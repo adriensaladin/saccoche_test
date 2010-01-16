@@ -23,17 +23,12 @@ $tab_id = array_filter($tab_id,'positif');
 sort($tab_id);
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-//	Choix de niveaux
+//	Choix de niveaux (excepté les niveaux transversaux liés aux paliers)
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-if($action=='Choisir')
+if( ($action=='Choisir') && (!in_array(96,$tab_id)) && (!in_array(97,$tab_id)) && (!in_array(98,$tab_id)) && (!in_array(99,$tab_id)) )
 {
 	$listing_niveaux = implode(',',$tab_id);
-	$DB_SQL = 'UPDATE livret_structure ';
-	$DB_SQL.= 'SET livret_structure_niveaux="'.$listing_niveaux.'" ';
-	$DB_SQL.= 'WHERE livret_structure_id=:structure_id ';
-	$DB_SQL.= 'LIMIT 1';
-	$DB_VAR = array(':structure_id'=>$_SESSION['STRUCTURE_ID']);
-	DB::query(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
+	modifier_niveaux_structure($_SESSION['STRUCTURE_ID'],$listing_niveaux);
 	$_SESSION['NIVEAUX'] = $listing_niveaux;
 	echo'ok';
 }

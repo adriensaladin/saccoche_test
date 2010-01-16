@@ -29,6 +29,21 @@ function lister_matieres_partagees_SACoche()
 }
 
 /**
+ * lister_niveaux_SACoche
+ * 
+ * @param void
+ * @return array
+ */
+
+function lister_niveaux_SACoche()
+{
+	$DB_SQL = 'SELECT * FROM livret_niveau ';
+	$DB_SQL.= 'ORDER BY livret_niveau_ordre ASC';
+	$DB_TAB = DB::queryTab(SACOCHE_BD_NAME , $DB_SQL);
+	return $DB_TAB ;
+}
+
+/**
  * lister_matieres_specifiques_structure
  * 
  * @param int    $structure_id
@@ -61,7 +76,27 @@ function modifier_matieres_partagees_structure($structure_id,$listing_matieres)
 	$DB_SQL.= 'LIMIT 1';
 	$DB_VAR = array(':structure_id'=>$structure_id);
 	DB::query(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
-	// On ne défait pas pour autant les liaisons avec les enseignants... simplement elles n'apparaitront plus.
+	// On ne défait pas pour autant les liaisons avec les enseignants... simplement elles n'apparaitront plus dans les formulaires.
+	// Idem pour les jointures avec les référentiels : ainsi les scores des élèves demeurent conservés.
+}
+
+/**
+ * modifier_niveaux_structure
+ * 
+ * @param int    $structure_id
+ * @param string $listing_niveaux id des niveaux séparés par des virgules
+ * @return void
+ */
+
+function modifier_niveaux_structure($structure_id,$listing_niveaux)
+{
+	$DB_SQL = 'UPDATE livret_structure ';
+	$DB_SQL.= 'SET livret_structure_niveaux="'.$listing_niveaux.'" ';
+	$DB_SQL.= 'WHERE livret_structure_id=:structure_id ';
+	$DB_SQL.= 'LIMIT 1';
+	$DB_VAR = array(':structure_id'=>$structure_id);
+	DB::query(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
+	// On ne défait pas pour autant les liaisons avec les groupes... simplement ils n'apparaitront plus dans les formulaires.
 	// Idem pour les jointures avec les référentiels : ainsi les scores des élèves demeurent conservés.
 }
 

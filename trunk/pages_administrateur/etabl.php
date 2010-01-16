@@ -18,8 +18,8 @@ $TITRE = "Gestion de l'établissement";
 
 <div class="hc">
 	<a href="./index.php?dossier=<?php echo $DOSSIER ?>&amp;fichier=<?php echo $FICHIER ?>&amp;section=matiere">Matières.</a>	||
-	<a href="./index.php?dossier=<?php echo $DOSSIER ?>&amp;fichier=<?php echo $FICHIER ?>&amp;section=niveau">Niveaux.</a>	||
-	<a href="./index.php?dossier=<?php echo $DOSSIER ?>&amp;fichier=<?php echo $FICHIER ?>&amp;section=palier">Paliers du socle.</a>	<br />
+	<a href="./index.php?dossier=<?php echo $DOSSIER ?>&amp;fichier=<?php echo $FICHIER ?>&amp;section=palier">Paliers du socle.</a>	||
+	<a href="./index.php?dossier=<?php echo $DOSSIER ?>&amp;fichier=<?php echo $FICHIER ?>&amp;section=niveau">Niveaux.</a>	<br />
 	<a href="./index.php?dossier=<?php echo $DOSSIER ?>&amp;fichier=<?php echo $FICHIER ?>&amp;section=login">Format des noms d'utilisateurs.</a>	||
 	<a href="./index.php?dossier=<?php echo $DOSSIER ?>&amp;fichier=<?php echo $FICHIER ?>&amp;section=connexion">Mode d'identification.</a>	||
 	<a href="./index.php?dossier=<?php echo $DOSSIER ?>&amp;fichier=<?php echo $FICHIER ?>&amp;section=duree-inactivite">Délai avant déconnexion.</a>	<br />

@@ -27,19 +27,23 @@ $TITRE = "Choix des niveaux";
 		</thead>
 		<tbody>
 			<?php
-			$tab_check = explode(',',$_SESSION['NIVEAUX']);
-			$DB_SQL = 'SELECT * FROM livret_niveau ';
-			$DB_SQL.= 'WHERE livret_palier_id=0 ';
-			$DB_SQL.= 'ORDER BY livret_niveau_ordre ASC';
-			$DB_TAB = DB::queryTab(SACOCHE_BD_NAME , $DB_SQL);
+			// Cases à cocher
+			$tab_check_niveaux = explode(',',$_SESSION['NIVEAUX']);
+			$tab_check_paliers = explode(',',$_SESSION['PALIERS']);
+			// Lister les niveaux
+			$DB_TAB = lister_niveaux_SACoche();
 			foreach($DB_TAB as $key => $DB_ROW)
 			{
-				$checked = (in_array($DB_ROW['livret_niveau_id'],$tab_check)) ? ' checked="checked"' : '' ;
-				echo'<tr>';
-				echo'	<td class="nu"><input type="checkbox" name="f_tab_id" value="'.$DB_ROW['livret_niveau_id'].'"'.$checked.' /></td>';
-				echo'	<td>'.html($DB_ROW['livret_niveau_ref']).'</td>';
-				echo	'<td>'.html($DB_ROW['livret_niveau_sigle']).'</td>';
-				echo'	<td>'.html($DB_ROW['livret_niveau_nom']).'</td>';
+				$checked  = ( (in_array($DB_ROW['livret_niveau_id'],$tab_check_niveaux)) || (in_array($DB_ROW['livret_palier_id'],$tab_check_paliers)) ) ? ' checked="checked"' : '' ;
+				$disabled = ($DB_ROW['livret_palier_id']) ? ' disabled="disabled"' : '' ;
+				$tr_class = ($DB_ROW['livret_palier_id']) ? ' class="new"' : '' ;
+				$td_label = ($DB_ROW['livret_palier_id']) ? '' : ' class="label"' ;
+				$indic    = ($DB_ROW['livret_palier_id']) ? ' <b>[automatique]</b>' : '' ;
+				echo'<tr'.$tr_class.'>';
+				echo'	<td class="nu"><input type="checkbox" name="f_tab_id" value="'.$DB_ROW['livret_niveau_id'].'"'.$disabled.$checked.' /></td>';
+				echo'	<td'.$td_label.'>'.html($DB_ROW['livret_niveau_ref']).'</td>';
+				echo'	<td'.$td_label.'>'.html($DB_ROW['livret_niveau_sigle']).'</td>';
+				echo'	<td'.$td_label.'>'.html($DB_ROW['livret_niveau_nom']).$indic.'</td>';
 				echo'</tr>';
 			}
 			?>

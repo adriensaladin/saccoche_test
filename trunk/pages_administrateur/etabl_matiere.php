@@ -40,7 +40,7 @@ $TITRE = "Choix des matières";
 				$disabled = ($DB_ROW['livret_matiere_transversal']) ? ' disabled="disabled"' : '' ;
 				$tr_class = ($DB_ROW['livret_matiere_transversal']) ? ' class="new"' : '' ;
 				$td_label = ($DB_ROW['livret_matiere_transversal']) ? '' : ' class="label"' ;
-				$indic    = ($DB_ROW['livret_matiere_transversal']) ? ' <b>(obligatoire)</b>' : '' ;
+				$indic    = ($DB_ROW['livret_matiere_transversal']) ? ' <b>[obligatoire]</b>' : '' ;
 				echo'<tr'.$tr_class.'>';
 				echo	'<td class="nu"><input type="checkbox" name="f_tab_id" value="'.$DB_ROW['livret_matiere_id'].'"'.$disabled.$checked.' /></td>';
 				echo	'<td'.$td_label.'>'.html($DB_ROW['livret_matiere_ref']).'</td>';

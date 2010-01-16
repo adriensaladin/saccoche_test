@@ -31,19 +31,20 @@ $TITRE = "Choix des matières";
 			<?php
 			// Cases à cocher
 			$tab_check = explode(',',$_SESSION['MATIERES']);
-			// Lister les matières communes
-			$DB_SQL = 'SELECT * FROM livret_matiere ';
-			$DB_SQL.= 'WHERE livret_matiere_structure_id=0 AND livret_matiere_transversal=0 ';
-			$DB_SQL.= 'ORDER BY livret_matiere_nom ASC';
-			$DB_TAB = DB::queryTab(SACOCHE_BD_NAME , $DB_SQL);
+			// Lister les matières partagées
+			$DB_TAB = lister_matieres_partagees_SACoche();
 			foreach($DB_TAB as $key => $DB_ROW)
 			{
 				// Afficher une ligne du tableau
-				$checked = (in_array($DB_ROW['livret_matiere_id'],$tab_check)) ? ' checked="checked"' : '' ;
-				echo'<tr>';
-				echo	'<td class="nu"><input type="checkbox" name="f_tab_id" value="'.$DB_ROW['livret_matiere_id'].'"'.$checked.' /></td>';
-				echo	'<td>'.html($DB_ROW['livret_matiere_ref']).'</td>';
-				echo	'<td>'.html($DB_ROW['livret_matiere_nom']).'</td>';
+				$checked  = (in_array($DB_ROW['livret_matiere_id'],$tab_check)) ? ' checked="checked"' : '' ;
+				$disabled = ($DB_ROW['livret_matiere_transversal']) ? ' disabled="disabled"' : '' ;
+				$tr_class = ($DB_ROW['livret_matiere_transversal']) ? ' class="new"' : '' ;
+				$td_label = ($DB_ROW['livret_matiere_transversal']) ? '' : ' class="label"' ;
+				$indic    = ($DB_ROW['livret_matiere_transversal']) ? ' <b>(obligatoire)</b>' : '' ;
+				echo'<tr'.$tr_class.'>';
+				echo	'<td class="nu"><input type="checkbox" name="f_tab_id" value="'.$DB_ROW['livret_matiere_id'].'"'.$disabled.$checked.' /></td>';
+				echo	'<td'.$td_label.'>'.html($DB_ROW['livret_matiere_ref']).'</td>';
+				echo	'<td'.$td_label.'>'.html($DB_ROW['livret_matiere_nom']).$indic.'</td>';
 				echo'</tr>';
 			}
 			?>
@@ -70,11 +71,7 @@ $TITRE = "Choix des matières";
 		<tbody>
 			<?php
 			// Lister les matières spécifiques
-			$DB_SQL = 'SELECT * FROM livret_matiere ';
-			$DB_SQL.= 'WHERE livret_matiere_structure_id=:structure_id ';
-			$DB_SQL.= 'ORDER BY livret_matiere_nom ASC';
-			$DB_VAR = array(':structure_id'=>$_SESSION['STRUCTURE_ID']);
-			$DB_TAB = DB::queryTab(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
+			$DB_TAB = lister_matieres_specifiques_structure($_SESSION['STRUCTURE_ID']);
 			foreach($DB_TAB as $key => $DB_ROW)
 			{
 				// Afficher une ligne du tableau

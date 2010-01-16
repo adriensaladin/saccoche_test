@@ -37,6 +37,17 @@ $(document).ready
 		trier_tableau();
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+//	Clic sur une cellule (remplace un champ label, impossible à définir sur plusieurs colonnes)
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+		$('td.label').click
+		(
+			function()
+			{
+				$(this).parent().find("input").click();
+			}
+		);
+
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 //	Clic sur un checkbox
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 		$('input[type=checkbox]').click
@@ -143,7 +154,7 @@ $(document).ready
 			mode = $(this).attr('class');
 			afficher_masquer_images_action('hide');
 			id = $(this).parent().parent().attr('id').substring(3);
-			new_span  = '<span class="danger"><input id="f_action" name="f_action" type="hidden" value="'+mode+'" /><input id="f_id" name="f_id" type="hidden" value="'+id+'" />Les associations et résultats seront perdus !<q class="valider" title="Confirmer la suppression de cette matière."></q><q class="annuler" title="Annuler la suppression de cette matière."></q> <label id="ajax_msg">&nbsp;</label></span>';
+			new_span  = '<span class="danger"><input id="f_action" name="f_action" type="hidden" value="'+mode+'" /><input id="f_id" name="f_id" type="hidden" value="'+id+'" />Les référentiels et les résultats associés seront perdus !<q class="valider" title="Confirmer la suppression de cette matière."></q><q class="annuler" title="Annuler la suppression de cette matière."></q> <label id="ajax_msg">&nbsp;</label></span>';
 			$(this).after(new_span);
 			infobulle();
 		};

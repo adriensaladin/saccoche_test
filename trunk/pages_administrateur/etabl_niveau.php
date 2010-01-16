@@ -23,7 +23,7 @@ $TITRE = "Choix des niveaux";
 <form id="niveau" action="">
 	<table class="form">
 		<thead>
-			<tr><th class="nu"></th><th>Référence</th><th>Nom complet</th></tr>
+			<tr><th class="nu"></th><th>Référence</th><th>Sigle Sconet</th><th>Nom complet</th></tr>
 		</thead>
 		<tbody>
 			<?php
@@ -35,7 +35,12 @@ $TITRE = "Choix des niveaux";
 			foreach($DB_TAB as $key => $DB_ROW)
 			{
 				$checked = (in_array($DB_ROW['livret_niveau_id'],$tab_check)) ? ' checked="checked"' : '' ;
-				echo'<tr><td class="nu"><input type="checkbox" name="f_tab_id" value="'.$DB_ROW['livret_niveau_id'].'"'.$checked.' /></td><td>'.html($DB_ROW['livret_niveau_ref']).'</td><td>'.html($DB_ROW['livret_niveau_nom']).'</td></tr>';
+				echo'<tr>';
+				echo'	<td class="nu"><input type="checkbox" name="f_tab_id" value="'.$DB_ROW['livret_niveau_id'].'"'.$checked.' /></td>';
+				echo'	<td>'.html($DB_ROW['livret_niveau_ref']).'</td>';
+				echo	'<td>'.html($DB_ROW['livret_niveau_sigle']).'</td>';
+				echo'	<td>'.html($DB_ROW['livret_niveau_nom']).'</td>';
+				echo'</tr>';
 			}
 			?>
 		</tbody>

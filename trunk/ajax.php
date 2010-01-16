@@ -57,6 +57,7 @@ require_once('./_inc/fonction_sessions.php');
 require_once('./_inc/fonction_requetes_administration.php');
 require_once('./_inc/fonction_requetes_formulaires_select.php');
 require_once('./_inc/fonction_requetes_referentiel.php');
+require_once('./_inc/fonction_requetes_gestion.php');
 require_once('./_inc/fonction_affichage.php');
 
 // Détermination du CHARSET d'en-tête

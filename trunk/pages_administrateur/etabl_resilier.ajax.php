@@ -15,43 +15,6 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 if($_SESSION['STRUCTURE_ID']==ID_DEMO) {exit('Action désactivée pour la démo...');}
 
-$DB_VAR = array(':structure_id'=>$_SESSION['STRUCTURE_ID']);
-
-$DB_SQL = 'DELETE FROM livret_structure WHERE livret_structure_id=:structure_id';
-DB::query(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
-
-$DB_SQL = 'DELETE FROM livret_groupe WHERE livret_structure_id=:structure_id';
-DB::query(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
-
-$DB_SQL = 'DELETE FROM livret_matiere WHERE livret_matiere_structure_id=:structure_id';
-DB::query(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
-
-$DB_SQL = 'DELETE FROM livret_user WHERE livret_structure_id=:structure_id';
-DB::query(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
-
-$DB_SQL = 'DELETE FROM livret_jointure_user_groupe WHERE livret_structure_id=:structure_id';
-DB::query(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
-
-$DB_SQL = 'DELETE FROM livret_jointure_user_matiere WHERE livret_structure_id=:structure_id';
-DB::query(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
-
-$DB_SQL = 'DELETE FROM livret_competence_domaine WHERE livret_structure_id=:structure_id';
-DB::query(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
-
-$DB_SQL = 'DELETE FROM livret_competence_theme WHERE livret_structure_id=:structure_id';
-DB::query(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
-
-$DB_SQL = 'DELETE FROM livret_competence_item WHERE livret_structure_id=:structure_id';
-DB::query(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
-
-$DB_SQL = 'DELETE FROM livret_evaluation WHERE livret_structure_id=:structure_id';
-DB::query(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
-
-$DB_SQL = 'DELETE FROM livret_jointure_user_competence WHERE livret_structure_id=:structure_id';
-DB::query(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
-
-$DB_SQL = 'DELETE FROM livret_jointure_evaluation_competence WHERE livret_structure_id=:structure_id';
-DB::query(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
-
+supprimer_structure($_SESSION['STRUCTURE_ID']);
 echo'ok';
 ?>

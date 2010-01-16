@@ -71,7 +71,7 @@ $TITRE = "Choix des matières";
 		<tbody>
 			<?php
 			// Lister les matières spécifiques
-			$DB_TAB = lister_matieres_specifiques_structure($_SESSION['STRUCTURE_ID']);
+			$DB_TAB = lister_matieres_specifiques($_SESSION['STRUCTURE_ID']);
 			foreach($DB_TAB as $key => $DB_ROW)
 			{
 				// Afficher une ligne du tableau

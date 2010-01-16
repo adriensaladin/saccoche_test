@@ -231,12 +231,7 @@ elseif( $step==3 )
 	$tab_classes_base        = array();
 	$tab_classes_base['ref'] = array();
 	$tab_classes_base['nom'] = array();
-	$DB_SQL = 'SELECT * FROM livret_groupe ';
-	$DB_SQL.= 'LEFT JOIN livret_niveau USING (livret_niveau_id) ';
-	$DB_SQL.= 'WHERE livret_structure_id=:structure_id AND livret_groupe_type=:type ';
-	$DB_SQL.= 'ORDER BY livret_niveau_ordre ASC, livret_groupe_ref ASC';
-	$DB_VAR = array(':structure_id'=>$_SESSION['STRUCTURE_ID'],':type'=>'classe');
-	$DB_TAB = DB::queryTab(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
+	$DB_TAB = lister_classes($_SESSION['STRUCTURE_ID']);
 	foreach($DB_TAB as $key => $DB_ROW)
 	{
 		$tab_classes_base['ref'][$DB_ROW['livret_groupe_id']] = $DB_ROW['livret_groupe_ref'];

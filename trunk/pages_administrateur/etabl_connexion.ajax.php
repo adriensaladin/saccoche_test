@@ -25,7 +25,7 @@ require_once('./_inc/tableau_sso.php');	// Charge $tab_sso['nom'] = array('txt'=
 
 if(isset($tab_sso[$f_mode_connexion]))
 {
-	modifier_mode_connexion_structure($_SESSION['STRUCTURE_ID'],$f_mode_connexion);
+	modifier_mode_connexion($_SESSION['STRUCTURE_ID'],$f_mode_connexion);
 	// ne pas oublier de mettre aussi à jour la session
 	// normalement faudrait pas car connecté avec l'ancien mode, mais sinon pb d'initalisation du focmulaire
 	$_SESSION['SSO']  = $f_mode_connexion;

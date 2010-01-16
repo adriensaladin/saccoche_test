@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Id: fonction_requetes_gestion.php 8 2009-10-30 20:56:02Z thomas $
+ * @version $Id$
  * @author Thomas Crespin <thomas.crespin@sesamath.net>
  * @copyright Thomas Crespin 2009
  * 
@@ -56,13 +56,13 @@ function lister_niveaux_SACoche()
 }
 
 /**
- * lister_matieres_specifiques_structure
+ * lister_matieres_specifiques
  * 
  * @param int    $structure_id
  * @return array
  */
 
-function lister_matieres_specifiques_structure($structure_id)
+function lister_matieres_specifiques($structure_id)
 {
 	$DB_SQL = 'SELECT * FROM livret_matiere ';
 	$DB_SQL.= 'WHERE livret_matiere_structure_id=:structure_id ';
@@ -72,14 +72,31 @@ function lister_matieres_specifiques_structure($structure_id)
 }
 
 /**
- * modifier_matieres_partagees_structure
+ * lister_classes
+ * 
+ * @param int    $structure_id
+ * @return array
+ */
+
+function lister_classes($structure_id)
+{
+	$DB_SQL = 'SELECT * FROM livret_groupe ';
+	$DB_SQL.= 'LEFT JOIN livret_niveau USING (livret_niveau_id) ';
+	$DB_SQL.= 'WHERE livret_structure_id=:structure_id AND livret_groupe_type=:type ';
+	$DB_SQL.= 'ORDER BY livret_niveau_ordre ASC, livret_groupe_ref ASC';
+	$DB_VAR = array(':structure_id'=>$structure_id,':type'=>'classe');
+	return DB::queryTab(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
+}
+
+/**
+ * modifier_matieres_partagees
  * 
  * @param int    $structure_id
  * @param string $listing_matieres id des matières séparés par des virgules
  * @return void
  */
 
-function modifier_matieres_partagees_structure($structure_id,$listing_matieres)
+function modifier_matieres_partagees($structure_id,$listing_matieres)
 {
 	$DB_SQL = 'UPDATE livret_structure ';
 	$DB_SQL.= 'SET livret_structure_matieres="'.$listing_matieres.'" ';
@@ -92,14 +109,14 @@ function modifier_matieres_partagees_structure($structure_id,$listing_matieres)
 }
 
 /**
- * modifier_niveaux_structure
+ * modifier_niveaux
  * 
  * @param int    $structure_id
  * @param string $listing_niveaux id des niveaux séparés par des virgules
  * @return void
  */
 
-function modifier_niveaux_structure($structure_id,$listing_niveaux)
+function modifier_niveaux($structure_id,$listing_niveaux)
 {
 	$DB_SQL = 'UPDATE livret_structure ';
 	$DB_SQL.= 'SET livret_structure_niveaux="'.$listing_niveaux.'" ';
@@ -112,14 +129,14 @@ function modifier_niveaux_structure($structure_id,$listing_niveaux)
 }
 
 /**
- * modifier_paliers_structure
+ * modifier_paliers
  * 
  * @param int    $structure_id
  * @param string $listing_paliers id des paliers séparés par des virgules
  * @return void
  */
 
-function modifier_paliers_structure($structure_id,$listing_paliers)
+function modifier_paliers($structure_id,$listing_paliers)
 {
 	$DB_SQL = 'UPDATE livret_structure ';
 	$DB_SQL.= 'SET livret_structure_paliers="'.$listing_paliers.'" ';
@@ -131,7 +148,7 @@ function modifier_paliers_structure($structure_id,$listing_paliers)
 }
 
 /**
- * modifier_format_login_structure
+ * modifier_format_login
  * 
  * @param int    $structure_id
  * @param string $modele_professeur
@@ -139,7 +156,7 @@ function modifier_paliers_structure($structure_id,$listing_paliers)
  * @return void
  */
 
-function modifier_format_login_structure($structure_id,$modele_professeur,$modele_eleve)
+function modifier_format_login($structure_id,$modele_professeur,$modele_eleve)
 {
 	$DB_SQL = 'UPDATE livret_structure ';
 	$DB_SQL.= 'SET livret_structure_modele_professeur=:modele_professeur, livret_structure_modele_eleve=:modele_eleve ';
@@ -150,14 +167,14 @@ function modifier_format_login_structure($structure_id,$modele_professeur,$model
 }
 
 /**
- * modifier_mode_connexion_structure
+ * modifier_mode_connexion
  * 
  * @param int    $structure_id
  * @param string $mode_connexion
  * @return void
  */
 
-function modifier_mode_connexion_structure($structure_id,$mode_connexion)
+function modifier_mode_connexion($structure_id,$mode_connexion)
 {
 	$DB_SQL = 'UPDATE livret_structure ';
 	$DB_SQL.= 'SET livret_structure_sso=:mode_connexion ';
@@ -168,14 +185,14 @@ function modifier_mode_connexion_structure($structure_id,$mode_connexion)
 }
 
 /**
- * modifier_duree_inactivite_structure
+ * modifier_duree_inactivite
  * 
  * @param int $structure_id
  * @param int $delai
  * @return void
  */
 
-function modifier_duree_inactivite_structure($structure_id,$delai)
+function modifier_duree_inactivite($structure_id,$delai)
 {
 
 	$DB_SQL = 'UPDATE livret_structure ';
@@ -187,14 +204,14 @@ function modifier_duree_inactivite_structure($structure_id,$delai)
 }
 
 /**
- * modifier_eleve_options_structure
+ * modifier_eleve_options
  * 
  * @param int    $structure_id
  * @param string $eleve_options
  * @return void
  */
 
-function modifier_eleve_options_structure($structure_id,$eleve_options)
+function modifier_eleve_options($structure_id,$eleve_options)
 {
 	$DB_SQL = 'UPDATE livret_structure ';
 	$DB_SQL.= 'SET livret_structure_eleve_options=:eleve_options ';
@@ -205,7 +222,7 @@ function modifier_eleve_options_structure($structure_id,$eleve_options)
 }
 
 /**
- * chercher_reference_matiere_structure
+ * chercher_reference_matiere
  * 
  * @param int    $structure_id
  * @param string $matiere_ref
@@ -213,7 +230,7 @@ function modifier_eleve_options_structure($structure_id,$eleve_options)
  * @return int
  */
 
-function chercher_reference_matiere_structure($structure_id,$matiere_ref,$matiere_id=false)
+function chercher_reference_matiere($structure_id,$matiere_ref,$matiere_id=false)
 {
 	$DB_SQL = 'SELECT livret_matiere_id FROM livret_matiere ';
 	$DB_SQL.= 'WHERE livret_matiere_ref=:matiere_ref AND livret_matiere_structure_id IN(0,:structure_id) ';
@@ -229,7 +246,7 @@ function chercher_reference_matiere_structure($structure_id,$matiere_ref,$matier
 }
 
 /**
- * ajouter_matiere_specifique_structure
+ * ajouter_matiere_specifique
  * 
  * @param int    $structure_id
  * @param string $matiere_ref
@@ -237,7 +254,7 @@ function chercher_reference_matiere_structure($structure_id,$matiere_ref,$matier
  * @return int
  */
 
-function ajouter_matiere_specifique_structure($structure_id,$matiere_ref,$matiere_nom)
+function ajouter_matiere_specifique($structure_id,$matiere_ref,$matiere_nom)
 {
 	$DB_SQL = 'INSERT INTO livret_matiere(livret_matiere_structure_id,livret_matiere_ref,livret_matiere_nom) ';
 	$DB_SQL.= 'VALUES(:structure_id,:matiere_ref,:matiere_nom)';
@@ -247,7 +264,7 @@ function ajouter_matiere_specifique_structure($structure_id,$matiere_ref,$matier
 }
 
 /**
- * modifier_matiere_specifique_structure
+ * modifier_matiere_specifique
  * 
  * @param int    $structure_id
  * @param int    $matiere_id
@@ -256,7 +273,7 @@ function ajouter_matiere_specifique_structure($structure_id,$matiere_ref,$matier
  * @return void
  */
 
-function modifier_matiere_specifique_structure($structure_id,$matiere_id,$matiere_ref,$matiere_nom)
+function modifier_matiere_specifique($structure_id,$matiere_id,$matiere_ref,$matiere_nom)
 {
 	$DB_SQL = 'UPDATE livret_matiere ';
 	$DB_SQL.= 'SET livret_matiere_ref=:matiere_ref,livret_matiere_nom=:matiere_nom ';
@@ -267,14 +284,14 @@ function modifier_matiere_specifique_structure($structure_id,$matiere_id,$matier
 }
 
 /**
- * supprimer_matiere_specifique_structure
+ * supprimer_matiere_specifique
  * 
  * @param int $structure_id
  * @param int $matiere_id
  * @return void
  */
 
-function supprimer_matiere_specifique_structure($structure_id,$matiere_id)
+function supprimer_matiere_specifique($structure_id,$matiere_id)
 {
 	$DB_SQL = 'DELETE FROM livret_matiere ';
 	$DB_SQL.= 'WHERE livret_matiere_structure_id=:structure_id AND livret_matiere_id=:matiere_id ';
@@ -287,11 +304,11 @@ function supprimer_matiere_specifique_structure($structure_id,$matiere_id)
 	$DB_VAR = array(':structure_id'=>$structure_id,':matiere_id'=>$matiere_id);
 	DB::query(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
 	// Il faut aussi supprimer les référentiels associés, et donc tous les scores associés (orphelins de la matière)
-	supprimer_referentiel_structure_matiere_niveau($structure_id,$matiere_id);
+	supprimer_referentiel_matiere_niveau($structure_id,$matiere_id);
 }
 
 /**
- * supprimer_referentiel_structure_matiere_niveau
+ * supprimer_referentiel_matiere_niveau
  * 
  * @param int $structure_id
  * @param int $matiere_id
@@ -299,7 +316,7 @@ function supprimer_matiere_specifique_structure($structure_id,$matiere_id)
  * @return void
  */
 
-function supprimer_referentiel_structure_matiere_niveau($structure_id,$matiere_id,$niveau_id=false)
+function supprimer_referentiel_matiere_niveau($structure_id,$matiere_id,$niveau_id=false)
 {
 	$DB_SQL = 'DELETE livret_referentiel,livret_competence_domaine, livret_competence_theme, livret_competence_item, livret_jointure_evaluation_competence, livret_jointure_user_competence FROM livret_referentiel ';
 	$DB_SQL.= 'LEFT JOIN livret_competence_domaine USING (livret_structure_id,livret_matiere_id,livret_niveau_id) ';
@@ -395,6 +412,38 @@ function changer_son_mdp($structure_id,$user_id,$user_profil,$password_ancien,$p
 	}
 	DB::query(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
 	return 'ok';
+}
+
+/**
+ * supprimer_structure
+ * 
+ * @param int $structure_id
+ * @return void
+ */
+
+function supprimer_structure($structure_id)
+{
+	$tab_sql = array();
+	$tab_sql[] = 'DELETE FROM livret_competence_domaine WHERE livret_structure_id=:structure_id';
+	$tab_sql[] = 'DELETE FROM livret_competence_item WHERE livret_structure_id=:structure_id';
+	$tab_sql[] = 'DELETE FROM livret_competence_theme WHERE livret_structure_id=:structure_id';
+	$tab_sql[] = 'DELETE FROM livret_evaluation WHERE livret_structure_id=:structure_id';
+	$tab_sql[] = 'DELETE FROM livret_groupe WHERE livret_structure_id=:structure_id';
+	$tab_sql[] = 'DELETE FROM livret_jointure_evaluation_competence WHERE livret_structure_id=:structure_id';
+	$tab_sql[] = 'DELETE FROM livret_jointure_groupe_periode WHERE livret_structure_id=:structure_id';
+	$tab_sql[] = 'DELETE FROM livret_jointure_user_competence WHERE livret_structure_id=:structure_id';
+	$tab_sql[] = 'DELETE FROM livret_jointure_user_groupe WHERE livret_structure_id=:structure_id';
+	$tab_sql[] = 'DELETE FROM livret_jointure_user_matiere WHERE livret_structure_id=:structure_id';
+	$tab_sql[] = 'DELETE FROM livret_matiere WHERE livret_matiere_structure_id=:structure_id';
+	$tab_sql[] = 'DELETE FROM livret_periode WHERE livret_structure_id=:structure_id';
+	$tab_sql[] = 'DELETE FROM livret_referentiel WHERE livret_structure_id=:structure_id';
+	$tab_sql[] = 'DELETE FROM livret_structure WHERE livret_structure_id=:structure_id';
+	$tab_sql[] = 'DELETE FROM livret_user WHERE livret_structure_id=:structure_id';
+	$DB_VAR = array(':structure_id'=>$structure_id);
+	foreach($tab_sql as $DB_SQL)
+	{
+		DB::query(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
+	}
 }
 
 ?>

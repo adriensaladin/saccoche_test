@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<!ELEMENT arbre (domaine*)>
+<!ATTLIST arbre id ID #REQUIRED>
+<!ELEMENT domaine (theme*)>
+<!ATTLIST domaine ref NMTOKEN #REQUIRED nom CDATA #REQUIRED coef NMTOKEN #REQUIRED>
+<!ELEMENT theme (competence*)>
+<!ATTLIST theme nom CDATA #REQUIRED coef NMTOKEN #REQUIRED>
+<!ELEMENT competence EMPTY>
+<!ATTLIST competence nom CDATA #REQUIRED coef NMTOKEN #REQUIRED>

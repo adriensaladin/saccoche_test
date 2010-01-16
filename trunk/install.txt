@@ -1,0 +1,10 @@
+PHP 5.1 minimum
+Extensions : 'session', 'mysql', 'dom', 'gd', 'mbstring' ,'PDO', 'pdo_mysql'
+Extension 'curl' si utilisation de CAS
+
+
+Bug avec PHP 5.3.0
+
+"The constant PDO::MYSQL_ATTR_INIT_COMMAND is not available."
+http://bugs.php.net/47224
+

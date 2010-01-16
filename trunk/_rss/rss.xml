@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0">
+<channel>
+
+	<title>SACoche</title>
+	<link>http://competences.sesamath.net</link>
+	<description>Suivi d'Acquisition de Compétences.</description>
+	<language>fr-FR</language>
+	<lastBuildDate>Sat, 26 Dec 2009 22:45:35 +0100</lastBuildDate>
+	<docs>http://www.scriptol.fr/rss/RSS-2.0.html</docs>
+	<image>
+		<url>http://competences.sesamath.net/_img/logo_grand2.gif</url>
+		<title>SACoche</title>
+		<link>http://competences.sesamath.net</link>
+		<width>208</width>
+		<height>71</height>
+		<description></description>
+	</image>
+
+	<item>
+		<title>Ordre des items d'une évaluation !!!</title>
+		<link>http://competences.sesamath.net</link>
+		<description>Il est désormais possible, pour une évaluation donnée, de modifier l'ordre des items d'une évaluation (par défaut, c'est celui du référentiel) ; cet ordre est notamment pris en compte pour l'interface de saisie et pour l'impression du cartouche.</description>
+		<pubDate>Tue, 22 Dec 2009 00:00:00 +0100</pubDate>
+		<guid isPermaLink="false">article_1</guid>
+	</item>
+
+	<item>
+		<title>hgwfksfd</title>
+		<link>http://competences.sesamath.net</link>
+		<description>bla bla bla</description>
+		<pubDate>Mon, 21 Dec 2009 00:00:00 +0100</pubDate>
+		<guid isPermaLink="false">article_2</guid>
+	</item>
+
+</channel>
+</rss>

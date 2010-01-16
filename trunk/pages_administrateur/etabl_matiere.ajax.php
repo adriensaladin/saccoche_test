@@ -32,6 +32,7 @@ if( ($action=='partager') && (in_array(99,$tab_id)) )
 {
 	$listing_matieres = implode(',',$tab_id);
 	modifier_matieres_partagees_structure($_SESSION['STRUCTURE_ID'],$listing_matieres);
+	// ne pas oublier de mettre à jour la session aussi
 	$_SESSION['MATIERES'] = $listing_matieres;
 	echo'ok';
 }

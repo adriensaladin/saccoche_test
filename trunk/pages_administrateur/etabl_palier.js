@@ -31,6 +31,17 @@ $(document).ready
 		);
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+//	Clic sur une cellule (remplace un champ label, impossible à définir sur plusieurs colonnes)
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+		$('td.label').click
+		(
+			function()
+			{
+				$(this).parent().find("input").click();
+			}
+		);
+
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 //	Clic sur un checkbox
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 		$('input[type=checkbox]').click
@@ -50,6 +61,11 @@ $(document).ready
 			{
 				$('#ajax_msg').removeAttr("class").addClass("loader").html("Demande envoyée... Veuillez patienter.");
 				var check_ids = new Array(); $("#socle input[type=checkbox]:checked").each(function(){check_ids.push($(this).val());});
+				if(check_ids.length==0)
+				{
+					$('#ajax_msg').removeAttr("class").addClass("erreur").html("Il faut cocher au moins un palier !");
+					return false;
+				}
 				$.ajax
 				(
 					{

@@ -25,15 +25,10 @@ sort($tab_id);
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 //	Choix de paliers du socle
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-if($action=='Choisir')
+if( ($action=='Choisir') && count($tab_id) )
 {
 	$listing_paliers = implode(',',$tab_id);
-	$DB_SQL = 'UPDATE livret_structure ';
-	$DB_SQL.= 'SET livret_structure_paliers="'.$listing_paliers.'" ';
-	$DB_SQL.= 'WHERE livret_structure_id=:structure_id ';
-	$DB_SQL.= 'LIMIT 1';
-	$DB_VAR = array(':structure_id'=>$_SESSION['STRUCTURE_ID']);
-	DB::query(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
+	modifier_paliers_structure($_SESSION['STRUCTURE_ID'],$listing_paliers);
 	// ne pas oublier de mettre à jour la session aussi
 	$_SESSION['PALIERS'] = $listing_paliers;
 	echo'ok';

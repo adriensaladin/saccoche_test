@@ -24,8 +24,21 @@ function lister_matieres_partagees_SACoche()
 	$DB_SQL = 'SELECT * FROM livret_matiere ';
 	$DB_SQL.= 'WHERE livret_matiere_structure_id=0 ';
 	$DB_SQL.= 'ORDER BY livret_matiere_nom ASC';
-	$DB_TAB = DB::queryTab(SACOCHE_BD_NAME , $DB_SQL);
-	return $DB_TAB ;
+	return DB::queryTab(SACOCHE_BD_NAME , $DB_SQL);
+}
+
+/**
+ * lister_paliers_SACoche
+ * 
+ * @param void
+ * @return array
+ */
+
+function lister_paliers_SACoche()
+{
+	$DB_SQL = 'SELECT * FROM livret_socle_palier ';
+	$DB_SQL.= 'ORDER BY livret_palier_ordre ASC';
+	return DB::queryTab(SACOCHE_BD_NAME , $DB_SQL);
 }
 
 /**
@@ -39,8 +52,7 @@ function lister_niveaux_SACoche()
 {
 	$DB_SQL = 'SELECT * FROM livret_niveau ';
 	$DB_SQL.= 'ORDER BY livret_niveau_ordre ASC';
-	$DB_TAB = DB::queryTab(SACOCHE_BD_NAME , $DB_SQL);
-	return $DB_TAB ;
+	return DB::queryTab(SACOCHE_BD_NAME , $DB_SQL);
 }
 
 /**
@@ -56,8 +68,7 @@ function lister_matieres_specifiques_structure($structure_id)
 	$DB_SQL.= 'WHERE livret_matiere_structure_id=:structure_id ';
 	$DB_SQL.= 'ORDER BY livret_matiere_nom ASC';
 	$DB_VAR = array(':structure_id'=>$structure_id);
-	$DB_TAB = DB::queryTab(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
-	return $DB_TAB ;
+	return DB::queryTab(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
 /**
@@ -101,6 +112,25 @@ function modifier_niveaux_structure($structure_id,$listing_niveaux)
 }
 
 /**
+ * modifier_paliers_structure
+ * 
+ * @param int    $structure_id
+ * @param string $listing_paliers id des paliers séparés par des virgules
+ * @return void
+ */
+
+function modifier_paliers_structure($structure_id,$listing_paliers)
+{
+	$DB_SQL = 'UPDATE livret_structure ';
+	$DB_SQL.= 'SET livret_structure_paliers="'.$listing_paliers.'" ';
+	$DB_SQL.= 'WHERE livret_structure_id=:structure_id ';
+	$DB_SQL.= 'LIMIT 1';
+	$DB_VAR = array(':structure_id'=>$structure_id);
+	DB::query(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
+	// On ne défait pas pour autant les jointures avec les référentiels : ainsi les scores des élèves demeurent conservés.
+}
+
+/**
  * chercher_reference_matiere_structure
  * 
  * @param int    $structure_id
@@ -139,8 +169,7 @@ function ajouter_matiere_specifique_structure($structure_id,$matiere_ref,$matier
 	$DB_SQL.= 'VALUES(:structure_id,:matiere_ref,:matiere_nom)';
 	$DB_VAR = array(':structure_id'=>$_SESSION['STRUCTURE_ID'],':matiere_ref'=>$matiere_ref,':matiere_nom'=>$matiere_nom);
 	DB::query(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
-	$id = DB::getLastOid(SACOCHE_BD_NAME);
-	return $id ;
+	return DB::getLastOid(SACOCHE_BD_NAME);
 }
 
 /**
@@ -212,6 +241,29 @@ function supprimer_referentiel_structure_matiere_niveau($structure_id,$matiere_i
 		$DB_VAR[':niveau_id'] = $niveau_id;
 	}
 	DB::query(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
+}
+
+/**
+ * select_arborescence_palier
+ * 
+ * @param int    $palier_id   facultatif : si non fourni, tous les paliers seront concernés
+ * @return array
+ */
+
+function select_arborescence_palier($palier_id=false)
+{
+	$DB_SQL = 'SELECT * FROM livret_socle_palier ';
+	$DB_SQL.= 'LEFT JOIN livret_socle_pilier USING (livret_palier_id) ';
+	$DB_SQL.= 'LEFT JOIN livret_socle_section USING (livret_pilier_id) ';
+	$DB_SQL.= 'LEFT JOIN livret_socle_item USING (livret_section_id) ';
+	$DB_VAR = array();
+	if($palier_id)
+	{
+		$DB_SQL.= 'WHERE livret_palier_id=:palier_id ';
+		$DB_VAR[':palier_id'] = $palier_id;
+	}
+	$DB_SQL.= 'ORDER BY livret_palier_ordre ASC, livret_pilier_ordre ASC, livret_section_ordre ASC, livret_socle_ordre ASC';
+	return DB::queryTab(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
 ?>

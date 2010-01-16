@@ -65,23 +65,6 @@ function select_arborescence_matiere($matiere_id)
 }
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-//	Retourner l'arborescence d'un socle un palier donné
-//	[./pages_eleve/grille_niveau.ajax.php]
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-
-function select_arborescence_palier($palier_id)
-{
-	$DB_SQL = 'SELECT * FROM livret_socle_palier ';
-	$DB_SQL.= 'LEFT JOIN livret_socle_pilier USING (livret_palier_id) ';
-	$DB_SQL.= 'LEFT JOIN livret_socle_section USING (livret_pilier_id) ';
-	$DB_SQL.= 'LEFT JOIN livret_socle_item USING (livret_section_id) ';
-	$DB_SQL.= 'WHERE livret_palier_id=:palier_id ';
-	$DB_SQL.= 'ORDER BY livret_palier_ordre ASC, livret_pilier_ordre ASC, livret_section_ordre ASC, livret_socle_ordre ASC';
-	$DB_VAR = array(':palier_id'=>$palier_id);
-	return DB::queryTab(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
-}
-
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 //	Retourner l'arborescence d'un référentiel pour toutes les matières d'un professeur, sur tous les niveaux
 //	[./pages_professeur/eval_groupe.php] [./pages_professeur/eval_select.php]
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-

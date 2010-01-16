@@ -27,14 +27,19 @@ $TITRE = "Choix des paliers du socle";
 		</thead>
 		<tbody>
 			<?php
+			// Cases à cocher
 			$tab_check = explode(',',$_SESSION['PALIERS']);
-			$DB_SQL = 'SELECT * FROM livret_socle_palier ';
-			$DB_SQL.= 'ORDER BY livret_palier_ordre ASC';
-			$DB_TAB = DB::queryTab(SACOCHE_BD_NAME , $DB_SQL);
+			// Lister les matières partagées
+			$DB_TAB = lister_paliers_SACoche();
 			foreach($DB_TAB as $key => $DB_ROW)
 			{
+				// Afficher une ligne du tableau
 				$checked = (in_array($DB_ROW['livret_palier_id'],$tab_check)) ? ' checked="checked"' : '' ;
-				echo'<tr><td class="nu"><input type="checkbox" name="f_tab_id" value="'.$DB_ROW['livret_palier_id'].'"'.$checked.' /></td><td>'.html($DB_ROW['livret_palier_nom']).'</td><td class="nu"><q class="voir" id="id_'.$DB_ROW['livret_palier_id'].'" title="Voir le détail de ce palier du socle."></q></td></tr>';
+				echo'<tr>';
+				echo	'<td class="nu"><input type="checkbox" name="f_tab_id" value="'.$DB_ROW['livret_palier_id'].'"'.$checked.' /></td>';
+				echo	'<td class="label">'.html($DB_ROW['livret_palier_nom']).'</td>';
+				echo	'<td class="nu"><q class="voir" id="id_'.$DB_ROW['livret_palier_id'].'" title="Voir le détail de ce palier du socle."></q></td>';
+				echo'</tr>';
 			}
 			?>
 		</tbody>
@@ -49,19 +54,13 @@ $TITRE = "Choix des paliers du socle";
 <div id="zone_paliers">
 	<?php
 	// Affichage de la liste des items du socle pour chaque palier
-	$DB_SQL = 'SELECT * FROM livret_socle_palier ';
-	$DB_SQL.= 'LEFT JOIN livret_socle_pilier USING (livret_palier_id) ';
-	$DB_SQL.= 'LEFT JOIN livret_socle_section USING (livret_pilier_id) ';
-	$DB_SQL.= 'LEFT JOIN livret_socle_item USING (livret_section_id) ';
-	$DB_SQL.= 'ORDER BY livret_palier_ordre ASC, livret_pilier_ordre ASC, livret_section_ordre ASC, livret_socle_ordre ASC';
-	$DB_VAR = array();
-	$DB_TAB = DB::queryTab(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
 	$tab_palier  = array();
 	$tab_pilier  = array();
 	$tab_section = array();
 	$tab_socle   = array();
 	$palier_id = 0;
 	$affich_socle = '';
+	$DB_TAB = select_arborescence_palier();
 	foreach($DB_TAB as $key => $DB_ROW)
 	{
 		if($DB_ROW['livret_palier_id']!=$palier_id)
@@ -93,7 +92,7 @@ $TITRE = "Choix des paliers du socle";
 	{
 		$affich_socle .= '	<li class="li_m1 hide" id="palier_'.$palier_id.'"><span>'.html($palier_nom).'</span>'."\r\n";
 		$affich_socle .= '		<ul class="ul_n1">'."\r\n";
-		if(count($tab_pilier[$palier_id]))
+		if(isset($tab_pilier[$palier_id]))
 		{
 			foreach($tab_pilier[$palier_id] as $pilier_id => $pilier_nom)
 			{

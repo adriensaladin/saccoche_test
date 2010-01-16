@@ -30,13 +30,8 @@ if( $f_login_professeur && $f_login_eleve )
 	$test_eleve      = (preg_match("#^n+[._-]?p+$#", $f_login_eleve))      ? 'nom-puis-prenom' : $test_eleve ;
 	if( $test_professeur && $test_eleve )
 	{
-		$DB_SQL = 'UPDATE livret_structure ';
-		$DB_SQL.= 'SET livret_structure_modele_professeur=:modele_professeur, livret_structure_modele_eleve=:modele_eleve ';
-		$DB_SQL.= 'WHERE livret_structure_id=:structure_id ';
-		$DB_SQL.= 'LIMIT 1';
-		$DB_VAR = array(':structure_id'=>$_SESSION['STRUCTURE_ID'],':modele_professeur'=>$f_login_professeur,':modele_eleve'=>$f_login_eleve);
-		DB::query(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
-		// ne pas oublier de mettre à jour la session aussi
+		modifier_format_login_structure($_SESSION['STRUCTURE_ID'],$f_login_professeur,$f_login_eleve);
+		// ne pas oublier de mettre aussi à jour la session
 		$_SESSION['MODELE_PROF']  = $f_login_professeur;
 		$_SESSION['MODELE_ELEVE'] = $f_login_eleve;
 		echo'ok';

@@ -131,6 +131,80 @@ function modifier_paliers_structure($structure_id,$listing_paliers)
 }
 
 /**
+ * modifier_format_login_structure
+ * 
+ * @param int    $structure_id
+ * @param string $modele_professeur
+ * @param string $modele_eleve
+ * @return void
+ */
+
+function modifier_format_login_structure($structure_id,$modele_professeur,$modele_eleve)
+{
+	$DB_SQL = 'UPDATE livret_structure ';
+	$DB_SQL.= 'SET livret_structure_modele_professeur=:modele_professeur, livret_structure_modele_eleve=:modele_eleve ';
+	$DB_SQL.= 'WHERE livret_structure_id=:structure_id ';
+	$DB_SQL.= 'LIMIT 1';
+	$DB_VAR = array(':structure_id'=>$structure_id,':modele_professeur'=>$modele_professeur,':modele_eleve'=>$modele_eleve);
+	DB::query(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
+}
+
+/**
+ * modifier_mode_connexion_structure
+ * 
+ * @param int    $structure_id
+ * @param string $mode_connexion
+ * @return void
+ */
+
+function modifier_mode_connexion_structure($structure_id,$mode_connexion)
+{
+	$DB_SQL = 'UPDATE livret_structure ';
+	$DB_SQL.= 'SET livret_structure_sso=:mode_connexion ';
+	$DB_SQL.= 'WHERE livret_structure_id=:structure_id ';
+	$DB_SQL.= 'LIMIT 1';
+	$DB_VAR = array(':structure_id'=>$structure_id,':mode_connexion'=>$mode_connexion);
+	DB::query(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
+}
+
+/**
+ * modifier_duree_inactivite_structure
+ * 
+ * @param int $structure_id
+ * @param int $delai
+ * @return void
+ */
+
+function modifier_duree_inactivite_structure($structure_id,$delai)
+{
+
+	$DB_SQL = 'UPDATE livret_structure ';
+	$DB_SQL.= 'SET livret_structure_duree_inactivite=:delai ';
+	$DB_SQL.= 'WHERE livret_structure_id=:structure_id ';
+	$DB_SQL.= 'LIMIT 1';
+	$DB_VAR = array(':structure_id'=>$structure_id,':delai'=>$delai);
+	DB::query(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
+}
+
+/**
+ * modifier_eleve_options_structure
+ * 
+ * @param int    $structure_id
+ * @param string $eleve_options
+ * @return void
+ */
+
+function modifier_eleve_options_structure($structure_id,$eleve_options)
+{
+	$DB_SQL = 'UPDATE livret_structure ';
+	$DB_SQL.= 'SET livret_structure_eleve_options=:eleve_options ';
+	$DB_SQL.= 'WHERE livret_structure_id=:structure_id ';
+	$DB_SQL.= 'LIMIT 1';
+	$DB_VAR = array(':structure_id'=>$structure_id,':eleve_options'=>$eleve_options);
+	DB::query(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
+}
+
+/**
  * chercher_reference_matiere_structure
  * 
  * @param int    $structure_id
@@ -143,7 +217,7 @@ function chercher_reference_matiere_structure($structure_id,$matiere_ref,$matier
 {
 	$DB_SQL = 'SELECT livret_matiere_id FROM livret_matiere ';
 	$DB_SQL.= 'WHERE livret_matiere_ref=:matiere_ref AND livret_matiere_structure_id IN(0,:structure_id) ';
-	$DB_VAR = array(':structure_id'=>$_SESSION['STRUCTURE_ID'],':matiere_ref'=>$matiere_ref);
+	$DB_VAR = array(':structure_id'=>$structure_id,':matiere_ref'=>$matiere_ref);
 	if($matiere_id)
 	{
 		$DB_SQL.= 'AND livret_matiere_id!=:matiere_id ';
@@ -167,7 +241,7 @@ function ajouter_matiere_specifique_structure($structure_id,$matiere_ref,$matier
 {
 	$DB_SQL = 'INSERT INTO livret_matiere(livret_matiere_structure_id,livret_matiere_ref,livret_matiere_nom) ';
 	$DB_SQL.= 'VALUES(:structure_id,:matiere_ref,:matiere_nom)';
-	$DB_VAR = array(':structure_id'=>$_SESSION['STRUCTURE_ID'],':matiere_ref'=>$matiere_ref,':matiere_nom'=>$matiere_nom);
+	$DB_VAR = array(':structure_id'=>$structure_id,':matiere_ref'=>$matiere_ref,':matiere_nom'=>$matiere_nom);
 	DB::query(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
 	return DB::getLastOid(SACOCHE_BD_NAME);
 }
@@ -188,7 +262,7 @@ function modifier_matiere_specifique_structure($structure_id,$matiere_id,$matier
 	$DB_SQL.= 'SET livret_matiere_ref=:matiere_ref,livret_matiere_nom=:matiere_nom ';
 	$DB_SQL.= 'WHERE livret_matiere_structure_id=:structure_id AND livret_matiere_id=:matiere_id ';
 	$DB_SQL.= 'LIMIT 1';
-	$DB_VAR = array(':structure_id'=>$_SESSION['STRUCTURE_ID'],':matiere_ref'=>$matiere_ref,':matiere_nom'=>$matiere_nom,':matiere_id'=>$matiere_id);
+	$DB_VAR = array(':structure_id'=>$structure_id,':matiere_ref'=>$matiere_ref,':matiere_nom'=>$matiere_nom,':matiere_id'=>$matiere_id);
 	DB::query(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
@@ -234,7 +308,7 @@ function supprimer_referentiel_structure_matiere_niveau($structure_id,$matiere_i
 	$DB_SQL.= 'LEFT JOIN livret_jointure_evaluation_competence USING (livret_structure_id,livret_competence_id) ';
 	$DB_SQL.= 'LEFT JOIN livret_jointure_user_competence USING (livret_structure_id,livret_competence_id) ';
 	$DB_SQL.= 'WHERE livret_structure_id=:structure_id AND livret_matiere_id=:matiere_id ';
-	$DB_VAR = array(':structure_id'=>$_SESSION['STRUCTURE_ID'],':matiere_id'=>$matiere_id);
+	$DB_VAR = array(':structure_id'=>$structure_id,':matiere_id'=>$matiere_id);
 	if($niveau_id)
 	{
 		$DB_SQL.= 'AND livret_niveau_id=:niveau_id ';
@@ -264,6 +338,63 @@ function select_arborescence_palier($palier_id=false)
 	}
 	$DB_SQL.= 'ORDER BY livret_palier_ordre ASC, livret_pilier_ordre ASC, livret_section_ordre ASC, livret_socle_ordre ASC';
 	return DB::queryTab(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
+}
+
+/**
+ * changer_son_mdp
+ * Remarque : cette fonction n'est pas appelée pour un professeur ou un élève si le mode de connexion est SSO
+ * 
+ * @param int    $structure_id
+ * @param int    $user_id
+ * @param string $user_profil
+ * @param string $password_ancien
+ * @param string $password_nouveau
+ * @return string   'ok' ou 'Le mot de passe actuel est incorrect !'
+ */
+
+function changer_son_mdp($structure_id,$user_id,$user_profil,$password_ancien,$password_nouveau)
+{
+	// Tester si l'ancien mot de passe correspond à celui enregistré
+	$password_ancien_crypte = md5('grain_de_sel'.$password_ancien);
+	if($user_profil != 'administrateur')
+	{
+		$DB_SQL = 'SELECT livret_user_id FROM livret_user ';
+		$DB_SQL.= 'WHERE livret_structure_id=:structure_id AND livret_user_id=:user_id AND livret_user_password=:password_crypte ';
+		$DB_SQL.= 'LIMIT 1';
+		$DB_VAR = array(':structure_id'=>$structure_id,':user_id'=>$user_id,':password_crypte'=>$password_ancien_crypte);
+	}
+	else
+	{
+		$DB_SQL = 'SELECT livret_structure_id FROM livret_structure ';
+		$DB_SQL.= 'WHERE livret_structure_id=:structure_id AND admin_password=:password_crypte ';
+		$DB_SQL.= 'LIMIT 1';
+		$DB_VAR = array(':structure_id'=>$structure_id,':password_crypte'=>$password_ancien_crypte);
+	}
+	$DB_ROW = DB::queryRow(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
+	if(!count($DB_ROW))
+	{
+		return 'Le mot de passe actuel est incorrect !';
+	}
+	// Remplacer par le nouveau mot de passe
+	$password_nouveau_crypte = md5('grain_de_sel'.$password_nouveau);
+	if($user_profil != 'administrateur')
+	{
+		$DB_SQL = 'UPDATE livret_user ';
+		$DB_SQL.= 'SET livret_user_password=:password_crypte ';
+		$DB_SQL.= 'WHERE livret_structure_id=:structure_id AND livret_user_id=:user_id ';
+		$DB_SQL.= 'LIMIT 1';
+		$DB_VAR = array(':structure_id'=>$structure_id,':user_id'=>$user_id,':password_crypte'=>$password_nouveau_crypte);
+	}
+	else
+	{
+		$DB_SQL = 'UPDATE livret_structure ';
+		$DB_SQL.= 'SET admin_password=:password_crypte ';
+		$DB_SQL.= 'WHERE livret_structure_id=:structure_id ';
+		$DB_SQL.= 'LIMIT 1';
+		$DB_VAR = array(':structure_id'=>$structure_id,':password_crypte'=>$password_nouveau_crypte);
+	}
+	DB::query(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
+	return 'ok';
 }
 
 ?>

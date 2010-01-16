@@ -22,13 +22,8 @@ $delai = (isset($_POST['f_delai'])) ? clean_entier($_POST['f_delai']) : 0;
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 if($delai)
 {
-	$DB_SQL = 'UPDATE livret_structure ';
-	$DB_SQL.= 'SET livret_structure_duree_inactivite=:delai ';
-	$DB_SQL.= 'WHERE livret_structure_id=:structure_id ';
-	$DB_SQL.= 'LIMIT 1';
-	$DB_VAR = array(':structure_id'=>$_SESSION['STRUCTURE_ID'],':delai'=>$delai);
-	DB::query(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
-	// ne pas oublier de mettre à jour la session aussi
+	modifier_duree_inactivite_structure($_SESSION['STRUCTURE_ID'],$delai);
+	// ne pas oublier de mettre aussi à jour la session
 	$_SESSION['DUREE_INACTIVITE'] = $delai;
 	echo'ok';
 }

@@ -29,7 +29,7 @@ if( ($action=='Choisir') && (!in_array(96,$tab_id)) && (!in_array(97,$tab_id)) &
 {
 	$listing_niveaux = implode(',',$tab_id);
 	modifier_niveaux_structure($_SESSION['STRUCTURE_ID'],$listing_niveaux);
-	// ne pas oublier de mettre à jour la session aussi
+	// ne pas oublier de mettre aussi à jour la session
 	$_SESSION['NIVEAUX'] = $listing_niveaux;
 	echo'ok';
 }

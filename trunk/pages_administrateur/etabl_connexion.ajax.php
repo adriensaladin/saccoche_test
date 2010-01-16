@@ -25,13 +25,8 @@ require_once('./_inc/tableau_sso.php');	// Charge $tab_sso['nom'] = array('txt'=
 
 if(isset($tab_sso[$f_mode_connexion]))
 {
-	$DB_SQL = 'UPDATE livret_structure ';
-	$DB_SQL.= 'SET livret_structure_sso=:mode_connexion ';
-	$DB_SQL.= 'WHERE livret_structure_id=:structure_id ';
-	$DB_SQL.= 'LIMIT 1';
-	$DB_VAR = array(':structure_id'=>$_SESSION['STRUCTURE_ID'],':mode_connexion'=>$f_mode_connexion);
-	DB::query(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
-	// ne pas oublier de mettre à jour la session aussi
+	modifier_mode_connexion_structure($_SESSION['STRUCTURE_ID'],$f_mode_connexion);
+	// ne pas oublier de mettre aussi à jour la session
 	// normalement faudrait pas car connecté avec l'ancien mode, mais sinon pb d'initalisation du focmulaire
 	$_SESSION['SSO']  = $f_mode_connexion;
 	echo'ok';

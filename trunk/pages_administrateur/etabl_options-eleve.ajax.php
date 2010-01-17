@@ -34,7 +34,7 @@ else
 
 if($test_options)
 {
-	modifier_eleve_options($_SESSION['STRUCTURE_ID'],$f_eleve_options);
+	DB_modifier_eleve_options($_SESSION['STRUCTURE_ID'],$f_eleve_options);
 	// ne pas oublier de mettre aussi à jour la session
 	$_SESSION['ELEVE_OPTIONS'] = $f_eleve_options;
 	echo'ok';

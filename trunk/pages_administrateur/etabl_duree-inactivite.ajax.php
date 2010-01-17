@@ -22,7 +22,7 @@ $delai = (isset($_POST['f_delai'])) ? clean_entier($_POST['f_delai']) : 0;
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 if($delai)
 {
-	modifier_duree_inactivite($_SESSION['STRUCTURE_ID'],$delai);
+	DB_modifier_duree_inactivite($_SESSION['STRUCTURE_ID'],$delai);
 	// ne pas oublier de mettre aussi à jour la session
 	$_SESSION['DUREE_INACTIVITE'] = $delai;
 	echo'ok';

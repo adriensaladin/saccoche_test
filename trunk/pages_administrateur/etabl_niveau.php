@@ -31,7 +31,7 @@ $TITRE = "Choix des niveaux";
 			$tab_check_niveaux = explode(',',$_SESSION['NIVEAUX']);
 			$tab_check_paliers = explode(',',$_SESSION['PALIERS']);
 			// Lister les niveaux
-			$DB_TAB = lister_niveaux_SACoche();
+			$DB_TAB = DB_lister_niveaux_SACoche();
 			foreach($DB_TAB as $key => $DB_ROW)
 			{
 				$checked  = ( (in_array($DB_ROW['livret_niveau_id'],$tab_check_niveaux)) || (in_array($DB_ROW['livret_palier_id'],$tab_check_paliers)) ) ? ' checked="checked"' : '' ;

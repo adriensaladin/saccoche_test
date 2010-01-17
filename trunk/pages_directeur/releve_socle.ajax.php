@@ -42,7 +42,7 @@ if( $detail && $palier_id && $palier_nom && $remplissage )
 	//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 	// Récupération de la liste des items pour la matière et le niveau sélectionné
 	//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-	$DB_TAB = select_arborescence_palier($palier_id);
+	$DB_TAB = DB_select_arborescence_palier($palier_id);
 	if(count($DB_TAB))
 	{
 		$pilier_id  = 0;

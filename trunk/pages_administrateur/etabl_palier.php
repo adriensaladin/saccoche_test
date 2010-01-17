@@ -30,7 +30,7 @@ $TITRE = "Choix des paliers du socle";
 			// Cases à cocher
 			$tab_check = explode(',',$_SESSION['PALIERS']);
 			// Lister les matières partagées
-			$DB_TAB = lister_paliers_SACoche();
+			$DB_TAB = DB_lister_paliers_SACoche();
 			foreach($DB_TAB as $key => $DB_ROW)
 			{
 				// Afficher une ligne du tableau
@@ -60,7 +60,7 @@ $TITRE = "Choix des paliers du socle";
 	$tab_socle   = array();
 	$palier_id = 0;
 	$affich_socle = '';
-	$DB_TAB = select_arborescence_palier();
+	$DB_TAB = DB_select_arborescence_palier();
 	foreach($DB_TAB as $key => $DB_ROW)
 	{
 		if($DB_ROW['livret_palier_id']!=$palier_id)

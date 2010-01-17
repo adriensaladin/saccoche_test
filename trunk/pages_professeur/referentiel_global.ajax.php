@@ -130,7 +130,7 @@ elseif( ($action=='Partager') && ($perso==0) && $matiere_id && $niveau_id && in_
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 elseif( ($action=='Retirer') && $matiere_id && $niveau_id )
 {
-	supprimer_referentiel_matiere_niveau($_SESSION['STRUCTURE_ID'],$matiere_id,$niveau_id);
+	DB_supprimer_referentiel_matiere_niveau($_SESSION['STRUCTURE_ID'],$matiere_id,$niveau_id);
 	echo'ok';
 }
 

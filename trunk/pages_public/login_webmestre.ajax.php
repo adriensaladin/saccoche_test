@@ -22,7 +22,7 @@ $password  = (isset($_POST['f_password']))  ? clean_password($_POST['f_password'
 $filename_webmestre = './__pages_webmestre/_inc/password.php';
 include($filename_webmestre);
 
-$password_crypte = md5('grain_de_sel'.$password);
+$password_crypte = crypter_mdp($password);
 $god = ($password_crypte==PASSWORD_WEBMESTRE) ? true : false ;
 
 if($god)

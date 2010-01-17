@@ -28,7 +28,7 @@ sort($tab_id);
 if( ($action=='Choisir') && count($tab_id) )
 {
 	$listing_paliers = implode(',',$tab_id);
-	modifier_paliers($_SESSION['STRUCTURE_ID'],$listing_paliers);
+	DB_modifier_paliers($_SESSION['STRUCTURE_ID'],$listing_paliers);
 	// ne pas oublier de mettre aussi à jour la session
 	$_SESSION['PALIERS'] = $listing_paliers;
 	echo'ok';

@@ -231,7 +231,7 @@ elseif( $step==3 )
 	$tab_classes_base        = array();
 	$tab_classes_base['ref'] = array();
 	$tab_classes_base['nom'] = array();
-	$DB_TAB = lister_classes($_SESSION['STRUCTURE_ID']);
+	$DB_TAB = DB_lister_classes($_SESSION['STRUCTURE_ID']);
 	foreach($DB_TAB as $key => $DB_ROW)
 	{
 		$tab_classes_base['ref'][$DB_ROW['livret_groupe_id']] = $DB_ROW['livret_groupe_ref'];
@@ -263,10 +263,7 @@ elseif( $step==3 )
 	{
 		$select_niveau = '<option value=""></option>';
 		$tab_niveau_ref = array();
-		$DB_SQL = 'SELECT * FROM livret_niveau ';
-		$DB_SQL.= 'WHERE livret_niveau_id IN('.$_SESSION['NIVEAUX'].') ';
-		$DB_SQL.= 'ORDER BY livret_niveau_ordre ASC';
-		$DB_TAB = DB::queryTab(SACOCHE_BD_NAME , $DB_SQL);
+		$DB_TAB = DB_lister_niveaux($_SESSION['NIVEAUX']);
 		foreach($DB_TAB as $key => $DB_ROW)
 		{
 			$select_niveau .= '<option value="'.$DB_ROW['livret_niveau_id'].'">'.html($DB_ROW['livret_niveau_nom']).'</option>';
@@ -336,10 +333,7 @@ elseif( $step==4 )
 		{
 			if( (count($tab)==3) && $tab['ref'] && $tab['nom'] && $tab['niv'] )
 			{
-				$DB_SQL = 'INSERT INTO livret_groupe(livret_structure_id,livret_groupe_type,livret_groupe_prof_id,livret_groupe_ref,livret_groupe_nom,livret_niveau_id) ';
-				$DB_SQL.= 'VALUES(:structure_id,:type,:prof_id,:ref,:nom,:niveau)';
-				$DB_VAR = array(':structure_id'=>$_SESSION['STRUCTURE_ID'],':type'=>'classe',':prof_id'=>0,':ref'=>$tab['ref'],':nom'=>$tab['nom'],':niveau'=>$tab['niv']);
-				DB::query(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
+				DB_ajouter_groupe($_SESSION['STRUCTURE_ID'],'classe',0,$tab['ref'],$tab['nom'],$tab['niv']);
 				$nb_add++;
 			}
 		}
@@ -348,29 +342,11 @@ elseif( $step==4 )
 	$nb_del = 0;
 	if(count($tab_del))
 	{
-		foreach($tab_del as $id)
+		foreach($tab_del as $groupe_id)
 		{
-			if( $id )
+			if( $groupe_id )
 			{
-				$DB_SQL = 'DELETE FROM livret_groupe ';
-				$DB_SQL.= 'WHERE livret_structure_id=:structure_id AND livret_groupe_id=:id ';
-				$DB_SQL.= 'LIMIT 1';
-				$DB_VAR = array(':structure_id'=>$_SESSION['STRUCTURE_ID'],':id'=>$id);
-				DB::query(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
-				$DB_SQL = 'DELETE FROM livret_jointure_user_groupe ';
-				$DB_SQL.= 'WHERE livret_structure_id=:structure_id AND livret_groupe_id=:id';
-				$DB_VAR = array(':structure_id'=>$_SESSION['STRUCTURE_ID'],':id'=>$id);
-				DB::query(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
-				$DB_SQL = 'UPDATE livret_user ';
-				$DB_SQL.= 'SET livret_eleve_classe_id=0 ';
-				$DB_SQL.= 'WHERE livret_structure_id=:structure_id AND livret_eleve_classe_id=:id';
-				$DB_VAR = array(':structure_id'=>$_SESSION['STRUCTURE_ID'],':id'=>$id);
-				DB::query(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
-				$DB_SQL = 'UPDATE livret_evaluation ';
-				$DB_SQL.= 'SET livret_groupe_id=0 ';
-				$DB_SQL.= 'WHERE livret_structure_id=:structure_id AND livret_groupe_id=:id';
-				$DB_VAR = array(':structure_id'=>$_SESSION['STRUCTURE_ID'],':id'=>$id);
-				DB::query(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
+				DB_supprimer_groupe($_SESSION['STRUCTURE_ID'],$groupe_id);
 				$nb_del++;
 			}
 		}
@@ -378,12 +354,7 @@ elseif( $step==4 )
 	// Afficher le bilan
 	$lignes = '';
 	$nb_fin = 0;
-	$DB_SQL = 'SELECT * FROM livret_groupe ';
-	$DB_SQL.= 'LEFT JOIN livret_niveau USING (livret_niveau_id) ';
-	$DB_SQL.= 'WHERE livret_structure_id=:structure_id AND livret_groupe_type=:type ';
-	$DB_SQL.= 'ORDER BY livret_niveau_ordre ASC, livret_groupe_ref ASC';
-	$DB_VAR = array(':structure_id'=>$_SESSION['STRUCTURE_ID'],':type'=>'classe');
-	$DB_TAB = DB::queryTab(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
+	$DB_TAB = DB_lister_classes_avec_niveaux($_SESSION['STRUCTURE_ID']);
 	foreach($DB_TAB as $key => $DB_ROW)
 	{
 		$lignes .= '<tr><td>'.html($DB_ROW['livret_niveau_nom']).'</td><td>'.html($DB_ROW['livret_groupe_ref']).'</td><td>'.html($DB_ROW['livret_groupe_nom']).'</td></tr>'."\r\n";
@@ -433,12 +404,7 @@ elseif( $step==5 )
 	$tab_eleves_base['prenom']     = array();
 	$tab_eleves_base['classe']     = array();
 	$tab_eleves_base['statut']     = array();
-	$DB_SQL = 'SELECT * FROM livret_user ';
-	$DB_SQL.= 'LEFT JOIN livret_groupe ON livret_user.livret_eleve_classe_id=livret_groupe.livret_groupe_id ';
-	$DB_SQL.= 'WHERE livret_user.livret_structure_id=:structure_id AND livret_user_profil=:profil ';
-	$DB_SQL.= 'ORDER BY livret_user_nom ASC, livret_user_prenom ASC';
-	$DB_VAR = array(':structure_id'=>$_SESSION['STRUCTURE_ID'],':profil'=>'eleve');
-	$DB_TAB = DB::queryTab(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
+	$DB_TAB = DB_lister_eleves_avec_classe($_SESSION['STRUCTURE_ID']);
 	foreach($DB_TAB as $key => $DB_ROW)
 	{
 		$tab_eleves_base['num_sconet'][$DB_ROW['livret_user_id']] = $DB_ROW['livret_user_num_sconet'];
@@ -450,10 +416,7 @@ elseif( $step==5 )
 	}
 	// $tab_classe_ref['ref'] -> id : tableau des id des classes à partir de leurs références
 	$tab_classe_ref = array();
-	$DB_SQL = 'SELECT * FROM livret_groupe ';
-	$DB_SQL.= 'WHERE livret_structure_id=:structure_id AND livret_groupe_type=:type ';
-	$DB_VAR = array(':structure_id'=>$_SESSION['STRUCTURE_ID'],':type'=>'classe');
-	$DB_TAB = DB::queryTab(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
+	$DB_TAB = DB_lister_classes($_SESSION['STRUCTURE_ID']);
 	foreach($DB_TAB as $key => $DB_ROW)
 	{
 		$tab_classe_ref[$DB_ROW['livret_groupe_ref']] = (int) $DB_ROW['livret_groupe_id'];
@@ -663,28 +626,17 @@ elseif( $step==6 )
 		}
 	}
 	// Dénombrer combien d'actifs et d'inactifs au départ
-	$DB_SQL = 'SELECT livret_user_statut, COUNT(*) AS nombre FROM livret_user ';
-	$DB_SQL.= 'WHERE livret_structure_id=:structure_id AND livret_user_profil=:profil ';
-	$DB_SQL.= 'GROUP BY livret_user_statut';
-	$DB_VAR = array(':structure_id'=>$_SESSION['STRUCTURE_ID'],':profil'=>'eleve');
-	$DB_TAB = DB::queryTab(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR , TRUE);
-	$nb_debut_actif   = ( (count($DB_TAB)) && (isset($DB_TAB[1])) ) ? $DB_TAB[1][0]['nombre'] : 0 ;
-	$nb_debut_inactif = ( (count($DB_TAB)) && (isset($DB_TAB[0])) ) ? $DB_TAB[0][0]['nombre'] : 0 ;
+	list($nb_debut_actif,$nb_debut_inactif) = DB_compter_eleves_suivant_statut($structure_id);
 	// Retirer des élèves éventuels
 	$nb_del = 0;
 	if(count($tab_del))
 	{
-		foreach($tab_del as $id)
+		foreach($tab_del as $user_id)
 		{
-			if( $id )
+			if( $user_id )
 			{
 				// Mettre à jour l'enregistrement
-				$DB_SQL = 'UPDATE livret_user ';
-				$DB_SQL.= 'SET livret_user_statut=:statut ';
-				$DB_SQL.= 'WHERE livret_structure_id=:structure_id AND livret_user_id=:id ';
-				$DB_SQL.= 'LIMIT 1';
-				$DB_VAR = array(':structure_id'=>$_SESSION['STRUCTURE_ID'],':id'=>$id,':statut'=>0);
-				DB::query(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
+				DB_modifier_statut_utilisateur($_SESSION['STRUCTURE_ID'],$user_id,0)
 				$nb_del++;
 			}
 		}
@@ -698,10 +650,7 @@ elseif( $step==6 )
 	{
 		// Récupérer les noms de classes pour le fichier avec les logins/mdp
 		$tab_nom_classe = array();
-		$DB_SQL = 'SELECT * FROM livret_groupe ';
-		$DB_SQL.= 'WHERE livret_structure_id=:structure_id AND livret_groupe_type=:type ';
-		$DB_VAR = array(':structure_id'=>$_SESSION['STRUCTURE_ID'],':type'=>'classe');
-		$DB_TAB = DB::queryTab(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
+		$DB_TAB = DB_lister_classes($_SESSION['STRUCTURE_ID']);
 		foreach($DB_TAB as $key => $DB_ROW)
 		{
 			$tab_nom_classe[$DB_ROW['livret_groupe_id']] = $DB_ROW['livret_groupe_nom'];
@@ -712,43 +661,16 @@ elseif( $step==6 )
 			{
 				// Il peut théoriquement subsister un conflit de num_sconet pour des élèves ayant même reference, et réciproquement...
 				// Construire le login
-				$login_prenom = mb_substr( clean_login($tab_traitement['ajout'][$i]['prenom']) , 0 , mb_substr_count($_SESSION['MODELE_ELEVE'],'p') );
-				$login_nom    = mb_substr( clean_login($tab_traitement['ajout'][$i]['nom'])    , 0 , mb_substr_count($_SESSION['MODELE_ELEVE'],'n') );
-				$login_separe = str_replace(array('p','n'),'',$_SESSION['MODELE_ELEVE']);
-				$login = ($_SESSION['MODELE_ELEVE']{0}=='p') ? $login_prenom.$login_separe.$login_nom : $login_nom.$login_separe.$login_prenom ;
+				$login = fabriquer_login($tab_traitement['ajout'][$i]['prenom'] , $tab_traitement['ajout'][$i]['nom'] , 'eleve');
 				// Puis tester le login (parmi tout le personnel de l'établissement)
-				$DB_SQL = 'SELECT livret_user_id FROM livret_user ';
-				$DB_SQL.= 'WHERE livret_structure_id=:structure_id AND livret_user_login=:login ';
-				$DB_SQL.= 'LIMIT 1';
-				$DB_VAR = array(':structure_id'=>$_SESSION['STRUCTURE_ID'],':login'=>$login);
-				$DB_ROW = DB::queryRow(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
-				if(count($DB_ROW))
+				if( DB_tester_login($_SESSION['STRUCTURE_ID'],$login) )
 				{
 					// Login pris : en chercher un autre en remplaçant la fin par des chiffres si besoin
-					
-					$nb_chiffres = 20-mb_strlen($login);
-					$max_result = 0;
-					do
-					{
-						$login = mb_substr($login,0,20-$nb_chiffres);
-						$DB_SQL = 'SELECT livret_user_login FROM livret_user ';
-						$DB_SQL.= 'WHERE livret_structure_id=:structure_id AND livret_user_login LIKE :login';
-						$DB_VAR = array(':structure_id'=>$_SESSION['STRUCTURE_ID'],':login'=>$login.'%');
-						$DB_TAB = DB::queryTab(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR , 'livret_user_login');
-						$max_result += pow(10,$nb_chiffres);
-					}
-					while (count($DB_TAB)>=$max_result);
-					$j=0;
-					do
-					{
-						$j++;
-					}
-					while (array_key_exists($login.$j,$DB_TAB));
-					$login .= $j;
+					$login = DB_rechercher_login_disponible($_SESSION['STRUCTURE_ID'],$login);
 				}
 				// Construire le password
-				$password = mb_substr(str_shuffle('23456789abcdfgnprstxyz'),0,6);	// e enlevé sinon un tableur peut interpréter le mot de passe comme un nombre avec exposant ; hijklmoquvw retirés aussi pour éviter tout risque de confusion
-				$password_crypte = md5('grain_de_sel'.$password);
+				$password = fabriquer_mdp();
+				$password_crypte = crypter_mdp($password);
 				$DB_SQL = 'INSERT INTO livret_user(livret_structure_id,livret_user_num_sconet,livret_user_reference,livret_user_profil,livret_user_nom,livret_user_prenom,livret_user_login,livret_user_password,livret_eleve_classe_id) ';
 				$DB_SQL.= 'VALUES(:structure_id,:num_sconet,:reference,:profil,:nom,:prenom,:login,:password,:classe)';
 				$DB_VAR = array(':structure_id'=>$_SESSION['STRUCTURE_ID'],':num_sconet'=>$tab_traitement['ajout'][$i]['num_sconet'],':reference'=>$tab_traitement['ajout'][$i]['reference'],':profil'=>'eleve',':nom'=>$tab_traitement['ajout'][$i]['nom'],':prenom'=>$tab_traitement['ajout'][$i]['prenom'],':login'=>$login,':password'=>$password_crypte,':classe'=>$tab_traitement['ajout'][$i]['classe']);

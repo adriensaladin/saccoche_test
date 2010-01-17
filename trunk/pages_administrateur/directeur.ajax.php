@@ -119,8 +119,8 @@ if( ($action=='ajouter') && $nom && $prenom )
 		$login .= $i;
 	}
 	// Construire le mot de passe
-	$password = mb_substr(str_shuffle('23456789abcdfgnprstxyz'),0,6);	// e enlevé sinon un tableur peut interpréter le mot de passe comme un nombre avec exposant ; hijklmoquvw retirés aussi pour éviter tout risque de confusion
-	$password_crypte = md5('grain_de_sel'.$password);
+	$password = fabriquer_mdp();
+	$password_crypte = crypter_mdp($password);
 	// Insérer l'enregistrement
 	$DB_SQL = 'INSERT INTO livret_user(livret_structure_id,livret_user_num_sconet,livret_user_reference,livret_user_profil,livret_user_nom,livret_user_prenom,livret_user_login,livret_user_password,livret_eleve_classe_id,livret_user_id_ent,livret_user_id_gepi) ';
 	$DB_SQL.= 'VALUES(:structure_id,:num_sconet,:reference,:profil,:nom,:prenom,:login,:password,:classe,:id_ent,:id_gepi)';
@@ -224,8 +224,8 @@ else if( ($action=='modifier') && $id && $nom && $prenom && $login )
 	else
 	{
 		// Mettre à jour l'enregistrement avec génération d'un nouveau mot de passe
-		$password = mb_substr(str_shuffle('23456789abcdfgnprstxyz'),0,6);	// e enlevé sinon un tableur peut interpréter le mot de passe comme un nombre avec exposant ; hijklmoquvw retirés aussi pour éviter tout risque de confusion
-		$password_crypte = md5('grain_de_sel'.$password);
+		$password = fabriquer_mdp();
+		$password_crypte = crypter_mdp($password);
 		$DB_SQL = 'UPDATE livret_user ';
 		$DB_SQL.= 'SET livret_user_num_sconet=:num_sconet,livret_user_reference=:reference,livret_user_nom=:nom,livret_user_prenom=:prenom,livret_user_login=:login,livret_user_password=:password_crypte,livret_user_id_ent=:id_ent,livret_user_id_gepi=:id_gepi ';
 		$DB_SQL.= 'WHERE livret_structure_id=:structure_id AND livret_user_id=:id ';

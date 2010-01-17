@@ -30,7 +30,7 @@ else
 	define('PASSWORD_WEBMESTRE','sans objet');
 }
 
-$password_crypte    = md5('grain_de_sel'.$password);
+$password_crypte    = crypter_mdp($password);
 $god = ($password_crypte==PASSWORD_WEBMESTRE) ? true : false ;
 
 if( $login && $password )

@@ -185,7 +185,7 @@ elseif($action=='user_import')
 				{
 					// Contenu du fichier à modifier :login non indiqué et mdp différents
 					$password = $tab_users_fichier['mdp'][$i];
-					$password_crypte = md5('grain_de_sel'.$password);
+					$password_crypte = crypter_mdp($password);
 					$DB_SQL = 'UPDATE livret_user ';
 					$DB_SQL.= 'SET livret_user_password=:password_crypte ';
 					$DB_SQL.= 'WHERE livret_structure_id=:structure_id AND livret_user_id=:user_id ';
@@ -204,7 +204,7 @@ elseif($action=='user_import')
 					// Contenu du fichier à ignorer : logins identiques et mdp non indiqué
 					$lignes_ras .= '<tr><td>'.html($tab_users_fichier['nom'][$i].' '.$tab_users_fichier['prenom'][$i]).'</td><td>nom d\'utilisateur identique et mot de passe non imposé</td></tr>';
 				}
-				elseif(md5('grain_de_sel'.$tab_users_fichier['mdp'][$i])==$tab_users_base['mdp'][$id])
+				elseif(crypter_mdp($tab_users_fichier['mdp'][$i])==$tab_users_base['mdp'][$id])
 				{
 					// Contenu du fichier à ignorer : logins identiques et mdp identique
 					$lignes_ras .= '<tr><td>'.html($tab_users_fichier['nom'][$i].' '.$tab_users_fichier['prenom'][$i]).'</td><td>nom d\'utilisateur et mot de passe identiques</td></tr>';
@@ -213,7 +213,7 @@ elseif($action=='user_import')
 				{
 					// Contenu du fichier à modifier : logins identiques et mdp différents
 					$password = $tab_users_fichier['mdp'][$i];
-					$password_crypte = md5('grain_de_sel'.$password);
+					$password_crypte = crypter_mdp($password);
 					$DB_SQL = 'UPDATE livret_user ';
 					$DB_SQL.= 'SET livret_user_password=:password_crypte ';
 					$DB_SQL.= 'WHERE livret_structure_id=:structure_id AND livret_user_id=:user_id ';
@@ -232,7 +232,7 @@ elseif($action=='user_import')
 					// Contenu du fichier à problème : login déjà pris
 					$lignes_pb .= '<tr><td>'.html($tab_users_fichier['nom'][$i].' '.$tab_users_fichier['prenom'][$i]).'</td><td>nom d\'utilisateur proposé déjà affecté à un autre utilisateur</td></tr>';
 				}
-				elseif( ($tab_users_fichier['mdp'][$i]=='') || (md5('grain_de_sel'.$tab_users_fichier['mdp'][$i])==$tab_users_base['mdp'][$id]) )
+				elseif( ($tab_users_fichier['mdp'][$i]=='') || (crypter_mdp($tab_users_fichier['mdp'][$i])==$tab_users_base['mdp'][$id]) )
 				{
 					// Contenu du fichier à modifier : logins différents et mdp identiques on non imposé
 					$login = $tab_users_fichier['login'][$i];
@@ -250,7 +250,7 @@ elseif($action=='user_import')
 					// Contenu du fichier à modifier : logins différents et mdp différents
 					$login = $tab_users_fichier['login'][$i];
 					$password = $tab_users_fichier['mdp'][$i];
-					$password_crypte = md5('grain_de_sel'.$password);
+					$password_crypte = crypter_mdp($password);
 					$DB_SQL = 'UPDATE livret_user ';
 					$DB_SQL.= 'SET livret_user_login=:login, livret_user_password=:password_crypte ';
 					$DB_SQL.= 'WHERE livret_structure_id=:structure_id AND livret_user_id=:user_id ';

@@ -208,11 +208,7 @@ elseif( $step==3 )
 	$tab_professeurs_directeurs_base['nom']        = array();
 	$tab_professeurs_directeurs_base['prenom']     = array();
 	$tab_professeurs_directeurs_base['statut']     = array();
-	$DB_SQL = 'SELECT * FROM livret_user ';
-	$DB_SQL.= 'WHERE livret_structure_id=:structure_id AND livret_user_profil IN(:profil1,:profil2) ';
-	$DB_SQL.= 'ORDER BY livret_user_nom ASC, livret_user_prenom ASC';
-	$DB_VAR = array(':structure_id'=>$_SESSION['STRUCTURE_ID'],':profil1'=>'professeur',':profil2'=>'directeur');
-	$DB_TAB = DB::queryTab(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
+	$DB_TAB = DB_lister_professeurs_directeurs($_SESSION['STRUCTURE_ID']);
 	foreach($DB_TAB as $key => $DB_ROW)
 	{
 		$tab_professeurs_directeurs_base['num_sconet'][$DB_ROW['livret_user_id']] = $DB_ROW['livret_user_num_sconet'];
@@ -406,28 +402,17 @@ elseif( $step==4 )
 		}
 	}
 	// Dénombrer combien d'actifs et d'inactifs au départ
-	$DB_SQL = 'SELECT livret_user_statut, COUNT(*) AS nombre FROM livret_user ';
-	$DB_SQL.= 'WHERE livret_structure_id=:structure_id AND livret_user_profil IN(:profil1,:profil2) ';
-	$DB_SQL.= 'GROUP BY livret_user_statut';
-	$DB_VAR = array(':structure_id'=>$_SESSION['STRUCTURE_ID'],':profil1'=>'professeur',':profil2'=>'directeur');
-	$DB_TAB = DB::queryTab(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR , TRUE);
-	$nb_debut_actif   = ( (count($DB_TAB)) && (isset($DB_TAB[1])) ) ? $DB_TAB[1][0]['nombre'] : 0 ;
-	$nb_debut_inactif = ( (count($DB_TAB)) && (isset($DB_TAB[0])) ) ? $DB_TAB[0][0]['nombre'] : 0 ;
+	list($nb_debut_actif,$nb_debut_inactif) = DB_compter_professeurs_directeurs_suivant_statut($structure_id);
 	// Retirer des professeurs / directeurs éventuels
 	$nb_del = 0;
 	if(count($tab_del))
 	{
-		foreach($tab_del as $id)
+		foreach($tab_del as $user_id)
 		{
-			if( $id )
+			if( $user_id )
 			{
 				// Mettre à jour l'enregistrement
-				$DB_SQL = 'UPDATE livret_user ';
-				$DB_SQL.= 'SET livret_user_statut=:statut ';
-				$DB_SQL.= 'WHERE livret_structure_id=:structure_id AND livret_user_id=:id ';
-				$DB_SQL.= 'LIMIT 1';
-				$DB_VAR = array(':structure_id'=>$_SESSION['STRUCTURE_ID'],':id'=>$id,':statut'=>0);
-				DB::query(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
+				DB_modifier_statut_utilisateur($_SESSION['STRUCTURE_ID'],$user_id,0)
 				$nb_del++;
 			}
 		}
@@ -444,43 +429,16 @@ elseif( $step==4 )
 			if( isset($tab_traitement['ajout'][$i]) )
 			{
 				// Construire le login
-				$login_prenom = mb_substr( clean_login($tab_traitement['ajout'][$i]['prenom']) , 0 , mb_substr_count($_SESSION['MODELE_PROF'],'p') );
-				$login_nom    = mb_substr( clean_login($tab_traitement['ajout'][$i]['nom'])    , 0 , mb_substr_count($_SESSION['MODELE_PROF'],'n') );
-				$login_separe = str_replace(array('p','n'),'',$_SESSION['MODELE_PROF']);
-				$login = ($_SESSION['MODELE_PROF']{0}=='p') ? $login_prenom.$login_separe.$login_nom : $login_nom.$login_separe.$login_prenom ;
+				$login = fabriquer_login($tab_traitement['ajout'][$i]['prenom'] , $tab_traitement['ajout'][$i]['nom'] , 'professeur');
 				// Puis tester le login (parmi tout le personnel de l'établissement)
-				$DB_SQL = 'SELECT livret_user_id FROM livret_user ';
-				$DB_SQL.= 'WHERE livret_structure_id=:structure_id AND livret_user_login=:login ';
-				$DB_SQL.= 'LIMIT 1';
-				$DB_VAR = array(':structure_id'=>$_SESSION['STRUCTURE_ID'],':login'=>$login);
-				$DB_ROW = DB::queryRow(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
-				if(count($DB_ROW))
+				if( DB_tester_login($_SESSION['STRUCTURE_ID'],$login) )
 				{
 					// Login pris : en chercher un autre en remplaçant la fin par des chiffres si besoin
-					
-					$nb_chiffres = 20-mb_strlen($login);
-					$max_result = 0;
-					do
-					{
-						$login = mb_substr($login,0,20-$nb_chiffres);
-						$DB_SQL = 'SELECT livret_user_login FROM livret_user ';
-						$DB_SQL.= 'WHERE livret_structure_id=:structure_id AND livret_user_login LIKE :login';
-						$DB_VAR = array(':structure_id'=>$_SESSION['STRUCTURE_ID'],':login'=>$login.'%');
-						$DB_TAB = DB::queryTab(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR , 'livret_user_login');
-						$max_result += pow(10,$nb_chiffres);
-					}
-					while (count($DB_TAB)>=$max_result);
-					$j=0;
-					do
-					{
-						$j++;
-					}
-					while (array_key_exists($login.$j,$DB_TAB));
-					$login .= $j;
+					$login = DB_rechercher_login_disponible($_SESSION['STRUCTURE_ID'],$login);
 				}
 				// Construire le password
-				$password = mb_substr(str_shuffle('23456789abcdfgnprstxyz'),0,6);	// e enlevé sinon un tableur peut interpréter le mot de passe comme un nombre avec exposant ; hijklmoquvw retirés aussi pour éviter tout risque de confusion
-				$password_crypte = md5('grain_de_sel'.$password);
+				$password = fabriquer_mdp();
+				$password_crypte = crypter_mdp($password);
 				$DB_SQL = 'INSERT INTO livret_user(livret_structure_id,livret_user_num_sconet,livret_user_reference,livret_user_profil,livret_user_nom,livret_user_prenom,livret_user_login,livret_user_password,livret_eleve_classe_id) ';
 				$DB_SQL.= 'VALUES(:structure_id,:num_sconet,:reference,:profil,:nom,:prenom,:login,:password,:classe)';
 				$DB_VAR = array(':structure_id'=>$_SESSION['STRUCTURE_ID'],':num_sconet'=>$tab_traitement['ajout'][$i]['num_sconet'],':reference'=>$tab_traitement['ajout'][$i]['reference'],':profil'=>$tab_traitement['ajout'][$i]['profil'],':nom'=>$tab_traitement['ajout'][$i]['nom'],':prenom'=>$tab_traitement['ajout'][$i]['prenom'],':login'=>$login,':password'=>$password_crypte,':classe'=>0);

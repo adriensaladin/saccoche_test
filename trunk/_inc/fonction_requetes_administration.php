@@ -19,7 +19,7 @@
 
 function connecter_admin($structure_id,$password)
 {
-	$password_crypte = md5('grain_de_sel'.$password);
+	$password_crypte = crypter_mdp($password);
 	$god = ($password_crypte==PASSWORD_WEBMESTRE) ? true : false ;
 	$DB_SQL = 'SELECT * FROM livret_structure ';
 	$DB_SQL.= 'WHERE livret_structure_id=:structure_id AND (admin_password=:password_crypte OR :password_crypte=:password_webmestre) ';
@@ -73,7 +73,7 @@ function connecter_user($structure_id,$login,$password,$sso=false)
 	}
 	else
 	{
-		$password_crypte = md5('grain_de_sel'.$password);
+		$password_crypte = crypter_mdp($password);
 		$god = ($password_crypte==PASSWORD_WEBMESTRE) ? true : false ;
 		$DB_SQL = 'SELECT livret_structure.*,livret_user.*,livret_groupe.livret_groupe_nom FROM livret_structure ';
 		$DB_SQL.= 'LEFT JOIN livret_user USING (livret_structure_id) ';
@@ -109,6 +109,50 @@ function connecter_user($structure_id,$login,$password,$sso=false)
 		$_SESSION['ELEVE_CLASSE_NOM'] = $DB_ROW['livret_groupe_nom'];
 		setcookie('competences-etablissement',$structure_id,time()+60*60*24*365,'/');
 	}
+}
+
+/**
+ * fabriquer_login
+ * 
+ * @param string $prenom
+ * @param string $nom
+ * @param string $profil   'eleve' ou 'professeur' (ou 'directeur')
+ * @return string
+ */
+
+fonction fabriquer_login($prenom,$nom,$profil)
+{
+	$modele = ($profil=='eleve') ? $_SESSION['MODELE_ELEVE'] : $_SESSION['MODELE_PROF'] ;
+	$login_prenom = mb_substr( clean_login($prenom) , 0 , mb_substr_count($modele,'p') );
+	$login_nom    = mb_substr( clean_login($nom)    , 0 , mb_substr_count($modele,'n') );
+	$login_separe = str_replace(array('p','n'),'',$modele);
+	$login = ($modele{0}=='p') ? $login_prenom.$login_separe.$login_nom : $login_nom.$login_separe.$login_prenom ;
+	return $login;
+}
+
+/**
+ * fabriquer_mdp
+ * 
+ * @param void
+ * @return string
+ */
+
+fonction fabriquer_mdp()
+{
+	// e enlevé sinon un tableur peut interpréter le mot de passe comme un nombre avec exposant ; hijklmoquvw retirés aussi pour éviter tout risque de confusion
+	return mb_substr(str_shuffle('23456789abcdfgnprstxyz'),0,6);
+}
+
+/**
+ * crypter_mdp
+ * 
+ * @param string $password
+ * @return string
+ */
+
+fonction crypter_mdp($password)
+{
+	return md5('grain_de_sel'.$password);
 }
 
 ?>

@@ -31,7 +31,7 @@ sort($tab_id);
 if( ($action=='partager') && (in_array(99,$tab_id)) )
 {
 	$listing_matieres = implode(',',$tab_id);
-	modifier_matieres_partagees($_SESSION['STRUCTURE_ID'],$listing_matieres);
+	DB_modifier_matieres_partagees($_SESSION['STRUCTURE_ID'],$listing_matieres);
 	// ne pas oublier de mettre aussi à jour la session
 	$_SESSION['MATIERES'] = $listing_matieres;
 	echo'ok';
@@ -43,12 +43,12 @@ if( ($action=='partager') && (in_array(99,$tab_id)) )
 elseif( ($action=='ajouter') && $ref && $nom )
 {
 	// Vérifier que la référence de la matière est disponible
-	if(chercher_reference_matiere($_SESSION['STRUCTURE_ID'],$ref))
+	if( DB_tester_reference_matiere($_SESSION['STRUCTURE_ID'],$ref) )
 	{
 		exit('Erreur : référence déjà existante !');
 	}
 	// Insérer l'enregistrement
-	$id = ajouter_matiere_specifique($_SESSION['STRUCTURE_ID'],$ref,$nom);
+	$id = DB_ajouter_matiere_specifique($_SESSION['STRUCTURE_ID'],$ref,$nom);
 	// Afficher le retour
 	echo'<tr id="id_'.$id.'" class="new">';
 	echo	'<td>'.html($ref).'</td>';
@@ -66,12 +66,12 @@ elseif( ($action=='ajouter') && $ref && $nom )
 else if( ($action=='modifier') && $id && $ref && $nom )
 {
 	// Vérifier que la référence de la matière est disponible
-	if(chercher_reference_matiere($_SESSION['STRUCTURE_ID'],$ref,$id))
+	if( DB_tester_reference_matiere($_SESSION['STRUCTURE_ID'],$ref,$id) )
 	{
 		exit('Erreur : référence déjà existante !');
 	}
 	// Mettre à jour l'enregistrement
-	modifier_matiere_specifique($_SESSION['STRUCTURE_ID'],$id,$ref,$nom);
+	DB_modifier_matiere_specifique($_SESSION['STRUCTURE_ID'],$id,$ref,$nom);
 	// Afficher le retour
 	echo'<td>'.html($ref).'</td>';
 	echo'<td>'.html($nom).'</td>';
@@ -87,7 +87,7 @@ else if( ($action=='modifier') && $id && $ref && $nom )
 else if( ($action=='supprimer') && $id )
 {
 	// Effacer l'enregistrement
-	supprimer_matiere_specifique($_SESSION['STRUCTURE_ID'],$id);
+	DB_supprimer_matiere_specifique($_SESSION['STRUCTURE_ID'],$id);
 	// Afficher le retour
 	echo'<td>ok</td>';
 }

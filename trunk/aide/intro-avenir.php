@@ -17,7 +17,7 @@ $TITRE = "Avenir de SACoche";
 ?>
 
 <p>
-	Il est notamment prévu au courant de l'année 2010 que <em>SACoche</em> doivent être téléchargé et installé par les établissements qui souhaitent l'utiliser. En effet c'est la seule solution pour :
+	Il est notamment prévu au courant de l'année 2010 que <em>SACoche</em> doive être téléchargé et installé par les établissements qui souhaitent l'utiliser. En effet c'est la seule solution pour :
 </p>
 
 <ul class="puce">

@@ -130,8 +130,8 @@ elseif( ($action=='eleve_mdp') && $nb )
 	// Mettre à jour les mots de passe des utilisateurs concernés
 	foreach($tab_select_users as $user_id)
 	{
-		$password = mb_substr(str_shuffle('23456789abcdfgnprstxyz'),0,6);	// e enlevé sinon un tableur peut interpréter le mot de passe comme un nombre avec exposant ; 01hijklmoquvw retirés aussi pour éviter tout risque de confusion
-		$password_crypte = md5('grain_de_sel'.$password);
+		$password = fabriquer_mdp();
+		$password_crypte = crypter_mdp($password);
 		$DB_SQL = 'UPDATE livret_user ';
 		$DB_SQL.= 'SET livret_user_password=:password_crypte ';
 		$DB_SQL.= 'WHERE livret_structure_id=:structure_id AND livret_user_id=:user_id ';

@@ -15,6 +15,6 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 if($_SESSION['STRUCTURE_ID']==ID_DEMO) {exit('Action désactivée pour la démo...');}
 
-supprimer_structure($_SESSION['STRUCTURE_ID']);
+DB_supprimer_structure($_SESSION['STRUCTURE_ID']);
 echo'ok';
 ?>

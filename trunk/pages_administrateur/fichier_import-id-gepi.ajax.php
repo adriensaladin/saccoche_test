@@ -26,7 +26,7 @@ $dossier_import = './__tmp/import/';
 if($action=='copy_id_ENT')
 {
 	$DB_SQL = 'UPDATE livret_user ';
-	$DB_SQL.= 'SET livret_user_id_gepi=livret_user_id_gepi ';
+	$DB_SQL.= 'SET livret_user_id_gepi=livret_user_id_ent ';
 	$DB_SQL.= 'WHERE livret_structure_id=:structure_id ';
 	$DB_VAR = array(':structure_id'=>$_SESSION['STRUCTURE_ID']);
 	DB::query(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);

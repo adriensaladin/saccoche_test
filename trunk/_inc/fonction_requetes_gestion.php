@@ -137,6 +137,24 @@ function DB_lister_eleves_avec_classe($structure_id)
 }
 
 /**
+ * DB_lister_eleves_tri_statut_classe
+ * 
+ * @param int    $structure_id
+ * @return array
+ */
+
+function DB_lister_eleves_tri_statut_classe($structure_id)
+{
+	$DB_SQL = 'SELECT * FROM livret_user ';
+	$DB_SQL.= 'LEFT JOIN livret_groupe ON livret_user.livret_eleve_classe_id=livret_groupe.livret_groupe_id ';
+	$DB_SQL.= 'LEFT JOIN livret_niveau USING (livret_niveau_id) ';
+	$DB_SQL.= 'WHERE livret_user.livret_structure_id=:structure_id AND livret_user_profil=:profil ';
+	$DB_SQL.= 'ORDER BY livret_user_statut DESC, livret_niveau_ordre ASC, livret_groupe_ref ASC, livret_user_nom ASC, livret_user_prenom ASC';
+	$DB_VAR = array(':structure_id'=>$structure_id,':profil'=>'eleve');
+	return $DB_TAB = DB::queryTab(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
+}
+
+/**
  * DB_lister_professeurs_directeurs
  * 
  * @param int    $structure_id
@@ -148,6 +166,22 @@ function DB_lister_professeurs_directeurs($structure_id)
 	$DB_SQL = 'SELECT * FROM livret_user ';
 	$DB_SQL.= 'WHERE livret_structure_id=:structure_id AND livret_user_profil IN(:profil1,:profil2) ';
 	$DB_SQL.= 'ORDER BY livret_user_nom ASC, livret_user_prenom ASC';
+	$DB_VAR = array(':structure_id'=>$structure_id,':profil1'=>'professeur',':profil2'=>'directeur');
+	return DB::queryTab(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
+}
+
+/**
+ * DB_lister_professeurs_directeurs_tri_statut
+ * 
+ * @param int    $structure_id
+ * @return array
+ */
+
+function DB_lister_professeurs_directeurs_tri_statut($structure_id)
+{
+	$DB_SQL = 'SELECT * FROM livret_user ';
+	$DB_SQL.= 'WHERE livret_structure_id=:structure_id AND livret_user_profil IN(:profil1,:profil2) ';
+	$DB_SQL.= 'ORDER BY livret_user_statut DESC, livret_user_nom ASC, livret_user_prenom ASC';
 	$DB_VAR = array(':structure_id'=>$structure_id,':profil1'=>'professeur',':profil2'=>'directeur');
 	return DB::queryTab(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
 }
@@ -338,8 +372,45 @@ function DB_modifier_statut_utilisateur($structure_id,$user_id,$user_statut)
 	$DB_SQL.= 'SET livret_user_statut=:user_statut ';
 	$DB_SQL.= 'WHERE livret_structure_id=:structure_id AND livret_user_id=:user_id ';
 	$DB_SQL.= 'LIMIT 1';
-	$DB_VAR = array(':structure_id'=>$structure_id,':user_id'=>$user_id,':user_statut'=>0);
+	$DB_VAR = array(':structure_id'=>$structure_id,':user_id'=>$user_id,':user_statut'=>$user_statut);
 	DB::query(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
+}
+
+/**
+ * DB_modifier_identifiants_utilisateur
+ * 
+ * @param int         $structure_id
+ * @param int         $user_id
+ * @param string|bool $user_login      false pour ne pas le modifier
+ * @param string|bool $user_password   false pour ne pas le modifier
+ * @return void
+ */
+
+function DB_modifier_identifiants_utilisateur($structure_id,$user_id,$user_login,$user_password)
+{
+	$virgule = '';
+	$DB_SQL = 'UPDATE livret_user ';
+	$DB_SQL.= 'SET ';
+	$DB_VAR = array(':structure_id'=>$structure_id,':user_id'=>$user_id);
+	if($user_login)
+	{
+		$DB_SQL.= 'livret_user_login=:user_login ';
+		$DB_VAR[':user_login'] = $user_login;
+		$virgule = ', ';
+	}
+	if($user_password)
+	{
+		$password_crypte = crypter_mdp($user_password);
+		$DB_SQL.= $virgule.'livret_user_password=:password_crypte ';
+		$DB_VAR[':password_crypte'] = $password_crypte;
+		$virgule = ', ';
+	}
+	$DB_SQL.= 'WHERE livret_structure_id=:structure_id AND livret_user_id=:user_id ';
+	$DB_SQL.= 'LIMIT 1';
+	if($virgule!='')
+	{
+		DB::query(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
+	}
 }
 
 /**
@@ -459,6 +530,40 @@ function DB_ajouter_groupe($structure_id,$groupe_type,$groupe_prof_id,$groupe_re
 	$DB_VAR = array(':structure_id'=>$structure_id,':groupe_type'=>$groupe_type,':groupe_prof_id'=>$groupe_prof_id,':groupe_ref'=>$groupe_ref,':groupe_nom'=>$groupe_nom,':niveau_id'=>$niveau_id);
 	DB::query(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
 	return DB::getLastOid(SACOCHE_BD_NAME);
+}
+
+/**
+ * DB_ajouter_eleve
+ * 
+ * @param int    $structure_id
+ * @param string $user_num_sconet
+ * @param string $user_reference
+ * @param string $user_profil
+ * @param string $user_nom
+ * @param string $user_prenom
+ * @param string $user_login
+ * @param string $user_password
+ * @param int    $eleve_classe_id
+ * @return int
+ */
+
+function DB_ajouter_utilisateur($structure_id,$user_num_sconet,$user_reference,$user_profil,$user_nom,$user_prenom,$user_login,$user_password,$eleve_classe_id)
+{
+	$password_crypte = crypter_mdp($user_password);
+	$DB_SQL = 'INSERT INTO livret_user(livret_structure_id,livret_user_num_sconet,livret_user_reference,livret_user_profil,livret_user_nom,livret_user_prenom,livret_user_login,livret_user_password,livret_eleve_classe_id) ';
+	$DB_SQL.= 'VALUES(:structure_id,:user_num_sconet,:user_reference,:user_profil,:user_nom,:user_prenom,:user_login,:password_crypte,:eleve_classe_id)';
+	$DB_VAR = array(':structure_id'=>$_SESSION['STRUCTURE_ID'],':user_num_sconet'=>$user_num_sconet,':user_reference'=>$user_reference,':user_profil'=>$user_profil,':user_nom'=>$user_nom,':user_prenom'=>$user_prenom,':user_login'=>$user_login,':password_crypte'=>$password_crypte,':eleve_classe_id'=>$eleve_classe_id);
+	DB::query(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
+	$user_id = DB::getLastOid(SACOCHE_BD_NAME);
+	// Pour un professeur, l'affecter obligatoirement à la matière transversale
+	if($user_profil=='professeur')
+	{
+		$DB_SQL = 'INSERT INTO livret_jointure_user_matiere (livret_structure_id ,livret_user_id ,livret_matiere_id,livret_jointure_coord) ';
+		$DB_SQL.= 'VALUES(:structure_id,:user_id,:matiere_id,:jointure_coord)';
+		$DB_VAR = array(':structure_id'=>$structure_id,':user_id'=>$user_id,':matiere_id'=>99,':jointure_coord'=>0);
+		DB::query(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
+	}
+	return $user_id;
 }
 
 /**

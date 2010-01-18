@@ -185,13 +185,7 @@ elseif($action=='user_import')
 				{
 					// Contenu du fichier à modifier :login non indiqué et mdp différents
 					$password = $tab_users_fichier['mdp'][$i];
-					$password_crypte = crypter_mdp($password);
-					$DB_SQL = 'UPDATE livret_user ';
-					$DB_SQL.= 'SET livret_user_password=:password_crypte ';
-					$DB_SQL.= 'WHERE livret_structure_id=:structure_id AND livret_user_id=:user_id ';
-					$DB_SQL.= 'LIMIT 1';
-					$DB_VAR = array(':structure_id'=>$_SESSION['STRUCTURE_ID'],':user_id'=>$id,':password_crypte'=>$password_crypte);
-					DB::query(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
+					DB_modifier_identifiants_utilisateur($_SESSION['STRUCTURE_ID'],$id,false,$password);
 					$lignes_mod .= '<tr class="new"><td>'.html($tab_users_fichier['nom'][$i].' '.$tab_users_fichier['prenom'][$i].' ('.$tab_users_base['info'][$id].')').'</td><td>login : <i>inchangé</i> || <b>password : '.html($password).'</b></td></tr>';
 					$fcontenu_pdf_tab[] = $tab_users_base['info'][$id]."\r\n".$tab_users_base['nom'][$id].' '.$tab_users_base['prenom'][$id]."\r\n".'Utilisateur : '.$tab_users_base['login'][$id]."\r\n".'Mot de passe : '.$password;
 				}
@@ -213,13 +207,7 @@ elseif($action=='user_import')
 				{
 					// Contenu du fichier à modifier : logins identiques et mdp différents
 					$password = $tab_users_fichier['mdp'][$i];
-					$password_crypte = crypter_mdp($password);
-					$DB_SQL = 'UPDATE livret_user ';
-					$DB_SQL.= 'SET livret_user_password=:password_crypte ';
-					$DB_SQL.= 'WHERE livret_structure_id=:structure_id AND livret_user_id=:user_id ';
-					$DB_SQL.= 'LIMIT 1';
-					$DB_VAR = array(':structure_id'=>$_SESSION['STRUCTURE_ID'],':user_id'=>$id,':password_crypte'=>$password_crypte);
-					DB::query(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
+					DB_modifier_identifiants_utilisateur($_SESSION['STRUCTURE_ID'],$id,false,$password);
 					$lignes_mod .= '<tr class="new"><td>'.html($tab_users_fichier['nom'][$i].' '.$tab_users_fichier['prenom'][$i].' ('.$tab_users_base['info'][$id].')').'</td><td>login : <i>inchangé</i> || <b>password : '.html($password).'</b></td></tr>';
 					$fcontenu_pdf_tab[] = $tab_users_base['info'][$id]."\r\n".$tab_users_base['nom'][$id].' '.$tab_users_base['prenom'][$id]."\r\n".'Utilisateur : '.$tab_users_base['login'][$id]."\r\n".'Mot de passe : '.$password;
 				}
@@ -236,12 +224,7 @@ elseif($action=='user_import')
 				{
 					// Contenu du fichier à modifier : logins différents et mdp identiques on non imposé
 					$login = $tab_users_fichier['login'][$i];
-					$DB_SQL = 'UPDATE livret_user ';
-					$DB_SQL.= 'SET livret_user_login=:login ';
-					$DB_SQL.= 'WHERE livret_structure_id=:structure_id AND livret_user_id=:user_id ';
-					$DB_SQL.= 'LIMIT 1';
-					$DB_VAR = array(':structure_id'=>$_SESSION['STRUCTURE_ID'],':user_id'=>$id,':login'=>$login);
-					DB::query(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
+					DB_modifier_identifiants_utilisateur($_SESSION['STRUCTURE_ID'],$id,$login,false);
 					$lignes_mod .= '<tr class="new"><td>'.html($tab_users_fichier['nom'][$i].' '.$tab_users_fichier['prenom'][$i].' ('.$tab_users_base['info'][$id].')').'</td><td><b>login : '.html($login).'</b> || password : <i>inchangé</i></td></tr>';
 					$fcontenu_pdf_tab[] = $tab_users_base['info'][$id]."\r\n".$tab_users_base['nom'][$id].' '.$tab_users_base['prenom'][$id]."\r\n".'Utilisateur : '.$login."\r\n".'Mot de passe : [ inchangé ]';
 				}
@@ -250,13 +233,7 @@ elseif($action=='user_import')
 					// Contenu du fichier à modifier : logins différents et mdp différents
 					$login = $tab_users_fichier['login'][$i];
 					$password = $tab_users_fichier['mdp'][$i];
-					$password_crypte = crypter_mdp($password);
-					$DB_SQL = 'UPDATE livret_user ';
-					$DB_SQL.= 'SET livret_user_login=:login, livret_user_password=:password_crypte ';
-					$DB_SQL.= 'WHERE livret_structure_id=:structure_id AND livret_user_id=:user_id ';
-					$DB_SQL.= 'LIMIT 1';
-					$DB_VAR = array(':structure_id'=>$_SESSION['STRUCTURE_ID'],':user_id'=>$id,':login'=>$login,':password_crypte'=>$password_crypte);
-					DB::query(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
+					DB_modifier_identifiants_utilisateur($_SESSION['STRUCTURE_ID'],$id,$login,$password);
 					$lignes_mod .= '<tr class="new"><td>'.html($tab_users_fichier['nom'][$i].' '.$tab_users_fichier['prenom'][$i].' ('.$tab_users_base['info'][$id].')').'</td><td><b>Login : '.html($login).'</b> || <b>Password : '.html($password).'</b></td></tr>';
 					$fcontenu_pdf_tab[] = $tab_users_base['info'][$id]."\r\n".$tab_users_base['nom'][$id].' '.$tab_users_base['prenom'][$id]."\r\n".'Utilisateur : '.$login."\r\n".'Mot de passe : '.$password;
 				}

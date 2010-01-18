@@ -438,14 +438,10 @@ elseif( $step==4 )
 				}
 				// Construire le password
 				$password = fabriquer_mdp();
-				$password_crypte = crypter_mdp($password);
-				$DB_SQL = 'INSERT INTO livret_user(livret_structure_id,livret_user_num_sconet,livret_user_reference,livret_user_profil,livret_user_nom,livret_user_prenom,livret_user_login,livret_user_password,livret_eleve_classe_id) ';
-				$DB_SQL.= 'VALUES(:structure_id,:num_sconet,:reference,:profil,:nom,:prenom,:login,:password,:classe)';
-				$DB_VAR = array(':structure_id'=>$_SESSION['STRUCTURE_ID'],':num_sconet'=>$tab_traitement['ajout'][$i]['num_sconet'],':reference'=>$tab_traitement['ajout'][$i]['reference'],':profil'=>$tab_traitement['ajout'][$i]['profil'],':nom'=>$tab_traitement['ajout'][$i]['nom'],':prenom'=>$tab_traitement['ajout'][$i]['prenom'],':login'=>$login,':password'=>$password_crypte,':classe'=>0);
-				DB::query(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
-				$id = DB::getLastOid(SACOCHE_BD_NAME);
+				// Ajouter l'utilisateur
+				$user_id = DB_ajouter_utilisateur($_SESSION['STRUCTURE_ID'],$tab_traitement['ajout'][$i]['num_sconet'],$tab_traitement['ajout'][$i]['reference'],$tab_traitement['ajout'][$i]['profil'],$tab_traitement['ajout'][$i]['nom'],$tab_traitement['ajout'][$i]['prenom'],$login,$password,0);
 				$nb_add++;
-				$tab_password[$id] = $password;
+				$tab_password[$user_id] = $password;
 				$fcontenu_csv .= $tab_traitement['ajout'][$i]['num_sconet']."\t".$tab_traitement['ajout'][$i]['reference']."\t".$tab_traitement['ajout'][$i]['profil']."\t".$tab_traitement['ajout'][$i]['nom']."\t".$tab_traitement['ajout'][$i]['prenom']."\t".$login."\t".$password."\r\n";
 				$fcontenu_pdf_tab[] = mb_strtoupper($tab_traitement['ajout'][$i]['profil'])."\r\n".$tab_traitement['ajout'][$i]['nom'].' '.$tab_traitement['ajout'][$i]['prenom']."\r\n".'Utilisateur : '.$login."\r\n".'Mot de passe : '.$password;
 			}
@@ -486,11 +482,7 @@ elseif( $step==4 )
 	$lignes         = '';
 	$nb_fin_actif   = 0;
 	$nb_fin_inactif = 0;
-	$DB_SQL = 'SELECT * FROM livret_user ';
-	$DB_SQL.= 'WHERE livret_structure_id=:structure_id AND livret_user_profil IN(:profil1,:profil2) ';
-	$DB_SQL.= 'ORDER BY livret_user_statut DESC, livret_user_nom ASC, livret_user_prenom ASC';
-	$DB_VAR = array(':structure_id'=>$_SESSION['STRUCTURE_ID'],':profil1'=>'professeur',':profil2'=>'directeur');
-	$DB_TAB = DB::queryTab(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
+	$DB_TAB = DB_lister_professeurs_directeurs_tri_statut($_SESSION['STRUCTURE_ID'])
 	foreach($DB_TAB as $key => $DB_ROW)
 	{
 		$class       = (isset($tab_password[$DB_ROW['livret_user_id']])) ? ' class="new"' : '' ;

@@ -346,7 +346,7 @@ elseif( $step==4 )
 		{
 			if( $groupe_id )
 			{
-				DB_supprimer_groupe($_SESSION['STRUCTURE_ID'],$groupe_id);
+				DB_supprimer_groupe($_SESSION['STRUCTURE_ID'],$groupe_id,'classe');
 				$nb_del++;
 			}
 		}
@@ -636,7 +636,7 @@ elseif( $step==6 )
 			if( $user_id )
 			{
 				// Mettre à jour l'enregistrement
-				DB_modifier_statut_utilisateur($_SESSION['STRUCTURE_ID'],$user_id,0)
+				DB_modifier_utilisateur_statut($_SESSION['STRUCTURE_ID'],$user_id,0)
 				$nb_del++;
 			}
 		}

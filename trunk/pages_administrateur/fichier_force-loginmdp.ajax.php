@@ -185,7 +185,7 @@ elseif($action=='user_import')
 				{
 					// Contenu du fichier à modifier :login non indiqué et mdp différents
 					$password = $tab_users_fichier['mdp'][$i];
-					DB_modifier_identifiants_utilisateur($_SESSION['STRUCTURE_ID'],$id,false,$password);
+					DB_modifier_utilisateur_identifiants($_SESSION['STRUCTURE_ID'],$id,false,$password);
 					$lignes_mod .= '<tr class="new"><td>'.html($tab_users_fichier['nom'][$i].' '.$tab_users_fichier['prenom'][$i].' ('.$tab_users_base['info'][$id].')').'</td><td>login : <i>inchangé</i> || <b>password : '.html($password).'</b></td></tr>';
 					$fcontenu_pdf_tab[] = $tab_users_base['info'][$id]."\r\n".$tab_users_base['nom'][$id].' '.$tab_users_base['prenom'][$id]."\r\n".'Utilisateur : '.$tab_users_base['login'][$id]."\r\n".'Mot de passe : '.$password;
 				}
@@ -207,7 +207,7 @@ elseif($action=='user_import')
 				{
 					// Contenu du fichier à modifier : logins identiques et mdp différents
 					$password = $tab_users_fichier['mdp'][$i];
-					DB_modifier_identifiants_utilisateur($_SESSION['STRUCTURE_ID'],$id,false,$password);
+					DB_modifier_utilisateur_identifiants($_SESSION['STRUCTURE_ID'],$id,false,$password);
 					$lignes_mod .= '<tr class="new"><td>'.html($tab_users_fichier['nom'][$i].' '.$tab_users_fichier['prenom'][$i].' ('.$tab_users_base['info'][$id].')').'</td><td>login : <i>inchangé</i> || <b>password : '.html($password).'</b></td></tr>';
 					$fcontenu_pdf_tab[] = $tab_users_base['info'][$id]."\r\n".$tab_users_base['nom'][$id].' '.$tab_users_base['prenom'][$id]."\r\n".'Utilisateur : '.$tab_users_base['login'][$id]."\r\n".'Mot de passe : '.$password;
 				}
@@ -224,7 +224,7 @@ elseif($action=='user_import')
 				{
 					// Contenu du fichier à modifier : logins différents et mdp identiques on non imposé
 					$login = $tab_users_fichier['login'][$i];
-					DB_modifier_identifiants_utilisateur($_SESSION['STRUCTURE_ID'],$id,$login,false);
+					DB_modifier_utilisateur_identifiants($_SESSION['STRUCTURE_ID'],$id,$login,false);
 					$lignes_mod .= '<tr class="new"><td>'.html($tab_users_fichier['nom'][$i].' '.$tab_users_fichier['prenom'][$i].' ('.$tab_users_base['info'][$id].')').'</td><td><b>login : '.html($login).'</b> || password : <i>inchangé</i></td></tr>';
 					$fcontenu_pdf_tab[] = $tab_users_base['info'][$id]."\r\n".$tab_users_base['nom'][$id].' '.$tab_users_base['prenom'][$id]."\r\n".'Utilisateur : '.$login."\r\n".'Mot de passe : [ inchangé ]';
 				}
@@ -233,7 +233,7 @@ elseif($action=='user_import')
 					// Contenu du fichier à modifier : logins différents et mdp différents
 					$login = $tab_users_fichier['login'][$i];
 					$password = $tab_users_fichier['mdp'][$i];
-					DB_modifier_identifiants_utilisateur($_SESSION['STRUCTURE_ID'],$id,$login,$password);
+					DB_modifier_utilisateur_identifiants($_SESSION['STRUCTURE_ID'],$id,$login,$password);
 					$lignes_mod .= '<tr class="new"><td>'.html($tab_users_fichier['nom'][$i].' '.$tab_users_fichier['prenom'][$i].' ('.$tab_users_base['info'][$id].')').'</td><td><b>Login : '.html($login).'</b> || <b>Password : '.html($password).'</b></td></tr>';
 					$fcontenu_pdf_tab[] = $tab_users_base['info'][$id]."\r\n".$tab_users_base['nom'][$id].' '.$tab_users_base['prenom'][$id]."\r\n".'Utilisateur : '.$login."\r\n".'Mot de passe : '.$password;
 				}

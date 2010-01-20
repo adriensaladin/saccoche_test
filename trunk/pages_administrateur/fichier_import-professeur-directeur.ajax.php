@@ -412,7 +412,7 @@ elseif( $step==4 )
 			if( $user_id )
 			{
 				// Mettre à jour l'enregistrement
-				DB_modifier_statut_utilisateur($_SESSION['STRUCTURE_ID'],$user_id,0)
+				DB_modifier_utilisateur_statut($_SESSION['STRUCTURE_ID'],$user_id,0)
 				$nb_del++;
 			}
 		}
@@ -439,7 +439,7 @@ elseif( $step==4 )
 				// Construire le password
 				$password = fabriquer_mdp();
 				// Ajouter l'utilisateur
-				$user_id = DB_ajouter_utilisateur($_SESSION['STRUCTURE_ID'],$tab_traitement['ajout'][$i]['num_sconet'],$tab_traitement['ajout'][$i]['reference'],$tab_traitement['ajout'][$i]['profil'],$tab_traitement['ajout'][$i]['nom'],$tab_traitement['ajout'][$i]['prenom'],$login,$password,0);
+				$user_id = DB_ajouter_utilisateur($_SESSION['STRUCTURE_ID'],$tab_traitement['ajout'][$i]['num_sconet'],$tab_traitement['ajout'][$i]['reference'],$tab_traitement['ajout'][$i]['profil'],$tab_traitement['ajout'][$i]['nom'],$tab_traitement['ajout'][$i]['prenom'],$login,$password);
 				$nb_add++;
 				$tab_password[$user_id] = $password;
 				$fcontenu_csv .= $tab_traitement['ajout'][$i]['num_sconet']."\t".$tab_traitement['ajout'][$i]['reference']."\t".$tab_traitement['ajout'][$i]['profil']."\t".$tab_traitement['ajout'][$i]['nom']."\t".$tab_traitement['ajout'][$i]['prenom']."\t".$login."\t".$password."\r\n";

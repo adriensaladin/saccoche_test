@@ -43,7 +43,7 @@ if( ($action=='partager') && (in_array(99,$tab_id)) )
 elseif( ($action=='ajouter') && $ref && $nom )
 {
 	// Vérifier que la référence de la matière est disponible
-	if( DB_tester_reference_matiere($_SESSION['STRUCTURE_ID'],$ref) )
+	if( DB_tester_matiere_reference($_SESSION['STRUCTURE_ID'],$ref) )
 	{
 		exit('Erreur : référence déjà existante !');
 	}
@@ -66,7 +66,7 @@ elseif( ($action=='ajouter') && $ref && $nom )
 else if( ($action=='modifier') && $id && $ref && $nom )
 {
 	// Vérifier que la référence de la matière est disponible
-	if( DB_tester_reference_matiere($_SESSION['STRUCTURE_ID'],$ref,$id) )
+	if( DB_tester_matiere_reference($_SESSION['STRUCTURE_ID'],$ref,$id) )
 	{
 		exit('Erreur : référence déjà existante !');
 	}

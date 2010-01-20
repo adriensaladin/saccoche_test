@@ -26,23 +26,14 @@ $ordre  = (isset($_POST['f_ordre']))  ? clean_entier($_POST['f_ordre']) : 0;
 if( (($action=='ajouter')||($action=='dupliquer')) && $nom && $ordre )
 {
 	// Vérifier que le nom de la période est disponible
-	$DB_SQL = 'SELECT livret_periode_id FROM livret_periode ';
-	$DB_SQL.= 'WHERE livret_structure_id=:structure_id AND livret_periode_nom=:nom ';
-	$DB_SQL.= 'LIMIT 1';
-	$DB_VAR = array(':structure_id'=>$_SESSION['STRUCTURE_ID'],':nom'=>$nom);
-	$DB_ROW = DB::queryRow(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
-	if(count($DB_ROW))
+	if( DB_tester_periode_nom($_SESSION['STRUCTURE_ID'],$nom) )
 	{
 		exit('Erreur : nom de période déjà existant !');
 	}
 	// Insérer l'enregistrement
-	$DB_SQL = 'INSERT INTO livret_periode(livret_structure_id,livret_periode_nom,livret_periode_ordre) ';
-	$DB_SQL.= 'VALUES(:structure_id,:nom,:ordre)';
-	$DB_VAR = array(':structure_id'=>$_SESSION['STRUCTURE_ID'],':nom'=>$nom,':ordre'=>$ordre);
-	DB::query(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
-	$id = DB::getLastOid(SACOCHE_BD_NAME);
+	$periode_id = DB_ajouter_periode($_SESSION['STRUCTURE_ID'],$nom,$ordre);
 	// Afficher le retour
-	echo'<tr id="id_'.$id.'" class="new">';
+	echo'<tr id="id_'.$periode_id.'" class="new">';
 	echo	'<td>'.$ordre.'</td>';
 	echo	'<td>'.html($nom).'</td>';
 	echo	'<td class="nu">';
@@ -59,22 +50,12 @@ if( (($action=='ajouter')||($action=='dupliquer')) && $nom && $ordre )
 else if( ($action=='modifier') && $id && $nom && $ordre )
 {
 	// Vérifier que le nom de la période est disponible
-	$DB_SQL = 'SELECT livret_periode_id FROM livret_periode ';
-	$DB_SQL.= 'WHERE livret_structure_id=:structure_id AND livret_periode_nom=:nom AND livret_periode_id!=:id ';
-	$DB_SQL.= 'LIMIT 1';
-	$DB_VAR = array(':structure_id'=>$_SESSION['STRUCTURE_ID'],':nom'=>$nom,':id'=>$id);
-	$DB_ROW = DB::queryRow(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
-	if(count($DB_ROW))
+	if( DB_tester_periode_nom($_SESSION['STRUCTURE_ID'],$nom,$id) )
 	{
 		exit('Erreur : nom de période déjà existant !');
 	}
 	// Mettre à jour l'enregistrement
-	$DB_SQL = 'UPDATE livret_periode ';
-	$DB_SQL.= 'SET livret_periode_nom=:nom,livret_periode_ordre=:ordre ';
-	$DB_SQL.= 'WHERE livret_structure_id=:structure_id AND livret_periode_id=:id ';
-	$DB_SQL.= 'LIMIT 1';
-	$DB_VAR = array(':structure_id'=>$_SESSION['STRUCTURE_ID'],':nom'=>$nom,':ordre'=>$ordre,':id'=>$id);
-	DB::query(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
+	DB_modifier_periode($_SESSION['STRUCTURE_ID'],$id,$nom,$ordre);
 	// Afficher le retour
 	echo'<td>'.$ordre.'</td>';
 	echo'<td>'.html($nom).'</td>';
@@ -91,16 +72,7 @@ else if( ($action=='modifier') && $id && $nom && $ordre )
 else if( ($action=='supprimer') && $id )
 {
 	// Effacer l'enregistrement
-	$DB_SQL = 'DELETE FROM livret_periode ';
-	$DB_SQL.= 'WHERE livret_structure_id=:structure_id AND livret_periode_id=:id ';
-	$DB_SQL.= 'LIMIT 1';
-	$DB_VAR = array(':structure_id'=>$_SESSION['STRUCTURE_ID'],':id'=>$id);
-	DB::query(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
-	// Effacer les jointures avec les classes
-	$DB_SQL = 'DELETE FROM livret_jointure_groupe_periode ';
-	$DB_SQL.= 'WHERE livret_structure_id=:structure_id AND livret_periode_id=:id ';
-	$DB_VAR = array(':structure_id'=>$_SESSION['STRUCTURE_ID'],':id'=>$id);
-	DB::query(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
+	DB_supprimer_periode($_SESSION['STRUCTURE_ID'],$id);
 	// Afficher le retour
 	echo'<td>ok</td>';
 }

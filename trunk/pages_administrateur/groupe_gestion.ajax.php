@@ -26,23 +26,14 @@ $nom    = (isset($_POST['f_nom']))    ? clean_texte($_POST['f_nom'])     : '';
 if( ($action=='ajouter') && $niveau && $nom )
 {
 	// Vérifier que le nom du groupe est disponible
-	$DB_SQL = 'SELECT livret_groupe_id FROM livret_groupe ';
-	$DB_SQL.= 'WHERE livret_structure_id=:structure_id AND livret_groupe_type=:type AND livret_groupe_nom=:nom AND livret_groupe_id!=:id ';
-	$DB_SQL.= 'LIMIT 1';
-	$DB_VAR = array(':structure_id'=>$_SESSION['STRUCTURE_ID'],':type'=>'groupe',':nom'=>$nom,':id'=>$id);
-	$DB_ROW = DB::queryRow(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
-	if(count($DB_ROW))
+	if( DB_tester_groupe_nom($_SESSION['STRUCTURE_ID'],$nom) )
 	{
 		exit('Erreur : nom de groupe déjà existant !');
 	}
 	// Insérer l'enregistrement
-	$DB_SQL = 'INSERT INTO livret_groupe(livret_structure_id,livret_groupe_type,livret_groupe_prof_id,livret_groupe_ref,livret_groupe_nom,livret_niveau_id) ';
-	$DB_SQL.= 'VALUES(:structure_id,:type,:prof_id,:ref,:nom,:niveau)';
-	$DB_VAR = array(':structure_id'=>$_SESSION['STRUCTURE_ID'],':type'=>'groupe',':prof_id'=>0,':ref'=>'',':nom'=>$nom,':niveau'=>$niveau);
-	DB::query(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
-	$id = DB::getLastOid(SACOCHE_BD_NAME);
+	$groupe_id = DB_ajouter_groupe($_SESSION['STRUCTURE_ID'],'groupe',0,'',$nom,$niveau);
 	// Afficher le retour
-	echo'<tr id="id_'.$id.'" class="new">';
+	echo'<tr id="id_'.$groupe_id.'" class="new">';
 	echo	'<td>{{NIVEAU_NOM}}</td>';
 	echo	'<td>'.html($nom).'</td>';
 	echo	'<td class="nu">';
@@ -58,22 +49,12 @@ if( ($action=='ajouter') && $niveau && $nom )
 else if( ($action=='modifier') && $id && $niveau && $nom )
 {
 	// Vérifier que le nom du groupe est disponible
-	$DB_SQL = 'SELECT livret_groupe_id FROM livret_groupe ';
-	$DB_SQL.= 'WHERE livret_structure_id=:structure_id AND livret_groupe_type=:type AND livret_groupe_nom=:nom AND livret_groupe_id!=:id ';
-	$DB_SQL.= 'LIMIT 1';
-	$DB_VAR = array(':structure_id'=>$_SESSION['STRUCTURE_ID'],':type'=>'groupe',':nom'=>$nom,':id'=>$id);
-	$DB_ROW = DB::queryRow(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
-	if(count($DB_ROW))
+	if( DB_tester_groupe_nom($_SESSION['STRUCTURE_ID'],$nom,$id) )
 	{
 		exit('Erreur : nom de groupe déjà existant !');
 	}
 	// Mettre à jour l'enregistrement
-	$DB_SQL = 'UPDATE livret_groupe ';
-	$DB_SQL.= 'SET livret_groupe_nom=:nom,livret_niveau_id=:niveau ';
-	$DB_SQL.= 'WHERE livret_structure_id=:structure_id AND livret_groupe_id=:id ';
-	$DB_SQL.= 'LIMIT 1';
-	$DB_VAR = array(':structure_id'=>$_SESSION['STRUCTURE_ID'],':nom'=>$nom,':niveau'=>$niveau,':id'=>$id);
-	DB::query(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
+	DB_modifier_groupe($_SESSION['STRUCTURE_ID'],$id,'',$nom,$niveau);
 	// Afficher le retour
 	echo'<td>{{NIVEAU_NOM}}</td>';
 	echo'<td>'.html($nom).'</td>';
@@ -89,24 +70,7 @@ else if( ($action=='modifier') && $id && $niveau && $nom )
 else if( ($action=='supprimer') && $id )
 {
 	// Effacer l'enregistrement
-	$DB_SQL = 'DELETE FROM livret_groupe ';
-	$DB_SQL.= 'WHERE livret_structure_id=:structure_id AND livret_groupe_id=:id ';
-	$DB_SQL.= 'LIMIT 1';
-	$DB_VAR = array(':structure_id'=>$_SESSION['STRUCTURE_ID'],':id'=>$id);
-	DB::query(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
-	$DB_SQL = 'DELETE FROM livret_jointure_groupe_periode ';
-	$DB_SQL.= 'WHERE livret_structure_id=:structure_id AND livret_groupe_id=:id';
-	$DB_VAR = array(':structure_id'=>$_SESSION['STRUCTURE_ID'],':id'=>$id);
-	DB::query(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
-	$DB_SQL = 'DELETE FROM livret_jointure_user_groupe ';
-	$DB_SQL.= 'WHERE livret_structure_id=:structure_id AND livret_groupe_id=:id';
-	$DB_VAR = array(':structure_id'=>$_SESSION['STRUCTURE_ID'],':id'=>$id);
-	DB::query(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
-	$DB_SQL = 'UPDATE livret_evaluation ';
-	$DB_SQL.= 'SET livret_groupe_id=0 ';
-	$DB_SQL.= 'WHERE livret_structure_id=:structure_id AND livret_groupe_id=:id';
-	$DB_VAR = array(':structure_id'=>$_SESSION['STRUCTURE_ID'],':id'=>$id);
-	DB::query(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
+	DB_supprimer_groupe($_SESSION['STRUCTURE_ID'],$id,'groupe');
 	// Afficher le retour
 	echo'<td>ok</td>';
 }

@@ -48,7 +48,7 @@ if( ($action=='prof_login') && $nb )
 			// Login pris : en chercher un autre en remplaçant la fin par des chiffres si besoin
 			$login = DB_rechercher_login_disponible($_SESSION['STRUCTURE_ID'],$login);
 		}
-		DB_modifier_identifiants_utilisateur($_SESSION['STRUCTURE_ID'],$DB_ROW['livret_user_id'],$login,false);
+		DB_modifier_utilisateur_identifiants($_SESSION['STRUCTURE_ID'],$DB_ROW['livret_user_id'],$login,false);
 		$tab_login[$DB_ROW['livret_user_id']] = $login;
 	}
 	// Générer une sortie csv zippé

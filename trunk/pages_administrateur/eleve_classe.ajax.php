@@ -26,31 +26,20 @@ $tab_select_classes = array_filter($tab_select_classes,'positif');
 // Ajouter des élèves à des classes
 if($action=='ajouter')
 {
+	$classe_id = current($tab_select_classes); // un élève ne peut être affecté qu'à 1 seule classe : inutile de toutes les passer en revue
 	foreach($tab_select_eleves as $user_id)
 	{
-		foreach($tab_select_classes as $classe_id)
-		{
-			$DB_SQL = 'UPDATE livret_user ';
-			$DB_SQL.= 'SET livret_eleve_classe_id=:classe_id ';
-			$DB_SQL.= 'WHERE livret_structure_id=:structure_id AND livret_user_id=:user_id ';
-			$DB_SQL.= 'LIMIT 1';
-			$DB_VAR = array(':structure_id'=>$_SESSION['STRUCTURE_ID'],':user_id'=>$user_id,':classe_id'=>$classe_id);
-			DB::query(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
-		}
+		DB_modifier_liaison_eleve_classe($_SESSION['STRUCTURE_ID'],$user_id,$classe_id,true)
 	}
 }
 
 // Retirer des élèves à des classes
 elseif($action=='retirer')
 {
+	// pas besoin de passer les classes en revue : il suffit de mettre $classe_id à 0
 	foreach($tab_select_eleves as $user_id)
 	{
-		$DB_SQL = 'UPDATE livret_user ';
-		$DB_SQL.= 'SET livret_eleve_classe_id=:classe_id ';
-		$DB_SQL.= 'WHERE livret_structure_id=:structure_id AND livret_user_id=:user_id ';
-		$DB_SQL.= 'LIMIT 1';
-		$DB_VAR = array(':structure_id'=>$_SESSION['STRUCTURE_ID'],':user_id'=>$user_id,':classe_id'=>0);
-		DB::query(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
+		DB_modifier_liaison_eleve_classe($_SESSION['STRUCTURE_ID'],$user_id,0,false)
 	}
 }
 

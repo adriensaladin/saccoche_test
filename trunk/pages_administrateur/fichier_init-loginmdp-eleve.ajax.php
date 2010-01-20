@@ -51,7 +51,7 @@ if( ($action=='eleve_login') && $nb )
 			// Login pris : en chercher un autre en remplaçant la fin par des chiffres si besoin
 			$login = DB_rechercher_login_disponible($_SESSION['STRUCTURE_ID'],$login);
 		}
-		DB_modifier_identifiants_utilisateur($_SESSION['STRUCTURE_ID'],$DB_ROW['livret_user_id'],$login,false);
+		DB_modifier_utilisateur_identifiants($_SESSION['STRUCTURE_ID'],$DB_ROW['livret_user_id'],$login,false);
 		$tab_login[$DB_ROW['livret_user_id']] = $login;
 	}
 	// Générer une sortie csv zippé
@@ -99,7 +99,7 @@ elseif( ($action=='eleve_mdp') && $nb )
 	foreach($tab_select_users as $user_id)
 	{
 		$password = fabriquer_mdp();
-		DB_modifier_identifiants_utilisateur($_SESSION['STRUCTURE_ID'],$user_id,false,$password);
+		DB_modifier_utilisateur_identifiants($_SESSION['STRUCTURE_ID'],$user_id,false,$password);
 		$tab_password[$user_id] = $password;
 	}
 	// Récupérer les données des utilisateurs concernés

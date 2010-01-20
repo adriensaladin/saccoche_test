@@ -626,7 +626,7 @@ elseif( $step==6 )
 		}
 	}
 	// Dénombrer combien d'actifs et d'inactifs au départ
-	list($nb_debut_actif,$nb_debut_inactif) = DB_compter_eleves_suivant_statut($structure_id);
+	list($nb_debut_actif,$nb_debut_inactif) = DB_compter_eleves_suivant_statut($_SESSION['STRUCTURE_ID']);
 	// Retirer des élèves éventuels
 	$nb_del = 0;
 	if(count($tab_del))
@@ -636,7 +636,7 @@ elseif( $step==6 )
 			if( $user_id )
 			{
 				// Mettre à jour l'enregistrement
-				DB_modifier_utilisateur_statut($_SESSION['STRUCTURE_ID'],$user_id,0)
+				DB_modifier_utilisateur_statut($_SESSION['STRUCTURE_ID'],$user_id,0);
 				$nb_del++;
 			}
 		}
@@ -714,7 +714,7 @@ elseif( $step==6 )
 	$lignes         = '';
 	$nb_fin_actif   = 0;
 	$nb_fin_inactif = 0;
-	$DB_TAB = DB_lister_eleves_tri_statut_classe($_SESSION['STRUCTURE_ID'])
+	$DB_TAB = DB_lister_eleves_tri_statut_classe($_SESSION['STRUCTURE_ID']);
 	foreach($DB_TAB as $key => $DB_ROW)
 	{
 		$class       = (isset($tab_password[$DB_ROW['livret_user_id']])) ? ' class="new"' : '' ;

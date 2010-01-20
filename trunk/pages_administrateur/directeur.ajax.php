@@ -159,7 +159,7 @@ else if( ($action=='modifier') && $id && $nom && $prenom && $login )
 else if( ($action=='desactiver') && $id )
 {
 	// Mettre à jour l'enregistrement
-	DB_modifier_utilisateur_statut($_SESSION['STRUCTURE_ID'],$id,0)
+	DB_modifier_utilisateur_statut($_SESSION['STRUCTURE_ID'],$id,0);
 	// Afficher le retour
 	echo'<td>ok</td>';
 }

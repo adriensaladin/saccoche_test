@@ -120,7 +120,7 @@ function connecter_user($structure_id,$login,$password,$sso=false)
  * @return string
  */
 
-fonction fabriquer_login($prenom,$nom,$profil)
+function fabriquer_login($prenom,$nom,$profil)
 {
 	$modele = ($profil=='eleve') ? $_SESSION['MODELE_ELEVE'] : $_SESSION['MODELE_PROF'] ;
 	$login_prenom = mb_substr( clean_login($prenom) , 0 , mb_substr_count($modele,'p') );
@@ -137,7 +137,7 @@ fonction fabriquer_login($prenom,$nom,$profil)
  * @return string
  */
 
-fonction fabriquer_mdp()
+function fabriquer_mdp()
 {
 	// e enlevé sinon un tableur peut interpréter le mot de passe comme un nombre avec exposant ; hijklmoquvw retirés aussi pour éviter tout risque de confusion
 	return mb_substr(str_shuffle('23456789abcdfgnprstxyz'),0,6);
@@ -150,7 +150,7 @@ fonction fabriquer_mdp()
  * @return string
  */
 
-fonction crypter_mdp($password)
+function crypter_mdp($password)
 {
 	return md5('grain_de_sel'.$password);
 }

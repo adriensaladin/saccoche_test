@@ -530,7 +530,7 @@ function DB_ajouter_periode($structure_id,$periode_nom,$periode_ordre)
 {
 	$DB_SQL = 'INSERT INTO livret_periode(livret_structure_id,livret_periode_nom,livret_periode_ordre) ';
 	$DB_SQL.= 'VALUES(:structure_id,:periode_nom,:periode_ordre)';
-	$DB_VAR = array(':structure_id'=>$_SESSION['STRUCTURE_ID'],':periode_nom'=>$periode_nom,':periode_ordre'=>$periode_ordre);
+	$DB_VAR = array(':structure_id'=>$structure_id,':periode_nom'=>$periode_nom,':periode_ordre'=>$periode_ordre);
 	DB::query(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
 	return DB::getLastOid(SACOCHE_BD_NAME);
 }
@@ -898,7 +898,7 @@ function DB_modifier_liaison_professeur_coordonnateur($structure_id,$user_id,$ma
 	$DB_SQL = 'UPDATE livret_jointure_user_matiere SET livret_jointure_coord=:coord ';
 	$DB_SQL.= 'WHERE livret_structure_id=:structure_id AND livret_user_id=:user_id AND livret_matiere_id=:matiere_id ';
 	$DB_SQL.= 'LIMIT 1';
-	$DB_VAR = array(':structure_id'=>$_SESSION['STRUCTURE_ID'],':user_id'=>$user_id,':matiere_id'=>$matiere_id,':coord'=>$coord);
+	$DB_VAR = array(':structure_id'=>$structure_id,':user_id'=>$user_id,':matiere_id'=>$matiere_id,':coord'=>$coord);
 	DB::query(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
@@ -918,7 +918,7 @@ function DB_modifier_liaison_professeur_principal($structure_id,$user_id,$groupe
 	$DB_SQL = 'UPDATE livret_jointure_user_groupe SET livret_jointure_pp=:pp ';
 	$DB_SQL.= 'WHERE livret_structure_id=:structure_id AND livret_user_id=:user_id AND livret_groupe_id=:groupe_id ';
 	$DB_SQL.= 'LIMIT 1';
-	$DB_VAR = array(':structure_id'=>$_SESSION['STRUCTURE_ID'],':user_id'=>$user_id,':groupe_id'=>$groupe_id,':pp'=>$pp);
+	$DB_VAR = array(':structure_id'=>$structure_id,':user_id'=>$user_id,':groupe_id'=>$groupe_id,':pp'=>$pp);
 	DB::query(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
@@ -985,7 +985,7 @@ function DB_modifier_liaison_groupe_periode($structure_id,$groupe_id,$periode_id
 		$DB_SQL = 'DELETE FROM livret_jointure_groupe_periode ';
 		$DB_SQL.= 'WHERE livret_structure_id=:structure_id AND livret_groupe_id=:groupe_id AND livret_periode_id=:periode_id ';
 		$DB_SQL.= 'LIMIT 1';
-		$DB_VAR = array(':structure_id'=>$_SESSION['STRUCTURE_ID'],':groupe_id'=>$groupe_id,':periode_id'=>$periode_id);
+		$DB_VAR = array(':structure_id'=>$structure_id,':groupe_id'=>$groupe_id,':periode_id'=>$periode_id);
 	}
 	DB::query(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
 }

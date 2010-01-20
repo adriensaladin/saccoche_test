@@ -29,19 +29,7 @@ if($action=='ajouter')
 	{
 		foreach($tab_select_matieres as $matiere_id)
 		{
-			// On ne peut pas utiliser REPLACE car on ne sait pas quelle est la valeur de livret_jointure_coord
-			$DB_SQL = 'SELECT livret_structure_id FROM livret_jointure_user_matiere ';
-			$DB_SQL.= 'WHERE livret_structure_id=:structure_id AND livret_user_id=:user_id AND livret_matiere_id=:matiere_id ';
-			$DB_SQL.= 'LIMIT 1';
-			$DB_VAR = array(':structure_id'=>$_SESSION['STRUCTURE_ID'],':user_id'=>$user_id,':matiere_id'=>$matiere_id);
-			$DB_ROW = DB::queryRow(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
-			if(!count($DB_ROW))
-			{
-				$DB_SQL = 'INSERT INTO livret_jointure_user_matiere (livret_structure_id,livret_user_id,livret_matiere_id,livret_jointure_coord) ';
-				$DB_SQL.= 'VALUES(:structure_id,:user_id,:matiere_id,:coord)';
-				$DB_VAR = array(':structure_id'=>$_SESSION['STRUCTURE_ID'],':user_id'=>$user_id,':matiere_id'=>$matiere_id,':coord'=>0);
-				DB::query(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
-			}
+			DB_modifier_liaison_professeur_matiere($_SESSION['STRUCTURE_ID'],$user_id,$matiere_id,true);
 		}
 	}
 }
@@ -53,11 +41,7 @@ elseif($action=='retirer')
 	{
 		foreach($tab_select_matieres as $matiere_id)
 		{
-			$DB_SQL = 'DELETE FROM livret_jointure_user_matiere ';
-			$DB_SQL.= 'WHERE livret_structure_id=:structure_id AND livret_user_id=:user_id AND livret_matiere_id=:matiere_id ';
-			$DB_SQL.= 'LIMIT 1';
-			$DB_VAR = array(':structure_id'=>$_SESSION['STRUCTURE_ID'],':user_id'=>$user_id,':matiere_id'=>$matiere_id);
-			DB::query(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
+			DB_modifier_liaison_professeur_matiere($_SESSION['STRUCTURE_ID'],$user_id,$matiere_id,false);
 		}
 	}
 }

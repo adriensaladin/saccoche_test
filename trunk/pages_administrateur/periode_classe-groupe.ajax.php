@@ -44,10 +44,7 @@ if( ($action=='ajouter') && $date_debut && $date_fin )
 	{
 		foreach($tab_select_classes_groupes as $groupe_id)
 		{
-			$DB_SQL = 'REPLACE INTO livret_jointure_groupe_periode (livret_structure_id,livret_groupe_id,livret_periode_id,livret_periode_date_debut,livret_periode_date_fin) ';
-			$DB_SQL.= 'VALUES(:structure_id,:groupe_id,:periode_id,:date_debut,:date_fin)';
-			$DB_VAR = array(':structure_id'=>$_SESSION['STRUCTURE_ID'],':groupe_id'=>$groupe_id,':periode_id'=>$periode_id,':date_debut'=>$date_debut_mysql,':date_fin'=>$date_fin_mysql);
-			DB::query(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
+			DB_modifier_liaison_groupe_periode($_SESSION['STRUCTURE_ID'],$groupe_id,$periode_id,true,$date_debut_mysql,$date_fin_mysql);
 		}
 	}
 }
@@ -62,11 +59,7 @@ elseif($action=='retirer')
 	{
 		foreach($tab_select_classes_groupes as $groupe_id)
 		{
-			$DB_SQL = 'DELETE FROM livret_jointure_groupe_periode ';
-			$DB_SQL.= 'WHERE livret_structure_id=:structure_id AND livret_groupe_id=:groupe_id AND livret_periode_id=:periode_id ';
-			$DB_SQL.= 'LIMIT 1';
-			$DB_VAR = array(':structure_id'=>$_SESSION['STRUCTURE_ID'],':groupe_id'=>$groupe_id,':periode_id'=>$periode_id);
-			DB::query(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
+			DB_modifier_liaison_groupe_periode($_SESSION['STRUCTURE_ID'],$groupe_id,$periode_id,false);
 		}
 	}
 }

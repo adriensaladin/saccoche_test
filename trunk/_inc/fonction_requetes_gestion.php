@@ -839,26 +839,154 @@ function DB_modifier_groupe($structure_id,$groupe_id,$groupe_ref,$groupe_nom,$ni
 }
 
 /**
- * DB_modifier_liaison_eleve_classe
+ * DB_modifier_liaison_user_groupe
  * 
  * @param int    $structure_id
- * @param int    $eleve_id
- * @param int    $classe_id
- * @param bool   $etat     'true' pour ajouter/modifier une liaison ; 'false pour retirer une liaison
+ * @param int    $user_id
+ * @param string $user_profil   'eleve' ou 'professeur'
+ * @param int    $groupe_id
+ * @param string $groupe_type   'classe' ou 'groupe' ou 'besoin' ou 'eval'
+ * @param bool   $etat          'true' pour ajouter/modifier une liaison ; 'false' pour retirer une liaison
  * @return void
  */
 
-function DB_modifier_liaison_eleve_classe($structure_id,$eleve_id,$classe_id,$etat)
+function DB_modifier_liaison_user_groupe($structure_id,$user_id,$user_profil,$groupe_id,$groupe_type,$etat)
 {
-	if(!$etat)
+	// Dans le cas d'un élève et d'une classe, ce n'est pas dans la table de jointure mais dans la table user que ça se passe
+	if( ($user_profil=='eleve') && ($groupe_type=='classe') )
 	{
-		$classe_id = 0; // normalement c'est déjà transmis à 0 mais bon...
+		if(!$etat)
+		{
+			$groupe_id = 0; // normalement c'est déjà transmis à 0 mais bon...
+		}
+		$DB_SQL = 'UPDATE livret_user ';
+		$DB_SQL.= 'SET livret_eleve_classe_id=:groupe_id ';
+		$DB_SQL.= 'WHERE livret_structure_id=:structure_id AND livret_user_id=:user_id ';
+		$DB_SQL.= 'LIMIT 1';
 	}
-	$DB_SQL = 'UPDATE livret_user ';
-	$DB_SQL.= 'SET livret_eleve_classe_id=:classe_id ';
-	$DB_SQL.= 'WHERE livret_structure_id=:structure_id AND livret_user_id=:user_id ';
+	else
+	{
+		if($etat)
+		{
+			$DB_SQL = 'REPLACE INTO livret_jointure_user_groupe (livret_structure_id,livret_user_id,livret_groupe_id) ';
+			$DB_SQL.= 'VALUES(:structure_id,:user_id,:groupe_id)';
+		}
+		else
+		{
+			$DB_SQL = 'DELETE FROM livret_jointure_user_groupe ';
+			$DB_SQL.= 'WHERE livret_structure_id=:structure_id AND livret_user_id=:user_id AND livret_groupe_id=:groupe_id ';
+			$DB_SQL.= 'LIMIT 1';
+		}
+	}
+	$DB_VAR = array(':structure_id'=>$structure_id,':user_id'=>$user_id,':groupe_id'=>$groupe_id);
+	DB::query(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
+}
+
+/**
+ * DB_modifier_liaison_professeur_coordonnateur
+ * 
+ * @param int    $structure_id
+ * @param int    $user_id
+ * @param int    $matiere_id
+ * @param bool   $etat          'true' pour ajouter/modifier une liaison ; 'false' pour retirer une liaison
+ * @return void
+ */
+
+function DB_modifier_liaison_professeur_coordonnateur($structure_id,$user_id,$matiere_id,$etat)
+{
+	$coord = ($etat) ? 1 : 0 ;
+	$DB_SQL = 'UPDATE livret_jointure_user_matiere SET livret_jointure_coord=:coord ';
+	$DB_SQL.= 'WHERE livret_structure_id=:structure_id AND livret_user_id=:user_id AND livret_matiere_id=:matiere_id ';
 	$DB_SQL.= 'LIMIT 1';
-	$DB_VAR = array(':structure_id'=>$structure_id,':user_id'=>$eleve_id,':classe_id'=>$classe_id);
+	$DB_VAR = array(':structure_id'=>$_SESSION['STRUCTURE_ID'],':user_id'=>$user_id,':matiere_id'=>$matiere_id,':coord'=>$coord);
+	DB::query(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
+}
+
+/**
+ * DB_modifier_liaison_professeur_principal
+ * 
+ * @param int    $structure_id
+ * @param int    $user_id
+ * @param int    $groupe_id
+ * @param bool   $etat          'true' pour ajouter/modifier une liaison ; 'false' pour retirer une liaison
+ * @return void
+ */
+
+function DB_modifier_liaison_professeur_principal($structure_id,$user_id,$groupe_id,$etat)
+{
+	$pp = ($etat) ? 1 : 0 ;
+	$DB_SQL = 'UPDATE livret_jointure_user_groupe SET livret_jointure_pp=:pp ';
+	$DB_SQL.= 'WHERE livret_structure_id=:structure_id AND livret_user_id=:user_id AND livret_groupe_id=:groupe_id ';
+	$DB_SQL.= 'LIMIT 1';
+	$DB_VAR = array(':structure_id'=>$_SESSION['STRUCTURE_ID'],':user_id'=>$user_id,':groupe_id'=>$groupe_id,':pp'=>$pp);
+	DB::query(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
+}
+
+/**
+ * DB_modifier_liaison_professeur_matiere
+ * 
+ * @param int    $structure_id
+ * @param int    $user_id
+ * @param int    $matiere_id
+ * @param bool   $etat          'true' pour ajouter/modifier une liaison ; 'false' pour retirer une liaison
+ * @return void
+ */
+
+function DB_modifier_liaison_professeur_matiere($structure_id,$user_id,$matiere_id,$etat)
+{
+	if($etat)
+	{
+		// On ne peut pas utiliser REPLACE car on ne sait pas quelle est la valeur de livret_jointure_coord
+		$DB_SQL = 'SELECT livret_structure_id FROM livret_jointure_user_matiere ';
+		$DB_SQL.= 'WHERE livret_structure_id=:structure_id AND livret_user_id=:user_id AND livret_matiere_id=:matiere_id ';
+		$DB_SQL.= 'LIMIT 1';
+		$DB_VAR = array(':structure_id'=>$structure_id,':user_id'=>$user_id,':matiere_id'=>$matiere_id);
+		DB::queryRow(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
+		if(!DB::rowCount(SACOCHE_BD_NAME))
+		{
+			$DB_SQL = 'INSERT INTO livret_jointure_user_matiere (livret_structure_id,livret_user_id,livret_matiere_id,livret_jointure_coord) ';
+			$DB_SQL.= 'VALUES(:structure_id,:user_id,:matiere_id,:coord)';
+			$DB_VAR = array(':structure_id'=>$structure_id,':user_id'=>$user_id,':matiere_id'=>$matiere_id,':coord'=>0);
+			DB::query(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
+		}
+	}
+	else
+	{
+		$DB_SQL = 'DELETE FROM livret_jointure_user_matiere ';
+		$DB_SQL.= 'WHERE livret_structure_id=:structure_id AND livret_user_id=:user_id AND livret_matiere_id=:matiere_id ';
+		$DB_SQL.= 'LIMIT 1';
+		$DB_VAR = array(':structure_id'=>$structure_id,':user_id'=>$user_id,':matiere_id'=>$matiere_id);
+		DB::query(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
+	}
+}
+
+/**
+ * DB_modifier_liaison_groupe_periode
+ * 
+ * @param int    $structure_id
+ * @param int    $groupe_id
+ * @param int    $periode_id
+ * @param bool   $etat               'true' pour ajouter/modifier une liaison ; 'false' pour retirer une liaison
+ * @param string $date_debut_mysql   date de début au format mysql (facultatif : obligatoire uniquement si $etat=true)
+ * @param string $date_fin_mysql     date de fin au format mysql (facultatif : obligatoire uniquement si $etat=true)
+ * @return void
+ */
+
+function DB_modifier_liaison_groupe_periode($structure_id,$groupe_id,$periode_id,$etat,$date_debut_mysql='',$date_fin_mysql='')
+{
+	if($etat)
+	{
+		$DB_SQL = 'REPLACE INTO livret_jointure_groupe_periode (livret_structure_id,livret_groupe_id,livret_periode_id,livret_periode_date_debut,livret_periode_date_fin) ';
+		$DB_SQL.= 'VALUES(:structure_id,:groupe_id,:periode_id,:date_debut,:date_fin)';
+		$DB_VAR = array(':structure_id'=>$structure_id,':groupe_id'=>$groupe_id,':periode_id'=>$periode_id,':date_debut'=>$date_debut_mysql,':date_fin'=>$date_fin_mysql);
+	}
+	else
+	{
+		$DB_SQL = 'DELETE FROM livret_jointure_groupe_periode ';
+		$DB_SQL.= 'WHERE livret_structure_id=:structure_id AND livret_groupe_id=:groupe_id AND livret_periode_id=:periode_id ';
+		$DB_SQL.= 'LIMIT 1';
+		$DB_VAR = array(':structure_id'=>$_SESSION['STRUCTURE_ID'],':groupe_id'=>$groupe_id,':periode_id'=>$periode_id);
+	}
 	DB::query(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 

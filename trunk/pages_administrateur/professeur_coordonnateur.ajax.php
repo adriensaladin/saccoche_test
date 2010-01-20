@@ -40,7 +40,7 @@ if($action=='Indiquer')
 	}
 
 	// On récupère le contenu de la base déjà enregistré pour le comparer
-	$DB_SQL = 'SELECT * FROM livret_jointure_user_matiere ';
+	$DB_SQL = 'SELECT livret_user_id,livret_matiere_id FROM livret_jointure_user_matiere ';
 	$DB_SQL.= 'LEFT JOIN livret_user USING (livret_structure_id,livret_user_id) ';
 	$DB_SQL.= 'WHERE livret_structure_id=:structure_id AND livret_jointure_coord=:coord AND livret_user_statut=:statut ';
 	$DB_VAR = array(':structure_id'=>$_SESSION['STRUCTURE_ID'],':coord'=>1,':statut'=>1);
@@ -66,20 +66,12 @@ if($action=='Indiquer')
 		foreach($tab_ajouter as $key => $true)
 		{
 			list($matiere_id,$professeur_id) = explode('x',$key);
-			$DB_SQL = 'UPDATE livret_jointure_user_matiere SET livret_jointure_coord=:coord ';
-			$DB_SQL.= 'WHERE livret_structure_id=:structure_id AND livret_user_id=:professeur_id AND livret_matiere_id=:matiere_id ';
-			$DB_SQL.= 'LIMIT 1';
-			$DB_VAR = array(':structure_id'=>$_SESSION['STRUCTURE_ID'],':professeur_id'=>$professeur_id,':matiere_id'=>$matiere_id,':coord'=>1);
-			DB::query(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
+			DB_modifier_liaison_professeur_coordonnateur($_SESSION['STRUCTURE_ID'],$professeur_id,$matiere_id,true);
 		}
 		foreach($tab_retirer as $key => $true)
 		{
 			list($matiere_id,$professeur_id) = explode('x',$key);
-			$DB_SQL = 'UPDATE livret_jointure_user_matiere SET livret_jointure_coord=:coord ';
-			$DB_SQL.= 'WHERE livret_structure_id=:structure_id AND livret_user_id=:professeur_id AND livret_matiere_id=:matiere_id ';
-			$DB_SQL.= 'LIMIT 1';
-			$DB_VAR = array(':structure_id'=>$_SESSION['STRUCTURE_ID'],':professeur_id'=>$professeur_id,':matiere_id'=>$matiere_id,':coord'=>0);
-			DB::query(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
+			DB_modifier_liaison_professeur_coordonnateur($_SESSION['STRUCTURE_ID'],$professeur_id,$matiere_id,false);
 		}
 		echo'ok';
 	}

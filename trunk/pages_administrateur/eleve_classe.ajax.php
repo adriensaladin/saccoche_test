@@ -29,17 +29,17 @@ if($action=='ajouter')
 	$classe_id = current($tab_select_classes); // un élève ne peut être affecté qu'à 1 seule classe : inutile de toutes les passer en revue
 	foreach($tab_select_eleves as $user_id)
 	{
-		DB_modifier_liaison_eleve_classe($_SESSION['STRUCTURE_ID'],$user_id,$classe_id,true)
+		DB_modifier_liaison_user_groupe($_SESSION['STRUCTURE_ID'],$user_id,'eleve',$classe_id,'classe',true);
 	}
 }
 
 // Retirer des élèves à des classes
 elseif($action=='retirer')
 {
-	// pas besoin de passer les classes en revue : il suffit de mettre $classe_id à 0
+	$classe_id = 0; // pas besoin de passer les classes en revue : il suffit de mettre $classe_id à 0
 	foreach($tab_select_eleves as $user_id)
 	{
-		DB_modifier_liaison_eleve_classe($_SESSION['STRUCTURE_ID'],$user_id,0,false)
+		DB_modifier_liaison_user_groupe($_SESSION['STRUCTURE_ID'],$user_id,'eleve',$classe_id,'classe',false);
 	}
 }
 

@@ -30,10 +30,7 @@ if($action=='ajouter')
 	{
 		foreach($tab_select_groupes as $groupe_id)
 		{
-			$DB_SQL = 'REPLACE INTO livret_jointure_user_groupe (livret_structure_id,livret_user_id,livret_groupe_id) ';
-			$DB_SQL.= 'VALUES(:structure_id,:user_id,:groupe_id)';
-			$DB_VAR = array(':structure_id'=>$_SESSION['STRUCTURE_ID'],':user_id'=>$user_id,':groupe_id'=>$groupe_id);
-			DB::query(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
+			DB_modifier_liaison_user_groupe($_SESSION['STRUCTURE_ID'],$user_id,'professeur',$groupe_id,'groupe',true);
 		}
 	}
 }
@@ -45,11 +42,7 @@ elseif($action=='retirer')
 	{
 		foreach($tab_select_groupes as $groupe_id)
 		{
-			$DB_SQL = 'DELETE FROM livret_jointure_user_groupe ';
-			$DB_SQL.= 'WHERE livret_structure_id=:structure_id AND livret_user_id=:user_id AND livret_groupe_id=:groupe_id ';
-			$DB_SQL.= 'LIMIT 1';
-			$DB_VAR = array(':structure_id'=>$_SESSION['STRUCTURE_ID'],':user_id'=>$user_id,':groupe_id'=>$groupe_id);
-			DB::query(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
+			DB_modifier_liaison_user_groupe($_SESSION['STRUCTURE_ID'],$user_id,'professeur',$groupe_id,'groupe',false);
 		}
 	}
 }

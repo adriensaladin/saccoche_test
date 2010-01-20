@@ -66,20 +66,12 @@ if($action=='Indiquer')
 		foreach($tab_ajouter as $key => $true)
 		{
 			list($groupe_id,$professeur_id) = explode('x',$key);
-			$DB_SQL = 'UPDATE livret_jointure_user_groupe SET livret_jointure_pp=:pp ';
-			$DB_SQL.= 'WHERE livret_structure_id=:structure_id AND livret_user_id=:professeur_id AND livret_groupe_id=:groupe_id ';
-			$DB_SQL.= 'LIMIT 1';
-			$DB_VAR = array(':structure_id'=>$_SESSION['STRUCTURE_ID'],':professeur_id'=>$professeur_id,':groupe_id'=>$groupe_id,':pp'=>1);
-			DB::query(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
+			DB_modifier_liaison_professeur_principal($_SESSION['STRUCTURE_ID'],$professeur_id,$groupe_id,true);
 		}
 		foreach($tab_retirer as $key => $true)
 		{
 			list($groupe_id,$professeur_id) = explode('x',$key);
-			$DB_SQL = 'UPDATE livret_jointure_user_groupe SET livret_jointure_pp=:pp ';
-			$DB_SQL.= 'WHERE livret_structure_id=:structure_id AND livret_user_id=:professeur_id AND livret_groupe_id=:groupe_id ';
-			$DB_SQL.= 'LIMIT 1';
-			$DB_VAR = array(':structure_id'=>$_SESSION['STRUCTURE_ID'],':professeur_id'=>$professeur_id,':groupe_id'=>$groupe_id,':pp'=>0);
-			DB::query(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
+			DB_modifier_liaison_professeur_principal($_SESSION['STRUCTURE_ID'],$professeur_id,$groupe_id,false);
 		}
 		echo'ok';
 	}

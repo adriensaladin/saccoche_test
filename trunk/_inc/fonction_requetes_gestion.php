@@ -565,7 +565,7 @@ function DB_ajouter_utilisateur($structure_id,$user_num_sconet,$user_reference,$
 	{
 		$DB_SQL = 'INSERT INTO livret_jointure_user_matiere (livret_structure_id ,livret_user_id ,livret_matiere_id,livret_jointure_coord) ';
 		$DB_SQL.= 'VALUES(:structure_id,:user_id,:matiere_id,:jointure_coord)';
-		$DB_VAR = array(':structure_id'=>$structure_id,':user_id'=>$user_id,':matiere_id'=>99,':jointure_coord'=>0);
+		$DB_VAR = array(':structure_id'=>$structure_id,':user_id'=>$user_id,':matiere_id'=>ID_MATIERE_TRANSVERSALE,':jointure_coord'=>0);
 		DB::query(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
 	}
 	return $user_id;

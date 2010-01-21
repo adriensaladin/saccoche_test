@@ -203,13 +203,15 @@ function afficher_select($DB_TAB,$select_nom,$option_first,$selection,$optgroup)
  * 
  * @param int    $structure_id
  * @param string $listing_matieres_communes   id des matières communes séparées par des virgules
+ * @param bool   $transversal                 inclure ou pas la matière tranversale à la liste
  * @return array|string
  */
 
-function DB_OPT_matieres_etabl($structure_id,$listing_matieres_communes)
+function DB_OPT_matieres_etabl($structure_id,$listing_matieres_communes,$transversal)
 {
 	$DB_SQL = 'SELECT livret_matiere_id AS valeur, livret_matiere_nom AS texte FROM livret_matiere ';
 	$DB_SQL.= ($listing_matieres_communes) ? 'WHERE livret_matiere_structure_id=:structure_id OR livret_matiere_id IN('.$listing_matieres_communes.') ' : 'WHERE livret_matiere_structure_id=:structure_id ';
+	$DB_SQL.= ($listing_matieres_communes && !$transversal) ? 'AND livret_matiere_transversal=0 ' : '' ;
 	$DB_SQL.= 'ORDER BY livret_matiere_nom ASC';
 	$DB_VAR = array(':structure_id'=>$structure_id);
 	$DB_TAB = DB::queryTab(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);

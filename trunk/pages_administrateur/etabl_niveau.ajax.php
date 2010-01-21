@@ -25,7 +25,7 @@ sort($tab_id);
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 //	Choix de niveaux (excepté les niveaux transversaux liés aux paliers)
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-if( ($action=='Choisir') && (!in_array(96,$tab_id)) && (!in_array(97,$tab_id)) && (!in_array(98,$tab_id)) && (!in_array(99,$tab_id)) )
+if( ($action=='Choisir') && (count(array_intersect($GLOBALS['TAB_ID_NIVEAUX_PALIERS'],$tab_id))==0) )
 {
 	$listing_niveaux = implode(',',$tab_id);
 	DB_modifier_niveaux($_SESSION['STRUCTURE_ID'],$listing_niveaux);

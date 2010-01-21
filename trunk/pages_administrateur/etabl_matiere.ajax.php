@@ -28,7 +28,7 @@ sort($tab_id);
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 //	Choix de matières parmi les matières partagées
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-if( ($action=='partager') && (in_array(99,$tab_id)) )
+if( ($action=='partager') && (in_array(ID_MATIERE_TRANSVERSALE,$tab_id)) )
 {
 	$listing_matieres = implode(',',$tab_id);
 	DB_modifier_matieres_partagees($_SESSION['STRUCTURE_ID'],$listing_matieres);

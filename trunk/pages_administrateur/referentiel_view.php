@@ -56,6 +56,7 @@ else
 	// On récupère la liste des niveaux utilisés par l'établissement
 	$DB_SQL = 'SELECT livret_niveau_id,livret_niveau_nom FROM livret_niveau ';
 	$DB_SQL.= 'WHERE livret_niveau_id IN('.$_SESSION['NIVEAUX'].') ';
+	$DB_SQL.= ($_SESSION['PALIERS']) ? 'OR livret_palier_id IN('.$_SESSION['PALIERS'].') ' : '' ;
 	$DB_SQL.= 'ORDER BY livret_niveau_ordre ASC';
 	$DB_TAB = DB::queryTab(SACOCHE_BD_NAME , $DB_SQL);
 	$nb_niveaux = count($DB_TAB);
@@ -101,22 +102,26 @@ else
 	$affichage = '<table class="comp_view"><thead><tr><th>Matière</th><th>Coordonnateur(s)</th><th>Niveau</th><th>Référentiel</th><th>Voir</th><th class="nu"></th></tr></thead><tbody>'."\r\n";
 	foreach($tab_matiere as $matiere_id => $tab)
 	{
+		$rowspan = ($matiere_id!=ID_MATIERE_TRANSVERSALE) ? $nb_niveaux : mb_substr_count($_SESSION['PALIERS'],',','UTF-8')+1 ;
 		$matiere_nom   = $tab['nom'];
 		$matiere_coord = (isset($tab['coord'])) ? '>'.$tab['coord'] : ' class="r">Absence de coordonnateur.' ;
 		$affichage .= '<tr><td colspan="6" class="nu">&nbsp;</td></tr>'."\r\n";
-		$affichage .= '<tr lang="'.$matiere_nom.'"><td rowspan="'.$nb_niveaux.'">'.$matiere_nom.'</td><td rowspan="'.$nb_niveaux.'"'.$matiere_coord.'</td>';
+		$affichage .= '<tr lang="'.$matiere_nom.'"><td rowspan="'.$rowspan.'">'.$matiere_nom.'</td><td rowspan="'.$rowspan.'"'.$matiere_coord.'</td>';
 		$affichage_suite = false;
 		foreach($tab_niveau as $niveau_id => $niveau_nom)
 		{
-			$colonnes = (isset($tab_colonne[$matiere_id][$niveau_id])) ? '<td class="v">'.$tab_colonne[$matiere_id][$niveau_id]['ref'].'</td><td class="nu">'.$tab_colonne[$matiere_id][$niveau_id]['oeil'].'</td><td class="nu">'.$tab_colonne[$matiere_id][$niveau_id]['label'].'</td>' : '<td  class="r">Absence de référentiel.</td><td class="nu"></td><td class="nu"></td>' ;
-			if($affichage_suite===false)
+			if( ($matiere_id!=ID_MATIERE_TRANSVERSALE) || (in_array($niveau_id,$GLOBALS['TAB_ID_NIVEAUX_PALIERS'])) )
 			{
-				$affichage .= '<td>'.$niveau_nom.'</td>'.$colonnes;
-				$affichage_suite = '';
-			}
-			else
-			{
-				$affichage_suite .= '<tr lang="'.$matiere_nom.'"><td>'.$niveau_nom.'</td>'.$colonnes.'</tr>'."\r\n";
+				$colonnes = (isset($tab_colonne[$matiere_id][$niveau_id])) ? '<td class="v">'.$tab_colonne[$matiere_id][$niveau_id]['ref'].'</td><td class="nu">'.$tab_colonne[$matiere_id][$niveau_id]['oeil'].'</td><td class="nu">'.$tab_colonne[$matiere_id][$niveau_id]['label'].'</td>' : '<td  class="r">Absence de référentiel.</td><td class="nu"></td><td class="nu"></td>' ;
+				if($affichage_suite===false)
+				{
+					$affichage .= '<td>'.$niveau_nom.'</td>'.$colonnes;
+					$affichage_suite = '';
+				}
+				else
+				{
+					$affichage_suite .= '<tr lang="'.$matiere_nom.'"><td>'.$niveau_nom.'</td>'.$colonnes.'</tr>'."\r\n";
+				}
 			}
 		}
 		$affichage .= '</tr>'."\r\n".$affichage_suite;

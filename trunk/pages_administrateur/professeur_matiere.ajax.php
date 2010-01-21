@@ -53,7 +53,7 @@ $tab_matiere[0] = '<i>sans affectation</i>';
 $tab_user[0]   = '';
 // Récupérer la liste des matières
 $DB_SQL = 'SELECT * FROM livret_matiere ';
-$DB_SQL.= ($_SESSION['MATIERES']) ? 'WHERE livret_matiere_structure_id=:structure_id OR livret_matiere_id IN('.$_SESSION['MATIERES'].') ' : 'WHERE livret_matiere_structure_id=:structure_id ';
+$DB_SQL.= ($_SESSION['MATIERES']) ? 'WHERE livret_matiere_structure_id=:structure_id OR livret_matiere_id IN('.$_SESSION['MATIERES'].') AND livret_matiere_transversal=0 ' : 'WHERE livret_matiere_structure_id=:structure_id ';
 $DB_SQL.= 'ORDER BY livret_matiere_nom ASC';
 $DB_VAR = array(':structure_id'=>$_SESSION['STRUCTURE_ID']);
 $DB_TAB = DB::queryTab(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
@@ -65,7 +65,7 @@ foreach($DB_TAB as $key => $DB_ROW)
 // Récupérer la liste des professeurs / matières
 $DB_SQL = 'SELECT * FROM livret_user ';
 $DB_SQL.= 'LEFT JOIN livret_jointure_user_matiere USING (livret_structure_id,livret_user_id) ';
-$DB_SQL.= 'WHERE livret_structure_id=:structure_id AND livret_user_profil=:profil AND livret_user_statut=:statut ';
+$DB_SQL.= 'WHERE livret_structure_id=:structure_id AND livret_user_profil=:profil AND livret_user_statut=:statut AND livret_matiere_id!='.ID_MATIERE_TRANSVERSALE.' ';
 $DB_SQL.= 'ORDER BY livret_user_nom ASC, livret_user_prenom ASC';
 $DB_VAR = array(':structure_id'=>$_SESSION['STRUCTURE_ID'],':profil'=>'professeur',':statut'=>1);
 $DB_TAB = DB::queryTab(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
@@ -103,6 +103,7 @@ foreach($tab_matiere as $matiere_id => $matiere_nom)
 	$TF[$tab_num] .= '<td>'.$nb.' professeur'.$s.'</td>';
 }
 echo'<hr />';
+echo'<p><span class="astuce">Tous les professeurs sont aussi automatiquement affectés à la matière "Transversal".</span></p>';
 for($tab_i=0;$tab_i<=$tab_num;$tab_i++)
 {
 	echo'<table class="affectation">';

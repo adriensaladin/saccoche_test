@@ -18,8 +18,8 @@ $TITRE = "Affecter les professeurs aux matières";
 
 <?php
 // Fabrication des éléments select du formulaire
-$select_professeurs = afficher_select(DB_OPT_professeurs_etabl($_SESSION['STRUCTURE_ID'])                    , $select_nom=false , $option_first='non' , $selection=false , $optgroup='non');
-$select_matieres    = afficher_select(DB_OPT_matieres_etabl($_SESSION['STRUCTURE_ID'],$_SESSION['MATIERES']) , $select_nom=false , $option_first='non' , $selection=false , $optgroup='non');
+$select_professeurs = afficher_select(DB_OPT_professeurs_etabl($_SESSION['STRUCTURE_ID'])                                       , $select_nom=false , $option_first='non' , $selection=false , $optgroup='non');
+$select_matieres    = afficher_select(DB_OPT_matieres_etabl($_SESSION['STRUCTURE_ID'],$_SESSION['MATIERES'],$transversal=false) , $select_nom=false , $option_first='non' , $selection=false , $optgroup='non');
 ?>
 
 <p class="hc">

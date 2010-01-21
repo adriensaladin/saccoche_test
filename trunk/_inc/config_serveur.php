@@ -24,9 +24,17 @@ define('FILE_JS','script19.js');
 $VERSION_JS = '';
 
 // ID_DEMO : id de l'établissement de démonstration
-// 0 pose des pbs, et il faut prendre un id dispo dans Sésaprof
+// 0 pose des pbs, et il faut prendre un id disponible dans Sésaprof
 // Attention, on ne peut pas changer cette valeur à la légère, il faut aussi modifier les entrées correspondantes dans la BDD...
 define('ID_DEMO',9999);
+
+// ID_MATIERE_TRANSVERSALE : id de la matière transversale dans la table "livret_matiere"
+// Ne pas changer cette valeur !
+define('ID_MATIERE_TRANSVERSALE',99);
+
+// $GLOBALS['TAB_ID_NIVEAUX_PALIERS'] : tableau des id des niveaux des paliers dans la table "livret_niveau"
+// Ne pas changer ces valeurs !
+$GLOBALS['TAB_ID_NIVEAUX_PALIERS'] = array(46,47,48,49);
 
 // CHARSET : "iso-8859-1" ou "utf-8" suivant l'encodage utilisé ; ajouter si besoin "AddDefaultCharset ..." dans le fichier .htaccess
 define('CHARSET','utf-8');

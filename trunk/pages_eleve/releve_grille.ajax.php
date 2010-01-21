@@ -62,20 +62,20 @@ if( $matiere_id && $niveau_id && $matiere_nom && $niveau_nom && $remplissage && 
 			if( (!is_null($DB_ROW['livret_domaine_id'])) && ($DB_ROW['livret_domaine_id']!=$domaine_id) )
 			{
 				$domaine_id  = $DB_ROW['livret_domaine_id'];
-				$domaine_ref = $DB_ROW['livret_niveau_ref']{0}.$DB_ROW['livret_domaine_ref'];
+				$domaine_ref = $DB_ROW['livret_niveau_ref'].'.'.$DB_ROW['livret_domaine_ref'];
 				$tab_domaine[$domaine_id] = array('domaine_ref'=>$domaine_ref,'domaine_nom'=>$DB_ROW['livret_domaine_nom'],'domaine_nb_lignes'=>2);
 			}
 			if( (!is_null($DB_ROW['livret_theme_id'])) && ($DB_ROW['livret_theme_id']!=$theme_id) )
 			{
 				$theme_id  = $DB_ROW['livret_theme_id'];
-				$theme_ref = $DB_ROW['livret_niveau_ref']{0}.$DB_ROW['livret_domaine_ref'].$DB_ROW['livret_theme_ordre'];
+				$theme_ref = $DB_ROW['livret_niveau_ref'].'.'.$DB_ROW['livret_domaine_ref'].$DB_ROW['livret_theme_ordre'];
 				$first_theme_of_domaine = (isset($tab_theme[$domaine_id])) ? false : true ;
 				$tab_theme[$domaine_id][$theme_id] = array('theme_ref'=>$theme_ref,'theme_nom'=>$DB_ROW['livret_theme_nom'],'theme_nb_lignes'=>1);
 			}
 			if( (!is_null($DB_ROW['livret_competence_id'])) && ($DB_ROW['livret_competence_id']!=$competence_id) )
 			{
 				$competence_id = $DB_ROW['livret_competence_id'];
-				$competence_ref = $DB_ROW['livret_niveau_ref']{0}.$DB_ROW['livret_domaine_ref'].$DB_ROW['livret_theme_ordre'].$DB_ROW['livret_competence_ordre'];
+				$competence_ref = $DB_ROW['livret_niveau_ref'].'.'.$DB_ROW['livret_domaine_ref'].$DB_ROW['livret_theme_ordre'].$DB_ROW['livret_competence_ordre'];
 				$tab_competence[$theme_id][$competence_id] = array('competence_ref'=>$competence_ref,'competence_nom'=>$DB_ROW['livret_competence_nom'],'competence_coef'=>$DB_ROW['livret_competence_coef'],'competence_socle'=>$DB_ROW['livret_socle_id'],'competence_lien'=>$DB_ROW['livret_competence_lien']);
 				$tab_theme[$domaine_id][$theme_id]['theme_nb_lignes']++;
 				if($first_theme_of_domaine)

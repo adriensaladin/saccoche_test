@@ -396,7 +396,7 @@ if(in_array('synthese',$tab_type))
 	foreach($tab_liste_comp as $competence_id)
 	{
 		$releve_pdf->Cell($releve_pdf->cases_largeur , $releve_pdf->cases_hauteur , pdf($tab_competence[$competence_id][0]['competence_ref']) , 1 , 0 , 'C' , true , '');
-		$releve_html_table_head .= '<th>'.html($tab_competence[$competence_id][0]['competence_ref']).'</th>';
+		$releve_html_table_head .= '<th title="'.html($tab_competence[$competence_id][0]['competence_nom']).'">'.html($tab_competence[$competence_id][0]['competence_ref']).'</th>';
 	}
 	$releve_pdf->SetX( $releve_pdf->GetX()+2 );
 	$releve_pdf->choisir_couleur_fond('gris_fonce');

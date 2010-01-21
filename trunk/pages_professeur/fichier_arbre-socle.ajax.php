@@ -48,12 +48,12 @@ if($palier_id && $palier_nom)
 		if( (!is_null($DB_ROW['livret_section_id'])) && ($DB_ROW['livret_section_id']!=$section_id) )
 		{
 			$section_id = $DB_ROW['livret_section_id'];
-			$tab_section[$pilier_id][$section_id] = $DB_ROW['livret_section_nom'];
+			$tab_section[$pilier_id][$section_id] = $DB_ROW['livret_pilier_ref'].'.'.$DB_ROW['livret_section_ordre'].' - '.$DB_ROW['livret_section_nom'];
 		}
 		if( (!is_null($DB_ROW['livret_socle_id'])) && ($DB_ROW['livret_socle_id']!=$socle_id) )
 		{
 			$socle_id = $DB_ROW['livret_socle_id'];
-			$tab_socle[$pilier_id][$section_id][$socle_id] = $DB_ROW['livret_socle_nom'];
+			$tab_socle[$pilier_id][$section_id][$socle_id] = $DB_ROW['livret_pilier_ref'].'.'.$DB_ROW['livret_section_ordre'].'.'.$DB_ROW['livret_socle_ordre'].' - '.$DB_ROW['livret_socle_nom'];
 		}
 	}
 	$export_csv .= $palier_nom."\r\n";

@@ -28,9 +28,9 @@ if($matiere_id && $matiere_nom)
 	// Préparation de l'export CSV
 	$separateur = ';';
 	// ajout du préfixe 'ITEM_' pour éviter un bug avec M$ Excel « SYLK : Format de fichier non valide » (http://support.microsoft.com/kb/215591/fr). 
-	$export_csv  = 'ITEM_ID'.$separateur.'MATIERE'.$separateur.'REFERENCE'.$separateur.'NOM'."\r\n\r\n";
+	$export_csv  = 'ITEM_ID'.$separateur.'MATIERE'.$separateur.'NIVEAU'.$separateur.'REFERENCE'.$separateur.'NOM'."\r\n\r\n";
 	// Préparation de l'export HTML
-	$export_html = '<table><thead><tr><th>Id</th><th>Matière</th><th>Référence</th><th>Nom</th></tr></thead><tbody>'."\r\n";
+	$export_html = '<table><thead><tr><th>Id</th><th>Matière</th><th>Niveau</th><th>Référence</th><th>Nom</th></tr></thead><tbody>'."\r\n";
 
 	$DB_SQL = 'SELECT * FROM livret_competence_item ';
 	$DB_SQL.= 'LEFT JOIN livret_competence_theme USING (livret_structure_id,livret_theme_id) ';
@@ -45,9 +45,9 @@ if($matiere_id && $matiere_nom)
 	{
 		foreach($DB_TAB as $key => $DB_ROW)
 		{
-			$item_ref = $DB_ROW['livret_matiere_ref'].' - '.$DB_ROW['livret_niveau_ref']{0}.$DB_ROW['livret_domaine_ref'].$DB_ROW['livret_theme_ordre'].$DB_ROW['livret_competence_ordre'];
-			$export_csv .= $DB_ROW['livret_competence_id'].$separateur.$matiere_nom.$separateur.$item_ref.$separateur.'"'.$DB_ROW['livret_competence_nom'].'"'."\r\n";
-			$export_html .= '<tr><td>'.$DB_ROW['livret_competence_id'].'</td><td>'.html($matiere_nom).'</td><td>'.html($item_ref).'</td><td>'.html($DB_ROW['livret_competence_nom']).'</td></tr>'."\r\n";
+			$item_ref = $DB_ROW['livret_matiere_ref'].'.'.$DB_ROW['livret_niveau_ref'].'.'.$DB_ROW['livret_domaine_ref'].$DB_ROW['livret_theme_ordre'].$DB_ROW['livret_competence_ordre'];
+			$export_csv .= $DB_ROW['livret_competence_id'].$separateur.$matiere_nom.$separateur.$DB_ROW['livret_niveau_nom'].$separateur.$item_ref.$separateur.'"'.$DB_ROW['livret_competence_nom'].'"'."\r\n";
+			$export_html .= '<tr><td>'.$DB_ROW['livret_competence_id'].'</td><td>'.html($matiere_nom).'</td><td>'.html($DB_ROW['livret_niveau_nom']).'</td><td>'.html($item_ref).'</td><td>'.html($DB_ROW['livret_competence_nom']).'</td></tr>'."\r\n";
 		}
 	}
 

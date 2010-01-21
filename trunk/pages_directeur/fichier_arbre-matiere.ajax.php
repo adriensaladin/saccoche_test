@@ -43,7 +43,7 @@ if($matiere_id && $matiere_nom)
 		if($DB_ROW['livret_niveau_id']!=$niveau_id)
 		{
 			$niveau_id = $DB_ROW['livret_niveau_id'];
-			$tab_niveau[$niveau_id] = $DB_ROW['livret_niveau_nom'];
+			$tab_niveau[$niveau_id] = $DB_ROW['livret_niveau_ref'].' - '.$DB_ROW['livret_niveau_nom'];
 			$domaine_id    = 0;
 			$theme_id      = 0;
 			$competence_id = 0;
@@ -51,22 +51,22 @@ if($matiere_id && $matiere_nom)
 		if( (!is_null($DB_ROW['livret_domaine_id'])) && ($DB_ROW['livret_domaine_id']!=$domaine_id) )
 		{
 			$domaine_id = $DB_ROW['livret_domaine_id'];
-			$tab_domaine[$niveau_id][$domaine_id] = $DB_ROW['livret_domaine_nom'];
+			$tab_domaine[$niveau_id][$domaine_id] = $DB_ROW['livret_domaine_ref'].' - '.$DB_ROW['livret_domaine_nom'];
 		}
 		if( (!is_null($DB_ROW['livret_theme_id'])) && ($DB_ROW['livret_theme_id']!=$theme_id) )
 		{
 			$theme_id = $DB_ROW['livret_theme_id'];
-			$tab_theme[$niveau_id][$domaine_id][$theme_id] = $DB_ROW['livret_theme_nom'];
+			$tab_theme[$niveau_id][$domaine_id][$theme_id] = $DB_ROW['livret_domaine_ref'].$DB_ROW['livret_theme_ordre'].' - '.$DB_ROW['livret_theme_nom'];
 		}
 		if( (!is_null($DB_ROW['livret_competence_id'])) && ($DB_ROW['livret_competence_id']!=$competence_id) )
 		{
 			$competence_id = $DB_ROW['livret_competence_id'];
-			$tab_competence[$niveau_id][$domaine_id][$theme_id][$competence_id] = $DB_ROW['livret_competence_nom'];
+			$tab_competence[$niveau_id][$domaine_id][$theme_id][$competence_id] = $DB_ROW['livret_domaine_ref'].$DB_ROW['livret_theme_ordre'].$DB_ROW['livret_competence_ordre'].' - '.$DB_ROW['livret_competence_nom'];
 		}
 	}
-	$export_csv .= $matiere_nom."\r\n";
+	$export_csv .= $DB_ROW['livret_matiere_ref'].' - '.$matiere_nom."\r\n";
 	$export_html .= '<ul class="ul_m1">'."\r\n";
-	$export_html .= '	<li class="li_m1"><span>'.html($matiere_nom).'</span>'."\r\n";
+	$export_html .= '	<li class="li_m1"><span>'.html($DB_ROW['livret_matiere_ref'].' - '.$matiere_nom).'</span>'."\r\n";
 	$export_html .= '		<ul class="ul_m2">'."\r\n";
 	foreach($tab_niveau as $niveau_id => $niveau_nom)
 	{

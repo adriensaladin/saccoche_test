@@ -94,7 +94,7 @@ function select_arborescence_eleve_periode_matiere($eleve_id,$matiere_id,$date_m
 	$sql_debut = ($date_mysql_debut) ? 'AND livret_user_competence_date>=:date_debut ' : '';
 	$sql_fin   = ($date_mysql_fin)   ? 'AND livret_user_competence_date<=:date_fin '   : '';
 	$DB_SQL = 'SELECT livret_competence_id , ';
-	$DB_SQL.= 'CONCAT(LEFT(livret_niveau_ref,1),livret_domaine_ref,livret_theme_ordre,livret_competence_ordre) AS competence_ref , ';
+	$DB_SQL.= 'CONCAT(livret_matiere_ref,".",livret_niveau_ref,".",livret_domaine_ref,livret_theme_ordre,livret_competence_ordre) AS competence_ref , ';
 	$DB_SQL.= 'livret_competence_nom AS competence_nom , livret_competence_coef AS competence_coef , livret_socle_id AS competence_socle , livret_competence_lien AS competence_lien ';
 	$DB_SQL.= 'FROM livret_jointure_user_competence ';
 	$DB_SQL.= 'LEFT JOIN livret_competence_item USING (livret_structure_id,livret_competence_id) ';
@@ -119,7 +119,7 @@ function select_arborescence_eleves_periode_matiere($liste_eleve_id,$matiere_id,
 	$sql_debut = ($date_mysql_debut) ? 'AND livret_user_competence_date>=:date_debut ' : '';
 	$sql_fin   = ($date_mysql_fin)   ? 'AND livret_user_competence_date<=:date_fin '   : '';
 	$DB_SQL = 'SELECT livret_competence_id , ';
-	$DB_SQL.= 'CONCAT(LEFT(livret_niveau_ref,1),livret_domaine_ref,livret_theme_ordre,livret_competence_ordre) AS competence_ref , ';
+	$DB_SQL.= 'CONCAT(livret_matiere_ref,".",livret_niveau_ref,".",livret_domaine_ref,livret_theme_ordre,livret_competence_ordre) AS competence_ref , ';
 	$DB_SQL.= 'livret_competence_nom AS competence_nom , livret_competence_coef AS competence_coef , livret_socle_id AS competence_socle , livret_competence_lien AS competence_lien ';
 	$DB_SQL.= 'FROM livret_jointure_user_competence ';
 	$DB_SQL.= 'LEFT JOIN livret_competence_item USING (livret_structure_id,livret_competence_id) ';
@@ -144,7 +144,7 @@ function select_arborescence_et_matieres_eleves_periode($liste_eleve_id,$date_my
 	$sql_debut = ($date_mysql_debut) ? 'AND livret_user_competence_date>=:date_debut ' : '';
 	$sql_fin   = ($date_mysql_fin)   ? 'AND livret_user_competence_date<=:date_fin '   : '';
 	$DB_SQL = 'SELECT livret_competence_id , ';
-	$DB_SQL.= 'CONCAT(LEFT(livret_niveau_ref,1),livret_domaine_ref,livret_theme_ordre,livret_competence_ordre) AS competence_ref , ';
+	$DB_SQL.= 'CONCAT(livret_matiere_ref,".",livret_niveau_ref,".",livret_domaine_ref,livret_theme_ordre,livret_competence_ordre) AS competence_ref , ';
 	$DB_SQL.= 'livret_competence_nom AS competence_nom , livret_competence_coef AS competence_coef , livret_socle_id AS competence_socle , livret_competence_lien AS competence_lien , ';
 	$DB_SQL.= 'livret_matiere_id , livret_matiere_nom ';
 	$DB_SQL.= 'FROM livret_jointure_user_competence ';
@@ -178,7 +178,7 @@ function select_arborescence_et_matieres_eleves_periode($liste_eleve_id,$date_my
 function select_arborescence_et_matieres_eleves_competence($liste_eleve_id,$liste_compet_id)
 {
 	$DB_SQL = 'SELECT livret_competence_id , ';
-	$DB_SQL.= 'CONCAT(LEFT(livret_niveau_ref,1),livret_domaine_ref,livret_theme_ordre,livret_competence_ordre) AS competence_ref , ';
+	$DB_SQL.= 'CONCAT(livret_matiere_ref,".",livret_niveau_ref,".",livret_domaine_ref,livret_theme_ordre,livret_competence_ordre) AS competence_ref , ';
 	$DB_SQL.= 'livret_competence_nom AS competence_nom , livret_competence_coef AS competence_coef , livret_socle_id AS competence_socle , livret_competence_lien AS competence_lien , ';
 	$DB_SQL.= 'livret_matiere_id , livret_matiere_nom ';
 	$DB_SQL.= 'FROM livret_jointure_user_competence ';
@@ -284,7 +284,7 @@ function select_result_eleves_palier($liste_eleve_id,$liste_item_id,$date_mysql_
 	$sql_fin   = ($date_mysql_fin)   ? 'AND livret_user_competence_date<=:date_fin '   : '';
 	$DB_SQL = 'SELECT livret_eleve_id AS eleve_id , livret_socle_id AS socle_id , livret_competence_id AS competence_id , ';
 	$DB_SQL.= 'livret_user_competence_note AS note , livret_competence_nom AS competence_nom , ';
-	$DB_SQL.= 'CONCAT(livret_matiere_ref,LEFT(livret_niveau_ref,1),livret_domaine_ref,livret_theme_ordre,livret_competence_ordre) AS competence_ref ';
+	$DB_SQL.= 'CONCAT(livret_matiere_ref,".",livret_niveau_ref,".",livret_domaine_ref,livret_theme_ordre,livret_competence_ordre) AS competence_ref ';
 	$DB_SQL.= 'FROM livret_jointure_user_competence ';
 	$DB_SQL.= 'LEFT JOIN livret_competence_item USING (livret_structure_id,livret_competence_id) ';
 	$DB_SQL.= 'LEFT JOIN livret_socle_item USING (livret_socle_id) ';

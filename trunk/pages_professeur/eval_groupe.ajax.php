@@ -288,7 +288,7 @@ else if( ($action=='ordonner') && $eval_id )
 		$tab_affich  = array();
 		foreach($DB_TAB_COMP as $key => $DB_ROW)
 		{
-			$comp_ref = $DB_ROW['livret_matiere_ref'].'-'.$DB_ROW['livret_niveau_ref']{0}.$DB_ROW['livret_domaine_ref'].$DB_ROW['livret_theme_ordre'].$DB_ROW['livret_competence_ordre'];
+			$comp_ref = $DB_ROW['livret_matiere_ref'].'.'.$DB_ROW['livret_niveau_ref'].'.'.$DB_ROW['livret_domaine_ref'].$DB_ROW['livret_theme_ordre'].$DB_ROW['livret_competence_ordre'];
 			$texte_socle = ($DB_ROW['livret_socle_id']) ? ' [S]' : ' [–]';
 			$tab_affich[] = '<div id="i'.$DB_ROW['livret_competence_id'].'"><b>'.html($comp_ref.$texte_socle).'</b> - '.html($DB_ROW['livret_competence_nom']).'</div>';
 		}
@@ -370,7 +370,7 @@ else if( ($action=='saisir') && $eval_id && $groupe_type && $groupe_id && $date 
 		// première colonne (noms items)
 		foreach($DB_TAB_COMP as $key => $DB_ROW)
 		{
-			$comp_ref = $DB_ROW['livret_matiere_ref'].'-'.$DB_ROW['livret_niveau_ref']{0}.$DB_ROW['livret_domaine_ref'].$DB_ROW['livret_theme_ordre'].$DB_ROW['livret_competence_ordre'];
+			$comp_ref = $DB_ROW['livret_matiere_ref'].'.'.$DB_ROW['livret_niveau_ref'].'.'.$DB_ROW['livret_domaine_ref'].$DB_ROW['livret_theme_ordre'].$DB_ROW['livret_competence_ordre'];
 			$texte_socle = ($DB_ROW['livret_socle_id']) ? ' [S]' : ' [–]';
 			$tab_affich[$DB_ROW['livret_competence_id']][0] = '<th><b>'.html($comp_ref.$texte_socle).'</b><br />'.html($DB_ROW['livret_competence_nom']).'</th>';
 			$tab_comp_id[$DB_ROW['livret_competence_id']] = $comp_ref;
@@ -494,7 +494,7 @@ else if( ($action=='voir') && $eval_id && $groupe_type && $groupe_id )
 		// première colonne (noms items)
 		foreach($DB_TAB_COMP as $key => $DB_ROW)
 		{
-			$comp_ref = $DB_ROW['livret_matiere_ref'].'-'.$DB_ROW['livret_niveau_ref']{0}.$DB_ROW['livret_domaine_ref'].$DB_ROW['livret_theme_ordre'].$DB_ROW['livret_competence_ordre'];
+			$comp_ref = $DB_ROW['livret_matiere_ref'].'.'.$DB_ROW['livret_niveau_ref'].'.'.$DB_ROW['livret_domaine_ref'].$DB_ROW['livret_theme_ordre'].$DB_ROW['livret_competence_ordre'];
 			$texte_socle = ($DB_ROW['livret_socle_id']) ? ' [S]' : ' [–]';
 			$tab_affich[$DB_ROW['livret_competence_id']][0] = '<th><b>'.html($comp_ref.$texte_socle).'</b><br />'.html($DB_ROW['livret_competence_nom']).'</th>';
 			$tab_comp_id[$DB_ROW['livret_competence_id']] = $comp_ref;
@@ -703,7 +703,7 @@ else if( ($action=='Imprimer_cartouche') && $eval_id && $groupe_type && $groupe_
 		// enregistrer refs noms items
 		foreach($DB_TAB_COMP as $key => $DB_ROW)
 		{
-			$comp_ref = $DB_ROW['livret_matiere_ref'].'-'.$DB_ROW['livret_niveau_ref']{0}.$DB_ROW['livret_domaine_ref'].$DB_ROW['livret_theme_ordre'].$DB_ROW['livret_competence_ordre'];
+			$comp_ref = $DB_ROW['livret_matiere_ref'].'.'.$DB_ROW['livret_niveau_ref'].'.'.$DB_ROW['livret_domaine_ref'].$DB_ROW['livret_theme_ordre'].$DB_ROW['livret_competence_ordre'];
 			$texte_socle = ($DB_ROW['livret_socle_id']) ? '[S] ' : '[–] ';
 			$tab_comp_id[$DB_ROW['livret_competence_id']] = array($comp_ref,$texte_socle.$DB_ROW['livret_competence_nom']);
 		}

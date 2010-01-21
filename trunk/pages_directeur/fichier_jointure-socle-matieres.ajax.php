@@ -49,19 +49,19 @@ if($palier_id && $palier_nom)
 		if( (!is_null($DB_ROW['livret_section_id'])) && ($DB_ROW['livret_section_id']!=$section_id) )
 		{
 			$section_id = $DB_ROW['livret_section_id'];
-			$tab_section[$pilier_id][$section_id] = $DB_ROW['livret_section_nom'];
+			$tab_section[$pilier_id][$section_id] = $DB_ROW['livret_pilier_ref'].'.'.$DB_ROW['livret_section_ordre'].' - '.$DB_ROW['livret_section_nom'];
 		}
 		if( (!is_null($DB_ROW['livret_socle_id'])) && ($DB_ROW['livret_socle_id']!=$socle_id) )
 		{
 			$socle_id = $DB_ROW['livret_socle_id'];
-			$tab_socle[$pilier_id][$section_id][$socle_id] = $DB_ROW['livret_socle_nom'];
+			$tab_socle[$pilier_id][$section_id][$socle_id] = $DB_ROW['livret_pilier_ref'].'.'.$DB_ROW['livret_section_ordre'].'.'.$DB_ROW['livret_socle_ordre'].' - '.$DB_ROW['livret_socle_nom'];
 		}
 	}
 
 	// Récupération des données des référentiels liés au socle
 	$tab_jointure = array();
-	$DB_SQL = 'SELECT livret_socle_id , livret_competence_nom , livret_matiere_ref , ';
-	$DB_SQL.= 'CONCAT(LEFT(livret_niveau_ref,1),livret_domaine_ref,livret_theme_ordre,livret_competence_ordre) AS competence_ref ';
+	$DB_SQL = 'SELECT livret_socle_id , livret_competence_nom , livret_matiere_ref , livret_niveau_ref , ';
+	$DB_SQL.= 'CONCAT(livret_domaine_ref,livret_theme_ordre,livret_competence_ordre) AS competence_ref ';
 	$DB_SQL.= 'FROM livret_referentiel ';
 	$DB_SQL.= 'LEFT JOIN livret_jointure_user_matiere USING (livret_structure_id,livret_matiere_id) ';
 	$DB_SQL.= 'LEFT JOIN livret_matiere USING (livret_matiere_id) ';
@@ -76,7 +76,7 @@ if($palier_id && $palier_nom)
 	$DB_TAB = DB::queryTab(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
 	foreach($DB_TAB as $key => $DB_ROW)
 	{
-		$tab_jointure[$DB_ROW['livret_socle_id']][] = $DB_ROW['livret_matiere_ref'].' - '.$DB_ROW['competence_ref'].' - '.$DB_ROW['livret_competence_nom'];
+		$tab_jointure[$DB_ROW['livret_socle_id']][] = $DB_ROW['livret_matiere_ref'].'.'.$DB_ROW['livret_niveau_ref'].'.'.$DB_ROW['competence_ref'].' - '.$DB_ROW['livret_competence_nom'];
 	}
 
 	// Elaboration de la sortie

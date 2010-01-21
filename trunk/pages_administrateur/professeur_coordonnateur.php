@@ -32,7 +32,7 @@ $TITRE = "Gérer les professeurs coordonnateurs";
 	$DB_SQL.= 'LEFT JOIN livret_jointure_user_matiere USING (livret_matiere_id) ';
 	$DB_SQL.= 'LEFT JOIN livret_user USING (livret_structure_id,livret_user_id) ';
 	$DB_SQL.= ($_SESSION['MATIERES']) ? 'WHERE livret_matiere_structure_id=:structure_id OR (livret_structure_id=:structure_id AND livret_matiere_id IN('.$_SESSION['MATIERES'].')) ' : 'WHERE livret_matiere_structure_id=:structure_id ';
-	$DB_SQL.= 'ORDER BY livret_matiere_nom ASC, livret_user_nom ASC, livret_user_prenom ASC';
+	$DB_SQL.= 'ORDER BY livret_matiere_transversal DESC, livret_matiere_nom ASC, livret_user_nom ASC, livret_user_prenom ASC';
 	$DB_VAR = array(':structure_id'=>$_SESSION['STRUCTURE_ID']);
 	$DB_TAB = DB::queryTab(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
 	if(count($DB_TAB))
@@ -63,8 +63,8 @@ $TITRE = "Gérer les professeurs coordonnateurs";
 			// Assemblage du tableau résultant
 			$TH = array();
 			$TB = array();
-			$tab_mod = 5;
-			$i = 0;
+			$tab_mod = 4;
+			$i = $tab_mod-1;
 			$memo_tab_num = -1;
 			foreach($tab_matiere as $matiere_id => $matiere_nom)
 			{
@@ -83,7 +83,8 @@ $TITRE = "Gérer les professeurs coordonnateurs";
 			// Affichage du tableau résultant
 			for($tab_i=0;$tab_i<=$tab_num;$tab_i++)
 			{
-				echo'<table>';
+				$class = ($tab_i) ? '' : ' style="float:right;margin-left:1em;margin-right:1ex"' ;
+				echo'<table'.$class.'>';
 				echo'<thead><tr>'.$TH[$tab_i].'</tr></thead>';
 				echo'<tbody><tr>'.$TB[$tab_i].'</tr></tbody>';
 				echo'</table><p />';

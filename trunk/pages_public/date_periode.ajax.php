@@ -19,7 +19,7 @@ $champ = (isset($_GET['champ'])) ? $_GET['champ'] : '' ;
 $debut = strpos($champ,'debut');
 $fin   = strpos($champ,'fin');
 
-$tab_periodes = periodes_etabl();
+$tab_periodes = DB_OPT_periodes_etabl($_SESSION['STRUCTURE_ID']);
 $calendrier_affichage = '';
 if(is_array($tab_periodes))
 {

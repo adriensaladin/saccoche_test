@@ -18,8 +18,8 @@ $TITRE = "Affecter les élèves aux groupes de besoin";
 
 <?php
 // Fabrication des éléments select du formulaire
-$select_groupe        = afficher_select(groupes_professeur() , $select_nom=false , $option_first='oui' , $selection=false , $optgroup='oui');
-$select_groupe_besoin = afficher_select(besoins_professeur() , $select_nom=false , $option_first='non' , $selection=false , $optgroup='non');
+$select_groupe        = afficher_select(DB_OPT_groupes_professeur($_SESSION['STRUCTURE_ID'],$_SESSION['USER_ID']) , $select_nom=false , $option_first='oui' , $selection=false , $optgroup='oui');
+$select_groupe_besoin = afficher_select(DB_OPT_besoins_professeur($_SESSION['STRUCTURE_ID'],$_SESSION['USER_ID']) , $select_nom=false , $option_first='non' , $selection=false , $optgroup='non');
 ?>
 
 <span class="manuel"><a class="pop_up" href="./aide.php?fichier=gestion_groupes_besoin">DOC : Gestion des groupes de besoin.</a></span>

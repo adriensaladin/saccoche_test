@@ -35,7 +35,7 @@ if($groupe_id && isset($tab_types[$groupe_type]) && $groupe_nom)
 	// Préparation de l'export HTML
 	$export_html = '<table><thead><tr><th>Id</th><th>Login</th><th>Nom</th><th>Prénom</th><th>Groupe</th></tr></thead><tbody>'."\r\n";
 
-	// $DB_TAB = eleves_regroupement($groupe_type,$groupe_id,$statut=1);
+	// $DB_TAB = DB_OPT_eleves_regroupement($_SESSION['STRUCTURE_ID'],$groupe_type,$groupe_id,$statut=1);
 	// Non utilisé car ne renvoie pas le détail des informations
 	$DB_SQL = 'SELECT * FROM livret_user ';
 	if($groupe_type=='Classes')

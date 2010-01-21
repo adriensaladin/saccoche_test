@@ -22,7 +22,7 @@ $groupe      = (isset($_POST['f_groupes'])) ? clean_texte($_POST['f_groupes']) :
 $groupe_type = clean_texte( substr($groupe,0,1) );
 $groupe_id   = clean_entier( substr($groupe,1) );
 // Construire et personnaliser le select pour restreindre à une classe ou un groupe
-$select_f_groupes = afficher_select(regroupements_etabl() , $select_nom='f_groupes' , $option_first='non' , $selection=$groupe , $optgroup='oui');
+$select_f_groupes = afficher_select(DB_OPT_regroupements_etabl($_SESSION['STRUCTURE_ID']) , $select_nom='f_groupes' , $option_first='non' , $selection=$groupe , $optgroup='oui');
 ?>
 
 <div class="hc">

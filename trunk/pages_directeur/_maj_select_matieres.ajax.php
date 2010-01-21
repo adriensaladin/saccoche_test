@@ -25,6 +25,6 @@ if(!$groupe)
 	exit('Erreur avec les données transmises !');
 }
 
-echo afficher_select(matieres_groupe($groupe) , $select_nom=false , $option_first='oui' , $selection=$matiere , $optgroup='non');
+echo afficher_select(DB_OPT_matieres_groupe($_SESSION['STRUCTURE_ID'],$groupe) , $select_nom=false , $option_first='oui' , $selection=$matiere , $optgroup='non');
 
 ?>

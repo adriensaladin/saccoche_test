@@ -39,7 +39,7 @@ $tab_eleve      = (isset($_POST['eleves']))        ? array_map('clean_entier',ex
 $tab_type[]     = 'individuel';
 $format         = 'multimatiere';
 
-save_cookie_select();
+save_cookie_select($_SESSION['STRUCTURE_ID'],$_SESSION['USER_ID']);
 
 function positif($n) {return($n);}
 $tab_eleve     = array_filter($tab_eleve,'positif');

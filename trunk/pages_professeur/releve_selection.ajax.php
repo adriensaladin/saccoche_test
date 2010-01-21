@@ -38,7 +38,7 @@ $tab_eleve      = (isset($_POST['eleves']))                        ? array_map('
 $tab_type       = (isset($_POST['types']))                         ? array_map('clean_texte',explode(',',$_POST['types']))   : array() ;
 $format         = 'selection';
 
-save_cookie_select();
+save_cookie_select($_SESSION['STRUCTURE_ID'],$_SESSION['USER_ID']);
 
 function positif($n) {return($n);}
 $tab_eleve     = array_filter($tab_eleve,'positif');

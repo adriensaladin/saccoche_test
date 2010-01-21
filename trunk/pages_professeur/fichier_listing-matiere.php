@@ -18,7 +18,7 @@ $TITRE = "Export listes des items par matière";
 
 <?php
 // Fabrication des éléments select du formulaire
-$select_matiere = afficher_select(matieres_professeur() , $select_nom='f_matiere' , $option_first='non' , $selection=false , $optgroup='non');
+$select_matiere = afficher_select(DB_OPT_matieres_professeur($_SESSION['STRUCTURE_ID'],$_SESSION['USER_ID']) , $select_nom='f_matiere' , $option_first='non' , $selection=false , $optgroup='non');
 ?>
 
 <div class="hc"><span class="manuel"><a class="pop_up" href="./aide.php?fichier=export_listings">DOC : Export listings.</a></span></div>

@@ -18,7 +18,7 @@ $TITRE = "Désactiver comptes professeurs &amp; directeurs";
 
 <?php
 // Fabrication des éléments select du formulaire
-$select_professeurs_directeurs = afficher_select(professeurs_directeurs_etabl($statut=1) , $select_nom=false , $option_first='non' , $selection=false , $optgroup='oui');
+$select_professeurs_directeurs = afficher_select(DB_OPT_professeurs_directeurs_etabl($_SESSION['STRUCTURE_ID'],$statut=1) , $select_nom=false , $option_first='non' , $selection=false , $optgroup='oui');
 ?>
 
 <span class="manuel"><a class="pop_up" href="./aide.php?fichier=gestion_statuts">DOC : Statuts : désactiver / réintégrer / supprimer</a></span><br />

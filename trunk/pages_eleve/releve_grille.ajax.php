@@ -32,7 +32,7 @@ $aff_lien      = (isset($_POST['f_lien']))        ? 1                           
 $groupe_id     = true;
 $tab_eleve[]   = $_SESSION['USER_ID'];
 
-save_cookie_select();
+save_cookie_select($_SESSION['STRUCTURE_ID'],$_SESSION['USER_ID']);
 
 // ...
 // ...

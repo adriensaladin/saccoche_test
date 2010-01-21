@@ -18,7 +18,7 @@ $TITRE = "Initialiser identifiants professeurs directeurs";
 
 <?php
 // Fabrication des éléments select du formulaire
-$select_professeurs_directeurs = afficher_select(professeurs_directeurs_etabl($statut=1) , $select_nom=false , $option_first='non' , $selection=true , $optgroup='oui');
+$select_professeurs_directeurs = afficher_select(DB_OPT_professeurs_directeurs_etabl($_SESSION['STRUCTURE_ID'],$statut=1) , $select_nom=false , $option_first='non' , $selection=true , $optgroup='oui');
 ?>
 
 <p><span class="astuce">Pour un traitement individuel, on peut aussi utiliser la page "<a href="./index.php?dossier=administrateur&amp;fichier=professeur&amp;section=gestion">Gérer les professeurs</a>" ou "<a href="./index.php?dossier=administrateur&amp;fichier=directeur&amp;section=gestion">Gérer les directeurs</a>".</span></p>

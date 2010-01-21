@@ -18,8 +18,8 @@ $TITRE = "Consulter les référentiels d'un établissement";
 
 <?php
 // Fabrication des éléments select du formulaire
-$select_etabl   = afficher_select(structures_partage() , $select_nom='f_etabl'   , $option_first='oui' , $selection=false , $optgroup='oui');
-$select_matiere = afficher_select(matieres_communes()  , $select_nom='f_matiere' , $option_first='oui' , $selection=false , $optgroup='non');
+$select_etabl   = afficher_select(DB_OPT_structures_partage($_SESSION['NIVEAUX']) , $select_nom='f_etabl'   , $option_first='oui' , $selection=false , $optgroup='oui');
+$select_matiere = afficher_select(DB_OPT_matieres_communes($_SESSION['MATIERES']) , $select_nom='f_matiere' , $option_first='oui' , $selection=false , $optgroup='non');
 ?>
 
 <form id="form_select" action="">

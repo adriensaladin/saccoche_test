@@ -18,7 +18,7 @@ $TITRE = "Réintégrer / supprimer élèves";
 
 <?php
 // Fabrication des éléments select du formulaire
-$select_f_groupes = afficher_select(regroupements_etabl() , $select_nom=false , $option_first='oui' , $selection=false , $optgroup='oui');
+$select_f_groupes = afficher_select(DB_OPT_regroupements_etabl($_SESSION['STRUCTURE_ID']) , $select_nom=false , $option_first='oui' , $selection=false , $optgroup='oui');
 ?>
 
 <span class="manuel"><a class="pop_up" href="./aide.php?fichier=gestion_statuts">DOC : Statuts : désactiver / réintégrer / supprimer</a></span><br />

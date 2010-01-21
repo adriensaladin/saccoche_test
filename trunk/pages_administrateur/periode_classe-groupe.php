@@ -18,8 +18,8 @@ $TITRE = "Affecter les périodes aux classes &amp; groupes";
 
 <?php
 // Fabrication des éléments select du formulaire
-$select_periodes        = afficher_select(periodes_etabl()        , $select_nom=false , $option_first='non' , $selection=false , $optgroup='non');
-$select_classes_groupes = afficher_select(classes_groupes_etabl() , $select_nom=false , $option_first='non' , $selection=false , $optgroup='oui');
+$select_periodes        = afficher_select(DB_OPT_periodes_etabl($_SESSION['STRUCTURE_ID'])        , $select_nom=false , $option_first='non' , $selection=false , $optgroup='non');
+$select_classes_groupes = afficher_select(DB_OPT_classes_groupes_etabl($_SESSION['STRUCTURE_ID']) , $select_nom=false , $option_first='non' , $selection=false , $optgroup='oui');
 ?>
 
 <p class="hc">

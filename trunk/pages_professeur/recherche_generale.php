@@ -18,8 +18,8 @@ $TITRE = "Consulter des référentiels d'établissements";
 
 <?php
 // Fabrication des éléments select du formulaire
-$select_matiere = afficher_select(matieres_communes() , $select_nom='f_matiere' , $option_first='oui' , $selection=false , $optgroup='non');
-$select_niveau  = afficher_select(niveaux_etabl()     , $select_nom='f_niveau'  , $option_first='oui' , $selection=false , $optgroup='non');
+$select_matiere = afficher_select(DB_OPT_matieres_communes($_SESSION['MATIERES']) , $select_nom='f_matiere' , $option_first='oui' , $selection=false , $optgroup='non');
+$select_niveau  = afficher_select(DB_OPT_niveaux_etabl($_SESSION['NIVEAUX'])      , $select_nom='f_niveau'  , $option_first='oui' , $selection=false , $optgroup='non');
 ?>
 
 <form id="form_select" action="">

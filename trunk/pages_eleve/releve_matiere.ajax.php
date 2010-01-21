@@ -39,7 +39,7 @@ $tab_eleve[]    = $_SESSION['USER_ID'];
 $tab_type[]     = 'individuel';
 $format         = 'matiere';
 
-save_cookie_select();
+save_cookie_select($_SESSION['STRUCTURE_ID'],$_SESSION['USER_ID']);
 
 // ...
 // ...

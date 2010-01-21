@@ -18,14 +18,14 @@ $TITRE = "Bilans sur une sélection d'items";
 
 <?php
 // Fabrication des éléments select du formulaire
-$tab_cookie = load_cookie_select();
-$select_groupe      = afficher_select(groupes_professeur()    , $select_nom='f_groupe'      , $option_first='oui' , $selection=false                        , $optgroup='oui');
-$select_orientation = afficher_select($tab_select_orientation , $select_nom='f_orientation' , $option_first='non' , $selection=$tab_cookie['orientation']   , $optgroup='non');
-$select_marge_min   = afficher_select($tab_select_marge_min   , $select_nom='f_marge_min'   , $option_first='non' , $selection=$tab_cookie['marge_min']     , $optgroup='non');
-$select_couleur     = afficher_select($tab_select_couleur     , $select_nom='f_couleur'     , $option_first='non' , $selection=$tab_cookie['couleur']       , $optgroup='non');
-$select_cases_nb    = afficher_select($tab_select_cases_nb    , $select_nom='f_cases_nb'    , $option_first='non' , $selection=$tab_cookie['cases_nb']      , $optgroup='non');
-$select_cases_larg  = afficher_select($tab_select_cases_size  , $select_nom='f_cases_larg'  , $option_first='non' , $selection=$tab_cookie['cases_largeur'] , $optgroup='non');
-$select_cases_haut  = afficher_select($tab_select_cases_size  , $select_nom='f_cases_haut'  , $option_first='non' , $selection=$tab_cookie['cases_hauteur'] , $optgroup='non');
+$tab_cookie = load_cookie_select($_SESSION['STRUCTURE_ID'],$_SESSION['USER_ID']);
+$select_groupe      = afficher_select(DB_OPT_groupes_professeur($_SESSION['STRUCTURE_ID'],$_SESSION['USER_ID']) , $select_nom='f_groupe'      , $option_first='oui' , $selection=false                        , $optgroup='oui');
+$select_orientation = afficher_select($tab_select_orientation                                                   , $select_nom='f_orientation' , $option_first='non' , $selection=$tab_cookie['orientation']   , $optgroup='non');
+$select_marge_min   = afficher_select($tab_select_marge_min                                                     , $select_nom='f_marge_min'   , $option_first='non' , $selection=$tab_cookie['marge_min']     , $optgroup='non');
+$select_couleur     = afficher_select($tab_select_couleur                                                       , $select_nom='f_couleur'     , $option_first='non' , $selection=$tab_cookie['couleur']       , $optgroup='non');
+$select_cases_nb    = afficher_select($tab_select_cases_nb                                                      , $select_nom='f_cases_nb'    , $option_first='non' , $selection=$tab_cookie['cases_nb']      , $optgroup='non');
+$select_cases_larg  = afficher_select($tab_select_cases_size                                                    , $select_nom='f_cases_larg'  , $option_first='non' , $selection=$tab_cookie['cases_largeur'] , $optgroup='non');
+$select_cases_haut  = afficher_select($tab_select_cases_size                                                    , $select_nom='f_cases_haut'  , $option_first='non' , $selection=$tab_cookie['cases_hauteur'] , $optgroup='non');
 ?>
 
 <div class="hc"><span class="manuel"><a class="pop_up" href="./aide.php?fichier=releve_selection">DOC : Bilans sur une sélection d'items.</a></span></div>

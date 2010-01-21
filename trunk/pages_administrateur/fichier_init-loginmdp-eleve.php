@@ -18,7 +18,7 @@ $TITRE = "Initialiser identifiants élèves";
 
 <?php
 // Fabrication des éléments select du formulaire
-$select_f_groupes = afficher_select(regroupements_etabl() , $select_nom=false , $option_first='oui' , $selection=false , $optgroup='oui');
+$select_f_groupes = afficher_select(DB_OPT_regroupements_etabl($_SESSION['STRUCTURE_ID']) , $select_nom=false , $option_first='oui' , $selection=false , $optgroup='oui');
 ?>
 
 <p><span class="astuce">Pour un traitement individuel, on peut aussi utiliser la page "<a href="./index.php?dossier=administrateur&amp;fichier=eleve&amp;section=gestion">Gérer les élèves</a>".</span></p>

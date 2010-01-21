@@ -32,7 +32,7 @@ $aff_lien      = (isset($_POST['f_lien']))        ? 1                           
 $groupe_id     = (isset($_POST['f_groupe']))      ? clean_entier($_POST['f_groupe'])     : 0;
 $tab_eleve_id  = (isset($_POST['eleves']))        ? array_map('clean_entier',explode(',',$_POST['eleves'])) : array() ;
 
-save_cookie_select();
+save_cookie_select($_SESSION['STRUCTURE_ID'],$_SESSION['USER_ID']);
 
 function positif($n) {return($n);}
 $tab_eleve_id  = array_filter($tab_eleve_id,'positif');

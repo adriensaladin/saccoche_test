@@ -30,7 +30,5 @@ if( (!$groupe) || (!isset($tab_types[$type])) )
 
 $type = $tab_types[$type];
 
-$DB_TAB = eleves_regroupement($type,$groupe,$statut);
-
-echo afficher_select($DB_TAB , $select_nom=false , $option_first='non' , $selection=true , $optgroup='non');
+echo afficher_select(DB_OPT_eleves_regroupement($_SESSION['STRUCTURE_ID'],$type,$groupe,$statut) , $select_nom=false , $option_first='non' , $selection=true , $optgroup='non');
 ?>

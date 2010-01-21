@@ -47,8 +47,9 @@ elseif($action=='retirer')
 	}
 }
 
-echo'<hr />';
 // Affichage du bilan des affectations des professeurs dans les classes
+echo'<hr />';
+
 // Deux requêtes préliminaires pour ne pas manquer les classes sans professeurs et les professeurs sans classes
 $tab_lignes_tableau1  = array();
 $tab_lignes_tableau2  = array();
@@ -94,7 +95,7 @@ if( (count($tab_profs)) && (count($tab_classes)) )
 	$DB_SQL.= 'LEFT JOIN livret_niveau USING (livret_niveau_id) ';
 	$DB_SQL.= 'WHERE livret_structure_id=:structure_id AND livret_user_id IN('.$liste_profs_id.') AND livret_groupe_id IN('.$liste_classes_id.') ';
 	$DB_SQL.= 'ORDER BY livret_niveau_ordre ASC, livret_groupe_ref ASC, livret_user_nom ASC, livret_user_prenom ASC';
-	$DB_VAR = array(':structure_id'=>$_SESSION['STRUCTURE_ID'],':profil'=>'professeur',':statut'=>1,':type'=>'classe');
+	$DB_VAR = array(':structure_id'=>$_SESSION['STRUCTURE_ID']);
 	$DB_TAB = DB::queryTab(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
 	foreach($DB_TAB as $key => $DB_ROW)
 	{
@@ -126,7 +127,7 @@ foreach($tab_lignes_tableau1 as $niveau_id => $tab_groupe)
 		$TF[$niveau_id] .= '<td>'.$nb.' professeur'.$s.'</td>';
 	}
 }
-echo'<h2>Professeurs par classes</h2>';
+echo'<h2>Professeurs par classe</h2>';
 foreach($tab_lignes_tableau1 as $niveau_id => $tab_groupe)
 {
 	echo'<table class="affectation">';
@@ -153,7 +154,7 @@ foreach($tab_lignes_tableau2 as $ligne_id => $tab_user)
 		$TF[$ligne_id] .= '<td>'.$nb.' classe'.$s.'</td>';
 	}
 }
-echo'<h2>Classes par professeurs</h2>';
+echo'<h2>Classes par professeur</h2>';
 foreach($tab_lignes_tableau2 as $ligne_id => $tab_user)
 {
 	echo'<table class="affectation">';

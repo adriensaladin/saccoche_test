@@ -19,5 +19,5 @@ if($_SESSION['STRUCTURE_ID']==ID_DEMO) {}
 
 $statut = (isset($_POST['f_statut'])) ? clean_entier($_POST['f_statut']) : 0;
 
-echo afficher_select(professeurs_directeurs_etabl($statut) , $select_nom=false , $option_first='non' , $selection=false , $optgroup='oui');
+echo afficher_select(DB_OPT_professeurs_directeurs_etabl($_SESSION['STRUCTURE_ID'],$statut) , $select_nom=false , $option_first='non' , $selection=false , $optgroup='oui');
 ?>

@@ -23,7 +23,7 @@ $select_id = (isset($_COOKIE['competences-etablissement'])) ? $_COOKIE['competen
 // Test si id d'établissement transmis dans l'URL
 $select_id = (isset($_GET['id'])) ? $_GET['id'] : $select_id;
 // formulaire de choix d'établissements
-$options_structures = afficher_select(structures_sacoche() , $select_nom=false , $option_first='val' , $selection=$select_id , $optgroup='oui');
+$options_structures = afficher_select(DB_OPT_structures_sacoche() , $select_nom=false , $option_first='val' , $selection=$select_id , $optgroup='oui');
 ?>
 
 <?php

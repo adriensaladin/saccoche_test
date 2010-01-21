@@ -34,7 +34,5 @@ if($groupe_type=='Divers')
 	$groupe_type = ($groupe_id==1) ? 'sdf' : 'all' ;
 }
 
-$DB_TAB = eleves_regroupement($groupe_type,$groupe_id,$statut);
-
-echo afficher_select($DB_TAB , $select_nom=false , $option_first='non' , $selection=true , $optgroup='non');
+echo afficher_select(DB_OPT_eleves_regroupement($_SESSION['STRUCTURE_ID'],$groupe_type,$groupe_id,$statut) , $select_nom=false , $option_first='non' , $selection=true , $optgroup='non');
 ?>

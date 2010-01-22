@@ -225,12 +225,12 @@ $(document).ready
 				rules :
 				{
 					f_ref : { required:true , maxlength:5 },
-					f_nom : { required:true , maxlength:50 },
+					f_nom : { required:true , maxlength:50 }
 				},
 				messages :
 				{
 					f_ref : { required:"référence manquante" , maxlength:"5 caractères maximum" },
-					f_nom : { required:"nom manquant" , maxlength:"50 caractères maximum" },
+					f_nom : { required:"nom manquant" , maxlength:"50 caractères maximum" }
 				},
 				errorElement : "label",
 				errorClass : "erreur",

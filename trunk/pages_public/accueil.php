@@ -60,7 +60,7 @@ if(is_dir('./__pages_webmestre'))
 // Alerte si navigateur trop ancien
 require_once('./_inc/fonction_css_browser_selector.php');
 $chaine_detection = css_browser_selector();
-if( strpos($chaine_detection,'ie4') || strpos($chaine_detection,'ie5') || strpos($chaine_detection,'ie6') || strpos($chaine_detection,'ff0') || strpos($chaine_detection,'ff1') || strpos($chaine_detection,'ff2') || strpos($chaine_detection,'opera8') || true )
+if( strpos($chaine_detection,'ie4') || strpos($chaine_detection,'ie5') || strpos($chaine_detection,'ie6') || strpos($chaine_detection,'ff0') || strpos($chaine_detection,'ff1') || strpos($chaine_detection,'ff2') || strpos($chaine_detection,'opera8') )
 {
 	echo'<hr />';
 	echo'<div class="danger">Attention : votre navigateur semble trop ancien, il ne permet pas d\'utiliser SACoche dans de bonne conditions !</div>';

@@ -57,6 +57,25 @@ if(is_dir('./__pages_webmestre'))
 ?>
 
 <?php
+// Alerte si navigateur trop ancien
+require_once('./_inc/fonction_css_browser_selector.php');
+$chaine_detection = css_browser_selector();
+if( strpos($chaine_detection,'ie4') || strpos($chaine_detection,'ie5') || strpos($chaine_detection,'ie6') || strpos($chaine_detection,'ff0') || strpos($chaine_detection,'ff1') || strpos($chaine_detection,'ff2') || strpos($chaine_detection,'opera8') || true )
+{
+	echo'<hr />';
+	echo'<div class="danger">Attention : votre navigateur semble trop ancien, il ne permet pas d\'utiliser SACoche dans de bonne conditions !</div>';
+	echo'<div class="astuce">Installez 
+	<a class="lien_ext" href="http://www.mozilla-europe.org/fr/"><img src="./_img/navigateur/firefox18.gif" alt="Firefox" /> Mozilla Firefox 3 ou +</a>, 
+	<a class="lien_ext" href="http://www.opera-fr.com/telechargements/"><img src="./_img/navigateur/opera18.gif" alt="Opéra" /> Opéra 9 ou 10</a>, 
+	<a class="lien_ext" href="http://www.apple.com/fr/safari/"><img src="./_img/navigateur/safari18.gif" alt="Safari" /> Safari 3 ou 4</a>, 
+	<a class="lien_ext" href="http://www.google.fr/chrome"><img src="./_img/navigateur/chrome18.gif" alt="Chrome" /> Google Chrome</a>, 
+	<a class="lien_ext" href="http://www.windows.fr/ie8"><img src="./_img/navigateur/explorer18.gif" alt="Explorer" /> Internet Explorer 7 ou 8</a>...
+	</div>';
+	echo'<hr />';
+}
+?>
+
+<?php
 // Alerte non déconnexion de l'ENT si deconnexion de SACoche depuis un compte connecté via un ENT
 if($ALERTE_SSO)
 {
@@ -112,7 +131,7 @@ if($ALERTE_SSO)
 <hr />
 <div>
 	Site strictement conforme aux normes <img src="./_img/valid_xhtml1.gif" alt="XHTML 1.0 Strict" /> et <img src="./_img/valid_css2.gif" alt="CSS 2.0" /> .<br />
-	Utilisez un navigateur respectant les standards, comme <a class="lien_ext" href="http://www.mozilla-europe.org/fr/"><img src="./_img/firefox.png" alt="Firefox" /> Firefox</a> !<br />
+	Utilisez un navigateur respectant les standards, comme <a class="lien_ext" href="http://www.mozilla-europe.org/fr/"><img src="./_img/navigateur/firefox16.png" alt="Firefox" /> Firefox</a> !<br />
 	Déclaration CNIL n°1390450 (catégorie "Espace numérique de travail").<br />
 	Pour un <a class="lien_ext" href="http://fr.wikipedia.org/wiki/Easter_egg">easter egg</a>, essayez le <a class="lien_ext" href="http://fr.wikipedia.org/wiki/Code_Konami">code Konami</a> <img src="./_img/smiley.gif" alt="sourire" />
 </div>

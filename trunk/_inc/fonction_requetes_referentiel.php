@@ -12,76 +12,199 @@
  * 
  */
 
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-//	Retourner une liste de données d'élèves à partir de leurs id
-//	[./pages_professeur/bilan_periode.ajax.php]
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+/**
+ * DB_select_arborescence
+ * Retourner l'arborescence d'un référentiel (tableau issu de la requête SQL)
+ * + pour une matière donnée / pour toutes les matières d'un professeur donné
+ * + pour un niveau donné / pour tous les niveaux concernés
+ * 
+ * @param int  $structure_id
+ * @param int  $prof_id      passer 0 pour une recherche sur une matière plutôt que sur toutes les matières d'un prof
+ * @param int  $matiere_id   passer 0 pour une recherche sur toutes les matières d'un prof plutôt que sur une matière
+ * @param int  $niveau_id    passer 0 pour une recherche sur tous les niveaux
+ * @param bool $socle_nom    avec ou pas le nom des items du socle associés
+ * @return array
+ */
 
-function select_eleves($liste_eleve_id)
+function DB_select_arborescence($structure_id,$prof_id,$matiere_id,$niveau_id,$socle_nom)
 {
-	$DB_SQL = 'SELECT livret_user_id AS eleve_id , livret_user_nom AS eleve_nom , livret_user_prenom AS eleve_prenom , livret_user_id_gepi AS eleve_id_gepi FROM livret_user ';
-	$DB_SQL.= 'WHERE livret_structure_id=:structure_id AND livret_user_id IN('.$liste_eleve_id.') AND livret_user_profil=:profil ';
-	$DB_SQL.= 'ORDER BY livret_user_nom ASC, livret_user_prenom ASC';
-	$DB_VAR = array(':structure_id'=>$_SESSION['STRUCTURE_ID'],':profil'=>'eleve');
-	$DB_TAB = DB::queryTab(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
-	return count($DB_TAB) ? $DB_TAB : 'Aucun élève trouvé correspondant aux identifiants transmis !' ;
-}
-
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-//	Retourner l'arborescence d'un référentiel pour une matière et un niveau donné
-//	[./pages_eleve/grille_niveau.ajax.php]
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-
-function select_arborescence_matiere_niveau($matiere_id,$niveau_id)
-{
-	$DB_SQL = 'SELECT * FROM livret_referentiel ';
+	$select_socle_nom  = ($socle_nom)  ? 'livret_socle_id,livret_socle_nom ' : 'livret_socle_id ' ;
+	$join_user_matiere = ($prof_id)    ? 'LEFT JOIN livret_jointure_user_matiere USING (livret_structure_id,livret_matiere_id) ' : '' ;
+	$join_socle_item   = ($socle_nom)  ? 'LEFT JOIN livret_socle_item USING (livret_socle_id) ' : '' ;
+	$where_user        = ($prof_id)    ? 'AND livret_user_id=:user_id ' : '' ;
+	$where_matiere     = ($matiere_id) ? 'AND livret_matiere_id=:matiere_id ' : '' ;
+	$where_niveau      = ($niveau_id)  ? 'AND livret_niveau_id=:niveau_id ' : '' ;
+	$order_matiere     = ($prof_id)    ? 'livret_matiere_nom ASC, ' : '' ;
+	$order_niveau      = (!$niveau_id) ? 'livret_niveau_ordre ASC, ' : '' ;
+	$DB_SQL = 'SELECT ';
+	$DB_SQL.= 'livret_matiere_id, livret_matiere_ref, livret_matiere_nom, ';
+	$DB_SQL.= 'livret_niveau_id, livret_niveau_ref, livret_niveau_nom, ';
+	$DB_SQL.= 'livret_domaine_id, livret_domaine_ref, livret_domaine_nom, ';
+	$DB_SQL.= 'livret_theme_id, livret_theme_ordre, livret_theme_nom, ';
+	$DB_SQL.= 'livret_competence_id, livret_competence_ordre, livret_competence_nom, livret_competence_coef, livret_competence_lien, ';
+	$DB_SQL.= $select_socle_nom;
+	$DB_SQL.= 'FROM livret_referentiel ';
+	$DB_SQL.= $join_user_matiere;
 	$DB_SQL.= 'LEFT JOIN livret_matiere USING (livret_matiere_id) ';
 	$DB_SQL.= 'LEFT JOIN livret_niveau USING (livret_niveau_id) ';
 	$DB_SQL.= 'LEFT JOIN livret_competence_domaine USING (livret_structure_id,livret_matiere_id,livret_niveau_id) ';
 	$DB_SQL.= 'LEFT JOIN livret_competence_theme USING (livret_structure_id,livret_domaine_id) ';
 	$DB_SQL.= 'LEFT JOIN livret_competence_item USING (livret_structure_id,livret_theme_id) ';
-	$DB_SQL.= 'WHERE livret_structure_id=:structure_id AND livret_matiere_id=:matiere_id AND livret_niveau_id=:niveau_id ';
-	$DB_SQL.= 'ORDER BY livret_domaine_ordre ASC, livret_theme_ordre ASC, livret_competence_ordre ASC';
-	$DB_VAR = array(':structure_id'=>$_SESSION['STRUCTURE_ID'],':matiere_id'=>$matiere_id,':niveau_id'=>$niveau_id);
+	$DB_SQL.= $join_socle_item;
+	$DB_SQL.= 'WHERE livret_structure_id=:structure_id '.$where_user.$where_matiere.$where_niveau;
+	$DB_SQL.= 'ORDER BY '.$order_matiere.$order_niveau.'livret_domaine_ordre ASC, livret_theme_ordre ASC, livret_competence_ordre ASC';
+	$DB_VAR = array(':structure_id'=>$structure_id);
+	if($prof_id)    {$DB_VAR[':user_id']    = $prof_id;}
+	if($matiere_id) {$DB_VAR[':matiere_id'] = $matiere_id;}
+	if($niveau_id)  {$DB_VAR[':niveau_id']  = $niveau_id;}
 	return DB::queryTab(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-//	Retourner l'arborescence d'un référentiel pour une matière donnée, sur tous les niveaux
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+/**
+ * afficher_arborescence
+ * Retourner une liste ordonnée à afficher à partir d'une requête SQL transmise.
+ * 
+ * @param tab  $DB_TAB
+ * @param bool        $dynamique   arborescence cliquable ou pas (plier/replier)
+ * @param bool        $reference   afficher ou pas les références
+ * @param bool|string $aff_coef    false | 'texte' | 'image' : affichage des coefficients des items
+ * @param bool|string $aff_socle   false | 'texte' | 'image' : affichage de la liaison au socle
+ * @param bool|string $aff_lien    false | 'image' | 'click' : affichage des ressources de remédiation
+ * @param bool        $aff_input   affichage ou pas des input checkbox avec label
+ * @return string
+ */
 
-function select_arborescence_matiere($matiere_id)
+function afficher_arborescence($DB_TAB,$dynamique,$reference,$aff_coef,$aff_socle,$aff_lien,$aff_input)
 {
-	$DB_SQL = 'SELECT * FROM livret_referentiel ';
-	$DB_SQL.= 'LEFT JOIN livret_matiere USING (livret_matiere_id) ';
-	$DB_SQL.= 'LEFT JOIN livret_niveau USING (livret_niveau_id) ';
-	$DB_SQL.= 'LEFT JOIN livret_competence_domaine USING (livret_structure_id,livret_matiere_id,livret_niveau_id) ';
-	$DB_SQL.= 'LEFT JOIN livret_competence_theme USING (livret_structure_id,livret_domaine_id) ';
-	$DB_SQL.= 'LEFT JOIN livret_competence_item USING (livret_structure_id,livret_theme_id) ';
-	$DB_SQL.= 'WHERE livret_structure_id=:structure_id AND livret_matiere_id=:matiere_id ';
-	$DB_SQL.= 'ORDER BY livret_niveau_ordre ASC, livret_domaine_ordre ASC, livret_theme_ordre ASC, livret_competence_ordre ASC';
-	$DB_VAR = array(':structure_id'=>$_SESSION['STRUCTURE_ID'],':matiere_id'=>$matiere_id);
-	return DB::queryTab(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
-}
-
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-//	Retourner l'arborescence d'un référentiel pour toutes les matières d'un professeur, sur tous les niveaux
-//	[./pages_professeur/eval_groupe.php] [./pages_professeur/eval_select.php]
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-
-function select_arborescence_professeur($prof_id)
-{
-	$DB_SQL = 'SELECT * FROM livret_referentiel ';
-	$DB_SQL.= 'LEFT JOIN livret_jointure_user_matiere USING (livret_structure_id,livret_matiere_id) ';
-	$DB_SQL.= 'LEFT JOIN livret_matiere USING (livret_matiere_id) ';
-	$DB_SQL.= 'LEFT JOIN livret_niveau USING (livret_niveau_id) ';
-	$DB_SQL.= 'LEFT JOIN livret_competence_domaine USING (livret_structure_id,livret_matiere_id,livret_niveau_id) ';
-	$DB_SQL.= 'LEFT JOIN livret_competence_theme USING (livret_structure_id,livret_domaine_id) ';
-	$DB_SQL.= 'LEFT JOIN livret_competence_item USING (livret_structure_id,livret_theme_id) ';
-	$DB_SQL.= 'WHERE livret_structure_id=:structure_id AND livret_user_id=:user_id ';
-	$DB_SQL.= 'ORDER BY livret_matiere_nom ASC, livret_niveau_ordre ASC, livret_domaine_ordre ASC, livret_theme_ordre ASC, livret_competence_ordre ASC';
-	$DB_VAR = array(':structure_id'=>$_SESSION['STRUCTURE_ID'],':user_id'=>$prof_id);
-	return DB::queryTab(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
+	$input_texte = '';
+	$coef_texte  = '';
+	$socle_texte = '';
+	$lien_texte  = '';
+	$lien_texte_avant = '';
+	$lien_texte_apres = '';
+	$label_texte_avant = '';
+	$label_texte_apres = '';
+	// Traiter le retour SQL : on remplit les tableaux suivants.
+	$tab_matiere    = array();
+	$tab_niveau     = array();
+	$tab_domaine    = array();
+	$tab_theme      = array();
+	$tab_competence = array();
+	$matiere_id = 0;
+	foreach($DB_TAB as $key => $DB_ROW)
+	{
+		if($DB_ROW['livret_matiere_id']!=$matiere_id)
+		{
+			$matiere_id = $DB_ROW['livret_matiere_id'];
+			$tab_matiere[$matiere_id] = ($reference) ? $DB_ROW['livret_matiere_ref'].' - '.$DB_ROW['livret_matiere_nom'] : $DB_ROW['livret_matiere_nom'] ;
+			$niveau_id     = 0;
+			$domaine_id    = 0;
+			$theme_id      = 0;
+			$competence_id = 0;
+		}
+		if( (!is_null($DB_ROW['livret_niveau_id'])) && ($DB_ROW['livret_niveau_id']!=$niveau_id) )
+		{
+			$niveau_id = $DB_ROW['livret_niveau_id'];
+			$tab_niveau[$matiere_id][$niveau_id] = ($reference) ? $DB_ROW['livret_niveau_ref'].' - '.$DB_ROW['livret_niveau_nom'] : $DB_ROW['livret_niveau_nom'];
+		}
+		if( (!is_null($DB_ROW['livret_domaine_id'])) && ($DB_ROW['livret_domaine_id']!=$domaine_id) )
+		{
+			$domaine_id = $DB_ROW['livret_domaine_id'];
+			$tab_domaine[$matiere_id][$niveau_id][$domaine_id] = ($reference) ? $DB_ROW['livret_domaine_ref'].' - '.$DB_ROW['livret_domaine_nom'] : $DB_ROW['livret_domaine_nom'];
+		}
+		if( (!is_null($DB_ROW['livret_theme_id'])) && ($DB_ROW['livret_theme_id']!=$theme_id) )
+		{
+			$theme_id = $DB_ROW['livret_theme_id'];
+			$tab_theme[$matiere_id][$niveau_id][$domaine_id][$theme_id] = ($reference) ? $DB_ROW['livret_domaine_ref'].$DB_ROW['livret_theme_ordre'].' - '.$DB_ROW['livret_theme_nom'] : $DB_ROW['livret_theme_nom'] ;
+		}
+		if( (!is_null($DB_ROW['livret_competence_id'])) && ($DB_ROW['livret_competence_id']!=$competence_id) )
+		{
+			$competence_id = $DB_ROW['livret_competence_id'];
+			switch($aff_coef)
+			{
+				case 'texte' :	$coef_texte = '['.$DB_ROW['livret_competence_coef'].'] ';
+												break;
+				case 'image' :	$coef_texte = '<img src="./_img/x'.$DB_ROW['livret_competence_coef'].'.gif" title="Coefficient '.$DB_ROW['livret_competence_coef'].'." /> ';
+			}
+			switch($aff_socle)
+			{
+				case 'texte' :	$socle_texte = ($DB_ROW['livret_socle_id']) ? '[S] ' : '[–] ';
+												break;
+				case 'image' :	$socle_image = ($DB_ROW['livret_socle_id']) ? 'on' : 'off' ;
+												$socle_nom   = ($DB_ROW['livret_socle_id']) ? html($DB_ROW['livret_socle_nom']) : 'Hors-socle.' ;
+												$socle_texte = '<img src="./_img/socle_'.$socle_image.'.png" title="'.$socle_nom.'" /> ';
+			}
+			switch($aff_lien)
+			{
+				case 'click' :	$lien_texte_avant = ($DB_ROW['livret_competence_lien']) ? '<a class="lien_ext" href="'.html($DB_ROW['livret_competence_lien']).'">' : '';
+												$lien_texte_apres = ($DB_ROW['livret_competence_lien']) ? '</a>' : '';
+				case 'image' :	$lien_image = ($DB_ROW['livret_competence_lien']) ? 'on' : 'off' ;
+												$lien_nom   = ($DB_ROW['livret_competence_lien']) ? html($DB_ROW['livret_competence_lien']) : 'Absence de ressource.' ;
+												$lien_texte = '<img src="./_img/link_'.$lien_image.'.png" title="'.$lien_nom.'" /> ';
+			}
+			if($aff_input)
+			{
+				$input_texte = '<input id="id_'.$competence_id.'" name="f_competences[]" type="checkbox" value="'.$competence_id.'" /> ';
+				$label_texte_avant = '<label for="id_'.$competence_id.'">';
+				$label_texte_apres = '</label>';
+			}
+			$competence_texte = ($reference) ? $DB_ROW['livret_domaine_ref'].$DB_ROW['livret_theme_ordre'].$DB_ROW['livret_competence_ordre'].' - '.$DB_ROW['livret_competence_nom'] : $DB_ROW['livret_competence_nom'] ;
+			$tab_competence[$matiere_id][$niveau_id][$domaine_id][$theme_id][$competence_id] = $input_texte.$label_texte_avant.$coef_texte.$socle_texte.$lien_texte.$lien_texte_avant.html($competence_texte).$lien_texte_apres.$label_texte_apres;
+		}
+	}
+	// Affichage de l'arborescence
+	$span_avant = ($dynamique) ? '<span>' : '' ;
+	$span_apres = ($dynamique) ? '</span>' : '' ;
+	$retour = '<ul class="ul_m1">'."\r\n";
+	if(count($tab_matiere))
+	{
+		foreach($tab_matiere as $matiere_id => $matiere_texte)
+		{
+			$retour .= '<li class="li_m1">'.$span_avant.html($matiere_texte).$span_apres."\r\n";
+			$retour .= '<ul class="ul_m2">'."\r\n";
+			if(isset($tab_niveau[$matiere_id]))
+			{
+				foreach($tab_niveau[$matiere_id] as $niveau_id => $niveau_texte)
+				{
+					$retour .= '<li class="li_m2">'.$span_avant.html($niveau_texte).$span_apres."\r\n";
+					$retour .= '<ul class="ul_n1">'."\r\n";
+					if(isset($tab_domaine[$matiere_id][$niveau_id]))
+					{
+						foreach($tab_domaine[$matiere_id][$niveau_id] as $domaine_id => $domaine_texte)
+						{
+							$retour .= '<li class="li_n1">'.$span_avant.html($domaine_texte).$span_apres."\r\n";
+							$retour .= '<ul class="ul_n2">'."\r\n";
+							if(isset($tab_theme[$matiere_id][$niveau_id][$domaine_id]))
+							{
+								foreach($tab_theme[$matiere_id][$niveau_id][$domaine_id] as $theme_id => $theme_texte)
+								{
+									$retour .= '<li class="li_n2">'.$span_avant.html($theme_texte).$span_apres."\r\n";
+									$retour .= '<ul class="ul_n3">'."\r\n";
+									if(isset($tab_competence[$matiere_id][$niveau_id][$domaine_id][$theme_id]))
+									{
+										foreach($tab_competence[$matiere_id][$niveau_id][$domaine_id][$theme_id] as $competence_id => $competence_texte)
+										{
+											$retour .= '<li class="li_n3">'.$competence_texte.'</li>'."\r\n";
+										}
+									}
+									$retour .= '</ul>'."\r\n";
+									$retour .= '</li>'."\r\n";
+								}
+							}
+							$retour .= '</ul>'."\r\n";
+							$retour .= '</li>'."\r\n";
+						}
+					}
+					$retour .= '</ul>'."\r\n";
+					$retour .= '</li>'."\r\n";
+				}
+			}
+			$retour .= '</ul>'."\r\n";
+			$retour .= '</li>'."\r\n";
+		}
+	}
+	$retour .= '</ul>'."\r\n";
+	return $retour;
 }
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-

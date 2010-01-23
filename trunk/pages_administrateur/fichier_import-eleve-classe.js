@@ -355,7 +355,7 @@ $(document).ready
 							{
 								$('#ajax_msg').removeAttr("class").html('&nbsp;');
 								$('#ajax').html(responseHTML);
-								format_liens();
+								format_liens('#ajax');
 							}
 						}
 					}

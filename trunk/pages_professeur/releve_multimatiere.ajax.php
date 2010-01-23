@@ -100,7 +100,7 @@ if( $orientation && $marge_min && $couleur && $cases_nb && $cases_largeur && $ca
 	//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 	// Récupération de la liste des élèves
 	//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-	$tab_eleve = select_eleves($liste_eleve);
+	$tab_eleve = DB_lister_eleves_donnes($_SESSION['STRUCTURE_ID'],$liste_eleve);
 	if(!is_array($tab_eleve))
 	{
 		exit('Aucun élève trouvé correspondant aux identifiants transmis !');

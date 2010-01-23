@@ -37,7 +37,7 @@ if($matiere_id && $matiere_nom)
 	$tab_theme      = array();
 	$tab_competence = array();
 	$niveau_id = 0;
-	$DB_TAB = select_arborescence_matiere($matiere_id);
+	$DB_TAB = DB_select_arborescence($_SESSION['STRUCTURE_ID'],$prof_id=0,$matiere_id,$niveau_id=0,$socle_nom=false);
 	foreach($DB_TAB as $key => $DB_ROW)
 	{
 		if($DB_ROW['livret_niveau_id']!=$niveau_id)

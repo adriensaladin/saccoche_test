@@ -51,7 +51,7 @@ if( $matiere_id && $niveau_id && $matiere_nom && $niveau_nom && $remplissage && 
 	//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 	// Récupération de la liste des items pour la matière et le niveau sélectionné
 	//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-	$DB_TAB = select_arborescence_matiere_niveau($matiere_id,$niveau_id);
+	$DB_TAB = DB_select_arborescence($_SESSION['STRUCTURE_ID'],$prof_id=0,$matiere_id,$niveau_id,$socle_nom=false);
 	if(count($DB_TAB))
 	{
 		$domaine_id    = 0;

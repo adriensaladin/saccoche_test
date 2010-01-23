@@ -92,7 +92,7 @@ else
 		$matiere_coord = $tab['coord'];
 		$matiere_perso = ($tab['perso']) ? 1 : 0 ;
 		$affichage .= '<tr><td colspan="4" class="nu">&nbsp;</td></tr>'."\r\n";
-		$affichage .= '<tr lang="'.$matiere_nom.'"><td rowspan="'.$rowspan.'">'.$matiere_nom.'</td>';
+		$affichage .= '<tr><td rowspan="'.$rowspan.'">'.$matiere_nom.'</td>';
 		$affichage_suite = false;
 		foreach($tab_niveau as $niveau_id => $niveau_nom)
 		{
@@ -116,7 +116,7 @@ else
 				}
 				else
 				{
-					$affichage_suite .= '<tr lang="'.$matiere_nom.'"><td>'.$niveau_nom.'</td>'.$colonnes.'</tr>'."\r\n";
+					$affichage_suite .= '<tr><td>'.$niveau_nom.'</td>'.$colonnes.'</tr>'."\r\n";
 				}
 			}
 		}

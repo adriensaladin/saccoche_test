@@ -58,7 +58,7 @@ function DB_lister_niveaux_SACoche()
 /**
  * DB_lister_niveaux
  * 
- * @param string $listing_niveaux id des niveaux séparés par des virgules
+ * @param string $listing_niveaux   id des niveaux séparés par des virgules
  * @return array
  */
 
@@ -117,6 +117,24 @@ function DB_lister_classes_avec_niveaux($structure_id)
 	$DB_SQL.= 'ORDER BY livret_niveau_ordre ASC, livret_groupe_ref ASC';
 	$DB_VAR = array(':structure_id'=>$structure_id,':type'=>'classe');
 	return DB::queryTab(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
+}
+
+/**
+ * DB_lister_eleves_donnes
+ * 
+ * @param int    $structure_id
+ * @param int    $listing_eleve_id   id des élèves séparés par des virgules
+ * @return array|string              le tableau est de la forme [i] => array('eleve_id'=>...,'eleve_nom'=>...,'eleve_prenom'=>...,'eleve_id_gepi'=>...);
+ */
+
+function DB_lister_eleves_donnes($structure_id,$listing_eleve_id)
+{
+	$DB_SQL = 'SELECT livret_user_id AS eleve_id , livret_user_nom AS eleve_nom , livret_user_prenom AS eleve_prenom , livret_user_id_gepi AS eleve_id_gepi FROM livret_user ';
+	$DB_SQL.= 'WHERE livret_structure_id=:structure_id AND livret_user_id IN('.$listing_eleve_id.') AND livret_user_profil=:profil ';
+	$DB_SQL.= 'ORDER BY livret_user_nom ASC, livret_user_prenom ASC';
+	$DB_VAR = array(':structure_id'=>$structure_id,':profil'=>'eleve');
+	$DB_TAB = DB::queryTab(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
+	return count($DB_TAB) ? $DB_TAB : 'Aucun élève trouvé correspondant aux identifiants transmis !' ;
 }
 
 /**

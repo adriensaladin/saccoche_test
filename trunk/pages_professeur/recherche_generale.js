@@ -94,8 +94,6 @@ $(document).ready
 			{
 				matiere_id  = $("#f_matiere option:selected").val();
 				niveau_id   = $("#f_niveau option:selected").val();
-				matiere_txt = $("#f_matiere option:selected").text();
-				niveau_txt  = $("#f_niveau option:selected").text();
 				donneur = $(this).parent().attr('id');
 				etabl   = $(this).parent().text();
 				new_label = '<label id="temp" class="loader">Demande envoyée... Veuillez patienter.</label>';
@@ -115,13 +113,13 @@ $(document).ready
 						success : function(responseHTML)
 						{
 							maj_clock(1);
-							if(responseHTML.substring(0,18)!='<ul class="ul_n1">')
+							if(responseHTML.substring(0,18)!='<ul class="ul_m1">')
 							{
 								$('label[id=temp]').removeAttr("class").addClass("alerte").html(responseHTML).fadeOut(2000,function(){$('label[id=temp]').remove();});
 							}
 							else
 							{
-								$('#zone_compet').html('<hr /><h2>'+etabl+'</h2><ul class="ul_m1"><li class="li_m1">'+matiere_txt+'<ul class="ul_m2"><li class="li_m2">'+niveau_txt+responseHTML+'</li></ul></li></ul><p />').show();
+								$('#zone_compet').html('<hr /><h2>'+etabl+'</h2>'+responseHTML+'<p />').show();
 								infobulle();
 								$('label[id=temp]').removeAttr("class").addClass("valide").html("Contenu affiché ci-dessous !").fadeOut(2000,function(){$('label[id=temp]').remove();});
 							}

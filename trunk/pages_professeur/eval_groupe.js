@@ -251,7 +251,7 @@ $(document).ready
 							$('img[title]').tooltip({showURL:false});
 							$('#export_file').attr("href", $("#filename").val()+ref+'.zip' );
 							colorer_cellules();
-							format_liens();
+							format_liens('#table_saisir');
 							infobulle();
 							$('#radio_'+pilotage).click();
 						}
@@ -387,7 +387,7 @@ $(document).ready
 							$('#msg_ordonner').removeAttr("class").html('&nbsp;');
 							$('#div_ordonner').html(responseHTML);
 							$('img[title]').tooltip({showURL:false});
-							format_liens();
+							format_liens('#div_ordonner');
 							infobulle();
 						}
 					}
@@ -565,7 +565,7 @@ $(document).ready
 							{
 								$('#msg_imprimer').removeAttr("class").addClass("valide").html("Cartouches générés !");
 								$('#zone_imprimer_retour').html(responseHTML);
-								format_liens();
+								format_liens('#zone_imprimer_retour');
 							}
 						}
 					}

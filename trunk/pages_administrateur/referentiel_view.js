@@ -44,14 +44,14 @@ $(document).ready
 						success : function(responseHTML)
 						{
 							maj_clock(1);
-							if(responseHTML.substring(0,18)!='<ul class="ul_n1">')
+							if(responseHTML.substring(0,18)!='<ul class="ul_m1">')
 							{
 								$('label[for='+ref+']').removeAttr("class").addClass("alerte").html(responseHTML);
 							}
 							else
 							{
 								$('label[for='+ref+']').removeAttr("class").addClass("valide").html("Contenu affiché ci-dessous !");
-								$('#referentiel').html('<ul class="ul_m1"><li class="li_m1">'+matiere+'<ul class="ul_m2"><li class="li_m2">'+niveau+responseHTML+'</li></ul></li></ul><p />');
+								$('#referentiel').html(responseHTML+'<p />');
 								infobulle();
 							}
 						}

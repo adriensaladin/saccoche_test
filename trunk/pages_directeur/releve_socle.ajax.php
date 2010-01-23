@@ -81,7 +81,7 @@ if( $detail && $palier_id && $palier_nom && $remplissage )
 	//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 	if($groupe_id && count($tab_eleve_id))
 	{
-		$tab_eleve = select_eleves($liste_eleve);
+		$tab_eleve = DB_lister_eleves_donnes($_SESSION['STRUCTURE_ID'],$liste_eleve);
 	}
 	else
 	{

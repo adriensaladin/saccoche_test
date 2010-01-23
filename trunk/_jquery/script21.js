@@ -209,7 +209,7 @@ $(document).ready
 (
 	function()
 	{
-		format_liens();
+		format_liens('body');
 		infobulle();
 		var imagesToPreload = Array(
 			'ajax/ajax_alerte.png','ajax/ajax_erreur.png','ajax/ajax_loader.gif','ajax/ajax_valide.png','puce_danger.gif',

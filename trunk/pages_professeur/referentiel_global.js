@@ -27,8 +27,6 @@ $(document).ready
 			function()
 			{
 				ids = $(this).parent().attr('id');
-				niveau = $(this).parent().prev().prev().text();
-				matiere = $(this).parent().parent().attr('lang');
 				afficher_masquer_images_action('hide');
 				new_label = '<label for="'+ids+'" class="loader">Demande envoyée... Veuillez patienter.</label>';
 				$(this).after(new_label);
@@ -47,13 +45,13 @@ $(document).ready
 						success : function(responseHTML)
 						{
 							maj_clock(1);
-							if(responseHTML.substring(0,18)!='<ul class="ul_n1">')
+							if(responseHTML.substring(0,18)!='<ul class="ul_m1">')
 							{
 								$('label[for='+ids+']').removeAttr("class").addClass("alerte").html(responseHTML).fadeOut(2000,function(){$('label[for='+ids+']').remove();afficher_masquer_images_action('show');});
 							}
 							else
 							{
-								$('#voir_referentiel').html('<ul class="ul_m1"><li class="li_m1">'+matiere+'<ul class="ul_m2"><li class="li_m2">'+niveau+responseHTML+'</li></ul></li></ul><p />');
+								$('#voir_referentiel').html(responseHTML+'<p />');
 								infobulle();
 								$('label[for='+ids+']').removeAttr("class").addClass("valide").html("Contenu affiché ci-dessous !").fadeOut(2000,function(){$('label[for='+ids+']').remove();afficher_masquer_images_action('show');});
 							}
@@ -341,13 +339,13 @@ $(document).ready
 						success : function(responseHTML)
 						{
 							maj_clock(1);
-							if(responseHTML.substring(0,18)!='<ul class="ul_n1">')
+							if(responseHTML.substring(0,18)!='<ul class="ul_m1">')
 							{
 								$('label[id=temp]').removeAttr("class").addClass("alerte").html(responseHTML).fadeOut(2000,function(){$('label[id=temp]').remove();});
 							}
 							else
 							{
-								$('#voir_referentiel').html('<h2>'+etabl+'</h2><ul class="ul_m1"><li class="li_m1">'+matiere+'<ul class="ul_m2"><li class="li_m2">'+niveau+responseHTML+'</li></ul></li></ul><p />');
+								$('#voir_referentiel').html('<h2>'+etabl+'</h2>'+responseHTML+'<p />');
 								infobulle();
 								$('label[id=temp]').removeAttr("class").addClass("valide").html("Contenu affiché ci-dessous !").fadeOut(2000,function(){$('label[id=temp]').remove();});
 							}

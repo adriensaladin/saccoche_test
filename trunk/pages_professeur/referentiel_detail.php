@@ -90,7 +90,7 @@ else
 		$matiere_coord = $tab['coord'];
 		$affichage .= '<tr lang="'.$matiere_nom.'"><td>'.$matiere_nom.'</td>';
 		$id = 'm1_'.$matiere_id;
-		if(isset($tab_matiere[$matiere_id]['niveau_nb']))
+		if($tab_matiere[$matiere_id]['niveau_nb']>0)
 		{
 			$x = ($tab_matiere[$matiere_id]['niveau_nb'])>1 ? 'x' : '';
 			$affichage .= '<td class="v">Référentiel présent sur '.$tab_matiere[$matiere_id]['niveau_nb'].' niveau'.$x.'.</td>';

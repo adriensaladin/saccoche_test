@@ -386,7 +386,7 @@ else if( ($action=='saisir') && $eval_id && $groupe_type && $groupe_id && $date 
 			foreach($tab_comp_id as $comp_id=>$val_comp)
 			{
 				$num_ligne++;
-				$tab_affich[$comp_id][$user_id] = '<td class="td_clavier" lang="'.$num_colonne.'o'.$num_ligne.'"><input type="text" class="X" value="X" id="'.$num_colonne.'o'.$num_ligne.'" name="'.$comp_id.'x'.$user_id.'" readonly="readonly" /></td>';
+				$tab_affich[$comp_id][$user_id] = '<td class="td_clavier" lang="C'.$num_colonne.'L'.$num_ligne.'"><input type="text" class="X" value="X" id="C'.$num_colonne.'L'.$num_ligne.'" name="'.$comp_id.'x'.$user_id.'" readonly="readonly" /></td>';
 			}
 		}
 		// configurer le champ input

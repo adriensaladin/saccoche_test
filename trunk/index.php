@@ -132,14 +132,14 @@ entete();
 	<link rel="stylesheet" type="text/css" href="./_css/<?php echo FILE_CSS ?>" />
 	<link rel="stylesheet" type="text/css" href="./_css/style_print.css" media="print" />
 	<link rel="alternate" type="application/rss+xml" href="./_rss/rss.xml" title="SACoche" />
-	<script type="text/javascript" charset="utf-8" src="./_jquery/jquery-min.js"></script>
+	<script type="text/javascript" charset="utf-8" src="./_jquery/jquery14.min.js"></script>
 	<script type="text/javascript" charset="utf-8" src="./_jquery/jquery.form.js"></script>
 	<script type="text/javascript" charset="utf-8" src="./_jquery/jquery.validate.min.js"></script>
 	<script type="text/javascript" charset="utf-8" src="./_jquery/jquery.tablesorter.min.js"></script>
 	<script type="text/javascript" charset="utf-8" src="./_jquery/jquery.tooltip.pack.js"></script>
 	<script type="text/javascript" charset="utf-8" src="./_jquery/jquery.timers.js"></script>
 	<script type="text/javascript" charset="utf-8" src="./_jquery/jquery.ajaxupload.js"></script>
-	<script type="text/javascript" charset="utf-8" src="./_jquery/jquery.livequery.js"></script>
+	<!-- <script type="text/javascript" charset="utf-8" src="./_jquery/jquery.livequery.js"></script> Inutile depuis le passage à jquery 1.4 dont live gère mouseleave -->
 	<script type="text/javascript" charset="utf-8" src="./_jquery/<?php echo FILE_JS ?>"></script>
 	<title>SACoche - Espace <?php echo $DOSSIER ?> - <?php echo ($TITRE) ? $TITRE : 'Suivi d\'Acquisition de Compétences' ; ?></title>
 </head>

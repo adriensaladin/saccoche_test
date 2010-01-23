@@ -682,8 +682,8 @@ $(document).ready
 				if(pilotage=='clavier')
 				{
 					id = $(this).attr("id");
-					colonne = parseInt(id.substring(0,id.indexOf('o')));
-					ligne   = parseInt(id.substring(id.indexOf('o')+1));
+					colonne = parseInt(id.substring(1,id.indexOf('L')));
+					ligne   = parseInt(id.substring(id.indexOf('L')+1));
 					findme = '.'+e.which+'.';
 					if('.8.46.49.50.51.52.65.68.78.97.98.99.100.'.indexOf(findme)!=-1)
 					{
@@ -708,7 +708,7 @@ $(document).ready
 						modification = true;
 						// Passer à la case suivante
 						ligne++;
-						new_id = colonne+'o'+ligne;
+						new_id = 'C'+colonne+'L'+ligne;
 						if($('#'+new_id).length)
 						{
 							$('#'+new_id).focus();
@@ -717,7 +717,7 @@ $(document).ready
 						{
 							ligne = 1;
 							colonne++;
-							new_id = colonne+'o'+ligne;
+							new_id = 'C'+colonne+'L'+ligne;
 							if($('#'+new_id).length)
 							{
 								$('#'+new_id).focus();
@@ -734,7 +734,7 @@ $(document).ready
 							case 39: colonne++; break; // flèche droit
 							case 40: ligne++;   break; // flèche bas
 						}
-						new_id = colonne+'o'+ligne;
+						new_id = 'C'+colonne+'L'+ligne;
 						if($('#'+new_id).length)
 						{
 							$('#'+new_id).focus();
@@ -786,7 +786,7 @@ $(document).ready
 		);
 
 		// Revenir à la cellule initiale ; mouseout ne fonctionne pas à cause des éléments contenus dans le div ; mouseleave est mieux, mais pb qd même avec les select du calendrier
-		$("#table_saisir tbody td").livequery
+		$("#table_saisir tbody td").live
 		('mouseleave',
 			function()
 			{

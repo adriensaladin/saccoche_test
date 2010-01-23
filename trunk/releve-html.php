@@ -53,7 +53,7 @@ entete();
 	<link rel="icon" type="image/png" href="./favicon.png" />
 	<link rel="stylesheet" type="text/css" href="./_css/<?php echo FILE_CSS ?>" />
 	<link rel="stylesheet" type="text/css" href="./_css/style_print.css" media="print" />
-	<script type="text/javascript" charset="utf-8" src="./_jquery/jquery-min.js"></script>
+	<script type="text/javascript" charset="utf-8" src="./_jquery/jquery14.min.js"></script>
 	<script type="text/javascript" charset="utf-8" src="./_jquery/jquery.tablesorter.min.js"></script>
 	<script type="text/javascript" charset="utf-8" src="./_jquery/jquery.tooltip.pack.js"></script>
 	<script type="text/javascript" charset="utf-8" src="./_jquery/<?php echo FILE_JS ?>"></script>

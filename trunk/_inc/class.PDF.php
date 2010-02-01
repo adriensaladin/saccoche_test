@@ -408,8 +408,11 @@ class PDF extends FPDF
 
 	public function bilan_periode_individuel_competence($competence_ref,$competence_texte)
 	{
+		list($ref_matiere,$ref_suite) = explode('.',$competence_ref,2);
 		$this->choisir_couleur_fond('gris_clair');
-		$this->Cell($this->reference_largeur , $this->cases_hauteur , pdf($competence_ref) , 1 , 0 , 'C' , true , '');
+		$this->SetFont('Arial' , '' , 7);
+		$this->Cell($this->reference_largeur , $this->cases_hauteur , pdf($ref_suite) , 1 , 0 , 'C' , true , '');
+		$this->SetFont('Arial' , '' , 8);
 		$this->Cell($this->intitule_largeur , $this->cases_hauteur , pdf($competence_texte) , 1 , 0 , 'L' , false , '');
 		$this->choisir_couleur_fond('blanc');
 	}
@@ -546,7 +549,7 @@ class PDF extends FPDF
 		$this->lignes_nb         = ($detail=='minimal') ? 4 : $competence_nb+1 ;
 		$this->cases_largeur     = ($detail=='minimal') ? ($this->page_largeur - $this->marge_gauche - $this->marge_droit) / $competence_nb : 10 ;
 		$this->cases_hauteur     = 5 ;
-		$this->reference_largeur = 20 ;
+		$this->reference_largeur = 15 ;
 		$this->intitule_largeur  = ($detail=='minimal') ? 0 : $this->page_largeur - $this->marge_gauche - $this->marge_droit - $this->reference_largeur - $this->cases_largeur ;
 		$this->SetMargins($this->marge_gauche , $this->marge_haut , $this->marge_droit);
 		$this->AddPage($this->orientation , 'A4');
@@ -572,7 +575,13 @@ class PDF extends FPDF
 	{
 		$memo_x = $this->GetX();
 		$memo_y = $this->GetY();
-		$this->Cell($this->cases_largeur , $this->cases_hauteur , pdf($competence_ref) , 1 , 2 , 'C' , false , '');
+		list($ref_matiere,$ref_suite) = explode('.',$competence_ref,2);
+		$this->SetFont('Arial' , '' , 7);
+		$this->Cell($this->cases_largeur , $this->cases_hauteur/2 , pdf($ref_matiere) , 0 , 2 , 'C' , false , '');
+		$this->Cell($this->cases_largeur , $this->cases_hauteur/2 , pdf($ref_suite) , 0 , 2 , 'C' , false , '');
+		$this->SetFont('Arial' , '' , 8);
+		$this->SetXY($memo_x , $memo_y);
+		$this->Cell($this->cases_largeur , $this->cases_hauteur , '' , 1 , 2 , 'C' , false , '');
 		$this->afficher_note_lomer($note);
 		$this->Cell($this->cases_largeur , $this->cases_hauteur , '' , 1 , 0 , 'C' , false , '');
 		$this->SetXY($memo_x+$this->cases_largeur , $memo_y);
@@ -580,7 +589,15 @@ class PDF extends FPDF
 
 	public function cartouche_complet_competence($competence_ref,$competence_intitule,$note)
 	{
-		$this->Cell($this->reference_largeur , $this->cases_hauteur , pdf($competence_ref) , 1 , 0 , 'C' , false , '');
+		$memo_x = $this->GetX();
+		$memo_y = $this->GetY();
+		list($ref_matiere,$ref_suite) = explode('.',$competence_ref,2);
+		$this->SetFont('Arial' , '' , 7);
+		$this->Cell($this->reference_largeur , $this->cases_hauteur/2 , pdf($ref_matiere) , 0 , 2 , 'C' , false , '');
+		$this->Cell($this->reference_largeur , $this->cases_hauteur/2 , pdf($ref_suite) , 0 , 2 , 'C' , false , '');
+		$this->SetFont('Arial' , '' , 8);
+		$this->SetXY($memo_x , $memo_y);
+		$this->Cell($this->reference_largeur , $this->cases_hauteur , '' , 1 , 0 , 'C' , false , '');
 		$this->Cell($this->intitule_largeur , $this->cases_hauteur , pdf($competence_intitule) , 1 , 0 , 'L' , false , '');
 		$this->afficher_note_lomer($note);
 		$this->Cell($this->cases_largeur , $this->cases_hauteur , '' , 1 , 1 , 'C' , false , '');

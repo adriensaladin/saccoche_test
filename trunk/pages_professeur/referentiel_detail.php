@@ -59,6 +59,7 @@ else
 	// On récupère la liste des niveaux utilisés par l'établissement
 	$DB_SQL = 'SELECT livret_niveau_id,livret_niveau_nom FROM livret_niveau ';
 	$DB_SQL.= 'WHERE livret_niveau_id IN('.$_SESSION['NIVEAUX'].') ';
+	$DB_SQL.= ($_SESSION['PALIERS']) ? 'OR livret_palier_id IN('.$_SESSION['PALIERS'].') ' : '' ;
 	$DB_SQL.= 'ORDER BY livret_niveau_ordre ASC';
 	$DB_TAB = DB::queryTab(SACOCHE_BD_NAME , $DB_SQL);
 	$nb_niveaux = count($DB_TAB);
@@ -70,7 +71,7 @@ else
 	$tab_partage = array('oui'=>'<img title="Référentiel accessible aux autres établissements." alt="" src="./_img/partage1.gif" />','non'=>'<img title="Référentiel caché aux autres établissements." alt="" src="./_img/partage0.gif" />','bof'=>'<img title="Référentiel dont le partage est sans intérêt (pas novateur)." alt="" src="./_img/partage0.gif" />','hs'=>'<img title="Référentiel dont le partage est sans objet (matière spécifique)." alt="" src="./_img/partage0.gif" />');
 	$DB_SQL = 'SELECT livret_matiere_id,COUNT(livret_niveau_id) AS niveau_nb FROM livret_referentiel ';
 	$DB_SQL.= 'LEFT JOIN livret_niveau USING (livret_niveau_id) ';
-	$DB_SQL.= 'WHERE livret_structure_id=:structure_id AND livret_matiere_id IN('.$liste_matieres.') AND livret_niveau_id IN('.$_SESSION['NIVEAUX'].') ';
+	$DB_SQL.= 'WHERE livret_structure_id=:structure_id AND livret_matiere_id IN('.$liste_matieres.') AND ( livret_niveau_id IN('.$_SESSION['NIVEAUX'].') OR livret_palier_id IN('.$_SESSION['PALIERS'].') ) ';
 	$DB_SQL.= 'GROUP BY livret_matiere_id ';
 	$DB_SQL.= 'ORDER BY livret_matiere_id ASC';
 	$DB_VAR = array(':structure_id'=>$_SESSION['STRUCTURE_ID']);

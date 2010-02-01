@@ -395,7 +395,15 @@ if(in_array('synthese',$tab_type))
 	// Pour chaque item...
 	foreach($tab_liste_comp as $competence_id)
 	{
-		$releve_pdf->Cell($releve_pdf->cases_largeur , $releve_pdf->cases_hauteur , pdf($tab_competence[$competence_id][0]['competence_ref']) , 1 , 0 , 'C' , true , '');
+		$memo_x = $releve_pdf->GetX();
+		$memo_y = $releve_pdf->GetY();
+		list($ref_matiere,$ref_suite) = explode('.',$tab_competence[$competence_id][0]['competence_ref'],2);
+		$releve_pdf->SetFont('Arial' , '' , $releve_pdf->taille_police-1);
+		$releve_pdf->Cell($releve_pdf->cases_largeur , $releve_pdf->cases_hauteur/2 , pdf($ref_matiere) , 0 , 2 , 'C' , true , '');
+		$releve_pdf->Cell($releve_pdf->cases_largeur , $releve_pdf->cases_hauteur/2 , pdf($ref_suite) , 0 , 2 , 'C' , true , '');
+		$releve_pdf->SetFont('Arial' , '' , $releve_pdf->taille_police);
+		$releve_pdf->SetXY($memo_x , $memo_y);
+		$releve_pdf->Cell($releve_pdf->cases_largeur , $releve_pdf->cases_hauteur , '' , 1 , 0 , 'C' , false , '');
 		$releve_html_table_head .= '<th title="'.html($tab_competence[$competence_id][0]['competence_nom']).'">'.html($tab_competence[$competence_id][0]['competence_ref']).'</th>';
 	}
 	$releve_pdf->SetX( $releve_pdf->GetX()+2 );

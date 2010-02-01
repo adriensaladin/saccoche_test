@@ -53,6 +53,47 @@ $(document).ready
 			}
 		);
 
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+//	Changement de matière -> desactiver les niveaux classiques en cas de matière transversale
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+		$('#f_matiere').change
+		(
+			function()
+			{
+				modif_niveau_selected = 0; // 0 = pas besoin modifier / 1 = à modifier / 2 = déjà modifié
+				matiere_id = $('#f_matiere').val();
+				$("#f_niveau option").each
+				(
+					function()
+					{
+						niveau_id = $(this).val();
+						findme = '.'+niveau_id+'.';
+						// Les niveaux "paliers" sont tout le temps accessibles
+						if('..46.47.48.49.'.indexOf(findme)==-1)
+						{
+							// matière classique -> tous niveaux actifs
+							if(matiere_id!=99)
+							{
+								$(this).removeAttr('disabled');
+							}
+							// matière transversale -> desactiver les autres niveaux
+							else
+							{
+								$(this).attr('disabled',true);
+								modif_niveau_selected = Math.max(modif_niveau_selected,1);
+							}
+						}
+						// C'est un niveau palier ; le sélectionner si besoin
+						else if(modif_niveau_selected==1)
+						{
+							$(this).attr('selected',true);
+							modif_niveau_selected = 2;
+						}
+					}
+				);
+			}
+		);
+
 		//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
 		//	Charger le select f_eleve en ajax
 		//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*

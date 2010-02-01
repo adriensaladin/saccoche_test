@@ -267,6 +267,47 @@ $(document).ready
 		);
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+//	Changement de matière -> desactiver les niveaux classiques en cas de matière transversale
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+		$('#f_matiere').change
+		(
+			function()
+			{
+				modif_niveau_selected = 0; // 0 = pas besoin modifier / 1 = à modifier / 2 = déjà modifié
+				matiere_id = $('#f_matiere').val();
+				$("#f_niveau option").each
+				(
+					function()
+					{
+						niveau_id = $(this).val();
+						findme = '.'+niveau_id+'.';
+						// Les niveaux "paliers" sont tout le temps accessibles
+						if('..46.47.48.49.'.indexOf(findme)==-1)
+						{
+							// matière classique -> tous niveaux actifs
+							if(matiere_id!=99)
+							{
+								$(this).removeAttr('disabled');
+							}
+							// matière transversale -> desactiver les autres niveaux
+							else
+							{
+								$(this).attr('disabled',true);
+								modif_niveau_selected = Math.max(modif_niveau_selected,1);
+							}
+						}
+						// C'est un niveau palier ; le sélectionner si besoin
+						else if(modif_niveau_selected==1)
+						{
+							$(this).attr('selected',true);
+							modif_niveau_selected = 2;
+						}
+					}
+				);
+			}
+		);
+
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 //	Clic sur le bouton pour chercher des référentiels partagés sur d'autres niveaux ou matières
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 		$('#f_submit_lister').click
@@ -276,6 +317,16 @@ $(document).ready
 				$('#voir_referentiel').html("&nbsp;");
 				matiere_id = $('#f_matiere').val();
 				niveau_id  = $('#f_niveau').val();
+				if(!matiere_id)
+				{
+					$('#ajax_msg_actualiser').removeAttr("class").addClass("erreur").html("Il faut choisir une matière !");
+					return false;
+				}
+				else if(!niveau_id)
+				{
+					$('#ajax_msg_actualiser').removeAttr("class").addClass("erreur").html("Il faut choisir un niveau !");
+					return false;
+				}
 				$('#ajax_msg_actualiser').removeAttr("class").addClass("loader").html('Demande envoyée... Veuillez patienter.');
 				$.ajax
 				(

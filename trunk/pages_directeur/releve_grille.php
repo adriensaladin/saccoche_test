@@ -20,7 +20,7 @@ $TITRE = "Grilles de compétences sur un niveau";
 // Fabrication des éléments select du formulaire
 $tab_cookie = load_cookie_select($_SESSION['STRUCTURE_ID'],$_SESSION['USER_ID']);
 $select_matiere     = afficher_select(DB_OPT_matieres_etabl($_SESSION['STRUCTURE_ID'],$_SESSION['MATIERES'],$transversal=true) , $select_nom='f_matiere'     , $option_first='oui' , $selection=false                        , $optgroup='non');
-$select_niveau      = afficher_select(DB_OPT_niveaux_etabl($_SESSION['NIVEAUX'])                                               , $select_nom='f_niveau'      , $option_first='oui' , $selection=false                        , $optgroup='non');
+$select_niveau      = afficher_select(DB_OPT_niveaux_etabl($_SESSION['NIVEAUX'],$_SESSION['PALIERS'])                          , $select_nom='f_niveau'      , $option_first='oui' , $selection=false                        , $optgroup='non');
 $select_groupe      = afficher_select(DB_OPT_classes_groupes_etabl($_SESSION['STRUCTURE_ID'])                                  , $select_nom='f_groupe'      , $option_first='val' , $selection=false                        , $optgroup='oui');
 $select_orientation = afficher_select($tab_select_orientation                                                                  , $select_nom='f_orientation' , $option_first='non' , $selection=$tab_cookie['orientation']   , $optgroup='non');
 $select_marge_min   = afficher_select($tab_select_marge_min                                                                    , $select_nom='f_marge_min'   , $option_first='non' , $selection=$tab_cookie['marge_min']     , $optgroup='non');

@@ -83,7 +83,7 @@ else
 	$tab_partage = array('oui'=>'<img title="Référentiel accessible par la communauté" alt="" src="./_img/partage1.gif" />','non'=>'<img title="Référentiel caché à la communauté." alt="" src="./_img/partage0.gif" />','bof'=>'<img title="Référentiel partage sans intérêt (pas novateur)." alt="" src="./_img/partage0.gif" />','hs'=>'<img title="Référentiel partage sans objet (matière spécifique)." alt="" src="./_img/partage0.gif" />');
 	$DB_SQL = 'SELECT livret_matiere_id,livret_niveau_id,livret_niveau_nom,livret_referentiel_partage FROM livret_referentiel ';
 	$DB_SQL.= 'LEFT JOIN livret_niveau USING (livret_niveau_id) ';
-	$DB_SQL.= 'WHERE livret_structure_id=:structure_id AND livret_matiere_id IN('.$liste_matieres.') AND livret_niveau_id IN('.$_SESSION['NIVEAUX'].') ';
+	$DB_SQL.= 'WHERE livret_structure_id=:structure_id AND livret_matiere_id IN('.$liste_matieres.') AND ( livret_niveau_id IN('.$_SESSION['NIVEAUX'].') OR livret_palier_id IN('.$_SESSION['PALIERS'].') ) ';
 	$DB_SQL.= 'ORDER BY livret_matiere_id ASC, livret_niveau_ordre ASC';
 	$DB_VAR = array(':structure_id'=>$_SESSION['STRUCTURE_ID']);
 	$DB_TAB = DB::queryTab(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);

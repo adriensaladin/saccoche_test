@@ -338,15 +338,17 @@ function DB_OPT_matieres_groupe($structure_id,$groupe_id)
  * Retourner un tableau [valeur texte] des niveaux de l'établissement
  * 
  * @param string $listing_niveaux   id des niveaux séparés par des virgules
+ * @param string $listing_paliers   id des paliers séparés par des virgules
  * @return array|string
  */
 
-function DB_OPT_niveaux_etabl($listing_niveaux)
+function DB_OPT_niveaux_etabl($listing_niveaux,$listing_paliers)
 {
 	if($listing_niveaux)
 	{
 		$DB_SQL = 'SELECT livret_niveau_id AS valeur, livret_niveau_nom AS texte FROM livret_niveau ';
 		$DB_SQL.= 'WHERE livret_niveau_id IN('.$listing_niveaux.') ';
+		$DB_SQL.= ($listing_paliers) ? 'OR livret_palier_id IN('.$listing_paliers.') ' : '' ;
 		$DB_SQL.= 'ORDER BY livret_niveau_ordre ASC';
 		$DB_TAB = DB::queryTab(SACOCHE_BD_NAME , $DB_SQL , null);
 		return $DB_TAB;

@@ -134,7 +134,7 @@ entete();
 	<link rel="alternate" type="application/rss+xml" href="./_rss/rss.xml" title="SACoche" />
 	<script type="text/javascript" charset="utf-8" src="./_jquery/jquery14.min.js"></script>
 	<script type="text/javascript" charset="utf-8" src="./_jquery/jquery.form.js"></script>
-	<script type="text/javascript" charset="utf-8" src="./_jquery/jquery.validate.min.js"></script>
+	<script type="text/javascript" charset="utf-8" src="./_jquery/jquery.validate.pack.js"></script>
 	<script type="text/javascript" charset="utf-8" src="./_jquery/jquery.tablesorter.min.js"></script>
 	<script type="text/javascript" charset="utf-8" src="./_jquery/jquery.tooltip.pack.js"></script>
 	<script type="text/javascript" charset="utf-8" src="./_jquery/jquery.timers.js"></script>

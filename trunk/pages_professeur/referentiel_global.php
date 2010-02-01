@@ -72,7 +72,7 @@ else
 	$tab_partage = array('oui'=>'<img title="Référentiel accessible aux autres établissements." alt="" src="./_img/partage1.gif" />','non'=>'<img title="Référentiel caché aux autres établissements." alt="" src="./_img/partage0.gif" />','bof'=>'<img title="Référentiel dont le partage est sans intérêt (pas novateur)." alt="" src="./_img/partage0.gif" />','hs'=>'<img title="Référentiel dont le partage est sans objet (matière spécifique)." alt="" src="./_img/partage0.gif" />');
 	$DB_SQL = 'SELECT livret_matiere_id,livret_niveau_id,livret_niveau_nom,livret_referentiel_partage FROM livret_referentiel ';
 	$DB_SQL.= 'LEFT JOIN livret_niveau USING (livret_niveau_id) ';
-	$DB_SQL.= 'WHERE livret_structure_id=:structure_id AND livret_matiere_id IN('.$liste_matieres.') AND livret_niveau_id IN('.$_SESSION['NIVEAUX'].') ';
+	$DB_SQL.= 'WHERE livret_structure_id=:structure_id AND livret_matiere_id IN('.$liste_matieres.') AND ( livret_niveau_id IN('.$_SESSION['NIVEAUX'].') OR livret_palier_id IN('.$_SESSION['PALIERS'].') ) ';
 	$DB_SQL.= 'ORDER BY livret_matiere_id ASC, livret_niveau_ordre ASC';
 	$DB_VAR = array(':structure_id'=>$_SESSION['STRUCTURE_ID']);
 	$DB_TAB = DB::queryTab(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
@@ -129,15 +129,17 @@ else
 
 <?php
 // Fabrication des éléments select du formulaire, pour pouvoir prendre un référentiel d'une autre matière ou d'un autre niveau (demandé...).
-$select_matiere = afficher_select(DB_OPT_matieres_communes($_SESSION['MATIERES']) , $select_nom='f_matiere' , $option_first='oui' , $selection=false , $optgroup='non');
-$select_niveau  = afficher_select(DB_OPT_niveaux_etabl($_SESSION['NIVEAUX'])      , $select_nom='f_niveau'  , $option_first='oui' , $selection=false , $optgroup='non');
+$select_matiere = afficher_select(DB_OPT_matieres_communes($_SESSION['MATIERES'])                 , $select_nom='f_matiere' , $option_first='oui' , $selection=false , $optgroup='non');
+$select_niveau  = afficher_select(DB_OPT_niveaux_etabl($_SESSION['NIVEAUX'],$_SESSION['PALIERS']) , $select_nom='f_niveau'  , $option_first='oui' , $selection=false , $optgroup='non');
 ?>
 
 <hr />
 
 <div id="choisir_referentiel" class="hide">
 	<h2>Liste des référentiels disponibles</h2>
-	<?php echo $select_matiere ?> <?php echo $select_niveau ?> <input id="f_submit_lister" type="button" value="Actualiser." /><label id="ajax_msg_actualiser">&nbsp;</label><p />
+	<img alt="" src="./_img/bulle_aide.png" title="Seules les matières cochées par l'administrateur apparaissent." /> <?php echo $select_matiere ?>
+	<img alt="" src="./_img/bulle_aide.png" title="Seules les niveaux cochés par l'administrateur apparaissent." /> <?php echo $select_niveau ?>
+	<input id="f_submit_lister" type="button" value="Actualiser." /><label id="ajax_msg_actualiser">&nbsp;</label><p />
 	<a class="Valider_choisir" href="#"><img alt="Valider" src="./_img/action/action_valider.png" /> Valider le choix du référentiel coché.</a><br />
 	<a class="Annuler_choisir" href="#"><img alt="Annuler" src="./_img/action/action_annuler.png" /> Annuler le choix d'un référentiel.</a><br />
 	<label id="ajax_msg_choisir">&nbsp;</label>

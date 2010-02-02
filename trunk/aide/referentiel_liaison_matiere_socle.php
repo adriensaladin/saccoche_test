@@ -37,16 +37,17 @@ $TITRE = "Liaison matières &amp; socle commun";
 	Voici des publications officielles au format <em>pdf</em> en rapport avec le socle commun :</span>
 </p>
 <ul class="puce">
-	<li><a class="lien_ext" href="./_doc/officiel/ecole_socle_paliers1-2.pdf">Paliers 1&amp;2 - Attestation de maîtrise des connaissances et compétences du socle commun.</a></li>
-	<li><a class="lien_ext" href="./_doc/officiel/college_socle_palier3_2009_12_03.pdf">Palier 3 - Attestation de maîtrise des connaissances et compétences du socle commun.</a></li>
-	<li><a class="lien_ext" href="./_doc/officiel/college_socle_piliers.pdf">Palier 3 - Grilles de référence pour l'évaluation de la maîtrise des connaissances et compétences du socle commun.</a></li>
-	<li><a class="lien_ext" href="./_doc/officiel/college_socle_bo.pdf">Palier 3 - Bulletin Officiel avec le contenu de chacun des 7 piliers remis en page.</a></li>
+	<li><a class="lien_ext" href="./_doc/officiel/socle_attestation_paliers1-2.pdf">Paliers 1&amp;2 - Attestation de maîtrise des connaissances et compétences du socle commun.</a></li>
+	<li><a class="lien_ext" href="./_doc/officiel/socle_attestation_palier3_2009_12_03.pdf">Palier 3 - Attestation de maîtrise des connaissances et compétences du socle commun.</a></li>
+	<li><a class="lien_ext" href="./_doc/officiel/socle_palier3_grilles_references.pdf">Palier 3 - Grilles de référence pour l'évaluation de la maîtrise des connaissances et compétences du socle commun.</a></li>
+	<li><a class="lien_ext" href="./_doc/officiel/socle_palier3_bo_2007.pdf">Palier 3 - Bulletin Officiel avec le contenu de chacun des 7 piliers remis en page.</a></li>
 </ul>
 
 <h2>Documentations associées</h2>
 <ul class="puce">
 	<li><span class="manuel"><a href="./aide.php?fichier=environnement_coordonnateur">DOC : L'environnement professeur coordonnateur.</a></span></li>
-	<li><span class="manuel"><a href="./aide.php?fichier=referentiel_organisation_competences">DOC : Organisation d'un référentiel de compétences.</a></span></li>
+	<li><span class="manuel"><a href="./aide.php?fichier=referentiel_organisation_competences">DOC : Organisation des compétences dans les référentiels.</a></span></li>
+	<li><span class="manuel"><a href="./aide.php?fichier=referentiel_structure">DOC : Structure d'un référentiel.</a></span></li>
 	<li><span class="manuel"><a href="./aide.php?fichier=referentiel_creer_importer_partager_detruire">DOC : Créer / importer / partager / détruire un référentiel.</a></span></li>
 	<li><span class="manuel"><a href="./aide.php?fichier=referentiel_modifier_parametrer">DOC : Modifier / paramétrer un référentiel.</a></span></li>
 	<li><span class="manuel">DOC : Attestation de maîtrise du socle commun.</span></li>

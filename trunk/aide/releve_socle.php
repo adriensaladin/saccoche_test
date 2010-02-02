@@ -51,10 +51,10 @@ Pour chaque item du socle, <em>SACoche</em> recherche tous les items associés d
 	Voici des publications officielles au format <em>pdf</em> en rapport avec le socle commun :</span>
 </p>
 <ul class="puce">
-	<li><a class="lien_ext" href="./_doc/officiel/ecole_socle_paliers1-2.pdf">Paliers 1&amp;2 - Attestation de maîtrise des connaissances et compétences du socle commun.</a></li>
-	<li><a class="lien_ext" href="./_doc/officiel/college_socle_palier3_2009_12_03.pdf">Palier 3 - Attestation de maîtrise des connaissances et compétences du socle commun.</a></li>
-	<li><a class="lien_ext" href="./_doc/officiel/college_socle_piliers.pdf">Palier 3 - Grilles de référence pour l'évaluation de la maîtrise des connaissances et compétences du socle commun.</a></li>
-	<li><a class="lien_ext" href="./_doc/officiel/college_socle_bo.pdf">Palier 3 - Bulletin Officiel avec le contenu de chacun des 7 piliers remis en page.</a></li>
+	<li><a class="lien_ext" href="./_doc/officiel/socle_attestation_paliers1-2.pdf">Paliers 1&amp;2 - Attestation de maîtrise des connaissances et compétences du socle commun.</a></li>
+	<li><a class="lien_ext" href="./_doc/officiel/socle_attestation_palier3_2009_12_03.pdf">Palier 3 - Attestation de maîtrise des connaissances et compétences du socle commun.</a></li>
+	<li><a class="lien_ext" href="./_doc/officiel/socle_palier3_grilles_references.pdf">Palier 3 - Grilles de référence pour l'évaluation de la maîtrise des connaissances et compétences du socle commun.</a></li>
+	<li><a class="lien_ext" href="./_doc/officiel/socle_palier3_bo_2007.pdf">Palier 3 - Bulletin Officiel avec le contenu de chacun des 7 piliers remis en page.</a></li>
 </ul>
 
 <h2>Documentations associées</h2>

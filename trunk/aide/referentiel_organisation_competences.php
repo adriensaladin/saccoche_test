@@ -13,44 +13,51 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-$TITRE = "Organisation d'un référentiel de compétences";
+$TITRE = "Organisation des compétences dans les référentiels";
 ?>
-<h2>Introduction</h2>
+<h2>Vocabulaire</h2>
+On distingue différents niveaux et types de <i>"compétences"</i> :
+<ul class="puce">
+	<li>les <b>savoirs</b> ou <b>connaissances</b> (exemple : réciter une propriété)</li>
+	<li>les <b>savoirs-faire</b> ou <b>capacités</b> (exemple : utiliser une propriété, application directe ou situation un peu habillée)</li>
+	<li>les <b>savoirs-être</b> ou <b>attitudes</b> (exemple : manifester curiosité, créativité, motivation)</li>
+</ul>
 <p>
-	<b>Les coordonnateurs</b>, en concertation avec leurs équipes, ont la charge d'établir pour chaque niveau le référentiel de compétences de leur discipline.
-	<div class="hc"><img alt="organigramme_enseignements_et_socle_commun_extrait" src="./_img/aide/organigramme_enseignements_et_socle_commun_extrait.png" /></div>
+	Une <b>compétence</b> est <i>«&nbsp;l'aptitude à mobiliser un ensemble de ressources (connaissances, capacités et attitudes) adaptées dans une situation complexe et authentique.&nbsp;»</i>. C'est donc une notion complexe...
 </p>
 
-<h2>Organisation et vocabulaire</h2>
+<h2>Que mettre dans les référentiels ?</h2>
 <p>
-	Chaque <img alt="niveau" src="./_img/folder/folder_m2.png" /> <b>niveau</b> contient des <img alt="domaine" src="./_img/folder/folder_n1.png" /> <b>domaines</b>.<br />
-	Un domaine est constitué d'un nom, et d'un caractère (lettre ou chiffre) qui le référence.
+	Tout dépend de l'usage envisagé !
 </p>
+Une grille de savoirs et savoirs-faire a ses avantages :
+<ul class="puce">
+	<li>possibilité d'un bilan par matière, avec suppression de la note chiffrée intermédiaire</li>
+	<li>permet un suivi des acquisitions des élèves au quotidien</li>
+	<li>plus concret, plus facile, plus motivant pour l'élève</li>
+	<li>possibilité de remédiation fine, item par item</li>
+</ul>
 <p>
-	Chaque <img alt="domaine" src="./_img/folder/folder_n1.png" /> <b>domaine</b> contient des <img alt="thème" src="./_img/folder/folder_n2.png" /> <b>thèmes</b>.<br />
-	Un thème est juste constitué d'un nom.<br />
-	Dans chaque domaine, les thèmes sont implicitement numérotés à partir de 1.
+	Mais une telle grille ne doit pas se suffire à elle-même : aujourd'hui la demande institutionnelle est plus orientée en terme de compétences qu'en grand nombre de savoirs et savoirs-faire ; estimer l'acquisition du socle ne se fait pas par accumulation de savoirs et savoirs-faire, mais à la capacité de mobiliser des ressources notamment pour résoudre des problèmes ou de mener à bien des tâches complexes.<br />
+	À l'opposé, une grille de compétences a ses défauts ; l'attestation de maîtrise du socle n'est pas un outil opérationnel de suivi de l'élève au cours de sa scolarité.
 </p>
+
+<h2>Comment organiser les référentiels ?</h2>
 <p>
-	Chaque <img alt="thème" src="./_img/folder/folder_n2.png" /> <b>thème</b> contient des <img alt="item" src="./_img/folder/folder_n3.png" /> <b>items</b>.<br />
-	Un item est constitué d'un nom.<br />
-	Dans chaque thème, les items sont implicitement numérotés à partir de 0.<br />
-	Chaque item peut être associé à un coefficient, relié au socle commun, et relié à une ressource de remédiation.
+	SACoche a été conçu pour suivre les acquisitions des élèves au quotidien au sein de chaque matière et chaque niveau.<br />
+	Afin de prendre en compte des items transversaux ou interdisciplinaires, il existe aussi un niveau global (correspondant à un palier) et une matière transversale (automatiquement affectée à tous les professeurs).
 </p>
-<p>
-	Voici par exemple l'arborescence d'un référentiel, et la fiche de compétences associée :
-	<div class="hc"><img alt="organisation_referentiel" src="./_img/aide/organisation_referentiel.png" /></div>
-</p>
-<p>
-	<span class="danger">Attention : tout changement dans l'organisation ou le contenu d'un référentiel peut rendre obsolète une grille de compétences distribuée aux élèves.</span><br />
-	Par exemple, si on insère l'item «&nbsp;Repasser les mouchoirs&nbsp;» au début du thème «&nbsp;M1&nbsp;–&nbsp;Repassage&nbsp;», alors il prendra la référence M10, et les suivantes deviendront M11, M12 et M13&nbsp;!<br />
-	Ainsi, un référentiel de compétences, utilisé avec des grilles papier distribuées aux élèves, ne devrait pas être modifié en cours d'année.
-</p>
+<ul class="puce">
+	<li>Les référentiels <b>par matière</b> et <b>par niveau</b> sont adaptés pour des savoirs et/ou savoirs-faire précis, attachés à un programme donné. Par exemple l'item "savoir mesurer un angle".</li>
+	<li>Les référentiels <b>par matière</b> et rattachés à <b>un palier</b> sont adaptés pour des capacités génériques et/ou des attitudes, attachées à une matière donnée. Par exemple l'item "savoir lire une carte géographique" ne doit pas être mis sur chaque niveau (items déconnectés non réévalués), mais référencé une unique fois sur un palier.</li>
+	<li>Les référentiels de la <b>matière "transversale"</b>, obligatoirement rattachés à <b>un palier</b> sont adaptés pour des capacités génériques et/ou des attitudes interdisciplinaires. Par exemple l'item "s'impliquer dans un projet individuel ou collectif.".</li>
+</ul>
 
 <h2>Documentations associées</h2>
 <ul class="puce">
 	<li><span class="manuel"><a href="./aide.php?fichier=environnement_coordonnateur">DOC : L'environnement professeur coordonnateur.</a></span></li>
-	<li><span class="manuel">DOC : Organisation d'un référentiel de compétences.</span></li>
+	<li><span class="manuel">DOC : Organisation des compétences dans les référentiels.</span></li>
+	<li><span class="manuel"><a href="./aide.php?fichier=referentiel_structure">DOC : Structure d'un référentiel.</a></span></li>
 	<li><span class="manuel"><a href="./aide.php?fichier=referentiel_creer_importer_partager_detruire">DOC : Créer / importer / partager / détruire un référentiel.</a></span></li>
 	<li><span class="manuel"><a href="./aide.php?fichier=referentiel_modifier_parametrer">DOC : Modifier / paramétrer un référentiel.</a></span></li>
 	<li><span class="manuel"><a href="./aide.php?fichier=referentiel_liaison_matiere_socle">DOC : Liaison matières &amp; socle commun.</a></span></li>

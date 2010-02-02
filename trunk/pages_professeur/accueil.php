@@ -29,7 +29,6 @@ $TITRE = "Bienvenue dans votre espace identifié !";
 	<li><span class="manuel"><a class="pop_up" href="./aide.php?fichier=ergonomie_generale">DOC : Ergonomie générale.</a></span></li>
 	<li><span class="manuel"><a class="pop_up" href="./aide.php?fichier=environnement_professeur">DOC : L'environnement professeur.</a></span></li>
 	<li><span class="manuel"><a class="pop_up" href="./aide.php?fichier=environnement_coordonnateur">DOC : L'environnement professeur coordonnateur.</a></span></li>
-	<li><span class="manuel"><a class="pop_up" href="./aide.php?fichier=referentiel_organisation_competences">DOC : Organisation d'un référentiel de compétences.</a></span></li>
 	<li><span class="manuel"><a class="pop_up" href="./aide.php?fichier=gestion_groupes_besoin">DOC : Gestion des groupes de besoin.</a></span></li>
 </ul>
 

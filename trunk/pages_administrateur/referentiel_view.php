@@ -17,7 +17,8 @@ $TITRE = "Référentiels de compétences utilisés";
 ?>
 
 <div class="hc">
-	<span class="manuel"><a class="pop_up" href="./aide.php?fichier=referentiel_organisation_competences">DOC : Organisation d'un référentiel de compétences.</a></span>
+	<span class="manuel"><a class="pop_up" href="./aide.php?fichier=referentiel_organisation_competences">DOC : Organisation des compétences dans les référentiels.</a></span><br />
+	<span class="manuel"><a class="pop_up" href="./aide.php?fichier=referentiel_structure">DOC : Structure d'un référentiel.</a></span>
 </div>
 
 <?php

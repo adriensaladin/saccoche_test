@@ -55,23 +55,23 @@ $(document).ready
 
 		var images = new Array();
 		images[1]  = '';
-		images[1] += '<q class="n1_edit" lang="edit" title="Renommer ce domaine (avec sa référence)." />';
-		images[1] += '<q class="n1_add" lang="add" title="Ajouter un domaine à la suite." />';
-		images[1] += '<q class="n1_move" lang="move" title="Déplacer ce domaine (et renuméroter)." />';
-		images[1] += '<q class="n1_del" lang="del" title="Supprimer ce domaine ainsi que tout son contenu." />';
-		images[1] += '<q class="n2_add" lang="add" title="Ajouter un thème au début de ce domaine (et renuméroter)." />';
+		images[1] += '<q class="n1_edit" lang="edit" title="Renommer ce domaine (avec sa référence)."></q>';
+		images[1] += '<q class="n1_add" lang="add" title="Ajouter un domaine à la suite."></q>';
+		images[1] += '<q class="n1_move" lang="move" title="Déplacer ce domaine (et renuméroter)."></q>';
+		images[1] += '<q class="n1_del" lang="del" title="Supprimer ce domaine ainsi que tout son contenu."></q>';
+		images[1] += '<q class="n2_add" lang="add" title="Ajouter un thème au début de ce domaine (et renuméroter)."></q>';
 		images[2]  = '';
-		images[2] += '<q class="n2_edit" lang="edit" title="Renommer ce thème." />';
-		images[2] += '<q class="n2_add" lang="add" title="Ajouter un thème à la suite (et renuméroter)." />';
-		images[2] += '<q class="n2_move" lang="move" title="Déplacer ce thème (et renuméroter)." />';
-		images[2] += '<q class="n2_del" lang="del" title="Supprimer ce thème ainsi que tout son contenu (et renuméroter)." />';
-		images[2] += '<q class="n3_add" lang="add" title="Ajouter un item au début de ce thème (et renuméroter)." />';
+		images[2] += '<q class="n2_edit" lang="edit" title="Renommer ce thème."></q>';
+		images[2] += '<q class="n2_add" lang="add" title="Ajouter un thème à la suite (et renuméroter)."></q>';
+		images[2] += '<q class="n2_move" lang="move" title="Déplacer ce thème (et renuméroter)."></q>';
+		images[2] += '<q class="n2_del" lang="del" title="Supprimer ce thème ainsi que tout son contenu (et renuméroter)."></q>';
+		images[2] += '<q class="n3_add" lang="add" title="Ajouter un item au début de ce thème (et renuméroter)."></q>';
 		images[3]  = '';
-		images[3] += '<q class="n3_edit" lang="edit" title="Renommer, coefficienter, lier cet item." />';
-		images[3] += '<q class="n3_add" lang="add" title="Ajouter un item à la suite (et renuméroter)." />';
-		images[3] += '<q class="n3_move" lang="move" title="Déplacer cet item (et renuméroter)." />';
-		images[3] += '<q class="n3_fus" lang="fus" title="Fusionner avec un autre item (et renuméroter)." />';
-		images[3] += '<q class="n3_del" lang="del" title="Supprimer cet item (et renuméroter)." />';
+		images[3] += '<q class="n3_edit" lang="edit" title="Renommer, coefficienter, lier cet item."></q>';
+		images[3] += '<q class="n3_add" lang="add" title="Ajouter un item à la suite (et renuméroter)."></q>';
+		images[3] += '<q class="n3_move" lang="move" title="Déplacer cet item (et renuméroter)."></q>';
+		images[3] += '<q class="n3_fus" lang="fus" title="Fusionner avec un autre item (et renuméroter)."></q>';
+		images[3] += '<q class="n3_del" lang="del" title="Supprimer cet item (et renuméroter)."></q>';
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 //	Charger le div zone_compet en ajax
@@ -153,7 +153,7 @@ $(document).ready
 						break;
 					case 'n3' :	// item
 						new_li += '<i>Coef.</i> <input id="f_coef" name="f_coef" type="text" value="1" size="1" maxlength="1" /> <i>Nom</i> <input id="f_nom" name="f_nom" size="100" maxlength="256" type="text" value="" /> <img alt="" src="./_img/bulle_aide.png" title="Indiquer un coefficient (entier entre 0 et 5) et un nom d\'item." /><br />';
-						new_li += '<i>Socle</i> <input id="f_intitule" name="f_intitule" size="100" maxlength="256" type="text" value="Hors-socle." readonly="readonly" /><input id="f_socle" name="f_socle" type="hidden" value="0" /><q class="choisir" title="Sélectionner un item du socle commun."></q> <img alt="" src="./_img/bulle_aide.png" title="Indiquer l\'appartenance éventuelle au socle commun." /><br />';
+						new_li += '<i>Socle</i> <input id="f_intitule" name="f_intitule" size="100" maxlength="256" type="text" value="Hors-socle." readonly="readonly" /><input id="f_socle" name="f_socle" type="hidden" value="0" /><q class="choisir_compet" title="Sélectionner un item du socle commun."></q> <img alt="" src="./_img/bulle_aide.png" title="Indiquer l\'appartenance éventuelle au socle commun." /><br />';
 						new_li += '<i>Lien</i> <input id="f_lien" name="f_lien" type="text" value="" size="90" /> <img alt="" src="./_img/bulle_aide.png" title="Indiquer un lien vers une ressource de remédiation (facultatif)." />';
 						texte = 'cet item';
 						break;
@@ -225,7 +225,7 @@ $(document).ready
 						competence_id = $(this).parent().attr('id').substring(3);
 						lien = tab_ressources[competence_id];
 						new_div += '<i>Coef.</i> <input id="f_coef" name="f_coef" type="text" value="'+coef+'" size="1" maxlength="1" /> <i>Nom</i> <input id="f_nom" name="f_nom" size="'+Math.min(10+nom.length,128)+'" maxlength="256" type="text" value="'+nom+'" /> <img alt="" src="./_img/bulle_aide.png" title="Indiquer un coefficient (entier entre 0 et 5) et un nom d\'item." /><br />';
-						new_div += '<i>Socle</i> <input id="f_intitule" name="f_intitule" size="110" maxlength="256" type="text" value="'+socle_txt+'" readonly="readonly" /><input id="f_socle" name="f_socle" type="hidden" value="'+socle_id+'" /><q class="choisir" title="Sélectionner un item du socle commun."></q> <img alt="" src="./_img/bulle_aide.png" title="Indiquer l\'appartenance éventuelle au socle commun." /><br />';
+						new_div += '<i>Socle</i> <input id="f_intitule" name="f_intitule" size="110" maxlength="256" type="text" value="'+socle_txt+'" readonly="readonly" /><input id="f_socle" name="f_socle" type="hidden" value="'+socle_id+'" /><q class="choisir_compet" title="Sélectionner un item du socle commun."></q> <img alt="" src="./_img/bulle_aide.png" title="Indiquer l\'appartenance éventuelle au socle commun." /><br />';
 						new_div += '<i>Lien</i> <input id="f_lien" name="f_lien" type="text" value="'+lien+'" size="90" /> <img alt="" src="./_img/bulle_aide.png" title="Indiquer un lien vers une ressource de remédiation (facultatif)." />';
 						texte = 'cet item';
 						break;
@@ -301,6 +301,24 @@ $(document).ready
 		);
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+//	Clic sur l'image pour Fusionner deux items
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+		$('q[lang=fus]').live // live est utilisé pour prendre en compte les nouveaux éléments créés
+		('click',
+			function()
+			{
+				afficher_masquer_images_action('hide');
+				// On ajoute les boutons à cocher
+				id = $(this).parent().attr('id');
+				$('#zone_compet li.li_n3').each( function(){ if($(this).attr('id')!=id){$(this).children('b').after('<q class="n3_fus2" lang="fus2" title="Valider l\'absorption de l\'item choisi en 1er par celui-ci."></q>');} } );
+				new_img = '<q class="annuler" lang="fusionner" title="Annuler la fusion de cet item."></q><label id="ajax_msg">&nbsp;</label>';
+				// On insère le formulaire dans la page
+				$(this).after(new_img);
+				infobulle();
+			}
+		);
+
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 //	Clic sur l'image pour Déplacer un domaine (avec son contenu), ou un thème (avec son contenu), ou un item
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 		$('q[lang=move]').live // live est utilisé pour prendre en compte les nouveaux éléments créés
@@ -350,20 +368,9 @@ $(document).ready
 		);
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-//	Clic sur l'image pour Fusionner deux items
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-		$('q[lang=fus]').live // live est utilisé pour prendre en compte les nouveaux éléments créés
-		('click',
-			function()
-			{
-				alert('Non encore implémenté... mais ça va venir !');
-			}
-		);
-
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 //	Clic sur l'image pour afficher les items du socle
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-		$('q.choisir').live // live est utilisé pour prendre en compte les nouveaux éléments créés
+		$('q.choisir_compet').live // live est utilisé pour prendre en compte les nouveaux éléments créés
 		('click',
 			function()
 			{
@@ -401,14 +408,14 @@ $(document).ready
 				$('#socle_0').parent().parent().css("display","block");
 				$('#zone_socle').show('fast');
 				$('#socle_'+socle_id).focus();
-				objet = 'choisir';
+				objet = 'choisir_compet';
 			}
 		);
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 //	Clic sur l'image pour confirmer la relation au socle d'un item
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-		$('q.valider[lang=choisir]').click
+		$('q.valider[lang=choisir_compet]').click
 		(
 			function()
 			{
@@ -682,6 +689,113 @@ $(document).ready
 		);
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+//	Clic sur l'image pour confirmer la suppression d'un domaine (avec son contenu), ou d'un thème (avec son contenu), ou d'un item
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+		$('q.valider[lang=supprimer]').live // live est utilisé pour prendre en compte les nouveaux éléments créés
+		('click',
+			function()
+			{
+				// On récupère le contexte de la demande : n1 ou n2 ou n3
+				contexte = $(this).parent().parent().attr('id').substring(0,2);
+				// On récupère l'id de l'élément concerné (domaine ou theme ou item)
+				element_id = $(this).parent().parent().attr('id').substring(3);
+				// On récupère la liste des éléments suivants dont il faudra diminuer l'ordre
+				li = $(this).parent().parent();
+				tab_id = new Array();
+				while(li.next().length)
+				{
+					li = li.next();
+					tab_id.push(li.attr('id').substring(3));
+				}
+				// Envoi des infos en ajax pour le traitement de la demande
+				$('#ajax_msg').removeAttr("class").addClass("loader").html('Demande envoyée... Veuillez patienter.');
+				$.ajax
+				(
+					{
+						type : 'POST',
+						url : 'ajax.php?dossier='+DOSSIER+'&fichier='+FICHIER,
+						data : 'action=del&contexte='+contexte+'&element='+element_id+'&tab_id='+tab_id,
+						dataType : "html",
+						error : function(msg,string)
+						{
+							$('#ajax_msg').removeAttr("class").addClass("alerte").html('Echec de la connexion ! Veuillez recommencer.');
+						},
+						success : function(responseHTML)
+						{
+							maj_clock(1);
+							if(responseHTML=='ok')	// Attention aux caractères accentués : l'utf-8 pose des pbs pour ce test
+							{
+								$('#ajax_msg').parent().parent().remove();
+								afficher_masquer_images_action('show');
+							}
+							else
+							{
+								$('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);
+							}
+						}
+					}
+				);
+			}
+		);
+
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+//	Clic sur l'image pour confirmer la fusion d'un item avec un second qui l'absorbe
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+		$('q[lang=fus2]').live // live est utilisé pour prendre en compte les nouveaux éléments créés
+		('click',
+			function()
+			{
+				//
+				// Element de départ
+				//
+				li = $('q.annuler[lang=fusionner]').parent();
+				li_id_depart = li.attr('id');
+				element_id = li_id_depart.substring(3);
+				// On récupère la liste des éléments suivants dont il faudra diminuer l'ordre
+				tab_id = new Array();
+				while(li.next().length)
+				{
+					li = li.next();
+					tab_id.push(li.attr('id').substring(3));
+				}
+				//
+				// Element d'arrivée
+				//
+				li_id_arrivee = $(this).parent().attr('id');
+				element2_id = li_id_arrivee.substring(3);
+				// Envoi des infos en ajax pour le traitement de la demande
+				$('#ajax_msg').removeAttr("class").addClass("loader").html('Demande envoyée... Veuillez patienter.');
+				$.ajax
+				(
+					{
+						type : 'POST',
+						url : 'ajax.php?dossier='+DOSSIER+'&fichier='+FICHIER,
+						data : 'action=fus&element='+element_id+'&tab_id='+tab_id+'&element2='+element2_id,
+						dataType : "html",
+						error : function(msg,string)
+						{
+							$('#ajax_msg').removeAttr("class").addClass("alerte").html('Echec de la connexion ! Veuillez recommencer.');
+						},
+						success : function(responseHTML)
+						{
+							maj_clock(1);
+							if(responseHTML=='ok')	// Attention aux caractères accentués : l'utf-8 pose des pbs pour ce test
+							{
+								$('#ajax_msg').parent().remove();
+								$('q[lang=fus2]').remove();
+								afficher_masquer_images_action('show');
+							}
+							else
+							{
+								$('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);
+							}
+						}
+					}
+				);
+			}
+		);
+
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 //	Clic sur l'image pour confirmer le déplacement d'un domaine, ou d'un thème, ou d'un item
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 		$('q[lang=move2]').live // live est utilisé pour prendre en compte les nouveaux éléments créés
@@ -800,59 +914,9 @@ $(document).ready
 		);
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-//	Clic sur l'image pour confirmer la suppression d'un domaine (avec son contenu), ou d'un thème (avec son contenu), ou d'un item
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-		$('q.valider[lang=supprimer]').live // live est utilisé pour prendre en compte les nouveaux éléments créés
-		('click',
-			function()
-			{
-				// On récupère le contexte de la demande : n1 ou n2 ou n3
-				contexte = $(this).parent().parent().attr('id').substring(0,2);
-				// On récupère l'id de l'élément concerné (domaine ou theme ou item)
-				element_id = $(this).parent().parent().attr('id').substring(3);
-				// On récupère la liste des éléments suivants dont il faudra diminuer l'ordre
-				li = $(this).parent().parent();
-				tab_id = new Array();
-				while(li.next().length)
-				{
-					li = li.next();
-					tab_id.push(li.attr('id').substring(3));
-				}
-				// Envoi des infos en ajax pour le traitement de la demande
-				$('#ajax_msg').removeAttr("class").addClass("loader").html('Demande envoyée... Veuillez patienter.');
-				$.ajax
-				(
-					{
-						type : 'POST',
-						url : 'ajax.php?dossier='+DOSSIER+'&fichier='+FICHIER,
-						data : 'action=del&contexte='+contexte+'&element='+element_id+'&tab_id='+tab_id,
-						dataType : "html",
-						error : function(msg,string)
-						{
-							$('#ajax_msg').removeAttr("class").addClass("alerte").html('Echec de la connexion ! Veuillez recommencer.');
-						},
-						success : function(responseHTML)
-						{
-							maj_clock(1);
-							if(responseHTML=='ok')	// Attention aux caractères accentués : l'utf-8 pose des pbs pour ce test
-							{
-								$('#ajax_msg').parent().parent().remove();
-								afficher_masquer_images_action('show');
-							}
-							else
-							{
-								$('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);
-							}
-						}
-					}
-				);
-			}
-		);
-
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 //	Clic sur l'image pour Annuler le choix dans le socle
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-		$('q.annuler[lang=choisir]').click
+		$('q.annuler[lang=choisir_compet]').click
 		(
 			function()
 			{
@@ -900,6 +964,20 @@ $(document).ready
 		);
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+//	Clic sur l'image pour Annuler une fusion
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+		$('q.annuler[lang=fusionner]').live // live est utilisé pour prendre en compte les nouveaux éléments créés
+		('click',
+			function()
+			{
+				$(this).remove();
+				$('#ajax_msg').remove();
+				$('q[lang=fus2]').remove();
+				afficher_masquer_images_action('show');
+			}
+		);
+
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 //	Clic sur l'image pour Annuler un déplacement
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 		$('q.annuler[lang=deplacer]').live // live est utilisé pour prendre en compte les nouveaux éléments créés
@@ -922,11 +1000,11 @@ $(document).ready
 			{
 				if(e.which==13)	// touche entrée
 				{
-					if(objet=='choisir') {$('#zone_socle q.valider').click();} else {$('#zone_compet q.valider').click();}
+					if(objet=='choisir_compet') {$('#zone_socle q.valider').click();} else {$('#zone_compet q.valider').click();}
 				}
 				else if(e.which==27)	// touche escape
 				{
-					if(objet=='choisir') {$('#zone_socle q.annuler').click();} else {$('#zone_compet q.annuler').click();}
+					if(objet=='choisir_compet') {$('#zone_socle q.annuler').click();} else {$('#zone_compet q.annuler').click();}
 				}
 			}
 		);

@@ -43,6 +43,8 @@ vide_dossier('./__tmp/badge/'     , 525600); // Nettoyer ce dossier des fichiers
 Bien mieux : MySQLDUmper http://www.mysqldumper.net mais necessite de placer un script perl dans un dossier cgi pour être automatisé
 A voir aussi : http://www.ozerov.de/bigdump.php
 */
+// La base étant trop grosse, ça provoque systématiquement une erreur 500, alors je laisse tomber en attendant la décentralisation.
+/*
 if(is_dir('./__pages_webmestre'))
 {
 	$chemin_fichier = './__tmp/dump-base/db_backup.'.SACOCHE_BD_NAME.'.'.date("Y-m-d").'.sql.gz';
@@ -54,6 +56,7 @@ if(is_dir('./__pages_webmestre'))
 		echo'<img alt="" src="./__DBsvg/backupDB.php?nohtml=1&amp;onlyDB='.SACOCHE_BD_NAME.'&amp;StartBackup=standard&amp;mailto=1" />';
 	}
 }
+*/
 ?>
 
 <?php
@@ -130,9 +133,10 @@ if($ALERTE_SSO)
 
 <hr />
 <div>
-	Site strictement conforme aux normes <img src="./_img/valid_xhtml1.gif" alt="XHTML 1.0 Strict" /> et <img src="./_img/valid_css2.gif" alt="CSS 2.0" /> .<br />
+	<em>SACoche</em> est un projet de <a class="lien_ext" href="http://www.sesamath.net"><img alt="Sésamath_logo" src="./_img/logo_sesamath.png" /></a> .<br />
+	Site conforme aux normes <img src="./_img/valid_xhtml1.gif" alt="XHTML 1.0 Strict" /> et <img src="./_img/valid_css2.gif" alt="CSS 2.0" /> .<br />
 	Utilisez un navigateur respectant les standards, comme <a class="lien_ext" href="http://www.mozilla-europe.org/fr/"><img src="./_img/navigateur/firefox16.png" alt="Firefox" /> Firefox</a> !<br />
-	Déclaration CNIL n°1390450 (catégorie "Espace numérique de travail").<br />
+	Déclaration <a class="lien_ext" href="http://www.cnil.fr">CNIL</a> n°1390450 (catégorie "Espace numérique de travail").<br />
 	Pour un <a class="lien_ext" href="http://fr.wikipedia.org/wiki/Easter_egg">easter egg</a>, essayez le <a class="lien_ext" href="http://fr.wikipedia.org/wiki/Code_Konami">code Konami</a> <img src="./_img/smiley.gif" alt="sourire" />
 </div>
 

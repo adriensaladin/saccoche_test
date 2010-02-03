@@ -15,17 +15,18 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 if(($_SESSION['STRUCTURE_ID']==ID_DEMO)&&($_POST['action']!='Voir')){exit('Action désactivée pour la démo...');}
 
-$action     = (isset($_POST['action']))   ? clean_texte($_POST['action'])   : '';
-$contexte   = (isset($_POST['contexte'])) ? clean_texte($_POST['contexte']) : '';	// n1 ou n2 ou n3
-$matiere_id = (isset($_POST['matiere']))  ? clean_entier($_POST['matiere']) : 0;
-$element_id = (isset($_POST['element']))  ? clean_entier($_POST['element']) : 0;
-$parent_id  = (isset($_POST['parent']))   ? clean_entier($_POST['parent'])  : 0;
-$ordre      = (isset($_POST['ordre']))    ? clean_entier($_POST['ordre'])   : -1;
-$ref        = (isset($_POST['ref']))      ? clean_texte($_POST['ref'])      : '';
-$nom        = (isset($_POST['nom']))      ? clean_texte($_POST['nom'])      : '';
-$coef       = (isset($_POST['coef']))     ? clean_entier($_POST['coef'])    : -1;
-$lien       = (isset($_POST['lien']))     ? clean_texte($_POST['lien'])     : '';
-$socle_id   = (isset($_POST['socle']))    ? clean_entier($_POST['socle'])   : -1;
+$action      = (isset($_POST['action']))   ? clean_texte($_POST['action'])    : '';
+$contexte    = (isset($_POST['contexte'])) ? clean_texte($_POST['contexte'])  : '';	// n1 ou n2 ou n3
+$matiere_id  = (isset($_POST['matiere']))  ? clean_entier($_POST['matiere'])  : 0;
+$element_id  = (isset($_POST['element']))  ? clean_entier($_POST['element'])  : 0;
+$element2_id = (isset($_POST['element2'])) ? clean_entier($_POST['element2']) : 0;
+$parent_id   = (isset($_POST['parent']))   ? clean_entier($_POST['parent'])   : 0;
+$ordre       = (isset($_POST['ordre']))    ? clean_entier($_POST['ordre'])    : -1;
+$ref         = (isset($_POST['ref']))      ? clean_texte($_POST['ref'])       : '';
+$nom         = (isset($_POST['nom']))      ? clean_texte($_POST['nom'])       : '';
+$coef        = (isset($_POST['coef']))     ? clean_entier($_POST['coef'])     : -1;
+$lien        = (isset($_POST['lien']))     ? clean_texte($_POST['lien'])      : '';
+$socle_id    = (isset($_POST['socle']))    ? clean_entier($_POST['socle'])    : -1;
 
 function positif($n) {return($n);}
 $tab_id = (isset($_POST['tab_id'])) ? array_map('clean_entier',explode(',',$_POST['tab_id'])) : array() ;
@@ -387,6 +388,85 @@ elseif( ($action=='del') && (in_array($contexte,array('n1','n2','n3'))) && $elem
 		$DB_VAR = array(':structure_id'=>$_SESSION['STRUCTURE_ID']);
 		DB::query(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
 	}
+	// retour
+	echo ($test_delete) ? 'ok' : 'Élément non trouvé !';
+}
+
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+// Fusionner un item en l'absorbant par un 2nd item
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+elseif( ($action=='fus') && $element_id && $element2_id )
+{
+	// Supprimer l'item à fusionner
+	$DB_SQL = 'DELETE FROM livret_competence_item ';
+	$DB_SQL.= 'WHERE livret_structure_id=:structure_id AND livret_competence_id=:competence_id';
+	$DB_VAR = array(':structure_id'=>$_SESSION['STRUCTURE_ID'],':competence_id'=>$element_id);
+	DB::query(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
+	$test_delete = DB::rowCount(SACOCHE_BD_NAME);	// Est censé renvoyé le nb de lignes supprimées ; à cause du multi-tables curieusement ça renvoie 2, même pour un item non lié
+	// Décaler les autres éléments de l'élément parent concerné
+	if( ($test_delete) && (count($tab_id)) )
+	{
+		$DB_SQL = 'UPDATE livret_competence_item ';
+		$DB_SQL.= 'SET livret_competence_ordre=livret_competence_ordre-1 ';
+		$DB_SQL.= 'WHERE livret_structure_id=:structure_id AND livret_competence_id IN('.implode(',',$tab_id).') ';
+		$DB_VAR = array(':structure_id'=>$_SESSION['STRUCTURE_ID']);
+		DB::query(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
+	}
+	// Mettre à jour les références vers l'item absorbant
+	// Dans le cas où les deux items ont été évalués dans une même évaluation, on est obligé de supprimer l'un des scores
+	// On doit donc commencer par chercher les conflits possibles de clefs multiples pour éviter un erreur lors de l'UPDATE
+	$DB_VAR = array(':structure_id'=>$_SESSION['STRUCTURE_ID'],':element_id'=>$element_id,':element2_id'=>$element2_id);
+	// Pour livret_jointure_evaluation_competence
+	$DB_SQL = 'SELECT livret_evaluation_id ';
+	$DB_SQL.= 'FROM livret_jointure_evaluation_competence ';
+	$DB_SQL.= 'WHERE livret_structure_id=:structure_id AND livret_competence_id=:element_id';
+	$TAB1 = array_keys(DB::queryTab(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR , TRUE));
+	$DB_SQL = 'SELECT livret_evaluation_id ';
+	$DB_SQL.= 'FROM livret_jointure_evaluation_competence ';
+	$DB_SQL.= 'WHERE livret_structure_id=:structure_id AND livret_competence_id=:element2_id';
+	$TAB2 = array_keys(DB::queryTab(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR , TRUE));
+	$tab_conflit = array_intersect($TAB1,$TAB2);
+	if(count($tab_conflit))
+	{
+		$DB_SQL = 'DELETE FROM livret_jointure_evaluation_competence ';
+		$DB_SQL.= 'WHERE livret_structure_id=:structure_id AND livret_evaluation_id=:evaluation_id AND livret_competence_id=:element_id ';
+		$DB_SQL.= 'LIMIT 1 ';
+		foreach($tab_conflit as $livret_evaluation_id)
+		{
+			$DB_VAR[':evaluation_id'] = $livret_evaluation_id;
+			DB::query(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
+		}
+	}
+	$DB_SQL = 'UPDATE livret_jointure_evaluation_competence ';
+	$DB_SQL.= 'SET livret_competence_id=:element2_id ';
+	$DB_SQL.= 'WHERE livret_structure_id=:structure_id AND livret_competence_id=:element_id';
+	DB::query(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
+	// Pour livret_jointure_user_competence
+	$DB_SQL = 'SELECT CONCAT(livret_eleve_id,"x",livret_evaluation_id) AS clefs ';
+	$DB_SQL.= 'FROM livret_jointure_user_competence ';
+	$DB_SQL.= 'WHERE livret_structure_id=:structure_id AND livret_competence_id=:element_id';
+	$TAB1 = array_keys(DB::queryTab(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR , TRUE));
+	$DB_SQL = 'SELECT CONCAT(livret_eleve_id,"x",livret_evaluation_id) AS clefs ';
+	$DB_SQL.= 'FROM livret_jointure_user_competence ';
+	$DB_SQL.= 'WHERE livret_structure_id=:structure_id AND livret_competence_id=:element2_id';
+	$TAB2 = array_keys(DB::queryTab(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR , TRUE));
+	$tab_conflit = array_intersect($TAB1,$TAB2);
+	if(count($tab_conflit))
+	{
+		$DB_SQL = 'DELETE FROM livret_jointure_user_competence ';
+		$DB_SQL.= 'WHERE livret_structure_id=:structure_id AND livret_eleve_id=:eleve_id AND livret_evaluation_id=:evaluation_id AND livret_competence_id=:element_id ';
+		foreach($tab_conflit as $ids)
+		{
+			list($livret_eleve_id,$livret_evaluation_id) = explode('x',$ids);
+			$DB_VAR[':eleve_id']      = $livret_eleve_id;
+			$DB_VAR[':evaluation_id'] = $livret_evaluation_id;
+			DB::query(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
+		}
+	}
+	$DB_SQL = 'UPDATE livret_jointure_user_competence ';
+	$DB_SQL.= 'SET livret_competence_id=:element2_id ';
+	$DB_SQL.= 'WHERE livret_structure_id=:structure_id AND livret_competence_id=:element_id';
+	DB::query(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
 	// retour
 	echo ($test_delete) ? 'ok' : 'Élément non trouvé !';
 }

@@ -101,7 +101,7 @@ function affichage_stats()
 	// Retour de l'affichage
 	$retour  = 'Logiciel expérimenté depuis '.$nb_jours.' jours.<br />';
 	$retour .= 'Sont enregistrés : '.$nb_total_structure.' établissements, '.$nb_total_professeur.' professeurs, '.$nb_total_eleve.' élèves et '.$nb_total_compet.' items.<br />';
-	$retour .= 'En pratique : dans '.$nb_structure.' établissements '.$nb_professeur.' professeurs ont mis '.$nb_note.' notes à '.$nb_eleve.' élèves sur '.$nb_compet.' items.';
+	$retour .= 'En pratique : dans '.$nb_structure.' établissements '.$nb_professeur.' professeurs ont évalué '.$nb_compet.' items pour '.$nb_eleve.' élèves avec '.$nb_note.' saisies.';
 	return $retour;
 }
 

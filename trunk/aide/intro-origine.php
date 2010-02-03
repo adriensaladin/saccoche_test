@@ -32,7 +32,7 @@ $TITRE = "Origine du projet";
 
 <p>
 	Ne trouvant pas de logiciel simple d'utilisation et immédiatement utilisable en tant que tel, je me suis lancé au courant de l'été 2009 dans la conception d'une web-application qui corresponde à ces besoins.<br />
-	Fin août 2009, j'ai présenté le début de ce travail lors de l'AG de <a class="lien_ext" href="http://www.sesamath.net">l'association Sésamath</a>, dont je suis membre depuis plusieurs années. Ce projet personnel est alors devenu <em>SACoche</em>, un projet de <em>Sésamath</em>.<br />
+	Fin août 2009, j'ai présenté le début de ce travail lors de l'AG de <a class="lien_ext" href="http://www.sesamath.net">l'association Sésamath</a>, dont je suis membre depuis plusieurs années. Ce projet personnel est alors devenu <em>SACoche</em>, un projet de <img alt="Sésamath_logo" src="./_img/logo_sesamath.png" />.<br />
 </p>
 
 <p>

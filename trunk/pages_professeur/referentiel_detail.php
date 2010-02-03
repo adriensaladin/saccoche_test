@@ -125,7 +125,7 @@ else
 <div id="zone_socle">
 	<h2>Relation au socle commun</h2>
 	<label class="tab" for="rien">Item disciplinaire :</label><span class="f_nom i"></span><br />
-	<label class="tab" for="f_lien">Socle commun :</label>Cocher ci-dessous.<q class="valider" lang="choisir" title="Valider la modification de la relation au socle commun."></q><q class="annuler" lang="choisir" title="Annuler la modification de la relation au socle commun."></q>
+	<label class="tab" for="f_lien">Socle commun :</label>Cocher ci-dessous.<q class="valider" lang="choisir_compet" title="Valider la modification de la relation au socle commun."></q><q class="annuler" lang="choisir_compet" title="Annuler la modification de la relation au socle commun."></q>
 	<p />
 	<ul class="ul_n1"><li class="li_n3"><input id="socle_0" name="f_socle" type="radio" value="0" /><label for="socle_0">Hors-socle.</label></li></ul>
 	<p />

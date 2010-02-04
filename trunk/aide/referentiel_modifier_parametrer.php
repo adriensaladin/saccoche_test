@@ -43,7 +43,7 @@ $TITRE = "Modifier / paramétrer un référentiel";
 	Cliquer sur <img alt="niveau" src="./_img/action/folder_n1_edit.png" /><img alt="niveau" src="./_img/action/folder_n2_edit.png" /><img alt="niveau" src="./_img/action/folder_n3_edit.png" /> permet de renommer des domaines (ainsi que de modifier leur référence), des thèmes ou items. L'utilisation de certains caractères spéciaux est à l'étude (à développer).
 </p>
 <p>
-	Cliquer sur <img alt="niveau" src="./_img/action/folder_n3_fus.png" /> permet de fusionner des items : le premier item sur lequel on clique sera absorbé (nom, coefficient, etc.) par le second item (<img alt="niveau" src="./_img/action/folder_n3_fus.png" />) ; les scores associés sont reportés vers l'item absorbant, sauf si les deux items concernés ont été utilisés lors d'une même évaluation (dans ce cas le score du 1er item est effacé).
+	Cliquer sur <img alt="niveau" src="./_img/action/folder_n3_fus.png" /> permet de fusionner des items : le premier item sur lequel on clique sera absorbé (nom, coefficient, etc.) par le second item (<img alt="niveau" src="./_img/action/folder_n3_fus2.png" />) ; les scores associés sont reportés vers l'item absorbant, sauf si les deux items concernés ont été utilisés lors d'une même évaluation (dans ce cas le score du 1er item est effacé).
 </p>
 
 <h2>Paramétrer les items d'un référentiel<br />(coefficients, liens au socle, liens de remédiation)</h2>

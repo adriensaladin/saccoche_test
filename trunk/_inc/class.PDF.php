@@ -44,6 +44,10 @@ class PDF extends FPDF
 	private $marge_droit   = 0;
 	private $marge_bas     = 0;
 	private $distance_pied = 0;
+	// Conserver les informations de l'élève pour une recopie sur plusieurs pages
+	private $eleve_id     = 0;
+	private $eleve_nom    = '';
+	private $eleve_prenom = '';
 	// Définition de qqs variables supplémentaires
 	private $cases_nb          = 0;
 	private $cases_largeur     = 0;
@@ -233,30 +237,22 @@ class PDF extends FPDF
 		$this->AddFont('ArialNarrow');
 	}
 
-	public function releve_socle_entete($palier_nom,$eleve_id,$eleve_nom,$eleve_prenom)
+	public function releve_socle_identite()
 	{
-		// On prend une nouvelle page PDF pour chaque élève
-		$this->AddPage($this->orientation , 'A4');
-		// Intitulé
-		$this->SetFont('Arial' , 'B' , 10);
-		$this->SetXY($this->marge_gauche,$this->marge_haut);
-		$this->Cell($this->page_largeur-$this->marge_droit-75 , 5 , pdf('Attestation de maîtrise du socle commun') , 0 , 2 , 'L' , false , '');
-		$this->Cell($this->page_largeur-$this->marge_droit-75 , 5 , pdf($palier_nom) , 0 , 2 , 'L' , false , '');
-		// Nom prénom
-		$this->SetFont('Arial' , '' , 10);
-		$this->SetXY($this->page_largeur-$this->marge_droit-70 , $this->marge_haut);
-		$this->Cell(20 , 5 , pdf('Nom :') , 0 , 2 , 'R' , false , '');
-		$this->Cell(20 , 5 , pdf('Prénom :') , 0 , 2 , 'R' , false , '');
 		// On met le document au nom de l'élève, ou on établit un document générique
-		if($eleve_id)
+		if($this->eleve_id)
 		{
 			$this->SetFont('Arial' , 'B' , 10);
 			$this->SetXY($this->page_largeur-$this->marge_droit-50 , $this->marge_haut);
-			$this->Cell(50 , 5 , pdf($eleve_nom) , 0 , 2 , 'L' , false , '');
-			$this->Cell(50 , 5 , pdf($eleve_prenom) , 0 , 2 , 'L' , false , '');
+			$this->Cell(50 , 5 , pdf($this->eleve_nom) , 0 , 2 , 'L' , false , '');
+			$this->Cell(50 , 5 , pdf($this->eleve_prenom) , 0 , 2 , 'L' , false , '');
 		}
 		else
 		{
+			$this->SetFont('Arial' , '' , 10);
+			$this->SetXY($this->page_largeur-$this->marge_droit-70 , $this->marge_haut);
+			$this->Cell(20 , 5 , pdf('Nom :') , 0 , 2 , 'R' , false , '');
+			$this->Cell(20 , 5 , pdf('Prénom :') , 0 , 2 , 'R' , false , '');
 			$this->choisir_couleur_trait('gris_fonce');
 			$this->SetLineWidth(0.1);
 			$this->Line($this->page_largeur-$this->marge_droit-50 , $this->marge_haut+5 , $this->page_largeur-$this->marge_droit , $this->marge_haut+5);
@@ -266,15 +262,33 @@ class PDF extends FPDF
 		}
 	}
 
+	public function releve_socle_entete($palier_nom,$eleve_id,$eleve_nom,$eleve_prenom)
+	{
+		// On prend une nouvelle page PDF pour chaque élève
+		$this->AddPage($this->orientation , 'A4');
+		// Intitulé
+		$this->SetFont('Arial' , 'B' , 10);
+		$this->SetXY($this->marge_gauche,$this->marge_haut);
+		$this->Cell($this->page_largeur-$this->marge_droit-75 , 5 , pdf('Attestation de maîtrise du socle commun') , 0 , 2 , 'L' , false , '');
+		$this->Cell($this->page_largeur-$this->marge_droit-75 , 5 , pdf($palier_nom) , 0 , 2 , 'L' , false , '');
+		// Nom / prénom
+		$this->eleve_id     = $eleve_id;
+		$this->eleve_nom    = $eleve_nom;
+		$this->eleve_prenom = $eleve_prenom;
+		$this->releve_socle_identite();
+	}
+
 	public function releve_socle_pilier($pilier_nom,$pilier_nb_lignes,$test_affichage_scores,$tab_pilier_score)
 	{
-		$this->SetXY($this->marge_gauche , $this->GetY()+4);
+		$this->SetXY($this->marge_gauche , $this->GetY()+2);
 		$hauteur_requise = $this->cases_hauteur * $pilier_nb_lignes;
 		$hauteur_restante = $this->page_hauteur - $this->GetY() - $this->marge_bas;
 		if($hauteur_requise > $hauteur_restante)
 		{
-			// Prendre une nouvelle page si ça ne rentre pas
+			// Prendre une nouvelle page si ça ne rentre pas, avec recopie de l'identité de l'élève
 			$this->AddPage($this->orientation , 'A4');
+			$this->releve_socle_identite();
+			$this->SetXY($this->marge_gauche , $this->GetY()+2);
 		}
 		$this->SetFont('Arial' , 'B' , $this->taille_police + 1);
 		$this->choisir_couleur_fond('gris_fonce');

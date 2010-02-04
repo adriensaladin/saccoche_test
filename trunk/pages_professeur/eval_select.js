@@ -284,7 +284,7 @@ $(document).ready
 				{
 					type : 'POST',
 					url : 'ajax.php?dossier='+DOSSIER+'&fichier='+FICHIER,
-					data : 'f_action='+mode+'&f_ref='+ref,
+					data : 'f_action='+mode+'&f_ref='+ref+'&f_date='+date,
 					dataType : "html",
 					error : function(msg,string)
 					{
@@ -302,6 +302,7 @@ $(document).ready
 						{
 							$('#msg_voir').removeAttr("class").html('&nbsp;');
 							$('#table_voir').html(responseHTML);
+							$('#export_file2').attr("href", $("#filename").val()+ref+'.zip' );
 							$('#table_voir tbody td').css({"background-color":"#DDF","text-align":"center","vertical-align":"middle","font-size":"110%"});
 							infobulle();
 						}

@@ -300,7 +300,7 @@ else if( ($action=='ordonner') && $eval_id )
 //	Afficher le formulaire pour saisir les items acquis par les élèves à une évaluation
 //	Générer en même temps un csv à récupérer pour une saisie déportée
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-else if( ($action=='saisir') && $eval_id && $groupe_type && $groupe_id && $date ) // $date (au format MySQL) reporté dans input hidden
+else if( ($action=='saisir') && $eval_id && $groupe_type && $groupe_id && $date ) // $date (au format MySQL) reportée dans input hidden
 {
 	// liste des items
 	$DB_SQL = 'SELECT * FROM livret_competence_item ';
@@ -439,7 +439,7 @@ else if( ($action=='saisir') && $eval_id && $groupe_type && $groupe_id && $date 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 //	Voir les items acquis par les élèves à une évaluation
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-else if( ($action=='voir') && $eval_id && $groupe_type && $groupe_id )
+else if( ($action=='voir') && $eval_id && $groupe_type && $groupe_id && $date ) // $date française pour le csv
 {
 	// liste des items
 	$DB_SQL = 'SELECT * FROM livret_competence_item ';
@@ -481,16 +481,24 @@ else if( ($action=='voir') && $eval_id && $groupe_type && $groupe_id )
 	}
 	else
 	{
+		$separateur = ';';
 		$tab_affich  = array(); // tableau bi-dimensionnel [n°ligne=id_competence][n°colonne=id_user]
 		$tab_user_id = array(); // pas indispensable, mais plus lisible
 		$tab_comp_id = array(); // pas indispensable, mais plus lisible
 		$tab_affich[0][0] = '<td><a class="fermer_zone_voir" href="#"><img alt="Retourner" src="./_img/action/action_retourner.png" /> Retour</a></td>';
 		// première ligne (noms prénoms des élèves)
+		$csv_ligne_eleve_nom = $separateur;
+		$csv_ligne_eleve_id  = $separateur;
 		foreach($DB_TAB_USER as $key => $DB_ROW)
 		{
 			$tab_affich[0][$DB_ROW['livret_user_id']] = '<th><img alt="'.html($DB_ROW['livret_user_nom'].' '.$DB_ROW['livret_user_prenom']).'" src="./_img/php/etiquette.php?nom='.urlencode($DB_ROW['livret_user_nom']).'&amp;prenom='.urlencode($DB_ROW['livret_user_prenom']).'" /></th>';
 			$tab_user_id[$DB_ROW['livret_user_id']] = html($DB_ROW['livret_user_prenom'].' '.$DB_ROW['livret_user_nom']);
+			$csv_ligne_eleve_nom .= '"'.$DB_ROW['livret_user_prenom'].' '.$DB_ROW['livret_user_nom'].'"'.$separateur;
+			$csv_ligne_eleve_id  .= $DB_ROW['livret_user_id'].$separateur;
 		}
+		$export_csv = $csv_ligne_eleve_id."\r\n";
+		$csv_lignes_scores = array();
+		$csv_colonne_texte = array();
 		// première colonne (noms items)
 		foreach($DB_TAB_COMP as $key => $DB_ROW)
 		{
@@ -498,6 +506,8 @@ else if( ($action=='voir') && $eval_id && $groupe_type && $groupe_id )
 			$texte_socle = ($DB_ROW['livret_socle_id']) ? ' [S]' : ' [–]';
 			$tab_affich[$DB_ROW['livret_competence_id']][0] = '<th><b>'.html($comp_ref.$texte_socle).'</b><br />'.html($DB_ROW['livret_competence_nom']).'</th>';
 			$tab_comp_id[$DB_ROW['livret_competence_id']] = $comp_ref;
+			$csv_lignes_scores[$DB_ROW['livret_competence_id']][0] = $DB_ROW['livret_competence_id'];
+			$csv_colonne_texte[$DB_ROW['livret_competence_id']]    = $comp_ref.$texte_socle.' '.$DB_ROW['livret_competence_nom'];
 		}
 		// cases centrales vierges
 		foreach($tab_user_id as $user_id=>$val_user)
@@ -505,9 +515,11 @@ else if( ($action=='voir') && $eval_id && $groupe_type && $groupe_id )
 			foreach($tab_comp_id as $comp_id=>$val_comp)
 			{
 				$tab_affich[$comp_id][$user_id] = '<td title="'.$val_user.'<br />'.$val_comp.'">-</td>';
+				$csv_lignes_scores[$comp_id][$user_id] = ' ';
 			}
 		}
 		// ajouter le contenu
+		$tab_conversion = array( ''=>' ' , 'RR'=>'1' , 'R'=>'2' , 'V'=>'3' , 'VV'=>'4' , 'ABS'=>'A' , 'NN'=>'N' , 'DISP'=>'D' );
 		$DB_SQL = 'SELECT * FROM livret_jointure_user_competence ';
 		$DB_SQL.= 'WHERE livret_structure_id=:structure_id AND livret_evaluation_id=:eval_id ';
 		$DB_VAR = array(':structure_id'=>$_SESSION['STRUCTURE_ID'],':eval_id'=>$eval_id);
@@ -518,6 +530,7 @@ else if( ($action=='voir') && $eval_id && $groupe_type && $groupe_id )
 			if(isset($tab_affich[$DB_ROW['livret_competence_id']][$DB_ROW['livret_eleve_id']]))
 			{
 				$tab_affich[$DB_ROW['livret_competence_id']][$DB_ROW['livret_eleve_id']] = str_replace('>-<','><img alt="'.$DB_ROW['livret_user_competence_note'].'" src="./_img/note/note_'.$DB_ROW['livret_user_competence_note'].'.gif" /><',$tab_affich[$DB_ROW['livret_competence_id']][$DB_ROW['livret_eleve_id']]);
+				$csv_lignes_scores[$DB_ROW['livret_competence_id']][$DB_ROW['livret_eleve_id']] = $tab_conversion[$DB_ROW['livret_user_competence_note']];
 			}
 		}
 		// affichage
@@ -539,6 +552,27 @@ else if( ($action=='voir') && $eval_id && $groupe_type && $groupe_id )
 			}
 		}
 		echo'</tbody>';
+		// assemblage du csv
+		foreach($tab_comp_id as $comp_id=>$val_comp)
+		{
+			$export_csv .= $csv_lignes_scores[$comp_id][0].$separateur;
+			foreach($tab_user_id as $user_id=>$val_user)
+			{
+				$export_csv .= $csv_lignes_scores[$comp_id][$user_id].$separateur;
+			}
+			$export_csv .= $csv_colonne_texte[$comp_id]."\r\n";
+		}
+		$export_csv .= $csv_ligne_eleve_nom."\r\n\r\n";
+		// Enregistrer le csv
+		$export_csv .= 'SAISIE ARCHIVÉE '.$eval_id.' DU '.$date.'.'."\r\n";
+		$export_csv .= 'CODAGES AUTORISÉS : 1 2 3 4 A N D'."\r\n\r\n";
+		$fnom = 'saisie_'.$_SESSION['STRUCTURE_ID'].'_'.$_SESSION['USER_ID'].'_'.$ref;
+		$zip = new ZipArchive();
+		if ($zip->open($dossier_export.$fnom.'.zip', ZIPARCHIVE::CREATE)===TRUE)
+		{
+			$zip->addFromString($fnom.'.csv',csv($export_csv));
+			$zip->close();
+		}
 	}
 }
 

@@ -169,6 +169,11 @@ $date_fin   = date("d/m/Y");
 	<table id="table_voir" class="scor_eval">
 		<tbody><tr><td></td></tr></tbody>
 	</table>
+	<p>
+		<ul class="puce">
+			<li><a id="export_file2" class="lien_ext" href="">Récupérer un fichier des scores au format CSV pour archivage ou une saisie déportée.</a></li>
+		</ul>
+	</p>
 </div>
 
 <?php

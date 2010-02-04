@@ -269,8 +269,10 @@ $(document).ready
 			mode = $(this).attr('class');
 			// Récupérer les informations de la ligne concernée
 			ref    = $(this).parent().attr('lang');
+			date   = $(this).parent().prev().prev().prev().prev().html();
 			groupe = $(this).parent().prev().prev().prev().html();
 			info   = $(this).parent().prev().prev().html();
+			date   = date.substring(17,date.length); // garder la date française
 			// Masquer le tableau ; Afficher la zone associée et charger son contenu
 			$('#form0 , #form1').hide('fast');
 			$('#zone_voir').css("display","block");
@@ -281,7 +283,7 @@ $(document).ready
 				{
 					type : 'POST',
 					url : 'ajax.php?dossier='+DOSSIER+'&fichier='+FICHIER,
-					data : 'f_action='+mode+'&f_ref='+ref,
+					data : 'f_action='+mode+'&f_ref='+ref+'&f_date='+date,
 					dataType : "html",
 					error : function(msg,string)
 					{
@@ -299,6 +301,7 @@ $(document).ready
 						{
 							$('#msg_voir').removeAttr("class").html('&nbsp;');
 							$('#table_voir').html(responseHTML);
+							$('#export_file2').attr("href", $("#filename").val()+ref+'.zip' );
 							$('#table_voir tbody td').css({"background-color":"#DDF","text-align":"center","vertical-align":"middle","font-size":"110%"});
 							infobulle();
 						}

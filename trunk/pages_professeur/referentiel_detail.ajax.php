@@ -402,7 +402,7 @@ elseif( ($action=='fus') && $element_id && $element2_id )
 	$DB_SQL.= 'WHERE livret_structure_id=:structure_id AND livret_competence_id=:competence_id';
 	$DB_VAR = array(':structure_id'=>$_SESSION['STRUCTURE_ID'],':competence_id'=>$element_id);
 	DB::query(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
-	$test_delete = DB::rowCount(SACOCHE_BD_NAME);	// Est censé renvoyé le nb de lignes supprimées ; à cause du multi-tables curieusement ça renvoie 2, même pour un item non lié
+	$test_delete = DB::rowCount(SACOCHE_BD_NAME);
 	// Décaler les autres éléments de l'élément parent concerné
 	if( ($test_delete) && (count($tab_id)) )
 	{

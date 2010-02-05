@@ -39,7 +39,7 @@ function DB_select_arborescence($structure_id,$prof_id,$matiere_id,$niveau_id,$s
 	$DB_SQL = 'SELECT ';
 	$DB_SQL.= 'livret_matiere_id, livret_matiere_ref, livret_matiere_nom, ';
 	$DB_SQL.= 'livret_niveau_id, livret_niveau_ref, livret_niveau_nom, ';
-	$DB_SQL.= 'livret_domaine_id, livret_domaine_ref, livret_domaine_nom, ';
+	$DB_SQL.= 'livret_domaine_id, livret_domaine_ref, livret_domaine_nom, livret_domaine_ordre, ';
 	$DB_SQL.= 'livret_theme_id, livret_theme_ordre, livret_theme_nom, ';
 	$DB_SQL.= 'livret_competence_id, livret_competence_ordre, livret_competence_nom, livret_competence_coef, livret_competence_lien, ';
 	$DB_SQL.= $select_socle_nom;

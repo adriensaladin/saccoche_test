@@ -16,42 +16,59 @@ if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');
 $TITRE = "Algorithme de calcul";
 ?>
 
+<?php
+$tab_options = array();
+$tab_options[1] = 'Favoriser les évaluations récentes (coefficients en progression arithmétique).';
+$tab_options[0] = 'Comptabiliser autant chaque évaluation (moyenne classique non pondérée).';
+$options_methode = '';
+foreach($tab_options as $value => $texte)
+{
+	$selected = ($value==$_SESSION['CALCUL_METHODE']) ? ' selected="selected"' : '' ;
+	$options_methode .= '<option value="'.$value.'"'.$selected.'>'.$texte.'</option>';
+}
+
+$tab_options = array(0,1,2,3,4,5,6,7,8,9,10,15,20,30,40,50);
+$options_limite = '';
+foreach($tab_options as $value)
+{
+	if($value>1)
+	{
+		$texte = 'Prendre en compte uniquement les '.$value.' dernières évaluations.';
+	}
+	else
+	{
+		$texte = ($value) ? 'Prendre en compte uniquement la dernière évaluation.' : 'Prendre en compte toutes les évaluations.' ;
+	}
+	$selected = ($value==$_SESSION['CALCUL_LIMITE']) ? ' selected="selected"' : '' ;
+	$options_limite .= '<option value="'.$value.'"'.$selected.'>'.$texte.'</option>';
+}
+?>
+
 <form id="form_input" action="">
 	<table summary="">
 	<thead>
 		<tr><th>
 			Valeur d'un code (sur 100)
 		</th><th>
-			Importance pour 2 devoirs
-		</th><th>
-			Importance pour 3 devoirs
-		</th><th>
-			Importance pour 4 devoirs ou +
+			Méthode de calcul par défaut (modifiable pour chaque référentiel)
 		</th><th>
 			Seuil d'aquisition (sur 100)
 		</th></tr>
 	</thead>
 	<tbody>
 		<tr><td>
-			<label class="tab mini" for="valeurRR">acquisition <img alt="" src="./_img/note/note_RR.gif" /> :</label><input type="text" size="3" id="valeurRR" name="valeurRR" value="<?php echo $_SESSION['PARAM_CALCUL']['valeur']['RR'] ?>" /><br />
-			<label class="tab mini" for="valeurR" >acquisition <img alt="" src="./_img/note/note_R.gif" />  :</label><input type="text" size="3" id="valeurR"  name="valeurR"  value="<?php echo $_SESSION['PARAM_CALCUL']['valeur']['R']  ?>" /><br />
-			<label class="tab mini" for="valeurV" >acquisition <img alt="" src="./_img/note/note_V.gif" />  :</label><input type="text" size="3" id="valeurV"  name="valeurV"  value="<?php echo $_SESSION['PARAM_CALCUL']['valeur']['V']  ?>" /><br />
-			<label class="tab mini" for="valeurVV">acquisition <img alt="" src="./_img/note/note_VV.gif" /> :</label><input type="text" size="3" id="valeurVV" name="valeurVV" value="<?php echo $_SESSION['PARAM_CALCUL']['valeur']['VV'] ?>" /><br />
+			<label class="tab mini" for="valeurRR">acquisition <img alt="" src="./_img/note/note_RR.gif" /> :</label><input type="text" size="3" id="valeurRR" name="valeurRR" value="<?php echo $_SESSION['CALCUL_VALEUR_RR'] ?>" /><br />
+			<label class="tab mini" for="valeurR" >acquisition <img alt="" src="./_img/note/note_R.gif" />  :</label><input type="text" size="3" id="valeurR"  name="valeurR"  value="<?php echo $_SESSION['CALCUL_VALEUR_R']  ?>" /><br />
+			<label class="tab mini" for="valeurV" >acquisition <img alt="" src="./_img/note/note_V.gif" />  :</label><input type="text" size="3" id="valeurV"  name="valeurV"  value="<?php echo $_SESSION['CALCUL_VALEUR_V']  ?>" /><br />
+			<label class="tab mini" for="valeurVV">acquisition <img alt="" src="./_img/note/note_VV.gif" /> :</label><input type="text" size="3" id="valeurVV" name="valeurVV" value="<?php echo $_SESSION['CALCUL_VALEUR_VV'] ?>" /><br />
 		</td><td>
-			<label class="tab mini" for="coef1sur2">devoir ancien :</label><input type="text" size="3" id="coef1sur2" name="coef1sur2" value="<?php echo $_SESSION['PARAM_CALCUL']['coef'][2][1] ?>" /><br />
-			<label class="tab mini" for="coef2sur2">devoir récent :</label><input type="text" size="3" id="coef2sur2" name="coef2sur2" value="<?php echo $_SESSION['PARAM_CALCUL']['coef'][2][2] ?>" /><br />
+			&nbsp;<br />
+			<select id="f_methode" name="f_methode"><?php echo $options_methode ?></select><br />
+			<select id="f_limite" name="f_limite"><?php echo $options_limite ?></select><br />
 		</td><td>
-			<label class="tab mini" for="coef1sur3">devoir ancien :</label><input type="text" size="3" id="coef1sur3" name="coef1sur3" value="<?php echo $_SESSION['PARAM_CALCUL']['coef'][3][1] ?>" /><br />
-			<label class="tab mini" for="coef2sur3">devoir médian :</label><input type="text" size="3" id="coef2sur3" name="coef2sur3" value="<?php echo $_SESSION['PARAM_CALCUL']['coef'][3][2] ?>" /><br />
-			<label class="tab mini" for="coef3sur3">devoir récent :</label><input type="text" size="3" id="coef3sur3" name="coef3sur3" value="<?php echo $_SESSION['PARAM_CALCUL']['coef'][3][3] ?>" /><br />
-		</td><td>
-			<label class="tab" for="coef1sur4">devoir très ancien :</label><input type="text" size="3" id="coef1sur4" name="coef1sur4" value="<?php echo $_SESSION['PARAM_CALCUL']['coef'][4][1] ?>" /><br />
-			<label class="tab" for="coef2sur4">devoir ancien :</label><input type="text" size="3" id="coef2sur4" name="coef2sur4" value="<?php echo $_SESSION['PARAM_CALCUL']['coef'][4][2] ?>" /><br />
-			<label class="tab" for="coef3sur4">devoir récent :</label><input type="text" size="3" id="coef3sur4" name="coef3sur4" value="<?php echo $_SESSION['PARAM_CALCUL']['coef'][4][3] ?>" /><br />
-			<label class="tab" for="coef4sur4">devoir très récent :</label><input type="text" size="3" id="coef4sur4" name="coef4sur4" value="<?php echo $_SESSION['PARAM_CALCUL']['coef'][4][4] ?>" /><br />
-		</td><td>
-			<label class="tab mini" for="seuilR">non acquis :</label>&lt; <input type="text" size="3" id="seuilR" name="seuilR" value="<?php echo $_SESSION['PARAM_CALCUL']['seuil']['R'] ?>" /><br />
-			<label class="tab mini" for="seuilV">acquis :</label>&gt; <input type="text" size="3" id="seuilV" name="seuilV" value="<?php echo $_SESSION['PARAM_CALCUL']['seuil']['V'] ?>" /><br />
+			&nbsp;<br />
+			<label class="tab mini" for="seuilR">non acquis :</label>&lt; <input type="text" size="3" id="seuilR" name="seuilR" value="<?php echo $_SESSION['CALCUL_SEUIL_R'] ?>" /><br />
+			<label class="tab mini" for="seuilV">acquis :</label>&gt; <input type="text" size="3" id="seuilV" name="seuilV" value="<?php echo $_SESSION['CALCUL_SEUIL_V'] ?>" /><br />
 		</td></tr>
 	</tbody>
 	</table>

@@ -262,8 +262,8 @@ function DB_tester_matiere_reference($structure_id,$matiere_ref,$matiere_id=fals
 		$DB_VAR[':matiere_id'] = $matiere_id;
 	}
 	$DB_SQL.= 'LIMIT 1';
-	DB::queryRow(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
-	return DB::rowCount(SACOCHE_BD_NAME) ;
+	$DB_ROW = DB::queryRow(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
+	return count($DB_ROW) ;
 }
 
 /**
@@ -286,8 +286,8 @@ function DB_tester_classe_reference($structure_id,$groupe_ref,$groupe_id=false)
 		$DB_VAR[':groupe_id'] = $groupe_id;
 	}
 	$DB_SQL.= 'LIMIT 1';
-	DB::queryRow(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
-	return DB::rowCount(SACOCHE_BD_NAME) ;
+	$DB_ROW = DB::queryRow(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
+	return count($DB_ROW) ;
 }
 
 /**
@@ -310,8 +310,8 @@ function DB_tester_groupe_nom($structure_id,$groupe_nom,$groupe_id=false)
 		$DB_VAR[':groupe_id'] = $groupe_id;
 	}
 	$DB_SQL.= 'LIMIT 1';
-	DB::queryRow(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
-	return DB::rowCount(SACOCHE_BD_NAME) ;
+	$DB_ROW = DB::queryRow(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
+	return count($DB_ROW) ;
 }
 
 /**
@@ -334,8 +334,8 @@ function DB_tester_periode_nom($structure_id,$periode_nom,$periode_id=false)
 		$DB_VAR[':periode_id'] = $periode_id;
 	}
 	$DB_SQL.= 'LIMIT 1';
-	DB::queryRow(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
-	return DB::rowCount(SACOCHE_BD_NAME) ;
+	$DB_ROW = DB::queryRow(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
+	return count($DB_ROW) ;
 }
 
 /**
@@ -359,8 +359,8 @@ function DB_tester_utilisateur_idENT($structure_id,$user_id_ent,$user_id=false)
 		$DB_VAR[':user_id'] = $user_id;
 	}
 	$DB_SQL.= 'LIMIT 1';
-	DB::queryRow(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
-	return DB::rowCount(SACOCHE_BD_NAME) ;
+	$DB_ROW = DB::queryRow(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
+	return count($DB_ROW) ;
 }
 
 /**
@@ -384,8 +384,8 @@ function DB_tester_utilisateur_idGepi($structure_id,$user_id_gepi,$user_id=false
 		$DB_VAR[':user_id'] = $user_id;
 	}
 	$DB_SQL.= 'LIMIT 1';
-	DB::queryRow(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
-	return DB::rowCount(SACOCHE_BD_NAME) ;
+	$DB_ROW = DB::queryRow(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
+	return count($DB_ROW) ;
 }
 
 /**
@@ -410,8 +410,8 @@ function DB_tester_utilisateur_numSconet($structure_id,$user_num_sconet,$user_pr
 		$DB_VAR[':user_id'] = $user_id;
 	}
 	$DB_SQL.= 'LIMIT 1';
-	DB::queryRow(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
-	return DB::rowCount(SACOCHE_BD_NAME) ;
+	$DB_ROW = DB::queryRow(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
+	return count($DB_ROW) ;
 }
 
 /**
@@ -436,8 +436,8 @@ function DB_tester_utilisateur_reference($structure_id,$user_reference,$user_pro
 		$DB_VAR[':user_id'] = $user_id;
 	}
 	$DB_SQL.= 'LIMIT 1';
-	DB::queryRow(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
-	return DB::rowCount(SACOCHE_BD_NAME) ;
+	$DB_ROW = DB::queryRow(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
+	return count($DB_ROW) ;
 }
 
 /**
@@ -461,8 +461,8 @@ function DB_tester_login($structure_id,$user_login,$user_id=false)
 		$DB_VAR[':user_id'] = $user_id;
 	}
 	$DB_SQL.= 'LIMIT 1';
-	DB::queryRow(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
-	return DB::rowCount(SACOCHE_BD_NAME) ;
+	$DB_ROW = DB::queryRow(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
+	return count($DB_ROW) ;
 }
 
 /**
@@ -959,8 +959,8 @@ function DB_modifier_liaison_professeur_matiere($structure_id,$user_id,$matiere_
 		$DB_SQL.= 'WHERE livret_structure_id=:structure_id AND livret_user_id=:user_id AND livret_matiere_id=:matiere_id ';
 		$DB_SQL.= 'LIMIT 1';
 		$DB_VAR = array(':structure_id'=>$structure_id,':user_id'=>$user_id,':matiere_id'=>$matiere_id);
-		DB::queryRow(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
-		if(!DB::rowCount(SACOCHE_BD_NAME))
+		$DB_ROW = DB::queryRow(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
+		if(!count($DB_ROW))
 		{
 			$DB_SQL = 'INSERT INTO livret_jointure_user_matiere (livret_structure_id,livret_user_id,livret_matiere_id,livret_jointure_coord) ';
 			$DB_SQL.= 'VALUES(:structure_id,:user_id,:matiere_id,:coord)';
@@ -1200,8 +1200,8 @@ function DB_changer_son_mdp($structure_id,$user_id,$user_profil,$password_ancien
 		$DB_SQL.= 'LIMIT 1';
 		$DB_VAR = array(':structure_id'=>$structure_id,':password_crypte'=>$password_ancien_crypte);
 	}
-	DB::queryRow(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
-	if(!DB::rowCount(SACOCHE_BD_NAME))
+	$DB_ROW = DB::queryRow(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
+	if(!count($DB_ROW))
 	{
 		return 'Le mot de passe actuel est incorrect !';
 	}

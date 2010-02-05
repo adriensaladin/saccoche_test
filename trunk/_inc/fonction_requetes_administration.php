@@ -41,15 +41,21 @@ function connecter_admin($structure_id,$password)
 		$_SESSION['USER_ID_ENT']      = '';
 		$_SESSION['USER_ID_GEPI']     = '';
 		$_SESSION['SSO']              = $DB_ROW['livret_structure_sso'];
+		$_SESSION['MODELE_PROF']      = $DB_ROW['livret_structure_modele_professeur']; // utile uniquement aux admins
+		$_SESSION['MODELE_ELEVE']     = $DB_ROW['livret_structure_modele_eleve']; // utile uniquement aux admins
 		$_SESSION['MATIERES']         = $DB_ROW['livret_structure_matieres'];
 		$_SESSION['NIVEAUX']          = $DB_ROW['livret_structure_niveaux'];
 		$_SESSION['PALIERS']          = $DB_ROW['livret_structure_paliers'];
 		$_SESSION['ELEVE_OPTIONS']    = $DB_ROW['livret_structure_eleve_options'];
 		$_SESSION['DUREE_INACTIVITE'] = $DB_ROW['livret_structure_duree_inactivite'];
-		eval('$_SESSION[\'PARAM_CALCUL\']='.$DB_ROW['livret_structure_param_calcul'].';');
-
-		$_SESSION['MODELE_PROF']   = $DB_ROW['livret_structure_modele_professeur'];
-		$_SESSION['MODELE_ELEVE']  = $DB_ROW['livret_structure_modele_eleve'];
+		$_SESSION['CALCUL_VALEUR_RR'] = $DB_ROW['livret_structure_calcul_valeur_RR'];
+		$_SESSION['CALCUL_VALEUR_R']  = $DB_ROW['livret_structure_calcul_valeur_R'];
+		$_SESSION['CALCUL_VALEUR_V']  = $DB_ROW['livret_structure_calcul_valeur_V'];
+		$_SESSION['CALCUL_VALEUR_VV'] = $DB_ROW['livret_structure_calcul_valeur_VV'];
+		$_SESSION['CALCUL_SEUIL_R']   = $DB_ROW['livret_structure_calcul_seuil_R'];
+		$_SESSION['CALCUL_SEUIL_V']   = $DB_ROW['livret_structure_calcul_seuil_V'];
+		$_SESSION['CALCUL_METHODE']   = $DB_ROW['livret_structure_calcul_methode'];
+		$_SESSION['CALCUL_LIMITE']    = $DB_ROW['livret_structure_calcul_limite'];
 		setcookie('competences-etablissement',$structure_id,time()+60*60*24*365,'/');
 	}
 }
@@ -98,15 +104,23 @@ function connecter_user($structure_id,$login,$password,$sso=false)
 		$_SESSION['USER_ID_ENT']      = $DB_ROW['livret_user_id_ent'];
 		$_SESSION['USER_ID_GEPI']     = $DB_ROW['livret_user_id_gepi'];
 		$_SESSION['SSO']              = $DB_ROW['livret_structure_sso'];
+		$_SESSION['MODELE_PROF']      = $DB_ROW['livret_structure_modele_professeur'];
+		$_SESSION['MODELE_ELEVE']     = $DB_ROW['livret_structure_modele_eleve'];
 		$_SESSION['MATIERES']         = $DB_ROW['livret_structure_matieres'];
 		$_SESSION['NIVEAUX']          = $DB_ROW['livret_structure_niveaux'];
 		$_SESSION['PALIERS']          = $DB_ROW['livret_structure_paliers'];
 		$_SESSION['ELEVE_OPTIONS']    = $DB_ROW['livret_structure_eleve_options'];
 		$_SESSION['DUREE_INACTIVITE'] = $DB_ROW['livret_structure_duree_inactivite'];
-		eval('$_SESSION[\'PARAM_CALCUL\']='.$DB_ROW['livret_structure_param_calcul'].';');
-
-		$_SESSION['ELEVE_CLASSE_ID']  = (int) $DB_ROW['livret_eleve_classe_id'];
-		$_SESSION['ELEVE_CLASSE_NOM'] = $DB_ROW['livret_groupe_nom'];
+		$_SESSION['CALCUL_VALEUR_RR'] = $DB_ROW['livret_structure_calcul_valeur_RR'];
+		$_SESSION['CALCUL_VALEUR_R']  = $DB_ROW['livret_structure_calcul_valeur_R'];
+		$_SESSION['CALCUL_VALEUR_V']  = $DB_ROW['livret_structure_calcul_valeur_V'];
+		$_SESSION['CALCUL_VALEUR_VV'] = $DB_ROW['livret_structure_calcul_valeur_VV'];
+		$_SESSION['CALCUL_SEUIL_R']   = $DB_ROW['livret_structure_calcul_seuil_R'];
+		$_SESSION['CALCUL_SEUIL_V']   = $DB_ROW['livret_structure_calcul_seuil_V'];
+		$_SESSION['CALCUL_METHODE']   = $DB_ROW['livret_structure_calcul_methode'];
+		$_SESSION['CALCUL_LIMITE']    = $DB_ROW['livret_structure_calcul_limite'];
+		$_SESSION['ELEVE_CLASSE_ID']  = (int) $DB_ROW['livret_eleve_classe_id'];	// inutile pour les admins
+		$_SESSION['ELEVE_CLASSE_NOM'] = $DB_ROW['livret_groupe_nom'];	// inutile pour les admins
 		setcookie('competences-etablissement',$structure_id,time()+60*60*24*365,'/');
 	}
 }

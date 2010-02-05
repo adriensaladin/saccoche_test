@@ -14,8 +14,27 @@
 
 // Classe de gestion des connexions aux pools
 require_once("database/DatabaseManager.class.php");
- 
- 
+
+/*
+SELECT une LIGNE			:	$DB_ROW = DB::queryRow(SACOCHE_BD_NAME , 'SELECT ... FROM ... WHERE ... LIMIT 1' , $DB_VAR );
+nb lignes retournées	:	count($DB_ROW)
+
+SELECT multi LIGNE		:	$DB_TAB = DB::queryTab(SACOCHE_BD_NAME , 'SELECT ... FROM ... WHERE ...' , $DB_VAR [, bool $indexkey] );
+nb lignes retournées	:	count($DB_TAB)
+
+UPDATE								:	DB::query(SACOCHE_BD_NAME, 'UPDATE ... SET ... WHERE ...' , $DB_VAR );
+nb lignes modifiées		:	DB::rowCount(SACOCHE_BD_NAME);
+
+DELETE								:	DB::query(SACOCHE_BD_NAME, 'DELETE ... FROM ... WHERE ...' , $DB_VAR );
+nb lignes modifiées		:	DB::rowCount(SACOCHE_BD_NAME);
+
+REPLACE								:	DB::query(SACOCHE_BD_NAME, 'REPLACE INTO ... VALUES ...' , $DB_VAR );
+nb lignes modifiées		:	DB::rowCount(SACOCHE_BD_NAME);	// (comme un REPLACE c'est un DELETE + un INSERT, à tester si ça renvoie le double de lignes remplacées ou pas...)
+
+INSERT								:	DB::query(SACOCHE_BD_NAME, 'INSERT INTO ... VALUES ...' , $DB_VAR );
+valeur AUTO-INCREMENT	: DB::getLastOid(SACOCHE_BD_NAME);
+*/
+
 class DB {
 	
 	

@@ -17,7 +17,16 @@ $(document).ready
 	function()
 	{
 
+		// Préparation de select utiles
 		var select_partage = '<select id="f_partage" name="f_partage"><option value="oui">Rendre ce référentiel accessible par d\'autres établissements.</option><option value="bof">Référentiel dont le partage sans intérêt (pas novateur).</option><option value="non">Cacher ce référentiel aux autres établissements.</option></select>';
+		var select_methode = '<select id="f_methode" name="f_methode"><option value="1">Coefficients progressifs</option><option value="0">Moyenne classique</option></select>';
+		var select_limite  = '<select id="f_limite" name="f_limite"><option value="0">avec toutes les notes.</option><option value="1">uniquement la dernière.</option>';
+		var tab_options = new Array(2,3,4,5,6,7,8,9,10,15,20,30,40,50);
+		for(i=0 ; i<tab_options.length ; i++)
+		{
+			select_limite += '<option value="2">des '+tab_options[i]+' dernières.</option>';
+		}
+		select_limite += '</select>';
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 //	Clic sur l'image pour Voir un référentiel de son établissement
@@ -70,11 +79,30 @@ $(document).ready
 			{
 				afficher_masquer_images_action('hide');
 				ids     = $(this).parent().attr('id');
-				partage = $(this).parent().prev().attr('lang');
+				partage = $(this).parent().prev().prev().attr('lang');
 				new_span = '<span>'+select_partage.replace('"'+partage+'"','"'+partage+'" selected="selected"')+'<q class="valider" lang="partager" title="Valider les modifications du partage de ce référentiel."></q><q class="annuler" title="Annuler la modification du partage de ce référentiel."></q> <label id="ajax_msg">&nbsp;</label></span>';
 				$(this).after(new_span);
 				infobulle();
 				mode = 'partager';
+			}
+		);
+
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+//	Clic sur l'image pour Modifier le mode de calcul d'un référentiel
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+		$('q.calculer').live // live est utilisé pour prendre en compte les nouveaux éléments créés
+		('click',
+			function()
+			{
+				afficher_masquer_images_action('hide');
+				ids     = $(this).parent().attr('id');
+				param   = $(this).parent().prev().attr('lang');
+				methode = param.substring(1,2);
+				limite  = param.substring(3,param.length);
+				new_span = '<span>'+select_methode.replace('"'+methode+'"','"'+methode+'" selected="selected"')+select_limite.replace('"'+limite+'"','"'+limite+'" selected="selected"')+'<q class="valider" lang="calculer" title="Valider les modifications du mode de calcul de ce référentiel."></q><q class="annuler" title="Annuler la modification du mode de calcul de ce référentiel."></q> <label id="ajax_msg">&nbsp;</label></span>';
+				$(this).after(new_span);
+				infobulle();
+				mode = 'calculer';
 			}
 		);
 
@@ -480,7 +508,7 @@ $(document).ready
 		);
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-//	Clic sur l'image pour Annuler la suppression ou la modification du partage d'un référentiel
+//	Clic sur l'image pour Annuler la suppression ou la modification du partage ou la modification du mode de calcul d'un référentiel
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 		$('q.annuler').live // live est utilisé pour prendre en compte les nouveaux éléments créés
 		('click',

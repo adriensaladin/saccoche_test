@@ -13,12 +13,12 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-$TITRE = "Créer / importer / partager / détruire un référentiel";
+$TITRE = "Gérer les référentiels";
 ?>
 
 <span class="manuel"><a class="pop_up" href="./aide.php?fichier=referentiel_organisation_competences">DOC : Organisation des compétences dans les référentiels.</a></span><br />
 <span class="manuel"><a class="pop_up" href="./aide.php?fichier=referentiel_structure">DOC : Structure d'un référentiel.</a></span><br />
-<span class="manuel"><a class="pop_up" href="./aide.php?fichier=referentiel_creer_importer_partager_detruire">DOC : Créer / importer / partager / détruire un référentiel.</a></span>
+<span class="manuel"><a class="pop_up" href="./aide.php?fichier=referentiel_gerer">DOC : Gérer les référentiels.</a></span>
 <div class="danger">Détruire un référentiel supprime les résultats associés de tous les élèves !</div>
 
 <hr />
@@ -71,7 +71,7 @@ else
 	}
 	// On récupère la liste des référentiels par matière et niveau
 	$tab_partage = array('oui'=>'<img title="Référentiel accessible aux autres établissements." alt="" src="./_img/partage1.gif" />','non'=>'<img title="Référentiel caché aux autres établissements." alt="" src="./_img/partage0.gif" />','bof'=>'<img title="Référentiel dont le partage est sans intérêt (pas novateur)." alt="" src="./_img/partage0.gif" />','hs'=>'<img title="Référentiel dont le partage est sans objet (matière spécifique)." alt="" src="./_img/partage0.gif" />');
-	$DB_SQL = 'SELECT livret_matiere_id,livret_niveau_id,livret_niveau_nom,livret_referentiel_partage FROM livret_referentiel ';
+	$DB_SQL = 'SELECT livret_matiere_id,livret_niveau_id,livret_niveau_nom,livret_referentiel_partage,livret_referentiel_calcul_methode,livret_referentiel_calcul_limite FROM livret_referentiel ';
 	$DB_SQL.= 'LEFT JOIN livret_niveau USING (livret_niveau_id) ';
 	$DB_SQL.= 'WHERE livret_structure_id=:structure_id AND livret_matiere_id IN('.$liste_matieres.') AND ( livret_niveau_id IN('.$_SESSION['NIVEAUX'].') OR livret_palier_id IN('.$_SESSION['PALIERS'].') ) ';
 	$DB_SQL.= 'ORDER BY livret_matiere_id ASC, livret_niveau_ordre ASC';
@@ -81,18 +81,31 @@ else
 	{
 		foreach($DB_TAB as $key => $DB_ROW)
 		{
-			$tab_colonne[$DB_ROW['livret_matiere_id']][$DB_ROW['livret_niveau_id']] = '<td lang="'.$DB_ROW['livret_referentiel_partage'].'" class="v">Référentiel présent. '.$tab_partage[$DB_ROW['livret_referentiel_partage']].'</td>';
+			$methode_calcul_texte = ($DB_ROW['livret_referentiel_calcul_methode']) ? 'Coefficients progressifs' : 'Moyenne classique' ;
+			if($DB_ROW['livret_referentiel_calcul_limite']==0)
+			{
+				$methode_calcul_texte .= ' sur toutes les évaluations.';
+			}
+			elseif($DB_ROW['livret_referentiel_calcul_limite']==1)
+			{
+				$methode_calcul_texte = 'Seule la dernière évaluation est prise en compte.';
+			}
+			else
+			{
+				$methode_calcul_texte .= ' des '.$DB_ROW['livret_referentiel_calcul_limite'].' dernières évaluations.';
+			}
+			$tab_colonne[$DB_ROW['livret_matiere_id']][$DB_ROW['livret_niveau_id']] = '<td lang="'.$DB_ROW['livret_referentiel_partage'].'" class="v">Référentiel présent. '.$tab_partage[$DB_ROW['livret_referentiel_partage']].'</td>'.'<td lang="M'.$DB_ROW['livret_referentiel_calcul_methode'].'L'.$DB_ROW['livret_referentiel_calcul_limite'].'" class="v">'.$methode_calcul_texte.'</td>';
 		}
 	}
 	// On construit et affiche le tableau résultant
-	$affichage = '<table class="comp_view"><thead><tr><th>Matière</th><th>Niveau</th><th>Référentiel</th><th class="nu"></th></tr></thead><tbody>'."\r\n";
+	$affichage = '<table class="comp_view"><thead><tr><th>Matière</th><th>Niveau</th><th>Référentiel</th><th>Méthode de calcul</th><th class="nu"></th></tr></thead><tbody>'."\r\n";
 	foreach($tab_matiere as $matiere_id => $tab)
 	{
 		$rowspan = ($matiere_id!=ID_MATIERE_TRANSVERSALE) ? $nb_niveaux : mb_substr_count($_SESSION['PALIERS'],',','UTF-8')+1 ;
 		$matiere_nom   = $tab['nom'];
 		$matiere_coord = $tab['coord'];
 		$matiere_perso = ($tab['perso']) ? 1 : 0 ;
-		$affichage .= '<tr><td colspan="4" class="nu">&nbsp;</td></tr>'."\r\n";
+		$affichage .= '<tr><td colspan="5" class="nu">&nbsp;</td></tr>'."\r\n";
 		$affichage .= '<tr><td rowspan="'.$rowspan.'">'.$matiere_nom.'</td>';
 		$affichage_suite = false;
 		foreach($tab_niveau as $niveau_id => $niveau_nom)
@@ -104,11 +117,11 @@ else
 				{
 					$proposition = ($matiere_perso) ? '' : ' ou importer un référentiel existant' ;
 					$partager = ($matiere_perso) ? '<q class="partager_non" title="Le référentiel d\'une matière spécifique à l\'établissement ne peut être partagé."></q>' : '<q class="partager" title="Modifier le partage de ce référentiel."></q>' ;
-					$colonnes = (isset($tab_colonne[$matiere_id][$niveau_id])) ? $tab_colonne[$matiere_id][$niveau_id].'<td class="nu" id="'.$ids.'"><q class="voir" title="Voir le détail de ce référentiel."></q>'.$partager.'<q class="supprimer" title="Supprimer ce référentiel."></q></td>' : '<td class="r">Absence de référentiel.</td><td class="nu" id="'.$ids.'"><q class="ajouter" title="Créer un référentiel vierge'.$proposition.'."></q></td>' ;
+					$colonnes = (isset($tab_colonne[$matiere_id][$niveau_id])) ? $tab_colonne[$matiere_id][$niveau_id].'<td class="nu" id="'.$ids.'"><q class="voir" title="Voir le détail de ce référentiel."></q>'.$partager.'<q class="calculer" title="Modifier le mode de calcul associé à ce référentiel."></q><q class="supprimer" title="Supprimer ce référentiel."></q></td>' : '<td class="r">Absence de référentiel.</td>><td class="r">Sans objet.</td><td class="nu" id="'.$ids.'"><q class="ajouter" title="Créer un référentiel vierge'.$proposition.'."></q></td>' ;
 				}
 				else
 				{
-					$colonnes = (isset($tab_colonne[$matiere_id][$niveau_id])) ? $tab_colonne[$matiere_id][$niveau_id].'<td class="nu" id="'.$ids.'"><q class="voir" title="Voir le détail de ce référentiel."></q><q class="partager_non" title="Action réservée aux coordonnateurs."></q><q class="supprimer_non" title="Action réservée aux coordonnateurs."></q></td>' : '<td class="r">Absence de référentiel.</td><td class="nu" id="'.$ids.'"><q class="ajouter_non" title="Action réservée aux coordonnateurs."></q></td>' ;
+					$colonnes = (isset($tab_colonne[$matiere_id][$niveau_id])) ? $tab_colonne[$matiere_id][$niveau_id].'<td class="nu" id="'.$ids.'"><q class="voir" title="Voir le détail de ce référentiel."></q><q class="partager_non" title="Action réservée aux coordonnateurs."></q><q class="calculer_non" title="Action réservée aux coordonnateurs."></q><q class="supprimer_non" title="Action réservée aux coordonnateurs."></q></td>' : '<td class="r">Absence de référentiel.</td><td class="nu" id="'.$ids.'"><q class="ajouter_non" title="Action réservée aux coordonnateurs."></q></td>' ;
 				}
 				if($affichage_suite===false)
 				{

@@ -44,8 +44,8 @@ $arbre='
 	</li>
 	<li><span>Compétences</span>
 		<ul>
-			<li class="referentiel_view"><a href="./index.php?dossier='.$DOSSIER.'&amp;fichier=referentiel_view">Référentiels de compétences utilisés</a></li>
-			<li class="algorithme_gestion"><a href="./index.php?dossier='.$DOSSIER.'&amp;fichier=algorithme_gestion">Mode de calcul du bilan de compétences</a></li>
+			<li class="algorithme_gestion"><a href="./index.php?dossier='.$DOSSIER.'&amp;fichier=algorithme_gestion">Paramétrage de l\'algorithme</a></li>
+			<li class="referentiel_view"><a href="./index.php?dossier='.$DOSSIER.'&amp;fichier=referentiel_view">Référentiels utilisés</a></li>
 		</ul>
 	</li>
 </ul>

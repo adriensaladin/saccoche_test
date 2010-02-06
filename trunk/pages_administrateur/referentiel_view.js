@@ -24,21 +24,20 @@ $(document).ready
 		(
 			function()
 			{
-				ref  = $(this).attr('id');
-				niveau = $(this).parent().prev().prev().html();
-				matiere = $(this).parent().parent().attr('lang');
-				$('label').removeAttr("class").html('&nbsp;');
-				$('label[for='+ref+']').removeAttr("class").addClass("loader").html('Demande envoyée... Veuillez patienter.');
+				ids = $(this).parent().attr('id');
+				afficher_masquer_images_action('hide');
+				new_label = '<label for="'+ids+'" class="loader">Demande envoyée... Veuillez patienter.</label>';
+				$(this).after(new_label);
 				$.ajax
 				(
 					{
 						type : 'POST',
 						url : 'ajax.php?dossier='+DOSSIER+'&fichier='+FICHIER,
-						data : 'ref='+ref,
+						data : 'ids='+ids,
 						dataType : "html",
 						error : function(msg,string)
 						{
-							$('label[for='+ref+']').removeAttr("class").addClass("alerte").html('Echec de la connexion ! Veuillez recommencer.');
+							$('label[for='+ids+']').removeAttr("class").addClass("alerte").html('Echec de la connexion ! Veuillez recommencer.').fadeOut(2000,function(){$('label[for='+ids+']').remove();afficher_masquer_images_action('show');});
 							return false;
 						},
 						success : function(responseHTML)
@@ -46,13 +45,13 @@ $(document).ready
 							maj_clock(1);
 							if(responseHTML.substring(0,18)!='<ul class="ul_m1">')
 							{
-								$('label[for='+ref+']').removeAttr("class").addClass("alerte").html(responseHTML);
+								$('label[for='+ids+']').removeAttr("class").addClass("alerte").html(responseHTML).fadeOut(2000,function(){$('label[for='+ids+']').remove();afficher_masquer_images_action('show');});
 							}
 							else
 							{
-								$('label[for='+ref+']').removeAttr("class").addClass("valide").html("Contenu affiché ci-dessous !");
 								$('#referentiel').html(responseHTML+'<p />');
 								infobulle();
+								$('label[for='+ids+']').removeAttr("class").addClass("valide").html("Contenu affiché ci-dessous !").fadeOut(2000,function(){$('label[for='+ids+']').remove();afficher_masquer_images_action('show');});
 							}
 						}
 					}

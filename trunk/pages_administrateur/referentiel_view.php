@@ -21,6 +21,8 @@ $TITRE = "Référentiels de compétences utilisés";
 	<span class="manuel"><a class="pop_up" href="./aide.php?fichier=referentiel_structure">DOC : Structure d'un référentiel.</a></span>
 </div>
 
+<form action="">
+
 <?php
 // J'ai séparé en plusieurs requêtes au bout de plusieurs heures sans m'en sortir (entre les matières sans coordonnateurs, sans référentiel, les deux à la fois...).
 // La recherche ne s'effectue que sur les matières et niveaux utilisés, sans débusquer des référentiels résiduels.
@@ -82,7 +84,7 @@ else
 	}
 	// On récupère la liste des référentiels par matière et niveau
 	$tab_partage = array('oui'=>'<img title="Référentiel accessible par la communauté" alt="" src="./_img/partage1.gif" />','non'=>'<img title="Référentiel caché à la communauté." alt="" src="./_img/partage0.gif" />','bof'=>'<img title="Référentiel partage sans intérêt (pas novateur)." alt="" src="./_img/partage0.gif" />','hs'=>'<img title="Référentiel partage sans objet (matière spécifique)." alt="" src="./_img/partage0.gif" />');
-	$DB_SQL = 'SELECT livret_matiere_id,livret_niveau_id,livret_niveau_nom,livret_referentiel_partage FROM livret_referentiel ';
+	$DB_SQL = 'SELECT livret_matiere_id,livret_niveau_id,livret_niveau_nom,livret_referentiel_partage,livret_referentiel_calcul_methode,livret_referentiel_calcul_limite FROM livret_referentiel ';
 	$DB_SQL.= 'LEFT JOIN livret_niveau USING (livret_niveau_id) ';
 	$DB_SQL.= 'WHERE livret_structure_id=:structure_id AND livret_matiere_id IN('.$liste_matieres.') AND ( livret_niveau_id IN('.$_SESSION['NIVEAUX'].') OR livret_palier_id IN('.$_SESSION['PALIERS'].') ) ';
 	$DB_SQL.= 'ORDER BY livret_matiere_id ASC, livret_niveau_ordre ASC';
@@ -92,15 +94,24 @@ else
 	{
 		foreach($DB_TAB as $key => $DB_ROW)
 		{
-			$partage = $tab_partage[$DB_ROW['livret_referentiel_partage']];
-			$ref = 'Voir_'.$DB_ROW['livret_matiere_id'].'_'.$DB_ROW['livret_niveau_id'];
-			$tab_colonne[$DB_ROW['livret_matiere_id']][$DB_ROW['livret_niveau_id']]['ref']   = 'Référentiel présent. '.$partage;
-			$tab_colonne[$DB_ROW['livret_matiere_id']][$DB_ROW['livret_niveau_id']]['oeil']  = '<q class="voir" id="'.$ref.'" title="Voir le détail de ce référentiel."></q>';
-			$tab_colonne[$DB_ROW['livret_matiere_id']][$DB_ROW['livret_niveau_id']]['label'] = '<label for="'.$ref.'"></label>';
+			$methode_calcul_texte = ($DB_ROW['livret_referentiel_calcul_methode']) ? 'Coefficients progressifs' : 'Moyenne classique' ;
+			if($DB_ROW['livret_referentiel_calcul_limite']==0)
+			{
+				$methode_calcul_texte .= ' avec toutes les évaluations.';
+			}
+			elseif($DB_ROW['livret_referentiel_calcul_limite']==1)
+			{
+				$methode_calcul_texte = 'Seule la dernière évaluation est prise en compte.';
+			}
+			else
+			{
+				$methode_calcul_texte .= ' des '.$DB_ROW['livret_referentiel_calcul_limite'].' dernières évaluations.';
+			}
+			$tab_colonne[$DB_ROW['livret_matiere_id']][$DB_ROW['livret_niveau_id']] = '<td class="v">Référentiel présent. '.$tab_partage[$DB_ROW['livret_referentiel_partage']].'</td>'.'<td class="v">'.$methode_calcul_texte.'</td>';
 		}
 	}
 	// On construit et affiche le tableau résultant
-	$affichage = '<table class="comp_view"><thead><tr><th>Matière</th><th>Coordonnateur(s)</th><th>Niveau</th><th>Référentiel</th><th>Voir</th><th class="nu"></th></tr></thead><tbody>'."\r\n";
+	$affichage = '<table class="comp_view"><thead><tr><th>Matière</th><th>Coordonnateur(s)</th><th>Niveau</th><th>Référentiel</th><th>Méthode de calcul</th><th class="nu"></th></tr></thead><tbody>'."\r\n";
 	foreach($tab_matiere as $matiere_id => $tab)
 	{
 		$rowspan = ($matiere_id!=ID_MATIERE_TRANSVERSALE) ? $nb_niveaux : mb_substr_count($_SESSION['PALIERS'],',','UTF-8')+1 ;
@@ -113,7 +124,8 @@ else
 		{
 			if( ($matiere_id!=ID_MATIERE_TRANSVERSALE) || (in_array($niveau_id,$GLOBALS['TAB_ID_NIVEAUX_PALIERS'])) )
 			{
-				$colonnes = (isset($tab_colonne[$matiere_id][$niveau_id])) ? '<td class="v">'.$tab_colonne[$matiere_id][$niveau_id]['ref'].'</td><td class="nu">'.$tab_colonne[$matiere_id][$niveau_id]['oeil'].'</td><td class="nu">'.$tab_colonne[$matiere_id][$niveau_id]['label'].'</td>' : '<td  class="r">Absence de référentiel.</td><td class="nu"></td><td class="nu"></td>' ;
+				$ids = 'ids_'.$matiere_id.'_'.$niveau_id;
+				$colonnes = (isset($tab_colonne[$matiere_id][$niveau_id])) ? $tab_colonne[$matiere_id][$niveau_id].'<td class="nu" id="'.$ids.'"><q class="voir" title="Voir le détail de ce référentiel."></q></td>' : '<td class="r">Absence de référentiel.</td><td class="r">Sans objet.</td><td class="nu"></td></td>' ;
 				if($affichage_suite===false)
 				{
 					$affichage .= '<td>'.$niveau_nom.'</td>'.$colonnes;
@@ -131,6 +143,8 @@ else
 	echo $affichage;
 }
 ?>
+
+</form>
 
 <hr />
 

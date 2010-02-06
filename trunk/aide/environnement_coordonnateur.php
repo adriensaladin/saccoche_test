@@ -42,7 +42,7 @@ $TITRE = "L'environnement coordonnateur";
 	<li><span class="manuel">DOC : L'environnement professeur coordonnateur.</span></li>
 	<li><span class="manuel"><a href="./aide.php?fichier=referentiel_organisation_competences">DOC : Organisation des compétences dans les référentiels.</a></span></li>
 	<li><span class="manuel"><a href="./aide.php?fichier=referentiel_structure">DOC : Structure d'un référentiel.</a></span></li>
-	<li><span class="manuel"><a href="./aide.php?fichier=referentiel_creer_importer_partager_detruire">DOC : Créer / importer / partager / détruire un référentiel.</a></span></li>
-	<li><span class="manuel"><a href="./aide.php?fichier=referentiel_modifier_parametrer">DOC : Modifier / paramétrer un référentiel.</a></span></li>
+	<li><span class="manuel"><a href="./aide.php?fichier=referentiel_gerer">DOC : Gérer les référentiels.</a></span></li>
+	<li><span class="manuel"><a href="./aide.php?fichier=referentiel_modifier">DOC : Modifier le contenu des référentiels.</a></span></li>
 	<li><span class="manuel"><a href="./aide.php?fichier=referentiel_liaison_matiere_socle">DOC : Liaison matières &amp; socle commun.</a></span></li>
 </ul>

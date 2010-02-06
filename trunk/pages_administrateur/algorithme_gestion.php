@@ -57,18 +57,18 @@ foreach($tab_options as $value)
 	</thead>
 	<tbody>
 		<tr><td>
-			<label class="tab mini" for="valeurRR">acquisition <img alt="" src="./_img/note/note_RR.gif" /> :</label><input type="text" size="3" id="valeurRR" name="valeurRR" value="<?php echo $_SESSION['CALCUL_VALEUR_RR'] ?>" /><br />
-			<label class="tab mini" for="valeurR" >acquisition <img alt="" src="./_img/note/note_R.gif" />  :</label><input type="text" size="3" id="valeurR"  name="valeurR"  value="<?php echo $_SESSION['CALCUL_VALEUR_R']  ?>" /><br />
-			<label class="tab mini" for="valeurV" >acquisition <img alt="" src="./_img/note/note_V.gif" />  :</label><input type="text" size="3" id="valeurV"  name="valeurV"  value="<?php echo $_SESSION['CALCUL_VALEUR_V']  ?>" /><br />
-			<label class="tab mini" for="valeurVV">acquisition <img alt="" src="./_img/note/note_VV.gif" /> :</label><input type="text" size="3" id="valeurVV" name="valeurVV" value="<?php echo $_SESSION['CALCUL_VALEUR_VV'] ?>" /><br />
+			<label class="tab mini" for="valeurRR">acquisition <img alt="" src="./_img/note/note_RR.gif" /> :</label><input type="text" size="3" id="valeurRR" name="valeurRR" value="<?php echo $_SESSION['CALCUL_VALEUR']['RR'] ?>" /><br />
+			<label class="tab mini" for="valeurR" >acquisition <img alt="" src="./_img/note/note_R.gif" />  :</label><input type="text" size="3" id="valeurR"  name="valeurR"  value="<?php echo $_SESSION['CALCUL_VALEUR']['R']  ?>" /><br />
+			<label class="tab mini" for="valeurV" >acquisition <img alt="" src="./_img/note/note_V.gif" />  :</label><input type="text" size="3" id="valeurV"  name="valeurV"  value="<?php echo $_SESSION['CALCUL_VALEUR']['V']  ?>" /><br />
+			<label class="tab mini" for="valeurVV">acquisition <img alt="" src="./_img/note/note_VV.gif" /> :</label><input type="text" size="3" id="valeurVV" name="valeurVV" value="<?php echo $_SESSION['CALCUL_VALEUR']['VV'] ?>" /><br />
 		</td><td>
 			&nbsp;<br />
 			<select id="f_methode" name="f_methode"><?php echo $options_methode ?></select><br />
 			<select id="f_limite" name="f_limite"><?php echo $options_limite ?></select><br />
 		</td><td>
 			&nbsp;<br />
-			<label class="tab mini" for="seuilR">non acquis :</label>&lt; <input type="text" size="3" id="seuilR" name="seuilR" value="<?php echo $_SESSION['CALCUL_SEUIL_R'] ?>" /><br />
-			<label class="tab mini" for="seuilV">acquis :</label>&gt; <input type="text" size="3" id="seuilV" name="seuilV" value="<?php echo $_SESSION['CALCUL_SEUIL_V'] ?>" /><br />
+			<label class="tab mini" for="seuilR">non acquis :</label>&lt; <input type="text" size="3" id="seuilR" name="seuilR" value="<?php echo $_SESSION['CALCUL_SEUIL']['R'] ?>" /><br />
+			<label class="tab mini" for="seuilV">acquis :</label>&gt; <input type="text" size="3" id="seuilV" name="seuilV" value="<?php echo $_SESSION['CALCUL_SEUIL']['V'] ?>" /><br />
 		</td></tr>
 	</tbody>
 	</table>

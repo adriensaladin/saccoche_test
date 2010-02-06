@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Id: referentiel_modifier_parametrer.php 8 2009-10-30 20:56:02Z thomas $
+ * @version $Id: referentiel_modifier.php 8 2009-10-30 20:56:02Z thomas $
  * @author Thomas Crespin <thomas.crespin@sesamath.net>
  * @copyright Thomas Crespin 2009
  * 
@@ -13,7 +13,7 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-$TITRE = "Modifier / paramétrer un référentiel";
+$TITRE = "Modifier le contenu des référentiels";
 ?>
 <h2>Introduction</h2>
 <p>
@@ -22,10 +22,10 @@ $TITRE = "Modifier / paramétrer un référentiel";
 	Les personnels de direction et les administrateurs peuvent uniquement consulter les référentiels de toutes les disciplines.
 </p>
 
-<h2>Modifier le contenu d'un référentiel<br />(compléter, élaguer, réorganiser, renommer)</h2>
+<h2>Arborescence : compléter, élaguer, réorganiser, renommer</h2>
 <ul class="puce">
 	<li>Se connecter avec son compte professeur.</li>
-	<li>Dans <em>[Référentiels de compétences]</em> menu <em>[Modifier / paramétrer]</em>.</li>
+	<li>Dans <em>[Référentiels de compétences]</em> menu <em>[Modifier le contenu des référentiels]</em>.</li>
 	<li>Cliquer sur <img alt="niveau" src="./_img/action/action_modifier.png" /> (si un référentiel est présent).</li>
 </ul>
 <p>
@@ -46,7 +46,7 @@ $TITRE = "Modifier / paramétrer un référentiel";
 	Cliquer sur <img alt="niveau" src="./_img/action/folder_n3_fus.png" /> permet de fusionner des items : le premier item sur lequel on clique sera absorbé (nom, coefficient, etc.) par le second item (<img alt="niveau" src="./_img/action/folder_n3_fus2.png" />) ; les scores associés sont reportés vers l'item absorbant, sauf si les deux items concernés ont été utilisés lors d'une même évaluation (dans ce cas le score du 1er item est effacé).
 </p>
 
-<h2>Paramétrer les items d'un référentiel<br />(coefficients, liens au socle, liens de remédiation)</h2>
+<h2>Items : coefficients, liens au socle, liens de remédiation</h2>
 Lors de la création ou lors de l'édition d'un item, plusieurs paramètres peuvent être choisis :
 <ul class="puce">
 	<li><b>Un coefficient</b> : nombre entier entre 0 et 5, qui sert uniquement dans le cadre d'un bilan concernant la matière concerné.</li>
@@ -59,7 +59,7 @@ Lors de la création ou lors de l'édition d'un item, plusieurs paramètres peuv
 	<li><span class="manuel"><a href="./aide.php?fichier=environnement_coordonnateur">DOC : L'environnement professeur coordonnateur.</a></span></li>
 	<li><span class="manuel"><a href="./aide.php?fichier=referentiel_organisation_competences">DOC : Organisation des compétences dans les référentiels.</a></span></li>
 	<li><span class="manuel"><a href="./aide.php?fichier=referentiel_structure">DOC : Structure d'un référentiel.</a></span></li>
-	<li><span class="manuel"><a href="./aide.php?fichier=referentiel_creer_importer_partager_detruire">DOC : Créer / importer / partager / détruire un référentiel.</a></span></li>
-	<li><span class="manuel">DOC : Modifier / paramétrer un référentiel.</span></li>
+	<li><span class="manuel"><a href="./aide.php?fichier=referentiel_gerer">DOC : Gérer les référentiels.</a></span></li>
+	<li><span class="manuel">DOC : Modifier le contenu des référentiels.</span></li>
 	<li><span class="manuel"><a href="./aide.php?fichier=referentiel_liaison_matiere_socle">DOC : Liaison matières &amp; socle commun.</a></span></li>
 </ul>

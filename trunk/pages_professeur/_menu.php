@@ -27,8 +27,8 @@ $arbre='
 	</li>
 	<li>Référentiels de compétences
 		<ul>
-			<li class="referentiel_global"><a href="./index.php?dossier='.$DOSSIER.'&amp;fichier=referentiel&amp;section=global">Créer / importer / partager / détruire</a></li>
-			<li class="referentiel_detail"><a href="./index.php?dossier='.$DOSSIER.'&amp;fichier=referentiel&amp;section=detail">Modifier / paramétrer</a></li>
+			<li class="referentiel_global"><a href="./index.php?dossier='.$DOSSIER.'&amp;fichier=referentiel&amp;section=global">Gérer les référentiels</a></li>
+			<li class="referentiel_detail"><a href="./index.php?dossier='.$DOSSIER.'&amp;fichier=referentiel&amp;section=detail">Modifier le contenu des référentiels</a></li>
 		</ul>
 	</li>
 	<li>Groupes de besoin

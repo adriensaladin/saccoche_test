@@ -15,18 +15,18 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 if($_SESSION['STRUCTURE_ID']==ID_DEMO) {}
 
-$ref = (isset($_POST['ref'])) ? $_POST['ref'] : '';
+$ids = (isset($_POST['ids'])) ? $_POST['ids'] : '';
 
-if(mb_substr_count($ref,'_')!=2)
+if(mb_substr_count($ids,'_')!=2)
 {
 	exit('Erreur avec les données transmises !');
 }
 
-list($action,$matiere_id,$niveau_id) = explode('_',$ref);
+list($prefixe,$matiere_id,$niveau_id) = explode('_',$ids);
 $matiere_id  = clean_entier($matiere_id);
 $niveau_id   = clean_entier($niveau_id);
 
-if( ($action=='Voir') && $matiere_id && $niveau_id )
+if( $matiere_id && $niveau_id )
 {
 	// Affichage du bilan de la liste des items pour la matière et le niveau sélectionnés
 	$DB_TAB = DB_select_arborescence($_SESSION['STRUCTURE_ID'],$prof_id=0,$matiere_id,$niveau_id,$socle_nom=true);

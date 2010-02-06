@@ -41,7 +41,8 @@ De nombreuses actions s'opèrent en cliquant sur des icônes ; celles-ci sont d
 	<li><img alt="niveau" src="./_img/action/action_saisir.png" /> Saisir les résultats d'une évaluation.</li>
 	<li><img alt="niveau" src="./_img/action/action_imprimer.png" /> Imprimer le cartouche d'une évaluation.</li>
 	<li><img alt="niveau" src="./_img/action/action_voir.png" /> Voir les résultats d'une évaluation, le détail d'un référentiel, etc.</li>
-	<li><img alt="niveau" src="./_img/action/action_partager.png" /> Partager un référentiel de compétences.</li>
+	<li><img alt="niveau" src="./_img/action/action_referentiel_partager.png" /> Changer le partage d'un référentiel de compétences.</li>
+	<li><img alt="niveau" src="./_img/action/action_referentiel_calculer.png" /> Changer le mode de calcul d'un référentiel de compétences.</li>
 	<li><img alt="niveau" src="./_img/action/folder_n1_add.png" /><img alt="niveau" src="./_img/action/folder_n1_del.png" /><img alt="niveau" src="./_img/action/folder_n1_edit.png" /><img alt="niveau" src="./_img/action/folder_n1_move.png" /><img alt="niveau" src="./_img/action/folder_n1_move2.png" /> Gérer les domaines d'un référentiel.</li>
 	<li><img alt="niveau" src="./_img/action/folder_n2_add.png" /><img alt="niveau" src="./_img/action/folder_n2_del.png" /><img alt="niveau" src="./_img/action/folder_n2_edit.png" /><img alt="niveau" src="./_img/action/folder_n2_move.png" /><img alt="niveau" src="./_img/action/folder_n2_move2.png" /> Gérer les thèmes d'un référentiel.</li>
 	<li><img alt="niveau" src="./_img/action/folder_n3_add.png" /><img alt="niveau" src="./_img/action/folder_n3_del.png" /><img alt="niveau" src="./_img/action/folder_n3_edit.png" /><img alt="niveau" src="./_img/action/folder_n3_move.png" /><img alt="niveau" src="./_img/action/folder_n3_move2.png" /><img alt="niveau" src="./_img/action/folder_n3_fus.png" /><img alt="niveau" src="./_img/action/folder_n3_fus2.png" /> Gérer les items d'un référentiel.</li>

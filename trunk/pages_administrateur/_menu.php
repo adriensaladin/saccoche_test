@@ -42,10 +42,10 @@ $arbre='
 			<li class="statut"><a href="./index.php?dossier='.$DOSSIER.'&amp;fichier=statut">Statuts</a></li>
 		</ul>
 	</li>
-	<li><span>Compétences</span>
+	<li><span>Référentiels</span>
 		<ul>
 			<li class="algorithme_gestion"><a href="./index.php?dossier='.$DOSSIER.'&amp;fichier=algorithme_gestion">Paramétrage de l\'algorithme</a></li>
-			<li class="referentiel_view"><a href="./index.php?dossier='.$DOSSIER.'&amp;fichier=referentiel_view">Référentiels utilisés</a></li>
+			<li class="referentiel_view"><a href="./index.php?dossier='.$DOSSIER.'&amp;fichier=referentiel_view">Référentiels en place (pour information)</a></li>
 		</ul>
 	</li>
 </ul>

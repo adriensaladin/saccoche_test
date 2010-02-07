@@ -22,8 +22,10 @@ $select_groupe        = afficher_select(DB_OPT_groupes_professeur($_SESSION['STR
 $select_groupe_besoin = afficher_select(DB_OPT_besoins_professeur($_SESSION['STRUCTURE_ID'],$_SESSION['USER_ID']) , $select_nom=false , $option_first='non' , $selection=false , $optgroup='non');
 ?>
 
-<span class="manuel"><a class="pop_up" href="./aide.php?fichier=gestion_groupes_besoin">DOC : Gestion des groupes de besoin.</a></span>
-<div class="danger">La composition d'un groupe de besoin déjà utilisé lors d'une évaluation ne devrait pas être modifiée (sinon vous n'aurez plus accès à certaines saisies) !</div>
+<ul class="puce">
+	<li><span class="manuel"><a class="pop_up" href="./aide.php?fichier=gestion_groupes_besoin">DOC : Gestion des groupes de besoin.</a></span></li>
+	<li><span class="danger">La composition d'un groupe de besoin déjà utilisé lors d'une évaluation ne devrait pas être modifiée (sinon vous n'aurez plus accès à certaines saisies) !</span></li>
+</ul>
 
 <hr />
 

@@ -80,7 +80,6 @@ elseif($action=='calculer')
 			    if($note<$seuil['R']) {$bg = 'r';}
 			elseif($note>$seuil['V']) {$bg = 'v';}
 			else                      {$bg = 'o';}
-			
 			$tab_lignes[$cas] .= '<td class="'.$bg.'">'.$note.'</td>';
 			if( ($cas==0) && ($nb_devoirs!=4) )
 			{

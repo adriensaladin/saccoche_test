@@ -79,7 +79,7 @@ if(is_file($filename_php))
 $filename_php = './'.$PREFIXE.'pages_'.$DOSSIER.'/'.$FICHIER.'.php';
 if(!is_file($filename_php))
 {
-	echo'<div class="danger">Page "'.$filename_php.'" manquante (supprimée, déplacée, non créée...).</div>';
+	echo'<p class="danger">Page "'.$filename_php.'" manquante (supprimée, déplacée, non créée...).</p>';
 	$FICHIER = 'accueil';
 	$filename_php = './'.$PREFIXE.'pages_'.$DOSSIER.'/'.$FICHIER.'.php';
 	if(!is_file($filename_php))

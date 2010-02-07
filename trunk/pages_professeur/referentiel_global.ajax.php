@@ -19,6 +19,8 @@ $action  = (isset($_POST['action']))  ? $_POST['action'] : '';
 $ids     = (isset($_POST['ids']))     ? $_POST['ids']    : '';
 
 $partage = (isset($_POST['partage'])) ? clean_texte($_POST['partage'])  : '';	// Changer l'état de partage
+$methode = (isset($_POST['methode'])) ? clean_entier($_POST['methode']) : -1;	// Changer le mode de calcul
+$limite  = (isset($_POST['limite']))  ? clean_entier($_POST['limite'])  : -1;	// Changer le nb d'items pris en compte
 $donneur = (isset($_POST['donneur'])) ? clean_entier($_POST['donneur']) : -1;	// Etablissement donneur d'un référentiel
 
 if(mb_substr_count($ids,'_')!=3)
@@ -60,6 +62,33 @@ elseif( ($action=='Partager') && ($perso==0) && $matiere_id && $niveau_id && in_
 }
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+// Modifier le mode de calcul d'un référentiel
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+elseif( ($action=='Calculer') && $matiere_id && $niveau_id && in_array($methode,array(0,1)) && in_array($limite,array(0,1,2,3,4,5,6,7,8,9,10,15,20,30,40,50)) )
+{
+	$DB_SQL = 'UPDATE livret_referentiel ';
+	$DB_SQL.= 'SET livret_referentiel_calcul_methode=:methode,livret_referentiel_calcul_limite=:limite ';
+	$DB_SQL.= 'WHERE livret_matiere_id=:matiere_id AND livret_niveau_id=:niveau_id AND livret_structure_id=:structure_id ';
+	$DB_SQL.= 'LIMIT 1';
+	$DB_VAR = array(':matiere_id'=>$matiere_id,':niveau_id'=>$niveau_id,':structure_id'=>$_SESSION['STRUCTURE_ID'],':methode'=>$methode,':limite'=>$limite);
+	DB::query(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
+	$retour = ($methode) ? 'Coefficients progressifs' : 'Moyenne classique' ;
+	if($limite==0)
+	{
+		$retour .= ' sur toutes les évaluations.';
+	}
+	elseif($limite==1)
+	{
+		$retour = 'Seule la dernière évaluation est prise en compte.';
+	}
+	else
+	{
+		$retour .= ' des '.$limite.' dernières évaluations.';
+	}
+	echo 'ok'.$retour;
+}
+
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 // Supprimer un référentiel
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 elseif( ($action=='Retirer') && $matiere_id && $niveau_id )
@@ -78,8 +107,8 @@ elseif( ($action=='Ajouter') && $matiere_id && $niveau_id )
 		// C'est une matière spécifique à l'établissement, ou une demande de partir d'un référentiel vierge : on ne peut que créer un nouveau référentiel
 		$partage = ($perso==1) ? 'hs' : 'non' ;
 		$DB_SQL = 'INSERT INTO livret_referentiel ';
-		$DB_SQL.= 'VALUES(:matiere_id,:niveau_id,:structure_id,:partage,:succes)';
-		$DB_VAR = array(':matiere_id'=>$matiere_id,':niveau_id'=>$niveau_id,':structure_id'=>$_SESSION['STRUCTURE_ID'],':partage'=>$partage,':succes'=>0);
+		$DB_SQL.= 'VALUES(:matiere_id,:niveau_id,:structure_id,:partage,:succes,:methode,:limite)';
+		$DB_VAR = array(':matiere_id'=>$matiere_id,':niveau_id'=>$niveau_id,':structure_id'=>$_SESSION['STRUCTURE_ID'],':partage'=>$partage,':succes'=>0,':methode'=>$_SESSION['CALCUL_METHODE'],':limite'=>$_SESSION['CALCUL_LIMITE']);
 		DB::query(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
 		echo'ok';
 	}
@@ -91,8 +120,8 @@ elseif( ($action=='Ajouter') && $matiere_id && $niveau_id )
 		// C'est une matière partagée, et une demande de dupliquer le référentiel d'un autre établissement
 		// On ajoute l'entrée dans la table des référentiels
 		$DB_SQL = 'INSERT INTO livret_referentiel ';
-		$DB_SQL.= 'VALUES(:matiere_id,:niveau_id,:structure_id,:partage,:succes)';
-		$DB_VAR = array(':matiere_id'=>$matiere_id,':niveau_id'=>$niveau_id,':structure_id'=>$_SESSION['STRUCTURE_ID'],':partage'=>'bof',':succes'=>0);
+		$DB_SQL.= 'VALUES(:matiere_id,:niveau_id,:structure_id,:partage,:succes,:methode,:limite)';
+		$DB_VAR = array(':matiere_id'=>$matiere_id,':niveau_id'=>$niveau_id,':structure_id'=>$_SESSION['STRUCTURE_ID'],':partage'=>'bof',':succes'=>0,':methode'=>$_SESSION['CALCUL_METHODE'],':limite'=>$_SESSION['CALCUL_LIMITE']);
 		DB::query(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
 		// On récupère et recopie le contenu du référentiel
 		$DB_TAB = DB_select_arborescence($donneur,$prof_id=0,$donneur_matiere_id,$donneur_niveau_id,$socle_nom=false);

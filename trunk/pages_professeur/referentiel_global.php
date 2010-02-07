@@ -16,10 +16,34 @@ if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');
 $TITRE = "Gérer les référentiels";
 ?>
 
-<span class="manuel"><a class="pop_up" href="./aide.php?fichier=referentiel_organisation_competences">DOC : Organisation des compétences dans les référentiels.</a></span><br />
-<span class="manuel"><a class="pop_up" href="./aide.php?fichier=referentiel_structure">DOC : Structure d'un référentiel.</a></span><br />
-<span class="manuel"><a class="pop_up" href="./aide.php?fichier=referentiel_gerer">DOC : Gérer les référentiels.</a></span>
-<div class="danger">Détruire un référentiel supprime les résultats associés de tous les élèves !</div>
+<script type="text/javascript">
+	<?php
+	// Pour remplir la cellule avec la méthode de calcul par défaut en cas de création d'un nouveau référentiel
+	$methode_calcul_langue = 'M'.$_SESSION['CALCUL_METHODE'].'L'.$_SESSION['CALCUL_LIMITE'] ;
+	$methode_calcul_texte = ($_SESSION['CALCUL_METHODE']) ? 'Coefficients progressifs' : 'Moyenne classique' ;
+	if($_SESSION['CALCUL_LIMITE']==0)
+	{
+		$methode_calcul_texte .= ' sur toutes les évaluations.';
+	}
+	elseif($_SESSION['CALCUL_LIMITE']==1)
+	{
+		$methode_calcul_texte = 'Seule la dernière évaluation est prise en compte.';
+	}
+	else
+	{
+		$methode_calcul_texte .= ' des '.$_SESSION['CALCUL_LIMITE'].' dernières évaluations.';
+	}
+	?>
+	var methode_calcul_langue="<?php echo $methode_calcul_langue ?>";
+	var methode_calcul_texte="<?php echo $methode_calcul_texte ?>";
+</script>
+
+<ul class="puce">
+	<li><span class="manuel"><a class="pop_up" href="./aide.php?fichier=referentiel_organisation_competences">DOC : Organisation des compétences dans les référentiels.</a></span></li>
+	<li><span class="manuel"><a class="pop_up" href="./aide.php?fichier=referentiel_structure">DOC : Structure d'un référentiel.</a></span></li>
+	<li><span class="manuel"><a class="pop_up" href="./aide.php?fichier=referentiel_gerer">DOC : Gérer les référentiels.</a></span></li>
+	<li><span class="danger">Détruire un référentiel supprime les résultats associés de tous les élèves !</span></li>
+</ul>
 
 <hr />
 
@@ -117,7 +141,7 @@ else
 				{
 					$proposition = ($matiere_perso) ? '' : ' ou importer un référentiel existant' ;
 					$partager = ($matiere_perso) ? '<q class="partager_non" title="Le référentiel d\'une matière spécifique à l\'établissement ne peut être partagé."></q>' : '<q class="partager" title="Modifier le partage de ce référentiel."></q>' ;
-					$colonnes = (isset($tab_colonne[$matiere_id][$niveau_id])) ? $tab_colonne[$matiere_id][$niveau_id].'<td class="nu" id="'.$ids.'"><q class="voir" title="Voir le détail de ce référentiel."></q>'.$partager.'<q class="calculer" title="Modifier le mode de calcul associé à ce référentiel."></q><q class="supprimer" title="Supprimer ce référentiel."></q></td>' : '<td class="r">Absence de référentiel.</td>><td class="r">Sans objet.</td><td class="nu" id="'.$ids.'"><q class="ajouter" title="Créer un référentiel vierge'.$proposition.'."></q></td>' ;
+					$colonnes = (isset($tab_colonne[$matiere_id][$niveau_id])) ? $tab_colonne[$matiere_id][$niveau_id].'<td class="nu" id="'.$ids.'"><q class="voir" title="Voir le détail de ce référentiel."></q>'.$partager.'<q class="calculer" title="Modifier le mode de calcul associé à ce référentiel."></q><q class="supprimer" title="Supprimer ce référentiel."></q></td>' : '<td class="r">Absence de référentiel.</td><td class="r">Sans objet.</td><td class="nu" id="'.$ids.'"><q class="ajouter" title="Créer un référentiel vierge'.$proposition.'."></q></td>' ;
 				}
 				else
 				{

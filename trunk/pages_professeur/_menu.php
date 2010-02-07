@@ -25,8 +25,10 @@ $arbre='
 			<li class="fichier"><a href="./index.php?dossier='.$DOSSIER.'&amp;fichier=fichier">Export listings</a></li>
 		</ul>
 	</li>
-	<li>Référentiels de compétences
+	<li>Référentiels
 		<ul>
+			<li class="algorithme_info"><a href="./index.php?dossier='.$DOSSIER.'&amp;fichier=algorithme_info">Algorithme de calcul (pour information)</a></li>
+			<li class="referentiel_view"><a href="./index.php?dossier='.$DOSSIER.'&amp;fichier=referentiel_view">Référentiels en place (pour information)</a></li>
 			<li class="referentiel_global"><a href="./index.php?dossier='.$DOSSIER.'&amp;fichier=referentiel&amp;section=global">Gérer les référentiels</a></li>
 			<li class="referentiel_detail"><a href="./index.php?dossier='.$DOSSIER.'&amp;fichier=referentiel&amp;section=detail">Modifier le contenu des référentiels</a></li>
 		</ul>
@@ -37,15 +39,14 @@ $arbre='
 			<li class="groupe_eleve"><a href="./index.php?dossier='.$DOSSIER.'&amp;fichier=groupe&amp;section=eleve">Élèves &amp; groupes de besoin</a></li>
 		</ul>
 	</li>
-	<li>Évaluations et saisie des résultats
+	<li>Évaluations &amp; Saisie des résultats
 		<ul>
 			<li class="eval_groupe"><a href="./index.php?dossier='.$DOSSIER.'&amp;fichier=eval&amp;section=groupe">Pour une classe ou un groupe</a></li>
 			<li class="eval_select"><a href="./index.php?dossier='.$DOSSIER.'&amp;fichier=eval&amp;section=select">Pour un ou plusieurs élèves sélectionnés</a></li>
 		</ul>
 	</li>
-	<li>Relevés de compétences
+	<li>Relevés &amp; Bilans
 		<ul>
-			<li class="algorithme_info"><a href="./index.php?dossier='.$DOSSIER.'&amp;fichier=algorithme_info">Algorithme de calcul (pour information)</a></li>
 			<li class="releve_grille"><a href="./index.php?dossier='.$DOSSIER.'&amp;fichier=releve&amp;section=grille">Grilles sur un niveau</a></li>
 			<li class="releve_matiere"><a href="./index.php?dossier='.$DOSSIER.'&amp;fichier=releve&amp;section=matiere">Bilans sur une matière</a></li>
 			<li class="releve_selection"><a href="./index.php?dossier='.$DOSSIER.'&amp;fichier=releve&amp;section=selection">Bilans sur une sélection d\'items</a></li>

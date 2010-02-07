@@ -37,35 +37,21 @@ $(document).ready
 				$('#valeurR').val(memo_valeurR);
 				$('#valeurV').val(memo_valeurV);
 				$('#valeurVV').val(memo_valeurVV);
-				$('#coef1sur2').val(memo_coef1sur2);
-				$('#coef2sur2').val(memo_coef2sur2);
-				$('#coef1sur3').val(memo_coef1sur3);
-				$('#coef2sur3').val(memo_coef2sur3);
-				$('#coef3sur3').val(memo_coef3sur3);
-				$('#coef1sur4').val(memo_coef1sur4);
-				$('#coef2sur4').val(memo_coef2sur4);
-				$('#coef3sur4').val(memo_coef3sur4);
-				$('#coef4sur4').val(memo_coef4sur4);
+				$('#f_methode option[value='+memo_methode+']').attr("selected",true);
+				$('#f_limite option[value='+memo_limite+']').attr("selected",true);
 				$('#seuilR').val(memo_seuilR);
 				$('#seuilV').val(memo_seuilV);
 			}
 		);
 		// Donc il faut retenir les valeurs initiales et les replacer
-		var memo_valeurRR  = $('#valeurRR').val();
-		var memo_valeurR   = $('#valeurR').val();
-		var memo_valeurV   = $('#valeurV').val();
-		var memo_valeurVV  = $('#valeurVV').val();
-		var memo_coef1sur2 = $('#coef1sur2').val();
-		var memo_coef2sur2 = $('#coef2sur2').val();
-		var memo_coef1sur3 = $('#coef1sur3').val();
-		var memo_coef2sur3 = $('#coef2sur3').val();
-		var memo_coef3sur3 = $('#coef3sur3').val();
-		var memo_coef1sur4 = $('#coef1sur4').val();
-		var memo_coef2sur4 = $('#coef2sur4').val();
-		var memo_coef3sur4 = $('#coef3sur4').val();
-		var memo_coef4sur4 = $('#coef4sur4').val();
-		var memo_seuilR    = $('#seuilR').val();
-		var memo_seuilV    = $('#seuilV').val();
+		var memo_valeurRR = $('#valeurRR').val();
+		var memo_valeurR  = $('#valeurR').val();
+		var memo_valeurV  = $('#valeurV').val();
+		var memo_valeurVV = $('#valeurVV').val();
+		var memo_methode  = $('#f_methode option:selected').val();
+		var memo_limite   = $('#f_limite option:selected').val();
+		var memo_seuilR   = $('#seuilR').val();
+		var memo_seuilV   = $('#seuilV').val();
 
 		// Demande d'initialisation du formulaire avec les valeurs par défaut
 		$('#initialiser_defaut').click
@@ -76,15 +62,8 @@ $(document).ready
 				$('#valeurR').val(33);
 				$('#valeurV').val(67);
 				$('#valeurVV').val(100);
-				$('#coef1sur2').val(0.25);
-				$('#coef2sur2').val(0.75);
-				$('#coef1sur3').val(0.2);
-				$('#coef2sur3').val(0.3);
-				$('#coef3sur3').val(0.5);
-				$('#coef1sur4').val(0.1);
-				$('#coef2sur4').val(0.2);
-				$('#coef3sur4').val(0.3);
-				$('#coef4sur4').val(0.4);
+				$('#f_methode option[value="1"]').attr("selected",true);
+				$('#f_limite option[value="0"]').attr("selected",true);
 				$('#seuilR').val(40);
 				$('#seuilV').val(60);
 			}
@@ -99,21 +78,14 @@ $(document).ready
 			{
 				rules :
 				{
-					valeurRR :  { required:true, digits:true },
-					valeurR :   { required:true, digits:true },
-					valeurV :   { required:true, digits:true },
-					valeurVV :  { required:true, digits:true },
-					coef1sur2 : { required:true, number:true },
-					coef2sur2 : { required:true, number:true },
-					coef1sur3 : { required:true, number:true },
-					coef2sur3 : { required:true, number:true },
-					coef3sur3 : { required:true, number:true },
-					coef1sur4 : { required:true, number:true },
-					coef2sur4 : { required:true, number:true },
-					coef3sur4 : { required:true, number:true },
-					coef4sur4 : { required:true, number:true },
-					seuilR :    { required:true, digits:true },
-					seuilV :    { required:true, digits:true }
+					valeurRR  : { required:true, digits:true },
+					valeurR   : { required:true, digits:true },
+					valeurV   : { required:true, digits:true },
+					valeurVV  : { required:true, digits:true },
+					f_methode : { required:true },
+					f_limite  : { required:true },
+					seuilR    : { required:true, digits:true },
+					seuilV    : { required:true, digits:true }
 				},
 				messages :
 				{
@@ -121,15 +93,8 @@ $(document).ready
 					valeurR :   { required:"valeur requise", digits:"nombre entier requis" },
 					valeurV :   { required:"valeur requise", digits:"nombre entier requis" },
 					valeurVV :  { required:"valeur requise", digits:"nombre entier requis" },
-					coef1sur2 : { required:"valeur requise", number:"nombre décimal requis" },
-					coef2sur2 : { required:"valeur requise", number:"nombre décimal requis" },
-					coef1sur3 : { required:"valeur requise", number:"nombre décimal requis" },
-					coef2sur3 : { required:"valeur requise", number:"nombre décimal requis" },
-					coef3sur3 : { required:"valeur requise", number:"nombre décimal requis" },
-					coef1sur4 : { required:"valeur requise", number:"nombre décimal requis" },
-					coef2sur4 : { required:"valeur requise", number:"nombre décimal requis" },
-					coef3sur4 : { required:"valeur requise", number:"nombre décimal requis" },
-					coef4sur4 : { required:"valeur requise", number:"nombre décimal requis" },
+					f_methode : { required:"méthode requise" },
+					f_limite :  { required:"méthode requise" },
 					seuilR :    { required:"valeur requise", digits:"nombre entier requis" },
 					seuilV :    { required:"valeur requise", digits:"nombre entier requis" }
 				},
@@ -174,39 +139,19 @@ $(document).ready
 				readytogo = false;
 				if( (Math.min($('#valeurRR').val(),$('#valeurR').val(),$('#valeurV').val(),$('#valeurVV').val())<0) || (Math.max($('#valeurRR').val(),$('#valeurR').val(),$('#valeurV').val(),$('#valeurVV').val())>100) )
 				{
-					$('#ajax_msg').removeAttr("class").addClass("erreur").html("Colonne 1 : valeurs entre 0 et 100 requises.").show();
+					$('#ajax_msg').removeAttr("class").addClass("erreur").html("Valeur d'un code : valeurs entre 0 et 100 requises.").show();
 				}
-				else if( (Math.min($('#coef1sur2').val(),$('#coef2sur2').val())<0) || (Math.max($('#coef1sur2').val(),$('#coef2sur2').val())>1) )
+				else if( (parseInt($('#valeurRR').val())>parseInt($('#valeurR').val())) || (parseInt($('#valeurR').val())>parseInt($('#valeurV').val())) || (parseInt($('#valeurV').val())>parseInt($('#valeurVV').val())) )
 				{
-					$('#ajax_msg').removeAttr("class").addClass("erreur").html("Colonne 2 : valeurs entre 0 et 1 requises.").show();
-				}
-				else if(eval($('#coef1sur2').val())+eval($('#coef2sur2').val())!=1)
-				{
-					$('#ajax_msg').removeAttr("class").addClass("erreur").html("Colonne 2 : somme requise égale à 1.").show();
-				}
-				else if( (Math.min($('#coef1sur3').val(),$('#coef2sur3').val(),$('#coef3sur3').val())<0) || (Math.max($('#coef1sur3').val(),$('#coef2sur3').val(),$('#coef3sur3').val())>1) )
-				{
-					$('#ajax_msg').removeAttr("class").addClass("erreur").html("Colonne 3 : valeurs entre 0 et 1 requises.").show();
-				}
-				else if(eval($('#coef1sur3').val())+eval($('#coef2sur3').val())+eval($('#coef3sur3').val())!=1)
-				{
-					$('#ajax_msg').removeAttr("class").addClass("erreur").html("Colonne 3 : somme requise égale à 1.").show();
-				}
-				else if( (Math.min($('#coef1sur4').val(),$('#coef2sur4').val(),$('#coef3sur4').val(),$('#coef4sur4').val())<0) || (Math.max($('#coef1sur4').val(),$('#coef2sur4').val(),$('#coef3sur4').val(),$('#coef4sur4').val())>1) )
-				{
-					$('#ajax_msg').removeAttr("class").addClass("erreur").html("Colonne 4 : valeurs entre 0 et 1 requises.").show();
-				}
-				else if(eval($('#coef1sur4').val())+eval($('#coef2sur4').val())+eval($('#coef3sur4').val())+eval($('#coef4sur4').val())!=1)
-				{
-					$('#ajax_msg').removeAttr("class").addClass("erreur").html("Colonne 4 : somme requise égale à 1.").show();
+					$('#ajax_msg').removeAttr("class").addClass("erreur").html("Valeur d'un code : valeurs croissantes requises.").show();
 				}
 				else if( (Math.min($('#seuilR').val(),$('#seuilV').val())<0) || (Math.max($('#seuilR').val(),$('#seuilV').val())>100) )
 				{
-					$('#ajax_msg').removeAttr("class").addClass("erreur").html("Colonne 5 : valeurs entre 0 et 100 requises.").show();
+					$('#ajax_msg').removeAttr("class").addClass("erreur").html("Seuil d'aquisition : valeurs entre 0 et 100 requises.").show();
 				}
-				else if( $('#seuilR').val() > $('#seuilV').val() )
+				else if( parseInt($('#seuilR').val()) > parseInt($('#seuilV').val()) )
 				{
-					$('#ajax_msg').removeAttr("class").addClass("erreur").html("Colonne 5 : valeurs croissantes requises.").show();
+					$('#ajax_msg').removeAttr("class").addClass("erreur").html("Seuil d'aquisition : valeurs croissantes requises.").show();
 				}
 				else
 				{

@@ -16,9 +16,11 @@ if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');
 $TITRE = "Modifier le contenu des référentiels";
 ?>
 
-<span class="manuel"><a class="pop_up" href="./aide.php?fichier=referentiel_modifier">DOC : Modifier le contenu des référentiels.</a></span><br />
-<span class="manuel"><a class="pop_up" href="./aide.php?fichier=referentiel_liaison_matiere_socle">DOC : Liaison matières &amp; socle commun.</a></span><br />
-<div class="danger">Retirer des items supprime les résultats associés de tous les élèves !</div>
+<ul class="puce">
+	<li><span class="manuel"><a class="pop_up" href="./aide.php?fichier=referentiel_modifier">DOC : Modifier le contenu des référentiels.</a></span></li>
+	<li><span class="manuel"><a class="pop_up" href="./aide.php?fichier=referentiel_liaison_matiere_socle">DOC : Liaison matières &amp; socle commun.</a></span></li>
+	<li><span class="danger">Retirer des items supprime les résultats associés de tous les élèves !</span></li>
+</ul>
 
 <hr />
 

@@ -21,8 +21,10 @@ $TITRE = "Réintégrer / supprimer professeurs &amp; directeurs";
 $select_professeurs_directeurs = afficher_select(DB_OPT_professeurs_directeurs_etabl($_SESSION['STRUCTURE_ID'],$statut=0) , $select_nom=false , $option_first='non' , $selection=false , $optgroup='oui');
 ?>
 
-<span class="manuel"><a class="pop_up" href="./aide.php?fichier=gestion_statuts">DOC : Statuts : désactiver / réintégrer / supprimer</a></span><br />
-<span class="danger">Supprimer un compte professeur ou directeur est une action irréversible !</span>
+<ul class="puce">
+	<li><span class="manuel"><a class="pop_up" href="./aide.php?fichier=gestion_statuts">DOC : Statuts : désactiver / réintégrer / supprimer</a></span></li>
+	<li><span class="danger">Supprimer un compte professeur ou directeur est une action irréversible !</span></li>
+</ul>
 
 <hr />
 

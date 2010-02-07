@@ -62,8 +62,11 @@ $date_fin   = date("d/m/Y");
 	<?php echo $tab_groupe_js ?>
 </script>
 
-<div class="manuel"><a class="pop_up" href="./aide.php?fichier=evaluations_gestion">DOC : Gestion des évaluations.</a></div>
-<div class="danger">Une évaluation dont la saisie a commencé ne devrait pas voir ses élèves ou ses items modifiés (sinon vous n'aurez plus accès à certaines données) !</div>
+<ul class="puce">
+	<li><span class="manuel"><a class="pop_up" href="./aide.php?fichier=evaluations_gestion">DOC : Gestion des évaluations.</a></span></li>
+	<li><span class="danger">Une évaluation dont la saisie a commencé ne devrait pas voir ses élèves ou ses items modifiés (sinon vous n'aurez plus accès à certaines données) !</span></li>
+</ul>
+
 <hr />
 
 <form action="" id="form0"><fieldset>

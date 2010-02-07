@@ -18,13 +18,13 @@ $(document).ready
 	{
 
 		// Préparation de select utiles
-		var select_partage = '<select id="f_partage" name="f_partage"><option value="oui">Rendre ce référentiel accessible par d\'autres établissements.</option><option value="bof">Référentiel dont le partage sans intérêt (pas novateur).</option><option value="non">Cacher ce référentiel aux autres établissements.</option></select>';
+		var select_partage = '<select id="f_partage" name="f_partage"><option value="oui">Accessible aux autres établissements.</option><option value="bof">Partage sans intérêt (pas novateur).</option><option value="non">Caché aux autres établissements.</option></select>';
 		var select_methode = '<select id="f_methode" name="f_methode"><option value="1">Coefficients progressifs</option><option value="0">Moyenne classique</option></select>';
 		var select_limite  = '<select id="f_limite" name="f_limite"><option value="0">avec toutes les notes.</option><option value="1">uniquement la dernière.</option>';
 		var tab_options = new Array(2,3,4,5,6,7,8,9,10,15,20,30,40,50);
 		for(i=0 ; i<tab_options.length ; i++)
 		{
-			select_limite += '<option value="2">des '+tab_options[i]+' dernières.</option>';
+			select_limite += '<option value="'+tab_options[i]+'">des '+tab_options[i]+' dernières notes.</option>';
 		}
 		select_limite += '</select>';
 
@@ -107,6 +107,22 @@ $(document).ready
 		);
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+//	Clic sur l'image pour Retirer un référentiel
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+		$('q.supprimer').live // live est utilisé pour prendre en compte les nouveaux éléments créés
+		('click',
+			function()
+			{
+				afficher_masquer_images_action('hide');
+				ids = $(this).parent().attr('id');
+				new_span = '<span class="danger">Tous les items et les résultats associés des élèves seront perdus !<q class="valider" lang="retirer" title="Confirmer la suppression de ce référentiel."></q><q class="annuler" title="Annuler la suppression de ce référentiel."></q> <label id="ajax_msg">&nbsp;</label></span>';
+				$(this).after(new_span);
+				infobulle();
+				mode = 'retirer';
+			}
+		);
+
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 //	Clic sur l'image pour Valider la modification du partage d'un référentiel
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 		$('q.valider[lang=partager]').live // live est utilisé pour prendre en compte les nouveaux éléments créés
@@ -137,7 +153,7 @@ $(document).ready
 							}
 							else
 							{
-								$('#'+ids).prev().attr('lang',partage).html('Référentiel présent. '+responseHTML);
+								$('#'+ids).prev().prev().attr('lang',partage).html('Référentiel présent. '+responseHTML);
 								$('#ajax_msg').parent().remove();
 								afficher_masquer_images_action('show');
 								infobulle();
@@ -149,18 +165,45 @@ $(document).ready
 		);
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-//	Clic sur l'image pour Retirer un référentiel
+//	Clic sur l'image pour Valider la modification du mode de calcul d'un référentiel
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-		$('q.supprimer').live // live est utilisé pour prendre en compte les nouveaux éléments créés
+		$('q.valider[lang=calculer]').live // live est utilisé pour prendre en compte les nouveaux éléments créés
 		('click',
 			function()
 			{
-				afficher_masquer_images_action('hide');
-				ids = $(this).parent().attr('id');
-				new_span = '<span class="danger">Tous les items et les résultats associés des élèves seront perdus !<q class="valider" lang="retirer" title="Confirmer la suppression de ce référentiel."></q><q class="annuler" title="Annuler la suppression de ce référentiel."></q> <label id="ajax_msg">&nbsp;</label></span>';
-				$(this).after(new_span);
-				infobulle();
-				mode = 'retirer';
+				ids = $(this).parent().parent().attr('id');
+				methode = $('#f_methode').val();
+				limite  = $('#f_limite').val();
+				$('#ajax_msg').removeAttr("class").addClass("loader").html('Demande envoyée... Veuillez patienter.');
+				$.ajax
+				(
+					{
+						type : 'POST',
+						url : 'ajax.php?dossier='+DOSSIER+'&fichier='+FICHIER,
+						data : 'action=Calculer&ids='+ids+'&methode='+methode+'&limite='+limite,
+						dataType : "html",
+						error : function(msg,string)
+						{
+							$('#ajax_msg').removeAttr("class").addClass("alerte").html('Echec de la connexion ! Veuillez recommencer.');
+							return false;
+						},
+						success : function(responseHTML)
+						{
+							maj_clock(1);
+							if(responseHTML.substring(0,2)!='ok')
+							{
+								$('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);
+							}
+							else
+							{
+								$('#'+ids).prev().attr( 'lang','M'+methode+'L'+limite ).html( responseHTML.substring(2,responseHTML.length) );
+								$('#ajax_msg').parent().remove();
+								afficher_masquer_images_action('show');
+								infobulle();
+							}
+						}
+					}
+				);
 			}
 		);
 
@@ -241,8 +284,9 @@ $(document).ready
 								}
 								else
 								{
-									$('#'+ids).html('<q class="voir" title="Voir le détail de ce référentiel."></q><q class="partager_non" title="Le référentiel d\'une matière spécifique à l\'établissement ne peut être partagé."></q><q class="supprimer" title="Supprimer ce référentiel."></q>');
-									$('#'+ids).prev().removeAttr("class").addClass("v").attr('lang','hs').html('Référentiel présent. <img title="Référentiel dont le partage est sans objet (matière spécifique)." src="./_img/partage0.gif" />');
+									$('#'+ids).html('<q class="voir" title="Voir le détail de ce référentiel."></q><q class="partager_non" title="Le référentiel d\'une matière spécifique à l\'établissement ne peut être partagé."></q><q class="calculer" title="Modifier le mode de calcul associé à ce référentiel."></q><q class="supprimer" title="Supprimer ce référentiel."></q>');
+									$('#'+ids).prev().removeAttr("class").addClass("v").attr('lang',methode_calcul_langue).html(methode_calcul_texte);
+									$('#'+ids).prev().prev().removeAttr("class").addClass("v").attr('lang','hs').html('Référentiel présent. <img title="Référentiel dont le partage est sans objet (matière spécifique)." src="./_img/partage0.gif" />');
 									afficher_masquer_images_action('show');
 									infobulle();
 								}
@@ -472,14 +516,15 @@ $(document).ready
 							}
 							else
 							{
-								$('#'+ids).html('<q class="voir" title="Voir le détail de ce référentiel."></q><q class="partager" title="Modifier le partage de ce référentiel."></q><q class="supprimer" title="Supprimer ce référentiel."></q>');
+								$('#'+ids).html('<q class="voir" title="Voir le détail de ce référentiel."></q><q class="partager" title="Modifier le partage de ce référentiel."></q><q class="calculer" title="Modifier le mode de calcul associé à ce référentiel."></q><q class="supprimer" title="Supprimer ce référentiel."></q>');
+									$('#'+ids).prev().removeAttr("class").addClass("v").attr('lang',methode_calcul_langue).html(methode_calcul_texte);
 								if(donneur>0)
 								{
-									$('#'+ids).prev().removeAttr("class").addClass("v").attr('lang','bof').html('Référentiel présent. <img title="Référentiel dont le partage est sans intérêt (pas novateur)." src="./_img/partage0.gif" />');
+									$('#'+ids).prev().prev().removeAttr("class").addClass("v").attr('lang','bof').html('Référentiel présent. <img title="Référentiel dont le partage est sans intérêt (pas novateur)." src="./_img/partage0.gif" />');
 								}
 								else
 								{
-									$('#'+ids).prev().removeAttr("class").addClass("v").attr('lang','non').html('Référentiel présent. <img title="Référentiel caché aux autres établissements." src="./_img/partage0.gif" />');
+									$('#'+ids).prev().prev().removeAttr("class").addClass("v").attr('lang','non').html('Référentiel présent. <img title="Référentiel caché aux autres établissements." src="./_img/partage0.gif" />');
 								}
 								infobulle();
 								$('a.Annuler_choisir').click();

@@ -21,8 +21,10 @@ $TITRE = "Réintégrer / supprimer élèves";
 $select_f_groupes = afficher_select(DB_OPT_regroupements_etabl($_SESSION['STRUCTURE_ID']) , $select_nom=false , $option_first='oui' , $selection=false , $optgroup='oui');
 ?>
 
-<span class="manuel"><a class="pop_up" href="./aide.php?fichier=gestion_statuts">DOC : Statuts : désactiver / réintégrer / supprimer</a></span><br />
-<span class="danger">Supprimer un compte élève est une action irréversible, effaçant en particulier tous les scores associés !</span>
+<ul class="puce">
+	<li><span class="manuel"><a class="pop_up" href="./aide.php?fichier=gestion_statuts">DOC : Statuts : désactiver / réintégrer / supprimer</a></span></li>
+	<li><span class="danger">Supprimer un compte élève est une action irréversible, effaçant en particulier tous les scores associés !</span></li>
+</ul>
 
 <hr />
 

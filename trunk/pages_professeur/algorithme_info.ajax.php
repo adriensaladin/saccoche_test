@@ -16,25 +16,19 @@ if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');
 if(($_SESSION['STRUCTURE_ID']==ID_DEMO)&&($_POST['action']!='calculer')){exit('Action désactivée pour la démo...');}
 
 $action = (isset($_POST['action'])) ? $_POST['action'] : '';
+// Valeur d'un code (sur 100)
 $valeur = array();
-$valeur['RR']  = (isset($_POST['valeurRR'])) ? clean_entier($_POST['valeurRR']) :   0 ;
-$valeur['R']   = (isset($_POST['valeurR']))  ? clean_entier($_POST['valeurR'])  :  33 ;
-$valeur['V']   = (isset($_POST['valeurV']))  ? clean_entier($_POST['valeurV'])  :  67 ;
-$valeur['VV']  = (isset($_POST['valeurVV'])) ? clean_entier($_POST['valeurVV']) : 100 ;
-$coef = array();
-$coef[1][1] = 1 ;
-$coef[2][1] = (isset($_POST['coef1sur2'])) ? clean_decimal($_POST['coef1sur2']) : 0.25 ;
-$coef[2][2] = (isset($_POST['coef2sur2'])) ? clean_decimal($_POST['coef2sur2']) : 0.75 ;
-$coef[3][1] = (isset($_POST['coef1sur3'])) ? clean_decimal($_POST['coef1sur3']) : 0.2 ;
-$coef[3][2] = (isset($_POST['coef2sur3'])) ? clean_decimal($_POST['coef2sur3']) : 0.3 ;
-$coef[3][3] = (isset($_POST['coef3sur3'])) ? clean_decimal($_POST['coef3sur3']) : 0.5 ;
-$coef[4][1] = (isset($_POST['coef1sur4'])) ? clean_decimal($_POST['coef1sur4']) : 0.1 ;
-$coef[4][2] = (isset($_POST['coef2sur4'])) ? clean_decimal($_POST['coef2sur4']) : 0.2 ;
-$coef[4][3] = (isset($_POST['coef3sur4'])) ? clean_decimal($_POST['coef3sur4']) : 0.3 ;
-$coef[4][4] = (isset($_POST['coef4sur4'])) ? clean_decimal($_POST['coef4sur4']) : 0.4 ;
+$valeur['RR'] = (isset($_POST['valeurRR'])) ? clean_entier($_POST['valeurRR']) :   0 ;
+$valeur['R']  = (isset($_POST['valeurR']))  ? clean_entier($_POST['valeurR'])  :  33 ;
+$valeur['V']  = (isset($_POST['valeurV']))  ? clean_entier($_POST['valeurV'])  :  67 ;
+$valeur['VV'] = (isset($_POST['valeurVV'])) ? clean_entier($_POST['valeurVV']) : 100 ;
+// Seuil d'aquisition (sur 100) 
 $seuil = array();
 $seuil['R'] = (isset($_POST['seuilR'])) ? clean_entier($_POST['seuilR']) : 40 ;
 $seuil['V'] = (isset($_POST['seuilV'])) ? clean_entier($_POST['seuilV']) : 60 ;
+// Méthode de calcul
+$methode = (isset($_POST['f_methode'])) ? clean_entier($_POST['f_methode']) : 1 ;
+$limite  = (isset($_POST['f_limite']))  ? clean_entier($_POST['f_limite'])  : 0 ;
 
 if($action=='calculer')
 {
@@ -49,6 +43,8 @@ if($action=='calculer')
 		for($cas=0;$cas<$nb_cas;$cas++)
 		{
 			$note = 0;
+			$coef = 0;
+			$somme_coef = 0;
 			$masque = sprintf('%0'.$nb_devoirs.'u',base_convert($cas,10,4));
 			$codes = str_replace($tab_bad,$tab_bon,$masque);
 			$tab_codes = explode(' ',$codes);
@@ -56,13 +52,18 @@ if($action=='calculer')
 			{
 				$code = $tab_codes[$num_devoir];
 				$tab_lignes[$cas] .= '<td><img alt="" src="./_img/note/note_'.$code.'.gif" /></td>';
-				$note += $valeur[$code]*$coef[$nb_devoirs][$num_devoir];
+				// Si on prend ce devoir en compte
+				if( ($limite==0) || ($nb_devoirs-$num_devoir<$limite) )
+				{
+					$coef = $methode ? $coef+1 : 1 ;
+					$somme_coef += $coef;
+					$note += $valeur[$code]*$coef;
+				}
 			}
-			$note = round($note,0);
-			    if($note<$_SESSION['PARAM_CALCUL']['seuil']['R']) {$bg = 'r';}
-			elseif($note>$_SESSION['PARAM_CALCUL']['seuil']['V']) {$bg = 'v';}
+			$note = round($note/$somme_coef,0);
+			    if($note<$seuil['R']) {$bg = 'r';}
+			elseif($note>$seuil['V']) {$bg = 'v';}
 			else                      {$bg = 'o';}
-			
 			$tab_lignes[$cas] .= '<td class="'.$bg.'">'.$note.'</td>';
 			if( ($cas==0) && ($nb_devoirs!=4) )
 			{

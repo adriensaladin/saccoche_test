@@ -437,7 +437,7 @@ elseif( $step==4 )
 	');
 	DB::query(SACOCHE_BD_NAME , '
 		REPLACE INTO livret_structure VALUES
-		(2404, "CLG", "Robert Barriere", 1, "France métropolitaine", "France", " 33", "Gironde", "Sauveterre-de-Guyenne", 0, "JOCAL", "Julien", "collegerb@free.fr", "93fd17ea6023ba55146bfbfcface2a03", "pre.nom", "pre.nom", "1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18", "1,2,3,4", "")
+		(2404, "CLG", "Robert Barriere", 1, "France métropolitaine", "France", " 33", "Gironde", "Sauveterre-de-Guyenne", 0, "JOCAL", "Julien", "collegerb@free.fr", "93fd17ea6023ba55146bfbfcface2a03", "pre.nom", "pre.nom", "1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,99", "1,2,3,4", "")
 	');
 	$affichage .= '<p><label for="rien" class="valide">Tables installées si nécessaire, établissement de Julien Jocal ajouté si nécessaire.</label></p>'."\r\n";
 	$affichage .= '<p><span class="tab"><a href="./index.php">Installation terminée - Retour à l\'accueil.</a></span></p>' ;

@@ -130,8 +130,8 @@ function affich_score_html($score,$methode_tri,$pourcent='')
 	{
 		return '<td class="hc">-</td>';
 	}
-	elseif($score<$_SESSION['PARAM_CALCUL']['seuil']['R']) {$etat = 'r';}
-	elseif($score>$_SESSION['PARAM_CALCUL']['seuil']['V']) {$etat = 'v';}
+	elseif($score<$_SESSION['CALCUL_SEUIL']['R']) {$etat = 'r';}
+	elseif($score>$_SESSION['CALCUL_SEUIL']['V']) {$etat = 'v';}
 	else                                                   {$etat = 'o';}
 	$tri = ($methode_tri=='score') ? sprintf("%03u",$score) : $tab_tri_etat[$etat] ;	// le sprintf et le tab_tri_etat servent pour le tri du tableau
 	return '<td class="hc '.$etat.'"><i>'.$tri.'</i>'.$score.$pourcent.'</td>';
@@ -148,8 +148,8 @@ function affich_validation_html($type_cellule,$tab_infos)
 	{
 		return '<'.$type_cellule.' class="hc">-</'.$type_cellule.'>';
 	}
-	elseif($tab_infos['%']<$_SESSION['PARAM_CALCUL']['seuil']['R']) {$etat = 'r';}
-	elseif($tab_infos['%']>$_SESSION['PARAM_CALCUL']['seuil']['V']) {$etat = 'v';}
+	elseif($tab_infos['%']<$_SESSION['CALCUL_SEUIL']['R']) {$etat = 'r';}
+	elseif($tab_infos['%']>$_SESSION['CALCUL_SEUIL']['V']) {$etat = 'v';}
 	else                                                            {$etat = 'o';}
 	return '<'.$type_cellule.' class="hc '.$etat.'">'.$tab_infos['%'].'% validé ('.$tab_infos['A'].'A '.$tab_infos['VA'].'VA '.$tab_infos['NA'].'NA)</'.$type_cellule.'>';
 }

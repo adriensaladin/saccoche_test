@@ -25,17 +25,56 @@ $tab_type[]		individuel	synthese	bulletin
 $format				matiere	selection	multimatiere
 */
 
+$dossier         = './__tmp/export/';
+$fichier_lien    = 'bilan_'.$format.'_etabl'.$_SESSION['STRUCTURE_ID'].'_user'.$_SESSION['USER_ID'].'_'.time();
+
+$tab_modele_bon = array('RR','R','V','VV');	// les notes prises en compte dans le calcul du score
+
 function non_nul($n)    {return $n!==false ;}
-function acquis($n)     {return $n>$_SESSION['PARAM_CALCUL']['seuil']['V'] ;}
-function non_acquis($n) {return $n<$_SESSION['PARAM_CALCUL']['seuil']['R'] ;}
+function acquis($n)     {return $n>$_SESSION['CALCUL_SEUIL']['V'] ;}
+function non_acquis($n) {return $n<$_SESSION['CALCUL_SEUIL']['R'] ;}
+function calculer_note($tab_devoirs,$calcul_methode,$calcul_limite)
+{
+	global $tab_modele_bon;
+	$nb_evaluation = count($tab_devoirs);
+	// on passe en revue les évaluations disponibles, et on retient les scores exploitables
+	$tab_note = array(); // pour les notes d'un élève
+	for($i=0;$i<$nb_evaluation;$i++)
+	{
+		if(in_array($tab_devoirs[$i]['note'],$tab_modele_bon))
+		{
+			$tab_note[] = $_SESSION['CALCUL_VALEUR'][$tab_devoirs[$i]['note']];
+		}
+	}
+	// si pas de notes exploitables, on arrête de suite (sinon, on est certain de pouvoir renvoyer un score)
+	$nb_note = count($tab_note);
+	if($nb_note==0)
+	{
+		return false;
+	}
+	// si le paramétrage du référentiel l'indique, on tronque pour ne garder que les derniers résultats
+	if( ($calcul_limite) && ($nb_note>$calcul_limite) )
+	{
+		$tab_note = array_slice($tab_note,-$calcul_limite);
+		$nb_note = $calcul_limite;
+	}
+	// calcul de la note en focntion du mode du référentiel
+	$somme_point = 0;
+	$somme_coef = 0;
+	for($num_devoir=1 ; $num_devoir<=$nb_note ; $num_devoir++)
+	{
+		$coef = $calcul_methode ? $num_devoir : 1 ;
+		$somme_coef += $coef;
+		$somme_point += $tab_note[$num_devoir-1]*$coef;
+	}
+	return round($somme_point/$somme_coef,0);
+}
 
 if(!$aff_coef)  { $texte_coef       = ''; }
 if(!$aff_socle) { $texte_socle      = ''; }
 if(!$aff_lien)  { $texte_lien_avant = ''; }
 if(!$aff_lien)  { $texte_lien_apres = ''; }
 
-$dossier         = './__tmp/export/';
-$fichier_lien    = 'bilan_'.$format.'_etabl'.$_SESSION['STRUCTURE_ID'].'_user'.$_SESSION['USER_ID'].'_'.time();
 $date_complement = ($retroactif=='oui') ? ' (évaluations antérieures comptabilisées).' : '.';
 $texte_periode   = ($format!='selection') ? 'Du '.$date_debut.' au '.$date_fin.$date_complement : false;
 $tab_titre       = array('matiere'=>'sur une matière' , 'multimatiere'=>'transdisciplinaire' , 'selection'=>'sur une sélection d\'items');
@@ -47,7 +86,6 @@ require('./_inc/class.PDF.php');
 // Tableaux et variables pour mémoriser les infos ; dans cette section on ne fait que les calculs (aucun affichage)
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
-$tab_modele_bon = array('RR','R','V','VV');	// les notes prises en compte dans le calcul du score
 $tab_score_eleve_competence             = array();	// Retenir les scores / élève / matière / item
 $tab_score_competence_eleve             = array();	// Retenir les scores / item / élève
 $tab_moyenne_scores_eleve               = array();	// Retenir la moyenne des scores d'acquisitions calculés / matière / élève
@@ -83,38 +121,9 @@ foreach($tab_eleve as $tab)
 				// Pour chaque item...
 				foreach($tab_eval[$eleve_id][$matiere_id] as $competence_id => $tab_devoirs)
 				{
-					extract($tab_competence[$competence_id][0]);	// $competence_ref $competence_nom $competence_coef $competence_socle $competence_lien
-					$evaluation_nb = count($tab_devoirs);
-					// on passe en revue les évaluations disponibles, et on retient les scores exploitables (il peut falloir remonter plus loin que ce qui est affiché en cas d'absences ou de dispenses...)
-					$tab_note = array(); // pour les notes d'un élève
-					for($i=0;$i<$evaluation_nb;$i++)
-					{
-						if(in_array($tab_devoirs[$i]['note'],$tab_modele_bon))
-						{
-							$tab_note[] = $_SESSION['PARAM_CALCUL']['valeur'][$tab_devoirs[$i]['note']];
-						}
-					}
+					extract($tab_competence[$competence_id][0]);	// $competence_ref $competence_nom $competence_coef $competence_socle $competence_lien $calcul_methode $calcul_limite
 					// calcul du bilan de l'item
-					$note_nb = count($tab_note);
-					if($note_nb>4)
-					{
-						$tab_note = array_slice($tab_note,-4);
-					}
-					if(count($tab_note))
-					{
-						switch ($note_nb)
-						{
-							case 1 :	$note = $tab_note[0]*$_SESSION['PARAM_CALCUL']['coef'][1][1]; break;
-							case 2 :	$note = $tab_note[0]*$_SESSION['PARAM_CALCUL']['coef'][2][1] + $tab_note[1]*$_SESSION['PARAM_CALCUL']['coef'][2][2] ; break;
-							case 3 :	$note = $tab_note[0]*$_SESSION['PARAM_CALCUL']['coef'][3][1] + $tab_note[1]*$_SESSION['PARAM_CALCUL']['coef'][3][2] + $tab_note[2]*$_SESSION['PARAM_CALCUL']['coef'][3][3] ; break;
-							default:	$note = $tab_note[0]*$_SESSION['PARAM_CALCUL']['coef'][4][1] + $tab_note[1]*$_SESSION['PARAM_CALCUL']['coef'][4][2] + $tab_note[2]*$_SESSION['PARAM_CALCUL']['coef'][4][3] + $tab_note[3]*$_SESSION['PARAM_CALCUL']['coef'][4][4] ; break;
-						}
-						$tab_score_eleve_competence[$eleve_id][$matiere_id][$competence_id] = round($note,0);
-					}
-					else
-					{
-						$tab_score_eleve_competence[$eleve_id][$matiere_id][$competence_id] = false;
-					}
+					$tab_score_eleve_competence[$eleve_id][$matiere_id][$competence_id] = calculer_note($tab_devoirs,$calcul_methode,$calcul_limite);
 					$tab_score_competence_eleve[$competence_id][$eleve_id] = $tab_score_eleve_competence[$eleve_id][$matiere_id][$competence_id];
 				}
 				// calcul des bilans des scores
@@ -268,7 +277,7 @@ if(in_array('individuel',$tab_type))
 					// Pour chaque item...
 					foreach($tab_eval[$eleve_id][$matiere_id] as $competence_id => $tab_devoirs)
 					{
-						extract($tab_competence[$competence_id][0]);	// $competence_ref $competence_nom $competence_coef $competence_socle $competence_lien
+						extract($tab_competence[$competence_id][0]);	// $competence_ref $competence_nom $competence_coef $competence_socle $competence_lien $calcul_methode $calcul_limite
 						// cases référence et nom
 						if($aff_coef)
 						{

@@ -37,7 +37,7 @@ if( $detail && $palier_id && $palier_nom && $remplissage )
 	$tab_liste_item = array();	// [i] => socle_id
 	$tab_eleve      = array();	// [i] => array(eleve_id,eleve_nom,eleve_prenom)
 	$tab_eval       = array();	// [eleve_id][socle_id][competence_id] => note
-	$tab_competence = array();	// [competence_id] => array(competence_ref,competence_nom);
+	$tab_competence = array();	// [competence_id] => array(competence_ref,competence_nom,calcul_methode,calcul_limite);
 
 	//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 	// Récupération de la liste des items du socle pour le palier sélectionné
@@ -97,7 +97,7 @@ if( $detail && $palier_id && $palier_nom && $remplissage )
 		foreach($DB_TAB as $key => $DB_ROW)
 		{
 			$tab_eval[$DB_ROW['eleve_id']][$DB_ROW['socle_id']][$DB_ROW['competence_id']][] = $DB_ROW['note'];
-			$tab_competence[$DB_ROW['competence_id']] = array('competence_ref'=>$DB_ROW['competence_ref'],'competence_nom'=>$DB_ROW['competence_nom']);
+			$tab_competence[$DB_ROW['competence_id']] = array('competence_ref'=>$DB_ROW['competence_ref'],'competence_nom'=>$DB_ROW['competence_nom'],'calcul_methode'=>$DB_ROW['calcul_methode'],'calcul_limite'=>$DB_ROW['calcul_limite']);
 		}
 	}
 

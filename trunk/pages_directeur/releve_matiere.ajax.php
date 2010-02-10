@@ -74,7 +74,7 @@ if( $orientation && $marge_min && $couleur && $cases_nb && $cases_largeur && $ca
 		exit('La date de début est postérieure à la date de fin !');
 	}
 
-	$tab_competence = array();	// [competence_id] => array(competence_ref,competence_nom,competence_coef,competence_socle,competence_lien);
+	$tab_competence = array();	// [competence_id] => array(competence_ref,competence_nom,competence_coef,competence_socle,competence_lien,calcul_methode,calcul_limite);
 	$tab_liste_comp = array();	// [i] => competence_id
 	$tab_eleve      = array();	// [i] => array(eleve_id,eleve_nom,eleve_prenom)
 	$tab_matiere    = array();	// [matiere_id] => matiere_nom

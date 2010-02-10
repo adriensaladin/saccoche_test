@@ -527,8 +527,8 @@ class PDF extends FPDF
 	else
 	{
 		// case 1
-				if($moyenne_pourcent<$_SESSION['PARAM_CALCUL']['seuil']['R']) {$this->choisir_couleur_fond('rouge_fonce');}
-		elseif($moyenne_pourcent>$_SESSION['PARAM_CALCUL']['seuil']['V']) {$this->choisir_couleur_fond('vert_fonce');}
+				if($moyenne_pourcent<$_SESSION['CALCUL_SEUIL']['R']) {$this->choisir_couleur_fond('rouge_fonce');}
+		elseif($moyenne_pourcent>$_SESSION['CALCUL_SEUIL']['V']) {$this->choisir_couleur_fond('vert_fonce');}
 		else                                                              {$this->choisir_couleur_fond('jaune_fonce');}
 		$this->Cell($this->cases_largeur , $this->cases_hauteur , $moyenne_pourcent.'%' , 1 , $direction_after_case1 , 'C' , true , '');
 
@@ -539,8 +539,8 @@ class PDF extends FPDF
 		}
 
 		// case 2
-				if($moyenne_nombre<$_SESSION['PARAM_CALCUL']['seuil']['R']) {$this->choisir_couleur_fond('rouge_fonce');}
-		elseif($moyenne_nombre>$_SESSION['PARAM_CALCUL']['seuil']['V']) {$this->choisir_couleur_fond('vert_fonce');}
+				if($moyenne_nombre<$_SESSION['CALCUL_SEUIL']['R']) {$this->choisir_couleur_fond('rouge_fonce');}
+		elseif($moyenne_nombre>$_SESSION['CALCUL_SEUIL']['V']) {$this->choisir_couleur_fond('vert_fonce');}
 		else                                                            {$this->choisir_couleur_fond('jaune_fonce');}
 		$this->Cell($this->cases_largeur , $this->cases_hauteur , $moyenne_nombre.'%' , 1 , $direction_after_case2 , 'C' , true , '');
 
@@ -727,8 +727,8 @@ function afficher_validation_socle($gras,$tab_infos)
 	}
 	else
 	{
-		    if($tab_infos['%']<$_SESSION['PARAM_CALCUL']['seuil']['R']) {$this->choisir_couleur_fond('rouge_fonce');}
-		elseif($tab_infos['%']>$_SESSION['PARAM_CALCUL']['seuil']['V']) {$this->choisir_couleur_fond('vert_fonce');}
+		    if($tab_infos['%']<$_SESSION['CALCUL_SEUIL']['R']) {$this->choisir_couleur_fond('rouge_fonce');}
+		elseif($tab_infos['%']>$_SESSION['CALCUL_SEUIL']['V']) {$this->choisir_couleur_fond('vert_fonce');}
 		else                                                            {$this->choisir_couleur_fond('jaune_fonce');}
 		$this->Cell($this->attestation_largeur , $this->cases_hauteur , pdf($tab_infos['%'].'% validé ('.$tab_infos['A'].'A '.$tab_infos['VA'].'VA '.$tab_infos['NA'].'NA)') , 1 , 1 , 'C' , true , '');
 	}
@@ -747,8 +747,8 @@ function afficher_validation_socle($gras,$tab_infos)
 		}
 		else
 		{
-					if($score<$_SESSION['PARAM_CALCUL']['seuil']['R']) {$this->choisir_couleur_fond('rouge_fonce');}
-			elseif($score>$_SESSION['PARAM_CALCUL']['seuil']['V']) {$this->choisir_couleur_fond('vert_fonce');}
+					if($score<$_SESSION['CALCUL_SEUIL']['R']) {$this->choisir_couleur_fond('rouge_fonce');}
+			elseif($score>$_SESSION['CALCUL_SEUIL']['V']) {$this->choisir_couleur_fond('vert_fonce');}
 			else                                                   {$this->choisir_couleur_fond('jaune_fonce');}
 			$this->SetFont('Arial' , '' , $this->taille_police-2);
 			$this->Cell($this->cases_largeur , $this->cases_hauteur , $score , 1 , $br , 'C' , true , '');

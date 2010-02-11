@@ -51,14 +51,16 @@ function calculer_note($tab_devoirs,$calcul_methode,$calcul_limite)
 		$tab_note = array_slice($tab_note,-$calcul_limite);
 		$nb_note = $calcul_limite;
 	}
-	// calcul de la note en focntion du mode du référentiel
+	// calcul de la note en fonction du mode du référentiel
 	$somme_point = 0;
+	$coef = 1;
 	$somme_coef = 0;
 	for($num_devoir=1 ; $num_devoir<=$nb_note ; $num_devoir++)
 	{
-		$coef = $calcul_methode ? $num_devoir : 1 ;
-		$somme_coef += $coef;
 		$somme_point += $tab_note[$num_devoir-1]*$coef;
+		$somme_coef += $coef;
+		// Calcul du coef de l'éventuel devoir suivant
+		$coef = ($calcul_methode=='geometrique') ? $coef*2 : ( ($calcul_methode=='arithmetique') ? $coef+1 : 1 ) ;
 	}
 	return round($somme_point/$somme_coef,0);
 }

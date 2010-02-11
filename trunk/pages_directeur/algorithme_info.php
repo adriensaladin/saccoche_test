@@ -18,8 +18,9 @@ $TITRE = "Algorithme de calcul";
 
 <?php
 $tab_options = array();
-$tab_options[1] = 'Favoriser les évaluations récentes (coefficients en progression arithmétique).';
-$tab_options[0] = 'Comptabiliser autant chaque évaluation (moyenne classique non pondérée).';
+$tab_options['geometrique']  = 'Coefficient multiplié par 2 à chaque devoir (sur les 5 dernières saisies maximum).';
+$tab_options['arithmetique'] = 'Coefficient augmenté de 1 à chaque devoir (sur les 9 dernières saisies maximum).';;
+$tab_options['classique']    = 'Moyenne classique non pondérée (comptabiliser autant chaque saisie).';
 $options_methode = '';
 foreach($tab_options as $value => $texte)
 {

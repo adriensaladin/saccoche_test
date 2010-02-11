@@ -19,7 +19,7 @@ $(document).ready
 
 		// Préparation de select utiles
 		var select_partage = '<select id="f_partage" name="f_partage"><option value="oui">Accessible aux autres établissements.</option><option value="bof">Partage sans intérêt (pas novateur).</option><option value="non">Caché aux autres établissements.</option></select>';
-		var select_methode = '<select id="f_methode" name="f_methode"><option value="1">Coefficients progressifs</option><option value="0">Moyenne classique</option></select>';
+		var select_methode = '<select id="f_methode" name="f_methode"><option value="geometrique">Coefficients &times;2</option><option value="arithmetique">Coefficients +1</option><option value="classique">Moyenne classique</option></select>';
 		var select_limite  = '<select id="f_limite" name="f_limite"><option value="0">avec toutes les notes.</option><option value="1">uniquement la dernière.</option>';
 		var tab_options = new Array(2,3,4,5,6,7,8,9,10,15,20,30,40,50);
 		for(i=0 ; i<tab_options.length ; i++)
@@ -27,6 +27,50 @@ $(document).ready
 			select_limite += '<option value="'+tab_options[i]+'">des '+tab_options[i]+' dernières notes.</option>';
 		}
 		select_limite += '</select>';
+
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+//	Changement de méthode -> desactiver les limites autorisées suivant les cas
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+		// Tableaux utilisés pour savoir quelles options desactiver
+		var tableau_limites_autorisees = new Array();
+		tableau_limites_autorisees['geometrique']  = '..1.2.3.4.5.';
+		tableau_limites_autorisees['arithmetique'] = '..1.2.3.4.5.6.7.8.9.';
+		tableau_limites_autorisees['classique']  = '..0.1.2.3.4.5.6.7.8.9.10.15.20.30.40.50.';
+		// La fonction qui s'en occupe
+		var actualiser_select_limite = function()
+		{
+			// Déterminer s'il faut modifier l'option sélectionnée
+			limite_valeur = $('#f_limite option:selected').val();
+			findme = '.'+limite_valeur+'.';
+			methode_valeur = $('#f_methode option:selected').val();
+			modifier_limite_selected = (tableau_limites_autorisees[methode_valeur].indexOf(findme)==-1) ? true : -1 ;
+			if(modifier_limite_selected!=-1)
+			{
+				modifier_limite_selected = (methode_valeur=='geometrique') ? 5 : 9 ;
+			}
+			$("#f_limite option").each
+			(
+				function()
+				{
+					limite_valeur = $(this).val();
+					findme = '.'+limite_valeur+'.';
+					if(tableau_limites_autorisees[methode_valeur].indexOf(findme)==-1)
+					{
+						$(this).attr('disabled',true);
+					}
+					else
+					{
+						$(this).removeAttr('disabled');
+					}
+					if(limite_valeur==modifier_limite_selected)
+					{
+						$(this).attr('selected',true);
+					}
+				}
+			);
+		}
+		// Appel de la fonction à chaque changement de méthode
+		$('#f_methode').live('change', actualiser_select_limite );
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 //	Clic sur l'image pour Voir un référentiel de son établissement
@@ -97,10 +141,12 @@ $(document).ready
 				afficher_masquer_images_action('hide');
 				ids     = $(this).parent().attr('id');
 				param   = $(this).parent().prev().attr('lang');
-				methode = param.substring(1,2);
-				limite  = param.substring(3,param.length);
+				tableau = param.split('_');
+				methode = tableau[0];
+				limite  = tableau[1];
 				new_span = '<span>'+select_methode.replace('"'+methode+'"','"'+methode+'" selected="selected"')+select_limite.replace('"'+limite+'"','"'+limite+'" selected="selected"')+'<q class="valider" lang="calculer" title="Valider les modifications du mode de calcul de ce référentiel."></q><q class="annuler" title="Annuler la modification du mode de calcul de ce référentiel."></q> <label id="ajax_msg">&nbsp;</label></span>';
 				$(this).after(new_span);
+				actualiser_select_limite();
 				infobulle();
 				mode = 'calculer';
 			}
@@ -196,7 +242,7 @@ $(document).ready
 							}
 							else
 							{
-								$('#'+ids).prev().attr( 'lang','M'+methode+'L'+limite ).html( responseHTML.substring(2,responseHTML.length) );
+								$('#'+ids).prev().attr( 'lang',methode+'_'+limite ).html( responseHTML.substring(2,responseHTML.length) );
 								$('#ajax_msg').parent().remove();
 								afficher_masquer_images_action('show');
 								infobulle();

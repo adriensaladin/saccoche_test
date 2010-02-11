@@ -18,8 +18,9 @@ $TITRE = "Algorithme de calcul";
 
 <?php
 $tab_options = array();
-$tab_options[1] = 'Favoriser les évaluations récentes (coefficients en progression arithmétique).';
-$tab_options[0] = 'Comptabiliser autant chaque évaluation (moyenne classique non pondérée).';
+$tab_options['geometrique']  = 'Coefficient multiplié par 2 à chaque devoir (sur les 5 dernières saisies maximum).';
+$tab_options['arithmetique'] = 'Coefficient augmenté de 1 à chaque devoir (sur les 9 dernières saisies maximum).';;
+$tab_options['classique']    = 'Moyenne classique non pondérée (comptabiliser autant chaque saisie).';
 $options_methode = '';
 foreach($tab_options as $value => $texte)
 {
@@ -33,11 +34,11 @@ foreach($tab_options as $value)
 {
 	if($value>1)
 	{
-		$texte = 'Prendre en compte uniquement les '.$value.' dernières évaluations.';
+		$texte = 'Prendre en compte seulement les '.$value.' dernières saisies.';
 	}
 	else
 	{
-		$texte = ($value) ? 'Prendre en compte uniquement la dernière évaluation.' : 'Prendre en compte toutes les évaluations.' ;
+		$texte = ($value) ? 'Prendre en compte uniquement la dernière saisie.' : 'Prendre en compte toutes les saisies.' ;
 	}
 	$selected = ($value==$_SESSION['CALCUL_LIMITE']) ? ' selected="selected"' : '' ;
 	$options_limite .= '<option value="'.$value.'"'.$selected.'>'.$texte.'</option>';

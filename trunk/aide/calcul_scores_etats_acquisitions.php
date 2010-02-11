@@ -32,28 +32,111 @@ $TITRE = "Calcul des scores et des états d'acquisitions";
 	<li><img alt="" src="./_img/note/note_VV.gif" /> = 100</li>
 </ul>
 <p>
-	Ceci correspond à une répartition régulière (0/3 ; 1/3 ; 2/3 ; 3/3). Une évaluation codée «&nbsp;absent&nbsp;» ou «&nbsp;non&nbsp;noté&nbsp;» ou «&nbsp;dispensé&nbsp;» n'est pas comptabilisée.
+	Ceci correspond à une répartition régulière (0/3 ; 1/3 ; 2/3 ; 3/3). Une saisie codée «&nbsp;absent&nbsp;» ou «&nbsp;non&nbsp;noté&nbsp;» ou «&nbsp;dispensé&nbsp;» n'est pas comptabilisée.
 </p>
 <p>
 	<b>Seul l'administrateur peut modifier ce réglage ; afin de le comprendre, les autres statuts y ont un accès en consultation et simulation.</b>
 </p>
 
-<h2>Coefficients des évaluations</h2>
-<p>
-	Par défaut, quand un item est évalué plusieurs fois, les évaluations les plus récentes sont celles qui ont le plus d'importance. On autorise ainsi le droit à l'erreur en cours d'apprentissage, l'essentiel étant de valoriser l'acquisition finale (mais inversement, un élève qui régresse sera davantage pénalisé).<br />
-	Les coefficients suivent alors une progression arithmétique : le coefficient du devoir suivant est augmenté de 1. Ainsi, dans le cas de 4 devoirs, le très ancien est coefficient 1, l'ancien est coefficient 2, le récent est coefficient 3, le très récent est coefficient 4.
-</p>
-<p>
-	On peut aussi choisir de compter autant chaque évaluation (moyenne classique).
-</p>
-<p>
-	<b>L'administrateur fixe un réglage par défaut ; celui-ci peut être modifié pour chaque référentiel par les coordonnateurs.</b>
-</p>
 
-<h2>Nombre d'évaluations prises en compte</h2>
+<h2>Méthode de calcul : coefficients et nombres de saisies</h2>
 <p>
-	Par défaut, toutes les évaluations sont comptabilisées. Mais on peut aussi se restreindre à la dernière évaluation, ou aux 2 ; 3 ; 4 ; 5 ; 6 ; 7 ; 8 ; 9 ; 10 ; 15 ; 20 ; 30 ; 40 ; 50 dernières évaluations.
+	Par défaut, quand un item est évalué plusieurs fois, les saisies les plus récentes sont celles qui ont le plus d'importance. On autorise ainsi le droit à l'erreur en cours d'apprentissage, l'essentiel étant de valoriser l'acquisition finale (mais inversement, un élève qui régresse sera davantage pénalisé). Voici les trois modes possibles :
 </p>
+<ul class="puce">
+	<li>Coefficients multipliés par 2 d'une saisie à la suivante : 1;2;4;8;16. Avec cette méthode, la dernière saisie tend a compter pour 50%. Au delà de 5 saisies, les précédentes deviennent négligeables (&lt;2%) ; cette méthode est ainsi limitée aux 5 dernières saisies maximum.</li>
+	<li>Coefficients augmentés de 1 d'une saisie à la suivante : 1;2;3;4;5... Avec cette méthode, les saisies comptent davantage mais l'ensemble est plus équilibré. Au delà de 9 saisies, les précédentes deviennent négligeables (&lt;2%) ; cette méthode est ainsi limitée aux 9 dernières saisies maximum.</li>
+	<li>Moyenne classique non pondérée. Avec cette méthode, on comptabilise autant chaque saisie. Ceci peut être utile pour la matière transversale, couplé ou pas avec une limitation du nombre de notes comptabilisées.</li>
+</ul>
+<a href="#" class="toggle">Voir / masquer les tableaux des coefficients.</a>
+<div class="toggle hide"><table id="simulation">
+	<tbody>
+		<tr><th class="o" colspan="6">Coefficients multipliés par 2</th><th class="nu"></th><th class="o" colspan="10">Coefficients augmentés de 1</th></tr>
+<?php
+for($nb_devoirs=2 ; $nb_devoirs<10 ; $nb_devoirs++)
+{
+	// ligne d'en-tête, progression géométrique
+	if($nb_devoirs<6)
+	{
+		echo'<tr><th class="nu"></th><th colspan="'.$nb_devoirs.'">'.$nb_devoirs.' saisies</th>';
+		$colspan = 6-$nb_devoirs;
+		echo'<th colspan="'.$colspan.'" class="nu"></th>';
+	}
+	else
+	{
+		echo'<tr><td colspan="7" class="nu">';
+	}
+	// ligne d'en-tête, progression arithmétique
+	echo'<th class="nu"></th><th colspan="'.$nb_devoirs.'">'.$nb_devoirs.' saisies</th>';
+	$colspan = 9-$nb_devoirs;
+	echo ($colspan==0) ? '' : ( ($colspan>1) ? '<th colspan="'.$colspan.'" class="nu"></th>' : '<th class="nu"></th>' ) ;
+	echo'</tr>'."\r\n";
+	// ligne du coef, progression géométrique
+	if($nb_devoirs<6)
+	{
+		echo'<tr><th>coefficient</th>';
+		for($num_devoir=1 ; $num_devoir<=$nb_devoirs ; $num_devoir++)
+		{
+			$coef = pow(2,$num_devoir-1);
+			echo'<td>'.$coef.'</td>';
+		}
+		$colspan = 6-$nb_devoirs;
+		echo ($colspan>1) ? '<td colspan="'.$colspan.'" class="nu"></td>' : '<td class="nu"></td>' ;
+	}
+	else
+	{
+		echo'<tr><td colspan="7" class="nu">';
+	}
+	// ligne du coef, progression arithmétique
+	echo'<th>coefficient</th>';
+	for($num_devoir=1 ; $num_devoir<=$nb_devoirs ; $num_devoir++)
+	{
+		$coef = $num_devoir;
+		echo'<td>'.$coef.'</td>';
+	}
+	$colspan = 9-$nb_devoirs;
+	echo ($colspan==0) ? '' : ( ($colspan>1) ? '<td colspan="'.$colspan.'" class="nu"></td>' : '<td class="nu"></td>' ) ;
+	echo'</tr>'."\r\n";
+	// ligne du %, progression géométrique
+	if($nb_devoirs<6)
+	{
+		echo'<tr><th>poids en %</th>';
+		$diviseur = pow(2,$nb_devoirs)-1;
+		for($num_devoir=1 ; $num_devoir<=$nb_devoirs ; $num_devoir++)
+		{
+			$pourcentage = round(100*pow(2,$num_devoir-1)/$diviseur);
+			echo'<td>'.$pourcentage.'%</td>';
+		}
+		$colspan = 6-$nb_devoirs;
+		echo ($colspan>1) ? '<td colspan="'.$colspan.'" class="nu"></td>' : '<td class="nu"></td>' ;
+	}
+	else
+	{
+		echo'<tr><td colspan="7" class="nu">';
+	}
+	// ligne du %, progression arithmétique
+	echo'<th>poids en %</th>';
+	$diviseur = $nb_devoirs*($nb_devoirs+1)/2;
+	for($num_devoir=1 ; $num_devoir<=$nb_devoirs ; $num_devoir++)
+	{
+		$pourcentage = round(100*$num_devoir/$diviseur);
+		echo'<td>'.$pourcentage.'%</td>';
+	}
+	$colspan = 9-$nb_devoirs;
+	echo ($colspan==0) ? '' : ( ($colspan>1) ? '<td colspan="'.$colspan.'" class="nu"></td>' : '<td class="nu"></td>' ) ;
+	echo'</tr>'."\r\n";
+}
+?>
+	</tbody>
+</table></div>
+
+<p>
+	De plus, il est possible de restreindre le nombre des dernières saisies prises en compte :
+</p>
+<ul class="puce">
+	<li>Dans le cas d'un moyenne classique, on peut ne comptabiliser que la dernière saisie, ou les 2 ; 3 ; 4 ; 5 ; 6 ; 7 ; 8 ; 9 ; 10 ; 15 ; 20 ; 30 ; 40 ; 50 dernières saisies.</li>
+	<li>Dans le cas d'un moyenne pondérée, les limites sont indiquées ci-dessus.</li>
+</ul>
 <p>
 	<b>L'administrateur fixe un réglage par défaut ; celui-ci peut être modifié pour chaque référentiel par les coordonnateurs.</b>
 </p>

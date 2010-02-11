@@ -16,10 +16,11 @@ if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');
 $TITRE = "Référentiels de compétences utilisés";
 ?>
 
-<div class="hc">
-	<span class="manuel"><a class="pop_up" href="./aide.php?fichier=referentiel_organisation_competences">DOC : Organisation des compétences dans les référentiels.</a></span><br />
-	<span class="manuel"><a class="pop_up" href="./aide.php?fichier=referentiel_structure">DOC : Structure d'un référentiel.</a></span>
-</div>
+<ul class="puce">
+	<li><span class="manuel"><a class="pop_up" href="./aide.php?fichier=referentiel_organisation_competences">DOC : Organisation des compétences dans les référentiels.</a></span></li>
+	<li><span class="manuel"><a class="pop_up" href="./aide.php?fichier=referentiel_structure">DOC : Structure d'un référentiel.</a></span></li>
+	<li><span class="manuel"><a class="pop_up" href="./aide.php?fichier=calcul_scores_etats_acquisitions">DOC : Calcul des scores et des états d'acquisitions.</a></span></li>
+</ul>
 
 <form action="">
 
@@ -94,18 +95,21 @@ else
 	{
 		foreach($DB_TAB as $key => $DB_ROW)
 		{
-			$methode_calcul_texte = ($DB_ROW['livret_referentiel_calcul_methode']) ? 'Coefficients progressifs' : 'Moyenne classique' ;
-			if($DB_ROW['livret_referentiel_calcul_limite']==0)
+			if($DB_ROW['livret_referentiel_calcul_limite']==1)
 			{
-				$methode_calcul_texte .= ' avec toutes les évaluations.';
+				$methode_calcul_texte = 'Seule la dernière saisie compte.';
 			}
-			elseif($DB_ROW['livret_referentiel_calcul_limite']==1)
+			elseif($DB_ROW['livret_referentiel_calcul_methode']=='classique')
 			{
-				$methode_calcul_texte = 'Seule la dernière évaluation est prise en compte.';
+				$methode_calcul_texte = ($DB_ROW['livret_referentiel_calcul_limite']==0) ? 'Moyenne de toutes les saisies.' : 'Moyenne des '.$DB_ROW['livret_referentiel_calcul_limite'].' dernières saisies.';
 			}
 			else
 			{
-				$methode_calcul_texte .= ' des '.$DB_ROW['livret_referentiel_calcul_limite'].' dernières évaluations.';
+				$chaine = '1/2/3/4/5/6/7/8/9.1/2/4/8/16';
+				$debut = ($DB_ROW['livret_referentiel_calcul_methode']=='geometrique') ? 18 : 0 ;
+				$long  = 2(*$DB_ROW['livret_referentiel_calcul_limite']-1);
+				$long += (($DB_ROW['livret_referentiel_calcul_methode']=='geometrique')&&($DB_ROW['livret_referentiel_calcul_limite']==5)) ? 2 : 1 ;
+				$methode_calcul_texte = 'Les '.$DB_ROW['livret_referentiel_calcul_limite'].' dernières saisies &times;'.substr($chaine,$debut,$long).'.';
 			}
 			$tab_colonne[$DB_ROW['livret_matiere_id']][$DB_ROW['livret_niveau_id']] = '<td class="v">Référentiel présent. '.$tab_partage[$DB_ROW['livret_referentiel_partage']].'</td>'.'<td class="v">'.$methode_calcul_texte.'</td>';
 		}

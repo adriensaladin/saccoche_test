@@ -19,7 +19,7 @@ $action  = (isset($_POST['action']))  ? $_POST['action'] : '';
 $ids     = (isset($_POST['ids']))     ? $_POST['ids']    : '';
 
 $partage = (isset($_POST['partage'])) ? clean_texte($_POST['partage'])  : '';	// Changer l'état de partage
-$methode = (isset($_POST['methode'])) ? clean_entier($_POST['methode']) : -1;	// Changer le mode de calcul
+$methode = (isset($_POST['methode'])) ? clean_texte($_POST['methode'])  : '';	// Changer le mode de calcul
 $limite  = (isset($_POST['limite']))  ? clean_entier($_POST['limite'])  : -1;	// Changer le nb d'items pris en compte
 $donneur = (isset($_POST['donneur'])) ? clean_entier($_POST['donneur']) : -1;	// Etablissement donneur d'un référentiel
 
@@ -32,6 +32,12 @@ list($prefixe,$perso,$matiere_id,$niveau_id) = explode('_',$ids);
 $perso      = clean_entier($perso);
 $matiere_id = clean_entier($matiere_id);
 $niveau_id  = clean_entier($niveau_id);
+
+$tab_partages = array('oui','non','bof');
+$tab_methodes = array('geometrique','arithmetique','classique');
+$tab_limites['geometrique']  = array(1,2,3,4,5);
+$tab_limites['arithmetique'] = array(1,2,3,4,5,6,7,8,9);
+$tab_limites['classique']  = array(0,1,2,3,4,5,6,7,8,9,10,15,20,30,40,50);
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 // Affichage du détail d'un référentiel pour une matière et un niveau donnés (pour son bahut ou un bahut donneur)
@@ -49,7 +55,7 @@ if( ($action=='Voir') && $matiere_id && $niveau_id )
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 // Modifier le partage d'un référentiel
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-elseif( ($action=='Partager') && ($perso==0) && $matiere_id && $niveau_id && in_array($partage,array('oui','non','bof')) )
+elseif( ($action=='Partager') && ($perso==0) && $matiere_id && $niveau_id && in_array($partage,$tab_partages) )
 {
 	$DB_SQL = 'UPDATE livret_referentiel ';
 	$DB_SQL.= 'SET livret_referentiel_partage=:partage ';
@@ -64,7 +70,7 @@ elseif( ($action=='Partager') && ($perso==0) && $matiere_id && $niveau_id && in_
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 // Modifier le mode de calcul d'un référentiel
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-elseif( ($action=='Calculer') && $matiere_id && $niveau_id && in_array($methode,array(0,1)) && in_array($limite,array(0,1,2,3,4,5,6,7,8,9,10,15,20,30,40,50)) )
+elseif( ($action=='Calculer') && $matiere_id && $niveau_id && in_array($methode,$tab_methodes) && in_array($limite,$tab_limites[$methode]) )
 {
 	$DB_SQL = 'UPDATE livret_referentiel ';
 	$DB_SQL.= 'SET livret_referentiel_calcul_methode=:methode,livret_referentiel_calcul_limite=:limite ';
@@ -72,18 +78,21 @@ elseif( ($action=='Calculer') && $matiere_id && $niveau_id && in_array($methode,
 	$DB_SQL.= 'LIMIT 1';
 	$DB_VAR = array(':matiere_id'=>$matiere_id,':niveau_id'=>$niveau_id,':structure_id'=>$_SESSION['STRUCTURE_ID'],':methode'=>$methode,':limite'=>$limite);
 	DB::query(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
-	$retour = ($methode) ? 'Coefficients progressifs' : 'Moyenne classique' ;
-	if($limite==0)
+	if($limite==1)
 	{
-		$retour .= ' sur toutes les évaluations.';
+		$retour = 'Seule la dernière saisie compte.';
 	}
-	elseif($limite==1)
+	elseif($methode=='classique')
 	{
-		$retour = 'Seule la dernière évaluation est prise en compte.';
+		$retour = ($limite==0) ? 'Moyenne de toutes les saisies.' : 'Moyenne des '.$limite.' dernières saisies.';
 	}
 	else
 	{
-		$retour .= ' des '.$limite.' dernières évaluations.';
+		$chaine = '1/2/3/4/5/6/7/8/9.1/2/4/8/16';
+		$debut = ($methode=='geometrique') ? 18 : 0 ;
+		$long  = 2*($limite-1);
+		$long += (($methode=='geometrique')&&($limite==5)) ? 2 : 1 ;
+		$retour = 'Les '.$limite.' dernières saisies &times;'.substr($chaine,$debut,$long).'.';
 	}
 	echo 'ok'.$retour;
 }

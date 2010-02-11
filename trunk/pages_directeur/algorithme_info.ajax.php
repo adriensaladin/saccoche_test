@@ -27,10 +27,15 @@ $seuil = array();
 $seuil['R'] = (isset($_POST['seuilR'])) ? clean_entier($_POST['seuilR']) : 40 ;
 $seuil['V'] = (isset($_POST['seuilV'])) ? clean_entier($_POST['seuilV']) : 60 ;
 // Méthode de calcul
-$methode = (isset($_POST['f_methode'])) ? clean_entier($_POST['f_methode']) : 1 ;
-$limite  = (isset($_POST['f_limite']))  ? clean_entier($_POST['f_limite'])  : 0 ;
+$methode = (isset($_POST['f_methode'])) ? clean_texte($_POST['f_methode']) : '' ;
+$limite  = (isset($_POST['f_limite']))  ? clean_entier($_POST['f_limite']) : 0 ;
 
-if($action=='calculer')
+$tab_methodes = array('geometrique','arithmetique','classique');
+$tab_limites['geometrique']  = array(1,2,3,4,5);
+$tab_limites['arithmetique'] = array(1,2,3,4,5,6,7,8,9);
+$tab_limites['classique']  = array(0,1,2,3,4,5,6,7,8,9,10,15,20,30,40,50);
+
+if( ($action=='calculer') && in_array($methode,$tab_methodes) && in_array($limite,$tab_limites[$methode]) )
 {
 	$tab_bad = array('0','1','2','3');
 	$tab_bon = array(' RR',' R',' V',' VV');
@@ -43,7 +48,7 @@ if($action=='calculer')
 		for($cas=0;$cas<$nb_cas;$cas++)
 		{
 			$note = 0;
-			$coef = 0;
+			$coef = 1;
 			$somme_coef = 0;
 			$masque = sprintf('%0'.$nb_devoirs.'u',base_convert($cas,10,4));
 			$codes = str_replace($tab_bad,$tab_bon,$masque);
@@ -55,9 +60,10 @@ if($action=='calculer')
 				// Si on prend ce devoir en compte
 				if( ($limite==0) || ($nb_devoirs-$num_devoir<$limite) )
 				{
-					$coef = $methode ? $coef+1 : 1 ;
-					$somme_coef += $coef;
 					$note += $valeur[$code]*$coef;
+					$somme_coef += $coef;
+					// Calcul du coef de l'éventuel devoir suivant
+					$coef = ($methode=='geometrique') ? $coef*2 : ( ($methode=='arithmetique') ? $coef+1 : 1 ) ;
 				}
 			}
 			$note = round($note/$somme_coef,0);

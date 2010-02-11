@@ -17,6 +17,48 @@ $(document).ready
 	function()
 	{
 
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+//	Changement de méthode -> desactiver les limites autorisées suivant les cas
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+		// Tableaux utilisés pour savoir quelles options desactiver
+		var tableau_limites_autorisees = new Array();
+		tableau_limites_autorisees['geometrique']  = '..1.2.3.4.5.';
+		tableau_limites_autorisees['arithmetique'] = '..1.2.3.4.5.6.7.8.9.';
+		tableau_limites_autorisees['classique']  = '..0.1.2.3.4.5.6.7.8.9.10.15.20.30.40.50.';
+		// La fonction qui s'en occupe
+		var actualiser_select_limite = function()
+		{
+			// Déterminer s'il faut modifier l'option sélectionnée
+			limite_valeur = $('#f_limite option:selected').val();
+			findme = '.'+limite_valeur+'.';
+			modifier_limite_selected = ('..1.2.3.4.5.'.indexOf(findme)==-1) ? true : false ;
+			methode_valeur = $('#f_methode option:selected').val();
+			$("#f_limite option").each
+			(
+				function()
+				{
+					limite_valeur = $(this).val();
+					findme = '.'+limite_valeur+'.';
+					if(tableau_limites_autorisees[methode_valeur].indexOf(findme)==-1)
+					{
+						$(this).attr('disabled',true);
+					}
+					else
+					{
+						$(this).removeAttr('disabled');
+					}
+					if( (limite_valeur==5) && (modifier_limite_selected) )
+					{
+						$(this).attr('selected',true);
+					}
+				}
+			);
+		}
+		// Appel de la fonction au chargement de la page puis à chaque changement de méthode
+		actualiser_select_limite();
+		$('#f_methode').change( actualiser_select_limite );
+
+
 		// Demande de soumission du formulaire
 		$('#calculer').click
 		(
@@ -41,6 +83,7 @@ $(document).ready
 				$('#f_limite option[value='+memo_limite+']').attr("selected",true);
 				$('#seuilR').val(memo_seuilR);
 				$('#seuilV').val(memo_seuilV);
+				actualiser_select_limite();
 			}
 		);
 		// Donc il faut retenir les valeurs initiales et les replacer
@@ -62,10 +105,11 @@ $(document).ready
 				$('#valeurR').val(33);
 				$('#valeurV').val(67);
 				$('#valeurVV').val(100);
-				$('#f_methode option[value="1"]').attr("selected",true);
-				$('#f_limite option[value="0"]').attr("selected",true);
+				$('#f_methode option[value="geometrique"]').attr("selected",true);
+				$('#f_limite option[value="5"]').attr("selected",true);
 				$('#seuilR').val(40);
 				$('#seuilV').val(60);
+				actualiser_select_limite();
 			}
 		);
 

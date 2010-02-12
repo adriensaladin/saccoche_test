@@ -109,7 +109,7 @@ else
 			{
 				$chaine = '1/2/3/4/5/6/7/8/9.1/2/4/8/16';
 				$debut = ($DB_ROW['livret_referentiel_calcul_methode']=='geometrique') ? 18 : 0 ;
-				$long  = 2(*$DB_ROW['livret_referentiel_calcul_limite']-1);
+				$long  = 2*($DB_ROW['livret_referentiel_calcul_limite']-1);
 				$long += (($DB_ROW['livret_referentiel_calcul_methode']=='geometrique')&&($DB_ROW['livret_referentiel_calcul_limite']==5)) ? 2 : 1 ;
 				$methode_calcul_texte = 'Les '.$DB_ROW['livret_referentiel_calcul_limite'].' dernières saisies &times;'.substr($chaine,$debut,$long).'.';
 			}

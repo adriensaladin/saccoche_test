@@ -45,7 +45,7 @@ $TITRE = "Calcul des scores et des états d'acquisitions";
 </p>
 <ul class="puce">
 	<li>Coefficients multipliés par 2 d'une saisie à la suivante : 1;2;4;8;16. Avec cette méthode, la dernière saisie tend a compter pour 50%. Au delà de 5 saisies, les précédentes deviennent négligeables (&lt;2%) ; cette méthode est ainsi limitée aux 5 dernières saisies maximum.</li>
-	<li>Coefficients augmentés de 1 d'une saisie à la suivante : 1;2;3;4;5... Avec cette méthode, les saisies comptent davantage mais l'ensemble est plus équilibré. Au delà de 9 saisies, les précédentes deviennent négligeables (&lt;2%) ; cette méthode est ainsi limitée aux 9 dernières saisies maximum.</li>
+	<li>Coefficients augmentés de 1 d'une saisie à la suivante : 1;2;3;4;5... Avec cette méthode, la progression des coefficients est régulière. Au delà de 9 saisies, les précédentes deviennent négligeables (&lt;2%) ; cette méthode est ainsi limitée aux 9 dernières saisies maximum.</li>
 	<li>Moyenne classique non pondérée. Avec cette méthode, on comptabilise autant chaque saisie. Ceci peut être utile pour la matière transversale, couplé ou pas avec une limitation du nombre de notes comptabilisées.</li>
 </ul>
 <a href="#" class="toggle">Voir / masquer les tableaux des coefficients.</a>
@@ -64,7 +64,7 @@ for($nb_devoirs=2 ; $nb_devoirs<10 ; $nb_devoirs++)
 	}
 	else
 	{
-		echo'<tr><td colspan="7" class="nu">';
+		echo'<tr><td colspan="7" class="nu"></td>';
 	}
 	// ligne d'en-tête, progression arithmétique
 	echo'<th class="nu"></th><th colspan="'.$nb_devoirs.'">'.$nb_devoirs.' saisies</th>';
@@ -85,7 +85,7 @@ for($nb_devoirs=2 ; $nb_devoirs<10 ; $nb_devoirs++)
 	}
 	else
 	{
-		echo'<tr><td colspan="7" class="nu">';
+		echo'<tr><td colspan="7" class="nu"></td>';
 	}
 	// ligne du coef, progression arithmétique
 	echo'<th>coefficient</th>';
@@ -112,7 +112,7 @@ for($nb_devoirs=2 ; $nb_devoirs<10 ; $nb_devoirs++)
 	}
 	else
 	{
-		echo'<tr><td colspan="7" class="nu">';
+		echo'<tr><td colspan="7" class="nu"></td>';
 	}
 	// ligne du %, progression arithmétique
 	echo'<th>poids en %</th>';

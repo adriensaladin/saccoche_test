@@ -68,7 +68,7 @@ $(document).ready
 					}
 				}
 			);
-		}
+		};
 		// Appel de la fonction à chaque changement de méthode
 		$('#f_methode').live('change', actualiser_select_limite );
 

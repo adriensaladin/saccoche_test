@@ -13,7 +13,7 @@
  * Pour tester la validité d'un document XML, on peut utiliser un analyseur syntaxique XML : http://fr3.php.net/manual/fr/book.xml.php
  * Voir en particulier l'exemple http://fr3.php.net/manual/fr/example.xml-structure.php
  * 
- * Mais ceci ne permet pas de vérifier la confirmité d'un XML avec une DTD.
+ * Mais ceci ne permet pas de vérifier la conformité d'un XML avec une DTD.
  * DOMDocument le permet : http://fr2.php.net/manual/fr/domdocument.validate.php
  * Mais d'une part ça emmet des warnings et d'autre part ça ne retourne qu'un booléen sans détails sur les erreurs trouvées
  * 

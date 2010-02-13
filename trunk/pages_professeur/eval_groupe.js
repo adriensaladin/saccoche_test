@@ -107,6 +107,7 @@ $(document).ready
 			afficher_masquer_images_action('hide');
 			$('#form0').css('visibility','hidden');
 			// Récupérer les informations de la ligne concernée
+			ref    = $(this).parent().attr('lang');
 			date   = $(this).parent().prev().prev().prev().prev().html();
 			info   = $(this).parent().prev().prev().html();
 			nombre = $(this).parent().prev().html();
@@ -118,7 +119,7 @@ $(document).ready
 			new_tr += '<td><select id="f_groupe" name="f_groupe">'+select_groupe+'</select></td>';
 			new_tr += '<td><input id="f_info" name="f_info" size="'+Math.max(info.length,20)+'" type="text" value="'+info+'" /></td>';
 			new_tr += '<td><input id="f_compet_nombre" name="f_compet_nombre" size="10" type="text" value="'+nombre+'" readonly="readonly" /><input id="f_compet_liste" name="f_compet_liste" type="hidden" value="'+liste+'" /><q class="choisir_compet" title="Voir ou choisir les items."></q></td>';
-			new_tr += '<td class="nu"><input id="f_action" name="f_action" type="hidden" value="'+mode+'" /><q class="valider" title="Valider l\'ajout de cette évaluation."></q><q class="annuler" title="Annuler l\'ajout de cette évaluation."></q> <label id="ajax_msg">&nbsp;</label></td>';
+			new_tr += '<td class="nu"><input id="f_action" name="f_action" type="hidden" value="'+mode+'" /><input id="f_ref" name="f_ref" type="hidden" value="'+ref+'" /><q class="valider" title="Valider l\'ajout de cette évaluation."></q><q class="annuler" title="Annuler l\'ajout de cette évaluation."></q> <label id="ajax_msg">&nbsp;</label></td>';
 			new_tr += '</tr>';
 			// Ajouter cette nouvelle ligne
 			$(this).parent().parent().after(new_tr);

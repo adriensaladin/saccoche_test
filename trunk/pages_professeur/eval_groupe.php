@@ -125,7 +125,8 @@ $date_fin   = date("d/m/Y");
 		<img alt="V" src="./_img/note/note_V.gif" /><img alt="DISP" src="./_img/note/note_DISP.gif" /><br />
 		<img alt="VV" src="./_img/note/note_VV.gif" /><img alt="X" src="./_img/note/note_X.gif" />
 	</div></div>
-	<p>
+	<p />
+	<div>
 		<a lang="zone_deport" href="#td_souris_container"><img src="./_img/toggle_plus.gif" alt="" title="Voir / masquer la saisie déportée." class="toggle" /></a> Saisie déportée
 		<div id="zone_deport" class="hide">
 			<input type="hidden" name="filename" id="filename" value="<?php echo './__tmp/export/saisie_'.$_SESSION['STRUCTURE_ID'].'_'.$_SESSION['USER_ID'].'_'; ?>" />
@@ -135,7 +136,7 @@ $date_fin   = date("d/m/Y");
 				<li><input id="import_file" type="button" value="Envoyer un fichier complété au format CSV." /><label id="msg_import">&nbsp;</label></li>
 			</ul>
 		</div>
-	</p>
+	</div>
 </form>
 
 <div id="zone_voir" class="hide">
@@ -143,11 +144,10 @@ $date_fin   = date("d/m/Y");
 	<table id="table_voir" class="scor_eval">
 		<tbody><tr><td></td></tr></tbody>
 	</table>
-	<p>
-		<ul class="puce">
-			<li><a id="export_file2" class="lien_ext" href="">Récupérer un fichier des scores au format CSV pour archivage ou une saisie déportée.</a></li>
-		</ul>
-	</p>
+	<p />
+	<ul class="puce">
+		<li><a id="export_file2" class="lien_ext" href="">Récupérer un fichier des scores au format CSV pour archivage ou une saisie déportée.</a></li>
+	</ul>
 </div>
 
 <?php

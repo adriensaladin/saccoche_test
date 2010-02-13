@@ -34,7 +34,6 @@ $TITRE = "Gestion des évaluations";
 	<li>Cliquer sur <img alt="niveau" src="./_img/action/action_voir.png" /> pour voir les résultats d'une évaluation.</li>
 </ul>
 <p>
-	<span class="astuce">En cas de duplication d'une évaluation, ses items de la copie sont ordonnés par défaut.</span><br />
 	<span class="danger">La liste des items évalués ou des élèves concernés ne devrait pas être modifiée à partir du moment où la saisie des résultats de l'évaluation a commencé (sinon, des résultats peuvent être perdus ou devenir inaccessibles).</span><br />
 	<span class="danger">Supprimer une évaluation entraîne la suppression de tous les résultats qui y sont associés !</span>
 </p>

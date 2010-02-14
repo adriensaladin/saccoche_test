@@ -334,31 +334,31 @@ elseif( ($action=='del') && (in_array($contexte,array('n1','n2','n3'))) && $elem
 	// exécution !
 	if($contexte=='n1')	// domaine
 	{
-		$DB_SQL = 'DELETE livret_competence_domaine, livret_competence_theme, livret_competence_item, livret_jointure_evaluation_competence, livret_jointure_user_competence ';
+		$DB_SQL = 'DELETE livret_competence_domaine, livret_competence_theme, livret_competence_item, livret_jointure_devoir_competence, livret_saisie ';
 		$DB_SQL.= 'FROM livret_competence_domaine ';
 		$DB_SQL.= 'LEFT JOIN livret_competence_theme USING (livret_structure_id,livret_domaine_id) ';
 		$DB_SQL.= 'LEFT JOIN livret_competence_item USING (livret_structure_id,livret_theme_id) ';
-		$DB_SQL.= 'LEFT JOIN livret_jointure_evaluation_competence USING (livret_structure_id,livret_competence_id) ';
-		$DB_SQL.= 'LEFT JOIN livret_jointure_user_competence USING (livret_structure_id,livret_competence_id) ';
+		$DB_SQL.= 'LEFT JOIN livret_jointure_devoir_competence USING (livret_structure_id,livret_competence_id) ';
+		$DB_SQL.= 'LEFT JOIN livret_saisie USING (livret_structure_id,livret_competence_id) ';
 		$DB_SQL.= 'WHERE livret_structure_id=:structure_id AND livret_domaine_id=:domaine_id';
 		$DB_VAR = array(':structure_id'=>$_SESSION['STRUCTURE_ID'],':domaine_id'=>$element_id);
 	}
 	elseif($contexte=='n2')	// thème
 	{
-		$DB_SQL = 'DELETE livret_competence_theme, livret_competence_item, livret_jointure_evaluation_competence, livret_jointure_user_competence ';
+		$DB_SQL = 'DELETE livret_competence_theme, livret_competence_item, livret_jointure_devoir_competence, livret_saisie ';
 		$DB_SQL.= 'FROM livret_competence_theme ';
 		$DB_SQL.= 'LEFT JOIN livret_competence_item USING (livret_structure_id,livret_theme_id) ';
-		$DB_SQL.= 'LEFT JOIN livret_jointure_evaluation_competence USING (livret_structure_id,livret_competence_id) ';
-		$DB_SQL.= 'LEFT JOIN livret_jointure_user_competence USING (livret_structure_id,livret_competence_id) ';
+		$DB_SQL.= 'LEFT JOIN livret_jointure_devoir_competence USING (livret_structure_id,livret_competence_id) ';
+		$DB_SQL.= 'LEFT JOIN livret_saisie USING (livret_structure_id,livret_competence_id) ';
 		$DB_SQL.= 'WHERE livret_structure_id=:structure_id AND livret_theme_id=:theme_id';
 		$DB_VAR = array(':structure_id'=>$_SESSION['STRUCTURE_ID'],':theme_id'=>$element_id);
 	}
 	elseif($contexte=='n3')	// item
 	{
-		$DB_SQL = 'DELETE livret_competence_item, livret_jointure_evaluation_competence, livret_jointure_user_competence ';
+		$DB_SQL = 'DELETE livret_competence_item, livret_jointure_devoir_competence, livret_saisie ';
 		$DB_SQL.= 'FROM livret_competence_item ';
-		$DB_SQL.= 'LEFT JOIN livret_jointure_evaluation_competence USING (livret_structure_id,livret_competence_id) ';
-		$DB_SQL.= 'LEFT JOIN livret_jointure_user_competence USING (livret_structure_id,livret_competence_id) ';
+		$DB_SQL.= 'LEFT JOIN livret_jointure_devoir_competence USING (livret_structure_id,livret_competence_id) ';
+		$DB_SQL.= 'LEFT JOIN livret_saisie USING (livret_structure_id,livret_competence_id) ';
 		$DB_SQL.= 'WHERE livret_structure_id=:structure_id AND livret_competence_id=:competence_id';
 		$DB_VAR = array(':structure_id'=>$_SESSION['STRUCTURE_ID'],':competence_id'=>$element_id);
 	}
@@ -416,54 +416,54 @@ elseif( ($action=='fus') && $element_id && $element2_id )
 	// Dans le cas où les deux items ont été évalués dans une même évaluation, on est obligé de supprimer l'un des scores
 	// On doit donc commencer par chercher les conflits possibles de clefs multiples pour éviter un erreur lors de l'UPDATE
 	$DB_VAR = array(':structure_id'=>$_SESSION['STRUCTURE_ID'],':element_id'=>$element_id,':element2_id'=>$element2_id);
-	// Pour livret_jointure_evaluation_competence
-	$DB_SQL = 'SELECT livret_evaluation_id ';
-	$DB_SQL.= 'FROM livret_jointure_evaluation_competence ';
+	// Pour livret_jointure_devoir_competence
+	$DB_SQL = 'SELECT livret_devoir_id ';
+	$DB_SQL.= 'FROM livret_jointure_devoir_competence ';
 	$DB_SQL.= 'WHERE livret_structure_id=:structure_id AND livret_competence_id=:element_id';
 	$TAB1 = array_keys(DB::queryTab(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR , TRUE));
-	$DB_SQL = 'SELECT livret_evaluation_id ';
-	$DB_SQL.= 'FROM livret_jointure_evaluation_competence ';
+	$DB_SQL = 'SELECT livret_devoir_id ';
+	$DB_SQL.= 'FROM livret_jointure_devoir_competence ';
 	$DB_SQL.= 'WHERE livret_structure_id=:structure_id AND livret_competence_id=:element2_id';
 	$TAB2 = array_keys(DB::queryTab(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR , TRUE));
 	$tab_conflit = array_intersect($TAB1,$TAB2);
 	if(count($tab_conflit))
 	{
-		$DB_SQL = 'DELETE FROM livret_jointure_evaluation_competence ';
-		$DB_SQL.= 'WHERE livret_structure_id=:structure_id AND livret_evaluation_id=:evaluation_id AND livret_competence_id=:element_id ';
+		$DB_SQL = 'DELETE FROM livret_jointure_devoir_competence ';
+		$DB_SQL.= 'WHERE livret_structure_id=:structure_id AND livret_devoir_id=:devoir_id AND livret_competence_id=:element_id ';
 		$DB_SQL.= 'LIMIT 1 ';
-		foreach($tab_conflit as $livret_evaluation_id)
+		foreach($tab_conflit as $livret_devoir_id)
 		{
-			$DB_VAR[':evaluation_id'] = $livret_evaluation_id;
+			$DB_VAR[':devoir_id'] = $livret_devoir_id;
 			DB::query(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
 		}
 	}
-	$DB_SQL = 'UPDATE livret_jointure_evaluation_competence ';
+	$DB_SQL = 'UPDATE livret_jointure_devoir_competence ';
 	$DB_SQL.= 'SET livret_competence_id=:element2_id ';
 	$DB_SQL.= 'WHERE livret_structure_id=:structure_id AND livret_competence_id=:element_id';
 	DB::query(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
-	// Pour livret_jointure_user_competence
-	$DB_SQL = 'SELECT CONCAT(livret_eleve_id,"x",livret_evaluation_id) AS clefs ';
-	$DB_SQL.= 'FROM livret_jointure_user_competence ';
+	// Pour livret_saisie
+	$DB_SQL = 'SELECT CONCAT(livret_eleve_id,"x",livret_devoir_id) AS clefs ';
+	$DB_SQL.= 'FROM livret_saisie ';
 	$DB_SQL.= 'WHERE livret_structure_id=:structure_id AND livret_competence_id=:element_id';
 	$TAB1 = array_keys(DB::queryTab(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR , TRUE));
-	$DB_SQL = 'SELECT CONCAT(livret_eleve_id,"x",livret_evaluation_id) AS clefs ';
-	$DB_SQL.= 'FROM livret_jointure_user_competence ';
+	$DB_SQL = 'SELECT CONCAT(livret_eleve_id,"x",livret_devoir_id) AS clefs ';
+	$DB_SQL.= 'FROM livret_saisie ';
 	$DB_SQL.= 'WHERE livret_structure_id=:structure_id AND livret_competence_id=:element2_id';
 	$TAB2 = array_keys(DB::queryTab(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR , TRUE));
 	$tab_conflit = array_intersect($TAB1,$TAB2);
 	if(count($tab_conflit))
 	{
-		$DB_SQL = 'DELETE FROM livret_jointure_user_competence ';
-		$DB_SQL.= 'WHERE livret_structure_id=:structure_id AND livret_eleve_id=:eleve_id AND livret_evaluation_id=:evaluation_id AND livret_competence_id=:element_id ';
+		$DB_SQL = 'DELETE FROM livret_saisie ';
+		$DB_SQL.= 'WHERE livret_structure_id=:structure_id AND livret_eleve_id=:eleve_id AND livret_devoir_id=:devoir_id AND livret_competence_id=:element_id ';
 		foreach($tab_conflit as $ids)
 		{
-			list($livret_eleve_id,$livret_evaluation_id) = explode('x',$ids);
-			$DB_VAR[':eleve_id']      = $livret_eleve_id;
-			$DB_VAR[':evaluation_id'] = $livret_evaluation_id;
+			list($livret_eleve_id,$livret_devoir_id) = explode('x',$ids);
+			$DB_VAR[':eleve_id']  = $livret_eleve_id;
+			$DB_VAR[':devoir_id'] = $livret_devoir_id;
 			DB::query(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
 		}
 	}
-	$DB_SQL = 'UPDATE livret_jointure_user_competence ';
+	$DB_SQL = 'UPDATE livret_saisie ';
 	$DB_SQL.= 'SET livret_competence_id=:element2_id ';
 	$DB_SQL.= 'WHERE livret_structure_id=:structure_id AND livret_competence_id=:element_id';
 	DB::query(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);

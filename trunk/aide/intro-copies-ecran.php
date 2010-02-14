@@ -17,8 +17,8 @@ $TITRE = "Copies d'écran";
 ?>
 
 <p class="hc"><img class="ce" src="./_img/copie-ecran/grille_niveau.png" alt="" /></p>
-<p class="hc"><img class="ce" src="./_img/copie-ecran/evaluation_creation.png" alt="" /></p>
-<p class="hc"><img class="ce" src="./_img/copie-ecran/evaluation_saisie.png" alt="" /></p>
+<p class="hc"><img class="ce" src="./_img/copie-ecran/devoir_creation.png" alt="" /></p>
+<p class="hc"><img class="ce" src="./_img/copie-ecran/devoir_saisie.png" alt="" /></p>
 <p class="hc"><img class="ce" src="./_img/copie-ecran/bilan_matiere_individuel.png" alt="" /></p>
 <p class="hc"><img class="ce" src="./_img/copie-ecran/bilan_matiere_synthese.png" alt="" /></p>
 <p class="hc"><img class="ce" src="./_img/copie-ecran/attestation_socle.png" alt="" /></p>

@@ -87,11 +87,11 @@ function affichage_stats()
 	$DB_TAB = DB::queryRow(SACOCHE_BD_NAME , $DB_SQL , null);
 	$nb_total_compet = $DB_TAB['nombre'];
 	// Stats effectifs globaux : nb notes
-	$DB_SQL = 'SELECT COUNT(*) AS nombre FROM livret_jointure_user_competence';
+	$DB_SQL = 'SELECT COUNT(*) AS nombre FROM livret_saisie';
 	$DB_TAB = DB::queryRow(SACOCHE_BD_NAME , $DB_SQL , null);
 	$nb_total_note = $DB_TAB['nombre'];
 	//Stats évals précises : nb structures, nb professeurs, nb élèves, nb compétences, nb notes
-	$DB_SQL = 'SELECT COUNT( DISTINCT livret_prof_id ) AS nb_professeur, COUNT( DISTINCT livret_structure_id ) AS nb_structure, COUNT( * ) AS nb_note, COUNT( DISTINCT livret_eleve_id ) AS nb_eleve, COUNT( DISTINCT livret_competence_id ) AS nb_compet FROM livret_jointure_user_competence';
+	$DB_SQL = 'SELECT COUNT( DISTINCT livret_prof_id ) AS nb_professeur, COUNT( DISTINCT livret_structure_id ) AS nb_structure, COUNT( * ) AS nb_note, COUNT( DISTINCT livret_eleve_id ) AS nb_eleve, COUNT( DISTINCT livret_competence_id ) AS nb_compet FROM livret_saisie';
 	$DB_TAB = DB::queryRow(SACOCHE_BD_NAME , $DB_SQL , null);
 	$nb_professeur = $DB_TAB['nb_professeur'] ;
 	$nb_structure  = $DB_TAB['nb_structure'] ;

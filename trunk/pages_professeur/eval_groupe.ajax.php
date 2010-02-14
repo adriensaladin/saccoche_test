@@ -37,14 +37,14 @@ $dossier_export = './__tmp/export/';
 // Dans le cas d'une duplication, "ref" sert à retrouver l'évaluation d'origine pour évenuellement récupérer l'ordre des items
 if(mb_strpos($ref,'_'))
 {
-	list($eval_id,$groupe_temp) = explode('_',$ref,2);
-	$eval_id = clean_entier($eval_id);
+	list($devoir_id,$groupe_temp) = explode('_',$ref,2);
+	$devoir_id = clean_entier($devoir_id);
 	// Si "groupe" est transmis en POST (pour Ajouter ou Éditer), il faut le prendre comme référence nouvelle ; sinon, on prend le groupe extrait de "ref"
 	$groupe = ($groupe) ? $groupe : clean_texte($groupe_temp) ;
 }
 else
 {
-	$eval_id = 0;
+	$devoir_id = 0;
 }
 
 // Si "groupe" est renseigné, il contient l'initiale du type de groupe + l'id du groupe
@@ -105,29 +105,29 @@ if( ($action=='Afficher_evaluations') && $aff_classe_txt && $aff_classe_id && ( 
 		$date_debut_mysql = $DB_ROW['livret_periode_date_debut'];
 		$date_fin_mysql   = $DB_ROW['livret_periode_date_fin'];
 	}
-	$where_periode = 'AND livret_evaluation_date>="'.$date_debut_mysql.'" AND livret_evaluation_date<="'.$date_fin_mysql.'" ' ;
+	$where_periode = 'AND livret_devoir_date>="'.$date_debut_mysql.'" AND livret_devoir_date<="'.$date_fin_mysql.'" ' ;
 	// Lister les évaluations
 	// DB::query(SACOCHE_BD_NAME , 'SET group_concat_max_len = ...'); // Pour lever si besoin une limitation de GROUP_CONCAT (group_concat_max_len est par défaut limité à une chaine de 1024 caractères).
 	$DB_SQL = 'SELECT *, GROUP_CONCAT(livret_competence_id SEPARATOR "_") AS competences_listing, COUNT(livret_competence_id) AS competences_nombre ';
-	$DB_SQL.= 'FROM livret_evaluation ';
-	$DB_SQL.= 'LEFT JOIN livret_jointure_evaluation_competence USING (livret_structure_id,livret_evaluation_id) ';
+	$DB_SQL.= 'FROM livret_devoir ';
+	$DB_SQL.= 'LEFT JOIN livret_jointure_devoir_competence USING (livret_structure_id,livret_devoir_id) ';
 	$DB_SQL.= 'LEFT JOIN livret_groupe USING (livret_structure_id,livret_groupe_id) ';
 	$DB_SQL.= 'WHERE livret_structure_id=:structure_id AND livret_prof_id=:prof_id AND livret_groupe_type!=:type4 '.$where_classe.$where_periode;
-	$DB_SQL.= 'GROUP BY livret_evaluation_id ';
-	$DB_SQL.= 'ORDER BY livret_evaluation_date DESC, livret_groupe_nom ASC';
+	$DB_SQL.= 'GROUP BY livret_devoir_id ';
+	$DB_SQL.= 'ORDER BY livret_devoir_date DESC, livret_groupe_nom ASC';
 	$DB_VAR = array(':structure_id'=>$_SESSION['STRUCTURE_ID'],':prof_id'=>$_SESSION['USER_ID'],':type4'=>'eval');
 	$DB_TAB = DB::queryTab(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
 	foreach($DB_TAB as $key => $DB_ROW)
 	{
 		// Formater la date et la référence de l'évaluation
-		$date_affich = convert_date_mysql_to_french($DB_ROW['livret_evaluation_date']);
-		$ref = $DB_ROW['livret_evaluation_id'].'_'.strtoupper($DB_ROW['livret_groupe_type']{0}).$DB_ROW['livret_groupe_id'];
+		$date_affich = convert_date_mysql_to_french($DB_ROW['livret_devoir_date']);
+		$ref = $DB_ROW['livret_devoir_id'].'_'.strtoupper($DB_ROW['livret_groupe_type']{0}).$DB_ROW['livret_groupe_id'];
 		$s = ($DB_ROW['competences_nombre']>1) ? 's' : '';
 		// Afficher une ligne du tableau
 		echo'<tr>';
-		echo	'<td><i>'.html($DB_ROW['livret_evaluation_date']).'</i>'.html($date_affich).'</td>';
+		echo	'<td><i>'.html($DB_ROW['livret_devoir_date']).'</i>'.html($date_affich).'</td>';
 		echo	'<td>'.html($DB_ROW['livret_groupe_nom']).'</td>';
-		echo	'<td>'.html($DB_ROW['livret_evaluation_info']).'</td>';
+		echo	'<td>'.html($DB_ROW['livret_devoir_info']).'</td>';
 		echo	'<td lang="'.html($DB_ROW['competences_listing']).'">'.html($DB_ROW['competences_nombre']).' item'.$s.'</td>';
 		echo	'<td class="nu" lang="'.$ref.'">';
 		echo		'<q class="modifier" title="Modifier cette évaluation (date, description, ...)."></q>';
@@ -145,42 +145,42 @@ if( ($action=='Afficher_evaluations') && $aff_classe_txt && $aff_classe_id && ( 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 //	Ajouter une nouvelle évaluation
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-elseif( (($action=='ajouter')||(($action=='dupliquer')&&($eval_id))) && $date && $groupe_type && $groupe_id && $nb_competences )
+elseif( (($action=='ajouter')||(($action=='dupliquer')&&($devoir_id))) && $date && $groupe_type && $groupe_id && $nb_competences )
 {
 	// Dans le cas d'une duplication, il faut aller rechercher l'ordre éventuel des items de l'évaluation d'origine pour ne pas le perdre
 	$tab_ordre = array();
 	if($action=='dupliquer')
 	{
-		$DB_SQL = 'SELECT livret_competence_id,livret_evaluation_ordre FROM livret_jointure_evaluation_competence ';
-		$DB_SQL.= 'WHERE livret_structure_id=:structure_id AND livret_evaluation_id=:eval_id AND livret_evaluation_ordre>0 ';
-		$DB_VAR = array(':structure_id'=>$_SESSION['STRUCTURE_ID'],':eval_id'=>$eval_id);
+		$DB_SQL = 'SELECT livret_competence_id,livret_jointure_ordre FROM livret_jointure_devoir_competence ';
+		$DB_SQL.= 'WHERE livret_structure_id=:structure_id AND livret_devoir_id=:devoir_id AND livret_jointure_ordre>0 ';
+		$DB_VAR = array(':structure_id'=>$_SESSION['STRUCTURE_ID'],':devoir_id'=>$devoir_id);
 		$DB_TAB = DB::queryTab(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
 		if(count($DB_TAB))
 		{
 			foreach($DB_TAB as $key => $DB_ROW)
 			{
-				$tab_ordre[$DB_ROW['livret_competence_id']] = $DB_ROW['livret_evaluation_ordre'];
+				$tab_ordre[$DB_ROW['livret_competence_id']] = $DB_ROW['livret_jointure_ordre'];
 			}
 		}
 	}
 	// Insérer l'enregistrement de l'évaluation
 	$date_mysql = convert_date_french_to_mysql($date);
-	$DB_SQL = 'INSERT INTO livret_evaluation(livret_structure_id,livret_prof_id,livret_groupe_id,livret_evaluation_date,livret_evaluation_info) ';
+	$DB_SQL = 'INSERT INTO livret_devoir(livret_structure_id,livret_prof_id,livret_groupe_id,livret_devoir_date,livret_devoir_info) ';
 	$DB_SQL.= 'VALUES(:structure_id,:prof_id,:groupe_id,:date,:info)';
 	$DB_VAR = array(':structure_id'=>$_SESSION['STRUCTURE_ID'],':prof_id'=>$_SESSION['USER_ID'],':groupe_id'=>$groupe_id,':date'=>$date_mysql,':info'=>$info);
 	DB::query(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
-	$eval_id = DB::getLastOid(SACOCHE_BD_NAME);
+	$devoir_id = DB::getLastOid(SACOCHE_BD_NAME);
 	// Insérer les enregistrements de items de l'évaluation
-	$DB_SQL = 'INSERT INTO livret_jointure_evaluation_competence(livret_structure_id,livret_evaluation_id,livret_competence_id,livret_evaluation_ordre) ';
-	$DB_SQL.= 'VALUES(:structure_id,:evaluation_id,:competence_id,:evaluation_ordre)';
+	$DB_SQL = 'INSERT INTO livret_jointure_devoir_competence(livret_structure_id,livret_devoir_id,livret_competence_id,livret_jointure_ordre) ';
+	$DB_SQL.= 'VALUES(:structure_id,:devoir_id,:competence_id,:ordre)';
 	foreach($tab_competences as $key => $competence_id)
 	{
-		$evaluation_ordre = (isset($tab_ordre[$competence_id])) ? $tab_ordre[$competence_id] : 0 ;
-		$DB_VAR = array(':structure_id'=>$_SESSION['STRUCTURE_ID'],':evaluation_id'=>$eval_id,':competence_id'=>$competence_id,':evaluation_ordre'=>$evaluation_ordre);
+		$ordre = (isset($tab_ordre[$competence_id])) ? $tab_ordre[$competence_id] : 0 ;
+		$DB_VAR = array(':structure_id'=>$_SESSION['STRUCTURE_ID'],':devoir_id'=>$devoir_id,':competence_id'=>$competence_id,':ordre'=>$ordre);
 		DB::query(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
 	}
 	// Afficher le retour
-	$ref = $eval_id.'_'.strtoupper($groupe_type{0}).$groupe_id;
+	$ref = $devoir_id.'_'.strtoupper($groupe_type{0}).$groupe_id;
 	$s = ($nb_competences>1) ? 's' : '';
 	echo'<td><i>'.html($date_mysql).'</i>'.html($date).'</td>';
 	echo'<td>{{GROUPE_NOM}}</td>';
@@ -200,68 +200,68 @@ elseif( (($action=='ajouter')||(($action=='dupliquer')&&($eval_id))) && $date &&
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 //	Modifier une évaluation existante
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-else if( ($action=='modifier') && $eval_id && $date && $groupe_type && $groupe_id && $nb_competences )
+else if( ($action=='modifier') && $devoir_id && $date && $groupe_type && $groupe_id && $nb_competences )
 {
 	$date_mysql = convert_date_french_to_mysql($date);
-	// livret_evaluation (maj)
-	$DB_SQL = 'UPDATE livret_evaluation ';
-	$DB_SQL.= 'SET livret_groupe_id=:groupe_id,livret_evaluation_date=:date,livret_evaluation_info=:info ';
-	$DB_SQL.= 'WHERE livret_structure_id=:structure_id AND livret_evaluation_id=:eval_id AND livret_prof_id=:prof_id ';
+	// livret_devoir (maj)
+	$DB_SQL = 'UPDATE livret_devoir ';
+	$DB_SQL.= 'SET livret_groupe_id=:groupe_id,livret_devoir_date=:date,livret_devoir_info=:info ';
+	$DB_SQL.= 'WHERE livret_structure_id=:structure_id AND livret_devoir_id=:devoir_id AND livret_prof_id=:prof_id ';
 	$DB_SQL.= 'LIMIT 1';
-	$DB_VAR = array(':structure_id'=>$_SESSION['STRUCTURE_ID'],':groupe_id'=>$groupe_id,':date'=>$date_mysql,':info'=>$info,':eval_id'=>$eval_id,':prof_id'=>$_SESSION['USER_ID']);
+	$DB_VAR = array(':structure_id'=>$_SESSION['STRUCTURE_ID'],':groupe_id'=>$groupe_id,':date'=>$date_mysql,':info'=>$info,':devoir_id'=>$devoir_id,':prof_id'=>$_SESSION['USER_ID']);
 	DB::query(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
-	// livret_jointure_user_competence (retirer superflu)
+	// livret_saisie (retirer superflu)
 	$chaine_id = implode(',',$tab_competences);
-	$DB_SQL = 'DELETE FROM livret_jointure_user_competence ';
-	$DB_SQL.= 'WHERE livret_structure_id=:structure_id AND livret_prof_id=:prof_id AND livret_evaluation_id=:eval_id AND livret_competence_id NOT IN('.$chaine_id.')';
-	$DB_VAR = array(':structure_id'=>$_SESSION['STRUCTURE_ID'],':prof_id'=>$_SESSION['USER_ID'],':eval_id'=>$eval_id);
+	$DB_SQL = 'DELETE FROM livret_saisie ';
+	$DB_SQL.= 'WHERE livret_structure_id=:structure_id AND livret_prof_id=:prof_id AND livret_devoir_id=:devoir_id AND livret_competence_id NOT IN('.$chaine_id.')';
+	$DB_VAR = array(':structure_id'=>$_SESSION['STRUCTURE_ID'],':prof_id'=>$_SESSION['USER_ID'],':devoir_id'=>$devoir_id);
 	DB::query(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
-	// livret_jointure_user_competence (maj)
-	$DB_SQL = 'UPDATE livret_jointure_user_competence ';
-	$DB_SQL.= 'SET livret_user_competence_date=:date,livret_user_competence_info=:info ';
-	$DB_SQL.= 'WHERE livret_structure_id=:structure_id AND livret_prof_id=:prof_id AND livret_evaluation_id=:eval_id ';
-	$DB_VAR = array(':structure_id'=>$_SESSION['STRUCTURE_ID'],':prof_id'=>$_SESSION['USER_ID'],':eval_id'=>$eval_id,':date'=>$date_mysql,':info'=>$info);
+	// livret_saisie (maj)
+	$DB_SQL = 'UPDATE livret_saisie ';
+	$DB_SQL.= 'SET livret_saisie_date=:date,livret_saisie_info=:info ';
+	$DB_SQL.= 'WHERE livret_structure_id=:structure_id AND livret_prof_id=:prof_id AND livret_devoir_id=:devoir_id ';
+	$DB_VAR = array(':structure_id'=>$_SESSION['STRUCTURE_ID'],':prof_id'=>$_SESSION['USER_ID'],':devoir_id'=>$devoir_id,':date'=>$date_mysql,':info'=>$info);
 	DB::query(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
-	// ************************ dans livret_jointure_user_competence faut aussi virer certains scores élèves en cas de changement de groupe ... ???
-	// livret_jointure_evaluation_competence
+	// ************************ dans livret_saisie faut aussi virer certains scores élèves en cas de changement de groupe ... ???
+	// livret_jointure_devoir_competence
 	/*
 	On ne peut pas faire un REPLACE car si un enregistrement est présent ça fait un DELETE+INSERT et du coup on perd l'info sur l'ordre des items.
 	Alors on récupère la liste des items et on cherche les différences pour faire des DELETE et INSERT sélectifs
 	*/
-	// livret_jointure_evaluation_competence -> on récupère les anciennes compétences
+	// livret_jointure_devoir_competence -> on récupère les anciennes compétences
 	$tab_old_competences = array();
-	$DB_SQL = 'SELECT livret_competence_id FROM livret_jointure_evaluation_competence ';
-	$DB_SQL.= 'WHERE livret_structure_id=:structure_id AND livret_evaluation_id=:eval_id ';
-	$DB_VAR = array(':structure_id'=>$_SESSION['STRUCTURE_ID'],':eval_id'=>$eval_id);
+	$DB_SQL = 'SELECT livret_competence_id FROM livret_jointure_devoir_competence ';
+	$DB_SQL.= 'WHERE livret_structure_id=:structure_id AND livret_devoir_id=:devoir_id ';
+	$DB_VAR = array(':structure_id'=>$_SESSION['STRUCTURE_ID'],':devoir_id'=>$devoir_id);
 	$DB_TAB = DB::queryTab(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
 	foreach($DB_TAB as $key => $DB_ROW)
 	{
 		$tab_old_competences[] = $DB_ROW['livret_competence_id'];
 	}
-	// livret_jointure_evaluation_competence -> on supprime les anciennes compétences non nouvellement sélectionnées
+	// livret_jointure_devoir_competence -> on supprime les anciennes compétences non nouvellement sélectionnées
 	$tab_competences_supprimer = array_diff($tab_old_competences,$tab_competences);
 	if(count($tab_competences_supprimer))
 	{
 		$chaine_supprimer_id = implode(',',$tab_competences_supprimer);
-		$DB_SQL = 'DELETE FROM livret_jointure_evaluation_competence ';
-		$DB_SQL.= 'WHERE livret_structure_id=:structure_id AND livret_evaluation_id=:eval_id AND livret_competence_id IN('.$chaine_supprimer_id.')';
-		$DB_VAR = array(':structure_id'=>$_SESSION['STRUCTURE_ID'],':eval_id'=>$eval_id);
+		$DB_SQL = 'DELETE FROM livret_jointure_devoir_competence ';
+		$DB_SQL.= 'WHERE livret_structure_id=:structure_id AND livret_devoir_id=:devoir_id AND livret_competence_id IN('.$chaine_supprimer_id.')';
+		$DB_VAR = array(':structure_id'=>$_SESSION['STRUCTURE_ID'],':devoir_id'=>$devoir_id);
 		DB::query(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
 	}
-	// livret_jointure_evaluation_competence -> on ajoute les nouvelles compétences non anciennement présentes
+	// livret_jointure_devoir_competence -> on ajoute les nouvelles compétences non anciennement présentes
 	$tab_competences_ajouter = array_diff($tab_competences,$tab_old_competences);
 	if(count($tab_competences_ajouter))
 	{
 		foreach($tab_competences_ajouter as $key => $competence_id)
 		{
-			$DB_SQL = 'INSERT INTO livret_jointure_evaluation_competence(livret_structure_id,livret_evaluation_id,livret_competence_id) ';
-			$DB_SQL.= 'VALUES(:structure_id,:evaluation_id,:competence_id)';
-			$DB_VAR = array(':structure_id'=>$_SESSION['STRUCTURE_ID'],':evaluation_id'=>$eval_id,':competence_id'=>$competence_id);
+			$DB_SQL = 'INSERT INTO livret_jointure_devoir_competence(livret_structure_id,livret_devoir_id,livret_competence_id) ';
+			$DB_SQL.= 'VALUES(:structure_id,:devoir_id,:competence_id)';
+			$DB_VAR = array(':structure_id'=>$_SESSION['STRUCTURE_ID'],':devoir_id'=>$devoir_id,':competence_id'=>$competence_id);
 			DB::query(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
 		}
 	}
 	// Afficher le retour
-	$ref = $eval_id.'_'.strtoupper($groupe_type{0}).$groupe_id;
+	$ref = $devoir_id.'_'.strtoupper($groupe_type{0}).$groupe_id;
 	$s = (count($tab_competences)>1) ? 's' : '';
 	echo'<td><i>'.html($date_mysql).'</i>'.html($date).'</td>';
 	echo'<td>{{GROUPE_NOM}}</td>';
@@ -281,21 +281,21 @@ else if( ($action=='modifier') && $eval_id && $date && $groupe_type && $groupe_i
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 //	Supprimer une évaluation existante
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-else if( ($action=='supprimer') && $eval_id )
+else if( ($action=='supprimer') && $devoir_id )
 {
 	// comme c'est une éval sur une classe ou un groupe ou un groupe de besoin, pas besoin de supprimer ce groupe et les entrées dans livret_jointure_groupe
-	$DB_SQL = 'DELETE FROM livret_evaluation ';
-	$DB_SQL.= 'WHERE livret_evaluation_id=:eval_id AND livret_structure_id=:structure_id AND livret_prof_id=:prof_id ';
+	$DB_SQL = 'DELETE FROM livret_devoir ';
+	$DB_SQL.= 'WHERE livret_devoir_id=:devoir_id AND livret_structure_id=:structure_id AND livret_prof_id=:prof_id ';
 	$DB_SQL.= 'LIMIT 1';
-	$DB_VAR = array(':eval_id'=>$eval_id,':structure_id'=>$_SESSION['STRUCTURE_ID'],':prof_id'=>$_SESSION['USER_ID']);
+	$DB_VAR = array(':devoir_id'=>$devoir_id,':structure_id'=>$_SESSION['STRUCTURE_ID'],':prof_id'=>$_SESSION['USER_ID']);
 	DB::query(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
-	$DB_SQL = 'DELETE FROM livret_jointure_user_competence ';
-	$DB_SQL.= 'WHERE livret_structure_id=:structure_id AND livret_prof_id=:prof_id AND livret_evaluation_id=:eval_id';
-	$DB_VAR = array(':structure_id'=>$_SESSION['STRUCTURE_ID'],':prof_id'=>$_SESSION['USER_ID'],':eval_id'=>$eval_id);
+	$DB_SQL = 'DELETE FROM livret_saisie ';
+	$DB_SQL.= 'WHERE livret_structure_id=:structure_id AND livret_prof_id=:prof_id AND livret_devoir_id=:devoir_id';
+	$DB_VAR = array(':structure_id'=>$_SESSION['STRUCTURE_ID'],':prof_id'=>$_SESSION['USER_ID'],':devoir_id'=>$devoir_id);
 	DB::query(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
-	$DB_SQL = 'DELETE FROM livret_jointure_evaluation_competence ';
-	$DB_SQL.= 'WHERE livret_structure_id=:structure_id AND livret_evaluation_id=:eval_id';
-	$DB_VAR = array(':structure_id'=>$_SESSION['STRUCTURE_ID'],':eval_id'=>$eval_id);
+	$DB_SQL = 'DELETE FROM livret_jointure_devoir_competence ';
+	$DB_SQL.= 'WHERE livret_structure_id=:structure_id AND livret_devoir_id=:devoir_id';
+	$DB_VAR = array(':structure_id'=>$_SESSION['STRUCTURE_ID'],':devoir_id'=>$devoir_id);
 	DB::query(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
 	// Afficher le retour
 	echo'<ok>';
@@ -304,18 +304,18 @@ else if( ($action=='supprimer') && $eval_id )
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 //	Afficher le formulaire pour réordonner les items d'une évaluation
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-else if( ($action=='ordonner') && $eval_id )
+else if( ($action=='ordonner') && $devoir_id )
 {
 	// liste des items
-	$DB_SQL = 'SELECT * FROM livret_jointure_evaluation_competence ';
+	$DB_SQL = 'SELECT * FROM livret_jointure_devoir_competence ';
 	$DB_SQL.= 'LEFT JOIN livret_competence_item USING (livret_structure_id,livret_competence_id) ';
 	$DB_SQL.= 'LEFT JOIN livret_competence_theme USING (livret_structure_id,livret_theme_id) ';
 	$DB_SQL.= 'LEFT JOIN livret_competence_domaine USING (livret_structure_id,livret_domaine_id) ';
 	$DB_SQL.= 'LEFT JOIN livret_niveau USING (livret_niveau_id) ';
 	$DB_SQL.= 'LEFT JOIN livret_matiere USING (livret_matiere_id) ';
-	$DB_SQL.= 'WHERE livret_structure_id=:structure_id AND livret_evaluation_id=:eval_id ';
-	$DB_SQL.= 'ORDER BY livret_evaluation_ordre ASC, livret_matiere_ref ASC, livret_niveau_ordre ASC, livret_domaine_ordre ASC, livret_theme_ordre ASC, livret_competence_ordre ASC';
-	$DB_VAR = array(':structure_id'=>$_SESSION['STRUCTURE_ID'],':eval_id'=>$eval_id);
+	$DB_SQL.= 'WHERE livret_structure_id=:structure_id AND livret_devoir_id=:devoir_id ';
+	$DB_SQL.= 'ORDER BY livret_jointure_ordre ASC, livret_matiere_ref ASC, livret_niveau_ordre ASC, livret_domaine_ordre ASC, livret_theme_ordre ASC, livret_competence_ordre ASC';
+	$DB_VAR = array(':structure_id'=>$_SESSION['STRUCTURE_ID'],':devoir_id'=>$devoir_id);
 	$DB_TAB_COMP = DB::queryTab(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
 	if(!count($DB_TAB_COMP))
 	{
@@ -343,18 +343,18 @@ else if( ($action=='ordonner') && $eval_id )
 //	Afficher le formulaire pour saisir les items acquis par les élèves à une évaluation
 //	Générer en même temps un csv à récupérer pour une saisie déportée
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-else if( ($action=='saisir') && $eval_id && $groupe_type && $groupe_id && $date ) // $date (au format MySQL) reportée dans input hidden
+else if( ($action=='saisir') && $devoir_id && $groupe_type && $groupe_id && $date ) // $date (au format MySQL) reportée dans input hidden
 {
 	// liste des items
 	$DB_SQL = 'SELECT * FROM livret_competence_item ';
-	$DB_SQL.= 'LEFT JOIN livret_jointure_evaluation_competence USING (livret_structure_id,livret_competence_id) ';
+	$DB_SQL.= 'LEFT JOIN livret_jointure_devoir_competence USING (livret_structure_id,livret_competence_id) ';
 	$DB_SQL.= 'LEFT JOIN livret_competence_theme USING (livret_structure_id,livret_theme_id) ';
 	$DB_SQL.= 'LEFT JOIN livret_competence_domaine USING (livret_structure_id,livret_domaine_id) ';
 	$DB_SQL.= 'LEFT JOIN livret_niveau USING (livret_niveau_id) ';
 	$DB_SQL.= 'LEFT JOIN livret_matiere USING (livret_matiere_id) ';
-	$DB_SQL.= 'WHERE livret_structure_id=:structure_id AND livret_evaluation_id=:eval_id ';
-	$DB_SQL.= 'ORDER BY livret_evaluation_ordre ASC, livret_matiere_ref ASC, livret_niveau_ordre ASC, livret_domaine_ordre ASC, livret_theme_ordre ASC, livret_competence_ordre ASC';
-	$DB_VAR = array(':structure_id'=>$_SESSION['STRUCTURE_ID'],':eval_id'=>$eval_id);
+	$DB_SQL.= 'WHERE livret_structure_id=:structure_id AND livret_devoir_id=:devoir_id ';
+	$DB_SQL.= 'ORDER BY livret_jointure_ordre ASC, livret_matiere_ref ASC, livret_niveau_ordre ASC, livret_domaine_ordre ASC, livret_theme_ordre ASC, livret_competence_ordre ASC';
+	$DB_VAR = array(':structure_id'=>$_SESSION['STRUCTURE_ID'],':devoir_id'=>$devoir_id);
 	$DB_TAB_COMP = DB::queryTab(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
 	// liste des élèves
 	if($groupe_type=='classe')
@@ -433,9 +433,9 @@ else if( ($action=='saisir') && $eval_id && $groupe_type && $groupe_id && $date 
 			}
 		}
 		// configurer le champ input
-		$DB_SQL = 'SELECT * FROM livret_jointure_user_competence ';
-		$DB_SQL.= 'WHERE livret_structure_id=:structure_id AND livret_evaluation_id=:eval_id ';
-		$DB_VAR = array(':structure_id'=>$_SESSION['STRUCTURE_ID'],':eval_id'=>$eval_id);
+		$DB_SQL = 'SELECT * FROM livret_saisie ';
+		$DB_SQL.= 'WHERE livret_structure_id=:structure_id AND livret_devoir_id=:devoir_id ';
+		$DB_VAR = array(':structure_id'=>$_SESSION['STRUCTURE_ID'],':devoir_id'=>$devoir_id);
 		$DB_TAB = DB::queryTab(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
 		$bad = 'class="X" value="X"';
 		foreach($DB_TAB as $key => $DB_ROW)
@@ -443,7 +443,7 @@ else if( ($action=='saisir') && $eval_id && $groupe_type && $groupe_id && $date 
 			// Test pour éviter les pbs des élèves changés de groupes ou des items modifiés en cours de route
 			if(isset($tab_affich[$DB_ROW['livret_competence_id']][$DB_ROW['livret_eleve_id']]))
 			{
-				$bon = 'class="'.$DB_ROW['livret_user_competence_note'].'" value="'.$DB_ROW['livret_user_competence_note'].'"';
+				$bon = 'class="'.$DB_ROW['livret_saisie_note'].'" value="'.$DB_ROW['livret_saisie_note'].'"';
 				$tab_affich[$DB_ROW['livret_competence_id']][$DB_ROW['livret_eleve_id']] = str_replace($bad,$bon,$tab_affich[$DB_ROW['livret_competence_id']][$DB_ROW['livret_eleve_id']]);
 			}
 		}
@@ -467,7 +467,7 @@ else if( ($action=='saisir') && $eval_id && $groupe_type && $groupe_id && $date 
 		}
 		echo'</tbody>';
 		// Enregistrer le csv
-		$export_csv .= 'SAISIE DÉPORTÉE '.$eval_id.' DU '.convert_date_mysql_to_french($date).'.'."\r\n";
+		$export_csv .= 'SAISIE DÉPORTÉE '.$devoir_id.' DU '.convert_date_mysql_to_french($date).'.'."\r\n";
 		$export_csv .= 'CODAGES AUTORISÉS : 1 2 3 4 A N D'."\r\n\r\n";
 		$fnom = 'saisie_'.$_SESSION['STRUCTURE_ID'].'_'.$_SESSION['USER_ID'].'_'.$ref;
 		$zip = new ZipArchive();
@@ -482,18 +482,18 @@ else if( ($action=='saisir') && $eval_id && $groupe_type && $groupe_id && $date 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 //	Voir les items acquis par les élèves à une évaluation
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-else if( ($action=='voir') && $eval_id && $groupe_type && $groupe_id && $date ) // $date française pour le csv
+else if( ($action=='voir') && $devoir_id && $groupe_type && $groupe_id && $date ) // $date française pour le csv
 {
 	// liste des items
 	$DB_SQL = 'SELECT * FROM livret_competence_item ';
-	$DB_SQL.= 'LEFT JOIN livret_jointure_evaluation_competence USING (livret_structure_id,livret_competence_id) ';
+	$DB_SQL.= 'LEFT JOIN livret_jointure_devoir_competence USING (livret_structure_id,livret_competence_id) ';
 	$DB_SQL.= 'LEFT JOIN livret_competence_theme USING (livret_structure_id,livret_theme_id) ';
 	$DB_SQL.= 'LEFT JOIN livret_competence_domaine USING (livret_structure_id,livret_domaine_id) ';
 	$DB_SQL.= 'LEFT JOIN livret_niveau USING (livret_niveau_id) ';
 	$DB_SQL.= 'LEFT JOIN livret_matiere USING (livret_matiere_id) ';
-	$DB_SQL.= 'WHERE livret_structure_id=:structure_id AND livret_evaluation_id=:eval_id ';
-	$DB_SQL.= 'ORDER BY livret_evaluation_ordre ASC, livret_matiere_ref ASC, livret_niveau_ordre ASC, livret_domaine_ordre ASC, livret_theme_ordre ASC, livret_competence_ordre ASC';
-	$DB_VAR = array(':structure_id'=>$_SESSION['STRUCTURE_ID'],':eval_id'=>$eval_id);
+	$DB_SQL.= 'WHERE livret_structure_id=:structure_id AND livret_devoir_id=:devoir_id ';
+	$DB_SQL.= 'ORDER BY livret_jointure_ordre ASC, livret_matiere_ref ASC, livret_niveau_ordre ASC, livret_domaine_ordre ASC, livret_theme_ordre ASC, livret_competence_ordre ASC';
+	$DB_VAR = array(':structure_id'=>$_SESSION['STRUCTURE_ID'],':devoir_id'=>$devoir_id);
 	$DB_TAB_COMP = DB::queryTab(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
 	// liste des élèves
 	if($groupe_type=='classe')
@@ -563,17 +563,17 @@ else if( ($action=='voir') && $eval_id && $groupe_type && $groupe_id && $date ) 
 		}
 		// ajouter le contenu
 		$tab_conversion = array( ''=>' ' , 'RR'=>'1' , 'R'=>'2' , 'V'=>'3' , 'VV'=>'4' , 'ABS'=>'A' , 'NN'=>'N' , 'DISP'=>'D' );
-		$DB_SQL = 'SELECT * FROM livret_jointure_user_competence ';
-		$DB_SQL.= 'WHERE livret_structure_id=:structure_id AND livret_evaluation_id=:eval_id ';
-		$DB_VAR = array(':structure_id'=>$_SESSION['STRUCTURE_ID'],':eval_id'=>$eval_id);
+		$DB_SQL = 'SELECT * FROM livret_saisie ';
+		$DB_SQL.= 'WHERE livret_structure_id=:structure_id AND livret_devoir_id=:devoir_id ';
+		$DB_VAR = array(':structure_id'=>$_SESSION['STRUCTURE_ID'],':devoir_id'=>$devoir_id);
 		$DB_TAB = DB::queryTab(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
 		foreach($DB_TAB as $key => $DB_ROW)
 		{
 			// Test pour éviter les pbs des élèves changés de groupes ou des items modifiés en cours de route
 			if(isset($tab_affich[$DB_ROW['livret_competence_id']][$DB_ROW['livret_eleve_id']]))
 			{
-				$tab_affich[$DB_ROW['livret_competence_id']][$DB_ROW['livret_eleve_id']] = str_replace('>-<','><img alt="'.$DB_ROW['livret_user_competence_note'].'" src="./_img/note/note_'.$DB_ROW['livret_user_competence_note'].'.gif" /><',$tab_affich[$DB_ROW['livret_competence_id']][$DB_ROW['livret_eleve_id']]);
-				$csv_lignes_scores[$DB_ROW['livret_competence_id']][$DB_ROW['livret_eleve_id']] = $tab_conversion[$DB_ROW['livret_user_competence_note']];
+				$tab_affich[$DB_ROW['livret_competence_id']][$DB_ROW['livret_eleve_id']] = str_replace('>-<','><img alt="'.$DB_ROW['livret_saisie_note'].'" src="./_img/note/note_'.$DB_ROW['livret_saisie_note'].'.gif" /><',$tab_affich[$DB_ROW['livret_competence_id']][$DB_ROW['livret_eleve_id']]);
+				$csv_lignes_scores[$DB_ROW['livret_competence_id']][$DB_ROW['livret_eleve_id']] = $tab_conversion[$DB_ROW['livret_saisie_note']];
 			}
 		}
 		// affichage
@@ -607,7 +607,7 @@ else if( ($action=='voir') && $eval_id && $groupe_type && $groupe_id && $date ) 
 		}
 		$export_csv .= $csv_ligne_eleve_nom."\r\n\r\n";
 		// Enregistrer le csv
-		$export_csv .= 'SAISIE ARCHIVÉE '.$eval_id.' DU '.$date.'.'."\r\n";
+		$export_csv .= 'SAISIE ARCHIVÉE '.$devoir_id.' DU '.$date.'.'."\r\n";
 		$export_csv .= 'CODAGES AUTORISÉS : 1 2 3 4 A N D'."\r\n\r\n";
 		$fnom = 'saisie_'.$_SESSION['STRUCTURE_ID'].'_'.$_SESSION['USER_ID'].'_'.$ref;
 		$zip = new ZipArchive();
@@ -622,17 +622,17 @@ else if( ($action=='voir') && $eval_id && $groupe_type && $groupe_id && $date ) 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 //	Mettre à jour l'ordre des items d'une évaluation
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-else if( ($action=='Enregistrer_ordre') && $eval_id && count($tab_id) )
+else if( ($action=='Enregistrer_ordre') && $devoir_id && count($tab_id) )
 {
-	$DB_SQL = 'UPDATE livret_jointure_evaluation_competence SET livret_evaluation_ordre=:evaluation_ordre ';
-	$DB_SQL.= 'WHERE livret_structure_id=:structure_id AND livret_evaluation_id=:evaluation_id AND livret_competence_id=:competence_id ';
+	$DB_SQL = 'UPDATE livret_jointure_devoir_competence SET livret_jointure_ordre=:ordre ';
+	$DB_SQL.= 'WHERE livret_structure_id=:structure_id AND livret_devoir_id=:devoir_id AND livret_competence_id=:competence_id ';
 	$DB_SQL.= 'LIMIT 1';
-	$numero = 1;
+	$ordre = 1;
 	foreach($tab_id as $competence_id)
 	{
-		$DB_VAR = array(':structure_id'=>$_SESSION['STRUCTURE_ID'],':evaluation_id'=>$eval_id,':competence_id'=>$competence_id,':evaluation_ordre'=>$numero);
+		$DB_VAR = array(':structure_id'=>$_SESSION['STRUCTURE_ID'],':devoir_id'=>$devoir_id,':competence_id'=>$competence_id,':ordre'=>$ordre);
 		DB::query(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
-		$numero++;
+		$ordre++;
 	}
 	echo'<ok>';
 }
@@ -640,7 +640,7 @@ else if( ($action=='Enregistrer_ordre') && $eval_id && count($tab_id) )
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 //	Mettre à jour les items acquis par les élèves à une évaluation
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-else if( ($action=='Enregistrer_saisie') && $eval_id && $date )
+else if( ($action=='Enregistrer_saisie') && $devoir_id && $date )
 {
 	// Tout est transmis : il faut comparer avec le contenu de la base pour ne mettre à jour que ce dont il y a besoin
 	// On récupère les données transmises dans $tab_post
@@ -661,15 +661,15 @@ else if( ($action=='Enregistrer_saisie') && $eval_id && $date )
 	// On recupère le contenu de la base déjà enregistré pour le comparer ; on remplit au fur et à mesure $tab_nouveau_modifier / $tab_nouveau_supprimer ; il faut éviter les élèves désactivés
 	$tab_nouveau_modifier = array();
 	$tab_nouveau_supprimer = array();
-	$DB_SQL = 'SELECT * FROM livret_jointure_user_competence ';
+	$DB_SQL = 'SELECT * FROM livret_saisie ';
 	$DB_SQL.= 'LEFT JOIN livret_user USING (livret_structure_id) ';
-	$DB_SQL.= 'WHERE livret_structure_id=:structure_id AND livret_evaluation_id=:eval_id AND livret_eleve_id=livret_user_id AND livret_user_statut=:statut ';
-	$DB_VAR = array(':structure_id'=>$_SESSION['STRUCTURE_ID'],':eval_id'=>$eval_id,':statut'=>1);
+	$DB_SQL.= 'WHERE livret_structure_id=:structure_id AND livret_devoir_id=:devoir_id AND livret_eleve_id=livret_user_id AND livret_user_statut=:statut ';
+	$DB_VAR = array(':structure_id'=>$_SESSION['STRUCTURE_ID'],':devoir_id'=>$devoir_id,':statut'=>1);
 	$DB_TAB = DB::queryTab(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
 	foreach($DB_TAB as $key => $DB_ROW)
 	{
 		$key = $DB_ROW['livret_competence_id'].'x'.$DB_ROW['livret_eleve_id'];
-		if($tab_post[$key]!=$DB_ROW['livret_user_competence_note'])
+		if($tab_post[$key]!=$DB_ROW['livret_saisie_note'])
 		{
 			if($tab_post[$key]=='X')
 			{
@@ -693,27 +693,27 @@ else if( ($action=='Enregistrer_saisie') && $eval_id && $date )
 		foreach($tab_nouveau_ajouter as $key => $note)
 		{
 			list($competence_id,$eleve_id) = explode('x',$key);
-			$DB_SQL = 'INSERT INTO livret_jointure_user_competence ';
-			$DB_SQL.= 'VALUES(:structure_id,:prof_id,:eleve_id,:evaluation_id,:competence_id,:competence_date,:competence_note,:competence_info)';
-			$DB_VAR = array(':structure_id'=>$_SESSION['STRUCTURE_ID'],':prof_id'=>$_SESSION['USER_ID'],':eleve_id'=>$eleve_id,':evaluation_id'=>$eval_id,':competence_id'=>$competence_id,':competence_date'=>$date,':competence_note'=>$note,':competence_info'=>'');
+			$DB_SQL = 'INSERT INTO livret_saisie ';
+			$DB_SQL.= 'VALUES(:structure_id,:prof_id,:eleve_id,:devoir_id,:competence_id,:competence_date,:competence_note,:competence_info)';
+			$DB_VAR = array(':structure_id'=>$_SESSION['STRUCTURE_ID'],':prof_id'=>$_SESSION['USER_ID'],':eleve_id'=>$eleve_id,':devoir_id'=>$devoir_id,':competence_id'=>$competence_id,':competence_date'=>$date,':competence_note'=>$note,':competence_info'=>'');
 			DB::query(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
 		}
 		foreach($tab_nouveau_modifier as $key => $note)
 		{
 			list($competence_id,$eleve_id) = explode('x',$key);
-			$DB_SQL = 'UPDATE livret_jointure_user_competence SET livret_user_competence_note=:competence_note ';
-			$DB_SQL.= 'WHERE livret_structure_id=:structure_id AND livret_eleve_id=:eleve_id AND livret_evaluation_id=:evaluation_id AND livret_competence_id=:competence_id ';
+			$DB_SQL = 'UPDATE livret_saisie SET livret_saisie_note=:competence_note ';
+			$DB_SQL.= 'WHERE livret_structure_id=:structure_id AND livret_eleve_id=:eleve_id AND livret_devoir_id=:devoir_id AND livret_competence_id=:competence_id ';
 			$DB_SQL.= 'LIMIT 1';
-			$DB_VAR = array(':structure_id'=>$_SESSION['STRUCTURE_ID'],':eleve_id'=>$eleve_id,':evaluation_id'=>$eval_id,':competence_id'=>$competence_id,':competence_note'=>$note);
+			$DB_VAR = array(':structure_id'=>$_SESSION['STRUCTURE_ID'],':eleve_id'=>$eleve_id,':devoir_id'=>$devoir_id,':competence_id'=>$competence_id,':competence_note'=>$note);
 			DB::query(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
 		}
 		foreach($tab_nouveau_supprimer as $key => $key)
 		{
 			list($competence_id,$eleve_id) = explode('x',$key);
-			$DB_SQL = 'DELETE FROM livret_jointure_user_competence ';
-			$DB_SQL.= 'WHERE livret_structure_id=:structure_id AND livret_eleve_id=:eleve_id AND livret_evaluation_id=:evaluation_id AND livret_competence_id=:competence_id ';
+			$DB_SQL = 'DELETE FROM livret_saisie ';
+			$DB_SQL.= 'WHERE livret_structure_id=:structure_id AND livret_eleve_id=:eleve_id AND livret_devoir_id=:devoir_id AND livret_competence_id=:competence_id ';
 			$DB_SQL.= 'LIMIT 1';
-			$DB_VAR = array(':structure_id'=>$_SESSION['STRUCTURE_ID'],':eleve_id'=>$eleve_id,':evaluation_id'=>$eval_id,':competence_id'=>$competence_id);
+			$DB_VAR = array(':structure_id'=>$_SESSION['STRUCTURE_ID'],':eleve_id'=>$eleve_id,':devoir_id'=>$devoir_id,':competence_id'=>$competence_id);
 			DB::query(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
 		}
 		echo'<ok>';
@@ -727,18 +727,18 @@ else if( ($action=='Enregistrer_saisie') && $eval_id && $date )
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 //	Imprimer un cartouche d'une évaluation
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-else if( ($action=='Imprimer_cartouche') && $eval_id && $groupe_type && $groupe_id && $date && $valeur && $detail && $orientation && $marge_min && $couleur )
+else if( ($action=='Imprimer_cartouche') && $devoir_id && $groupe_type && $groupe_id && $date && $valeur && $detail && $orientation && $marge_min && $couleur )
 {
 	// liste des items
 	$DB_SQL = 'SELECT * FROM livret_competence_item ';
-	$DB_SQL.= 'LEFT JOIN livret_jointure_evaluation_competence USING (livret_structure_id,livret_competence_id) ';
+	$DB_SQL.= 'LEFT JOIN livret_jointure_devoir_competence USING (livret_structure_id,livret_competence_id) ';
 	$DB_SQL.= 'LEFT JOIN livret_competence_theme USING (livret_structure_id,livret_theme_id) ';
 	$DB_SQL.= 'LEFT JOIN livret_competence_domaine USING (livret_structure_id,livret_domaine_id) ';
 	$DB_SQL.= 'LEFT JOIN livret_niveau USING (livret_niveau_id) ';
 	$DB_SQL.= 'LEFT JOIN livret_matiere USING (livret_matiere_id) ';
-	$DB_SQL.= 'WHERE livret_structure_id=:structure_id AND livret_evaluation_id=:eval_id ';
-	$DB_SQL.= 'ORDER BY livret_evaluation_ordre ASC, livret_matiere_ref ASC, livret_niveau_ordre ASC, livret_domaine_ordre ASC, livret_theme_ordre ASC, livret_competence_ordre ASC';
-	$DB_VAR = array(':structure_id'=>$_SESSION['STRUCTURE_ID'],':eval_id'=>$eval_id);
+	$DB_SQL.= 'WHERE livret_structure_id=:structure_id AND livret_devoir_id=:devoir_id ';
+	$DB_SQL.= 'ORDER BY livret_jointure_ordre ASC, livret_matiere_ref ASC, livret_niveau_ordre ASC, livret_domaine_ordre ASC, livret_theme_ordre ASC, livret_competence_ordre ASC';
+	$DB_VAR = array(':structure_id'=>$_SESSION['STRUCTURE_ID'],':devoir_id'=>$devoir_id);
 	$DB_TAB_COMP = DB::queryTab(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
 	// liste des élèves
 	if($groupe_type=='classe')
@@ -795,21 +795,21 @@ else if( ($action=='Imprimer_cartouche') && $eval_id && $groupe_type && $groupe_
 		// compléter avec les résultats
 		if($valeur=='plein')
 		{
-			$DB_SQL = 'SELECT * FROM livret_jointure_user_competence ';
-			$DB_SQL.= 'WHERE livret_structure_id=:structure_id AND livret_evaluation_id=:eval_id ';
-			$DB_VAR = array(':structure_id'=>$_SESSION['STRUCTURE_ID'],':eval_id'=>$eval_id);
+			$DB_SQL = 'SELECT * FROM livret_saisie ';
+			$DB_SQL.= 'WHERE livret_structure_id=:structure_id AND livret_devoir_id=:devoir_id ';
+			$DB_VAR = array(':structure_id'=>$_SESSION['STRUCTURE_ID'],':devoir_id'=>$devoir_id);
 			$DB_TAB = DB::queryTab(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
 			foreach($DB_TAB as $key => $DB_ROW)
 			{
 				// Test pour éviter les pbs des élèves changés de groupes ou des items modifiés en cours de route
 				if(isset($tab_result[$DB_ROW['livret_competence_id']][$DB_ROW['livret_eleve_id']]))
 				{
-					$tab_result[$DB_ROW['livret_competence_id']][$DB_ROW['livret_eleve_id']] = $DB_ROW['livret_user_competence_note'];
+					$tab_result[$DB_ROW['livret_competence_id']][$DB_ROW['livret_eleve_id']] = $DB_ROW['livret_saisie_note'];
 				}
 			}
 		}
 		// On attaque l'élaboration des sorties HTML, CSV et PDF
-		$fnom = 'cartouche_'.$_SESSION['STRUCTURE_ID'].'_'.$eval_id.'_'.time();
+		$fnom = 'cartouche_'.$_SESSION['STRUCTURE_ID'].'_'.$devoir_id.'_'.time();
 		$livret_htm = '<hr /><a class="lien_ext" href="'.$dossier_export.$fnom.'.pdf">Récupérez les cartouches de cette évaluation dans un fichier pdf (à imprimer).</a><br />';
 		$livret_htm.= '<a class="lien_ext" href="'.$dossier_export.$fnom.'.zip">Récupérez les cartouches de cette évaluation dans un fichier csv tabulé pour tableur.</a><p />';
 		$livret_csv = '';

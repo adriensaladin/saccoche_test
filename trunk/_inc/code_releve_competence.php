@@ -36,10 +36,10 @@ function non_acquis($n) {return $n<$_SESSION['CALCUL_SEUIL']['R'] ;}
 function calculer_note($tab_devoirs,$calcul_methode,$calcul_limite)
 {
 	global $tab_modele_bon;
-	$nb_evaluation = count($tab_devoirs);
+	$nb_devoir = count($tab_devoirs);
 	// on passe en revue les évaluations disponibles, et on retient les scores exploitables
 	$tab_note = array(); // pour les notes d'un élève
-	for($i=0;$i<$nb_evaluation;$i++)
+	for($i=0;$i<$nb_devoir;$i++)
 	{
 		if(in_array($tab_devoirs[$i]['note'],$tab_modele_bon))
 		{
@@ -297,16 +297,16 @@ if(in_array('individuel',$tab_type))
 						$releve_html_table_body .= '<tr><td>'.$competence_ref.'</td><td>'.$texte_coef.$texte_socle.$texte_lien_avant.html($competence_nom).$texte_lien_apres.'</td>';
 						$releve_pdf->bilan_periode_individuel_competence($competence_ref,$texte_coef.$texte_socle.$competence_nom);
 						// cases d'évaluations
-						$evaluation_nb = count($tab_devoirs);
+						$devoirs_nb = count($tab_devoirs);
 						// on passe en revue les cases disponibles et on remplit en fonction des évaluations disponibles
-						$decalage = $evaluation_nb - $cases_nb;
+						$decalage = $devoirs_nb - $cases_nb;
 						for($i=0;$i<$cases_nb;$i++)
 						{
 							// on doit remplir une case
 							if($decalage<0)
 							{
 								// il y a moins d'évaluations que de cases à remplir : on met un score dispo ou une case blanche si plus de score dispo
-								if($i<$evaluation_nb)
+								if($i<$devoirs_nb)
 								{
 									extract($tab_devoirs[$i]);	// $note $date $info
 									$releve_html_table_body .= '<td>'.affich_note_html($note,$date,$info,true).'</td>';

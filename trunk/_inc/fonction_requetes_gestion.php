@@ -1082,7 +1082,7 @@ function DB_supprimer_groupe($structure_id,$groupe_id,$groupe_type)
 		DB::query(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
 	}
 	// Sans oublier le champ pour les évaluations portant sur un groupe
-	$DB_SQL = 'UPDATE livret_evaluation ';
+	$DB_SQL = 'UPDATE livret_devoir ';
 	$DB_SQL.= 'SET livret_groupe_id=0 ';
 	$DB_SQL.= 'WHERE livret_structure_id=:structure_id AND livret_groupe_id=:groupe_id';
 	$DB_VAR = array(':structure_id'=>$structure_id,':groupe_id'=>$groupe_id);
@@ -1131,12 +1131,12 @@ function DB_supprimer_periode($structure_id,$periode_id)
 
 function DB_supprimer_referentiel_matiere_niveau($structure_id,$matiere_id,$niveau_id=false)
 {
-	$DB_SQL = 'DELETE livret_referentiel,livret_competence_domaine, livret_competence_theme, livret_competence_item, livret_jointure_evaluation_competence, livret_jointure_user_competence FROM livret_referentiel ';
+	$DB_SQL = 'DELETE livret_referentiel,livret_competence_domaine, livret_competence_theme, livret_competence_item, livret_jointure_devoir_competence, livret_saisie FROM livret_referentiel ';
 	$DB_SQL.= 'LEFT JOIN livret_competence_domaine USING (livret_structure_id,livret_matiere_id,livret_niveau_id) ';
 	$DB_SQL.= 'LEFT JOIN livret_competence_theme USING (livret_structure_id,livret_domaine_id) ';
 	$DB_SQL.= 'LEFT JOIN livret_competence_item USING (livret_structure_id,livret_theme_id) ';
-	$DB_SQL.= 'LEFT JOIN livret_jointure_evaluation_competence USING (livret_structure_id,livret_competence_id) ';
-	$DB_SQL.= 'LEFT JOIN livret_jointure_user_competence USING (livret_structure_id,livret_competence_id) ';
+	$DB_SQL.= 'LEFT JOIN livret_jointure_devoir_competence USING (livret_structure_id,livret_competence_id) ';
+	$DB_SQL.= 'LEFT JOIN livret_saisie USING (livret_structure_id,livret_competence_id) ';
 	$DB_SQL.= 'WHERE livret_structure_id=:structure_id AND livret_matiere_id=:matiere_id ';
 	$DB_VAR = array(':structure_id'=>$structure_id,':matiere_id'=>$matiere_id);
 	if($niveau_id)
@@ -1237,21 +1237,21 @@ function DB_changer_son_mdp($structure_id,$user_id,$user_profil,$password_ancien
 function DB_supprimer_structure($structure_id)
 {
 	$tab_sql = array();
-	$tab_sql[] = 'DELETE FROM livret_competence_domaine             WHERE livret_structure_id=:structure_id';
-	$tab_sql[] = 'DELETE FROM livret_competence_item                WHERE livret_structure_id=:structure_id';
-	$tab_sql[] = 'DELETE FROM livret_competence_theme               WHERE livret_structure_id=:structure_id';
-	$tab_sql[] = 'DELETE FROM livret_evaluation                     WHERE livret_structure_id=:structure_id';
-	$tab_sql[] = 'DELETE FROM livret_groupe                         WHERE livret_structure_id=:structure_id';
-	$tab_sql[] = 'DELETE FROM livret_jointure_evaluation_competence WHERE livret_structure_id=:structure_id';
-	$tab_sql[] = 'DELETE FROM livret_jointure_groupe_periode        WHERE livret_structure_id=:structure_id';
-	$tab_sql[] = 'DELETE FROM livret_jointure_user_competence       WHERE livret_structure_id=:structure_id';
-	$tab_sql[] = 'DELETE FROM livret_jointure_user_groupe           WHERE livret_structure_id=:structure_id';
-	$tab_sql[] = 'DELETE FROM livret_jointure_user_matiere          WHERE livret_structure_id=:structure_id';
-	$tab_sql[] = 'DELETE FROM livret_matiere                        WHERE livret_matiere_structure_id=:structure_id';
-	$tab_sql[] = 'DELETE FROM livret_periode                        WHERE livret_structure_id=:structure_id';
-	$tab_sql[] = 'DELETE FROM livret_referentiel                    WHERE livret_structure_id=:structure_id';
-	$tab_sql[] = 'DELETE FROM livret_structure                      WHERE livret_structure_id=:structure_id';
-	$tab_sql[] = 'DELETE FROM livret_user                           WHERE livret_structure_id=:structure_id';
+	$tab_sql[] = 'DELETE FROM livret_competence_domaine         WHERE livret_structure_id=:structure_id';
+	$tab_sql[] = 'DELETE FROM livret_competence_item            WHERE livret_structure_id=:structure_id';
+	$tab_sql[] = 'DELETE FROM livret_competence_theme           WHERE livret_structure_id=:structure_id';
+	$tab_sql[] = 'DELETE FROM livret_devoir                     WHERE livret_structure_id=:structure_id';
+	$tab_sql[] = 'DELETE FROM livret_groupe                     WHERE livret_structure_id=:structure_id';
+	$tab_sql[] = 'DELETE FROM livret_jointure_devoir_competence WHERE livret_structure_id=:structure_id';
+	$tab_sql[] = 'DELETE FROM livret_jointure_groupe_periode    WHERE livret_structure_id=:structure_id';
+	$tab_sql[] = 'DELETE FROM livret_saisie   WHERE livret_structure_id=:structure_id';
+	$tab_sql[] = 'DELETE FROM livret_jointure_user_groupe       WHERE livret_structure_id=:structure_id';
+	$tab_sql[] = 'DELETE FROM livret_jointure_user_matiere      WHERE livret_structure_id=:structure_id';
+	$tab_sql[] = 'DELETE FROM livret_matiere                    WHERE livret_matiere_structure_id=:structure_id';
+	$tab_sql[] = 'DELETE FROM livret_periode                    WHERE livret_structure_id=:structure_id';
+	$tab_sql[] = 'DELETE FROM livret_referentiel                WHERE livret_structure_id=:structure_id';
+	$tab_sql[] = 'DELETE FROM livret_structure                  WHERE livret_structure_id=:structure_id';
+	$tab_sql[] = 'DELETE FROM livret_user                       WHERE livret_structure_id=:structure_id';
 	$DB_VAR = array(':structure_id'=>$structure_id);
 	foreach($tab_sql as $DB_SQL)
 	{

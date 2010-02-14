@@ -61,7 +61,7 @@ elseif( ($action=='supprimer') && $nb )
 		$DB_SQL.= 'WHERE livret_structure_id=:structure_id AND livret_user_id=:user_id';
 		$DB_VAR = array(':structure_id'=>$_SESSION['STRUCTURE_ID'],':user_id'=>$user_id);
 		DB::query(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
-		$DB_SQL = 'DELETE FROM livret_jointure_user_competence ';
+		$DB_SQL = 'DELETE FROM livret_saisie ';
 		$DB_SQL.= 'WHERE livret_structure_id=:structure_id AND livret_eleve_id=:user_id';
 		$DB_VAR = array(':structure_id'=>$_SESSION['STRUCTURE_ID'],':user_id'=>$user_id);
 		DB::query(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);

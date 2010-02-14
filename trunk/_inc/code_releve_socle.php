@@ -29,10 +29,10 @@ function non_acquis($n) {return $n<$_SESSION['CALCUL_SEUIL']['R'] ;}
 function calculer_note($tab_devoirs,$calcul_methode,$calcul_limite)
 {
 	global $tab_modele_bon;
-	$evaluation_nb = count($tab_devoirs);
+	$devoirs_nb = count($tab_devoirs);
 	// on passe en revue les évaluations disponibles, et on retient les scores exploitables
 	$tab_note = array(); // pour les notes d'un élève
-	for($i=0;$i<$evaluation_nb;$i++)
+	for($i=0;$i<$devoirs_nb;$i++)
 	{
 		if(in_array($tab_devoirs[$i]['note'],$tab_modele_bon))
 		{

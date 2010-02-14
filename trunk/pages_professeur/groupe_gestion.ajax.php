@@ -98,7 +98,7 @@ else if( ($action=='supprimer') && $id )
 	$DB_SQL.= 'WHERE livret_structure_id=:structure_id AND livret_groupe_id=:id';
 	$DB_VAR = array(':structure_id'=>$_SESSION['STRUCTURE_ID'],':id'=>$id);
 	DB::query(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
-	$DB_SQL = 'UPDATE livret_evaluation ';
+	$DB_SQL = 'UPDATE livret_devoir ';
 	$DB_SQL.= 'SET livret_groupe_id=0 ';
 	$DB_SQL.= 'WHERE livret_structure_id=:structure_id AND livret_groupe_id=:id';
 	$DB_VAR = array(':structure_id'=>$_SESSION['STRUCTURE_ID'],':id'=>$id);

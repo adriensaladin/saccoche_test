@@ -214,13 +214,13 @@ function afficher_arborescence($DB_TAB,$dynamique,$reference,$aff_coef,$aff_socl
 
 function select_arborescence_eleve_periode_matiere($eleve_id,$matiere_id,$date_mysql_debut,$date_mysql_fin)
 {
-	$sql_debut = ($date_mysql_debut) ? 'AND livret_user_competence_date>=:date_debut ' : '';
-	$sql_fin   = ($date_mysql_fin)   ? 'AND livret_user_competence_date<=:date_fin '   : '';
+	$sql_debut = ($date_mysql_debut) ? 'AND livret_saisie_date>=:date_debut ' : '';
+	$sql_fin   = ($date_mysql_fin)   ? 'AND livret_saisie_date<=:date_fin '   : '';
 	$DB_SQL = 'SELECT livret_competence_id , ';
 	$DB_SQL.= 'CONCAT(livret_matiere_ref,".",livret_niveau_ref,".",livret_domaine_ref,livret_theme_ordre,livret_competence_ordre) AS competence_ref , ';
 	$DB_SQL.= 'livret_competence_nom AS competence_nom , livret_competence_coef AS competence_coef , livret_socle_id AS competence_socle , livret_competence_lien AS competence_lien , ';
 	$DB_SQL.= 'livret_referentiel_calcul_methode AS calcul_methode , livret_referentiel_calcul_limite AS calcul_limite ';
-	$DB_SQL.= 'FROM livret_jointure_user_competence ';
+	$DB_SQL.= 'FROM livret_saisie ';
 	$DB_SQL.= 'LEFT JOIN livret_competence_item USING (livret_structure_id,livret_competence_id) ';
 	$DB_SQL.= 'LEFT JOIN livret_competence_theme USING (livret_structure_id,livret_theme_id) ';
 	$DB_SQL.= 'LEFT JOIN livret_competence_domaine USING (livret_structure_id,livret_domaine_id) ';
@@ -241,13 +241,13 @@ function select_arborescence_eleve_periode_matiere($eleve_id,$matiere_id,$date_m
 
 function select_arborescence_eleves_periode_matiere($liste_eleve_id,$matiere_id,$date_mysql_debut,$date_mysql_fin)
 {
-	$sql_debut = ($date_mysql_debut) ? 'AND livret_user_competence_date>=:date_debut ' : '';
-	$sql_fin   = ($date_mysql_fin)   ? 'AND livret_user_competence_date<=:date_fin '   : '';
+	$sql_debut = ($date_mysql_debut) ? 'AND livret_saisie_date>=:date_debut ' : '';
+	$sql_fin   = ($date_mysql_fin)   ? 'AND livret_saisie_date<=:date_fin '   : '';
 	$DB_SQL = 'SELECT livret_competence_id , ';
 	$DB_SQL.= 'CONCAT(livret_matiere_ref,".",livret_niveau_ref,".",livret_domaine_ref,livret_theme_ordre,livret_competence_ordre) AS competence_ref , ';
 	$DB_SQL.= 'livret_competence_nom AS competence_nom , livret_competence_coef AS competence_coef , livret_socle_id AS competence_socle , livret_competence_lien AS competence_lien , ';
 	$DB_SQL.= 'livret_referentiel_calcul_methode AS calcul_methode , livret_referentiel_calcul_limite AS calcul_limite ';
-	$DB_SQL.= 'FROM livret_jointure_user_competence ';
+	$DB_SQL.= 'FROM livret_saisie ';
 	$DB_SQL.= 'LEFT JOIN livret_competence_item USING (livret_structure_id,livret_competence_id) ';
 	$DB_SQL.= 'LEFT JOIN livret_competence_theme USING (livret_structure_id,livret_theme_id) ';
 	$DB_SQL.= 'LEFT JOIN livret_competence_domaine USING (livret_structure_id,livret_domaine_id) ';
@@ -268,14 +268,14 @@ function select_arborescence_eleves_periode_matiere($liste_eleve_id,$matiere_id,
 
 function select_arborescence_et_matieres_eleves_periode($liste_eleve_id,$date_mysql_debut,$date_mysql_fin)
 {
-	$sql_debut = ($date_mysql_debut) ? 'AND livret_user_competence_date>=:date_debut ' : '';
-	$sql_fin   = ($date_mysql_fin)   ? 'AND livret_user_competence_date<=:date_fin '   : '';
+	$sql_debut = ($date_mysql_debut) ? 'AND livret_saisie_date>=:date_debut ' : '';
+	$sql_fin   = ($date_mysql_fin)   ? 'AND livret_saisie_date<=:date_fin '   : '';
 	$DB_SQL = 'SELECT livret_competence_id , ';
 	$DB_SQL.= 'CONCAT(livret_matiere_ref,".",livret_niveau_ref,".",livret_domaine_ref,livret_theme_ordre,livret_competence_ordre) AS competence_ref , ';
 	$DB_SQL.= 'livret_competence_nom AS competence_nom , livret_competence_coef AS competence_coef , livret_socle_id AS competence_socle , livret_competence_lien AS competence_lien , ';
 	$DB_SQL.= 'livret_matiere_id , livret_matiere_nom , ';
 	$DB_SQL.= 'livret_referentiel_calcul_methode AS calcul_methode , livret_referentiel_calcul_limite AS calcul_limite ';
-	$DB_SQL.= 'FROM livret_jointure_user_competence ';
+	$DB_SQL.= 'FROM livret_saisie ';
 	$DB_SQL.= 'LEFT JOIN livret_competence_item USING (livret_structure_id,livret_competence_id) ';
 	$DB_SQL.= 'LEFT JOIN livret_competence_theme USING (livret_structure_id,livret_theme_id) ';
 	$DB_SQL.= 'LEFT JOIN livret_competence_domaine USING (livret_structure_id,livret_domaine_id) ';
@@ -311,7 +311,7 @@ function select_arborescence_et_matieres_eleves_competence($liste_eleve_id,$list
 	$DB_SQL.= 'livret_competence_nom AS competence_nom , livret_competence_coef AS competence_coef , livret_socle_id AS competence_socle , livret_competence_lien AS competence_lien , ';
 	$DB_SQL.= 'livret_matiere_id , livret_matiere_nom , ';
 	$DB_SQL.= 'livret_referentiel_calcul_methode AS calcul_methode , livret_referentiel_calcul_limite AS calcul_limite ';
-	$DB_SQL.= 'FROM livret_jointure_user_competence ';
+	$DB_SQL.= 'FROM livret_saisie ';
 	$DB_SQL.= 'LEFT JOIN livret_competence_item USING (livret_structure_id,livret_competence_id) ';
 	$DB_SQL.= 'LEFT JOIN livret_competence_theme USING (livret_structure_id,livret_theme_id) ';
 	$DB_SQL.= 'LEFT JOIN livret_competence_domaine USING (livret_structure_id,livret_domaine_id) ';
@@ -341,18 +341,18 @@ function select_arborescence_et_matieres_eleves_competence($liste_eleve_id,$list
 
 function select_result_eleve($eleve_id,$liste_competence_id,$date_mysql_debut,$date_mysql_fin)
 {
-	$sql_debut = ($date_mysql_debut) ? 'AND livret_user_competence_date>=:date_debut ' : '';
-	$sql_fin   = ($date_mysql_fin)   ? 'AND livret_user_competence_date<=:date_fin '   : '';
+	$sql_debut = ($date_mysql_debut) ? 'AND livret_saisie_date>=:date_debut ' : '';
+	$sql_fin   = ($date_mysql_fin)   ? 'AND livret_saisie_date<=:date_fin '   : '';
 	$DB_SQL = 'SELECT livret_competence_id AS competence_id , ';
-	$DB_SQL.= 'livret_user_competence_note AS note , livret_user_competence_date AS date , livret_evaluation_info AS info ';
-	$DB_SQL.= 'FROM livret_jointure_user_competence ';
-	$DB_SQL.= 'LEFT JOIN livret_evaluation USING (livret_structure_id,livret_evaluation_id) ';
+	$DB_SQL.= 'livret_saisie_note AS note , livret_saisie_date AS date , livret_devoir_info AS info ';
+	$DB_SQL.= 'FROM livret_saisie ';
+	$DB_SQL.= 'LEFT JOIN livret_devoir USING (livret_structure_id,livret_devoir_id) ';
 	$DB_SQL.= 'LEFT JOIN livret_competence_item USING (livret_structure_id,livret_competence_id) ';
 	$DB_SQL.= 'LEFT JOIN livret_competence_theme USING (livret_structure_id,livret_theme_id) ';
 	$DB_SQL.= 'LEFT JOIN livret_competence_domaine USING (livret_structure_id,livret_domaine_id) ';
 	$DB_SQL.= 'LEFT JOIN livret_niveau USING (livret_niveau_id) ';
 	$DB_SQL.= 'WHERE livret_structure_id=:structure_id AND livret_eleve_id=:eleve_id AND livret_competence_id IN('.$liste_competence_id.') '.$sql_debut.$sql_fin;
-	$DB_SQL.= 'ORDER BY livret_niveau_ordre ASC, livret_domaine_ordre ASC, livret_theme_ordre ASC, livret_competence_ordre ASC, livret_user_competence_date ASC';
+	$DB_SQL.= 'ORDER BY livret_niveau_ordre ASC, livret_domaine_ordre ASC, livret_theme_ordre ASC, livret_competence_ordre ASC, livret_saisie_date ASC';
 	$DB_VAR = array(':structure_id'=>$_SESSION['STRUCTURE_ID'],':eleve_id'=>$_SESSION['USER_ID'],':date_debut'=>$date_mysql_debut,':date_fin'=>$date_mysql_fin);
 	return DB::queryTab(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
 }
@@ -364,18 +364,18 @@ function select_result_eleve($eleve_id,$liste_competence_id,$date_mysql_debut,$d
 
 function select_result_eleves_matiere($liste_eleve_id,$liste_competence_id,$date_mysql_debut,$date_mysql_fin)
 {
-	$sql_debut = ($date_mysql_debut) ? 'AND livret_user_competence_date>=:date_debut ' : '';
-	$sql_fin   = ($date_mysql_fin)   ? 'AND livret_user_competence_date<=:date_fin '   : '';
+	$sql_debut = ($date_mysql_debut) ? 'AND livret_saisie_date>=:date_debut ' : '';
+	$sql_fin   = ($date_mysql_fin)   ? 'AND livret_saisie_date<=:date_fin '   : '';
 	$DB_SQL = 'SELECT livret_eleve_id AS eleve_id , livret_competence_id AS competence_id , ';
-	$DB_SQL.= 'livret_user_competence_note AS note , livret_user_competence_date AS date , livret_evaluation_info AS info ';
-	$DB_SQL.= 'FROM livret_jointure_user_competence ';
-	$DB_SQL.= 'LEFT JOIN livret_evaluation USING (livret_structure_id,livret_evaluation_id) ';
+	$DB_SQL.= 'livret_saisie_note AS note , livret_saisie_date AS date , livret_devoir_info AS info ';
+	$DB_SQL.= 'FROM livret_saisie ';
+	$DB_SQL.= 'LEFT JOIN livret_devoir USING (livret_structure_id,livret_devoir_id) ';
 	$DB_SQL.= 'LEFT JOIN livret_competence_item USING (livret_structure_id,livret_competence_id) ';
 	$DB_SQL.= 'LEFT JOIN livret_competence_theme USING (livret_structure_id,livret_theme_id) ';
 	$DB_SQL.= 'LEFT JOIN livret_competence_domaine USING (livret_structure_id,livret_domaine_id) ';
 	$DB_SQL.= 'LEFT JOIN livret_niveau USING (livret_niveau_id) ';
 	$DB_SQL.= 'WHERE livret_structure_id=:structure_id AND livret_eleve_id IN('.$liste_eleve_id.') AND livret_competence_id IN('.$liste_competence_id.') '.$sql_debut.$sql_fin;
-	$DB_SQL.= 'ORDER BY livret_niveau_ordre ASC, livret_domaine_ordre ASC, livret_theme_ordre ASC, livret_competence_ordre ASC, livret_user_competence_date ASC';
+	$DB_SQL.= 'ORDER BY livret_niveau_ordre ASC, livret_domaine_ordre ASC, livret_theme_ordre ASC, livret_competence_ordre ASC, livret_saisie_date ASC';
 	$DB_VAR = array(':structure_id'=>$_SESSION['STRUCTURE_ID'],':date_debut'=>$date_mysql_debut,':date_fin'=>$date_mysql_fin);
 	return DB::queryTab(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
 }
@@ -387,19 +387,19 @@ function select_result_eleves_matiere($liste_eleve_id,$liste_competence_id,$date
 
 function select_result_eleves_matieres($liste_eleve_id,$liste_competence_id,$date_mysql_debut,$date_mysql_fin)
 {
-	$sql_debut = ($date_mysql_debut) ? 'AND livret_user_competence_date>=:date_debut ' : '';
-	$sql_fin   = ($date_mysql_fin)   ? 'AND livret_user_competence_date<=:date_fin '   : '';
+	$sql_debut = ($date_mysql_debut) ? 'AND livret_saisie_date>=:date_debut ' : '';
+	$sql_fin   = ($date_mysql_fin)   ? 'AND livret_saisie_date<=:date_fin '   : '';
 	$DB_SQL = 'SELECT livret_eleve_id AS eleve_id , livret_matiere_id AS matiere_id , livret_competence_id AS competence_id , ';
-	$DB_SQL.= 'livret_user_competence_note AS note , livret_user_competence_date AS date , livret_evaluation_info AS info ';
-	$DB_SQL.= 'FROM livret_jointure_user_competence ';
-	$DB_SQL.= 'LEFT JOIN livret_evaluation USING (livret_structure_id,livret_evaluation_id) ';
+	$DB_SQL.= 'livret_saisie_note AS note , livret_saisie_date AS date , livret_devoir_info AS info ';
+	$DB_SQL.= 'FROM livret_saisie ';
+	$DB_SQL.= 'LEFT JOIN livret_devoir USING (livret_structure_id,livret_devoir_id) ';
 	$DB_SQL.= 'LEFT JOIN livret_competence_item USING (livret_structure_id,livret_competence_id) ';
 	$DB_SQL.= 'LEFT JOIN livret_competence_theme USING (livret_structure_id,livret_theme_id) ';
 	$DB_SQL.= 'LEFT JOIN livret_competence_domaine USING (livret_structure_id,livret_domaine_id) ';
 	$DB_SQL.= 'LEFT JOIN livret_matiere USING (livret_matiere_id) ';
 	$DB_SQL.= 'LEFT JOIN livret_niveau USING (livret_niveau_id) ';
 	$DB_SQL.= 'WHERE livret_structure_id=:structure_id AND livret_eleve_id IN('.$liste_eleve_id.') AND livret_competence_id IN('.$liste_competence_id.') '.$sql_debut.$sql_fin;
-	$DB_SQL.= 'ORDER BY livret_niveau_ordre ASC, livret_domaine_ordre ASC, livret_theme_ordre ASC, livret_competence_ordre ASC, livret_user_competence_date ASC';
+	$DB_SQL.= 'ORDER BY livret_niveau_ordre ASC, livret_domaine_ordre ASC, livret_theme_ordre ASC, livret_competence_ordre ASC, livret_saisie_date ASC';
 	$DB_VAR = array(':structure_id'=>$_SESSION['STRUCTURE_ID'],':date_debut'=>$date_mysql_debut,':date_fin'=>$date_mysql_fin);
 	return DB::queryTab(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
 }
@@ -411,13 +411,13 @@ function select_result_eleves_matieres($liste_eleve_id,$liste_competence_id,$dat
 
 function select_result_eleves_palier($liste_eleve_id,$liste_item_id,$date_mysql_debut,$date_mysql_fin)
 {
-	$sql_debut = ($date_mysql_debut) ? 'AND livret_user_competence_date>=:date_debut ' : '';
-	$sql_fin   = ($date_mysql_fin)   ? 'AND livret_user_competence_date<=:date_fin '   : '';
+	$sql_debut = ($date_mysql_debut) ? 'AND livret_saisie_date>=:date_debut ' : '';
+	$sql_fin   = ($date_mysql_fin)   ? 'AND livret_saisie_date<=:date_fin '   : '';
 	$DB_SQL = 'SELECT livret_eleve_id AS eleve_id , livret_socle_id AS socle_id , livret_competence_id AS competence_id , ';
-	$DB_SQL.= 'livret_user_competence_note AS note , livret_competence_nom AS competence_nom , ';
+	$DB_SQL.= 'livret_saisie_note AS note , livret_competence_nom AS competence_nom , ';
 	$DB_SQL.= 'CONCAT(livret_matiere_ref,".",livret_niveau_ref,".",livret_domaine_ref,livret_theme_ordre,livret_competence_ordre) AS competence_ref , ';
 	$DB_SQL.= 'livret_referentiel_calcul_methode AS calcul_methode , livret_referentiel_calcul_limite AS calcul_limite ';
-	$DB_SQL.= 'FROM livret_jointure_user_competence ';
+	$DB_SQL.= 'FROM livret_saisie ';
 	$DB_SQL.= 'LEFT JOIN livret_competence_item USING (livret_structure_id,livret_competence_id) ';
 	$DB_SQL.= 'LEFT JOIN livret_socle_item USING (livret_socle_id) ';
 	$DB_SQL.= 'LEFT JOIN livret_competence_theme USING (livret_structure_id,livret_theme_id) ';
@@ -426,7 +426,7 @@ function select_result_eleves_palier($liste_eleve_id,$liste_item_id,$date_mysql_
 	$DB_SQL.= 'LEFT JOIN livret_niveau USING (livret_niveau_id) ';
 	$DB_SQL.= 'LEFT JOIN livret_referentiel USING (livret_structure_id,livret_matiere_id,livret_niveau_id) ';
 	$DB_SQL.= 'WHERE livret_structure_id=:structure_id AND livret_eleve_id IN('.$liste_eleve_id.') AND livret_socle_id IN('.$liste_item_id.') '.$sql_debut.$sql_fin;
-	$DB_SQL.= 'ORDER BY livret_matiere_nom ASC, livret_niveau_ordre ASC, livret_domaine_ordre ASC, livret_theme_ordre ASC, livret_competence_ordre ASC, livret_user_competence_date ASC';
+	$DB_SQL.= 'ORDER BY livret_matiere_nom ASC, livret_niveau_ordre ASC, livret_domaine_ordre ASC, livret_theme_ordre ASC, livret_competence_ordre ASC, livret_saisie_date ASC';
 	$DB_VAR = array(':structure_id'=>$_SESSION['STRUCTURE_ID'],':date_debut'=>$date_mysql_debut,':date_fin'=>$date_mysql_fin);
 	return DB::queryTab(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
 }

@@ -50,7 +50,7 @@ em {display:inline;font-style:normal;font-weight:bold;font-variant:small-caps} /
 /* Images sprites utilisées comme images cliquables ; http://fr.spritegen.website-performance.org/     */
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-body q {background:transparent url(../_img/sprite6.png) 0 0 no-repeat;width:16px;height:16px;display:inline-block;vertical-align:middle;margin-left:5px;quotes:none}
+body q {background:transparent url(../_img/sprite7.png) 0 0 no-repeat;width:16px;height:16px;display:inline-block;vertical-align:middle;margin-left:5px;quotes:none}
 body q:before, body q:after {content: "";} /* patch pour Safari : voir par exemple http://forum.alsacreations.com/topic-4-41216-1-Resolu-Modifier-le-style-des-citations-quotqquot.html */
 body q.activer         {background-position:      0 0}
 body q.ajouter         {background-position:  -20px 0}
@@ -61,40 +61,42 @@ body q.choisir_eleve   {background-position: -100px 0}
 body q.date_calendrier {background-position: -120px 0}
 body q.date_periode    {background-position: -140px 0}
 body q.deconnecter     {background-position: -160px 0}
-body q.desactiver      {background-position: -180px 0}
-body q.detailler       {background-position: -200px 0}
-body q.dupliquer       {background-position: -220px 0}
-body q.imprimer        {background-position: -240px 0}
-body q.modifier        {background-position: -260px 0}
-body q.modifier_non    {background-position: -280px 0}
-body q.ordonner        {background-position: -300px 0}
-body q.calculer        {background-position: -320px 0} 
-body q.calculer_non    {background-position: -340px 0} 
-body q.partager        {background-position: -360px 0} 
-body q.partager_non    {background-position: -380px 0} 
-body q.retourner       {background-position: -400px 0} 
-body q.saisir          {background-position: -420px 0} 
-body q.supprimer       {background-position: -440px 0} 
-body q.supprimer_non   {background-position: -460px 0} 
-body q.valider         {background-position: -480px 0} 
-body q.voir            {background-position: -500px 0} 
-body q.n1_add          {background-position: -520px 0} 
-body q.n1_del          {background-position: -540px 0} 
-body q.n1_edit         {background-position: -560px 0} 
-body q.n1_move         {background-position: -580px 0} 
-body q.n1_move2        {background-position: -600px 0} 
-body q.n2_add          {background-position: -620px 0} 
-body q.n2_del          {background-position: -640px 0} 
-body q.n2_edit         {background-position: -660px 0} 
-body q.n2_move         {background-position: -680px 0} 
-body q.n2_move2        {background-position: -700px 0} 
-body q.n3_add          {background-position: -720px 0} 
-body q.n3_del          {background-position: -740px 0} 
-body q.n3_edit         {background-position: -760px 0} 
-body q.n3_fus          {background-position: -780px 0} 
-body q.n3_fus2         {background-position: -800px 0} 
-body q.n3_move         {background-position: -820px 0} 
-body q.n3_move2        {background-position: -840px 0} 
+body q.demander_add    {background-position: -180px 0} 
+body q.demander_del    {background-position: -200px 0} 
+body q.desactiver      {background-position: -220px 0}
+body q.detailler       {background-position: -240px 0}
+body q.dupliquer       {background-position: -260px 0}
+body q.imprimer        {background-position: -280px 0}
+body q.modifier        {background-position: -300px 0}
+body q.modifier_non    {background-position: -320px 0}
+body q.ordonner        {background-position: -340px 0}
+body q.calculer        {background-position: -360px 0} 
+body q.calculer_non    {background-position: -380px 0} 
+body q.partager        {background-position: -400px 0} 
+body q.partager_non    {background-position: -420px 0} 
+body q.retourner       {background-position: -440px 0} 
+body q.saisir          {background-position: -460px 0} 
+body q.supprimer       {background-position: -480px 0} 
+body q.supprimer_non   {background-position: -500px 0} 
+body q.valider         {background-position: -520px 0} 
+body q.voir            {background-position: -540px 0} 
+body q.n1_add          {background-position: -560px 0} 
+body q.n1_del          {background-position: -580px 0} 
+body q.n1_edit         {background-position: -600px 0} 
+body q.n1_move         {background-position: -620px 0} 
+body q.n1_move2        {background-position: -640px 0} 
+body q.n2_add          {background-position: -660px 0} 
+body q.n2_del          {background-position: -680px 0} 
+body q.n2_edit         {background-position: -700px 0} 
+body q.n2_move         {background-position: -720px 0} 
+body q.n2_move2        {background-position: -740px 0} 
+body q.n3_add          {background-position: -760px 0} 
+body q.n3_del          {background-position: -780px 0} 
+body q.n3_edit         {background-position: -800px 0} 
+body q.n3_fus          {background-position: -820px 0} 
+body q.n3_fus2         {background-position: -840px 0} 
+body q.n3_move         {background-position: -860px 0} 
+body q.n3_move2        {background-position: -880px 0} 
 body q:hover {cursor:pointer}	/* Curseur pointeur pour ces images qui sont des liens */
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */

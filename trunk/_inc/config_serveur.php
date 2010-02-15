@@ -15,11 +15,11 @@
  */
 
 // MAINTENANCE : Mettre à 1 en cas de maintenance : seul le webmestre SACoche pourra continuer à surfer.
-define('MAINTENANCE',1);
+define('MAINTENANCE',0);
 
 // FILE_CSS et FILE_JS : pour éviter les problèmes de mise en cache, modifier le nom du fichier lors d'une mise à jour
 // VERSION_JS : pour éviter le problème de mise en cache du js de la page d'accueil principale
-define('FILE_CSS','style20.css');
+define('FILE_CSS','style21.css');
 define('FILE_JS','script21.js');
 $VERSION_JS = '';
 

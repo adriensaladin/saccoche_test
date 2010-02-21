@@ -23,6 +23,7 @@ $TITRE = "Gestion de l'établissement";
 	<a href="./index.php?dossier=<?php echo $DOSSIER ?>&amp;fichier=<?php echo $FICHIER ?>&amp;section=login">Format des noms d'utilisateurs.</a>	||
 	<a href="./index.php?dossier=<?php echo $DOSSIER ?>&amp;fichier=<?php echo $FICHIER ?>&amp;section=connexion">Mode d'identification.</a>	||
 	<a href="./index.php?dossier=<?php echo $DOSSIER ?>&amp;fichier=<?php echo $FICHIER ?>&amp;section=duree-inactivite">Délai avant déconnexion.</a>	<br />
+	<a href="./index.php?dossier=<?php echo $DOSSIER ?>&amp;fichier=<?php echo $FICHIER ?>&amp;section=demandes-eval">Demandes d'évaluations.</a>	||
 	<a href="./index.php?dossier=<?php echo $DOSSIER ?>&amp;fichier=<?php echo $FICHIER ?>&amp;section=options-eleve">Options de l'environnement élève.</a>
 </div>
 

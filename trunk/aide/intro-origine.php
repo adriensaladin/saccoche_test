@@ -26,7 +26,7 @@ $TITRE = "Origine du projet";
 	<li>d'établir des référentiels de compétences par matière et par niveau</li>
 	<li>d'imprimer des grilles de compétences à distribuer aux élèves</li>
 	<li>de créer des évaluations associées à des items et d'en saisir les résultats facilement</li>
-	<li>de générer des bilans s'acquisitions chiffrés pour les besoins de l'institution</li>
+	<li>de générer des bilans d'acquisitions chiffrés pour les besoins de l'institution</li>
 	<li>d'avoir un accès élèves / parents permettant de consulter les bilans de compétences</li>
 </ul>
 

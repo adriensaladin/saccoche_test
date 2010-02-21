@@ -705,6 +705,25 @@ function DB_modifier_duree_inactivite($structure_id,$delai)
 }
 
 /**
+ * DB_modifier_nombre_demandes_eval
+ * 
+ * @param int $structure_id
+ * @param int $nb_demandes
+ * @return void
+ */
+
+function DB_modifier_nombre_demandes_eval($structure_id,$nb_demandes)
+{
+
+	$DB_SQL = 'UPDATE livret_structure ';
+	$DB_SQL.= 'SET livret_structure_eleve_demandes=:nb_demandes ';
+	$DB_SQL.= 'WHERE livret_structure_id=:structure_id ';
+	$DB_SQL.= 'LIMIT 1';
+	$DB_VAR = array(':structure_id'=>$structure_id,':nb_demandes'=>$nb_demandes);
+	DB::query(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
+}
+
+/**
  * DB_modifier_eleve_options
  * 
  * @param int    $structure_id

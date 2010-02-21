@@ -385,7 +385,7 @@ $(document).ready
 		}
 
 		//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
-		//	Calque pour afficher un calendrier
+		//	Calque pour afficher un calendrier, ou le résultat d'une demande d'évaluation
 		//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
 
 		// Ajoute au document le calque d'aide au remplissage

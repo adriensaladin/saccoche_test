@@ -97,7 +97,7 @@ if( $detail && $palier_id && $palier_nom && $remplissage )
 		foreach($DB_TAB as $key => $DB_ROW)
 		{
 			$tab_eval[$_SESSION['USER_ID']][$DB_ROW['socle_id']][$DB_ROW['competence_id']][] = $DB_ROW['note'];
-			$tab_competence[$DB_ROW['competence_id']] = array('competence_ref'=>$DB_ROW['competence_ref'],'competence_nom'=>$DB_ROW['competence_nom'],'calcul_methode'=>$DB_ROW['calcul_methode'],'calcul_limite'=>$DB_ROW['calcul_limite']);
+			$tab_competence[$DB_ROW['competence_id']] = array('competence_ref'=>$DB_ROW['competence_ref'],'competence_nom'=>$DB_ROW['competence_nom'],'matiere_id'=>$DB_ROW['livret_matiere_id'],'calcul_methode'=>$DB_ROW['calcul_methode'],'calcul_limite'=>$DB_ROW['calcul_limite']);
 		}
 	}
 

@@ -294,7 +294,8 @@ if(in_array('individuel',$tab_type))
 							$texte_lien_avant = ($competence_lien) ? '<a class="lien_ext" href="'.html($competence_lien).'">' : '';
 							$texte_lien_apres = ($competence_lien) ? '</a>' : '';
 						}
-						$releve_html_table_body .= '<tr><td>'.$competence_ref.'</td><td>'.$texte_coef.$texte_socle.$texte_lien_avant.html($competence_nom).$texte_lien_apres.'</td>';
+						$texte_demande_eval = ( ($_SESSION['PROFIL']=='eleve') && ($_SESSION['ELEVE_DEMANDES']>0) ) ? '<q class="demander_add" lang="ids_'.$eleve_id.'_'.$matiere_id.'_'.$competence_id.'_'.$tab_score_eleve_competence[$eleve_id][$matiere_id][$competence_id].'" title="Ajouter aux demandes d\'évaluations."></q>' : '' ;
+						$releve_html_table_body .= '<tr><td>'.$competence_ref.'</td><td>'.$texte_coef.$texte_socle.$texte_lien_avant.html($competence_nom).$texte_lien_apres.$texte_demande_eval.'</td>';
 						$releve_pdf->bilan_periode_individuel_competence($competence_ref,$texte_coef.$texte_socle.$competence_nom);
 						// cases d'évaluations
 						$devoirs_nb = count($tab_devoirs);

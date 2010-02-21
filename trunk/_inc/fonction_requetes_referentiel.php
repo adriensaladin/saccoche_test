@@ -416,6 +416,7 @@ function select_result_eleves_palier($liste_eleve_id,$liste_item_id,$date_mysql_
 	$DB_SQL = 'SELECT livret_eleve_id AS eleve_id , livret_socle_id AS socle_id , livret_competence_id AS competence_id , ';
 	$DB_SQL.= 'livret_saisie_note AS note , livret_competence_nom AS competence_nom , ';
 	$DB_SQL.= 'CONCAT(livret_matiere_ref,".",livret_niveau_ref,".",livret_domaine_ref,livret_theme_ordre,livret_competence_ordre) AS competence_ref , ';
+	$DB_SQL.= 'livret_matiere_id , '; // Besoin pour l'élève s'il ajoute l'item aux demandes d'évaluations
 	$DB_SQL.= 'livret_referentiel_calcul_methode AS calcul_methode , livret_referentiel_calcul_limite AS calcul_limite ';
 	$DB_SQL.= 'FROM livret_saisie ';
 	$DB_SQL.= 'LEFT JOIN livret_competence_item USING (livret_structure_id,livret_competence_id) ';

@@ -47,6 +47,7 @@ function connecter_admin($structure_id,$password)
 		$_SESSION['NIVEAUX']          = $DB_ROW['livret_structure_niveaux'];
 		$_SESSION['PALIERS']          = $DB_ROW['livret_structure_paliers'];
 		$_SESSION['ELEVE_OPTIONS']    = $DB_ROW['livret_structure_eleve_options'];
+		$_SESSION['ELEVE_DEMANDES']   = $DB_ROW['livret_structure_eleve_demandes'];
 		$_SESSION['DUREE_INACTIVITE'] = $DB_ROW['livret_structure_duree_inactivite'];
 		$_SESSION['CALCUL_VALEUR']['RR'] = $DB_ROW['livret_structure_calcul_valeur_RR'];
 		$_SESSION['CALCUL_VALEUR']['R']  = $DB_ROW['livret_structure_calcul_valeur_R'];
@@ -110,6 +111,7 @@ function connecter_user($structure_id,$login,$password,$sso=false)
 		$_SESSION['NIVEAUX']          = $DB_ROW['livret_structure_niveaux'];
 		$_SESSION['PALIERS']          = $DB_ROW['livret_structure_paliers'];
 		$_SESSION['ELEVE_OPTIONS']    = $DB_ROW['livret_structure_eleve_options'];
+		$_SESSION['ELEVE_DEMANDES']   = $DB_ROW['livret_structure_eleve_demandes'];
 		$_SESSION['DUREE_INACTIVITE'] = $DB_ROW['livret_structure_duree_inactivite'];
 		$_SESSION['ELEVE_CLASSE_ID']  = (int) $DB_ROW['livret_eleve_classe_id'];	// inutile pour les admins
 		$_SESSION['ELEVE_CLASSE_NOM'] = $DB_ROW['livret_groupe_nom'];	// inutile pour les admins

@@ -106,7 +106,7 @@ if($test_affichage_scores)
 								{
 									foreach($tab_eval[$eleve_id][$socle_id] as $competence_id => $tab_devoirs)
 									{
-										extract($tab_competence[$competence_id]);	// $competence_ref $competence_nom $calcul_methode $calcul_limite
+										extract($tab_competence[$competence_id]);	// $competence_ref $competence_nom $matiere_id $calcul_methode $calcul_limite
 										// calcul du bilan de l'item
 										$note = calculer_note($tab_devoirs,$calcul_methode,$calcul_limite);
 										if($note)
@@ -118,7 +118,8 @@ if($test_affichage_scores)
 											// on enregistre les infos
 											if($detail=='complet')
 											{
-												$tab_infos_socle_eleve[$socle_id][$eleve_id][] = '<span class="'.$tab_etat[$indice].'">'.html($competence_ref.' || '.$competence_nom.' ['.$note.'%]').'</span>';
+												$texte_demande_eval = ( ($_SESSION['PROFIL']=='eleve') && ($_SESSION['ELEVE_DEMANDES']>0) ) ? '<q class="demander_add" lang="ids_'.$eleve_id.'_'.$matiere_id.'_'.$competence_id.'_'.$note.'" title="Ajouter aux demandes d\'évaluations."></q>' : '' ;
+												$tab_infos_socle_eleve[$socle_id][$eleve_id][] = '<span class="'.$tab_etat[$indice].'">'.html($competence_ref.' || '.$competence_nom.' ['.$note.'%]').'</span>'.$texte_demande_eval;
 												$tab_score_socle_eleve[$socle_id][$eleve_id][$indice]++;
 												$tab_score_socle_eleve[$socle_id][$eleve_id]['nb']++;
 											}

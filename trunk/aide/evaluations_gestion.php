@@ -23,7 +23,7 @@ $TITRE = "Gestion des évaluations";
 <h2>Gestion des évaluations</h2>
 <ul class="puce">
 	<li>Se connecter avec son compte professeur.</li>
-	<li>Dans <em>[Évaluations et saisie des résultats]</em> menu <em>[Pour une classe ou un groupe]</em> ou <em>[Pour un ou plusieurs élèves sélectionnés]</em>.</li>
+	<li>Dans <em>[Évaluations et saisie des résultats]</em> menu <em>[Évaluer une classe ou un groupe]</em> ou <em>[Évaluer des élèves sélectionnés]</em>.</li>
 	<li>Cliquer sur <img alt="niveau" src="./_img/action/action_ajouter.png" /> pour ajouter une nouvelle évaluation : on renseigne la date, le regroupement ou les élèves concernés (parmi ceux affectés au professeur), une brève description et la liste des items concernés par l'évaluation (à cocher dans une liste comprenant ceux enregistrés dans les matières affectées au professeur).</li>
 	<li>Cliquer sur <img alt="niveau" src="./_img/action/action_ordonner.png" /> pour modifier l'ordre des items d'une évaluation affiché lors de la saisie, de l'impression d'un cartouche, et de la visualisation (par défaut c'est l'ordre du référentiel).</li>
 	<li>Cliquer sur <img alt="niveau" src="./_img/action/action_modifier.png" /> pour modifier une évaluation existante.</li>

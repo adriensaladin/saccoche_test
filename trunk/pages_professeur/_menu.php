@@ -41,8 +41,9 @@ $arbre='
 	</li>
 	<li>Évaluations &amp; Saisie des résultats
 		<ul>
-			<li class="eval_groupe"><a href="./index.php?dossier='.$DOSSIER.'&amp;fichier=eval&amp;section=groupe">Pour une classe ou un groupe</a></li>
-			<li class="eval_select"><a href="./index.php?dossier='.$DOSSIER.'&amp;fichier=eval&amp;section=select">Pour un ou plusieurs élèves sélectionnés</a></li>
+			<li class="eval_demande"><a href="./index.php?dossier='.$DOSSIER.'&amp;fichier=eval&amp;section=demande">Demandes des élèves</a></li>
+			<li class="eval_groupe"><a href="./index.php?dossier='.$DOSSIER.'&amp;fichier=eval&amp;section=groupe">Évaluer une classe ou un groupe</a></li>
+			<li class="eval_select"><a href="./index.php?dossier='.$DOSSIER.'&amp;fichier=eval&amp;section=select">Évaluer des élèves sélectionnés</a></li>
 		</ul>
 	</li>
 	<li>Relevés &amp; Bilans

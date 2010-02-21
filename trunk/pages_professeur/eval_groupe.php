@@ -17,7 +17,7 @@ $TITRE = "Évaluer une classe ou un groupe";
 ?>
 
 <?php
-// Élément de formulaire "f_aff_classe" pour le choix des élèves (liste des classes / groupes / besoins) du professeur, enregistré dans une variable javascript pour utilisation suivant le besoin, et utilisé pour un tri itnitial
+// Élément de formulaire "f_aff_classe" pour le choix des élèves (liste des classes / groupes / besoins) du professeur, enregistré dans une variable javascript pour utilisation suivant le besoin, et utilisé pour un tri initial
 // Fabrication de tableaux javascript "tab_niveau" et "tab_groupes" indiquant le niveau et le nom d'un groupe
 $select_eleve  = '<option value=""></option>';
 $tab_niveau_js = 'var tab_niveau = new Array();';

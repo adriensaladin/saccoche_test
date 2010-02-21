@@ -34,12 +34,12 @@ $TITRE = "Gérer les groupes de besoin";
 		</thead>
 		<tbody>
 			<?php
-			// Lister les groupes de besoin
+			// Lister les groupes de besoin du prof
 			$DB_SQL = 'SELECT livret_groupe_id, livret_groupe_nom, livret_niveau_ordre, livret_niveau_nom FROM livret_groupe ';
 			$DB_SQL.= 'LEFT JOIN livret_niveau USING (livret_niveau_id) ';
-			$DB_SQL.= 'WHERE livret_structure_id=:structure_id AND livret_groupe_type=:type ';
+			$DB_SQL.= 'WHERE livret_structure_id=:structure_id AND livret_groupe_prof_id=:user_id AND livret_groupe_type=:type ';
 			$DB_SQL.= 'ORDER BY livret_niveau_ordre ASC, livret_groupe_nom ASC';
-			$DB_VAR = array(':structure_id'=>$_SESSION['STRUCTURE_ID'],':type'=>'besoin');
+			$DB_VAR = array(':structure_id'=>$_SESSION['STRUCTURE_ID'],':user_id'=>$_SESSION['USER_ID'],':type'=>'besoin');
 			$DB_TAB = DB::queryTab(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
 			foreach($DB_TAB as $key => $DB_ROW)
 			{

@@ -21,7 +21,7 @@ $TITRE = "Saisie des résultats";
 </p>
 <ul class="puce">
 	<li>Se connecter avec son compte professeur.</li>
-	<li>Dans <em>[Évaluations et saisie des résultats]</em> menu <em>[Pour une classe ou un groupe]</em> ou <em>[Pour un ou plusieurs élèves sélectionnés]</em>.</li>
+	<li>Dans <em>[Évaluations et saisie des résultats]</em> menu <em>[Évaluer une classe ou un groupe]</em> ou <em>[Évaluer des élèves sélectionnés]</em>.</li>
 	<li>Cliquer sur <img alt="niveau" src="./_img/action/action_saisir.png" /> pour saisir les résultats d'une évaluation.</li>
 </ul>
 

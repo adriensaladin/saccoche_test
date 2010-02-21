@@ -13,7 +13,7 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-$TITRE = "Évaluer un ou plusieurs élèves sélectionnés";
+$TITRE = "Évaluer des élèves sélectionnés";
 ?>
 
 <?php

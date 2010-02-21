@@ -17,8 +17,9 @@ $TITRE = "Gestion des évaluations et saisie des acquisitions";
 ?>
 
 <div class="hc">
+	<a href="./index.php?dossier=<?php echo $DOSSIER ?>&amp;fichier=<?php echo $FICHIER ?>&amp;section=demande">Demandes des élèves.</a>	||
 	<a href="./index.php?dossier=<?php echo $DOSSIER ?>&amp;fichier=<?php echo $FICHIER ?>&amp;section=groupe">Évaluer une classe ou un groupe.</a>	||
-	<a href="./index.php?dossier=<?php echo $DOSSIER ?>&amp;fichier=<?php echo $FICHIER ?>&amp;section=select">Évaluer un ou plusieurs élèves sélectionnés.</a>||
+	<a href="./index.php?dossier=<?php echo $DOSSIER ?>&amp;fichier=<?php echo $FICHIER ?>&amp;section=select">Évaluer des élèves sélectionnés.</a>	||
 	<a href="./index.php?dossier=<?php echo $DOSSIER ?>&amp;fichier=releve">Accéder aux bilans.</a>
 </div>
 

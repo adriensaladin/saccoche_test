@@ -42,8 +42,8 @@ span.danger,div.danger,p.danger {background:transparent url(../_img/puce_danger.
 span.manuel,div.manuel,p.manuel {background:transparent url(../_img/puce_manuel.png) no-repeat top left;padding-left:18px;color:#777}
 #aide_en_ligne {margin:1ex 1em}
 em {display:inline;font-style:normal;font-weight:bold;font-variant:small-caps} /* "SACoche" et divers noms propres */
-.hc{text-align:center} .hg {text-align:left} .hd{text-align:right} .ti{text-indent:3em}
-.i {font-style:italic} .u {text-decoration:underline}
+.hc{text-align:center} .hg{text-align:left} .hd{text-align:right} .ti{text-indent:3em}
+.i{font-style:italic} .u{text-decoration:underline}
 .hide{display:none}
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
@@ -309,7 +309,7 @@ a.puce_moins {background:transparent url(../_img/puce_moins.gif) no-repeat left;
 
 div#td_souris_container{display:none;}
 div.td_souris {font-size:0}
-div.td_souris img {padding:2px;;margin:1px;background-color:#FFF}
+div.td_souris img {padding:2px;margin:1px;background-color:#FFF}
 div.td_souris img.on {background-color:#FF0}
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */

@@ -438,9 +438,67 @@ $(document).ready
 								$('#calque').html(responseHTML);
 								leave_erreur = false;
 							}
-						else
+							else
 							{
-								$('#ajax_alerte_calque').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
+								$('#ajax_alerte_calque').removeAttr("class").addClass("alerte").html(responseHTML);
+								leave_erreur = true;
+							}
+						}
+					}
+				);
+			}
+		);
+
+		// Afficher le calque et le compléter : ajouter une demande d'évaluation
+		$('q.demander_add').live
+		('click',
+			function(e)
+			{
+				// Récupérer les infos associées
+				infos = $(this).attr("lang");    // 'ids_' + eleve_id + '_' + matiere_id + '_' + competence_id + '_' + score
+				tab_infos = infos.split('_');
+				if(tab_infos.length==5)
+				{
+					eleve_id      = tab_infos[1];
+					matiere_id    = tab_infos[2];
+					competence_id = tab_infos[3];
+					score         = (tab_infos[4]!='') ? tab_infos[4] : -1 ; // si absence de score...
+					get_data = 'eleve_id='+eleve_id+'&matiere_id='+matiere_id+'&competence_id='+competence_id+'&score='+score;
+				}
+				else
+				{
+					return false;
+				}
+				// Afficher le calque
+				posX = e.pageX-5;
+				posY = e.pageY-5;
+				$("#calque").css('left',posX + 'px');
+				$("#calque").css('top',posY + 'px');
+				$("#calque").html('<label id="ajax_alerte_calque" for="nada" class="loader">Chargement en cours...</label>').show();
+				// Charger en Ajax le contenu du calque
+				$.ajax
+				(
+					{
+						type : 'GET',
+						url : 'ajax.php?dossier=public&fichier=demander_add',
+						data : get_data,
+						dataType : "html",
+						error : function(msg,string)
+						{
+							$('#ajax_alerte_calque').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
+							leave_erreur = true;
+						},
+						success : function(responseHTML)
+						{
+							if(responseHTML.substring(0,5)=='<form')	// Attention aux caractères accentués : l'utf-8 pose des pbs pour ce test
+							{
+								maj_clock(1);
+								$('#calque').html(responseHTML);
+								leave_erreur = true;
+							}
+							else
+							{
+								$('#ajax_alerte_calque').removeAttr("class").addClass("alerte").html(responseHTML);
 								leave_erreur = true;
 							}
 						}

@@ -492,7 +492,7 @@ function DB_OPT_groupes_professeur($structure_id,$user_id)
 	$DB_SQL.= 'LEFT JOIN livret_jointure_user_groupe USING (livret_structure_id,livret_groupe_id) ';
 	$DB_SQL.= 'LEFT JOIN livret_niveau USING (livret_niveau_id) ';
 	$DB_SQL.= 'WHERE livret_structure_id=:structure_id AND ( livret_user_id=:user_id OR livret_groupe_prof_id=:user_id ) AND livret_groupe_type!=:type4 ';
-//	$DB_SQL.= 'GROUP BY livret_groupe_id '; // a priori inutile
+	$DB_SQL.= 'GROUP BY livret_groupe_id '; // indispensable pour les groupes de besoin, sinon autant de lignes que de membres du groupe
 	$DB_SQL.= 'ORDER BY livret_niveau_ordre ASC, livret_groupe_nom ASC';
 	$DB_VAR = array(':structure_id'=>$structure_id,':user_id'=>$user_id,':type4'=>'eval');
 	$DB_TAB = DB::queryTab(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);

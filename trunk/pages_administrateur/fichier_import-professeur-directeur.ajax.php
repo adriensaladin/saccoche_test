@@ -209,7 +209,7 @@ elseif( $step==3 )
 	$tab_professeurs_directeurs_base['prenom']     = array();
 	$tab_professeurs_directeurs_base['statut']     = array();
 	$DB_TAB = DB_lister_professeurs_directeurs($_SESSION['STRUCTURE_ID']);
-	foreach($DB_TAB as $key => $DB_ROW)
+	foreach($DB_TAB as $DB_ROW)
 	{
 		$tab_professeurs_directeurs_base['num_sconet'][$DB_ROW['livret_user_id']] = $DB_ROW['livret_user_num_sconet'];
 		$tab_professeurs_directeurs_base['reference'][$DB_ROW['livret_user_id']]  = $DB_ROW['livret_user_reference'];
@@ -483,7 +483,7 @@ elseif( $step==4 )
 	$nb_fin_actif   = 0;
 	$nb_fin_inactif = 0;
 	$DB_TAB = DB_lister_professeurs_directeurs_tri_statut($_SESSION['STRUCTURE_ID']);
-	foreach($DB_TAB as $key => $DB_ROW)
+	foreach($DB_TAB as $DB_ROW)
 	{
 		$class       = (isset($tab_password[$DB_ROW['livret_user_id']])) ? ' class="new"' : '' ;
 		$td_password = (isset($tab_password[$DB_ROW['livret_user_id']])) ? '<td class="new">'.html($tab_password[$DB_ROW['livret_user_id']]).'</td>' : '<td class="i">champ crypté</td>' ;

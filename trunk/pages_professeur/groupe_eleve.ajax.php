@@ -64,7 +64,7 @@ $DB_SQL.= 'WHERE livret_structure_id=:structure_id AND livret_groupe_prof_id=:us
 $DB_SQL.= 'ORDER BY livret_niveau_ordre ASC, livret_groupe_nom ASC';
 $DB_VAR = array(':structure_id'=>$_SESSION['STRUCTURE_ID'],':user_id'=>$_SESSION['USER_ID'],':type'=>'besoin');
 $DB_TAB = DB::queryTab(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
-foreach($DB_TAB as $key => $DB_ROW)
+foreach($DB_TAB as $DB_ROW)
 {
 	$tab_niveau_groupe[$DB_ROW['livret_niveau_id']][$DB_ROW['livret_groupe_id']] = html($DB_ROW['livret_groupe_nom']);
 	$tab_user[$DB_ROW['livret_groupe_id']] = '';
@@ -77,7 +77,7 @@ $DB_SQL.= 'WHERE livret_structure_id=:structure_id AND livret_user_profil=:profi
 $DB_SQL.= 'ORDER BY livret_user_nom ASC, livret_user_prenom ASC';
 $DB_VAR = array(':structure_id'=>$_SESSION['STRUCTURE_ID'],':profil'=>'eleve',':statut'=>1,':user_id'=>$_SESSION['USER_ID'],':type'=>'besoin');
 $DB_TAB = DB::queryTab(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
-foreach($DB_TAB as $key => $DB_ROW)
+foreach($DB_TAB as $DB_ROW)
 {
 	$tab_user[$DB_ROW['livret_groupe_id']]  .= html($DB_ROW['livret_user_nom'].' '.$DB_ROW['livret_user_prenom']).'<br />';
 }

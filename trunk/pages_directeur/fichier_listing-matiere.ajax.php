@@ -43,7 +43,7 @@ if($matiere_id && $matiere_nom)
 	$DB_TAB = DB::queryTab(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
 	if(count($DB_TAB))
 	{
-		foreach($DB_TAB as $key => $DB_ROW)
+		foreach($DB_TAB as $DB_ROW)
 		{
 			$item_ref = $DB_ROW['livret_matiere_ref'].'.'.$DB_ROW['livret_niveau_ref'].'.'.$DB_ROW['livret_domaine_ref'].$DB_ROW['livret_theme_ordre'].$DB_ROW['livret_competence_ordre'];
 			$export_csv .= $DB_ROW['livret_competence_id'].$separateur.$matiere_nom.$separateur.$DB_ROW['livret_niveau_nom'].$separateur.$item_ref.$separateur.'"'.$DB_ROW['livret_competence_nom'].'"'."\r\n";

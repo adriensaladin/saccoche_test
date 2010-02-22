@@ -70,7 +70,7 @@ $select_cases_haut  = afficher_select($tab_select_cases_size                    
 	$tab_competence = array();
 	$matiere_id = 0;
 	$DB_TAB = DB_select_arborescence($_SESSION['STRUCTURE_ID'],$_SESSION['USER_ID'],$matiere_id=0,$niveau_id=0,$socle_nom=false);
-	foreach($DB_TAB as $key => $DB_ROW)
+	foreach($DB_TAB as $DB_ROW)
 	{
 		if($DB_ROW['livret_matiere_id']!=$matiere_id)
 		{

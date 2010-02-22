@@ -52,7 +52,7 @@ if($groupe_id && isset($tab_types[$groupe_type]) && $groupe_nom)
 	$DB_TAB = DB::queryTab(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
 	if(count($DB_TAB))
 	{
-		foreach($DB_TAB as $key => $DB_ROW)
+		foreach($DB_TAB as $DB_ROW)
 		{
 			$export_csv  .= $DB_ROW['livret_user_id'].$separateur.$DB_ROW['livret_user_login'].$separateur.$DB_ROW['livret_user_nom'].$separateur.$DB_ROW['livret_user_prenom'].$separateur.$groupe_nom."\r\n";
 			$export_html .= '<tr><td>'.$DB_ROW['livret_user_id'].'</td><td>'.html($DB_ROW['livret_user_login']).'</td><td>'.html($DB_ROW['livret_user_nom']).'</td><td>'.html($DB_ROW['livret_user_prenom']).'</td><td>'.html($groupe_nom).'</td></tr>'."\r\n";

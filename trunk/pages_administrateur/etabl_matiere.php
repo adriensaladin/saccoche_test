@@ -33,7 +33,7 @@ $TITRE = "Choix des matières";
 			$tab_check = explode(',',$_SESSION['MATIERES']);
 			// Lister les matières partagées
 			$DB_TAB = DB_lister_matieres_partagees_SACoche();
-			foreach($DB_TAB as $key => $DB_ROW)
+			foreach($DB_TAB as $DB_ROW)
 			{
 				// Afficher une ligne du tableau
 				$checked  = (in_array($DB_ROW['livret_matiere_id'],$tab_check)) ? ' checked="checked"' : '' ;
@@ -72,7 +72,7 @@ $TITRE = "Choix des matières";
 			<?php
 			// Lister les matières spécifiques
 			$DB_TAB = DB_lister_matieres_specifiques($_SESSION['STRUCTURE_ID']);
-			foreach($DB_TAB as $key => $DB_ROW)
+			foreach($DB_TAB as $DB_ROW)
 			{
 				// Afficher une ligne du tableau
 				echo'<tr id="id_'.$DB_ROW['livret_matiere_id'].'">';

@@ -69,7 +69,7 @@ if( ($action=='Afficher_demandes') && $matiere_id && $matiere_nom && $groupe_id 
 		exit($DB_TAB);	// Erreur : aucun élève de ce regroupement n\'est enregistré !
 	}
 	$tab_eleves = array();
-	foreach($DB_TAB as $key => $DB_ROW)
+	foreach($DB_TAB as $DB_ROW)
 	{
 		$tab_eleves[$DB_ROW['valeur']] = $DB_ROW['texte'];
 	}
@@ -93,7 +93,7 @@ if( ($action=='Afficher_demandes') && $matiere_id && $matiere_nom && $groupe_id 
 	{
 		exit('Aucune demande n\'a été formulée pour ces élèves et cette matière !');
 	}
-	foreach($DB_TAB as $key => $DB_ROW)
+	foreach($DB_TAB as $DB_ROW)
 	{
 		$tab_demandes[] = $DB_ROW['livret_demande_id'] ;
 		$score = ($DB_ROW['livret_demande_score']!==null) ? $DB_ROW['livret_demande_score'] : false ;
@@ -123,7 +123,7 @@ if( ($action=='Afficher_demandes') && $matiere_id && $matiere_nom && $groupe_id 
 	$DB_TAB = DB::queryTab(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
 	$tab_bad = array();
 	$tab_bon = array();
-	foreach($DB_TAB as $key => $DB_ROW)
+	foreach($DB_TAB as $DB_ROW)
 	{
 		$s = ($DB_ROW['popularite']>1) ? 's' : '' ;
 		$tab_bad[] = '$'.$DB_ROW['livret_competence_id'].'$';

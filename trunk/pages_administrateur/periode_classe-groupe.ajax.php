@@ -84,7 +84,7 @@ if(!count($DB_TAB))
 {
 	exit('Aucune classe et aucun groupe ne sont enregistrés !');
 }
-foreach($DB_TAB as $key => $DB_ROW)
+foreach($DB_TAB as $DB_ROW)
 {
 	$tab_groupe[$DB_ROW['livret_groupe_id']]    = '<th>'.html($DB_ROW['livret_groupe_nom']).'</th>';
 	$tab_graphique[$DB_ROW['livret_groupe_id']] = '';
@@ -99,7 +99,7 @@ if(!count($DB_TAB))
 {
 	exit('Aucune période n\'est enregistrée !');
 }
-foreach($DB_TAB as $key => $DB_ROW)
+foreach($DB_TAB as $DB_ROW)
 {
 	$tab_periode[$DB_ROW['livret_periode_id']] = '<th>'.html($DB_ROW['livret_periode_nom']).'</th>';
 }
@@ -133,7 +133,7 @@ $DB_SQL.= 'ORDER BY livret_groupe_id ASC, livret_periode_date_debut ASC, livret_
 $DB_VAR = array(':structure_id'=>$_SESSION['STRUCTURE_ID'],':tout_debut'=>$tout_debut);
 $DB_TAB = DB::queryTab(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
 $memo_groupe_id = 0;
-foreach($DB_TAB as $key => $DB_ROW)
+foreach($DB_TAB as $DB_ROW)
 {
 	$groupe_id = $DB_ROW['livret_groupe_id'];
 	$date_affich_debut = convert_date_mysql_to_french($DB_ROW['livret_periode_date_debut']);

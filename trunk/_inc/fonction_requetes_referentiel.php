@@ -91,7 +91,7 @@ function afficher_arborescence($DB_TAB,$dynamique,$reference,$aff_coef,$aff_socl
 	$tab_theme      = array();
 	$tab_competence = array();
 	$matiere_id = 0;
-	foreach($DB_TAB as $key => $DB_ROW)
+	foreach($DB_TAB as $DB_ROW)
 	{
 		if($DB_ROW['livret_matiere_id']!=$matiere_id)
 		{

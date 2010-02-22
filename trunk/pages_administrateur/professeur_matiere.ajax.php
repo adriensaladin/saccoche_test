@@ -57,7 +57,7 @@ $DB_SQL.= ($_SESSION['MATIERES']) ? 'WHERE livret_matiere_structure_id=:structur
 $DB_SQL.= 'ORDER BY livret_matiere_nom ASC';
 $DB_VAR = array(':structure_id'=>$_SESSION['STRUCTURE_ID']);
 $DB_TAB = DB::queryTab(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
-foreach($DB_TAB as $key => $DB_ROW)
+foreach($DB_TAB as $DB_ROW)
 {
 	$tab_matiere[$DB_ROW['livret_matiere_id']] = html($DB_ROW['livret_matiere_nom']);
 	$tab_user[$DB_ROW['livret_matiere_id']]   = '';
@@ -69,7 +69,7 @@ $DB_SQL.= 'WHERE livret_structure_id=:structure_id AND livret_user_profil=:profi
 $DB_SQL.= 'ORDER BY livret_user_nom ASC, livret_user_prenom ASC';
 $DB_VAR = array(':structure_id'=>$_SESSION['STRUCTURE_ID'],':profil'=>'professeur',':statut'=>1);
 $DB_TAB = DB::queryTab(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
-foreach($DB_TAB as $key => $DB_ROW)
+foreach($DB_TAB as $DB_ROW)
 {
 	// Mettre de côté les professeurs non affectés ou affectés à une matière qui n'est plus associée à l'établissement...
 	if( (is_null($DB_ROW['livret_matiere_id'])) || (!isset($tab_user[$DB_ROW['livret_matiere_id']])) )

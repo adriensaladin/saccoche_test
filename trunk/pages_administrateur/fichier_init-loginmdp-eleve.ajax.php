@@ -41,7 +41,7 @@ if( ($action=='eleve_login') && $nb )
 	$DB_VAR = array(':structure_id'=>$_SESSION['STRUCTURE_ID']);
 	$DB_TAB = DB::queryTab(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
 	// Mettre à jour les noms d'utilisateurs des utilisateurs concernés
-	foreach($DB_TAB as $key => $DB_ROW)
+	foreach($DB_TAB as $DB_ROW)
 	{
 		// Construire le login
 		$login = fabriquer_login($DB_ROW['livret_user_prenom'] , $DB_ROW['livret_user_nom'] , $DB_ROW['livret_user_profil']);
@@ -56,7 +56,7 @@ if( ($action=='eleve_login') && $nb )
 	}
 	// Générer une sortie csv zippé
 	$fcontenu = 'CLASSE'."\t".'N°SCONET'."\t".'REFERENCE'."\t".'NOM'."\t".'PRENOM'."\t".'LOGIN'."\t".'MOT DE PASSE'."\r\n\r\n";
-	foreach($DB_TAB as $key => $DB_ROW)
+	foreach($DB_TAB as $DB_ROW)
 	{
 		$fcontenu .= $DB_ROW['livret_groupe_nom']."\t".$DB_ROW['livret_user_num_sconet']."\t".$DB_ROW['livret_user_reference']."\t".$DB_ROW['livret_user_nom']."\t".$DB_ROW['livret_user_prenom']."\t".$tab_login[$DB_ROW['livret_user_id']]."\t".'inchangé'."\r\n";
 	}
@@ -73,7 +73,7 @@ if( ($action=='eleve_login') && $nb )
 	$pdf -> AddPage();
 	$pdf -> SetFillColor(245,245,245);
 	$pdf -> SetDrawColor(145,145,145);
-	foreach($DB_TAB as $key => $DB_ROW)
+	foreach($DB_TAB as $DB_ROW)
 	{
 		$text = $DB_ROW['livret_groupe_nom']."\r\n";
 		$text.= $DB_ROW['livret_user_nom'].' '.$DB_ROW['livret_user_prenom']."\r\n";
@@ -112,7 +112,7 @@ elseif( ($action=='eleve_mdp') && $nb )
 	$DB_TAB = DB::queryTab(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
 	// Générer une sortie csv zippé
 	$fcontenu = 'CLASSE'."\t".'N°SCONET'."\t".'REFERENCE'."\t".'NOM'."\t".'PRENOM'."\t".'LOGIN'."\t".'MOT DE PASSE'."\r\n\r\n";
-	foreach($DB_TAB as $key => $DB_ROW)
+	foreach($DB_TAB as $DB_ROW)
 	{
 		$fcontenu .= $DB_ROW['livret_groupe_nom']."\t".$DB_ROW['livret_user_num_sconet']."\t".$DB_ROW['livret_user_reference']."\t".$DB_ROW['livret_user_nom']."\t".$DB_ROW['livret_user_prenom']."\t".$DB_ROW['livret_user_login']."\t".$tab_password[$DB_ROW['livret_user_id']]."\r\n";
 	}
@@ -129,7 +129,7 @@ elseif( ($action=='eleve_mdp') && $nb )
 	$pdf -> AddPage();
 	$pdf -> SetFillColor(245,245,245);
 	$pdf -> SetDrawColor(145,145,145);
-	foreach($DB_TAB as $key => $DB_ROW)
+	foreach($DB_TAB as $DB_ROW)
 	{
 		$text = $DB_ROW['livret_groupe_nom']."\r\n";
 		$text.= $DB_ROW['livret_user_nom'].' '.$DB_ROW['livret_user_prenom']."\r\n";

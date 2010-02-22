@@ -131,7 +131,7 @@ if($action=='import_ent')
 	$DB_SQL.= 'WHERE livret_user.livret_structure_id=:structure_id ';
 	$DB_VAR = array(':structure_id'=>$_SESSION['STRUCTURE_ID']);
 	$DB_TAB = DB::queryTab(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
-	foreach($DB_TAB as $key => $DB_ROW)
+	foreach($DB_TAB as $DB_ROW)
 	{
 		$tab_users_base['id_ent'][$DB_ROW['livret_user_id']] = $DB_ROW['livret_user_id_ent'];
 		$tab_users_base['nom'][$DB_ROW['livret_user_id']]    = $DB_ROW['livret_user_nom'];

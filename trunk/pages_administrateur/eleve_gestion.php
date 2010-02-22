@@ -98,7 +98,7 @@ $select_f_groupes = afficher_select(DB_OPT_regroupements_etabl($_SESSION['STRUCT
 				$DB_VAR = array(':structure_id'=>$_SESSION['STRUCTURE_ID'],':profil'=>'eleve',':statut'=>1,':groupe'=>$groupe_id);
 			}
 			$DB_TAB = DB::queryTab(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
-			foreach($DB_TAB as $key => $DB_ROW)
+			foreach($DB_TAB as $DB_ROW)
 			{
 				// Afficher une ligne du tableau
 				echo'<tr id="id_'.$DB_ROW['livret_user_id'].'">';

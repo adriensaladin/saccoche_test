@@ -43,7 +43,7 @@ if( ($action=='Lister') && $matiere_id && $niveau_id )
 	$DB_TAB = DB::queryTab(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
 	if(count($DB_TAB))
 	{
-		foreach($DB_TAB as $key => $DB_ROW)
+		foreach($DB_TAB as $DB_ROW)
 		{
 			$texte = ($DB_ROW['geo_continent_ordre']>2) ? $DB_ROW['geo_pays_nom'].' | ' : $DB_ROW['geo_departement_numero'].' '.$DB_ROW['geo_departement_nom'].' | ';
 			$texte.= $DB_ROW['geo_commune_nom'].' | ';

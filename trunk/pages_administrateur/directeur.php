@@ -43,7 +43,7 @@ $TITRE = "Gérer les directeurs";
 			$DB_SQL.= 'ORDER BY livret_user_nom ASC, livret_user_prenom ASC';
 			$DB_VAR = array(':structure_id'=>$_SESSION['STRUCTURE_ID'],':profil'=>'directeur',':statut'=>1);
 			$DB_TAB = DB::queryTab(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
-			foreach($DB_TAB as $key => $DB_ROW)
+			foreach($DB_TAB as $DB_ROW)
 			{
 				// Afficher une ligne du tableau
 				echo'<tr id="id_'.$DB_ROW['livret_user_id'].'">';

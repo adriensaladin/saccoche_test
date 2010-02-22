@@ -37,7 +37,7 @@ if($palier_id && $palier_nom)
 	$tab_socle   = array();
 	$pilier_id = 0;
 	$DB_TAB = DB_select_arborescence_palier($palier_id);
-	foreach($DB_TAB as $key => $DB_ROW)
+	foreach($DB_TAB as $DB_ROW)
 	{
 		if($DB_ROW['livret_pilier_id']!=$pilier_id)
 		{
@@ -74,7 +74,7 @@ if($palier_id && $palier_nom)
 	$DB_SQL.= 'ORDER BY livret_matiere_nom ASC, livret_niveau_ordre ASC, livret_domaine_ordre ASC, livret_theme_ordre ASC, livret_competence_ordre ASC';
 	$DB_VAR = array(':structure_id'=>$_SESSION['STRUCTURE_ID']);
 	$DB_TAB = DB::queryTab(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
-	foreach($DB_TAB as $key => $DB_ROW)
+	foreach($DB_TAB as $DB_ROW)
 	{
 		$tab_jointure[$DB_ROW['livret_socle_id']][] = $DB_ROW['livret_matiere_ref'].'.'.$DB_ROW['livret_niveau_ref'].'.'.$DB_ROW['competence_ref'].' - '.$DB_ROW['livret_competence_nom'];
 	}
@@ -105,7 +105,7 @@ if($palier_id && $palier_nom)
 						if(isset($tab_jointure[$socle_id]))
 						{
 							$export_html .= '								<ul class="ul_m2">'."\r\n";
-							foreach($tab_jointure[$socle_id] as $key => $competence_descriptif)
+							foreach($tab_jointure[$socle_id] as $competence_descriptif)
 							{
 								$export_csv .= $separateur.$separateur.$separateur.$separateur.'"'.$competence_descriptif.'"'."\r\n";
 								$export_html .= '									<li class="li_m2">'.html($competence_descriptif).'</li>'."\r\n";

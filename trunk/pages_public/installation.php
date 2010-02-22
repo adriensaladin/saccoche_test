@@ -16,18 +16,6 @@ if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');
 $TITRE = "Procédure d'installation";
 ?>
 
-<?php
-$dossier  = './_doc/doc_pdf/';
-$tab_fich = array('eleve'=>'doc-eleve.pdf');
-$tab_lien = array();
-$tab_date = array();
-foreach($tab_fich as $key => $fichier)
-{
-	$tab_lien[$key] = $dossier.$fichier;
-	$tab_date[$key] = 'MAJ '.date("d/m/Y",filemtime($dossier.$fichier));
-}
-?>
-
 <ul id="step">
 	<li id="step1">Étape 1 - vérification / création des dossiers supplémentaires et de leurs droits</li>
 	<li id="step2">Étape 2 - vérification / remplissage de ces dossiers avec le contenu approprié</li>

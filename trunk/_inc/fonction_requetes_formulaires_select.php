@@ -152,7 +152,7 @@ function afficher_select($DB_TAB,$select_nom,$option_first,$selection,$optgroup)
 		if($optgroup==='non')
 		{
 			// ... classiquement, sans regroupements
-			foreach($DB_TAB as $key => $DB_ROW)
+			foreach($DB_TAB as $DB_ROW)
 			{
 				$class = (isset($DB_ROW['class'])) ? ' class="'.html($DB_ROW['class']).'"' : '';
 				$options .= '<option value="'.$DB_ROW['valeur'].'"'.$class.'>'.html($DB_ROW['texte']).'</option>';
@@ -162,7 +162,7 @@ function afficher_select($DB_TAB,$select_nom,$option_first,$selection,$optgroup)
 		{
 			// ... en regroupant par optgroup ; $optgroup est alors un tableau à 2 champs
 			$tab_options = array();
-			foreach($DB_TAB as $key => $DB_ROW)
+			foreach($DB_TAB as $DB_ROW)
 			{
 				$class = (isset($DB_ROW['class'])) ? ' class="'.html($DB_ROW['class']).'"' : '';
 				$tab_options[$DB_ROW['optgroup']][] = '<option value="'.$DB_ROW['valeur'].'"'.$class.'>'.html($DB_ROW['texte']).'</option>';
@@ -406,7 +406,7 @@ function DB_OPT_niveaux_eleve($structure_id,$listing_niveaux,$eleve_classe_id)
 		$DB_TAB = DB::queryTab(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
 		// Tester la présence de la classe parmi la liste des id de groupes
 		$search_valeur = ','.$eleve_classe_id.',';
-		foreach($DB_TAB as $key => $DB_ROW)
+		foreach($DB_TAB as $DB_ROW)
 		{
 			if(mb_substr_count(','.$DB_ROW['liste_groupe_id'].',',$search_valeur))
 			{
@@ -697,7 +697,7 @@ function DB_OPT_structures_sacoche()
 	if(count($DB_TAB))
 	{
 		$tab_retour_champs = array();
-		foreach($DB_TAB as $key => $DB_ROW)
+		foreach($DB_TAB as $DB_ROW)
 		{
 			$texte = ($DB_ROW['geo_continent_ordre']>2) ? $DB_ROW['geo_pays_nom'].' | ' : $DB_ROW['geo_departement_numero'].' '.$DB_ROW['geo_departement_nom'].' | ';
 			$texte.= $DB_ROW['geo_commune_nom'].' | ';
@@ -733,7 +733,7 @@ function DB_OPT_structures_partage($listing_niveaux)
 	if(count($DB_TAB))
 	{
 		$tab_retour_champs = array();
-		foreach($DB_TAB as $key => $DB_ROW)
+		foreach($DB_TAB as $DB_ROW)
 		{
 			$texte = ($DB_ROW['geo_continent_ordre']>2) ? $DB_ROW['geo_pays_nom'].' | ' : $DB_ROW['geo_departement_numero'].' '.$DB_ROW['geo_departement_nom'].' | ';
 			$texte.= $DB_ROW['geo_commune_nom'].' | ';

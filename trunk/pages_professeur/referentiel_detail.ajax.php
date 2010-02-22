@@ -52,7 +52,7 @@ if( ($action=='Voir') && $matiere_id )
 	$tab_theme      = array();
 	$tab_competence = array();
 	$niveau_id = 0;
-	foreach($DB_TAB as $key => $DB_ROW)
+	foreach($DB_TAB as $DB_ROW)
 	{
 		if( (!is_null($DB_ROW['livret_niveau_id'])) && ($DB_ROW['livret_niveau_id']!=$niveau_id) )
 		{

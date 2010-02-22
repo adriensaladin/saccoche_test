@@ -64,7 +64,7 @@ $DB_SQL.= 'WHERE livret_structure_id=:structure_id AND livret_groupe_type=:type 
 $DB_SQL.= 'ORDER BY livret_niveau_ordre ASC, livret_groupe_nom ASC';
 $DB_VAR = array(':structure_id'=>$_SESSION['STRUCTURE_ID'],':type'=>'groupe');
 $DB_TAB = DB::queryTab(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
-foreach($DB_TAB as $key => $DB_ROW)
+foreach($DB_TAB as $DB_ROW)
 {
 	$tab_groupes[$DB_ROW['livret_groupe_id']] = html($DB_ROW['livret_groupe_nom']);
 	$tab_profs_par_groupe[$DB_ROW['livret_groupe_id']] = '';
@@ -77,7 +77,7 @@ $DB_SQL.= 'ORDER BY livret_user_nom ASC, livret_user_prenom ASC';
 $DB_VAR = array(':structure_id'=>$_SESSION['STRUCTURE_ID'],':profil'=>'professeur',':statut'=>1);
 $DB_TAB = DB::queryTab(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
 $compteur = 0 ;
-foreach($DB_TAB as $key => $DB_ROW)
+foreach($DB_TAB as $DB_ROW)
 {
 	$tab_profs[$DB_ROW['livret_user_id']] = html($DB_ROW['livret_user_nom'].' '.$DB_ROW['livret_user_prenom']);
 	$tab_groupes_par_prof[$DB_ROW['livret_user_id']] = '';
@@ -97,7 +97,7 @@ if( (count($tab_profs)) && (count($tab_groupes)) )
 	$DB_SQL.= 'ORDER BY livret_niveau_ordre ASC, livret_groupe_ref ASC, livret_user_nom ASC, livret_user_prenom ASC';
 	$DB_VAR = array(':structure_id'=>$_SESSION['STRUCTURE_ID']);
 	$DB_TAB = DB::queryTab(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
-	foreach($DB_TAB as $key => $DB_ROW)
+	foreach($DB_TAB as $DB_ROW)
 	{
 		$tab_profs_par_groupe[$DB_ROW['livret_groupe_id']] .= $tab_profs[$DB_ROW['livret_user_id']].'<br />';
 		$tab_groupes_par_prof[$DB_ROW['livret_user_id']]   .= $tab_groupes[$DB_ROW['livret_groupe_id']].'<br />';

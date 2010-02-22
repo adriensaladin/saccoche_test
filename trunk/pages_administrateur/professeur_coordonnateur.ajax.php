@@ -25,7 +25,7 @@ if($action=='Indiquer')
 	$tab_retirer = array();
 
 	// On récupère les données transmises dans $tab_ajouter
-	foreach($tab_id as $key => $ids)
+	foreach($tab_id as $ids)
 	{
 		$tab = explode('x',$ids);
 		if(count($tab)==2)
@@ -45,7 +45,7 @@ if($action=='Indiquer')
 	$DB_SQL.= 'WHERE livret_structure_id=:structure_id AND livret_jointure_coord=:coord AND livret_user_statut=:statut ';
 	$DB_VAR = array(':structure_id'=>$_SESSION['STRUCTURE_ID'],':coord'=>1,':statut'=>1);
 	$DB_TAB = DB::queryTab(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
-	foreach($DB_TAB as $key => $DB_ROW)
+	foreach($DB_TAB as $DB_ROW)
 	{
 		$key = $DB_ROW['livret_matiere_id'].'x'.$DB_ROW['livret_user_id'];
 		if(isset($tab_ajouter[$key]))

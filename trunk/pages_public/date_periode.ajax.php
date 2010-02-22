@@ -23,7 +23,7 @@ $tab_periodes = DB_OPT_periodes_etabl($_SESSION['STRUCTURE_ID']);
 $calendrier_affichage = '';
 if(is_array($tab_periodes))
 {
-	foreach($tab_periodes as $key => $tab_infos)
+	foreach($tab_periodes as $tab_infos)
 	{
 		list($periode_debut,$periode_fin) = explode(' ',$tab_infos['optgroup']);
 		$calendrier_affichage .= $debut ? '<a class="actu" href="'.convert_date_mysql_to_french($periode_debut).'">'.html($tab_infos['texte']).' [ debut ]</a><br />' : '' ;

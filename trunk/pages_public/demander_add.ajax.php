@@ -69,7 +69,7 @@ else
 	}
 	else
 	{
-		$reponse = ($_SESSION['ELEVE_DEMANDES']>1) ? 'Vous avez déjà formulé les '.$nb_demandes_attente.' demandes autorisées pour cette matière.<br />Veuillez en supprimer pour en ajouter d\'autres !' : 'Vous avez déjà formulé la demande autorisée pour cette matière.<br />Veuillez la supprimer pour en mettre une autre !' ;
+		$reponse = ($_SESSION['ELEVE_DEMANDES']>1) ? 'Vous avez déjà formulé les '.$nb_demandes_attente.' demandes autorisées pour cette matière.<br /><a href="./index.php?dossier=eleve&amp;fichier=eval_demande">Veuillez en supprimer pour en ajouter d\'autres !</a>' : 'Vous avez déjà formulé la demande autorisée pour cette matière.<br /><a href="./index.php?dossier=eleve&amp;fichier=eval_demande">Veuillez la supprimer pour en mettre une autre !</a>' ;
 	}
 }
 echo'<form id="form_calque" action="">';

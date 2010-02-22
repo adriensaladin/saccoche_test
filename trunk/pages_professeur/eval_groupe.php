@@ -31,7 +31,7 @@ $DB_SQL.= 'ORDER BY livret_niveau_ordre ASC, livret_groupe_nom ASC';
 $DB_VAR = array(':structure_id'=>$_SESSION['STRUCTURE_ID'],':user_id'=>$_SESSION['USER_ID'],':type4'=>'eval');
 $DB_TAB = DB::queryTab(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
 $tab_options = array('classe'=>'','groupe'=>'','besoin'=>'');
-foreach($DB_TAB as $key => $DB_ROW)
+foreach($DB_TAB as $DB_ROW)
 {
 	$groupe = strtoupper($DB_ROW['livret_groupe_type']{0}).$DB_ROW['livret_groupe_id'];
 	$tab_options[$DB_ROW['livret_groupe_type']] .= '<option value="'.$groupe.'">'.html($DB_ROW['livret_groupe_nom']).'</option>';

@@ -29,6 +29,7 @@ $TITRE = "Documentations spécifiques";
 	<li><span class="manuel"><a class="pop_up" href="./aide.php?fichier=environnement_directeur">DOC : L'environnement directeur.</a></span></li>
 	<li><span class="manuel"><a class="pop_up" href="./aide.php?fichier=environnement_eleve">DOC : L'environnement élève.</a></span></li>
 	<li><span class="manuel"><a class="pop_up" href="./aide.php?fichier=calcul_scores_etats_acquisitions">DOC : Calcul des scores et des états d'acquisitions.</a></span></li>
+	<li><span class="manuel"><a class="pop_up" href="./aide.php?fichier=demandes_evaluations">DOC : Demandes d'évaluations.</a></span></li>
 </ul>
 
 <h2>Référentiels &amp; compétences.</h2>

@@ -36,7 +36,7 @@ if($action=='user_export')
 	$DB_SQL.= 'ORDER BY livret_user_profil ASC, livret_niveau_ordre ASC, livret_groupe_ref ASC, livret_user_nom ASC, livret_user_prenom ASC';
 	$DB_VAR = array(':structure_id'=>$_SESSION['STRUCTURE_ID']);
 	$DB_TAB = DB::queryTab(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
-	foreach($DB_TAB as $key => $DB_ROW)
+	foreach($DB_TAB as $DB_ROW)
 	{
 		$fcontenu_csv .= $DB_ROW['livret_user_login']."\t".''."\t".$DB_ROW['livret_user_nom']."\t".$DB_ROW['livret_user_prenom']."\t".$DB_ROW['livret_user_profil']."\t".$DB_ROW['livret_groupe_ref']."\r\n";
 	}
@@ -134,7 +134,7 @@ elseif($action=='user_import')
 	$DB_SQL.= 'WHERE livret_user.livret_structure_id=:structure_id ';
 	$DB_VAR = array(':structure_id'=>$_SESSION['STRUCTURE_ID']);
 	$DB_TAB = DB::queryTab(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
-	foreach($DB_TAB as $key => $DB_ROW)
+	foreach($DB_TAB as $DB_ROW)
 	{
 		$tab_users_base['login'][$DB_ROW['livret_user_id']]  = $DB_ROW['livret_user_login'];
 		$tab_users_base['mdp'][$DB_ROW['livret_user_id']]    = $DB_ROW['livret_user_password'];

@@ -38,7 +38,7 @@ $TITRE = "Gérer les professeurs principaux";
 	$DB_TAB = DB::queryTab(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
 	if(count($DB_TAB))
 	{
-		foreach($DB_TAB as $key => $DB_ROW)
+		foreach($DB_TAB as $DB_ROW)
 		{
 			if($groupe_id != $DB_ROW['livret_groupe_id'])
 			{

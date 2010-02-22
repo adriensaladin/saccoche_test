@@ -126,7 +126,7 @@ if($action=='import_gepi_profs')
 	$DB_SQL.= 'WHERE livret_structure_id=:structure_id AND livret_user_profil=:profil ';
 	$DB_VAR = array(':structure_id'=>$_SESSION['STRUCTURE_ID'],':profil'=>'professeur');
 	$DB_TAB = DB::queryTab(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
-	foreach($DB_TAB as $key => $DB_ROW)
+	foreach($DB_TAB as $DB_ROW)
 	{
 		$tab_users_base['id_gepi'][$DB_ROW['livret_user_id']] = $DB_ROW['livret_user_id_gepi'];
 		$tab_users_base['nom'][$DB_ROW['livret_user_id']]     = $DB_ROW['livret_user_nom'];
@@ -293,7 +293,7 @@ if($action=='import_gepi_eleves')
 	$DB_SQL.= 'WHERE livret_structure_id=:structure_id AND livret_user_profil=:profil ';
 	$DB_VAR = array(':structure_id'=>$_SESSION['STRUCTURE_ID'],':profil'=>'eleve');
 	$DB_TAB = DB::queryTab(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
-	foreach($DB_TAB as $key => $DB_ROW)
+	foreach($DB_TAB as $DB_ROW)
 	{
 		$tab_users_base['id_gepi'][$DB_ROW['livret_user_id']]    = $DB_ROW['livret_user_id_gepi'];
 		$tab_users_base['nom'][$DB_ROW['livret_user_id']]        = $DB_ROW['livret_user_nom'];

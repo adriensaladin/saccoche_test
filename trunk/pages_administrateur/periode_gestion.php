@@ -39,7 +39,7 @@ $TITRE = "Gérer les périodes";
 			$DB_SQL.= 'ORDER BY livret_periode_ordre ASC';
 			$DB_VAR = array(':structure_id'=>$_SESSION['STRUCTURE_ID']);
 			$DB_TAB = DB::queryTab(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
-			foreach($DB_TAB as $key => $DB_ROW)
+			foreach($DB_TAB as $DB_ROW)
 			{
 				// Afficher une ligne du tableau
 				echo'<tr id="id_'.$DB_ROW['livret_periode_id'].'">';

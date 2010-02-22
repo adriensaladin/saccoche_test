@@ -232,7 +232,7 @@ elseif( $step==3 )
 	$tab_classes_base['ref'] = array();
 	$tab_classes_base['nom'] = array();
 	$DB_TAB = DB_lister_classes($_SESSION['STRUCTURE_ID']);
-	foreach($DB_TAB as $key => $DB_ROW)
+	foreach($DB_TAB as $DB_ROW)
 	{
 		$tab_classes_base['ref'][$DB_ROW['livret_groupe_id']] = $DB_ROW['livret_groupe_ref'];
 		$tab_classes_base['nom'][$DB_ROW['livret_groupe_id']] = $DB_ROW['livret_groupe_nom'];
@@ -264,7 +264,7 @@ elseif( $step==3 )
 		$select_niveau = '<option value=""></option>';
 		$tab_niveau_ref = array();
 		$DB_TAB = DB_lister_niveaux($_SESSION['NIVEAUX']);
-		foreach($DB_TAB as $key => $DB_ROW)
+		foreach($DB_TAB as $DB_ROW)
 		{
 			$select_niveau .= '<option value="'.$DB_ROW['livret_niveau_id'].'">'.html($DB_ROW['livret_niveau_nom']).'</option>';
 			$tab_niveau_ref[$DB_ROW['livret_niveau_ref']{0}] = (isset($tab_niveau_ref[$DB_ROW['livret_niveau_ref']{0}])) ? $tab_niveau_ref[$DB_ROW['livret_niveau_ref']{0}] : $DB_ROW['livret_niveau_id'];
@@ -355,7 +355,7 @@ elseif( $step==4 )
 	$lignes = '';
 	$nb_fin = 0;
 	$DB_TAB = DB_lister_classes_avec_niveaux($_SESSION['STRUCTURE_ID']);
-	foreach($DB_TAB as $key => $DB_ROW)
+	foreach($DB_TAB as $DB_ROW)
 	{
 		$lignes .= '<tr><td>'.html($DB_ROW['livret_niveau_nom']).'</td><td>'.html($DB_ROW['livret_groupe_ref']).'</td><td>'.html($DB_ROW['livret_groupe_nom']).'</td></tr>'."\r\n";
 		$nb_fin++;
@@ -405,7 +405,7 @@ elseif( $step==5 )
 	$tab_eleves_base['classe']     = array();
 	$tab_eleves_base['statut']     = array();
 	$DB_TAB = DB_lister_eleves_avec_classe($_SESSION['STRUCTURE_ID']);
-	foreach($DB_TAB as $key => $DB_ROW)
+	foreach($DB_TAB as $DB_ROW)
 	{
 		$tab_eleves_base['num_sconet'][$DB_ROW['livret_user_id']] = $DB_ROW['livret_user_num_sconet'];
 		$tab_eleves_base['reference'][$DB_ROW['livret_user_id']]  = $DB_ROW['livret_user_reference'];
@@ -417,7 +417,7 @@ elseif( $step==5 )
 	// $tab_classe_ref['ref'] -> id : tableau des id des classes à partir de leurs références
 	$tab_classe_ref = array();
 	$DB_TAB = DB_lister_classes($_SESSION['STRUCTURE_ID']);
-	foreach($DB_TAB as $key => $DB_ROW)
+	foreach($DB_TAB as $DB_ROW)
 	{
 		$tab_classe_ref[$DB_ROW['livret_groupe_ref']] = (int) $DB_ROW['livret_groupe_id'];
 	}
@@ -651,7 +651,7 @@ elseif( $step==6 )
 		// Récupérer les noms de classes pour le fichier avec les logins/mdp
 		$tab_nom_classe = array();
 		$DB_TAB = DB_lister_classes($_SESSION['STRUCTURE_ID']);
-		foreach($DB_TAB as $key => $DB_ROW)
+		foreach($DB_TAB as $DB_ROW)
 		{
 			$tab_nom_classe[$DB_ROW['livret_groupe_id']] = $DB_ROW['livret_groupe_nom'];
 		}
@@ -715,7 +715,7 @@ elseif( $step==6 )
 	$nb_fin_actif   = 0;
 	$nb_fin_inactif = 0;
 	$DB_TAB = DB_lister_eleves_tri_statut_classe($_SESSION['STRUCTURE_ID']);
-	foreach($DB_TAB as $key => $DB_ROW)
+	foreach($DB_TAB as $DB_ROW)
 	{
 		$class       = (isset($tab_password[$DB_ROW['livret_user_id']])) ? ' class="new"' : '' ;
 		$td_password = (isset($tab_password[$DB_ROW['livret_user_id']])) ? '<td class="new">'.html($tab_password[$DB_ROW['livret_user_id']]).'</td>' : '<td class="i">champ crypté</td>' ;

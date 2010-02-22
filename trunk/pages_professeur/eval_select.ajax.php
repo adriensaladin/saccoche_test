@@ -679,7 +679,7 @@ else if( ($action=='Enregistrer_saisie') && $devoir_id && $date )
 	$DB_SQL.= 'WHERE livret_structure_id=:structure_id AND livret_devoir_id=:devoir_id AND livret_eleve_id=livret_user_id AND livret_user_statut=:statut ';
 	$DB_VAR = array(':structure_id'=>$_SESSION['STRUCTURE_ID'],':devoir_id'=>$devoir_id,':statut'=>1);
 	$DB_TAB = DB::queryTab(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
-	foreach($DB_TAB as $key => $DB_ROW)
+	foreach($DB_TAB as $DB_ROW)
 	{
 		$key = $DB_ROW['livret_competence_id'].'x'.$DB_ROW['livret_eleve_id'];
 		if($tab_post[$key]!=$DB_ROW['livret_saisie_note'])

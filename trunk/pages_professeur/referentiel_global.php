@@ -69,7 +69,7 @@ $DB_VAR = array(':structure_id'=>$_SESSION['STRUCTURE_ID'],':user_id'=>$_SESSION
 $DB_TAB = DB::queryTab(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
 if(count($DB_TAB))
 {
-	foreach($DB_TAB as $key => $DB_ROW)
+	foreach($DB_TAB as $DB_ROW)
 	{
 		$tab_matiere[$DB_ROW['livret_matiere_id']] = array( 'nom'=>html($DB_ROW['livret_matiere_nom']) , 'coord'=>$DB_ROW['livret_jointure_coord'] , 'perso'=>$DB_ROW['livret_matiere_structure_id'] );
 	}
@@ -93,7 +93,7 @@ else
 	$DB_SQL.= 'ORDER BY livret_niveau_ordre ASC';
 	$DB_TAB = DB::queryTab(SACOCHE_BD_NAME , $DB_SQL);
 	$nb_niveaux = count($DB_TAB);
-	foreach($DB_TAB as $key => $DB_ROW)
+	foreach($DB_TAB as $DB_ROW)
 	{
 		$tab_niveau[$DB_ROW['livret_niveau_id']] = html($DB_ROW['livret_niveau_nom']);
 	}
@@ -107,7 +107,7 @@ else
 	$DB_TAB = DB::queryTab(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
 	if(count($DB_TAB))
 	{
-		foreach($DB_TAB as $key => $DB_ROW)
+		foreach($DB_TAB as $DB_ROW)
 		{
 			if($DB_ROW['livret_referentiel_calcul_limite']==1)
 			{

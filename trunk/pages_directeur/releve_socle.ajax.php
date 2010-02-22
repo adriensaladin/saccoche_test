@@ -48,7 +48,7 @@ if( $detail && $palier_id && $palier_nom && $remplissage )
 		$pilier_id  = 0;
 		$section_id = 0;
 		$socle_id   = 0;
-		foreach($DB_TAB as $key => $DB_ROW)
+		foreach($DB_TAB as $DB_ROW)
 		{
 			if( (!is_null($DB_ROW['livret_pilier_id'])) && ($DB_ROW['livret_pilier_id']!=$pilier_id) )
 			{
@@ -94,7 +94,7 @@ if( $detail && $palier_id && $palier_nom && $remplissage )
 	if($test_affichage_scores)
 	{
 		$DB_TAB = select_result_eleves_palier($liste_eleve , $liste_item , $date_debut=false , $date_fin=false);
-		foreach($DB_TAB as $key => $DB_ROW)
+		foreach($DB_TAB as $DB_ROW)
 		{
 			$tab_eval[$DB_ROW['eleve_id']][$DB_ROW['socle_id']][$DB_ROW['competence_id']][] = $DB_ROW['note'];
 			$tab_competence[$DB_ROW['competence_id']] = array('competence_ref'=>$DB_ROW['competence_ref'],'competence_nom'=>$DB_ROW['competence_nom'],'matiere_id'=>$DB_ROW['livret_matiere_id'],'calcul_methode'=>$DB_ROW['calcul_methode'],'calcul_limite'=>$DB_ROW['calcul_limite']);

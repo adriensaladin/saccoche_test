@@ -41,7 +41,7 @@ $TITRE = "Gérer les groupes de besoin";
 			$DB_SQL.= 'ORDER BY livret_niveau_ordre ASC, livret_groupe_nom ASC';
 			$DB_VAR = array(':structure_id'=>$_SESSION['STRUCTURE_ID'],':user_id'=>$_SESSION['USER_ID'],':type'=>'besoin');
 			$DB_TAB = DB::queryTab(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
-			foreach($DB_TAB as $key => $DB_ROW)
+			foreach($DB_TAB as $DB_ROW)
 			{
 				// Afficher une ligne du tableau
 				echo'<tr id="id_'.$DB_ROW['livret_groupe_id'].'">';
@@ -68,7 +68,7 @@ if($_SESSION['NIVEAUX'])
 	$DB_SQL.= 'WHERE livret_niveau_id IN('.$_SESSION['NIVEAUX'].') ';
 	$DB_SQL.= 'ORDER BY livret_niveau_ordre ASC';
 	$DB_TAB = DB::queryTab(SACOCHE_BD_NAME , $DB_SQL);
-	foreach($DB_TAB as $key => $DB_ROW)
+	foreach($DB_TAB as $DB_ROW)
 	{
 		$select_niveau .= '<option value="'.$DB_ROW['livret_niveau_id'].'">'.html($DB_ROW['livret_niveau_nom']).'</option>';
 		$tab_niveau_ordre_js .= 'tab_niveau_ordre["'.html($DB_ROW['livret_niveau_nom']).'"]="'.sprintf("%02u",$DB_ROW['livret_niveau_ordre']).'";';

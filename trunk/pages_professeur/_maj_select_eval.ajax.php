@@ -40,7 +40,7 @@ if(!count($DB_TAB))
 {
 	exit('<option value="" disabled="disabled">Aucun devoir n\'a été trouvé pour ce groupe d\'élèves !</option>');
 }
-foreach($DB_TAB as $key => $DB_ROW)
+foreach($DB_TAB as $DB_ROW)
 {
 	// Formater la date et la référence de l'évaluation
 	$date_affich = convert_date_mysql_to_french($DB_ROW['livret_devoir_date']);

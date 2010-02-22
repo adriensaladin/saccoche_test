@@ -57,7 +57,7 @@ if( $matiere_id && $niveau_id && $matiere_nom && $niveau_nom && $remplissage && 
 		$domaine_id    = 0;
 		$theme_id      = 0;
 		$competence_id = 0;
-		foreach($DB_TAB as $key => $DB_ROW)
+		foreach($DB_TAB as $DB_ROW)
 		{
 			if( (!is_null($DB_ROW['livret_domaine_id'])) && ($DB_ROW['livret_domaine_id']!=$domaine_id) )
 			{
@@ -110,7 +110,7 @@ if( $matiere_id && $niveau_id && $matiere_nom && $niveau_nom && $remplissage && 
 	if($groupe_id && count($tab_eleve_id) && $remplissage=='plein')
 	{
 		$DB_TAB = select_result_eleves_matiere($liste_eleve , $liste_comp , $date_debut=false , $date_fin=false);
-		foreach($DB_TAB as $key => $DB_ROW)
+		foreach($DB_TAB as $DB_ROW)
 		{
 			$tab_eval[$DB_ROW['eleve_id']][$DB_ROW['competence_id']][] = array('note'=>$DB_ROW['note'],'date'=>$DB_ROW['date'],'info'=>$DB_ROW['info']);
 		}

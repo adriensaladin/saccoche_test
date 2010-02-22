@@ -85,7 +85,7 @@ $date_fin   = date("d/m/Y");
 	$DB_SQL.= 'ORDER BY livret_groupe_type ASC, livret_niveau_ordre ASC, livret_groupe_nom ASC';
 	$DB_VAR = array(':structure_id'=>$_SESSION['STRUCTURE_ID'],':user_id'=>$_SESSION['USER_ID'],':type1'=>'classe',':type2'=>'groupe');
 	$DB_TAB = DB::queryTab(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
-	foreach($DB_TAB as $key => $DB_ROW)
+	foreach($DB_TAB as $DB_ROW)
 	{
 		$tab_regroupements[$DB_ROW['livret_groupe_id']] = array('nom'=>$DB_ROW['livret_groupe_nom'],'eleve'=>array());
 		$tab_id[$DB_ROW['livret_groupe_type']][] = $DB_ROW['livret_groupe_id'];
@@ -99,7 +99,7 @@ $date_fin   = date("d/m/Y");
 		$DB_SQL.= 'ORDER BY livret_user_nom ASC, livret_user_prenom ASC';
 		$DB_VAR = array(':structure_id'=>$_SESSION['STRUCTURE_ID'],':profil'=>'eleve',':statut'=>1);
 		$DB_TAB = DB::queryTab(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
-		foreach($DB_TAB as $key => $DB_ROW)
+		foreach($DB_TAB as $DB_ROW)
 		{
 			$tab_regroupements[$DB_ROW['livret_eleve_classe_id']]['eleve'][$DB_ROW['livret_user_id']] = $DB_ROW['livret_user_nom'].' '.$DB_ROW['livret_user_prenom'].' ('.$DB_ROW['livret_user_login'].')';
 		}
@@ -114,7 +114,7 @@ $date_fin   = date("d/m/Y");
 		$DB_SQL.= 'ORDER BY livret_user_nom ASC, livret_user_prenom ASC';
 		$DB_VAR = array(':structure_id'=>$_SESSION['STRUCTURE_ID'],':profil'=>'eleve',':statut'=>1);
 		$DB_TAB = DB::queryTab(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
-		foreach($DB_TAB as $key => $DB_ROW)
+		foreach($DB_TAB as $DB_ROW)
 		{
 			$tab_regroupements[$DB_ROW['livret_groupe_id']]['eleve'][$DB_ROW['livret_user_id']] = $DB_ROW['livret_user_nom'].' '.$DB_ROW['livret_user_prenom'].' ('.$DB_ROW['livret_user_login'].')';
 		}

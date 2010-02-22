@@ -32,6 +32,7 @@ vide_dossier('./__tmp/login-mdp/' ,     10); // Nettoyer ce dossier des fichiers
 vide_dossier('./__tmp/export/'    ,     60); // Nettoyer ce dossier des fichiers antérieurs à 1 heure
 vide_dossier('./__tmp/import/'    ,   1440); // Nettoyer ce dossier des fichiers antérieurs à 1 jour (24h)
 vide_dossier('./__tmp/dump-base/' ,  10080); // Nettoyer ce dossier des fichiers antérieurs à 1 semaine
+vide_dossier('./__tmp/rss/'       ,  43800); // Nettoyer ce dossier des fichiers antérieurs à 1 mois
 vide_dossier('./__tmp/badge/'     , 525600); // Nettoyer ce dossier des fichiers antérieurs à 1 an
 ?>
 

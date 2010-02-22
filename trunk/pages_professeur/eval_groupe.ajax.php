@@ -117,7 +117,7 @@ if( ($action=='Afficher_evaluations') && $aff_classe_txt && $aff_classe_id && ( 
 	$DB_SQL.= 'ORDER BY livret_devoir_date DESC, livret_groupe_nom ASC';
 	$DB_VAR = array(':structure_id'=>$_SESSION['STRUCTURE_ID'],':prof_id'=>$_SESSION['USER_ID'],':type4'=>'eval');
 	$DB_TAB = DB::queryTab(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
-	foreach($DB_TAB as $key => $DB_ROW)
+	foreach($DB_TAB as $DB_ROW)
 	{
 		// Formater la date et la référence de l'évaluation
 		$date_affich = convert_date_mysql_to_french($DB_ROW['livret_devoir_date']);
@@ -157,7 +157,7 @@ elseif( (($action=='ajouter')||(($action=='dupliquer')&&($devoir_id))) && $date 
 		$DB_TAB = DB::queryTab(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
 		if(count($DB_TAB))
 		{
-			foreach($DB_TAB as $key => $DB_ROW)
+			foreach($DB_TAB as $DB_ROW)
 			{
 				$tab_ordre[$DB_ROW['livret_competence_id']] = $DB_ROW['livret_jointure_ordre'];
 			}
@@ -173,7 +173,7 @@ elseif( (($action=='ajouter')||(($action=='dupliquer')&&($devoir_id))) && $date 
 	// Insérer les enregistrements de items de l'évaluation
 	$DB_SQL = 'INSERT INTO livret_jointure_devoir_competence(livret_structure_id,livret_devoir_id,livret_competence_id,livret_jointure_ordre) ';
 	$DB_SQL.= 'VALUES(:structure_id,:devoir_id,:competence_id,:ordre)';
-	foreach($tab_competences as $key => $competence_id)
+	foreach($tab_competences as $competence_id)
 	{
 		$ordre = (isset($tab_ordre[$competence_id])) ? $tab_ordre[$competence_id] : 0 ;
 		$DB_VAR = array(':structure_id'=>$_SESSION['STRUCTURE_ID'],':devoir_id'=>$devoir_id,':competence_id'=>$competence_id,':ordre'=>$ordre);
@@ -234,7 +234,7 @@ else if( ($action=='modifier') && $devoir_id && $date && $groupe_type && $groupe
 	$DB_SQL.= 'WHERE livret_structure_id=:structure_id AND livret_devoir_id=:devoir_id ';
 	$DB_VAR = array(':structure_id'=>$_SESSION['STRUCTURE_ID'],':devoir_id'=>$devoir_id);
 	$DB_TAB = DB::queryTab(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
-	foreach($DB_TAB as $key => $DB_ROW)
+	foreach($DB_TAB as $DB_ROW)
 	{
 		$tab_old_competences[] = $DB_ROW['livret_competence_id'];
 	}
@@ -252,7 +252,7 @@ else if( ($action=='modifier') && $devoir_id && $date && $groupe_type && $groupe
 	$tab_competences_ajouter = array_diff($tab_competences,$tab_old_competences);
 	if(count($tab_competences_ajouter))
 	{
-		foreach($tab_competences_ajouter as $key => $competence_id)
+		foreach($tab_competences_ajouter as $competence_id)
 		{
 			$DB_SQL = 'INSERT INTO livret_jointure_devoir_competence(livret_structure_id,livret_devoir_id,livret_competence_id) ';
 			$DB_SQL.= 'VALUES(:structure_id,:devoir_id,:competence_id)';
@@ -329,7 +329,7 @@ else if( ($action=='ordonner') && $devoir_id )
 		echo	'<label id="ajax_msg">&nbsp;</label>';
 		echo'</div>';
 		$tab_affich  = array();
-		foreach($DB_TAB_COMP as $key => $DB_ROW)
+		foreach($DB_TAB_COMP as $DB_ROW)
 		{
 			$comp_ref = $DB_ROW['livret_matiere_ref'].'.'.$DB_ROW['livret_niveau_ref'].'.'.$DB_ROW['livret_domaine_ref'].$DB_ROW['livret_theme_ordre'].$DB_ROW['livret_competence_ordre'];
 			$texte_socle = ($DB_ROW['livret_socle_id']) ? ' [S]' : ' [–]';
@@ -401,7 +401,7 @@ else if( ($action=='saisir') && $devoir_id && $groupe_type && $groupe_id && $dat
 		$csv_ligne_eleve_nom = $separateur;
 		$csv_ligne_eleve_id  = $separateur;
 		$csv_nb_colonnes = 1;
-		foreach($DB_TAB_USER as $key => $DB_ROW)
+		foreach($DB_TAB_USER as $DB_ROW)
 		{
 			$tab_affich[0][$DB_ROW['livret_user_id']] = '<th><img alt="'.html($DB_ROW['livret_user_nom'].' '.$DB_ROW['livret_user_prenom']).'" src="./_img/php/etiquette.php?nom='.urlencode($DB_ROW['livret_user_nom']).'&amp;prenom='.urlencode($DB_ROW['livret_user_prenom']).'" /></th>';
 			$tab_user_id[$DB_ROW['livret_user_id']] = html($DB_ROW['livret_user_prenom'].' '.$DB_ROW['livret_user_nom']);
@@ -411,7 +411,7 @@ else if( ($action=='saisir') && $devoir_id && $groupe_type && $groupe_id && $dat
 		}
 		$export_csv = $csv_ligne_eleve_id."\r\n";
 		// première colonne (noms items)
-		foreach($DB_TAB_COMP as $key => $DB_ROW)
+		foreach($DB_TAB_COMP as $DB_ROW)
 		{
 			$comp_ref = $DB_ROW['livret_matiere_ref'].'.'.$DB_ROW['livret_niveau_ref'].'.'.$DB_ROW['livret_domaine_ref'].$DB_ROW['livret_theme_ordre'].$DB_ROW['livret_competence_ordre'];
 			$texte_socle = ($DB_ROW['livret_socle_id']) ? ' [S]' : ' [–]';
@@ -438,7 +438,7 @@ else if( ($action=='saisir') && $devoir_id && $groupe_type && $groupe_id && $dat
 		$DB_VAR = array(':structure_id'=>$_SESSION['STRUCTURE_ID'],':devoir_id'=>$devoir_id);
 		$DB_TAB = DB::queryTab(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
 		$bad = 'class="X" value="X"';
-		foreach($DB_TAB as $key => $DB_ROW)
+		foreach($DB_TAB as $DB_ROW)
 		{
 			// Test pour éviter les pbs des élèves changés de groupes ou des items modifiés en cours de route
 			if(isset($tab_affich[$DB_ROW['livret_competence_id']][$DB_ROW['livret_eleve_id']]))
@@ -532,7 +532,7 @@ else if( ($action=='voir') && $devoir_id && $groupe_type && $groupe_id && $date 
 		// première ligne (noms prénoms des élèves)
 		$csv_ligne_eleve_nom = $separateur;
 		$csv_ligne_eleve_id  = $separateur;
-		foreach($DB_TAB_USER as $key => $DB_ROW)
+		foreach($DB_TAB_USER as $DB_ROW)
 		{
 			$tab_affich[0][$DB_ROW['livret_user_id']] = '<th><img alt="'.html($DB_ROW['livret_user_nom'].' '.$DB_ROW['livret_user_prenom']).'" src="./_img/php/etiquette.php?nom='.urlencode($DB_ROW['livret_user_nom']).'&amp;prenom='.urlencode($DB_ROW['livret_user_prenom']).'" /></th>';
 			$tab_user_id[$DB_ROW['livret_user_id']] = html($DB_ROW['livret_user_prenom'].' '.$DB_ROW['livret_user_nom']);
@@ -543,7 +543,7 @@ else if( ($action=='voir') && $devoir_id && $groupe_type && $groupe_id && $date 
 		$csv_lignes_scores = array();
 		$csv_colonne_texte = array();
 		// première colonne (noms items)
-		foreach($DB_TAB_COMP as $key => $DB_ROW)
+		foreach($DB_TAB_COMP as $DB_ROW)
 		{
 			$comp_ref = $DB_ROW['livret_matiere_ref'].'.'.$DB_ROW['livret_niveau_ref'].'.'.$DB_ROW['livret_domaine_ref'].$DB_ROW['livret_theme_ordre'].$DB_ROW['livret_competence_ordre'];
 			$texte_socle = ($DB_ROW['livret_socle_id']) ? ' [S]' : ' [–]';
@@ -567,7 +567,7 @@ else if( ($action=='voir') && $devoir_id && $groupe_type && $groupe_id && $date 
 		$DB_SQL.= 'WHERE livret_structure_id=:structure_id AND livret_devoir_id=:devoir_id ';
 		$DB_VAR = array(':structure_id'=>$_SESSION['STRUCTURE_ID'],':devoir_id'=>$devoir_id);
 		$DB_TAB = DB::queryTab(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
-		foreach($DB_TAB as $key => $DB_ROW)
+		foreach($DB_TAB as $DB_ROW)
 		{
 			// Test pour éviter les pbs des élèves changés de groupes ou des items modifiés en cours de route
 			if(isset($tab_affich[$DB_ROW['livret_competence_id']][$DB_ROW['livret_eleve_id']]))
@@ -697,6 +697,15 @@ else if( ($action=='Enregistrer_saisie') && $devoir_id && $date )
 			$DB_SQL.= 'VALUES(:structure_id,:prof_id,:eleve_id,:devoir_id,:competence_id,:competence_date,:competence_note,:competence_info)';
 			$DB_VAR = array(':structure_id'=>$_SESSION['STRUCTURE_ID'],':prof_id'=>$_SESSION['USER_ID'],':eleve_id'=>$eleve_id,':devoir_id'=>$devoir_id,':competence_id'=>$competence_id,':competence_date'=>$date,':competence_note'=>$note,':competence_info'=>'');
 			DB::query(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
+			// On supprime une éventuelle demande d'évaluation associée.
+			if($_SESSION['ELEVE_DEMANDES'])
+			{
+				$DB_SQL = 'DELETE FROM livret_demande ';
+				$DB_SQL.= 'WHERE livret_structure_id=:structure_id AND livret_user_id=:eleve_id AND livret_competence_id=:competence_id ';
+				$DB_SQL.= 'LIMIT 1';
+				$DB_VAR = array(':structure_id'=>$_SESSION['STRUCTURE_ID'],':eleve_id'=>$eleve_id,':competence_id'=>$competence_id);
+				DB::query(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
+			}
 		}
 		foreach($tab_nouveau_modifier as $key => $note)
 		{
@@ -773,12 +782,12 @@ else if( ($action=='Imprimer_cartouche') && $devoir_id && $groupe_type && $group
 		$tab_user_id = array(); // pas indispensable, mais plus lisible
 		$tab_comp_id = array(); // pas indispensable, mais plus lisible
 		// enregistrer noms prénoms des élèves
-		foreach($DB_TAB_USER as $key => $DB_ROW)
+		foreach($DB_TAB_USER as $DB_ROW)
 		{
 			$tab_user_id[$DB_ROW['livret_user_id']] = html($DB_ROW['livret_user_prenom'].' '.$DB_ROW['livret_user_nom']);
 		}
 		// enregistrer refs noms items
-		foreach($DB_TAB_COMP as $key => $DB_ROW)
+		foreach($DB_TAB_COMP as $DB_ROW)
 		{
 			$comp_ref = $DB_ROW['livret_matiere_ref'].'.'.$DB_ROW['livret_niveau_ref'].'.'.$DB_ROW['livret_domaine_ref'].$DB_ROW['livret_theme_ordre'].$DB_ROW['livret_competence_ordre'];
 			$texte_socle = ($DB_ROW['livret_socle_id']) ? '[S] ' : '[–] ';
@@ -799,7 +808,7 @@ else if( ($action=='Imprimer_cartouche') && $devoir_id && $groupe_type && $group
 			$DB_SQL.= 'WHERE livret_structure_id=:structure_id AND livret_devoir_id=:devoir_id ';
 			$DB_VAR = array(':structure_id'=>$_SESSION['STRUCTURE_ID'],':devoir_id'=>$devoir_id);
 			$DB_TAB = DB::queryTab(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
-			foreach($DB_TAB as $key => $DB_ROW)
+			foreach($DB_TAB as $DB_ROW)
 			{
 				// Test pour éviter les pbs des élèves changés de groupes ou des items modifiés en cours de route
 				if(isset($tab_result[$DB_ROW['livret_competence_id']][$DB_ROW['livret_eleve_id']]))

@@ -20,6 +20,7 @@ $arbre='
 		<ul>
 			<li class="accueil"><a href="./index.php?dossier='.$DOSSIER.'&amp;fichier=accueil">Accueil</a></li>
 			<li class="password"><a href="./index.php?dossier='.$DOSSIER.'&amp;fichier=password">Mot de passe</a></li>
+			<li class="eval_demande"><a href="./index.php?dossier='.$DOSSIER.'&amp;fichier=eval_demande">Demandes d\'évaluations</a></li>
 		</ul>
 	</li>
 	<li><span>Relevés de compétences</span>

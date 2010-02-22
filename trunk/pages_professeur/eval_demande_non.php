@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Id: eval_demande.php 8 2009-10-30 20:56:02Z thomas $
+ * @version $Id: eval_demande_non.php 8 2009-10-30 20:56:02Z thomas $
  * @author Thomas Crespin <thomas.crespin@sesamath.net>
  * @copyright Thomas Crespin 2009
  * 
@@ -13,10 +13,10 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-$TITRE = "Demandes d'évaluations";
 ?>
 
-<?php
-$fin = ($_SESSION['ELEVE_DEMANDES']) ? 'oui' : 'non' ;
-include('./pages_'.$DOSSIER.'/'.$FICHIER.'_'.$SECTION.'_'.$fin.'.php');
-?>
+<p><span class="manuel"><a class="pop_up" href="./aide.php?fichier=demandes_evaluations">DOC : Demandes d'évaluations.</a></span></p>
+
+<hr />
+
+<p class="astuce">Cette fonctionnalité n'a pas été activée par l'administrateur de <em>SACoche</em> pour votre établissement.</p>

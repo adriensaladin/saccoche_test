@@ -18,5 +18,5 @@ $TITRE = "Demandes d'évaluations";
 
 <?php
 $fin = ($_SESSION['ELEVE_DEMANDES']) ? 'oui' : 'non' ;
-include('./pages_'.$DOSSIER.'/'.$FICHIER.'_'.$SECTION.'_'.$fin.'.php');
+include('./pages_'.$DOSSIER.'/'.$FICHIER.'_'.$fin.'.php');
 ?>

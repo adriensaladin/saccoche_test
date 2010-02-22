@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Id: eval_demande.php 8 2009-10-30 20:56:02Z thomas $
+ * @version $Id: password_non.php 8 2009-10-30 20:56:02Z thomas $
  * @author Thomas Crespin <thomas.crespin@sesamath.net>
  * @copyright Thomas Crespin 2009
  * 
@@ -13,10 +13,6 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-$TITRE = "Demandes d'évaluations";
 ?>
 
-<?php
-$fin = ($_SESSION['ELEVE_DEMANDES']) ? 'oui' : 'non' ;
-include('./pages_'.$DOSSIER.'/'.$FICHIER.'_'.$SECTION.'_'.$fin.'.php');
-?>
+<p class="astuce">Le mode de connexion étant SSO (<?php echo $_SESSION['SSO'] ?>), cette fonctionnalité de <em>SACoche</em> est sans objet vous concernant.</p>

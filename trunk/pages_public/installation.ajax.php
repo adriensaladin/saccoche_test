@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Id: installation.ajax.php 7 2009-10-30 20:50:17Z thomas $
+ * @version $Id$
  * @author Thomas Crespin <thomas.crespin@sesamath.net>
  * @copyright Thomas Crespin 2009
  * 

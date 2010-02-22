@@ -1,5 +1,5 @@
 /**
- * @version $Id: login_webmestre.js 7 2009-10-30 20:50:17Z thomas $
+ * @version $Id$
  * @author Thomas Crespin <thomas.crespin@sesamath.net>
  * @copyright Thomas Crespin 2009
  * 

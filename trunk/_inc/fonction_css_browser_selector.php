@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Id:$
+ * @version $Id$
  * 
  * ****************************************************************************************************
  * SACoche [http://competences.sesamath.net] - Suivi d'Acquisitions de Compétences

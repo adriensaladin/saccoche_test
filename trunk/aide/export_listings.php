@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Id: gestion_statuts.php 8 2009-10-30 20:56:02Z thomas $
+ * @version $Id$
  * @author Thomas Crespin <thomas.crespin@sesamath.net>
  * @copyright Thomas Crespin 2009
  * 

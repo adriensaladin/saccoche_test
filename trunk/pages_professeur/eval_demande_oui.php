@@ -67,6 +67,10 @@ $select_groupe  = afficher_select(DB_OPT_groupes_professeur($_SESSION['STRUCTURE
 		</tbody>
 	</table>
 	<div id="zone_actions" class="hide">
+		<div class="ti">
+			<a href="#zone_actions" id="all_check">[ Tout cocher. ]</a>
+			<a href="#zone_actions" id="all_uncheck">[ Tout décocher. ]</a>
+		</div>
 		<h2>Avec les demandes cochées :<input type="hidden" id="ids" name="ids" value="" /></h2>
 		<fieldset>
 			<label class="tab" for="f_quoi">Action :</label><select id="f_quoi" name="f_quoi"><option value=""></option><option value="creer">Créer une nouvelle évaluation.</option><option value="completer">Compléter une évaluation existante.</option><option value="changer">Changer le statut pour "évaluation en préparation".</option><option value="retirer">Retirer de la liste des demandes.</option></select>

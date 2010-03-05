@@ -406,7 +406,7 @@ $(document).ready
 				{
 					if($('#socle_'+socle_id).length)
 					{
-						$('#socle_'+socle_id).attr('checked','true');
+						$('#socle_'+socle_id).attr('checked',true);
 						$('#socle_'+socle_id).parent().parent().css("display","block");	// les items
 						$('#socle_'+socle_id).parent().parent().parent().parent().css("display","block");	// le section
 						$('#socle_'+socle_id).parent().parent().parent().parent().parent().parent().css("display","block");	// le pilier
@@ -414,7 +414,7 @@ $(document).ready
 				}
 				else
 				{
-					$('#socle_0').attr('checked','true');
+					$('#socle_0').attr('checked',true);
 				}
 				// montrer le cadre
 				$('#zone_socle q').show();

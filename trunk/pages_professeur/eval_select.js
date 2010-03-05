@@ -354,7 +354,7 @@ $(document).ready
 					id = 'id_'+tab_id[i];
 					if($('#'+id).length)
 					{
-						$('#'+id).attr('checked','true');
+						$('#'+id).attr('checked',true);
 						$('#'+id).parent().parent().css("display","block");	// les items
 						$('#'+id).parent().parent().parent().parent().css("display","block");	// le thème
 						$('#'+id).parent().parent().parent().parent().parent().parent().css("display","block");	// le domaine
@@ -393,7 +393,7 @@ $(document).ready
 					id = 'id_'+tab_id[i];
 					if($('input[id^='+id+']').length)
 					{
-						$('input[id^='+id+']').attr('checked','true');
+						$('input[id^='+id+']').attr('checked',true);
 						$('input[id^='+id+']').parent().parent().css("display","block");	// le regroupement
 					}
 				}

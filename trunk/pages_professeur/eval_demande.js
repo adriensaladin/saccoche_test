@@ -232,6 +232,22 @@ $(document).ready
 		//	Éléments dynamiques du formulaire
 		//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
 
+		// Tout cocher ou tout décocher
+		$('#all_check').click
+		(
+			function()
+			{
+				$('input[type=checkbox]').attr('checked',true);
+			}
+		);
+		$('#all_uncheck').click
+		(
+			function()
+			{
+				$('input[type=checkbox]').attr('checked',false);
+			}
+		);
+
 		// Récupérer les noms de items des checkbox cochés pour la description de l'évaluation
 		$('input[type=checkbox]').live // live est utilisé pour prendre en compte les nouveaux éléments créés
 		('click',

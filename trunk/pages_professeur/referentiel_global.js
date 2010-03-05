@@ -145,6 +145,46 @@ $(document).ready
 		);
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+//	Clic sur l'image pour Mettre à jour sur le serveur de partage la dernière version d'un référentiel
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+		$('q.envoyer').live // live est utilisé pour prendre en compte les nouveaux éléments créés
+		('click',
+			function()
+			{
+				ids = $(this).parent().attr('id');
+				afficher_masquer_images_action('hide');
+				new_label = '<label for="'+ids+'" class="loader">Demande envoyée... Veuillez patienter.</label>';
+				$(this).after(new_label);
+				$.ajax
+				(
+					{
+						type : 'POST',
+						url : 'ajax.php?dossier='+DOSSIER+'&fichier='+FICHIER,
+						data : 'action=Envoyer&ids='+ids,
+						dataType : "html",
+						error : function(msg,string)
+						{
+							$('label[for='+ids+']').removeAttr("class").addClass("alerte").html('Echec de la connexion ! Veuillez recommencer.').fadeOut(2000,function(){$('label[for='+ids+']').remove();afficher_masquer_images_action('show');});
+							return false;
+						},
+						success : function(responseHTML)
+						{
+							maj_clock(1);
+							if(responseHTML!='ok')
+							{
+								$('label[for='+ids+']').removeAttr("class").addClass("alerte").html(responseHTML).fadeOut(4000,function(){$('label[for='+ids+']').remove();afficher_masquer_images_action('show');});
+							}
+							else
+							{
+								$('label[for='+ids+']').removeAttr("class").addClass("valide").html("Référentiel transmis au serveur de partage avec succès !").fadeOut(2000,function(){$('label[for='+ids+']').remove();afficher_masquer_images_action('show');});
+							}
+						}
+					}
+				);
+			}
+		);
+
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 //	Clic sur l'image pour Modifier le mode de calcul d'un référentiel
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 		$('q.calculer').live // live est utilisé pour prendre en compte les nouveaux éléments créés
@@ -213,6 +253,14 @@ $(document).ready
 							else
 							{
 								$('#'+ids).prev().prev().attr('lang',partage).html('Référentiel présent. '+responseHTML);
+								if(partage=='oui')
+								{
+									$('#'+ids).children('q.envoyer_non').attr('class','envoyer').attr('title','Mettre à jour sur le serveur de partage la dernière version de ce référentiel.');
+								}
+								else
+								{
+									$('#'+ids).children('q.envoyer').attr('class','envoyer_non').attr('title','Un référentiel non partagé ne peut pas être transmis à la collectivité.');
+								}
 								$('#ajax_msg').parent().remove();
 								afficher_masquer_images_action('show');
 								infobulle();
@@ -575,7 +623,7 @@ $(document).ready
 							}
 							else
 							{
-								$('#'+ids).html('<q class="voir" title="Voir le détail de ce référentiel."></q><q class="partager" title="Modifier le partage de ce référentiel."></q><q class="calculer" title="Modifier le mode de calcul associé à ce référentiel."></q><q class="supprimer" title="Supprimer ce référentiel."></q>');
+								$('#'+ids).html('<q class="voir" title="Voir le détail de ce référentiel."></q><q class="partager" title="Modifier le partage de ce référentiel."></q><q class="envoyer_non" title="Un référentiel non partagé ne peut pas être transmis à la collectivité."></q><q class="calculer" title="Modifier le mode de calcul associé à ce référentiel."></q><q class="supprimer" title="Supprimer ce référentiel."></q>');
 									$('#'+ids).prev().removeAttr("class").addClass("v").attr('lang',methode_calcul_langue).html(methode_calcul_texte);
 								if(donneur>0)
 								{

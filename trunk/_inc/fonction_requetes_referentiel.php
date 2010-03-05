@@ -220,6 +220,115 @@ function afficher_arborescence($DB_TAB,$dynamique,$reference,$aff_coef,$aff_socl
 	return $retour;
 }
 
+/**
+ * exporter_referentiel_XML
+ * Fabriquer un export XML d'un référentiel (pour partage sur serveur central) à partir d'une requête SQL transmise.
+ * 
+ * @param tab  $DB_TAB
+ * @return string
+ */
+
+function exporter_referentiel_XML($DB_TAB)
+{
+	// Traiter le retour SQL : on remplit les tableaux suivants.
+	$tab_domaine    = array();
+	$tab_theme      = array();
+	$tab_competence = array();
+	$domaine_id    = 0;
+	$theme_id      = 0;
+	$competence_id = 0;
+	foreach($DB_TAB as $DB_ROW)
+	{
+		if( (!is_null($DB_ROW['livret_domaine_id'])) && ($DB_ROW['livret_domaine_id']!=$domaine_id) )
+		{
+			$domaine_id = $DB_ROW['livret_domaine_id'];
+			$tab_domaine[$domaine_id] = array('ref'=>$DB_ROW['livret_domaine_ref'],'nom'=>$DB_ROW['livret_domaine_nom'],'ordre'=>$DB_ROW['livret_domaine_ordre']);
+		}
+		if( (!is_null($DB_ROW['livret_theme_id'])) && ($DB_ROW['livret_theme_id']!=$theme_id) )
+		{
+			$theme_id = $DB_ROW['livret_theme_id'];
+			$tab_theme[$domaine_id][$theme_id] = array('nom'=>$DB_ROW['livret_theme_nom'],'ordre'=>$DB_ROW['livret_theme_ordre']);
+		}
+		if( (!is_null($DB_ROW['livret_competence_id'])) && ($DB_ROW['livret_competence_id']!=$competence_id) )
+		{
+			$competence_id = $DB_ROW['livret_competence_id'];
+			$tab_competence[$domaine_id][$theme_id][$competence_id] = array('nom'=>$DB_ROW['livret_competence_nom'],'ordre'=>$DB_ROW['livret_competence_ordre'],'socle'=>$DB_ROW['livret_socle_id'],'coef'=>$DB_ROW['livret_competence_coef'],'lien'=>$DB_ROW['livret_competence_lien']);
+		}
+	}
+	// Fabrication de l'arbre XML
+	$arbreXML = '<arbre id="SACoche">'."\r\n";
+	if(count($tab_domaine))
+	{
+		foreach($tab_domaine as $domaine_id => $tab_domaine_info)
+		{
+			$arbreXML .= "\t".'<domaine ref="'.$tab_domaine_info['ref'].'" nom="'.html($tab_domaine_info['nom']).'" ordre="'.$tab_domaine_info['ordre'].'">'."\r\n";
+			if(isset($tab_theme[$domaine_id]))
+			{
+				foreach($tab_theme[$domaine_id] as $theme_id => $tab_theme_info)
+				{
+					$arbreXML .= "\t\t".'<theme nom="'.html($tab_theme_info['nom']).'" ordre="'.$tab_theme_info['ordre'].'">'."\r\n";
+					if(isset($tab_competence[$domaine_id][$theme_id]))
+					{
+						foreach($tab_competence[$domaine_id][$theme_id] as $competence_id => $tab_competence_info)
+						{
+							$arbreXML .= "\t\t\t".'<competence nom="'.html($tab_competence_info['nom']).'" ordre="'.$tab_competence_info['ordre'].'" socle="'.$tab_competence_info['socle'].'" coef="'.$tab_competence_info['coef'].'" lien="'.html($tab_competence_info['lien']).'" />'."\r\n";
+						}
+					}
+					$arbreXML .= "\t\t".'</theme>'."\r\n";
+				}
+			}
+			$arbreXML .= "\t".'</domaine>'."\r\n";
+		}
+	}
+	$arbreXML .= '</arbre>'."\r\n";
+	return $arbreXML;
+}
+
+/**
+ * envoyer_referentiel_XML
+ * Fabriquer un export XML d'un référentiel (pour partage sur serveur central) à partir d'une requête SQL transmise.
+ * 
+ * @param int    $structure_id
+ * @param string $structure_key
+ * @param int    $matiere_id
+ * @param int    $niveau_id
+ * @param string $arbreXML       si fourni vide, provoquera l'effacement du référentiel mis en partage
+ * @return string
+ */
+
+function envoyer_referentiel_XML($structure_id,$structure_key,$matiere_id,$niveau_id,$arbreXML)
+{
+	/*
+	Attention, si on balance le xml tel quel en GET on obtient l'erreur "414 Request-URI Too Large : The requested URL's length exceeds the capacity limit for this server.".
+	En ce qui concerne Apache (v2), cette limite est dans la constante DEFAULT_LIMIT_REQUEST_LINE et correspond à la taille maximale de la ligne de requête.
+	Par défaut c’est 8190, ce qui si on retire les 14 caractères de « GET / HTTP/1.1″ nous donne exactement la limite observée empiriquement : 8176.
+	La directive LimitRequestLine permet de modifier cette valeur (http://httpd.apache.org/docs/2.0/mod/core.html#limitrequestline).
+	Lors de l'expérimentation, la longueur moyenne de $arbreXML était de 9195, avec un maximum à 22806.
+	Alors on compresse l'arbre XML avant transfert.
+	Par exemple pour un arbre XML long de 17575, gzcompress() renvoie 3413 caractères et gzdeflate() renvoie 3407 caractères.
+	Cette compression de 80% permet ainsi de passer outre ce problème.
+	*/
+	require_once('./_inc/class.httprequest.php');
+	$tab_get = array();
+	$tab_get[] = 'action=distant-to-central';
+	$tab_get[] = 'structure_id='.$structure_id;
+	$tab_get[] = 'structure_key='.$structure_key;
+	$tab_get[] = 'matiere_id='.$matiere_id;
+	$tab_get[] = 'niveau_id='.$niveau_id;
+	$tab_get[] = 'arbreXML='.gzcompress($arbreXML,9);
+	$requete_envoi   = new HTTPRequest('http://competences.sesamath.net/partage_referentiel.php?'.implode('&',$tab_get));
+	$requete_reponse = $requete_envoi->DownloadToString();
+	$reponse_verif   = @extract(unserialize($requete_reponse),'EXTR_SKIP');
+	if(!isset($reponse_statut,$reponse_contenu))
+	{
+		return $requete_reponse;
+	}
+	else
+	{
+		return ($reponse_statut == 'ok') ? $reponse_statut : $reponse_contenu ;
+	}
+}
+
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 // Retourner l'arborescence des items travaillés par un élève pour la matière selectionnée, durant la période choisie
 //	[./pages_eleve/bilan_periode.ajax.php]

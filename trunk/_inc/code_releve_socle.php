@@ -41,15 +41,16 @@ function acquis($n)     {return $n>$_SESSION['CALCUL_SEUIL']['V'] ;}
 function non_acquis($n) {return $n<$_SESSION['CALCUL_SEUIL']['R'] ;}
 function calculer_note($tab_devoirs,$calcul_methode,$calcul_limite)
 {
+	// Attention !!! $tab_devoirs n'est pas sur le même modèle que dans le fichier code_releve_competence ; donc $tab_devoirs[$i]['note'] remplacé par $tab_devoirs[$i]
 	global $tab_modele_bon;
 	$devoirs_nb = count($tab_devoirs);
 	// on passe en revue les évaluations disponibles, et on retient les scores exploitables
 	$tab_note = array(); // pour les notes d'un élève
 	for($i=0;$i<$devoirs_nb;$i++)
 	{
-		if(in_array($tab_devoirs[$i]['note'],$tab_modele_bon))
+		if(in_array($tab_devoirs[$i],$tab_modele_bon))
 		{
-			$tab_note[] = $_SESSION['CALCUL_VALEUR'][$tab_devoirs[$i]['note']];
+			$tab_note[] = $_SESSION['CALCUL_VALEUR'][$tab_devoirs[$i]];
 		}
 	}
 	// si pas de notes exploitables, on arrête de suite (sinon, on est certain de pouvoir renvoyer un score)

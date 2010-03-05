@@ -32,7 +32,7 @@ define('MAINTENANCE',0);
 
 // FILE_CSS et FILE_JS : pour éviter les problèmes de mise en cache, modifier le nom du fichier lors d'une mise à jour
 // VERSION_JS : pour éviter le problème de mise en cache du js de la page d'accueil principale
-define('FILE_CSS','style21.css');
+define('FILE_CSS','style22.css');
 define('FILE_JS','script22.js');
 $VERSION_JS = '';
 

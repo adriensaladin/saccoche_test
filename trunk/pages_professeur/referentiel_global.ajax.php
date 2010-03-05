@@ -70,14 +70,44 @@ if( ($action=='Voir') && $matiere_id && $niveau_id )
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 elseif( ($action=='Partager') && ($perso==0) && $matiere_id && $niveau_id && in_array($partage,$tab_partages) )
 {
+	if( ($partage=='oui') && (!$_SESSION['STRUCTURE_KEY']) )
+	{
+		exit('Une version de démonstration ne permet pas le partage de référentiels.');
+	}
 	$DB_SQL = 'UPDATE livret_referentiel ';
 	$DB_SQL.= 'SET livret_referentiel_partage=:partage ';
 	$DB_SQL.= 'WHERE livret_matiere_id=:matiere_id AND livret_niveau_id=:niveau_id AND livret_structure_id=:structure_id ';
 	$DB_SQL.= 'LIMIT 1';
 	$DB_VAR = array(':matiere_id'=>$matiere_id,':niveau_id'=>$niveau_id,':structure_id'=>$_SESSION['STRUCTURE_ID'],':partage'=>$partage);
 	DB::query(SACOCHE_BD_NAME , $DB_SQL , $DB_VAR);
+	// Mettre ensuite à jour les données sur le serveur de partage
+	if($partage=='oui')
+	{
+		$DB_TAB = DB_select_arborescence($_SESSION['STRUCTURE_ID'],0,$matiere_id,$niveau_id,FALSE);
+		$arbreXML = exporter_referentiel_XML($DB_TAB);
+		$retour = envoyer_referentiel_XML($_SESSION['STRUCTURE_ID'],$_SESSION['STRUCTURE_KEY'],$matiere_id,$niveau_id,$arbreXML);
+	}
+	else
+	{
+		$retour = envoyer_referentiel_XML($_SESSION['STRUCTURE_ID'],$_SESSION['STRUCTURE_KEY'],$matiere_id,$niveau_id,'');
+	}
+	// Retour envoyé
 	$tab_partage = array('oui'=>'<img title="Référentiel accessible aux autres établissements." alt="" src="./_img/partage1.gif" />','non'=>'<img title="Référentiel caché aux autres établissements." alt="" src="./_img/partage0.gif" />','bof'=>'<img title="Référentiel dont le partage est sans intérêt (pas novateur)." alt="" src="./_img/partage0.gif" />','hs'=>'<img title="Référentiel dont le partage est sans objet (matière spécifique)." alt="" src="./_img/partage0.gif" />');
-	echo $tab_partage[$partage];
+	echo ($retour=='ok') ? $tab_partage[$partage] : $retour ;
+}
+
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+// Mettre à jour sur le serveur de partage la dernière version d'un référentiel
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+elseif( ($action=='Envoyer') && ($perso==0) && $matiere_id && $niveau_id )
+{
+	if(!$_SESSION['STRUCTURE_KEY'])
+	{
+		exit('Une version de démonstration ne permet pas le partage de référentiels.');
+	}
+	$DB_TAB = DB_select_arborescence($_SESSION['STRUCTURE_ID'],0,$matiere_id,$niveau_id,FALSE);
+	$arbreXML = exporter_referentiel_XML($DB_TAB);
+	echo envoyer_referentiel_XML($_SESSION['STRUCTURE_ID'],$_SESSION['STRUCTURE_KEY'],$matiere_id,$niveau_id,$arbreXML);
 }
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
@@ -116,7 +146,8 @@ elseif( ($action=='Calculer') && $matiere_id && $niveau_id && in_array($methode,
 elseif( ($action=='Retirer') && $matiere_id && $niveau_id )
 {
 	DB_supprimer_referentiel_matiere_niveau($_SESSION['STRUCTURE_ID'],$matiere_id,$niveau_id);
-	echo'ok';
+	$retour = ($_SESSION['STRUCTURE_KEY']) ? envoyer_referentiel_XML($_SESSION['STRUCTURE_ID'],$_SESSION['STRUCTURE_KEY'],$matiere_id,$niveau_id,'') : 'ok' ;
+	echo $retour;
 }
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-

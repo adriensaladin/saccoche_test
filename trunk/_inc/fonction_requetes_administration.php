@@ -44,6 +44,7 @@ function connecter_admin($structure_id,$password)
 		$_SESSION['GOD']              = $god;
 		$_SESSION['PROFIL']           = 'administrateur';
 		$_SESSION['STRUCTURE_ID']     = (int) $DB_ROW['livret_structure_id'];
+		$_SESSION['STRUCTURE_KEY']    = $DB_ROW['livret_structure_key'];
 		$_SESSION['STRUCTURE_UAI']    = $DB_ROW['structure_uai'];
 		$_SESSION['STRUCTURE']        = $DB_ROW['structure_type_ref'].' '.$DB_ROW['structure_nom'];
 		$_SESSION['USER_ID']          = 0;
@@ -108,6 +109,7 @@ function connecter_user($structure_id,$login,$password,$sso=false)
 		$_SESSION['GOD']              = $god;
 		$_SESSION['PROFIL']           = $DB_ROW['livret_user_profil'];
 		$_SESSION['STRUCTURE_ID']     = (int) $DB_ROW['livret_structure_id'];
+		$_SESSION['STRUCTURE_KEY']    = $DB_ROW['livret_structure_key'];
 		$_SESSION['STRUCTURE_UAI']    = $DB_ROW['structure_uai'];
 		$_SESSION['STRUCTURE']        = $DB_ROW['structure_type_ref'].' '.$DB_ROW['structure_nom'];
 		$_SESSION['USER_ID']          = (int) $DB_ROW['livret_user_id'];

@@ -48,6 +48,7 @@ function acquis($n)     {return $n>$_SESSION['CALCUL_SEUIL']['V'] ;}
 function non_acquis($n) {return $n<$_SESSION['CALCUL_SEUIL']['R'] ;}
 function calculer_note($tab_devoirs,$calcul_methode,$calcul_limite)
 {
+	// Attention !!! $tab_devoirs n'est pas sur le même modèle que dans le fichier code_releve_competence ; donc $tab_devoirs[$i] remplacé par $tab_devoirs[$i]['note']
 	global $tab_modele_bon;
 	$nb_devoir = count($tab_devoirs);
 	// on passe en revue les évaluations disponibles, et on retient les scores exploitables

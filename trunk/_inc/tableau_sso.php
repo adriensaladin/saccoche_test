@@ -31,6 +31,7 @@ $tab_sso = array();
 $tab_sso['normal']                  = array('txt'=>'Mode de connexion normal avec les identifiants enregistrés dans SACoche.' , 'doc'=>false);
 $tab_sso['ent-auth.ac-bordeaux.fr'] = array('doc'=>'academie_Bordeaux' , 'nom'=>3 , 'prenom'=>4 , 'id_ent'=>1 , 'txt'=>'ENT Argos de l\'académie de Bordeaux (départements 24,33,40,47).');
 $tab_sso['cas.argos64.fr']          = array('doc'=>'academie_Bordeaux' , 'nom'=>3 , 'prenom'=>4 , 'id_ent'=>1 , 'txt'=>'ENT Argos64 (département des Pyrénées-Atlantiques).');
+$tab_sso['cas.e-lyco.fr']           = array('doc'=>'academie_Nantes'   , 'nom'=>4 , 'prenom'=>3 , 'id_ent'=>1 , 'txt'=>'ENT e-lyco de l\'académie de Nantes.');
 $tab_sso['cas.entmip.fr']           = array('doc'=>'academie_Toulouse' , 'nom'=>4 , 'prenom'=>3 , 'id_ent'=>1 , 'txt'=>'ENT Midi-Pyrénées K-d\'Ecole de l\'académie de Toulouse.');
 $tab_sso['cas.cybercolleges42.fr']  = array('doc'=>'departement_Loire' , 'nom'=>4 , 'prenom'=>3 , 'id_ent'=>1 , 'txt'=>'ENT Cybercollège 42 du département de la Loire.');
 

@@ -123,7 +123,7 @@ if($test_affichage_scores)
 										extract($tab_competence[$competence_id]);	// $competence_ref $competence_nom $matiere_id $calcul_methode $calcul_limite
 										// calcul du bilan de l'item
 										$note = calculer_note($tab_devoirs,$calcul_methode,$calcul_limite);
-										if($note)
+										if($note!==false)
 										{
 											// on détermine si elle est acquise ou pas
 											if(non_acquis($note)) {$indice = 'NA';}

@@ -157,6 +157,7 @@ entete();
 	<title>SACoche - Espace <?php echo $DOSSIER ?> - <?php echo ($TITRE) ? $TITRE : 'Suivi d\'Acquisition de Compétences' ; ?></title>
 </head>
 <body>
+
 	<h1 id="titre_page"><?php echo ($TITRE) ? $TITRE : '<img alt="Suivi d\'Acquisition de Compétences" src="./_img/logo_grand2.gif" />' ; ?></h1>
 	<?php echo $CONTENU_PAGE;
 	// var_dump($_SESSION);

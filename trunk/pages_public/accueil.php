@@ -144,6 +144,7 @@ if($ALERTE_SSO)
 	<li>Soyez au courant des nouveautés du projet, avec <a  href="http://competences.sesamath.net/_rss/rss.xml"><img src="./_img/rss.gif" alt="RSS" /> le flux RSS</a> !</li>
 </ul>
 </div>
+<p><a href="http://www.intertice.fr/index.php/animations/animations-mardi-11-mai" class="lien_ext"><img alt="Intertice 2010" src="./_img/communication/annonce_2010_intertice.jpg" /></a></p>
 
 <hr />
 <div>

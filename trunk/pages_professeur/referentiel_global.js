@@ -391,7 +391,7 @@ $(document).ready
 		);
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-//	Clic sur l'image pour Ajouter un référentiel ; cas d'une matière spécifique à l'établissement traité, ou chargement de choisir_referentiel sinon
+//	Clic sur l'image pour Ajouter un référentiel ; cas d'une matière spécifique à l'établissement traité, ou affichage de choisir_referentiel sinon
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
 		$('q.ajouter').live // live est utilisé pour prendre en compte les nouveaux éléments créés
@@ -438,217 +438,91 @@ $(document).ready
 				}
 				else
 				{
-					// C'est une matière commune : on propose d'importer un référentiel partagé existant
+					// C'est une matière commune : on propose d'importer un référentiel partagé existant si c'est possible
 					$('#voir_referentiel').html("&nbsp;");
 					afficher_masquer_images_action('hide');
-					new_span = '<span><input id="succes" name="succes" type="hidden" value="" /><label for="'+ids+'" class="loader">Demande envoyée... Veuillez patienter.</label></span>';
+					new_span = '<span><input id="succes" name="succes" type="hidden" value="" /><label for="'+ids+'" class="valide">Faites votre choix ci-dessous...</label></span>';
 					$(this).after(new_span);
-					$.ajax
-					(
-						{
-							type : 'POST',
-							url : 'ajax.php?dossier='+DOSSIER+'&fichier='+FICHIER,
-							data : 'action=Appeler&ids='+ids+'&adresse='+encodeURIComponent(document.location),
-							dataType : "html",
-							error : function(msg,string)
-							{
-								$('label[for='+ids+']').removeAttr("class").addClass("alerte").html('Echec de la connexion ! Veuillez recommencer.').fadeOut(2000,function(){$('label[for='+ids+']').remove();afficher_masquer_images_action('show');});
-								return false;
-							},
-							success : function(responseHTML)
-							{
-								maj_clock(1);
-								if(responseHTML.substring(0,7)=='<object')
-								{
-									$('label[for='+ids+']').removeAttr("class").addClass("valide").html("Référentiels disponibles affichés ci-dessous...");
-									tab_ids = ids.split('_');
-									$('#object_container').html(responseHTML).parent().show();
-									surveiller_url();
-								}
-								else if(responseHTML.substring(0,6)=='<label')
-								{
-									$('label[for='+ids+']').removeAttr("class").addClass("valide").html("Référentiels disponibles affichés ci-dessous...");
-									tab_ids = ids.split('_');
-									$('#object_container').html(responseHTML).parent().show();
-								}
-								else
-								{
-									$('label[for='+ids+']').removeAttr("class").addClass("alerte").html(responseHTML).fadeOut(2000,function(){$('label[for='+ids+']').remove();afficher_masquer_images_action('show');});
-								}
-							}
-						}
-					);
+					$('#choisir_referentiel').show();
 				}
 			}
 		);
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-//	Changement de matière -> desactiver les niveaux classiques en cas de matière transversale
+//	Clic sur le lien pour Annuler le choix d'un référentiel
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
-		$('#f_matiere').change
-		(
-			function()
-			{
-				modif_niveau_selected = 0; // 0 = pas besoin modifier / 1 = à modifier / 2 = déjà modifié
-				matiere_id = $('#f_matiere').val();
-				$("#f_niveau option").each
-				(
-					function()
-					{
-						niveau_id = $(this).val();
-						findme = '.'+niveau_id+'.';
-						// Les niveaux "paliers" sont tout le temps accessibles
-						if(listing_id_niveaux_paliers.indexOf(findme) == -1)
-						{
-							// matière classique -> tous niveaux actifs
-							if(matiere_id != id_matiere_transversale)
-							{
-								$(this).removeAttr('disabled');
-							}
-							// matière transversale -> desactiver les autres niveaux
-							else
-							{
-								$(this).attr('disabled',true);
-								modif_niveau_selected = Math.max(modif_niveau_selected,1);
-							}
-						}
-						// C'est un niveau palier ; le sélectionner si besoin
-						else if(modif_niveau_selected==1)
-						{
-							$(this).attr('selected',true);
-							modif_niveau_selected = 2;
-						}
-					}
-				);
-			}
-		);
-
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-//	Clic sur le bouton pour chercher des référentiels partagés sur d'autres niveaux ou matières
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-
-		$('#f_submit_lister').click
+		$('#choisir_annuler').click
 		(
 			function()
 			{
 				$('#voir_referentiel').html("&nbsp;");
-				matiere_id = $('#f_matiere').val();
-				niveau_id  = $('#f_niveau').val();
-				if(!matiere_id)
+				$('#choisir_referentiel').hide();
+				$('#ajax_msg_choisir').removeAttr("class").html("&nbsp;");
+				if ( $('#choisir_existant').length )
 				{
-					$('#ajax_msg_actualiser').removeAttr("class").addClass("erreur").html("Il faut choisir une matière !");
-					return false;
+					$('#choisir_existant').html("&nbsp;");
 				}
-				else if(!niveau_id)
-				{
-					$('#ajax_msg_actualiser').removeAttr("class").addClass("erreur").html("Il faut choisir un niveau !");
-					return false;
-				}
-				$('#ajax_msg_actualiser').removeAttr("class").addClass("loader").html('Demande envoyée... Veuillez patienter.');
-				$.ajax
-				(
-					{
-						type : 'POST',
-						url : 'ajax.php?dossier='+DOSSIER+'&fichier='+FICHIER,
-						data : 'action=Lister&ids='+ids+'&matiere_id='+matiere_id+'&niveau_id='+niveau_id,
-						dataType : "html",
-						error : function(msg,string)
-						{
-							$('#ajax_msg_actualiser').removeAttr("class").addClass("alerte").html('Echec de la connexion ! Veuillez recommencer.');
-							return false;
-						},
-						success : function(responseHTML)
-						{
-							maj_clock(1);
-							if(responseHTML.substring(0,4)!='<li>')
-							{
-								$('#ajax_msg_actualiser').removeAttr("class").addClass("alerte").html(responseHTML);
-							}
-							else
-							{
-								$('#ajax_msg_actualiser').removeAttr("class").html("&nbsp;");
-								$('#choisir_referentiel ul').html('<li><input id="etabl_0" name="donneur" type="radio" value="0" /><label for="etabl_0"> Référentiel vierge.</label></li>'+responseHTML);
-								infobulle();
-							}
-						}
-					}
-				);
+				$('#succes').parent().remove();
+				afficher_masquer_images_action('show');
+				return(false);
 			}
 		);
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-//	Clic sur l'image pour Voir un référentiel d'un autre établissement
+//	Clic sur le lien pour Lancer une recherche sur le serveur communautaire
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
-		$('#choisir_referentiel q.voir').live // live est utilisé pour prendre en compte les nouveaux éléments créés
-		('click',
+		$('#choisir_rechercher').click
+		(
 			function()
 			{
+				// Récup des infos
 				ids = $('#succes').parent().parent().attr('id');
-				matiere_id = $('#f_matiere').val();
-				niveau_id  = $('#f_niveau').val();
-				matiere = $('#f_matiere option:selected').text();
-				niveau = $('#f_niveau option:selected').text();
-				donneur = $(this).parent().children('input').val();
-				etabl   = $(this).parent().children('label').text();
-				new_label = '<label id="temp" class="loader">Demande envoyée... Veuillez patienter.</label>';
-				$(this).after(new_label);
-				$.ajax
-				(
-					{
-						type : 'POST',
-						url : 'ajax.php?dossier='+DOSSIER+'&fichier='+FICHIER,
-						data : 'action=Voir&ids='+ids+'&donneur='+donneur+'&matiere_id='+matiere_id+'&niveau_id='+niveau_id,
-						dataType : "html",
-						error : function(msg,string)
-						{
-							$('label[id=temp]').removeAttr("class").addClass("alerte").html('Echec de la connexion ! Veuillez recommencer.').fadeOut(2000,function(){$('label[id=temp]').remove();});
-							return false;
-						},
-						success : function(responseHTML)
-						{
-							maj_clock(1);
-							if(responseHTML.substring(0,18)!='<ul class="ul_m1">')
-							{
-								$('label[id=temp]').removeAttr("class").addClass("alerte").html(responseHTML).fadeOut(2000,function(){$('label[id=temp]').remove();});
-							}
-							else
-							{
-								$('#voir_referentiel').html('<h2>'+etabl+'</h2>'+responseHTML+'<p />');
-								infobulle();
-								$('label[id=temp]').removeAttr("class").addClass("valide").html("Contenu affiché ci-dessous !").fadeOut(2000,function(){$('label[id=temp]').remove();});
-							}
-						}
-					}
-				);
+				tab_ids = ids.split('_')
+				matiere_id = tab_ids[2];
+				niveau_id  = tab_ids[3];
+				data = url_debut + '?mode=object' + '&fichier=referentiel_choisir' + '&structure_id=' + structure_id + '&structure_key=' + structure_key + '&matiere_id=' + matiere_id + '&niveau_id=' + niveau_id + '&adresse_retour=' + encodeURIComponent(document.location.href);	// Mettre href sinon c'est le dernier appel ajax (non visible dans la barre d'adresse) qui compte...
+				// Afficher / masquer ce qu'il faut
+				$('form').hide();
+				$('#cadre').attr('data',data).parent().show();
+				surveiller_url();
+				return(false);
 			}
 		);
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-//	Clic sur l'image pour Valider le choix d'un referentiel
+//	Clic sur le lien pour Annuler la recherche sur le serveur communautaire
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
-		$('a.Valider_choisir').click
+		$('#rechercher_annuler').click
+		(
+			function()
+			{
+				$('form').show();
+				$('#cadre').attr('data','').parent().hide();
+				$("body").stopTime('look_hash');
+				return(false);
+			}
+		);
+
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+//	Clic sur un lien pour Valider le choix d'un referentiel (vierge ou issu du serveur communautaire)
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
+		$('a.choisir_valider').click
 		(
 			function()
 			{
 				ids = $('#succes').parent().parent().attr('id');
-				matiere_id = $('#f_matiere').val();
-				niveau_id  = $('#f_niveau').val();
-				donneur = $("#choisir_referentiel input[type=radio]:checked").val();
-				if(isNaN(donneur))	// normalement impossible, sauf si par exemple on triche avec la barre d'outils Web Developer...
-				{
-					$('#ajax_msg_choisir').removeAttr("class").addClass("erreur").html("Veuillez cocher un bouton !");
-					return false;
-				}
+				referentiel_id = $(this).attr('href').substring(1);
 				$('#ajax_msg_choisir').removeAttr("class").addClass("loader").html("Demande envoyée... Veuillez patienter.");
 				$.ajax
 				(
 					{
 						type : 'POST',
 						url : 'ajax.php?dossier='+DOSSIER+'&fichier='+FICHIER,
-						data : 'action=Ajouter&ids='+ids+'&donneur='+donneur+'&matiere_id='+matiere_id+'&niveau_id='+niveau_id,
+						data : 'action=Ajouter&ids='+ids+'&referentiel_id='+referentiel_id,
 						dataType : "html",
 						error : function(msg,string)
 						{
@@ -665,8 +539,8 @@ $(document).ready
 							else
 							{
 								$('#'+ids).html('<q class="voir" title="Voir le détail de ce référentiel."></q><q class="partager" title="Modifier le partage de ce référentiel."></q><q class="envoyer_non" title="Un référentiel non partagé ne peut pas être transmis à la collectivité."></q><q class="calculer" title="Modifier le mode de calcul associé à ce référentiel."></q><q class="supprimer" title="Supprimer ce référentiel."></q>');
-									$('#'+ids).prev().removeAttr("class").addClass("v").attr('lang',methode_calcul_langue).html(methode_calcul_texte);
-								if(donneur>0)
+								$('#'+ids).prev().removeAttr("class").addClass("v").attr('lang',methode_calcul_langue).html(methode_calcul_texte);
+								if(referentiel_id!='0')
 								{
 									$('#'+ids).prev().prev().removeAttr("class").addClass("v").attr('lang','bof').html('Référentiel présent. <img title="Référentiel dont le partage est sans intérêt (pas novateur)." src="./_img/partage0.gif" />');
 								}
@@ -675,29 +549,11 @@ $(document).ready
 									$('#'+ids).prev().prev().removeAttr("class").addClass("v").attr('lang','non').html('Référentiel présent. <img title="Référentiel caché aux autres établissements." src="./_img/partage0.gif" />');
 								}
 								infobulle();
-								$('a.Annuler_choisir').click();
+								$('#choisir_annuler').click();
 							}
 						}
 					}
 				);
-			}
-		);
-
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-//	Clic sur l'image pour Annuler le choix d'un référentiel
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-
-		$('a.Annuler_choisir').click
-		(
-			function()
-			{
-				$('#voir_referentiel').html("&nbsp;");
-				$('#choisir_referentiel').hide();
-				$('#choisir_referentiel ul.ul_m2').html("&nbsp;");
-				$('#ajax_msg_choisir').removeAttr("class").html("&nbsp;");
-				$('#succes').parent().remove();
-				afficher_masquer_images_action('show');
-				return(false);
 			}
 		);
 

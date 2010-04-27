@@ -317,7 +317,7 @@ function envoyer_referentiel_XML($structure_id,$structure_key,$matiere_id,$nivea
 	require_once('./_inc/class.httprequest.php');
 	$tab_get = array();
 	$tab_get[] = 'mode=httprequest';
-	$tab_get[] = 'fichier=envoyer_referentiel';
+	$tab_get[] = 'fichier=referentiel_uploader';
 	$tab_get[] = 'structure_id='.$structure_id;
 	$tab_get[] = 'structure_key='.$structure_key;
 	$tab_get[] = 'matiere_id='.$matiere_id;
@@ -330,6 +330,43 @@ function envoyer_referentiel_XML($structure_id,$structure_key,$matiere_id,$nivea
 	$requete_envoi   = new HTTPRequest(SERVEUR_COMMUNAUTAIRE.'?'.implode('&',$tab_get));
 	$requete_reponse = $requete_envoi->DownloadToString();
 	return $requete_reponse;
+}
+
+/**
+ * recuperer_referentiel_XML
+ * Demander à ce que nous soit retourne le XML d'un référentiel depuis un autre serveur (en bidouillant...).
+ * 
+ * @param int    $structure_id
+ * @param string $structure_key
+ * @param int    $referentiel_id
+ * @return string         le XML ou un message d'erreur
+ */
+
+function recuperer_referentiel_XML($structure_id,$structure_key,$referentiel_id)
+{
+	/*
+	Comme pour la fonction envoyer_referentiel_XML(), l'arbre est compressé avant d'être transféré.
+	Il faut donc le décompresser une fois réceptionné.
+	*/
+	require_once('./_inc/class.httprequest.php');
+	$tab_get = array();
+	$tab_get[] = 'mode=httprequest';
+	$tab_get[] = 'fichier=referentiel_downloader';
+	$tab_get[] = 'structure_id='.$structure_id;
+	$tab_get[] = 'structure_key='.$structure_key;
+	$tab_get[] = 'referentiel_id='.$referentiel_id;
+	$requete_envoi   = new HTTPRequest(SERVEUR_COMMUNAUTAIRE.'?'.implode('&',$tab_get));
+	$requete_reponse = $requete_envoi->DownloadToString();
+	if(mb_substr($requete_reponse,0,6)=='Erreur')
+	{
+		return $requete_reponse;
+	}
+	$arbreXML = @gzuncompress( base64_decode( $_GET['arbreXML'] ) , 35000 ) ;
+	if($arbreXML==false)
+	{
+		return 'Erreur lors de la décompression du référentiel transmis.';
+	}
+	return $arbreXML;
 }
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-

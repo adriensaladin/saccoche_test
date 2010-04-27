@@ -50,11 +50,17 @@ $TITRE = "Gérer les référentiels";
 		$methode_calcul_texte = 'Les '.$_SESSION['CALCUL_LIMITE'].' dernières saisies &times;'.substr($chaine,$debut,$long).'.';
 	}
 	?>
-	var methode_calcul_langue      ="<?php echo $methode_calcul_langue ?>";
-	var methode_calcul_texte       ="<?php echo $methode_calcul_texte ?>";
+	var methode_calcul_langue      = "<?php echo $methode_calcul_langue ?>";
+	var methode_calcul_texte       = "<?php echo $methode_calcul_texte ?>";
 	var id_matiere_transversale    = "<?php echo ID_MATIERE_TRANSVERSALE ?>";
 	var listing_id_niveaux_paliers = "<?php echo LISTING_ID_NIVEAUX_PALIERS ?>";
+	// Pour appeler le serveur communautaire
+	var url_debut                  = "<?php echo html(SERVEUR_COMMUNAUTAIRE) ?>";
+	var structure_id               = "<?php echo $_SESSION['STRUCTURE_ID'] ?>";
+	var structure_key              = "<?php echo $_SESSION['STRUCTURE_KEY'] ?>";
 </script>
+
+<form action="">
 
 <ul class="puce">
 	<li><span class="manuel"><a class="pop_up" href="./aide.php?fichier=referentiel_organisation_competences">DOC : Organisation des compétences dans les référentiels.</a></span></li>
@@ -65,8 +71,6 @@ $TITRE = "Gérer les référentiels";
 </ul>
 
 <hr />
-
-<form action="">
 
 <?php
 // J'ai séparé en plusieurs requêtes au bout de plusieurs heures sans m'en sortir (entre les matières sans coordonnateurs, sans référentiel, les deux à la fois...).
@@ -186,11 +190,21 @@ else
 <hr />
 
 <div id="choisir_referentiel" class="hide">
-	<h2>Liste des référentiels disponibles</h2>
-	<button name="Annuler_choisir" type="button"><img alt="Annuler" src="./_img/action/action_annuler.png" /> Annuler la création d'un référentiel.</button><br />
-	<button name="Valider_choisir" type="button"><img alt="Valider" src="./_img/action/action_valider.png" /> Démarrer avec un référentiel vierge.</button>
-	<div id="object_container">
-	</div>
+	<h2>Choisir un référentiel</h2>
+	<a class="choisir_valider" href="#0"><img alt=" vierge" src="./_img/action/action_valider.png" /> Démarrer avec un référentiel vierge.</a><br />
+	<?php
+	if( (!$_SESSION['STRUCTURE_ID']) || (!$_SESSION['STRUCTURE_KEY']) )
+	{
+		echo'<label for="rien" class="erreur">Pour pouvoir effectuer la recherche d\'un référentiel partagé sur le serveur communautaire, un administrateur doit identifier cette installation de SACoche.</label><br />';
+	}
+	else
+	{
+		echo'<a id="choisir_rechercher" href="#"><img alt="" src="./_img/find.png" /> Rechercher parmi les référentiels partagés sur le serveur communautaire.</a><br />';
+		echo'<a class="choisir_valider" href="#"></a><br />';
+	}
+	?>
+	<a id="choisir_annuler" href="#"><img alt="" src="./_img/action/action_annuler.png" /> Annuler la création d'un référentiel.</a><br />
+	<label id="ajax_msg_choisir">&nbsp;</label>
 </div>
 
 <div id="voir_referentiel">
@@ -198,4 +212,8 @@ else
 
 </form>
 
-
+<div id="object_container" class="hide">
+	<h2>Rechercher un référentiel partagé sur le serveur communautaire</h2>
+	<p><a id="rechercher_annuler" href="#"><img alt="" src="./_img/action/action_annuler.png" /> Annuler la recherche d'un référentiel.</a></p>
+	<object id="cadre" data="" height="500px" style="width:100%"><img src="./_img/ajax/ajax_loader.gif" /> Appel au serveur communautaire...</object>
+</div>

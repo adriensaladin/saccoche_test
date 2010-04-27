@@ -31,11 +31,10 @@ if(($_SESSION['STRUCTURE_ID']==ID_DEMO)&&($_GET['action']!='Voir')){exit('Action
 $action  = (isset($_POST['action']))  ? $_POST['action'] : '';
 $ids     = (isset($_POST['ids']))     ? $_POST['ids']    : '';
 
-$adresse = (isset($_POST['adresse'])) ? clean_texte($_POST['adresse'])  : '';	// Transmettre l'URL de la page pour être certain de rappeler le bon URL au retour du serveur communautaire
-$partage = (isset($_POST['partage'])) ? clean_texte($_POST['partage'])  : '';	// Changer l'état de partage
-$methode = (isset($_POST['methode'])) ? clean_texte($_POST['methode'])  : '';	// Changer le mode de calcul
-$limite  = (isset($_POST['limite']))  ? clean_entier($_POST['limite'])  : -1;	// Changer le nb d'items pris en compte
-$donneur = (isset($_POST['donneur'])) ? clean_entier($_POST['donneur']) : -1;	// Etablissement donneur d'un référentiel
+$partage        = (isset($_POST['partage']))        ? clean_texte($_POST['partage'])         : '';	// Changer l'état de partage
+$methode        = (isset($_POST['methode']))        ? clean_texte($_POST['methode'])         : '';	// Changer le mode de calcul
+$limite         = (isset($_POST['limite']))         ? clean_entier($_POST['limite'])         : -1;	// Changer le nb d'items pris en compte
+$referentiel_id = (isset($_POST['referentiel_id'])) ? clean_entier($_POST['referentiel_id']) : -1;	// Référence du référentiel importé (0 si vierge)
 
 if(mb_substr_count($ids,'_')!=3)
 {
@@ -109,13 +108,24 @@ elseif( ($action=='Envoyer') && ($perso==0) && $matiere_id && $niveau_id )
 	{
 		exit('Pour pouvoir échanger avec le serveur communautaire, un administrateur doit déclarer cette installation de SACoche.');
 	}
+	// Envoyer le référentiel vers le serveur de partage
 	$DB_TAB = DB_select_arborescence(0,$matiere_id,$niveau_id,$only_item=FALSE,$socle_nom=FALSE);
 	$arbreXML = exporter_referentiel_XML($DB_TAB);
 	$reponse = envoyer_referentiel_XML($_SESSION['STRUCTURE_ID'],$_SESSION['STRUCTURE_KEY'],$matiere_id,$niveau_id,$arbreXML);
+	// Analyse de la réponse retournée par le serveur de partage
 	if($reponse!='ok')
 	{
 		exit($reponse);
 	}
+	// Tout s'est bien passé si on arrive jusque là...
+	$date_mysql = date("Y-m-d");
+	$DB_SQL = 'UPDATE sacoche_referentiel ';
+	$DB_SQL.= 'SET referentiel_partage_date=:date ';
+	$DB_SQL.= 'WHERE matiere_id=:matiere_id AND niveau_id=:niveau_id ';
+	$DB_SQL.= 'LIMIT 1';
+	$DB_VAR = array(':matiere_id'=>$matiere_id,':niveau_id'=>$niveau_id,':date'=>$date_mysql);
+	DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+	// Retour envoyé
 	exit('<img title="Référentiel partagé sur le serveur communautaire (MAJ le '.affich_date(date("Y-m-d")).')." alt="" src="./_img/partage1.gif" />');
 }
 
@@ -172,55 +182,42 @@ elseif( ($action=='Calculer') && $matiere_id && $niveau_id && in_array($methode,
 }
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-// Appeler le serveur communautaire pour y choisir un référentiel (préselectionner une matière et un niveau donnés)
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-elseif( ($action=='Appeler') && $matiere_id && $niveau_id && $adresse )
-{
-	if( (!$_SESSION['STRUCTURE_ID']) || (!$_SESSION['STRUCTURE_KEY']) )
-	{
-		exit('<label for="rien" class="erreur">Pour pouvoir échanger avec le serveur communautaire, un administrateur doit déclarer cette installation de SACoche.</label><br />Dans l\'attente, il n\'est pas possible de sélectionner un référentiel partagé...');
-	}
-	else
-	{
-		$tab_get = array();
-		$tab_get[] = 'mode=object';
-		$tab_get[] = 'fichier=choisir_referentiel';
-		$tab_get[] = 'structure_id='.$_SESSION['STRUCTURE_ID'];
-		$tab_get[] = 'structure_key='.$_SESSION['STRUCTURE_KEY'];
-		$tab_get[] = 'matiere_id='.$matiere_id;
-		$tab_get[] = 'niveau_id='.$niveau_id;
-		$tab_get[] = 'adresse_retour='.urlencode($adresse);
-		exit('<object data="'.SERVEUR_COMMUNAUTAIRE.'?'.implode('&amp;',$tab_get).'" height="500px" style="width:100%"><img src="./_img/ajax/ajax_loader.gif" /> Appel au serveur communautaire...</object>');
-	}
-}
-
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 // Ajouter un référentiel
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 elseif( ($action=='Ajouter') && $matiere_id && $niveau_id )
 {
-	if( ($perso==1) || ($donneur==0) )
+	if( ($perso==1) || ($referentiel_id==0) )
 	{
 		// C'est une matière spécifique à l'établissement, ou une demande de partir d'un référentiel vierge : on ne peut que créer un nouveau référentiel
 		$partage = ($perso==1) ? 'hs' : 'non' ;
+		$date_mysql = date("Y-m-d");
 		$DB_SQL = 'INSERT INTO sacoche_referentiel ';
-		$DB_SQL.= 'VALUES(:matiere_id,:niveau_id,:partage,:succes,:methode,:limite)';
-		$DB_VAR = array(':matiere_id'=>$matiere_id,':niveau_id'=>$niveau_id,':partage'=>$partage,':succes'=>0,':methode'=>$_SESSION['CALCUL_METHODE'],':limite'=>$_SESSION['CALCUL_LIMITE']);
+		$DB_SQL.= 'VALUES(:matiere_id,:niveau_id,:etat,:date,:methode,:limite)';
+		$DB_VAR = array(':matiere_id'=>$matiere_id,':niveau_id'=>$niveau_id,':etat'=>$partage,':date'=>$date_mysql,':methode'=>$_SESSION['CALCUL_METHODE'],':limite'=>$_SESSION['CALCUL_LIMITE']);
 		DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-		echo'ok';
+		exit('ok');
 	}
-	elseif($donneur>0)
+	elseif($referentiel_id>0)
 	{
-		// La matière et le niveau donneurs peuvent ne pas correspondre avec la matière et le niveau de l'établissement.
-		$donneur_matiere_id = (isset($_POST['matiere_id'])) ? $_POST['matiere_id'] : $matiere_id ;
-		$donneur_niveau_id  = (isset($_POST['niveau_id']))  ? $_POST['niveau_id']  : $niveau_id  ;
-		// C'est une matière partagée, et une demande de dupliquer le référentiel d'un autre établissement
+		// C'est une matière partagée, et une demande de récupérer un référentiel provenant du serveur communautaire pour se le dupliquer
+		if( (!$_SESSION['STRUCTURE_ID']) || (!$_SESSION['STRUCTURE_KEY']) )
+		{
+			exit('Pour pouvoir échanger avec le serveur communautaire, un administrateur doit déclarer cette installation de SACoche.');
+		}
+		$arbreXML = recuperer_referentiel_XML($_SESSION['STRUCTURE_ID'],$_SESSION['STRUCTURE_KEY'],$referentiel_id);
+		if(mb_substr($arbreXML,0,6)=='Erreur')
+		{
+			exit($arbreXML);
+		}
+		// XML -> BDD
+/*
 		// On ajoute l'entrée dans la table des référentiels
 		$DB_SQL = 'INSERT INTO sacoche_referentiel ';
-		$DB_SQL.= 'VALUES(:matiere_id,:niveau_id,:partage,:succes,:methode,:limite)';
-		$DB_VAR = array(':matiere_id'=>$matiere_id,':niveau_id'=>$niveau_id,':partage'=>'bof',':succes'=>0,':methode'=>$_SESSION['CALCUL_METHODE'],':limite'=>$_SESSION['CALCUL_LIMITE']);
+		$DB_SQL.= 'VALUES(:matiere_id,:niveau_id,:etat,:date,:methode,:limite)';
+		$DB_VAR = array(':matiere_id'=>$matiere_id,':niveau_id'=>$niveau_id,':etat'=>'bof',':date'=>$date_mysql,':methode'=>$_SESSION['CALCUL_METHODE'],':limite'=>$_SESSION['CALCUL_LIMITE']);
 		DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 		// On récupère et recopie le contenu du référentiel
+		
 		// ***** $DB_TAB = DB_select_arborescence($donneur,$prof_id=0,$donneur_matiere_id,$donneur_niveau_id,$only_item=false,$socle_nom=false);
 		$domaine_id = 0;
 		$theme_id = 0;
@@ -260,24 +257,18 @@ elseif( ($action=='Ajouter') && $matiere_id && $niveau_id )
 				DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 			}
 		}
-		// On valorise le référentiel dupliqué
-		$DB_SQL = 'UPDATE sacoche_referentiel ';
-		$DB_SQL.= 'SET sacoche_referentiel_succes=sacoche_referentiel_succes+1 ';
-		$DB_SQL.= 'WHERE matiere_id=:matiere_id AND niveau_id=:niveau_id AND sacoche_structure_id=:structure_id ';
-		$DB_SQL.= 'LIMIT 1';
-		$DB_VAR = array(':matiere_id'=>$donneur_matiere_id,':niveau_id'=>$donneur_niveau_id,':structure_id'=>$donneur);
-		DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 		echo'ok';
+*/
 	}
-	elseif($donneur==-1)
+	elseif($referentiel_id==-1)
 	{
 		// C'est une matière partagée, et une demande de dupliquer le référentiel d'un autre établissement, mais rien n'est transmis (normalement impossible)
-		echo'Erreur avec les données transmises !';
+		exit('Erreur avec les données transmises !');
 	}
 }
 
 else
 {
-	echo'Erreur avec les données transmises !';
+	exit('Erreur avec les données transmises !');
 }
 ?>

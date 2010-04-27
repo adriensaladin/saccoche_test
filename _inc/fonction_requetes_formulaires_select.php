@@ -704,7 +704,7 @@ function DB_OPT_eleves_regroupement($groupe_type,$groupe_id,$user_statut)
 
 /**
  * Retourner un tableau [valeur texte optgroup] des structures (choix d'établissements en page d'accueil)
- * le continent sert à pouvoir regrouper les options
+ * l'indice géographique sert à pouvoir regrouper les options
  * 
  * @param void
  * @return array|string
@@ -729,41 +729,6 @@ function DB_OPT_structures_sacoche()
 	else
 	{
 		return 'Aucun autre établissement n\'est enregistré !';
-	}
-}
-
-/**
- * Retourner un tableau [valeur texte optgroup] des structures qui partagent au moins un référentiel
- * le continent sert à pouvoir regrouper les options
- * 
- * @param string $listing_niveaux   id des niveaux séparés par des virgules
- * @return array|string
- */
-
-function DB_OPT_structures_partage($listing_niveaux)
-{
-	$DB_SQL = 'SELECT * FROM sacoche_referentiel ';
-	$DB_SQL.= 'LEFT JOIN sacoche_structure USING (structure_id) ';
-	$DB_SQL.= 'WHERE structure_id!='.ID_DEMO.' AND niveau_id IN('.$listing_niveaux.') ';
-	$DB_SQL.= 'GROUP BY structure_id ';
-	$DB_SQL.= 'ORDER BY geo_continent_ordre ASC, geo_pays_nom ASC, geo_departement_numero ASC, geo_commune_nom ASC';
-	$DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , null);
-	if(count($DB_TAB))
-	{
-		$tab_retour_champs = array();
-		foreach($DB_TAB as $DB_ROW)
-		{
-			$texte = ($DB_ROW['geo_continent_ordre']>2) ? $DB_ROW['geo_pays_nom'].' | ' : $DB_ROW['geo_departement_numero'].' '.$DB_ROW['geo_departement_nom'].' | ';
-			$texte.= $DB_ROW['geo_commune_nom'].' | ';
-			$texte.= $DB_ROW['structure_type_ref'].' '.$DB_ROW['structure_nom'];
-			$GLOBALS['tab_select_optgroup'][$DB_ROW['geo_continent_ordre']] = $DB_ROW['geo_continent_nom'];
-			$tab_retour_champs[] = array('valeur'=>$DB_ROW['structure_id'],'texte'=>$texte,'optgroup'=>$DB_ROW['geo_continent_ordre']);
-		}
-		return $tab_retour_champs;
-	}
-	else
-	{
-		return 'Aucun établissement ne partage de référentiel !';
 	}
 }
 

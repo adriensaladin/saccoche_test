@@ -613,7 +613,7 @@ $(document).ready
 //	Gérer la saisie des acquisitions au clavier
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 		$('#table_saisir tbody td input').live // live est utilisé pour prendre en compte les nouveaux éléments créés
-		('keyup',
+		('keydown',	// keydown au lieu de keyup permet de laisser appuyer sur la touche pour répéter une action
 			function(e)
 			{
 				if(pilotage=='clavier')

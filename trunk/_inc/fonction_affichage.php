@@ -79,46 +79,6 @@ function affich_date($date)
 }
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-//	Afficher les statistiques en page d'accueil => Retirées car incompatibles avec multi-bases et décentralisation
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-
-function affichage_stats()
-{
-	// Stats date
-	$nb_jours = floor( ( strtotime(date("Y-m-d H:i:s")) - date(strtotime('2009-08-31 17:09:00')) ) / 86400 );
-	// Stats effectifs globaux : nb structures
-	$DB_SQL = 'SELECT COUNT(sacoche_structure_id) AS nombre FROM sacoche_structure';
-	$DB_TAB = DB::queryRow(SACOCHE_WEBMESTRE_BD_NAME , $DB_SQL , null);
-	$nb_total_structure = $DB_TAB['nombre'];
-	// Stats effectifs globaux : nb professeurs, nb élèves
-	$DB_SQL = 'SELECT user_profil, COUNT(*) AS nombre FROM sacoche_user GROUP BY user_profil';
-	$DB_TAB = DB::queryTab(SACOCHE_WEBMESTRE_BD_NAME , $DB_SQL , null , TRUE);
-	$nb_total_professeur = (count($DB_TAB)) ? $DB_TAB['professeur'][0]['nombre'] : 0 ;
-	$nb_total_eleve      = (count($DB_TAB)) ? $DB_TAB['eleve'][0]['nombre'] : 0 ;
-	// Stats effectifs globaux : nb compétences
-	$DB_SQL = 'SELECT COUNT(item_id) AS nombre FROM sacoche_referentiel_item';
-	$DB_TAB = DB::queryRow(SACOCHE_WEBMESTRE_BD_NAME , $DB_SQL , null);
-	$nb_total_compet = $DB_TAB['nombre'];
-	// Stats effectifs globaux : nb notes
-	$DB_SQL = 'SELECT COUNT(*) AS nombre FROM sacoche_saisie';
-	$DB_TAB = DB::queryRow(SACOCHE_WEBMESTRE_BD_NAME , $DB_SQL , null);
-	$nb_total_note = $DB_TAB['nombre'];
-	//Stats évals précises : nb structures, nb professeurs, nb élèves, nb compétences, nb notes
-	$DB_SQL = 'SELECT COUNT( DISTINCT prof_id ) AS nb_professeur, COUNT( DISTINCT sacoche_structure_id ) AS nb_structure, COUNT( * ) AS nb_note, COUNT( DISTINCT eleve_id ) AS nb_eleve, COUNT( DISTINCT item_id ) AS nb_compet FROM sacoche_saisie';
-	$DB_TAB = DB::queryRow(SACOCHE_WEBMESTRE_BD_NAME , $DB_SQL , null);
-	$nb_professeur = $DB_TAB['nb_professeur'] ;
-	$nb_structure  = $DB_TAB['nb_structure'] ;
-	$nb_note       = $DB_TAB['nb_note'];
-	$nb_eleve      = $DB_TAB['nb_eleve'] ;
-	$nb_compet     = $DB_TAB['nb_compet'];
-	// Retour de l'affichage
-	$retour  = 'Logiciel expérimenté depuis '.$nb_jours.' jours.<br />';
-	$retour .= 'Sont enregistrés : '.$nb_total_structure.' établissements, '.$nb_total_professeur.' professeurs, '.$nb_total_eleve.' élèves et '.$nb_total_compet.' items.<br />';
-	$retour .= 'En pratique : dans '.$nb_structure.' établissements '.$nb_professeur.' professeurs ont évalué '.$nb_compet.' items pour '.$nb_eleve.' élèves avec '.$nb_note.' saisies.';
-	return $retour;
-}
-
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 // Afficher une note Lomer pour une sortie HTML
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 

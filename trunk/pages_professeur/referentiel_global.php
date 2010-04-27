@@ -64,9 +64,6 @@ $TITRE = "Gérer les référentiels";
 	<li><span class="danger">Détruire un référentiel supprime les résultats associés de tous les élèves !</span></li>
 </ul>
 
-<a id="start_look_hash" href="http://competences.sesamath.net/referentiel_choisir.php?retour=<?php echo SERVEUR_ADRESSE ?>" rel="superbox[iframe]">Cliquer ici !</a>
-Hash : <span id="voir_hash"></span>
-
 <hr />
 
 <form action="">

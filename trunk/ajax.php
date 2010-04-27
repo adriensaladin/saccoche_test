@@ -31,7 +31,8 @@
 // Atteste l'appel de cette page avant l'inclusion d'une autre
 define('SACoche','ajax');
 
-// Fonctions de redirections et Configuration serveur
+// Constantes / Fonctions de redirections / Configuration serveur
+require_once('./_inc/constantes.php');
 require_once('./_inc/fonction_redirection.php');
 require_once('./_inc/config_serveur.php');
 

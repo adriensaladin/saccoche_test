@@ -120,6 +120,7 @@ else
 		}
 	}
 	// On construit et affiche le tableau résultant
+	$tab_paliers = explode( '.' , substr(LISTING_ID_NIVEAUX_PALIERS,1,-1) );
 	$affichage = '<table class="comp_view"><thead><tr><th>Matière</th><th>Niveau</th><th>Référentiel</th><th>Méthode de calcul</th><th class="nu"></th></tr></thead><tbody>'."\r\n"; // <th>Coordonnateur(s)</th>
 	foreach($tab_matiere as $matiere_id => $tab)
 	{
@@ -131,7 +132,7 @@ else
 		$affichage_suite = false;
 		foreach($tab_niveau as $niveau_id => $niveau_nom)
 		{
-			if( ($matiere_id!=ID_MATIERE_TRANSVERSALE) || (in_array($niveau_id,$GLOBALS['TAB_ID_NIVEAUX_PALIERS'])) )
+			if( ($matiere_id!=ID_MATIERE_TRANSVERSALE) || (in_array($niveau_id,$tab_paliers)) )
 			{
 				$ids = 'ids_'.$matiere_id.'_'.$niveau_id;
 				$colonnes = (isset($tab_colonne[$matiere_id][$niveau_id])) ? $tab_colonne[$matiere_id][$niveau_id].'<td class="nu" id="'.$ids.'"><q class="voir" title="Voir le détail de ce référentiel."></q></td>' : '<td class="r">Absence de référentiel.</td><td class="r">Sans objet.</td><td class="nu"></td></td>' ;

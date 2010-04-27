@@ -35,6 +35,11 @@ $select_matiere = afficher_select(DB_OPT_matieres_communes($_SESSION['MATIERES']
 $select_niveau  = afficher_select(DB_OPT_niveaux_etabl($_SESSION['NIVEAUX'],$_SESSION['PALIERS']) , $select_nom='f_niveau'  , $option_first='oui' , $selection=false , $optgroup='non');
 ?>
 
+<script type="text/javascript">
+	var id_matiere_transversale    = "<?php echo ID_MATIERE_TRANSVERSALE ?>";
+	var listing_id_niveaux_paliers = "<?php echo LISTING_ID_NIVEAUX_PALIERS ?>";
+</script>
+
 <form id="form_select" action="">
 	<fieldset>
 		<label class="tab" for="f_matiere">Matière <img alt="" src="./_img/bulle_aide.png" title="Seules les matières cochées par l'administrateur apparaissent." /> :</label><?php echo $select_matiere ?><br />

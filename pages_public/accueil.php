@@ -66,7 +66,6 @@ if( strpos($chaine_detection,'ie4') || strpos($chaine_detection,'ie5') || strpos
 	<a class="lien_ext" href="http://www.google.fr/chrome"><img src="./_img/navigateur/chrome18.gif" alt="Chrome" /> Google Chrome</a>, 
 	<a class="lien_ext" href="http://www.windows.fr/ie8"><img src="./_img/navigateur/explorer18.gif" alt="Explorer" /> Internet Explorer 7 ou 8</a>...
 	</div>';
-	echo'<hr />';
 }
 ?>
 
@@ -74,6 +73,7 @@ if( strpos($chaine_detection,'ie4') || strpos($chaine_detection,'ie5') || strpos
 // Alerte non déconnexion de l'ENT si deconnexion de SACoche depuis un compte connecté via un ENT
 if($ALERTE_SSO)
 {
+	echo'<hr />';
 	echo'<div class="danger">Attention : vous n\'êtes pas déconnecté de l\'ENT ! On peut encore entrer dans <em>SACoche</em> sans s\'identifier ! Fermez votre navigateur ou <a class="lien_ext" href="./pages_public/logout_SSO.php?'.$ALERTE_SSO.'">déconnectez-vous de l\'ENT</a>.</div>';
 }
 ?>
@@ -100,10 +100,8 @@ if($ALERTE_SSO)
 
 <h2><img src="./_img/puce_astuce.png" alt="Informations" /> Informations</h2>
 <ul class="puce">
-	<li>Toutes les informations se trouvent sur <a class="lien_ext" href="http://competences.sesamath.net">le site officiel de <em>SACoche</em></a>.</li>
-	<li><em>SACoche</em> est un projet de l'association <a class="lien_ext" href="http://www.sesamath.net"><img alt="Sésamath_logo" src="./_img/logo_sesamath.png" /></a>.</li>
-	<li><em>SACoche</em> est un logiciel gratuit et libre, sous <a class="lien_ext" href="http://www.rodage.org/gpl-3.0.fr.html">licence GNU GPL v3</a>.</li>
-	<li><em>SACoche</em> est conforme aux normes <img src="./_img/valid_xhtml1.gif" alt="XHTML 1.0 Strict" /> et <img src="./_img/valid_css2.gif" alt="CSS 2.0" /> .</li>
-	<li>Utilisez un navigateur respectant les standards, comme <a class="lien_ext" href="http://www.mozilla-europe.org/fr/"><img src="./_img/navigateur/firefox16.png" alt="Firefox" /> Firefox</a> !</li>
-	<li>Pour un <a class="lien_ext" href="http://fr.wikipedia.org/wiki/Easter_egg">easter egg</a>, essayez le <a class="lien_ext" href="http://fr.wikipedia.org/wiki/Code_Konami">code Konami</a> <img src="./_img/smiley.gif" alt="sourire" /></li>
+	<li><em>SACoche</em> est un logiciel gratuit, libre, développé avec le soutien de <a class="lien_ext" href="http://www.sesamath.net"><img alt="Sésamath_logo" src="./_img/logo_sesamath.png" /></a>.</li>
+	<li>Toutes les informations concernant ce projet se trouvent sur <a class="lien_ext" href="http://competences.sesamath.net">le site officiel de <em>SACoche</em></a>.</li>
 </ul>
+
+<hr />

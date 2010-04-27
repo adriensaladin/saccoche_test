@@ -31,7 +31,8 @@
 // Atteste l'appel de cette page avant l'inclusion d'une autre
 define('SACoche','releve');
 
-// Fonctions de redirections et Configuration serveur
+// Constantes / Fonctions de redirections / Configuration serveur
+require_once('./_inc/constantes.php');
 require_once('./_inc/fonction_redirection.php');
 require_once('./_inc/config_serveur.php');
 
@@ -64,8 +65,8 @@ entete();
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<link rel="shortcut icon" type="images/x-icon" href="./favicon.ico" />
 	<link rel="icon" type="image/png" href="./favicon.png" />
-	<link rel="stylesheet" type="text/css" href="./_css/<?php echo FILE_CSS ?>" />
-	<link rel="stylesheet" type="text/css" href="./_css/style_print.css" media="print" />
+	<link rel="stylesheet" type="text/css" href="./_css/<?php echo FILE_CSS_SCREEN ?>" />
+	<link rel="stylesheet" type="text/css" href="./_css/<?php echo FILE_CSS_PRINT ?>" media="print" />
 	<script type="text/javascript" charset="utf-8" src="./_js/<?php echo FILE_JS_BIBLIO ?>"></script>
 	<script type="text/javascript" charset="utf-8" src="./_js/<?php echo FILE_JS_SCRIPT ?>"></script>
 	<title>SACoche - Relevé HTML</title>

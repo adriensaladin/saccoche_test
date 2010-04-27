@@ -43,6 +43,11 @@ $select_cases_larg  = afficher_select($tab_select_cases_size                    
 $select_cases_haut  = afficher_select($tab_select_cases_size                                          , $select_nom='f_cases_haut'  , $option_first='non' , $selection=$tab_cookie['cases_hauteur'] , $optgroup='non');
 ?>
 
+<script type="text/javascript">
+	var id_matiere_transversale    = "<?php echo ID_MATIERE_TRANSVERSALE ?>";
+	var listing_id_niveaux_paliers = "<?php echo LISTING_ID_NIVEAUX_PALIERS ?>";
+</script>
+
 <div class="hc"><span class="manuel"><a class="pop_up" href="./aide.php?fichier=releve_grille_niveau">DOC : Grilles de compétences sur un niveau.</a></span></div>
 
 <form id="form_select" action=""><fieldset>

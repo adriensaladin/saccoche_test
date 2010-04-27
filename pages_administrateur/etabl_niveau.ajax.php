@@ -34,11 +34,12 @@ $tab_id = (isset($_POST['tab_id']))   ? array_map('clean_entier',explode(',',$_P
 function positif($n) {return($n);}
 $tab_id = array_filter($tab_id,'positif');
 sort($tab_id);
+$tab_paliers = explode( '.' , substr(LISTING_ID_NIVEAUX_PALIERS,1,-1) );
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 //	Choix de niveaux (excepté les niveaux transversaux liés aux paliers)
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-if( ($action=='Choisir') && (count(array_intersect($GLOBALS['TAB_ID_NIVEAUX_PALIERS'],$tab_id))==0) )
+if( ($action=='Choisir') && (count(array_intersect($tab_paliers,$tab_id))==0) )
 {
 	$listing_niveaux = implode(',',$tab_id);
 	DB_modifier_parametres( array('niveaux'=>$listing_niveaux) );

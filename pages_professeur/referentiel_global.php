@@ -50,8 +50,10 @@ $TITRE = "Gérer les référentiels";
 		$methode_calcul_texte = 'Les '.$_SESSION['CALCUL_LIMITE'].' dernières saisies &times;'.substr($chaine,$debut,$long).'.';
 	}
 	?>
-	var methode_calcul_langue="<?php echo $methode_calcul_langue ?>";
-	var methode_calcul_texte="<?php echo $methode_calcul_texte ?>";
+	var methode_calcul_langue      ="<?php echo $methode_calcul_langue ?>";
+	var methode_calcul_texte       ="<?php echo $methode_calcul_texte ?>";
+	var id_matiere_transversale    = "<?php echo ID_MATIERE_TRANSVERSALE ?>";
+	var listing_id_niveaux_paliers = "<?php echo LISTING_ID_NIVEAUX_PALIERS ?>";
 </script>
 
 <ul class="puce">
@@ -152,7 +154,7 @@ else
 		$affichage_suite = false;
 		foreach($tab_niveau as $niveau_id => $niveau_nom)
 		{
-			if( ($matiere_id!=ID_MATIERE_TRANSVERSALE) || (in_array($niveau_id,$GLOBALS['TAB_ID_NIVEAUX_PALIERS'])) )
+			if( ($matiere_id!=ID_MATIERE_TRANSVERSALE) || (strpos(LISTING_ID_NIVEAUX_PALIERS,'.'.$niveau_id.'.')!==FALSE) )
 			{
 				$ids = 'ids_'.$matiere_perso.'_'.$matiere_id.'_'.$niveau_id;
 				if($matiere_coord)

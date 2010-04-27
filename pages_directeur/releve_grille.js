@@ -82,10 +82,10 @@ $(document).ready
 						niveau_id = $(this).val();
 						findme = '.'+niveau_id+'.';
 						// Les niveaux "paliers" sont tout le temps accessibles
-						if('..46.47.48.49.'.indexOf(findme)==-1)
+						if(listing_id_niveaux_paliers.indexOf(findme) == -1)
 						{
 							// matière classique -> tous niveaux actifs
-							if(matiere_id!=99)
+							if(matiere_id != id_matiere_transversale)
 							{
 								$(this).removeAttr('disabled');
 							}

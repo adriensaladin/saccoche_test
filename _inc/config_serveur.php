@@ -25,47 +25,6 @@
  * 
  */
 
-// Paramétrage PHP et initialisations.
-
-// MAINTENANCE : Mettre à 1 en cas de maintenance : seul le webmestre SACoche pourra continuer à surfer.
-define('MAINTENANCE',0);
-
-// FILE_CSS / FILE_JS_BIBLIO / FILE_JS_SCRIPT : pour éviter les problèmes de mise en cache, modifier le nom du fichier lors d'une mise à jour
-// VERSION_JS : pour éviter le problème de mise en cache du js de la page d'accueil principale
-define('FILE_CSS','style-23.css');
-define('FILE_JS_BIBLIO','jquery-librairies-2.js');
-define('FILE_JS_SCRIPT','script-22.js');
-$VERSION_JS = '';
-
-// ID_DEMO : id de l'établissement de démonstration
-// 0 pose des pbs, et il faut prendre un id disponible dans Sésaprof
-// Attention, on ne peut pas changer cette valeur à la légère, il faut aussi modifier les entrées correspondantes dans la BDD...
-define('ID_DEMO',9999);
-
-// ID_MATIERE_TRANSVERSALE : id de la matière transversale dans la table "sacoche_matiere"
-// Ne pas changer cette valeur !
-define('ID_MATIERE_TRANSVERSALE',99);
-
-// $GLOBALS['TAB_ID_NIVEAUX_PALIERS'] : tableau des id des niveaux des paliers dans la table "sacoche_niveau"
-// Ne pas changer ces valeurs !
-$GLOBALS['TAB_ID_NIVEAUX_PALIERS'] = array(46,47,48,49);
-
-// CHARSET : "iso-8859-1" ou "utf-8" suivant l'encodage utilisé ; ajouter si besoin "AddDefaultCharset ..." dans le fichier .htaccess
-define('CHARSET','utf-8');
-
-// SERVEUR_ADRESSE
-$chemin = 'http://'.$_SERVER["SERVER_NAME"].$_SERVER["SCRIPT_NAME"];
-$fin = mb_strpos($chemin,SACoche);
-if($fin)
-{
-	$chemin = mb_substr($chemin,0,$fin-1);
-}
-define('SERVEUR_ADRESSE',$chemin);
-
-// SERVEUR_TYPE : Serveur local de développement (LOCAL) ou serveur en ligne de production (PROD)
-$serveur = ($_SERVER['SERVER_NAME']=='localhost') ? 'LOCAL' : 'PROD';
-define('SERVEUR_TYPE',$serveur);
-
 // Vérifier la version de PHP
 $version_php_mini = '5.1';
 if(version_compare(PHP_VERSION,$version_php_mini,'<'))
@@ -98,7 +57,7 @@ else
 // Définir le décalage horaire par défaut de toutes les fonctions date/heure 
 @date_default_timezone_set('Europe/Paris');
 
-// Ne pas échapper les appostrophes pour Get/Post/Cookie
+// Ne pas échapper les apostrophes pour Get/Post/Cookie
 ini_set('magic_quotes_gpc',0);
 ini_set('magic_quotes_sybase',0);
 

@@ -316,7 +316,8 @@ function envoyer_referentiel_XML($structure_id,$structure_key,$matiere_id,$nivea
 	*/
 	require_once('./_inc/class.httprequest.php');
 	$tab_get = array();
-	$tab_get[] = 'action=partager_referentiel';
+	$tab_get[] = 'mode=httprequest';
+	$tab_get[] = 'fichier=envoyer_referentiel';
 	$tab_get[] = 'structure_id='.$structure_id;
 	$tab_get[] = 'structure_key='.$structure_key;
 	$tab_get[] = 'matiere_id='.$matiere_id;
@@ -326,7 +327,7 @@ function envoyer_referentiel_XML($structure_id,$structure_key,$matiere_id,$nivea
 	{
 		$tab_get[] = 'arbreXML='.urlencode( base64_encode( gzcompress($arbreXML,9) ) );
 	}
-	$requete_envoi   = new HTTPRequest('http://competences.sesamath.net/interconnexion.php?'.implode('&',$tab_get));
+	$requete_envoi   = new HTTPRequest(SERVEUR_COMMUNAUTAIRE.'?'.implode('&',$tab_get));
 	$requete_reponse = $requete_envoi->DownloadToString();
 	return $requete_reponse;
 }

@@ -183,13 +183,14 @@ elseif( ($action=='Appeler') && $matiere_id && $niveau_id && $adresse )
 	else
 	{
 		$tab_get = array();
-		$tab_get[] = 'action=choisir_referentiel';
+		$tab_get[] = 'mode=object';
+		$tab_get[] = 'fichier=choisir_referentiel';
 		$tab_get[] = 'structure_id='.$_SESSION['STRUCTURE_ID'];
 		$tab_get[] = 'structure_key='.$_SESSION['STRUCTURE_KEY'];
 		$tab_get[] = 'matiere_id='.$matiere_id;
 		$tab_get[] = 'niveau_id='.$niveau_id;
 		$tab_get[] = 'adresse_retour='.urlencode($adresse);
-		exit('<object data="http://competences.sesamath.net/interconnexion.php?'.implode('&amp;',$tab_get).'" height="500px" style="width:100%"><img src="./_img/ajax/ajax_loader.gif" /> Appel au serveur communautaire...</object>');
+		exit('<object data="'.SERVEUR_COMMUNAUTAIRE.'?'.implode('&amp;',$tab_get).'" height="500px" style="width:100%"><img src="./_img/ajax/ajax_loader.gif" /> Appel au serveur communautaire...</object>');
 	}
 }
 

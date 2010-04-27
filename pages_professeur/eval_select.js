@@ -695,7 +695,7 @@ $(document).ready
 //	Gérer la saisie des acquisitions au clavier
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 		$('#table_saisir tbody td input').live // live est utilisé pour prendre en compte les nouveaux éléments créés
-		('keyup',
+		('keydown',	// keydown au lieu de keyup permet de laisser appuyer sur la touche pour répéter une action
 			function(e)
 			{
 				if(pilotage=='clavier')
@@ -709,7 +709,7 @@ $(document).ready
 						// Une touche d'item a été pressée
 						switch (e.which)
 						{
-							case 8: $(this).val('X').removeAttr("class").addClass('X'); break;					// backspace
+							case 8: $(this).val('X').removeAttr("class").addClass('X'); break;				// backspace
 							case 46: $(this).val('X').removeAttr("class").addClass('X'); break;				// suppr
 							case 49: $(this).val('RR').removeAttr("class").addClass('RR'); break;			// 1
 							case 97: $(this).val('RR').removeAttr("class").addClass('RR'); break;			// 1

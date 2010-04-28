@@ -57,7 +57,7 @@ $tab_limites['classique']  = array(0,1,2,3,4,5,6,7,8,9,10,15,20,30,40,50);
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 if( ($action=='Voir') && $matiere_id && $niveau_id )
 {
-	$DB_TAB = DB_select_arborescence($prof_id=0,$matiere_id,$niveau_id,$only_item=false,$socle_nom=true);
+	$DB_TAB = DB_recuperer_arborescence($prof_id=0,$matiere_id,$niveau_id,$only_item=false,$socle_nom=true);
 	echo afficher_arborescence($DB_TAB,$dynamique=false,$reference=false,$aff_coef='image',$aff_socle='image',$aff_lien='image',$aff_input=false);
 }
 
@@ -73,13 +73,13 @@ if( ($action=='Partager') && ($perso==0) && $matiere_id && $niveau_id && in_arra
 	// Envoyer le référentiel (éventuellement vide pour l'effacer) vers le serveur de partage
 	if($partage=='oui')
 	{
-		$DB_TAB = DB_select_arborescence(0,$matiere_id,$niveau_id,$only_item=FALSE,$socle_nom=FALSE);
-		$arbreXML = exporter_referentiel_XML($DB_TAB);
-		$reponse = envoyer_referentiel_XML($_SESSION['STRUCTURE_ID'],$_SESSION['STRUCTURE_KEY'],$matiere_id,$niveau_id,$arbreXML);
+		$DB_TAB = DB_recuperer_arborescence(0,$matiere_id,$niveau_id,$only_item=FALSE,$socle_nom=FALSE);
+		$arbreXML = exporter_arborescence_to_XML($DB_TAB);
+		$reponse = envoyer_arborescence_XML($_SESSION['STRUCTURE_ID'],$_SESSION['STRUCTURE_KEY'],$matiere_id,$niveau_id,$arbreXML);
 	}
 	else
 	{
-		$reponse = envoyer_referentiel_XML($_SESSION['STRUCTURE_ID'],$_SESSION['STRUCTURE_KEY'],$matiere_id,$niveau_id,'');
+		$reponse = envoyer_arborescence_XML($_SESSION['STRUCTURE_ID'],$_SESSION['STRUCTURE_KEY'],$matiere_id,$niveau_id,'');
 	}
 	// Analyse de la réponse retournée par le serveur de partage
 	if($reponse!='ok')
@@ -109,9 +109,9 @@ elseif( ($action=='Envoyer') && ($perso==0) && $matiere_id && $niveau_id )
 		exit('Pour pouvoir échanger avec le serveur communautaire, un administrateur doit déclarer cette installation de SACoche.');
 	}
 	// Envoyer le référentiel vers le serveur de partage
-	$DB_TAB = DB_select_arborescence(0,$matiere_id,$niveau_id,$only_item=FALSE,$socle_nom=FALSE);
-	$arbreXML = exporter_referentiel_XML($DB_TAB);
-	$reponse = envoyer_referentiel_XML($_SESSION['STRUCTURE_ID'],$_SESSION['STRUCTURE_KEY'],$matiere_id,$niveau_id,$arbreXML);
+	$DB_TAB = DB_recuperer_arborescence(0,$matiere_id,$niveau_id,$only_item=FALSE,$socle_nom=FALSE);
+	$arbreXML = exporter_arborescence_to_XML($DB_TAB);
+	$reponse = envoyer_arborescence_XML($_SESSION['STRUCTURE_ID'],$_SESSION['STRUCTURE_KEY'],$matiere_id,$niveau_id,$arbreXML);
 	// Analyse de la réponse retournée par le serveur de partage
 	if($reponse!='ok')
 	{
@@ -141,7 +141,7 @@ elseif( ($action=='Retirer') && $matiere_id && $niveau_id && in_array($partage,$
 		{
 			exit('Pour pouvoir échanger avec le serveur communautaire, un administrateur doit déclarer cette installation de SACoche.');
 		}
-		$reponse = envoyer_referentiel_XML($_SESSION['STRUCTURE_ID'],$_SESSION['STRUCTURE_KEY'],$matiere_id,$niveau_id,'');
+		$reponse = envoyer_arborescence_XML($_SESSION['STRUCTURE_ID'],$_SESSION['STRUCTURE_KEY'],$matiere_id,$niveau_id,'');
 		if($reponse!='ok')
 		{
 			exit($reponse);
@@ -204,11 +204,20 @@ elseif( ($action=='Ajouter') && $matiere_id && $niveau_id )
 		{
 			exit('Pour pouvoir échanger avec le serveur communautaire, un administrateur doit déclarer cette installation de SACoche.');
 		}
-		$arbreXML = recuperer_referentiel_XML($_SESSION['STRUCTURE_ID'],$_SESSION['STRUCTURE_KEY'],$referentiel_id);
+		// Récupérer le référentiel
+		$arbreXML = recuperer_arborescence_XML($_SESSION['STRUCTURE_ID'],$_SESSION['STRUCTURE_KEY'],$referentiel_id);
 		if(mb_substr($arbreXML,0,6)=='Erreur')
 		{
 			exit($arbreXML);
 		}
+		// L'analyser
+		$test_XML_valide = verifier_arborescence_XML($arbreXML);
+		if($test_XML_valide!='ok')
+		{
+			exit($test_XML_valide);
+		}
+		DB_importer_arborescence_from_XML($arbreXML,$matiere_id,$niveau_id);
+
 		// XML -> BDD
 /*
 		// On ajoute l'entrée dans la table des référentiels
@@ -218,7 +227,7 @@ elseif( ($action=='Ajouter') && $matiere_id && $niveau_id )
 		DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 		// On récupère et recopie le contenu du référentiel
 		
-		// ***** $DB_TAB = DB_select_arborescence($donneur,$prof_id=0,$donneur_matiere_id,$donneur_niveau_id,$only_item=false,$socle_nom=false);
+		// ***** $DB_TAB = DB_recuperer_arborescence($donneur,$prof_id=0,$donneur_matiere_id,$donneur_niveau_id,$only_item=false,$socle_nom=false);
 		$domaine_id = 0;
 		$theme_id = 0;
 		$competence_id = 0;

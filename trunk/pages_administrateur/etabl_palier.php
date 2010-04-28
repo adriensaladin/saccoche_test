@@ -73,7 +73,7 @@ $TITRE = "Choix des paliers du socle";
 	$tab_socle   = array();
 	$palier_id = 0;
 	$affich_socle = '';
-	$DB_TAB = DB_select_arborescence_palier();
+	$DB_TAB = DB_recuperer_arborescence_palier();
 	foreach($DB_TAB as $DB_ROW)
 	{
 		if($DB_ROW['palier_id']!=$palier_id)

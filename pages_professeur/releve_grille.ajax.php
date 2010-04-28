@@ -64,7 +64,7 @@ if( $matiere_id && $niveau_id && $matiere_nom && $niveau_nom && $remplissage && 
 	//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 	// Récupération de la liste des items pour la matière et le niveau sélectionné
 	//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-	$DB_TAB = DB_select_arborescence($prof_id=0,$matiere_id,$niveau_id,$only_item=false,$socle_nom=false);
+	$DB_TAB = DB_recuperer_arborescence($prof_id=0,$matiere_id,$niveau_id,$only_item=false,$socle_nom=false);
 	if(count($DB_TAB))
 	{
 		$domaine_id    = 0;
@@ -122,7 +122,7 @@ if( $matiere_id && $niveau_id && $matiere_nom && $niveau_nom && $remplissage && 
 	//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 	if($groupe_id && count($tab_eleve_id) && $remplissage=='plein')
 	{
-		$DB_TAB = select_result_eleves_matiere($liste_eleve , $liste_comp , $date_debut=false , $date_fin=false);
+		$DB_TAB = DB_lister_result_eleves_matiere($liste_eleve , $liste_comp , $date_debut=false , $date_fin=false);
 		foreach($DB_TAB as $DB_ROW)
 		{
 			$tab_eval[$DB_ROW['eleve_id']][$DB_ROW['competence_id']][] = array('note'=>$DB_ROW['note'],'date'=>$DB_ROW['date'],'info'=>$DB_ROW['info']);

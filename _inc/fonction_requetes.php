@@ -26,6 +26,387 @@
  */
 
 /**
+ * DB_recuperer_dates_periode
+ * 
+ * @param int    $groupe_id    id du groupe
+ * @param int    $periode_id   id de la période
+ * @return array
+ */
+
+function DB_recuperer_dates_periode($groupe_id,$periode_id)
+{
+	$DB_SQL = 'SELECT jointure_date_debut, jointure_date_fin ';
+	$DB_SQL.= 'FROM sacoche_jointure_groupe_periode ';
+	$DB_SQL.= 'WHERE groupe_id=:groupe_id AND periode_id=:periode_id ';
+	$DB_SQL.= 'LIMIT 1';
+	$DB_VAR = array(':groupe_id'=>$groupe_id,':periode_id'=>$periode_id);
+	return DB::queryRow(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+}
+
+/**
+ * DB_recuperer_amplitude_periodes
+ * 
+ * @param void
+ * @return array  de la forme array('tout_debut'=>... , ['toute_fin']=>... , ['nb_jours_total']=>...)
+ */
+
+function DB_recuperer_amplitude_periodes()
+{
+	$DB_SQL = 'SELECT MIN(jointure_date_debut) AS tout_debut , MAX(jointure_date_fin) AS toute_fin FROM sacoche_jointure_groupe_periode ';
+	$DB_ROW = DB::queryRow(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , null);
+	if(count($DB_ROW))
+	{
+		// On ajoute un jour pour dessiner les barres jusqu'au jour suivant (accessoirement, ça évite aussi une possible division par 0).
+		$DB_SQL = 'SELECT DATEDIFF(DATE_ADD(:toute_fin,INTERVAL 1 DAY),:tout_debut) AS nb_jours_total ';
+		$DB_VAR = array(':tout_debut'=>$DB_ROW['tout_debut'],':toute_fin'=>$DB_ROW['toute_fin']);
+		$DB_ROX = DB::queryRow(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+		$DB_ROW['nb_jours_total'] = $DB_ROX['nb_jours_total'];
+	}
+	return $DB_ROW;
+}
+
+/**
+ * DB_recuperer_arborescence
+ * Retourner l'arborescence d'un référentiel (tableau issu de la requête SQL)
+ * + pour une matière donnée / pour toutes les matières d'un professeur donné
+ * + pour un niveau donné / pour tous les niveaux concernés
+ * 
+ * @param int  $prof_id      passer 0 pour une recherche sur une matière plutôt que sur toutes les matières d'un prof
+ * @param int  $matiere_id   passer 0 pour une recherche sur toutes les matières d'un prof plutôt que sur une matière
+ * @param int  $niveau_id    passer 0 pour une recherche sur tous les niveaux
+ * @param bool $only_item    "true" pour ne retourner que les lignes d'items, "false" pour l'arborescence complète, sans forcément descendre jusqu'à l'items (valeurs NULL retournées).
+ * @param bool $socle_nom    avec ou pas le nom des items du socle associés
+ * @return array
+ */
+
+function DB_recuperer_arborescence($prof_id,$matiere_id,$niveau_id,$only_item,$socle_nom)
+{
+	$select_socle_nom  = ($socle_nom)  ? 'entree_id,entree_nom ' : 'entree_id ' ;
+	$join_user_matiere = ($prof_id)    ? 'LEFT JOIN sacoche_jointure_user_matiere USING (matiere_id) ' : '' ;
+	$join_socle_item   = ($socle_nom)  ? 'LEFT JOIN sacoche_socle_entree USING (entree_id) ' : '' ;
+	$where_user        = ($prof_id)    ? 'user_id=:user_id ' : '' ;
+	$where_matiere     = ($matiere_id) ? 'matiere_id=:matiere_id ' : '' ;
+	$where_niveau      = ($niveau_id)  ? 'AND niveau_id=:niveau_id ' : 'AND (niveau_id IN('.$_SESSION['NIVEAUX'].') OR palier_id IN('.$_SESSION['PALIERS'].')) ' ;
+	$where_item        = ($only_item)  ? 'AND item_id IS NOT NULL ' : '' ;
+	$order_matiere     = ($prof_id)    ? 'matiere_nom ASC, ' : '' ;
+	$order_niveau      = (!$niveau_id) ? 'niveau_ordre ASC, ' : '' ;
+	$DB_SQL = 'SELECT ';
+	$DB_SQL.= 'matiere_id, matiere_ref, matiere_nom, ';
+	$DB_SQL.= 'niveau_id, niveau_ref, niveau_nom, ';
+	$DB_SQL.= 'domaine_id, domaine_ordre, domaine_ref, domaine_nom, ';
+	$DB_SQL.= 'theme_id, theme_ordre, theme_nom, ';
+	$DB_SQL.= 'item_id, item_ordre, item_nom, item_coef, item_lien, ';
+	$DB_SQL.= $select_socle_nom;
+	$DB_SQL.= 'FROM sacoche_referentiel ';
+	$DB_SQL.= $join_user_matiere;
+	$DB_SQL.= 'LEFT JOIN sacoche_matiere USING (matiere_id) ';
+	$DB_SQL.= 'LEFT JOIN sacoche_niveau USING (niveau_id) ';
+	$DB_SQL.= 'LEFT JOIN sacoche_referentiel_domaine USING (matiere_id,niveau_id) ';
+	$DB_SQL.= 'LEFT JOIN sacoche_referentiel_theme USING (domaine_id) ';
+	$DB_SQL.= 'LEFT JOIN sacoche_referentiel_item USING (theme_id) ';
+	$DB_SQL.= $join_socle_item;
+	$DB_SQL.= 'WHERE '.$where_user.$where_matiere.$where_niveau.$where_item;
+	$DB_SQL.= 'ORDER BY '.$order_matiere.$order_niveau.'domaine_ordre ASC, theme_ordre ASC, item_ordre ASC';
+	$DB_VAR = array();
+	if($prof_id)    {$DB_VAR[':user_id']    = $prof_id;}
+	if($matiere_id) {$DB_VAR[':matiere_id'] = $matiere_id;}
+	if($niveau_id)  {$DB_VAR[':niveau_id']  = $niveau_id;}
+	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+}
+
+/**
+ * DB_recuperer_arborescence_eleve_periode_matiere
+ * Retourner l'arborescence des items travaillés par un élève pour la matière selectionnée, durant la période choisie
+ * 
+ * @param int    $eleve_id
+ * @param int    $matiere_id
+ * @param string $date_mysql_debut
+ * @param string $date_mysql_fin
+ * @return array
+ */
+
+function DB_recuperer_arborescence_eleve_periode_matiere($eleve_id,$matiere_id,$date_mysql_debut,$date_mysql_fin)
+{
+	$sql_debut = ($date_mysql_debut) ? 'AND saisie_date>=:date_debut ' : '';
+	$sql_fin   = ($date_mysql_fin)   ? 'AND saisie_date<=:date_fin '   : '';
+	$DB_SQL = 'SELECT item_id , ';
+	$DB_SQL.= 'CONCAT(matiere_ref,".",niveau_ref,".",domaine_ref,theme_ordre,item_ordre) AS competence_ref , ';
+	$DB_SQL.= 'item_nom AS competence_nom , item_coef AS competence_coef , entree_id AS competence_socle , item_lien AS competence_lien , ';
+	$DB_SQL.= 'referentiel_calcul_methode AS calcul_methode , referentiel_calcul_limite AS calcul_limite ';
+	$DB_SQL.= 'FROM sacoche_saisie ';
+	$DB_SQL.= 'LEFT JOIN sacoche_referentiel_item USING (item_id) ';
+	$DB_SQL.= 'LEFT JOIN sacoche_referentiel_theme USING (theme_id) ';
+	$DB_SQL.= 'LEFT JOIN sacoche_referentiel_domaine USING (domaine_id) ';
+	$DB_SQL.= 'LEFT JOIN sacoche_matiere USING (matiere_id) ';
+	$DB_SQL.= 'LEFT JOIN sacoche_niveau USING (niveau_id) ';
+	$DB_SQL.= 'LEFT JOIN sacoche_referentiel USING (matiere_id,niveau_id) ';
+	$DB_SQL.= 'WHERE eleve_id=:eleve_id AND matiere_id=:matiere '.$sql_debut.$sql_fin;
+	$DB_SQL.= 'GROUP BY item_id ';
+	$DB_SQL.= 'ORDER BY matiere_nom ASC, niveau_ordre ASC, domaine_ordre ASC, theme_ordre ASC, item_ordre ASC';
+	$DB_VAR = array(':eleve_id'=>$eleve_id,':matiere'=>$matiere_id,':date_debut'=>$date_mysql_debut,':date_fin'=>$date_mysql_fin);
+	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR , TRUE);
+}
+
+/**
+ * DB_recuperer_arborescence_eleves_periode_matiere
+ * Retourner l'arborescence des items travaillés par des élèves selectionnés, pour la matière selectionnée, durant la période choisie
+ * 
+ * @param string $liste_eleve_id   id des élèves séparés par des virgules
+ * @param int    $matiere_id
+ * @param string $date_mysql_debut
+ * @param string $date_mysql_fin
+ * @return array
+ */
+
+function DB_recuperer_arborescence_eleves_periode_matiere($liste_eleve_id,$matiere_id,$date_mysql_debut,$date_mysql_fin)
+{
+	$sql_debut = ($date_mysql_debut) ? 'AND saisie_date>=:date_debut ' : '';
+	$sql_fin   = ($date_mysql_fin)   ? 'AND saisie_date<=:date_fin '   : '';
+	$DB_SQL = 'SELECT item_id , ';
+	$DB_SQL.= 'CONCAT(matiere_ref,".",niveau_ref,".",domaine_ref,theme_ordre,item_ordre) AS competence_ref , ';
+	$DB_SQL.= 'item_nom AS competence_nom , item_coef AS competence_coef , entree_id AS competence_socle , item_lien AS competence_lien , ';
+	$DB_SQL.= 'referentiel_calcul_methode AS calcul_methode , referentiel_calcul_limite AS calcul_limite ';
+	$DB_SQL.= 'FROM sacoche_saisie ';
+	$DB_SQL.= 'LEFT JOIN sacoche_referentiel_item USING (item_id) ';
+	$DB_SQL.= 'LEFT JOIN sacoche_referentiel_theme USING (theme_id) ';
+	$DB_SQL.= 'LEFT JOIN sacoche_referentiel_domaine USING (domaine_id) ';
+	$DB_SQL.= 'LEFT JOIN sacoche_matiere USING (matiere_id) ';
+	$DB_SQL.= 'LEFT JOIN sacoche_niveau USING (niveau_id) ';
+	$DB_SQL.= 'LEFT JOIN sacoche_referentiel USING (matiere_id,niveau_id) ';
+	$DB_SQL.= 'WHERE eleve_id IN('.$liste_eleve_id.') AND matiere_id=:matiere '.$sql_debut.$sql_fin;
+	$DB_SQL.= 'GROUP BY item_id ';
+	$DB_SQL.= 'ORDER BY matiere_nom ASC, niveau_ordre ASC, domaine_ordre ASC, theme_ordre ASC, item_ordre ASC';
+	$DB_VAR = array(':matiere'=>$matiere_id,':date_debut'=>$date_mysql_debut,':date_fin'=>$date_mysql_fin);
+	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR , TRUE);
+}
+
+/**
+ * DB_recuperer_arborescence_et_matieres_eleves_periode
+ * Retourner l'arborescence des items travaillés et des matières concernées par des élèves selectionnés, durant la période choisie
+ * 
+ * @param string $liste_eleve_id   id des élèves séparés par des virgules
+ * @param string $date_mysql_debut
+ * @param string $date_mysql_fin
+ * @return array
+ */
+
+function DB_recuperer_arborescence_et_matieres_eleves_periode($liste_eleve_id,$date_mysql_debut,$date_mysql_fin)
+{
+	$sql_debut = ($date_mysql_debut) ? 'AND saisie_date>=:date_debut ' : '';
+	$sql_fin   = ($date_mysql_fin)   ? 'AND saisie_date<=:date_fin '   : '';
+	$DB_SQL = 'SELECT item_id , ';
+	$DB_SQL.= 'CONCAT(matiere_ref,".",niveau_ref,".",domaine_ref,theme_ordre,item_ordre) AS competence_ref , ';
+	$DB_SQL.= 'item_nom AS competence_nom , item_coef AS competence_coef , entree_id AS competence_socle , item_lien AS competence_lien , ';
+	$DB_SQL.= 'matiere_id , matiere_nom , ';
+	$DB_SQL.= 'referentiel_calcul_methode AS calcul_methode , referentiel_calcul_limite AS calcul_limite ';
+	$DB_SQL.= 'FROM sacoche_saisie ';
+	$DB_SQL.= 'LEFT JOIN sacoche_referentiel_item USING (item_id) ';
+	$DB_SQL.= 'LEFT JOIN sacoche_referentiel_theme USING (theme_id) ';
+	$DB_SQL.= 'LEFT JOIN sacoche_referentiel_domaine USING (domaine_id) ';
+	$DB_SQL.= 'LEFT JOIN sacoche_matiere USING (matiere_id) ';
+	$DB_SQL.= 'LEFT JOIN sacoche_niveau USING (niveau_id) ';
+	$DB_SQL.= 'LEFT JOIN sacoche_referentiel USING (matiere_id,niveau_id) ';
+	$DB_SQL.= 'WHERE eleve_id IN('.$liste_eleve_id.') '.$sql_debut.$sql_fin;
+	$DB_SQL.= 'GROUP BY item_id ';
+	$DB_SQL.= 'ORDER BY matiere_nom ASC, niveau_ordre ASC, domaine_ordre ASC, theme_ordre ASC, item_ordre ASC';
+	$DB_VAR = array(':date_debut'=>$date_mysql_debut,':date_fin'=>$date_mysql_fin);
+	$DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR , TRUE);
+	$tab_matiere = array();
+	foreach($DB_TAB as $competence_id => $tab)
+	{
+		foreach($tab as $key => $DB_ROW)
+		{
+			$tab_matiere[$DB_ROW['matiere_id']] = $DB_ROW['matiere_nom'];
+			unset($DB_TAB[$competence_id][$key]['matiere_id'],$DB_TAB[$competence_id][$key]['matiere_nom']);
+		}
+	}
+	return array($DB_TAB,$tab_matiere);
+}
+
+/**
+ * DB_recuperer_arborescence_et_matieres_eleves_item
+ * Retourner l'arborescence des items travaillés et des matières concernées par des élèves selectionnés, pour les items choisis !
+ * 
+ * @param string $liste_eleve_id  id des élèves séparés par des virgules
+ * @param string $liste_item_id   id des items séparés par des virgules
+ * @return array
+ */
+
+function DB_recuperer_arborescence_et_matieres_eleves_item($liste_eleve_id,$liste_item_id)
+{
+	$DB_SQL = 'SELECT item_id , ';
+	$DB_SQL.= 'CONCAT(matiere_ref,".",niveau_ref,".",domaine_ref,theme_ordre,item_ordre) AS competence_ref , ';
+	$DB_SQL.= 'item_nom AS competence_nom , item_coef AS competence_coef , entree_id AS competence_socle , item_lien AS competence_lien , ';
+	$DB_SQL.= 'matiere_id , matiere_nom , ';
+	$DB_SQL.= 'referentiel_calcul_methode AS calcul_methode , referentiel_calcul_limite AS calcul_limite ';
+	$DB_SQL.= 'FROM sacoche_saisie ';
+	$DB_SQL.= 'LEFT JOIN sacoche_referentiel_item USING (item_id) ';
+	$DB_SQL.= 'LEFT JOIN sacoche_referentiel_theme USING (theme_id) ';
+	$DB_SQL.= 'LEFT JOIN sacoche_referentiel_domaine USING (domaine_id) ';
+	$DB_SQL.= 'LEFT JOIN sacoche_matiere USING (matiere_id) ';
+	$DB_SQL.= 'LEFT JOIN sacoche_niveau USING (niveau_id) ';
+	$DB_SQL.= 'LEFT JOIN sacoche_referentiel USING (matiere_id,niveau_id) ';
+	$DB_SQL.= 'WHERE eleve_id IN('.$liste_eleve_id.') AND item_id IN('.$liste_item_id.') ';
+	$DB_SQL.= 'ORDER BY matiere_nom ASC, niveau_ordre ASC, domaine_ordre ASC, theme_ordre ASC, item_ordre ASC';
+	$DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , null , TRUE);
+	$tab_matiere = array();
+	foreach($DB_TAB as $competence_id => $tab)
+	{
+		foreach($tab as $key => $DB_ROW)
+		{
+			unset($DB_TAB[$competence_id][$key]['matiere_id'],$DB_TAB[$competence_id][$key]['matiere_nom']);
+		}
+		$tab_matiere[$DB_ROW['matiere_id']] = $DB_ROW['matiere_nom'];
+	}
+	return array($DB_TAB,$tab_matiere);
+}
+
+/**
+ * DB_recuperer_arborescence_palier
+ * 
+ * @param int    $palier_id   facultatif : si non fourni, tous les paliers seront concernés
+ * @return array
+ */
+
+function DB_recuperer_arborescence_palier($palier_id=false)
+{
+	$DB_SQL = 'SELECT * FROM sacoche_socle_palier ';
+	$DB_SQL.= 'LEFT JOIN sacoche_socle_pilier USING (palier_id) ';
+	$DB_SQL.= 'LEFT JOIN sacoche_socle_section USING (pilier_id) ';
+	$DB_SQL.= 'LEFT JOIN sacoche_socle_entree USING (section_id) ';
+	$DB_VAR = array();
+	if($palier_id)
+	{
+		$DB_SQL.= 'WHERE palier_id=:palier_id ';
+		$DB_VAR[':palier_id'] = $palier_id;
+	}
+	$DB_SQL.= 'ORDER BY palier_ordre ASC, pilier_ordre ASC, section_ordre ASC, entree_ordre ASC';
+	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+}
+
+/**
+ * DB_lister_result_eleve
+ * Retourner les résultats pour un élève donné, pour des items donnés, sur une période donnée
+ * 
+ * @param int    $eleve_id
+ * @param string $liste_item_id   id des items séparés par des virgules
+ * @param string $date_mysql_debut
+ * @param string $date_mysql_fin
+ * @return array
+ */
+
+function DB_lister_result_eleve($eleve_id,$liste_item_id,$date_mysql_debut,$date_mysql_fin)
+{
+	$sql_debut = ($date_mysql_debut) ? 'AND saisie_date>=:date_debut ' : '';
+	$sql_fin   = ($date_mysql_fin)   ? 'AND saisie_date<=:date_fin '   : '';
+	$DB_SQL = 'SELECT item_id AS competence_id , ';
+	$DB_SQL.= 'saisie_note AS note , saisie_date AS date , devoir_info AS info ';
+	$DB_SQL.= 'FROM sacoche_saisie ';
+	$DB_SQL.= 'LEFT JOIN sacoche_devoir USING (devoir_id) ';
+	$DB_SQL.= 'LEFT JOIN sacoche_referentiel_item USING (item_id) ';
+	$DB_SQL.= 'LEFT JOIN sacoche_referentiel_theme USING (theme_id) ';
+	$DB_SQL.= 'LEFT JOIN sacoche_referentiel_domaine USING (domaine_id) ';
+	$DB_SQL.= 'LEFT JOIN sacoche_niveau USING (niveau_id) ';
+	$DB_SQL.= 'WHERE eleve_id=:eleve_id AND item_id IN('.$liste_item_id.') '.$sql_debut.$sql_fin;
+	$DB_SQL.= 'ORDER BY niveau_ordre ASC, domaine_ordre ASC, theme_ordre ASC, item_ordre ASC, saisie_date ASC';
+	$DB_VAR = array(':eleve_id'=>$_SESSION['USER_ID'],':date_debut'=>$date_mysql_debut,':date_fin'=>$date_mysql_fin);
+	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+}
+
+/**
+ * DB_lister_result_eleves_matiere
+ * Retourner les résultats pour des élèves donnés, pour des items donnés d'une matiere donnée, sur une période donnée
+ * 
+ * @param string $liste_eleve_id  id des élèves séparés par des virgules
+ * @param string $liste_item_id   id des items séparés par des virgules
+ * @param string $date_mysql_debut
+ * @param string $date_mysql_fin
+ * @return array
+ */
+
+function DB_lister_result_eleves_matiere($liste_eleve_id,$liste_item_id,$date_mysql_debut,$date_mysql_fin)
+{
+	$sql_debut = ($date_mysql_debut) ? 'AND saisie_date>=:date_debut ' : '';
+	$sql_fin   = ($date_mysql_fin)   ? 'AND saisie_date<=:date_fin '   : '';
+	$DB_SQL = 'SELECT eleve_id AS eleve_id , item_id AS competence_id , ';
+	$DB_SQL.= 'saisie_note AS note , saisie_date AS date , devoir_info AS info ';
+	$DB_SQL.= 'FROM sacoche_saisie ';
+	$DB_SQL.= 'LEFT JOIN sacoche_devoir USING (devoir_id) ';
+	$DB_SQL.= 'LEFT JOIN sacoche_referentiel_item USING (item_id) ';
+	$DB_SQL.= 'LEFT JOIN sacoche_referentiel_theme USING (theme_id) ';
+	$DB_SQL.= 'LEFT JOIN sacoche_referentiel_domaine USING (domaine_id) ';
+	$DB_SQL.= 'LEFT JOIN sacoche_niveau USING (niveau_id) ';
+	$DB_SQL.= 'WHERE eleve_id IN('.$liste_eleve_id.') AND item_id IN('.$liste_item_id.') '.$sql_debut.$sql_fin;
+	$DB_SQL.= 'ORDER BY niveau_ordre ASC, domaine_ordre ASC, theme_ordre ASC, item_ordre ASC, saisie_date ASC';
+	$DB_VAR = array(':date_debut'=>$date_mysql_debut,':date_fin'=>$date_mysql_fin);
+	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+}
+
+/**
+ * DB_lister_result_eleves_matieres
+ * Retourner les résultats pour des élèves donnés, pour des items donnés de plusieurs matieres, sur une période donnée
+ * 
+ * @param string $liste_eleve_id  id des élèves séparés par des virgules
+ * @param string $liste_item_id   id des items séparés par des virgules
+ * @param string $date_mysql_debut
+ * @param string $date_mysql_fin
+ * @return array
+ */
+
+function DB_lister_result_eleves_matieres($liste_eleve_id,$liste_item_id,$date_mysql_debut,$date_mysql_fin)
+{
+	$sql_debut = ($date_mysql_debut) ? 'AND saisie_date>=:date_debut ' : '';
+	$sql_fin   = ($date_mysql_fin)   ? 'AND saisie_date<=:date_fin '   : '';
+	$DB_SQL = 'SELECT eleve_id AS eleve_id , matiere_id AS matiere_id , item_id AS competence_id , ';
+	$DB_SQL.= 'saisie_note AS note , saisie_date AS date , devoir_info AS info ';
+	$DB_SQL.= 'FROM sacoche_saisie ';
+	$DB_SQL.= 'LEFT JOIN sacoche_devoir USING (devoir_id) ';
+	$DB_SQL.= 'LEFT JOIN sacoche_referentiel_item USING (item_id) ';
+	$DB_SQL.= 'LEFT JOIN sacoche_referentiel_theme USING (theme_id) ';
+	$DB_SQL.= 'LEFT JOIN sacoche_referentiel_domaine USING (domaine_id) ';
+	$DB_SQL.= 'LEFT JOIN sacoche_matiere USING (matiere_id) ';
+	$DB_SQL.= 'LEFT JOIN sacoche_niveau USING (niveau_id) ';
+	$DB_SQL.= 'WHERE eleve_id IN('.$liste_eleve_id.') AND item_id IN('.$liste_item_id.') '.$sql_debut.$sql_fin;
+	$DB_SQL.= 'ORDER BY niveau_ordre ASC, domaine_ordre ASC, theme_ordre ASC, item_ordre ASC, saisie_date ASC';
+	$DB_VAR = array(':date_debut'=>$date_mysql_debut,':date_fin'=>$date_mysql_fin);
+	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+}
+
+/**
+ * DB_lister_result_eleves_palier
+ * Retourner les résultats pour des élèves donnés, pour des items du socle donnés d'un certain palier
+ * 
+ * @param string $liste_eleve_id  id des élèves séparés par des virgules
+ * @param string $liste_item_id   id des items séparés par des virgules
+ * @param string $date_mysql_debut
+ * @param string $date_mysql_fin
+ * @return array
+ */
+
+function DB_lister_result_eleves_palier($liste_eleve_id,$liste_item_id,$date_mysql_debut,$date_mysql_fin)
+{
+	$sql_debut = ($date_mysql_debut) ? 'AND saisie_date>=:date_debut ' : '';
+	$sql_fin   = ($date_mysql_fin)   ? 'AND saisie_date<=:date_fin '   : '';
+	$DB_SQL = 'SELECT eleve_id AS eleve_id , entree_id AS socle_id , item_id AS competence_id , ';
+	$DB_SQL.= 'saisie_note AS note , item_nom AS competence_nom , ';
+	$DB_SQL.= 'CONCAT(matiere_ref,".",niveau_ref,".",domaine_ref,theme_ordre,item_ordre) AS competence_ref , ';
+	$DB_SQL.= 'matiere_id , '; // Besoin pour l'élève s'il ajoute l'item aux demandes d'évaluations
+	$DB_SQL.= 'referentiel_calcul_methode AS calcul_methode , referentiel_calcul_limite AS calcul_limite ';
+	$DB_SQL.= 'FROM sacoche_saisie ';
+	$DB_SQL.= 'LEFT JOIN sacoche_referentiel_item USING (item_id) ';
+	$DB_SQL.= 'LEFT JOIN sacoche_socle_entree USING (entree_id) ';
+	$DB_SQL.= 'LEFT JOIN sacoche_referentiel_theme USING (theme_id) ';
+	$DB_SQL.= 'LEFT JOIN sacoche_referentiel_domaine USING (domaine_id) ';
+	$DB_SQL.= 'LEFT JOIN sacoche_matiere USING (matiere_id) ';
+	$DB_SQL.= 'LEFT JOIN sacoche_niveau USING (niveau_id) ';
+	$DB_SQL.= 'LEFT JOIN sacoche_referentiel USING (matiere_id,niveau_id) ';
+	$DB_SQL.= 'WHERE eleve_id IN('.$liste_eleve_id.') AND entree_id IN('.$liste_item_id.') '.$sql_debut.$sql_fin;
+	$DB_SQL.= 'ORDER BY matiere_nom ASC, niveau_ordre ASC, domaine_ordre ASC, theme_ordre ASC, item_ordre ASC, saisie_date ASC';
+	$DB_VAR = array(':date_debut'=>$date_mysql_debut,':date_fin'=>$date_mysql_fin);
+	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+}
+
+/**
  * DB_lister_matieres_partagees_SACoche
  * 
  * @param void
@@ -146,46 +527,6 @@ function DB_lister_zones()
 	$DB_SQL = 'SELECT * FROM sacoche_geo ';
 	$DB_SQL.= 'ORDER BY geo_ordre ASC';
 	return DB::queryTab(SACOCHE_WEBMESTRE_BD_NAME , $DB_SQL , null);
-}
-
-/**
- * DB_dates_periode
- * 
- * @param int    $groupe_id    id du groupe
- * @param int    $periode_id   id de la période
- * @return array
- */
-
-function DB_dates_periode($groupe_id,$periode_id)
-{
-	$DB_SQL = 'SELECT jointure_date_debut, jointure_date_fin ';
-	$DB_SQL.= 'FROM sacoche_jointure_groupe_periode ';
-	$DB_SQL.= 'WHERE groupe_id=:groupe_id AND periode_id=:periode_id ';
-	$DB_SQL.= 'LIMIT 1';
-	$DB_VAR = array(':groupe_id'=>$groupe_id,':periode_id'=>$periode_id);
-	return DB::queryRow(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-}
-
-/**
- * DB_amplitude_periodes
- * 
- * @param void
- * @return array  de la forme array('tout_debut'=>... , ['toute_fin']=>... , ['nb_jours_total']=>...)
- */
-
-function DB_amplitude_periodes()
-{
-	$DB_SQL = 'SELECT MIN(jointure_date_debut) AS tout_debut , MAX(jointure_date_fin) AS toute_fin FROM sacoche_jointure_groupe_periode ';
-	$DB_ROW = DB::queryRow(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , null);
-	if(count($DB_ROW))
-	{
-		// On ajoute un jour pour dessiner les barres jusqu'au jour suivant (accessoirement, ça évite aussi une possible division par 0).
-		$DB_SQL = 'SELECT DATEDIFF(DATE_ADD(:toute_fin,INTERVAL 1 DAY),:tout_debut) AS nb_jours_total ';
-		$DB_VAR = array(':tout_debut'=>$DB_ROW['tout_debut'],':toute_fin'=>$DB_ROW['toute_fin']);
-		$DB_ROX = DB::queryRow(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-		$DB_ROW['nb_jours_total'] = $DB_ROX['nb_jours_total'];
-	}
-	return $DB_ROW;
 }
 
 /**
@@ -1163,6 +1504,67 @@ function DB_ajouter_saisie($prof_id,$eleve_id,$devoir_id,$competence_id,$compete
 	$DB_SQL.= 'VALUES(:prof_id,:eleve_id,:devoir_id,:competence_id,:competence_date,:competence_note,:competence_info)';
 	$DB_VAR = array(':prof_id'=>$prof_id,':eleve_id'=>$eleve_id,':devoir_id'=>$devoir_id,':competence_id'=>$competence_id,':competence_date'=>$competence_date_mysql,':competence_note'=>$competence_note,':competence_info'=>$competence_info);
 	DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+}
+
+/**
+ * DB_importer_arborescence_from_XML
+ * Importer dans la base l'arborescence d'un référentiel à partir d'un XML récupéré sur le serveur communautaire.
+ * Remarque : les ordres des domaines / thèmes / items ne sont pas dans le XML car il sont générés par leur position dans l'arborescence
+ * 
+ * @param string $arbreXML
+ * @param int    $matiere_id
+ * @param int    $niveau_id
+ * @return void
+ */
+
+function DB_importer_arborescence_from_XML($arbreXML,$matiere_id,$niveau_id)
+{
+	// décortiquer l'arbre XML
+	$xml = new DOMDocument;
+	$xml -> loadXML($arbreXML);
+	// On passe en revue les domaines...
+	$domaine_liste = $xml -> getElementsByTagName('domaine');
+	$domaine_nb = $domaine_liste -> length;
+	for($domaine_ordre=0; $domaine_ordre<$domaine_nb; $domaine_ordre++)
+	{
+		$domaine_xml = $domaine_liste -> item($domaine_ordre);
+		$domaine_ref = $domaine_xml -> getAttribute('ref');
+		$domaine_nom = $domaine_xml -> getAttribute('nom');
+		$DB_SQL = 'INSERT INTO sacoche_referentiel_domaine(matiere_id,niveau_id,domaine_ordre,domaine_ref,domaine_nom) ';
+		$DB_SQL.= 'VALUES(:matiere_id,:niveau_id,:niveau,:ordre,:ref,:nom)';
+		$DB_VAR = array(':matiere_id'=>$matiere_id,':niveau_id'=>$niveau_id,':ordre'=>$domaine_ordre+1,':ref'=>$domaine_ref,':nom'=>$domaine_nom);
+		DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+		$domaine_id = DB::getLastOid(SACOCHE_STRUCTURE_BD_NAME);
+		// On passe en revue les thèmes du domaine...
+		$theme_liste = $domaine_xml -> getElementsByTagName('theme');
+		$theme_nb = $theme_liste -> length;
+		for($theme_ordre=0; $theme_ordre<$theme_nb; $theme_ordre++)
+		{
+			$theme_xml = $theme_liste -> item($theme_ordre);
+			$theme_nom = $theme_xml -> getAttribute('nom');
+			$DB_SQL = 'INSERT INTO sacoche_referentiel_theme(domaine_id,theme_ordre,theme_nom) ';
+			$DB_SQL.= 'VALUES(:domaine_id,:ordre,:nom)';
+			$DB_VAR = array(':domaine_id'=>$domaine_id,':ordre'=>$theme_ordre+1,':nom'=>$theme_nom);
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+			$theme_id = DB::getLastOid(SACOCHE_STRUCTURE_BD_NAME);
+			// On passe en revue les items du thème...
+			$item_liste = $theme_xml -> getElementsByTagName('item');
+			$item_nb = $item_liste -> length;
+			for($item_ordre=0; $item_ordre<$item_nb; $item_ordre++)
+			{
+				$item_xml   = $item_liste -> item($item_ordre);
+				$item_socle = $item_xml -> getAttribute('socle');
+				$item_nom   = $item_xml -> getAttribute('nom');
+				$item_coef  = $item_xml -> getAttribute('coef');
+				$item_lien  = $item_xml -> getAttribute('lien');
+				$DB_SQL = 'INSERT INTO sacoche_referentiel_item(theme_id,entree_id,item_ordre,item_nom,item_coef,item_lien) ';
+				$DB_SQL.= 'VALUES(:theme,:socle,:ordre,:nom,:coef,:lien)';
+				$DB_VAR = array(':theme'=>$theme_id,':socle'=>$item_socle,':ordre'=>$item_ordre,':nom'=>$item_nom,':coef'=>$item_coef,':lien'=>$item_lien);
+				DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+				// $item_id = DB::getLastOid(SACOCHE_STRUCTURE_BD_NAME); // inutile
+			}
+		}
+	}
 }
 
 /**

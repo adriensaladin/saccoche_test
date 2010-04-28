@@ -81,7 +81,7 @@ $select_cases_haut  = afficher_select($tab_select_cases_size                    
 	$tab_theme      = array();
 	$tab_competence = array();
 	$matiere_id = 0;
-	$DB_TAB = DB_select_arborescence($_SESSION['USER_ID'],$matiere_id=0,$niveau_id=0,$only_item=false,$socle_nom=false);
+	$DB_TAB = DB_recuperer_arborescence($_SESSION['USER_ID'],$matiere_id=0,$niveau_id=0,$only_item=false,$socle_nom=false);
 	foreach($DB_TAB as $DB_ROW)
 	{
 		if($DB_ROW['matiere_id']!=$matiere_id)

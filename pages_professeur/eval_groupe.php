@@ -116,7 +116,7 @@ $date_fin    = date("d/m/Y");
 	</div>
 	<?php
 	// Affichage de la liste des items pour toutes les matières d'un professeur, sur tous les niveaux
-	$DB_TAB = DB_select_arborescence($_SESSION['USER_ID'],$matiere_id=0,$niveau_id=0,$only_item=false,$socle_nom=false);
+	$DB_TAB = DB_recuperer_arborescence($_SESSION['USER_ID'],$matiere_id=0,$niveau_id=0,$only_item=false,$socle_nom=false);
 	echo afficher_arborescence($DB_TAB,$dynamique=true,$reference=true,$aff_coef=false,$aff_socle='texte',$aff_lien=false,$aff_input=true);
 	?>
 </form>

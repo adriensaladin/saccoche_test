@@ -76,7 +76,7 @@ if( ($action=='Lister') && $matiere_id && $niveau_id )
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 elseif( ($action=='Voir') && $matiere_id && $niveau_id && $donneur_id )
 {
-	// ***** $DB_TAB = DB_select_arborescence($donneur_id,$prof_id=0,$matiere_id,$niveau_id,$only_item=false,$socle_nom=true);
+	// ***** $DB_TAB = DB_recuperer_arborescence($donneur_id,$prof_id=0,$matiere_id,$niveau_id,$only_item=false,$socle_nom=true);
 	echo afficher_arborescence($DB_TAB,$dynamique=false,$reference=false,$aff_coef='image',$aff_socle='image',$aff_lien='click',$aff_input=false);
 }
 

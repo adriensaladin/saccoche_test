@@ -104,7 +104,7 @@ if( ($action=='Afficher_evaluations') && $aff_classe_txt && $aff_classe_id && ( 
 	// Restreindre la recherche à une période donnée, cas d'une période associée à une classe ou à un groupe
 	else
 	{
-		$DB_ROW = DB_dates_periode($aff_classe_id,$aff_periode);
+		$DB_ROW = DB_recuperer_dates_periode($aff_classe_id,$aff_periode);
 		if(!count($DB_ROW))
 		{
 			exit('Erreur : cette classe et cette période ne sont pas reliées !');

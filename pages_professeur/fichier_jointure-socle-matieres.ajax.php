@@ -49,7 +49,7 @@ if($palier_id && $palier_nom)
 	$tab_section = array();
 	$tab_socle   = array();
 	$pilier_id = 0;
-	$DB_TAB = DB_select_arborescence_palier($palier_id);
+	$DB_TAB = DB_recuperer_arborescence_palier($palier_id);
 	foreach($DB_TAB as $DB_ROW)
 	{
 		if($DB_ROW['pilier_id']!=$pilier_id)

@@ -108,7 +108,7 @@ foreach($DB_TAB as $DB_ROW)
 	$tab_periode[$DB_ROW['periode_id']] = '<th>'.html($DB_ROW['periode_nom']).'</th>';
 }
 // Récupérer l'amplitude complète sur l'ensemble des périodes
-$DB_ROW = DB_amplitude_periodes();
+$DB_ROW = DB_recuperer_amplitude_periodes();
 $tout_debut     = ($DB_ROW['tout_debut'])     ? $DB_ROW['tout_debut']     : '2000-01-01' ;
 $toute_fin      = ($DB_ROW['toute_fin'])      ? $DB_ROW['toute_fin']      : '2000-01-01' ;
 $nb_jours_total = ($DB_ROW['nb_jours_total']) ? $DB_ROW['nb_jours_total'] : 0;

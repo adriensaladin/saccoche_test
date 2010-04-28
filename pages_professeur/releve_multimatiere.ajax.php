@@ -69,7 +69,7 @@ if( $orientation && $marge_min && $couleur && $cases_nb && $cases_largeur && $ca
 	}
 	else
 	{
-		$DB_ROW = DB_dates_periode($groupe_id,$periode_id);
+		$DB_ROW = DB_recuperer_dates_periode($groupe_id,$periode_id);
 		if(!count($DB_ROW))
 		{
 			exit('La classe et la période ne sont pas reliées !');
@@ -93,7 +93,7 @@ if( $orientation && $marge_min && $couleur && $cases_nb && $cases_largeur && $ca
 	//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 	// Récupération de la liste des items travaillés durant la période choisie, pour les élèves selectionnés, toutes matières confondues
 	//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-	list($tab_competence,$tab_matiere) = select_arborescence_et_matieres_eleves_periode($liste_eleve,$date_mysql_debut,$date_mysql_fin);
+	list($tab_competence,$tab_matiere) = DB_recuperer_arborescence_et_matieres_eleves_periode($liste_eleve,$date_mysql_debut,$date_mysql_fin);
 	$competence_nb = count($tab_competence);
 	if(!$competence_nb)
 	{
@@ -121,7 +121,7 @@ if( $orientation && $marge_min && $couleur && $cases_nb && $cases_largeur && $ca
 	// Récupération de la liste des résultats des évaluations associées à ces items donnés de plusieurs matieres, pour les élèves selectionnés, sur la période sélectionnée
 	//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 	$date_mysql_debut = ($retroactif=='non') ? $date_mysql_debut : false;
-	$DB_TAB = select_result_eleves_matieres($liste_eleve , $liste_comp , $date_mysql_debut , $date_mysql_fin);
+	$DB_TAB = DB_lister_result_eleves_matieres($liste_eleve , $liste_comp , $date_mysql_debut , $date_mysql_fin);
 	foreach($DB_TAB as $DB_ROW)
 	{
 		$tab_eval[$DB_ROW['eleve_id']][$DB_ROW['matiere_id']][$DB_ROW['competence_id']][] = array('note'=>$DB_ROW['note'],'date'=>$DB_ROW['date'],'info'=>$DB_ROW['info']);

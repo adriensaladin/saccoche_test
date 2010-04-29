@@ -191,7 +191,7 @@ else
 
 <div id="choisir_referentiel" class="hide">
 	<h2>Choisir un référentiel</h2>
-	<a class="choisir_valider" href="#0"><img alt=" vierge" src="./_img/action/action_valider.png" /> Démarrer avec un référentiel vierge.</a><br />
+	<a class="choisir_valider" href="#" lang="id_0"><img alt=" vierge" src="./_img/action/action_valider.png" /> Démarrer avec un référentiel vierge.</a><br />
 	<?php
 	if( (!$_SESSION['STRUCTURE_ID']) || (!$_SESSION['STRUCTURE_KEY']) )
 	{
@@ -200,7 +200,7 @@ else
 	else
 	{
 		echo'<a id="choisir_rechercher" href="#"><img alt="" src="./_img/find.png" /> Rechercher parmi les référentiels partagés sur le serveur communautaire.</a><br />';
-		echo'<a class="choisir_valider" href="#"></a><br />';
+		echo'<a class="choisir_valider" id="reporter_referentiel" href="#" lang="id_x"></a><br />';
 	}
 	?>
 	<a id="choisir_annuler" href="#"><img alt="" src="./_img/action/action_annuler.png" /> Annuler la création d'un référentiel.</a><br />
@@ -215,5 +215,5 @@ else
 <div id="object_container" class="hide">
 	<h2>Rechercher un référentiel partagé sur le serveur communautaire</h2>
 	<p><a id="rechercher_annuler" href="#"><img alt="" src="./_img/action/action_annuler.png" /> Annuler la recherche d'un référentiel.</a></p>
-	<object id="cadre" data="" height="500px" style="width:100%"><img src="./_img/ajax/ajax_loader.gif" /> Appel au serveur communautaire...</object>
+	<object id="cadre" data="" height="350px" style="width:100%"><img src="./_img/ajax/ajax_loader.gif" /> Appel au serveur communautaire...</object>
 </div>

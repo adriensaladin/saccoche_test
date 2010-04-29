@@ -42,30 +42,6 @@ $(document).ready
 		select_limite += '</select>';
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-//	Inspection de l'URL : l'ajout d'un hash indique un retour de l'iframe suite à un choix de référentiel
-//	Pour les explications : http://softwareas.com/cross-domain-communication-with-iframes (démo 1 : http://ajaxify.com/run/crossframe/ )
-//	Attention, seule la 1e méthode fonctionne, la 2nde avec les iframes ajouté n'est pas compatible avec tous les navigateurs.
-//	Voir aussi cette librairie : http://easyxdm.net/wp/
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-
-		function surveiller_url()
-		{
-			$("body").everyTime
-			('1ds', 'look_hash', function()
-				{
-					var hashVal = window.location.hash.substr(1);
-					if(hashVal!="")
-					{
-						window.location.hash='';
-						$("body").stopTime('look_hash');
-						$('div.close a').click();
-					}
-					$('#voir_hash').html('...'+hashVal);
-				}
-			);
-		}
-
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 //	Changement de méthode -> desactiver les limites autorisées suivant les cas
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
@@ -486,10 +462,55 @@ $(document).ready
 				// Afficher / masquer ce qu'il faut
 				$('form').hide();
 				$('#cadre').attr('data',data).parent().show();
-				surveiller_url();
+				surveiller_url_et_hauteur();
 				return(false);
 			}
 		);
+
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+//	Inspection de l'URL : l'ajout d'un hash indique un retour de l'iframe suite à un choix de référentiel
+//	Pour les explications : http://softwareas.com/cross-domain-communication-with-iframes (démo 1 : http://ajaxify.com/run/crossframe/ )
+//	Attention, seule la 1e méthode fonctionne, la 2nde avec les iframes ajouté n'est pas compatible avec tous les navigateurs.
+//	Voir aussi cette librairie : http://easyxdm.net/wp/
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
+		function surveiller_url_et_hauteur()
+		{
+			$("body").everyTime
+			('1ds', 'surveillance', function()
+				{
+					// Surveillance de l'URL
+					var hashVal = window.location.hash.substr(1);
+					if(hashVal!="")
+					{
+						window.location.hash='';
+						$("body").stopTime('surveillance');
+						$('#reporter_referentiel').attr('lang','id_'+hashVal).html('<img alt=" vierge" src="./_img/action/action_valider.png" /> Démarrer avec ce référentiel : *****');
+						$('#rechercher_annuler').click();
+					}
+					// Surveillance du redimensionnement
+					var hauteur_entete = 180;
+					var hauteur_object_mini = 350;
+					var hauteur_document = hauteur_entete+hauteur_object_mini;
+					// hauteur_document = $(document).height() pose problème si on retrécit la fenêtre en hauteur : il s'adapte très lentement...
+					// D'où la procédure suivante récupérée à l'adresse http://www.howtocreate.co.uk/tutorials/javascript/browserwindow
+					if( typeof( window.innerHeight ) == 'number' )
+					{
+						hauteur_document = window.innerHeight;	//Non-IE
+					}
+					else if( document.documentElement && document.documentElement.clientHeight )
+					{
+						hauteur_document = document.documentElement.clientHeight;	//IE 6+ in 'standards compliant mode'
+					}
+					else if( document.body && document.body.clientHeight )
+					{
+						hauteur_document = document.body.clientHeight;	//IE 4 compatible
+					}
+					var hauteur_object = Math.max(hauteur_document-hauteur_entete,hauteur_object_mini);
+					$('#cadre').css('height',hauteur_object);
+				}
+			);
+		}
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 //	Clic sur le lien pour Annuler la recherche sur le serveur communautaire
@@ -501,7 +522,7 @@ $(document).ready
 			{
 				$('form').show();
 				$('#cadre').attr('data','').parent().hide();
-				$("body").stopTime('look_hash');
+				$("body").stopTime('surveillance');
 				return(false);
 			}
 		);
@@ -515,7 +536,7 @@ $(document).ready
 			function()
 			{
 				ids = $('#succes').parent().parent().attr('id');
-				referentiel_id = $(this).attr('href').substring(1);
+				referentiel_id = $(this).attr('lang').substring(3);
 				$('#ajax_msg_choisir').removeAttr("class").addClass("loader").html("Demande envoyée... Veuillez patienter.");
 				$.ajax
 				(
@@ -546,7 +567,7 @@ $(document).ready
 								}
 								else
 								{
-									$('#'+ids).prev().prev().removeAttr("class").addClass("v").attr('lang','non').html('Référentiel présent. <img title="Référentiel caché aux autres établissements." src="./_img/partage0.gif" />');
+									$('#'+ids).prev().prev().removeAttr("class").addClass("v").attr('lang','non').html('Référentiel présent. <img title="Référentiel non partagé avec la communauté." src="./_img/partage0.gif" />');
 								}
 								infobulle();
 								$('#choisir_annuler').click();

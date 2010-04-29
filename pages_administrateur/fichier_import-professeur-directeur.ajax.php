@@ -474,7 +474,7 @@ elseif( $step==4 )
 			{
 				if($tab_traitement['modif'][$id][$champ_ref] !== false)
 				{
-					$tab_set[] = 'sacoche_user_'.$champ_ref.'=:'.$champ_ref;
+					$tab_set[] = 'user_'.$champ_ref.'=:'.$champ_ref;
 					$DB_VAR[':'.$champ_ref] = $tab_traitement['modif'][$id][$champ_ref];
 				}
 			}

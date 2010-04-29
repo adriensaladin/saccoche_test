@@ -26,6 +26,25 @@
  */
 
 /**
+ * DB_recuperer_donnees_utilisateur
+ * 
+ * @param bool|string $sso     connexion $sso ou pas (texte ou false)
+ * @param string      $login
+ * @return array
+ */
+
+function DB_recuperer_donnees_utilisateur($sso,$login)
+{
+	$champ = ($sso) ? 'user_id_ent' : 'user_login' ;
+	$DB_SQL = 'SELECT sacoche_user.*,sacoche_groupe.groupe_nom FROM sacoche_user ';
+	$DB_SQL.= 'LEFT JOIN sacoche_groupe ON sacoche_user.eleve_classe_id=sacoche_groupe.groupe_id ';
+	$DB_SQL.= 'WHERE '.$champ.'=:identifiant ';
+	$DB_SQL.= 'LIMIT 1';
+	$DB_VAR = array(':identifiant'=>$login);
+	return DB::queryRow(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+}
+
+/**
  * DB_recuperer_dates_periode
  * 
  * @param int    $groupe_id    id du groupe
@@ -282,6 +301,20 @@ function DB_recuperer_arborescence_palier($palier_id=false)
 	}
 	$DB_SQL.= 'ORDER BY palier_ordre ASC, pilier_ordre ASC, section_ordre ASC, entree_ordre ASC';
 	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+}
+
+/**
+ * DB_lister_parametres
+ * 
+ * @param void
+ * @return array
+ */
+
+function DB_lister_parametres()
+{
+	$DB_SQL = 'SELECT parametre_nom,parametre_valeur ';
+	$DB_SQL.= 'FROM sacoche_parametre ';
+	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , null);
 }
 
 /**
@@ -1507,6 +1540,23 @@ function DB_ajouter_saisie($prof_id,$eleve_id,$devoir_id,$competence_id,$compete
 }
 
 /**
+ * DB_ajouter_referentiel
+ * 
+ * @param int    $matiere_id
+ * @param int    $niveau_id
+ * @param string $partage_etat
+ * @return void
+ */
+
+function DB_ajouter_referentiel($matiere_id,$niveau_id,$partage_etat)
+{
+	$DB_SQL = 'INSERT INTO sacoche_referentiel ';
+	$DB_SQL.= 'VALUES(:matiere_id,:niveau_id,:partage_etat,:partage_date,:calcul_methode,:calcul_limite)';
+	$DB_VAR = array(':matiere_id'=>$matiere_id,':niveau_id'=>$niveau_id,':partage_etat'=>$partage_etat,':partage_date'=>date("Y-m-d"),':calcul_methode'=>$_SESSION['CALCUL_METHODE'],':calcul_limite'=>$_SESSION['CALCUL_LIMITE']);
+	DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+}
+
+/**
  * DB_importer_arborescence_from_XML
  * Importer dans la base l'arborescence d'un référentiel à partir d'un XML récupéré sur le serveur communautaire.
  * Remarque : les ordres des domaines / thèmes / items ne sont pas dans le XML car il sont générés par leur position dans l'arborescence
@@ -1531,7 +1581,7 @@ function DB_importer_arborescence_from_XML($arbreXML,$matiere_id,$niveau_id)
 		$domaine_ref = $domaine_xml -> getAttribute('ref');
 		$domaine_nom = $domaine_xml -> getAttribute('nom');
 		$DB_SQL = 'INSERT INTO sacoche_referentiel_domaine(matiere_id,niveau_id,domaine_ordre,domaine_ref,domaine_nom) ';
-		$DB_SQL.= 'VALUES(:matiere_id,:niveau_id,:niveau,:ordre,:ref,:nom)';
+		$DB_SQL.= 'VALUES(:matiere_id,:niveau_id,:ordre,:ref,:nom)';
 		$DB_VAR = array(':matiere_id'=>$matiere_id,':niveau_id'=>$niveau_id,':ordre'=>$domaine_ordre+1,':ref'=>$domaine_ref,':nom'=>$domaine_nom);
 		DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 		$domaine_id = DB::getLastOid(SACOCHE_STRUCTURE_BD_NAME);
@@ -1608,7 +1658,7 @@ function DB_modifier_parametres($tab_parametres)
 function DB_recopier_identifiants($champ_depart,$champ_arrive)
 {
 	$DB_SQL = 'UPDATE sacoche_user ';
-	$DB_SQL.= 'SET sacoche_user_'.$champ_arrive.'=sacoche_user_'.$champ_depart.' ';
+	$DB_SQL.= 'SET user_'.$champ_arrive.'=user_'.$champ_depart.' ';
 	DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , null);
 }
 
@@ -1640,10 +1690,41 @@ function DB_modifier_utilisateur($user_id,$DB_VAR)
 		}
 	}
 	$DB_SQL = 'UPDATE sacoche_user ';
-	$DB_SQL.= 'SET '.implode(',',$tab_set).' ';
+	$DB_SQL.= 'SET '.implode(', ',$tab_set).' ';
 	$DB_SQL.= 'WHERE user_id=:user_id ';
 	$DB_SQL.= 'LIMIT 1';
 	$DB_VAR[':user_id'] = $user_id;
+	DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+}
+
+/**
+ * DB_modifier_referentiel (juste ses paramètres, pas le contenu de son arborescence)
+ * 
+ * @param int     $matiere_id
+ * @param int     $niveau_id
+ * @param array   array(':partage_etat'=>$val, ':partage_date'=>$val , ':calcul_methode'=>$val , ':calcul_limite'=>$val );
+ * @return void
+ */
+
+function DB_modifier_referentiel($matiere_id,$niveau_id,$DB_VAR)
+{
+	$tab_set = array();
+	foreach($DB_VAR as $key => $val)
+	{
+		switch($key)
+		{
+			case ':partage_etat'   : $tab_set[] = 'partage_etat='.$key; break;
+			case ':partage_date'   : $tab_set[] = 'partage_date='.$key; break;
+			case ':calcul_methode' : $tab_set[] = 'calcul_methode='.$key; break;
+			case ':calcul_limite'  : $tab_set[] = 'calcul_limite='.$key; break;
+		}
+	}
+	$DB_SQL = 'UPDATE sacoche_referentiel ';
+	$DB_SQL.= 'SET '.implode(', ',$tab_set).' ';
+	$DB_SQL.= 'WHERE matiere_id=:matiere_id AND niveau_id=:niveau_id ';
+	$DB_SQL.= 'LIMIT 1';
+	$DB_VAR[':matiere_id'] = $matiere_id;
+	$DB_VAR[':niveau_id'] = $niveau_id;
 	DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 

@@ -58,13 +58,13 @@ $tab_limites['classique']  = array(0,1,2,3,4,5,6,7,8,9,10,15,20,30,40,50);
 if( ($action=='Voir') && $matiere_id && $niveau_id )
 {
 	$DB_TAB = DB_recuperer_arborescence($prof_id=0,$matiere_id,$niveau_id,$only_item=false,$socle_nom=true);
-	echo afficher_arborescence($DB_TAB,$dynamique=false,$reference=false,$aff_coef='image',$aff_socle='image',$aff_lien='image',$aff_input=false);
+	exit( afficher_arborescence_from_SQL($DB_TAB,$dynamique=false,$reference=false,$aff_coef='image',$aff_socle='image',$aff_lien='image',$aff_input=false) );
 }
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 // Modifier le partage d'un référentiel
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-if( ($action=='Partager') && ($perso==0) && $matiere_id && $niveau_id && in_array($partage,$tab_partages) && ($partage!='hs') )
+elseif( ($action=='Partager') && ($perso==0) && $matiere_id && $niveau_id && in_array($partage,$tab_partages) && ($partage!='hs') )
 {
 	if( ($partage=='oui') && ( (!$_SESSION['STRUCTURE_ID']) || (!$_SESSION['STRUCTURE_KEY']) ) )
 	{
@@ -88,12 +88,7 @@ if( ($action=='Partager') && ($perso==0) && $matiere_id && $niveau_id && in_arra
 	}
 	// Tout s'est bien passé si on arrive jusque là...
 	$date_mysql = date("Y-m-d");
-	$DB_SQL = 'UPDATE sacoche_referentiel ';
-	$DB_SQL.= 'SET referentiel_partage_etat=:etat, referentiel_partage_date=:date ';
-	$DB_SQL.= 'WHERE matiere_id=:matiere_id AND niveau_id=:niveau_id ';
-	$DB_SQL.= 'LIMIT 1';
-	$DB_VAR = array(':matiere_id'=>$matiere_id,':niveau_id'=>$niveau_id,':etat'=>$partage,':date'=>$date_mysql);
-	DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+	DB_modifier_referentiel( $matiere_id , $niveau_id , array(':partage_etat'=>$partage,':partage_date'=>$date_mysql) );
 	// Retour envoyé
 	$tab_partage = array('oui'=>'<img title="Référentiel partagé sur le serveur communautaire (MAJ le ◄DATE►)." alt="" src="./_img/partage1.gif" />','non'=>'<img title="Référentiel non partagé avec la communauté (choix du ◄DATE►)." alt="" src="./_img/partage0.gif" />','bof'=>'<img title="Référentiel dont le partage est sans intérêt (pas novateur)." alt="" src="./_img/partage0.gif" />','hs'=>'<img title="Référentiel dont le partage est sans objet (matière spécifique)." alt="" src="./_img/partage0.gif" />');
 	exit( str_replace('◄DATE►',affich_date($date_mysql),$tab_partage[$partage]) );
@@ -119,14 +114,9 @@ elseif( ($action=='Envoyer') && ($perso==0) && $matiere_id && $niveau_id )
 	}
 	// Tout s'est bien passé si on arrive jusque là...
 	$date_mysql = date("Y-m-d");
-	$DB_SQL = 'UPDATE sacoche_referentiel ';
-	$DB_SQL.= 'SET referentiel_partage_date=:date ';
-	$DB_SQL.= 'WHERE matiere_id=:matiere_id AND niveau_id=:niveau_id ';
-	$DB_SQL.= 'LIMIT 1';
-	$DB_VAR = array(':matiere_id'=>$matiere_id,':niveau_id'=>$niveau_id,':date'=>$date_mysql);
-	DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+	DB_modifier_referentiel( $matiere_id , $niveau_id , array(':partage_date'=>$date_mysql) );
 	// Retour envoyé
-	exit('<img title="Référentiel partagé sur le serveur communautaire (MAJ le '.affich_date(date("Y-m-d")).')." alt="" src="./_img/partage1.gif" />');
+	exit('<img title="Référentiel partagé sur le serveur communautaire (MAJ le '.affich_date($date_mysql).')." alt="" src="./_img/partage1.gif" />');
 }
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
@@ -156,12 +146,7 @@ elseif( ($action=='Retirer') && $matiere_id && $niveau_id && in_array($partage,$
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 elseif( ($action=='Calculer') && $matiere_id && $niveau_id && in_array($methode,$tab_methodes) && in_array($limite,$tab_limites[$methode]) )
 {
-	$DB_SQL = 'UPDATE sacoche_referentiel ';
-	$DB_SQL.= 'SET referentiel_calcul_methode=:methode,referentiel_calcul_limite=:limite ';
-	$DB_SQL.= 'WHERE matiere_id=:matiere_id AND niveau_id=:niveau_id ';
-	$DB_SQL.= 'LIMIT 1';
-	$DB_VAR = array(':matiere_id'=>$matiere_id,':niveau_id'=>$niveau_id,':methode'=>$methode,':limite'=>$limite);
-	DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+	DB_modifier_referentiel( $matiere_id , $niveau_id , array(':calcul_methode'=>$methode,':calcul_limite'=>$limite) );
 	if($limite==1)
 	{
 		$retour = 'Seule la dernière saisie compte.';
@@ -190,11 +175,7 @@ elseif( ($action=='Ajouter') && $matiere_id && $niveau_id )
 	{
 		// C'est une matière spécifique à l'établissement, ou une demande de partir d'un référentiel vierge : on ne peut que créer un nouveau référentiel
 		$partage = ($perso==1) ? 'hs' : 'non' ;
-		$date_mysql = date("Y-m-d");
-		$DB_SQL = 'INSERT INTO sacoche_referentiel ';
-		$DB_SQL.= 'VALUES(:matiere_id,:niveau_id,:etat,:date,:methode,:limite)';
-		$DB_VAR = array(':matiere_id'=>$matiere_id,':niveau_id'=>$niveau_id,':etat'=>$partage,':date'=>$date_mysql,':methode'=>$_SESSION['CALCUL_METHODE'],':limite'=>$_SESSION['CALCUL_LIMITE']);
-		DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+		DB_ajouter_referentiel($matiere_id,$niveau_id,$partage);
 		exit('ok');
 	}
 	elseif($referentiel_id>0)
@@ -217,57 +198,8 @@ elseif( ($action=='Ajouter') && $matiere_id && $niveau_id )
 			exit($test_XML_valide);
 		}
 		DB_importer_arborescence_from_XML($arbreXML,$matiere_id,$niveau_id);
-
-		// XML -> BDD
-/*
-		// On ajoute l'entrée dans la table des référentiels
-		$DB_SQL = 'INSERT INTO sacoche_referentiel ';
-		$DB_SQL.= 'VALUES(:matiere_id,:niveau_id,:etat,:date,:methode,:limite)';
-		$DB_VAR = array(':matiere_id'=>$matiere_id,':niveau_id'=>$niveau_id,':etat'=>'bof',':date'=>$date_mysql,':methode'=>$_SESSION['CALCUL_METHODE'],':limite'=>$_SESSION['CALCUL_LIMITE']);
-		DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-		// On récupère et recopie le contenu du référentiel
-		
-		// ***** $DB_TAB = DB_recuperer_arborescence($donneur,$prof_id=0,$donneur_matiere_id,$donneur_niveau_id,$only_item=false,$socle_nom=false);
-		$domaine_id = 0;
-		$theme_id = 0;
-		$competence_id = 0;
-		foreach($DB_TAB as $DB_ROW)
-		{
-			if( (!is_null($DB_ROW['domaine_id'])) && ($DB_ROW['domaine_id']!=$domaine_id) )
-			{
-				// nouveau domaine
-				$domaine_id = $DB_ROW['domaine_id'];
-				$competence_id = 0;
-				$theme_id = 0;
-				$DB_SQL = 'INSERT INTO sacoche_referentiel_domaine(matiere_id,niveau_id,domaine_ordre,domaine_ref,domaine_nom) ';
-				$DB_SQL.= 'VALUES(:matiere,:niveau,:ordre,:ref,:nom)';
-				$DB_VAR = array(':matiere'=>$matiere_id,':niveau'=>$niveau_id,':ordre'=>$DB_ROW['domaine_ordre'],':ref'=>$DB_ROW['domaine_ref'],':nom'=>$DB_ROW['domaine_nom']);
-				DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-				$domaine_id_new = DB::getLastOid(SACOCHE_STRUCTURE_BD_NAME);
-			}
-			if( (!is_null($DB_ROW['theme_id'])) && ($DB_ROW['theme_id']!=$theme_id) )
-			{
-				// nouveau thème
-				$theme_id = $DB_ROW['theme_id'];
-				$competence_id = 0;
-				$DB_SQL = 'INSERT INTO sacoche_referentiel_theme(domaine_id,theme_ordre,theme_nom) ';
-				$DB_SQL.= 'VALUES(:domaine,:ordre,:nom)';
-				$DB_VAR = array(':domaine'=>$domaine_id_new,':ordre'=>$DB_ROW['theme_ordre'],':nom'=>$DB_ROW['theme_nom']);
-				DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-				$theme_id_new = DB::getLastOid(SACOCHE_STRUCTURE_BD_NAME);
-			}
-			if(!is_null($DB_ROW['item_id']))
-			{
-				// nouvel item
-				$competence_id = $DB_ROW['item_id'];
-				$DB_SQL = 'INSERT INTO sacoche_referentiel_item(theme_id,entree_id,item_ordre,item_nom,item_coef,item_lien) ';
-				$DB_SQL.= 'VALUES(:theme,:entree,:ordre,:nom,:coef,:lien)';
-				$DB_VAR = array(':theme'=>$theme_id_new,':entree'=>$DB_ROW['entree_id'],':ordre'=>$DB_ROW['item_ordre'],':nom'=>$DB_ROW['item_nom'],':coef'=>$DB_ROW['item_coef'],':lien'=>$DB_ROW['item_lien']);
-				DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-			}
-		}
-		echo'ok';
-*/
+		DB_ajouter_referentiel($matiere_id,$niveau_id,$partage='bof');
+		exit('ok');
 	}
 	elseif($referentiel_id==-1)
 	{

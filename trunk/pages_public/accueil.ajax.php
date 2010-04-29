@@ -141,23 +141,16 @@ elseif( ( ($action=='initialiser') && ($BASE>0) && (HEBERGEUR_INSTALLATION=='mul
 
 elseif( ($action=='identifier') && ($profil=='webmestre') && ($login=='webmestre') && $password )
 {
-	connecter_webmestre($password);
-	echo ($_SESSION['USER_PROFIL']=='webmestre') ? $_SESSION['USER_PROFIL'] : 'Erreur : l\'identification a échoué !' ;
+	$connexion = connecter_webmestre($password);
+	echo ($connexion=='ok') ? $_SESSION['USER_PROFIL'] : $connexion ;
 }
 
 // Pour un utilisateur normal, y compris un administrateur
 
 elseif( ($action=='identifier') && ($profil!='webmestre') && $login && $password )
 {
-	// WEBMESTRE_PASSWORD_MD5 : utilisation du md5 du password du webmestre pour permettre d'effectuer des tests à la place des utilisateurs (recherches d'erreurs)
-	if(!defined('WEBMESTRE_PASSWORD_MD5'))
-	{
-		define('WEBMESTRE_PASSWORD_MD5','sans objet');
-	}
-	$password_crypte    = crypter_mdp($password);
-	$god = ($password_crypte==WEBMESTRE_PASSWORD_MD5) ? true : false ;
-	connecter_user($BASE,$profil,$login,$password,$sso=false);
-	echo ($_SESSION['USER_PROFIL']!='public') ? $_SESSION['USER_PROFIL'] : ( (!$_SESSION['BLOCAGE_STATUT']) ? 'Erreur : l\'identification a échoué (ou le compte est désactivé) !' : 'Accès temporairement desactivé : '.$_SESSION['BLOCAGE_MESSAGE'] ) ;
+	$connexion = connecter_user($BASE,$profil,$login,$password,$sso=false);
+	echo ($connexion=='ok') ? $_SESSION['USER_PROFIL'] : $connexion ;
 }
 
 else

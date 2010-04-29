@@ -172,17 +172,15 @@ function fabriquer_fichier_connexion_base($base_id,$BD_host,$BD_name,$BD_user,$B
  * connecter_webmestre
  * 
  * @param string $password
- * @return void
+ * @return string   'ok' (et dans ce cas la session est mise à jour) ou un message d'erreur
  */
 
 function connecter_webmestre($password)
 {
 	$password_crypte = crypter_mdp($password);
-	$god = ($password_crypte==WEBMESTRE_PASSWORD_MD5) ? true : false ;
-	if($god)
+	if($password_crypte==WEBMESTRE_PASSWORD_MD5)
 	{
 		$_SESSION['BASE']             = 0;
-		$_SESSION['GOD']              = $god;
 		$_SESSION['USER_PROFIL']      = 'webmestre';
 		$_SESSION['STRUCTURE_ID']     = 0;
 		$_SESSION['DENOMINATION']     = 'Gestion '.HEBERGEUR_INSTALLATION;
@@ -193,18 +191,20 @@ function connecter_webmestre($password)
 		$_SESSION['SSO']              = 'normal';
 		$_SESSION['DUREE_INACTIVITE'] = 30;
 		$_SESSION['BLOCAGE_STATUT']   = 0;
+		return 'ok';
 	}
+	return 'Mot de passe incorrect !';
 }
 
 /**
  * connecter_user
  * 
  * @param int    $BASE
- * @param string $profil
+ * @param string $profil   'normal' ou 'administrateur'
  * @param string $login
  * @param string $password
  * @param string $sso
- * @return void
+ * @return string   retourne 'ok' en cas de succès (et dans ce cas la session est mise à jour) ou un message d'erreur sinon
  */
 
 function connecter_user($BASE,$profil,$login,$password,$sso)
@@ -214,79 +214,72 @@ function connecter_user($BASE,$profil,$login,$password,$sso)
 	{
 		charger_parametres_mysql_supplementaires($BASE);
 	}
-	if($sso)
+	$DB_ROW = DB_recuperer_donnees_utilisateur($sso,$login);
+	if(!count($DB_ROW))
 	{
-		$god = false ;
-		$DB_SQL = 'SELECT sacoche_user.*,sacoche_groupe.groupe_nom FROM sacoche_user ';
-		$DB_SQL.= 'LEFT JOIN sacoche_groupe ON sacoche_user.eleve_classe_id=sacoche_groupe.groupe_id ';
-		$DB_SQL.= 'WHERE user_id_ent=:id_ent AND user_statut=:statut ';
-		$DB_SQL.= 'LIMIT 1';
-		$DB_VAR = array(':id_ent'=>$login,':sso'=>$sso,':statut'=>1);
+		return ($sso) ? 'Identification réussie mais valeur "'.$login.'" inconnue dans SACoche !' : 'Nom d\'utilisateur incorrect !' ;
 	}
-	else
+	elseif( (!$sso) && ($DB_ROW['user_password']!=crypter_mdp($password)) )
 	{
-		$password_crypte = crypter_mdp($password);
-		$is_admin = ($profil=='administrateur') ? '=' : '!=' ;
-		$god = ($password_crypte==WEBMESTRE_PASSWORD_MD5) ? true : false ;
-		$DB_SQL = 'SELECT sacoche_user.*,sacoche_groupe.groupe_nom FROM sacoche_user ';
-		$DB_SQL.= 'LEFT JOIN sacoche_groupe ON sacoche_user.eleve_classe_id=sacoche_groupe.groupe_id ';
-		$DB_SQL.= 'WHERE user_login=:login AND (user_password=:password_crypte OR :password_crypte=:password_webmestre) AND user_statut=:statut AND user_profil'.$is_admin.':profil ';
-		$DB_SQL.= 'LIMIT 1';
-		$DB_VAR = array(':login'=>$login,':password_crypte'=>$password_crypte,':password_webmestre'=>WEBMESTRE_PASSWORD_MD5,':statut'=>1,':profil'=>'administrateur');
+		return 'Mot de passe incorrect !';
 	}
-	$DB_ROW = DB::queryRow(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-	if(count($DB_ROW))
+	elseif($DB_ROW['user_statut']!=1)
 	{
-		// Enregistrer le numéro de la base
-		$_SESSION['BASE']             = $BASE;
-		// On récupère les données associées à l'utilisateur.
-		$_SESSION['GOD']              = $god;
-		$_SESSION['USER_PROFIL']      = $DB_ROW['user_profil'];
-		$_SESSION['USER_ID']          = (int) $DB_ROW['user_id'];
-		$_SESSION['USER_NOM']         = $DB_ROW['user_nom'];
-		$_SESSION['USER_PRENOM']      = $DB_ROW['user_prenom'];
-		$_SESSION['USER_LOGIN']       = $DB_ROW['user_login'];
-		$_SESSION['USER_DESCR']       = '['.$DB_ROW['user_profil'].'] '.$DB_ROW['user_prenom'].' '.$DB_ROW['user_nom'];
-		$_SESSION['USER_ID_ENT']      = $DB_ROW['user_id_ent'];
-		$_SESSION['USER_ID_GEPI']     = $DB_ROW['user_id_gepi'];
-		$_SESSION['ELEVE_CLASSE_ID']  = (int) $DB_ROW['eleve_classe_id'];
-		$_SESSION['ELEVE_CLASSE_NOM'] = $DB_ROW['groupe_nom'];
-		// On récupère les données associées à l'établissement.
-		$DB_SQL = 'SELECT parametre_nom,parametre_valeur FROM sacoche_parametre ';
-		$DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL );
-		foreach($DB_TAB as $DB_ROW)
+		return 'Identification réussie mais ce compte est desactivé !';
+	}
+	elseif( ( ($profil!='administrateur')&&($DB_ROW['user_profil']=='administrateur') ) || ( ($profil=='administrateur')&&($DB_ROW['user_profil']!='administrateur') ) )
+	{
+		return 'Ces identifiants sont ceux d\'un '.$DB_ROW['user_profil'].' : utilisez le formulaire approprié !';
+	}
+	/*
+		Reste à étudier le cas d'un blocage par un admin ou le webmestre (à enregistrer dans un fichier).............
+	*/
+	// Si on arrive ici c'est que l'identification s'est bien effectuée !
+	// Enregistrer le numéro de la base
+	$_SESSION['BASE']             = $BASE;
+	// On récupère les données associées à l'utilisateur.
+	$_SESSION['USER_PROFIL']      = $DB_ROW['user_profil'];
+	$_SESSION['USER_ID']          = (int) $DB_ROW['user_id'];
+	$_SESSION['USER_NOM']         = $DB_ROW['user_nom'];
+	$_SESSION['USER_PRENOM']      = $DB_ROW['user_prenom'];
+	$_SESSION['USER_LOGIN']       = $DB_ROW['user_login'];
+	$_SESSION['USER_DESCR']       = '['.$DB_ROW['user_profil'].'] '.$DB_ROW['user_prenom'].' '.$DB_ROW['user_nom'];
+	$_SESSION['USER_ID_ENT']      = $DB_ROW['user_id_ent'];
+	$_SESSION['USER_ID_GEPI']     = $DB_ROW['user_id_gepi'];
+	$_SESSION['ELEVE_CLASSE_ID']  = (int) $DB_ROW['eleve_classe_id'];
+	$_SESSION['ELEVE_CLASSE_NOM'] = $DB_ROW['groupe_nom'];
+	// On récupère les données associées à l'établissement.
+	$DB_TAB = DB_lister_parametres();
+	foreach($DB_TAB as $DB_ROW)
+	{
+		switch($DB_ROW['parametre_nom'])
 		{
-			switch($DB_ROW['parametre_nom'])
-			{
-				case 'structure_id'  :    $_SESSION['STRUCTURE_ID']        = (int) $DB_ROW['parametre_valeur']; break;
-				case 'structure_uai' :    $_SESSION['STRUCTURE_UAI']       =       $DB_ROW['parametre_valeur']; break;
-				case 'structure_key' :    $_SESSION['STRUCTURE_KEY']       =       $DB_ROW['parametre_valeur']; break;
-				case 'denomination':      $_SESSION['DENOMINATION']        =       $DB_ROW['parametre_valeur']; break;
-				case 'sso':               $_SESSION['SSO']                 =       $DB_ROW['parametre_valeur']; break;
-				case 'modele_professeur': $_SESSION['MODELE_PROF']         =       $DB_ROW['parametre_valeur']; break;
-				case 'modele_eleve':      $_SESSION['MODELE_ELEVE']        =       $DB_ROW['parametre_valeur']; break;
-				case 'matieres':          $_SESSION['MATIERES']            =       $DB_ROW['parametre_valeur']; break;
-				case 'niveaux':           $_SESSION['NIVEAUX']             =       $DB_ROW['parametre_valeur']; break;
-				case 'paliers':           $_SESSION['PALIERS']             =       $DB_ROW['parametre_valeur']; break;
-				case 'eleve_options':     $_SESSION['ELEVE_OPTIONS']       =       $DB_ROW['parametre_valeur']; break;
-				case 'eleve_demandes':    $_SESSION['ELEVE_DEMANDES']      = (int) $DB_ROW['parametre_valeur']; break;
-				case 'duree_inactivite':  $_SESSION['DUREE_INACTIVITE']    = (int) $DB_ROW['parametre_valeur']; break;
-				case 'calcul_valeur_RR':  $_SESSION['CALCUL_VALEUR']['RR'] = (int) $DB_ROW['parametre_valeur']; break;
-				case 'calcul_valeur_R':   $_SESSION['CALCUL_VALEUR']['R']  = (int) $DB_ROW['parametre_valeur']; break;
-				case 'calcul_valeur_V':   $_SESSION['CALCUL_VALEUR']['V']  = (int) $DB_ROW['parametre_valeur']; break;
-				case 'calcul_valeur_VV':  $_SESSION['CALCUL_VALEUR']['VV'] = (int) $DB_ROW['parametre_valeur']; break;
-				case 'calcul_seuil_R':    $_SESSION['CALCUL_SEUIL']['R']   = (int) $DB_ROW['parametre_valeur']; break;
-				case 'calcul_seuil_V':    $_SESSION['CALCUL_SEUIL']['V']   = (int) $DB_ROW['parametre_valeur']; break;
-				case 'calcul_methode':    $_SESSION['CALCUL_METHODE']      =       $DB_ROW['parametre_valeur']; break;
-				case 'calcul_limite':     $_SESSION['CALCUL_LIMITE']       = (int) $DB_ROW['parametre_valeur']; break;
-				case 'blocage_statut':    $_SESSION['BLOCAGE_STATUT']      = (int) $DB_ROW['parametre_valeur']; break;
-				case 'blocage_message':   $_SESSION['BLOCAGE_MESSAGE']     =       $DB_ROW['parametre_valeur']; break;
-			}
+			case 'structure_id'  :    $_SESSION['STRUCTURE_ID']        = (int) $DB_ROW['parametre_valeur']; break;
+			case 'structure_uai' :    $_SESSION['STRUCTURE_UAI']       =       $DB_ROW['parametre_valeur']; break;
+			case 'structure_key' :    $_SESSION['STRUCTURE_KEY']       =       $DB_ROW['parametre_valeur']; break;
+			case 'denomination':      $_SESSION['DENOMINATION']        =       $DB_ROW['parametre_valeur']; break;
+			case 'sso':               $_SESSION['SSO']                 =       $DB_ROW['parametre_valeur']; break;
+			case 'modele_professeur': $_SESSION['MODELE_PROF']         =       $DB_ROW['parametre_valeur']; break;
+			case 'modele_eleve':      $_SESSION['MODELE_ELEVE']        =       $DB_ROW['parametre_valeur']; break;
+			case 'matieres':          $_SESSION['MATIERES']            =       $DB_ROW['parametre_valeur']; break;
+			case 'niveaux':           $_SESSION['NIVEAUX']             =       $DB_ROW['parametre_valeur']; break;
+			case 'paliers':           $_SESSION['PALIERS']             =       $DB_ROW['parametre_valeur']; break;
+			case 'eleve_options':     $_SESSION['ELEVE_OPTIONS']       =       $DB_ROW['parametre_valeur']; break;
+			case 'eleve_demandes':    $_SESSION['ELEVE_DEMANDES']      = (int) $DB_ROW['parametre_valeur']; break;
+			case 'duree_inactivite':  $_SESSION['DUREE_INACTIVITE']    = (int) $DB_ROW['parametre_valeur']; break;
+			case 'calcul_valeur_RR':  $_SESSION['CALCUL_VALEUR']['RR'] = (int) $DB_ROW['parametre_valeur']; break;
+			case 'calcul_valeur_R':   $_SESSION['CALCUL_VALEUR']['R']  = (int) $DB_ROW['parametre_valeur']; break;
+			case 'calcul_valeur_V':   $_SESSION['CALCUL_VALEUR']['V']  = (int) $DB_ROW['parametre_valeur']; break;
+			case 'calcul_valeur_VV':  $_SESSION['CALCUL_VALEUR']['VV'] = (int) $DB_ROW['parametre_valeur']; break;
+			case 'calcul_seuil_R':    $_SESSION['CALCUL_SEUIL']['R']   = (int) $DB_ROW['parametre_valeur']; break;
+			case 'calcul_seuil_V':    $_SESSION['CALCUL_SEUIL']['V']   = (int) $DB_ROW['parametre_valeur']; break;
+			case 'calcul_methode':    $_SESSION['CALCUL_METHODE']      =       $DB_ROW['parametre_valeur']; break;
+			case 'calcul_limite':     $_SESSION['CALCUL_LIMITE']       = (int) $DB_ROW['parametre_valeur']; break;
 		}
-		// Enregistrement d'un cookie sur le poste client servant à retenir le dernier établissement sélectionné si identification avec succès
-		setcookie('SACoche-etablissement',$BASE,time()+60*60*24*365,'/');
-		// Vérifier qu'un admin de l'établissement n'a pas interdit l'accès
 	}
+	// Enregistrement d'un cookie sur le poste client servant à retenir le dernier établissement sélectionné si identification avec succès
+	setcookie('SACoche-etablissement',$BASE,time()+60*60*24*365,'/');
+	return('ok');
 }
 
 function envoyer_webmestre_courriel($adresse,$objet,$contenu)
@@ -302,7 +295,7 @@ function envoyer_webmestre_courriel($adresse,$objet,$contenu)
 }
 
 /**
- * afficher_arborescence
+ * afficher_arborescence_from_SQL
  * Retourner une liste ordonnée à afficher à partir d'une requête SQL transmise.
  * 
  * @param tab  $DB_TAB
@@ -315,7 +308,7 @@ function envoyer_webmestre_courriel($adresse,$objet,$contenu)
  * @return string
  */
 
-function afficher_arborescence($DB_TAB,$dynamique,$reference,$aff_coef,$aff_socle,$aff_lien,$aff_input)
+function afficher_arborescence_from_SQL($DB_TAB,$dynamique,$reference,$aff_coef,$aff_socle,$aff_lien,$aff_input)
 {
 	$input_texte = '';
 	$coef_texte  = '';
@@ -612,7 +605,7 @@ function recuperer_arborescence_XML($structure_id,$structure_key,$referentiel_id
 	{
 		return $requete_reponse;
 	}
-	$arbreXML = @gzuncompress( base64_decode( $_GET['arbreXML'] ) , 35000 ) ;
+	$arbreXML = @gzuncompress( base64_decode( $requete_reponse ) , 35000 ) ;
 	if($arbreXML==false)
 	{
 		return 'Erreur lors de la décompression du référentiel transmis.';

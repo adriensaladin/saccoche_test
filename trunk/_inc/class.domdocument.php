@@ -96,19 +96,19 @@ class MyDOMDocument
 	}
 }
 
-function analyser_XML($fichier)
+function analyser_XML($fichier_adresse)
 {
 	// Récupération du contenu du fichier
-	$fcontenu = file_get_contents($fichier);
+	$fichier_contenu = file_get_contents($fichier_adresse);
 	// Convertir en UTF-8 si besoin (la chaine + le fichier)
-	if( (!perso_mb_detect_encoding_utf8($contenu)) || (!mb_check_encoding($fcontenu,'UTF-8')) )
+	if( (!perso_mb_detect_encoding_utf8($fichier_contenu)) || (!mb_check_encoding($fichier_contenu,'UTF-8')) )
 	{
-		$fcontenu = mb_convert_encoding($fcontenu,'UTF-8','Windows-1252'); // Si on utilise utf8_encode() ou mb_convert_encoding() sans le paramètre 'Windows-1252' ça pose des pbs pour '’' 'Œ' 'œ' etc.
-		file_put_contents($fichier,$fcontenu);
+		$fichier_contenu = mb_convert_encoding($fichier_contenu,'UTF-8','Windows-1252'); // Si on utilise utf8_encode() ou mb_convert_encoding() sans le paramètre 'Windows-1252' ça pose des pbs pour '’' 'Œ' 'œ' etc.
+		file_put_contents($fichier_adresse,$fichier_contenu);
 	}
 	// Analyse XML (s'arrête à la 1ère erreur trouvée)
 	$xml_parser = xml_parser_create();
-	$valid_XML = xml_parse($xml_parser , $fcontenu , TRUE);
+	$valid_XML = xml_parse($xml_parser , $fichier_contenu , TRUE);
 	if(!$valid_XML)
 	{
 		return sprintf("Erreur XML ligne %d (%s)" , xml_get_current_line_number($xml_parser) , xml_error_string(xml_get_error_code($xml_parser)));
@@ -116,7 +116,7 @@ function analyser_XML($fichier)
 	xml_parser_free($xml_parser);
 	// Analyse DTD (renvoie un tableau d'erreurs, affiche la dernière)
 	$xml = new DOMDocument;
-	$xml -> load($fichier);
+	$xml -> load($fichier_adresse);
 	$xml = new MyDOMDocument($xml);
 	$valid_DTD = $xml->validate();
 	if(!$valid_DTD)

@@ -66,7 +66,7 @@ define('SERVEUR_ADRESSE',$chemin);
 $serveur = ($_SERVER['SERVER_NAME']=='localhost') ? 'LOCAL' : 'PROD';
 define('SERVEUR_TYPE',$serveur);
 
-// SERVEUR_COMMUNAUTAIRE : URL du fichier sur le serveur communautaire servant à faire la liaison avec les installation de SACoche
+// SERVEUR_COMMUNAUTAIRE : URL du fichier sur le serveur communautaire servant à faire la liaison avec les installations de SACoche
 // Ne pas changer cette valeur !
 define('SERVEUR_COMMUNAUTAIRE','http://competences.sesamath.net/V2/appel_externe.php');
 

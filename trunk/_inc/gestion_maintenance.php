@@ -28,7 +28,7 @@
 // Blocage des sites si maintenance, sauf pour le webmestre déjà identifié.
 // Nécessite que la session soit ouverte.
 
-if( MAINTENANCE && ($_SESSION['USER_PROFIL']!='public') && (!$_SESSION['GOD']) )
+if( MAINTENANCE && ($_SESSION['USER_PROFIL']!='public') && ($_SESSION['USER_PROFIL']!='webmestre') )
 {
 	affich_message_exit($titre='Maintenance',$contenu='Site en cours de maintenance ! Réouverture dans quelques instants...');
 }

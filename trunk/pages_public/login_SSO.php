@@ -83,9 +83,9 @@ $login = phpCAS::getUser();
 // Comparer avec les données de la base (demande de connexion comme élève ou professeur ou directeur)
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
-connecter_user($BASE,$profil='normal',$login,$password=false,$sso);
+$connexion = connecter_user($BASE,$profil='normal',$login,$password=false,$sso);
 
-if($_SESSION['USER_PROFIL']!='public')
+if($connexion=='ok')
 {
 	// Redirection vers l'espace en cas de succès
 	alert_redirection_exit($texte_alert='',$adresse='index.php?dossier='.$_SESSION['USER_PROFIL']);
@@ -93,7 +93,6 @@ if($_SESSION['USER_PROFIL']!='public')
 else
 {
 	// Affichage d'un message d'erreur en cas d'échec
-	$message = $_SESSION['BLOCAGE_STATUT'] ? 'votre identifiant "'.$login.'" n\'est pas présent dans SACoche pour l\'établissement choisi, ou bien le compte est désactivé' : 'un administrateur a desactivé temporairement la connexion à l\'établissement : '.$_SESSION['BLOCAGE_MESSAGE'] ;
-	affich_message_exit($titre='Compte inaccessible.',$contenu='Vous vous êtes correctement identifié sur l\'ENT mais '.$message);
+	affich_message_exit($titre='Compte inaccessible.',$contenu=$connexion);
 }
 ?>

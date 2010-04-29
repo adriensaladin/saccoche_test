@@ -463,12 +463,13 @@ $(document).ready
 				$('form').hide();
 				$('#cadre').attr('data',data).parent().show();
 				surveiller_url_et_hauteur();
+				maj_clock(1);
 				return(false);
 			}
 		);
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-//	Inspection de l'URL : l'ajout d'un hash indique un retour de l'iframe suite à un choix de référentiel
+//	Inspection de l'URL : l'ajout d'un hash indique un retour de l'iframe suite à un choix de référentiel ou pour maj le compteur de session
 //	Pour les explications : http://softwareas.com/cross-domain-communication-with-iframes (démo 1 : http://ajaxify.com/run/crossframe/ )
 //	Attention, seule la 1e méthode fonctionne, la 2nde avec les iframes ajouté n'est pas compatible avec tous les navigateurs.
 //	Voir aussi cette librairie : http://easyxdm.net/wp/
@@ -484,9 +485,23 @@ $(document).ready
 					if(hashVal!="")
 					{
 						window.location.hash='';
-						$("body").stopTime('surveillance');
-						$('#reporter_referentiel').attr('lang','id_'+hashVal).html('<img alt=" vierge" src="./_img/action/action_valider.png" /> Démarrer avec ce référentiel : *****');
-						$('#rechercher_annuler').click();
+						if(hashVal=='maj_clock')
+						{
+							maj_clock(1);
+						}
+						else
+						{
+							$("body").stopTime('surveillance');
+							position_separateur = hashVal.indexOf('_');
+							if(position_separateur != -1)
+							{
+								referentiel_id = hashVal.substring(0,position_separateur);
+								description    = hashVal.substr(position_separateur+1);
+								$('#reporter_referentiel').attr('lang','id_'+referentiel_id).html('<img alt=" vierge" src="./_img/action/action_valider.png" /> Démarrer avec ce référentiel : <b>'+description+'</b>');
+								maj_clock(1);
+							}
+							$('#rechercher_annuler').click();
+						}
 					}
 					// Surveillance du redimensionnement
 					var hauteur_entete = 180;

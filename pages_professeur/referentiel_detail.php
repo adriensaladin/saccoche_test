@@ -121,14 +121,6 @@ else
 
 <hr />
 
-<p>
-	<span class="astuce">Référentiels de compétences partagés :</span><br />
-	<a class="lien_ext" href="./index.php?dossier=professeur&amp;fichier=recherche_generale">Recherche générale sur plusieurs établissements, pour une matière et un niveau donnés.</a><br />
-	<a class="lien_ext" href="./index.php?dossier=professeur&amp;fichier=recherche_precise">Recherche sur un établissement précis, pour une matière donnée.</a>
-</p>
-
-<hr />
-
 <div id="zone_compet">
 </div>
 

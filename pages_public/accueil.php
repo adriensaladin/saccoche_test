@@ -101,7 +101,7 @@ if($ALERTE_SSO)
 <h2><img src="./_img/puce_astuce.png" alt="Informations" /> Informations</h2>
 <ul class="puce">
 	<li><em>SACoche</em> est un logiciel gratuit, libre, développé avec le soutien de <a class="lien_ext" href="http://www.sesamath.net"><img alt="Sésamath_logo" src="./_img/logo_sesamath.png" /></a>.</li>
-	<li>Toutes les informations concernant ce projet se trouvent sur <a class="lien_ext" href="http://competences.sesamath.net">le site officiel de <em>SACoche</em></a>.</li>
+	<li><a class="lien_ext" href="http://competences.sesamath.net">Toutes les informations concernant ce projet se trouvent sur le site officiel de <em>SACoche</em></a>.</li>
 </ul>
 
 <hr />

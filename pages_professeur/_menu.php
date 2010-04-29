@@ -41,7 +41,8 @@ $arbre='
 	<li>Référentiels
 		<ul>
 			<li class="algorithme_info"><a href="./index.php?dossier='.$DOSSIER.'&amp;fichier=algorithme_info">Algorithme de calcul (pour information)</a></li>
-			<li class="referentiel_view"><a href="./index.php?dossier='.$DOSSIER.'&amp;fichier=referentiel&amp;section=view">Référentiels en place (pour information)</a></li>
+			<li class="referentiel_view"><a href="./index.php?dossier='.$DOSSIER.'&amp;fichier=referentiel&amp;section=voir-interne">Référentiels en place (pour information)</a></li>
+			<li class="referentiel_view"><a href="./index.php?dossier='.$DOSSIER.'&amp;fichier=referentiel&amp;section=voir-externe">Référentiels partagés (pour information)</a></li>
 			<li class="referentiel_global"><a href="./index.php?dossier='.$DOSSIER.'&amp;fichier=referentiel&amp;section=global">Gérer les référentiels</a></li>
 			<li class="referentiel_detail"><a href="./index.php?dossier='.$DOSSIER.'&amp;fichier=referentiel&amp;section=detail">Modifier le contenu des référentiels</a></li>
 		</ul>

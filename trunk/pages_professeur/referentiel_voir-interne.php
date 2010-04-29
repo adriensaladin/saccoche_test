@@ -26,7 +26,7 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-$TITRE = "Référentiels de compétences utilisés";
+$TITRE = "Référentiels en place dans l'établissement";
 ?>
 
 <ul class="puce">

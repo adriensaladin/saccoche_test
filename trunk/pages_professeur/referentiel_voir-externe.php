@@ -26,25 +26,25 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-$TITRE = "Consulter les référentiels d'un établissement";
+$TITRE = "Référentiels partagés sur le serveur communautaire";
 ?>
+
+<ul class="puce">
+	<li><span class="manuel"><a class="pop_up" href="./aide.php?fichier=referentiel_organisation_competences">DOC : Organisation des compétences dans les référentiels.</a></span></li>
+	<li><span class="manuel"><a class="pop_up" href="./aide.php?fichier=referentiel_structure">DOC : Structure d'un référentiel.</a></span></li>
+</ul>
+
+<hr />
 
 <?php
-// Fabrication des éléments select du formulaire
-$select_etabl   = afficher_select(DB_OPT_structures_partage($_SESSION['NIVEAUX']) , $select_nom='f_etabl'   , $option_first='oui' , $selection=false , $optgroup='oui');
-$select_matiere = afficher_select(DB_OPT_matieres_communes($_SESSION['MATIERES']) , $select_nom='f_matiere' , $option_first='oui' , $selection=false , $optgroup='non');
+if( (!$_SESSION['STRUCTURE_ID']) || (!$_SESSION['STRUCTURE_KEY']) )
+{
+	echo'<p><label for="rien" class="erreur">Pour pouvoir effectuer la recherche d\'un référentiel partagé sur le serveur communautaire, un administrateur doit identifier cette installation de SACoche.</label></p>';
+}
+else
+{
+	echo'<p id="object_container"><object id="cadre" data="'.html(SERVEUR_COMMUNAUTAIRE).'?mode=object'.'&fichier=referentiel_voir'.'&structure_id='.$_SESSION['STRUCTURE_ID'].'&structure_key='.$_SESSION['STRUCTURE_KEY'].'" height="350px" style="width:100%"><img src="./_img/ajax/ajax_loader.gif" /> Appel au serveur communautaire...</object></p>';
+}
 ?>
-
-<form id="form_select" action="">
-	<fieldset>
-		<label class="tab" for="f_etabl">Établissement :</label><?php echo $select_etabl ?><br />
-		<label class="tab" for="f_matiere">Matière <img alt="" src="./_img/bulle_aide.png" title="Seules les matières cochées par l'administrateur apparaissent." /> :</label><?php echo $select_matiere ?><br />
-		<span class="tab"></span><input id="f_submit" type="button" value="Valider." /><label id="ajax_msg">&nbsp;</label>
-	</fieldset>
-</form>
-
-<div id="zone_compet">
-</div>
-
 
 

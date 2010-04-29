@@ -191,19 +191,19 @@ else
 
 <div id="choisir_referentiel" class="hide">
 	<h2>Choisir un référentiel</h2>
-	<a class="choisir_valider" href="#" lang="id_0"><img alt=" vierge" src="./_img/action/action_valider.png" /> Démarrer avec un référentiel vierge.</a><br />
+	<p><a class="choisir_valider" href="#" lang="id_0"><img alt=" vierge" src="./_img/action/action_valider.png" /> Démarrer avec un référentiel vierge.</a></p>
 	<?php
 	if( (!$_SESSION['STRUCTURE_ID']) || (!$_SESSION['STRUCTURE_KEY']) )
 	{
-		echo'<label for="rien" class="erreur">Pour pouvoir effectuer la recherche d\'un référentiel partagé sur le serveur communautaire, un administrateur doit identifier cette installation de SACoche.</label><br />';
+		echo'<p><label for="rien" class="erreur">Pour pouvoir effectuer la recherche d\'un référentiel partagé sur le serveur communautaire, un administrateur doit identifier cette installation de SACoche.</label></p>';
 	}
 	else
 	{
-		echo'<a id="choisir_rechercher" href="#"><img alt="" src="./_img/find.png" /> Rechercher parmi les référentiels partagés sur le serveur communautaire.</a><br />';
-		echo'<a class="choisir_valider" id="reporter_referentiel" href="#" lang="id_x"></a><br />';
+		echo'<p><a id="choisir_rechercher" href="#"><img alt="" src="./_img/find.png" /> Rechercher parmi les référentiels partagés sur le serveur communautaire.</a><br />';
+		echo'<a class="choisir_valider" id="reporter_referentiel" href="#" lang="id_x"></a></p>';
 	}
 	?>
-	<a id="choisir_annuler" href="#"><img alt="" src="./_img/action/action_annuler.png" /> Annuler la création d'un référentiel.</a><br />
+	<p><a id="choisir_annuler" href="#"><img alt="" src="./_img/action/action_annuler.png" /> Annuler la création d'un référentiel.</a></p>
 	<label id="ajax_msg_choisir">&nbsp;</label>
 </div>
 

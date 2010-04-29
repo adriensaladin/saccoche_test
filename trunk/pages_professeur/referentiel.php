@@ -30,7 +30,8 @@ $TITRE = "Référentiels de compétences";
 ?>
 
 <div class="hc">
-	<a href="./index.php?dossier=<?php echo $DOSSIER ?>&amp;fichier=<?php echo $FICHIER ?>&amp;section=view">Référentiels en place (pour information)</a>	||
+	<a href="./index.php?dossier=<?php echo $DOSSIER ?>&amp;fichier=<?php echo $FICHIER ?>&amp;section=voir-interne">Référentiels en place (pour information)</a>	||
+	<a href="./index.php?dossier=<?php echo $DOSSIER ?>&amp;fichier=<?php echo $FICHIER ?>&amp;section=voir-externe">Référentiels partagés (pour information)</a>	||
 	<a href="./index.php?dossier=<?php echo $DOSSIER ?>&amp;fichier=<?php echo $FICHIER ?>&amp;section=global">Gérer les référentiels.</a>	||
 	<a href="./index.php?dossier=<?php echo $DOSSIER ?>&amp;fichier=<?php echo $FICHIER ?>&amp;section=detail">Modifier le contenu des référentiels.</a>
 </div>

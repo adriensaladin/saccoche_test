@@ -53,7 +53,7 @@ $(document).ready
 						}
 					}
 					// Surveillance du redimensionnement
-					var hauteur_entete = 180;
+					var hauteur_entete = 200;
 					var hauteur_object_mini = 350;
 					var hauteur_document = hauteur_entete+hauteur_object_mini;
 					// hauteur_document = $(document).height() pose problème si on retrécit la fenêtre en hauteur : il s'adapte très lentement...
@@ -77,6 +77,15 @@ $(document).ready
 		}
 		// Appel au chargement de la page
 		surveiller_url_et_hauteur();
-
+		// Et appeler l'objet
+		adresse = url_debut + '?mode=object' + '&fichier=referentiel_voir' + '&structure_id=' + structure_id + '&structure_key=' + structure_key + '&adresse_retour=' + encodeURIComponent(document.location.href);	// Mettre href sinon c'est le dernier appel ajax (non visible dans la barre d'adresse) qui compte...
+		if($('#object_container object').length)
+		{
+			$('#cadre').attr('data',adresse);
+		}
+		else
+		{
+			$('#cadre').attr('src',adresse);
+		}
 	}
 );

@@ -458,10 +458,17 @@ $(document).ready
 				tab_ids = ids.split('_')
 				matiere_id = tab_ids[2];
 				niveau_id  = tab_ids[3];
-				data = url_debut + '?mode=object' + '&fichier=referentiel_choisir' + '&structure_id=' + structure_id + '&structure_key=' + structure_key + '&matiere_id=' + matiere_id + '&niveau_id=' + niveau_id + '&adresse_retour=' + encodeURIComponent(document.location.href);	// Mettre href sinon c'est le dernier appel ajax (non visible dans la barre d'adresse) qui compte...
-				// Afficher / masquer ce qu'il faut
+				adresse = url_debut + '?mode=object' + '&fichier=referentiel_choisir' + '&structure_id=' + structure_id + '&structure_key=' + structure_key + '&matiere_id=' + matiere_id + '&niveau_id=' + niveau_id + '&adresse_retour=' + encodeURIComponent(document.location.href);	// Mettre href sinon c'est le dernier appel ajax (non visible dans la barre d'adresse) qui compte...
+				// Afficher / masquer ce qu'il faut et appeler l'objet
 				$('form').hide();
-				$('#cadre').attr('data',data).parent().show();
+				if($('#object_container object').length)
+				{
+					$('#cadre').attr('data',adresse).parent().show();
+				}
+				else
+				{
+					$('#cadre').attr('src',adresse).parent().show();
+				}
 				surveiller_url_et_hauteur();
 				maj_clock(1);
 				return(false);

@@ -29,6 +29,12 @@ if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');
 $TITRE = "Référentiels partagés sur le serveur communautaire";
 ?>
 
+<script type="text/javascript">
+	var url_debut                  = "<?php echo html(SERVEUR_COMMUNAUTAIRE) ?>";
+	var structure_id               = "<?php echo $_SESSION['STRUCTURE_ID'] ?>";
+	var structure_key              = "<?php echo $_SESSION['STRUCTURE_KEY'] ?>";
+</script>
+
 <ul class="puce">
 	<li><span class="manuel"><a class="pop_up" href="./aide.php?fichier=referentiel_organisation_competences">DOC : Organisation des compétences dans les référentiels.</a></span></li>
 	<li><span class="manuel"><a class="pop_up" href="./aide.php?fichier=referentiel_structure">DOC : Structure d'un référentiel.</a></span></li>
@@ -43,7 +49,21 @@ if( (!$_SESSION['STRUCTURE_ID']) || (!$_SESSION['STRUCTURE_KEY']) )
 }
 else
 {
-	echo'<p id="object_container"><object id="cadre" data="'.html(SERVEUR_COMMUNAUTAIRE).'?mode=object'.'&fichier=referentiel_voir'.'&structure_id='.$_SESSION['STRUCTURE_ID'].'&structure_key='.$_SESSION['STRUCTURE_KEY'].'" height="350px" style="width:100%"><img src="./_img/ajax/ajax_loader.gif" /> Appel au serveur communautaire...</object></p>';
+	// La balise object fonctionne sauf avec Internet Explorer qui n'affiche rien si on appelle une page provenant d'un autre domaine
+	// Par ailleurs, il faut mettre une adresse valise au départ sous peine de se voir retirer la balise par son substitut (pour Opéra).
+	require_once('./_inc/fonction_css_browser_selector.php');
+	$chaine_detection = css_browser_selector();
+	if(substr($chaine_detection,0,3)!='ie ')
+	{
+		$balise   = 'object';
+		$attribut = 'data';
+	}
+	else
+	{
+		$balise   = 'iframe';
+		$attribut = 'src';
+	}
+	echo'<p id="object_container"><'.$balise.' id="cadre" '.$attribut.'="./_img/ajax/ajax_loader.gif" type="text/html" height="350px" style="width:100%;border:none;"><img src="./_img/ajax/ajax_loader.gif" alt="Chargement..." /> Appel au serveur communautaire...</'.$balise.'></p>';
 }
 ?>
 

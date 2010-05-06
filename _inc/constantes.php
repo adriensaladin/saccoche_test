@@ -30,7 +30,7 @@ define('MAINTENANCE',0);
 
 // FILE_CSS_SCREEN / FILE_CSS_PRINT / FILE_JS_BIBLIO / FILE_JS_SCRIPT / FILE_JS_BIBLIO / FILE_JS_SCRIPT
 // Pour éviter les problèmes de mise en cache, modifier les noms des fichiers lors d'une mise à jour
-define('FILE_CSS_SCREEN','style-23.min.css');
+define('FILE_CSS_SCREEN','style-23.css'); // .min
 define('FILE_CSS_PRINT','style_print.min.css');
 define('FILE_JS_BIBLIO','jquery-librairies-2.js');
 define('FILE_JS_SCRIPT','script-22.min.js');
@@ -54,7 +54,8 @@ define('LISTING_ID_NIVEAUX_PALIERS','.46.47.48.49.');
 define('CHARSET','utf-8');
 
 // SERVEUR_ADRESSE
-$chemin = 'http://'.$_SERVER["SERVER_NAME"].$_SERVER["SCRIPT_NAME"];
+$protocole = ( isset($_SERVER['HTTPS']) && ($_SERVER['HTTPS']=='on') ) ? 'https://' : 'http://';
+$chemin = $protocole.$_SERVER["SERVER_NAME"].$_SERVER["SCRIPT_NAME"];
 $fin = mb_strpos($chemin,SACoche);
 if($fin)
 {

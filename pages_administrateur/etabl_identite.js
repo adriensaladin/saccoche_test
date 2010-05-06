@@ -30,6 +30,98 @@ $(document).ready
 	function()
 	{
 
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+//	Clic sur le lien pour Lancer une recherche sur le serveur communautaire
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
+		$('#ouvrir_recherche').click
+		(
+			function()
+			{
+				adresse = url_debut + '?mode=object' + '&fichier=structure_enregistrer' + '&adresse_retour=' + encodeURIComponent(document.location.href);	// Mettre href sinon c'est le dernier appel ajax (non visible dans la barre d'adresse) qui compte...
+				if($('#object_container object').length)
+				{
+					$('#cadre').attr('data',adresse).parent().show();
+				}
+				else
+				{
+					$('#cadre').attr('src',adresse).parent().show();
+				}
+				surveiller_url_et_hauteur();
+				maj_clock(1);
+				return(false);
+			}
+		);
+
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+//	Inspection de l'URL : l'ajout d'un hash indique un retour de l'iframe suite à un renvoi d'informations ou pour maj le compteur de session
+//	Pour les explications : http://softwareas.com/cross-domain-communication-with-iframes (démo 1 : http://ajaxify.com/run/crossframe/ )
+//	Attention, seule la 1e méthode fonctionne, la 2nde avec les iframes ajouté n'est pas compatible avec tous les navigateurs.
+//	Voir aussi cette librairie : http://easyxdm.net/wp/
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
+		function surveiller_url_et_hauteur()
+		{
+			$("body").everyTime
+			('1ds', 'surveillance', function()
+				{
+					// Surveillance de l'URL
+					var hashVal = window.location.hash.substr(1);
+					if(hashVal!="")
+					{
+						window.location.hash='';
+						if(hashVal=='maj_clock')
+						{
+							maj_clock(1);
+						}
+						else
+						{
+							$("body").stopTime('surveillance');
+							tab_infos = ids.split('-+')
+							if(tab_infos.length == 4)
+							{
+								$('#f_structure_id').val(tab_infos[0]);
+								$('#f_structure_key').val(tab_infos[1]);
+								$('#f_structure_uai').val(tab_infos[2]);
+								$('#f_denomination').val(tab_infos[3]);
+								maj_clock(1);
+							}
+							adresse = './_img/ajax/ajax_loader.gif';
+							if($('#object_container object').length)
+							{
+								$('#cadre').attr('data',adresse).parent().hide();
+							}
+							else
+							{
+								$('#cadre').attr('src',adresse).parent().hide();
+							}
+							$("body").stopTime('surveillance');
+						}
+					}
+					// Surveillance du redimensionnement
+					var hauteur_entete = 180;
+					var hauteur_object_mini = 350;
+					var hauteur_document = hauteur_entete+hauteur_object_mini;
+					// hauteur_document = $(document).height() pose problème si on retrécit la fenêtre en hauteur : il s'adapte très lentement...
+					// D'où la procédure suivante récupérée à l'adresse http://www.howtocreate.co.uk/tutorials/javascript/browserwindow
+					if( typeof( window.innerHeight ) == 'number' )
+					{
+						hauteur_document = window.innerHeight;	//Non-IE
+					}
+					else if( document.documentElement && document.documentElement.clientHeight )
+					{
+						hauteur_document = document.documentElement.clientHeight;	//IE 6+ in 'standards compliant mode'
+					}
+					else if( document.body && document.body.clientHeight )
+					{
+						hauteur_document = document.body.clientHeight;	//IE 4 compatible
+					}
+					var hauteur_object = Math.max(hauteur_document-hauteur_entete,hauteur_object_mini);
+					$('#cadre').css('height',hauteur_object);
+				}
+			);
+		}
+
 		//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
 		// Traitement du formulaire principal
 		//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*

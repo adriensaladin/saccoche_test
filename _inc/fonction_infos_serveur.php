@@ -249,4 +249,16 @@ function tableau_modules_PHP($nb_colonnes=3)
 	';
 }
 
+function tableau_serveur_et_client()
+{
+	return'
+		<table>
+			<tbody>
+				<tr><th>Identification du serveur</th><td class="hc">'.$_SERVER['SERVER_SOFTWARE'].' &laquo; '.SERVEUR_ADRESSE.' &raquo;</td></tr>
+				<tr><th>Identification du client</th><td class="hc">'.$_SERVER['HTTP_USER_AGENT'].'</td></tr>
+			</tbody>
+		</table>
+	';
+}
+
 ?>

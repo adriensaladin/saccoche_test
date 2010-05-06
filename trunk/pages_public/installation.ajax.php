@@ -137,7 +137,7 @@ elseif( $step==2 )
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 elseif( $step==3 )
 {
-	if( defined('HEBERGEUR_INSTALLATION') && defined('HEBERGEUR_DENOMINATION') && defined('HEBERGEUR_LOGO') && defined('HEBERGEUR_CNIL') && defined('WEBMESTRE_NOM') && defined('WEBMESTRE_PRENOM') && defined('WEBMESTRE_COURRIEL') && defined('WEBMESTRE_PASSWORD_MD5') )
+	if( defined('HEBERGEUR_INSTALLATION') && defined('HEBERGEUR_DENOMINATION') && defined('HEBERGEUR_ADRESSE_SITE') && defined('HEBERGEUR_LOGO') && defined('HEBERGEUR_CNIL') && defined('WEBMESTRE_NOM') && defined('WEBMESTRE_PRENOM') && defined('WEBMESTRE_COURRIEL') && defined('WEBMESTRE_PASSWORD_MD5') )
 	{
 		$affichage .= '<p><label for="rien" class="valide">Les informations concernant le webmestre et l\'hébergement sont déjà renseignées.</label></p>'."\r\n";
 		$affichage .= '<p><span class="tab"><a href="#" class="step4">Passer à l\'étape 4.</a><label id="ajax_msg">&nbsp;</label></span></p>' ;
@@ -152,6 +152,7 @@ elseif( $step==3 )
 		$affichage .= '<div class="danger">Pour l\'installation d\'une seule structure, la base mysql à utiliser doit déjà exister (la créer maintenant si nécessaire, typiquement via "phpMyAdmin").</div>'."\r\n";
 		$affichage .= '<label class="tab" for="f_installation">Installation :</label><select id="f_installation" name="f_installation"><option value=""></option><option value="mono-structure">Installation d\'un unique établissement sur ce serveur, nécessitant une seule base de données.</option><option value="multi-structures">Gestion d\'établissements multiples (par un rectorat...) avec gestion des comptes et bases de données associées.</option></select><br />'."\r\n";
 		$affichage .= '<label class="tab" for="f_denomination"><img alt="" src="./_img/bulle_aide.png" title="Exemples :<br />Collège de Trucville<br />Rectorat du paradis" /> Dénomination :</label><input id="f_denomination" name="f_denomination" size="55" type="text" value="" /><br />'."\r\n";
+		$affichage .= '<label class="tab" for="f_adresse_site"><img alt="" src="./_img/bulle_aide.png" title="Exemple : http://www.ac-paradis.fr<br />Ce champ est facultatif." /> Adresse web :</label><input id="f_adresse_site" name="f_adresse_site" size="60" type="text" value="" /><br />'."\r\n";
 		$affichage .= '<h2>Coordonnées du webmestre</h2>'."\r\n";
 		$affichage .= '<label class="tab" for="f_nom">Nom :</label><input id="f_nom" name="f_nom" size="20" type="text" value="" /><br />'."\r\n";
 		$affichage .= '<label class="tab" for="f_prenom">Prénom :</label><input id="f_prenom" name="f_prenom" size="20" type="text" value="" /><br />'."\r\n";
@@ -171,13 +172,14 @@ elseif( $step==31 )
 	// récupérer et tester les paramètres
 	$installation = (isset($_POST['f_installation'])) ? clean_texte($_POST['f_installation']) : '';
 	$denomination = (isset($_POST['f_denomination'])) ? clean_texte($_POST['f_denomination']) : '';
+	$adresse_site = (isset($_POST['f_adresse_site'])) ? clean_url($_POST['f_adresse_site'])   : '';
 	$nom          = (isset($_POST['f_nom']))          ? clean_nom($_POST['f_nom'])            : '';
 	$prenom       = (isset($_POST['f_prenom']))       ? clean_prenom($_POST['f_prenom'])      : '';
 	$courriel     = (isset($_POST['f_courriel']))     ? clean_courriel($_POST['f_courriel'])  : '';
 	$password     = (isset($_POST['f_password1']))    ? clean_password($_POST['f_password1']) : '';
 	if( in_array($installation,array('mono-structure','multi-structures')) && $denomination && $nom && $prenom && $courriel && $password )
 	{
-		fabriquer_fichier_hebergeur_info($installation,$denomination,$logo='',$cnil='non renseignée',$nom,$prenom,$courriel,crypter_mdp($password));
+		fabriquer_fichier_hebergeur_info($installation,$denomination,$adresse_site,$logo='',$cnil='non renseignée',$nom,$prenom,$courriel,crypter_mdp($password));
 		$affichage .= '<p><label for="rien" class="valide">Les informations concernant le webmestre et l\'hébergement sont maintenant renseignées.</label></p>'."\r\n";
 		$affichage .= '<div class="astuce">Vous pourrez les modifier depuis l\'espace du webmestre, en particulier ajouter un logo et un numéro de déclaration à la CNIL.</div>'."\r\n";
 		$affichage .= '<p><span class="tab"><a href="#" class="step4">Passer à l\'étape 4.</a><label id="ajax_msg">&nbsp;</label></span></p>' ;

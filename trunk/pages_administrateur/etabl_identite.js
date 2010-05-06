@@ -38,7 +38,8 @@ $(document).ready
 		(
 			function()
 			{
-				adresse = url_debut + '?mode=object' + '&fichier=structure_enregistrer' + '&adresse_retour=' + encodeURIComponent(document.location.href);	// Mettre href sinon c'est le dernier appel ajax (non visible dans la barre d'adresse) qui compte...
+				adresse = url_debut + '?mode=object' + '&fichier=structure_rechercher' + '&adresse_retour=' + encodeURIComponent(document.location.href);	// Mettre href sinon c'est le dernier appel ajax (non visible dans la barre d'adresse) qui compte...
+				$('#form').hide();
 				if($('#object_container object').length)
 				{
 					$('#cadre').attr('data',adresse).parent().show();
@@ -77,29 +78,19 @@ $(document).ready
 						else
 						{
 							$("body").stopTime('surveillance');
-							tab_infos = ids.split('-+')
-							if(tab_infos.length == 4)
+							tab_infos = hashVal.split('___')
+							if(tab_infos.length == 3)
 							{
 								$('#f_structure_id').val(tab_infos[0]);
-								$('#f_structure_key').val(tab_infos[1]);
-								$('#f_structure_uai').val(tab_infos[2]);
-								$('#f_denomination').val(tab_infos[3]);
+								$('#f_structure_uai').val(tab_infos[1]);
+								$('#f_denomination').val(tab_infos[2]);
 								maj_clock(1);
 							}
-							adresse = './_img/ajax/ajax_loader.gif';
-							if($('#object_container object').length)
-							{
-								$('#cadre').attr('data',adresse).parent().hide();
-							}
-							else
-							{
-								$('#cadre').attr('src',adresse).parent().hide();
-							}
-							$("body").stopTime('surveillance');
+							$('#rechercher_annuler').click();
 						}
 					}
 					// Surveillance du redimensionnement
-					var hauteur_entete = 180;
+					var hauteur_entete = 230;
 					var hauteur_object_mini = 350;
 					var hauteur_document = hauteur_entete+hauteur_object_mini;
 					// hauteur_document = $(document).height() pose problème si on retrécit la fenêtre en hauteur : il s'adapte très lentement...
@@ -121,6 +112,29 @@ $(document).ready
 				}
 			);
 		}
+
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+//	Clic sur le lien pour Annuler la recherche sur le serveur communautaire
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
+		$('#rechercher_annuler').click
+		(
+			function()
+			{
+				$('form').show();
+				adresse = './_img/ajax/ajax_loader.gif';
+				if($('#object_container object').length)
+				{
+					$('#cadre').attr('data',adresse).parent().hide();
+				}
+				else
+				{
+					$('#cadre').attr('src',adresse).parent().hide();
+				}
+				$("body").stopTime('surveillance');
+				return(false);
+			}
+		);
 
 		//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
 		// Traitement du formulaire principal

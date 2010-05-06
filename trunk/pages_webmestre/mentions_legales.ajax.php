@@ -30,6 +30,7 @@ if($_SESSION['STRUCTURE_ID']==ID_DEMO) {exit('Action désactivée pour la démo.
 
 $action       = (isset($_POST['f_action']))       ? clean_texte($_POST['f_action'])       : '';
 $denomination = (isset($_POST['f_denomination'])) ? clean_texte($_POST['f_denomination']) : '';
+$adresse_site = (isset($_POST['f_adresse_site'])) ? clean_url($_POST['f_adresse_site'])   : '';
 $logo         = (isset($_POST['f_logo']))         ? clean_texte($_POST['f_logo'])         : '';
 $cnil         = (isset($_POST['f_cnil']))         ? clean_texte($_POST['f_cnil'])         : '';
 $nom          = (isset($_POST['f_nom']))          ? clean_nom($_POST['f_nom'])            : '';
@@ -117,7 +118,7 @@ elseif( ($action=='delete_logo') && $logo )
 	// Si on supprime l'image actuellement utilisée, alors la retirer du fichier
 	if($logo==HEBERGEUR_LOGO)
 	{
-		fabriquer_fichier_hebergeur_info(HEBERGEUR_INSTALLATION,HEBERGEUR_DENOMINATION,'',HEBERGEUR_CNIL,WEBMESTRE_NOM,WEBMESTRE_PRENOM,WEBMESTRE_COURRIEL,WEBMESTRE_PASSWORD_MD5);
+		fabriquer_fichier_hebergeur_info(HEBERGEUR_INSTALLATION,HEBERGEUR_DENOMINATION,HEBERGEUR_ADRESSE_SITE,'',HEBERGEUR_CNIL,WEBMESTRE_NOM,WEBMESTRE_PRENOM,WEBMESTRE_COURRIEL,WEBMESTRE_PASSWORD_MD5);
 	}
 	echo'ok';
 }
@@ -128,7 +129,7 @@ elseif( ($action=='delete_logo') && $logo )
 
 elseif( ($action=='enregistrer') && $denomination && $cnil && $nom && $prenom && $courriel )
 {
-	fabriquer_fichier_hebergeur_info(HEBERGEUR_INSTALLATION,$denomination,$logo,$cnil,$nom,$prenom,$courriel,WEBMESTRE_PASSWORD_MD5);
+	fabriquer_fichier_hebergeur_info(HEBERGEUR_INSTALLATION,$denomination,$adresse_site,$logo,$cnil,$nom,$prenom,$courriel,WEBMESTRE_PASSWORD_MD5);
 	// On modifie aussi la session
 	$_SESSION['DENOMINATION'] = $denomination ;
 	$_SESSION['USER_NOM']     = $nom ;

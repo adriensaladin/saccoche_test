@@ -71,9 +71,9 @@ foreach($DB_TAB as $DB_ROW)
 				echo	'<td>'.html($DB_ROW['structure_localisation']).'</td>';
 				echo	'<td>'.html($DB_ROW['structure_denomination']).'</td>';
 				echo	'<td>'.html($DB_ROW['structure_uai']).'</td>';
-				echo	'<td>'.html($DB_ROW['contact_nom']).'</td>';
-				echo	'<td>'.html($DB_ROW['contact_prenom']).'</td>';
-				echo	'<td>'.html($DB_ROW['contact_courriel']).'</td>';
+				echo	'<td>'.html($DB_ROW['structure_contact_nom']).'</td>';
+				echo	'<td>'.html($DB_ROW['structure_contact_prenom']).'</td>';
+				echo	'<td>'.html($DB_ROW['structure_contact_courriel']).'</td>';
 				echo	'<td class="nu">';
 				echo		'<q class="modifier" title="Modifier cet établissement."></q>';
 				echo		'<q class="supprimer" title="Supprimer cet établissement."></q>';

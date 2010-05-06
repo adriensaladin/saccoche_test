@@ -219,6 +219,7 @@ $(document).ready
 				rules :
 				{
 					f_denomination : { required:true , maxlength:60 },
+					f_adresse_site : { required:false , maxlength:150 },
 					f_logo :         { required:false },
 					f_cnil :         { required:true },
 					f_nom :          { required:true , maxlength:20 },
@@ -228,6 +229,7 @@ $(document).ready
 				messages :
 				{
 					f_denomination : { required:"dénomination manquante" , maxlength:"60 caractères maximum" },
+					f_adresse_site : { maxlength:"150 caractères maximum" },
 					f_logo :         { },
 					f_cnil :         { required:"indication CNIL manquante" },
 					f_nom :          { required:"nom manquant" , maxlength:"20 caractères maximum" },

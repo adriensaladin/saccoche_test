@@ -172,8 +172,10 @@ if($DOSSIER!='public')
 else
 {
 	// Accueil (identification) : image SACoche + image hébergeur.
-	$img_hebergeur = ( (defined('HEBERGEUR_LOGO')) && (is_file('./__hebergeur_info/'.HEBERGEUR_LOGO)) ) ? '<img alt="Hébergeur" src="./__hebergeur_info/'.HEBERGEUR_LOGO.'" />' : '' ;
-	$TITRE_PAGE = '<h1><a href="http://competences.sesamath.net"><img alt="Suivi d\'Acquisition de Compétences" src="./_img/logo_grand2.gif" /></a>'.$img_hebergeur.'</h1>';
+	$hebergeur_img  = ( (defined('HEBERGEUR_LOGO')) && (is_file('./__hebergeur_info/'.HEBERGEUR_LOGO)) ) ? '<img alt="Hébergeur" src="./__hebergeur_info/'.HEBERGEUR_LOGO.'" />' : '' ;
+	$hebergeur_lien = ( (defined('HEBERGEUR_ADRESSE_SITE')) && HEBERGEUR_ADRESSE_SITE && ($hebergeur_img) ) ? '<a href="'.html(HEBERGEUR_ADRESSE_SITE).'">'.$hebergeur_img.'</a>' : $hebergeur_img ;
+	$SACoche_lien   = '<a href="http://competences.sesamath.net"><img alt="Suivi d\'Acquisition de Compétences" src="./_img/logo_grand2.gif" /></a>' ;
+	$TITRE_PAGE = '<h1>'.$SACoche_lien.$hebergeur_lien.'</h1>';
 }
 
 // Affichage de l'en-tête

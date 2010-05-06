@@ -543,7 +543,15 @@ $(document).ready
 			function()
 			{
 				$('form').show();
-				$('#cadre').attr('data','').parent().hide();
+				adresse = './_img/ajax/ajax_loader.gif';
+				if($('#object_container object').length)
+				{
+					$('#cadre').attr('data',adresse).parent().hide();
+				}
+				else
+				{
+					$('#cadre').attr('src',adresse).parent().hide();
+				}
 				$("body").stopTime('surveillance');
 				return(false);
 			}

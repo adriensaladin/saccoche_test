@@ -216,8 +216,8 @@ else
 	<h2>Rechercher un référentiel partagé sur le serveur communautaire</h2>
 	<p><a id="rechercher_annuler" href="#"><img alt="" src="./_img/action/action_annuler.png" /> Annuler la recherche d'un référentiel.</a></p>
 	<?php
-	// La balise object fonctionne sauf avec Internet Explorer qui n'affiche rien si on appelle une page provenant d'un autre domaine
-	// Par ailleurs, il faut mettre une adresse valise au départ sous peine de se voir retirer la balise par son substitut (pour Opéra).
+	// La balise object fonctionne sauf avec Internet Explorer qui n'affiche rien si on appelle une page provenant d'un autre domaine.
+	// Par ailleurs, il faut mettre une adresse valide au départ sous peine de se voir retirer la balise par son substitut (pour Opéra).
 	require_once('./_inc/fonction_css_browser_selector.php');
 	$chaine_detection = css_browser_selector();
 	if(substr($chaine_detection,0,3)!='ie ')

@@ -49,8 +49,8 @@ if( (!$_SESSION['STRUCTURE_ID']) || (!$_SESSION['STRUCTURE_KEY']) )
 }
 else
 {
-	// La balise object fonctionne sauf avec Internet Explorer qui n'affiche rien si on appelle une page provenant d'un autre domaine
-	// Par ailleurs, il faut mettre une adresse valise au départ sous peine de se voir retirer la balise par son substitut (pour Opéra).
+	// La balise object fonctionne sauf avec Internet Explorer qui n'affiche rien si on appelle une page provenant d'un autre domaine.
+	// Par ailleurs, il faut mettre une adresse valide au départ sous peine de se voir retirer la balise par son substitut (pour Opéra).
 	require_once('./_inc/fonction_css_browser_selector.php');
 	$chaine_detection = css_browser_selector();
 	if(substr($chaine_detection,0,3)!='ie ')

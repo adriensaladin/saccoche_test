@@ -44,6 +44,7 @@ p{margin:1em auto}
 img {vertical-align:text-top}
 td img , #aide_en_ligne img {vertical-align:middle}
 input[type=radio],input[type=checkbox],input[type=image] {vertical-align:-2px}
+input[readonly=readonly] {color:#666}
 a {color:#139;text-decoration:none}a:hover{color:#D41;text-decoration:underline}
 h1{display:block;font-size:125%;text-align:center;font-weight:bold;font-variant:small-caps;color:#33A;letter-spacing:0.15em;}
 h1 img{vertical-align:middle;margin:1ex 1em;}

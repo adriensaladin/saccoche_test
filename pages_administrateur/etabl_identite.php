@@ -29,25 +29,32 @@ if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');
 $TITRE = "Identité de l'établissement";
 ?>
 
-<p class="hc"><span class="manuel"><a class="pop_up" href="./aide.php?fichier=gestion_informations_structure">DOC : Gestion de l'identité de l'établissement</a></span></p>
+<form id="form" action="">
 
-<hr />
+	<p class="hc"><span class="manuel"><a class="pop_up" href="./aide.php?fichier=gestion_informations_structure">DOC : Gestion de l'identité de l'établissement</a></span></p>
 
-<form id="form" action=""><fieldset>
-	<label class="tab" for="f_denomination">Dénomination :</label><input id="f_denomination" name="f_denomination" size="55" type="text" value="<?php echo html($_SESSION['DENOMINATION']); ?>" /><br />
-	<label class="tab" for="f_structure_uai">Code UAI (ex-RNE) :</label><input id="f_structure_uai" name="f_structure_uai" size="8" type="text" value="<?php echo html($_SESSION['STRUCTURE_UAI']); ?>" /><br />
-	<label class="tab" for="f_structure_id"><img alt="" src="./_img/bulle_aide.png" title="Valeur non modifiable manuellement.<br />Utilisez le lien ci-dessous." /> Id. Sésamath :</label><input id="f_structure_id" name="f_structure_id" size="5" type="text" value="<?php echo html($_SESSION['STRUCTURE_ID']); ?>" readonly="readonly" /><br />
-	<label class="tab" for="f_structure_key"><img alt="" src="./_img/bulle_aide.png" title="Valeur non modifiable manuellement.<br />Utilisez le lien ci-dessous." /> Clef de contrôle :</label><input id="f_structure_key" name="f_structure_key" size="35" type="text" value="<?php echo html($_SESSION['STRUCTURE_KEY']); ?>" readonly="readonly" /><br />
-	<span class="tab"></span><input id="f_submit" type="submit" value="Valider." /><label id="ajax_msg">&nbsp;</label>
-</fieldset></form>
+	<hr />
 
-<p><a id="ouvrir_recherche" href="#"><img alt="" src="./_img/find.png" /> Rechercher l'établissement dans la base Sésamath afin de pouvoir échanger avec le serveur communautaire.</a></p>
+	<fieldset>
+		<label class="tab" for="f_denomination">Dénomination :</label><input id="f_denomination" name="f_denomination" size="55" type="text" value="<?php echo html($_SESSION['DENOMINATION']); ?>" /><br />
+		<label class="tab" for="f_structure_uai">Code UAI (ex-RNE) :</label><input id="f_structure_uai" name="f_structure_uai" size="8" type="text" value="<?php echo html($_SESSION['STRUCTURE_UAI']); ?>" /><br />
+		<label class="tab" for="f_structure_id"><img alt="" src="./_img/bulle_aide.png" title="Valeur non modifiable manuellement.<br />Utilisez le lien ci-dessous." /> Id. Sésamath :</label><input id="f_structure_id" name="f_structure_id" size="5" type="text" value="<?php echo html($_SESSION['STRUCTURE_ID']); ?>" readonly="readonly" /><br />
+		<label class="tab" for="f_structure_key"><img alt="" src="./_img/bulle_aide.png" title="Valeur non modifiable manuellement.<br />Utilisez le lien ci-dessous." /> Clef de contrôle :</label><input id="f_structure_key" name="f_structure_key" size="35" type="text" value="<?php echo html($_SESSION['STRUCTURE_KEY']); ?>" readonly="readonly" /><br />
+		<span class="tab"></span><input id="f_submit" type="submit" value="Valider." /><label id="ajax_msg">&nbsp;</label>
+	</fieldset>
+
+	<p><a id="ouvrir_recherche" href="#"><img alt="" src="./_img/find.png" /> Rechercher l'établissement dans la base Sésamath afin de pouvoir échanger avec le serveur communautaire.</a></p>
+
+</form>
 
 <script type="text/javascript">
 	var url_debut = "<?php echo html(SERVEUR_COMMUNAUTAIRE) ?>";
 </script>
 
+
 <div id="object_container" class="hide">
+	<h2>Rechercher l'établissement dans la base Sésamath</h2>
+	<p><a id="rechercher_annuler" href="#"><img alt="" src="./_img/action/action_annuler.png" /> Annuler la recherche.</a></p>
 	<?php
 	// La balise object fonctionne sauf avec Internet Explorer qui n'affiche rien si on appelle une page provenant d'un autre domaine.
 	// Par ailleurs, il faut mettre une adresse valide au départ sous peine de se voir retirer la balise par son substitut (pour Opéra).

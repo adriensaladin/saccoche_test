@@ -1804,7 +1804,7 @@ function DB_modifier_mdp_webmestre($password_ancien,$password_nouveau)
 	}
 	// Remplacer par le nouveau mot de passe
 	$password_nouveau_crypte = crypter_mdp($password_nouveau);
-	fabriquer_fichier_hebergeur_info(HEBERGEUR_INSTALLATION,HEBERGEUR_DENOMINATION,HEBERGEUR_LOGO,HEBERGEUR_CNIL,WEBMESTRE_NOM,WEBMESTRE_PRENOM,WEBMESTRE_COURRIEL,$password_nouveau_crypte);
+	fabriquer_fichier_hebergeur_info(HEBERGEUR_INSTALLATION,HEBERGEUR_DENOMINATION,HEBERGEUR_ADRESSE_SITE,HEBERGEUR_LOGO,HEBERGEUR_CNIL,WEBMESTRE_NOM,WEBMESTRE_PRENOM,WEBMESTRE_COURRIEL,$password_nouveau_crypte);
 	return 'ok';
 }
 

@@ -37,7 +37,8 @@ $TITRE = "Mentions légales";
 
 <form id="form1" action=""><fieldset>
 	<h2>Caractéristiques de l'hébergement</h2>
-	<label class="tab" for="f_denomination">Dénomination :</label><input id="f_denomination" name="f_denomination" size="55" type="text" value="<?php echo html(HEBERGEUR_DENOMINATION); ?>" /><br />
+	<label class="tab" for="f_denomination"><img alt="" src="./_img/bulle_aide.png" title="Exemples :<br />Collège de Trucville<br />Rectorat du paradis" /> Dénomination :</label><input id="f_denomination" name="f_denomination" size="55" type="text" value="<?php echo html(HEBERGEUR_DENOMINATION); ?>" /><br />
+	<label class="tab" for="f_adresse_site"><img alt="" src="./_img/bulle_aide.png" title="Exemple : http://www.ac-paradis.fr<br />Ce champ est facultatif." /> Adresse web :</label><input id="f_adresse_site" name="f_adresse_site" size="60" type="text" value="<?php echo html(HEBERGEUR_ADRESSE_SITE); ?>" /><br />
 	<label class="tab" for="f_logo">Logo :</label><select id="f_logo" name="f_logo"><option value=""></option></select><label id="ajax_logo"></label><br />
 	<label class="tab" for="f_cnil">C.N.I.L. :</label><input id="f_cnil" name="f_cnil" size="15" type="text" value="<?php echo html(HEBERGEUR_CNIL); ?>" /><br />
 	<h2>Coordonnées du webmestre</h2>

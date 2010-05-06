@@ -35,10 +35,8 @@ $VERSION_JS = '3';
 $BASE = (isset($_COOKIE['SACoche-etablissement'])) ? clean_entier($_COOKIE['SACoche-etablissement']) : 0 ;
 // Test si id d'établissement transmis dans l'URL
 $BASE = (isset($_GET['id'])) ? clean_entier($_GET['id']) : $BASE ;
-// Test si affichage du formulaire spécial pour un administrateur d'une structure (pas de SSO)
-$profil = (isset($_GET['admin'])) ? 'administrateur' : 'normal' ;
-// Test si affichage du formulaire spécial pour le webmestre
-$profil = (isset($_GET['webmestre'])) ? 'webmestre' : $profil ;
+// Test si affichage du formulaire spécial pour un administrateur d'une structure (pas de SSO) ou pour le webmestre
+$profil = (isset($_GET['admin'])) ? 'administrateur' : ( (isset($_GET['webmestre'])) ? 'webmestre' : 'normal' ) ;
 ?>
 
 <?php
@@ -80,7 +78,7 @@ if($ALERTE_SSO)
 
 <hr />
 
-<h2><img src="./_img/login.gif" alt="Identification" /> Identification <?php echo($profil=='normal')?'':'<u>'.$profil.'</u>'; ?></h2>
+<h2><img src="./_img/login.gif" alt="Identification" /> Identification <?php echo($profil=='normal')?'':'<span style="color:#C00">'.$profil.'</span>'; ?></h2>
 <form action=""><fieldset>
 	<input id="f_base" name="f_base" type="hidden" value="<?php echo $BASE ?>" />
 	<input id="f_profil" name="f_profil" type="hidden" value="<?php echo $profil ?>" />
@@ -92,7 +90,7 @@ if($ALERTE_SSO)
 <h2><img src="./_img/serveur.png" alt="Hébergement" /> Hébergement</h2>
 <ul class="puce">
 	<li><em>SACoche</em> peut être librement téléchargé et installé sur différents serveurs.</li>
-	<li>Vous êtes actuellement sur un serveur hébergé par <?php echo mailto(WEBMESTRE_COURRIEL,'SACoche',HEBERGEUR_DENOMINATION); ?>.</li>
+	<li>Vous êtes actuellement sur un serveur hébergé par <?php echo (HEBERGEUR_ADRESSE_SITE) ? '<a class="lien_ext" href="'.html(HEBERGEUR_ADRESSE_SITE).'">'.html(HEBERGEUR_DENOMINATION).'</a>' : html(HEBERGEUR_DENOMINATION); ?> (<?php echo mailto(WEBMESTRE_COURRIEL,'SACoche','contact'); ?>).</li>
 	<li>Déclaration <a class="lien_ext" href="http://www.cnil.fr">CNIL</a> <?php echo HEBERGEUR_CNIL ?> (catégorie "Espace numérique de travail").</li>
 </ul>
 

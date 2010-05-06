@@ -149,6 +149,7 @@ $(document).ready
 								$('#form0').html('');
 								$('#form3').html(responseHTML);
 								$('#form4').html('');
+								infobulle();
 								$('#f_installation').focus();
 							}
 						}
@@ -172,6 +173,7 @@ $(document).ready
 				{
 					f_installation : { required:true },
 					f_denomination : { required:true , maxlength:60 },
+					f_adresse_site : { required:false , maxlength:150 },
 					f_nom :          { required:true , maxlength:20 },
 					f_prenom :       { required:true , maxlength:20 },
 					f_courriel :     { required:true , email:true , maxlength:60 },
@@ -182,6 +184,7 @@ $(document).ready
 				{
 					f_installation : { required:"type manquant" },
 					f_denomination : { required:"dénomination manquante" , maxlength:"60 caractères maximum" },
+					f_adresse_site : { maxlength:"150 caractères maximum" },
 					f_nom :          { required:"nom manquant" , maxlength:"20 caractères maximum" },
 					f_prenom :       { required:"prénom manquant" , maxlength:"20 caractères maximum" },
 					f_courriel :     { required:"courriel manquant" , email:"courriel invalide", maxlength:"63 caractères maximum" },

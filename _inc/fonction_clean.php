@@ -133,6 +133,7 @@ function clean_uai($text)      { return perso_strtoupper( trim($text) ); }
 function clean_prenom($text)   { return perso_ucwords( trim($text) ); }
 function clean_texte($text)    { return trim($text); }
 function clean_courriel($text) { return perso_strtolower( trim($text) ); }
+function clean_url($text)      { return perso_strtolower( trim($text) ); }
 function clean_entier($text)   { return intval($text); }
 function clean_decimal($text)  { return floatval($text); }
 

@@ -101,6 +101,7 @@ function crypter_mdp($password)
  * 
  * @param string $hebergeur_installation
  * @param string $hebergeur_denomination
+ * @param string $hebergeur_adresse_site
  * @param string $hebergeur_logo
  * @param string $hebergeur_cnil
  * @param string $webmestre_nom
@@ -110,13 +111,14 @@ function crypter_mdp($password)
  * @return void
  */
 
-function fabriquer_fichier_hebergeur_info($hebergeur_installation,$hebergeur_denomination,$hebergeur_logo,$hebergeur_cnil,$webmestre_nom,$webmestre_prenom,$webmestre_courriel,$webmestre_password_md5)
+function fabriquer_fichier_hebergeur_info($hebergeur_installation,$hebergeur_denomination,$hebergeur_adresse_site,$hebergeur_logo,$hebergeur_cnil,$webmestre_nom,$webmestre_prenom,$webmestre_courriel,$webmestre_password_md5)
 {
 	$fichier_nom     = './__hebergeur_info/constantes.php';
 	$fichier_contenu = '<?php'."\r\n";
 	$fichier_contenu.= '// Informations concernant l\'hébergement et son webmestre'."\r\n";
 	$fichier_contenu.= 'define(\'HEBERGEUR_INSTALLATION\',\''.str_replace('\'','\\\'',$hebergeur_installation).'\');'."\r\n";
 	$fichier_contenu.= 'define(\'HEBERGEUR_DENOMINATION\',\''.str_replace('\'','\\\'',$hebergeur_denomination).'\');'."\r\n";
+	$fichier_contenu.= 'define(\'HEBERGEUR_ADRESSE_SITE\',\''.str_replace('\'','\\\'',$hebergeur_adresse_site).'\');'."\r\n";
 	$fichier_contenu.= 'define(\'HEBERGEUR_LOGO\'        ,\''.str_replace('\'','\\\'',$hebergeur_logo)        .'\');'."\r\n";
 	$fichier_contenu.= 'define(\'HEBERGEUR_CNIL\'        ,\''.str_replace('\'','\\\'',$hebergeur_cnil)        .'\');'."\r\n";
 	$fichier_contenu.= 'define(\'WEBMESTRE_NOM\'         ,\''.str_replace('\'','\\\'',$webmestre_nom)         .'\');'."\r\n";
@@ -254,9 +256,12 @@ function connecter_user($BASE,$profil,$login,$password,$sso)
 	{
 		switch($DB_ROW['parametre_nom'])
 		{
-			case 'structure_id'  :    $_SESSION['STRUCTURE_ID']        = (int) $DB_ROW['parametre_valeur']; break;
-			case 'structure_uai' :    $_SESSION['STRUCTURE_UAI']       =       $DB_ROW['parametre_valeur']; break;
-			case 'structure_key' :    $_SESSION['STRUCTURE_KEY']       =       $DB_ROW['parametre_valeur']; break;
+			case 'sesamath_id' :      $_SESSION['SESAMATH_ID']         = (int) $DB_ROW['parametre_valeur']; break;
+			case 'sesamath_uai' :     $_SESSION['SESAMATH_UAI']        =       $DB_ROW['parametre_valeur']; break;
+			case 'sesamath_type' :    $_SESSION['SESAMATH_TYPE']       =       $DB_ROW['parametre_valeur']; break;
+			case 'sesamath_nom' :     $_SESSION['SESAMATH_NOM']        =       $DB_ROW['parametre_valeur']; break;
+			case 'sesamath_key' :     $_SESSION['SESAMATH_KEY']        =       $DB_ROW['parametre_valeur']; break;
+			case 'uai' :              $_SESSION['UAI']                 =       $DB_ROW['parametre_valeur']; break;
 			case 'denomination':      $_SESSION['DENOMINATION']        =       $DB_ROW['parametre_valeur']; break;
 			case 'sso':               $_SESSION['SSO']                 =       $DB_ROW['parametre_valeur']; break;
 			case 'modele_professeur': $_SESSION['MODELE_PROF']         =       $DB_ROW['parametre_valeur']; break;

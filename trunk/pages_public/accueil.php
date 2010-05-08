@@ -36,7 +36,7 @@ $BASE = (isset($_COOKIE['SACoche-etablissement'])) ? clean_entier($_COOKIE['SACo
 // Test si id d'établissement transmis dans l'URL
 $BASE = (isset($_GET['id'])) ? clean_entier($_GET['id']) : $BASE ;
 // Test si affichage du formulaire spécial pour un administrateur d'une structure (pas de SSO) ou pour le webmestre
-$profil = (isset($_GET['admin'])) ? 'administrateur' : ( (isset($_GET['webmestre'])) ? 'webmestre' : 'normal' ) ;
+$profil = ( isset($_GET['admin']) || isset($_GET['administrateur']) ) ? 'administrateur' : ( (isset($_GET['webmestre'])) ? 'webmestre' : 'normal' ) ;
 ?>
 
 <?php

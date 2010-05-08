@@ -40,6 +40,7 @@ $(document).ready
 			{
 				adresse = url_debut + '?mode=object' + '&fichier=structure_rechercher' + '&adresse_retour=' + encodeURIComponent(document.location.href);	// Mettre href sinon c'est le dernier appel ajax (non visible dans la barre d'adresse) qui compte...
 				$('#form').hide();
+				$('#ajax_msg').removeAttr("class").html("&nbsp;");
 				if($('#object_container object').length)
 				{
 					$('#cadre').attr('data',adresse).parent().show();
@@ -78,12 +79,13 @@ $(document).ready
 						else
 						{
 							$("body").stopTime('surveillance');
-							tab_infos = hashVal.split('___')
-							if(tab_infos.length == 3)
+							tab_infos = hashVal.split('-+')
+							if(tab_infos.length == 4)
 							{
-								$('#f_structure_id').val(tab_infos[0]);
-								$('#f_structure_uai').val(tab_infos[1]);
-								$('#f_denomination').val(tab_infos[2]);
+								$('#f_sesamath_id').val(tab_infos[0]);
+								$('#f_sesamath_key').val(tab_infos[1]);
+								$('#f_sesamath_uai').val(tab_infos[2]); // (peut être vide)
+								$('#f_sesamath_type_nom').val(tab_infos[3]);
 								maj_clock(1);
 							}
 							$('#rechercher_annuler').click();
@@ -205,17 +207,17 @@ $(document).ready
 			{
 				rules :
 				{
-					f_denomination  : { required:true , maxlength:60 },
-					f_structure_uai : { required:false , uai_format:true , uai_clef:true },
-					f_structure_id  : { required:false , digits:true },
-					f_structure_key : { required:false , rangelength:[32,32] }
+					f_sesamath_id       : { required:true , digits:true },
+					f_sesamath_uai      : { required:false , uai_format:true , uai_clef:true },
+					f_sesamath_type_nom : { required:true , maxlength:50 },
+					f_sesamath_key      : { required:true , rangelength:[32,32] }
 				},
 				messages :
 				{
-					f_denomination  : { required:"dénomination manquante" , maxlength:"60 caractères maximum" },
-					f_structure_uai : { uai_format:"n°UAI invalide" , uai_clef:"n°UAI invalide" },
-					f_structure_id  : { digits:"identifiants uniquement composé de chiffres" },
-					f_structure_key : { rangelength:"la clef doit comporter 32 caractères" }
+					f_sesamath_id       : { required:"identifiant manquant" , digits:"identifiant uniquement composé de chiffres" },
+					f_sesamath_uai      : { uai_format:"n°UAI invalide" , uai_clef:"n°UAI invalide" },
+					f_sesamath_type_nom : { required:"dénomination manquante" , maxlength:"50 caractères maximum" },
+					f_sesamath_key      : { required:"clef manquante" , rangelength:"la clef doit comporter 32 caractères" }
 				},
 				errorElement : "label",
 				errorClass : "erreur",

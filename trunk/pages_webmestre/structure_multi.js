@@ -67,7 +67,7 @@ $(document).ready
 			new_tr += '<td><select id="f_geo" name="f_geo">'+options_geo+'</select></td>';
 			new_tr += '<td><input id="f_localisation" name="f_localisation" size="40" type="text" value="" /></td>';
 			new_tr += '<td><input id="f_denomination" name="f_denomination" size="30" type="text" value="" /></td>';
-			new_tr += '<td><input id="f_structure_uai" name="f_structure_uai" size="8" type="text" value="" /></td>';
+			new_tr += '<td><input id="f_uai" name="f_uai" size="8" type="text" value="" /></td>';
 			new_tr += '<td><input id="f_contact_nom" name="f_contact_nom" size="15" type="text" value="" /></td>';
 			new_tr += '<td><input id="f_contact_prenom" name="f_contact_prenom" size="15" type="text" value="" /></td>';
 			new_tr += '<td><input id="f_contact_courriel" name="f_contact_courriel" size="30" type="text" value="" /></td>';
@@ -92,7 +92,7 @@ $(document).ready
 			geo              = $(this).parent().prev().prev().prev().prev().prev().prev().prev().html();
 			localisation     = $(this).parent().prev().prev().prev().prev().prev().prev().html();
 			denomination     = $(this).parent().prev().prev().prev().prev().prev().html();
-			structure_uai    = $(this).parent().prev().prev().prev().prev().html();
+			uai              = $(this).parent().prev().prev().prev().prev().html();
 			contact_nom      = $(this).parent().prev().prev().prev().html();
 			contact_prenom   = $(this).parent().prev().prev().html();
 			contact_courriel = $(this).parent().prev().html();
@@ -103,7 +103,7 @@ $(document).ready
 			new_tr += '<td><select id="f_geo" name="f_geo">'+options_geo.replace('>'+geo+'<',' selected="selected">'+geo+'<')+'</select></td>';
 			new_tr += '<td><input id="f_localisation" name="f_localisation" size="'+Math.max(localisation.length,30)+'" type="text" value="'+localisation+'" /></td>';
 			new_tr += '<td><input id="f_denomination" name="f_denomination" size="'+Math.max(denomination.length,20)+'" type="text" value="'+denomination+'" /></td>';
-			new_tr += '<td><input id="f_structure_uai" name="f_structure_uai" size="8" type="text" value="'+structure_uai+'" /></td>';
+			new_tr += '<td><input id="f_uai" name="f_uai" size="8" type="text" value="'+uai+'" /></td>';
 			new_tr += '<td><input id="f_contact_nom" name="f_contact_nom" size="'+Math.max(contact_nom.length,10)+'" type="text" value="'+contact_nom+'" /></td>';
 			new_tr += '<td><input id="f_contact_prenom" name="f_contact_prenom" size="'+Math.max(contact_prenom.length,10)+'" type="text" value="'+contact_prenom+'" /></td>';
 			new_tr += '<td><input id="f_contact_courriel" name="f_contact_courriel" size="'+Math.max(contact_courriel.length,20)+'" type="text" value="'+contact_courriel+'" /></td>';
@@ -255,7 +255,7 @@ $(document).ready
 					f_geo :              { required:true },
 					f_localisation :     { required:true , maxlength:100 },
 					f_denomination :     { required:true , maxlength:50 },
-					f_structure_uai :    { required:false , uai_format:true , uai_clef:true },
+					f_uai :              { required:false , uai_format:true , uai_clef:true },
 					f_contact_nom :      { required:true , maxlength:20 },
 					f_contact_prenom :   { required:true , maxlength:20 },
 					f_contact_courriel : { required:true , email:true , maxlength:60 }
@@ -265,7 +265,7 @@ $(document).ready
 					f_geo :              { required:"zone manquante" },
 					f_localisation :     { required:"localisation manquante" , maxlength:"100 caractères maximum" },
 					f_denomination :     { required:"dénomination manquante" , maxlength:"50 caractères maximum" },
-					f_structure_uai :    { uai_format:"n°UAI invalide" , uai_clef:"n°UAI invalide" },
+					f_uai :              { uai_format:"n°UAI invalide" , uai_clef:"n°UAI invalide" },
 					f_contact_nom :      { required:"nom manquant" , maxlength:"20 caractères maximum" },
 					f_contact_prenom :   { required:"prénom manquant" , maxlength:"20 caractères maximum" },
 					f_contact_courriel : { required:"courriel manquant" , email:"courriel invalide", maxlength:"60 caractères maximum" }

@@ -28,28 +28,34 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 if($_SESSION['STRUCTURE_ID']==ID_DEMO) {exit('Action désactivée pour la démo...');}
 
-$denomination  = (isset($_POST['f_denomination']))  ? clean_texte($_POST['f_denomination'])  : '';
-$structure_uai = (isset($_POST['f_structure_uai'])) ? clean_uai($_POST['f_structure_uai'])   : '';
-$structure_id  = (isset($_POST['f_structure_id']))  ? clean_entier($_POST['f_structure_id']) : 0;
-$structure_key = (isset($_POST['f_structure_key'])) ? clean_texte($_POST['f_structure_key']) : '';
+$sesamath_id        = (isset($_POST['f_sesamath_id']))       ? clean_entier($_POST['f_sesamath_id'])      : 0;
+$sesamath_uai       = (isset($_POST['f_sesamath_uai']))      ? clean_uai($_POST['f_sesamath_uai'])        : '';
+$sesamath_type_nom  = (isset($_POST['f_sesamath_type_nom'])) ? clean_texte($_POST['f_sesamath_type_nom']) : '';
+$sesamath_key       = (isset($_POST['f_sesamath_key']))      ? clean_texte($_POST['f_sesamath_key'])      : '';
 
 //	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
 // Mettre à jour les informations
 //	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
 
-if( $denomination )
+if( $sesamath_id && $sesamath_type_nom && $sesamath_key )
 {
+	$retour = enregistrer_structure_Sesamath($sesamath_id,$sesamath_key);
+	if($retour!='ok')
+	{
+		exit($retour);
+	}
+	// Si on arrive là, alors tout s'est bien passé.
 	$tab_parametres = array();
-	$tab_parametres['denomination']  = $denomination;
-	$tab_parametres['structure_uai'] = $structure_uai;
-	$tab_parametres['structure_id']  = $structure_id;
-	$tab_parametres['structure_key'] = $structure_key;
+	$tab_parametres['sesamath_id']       = $sesamath_id;
+	$tab_parametres['sesamath_uai']      = $sesamath_uai;
+	$tab_parametres['sesamath_type_nom'] = $sesamath_type_nom;
+	$tab_parametres['sesamath_key']      = $sesamath_key;
 	DB_modifier_parametres($tab_parametres);
 	// On modifie aussi la session
-	$_SESSION['DENOMINATION']  = $denomination ;
-	$_SESSION['STRUCTURE_UAI'] = $structure_uai ;
-	$_SESSION['STRUCTURE_ID']  = $structure_id ;
-	$_SESSION['STRUCTURE_KEY'] = $structure_key ;
+	$_SESSION['SESAMATH_ID']       = $sesamath_id ;
+	$_SESSION['SESAMATH_UAI']      = $sesamath_uai ;
+	$_SESSION['SESAMATH_TYPE_NOM'] = $sesamath_type_nom ;
+	$_SESSION['SESAMATH_KEY']      = $sesamath_key ;
 	echo'ok';
 }
 

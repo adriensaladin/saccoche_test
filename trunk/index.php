@@ -196,7 +196,7 @@ entete();
 	<?php echo $TITRE_PAGE; ?>
 	<?php echo $CONTENU_PAGE; ?>
 	<?php 
-	// var_dump($_SESSION);
+	// echo'<pre>';var_dump($_SESSION);echo'</pre>';
 	?>
 	<script type="text/javascript">
 		var DOSSIER='<?php echo $DOSSIER ?>';

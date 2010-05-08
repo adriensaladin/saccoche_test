@@ -256,30 +256,29 @@ function connecter_user($BASE,$profil,$login,$password,$sso)
 	{
 		switch($DB_ROW['parametre_nom'])
 		{
-			case 'sesamath_id' :      $_SESSION['SESAMATH_ID']         = (int) $DB_ROW['parametre_valeur']; break;
-			case 'sesamath_uai' :     $_SESSION['SESAMATH_UAI']        =       $DB_ROW['parametre_valeur']; break;
-			case 'sesamath_type' :    $_SESSION['SESAMATH_TYPE']       =       $DB_ROW['parametre_valeur']; break;
-			case 'sesamath_nom' :     $_SESSION['SESAMATH_NOM']        =       $DB_ROW['parametre_valeur']; break;
-			case 'sesamath_key' :     $_SESSION['SESAMATH_KEY']        =       $DB_ROW['parametre_valeur']; break;
-			case 'uai' :              $_SESSION['UAI']                 =       $DB_ROW['parametre_valeur']; break;
-			case 'denomination':      $_SESSION['DENOMINATION']        =       $DB_ROW['parametre_valeur']; break;
-			case 'sso':               $_SESSION['SSO']                 =       $DB_ROW['parametre_valeur']; break;
-			case 'modele_professeur': $_SESSION['MODELE_PROF']         =       $DB_ROW['parametre_valeur']; break;
-			case 'modele_eleve':      $_SESSION['MODELE_ELEVE']        =       $DB_ROW['parametre_valeur']; break;
-			case 'matieres':          $_SESSION['MATIERES']            =       $DB_ROW['parametre_valeur']; break;
-			case 'niveaux':           $_SESSION['NIVEAUX']             =       $DB_ROW['parametre_valeur']; break;
-			case 'paliers':           $_SESSION['PALIERS']             =       $DB_ROW['parametre_valeur']; break;
-			case 'eleve_options':     $_SESSION['ELEVE_OPTIONS']       =       $DB_ROW['parametre_valeur']; break;
-			case 'eleve_demandes':    $_SESSION['ELEVE_DEMANDES']      = (int) $DB_ROW['parametre_valeur']; break;
-			case 'duree_inactivite':  $_SESSION['DUREE_INACTIVITE']    = (int) $DB_ROW['parametre_valeur']; break;
-			case 'calcul_valeur_RR':  $_SESSION['CALCUL_VALEUR']['RR'] = (int) $DB_ROW['parametre_valeur']; break;
-			case 'calcul_valeur_R':   $_SESSION['CALCUL_VALEUR']['R']  = (int) $DB_ROW['parametre_valeur']; break;
-			case 'calcul_valeur_V':   $_SESSION['CALCUL_VALEUR']['V']  = (int) $DB_ROW['parametre_valeur']; break;
-			case 'calcul_valeur_VV':  $_SESSION['CALCUL_VALEUR']['VV'] = (int) $DB_ROW['parametre_valeur']; break;
-			case 'calcul_seuil_R':    $_SESSION['CALCUL_SEUIL']['R']   = (int) $DB_ROW['parametre_valeur']; break;
-			case 'calcul_seuil_V':    $_SESSION['CALCUL_SEUIL']['V']   = (int) $DB_ROW['parametre_valeur']; break;
-			case 'calcul_methode':    $_SESSION['CALCUL_METHODE']      =       $DB_ROW['parametre_valeur']; break;
-			case 'calcul_limite':     $_SESSION['CALCUL_LIMITE']       = (int) $DB_ROW['parametre_valeur']; break;
+			case 'sesamath_id' :       $_SESSION['SESAMATH_ID']         = (int) $DB_ROW['parametre_valeur']; break;
+			case 'sesamath_uai' :      $_SESSION['SESAMATH_UAI']        =       $DB_ROW['parametre_valeur']; break;
+			case 'sesamath_type_nom' : $_SESSION['SESAMATH_TYPE_NOM']   =       $DB_ROW['parametre_valeur']; break;
+			case 'sesamath_key' :      $_SESSION['SESAMATH_KEY']        =       $DB_ROW['parametre_valeur']; break;
+			case 'uai' :               $_SESSION['UAI']                 =       $DB_ROW['parametre_valeur']; break;
+			case 'denomination':       $_SESSION['DENOMINATION']        =       $DB_ROW['parametre_valeur']; break;
+			case 'sso':                $_SESSION['SSO']                 =       $DB_ROW['parametre_valeur']; break;
+			case 'modele_professeur':  $_SESSION['MODELE_PROF']         =       $DB_ROW['parametre_valeur']; break;
+			case 'modele_eleve':       $_SESSION['MODELE_ELEVE']        =       $DB_ROW['parametre_valeur']; break;
+			case 'matieres':           $_SESSION['MATIERES']            =       $DB_ROW['parametre_valeur']; break;
+			case 'niveaux':            $_SESSION['NIVEAUX']             =       $DB_ROW['parametre_valeur']; break;
+			case 'paliers':            $_SESSION['PALIERS']             =       $DB_ROW['parametre_valeur']; break;
+			case 'eleve_options':      $_SESSION['ELEVE_OPTIONS']       =       $DB_ROW['parametre_valeur']; break;
+			case 'eleve_demandes':     $_SESSION['ELEVE_DEMANDES']      = (int) $DB_ROW['parametre_valeur']; break;
+			case 'duree_inactivite':   $_SESSION['DUREE_INACTIVITE']    = (int) $DB_ROW['parametre_valeur']; break;
+			case 'calcul_valeur_RR':   $_SESSION['CALCUL_VALEUR']['RR'] = (int) $DB_ROW['parametre_valeur']; break;
+			case 'calcul_valeur_R':    $_SESSION['CALCUL_VALEUR']['R']  = (int) $DB_ROW['parametre_valeur']; break;
+			case 'calcul_valeur_V':    $_SESSION['CALCUL_VALEUR']['V']  = (int) $DB_ROW['parametre_valeur']; break;
+			case 'calcul_valeur_VV':   $_SESSION['CALCUL_VALEUR']['VV'] = (int) $DB_ROW['parametre_valeur']; break;
+			case 'calcul_seuil_R':     $_SESSION['CALCUL_SEUIL']['R']   = (int) $DB_ROW['parametre_valeur']; break;
+			case 'calcul_seuil_V':     $_SESSION['CALCUL_SEUIL']['V']   = (int) $DB_ROW['parametre_valeur']; break;
+			case 'calcul_methode':     $_SESSION['CALCUL_METHODE']      =       $DB_ROW['parametre_valeur']; break;
+			case 'calcul_limite':      $_SESSION['CALCUL_LIMITE']       = (int) $DB_ROW['parametre_valeur']; break;
 		}
 	}
 	// Enregistrement d'un cookie sur le poste client servant à retenir le dernier établissement sélectionné si identification avec succès
@@ -644,6 +643,29 @@ function verifier_arborescence_XML($arbreXML)
 	// On efface le fichier temporaire
 	unlink($fichier_adresse);
 	return $test_XML_valide;
+}
+
+/**
+ * enregistrer_structure_Sesamath
+ * Demander à ce que la structure soit identifiée et enregistrée dans la base du serveur partagée.
+ * 
+ * @param int    $structure_id
+ * @param string $structure_key
+ * @return string         'ok' ou un message d'erreur
+ */
+
+function enregistrer_structure_Sesamath($structure_id,$structure_key)
+{
+	require_once('./_inc/class.httprequest.php');
+	$tab_get = array();
+	$tab_get[] = 'mode=httprequest';
+	$tab_get[] = 'fichier=structure_enregistrer';
+	$tab_get[] = 'structure_id='.$structure_id;
+	$tab_get[] = 'structure_key='.$structure_key;
+	$tab_get[] = 'adresse_retour='.urlencode(SERVEUR_ADRESSE);
+	$requete_envoi   = new HTTPRequest(SERVEUR_COMMUNAUTAIRE.'?'.implode('&',$tab_get));
+	$requete_reponse = $requete_envoi->DownloadToString();
+	return $requete_reponse;
 }
 
 ?>

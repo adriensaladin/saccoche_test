@@ -8,9 +8,12 @@ CREATE TABLE sacoche_parametre (
 ALTER TABLE sacoche_parametre DISABLE KEYS;
 
 INSERT INTO sacoche_parametre VALUES 
-( "structure_id"      , "0" ),
-( "structure_uai"     , "" ),
-( "structure_key"     , "" ),
+( "sesamath_id"       , "0" ),
+( "sesamath_uai"      , "" ),
+( "sesamath_type"     , "" ),
+( "sesamath_nom"      , "" ),
+( "sesamath_key"      , "" ),
+( "uai"               , "" ),
 ( "denomination"      , "" ),
 ( "sso"               , "normal" ),
 ( "modele_professeur" , "ppp.nnnnnnnn" ),

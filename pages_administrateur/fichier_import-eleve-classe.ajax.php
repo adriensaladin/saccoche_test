@@ -189,7 +189,7 @@ elseif( $step==2 )
 				list($ref,$nom,$prenom,$classe) = $tab_elements;
 				if( ($nom!='') && ($prenom!='') )
 				{
-					$classe_ref                 = clean_ref($classe);
+					$classe_ref                 = mb_substr(clean_ref($classe),0,8);
 					$tab_eleves['num_sconet'][] = 0;
 					$tab_eleves['reference'][]  = clean_ref($ref);
 					$tab_eleves['nom'][]        = clean_nom($nom);

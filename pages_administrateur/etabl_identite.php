@@ -35,15 +35,30 @@ $TITRE = "Identité de l'établissement";
 
 	<hr />
 
+	<h2>Données saisies par le webmestre</h2>
+
 	<fieldset>
-		<label class="tab" for="f_denomination">Dénomination :</label><input id="f_denomination" name="f_denomination" size="55" type="text" value="<?php echo html($_SESSION['DENOMINATION']); ?>" /><br />
-		<label class="tab" for="f_structure_uai">Code UAI (ex-RNE) :</label><input id="f_structure_uai" name="f_structure_uai" size="8" type="text" value="<?php echo html($_SESSION['STRUCTURE_UAI']); ?>" /><br />
-		<label class="tab" for="f_structure_id"><img alt="" src="./_img/bulle_aide.png" title="Valeur non modifiable manuellement.<br />Utilisez le lien ci-dessous." /> Id. Sésamath :</label><input id="f_structure_id" name="f_structure_id" size="5" type="text" value="<?php echo html($_SESSION['STRUCTURE_ID']); ?>" readonly="readonly" /><br />
-		<label class="tab" for="f_structure_key"><img alt="" src="./_img/bulle_aide.png" title="Valeur non modifiable manuellement.<br />Utilisez le lien ci-dessous." /> Clef de contrôle :</label><input id="f_structure_key" name="f_structure_key" size="35" type="text" value="<?php echo html($_SESSION['STRUCTURE_KEY']); ?>" readonly="readonly" /><br />
+		<label class="tab" for="f_uai">Code UAI (ex-RNE) :</label><input id="f_uai" name="f_uai" size="8" type="text" value="<?php echo html($_SESSION['UAI']); ?>" disabled="disabled" /><br />
+		<label class="tab" for="f_denomination">Dénomination :</label><input id="f_denomination" name="f_denomination" size="50" type="text" value="<?php echo html($_SESSION['DENOMINATION']); ?>" disabled="disabled" /><br />
+	</fieldset>
+	<p />
+	<ul class="puce"><li>En cas d'erreur, <?php echo mailto(WEBMESTRE_COURRIEL,'Modifier données SACoche '.$_SESSION['BASE'],'contactez le webmestre'); ?> responsable de <em>SACoche</em> sur ce serveur.</li></ul>
+
+	<hr />
+
+	<h2>Identification de l'établissement dans la base Sésamath</h2>
+
+	<fieldset>
+		<label class="tab" for="f_sesamath_id">Identifiant <img alt="" src="./_img/bulle_aide.png" title="Valeur non modifiable manuellement.<br />Utilisez le lien ci-dessous." /> :</label><input id="f_sesamath_id" name="f_sesamath_id" size="5" type="text" value="<?php echo html($_SESSION['SESAMATH_ID']); ?>" readonly="readonly" /><br />
+		<label class="tab" for="f_sesamath_uai">Code UAI <img alt="" src="./_img/bulle_aide.png" title="Valeur non modifiable manuellement.<br />Utilisez le lien ci-dessous." /> :</label><input id="f_sesamath_uai" name="f_sesamath_uai" size="8" type="text" value="<?php echo html($_SESSION['SESAMATH_UAI']); ?>" readonly="readonly" /><br />
+		<label class="tab" for="f_sesamath_type_nom">Dénomination <img alt="" src="./_img/bulle_aide.png" title="Valeur non modifiable manuellement.<br />Utilisez le lien ci-dessous." /> :</label><input id="f_sesamath_type_nom" name="f_sesamath_type_nom" size="50" type="text" value="<?php echo html($_SESSION['SESAMATH_TYPE_NOM']); ?>" readonly="readonly" /><br />
+		<label class="tab" for="f_sesamath_key">Clef de contrôle <img alt="" src="./_img/bulle_aide.png" title="Valeur non modifiable manuellement.<br />Utilisez le lien ci-dessous." /> :</label><input id="f_sesamath_key" name="f_sesamath_key" size="35" type="text" value="<?php echo html($_SESSION['SESAMATH_KEY']); ?>" readonly="readonly" /><br />
 		<span class="tab"></span><input id="f_submit" type="submit" value="Valider." /><label id="ajax_msg">&nbsp;</label>
 	</fieldset>
+	<p />
+	<ul class="puce"><li><a id="ouvrir_recherche" href="#"><img alt="" src="./_img/find.png" /> Rechercher l'établissement dans la base Sésamath</a> afin de pouvoir échanger ensuite avec le serveur communautaire.</li></ul>
 
-	<p><a id="ouvrir_recherche" href="#"><img alt="" src="./_img/find.png" /> Rechercher l'établissement dans la base Sésamath afin de pouvoir échanger avec le serveur communautaire.</a></p>
+	<hr />
 
 </form>
 

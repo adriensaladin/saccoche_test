@@ -58,6 +58,7 @@ elseif(HEBERGEUR_INSTALLATION=='mono-structure')
 	$arbre.='
 		<li><span>Gestion de l\'établissement</span>
 			<ul>
+				<li class="webmestre_structure"><a href="./index.php?dossier='.$DOSSIER.'&amp;fichier=structure_mono">Établissement</a></li>
 				<li class="admin_administrateur"><a href="./index.php?dossier='.$DOSSIER.'&amp;fichier=init-mdp_mono">Mot de passe administrateur</a></li>
 				<li class="admin_resilier"><a href="./index.php?dossier='.$DOSSIER.'&amp;fichier=structure_mono_resilier">Résilier l\'inscription</a></li>
 			</ul>

@@ -32,9 +32,10 @@ $TITRE = "Procédure d'installation";
 <ul id="step">
 	<li id="step1">Étape 1 - Création de dossiers supplémentaires et de leurs droits</li>
 	<li id="step2">Étape 2 - Remplissage de ces dossiers avec le contenu approprié</li>
-	<li id="step3">Étape 3 - Informations concernant le webmestre et l'hébergement</li>
-	<li id="step4">Étape 4 - Indication des paramètres de connexion MySQL</li>
-	<li id="step5">Étape 5 - Installation des tables de la base de données</li>
+	<li id="step3">Étape 3 - Choix du type d'installation</li>
+	<li id="step4">Étape 4 - Informations concernant l'hébergement et le webmestre</li>
+	<li id="step5">Étape 5 - Indication des paramètres de connexion MySQL</li>
+	<li id="step6">Étape 6 - Installation des tables de la base de données</li>
 </ul>
 
 <hr />
@@ -48,4 +49,6 @@ $TITRE = "Procédure d'installation";
 <form action="" id="form3">
 </form>
 <form action="" id="form4">
+</form>
+<form action="" id="form5">
 </form>

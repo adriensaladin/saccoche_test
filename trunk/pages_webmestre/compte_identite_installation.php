@@ -26,19 +26,27 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-$TITRE = "Mentions légales";
+$TITRE = "Identité de l'installation";
+
+$exemple_denomination = (HEBERGEUR_INSTALLATION=='mono-structure') ? 'Collège de Trucville' : 'Rectorat du paradis' ;
+$exemple_adresse_web  = (HEBERGEUR_INSTALLATION=='mono-structure') ? 'http://www.college-trucville.com' : 'http://www.ac-paradis.fr' ;
+$uai_div_hide_avant  = (HEBERGEUR_INSTALLATION=='mono-structure') ? '' : '<div class="hide">' ;
+$uai_div_hide_apres  = (HEBERGEUR_INSTALLATION=='mono-structure') ? '' : '</div>' ;
 ?>
 
-<p class="hc">
-	<span class="manuel"><a class="pop_up" href="./aide.php?fichier=webmestre_mentions_legales">DOC : Mentions légales (page d'accueil)</a></span></p>
-</p>
+<div class="hc">
+	<span class="manuel"><a class="pop_up" href="./aide.php?fichier=webmestre_identite_installation">DOC : Identité de l'installation (page d'accueil)</a></span>
+</div>
 
 <hr />
 
 <form id="form1" action=""><fieldset>
 	<h2>Caractéristiques de l'hébergement</h2>
-	<label class="tab" for="f_denomination">Dénomination <img alt="" src="./_img/bulle_aide.png" title="Exemples :<br />Collège de Trucville<br />Rectorat du paradis" /> :</label><input id="f_denomination" name="f_denomination" size="55" type="text" value="<?php echo html(HEBERGEUR_DENOMINATION); ?>" /><br />
-	<label class="tab" for="f_adresse_site">Adresse web <img alt="" src="./_img/bulle_aide.png" title="Exemples :<br />http://www.college-trucville.com<br />http://www.ac-paradis.fr<br />Ce champ est facultatif." /> :</label><input id="f_adresse_site" name="f_adresse_site" size="60" type="text" value="<?php echo html(HEBERGEUR_ADRESSE_SITE); ?>" /><br />
+	<label class="tab" for="f_denomination">Dénomination <img alt="" src="./_img/bulle_aide.png" title="Exemple : <?php echo $exemple_denomination ?>" /> :</label><input id="f_denomination" name="f_denomination" size="55" type="text" value="<?php echo html(HEBERGEUR_DENOMINATION); ?>" /><br />
+	<?php echo $uai_div_hide_avant ?>
+	<label class="tab" for="f_uai">n° UAI (ex-RNE) <img alt="" src="./_img/bulle_aide.png" title="Ce champ est facultatif." /> :</label><input id="f_uai" name="f_uai" size="8" type="text" value="<?php echo html(HEBERGEUR_UAI); ?>" /><br />
+	<?php echo $uai_div_hide_apres ?>
+	<label class="tab" for="f_adresse_site">Adresse web <img alt="" src="./_img/bulle_aide.png" title="Exemple : <?php echo $exemple_adresse_web ?>" /> :</label><input id="f_adresse_site" name="f_adresse_site" size="60" type="text" value="<?php echo html(HEBERGEUR_ADRESSE_SITE); ?>" /><br />
 	<label class="tab" for="f_logo">Logo :</label><select id="f_logo" name="f_logo"><option value=""></option></select><label id="ajax_logo"></label><br />
 	<label class="tab" for="f_cnil">C.N.I.L. <img alt="" src="./_img/bulle_aide.png" title="Voir la documentation.<br />Mettre 'non renseignée' ou 'n°12345678'." /> :</label><input id="f_cnil" name="f_cnil" size="15" type="text" value="<?php echo html(HEBERGEUR_CNIL); ?>" /><br />
 	<h2>Coordonnées du webmestre</h2>

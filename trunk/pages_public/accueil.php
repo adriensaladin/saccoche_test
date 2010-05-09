@@ -89,8 +89,8 @@ if($ALERTE_SSO)
 
 <h2><img src="./_img/serveur.png" alt="Hébergement" /> Hébergement</h2>
 <ul class="puce">
-	<li><em>SACoche</em> peut être librement téléchargé et installé sur différents serveurs.</li>
-	<li>Vous êtes actuellement sur un serveur hébergé par <?php echo (HEBERGEUR_ADRESSE_SITE) ? '<a class="lien_ext" href="'.html(HEBERGEUR_ADRESSE_SITE).'">'.html(HEBERGEUR_DENOMINATION).'</a>' : html(HEBERGEUR_DENOMINATION); ?> (<?php echo mailto(WEBMESTRE_COURRIEL,'SACoche','contact'); ?>).</li>
+	<li><em>SACoche</em> peut être téléchargé et installé sur différents serveurs.</li>
+	<li>La présente installation a été effectuée par : <?php echo (HEBERGEUR_ADRESSE_SITE) ? '<a class="lien_ext" href="'.html(HEBERGEUR_ADRESSE_SITE).'">'.html(HEBERGEUR_DENOMINATION).'</a>' : html(HEBERGEUR_DENOMINATION); ?> (<?php echo mailto(WEBMESTRE_COURRIEL,'SACoche','contact'); ?>).</li>
 	<li>Déclaration <a class="lien_ext" href="http://www.cnil.fr">CNIL</a> <?php echo HEBERGEUR_CNIL ?> (catégorie "Espace numérique de travail").</li>
 </ul>
 

@@ -65,6 +65,7 @@ $(document).ready
 								$('#form0').html(responseHTML);
 								$('#form3').html('');
 								$('#form4').html('');
+								$('#form5').html('');
 							}
 						}
 					}
@@ -107,6 +108,7 @@ $(document).ready
 								$('#form0').html(responseHTML);
 								$('#form3').html('');
 								$('#form4').html('');
+								$('#form5').html('');
 							}
 						}
 					}
@@ -149,6 +151,7 @@ $(document).ready
 								$('#form0').html('');
 								$('#form3').html(responseHTML);
 								$('#form4').html('');
+								$('#form5').html('');
 								infobulle();
 								$('#f_installation').focus();
 							}
@@ -159,20 +162,123 @@ $(document).ready
 		);
 
 		// ********************
-		// * Étape 3 -> Étape 31
+		// * Étape 3 -> Étape 4
+		// ********************
+
+		$('a.step4').live // live est utilisé pour prendre en compte les nouveaux éléments créés
+		('click',
+			function()
+			{
+				var f_installation = $(this).attr('id');
+				$("#step li").removeAttr("class");
+				$("#step4").addClass("on");
+				$('#ajax_msg').removeAttr("class").addClass("loader").html("Demande envoyée... Veuillez patienter.");
+				$.ajax
+				(
+					{
+						type : 'POST',
+						url : 'ajax.php?dossier='+DOSSIER+'&fichier='+FICHIER,
+						data : 'f_step=4&f_installation='+f_installation,
+						dataType : "html",
+						error : function(msg,string)
+						{
+							$('#ajax_msg').removeAttr("class").addClass("alerte").html('Echec de la connexion ! Veuillez recommencer.');
+							return false;
+						},
+						success : function(responseHTML)
+						{
+							if(responseHTML.substring(0,10)!='<fieldset>')
+							{
+								$('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);
+							}
+							else
+							{
+								$('#ajax_msg').removeAttr("class").html('&nbsp;');
+								$('#form0').html('');
+								$('#form3').html('');
+								$('#form4').html(responseHTML);
+								$('#form5').html('');
+								infobulle();
+								$('#f_denomination').focus();
+							}
+						}
+					}
+				);
+			}
+		);
+
+		// ********************
+		// * Étape 4 -> Étape 41
 		// ********************
 
 		// Le formulaire qui va être analysé et traité en AJAX
-		var formulaire3 = $('#form3');
+		var formulaire4 = $('#form4');
+
+		// Ajout d'une méthode pour vérifier le format du numéro UAI
+		jQuery.validator.addMethod
+		(
+			"uai_format", function(value, element)
+			{
+				var uai = value.toUpperCase();
+				var uai_valide = true;
+				if(uai.length!=8)
+				{
+					uai_valide = false;
+				}
+				else
+				{
+					var uai_fin = uai.substring(7,8);
+					if((uai_fin<"A")||(uai_fin>"Z"))
+					{
+						uai_valide = false;
+					}
+					else
+					{
+						for(i=0;i<7;i++)
+						{
+							var t = uai.substring(i,i+1);
+							if((t<"0")||(t>"9"))
+							{
+								uai_valide = false;
+							}
+						}
+					}
+				}
+				return this.optional(element) || uai_valide ;
+			}
+			, "il faut 7 chiffres suivis d'une lettre"
+		); 
+
+		// Ajout d'une méthode pour vérifier la clef de contrôle du numéro UAI
+		jQuery.validator.addMethod
+		(
+			"uai_clef", function(value, element)
+			{
+				var uai = value.toUpperCase();
+				var uai_valide = true;
+				var uai_nombre = uai.substring(0,7);
+				var uai_fin = uai.substring(7,8);
+				alphabet = "ABCDEFGHJKLMNPRSTUVWXYZ";
+				reste = uai_nombre-(23*Math.floor(uai_nombre/23));
+				clef = alphabet.substring(reste,reste+1);;
+				if(clef!=uai_fin )
+				{
+					uai_valide = false;
+				}
+				return this.optional(element) || uai_valide ;
+			}
+			, "clef de contrôle incompatible"
+		); 
 
 		// Vérifier la validité du formulaire (avec jquery.validate.js)
-		var validation3 = formulaire3.validate
+		var validation4 = formulaire4.validate
 		(
 			{
 				rules :
 				{
 					f_installation : { required:true },
 					f_denomination : { required:true , maxlength:60 },
+					f_uai :          { required:false , uai_format:true , uai_clef:true },
 					f_adresse_site : { required:false , maxlength:150 },
 					f_nom :          { required:true , maxlength:20 },
 					f_prenom :       { required:true , maxlength:20 },
@@ -184,6 +290,7 @@ $(document).ready
 				{
 					f_installation : { required:"type manquant" },
 					f_denomination : { required:"dénomination manquante" , maxlength:"60 caractères maximum" },
+					f_uai :          { uai_format:"n°UAI invalide" , uai_clef:"n°UAI invalide" },
 					f_adresse_site : { maxlength:"150 caractères maximum" },
 					f_nom :          { required:"nom manquant" , maxlength:"20 caractères maximum" },
 					f_prenom :       { required:"prénom manquant" , maxlength:"20 caractères maximum" },
@@ -199,7 +306,7 @@ $(document).ready
 		);
 
 		// Options d'envoi du formulaire (avec jquery.form.js)
-		var ajaxOptions3 =
+		var ajaxOptions4 =
 		{
 			url : 'ajax.php?dossier='+DOSSIER+'&fichier='+FICHIER,
 			type : 'POST',
@@ -207,26 +314,26 @@ $(document).ready
 			clearForm : false,
 			resetForm : false,
 			target : "#ajax_msg",
-			beforeSubmit : test_form3_avant_envoi,
-			error : retour_form3_erreur,
-			success : retour_form3_valide
+			beforeSubmit : test_form4_avant_envoi,
+			error : retour_form4_erreur,
+			success : retour_form4_valide
 		};
 
 		// Envoi du formulaire (avec jquery.form.js)
-    formulaire3.submit
+    formulaire4.submit
 		(
 			function()
 			{
-				$(this).ajaxSubmit(ajaxOptions3);
+				$(this).ajaxSubmit(ajaxOptions4);
 				return false;
 			}
 		); 
 
 		// Fonction précédent l'envoi du formulaire (avec jquery.form.js)
-		function test_form3_avant_envoi(formData, jqForm, options)
+		function test_form4_avant_envoi(formData, jqForm, options)
 		{
 			$('#ajax_msg').removeAttr("class").html("&nbsp;");
-			var readytogo = validation3.form();
+			var readytogo = validation4.form();
 			if(readytogo)
 			{
 				$('#f_submit').hide();
@@ -236,14 +343,14 @@ $(document).ready
 		}
 
 		// Fonction suivant l'envoi du formulaire (avec jquery.form.js)
-		function retour_form3_erreur(msg,string)
+		function retour_form4_erreur(msg,string)
 		{
 			$('#f_submit').show();
 			$('#ajax_msg').removeAttr("class").addClass("alerte").html("Echec de la connexion ! Veuillez valider de nouveau.");
 		}
 
 		// Fonction suivant l'envoi du formulaire (avec jquery.form.js)
-		function retour_form3_valide(responseHTML)
+		function retour_form4_valide(responseHTML)
 		{
 			$('#f_submit').show();
 			if(responseHTML.substring(0,6)=='Erreur')
@@ -255,26 +362,27 @@ $(document).ready
 				$('#form0').html(responseHTML);
 				$('#form3').html('');
 				$('#form4').html('');
+				$('#form5').html('');
 			}
 		} 
 
 		// ********************
-		// * Étape 3|31|n -> Étape 4
+		// * Étape 4|41|n -> Étape 5
 		// ********************
 
-		$('a.step4').live // live est utilisé pour prendre en compte les nouveaux éléments créés
+		$('a.step5').live // live est utilisé pour prendre en compte les nouveaux éléments créés
 		('click',
 			function()
 			{
 				$("#step li").removeAttr("class");
-				$("#step4").addClass("on");
+				$("#step5").addClass("on");
 				$('#ajax_msg').removeAttr("class").addClass("loader").html("Demande envoyée... Veuillez patienter.");
 				$.ajax
 				(
 					{
 						type : 'POST',
 						url : 'ajax.php?dossier='+DOSSIER+'&fichier='+FICHIER,
-						data : 'f_step=4',
+						data : 'f_step=5',
 						dataType : "html",
 						error : function(msg,string)
 						{
@@ -285,7 +393,8 @@ $(document).ready
 						{
 							$('#form0').html('');
 							$('#form3').html('');
-							$('#form4').html(responseHTML);
+							$('#form4').html('');
+							$('#form5').html(responseHTML);
 							$('#f_host').focus();
 						}
 					}
@@ -294,14 +403,14 @@ $(document).ready
 		);
 
 		// ********************
-		// * Étape 4|41 -> Étape 41|42
+		// * Étape 5|51 -> Étape 51|52
 		// ********************
 
 		// Le formulaire qui va être analysé et traité en AJAX
-		var formulaire = $('#form4');
+		var formulaire5 = $('#form5');
 
 		// Vérifier la validité du formulaire (avec jquery.validate.js)
-		var validation = formulaire.validate
+		var validation5 = formulaire5.validate
 		(
 			{
 				rules :
@@ -326,7 +435,7 @@ $(document).ready
 		);
 
 		// Options d'envoi du formulaire (avec jquery.form.js)
-		var ajaxOptions =
+		var ajaxOptions5 =
 		{
 			url : 'ajax.php?dossier='+DOSSIER+'&fichier='+FICHIER,
 			type : 'POST',
@@ -334,26 +443,26 @@ $(document).ready
 			clearForm : false,
 			resetForm : false,
 			target : "#ajax_msg",
-			beforeSubmit : test_form_avant_envoi,
-			error : retour_form_erreur,
-			success : retour_form_valide
+			beforeSubmit : test_form_avant_envoi5,
+			error : retour_form_erreur5,
+			success : retour_form_valide5
 		};
 
 		// Envoi du formulaire (avec jquery.form.js)
-    formulaire.submit
+    formulaire5.submit
 		(
 			function()
 			{
-				$(this).ajaxSubmit(ajaxOptions);
+				$(this).ajaxSubmit(ajaxOptions5);
 				return false;
 			}
 		); 
 
 		// Fonction précédent l'envoi du formulaire (avec jquery.form.js)
-		function test_form_avant_envoi(formData, jqForm, options)
+		function test_form_avant_envoi5(formData, jqForm, options)
 		{
 			$('#ajax_msg').removeAttr("class").html("&nbsp;");
-			var readytogo = validation.form();
+			var readytogo = validation5.form();
 			if(readytogo)
 			{
 				$('#f_submit').hide();
@@ -363,14 +472,14 @@ $(document).ready
 		}
 
 		// Fonction suivant l'envoi du formulaire (avec jquery.form.js)
-		function retour_form_erreur(msg,string)
+		function retour_form_erreur5(msg,string)
 		{
 			$('#f_submit').show();
 			$('#ajax_msg').removeAttr("class").addClass("alerte").html("Echec de la connexion ! Veuillez valider de nouveau.");
 		}
 
 		// Fonction suivant l'envoi du formulaire (avec jquery.form.js)
-		function retour_form_valide(responseHTML)
+		function retour_form_valide5(responseHTML)
 		{
 			$('#f_submit').show();
 			if(responseHTML.substring(0,6)=='Erreur')
@@ -382,7 +491,8 @@ $(document).ready
 				// choix de la base (mono-structure)
 				$('#form0').html('');
 				$('#form3').html('');
-				$('#form4').html(responseHTML);
+				$('#form4').html('');
+				$('#form5').html(responseHTML);
 				$('#f_name').focus();
 			}
 			else
@@ -391,26 +501,27 @@ $(document).ready
 				$('#form0').html(responseHTML);
 				$('#form3').html('');
 				$('#form4').html('');
+				$('#form5').html('');
 			}
 		} 
 
 		// ********************
-		// * Étape 4|41|42|n -> Étape 5
+		// * Étape 5|51|52|n -> Étape 6
 		// ********************
 
-		$('a.step5').live // live est utilisé pour prendre en compte les nouveaux éléments créés
+		$('a.step6').live // live est utilisé pour prendre en compte les nouveaux éléments créés
 		('click',
 			function()
 			{
 				$("#step li").removeAttr("class");
-				$("#step5").addClass("on");
+				$("#step6").addClass("on");
 				$('#ajax_msg').removeAttr("class").addClass("loader").html("Demande envoyée... Veuillez patienter.");
 				$.ajax
 				(
 					{
 						type : 'POST',
 						url : 'ajax.php?dossier='+DOSSIER+'&fichier='+FICHIER,
-						data : 'f_step=5',
+						data : 'f_step=6',
 						dataType : "html",
 						error : function(msg,string)
 						{
@@ -422,6 +533,7 @@ $(document).ready
 							$('#form0').html(responseHTML);
 							$('#form3').html('');
 							$('#form4').html('');
+							$('#form5').html('');
 						}
 					}
 				);

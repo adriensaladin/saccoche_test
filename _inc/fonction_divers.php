@@ -101,6 +101,7 @@ function crypter_mdp($password)
  * 
  * @param string $hebergeur_installation
  * @param string $hebergeur_denomination
+ * @param string $hebergeur_uai
  * @param string $hebergeur_adresse_site
  * @param string $hebergeur_logo
  * @param string $hebergeur_cnil
@@ -111,13 +112,14 @@ function crypter_mdp($password)
  * @return void
  */
 
-function fabriquer_fichier_hebergeur_info($hebergeur_installation,$hebergeur_denomination,$hebergeur_adresse_site,$hebergeur_logo,$hebergeur_cnil,$webmestre_nom,$webmestre_prenom,$webmestre_courriel,$webmestre_password_md5)
+function fabriquer_fichier_hebergeur_info($hebergeur_installation,$hebergeur_denomination,$hebergeur_uai,$hebergeur_adresse_site,$hebergeur_logo,$hebergeur_cnil,$webmestre_nom,$webmestre_prenom,$webmestre_courriel,$webmestre_password_md5)
 {
 	$fichier_nom     = './__hebergeur_info/constantes.php';
 	$fichier_contenu = '<?php'."\r\n";
-	$fichier_contenu.= '// Informations concernant l\'hébergement et son webmestre'."\r\n";
+	$fichier_contenu.= '// Informations concernant l\'hébergement et son webmestre (n°UAI uniquement pour une installation de type mono-structure)'."\r\n";
 	$fichier_contenu.= 'define(\'HEBERGEUR_INSTALLATION\',\''.str_replace('\'','\\\'',$hebergeur_installation).'\');'."\r\n";
 	$fichier_contenu.= 'define(\'HEBERGEUR_DENOMINATION\',\''.str_replace('\'','\\\'',$hebergeur_denomination).'\');'."\r\n";
+	$fichier_contenu.= 'define(\'HEBERGEUR_UAI\'         ,\''.str_replace('\'','\\\'',$hebergeur_uai)         .'\');'."\r\n";
 	$fichier_contenu.= 'define(\'HEBERGEUR_ADRESSE_SITE\',\''.str_replace('\'','\\\'',$hebergeur_adresse_site).'\');'."\r\n";
 	$fichier_contenu.= 'define(\'HEBERGEUR_LOGO\'        ,\''.str_replace('\'','\\\'',$hebergeur_logo)        .'\');'."\r\n";
 	$fichier_contenu.= 'define(\'HEBERGEUR_CNIL\'        ,\''.str_replace('\'','\\\'',$hebergeur_cnil)        .'\');'."\r\n";

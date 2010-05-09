@@ -31,7 +31,7 @@ $TITRE = "Gestion de l'identité de l'établissement";
 
 <h2>Introduction</h2>
 <p>
-	Les administrateurs peuvent renseigner / modifier certaines informations concernant l'établissement.<br />
+	Les administrateurs peuvent consuler les informations concernant l'établissement et identifier l'établissement dans la base <em>Sésamath</em>.<br />
 	<span class="astuce">Si les informations sont déjà renseignées et sont correctes, alors ne les modifiez pas !</span>
 </p>
 <ul class="puce">
@@ -39,29 +39,21 @@ $TITRE = "Gestion de l'identité de l'établissement";
 	<li>Menu <em>[Paramétrages]</em> puis <em>[Identité de l'établissement]</em>.</li>
 </ul>
 
-<h2>Dénomination</h2>
+<h2>Données saisies par le webmestre</h2>
 <p>
-	Typiquement, ce champ est de la forme "CLG Gaston Lagaffe".
+	Le webmestre a la charge d'indiquer la dénomination et le code UAI éventuel de l'établissement.<br />Si besoin, contactez-le pour apporter des modifications.
 </p>
-<ul class="puce">
-	<li>Sur un hébergement de type <em>mono-structure</em>, cette dénomination est affichée sur la page d'identification.</li>
-	<li>Sur un hébergement de type <em>multi-structures</em>, cette dénomination est seulement utilisée une fois connecté, car celle affichée sur la page d'identification est celle figurant dans la base du webmestre.</li>
-</ul>
 
-<h2>Numéro UAI (ex-RNE)</h2>
+<h2>Identification de l'établissement dans la base Sésamath</h2>
 <p>
-	Un code <em>UAI</em> (<em>U</em>nité <em>A</em>dministrative <em>I</em>mmatriculée) est attribué à chaque établissement d'enseignement français.<br />
-	Il correspond à l'ancien code <em>RNE</em> (<em>R</em>épertoire <em>N</em>ational des <em>E</em>tablissements) depuis 1996.<br />
-	Pour le trouver, on peut rechercher dans <a class="lien_ext" href="http://www.infocentre.education.fr/bce/">la Base Centrale des Etablissements (BCE)</a>.
+	Pour certaines opérations, les serveurs hébergeant <em>SACoche</em> doivent se connecter au serveur communautaire de <em>Sésamath</em> :
 </p>
 <ul class="puce">
-	<li>Ce code doit être renseigné pour pouvoir importer un fichier issu de Sconet / STS-Web.</li>
+	<li>Consulter, choisir, récupérer un référentiel partagé par d'autres</li>
+	<li>Proposer, envoyer, mettre à jour un référentiel que l'on souhaite partager</li>
 </ul>
-
-<h2>Identifiant Sésamath et clef de contrôle</h2>
 <p>
-	Les serveurs hébergeant<em>SACoche</em> ont la possibilité de se connecter au serveur central pour partager des référentiels, ou de récupérer des référentiels partagés par d'autres. Ceci nécessite de pouvoir référencer les établissements concernés dans une base unique, et de pouvoir joindre leur(s) responsable(s) en cas de problème.
+	Mais ceci nécessite de pouvoir identifier les établissements concernés dans une base unique, afin de pouvoir les reconnaître. Ce menu permet à l'administrateur de procéder à cette identification.
 </p>
-<ul class="puce">
-	<li>Pour récupérer si besoin ces valeurs, <a class="lien_ext" href="http://competences.sesamath.net">s'inscrire au projet SACoche</a> puis en faire la demande.</li>
-</ul>
+<p class="astuce">Lors d'une action sur le serveur communaitaire, l'adresse IP de l'utilisateur et l'adresse du serveur sont enregistrées, afin de pouvoir réagir en cas de problème (fausse déclaration, référentiel effacé par autrui...).</p>
+<p class="astuce">Une installation de <em>SACoche</em> non déclarée sur le serveur communautaire est utilisable de façon entièrement autonome, mais ne dispose pas des fontionnalités supplémentaires nécessitant un échange avec ce serveur communautaire.</p>

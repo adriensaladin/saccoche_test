@@ -58,17 +58,17 @@ header('Content-Type: '.$format);header('Charset: utf-8');
 $PROFIL_REQUIS = $DOSSIER;
 require_once('./_inc/gestion_sessions.php');
 
-// Blocage des sites si maintenance
-require_once('./_inc/gestion_maintenance.php');
-
 // Arrêt s'il fallait seulement mettre la session à jour (la session d'un user connecté n'a pas été perdue si on arrive jusqu'ici)
 if($FICHIER=='conserver_session_active')
 {
 	exit('ok');
 }
 
+// Blocage éventuel par le webmestre ou un administrateur
+tester_blocage_acces($demande_connexion_profil=false);
+
 // Informations sur l'hébergement
-$fichier_constantes = './__hebergeur_info/constantes.php';
+$fichier_constantes = './__hebergement_info/constantes.php';
 if(is_file($fichier_constantes))
 {
 	require_once($fichier_constantes);

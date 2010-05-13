@@ -53,11 +53,11 @@ require_once('./_inc/fonction_affichage.php');
 $PROFIL_REQUIS = $DOSSIER;
 require_once('./_inc/gestion_sessions.php');
 
-// Blocage des sites si maintenance
-require_once('./_inc/gestion_maintenance.php');
+// Blocage éventuel par le webmestre ou un administrateur
+tester_blocage_acces($demande_connexion_profil=false);
 
 // Informations sur l'hébergement
-$fichier_constantes = './__hebergeur_info/constantes.php';
+$fichier_constantes = './__hebergement_info/constantes.php';
 if(is_file($fichier_constantes))
 {
 	require_once($fichier_constantes);
@@ -172,7 +172,7 @@ if($DOSSIER!='public')
 else
 {
 	// Accueil (identification) : image SACoche + image hébergeur.
-	$hebergeur_img  = ( (defined('HEBERGEUR_LOGO')) && (is_file('./__hebergeur_info/'.HEBERGEUR_LOGO)) ) ? '<img alt="Hébergeur" src="./__hebergeur_info/'.HEBERGEUR_LOGO.'" />' : '' ;
+	$hebergeur_img  = ( (defined('HEBERGEUR_LOGO')) && (is_file('./__hebergement_info/'.HEBERGEUR_LOGO)) ) ? '<img alt="Hébergeur" src="./__hebergement_info/'.HEBERGEUR_LOGO.'" />' : '' ;
 	$hebergeur_lien = ( (defined('HEBERGEUR_ADRESSE_SITE')) && HEBERGEUR_ADRESSE_SITE && ($hebergeur_img) ) ? '<a href="'.html(HEBERGEUR_ADRESSE_SITE).'">'.$hebergeur_img.'</a>' : $hebergeur_img ;
 	$SACoche_lien   = '<a href="http://competences.sesamath.net"><img alt="Suivi d\'Acquisition de Compétences" src="./_img/logo_grand2.gif" /></a>' ;
 	$TITRE_PAGE = '<h1>'.$SACoche_lien.$hebergeur_lien.'</h1>';

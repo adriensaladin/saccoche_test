@@ -38,7 +38,7 @@ $nom          = (isset($_POST['f_nom']))          ? clean_nom($_POST['f_nom'])  
 $prenom       = (isset($_POST['f_prenom']))       ? clean_prenom($_POST['f_prenom'])      : '';
 $courriel     = (isset($_POST['f_courriel']))     ? clean_courriel($_POST['f_courriel'])  : '';
 
-$dossier_images = './__hebergeur_info/';
+$dossier_images = './__hebergement_info/';
 $tab_ext_images = array('bmp','gif','jpg','jpeg','png','svg');
 
 //	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*

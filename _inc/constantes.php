@@ -25,9 +25,6 @@
  * 
  */
 
-// MAINTENANCE : Mettre à 1 en cas de maintenance : seul le webmestre SACoche pourra continuer à surfer.
-define('MAINTENANCE',0);
-
 // FILE_CSS_SCREEN / FILE_CSS_PRINT / FILE_JS_BIBLIO / FILE_JS_SCRIPT / FILE_JS_BIBLIO / FILE_JS_SCRIPT
 // Pour éviter les problèmes de mise en cache, modifier les noms des fichiers lors d'une mise à jour
 define('FILE_CSS_SCREEN','style-23.css'); // .min

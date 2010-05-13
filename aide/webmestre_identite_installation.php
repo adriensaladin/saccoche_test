@@ -32,7 +32,7 @@ $TITRE = "Identité de l'installation";
 <h2>Introduction</h2>
 <p>
 	La page d'accueil présente quelques informations relatives à l'hébergement.<br />
-	Le webmestre peut modifier ces informations. Celles-ci sont enregistrées dans le dossier <em>/__hebergeur_info/</em>.
+	Le webmestre peut modifier ces informations. Celles-ci sont enregistrées dans le dossier <em>/__hebergement_info/</em>.
 </p>
 <ul class="puce">
 	<li>Se connecter avec son compte webmestre.</li>

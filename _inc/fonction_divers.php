@@ -114,7 +114,7 @@ function crypter_mdp($password)
 
 function fabriquer_fichier_hebergeur_info($hebergeur_installation,$hebergeur_denomination,$hebergeur_uai,$hebergeur_adresse_site,$hebergeur_logo,$hebergeur_cnil,$webmestre_nom,$webmestre_prenom,$webmestre_courriel,$webmestre_password_md5)
 {
-	$fichier_nom     = './__hebergeur_info/constantes.php';
+	$fichier_nom     = './__hebergement_info/constantes.php';
 	$fichier_contenu = '<?php'."\r\n";
 	$fichier_contenu.= '// Informations concernant l\'hébergement et son webmestre (n°UAI uniquement pour une installation de type mono-structure)'."\r\n";
 	$fichier_contenu.= 'define(\'HEBERGEUR_INSTALLATION\',\''.str_replace('\'','\\\'',$hebergeur_installation).'\');'."\r\n";
@@ -173,6 +173,32 @@ function fabriquer_fichier_connexion_base($base_id,$BD_host,$BD_name,$BD_user,$B
 }
 
 /**
+ * tester_blocage_acces
+ * Blocage des sites sur demande du webmestre ou d'un administrateur (maintenance, sauvegarde/restauration, ...).
+ * Nécessite que la session soit ouverte.
+ * Appelé depuis les pages index.php + ajax.php + lors d'une demande d'identification d'un utilisateur (sauf webmestre)
+ * 
+ * @param string $demande_connexion_profil   false si appel depuis index.php ou ajax.php, le profil si demande d'identification
+ * @return void
+ */
+
+function tester_blocage_acces($demande_connexion_profil)
+{
+	// Par le webmestre
+	$fichier_blocage_webmestre = './__hebergement_info/blocage_webmestre.txt';
+	if( (is_file($fichier_blocage_webmestre)) && (($_SESSION['USER_PROFIL']!='public')||($demande_connexion_profil!=false)) && ($_SESSION['USER_PROFIL']!='webmestre') )
+	{
+		affich_message_exit($titre='Blocage par le webmestre',$contenu='Blocage par le webmestre : '.file_get_contents($fichier_blocage_webmestre) );
+	}
+	// Par un administrateur
+	$fichier_blocage_administrateur = './__hebergement_info/blocage_admin_'.$_SESSION['BASE'].'.txt';
+	if( (is_file($fichier_blocage_administrateur)) && (($_SESSION['USER_PROFIL']!='public')||($demande_connexion_profil!='administrateur')) && ($_SESSION['USER_PROFIL']!='webmestre') && ($_SESSION['USER_PROFIL']!='administrateur') )
+	{
+		affich_message_exit($titre='Blocage par un administrateur',$contenu='Blocage par un administrateur : '.file_get_contents($fichier_blocage_administrateur) );
+	}
+}
+
+/**
  * connecter_webmestre
  * 
  * @param string $password
@@ -213,6 +239,8 @@ function connecter_webmestre($password)
 
 function connecter_user($BASE,$profil,$login,$password,$sso)
 {
+	// Blocage éventuel par le webmestre ou un administrateur
+	tester_blocage_acces($demande_connexion_profil=$profil);
 	// En cas de multi-structures, il faut charger les paramètres de connexion à la base en question
 	if($BASE)
 	{

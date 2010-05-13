@@ -71,7 +71,7 @@ if( $step==1 )
 		}
 	}
 	// Création des trois dossiers principaux, et vérification de leur accès en écriture
-	$tab_dossier = array('./__hebergeur_info','./__mysql_config','./__tmp');
+	$tab_dossier = array('./__hebergement_info','./__mysql_config','./__tmp');
 	foreach($tab_dossier as $dossier)
 	{
 		creer_dossier($dossier);
@@ -97,7 +97,7 @@ elseif( $step==2 )
 {
 	// Création des fichiers index.htm
 	$poursuivre1 = true;
-	$tab_dossier = array('./__hebergeur_info','./__mysql_config','./__tmp','./__tmp/badge','./__tmp/cookie','./__tmp/dump-base','./__tmp/export','./__tmp/import','./__tmp/login-mdp','./__tmp/rss');
+	$tab_dossier = array('./__hebergement_info','./__mysql_config','./__tmp','./__tmp/badge','./__tmp/cookie','./__tmp/dump-base','./__tmp/export','./__tmp/import','./__tmp/login-mdp','./__tmp/rss');
 	foreach($tab_dossier as $dossier)
 	{
 		$test = @file_put_contents($dossier.'/index.htm','Circulez, il n\'y a rien à voir par ici !');
@@ -113,7 +113,7 @@ elseif( $step==2 )
 	}
 	// Création des fichiers .htaccess
 	$poursuivre2 = true;
-	$tab_dossier = array('./__hebergeur_info','./__mysql_config');
+	$tab_dossier = array('./__hebergement_info','./__mysql_config');
 	foreach($tab_dossier as $dossier)
 	{
 		$test = @file_put_contents('./__mysql_config/.htaccess','Order deny,allow'."\r\n".'allow from 127.0.0.1'."\r\n".'deny from all'."\r\n");
@@ -121,11 +121,11 @@ elseif( $step==2 )
 	}
 	if($poursuivre2)
 	{
-		$affichage .= '<label for="rien" class="valide">Fichiers &laquo;&nbsp;<b>.htaccess</b>&nbsp;&raquo; créés dans les dossiers &laquo;&nbsp;<b>./__hebergeur_info</b>&nbsp;&raquo; et &laquo;&nbsp;<b>./__mysql_config</b>&nbsp;&raquo;.</label><br />'."\r\n";
+		$affichage .= '<label for="rien" class="valide">Fichiers &laquo;&nbsp;<b>.htaccess</b>&nbsp;&raquo; créés dans les dossiers &laquo;&nbsp;<b>./__hebergement_info</b>&nbsp;&raquo; et &laquo;&nbsp;<b>./__mysql_config</b>&nbsp;&raquo;.</label><br />'."\r\n";
 	}
 	else
 	{
-		$affichage .= '<label for="rien" class="erreur">Echec lors de la création du fichier &laquo;&nbsp;<b>.htaccess</b>&nbsp;&raquo; dans les dossiers &laquo;&nbsp;<b>./__hebergeur_info</b>&nbsp;&raquo; et &laquo;&nbsp;<b>./__mysql_config</b>&nbsp;&raquo;.</label><br />Veuiller y recopier ceui se trouvant par exemple dans le dossier <b>./_inc</b>.'."\r\n";
+		$affichage .= '<label for="rien" class="erreur">Echec lors de la création du fichier &laquo;&nbsp;<b>.htaccess</b>&nbsp;&raquo; dans les dossiers &laquo;&nbsp;<b>./__hebergement_info</b>&nbsp;&raquo; et &laquo;&nbsp;<b>./__mysql_config</b>&nbsp;&raquo;.</label><br />Veuiller y recopier ceui se trouvant par exemple dans le dossier <b>./_inc</b>.'."\r\n";
 	}
 	// Affichage du résultat des opérations
 	echo $affichage;

@@ -85,5 +85,5 @@ $TITRE = "Identité de l'installation";
 <ul class="puce">
 	<li><em>Nom</em> : n'est affiché que dans l'espace du webmestre.</li>
 	<li><em>Prénom</em> : n'est affiché que dans l'espace du webmestre.</li>
-	<li><em>Courriel</em> : l'adresse est affichée codée pour éviter une récupération par des robots fouineurs malveillants.</li>
+	<li><em>Courriel</em> : l'adresse est affichée codée pour éviter une récupération par des robots fouineurs.</li>
 </ul>

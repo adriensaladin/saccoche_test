@@ -173,43 +173,44 @@ function fabriquer_fichier_connexion_base($base_id,$BD_host,$BD_name,$BD_user,$B
 }
 
 /**
- * bloquer_acces
+ * bloquer_application
  * 
  * @param string $profil_demandeur
  * @param string $motif
  * @return void
  */
 
-function bloquer_acces($profil_demandeur,$motif)
+function bloquer_application($profil_demandeur,$motif)
 {
 	$fichier_nom = ($profil_demandeur=='webmestre') ? './__hebergement_info/blocage_webmestre.txt' : './__hebergement_info/blocage_admin_'.$_SESSION['BASE'].'.txt' ;
 	file_put_contents($fichier_nom,$motif);
 }
 
 /**
- * debloquer_acces
+ * debloquer_application
  * 
  * @param string $profil_demandeur
  * @return void
  */
 
-function debloquer_acces($profil_demandeur)
+function debloquer_application($profil_demandeur)
 {
 	$fichier_nom = ($profil_demandeur=='webmestre') ? './__hebergement_info/blocage_webmestre.txt' : './__hebergement_info/blocage_admin_'.$_SESSION['BASE'].'.txt' ;
 	@unlink($fichier_nom);
 }
 
 /**
- * tester_blocage_acces
+ * tester_blocage_application
  * Blocage des sites sur demande du webmestre ou d'un administrateur (maintenance, sauvegarde/restauration, ...).
  * Nécessite que la session soit ouverte.
  * Appelé depuis les pages index.php + ajax.php + lors d'une demande d'identification d'un utilisateur (sauf webmestre)
  * 
+ * @param string $BASE                       car $_SESSION['BASE'] non encore renseigné si demande d'identification
  * @param string $demande_connexion_profil   false si appel depuis index.php ou ajax.php, le profil si demande d'identification
  * @return void
  */
 
-function tester_blocage_acces($demande_connexion_profil)
+function tester_blocage_application($BASE,$demande_connexion_profil)
 {
 	// Par le webmestre
 	$fichier_blocage_webmestre = './__hebergement_info/blocage_webmestre.txt';
@@ -218,7 +219,7 @@ function tester_blocage_acces($demande_connexion_profil)
 		affich_message_exit($titre='Blocage par le webmestre',$contenu='Blocage par le webmestre : '.file_get_contents($fichier_blocage_webmestre) );
 	}
 	// Par un administrateur
-	$fichier_blocage_administrateur = './__hebergement_info/blocage_admin_'.$_SESSION['BASE'].'.txt';
+	$fichier_blocage_administrateur = './__hebergement_info/blocage_admin_'.$BASE.'.txt';
 	if( (is_file($fichier_blocage_administrateur)) && (($_SESSION['USER_PROFIL']!='public')||($demande_connexion_profil!='administrateur')) && ($_SESSION['USER_PROFIL']!='webmestre') && ($_SESSION['USER_PROFIL']!='administrateur') )
 	{
 		affich_message_exit($titre='Blocage par un administrateur',$contenu='Blocage par un administrateur : '.file_get_contents($fichier_blocage_administrateur) );
@@ -269,7 +270,7 @@ function connecter_webmestre($password)
 function connecter_user($BASE,$profil,$login,$password,$sso)
 {
 	// Blocage éventuel par le webmestre ou un administrateur
-	tester_blocage_acces($demande_connexion_profil=$profil);
+	tester_blocage_application($BASE,$demande_connexion_profil=$profil);
 	// En cas de multi-structures, il faut charger les paramètres de connexion à la base en question
 	if($BASE)
 	{

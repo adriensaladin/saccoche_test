@@ -26,27 +26,28 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-if($_SESSION['SESAMATH_ID']==ID_DEMO) {exit('Action désactivée pour la démo...');}
-
-$action = (isset($_POST['f_action'])) ? clean_texte($_POST['f_action']) : '';
-$motif  = (isset($_POST['f_motif']))  ? clean_texte($_POST['f_motif'])  : '';
-
-//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
-// Bloquer ou débloquer l'application
-//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
-
-if($action=='debloquer')
-{
-	debloquer_application($_SESSION['USER_PROFIL']);
-	exit('<label class="valide">Application accessible.</label>');
-}
-elseif($action=='bloquer')
-{
-	bloquer_application($_SESSION['USER_PROFIL'],$motif);
-	exit('<label class="erreur">Application fermée : '.html($motif).'</label>');
-}
-else
-{
-	echo'Erreur avec les données transmises !';
-}
+$TITRE = "Blocage de l'application";
 ?>
+
+<h2>Introduction</h2>
+<p>
+	Le webmestre et les administrateurs peuvent bloquer l'accès à l'application, ou le rétablir.<br />
+	En cas de blocage, un fichier est créé dans le dossier <em>/__hebergement_info/</em>.
+</p>
+<ul class="puce">
+	<li>Se connecter avec son compte webmestre ou administrateur.</li>
+	<li>Menu <em>[Blocage de l'application]</em>.</li>
+</ul>
+
+<h2>Blocage de l'application par le webmestre</h2>
+<ul class="puce">
+	<li>En cas de blocage de l'application par le webmestre, seul le webmestre peut se connecter, et les autres personnes déjà connectées ne peuvent plus naviguer.</li>
+	<li>Cette fonctionnalité est notamment utile lors d'une mise à jour des fichiers.</li>
+	<li>Cette fonctionnalité est utilisée automatiquement lors d'une mise à jour de la base.</li>
+</ul>
+
+<h2>Blocage de l'application par un administrateur</h2>
+<ul class="puce">
+	<li>En cas de blocage de l'application par un administrateur, seul le webmestre et les administrateurs peuvent se connecter, et les autres personnes déjà connectées ne peuvent plus naviguer.</li>
+	<li>Cette fonctionnalité est utilisée automatiquement lors d'une sauvegarde, d'une restauration, ou d'une mise à jour de la base.</li>
+</ul>

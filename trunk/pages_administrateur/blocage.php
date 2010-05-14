@@ -29,10 +29,10 @@ if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');
 $TITRE = "Blocage de l'application";
 
 // Initialisation de l'état de l'accès
-$fichier_blocage_webmestre = './__hebergement_info/blocage_webmestre.txt';
-if(is_file($fichier_blocage_webmestre))
+$fichier_blocage_administrateur = './__hebergement_info/blocage_admin_'.$_SESSION['BASE'].'.txt';
+if(is_file($fichier_blocage_administrateur))
 {
-	$label = '<label class="erreur">Application fermée : '.html(file_get_contents($fichier_blocage_webmestre)).'</label>';
+	$label = '<label class="erreur">Application fermée : '.html(file_get_contents($fichier_blocage_administrateur)).'</label>';
 }
 else
 {
@@ -60,12 +60,10 @@ else
 	<span id="span_motif" class="hide">
 		<label class="tab" for="f_motif">Motif :</label>
 			<select id="f_proposition" name="f_proposition">
-				<option value="rien">autre motif</option>
-				<option value="mise-a-jour" selected="selected">mise à jour</option>
-				<option value="maintenance">maintenance</option>
+				<option value="rien" selected="selected">autre motif</option>
 				<option value="demenagement">déménagement</option>
 			</select>
-			<input id="f_motif" name="f_motif" size="50" maxlength="100" type="text" value="Mise à jour des fichiers en cours." />
+			<input id="f_motif" name="f_motif" size="50" maxlength="100" type="text" value="" />
 	</span><p />
 	<span class="tab"></span><input id="f_submit" type="submit" value="Valider." /><label id="ajax_msg">&nbsp;</label>
 </fieldset></form>

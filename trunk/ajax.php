@@ -65,7 +65,7 @@ if($FICHIER=='conserver_session_active')
 }
 
 // Blocage éventuel par le webmestre ou un administrateur
-tester_blocage_acces($demande_connexion_profil=false);
+tester_blocage_application($_SESSION['BASE'],$demande_connexion_profil=false);
 
 // Informations sur l'hébergement
 $fichier_constantes = './__hebergement_info/constantes.php';

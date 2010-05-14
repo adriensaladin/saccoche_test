@@ -26,7 +26,7 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-if(($_SESSION['STRUCTURE_ID']==ID_DEMO)&&($_GET['action']!='initialiser')){exit('Action désactivée pour la démo...');}
+if(($_SESSION['SESAMATH_ID']==ID_DEMO)&&($_GET['action']!='initialiser')){exit('Action désactivée pour la démo...');}
 
 $action     = (isset($_GET['action']))        ? $_GET['action']                     : '';
 $date_debut = (isset($_POST['f_date_debut'])) ? clean_texte($_POST['f_date_debut']) : '';

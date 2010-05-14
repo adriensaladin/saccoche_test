@@ -26,7 +26,7 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-if($_SESSION['STRUCTURE_ID']==ID_DEMO) {}
+if($_SESSION['SESAMATH_ID']==ID_DEMO) {}
 
 $eleve_id      = (isset($_GET['eleve_id']))      ? clean_entier($_GET['eleve_id'])      : 0;
 $matiere_id    = (isset($_GET['matiere_id']))    ? clean_entier($_GET['matiere_id'])    : 0;

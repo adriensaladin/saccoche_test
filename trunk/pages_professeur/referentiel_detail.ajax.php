@@ -26,7 +26,7 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-if(($_SESSION['STRUCTURE_ID']==ID_DEMO)&&($_POST['action']!='Voir')){exit('Action désactivée pour la démo...');}
+if(($_SESSION['SESAMATH_ID']==ID_DEMO)&&($_POST['action']!='Voir')){exit('Action désactivée pour la démo...');}
 
 $action      = (isset($_POST['action']))   ? clean_texte($_POST['action'])    : '';
 $contexte    = (isset($_POST['contexte'])) ? clean_texte($_POST['contexte'])  : '';	// n1 ou n2 ou n3

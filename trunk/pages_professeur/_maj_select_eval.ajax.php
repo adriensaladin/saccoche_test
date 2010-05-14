@@ -28,7 +28,7 @@
 // Mettre à jour l'élément de formulaire "f_devoir" et le renvoyer en HTML
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-if($_SESSION['STRUCTURE_ID']==ID_DEMO) {}
+if($_SESSION['SESAMATH_ID']==ID_DEMO) {}
 
 $eval_type = (isset($_POST['eval_type'])) ? clean_texte($_POST['eval_type'])  : '';	// 'groupe' ou 'select'
 $groupe_id = (isset($_POST['groupe_id'])) ? clean_entier($_POST['groupe_id']) : 0;	// utile uniquement pour $eval_type='groupe'

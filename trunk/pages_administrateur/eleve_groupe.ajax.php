@@ -26,7 +26,7 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-if(($_SESSION['STRUCTURE_ID']==ID_DEMO)&&($_GET['action']!='initialiser')){exit('Action désactivée pour la démo...');}
+if(($_SESSION['SESAMATH_ID']==ID_DEMO)&&($_GET['action']!='initialiser')){exit('Action désactivée pour la démo...');}
 
 $action = (isset($_GET['action'])) ? $_GET['action'] : '';
 $tab_select_eleves  = (isset($_POST['select_eleves']))  ? array_map('clean_entier',explode(',',$_POST['select_eleves']))  : array() ;

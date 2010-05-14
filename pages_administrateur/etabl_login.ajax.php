@@ -26,7 +26,7 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-if($_SESSION['STRUCTURE_ID']==ID_DEMO) {exit('Action désactivée pour la démo...');}
+if($_SESSION['SESAMATH_ID']==ID_DEMO) {exit('Action désactivée pour la démo...');}
 
 $f_login_professeur = (isset($_POST['f_login_professeur'])) ? clean_texte($_POST['f_login_professeur']) : '';
 $f_login_eleve      = (isset($_POST['f_login_eleve']))      ? clean_texte($_POST['f_login_eleve'])      : '';

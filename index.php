@@ -117,7 +117,7 @@ $filename_php = './pages_'.$DOSSIER.'/'.$FICHIER.'.php';
 if(!is_file($filename_php))
 {
 	echo'<p class="danger">Page "'.$filename_php.'" manquante (supprimée, déplacée, non créée...).</p>';
-	$FICHIER = 'accueil';
+	$FICHIER = ($DOSSIER!='public') ? 'compte_accueil' : 'accueil' ;
 	$filename_php = './pages_'.$DOSSIER.'/'.$FICHIER.'.php';
 	if(!is_file($filename_php))
 	{
@@ -196,7 +196,7 @@ entete();
 	<?php echo $TITRE_PAGE; ?>
 	<?php echo $CONTENU_PAGE; ?>
 	<?php 
-	// echo'<pre>';var_dump($_SESSION);echo'</pre>';
+	echo'<pre>';var_dump($_SESSION);echo'</pre>';
 	?>
 	<script type="text/javascript">
 		var DOSSIER='<?php echo $DOSSIER ?>';

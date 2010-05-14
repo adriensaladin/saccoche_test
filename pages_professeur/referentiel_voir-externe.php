@@ -30,9 +30,9 @@ $TITRE = "Référentiels partagés sur le serveur communautaire";
 ?>
 
 <script type="text/javascript">
-	var url_debut                  = "<?php echo html(SERVEUR_COMMUNAUTAIRE) ?>";
-	var structure_id               = "<?php echo $_SESSION['STRUCTURE_ID'] ?>";
-	var structure_key              = "<?php echo $_SESSION['STRUCTURE_KEY'] ?>";
+	var url_debut    = "<?php echo html(SERVEUR_COMMUNAUTAIRE) ?>";
+	var sesamath_id  = "<?php echo $_SESSION['SESAMATH_ID'] ?>";
+	var sesamath_key = "<?php echo $_SESSION['SESAMATH_KEY'] ?>";
 </script>
 
 <ul class="puce">
@@ -43,9 +43,9 @@ $TITRE = "Référentiels partagés sur le serveur communautaire";
 <hr />
 
 <?php
-if( (!$_SESSION['STRUCTURE_ID']) || (!$_SESSION['STRUCTURE_KEY']) )
+if( (!$_SESSION['SESAMATH_ID']) || (!$_SESSION['STRUCTURE_KEY']) )
 {
-	echo'<p><label for="rien" class="erreur">Pour pouvoir effectuer la recherche d\'un référentiel partagé sur le serveur communautaire, un administrateur doit identifier cette installation de SACoche.</label></p>';
+	echo'<p><label for="rien" class="erreur">Pour pouvoir effectuer la recherche d\'un référentiel partagé sur le serveur communautaire, un administrateur doit identifier l\'établissement dans la base Sésamath.</label></p>';
 }
 else
 {

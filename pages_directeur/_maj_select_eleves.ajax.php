@@ -28,7 +28,7 @@
 // Mettre à jour l'élément de formulaire "f_eleve" et le renvoyer en HTML
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-if($_SESSION['STRUCTURE_ID']==ID_DEMO) {}
+if($_SESSION['SESAMATH_ID']==ID_DEMO) {}
 
 $groupe = (isset($_POST['f_groupe'])) ? clean_entier($_POST['f_groupe']) : 0;
 $type   = (isset($_POST['f_type']))   ? clean_texte($_POST['f_type'])    : '';

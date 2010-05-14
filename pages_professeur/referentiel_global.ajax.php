@@ -26,7 +26,7 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-if(($_SESSION['STRUCTURE_ID']==ID_DEMO)&&($_GET['action']!='Voir')){exit('Action désactivée pour la démo...');}
+if(($_SESSION['SESAMATH_ID']==ID_DEMO)&&($_GET['action']!='Voir')){exit('Action désactivée pour la démo...');}
 
 $action  = (isset($_POST['action']))  ? $_POST['action'] : '';
 $ids     = (isset($_POST['ids']))     ? $_POST['ids']    : '';
@@ -66,20 +66,20 @@ if( ($action=='Voir') && $matiere_id && $niveau_id )
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 elseif( ($action=='Partager') && ($perso==0) && $matiere_id && $niveau_id && in_array($partage,$tab_partages) && ($partage!='hs') )
 {
-	if( ($partage=='oui') && ( (!$_SESSION['STRUCTURE_ID']) || (!$_SESSION['STRUCTURE_KEY']) ) )
+	if( ($partage=='oui') && ( (!$_SESSION['SESAMATH_ID']) || (!$_SESSION['SESAMATH_KEY']) ) )
 	{
-		exit('Pour pouvoir échanger avec le serveur communautaire, un administrateur doit déclarer cette installation de SACoche.');
+		exit('Pour pouvoir échanger avec le serveur communautaire, un administrateur doit identifier l\'établissement dans la base Sésamath.');
 	}
 	// Envoyer le référentiel (éventuellement vide pour l'effacer) vers le serveur de partage
 	if($partage=='oui')
 	{
 		$DB_TAB = DB_recuperer_arborescence(0,$matiere_id,$niveau_id,$only_item=FALSE,$socle_nom=FALSE);
 		$arbreXML = exporter_arborescence_to_XML($DB_TAB);
-		$reponse = envoyer_arborescence_XML($_SESSION['STRUCTURE_ID'],$_SESSION['STRUCTURE_KEY'],$matiere_id,$niveau_id,$arbreXML);
+		$reponse = envoyer_arborescence_XML($_SESSION['SESAMATH_ID'],$_SESSION['SESAMATH_KEY'],$matiere_id,$niveau_id,$arbreXML);
 	}
 	else
 	{
-		$reponse = envoyer_arborescence_XML($_SESSION['STRUCTURE_ID'],$_SESSION['STRUCTURE_KEY'],$matiere_id,$niveau_id,'');
+		$reponse = envoyer_arborescence_XML($_SESSION['SESAMATH_ID'],$_SESSION['SESAMATH_KEY'],$matiere_id,$niveau_id,'');
 	}
 	// Analyse de la réponse retournée par le serveur de partage
 	if($reponse!='ok')
@@ -99,14 +99,14 @@ elseif( ($action=='Partager') && ($perso==0) && $matiere_id && $niveau_id && in_
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 elseif( ($action=='Envoyer') && ($perso==0) && $matiere_id && $niveau_id )
 {
-	if( (!$_SESSION['STRUCTURE_ID']) || (!$_SESSION['STRUCTURE_KEY']) )
+	if( (!$_SESSION['SESAMATH_ID']) || (!$_SESSION['SESAMATH_KEY']) )
 	{
-		exit('Pour pouvoir échanger avec le serveur communautaire, un administrateur doit déclarer cette installation de SACoche.');
+		exit('Pour pouvoir échanger avec le serveur communautaire, un administrateur doit identifier l\'établissement dans la base Sésamath.');
 	}
 	// Envoyer le référentiel vers le serveur de partage
 	$DB_TAB = DB_recuperer_arborescence(0,$matiere_id,$niveau_id,$only_item=FALSE,$socle_nom=FALSE);
 	$arbreXML = exporter_arborescence_to_XML($DB_TAB);
-	$reponse = envoyer_arborescence_XML($_SESSION['STRUCTURE_ID'],$_SESSION['STRUCTURE_KEY'],$matiere_id,$niveau_id,$arbreXML);
+	$reponse = envoyer_arborescence_XML($_SESSION['SESAMATH_ID'],$_SESSION['SESAMATH_KEY'],$matiere_id,$niveau_id,$arbreXML);
 	// Analyse de la réponse retournée par le serveur de partage
 	if($reponse!='ok')
 	{
@@ -127,11 +127,11 @@ elseif( ($action=='Retirer') && $matiere_id && $niveau_id && in_array($partage,$
 	// S'il était partagé, il faut le retirer du serveur communautaire
 	if($partage=='oui')
 	{
-		if( (!$_SESSION['STRUCTURE_ID']) || (!$_SESSION['STRUCTURE_KEY']) )
+		if( (!$_SESSION['SESAMATH_ID']) || (!$_SESSION['SESAMATH_KEY']) )
 		{
-			exit('Pour pouvoir échanger avec le serveur communautaire, un administrateur doit déclarer cette installation de SACoche.');
+			exit('Pour pouvoir échanger avec le serveur communautaire, un administrateur doit identifier l\'établissement dans la base Sésamath.');
 		}
-		$reponse = envoyer_arborescence_XML($_SESSION['STRUCTURE_ID'],$_SESSION['STRUCTURE_KEY'],$matiere_id,$niveau_id,'');
+		$reponse = envoyer_arborescence_XML($_SESSION['SESAMATH_ID'],$_SESSION['SESAMATH_KEY'],$matiere_id,$niveau_id,'');
 		if($reponse!='ok')
 		{
 			exit($reponse);
@@ -181,12 +181,12 @@ elseif( ($action=='Ajouter') && $matiere_id && $niveau_id )
 	elseif($referentiel_id>0)
 	{
 		// C'est une matière partagée, et une demande de récupérer un référentiel provenant du serveur communautaire pour se le dupliquer
-		if( (!$_SESSION['STRUCTURE_ID']) || (!$_SESSION['STRUCTURE_KEY']) )
+		if( (!$_SESSION['SESAMATH_ID']) || (!$_SESSION['SESAMATH_KEY']) )
 		{
-			exit('Pour pouvoir échanger avec le serveur communautaire, un administrateur doit déclarer cette installation de SACoche.');
+			exit('Pour pouvoir échanger avec le serveur communautaire, un administrateur doit identifier l\'établissement dans la base Sésamath.');
 		}
 		// Récupérer le référentiel
-		$arbreXML = recuperer_arborescence_XML($_SESSION['STRUCTURE_ID'],$_SESSION['STRUCTURE_KEY'],$referentiel_id);
+		$arbreXML = recuperer_arborescence_XML($_SESSION['SESAMATH_ID'],$_SESSION['SESAMATH_KEY'],$referentiel_id);
 		if(mb_substr($arbreXML,0,6)=='Erreur')
 		{
 			exit($arbreXML);

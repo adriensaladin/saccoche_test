@@ -78,7 +78,7 @@ $(document).ready
 		// Appel au chargement de la page
 		surveiller_url_et_hauteur();
 		// Et appeler l'objet
-		adresse = url_debut + '?mode=object' + '&fichier=referentiel_voir' + '&structure_id=' + structure_id + '&structure_key=' + structure_key + '&adresse_retour=' + encodeURIComponent(document.location.href);	// Mettre href sinon c'est le dernier appel ajax (non visible dans la barre d'adresse) qui compte...
+		adresse = url_debut + '?mode=object' + '&fichier=referentiel_voir' + '&structure_id=' + sesamath_id + '&structure_key=' + sesamath_key + '&adresse_retour=' + encodeURIComponent(document.location.href);	// Mettre href sinon c'est le dernier appel ajax (non visible dans la barre d'adresse) qui compte...
 		if($('#object_container object').length)
 		{
 			$('#cadre').attr('data',adresse);

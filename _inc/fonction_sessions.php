@@ -62,13 +62,16 @@ function open_new_session()
 function init_session()
 {
 	$_SESSION = array();
-	$_SESSION['USER_PROFIL']      = 'public';	// public / webmestre / administrateur  / professeur  / eleve
+
+	// Numéro de la base
 	$_SESSION['BASE']             = 0;
-	$_SESSION['STRUCTURE_ID']     = 0;
+	// Données associées à l'utilisateur.
+	$_SESSION['USER_PROFIL']      = 'public';	// public / webmestre / administrateur  / professeur  / eleve
 	$_SESSION['USER_ID']          = 0;
+	// Données associées à l'établissement.
+	$_SESSION['SESAMATH_ID']      = 0;
 	$_SESSION['SSO']              = 'normal';
 	$_SESSION['DUREE_INACTIVITE'] = 30;
-	$_SESSION['BLOCAGE_STATUT']   = 0;
 }
 
 // Fermer une session existante

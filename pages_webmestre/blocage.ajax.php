@@ -26,47 +26,25 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-if(($_SESSION['SESAMATH_ID']==ID_DEMO)&&($_GET['action']!='initialiser')){exit('Action désactivée pour la démo...');}
+if($_SESSION['SESAMATH_ID']==ID_DEMO) {exit('Action désactivée pour la démo...');}
 
-$action = (isset($_GET['action'])) ? $_GET['action'] : '';
-$tab_select_users = (isset($_POST['select_users'])) ? array_map('clean_entier',explode(',',$_POST['select_users'])) : array() ;
+$action = (isset($_POST['f_action'])) ? clean_texte($_POST['f_action']) : '';
+$motif  = (isset($_POST['f_motif']))  ? clean_texte($_POST['f_motif'])  : '';
 
-function positif($n) {return($n);}
-$tab_select_users = array_filter($tab_select_users,'positif');
-$nb = count($tab_select_users);
+//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
+// Bloquer ou débloquer l'application
+//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
 
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-//	Réintégrer des élèves
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-
-if( ($action=='reintegrer') && $nb )
+if($action=='debloquer')
 {
-	foreach($tab_select_users as $user_id)
-	{
-		// Mettre à jour l'enregistrement
-		DB_modifier_utilisateur( $user_id , array(':statut'=>1) );
-	}
-	// Afficher le retour
-	$s = ($nb>1) ? 's' : '';
-	echo'<hr />'.$nb.' élève'.$s.' réintégré'.$s.'.';
+	debloquer_acces($_SESSION['USER_PROFIL']);
+	exit('<label class="valide">Application accessible.</label>');
 }
-
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-//	Supprimer des élèves
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-
-elseif( ($action=='supprimer') && $nb )
+elseif($action=='bloquer')
 {
-	foreach($tab_select_users as $user_id)
-	{
-		// Effacer l'enregistrement et les jointures associées
-		DB_supprimer_utilisateur($user_id,'eleve');
-	}
-	// Afficher le retour
-	$s = ($nb>1) ? 's' : '';
-	echo'<hr />'.$nb.' élève'.$s.' supprimé'.$s.'.';
+	bloquer_acces($_SESSION['USER_PROFIL'],$motif);
+	exit('<label class="erreur">Application fermée : '.html($motif).'</label>');
 }
-
 else
 {
 	echo'Erreur avec les données transmises !';

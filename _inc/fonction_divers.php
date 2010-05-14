@@ -173,6 +173,33 @@ function fabriquer_fichier_connexion_base($base_id,$BD_host,$BD_name,$BD_user,$B
 }
 
 /**
+ * bloquer_acces
+ * 
+ * @param string $profil_demandeur
+ * @param string $motif
+ * @return void
+ */
+
+function bloquer_acces($profil_demandeur,$motif)
+{
+	$fichier_nom = ($profil_demandeur=='webmestre') ? './__hebergement_info/blocage_webmestre.txt' : './__hebergement_info/blocage_admin_'.$_SESSION['BASE'].'.txt' ;
+	file_put_contents($fichier_nom,$motif);
+}
+
+/**
+ * debloquer_acces
+ * 
+ * @param string $profil_demandeur
+ * @return void
+ */
+
+function debloquer_acces($profil_demandeur)
+{
+	$fichier_nom = ($profil_demandeur=='webmestre') ? './__hebergement_info/blocage_webmestre.txt' : './__hebergement_info/blocage_admin_'.$_SESSION['BASE'].'.txt' ;
+	@unlink($fichier_nom);
+}
+
+/**
  * tester_blocage_acces
  * Blocage des sites sur demande du webmestre ou d'un administrateur (maintenance, sauvegarde/restauration, ...).
  * Nécessite que la session soit ouverte.
@@ -210,17 +237,19 @@ function connecter_webmestre($password)
 	$password_crypte = crypter_mdp($password);
 	if($password_crypte==WEBMESTRE_PASSWORD_MD5)
 	{
+		// Numéro de la base
 		$_SESSION['BASE']             = 0;
+		// Données associées à l'utilisateur.
 		$_SESSION['USER_PROFIL']      = 'webmestre';
-		$_SESSION['STRUCTURE_ID']     = 0;
-		$_SESSION['DENOMINATION']     = 'Gestion '.HEBERGEUR_INSTALLATION;
 		$_SESSION['USER_ID']          = 0;
 		$_SESSION['USER_NOM']         = WEBMESTRE_NOM;
 		$_SESSION['USER_PRENOM']      = WEBMESTRE_PRENOM;
 		$_SESSION['USER_DESCR']       = '[webmestre] '.WEBMESTRE_PRENOM.' '.WEBMESTRE_NOM;
+		// Données associées à l'établissement.
+		$_SESSION['SESAMATH_ID']      = 0;
+		$_SESSION['DENOMINATION']     = 'Gestion '.HEBERGEUR_INSTALLATION;
 		$_SESSION['SSO']              = 'normal';
 		$_SESSION['DUREE_INACTIVITE'] = 30;
-		$_SESSION['BLOCAGE_STATUT']   = 0;
 		return 'ok';
 	}
 	return 'Mot de passe incorrect !';

@@ -26,7 +26,7 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-if($_SESSION['STRUCTURE_ID']==ID_DEMO) {}
+if($_SESSION['SESAMATH_ID']==ID_DEMO) {}
 
 $jour_actuel    = date('j');
 $mois_actuel    = date('n');

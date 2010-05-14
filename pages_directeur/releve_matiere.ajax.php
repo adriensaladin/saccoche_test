@@ -26,7 +26,7 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-if($_SESSION['STRUCTURE_ID']==ID_DEMO) {}
+if($_SESSION['SESAMATH_ID']==ID_DEMO) {}
 
 $orientation    = (isset($_POST['f_orientation'])) ? clean_texte($_POST['f_orientation']) : '';
 $marge_min      = (isset($_POST['f_marge_min']))   ? clean_texte($_POST['f_marge_min'])   : '';

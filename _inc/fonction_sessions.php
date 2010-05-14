@@ -53,7 +53,7 @@ function open_old_session()
 // Créer une nouvelle session
 function open_new_session()
 {
-	$ID = md5(uniqid(rand(),true));
+	$ID = uniqid(mt_rand(),true);
 	session_id($ID);
 	session_start();
 }

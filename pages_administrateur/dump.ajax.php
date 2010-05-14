@@ -98,6 +98,8 @@ if($action=='sauvegarder')
 	{
 		vider_dossier($dossier_temp);
 	}
+	// Bloquer l'application
+	bloquer_application($_SESSION['USER_PROFIL'],'Sauvegarde de la base en cours.');
 	// Lister les tables présentes et leur nombre d'enregistrement (pour déterminer le nombre de boucles à effectuer afin de récupérer les données des grosses tables)
 	$tab_tables_info = array();
 	$DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME,'SHOW TABLE STATUS LIKE "sacoche_%"');
@@ -139,6 +141,8 @@ if($action=='sauvegarder')
 			file_put_contents($dossier_temp.$fichier_sql_nom,$fichier_contenu);
 		}
 	}
+	// Débloquer l'application
+	debloquer_application($_SESSION['USER_PROFIL']);
 	// Zipper les fichiers
 	$zip = new ZipArchive();
 	$fichier_zip_nom = 'dump_SACoche_'.$_SESSION['BASE'].'_'.date('Y-m-d_H-i-s').'_'.mt_rand().'.zip';
@@ -231,8 +235,10 @@ elseif($action=='uploader')
 elseif($action=='restaurer')
 {
 	// Connexion à la base "de façon classique"
-	$BD_link = mysql_connect(SACOCHE_STRUCTURE_BD_HOST,SACOCHE_STRUCTURE_BD_USER,SACOCHE_STRUCTURE_BD_PASS);
-	mysql_select_db(SACOCHE_STRUCTURE_BD_NAME,$BD_link);
+	// $BD_link = mysql_connect(SACOCHE_STRUCTURE_BD_HOST,SACOCHE_STRUCTURE_BD_USER,SACOCHE_STRUCTURE_BD_PASS);
+	// mysql_select_db(SACOCHE_STRUCTURE_BD_NAME,$BD_link);
+	// Bloquer l'application
+	bloquer_application($_SESSION['USER_PROFIL'],'Restauration de la base en cours.');
 	// Pour chaque fichier...
 	$tab_fichier = scandir($dossier_temp);
 	unset($tab_fichier[0],$tab_fichier[1]);	// fichiers '.' et '..'
@@ -248,6 +254,8 @@ elseif($action=='restaurer')
 		*/
 		DB::close(SACOCHE_STRUCTURE_BD_NAME);
 	}
+	// Débloquer l'application
+	debloquer_application($_SESSION['USER_PROFIL']);
 	// Supprimer le dossier temporaire
 	vider_dossier($dossier_temp);
 	effacer_dossier($dossier_temp);

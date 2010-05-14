@@ -54,7 +54,7 @@ $PROFIL_REQUIS = $DOSSIER;
 require_once('./_inc/gestion_sessions.php');
 
 // Blocage éventuel par le webmestre ou un administrateur
-tester_blocage_acces($demande_connexion_profil=false);
+tester_blocage_application($_SESSION['BASE'],$demande_connexion_profil=false);
 
 // Informations sur l'hébergement
 $fichier_constantes = './__hebergement_info/constantes.php';
@@ -196,7 +196,7 @@ entete();
 	<?php echo $TITRE_PAGE; ?>
 	<?php echo $CONTENU_PAGE; ?>
 	<?php 
-	echo'<pre>';var_dump($_SESSION);echo'</pre>';
+	// echo'<pre>';var_dump($_SESSION);echo'</pre>';
 	?>
 	<script type="text/javascript">
 		var DOSSIER='<?php echo $DOSSIER ?>';

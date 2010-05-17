@@ -47,6 +47,8 @@ vide_dossier('./__tmp/dump-base/' ,   1440); // Nettoyer ce dossier des fichiers
 vide_dossier('./__tmp/import/'    ,  10080); // Nettoyer ce dossier des fichiers antérieurs à 1 semaine
 vide_dossier('./__tmp/rss/'       ,  43800); // Nettoyer ce dossier des fichiers antérieurs à 1 mois
 vide_dossier('./__tmp/badge/'     , 525600); // Nettoyer ce dossier des fichiers antérieurs à 1 an
+// Anciens fichiers de session à effacer (normalement c'est automatique, mais j'ai déjà eu des problèmes à cause de ça...
+clean_old_session();
 ?>
 
 <?php
@@ -90,7 +92,7 @@ if($ALERTE_SSO)
 <h2><img src="./_img/serveur.png" alt="Hébergement" /> Hébergement</h2>
 <ul class="puce">
 	<li><em>SACoche</em> peut être téléchargé et installé sur différents serveurs.</li>
-	<li>La présente installation a été effectuée par : <?php echo (HEBERGEUR_ADRESSE_SITE) ? '<a class="lien_ext" href="'.html(HEBERGEUR_ADRESSE_SITE).'">'.html(HEBERGEUR_DENOMINATION).'</a>' : html(HEBERGEUR_DENOMINATION); ?> (<?php echo mailto(WEBMESTRE_COURRIEL,'SACoche','contact'); ?>).</li>
+	<li>Cette installation a été effectuée par : <?php echo (HEBERGEUR_ADRESSE_SITE) ? '<a class="lien_ext" href="'.html(HEBERGEUR_ADRESSE_SITE).'">'.html(HEBERGEUR_DENOMINATION).'</a>' : html(HEBERGEUR_DENOMINATION); ?> (<?php echo mailto(WEBMESTRE_COURRIEL,'SACoche','contact'); ?>).</li>
 	<li>Déclaration <a class="lien_ext" href="http://www.cnil.fr">CNIL</a> <?php echo HEBERGEUR_CNIL ?> (catégorie "Espace numérique de travail").</li>
 </ul>
 
@@ -99,7 +101,13 @@ if($ALERTE_SSO)
 <h2><img src="./_img/puce_astuce.png" alt="Informations" /> Informations</h2>
 <ul class="puce">
 	<li><em>SACoche</em> est un logiciel gratuit, libre, développé avec le soutien de <a class="lien_ext" href="http://www.sesamath.net"><img alt="Sésamath_logo" src="./_img/logo_sesamath.png" /></a>.</li>
-	<li><a class="lien_ext" href="http://competences.sesamath.net">Toutes les informations concernant ce projet se trouvent sur le site officiel de <em>SACoche</em></a>.</li>
+	<li><a class="lien_ext" href="http://competences.sesamath.net">Consulter le site officiel pour tout renseignement concernant le projet <em>SACoche</em></a>.</li>
+	<li>Version installée <em><?php echo VERSION_PROG ?></em>.<label id="ajax_version" for="version"></label></li>
 </ul>
 
 <hr />
+
+<script type="text/javascript">
+	var VERSION_PROG = "<?php echo VERSION_PROG ?>";
+	
+</script>

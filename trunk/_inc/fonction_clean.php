@@ -193,7 +193,7 @@ function vide_dossier($dossier,$nb_minutes)
 	{
 		$extension = pathinfo($fichier_nom,PATHINFO_EXTENSION);
 		$date_unix = filemtime($dossier.$fichier_nom);
-		if( ($date_unix<$date_limite) && ($extension!='htm') )
+		if( (is_file($dossier.$fichier_nom)) && ($date_unix<$date_limite) && ($extension!='htm') )
 		{
 			unlink($dossier.$fichier_nom);
 		}

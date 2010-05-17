@@ -229,7 +229,7 @@ function tester_blocage_application($BASE,$demande_connexion_profil)
 /**
  * connecter_webmestre
  * 
- * @param string $password
+ * @param string    $password
  * @return string   'ok' (et dans ce cas la session est mise à jour) ou un message d'erreur
  */
 
@@ -259,11 +259,11 @@ function connecter_webmestre($password)
 /**
  * connecter_user
  * 
- * @param int    $BASE
- * @param string $profil   'normal' ou 'administrateur'
- * @param string $login
- * @param string $password
- * @param string $sso
+ * @param int       $BASE
+ * @param string    $profil   'normal' ou 'administrateur'
+ * @param string    $login
+ * @param string    $password
+ * @param string    $sso
  * @return string   retourne 'ok' en cas de succès (et dans ce cas la session est mise à jour) ou un message d'erreur sinon
  */
 
@@ -271,7 +271,7 @@ function connecter_user($BASE,$profil,$login,$password,$sso)
 {
 	// Blocage éventuel par le webmestre ou un administrateur
 	tester_blocage_application($BASE,$demande_connexion_profil=$profil);
-	// En cas de multi-structures, il faut charger les paramètres de connexion à la base en question
+	// En cas de multi-structures, il faut charger les paramètres de connexion à la base concernée
 	if($BASE)
 	{
 		charger_parametres_mysql_supplementaires($BASE);
@@ -293,13 +293,10 @@ function connecter_user($BASE,$profil,$login,$password,$sso)
 	{
 		return 'Ces identifiants sont ceux d\'un '.$DB_ROW['user_profil'].' : utilisez le formulaire approprié !';
 	}
-	/*
-		Reste à étudier le cas d'un blocage par un admin ou le webmestre (à enregistrer dans un fichier).............
-	*/
 	// Si on arrive ici c'est que l'identification s'est bien effectuée !
 	// Enregistrer le numéro de la base
 	$_SESSION['BASE']             = $BASE;
-	// On récupère les données associées à l'utilisateur.
+	// Enregistrer les données associées à l'utilisateur.
 	$_SESSION['USER_PROFIL']      = $DB_ROW['user_profil'];
 	$_SESSION['USER_ID']          = (int) $DB_ROW['user_id'];
 	$_SESSION['USER_NOM']         = $DB_ROW['user_nom'];
@@ -310,12 +307,13 @@ function connecter_user($BASE,$profil,$login,$password,$sso)
 	$_SESSION['USER_ID_GEPI']     = $DB_ROW['user_id_gepi'];
 	$_SESSION['ELEVE_CLASSE_ID']  = (int) $DB_ROW['eleve_classe_id'];
 	$_SESSION['ELEVE_CLASSE_NOM'] = $DB_ROW['groupe_nom'];
-	// On récupère les données associées à l'établissement.
+	// Récupérer et Enregistrer les données associées à l'établissement.
 	$DB_TAB = DB_lister_parametres();
 	foreach($DB_TAB as $DB_ROW)
 	{
 		switch($DB_ROW['parametre_nom'])
 		{
+			case 'version_base':       $_SESSION['VERSION_BASE']        =       $DB_ROW['parametre_valeur']; break;
 			case 'sesamath_id' :       $_SESSION['SESAMATH_ID']         = (int) $DB_ROW['parametre_valeur']; break;
 			case 'sesamath_uai' :      $_SESSION['SESAMATH_UAI']        =       $DB_ROW['parametre_valeur']; break;
 			case 'sesamath_type_nom' : $_SESSION['SESAMATH_TYPE_NOM']   =       $DB_ROW['parametre_valeur']; break;
@@ -341,6 +339,12 @@ function connecter_user($BASE,$profil,$login,$password,$sso)
 			case 'calcul_limite':      $_SESSION['CALCUL_LIMITE']       = (int) $DB_ROW['parametre_valeur']; break;
 		}
 	}
+	// Vérifier la version de la base
+	if($_SESSION['VERSION_BASE'] != VERSION_BASE)
+	{
+		close_session();
+		return 'Identification réussie mais la base doit être mise à jour : contactez le webmestre !';
+	}
 	// Enregistrement d'un cookie sur le poste client servant à retenir le dernier établissement sélectionné si identification avec succès
 	setcookie('SACoche-etablissement',$BASE,time()+60*60*24*365,'/');
 	return('ok');
@@ -362,7 +366,7 @@ function envoyer_webmestre_courriel($adresse,$objet,$contenu)
  * afficher_arborescence_from_SQL
  * Retourner une liste ordonnée à afficher à partir d'une requête SQL transmise.
  * 
- * @param tab  $DB_TAB
+ * @param tab         $DB_TAB
  * @param bool        $dynamique   arborescence cliquable ou pas (plier/replier)
  * @param bool        $reference   afficher ou pas les références
  * @param bool|string $aff_coef    false | 'texte' | 'image' : affichage des coefficients des items
@@ -599,8 +603,8 @@ function compresser_arborescence_XML($arbreXML)
 /**
  * decompresser_arborescence_XML
  * 
- * @param string $arbreXML
- * @return string|bool
+ * @param    string $arbreXML
+ * @return   string|bool
  */
 
 function decompresser_arborescence_XML($arbreXML)
@@ -612,12 +616,12 @@ function decompresser_arborescence_XML($arbreXML)
  * envoyer_arborescence_XML
  * Transmettre le XML d'un référentiel d'un serveur à un autre (en bidouillant...).
  * 
- * @param int    $structure_id
- * @param string $structure_key
- * @param int    $matiere_id
- * @param int    $niveau_id
- * @param string $arbreXML       si fourni vide, provoquera l'effacement du référentiel mis en partage
- * @return string                "ok" ou un message d'erreur
+ * @param int       $structure_id
+ * @param string    $structure_key
+ * @param int       $matiere_id
+ * @param int       $niveau_id
+ * @param string    $arbreXML       si fourni vide, provoquera l'effacement du référentiel mis en partage
+ * @return string   "ok" ou un message d'erreur
  */
 
 function envoyer_arborescence_XML($structure_id,$structure_key,$matiere_id,$niveau_id,$arbreXML)
@@ -644,10 +648,10 @@ function envoyer_arborescence_XML($structure_id,$structure_key,$matiere_id,$nive
  * recuperer_arborescence_XML
  * Demander à ce que nous soit retourné le XML d'un référentiel depuis un autre serveur (en bidouillant...).
  * 
- * @param int    $structure_id
- * @param string $structure_key
- * @param int    $referentiel_id
- * @return string         le XML ou un message d'erreur
+ * @param int       $structure_id
+ * @param string    $structure_key
+ * @param int       $referentiel_id
+ * @return string   le XML ou un message d'erreur
  */
 
 function recuperer_arborescence_XML($structure_id,$structure_key,$referentiel_id)
@@ -709,9 +713,9 @@ function verifier_arborescence_XML($arbreXML)
  * enregistrer_structure_Sesamath
  * Demander à ce que la structure soit identifiée et enregistrée dans la base du serveur partagée.
  * 
- * @param int    $structure_id
- * @param string $structure_key
- * @return string         'ok' ou un message d'erreur
+ * @param int       $structure_id
+ * @param string    $structure_key
+ * @return string   'ok' ou un message d'erreur
  */
 
 function enregistrer_structure_Sesamath($structure_id,$structure_key)
@@ -722,6 +726,25 @@ function enregistrer_structure_Sesamath($structure_id,$structure_key)
 	$tab_get[] = 'fichier=structure_enregistrer';
 	$tab_get[] = 'structure_id='.$structure_id;
 	$tab_get[] = 'structure_key='.$structure_key;
+	$tab_get[] = 'adresse_retour='.urlencode(SERVEUR_ADRESSE);
+	$requete_envoi   = new HTTPRequest(SERVEUR_COMMUNAUTAIRE.'?'.implode('&',$tab_get));
+	$requete_reponse = $requete_envoi->DownloadToString();
+	return $requete_reponse;
+}
+
+/**
+ * recuperer_numero_derniere_version
+ * 
+ * @param void
+ * @return string   'AAAA-MM-JJ' ou un message d'erreur
+ */
+
+function recuperer_numero_derniere_version()
+{
+	require_once('./_inc/class.httprequest.php');
+	$tab_get = array();
+	$tab_get[] = 'mode=httprequest';
+	$tab_get[] = 'fichier=version_interroger';
 	$tab_get[] = 'adresse_retour='.urlencode(SERVEUR_ADRESSE);
 	$requete_envoi   = new HTTPRequest(SERVEUR_COMMUNAUTAIRE.'?'.implode('&',$tab_get));
 	$requete_reponse = $requete_envoi->DownloadToString();

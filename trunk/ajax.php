@@ -55,8 +55,7 @@ $format = ( $test_xml && !$test_upload ) ? 'text/xml' : 'text/html' ;
 header('Content-Type: '.$format);header('Charset: utf-8');
 
 // Ouverture de la session et gestion des droits d'accès
-$PROFIL_REQUIS = $DOSSIER;
-require_once('./_inc/gestion_sessions.php');
+gestion_session($PROFIL_REQUIS = $DOSSIER);
 
 // Arrêt s'il fallait seulement mettre la session à jour (la session d'un user connecté n'a pas été perdue si on arrive jusqu'ici)
 if($FICHIER=='conserver_session_active')

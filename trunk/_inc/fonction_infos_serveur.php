@@ -29,9 +29,15 @@
 // Commentaires
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
+$tester_version = recuperer_numero_derniere_version();
+$tester_version = (mb_strlen($tester_version)==10) ? $tester_version : 'inconnue' ;
+$complement = ($_SESSION['USER_PROFIL']!='webmestre') ? '' : ( (HEBERGEUR_INSTALLATION=='multi-structures') ? 'La valeur peut dépendre de la structure...<br />' : 'Information disponible sous un profil administrateur.<br />' ) ;
+
 $tab_commentaires = array();
 $tab_commentaires['version_php']          = 'Version 5.1 ou ultérieure requise.<br \>Avec la version 5.3 des bugs peuvent subsister.';
 $tab_commentaires['version_mysql']        = 'Version 5.1 ou ultérieure conseillée.<br \>Version 4.1 ou ultérieure requise.';
+$tab_commentaires['version_sacoche_prog'] = 'Dernière version disponible : '.$tester_version;
+$tab_commentaires['version_sacoche_base'] = $complement.'Version attendue : '.VERSION_BASE;
 $tab_commentaires['max_execution_time']   = 'Par défaut 30 secondes.<br />Une valeur trop faible pourrait gêner les sauvegardes / restaurations de grosses bases.';
 $tab_commentaires['memory_limit']         = 'Par défaut 128Mo (bien suffisant).<br />Doit être plus grand que post_max_size (ci-dessous).';
 $tab_commentaires['post_max_size']        = 'Par défaut 8Mo.<br />Doit être plus grand que upload_max_filesize (ci-dessous).';
@@ -67,6 +73,16 @@ function version_mysql()
 	$version = $DB_ROW['version'];
 	$fin = strpos($version,'-');
 	return ($fin) ? substr($version,0,$fin) : $version;
+}
+
+function version_sacoche_prog()
+{
+	return VERSION_PROG;
+}
+
+function version_sacoche_base()
+{
+	return ($_SESSION['USER_PROFIL']=='webmestre') ? 'indisponible' : $_SESSION['VERSION_BASE'] ;
 }
 
 function max_execution_time()
@@ -180,6 +196,8 @@ function tableau_versions_logicielles()
 			<tbody>
 				<tr><td><img alt="" title="'.$tab_commentaires['version_php'].'" src="./_img/bulle_aide.png" /> PHP</td><td class="hc">'.version_php().'</td></tr>
 				<tr><td><img alt="" title="'.$tab_commentaires['version_mysql'].'" src="./_img/bulle_aide.png" /> MySQL</td><td class="hc">'.version_mysql().'</td></tr>
+				<tr><td><img alt="" title="'.$tab_commentaires['version_sacoche_prog'].'" src="./_img/bulle_aide.png" /> SACoche fichiers</td><td class="hc">'.version_sacoche_prog().'</td></tr>
+				<tr><td><img alt="" title="'.$tab_commentaires['version_sacoche_base'].'" src="./_img/bulle_aide.png" /> SACoche base</td><td class="hc">'.version_sacoche_base().'</td></tr>
 			</tbody>
 		</table>
 	';
@@ -220,13 +238,13 @@ function tableau_limitations_MySQL()
 	';
 }
 
-function tableau_modules_PHP($nb_colonnes=3)
+function tableau_modules_PHP($nb_lignes)
 {
 	global $tab_commentaires;
 	$lignes = '';
 	$tab_modules = modules_php();
 	$nb_modules = count($tab_modules);
-	$nb_lignes = ceil($nb_modules/$nb_colonnes);
+	$nb_colonnes = ceil($nb_modules/$nb_lignes);
 	for($numero_ligne=0 ; $numero_ligne<$nb_lignes ; $numero_ligne++)
 	{
 		$lignes .= '<tr>';

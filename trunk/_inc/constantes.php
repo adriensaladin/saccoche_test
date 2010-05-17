@@ -25,6 +25,16 @@
  * 
  */
 
+//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
+// Avertissement : le contenu de ce fichier doit pas être modifié !
+// Seul un développeur averti peut jouer sur certains paramètres...
+//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
+
+// VERSION_PROG : version des fichiers installés, à comparer avec la dernière version disponible sur le serveur communautaire
+// VERSION_BASE : version de la base associée, à comparer avec la version de la base actuellement installée
+define('VERSION_PROG','2010-05-15');
+define('VERSION_BASE','2010-05-15');
+
 // FILE_CSS_SCREEN / FILE_CSS_PRINT / FILE_JS_BIBLIO / FILE_JS_SCRIPT / FILE_JS_BIBLIO / FILE_JS_SCRIPT
 // Pour éviter les problèmes de mise en cache, modifier les noms des fichiers lors d'une mise à jour
 define('FILE_CSS_SCREEN','style-23.css'); // .min
@@ -32,22 +42,22 @@ define('FILE_CSS_PRINT','style_print.min.css');
 define('FILE_JS_BIBLIO','jquery-librairies-2.js');
 define('FILE_JS_SCRIPT','script-22.min.js');
 
-// VERSION_JS : pour éviter le problème de mise en cache du js de la page d'accueil principale
+// $VERSION_JS : pour éviter le problème de mise en cache d'un javascript, cette variable peut contenir un numéro de version afin d'appeler un fichier différent
 $VERSION_JS = '';
 
-// ID_DEMO : id de l'établissement de démonstration
-// 0 pose des pbs, et il faut prendre un id disponible dans Sésaprof
-// Attention, on ne peut pas changer cette valeur à la légère, il faut aussi modifier les entrées correspondantes dans la BDD...
+// $ALERTE_SSO : pour signaler éventuellement qu'une deconnexion de SACoche n'entraîne pas une déconnexion d'un ENT
+$ALERTE_SSO = false;
+
+// ID_DEMO : valeur de $_SESSION['SESAMATH_ID'] correspondant à l'établissement de démonstration
+// 0 pose des pbs, et il faut prendre un id disponible dans la base d'établissement de Sésamath
 define('ID_DEMO',9999);
 
 // ID_MATIERE_TRANSVERSALE : id de la matière transversale dans la table "sacoche_matiere"
 // LISTING_ID_NIVEAUX_PALIERS : tableau des id des niveaux des paliers dans la table "sacoche_niveau"
-// Ne pas changer ces valeurs !
 define('ID_MATIERE_TRANSVERSALE',99);
 define('LISTING_ID_NIVEAUX_PALIERS','.46.47.48.49.');
 
 // CHARSET : "iso-8859-1" ou "utf-8" suivant l'encodage utilisé ; ajouter si besoin "AddDefaultCharset ..." dans le fichier .htaccess
-// Ne pas changer cette valeur !
 define('CHARSET','utf-8');
 
 // SERVEUR_ADRESSE
@@ -65,7 +75,6 @@ $serveur = ($_SERVER['SERVER_NAME']=='localhost') ? 'LOCAL' : 'PROD';
 define('SERVEUR_TYPE',$serveur);
 
 // SERVEUR_COMMUNAUTAIRE : URL du fichier sur le serveur communautaire servant à faire la liaison avec les installations de SACoche
-// Ne pas changer cette valeur !
 define('SERVEUR_COMMUNAUTAIRE','http://competences.sesamath.net/V2/appel_externe.php');
 
 ?>

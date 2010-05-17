@@ -25,15 +25,23 @@
  * 
  */
 
-if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-$TITRE = "Informations serveur";
-?>
+// Fonction pour mettre à jour la base. Ce script est appelé :
+// + par un administrateur après une restauration de la base (automatique)
+// + par un webmestre après une maj des fichiers (clic manuel)
 
-<?php
-require_once('./_inc/fonction_infos_serveur.php');
-echo tableau_versions_logicielles().'<p />';
-echo tableau_limitations_PHP().'<p />';
-echo tableau_limitations_MySQL().'<p />';
-echo tableau_modules_PHP($nb_lignes=5).'<p />';
-echo tableau_serveur_et_client().'<p />';
+function maj_base()
+{
+	/*
+		à compléter au fur et à mesure pour passer d'une version à une autre sur le modèle suivant...
+		
+		// Récupérer la version de la base ; si champ vide (ça ne devrait pas...), affecter la valeur minimale
+		
+		if($version_actuelle=='2010-05-15')
+		{
+			// script pour migrer vers la version suivante, y compris la mise à jour du champ "version_base" justement
+			$version_actuelle = '2010-..-..';
+		}
+	*/
+}
+
 ?>

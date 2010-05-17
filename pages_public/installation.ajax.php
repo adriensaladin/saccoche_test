@@ -412,8 +412,9 @@ elseif( $step==6 )
 			DB_creer_remplir_tables_structure();
 			// Personnaliser certains paramètres de la structure
 			$tab_parametres = array();
-			$tab_parametres['denomination'] = HEBERGEUR_DENOMINATION;
+			$tab_parametres['version_base'] = VERSION_BASE;
 			$tab_parametres['uai']          = HEBERGEUR_UAI;
+			$tab_parametres['denomination'] = HEBERGEUR_DENOMINATION;
 			DB_modifier_parametres($tab_parametres);
 			// Insérer un compte administrateur dans la base de la structure
 			$password = fabriquer_mdp();

@@ -35,11 +35,15 @@ session_cache_limiter('nocache');
 session_cache_expire(180);
 
 // Répertoire d'enregistrement des sessions
-$session_rep = session_save_path();
-$test_open = @opendir($session_rep);
+$dossier_session = session_save_path();
+$test_open = @opendir($dossier_session);
 if(!$test_open)
 {
-	@mkdir($session_rep);
+	$test_create = @mkdir($dossier_session);
+	if(!$test_create)
+	{
+		affich_message_exit($titre='PHP mal configuré',$contenu='Le répertoire pour accueillir les sessions n\'existe pas et ne peut être créé.');
+	}
 }
 
 // Ouvrir une session existante
@@ -53,7 +57,7 @@ function open_old_session()
 // Créer une nouvelle session
 function open_new_session()
 {
-	$ID = uniqid(mt_rand(),true);
+	$ID = uniqid().md5('grain_de_sable'.mt_rand());	// Utiliser l'option préfixe ou entropie de uniqid() insère un '.' qui peut provoquer une erreur disant que les seuls caractères autorisés sont a-z, A-Z, 0-9 et -
 	session_id($ID);
 	session_start();
 }
@@ -62,11 +66,10 @@ function open_new_session()
 function init_session()
 {
 	$_SESSION = array();
-
 	// Numéro de la base
 	$_SESSION['BASE']             = 0;
 	// Données associées à l'utilisateur.
-	$_SESSION['USER_PROFIL']      = 'public';	// public / webmestre / administrateur  / professeur  / eleve
+	$_SESSION['USER_PROFIL']      = 'public';	// public / webmestre / administrateur / directeur / professeur / eleve
 	$_SESSION['USER_ID']          = 0;
 	// Données associées à l'établissement.
 	$_SESSION['SESAMATH_ID']      = 0;
@@ -85,18 +88,101 @@ function close_session()
 }
 
 // Effacer les traces d'anciennes sessions (prend vite de la place si non effacé automatiquement par l'hébergeur)
-// ***** A appeler lors une fois par jour (non encore incorporé). *****
 function clean_old_session()
 {
-	global $session_rep;
-	$j_moins_7 = time() - 7*24*60*60;
-	$tab_files = scandir($session_rep);
-	unset($tab_files[0],$tab_files[1]);
-	foreach($tab_files as $file)
+	global $dossier_session;
+	$j_moins_7 = time() - 604800;	// 1 semaine = 604800 secondes (7*24*60*60)
+	$tab_fichier = scandir($dossier_session);
+	unset($tab_fichier[0],$tab_fichier[1]);	// fichiers '.' et '..'
+	foreach($tab_fichier as $fichier_nom)
 	{
-		if( filemtime($session_rep.'/'.$file) < $j_moins_7 )
+		if( filemtime($dossier_session.'/'.$fichier_nom) < $j_moins_7 )
 		{
-			unlink($session_rep.'/'.$file);
+			unlink($dossier_session.'/'.$fichier_nom);
+		}
+	}
+}
+
+// Recherche d'une session existante et gestion des cas possibles.
+function gestion_session($PROFIL_REQUIS)
+{
+	global $ALERTE_SSO;
+	// Messages d'erreurs possibles
+	$tab_msg_alerte = array();
+	$tab_msg_alerte['I.2']['index'] = 'Tentative d\'accès direct à une page réservée !\nRedirection vers l\'accueil...';
+	$tab_msg_alerte['I.2']['ajax']  = 'Session perdue. Déconnectez-vous et reconnectez-vous...';
+	$tab_msg_alerte['II.1.a']['index'] = 'Votre session a expiré !\nRedirection vers l\'accueil...';
+	$tab_msg_alerte['II.1.a']['ajax']  = 'Session expirée. Déconnectez-vous et reconnectez-vous...';
+	$tab_msg_alerte['II.3.a']['index'] = 'Tentative d\'accès direct à une page réservée !\nRedirection vers l\'accueil...';
+	$tab_msg_alerte['II.3.a']['ajax']  = 'Page réservée. Retournez à l\'accueil...';
+	$tab_msg_alerte['II.4.c']['index'] = 'Tentative d\'accès direct à une page réservée !\nRedirection vers l\'accueil...';
+	$tab_msg_alerte['II.4.c']['ajax']  = 'Page réservée. Déconnexion effectuée. Retournez à l\'accueil...';
+	// Zyva !
+	if(!isset($_COOKIE[SESSION_NOM]))
+	{
+		// I. Aucune session transmise
+		open_new_session(); init_session();
+		if($PROFIL_REQUIS!='public')
+		{
+			// I.2. Redirection : demande d'accès à une page réservée donc identification avant accès direct
+			alert_redirection_exit($tab_msg_alerte['I.2'][SACoche]);
+		}
+	}
+	else
+	{
+		// II. id de session transmis
+		open_old_session();
+		if(!isset($_SESSION['USER_PROFIL']))
+		{
+			// II.1. Pas de session retrouvée (sinon cette variable serait renseignée)
+			if($PROFIL_REQUIS!='public')
+			{
+				// II.1.a. Session perdue ou expirée et demande d'accès à une page réservée : redirection pour une nouvelle identification
+				$ALERTE_SSO = close_session(); open_new_session(); init_session();
+				alert_redirection_exit($tab_msg_alerte['II.1.a'][SACoche]);
+			}
+			else
+			{
+				// II.1.b. Session perdue ou expirée et page publique : création d'une nouvelle session (éventuellement un message d'alerte pour indiquer session perdue ?)
+				$ALERTE_SSO = close_session();open_new_session();init_session();
+			}
+		}
+		elseif($_SESSION['USER_PROFIL'] == 'public')
+		{
+			// II.3. Personne non identifiée
+			if($PROFIL_REQUIS!='public')
+			{
+				// II.3.a. Espace non identifié => Espace identifié : redirection pour identification
+				init_session();
+				alert_redirection_exit($tab_msg_alerte['II.3.a'][SACoche]);
+			}
+			else
+			{
+				// II.3.b. Espace non identifié => Espace non identifié : RAS
+			}
+		}
+		else
+		{
+			// II.4. Personne identifiée
+			if($_SESSION['USER_PROFIL'] == $PROFIL_REQUIS)
+			{
+				// II.4.a. Espace identifié => Espace identifié identique : RAS
+			}
+			elseif($PROFIL_REQUIS=='public')
+			{
+				// II.4.b. Espace identifié => Espace non identifié : création d'une nouvelle session vierge (éventuellement un message d'alerte pour indiquer session perdue ?)
+				if (SACoche!='ajax')
+				{
+					// Ne pas déconnecter si on appelle le calendrier de l'espace public
+					$ALERTE_SSO = close_session();open_new_session();init_session();
+				}
+			}
+			elseif($PROFIL_REQUIS!='public')
+			{
+				// II.4.c. Espace identifié => Autre espace identifié incompatible : redirection pour une nouvelle identification
+				init_session();
+				alert_redirection_exit($tab_msg_alerte['II.4.c'][SACoche]);
+			}
 		}
 	}
 }

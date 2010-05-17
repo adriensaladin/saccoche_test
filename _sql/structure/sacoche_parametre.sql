@@ -8,6 +8,7 @@ CREATE TABLE sacoche_parametre (
 ALTER TABLE sacoche_parametre DISABLE KEYS;
 
 INSERT INTO sacoche_parametre VALUES 
+( "version_base"      , "" ),
 ( "sesamath_id"       , "0" ),
 ( "sesamath_uai"      , "" ),
 ( "sesamath_type"     , "" ),

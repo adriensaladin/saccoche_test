@@ -38,11 +38,7 @@ valeur AUTO-INCREMENT	: DB::getLastOid(SACOCHE_STRUCTURE_BD_NAME);
 Pour fermer la connexion (évite un bug avec les requêtes multiples) :
 DB::close(SACOCHE_STRUCTURE_BD_NAME);
 
-Dans ./satabase/DatabaseFactory.class.php à la ligne 39 c'est normalement
-$driverOptions[PDO::MYSQL_ATTR_INIT_COMMAND] = ...
-mais cette constante a été oubliée dans PHP 5.3, et sa valeur 1002 ne passe pas :
-http://bugs.php.net/bug.php?id=47224
-D'où un patch...
+Dans ./satabase/DatabaseFactory.class.php correction d'un pb dû à l'oubli de la constante MYSQL_ATTR_INIT_COMMAND en PHP 5.3, et sa valeur 1002 ne passe pas : http://bugs.php.net/bug.php?id=47224
 
 */
 
@@ -65,7 +61,6 @@ class DB {
 		$connection = $databaseManager->getConnexion($connection_name);
 		if(is_object($connection)){
 			$time_start = microtime(true);
-			// global $_CONST,$pool;if(($_CONST["POOL"][$pool]["ABSTRACTION"]=="PDO")&&(!defined('PDO::MYSQL_ATTR_INIT_COMMAND'))) {$connection->query("SET NAMES ".$_CONST["POOL"][$pool]["FORCE_ENCODING"]); }	// XXX
 			$connection->query($query, $param);
 			DatabaseManager::setLog($connection, microtime(true) - $time_start);			
 		}
@@ -204,11 +199,10 @@ class DB {
    * Permet de fermer une connexion à la base de données (ne sert que dans des cas bien préçis, ne pas utiliser si pas necessaire)
    *
    * @param string $connection_name nom de la connection définie dans le fichier de configuration
-	 * @return mixed
    */
   public static  function close($connection_name) {
   	$databaseManager = DatabaseManager::getInstance();
-  	$databaseManager->closeConnexion($connection_name);
+  	return $databaseManager->closeConnexion($connection_name);
   }
 }
 ?>

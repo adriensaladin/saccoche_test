@@ -50,8 +50,7 @@ require_once('./_inc/fonction_formulaires_select.php');
 require_once('./_inc/fonction_affichage.php');
 
 // Ouverture de la session et gestion des droits d'accès
-$PROFIL_REQUIS = $DOSSIER;
-require_once('./_inc/gestion_sessions.php');
+gestion_session($PROFIL_REQUIS = $DOSSIER);
 
 // Blocage éventuel par le webmestre ou un administrateur
 tester_blocage_application($_SESSION['BASE'],$demande_connexion_profil=false);

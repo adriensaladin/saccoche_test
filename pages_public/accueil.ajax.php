@@ -66,9 +66,22 @@ function afficher_formulaire_identification($profil,$sso)
 	echo'<span class="tab"></span><input id="f_sso" name="f_sso" type="hidden" value="'.$sso.'" /><input id="f_profil" name="f_profil" type="hidden" value="'.$profil.'" /><input id="f_action" name="f_action" type="hidden" value="identifier" /><input id="f_submit" type="submit" value="Accéder à son espace." tabindex="4" /><label id="ajax_msg">&nbsp;</label><br />'."\r\n";
 }
 
+//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
+// Rechercher la dernière version disponible
+//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
+
+if($action=='tester_version')
+{
+	exit( recuperer_numero_derniere_version() );
+}
+
+//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
+// Charger un formulaire d'identification
+//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
+
 // Charger le formulaire pour le webmestre d'un serveur
 
-if( ($action=='initialiser') && ($profil=='webmestre') )
+elseif( ($action=='initialiser') && ($profil=='webmestre') )
 {
 	afficher_formulaire_identification_webmestre();
 }

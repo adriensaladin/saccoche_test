@@ -72,6 +72,7 @@ if( ($action=='ajouter') && isset($tab_geo[$geo_id]) && $localisation && $denomi
 	DB_creer_remplir_tables_structure();
 	// Personnaliser certains paramètres de la structure
 	$tab_parametres = array();
+	$tab_parametres['version_base'] = VERSION_BASE;
 	$tab_parametres['uai']          = $uai;
 	$tab_parametres['denomination'] = $denomination;
 	DB_modifier_parametres($tab_parametres);

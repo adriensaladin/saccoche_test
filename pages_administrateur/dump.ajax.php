@@ -74,6 +74,12 @@ function formater_guillemets($val)
 {
 	return '"'.str_replace('"','\"',$val).'"';
 }
+function version_base_fichier_svg()
+{
+	$fichier_contenu = file_get_contents($dossier_temp.'dump_sacoche_parametre_0.sql');
+	$position_debut = mb_strpos($fichier_contenu,'"version_base"') + 16;
+	return mb_substr($fichier_contenu,$position_debut,10);
+}
 
 //	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
 // Sauvegarder la base
@@ -167,7 +173,7 @@ if($action=='sauvegarder')
 }
 
 //	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
-//	Uploader et dezipper un fichier à restaurer
+//	Uploader et dezipper / vérifier un fichier à restaurer
 //	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
 
 elseif($action=='uploader')
@@ -221,6 +227,11 @@ elseif($action=='uploader')
 	{
 		exit('<li><label class="alerte">Erreur : votre archive ZIP contient au moins un fichier dont la taille dépasse la limitation <em>max_allowed_packet</em> de MySQL !</label></li>');
 	}
+	// Vérifier le contenu : version de la base compatible avec la version logicielle
+	if( version_base_fichier_svg() > VERSION_BASE )
+	{
+		exit('<li><label class="alerte">Erreur : votre archive ZIP contient une sauvegarde plus récente que celle supportée par cette installation ! Le webmestre doit préalablement mettre à jour le programme...</label></li>');
+	}
 	// Afficher le retour
 	$top_arrivee = microtime(TRUE);
 	$duree = number_format($top_arrivee - $top_depart,2,',','');
@@ -254,6 +265,14 @@ elseif($action=='restaurer')
 		*/
 		DB::close(SACOCHE_STRUCTURE_BD_NAME);
 	}
+	// Tester si la base nécessite une mise à jour, et si oui alors la lancer
+	$texte_maj = '';
+	if( version_base_fichier_svg() < VERSION_BASE )
+	{
+		require_once('./_inc/fonction_maj_base.php');
+		maj_base();
+		$texte_maj = ', et base mise à jour,';
+	}
 	// Débloquer l'application
 	debloquer_application($_SESSION['USER_PROFIL']);
 	// Supprimer le dossier temporaire
@@ -262,7 +281,7 @@ elseif($action=='restaurer')
 	// Afficher le retour
 	$top_arrivee = microtime(TRUE);
 	$duree = number_format($top_arrivee - $top_depart,2,',','');
-	echo'<li><label class="valide">Restauration de la base réalisée avec succès en '.$duree.'s.</label></li>';
+	echo'<li><label class="valide">Restauration de la base réalisée avec succès'.$texte_maj.' en '.$duree.'s.</label></li>';
 	exit();
 }
 

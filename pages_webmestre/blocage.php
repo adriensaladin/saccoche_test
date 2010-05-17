@@ -26,7 +26,7 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-$TITRE = "Blocage de l'application";
+$TITRE = "Maintenance &amp; mise à jour";
 
 // Initialisation de l'état de l'accès
 $fichier_blocage_webmestre = './__hebergement_info/blocage_webmestre.txt';
@@ -46,16 +46,15 @@ else
 
 <hr />
 
-<h2>État actuel</h2>
-
-<p id="ajax_acces_actuel"><?php echo $label ?></p>
+<h2>Mise à jour des fichiers et de la base</h2>
 
 <hr />
 
-<h2>Demande de modification</h2>
+<h2>Verrouillage de l'application</h2>
+
+<p id="ajax_acces_actuel"><?php echo $label ?></p>
 
 <form id="form" action=""><fieldset>
-	<label for="f_debloquer"><input type="radio" id="f_debloquer" name="f_action" value="debloquer" /> Débloquer l'application</label><p />
 	<label for="f_bloquer"><input type="radio" id="f_bloquer" name="f_action" value="bloquer" /> Bloquer l'application</label><br />
 	<span id="span_motif" class="hide">
 		<label class="tab" for="f_motif">Motif :</label>
@@ -66,8 +65,11 @@ else
 				<option value="demenagement">déménagement</option>
 			</select>
 			<input id="f_motif" name="f_motif" size="50" maxlength="100" type="text" value="Mise à jour des fichiers en cours." />
-	</span><p />
+	</span>&nbsp;<p />
+	<label for="f_debloquer"><input type="radio" id="f_debloquer" name="f_action" value="debloquer" /> Débloquer l'application</label><p />
 	<span class="tab"></span><input id="f_submit" type="submit" value="Valider." /><label id="ajax_msg">&nbsp;</label>
 </fieldset></form>
+
+<hr />
 
 <p />

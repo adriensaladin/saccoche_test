@@ -54,7 +54,7 @@ $format         = 'matiere';
 
 save_cookie_select($_SESSION['BASE'],$_SESSION['USER_ID']);
 
-function positif($n) {return($n);}
+function positif($n) {return $n;}
 $tab_eleve     = array_filter($tab_eleve,'positif');
 $liste_eleve   = implode(',',$tab_eleve);
 

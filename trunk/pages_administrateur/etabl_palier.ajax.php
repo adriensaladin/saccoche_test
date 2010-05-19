@@ -31,7 +31,7 @@ if($_SESSION['SESAMATH_ID']==ID_DEMO) {exit('Action désactivée pour la démo..
 $action = (isset($_POST['f_action'])) ? clean_texte($_POST['f_action']) : '';
 
 $tab_id = (isset($_POST['tab_id']))   ? array_map('clean_entier',explode(',',$_POST['tab_id'])) : array() ;
-function positif($n) {return($n);}
+function positif($n) {return $n;}
 $tab_id = array_filter($tab_id,'positif');
 sort($tab_id);
 

@@ -34,7 +34,7 @@ $date_fin   = (isset($_POST['f_date_fin']))   ? clean_texte($_POST['f_date_fin']
 $tab_select_periodes        = (isset($_POST['select_periodes']))        ? array_map('clean_entier',explode(',',$_POST['select_periodes']))        : array() ;
 $tab_select_classes_groupes = (isset($_POST['select_classes_groupes'])) ? array_map('clean_entier',explode(',',$_POST['select_classes_groupes'])) : array() ;
 
-function positif($n) {return($n);}
+function positif($n) {return $n;}
 $tab_select_periodes        = array_filter($tab_select_periodes,'positif');
 $tab_select_classes_groupes = array_filter($tab_select_classes_groupes,'positif');
 

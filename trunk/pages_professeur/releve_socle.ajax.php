@@ -35,7 +35,7 @@ $remplissage  = (isset($_POST['f_remplissage'])) ? clean_texte($_POST['f_remplis
 $groupe_id    = (isset($_POST['f_groupe']))      ? clean_entier($_POST['f_groupe'])     : 0;
 $tab_eleve_id = (isset($_POST['eleves']))        ? array_map('clean_entier',explode(',',$_POST['eleves'])) : array() ;
 
-function positif($n) {return($n);}
+function positif($n) {return $n;}
 $tab_eleve_id  = array_filter($tab_eleve_id,'positif');
 $liste_eleve   = implode(',',$tab_eleve_id);
 

@@ -41,18 +41,12 @@ else
 ?>
 
 <div class="hc">
-	<span class="manuel"><a class="pop_up" href="./aide.php?fichier=blocage_application">DOC : Blocage de l'application</a></span>
+	<span class="manuel"><a class="pop_up" href="./aide.php?fichier=blocage_maintenance">DOC : Blocage de l'application</a></span>
 </div>
 
 <hr />
 
-<h2>Mise à jour des fichiers et de la base</h2>
-
-<hr />
-
 <h2>Verrouillage de l'application</h2>
-
-<p id="ajax_acces_actuel"><?php echo $label ?></p>
 
 <form id="form" action=""><fieldset>
 	<label for="f_bloquer"><input type="radio" id="f_bloquer" name="f_action" value="bloquer" /> Bloquer l'application</label><br />
@@ -72,4 +66,6 @@ else
 
 <hr />
 
-<p />
+<h2>État de l'accès actuel</h2>
+
+<p id="ajax_acces_actuel"><?php echo $label ?></p>

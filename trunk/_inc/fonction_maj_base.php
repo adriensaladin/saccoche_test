@@ -27,7 +27,7 @@
 
 // Fonction pour mettre à jour la base. Ce script est appelé :
 // + par un administrateur après une restauration de la base (automatique)
-// + par un webmestre après une maj des fichiers (clic manuel)
+// + par un utilisateur se connectant si besoin il y a (automatique)
 
 function maj_base()
 {

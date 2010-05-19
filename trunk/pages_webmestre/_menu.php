@@ -49,7 +49,7 @@ if(HEBERGEUR_INSTALLATION=='multi-structures')
 				<li class="webmestre_structure"><a href="./index.php?dossier='.$DOSSIER.'&amp;fichier=structure_multi">Établissements</a></li>
 				<li class="webmestre_newsletter"><a href="./index.php?dossier='.$DOSSIER.'&amp;fichier=newsletter">Lettre d\'information</a></li>
 				<li class="admin_administrateur"><a href="./index.php?dossier='.$DOSSIER.'&amp;fichier=init-mdp_multi">Mot de passe administrateur</a></li>
-				<li class="admin_blocage"><a href="./index.php?dossier='.$DOSSIER.'&amp;fichier=blocage">Blocage de l\'application</a></li>
+				<li class="webmestre_maintenance"><a href="./index.php?dossier='.$DOSSIER.'&amp;fichier=blocage-maintenance">Maintenance &amp; mise à jour</a></li>
 			</ul>
 		</li>
 	';
@@ -60,7 +60,7 @@ elseif(HEBERGEUR_INSTALLATION=='mono-structure')
 		<li><span>Gestion de l\'établissement</span>
 			<ul>
 				<li class="admin_administrateur"><a href="./index.php?dossier='.$DOSSIER.'&amp;fichier=init-mdp_mono">Mot de passe administrateur</a></li>
-				<li class="admin_blocage"><a href="./index.php?dossier='.$DOSSIER.'&amp;fichier=blocage">Blocage de l\'application</a></li>
+				<li class="webmestre_maintenance"><a href="./index.php?dossier='.$DOSSIER.'&amp;fichier=blocage-maintenance">Maintenance &amp; mise à jour</a></li>
 				<li class="admin_resilier"><a href="./index.php?dossier='.$DOSSIER.'&amp;fichier=structure_mono_resilier">Résilier l\'inscription</a></li>
 			</ul>
 		</li>

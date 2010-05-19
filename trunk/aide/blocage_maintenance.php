@@ -43,7 +43,7 @@ $TITRE = "Blocage de l'application";
 <ul class="puce">
 	<li>En cas de blocage de l'application par le webmestre, seul le webmestre peut se connecter, et les autres personnes déjà connectées ne peuvent plus naviguer.</li>
 	<li>Cette fonctionnalité est notamment utile lors d'une mise à jour des fichiers.</li>
-	<li>Cette fonctionnalité est utilisée automatiquement lors d'une mise à jour de la base.</li>
+	<li>Cette fonctionnalité est utilisée automatiquement lors d'une mise à jour de la base, elle-même lancée automatiquement si besoin lorsqu'un utilisateur se connecte.</li>
 </ul>
 
 <h2>Blocage de l'application par un administrateur</h2>

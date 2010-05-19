@@ -34,7 +34,7 @@ $ref    = (isset($_POST['f_ref']))    ? clean_ref($_POST['f_ref'])      : '';
 $nom    = (isset($_POST['f_nom']))    ? clean_texte($_POST['f_nom'])    : '';
 
 $tab_id = (isset($_POST['tab_id']))   ? array_map('clean_entier',explode(',',$_POST['tab_id'])) : array() ;
-function positif($n) {return($n);}
+function positif($n) {return $n;}
 $tab_id = array_filter($tab_id,'positif');
 sort($tab_id);
 

@@ -32,7 +32,7 @@ $action = (isset($_GET['action'])) ? $_GET['action'] : '';
 $tab_select_eleves  = (isset($_POST['select_eleves']))  ? array_map('clean_entier',explode(',',$_POST['select_eleves']))  : array() ;
 $tab_select_groupes = (isset($_POST['select_groupes'])) ? array_map('clean_entier',explode(',',$_POST['select_groupes'])) : array() ;
 
-function positif($n) {return($n);}
+function positif($n) {return $n;}
 $tab_select_eleves = array_filter($tab_select_eleves,'positif');
 $tab_select_groupes = array_filter($tab_select_groupes,'positif');
 

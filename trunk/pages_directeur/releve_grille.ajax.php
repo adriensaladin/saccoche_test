@@ -47,7 +47,7 @@ $tab_eleve_id  = (isset($_POST['eleves']))        ? array_map('clean_entier',exp
 
 save_cookie_select($_SESSION['BASE'],$_SESSION['USER_ID']);
 
-function positif($n) {return($n);}
+function positif($n) {return $n;}
 $tab_eleve_id  = array_filter($tab_eleve_id,'positif');
 $liste_eleve   = implode(',',$tab_eleve_id);
 

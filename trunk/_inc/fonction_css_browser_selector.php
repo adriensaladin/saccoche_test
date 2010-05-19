@@ -49,15 +49,15 @@ function css_browser_selector($UserAgent=null)
 	{
 		$tab_retour[] = 'ie ie'.$array[1];
 	}
-	elseif(strstr($UserAgent,'firefox/0'))
+	elseif( strstr($UserAgent, 'firefox/0') || strstr($UserAgent, 'iceweasel/0') || strstr($UserAgent, 'icecat/0') )
 	{
 		$tab_retour[] = $gecko.' ff0';
 	}
-	elseif(strstr($UserAgent,'firefox/1'))
+	elseif( strstr($UserAgent, 'firefox/1') || strstr($UserAgent, 'iceweasel/1') || strstr($UserAgent, 'icecat/1') )
 	{
 		$tab_retour[] = $gecko.' ff1';
 	}
-	elseif(strstr($UserAgent,'firefox/2'))
+	elseif( strstr($UserAgent, 'firefox/2') || strstr($UserAgent, 'iceweasel/2') || strstr($UserAgent, 'icecat/2') )
 	{
 		$tab_retour[] = $gecko.' ff2';
 	}
@@ -65,7 +65,7 @@ function css_browser_selector($UserAgent=null)
 	{
 		$tab_retour[] = $gecko.' ff3 ff3_5';
 	}
-	elseif(strstr($UserAgent,'firefox/3'))
+	elseif( strstr($UserAgent, 'firefox/3') || strstr($UserAgent, 'iceweasel/3') || strstr($UserAgent, 'icecat/3') )
 	{
 		$tab_retour[] = $gecko.' ff3';
 	}

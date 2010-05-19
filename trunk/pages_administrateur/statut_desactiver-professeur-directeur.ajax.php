@@ -31,7 +31,7 @@ if(($_SESSION['SESAMATH_ID']==ID_DEMO)&&($_GET['action']!='initialiser')){exit('
 $action = (isset($_GET['action'])) ? $_GET['action'] : '';
 $tab_select_users = (isset($_POST['select_users'])) ? array_map('clean_entier',explode(',',$_POST['select_users'])) : array() ;
 
-function positif($n) {return($n);}
+function positif($n) {return $n;}
 $tab_select_users = array_filter($tab_select_users,'positif');
 $nb = count($tab_select_users);
 

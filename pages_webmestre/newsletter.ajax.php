@@ -35,7 +35,7 @@ $num  = (isset($_GET['num'])) ? (int)$_GET['num'] : 0 ;	// Numéro de l'étape e
 $max  = (isset($_GET['max'])) ? (int)$_GET['max'] : 0 ;	// Nombre d'étapes à effectuer
 $pack = 10 ;	// Nombre de mails envoyés à chaque étape
 
-function positif($n) {return($n);}
+function positif($n) {return $n;}
 $tab_bases = array_filter($tab_bases,'positif');
 $nb_bases  = count($tab_bases);
 

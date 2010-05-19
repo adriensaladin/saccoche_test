@@ -79,7 +79,7 @@ class HTTPRequest
 		$pos = strpos($response, $crlf . $crlf);
 		if ($pos === false)
 		{
-			return($response);
+			return $response;
 		}
 		$header = substr($response, 0, $pos);
 		$body   = substr($response, $pos + 2 * strlen($crlf));
@@ -95,11 +95,11 @@ class HTTPRequest
 		if (isset($headers['location']))
 		{
 			$http = new HTTPRequest($this->_protocol . "://" . $this->_host . substr($this->_uri, 0, strrpos($this->_uri, "/")) . "/" . $headers['location']);
-			return($http->DownloadToString());
+			return $http->DownloadToString();
 		}
 		else
 		{
-			return($body);
+			return $body;
 		}
 	}
 }

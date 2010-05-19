@@ -60,7 +60,7 @@ else
 $groupe_type = 'eval';
 $groupe_id   = ($groupe) ? clean_entier(mb_substr($groupe,1)) : 0 ;
 
-function positif($n) {return($n);}
+function positif($n) {return $n;}
 // Contrôler la liste des items transmis
 $tab_id = (isset($_POST['tab_id'])) ? array_map('clean_entier',explode(',',$_POST['tab_id'])) : array() ;
 $tab_id = array_filter($tab_id,'positif');
@@ -501,7 +501,7 @@ else if( ($action=='Enregistrer_saisie') && $devoir_id && $date )
 		unset($tab_post[$key]);
 	}
 	// Il reste dans $tab_post les données à ajouter (mises dans $tab_nouveau_ajouter) et les données vides qui ne servent pas (non enregistrées et non saisies)
-	function nonvide($note) {return($note!='X');}
+	function nonvide($note) {return ($note!='X') ? true : false;}
 	$tab_nouveau_ajouter = array_filter($tab_post,'nonvide');
 	// Il n'y a plus qu'à mettre à jour la base
 	if( count($tab_nouveau_ajouter) || count($tab_nouveau_modifier) || count($tab_nouveau_supprimer) )

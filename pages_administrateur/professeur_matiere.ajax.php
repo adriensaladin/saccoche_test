@@ -32,7 +32,7 @@ $action = (isset($_GET['action'])) ? $_GET['action'] : '';
 $tab_select_professeurs = (isset($_POST['select_professeurs'])) ? array_map('clean_entier',explode(',',$_POST['select_professeurs'])) : array() ;
 $tab_select_matieres    = (isset($_POST['select_matieres']))    ? array_map('clean_entier',explode(',',$_POST['select_matieres']))    : array() ;
 
-function positif($n) {return($n);}
+function positif($n) {return $n;}
 $tab_select_professeurs = array_filter($tab_select_professeurs,'positif');
 $tab_select_matieres    = array_filter($tab_select_matieres,'positif');
 // Ajouter des professeurs à des matières

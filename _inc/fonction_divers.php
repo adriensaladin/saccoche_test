@@ -342,12 +342,20 @@ function connecter_user($BASE,$profil,$login,$password,$sso)
 	// Vérifier la version de la base
 	if($_SESSION['VERSION_BASE'] != VERSION_BASE)
 	{
+		// Bloquer l'application
+		bloquer_application($_SESSION['USER_PROFIL'],'Mise à jour de la base en cours.');
+		// Lancer une mise à jour de la base
+		require_once('./_inc/fonction_maj_base.php');
+		maj_base();
+		// Débloquer l'application
+		debloquer_application($_SESSION['USER_PROFIL']);
+		// Retour explicatif
 		close_session();
-		return 'Identification réussie mais la base doit être mise à jour : contactez le webmestre !';
+		return'Identification réussie mais la base n\'était pas à jour : merci de valider de nouveau !';
 	}
 	// Enregistrement d'un cookie sur le poste client servant à retenir le dernier établissement sélectionné si identification avec succès
 	setcookie('SACoche-etablissement',$BASE,time()+60*60*24*365,'/');
-	return('ok');
+	return'ok';
 }
 
 function envoyer_webmestre_courriel($adresse,$objet,$contenu)

@@ -87,7 +87,7 @@ function clean_diacris($text)
 {
 	$bad = array('Ç','ç','Æ' ,'æ' ,'Œ' ,'œ' );
 	$bon = array('C','c','AE','ae','OE','oe');
-	return(str_replace($bad,$bon,$text));
+	return str_replace($bad,$bon,$text);
 }
 
 // Equivalent de "ucwords()" adaptée aux caractères accentués et aux expressions séparées par autre chose qu'une espace (virgule, point, tiret, parenthèse...)

@@ -41,7 +41,7 @@ else
 ?>
 
 <div class="hc">
-	<span class="manuel"><a class="pop_up" href="./aide.php?fichier=blocage_application">DOC : Blocage de l'application</a></span>
+	<span class="manuel"><a class="pop_up" href="./aide.php?fichier=blocage_maintenance">DOC : Blocage de l'application</a></span>
 </div>
 
 <hr />
@@ -55,7 +55,6 @@ else
 <h2>Demande de modification</h2>
 
 <form id="form" action=""><fieldset>
-	<label for="f_debloquer"><input type="radio" id="f_debloquer" name="f_action" value="debloquer" /> Débloquer l'application</label><p />
 	<label for="f_bloquer"><input type="radio" id="f_bloquer" name="f_action" value="bloquer" /> Bloquer l'application</label><br />
 	<span id="span_motif" class="hide">
 		<label class="tab" for="f_motif">Motif :</label>
@@ -65,6 +64,7 @@ else
 			</select>
 			<input id="f_motif" name="f_motif" size="50" maxlength="100" type="text" value="" />
 	</span><p />
+	<label for="f_debloquer"><input type="radio" id="f_debloquer" name="f_action" value="debloquer" /> Débloquer l'application</label><p />
 	<span class="tab"></span><input id="f_submit" type="submit" value="Valider." /><label id="ajax_msg">&nbsp;</label>
 </fieldset></form>
 

@@ -41,7 +41,7 @@ $coef        = (isset($_POST['coef']))     ? clean_entier($_POST['coef'])     : 
 $lien        = (isset($_POST['lien']))     ? clean_texte($_POST['lien'])      : '';
 $socle_id    = (isset($_POST['socle']))    ? clean_entier($_POST['socle'])    : -1;
 
-function positif($n) {return($n);}
+function positif($n) {return $n;}
 $tab_id = (isset($_POST['tab_id'])) ? array_map('clean_entier',explode(',',$_POST['tab_id'])) : array() ;
 $tab_id = array_filter($tab_id,'positif');
 $tab_id2 = (isset($_POST['tab_id2'])) ? array_map('clean_entier',explode(',',$_POST['tab_id2'])) : array() ;

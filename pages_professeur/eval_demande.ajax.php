@@ -56,7 +56,7 @@ if(count($tab_ids))
 		$tab_user_id[]       = $tab_id[1];
 		$tab_competence_id[] = $tab_id[2];
 	}
-	function positif($n) {return($n);}
+	function positif($n) {return $n;}
 	$tab_demande_id    = array_filter( array_map('clean_entier',$tab_demande_id)                  ,'positif');
 	$tab_user_id       = array_filter( array_map('clean_entier',array_unique($tab_user_id))       ,'positif');
 	$tab_competence_id = array_filter( array_map('clean_entier',array_unique($tab_competence_id)) ,'positif');

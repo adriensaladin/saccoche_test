@@ -31,14 +31,14 @@ if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');
 
 $arbre='
 <ul id="treeview">
-	<li><span>Mon compte</span>
+	<li>Mon compte
 		<ul>
 			<li class="compte_accueil"><a href="./index.php?dossier='.$DOSSIER.'&amp;fichier=compte_accueil">Accueil</a></li>
 			<li class="compte_password"><a href="./index.php?dossier='.$DOSSIER.'&amp;fichier=compte_password">Mot de passe</a></li>
 			<li class="eval_demande"><a href="./index.php?dossier='.$DOSSIER.'&amp;fichier=eval_demande">Demandes d\'évaluations</a></li>
 		</ul>
 	</li>
-	<li><span>Relevés de compétences</span>
+	<li>Relevés de compétences
 		<ul>
 			<li class="releve_matiere"><a href="./index.php?dossier='.$DOSSIER.'&amp;fichier=releve_matiere">Bilans sur une matière</a></li>';
 if(mb_substr_count($_SESSION['ELEVE_OPTIONS'],'as'))

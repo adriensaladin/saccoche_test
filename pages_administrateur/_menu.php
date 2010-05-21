@@ -31,14 +31,14 @@ if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');
 
 $arbre='
 <ul id="treeview">
-	<li><span>Mon compte</span>
+	<li>Mon compte
 		<ul>
 			<li class="compte_accueil"><a href="./index.php?dossier='.$DOSSIER.'&amp;fichier=compte_accueil">Accueil</a></li>
 			<li class="compte_password"><a href="./index.php?dossier='.$DOSSIER.'&amp;fichier=compte_password">Changer mon mot de passe</a></li>
 			<li class="compte_info_serveur"><a href="./index.php?dossier='.$DOSSIER.'&amp;fichier=compte_info_serveur">Informations serveur</a></li>
 		</ul>
 	</li>
-	<li><span>Établissement</span>
+	<li>Établissement
 		<ul>
 			<li class="admin_administrateur"><a href="./index.php?dossier='.$DOSSIER.'&amp;fichier=administrateur">Administrateurs</a></li>
 			<li class="admin_etabl"><a href="./index.php?dossier='.$DOSSIER.'&amp;fichier=etabl">Paramétrages</a></li>
@@ -47,7 +47,7 @@ $arbre='
 			<li class="admin_resilier"><a href="./index.php?dossier='.$DOSSIER.'&amp;fichier=resilier">Résilier l\'inscription</a></li>
 		</ul>
 	</li>
-	<li><span>Utilisateurs et affectations</span>
+	<li>Utilisateurs et affectations
 		<ul>
 			<li class="admin_fichier"><a href="./index.php?dossier='.$DOSSIER.'&amp;fichier=fichier">Import / Export</a></li>
 			<li class="admin_periode"><a href="./index.php?dossier='.$DOSSIER.'&amp;fichier=periode">Périodes</a></li>
@@ -59,7 +59,7 @@ $arbre='
 			<li class="admin_statut"><a href="./index.php?dossier='.$DOSSIER.'&amp;fichier=statut">Statuts</a></li>
 		</ul>
 	</li>
-	<li><span>Référentiels</span>
+	<li>Référentiels
 		<ul>
 			<li class="algorithme_gestion"><a href="./index.php?dossier='.$DOSSIER.'&amp;fichier=algorithme_gestion">Paramétrage de l\'algorithme</a></li>
 			<li class="referentiel_view"><a href="./index.php?dossier='.$DOSSIER.'&amp;fichier=referentiel_view">Référentiels en place (pour information)</a></li>

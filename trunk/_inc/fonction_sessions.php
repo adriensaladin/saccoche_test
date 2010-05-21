@@ -42,7 +42,7 @@ if(!$test_open)
 	$test_create = @mkdir($dossier_session);
 	if(!$test_create)
 	{
-		affich_message_exit($titre='PHP mal configuré',$contenu='Le répertoire pour accueillir les sessions n\'existe pas et ne peut être créé.');
+		affich_message_exit($titre='PHP mal configuré',$contenu='Le répertoire "'.$dossier_session.'" pour accueillir les sessions n\'existe pas et ne peut être créé.');
 	}
 }
 

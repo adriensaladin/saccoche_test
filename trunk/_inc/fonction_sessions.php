@@ -34,18 +34,6 @@ session_name(SESSION_NOM);
 session_cache_limiter('nocache');
 session_cache_expire(180);
 
-// Répertoire d'enregistrement des sessions
-$dossier_session = session_save_path();
-$test_open = @opendir($dossier_session);
-if(!$test_open)
-{
-	$test_create = @mkdir($dossier_session);
-	if(!$test_create)
-	{
-		affich_message_exit($titre='PHP mal configuré',$contenu='Le répertoire "'.$dossier_session.'" pour accueillir les sessions n\'existe pas et ne peut être créé.');
-	}
-}
-
 // Ouvrir une session existante
 function open_old_session()
 {

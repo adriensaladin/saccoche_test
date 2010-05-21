@@ -58,15 +58,11 @@ $(document).ready
 							if(responseHTML.substring(0,6)!='<label')
 							{
 								$('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);
-								alert('1');
 							}
 							else
 							{
-								alert('2');
 								$('#ajax_msg').removeAttr("class").html('&nbsp;');
-								alert('3');
 								$('#form0').html(responseHTML);
-								alert('4');
 								$('#form3').html('');
 								$('#form4').html('');
 								$('#form5').html('');

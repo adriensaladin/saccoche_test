@@ -47,8 +47,6 @@ vide_dossier('./__tmp/dump-base/' ,   1440); // Nettoyer ce dossier des fichiers
 vide_dossier('./__tmp/import/'    ,  10080); // Nettoyer ce dossier des fichiers antérieurs à 1 semaine
 vide_dossier('./__tmp/rss/'       ,  43800); // Nettoyer ce dossier des fichiers antérieurs à 1 mois
 vide_dossier('./__tmp/badge/'     , 525600); // Nettoyer ce dossier des fichiers antérieurs à 1 an
-// Anciens fichiers de session à effacer (normalement c'est automatique, mais j'ai déjà eu des problèmes à cause de ça...
-clean_old_session();
 ?>
 
 <?php

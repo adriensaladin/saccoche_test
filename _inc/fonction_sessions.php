@@ -75,22 +75,6 @@ function close_session()
 	return $alerte_sso;
 }
 
-// Effacer les traces d'anciennes sessions (prend vite de la place si non effacé automatiquement par l'hébergeur)
-function clean_old_session()
-{
-	global $dossier_session;
-	$j_moins_7 = time() - 604800;	// 1 semaine = 604800 secondes (7*24*60*60)
-	$tab_fichier = scandir($dossier_session);
-	unset($tab_fichier[0],$tab_fichier[1]);	// fichiers '.' et '..'
-	foreach($tab_fichier as $fichier_nom)
-	{
-		if( filemtime($dossier_session.'/'.$fichier_nom) < $j_moins_7 )
-		{
-			unlink($dossier_session.'/'.$fichier_nom);
-		}
-	}
-}
-
 // Recherche d'une session existante et gestion des cas possibles.
 function gestion_session($PROFIL_REQUIS)
 {

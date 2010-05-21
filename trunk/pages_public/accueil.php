@@ -58,7 +58,7 @@ $chaine_detection = css_browser_selector();
 if( strpos($chaine_detection,'ie4') || strpos($chaine_detection,'ie5') || strpos($chaine_detection,'ie6') || strpos($chaine_detection,'ff0') || strpos($chaine_detection,'ff1') || strpos($chaine_detection,'ff2') || strpos($chaine_detection,'opera8') )
 {
 	echo'<hr />';
-	echo'<div class="danger">Attention : votre navigateur semble trop ancien, il ne permet pas d\'utiliser SACoche dans de bonne conditions !</div>';
+	echo'<div class="danger">Attention : votre navigateur semble trop ancien pour permettre d\'utiliser SACoche correctement !</div>';
 	echo'<div class="astuce">Installez 
 	<a class="lien_ext" href="http://www.mozilla-europe.org/fr/"><img src="./_img/navigateur/firefox18.gif" alt="Firefox" /> Mozilla Firefox 3 ou +</a>, 
 	<a class="lien_ext" href="http://www.opera-fr.com/telechargements/"><img src="./_img/navigateur/opera18.gif" alt="Opéra" /> Opéra 9 ou 10</a>, 

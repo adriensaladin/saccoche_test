@@ -31,7 +31,7 @@ if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');
 
 $arbre='
 <ul id="treeview">
-	<li><span>Mon compte</span>
+	<li>Mon compte
 		<ul>
 			<li class="compte_accueil"><a href="./index.php?dossier='.$DOSSIER.'&amp;fichier=compte_accueil">Accueil</a></li>
 			<li class="compte_password"><a href="./index.php?dossier='.$DOSSIER.'&amp;fichier=compte_password">Mot de passe du webmestre</a></li>
@@ -43,7 +43,7 @@ $arbre='
 if(HEBERGEUR_INSTALLATION=='multi-structures')
 {
 	$arbre.='
-		<li><span>Gestion des établissements</span>
+		<li>Gestion des établissements
 			<ul>
 				<li class="webmestre_geographie"><a href="./index.php?dossier='.$DOSSIER.'&amp;fichier=geographie">Zones géographiques</a></li>
 				<li class="webmestre_structure"><a href="./index.php?dossier='.$DOSSIER.'&amp;fichier=structure_multi">Établissements</a></li>
@@ -57,7 +57,7 @@ if(HEBERGEUR_INSTALLATION=='multi-structures')
 elseif(HEBERGEUR_INSTALLATION=='mono-structure')
 {
 	$arbre.='
-		<li><span>Gestion de l\'établissement</span>
+		<li>Gestion de l\'établissement
 			<ul>
 				<li class="admin_administrateur"><a href="./index.php?dossier='.$DOSSIER.'&amp;fichier=init-mdp_mono">Mot de passe administrateur</a></li>
 				<li class="webmestre_maintenance"><a href="./index.php?dossier='.$DOSSIER.'&amp;fichier=blocage-maintenance">Maintenance &amp; mise à jour</a></li>

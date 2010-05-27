@@ -70,8 +70,8 @@ $select_cases_haut  = afficher_select($tab_select_cases_size                    
 
 <form action="" id="zone_compet" class="hide">
 	<div class="hc">
-		<a class="valider_compet" href="#"><img alt="Valider" src="./_img/action/action_valider.png" /> Valider ce choix</a><br />
-		<a class="annuler_compet" href="#"><img alt="Annuler" src="./_img/action/action_annuler.png" /> Annuler / Retour</a>
+		<a class="valider_compet" href="#"><img alt="Valider" src="./_img/action_valider.png" /> Valider ce choix</a><br />
+		<a class="annuler_compet" href="#"><img alt="Annuler" src="./_img/action_annuler.png" /> Annuler / Retour</a>
 	</div>
 	<?php
 	// Affichage de la liste des items pour toutes les matières d'un professeur, sur tous les niveaux

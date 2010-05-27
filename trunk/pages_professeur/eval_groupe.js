@@ -247,7 +247,7 @@ $(document).ready
 					dataType : "html",
 					error : function(msg,string)
 					{
-						$('#msg_saisir').removeAttr("class").addClass("alerte").html('Echec de la connexion ! Veuillez recommencer. <a class="fermer_zone_saisir" href="#"><img alt="Retourner" src="./_img/action/action_retourner.png" /> retour</a>');
+						$('#msg_saisir').removeAttr("class").addClass("alerte").html('Echec de la connexion ! Veuillez recommencer. <a class="fermer_zone_saisir" href="#"><img alt="Retourner" src="./_img/action_retourner.png" /> retour</a>');
 						return false;
 					},
 					success : function(responseHTML)
@@ -255,7 +255,7 @@ $(document).ready
 						maj_clock(1);
 						if(responseHTML.substring(0,1)!='<')
 						{
-							$('#msg_saisir').removeAttr("class").addClass("alerte").html(responseHTML+' <a class="fermer_zone_saisir" href="#"><img alt="Retourner" src="./_img/action/action_retourner.png" /> retour</a>');
+							$('#msg_saisir').removeAttr("class").addClass("alerte").html(responseHTML+' <a class="fermer_zone_saisir" href="#"><img alt="Retourner" src="./_img/action_retourner.png" /> retour</a>');
 						}
 						else
 						{
@@ -305,7 +305,7 @@ $(document).ready
 					dataType : "html",
 					error : function(msg,string)
 					{
-						$('#msg_voir').removeAttr("class").addClass("alerte").html('Echec de la connexion ! Veuillez recommencer. <a class="fermer_zone_voir" href="#"><img alt="Retourner" src="./_img/action/action_retourner.png" /> retour</a>');
+						$('#msg_voir').removeAttr("class").addClass("alerte").html('Echec de la connexion ! Veuillez recommencer. <a class="fermer_zone_voir" href="#"><img alt="Retourner" src="./_img/action_retourner.png" /> retour</a>');
 						return false;
 					},
 					success : function(responseHTML)
@@ -313,7 +313,7 @@ $(document).ready
 						maj_clock(1);
 						if(responseHTML.substring(0,1)!='<')
 						{
-							$('#msg_voir').removeAttr("class").addClass("alerte").html(responseHTML+' <a class="fermer_zone_voir" href="#"><img alt="Retourner" src="./_img/action/action_retourner.png" /> retour</a>');
+							$('#msg_voir').removeAttr("class").addClass("alerte").html(responseHTML+' <a class="fermer_zone_voir" href="#"><img alt="Retourner" src="./_img/action_retourner.png" /> retour</a>');
 						}
 						else
 						{
@@ -392,7 +392,7 @@ $(document).ready
 					dataType : "html",
 					error : function(msg,string)
 					{
-						$('#msg_ordonner').removeAttr("class").addClass("alerte").html('Echec de la connexion ! Veuillez recommencer. <a class="fermer_zone_ordonner" href="#"><img alt="Retourner" src="./_img/action/action_retourner.png" /> retour</a>');
+						$('#msg_ordonner').removeAttr("class").addClass("alerte").html('Echec de la connexion ! Veuillez recommencer. <a class="fermer_zone_ordonner" href="#"><img alt="Retourner" src="./_img/action_retourner.png" /> retour</a>');
 						return false;
 					},
 					success : function(responseHTML)
@@ -400,7 +400,7 @@ $(document).ready
 						maj_clock(1);
 						if(responseHTML.substring(0,16)!='<div class="hc">')
 						{
-							$('#msg_ordonner').removeAttr("class").addClass("alerte").html(responseHTML+' <a class="fermer_zone_ordonner" href="#"><img alt="Retourner" src="./_img/action/action_retourner.png" /> retour</a>');
+							$('#msg_ordonner').removeAttr("class").addClass("alerte").html(responseHTML+' <a class="fermer_zone_ordonner" href="#"><img alt="Retourner" src="./_img/action_retourner.png" /> retour</a>');
 						}
 						else
 						{

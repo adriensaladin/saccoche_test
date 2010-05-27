@@ -69,7 +69,7 @@ $TITRE = "Identité de l'établissement";
 
 <div id="object_container" class="hide">
 	<h2>Rechercher l'établissement dans la base Sésamath</h2>
-	<p><a id="rechercher_annuler" href="#"><img alt="" src="./_img/action/action_annuler.png" /> Annuler la recherche.</a></p>
+	<p><a id="rechercher_annuler" href="#"><img alt="" src="./_img/action_annuler.png" /> Annuler la recherche.</a></p>
 	<?php
 	// La balise object fonctionne sauf avec Internet Explorer qui n'affiche rien si on appelle une page provenant d'un autre domaine.
 	// Par ailleurs, il faut mettre une adresse valide au départ sous peine de se voir retirer la balise par son substitut (pour Opéra).

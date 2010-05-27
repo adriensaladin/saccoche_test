@@ -77,7 +77,7 @@ entete();
 		<?php echo $CONTENU_PAGE; ?>
 		<p />
 		<div class="hc">
-			<a href="javascript:window.close();"><img alt="Fermer l'aide." src="./_img/action/action_retourner.png" /> Fermer</a>
+			<a href="javascript:window.close();"><img alt="Fermer l'aide." src="./_img/action_retourner.png" /> Fermer</a>
 			<a href="javascript:window.print();"><img alt="Fermer l'aide." src="./_img/action/action_imprimer.png" /> Imprimer</a>
 		</div>
 		<div class="hc">

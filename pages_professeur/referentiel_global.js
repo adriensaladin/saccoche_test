@@ -504,7 +504,7 @@ $(document).ready
 							{
 								referentiel_id = hashVal.substring(0,position_separateur);
 								description    = hashVal.substr(position_separateur+1);
-								$('#reporter_referentiel').attr('lang','id_'+referentiel_id).html('<img alt=" vierge" src="./_img/action/action_valider.png" /> Démarrer avec ce référentiel : <b>'+description+'</b>');
+								$('#reporter_referentiel').attr('lang','id_'+referentiel_id).html('<img alt=" vierge" src="./_img/action_valider.png" /> Démarrer avec ce référentiel : <b>'+description+'</b>');
 								maj_clock(1);
 							}
 							$('#rechercher_annuler').click();

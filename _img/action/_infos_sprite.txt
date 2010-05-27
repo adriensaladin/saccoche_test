@@ -1,5 +1,0 @@
-Zipper les images
-Aller sur http://fr.spritegen.website-performance.org/
-Demander une bande horizontale, espacement de 4px.
-
-Voir le fichier css pour l'usage ensuite.

@@ -191,7 +191,7 @@ else
 
 <div id="choisir_referentiel" class="hide">
 	<h2>Choisir un référentiel</h2>
-	<p><a class="choisir_valider" href="#" lang="id_0"><img alt=" vierge" src="./_img/action/action_valider.png" /> Démarrer avec un référentiel vierge.</a></p>
+	<p><a class="choisir_valider" href="#" lang="id_0"><img alt=" vierge" src="./_img/action_valider.png" /> Démarrer avec un référentiel vierge.</a></p>
 	<?php
 	if( (!$_SESSION['SESAMATH_ID']) || (!$_SESSION['SESAMATH_KEY']) )
 	{
@@ -203,7 +203,7 @@ else
 		echo'<a class="choisir_valider" id="reporter_referentiel" href="#" lang="id_x"></a></p>';
 	}
 	?>
-	<p><a id="choisir_annuler" href="#"><img alt="" src="./_img/action/action_annuler.png" /> Annuler la création d'un référentiel.</a></p>
+	<p><a id="choisir_annuler" href="#"><img alt="" src="./_img/action_annuler.png" /> Annuler la création d'un référentiel.</a></p>
 	<label id="ajax_msg_choisir">&nbsp;</label>
 </div>
 
@@ -214,7 +214,7 @@ else
 
 <div id="object_container" class="hide">
 	<h2>Rechercher un référentiel partagé sur le serveur communautaire</h2>
-	<p><a id="rechercher_annuler" href="#"><img alt="" src="./_img/action/action_annuler.png" /> Annuler la recherche d'un référentiel.</a></p>
+	<p><a id="rechercher_annuler" href="#"><img alt="" src="./_img/action_annuler.png" /> Annuler la recherche d'un référentiel.</a></p>
 	<?php
 	// La balise object fonctionne sauf avec Internet Explorer qui n'affiche rien si on appelle une page provenant d'un autre domaine.
 	// Par ailleurs, il faut mettre une adresse valide au départ sous peine de se voir retirer la balise par son substitut (pour Opéra).

@@ -32,13 +32,6 @@ $TITRE = "Bienvenue dans votre espace identifié !";
 <img id="look_menu" src="./_img/fleche_h1.gif" alt="look !" />
 
 <ul class="puce">
-	<li><span class="astuce">En haut à gauche, le bouton <img src="./_img/menu.gif" alt="Menu" /> se développe au survol de la souris et permet de naviguer dans son espace.</span></li>
-	<li><span class="astuce">En haut à droite, le bouton <img src="./_img/action/action_deconnecter.png" alt="" /> permet de se déconnecter.</span></li>
-</ul>
-
-<hr />
-
-<ul class="puce">
 	<li><span class="manuel"><a class="pop_up" href="./aide.php?fichier=ergonomie_generale">DOC : Ergonomie générale.</a></span></li>
 	<li><span class="manuel"><a class="pop_up" href="./aide.php?fichier=environnement_webmestre">DOC : L'environnement webmestre.</a></span></li>
 </ul>

@@ -222,8 +222,8 @@ else if( ($action=='ordonner') && $devoir_id )
 	else
 	{
 		echo'<div class="hc">';
-		echo	'<a class="Enregistrer_ordre" href="#"><input type="hidden" name="f_ref" id="f_ref" value="'.$ref.'" /><img class="f_submit" alt="Enregistrer_ordre" src="./_img/action/action_valider.png" /> Enregistrer cet ordre</a><br />';
-		echo	'<a class="fermer_zone_ordonner" href="#"><img class="f_submit" alt="Annuler_ordonner" src="./_img/action/action_annuler.png" /> Annuler / Retour</a><br />';
+		echo	'<a class="Enregistrer_ordre" href="#"><input type="hidden" name="f_ref" id="f_ref" value="'.$ref.'" /><img class="f_submit" alt="Enregistrer_ordre" src="./_img/action_valider.png" /> Enregistrer cet ordre</a><br />';
+		echo	'<a class="fermer_zone_ordonner" href="#"><img class="f_submit" alt="Annuler_ordonner" src="./_img/action_annuler.png" /> Annuler / Retour</a><br />';
 		echo	'<label id="ajax_msg">&nbsp;</label>';
 		echo'</div>';
 		$tab_affich  = array();
@@ -233,7 +233,7 @@ else if( ($action=='ordonner') && $devoir_id )
 			$texte_socle = ($DB_ROW['entree_id']) ? ' [S]' : ' [–]';
 			$tab_affich[] = '<div id="i'.$DB_ROW['item_id'].'"><b>'.html($item_ref.$texte_socle).'</b> - '.html($DB_ROW['item_nom']).'</div>';
 		}
-		echo implode('<div class="ti"><input type="image" src="./_img/action/action_ordonner.png" /></div>',$tab_affich);
+		echo implode('<div class="ti"><input type="image" src="./_img/action_ordonner.png" /></div>',$tab_affich);
 	}
 }
 
@@ -266,8 +266,8 @@ else if( ($action=='saisir') && $devoir_id && $groupe_type && $groupe_id && $dat
 		$tab_affich[0][0].= '<span class="manuel"><a class="pop_up" href="./aide.php?fichier=evaluations_saisie_resultats">DOC : Saisie des résultats.</a></span><p />';
 		$tab_affich[0][0].= '<label for="radio_clavier"><input type="radio" id="radio_clavier" name="mode_saisie" value="clavier" /> <img alt="" src="./_img/pilot_keyboard.png" /> Pilotage au clavier</label> <img alt="" src="./_img/bulle_aide.png" title="Sélectionner un rectangle blanc<br />au clavier (flèches) ou à la souris<br />puis utiliser les touches suivantes :<br />&nbsp;1 ; 2 ; 3 ; 4 ; A ; N ; D ; suppr" /><br />';
 		$tab_affich[0][0].= '<label for="radio_souris"><input type="radio" id="radio_souris" name="mode_saisie" value="souris" /> <img alt="" src="./_img/pilot_mouse.png" /> Pilotage à la souris</label> <img alt="" src="./_img/bulle_aide.png" title="Survoler une case du tableau avec la souris<br />puis cliquer sur une des images proposées." /><p />';
-		$tab_affich[0][0].= '<a class="Enregistrer_saisie" href="#"><input type="hidden" name="f_ref" id="f_ref" value="'.$ref.'" /><input id="f_date" name="f_date" type="hidden" value="'.$date.'" /><img class="f_submit" alt="Enregistrer_saisie" src="./_img/action/action_valider.png" /> Enregistrer les saisies</a><br />';
-		$tab_affich[0][0].= '<a class="fermer_zone_saisir" href="#"><img class="f_submit" alt="Annuler_saisir" src="./_img/action/action_annuler.png" /> Annuler / Retour</a><br />';
+		$tab_affich[0][0].= '<a class="Enregistrer_saisie" href="#"><input type="hidden" name="f_ref" id="f_ref" value="'.$ref.'" /><input id="f_date" name="f_date" type="hidden" value="'.$date.'" /><img class="f_submit" alt="Enregistrer_saisie" src="./_img/action_valider.png" /> Enregistrer les saisies</a><br />';
+		$tab_affich[0][0].= '<a class="fermer_zone_saisir" href="#"><img class="f_submit" alt="Annuler_saisir" src="./_img/action_annuler.png" /> Annuler / Retour</a><br />';
 		$tab_affich[0][0].= '<label id="ajax_msg">&nbsp;</label>';
 		$tab_affich[0][0].= '</td>';
 		// première ligne (noms prénoms des élèves)
@@ -373,7 +373,7 @@ else if( ($action=='voir') && $devoir_id && $groupe_type && $groupe_id && $date 
 		$tab_affich  = array(); // tableau bi-dimensionnel [n°ligne=id_competence][n°colonne=id_user]
 		$tab_user_id = array(); // pas indispensable, mais plus lisible
 		$tab_comp_id = array(); // pas indispensable, mais plus lisible
-		$tab_affich[0][0] = '<td><a class="fermer_zone_voir" href="#"><img alt="Retourner" src="./_img/action/action_retourner.png" /> Retour</a></td>';
+		$tab_affich[0][0] = '<td><a class="fermer_zone_voir" href="#"><img alt="Retourner" src="./_img/action_retourner.png" /> Retour</a></td>';
 		// première ligne (noms prénoms des élèves)
 		$csv_ligne_eleve_nom = $separateur;
 		$csv_ligne_eleve_id  = $separateur;

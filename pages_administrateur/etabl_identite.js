@@ -86,6 +86,7 @@ $(document).ready
 								$('#f_sesamath_key').val(tab_infos[1]);
 								$('#f_sesamath_uai').val(tab_infos[2]); // (peut être vide)
 								$('#f_sesamath_type_nom').val(tab_infos[3]);
+								$('#ajax_msg').removeAttr("class").addClass("alerte").html('Pensez à valider pour confirmer votre sélection !');
 								maj_clock(1);
 							}
 							$('#rechercher_annuler').click();

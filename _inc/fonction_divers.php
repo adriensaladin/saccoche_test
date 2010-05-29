@@ -744,19 +744,13 @@ function enregistrer_structure_Sesamath($structure_id,$structure_key)
  * recuperer_numero_derniere_version
  * 
  * @param void
- * @return string   'AAAA-MM-JJ' ou un message d'erreur
+ * @return string 'AAAA-MM-JJ'
  */
 
 function recuperer_numero_derniere_version()
 {
-	require_once('./_inc/class.httprequest.php');
-	$tab_get = array();
-	$tab_get[] = 'mode=httprequest';
-	$tab_get[] = 'fichier=version_interroger';
-	$tab_get[] = 'adresse_retour='.urlencode(SERVEUR_ADRESSE);
-	$requete_envoi   = new HTTPRequest(SERVEUR_COMMUNAUTAIRE.'?'.implode('&',$tab_get));
-	$requete_reponse = $requete_envoi->DownloadToString();
-	return $requete_reponse;
+	$requete_reponse = @file_get_contents(SERVEUR_VERSION);
+	return (mb_strlen($requete_reponse)==10) ? $requete_reponse : 'Dernière version non détectée...' ;
 }
 
 ?>

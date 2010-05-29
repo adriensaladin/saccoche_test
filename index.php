@@ -173,7 +173,7 @@ else
 	// Accueil (identification) : image SACoche + image hébergeur.
 	$hebergeur_img  = ( (defined('HEBERGEUR_LOGO')) && (is_file('./__hebergement_info/'.HEBERGEUR_LOGO)) ) ? '<img alt="Hébergeur" src="./__hebergement_info/'.HEBERGEUR_LOGO.'" />' : '' ;
 	$hebergeur_lien = ( (defined('HEBERGEUR_ADRESSE_SITE')) && HEBERGEUR_ADRESSE_SITE && ($hebergeur_img) ) ? '<a href="'.html(HEBERGEUR_ADRESSE_SITE).'">'.$hebergeur_img.'</a>' : $hebergeur_img ;
-	$SACoche_lien   = '<a href="http://competences.sesamath.net"><img alt="Suivi d\'Acquisition de Compétences" src="./_img/logo_grand2.gif" /></a>' ;
+	$SACoche_lien   = '<a href="http://competences.sesamath.net"><img alt="Suivi d\'Acquisition de Compétences" src="./_img/logo_grand.gif" /></a>' ;
 	$TITRE_PAGE = '<h1>'.$SACoche_lien.$hebergeur_lien.'</h1>';
 }
 
@@ -186,7 +186,6 @@ entete();
 	<link rel="icon" type="image/png" href="./favicon.png" />
 	<link rel="stylesheet" type="text/css" href="./_css/<?php echo FILE_CSS_SCREEN ?>" />
 	<link rel="stylesheet" type="text/css" href="./_css/<?php echo FILE_CSS_PRINT ?>" media="print" />
-	<link rel="alternate" type="application/rss+xml" href="./_rss/rss.xml" title="SACoche" />
 	<script type="text/javascript" charset="utf-8" src="./_js/<?php echo FILE_JS_BIBLIO ?>"></script>
 	<script type="text/javascript" charset="utf-8" src="./_js/<?php echo FILE_JS_SCRIPT ?>"></script>
 	<title><?php echo $TITRE_NAVIGATEUR ?></title>

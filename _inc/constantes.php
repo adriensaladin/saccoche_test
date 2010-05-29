@@ -74,10 +74,11 @@ define('SERVEUR_ADRESSE',$chemin);
 $serveur = ($_SERVER['SERVER_NAME']=='localhost') ? 'LOCAL' : 'PROD';
 define('SERVEUR_TYPE',$serveur);
 
-// SERVEUR_COMMUNAUTAIRE : URL complète du fichier chargé d'effectuer la liaison entre les installations de SACoche et le serveur communautaire
-define('SERVEUR_COMMUNAUTAIRE','http://competences.sesamath.net/V2/appel_externe.php');
-
-// SERVEUR_DOCUMENTAIRE : URL complète du fichier chargé d'afficher les documentations
-define('SERVEUR_DOCUMENTAIRE','http://localhost/site_SACoche_portail/appel_doc.php');
+// SERVEUR_COMMUNAUTAIRE : URL complète du fichier chargé d'effectuer la liaison entre les installations de SACoche et le serveur communautaire concernant les référentiels.
+// SERVEUR_DOCUMENTAIRE  : URL complète du fichier chargé d'afficher les documentations
+// SERVEUR_VERSION       : URL complète du fichier contenant le numéro de la dernière version disponible
+define('SERVEUR_COMMUNAUTAIRE' , 'http://competences.sesamath.net/V2/appel_externe.php');
+define('SERVEUR_DOCUMENTAIRE'  , 'http://competences.sesamath.net/V2/appel_doc.php');
+define('SERVEUR_VERSION'       , 'http://competences.sesamath.net/V2/appel_version.php');
 
 ?>

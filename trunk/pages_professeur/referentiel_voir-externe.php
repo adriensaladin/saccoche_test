@@ -36,8 +36,7 @@ $TITRE = "Référentiels partagés sur le serveur communautaire";
 </script>
 
 <ul class="puce">
-	<li><span class="manuel"><a class="pop_up" href="./aide.php?fichier=referentiel_organisation_competences">DOC : Organisation des compétences dans les référentiels.</a></span></li>
-	<li><span class="manuel"><a class="pop_up" href="./aide.php?fichier=referentiel_structure">DOC : Structure d'un référentiel.</a></span></li>
+	<li><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=referentiels_competences__referentiel_organisation">DOC : Organisation des items dans les référentiels.</a></span></li>
 </ul>
 
 <hr />

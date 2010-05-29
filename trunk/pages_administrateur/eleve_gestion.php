@@ -39,7 +39,7 @@ $select_f_groupes = afficher_select(DB_OPT_regroupements_etabl() , $select_nom='
 ?>
 
 <div class="hc">
-	<span class="manuel"><a class="pop_up" href="./aide.php?fichier=gestion_eleves">DOC : Gestion des élèves</a></span>
+	<span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__gestion_eleves">DOC : Gestion des élèves</a></span>
 </div>
 
 <form action="./index.php?dossier=<?php echo $DOSSIER ?>&amp;fichier=<?php echo $FICHIER ?>&amp;section=<?php echo $SECTION ?>" method="POST" id="form0">

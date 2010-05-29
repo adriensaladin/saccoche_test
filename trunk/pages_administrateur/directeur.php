@@ -30,7 +30,7 @@ $TITRE = "Gérer les directeurs";
 ?>
 
 <p class="hc">
-	<span class="manuel"><a class="pop_up" href="./aide.php?fichier=gestion_directeurs">DOC : Gestion des directeurs</a></span>
+	<span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__gestion_directeurs">DOC : Gestion des directeurs</a></span>
 </p>
 
 <form action="">

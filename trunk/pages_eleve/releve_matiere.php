@@ -46,7 +46,7 @@ $date_debut = '01/09/'.$annee_debut;
 $date_fin   = date("d/m/Y");
 ?>
 
-<div class="hc"><span class="manuel"><a class="pop_up" href="./aide.php?fichier=releve_matiere">DOC : Bilans sur une matière.</a></span></div>
+<div class="hc"><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=releves_bilans__releve_matiere">DOC : Bilans sur une matière.</a></span></div>
 
 <form id="form_select" action=""><fieldset>
 	<label class="tab" for="f_periode"><img alt="" src="./_img/bulle_aide.png" title="Les items pris en compte sont ceux qui sont évalués<br />au moins une fois sur cette période." /> Période :</label><?php echo $select_periode ?>

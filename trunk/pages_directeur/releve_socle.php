@@ -35,7 +35,7 @@ $select_palier = afficher_select(DB_OPT_paliers_etabl($_SESSION['PALIERS'])     
 $select_groupe = afficher_select(DB_OPT_classes_groupes_etabl() , $select_nom='f_groupe' , $option_first='val' , $selection=false , $optgroup='oui');
 ?>
 
-<p class="hc"><span class="manuel"><a class="pop_up" href="./aide.php?fichier=releve_socle">DOC : Attestation de maîtrise du socle commun.</a></span></p>
+<p class="hc"><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=releves_bilans__releve_socle">DOC : Attestation de maîtrise du socle commun.</a></span></p>
 
 <form id="form_select" action=""><fieldset>
 	<label class="tab" for="f_detail">Affichage :</label><label for="f_detail_complet"><input type="radio" id="f_detail_complet" name="f_detail" value="complet" checked="checked" /> Attestation complète</label>&nbsp;&nbsp;&nbsp;<label for="f_detail_extrait"><input type="radio" id="f_detail_extrait" name="f_detail" value="extrait" /> Uniquement les intitulés</label><p />

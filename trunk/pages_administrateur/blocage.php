@@ -41,7 +41,7 @@ else
 ?>
 
 <div class="hc">
-	<span class="manuel"><a class="pop_up" href="./aide.php?fichier=blocage_maintenance">DOC : Blocage de l'application</a></span>
+	<span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=environnement_generalites__verrouillage">DOC : Verrouillage de l'application</a></span>
 </div>
 
 <hr />

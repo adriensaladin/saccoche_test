@@ -46,7 +46,7 @@ $date_debut = '01/09/'.$annee_debut;
 $date_fin   = date("d/m/Y");
 ?>
 
-<div class="hc"><span class="manuel"><a class="pop_up" href="./aide.php?fichier=releve_matiere">DOC : Bilans sur une matière.</a></span></div>
+<div class="hc"><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=releves_bilans__releve_matiere">DOC : Bilans sur une matière.</a></span></div>
 
 <form id="form_select" action=""><fieldset>
 	<label class="tab" for="f_type">Type de bilan :</label><label for="f_type_individuel"><input type="checkbox" id="f_type_individuel" name="f_type" value="individuel" /> Relevé individuel</label>&nbsp;&nbsp;&nbsp;<label for="f_type_synthese"><input type="checkbox" id="f_type_synthese" name="f_type" value="synthese" /> Synthèse collective</label>&nbsp;&nbsp;&nbsp;<label for="f_type_bulletin"><input type="checkbox" id="f_type_bulletin" name="f_type" value="bulletin" /> Bulletin (moyenne &amp; appréciation)</label><input type="hidden" id="types" name="types" value="" /><br />
@@ -55,7 +55,7 @@ $date_fin   = date("d/m/Y");
 		<label class="tab" for="f_opt_bilan">Opt. relevé <img alt="" src="./_img/bulle_aide.png" title="Pour le relévé individuel, deux lignes de synthèse peuvent être ajoutées.<br />Dans ce cas, une note sur 20 peut aussi être affichée." /> :</label><label for="f_bilan_ms"><input type="checkbox" id="f_bilan_ms" name="f_bilan_ms" value="1" checked="checked" /> Moyenne des scores</label>&nbsp;&nbsp;&nbsp;<label for="f_bilan_pv"><input type="checkbox" id="f_bilan_pv" name="f_bilan_pv" value="1" checked="checked" /> Pourcentage d'acquisitions validées</label>&nbsp;&nbsp;&nbsp;<label for="f_conv_sur20"><input type="checkbox" id="f_conv_sur20" name="f_conv_sur20" value="1" /> Proposition de note sur 20</label><br />
 	</span>
 	<span id="astuce_bulletin" class="hide">
-		<span class="tab"></span><span class="manuel"><a class="pop_up" href="./aide.php?fichier=transfert_bulletin_SACoche_Gepi">DOC : Transfert du bulletin de SACoche dans GEPI.</a></span>
+		<span class="tab"></span><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=releves_bilans__transfert_bulletin_SACoche_Gepi">DOC : Transfert du bulletin de SACoche dans GEPI.</a></span>
 	</span>
 	<p />
 	<label class="tab" for="f_periode"><img alt="" src="./_img/bulle_aide.png" title="Les items pris en compte sont ceux qui sont évalués<br />au moins une fois sur cette période." /> Période :</label><?php echo $select_periode ?>

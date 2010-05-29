@@ -76,7 +76,7 @@ $date_fin    = date("d/m/Y");
 </script>
 
 <ul class="puce">
-	<li><span class="manuel"><a class="pop_up" href="./aide.php?fichier=evaluations_gestion">DOC : Gestion des évaluations.</a></span></li>
+	<li><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_professeur__evaluations_gestion">DOC : Gestion des évaluations.</a></span></li>
 	<li><span class="danger">Une évaluation dont la saisie a commencé ne devrait pas voir ses élèves ou ses items modifiés (sinon vous n'aurez plus accès à certaines données) !</span></li>
 </ul>
 
@@ -144,7 +144,7 @@ $date_fin    = date("d/m/Y");
 		<a lang="zone_deport" href="#td_souris_container"><img src="./_img/toggle_plus.gif" alt="" title="Voir / masquer la saisie déportée." class="toggle" /></a> Saisie déportée
 		<div id="zone_deport" class="hide">
 			<input type="hidden" name="filename" id="filename" value="<?php echo './__tmp/export/saisie_'.$_SESSION['BASE'].'_'.$_SESSION['USER_ID'].'_'; ?>" />
-			<span class="manuel"><a class="pop_up" href="./aide.php?fichier=evaluations_saisie_deportee">DOC : Saisie déportée.</a></span>
+			<span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_professeur__evaluations_saisie_deportee">DOC : Saisie déportée.</a></span>
 			<ul class="puce">
 				<li><a id="export_file" class="lien_ext" href="">Récupérer un fichier vierge au format CSV pour une saisie déportée.</a></li>
 				<li><input id="import_file" type="button" value="Envoyer un fichier complété au format CSV." /><label id="msg_import">&nbsp;</label></li>

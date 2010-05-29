@@ -47,7 +47,7 @@ $date_debut = '01/09/'.$annee_debut;
 $date_fin   = date("d/m/Y");
 ?>
 
-<div class="hc"><span class="manuel"><a class="pop_up" href="./aide.php?fichier=releve_multimatiere">DOC : Bilans transdisciplinaires (P.P.).</a></span></div>
+<div class="hc"><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=releves_bilans__releve_multimatiere">DOC : Bilans transdisciplinaires (P.P.).</a></span></div>
 
 <form id="form_select" action=""><fieldset>
 	<label class="tab" for="f_opt_grille">Opt. relevé <img alt="" src="./_img/bulle_aide.png" title="Les paramètres des items peuvent être affichés." /> :</label><label for="f_coef"><input type="checkbox" id="f_coef" name="f_coef" value="1" /> Coefficients</label>&nbsp;&nbsp;&nbsp;<label for="f_socle"><input type="checkbox" id="f_socle" name="f_socle" value="1" /> Socle</label>&nbsp;&nbsp;&nbsp;<label for="f_lien"><input type="checkbox" id="f_lien" name="f_lien" value="1" /> Liens de remédiation</label><br />

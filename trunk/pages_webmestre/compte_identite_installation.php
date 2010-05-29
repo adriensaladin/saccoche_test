@@ -35,7 +35,7 @@ $uai_div_hide_apres  = (HEBERGEUR_INSTALLATION=='mono-structure') ? '' : '</div>
 ?>
 
 <div class="hc">
-	<span class="manuel"><a class="pop_up" href="./aide.php?fichier=webmestre_identite_installation">DOC : Identité de l'installation (page d'accueil)</a></span>
+	<span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_webmestre__identite_installation">DOC : Identité de l'installation (page d'accueil)</a></span>
 </div>
 
 <hr />

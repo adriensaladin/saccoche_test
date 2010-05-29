@@ -34,7 +34,7 @@ $TITRE = "Export arborescence des items par matière";
 $select_matiere = afficher_select(DB_OPT_matieres_professeur($_SESSION['USER_ID']) , $select_nom='f_matiere' , $option_first='non' , $selection=false , $optgroup='non');
 ?>
 
-<div class="hc"><span class="manuel"><a class="pop_up" href="./aide.php?fichier=export_listings">DOC : Export listings.</a></span></div>
+<div class="hc"><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_professeur__export_listings">DOC : Export listings.</a></span></div>
 
 <form action="" id="form_export"><fieldset>
 	<label class="tab" for="f_matiere">Matière :</label><?php echo $select_matiere ?><input type="hidden" id="f_matiere_nom" name="f_matiere_nom" value="" /><br />

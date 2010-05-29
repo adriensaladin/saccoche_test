@@ -372,7 +372,7 @@ $(document).ready
 					window.resizeTo(largeur,hauteur);
 				}
 				// Fenêtre pop-up
-				var largeur = (adresse.substring(19,25)!='intro-') ? 600 : 800 ;
+				var largeur = 600 ;
 				var hauteur = screen.height * 1 ;
 				var gauche = screen.width - largeur ;
 				var haut  = 0 ;

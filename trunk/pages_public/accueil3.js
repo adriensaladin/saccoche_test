@@ -274,26 +274,3 @@ $(document).ready
 
 	}
 );
-
-// Konami Code !!!
-jQuery
-(
-	function()
-	{
-		var kKeys = [];
-		function Kpress(e)
-		{
-			kKeys.push(e.keyCode);
-			if (kKeys.toString().indexOf("38,38,40,40,37,39,37,39,66,65") >= 0)
-			{
-				jQuery(this).unbind('keydown', Kpress);
-				setVolume(50);play("bennyhill");
-				$('h1,h2,p,form,hr,ul,div').fadeOut(2000,function(){	// si on applique le fadeout au body, la musique s'arrête !
- 					$('h1,h2,p,form,hr,ul,div').remove();
-					$('body').append('<p class="hc"><img src="./_img/konami/laurel_hardy.gif" alt=""/><br /><img src="./_img/konami/piste_danse.gif" alt=""/></p>').fadeIn(2000); 
-				});
-			}
-		}
-		jQuery(document).keydown(Kpress);
-	}
-);

@@ -41,7 +41,7 @@ $select_cases_larg  = afficher_select($tab_select_cases_size                    
 $select_cases_haut  = afficher_select($tab_select_cases_size                          , $select_nom='f_cases_haut'  , $option_first='non' , $selection=$tab_cookie['cases_hauteur'] , $optgroup='non');
 ?>
 
-<div class="hc"><span class="manuel"><a class="pop_up" href="./aide.php?fichier=releve_selection">DOC : Bilans sur une sélection d'items.</a></span></div>
+<div class="hc"><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=releves_bilans__releve_selection">DOC : Bilans sur une sélection d'items.</a></span></div>
 
 <form id="form_select" action=""><fieldset>
 	<label class="tab" for="f_type">Type de bilan :</label><label for="f_type_individuel"><input type="checkbox" id="f_type_individuel" name="f_type" value="individuel" /> Relevé individuel</label>&nbsp;&nbsp;&nbsp;<label for="f_type_synthese"><input type="checkbox" id="f_type_synthese" name="f_type" value="synthese" /> Synthèse collective</label><input type="hidden" id="types" name="types" value="" /><br />

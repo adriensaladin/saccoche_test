@@ -30,7 +30,7 @@ $TITRE = "Gérer les périodes";
 ?>
 
 <p class="hc">
-	<span class="manuel"><a class="pop_up" href="./aide.php?fichier=gestion_periodes">DOC : Gestion des périodes</a></span>
+	<span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__gestion_periodes">DOC : Gestion des périodes</a></span>
 </p>
 
 <hr />

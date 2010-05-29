@@ -49,6 +49,6 @@ if(is_file($fichier_section))
 else
 {
 	echo'<p><span class="astuce">Choisissez une rubrique ci-dessus...</span></p>';
-	echo'<p><span class="manuel"><a class="pop_up" href="./aide.php?fichier=gestion_statuts">DOC : Statuts : désactiver / réintégrer / supprimer</a></span></p>';
+	echo'<p><span class="manuel"><a class="pop_up" href="'.SERVEUR_DOCUMENTAIRE.'?fichier=support_administrateur__gestion_statuts">DOC : Statuts : désactiver / réintégrer / supprimer</a></span></p>';
 }
 ?>

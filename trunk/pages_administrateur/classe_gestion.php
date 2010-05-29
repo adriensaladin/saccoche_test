@@ -30,7 +30,7 @@ $TITRE = "Gérer les classes";
 ?>
 
 <p class="hc">
-	<span class="manuel"><a class="pop_up" href="./aide.php?fichier=gestion_classes">DOC : Gestion des classes</a></span>
+	<span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__gestion_classes">DOC : Gestion des classes</a></span>
 </p>
 
 <hr />

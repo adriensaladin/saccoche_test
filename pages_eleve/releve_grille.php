@@ -48,7 +48,7 @@ $select_remplissage = afficher_select($tab_select_remplissage                   
 	var listing_id_niveaux_paliers = "<?php echo LISTING_ID_NIVEAUX_PALIERS ?>";
 </script>
 
-<div class="hc"><span class="manuel"><a class="pop_up" href="./aide.php?fichier=releve_grille_niveau">DOC : Grilles de compétences sur un niveau.</a></span></div>
+<div class="hc"><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=releves_bilans__releve_grille_niveau">DOC : Grilles de compétences sur un niveau.</a></span></div>
 
 <form id="form_select" action=""><fieldset>
 	<label class="tab" for="f_matiere">Matière :</label><?php echo $select_matiere ?><input type="hidden" id="f_matiere_nom" name="f_matiere_nom" value="" /><br />

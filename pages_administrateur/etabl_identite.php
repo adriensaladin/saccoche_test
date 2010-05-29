@@ -31,7 +31,7 @@ $TITRE = "Identité de l'établissement";
 
 <form id="form" action="">
 
-	<p class="hc"><span class="manuel"><a class="pop_up" href="./aide.php?fichier=gestion_informations_structure">DOC : Gestion de l'identité de l'établissement</a></span></p>
+	<p class="hc"><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__gestion_informations_structure">DOC : Gestion de l'identité de l'établissement</a></span></p>
 
 	<hr />
 

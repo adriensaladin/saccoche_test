@@ -28,7 +28,7 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 ?>
 
-<p><span class="manuel"><a class="pop_up" href="./aide.php?fichier=gestion_demandes_evaluations">DOC : Demandes d'évaluations.</a></span></p>
+<p><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=environnement_generalites__demandes_evaluations">DOC : Demandes d'évaluations.</a></span></p>
 
 <hr />
 

@@ -54,7 +54,7 @@ $nom_fin_fichier = $_SESSION['STRUCTURE_UAI'].'_'.$nom_fin_fichier;
 		if($_SESSION['STRUCTURE_UAI'])
 		{
 			echo'Cette méthode est fortement recommandée.<br />'."\r\n";
-			echo'<span class="manuel"><a class="pop_up" href="./aide.php?fichier=import_professeurs_directeurs_Sconet">DOC : Import professeurs / directeurs depuis Sconet</a></span><br />'."\r\n";
+			echo'<span class="manuel"><a class="pop_up" href="'.SERVEUR_DOCUMENTAIRE.'?fichier=support_administrateur__import_professeurs_directeurs_Sconet">DOC : Import professeurs / directeurs depuis Sconet</a></span><br />'."\r\n";
 			echo'Indiquez ci-dessous le fichier <b>sts_emp_'.$nom_fin_fichier.'.xml</b> (ou <b>sts_emp_'.$nom_fin_fichier.'.zip</b>) obtenu.'."\r\n";
 		}
 		else
@@ -68,7 +68,7 @@ $nom_fin_fichier = $_SESSION['STRUCTURE_UAI'].'_'.$nom_fin_fichier;
 		<p />
 		<h2>Seconde méthode : fichier tableur</h2>
 		Cette méthode n'est à utiliser que si l'établissement n'utilise pas SCONET (à l'étranger...).<br />
-		<span class="manuel"><a class="pop_up" href="./aide.php?fichier=import_professeurs_directeurs_tableur">DOC : Import professeurs / directeurs avec un tableur</a></span><br />
+		<span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__import_professeurs_directeurs_tableur">DOC : Import professeurs / directeurs avec un tableur</a></span><br />
 		Indiquez ci-dessous le fichier <b>nom-du-fichier.csv</b> (ou <b>nom-du-fichier.txt</b>) obtenu.
 		<p />
 		<h2>Démarrer la procédure</h2>

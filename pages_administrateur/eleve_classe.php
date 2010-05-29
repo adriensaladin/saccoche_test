@@ -36,8 +36,7 @@ $select_classes   = afficher_select(DB_OPT_classes_etabl()       , $select_nom=f
 ?>
 
 <p class="hc">
-	<span class="manuel"><a class="pop_up" href="./aide.php?fichier=gestion_classes">DOC : Gestion des classes</a></span><br />
-	<span class="manuel"><a class="pop_up" href="./aide.php?fichier=deplacer_eleve_durant_annee">DOC : Peut-on déplacer un élève en cours d'année ?</a></span>
+	<span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__gestion_classes">DOC : Gestion des classes</a></span><br />
 </p>
 
 <hr />

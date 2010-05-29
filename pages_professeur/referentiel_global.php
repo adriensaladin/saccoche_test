@@ -63,10 +63,8 @@ $TITRE = "Gérer les référentiels";
 <form action="">
 
 <ul class="puce">
-	<li><span class="manuel"><a class="pop_up" href="./aide.php?fichier=referentiel_organisation_competences">DOC : Organisation des compétences dans les référentiels.</a></span></li>
-	<li><span class="manuel"><a class="pop_up" href="./aide.php?fichier=referentiel_structure">DOC : Structure d'un référentiel.</a></span></li>
-	<li><span class="manuel"><a class="pop_up" href="./aide.php?fichier=referentiel_gerer">DOC : Gérer les référentiels.</a></span></li>
-	<li><span class="manuel"><a class="pop_up" href="./aide.php?fichier=calcul_scores_etats_acquisitions">DOC : Calcul des scores et des états d'acquisitions.</a></span></li>
+	<li><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=referentiels_competences__referentiel_organisation">DOC : Organisation des items dans les référentiels.</a></span></li>
+	<li><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=environnement_generalites__calcul_scores_etats_acquisitions">DOC : Calcul des scores et des états d'acquisitions.</a></span></li>
 	<li><span class="danger">Détruire un référentiel supprime les résultats associés de tous les élèves !</span></li>
 </ul>
 

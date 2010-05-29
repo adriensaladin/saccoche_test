@@ -32,8 +32,8 @@ $TITRE = "Bienvenue dans votre espace identifié !";
 <img id="look_menu" src="./_img/fleche_h1.gif" alt="look !" />
 
 <ul class="puce">
-	<li><span class="manuel"><a class="pop_up" href="./aide.php?fichier=ergonomie_generale">DOC : Ergonomie générale.</a></span></li>
-	<li><span class="manuel"><a class="pop_up" href="./aide.php?fichier=environnement_professeur">DOC : L'environnement professeur.</a></span></li>
+	<li><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=environnement_generalites__ergonomie_generale">DOC : Ergonomie générale.</a></span></li>
+	<li><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=environnement_generalites__fonctionnalites_professeur">DOC : Fonctionnalités du professeur.</a></span></li>
 </ul>
 
 <hr />

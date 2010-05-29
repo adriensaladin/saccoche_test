@@ -29,7 +29,7 @@ if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');
 $TITRE = "Imposer identifiants SACoche";
 ?>
 
-<p class="hc"><span class="manuel"><a class="pop_up" href="./aide.php?fichier=force_login_mdp_tableur">DOC : Imposer identifiants SACoche avec un tableur</a></span></p>
+<p class="hc"><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__force_login_mdp_tableur">DOC : Imposer identifiants SACoche avec un tableur</a></span></p>
 
 <form action="">
 	<div>

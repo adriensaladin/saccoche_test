@@ -87,7 +87,7 @@ foreach($tab_options as $value)
 	</tbody>
 	</table>
 	<p><input type="hidden" id="action" name="action" value="calculer" /> <input id="initialiser_defaut" type="button" value="Afficher les valeurs par défaut." /> <input id="initialiser_etablissement" type="button" value="Afficher les valeurs de l'établissement." /> <input id="calculer" type="button" value="Simuler avec ces valeurs." /><label id="ajax_msg">&nbsp;</label></p>
-	<p class="hc"><span class="manuel"><a class="pop_up" href="./aide.php?fichier=calcul_scores_etats_acquisitions">DOC : Calcul des scores et des états d'acquisitions.</a></span></p>
+	<p class="hc"><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=environnement_generalites__calcul_scores_etats_acquisitions">DOC : Calcul des scores et des états d'acquisitions.</a></span></p>
 </form>
 
 <hr />

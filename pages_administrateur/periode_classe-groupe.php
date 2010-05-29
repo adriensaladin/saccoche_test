@@ -36,7 +36,7 @@ $select_classes_groupes = afficher_select(DB_OPT_classes_groupes_etabl() , $sele
 ?>
 
 <p class="hc">
-	<span class="manuel"><a class="pop_up" href="./aide.php?fichier=gestion_periodes">DOC : Gestion des périodes</a></span>
+	<span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__gestion_periodes">DOC : Gestion des périodes</a></span>
 </p>
 
 <hr />

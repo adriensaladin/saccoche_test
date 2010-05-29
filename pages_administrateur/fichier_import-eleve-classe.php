@@ -47,11 +47,11 @@ $TITRE = "Importer les élèves et les classes";
 	<div id="ajax">
 		<h2>Première méthode : fichier issu de Sconet</h2>
 		Cette méthode est fortement recommandée.<br />
-		<span class="manuel"><a class="pop_up" href="./aide.php?fichier=import_classes_eleves_Sconet">DOC : Import classes / élèves depuis Sconet</a></span><br />
+		<span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__import_classes_eleves_Sconet">DOC : Import classes / élèves depuis Sconet</a></span><br />
 		Indiquez ci-dessous le fichier <b>ExportXML_ElevesSansAdresses.zip</b> (ou <b>ElevesSansAdresses.xml</b>) obtenu.
 		<h2>Seconde méthode : fichier tableur</h2>
 		Cette méthode n'est à utiliser que si l'établissement n'utilise pas SCONET (à l'étranger...).<br />
-		<span class="manuel"><a class="pop_up" href="./aide.php?fichier=import_classes_eleves_tableur">DOC : Import classes / élèves avec un tableur</a></span><br />
+		<span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__import_classes_eleves_tableur">DOC : Import classes / élèves avec un tableur</a></span><br />
 		Indiquez ci-dessous le fichier <b>nom-du-fichier.csv</b> (ou <b>nom-du-fichier.txt</b>) obtenu.
 		<h2>Démarrer la procédure</h2>
 		<label class="tab" for="f_submit_1">Fichier à importer :</label><input id="f_submit_1" type="button" value="Parcourir..." /><label id="ajax_msg">&nbsp;</label>

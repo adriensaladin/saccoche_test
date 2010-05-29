@@ -43,7 +43,8 @@ $profil = ( isset($_GET['admin']) || isset($_GET['administrateur']) ) ? 'adminis
 // Fichiers temporaires à effacer ; il y a ausi le dossier './__tmp/cookie/' auquel on ne touche pas.
 vide_dossier('./__tmp/login-mdp/' ,     10); // Nettoyer ce dossier des fichiers antérieurs à 10 minutes
 vide_dossier('./__tmp/export/'    ,     60); // Nettoyer ce dossier des fichiers antérieurs à 1 heure
-vide_dossier('./__tmp/dump-base/' ,   1440); // Nettoyer ce dossier des fichiers antérieurs à 1 jour (24h)
+vide_dossier('./__tmp/dump-base/' ,     60); // Nettoyer ce dossier des fichiers antérieurs à 1 heure
+// vide_dossier('./__tmp/.../' ,      1440); // Nettoyer ce dossier des fichiers antérieurs à 1 jour (24h)
 vide_dossier('./__tmp/import/'    ,  10080); // Nettoyer ce dossier des fichiers antérieurs à 1 semaine
 vide_dossier('./__tmp/rss/'       ,  43800); // Nettoyer ce dossier des fichiers antérieurs à 1 mois
 vide_dossier('./__tmp/badge/'     , 525600); // Nettoyer ce dossier des fichiers antérieurs à 1 an

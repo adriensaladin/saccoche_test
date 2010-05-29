@@ -29,7 +29,7 @@ if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');
 $TITRE = "Mode d'identification";
 ?>
 
-<p class="hc"><span class="manuel"><a class="pop_up" href="./aide.php?fichier=gestion_mode_identification">DOC : Gestion du mode d'identification</a></span></p>
+<p class="hc"><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__gestion_mode_identification">DOC : Gestion du mode d'identification</a></span></p>
 
 <hr />
 
@@ -42,7 +42,7 @@ $TITRE = "Mode d'identification";
 		$i_id++;
 		$checked = ($value==$_SESSION['SSO']) ? ' checked="checked"' : '' ;
 		$debut_phrase = ($value!='normal') ? 'Connexion SSO en lien avec l\'' : '' ;
-		$documentation = ($tab_infos['doc']) ? ' <span class="manuel"><a class="pop_up" href="./aide.php?fichier=integration_ENT_'.$tab_infos['doc'].'">DOC : Intégration à cet ENT.</a></span>' : '' ;
+		$documentation = ($tab_infos['doc']) ? ' <span class="manuel"><a class="pop_up" href="'.SERVEUR_DOCUMENTAIRE.'?fichier=support_administrateur__gestion_mode_identification__integration_ENT_'.$tab_infos['doc'].'">DOC : Intégration à cet ENT.</a></span>' : '' ;
 		echo'<label for="input_'.$i_id.'"><input type="radio" id="input_'.$i_id.'" name="mode_connexion" value="'.$value.'"'.$checked.' /> '.$debut_phrase.$tab_infos['txt'].'</label>'.$documentation.'<br />'."\r\n";
 	}
 	?>

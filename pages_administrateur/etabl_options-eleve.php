@@ -29,7 +29,7 @@ if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');
 $TITRE = "Options de l'environnement élève";
 ?>
 
-<p class="hc"><span class="manuel"><a class="pop_up" href="./aide.php?fichier=gestion_options_eleve">DOC : Gestion des options de l'environnement élève</a></span></p>
+<p class="hc"><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__gestion_options_eleve">DOC : Gestion des options de l'environnement élève</a></span></p>
 
 <hr />
 

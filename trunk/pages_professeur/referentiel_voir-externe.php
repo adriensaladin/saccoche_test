@@ -42,7 +42,7 @@ $TITRE = "Référentiels partagés sur le serveur communautaire";
 <hr />
 
 <?php
-if( (!$_SESSION['SESAMATH_ID']) || (!$_SESSION['STRUCTURE_KEY']) )
+if( (!$_SESSION['SESAMATH_ID']) || (!$_SESSION['SESAMATH_KEY']) )
 {
 	echo'<p><label for="rien" class="erreur">Pour pouvoir effectuer la recherche d\'un référentiel partagé sur le serveur communautaire, un administrateur doit identifier l\'établissement dans la base Sésamath.</label></p>';
 }

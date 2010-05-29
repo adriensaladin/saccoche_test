@@ -208,14 +208,6 @@ table.scor_eval tbody td input.DISP {background:#FFF url('../_img/note/note_DISP
 table.scor_eval tbody td input:focus {border:2px solid #00F}
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-/* Tableau de simulation de calcul des scores (administrateur)                                         */
-/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-
-table#simulation {border-collapse:separate;border-spacing:3px;empty-cells:hide;text-align:center}
-table#simulation colgroup {margin:auto 10px}
-table#simulation th, table#simulation td {border:1px solid #000;text-align:center}
-
-/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 /* Couleur de fond pour indiquer A / VA / NA                                                           */
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
@@ -278,32 +270,6 @@ table.form i, table.bilan i, table.bilan_synthese i {display:none}
 #zone_socle{position:fixed;z-index:9999;left:0;top:0;right:0;bottom:0;border:0;background:#EEE;font-size:13px;padding:0.25em;overflow:auto;display:none}
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-/* Style pour l'iframe (recherche de référentiels sur le serveur communautaire)                        */
-/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-
-/* Base Superbox Styles */
-#superbox-overlay{position:fixed;top:0;left:0;z-index:9998;width:100%;height:100%;}
-#superbox-wrapper{position:fixed;z-index:9999;top:0;display:table;width:100%;height:100%;}
-#superbox-container{position:relative;display:table-cell;width:100%;height:100%;margin:0;padding:0;vertical-align:middle;}
-#superbox{margin:0 auto;padding:0;}
-#superbox-container .loading{margin:0 auto;text-align:center;}
-/* IE7 */
-*:first-child+html #superbox-container{position:absolute;top:50%;display:block;height:auto;}
-*:first-child+html #superbox{position:relative;top:-50%;display:block;}
-/* IE6 - Thanks to Thickbox for IE expressions */
-* html #superbox-container{position:absolute;top:50%;display:block;height:auto;}
-* html #superbox{position:relative;top:-50%;display:block;}
-* html #superbox-overlay{position:absolute;height:100%;}
-* html #superbox-wrapper{position:absolute;margin-top:0;}
-/* Personnalisations */
-#superbox-overlay{background:#FFF;}
-#superbox-container .loading{font-weight:bold;}
-#superbox{padding:10px;background:#CCF;}
-#superbox-innerbox{padding:0px;margin-top:-10px;background:#CCF;}
-#superbox .close{margin-top:-10px;margin-left:-10px;width:30px;height:30px;padding:0}
-#superbox .close:hover{cursor:pointer}
-
-/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 /* Liste à puce pour l'affichage de l'arborescence des compétences ou du socle                         */
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
@@ -335,7 +301,7 @@ ul.donneur li span:hover {cursor:pointer}
 #step li.on {color:#000;font-weight:bold;list-style:url(../_img/puce_li.png);}
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-/* Liste à puce pour la page de présentation du projet                                                 */
+/* Liste à puce avec flèches vertes                                                                    */
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 ul.puce li {margin-left:2em;list-style:url(../_img/puce_li.png);}
@@ -363,9 +329,3 @@ div.td_souris img.on {background-color:#FF0}
 .graph_total  {background-color:#99F;text-align:center;width:100%}
 .graph_partie {background-color:#080;height:3px;} /* margin-left et width ajoutés en PHP */
 .graph_erreur {background-color:#A00;height:3px;} /* margin-left et width ajoutés en PHP */
-
-/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-/* Copies d'écrans                                                                                     */
-/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-
-img.ce {padding:5px;border:3px solid #66F}

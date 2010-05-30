@@ -744,7 +744,7 @@ function enregistrer_structure_Sesamath($structure_id,$structure_key)
  * recuperer_numero_derniere_version
  * 
  * @param void
- * @return string 'AAAA-MM-JJ'
+ * @return string 'AAAA-MM-JJ' ou message d'erreur
  */
 
 function recuperer_numero_derniere_version()

@@ -77,7 +77,7 @@ elseif( ($action=='init-mdp-admin') && $base_id && $admin_id )
 	$texte.= 'Je viens de réinitialiser le mot de passe de '.$admin_prenom.' '.$admin_nom.', administrateur de SACoche pour l\'établissement "'.$denomination.'" sur le site hébergé par '.HEBERGEUR_DENOMINATION.'.'."\r\n\r\n";
 	$texte.= 'Pour se connecter comme administrateur, il faut utiliser le lien'."\r\n".SERVEUR_ADRESSE.'?id='.$base_id.'&admin'."\r\n".'et entrer les identifiants'."\r\n".'nom d\'utilisateur " '.$admin_login.' "'."\r\n".'mot de passe " '.$admin_password.' "'."\r\n".'(on peut changer ce mot de passe depuis l\'espace d\'administration).'."\r\n\r\n";
 	$texte.= 'Rappel : ce logiciel est mis à votre disposition gratuitement, mais sans aucune garantie, conformément à la licence libre GNU GPL3.'."\r\n".'De plus les administrateurs sont responsables de toute conséquence d\'une mauvaise manipulation de leur part.'."\r\n\r\n";
-	$texte.= 'N\'hésitez pas à consulter la documentation disponible depuis le site du projet :'."\r\n".'http://competences.sesamath.net'."\r\n".'Tout retour quand à votre utilisation sera le bienvenu.'."\r\n\r\n";
+	$texte.= 'N\'hésitez pas à consulter la documentation disponible depuis le site du projet :'."\r\n".SERVEUR_PROJET."\r\n".'Tout retour quand à votre utilisation sera le bienvenu.'."\r\n\r\n";
 	$texte.= 'Cordialement'."\r\n";
 	$texte.= WEBMESTRE_PRENOM.' '.WEBMESTRE_NOM."\r\n\r\n";
 	$courriel_bilan = envoyer_webmestre_courriel($contact_courriel,'Création compte',$texte,false);

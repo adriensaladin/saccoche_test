@@ -173,7 +173,7 @@ else
 	// Accueil (identification) : image SACoche + image hébergeur.
 	$hebergeur_img  = ( (defined('HEBERGEUR_LOGO')) && (is_file('./__hebergement_info/'.HEBERGEUR_LOGO)) ) ? '<img alt="Hébergeur" src="./__hebergement_info/'.HEBERGEUR_LOGO.'" />' : '' ;
 	$hebergeur_lien = ( (defined('HEBERGEUR_ADRESSE_SITE')) && HEBERGEUR_ADRESSE_SITE && ($hebergeur_img) ) ? '<a href="'.html(HEBERGEUR_ADRESSE_SITE).'">'.$hebergeur_img.'</a>' : $hebergeur_img ;
-	$SACoche_lien   = '<a href="http://competences.sesamath.net"><img alt="Suivi d\'Acquisition de Compétences" src="./_img/logo_grand.gif" /></a>' ;
+	$SACoche_lien   = '<a href="'.SERVEUR_PROJET.'"><img alt="Suivi d\'Acquisition de Compétences" src="./_img/logo_grand.gif" /></a>' ;
 	$TITRE_PAGE = '<h1>'.$SACoche_lien.$hebergeur_lien.'</h1>';
 }
 

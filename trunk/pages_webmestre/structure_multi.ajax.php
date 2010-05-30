@@ -84,7 +84,7 @@ if( ($action=='ajouter') && isset($tab_geo[$geo_id]) && $localisation && $denomi
 	$texte.= 'Je viens de créer une base SACoche pour l\'établissement "'.$denomination.'" sur le site hébergé par '.HEBERGEUR_DENOMINATION.'. Pour accéder au site sans avoir besoin de sélectionner votre établissement, utilisez le lien suivant :'."\r\n".SERVEUR_ADRESSE.'?id='.$base_id."\r\n\r\n";
 	$texte.= 'Vous êtes maintenant inscrit comme administrateur de cet établissement sur SACoche. Pour vous connecter comme administrateur, utilisez le lien'."\r\n".SERVEUR_ADRESSE.'?id='.$base_id.'&admin'."\r\n".'et entrez les identifiants'."\r\n".'nom d\'utilisateur " admin "'."\r\n".'mot de passe " '.$password.' "'."\r\n".'(vous pouvez changer ce mot de passe depuis votre espace d\'administration).'."\r\n\r\n";
 	$texte.= 'Ce logiciel est mis à votre disposition gratuitement, mais sans aucune garantie, conformément à la licence libre GNU GPL3.'."\r\n".'De plus les administrateurs sont responsables de toute conséquence d\'une mauvaise manipulation de leur part.'."\r\n\r\n";
-	$texte.= 'N\'hésitez pas à consulter la documentation disponible depuis le site du projet :'."\r\n".'http://competences.sesamath.net'."\r\n".'Tout retour quand à votre utilisation sera le bienvenu.'."\r\n\r\n";
+	$texte.= 'N\'hésitez pas à consulter la documentation disponible depuis le site du projet :'."\r\n".SERVEUR_PROJET."\r\n".'Tout retour quand à votre utilisation sera le bienvenu.'."\r\n\r\n";
 	$texte.= 'Cordialement'."\r\n";
 	$texte.= WEBMESTRE_PRENOM.' '.WEBMESTRE_NOM."\r\n\r\n";
 	$courriel_bilan = envoyer_webmestre_courriel($contact_courriel,'Création compte',$texte,false);

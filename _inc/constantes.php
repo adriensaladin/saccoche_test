@@ -32,8 +32,8 @@
 
 // VERSION_PROG : version des fichiers installés, à comparer avec la dernière version disponible sur le serveur communautaire
 // VERSION_BASE : version de la base associée, à comparer avec la version de la base actuellement installée
-define('VERSION_PROG','2010-05-15');
-define('VERSION_BASE','2010-05-15');
+define('VERSION_PROG','2010-06-03');
+define('VERSION_BASE','2010-06-03');
 
 // FILE_CSS_SCREEN / FILE_CSS_PRINT / FILE_JS_BIBLIO / FILE_JS_SCRIPT / FILE_JS_BIBLIO / FILE_JS_SCRIPT
 // Pour éviter les problèmes de mise en cache, modifier les noms des fichiers lors d'une mise à jour

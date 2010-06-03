@@ -1663,7 +1663,7 @@ function DB_recopier_identifiants($champ_depart,$champ_arrive)
 }
 
 /**
- * DB_modifier_utilisateur (on ne touche pas à 'user_profil')
+ * DB_modifier_utilisateur (on ne touche pas à 'user_profil' ni à 'connexion_date')
  * 
  * @param int     $user_id
  * @param array   array(':num_sconet'=>$val, ':reference'=>$val , ':nom'=>$val , ':prenom'=>$val , ':login'=>$val , ':password'=>$val , ':statut'=>$val , ':classe'=>$val , ':id_ent'=>$val , ':id_gepi'=>$val );
@@ -1677,16 +1677,16 @@ function DB_modifier_utilisateur($user_id,$DB_VAR)
 	{
 		switch($key)
 		{
-			case ':num_sconet' : $tab_set[] = 'user_num_sconet='.$key; break;
-			case ':reference' :  $tab_set[] = 'user_reference='.$key;  break;
-			case ':nom' :        $tab_set[] = 'user_nom='.$key;        break;
-			case ':prenom' :     $tab_set[] = 'user_prenom='.$key;     break;
-			case ':login' :      $tab_set[] = 'user_login='.$key;      break;
-			case ':password' :   $tab_set[] = 'user_password=:password_crypte'; $DB_VAR[':password_crypte'] = crypter_mdp($DB_VAR[':password']); unset($DB_VAR[':password']); break;
-			case ':statut' :     $tab_set[] = 'user_statut='.$key;     break;
-			case ':classe' :     $tab_set[] = 'eleve_classe_id='.$key; break;
-			case ':id_ent' :     $tab_set[] = 'user_id_ent='.$key;     break;
-			case ':id_gepi' :    $tab_set[] = 'user_id_gepi='.$key;    break;
+			case ':num_sconet' :     $tab_set[] = 'user_num_sconet='.$key;     break;
+			case ':reference' :      $tab_set[] = 'user_reference='.$key;      break;
+			case ':nom' :            $tab_set[] = 'user_nom='.$key;            break;
+			case ':prenom' :         $tab_set[] = 'user_prenom='.$key;         break;
+			case ':login' :          $tab_set[] = 'user_login='.$key;          break;
+			case ':password' :       $tab_set[] = 'user_password=:password_crypte'; $DB_VAR[':password_crypte'] = crypter_mdp($DB_VAR[':password']); unset($DB_VAR[':password']); break;
+			case ':statut' :         $tab_set[] = 'user_statut='.$key;         break;
+			case ':classe' :         $tab_set[] = 'eleve_classe_id='.$key;     break;
+			case ':id_ent' :         $tab_set[] = 'user_id_ent='.$key;         break;
+			case ':id_gepi' :        $tab_set[] = 'user_id_gepi='.$key;        break;
 		}
 	}
 	$DB_SQL = 'UPDATE sacoche_user ';
@@ -1694,6 +1694,23 @@ function DB_modifier_utilisateur($user_id,$DB_VAR)
 	$DB_SQL.= 'WHERE user_id=:user_id ';
 	$DB_SQL.= 'LIMIT 1';
 	$DB_VAR[':user_id'] = $user_id;
+	DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+}
+
+/**
+ * DB_modifier_date_connexion
+ * 
+ * @param int     $user_id
+ * @return void
+ */
+
+function DB_modifier_date_connexion($user_id)
+{
+	$DB_SQL = 'UPDATE sacoche_user ';
+	$DB_SQL.= 'SET user_connexion_date=NOW() ';
+	$DB_SQL.= 'WHERE user_id=:user_id ';
+	$DB_SQL.= 'LIMIT 1';
+	$DB_VAR = array(':user_id'=>$user_id);
 	DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 

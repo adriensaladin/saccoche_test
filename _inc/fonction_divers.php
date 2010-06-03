@@ -346,13 +346,15 @@ function connecter_user($BASE,$profil,$login,$password,$sso)
 		bloquer_application($_SESSION['USER_PROFIL'],'Mise à jour de la base en cours.');
 		// Lancer une mise à jour de la base
 		require_once('./_inc/fonction_maj_base.php');
-		maj_base();
+		maj_base($_SESSION['VERSION_BASE']);
 		// Débloquer l'application
 		debloquer_application($_SESSION['USER_PROFIL']);
 		// Retour explicatif
 		close_session();
 		return'Identification réussie mais la base n\'était pas à jour : merci de valider de nouveau !';
 	}
+	// Mémoriser la date de la (dernière) connexion
+	DB_modifier_date_connexion($_SESSION['USER_ID']);
 	// Enregistrement d'un cookie sur le poste client servant à retenir le dernier établissement sélectionné si identification avec succès
 	setcookie('SACoche-etablissement',$BASE,time()+60*60*24*365,'/');
 	return'ok';

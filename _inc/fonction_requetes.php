@@ -231,12 +231,12 @@ function DB_recuperer_arborescence_et_matieres_eleves_periode($liste_eleve_id,$d
 	$DB_VAR = array(':date_debut'=>$date_mysql_debut,':date_fin'=>$date_mysql_fin);
 	$DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR , TRUE);
 	$tab_matiere = array();
-	foreach($DB_TAB as $competence_id => $tab)
+	foreach($DB_TAB as $item_id => $tab)
 	{
 		foreach($tab as $key => $DB_ROW)
 		{
 			$tab_matiere[$DB_ROW['matiere_id']] = $DB_ROW['matiere_nom'];
-			unset($DB_TAB[$competence_id][$key]['matiere_id'],$DB_TAB[$competence_id][$key]['matiere_nom']);
+			unset($DB_TAB[$item_id][$key]['matiere_id'],$DB_TAB[$item_id][$key]['matiere_nom']);
 		}
 	}
 	return array($DB_TAB,$tab_matiere);
@@ -269,11 +269,11 @@ function DB_recuperer_arborescence_et_matieres_eleves_item($liste_eleve_id,$list
 	$DB_SQL.= 'ORDER BY matiere_nom ASC, niveau_ordre ASC, domaine_ordre ASC, theme_ordre ASC, item_ordre ASC';
 	$DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , null , TRUE);
 	$tab_matiere = array();
-	foreach($DB_TAB as $competence_id => $tab)
+	foreach($DB_TAB as $item_id => $tab)
 	{
 		foreach($tab as $key => $DB_ROW)
 		{
-			unset($DB_TAB[$competence_id][$key]['matiere_id'],$DB_TAB[$competence_id][$key]['matiere_nom']);
+			unset($DB_TAB[$item_id][$key]['matiere_id'],$DB_TAB[$item_id][$key]['matiere_nom']);
 		}
 		$tab_matiere[$DB_ROW['matiere_id']] = $DB_ROW['matiere_nom'];
 	}
@@ -1524,18 +1524,18 @@ function DB_ajouter_devoir($prof_id,$groupe_id,$date_mysql,$info)
  * @param int    $prof_id
  * @param int    $eleve_id
  * @param int    $devoir_id
- * @param int    $competence_id
- * @param string $competence_date_mysql
- * @param string $competence_note
- * @param string $competence_info
+ * @param int    $item_id
+ * @param string $item_date_mysql
+ * @param string $item_note
+ * @param string $item_info
  * @return void
  */
 
-function DB_ajouter_saisie($prof_id,$eleve_id,$devoir_id,$competence_id,$competence_date_mysql,$competence_note,$competence_info)
+function DB_ajouter_saisie($prof_id,$eleve_id,$devoir_id,$item_id,$item_date_mysql,$item_note,$item_info)
 {
 	$DB_SQL = 'INSERT INTO sacoche_saisie ';
-	$DB_SQL.= 'VALUES(:prof_id,:eleve_id,:devoir_id,:competence_id,:competence_date,:competence_note,:competence_info)';
-	$DB_VAR = array(':prof_id'=>$prof_id,':eleve_id'=>$eleve_id,':devoir_id'=>$devoir_id,':competence_id'=>$competence_id,':competence_date'=>$competence_date_mysql,':competence_note'=>$competence_note,':competence_info'=>$competence_info);
+	$DB_SQL.= 'VALUES(:prof_id,:eleve_id,:devoir_id,:item_id,:item_date,:item_note,:item_info)';
+	$DB_VAR = array(':prof_id'=>$prof_id,':eleve_id'=>$eleve_id,':devoir_id'=>$devoir_id,':item_id'=>$item_id,':item_date'=>$item_date_mysql,':item_note'=>$item_note,':item_info'=>$item_info);
 	DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
@@ -1875,12 +1875,12 @@ function DB_modifier_groupe($groupe_id,$groupe_ref,$groupe_nom,$niveau_id)
 function DB_modifier_ordre_item($devoir_id,$tab_items)
 {
 	$DB_SQL = 'UPDATE sacoche_jointure_devoir_item SET jointure_ordre=:ordre ';
-	$DB_SQL.= 'WHERE devoir_id=:devoir_id AND item_id=:competence_id ';
+	$DB_SQL.= 'WHERE devoir_id=:devoir_id AND item_id=:item_id ';
 	$DB_SQL.= 'LIMIT 1';
 	$ordre = 1;
-	foreach($tab_items as $competence_id)
+	foreach($tab_items as $item_id)
 	{
-		$DB_VAR = array(':devoir_id'=>$devoir_id,':competence_id'=>$competence_id,':ordre'=>$ordre);
+		$DB_VAR = array(':devoir_id'=>$devoir_id,':item_id'=>$item_id,':ordre'=>$ordre);
 		DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 		$ordre++;
 	}
@@ -1891,17 +1891,18 @@ function DB_modifier_ordre_item($devoir_id,$tab_items)
  * 
  * @param int    $eleve_id
  * @param int    $devoir_id
- * @param int    $competence_id
- * @param string $competence_note
+ * @param int    $item_id
+ * @param string $saisie_note
+ * @param string $saisie_info
  * @return void
  */
 
-function DB_modifier_saisie($eleve_id,$devoir_id,$competence_id,$competence_note)
+function DB_modifier_saisie($eleve_id,$devoir_id,$item_id,$saisie_note,$saisie_info)
 {
-	$DB_SQL = 'UPDATE sacoche_saisie SET saisie_note=:competence_note ';
-	$DB_SQL.= 'WHERE eleve_id=:eleve_id AND devoir_id=:devoir_id AND item_id=:competence_id ';
+	$DB_SQL = 'UPDATE sacoche_saisie SET saisie_note=:saisie_note,saisie_info=:saisie_info ';
+	$DB_SQL.= 'WHERE eleve_id=:eleve_id AND devoir_id=:devoir_id AND item_id=:item_id ';
 	$DB_SQL.= 'LIMIT 1';
-	$DB_VAR = array(':eleve_id'=>$eleve_id,':devoir_id'=>$devoir_id,':competence_id'=>$competence_id,':competence_note'=>$competence_note);
+	$DB_VAR = array(':eleve_id'=>$eleve_id,':devoir_id'=>$devoir_id,':item_id'=>$item_id,':saisie_note'=>$saisie_note,':saisie_info'=>$saisie_info);
 	DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
@@ -1920,10 +1921,10 @@ function DB_modifier_devoir($devoir_id,$prof_id,$date_mysql,$info,$tab_items)
 {
 	// sacoche_devoir (maj)
 	$DB_SQL = 'UPDATE sacoche_devoir ';
-	$DB_SQL.= 'SET devoir_date=:date,devoir_info=:info ';
+	$DB_SQL.= 'SET devoir_date=:date,devoir_info=:devoir_info ';
 	$DB_SQL.= 'WHERE devoir_id=:devoir_id AND prof_id=:prof_id ';
 	$DB_SQL.= 'LIMIT 1';
-	$DB_VAR = array(':date'=>$date_mysql,':info'=>$info,':devoir_id'=>$devoir_id,':prof_id'=>$prof_id);
+	$DB_VAR = array(':date'=>$date_mysql,':devoir_info'=>$info,':devoir_id'=>$devoir_id,':prof_id'=>$prof_id);
 	DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 	// sacoche_saisie (retirer superflu)
 	$chaine_id = implode(',',$tab_items);
@@ -1932,10 +1933,11 @@ function DB_modifier_devoir($devoir_id,$prof_id,$date_mysql,$info,$tab_items)
 	$DB_VAR = array(':prof_id'=>$prof_id,':devoir_id'=>$devoir_id);
 	DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 	// sacoche_saisie (maj)
+	$saisie_info = $info.' ('.$_SESSION['USER_NOM'].' '.$_SESSION['USER_PRENOM']{0}.'.)';
 	$DB_SQL = 'UPDATE sacoche_saisie ';
-	$DB_SQL.= 'SET saisie_date=:date,saisie_info=:info ';
+	$DB_SQL.= 'SET saisie_date=:date,saisie_info=:saisie_info ';
 	$DB_SQL.= 'WHERE prof_id=:prof_id AND devoir_id=:devoir_id ';
-	$DB_VAR = array(':prof_id'=>$prof_id,':devoir_id'=>$devoir_id,':date'=>$date_mysql,':info'=>$info);
+	$DB_VAR = array(':prof_id'=>$prof_id,':devoir_id'=>$devoir_id,':date'=>$date_mysql,':saisie_info'=>$saisie_info);
 	DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
@@ -2089,11 +2091,11 @@ function DB_modifier_liaison_devoir_competence($devoir_id,$tab_items,$mode,$devo
 		}
 		// Insertion des items
 		$DB_SQL = 'INSERT INTO sacoche_jointure_devoir_item(devoir_id,item_id,jointure_ordre) ';
-		$DB_SQL.= 'VALUES(:devoir_id,:competence_id,:ordre)';
-		foreach($tab_items as $competence_id)
+		$DB_SQL.= 'VALUES(:devoir_id,:item_id,:ordre)';
+		foreach($tab_items as $item_id)
 		{
-			$ordre = (isset($tab_ordre[$competence_id])) ? $tab_ordre[$competence_id] : 0 ;
-			$DB_VAR = array(':devoir_id'=>$devoir_id,':competence_id'=>$competence_id,':ordre'=>$ordre);
+			$ordre = (isset($tab_ordre[$item_id])) ? $tab_ordre[$item_id] : 0 ;
+			$DB_VAR = array(':devoir_id'=>$devoir_id,':item_id'=>$item_id,':ordre'=>$ordre);
 			DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 		}
 	}
@@ -2128,11 +2130,11 @@ function DB_modifier_liaison_devoir_competence($devoir_id,$tab_items,$mode,$devo
 		$tab_items_ajouter = array_diff($tab_items,$tab_old_items);
 		if(count($tab_items_ajouter))
 		{
-			foreach($tab_items_ajouter as $competence_id)
+			foreach($tab_items_ajouter as $item_id)
 			{
 				$DB_SQL = 'INSERT INTO sacoche_jointure_devoir_item(devoir_id,item_id) ';
-				$DB_SQL.= 'VALUES(:devoir_id,:competence_id)';
-				$DB_VAR = array(':devoir_id'=>$devoir_id,':competence_id'=>$competence_id);
+				$DB_SQL.= 'VALUES(:devoir_id,:item_id)';
+				$DB_VAR = array(':devoir_id'=>$devoir_id,':item_id'=>$item_id);
 				DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 			}
 		}
@@ -2365,17 +2367,17 @@ function DB_supprimer_devoir_et_saisies($devoir_id,$prof_id)
  * 
  * @param int   $eleve_id
  * @param int   $devoir_id
- * @param int   $competence_id
+ * @param int   $item_id
  * @return void
  */
 
-function DB_supprimer_saisie($eleve_id,$devoir_id,$competence_id)
+function DB_supprimer_saisie($eleve_id,$devoir_id,$item_id)
 {
 	// Il faut aussi supprimer les jointures du devoir avec les items
 	$DB_SQL = 'DELETE FROM sacoche_saisie ';
-	$DB_SQL.= 'WHERE eleve_id=:eleve_id AND devoir_id=:devoir_id AND item_id=:competence_id ';
+	$DB_SQL.= 'WHERE eleve_id=:eleve_id AND devoir_id=:devoir_id AND item_id=:item_id ';
 	$DB_SQL.= 'LIMIT 1';
-	$DB_VAR = array(':eleve_id'=>$eleve_id,':devoir_id'=>$devoir_id,':competence_id'=>$competence_id);
+	$DB_VAR = array(':eleve_id'=>$eleve_id,':devoir_id'=>$devoir_id,':item_id'=>$item_id);
 	DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
@@ -2436,8 +2438,8 @@ function DB_supprimer_demande($id1,$id2=false)
 	$DB_SQL = 'DELETE FROM sacoche_demande ';
 	if($id2)
 	{
-		$DB_SQL.= 'WHERE user_id=:eleve_id AND item_id=:competence_id ';
-		$DB_VAR = array(':eleve_id'=>$id1,':competence_id'=>$id2);
+		$DB_SQL.= 'WHERE user_id=:eleve_id AND item_id=:item_id ';
+		$DB_VAR = array(':eleve_id'=>$id1,':item_id'=>$id2);
 	}
 	else
 	{

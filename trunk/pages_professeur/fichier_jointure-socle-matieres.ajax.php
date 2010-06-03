@@ -74,7 +74,7 @@ if($palier_id && $palier_nom)
 	// Récupération des données des référentiels liés au socle
 	$tab_jointure = array();
 	$DB_SQL = 'SELECT entree_id , item_nom , matiere_ref , niveau_ref , ';
-	$DB_SQL.= 'CONCAT(domaine_ref,theme_ordre,item_ordre) AS competence_ref ';
+	$DB_SQL.= 'CONCAT(domaine_ref,theme_ordre,item_ordre) AS item_ref ';
 	$DB_SQL.= 'FROM sacoche_referentiel ';
 	$DB_SQL.= 'LEFT JOIN sacoche_jointure_user_matiere USING (matiere_id) ';
 	$DB_SQL.= 'LEFT JOIN sacoche_matiere USING (matiere_id) ';
@@ -88,7 +88,7 @@ if($palier_id && $palier_nom)
 	$DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , null);
 	foreach($DB_TAB as $DB_ROW)
 	{
-		$tab_jointure[$DB_ROW['entree_id']][] = $DB_ROW['matiere_ref'].'.'.$DB_ROW['niveau_ref'].'.'.$DB_ROW['competence_ref'].' - '.$DB_ROW['item_nom'];
+		$tab_jointure[$DB_ROW['entree_id']][] = $DB_ROW['matiere_ref'].'.'.$DB_ROW['niveau_ref'].'.'.$DB_ROW['item_ref'].' - '.$DB_ROW['item_nom'];
 	}
 
 	// Elaboration de la sortie
@@ -117,10 +117,10 @@ if($palier_id && $palier_nom)
 						if(isset($tab_jointure[$socle_id]))
 						{
 							$export_html .= '								<ul class="ul_m2">'."\r\n";
-							foreach($tab_jointure[$socle_id] as $competence_descriptif)
+							foreach($tab_jointure[$socle_id] as $item_descriptif)
 							{
-								$export_csv .= $separateur.$separateur.$separateur.$separateur.'"'.$competence_descriptif.'"'."\r\n";
-								$export_html .= '									<li class="li_m2">'.html($competence_descriptif).'</li>'."\r\n";
+								$export_csv .= $separateur.$separateur.$separateur.$separateur.'"'.$item_descriptif.'"'."\r\n";
+								$export_html .= '									<li class="li_m2">'.html($item_descriptif).'</li>'."\r\n";
 							}
 							$export_html .= '								</ul>'."\r\n";
 						}

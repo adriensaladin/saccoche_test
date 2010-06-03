@@ -28,13 +28,13 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 if($_SESSION['SESAMATH_ID']==ID_DEMO) {}
 
-$eleve_id      = (isset($_GET['eleve_id']))      ? clean_entier($_GET['eleve_id'])      : 0;
-$matiere_id    = (isset($_GET['matiere_id']))    ? clean_entier($_GET['matiere_id'])    : 0;
-$competence_id = (isset($_GET['competence_id'])) ? clean_entier($_GET['competence_id']) : 0;
-$score         = (isset($_GET['score']))         ? clean_entier($_GET['score'])         : -2; // normalement entier entre 0 et 100 ou -1 si non évalué
+$eleve_id   = (isset($_GET['eleve_id']))   ? clean_entier($_GET['eleve_id'])   : 0;
+$matiere_id = (isset($_GET['matiere_id'])) ? clean_entier($_GET['matiere_id']) : 0;
+$item_id    = (isset($_GET['item_id']))    ? clean_entier($_GET['item_id'])    : 0;
+$score      = (isset($_GET['score']))      ? clean_entier($_GET['score'])      : -2; // normalement entier entre 0 et 100 ou -1 si non évalué
 
 // Un élève demande souhaite ajouter une demande d'évaluation.
-if( ($eleve_id==0) || ($matiere_id==0) || ($competence_id==0) || ($score==-2) )
+if( ($eleve_id==0) || ($matiere_id==0) || ($item_id==0) || ($score==-2) )
 {
 	$reponse = 'Erreur avec les données transmises !';
 }
@@ -57,9 +57,9 @@ else
 	{
 		// Vérifier que cet item n'est pas déjà en attente d'évaluation pour cet élève
 		$DB_SQL = 'SELECT demande_id FROM sacoche_demande ';
-		$DB_SQL.= 'WHERE user_id=:eleve_id AND matiere_id=:matiere_id AND item_id=:competence_id ';
+		$DB_SQL.= 'WHERE user_id=:eleve_id AND matiere_id=:matiere_id AND item_id=:item_id ';
 		$DB_SQL.= 'LIMIT 1';
-		$DB_VAR = array(':eleve_id'=>$eleve_id,':matiere_id'=>$matiere_id,':competence_id'=>$competence_id);
+		$DB_VAR = array(':eleve_id'=>$eleve_id,':matiere_id'=>$matiere_id,':item_id'=>$item_id);
 		$DB_ROW = DB::queryRow(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 		if(count($DB_ROW))
 		{
@@ -70,8 +70,8 @@ else
 			$score = ($score!=-1) ? $score : NULL ;
 			$date_mysql = date("Y-m-d");	// date_mysql de la forme aaaa-mm-jj
 			$DB_SQL = 'INSERT INTO sacoche_demande(user_id,matiere_id,item_id,demande_date,demande_score,demande_statut) ';
-			$DB_SQL.= 'VALUES(:eleve_id,:matiere_id,:competence_id,:demande_date,:demande_score,:demande_statut)';
-			$DB_VAR = array(':eleve_id'=>$eleve_id,':matiere_id'=>$matiere_id,':competence_id'=>$competence_id,':demande_date'=>$date_mysql,':demande_score'=>$score,':demande_statut'=>'eleve');
+			$DB_SQL.= 'VALUES(:eleve_id,:matiere_id,:item_id,:demande_date,:demande_score,:demande_statut)';
+			$DB_VAR = array(':eleve_id'=>$eleve_id,':matiere_id'=>$matiere_id,':item_id'=>$item_id,':demande_date'=>$date_mysql,':demande_score'=>$score,':demande_statut'=>'eleve');
 			DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 			$nb_demandes_attente++;
 			$nb_demandes_possibles--;

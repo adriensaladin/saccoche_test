@@ -397,11 +397,11 @@ function afficher_arborescence_from_SQL($DB_TAB,$dynamique,$reference,$aff_coef,
 	$label_texte_avant = '';
 	$label_texte_apres = '';
 	// Traiter le retour SQL : on remplit les tableaux suivants.
-	$tab_matiere    = array();
-	$tab_niveau     = array();
-	$tab_domaine    = array();
-	$tab_theme      = array();
-	$tab_competence = array();
+	$tab_matiere = array();
+	$tab_niveau  = array();
+	$tab_domaine = array();
+	$tab_theme   = array();
+	$tab_item    = array();
 	$matiere_id = 0;
 	foreach($DB_TAB as $DB_ROW)
 	{
@@ -409,10 +409,10 @@ function afficher_arborescence_from_SQL($DB_TAB,$dynamique,$reference,$aff_coef,
 		{
 			$matiere_id = $DB_ROW['matiere_id'];
 			$tab_matiere[$matiere_id] = ($reference) ? $DB_ROW['matiere_ref'].' - '.$DB_ROW['matiere_nom'] : $DB_ROW['matiere_nom'] ;
-			$niveau_id     = 0;
-			$domaine_id    = 0;
-			$theme_id      = 0;
-			$competence_id = 0;
+			$niveau_id  = 0;
+			$domaine_id = 0;
+			$theme_id   = 0;
+			$item_id    = 0;
 		}
 		if( (!is_null($DB_ROW['niveau_id'])) && ($DB_ROW['niveau_id']!=$niveau_id) )
 		{
@@ -429,9 +429,9 @@ function afficher_arborescence_from_SQL($DB_TAB,$dynamique,$reference,$aff_coef,
 			$theme_id = $DB_ROW['theme_id'];
 			$tab_theme[$matiere_id][$niveau_id][$domaine_id][$theme_id] = ($reference) ? $DB_ROW['domaine_ref'].$DB_ROW['theme_ordre'].' - '.$DB_ROW['theme_nom'] : $DB_ROW['theme_nom'] ;
 		}
-		if( (!is_null($DB_ROW['item_id'])) && ($DB_ROW['item_id']!=$competence_id) )
+		if( (!is_null($DB_ROW['item_id'])) && ($DB_ROW['item_id']!=$item_id) )
 		{
-			$competence_id = $DB_ROW['item_id'];
+			$item_id = $DB_ROW['item_id'];
 			switch($aff_coef)
 			{
 				case 'texte' :	$coef_texte = '['.$DB_ROW['item_coef'].'] ';
@@ -456,12 +456,12 @@ function afficher_arborescence_from_SQL($DB_TAB,$dynamique,$reference,$aff_coef,
 			}
 			if($aff_input)
 			{
-				$input_texte = '<input id="id_'.$competence_id.'" name="f_competences[]" type="checkbox" value="'.$competence_id.'" /> ';
-				$label_texte_avant = '<label for="id_'.$competence_id.'">';
+				$input_texte = '<input id="id_'.$item_id.'" name="f_items[]" type="checkbox" value="'.$item_id.'" /> ';
+				$label_texte_avant = '<label for="id_'.$item_id.'">';
 				$label_texte_apres = '</label>';
 			}
-			$competence_texte = ($reference) ? $DB_ROW['domaine_ref'].$DB_ROW['theme_ordre'].$DB_ROW['item_ordre'].' - '.$DB_ROW['item_nom'] : $DB_ROW['item_nom'] ;
-			$tab_competence[$matiere_id][$niveau_id][$domaine_id][$theme_id][$competence_id] = $input_texte.$label_texte_avant.$coef_texte.$socle_texte.$lien_texte.$lien_texte_avant.html($competence_texte).$lien_texte_apres.$label_texte_apres;
+			$item_texte = ($reference) ? $DB_ROW['domaine_ref'].$DB_ROW['theme_ordre'].$DB_ROW['item_ordre'].' - '.$DB_ROW['item_nom'] : $DB_ROW['item_nom'] ;
+			$tab_item[$matiere_id][$niveau_id][$domaine_id][$theme_id][$item_id] = $input_texte.$label_texte_avant.$coef_texte.$socle_texte.$lien_texte.$lien_texte_avant.html($item_texte).$lien_texte_apres.$label_texte_apres;
 		}
 	}
 	// Affichage de l'arborescence
@@ -492,11 +492,11 @@ function afficher_arborescence_from_SQL($DB_TAB,$dynamique,$reference,$aff_coef,
 								{
 									$retour .= '<li class="li_n2">'.$span_avant.html($theme_texte).$span_apres."\r\n";
 									$retour .= '<ul class="ul_n3">'."\r\n";
-									if(isset($tab_competence[$matiere_id][$niveau_id][$domaine_id][$theme_id]))
+									if(isset($tab_item[$matiere_id][$niveau_id][$domaine_id][$theme_id]))
 									{
-										foreach($tab_competence[$matiere_id][$niveau_id][$domaine_id][$theme_id] as $competence_id => $competence_texte)
+										foreach($tab_item[$matiere_id][$niveau_id][$domaine_id][$theme_id] as $item_id => $item_texte)
 										{
-											$retour .= '<li class="li_n3">'.$competence_texte.'</li>'."\r\n";
+											$retour .= '<li class="li_n3">'.$item_texte.'</li>'."\r\n";
 										}
 									}
 									$retour .= '</ul>'."\r\n";

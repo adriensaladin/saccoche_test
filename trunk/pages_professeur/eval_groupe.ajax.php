@@ -79,10 +79,10 @@ function positif($n) {return $n;}
 $tab_id = (isset($_POST['tab_id'])) ? array_map('clean_entier',explode(',',$_POST['tab_id'])) : array() ;
 $tab_id = array_filter($tab_id,'positif');
 // Contrôler la liste des items transmis
-$tab_competences = (isset($_POST['f_compet_liste'])) ? explode('_',$_POST['f_compet_liste']) : array() ;
-$tab_competences = array_map('clean_entier',$tab_competences);
-$tab_competences = array_filter($tab_competences,'positif');
-$nb_competences = count($tab_competences);
+$tab_items = (isset($_POST['f_compet_liste'])) ? explode('_',$_POST['f_compet_liste']) : array() ;
+$tab_items = array_map('clean_entier',$tab_items);
+$tab_items = array_filter($tab_items,'positif');
+$nb_items = count($tab_items);
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 //	Afficher une liste d'évaluations
@@ -120,13 +120,13 @@ if( ($action=='Afficher_evaluations') && $aff_classe_txt && $aff_classe_id && ( 
 		// Formater la date et la référence de l'évaluation
 		$date_affich = convert_date_mysql_to_french($DB_ROW['devoir_date']);
 		$ref = $DB_ROW['devoir_id'].'_'.strtoupper($DB_ROW['groupe_type']{0}).$DB_ROW['groupe_id'];
-		$s = ($DB_ROW['competences_nombre']>1) ? 's' : '';
+		$s = ($DB_ROW['items_nombre']>1) ? 's' : '';
 		// Afficher une ligne du tableau
 		echo'<tr>';
 		echo	'<td><i>'.html($DB_ROW['devoir_date']).'</i>'.html($date_affich).'</td>';
 		echo	'<td>'.html($DB_ROW['groupe_nom']).'</td>';
 		echo	'<td>'.html($DB_ROW['devoir_info']).'</td>';
-		echo	'<td lang="'.html($DB_ROW['competences_listing']).'">'.html($DB_ROW['competences_nombre']).' item'.$s.'</td>';
+		echo	'<td lang="'.html($DB_ROW['items_listing']).'">'.html($DB_ROW['items_nombre']).' item'.$s.'</td>';
 		echo	'<td class="nu" lang="'.$ref.'">';
 		echo		'<q class="modifier" title="Modifier cette évaluation (date, description, ...)."></q>';
 		echo		'<q class="ordonner" title="Réordonner les items de cette évaluation."></q>';
@@ -143,20 +143,20 @@ if( ($action=='Afficher_evaluations') && $aff_classe_txt && $aff_classe_id && ( 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 //	Ajouter une nouvelle évaluation
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-elseif( (($action=='ajouter')||(($action=='dupliquer')&&($devoir_id))) && $date && $groupe_type && $groupe_id && $nb_competences )
+elseif( (($action=='ajouter')||(($action=='dupliquer')&&($devoir_id))) && $date && $groupe_type && $groupe_id && $nb_items )
 {
 	// Insérer l'enregistrement de l'évaluation
 	$date_mysql = convert_date_french_to_mysql($date);
 	$devoir_id2 = DB_ajouter_devoir($_SESSION['USER_ID'],$groupe_id,$date_mysql,$info);
 	// Insérer les enregistrements des items de l'évaluation
-	DB_modifier_liaison_devoir_competence($devoir_id2,$tab_competences,'dupliquer',$devoir_id);
+	DB_modifier_liaison_devoir_item($devoir_id2,$tab_items,'dupliquer',$devoir_id);
 	// Afficher le retour
 	$ref = $devoir_id2.'_'.strtoupper($groupe_type{0}).$groupe_id;
-	$s = ($nb_competences>1) ? 's' : '';
+	$s = ($nb_items>1) ? 's' : '';
 	echo'<td><i>'.html($date_mysql).'</i>'.html($date).'</td>';
 	echo'<td>{{GROUPE_NOM}}</td>';
 	echo'<td>'.html($info).'</td>';
-	echo'<td lang="'.implode('_',$tab_competences).'">'.$nb_competences.' item'.$s.'</td>';
+	echo'<td lang="'.implode('_',$tab_items).'">'.$nb_items.' item'.$s.'</td>';
 	echo'<td class="nu" lang="'.$ref.'">';
 	echo	'<q class="modifier" title="Modifier cette évaluation (date, description, ...)."></q>';
 	echo	'<q class="ordonner" title="Réordonner les items de cette évaluation."></q>';
@@ -171,21 +171,21 @@ elseif( (($action=='ajouter')||(($action=='dupliquer')&&($devoir_id))) && $date 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 //	Modifier une évaluation existante
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-else if( ($action=='modifier') && $devoir_id && $date && $groupe_type && $groupe_id && $nb_competences )
+else if( ($action=='modifier') && $devoir_id && $date && $groupe_type && $groupe_id && $nb_items )
 {
 	$date_mysql = convert_date_french_to_mysql($date);
 	// sacoche_devoir (maj) ainsi que sacoche_saisie (retirer superflu + maj)
-	DB_modifier_devoir($devoir_id,$_SESSION['USER_ID'],$date_mysql,$info,$tab_competences);
+	DB_modifier_devoir($devoir_id,$_SESSION['USER_ID'],$date_mysql,$info,$tab_items);
 	// ************************ dans sacoche_saisie faut-il aussi virer certains scores élèves en cas de changement de groupe ... ???
 	// sacoche_jointure_devoir_item
-	DB_modifier_liaison_devoir_competence($devoir_id,$tab_competences,'substituer');
+	DB_modifier_liaison_devoir_item($devoir_id,$tab_items,'substituer');
 	// Afficher le retour
 	$ref = $devoir_id.'_'.strtoupper($groupe_type{0}).$groupe_id;
-	$s = (count($tab_competences)>1) ? 's' : '';
+	$s = (count($tab_items)>1) ? 's' : '';
 	echo'<td><i>'.html($date_mysql).'</i>'.html($date).'</td>';
 	echo'<td>{{GROUPE_NOM}}</td>';
 	echo'<td>'.html($info).'</td>';
-	echo'<td lang="'.implode('_',$tab_competences).'">'.$nb_competences.' item'.$s.'</td>';
+	echo'<td lang="'.implode('_',$tab_items).'">'.$nb_items.' item'.$s.'</td>';
 	echo'<td class="nu" lang="'.$ref.'">';
 	echo	'<q class="modifier" title="Modifier cette évaluation (date, description, ...)."></q>';
 	echo	'<q class="ordonner" title="Réordonner les items de cette évaluation."></q>';
@@ -259,7 +259,7 @@ else if( ($action=='saisir') && $devoir_id && $groupe_type && $groupe_id && $dat
 	else
 	{
 		$separateur = ';';
-		$tab_affich  = array(); // tableau bi-dimensionnel [n°ligne=id_competence][n°colonne=id_user]
+		$tab_affich  = array(); // tableau bi-dimensionnel [n°ligne=id_item][n°colonne=id_user]
 		$tab_user_id = array(); // pas indispensable, mais plus lisible
 		$tab_comp_id = array(); // pas indispensable, mais plus lisible
 		$tab_affich[0][0] = '<td>';
@@ -370,7 +370,7 @@ else if( ($action=='voir') && $devoir_id && $groupe_type && $groupe_id && $date 
 	else
 	{
 		$separateur = ';';
-		$tab_affich  = array(); // tableau bi-dimensionnel [n°ligne=id_competence][n°colonne=id_user]
+		$tab_affich  = array(); // tableau bi-dimensionnel [n°ligne=id_item][n°colonne=id_user]
 		$tab_user_id = array(); // pas indispensable, mais plus lisible
 		$tab_comp_id = array(); // pas indispensable, mais plus lisible
 		$tab_affich[0][0] = '<td><a class="fermer_zone_voir" href="#"><img alt="Retourner" src="./_img/action_retourner.png" /> Retour</a></td>';
@@ -483,11 +483,11 @@ else if( ($action=='Enregistrer_saisie') && $devoir_id && $date )
 		$tab_key = explode('x',$key);
 		if(count($tab_key)==2)
 		{
-			$competence_id = clean_entier($tab_key[0]);
+			$item_id = clean_entier($tab_key[0]);
 			$eleve_id = clean_entier($tab_key[1]);
-			if( $competence_id && $eleve_id )
+			if( $item_id && $eleve_id )
 			{
-				$tab_post[$competence_id.'x'.$eleve_id] = $note;
+				$tab_post[$item_id.'x'.$eleve_id] = $note;
 			}
 		}
 	}
@@ -523,23 +523,23 @@ else if( ($action=='Enregistrer_saisie') && $devoir_id && $date )
 		$info = $info.' ('.$_SESSION['USER_NOM'].' '.$_SESSION['USER_PRENOM']{0}.'.)';
 		foreach($tab_nouveau_ajouter as $key => $note)
 		{
-			list($competence_id,$eleve_id) = explode('x',$key);
-			DB_ajouter_saisie($_SESSION['USER_ID'],$eleve_id,$devoir_id,$competence_id,$date,$note,$info);
+			list($item_id,$eleve_id) = explode('x',$key);
+			DB_ajouter_saisie($_SESSION['USER_ID'],$eleve_id,$devoir_id,$item_id,$date,$note,$info);
 			// On supprime une éventuelle demande d'évaluation associée.
 			if($_SESSION['ELEVE_DEMANDES'])
 			{
-				DB_supprimer_demande($eleve_id,$competence_id);
+				DB_supprimer_demande($eleve_id,$item_id);
 			}
 		}
 		foreach($tab_nouveau_modifier as $key => $note)
 		{
-			list($competence_id,$eleve_id) = explode('x',$key);
-			DB_modifier_saisie($eleve_id,$devoir_id,$competence_id,$note,$info);
+			list($item_id,$eleve_id) = explode('x',$key);
+			DB_modifier_saisie($eleve_id,$devoir_id,$item_id,$note,$info);
 		}
 		foreach($tab_nouveau_supprimer as $key => $key)
 		{
-			list($competence_id,$eleve_id) = explode('x',$key);
-			DB_supprimer_saisie($eleve_id,$devoir_id,$competence_id);
+			list($item_id,$eleve_id) = explode('x',$key);
+			DB_supprimer_saisie($eleve_id,$devoir_id,$item_id);
 		}
 		echo'<ok>';
 	}
@@ -569,7 +569,7 @@ else if( ($action=='Imprimer_cartouche') && $devoir_id && $groupe_type && $group
 	}
 	else
 	{
-		$tab_result  = array(); // tableau bi-dimensionnel [n°ligne=id_competence][n°colonne=id_user]
+		$tab_result  = array(); // tableau bi-dimensionnel [n°ligne=id_item][n°colonne=id_user]
 		$tab_user_id = array(); // pas indispensable, mais plus lisible
 		$tab_comp_id = array(); // pas indispensable, mais plus lisible
 		// enregistrer noms prénoms des élèves
@@ -611,12 +611,12 @@ else if( ($action=='Imprimer_cartouche') && $devoir_id && $groupe_type && $group
 		$sacoche_htm.= '<a class="lien_ext" href="'.$dossier_export.$fnom.'.zip">Récupérez les cartouches de cette évaluation dans un fichier csv tabulé pour tableur.</a><p />';
 		$sacoche_csv = '';
 		// Appel de la classe et définition de qqs variables supplémentaires pour la mise en page PDF
-		$competence_nb = count($tab_comp_id);
-		$colspan = ($detail=='minimal') ? $competence_nb : 3 ;
+		$item_nb = count($tab_comp_id);
+		$colspan = ($detail=='minimal') ? $item_nb : 3 ;
 		require('./_fpdf/fpdf.php');
 		require('./_inc/class.PDF.php');
 		$sacoche_pdf = new PDF($orientation,$marge_min,$couleur);
-		$sacoche_pdf->cartouche_initialiser($detail,$competence_nb);
+		$sacoche_pdf->cartouche_initialiser($detail,$item_nb);
 		if($detail=='minimal')
 		{
 			// dans le cas d'un cartouche minimal

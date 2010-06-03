@@ -77,32 +77,32 @@ foreach($tab_eleve as $tab)
 					$releve_html .= '<tr><th>'.$theme_ref.'</th><th>'.html($theme_nom).'</th><th colspan="'.$cases_nb.'" class="nu"></th></tr>'."\r\n";
 					$releve_pdf->grille_niveau_theme($theme_ref,$theme_nom,$theme_nb_lignes);
 					// Pour chaque item...
-					if(isset($tab_competence[$theme_id]))
+					if(isset($tab_item[$theme_id]))
 					{
-						foreach($tab_competence[$theme_id] as $competence_id => $tab)
+						foreach($tab_item[$theme_id] as $item_id => $tab)
 						{
-							extract($tab);	// $competence_ref $competence_nom $competence_coef $competence_socle $competence_lien
+							extract($tab);	// $item_ref $item_nom $item_coef $item_socle $item_lien
 							if($aff_coef)
 							{
-								$texte_coef = '['.$competence_coef.'] ';
+								$texte_coef = '['.$item_coef.'] ';
 							}
 							if($aff_socle)
 							{
-								$texte_socle = ($competence_socle) ? '[S] ' : '[–] ';
+								$texte_socle = ($item_socle) ? '[S] ' : '[–] ';
 							}
 							if($aff_lien)
 							{
-								$texte_lien_avant = ($competence_lien) ? '<a class="lien_ext" href="'.html($competence_lien).'">' : '';
-								$texte_lien_apres = ($competence_lien) ? '</a>' : '';
+								$texte_lien_avant = ($item_lien) ? '<a class="lien_ext" href="'.html($item_lien).'">' : '';
+								$texte_lien_apres = ($item_lien) ? '</a>' : '';
 							}
-							$releve_html .= '<tr><td>'.$competence_ref.'</td><td>'.$texte_coef.$texte_socle.$texte_lien_avant.html($competence_nom).$texte_lien_apres.'</td>';
-							$releve_pdf->grille_niveau_competence($competence_ref,$texte_coef.$texte_socle.$competence_nom);
+							$releve_html .= '<tr><td>'.$item_ref.'</td><td>'.$texte_coef.$texte_socle.$texte_lien_avant.html($item_nom).$texte_lien_apres.'</td>';
+							$releve_pdf->grille_niveau_competence($item_ref,$texte_coef.$texte_socle.$item_nom);
 							// Pour chaque case...
 							for($i=0;$i<$cases_nb;$i++)
 							{
-								if(isset($tab_eval[$eleve_id][$competence_id][$i]))
+								if(isset($tab_eval[$eleve_id][$item_id][$i]))
 								{
-									extract($tab_eval[$eleve_id][$competence_id][$i]);	// $note $date $info
+									extract($tab_eval[$eleve_id][$item_id][$i]);	// $note $date $info
 								}
 								else
 								{

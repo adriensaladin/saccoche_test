@@ -264,10 +264,11 @@ elseif($action=='restaurer')
 	}
 	// Tester si la base nécessite une mise à jour, et si oui alors la lancer
 	$texte_maj = '';
-	if( version_base_fichier_svg() < VERSION_BASE )
+	$version_base_restauree = version_base_fichier_svg();
+	if( $version_base_restauree < VERSION_BASE )
 	{
 		require_once('./_inc/fonction_maj_base.php');
-		maj_base();
+		maj_base($version_base_restauree);
 		$texte_maj = ', et base mise à jour,';
 	}
 	// Débloquer l'application

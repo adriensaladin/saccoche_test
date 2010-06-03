@@ -235,8 +235,8 @@ $(document).ready
 						socle_id  = $(this).parent().children('b').children('img:eq(1)').attr('lang').substring(3);
 						socle_txt = $('label[for=socle_'+socle_id+']').text();
 						// On récupère le lien
-						competence_id = $(this).parent().attr('id').substring(3);
-						lien = tab_ressources[competence_id];
+						item_id = $(this).parent().attr('id').substring(3);
+						lien = tab_ressources[item_id];
 						new_div += '<i>Coef.</i> <input id="f_coef" name="f_coef" type="text" value="'+coef+'" size="1" maxlength="1" /> <i>Nom</i> <input id="f_nom" name="f_nom" size="'+Math.min(10+nom.length,128)+'" maxlength="256" type="text" value="'+nom+'" /> <img alt="" src="./_img/bulle_aide.png" title="Indiquer un coefficient (entier entre 0 et 5) et un nom d\'item." /><br />';
 						new_div += '<i>Socle</i> <input id="f_intitule" name="f_intitule" size="110" maxlength="256" type="text" value="'+socle_txt+'" readonly="readonly" /><input id="f_socle" name="f_socle" type="hidden" value="'+socle_id+'" /><q class="choisir_compet" title="Sélectionner un item du socle commun."></q> <img alt="" src="./_img/bulle_aide.png" title="Indiquer l\'appartenance éventuelle au socle commun." /><br />';
 						new_div += '<i>Lien</i> <input id="f_lien" name="f_lien" type="text" value="'+lien+'" size="90" /> <img alt="" src="./_img/bulle_aide.png" title="Indiquer un lien vers une ressource de remédiation (facultatif)." />';
@@ -388,9 +388,9 @@ $(document).ready
 			function()
 			{
 				// récupérer le nom de l'item et le reporter
-				competence_id  = $(this).parent().parent().attr('id').substring(3);
-				competence_nom = htmlspecialchars( entity_convert( $('#f_nom').val() ) );
-				$('#zone_socle span.f_nom').html(competence_nom);
+				item_id  = $(this).parent().parent().attr('id').substring(3);
+				item_nom = htmlspecialchars( entity_convert( $('#f_nom').val() ) );
+				$('#zone_socle span.f_nom').html(item_nom);
 				// récupérer la relation au socle commun et le cocher
 				socle_id = $(this).prev().val();
 				// 1. Décocher tout
@@ -490,7 +490,7 @@ $(document).ready
 					$('#f_nom').focus();
 					return false;
 				}
-				// On récupère le coefficient, le lien au socle et le lien de remédiation de l'élément (competence uniquement)
+				// On récupère le coefficient, le lien au socle et le lien de remédiation de l'élément (item uniquement)
 				if(contexte=='n3')
 				{
 					coef  = $('#f_coef').val();
@@ -626,7 +626,7 @@ $(document).ready
 					$('#f_nom').focus();
 					return false;
 				}
-				// On récupère le coefficient, le lien au socle et le lien de remédiation de l'élément (competence uniquement)
+				// On récupère le coefficient, le lien au socle et le lien de remédiation de l'élément (item uniquement)
 				if(contexte=='n3')
 				{
 					coef  = $('#f_coef').val();

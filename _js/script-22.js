@@ -468,15 +468,15 @@ $(document).ready
 			function(e)
 			{
 				// Récupérer les infos associées
-				infos = $(this).attr("lang");    // 'ids_' + eleve_id + '_' + matiere_id + '_' + competence_id + '_' + score
+				infos = $(this).attr("lang");    // 'ids_' + eleve_id + '_' + matiere_id + '_' + item_id + '_' + score
 				tab_infos = infos.split('_');
 				if(tab_infos.length==5)
 				{
-					eleve_id      = tab_infos[1];
-					matiere_id    = tab_infos[2];
-					competence_id = tab_infos[3];
-					score         = (tab_infos[4]!='') ? tab_infos[4] : -1 ; // si absence de score...
-					get_data = 'eleve_id='+eleve_id+'&matiere_id='+matiere_id+'&competence_id='+competence_id+'&score='+score;
+					eleve_id   = tab_infos[1];
+					matiere_id = tab_infos[2];
+					item_id    = tab_infos[3];
+					score      = (tab_infos[4]!='') ? tab_infos[4] : -1 ; // si absence de score...
+					get_data   = 'eleve_id='+eleve_id+'&matiere_id='+matiere_id+'&item_id='+item_id+'&score='+score;
 				}
 				else
 				{

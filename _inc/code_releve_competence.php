@@ -102,20 +102,20 @@ require('./_inc/class.PDF.php');
 // Tableaux et variables pour mémoriser les infos ; dans cette section on ne fait que les calculs (aucun affichage)
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
-$tab_score_eleve_competence             = array();	// Retenir les scores / élève / matière / item
-$tab_score_competence_eleve             = array();	// Retenir les scores / item / élève
-$tab_moyenne_scores_eleve               = array();	// Retenir la moyenne des scores d'acquisitions calculés / matière / élève
-$tab_pourcentage_validations_eleve      = array();	// Retenir le pourcentage d'items validés / matière / élève
-$tab_infos_validations_eleve            = array();	// Retenir les infos (nb A - VA - NA) à l'ogine du tableau précédent / matière / élève
-$tab_moyenne_scores_competence          = array();	// Retenir la moyenne des scores d'acquisitions calculés / item
-$tab_pourcentage_validations_competence = array();	// Retenir le pourcentage d'items validés / item
-$moyenne_moyenne_scores                 = 0;	// moyenne des moyennes des scores d'acquisitions calculés
-$moyenne_pourcentage_validations        = 0;	// moyenne des moyennes des pourcentages d'items validés
+$tab_score_eleve_item              = array();	// Retenir les scores / élève / matière / item
+$tab_score_item_eleve              = array();	// Retenir les scores / item / élève
+$tab_moyenne_scores_eleve          = array();	// Retenir la moyenne des scores d'acquisitions calculés / matière / élève
+$tab_pourcentage_validations_eleve = array();	// Retenir le pourcentage d'items validés / matière / élève
+$tab_infos_validations_eleve       = array();	// Retenir les infos (nb A - VA - NA) à l'ogine du tableau précédent / matière / élève
+$tab_moyenne_scores_item           = array();	// Retenir la moyenne des scores d'acquisitions calculés / item
+$tab_pourcentage_validations_item  = array();	// Retenir le pourcentage d'items validés / item
+$moyenne_moyenne_scores            = 0;	// moyenne des moyennes des scores d'acquisitions calculés
+$moyenne_pourcentage_validations   = 0;	// moyenne des moyennes des pourcentages d'items validés
 
 /*
 	On renseigne :
-	$tab_score_eleve_competence[$eleve_id][$matiere_id][$competence_id]
-	$tab_score_competence_eleve[$competence_id][$eleve_id]
+	$tab_score_eleve_item[$eleve_id][$matiere_id][$item_id]
+	$tab_score_item_eleve[$item_id][$eleve_id]
 	$tab_moyenne_scores_eleve[$matiere_id][$eleve_id]
 	$tab_pourcentage_validations_eleve[$matiere_id][$eleve_id]
 	$tab_infos_validations_eleve[$matiere_id][$eleve_id]
@@ -135,15 +135,15 @@ foreach($tab_eleve as $tab)
 			if(isset($tab_eval[$eleve_id][$matiere_id]))
 			{
 				// Pour chaque item...
-				foreach($tab_eval[$eleve_id][$matiere_id] as $competence_id => $tab_devoirs)
+				foreach($tab_eval[$eleve_id][$matiere_id] as $item_id => $tab_devoirs)
 				{
-					extract($tab_competence[$competence_id][0]);	// $competence_ref $competence_nom $competence_coef $competence_socle $competence_lien $calcul_methode $calcul_limite
+					extract($tab_item[$item_id][0]);	// $item_ref $item_nom $item_coef $item_socle $item_lien $calcul_methode $calcul_limite
 					// calcul du bilan de l'item
-					$tab_score_eleve_competence[$eleve_id][$matiere_id][$competence_id] = calculer_note($tab_devoirs,$calcul_methode,$calcul_limite);
-					$tab_score_competence_eleve[$competence_id][$eleve_id] = $tab_score_eleve_competence[$eleve_id][$matiere_id][$competence_id];
+					$tab_score_eleve_item[$eleve_id][$matiere_id][$item_id] = calculer_note($tab_devoirs,$calcul_methode,$calcul_limite);
+					$tab_score_item_eleve[$item_id][$eleve_id] = $tab_score_eleve_item[$eleve_id][$matiere_id][$item_id];
 				}
 				// calcul des bilans des scores
-				$tableau_score_filtre = array_filter($tab_score_eleve_competence[$eleve_id][$matiere_id],'non_nul');
+				$tableau_score_filtre = array_filter($tab_score_eleve_item[$eleve_id][$matiere_id],'non_nul');
 				$nb_scores = count( $tableau_score_filtre );
 				// la moyenne peut être pondérée par des coefficients
 				$somme_scores_ponderes = 0;
@@ -153,10 +153,10 @@ foreach($tab_eleve as $tab)
 					// En l'absence de coefficients, ces 2 lignes suffiraient :
 					// $somme_scores_ponderes = array_sum($tableau_score_filtre);
 					// $somme_coefs = $nb_scores;
-					foreach($tableau_score_filtre as $competence_id => $competence_score)
+					foreach($tableau_score_filtre as $item_id => $item_score)
 					{
-						$somme_scores_ponderes += $competence_score*$tab_competence[$competence_id][0]['competence_coef'];
-						$somme_coefs += $tab_competence[$competence_id][0]['competence_coef'];
+						$somme_scores_ponderes += $item_score*$tab_item[$item_id][0]['item_coef'];
+						$somme_coefs += $tab_item[$item_id][0]['item_coef'];
 					}
 				}
 				// ... un pour la moyenne des pourcentages d'acquisition
@@ -189,16 +189,16 @@ foreach($tab_eleve as $tab)
 
 /*
 	On renseigne (uniquement utile pour le tableau de synthèse) :
-	$tab_moyenne_scores_competence[$competence_id]
-	$tab_pourcentage_validations_competence[$competence_id]
+	$tab_moyenne_scores_item[$item_id]
+	$tab_pourcentage_validations_item[$item_id]
 */
 
 if(in_array('synthese',$tab_type))
 {
 	// Pour chaque item...
-	foreach($tab_liste_comp as $competence_id)
+	foreach($tab_liste_item as $item_id)
 	{
-		$tableau_score_filtre = array_filter($tab_score_competence_eleve[$competence_id],'non_nul');
+		$tableau_score_filtre = array_filter($tab_score_item_eleve[$item_id],'non_nul');
 		$nb_scores = count( $tableau_score_filtre );
 		if($nb_scores)
 		{
@@ -206,13 +206,13 @@ if(in_array('synthese',$tab_type))
 			$nb_acquis      = count( array_filter($tableau_score_filtre,'acquis') );
 			$nb_non_acquis  = count( array_filter($tableau_score_filtre,'non_acquis') );
 			$nb_voie_acquis = $nb_scores - $nb_acquis - $nb_non_acquis;
-			$tab_moyenne_scores_competence[$competence_id]          = round($somme_scores/$nb_scores,0);
-			$tab_pourcentage_validations_competence[$competence_id] = round( 50 * ( ($nb_acquis*2 + $nb_voie_acquis) / $nb_scores ) ,0);
+			$tab_moyenne_scores_item[$item_id]          = round($somme_scores/$nb_scores,0);
+			$tab_pourcentage_validations_item[$item_id] = round( 50 * ( ($nb_acquis*2 + $nb_voie_acquis) / $nb_scores ) ,0);
 		}
 		else
 		{
-			$tab_moyenne_scores_competence[$competence_id]          = false;
-			$tab_pourcentage_validations_competence[$competence_id] = false;
+			$tab_moyenne_scores_item[$item_id]          = false;
+			$tab_pourcentage_validations_item[$item_id] = false;
 		}
 	}
 }
@@ -254,7 +254,7 @@ if(in_array('individuel',$tab_type))
 	}
 	// Appel de la classe et définition de qqs variables supplémentaires pour la mise en page PDF
 	$releve_pdf = new PDF($orientation,$marge_min,$couleur);
-	if($format=='matiere')      {$releve_pdf->bilan_periode_individuel_initialiser($cases_nb,$cases_largeur,$cases_hauteur,$lignes_nb=$competence_nb+$aff_bilan_ms+$aff_bilan_pv,$new_page=true);}
+	if($format=='matiere')      {$releve_pdf->bilan_periode_individuel_initialiser($cases_nb,$cases_largeur,$cases_hauteur,$lignes_nb=$item_nb+$aff_bilan_ms+$aff_bilan_pv,$new_page=true);}
 	if($format=='multimatiere') {$releve_pdf->bilan_periode_individuel_initialiser($cases_nb,$cases_largeur,$cases_hauteur,$lignes_nb=0,$new_page=false);}
 	if($format=='selection')    {$releve_pdf->bilan_periode_individuel_initialiser($cases_nb,$cases_largeur,$cases_hauteur,$lignes_nb=0,$new_page=false);}
 	$bilan_colspan = $cases_nb + 2 ;
@@ -278,8 +278,8 @@ if(in_array('individuel',$tab_type))
 				{
 					if( ($format=='multimatiere') || ($format=='selection') )
 					{
-						$competence_matiere_nb = count($tab_eval[$eleve_id][$matiere_id]);
-						$releve_pdf->bilan_periode_individuel_entete_transdisciplinaire_secondaire($matiere_nom,$lignes_nb=$competence_matiere_nb+$aff_bilan_ms+$aff_bilan_pv);
+						$item_matiere_nb = count($tab_eval[$eleve_id][$matiere_id]);
+						$releve_pdf->bilan_periode_individuel_entete_transdisciplinaire_secondaire($matiere_nom,$lignes_nb=$item_matiere_nb+$aff_bilan_ms+$aff_bilan_pv);
 					}
 					$releve_html_individuel .= '<h3>'.html($matiere_nom).'</h3>';
 					// On passe au tableau
@@ -291,26 +291,26 @@ if(in_array('individuel',$tab_type))
 					$releve_html_table_head .= '<th>score</th></tr></thead>';
 					$releve_html_table_body = '<tbody>';
 					// Pour chaque item...
-					foreach($tab_eval[$eleve_id][$matiere_id] as $competence_id => $tab_devoirs)
+					foreach($tab_eval[$eleve_id][$matiere_id] as $item_id => $tab_devoirs)
 					{
-						extract($tab_competence[$competence_id][0]);	// $competence_ref $competence_nom $competence_coef $competence_socle $competence_lien $calcul_methode $calcul_limite
+						extract($tab_item[$item_id][0]);	// $item_ref $item_nom $item_coef $item_socle $item_lien $calcul_methode $calcul_limite
 						// cases référence et nom
 						if($aff_coef)
 						{
-							$texte_coef = '['.$competence_coef.'] ';
+							$texte_coef = '['.$item_coef.'] ';
 						}
 						if($aff_socle)
 						{
-							$texte_socle = ($competence_socle) ? '[S] ' : '[–] ';
+							$texte_socle = ($item_socle) ? '[S] ' : '[–] ';
 						}
 						if($aff_lien)
 						{
-							$texte_lien_avant = ($competence_lien) ? '<a class="lien_ext" href="'.html($competence_lien).'">' : '';
-							$texte_lien_apres = ($competence_lien) ? '</a>' : '';
+							$texte_lien_avant = ($item_lien) ? '<a class="lien_ext" href="'.html($item_lien).'">' : '';
+							$texte_lien_apres = ($item_lien) ? '</a>' : '';
 						}
-						$texte_demande_eval = ( ($_SESSION['USER_PROFIL']=='eleve') && ($_SESSION['ELEVE_DEMANDES']>0) ) ? '<q class="demander_add" lang="ids_'.$eleve_id.'_'.$matiere_id.'_'.$competence_id.'_'.$tab_score_eleve_competence[$eleve_id][$matiere_id][$competence_id].'" title="Ajouter aux demandes d\'évaluations."></q>' : '' ;
-						$releve_html_table_body .= '<tr><td>'.$competence_ref.'</td><td>'.$texte_coef.$texte_socle.$texte_lien_avant.html($competence_nom).$texte_lien_apres.$texte_demande_eval.'</td>';
-						$releve_pdf->bilan_periode_individuel_competence($competence_ref,$texte_coef.$texte_socle.$competence_nom);
+						$texte_demande_eval = ( ($_SESSION['USER_PROFIL']=='eleve') && ($_SESSION['ELEVE_DEMANDES']>0) ) ? '<q class="demander_add" lang="ids_'.$eleve_id.'_'.$matiere_id.'_'.$item_id.'_'.$tab_score_eleve_item[$eleve_id][$matiere_id][$item_id].'" title="Ajouter aux demandes d\'évaluations."></q>' : '' ;
+						$releve_html_table_body .= '<tr><td>'.$item_ref.'</td><td>'.$texte_coef.$texte_socle.$texte_lien_avant.html($item_nom).$texte_lien_apres.$texte_demande_eval.'</td>';
+						$releve_pdf->bilan_periode_individuel_competence($item_ref,$texte_coef.$texte_socle.$item_nom);
 						// cases d'évaluations
 						$devoirs_nb = count($tab_devoirs);
 						// on passe en revue les cases disponibles et on remplit en fonction des évaluations disponibles
@@ -344,8 +344,8 @@ if(in_array('individuel',$tab_type))
 							}
 						}
 						// affichage du bilan de l'item
-						$releve_html_table_body .= affich_score_html($tab_score_eleve_competence[$eleve_id][$matiere_id][$competence_id],'score');
-						$releve_pdf->afficher_score_bilan($tab_score_eleve_competence[$eleve_id][$matiere_id][$competence_id],$br=1);
+						$releve_html_table_body .= affich_score_html($tab_score_eleve_item[$eleve_id][$matiere_id][$item_id],'score');
+						$releve_pdf->afficher_score_bilan($tab_score_eleve_item[$eleve_id][$matiere_id][$item_id],$br=1);
 						$releve_html_table_body .= '</tr>'."\r\n";
 					}
 					$releve_html_table_body .= '</tbody>';
@@ -408,7 +408,7 @@ if(in_array('synthese',$tab_type))
 	}
 	// Appel de la classe et redéfinition de qqs variables supplémentaires pour la mise en page PDF ; on impose l'orientation paysage
 	$releve_pdf = new PDF('landscape',$marge_min,$couleur);
-	$releve_pdf->bilan_periode_synthese_initialiser($eleve_nb,$competence_nb);
+	$releve_pdf->bilan_periode_synthese_initialiser($eleve_nb,$item_nb);
 
 	if($format=='matiere')   {$releve_pdf->bilan_periode_synthese_entete($tab_titre[$format],$matiere_nom,$texte_periode,$groupe_nom);}
 	if($format=='selection') {$releve_pdf->bilan_periode_synthese_entete($tab_titre[$format],$matiere_nom,false,$groupe_nom);}
@@ -419,18 +419,18 @@ if(in_array('synthese',$tab_type))
 	$releve_pdf->choisir_couleur_fond('gris_clair');
 	$releve_html_table_head = '<thead><tr><th>Elève</th>';
 	// Pour chaque item...
-	foreach($tab_liste_comp as $competence_id)
+	foreach($tab_liste_item as $item_id)
 	{
 		$memo_x = $releve_pdf->GetX();
 		$memo_y = $releve_pdf->GetY();
-		list($ref_matiere,$ref_suite) = explode('.',$tab_competence[$competence_id][0]['competence_ref'],2);
+		list($ref_matiere,$ref_suite) = explode('.',$tab_item[$item_id][0]['item_ref'],2);
 		$releve_pdf->SetFont('Arial' , '' , $releve_pdf->taille_police-1);
 		$releve_pdf->Cell($releve_pdf->cases_largeur , $releve_pdf->cases_hauteur/2 , pdf($ref_matiere) , 0 , 2 , 'C' , true , '');
 		$releve_pdf->Cell($releve_pdf->cases_largeur , $releve_pdf->cases_hauteur/2 , pdf($ref_suite) , 0 , 2 , 'C' , true , '');
 		$releve_pdf->SetFont('Arial' , '' , $releve_pdf->taille_police);
 		$releve_pdf->SetXY($memo_x , $memo_y);
 		$releve_pdf->Cell($releve_pdf->cases_largeur , $releve_pdf->cases_hauteur , '' , 1 , 0 , 'C' , false , '');
-		$releve_html_table_head .= '<th title="'.html($tab_competence[$competence_id][0]['competence_nom']).'">'.html($tab_competence[$competence_id][0]['competence_ref']).'</th>';
+		$releve_html_table_head .= '<th title="'.html($tab_item[$item_id][0]['item_nom']).'">'.html($tab_item[$item_id][0]['item_ref']).'</th>';
 	}
 	$releve_pdf->SetX( $releve_pdf->GetX()+2 );
 	$releve_pdf->choisir_couleur_fond('gris_fonce');
@@ -449,9 +449,9 @@ if(in_array('synthese',$tab_type))
 		$releve_html_table_body1 .= '<tr><td>'.html($eleve_nom.' '.$eleve_prenom).'</td>';
 		$releve_html_table_body2 .= '<tr><td>'.html($eleve_nom.' '.$eleve_prenom).'</td>';
 		// Pour chaque item...
-		foreach($tab_liste_comp as $competence_id)
+		foreach($tab_liste_item as $item_id)
 		{
-			$score = (isset($tab_score_eleve_competence[$eleve_id][$matiere_id][$competence_id])) ? $tab_score_eleve_competence[$eleve_id][$matiere_id][$competence_id] : false ;
+			$score = (isset($tab_score_eleve_item[$eleve_id][$matiere_id][$item_id])) ? $tab_score_eleve_item[$eleve_id][$matiere_id][$item_id] : false ;
 			$releve_pdf->afficher_score_bilan($score,$br=0);
 			$releve_html_table_body1 .= affich_score_html($score,'score');
 			$releve_html_table_body2 .= affich_score_html($score,'etat');
@@ -463,7 +463,7 @@ if(in_array('synthese',$tab_type))
 	$releve_html_table_body1 = '<tbody>'.$releve_html_table_body1.'</tbody>'."\r\n";
 	$releve_html_table_body2 = '<tbody>'.$releve_html_table_body2.'</tbody>'."\r\n";
 	// dernière ligne (doublée)
-	$colspan = $competence_nb+4;
+	$colspan = $item_nb+4;
 	$memo_y = $releve_pdf->GetY()+2;
 	$releve_pdf->SetY( $memo_y );
 	$releve_pdf->choisir_couleur_fond('gris_fonce');
@@ -474,18 +474,18 @@ if(in_array('synthese',$tab_type))
 	$memo_x = $releve_pdf->GetX();
 	$releve_pdf->SetXY($memo_x,$memo_y);
 	// Pour chaque item...
-	foreach($tab_liste_comp as $competence_id)
+	foreach($tab_liste_item as $item_id)
 	{
-		$releve_pdf->bilan_periode_synthese_pourcentages($tab_moyenne_scores_competence[$competence_id],$tab_pourcentage_validations_competence[$competence_id],true,false);
-		$releve_html_table_foot1 .= affich_score_html($tab_moyenne_scores_competence[$competence_id],'score','%');
-		$releve_html_table_foot2 .= affich_score_html($tab_pourcentage_validations_competence[$competence_id],'score','%');
+		$releve_pdf->bilan_periode_synthese_pourcentages($tab_moyenne_scores_item[$item_id],$tab_pourcentage_validations_item[$item_id],true,false);
+		$releve_html_table_foot1 .= affich_score_html($tab_moyenne_scores_item[$item_id],'score','%');
+		$releve_html_table_foot2 .= affich_score_html($tab_pourcentage_validations_item[$item_id],'score','%');
 	}
 	// les deux dernières cases (moyenne des moyennes)
 	$releve_pdf->bilan_periode_synthese_pourcentages($moyenne_moyenne_scores,$moyenne_pourcentage_validations,true,true);
 	$releve_html_table_foot1 .= '<th class="nu">&nbsp;</th>'.affich_score_html($moyenne_moyenne_scores,'score','%').'<th class="nu">&nbsp;</th></tr>';
 	$releve_html_table_foot2 .= '<th class="nu">&nbsp;</th><th class="nu">&nbsp;</th>'.affich_score_html($moyenne_pourcentage_validations,'score','%').'</tr>';
 	$releve_html_table_foot = '<tfoot><tr><td class="nu" colspan="'.$colspan.'" style="font-size:0;height:9px">&nbsp;</td></tr>'.$releve_html_table_foot1.$releve_html_table_foot2.'</tfoot>'."\r\n";
-	$num_hide = $competence_nb+1;
+	$num_hide = $item_nb+1;
 	// pour la sortie HTML, on peut placer les tableaux de synthèse au début
 	$releve_html_synthese .= '<hr /><h2>SYNTHESE - Colonnes triables par score (intérêt pour un tri simple)</h2>';
 	$releve_html_synthese .= '<table id="table_s1" class="bilan_synthese">'.$releve_html_table_head.$releve_html_table_foot.$releve_html_table_body1.'</table>';

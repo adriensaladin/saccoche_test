@@ -51,10 +51,10 @@ if( ($action=='Voir') && $matiere_id )
 {
 	// Affichage du référentiel pour la matière sélectionnée
 	$DB_TAB = DB_recuperer_arborescence($prof_id=0,$matiere_id,$niveau_id=0,$only_item=false,$socle_nom=true);
-	$tab_niveau     = array();
-	$tab_domaine    = array();
-	$tab_theme      = array();
-	$tab_competence = array();
+	$tab_niveau  = array();
+	$tab_domaine = array();
+	$tab_theme   = array();
+	$tab_item    = array();
 	$niveau_id = 0;
 	foreach($DB_TAB as $DB_ROW)
 	{
@@ -62,9 +62,9 @@ if( ($action=='Voir') && $matiere_id )
 		{
 			$niveau_id = $DB_ROW['niveau_id'];
 			$tab_niveau[$niveau_id] = $DB_ROW['niveau_nom'];
-			$domaine_id    = 0;
-			$theme_id      = 0;
-			$competence_id = 0;
+			$domaine_id = 0;
+			$theme_id   = 0;
+			$item_id    = 0;
 		}
 		if( (!is_null($DB_ROW['domaine_id'])) && ($DB_ROW['domaine_id']!=$domaine_id) )
 		{
@@ -76,17 +76,17 @@ if( ($action=='Voir') && $matiere_id )
 			$theme_id = $DB_ROW['theme_id'];
 			$tab_theme[$niveau_id][$domaine_id][$theme_id] = $DB_ROW['theme_nom'];
 		}
-		if( (!is_null($DB_ROW['item_id'])) && ($DB_ROW['item_id']!=$competence_id) )
+		if( (!is_null($DB_ROW['item_id'])) && ($DB_ROW['item_id']!=$item_id) )
 		{
-			$competence_id = $DB_ROW['item_id'];
-			$coef_texte    = '<img src="./_img/x'.$DB_ROW['item_coef'].'.gif" alt="" title="Coefficient '.$DB_ROW['item_coef'].'." />';
-			$socle_image   = ($DB_ROW['entree_id']==0) ? 'off' : 'on' ;
-			$socle_nom     = ($DB_ROW['entree_id']==0) ? 'Hors-socle.' : html($DB_ROW['entree_nom']) ;
-			$socle_texte   = '<img src="./_img/socle_'.$socle_image.'.png" alt="" title="'.$socle_nom.'" lang="id_'.$DB_ROW['entree_id'].'" />';
-			$lien_image    = ($DB_ROW['item_lien']=='') ? 'off' : 'on' ;
-			$lien_nom      = ($DB_ROW['item_lien']=='') ? 'Absence de ressource.' : html($DB_ROW['item_lien']) ;
-			$lien_texte    = '<img src="./_img/link_'.$lien_image.'.png" alt="" title="'.$lien_nom.'" />';
-			$tab_competence[$niveau_id][$domaine_id][$theme_id][$competence_id] = $coef_texte.$socle_texte.$lien_texte.html($DB_ROW['item_nom']);
+			$item_id     = $DB_ROW['item_id'];
+			$coef_texte  = '<img src="./_img/x'.$DB_ROW['item_coef'].'.gif" alt="" title="Coefficient '.$DB_ROW['item_coef'].'." />';
+			$socle_image = ($DB_ROW['entree_id']==0) ? 'off' : 'on' ;
+			$socle_nom   = ($DB_ROW['entree_id']==0) ? 'Hors-socle.' : html($DB_ROW['entree_nom']) ;
+			$socle_texte = '<img src="./_img/socle_'.$socle_image.'.png" alt="" title="'.$socle_nom.'" lang="id_'.$DB_ROW['entree_id'].'" />';
+			$lien_image  = ($DB_ROW['item_lien']=='') ? 'off' : 'on' ;
+			$lien_nom    = ($DB_ROW['item_lien']=='') ? 'Absence de ressource.' : html($DB_ROW['item_lien']) ;
+			$lien_texte  = '<img src="./_img/link_'.$lien_image.'.png" alt="" title="'.$lien_nom.'" />';
+			$tab_item[$niveau_id][$domaine_id][$theme_id][$item_id] = $coef_texte.$socle_texte.$lien_texte.html($DB_ROW['item_nom']);
 		}
 	}
 	// Attention : envoyer des balises vides sous la forme <q ... /> plante jquery 1.4 (ça marchait avec la 1.3.2).
@@ -104,12 +104,12 @@ if( ($action=='Voir') && $matiere_id )
 	$images_theme .= '<q class="n2_move" lang="move" title="Déplacer ce thème (et renuméroter)."></q>';
 	$images_theme .= '<q class="n2_del" lang="del" title="Supprimer ce thème ainsi que tout son contenu (et renuméroter)."></q>';
 	$images_theme .= '<q class="n3_add" lang="add" title="Ajouter un item au début de ce thème (et renuméroter)."></q>';
-	$images_competence  = '';
-	$images_competence .= '<q class="n3_edit" lang="edit" title="Renommer, coefficienter, lier cet item."></q>';
-	$images_competence .= '<q class="n3_add" lang="add" title="Ajouter un item à la suite (et renuméroter)."></q>';
-	$images_competence .= '<q class="n3_move" lang="move" title="Déplacer cet item (et renuméroter)."></q>';
-	$images_competence .= '<q class="n3_fus" lang="fus" title="Fusionner avec un autre item (et renuméroter)."></q>';
-	$images_competence .= '<q class="n3_del" lang="del" title="Supprimer cet item (et renuméroter)."></q>';
+	$images_item  = '';
+	$images_item .= '<q class="n3_edit" lang="edit" title="Renommer, coefficienter, lier cet item."></q>';
+	$images_item .= '<q class="n3_add" lang="add" title="Ajouter un item à la suite (et renuméroter)."></q>';
+	$images_item .= '<q class="n3_move" lang="move" title="Déplacer cet item (et renuméroter)."></q>';
+	$images_item .= '<q class="n3_fus" lang="fus" title="Fusionner avec un autre item (et renuméroter)."></q>';
+	$images_item .= '<q class="n3_del" lang="del" title="Supprimer cet item (et renuméroter)."></q>';
 	echo'<ul class="ul_m1">'."\r\n";
 	if(count($tab_niveau))
 	{
@@ -129,11 +129,11 @@ if( ($action=='Voir') && $matiere_id )
 						{
 							echo'					<li class="li_n2" id="n2_'.$theme_id.'"><span>'.html($theme_nom).'</span>'.$images_theme."\r\n";
 							echo'						<ul class="ul_n3">'."\r\n";
-							if(isset($tab_competence[$niveau_id][$domaine_id][$theme_id]))
+							if(isset($tab_item[$niveau_id][$domaine_id][$theme_id]))
 							{
-								foreach($tab_competence[$niveau_id][$domaine_id][$theme_id] as $competence_id => $competence_nom)
+								foreach($tab_item[$niveau_id][$domaine_id][$theme_id] as $item_id => $item_nom)
 								{
-									echo'							<li class="li_n3" id="n3_'.$competence_id.'"><b>'.$competence_nom.'</b>'.$images_competence.'</li>'."\r\n";
+									echo'							<li class="li_n3" id="n3_'.$item_id.'"><b>'.$item_nom.'</b>'.$images_item.'</li>'."\r\n";
 								}
 							}
 							echo'						</ul>'."\r\n";
@@ -360,8 +360,8 @@ elseif( ($action=='del') && (in_array($contexte,array('n1','n2','n3'))) && $elem
 		$DB_SQL.= 'FROM sacoche_referentiel_item ';
 		$DB_SQL.= 'LEFT JOIN sacoche_jointure_devoir_item USING (item_id) ';
 		$DB_SQL.= 'LEFT JOIN sacoche_saisie USING (item_id) ';
-		$DB_SQL.= 'WHERE item_id=:competence_id';
-		$DB_VAR = array(':competence_id'=>$element_id);
+		$DB_SQL.= 'WHERE item_id=:item_id';
+		$DB_VAR = array(':item_id'=>$element_id);
 	}
 	DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 	$test_delete = DB::rowCount(SACOCHE_STRUCTURE_BD_NAME);	// Est censé renvoyé le nb de lignes supprimées ; à cause du multi-tables curieusement ça renvoie 2, même pour un item non lié
@@ -399,8 +399,8 @@ elseif( ($action=='fus') && $element_id && $element2_id )
 {
 	// Supprimer l'item à fusionner
 	$DB_SQL = 'DELETE FROM sacoche_referentiel_item ';
-	$DB_SQL.= 'WHERE item_id=:competence_id';
-	$DB_VAR = array(':competence_id'=>$element_id);
+	$DB_SQL.= 'WHERE item_id=:item_id';
+	$DB_VAR = array(':item_id'=>$element_id);
 	DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 	$test_delete = DB::rowCount(SACOCHE_STRUCTURE_BD_NAME);
 	// Décaler les autres éléments de l'élément parent concerné

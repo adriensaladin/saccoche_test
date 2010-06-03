@@ -59,7 +59,7 @@ if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');
 				echo'<tr id="id_'.$DB_ROW['demande_id'].'">';
 				echo	'<td><i>'.html($DB_ROW['demande_date']).'</i>'.convert_date_mysql_to_french($DB_ROW['demande_date']).'</td>';
 				echo	'<td>'.html($DB_ROW['matiere_nom']).'</td>';
-				echo	'<td>'.html($DB_ROW['competence_ref']).' <img alt="" src="./_img/bulle_aide.png" title="'.html($DB_ROW['item_nom']).'" /></td>';
+				echo	'<td>'.html($DB_ROW['item_ref']).' <img alt="" src="./_img/bulle_aide.png" title="'.html($DB_ROW['item_nom']).'" /></td>';
 				echo	affich_score_html($score,'score',$pourcent='');
 				echo	'<td>'.$statut.'</td>';
 				echo	'<td class="nu"><q class="demander_del" title="Supprimer cette demande d\'évaluation."></q></td>';

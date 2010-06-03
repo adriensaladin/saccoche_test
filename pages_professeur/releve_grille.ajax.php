@@ -56,10 +56,10 @@ if( $matiere_id && $niveau_id && $matiere_nom && $niveau_nom && $remplissage && 
 
 	$tab_domaine    = array();	// [domaine_id] => array(domaine_ref,domaine_nom,domaine_nb_lignes);
 	$tab_theme      = array();	// [domaine_id][theme_id] => array(theme_ref,theme_nom,theme_nb_lignes);
-	$tab_competence = array();	// [theme_id][competence_id] => array(competence_ref,competence_nom,competence_coef,competence_socle,competence_lien);
-	$tab_liste_comp = array();	// [i] => competence_id
+	$tab_item       = array();	// [theme_id][item_id] => array(item_ref,item_nom,item_coef,item_socle,item_lien);
+	$tab_liste_item = array();	// [i] => item_id
 	$tab_eleve      = array();	// [i] => array(eleve_id,eleve_nom,eleve_prenom)
-	$tab_eval       = array();	// [eleve_id][competence_id] => array(note,date,info)
+	$tab_eval       = array();	// [eleve_id][item_id] => array(note,date,info)
 
 	//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 	// Récupération de la liste des items pour la matière et le niveau sélectionné
@@ -67,9 +67,9 @@ if( $matiere_id && $niveau_id && $matiere_nom && $niveau_nom && $remplissage && 
 	$DB_TAB = DB_recuperer_arborescence($prof_id=0,$matiere_id,$niveau_id,$only_item=false,$socle_nom=false);
 	if(count($DB_TAB))
 	{
-		$domaine_id    = 0;
-		$theme_id      = 0;
-		$competence_id = 0;
+		$domaine_id = 0;
+		$theme_id   = 0;
+		$item_id    = 0;
 		foreach($DB_TAB as $DB_ROW)
 		{
 			if( (!is_null($DB_ROW['domaine_id'])) && ($DB_ROW['domaine_id']!=$domaine_id) )
@@ -85,20 +85,20 @@ if( $matiere_id && $niveau_id && $matiere_nom && $niveau_nom && $remplissage && 
 				$first_theme_of_domaine = (isset($tab_theme[$domaine_id])) ? false : true ;
 				$tab_theme[$domaine_id][$theme_id] = array('theme_ref'=>$theme_ref,'theme_nom'=>$DB_ROW['theme_nom'],'theme_nb_lignes'=>1);
 			}
-			if( (!is_null($DB_ROW['item_id'])) && ($DB_ROW['item_id']!=$competence_id) )
+			if( (!is_null($DB_ROW['item_id'])) && ($DB_ROW['item_id']!=$item_id) )
 			{
-				$competence_id = $DB_ROW['item_id'];
-				$competence_ref = $DB_ROW['niveau_ref'].'.'.$DB_ROW['domaine_ref'].$DB_ROW['theme_ordre'].$DB_ROW['item_ordre'];
-				$tab_competence[$theme_id][$competence_id] = array('competence_ref'=>$competence_ref,'competence_nom'=>$DB_ROW['item_nom'],'competence_coef'=>$DB_ROW['item_coef'],'competence_socle'=>$DB_ROW['entree_id'],'competence_lien'=>$DB_ROW['item_lien']);
+				$item_id = $DB_ROW['item_id'];
+				$item_ref = $DB_ROW['niveau_ref'].'.'.$DB_ROW['domaine_ref'].$DB_ROW['theme_ordre'].$DB_ROW['item_ordre'];
+				$tab_item[$theme_id][$item_id] = array('item_ref'=>$item_ref,'item_nom'=>$DB_ROW['item_nom'],'item_coef'=>$DB_ROW['item_coef'],'item_socle'=>$DB_ROW['entree_id'],'item_lien'=>$DB_ROW['item_lien']);
 				$tab_theme[$domaine_id][$theme_id]['theme_nb_lignes']++;
 				if($first_theme_of_domaine)
 				{
 					$tab_domaine[$domaine_id]['domaine_nb_lignes']++;
 				}
-				$tab_liste_comp[] = $competence_id;
+				$tab_liste_item[] = $item_id;
 			}
 		}
-		$liste_comp = implode(',',$tab_liste_comp);
+		$liste_item = implode(',',$tab_liste_item);
 	}
 	else
 	{
@@ -122,21 +122,21 @@ if( $matiere_id && $niveau_id && $matiere_nom && $niveau_nom && $remplissage && 
 	//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 	if($groupe_id && count($tab_eleve_id) && $remplissage=='plein')
 	{
-		$DB_TAB = DB_lister_result_eleves_matiere($liste_eleve , $liste_comp , $date_debut=false , $date_fin=false);
+		$DB_TAB = DB_lister_result_eleves_matiere($liste_eleve , $liste_item , $date_debut=false , $date_fin=false);
 		foreach($DB_TAB as $DB_ROW)
 		{
-			$tab_eval[$DB_ROW['eleve_id']][$DB_ROW['competence_id']][] = array('note'=>$DB_ROW['note'],'date'=>$DB_ROW['date'],'info'=>$DB_ROW['info']);
+			$tab_eval[$DB_ROW['eleve_id']][$DB_ROW['item_id']][] = array('note'=>$DB_ROW['note'],'date'=>$DB_ROW['date'],'info'=>$DB_ROW['info']);
 		}
 	}
 	// On tronque s'il y en a trop
 	foreach($tab_eleve_id as $eleve_id)
 	{
-		foreach($tab_liste_comp as $competence_id)
+		foreach($tab_liste_item as $item_id)
 		{
-			$eval_nb = (isset($tab_eval[$eleve_id][$competence_id])) ? count($tab_eval[$eleve_id][$competence_id]) : 0;
+			$eval_nb = (isset($tab_eval[$eleve_id][$item_id])) ? count($tab_eval[$eleve_id][$item_id]) : 0;
 			if($eval_nb>$cases_nb)
 			{
-				$tab_eval[$eleve_id][$competence_id] = array_slice($tab_eval[$eleve_id][$competence_id],$eval_nb-$cases_nb);
+				$tab_eval[$eleve_id][$item_id] = array_slice($tab_eval[$eleve_id][$item_id],$eval_nb-$cases_nb);
 			}
 		}
 	}

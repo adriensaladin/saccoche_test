@@ -149,8 +149,8 @@ function DB_recuperer_arborescence_eleve_periode_matiere($eleve_id,$matiere_id,$
 	$sql_debut = ($date_mysql_debut) ? 'AND saisie_date>=:date_debut ' : '';
 	$sql_fin   = ($date_mysql_fin)   ? 'AND saisie_date<=:date_fin '   : '';
 	$DB_SQL = 'SELECT item_id , ';
-	$DB_SQL.= 'CONCAT(matiere_ref,".",niveau_ref,".",domaine_ref,theme_ordre,item_ordre) AS competence_ref , ';
-	$DB_SQL.= 'item_nom AS competence_nom , item_coef AS competence_coef , entree_id AS competence_socle , item_lien AS competence_lien , ';
+	$DB_SQL.= 'CONCAT(matiere_ref,".",niveau_ref,".",domaine_ref,theme_ordre,item_ordre) AS item_ref , ';
+	$DB_SQL.= 'item_nom , item_coef , entree_id AS item_socle , item_lien , ';
 	$DB_SQL.= 'referentiel_calcul_methode AS calcul_methode , referentiel_calcul_limite AS calcul_limite ';
 	$DB_SQL.= 'FROM sacoche_saisie ';
 	$DB_SQL.= 'LEFT JOIN sacoche_referentiel_item USING (item_id) ';
@@ -182,8 +182,8 @@ function DB_recuperer_arborescence_eleves_periode_matiere($liste_eleve_id,$matie
 	$sql_debut = ($date_mysql_debut) ? 'AND saisie_date>=:date_debut ' : '';
 	$sql_fin   = ($date_mysql_fin)   ? 'AND saisie_date<=:date_fin '   : '';
 	$DB_SQL = 'SELECT item_id , ';
-	$DB_SQL.= 'CONCAT(matiere_ref,".",niveau_ref,".",domaine_ref,theme_ordre,item_ordre) AS competence_ref , ';
-	$DB_SQL.= 'item_nom AS competence_nom , item_coef AS competence_coef , entree_id AS competence_socle , item_lien AS competence_lien , ';
+	$DB_SQL.= 'CONCAT(matiere_ref,".",niveau_ref,".",domaine_ref,theme_ordre,item_ordre) AS item_ref , ';
+	$DB_SQL.= 'item_nom , item_coef , entree_id AS item_socle , item_lien , ';
 	$DB_SQL.= 'referentiel_calcul_methode AS calcul_methode , referentiel_calcul_limite AS calcul_limite ';
 	$DB_SQL.= 'FROM sacoche_saisie ';
 	$DB_SQL.= 'LEFT JOIN sacoche_referentiel_item USING (item_id) ';
@@ -214,8 +214,8 @@ function DB_recuperer_arborescence_et_matieres_eleves_periode($liste_eleve_id,$d
 	$sql_debut = ($date_mysql_debut) ? 'AND saisie_date>=:date_debut ' : '';
 	$sql_fin   = ($date_mysql_fin)   ? 'AND saisie_date<=:date_fin '   : '';
 	$DB_SQL = 'SELECT item_id , ';
-	$DB_SQL.= 'CONCAT(matiere_ref,".",niveau_ref,".",domaine_ref,theme_ordre,item_ordre) AS competence_ref , ';
-	$DB_SQL.= 'item_nom AS competence_nom , item_coef AS competence_coef , entree_id AS competence_socle , item_lien AS competence_lien , ';
+	$DB_SQL.= 'CONCAT(matiere_ref,".",niveau_ref,".",domaine_ref,theme_ordre,item_ordre) AS item_ref , ';
+	$DB_SQL.= 'item_nom , item_coef , entree_id AS item_socle , item_lien , ';
 	$DB_SQL.= 'matiere_id , matiere_nom , ';
 	$DB_SQL.= 'referentiel_calcul_methode AS calcul_methode , referentiel_calcul_limite AS calcul_limite ';
 	$DB_SQL.= 'FROM sacoche_saisie ';
@@ -254,8 +254,8 @@ function DB_recuperer_arborescence_et_matieres_eleves_periode($liste_eleve_id,$d
 function DB_recuperer_arborescence_et_matieres_eleves_item($liste_eleve_id,$liste_item_id)
 {
 	$DB_SQL = 'SELECT item_id , ';
-	$DB_SQL.= 'CONCAT(matiere_ref,".",niveau_ref,".",domaine_ref,theme_ordre,item_ordre) AS competence_ref , ';
-	$DB_SQL.= 'item_nom AS competence_nom , item_coef AS competence_coef , entree_id AS competence_socle , item_lien AS competence_lien , ';
+	$DB_SQL.= 'CONCAT(matiere_ref,".",niveau_ref,".",domaine_ref,theme_ordre,item_ordre) AS item_ref , ';
+	$DB_SQL.= 'item_nom , item_coef , entree_id AS item_socle , item_lien , ';
 	$DB_SQL.= 'matiere_id , matiere_nom , ';
 	$DB_SQL.= 'referentiel_calcul_methode AS calcul_methode , referentiel_calcul_limite AS calcul_limite ';
 	$DB_SQL.= 'FROM sacoche_saisie ';
@@ -332,7 +332,7 @@ function DB_lister_result_eleve($eleve_id,$liste_item_id,$date_mysql_debut,$date
 {
 	$sql_debut = ($date_mysql_debut) ? 'AND saisie_date>=:date_debut ' : '';
 	$sql_fin   = ($date_mysql_fin)   ? 'AND saisie_date<=:date_fin '   : '';
-	$DB_SQL = 'SELECT item_id AS competence_id , ';
+	$DB_SQL = 'SELECT item_id , ';
 	$DB_SQL.= 'saisie_note AS note , saisie_date AS date , devoir_info AS info ';
 	$DB_SQL.= 'FROM sacoche_saisie ';
 	$DB_SQL.= 'LEFT JOIN sacoche_devoir USING (devoir_id) ';
@@ -361,7 +361,7 @@ function DB_lister_result_eleves_matiere($liste_eleve_id,$liste_item_id,$date_my
 {
 	$sql_debut = ($date_mysql_debut) ? 'AND saisie_date>=:date_debut ' : '';
 	$sql_fin   = ($date_mysql_fin)   ? 'AND saisie_date<=:date_fin '   : '';
-	$DB_SQL = 'SELECT eleve_id AS eleve_id , item_id AS competence_id , ';
+	$DB_SQL = 'SELECT eleve_id , item_id , ';
 	$DB_SQL.= 'saisie_note AS note , saisie_date AS date , devoir_info AS info ';
 	$DB_SQL.= 'FROM sacoche_saisie ';
 	$DB_SQL.= 'LEFT JOIN sacoche_devoir USING (devoir_id) ';
@@ -390,7 +390,7 @@ function DB_lister_result_eleves_matieres($liste_eleve_id,$liste_item_id,$date_m
 {
 	$sql_debut = ($date_mysql_debut) ? 'AND saisie_date>=:date_debut ' : '';
 	$sql_fin   = ($date_mysql_fin)   ? 'AND saisie_date<=:date_fin '   : '';
-	$DB_SQL = 'SELECT eleve_id AS eleve_id , matiere_id AS matiere_id , item_id AS competence_id , ';
+	$DB_SQL = 'SELECT eleve_id , matiere_id , item_id , ';
 	$DB_SQL.= 'saisie_note AS note , saisie_date AS date , devoir_info AS info ';
 	$DB_SQL.= 'FROM sacoche_saisie ';
 	$DB_SQL.= 'LEFT JOIN sacoche_devoir USING (devoir_id) ';
@@ -420,9 +420,8 @@ function DB_lister_result_eleves_palier($liste_eleve_id,$liste_item_id,$date_mys
 {
 	$sql_debut = ($date_mysql_debut) ? 'AND saisie_date>=:date_debut ' : '';
 	$sql_fin   = ($date_mysql_fin)   ? 'AND saisie_date<=:date_fin '   : '';
-	$DB_SQL = 'SELECT eleve_id AS eleve_id , entree_id AS socle_id , item_id AS competence_id , ';
-	$DB_SQL.= 'saisie_note AS note , item_nom AS competence_nom , ';
-	$DB_SQL.= 'CONCAT(matiere_ref,".",niveau_ref,".",domaine_ref,theme_ordre,item_ordre) AS competence_ref , ';
+	$DB_SQL = 'SELECT eleve_id , entree_id AS socle_id , item_id , saisie_note AS note , item_nom , ';
+	$DB_SQL.= 'CONCAT(matiere_ref,".",niveau_ref,".",domaine_ref,theme_ordre,item_ordre) AS item_ref , ';
 	$DB_SQL.= 'matiere_id , '; // Besoin pour l'élève s'il ajoute l'item aux demandes d'évaluations
 	$DB_SQL.= 'referentiel_calcul_methode AS calcul_methode , referentiel_calcul_limite AS calcul_limite ';
 	$DB_SQL.= 'FROM sacoche_saisie ';
@@ -881,7 +880,7 @@ function DB_lister_eleves_actifs_regroupement($groupe_type,$groupe_id)
 function DB_lister_demandes_prof($matiere_id,$listing_user_id)
 {
 	$DB_SQL = 'SELECT sacoche_demande.*, ';
-	$DB_SQL.= 'CONCAT(niveau_ref,".",domaine_ref,theme_ordre,item_ordre) AS competence_ref , ';
+	$DB_SQL.= 'CONCAT(niveau_ref,".",domaine_ref,theme_ordre,item_ordre) AS item_ref , ';
 	$DB_SQL.= 'item_nom, user_nom, user_prenom ';
 	$DB_SQL.= 'FROM sacoche_demande ';
 	$DB_SQL.= 'LEFT JOIN sacoche_referentiel_item USING (item_id) ';
@@ -905,7 +904,7 @@ function DB_lister_demandes_prof($matiere_id,$listing_user_id)
 function DB_lister_demandes_eleve($user_id)
 {
 	$DB_SQL = 'SELECT sacoche_demande.*, ';
-	$DB_SQL.= 'CONCAT(niveau_ref,".",domaine_ref,theme_ordre,item_ordre) AS competence_ref , ';
+	$DB_SQL.= 'CONCAT(niveau_ref,".",domaine_ref,theme_ordre,item_ordre) AS item_ref , ';
 	$DB_SQL.= 'item_nom , matiere_nom ';
 	$DB_SQL.= 'FROM sacoche_demande ';
 	$DB_SQL.= 'LEFT JOIN sacoche_referentiel_item USING (item_id) ';
@@ -934,7 +933,7 @@ function DB_lister_devoirs($prof_id,$groupe_id,$date_debut_mysql,$date_fin_mysql
 	// DB::query(SACOCHE_STRUCTURE_BD_NAME , 'SET group_concat_max_len = ...'); // Pour lever si besoin une limitation de GROUP_CONCAT (group_concat_max_len est par défaut limité à une chaine de 1024 caractères).
 	// Il faut ajouter dans la requête des "DISTINCT" sinon la liaison avec "sacoche_jointure_user_groupe" duplique tout x le nb d'élèves associés pour une évaluation sur une sélection d'élèves.
 	$DB_SQL = 'SELECT *, ';
-	$DB_SQL.= 'GROUP_CONCAT(DISTINCT item_id SEPARATOR "_") AS competences_listing, COUNT(DISTINCT item_id) AS competences_nombre ';
+	$DB_SQL.= 'GROUP_CONCAT(DISTINCT item_id SEPARATOR "_") AS items_listing, COUNT(DISTINCT item_id) AS items_nombre ';
 	if(!$groupe_id)
 	{
 		$DB_SQL .= ', '.'GROUP_CONCAT(DISTINCT user_id SEPARATOR "_") AS users_listing, COUNT(DISTINCT user_id) AS users_nombre ';
@@ -1868,7 +1867,7 @@ function DB_modifier_groupe($groupe_id,$groupe_ref,$groupe_nom,$niveau_id)
  * DB_modifier_ordre_item
  * 
  * @param int    $devoir_id
- * @param array  $tab_items   tableau des id des competences
+ * @param array  $tab_items   tableau des id des items
  * @return void
  */
 
@@ -1913,7 +1912,7 @@ function DB_modifier_saisie($eleve_id,$devoir_id,$item_id,$saisie_note,$saisie_i
  * @param int    $prof_id
  * @param string $date_mysql
  * @param string $info
- * @param array  $tab_items   tableau des id des competences
+ * @param array  $tab_items   tableau des id des items
  * @return void
  */
 
@@ -2060,16 +2059,16 @@ function DB_modifier_liaison_professeur_matiere($user_id,$matiere_id,$etat)
 }
 
 /**
- * DB_modifier_liaison_devoir_competence
+ * DB_modifier_liaison_devoir_item
  * 
  * @param int    $devoir_id
- * @param array  $tab_items   tableau des id des competences
+ * @param array  $tab_items   tableau des id des items
  * @param string $mode        'creer' ou 'dupliquer' pour un insert dans un nouveau devoir || 'substituer' pour une maj delete / insert || 'ajouter' pour maj insert uniquement
  * @param int    $devoir_ordonne_id   Dans le cas d'une duplication, id du devoir dont il faut récupérer l'ordre des items.
  * @return void
  */
 
-function DB_modifier_liaison_devoir_competence($devoir_id,$tab_items,$mode,$devoir_ordonne_id=0)
+function DB_modifier_liaison_devoir_item($devoir_id,$tab_items,$mode,$devoir_ordonne_id=0)
 {
 	if( ($mode=='creer') || ($mode=='dupliquer') )
 	{

@@ -118,9 +118,9 @@ if($test_affichage_scores)
 								// Pour chaque item associé à cet item du socle, ayant été évalué pour cet élève...
 								if(isset($tab_eval[$eleve_id][$socle_id]))
 								{
-									foreach($tab_eval[$eleve_id][$socle_id] as $competence_id => $tab_devoirs)
+									foreach($tab_eval[$eleve_id][$socle_id] as $item_id => $tab_devoirs)
 									{
-										extract($tab_competence[$competence_id]);	// $competence_ref $competence_nom $matiere_id $calcul_methode $calcul_limite
+										extract($tab_item[$item_id]);	// $item_ref $item_nom $matiere_id $calcul_methode $calcul_limite
 										// calcul du bilan de l'item
 										$note = calculer_note($tab_devoirs,$calcul_methode,$calcul_limite);
 										if($note!==false)
@@ -132,8 +132,8 @@ if($test_affichage_scores)
 											// on enregistre les infos
 											if($detail=='complet')
 											{
-												$texte_demande_eval = ( ($_SESSION['USER_PROFIL']=='eleve') && ($_SESSION['ELEVE_DEMANDES']>0) ) ? '<q class="demander_add" lang="ids_'.$eleve_id.'_'.$matiere_id.'_'.$competence_id.'_'.$note.'" title="Ajouter aux demandes d\'évaluations."></q>' : '' ;
-												$tab_infos_socle_eleve[$socle_id][$eleve_id][] = '<span class="'.$tab_etat[$indice].'">'.html($competence_ref.' || '.$competence_nom.' ['.$note.'%]').'</span>'.$texte_demande_eval;
+												$texte_demande_eval = ( ($_SESSION['USER_PROFIL']=='eleve') && ($_SESSION['ELEVE_DEMANDES']>0) ) ? '<q class="demander_add" lang="ids_'.$eleve_id.'_'.$matiere_id.'_'.$item_id.'_'.$note.'" title="Ajouter aux demandes d\'évaluations."></q>' : '' ;
+												$tab_infos_socle_eleve[$socle_id][$eleve_id][] = '<span class="'.$tab_etat[$indice].'">'.html($item_ref.' || '.$item_nom.' ['.$note.'%]').'</span>'.$texte_demande_eval;
 												$tab_score_socle_eleve[$socle_id][$eleve_id][$indice]++;
 												$tab_score_socle_eleve[$socle_id][$eleve_id]['nb']++;
 											}
@@ -155,8 +155,8 @@ if($test_affichage_scores)
 
 /*
 	On calcule les états d'acquisition à partir des A / VA / NA
-	$tab_moyenne_scores_competence[$competence_id]
-	$tab_pourcentage_validations_competence[$competence_id]
+	$tab_moyenne_scores_item[$item_id]
+	$tab_pourcentage_validations_item[$item_id]
 */
 
 if($test_affichage_scores)

@@ -45,10 +45,10 @@ if($matiere_id && $matiere_nom)
 	// Préparation de l'export HTML
 	$export_html = '<div id="zone_compet">';
 
-	$tab_niveau     = array();
-	$tab_domaine    = array();
-	$tab_theme      = array();
-	$tab_competence = array();
+	$tab_niveau  = array();
+	$tab_domaine = array();
+	$tab_theme   = array();
+	$tab_item    = array();
 	$niveau_id = 0;
 	$DB_TAB = DB_recuperer_arborescence($prof_id=0,$matiere_id,$niveau_id=0,$only_item=false,$socle_nom=false);
 	foreach($DB_TAB as $DB_ROW)
@@ -57,9 +57,9 @@ if($matiere_id && $matiere_nom)
 		{
 			$niveau_id = $DB_ROW['niveau_id'];
 			$tab_niveau[$niveau_id] = $DB_ROW['niveau_ref'].' - '.$DB_ROW['niveau_nom'];
-			$domaine_id    = 0;
-			$theme_id      = 0;
-			$competence_id = 0;
+			$domaine_id = 0;
+			$theme_id   = 0;
+			$item_id    = 0;
 		}
 		if( (!is_null($DB_ROW['domaine_id'])) && ($DB_ROW['domaine_id']!=$domaine_id) )
 		{
@@ -71,10 +71,10 @@ if($matiere_id && $matiere_nom)
 			$theme_id = $DB_ROW['theme_id'];
 			$tab_theme[$niveau_id][$domaine_id][$theme_id] = $DB_ROW['domaine_ref'].$DB_ROW['theme_ordre'].' - '.$DB_ROW['theme_nom'];
 		}
-		if( (!is_null($DB_ROW['item_id'])) && ($DB_ROW['item_id']!=$competence_id) )
+		if( (!is_null($DB_ROW['item_id'])) && ($DB_ROW['item_id']!=$item_id) )
 		{
-			$competence_id = $DB_ROW['item_id'];
-			$tab_competence[$niveau_id][$domaine_id][$theme_id][$competence_id] = $DB_ROW['domaine_ref'].$DB_ROW['theme_ordre'].$DB_ROW['item_ordre'].' - '.$DB_ROW['item_nom'];
+			$item_id = $DB_ROW['item_id'];
+			$tab_item[$niveau_id][$domaine_id][$theme_id][$item_id] = $DB_ROW['domaine_ref'].$DB_ROW['theme_ordre'].$DB_ROW['item_ordre'].' - '.$DB_ROW['item_nom'];
 		}
 	}
 	$export_csv .= $DB_ROW['matiere_ref'].' - '.$matiere_nom."\r\n";
@@ -100,12 +100,12 @@ if($matiere_id && $matiere_nom)
 						$export_csv .= $separateur.$separateur.$separateur.$theme_nom."\r\n";
 						$export_html .= '							<li class="li_n2"><span>'.html($theme_nom).'</span>'."\r\n";
 						$export_html .= '								<ul class="ul_n3">'."\r\n";
-						if(isset($tab_competence[$niveau_id][$domaine_id][$theme_id]))
+						if(isset($tab_item[$niveau_id][$domaine_id][$theme_id]))
 						{
-							foreach($tab_competence[$niveau_id][$domaine_id][$theme_id] as $competence_id => $competence_nom)
+							foreach($tab_item[$niveau_id][$domaine_id][$theme_id] as $item_id => $item_nom)
 							{
-								$export_csv .= $separateur.$separateur.$separateur.$separateur.'"'.$competence_nom.'"'."\r\n";
-								$export_html .= '									<li class="li_n3">'.html($competence_nom).'</li>'."\r\n";
+								$export_csv .= $separateur.$separateur.$separateur.$separateur.'"'.$item_nom.'"'."\r\n";
+								$export_html .= '									<li class="li_n3">'.html($item_nom).'</li>'."\r\n";
 							}
 						}
 						$export_html .= '								</ul>'."\r\n";

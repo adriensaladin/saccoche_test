@@ -42,9 +42,9 @@ $info        = (isset($_POST['f_info']))        ? clean_texte($_POST['f_info']) 
 $devoir_id   = (isset($_POST['f_devoir']))      ? clean_entier($_POST['f_devoir'])     : 0;
 $suite       = (isset($_POST['f_suite']))       ? clean_texte($_POST['f_suite'])       : '';
 
-$tab_demande_id    = array();
-$tab_user_id       = array();
-$tab_competence_id = array();
+$tab_demande_id = array();
+$tab_user_id    = array();
+$tab_item_id    = array();
 // Récupérer et contrôler la liste des items transmis
 $tab_ids = (isset($_POST['ids'])) ? explode(',',$_POST['ids']) : array() ;
 if(count($tab_ids))
@@ -52,18 +52,18 @@ if(count($tab_ids))
 	foreach($tab_ids as $ids)
 	{
 		$tab_id = explode('x',$ids);
-		$tab_demande_id[]    = $tab_id[0];
-		$tab_user_id[]       = $tab_id[1];
-		$tab_competence_id[] = $tab_id[2];
+		$tab_demande_id[] = $tab_id[0];
+		$tab_user_id[]    = $tab_id[1];
+		$tab_item_id[]    = $tab_id[2];
 	}
 	function positif($n) {return $n;}
-	$tab_demande_id    = array_filter( array_map('clean_entier',$tab_demande_id)                  ,'positif');
-	$tab_user_id       = array_filter( array_map('clean_entier',array_unique($tab_user_id))       ,'positif');
-	$tab_competence_id = array_filter( array_map('clean_entier',array_unique($tab_competence_id)) ,'positif');
+	$tab_demande_id = array_filter( array_map('clean_entier',$tab_demande_id)            ,'positif');
+	$tab_user_id    = array_filter( array_map('clean_entier',array_unique($tab_user_id)) ,'positif');
+	$tab_item_id    = array_filter( array_map('clean_entier',array_unique($tab_item_id)) ,'positif');
 }
-$nb_demandes    = count($tab_demande_id);
-$nb_users       = count($tab_user_id);
-$nb_competences = count($tab_competence_id);
+$nb_demandes = count($tab_demande_id);
+$nb_users    = count($tab_user_id);
+$nb_items    = count($tab_item_id);
 
 $tab_types = array('Classes'=>'classe' , 'Groupes'=>'groupe' , 'Besoins'=>'groupe');
 $tab_qui   = array('groupe','select');
@@ -97,15 +97,15 @@ if( ($action=='Afficher_demandes') && $matiere_id && $matiere_nom && $groupe_id 
 	foreach($DB_TAB as $DB_ROW)
 	{
 		$tab_demandes[] = $DB_ROW['demande_id'] ;
-		$score = ($DB_ROW['demande_score']!==null) ? $DB_ROW['demande_score'] : false ;
+		$score  = ($DB_ROW['demande_score']!==null) ? $DB_ROW['demande_score'] : false ;
 		$statut = ($DB_ROW['demande_statut']=='eleve') ? 'demande non traitée' : 'évaluation en préparation' ;
 		$class  = ($DB_ROW['demande_statut']=='eleve') ? ' class="new"' : '' ;
-		$langue = mb_substr( $DB_ROW['competence_ref'] , mb_strpos($DB_ROW['competence_ref'],'.')+1 );
+		$langue = mb_substr( $DB_ROW['item_ref'] , mb_strpos($DB_ROW['item_ref'],'.')+1 );
 		// Afficher une ligne du tableau 
 		$retour .= '<tr'.$class.'>';
 		$retour .= '<td class="nu"><input type="checkbox" name="f_ids" value="'.$DB_ROW['demande_id'].'x'.$DB_ROW['user_id'].'x'.$DB_ROW['item_id'].'" lang="'.html($langue).'" /></td>';
 		$retour .= '<td>'.html($matiere_nom).'</td>';
-		$retour .= '<td>'.html($DB_ROW['competence_ref']).' <img alt="" src="./_img/bulle_aide.png" title="'.html($DB_ROW['item_nom']).'" /></td>';
+		$retour .= '<td>'.html($DB_ROW['item_ref']).' <img alt="" src="./_img/bulle_aide.png" title="'.html($DB_ROW['item_nom']).'" /></td>';
 		$retour .= '<td>$'.$DB_ROW['item_id'].'$</td>';
 		$retour .= '<td>'.html($groupe_nom).'</td>';
 		$retour .= '<td>'.html($tab_eleves[$DB_ROW['user_id']]).'</td>';
@@ -135,7 +135,7 @@ if( ($action=='Afficher_demandes') && $matiere_id && $matiere_nom && $groupe_id 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 //	Créer une nouvelle évaluation
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-elseif( ($action=='creer') && $groupe_id && (isset($tab_types[$groupe_type])) && in_array($qui,$tab_qui) && $date && $info && in_array($suite,$tab_suite) && $nb_demandes && $nb_users && $nb_competences )
+elseif( ($action=='creer') && $groupe_id && (isset($tab_types[$groupe_type])) && in_array($qui,$tab_qui) && $date && $info && in_array($suite,$tab_suite) && $nb_demandes && $nb_users && $nb_items )
 {
 	// Dans le cas d'une évaluation sur une liste d'élèves sélectionnés
 	if($qui=='select')
@@ -149,7 +149,7 @@ elseif( ($action=='creer') && $groupe_id && (isset($tab_types[$groupe_type])) &&
 	$date_mysql = convert_date_french_to_mysql($date);
 	$devoir_id = DB_ajouter_devoir($_SESSION['USER_ID'],$groupe_id,$date_mysql,$info);
 	// Insérer les enregistrements des items de l'évaluation
-	DB_modifier_liaison_devoir_competence($devoir_id,$tab_competence_id,'creer');
+	DB_modifier_liaison_devoir_item($devoir_id,$tab_item_id,'creer');
 	// Pour terminer, on change le statut des demandes ou on les supprime
 	$listing_demande_id = implode(',',$tab_demande_id);
 	if($suite=='changer')
@@ -166,7 +166,7 @@ elseif( ($action=='creer') && $groupe_id && (isset($tab_types[$groupe_type])) &&
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 //	Compléter une évaluation existante
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-elseif( ($action=='completer') && $groupe_id && (isset($tab_types[$groupe_type])) && in_array($qui,$tab_qui) && $devoir_id && in_array($suite,$tab_suite) && $nb_demandes && $nb_users && $nb_competences )
+elseif( ($action=='completer') && $groupe_id && (isset($tab_types[$groupe_type])) && in_array($qui,$tab_qui) && $devoir_id && in_array($suite,$tab_suite) && $nb_demandes && $nb_users && $nb_items )
 {
 	// Dans le cas d'une évaluation sur une liste d'élèves sélectionnés
 	if($qui=='select')
@@ -176,7 +176,7 @@ elseif( ($action=='completer') && $groupe_id && (isset($tab_types[$groupe_type])
 	}
 	// Maintenant on peut modifier les items de l'évaluation
 	// sacoche_jointure_devoir_item
-	DB_modifier_liaison_devoir_competence($devoir_id,$tab_competence_id,'ajouter');
+	DB_modifier_liaison_devoir_item($devoir_id,$tab_item_id,'ajouter');
 	// Pour terminer, on change le statut des demandes ou on les supprime
 	$listing_demande_id = implode(',',$tab_demande_id);
 	if($suite=='changer')

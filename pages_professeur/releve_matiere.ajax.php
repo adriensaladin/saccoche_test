@@ -84,23 +84,23 @@ if( $orientation && $marge_min && $couleur && $cases_nb && $cases_largeur && $ca
 		exit('La date de début est postérieure à la date de fin !');
 	}
 
-	$tab_competence = array();	// [competence_id] => array(competence_ref,competence_nom,competence_coef,competence_socle,competence_lien,calcul_methode,calcul_limite);
-	$tab_liste_comp = array();	// [i] => competence_id
+	$tab_item       = array();	// [item_id] => array(item_ref,item_nom,item_coef,item_socle,item_lien,calcul_methode,calcul_limite);
+	$tab_liste_item = array();	// [i] => item_id
 	$tab_eleve      = array();	// [i] => array(eleve_id,eleve_nom,eleve_prenom,eleve_id_gepi)
 	$tab_matiere    = array();	// [matiere_id] => matiere_nom
-	$tab_eval       = array();	// [eleve_id][matiere_id][competence_id][devoir] => array(note,date,info) On utilise un tableau multidimensionnel vu qu'on ne sait pas à l'avance combien il y a d'évaluations pour un élève et un item donnés.
+	$tab_eval       = array();	// [eleve_id][matiere_id][item_id][devoir] => array(note,date,info) On utilise un tableau multidimensionnel vu qu'on ne sait pas à l'avance combien il y a d'évaluations pour un élève et un item donnés.
 
 	//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 	// Récupération de la liste des items travaillés durant la période choisie, pour la matière et les élèves selectionnés
 	//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-	$tab_competence = DB_recuperer_arborescence_eleves_periode_matiere($liste_eleve,$matiere_id,$date_mysql_debut,$date_mysql_fin);
-	$competence_nb = count($tab_competence);
-	if(!$competence_nb)
+	$tab_item = DB_recuperer_arborescence_eleves_periode_matiere($liste_eleve,$matiere_id,$date_mysql_debut,$date_mysql_fin);
+	$item_nb = count($tab_item);
+	if(!$item_nb)
 	{
 		exit('Aucun item n\'a été évalué durant cette période pour cette matière et ces élèves !');
 	}
-	$tab_liste_comp = array_keys($tab_competence);
-	$liste_comp = implode(',',$tab_liste_comp);
+	$tab_liste_item = array_keys($tab_item);
+	$liste_comp = implode(',',$tab_liste_item);
 
 	//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 	// Récupération de la liste des matières travaillées
@@ -124,7 +124,7 @@ if( $orientation && $marge_min && $couleur && $cases_nb && $cases_largeur && $ca
 	$DB_TAB = DB_lister_result_eleves_matiere($liste_eleve , $liste_comp , $date_mysql_debut , $date_mysql_fin);
 	foreach($DB_TAB as $DB_ROW)
 	{
-		$tab_eval[$DB_ROW['eleve_id']][$matiere_id][$DB_ROW['competence_id']][] = array('note'=>$DB_ROW['note'],'date'=>$DB_ROW['date'],'info'=>$DB_ROW['info']);
+		$tab_eval[$DB_ROW['eleve_id']][$matiere_id][$DB_ROW['item_id']][] = array('note'=>$DB_ROW['note'],'date'=>$DB_ROW['date'],'info'=>$DB_ROW['info']);
 	}
 
 	//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-

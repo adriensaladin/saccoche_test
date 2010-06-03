@@ -228,7 +228,7 @@ else if( ($action=='ordonner') && $devoir_id )
 //	Afficher le formulaire pour saisir les items acquis par les élèves à une évaluation
 //	Générer en même temps un csv à récupérer pour une saisie déportée
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-else if( ($action=='saisir') && $devoir_id && $groupe_id && $date ) // $date (au format MySQL) reportée dans input hidden
+else if( ($action=='saisir') && $devoir_id && $groupe_id && $date ) // $date (au format MySQL) et $info (facultative) reportées dans input hidden
 {
 	// liste des items
 	$DB_TAB_COMP = DB_lister_items_devoir($devoir_id);
@@ -253,7 +253,7 @@ else if( ($action=='saisir') && $devoir_id && $groupe_id && $date ) // $date (au
 		$tab_affich[0][0].= '<span class="manuel"><a class="pop_up" href="'.SERVEUR_DOCUMENTAIRE.'?fichier=support_professeur__evaluations_saisie_resultats">DOC : Saisie des résultats.</a></span><p />';
 		$tab_affich[0][0].= '<label for="radio_clavier"><input type="radio" id="radio_clavier" name="mode_saisie" value="clavier" /> <img alt="" src="./_img/pilot_keyboard.png" /> Pilotage au clavier</label> <img alt="" src="./_img/bulle_aide.png" title="Sélectionner un rectangle blanc<br />au clavier (flèches) ou à la souris<br />puis utiliser les touches suivantes :<br />&nbsp;1 ; 2 ; 3 ; 4 ; A ; N ; D ; suppr" /><br />';
 		$tab_affich[0][0].= '<label for="radio_souris"><input type="radio" id="radio_souris" name="mode_saisie" value="souris" /> <img alt="" src="./_img/pilot_mouse.png" /> Pilotage à la souris</label> <img alt="" src="./_img/bulle_aide.png" title="Survoler une case du tableau avec la souris<br />puis cliquer sur une des images proposées." /><p />';
-		$tab_affich[0][0].= '<a class="Enregistrer_saisie" href="#"><input type="hidden" name="f_ref" id="f_ref" value="'.$ref.'" /><input id="f_date" name="f_date" type="hidden" value="'.$date.'" /><img class="f_submit" alt="Enregistrer_saisie" src="./_img/action_valider.png" /> Enregistrer les saisies</a><br />';
+		$tab_affich[0][0].= '<a class="Enregistrer_saisie" href="#"><input type="hidden" name="f_ref" id="f_ref" value="'.$ref.'" /><input id="f_date" name="f_date" type="hidden" value="'.$date.'" /><input id="f_info" name="f_info" type="hidden" value="'.html($info).'" /><img class="f_submit" alt="Enregistrer_saisie" src="./_img/action_valider.png" /> Enregistrer les saisies</a><br />';
 		$tab_affich[0][0].= '<a class="fermer_zone_saisir" href="#"><img class="f_submit" alt="Annuler_saisir" src="./_img/action_annuler.png" /> Annuler / Retour</a><br />';
 		$tab_affich[0][0].= '<label id="ajax_msg">&nbsp;</label>';
 		$tab_affich[0][0].= '</td>';
@@ -506,10 +506,12 @@ else if( ($action=='Enregistrer_saisie') && $devoir_id && $date )
 	// Il n'y a plus qu'à mettre à jour la base
 	if( count($tab_nouveau_ajouter) || count($tab_nouveau_modifier) || count($tab_nouveau_supprimer) )
 	{
+		// L'information associée à la note comporte le nom de l'évaluation + celui du professeur (c'est une information statique, conservée sur plusieurs années)
+		$info = $info.' ('.$_SESSION['USER_NOM'].' '.$_SESSION['USER_PRENOM']{0}.'.)';
 		foreach($tab_nouveau_ajouter as $key => $note)
 		{
 			list($competence_id,$eleve_id) = explode('x',$key);
-			DB_ajouter_saisie($_SESSION['USER_ID'],$eleve_id,$devoir_id,$competence_id,$date,$note,'');	// !!! On ne passe pas l'info alors qu'il faudrait la récupérer !!!
+			DB_ajouter_saisie($_SESSION['USER_ID'],$eleve_id,$devoir_id,$competence_id,$date,$note,$info);
 			// On supprime une éventuelle demande d'évaluation associée.
 			if($_SESSION['ELEVE_DEMANDES'])
 			{
@@ -519,7 +521,7 @@ else if( ($action=='Enregistrer_saisie') && $devoir_id && $date )
 		foreach($tab_nouveau_modifier as $key => $note)
 		{
 			list($competence_id,$eleve_id) = explode('x',$key);
-			DB_modifier_saisie($eleve_id,$devoir_id,$competence_id,$note);
+			DB_modifier_saisie($eleve_id,$devoir_id,$competence_id,$note,$info);
 		}
 		foreach($tab_nouveau_supprimer as $key => $key)
 		{

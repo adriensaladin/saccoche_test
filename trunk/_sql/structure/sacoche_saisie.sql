@@ -7,7 +7,7 @@ CREATE TABLE sacoche_saisie (
 	item_id MEDIUMINT(8) UNSIGNED NOT NULL,
 	saisie_date DATE NOT NULL,
 	saisie_note ENUM("VV","V","R","RR","ABS","NN","DISP") COLLATE utf8_unicode_ci NOT NULL,
-	saisie_info TINYTEXT COLLATE utf8_unicode_ci NOT NULL,
+	saisie_info TINYTEXT COLLATE utf8_unicode_ci NOT NULL COMMENT "Enregistrement statique du nom du devoir et du professeur, conservé les années suivantes.",
 	UNIQUE KEY saisie_key (eleve_id,devoir_id,item_id),
 	KEY prof_id (prof_id),
 	KEY eleve_id (eleve_id),

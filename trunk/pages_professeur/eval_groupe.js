@@ -243,7 +243,7 @@ $(document).ready
 				{
 					type : 'POST',
 					url : 'ajax.php?dossier='+DOSSIER+'&fichier='+FICHIER,
-					data : 'f_action='+mode+'&f_ref='+ref+'&f_date='+date,
+					data : 'f_action='+mode+'&f_ref='+ref+'&f_date='+date+'&f_info='+info,
 					dataType : "html",
 					error : function(msg,string)
 					{

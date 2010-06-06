@@ -37,7 +37,7 @@ $arbre='
 			<li class="compte_password"><a href="./index.php?dossier='.$DOSSIER.'&amp;fichier=compte_password">Mot de passe du webmestre</a></li>
 			<li class="compte_identite_installation"><a href="./index.php?dossier='.$DOSSIER.'&amp;fichier=compte_identite_installation">Identité de l\'installation</a></li>
 			<li class="compte_info_serveur"><a href="./index.php?dossier='.$DOSSIER.'&amp;fichier=compte_info_serveur">Informations serveur</a></li>
-			<li class="webmestre_stats"><a href="./index.php?dossier='.$DOSSIER.'&amp;fichier=webmestre_stats">Statistiques d\'utilisation</a></li>
+			<li class="webmestre_stats"><a href="./index.php?dossier='.$DOSSIER.'&amp;fichier=statistiques">Statistiques d\'utilisation</a></li>
 			</ul>
 	</li>
 ';

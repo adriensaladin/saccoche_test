@@ -61,14 +61,14 @@ function init_session()
 	$_SESSION['USER_ID']          = 0;
 	// Données associées à l'établissement.
 	$_SESSION['SESAMATH_ID']      = 0;
-	$_SESSION['SSO']              = 'normal';
+	$_SESSION['CONNEXION_MODE']   = 'normal';
 	$_SESSION['DUREE_INACTIVITE'] = 30;
 }
 
 // Fermer une session existante
 function close_session()
 {
-	$alerte_sso = ( isset($_SESSION['SSO']) && ($_SESSION['SSO']!='normal') &&($_SESSION['USER_PROFIL']!='administrateur') ) ? '&amp;f_base='.$_SESSION['BASE'].'&amp;f_sso='.$_SESSION['SSO'] : false ;
+	$alerte_sso = ( isset($_SESSION['CONNEXION_MODE']) && ($_SESSION['CONNEXION_MODE']!='normal') &&($_SESSION['USER_PROFIL']!='administrateur') ) ? '&amp;f_base='.$_SESSION['BASE'].'&amp;f_mode='.$_SESSION['CONNEXION_MODE'] : false ;
 	$_SESSION = array();
 	setcookie(session_name(),'',time()-42000,'/');
 	session_destroy();

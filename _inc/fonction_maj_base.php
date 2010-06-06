@@ -33,9 +33,10 @@ function maj_base($version_actuelle)
 {
 	if($version_actuelle=='2010-05-15')
 	{
-		$version_actuelle = '2010-06-03';
-		// script pour migrer vers la version suivante, y compris la mise à jour du champ "version_base" justement
+		// script pour migrer vers la version suivante
 		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_user ADD user_connexion_date DATETIME NOT NULL AFTER user_statut' );
+		// y compris la mise à jour du champ "version_base" justement
+		$version_actuelle = '2010-06-03';
 		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_actuelle.'" WHERE parametre_nom="version_base" LIMIT 1' );
 	}
 }

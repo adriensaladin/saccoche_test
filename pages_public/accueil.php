@@ -27,7 +27,7 @@
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = ''; // Pas de titre pour que le logo s'affiche à la place
-$VERSION_JS = '3';
+$VERSION_JS = '4';
 ?>
 
 <?php
@@ -108,5 +108,4 @@ if($ALERTE_SSO)
 
 <script type="text/javascript">
 	var VERSION_PROG = "<?php echo VERSION_PROG ?>";
-	
 </script>

@@ -28,14 +28,14 @@
 /**
  * DB_recuperer_donnees_utilisateur
  * 
- * @param bool|string $sso     connexion $sso ou pas (texte ou false)
- * @param string      $login
+ * @param string $mode_connection   'normal' ou 'cas' ou ...
+ * @param string $login
  * @return array
  */
 
-function DB_recuperer_donnees_utilisateur($sso,$login)
+function DB_recuperer_donnees_utilisateur($mode_connection,$login)
 {
-	$champ = ($sso) ? 'user_id_ent' : 'user_login' ;
+	$champ = ($mode_connection=='normal') ? 'user_login' : 'user_id_ent' ;
 	$DB_SQL = 'SELECT sacoche_user.*,sacoche_groupe.groupe_nom FROM sacoche_user ';
 	$DB_SQL.= 'LEFT JOIN sacoche_groupe ON sacoche_user.eleve_classe_id=sacoche_groupe.groupe_id ';
 	$DB_SQL.= 'WHERE '.$champ.'=:identifiant ';

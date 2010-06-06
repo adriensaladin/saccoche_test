@@ -32,6 +32,6 @@ $TITRE = "Changer son mot de passe";
 <hr />
 
 <?php
-$fin = ($_SESSION['SSO']=='normal') ? 'oui' : 'non' ;
+$fin = ($_SESSION['CONNEXION_MODE']=='normal') ? 'oui' : 'non' ;
 include('./pages_'.$DOSSIER.'/'.$FICHIER.'_'.$fin.'.php');
 ?>

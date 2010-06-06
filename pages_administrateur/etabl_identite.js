@@ -79,7 +79,7 @@ $(document).ready
 						else
 						{
 							$("body").stopTime('surveillance');
-							tab_infos = hashVal.split('-+')
+							tab_infos = hashVal.split('-+');
 							if(tab_infos.length == 4)
 							{
 								$('#f_sesamath_id').val(tab_infos[0]);

@@ -26,12 +26,13 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-$TITRE = "Changer son mot de passe";
 ?>
 
-<hr />
+<p><span class="astuce">Entrer le mot de passe actuel, puis deux fois le nouveau mot de passe choisi.</span></p>
 
-<?php
-$fin = ($_SESSION['CONNEXION_MODE']=='normal') ? 'oui' : 'non' ;
-include('./pages_'.$DOSSIER.'/'.$FICHIER.'_'.$fin.'.php');
-?>
+<form action=""><fieldset>
+	<label class="tab" for="f_password0">Actuel :</label><input id="f_password0" name="f_password0" size="20" type="password" value="" /><br />
+	<label class="tab" for="f_password1">Nouveau 1/2 :</label><input id="f_password1" name="f_password1" size="20" type="password" value="" /><br />
+	<label class="tab" for="f_password2">Nouveau 2/2 :</label><input id="f_password2" name="f_password2" size="20" type="password" value="" /><br />
+	<span class="tab"></span><input id="f_submit" type="submit" value="Valider." /><label id="ajax_msg">&nbsp;</label><br />
+</fieldset></form>

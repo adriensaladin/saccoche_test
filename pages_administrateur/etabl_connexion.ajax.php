@@ -28,25 +28,55 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 if($_SESSION['SESAMATH_ID']==ID_DEMO) {exit('Action désactivée pour la démo...');}
 
-$f_mode_connexion = (isset($_POST['f_mode_connexion'])) ? clean_texte($_POST['f_mode_connexion']) : '';
+$f_connexion_mode = (isset($_POST['f_connexion_mode'])) ? clean_texte($_POST['f_connexion_mode']) : '';
+$f_connexion_nom  = (isset($_POST['f_connexion_nom']))  ? clean_texte($_POST['f_connexion_nom'])  : '';
+$cas_serveur_host = (isset($_POST['cas_serveur_host'])) ? clean_texte($_POST['cas_serveur_host'])  : '';
+$cas_serveur_port = (isset($_POST['cas_serveur_port'])) ? clean_entier($_POST['cas_serveur_port']) : 0;
+$cas_serveur_root = (isset($_POST['cas_serveur_root'])) ? clean_texte($_POST['cas_serveur_root'])  : '';
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 //	Mode de connexion (normal, SSO...)
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
-require_once('./_inc/tableau_sso.php');	// Charge $tab_sso['nom'] = array('txt'=>'...' , 'doc'=>'...');
+require_once('./_inc/tableau_sso.php');
 
-if(isset($tab_sso[$f_mode_connexion]))
+if(!isset($tab_connexion_info[$f_connexion_mode][$f_connexion_nom]))
 {
-	DB_modifier_parametres( array('sso'=>$f_mode_connexion) );
-	// ne pas oublier de mettre aussi à jour la session
-	// normalement faudrait pas car connecté avec l'ancien mode, mais sinon pb d'initalisation du formulaire
-	$_SESSION['SSO']  = $f_mode_connexion;
-	echo'ok';
+	exit('Erreur avec les données transmises !');
 }
 
-else
+if($f_connexion_mode=='normal')
 {
-	echo'Erreur avec les données transmises !';
+	DB_modifier_parametres( array('connexion_mode'=>$f_connexion_mode,'connexion_nom'=>$f_connexion_nom) );
+	// ne pas oublier de mettre aussi à jour la session (normalement faudrait pas car connecté avec l'ancien mode, mais sinon pb d'initalisation du formulaire)
+	$_SESSION['CONNEXION_MODE'] = $f_connexion_mode;
+	$_SESSION['CONNEXION_NOM']  = $f_connexion_nom;
+	exit('ok');
 }
+
+if($f_connexion_mode=='cas')
+{
+	// Vérifier les paramètres CAS en reprenant le code de phpCAS
+	if ( empty($cas_serveur_host) || !preg_match('/[\.\d\-abcdefghijklmnopqrstuvwxyz]*/',$cas_serveur_host) )
+	{
+		exit('Syntaxe du domaine incorrecte !');
+	}
+	if ( ($cas_serveur_port == 0) || !is_int($cas_serveur_port) )
+	{
+		exit('Numéro du port incorrect !');
+	}
+	if ( !preg_match('/[\.\d\-_abcdefghijklmnopqrstuvwxyz\/]*/',$cas_serveur_root) )
+	{
+		exit('Syntaxe du chemin incorrect !');
+	}
+	DB_modifier_parametres( array('connexion_mode'=>$f_connexion_mode,'connexion_nom'=>$f_connexion_nom,'cas_serveur_host'=>$cas_serveur_host,'cas_serveur_port'=>$cas_serveur_port,'cas_serveur_root'=>$cas_serveur_root) );
+	// ne pas oublier de mettre aussi à jour la session (normalement faudrait pas car connecté avec l'ancien mode, mais sinon pb d'initalisation du formulaire)
+	$_SESSION['CONNEXION_MODE']   = $f_connexion_mode;
+	$_SESSION['CONNEXION_NOM']    = $f_connexion_nom;
+	$_SESSION['CAS_SERVEUR_HOST'] = $cas_serveur_host;
+	$_SESSION['CAS_SERVEUR_PORT'] = $cas_serveur_port;
+	$_SESSION['CAS_SERVEUR_ROOT'] = $cas_serveur_root;
+	exit('ok');
+}
+
 ?>

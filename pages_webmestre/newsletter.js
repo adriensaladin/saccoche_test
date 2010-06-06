@@ -108,7 +108,6 @@ $(document).ready
 		function retour_form_valide(responseHTML)
 		{
 			maj_clock(1);
-			$('#f_submit').show();
 			if(responseHTML.substring(0,2)!='ok')
 			{
 				$('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);

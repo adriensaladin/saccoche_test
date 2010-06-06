@@ -27,27 +27,7 @@
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 
-function DB_statistiques()
-{
-	// nb professeurs enregistrés ; nb élèves enregistrés
-	$DB_SQL = 'SELECT user_profil, COUNT(*) AS nombre FROM sacoche_user WHERE user_statut=1 GROUP BY user_profil';
-	$DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , null , TRUE);
-	$prof_nb  = (isset($DB_TAB['professeur'])) ? $DB_TAB['professeur'][0]['nombre'] : 0 ;
-	$eleve_nb = (isset($DB_TAB['eleve']))      ? $DB_TAB['eleve'][0]['nombre']      : 0 ;
-	// nb professeurs connectés ; nb élèves connectés
-	$DB_SQL = 'SELECT user_profil, COUNT(*) AS nombre FROM sacoche_user WHERE user_statut=1 AND user_connexion_date>DATE_SUB(NOW(),INTERVAL 6 MONTH) GROUP BY user_profil';
-	$DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , null , TRUE);
-	$prof_use  = (isset($DB_TAB['professeur'])) ? $DB_TAB['professeur'][0]['nombre'] : 0 ;
-	$eleve_use = (isset($DB_TAB['eleve']))      ? $DB_TAB['eleve'][0]['nombre']      : 0 ;
-	// nb notes saisies
-	$DB_SQL = 'SELECT COUNT(*) AS nombre FROM sacoche_saisie';
-	$DB_ROW = DB::queryRow(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , null);
-	$score_nb = $DB_ROW['nombre'];
-	// Retour
-	return array($prof_nb,$prof_use,$eleve_nb,$eleve_use,$score_nb);
-}
-
-list($prof_nb,$prof_use,$eleve_nb,$eleve_use,$score_nb) = DB_statistiques();
+list($prof_nb,$prof_use,$eleve_nb,$eleve_use,$score_nb) = DB_recuperer_statistiques();
 
 ?>
 

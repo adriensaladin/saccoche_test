@@ -184,6 +184,12 @@ table.affectation {font-size:85%}
 table.affectation tfoot td {background:#CCF;color:#333}
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+/* Tableau de statistiques pour le webmestre                                                           */
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
+table#resultat td {text-align:center}
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 /* Tableau de saisie des compétences                                                                   */
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
@@ -243,7 +249,7 @@ table.comp_view td {vertical-align:middle}
 /* Marqueur invisible pour le tri d'un tableau                                                         */
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-table.form i, table.bilan i, table.bilan_synthese i {display:none}
+table.form i, table.bilan i, table.bilan_synthese i, table#resultat i {display:none}
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 /* Style pour les infobulles                                                                           */

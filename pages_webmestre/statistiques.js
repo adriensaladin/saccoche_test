@@ -30,9 +30,25 @@ $(document).ready
 	function()
 	{
 
-		//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-		// Installation mono-structure : tout en une seule étape
-		//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+//	Initialisation
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
+		// tri du tableau (avec jquery.tablesorter.js).
+		var sorting = [[0,0]];
+		$('table#resultat').tablesorter({ headers:{2:{sorter:false}} });
+		function trier_tableau()
+		{
+			if($('table#resultat tbody tr').length)
+			{
+				$('table#resultat').trigger('update');
+				$('table#resultat').trigger('sorton',[sorting]);
+			}
+		}
+
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+//	Formulaire et traitement
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
 		// Le formulaire qui va être analysé et traité en AJAX
 		var formulaire = $("#structures");
@@ -108,7 +124,6 @@ $(document).ready
 		function retour_form_valide(responseHTML)
 		{
 			maj_clock(1);
-			$('#f_submit').show();
 			if(responseHTML.substring(0,2)!='ok')
 			{
 				$('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);
@@ -121,7 +136,7 @@ $(document).ready
 				$('#ajax_num').html(1);
 				$('#ajax_max').html(max);
 				$('#ajax_info').show('fast');
-				$('#newsletter').hide('fast');
+				$('#resultat').hide('fast').children('tbody').html('');
 				calculer();
 			}
 		} 
@@ -148,18 +163,27 @@ $(document).ready
 					},
 					success : function(responseHTML)
 					{
-						if(responseHTML=='ok')
+						if(responseHTML.substring(0,2)=='ok')
 						{
+							var ligne = responseHTML.substring(3,responseHTML.length);
+							$('#resultat tbody').append(ligne);
 							num++;
 							if(num > max)	// Utilisation de parseInt obligatoire sinon la comparaison des valeurs pose ici pb
 							{
-								$('#ajax_msg1').removeAttr("class").addClass("valide").html('Envoi de la lettre d\'informations terminée.');
-								$('#ajax_msg2').html('<a id="a_retour" href="#">Retour au formulaire.</a>');
+								$('#ajax_msg1').removeAttr("class").addClass("valide").html('Calcul des statistiques terminé.');
+								$('#ajax_msg2').html('');
+								format_liens('#resultat tbody');
+								trier_tableau();
+								$('#resultat').show('fast');
+								$('#expli').show('fast');
+								$('#ajax_info').hide('fast');
+								$('#f_submit').show();
+								$('#ajax_msg').removeAttr("class").html("&nbsp;");
 							}
 							else
 							{
 								$('#ajax_num').html(num);
-								$('#ajax_msg1').removeAttr("class").addClass("loader").html('Lettre d\'information en cours d\'envoi : étape ' + num + ' sur ' + max + '...');
+								$('#ajax_msg1').removeAttr("class").addClass("loader").html('Structures à l\'étude : étape ' + num + ' sur ' + max + '...');
 								$('#ajax_msg2').html('Ne pas interrompre la procédure avant la fin du traitement !');
 								calculer();
 							}
@@ -182,20 +206,9 @@ $(document).ready
 			{
 				num = $('#ajax_num').html();
 				max = $('#ajax_max').html();
-				$('#ajax_msg1').removeAttr("class").addClass("loader").html('Lettre d\'information en cours d\'envoi : étape ' + num + ' sur ' + max + '...');
+				$('#ajax_msg1').removeAttr("class").addClass("loader").html('Structures à l\'étude : étape ' + num + ' sur ' + max + '...');
 				$('#ajax_msg2').html('Ne pas interrompre la procédure avant la fin du traitement !');
-				calculers();
-			}
-		);
-
-		$('#a_retour').live
-		('click',
-			function()
-			{
-				$('#ajax_msg').removeAttr("class").html("&nbsp;");
-				$('#f_submit').show();
-				$('#ajax_info').hide('fast');
-				$('#newsletter').show('fast');
+				calculer();
 			}
 		);
 

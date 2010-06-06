@@ -27,80 +27,55 @@
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 
-$titre     = (isset($_POST['f_titre']))   ? clean_texte($_POST['f_titre'])   : '';
-$contenu   = (isset($_POST['f_contenu'])) ? clean_texte($_POST['f_contenu']) : '';
-$tab_bases = (isset($_POST['bases']))     ? array_map('clean_entier',explode(',',$_POST['bases'])) : array() ;
+$tab_bases = (isset($_POST['bases'])) ? array_map('clean_entier',explode(',',$_POST['bases'])) : array() ;
 
 $num  = (isset($_GET['num'])) ? (int)$_GET['num'] : 0 ;	// Numéro de l'étape en cours
 $max  = (isset($_GET['max'])) ? (int)$_GET['max'] : 0 ;	// Nombre d'étapes à effectuer
-$pack = 10 ;	// Nombre de mails envoyés à chaque étape
 
 function positif($n) {return $n;}
 $tab_bases = array_filter($tab_bases,'positif');
 $nb_bases  = count($tab_bases);
 
 $dossier = './__tmp/export/';
-$fichier_contenu = 'lettre_contenu.txt';
-$fichier_contact = 'lettre_contact.txt';
+$fichier_info = 'bases_contenu.txt';
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-// Préparation d'une lettre d'informations avant envoi
+// Récupération de la liste des structures avant recherche des stats
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-if( $titre && $contenu && $nb_bases )
+if( $nb_bases )
 {
-	// Mémoriser dans un fichier le titre et le contenu de la lettre d'informations
-	$fichier_texte = $titre.' ◄■► '.$contenu."\r\n";
-	file_put_contents($dossier.$fichier_contenu,$fichier_texte);
-	// Mémoriser dans un fichier les données des contacts concernés par la lettre
+	// Mémoriser dans un fichier les données des structures concernées par les stats
 	$fichier_texte = '';
-	$DB_TAB = DB_lister_contacts_cibles( implode(',',$tab_bases) );
+	$DB_TAB = DB_lister_structures( implode(',',$tab_bases) );
 	foreach($DB_TAB as $DB_ROW)
 	{
-		$fichier_texte .= '<'.$DB_ROW['contact_id'].'>-<'.$DB_ROW['contact_nom'].'>-<'.$DB_ROW['contact_prenom'].'>-<'.$DB_ROW['contact_courriel'].'>'."\r\n";
+		$fichier_texte .= '<'.$DB_ROW['sacoche_base'].'>-<'.$DB_ROW['structure_denomination'].'>-<'.$DB_ROW['structure_contact_courriel'].'>'."\r\n";
 	}
-	file_put_contents($dossier.$fichier_contact,$fichier_texte);
-	$max = 1 + floor($nb_bases/$pack) + 1 ; // La dernière étape consiste uniquement à effacer les fichiers
+	file_put_contents($dossier.$fichier_info,$fichier_texte);
+	$max = $nb_bases + 1 ; // La dernière étape consiste uniquement à effacer le fichier
 	exit('ok-'.$max);
 }
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-// Etape d'envoi d'une lettre d'informations
+// Etape de récupération des stats
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 elseif( $num && $max && ($num<$max) )
 {
-	// Récupérer le titre et le contenu de la lettre d'informations
-	$fichier_texte = file_get_contents($dossier.$fichier_contenu);
-	list($titre,$contenu) = explode(' ◄■► ',$fichier_texte);
-	// Récupérer une série de données des contacts concernés par la lettre
-	$fichier_texte = file_get_contents($dossier.$fichier_contact);
+	// Récupérer la ligne de données
+	$fichier_texte = file_get_contents($dossier.$fichier_info);
+	$fichier_texte = file_get_contents($dossier.$fichier_info);
 	$tab_ligne = explode("\r\n",$fichier_texte);
 	// Envoyer une série de courriels
-	$i_min = ($num-1)*10;
-	$i_max = min( count($tab_ligne)-1 , $num*10); // -1 à cause du dernier retour chariot dans $fichier_contact qui créé une ligne de trop
-	for($i=$i_min ; $i<$i_max ; $i++)
-	{
-		list($base_id,$contact_nom,$contact_prenom,$contact_courriel) = explode('>-<',substr($tab_ligne[$i],1,-1));
-		$texte = 'Bonjour '.$contact_prenom.' '.$contact_nom.'.'."\r\n\r\n";
-		$texte.= $contenu."\r\n\r\n";
-		$texte.= 'Rappel des adresses à utiliser :'."\r\n";
-		$texte.= SERVEUR_ADRESSE.'?id='.$base_id.' (hébergement de l\'établissement)'."\r\n";
-		$texte.= SERVEUR_ADRESSE.'?id='.$base_id.'&admin'.' (connexion administrateur)'."\r\n";
-		$texte.= 'http://competences.sesamath.net (site du projet SACoche)'."\r\n\r\n";
-		$texte.= 'Cordialement'."\r\n";
-		$texte.= WEBMESTRE_PRENOM.' '.WEBMESTRE_NOM."\r\n\r\n";
-		$courriel_bilan = envoyer_webmestre_courriel($contact_courriel,$titre,$texte,false);
-		if(!$courriel_bilan)
-		{
-			exit('Erreur lors de l\'envoi du courriel !');
-		}
-	}
-	exit('ok');
+	$num_ligne = $num-1;
+	list($base_id,$structure_denomination,$contact_courriel) = explode('>-<',substr($tab_ligne[$num_ligne],1,-1));
+	charger_parametres_mysql_supplementaires($base_id);
+	list($prof_nb,$prof_use,$eleve_nb,$eleve_use,$score_nb) = DB_recuperer_statistiques();
+	exit('ok-<tr><td>'.$base_id.'</td><td>'.html($structure_denomination).'</td><td>'.mailto($contact_courriel,'SACoche - Inscription inutilisée','contact').'</td><td>'.$prof_nb.'</td><td>'.$prof_use.'</td><td>'.$eleve_nb.'</td><td>'.$eleve_use.'</td><td><i>'.sprintf("%07u",$score_nb).'</i>'.number_format($score_nb,0,'',' ').'</td></tr>');
 }
 elseif( $num && $max && ($num==$max) )
 {
 	// Supprimer les fichiers dont on n'a plus besoin
-	unlink($dossier.$fichier_contenu);
-	unlink($dossier.$fichier_contact);
+	unlink($dossier.$fichier_info);
 	exit('ok');
 }
 

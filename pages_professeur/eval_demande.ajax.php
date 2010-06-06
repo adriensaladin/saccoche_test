@@ -116,11 +116,7 @@ if( ($action=='Afficher_demandes') && $matiere_id && $matiere_nom && $groupe_id 
 	}
 	// Calculer pour chaque item sa popularité (le nb de demandes pour les élèves affichés)
 	$listing_demande_id = implode(',', $tab_demandes );
-	$DB_SQL = 'SELECT item_id , COUNT(item_id) AS popularite ';
-	$DB_SQL.= 'FROM sacoche_demande ';
-	$DB_SQL.= 'WHERE demande_id IN('.$listing_demande_id.') AND user_id IN('.$listing_user_id.') ';
-	$DB_SQL.= 'GROUP BY item_id ';
-	$DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , null);
+	$DB_TAB = DB_recuperer_item_popularite($listing_demande_id,$listing_user_id);
 	$tab_bad = array();
 	$tab_bon = array();
 	foreach($DB_TAB as $DB_ROW)

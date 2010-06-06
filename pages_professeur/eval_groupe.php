@@ -36,14 +36,7 @@ $VERSION_JS = '2';
 $select_eleve  = '<option value=""></option>';
 $tab_niveau_js = 'var tab_niveau = new Array();';
 $tab_groupe_js = 'var tab_groupes = new Array();';
-$DB_SQL = 'SELECT * FROM sacoche_groupe ';
-$DB_SQL.= 'LEFT JOIN sacoche_jointure_user_groupe USING (groupe_id) ';
-$DB_SQL.= 'LEFT JOIN sacoche_niveau USING (niveau_id) ';
-$DB_SQL.= 'WHERE ( user_id=:user_id OR groupe_prof_id=:user_id ) AND groupe_type!=:type4 ';
-$DB_SQL.= 'GROUP BY groupe_id ';
-$DB_SQL.= 'ORDER BY niveau_ordre ASC, groupe_nom ASC';
-$DB_VAR = array(':user_id'=>$_SESSION['USER_ID'],':type4'=>'eval');
-$DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+$DB_TAB = DB_lister_groupes_professeur($_SESSION['USER_ID']);
 $tab_options = array('classe'=>'','groupe'=>'','besoin'=>'');
 foreach($DB_TAB as $DB_ROW)
 {

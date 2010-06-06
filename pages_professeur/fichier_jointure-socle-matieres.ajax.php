@@ -73,19 +73,7 @@ if($palier_id && $palier_nom)
 
 	// Récupération des données des référentiels liés au socle
 	$tab_jointure = array();
-	$DB_SQL = 'SELECT entree_id , item_nom , matiere_ref , niveau_ref , ';
-	$DB_SQL.= 'CONCAT(domaine_ref,theme_ordre,item_ordre) AS item_ref ';
-	$DB_SQL.= 'FROM sacoche_referentiel ';
-	$DB_SQL.= 'LEFT JOIN sacoche_jointure_user_matiere USING (matiere_id) ';
-	$DB_SQL.= 'LEFT JOIN sacoche_matiere USING (matiere_id) ';
-	$DB_SQL.= 'LEFT JOIN sacoche_niveau USING (niveau_id) ';
-	$DB_SQL.= 'LEFT JOIN sacoche_referentiel_domaine USING (matiere_id,niveau_id) ';
-	$DB_SQL.= 'LEFT JOIN sacoche_referentiel_theme USING (domaine_id) ';
-	$DB_SQL.= 'LEFT JOIN sacoche_referentiel_item USING (theme_id) ';
-	$DB_SQL.= 'WHERE entree_id>0 ';
-	$DB_SQL.= 'GROUP BY item_id ';
-	$DB_SQL.= 'ORDER BY matiere_nom ASC, niveau_ordre ASC, domaine_ordre ASC, theme_ordre ASC, item_ordre ASC';
-	$DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , null);
+	$DB_TAB = DB_recuperer_associations_entrees_socle();
 	foreach($DB_TAB as $DB_ROW)
 	{
 		$tab_jointure[$DB_ROW['entree_id']][] = $DB_ROW['matiere_ref'].'.'.$DB_ROW['niveau_ref'].'.'.$DB_ROW['item_ref'].' - '.$DB_ROW['item_nom'];

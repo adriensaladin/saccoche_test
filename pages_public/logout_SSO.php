@@ -50,10 +50,7 @@ if($mode=='cas')
 	require_once('../_inc/class.DB.php');	// !!! Remonter d'un dossier !!!
 	require_once('../__mysql_config/serveur_sacoche_structure'.$suffixe.'.php');	// !!! Remonter d'un dossier !!!
 	require_once('../_inc/class.DB.config.sacoche_structure.php');	// !!! Remonter d'un dossier !!!
-	$DB_SQL = 'SELECT parametre_nom,parametre_valeur FROM sacoche_parametre ';
-	$DB_SQL.= 'WHERE parametre_nom IN("connexion_mode","cas_serveur_host","cas_serveur_port","cas_serveur_root") ';
-	$DB_SQL.= 'LIMIT 4';
-	$DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL );
+	$DB_TAB = DB_lister_parametres('"connexion_mode","cas_serveur_host","cas_serveur_port","cas_serveur_root"');
 	foreach($DB_TAB as $DB_ROW)
 	{
 		${$DB_ROW['parametre_nom']} = $DB_ROW['parametre_valeur'];

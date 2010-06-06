@@ -26,23 +26,19 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-$TITRE = "Connexion SSO";
+$TITRE = "Connexion serveur CAS";
 ?>
 
 <?php
-$BASE = (isset($_GET['f_base'])) ? intval($_GET['f_base'])     : 0;
-$sso  = (isset($_GET['f_sso']))  ? clean_texte($_GET['f_sso']) : '';
+$BASE = (isset($_GET['f_base'])) ? intval($_GET['f_base']) : 0;
 
-require_once('./_inc/tableau_sso.php');	// Charge $tab_sso['nom'] = array('txt'=>'...' , 'doc'=>'...');
-unset($tab_sso['normal']);
-
-if( (!$BASE) || (!isset($tab_sso[$sso])) )
+if(!$BASE)
 {
-	affich_message_exit($titre='Paramètres manquants',$contenu='Paramètres manquants.');
+	affich_message_exit($titre='Paramètre manquant',$contenu='Paramètre manquant.');
 }
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-// Préparation de la connexion à l'ENT
+// Préparation de la connexion au serveur CAS
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
 // La classe phpCAS nécessite la bibliothèque de fonction cURL http://fr2.php.net/manual/fr/book.curl.php
@@ -50,26 +46,39 @@ if(!in_array( 'curl' , get_loaded_extensions() ))
 {
 	affich_message_exit($titre='PHP incomplet',$contenu='Le module PHP "curl" est manquant (bibliothèque requise pour CAS).');
 }
+// En cas de multi-structures, il faut charger les paramètres de connexion du serveur CAS
+if($BASE)
+{
+	charger_parametres_mysql_supplementaires($BASE);
+}
+$DB_SQL = 'SELECT parametre_nom,parametre_valeur FROM sacoche_parametre ';
+$DB_SQL.= 'WHERE parametre_nom IN("connexion_mode","cas_serveur_host","cas_serveur_port","cas_serveur_root") ';
+$DB_SQL.= 'LIMIT 4';
+$DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL );
+foreach($DB_TAB as $DB_ROW)
+{
+	${$DB_ROW['parametre_nom']} = $DB_ROW['parametre_valeur'];
+}
+if( (isset($connexion_mode,$cas_serveur_host,$cas_serveur_port,$cas_serveur_root)==false) || ($connexion_mode!='cas') )
+{
+	affich_message_exit($titre='Données incompatibles',$contenu='Base de l\'établissement non configurée pour une connexion CAS.');
+}
+
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+// Connexion au serveur CAS pour s'identifier
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
 // Inclure la classe phpCAS
 include_once('./_inc/class.CAS.php');
 // Pour tester, cette méthode statique créé un fichier de log sur ce qui se passe avec CAS
 // phpCAS::setDebug('debugcas.txt');
-// Initialiser la connexion avec CAS 
-$cas_host = $sso; // l'hôte du serveur CAS
-$cas_port = 443; // Le port
-$cas_root = ''; //inutile avec ARGOS
-// Le premier argument est la version du protocole CAS
-phpCAS::client(CAS_VERSION_2_0, $cas_host, $cas_port, $cas_root, false);
-phpCAS::setLang('french');
+// Initialiser la connexion avec CAS  ; le premier argument est la version du protocole CAS
+phpCAS::client(CAS_VERSION_2_0, $cas_serveur_host, (int)$cas_serveur_port, $cas_serveur_root, false);
+phpCAS::setLang(PHPCAS_LANG_FRENCH);
 // On indique qu'il n'y a pas de validation du certificat SSL à faire
 phpCAS::setNoCasServerValidation();
 // Gestion du single sign-out
 phpCAS::handleLogoutRequests(false);
-
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-// Appel pour se connecter
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-
 // Demander à CAS d'aller interroger le serveur
 // Cette méthode permet de forcer CAS à demander au client de s'authentifier s'il ne trouve aucun client d'authentifié.
 // (redirige vers le serveur d'authentification si aucun utilisateur authentifié n'a été trouvé par le client CAS)
@@ -83,7 +92,7 @@ $login = phpCAS::getUser();
 // Comparer avec les données de la base (demande de connexion comme élève ou professeur ou directeur)
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
-$connexion = connecter_user($BASE,$profil='normal',$login,$password=false,$sso);
+$connexion = connecter_user($BASE,$profil='normal',$login,$password=false,$mode_connection='cas');
 
 if($connexion=='ok')
 {

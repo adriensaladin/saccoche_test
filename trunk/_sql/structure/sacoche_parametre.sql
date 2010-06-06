@@ -16,7 +16,8 @@ INSERT INTO sacoche_parametre VALUES
 ( "sesamath_key"      , "" ),
 ( "uai"               , "" ),
 ( "denomination"      , "" ),
-( "sso"               , "normal" ),
+( "connexion_mode"    , "normal" ),
+( "connexion_nom"     , "sacoche" ),
 ( "modele_professeur" , "ppp.nnnnnnnn" ),
 ( "modele_eleve"      , "ppp.nnnnnnnn" ),
 ( "matieres"          , "1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,99" ),
@@ -34,6 +35,9 @@ INSERT INTO sacoche_parametre VALUES
 ( "calcul_methode"    , "geometrique" ),
 ( "calcul_limite"     , "5" ),
 ( "blocage_statut"    , "0" ),
-( "blocage_message"   , "" );
+( "blocage_message"   , "" ),
+( "cas_serveur_host"  , "" ),
+( "cas_serveur_port"  , "" ),
+( "cas_serveur_root"  , "" );
 
 ALTER TABLE sacoche_parametre ENABLE KEYS;

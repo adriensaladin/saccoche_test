@@ -224,14 +224,16 @@ $(document).ready
 		(
 			function()
 			{
-				if($('#f_login').val()!='connexion ENT')
+				profil = $('#f_profil').val();
+				mode_connexion = $('#f_mode').val();
+				if( (mode_connexion=='normal') || (profil=='administrateur') )
 				{
 					$(this).ajaxSubmit(ajaxOptions);
 					return false;
 				}
-				else
+				else if(mode_connexion=='cas')
 				{
-					document.location.href = './index.php?fichier=login_SSO&f_base='+$('#f_base').val()+'&f_sso='+$('#f_sso').val();
+					document.location.href = './index.php?fichier=login_CAS&f_base='+$('#f_base').val();
 					return false;
 				}
 			}

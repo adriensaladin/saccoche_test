@@ -103,8 +103,8 @@ if($action=='import_ent')
 	elseif(mb_substr_count($tab_lignes[0],"\t")>1) {$separateur = "\t";}
 	else {exit('Erreur : séparateur du fichier csv indéterminé !');}
 	unset($tab_lignes[0]);
-	// Utiliser $_SESSION['SSO'] pour déterminer l'emplacement des données à récupérer
-	require_once('./_inc/tableau_sso.php');	// Charge $tab_sso['nom'] = array('txt'=>'...' , 'doc'=>'...');
+	// Utiliser $_SESSION['CONNEXION_MODE'] et $_SESSION['CONNEXION_NOM'] pour déterminer l'emplacement des données à récupérer
+	require_once('./_inc/tableau_sso.php');
 	// Récupérer les données
 	foreach ($tab_lignes as $ligne_contenu)
 	{
@@ -112,9 +112,9 @@ if($action=='import_ent')
 		if(count($tab_elements)>2)
 		{
 			$tab_elements = array_map('clean_csv',$tab_elements);
-			$id_ent = $tab_elements[ $tab_sso[$_SESSION['SSO']]['id_ent'] ];
-			$nom    = $tab_elements[ $tab_sso[$_SESSION['SSO']]['nom']    ];
-			$prenom = $tab_elements[ $tab_sso[$_SESSION['SSO']]['prenom'] ];
+			$id_ent = $tab_elements[ $tab_connexion_info[$_SESSION['CONNEXION_MODE']][$_SESSION['CONNEXION_NOM']]['csv_id_ent'] ];
+			$nom    = $tab_elements[ $tab_connexion_info[$_SESSION['CONNEXION_MODE']][$_SESSION['CONNEXION_NOM']]['csv_nom']    ];
+			$prenom = $tab_elements[ $tab_connexion_info[$_SESSION['CONNEXION_MODE']][$_SESSION['CONNEXION_NOM']]['csv_prenom'] ];
 			if( ($id_ent!='') && ($nom!='') && ($prenom!='') )
 			{
 				$tab_users_fichier['id_ent'][] = mb_substr(clean_texte($id_ent),0,32);

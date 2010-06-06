@@ -54,16 +54,16 @@ function afficher_nom_etablissement($BASE,$denomination)
 function afficher_formulaire_identification_webmestre()
 {
 	echo'<label class="tab" for="f_password">Mot de passe :</label><input id="f_password" name="f_password" size="20" type="password" value="" tabindex="3" /><br />'."\r\n";
-	echo'<span class="tab"></span><input id="f_login" name="f_login" type="hidden" value="webmestre" /><input id="f_sso" name="f_sso" type="hidden" value="normal" /><input id="f_profil" name="f_profil" type="hidden" value="webmestre" /><input id="f_action" name="f_action" type="hidden" value="identifier" /><input id="f_submit" type="submit" value="Accéder à son espace." tabindex="4" /><label id="ajax_msg">&nbsp;</label><br />'."\r\n";
+	echo'<span class="tab"></span><input id="f_login" name="f_login" type="hidden" value="webmestre" /><input id="f_mode" name="f_mode" type="hidden" value="normal" /><input id="f_profil" name="f_profil" type="hidden" value="webmestre" /><input id="f_action" name="f_action" type="hidden" value="identifier" /><input id="f_submit" type="submit" value="Accéder à son espace." tabindex="4" /><label id="ajax_msg">&nbsp;</label><br />'."\r\n";
 }
 
-function afficher_formulaire_identification($profil,$sso)
+function afficher_formulaire_identification($profil,$mode)
 {
-	$input_login    = (($sso=='normal')||($profil=='administrateur')) ? 'type="text" value=""' : 'type="text" value="connexion ENT" disabled="disabled"' ;
-	$input_password = (($sso=='normal')||($profil=='administrateur')) ? 'type="password" value=""' : 'type="text" value="connexion ENT" disabled="disabled"' ;
+	$input_login    = (($mode=='normal')||($profil=='administrateur')) ? 'type="text" value=""' : 'type="text" value="connexion ENT" disabled="disabled"' ;
+	$input_password = (($mode=='normal')||($profil=='administrateur')) ? 'type="password" value=""' : 'type="text" value="connexion ENT" disabled="disabled"' ;
 	echo'<label class="tab" for="f_login">Nom d\'utilisateur :</label><input id="f_login" name="f_login" size="20" '.$input_login.' tabindex="2" /><br />'."\r\n";
 	echo'<label class="tab" for="f_password">Mot de passe :</label><input id="f_password" name="f_password" size="20" '.$input_password.' tabindex="3" /><br />'."\r\n";
-	echo'<span class="tab"></span><input id="f_sso" name="f_sso" type="hidden" value="'.$sso.'" /><input id="f_profil" name="f_profil" type="hidden" value="'.$profil.'" /><input id="f_action" name="f_action" type="hidden" value="identifier" /><input id="f_submit" type="submit" value="Accéder à son espace." tabindex="4" /><label id="ajax_msg">&nbsp;</label><br />'."\r\n";
+	echo'<span class="tab"></span><input id="f_mode" name="f_mode" type="hidden" value="'.$mode.'" /><input id="f_profil" name="f_profil" type="hidden" value="'.$profil.'" /><input id="f_action" name="f_action" type="hidden" value="identifier" /><input id="f_submit" type="submit" value="Accéder à son espace." tabindex="4" /><label id="ajax_msg">&nbsp;</label><br />'."\r\n";
 }
 
 //	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
@@ -91,22 +91,19 @@ elseif( ($action=='initialiser') && ($profil=='webmestre') )
 elseif( ($action=='initialiser') && (HEBERGEUR_INSTALLATION=='mono-structure') && $profil )
 {
 	$DB_SQL = 'SELECT parametre_nom,parametre_valeur FROM sacoche_parametre ';
-	$DB_SQL.= 'WHERE parametre_nom IN("denomination","sso") ';
+	$DB_SQL.= 'WHERE parametre_nom IN("denomination","connexion_mode") ';
 	$DB_SQL.= 'LIMIT 2';
 	$DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL );
 	foreach($DB_TAB as $DB_ROW)
 	{
 		${$DB_ROW['parametre_nom']} = $DB_ROW['parametre_valeur'];
 	}
-	if(isset($denomination,$sso))
-	{
-		afficher_nom_etablissement($BASE=0,$denomination);
-		afficher_formulaire_identification($profil,$sso);
-	}
-	else
+	if(isset($denomination,$connexion_mode)==false)
 	{
 		exit('Erreur : base de l\'établissement incomplète !');
 	}
+	afficher_nom_etablissement($BASE=0,$denomination);
+	afficher_formulaire_identification($profil,$connexion_mode);
 }
 
 // Charger le formulaire de choix des établissements (installation multi-structures)
@@ -136,7 +133,7 @@ elseif( ( ($action=='initialiser') && ($BASE>0) && (HEBERGEUR_INSTALLATION=='mul
 	// Une deuxième requête sur SACOCHE_STRUCTURE_BD_NAME pour savoir si le mode de connexion est SSO ou pas
 	charger_parametres_mysql_supplementaires($BASE);
 	$DB_SQL = 'SELECT parametre_nom,parametre_valeur FROM sacoche_parametre ';
-	$DB_SQL.= 'WHERE parametre_nom="sso" ';
+	$DB_SQL.= 'WHERE parametre_nom="connexion_mode" ';
 	$DB_SQL.= 'LIMIT 1';
 	$DB_ROW = DB::queryRow(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL );
 	if(!count($DB_ROW))
@@ -162,7 +159,7 @@ elseif( ($action=='identifier') && ($profil=='webmestre') && ($login=='webmestre
 
 elseif( ($action=='identifier') && ($profil!='webmestre') && $login && $password )
 {
-	$connexion = connecter_user($BASE,$profil,$login,$password,$sso=false);
+	$connexion = connecter_user($BASE,$profil,$login,$password,$mode_connection='normal');
 	echo ($connexion=='ok') ? $_SESSION['USER_PROFIL'] : $connexion ;
 }
 

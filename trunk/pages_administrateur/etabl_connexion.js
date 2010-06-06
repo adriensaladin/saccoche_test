@@ -57,26 +57,72 @@ $(document).ready
 		);
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-//	Mode de connexion (normal, SSO...)
+// Déplacer / afficher / masquer le formulaire CAS
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
+		$("input[type=radio]").click
+		(
+			function()
+			{
+				$('#cas_options').hide();
+				var valeur = $(this).val();
+				var tab_infos = valeur.split('|');
+				var connexion_mode = tab_infos[0];
+				var connexion_nom = tab_infos[1];
+				if(connexion_mode=='cas')
+				{
+					var valeur = tab_cas[connexion_nom];
+					var tab_infos = valeur.split(']¤[');
+					$('#cas_serveur_host').val( tab_infos[0] );
+					$('#cas_serveur_port').val( tab_infos[1] );
+					$('#cas_serveur_root').val( tab_infos[2] );
+					$(this).parent().parent().next().after( $('#cas_options') );
+					$('#cas_options').show();
+				}
+			}
+		);
+
+		// Initialiser son placement
+		$('input[type=radio]:checked').each
+		(
+			function()
+			{
+				var valeur = $(this).val();
+				var tab_infos = valeur.split('|');
+				var connexion_mode = tab_infos[0];
+				if(connexion_mode=='cas')
+				{
+					$(this).parent().parent().next().after( $('#cas_options') );
+					$('#cas_options').show();
+				}
+			}
+		);
+
+
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+//	Mode d'identification (normal, CAS...) & paramètres associés
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
 		$('#f_submit').click
 		(
 			function()
 			{
-				if( $('input[name=mode_connexion]').is(":checked")!=true )	// normalement impossible, sauf si par exemple on triche avec la barre d'outils Web Developer...
+				if( $('input[name=connexion_mode_nom]').is(":checked")!=true )	// normalement impossible, sauf si par exemple on triche avec la barre d'outils Web Developer...
 				{
 					$('#ajax_msg').removeAttr("class").addClass("erreur").html("Cocher un mode de connexion !");
 					return(false);
 				}
-				f_mode_connexion = $('input[name=mode_connexion]:checked').val();
+				var connexion_mode_nom = $('input[name=connexion_mode_nom]:checked').val();
+				var tab_infos = connexion_mode_nom.split('|');
+				var connexion_mode = tab_infos[0];
+				var connexion_nom = tab_infos[1];
 				$('#ajax_msg').removeAttr("class").addClass("loader").html("Demande envoyée... Veuillez patienter.");
 				$.ajax
 				(
 					{
 						type : 'POST',
 						url : 'ajax.php?dossier='+DOSSIER+'&fichier='+FICHIER,
-						data : 'f_mode_connexion='+f_mode_connexion,
+						data : 'f_connexion_mode='+connexion_mode+'&f_connexion_nom='+connexion_nom+'&'+$("form").serialize(),
 						dataType : "html",
 						error : function(msg,string)
 						{

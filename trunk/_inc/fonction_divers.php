@@ -249,7 +249,7 @@ function connecter_webmestre($password)
 		// Données associées à l'établissement.
 		$_SESSION['SESAMATH_ID']      = 0;
 		$_SESSION['DENOMINATION']     = 'Gestion '.HEBERGEUR_INSTALLATION;
-		$_SESSION['SSO']              = 'normal';
+		$_SESSION['MODE_CONNEXION']   = 'normal';
 		$_SESSION['DUREE_INACTIVITE'] = 30;
 		return 'ok';
 	}
@@ -263,25 +263,26 @@ function connecter_webmestre($password)
  * @param string    $profil   'normal' ou 'administrateur'
  * @param string    $login
  * @param string    $password
- * @param string    $sso
+ * @param string    $mode_connection   'normal' ou 'cas' ou ...
  * @return string   retourne 'ok' en cas de succès (et dans ce cas la session est mise à jour) ou un message d'erreur sinon
  */
 
-function connecter_user($BASE,$profil,$login,$password,$sso)
+function connecter_user($BASE,$profil,$login,$password,$mode_connection)
 {
 	// Blocage éventuel par le webmestre ou un administrateur
 	tester_blocage_application($BASE,$demande_connexion_profil=$profil);
 	// En cas de multi-structures, il faut charger les paramètres de connexion à la base concernée
-	if($BASE)
+	// Sauf pour une connexion à un ENT, car alors il a déjà fallu les charger pour récupérer les paramètres de connexion à l'ENT
+	if( ($BASE) && ($mode_connection=='normal') )
 	{
 		charger_parametres_mysql_supplementaires($BASE);
 	}
-	$DB_ROW = DB_recuperer_donnees_utilisateur($sso,$login);
+	$DB_ROW = DB_recuperer_donnees_utilisateur($mode_connection,$login);
 	if(!count($DB_ROW))
 	{
-		return ($sso) ? 'Identification réussie mais valeur "'.$login.'" inconnue dans SACoche !' : 'Nom d\'utilisateur incorrect !' ;
+		return ($mode_connection=='normal') ? 'Nom d\'utilisateur incorrect !' : 'Identification réussie mais identifiant ENT "'.$login.'" inconnu dans SACoche !' ;
 	}
-	elseif( (!$sso) && ($DB_ROW['user_password']!=crypter_mdp($password)) )
+	elseif( ($mode_connection=='normal') && ($DB_ROW['user_password']!=crypter_mdp($password)) )
 	{
 		return 'Mot de passe incorrect !';
 	}
@@ -320,7 +321,8 @@ function connecter_user($BASE,$profil,$login,$password,$sso)
 			case 'sesamath_key' :      $_SESSION['SESAMATH_KEY']        =       $DB_ROW['parametre_valeur']; break;
 			case 'uai' :               $_SESSION['UAI']                 =       $DB_ROW['parametre_valeur']; break;
 			case 'denomination':       $_SESSION['DENOMINATION']        =       $DB_ROW['parametre_valeur']; break;
-			case 'sso':                $_SESSION['SSO']                 =       $DB_ROW['parametre_valeur']; break;
+			case 'connexion_mode':     $_SESSION['CONNEXION_MODE']      =       $DB_ROW['parametre_valeur']; break;
+			case 'connexion_nom':      $_SESSION['CONNEXION_NOM']       =       $DB_ROW['parametre_valeur']; break;
 			case 'modele_professeur':  $_SESSION['MODELE_PROF']         =       $DB_ROW['parametre_valeur']; break;
 			case 'modele_eleve':       $_SESSION['MODELE_ELEVE']        =       $DB_ROW['parametre_valeur']; break;
 			case 'matieres':           $_SESSION['MATIERES']            =       $DB_ROW['parametre_valeur']; break;
@@ -337,6 +339,9 @@ function connecter_user($BASE,$profil,$login,$password,$sso)
 			case 'calcul_seuil_V':     $_SESSION['CALCUL_SEUIL']['V']   = (int) $DB_ROW['parametre_valeur']; break;
 			case 'calcul_methode':     $_SESSION['CALCUL_METHODE']      =       $DB_ROW['parametre_valeur']; break;
 			case 'calcul_limite':      $_SESSION['CALCUL_LIMITE']       = (int) $DB_ROW['parametre_valeur']; break;
+			case 'cas_serveur_host':   $_SESSION['CAS_SERVEUR_HOST']    =       $DB_ROW['parametre_valeur']; break;
+			case 'cas_serveur_port':   $_SESSION['CAS_SERVEUR_PORT']    = (int) $DB_ROW['parametre_valeur']; break;
+			case 'cas_serveur_root':   $_SESSION['CAS_SERVEUR_ROOT']    =       $DB_ROW['parametre_valeur']; break;
 		}
 	}
 	// Vérifier la version de la base

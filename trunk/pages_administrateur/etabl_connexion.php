@@ -27,25 +27,46 @@
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = "Mode d'identification";
+
+require_once('./_inc/tableau_sso.php');
+
+// Liste des possibilités
+$choix = '';
+$i_id = 0;	// Pour donner des ids aux checkbox et radio
+foreach($tab_connexion_mode as $connexion_mode => $mode_texte)
+{
+	foreach($tab_connexion_info[$connexion_mode] as $connexion_nom => $tab_info)
+	{
+		$i_id++;
+		$checked = ( ($connexion_mode==$_SESSION['CONNEXION_MODE']) && ($connexion_nom==$_SESSION['CONNEXION_NOM']) ) ? ' checked="checked"' : '' ;
+		$choix .= '<span class="tab"><label for="input_'.$i_id.'"><input type="radio" id="input_'.$i_id.'" name="connexion_mode_nom" value="'.$connexion_mode.'|'.$connexion_nom.'"'.$checked.' /> '.$mode_texte.' &rarr; '.$tab_info['txt'].'</label></span><br />'."\r\n";
+	}
+}
+
+// Retenir en variable javascript les paramètres des serveurs CAS
+$tab_cas_js = '';
+foreach($tab_connexion_info['cas'] as $connexion_nom => $tab_info)
+{
+	$tab_cas_js .= 'tab_cas["'.$connexion_nom.'"]="'.html($tab_info['serveur_host'].']¤['.$tab_info['serveur_port'].']¤['.$tab_info['serveur_root']).'";';
+}
+
 ?>
 
 <p class="hc"><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__gestion_mode_identification">DOC : Gestion du mode d'identification</a></span></p>
 
 <hr />
 
+<script type="text/javascript">
+	var tab_cas = new Array();<?php echo $tab_cas_js ?>
+</script>
+
 <form action=""><fieldset>
-	<?php
-	require_once('./_inc/tableau_sso.php');	// Charge $tab_sso['nom'] = array('txt'=>'...' , 'doc'=>'...');
-	$i_id = 0;	// Pour donner des ids aux checkbox et radio
-	foreach($tab_sso as $value => $tab_infos)
-	{
-		$i_id++;
-		$checked = ($value==$_SESSION['SSO']) ? ' checked="checked"' : '' ;
-		$debut_phrase = ($value!='normal') ? 'Connexion SSO en lien avec l\'' : '' ;
-		$documentation = ($tab_infos['doc']) ? ' <span class="manuel"><a class="pop_up" href="'.SERVEUR_DOCUMENTAIRE.'?fichier=support_administrateur__gestion_mode_identification__integration_ENT_'.$tab_infos['doc'].'">DOC : Intégration à cet ENT.</a></span>' : '' ;
-		echo'<label for="input_'.$i_id.'"><input type="radio" id="input_'.$i_id.'" name="mode_connexion" value="'.$value.'"'.$checked.' /> '.$debut_phrase.$tab_infos['txt'].'</label>'.$documentation.'<br />'."\r\n";
-	}
-	?>
+	<div id="cas_options" class="hide">
+		<label class="tab" for="cas_serveur_host">Domaine :</label><input id="cas_serveur_host" name="cas_serveur_host" size="20" type="text" value="<?php echo html($_SESSION['CAS_SERVEUR_HOST']) ?>" /><br />
+		<label class="tab" for="cas_serveur_port">Port :</label><input id="cas_serveur_port" name="cas_serveur_port" size="5" type="text" value="<?php echo html($_SESSION['CAS_SERVEUR_PORT']) ?>" /><br />
+		<label class="tab" for="cas_serveur_root">Chemin :</label><input id="cas_serveur_root" name="cas_serveur_root" size="10" type="text" value="<?php echo html($_SESSION['CAS_SERVEUR_ROOT']) ?>" /><br />
+	</div>
+	<?php echo $choix ?>
 	<span class="tab"></span><input id="f_submit" type="button" value="Valider." /><label id="ajax_msg">&nbsp;</label>
 	<p><span class="astuce">Pour importer les identifiants de l'ENT, utiliser ensuite la page "<a href="./index.php?dossier=administrateur&amp;fichier=fichier&amp;section=import-id-ent">Importer identifiant ENT</a>".</span></p>
 </fieldset></form>

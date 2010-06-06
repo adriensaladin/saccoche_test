@@ -25,46 +25,61 @@
  * 
  */
 
-$base = (isset($_GET['f_base'])) ? intval($_GET['f_base'])     : 0;
-$sso  = (isset($_GET['f_sso']))  ? $_GET['f_sso']              : '';
+$BASE = (isset($_GET['f_base'])) ? intval($_GET['f_base']) : 0;
+$mode = (isset($_GET['f_mode'])) ? $_GET['f_mode']         : '';
 
-require_once('../_inc/tableau_sso.php');	// !!! Remonter d'un dossier !!!	// Charge $tab_sso['nom'] = array('txt'=>'...' , 'doc'=>'...');
-unset($tab_sso['normal']);
-
-if( (!$base) || (!isset($tab_sso[$sso])) )
+if( (!$BASE) || ($mode!='cas') )
 {
 	exit('Paramètre manquant.');
 }
 
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-// Préparation de la connexion à l'ENT
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-
-// La classe phpCAS nécessite la bibliothèque de fonction cURL http://fr2.php.net/manual/fr/book.curl.php
-if(!in_array( 'curl' , get_loaded_extensions() ))
+if($mode=='cas')
 {
-	exit('Le module PHP "curl" est manquant (bibliothèque requise pour CAS).');
+	//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+	// Préparation de la connexion au serveur CAS
+	//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
+	// La classe phpCAS nécessite la bibliothèque de fonction cURL http://fr2.php.net/manual/fr/book.curl.php
+	if(!in_array( 'curl' , get_loaded_extensions() ))
+	{
+		affich_message_exit($titre='PHP incomplet',$contenu='Le module PHP "curl" est manquant (bibliothèque requise pour CAS).');
+	}
+	// De connecter pour charger les paramètres de connexion au serveur CAS
+	$suffixe = ($BASE) ? '_'.$BASE : '' ;
+	require_once('../_inc/fonction_divers.php');	// !!! Remonter d'un dossier !!!
+	require_once('../_inc/class.DB.php');	// !!! Remonter d'un dossier !!!
+	require_once('../__mysql_config/serveur_sacoche_structure'.$suffixe.'.php');	// !!! Remonter d'un dossier !!!
+	require_once('../_inc/class.DB.config.sacoche_structure.php');	// !!! Remonter d'un dossier !!!
+	$DB_SQL = 'SELECT parametre_nom,parametre_valeur FROM sacoche_parametre ';
+	$DB_SQL.= 'WHERE parametre_nom IN("connexion_mode","cas_serveur_host","cas_serveur_port","cas_serveur_root") ';
+	$DB_SQL.= 'LIMIT 4';
+	$DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL );
+	foreach($DB_TAB as $DB_ROW)
+	{
+		${$DB_ROW['parametre_nom']} = $DB_ROW['parametre_valeur'];
+	}
+	if( (isset($connexion_mode,$cas_serveur_host,$cas_serveur_port,$cas_serveur_root)==false) || ($connexion_mode!='cas') )
+	{
+		affich_message_exit($titre='Données incompatibles',$contenu='Base de l\'établissement non configurée pour une connexion CAS.');
+	}
+
+	//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+	// Connexion au serveur CAS pour se déconnecter
+	//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
+	// Inclure la classe phpCAS
+	include_once('../_inc/class.CAS.php');	// !!! Remonter d'un dossier !!!
+	// Pour tester, cette méthode statique créé un fichier de log sur ce qui se passe avec CAS
+	// phpCAS::setDebug('debugcas.txt');
+	// Initialiser la connexion avec CAS  ; le premier argument est la version du protocole CAS
+	phpCAS::client(CAS_VERSION_2_0, $cas_serveur_host, (int)$cas_serveur_port, $cas_serveur_root, false);
+	phpCAS::setLang(PHPCAS_LANG_FRENCH);
+	// On indique qu'il n'y a pas de validation du certificat SSL à faire
+	phpCAS::setNoCasServerValidation();
+	// Gestion du single sign-out
+	phpCAS::handleLogoutRequests(false);
+	// Demander à CAS de se déconnecter
+	phpCAS::logout();
 }
-// Inclure la classe phpCAS
-include_once('../_inc/class.CAS.php');	// !!! Remonter d'un dossier !!!
-// Pour tester, cette méthode statique créé un fichier de log sur ce qui se passe avec CAS
-// phpCAS::setDebug('debugcas.txt');
-// Initialiser la connexion avec CAS 
-$cas_host = $sso; // l'hôte du serveur CAS
-$cas_port = 443; // Le port
-$cas_root = ''; //inutile avec ARGOS
-// Le premier argument est la version du protocole CAS
-phpCAS::client(CAS_VERSION_2_0, $cas_host, $cas_port, $cas_root, false);
-phpCAS::setLang('french');
-// On indique qu'il n'y a pas de validation du certificat SSL à faire
-phpCAS::setNoCasServerValidation();
-// Gestion du single sign-out
-phpCAS::handleLogoutRequests(false);
-
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-// Appel pour se déconnecter
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-
-phpCAS::logout();
 
 ?>

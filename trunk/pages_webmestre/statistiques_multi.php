@@ -63,11 +63,9 @@ $select_structure = afficher_select(DB_OPT_structures_sacoche() , $select_nom=fa
 	</tbody>
 </table>
 
-<p />
-
-<div id="expli" class="hide">
+<p id="expli" class="hide">
 	<hr />
-	<span class="astuce">Concernant les utilisateurs enregistrés, seuls sont comptés ceux au statut "actif".</span><br />
-	<span class="astuce">Les utilisateurs connectés sont ceux s'étant identifiés au cours du dernier semestre.</span><br />
+	<span class="astuce">Concernant les <b>utilisateurs enregistrés</b>, seuls sont comptés ceux au statut "actif".</span><br />
+	<span class="astuce">Les <b>utilisateurs connectés</b> sont ceux s'étant identifiés au cours du dernier semestre.</span><br />
 	<span class="astuce">La date de dernière connexion n'étant mémorisée que depuis juin 2010, les identifications antérieures ne sont pas comptabilisées.</span>
-</div>
+</p>

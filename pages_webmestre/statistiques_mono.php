@@ -51,19 +51,16 @@ list($prof_nb,$prof_use,$eleve_nb,$eleve_use,$score_nb) = DB_statistiques();
 
 ?>
 
+<ul id="result_mono" class="puce">
+	<li>Il y a <b id="prof_nb"><?php echo $prof_nb ?></b> professeurs enregistrés, dont <b id="prof_use"><?php echo $prof_use ?></b> professeurs connectés.</li>
+	<li>Il y a <b id="eleve_nb"><?php echo $eleve_nb ?></b> élèves enregistrés, dont <b id="eleve_use"><?php echo $eleve_use ?></b> élèves connectés.</li>
+	<li>Il y a <b id="score_nb"><?php echo $score_nb ?></b> saisies enregistrées.</li>
+</ul>
+
 <hr />
 
-<p id="result_mono">
-	Il y a <b id="prof_nb"><?php echo $prof_nb ?></b> professeurs enregistrés, dont <b id="prof_use"><?php echo $prof_use ?></b> professeurs connectés.<br />
-	Il y a <b id="eleve_nb"><?php echo $eleve_nb ?></b> élèves enregistrés, dont <b id="eleve_use"><?php echo $eleve_use ?></b> élèves connectés.<br />
-	Il y a <b id="score_nb"><?php echo $score_nb ?></b> saisies enregistrés.
-</p>
-
-<p />
-<hr />
-
-<div id="expli" class="hide">
+<div id="expli">
 	<span class="astuce">Concernant les utilisateurs enregistrés, seuls sont comptés ceux au statut "actif".</span><br />
 	<span class="astuce">Les utilisateurs connectés sont ceux s'étant identifiés au cours du dernier semestre.</span><br />
-	<span class="astuce">La date de dernière connexion n'étant mémorisée que depuis juin 2010, les identification antérieures ne sont pas comptabilisées.</span>
+	<span class="astuce">La date de dernière connexion n'étant mémorisée que depuis juin 2010, les identifications antérieures ne sont pas comptabilisées.</span>
 </div>

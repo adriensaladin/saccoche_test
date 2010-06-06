@@ -116,7 +116,7 @@ elseif( $step==2 )
 	$tab_dossier = array('./__hebergement_info','./__mysql_config');
 	foreach($tab_dossier as $dossier)
 	{
-		$test = @file_put_contents('./__mysql_config/.htaccess','Order deny,allow'."\r\n".'allow from 127.0.0.1'."\r\n".'deny from all'."\r\n");
+		$test = @file_put_contents($dossier.'/.htaccess','Order deny,allow'."\r\n".'allow from 127.0.0.1'."\r\n".'deny from all'."\r\n");
 		$poursuivre2 = (!$test) ? false : $poursuivre2 ;
 	}
 	if($poursuivre2)

@@ -92,13 +92,7 @@ $date_fin    = date("d/m/Y");
 	$tab_regroupements = array();
 	$tab_id = array('classe'=>'','groupe'=>'');
 	// Recherche de la liste des classes et des groupes du professeur
-	$DB_SQL = 'SELECT * FROM sacoche_groupe ';
-	$DB_SQL.= 'LEFT JOIN sacoche_jointure_user_groupe USING (groupe_id) ';
-	$DB_SQL.= 'LEFT JOIN sacoche_niveau USING (niveau_id) ';
-	$DB_SQL.= 'WHERE user_id=:user_id AND groupe_type IN (:type1,:type2) ';
-	$DB_SQL.= 'ORDER BY groupe_type ASC, niveau_ordre ASC, groupe_nom ASC';
-	$DB_VAR = array(':user_id'=>$_SESSION['USER_ID'],':type1'=>'classe',':type2'=>'groupe');
-	$DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+	$DB_TAB = DB_lister_classes_groupes_professeur($_SESSION['USER_ID']);
 	foreach($DB_TAB as $DB_ROW)
 	{
 		$tab_regroupements[$DB_ROW['groupe_id']] = array('nom'=>$DB_ROW['groupe_nom'],'eleve'=>array());
@@ -108,11 +102,7 @@ $date_fin    = date("d/m/Y");
 	if(is_array($tab_id['classe']))
 	{
 		$listing = implode(',',$tab_id['classe']);
-		$DB_SQL = 'SELECT * FROM sacoche_user ';
-		$DB_SQL.= 'WHERE user_profil=:profil AND user_statut=:statut AND eleve_classe_id IN ('.$listing.') ';
-		$DB_SQL.= 'ORDER BY user_nom ASC, user_prenom ASC';
-		$DB_VAR = array(':profil'=>'eleve',':statut'=>1);
-		$DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+		$DB_TAB = DB_lister_eleves_classes($listing);
 		foreach($DB_TAB as $DB_ROW)
 		{
 			$tab_regroupements[$DB_ROW['eleve_classe_id']]['eleve'][$DB_ROW['user_id']] = $DB_ROW['user_nom'].' '.$DB_ROW['user_prenom'].' ('.$DB_ROW['user_login'].')';
@@ -122,12 +112,7 @@ $date_fin    = date("d/m/Y");
 	if(is_array($tab_id['groupe']))
 	{
 		$listing = implode(',',$tab_id['groupe']);
-		$DB_SQL = 'SELECT * FROM sacoche_user ';
-		$DB_SQL.= 'LEFT JOIN sacoche_jointure_user_groupe USING (user_id) ';
-		$DB_SQL.= 'WHERE user_profil=:profil AND user_statut=:statut AND groupe_id IN ('.$listing.') ';
-		$DB_SQL.= 'ORDER BY user_nom ASC, user_prenom ASC';
-		$DB_VAR = array(':profil'=>'eleve',':statut'=>1);
-		$DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+		$DB_TAB = DB_lister_eleves_groupes($listing);
 		foreach($DB_TAB as $DB_ROW)
 		{
 			$tab_regroupements[$DB_ROW['groupe_id']]['eleve'][$DB_ROW['user_id']] = $DB_ROW['user_nom'].' '.$DB_ROW['user_prenom'].' ('.$DB_ROW['user_login'].')';

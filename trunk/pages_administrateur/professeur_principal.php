@@ -41,14 +41,7 @@ $TITRE = "Gérer les professeurs principaux";
 	$groupe_id = 0;
 	$nb_professeurs = 0;
 	// Récupération de la liste des professeurs / classes
-	$DB_SQL = 'SELECT * FROM sacoche_groupe ';
-	$DB_SQL.= 'LEFT JOIN sacoche_niveau USING (niveau_id) ';
-	$DB_SQL.= 'LEFT JOIN sacoche_jointure_user_groupe USING (groupe_id) ';
-	$DB_SQL.= 'LEFT JOIN sacoche_user USING (user_id) ';
-	$DB_SQL.= 'WHERE groupe_type=:type AND user_statut=:statut ';
-	$DB_SQL.= 'ORDER BY niveau_ordre ASC, groupe_ref ASC, user_nom ASC, user_prenom ASC';
-	$DB_VAR = array(':type'=>'classe',':statut'=>1);
-	$DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+	$DB_TAB = DB_lister_classes_avec_professeurs();
 	if(count($DB_TAB))
 	{
 		foreach($DB_TAB as $DB_ROW)

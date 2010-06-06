@@ -110,6 +110,7 @@ $(document).ready
 			maj_clock(1);
 			if(responseHTML.substring(0,2)!='ok')
 			{
+				$('#f_submit').show();
 				$('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);
 			}
 			else

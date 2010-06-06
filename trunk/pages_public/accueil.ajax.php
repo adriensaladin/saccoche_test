@@ -90,10 +90,7 @@ elseif( ($action=='initialiser') && ($profil=='webmestre') )
 
 elseif( ($action=='initialiser') && (HEBERGEUR_INSTALLATION=='mono-structure') && $profil )
 {
-	$DB_SQL = 'SELECT parametre_nom,parametre_valeur FROM sacoche_parametre ';
-	$DB_SQL.= 'WHERE parametre_nom IN("denomination","connexion_mode") ';
-	$DB_SQL.= 'LIMIT 2';
-	$DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL );
+	$DB_TAB = DB_lister_parametres('"denomination","connexion_mode"');
 	foreach($DB_TAB as $DB_ROW)
 	{
 		${$DB_ROW['parametre_nom']} = $DB_ROW['parametre_valeur'];
@@ -118,11 +115,7 @@ elseif( ( ($action=='initialiser') && ($BASE==0) && (HEBERGEUR_INSTALLATION=='mu
 elseif( ( ($action=='initialiser') && ($BASE>0) && (HEBERGEUR_INSTALLATION=='multi-structures') ) || ($action=='charger') && $profil )
 {
 	// Une première requête sur SACOCHE_WEBMESTRE_BD_NAME pour vérifier que la structure est référencée
-	$DB_SQL = 'SELECT structure_denomination FROM sacoche_structure ';
-	$DB_SQL.= 'WHERE sacoche_base=:sacoche_base ';
-	$DB_SQL.= 'LIMIT 1';
-	$DB_VAR = array(':sacoche_base'=>$BASE);
-	$DB_ROW = DB::queryRow(SACOCHE_WEBMESTRE_BD_NAME , $DB_SQL , $DB_VAR);
+	$DB_ROW = DB_recuperer_structure($BASE);
 	if(!count($DB_ROW))
 	{
 		// Sans doute un établissement supprimé, mais le cookie est encore là
@@ -132,10 +125,7 @@ elseif( ( ($action=='initialiser') && ($BASE>0) && (HEBERGEUR_INSTALLATION=='mul
 	afficher_nom_etablissement($BASE,$DB_ROW['structure_denomination']);
 	// Une deuxième requête sur SACOCHE_STRUCTURE_BD_NAME pour savoir si le mode de connexion est SSO ou pas
 	charger_parametres_mysql_supplementaires($BASE);
-	$DB_SQL = 'SELECT parametre_nom,parametre_valeur FROM sacoche_parametre ';
-	$DB_SQL.= 'WHERE parametre_nom="connexion_mode" ';
-	$DB_SQL.= 'LIMIT 1';
-	$DB_ROW = DB::queryRow(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL );
+	$DB_ROW = DB_lister_parametres('"connexion_mode"');
 	if(!count($DB_ROW))
 	{
 		exit('Erreur : base de l\'établissement incomplète !');

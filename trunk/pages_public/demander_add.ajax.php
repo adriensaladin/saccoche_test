@@ -46,22 +46,12 @@ elseif($_SESSION['ELEVE_DEMANDES']==0)
 // Vérifier qu'il reste des demandes disponibles pour l'élève et la matière concernés (on compte le nb de demandes en attente)
 else
 {
-	$DB_SQL = 'SELECT demande_id FROM sacoche_demande ';
-	$DB_SQL.= 'WHERE user_id=:eleve_id AND matiere_id=:matiere_id ';
-	$DB_SQL.= 'LIMIT '.$_SESSION['ELEVE_DEMANDES'];
-	$DB_VAR = array(':eleve_id'=>$eleve_id,':matiere_id'=>$matiere_id);
-	$DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-	$nb_demandes_attente = count($DB_TAB);
+	$nb_demandes_attente = DB_compter_demandes_eleve_matiere($eleve_id,$matiere_id);
 	$nb_demandes_possibles = $_SESSION['ELEVE_DEMANDES'] - $nb_demandes_attente ;
 	if($nb_demandes_possibles>0)
 	{
 		// Vérifier que cet item n'est pas déjà en attente d'évaluation pour cet élève
-		$DB_SQL = 'SELECT demande_id FROM sacoche_demande ';
-		$DB_SQL.= 'WHERE user_id=:eleve_id AND matiere_id=:matiere_id AND item_id=:item_id ';
-		$DB_SQL.= 'LIMIT 1';
-		$DB_VAR = array(':eleve_id'=>$eleve_id,':matiere_id'=>$matiere_id,':item_id'=>$item_id);
-		$DB_ROW = DB::queryRow(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-		if(count($DB_ROW))
+		if( DB_tester_demande($eleve_id,$matiere_id,$item_id) )
 		{
 			$reponse = 'Cette demande est déjà enregistrée !';
 		}
@@ -69,10 +59,7 @@ else
 		{
 			$score = ($score!=-1) ? $score : NULL ;
 			$date_mysql = date("Y-m-d");	// date_mysql de la forme aaaa-mm-jj
-			$DB_SQL = 'INSERT INTO sacoche_demande(user_id,matiere_id,item_id,demande_date,demande_score,demande_statut) ';
-			$DB_SQL.= 'VALUES(:eleve_id,:matiere_id,:item_id,:demande_date,:demande_score,:demande_statut)';
-			$DB_VAR = array(':eleve_id'=>$eleve_id,':matiere_id'=>$matiere_id,':item_id'=>$item_id,':demande_date'=>$date_mysql,':demande_score'=>$score,':demande_statut'=>'eleve');
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+			DB_ajouter_demande($eleve_id,$matiere_id,$item_id,$date_mysql,$score,$statut='eleve');
 			$nb_demandes_attente++;
 			$nb_demandes_possibles--;
 			$reponse = 'Votre demande a été ajoutée.<br />';

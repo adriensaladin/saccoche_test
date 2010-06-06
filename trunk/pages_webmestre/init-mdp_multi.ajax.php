@@ -47,11 +47,7 @@ elseif( ($action=='init-mdp-admin') && $base_id && $admin_id )
 {
 	charger_parametres_mysql_supplementaires($base_id);
 	// Informations sur la structure, notamment coordonnées du contact.
-	$DB_SQL = 'SELECT * FROM sacoche_structure ';
-	$DB_SQL.= 'WHERE sacoche_base=:base_id ';
-	$DB_SQL.= 'LIMIT 1 ';
-	$DB_VAR = array(':base_id'=>$base_id);
-	$DB_ROW = DB::queryRow(SACOCHE_WEBMESTRE_BD_NAME , $DB_SQL , $DB_VAR);
+	$DB_ROW = DB_recuperer_structure($base_id);
 	if(!count($DB_ROW))
 	{
 		exit('Erreur : structure introuvable !');

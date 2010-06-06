@@ -92,7 +92,7 @@ $(document).ready
 			if(readytogo)
 			{
 				$('#f_submit').hide();
-				$('#ajax_msg').removeAttr("class").addClass("loader").html("Préparation de l'envoi...... Veuillez patienter.");
+				$('#ajax_msg').removeAttr("class").addClass("loader").html("Préparation de l'envoi... Veuillez patienter.");
 			}
 			return readytogo;
 		}

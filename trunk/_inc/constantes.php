@@ -35,15 +35,13 @@
 define('VERSION_PROG','2010-06-03');
 define('VERSION_BASE','2010-06-03');
 
-// FILE_CSS_SCREEN / FILE_CSS_PRINT / FILE_JS_BIBLIO / FILE_JS_SCRIPT / FILE_JS_BIBLIO / FILE_JS_SCRIPT
-// Pour éviter les problèmes de mise en cache, modifier les noms des fichiers lors d'une mise à jour
-define('FILE_CSS_SCREEN','style-23.css'); // .min
-define('FILE_CSS_PRINT','style_print.min.css');
-define('FILE_JS_BIBLIO','jquery-librairies-2.js');
-define('FILE_JS_SCRIPT','script-22.min.js');
-
-// $VERSION_JS : pour éviter le problème de mise en cache d'un javascript, cette variable peut contenir un numéro de version afin d'appeler un fichier différent
-$VERSION_JS = '';
+// VERSION_CSS_SCREEN / VERSION_CSS_PRINT / VERSION_JS_BIBLIO / VERSION_JS_GLOBAL / VERSION_JS_FILE
+// Pour éviter les problèmes de mise en cache (hors serveur localhost), modifier ces valeurs lors d'une mise à jour
+define('VERSION_CSS_SCREEN',24);
+define('VERSION_CSS_PRINT',1);
+define('VERSION_JS_BIBLIO',2);
+define('VERSION_JS_GLOBAL',23);
+$VERSION_JS_FILE = 1;	// Modifiée ensuite si besoin dans le script associé à la page
 
 // $ALERTE_SSO : pour signaler éventuellement qu'une deconnexion de SACoche n'entraîne pas une déconnexion d'un ENT
 $ALERTE_SSO = false;

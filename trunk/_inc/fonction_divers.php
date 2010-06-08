@@ -26,6 +26,62 @@
  */
 
 /**
+ * compacter
+ * Compression si d'un fichier css ou js sur le serveur en production
+ * 
+ * @param string $chemin    chemin complet vers le fichier
+ * @param string $version   $version éventuelle du fichier pour éviter un pb de mise en cache
+ * @param string $methode   soit "pack" soit "mini"
+ * @return string           chemin complet vers le fichier à prendre en compte
+ */
+
+function compacter($chemin,$version,$methode)
+{
+	$extension = pathinfo($chemin,PATHINFO_EXTENSION);
+	$chemin_sans_extension   = substr($chemin,0,-(strlen($extension)+1)); // PATHINFO_FILENAME ajouté en PHP 5.2.0 seulement...
+	$chemin_fichier_original = $chemin;
+	$chemin_fichier_compacte = $chemin_sans_extension.'.'.$methode.$version.'.'.$extension; // Pour un css l'extension doit être conservée (pour un js peu importe)
+	if(SERVEUR_TYPE == 'PROD')
+	{
+		// Sur le serveur en production, on compresse le fichier s'il ne l'est pas
+		if( (!is_file($chemin_fichier_compacte)) || (filemtime($chemin_fichier_compacte)<filemtime($chemin_fichier_original)) )
+		{
+			$fichier_contenu = file_get_contents($chemin_fichier_original);
+			$fichier_contenu = utf8_decode($fichier_contenu); // Attention, il faut envoyer à ces classes de l'iso et pas de l'utf8.
+			if( ($extension=='js') && ($methode=='pack') )
+			{
+				include_once('./_inc/class.JavaScriptPacker.php');
+				$myPacker = new JavaScriptPacker($fichier_contenu, 62, true, false);
+				$fichier_compacte = $myPacker->pack();
+			}
+			elseif( ($extension=='js') && ($methode=='mini') )
+			{
+				include_once('./_inc/class.JavaScriptMinified.php');
+				$fichier_compacte = JSMin::minify($fichier_contenu);
+			}
+			elseif( ($extension=='css') && ($methode=='mini') )
+			{
+				include_once('./_inc/class.CssMinified.php');
+				$fichier_compacte = cssmin::minify($fichier_contenu);
+			}
+			else
+			{
+				// Normalement on ne doit pas en arriver là... sauf à passer de mauvais paramètres à la fonction.
+				$fichier_compacte = $fichier_contenu;
+			}
+			$fichier_compacte = utf8_encode($fichier_compacte);	// On réencode donc en UTF-8...
+			file_put_contents($chemin_fichier_compacte,$fichier_compacte);
+		}
+		return $chemin_fichier_compacte;
+	}
+	else
+	{
+		// Sur le serveur local, on travaille avec le fichier normal pour le debugguer si besoin et ne pas encombrer le SVN
+		return $chemin_fichier_original;
+	}
+}
+
+/**
  * charger_parametres_mysql_supplementaires
  * 
  * Dans le cas d'une installation de type multi-structures, on peut avoir besoin d'effectuer une requête sur une base d'établissement sans y être connecté :

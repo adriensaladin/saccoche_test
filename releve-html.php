@@ -40,6 +40,7 @@ require_once('./_inc/config_serveur.php');
 $FICHIER = (isset($_GET['fichier'])) ? $_GET['fichier'] : '';
 
 // Fonctions
+require_once('./_inc/fonction_divers.php');
 require_once('./_inc/fonction_affichage.php');
 
 ob_start();
@@ -65,10 +66,10 @@ entete();
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<link rel="shortcut icon" type="images/x-icon" href="./favicon.ico" />
 	<link rel="icon" type="image/png" href="./favicon.png" />
-	<link rel="stylesheet" type="text/css" href="./_css/<?php echo FILE_CSS_SCREEN ?>" />
-	<link rel="stylesheet" type="text/css" href="./_css/<?php echo FILE_CSS_PRINT ?>" media="print" />
-	<script type="text/javascript" charset="utf-8" src="./_js/<?php echo FILE_JS_BIBLIO ?>"></script>
-	<script type="text/javascript" charset="utf-8" src="./_js/<?php echo FILE_JS_SCRIPT ?>"></script>
+	<link rel="stylesheet" type="text/css" href="<?php echo compacter('./_css/style.css',VERSION_CSS_SCREEN,'mini') ?>" />
+	<link rel="stylesheet" type="text/css" href="<?php echo compacter('./_css/style_print.css',VERSION_CSS_SCREEN,'mini') ?>" media="print" />
+	<script type="text/javascript" charset="utf-8" src="./_js/jquery-librairies-<?php echo VERSION_JS_BIBLIO ?>.js"></script>
+	<script type="text/javascript" charset="utf-8" src="<?php echo compacter('./_js/script.js',VERSION_JS_GLOBAL,'mini') ?>"></script>
 	<title>SACoche - Relevé HTML</title>
 </head>
 <body>

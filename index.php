@@ -131,32 +131,7 @@ ob_end_clean();
 
 // Chargement du js associé de la page
 $filename_js_normal = './pages_'.$DOSSIER.'/'.$FICHIER.'.js';
-$filename_js_packed = './pages_'.$DOSSIER.'/'.$FICHIER.$VERSION_JS.'.js.pack';
-if(is_file($filename_js_normal))
-{
-	if(SERVEUR_TYPE == 'PROD')
-	{
-		// Sur le serveur en production, on compresse le js s'il ne l'est pas
-		if( (!is_file($filename_js_packed)) || (filemtime($filename_js_packed)<filemtime($filename_js_normal)) )
-		{
-			require_once('./_inc/class.JavaScriptPacker.php'); // Attention, il faut lui envoyer de l'iso et pas de l'utf8.
-			$js_normal = file_get_contents($filename_js_normal);
-			$myPacker = new JavaScriptPacker(utf8_decode($js_normal), 62, true, false);
-			$js_packed = $myPacker->pack();
-			file_put_contents($filename_js_packed,utf8_encode($js_packed));
-		}
-		$SCRIPT = '<script type="text/javascript" charset="utf-8" src="'.$filename_js_packed.'"></script>';
-	}
-	else
-	{
-		// Sur le serveur local, on travaille avec le js normal pour le debugguer si besoin
-		$SCRIPT = '<script type="text/javascript" charset="utf-8" src="'.$filename_js_normal.'"></script>';
-	}
-}
-else
-{
-	$SCRIPT = '';
-}
+$SCRIPT = (is_file($filename_js_normal)) ? '<script type="text/javascript" charset="utf-8" src="'.compacter($filename_js_normal,$VERSION_JS_FILE,'pack').'"></script>' : '' ;
 
 // Titre du navigateur
 $TITRE_NAVIGATEUR = 'SACoche - Espace '.$DOSSIER.' - ';
@@ -184,10 +159,10 @@ entete();
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<link rel="shortcut icon" type="images/x-icon" href="./favicon.ico" />
 	<link rel="icon" type="image/png" href="./favicon.png" />
-	<link rel="stylesheet" type="text/css" href="./_css/<?php echo FILE_CSS_SCREEN ?>" />
-	<link rel="stylesheet" type="text/css" href="./_css/<?php echo FILE_CSS_PRINT ?>" media="print" />
-	<script type="text/javascript" charset="utf-8" src="./_js/<?php echo FILE_JS_BIBLIO ?>"></script>
-	<script type="text/javascript" charset="utf-8" src="./_js/<?php echo FILE_JS_SCRIPT ?>"></script>
+	<link rel="stylesheet" type="text/css" href="<?php echo compacter('./_css/style.css',VERSION_CSS_SCREEN,'mini') ?>" />
+	<link rel="stylesheet" type="text/css" href="<?php echo compacter('./_css/style_print.css',VERSION_CSS_SCREEN,'mini') ?>" media="print" />
+	<script type="text/javascript" charset="utf-8" src="./_js/jquery-librairies-<?php echo VERSION_JS_BIBLIO ?>.js"></script>
+	<script type="text/javascript" charset="utf-8" src="<?php echo compacter('./_js/script.js',VERSION_JS_GLOBAL,'mini') ?>"></script>
 	<title><?php echo $TITRE_NAVIGATEUR ?></title>
 </head>
 <body>

@@ -130,7 +130,7 @@ $CONTENU_PAGE = ob_get_contents();
 ob_end_clean();
 
 // Chargement du js associé de la page
-$filename_js_normal = './pages_'.$DOSSIER.'/'.$FICHIER.$VERSION_JS.'.js';
+$filename_js_normal = './pages_'.$DOSSIER.'/'.$FICHIER.'.js';
 $filename_js_packed = './pages_'.$DOSSIER.'/'.$FICHIER.$VERSION_JS.'.js.pack';
 if(is_file($filename_js_normal))
 {

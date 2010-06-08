@@ -67,7 +67,7 @@ if($FICHIER=='conserver_session_active')
 tester_blocage_application($_SESSION['BASE'],$demande_connexion_profil=false);
 
 // Informations sur l'hébergement
-$fichier_constantes = './__hebergement_info/constantes.php';
+$fichier_constantes = './__private/config/constantes.php';
 if(is_file($fichier_constantes))
 {
 	require_once($fichier_constantes);
@@ -97,7 +97,7 @@ if(is_file($fichier_constantes))
 		affich_message_exit($titre='Configuration anormale',$contenu='Une anomalie dans les données d\'hébergement et/ou de session empêche l\'application de se poursuivre.');
 	}
 	// Ajout du chemin correspondant
-	$fichier_mysql_config = './__mysql_config/'.$fichier_mysql_config.'.php';
+	$fichier_mysql_config = './__private/mysql/'.$fichier_mysql_config.'.php';
 	$fichier_class_config = './_inc/'.$fichier_class_config.'.php';
 	// Chargement du fichier de connexion à la BDD
 	if(is_file($fichier_mysql_config))

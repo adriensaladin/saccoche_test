@@ -39,7 +39,7 @@
 
 function charger_parametres_mysql_supplementaires($BASE)
 {
-	$file_config_base_structure_multi = './__mysql_config/serveur_sacoche_structure_'.$BASE.'.php';
+	$file_config_base_structure_multi = './__private/mysql/serveur_sacoche_structure_'.$BASE.'.php';
 	if(is_file($file_config_base_structure_multi))
 	{
 		global $_CONST; // Car si on charge les paramètres dans une fonction, ensuite ils ne sont pas trouvés par la classe de connexion.
@@ -114,7 +114,7 @@ function crypter_mdp($password)
 
 function fabriquer_fichier_hebergeur_info($hebergeur_installation,$hebergeur_denomination,$hebergeur_uai,$hebergeur_adresse_site,$hebergeur_logo,$hebergeur_cnil,$webmestre_nom,$webmestre_prenom,$webmestre_courriel,$webmestre_password_md5)
 {
-	$fichier_nom     = './__hebergement_info/constantes.php';
+	$fichier_nom     = './__private/config/constantes.php';
 	$fichier_contenu = '<?php'."\r\n";
 	$fichier_contenu.= '// Informations concernant l\'hébergement et son webmestre (n°UAI uniquement pour une installation de type mono-structure)'."\r\n";
 	$fichier_contenu.= 'define(\'HEBERGEUR_INSTALLATION\',\''.str_replace('\'','\\\'',$hebergeur_installation).'\');'."\r\n";
@@ -146,19 +146,19 @@ function fabriquer_fichier_connexion_base($base_id,$BD_host,$BD_name,$BD_user,$B
 {
 	if( (HEBERGEUR_INSTALLATION=='multi-structures') && ($base_id>0) )
 	{
-		$fichier_nom = './__mysql_config/serveur_sacoche_structure_'.$base_id.'.php';
+		$fichier_nom = './__private/mysql/serveur_sacoche_structure_'.$base_id.'.php';
 		$fichier_descriptif = 'Paramètres MySQL de la base de données SACoche n°'.$base_id.' (installation multi-structures).';
 		$prefixe = 'STRUCTURE';
 	}
 	elseif(HEBERGEUR_INSTALLATION=='mono-structure')
 	{
-		$fichier_nom = './__mysql_config/serveur_sacoche_structure.php';
+		$fichier_nom = './__private/mysql/serveur_sacoche_structure.php';
 		$fichier_descriptif = 'Paramètres MySQL de la base de données SACoche (installation mono-structure).';
 		$prefixe = 'STRUCTURE';
 	}
 	else	// (HEBERGEUR_INSTALLATION=='multi-structures') && ($base_id==0)
 	{
-		$fichier_nom = './__mysql_config/serveur_sacoche_webmestre.php';
+		$fichier_nom = './__private/mysql/serveur_sacoche_webmestre.php';
 		$fichier_descriptif = 'Paramètres MySQL de la base de données SACoche du webmestre (installation multi-structures).';
 		$prefixe = 'WEBMESTRE';
 	}
@@ -182,7 +182,7 @@ function fabriquer_fichier_connexion_base($base_id,$BD_host,$BD_name,$BD_user,$B
 
 function bloquer_application($profil_demandeur,$motif)
 {
-	$fichier_nom = ($profil_demandeur=='webmestre') ? './__hebergement_info/blocage_webmestre.txt' : './__hebergement_info/blocage_admin_'.$_SESSION['BASE'].'.txt' ;
+	$fichier_nom = ($profil_demandeur=='webmestre') ? './__private/config/blocage_webmestre.txt' : './__private/config/blocage_admin_'.$_SESSION['BASE'].'.txt' ;
 	file_put_contents($fichier_nom,$motif);
 }
 
@@ -195,7 +195,7 @@ function bloquer_application($profil_demandeur,$motif)
 
 function debloquer_application($profil_demandeur)
 {
-	$fichier_nom = ($profil_demandeur=='webmestre') ? './__hebergement_info/blocage_webmestre.txt' : './__hebergement_info/blocage_admin_'.$_SESSION['BASE'].'.txt' ;
+	$fichier_nom = ($profil_demandeur=='webmestre') ? './__private/config/blocage_webmestre.txt' : './__private/config/blocage_admin_'.$_SESSION['BASE'].'.txt' ;
 	@unlink($fichier_nom);
 }
 
@@ -213,13 +213,13 @@ function debloquer_application($profil_demandeur)
 function tester_blocage_application($BASE,$demande_connexion_profil)
 {
 	// Par le webmestre
-	$fichier_blocage_webmestre = './__hebergement_info/blocage_webmestre.txt';
+	$fichier_blocage_webmestre = './__private/config/blocage_webmestre.txt';
 	if( (is_file($fichier_blocage_webmestre)) && (($_SESSION['USER_PROFIL']!='public')||($demande_connexion_profil!=false)) && ($_SESSION['USER_PROFIL']!='webmestre') )
 	{
 		affich_message_exit($titre='Blocage par le webmestre',$contenu='Blocage par le webmestre : '.file_get_contents($fichier_blocage_webmestre) );
 	}
 	// Par un administrateur
-	$fichier_blocage_administrateur = './__hebergement_info/blocage_admin_'.$BASE.'.txt';
+	$fichier_blocage_administrateur = './__private/config/blocage_admin_'.$BASE.'.txt';
 	if( (is_file($fichier_blocage_administrateur)) && (($_SESSION['USER_PROFIL']!='public')||($demande_connexion_profil!='administrateur')) && ($_SESSION['USER_PROFIL']!='webmestre') && ($_SESSION['USER_PROFIL']!='administrateur') )
 	{
 		affich_message_exit($titre='Blocage par un administrateur',$contenu='Blocage par un administrateur : '.file_get_contents($fichier_blocage_administrateur) );

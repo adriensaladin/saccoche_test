@@ -367,7 +367,7 @@ function DB_recuperer_structure($base_id)
 	$DB_SQL.= 'WHERE sacoche_base=:base_id ';
 	$DB_SQL.= 'LIMIT 1 ';
 	$DB_VAR = array(':base_id'=>$base_id);
-	$return = DB::queryRow(SACOCHE_WEBMESTRE_BD_NAME , $DB_SQL , $DB_VAR);
+	return DB::queryRow(SACOCHE_WEBMESTRE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
 /**
@@ -2804,7 +2804,7 @@ function DB_supprimer_structure($BASE)
 		DB::query(SACOCHE_WEBMESTRE_BD_NAME , 'REVOKE ALL PRIVILEGES ON '.$BD_name.'.* FROM '.$BD_user );
 		DB::query(SACOCHE_WEBMESTRE_BD_NAME , 'DROP USER '.$BD_user );
 		// Supprimer le fichier de connexion
-		unlink('./__mysql_config/serveur_sacoche_structure_'.$BASE.'.php');
+		unlink('./__private/mysql/serveur_sacoche_structure_'.$BASE.'.php');
 		// Supprimer la structure dans la base du webmestre
 		$DB_SQL = 'DELETE FROM sacoche_structure ';
 		$DB_SQL.= 'WHERE sacoche_base=:base ';
@@ -2823,7 +2823,7 @@ function DB_supprimer_structure($BASE)
 		}
 		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'DROP TABLE '.implode(', ',$tab_tables) );
 		// Supprimer le fichier de connexion
-		unlink('./__mysql_config/serveur_sacoche_structure.php');
+		unlink('./__private/mysql/serveur_sacoche_structure.php');
 	}
 }
 

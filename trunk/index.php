@@ -56,7 +56,7 @@ gestion_session($PROFIL_REQUIS = $DOSSIER);
 tester_blocage_application($_SESSION['BASE'],$demande_connexion_profil=false);
 
 // Informations sur l'hébergement
-$fichier_constantes = './__hebergement_info/constantes.php';
+$fichier_constantes = './__private/config/constantes.php';
 if(is_file($fichier_constantes))
 {
 	require_once($fichier_constantes);
@@ -86,7 +86,7 @@ if(is_file($fichier_constantes))
 		affich_message_exit($titre='Configuration anormale',$contenu='Une anomalie dans les données d\'hébergement et/ou de session empêche l\'application de se poursuivre.');
 	}
 	// Ajout du chemin correspondant
-	$fichier_mysql_config = './__mysql_config/'.$fichier_mysql_config.'.php';
+	$fichier_mysql_config = './__private/mysql/'.$fichier_mysql_config.'.php';
 	$fichier_class_config = './_inc/'.$fichier_class_config.'.php';
 	// Chargement du fichier de connexion à la BDD
 	if(is_file($fichier_mysql_config))
@@ -171,7 +171,7 @@ if($DOSSIER!='public')
 else
 {
 	// Accueil (identification) : image SACoche + image hébergeur.
-	$hebergeur_img  = ( (defined('HEBERGEUR_LOGO')) && (is_file('./__hebergement_info/'.HEBERGEUR_LOGO)) ) ? '<img alt="Hébergeur" src="./__hebergement_info/'.HEBERGEUR_LOGO.'" />' : '' ;
+	$hebergeur_img  = ( (defined('HEBERGEUR_LOGO')) && (is_file('./__tmp/logo/'.HEBERGEUR_LOGO)) ) ? '<img alt="Hébergeur" src="./__tmp/logo/'.HEBERGEUR_LOGO.'" />' : '' ;
 	$hebergeur_lien = ( (defined('HEBERGEUR_ADRESSE_SITE')) && HEBERGEUR_ADRESSE_SITE && ($hebergeur_img) ) ? '<a href="'.html(HEBERGEUR_ADRESSE_SITE).'">'.$hebergeur_img.'</a>' : $hebergeur_img ;
 	$SACoche_lien   = '<a href="'.SERVEUR_PROJET.'"><img alt="Suivi d\'Acquisition de Compétences" src="./_img/logo_grand.gif" /></a>' ;
 	$TITRE_PAGE = '<h1>'.$SACoche_lien.$hebergeur_lien.'</h1>';

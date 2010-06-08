@@ -30,7 +30,7 @@ if($_SESSION['SESAMATH_ID']==ID_DEMO) {exit('Action désactivée pour la démo..
 
 $step = (isset($_POST['f_step'])) ? clean_entier($_POST['f_step']) : '';
 $affichage = '';
-$filename_php = './__mysql_config/serveur_sacoche.php';
+$filename_php = './__private/mysql/serveur_sacoche.php';
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 //	Étape 1 - Création de dossiers supplémentaires et de leurs droits
@@ -70,8 +70,8 @@ if( $step==1 )
 			}
 		}
 	}
-	// Création des trois dossiers principaux, et vérification de leur accès en écriture
-	$tab_dossier = array('./__hebergement_info','./__mysql_config','./__tmp');
+	// Création des deux dossiers principaux, et vérification de leur accès en écriture
+	$tab_dossier = array('./__private','./__tmp');
 	foreach($tab_dossier as $dossier)
 	{
 		creer_dossier($dossier);
@@ -79,7 +79,7 @@ if( $step==1 )
 	// Création des sous-dossiers, et vérification de leur accès en éciture
 	if($poursuivre)
 	{
-		$tab_dossier = array('./__tmp/badge','./__tmp/cookie','./__tmp/dump-base','./__tmp/export','./__tmp/import','./__tmp/login-mdp','./__tmp/rss');
+		$tab_dossier = array('./__private/config','./__private/log','./__private/mysql','./__tmp/badge','./__tmp/cookie','./__tmp/dump-base','./__tmp/export','./__tmp/import','./__tmp/login-mdp','./__tmp/logo','./__tmp/rss');
 		foreach($tab_dossier as $dossier)
 		{
 			creer_dossier($dossier);
@@ -91,41 +91,36 @@ if( $step==1 )
 }
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-//	Étape 2 - Remplissage de ces dossiers avec le contenu approprié
+//	Étape 2 - Remplissage des dossiers avec le contenu approprié
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 elseif( $step==2 )
 {
 	// Création des fichiers index.htm
 	$poursuivre1 = true;
-	$tab_dossier = array('./__hebergement_info','./__mysql_config','./__tmp','./__tmp/badge','./__tmp/cookie','./__tmp/dump-base','./__tmp/export','./__tmp/import','./__tmp/login-mdp','./__tmp/rss');
+	$tab_dossier = array('badge','cookie','dump-base','export','import','login-mdp','logo','rss');
 	foreach($tab_dossier as $dossier)
 	{
-		$test = @file_put_contents($dossier.'/index.htm','Circulez, il n\'y a rien à voir par ici !');
-		$poursuivre1 = (!$test) ? false : $poursuivre1 ;
+		$test = @file_put_contents('./__tmp/'.$dossier.'/index.htm','Circulez, il n\'y a rien à voir par ici !');
+		$poursuivre1 = ($test) ? $poursuivre1 : false ;
 	}
 	if($poursuivre1)
 	{
-		$affichage .= '<label for="rien" class="valide">Fichiers &laquo;&nbsp;<b>index.htm</b>&nbsp;&raquo; créés dans chaque dossier.</label><br />'."\r\n";
+		$affichage .= '<label for="rien" class="valide">Fichiers &laquo;&nbsp;<b>index.htm</b>&nbsp;&raquo; créés dans chaque sous-dossier de &laquo;&nbsp;<b>./__tmp/</b>&nbsp;&raquo;.</label><br />'."\r\n";
 	}
 	else
 	{
 		$affichage .= '<label for="rien" class="erreur">Echec lors de la création d\'un ou plusieurs fichiers &laquo;&nbsp;<b>index.htm</b>&nbsp;&raquo; dans chaque dossier précédent.</label><br />'."\r\n";
 	}
-	// Création des fichiers .htaccess
-	$poursuivre2 = true;
-	$tab_dossier = array('./__hebergement_info','./__mysql_config');
-	foreach($tab_dossier as $dossier)
-	{
-		$test = @file_put_contents($dossier.'/.htaccess','Order deny,allow'."\r\n".'allow from 127.0.0.1'."\r\n".'deny from all'."\r\n");
-		$poursuivre2 = (!$test) ? false : $poursuivre2 ;
-	}
+	// Création du fichier .htaccess
+	$test = @file_put_contents('./__private/.htaccess','Order deny,allow'."\r\n".'allow from 127.0.0.1'."\r\n".'deny from all'."\r\n");
+	$poursuivre2 = ($test) ? true : false ;
 	if($poursuivre2)
 	{
-		$affichage .= '<label for="rien" class="valide">Fichiers &laquo;&nbsp;<b>.htaccess</b>&nbsp;&raquo; créés dans les dossiers &laquo;&nbsp;<b>./__hebergement_info</b>&nbsp;&raquo; et &laquo;&nbsp;<b>./__mysql_config</b>&nbsp;&raquo;.</label><br />'."\r\n";
+		$affichage .= '<label for="rien" class="valide">Fichier &laquo;&nbsp;<b>.htaccess</b>&nbsp;&raquo; créé dans le dossier &laquo;&nbsp;<b>./__private/</b>&nbsp;&raquo;.</label><br />'."\r\n";
 	}
 	else
 	{
-		$affichage .= '<label for="rien" class="erreur">Echec lors de la création du fichier &laquo;&nbsp;<b>.htaccess</b>&nbsp;&raquo; dans les dossiers &laquo;&nbsp;<b>./__hebergement_info</b>&nbsp;&raquo; et &laquo;&nbsp;<b>./__mysql_config</b>&nbsp;&raquo;.</label><br />Veuiller y recopier ceui se trouvant par exemple dans le dossier <b>./_inc</b>.'."\r\n";
+		$affichage .= '<label for="rien" class="erreur">Echec lors de la création du fichier &laquo;&nbsp;<b>.htaccess</b>&nbsp;&raquo; dans le dossier &laquo;&nbsp;<b>./__private/</b>&nbsp;&raquo;.</label><br />Veuiller y recopier celui se trouvant par exemple dans le dossier <b>./_inc/</b>.'."\r\n";
 	}
 	// Affichage du résultat des opérations
 	echo $affichage;
@@ -337,13 +332,13 @@ elseif( $step==51 )
 		$affichage .= '<p><label for="rien" class="valide">Les paramètres de connexion MySQL ont été testés avec succès.</label></p>'."\r\n";
 		$affichage .= '<h2>Base à utiliser</h2>'."\r\n";
 		$affichage .= '<label class="tab" for="f_name">Nom de la base :</label><select id="f_name" name="f_name">'.$options.'</select><br />'."\r\n";
-		$affichage .= '<span class="tab"></span><input id="f_host" name="f_host" size="20" type="hidden" value="'.html($BD_host).'" /><input id="f_user" name="f_user" size="20" type="hidden" value="'.html($BD_user).'" /><input id="f_pass" name="f_pass" size="20" type="hidden" value="'.html($BD_pass).'" /><input id="f_step" name="f_step" type="hidden" value="42" /><input id="f_submit" type="submit" value="Valider." /><label id="ajax_msg">&nbsp;</label>'."\r\n";
+		$affichage .= '<span class="tab"></span><input id="f_host" name="f_host" size="20" type="hidden" value="'.html($BD_host).'" /><input id="f_user" name="f_user" size="20" type="hidden" value="'.html($BD_user).'" /><input id="f_pass" name="f_pass" size="20" type="hidden" value="'.html($BD_pass).'" /><input id="f_step" name="f_step" type="hidden" value="52" /><input id="f_submit" type="submit" value="Valider." /><label id="ajax_msg">&nbsp;</label>'."\r\n";
 		$affichage .= '</fieldset>'."\r\n";
 	}
 	echo $affichage;
 }
 
-elseif( $step==42 )
+elseif( $step==52 )
 {
 	// A ce niveau, le fichier d'informations sur l'hébergement doit exister.
 	if(!defined('HEBERGEUR_INSTALLATION'))
@@ -394,13 +389,14 @@ elseif( $step==6 )
 		exit('Erreur : problème avec le fichier : '.$fichier_mysql_config.' !');
 	}
 	// On cherche d'éventuelles tables existantes de SACoche.
-	$DB_TAB = (HEBERGEUR_INSTALLATION=='mono-structure') ? DB::queryTab(SACOCHE_STRUCTURE_BD_NAME,'SHOW TABLE STATUS LIKE "sacoche_%"') : DB::queryTab(SACOCHE_WEBMESTRE_BD_NAME,'SHOW TABLE STATUS LIKE "sacoche_%"') ;
+	$BASE_NOM = (HEBERGEUR_INSTALLATION=='mono-structure') ? SACOCHE_STRUCTURE_BD_NAME : SACOCHE_WEBMESTRE_BD_NAME ;
+	$DB_TAB = DB::queryTab($BASE_NOM,'SHOW TABLE STATUS LIKE "sacoche_%"');
 	$nb_tables_presentes = count($DB_TAB);
 	if($nb_tables_presentes)
 	{
 		$s = ($nb_tables_presentes>1) ? 's' : '' ;
-		$affichage .= '<p><label class="alerte">'.$nb_tables_presentes.' table'.$s.' de SACoche étant déjà présente'.$s.', les tables n\'ont pas été installées.</label></p>'."\r\n";
-		$affichage .= '<p class="astuce">Si besoin, supprimez toutes les tables concernées manuellement, puis <a href="#" class="step6">relancer l\'étape 6.</a><label id="ajax_msg">&nbsp;</label></p>'."\r\n";
+		$affichage .= '<p><label class="alerte">'.$nb_tables_presentes.' table'.$s.' de SACoche étant déjà présente'.$s.' dans la base &laquo;&nbsp;<b>'.$BASE_NOM.'</b>&nbsp;&raquo;, les tables n\'ont pas été installées.</label></p>'."\r\n";
+		$affichage .= '<p class="astuce">Si besoin, supprimez les tables manuellement, puis <a href="#" class="step6">relancer l\'étape 6.</a><label id="ajax_msg">&nbsp;</label></p>'."\r\n";
 		$affichage .= '<hr />'."\r\n";
 		$affichage .= '<h2>Installation logicielle terminée</h2>'."\r\n";
 		$affichage .= '<p>Pour se connecter avec le compte webmestre : <a href="'.SERVEUR_ADRESSE.'?webmestre">'.SERVEUR_ADRESSE.'?webmestre</a></p>'."\r\n";

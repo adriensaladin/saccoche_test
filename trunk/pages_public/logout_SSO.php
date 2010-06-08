@@ -48,7 +48,7 @@ if($mode=='cas')
 	$suffixe = ($BASE) ? '_'.$BASE : '' ;
 	require_once('../_inc/fonction_divers.php');	// !!! Remonter d'un dossier !!!
 	require_once('../_inc/class.DB.php');	// !!! Remonter d'un dossier !!!
-	require_once('../__mysql_config/serveur_sacoche_structure'.$suffixe.'.php');	// !!! Remonter d'un dossier !!!
+	require_once('../__private/mysql/serveur_sacoche_structure'.$suffixe.'.php');	// !!! Remonter d'un dossier !!!
 	require_once('../_inc/class.DB.config.sacoche_structure.php');	// !!! Remonter d'un dossier !!!
 	$DB_TAB = DB_lister_parametres('"connexion_mode","cas_serveur_host","cas_serveur_port","cas_serveur_root"');
 	foreach($DB_TAB as $DB_ROW)

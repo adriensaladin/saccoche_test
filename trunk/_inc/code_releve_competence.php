@@ -269,7 +269,7 @@ if(in_array('individuel',$tab_type))
 			if($format=='multimatiere') {$releve_pdf->bilan_periode_individuel_entete_transdisciplinaire_principal($tab_titre[$format],$texte_periode,$groupe_nom,$eleve_nom,$eleve_prenom);}
 			if($format=='selection')    {$releve_pdf->bilan_periode_individuel_entete_transdisciplinaire_principal($tab_titre[$format],false,$groupe_nom,$eleve_nom,$eleve_prenom);}
 			// Intitulé
-			$releve_html_individuel .= '<hr /><h2>'.html($groupe_nom).' - '.html($eleve_nom).' '.html($eleve_prenom).'</h2>';
+			$releve_html_individuel .= '<hr class="breakafter" /><h2>'.html($groupe_nom).' - '.html($eleve_nom).' '.html($eleve_prenom).'</h2>';
 			// Pour chaque matiere...
 			foreach($tab_matiere as $matiere_id => $matiere_nom)
 			{

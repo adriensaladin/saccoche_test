@@ -30,7 +30,6 @@ if($_SESSION['SESAMATH_ID']==ID_DEMO) {exit('Action désactivée pour la démo..
 
 $step = (isset($_POST['f_step'])) ? clean_entier($_POST['f_step']) : '';
 $affichage = '';
-$filename_php = './__private/mysql/serveur_sacoche.php';
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 //	Étape 1 - Création de dossiers supplémentaires et de leurs droits
@@ -279,7 +278,7 @@ elseif( $step==51 )
 		// Vérifier que ce compte a les droits suffisants
 		// Réponses typiques :
 		// GRANT ALL PRIVILEGES ON *.* TO 'root'@'localhost' WITH GRANT OPTION
-		// GRANT USAGE ON *.* TO 'sql_user_...'@'%' IDENTIFIED BY PASSWORD '...'
+		// GRANT USAGE ON *.* TO 'sac_user_...'@'%' IDENTIFIED BY PASSWORD '...'
 		$res = @mysql_query('SHOW GRANTS FOR CURRENT_USER()');
 		$row = mysql_fetch_row($res);
 		if( (strpos($row[0],'ALL PRIVILEGES')==false) && (strpos($row[0],'WITH GRANT OPTION')==false) )

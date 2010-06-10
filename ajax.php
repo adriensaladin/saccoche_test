@@ -54,6 +54,12 @@ $test_upload = ( (isset($_SERVER['CONTENT_TYPE'])) &&(strpos($_SERVER['CONTENT_T
 $format = ( $test_xml && !$test_upload ) ? 'text/xml' : 'text/html' ;
 header('Content-Type: '.$format);header('Charset: utf-8');
 
+// Vérifier que l'appel est légitime
+if( (isset($_SERVER['HTTP_REFERER'])) && (strpos($_SERVER['HTTP_REFERER'],SERVEUR_ADRESSE)!==0) )
+{
+	affich_message_exit($titre='Appel interdit',$contenu='Appel ajax interdit depuis un serveur externe !');
+}
+
 // Ouverture de la session et gestion des droits d'accès
 gestion_session($PROFIL_REQUIS = $DOSSIER);
 

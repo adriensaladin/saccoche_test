@@ -1663,13 +1663,13 @@ function DB_ajouter_structure($geo_id,$structure_uai,$localisation,$denomination
 	DB::query(SACOCHE_WEBMESTRE_BD_NAME , $DB_SQL , $DB_VAR);
 	$base_id = DB::getLastOid(SACOCHE_WEBMESTRE_BD_NAME);
 	// Génération des paramètres de connexion à la base de données
-	$BD_name = 'sacoche_structure_'.$base_id;
-	$BD_user = 'sql_user_'.$base_id; // Limité à 16 caractères
+	$BD_name = 'sac_base_'.$base_id; // Limité à 64 caractères (tranquille...)
+	$BD_user = 'sac_user_'.$base_id; // Limité à 16 caractères (attention !)
 	$BD_pass = fabriquer_mdp();
 	// Créer le fichier de connexion de la base de données de la structure
 	fabriquer_fichier_connexion_base($base_id,SACOCHE_WEBMESTRE_BD_HOST,$BD_name,$BD_user,$BD_pass);
 	// Créer la base de données de la structure
-	DB::query(SACOCHE_WEBMESTRE_BD_NAME , 'CREATE DATABASE sacoche_structure_'.$base_id );
+	DB::query(SACOCHE_WEBMESTRE_BD_NAME , 'CREATE DATABASE sac_base_'.$base_id );
 	// Créer un utilisateur pour la base de données de la structure et lui attribuer ses droits
 	DB::query(SACOCHE_WEBMESTRE_BD_NAME , 'CREATE USER '.$BD_user.' IDENTIFIED BY "'.$BD_pass.'"' );
 	DB::query(SACOCHE_WEBMESTRE_BD_NAME , 'GRANT ALTER, CREATE, DELETE, DROP, INDEX, INSERT, SELECT, UPDATE ON '.$BD_name.'.* TO '.$BD_user );
@@ -2797,7 +2797,7 @@ function DB_supprimer_structure($BASE)
 	{
 		// Paramètres de connexion à la base de données
 		$BD_name = 'sacoche_structure_'.$BASE;
-		$BD_user = 'sql_user_'.$BASE; // Limité à 16 caractères
+		$BD_user = 'sac_user_'.$BASE; // Limité à 16 caractères
 		// Supprimer la base associée à la structure
 		DB::query(SACOCHE_WEBMESTRE_BD_NAME , 'DROP DATABASE '.$BD_name );
 		// Retirer les droits et supprimer l'utilisateur pour la base de données de la structure

@@ -47,7 +47,7 @@ $VERSION_JS_FILE = 1;	// Modifiée ensuite si besoin dans le script associé à 
 $ALERTE_SSO = false;
 
 // ID_DEMO : valeur de $_SESSION['SESAMATH_ID'] correspondant à l'établissement de démonstration
-// 0 pose des pbs, et il faut prendre un id disponible dans la base d'établissement de Sésamath
+// 0 pose des pbs, et il faut prendre un id disponible dans la base d'établissements de Sésamath
 define('ID_DEMO',9999);
 
 // ID_MATIERE_TRANSVERSALE : id de la matière transversale dans la table "sacoche_matiere"
@@ -69,16 +69,16 @@ if($fin)
 define('SERVEUR_ADRESSE',$chemin);
 
 // SERVEUR_TYPE : Serveur local de développement (LOCAL) ou serveur en ligne de production (PROD)
-$serveur = ($_SERVER['SERVER_NAME']=='localhost') ? 'LOCAL' : 'PROD';
+$serveur = in_array($_SERVER['SERVER_NAME'],array('localhost','127.0.0.1')) ? 'LOCAL' : 'PROD';
 define('SERVEUR_TYPE',$serveur);
 
 // SERVEUR_PROJET        : URL du projet SACoche
 // SERVEUR_COMMUNAUTAIRE : URL complète du fichier chargé d'effectuer la liaison entre les installations de SACoche et le serveur communautaire concernant les référentiels.
 // SERVEUR_DOCUMENTAIRE  : URL complète du fichier chargé d'afficher les documentations
 // SERVEUR_VERSION       : URL complète du fichier chargé de renvoyer le numéro de la dernière version disponible
-define('SERVEUR_PROJET'        , 'http://competences.sesamath.net');
-define('SERVEUR_COMMUNAUTAIRE' , SERVEUR_PROJET.'/V2/appel_externe.php');
-define('SERVEUR_DOCUMENTAIRE'  , SERVEUR_PROJET.'/V2/appel_doc.php');
-define('SERVEUR_VERSION'       , SERVEUR_PROJET.'/V2/appel_version.php');
+define('SERVEUR_PROJET'        , 'http://sacoche.xcasenligne.fr'); // http://competences.sesamath.net
+define('SERVEUR_COMMUNAUTAIRE' , SERVEUR_PROJET.'/appel_externe.php');
+define('SERVEUR_DOCUMENTAIRE'  , SERVEUR_PROJET.'/appel_doc.php');
+define('SERVEUR_VERSION'       , SERVEUR_PROJET.'/appel_version.php');
 
 ?>

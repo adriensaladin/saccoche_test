@@ -36,6 +36,12 @@ require_once('./_inc/constantes.php');
 require_once('./_inc/fonction_redirection.php');
 require_once('./_inc/config_serveur.php');
 
+// Vérifier que l'appel est légitime (même si le HTTP_REFERER peut se trafiquer)
+if( (!isset($_SERVER['HTTP_REFERER'])) || (strpos($_SERVER['HTTP_REFERER'],SERVEUR_ADRESSE)!==0) )
+{
+	exit('Appel ajax interdit depuis un autre domaine !');
+}
+
 // Paramètres transmis
 $DOSSIER = (isset($_GET['dossier'])) ? $_GET['dossier'] : 'public';
 $FICHIER = (isset($_GET['fichier'])) ? $_GET['fichier'] : 'index';
@@ -53,12 +59,6 @@ $test_xml = (strpos($_SERVER['HTTP_ACCEPT'],'/xml')) ? TRUE : FALSE;
 $test_upload = ( (isset($_SERVER['CONTENT_TYPE'])) &&(strpos($_SERVER['CONTENT_TYPE'],'multipart/form-data')!==FALSE) ) ? TRUE : FALSE; // L'upload d'un fichier XML change le HTTP_ACCEPT, d'où ce second test
 $format = ( $test_xml && !$test_upload ) ? 'text/xml' : 'text/html' ;
 header('Content-Type: '.$format);header('Charset: utf-8');
-
-// Vérifier que l'appel est légitime
-if( (isset($_SERVER['HTTP_REFERER'])) && (strpos($_SERVER['HTTP_REFERER'],SERVEUR_ADRESSE)!==0) )
-{
-	affich_message_exit($titre='Appel interdit',$contenu='Appel ajax interdit depuis un serveur externe !');
-}
 
 // Ouverture de la session et gestion des droits d'accès
 gestion_session($PROFIL_REQUIS = $DOSSIER);

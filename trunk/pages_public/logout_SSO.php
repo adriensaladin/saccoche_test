@@ -65,7 +65,7 @@ if($mode=='cas')
 	//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
 	// Inclure la classe phpCAS
-	include_once('../_inc/class.CAS.php');	// !!! Remonter d'un dossier !!!
+	require_once('../_inc/class.CAS.php');	// !!! Remonter d'un dossier !!!
 	// Pour tester, cette méthode statique créé un fichier de log sur ce qui se passe avec CAS
 	// phpCAS::setDebug('debugcas.txt');
 	// Initialiser la connexion avec CAS  ; le premier argument est la version du protocole CAS

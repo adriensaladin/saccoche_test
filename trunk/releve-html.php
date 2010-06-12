@@ -48,7 +48,7 @@ ob_start();
 $filename_html = './__tmp/export/'.$FICHIER.'.html';
 if(is_file($filename_html))
 {
-	include($filename_html);
+	require($filename_html);
 }
 else
 {

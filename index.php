@@ -109,7 +109,7 @@ ob_start();
 $filename_php = './pages_'.$DOSSIER.'/_menu.php';
 if(is_file($filename_php))
 {
-	include($filename_php);
+	require($filename_php);
 }
 // Chargement de la page concernée
 $filename_php = './pages_'.$DOSSIER.'/'.$FICHIER.'.php';
@@ -124,7 +124,7 @@ if(!is_file($filename_php))
 		$filename_php = './pages_'.$DOSSIER.'/'.$FICHIER.'.php';
 	}
 }
-include($filename_php);
+require($filename_php);
 // Affichage dans une variable
 $CONTENU_PAGE = ob_get_contents();
 ob_end_clean();

@@ -42,7 +42,7 @@ $TITRE = "Groupes de besoin";
 $fichier_section = './pages_'.$DOSSIER.'/'.$FICHIER.'_'.$SECTION.'.php';
 if(is_file($fichier_section))
 {
-	include($fichier_section);
+	require($fichier_section);
 	$FICHIER = $FICHIER.'_'.$SECTION ;
 }
 ?>

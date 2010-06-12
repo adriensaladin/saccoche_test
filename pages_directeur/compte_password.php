@@ -33,6 +33,6 @@ $TITRE = "Changer son mot de passe";
 
 <?php
 $fin = ($_SESSION['CONNEXION_MODE']=='normal') ? 'oui' : 'non' ;
-include('./pages_'.$DOSSIER.'/'.$FICHIER.'_'.$fin.'.php');
+require('./pages_'.$DOSSIER.'/'.$FICHIER.'_'.$fin.'.php');
 ?>
 

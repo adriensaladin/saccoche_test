@@ -50,18 +50,18 @@ function compacter($chemin,$version,$methode)
 			$fichier_contenu = utf8_decode($fichier_contenu); // Attention, il faut envoyer à ces classes de l'iso et pas de l'utf8.
 			if( ($extension=='js') && ($methode=='pack') )
 			{
-				include_once('./_inc/class.JavaScriptPacker.php');
+				require_once('./_inc/class.JavaScriptPacker.php');
 				$myPacker = new JavaScriptPacker($fichier_contenu, 62, true, false);
 				$fichier_compacte = $myPacker->pack();
 			}
 			elseif( ($extension=='js') && ($methode=='mini') )
 			{
-				include_once('./_inc/class.JavaScriptMinified.php');
+				require_once('./_inc/class.JavaScriptMinified.php');
 				$fichier_compacte = JSMin::minify($fichier_contenu);
 			}
 			elseif( ($extension=='css') && ($methode=='mini') )
 			{
-				include_once('./_inc/class.CssMinified.php');
+				require_once('./_inc/class.CssMinified.php');
 				$fichier_compacte = cssmin::minify($fichier_contenu);
 			}
 			else
@@ -99,7 +99,7 @@ function charger_parametres_mysql_supplementaires($BASE)
 	if(is_file($file_config_base_structure_multi))
 	{
 		global $_CONST; // Car si on charge les paramètres dans une fonction, ensuite ils ne sont pas trouvés par la classe de connexion.
-		include_once($file_config_base_structure_multi);
+		require_once($file_config_base_structure_multi);
 		require_once('./_inc/class.DB.config.sacoche_structure.php');
 	}
 	else

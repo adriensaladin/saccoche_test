@@ -125,7 +125,7 @@ elseif($FICHIER!='installation')
 $filename_php = './pages_'.$DOSSIER.'/'.$FICHIER.'.ajax.php';
 if(is_file($filename_php))
 {
-	include($filename_php);
+	require($filename_php);
 }
 else
 {

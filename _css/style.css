@@ -335,3 +335,9 @@ div.td_souris img.on {background-color:#FF0}
 .graph_total  {background-color:#99F;text-align:center;width:100%}
 .graph_partie {background-color:#080;height:3px;} /* margin-left et width ajoutés en PHP */
 .graph_erreur {background-color:#A00;height:3px;} /* margin-left et width ajoutés en PHP */
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+/* Indicateur de robustesse d'un mot de passe                                                          */
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
+#robustesse {border:1px solid #66F;margin:auto 10%;background-color:#F99;text-align:center;font-style:italic;white-space:nowrap}

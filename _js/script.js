@@ -90,6 +90,41 @@ function preloadImages(tableau)
 	}
 }
 
+/**
+ * Fonction pour un tester la robustesse d'un mot de passe.
+ * @param void
+ * @return void
+ */
+
+function analyse_mdp(mdp)
+{
+	mdp.replace(/^\s+/g,'').replace(/\s+$/g,'');	// équivalent de trim() en javascript
+	mdp = mdp.substring(0,20);
+	var nb_min = 0;
+	var nb_maj = 0;
+	var nb_num = 0;
+	var nb_spe = 0;
+	var longueur = mdp.length;
+	for (i=0 ; i<longueur ; i++)
+	{
+		var car = mdp.charAt(i);
+				 if((/[a-z]/).test(car)) {nb_min++;}	// 2 points maxi pour des minuscules
+		else if((/[A-Z]/).test(car)) {nb_maj++;}	// 2 points maxi pour des majuscules
+		else if((/[0-9]/).test(car)) {nb_num++;}	// 2 points maxi pour des chiffres
+		else                         {nb_spe++;}	// 6 points maxi pour des caractères autres
+	}
+	var coef = Math.min(nb_min,2) + Math.min(nb_maj,2) + Math.min(nb_num,2) + Math.min(nb_spe*2,6) ;
+	if(longueur>7)
+	{
+		coef += Math.floor( (longueur-5)/3 );	// 6 points maxi pour la longueur du mdp
+	}
+	coef = Math.min(coef,12);	// total 18 points maxi, plafonné à 12
+	var rouge = 255 - 16*Math.max(0,coef-6) ; // 255 -> 255 -> 159
+	var vert  = 159 + 16*Math.min(6,coef) ;   // 159 -> 255 -> 255
+	var bleu  = 159 ;
+	$('#robustesse').css('background-color','rgb('+rouge+','+vert+','+bleu+')').children('span').html(coef);
+}
+
 //	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
 //	Gestion de la durée d'inactivité
 //	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*

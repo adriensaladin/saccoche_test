@@ -165,10 +165,11 @@ function crypter_mdp($password)
  * @param string $webmestre_prenom
  * @param string $webmestre_courriel
  * @param string $webmestre_password_md5
+ * @param int    $webmestre_erreur_date
  * @return void
  */
 
-function fabriquer_fichier_hebergeur_info($hebergeur_installation,$hebergeur_denomination,$hebergeur_uai,$hebergeur_adresse_site,$hebergeur_logo,$hebergeur_cnil,$webmestre_nom,$webmestre_prenom,$webmestre_courriel,$webmestre_password_md5)
+function fabriquer_fichier_hebergeur_info($hebergeur_installation,$hebergeur_denomination,$hebergeur_uai,$hebergeur_adresse_site,$hebergeur_logo,$hebergeur_cnil,$webmestre_nom,$webmestre_prenom,$webmestre_courriel,$webmestre_password_md5,$webmestre_erreur_date)
 {
 	$fichier_nom     = './__private/config/constantes.php';
 	$fichier_contenu = '<?php'."\r\n";
@@ -183,6 +184,7 @@ function fabriquer_fichier_hebergeur_info($hebergeur_installation,$hebergeur_den
 	$fichier_contenu.= 'define(\'WEBMESTRE_PRENOM\'      ,\''.str_replace('\'','\\\'',$webmestre_prenom)      .'\');'."\r\n";
 	$fichier_contenu.= 'define(\'WEBMESTRE_COURRIEL\'    ,\''.str_replace('\'','\\\'',$webmestre_courriel)    .'\');'."\r\n";
 	$fichier_contenu.= 'define(\'WEBMESTRE_PASSWORD_MD5\',\''.str_replace('\'','\\\'',$webmestre_password_md5).'\');'."\r\n";
+	$fichier_contenu.= 'define(\'WEBMESTRE_ERREUR_DATE\' ,\''.str_replace('\'','\\\'',$webmestre_erreur_date) .'\');'."\r\n";
 	$fichier_contenu.= '?>'."\r\n";
 	file_put_contents($fichier_nom,$fichier_contenu);
 }
@@ -291,25 +293,40 @@ function tester_blocage_application($BASE,$demande_connexion_profil)
 
 function connecter_webmestre($password)
 {
-	$password_crypte = crypter_mdp($password);
-	if($password_crypte==WEBMESTRE_PASSWORD_MD5)
+	// Si tentatives trop rapprochées...
+	$delai_attente_consomme = time() - WEBMESTRE_ERREUR_DATE ;
+	if($delai_attente_consomme<3)
 	{
-		// Numéro de la base
-		$_SESSION['BASE']             = 0;
-		// Données associées à l'utilisateur.
-		$_SESSION['USER_PROFIL']      = 'webmestre';
-		$_SESSION['USER_ID']          = 0;
-		$_SESSION['USER_NOM']         = WEBMESTRE_NOM;
-		$_SESSION['USER_PRENOM']      = WEBMESTRE_PRENOM;
-		$_SESSION['USER_DESCR']       = '[webmestre] '.WEBMESTRE_PRENOM.' '.WEBMESTRE_NOM;
-		// Données associées à l'établissement.
-		$_SESSION['SESAMATH_ID']      = 0;
-		$_SESSION['DENOMINATION']     = 'Gestion '.HEBERGEUR_INSTALLATION;
-		$_SESSION['MODE_CONNEXION']   = 'normal';
-		$_SESSION['DUREE_INACTIVITE'] = 30;
-		return 'ok';
+		fabriquer_fichier_hebergeur_info(HEBERGEUR_INSTALLATION,HEBERGEUR_DENOMINATION,HEBERGEUR_UAI,HEBERGEUR_ADRESSE_SITE,'',HEBERGEUR_CNIL,WEBMESTRE_NOM,WEBMESTRE_PRENOM,WEBMESTRE_COURRIEL,WEBMESTRE_PASSWORD_MD5,time());
+		return'Calmez-vous et patientez 10s avant toute nouvelle tentative !';
 	}
-	return 'Mot de passe incorrect !';
+	elseif($delai_attente_consomme<10)
+	{
+		$delai_attente_restant = 10-$delai_attente_consomme ;
+		return'Merci d\'attendre encore '.$delai_attente_restant.'s avant toute nouvelle tentative.';
+	}
+	// Si mdp incorrect...
+	$password_crypte = crypter_mdp($password);
+	if($password_crypte!=WEBMESTRE_PASSWORD_MD5)
+	{
+		fabriquer_fichier_hebergeur_info(HEBERGEUR_INSTALLATION,HEBERGEUR_DENOMINATION,HEBERGEUR_UAI,HEBERGEUR_ADRESSE_SITE,'',HEBERGEUR_CNIL,WEBMESTRE_NOM,WEBMESTRE_PRENOM,WEBMESTRE_COURRIEL,WEBMESTRE_PASSWORD_MD5,time());
+		return 'Mot de passe incorrect ! Veuillez patienter 10s avant toute nouvelle tentative.';
+	}
+	// Si on arrive ici c'est que l'identification s'est bien effectuée !
+	// Numéro de la base
+	$_SESSION['BASE']             = 0;
+	// Données associées à l'utilisateur.
+	$_SESSION['USER_PROFIL']      = 'webmestre';
+	$_SESSION['USER_ID']          = 0;
+	$_SESSION['USER_NOM']         = WEBMESTRE_NOM;
+	$_SESSION['USER_PRENOM']      = WEBMESTRE_PRENOM;
+	$_SESSION['USER_DESCR']       = '[webmestre] '.WEBMESTRE_PRENOM.' '.WEBMESTRE_NOM;
+	// Données associées à l'établissement.
+	$_SESSION['SESAMATH_ID']      = 0;
+	$_SESSION['DENOMINATION']     = 'Gestion '.HEBERGEUR_INSTALLATION;
+	$_SESSION['MODE_CONNEXION']   = 'normal';
+	$_SESSION['DUREE_INACTIVITE'] = 30;
+	return 'ok';
 }
 
 /**
@@ -333,22 +350,55 @@ function connecter_user($BASE,$profil,$login,$password,$mode_connection)
 	{
 		charger_parametres_mysql_supplementaires($BASE);
 	}
+	// Vérifier la version de la base et la mettre à jour si besoin ; à effectuer avant toute récupération des données sinon ça peut poser pb...
+	$version_base = DB_version_base();
+	if($version_base != VERSION_BASE)
+	{
+		// Bloquer l'application
+		bloquer_application($profil,'Mise à jour de la base en cours.');
+		// Lancer une mise à jour de la base
+		require_once('./_inc/fonction_maj_base.php');
+		maj_base($version_base);
+		// Débloquer l'application
+		debloquer_application($profil);
+		// Retour explicatif
+		close_session();
+		return'La base n\'était pas à jour : merci de valider de nouveau !';
+	}
+	// Récupérer les données associées à l'utilisateur.
 	$DB_ROW = DB_recuperer_donnees_utilisateur($mode_connection,$login);
+	// Si login non trouvé...
 	if(!count($DB_ROW))
 	{
 		return ($mode_connection=='normal') ? 'Nom d\'utilisateur incorrect !' : 'Identification réussie mais identifiant ENT "'.$login.'" inconnu dans SACoche !' ;
 	}
-	elseif( ($mode_connection=='normal') && ($DB_ROW['user_password']!=crypter_mdp($password)) )
+	// Si tentatives trop rapprochées...
+	$delai_attente_consomme = time() - $DB_ROW['tentative_unix'] ;
+	if($delai_attente_consomme<3)
 	{
-		return 'Mot de passe incorrect !';
+		DB_modifier_date('tentative',$DB_ROW['user_id']);
+		return'Calmez-vous et patientez 10s avant toute nouvelle tentative !';
 	}
-	elseif($DB_ROW['user_statut']!=1)
+	elseif($delai_attente_consomme<10)
 	{
-		return 'Identification réussie mais ce compte est desactivé !';
+		$delai_attente_restant = 10-$delai_attente_consomme ;
+		return'Merci d\'attendre encore '.$delai_attente_restant.'s avant toute nouvelle tentative.';
 	}
-	elseif( ( ($profil!='administrateur')&&($DB_ROW['user_profil']=='administrateur') ) || ( ($profil=='administrateur')&&($DB_ROW['user_profil']!='administrateur') ) )
+	// Si mdp incorrect...
+	if( ($mode_connection=='normal') && ($DB_ROW['user_password']!=crypter_mdp($password)) )
 	{
-		return 'Ces identifiants sont ceux d\'un '.$DB_ROW['user_profil'].' : utilisez le formulaire approprié !';
+		DB_modifier_date('tentative',$DB_ROW['user_id']);
+		return'Mot de passe incorrect ! Veuillez patienter 10s avant toute nouvelle tentative.';
+	}
+	// Si compte desactivé...
+	if($DB_ROW['user_statut']!=1)
+	{
+		return'Identification réussie mais ce compte est desactivé !';
+	}
+	// Si erreur de profil...
+	if( ( ($profil!='administrateur')&&($DB_ROW['user_profil']=='administrateur') ) || ( ($profil=='administrateur')&&($DB_ROW['user_profil']!='administrateur') ) )
+	{
+		return'Ces identifiants sont ceux d\'un '.$DB_ROW['user_profil'].' : utilisez le formulaire approprié !';
 	}
 	// Si on arrive ici c'est que l'identification s'est bien effectuée !
 	// Enregistrer le numéro de la base
@@ -400,22 +450,8 @@ function connecter_user($BASE,$profil,$login,$password,$mode_connection)
 			case 'cas_serveur_root':   $_SESSION['CAS_SERVEUR_ROOT']    =       $DB_ROW['parametre_valeur']; break;
 		}
 	}
-	// Vérifier la version de la base
-	if($_SESSION['VERSION_BASE'] != VERSION_BASE)
-	{
-		// Bloquer l'application
-		bloquer_application($_SESSION['USER_PROFIL'],'Mise à jour de la base en cours.');
-		// Lancer une mise à jour de la base
-		require_once('./_inc/fonction_maj_base.php');
-		maj_base($_SESSION['VERSION_BASE']);
-		// Débloquer l'application
-		debloquer_application($_SESSION['USER_PROFIL']);
-		// Retour explicatif
-		close_session();
-		return'Identification réussie mais la base n\'était pas à jour : merci de valider de nouveau !';
-	}
 	// Mémoriser la date de la (dernière) connexion
-	DB_modifier_date_connexion($_SESSION['USER_ID']);
+	DB_modifier_date('connexion',$_SESSION['USER_ID']);
 	// Enregistrement d'un cookie sur le poste client servant à retenir le dernier établissement sélectionné si identification avec succès
 	setcookie('SACoche-etablissement',$BASE,time()+60*60*24*365,'/');
 	return'ok';

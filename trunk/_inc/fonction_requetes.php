@@ -36,7 +36,9 @@
 function DB_recuperer_donnees_utilisateur($mode_connection,$login)
 {
 	$champ = ($mode_connection=='normal') ? 'user_login' : 'user_id_ent' ;
-	$DB_SQL = 'SELECT sacoche_user.*,sacoche_groupe.groupe_nom FROM sacoche_user ';
+	$DB_SQL = 'SELECT sacoche_user.*, sacoche_groupe.groupe_nom, ';
+	$DB_SQL.= 'UNIX_TIMESTAMP(sacoche_user.user_tentative_date) AS tentative_unix ';
+	$DB_SQL.= 'FROM sacoche_user ';
 	$DB_SQL.= 'LEFT JOIN sacoche_groupe ON sacoche_user.eleve_classe_id=sacoche_groupe.groupe_id ';
 	$DB_SQL.= 'WHERE '.$champ.'=:identifiant ';
 	$DB_SQL.= 'LIMIT 1';
@@ -325,6 +327,20 @@ function DB_recuperer_associations_entrees_socle()
 	$DB_SQL.= 'GROUP BY item_id ';
 	$DB_SQL.= 'ORDER BY matiere_nom ASC, niveau_ordre ASC, domaine_ordre ASC, theme_ordre ASC, item_ordre ASC';
 	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , null);
+}
+
+/**
+ * DB_version_base
+ * 
+ * @param void
+ * @return string
+ */
+
+function DB_version_base()
+{
+	$DB_SQL = 'SELECT parametre_valeur FROM sacoche_parametre WHERE parametre_nom="version_base" LIMIT 1';
+	$DB_ROW = DB::queryRow(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , null);
+	return $DB_ROW['parametre_valeur'];
 }
 
 /**
@@ -1934,16 +1950,17 @@ function DB_modifier_utilisateur($user_id,$DB_VAR)
 }
 
 /**
- * DB_modifier_date_connexion
+ * DB_modifier_date
  * 
+ * @param string  $champ   'connexion' ou 'tentative'
  * @param int     $user_id
  * @return void
  */
 
-function DB_modifier_date_connexion($user_id)
+function DB_modifier_date($champ,$user_id)
 {
 	$DB_SQL = 'UPDATE sacoche_user ';
-	$DB_SQL.= 'SET user_connexion_date=NOW() ';
+	$DB_SQL.= 'SET user_'.$champ.'_date=NOW() ';
 	$DB_SQL.= 'WHERE user_id=:user_id ';
 	$DB_SQL.= 'LIMIT 1';
 	$DB_VAR = array(':user_id'=>$user_id);
@@ -2057,7 +2074,7 @@ function DB_modifier_mdp_webmestre($password_ancien,$password_nouveau)
 	}
 	// Remplacer par le nouveau mot de passe
 	$password_nouveau_crypte = crypter_mdp($password_nouveau);
-	fabriquer_fichier_hebergeur_info(HEBERGEUR_INSTALLATION,HEBERGEUR_DENOMINATION,HEBERGEUR_UAI,HEBERGEUR_ADRESSE_SITE,HEBERGEUR_LOGO,HEBERGEUR_CNIL,WEBMESTRE_NOM,WEBMESTRE_PRENOM,WEBMESTRE_COURRIEL,$password_nouveau_crypte);
+	fabriquer_fichier_hebergeur_info(HEBERGEUR_INSTALLATION,HEBERGEUR_DENOMINATION,HEBERGEUR_UAI,HEBERGEUR_ADRESSE_SITE,HEBERGEUR_LOGO,HEBERGEUR_CNIL,WEBMESTRE_NOM,WEBMESTRE_PRENOM,WEBMESTRE_COURRIEL,$password_nouveau_crypte,WEBMESTRE_ERREUR_DATE);
 	return 'ok';
 }
 

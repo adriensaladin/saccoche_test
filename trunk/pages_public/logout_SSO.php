@@ -25,6 +25,8 @@
  * 
  */
 
+if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
+
 $BASE = (isset($_GET['f_base'])) ? intval($_GET['f_base']) : 0;
 $mode = (isset($_GET['f_mode'])) ? $_GET['f_mode']         : '';
 
@@ -45,11 +47,10 @@ if($mode=='cas')
 		affich_message_exit($titre='PHP incomplet',$contenu='Le module PHP "curl" est manquant (bibliothèque requise pour CAS).');
 	}
 	// De connecter pour charger les paramètres de connexion au serveur CAS
-	$suffixe = ($BASE) ? '_'.$BASE : '' ;
-	require_once('../_inc/fonction_divers.php');	// !!! Remonter d'un dossier !!!
-	require_once('../_inc/class.DB.php');	// !!! Remonter d'un dossier !!!
-	require_once('../__private/mysql/serveur_sacoche_structure'.$suffixe.'.php');	// !!! Remonter d'un dossier !!!
-	require_once('../_inc/class.DB.config.sacoche_structure.php');	// !!! Remonter d'un dossier !!!
+	if($BASE)
+	{
+		charger_parametres_mysql_supplementaires($BASE);
+	}
 	$DB_TAB = DB_lister_parametres('"connexion_mode","cas_serveur_host","cas_serveur_port","cas_serveur_root"');
 	foreach($DB_TAB as $DB_ROW)
 	{
@@ -65,7 +66,7 @@ if($mode=='cas')
 	//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
 	// Inclure la classe phpCAS
-	require_once('../_inc/class.CAS.php');	// !!! Remonter d'un dossier !!!
+	require_once('./_inc/class.CAS.php');
 	// Pour tester, cette méthode statique créé un fichier de log sur ce qui se passe avec CAS
 	// phpCAS::setDebug('debugcas.txt');
 	// Initialiser la connexion avec CAS  ; le premier argument est la version du protocole CAS
@@ -78,5 +79,7 @@ if($mode=='cas')
 	// Demander à CAS de se déconnecter
 	phpCAS::logout();
 }
+
+exit();
 
 ?>

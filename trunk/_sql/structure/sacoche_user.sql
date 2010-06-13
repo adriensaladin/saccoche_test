@@ -10,6 +10,7 @@ CREATE TABLE sacoche_user (
 	user_login VARCHAR(20) COLLATE utf8_unicode_ci NOT NULL,
 	user_password CHAR(32) COLLATE utf8_unicode_ci NOT NULL,
 	user_statut TINYINT(1) NOT NULL DEFAULT 1,
+	user_tentative_date DATETIME NOT NULL,
 	user_connexion_date DATETIME NOT NULL,
 	eleve_classe_id MEDIUMINT(8) UNSIGNED NOT NULL,
 	user_id_ent VARCHAR(32) COLLATE utf8_unicode_ci NOT NULL COMMENT "Paramètre renvoyé après une identification CAS depuis un ENT (ça peut être le login, mais ça peut aussi être un numéro interne à l'ENT...).",

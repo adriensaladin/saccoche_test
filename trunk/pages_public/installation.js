@@ -211,6 +211,15 @@ $(document).ready
 		// * Étape 4 -> Étape 41
 		// ********************
 
+		//	Analyse de la robustesse du mot de passe
+		$('#f_password1').live // live est utilisé pour prendre en compte les nouveaux éléments créés
+		('keyup',
+			function()
+			{
+				analyse_mdp( $(this).val() );
+			}
+		);
+
 		// Le formulaire qui va être analysé et traité en AJAX
 		var formulaire4 = $('#form4');
 

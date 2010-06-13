@@ -73,7 +73,7 @@ if( strpos($chaine_detection,'ie4') || strpos($chaine_detection,'ie5') || strpos
 if($ALERTE_SSO)
 {
 	echo'<hr />';
-	echo'<div class="danger">Attention : vous n\'êtes pas déconnecté de l\'ENT ! On peut encore entrer dans <em>SACoche</em> sans s\'identifier ! Fermez votre navigateur ou <a class="lien_ext" href="./pages_public/logout_SSO.php?'.$ALERTE_SSO.'">déconnectez-vous de l\'ENT</a>.</div>';
+	echo'<div class="danger">Attention : vous n\'êtes pas déconnecté de l\'ENT ! On peut encore entrer dans <em>SACoche</em> sans s\'identifier ! Fermez votre navigateur ou <a class="lien_ext" href="index.php?fichier=logout_SSO&amp;'.$ALERTE_SSO.'">déconnectez-vous de l\'ENT</a>.</div>';
 }
 ?>
 

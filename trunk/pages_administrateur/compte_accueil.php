@@ -38,6 +38,5 @@ $TITRE = "Bienvenue dans votre espace identifié !";
 
 <hr />
 
-<div>
-	<span class="astuce">Pour vous connecter facilement à cet espace depuis n'importe quel ordinateur, utilisez l'adresse <b><?php echo (HEBERGEUR_INSTALLATION=='multi-structures') ? SERVEUR_ADRESSE.'?id='.$_SESSION['BASE'].'&admin' : SERVEUR_ADRESSE.'?admin' ; ?></b></span><br />
-</div>
+<div class="astuce">Adresse à utiliser pour une connexion facile à cet espace depuis n\'importe quel ordinateur :</div>
+<p class="hc"><b><?php echo (HEBERGEUR_INSTALLATION=='multi-structures') ? SERVEUR_ADRESSE.'?id='.$_SESSION['BASE'].'&admin' : SERVEUR_ADRESSE.'?admin' ; ?></b></p>

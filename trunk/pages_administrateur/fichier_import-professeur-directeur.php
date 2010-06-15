@@ -61,7 +61,7 @@ $nom_fin_fichier = $_SESSION['STRUCTURE_UAI'].'_'.$nom_fin_fichier;
 		{
 			echo'<label class="alerte">Le numéro UAI de l\'établissement n\'étant pas renseigné, cette procédure ne peut pas être utilisée.</label>'."\r\n";
 			echo'<ul class="puce">'."\r\n";
-			echo'	<li><a href="./index.php?dossier='.$DOSSIER.'&amp;fichier=etabl&amp;section=identite">Compléter l\'identification de l\'établissement.</a></li>'."\r\n";
+			echo'	<li><a href="./index.php?dossier='.$DOSSIER.'&amp;fichier=etabl&amp;section=identite">Voir l\'identification de l\'établissement.</a></li>'."\r\n";
 			echo'</ul>'."\r\n";
 		}
 		?>

@@ -38,4 +38,4 @@ $TITRE = "Bienvenue dans votre espace identifié !";
 
 <hr />
 
-<div class="astuce">Pour vous connecter à cet espace, utilisez l'adresse <b><?php echo SERVEUR_ADRESSE.'?webmestre' ?></b></div>
+<p class="astuce">Pour vous connecter à cet espace, utilisez l'adresse <b><?php echo SERVEUR_ADRESSE.'?webmestre' ?></b></p>

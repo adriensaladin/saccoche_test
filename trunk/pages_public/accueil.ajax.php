@@ -34,6 +34,25 @@ $login    = (isset($_POST['f_login']))    ? clean_login($_POST['f_login'])      
 $password = (isset($_POST['f_password'])) ? clean_password($_POST['f_password']) : '';
 
 //	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
+// Mettre à jour automatiquement la base si besoin ; à effectuer avant toute récupération des données sinon ça peut poser pb...
+//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
+
+function maj_base_si_besoin($profil)
+{
+	$version_base = DB_version_base();
+	if($version_base != VERSION_BASE)
+	{
+		// Bloquer l'application
+		bloquer_application($profil,'Mise à jour de la base en cours.');
+		// Lancer une mise à jour de la base
+		require_once('./_inc/fonction_maj_base.php');
+		maj_base($version_base);
+		// Débloquer l'application
+		debloquer_application($profil);
+	}
+}
+
+//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
 // Afficher un formulaire d'identification
 //	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
 
@@ -90,6 +109,9 @@ elseif( ($action=='initialiser') && ($profil=='webmestre') )
 
 elseif( ($action=='initialiser') && (HEBERGEUR_INSTALLATION=='mono-structure') && $profil )
 {
+	// Mettre à jour la base si nécessaire
+	maj_base_si_besoin($profil);
+	// Requête pour récupérer la dénomination et le mode de connexion
 	$DB_TAB = DB_lister_parametres('"denomination","connexion_mode"');
 	foreach($DB_TAB as $DB_ROW)
 	{
@@ -123,8 +145,10 @@ elseif( ( ($action=='initialiser') && ($BASE>0) && (HEBERGEUR_INSTALLATION=='mul
 		exit('Erreur : établissement non trouvé dans la base d\'administration !');
 	}
 	afficher_nom_etablissement($BASE,$DB_ROW['structure_denomination']);
-	// Une deuxième requête sur SACOCHE_STRUCTURE_BD_NAME pour savoir si le mode de connexion est SSO ou pas
+	// Mettre à jour la base si nécessaire
 	charger_parametres_mysql_supplementaires($BASE);
+	maj_base_si_besoin($profil);
+	// Une deuxième requête sur SACOCHE_STRUCTURE_BD_NAME pour savoir si le mode de connexion est SSO ou pas
 	$DB_ROW = DB_lister_parametres('"connexion_mode"');
 	if(!count($DB_ROW))
 	{

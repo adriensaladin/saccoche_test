@@ -455,7 +455,7 @@ $(document).ready
 			{
 				// Récup des infos
 				ids = $('#succes').parent().parent().attr('id');
-				tab_ids = ids.split('_')
+				tab_ids = ids.split('_');
 				matiere_id = tab_ids[2];
 				niveau_id  = tab_ids[3];
 				adresse = url_debut + '?mode=object' + '&fichier=referentiel_choisir' + '&structure_id=' + sesamath_id + '&structure_key=' + sesamath_key + '&matiere_id=' + matiere_id + '&niveau_id=' + niveau_id + '&adresse_retour=' + encodeURIComponent(document.location.href);	// Mettre href sinon c'est le dernier appel ajax (non visible dans la barre d'adresse) qui compte...

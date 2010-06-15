@@ -41,7 +41,7 @@ define('VERSION_CSS_SCREEN',25);
 define('VERSION_CSS_PRINT',1);
 define('VERSION_JS_BIBLIO',2);
 define('VERSION_JS_GLOBAL',24);
-$VERSION_JS_FILE = 1;	// Modifiée ensuite si besoin dans le script associé à la page
+$VERSION_JS_FILE = 2;	// Modifiée ensuite si besoin dans le script associé à la page
 
 // $ALERTE_SSO : pour signaler éventuellement qu'une deconnexion de SACoche n'entraîne pas une déconnexion d'un ENT
 $ALERTE_SSO = false;

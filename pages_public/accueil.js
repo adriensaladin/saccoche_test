@@ -228,8 +228,16 @@ $(document).ready
 				mode_connexion = $('#f_mode').val();
 				if( (mode_connexion=='normal') || (profil=='administrateur') )
 				{
-					$(this).ajaxSubmit(ajaxOptions);
-					return false;
+					if (!please_wait)
+					{
+						please_wait = true;
+						$(this).ajaxSubmit(ajaxOptions);
+						return false;
+					}
+					else
+					{
+						return false;
+					}
 				}
 				else if(mode_connexion=='cas')
 				{
@@ -255,6 +263,7 @@ $(document).ready
 		// Fonction suivant l'envoi du formulaire (avec jquery.form.js)
 		function retour_form_erreur(msg,string)
 		{
+			please_wait = false;
 			$('#f_submit').show();
 			$('#ajax_msg').removeAttr("class").addClass("alerte").html("Echec de la connexion ! Veuillez valider de nouveau.");
 		}
@@ -262,6 +271,7 @@ $(document).ready
 		// Fonction suivant l'envoi du formulaire (avec jquery.form.js)
 		function retour_form_valide(responseHTML)
 		{
+			please_wait = false;
 			$('#f_submit').show();
 			if((responseHTML=='eleve')||(responseHTML=='professeur')||(responseHTML=='directeur')||(responseHTML=='administrateur')||(responseHTML=='webmestre'))
 			{

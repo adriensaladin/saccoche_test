@@ -35,7 +35,6 @@ $(document).ready
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
 		var mode = false;
-		var please_wait = false;
 
 		// tri du tableau (avec jquery.tablesorter.js).
 		var sorting = [[1,0],[2,0],[3,0]];

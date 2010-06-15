@@ -50,18 +50,18 @@ function compacter($chemin,$version,$methode)
 			$fichier_contenu = utf8_decode($fichier_contenu); // Attention, il faut envoyer à ces classes de l'iso et pas de l'utf8.
 			if( ($extension=='js') && ($methode=='pack') )
 			{
-				require_once('./_inc/class.JavaScriptPacker.php');
+				require_once('class.JavaScriptPacker.php');	// Ne pas mettre de chemin !
 				$myPacker = new JavaScriptPacker($fichier_contenu, 62, true, false);
 				$fichier_compacte = $myPacker->pack();
 			}
 			elseif( ($extension=='js') && ($methode=='mini') )
 			{
-				require_once('./_inc/class.JavaScriptMinified.php');
+				require_once('class.JavaScriptMinified.php');	// Ne pas mettre de chemin !
 				$fichier_compacte = JSMin::minify($fichier_contenu);
 			}
 			elseif( ($extension=='css') && ($methode=='mini') )
 			{
-				require_once('./_inc/class.CssMinified.php');
+				require_once('class.CssMinified.php');	// Ne pas mettre de chemin !
 				$fichier_compacte = cssmin::minify($fichier_contenu);
 			}
 			else
@@ -349,21 +349,6 @@ function connecter_user($BASE,$profil,$login,$password,$mode_connection)
 	if( ($BASE) && ($mode_connection=='normal') )
 	{
 		charger_parametres_mysql_supplementaires($BASE);
-	}
-	// Vérifier la version de la base et la mettre à jour si besoin ; à effectuer avant toute récupération des données sinon ça peut poser pb...
-	$version_base = DB_version_base();
-	if($version_base != VERSION_BASE)
-	{
-		// Bloquer l'application
-		bloquer_application($profil,'Mise à jour de la base en cours.');
-		// Lancer une mise à jour de la base
-		require_once('./_inc/fonction_maj_base.php');
-		maj_base($version_base);
-		// Débloquer l'application
-		debloquer_application($profil);
-		// Retour explicatif
-		close_session();
-		return'La base n\'était pas à jour : merci de valider de nouveau !';
 	}
 	// Récupérer les données associées à l'utilisateur.
 	$DB_ROW = DB_recuperer_donnees_utilisateur($mode_connection,$login);
@@ -733,7 +718,7 @@ function decompresser_arborescence_XML($arbreXML)
 
 function envoyer_arborescence_XML($structure_id,$structure_key,$matiere_id,$niveau_id,$arbreXML)
 {
-	require_once('./_inc/class.httprequest.php');
+	require_once('class.httprequest.php');	// Ne pas mettre de chemin !
 	$tab_get = array();
 	$tab_get[] = 'mode=httprequest';
 	$tab_get[] = 'fichier=referentiel_uploader';
@@ -767,7 +752,7 @@ function recuperer_arborescence_XML($structure_id,$structure_key,$referentiel_id
 	Comme pour la fonction envoyer_arborescence_XML(), l'arbre est compressé avant d'être transféré.
 	Il faut donc le décompresser une fois réceptionné.
 	*/
-	require_once('./_inc/class.httprequest.php');
+	require_once('class.httprequest.php');	// Ne pas mettre de chemin !
 	$tab_get = array();
 	$tab_get[] = 'mode=httprequest';
 	$tab_get[] = 'fichier=referentiel_downloader';
@@ -809,7 +794,7 @@ function verifier_arborescence_XML($arbreXML)
 	// On enregistre temporairement dans un fichier pour analyse
 	file_put_contents($fichier_adresse,$fichier_contenu);
 	// On lance le test
-	require('./_inc/class.domdocument.php');
+	require('class.domdocument.php');	// Ne pas mettre de chemin !
 	$test_XML_valide = analyser_XML($fichier_adresse);
 	// On efface le fichier temporaire
 	unlink($fichier_adresse);
@@ -827,7 +812,7 @@ function verifier_arborescence_XML($arbreXML)
 
 function enregistrer_structure_Sesamath($structure_id,$structure_key)
 {
-	require_once('./_inc/class.httprequest.php');
+	require_once('class.httprequest.php');	// Ne pas mettre de chemin !
 	$tab_get = array();
 	$tab_get[] = 'mode=httprequest';
 	$tab_get[] = 'fichier=structure_enregistrer';

@@ -26,7 +26,7 @@
  */
 
 //	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
-// Avertissement : le contenu de ce fichier doit pas être modifié !
+// Avertissement : le contenu de ce fichier doit pas être modifié à la légère !
 // Seul un développeur averti peut jouer sur certains paramètres...
 //	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
 

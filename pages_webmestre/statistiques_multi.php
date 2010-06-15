@@ -52,6 +52,7 @@ $select_structure = afficher_select(DB_OPT_structures_sacoche() , $select_nom=fa
 			<th>Id</th>
 			<th>Structure</th>
 			<th>Contact</th>
+			<th>Ancienneté</th>
 			<th>professeurs<br />enregistrés</th>
 			<th>professeurs<br />connectés</th>
 			<th>élèves<br />enregistrés</th>

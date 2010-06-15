@@ -38,7 +38,10 @@ $TITRE = "Bienvenue dans votre espace identifié !";
 
 <hr />
 
-<div>
-	<span class="astuce">Pour que votre établissement soit automatiquement sélectionné depuis n'importe quel ordinateur, utilisez l'adresse <b><?php echo SERVEUR_ADRESSE.'?id='.$_SESSION['BASE'] ?></b></span><br />
-</div>
-
+<?php
+if(HEBERGEUR_INSTALLATION=='multi-structures')
+{
+	echo'<div class="astuce">Adresse à utiliser pour une sélection automatique de l\'établissement depuis n\'importe quel ordinateur :</div>';
+	echo'<p class="hc"><b>'.SERVEUR_ADRESSE.'?id='.$_SESSION['BASE'].'</b></p>';
+}
+?>

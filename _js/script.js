@@ -76,21 +76,6 @@ function infobulle()
 }
 
 /**
- * Fonction pour un préchargement d'images (pas certain que ça fonctionne bien...).
- * @param why valeur parmi [show] [hide]
- * @return void
- */
-
-function preloadImages(tableau)
-{
-	var repertoire = './_img/';
-	for (var i=0; i<tableau.length; i++)
-	{
-		$('<img/>').attr('src', repertoire+tableau[i]);
-	}
-}
-
-/**
  * Fonction pour un tester la robustesse d'un mot de passe.
  * @param void
  * @return void
@@ -259,11 +244,6 @@ $(document).ready
 	{
 		format_liens('body');
 		infobulle();
-		var imagesToPreload = Array(
-			'ajax/ajax_alerte.png','ajax/ajax_erreur.png','ajax/ajax_loader.gif','ajax/ajax_valide.png','puce_danger.gif',
-			'folder/folder_m1.png','folder/folder_m2.png','folder/folder_n0.png','folder/folder_n1.png','folder/folder_n2.png','folder/folder_n3.png'
-		);
-		preloadImages(imagesToPreload);
 
 		// MENU - Styler les puces avec les images
 		$("#treeview li").each

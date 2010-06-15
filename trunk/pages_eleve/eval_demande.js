@@ -130,8 +130,16 @@ $(document).ready
 		(
 			function()
 			{
-				$(this).ajaxSubmit(ajaxOptions);
-				return false;
+				if (!please_wait)
+				{
+					please_wait = true;
+					$(this).ajaxSubmit(ajaxOptions);
+					return false;
+				}
+				else
+				{
+					return false;
+				}
 			}
 		); 
 
@@ -151,6 +159,7 @@ $(document).ready
 		// Fonction suivant l'envoi du formulaire (avec jquery.form.js)
 		function retour_form_erreur(msg,string)
 		{
+			please_wait = false;
 			$('#ajax_msg').parent().children('q').show();
 			$('#ajax_msg').removeAttr("class").addClass("alerte").html("Echec de la connexion ! Veuillez recommencer.");
 		}
@@ -159,6 +168,7 @@ $(document).ready
 		function retour_form_valide(responseHTML)
 		{
 			maj_clock(1);
+			please_wait = false;
 			$('#ajax_msg').parent().children('q').show();
 			if(responseHTML!='ok')
 			{

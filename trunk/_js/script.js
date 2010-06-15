@@ -242,6 +242,9 @@ $(document).ready
 (
 	function()
 	{
+
+		//	Initialisation
+		var please_wait = false; // Pour éviter une soumission d'un formulaire en double lors de l'appui sur "entrée" (constaté avec Chrome malgré l'usage de la biblio jquery.form.js)
 		format_liens('body');
 		infobulle();
 

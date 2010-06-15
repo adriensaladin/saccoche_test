@@ -255,8 +255,16 @@ $(document).ready
 				$('#types').val(f_type);
 				// récupération du nom du groupe
 				$('#f_groupe_nom').val( $("#f_groupe option:selected").text() );
-				$(this).ajaxSubmit(ajaxOptions);
-				return false;
+				if (!please_wait)
+				{
+					please_wait = true;
+					$(this).ajaxSubmit(ajaxOptions);
+					return false;
+				}
+				else
+				{
+					return false;
+				}
 			}
 		); 
 
@@ -277,6 +285,7 @@ $(document).ready
 		// Fonction suivant l'envoi du formulaire (avec jquery.form.js)
 		function retour_form_erreur(msg,string)
 		{
+			please_wait = false;
 			$('#f_submit').show();
 			$('#ajax_msg').removeAttr("class").addClass("alerte").html("Echec de la connexion ! Veuillez valider de nouveau.");
 		}
@@ -285,6 +294,7 @@ $(document).ready
 		function retour_form_valide(responseHTML)
 		{
 			maj_clock(1);
+			please_wait = false;
 			$('#f_submit').show();
 			if(responseHTML.substring(0,17)!='<ul class="puce">')
 			{

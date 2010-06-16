@@ -31,6 +31,10 @@ $TITRE = "Statistiques d'utilisation";
 $select_structure = afficher_select(DB_OPT_structures_sacoche() , $select_nom=false , $option_first='non' , $selection=false , $optgroup='oui') ;
 ?>
 
+<style type="text/css">
+	table#resultat td {text-align:center}
+</style>
+
 <form id="structures" action=""><fieldset>
 	<label class="tab" for="f_basic">Structure(s) :</label><select id="f_base" name="f_base" multiple="multiple" size="10"><?php echo $select_structure ?></select><br />
 	<span class="tab"></span><input type="hidden" id="bases" name="bases" value="" /><input id="f_submit" type="submit" value="Envoyer." /><label id="ajax_msg">&nbsp;</label>

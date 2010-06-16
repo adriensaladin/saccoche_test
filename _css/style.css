@@ -172,22 +172,12 @@ th.nu , td.nu {background:#F7F7F7;border:none;text-align:center;height:1.6em;}	/
 tr.new{background:#CFC}
 td.new{font-weight:bold}
 
-form.encadre fieldset{margin:3ex 0.5em 0 0.5em;padding:0.25ex 0.5em;background:#DDF;border:1px solid #66F;}
-form.encadre legend{position:absolute;margin-top:0;margin-left:15em;padding:0 5px 0 0;background:#DDF;border:1px solid #66F;color:#D74C12;}
-form.encadre fieldset.new{background:#CFC}
-
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-/* Tableau résultat d'une affectation(professeurs / élèves / matières)                                 */
+/* Tableau résultat d'une affectation (professeurs / élèves / matières)                                */
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 table.affectation {font-size:85%}
 table.affectation tfoot td {background:#CCF;color:#333}
-
-/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-/* Tableau de statistiques pour le webmestre                                                           */
-/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-
-table#resultat td {text-align:center}
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 /* Tableau de saisie des compétences                                                                   */

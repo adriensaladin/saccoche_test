@@ -111,7 +111,7 @@ elseif( $step==2 )
 		$affichage .= '<label for="rien" class="erreur">Echec lors de la création d\'un ou plusieurs fichiers &laquo;&nbsp;<b>index.htm</b>&nbsp;&raquo; dans chaque dossier précédent.</label><br />'."\r\n";
 	}
 	// Création du fichier .htaccess
-	$test = @file_put_contents('./__private/.htaccess','Order deny,allow'."\r\n".'allow from 127.0.0.1'."\r\n".'deny from all'."\r\n");
+	$test = @file_put_contents('./__private/.htaccess','deny from all'."\r\n");
 	$poursuivre2 = ($test) ? true : false ;
 	if($poursuivre2)
 	{
@@ -407,16 +407,16 @@ elseif( $step==6 )
 	{
 		if(HEBERGEUR_INSTALLATION=='mono-structure')
 		{
-			DB_creer_remplir_tables_structure();
+			DB_STRUCTURE_creer_remplir_tables_structure('./_sql/structure/');
 			// Personnaliser certains paramètres de la structure
 			$tab_parametres = array();
 			$tab_parametres['version_base'] = VERSION_BASE;
 			$tab_parametres['uai']          = HEBERGEUR_UAI;
 			$tab_parametres['denomination'] = HEBERGEUR_DENOMINATION;
-			DB_modifier_parametres($tab_parametres);
+			DB_STRUCTURE_modifier_parametres($tab_parametres);
 			// Insérer un compte administrateur dans la base de la structure
 			$password = fabriquer_mdp();
-			$user_id = DB_ajouter_utilisateur($num_sconet=0,$reference='','administrateur',WEBMESTRE_NOM,WEBMESTRE_PRENOM,$login='admin',$password,$classe_id=0,$id_ent='',$id_gepi='');
+			$user_id = DB_STRUCTURE_ajouter_utilisateur($num_sconet=0,$reference='','administrateur',WEBMESTRE_NOM,WEBMESTRE_PRENOM,$login='admin',$password,$classe_id=0,$id_ent='',$id_gepi='');
 			$affichage .= '<p><label class="valide">Les tables de la base de données ont été installées.</label></p>'."\r\n";
 			$affichage .= '<span class="astuce">Le premier compte administrateur a été créé avec votre identité :</span>'."\r\n";
 			$affichage .= '<ul class="puce">';
@@ -431,7 +431,7 @@ elseif( $step==6 )
 		}
 		elseif(HEBERGEUR_INSTALLATION=='multi-structures')
 		{
-			DB_creer_remplir_tables_webmestre();
+			DB_WEBMESTRE_creer_remplir_tables_webmestre('./_sql/webmestre/');
 			$affichage .= '<p><label class="valide">Les tables de la base de données du webmestre ont été installées.</label></p>'."\r\n";
 			$affichage .= '<hr />'."\r\n";
 			$affichage .= '<h2>Installation logicielle terminée</h2>'."\r\n";

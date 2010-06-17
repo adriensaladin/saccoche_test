@@ -43,7 +43,7 @@ if( $f_login_professeur && $f_login_eleve )
 	$test_eleve      = (preg_match("#^n+[._-]?p+$#", $f_login_eleve))      ? 'nom-puis-prenom' : $test_eleve ;
 	if( $test_professeur && $test_eleve )
 	{
-		DB_modifier_parametres( array('modele_professeur'=>$f_login_professeur,'modele_eleve'=>$f_login_eleve) );
+		DB_STRUCTURE_modifier_parametres( array('modele_professeur'=>$f_login_professeur,'modele_eleve'=>$f_login_eleve) );
 		// ne pas oublier de mettre aussi à jour la session
 		$_SESSION['MODELE_PROF']  = $f_login_professeur;
 		$_SESSION['MODELE_ELEVE'] = $f_login_eleve;

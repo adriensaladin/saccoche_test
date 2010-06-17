@@ -58,7 +58,7 @@ function maj_base_si_besoin($profil)
 
 function afficher_formulaire_etablissement($BASE,$profil)
 {
-	$options_structures = afficher_select(DB_OPT_structures_sacoche() , $select_nom=false , $option_first='non' , $selection=$BASE , $optgroup='oui');
+	$options_structures = afficher_select(DB_WEBMESTRE_OPT_structures_sacoche() , $select_nom=false , $option_first='non' , $selection=$BASE , $optgroup='oui');
 	echo'<label class="tab" for="f_base">Établissement :</label><select id="f_base" name="f_base" tabindex="1" >'.$options_structures.'</select><br />'."\r\n";
 	echo'<span class="tab"></span><input id="f_choisir" type="button" value="Choisir cet établissement." tabindex="2" /><label id="ajax_msg">&nbsp;</label><br />'."\r\n";
 	echo'<input id="f_profil" name="f_profil" type="hidden" value="'.$profil.'" />'."\r\n";
@@ -112,7 +112,7 @@ elseif( ($action=='initialiser') && (HEBERGEUR_INSTALLATION=='mono-structure') &
 	// Mettre à jour la base si nécessaire
 	maj_base_si_besoin($profil);
 	// Requête pour récupérer la dénomination et le mode de connexion
-	$DB_TAB = DB_lister_parametres('"denomination","connexion_mode"');
+	$DB_TAB = DB_STRUCTURE_lister_parametres('"denomination","connexion_mode"');
 	foreach($DB_TAB as $DB_ROW)
 	{
 		${$DB_ROW['parametre_nom']} = $DB_ROW['parametre_valeur'];
@@ -137,7 +137,7 @@ elseif( ( ($action=='initialiser') && ($BASE==0) && (HEBERGEUR_INSTALLATION=='mu
 elseif( ( ($action=='initialiser') && ($BASE>0) && (HEBERGEUR_INSTALLATION=='multi-structures') ) || ($action=='charger') && $profil )
 {
 	// Une première requête sur SACOCHE_WEBMESTRE_BD_NAME pour vérifier que la structure est référencée
-	$DB_ROW = DB_recuperer_structure($BASE);
+	$DB_ROW = DB_WEBMESTRE_recuperer_structure($BASE);
 	if(!count($DB_ROW))
 	{
 		// Sans doute un établissement supprimé, mais le cookie est encore là
@@ -149,7 +149,7 @@ elseif( ( ($action=='initialiser') && ($BASE>0) && (HEBERGEUR_INSTALLATION=='mul
 	charger_parametres_mysql_supplementaires($BASE);
 	maj_base_si_besoin($profil);
 	// Une deuxième requête sur SACOCHE_STRUCTURE_BD_NAME pour savoir si le mode de connexion est SSO ou pas
-	$DB_ROW = DB_lister_parametres('"connexion_mode"');
+	$DB_ROW = DB_STRUCTURE_lister_parametres('"connexion_mode"');
 	if(!count($DB_ROW))
 	{
 		exit('Erreur : base de l\'établissement incomplète !');

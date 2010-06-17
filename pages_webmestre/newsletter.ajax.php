@@ -53,7 +53,7 @@ if( $titre && $contenu && $nb_bases )
 	file_put_contents($dossier.$fichier_contenu,$fichier_texte);
 	// Mémoriser dans un fichier les données des contacts concernés par la lettre
 	$fichier_texte = '';
-	$DB_TAB = DB_lister_contacts_cibles( implode(',',$tab_bases) );
+	$DB_TAB = DB_WEBMESTRE_lister_contacts_cibles( implode(',',$tab_bases) );
 	foreach($DB_TAB as $DB_ROW)
 	{
 		$fichier_texte .= '<'.$DB_ROW['contact_id'].'>-<'.$DB_ROW['contact_nom'].'>-<'.$DB_ROW['contact_prenom'].'>-<'.$DB_ROW['contact_courriel'].'>'."\r\n";

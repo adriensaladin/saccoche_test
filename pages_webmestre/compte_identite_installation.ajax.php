@@ -137,7 +137,7 @@ elseif( ($action=='enregistrer') && $denomination && $cnil && $nom && $prenom &&
 		$tab_parametres = array();
 		$tab_parametres['denomination'] = HEBERGEUR_DENOMINATION;
 		$tab_parametres['uai']          = HEBERGEUR_UAI;
-		DB_modifier_parametres($tab_parametres);
+		DB_STRUCTURE_modifier_parametres($tab_parametres);
 	}
 	// On modifie aussi la session
 	$_SESSION['USER_NOM']     = $nom ;

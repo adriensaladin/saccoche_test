@@ -57,7 +57,7 @@ if( ($action=='ajouter') && $date_debut && $date_fin )
 	{
 		foreach($tab_select_classes_groupes as $groupe_id)
 		{
-			DB_modifier_liaison_groupe_periode($groupe_id,$periode_id,true,$date_debut_mysql,$date_fin_mysql);
+			DB_STRUCTURE_modifier_liaison_groupe_periode($groupe_id,$periode_id,true,$date_debut_mysql,$date_fin_mysql);
 		}
 	}
 }
@@ -72,7 +72,7 @@ elseif($action=='retirer')
 	{
 		foreach($tab_select_classes_groupes as $groupe_id)
 		{
-			DB_modifier_liaison_groupe_periode($groupe_id,$periode_id,false);
+			DB_STRUCTURE_modifier_liaison_groupe_periode($groupe_id,$periode_id,false);
 		}
 	}
 }
@@ -87,7 +87,7 @@ $tab_periode   = array();
 $tab_jointure  = array();
 $tab_graphique = array();
 // Récupérer la liste des classes & groupes, dans l'ordre des niveaux
-$DB_TAB = DB_lister_classes_et_groupes_avec_niveaux();
+$DB_TAB = DB_STRUCTURE_lister_classes_et_groupes_avec_niveaux();
 if(!count($DB_TAB))
 {
 	exit('Aucune classe et aucun groupe ne sont enregistrés !');
@@ -98,7 +98,7 @@ foreach($DB_TAB as $DB_ROW)
 	$tab_graphique[$DB_ROW['groupe_id']] = '';
 }
 // Récupérer la liste des périodes, dans l'ordre choisi par l'admin
-$DB_TAB = DB_lister_periodes();
+$DB_TAB = DB_STRUCTURE_lister_periodes();
 if(!count($DB_TAB))
 {
 	exit('Aucune période n\'est enregistrée !');
@@ -108,7 +108,7 @@ foreach($DB_TAB as $DB_ROW)
 	$tab_periode[$DB_ROW['periode_id']] = '<th>'.html($DB_ROW['periode_nom']).'</th>';
 }
 // Récupérer l'amplitude complète sur l'ensemble des périodes
-$DB_ROW = DB_recuperer_amplitude_periodes();
+$DB_ROW = DB_STRUCTURE_recuperer_amplitude_periodes();
 $tout_debut     = ($DB_ROW['tout_debut'])     ? $DB_ROW['tout_debut']     : '2000-01-01' ;
 $toute_fin      = ($DB_ROW['toute_fin'])      ? $DB_ROW['toute_fin']      : '2000-01-01' ;
 $nb_jours_total = ($DB_ROW['nb_jours_total']) ? $DB_ROW['nb_jours_total'] : 0;

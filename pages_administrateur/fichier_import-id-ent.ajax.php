@@ -38,7 +38,7 @@ $dossier_import = './__tmp/import/';
 
 if($action=='copy_id_Gepi')
 {
-	DB_recopier_identifiants('id_gepi','id_ent');
+	DB_STRUCTURE_recopier_identifiants('id_gepi','id_ent');
 	exit('ok');
 }
 
@@ -48,7 +48,7 @@ if($action=='copy_id_Gepi')
 
 if($action=='copy_login_SACoche')
 {
-	DB_recopier_identifiants('login','id_ent');
+	DB_STRUCTURE_recopier_identifiants('login','id_ent');
 	exit('ok');
 }
 
@@ -131,7 +131,7 @@ if($action=='import_ent')
 	$tab_users_base['nom']    = array();
 	$tab_users_base['prenom'] = array();
 	$tab_users_base['info']   = array();
-	$DB_TAB = DB_lister_users('tous',$only_actifs=false,$with_classe=true);
+	$DB_TAB = DB_STRUCTURE_lister_users('tous',$only_actifs=false,$with_classe=true);
 	foreach($DB_TAB as $DB_ROW)
 	{
 		$tab_users_base['id_ent'][$DB_ROW['user_id']] = $DB_ROW['user_id_ent'];
@@ -186,7 +186,7 @@ if($action=='import_ent')
 					else
 					{
 						// Contenu du fichier à modifier : id_ent nouveau
-						DB_modifier_utilisateur( $id , array(':id_ent'=>$id_ent) );
+						DB_STRUCTURE_modifier_utilisateur( $id , array(':id_ent'=>$id_ent) );
 						$lignes_mod .= '<tr class="new"><td>'.html($tab_users_fichier['nom'][$i].' '.$tab_users_fichier['prenom'][$i].' ('.$tab_users_base['info'][$id].')').'</td><td><b>Id ENT : '.html($id_ent).'</b></td></tr>';
 					}
 				}

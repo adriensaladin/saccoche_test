@@ -48,7 +48,7 @@ $TITRE = "Gérer les classes";
 		<tbody>
 			<?php
 			// Lister les classes avec les niveaux
-			$DB_TAB = DB_lister_classes_avec_niveaux();
+			$DB_TAB = DB_STRUCTURE_lister_classes_avec_niveaux();
 			foreach($DB_TAB as $DB_ROW)
 			{
 				// Afficher une ligne du tableau
@@ -73,7 +73,7 @@ $select_niveau = '<option value=""></option>';
 
 if($_SESSION['NIVEAUX'])
 {
-	$DB_TAB = DB_lister_niveaux_etablissement($_SESSION['NIVEAUX'],$listing_paliers=false);
+	$DB_TAB = DB_STRUCTURE_lister_niveaux_etablissement($_SESSION['NIVEAUX'],$listing_paliers=false);
 	foreach($DB_TAB as $DB_ROW)
 	{
 		$select_niveau .= '<option value="'.$DB_ROW['niveau_id'].'">'.html($DB_ROW['niveau_nom']).'</option>';

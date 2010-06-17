@@ -31,7 +31,7 @@ $TITRE = "Export listes des items par matière";
 
 <?php
 // Fabrication des éléments select du formulaire
-$select_matiere = afficher_select(DB_OPT_matieres_etabl($_SESSION['MATIERES'],$transversal=true) , $select_nom='f_matiere' , $option_first='oui' , $selection=false , $optgroup='non');
+$select_matiere = afficher_select(DB_STRUCTURE_OPT_matieres_etabl($_SESSION['MATIERES'],$transversal=true) , $select_nom='f_matiere' , $option_first='oui' , $selection=false , $optgroup='non');
 ?>
 
 <div class="hc"><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_professeur__export_listings">DOC : Export listings.</a></span></div>

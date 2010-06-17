@@ -46,12 +46,12 @@ elseif($_SESSION['ELEVE_DEMANDES']==0)
 // Vérifier qu'il reste des demandes disponibles pour l'élève et la matière concernés (on compte le nb de demandes en attente)
 else
 {
-	$nb_demandes_attente = DB_compter_demandes_eleve_matiere($eleve_id,$matiere_id);
+	$nb_demandes_attente = DB_STRUCTURE_compter_demandes_eleve_matiere($eleve_id,$matiere_id);
 	$nb_demandes_possibles = $_SESSION['ELEVE_DEMANDES'] - $nb_demandes_attente ;
 	if($nb_demandes_possibles>0)
 	{
 		// Vérifier que cet item n'est pas déjà en attente d'évaluation pour cet élève
-		if( DB_tester_demande($eleve_id,$matiere_id,$item_id) )
+		if( DB_STRUCTURE_tester_demande($eleve_id,$matiere_id,$item_id) )
 		{
 			$reponse = 'Cette demande est déjà enregistrée !';
 		}
@@ -59,7 +59,7 @@ else
 		{
 			$score = ($score!=-1) ? $score : NULL ;
 			$date_mysql = date("Y-m-d");	// date_mysql de la forme aaaa-mm-jj
-			DB_ajouter_demande($eleve_id,$matiere_id,$item_id,$date_mysql,$score,$statut='eleve');
+			DB_STRUCTURE_ajouter_demande($eleve_id,$matiere_id,$item_id,$date_mysql,$score,$statut='eleve');
 			$nb_demandes_attente++;
 			$nb_demandes_possibles--;
 			$reponse = 'Votre demande a été ajoutée.<br />';

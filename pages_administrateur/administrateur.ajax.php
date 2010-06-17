@@ -41,14 +41,14 @@ $password   = (isset($_POST['f_password']))   ? clean_entier($_POST['f_password'
 if( ($action=='ajouter') && $nom && $prenom && $login )
 {
 	// Vérifier que le login de l'administrateur est disponible (parmi tout le personnel de l'établissement)
-	if( DB_tester_login($login) )
+	if( DB_STRUCTURE_tester_login($login) )
 	{
 		exit('Erreur : login déjà existant !');
 	}
 	// Construire le password
 	$password = fabriquer_mdp();
 	// Insérer l'enregistrement
-	$user_id = DB_ajouter_utilisateur($num_sconet=0,$reference='','administrateur',$nom,$prenom,$login,$password,$classe_id=0,$id_ent='',$id_gepi='');
+	$user_id = DB_STRUCTURE_ajouter_utilisateur($num_sconet=0,$reference='','administrateur',$nom,$prenom,$login,$password,$classe_id=0,$id_ent='',$id_gepi='');
 	// Afficher le retour
 	echo'<tr id="id_'.$user_id.'" class="new">';
 	echo	'<td>'.html($nom).'</td>';
@@ -68,7 +68,7 @@ if( ($action=='ajouter') && $nom && $prenom && $login )
 else if( ($action=='modifier') && $id && $nom && $prenom && $login )
 {
 	// Vérifier que le login de l'administrateur est disponible (parmi tout le personnel de l'établissement)
-	if( DB_tester_login($login,$id) )
+	if( DB_STRUCTURE_tester_login($login,$id) )
 	{
 		exit('Erreur : login déjà existant !');
 	}
@@ -78,7 +78,7 @@ else if( ($action=='modifier') && $id && $nom && $prenom && $login )
 	{
 		$tab_donnees[':password'] = fabriquer_mdp() ;
 	}
-	DB_modifier_utilisateur( $id , $tab_donnees );
+	DB_STRUCTURE_modifier_utilisateur( $id , $tab_donnees );
 	// Mettre à jour aussi éventuellement la session
 	if($id==$_SESSION['USER_ID'])
 	{
@@ -106,7 +106,7 @@ else if( ($action=='supprimer') && $id )
 		exit('Erreur : un administrateur ne peut pas supprimer son propre compte !');
 	}
 	// Supprimer l'enregistrement
-	DB_supprimer_utilisateur( $id , 'administrateur' );
+	DB_STRUCTURE_supprimer_utilisateur( $id , 'administrateur' );
 	// Afficher le retour
 	echo'<td>ok</td>';
 }

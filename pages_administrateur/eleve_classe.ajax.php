@@ -42,7 +42,7 @@ if($action=='ajouter')
 	$classe_id = current($tab_select_classes); // un élève ne peut être affecté qu'à 1 seule classe : inutile de toutes les passer en revue
 	foreach($tab_select_eleves as $user_id)
 	{
-		DB_modifier_liaison_user_groupe($user_id,'eleve',$classe_id,'classe',true);
+		DB_STRUCTURE_modifier_liaison_user_groupe($user_id,'eleve',$classe_id,'classe',true);
 	}
 }
 
@@ -52,7 +52,7 @@ elseif($action=='retirer')
 	$classe_id = 0; // pas besoin de passer les classes en revue : il suffit de mettre $classe_id à 0
 	foreach($tab_select_eleves as $user_id)
 	{
-		DB_modifier_liaison_user_groupe($user_id,'eleve',$classe_id,'classe',false);
+		DB_STRUCTURE_modifier_liaison_user_groupe($user_id,'eleve',$classe_id,'classe',false);
 	}
 }
 
@@ -63,14 +63,14 @@ $tab_niveau_groupe[0][0] = '<i>sans classe</i>';
 $tab_user[0]             = '';
 
 // Récupérer la liste des classes
-$DB_TAB = DB_lister_classes_avec_niveaux();
+$DB_TAB = DB_STRUCTURE_lister_classes_avec_niveaux();
 foreach($DB_TAB as $DB_ROW)
 {
 	$tab_niveau_groupe[$DB_ROW['niveau_id']][$DB_ROW['groupe_id']] = html($DB_ROW['groupe_nom']);
 	$tab_user[$DB_ROW['groupe_id']] = '';
 }
 // Récupérer la liste des élèves / classes
-$DB_TAB = DB_lister_users('eleve',$only_actifs=true,$with_classe=false);
+$DB_TAB = DB_STRUCTURE_lister_users('eleve',$only_actifs=true,$with_classe=false);
 foreach($DB_TAB as $DB_ROW)
 {
 	$tab_user[$DB_ROW['eleve_classe_id']] .= html($DB_ROW['user_nom'].' '.$DB_ROW['user_prenom']).'<br />';

@@ -27,7 +27,7 @@
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 
-list($prof_nb,$prof_use,$eleve_nb,$eleve_use,$score_nb) = DB_recuperer_statistiques();
+list($prof_nb,$prof_use,$eleve_nb,$eleve_use,$score_nb) = DB_STRUCTURE_recuperer_statistiques();
 
 ?>
 

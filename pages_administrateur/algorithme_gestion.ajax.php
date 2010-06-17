@@ -54,7 +54,7 @@ if( ($action=='enregistrer') && in_array($methode,$tab_methodes) && in_array($li
 	$_SESSION['CALCUL_SEUIL']   = $seuil;
 	$_SESSION['CALCUL_METHODE'] = $methode;
 	$_SESSION['CALCUL_LIMITE']  = $limite;
-	DB_modifier_parametres( array('calcul_valeur_RR'=>$valeur['RR'],'calcul_valeur_R'=>$valeur['R'],'calcul_valeur_V'=>$valeur['V'],'calcul_valeur_VV'=>$valeur['VV'],'calcul_seuil_R'=>$seuil['R'],'calcul_seuil_V'=>$seuil['V'],'calcul_methode'=>$methode,'calcul_limite'=>$limite) );
+	DB_STRUCTURE_modifier_parametres( array('calcul_valeur_RR'=>$valeur['RR'],'calcul_valeur_R'=>$valeur['R'],'calcul_valeur_V'=>$valeur['V'],'calcul_valeur_VV'=>$valeur['VV'],'calcul_seuil_R'=>$seuil['R'],'calcul_seuil_V'=>$seuil['V'],'calcul_methode'=>$methode,'calcul_limite'=>$limite) );
 	echo'<ok>';
 }
 

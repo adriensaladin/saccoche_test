@@ -48,7 +48,7 @@ if($groupe_id && isset($tab_types[$groupe_type]) && $groupe_nom)
 	// Préparation de l'export HTML
 	$export_html = '<table><thead><tr><th>Id</th><th>Login</th><th>Nom</th><th>Prénom</th><th>Groupe</th></tr></thead><tbody>'."\r\n";
 
-	$DB_TAB = DB_lister_eleves_actifs_regroupement($tab_types[$groupe_type],$groupe_id);
+	$DB_TAB = DB_STRUCTURE_lister_eleves_actifs_regroupement($tab_types[$groupe_type],$groupe_id);
 	if(count($DB_TAB))
 	{
 		foreach($DB_TAB as $DB_ROW)

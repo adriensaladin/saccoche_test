@@ -55,7 +55,7 @@ if( $detail && $palier_id && $palier_nom && $remplissage )
 	//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 	// Récupération de la liste des items pour la matière et le niveau sélectionné
 	//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-	$DB_TAB = DB_recuperer_arborescence_palier($palier_id);
+	$DB_TAB = DB_STRUCTURE_recuperer_arborescence_palier($palier_id);
 	if(count($DB_TAB))
 	{
 		$pilier_id  = 0;
@@ -106,7 +106,7 @@ if( $detail && $palier_id && $palier_nom && $remplissage )
 	//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 	if($test_affichage_scores)
 	{
-		$DB_TAB = DB_lister_result_eleves_palier($_SESSION['USER_ID'] , $liste_item , $date_debut=false , $date_fin=false);
+		$DB_TAB = DB_STRUCTURE_lister_result_eleves_palier($_SESSION['USER_ID'] , $liste_item , $date_debut=false , $date_fin=false);
 		foreach($DB_TAB as $DB_ROW)
 		{
 			$tab_eval[$_SESSION['USER_ID']][$DB_ROW['socle_id']][$DB_ROW['item_id']][] = $DB_ROW['note'];

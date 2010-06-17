@@ -42,7 +42,7 @@ $tab_paliers = explode( '.' , substr(LISTING_ID_NIVEAUX_PALIERS,1,-1) );
 if( ($action=='Choisir') && (count(array_intersect($tab_paliers,$tab_id))==0) )
 {
 	$listing_niveaux = implode(',',$tab_id);
-	DB_modifier_parametres( array('niveaux'=>$listing_niveaux) );
+	DB_STRUCTURE_modifier_parametres( array('niveaux'=>$listing_niveaux) );
 	// ne pas oublier de mettre aussi à jour la session
 	$_SESSION['NIVEAUX'] = $listing_niveaux;
 	echo'ok';

@@ -28,7 +28,7 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = "Lettre d'information";
 
-$select_structure = afficher_select(DB_OPT_structures_sacoche() , $select_nom=false , $option_first='non' , $selection=false , $optgroup='oui');
+$select_structure = afficher_select(DB_WEBMESTRE_OPT_structures_sacoche() , $select_nom=false , $option_first='non' , $selection=false , $optgroup='oui');
 ?>
 
 <div id="ajax_info" class="hide">

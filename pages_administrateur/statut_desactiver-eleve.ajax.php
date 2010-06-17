@@ -43,7 +43,7 @@ if($nb)
 {
 	foreach($tab_select_users as $user_id)
 	{
-		DB_modifier_utilisateur( $user_id , array(':statut'=>0) );
+		DB_STRUCTURE_modifier_utilisateur( $user_id , array(':statut'=>0) );
 	}
 	$s = ($nb>1) ? 's' : '';
 	echo'<hr />'.$nb.' élève'.$s.' désactivé'.$s.'.';

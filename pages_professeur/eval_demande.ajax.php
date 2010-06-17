@@ -76,7 +76,7 @@ if( ($action=='Afficher_demandes') && $matiere_id && $matiere_nom && $groupe_id 
 {
 	$retour = '';
 	// Récupérer la liste des élèves concernés
-	$DB_TAB = DB_OPT_eleves_regroupement($tab_types[$groupe_type],$groupe_id,$user_statut=1);
+	$DB_TAB = DB_STRUCTURE_OPT_eleves_regroupement($tab_types[$groupe_type],$groupe_id,$user_statut=1);
 	if(!is_array($DB_TAB))
 	{
 		exit($DB_TAB);	// Erreur : aucun élève de ce regroupement n\'est enregistré !
@@ -89,7 +89,7 @@ if( ($action=='Afficher_demandes') && $matiere_id && $matiere_nom && $groupe_id 
 	$listing_user_id = implode(',', array_keys($tab_eleves) );
 	// Lister les demandes
 	$tab_demandes = array();
-	$DB_TAB = DB_lister_demandes_prof($matiere_id,$listing_user_id);
+	$DB_TAB = DB_STRUCTURE_lister_demandes_prof($matiere_id,$listing_user_id);
 	if(!count($DB_TAB))
 	{
 		exit('Aucune demande n\'a été formulée pour ces élèves et cette matière !');
@@ -116,7 +116,7 @@ if( ($action=='Afficher_demandes') && $matiere_id && $matiere_nom && $groupe_id 
 	}
 	// Calculer pour chaque item sa popularité (le nb de demandes pour les élèves affichés)
 	$listing_demande_id = implode(',', $tab_demandes );
-	$DB_TAB = DB_recuperer_item_popularite($listing_demande_id,$listing_user_id);
+	$DB_TAB = DB_STRUCTURE_recuperer_item_popularite($listing_demande_id,$listing_user_id);
 	$tab_bad = array();
 	$tab_bon = array();
 	foreach($DB_TAB as $DB_ROW)
@@ -137,24 +137,24 @@ elseif( ($action=='creer') && $groupe_id && (isset($tab_types[$groupe_type])) &&
 	if($qui=='select')
 	{
 		// Il faut commencer par créer un nouveau groupe de type "eval", utilisé uniquement pour cette évaluation (c'est transparent pour le professeur)
-		$groupe_id = DB_ajouter_groupe('eval',$_SESSION['USER_ID'],'','',0);
+		$groupe_id = DB_STRUCTURE_ajouter_groupe('eval',$_SESSION['USER_ID'],'','',0);
 		// Il faut y affecter tous les élèves choisis
-		DB_modifier_liaison_devoir_user($groupe_id,$tab_user_id,'creer');
+		DB_STRUCTURE_modifier_liaison_devoir_user($groupe_id,$tab_user_id,'creer');
 	}
 	// Maintenant on peut insérer l'enregistrement de l'évaluation
 	$date_mysql = convert_date_french_to_mysql($date);
-	$devoir_id = DB_ajouter_devoir($_SESSION['USER_ID'],$groupe_id,$date_mysql,$info);
+	$devoir_id = DB_STRUCTURE_ajouter_devoir($_SESSION['USER_ID'],$groupe_id,$date_mysql,$info);
 	// Insérer les enregistrements des items de l'évaluation
-	DB_modifier_liaison_devoir_item($devoir_id,$tab_item_id,'creer');
+	DB_STRUCTURE_modifier_liaison_devoir_item($devoir_id,$tab_item_id,'creer');
 	// Pour terminer, on change le statut des demandes ou on les supprime
 	$listing_demande_id = implode(',',$tab_demande_id);
 	if($suite=='changer')
 	{
-		DB_modifier_statut_demandes($listing_demande_id,$nb_demandes,'prof');
+		DB_STRUCTURE_modifier_statut_demandes($listing_demande_id,$nb_demandes,'prof');
 	}
 	else
 	{
-		DB_supprimer_demandes($listing_demande_id,$nb_demandes);
+		DB_STRUCTURE_supprimer_demandes($listing_demande_id,$nb_demandes);
 	}
 	exit('ok');
 }
@@ -168,20 +168,20 @@ elseif( ($action=='completer') && $groupe_id && (isset($tab_types[$groupe_type])
 	if($qui=='select')
 	{
 		// sacoche_jointure_user_groupe
-		DB_modifier_liaison_devoir_user($groupe_id,$tab_user_id,'ajouter');
+		DB_STRUCTURE_modifier_liaison_devoir_user($groupe_id,$tab_user_id,'ajouter');
 	}
 	// Maintenant on peut modifier les items de l'évaluation
 	// sacoche_jointure_devoir_item
-	DB_modifier_liaison_devoir_item($devoir_id,$tab_item_id,'ajouter');
+	DB_STRUCTURE_modifier_liaison_devoir_item($devoir_id,$tab_item_id,'ajouter');
 	// Pour terminer, on change le statut des demandes ou on les supprime
 	$listing_demande_id = implode(',',$tab_demande_id);
 	if($suite=='changer')
 	{
-		DB_modifier_statut_demandes($listing_demande_id,$nb_demandes,'prof');
+		DB_STRUCTURE_modifier_statut_demandes($listing_demande_id,$nb_demandes,'prof');
 	}
 	else
 	{
-		DB_supprimer_demandes($listing_demande_id,$nb_demandes);
+		DB_STRUCTURE_supprimer_demandes($listing_demande_id,$nb_demandes);
 	}
 	exit('ok');
 }
@@ -192,7 +192,7 @@ elseif( ($action=='completer') && $groupe_id && (isset($tab_types[$groupe_type])
 elseif( ($action=='changer') && $nb_demandes )
 {
 	$listing_demande_id = implode(',',$tab_demande_id);
-	DB_modifier_statut_demandes($listing_demande_id,$nb_demandes,'prof');
+	DB_STRUCTURE_modifier_statut_demandes($listing_demande_id,$nb_demandes,'prof');
 	exit('ok');
 }
 
@@ -202,7 +202,7 @@ elseif( ($action=='changer') && $nb_demandes )
 elseif( ($action=='retirer') && $nb_demandes )
 {
 	$listing_demande_id = implode(',',$tab_demande_id);
-	DB_supprimer_demandes($listing_demande_id,$nb_demandes);
+	DB_STRUCTURE_supprimer_demandes($listing_demande_id,$nb_demandes);
 	exit('ok');
 }
 

@@ -244,7 +244,7 @@ elseif( $step==3 )
 	$tab_classes_base        = array();
 	$tab_classes_base['ref'] = array();
 	$tab_classes_base['nom'] = array();
-	$DB_TAB = DB_lister_classes();
+	$DB_TAB = DB_STRUCTURE_lister_classes();
 	foreach($DB_TAB as $DB_ROW)
 	{
 		$tab_classes_base['ref'][$DB_ROW['groupe_id']] = $DB_ROW['groupe_ref'];
@@ -276,7 +276,7 @@ elseif( $step==3 )
 	{
 		$select_niveau = '<option value=""></option>';
 		$tab_niveau_ref = array();
-		$DB_TAB = DB_lister_niveaux_etablissement($_SESSION['NIVEAUX'],$listing_paliers=false);
+		$DB_TAB = DB_STRUCTURE_lister_niveaux_etablissement($_SESSION['NIVEAUX'],$listing_paliers=false);
 		foreach($DB_TAB as $DB_ROW)
 		{
 			$select_niveau .= '<option value="'.$DB_ROW['niveau_id'].'">'.html($DB_ROW['niveau_nom']).'</option>';
@@ -346,7 +346,7 @@ elseif( $step==4 )
 		{
 			if( (count($tab)==3) && $tab['ref'] && $tab['nom'] && $tab['niv'] )
 			{
-				DB_ajouter_groupe('classe',0,$tab['ref'],$tab['nom'],$tab['niv']);
+				DB_STRUCTURE_ajouter_groupe('classe',0,$tab['ref'],$tab['nom'],$tab['niv']);
 				$nb_add++;
 			}
 		}
@@ -359,7 +359,7 @@ elseif( $step==4 )
 		{
 			if( $groupe_id )
 			{
-				DB_supprimer_groupe($groupe_id,'classe');
+				DB_STRUCTURE_supprimer_groupe($groupe_id,'classe');
 				$nb_del++;
 			}
 		}
@@ -367,7 +367,7 @@ elseif( $step==4 )
 	// Afficher le bilan
 	$lignes = '';
 	$nb_fin = 0;
-	$DB_TAB = DB_lister_classes_avec_niveaux();
+	$DB_TAB = DB_STRUCTURE_lister_classes_avec_niveaux();
 	foreach($DB_TAB as $DB_ROW)
 	{
 		$lignes .= '<tr><td>'.html($DB_ROW['niveau_nom']).'</td><td>'.html($DB_ROW['groupe_ref']).'</td><td>'.html($DB_ROW['groupe_nom']).'</td></tr>'."\r\n";
@@ -417,7 +417,7 @@ elseif( $step==5 )
 	$tab_eleves_base['prenom']     = array();
 	$tab_eleves_base['classe']     = array();
 	$tab_eleves_base['statut']     = array();
-	$DB_TAB = DB_lister_users($profil='eleve',$only_actifs=false,$with_classe=true);
+	$DB_TAB = DB_STRUCTURE_lister_users($profil='eleve',$only_actifs=false,$with_classe=true);
 	foreach($DB_TAB as $DB_ROW)
 	{
 		$tab_eleves_base['num_sconet'][$DB_ROW['user_id']] = $DB_ROW['user_num_sconet'];
@@ -429,7 +429,7 @@ elseif( $step==5 )
 	}
 	// $tab_classe_ref['ref'] -> id : tableau des id des classes à partir de leurs références
 	$tab_classe_ref = array();
-	$DB_TAB = DB_lister_classes();
+	$DB_TAB = DB_STRUCTURE_lister_classes();
 	foreach($DB_TAB as $DB_ROW)
 	{
 		$tab_classe_ref[$DB_ROW['groupe_ref']] = (int) $DB_ROW['groupe_id'];
@@ -639,7 +639,7 @@ elseif( $step==6 )
 		}
 	}
 	// Dénombrer combien d'actifs et d'inactifs au départ
-	list($nb_debut_actif,$nb_debut_inactif) = DB_compter_eleves_suivant_statut();
+	list($nb_debut_actif,$nb_debut_inactif) = DB_STRUCTURE_compter_eleves_suivant_statut();
 	// Retirer des élèves éventuels
 	$nb_del = 0;
 	if(count($tab_del))
@@ -649,7 +649,7 @@ elseif( $step==6 )
 			if( $user_id )
 			{
 				// Mettre à jour l'enregistrement
-				DB_modifier_utilisateur( $user_id , array(':statut'=>0) );
+				DB_STRUCTURE_modifier_utilisateur( $user_id , array(':statut'=>0) );
 				$nb_del++;
 			}
 		}
@@ -663,7 +663,7 @@ elseif( $step==6 )
 	{
 		// Récupérer les noms de classes pour le fichier avec les logins/mdp
 		$tab_nom_classe = array();
-		$DB_TAB = DB_lister_classes();
+		$DB_TAB = DB_STRUCTURE_lister_classes();
 		foreach($DB_TAB as $DB_ROW)
 		{
 			$tab_nom_classe[$DB_ROW['groupe_id']] = $DB_ROW['groupe_nom'];
@@ -676,15 +676,15 @@ elseif( $step==6 )
 				// Construire le login
 				$login = fabriquer_login($tab_traitement['ajout'][$i]['prenom'] , $tab_traitement['ajout'][$i]['nom'] , 'eleve');
 				// Puis tester le login (parmi tout le personnel de l'établissement)
-				if( DB_tester_login($login) )
+				if( DB_STRUCTURE_tester_login($login) )
 				{
 					// Login pris : en chercher un autre en remplaçant la fin par des chiffres si besoin
-					$login = DB_rechercher_login_disponible($login);
+					$login = DB_STRUCTURE_rechercher_login_disponible($login);
 				}
 				// Construire le password
 				$password = fabriquer_mdp();
 				// Ajouter l'utilisateur
-				$user_id = DB_ajouter_utilisateur($tab_traitement['ajout'][$i]['num_sconet'],$tab_traitement['ajout'][$i]['reference'],'eleve',$tab_traitement['ajout'][$i]['nom'],$tab_traitement['ajout'][$i]['prenom'],$login,$password,$tab_traitement['ajout'][$i]['classe']);
+				$user_id = DB_STRUCTURE_ajouter_utilisateur($tab_traitement['ajout'][$i]['num_sconet'],$tab_traitement['ajout'][$i]['reference'],'eleve',$tab_traitement['ajout'][$i]['nom'],$tab_traitement['ajout'][$i]['prenom'],$login,$password,$tab_traitement['ajout'][$i]['classe']);
 				$nb_add++;
 				$tab_password[$user_id] = $password;
 				$fcontenu_csv .= $tab_nom_classe[$tab_traitement['ajout'][$i]['classe']]."\t".$tab_traitement['ajout'][$i]['num_sconet']."\t".$tab_traitement['ajout'][$i]['reference']."\t".$tab_traitement['ajout'][$i]['nom']."\t".$tab_traitement['ajout'][$i]['prenom']."\t".$login."\t".$password."\r\n";
@@ -711,7 +711,7 @@ elseif( $step==6 )
 			// bilan
 			if( count($DB_VAR) )
 			{
-				DB_modifier_utilisateur( $id , $DB_VAR );
+				DB_STRUCTURE_modifier_utilisateur( $id , $DB_VAR );
 			}
 			$nb_mod++;
 		}
@@ -721,7 +721,7 @@ elseif( $step==6 )
 	$lignes         = '';
 	$nb_fin_actif   = 0;
 	$nb_fin_inactif = 0;
-	$DB_TAB = DB_lister_eleves_tri_statut_classe();
+	$DB_TAB = DB_STRUCTURE_lister_eleves_tri_statut_classe();
 	foreach($DB_TAB as $DB_ROW)
 	{
 		$class       = (isset($tab_password[$DB_ROW['user_id']])) ? ' class="new"' : '' ;

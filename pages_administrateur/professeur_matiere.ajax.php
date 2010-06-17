@@ -42,7 +42,7 @@ if($action=='ajouter')
 	{
 		foreach($tab_select_matieres as $matiere_id)
 		{
-			DB_modifier_liaison_professeur_matiere($user_id,$matiere_id,true);
+			DB_STRUCTURE_modifier_liaison_professeur_matiere($user_id,$matiere_id,true);
 		}
 	}
 }
@@ -54,7 +54,7 @@ elseif($action=='retirer')
 	{
 		foreach($tab_select_matieres as $matiere_id)
 		{
-			DB_modifier_liaison_professeur_matiere($user_id,$matiere_id,false);
+			DB_STRUCTURE_modifier_liaison_professeur_matiere($user_id,$matiere_id,false);
 		}
 	}
 }
@@ -65,7 +65,7 @@ $tab_user   = array();
 $tab_matiere[0] = '<i>sans affectation</i>';
 $tab_user[0]   = '';
 // Récupérer la liste des matières utilisées
-$DB_TAB = DB_lister_matieres_etablissement($_SESSION['MATIERES'],$with_transversal=false);
+$DB_TAB = DB_STRUCTURE_lister_matieres_etablissement($_SESSION['MATIERES'],$with_transversal=false);
 foreach($DB_TAB as $DB_ROW)
 {
 	$tab_matiere[$DB_ROW['matiere_id']] = html($DB_ROW['matiere_nom']);

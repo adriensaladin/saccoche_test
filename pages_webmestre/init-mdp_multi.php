@@ -28,7 +28,7 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = "Mot de passe administrateur";
 
-$select_structure = afficher_select(DB_OPT_structures_sacoche() , $select_nom='f_base' , $option_first='oui' , $selection=false , $optgroup='oui');
+$select_structure = afficher_select(DB_WEBMESTRE_OPT_structures_sacoche() , $select_nom='f_base' , $option_first='oui' , $selection=false , $optgroup='oui');
 
 ?>
 

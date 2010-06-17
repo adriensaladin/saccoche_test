@@ -51,7 +51,7 @@ $TITRE = "Gérer les professeurs";
 		<tbody>
 			<?php
 			// Lister les professeurs
-			$DB_TAB = DB_lister_users('professeur',$only_actifs=true,$with_classe=false);
+			$DB_TAB = DB_STRUCTURE_lister_users('professeur',$only_actifs=true,$with_classe=false);
 			foreach($DB_TAB as $DB_ROW)
 			{
 				// Afficher une ligne du tableau

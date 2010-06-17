@@ -49,7 +49,7 @@ if($palier_id && $palier_nom)
 	$tab_section = array();
 	$tab_socle   = array();
 	$pilier_id = 0;
-	$DB_TAB = DB_recuperer_arborescence_palier($palier_id);
+	$DB_TAB = DB_STRUCTURE_recuperer_arborescence_palier($palier_id);
 	foreach($DB_TAB as $DB_ROW)
 	{
 		if($DB_ROW['pilier_id']!=$pilier_id)
@@ -73,7 +73,7 @@ if($palier_id && $palier_nom)
 
 	// Récupération des données des référentiels liés au socle
 	$tab_jointure = array();
-	$DB_TAB = DB_recuperer_associations_entrees_socle();
+	$DB_TAB = DB_STRUCTURE_recuperer_associations_entrees_socle();
 	foreach($DB_TAB as $DB_ROW)
 	{
 		$tab_jointure[$DB_ROW['entree_id']][] = $DB_ROW['matiere_ref'].'.'.$DB_ROW['niveau_ref'].'.'.$DB_ROW['item_ref'].' - '.$DB_ROW['item_nom'];

@@ -356,7 +356,6 @@ $(document).ready
 						$('q.valider').parent().parent().parent().remove();
 						break;
 				}
-				trier_tableau();
 				afficher_masquer_images_action('show');
 				infobulle();
 			}

@@ -37,7 +37,7 @@ $admin_id = (isset($_POST['f_admin']))  ? clean_entier($_POST['f_admin']) : 0;
 if( ($action=='maj_admin') && $base_id )
 {
 	charger_parametres_mysql_supplementaires($base_id);
-	exit( afficher_select(DB_OPT_administrateurs_etabl() , $select_nom=false , $option_first='non' , $selection=false , $optgroup='non') );
+	exit( afficher_select(DB_STRUCTURE_OPT_administrateurs_etabl() , $select_nom=false , $option_first='non' , $selection=false , $optgroup='non') );
 }
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
@@ -47,7 +47,7 @@ elseif( ($action=='init-mdp-admin') && $base_id && $admin_id )
 {
 	charger_parametres_mysql_supplementaires($base_id);
 	// Informations sur la structure, notamment coordonnées du contact.
-	$DB_ROW = DB_recuperer_structure($base_id);
+	$DB_ROW = DB_WEBMESTRE_recuperer_structure($base_id);
 	if(!count($DB_ROW))
 	{
 		exit('Erreur : structure introuvable !');
@@ -57,7 +57,7 @@ elseif( ($action=='init-mdp-admin') && $base_id && $admin_id )
 	$contact_prenom   = $DB_ROW['structure_contact_prenom'];
 	$contact_courriel = $DB_ROW['structure_contact_courriel'];
 	// Informations sur l'admin : nom / prénom / login.
-	$DB_TAB = DB_lister_users_cibles($admin_id,$info_classe=false);
+	$DB_TAB = DB_STRUCTURE_lister_users_cibles($admin_id,$info_classe=false);
 	if(!count($DB_TAB))
 	{
 		exit('Erreur : administrateur introuvable !');
@@ -67,7 +67,7 @@ elseif( ($action=='init-mdp-admin') && $base_id && $admin_id )
 	$admin_login  = $DB_TAB[0]['user_login'];
 	// Initialiser le mdp de l'admin
 	$admin_password = fabriquer_mdp();
-	DB_modifier_utilisateur($admin_id, array(':password'=>$admin_password) );
+	DB_STRUCTURE_modifier_utilisateur($admin_id, array(':password'=>$admin_password) );
 	// Envoyer un courriel au contact
 	$texte = 'Bonjour '.$contact_prenom.' '.$contact_nom.'.'."\r\n\r\n";
 	$texte.= 'Je viens de réinitialiser le mot de passe de '.$admin_prenom.' '.$admin_nom.', administrateur de SACoche pour l\'établissement "'.$denomination.'" sur le site hébergé par '.HEBERGEUR_DENOMINATION.'.'."\r\n\r\n";

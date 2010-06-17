@@ -72,7 +72,7 @@ elseif(!$_SESSION['NIVEAUX'])
 else
 {
 	// On récupère la liste des niveaux utilisés par l'établissement
-	$DB_TAB = DB_lister_niveaux_etablissement($_SESSION['NIVEAUX'],$_SESSION['PALIERS']);
+	$DB_TAB = DB_STRUCTURE_lister_niveaux_etablissement($_SESSION['NIVEAUX'],$_SESSION['PALIERS']);
 	$nb_niveaux = count($DB_TAB);
 	foreach($DB_TAB as $DB_ROW)
 	{

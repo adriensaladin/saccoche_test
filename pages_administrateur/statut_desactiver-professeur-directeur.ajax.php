@@ -44,7 +44,7 @@ if($nb)
 	foreach($tab_select_users as $user_id)
 	{
 		// Mettre à jour l'enregistrement
-		DB_modifier_utilisateur( $user_id , array(':statut'=>0) );
+		DB_STRUCTURE_modifier_utilisateur( $user_id , array(':statut'=>0) );
 	}
 	$s = ($nb>1) ? 's' : '';
 	echo'<hr />'.$nb.' professeur'.$s.' et/ou directeur'.$s.' désactivé'.$s.'.';

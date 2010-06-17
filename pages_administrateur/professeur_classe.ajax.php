@@ -43,7 +43,7 @@ if($action=='ajouter')
 	{
 		foreach($tab_select_classes as $classe_id)
 		{
-			DB_modifier_liaison_user_groupe($user_id,'professeur',$classe_id,'classe',true);
+			DB_STRUCTURE_modifier_liaison_user_groupe($user_id,'professeur',$classe_id,'classe',true);
 		}
 	}
 }
@@ -55,7 +55,7 @@ elseif($action=='retirer')
 	{
 		foreach($tab_select_classes as $classe_id)
 		{
-			DB_modifier_liaison_user_groupe($user_id,'professeur',$classe_id,'classe',false);
+			DB_STRUCTURE_modifier_liaison_user_groupe($user_id,'professeur',$classe_id,'classe',false);
 		}
 	}
 }
@@ -71,7 +71,7 @@ $tab_classes          = array();
 $tab_profs_par_classe = array();
 $tab_classes_par_prof = array();
 // Récupérer la liste des classes
-$DB_TAB = DB_lister_classes_avec_niveaux();
+$DB_TAB = DB_STRUCTURE_lister_classes_avec_niveaux();
 foreach($DB_TAB as $DB_ROW)
 {
 	$tab_classes[$DB_ROW['groupe_id']] = html($DB_ROW['groupe_nom']);
@@ -79,7 +79,7 @@ foreach($DB_TAB as $DB_ROW)
 	$tab_lignes_tableau1[$DB_ROW['niveau_id']][] = $DB_ROW['groupe_id'];
 }
 // Récupérer la liste des professeurs
-$DB_TAB = DB_lister_users('professeur',$only_actifs=true,$with_classe=false);
+$DB_TAB = DB_STRUCTURE_lister_users('professeur',$only_actifs=true,$with_classe=false);
 $compteur = 0 ;
 foreach($DB_TAB as $DB_ROW)
 {

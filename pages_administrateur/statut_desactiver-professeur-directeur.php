@@ -31,7 +31,7 @@ $TITRE = "Désactiver comptes professeurs &amp; directeurs";
 
 <?php
 // Fabrication des éléments select du formulaire
-$select_professeurs_directeurs = afficher_select(DB_OPT_professeurs_directeurs_etabl($statut=1) , $select_nom=false , $option_first='non' , $selection=false , $optgroup='oui');
+$select_professeurs_directeurs = afficher_select(DB_STRUCTURE_OPT_professeurs_directeurs_etabl($statut=1) , $select_nom=false , $option_first='non' , $selection=false , $optgroup='oui');
 ?>
 
 <ul class="puce">

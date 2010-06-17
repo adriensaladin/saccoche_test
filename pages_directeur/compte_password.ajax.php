@@ -33,7 +33,7 @@ $password_nouveau = (isset($_POST['f_password1'])) ? clean_password($_POST['f_pa
 
 if( $password_ancien && $password_nouveau )
 {
-	echo DB_modifier_mdp_utilisateur($_SESSION['USER_ID'],$password_ancien,$password_nouveau);
+	echo DB_STRUCTURE_modifier_mdp_utilisateur($_SESSION['USER_ID'],$password_ancien,$password_nouveau);
 }
 
 else

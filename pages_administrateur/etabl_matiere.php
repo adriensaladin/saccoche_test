@@ -45,7 +45,7 @@ $TITRE = "Choix des matières";
 			// Cases à cocher
 			$tab_check = explode(',',$_SESSION['MATIERES']);
 			// Lister les matières partagées
-			$DB_TAB = DB_lister_matieres_partagees_SACoche();
+			$DB_TAB = DB_STRUCTURE_lister_matieres_partagees_SACoche();
 			foreach($DB_TAB as $DB_ROW)
 			{
 				// Afficher une ligne du tableau
@@ -84,7 +84,7 @@ $TITRE = "Choix des matières";
 		<tbody>
 			<?php
 			// Lister les matières spécifiques
-			$DB_TAB = DB_lister_matieres_specifiques();
+			$DB_TAB = DB_STRUCTURE_lister_matieres_specifiques();
 			foreach($DB_TAB as $DB_ROW)
 			{
 				// Afficher une ligne du tableau

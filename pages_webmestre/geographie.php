@@ -48,7 +48,7 @@ $TITRE = "Zones géographiques";
 		<tbody>
 			<?php
 			// Lister les zones
-			$DB_TAB = DB_lister_zones();
+			$DB_TAB = DB_WEBMESTRE_lister_zones();
 			foreach($DB_TAB as $DB_ROW)
 			{
 				// Afficher une ligne du tableau

@@ -33,8 +33,8 @@ $TITRE = "Bilans transdisciplinaires (P.P.)";
 <?php
 // Fabrication des éléments select du formulaire
 $tab_cookie = load_cookie_select($_SESSION['BASE'],$_SESSION['USER_ID']);
-$select_groupe      = afficher_select(DB_OPT_classes_prof_principal($_SESSION['USER_ID']) , $select_nom='f_groupe'      , $option_first='oui' , $selection=false                        , $optgroup='non');
-$select_periode     = afficher_select(DB_OPT_periodes_etabl()                             , $select_nom='f_periode'     , $option_first='val' , $selection=false                        , $optgroup='non');
+$select_groupe      = afficher_select(DB_STRUCTURE_OPT_classes_prof_principal($_SESSION['USER_ID']) , $select_nom='f_groupe'      , $option_first='oui' , $selection=false                        , $optgroup='non');
+$select_periode     = afficher_select(DB_STRUCTURE_OPT_periodes_etabl()                             , $select_nom='f_periode'     , $option_first='val' , $selection=false                        , $optgroup='non');
 $select_orientation = afficher_select($tab_select_orientation                             , $select_nom='f_orientation' , $option_first='non' , $selection=$tab_cookie['orientation']   , $optgroup='non');
 $select_marge_min   = afficher_select($tab_select_marge_min                               , $select_nom='f_marge_min'   , $option_first='non' , $selection=$tab_cookie['marge_min']     , $optgroup='non');
 $select_couleur     = afficher_select($tab_select_couleur                                 , $select_nom='f_couleur'     , $option_first='non' , $selection=$tab_cookie['couleur']       , $optgroup='non');

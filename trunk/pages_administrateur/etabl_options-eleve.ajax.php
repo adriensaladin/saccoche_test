@@ -47,7 +47,7 @@ else
 
 if($test_options)
 {
-	DB_modifier_parametres( array('eleve_options'=>$f_eleve_options) );
+	DB_STRUCTURE_modifier_parametres( array('eleve_options'=>$f_eleve_options) );
 	// ne pas oublier de mettre aussi à jour la session
 	$_SESSION['ELEVE_OPTIONS'] = $f_eleve_options;
 	echo'ok';

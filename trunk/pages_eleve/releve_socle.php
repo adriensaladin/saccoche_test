@@ -31,8 +31,8 @@ $TITRE = "Attestation de maîtrise du socle";
 
 <?php
 // Fabrication des éléments select du formulaire
-$select_palier = afficher_select(DB_OPT_paliers_etabl($_SESSION['PALIERS'])      , $select_nom='f_palier' , $option_first='non' , $selection=false , $optgroup='non');
-$select_groupe = afficher_select(DB_OPT_groupes_professeur($_SESSION['USER_ID']) , $select_nom='f_groupe' , $option_first='val' , $selection=false , $optgroup='oui');
+$select_palier = afficher_select(DB_STRUCTURE_OPT_paliers_etabl($_SESSION['PALIERS'])      , $select_nom='f_palier' , $option_first='non' , $selection=false , $optgroup='non');
+$select_groupe = afficher_select(DB_STRUCTURE_OPT_groupes_professeur($_SESSION['USER_ID']) , $select_nom='f_groupe' , $option_first='val' , $selection=false , $optgroup='oui');
 ?>
 
 <p class="hc"><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=releves_bilans__releve_socle">DOC : Attestation de maîtrise du socle commun.</a></span></p>

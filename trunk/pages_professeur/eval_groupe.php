@@ -36,7 +36,7 @@ $VERSION_JS_FILE = 2;
 $select_eleve  = '<option value=""></option>';
 $tab_niveau_js = 'var tab_niveau = new Array();';
 $tab_groupe_js = 'var tab_groupes = new Array();';
-$DB_TAB = DB_lister_groupes_professeur($_SESSION['USER_ID']);
+$DB_TAB = DB_STRUCTURE_lister_groupes_professeur($_SESSION['USER_ID']);
 $tab_options = array('classe'=>'','groupe'=>'','besoin'=>'');
 foreach($DB_TAB as $DB_ROW)
 {
@@ -53,7 +53,7 @@ foreach($tab_options as $type => $contenu)
 	}
 }
 // Élément de formulaire "f_aff_periode" pour le choix d'une période
-$select_periode = afficher_select(DB_OPT_periodes_etabl() , $select_nom='f_aff_periode' , $option_first='val' , $selection=false , $optgroup='non');
+$select_periode = afficher_select(DB_STRUCTURE_OPT_periodes_etabl() , $select_nom='f_aff_periode' , $option_first='val' , $selection=false , $optgroup='non');
 // Dates par défaut de début et de fin
 $annee_debut = (date('n')>8) ? date('Y') : date('Y')-1 ;
 $date_debut  = '01/09/'.$annee_debut;
@@ -110,7 +110,7 @@ $date_fin    = date("d/m/Y");
 	</div>
 	<?php
 	// Affichage de la liste des items pour toutes les matières d'un professeur, sur tous les niveaux
-	$DB_TAB = DB_recuperer_arborescence($_SESSION['USER_ID'],$matiere_id=0,$niveau_id=0,$only_item=false,$socle_nom=false);
+	$DB_TAB = DB_STRUCTURE_recuperer_arborescence($_SESSION['USER_ID'],$matiere_id=0,$niveau_id=0,$only_item=false,$socle_nom=false);
 	echo afficher_arborescence_from_SQL($DB_TAB,$dynamique=true,$reference=true,$aff_coef=false,$aff_socle='texte',$aff_lien=false,$aff_input=true);
 	?>
 </form>

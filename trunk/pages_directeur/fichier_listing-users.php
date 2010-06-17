@@ -31,7 +31,7 @@ $TITRE = "Export listes des élèves par classe";
 
 <?php
 // Fabrication des éléments select du formulaire
-$select_groupe = afficher_select(DB_OPT_classes_groupes_etabl() , $select_nom='f_groupe' , $option_first='oui' , $selection=false , $optgroup='oui');
+$select_groupe = afficher_select(DB_STRUCTURE_OPT_classes_groupes_etabl() , $select_nom='f_groupe' , $option_first='oui' , $selection=false , $optgroup='oui');
 ?>
 
 <div class="hc"><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_professeur__export_listings">DOC : Export listings.</a></span></div>

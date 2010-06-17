@@ -88,7 +88,7 @@ if( ($action=='Afficher_evaluations') && $date_debut && $date_fin )
 	{
 		exit('Erreur : la date de début est postérieure à la date de fin !');
 	}
-	$DB_TAB = DB_lister_devoirs($_SESSION['USER_ID'],0,$date_debut_mysql,$date_fin_mysql);
+	$DB_TAB = DB_STRUCTURE_lister_devoirs($_SESSION['USER_ID'],0,$date_debut_mysql,$date_fin_mysql);
 	foreach($DB_TAB as $DB_ROW)
 	{
 		// Formater la date et la référence de l'évaluation
@@ -121,14 +121,14 @@ if( ($action=='Afficher_evaluations') && $date_debut && $date_fin )
 elseif( (($action=='ajouter')||(($action=='dupliquer')&&($devoir_id))) && $date && $nb_eleves && $nb_items )
 {
 	// Il faut commencer par créer un nouveau groupe de type "eval", utilisé uniquement pour cette évaluation (c'est transparent pour le professeur)
-	$groupe_id = DB_ajouter_groupe($groupe_type,$_SESSION['USER_ID'],'','',0);
+	$groupe_id = DB_STRUCTURE_ajouter_groupe($groupe_type,$_SESSION['USER_ID'],'','',0);
 	// Il faut y affecter tous les élèves choisis
-	DB_modifier_liaison_devoir_user($groupe_id,$tab_eleves,'creer');
+	DB_STRUCTURE_modifier_liaison_devoir_user($groupe_id,$tab_eleves,'creer');
 	// Maintenant on peut insérer l'enregistrement de l'évaluation
 	$date_mysql = convert_date_french_to_mysql($date);
-	$devoir_id2 = DB_ajouter_devoir($_SESSION['USER_ID'],$groupe_id,$date_mysql,$info);
+	$devoir_id2 = DB_STRUCTURE_ajouter_devoir($_SESSION['USER_ID'],$groupe_id,$date_mysql,$info);
 	// Insérer les enregistrements des items de l'évaluation
-	DB_modifier_liaison_devoir_item($devoir_id2,$tab_items,'dupliquer',$devoir_id);
+	DB_STRUCTURE_modifier_liaison_devoir_item($devoir_id2,$tab_items,'dupliquer',$devoir_id);
 	// Afficher le retour
 	$ref = $devoir_id2.'_'.strtoupper($groupe_type{0}).$groupe_id;
 	$cs = ($nb_items>1) ? 's' : '';
@@ -155,14 +155,14 @@ else if( ($action=='modifier') && $devoir_id && $groupe_id && $date && $nb_eleve
 {
 	// On commence par modifier l'affectation des élèves choisis
 	// sacoche_jointure_user_groupe (maj)
-	DB_modifier_liaison_devoir_user($groupe_id,$tab_eleves,'substituer');
+	DB_STRUCTURE_modifier_liaison_devoir_user($groupe_id,$tab_eleves,'substituer');
 	// Maintenant on peut modifier les autres données de l'évaluation (paramètres, items)
 	$date_mysql = convert_date_french_to_mysql($date);
 	// sacoche_devoir (maj) ainsi que sacoche_saisie (retirer superflu + maj)
-	DB_modifier_devoir($devoir_id,$_SESSION['USER_ID'],$date_mysql,$info,$tab_items);
+	DB_STRUCTURE_modifier_devoir($devoir_id,$_SESSION['USER_ID'],$date_mysql,$info,$tab_items);
 	// ************************ dans sacoche_saisie faut-il aussi virer certains scores élèves en cas de changement de groupe ... ???
 	// sacoche_jointure_devoir_item
-	DB_modifier_liaison_devoir_item($devoir_id,$tab_items,'substituer');
+	DB_STRUCTURE_modifier_liaison_devoir_item($devoir_id,$tab_items,'substituer');
 	// Afficher le retour
 	$ref = $devoir_id.'_'.strtoupper($groupe_type{0}).$groupe_id;
 	$cs = ($nb_items>1) ? 's' : '';
@@ -188,9 +188,9 @@ else if( ($action=='modifier') && $devoir_id && $groupe_id && $date && $nb_eleve
 else if( ($action=='supprimer') && $devoir_id && $groupe_id )
 {
 	// supprimer le groupe spécialement associé (invisible à l'utilisateur) et les entrées dans sacoche_jointure_user_groupe pour une évaluation avec des élèves piochés en dehors de tout groupe prédéfini
-	DB_supprimer_groupe($groupe_id,$groupe_type,$with_devoir=false);
+	DB_STRUCTURE_supprimer_groupe($groupe_id,$groupe_type,$with_devoir=false);
 	// la suite est commune aux évals sur une classe ou un groupe
-	DB_supprimer_devoir_et_saisies($devoir_id,$_SESSION['USER_ID']);
+	DB_STRUCTURE_supprimer_devoir_et_saisies($devoir_id,$_SESSION['USER_ID']);
 	// Afficher le retour
 	echo'<ok>';
 }
@@ -201,7 +201,7 @@ else if( ($action=='supprimer') && $devoir_id && $groupe_id )
 else if( ($action=='ordonner') && $devoir_id )
 {
 	// liste des items
-	$DB_TAB_COMP = DB_lister_items_devoir($devoir_id);
+	$DB_TAB_COMP = DB_STRUCTURE_lister_items_devoir($devoir_id);
 	if(!count($DB_TAB_COMP))
 	{
 		echo'Aucun item n\'est associé à cette évaluation !';
@@ -231,9 +231,9 @@ else if( ($action=='ordonner') && $devoir_id )
 else if( ($action=='saisir') && $devoir_id && $groupe_id && $date ) // $date (au format MySQL) et $info (facultative) reportées dans input hidden
 {
 	// liste des items
-	$DB_TAB_COMP = DB_lister_items_devoir($devoir_id);
+	$DB_TAB_COMP = DB_STRUCTURE_lister_items_devoir($devoir_id);
 	// liste des élèves
-	$DB_TAB_USER = DB_lister_eleves_actifs_regroupement($groupe_type,$groupe_id);
+	$DB_TAB_USER = DB_STRUCTURE_lister_eleves_actifs_regroupement($groupe_type,$groupe_id);
 	// Let's go
 	if(!count($DB_TAB_COMP))
 	{
@@ -293,7 +293,7 @@ else if( ($action=='saisir') && $devoir_id && $groupe_id && $date ) // $date (au
 			}
 		}
 		// configurer le champ input
-		$DB_TAB = DB_lister_saisies_devoir($devoir_id);
+		$DB_TAB = DB_STRUCTURE_lister_saisies_devoir($devoir_id);
 		$bad = 'class="X" value="X"';
 		foreach($DB_TAB as $DB_ROW)
 		{
@@ -342,9 +342,9 @@ else if( ($action=='saisir') && $devoir_id && $groupe_id && $date ) // $date (au
 else if( ($action=='voir') && $devoir_id && $groupe_id && $date ) // $date française pour le csv
 {
 	// liste des items
-	$DB_TAB_COMP = DB_lister_items_devoir($devoir_id);
+	$DB_TAB_COMP = DB_STRUCTURE_lister_items_devoir($devoir_id);
 	// liste des élèves
-	$DB_TAB_USER = DB_lister_eleves_actifs_regroupement($groupe_type,$groupe_id);
+	$DB_TAB_USER = DB_STRUCTURE_lister_eleves_actifs_regroupement($groupe_type,$groupe_id);
 	// Let's go
 	if(!count($DB_TAB_COMP))
 	{
@@ -395,7 +395,7 @@ else if( ($action=='voir') && $devoir_id && $groupe_id && $date ) // $date fran�
 		}
 		// ajouter le contenu
 		$tab_conversion = array( ''=>' ' , 'RR'=>'1' , 'R'=>'2' , 'V'=>'3' , 'VV'=>'4' , 'ABS'=>'A' , 'NN'=>'N' , 'DISP'=>'D' );
-		$DB_TAB = DB_lister_saisies_devoir($devoir_id);
+		$DB_TAB = DB_STRUCTURE_lister_saisies_devoir($devoir_id);
 		foreach($DB_TAB as $DB_ROW)
 		{
 			// Test pour éviter les pbs des élèves changés de groupes ou des items modifiés en cours de route
@@ -453,7 +453,7 @@ else if( ($action=='voir') && $devoir_id && $groupe_id && $date ) // $date fran�
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 else if( ($action=='Enregistrer_ordre') && $devoir_id && count($tab_id) )
 {
-	DB_modifier_ordre_item($devoir_id,$tab_id);
+	DB_STRUCTURE_modifier_ordre_item($devoir_id,$tab_id);
 	echo'<ok>';
 }
 
@@ -481,7 +481,7 @@ else if( ($action=='Enregistrer_saisie') && $devoir_id && $date )
 	// On recupère le contenu de la base déjà enregistré pour le comparer ; on remplit au fur et à mesure $tab_nouveau_modifier / $tab_nouveau_supprimer
 	$tab_nouveau_modifier = array();
 	$tab_nouveau_supprimer = array();
-	$DB_TAB = DB_lister_saisies_devoir($devoir_id);
+	$DB_TAB = DB_STRUCTURE_lister_saisies_devoir($devoir_id);
 	foreach($DB_TAB as $DB_ROW)
 	{
 		$key = $DB_ROW['item_id'].'x'.$DB_ROW['eleve_id'];
@@ -511,22 +511,22 @@ else if( ($action=='Enregistrer_saisie') && $devoir_id && $date )
 		foreach($tab_nouveau_ajouter as $key => $note)
 		{
 			list($item_id,$eleve_id) = explode('x',$key);
-			DB_ajouter_saisie($_SESSION['USER_ID'],$eleve_id,$devoir_id,$item_id,$date,$note,$info);
+			DB_STRUCTURE_ajouter_saisie($_SESSION['USER_ID'],$eleve_id,$devoir_id,$item_id,$date,$note,$info);
 			// On supprime une éventuelle demande d'évaluation associée.
 			if($_SESSION['ELEVE_DEMANDES'])
 			{
-				DB_supprimer_demande($eleve_id,$item_id);
+				DB_STRUCTURE_supprimer_demande($eleve_id,$item_id);
 			}
 		}
 		foreach($tab_nouveau_modifier as $key => $note)
 		{
 			list($item_id,$eleve_id) = explode('x',$key);
-			DB_modifier_saisie($eleve_id,$devoir_id,$item_id,$note,$info);
+			DB_STRUCTURE_modifier_saisie($eleve_id,$devoir_id,$item_id,$note,$info);
 		}
 		foreach($tab_nouveau_supprimer as $key => $key)
 		{
 			list($item_id,$eleve_id) = explode('x',$key);
-			DB_supprimer_saisie($eleve_id,$devoir_id,$item_id);
+			DB_STRUCTURE_supprimer_saisie($eleve_id,$devoir_id,$item_id);
 		}
 		echo'<ok>';
 	}
@@ -542,9 +542,9 @@ else if( ($action=='Enregistrer_saisie') && $devoir_id && $date )
 else if( ($action=='Imprimer_cartouche') && $devoir_id && $groupe_id && $date && $valeur && $detail && $orientation && $marge_min && $couleur )
 {
 	// liste des items
-	$DB_TAB_COMP = DB_lister_items_devoir($devoir_id);
+	$DB_TAB_COMP = DB_STRUCTURE_lister_items_devoir($devoir_id);
 	// liste des élèves
-	$DB_TAB_USER = DB_lister_eleves_actifs_regroupement($groupe_type,$groupe_id);
+	$DB_TAB_USER = DB_STRUCTURE_lister_eleves_actifs_regroupement($groupe_type,$groupe_id);
 	// Let's go
 	if(!count($DB_TAB_COMP))
 	{
@@ -582,7 +582,7 @@ else if( ($action=='Imprimer_cartouche') && $devoir_id && $groupe_id && $date &&
 		// compléter avec les résultats
 		if($valeur=='plein')
 		{
-			$DB_TAB = DB_lister_saisies_devoir($devoir_id);
+			$DB_TAB = DB_STRUCTURE_lister_saisies_devoir($devoir_id);
 			foreach($DB_TAB as $DB_ROW)
 			{
 				// Test pour éviter les pbs des élèves changés de groupes ou des items modifiés en cours de route

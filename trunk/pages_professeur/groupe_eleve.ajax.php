@@ -43,7 +43,7 @@ if($action=='ajouter')
 	{
 		foreach($tab_select_groupes as $groupe_id)
 		{
-			DB_modifier_liaison_user_groupe($user_id,'eleve',$groupe_id,'besoin',true);
+			DB_STRUCTURE_modifier_liaison_user_groupe($user_id,'eleve',$groupe_id,'besoin',true);
 		}
 	}
 }
@@ -55,7 +55,7 @@ elseif($action=='retirer')
 	{
 		foreach($tab_select_groupes as $groupe_id)
 		{
-			DB_modifier_liaison_user_groupe($user_id,'eleve',$groupe_id,'besoin',false);
+			DB_STRUCTURE_modifier_liaison_user_groupe($user_id,'eleve',$groupe_id,'besoin',false);
 		}
 	}
 }
@@ -64,14 +64,14 @@ elseif($action=='retirer')
 $tab_niveau_groupe = array();
 $tab_user          = array();
 // Récupérer la liste des groupes de besoin
-$DB_TAB = DB_lister_groupes_besoins($_SESSION['USER_ID']);
+$DB_TAB = DB_STRUCTURE_lister_groupes_besoins($_SESSION['USER_ID']);
 foreach($DB_TAB as $DB_ROW)
 {
 	$tab_niveau_groupe[$DB_ROW['niveau_id']][$DB_ROW['groupe_id']] = html($DB_ROW['groupe_nom']);
 	$tab_user[$DB_ROW['groupe_id']] = '';
 }
 // Récupérer la liste des élèves / groupes de besoin
-$DB_TAB = DB_lister_eleves_avec_groupe($prof_id=$_SESSION['USER_ID'],$only_actifs=true);;
+$DB_TAB = DB_STRUCTURE_lister_eleves_avec_groupe($prof_id=$_SESSION['USER_ID'],$only_actifs=true);;
 foreach($DB_TAB as $DB_ROW)
 {
 	$tab_user[$DB_ROW['groupe_id']]  .= html($DB_ROW['user_nom'].' '.$DB_ROW['user_prenom']).'<br />';

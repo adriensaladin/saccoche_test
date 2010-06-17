@@ -50,8 +50,9 @@ $FICHIER = (isset($_GET['fichier'])) ? $_GET['fichier'] : 'index';
 require_once('./_inc/fonction_clean.php');
 require_once('./_inc/fonction_sessions.php');
 require_once('./_inc/fonction_divers.php');
-require_once('./_inc/fonction_requetes.php');
 require_once('./_inc/fonction_formulaires_select.php');
+require_once('./_inc/fonction_requetes_structure.php');
+require_once('./_inc/fonction_requetes_webmestre.php');
 require_once('./_inc/fonction_affichage.php');
 
 // Détermination du CHARSET d'en-tête
@@ -73,7 +74,7 @@ if($FICHIER=='conserver_session_active')
 tester_blocage_application($_SESSION['BASE'],$demande_connexion_profil=false);
 
 // Informations sur l'hébergement
-$fichier_constantes = './__private/config/constantes.php';
+$fichier_constantes = $CHEMIN_CONFIG.'constantes.php';
 if(is_file($fichier_constantes))
 {
 	require_once($fichier_constantes);
@@ -103,7 +104,7 @@ if(is_file($fichier_constantes))
 		affich_message_exit($titre='Configuration anormale',$contenu='Une anomalie dans les données d\'hébergement et/ou de session empêche l\'application de se poursuivre.');
 	}
 	// Ajout du chemin correspondant
-	$fichier_mysql_config = './__private/mysql/'.$fichier_mysql_config.'.php';
+	$fichier_mysql_config = $CHEMIN_MYSQL.$fichier_mysql_config.'.php';
 	$fichier_class_config = './_inc/'.$fichier_class_config.'.php';
 	// Chargement du fichier de connexion à la BDD
 	if(is_file($fichier_mysql_config))

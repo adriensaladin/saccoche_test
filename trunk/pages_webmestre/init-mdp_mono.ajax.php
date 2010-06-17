@@ -35,7 +35,7 @@ $admin_id = (isset($_POST['f_admin']))  ? clean_entier($_POST['f_admin']) : 0;
 if($admin_id)
 {
 	// Informations sur l'admin : nom / prénom / login.
-	$DB_TAB = DB_lister_users_cibles($admin_id,$info_classe=false);
+	$DB_TAB = DB_STRUCTURE_lister_users_cibles($admin_id,$info_classe=false);
 	if(!count($DB_TAB))
 	{
 		exit('Erreur : administrateur introuvable !');
@@ -45,7 +45,7 @@ if($admin_id)
 	$admin_login  = $DB_TAB[0]['user_login'];
 	// Initialiser le mdp de l'admin
 	$admin_password = fabriquer_mdp();
-	DB_modifier_utilisateur($admin_id, array(':password'=>$admin_password) );
+	DB_STRUCTURE_modifier_utilisateur($admin_id, array(':password'=>$admin_password) );
 	// On affiche le retour
 	echo'<ul class="puce">';
 	echo'<li>Le mot de passe administrateur de <em>'.html($admin_prenom).' '.html($admin_nom).'</em> vient d\'être réinitialisé.</li>';

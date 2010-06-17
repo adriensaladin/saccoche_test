@@ -48,7 +48,7 @@ $TITRE = "Gérer les groupes de besoin";
 		<tbody>
 			<?php
 			// Lister les groupes de besoin du prof
-			$DB_TAB = DB_lister_groupes_besoins($_SESSION['USER_ID']);
+			$DB_TAB = DB_STRUCTURE_lister_groupes_besoins($_SESSION['USER_ID']);
 			foreach($DB_TAB as $DB_ROW)
 			{
 				// Afficher une ligne du tableau
@@ -72,7 +72,7 @@ $tab_niveau_ordre_js = 'var tab_niveau_ordre = new Array();';
 
 if($_SESSION['NIVEAUX'])
 {
-	$DB_TAB = DB_lister_niveaux_etablissement($_SESSION['NIVEAUX'],$listing_paliers=false);
+	$DB_TAB = DB_STRUCTURE_lister_niveaux_etablissement($_SESSION['NIVEAUX'],$listing_paliers=false);
 	foreach($DB_TAB as $DB_ROW)
 	{
 		$select_niveau .= '<option value="'.$DB_ROW['niveau_id'].'">'.html($DB_ROW['niveau_nom']).'</option>';

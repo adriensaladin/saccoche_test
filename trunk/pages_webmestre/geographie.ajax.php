@@ -39,12 +39,12 @@ $nom    = (isset($_POST['f_nom']))    ? clean_texte($_POST['f_nom'])    : '';
 if( (($action=='ajouter')||($action=='dupliquer')) && $ordre )
 {
 	// Vérifier que le nom de la zone est disponible
-	if( DB_tester_zone_nom($nom) )
+	if( DB_WEBMESTRE_tester_zone_nom($nom) )
 	{
 		exit('Erreur : nom de zone déjà existant !');
 	}
 	// Insérer l'enregistrement
-	$geo_id = DB_ajouter_zone($ordre,$nom);
+	$geo_id = DB_WEBMESTRE_ajouter_zone($ordre,$nom);
 	// Afficher le retour
 	echo'<tr id="id_'.$geo_id.'" class="new">';
 	echo	'<td>'.$geo_id.'</td>';
@@ -64,12 +64,12 @@ if( (($action=='ajouter')||($action=='dupliquer')) && $ordre )
 else if( ($action=='modifier') && $id && $ordre && $nom )
 {
 	// Vérifier que le nom de la zone est disponible
-	if( DB_tester_zone_nom($nom,$id) )
+	if( DB_WEBMESTRE_tester_zone_nom($nom,$id) )
 	{
 		exit('Erreur : nom de zone déjà existant !');
 	}
 	// Mettre à jour l'enregistrement
-	DB_modifier_zone($id,$ordre,$nom);
+	DB_WEBMESTRE_modifier_zone($id,$ordre,$nom);
 	// Afficher le retour
 	echo'<td>'.$ordre.'</td>';
 	echo'<td>'.html($nom).'</td>';
@@ -87,7 +87,7 @@ else if( ($action=='modifier') && $id && $ordre && $nom )
 else if( ($action=='supprimer') && ($id>1) )
 {
 	// Effacer l'enregistrement
-	DB_supprimer_zone($id);
+	DB_WEBMESTRE_supprimer_zone($id);
 	// Afficher le retour
 	echo'<td>ok</td>';
 }

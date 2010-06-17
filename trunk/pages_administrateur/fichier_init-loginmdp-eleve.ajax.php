@@ -46,19 +46,19 @@ if( ($action=='eleve_login') && $nb )
 {
 	$tab_login = array();
 	// Récupérer les données des utilisateurs concernés
-	$DB_TAB = DB_lister_users_cibles(implode(',',$tab_select_users),$info_classe=true);
+	$DB_TAB = DB_STRUCTURE_lister_users_cibles(implode(',',$tab_select_users),$info_classe=true);
 	// Mettre à jour les noms d'utilisateurs des utilisateurs concernés
 	foreach($DB_TAB as $DB_ROW)
 	{
 		// Construire le login
 		$login = fabriquer_login($DB_ROW['user_prenom'] , $DB_ROW['user_nom'] , $DB_ROW['user_profil']);
 		// Puis tester le login
-		if( DB_tester_login($login) )
+		if( DB_STRUCTURE_tester_login($login) )
 		{
 			// Login pris : en chercher un autre en remplaçant la fin par des chiffres si besoin
-			$login = DB_rechercher_login_disponible($login);
+			$login = DB_STRUCTURE_rechercher_login_disponible($login);
 		}
-		DB_modifier_utilisateur( $DB_ROW['user_id'] , array(':login'=>$login) );
+		DB_STRUCTURE_modifier_utilisateur( $DB_ROW['user_id'] , array(':login'=>$login) );
 		$tab_login[$DB_ROW['user_id']] = $login;
 	}
 	// Générer une sortie csv zippé
@@ -106,11 +106,11 @@ elseif( ($action=='eleve_mdp') && $nb )
 	foreach($tab_select_users as $user_id)
 	{
 		$password = fabriquer_mdp();
-		DB_modifier_utilisateur( $user_id , array(':password'=>$password) );
+		DB_STRUCTURE_modifier_utilisateur( $user_id , array(':password'=>$password) );
 		$tab_password[$user_id] = $password;
 	}
 	// Récupérer les données des utilisateurs concernés
-	$DB_TAB = DB_lister_users_cibles(implode(',',$tab_select_users),$info_classe=true);
+	$DB_TAB = DB_STRUCTURE_lister_users_cibles(implode(',',$tab_select_users),$info_classe=true);
 	// Générer une sortie csv zippé
 	$fcontenu = 'CLASSE'."\t".'N°SCONET'."\t".'REFERENCE'."\t".'NOM'."\t".'PRENOM'."\t".'LOGIN'."\t".'MOT DE PASSE'."\r\n\r\n";
 	foreach($DB_TAB as $DB_ROW)

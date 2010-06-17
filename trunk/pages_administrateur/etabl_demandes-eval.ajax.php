@@ -35,7 +35,7 @@ $nb_demandes = (isset($_POST['f_demandes'])) ? clean_entier($_POST['f_demandes']
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 if( ($nb_demandes!=-1) && ($nb_demandes<10) )
 {
-	DB_modifier_parametres( array('eleve_demande'=>$nb_demandes) );
+	DB_STRUCTURE_modifier_parametres( array('eleve_demande'=>$nb_demandes) );
 	// ne pas oublier de mettre aussi à jour la session
 	$_SESSION['ELEVE_DEMANDES'] = $nb_demandes;
 	echo'ok';

@@ -221,7 +221,7 @@ elseif( $step==3 )
 	$tab_professeurs_directeurs_base['nom']        = array();
 	$tab_professeurs_directeurs_base['prenom']     = array();
 	$tab_professeurs_directeurs_base['statut']     = array();
-	$DB_TAB = DB_lister_professeurs_et_directeurs();
+	$DB_TAB = DB_STRUCTURE_lister_professeurs_et_directeurs();
 	foreach($DB_TAB as $DB_ROW)
 	{
 		$tab_professeurs_directeurs_base['num_sconet'][$DB_ROW['user_id']] = $DB_ROW['user_num_sconet'];
@@ -415,7 +415,7 @@ elseif( $step==4 )
 		}
 	}
 	// Dénombrer combien d'actifs et d'inactifs au départ
-	list($nb_debut_actif,$nb_debut_inactif) = DB_compter_professeurs_directeurs_suivant_statut();
+	list($nb_debut_actif,$nb_debut_inactif) = DB_STRUCTURE_compter_professeurs_directeurs_suivant_statut();
 	// Retirer des professeurs / directeurs éventuels
 	$nb_del = 0;
 	if(count($tab_del))
@@ -425,7 +425,7 @@ elseif( $step==4 )
 			if( $user_id )
 			{
 				// Mettre à jour l'enregistrement
-				DB_modifier_utilisateur( $user_id , array(':statut'=>0) );
+				DB_STRUCTURE_modifier_utilisateur( $user_id , array(':statut'=>0) );
 				$nb_del++;
 			}
 		}
@@ -444,15 +444,15 @@ elseif( $step==4 )
 				// Construire le login
 				$login = fabriquer_login($tab_traitement['ajout'][$i]['prenom'] , $tab_traitement['ajout'][$i]['nom'] , 'professeur');
 				// Puis tester le login (parmi tout le personnel de l'établissement)
-				if( DB_tester_login($login) )
+				if( DB_STRUCTURE_tester_login($login) )
 				{
 					// Login pris : en chercher un autre en remplaçant la fin par des chiffres si besoin
-					$login = DB_rechercher_login_disponible($login);
+					$login = DB_STRUCTURE_rechercher_login_disponible($login);
 				}
 				// Construire le password
 				$password = fabriquer_mdp();
 				// Ajouter l'utilisateur
-				$user_id = DB_ajouter_utilisateur($tab_traitement['ajout'][$i]['num_sconet'],$tab_traitement['ajout'][$i]['reference'],$tab_traitement['ajout'][$i]['profil'],$tab_traitement['ajout'][$i]['nom'],$tab_traitement['ajout'][$i]['prenom'],$login,$password);
+				$user_id = DB_STRUCTURE_ajouter_utilisateur($tab_traitement['ajout'][$i]['num_sconet'],$tab_traitement['ajout'][$i]['reference'],$tab_traitement['ajout'][$i]['profil'],$tab_traitement['ajout'][$i]['nom'],$tab_traitement['ajout'][$i]['prenom'],$login,$password);
 				$nb_add++;
 				$tab_password[$user_id] = $password;
 				$fcontenu_csv .= $tab_traitement['ajout'][$i]['num_sconet']."\t".$tab_traitement['ajout'][$i]['reference']."\t".$tab_traitement['ajout'][$i]['profil']."\t".$tab_traitement['ajout'][$i]['nom']."\t".$tab_traitement['ajout'][$i]['prenom']."\t".$login."\t".$password."\r\n";
@@ -495,7 +495,7 @@ elseif( $step==4 )
 	$lignes         = '';
 	$nb_fin_actif   = 0;
 	$nb_fin_inactif = 0;
-	$DB_TAB = DB_lister_professeurs_et_directeurs_tri_statut();
+	$DB_TAB = DB_STRUCTURE_lister_professeurs_et_directeurs_tri_statut();
 	foreach($DB_TAB as $DB_ROW)
 	{
 		$class       = (isset($tab_password[$DB_ROW['user_id']])) ? ' class="new"' : '' ;

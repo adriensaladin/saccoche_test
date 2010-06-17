@@ -35,7 +35,7 @@ $groupe      = (isset($_POST['f_groupes'])) ? clean_texte($_POST['f_groupes']) :
 $groupe_type = clean_texte( substr($groupe,0,1) );
 $groupe_id   = clean_entier( substr($groupe,1) );
 // Construire et personnaliser le select pour restreindre à une classe ou un groupe
-$select_f_groupes = afficher_select(DB_OPT_regroupements_etabl() , $select_nom='f_groupes' , $option_first='non' , $selection=$groupe , $optgroup='oui');
+$select_f_groupes = afficher_select(DB_STRUCTURE_OPT_regroupements_etabl() , $select_nom='f_groupes' , $option_first='non' , $selection=$groupe , $optgroup='oui');
 ?>
 
 <div class="hc">
@@ -72,7 +72,7 @@ $select_f_groupes = afficher_select(DB_OPT_regroupements_etabl() , $select_nom='
 			{
 				$groupe_type = ($groupe_id==1) ? 'sdf' : 'all' ;
 			}
-			$DB_TAB = DB_lister_eleves_actifs_regroupement($groupe_type,$groupe_id);
+			$DB_TAB = DB_STRUCTURE_lister_eleves_actifs_regroupement($groupe_type,$groupe_id);
 			if(count($DB_TAB))
 			{
 				foreach($DB_TAB as $DB_ROW)

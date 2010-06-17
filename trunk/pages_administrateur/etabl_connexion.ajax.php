@@ -47,7 +47,7 @@ if(!isset($tab_connexion_info[$f_connexion_mode][$f_connexion_nom]))
 
 if($f_connexion_mode=='normal')
 {
-	DB_modifier_parametres( array('connexion_mode'=>$f_connexion_mode,'connexion_nom'=>$f_connexion_nom) );
+	DB_STRUCTURE_modifier_parametres( array('connexion_mode'=>$f_connexion_mode,'connexion_nom'=>$f_connexion_nom) );
 	// ne pas oublier de mettre aussi à jour la session (normalement faudrait pas car connecté avec l'ancien mode, mais sinon pb d'initalisation du formulaire)
 	$_SESSION['CONNEXION_MODE'] = $f_connexion_mode;
 	$_SESSION['CONNEXION_NOM']  = $f_connexion_nom;
@@ -69,7 +69,7 @@ if($f_connexion_mode=='cas')
 	{
 		exit('Syntaxe du chemin incorrect !');
 	}
-	DB_modifier_parametres( array('connexion_mode'=>$f_connexion_mode,'connexion_nom'=>$f_connexion_nom,'cas_serveur_host'=>$cas_serveur_host,'cas_serveur_port'=>$cas_serveur_port,'cas_serveur_root'=>$cas_serveur_root) );
+	DB_STRUCTURE_modifier_parametres( array('connexion_mode'=>$f_connexion_mode,'connexion_nom'=>$f_connexion_nom,'cas_serveur_host'=>$cas_serveur_host,'cas_serveur_port'=>$cas_serveur_port,'cas_serveur_root'=>$cas_serveur_root) );
 	// ne pas oublier de mettre aussi à jour la session (normalement faudrait pas car connecté avec l'ancien mode, mais sinon pb d'initalisation du formulaire)
 	$_SESSION['CONNEXION_MODE']   = $f_connexion_mode;
 	$_SESSION['CONNEXION_NOM']    = $f_connexion_nom;

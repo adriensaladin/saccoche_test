@@ -32,7 +32,7 @@ $TITRE = "Bilans sur une sélection d'items";
 <?php
 // Fabrication des éléments select du formulaire
 $tab_cookie = load_cookie_select($_SESSION['BASE'],$_SESSION['USER_ID']);
-$select_groupe      = afficher_select(DB_OPT_groupes_professeur($_SESSION['USER_ID']) , $select_nom='f_groupe'      , $option_first='oui' , $selection=false                        , $optgroup='oui');
+$select_groupe      = afficher_select(DB_STRUCTURE_OPT_groupes_professeur($_SESSION['USER_ID']) , $select_nom='f_groupe'      , $option_first='oui' , $selection=false                        , $optgroup='oui');
 $select_orientation = afficher_select($tab_select_orientation                         , $select_nom='f_orientation' , $option_first='non' , $selection=$tab_cookie['orientation']   , $optgroup='non');
 $select_marge_min   = afficher_select($tab_select_marge_min                           , $select_nom='f_marge_min'   , $option_first='non' , $selection=$tab_cookie['marge_min']     , $optgroup='non');
 $select_couleur     = afficher_select($tab_select_couleur                             , $select_nom='f_couleur'     , $option_first='non' , $selection=$tab_cookie['couleur']       , $optgroup='non');
@@ -75,7 +75,7 @@ $select_cases_haut  = afficher_select($tab_select_cases_size                    
 	</div>
 	<?php
 	// Affichage de la liste des items pour toutes les matières d'un professeur, sur tous les niveaux
-	$DB_TAB = DB_recuperer_arborescence($_SESSION['USER_ID'],$matiere_id=0,$niveau_id=0,$only_item=false,$socle_nom=false);
+	$DB_TAB = DB_STRUCTURE_recuperer_arborescence($_SESSION['USER_ID'],$matiere_id=0,$niveau_id=0,$only_item=false,$socle_nom=false);
 	echo afficher_arborescence_from_SQL($DB_TAB,$dynamique=true,$reference=true,$aff_coef=false,$aff_socle='texte',$aff_lien=false,$aff_input=true);
 	?>
 </form>

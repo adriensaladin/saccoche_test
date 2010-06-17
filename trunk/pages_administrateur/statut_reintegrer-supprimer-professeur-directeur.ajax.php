@@ -44,7 +44,7 @@ if( ($action=='reintegrer') && $nb )
 	foreach($tab_select_users as $user_id)
 	{
 		// Mettre à jour l'enregistrement
-		DB_modifier_utilisateur( $user_id , array(':statut'=>1) );
+		DB_STRUCTURE_modifier_utilisateur( $user_id , array(':statut'=>1) );
 	}
 	// Afficher le retour
 	$s = ($nb>1) ? 's' : '';
@@ -60,7 +60,7 @@ elseif( ($action=='supprimer') && $nb )
 	foreach($tab_select_users as $user_id)
 	{
 		// Effacer l'enregistrement et les jointures associées
-		DB_supprimer_utilisateur($user_id,'professeur'); // Transmis même pour les directeurs...
+		DB_STRUCTURE_supprimer_utilisateur($user_id,'professeur'); // Transmis même pour les directeurs...
 	}
 	// Afficher le retour
 	$s = ($nb>1) ? 's' : '';

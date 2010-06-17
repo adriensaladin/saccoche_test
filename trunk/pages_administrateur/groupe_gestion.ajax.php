@@ -39,12 +39,12 @@ $nom    = (isset($_POST['f_nom']))    ? clean_texte($_POST['f_nom'])     : '';
 if( ($action=='ajouter') && $niveau && $nom )
 {
 	// Vérifier que le nom du groupe est disponible
-	if( DB_tester_groupe_nom($nom) )
+	if( DB_STRUCTURE_tester_groupe_nom($nom) )
 	{
 		exit('Erreur : nom de groupe déjà existant !');
 	}
 	// Insérer l'enregistrement
-	$groupe_id = DB_ajouter_groupe('groupe',0,'',$nom,$niveau);
+	$groupe_id = DB_STRUCTURE_ajouter_groupe('groupe',0,'',$nom,$niveau);
 	// Afficher le retour
 	echo'<tr id="id_'.$groupe_id.'" class="new">';
 	echo	'<td>{{NIVEAU_NOM}}</td>';
@@ -62,12 +62,12 @@ if( ($action=='ajouter') && $niveau && $nom )
 else if( ($action=='modifier') && $id && $niveau && $nom )
 {
 	// Vérifier que le nom du groupe est disponible
-	if( DB_tester_groupe_nom($nom,$id) )
+	if( DB_STRUCTURE_tester_groupe_nom($nom,$id) )
 	{
 		exit('Erreur : nom de groupe déjà existant !');
 	}
 	// Mettre à jour l'enregistrement
-	DB_modifier_groupe($id,'',$nom,$niveau);
+	DB_STRUCTURE_modifier_groupe($id,'',$nom,$niveau);
 	// Afficher le retour
 	echo'<td>{{NIVEAU_NOM}}</td>';
 	echo'<td>'.html($nom).'</td>';
@@ -83,7 +83,7 @@ else if( ($action=='modifier') && $id && $niveau && $nom )
 else if( ($action=='supprimer') && $id )
 {
 	// Effacer l'enregistrement
-	DB_supprimer_groupe($id,'groupe');
+	DB_STRUCTURE_supprimer_groupe($id,'groupe');
 	// Afficher le retour
 	echo'<td>ok</td>';
 }

@@ -47,5 +47,5 @@ if($groupe_type=='Divers')
 	$groupe_type = ($groupe_id==1) ? 'sdf' : 'all' ;
 }
 
-echo afficher_select(DB_OPT_eleves_regroupement($groupe_type,$groupe_id,$statut) , $select_nom=false , $option_first='non' , $selection=true , $optgroup='non');
+echo afficher_select(DB_STRUCTURE_OPT_eleves_regroupement($groupe_type,$groupe_id,$statut) , $select_nom=false , $option_first='non' , $selection=true , $optgroup='non');
 ?>

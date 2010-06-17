@@ -50,7 +50,7 @@ if( $sesamath_id && $sesamath_type_nom && $sesamath_key )
 	$tab_parametres['sesamath_uai']      = $sesamath_uai;
 	$tab_parametres['sesamath_type_nom'] = $sesamath_type_nom;
 	$tab_parametres['sesamath_key']      = $sesamath_key;
-	DB_modifier_parametres($tab_parametres);
+	DB_STRUCTURE_modifier_parametres($tab_parametres);
 	// On modifie aussi la session
 	$_SESSION['SESAMATH_ID']       = $sesamath_id ;
 	$_SESSION['SESAMATH_UAI']      = $sesamath_uai ;

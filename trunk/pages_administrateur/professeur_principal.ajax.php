@@ -53,7 +53,7 @@ if($action=='Indiquer')
 	}
 
 	// On récupère le contenu de la base déjà enregistré pour le comparer ; il faut éviter les professeurs désactivés
-	$DB_TAB = DB_lister_jointure_professeurs_principaux();
+	$DB_TAB = DB_STRUCTURE_lister_jointure_professeurs_principaux();
 	foreach($DB_TAB as $DB_ROW)
 	{
 		$key = $DB_ROW['groupe_id'].'x'.$DB_ROW['user_id'];
@@ -75,12 +75,12 @@ if($action=='Indiquer')
 		foreach($tab_ajouter as $key => $true)
 		{
 			list($groupe_id,$professeur_id) = explode('x',$key);
-			DB_modifier_liaison_professeur_principal($professeur_id,$groupe_id,true);
+			DB_STRUCTURE_modifier_liaison_professeur_principal($professeur_id,$groupe_id,true);
 		}
 		foreach($tab_retirer as $key => $true)
 		{
 			list($groupe_id,$professeur_id) = explode('x',$key);
-			DB_modifier_liaison_professeur_principal($professeur_id,$groupe_id,false);
+			DB_STRUCTURE_modifier_liaison_professeur_principal($professeur_id,$groupe_id,false);
 		}
 		echo'ok';
 	}

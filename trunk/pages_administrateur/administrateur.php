@@ -47,7 +47,7 @@ $TITRE = "Gérer les administrateurs";
 		<tbody>
 			<?php
 			// Lister les administrateurs
-			$DB_TAB = DB_lister_users('administrateur',$only_actifs=true,$with_classe=false);
+			$DB_TAB = DB_STRUCTURE_lister_users('administrateur',$only_actifs=true,$with_classe=false);
 			foreach($DB_TAB as $DB_ROW)
 			{
 				// Afficher une ligne du tableau

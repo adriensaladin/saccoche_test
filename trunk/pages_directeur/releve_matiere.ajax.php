@@ -69,7 +69,7 @@ if( $orientation && $marge_min && $couleur && $cases_nb && $cases_largeur && $ca
 	}
 	else
 	{
-		$DB_ROW = DB_recuperer_dates_periode($groupe_id,$periode_id);
+		$DB_ROW = DB_STRUCTURE_recuperer_dates_periode($groupe_id,$periode_id);
 		if(!count($DB_ROW))
 		{
 			exit('La classe et la période ne sont pas reliées !');
@@ -93,7 +93,7 @@ if( $orientation && $marge_min && $couleur && $cases_nb && $cases_largeur && $ca
 	//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 	// Récupération de la liste des items travaillés durant la période choisie, pour la matière et les élèves selectionnés
 	//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-	$tab_item = DB_recuperer_arborescence_eleves_periode_matiere($liste_eleve,$matiere_id,$date_mysql_debut,$date_mysql_fin);
+	$tab_item = DB_STRUCTURE_recuperer_arborescence_eleves_periode_matiere($liste_eleve,$matiere_id,$date_mysql_debut,$date_mysql_fin);
 	$item_nb = count($tab_item);
 	if(!$item_nb)
 	{
@@ -110,7 +110,7 @@ if( $orientation && $marge_min && $couleur && $cases_nb && $cases_largeur && $ca
 	//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 	// Récupération de la liste des élèves
 	//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-	$tab_eleve = DB_lister_eleves_cibles($liste_eleve);
+	$tab_eleve = DB_STRUCTURE_lister_eleves_cibles($liste_eleve);
 	if(!is_array($tab_eleve))
 	{
 		exit('Aucun élève trouvé correspondant aux identifiants transmis !');
@@ -121,7 +121,7 @@ if( $orientation && $marge_min && $couleur && $cases_nb && $cases_largeur && $ca
 	// Récupération de la liste des résultats des évaluations associées à ces items données d'une matiere donnée, pour les élèves selectionnés, sur la période sélectionnée
 	//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 	$date_mysql_debut = ($retroactif=='non') ? $date_mysql_debut : false;
-	$DB_TAB = DB_lister_result_eleves_matiere($liste_eleve , $liste_item , $date_mysql_debut , $date_mysql_fin);
+	$DB_TAB = DB_STRUCTURE_lister_result_eleves_matiere($liste_eleve , $liste_item , $date_mysql_debut , $date_mysql_fin);
 	foreach($DB_TAB as $DB_ROW)
 	{
 		$tab_eval[$DB_ROW['eleve_id']][$matiere_id][$DB_ROW['item_id']][] = array('note'=>$DB_ROW['note'],'date'=>$DB_ROW['date'],'info'=>$DB_ROW['info']);

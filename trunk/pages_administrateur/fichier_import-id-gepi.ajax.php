@@ -38,7 +38,7 @@ $dossier_import = './__tmp/import/';
 
 if($action=='copy_id_ENT')
 {
-	DB_recopier_identifiants('id_ent','id_gepi');
+	DB_STRUCTURE_recopier_identifiants('id_ent','id_gepi');
 	exit('ok');
 }
 
@@ -48,7 +48,7 @@ if($action=='copy_id_ENT')
 
 if($action=='copy_login_SACoche')
 {
-	DB_recopier_identifiants('login','id_gepi');
+	DB_STRUCTURE_recopier_identifiants('login','id_gepi');
 	exit('ok');
 }
 
@@ -127,7 +127,7 @@ if($action=='import_gepi_profs')
 	$tab_users_base['id_gepi'] = array();
 	$tab_users_base['nom']     = array();
 	$tab_users_base['prenom']  = array();
-	$DB_TAB = DB_lister_users('professeur',$only_actifs=false,$with_classe=false);
+	$DB_TAB = DB_STRUCTURE_lister_users('professeur',$only_actifs=false,$with_classe=false);
 	foreach($DB_TAB as $DB_ROW)
 	{
 		$tab_users_base['id_gepi'][$DB_ROW['user_id']] = $DB_ROW['user_id_gepi'];
@@ -181,7 +181,7 @@ if($action=='import_gepi_profs')
 					else
 					{
 						// Contenu du fichier à modifier : id_gepi nouveau
-						DB_modifier_utilisateur( $id , array(':id_gepi'=>$id_gepi) );
+						DB_STRUCTURE_modifier_utilisateur( $id , array(':id_gepi'=>$id_gepi) );
 						$lignes_mod .= '<tr class="new"><td>'.html($tab_users_fichier['nom'][$i].' '.$tab_users_fichier['prenom'][$i]).'</td><td><b>Id Gepi : '.html($id_gepi).'</b></td></tr>';
 					}
 				}
@@ -286,7 +286,7 @@ if($action=='import_gepi_eleves')
 	$tab_users_base['nom']        = array();
 	$tab_users_base['prenom']     = array();
 	$tab_users_base['num_sconet'] = array();
-	$DB_TAB = DB_lister_users('eleve',$only_actifs=false,$with_classe=false);
+	$DB_TAB = DB_STRUCTURE_lister_users('eleve',$only_actifs=false,$with_classe=false);
 	foreach($DB_TAB as $DB_ROW)
 	{
 		$tab_users_base['id_gepi'][$DB_ROW['user_id']]    = $DB_ROW['user_id_gepi'];
@@ -353,7 +353,7 @@ if($action=='import_gepi_eleves')
 					else
 					{
 						// Contenu du fichier à modifier : id_gepi nouveau
-						DB_modifier_utilisateur( $id , array(':id_gepi'=>$id_gepi) );
+						DB_STRUCTURE_modifier_utilisateur( $id , array(':id_gepi'=>$id_gepi) );
 						$lignes_mod .= '<tr class="new"><td>'.html($tab_users_fichier['nom'][$i].' '.$tab_users_fichier['prenom'][$i]).'</td><td><b>Id Gepi : '.html($id_gepi).'</b></td></tr>';
 					}
 				}

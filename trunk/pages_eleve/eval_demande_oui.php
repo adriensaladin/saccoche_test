@@ -50,7 +50,7 @@ if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');
 		<tbody>
 			<?php
 			// Lister les demandes d'évaluation
-			$DB_TAB = DB_lister_demandes_eleve($_SESSION['USER_ID']);
+			$DB_TAB = DB_STRUCTURE_lister_demandes_eleve($_SESSION['USER_ID']);
 			foreach($DB_TAB as $DB_ROW)
 			{
 				$score  = ($DB_ROW['demande_score']!==null) ? $DB_ROW['demande_score'] : false ;

@@ -42,7 +42,7 @@ $contact_courriel = (isset($_POST['f_contact_courriel'])) ? clean_courriel($_POS
 // => pouvoir retourner la cellule correspondante du tableau
 if($action!='supprimer')
 {
-	$DB_TAB = DB_lister_zones();
+	$DB_TAB = DB_WEBMESTRE_lister_zones();
 	foreach($DB_TAB as $DB_ROW)
 	{
 		$tab_geo[$DB_ROW['geo_id']] = array( 'ordre'=>$DB_ROW['geo_ordre'] , 'nom'=>$DB_ROW['geo_nom'] );
@@ -57,7 +57,7 @@ if( ($action=='ajouter') && isset($tab_geo[$geo_id]) && $localisation && $denomi
 	if($uai)
 	{
 		// Vérifier que le n°UAI est disponible
-		if( DB_tester_structure_UAI($uai) )
+		if( DB_WEBMESTRE_tester_structure_UAI($uai) )
 		{
 			exit('Erreur : numéro UAI déjà utilisé !');
 		}
@@ -66,19 +66,19 @@ if( ($action=='ajouter') && isset($tab_geo[$geo_id]) && $localisation && $denomi
 	// Créer le fichier de connexion de la base de données de la structure
 	// Créer la base de données de la structure
 	// Créer un utilisateur pour la base de données de la structure et lui attribuer ses droits
-	$base_id = DB_ajouter_structure($geo_id,$uai,$localisation,$denomination,$contact_nom,$contact_prenom,$contact_courriel);
+	$base_id = DB_WEBMESTRE_ajouter_structure($base_id=0,$geo_id,$uai,$localisation,$denomination,$contact_nom,$contact_prenom,$contact_courriel);
 	// Lancer les requêtes pour créer et remplir les tables
 	charger_parametres_mysql_supplementaires($base_id);
-	DB_creer_remplir_tables_structure();
+	DB_STRUCTURE_creer_remplir_tables_structure('./_sql/structure/');
 	// Personnaliser certains paramètres de la structure
 	$tab_parametres = array();
 	$tab_parametres['version_base'] = VERSION_BASE;
 	$tab_parametres['uai']          = $uai;
 	$tab_parametres['denomination'] = $denomination;
-	DB_modifier_parametres($tab_parametres);
+	DB_STRUCTURE_modifier_parametres($tab_parametres);
 	// Insérer le compte administrateur dans la base de cette structure
 	$password = fabriquer_mdp();
-	$user_id = DB_ajouter_utilisateur($num_sconet=0,$reference='','administrateur',$contact_nom,$contact_prenom,$login='admin',$password,$classe_id=0,$id_ent='',$id_gepi='');
+	$user_id = DB_STRUCTURE_ajouter_utilisateur($num_sconet=0,$reference='','administrateur',$contact_nom,$contact_prenom,$login='admin',$password,$classe_id=0,$id_ent='',$id_gepi='');
 	// Et lui envoyer un courriel
 	$texte = 'Bonjour '.$contact_prenom.' '.$contact_nom.'.'."\r\n\r\n";
 	$texte.= 'Je viens de créer une base SACoche pour l\'établissement "'.$denomination.'" sur le site hébergé par '.HEBERGEUR_DENOMINATION.'. Pour accéder au site sans avoir besoin de sélectionner votre établissement, utilisez le lien suivant :'."\r\n".SERVEUR_ADRESSE.'?id='.$base_id."\r\n\r\n";
@@ -119,19 +119,19 @@ else if( ($action=='modifier') && $base_id && isset($tab_geo[$geo_id]) && $local
 		// Vérifier que le n°UAI est disponible
 	if($uai)
 	{
-		if( DB_tester_structure_UAI($uai,$base_id) )
+		if( DB_WEBMESTRE_tester_structure_UAI($uai,$base_id) )
 		{
 			exit('Erreur : numéro UAI déjà utilisé !');
 		}
 	}
 	// On met à jour l'enregistrement dans la base du webmestre
-	DB_modifier_structure($base_id,$geo_id,$uai,$localisation,$denomination,$contact_nom,$contact_prenom,$contact_courriel);
+	DB_WEBMESTRE_modifier_structure($base_id,$geo_id,$uai,$localisation,$denomination,$contact_nom,$contact_prenom,$contact_courriel);
 	// On met à jour l'enregistrement dans la base de la structure
 	charger_parametres_mysql_supplementaires($base_id);
 	$tab_parametres = array();
 	$tab_parametres['uai']          = $uai;
 	$tab_parametres['denomination'] = $denomination;
-	DB_modifier_parametres($tab_parametres);
+	DB_STRUCTURE_modifier_parametres($tab_parametres);
 	// On affiche le retour
 	echo'<td>'.$base_id.'</td>';
 	echo'<td><i>'.sprintf("%02u",$tab_geo[$geo_id]['ordre']).'</i>'.html($tab_geo[$geo_id]['nom']).'</td>';
@@ -152,7 +152,7 @@ else if( ($action=='modifier') && $base_id && isset($tab_geo[$geo_id]) && $local
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 else if( ($action=='supprimer') && $base_id )
 {
-	DB_supprimer_structure($base_id);
+	DB_WEBMESTRE_supprimer_multi_structure($base_id);
 	echo'<ok>';
 }
 

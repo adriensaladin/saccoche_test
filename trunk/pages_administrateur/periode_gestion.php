@@ -47,7 +47,7 @@ $TITRE = "Gérer les périodes";
 		<tbody>
 			<?php
 			// Lister les périodes
-			$DB_TAB = DB_lister_periodes();
+			$DB_TAB = DB_STRUCTURE_lister_periodes();
 			foreach($DB_TAB as $DB_ROW)
 			{
 				// Afficher une ligne du tableau

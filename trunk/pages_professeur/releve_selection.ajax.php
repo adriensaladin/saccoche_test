@@ -77,7 +77,7 @@ if( $orientation && $marge_min && $couleur && $cases_nb && $cases_largeur && $ca
 	$tab_compet_liste = (isset($_POST['f_compet_liste'])) ? explode('_',$_POST['f_compet_liste']) : array() ;
 	$tab_compet_liste = array_map('clean_entier',$tab_compet_liste);
 	$liste_compet = implode(',',$tab_compet_liste);
-	list($tab_item,$tab_matiere) = DB_recuperer_arborescence_et_matieres_eleves_item($liste_eleve,$liste_compet);
+	list($tab_item,$tab_matiere) = DB_STRUCTURE_recuperer_arborescence_et_matieres_eleves_item($liste_eleve,$liste_compet);
 	$item_nb = count($tab_item);
 	if(!$item_nb)
 	{
@@ -94,7 +94,7 @@ if( $orientation && $marge_min && $couleur && $cases_nb && $cases_largeur && $ca
 	//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 	// Récupération de la liste des élèves
 	//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-	$tab_eleve = DB_lister_eleves_cibles($liste_eleve);
+	$tab_eleve = DB_STRUCTURE_lister_eleves_cibles($liste_eleve);
 	if(!is_array($tab_eleve))
 	{
 		exit('Aucun élève trouvé correspondant aux identifiants transmis !');
@@ -105,7 +105,7 @@ if( $orientation && $marge_min && $couleur && $cases_nb && $cases_largeur && $ca
 	// Récupération de la liste des résultats des évaluations associées à ces items donnés d'une matiere donnée, pour les élèves selectionnés, sur la période sélectionnée
 	//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 	$date_mysql_debut = ($retroactif=='non') ? $date_mysql_debut : false;
-	$DB_TAB = DB_lister_result_eleves_matieres($liste_eleve , $liste_comp , $date_mysql_debut , $date_mysql_fin);
+	$DB_TAB = DB_STRUCTURE_lister_result_eleves_matieres($liste_eleve , $liste_comp , $date_mysql_debut , $date_mysql_fin);
 	foreach($DB_TAB as $DB_ROW)
 	{
 		$tab_eval[$DB_ROW['eleve_id']][$DB_ROW['matiere_id']][$DB_ROW['item_id']][] = array('note'=>$DB_ROW['note'],'date'=>$DB_ROW['date'],'info'=>$DB_ROW['info']);

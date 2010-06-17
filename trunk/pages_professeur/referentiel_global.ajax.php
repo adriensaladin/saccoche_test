@@ -57,7 +57,7 @@ $tab_limites['classique']  = array(0,1,2,3,4,5,6,7,8,9,10,15,20,30,40,50);
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 if( ($action=='Voir') && $matiere_id && $niveau_id )
 {
-	$DB_TAB = DB_recuperer_arborescence($prof_id=0,$matiere_id,$niveau_id,$only_item=false,$socle_nom=true);
+	$DB_TAB = DB_STRUCTURE_recuperer_arborescence($prof_id=0,$matiere_id,$niveau_id,$only_item=false,$socle_nom=true);
 	exit( afficher_arborescence_from_SQL($DB_TAB,$dynamique=false,$reference=false,$aff_coef='image',$aff_socle='image',$aff_lien='image',$aff_input=false) );
 }
 
@@ -73,7 +73,7 @@ elseif( ($action=='Partager') && ($perso==0) && $matiere_id && $niveau_id && in_
 	// Envoyer le référentiel (éventuellement vide pour l'effacer) vers le serveur de partage
 	if($partage=='oui')
 	{
-		$DB_TAB = DB_recuperer_arborescence(0,$matiere_id,$niveau_id,$only_item=FALSE,$socle_nom=FALSE);
+		$DB_TAB = DB_STRUCTURE_recuperer_arborescence(0,$matiere_id,$niveau_id,$only_item=FALSE,$socle_nom=FALSE);
 		$arbreXML = exporter_arborescence_to_XML($DB_TAB);
 		$reponse = envoyer_arborescence_XML($_SESSION['SESAMATH_ID'],$_SESSION['SESAMATH_KEY'],$matiere_id,$niveau_id,$arbreXML);
 	}
@@ -88,7 +88,7 @@ elseif( ($action=='Partager') && ($perso==0) && $matiere_id && $niveau_id && in_
 	}
 	// Tout s'est bien passé si on arrive jusque là...
 	$date_mysql = date("Y-m-d");
-	DB_modifier_referentiel( $matiere_id , $niveau_id , array(':partage_etat'=>$partage,':partage_date'=>$date_mysql) );
+	DB_STRUCTURE_modifier_referentiel( $matiere_id , $niveau_id , array(':partage_etat'=>$partage,':partage_date'=>$date_mysql) );
 	// Retour envoyé
 	$tab_partage = array('oui'=>'<img title="Référentiel partagé sur le serveur communautaire (MAJ le ◄DATE►)." alt="" src="./_img/partage1.gif" />','non'=>'<img title="Référentiel non partagé avec la communauté (choix du ◄DATE►)." alt="" src="./_img/partage0.gif" />','bof'=>'<img title="Référentiel dont le partage est sans intérêt (pas novateur)." alt="" src="./_img/partage0.gif" />','hs'=>'<img title="Référentiel dont le partage est sans objet (matière spécifique)." alt="" src="./_img/partage0.gif" />');
 	exit( str_replace('◄DATE►',affich_date($date_mysql),$tab_partage[$partage]) );
@@ -104,7 +104,7 @@ elseif( ($action=='Envoyer') && ($perso==0) && $matiere_id && $niveau_id )
 		exit('Pour pouvoir échanger avec le serveur communautaire, un administrateur doit identifier l\'établissement dans la base Sésamath.');
 	}
 	// Envoyer le référentiel vers le serveur de partage
-	$DB_TAB = DB_recuperer_arborescence(0,$matiere_id,$niveau_id,$only_item=FALSE,$socle_nom=FALSE);
+	$DB_TAB = DB_STRUCTURE_recuperer_arborescence(0,$matiere_id,$niveau_id,$only_item=FALSE,$socle_nom=FALSE);
 	$arbreXML = exporter_arborescence_to_XML($DB_TAB);
 	$reponse = envoyer_arborescence_XML($_SESSION['SESAMATH_ID'],$_SESSION['SESAMATH_KEY'],$matiere_id,$niveau_id,$arbreXML);
 	// Analyse de la réponse retournée par le serveur de partage
@@ -114,7 +114,7 @@ elseif( ($action=='Envoyer') && ($perso==0) && $matiere_id && $niveau_id )
 	}
 	// Tout s'est bien passé si on arrive jusque là...
 	$date_mysql = date("Y-m-d");
-	DB_modifier_referentiel( $matiere_id , $niveau_id , array(':partage_date'=>$date_mysql) );
+	DB_STRUCTURE_modifier_referentiel( $matiere_id , $niveau_id , array(':partage_date'=>$date_mysql) );
 	// Retour envoyé
 	exit('<img title="Référentiel partagé sur le serveur communautaire (MAJ le '.affich_date($date_mysql).')." alt="" src="./_img/partage1.gif" />');
 }
@@ -137,7 +137,7 @@ elseif( ($action=='Retirer') && $matiere_id && $niveau_id && in_array($partage,$
 			exit($reponse);
 		}
 	}
-	DB_supprimer_referentiel_matiere_niveau($matiere_id,$niveau_id);
+	DB_STRUCTURE_supprimer_referentiel_matiere_niveau($matiere_id,$niveau_id);
 	exit('ok');
 }
 
@@ -146,7 +146,7 @@ elseif( ($action=='Retirer') && $matiere_id && $niveau_id && in_array($partage,$
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 elseif( ($action=='Calculer') && $matiere_id && $niveau_id && in_array($methode,$tab_methodes) && in_array($limite,$tab_limites[$methode]) )
 {
-	DB_modifier_referentiel( $matiere_id , $niveau_id , array(':calcul_methode'=>$methode,':calcul_limite'=>$limite) );
+	DB_STRUCTURE_modifier_referentiel( $matiere_id , $niveau_id , array(':calcul_methode'=>$methode,':calcul_limite'=>$limite) );
 	if($limite==1)
 	{
 		$retour = 'Seule la dernière saisie compte.';
@@ -175,7 +175,7 @@ elseif( ($action=='Ajouter') && $matiere_id && $niveau_id )
 	{
 		// C'est une matière spécifique à l'établissement, ou une demande de partir d'un référentiel vierge : on ne peut que créer un nouveau référentiel
 		$partage = ($perso==1) ? 'hs' : 'non' ;
-		DB_ajouter_referentiel($matiere_id,$niveau_id,$partage);
+		DB_STRUCTURE_ajouter_referentiel($matiere_id,$niveau_id,$partage);
 		exit('ok');
 	}
 	elseif($referentiel_id>0)
@@ -197,8 +197,8 @@ elseif( ($action=='Ajouter') && $matiere_id && $niveau_id )
 		{
 			exit($test_XML_valide);
 		}
-		DB_importer_arborescence_from_XML($arbreXML,$matiere_id,$niveau_id);
-		DB_ajouter_referentiel($matiere_id,$niveau_id,$partage='bof');
+		DB_STRUCTURE_importer_arborescence_from_XML($arbreXML,$matiere_id,$niveau_id);
+		DB_STRUCTURE_ajouter_referentiel($matiere_id,$niveau_id,$partage='bof');
 		exit('ok');
 	}
 	elseif($referentiel_id==-1)

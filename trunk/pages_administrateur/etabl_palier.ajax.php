@@ -41,7 +41,7 @@ sort($tab_id);
 if( ($action=='Choisir') && count($tab_id) )
 {
 	$listing_paliers = implode(',',$tab_id);
-	DB_modifier_parametres( array('paliers'=>$listing_paliers) );
+	DB_STRUCTURE_modifier_parametres( array('paliers'=>$listing_paliers) );
 	// ne pas oublier de mettre aussi à jour la session
 	$_SESSION['PALIERS'] = $listing_paliers;
 	echo'ok';

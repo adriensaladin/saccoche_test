@@ -89,18 +89,19 @@ function compacter($chemin,$version,$methode)
  * => pour l'identification (fonction connecter_user() dans ./_inc/fonction_requetes_administration)
  * => pour le webmestre (création d'un admin, info sur les admins, initialisation du mdp...)
  * 
- * @param string $BASE
+ * @param int   $BASE
  * @return void
  */
 
 function charger_parametres_mysql_supplementaires($BASE)
 {
-	$file_config_base_structure_multi = './__private/mysql/serveur_sacoche_structure_'.$BASE.'.php';
+	global $CHEMIN_MYSQL;
+	$file_config_base_structure_multi = $CHEMIN_MYSQL.'serveur_sacoche_structure_'.$BASE.'.php';
 	if(is_file($file_config_base_structure_multi))
 	{
 		global $_CONST; // Car si on charge les paramètres dans une fonction, ensuite ils ne sont pas trouvés par la classe de connexion.
 		require_once($file_config_base_structure_multi);
-		require_once('./_inc/class.DB.config.sacoche_structure.php');
+		require_once($CHEMIN_MYSQL.'../../_inc/class.DB.config.sacoche_structure.php'); // Chemin un peu tordu... mais nécessaire à cause d'un appel particulier pour l'install Sésamath
 	}
 	else
 	{
@@ -171,7 +172,8 @@ function crypter_mdp($password)
 
 function fabriquer_fichier_hebergeur_info($hebergeur_installation,$hebergeur_denomination,$hebergeur_uai,$hebergeur_adresse_site,$hebergeur_logo,$hebergeur_cnil,$webmestre_nom,$webmestre_prenom,$webmestre_courriel,$webmestre_password_md5,$webmestre_erreur_date)
 {
-	$fichier_nom     = './__private/config/constantes.php';
+	global $CHEMIN_CONFIG;
+	$fichier_nom     = $CHEMIN_CONFIG.'constantes.php';
 	$fichier_contenu = '<?php'."\r\n";
 	$fichier_contenu.= '// Informations concernant l\'hébergement et son webmestre (n°UAI uniquement pour une installation de type mono-structure)'."\r\n";
 	$fichier_contenu.= 'define(\'HEBERGEUR_INSTALLATION\',\''.str_replace('\'','\\\'',$hebergeur_installation).'\');'."\r\n";
@@ -202,21 +204,22 @@ function fabriquer_fichier_hebergeur_info($hebergeur_installation,$hebergeur_den
 
 function fabriquer_fichier_connexion_base($base_id,$BD_host,$BD_name,$BD_user,$BD_pass)
 {
+	global $CHEMIN_MYSQL;
 	if( (HEBERGEUR_INSTALLATION=='multi-structures') && ($base_id>0) )
 	{
-		$fichier_nom = './__private/mysql/serveur_sacoche_structure_'.$base_id.'.php';
+		$fichier_nom = $CHEMIN_MYSQL.'serveur_sacoche_structure_'.$base_id.'.php';
 		$fichier_descriptif = 'Paramètres MySQL de la base de données SACoche n°'.$base_id.' (installation multi-structures).';
 		$prefixe = 'STRUCTURE';
 	}
 	elseif(HEBERGEUR_INSTALLATION=='mono-structure')
 	{
-		$fichier_nom = './__private/mysql/serveur_sacoche_structure.php';
+		$fichier_nom = $CHEMIN_MYSQL.'serveur_sacoche_structure.php';
 		$fichier_descriptif = 'Paramètres MySQL de la base de données SACoche (installation mono-structure).';
 		$prefixe = 'STRUCTURE';
 	}
 	else	// (HEBERGEUR_INSTALLATION=='multi-structures') && ($base_id==0)
 	{
-		$fichier_nom = './__private/mysql/serveur_sacoche_webmestre.php';
+		$fichier_nom = $CHEMIN_MYSQL.'serveur_sacoche_webmestre.php';
 		$fichier_descriptif = 'Paramètres MySQL de la base de données SACoche du webmestre (installation multi-structures).';
 		$prefixe = 'WEBMESTRE';
 	}
@@ -231,6 +234,28 @@ function fabriquer_fichier_connexion_base($base_id,$BD_host,$BD_name,$BD_user,$B
 }
 
 /**
+ * modifier_mdp_webmestre
+ * 
+ * @param string $password_ancien
+ * @param string $password_nouveau
+ * @return string   'ok' ou 'Le mot de passe actuel est incorrect !'
+ */
+
+function modifier_mdp_webmestre($password_ancien,$password_nouveau)
+{
+	// Tester si l'ancien mot de passe correspond à celui enregistré
+	$password_ancien_crypte = crypter_mdp($password_ancien);
+	if($password_ancien_crypte!=WEBMESTRE_PASSWORD_MD5)
+	{
+		return 'Le mot de passe actuel est incorrect !';
+	}
+	// Remplacer par le nouveau mot de passe
+	$password_nouveau_crypte = crypter_mdp($password_nouveau);
+	fabriquer_fichier_hebergeur_info(HEBERGEUR_INSTALLATION,HEBERGEUR_DENOMINATION,HEBERGEUR_UAI,HEBERGEUR_ADRESSE_SITE,HEBERGEUR_LOGO,HEBERGEUR_CNIL,WEBMESTRE_NOM,WEBMESTRE_PRENOM,WEBMESTRE_COURRIEL,$password_nouveau_crypte,WEBMESTRE_ERREUR_DATE);
+	return 'ok';
+}
+
+/**
  * bloquer_application
  * 
  * @param string $profil_demandeur
@@ -240,7 +265,8 @@ function fabriquer_fichier_connexion_base($base_id,$BD_host,$BD_name,$BD_user,$B
 
 function bloquer_application($profil_demandeur,$motif)
 {
-	$fichier_nom = ($profil_demandeur=='webmestre') ? './__private/config/blocage_webmestre.txt' : './__private/config/blocage_admin_'.$_SESSION['BASE'].'.txt' ;
+	global $CHEMIN_CONFIG;
+	$fichier_nom = ($profil_demandeur=='webmestre') ? $CHEMIN_CONFIG.'blocage_webmestre.txt' : $CHEMIN_CONFIG.'blocage_admin_'.$_SESSION['BASE'].'.txt' ;
 	file_put_contents($fichier_nom,$motif);
 }
 
@@ -253,7 +279,8 @@ function bloquer_application($profil_demandeur,$motif)
 
 function debloquer_application($profil_demandeur)
 {
-	$fichier_nom = ($profil_demandeur=='webmestre') ? './__private/config/blocage_webmestre.txt' : './__private/config/blocage_admin_'.$_SESSION['BASE'].'.txt' ;
+	global $CHEMIN_CONFIG;
+	$fichier_nom = ($profil_demandeur=='webmestre') ? $CHEMIN_CONFIG.'blocage_webmestre.txt' : $CHEMIN_CONFIG.'blocage_admin_'.$_SESSION['BASE'].'.txt' ;
 	@unlink($fichier_nom);
 }
 
@@ -270,14 +297,15 @@ function debloquer_application($profil_demandeur)
 
 function tester_blocage_application($BASE,$demande_connexion_profil)
 {
+	global $CHEMIN_CONFIG;
 	// Par le webmestre
-	$fichier_blocage_webmestre = './__private/config/blocage_webmestre.txt';
+	$fichier_blocage_webmestre = $CHEMIN_CONFIG.'blocage_webmestre.txt';
 	if( (is_file($fichier_blocage_webmestre)) && (($_SESSION['USER_PROFIL']!='public')||($demande_connexion_profil!=false)) && ($_SESSION['USER_PROFIL']!='webmestre') )
 	{
 		affich_message_exit($titre='Blocage par le webmestre',$contenu='Blocage par le webmestre : '.file_get_contents($fichier_blocage_webmestre) );
 	}
 	// Par un administrateur
-	$fichier_blocage_administrateur = './__private/config/blocage_admin_'.$BASE.'.txt';
+	$fichier_blocage_administrateur = $CHEMIN_CONFIG.'blocage_admin_'.$BASE.'.txt';
 	if( (is_file($fichier_blocage_administrateur)) && (($_SESSION['USER_PROFIL']!='public')||($demande_connexion_profil!='administrateur')) && ($_SESSION['USER_PROFIL']!='webmestre') && ($_SESSION['USER_PROFIL']!='administrateur') )
 	{
 		affich_message_exit($titre='Blocage par un administrateur',$contenu='Blocage par un administrateur : '.file_get_contents($fichier_blocage_administrateur) );
@@ -351,7 +379,7 @@ function connecter_user($BASE,$profil,$login,$password,$mode_connection)
 		charger_parametres_mysql_supplementaires($BASE);
 	}
 	// Récupérer les données associées à l'utilisateur.
-	$DB_ROW = DB_recuperer_donnees_utilisateur($mode_connection,$login);
+	$DB_ROW = DB_STRUCTURE_recuperer_donnees_utilisateur($mode_connection,$login);
 	// Si login non trouvé...
 	if(!count($DB_ROW))
 	{
@@ -361,7 +389,7 @@ function connecter_user($BASE,$profil,$login,$password,$mode_connection)
 	$delai_attente_consomme = time() - $DB_ROW['tentative_unix'] ;
 	if($delai_attente_consomme<3)
 	{
-		DB_modifier_date('tentative',$DB_ROW['user_id']);
+		DB_STRUCTURE_modifier_date('tentative',$DB_ROW['user_id']);
 		return'Calmez-vous et patientez 10s avant toute nouvelle tentative !';
 	}
 	elseif($delai_attente_consomme<10)
@@ -372,7 +400,7 @@ function connecter_user($BASE,$profil,$login,$password,$mode_connection)
 	// Si mdp incorrect...
 	if( ($mode_connection=='normal') && ($DB_ROW['user_password']!=crypter_mdp($password)) )
 	{
-		DB_modifier_date('tentative',$DB_ROW['user_id']);
+		DB_STRUCTURE_modifier_date('tentative',$DB_ROW['user_id']);
 		return'Mot de passe incorrect ! Veuillez patienter 10s avant toute nouvelle tentative.';
 	}
 	// Si compte desactivé...
@@ -400,7 +428,7 @@ function connecter_user($BASE,$profil,$login,$password,$mode_connection)
 	$_SESSION['ELEVE_CLASSE_ID']  = (int) $DB_ROW['eleve_classe_id'];
 	$_SESSION['ELEVE_CLASSE_NOM'] = $DB_ROW['groupe_nom'];
 	// Récupérer et Enregistrer les données associées à l'établissement.
-	$DB_TAB = DB_lister_parametres();
+	$DB_TAB = DB_STRUCTURE_lister_parametres();
 	foreach($DB_TAB as $DB_ROW)
 	{
 		switch($DB_ROW['parametre_nom'])
@@ -436,7 +464,7 @@ function connecter_user($BASE,$profil,$login,$password,$mode_connection)
 		}
 	}
 	// Mémoriser la date de la (dernière) connexion
-	DB_modifier_date('connexion',$_SESSION['USER_ID']);
+	DB_STRUCTURE_modifier_date('connexion',$_SESSION['USER_ID']);
 	// Enregistrement d'un cookie sur le poste client servant à retenir le dernier établissement sélectionné si identification avec succès
 	setcookie('SACoche-etablissement',$BASE,time()+60*60*24*365,'/');
 	return'ok';

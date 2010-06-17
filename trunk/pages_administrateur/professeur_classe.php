@@ -31,8 +31,8 @@ $TITRE = "Affecter les professeurs aux classes";
 
 <?php
 // Fabrication des éléments select du formulaire
-$select_professeurs = afficher_select(DB_OPT_professeurs_etabl() , $select_nom=false , $option_first='non' , $selection=false , $optgroup='non');
-$select_classes     = afficher_select(DB_OPT_classes_etabl()     , $select_nom=false , $option_first='non' , $selection=false , $optgroup='non');
+$select_professeurs = afficher_select(DB_STRUCTURE_OPT_professeurs_etabl() , $select_nom=false , $option_first='non' , $selection=false , $optgroup='non');
+$select_classes     = afficher_select(DB_STRUCTURE_OPT_classes_etabl()     , $select_nom=false , $option_first='non' , $selection=false , $optgroup='non');
 ?>
 
 <p class="hc">

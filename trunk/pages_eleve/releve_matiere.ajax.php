@@ -69,7 +69,7 @@ if( $orientation && $marge_min && $couleur && $cases_nb && $cases_largeur && $ca
 	}
 	else
 	{
-		$DB_ROW = DB_recuperer_dates_periode($groupe_id,$periode_id);
+		$DB_ROW = DB_STRUCTURE_recuperer_dates_periode($groupe_id,$periode_id);
 		if(!count($DB_ROW))
 		{
 			exit('La classe et la période ne sont pas reliées !');
@@ -93,7 +93,7 @@ if( $orientation && $marge_min && $couleur && $cases_nb && $cases_largeur && $ca
 	//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 	// Récupération de la liste des items travaillés durant la période choisie, pour la matière selectionnée
 	//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-	$tab_item = DB_recuperer_arborescence_eleve_periode_matiere($_SESSION['USER_ID'],$matiere_id,$date_mysql_debut,$date_mysql_fin);
+	$tab_item = DB_STRUCTURE_recuperer_arborescence_eleve_periode_matiere($_SESSION['USER_ID'],$matiere_id,$date_mysql_debut,$date_mysql_fin);
 	$item_nb = count($tab_item);
 	if(!$item_nb)
 	{
@@ -121,7 +121,7 @@ if( $orientation && $marge_min && $couleur && $cases_nb && $cases_largeur && $ca
 	// Récupération de la liste des résultats des évaluations associées à ces items, pour la matière selectionnée, sur la période sélectionnée
 	//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 	$date_mysql_debut = ($retroactif=='non') ? $date_mysql_debut : false;
-	$DB_TAB = DB_lister_result_eleve($_SESSION['USER_ID'] , $liste_comp , $date_mysql_debut , $date_mysql_fin);
+	$DB_TAB = DB_STRUCTURE_lister_result_eleve($_SESSION['USER_ID'] , $liste_comp , $date_mysql_debut , $date_mysql_fin);
 	foreach($DB_TAB as $DB_ROW)
 	{
 		$tab_eval[$_SESSION['USER_ID']][$matiere_id][$DB_ROW['item_id']][] = array('note'=>$DB_ROW['note'],'date'=>$DB_ROW['date'],'info'=>$DB_ROW['info']);

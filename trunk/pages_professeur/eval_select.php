@@ -78,7 +78,7 @@ $date_fin    = date("d/m/Y");
 	</div>
 	<?php
 	// Affichage de la liste des items pour toutes les matières d'un professeur, sur tous les niveaux
-	$DB_TAB = DB_recuperer_arborescence($_SESSION['USER_ID'],$matiere_id=0,$niveau_id=0,$only_item=false,$socle_nom=false);
+	$DB_TAB = DB_STRUCTURE_recuperer_arborescence($_SESSION['USER_ID'],$matiere_id=0,$niveau_id=0,$only_item=false,$socle_nom=false);
 	echo afficher_arborescence_from_SQL($DB_TAB,$dynamique=true,$reference=true,$aff_coef=false,$aff_socle='texte',$aff_lien=false,$aff_input=true);
 	?>
 </form>
@@ -92,7 +92,7 @@ $date_fin    = date("d/m/Y");
 	$tab_regroupements = array();
 	$tab_id = array('classe'=>'','groupe'=>'');
 	// Recherche de la liste des classes et des groupes du professeur
-	$DB_TAB = DB_lister_classes_groupes_professeur($_SESSION['USER_ID']);
+	$DB_TAB = DB_STRUCTURE_lister_classes_groupes_professeur($_SESSION['USER_ID']);
 	foreach($DB_TAB as $DB_ROW)
 	{
 		$tab_regroupements[$DB_ROW['groupe_id']] = array('nom'=>$DB_ROW['groupe_nom'],'eleve'=>array());
@@ -102,7 +102,7 @@ $date_fin    = date("d/m/Y");
 	if(is_array($tab_id['classe']))
 	{
 		$listing = implode(',',$tab_id['classe']);
-		$DB_TAB = DB_lister_eleves_classes($listing);
+		$DB_TAB = DB_STRUCTURE_lister_eleves_classes($listing);
 		foreach($DB_TAB as $DB_ROW)
 		{
 			$tab_regroupements[$DB_ROW['eleve_classe_id']]['eleve'][$DB_ROW['user_id']] = $DB_ROW['user_nom'].' '.$DB_ROW['user_prenom'].' ('.$DB_ROW['user_login'].')';
@@ -112,7 +112,7 @@ $date_fin    = date("d/m/Y");
 	if(is_array($tab_id['groupe']))
 	{
 		$listing = implode(',',$tab_id['groupe']);
-		$DB_TAB = DB_lister_eleves_groupes($listing);
+		$DB_TAB = DB_STRUCTURE_lister_eleves_groupes($listing);
 		foreach($DB_TAB as $DB_ROW)
 		{
 			$tab_regroupements[$DB_ROW['groupe_id']]['eleve'][$DB_ROW['user_id']] = $DB_ROW['user_nom'].' '.$DB_ROW['user_prenom'].' ('.$DB_ROW['user_login'].')';

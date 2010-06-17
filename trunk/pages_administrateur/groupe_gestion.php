@@ -46,7 +46,7 @@ $TITRE = "Gérer les groupes";
 		</thead>
 		<tbody>
 			<?php
-			$DB_TAB = DB_lister_groupes_avec_niveaux();
+			$DB_TAB = DB_STRUCTURE_lister_groupes_avec_niveaux();
 			foreach($DB_TAB as $DB_ROW)
 			{
 				// Afficher une ligne du tableau
@@ -70,7 +70,7 @@ $tab_niveau_ordre_js = 'var tab_niveau_ordre = new Array();';
 
 if($_SESSION['NIVEAUX'])
 {
-	$DB_TAB = DB_lister_niveaux_etablissement($_SESSION['NIVEAUX'],$listing_paliers=false);
+	$DB_TAB = DB_STRUCTURE_lister_niveaux_etablissement($_SESSION['NIVEAUX'],$listing_paliers=false);
 	foreach($DB_TAB as $DB_ROW)
 	{
 		$select_niveau .= '<option value="'.$DB_ROW['niveau_id'].'">'.html($DB_ROW['niveau_nom']).'</option>';

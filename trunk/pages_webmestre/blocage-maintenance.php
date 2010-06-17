@@ -29,7 +29,7 @@ if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');
 $TITRE = "Maintenance &amp; mise à jour";
 
 // Initialisation de l'état de l'accès
-$fichier_blocage_webmestre = './__private/config/blocage_webmestre.txt';
+$fichier_blocage_webmestre = $CHEMIN_CONFIG.'blocage_webmestre.txt';
 if(is_file($fichier_blocage_webmestre))
 {
 	$label = '<label class="erreur">Application fermée : '.html(file_get_contents($fichier_blocage_webmestre)).'</label>';

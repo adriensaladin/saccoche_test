@@ -36,7 +36,7 @@ $id     = (isset($_POST['f_id']))     ? clean_entier($_POST['f_id'])    : 0;
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 if( ($action=='demander_del') && $id )
 {
-	DB_supprimer_demande($id);
+	DB_STRUCTURE_supprimer_demande($id);
 	exit('ok');
 }
 

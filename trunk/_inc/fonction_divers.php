@@ -26,6 +26,26 @@
  */
 
 /**
+ * ajouter_log
+ * Ajout d'un log dans un fichier d'actions critiques
+ * 
+ * @param string $contenu   description de l'action
+ * @return void
+ */
+
+function ajouter_log($contenu)
+{
+	$chemin_fichier = './__private/log/base_'.$_SESSION['BASE'].'.php';
+	$tab_ligne = array();
+	$tab_ligne[] = '<?php /*';
+	$tab_ligne[] = date('Y-m-d H:i:s');
+	$tab_ligne[] = html($_SESSION['USER_PROFIL'].' ['.$_SESSION['USER_ID'].'] '.$_SESSION['USER_NOM'].' '.$_SESSION['USER_PRENOM']);
+	$tab_ligne[] = html($contenu);
+	$tab_ligne[] = '*/ ?>';
+	file_put_contents($chemin_fichier_compacte, implode("\r\n",$tab_ligne), FILE_APPEND);
+}
+
+/**
  * compacter
  * Compression si d'un fichier css ou js sur le serveur en production
  * 
@@ -268,6 +288,8 @@ function bloquer_application($profil_demandeur,$motif)
 	global $CHEMIN_CONFIG;
 	$fichier_nom = ($profil_demandeur=='webmestre') ? $CHEMIN_CONFIG.'blocage_webmestre.txt' : $CHEMIN_CONFIG.'blocage_admin_'.$_SESSION['BASE'].'.txt' ;
 	file_put_contents($fichier_nom,$motif);
+	// Log de l'action
+	ajouter_log('Blocage de l\'accès à l\'application ('.$motif.').');
 }
 
 /**
@@ -282,6 +304,8 @@ function debloquer_application($profil_demandeur)
 	global $CHEMIN_CONFIG;
 	$fichier_nom = ($profil_demandeur=='webmestre') ? $CHEMIN_CONFIG.'blocage_webmestre.txt' : $CHEMIN_CONFIG.'blocage_admin_'.$_SESSION['BASE'].'.txt' ;
 	@unlink($fichier_nom);
+	// Log de l'action
+	ajouter_log('Déblocage de l\'accès à l\'application.');
 }
 
 /**

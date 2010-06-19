@@ -59,6 +59,8 @@ function init_session()
 	// Données associées à l'utilisateur.
 	$_SESSION['USER_PROFIL']      = 'public';	// public / webmestre / administrateur / directeur / professeur / eleve
 	$_SESSION['USER_ID']          = 0;
+	$_SESSION['USER_NOM']         = '-';
+	$_SESSION['USER_PRENOM']      = '-';
 	// Données associées à l'établissement.
 	$_SESSION['SESAMATH_ID']      = 0;
 	$_SESSION['CONNEXION_MODE']   = 'normal';

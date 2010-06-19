@@ -263,6 +263,8 @@ function DB_WEBMESTRE_supprimer_zone($geo_id)
 	$DB_SQL.= 'WHERE geo_id=:geo_id ';
 	$DB_VAR = array(':geo_id'=>$geo_id);
 	DB::query(SACOCHE_WEBMESTRE_BD_NAME , $DB_SQL , $DB_VAR);
+	// Log de l'action
+	ajouter_log('Suppression de la zone géographique '.$geo_id.'.');
 }
 
 /**
@@ -290,6 +292,8 @@ function DB_WEBMESTRE_supprimer_multi_structure($BASE)
 	$DB_SQL.= 'WHERE sacoche_base=:base ';
 	$DB_VAR = array(':base'=>$BASE);
 	DB::query(SACOCHE_WEBMESTRE_BD_NAME , $DB_SQL , $DB_VAR);
+	// Log de l'action
+	ajouter_log('Suppression de la zone structure '.$BASE.'.');
 }
 
 /**

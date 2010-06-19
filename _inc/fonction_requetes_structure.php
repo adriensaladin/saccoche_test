@@ -2325,6 +2325,8 @@ function DB_STRUCTURE_supprimer_matiere_specifique($matiere_id)
 	DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 	// Il faut aussi supprimer les référentiels associés, et donc tous les scores associés (orphelins de la matière)
 	DB_STRUCTURE_supprimer_referentiel_matiere_niveau($matiere_id);
+	// Log de l'action
+	ajouter_log('Suppression d\'une matière spécifique ('.$matiere_id.').');
 }
 
 /**
@@ -2364,6 +2366,9 @@ function DB_STRUCTURE_supprimer_groupe($groupe_id,$groupe_type,$with_devoir=true
 		$DB_VAR = array(':groupe_id'=>$groupe_id);
 		DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 	}
+	// Log de l'action
+	$complement = ($with_devoir) ? ' avec les devoirs associés' : '' ;
+	ajouter_log('Suppression d\'un goupe ('.$groupe_type.' '.$groupe_id.')'.$complement.'.');
 }
 
 /**
@@ -2384,6 +2389,8 @@ function DB_STRUCTURE_supprimer_devoir_et_saisies($devoir_id,$prof_id)
 	$DB_SQL.= 'WHERE devoir_id=:devoir_id AND prof_id=:prof_id ';
 	$DB_VAR = array(':devoir_id'=>$devoir_id,':prof_id'=>$prof_id);
 	DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+	// Log de l'action
+	ajouter_log('Suppression d\'un devoir ('.$devoir_id.') avec les saisies associées.');
 }
 
 /**
@@ -2424,6 +2431,8 @@ function DB_STRUCTURE_supprimer_periode($periode_id)
 	$DB_SQL.= 'WHERE periode_id=:periode_id ';
 	$DB_VAR = array(':periode_id'=>$periode_id);
 	DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+	// Log de l'action
+	ajouter_log('Suppression d\'une période ('.$periode_id.').');
 }
 
 /**
@@ -2519,6 +2528,8 @@ function DB_STRUCTURE_supprimer_utilisateur($user_id,$user_profil)
 		$DB_SQL.= 'WHERE prof_id=:user_id';
 		DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 	}
+	// Log de l'action
+	ajouter_log('Suppression d\'un utilisateur ('.$user_profil.' '.$user_id.').');
 }
 
 /**
@@ -2547,6 +2558,8 @@ function DB_STRUCTURE_supprimer_referentiel_matiere_niveau($matiere_id,$niveau_i
 		$DB_VAR[':niveau_id'] = $niveau_id;
 	}
 	DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+	// Log de l'action
+	ajouter_log('Suppression d\'un référentiel ('.$matiere_id.' / '.$niveau_id.').');
 }
 
 /**
@@ -2569,6 +2582,8 @@ function DB_STRUCTURE_supprimer_mono_structure()
 	DB::query(SACOCHE_STRUCTURE_BD_NAME , 'DROP TABLE '.implode(', ',$tab_tables) );
 	// Supprimer le fichier de connexion
 	unlink($CHEMIN_MYSQL.'serveur_sacoche_structure.php');
+	// Log de l'action
+	ajouter_log('Résiliation de l\'inscription.');
 }
 
 /**

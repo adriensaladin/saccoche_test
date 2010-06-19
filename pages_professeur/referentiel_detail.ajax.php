@@ -388,6 +388,8 @@ elseif( ($action=='del') && (in_array($contexte,array('n1','n2','n3'))) && $elem
 		}
 		DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , null);
 	}
+	// Log de l'action
+	ajouter_log('Suppression d\'un élément de référentiel ('.$contexte.' / '.$element_id.').');
 	// retour
 	echo ($test_delete) ? 'ok' : 'Élément non trouvé !';
 }

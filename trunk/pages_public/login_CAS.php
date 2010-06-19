@@ -64,13 +64,20 @@ if( (isset($connexion_mode,$cas_serveur_host,$cas_serveur_port,$cas_serveur_root
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 // Connexion au serveur CAS pour s'identifier
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+/*
+	Voici un bug extraordinaire et non résolu, rencontré avec phpCAS 1.1.1 (RAS avec phpCAS 1.0.1).
+	Lors de l'appel phpCAS::client(), si le dernier paramètre vaut "true", ça entre en conflit avec la session de SACoche (normal).
+	Et si le dernier paramètre vaut "false", l'affectation $_SESSION['USER_PROFIL']=... dans connecter_user() fait boucler PHP !
+	Ceci n'est pas dû au nom de la variable de session : la renommer partout ne change rien !!!
+	J'ai aussi tenté d'initialiser en 1er $_SESSION['phpCAS'][...] dans ma propre gestion de session, sans succès non plus !!!
+*/
 
 // Inclure la classe phpCAS
-require_once('./_inc/class.CAS.php');
+require_once('./_inc/class.CAS.1.1.1.php');
 // Pour tester, cette méthode statique créé un fichier de log sur ce qui se passe avec CAS
 // phpCAS::setDebug('debugcas.txt');
-// Initialiser la connexion avec CAS  ; le premier argument est la version du protocole CAS ; passer false comme dernier paramètre fait boucler phpCAS 1.1.1 (RAS avec phpCAS 1.0.1)
-phpCAS::client(CAS_VERSION_2_0, $cas_serveur_host, (int)$cas_serveur_port, $cas_serveur_root, true);
+// Initialiser la connexion avec CAS  ; le premier argument est la version du protocole CAS ; le dernier argument indique qu'on utilise la session existante
+phpCAS::client(CAS_VERSION_2_0, $cas_serveur_host, (int)$cas_serveur_port, $cas_serveur_root, false);
 phpCAS::setLang(PHPCAS_LANG_FRENCH);
 // On indique qu'il n'y a pas de validation du certificat SSL à faire
 phpCAS::setNoCasServerValidation();

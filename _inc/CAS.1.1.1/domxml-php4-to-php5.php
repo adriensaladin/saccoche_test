@@ -67,6 +67,7 @@ function domxml_open_file($filename,$mode=DOMXML_LOAD_PARSING,&$error=null)
 function domxml_open_mem($str,$mode=DOMXML_LOAD_PARSING,&$error=null)
 {
 	$dom=new php4DOMDocument($mode);
+	if($str==''){return $dom;}	/* AJOUT THOMAS CRESPIN */
 	$errorMode=(func_num_args()>2)&&defined('LIBXML_VERSION');
 	if ($errorMode) libxml_use_internal_errors(true);
 	if (!$dom->myDOMNode->loadXML($str)) $dom=null;

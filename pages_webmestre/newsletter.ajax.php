@@ -85,7 +85,7 @@ elseif( $num && $max && ($num<$max) )
 		$texte.= 'Rappel des adresses à utiliser :'."\r\n";
 		$texte.= SERVEUR_ADRESSE.'?id='.$base_id.' (hébergement de l\'établissement)'."\r\n";
 		$texte.= SERVEUR_ADRESSE.'?id='.$base_id.'&admin'.' (connexion administrateur)'."\r\n";
-		$texte.= 'http://competences.sesamath.net (site du projet SACoche)'."\r\n\r\n";
+		$texte.= SERVEUR_PROJET.' (site du projet SACoche)'."\r\n\r\n";
 		$texte.= 'Cordialement'."\r\n";
 		$texte.= WEBMESTRE_PRENOM.' '.WEBMESTRE_NOM."\r\n\r\n";
 		$courriel_bilan = envoyer_webmestre_courriel($contact_courriel,$titre,$texte,false);

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * @file languages/french.php
+ * @file languages/english.php
  * @author Pascal Aubry <pascal.aubry at univ-rennes1.fr>
  * @sa @link internalLang Internationalization @endlink
  * @ingroup internalLang

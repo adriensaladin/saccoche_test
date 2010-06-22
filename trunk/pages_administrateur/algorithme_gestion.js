@@ -208,7 +208,6 @@ $(document).ready
 			{
 				if (!please_wait)
 				{
-					please_wait = true;
 					$(this).ajaxSubmit(ajaxOptions);
 					return false;
 				}
@@ -250,6 +249,7 @@ $(document).ready
 			}
 			if(readytogo)
 			{
+				please_wait = true;
 				if( $('#action').val()=='calculer' )
 				{
 					$('#bilan table tbody').hide();

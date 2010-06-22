@@ -36,7 +36,7 @@ $TITRE = "Choix des niveaux";
 <form id="niveau" action="">
 	<table class="form">
 		<thead>
-			<tr><th class="nu"></th><th>Référence</th><th>Sigle Sconet</th><th>Nom complet</th></tr>
+			<tr><th class="nu"></th><th>Codage</th><th>Dénomination</th></tr>
 		</thead>
 		<tbody>
 			<?php
@@ -55,7 +55,6 @@ $TITRE = "Choix des niveaux";
 				echo'<tr'.$tr_class.'>';
 				echo'	<td class="nu"><input type="checkbox" name="f_tab_id" value="'.$DB_ROW['niveau_id'].'"'.$disabled.$checked.' /></td>';
 				echo'	<td'.$td_label.'>'.html($DB_ROW['niveau_ref']).'</td>';
-				echo'	<td'.$td_label.'>'.html($DB_ROW['niveau_sigle']).'</td>';
 				echo'	<td'.$td_label.'>'.html($DB_ROW['niveau_nom']).$indic.'</td>';
 				echo'</tr>';
 			}

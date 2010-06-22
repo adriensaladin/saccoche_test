@@ -70,7 +70,6 @@ $(document).ready
 			{
 				if (!please_wait)
 				{
-					please_wait = true;
 					$(this).ajaxSubmit(ajaxOptions);
 					return false;
 				}
@@ -87,6 +86,7 @@ $(document).ready
 			$('#ajax_msg').removeAttr("class").html("&nbsp;");
 			if(confirm("Etes-vous bien certain de vouloir supprimer irrémédiablement toutes les données ?"))
 			{
+				please_wait = true;
 				$('#ajax_msg').removeAttr("class").addClass("loader").html("Demande envoyée... Veuillez patienter.");
 				readytogo = true;
 			}

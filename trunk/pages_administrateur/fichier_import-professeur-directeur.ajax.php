@@ -65,7 +65,7 @@ if( $step==1 )
 	else
 	{
 		$nom_fichier = (date('n')>7) ? date('Y') : date('Y')-1 ;
-		$nom_fichier = 'sts_emp_'.$_SESSION['STRUCTURE_UAI'].'_'.$nom_fichier.'.xml';
+		$nom_fichier = 'sts_emp_'.$_SESSION['UAI'].'_'.$nom_fichier.'.xml';
 		// Dézipper le fichier
 		if(extension_loaded('zip')!==true)
 		{

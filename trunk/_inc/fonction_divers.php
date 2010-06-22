@@ -38,11 +38,11 @@ function ajouter_log($contenu)
 	$chemin_fichier = './__private/log/base_'.$_SESSION['BASE'].'.php';
 	$tab_ligne = array();
 	$tab_ligne[] = '<?php /*';
-	$tab_ligne[] = date('Y-m-d H:i:s');
+	$tab_ligne[] = date('d-m-Y H:i:s');
 	$tab_ligne[] = html($_SESSION['USER_PROFIL'].' ['.$_SESSION['USER_ID'].'] '.$_SESSION['USER_NOM'].' '.$_SESSION['USER_PRENOM']);
 	$tab_ligne[] = html($contenu);
-	$tab_ligne[] = '*/ ?>';
-	file_put_contents($chemin_fichier_compacte, implode("\r\n",$tab_ligne), FILE_APPEND);
+	$tab_ligne[] = '*/ ?>'."\r\n";
+	file_put_contents($chemin_fichier, implode("\t",$tab_ligne), FILE_APPEND);
 }
 
 /**
@@ -289,7 +289,7 @@ function bloquer_application($profil_demandeur,$motif)
 	$fichier_nom = ($profil_demandeur=='webmestre') ? $CHEMIN_CONFIG.'blocage_webmestre.txt' : $CHEMIN_CONFIG.'blocage_admin_'.$_SESSION['BASE'].'.txt' ;
 	file_put_contents($fichier_nom,$motif);
 	// Log de l'action
-	ajouter_log('Blocage de l\'accès à l\'application ('.$motif.').');
+	ajouter_log('Blocage de l\'accès à l\'application ['.$motif.'].');
 }
 
 /**

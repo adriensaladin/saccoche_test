@@ -175,7 +175,6 @@ $(document).ready
 				$('#f_palier_nom').val( $("#f_palier option:selected").text() );
 				if (!please_wait)
 				{
-					please_wait = true;
 					$(this).ajaxSubmit(ajaxOptions);
 					return false;
 				}
@@ -193,6 +192,7 @@ $(document).ready
 			var readytogo = validation.form();
 			if(readytogo)
 			{
+				please_wait = true;
 				$('#f_submit').hide();
 				$('#ajax_msg').removeAttr("class").addClass("loader").html("Transmission du fichier en cours... Veuillez patienter.");
 			}

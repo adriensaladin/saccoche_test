@@ -133,6 +133,7 @@ elseif( $step==2 )
 			$tab_eleves['nom'][$eleve_id]        = clean_nom($eleve->NOM);
 			$tab_eleves['prenom'][$eleve_id]     = clean_prenom($eleve->PRENOM);
 			$tab_eleves['classe'][$eleve_id]     = '';
+			$tab_eleves['niveau'][$eleve_id]     = clean_ref($eleve->CODE_MEF);
 		}
 		foreach ($xml->DONNEES->STRUCTURES->STRUCTURES_ELEVE as $structures)
 		{
@@ -146,10 +147,10 @@ elseif( $step==2 )
 					{
 						$tab_eleves['classe'][$eleve_id] = $classe_ref;
 					}
-					if(!in_array($classe_ref,$tab_classes['ref']))
+					if( (!in_array($classe_ref,$tab_classes['ref'])) && (isset($tab_eleves['niveau'][$eleve_id])) )
 					{
 						$tab_classes['ref'][]    = $classe_ref;
-						$tab_classes['niveau'][] = $classe_ref{0};
+						$tab_classes['niveau'][] = $tab_eleves['niveau'][$eleve_id];
 					}
 				}
 			}
@@ -198,7 +199,7 @@ elseif( $step==2 )
 					if( ($classe_ref) && (!in_array($classe_ref,$tab_classes['ref'])) )
 					{
 						$tab_classes['ref'][]    = $classe_ref;
-						$tab_classes['niveau'][] = $classe_ref{0};
+						$tab_classes['niveau'][] = '';
 					}
 				}
 			}
@@ -211,11 +212,10 @@ elseif( $step==2 )
 	// On trie
 	array_multisort($tab_eleves['nom'],SORT_ASC,SORT_STRING,$tab_eleves['prenom'],SORT_ASC,SORT_STRING,$tab_eleves['num_sconet'],$tab_eleves['reference'],$tab_eleves['classe']);
 	array_multisort($tab_classes['niveau'],SORT_DESC,SORT_STRING,$tab_classes['ref']);
-	unset($tab_classes['niveau']);
 	// On enregistre
 	$tab_eleves_fichier = array('num_sconet'=>$tab_eleves['num_sconet'],'reference'=>$tab_eleves['reference'],'nom'=>$tab_eleves['nom'],'prenom'=>$tab_eleves['prenom'],'classe'=>$tab_eleves['classe']);
 	file_put_contents($dossier_import.'import_'.$_SESSION['BASE'].'_eleves.txt',serialize($tab_eleves_fichier));
-	$tab_classes_fichier = array('ref'=>$tab_classes['ref']);
+	$tab_classes_fichier = array('ref'=>$tab_classes['ref'],'niveau'=>$tab_classes['niveau']);
 	file_put_contents($dossier_import.'import_'.$_SESSION['BASE'].'_classes.txt',serialize($tab_classes_fichier));
 	echo'<div id="ok">';
 	echo' <p><label class="valide">Les données ont été correctement extraites.</label></p>';
@@ -235,7 +235,7 @@ elseif( $step==3 )
 		exit('Erreur : le fichier contenant les classes est introuvable !');
 	}
 	$contenu = file_get_contents($dossier_import.$fnom);
-	$tab_classes_fichier = @unserialize($contenu);	// $tab_classes_fichier['ref'] : i -> ref
+	$tab_classes_fichier = @unserialize($contenu);	// $tab_classes_fichier['ref'] : i -> ref ; $tab_classes_fichier['niveau'] : i -> niveau
 	if($tab_classes_fichier===FALSE)
 	{
 		exit('Erreur : le fichier contenant les classes est syntaxiquement incorrect !');
@@ -258,7 +258,7 @@ elseif( $step==3 )
 		if($id!==false)
 		{
 			$lignes_ras .= '<tr><th>'.html($tab_classes_base['ref'][$id]).'</th><td>'.html($tab_classes_base['nom'][$id]).'</td></tr>';
-			unset($tab_classes_fichier['ref'][$i] , $tab_classes_base['ref'][$id] , $tab_classes_base['nom'][$id]);
+			unset($tab_classes_fichier['ref'][$i] , $tab_classes_fichier['niveau'][$i] , $tab_classes_base['ref'][$id] , $tab_classes_base['nom'][$id]);
 		}
 	}
 	// Comparer sconet et base : contenu à supprimer
@@ -274,17 +274,35 @@ elseif( $step==3 )
 	$lignes_add = '';
 	if(count($tab_classes_fichier['ref']))
 	{
+		$mode = ($tab_classes_fichier['ref'][0]=='') ? 'tableur' : 'sconet' ;
 		$select_niveau = '<option value=""></option>';
 		$tab_niveau_ref = array();
 		$DB_TAB = DB_STRUCTURE_lister_niveaux_etablissement($_SESSION['NIVEAUX'],$listing_paliers=false);
 		foreach($DB_TAB as $DB_ROW)
 		{
 			$select_niveau .= '<option value="'.$DB_ROW['niveau_id'].'">'.html($DB_ROW['niveau_nom']).'</option>';
-			$tab_niveau_ref[$DB_ROW['niveau_ref']{0}] = (isset($tab_niveau_ref[$DB_ROW['niveau_ref']{0}])) ? $tab_niveau_ref[$DB_ROW['niveau_ref']{0}] : $DB_ROW['niveau_id'];
+			$key = ($mode=='sconet') ? $DB_ROW['code_mef'] : $DB_ROW['niveau_ref'] ;
+			$tab_niveau_ref[$key] = $DB_ROW['niveau_id'];
 		}
 		foreach($tab_classes_fichier['ref'] as $i => $ref)
 		{
-			$id_checked = (isset($tab_niveau_ref[$ref{0}])) ? $tab_niveau_ref[$ref{0}] : '';
+			// On préselectionne un niveau ; pour un fichier tableur on compare avec le début du nom, pour un fichier sconet on compare avec un masque d'expression régulière.
+			$id_checked = '';
+			foreach($tab_niveau_ref as $masque_recherche => $niveau_id)
+			{
+				if($mode=='sconet')
+				{
+					$id_checked = (preg_match('/^'.$masque_recherche.'$/',$tab_classes_fichier['niveau'][$i])) ? $niveau_id : '';
+				}
+				elseif($mode=='tableur')
+				{
+					$id_checked = (strpos($ref,$masque_recherche)) ? $niveau_id : '';
+				}
+				if($id_checked)
+				{
+					break;
+				}
+			}
 			$lignes_add .= '<tr><th>'.html($ref).'<input id="add_ref_'.$i.'" name="add_ref_'.$i.'" type="hidden" value="'.html($ref).'" /></th><td>Niveau : <select id="add_niv_'.$i.'" name="add_niv_'.$i.'">'.str_replace('value="'.$id_checked.'"','value="'.$id_checked.'" selected="selected"',$select_niveau).'</select> Nom complet : <input id="add_nom_'.$i.'" name="add_nom_'.$i.'" size="10" type="text" value="'.html($ref).'" maxlength="20" /></td></tr>';
 		}
 	}
@@ -293,13 +311,13 @@ elseif( $step==3 )
 	echo' <table>';
 	echo'  <tbody>';
 	echo'   <tr><th colspan="2">Classes actuelles à conserver</th></tr>';
-	echo($lignes_ras) ? $lignes_ras : '<tr><td colspan="2">Aucun</td></tr>';
+	echo($lignes_ras) ? $lignes_ras : '<tr><td colspan="2">Aucune</td></tr>';
 	echo'  </tbody><tbody>';
 	echo'   <tr><th colspan="2">Classes nouvelles à ajouter</th></tr>';
-	echo($lignes_add) ? $lignes_add : '<tr><td colspan="2">Aucun</td></tr>';
+	echo($lignes_add) ? $lignes_add : '<tr><td colspan="2">Aucune</td></tr>';
 	echo'  </tbody><tbody>';
 	echo'   <tr><th colspan="2">Classes anciennes à supprimer</th></tr>';
-	echo($lignes_del) ? $lignes_del : '<tr><td colspan="2">Aucun</td></tr>';
+	echo($lignes_del) ? $lignes_del : '<tr><td colspan="2">Aucune</td></tr>';
 	echo'  </tbody>';
 	echo' <table>';
 	echo' <p><span class="tab"><a href="#" class="step4">Valider et passer à l\'étape 4.</a><label id="ajax_msg">&nbsp;</label></span></p>';

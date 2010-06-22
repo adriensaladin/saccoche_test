@@ -31,7 +31,7 @@ $TITRE = "Importer les professeurs et les directeurs";
 
 <?php
 $nom_fin_fichier = (date('n')>7) ? date('Y') : date('Y')-1 ;
-$nom_fin_fichier = $_SESSION['STRUCTURE_UAI'].'_'.$nom_fin_fichier;
+$nom_fin_fichier = $_SESSION['UAI'].'_'.$nom_fin_fichier;
 ?>
 
 <p><span class="astuce">Si la procédure est utilisée en début d'année (initialisation), elle peut ensuite être renouvelée en cours d'année (mise à jour).</span></p>
@@ -51,7 +51,7 @@ $nom_fin_fichier = $_SESSION['STRUCTURE_UAI'].'_'.$nom_fin_fichier;
 		<h2>Première méthode : fichier issu de Sconet / STS-Web</h2>
 		<?php
 		// Si le numéro UAI n'est pas renseigné, cette procédure ne peut pas être utilisée.
-		if($_SESSION['STRUCTURE_UAI'])
+		if($_SESSION['UAI'])
 		{
 			echo'Cette méthode est fortement recommandée.<br />'."\r\n";
 			echo'<span class="manuel"><a class="pop_up" href="'.SERVEUR_DOCUMENTAIRE.'?fichier=support_administrateur__import_professeurs_directeurs_Sconet">DOC : Import professeurs / directeurs depuis Sconet</a></span><br />'."\r\n";

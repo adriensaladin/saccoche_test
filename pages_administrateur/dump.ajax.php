@@ -76,6 +76,7 @@ function formater_guillemets($val)
 }
 function version_base_fichier_svg()
 {
+	global $dossier_temp;
 	$fichier_contenu = file_get_contents($dossier_temp.'dump_sacoche_parametre_0.sql');
 	$position_debut = mb_strpos($fichier_contenu,'"version_base"') + 16;
 	return mb_substr($fichier_contenu,$position_debut,10);

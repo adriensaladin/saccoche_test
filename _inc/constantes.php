@@ -57,7 +57,7 @@ define('ID_DEMO',9999);
 // ID_MATIERE_TRANSVERSALE : id de la matière transversale dans la table "sacoche_matiere"
 // LISTING_ID_NIVEAUX_PALIERS : tableau des id des niveaux des paliers dans la table "sacoche_niveau"
 define('ID_MATIERE_TRANSVERSALE',99);
-define('LISTING_ID_NIVEAUX_PALIERS','.46.47.48.49.');
+define('LISTING_ID_NIVEAUX_PALIERS','.1.2.3.4.');
 
 // CHARSET : "iso-8859-1" ou "utf-8" suivant l'encodage utilisé ; ajouter si besoin "AddDefaultCharset ..." dans le fichier .htaccess
 define('CHARSET','utf-8');
@@ -80,7 +80,7 @@ define('SERVEUR_TYPE',$serveur);
 // SERVEUR_COMMUNAUTAIRE : URL complète du fichier chargé d'effectuer la liaison entre les installations de SACoche et le serveur communautaire concernant les référentiels.
 // SERVEUR_DOCUMENTAIRE  : URL complète du fichier chargé d'afficher les documentations
 // SERVEUR_VERSION       : URL complète du fichier chargé de renvoyer le numéro de la dernière version disponible
-define('SERVEUR_PROJET'        , 'http://sacoche.xcasenligne.fr'); // http://competences.sesamath.net
+define('SERVEUR_PROJET'        , 'http://sacoche.sesamath.net');
 define('SERVEUR_COMMUNAUTAIRE' , SERVEUR_PROJET.'/appel_externe.php');
 define('SERVEUR_DOCUMENTAIRE'  , SERVEUR_PROJET.'/appel_doc.php');
 define('SERVEUR_VERSION'       , SERVEUR_PROJET.'/appel_version.php');

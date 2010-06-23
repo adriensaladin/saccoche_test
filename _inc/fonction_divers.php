@@ -889,4 +889,89 @@ function recuperer_numero_derniere_version()
 	return (mb_strlen($requete_reponse)==10) ? $requete_reponse : 'Dernière version non détectée...' ;
 }
 
+/**
+ * Creer_Dossier
+ * Tester l'existence d'un dossier, le créer, tester son accès en écriture.
+ * 
+ * @param string   $dossier
+ * @return bool
+ */
+
+function Creer_Dossier($dossier)
+{
+	global $affichage;
+	// Le dossier existe-t-il déjà ?
+	if(is_dir($dossier))
+	{
+		$affichage .= '<label for="rien" class="valide">Dossier &laquo;&nbsp;<b>'.$dossier.'</b>&nbsp;&raquo; déjà en place.</label><br />'."\r\n";
+		return true;
+	}
+	// Le dossier a-t-il bien été créé ?
+	$test = @mkdir($dossier);
+	if(!$test)
+	{
+		$affichage .= '<label for="rien" class="erreur">Echec lors de la création du dossier &laquo;&nbsp;<b>'.$dossier.'</b>&nbsp;&raquo; : veuillez le créer manuellement.</label><br />'."\r\n";
+		return false;
+	}
+	$affichage .= '<label for="rien" class="valide">Dossier &laquo;&nbsp;<b>'.$dossier.'</b>&nbsp;&raquo; créé.</label><br />'."\r\n";
+	// Le dossier est-il accessible en écriture ?
+	$test = is_writable($dossier);
+	if(!$test)
+	{
+		$affichage .= '<label for="rien" class="erreur">Dossier &laquo;&nbsp;<b>'.$dossier.'</b>&nbsp;&raquo; inaccessible en écriture : veuillez en changer les droits manuellement.</label><br />'."\r\n";
+		return false;
+	}
+	// Si on arrive là, c'est bon...
+	$affichage .= '<label for="rien" class="valide">Dossier &laquo;&nbsp;<b>'.$dossier.'</b>&nbsp;&raquo; accessible en écriture.</label><br />'."\r\n";
+	return true;
+}
+
+/**
+ * Vider_Dossier
+ * Vider un dossier ne contenant que d'éventuels fichiers.
+ * 
+ * @param string   $dossier
+ * @return void
+ */
+
+function Vider_Dossier($dossier)
+{
+	$tab_fichier = scandir($dossier);
+	unset($tab_fichier[0],$tab_fichier[1]);	// fichiers '.' et '..'
+	foreach($tab_fichier as $fichier_nom)
+	{
+		unlink($dossier.'/'.$fichier_nom);
+	}
+}
+
+/**
+ * Supprimer_Dossier
+ * Supprimer un dossier, après avoir effacé récursivement son contenu.
+ * 
+ * @param string   $dossier
+ * @return void
+ */
+
+function Supprimer_Dossier($dossier)
+{
+	$tab_contenu = scandir($dossier);
+	foreach($tab_contenu as $contenu)
+	{
+		if( ($contenu!='.') && ($contenu!='..') )
+		{
+			$chemin_contenu = $dossier.'/'.$contenu;
+			if(is_dir($chemin_contenu))
+			{
+				Supprimer_Dossier($chemin_contenu);
+				rmdir($chemin_contenu);
+			}
+			else
+			{
+				unlink($chemin_contenu);
+			}
+		}
+	}
+}
+
+
 ?>

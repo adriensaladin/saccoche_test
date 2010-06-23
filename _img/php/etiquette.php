@@ -31,10 +31,11 @@ header("Content-type: image/png");
 
 require_once('../../_inc/fonction_clean.php');
 
-$nom    = isset($_GET['nom'])    ? $_GET['nom']    : '';
-$prenom = isset($_GET['prenom']) ? $_GET['prenom'] : '';
+$dossier = isset($_GET['dossier']) ? $_GET['dossier'] : '';
+$nom     = isset($_GET['nom'])     ? $_GET['nom']     : '';
+$prenom  = isset($_GET['prenom'])  ? $_GET['prenom']  : '';
 
-$fichier = '../../__tmp/badge/'.clean_login($nom).'_'.clean_login($prenom).'.png';
+$fichier = '../../__tmp/badge/'.clean_entier($dossier).'/'.clean_login($nom).'_'.clean_login($prenom).'.png';
 
 if(!file_exists($fichier))
 {

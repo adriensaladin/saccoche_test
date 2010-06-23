@@ -36,15 +36,6 @@ $dossier_dump   = './__tmp/dump-base/';
 $dossier_temp   = './__tmp/dump-base/'.$_SESSION['BASE'].'/';
 $dossier_import = './__tmp/import/';
 
-function vider_dossier($dossier)
-{
-	$tab_fichier = scandir($dossier);
-	unset($tab_fichier[0],$tab_fichier[1]);	// fichiers '.' et '..'
-	foreach($tab_fichier as $fichier_nom)
-	{
-		unlink($dossier.$fichier_nom);
-	}
-}
 function verifier_dossier($dossier)
 {
 	$taille_maximale = 0;
@@ -52,23 +43,16 @@ function verifier_dossier($dossier)
 	unset($tab_fichier[0],$tab_fichier[1]);	// fichiers '.' et '..'
 	foreach($tab_fichier as $fichier_nom)
 	{
-		$prefixe   = substr($fichier_nom,0,13);
-		$extension = pathinfo($fichier_nom,PATHINFO_EXTENSION);
+		$chemin_fichier = $dossier.'/'.$fichier_nom;
+		$prefixe   = substr($chemin_fichier,0,13);
+		$extension = pathinfo($chemin_fichier,PATHINFO_EXTENSION);
 		if( ($prefixe!='dump_sacoche_') && ($extension!='sql') )
 		{
 			return false;
 		}
-		$taille_maximale = max( $taille_maximale , filesize($dossier.$fichier_nom) );
+		$taille_maximale = max( $taille_maximale , filesize($chemin_fichier) );
 	}
 	return $taille_maximale;
-}
-function effacer_dossier($dossier)
-{
-	$test = rmdir($dossier);
-}
-function creer_dossier($dossier)
-{
-	$test = mkdir($dossier);
 }
 function formater_guillemets($val)
 {
@@ -99,11 +83,11 @@ if($action=='sauvegarder')
 	// Créer ou vider le dossier temporaire
 	if(!is_dir($dossier_temp))
 	{
-		creer_dossier($dossier_temp);
+		Creer_Dossier($dossier_temp);
 	}
 	else
 	{
-		vider_dossier($dossier_temp);
+		Vider_Dossier($dossier_temp);
 	}
 	// Bloquer l'application
 	bloquer_application($_SESSION['USER_PROFIL'],'Sauvegarde de la base en cours.');
@@ -162,8 +146,7 @@ if($action=='sauvegarder')
 	}
 	$zip->close();
 	// Supprimer le dossier temporaire
-	vider_dossier($dossier_temp);
-	effacer_dossier($dossier_temp);
+	Supprimer_Dossier($dossier_temp);
 	// Afficher le retour
 	$top_arrivee = microtime(TRUE);
 	$duree = number_format($top_arrivee - $top_depart,2,',','');
@@ -201,11 +184,11 @@ elseif($action=='uploader')
 	// Créer ou vider le dossier temporaire
 	if(!is_dir($dossier_temp))
 	{
-		creer_dossier($dossier_temp);
+		Creer_Dossier($dossier_temp);
 	}
 	else
 	{
-		vider_dossier($dossier_temp);
+		Vider_Dossier($dossier_temp);
 	}
 	// Dezipper dans le dossier temporaire
 	$zip = new ZipArchive();
@@ -275,8 +258,7 @@ elseif($action=='restaurer')
 	// Débloquer l'application
 	debloquer_application($_SESSION['USER_PROFIL']);
 	// Supprimer le dossier temporaire
-	vider_dossier($dossier_temp);
-	effacer_dossier($dossier_temp);
+	Supprimer_Dossier($dossier_temp);
 	// Afficher le retour
 	$top_arrivee = microtime(TRUE);
 	$duree = number_format($top_arrivee - $top_depart,2,',','');

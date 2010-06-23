@@ -184,18 +184,19 @@ function deleteBOM($file)
 	On transmet en paramètre à la fonction : le dossier à vider + le délai d'expiration en minutes
 */
 
-function vide_dossier($dossier,$nb_minutes)
+function effacer_fichiers_temporaires($dossier,$nb_minutes)
 {
 	$date_limite = time() - $nb_minutes*60;
 	$tab_fichier = scandir($dossier);
 	unset($tab_fichier[0],$tab_fichier[1]);	// fichiers '.' et '..'
 	foreach($tab_fichier as $fichier_nom)
 	{
-		$extension = pathinfo($fichier_nom,PATHINFO_EXTENSION);
-		$date_unix = filemtime($dossier.$fichier_nom);
-		if( (is_file($dossier.$fichier_nom)) && ($date_unix<$date_limite) && ($extension!='htm') )
+		$chemin_fichier = $dossier.'/'.$fichier_nom;
+		$extension = pathinfo($chemin_fichier,PATHINFO_EXTENSION);
+		$date_unix = filemtime($chemin_fichier);
+		if( (is_file($chemin_fichier)) && ($date_unix<$date_limite) && ($extension!='htm') )
 		{
-			unlink($dossier.$fichier_nom);
+			unlink($chemin_fichier);
 		}
 	}
 }

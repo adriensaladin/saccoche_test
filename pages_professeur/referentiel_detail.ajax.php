@@ -341,6 +341,7 @@ elseif( ($action=='del') && (in_array($contexte,array('n1','n2','n3'))) && $elem
 		$DB_SQL.= 'LEFT JOIN sacoche_referentiel_item USING (theme_id) ';
 		$DB_SQL.= 'LEFT JOIN sacoche_jointure_devoir_item USING (item_id) ';
 		$DB_SQL.= 'LEFT JOIN sacoche_saisie USING (item_id) ';
+		$DB_SQL.= 'LEFT JOIN sacoche_demande USING (item_id) ';
 		$DB_SQL.= 'WHERE domaine_id=:domaine_id';
 		$DB_VAR = array(':domaine_id'=>$element_id);
 	}
@@ -351,6 +352,7 @@ elseif( ($action=='del') && (in_array($contexte,array('n1','n2','n3'))) && $elem
 		$DB_SQL.= 'LEFT JOIN sacoche_referentiel_item USING (theme_id) ';
 		$DB_SQL.= 'LEFT JOIN sacoche_jointure_devoir_item USING (item_id) ';
 		$DB_SQL.= 'LEFT JOIN sacoche_saisie USING (item_id) ';
+		$DB_SQL.= 'LEFT JOIN sacoche_demande USING (item_id) ';
 		$DB_SQL.= 'WHERE theme_id=:theme_id';
 		$DB_VAR = array(':theme_id'=>$element_id);
 	}
@@ -360,6 +362,7 @@ elseif( ($action=='del') && (in_array($contexte,array('n1','n2','n3'))) && $elem
 		$DB_SQL.= 'FROM sacoche_referentiel_item ';
 		$DB_SQL.= 'LEFT JOIN sacoche_jointure_devoir_item USING (item_id) ';
 		$DB_SQL.= 'LEFT JOIN sacoche_saisie USING (item_id) ';
+		$DB_SQL.= 'LEFT JOIN sacoche_demande USING (item_id) ';
 		$DB_SQL.= 'WHERE item_id=:item_id';
 		$DB_VAR = array(':item_id'=>$element_id);
 	}
@@ -399,8 +402,9 @@ elseif( ($action=='del') && (in_array($contexte,array('n1','n2','n3'))) && $elem
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 elseif( ($action=='fus') && $element_id && $element2_id )
 {
-	// Supprimer l'item à fusionner
+	// Supprimer l'item à fusionner et les demandes d'évaluations associées (ne nous embêtons pas avec ça...)
 	$DB_SQL = 'DELETE FROM sacoche_referentiel_item ';
+	$DB_SQL.= 'LEFT JOIN sacoche_demande USING (item_id) ';
 	$DB_SQL.= 'WHERE item_id=:item_id';
 	$DB_VAR = array(':item_id'=>$element_id);
 	DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);

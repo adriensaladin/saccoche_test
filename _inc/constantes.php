@@ -32,7 +32,7 @@
 
 // VERSION_PROG : version des fichiers installés, à comparer avec la dernière version disponible sur le serveur communautaire
 // VERSION_BASE : version de la base associée, à comparer avec la version de la base actuellement installée
-define('VERSION_PROG','2010-06-12');
+define('VERSION_PROG','2010-06-23');
 define('VERSION_BASE','2010-06-12');
 
 // VERSION_CSS_SCREEN / VERSION_CSS_PRINT / VERSION_JS_BIBLIO / VERSION_JS_GLOBAL / VERSION_JS_FILE

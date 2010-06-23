@@ -37,43 +37,11 @@ $affichage = '';
 if( $step==1 )
 {
 	$poursuivre = true;
-	// Fonction utilisée pour tester l'existence d'un dossier, le créer, tester son accès en écriture
-	function creer_dossier($dossier)
-	{
-		global $affichage,$poursuivre;
-		if(is_dir($dossier))
-		{
-			$affichage .= '<label for="rien" class="valide">Dossier &laquo;&nbsp;<b>'.$dossier.'</b>&nbsp;&raquo; déjà en place.</label><br />'."\r\n";
-		}
-		else
-		{
-			$test = @mkdir($dossier);
-			if($test)
-			{
-				$affichage .= '<label for="rien" class="valide">Dossier &laquo;&nbsp;<b>'.$dossier.'</b>&nbsp;&raquo; créé.</label><br />'."\r\n";
-				$test = is_writable($dossier);
-				if($test)
-				{
-					$affichage .= '<label for="rien" class="valide">Dossier &laquo;&nbsp;<b>'.$dossier.'</b>&nbsp;&raquo; accessible en écriture.</label><br />'."\r\n";
-				}
-				else
-				{
-					$affichage .= '<label for="rien" class="erreur">Dossier &laquo;&nbsp;<b>'.$dossier.'</b>&nbsp;&raquo; inaccessible en écriture : veuillez en changer les droits manuellement.</label><br />'."\r\n";
-					$poursuivre = false;
-				}
-			}
-			else
-			{
-				$affichage .= '<label for="rien" class="erreur">Echec lors de la création du dossier &laquo;&nbsp;<b>'.$dossier.'</b>&nbsp;&raquo; : veuillez le créer manuellement.</label><br />'."\r\n";
-				$poursuivre = false;
-			}
-		}
-	}
 	// Création des deux dossiers principaux, et vérification de leur accès en écriture
 	$tab_dossier = array('./__private','./__tmp');
 	foreach($tab_dossier as $dossier)
 	{
-		creer_dossier($dossier);
+		$poursuivre = $poursuivre && Creer_Dossier($dossier);
 	}
 	// Création des sous-dossiers, et vérification de leur accès en éciture
 	if($poursuivre)
@@ -81,7 +49,7 @@ if( $step==1 )
 		$tab_dossier = array('./__private/config','./__private/log','./__private/mysql','./__tmp/badge','./__tmp/cookie','./__tmp/dump-base','./__tmp/export','./__tmp/import','./__tmp/login-mdp','./__tmp/logo','./__tmp/rss');
 		foreach($tab_dossier as $dossier)
 		{
-			creer_dossier($dossier);
+			$poursuivre = $poursuivre && Creer_Dossier($dossier);
 		}
 	}
 	// Affichage du résultat des opérations
@@ -417,6 +385,10 @@ elseif( $step==6 )
 			// Insérer un compte administrateur dans la base de la structure
 			$password = fabriquer_mdp();
 			$user_id = DB_STRUCTURE_ajouter_utilisateur($num_sconet=0,$reference='','administrateur',WEBMESTRE_NOM,WEBMESTRE_PRENOM,$login='admin',$password,$classe_id=0,$id_ent='',$id_gepi='');
+			// Créer un dossier accueillir pour les vignettes verticales avec l'identité des élèves
+			Creer_Dossier('./__tmp/badge/'.'0');
+			file_put_contents('./__tmp/badge/'.'0'.'/index.htm','Circulez, il n\'y a rien à voir par ici !');
+			// Affichage du retour
 			$affichage .= '<p><label class="valide">Les tables de la base de données ont été installées.</label></p>'."\r\n";
 			$affichage .= '<span class="astuce">Le premier compte administrateur a été créé avec votre identité :</span>'."\r\n";
 			$affichage .= '<ul class="puce">';

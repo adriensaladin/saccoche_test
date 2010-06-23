@@ -94,6 +94,9 @@ if( ($action=='ajouter') && isset($tab_geo[$geo_id]) && $localisation && $denomi
 	{
 		exit('Erreur lors de l\'envoi du courriel !');
 	}
+	// Créer un dossier pour accueillir les vignettes verticales avec l'identité des élèves
+	Creer_Dossier('./__tmp/badge/'.$base_id);
+	file_put_contents('./__tmp/badge/'.$base_id.'/index.htm','Circulez, il n\'y a rien à voir par ici !');
 	// On affiche le retour
 	echo'<tr id="id_'.$base_id.'" class="new">';
 	echo	'<td>'.$base_id.'</td>';

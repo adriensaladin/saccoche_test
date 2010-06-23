@@ -196,6 +196,7 @@ function DB_WEBMESTRE_ajouter_structure($base_id,$geo_id,$structure_uai,$localis
 	/* Il reste à :
 		+ Lancer les requêtes pour installer et remplir les tables, éventuellement personnaliser certains paramètres de la structure
 		+ Insérer le compte administrateur dans la base de cette structure, éventuellement lui envoyer un courriel
+		+ Créer un dossier pour les les vignettes images
 	*/
 	return $base_id;
 }
@@ -292,6 +293,8 @@ function DB_WEBMESTRE_supprimer_multi_structure($BASE)
 	$DB_SQL.= 'WHERE sacoche_base=:base ';
 	$DB_VAR = array(':base'=>$BASE);
 	DB::query(SACOCHE_WEBMESTRE_BD_NAME , $DB_SQL , $DB_VAR);
+	// Supprimer le dossier pour accueillir les vignettes verticales avec l'identité des élèves
+	Supprimer_Dossier('./sacoche/__tmp/badge/'.$BASE);
 	// Log de l'action
 	ajouter_log('Suppression de la zone structure '.$BASE.'.');
 }

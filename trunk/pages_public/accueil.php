@@ -40,14 +40,12 @@ $profil = ( isset($_GET['admin']) || isset($_GET['administrateur']) ) ? 'adminis
 ?>
 
 <?php
-// Fichiers temporaires à effacer ; il y a ausi le dossier './__tmp/cookie/' auquel on ne touche pas.
-vide_dossier('./__tmp/login-mdp/' ,     10); // Nettoyer ce dossier des fichiers antérieurs à 10 minutes
-vide_dossier('./__tmp/export/'    ,     60); // Nettoyer ce dossier des fichiers antérieurs à 1 heure
-vide_dossier('./__tmp/dump-base/' ,     60); // Nettoyer ce dossier des fichiers antérieurs à 1 heure
-// vide_dossier('./__tmp/.../' ,      1440); // Nettoyer ce dossier des fichiers antérieurs à 1 jour (24h)
-vide_dossier('./__tmp/import/'    ,  10080); // Nettoyer ce dossier des fichiers antérieurs à 1 semaine
-vide_dossier('./__tmp/rss/'       ,  43800); // Nettoyer ce dossier des fichiers antérieurs à 1 mois
-vide_dossier('./__tmp/badge/'     , 525600); // Nettoyer ce dossier des fichiers antérieurs à 1 an
+// Fichiers temporaires à effacer ; il y a ausi le dossier './__tmp/cookie/' auquel on ne touche pas, et les sous-dossiers de './__tmp/badge/' traités ailleurs
+effacer_fichiers_temporaires('./__tmp/login-mdp' ,     10); // Nettoyer ce dossier des fichiers antérieurs à 10 minutes
+effacer_fichiers_temporaires('./__tmp/export'    ,     60); // Nettoyer ce dossier des fichiers antérieurs à 1 heure
+effacer_fichiers_temporaires('./__tmp/dump-base' ,     60); // Nettoyer ce dossier des fichiers antérieurs à 1 heure
+effacer_fichiers_temporaires('./__tmp/import'    ,  10080); // Nettoyer ce dossier des fichiers antérieurs à 1 semaine
+effacer_fichiers_temporaires('./__tmp/rss'       ,  43800); // Nettoyer ce dossier des fichiers antérieurs à 1 mois
 ?>
 
 <?php
@@ -100,7 +98,7 @@ if($ALERTE_SSO)
 <h2><img src="./_img/puce_astuce.png" alt="Informations" /> Informations</h2>
 <ul class="puce">
 	<li><em>SACoche</em> est un logiciel gratuit, libre, développé avec le soutien de <a class="lien_ext" href="http://www.sesamath.net"><em>Sésamath</em></a>.</li>
-	<li>Consulter <a class="lien_ext" href="<?php echo SERVEUR_PROJET ?>">le site officiel de <em>SACoche</em></a> pour tout renseignement.</li>
+	<li>Consulter <a href="<?php echo SERVEUR_PROJET ?>">le site officiel de <em>SACoche</em></a> pour tout renseignement.</li>
 	<li>Version installée <em><?php echo VERSION_PROG ?></em>.<label id="ajax_version" for="version"></label></li>
 </ul>
 

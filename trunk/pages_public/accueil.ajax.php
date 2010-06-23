@@ -111,6 +111,8 @@ elseif( ($action=='initialiser') && (HEBERGEUR_INSTALLATION=='mono-structure') &
 {
 	// Mettre à jour la base si nécessaire
 	maj_base_si_besoin($profil);
+	// Nettoyer le dossier des vignettes si nécessaire
+	effacer_fichiers_temporaires('./__tmp/badge/'.'0' , 525600); // Nettoyer ce dossier des fichiers antérieurs à 1 an
 	// Requête pour récupérer la dénomination et le mode de connexion
 	$DB_TAB = DB_STRUCTURE_lister_parametres('"denomination","connexion_mode"');
 	foreach($DB_TAB as $DB_ROW)
@@ -148,6 +150,8 @@ elseif( ( ($action=='initialiser') && ($BASE>0) && (HEBERGEUR_INSTALLATION=='mul
 	// Mettre à jour la base si nécessaire
 	charger_parametres_mysql_supplementaires($BASE);
 	maj_base_si_besoin($profil);
+	// Nettoyer le dossier des vignettes si nécessaire
+	effacer_fichiers_temporaires('./__tmp/badge/'.$BASE , 525600); // Nettoyer ce dossier des fichiers antérieurs à 1 an
 	// Une deuxième requête sur SACOCHE_STRUCTURE_BD_NAME pour savoir si le mode de connexion est SSO ou pas
 	$DB_ROW = DB_STRUCTURE_lister_parametres('"connexion_mode"');
 	if(!count($DB_ROW))

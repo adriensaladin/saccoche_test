@@ -294,9 +294,9 @@ function DB_WEBMESTRE_supprimer_multi_structure($BASE)
 	$DB_VAR = array(':base'=>$BASE);
 	DB::query(SACOCHE_WEBMESTRE_BD_NAME , $DB_SQL , $DB_VAR);
 	// Supprimer le dossier pour accueillir les vignettes verticales avec l'identité des élèves
-	Supprimer_Dossier('./sacoche/__tmp/badge/'.$BASE);
+	Supprimer_Dossier('./__tmp/badge/'.$BASE);
 	// Log de l'action
-	ajouter_log('Suppression de la zone structure '.$BASE.'.');
+	ajouter_log('Suppression de la structure '.$BASE.'.');
 }
 
 /**

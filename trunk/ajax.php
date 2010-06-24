@@ -36,12 +36,6 @@ require_once('./_inc/constantes.php');
 require_once('./_inc/fonction_redirection.php');
 require_once('./_inc/config_serveur.php');
 
-// Vérifier que l'appel est légitime (même si le HTTP_REFERER peut se trafiquer) ; attention, avec certains navigateurs on reçoit une chaine vide...
-if( (isset($_SERVER['HTTP_REFERER'])) && ($_SERVER['HTTP_REFERER']!='') && (strpos($_SERVER['HTTP_REFERER'],SERVEUR_ADRESSE)!==0) )
-{
-	exit('Appel ajax interdit depuis un autre domaine ('.$_SERVER['HTTP_REFERER'].') !');
-}
-
 // Paramètres transmis
 $DOSSIER = (isset($_GET['dossier'])) ? $_GET['dossier'] : 'public';
 $FICHIER = (isset($_GET['fichier'])) ? $_GET['fichier'] : 'index';

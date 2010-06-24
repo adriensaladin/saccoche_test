@@ -5,7 +5,7 @@
  * @copyright Thomas Crespin 2010
  * 
  * ****************************************************************************************************
- * SACoche <http://competences.sesamath.net> - Suivi d'Acquisitions de Compétences
+ * SACoche <http://sacoche.sesamath.net> - Suivi d'Acquisitions de Compétences
  * © Thomas Crespin pour Sésamath <http://www.sesamath.net> - Tous droits réservés.
  * Logiciel placé sous la licence libre GPL 3 <http://www.rodage.org/gpl-3.0.fr.html>.
  * ****************************************************************************************************
@@ -403,7 +403,8 @@ elseif( ($action=='del') && (in_array($contexte,array('n1','n2','n3'))) && $elem
 elseif( ($action=='fus') && $element_id && $element2_id )
 {
 	// Supprimer l'item à fusionner et les demandes d'évaluations associées (ne nous embêtons pas avec ça...)
-	$DB_SQL = 'DELETE FROM sacoche_referentiel_item ';
+	$DB_SQL = 'DELETE sacoche_referentiel_item, sacoche_demande ';
+	$DB_SQL.= 'FROM sacoche_referentiel_item ';
 	$DB_SQL.= 'LEFT JOIN sacoche_demande USING (item_id) ';
 	$DB_SQL.= 'WHERE item_id=:item_id';
 	$DB_VAR = array(':item_id'=>$element_id);

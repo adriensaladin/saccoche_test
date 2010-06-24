@@ -5,7 +5,7 @@
  * @copyright Thomas Crespin 2010
  * 
  * ****************************************************************************************************
- * SACoche <http://competences.sesamath.net> - Suivi d'Acquisitions de Compétences
+ * SACoche <http://sacoche.sesamath.net> - Suivi d'Acquisitions de Compétences
  * © Thomas Crespin pour Sésamath <http://www.sesamath.net> - Tous droits réservés.
  * Logiciel placé sous la licence libre GPL 3 <http://www.rodage.org/gpl-3.0.fr.html>.
  * ****************************************************************************************************
@@ -735,7 +735,7 @@ function afficher_arborescence_socle_from_SQL($DB_TAB,$dynamique,$reference,$aff
 							{
 								foreach($tab_entree[$palier_id][$pilier_id][$section_id] as $socle_id => $entree_texte)
 								{
-									$retour .= '<li class="li_n3">'.html($entree_texte).'</li>'."\r\n";
+									$retour .= '<li class="li_n3">'.$entree_texte.'</li>'."\r\n";
 									
 								}
 							}

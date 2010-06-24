@@ -33,7 +33,7 @@ $TITRE = "Bienvenue dans votre espace identifié !";
 
 <ul class="puce">
 	<li><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=environnement_generalites__ergonomie_generale">DOC : Ergonomie générale.</a></span></li>
-	<li><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=environnement_generalites__fonctionnalites_eleve">DOC : Fonctionnalités de l'élève.</a></span></li>
+	<li><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=environnement_generalites__fonctionnalites_eleve">DOC : Fonctionnalités pour un élève.</a></span></li>
 </ul>
 
 <hr />

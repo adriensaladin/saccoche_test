@@ -39,7 +39,7 @@ function open_old_session()
 {
 	$ID = $_COOKIE[SESSION_NOM];
 	session_id($ID);
-	session_start();
+	return session_start();
 }
 
 // Créer une nouvelle session
@@ -47,7 +47,7 @@ function open_new_session()
 {
 	$ID = uniqid().md5('grain_de_sable'.mt_rand());	// Utiliser l'option préfixe ou entropie de uniqid() insère un '.' qui peut provoquer une erreur disant que les seuls caractères autorisés sont a-z, A-Z, 0-9 et -
 	session_id($ID);
-	session_start();
+	return session_start();
 }
 
 // Initialiser une session existante

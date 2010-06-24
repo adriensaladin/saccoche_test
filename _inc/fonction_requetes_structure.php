@@ -5,7 +5,7 @@
  * @copyright Thomas Crespin 2010
  * 
  * ****************************************************************************************************
- * SACoche <http://competences.sesamath.net> - Suivi d'Acquisitions de Compétences
+ * SACoche <http://sacoche.sesamath.net> - Suivi d'Acquisitions de Compétences
  * © Thomas Crespin pour Sésamath <http://www.sesamath.net> - Tous droits réservés.
  * Logiciel placé sous la licence libre GPL 3 <http://www.rodage.org/gpl-3.0.fr.html>.
  * ****************************************************************************************************
@@ -2382,7 +2382,7 @@ function DB_STRUCTURE_supprimer_groupe($groupe_id,$groupe_type,$with_devoir=true
 function DB_STRUCTURE_supprimer_devoir_et_saisies($devoir_id,$prof_id)
 {
 	// Il faut aussi supprimer les jointures du devoir avec les items
-	$DB_SQL = 'DELETE FROM sacoche_devoir, sacoche_jointure_devoir_item, sacoche_saisie ';
+	$DB_SQL = 'DELETE sacoche_devoir, sacoche_jointure_devoir_item, sacoche_saisie ';
 	$DB_SQL.= 'FROM sacoche_devoir ';
 	$DB_SQL.= 'LEFT JOIN sacoche_jointure_devoir_item USING (devoir_id) ';
 	$DB_SQL.= 'LEFT JOIN sacoche_saisie USING (devoir_id,prof_id) ';

@@ -5,7 +5,7 @@
  * @copyright Thomas Crespin 2010
  * 
  * ****************************************************************************************************
- * SACoche <http://competences.sesamath.net> - Suivi d'Acquisitions de Compétences
+ * SACoche <http://sacoche.sesamath.net> - Suivi d'Acquisitions de Compétences
  * © Thomas Crespin pour Sésamath <http://www.sesamath.net> - Tous droits réservés.
  * Logiciel placé sous la licence libre GPL 3 <http://www.rodage.org/gpl-3.0.fr.html>.
  * ****************************************************************************************************
@@ -120,6 +120,8 @@ if($profil!='webmestre')
 </ul>
 
 <hr />
+
+<img src="http://sacoche.sesamath.net/_img/portail/migration2.png" alt="Avertissement" />
 
 <script type="text/javascript">
 	var VERSION_PROG = "<?php echo VERSION_PROG ?>";

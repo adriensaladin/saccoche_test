@@ -4,7 +4,7 @@
  * @copyright Thomas Crespin 2010
  * 
  * ****************************************************************************************************
- * SACoche <http://competences.sesamath.net> - Suivi d'Acquisitions de Compétences
+ * SACoche <http://sacoche.sesamath.net> - Suivi d'Acquisitions de Compétences
  * © Thomas Crespin pour Sésamath <http://www.sesamath.net> - Tous droits réservés.
  * Logiciel placé sous la licence libre GPL 3 <http://www.rodage.org/gpl-3.0.fr.html>.
  * ****************************************************************************************************
@@ -683,6 +683,7 @@ $(document).ready
 									lien_texte  = '<img src="./_img/link_'+lien_image+'.png" alt="" title="'+lien_nom+'" />';
 									$('#ajax_msg').parent().parent().children('b').html(coef_texte+socle_texte+lien_texte+texte).show();
 									tab_ressources[element_id] = (lien=='') ? '' : lien_nom ;
+									infobulle();
 								}
 								else
 								{

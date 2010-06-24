@@ -2583,7 +2583,7 @@ function DB_STRUCTURE_supprimer_mono_structure()
 	// Supprimer le fichier de connexion
 	unlink($CHEMIN_MYSQL.'serveur_sacoche_structure.php');
 	// Supprimer le dossier pour accueillir les vignettes verticales avec l'identité des élèves
-	Supprimer_Dossier('./sacoche/__tmp/badge/'.'0');
+	Supprimer_Dossier('./__tmp/badge/'.'0');
 	// Log de l'action
 	ajouter_log('Résiliation de l\'inscription.');
 }

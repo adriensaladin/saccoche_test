@@ -46,11 +46,11 @@ INSERT INTO sacoche_matiere VALUES
 ( 32, 1, 0, "RUS1", "Russe LV1"),
 ( 33, 1, 0, "RUS2", "Russe LV2"),
 ( 34, 1, 0, "DOC", "Documentation"),
-( 35, 1, 0, 'POR1', 'Portugais LV1');
-( 36, 1, 0, 'POR2', 'Portugais LV2');
-( 37, 1, 0, 'CHI1', 'Chinois LV1');
-( 38, 1, 0, 'CHI2', 'Chinois LV2');
-( 39, 1, 0, 'OCCR', 'Occitan');
+( 35, 1, 0, 'POR1', 'Portugais LV1'),
+( 36, 1, 0, 'POR2', 'Portugais LV2'),
+( 37, 1, 0, 'CHI1', 'Chinois LV1'),
+( 38, 1, 0, 'CHI2', 'Chinois LV2'),
+( 39, 1, 0, 'OCCR', 'Occitan'),
 ( 99, 1, 1, "TRANS", "Transversal");
 
 ALTER TABLE sacoche_matiere ENABLE KEYS;

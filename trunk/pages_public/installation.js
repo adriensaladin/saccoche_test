@@ -404,6 +404,7 @@ $(document).ready
 							$('#form3').html('');
 							$('#form4').html('');
 							$('#form5').html(responseHTML);
+							infobulle();
 							$('#f_host').focus();
 						}
 					}
@@ -502,6 +503,7 @@ $(document).ready
 				$('#form3').html('');
 				$('#form4').html('');
 				$('#form5').html(responseHTML);
+				infobulle();
 				$('#f_name').focus();
 			}
 			else

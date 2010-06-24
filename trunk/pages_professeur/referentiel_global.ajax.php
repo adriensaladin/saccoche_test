@@ -58,7 +58,7 @@ $tab_limites['classique']  = array(0,1,2,3,4,5,6,7,8,9,10,15,20,30,40,50);
 if( ($action=='Voir') && $matiere_id && $niveau_id )
 {
 	$DB_TAB = DB_STRUCTURE_recuperer_arborescence($prof_id=0,$matiere_id,$niveau_id,$only_item=false,$socle_nom=true);
-	exit( afficher_arborescence_from_SQL($DB_TAB,$dynamique=false,$reference=false,$aff_coef='image',$aff_socle='image',$aff_lien='image',$aff_input=false) );
+	exit( afficher_arborescence_matiere_from_SQL($DB_TAB,$dynamique=false,$reference=false,$aff_coef='image',$aff_socle='image',$aff_lien='image',$aff_input=false) );
 }
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-

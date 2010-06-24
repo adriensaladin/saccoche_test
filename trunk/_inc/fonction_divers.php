@@ -507,7 +507,7 @@ function envoyer_webmestre_courriel($adresse,$objet,$contenu)
 }
 
 /**
- * afficher_arborescence_from_SQL
+ * afficher_arborescence_matiere_from_SQL
  * Retourner une liste ordonnée à afficher à partir d'une requête SQL transmise.
  * 
  * @param tab         $DB_TAB
@@ -520,7 +520,7 @@ function envoyer_webmestre_courriel($adresse,$objet,$contenu)
  * @return string
  */
 
-function afficher_arborescence_from_SQL($DB_TAB,$dynamique,$reference,$aff_coef,$aff_socle,$aff_lien,$aff_input)
+function afficher_arborescence_matiere_from_SQL($DB_TAB,$dynamique,$reference,$aff_coef,$aff_socle,$aff_lien,$aff_input)
 {
 	$input_texte = '';
 	$coef_texte  = '';
@@ -635,6 +635,108 @@ function afficher_arborescence_from_SQL($DB_TAB,$dynamique,$reference,$aff_coef,
 									}
 									$retour .= '</ul>'."\r\n";
 									$retour .= '</li>'."\r\n";
+								}
+							}
+							$retour .= '</ul>'."\r\n";
+							$retour .= '</li>'."\r\n";
+						}
+					}
+					$retour .= '</ul>'."\r\n";
+					$retour .= '</li>'."\r\n";
+				}
+			}
+			$retour .= '</ul>'."\r\n";
+			$retour .= '</li>'."\r\n";
+		}
+	}
+	$retour .= '</ul>'."\r\n";
+	return $retour;
+}
+
+/**
+ * afficher_arborescence_socle_from_SQL
+ * Retourner une liste ordonnée à afficher à partir d'une requête SQL transmise.
+ * 
+ * @param tab         $DB_TAB
+ * @param bool        $dynamique   arborescence cliquable ou pas (plier/replier)
+ * @param bool        $reference   afficher ou pas les références
+ * @param bool        $aff_input   affichage ou pas des input radio avec label
+ * @return string
+ */
+
+function afficher_arborescence_socle_from_SQL($DB_TAB,$dynamique,$reference,$aff_input)
+{
+	$input_texte = '';
+	$label_texte_avant = '';
+	$label_texte_apres = '';
+	// Traiter le retour SQL : on remplit les tableaux suivants.
+	$tab_palier  = array();
+	$tab_pilier  = array();
+	$tab_section = array();
+	$tab_entree   = array();
+	$palier_id = 0;
+	foreach($DB_TAB as $DB_ROW)
+	{
+		if($DB_ROW['palier_id']!=$palier_id)
+		{
+			$palier_id = $DB_ROW['palier_id'];
+			$tab_palier[$palier_id] = $DB_ROW['palier_nom'];
+			$pilier_id  = 0;
+			$section_id = 0;
+			$entree_id   = 0;
+		}
+		if( (!is_null($DB_ROW['pilier_id'])) && ($DB_ROW['pilier_id']!=$pilier_id) )
+		{
+			$pilier_id = $DB_ROW['pilier_id'];
+			$tab_pilier[$palier_id][$pilier_id] = $DB_ROW['pilier_nom'];
+			$tab_pilier[$palier_id][$pilier_id] = ($reference) ? $DB_ROW['pilier_ref'].' - '.$DB_ROW['pilier_nom'] : $DB_ROW['pilier_nom'];
+		}
+		if( (!is_null($DB_ROW['section_id'])) && ($DB_ROW['section_id']!=$section_id) )
+		{
+			$section_id = $DB_ROW['section_id'];
+			$tab_section[$palier_id][$pilier_id][$section_id] = ($reference) ? $DB_ROW['pilier_ref'].'.'.$DB_ROW['section_ordre'].' - '.$DB_ROW['section_nom'] : $DB_ROW['section_nom'];
+		}
+		if( (!is_null($DB_ROW['entree_id'])) && ($DB_ROW['entree_id']!=$entree_id) )
+		{
+			$entree_id = $DB_ROW['entree_id'];
+			if($aff_input)
+			{
+				$input_texte = '<input id="socle_'.$entree_id.'" name="f_socle" type="radio" value="'.$entree_id.'" /> ';
+				$label_texte_avant = '<label for="socle_'.$entree_id.'">';
+				$label_texte_apres = '</label>';
+			}
+			$entree_texte = ($reference) ? $DB_ROW['pilier_ref'].'.'.$DB_ROW['section_ordre'].'.'.$DB_ROW['entree_ordre'].' - '.$DB_ROW['entree_nom'] : $DB_ROW['entree_nom'] ;
+			$tab_entree[$palier_id][$pilier_id][$section_id][$entree_id] = $input_texte.$label_texte_avant.html($entree_texte).$label_texte_apres;
+		}
+	}
+	// Affichage de l'arborescence
+	$span_avant = ($dynamique) ? '<span>' : '' ;
+	$span_apres = ($dynamique) ? '</span>' : '' ;
+	$retour = '<ul class="ul_m1">'."\r\n";
+	if(count($tab_palier))
+	{
+		foreach($tab_palier as $palier_id => $palier_texte)
+		{
+			$retour .= '<li class="li_m1" id="palier_'.$palier_id.'">'.$span_avant.html($palier_texte).$span_apres."\r\n";
+			$retour .= '<ul class="ul_n1">'."\r\n";
+			if(isset($tab_pilier[$palier_id]))
+			{
+				foreach($tab_pilier[$palier_id] as $pilier_id => $pilier_texte)
+				{
+					$retour .= '<li class="li_n1">'.$span_avant.html($pilier_texte).$span_apres."\r\n";
+					$retour .= '<ul class="ul_n2">'."\r\n";
+					if(isset($tab_section[$palier_id][$pilier_id]))
+					{
+						foreach($tab_section[$palier_id][$pilier_id] as $section_id => $section_texte)
+						{
+							$retour .= '<li class="li_n2">'.$span_avant.html($section_texte).$span_apres."\r\n";
+							$retour .= '<ul class="ul_n3">'."\r\n";
+							if(isset($tab_entree[$palier_id][$pilier_id][$section_id]))
+							{
+								foreach($tab_entree[$palier_id][$pilier_id][$section_id] as $socle_id => $entree_texte)
+								{
+									$retour .= '<li class="li_n3">'.html($entree_texte).'</li>'."\r\n";
+									
 								}
 							}
 							$retour .= '</ul>'."\r\n";

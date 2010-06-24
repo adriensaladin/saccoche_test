@@ -58,7 +58,7 @@ INSERT INTO sacoche_socle_section VALUES
 ( 44, 12, 1, "Lire"),
 ( 45, 12, 2, "Écrire"),
 ( 46, 12, 3, "S'exprimer à l'oral"),
-( 47, 12, 4 "Utiliser des outils"),
+( 47, 12, 4, "Utiliser des outils"),
 ( 48, 13, 1, "Réagir et dialoguer"),
 ( 49, 13, 2, "Écouter et comprendre"),
 ( 50, 13, 3, "Parler en continu"),

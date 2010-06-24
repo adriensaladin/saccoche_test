@@ -75,9 +75,26 @@ if($ALERTE_SSO)
 }
 ?>
 
+<?php
+// Liens vers les autres profils d'identification
+$liens_autres_profils = '';
+if($profil!='normal')
+{
+	$liens_autres_profils .= '<a class="anti_h2" href="index.php">normal</a>';
+}
+if($profil!='administrateur')
+{
+	$liens_autres_profils .= '<a class="anti_h2" href="index.php?administrateur">administrateur</a>';
+}
+if($profil!='webmestre')
+{
+	$liens_autres_profils .= '<a class="anti_h2" href="index.php?webmestre">webmestre</a>';
+}
+?>
+
 <hr />
 
-<h2><img src="./_img/login.gif" alt="Identification" /> Identification <?php echo($profil=='normal')?'':'<span style="color:#C00">'.$profil.'</span>'; ?></h2>
+<h2><img src="./_img/login.gif" alt="Identification" /> Identification <?php echo($profil=='normal')?'normale':'<span style="color:#C00">'.$profil.'</span>'; ?><?php echo $liens_autres_profils ?></h2>
 <form action=""><fieldset>
 	<input id="f_base" name="f_base" type="hidden" value="<?php echo $BASE ?>" />
 	<input id="f_profil" name="f_profil" type="hidden" value="<?php echo $profil ?>" />

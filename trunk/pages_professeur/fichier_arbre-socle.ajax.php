@@ -33,7 +33,7 @@ $palier_nom = (isset($_POST['f_palier_nom'])) ? clean_texte($_POST['f_palier_nom
 $dossier_export = './__tmp/export/';
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-//	Export CSV de l'arborescence des items d'une matière d'un prof
+//	Export CSV de l'arborescence du socle
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
 if($palier_id && $palier_nom)

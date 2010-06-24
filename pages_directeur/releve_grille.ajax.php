@@ -98,6 +98,9 @@ if( $matiere_id && $niveau_id && $matiere_nom && $niveau_nom && $remplissage && 
 				$tab_liste_item[] = $item_id;
 			}
 		}
+	}
+	if(count($tab_liste_item))
+	{
 		$liste_item = implode(',',$tab_liste_item);
 	}
 	else

@@ -570,7 +570,7 @@ function DB_STRUCTURE_lister_matieres_etablissement($listing_matieres,$with_tran
 {
 	$where_trans = ($with_transversal) ? '' : 'AND matiere_transversal=0 ' ;
 	$DB_SQL = 'SELECT * FROM sacoche_matiere ';
-	$DB_SQL.= ($listing_matieres) ? 'WHERE matiere_id IN('.$listing_matieres.') OR matiere_partage=:partage '.$where_trans : 'WHERE matiere_partage=:partage ';
+	$DB_SQL.= ($listing_matieres) ? 'WHERE (matiere_id IN('.$listing_matieres.') OR matiere_partage=:partage) '.$where_trans : 'WHERE matiere_partage=:partage '.$where_trans;
 	$DB_SQL.= 'ORDER BY matiere_nom ASC';
 	$DB_VAR = array(':partage'=>0);
 	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
@@ -1819,10 +1819,10 @@ function DB_STRUCTURE_modifier_referentiel($matiere_id,$niveau_id,$DB_VAR)
 	{
 		switch($key)
 		{
-			case ':partage_etat'   : $tab_set[] = 'partage_etat='.$key; break;
-			case ':partage_date'   : $tab_set[] = 'partage_date='.$key; break;
-			case ':calcul_methode' : $tab_set[] = 'calcul_methode='.$key; break;
-			case ':calcul_limite'  : $tab_set[] = 'calcul_limite='.$key; break;
+			case ':partage_etat'   : $tab_set[] = 'referentiel_partage_etat='.$key; break;
+			case ':partage_date'   : $tab_set[] = 'referentiel_partage_date='.$key; break;
+			case ':calcul_methode' : $tab_set[] = 'referentiel_calcul_methode='.$key; break;
+			case ':calcul_limite'  : $tab_set[] = 'referentiel_calcul_limite='.$key; break;
 		}
 	}
 	$DB_SQL = 'UPDATE sacoche_referentiel ';
@@ -2079,7 +2079,7 @@ function DB_STRUCTURE_modifier_liaison_professeur_matiere($user_id,$matiere_id,$
 	if($etat)
 	{
 		// On ne peut pas faire un REPLACE car si un enregistrement est présent ça fait un DELETE+INSERT et du coup on perd la valeur de jointure_coord.
-		$DB_SQL = 'SELECT sacoche_structure_id FROM sacoche_jointure_user_matiere ';
+		$DB_SQL = 'SELECT * FROM sacoche_jointure_user_matiere ';
 		$DB_SQL.= 'WHERE user_id=:user_id AND matiere_id=:matiere_id ';
 		$DB_SQL.= 'LIMIT 1';
 		$DB_VAR = array(':user_id'=>$user_id,':matiere_id'=>$matiere_id);

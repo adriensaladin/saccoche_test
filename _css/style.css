@@ -45,13 +45,14 @@ img {vertical-align:text-top}
 td img , #aide_en_ligne img {vertical-align:middle}
 input[type=radio],input[type=checkbox],input[type=image] {vertical-align:-2px}
 input[readonly=readonly],input[disabled=disabled] {color:#666}
-a {color:#139;text-decoration:none}a:hover{color:#D41;text-decoration:underline}
 h1{display:block;font-size:125%;text-align:center;font-weight:bold;font-variant:small-caps;color:#33A;letter-spacing:0.15em;}
 h1 img{vertical-align:middle}
 h1 a{margin:auto 1em}
 #titre_page{background:transparent url(../_img/logo_petit.png) no-repeat 60px 1px;line-height:62px}
 #titre_aide{background:transparent url(../_img/puce_manuel_ouvert.png) no-repeat left;padding-left:24px;margin:1ex 2em;text-align:left}
 h2{display:block;font-size:110%;text-align:left;font-weight:bold;font-variant:small-caps;color:#33A;letter-spacing:0.15em;margin-top:1ex;margin-bottom:1ex;}
+a.anti_h2{background:transparent url(../_img/actualiser_small.png) no-repeat left;padding-left:15px;margin-left:1em;font-size:80%;font-weight:normal;font-variant:normal;letter-spacing:0;}
+a {color:#139;text-decoration:none}a:hover{color:#D41;text-decoration:underline}
 hr {display:block;height:1px;margin:1em 0;color:#66F;background:#66F}
 span.astuce,div.astuce,p.astuce {background:transparent url(../_img/puce_astuce.png) no-repeat top left;padding-left:18px}
 span.danger,div.danger,p.danger {background:transparent url(../_img/puce_danger.gif) no-repeat top left;padding-left:18px;color:#C00}
@@ -202,6 +203,14 @@ table.scor_eval tbody td input.ABS  {background:#FFF url('../_img/note/note_ABS.
 table.scor_eval tbody td input.NN   {background:#FFF url('../_img/note/note_NN.gif')   no-repeat center center;}
 table.scor_eval tbody td input.DISP {background:#FFF url('../_img/note/note_DISP.gif') no-repeat center center;}
 table.scor_eval tbody td input:focus {border:2px solid #00F}
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+/* Tableau de simulation de calcul des scores, aussi utilisé pour dessiner les cellules d'un tableur.  */
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
+table.simulation {border-collapse:separate;border-spacing:3px;empty-cells:hide;text-align:center}
+table.simulation colgroup {margin:auto 10px}
+table.simulation th, table.simulation td {border:1px solid #000;text-align:center}
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 /* Couleur de fond pour indiquer A / VA / NA                                                           */

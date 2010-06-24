@@ -93,7 +93,7 @@ foreach($tab_options as $value)
 <hr />
 
 <div id="bilan">
-<table id="simulation">
+<table class="simulation">
 	<thead>
 		<tr>
 			<th colspan="2">Cas de 1 devoir</th>

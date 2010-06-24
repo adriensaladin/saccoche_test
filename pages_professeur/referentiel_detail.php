@@ -135,88 +135,13 @@ else
 	// Affichage de la liste des items du socle pour chaque palier
 	if($_SESSION['PALIERS'])
 	{
-		$DB_SQL = 'SELECT * FROM sacoche_socle_palier ';
-		$DB_SQL.= 'LEFT JOIN sacoche_socle_pilier USING (palier_id) ';
-		$DB_SQL.= 'LEFT JOIN sacoche_socle_section USING (pilier_id) ';
-		$DB_SQL.= 'LEFT JOIN sacoche_socle_entree USING (section_id) ';
-		$DB_SQL.= 'WHERE palier_id IN('.$_SESSION['PALIERS'].') ';
-		$DB_SQL.= 'ORDER BY palier_ordre ASC, pilier_ordre ASC, section_ordre ASC, entree_ordre ASC';
-		$DB_VAR = array();
-		$DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-		$tab_palier  = array();
-		$tab_pilier  = array();
-		$tab_section = array();
-		$tab_socle   = array();
-		$palier_id = 0;
-		$affich_socle = '';
-		foreach($DB_TAB as $DB_ROW)
-		{
-			if($DB_ROW['palier_id']!=$palier_id)
-			{
-				$palier_id = $DB_ROW['palier_id'];
-				$tab_palier[$palier_id] = $DB_ROW['palier_nom'];
-				$pilier_id  = 0;
-				$section_id = 0;
-				$socle_id   = 0;
-			}
-			if( (!is_null($DB_ROW['pilier_id'])) && ($DB_ROW['pilier_id']!=$pilier_id) )
-			{
-				$pilier_id = $DB_ROW['pilier_id'];
-				$tab_pilier[$palier_id][$pilier_id] = $DB_ROW['pilier_nom'];
-			}
-			if( (!is_null($DB_ROW['section_id'])) && ($DB_ROW['section_id']!=$section_id) )
-			{
-				$section_id = $DB_ROW['section_id'];
-				$tab_section[$palier_id][$pilier_id][$section_id] = $DB_ROW['section_nom'];
-			}
-			if( (!is_null($DB_ROW['entree_id'])) && ($DB_ROW['entree_id']!=$socle_id) )
-			{
-				$socle_id = $DB_ROW['entree_id'];
-				$tab_socle[$palier_id][$pilier_id][$section_id][$socle_id] = $DB_ROW['entree_nom'];
-			}
-		}
-		$affich_socle .= '<ul class="ul_m1">'."\r\n";
-		foreach($tab_palier as $palier_id => $palier_nom)
-		{
-			$affich_socle .= '	<li class="li_m1" id="palier_'.$palier_id.'"><span>'.html($palier_nom).'</span>'."\r\n";
-			$affich_socle .= '		<ul class="ul_n1">'."\r\n";
-			if(count($tab_pilier[$palier_id]))
-			{
-				foreach($tab_pilier[$palier_id] as $pilier_id => $pilier_nom)
-				{
-					$affich_socle .= '			<li class="li_n1"><span>'.html($pilier_nom).'</span>'."\r\n";
-					$affich_socle .= '				<ul class="ul_n2">'."\r\n";
-					if(count($tab_section[$palier_id][$pilier_id]))
-					{
-						foreach($tab_section[$palier_id][$pilier_id] as $section_id => $section_nom)
-						{
-							$affich_socle .= '					<li class="li_n2"><span>'.html($section_nom).'</span>'."\r\n";
-							$affich_socle .= '						<ul class="ul_n3">'."\r\n";
-							if(count($tab_socle[$palier_id][$pilier_id][$section_id]))
-							{
-								foreach($tab_socle[$palier_id][$pilier_id][$section_id] as $socle_id => $socle_nom)
-								{
-									$affich_socle .= '							<li class="li_n3"><input id="socle_'.$socle_id.'" name="f_socle" type="radio" value="'.$socle_id.'" /> <label for="socle_'.$socle_id.'">'.html($socle_nom).'</label></li>'."\r\n";
-								}
-							}
-							$affich_socle .= '						</ul>'."\r\n";
-							$affich_socle .= '					</li>'."\r\n";
-						}
-					}
-					$affich_socle .= '				</ul>'."\r\n";
-					$affich_socle .= '			</li>'."\r\n";
-				}
-			}
-			$affich_socle .= '		</ul>'."\r\n";
-			$affich_socle .= '	</li>'."\r\n";
-		}
-		$affich_socle .= '</ul>'."\r\n";
+		$DB_TAB = DB_STRUCTURE_recuperer_arborescence_palier($_SESSION['PALIERS']);
+		echo afficher_arborescence_socle_from_SQL($DB_TAB,$dynamique=true,$reference=false,$aff_input=true);
 	}
 	else
 	{
-		$affich_socle = '<p><span class="danger"> Aucun palier du socle n\'est associé à l\'établissement ! L\'administrateur doit préalablement choisir les paliers évalués...</span></p>'."\r\n";
+		echo'<p><span class="danger"> Aucun palier du socle n\'est associé à l\'établissement ! L\'administrateur doit préalablement choisir les paliers évalués...</span></p>'."\r\n";
 	}
-	echo $affich_socle;
 	?>
 </div>
 

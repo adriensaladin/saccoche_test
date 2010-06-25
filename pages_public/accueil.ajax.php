@@ -143,7 +143,7 @@ elseif( ( ($action=='initialiser') && ($BASE>0) && (HEBERGEUR_INSTALLATION=='mul
 	if(!count($DB_ROW))
 	{
 		// Sans doute un établissement supprimé, mais le cookie est encore là
-		setcookie('SACoche-etablissement','',time()-42000,'/');
+		setcookie(COOKIE_STRUCTURE,'',time()-42000,'/');
 		exit('Erreur : établissement non trouvé dans la base d\'administration !');
 	}
 	afficher_nom_etablissement($BASE,$DB_ROW['structure_denomination']);

@@ -85,4 +85,7 @@ define('SERVEUR_COMMUNAUTAIRE' , SERVEUR_PROJET.'/appel_externe.php');
 define('SERVEUR_DOCUMENTAIRE'  , SERVEUR_PROJET.'/appel_doc.php');
 define('SERVEUR_VERSION'       , SERVEUR_PROJET.'/appel_version.php');
 
+// COOKIE_STRUCTURE : nom du cookie servant à retenir l'établissement sélectionné.
+define('COOKIE_STRUCTURE','SACoche-etablissement');
+
 ?>

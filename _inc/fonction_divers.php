@@ -490,7 +490,7 @@ function connecter_user($BASE,$profil,$login,$password,$mode_connection)
 	// Mémoriser la date de la (dernière) connexion
 	DB_STRUCTURE_modifier_date('connexion',$_SESSION['USER_ID']);
 	// Enregistrement d'un cookie sur le poste client servant à retenir le dernier établissement sélectionné si identification avec succès
-	setcookie('SACoche-etablissement',$BASE,time()+60*60*24*365,'/');
+	setcookie(COOKIE_STRUCTURE,$BASE,time()+60*60*24*365,'/');
 	return'ok';
 }
 

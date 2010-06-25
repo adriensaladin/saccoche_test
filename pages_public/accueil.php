@@ -32,7 +32,7 @@ $VERSION_JS_FILE = 5;
 
 <?php
 // Lecture d'un cookie sur le poste client servant à retenir le dernier établissement sélectionné si identification avec succès
-$BASE = (isset($_COOKIE['SACoche-etablissement'])) ? clean_entier($_COOKIE['SACoche-etablissement']) : 0 ;
+$BASE = (isset($_COOKIE[COOKIE_STRUCTURE])) ? clean_entier($_COOKIE[COOKIE_STRUCTURE]) : 0 ;
 // Test si id d'établissement transmis dans l'URL
 $BASE = (isset($_GET['id'])) ? clean_entier($_GET['id']) : $BASE ;
 // Test si affichage du formulaire spécial pour un administrateur d'une structure (pas de SSO) ou pour le webmestre

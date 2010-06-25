@@ -35,7 +35,7 @@ $version_mysql_mini = '4.1'; // Pour l'installation
 
 // Vérifier la présence des modules nécessaires
 $extensions_chargees = get_loaded_extensions();
-$extensions_requises = array('session','mysql','dom','gd','mbstring','PDO','pdo_mysql','zip','zlib');
+$extensions_requises = array('curl','dom','gd','mbstring','mysql','PDO','pdo_mysql','session','zip','zlib');
 $extensions_manquantes = array_diff($extensions_requises,$extensions_chargees);
 if(count($extensions_manquantes))
 {

@@ -41,12 +41,7 @@ if($mode=='cas')
 	// Préparation de la connexion au serveur CAS
 	//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
-	// La classe phpCAS nécessite la bibliothèque de fonction cURL http://fr2.php.net/manual/fr/book.curl.php
-	if(!in_array( 'curl' , get_loaded_extensions() ))
-	{
-		affich_message_exit($titre='PHP incomplet',$contenu='Le module PHP "curl" est manquant (bibliothèque requise pour CAS).');
-	}
-	// De connecter pour charger les paramètres de connexion au serveur CAS
+	// Se connecter pour charger les paramètres de connexion au serveur CAS
 	if($BASE)
 	{
 		charger_parametres_mysql_supplementaires($BASE);

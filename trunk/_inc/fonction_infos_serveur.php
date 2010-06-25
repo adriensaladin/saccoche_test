@@ -45,7 +45,7 @@ $tab_commentaires['upload_max_filesize']  = 'Par défaut 2Mo.<br />A augmenter s
 $tab_commentaires['max_allowed_packet']   = 'Par défaut 1Mo (1 048 576 octets).<br />Pour restaurer une sauvegarde, les fichiers contenus dans le zip ne doivent pas dépasser cette taille.';
 $tab_commentaires['max_user_connections'] = 'Une valeur inférieure à 5 est susceptible, suivant la charge, de poser problème.';
 $tab_commentaires['group_concat_max_len'] = 'Par défaut 1024 octets.<br />Une telle valeur devrait suffire.';
-$tab_commentaires['modules_PHP']          = 'Les modules \'dom\' \'gd\' \'mbstring\' \'mysql\' \'PDO\' \'pdo_mysql\' \'session\' \'zip\' \'zlib\' sont requis.<br />Le module \'curl\' est aussi nécessaire pour une identification utilisant le protocole CAS.';
+$tab_commentaires['modules_PHP']          = 'Les modules  \'curl\' \'dom\' \'gd\' \'mbstring\' \'mysql\' \'pdo\' \'pdo_mysql\' \'session\' \'zip\' \'zlib\' sont requis.';
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 // Fonctions de base

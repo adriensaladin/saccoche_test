@@ -2368,7 +2368,7 @@ function DB_STRUCTURE_supprimer_groupe($groupe_id,$groupe_type,$with_devoir=true
 	}
 	// Log de l'action
 	$complement = ($with_devoir) ? ' avec les devoirs associés' : '' ;
-	ajouter_log('Suppression d\'un goupe ('.$groupe_type.' '.$groupe_id.')'.$complement.'.');
+	ajouter_log('Suppression d\'un groupe ('.$groupe_type.' '.$groupe_id.')'.$complement.'.');
 }
 
 /**

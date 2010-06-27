@@ -157,6 +157,10 @@ else
 entete();
 ?>
 <head>
+	<meta name="Description" content="SACoche -  Suivi d'Acquisition de Compétences" />
+	<meta name="Keywords" content="SACoche Sésamath évaluation compétences validation socle commun collège points Lomer" />
+	<meta name="Author-Personal" content="Thomas Crespin pour Sésamath" />
+	<meta name="Robots" content="index,follow" />
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<link rel="shortcut icon" type="images/x-icon" href="./favicon.ico" />
 	<link rel="icon" type="image/png" href="./favicon.png" />

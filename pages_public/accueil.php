@@ -121,8 +121,6 @@ if($profil!='webmestre')
 
 <hr />
 
-<img src="http://sacoche.sesamath.net/_img/portail/migration2.png" alt="Avertissement" />
-
 <script type="text/javascript">
 	var VERSION_PROG = "<?php echo VERSION_PROG ?>";
 </script>

@@ -285,24 +285,19 @@ function DB_STRUCTURE_recuperer_arborescence_et_matieres_eleves_item($liste_elev
 /**
  * DB_STRUCTURE_recuperer_arborescence_palier
  * 
- * @param int    $palier_id   facultatif : si non fourni, tous les paliers seront concernés
+ * @param string|bool $liste_palier_id   id des paliers séparés par des virgules ; false pour retourner tous les paliers
  * @return array
  */
 
-function DB_STRUCTURE_recuperer_arborescence_palier($palier_id=false)
+function DB_STRUCTURE_recuperer_arborescence_palier($liste_palier_id=false)
 {
 	$DB_SQL = 'SELECT * FROM sacoche_socle_palier ';
 	$DB_SQL.= 'LEFT JOIN sacoche_socle_pilier USING (palier_id) ';
 	$DB_SQL.= 'LEFT JOIN sacoche_socle_section USING (pilier_id) ';
 	$DB_SQL.= 'LEFT JOIN sacoche_socle_entree USING (section_id) ';
-	$DB_VAR = array();
-	if($palier_id)
-	{
-		$DB_SQL.= 'WHERE palier_id=:palier_id ';
-		$DB_VAR[':palier_id'] = $palier_id;
-	}
+	$DB_SQL.= ($liste_palier_id) ? 'WHERE palier_id IN('.$liste_palier_id.') ' : '' ;
 	$DB_SQL.= 'ORDER BY palier_ordre ASC, pilier_ordre ASC, section_ordre ASC, entree_ordre ASC';
-	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , null);
 }
 
 /**

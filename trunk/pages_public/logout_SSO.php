@@ -30,7 +30,7 @@ if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');
 $BASE = (isset($_GET['f_base'])) ? intval($_GET['f_base']) : 0;
 $mode = (isset($_GET['f_mode'])) ? $_GET['f_mode']         : '';
 
-if( (!$BASE) || ($mode!='cas') )
+if($mode!='cas')
 {
 	exit('Paramètre manquant.');
 }

@@ -32,11 +32,6 @@ $TITRE = "Connexion serveur CAS";
 <?php
 $BASE = (isset($_GET['f_base'])) ? intval($_GET['f_base']) : 0;
 
-if(!$BASE)
-{
-	affich_message_exit($titre='Paramètre manquant',$contenu='Paramètre manquant.');
-}
-
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 // Préparation de la connexion au serveur CAS
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-

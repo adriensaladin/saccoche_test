@@ -32,9 +32,34 @@ $step = (isset($_POST['f_step'])) ? clean_entier($_POST['f_step']) : '';
 $affichage = '';
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-//	Étape 1 - Création de dossiers supplémentaires et de leurs droits
+//	Étape 1 - Vérification des droits d'accès en écriture des dossiers
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 if( $step==1 )
+{
+	$poursuivre = true;
+	$tab_dossier = array('./_css','./_js','./pages_administrateur','./pages_directeur','./pages_eleve','./pages_professeur','./pages_public','./pages_webmestre');
+	foreach($tab_dossier as $dossier)
+	{
+		$test = is_writable($dossier);
+		if(!$test)
+		{
+			$affichage .= '<label for="rien" class="erreur">Dossier &laquo;&nbsp;<b>'.$dossier.'</b>&nbsp;&raquo; inaccessible en écriture : veuillez en changer les droits manuellement.</label><br />'."\r\n";
+			$poursuivre = false;
+		}
+		else
+		{
+			$affichage .= '<label for="rien" class="valide">Dossier &laquo;&nbsp;<b>'.$dossier.'</b>&nbsp;&raquo; accessible en écriture.</label><br />'."\r\n";
+		}
+	}
+	// Affichage du résultat des opérations
+	echo $affichage;
+	echo ($poursuivre) ? '<p><span class="tab"><a href="#" class="step2">Passer à l\'étape 2.</a><label id="ajax_msg">&nbsp;</label></span></p>' : '<p><span class="tab"><a href="#" class="step1">Reprendre l\'étape 1.</a><label id="ajax_msg">&nbsp;</label></span></p>' ;
+}
+
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+//	Étape 2 - Création de dossiers supplémentaires et de leurs droits
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+elseif( $step==2 )
 {
 	$poursuivre = true;
 	// Création des deux dossiers principaux, et vérification de leur accès en écriture
@@ -54,13 +79,13 @@ if( $step==1 )
 	}
 	// Affichage du résultat des opérations
 	echo $affichage;
-	echo ($poursuivre) ? '<p><span class="tab"><a href="#" class="step2">Passer à l\'étape 2.</a><label id="ajax_msg">&nbsp;</label></span></p>' : '<p><span class="tab"><a href="#" class="step1">Reprendre l\'étape 1.</a><label id="ajax_msg">&nbsp;</label></span></p>' ;
+	echo ($poursuivre) ? '<p><span class="tab"><a href="#" class="step3">Passer à l\'étape 3.</a><label id="ajax_msg">&nbsp;</label></span></p>' : '<p><span class="tab"><a href="#" class="step2">Reprendre l\'étape 2.</a><label id="ajax_msg">&nbsp;</label></span></p>' ;
 }
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-//	Étape 2 - Remplissage des dossiers avec le contenu approprié
+//	Étape 3 - Remplissage des dossiers avec le contenu approprié
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-elseif( $step==2 )
+elseif( $step==3 )
 {
 	// Création des fichiers index.htm
 	$poursuivre1 = true;
@@ -91,28 +116,28 @@ elseif( $step==2 )
 	}
 	// Affichage du résultat des opérations
 	echo $affichage;
-	echo ($poursuivre1 && $poursuivre2) ? '<p><span class="tab"><a href="#" class="step3">Passer à l\'étape 3.</a><label id="ajax_msg">&nbsp;</label></span></p>' : '<p><span class="tab"><a href="#" class="step1">Reprendre l\'étape 1.</a><label id="ajax_msg">&nbsp;</label></span></p>' ;
+	echo ($poursuivre1 && $poursuivre2) ? '<p><span class="tab"><a href="#" class="step4">Passer à l\'étape 4.</a><label id="ajax_msg">&nbsp;</label></span></p>' : '<p><span class="tab"><a href="#" class="step3">Reprendre l\'étape 3.</a><label id="ajax_msg">&nbsp;</label></span></p>' ;
 }
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-//	Étape 3 - Choix du type d'installation
+//	Étape 4 - Choix du type d'installation
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-elseif( $step==3 )
+elseif( $step==4 )
 {
 	if( defined('HEBERGEUR_INSTALLATION') && defined('HEBERGEUR_DENOMINATION') && defined('HEBERGEUR_UAI') && defined('HEBERGEUR_ADRESSE_SITE') && defined('HEBERGEUR_LOGO') && defined('HEBERGEUR_CNIL') && defined('WEBMESTRE_NOM') && defined('WEBMESTRE_PRENOM') && defined('WEBMESTRE_COURRIEL') && defined('WEBMESTRE_PASSWORD_MD5') )
 	{
 		$affichage .= '<p><label for="rien" class="valide">Les informations concernant le type d\'installation, l\'hébergement et le webmestre sont déjà renseignées.</label></p>'."\r\n";
-		$affichage .= '<p><span class="tab"><a href="#" class="step5">Passer à l\'étape 5.</a><label id="ajax_msg">&nbsp;</label></span></p>' ;
+		$affichage .= '<p><span class="tab"><a href="#" class="step6">Passer à l\'étape 6.</a><label id="ajax_msg">&nbsp;</label></span></p>' ;
 	}
 	else
 	{
 		$affichage .= '<p><label for="rien" class="alerte">Le fichier &laquo;&nbsp;<b>'.$fichier_constantes.'</b>&nbsp;&raquo; n\'existant pas ou étant corrompu, vous devez renseigner les étapes 3 et 4.</label></p>'."\r\n";
 		$affichage .= '<h2>Type d\'installation</h2>'."\r\n";
 		$affichage .= '<p class="astuce">Le type d\'installation, déterminant, n\'est pas modifiable ultérieurement : sélectionnez ce qui vous correspond vraiment !</p>'."\r\n";
-		$affichage .= '<ul class="puce"><li><a href="#" class="step4" id="mono-structure">Installation d\'un unique établissement sur ce serveur, nécessitant une seule base de données.</a></li></ul>'."\r\n";
+		$affichage .= '<ul class="puce"><li><a href="#" class="step5" id="mono-structure">Installation d\'un unique établissement sur ce serveur, nécessitant une seule base de données.</a></li></ul>'."\r\n";
 		$affichage .= '<div class="danger">La base MySQL à utiliser doit déjà exister (la créer maintenant si nécessaire, typiquement via "phpMyAdmin").</div>'."\r\n";
 		$affichage .= '<p />'."\r\n";
-		$affichage .= '<ul class="puce"><li><a href="#" class="step4" id="multi-structures">Gestion d\'établissements multiples (par un rectorat...) avec autant de bases de données associées.</a></li></ul>'."\r\n";
+		$affichage .= '<ul class="puce"><li><a href="#" class="step5" id="multi-structures">Gestion d\'établissements multiples (par un rectorat...) avec autant de bases de données associées.</a></li></ul>'."\r\n";
 		$affichage .= '<div class="danger">Il faut disposer d\'un compte MySQL avec des droits d\'administration de bases et d\'utilisateurs (création, suppression).</div>'."\r\n";
 		$affichage .= '<p><span class="tab"><label id="ajax_msg">&nbsp;</label></span></p>'."\r\n";
 	}
@@ -120,9 +145,9 @@ elseif( $step==3 )
 }
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-//	Étape 4 - Informations concernant l'hébergement et le webmestre
+//	Étape 5 - Informations concernant l'hébergement et le webmestre
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-elseif( $step==4 )
+elseif( $step==5 )
 {
 	// récupérer et teste le paramètre
 	$installation = (isset($_POST['f_installation'])) ? clean_texte($_POST['f_installation']) : '';
@@ -146,7 +171,7 @@ elseif( $step==4 )
 		$affichage .= '<div class="astuce">Ce mot de passe doit être complexe pour offrir un niveau de sécurité suffisant !</div>'."\r\n";
 		$affichage .= '<label class="tab" for="f_password1"><img alt="" src="./_img/bulle_aide.png" title="La robustesse du mot de passe indiqué dans ce champ est estimée ci-dessous." /> Saisie 1/2 :</label><input id="f_password1" name="f_password1" size="20" type="password" value="" /><br />'."\r\n";
 		$affichage .= '<label class="tab" for="f_password2">Saisie 2/2 :</label><input id="f_password2" name="f_password2" size="20" type="password" value="" /><p />'."\r\n";
-		$affichage .= '<span class="tab"></span><input id="f_step" name="f_step" type="hidden" value="41" /><input id="f_submit" type="submit" value="Valider." /><label id="ajax_msg">&nbsp;</label>'."\r\n";
+		$affichage .= '<span class="tab"></span><input id="f_step" name="f_step" type="hidden" value="51" /><input id="f_submit" type="submit" value="Valider." /><label id="ajax_msg">&nbsp;</label>'."\r\n";
 		$affichage .= '<hr />'."\r\n";
 		$affichage .= '<p><span class="astuce">Un mot de passe est considéré comme robuste s\'il comporte de nombreux caractères, mélangeant des lettres minuscules et majuscules, des chiffres et d\'autres symboles.</span></p>'."\r\n";
 		$affichage .= '<div id="robustesse" style="border:1px solid blue;margin:auto 10%;text-align:center;font-style:italic;background-color:#F99">indicateur de robustesse : <span>0</span> / 12</div>'."\r\n";
@@ -159,7 +184,7 @@ elseif( $step==4 )
 	}
 }
 
-elseif( $step==41 )
+elseif( $step==51 )
 {
 	// récupérer et tester les paramètres
 	$installation = (isset($_POST['f_installation'])) ? clean_texte($_POST['f_installation']) : '';
@@ -175,7 +200,7 @@ elseif( $step==41 )
 		fabriquer_fichier_hebergeur_info($installation,$denomination,$uai,$adresse_site,$logo='',$cnil='non renseignée',$nom,$prenom,$courriel,crypter_mdp($password),0);
 		$affichage .= '<p><label for="rien" class="valide">Les informations concernant le webmestre et l\'hébergement sont maintenant renseignées.</label></p>'."\r\n";
 		$affichage .= '<div class="astuce">Vous pourrez les modifier depuis l\'espace du webmestre, en particulier ajouter un logo et un numéro de déclaration à la CNIL.</div>'."\r\n";
-		$affichage .= '<p><span class="tab"><a href="#" class="step5">Passer à l\'étape 5.</a><label id="ajax_msg">&nbsp;</label></span></p>' ;
+		$affichage .= '<p><span class="tab"><a href="#" class="step6">Passer à l\'étape 6.</a><label id="ajax_msg">&nbsp;</label></span></p>' ;
 		echo $affichage;
 	}
 	else
@@ -185,20 +210,20 @@ elseif( $step==41 )
 }
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-//	Étape 5 - Indication des paramètres de connexion MySQL
+//	Étape 6 - Indication des paramètres de connexion MySQL
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-elseif( $step==5 )
+elseif( $step==6 )
 {
 	// A ce niveau, le fichier d'informations sur l'hébergement doit exister.
 	if(!defined('HEBERGEUR_INSTALLATION'))
 	{
 		$affichage .= '<label for="rien" class="valide">Les données du fichier <b>'.$fichier_constantes.'</b> n\'ont pas été correctement chargées.</label>'."\r\n";
-		$affichage .= '<p><span class="tab"><a href="#" class="step3">Retour à l\'étape 3.</a><label id="ajax_msg">&nbsp;</label></span></p>' ;
+		$affichage .= '<p><span class="tab"><a href="#" class="step4">Retour à l\'étape 4.</a><label id="ajax_msg">&nbsp;</label></span></p>' ;
 	}
 	elseif(is_file($fichier_mysql_config))
 	{
 		$affichage .= '<p><label for="rien" class="valide">Le fichier <b>'.$fichier_mysql_config.'</b> existe déjà ; modifiez-en manuellement le contenu si les paramètres sont incorrects.</label></p>'."\r\n";
-		$affichage .= '<p><span class="tab"><a href="#" class="step6">Passer à l\'étape 6.</a><label id="ajax_msg">&nbsp;</label></span></p>' ;
+		$affichage .= '<p><span class="tab"><a href="#" class="step7">Passer à l\'étape 7.</a><label id="ajax_msg">&nbsp;</label></span></p>' ;
 	}
 	else
 	{
@@ -208,16 +233,16 @@ elseif( $step==5 )
 		$affichage .= '<p class="danger">Comme indiqué précédemment, '.$texte_alerte.'.</p>'."\r\n";
 		$affichage .= '<fieldset>'."\r\n";
 		$affichage .= '<h2>Paramètres MySQL</h2>'."\r\n";
-		$affichage .= '<label class="tab" for="f_host"><img alt="" src="./_img/bulle_aide.png" title="Parfois \'localhost\' sur un serveur que l\'on administre." /> Nom d\'hôte ou IP :</label><input id="f_host" name="f_host" size="20" type="text" value="" /><br />'."\r\n";
+		$affichage .= '<label class="tab" for="f_host"><img alt="" src="./_img/bulle_aide.png" title="Parfois \'localhost\' sur un serveur que l\'on administre." /> Hôte ou IP :</label><input id="f_host" name="f_host" size="20" type="text" value="" /><br />'."\r\n";
 		$affichage .= '<label class="tab" for="f_user">Nom d\'utilisateur :</label><input id="f_user" name="f_user" size="20" type="text" value="" /><br />'."\r\n";
 		$affichage .= '<label class="tab" for="f_pass">Mot de passe :</label><input id="f_pass" name="f_pass" size="20" type="text" value="" /><br />'."\r\n";
-		$affichage .= '<span class="tab"></span><input id="f_name" name="f_name" size="20" type="hidden" value="remplissage bidon" /><input id="f_step" name="f_step" type="hidden" value="51" /><input id="f_submit" type="submit" value="Valider." /><label id="ajax_msg">&nbsp;</label>'."\r\n";
+		$affichage .= '<span class="tab"></span><input id="f_name" name="f_name" size="20" type="hidden" value="remplissage bidon" /><input id="f_step" name="f_step" type="hidden" value="61" /><input id="f_submit" type="submit" value="Valider." /><label id="ajax_msg">&nbsp;</label>'."\r\n";
 		$affichage .= '</fieldset>'."\r\n";
 	}
 	echo $affichage;
 }
 
-elseif( $step==51 )
+elseif( $step==61 )
 {
 	// A ce niveau, le fichier d'informations sur l'hébergement doit exister.
 	if(!defined('HEBERGEUR_INSTALLATION'))
@@ -269,7 +294,7 @@ elseif( $step==51 )
 		// Créer le fichier de connexion de la base de données du webmestre, installation multi-structures
 		fabriquer_fichier_connexion_base(0,$BD_host,$BD_name,$BD_user,$BD_pass);
 		$affichage .= '<p><label for="rien" class="valide">Les paramètres de connexion MySQL, testés avec succès, sont maintenant enregistrés.</label></p>'."\r\n";
-		$affichage .= '<p><span class="tab"><a href="#" class="step6">Passer à l\'étape 6.</a><label id="ajax_msg">&nbsp;</label></span></p>' ;
+		$affichage .= '<p><span class="tab"><a href="#" class="step7">Passer à l\'étape 7.</a><label id="ajax_msg">&nbsp;</label></span></p>' ;
 	}
 	elseif(HEBERGEUR_INSTALLATION=='mono-structure')
 	{
@@ -301,13 +326,13 @@ elseif( $step==51 )
 		$affichage .= '<p><label for="rien" class="valide">Les paramètres de connexion MySQL ont été testés avec succès.</label></p>'."\r\n";
 		$affichage .= '<h2>Base à utiliser</h2>'."\r\n";
 		$affichage .= '<label class="tab" for="f_name">Nom de la base :</label><select id="f_name" name="f_name">'.$options.'</select><br />'."\r\n";
-		$affichage .= '<span class="tab"></span><input id="f_host" name="f_host" size="20" type="hidden" value="'.html($BD_host).'" /><input id="f_user" name="f_user" size="20" type="hidden" value="'.html($BD_user).'" /><input id="f_pass" name="f_pass" size="20" type="hidden" value="'.html($BD_pass).'" /><input id="f_step" name="f_step" type="hidden" value="52" /><input id="f_submit" type="submit" value="Valider." /><label id="ajax_msg">&nbsp;</label>'."\r\n";
+		$affichage .= '<span class="tab"></span><input id="f_host" name="f_host" size="20" type="hidden" value="'.html($BD_host).'" /><input id="f_user" name="f_user" size="20" type="hidden" value="'.html($BD_user).'" /><input id="f_pass" name="f_pass" size="20" type="hidden" value="'.html($BD_pass).'" /><input id="f_step" name="f_step" type="hidden" value="62" /><input id="f_submit" type="submit" value="Valider." /><label id="ajax_msg">&nbsp;</label>'."\r\n";
 		$affichage .= '</fieldset>'."\r\n";
 	}
 	echo $affichage;
 }
 
-elseif( $step==52 )
+elseif( $step==62 )
 {
 	// A ce niveau, le fichier d'informations sur l'hébergement doit exister.
 	if(!defined('HEBERGEUR_INSTALLATION'))
@@ -338,14 +363,14 @@ elseif( $step==52 )
 	// Créer le fichier de connexion de la base de données du webmestre, installation multi-structures
 	fabriquer_fichier_connexion_base(0,$BD_host,$BD_name,$BD_user,$BD_pass);
 	$affichage .= '<p><label for="rien" class="valide">Les paramètres de connexion MySQL sont maintenant enregistrés.</label></p>'."\r\n";
-	$affichage .= '<p><span class="tab"><a href="#" class="step6">Passer à l\'étape 6.</a><label id="ajax_msg">&nbsp;</label></span></p>' ;
+	$affichage .= '<p><span class="tab"><a href="#" class="step7">Passer à l\'étape 7.</a><label id="ajax_msg">&nbsp;</label></span></p>' ;
 	echo $affichage;
 }
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-//	Étape 6 - Installation des tables de la base de données
+//	Étape 7 - Installation des tables de la base de données
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-elseif( $step==6 )
+elseif( $step==7 )
 {
 	// A ce niveau, le fichier d'informations sur l'hébergement doit exister.
 	if(!is_file($fichier_constantes))
@@ -365,7 +390,7 @@ elseif( $step==6 )
 	{
 		$s = ($nb_tables_presentes>1) ? 's' : '' ;
 		$affichage .= '<p><label class="alerte">'.$nb_tables_presentes.' table'.$s.' de SACoche étant déjà présente'.$s.' dans la base &laquo;&nbsp;<b>'.$BASE_NOM.'</b>&nbsp;&raquo;, les tables n\'ont pas été installées.</label></p>'."\r\n";
-		$affichage .= '<p class="astuce">Si besoin, supprimez les tables manuellement, puis <a href="#" class="step6">relancer l\'étape 6.</a><label id="ajax_msg">&nbsp;</label></p>'."\r\n";
+		$affichage .= '<p class="astuce">Si besoin, supprimez les tables manuellement, puis <a href="#" class="step7">relancer l\'étape 7.</a><label id="ajax_msg">&nbsp;</label></p>'."\r\n";
 		$affichage .= '<hr />'."\r\n";
 		$affichage .= '<h2>Installation logicielle terminée</h2>'."\r\n";
 		$affichage .= '<p>Pour se connecter avec le compte webmestre : <a href="'.SERVEUR_ADRESSE.'?webmestre">'.SERVEUR_ADRESSE.'?webmestre</a></p>'."\r\n";

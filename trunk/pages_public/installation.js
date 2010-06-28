@@ -31,7 +31,7 @@ $(document).ready
 	{
 
 		// ********************
-		// * Étape 0|n -> Étape 1
+		// * Départ | Étape n -> Étape 1
 		// ********************
 
 		$('a.step1').live // live est utilisé pour prendre en compte les nouveaux éléments créés
@@ -63,9 +63,9 @@ $(document).ready
 							{
 								$('#ajax_msg').removeAttr("class").html('&nbsp;');
 								$('#form0').html(responseHTML);
-								$('#form3').html('');
 								$('#form4').html('');
 								$('#form5').html('');
+								$('#form6').html('');
 							}
 						}
 					}
@@ -74,7 +74,7 @@ $(document).ready
 		);
 
 		// ********************
-		// * Étape 1|n -> Étape 2
+		// * Étape 1 -> Étape 2
 		// ********************
 
 		$('a.step2').live // live est utilisé pour prendre en compte les nouveaux éléments créés
@@ -106,9 +106,9 @@ $(document).ready
 							{
 								$('#ajax_msg').removeAttr("class").html('&nbsp;');
 								$('#form0').html(responseHTML);
-								$('#form3').html('');
 								$('#form4').html('');
 								$('#form5').html('');
+								$('#form6').html('');
 							}
 						}
 					}
@@ -141,6 +141,49 @@ $(document).ready
 						},
 						success : function(responseHTML)
 						{
+							if(responseHTML.substring(0,6)!='<label')
+							{
+								$('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);
+							}
+							else
+							{
+								$('#ajax_msg').removeAttr("class").html('&nbsp;');
+								$('#form0').html(responseHTML);
+								$('#form4').html('');
+								$('#form5').html('');
+								$('#form6').html('');
+							}
+						}
+					}
+				);
+			}
+		);
+
+		// ********************
+		// * Étape 3|n -> Étape 4
+		// ********************
+
+		$('a.step4').live // live est utilisé pour prendre en compte les nouveaux éléments créés
+		('click',
+			function()
+			{
+				$("#step li").removeAttr("class");
+				$("#step4").addClass("on");
+				$('#ajax_msg').removeAttr("class").addClass("loader").html("Demande envoyée... Veuillez patienter.");
+				$.ajax
+				(
+					{
+						type : 'POST',
+						url : 'ajax.php?dossier='+DOSSIER+'&fichier='+FICHIER,
+						data : 'f_step=4',
+						dataType : "html",
+						error : function(msg,string)
+						{
+							$('#ajax_msg').removeAttr("class").addClass("alerte").html('Echec de la connexion ! Veuillez recommencer.');
+							return false;
+						},
+						success : function(responseHTML)
+						{
 							if(responseHTML.substring(0,20)!='<p><label for="rien"')
 							{
 								$('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);
@@ -149,9 +192,9 @@ $(document).ready
 							{
 								$('#ajax_msg').removeAttr("class").html('&nbsp;');
 								$('#form0').html('');
-								$('#form3').html(responseHTML);
-								$('#form4').html('');
+								$('#form4').html(responseHTML);
 								$('#form5').html('');
+								$('#form6').html('');
 								infobulle();
 								$('#f_installation').focus();
 							}
@@ -162,23 +205,23 @@ $(document).ready
 		);
 
 		// ********************
-		// * Étape 3 -> Étape 4
+		// * Étape 4 -> Étape 5
 		// ********************
 
-		$('a.step4').live // live est utilisé pour prendre en compte les nouveaux éléments créés
+		$('a.step5').live // live est utilisé pour prendre en compte les nouveaux éléments créés
 		('click',
 			function()
 			{
 				var f_installation = $(this).attr('id');
 				$("#step li").removeAttr("class");
-				$("#step4").addClass("on");
+				$("#step5").addClass("on");
 				$('#ajax_msg').removeAttr("class").addClass("loader").html("Demande envoyée... Veuillez patienter.");
 				$.ajax
 				(
 					{
 						type : 'POST',
 						url : 'ajax.php?dossier='+DOSSIER+'&fichier='+FICHIER,
-						data : 'f_step=4&f_installation='+f_installation,
+						data : 'f_step=5&f_installation='+f_installation,
 						dataType : "html",
 						error : function(msg,string)
 						{
@@ -195,9 +238,9 @@ $(document).ready
 							{
 								$('#ajax_msg').removeAttr("class").html('&nbsp;');
 								$('#form0').html('');
-								$('#form3').html('');
-								$('#form4').html(responseHTML);
-								$('#form5').html('');
+								$('#form4').html('');
+								$('#form5').html(responseHTML);
+								$('#form6').html('');
 								infobulle();
 								$('#f_denomination').focus();
 							}
@@ -208,7 +251,7 @@ $(document).ready
 		);
 
 		// ********************
-		// * Étape 4 -> Étape 41
+		// * Étape 5 -> Étape 51
 		// ********************
 
 		//	Analyse de la robustesse du mot de passe
@@ -221,7 +264,7 @@ $(document).ready
 		);
 
 		// Le formulaire qui va être analysé et traité en AJAX
-		var formulaire4 = $('#form4');
+		var formulaire5 = $('#form5');
 
 		// Ajout d'une méthode pour vérifier le format du numéro UAI
 		jQuery.validator.addMethod
@@ -280,7 +323,7 @@ $(document).ready
 		); 
 
 		// Vérifier la validité du formulaire (avec jquery.validate.js)
-		var validation4 = formulaire4.validate
+		var validation5 = formulaire5.validate
 		(
 			{
 				rules :
@@ -315,7 +358,7 @@ $(document).ready
 		);
 
 		// Options d'envoi du formulaire (avec jquery.form.js)
-		var ajaxOptions4 =
+		var ajaxOptions5 =
 		{
 			url : 'ajax.php?dossier='+DOSSIER+'&fichier='+FICHIER,
 			type : 'POST',
@@ -323,26 +366,26 @@ $(document).ready
 			clearForm : false,
 			resetForm : false,
 			target : "#ajax_msg",
-			beforeSubmit : test_form4_avant_envoi,
-			error : retour_form4_erreur,
-			success : retour_form4_valide
+			beforeSubmit : test_form5_avant_envoi,
+			error : retour_form5_erreur,
+			success : retour_form5_valide
 		};
 
 		// Envoi du formulaire (avec jquery.form.js)
-    formulaire4.submit
+    formulaire5.submit
 		(
 			function()
 			{
-				$(this).ajaxSubmit(ajaxOptions4);
+				$(this).ajaxSubmit(ajaxOptions5);
 				return false;
 			}
 		); 
 
 		// Fonction précédent l'envoi du formulaire (avec jquery.form.js)
-		function test_form4_avant_envoi(formData, jqForm, options)
+		function test_form5_avant_envoi(formData, jqForm, options)
 		{
 			$('#ajax_msg').removeAttr("class").html("&nbsp;");
-			var readytogo = validation4.form();
+			var readytogo = validation5.form();
 			if(readytogo)
 			{
 				$('#f_submit').hide();
@@ -352,14 +395,14 @@ $(document).ready
 		}
 
 		// Fonction suivant l'envoi du formulaire (avec jquery.form.js)
-		function retour_form4_erreur(msg,string)
+		function retour_form5_erreur(msg,string)
 		{
 			$('#f_submit').show();
 			$('#ajax_msg').removeAttr("class").addClass("alerte").html("Echec de la connexion ! Veuillez valider de nouveau.");
 		}
 
 		// Fonction suivant l'envoi du formulaire (avec jquery.form.js)
-		function retour_form4_valide(responseHTML)
+		function retour_form5_valide(responseHTML)
 		{
 			$('#f_submit').show();
 			if(responseHTML.substring(0,6)=='Erreur')
@@ -369,29 +412,29 @@ $(document).ready
 			else
 			{
 				$('#form0').html(responseHTML);
-				$('#form3').html('');
 				$('#form4').html('');
 				$('#form5').html('');
+				$('#form6').html('');
 			}
 		} 
 
 		// ********************
-		// * Étape 4|41|n -> Étape 5
+		// * Étape 5|51|n -> Étape 6
 		// ********************
 
-		$('a.step5').live // live est utilisé pour prendre en compte les nouveaux éléments créés
+		$('a.step6').live // live est utilisé pour prendre en compte les nouveaux éléments créés
 		('click',
 			function()
 			{
 				$("#step li").removeAttr("class");
-				$("#step5").addClass("on");
+				$("#step6").addClass("on");
 				$('#ajax_msg').removeAttr("class").addClass("loader").html("Demande envoyée... Veuillez patienter.");
 				$.ajax
 				(
 					{
 						type : 'POST',
 						url : 'ajax.php?dossier='+DOSSIER+'&fichier='+FICHIER,
-						data : 'f_step=5',
+						data : 'f_step=6',
 						dataType : "html",
 						error : function(msg,string)
 						{
@@ -401,9 +444,9 @@ $(document).ready
 						success : function(responseHTML)
 						{
 							$('#form0').html('');
-							$('#form3').html('');
 							$('#form4').html('');
-							$('#form5').html(responseHTML);
+							$('#form5').html('');
+							$('#form6').html(responseHTML);
 							infobulle();
 							$('#f_host').focus();
 						}
@@ -413,14 +456,14 @@ $(document).ready
 		);
 
 		// ********************
-		// * Étape 5|51 -> Étape 51|52
+		// * Étape 6|61 -> Étape 61|62
 		// ********************
 
 		// Le formulaire qui va être analysé et traité en AJAX
-		var formulaire5 = $('#form5');
+		var formulaire6 = $('#form6');
 
 		// Vérifier la validité du formulaire (avec jquery.validate.js)
-		var validation5 = formulaire5.validate
+		var validation6 = formulaire6.validate
 		(
 			{
 				rules :
@@ -445,7 +488,7 @@ $(document).ready
 		);
 
 		// Options d'envoi du formulaire (avec jquery.form.js)
-		var ajaxOptions5 =
+		var ajaxOptions6 =
 		{
 			url : 'ajax.php?dossier='+DOSSIER+'&fichier='+FICHIER,
 			type : 'POST',
@@ -459,11 +502,11 @@ $(document).ready
 		};
 
 		// Envoi du formulaire (avec jquery.form.js)
-    formulaire5.submit
+    formulaire6.submit
 		(
 			function()
 			{
-				$(this).ajaxSubmit(ajaxOptions5);
+				$(this).ajaxSubmit(ajaxOptions6);
 				return false;
 			}
 		); 
@@ -472,7 +515,7 @@ $(document).ready
 		function test_form_avant_envoi5(formData, jqForm, options)
 		{
 			$('#ajax_msg').removeAttr("class").html("&nbsp;");
-			var readytogo = validation5.form();
+			var readytogo = validation6.form();
 			if(readytogo)
 			{
 				$('#f_submit').hide();
@@ -500,9 +543,9 @@ $(document).ready
 			{
 				// choix de la base (mono-structure)
 				$('#form0').html('');
-				$('#form3').html('');
 				$('#form4').html('');
-				$('#form5').html(responseHTML);
+				$('#form5').html('');
+				$('#form6').html(responseHTML);
 				infobulle();
 				$('#f_name').focus();
 			}
@@ -510,29 +553,29 @@ $(document).ready
 			{
 				// paramètres mysql et base ok
 				$('#form0').html(responseHTML);
-				$('#form3').html('');
 				$('#form4').html('');
 				$('#form5').html('');
+				$('#form6').html('');
 			}
 		} 
 
 		// ********************
-		// * Étape 5|51|52|n -> Étape 6
+		// * Étape 6|61|62|n -> Étape 7
 		// ********************
 
-		$('a.step6').live // live est utilisé pour prendre en compte les nouveaux éléments créés
+		$('a.step7').live // live est utilisé pour prendre en compte les nouveaux éléments créés
 		('click',
 			function()
 			{
 				$("#step li").removeAttr("class");
-				$("#step6").addClass("on");
+				$("#step7").addClass("on");
 				$('#ajax_msg').removeAttr("class").addClass("loader").html("Demande envoyée... Veuillez patienter.");
 				$.ajax
 				(
 					{
 						type : 'POST',
 						url : 'ajax.php?dossier='+DOSSIER+'&fichier='+FICHIER,
-						data : 'f_step=6',
+						data : 'f_step=7',
 						dataType : "html",
 						error : function(msg,string)
 						{
@@ -542,9 +585,9 @@ $(document).ready
 						success : function(responseHTML)
 						{
 							$('#form0').html(responseHTML);
-							$('#form3').html('');
 							$('#form4').html('');
 							$('#form5').html('');
+							$('#form6').html('');
 						}
 					}
 				);

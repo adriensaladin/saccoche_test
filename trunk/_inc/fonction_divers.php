@@ -988,20 +988,16 @@ function enregistrer_structure_Sesamath($structure_id,$structure_key)
 
 function url_get_contents($url)
 {
-	$requete_reponse = @file_get_contents($url);
-	// Certains serveurs n'accepent pas d'utiliser une URL comme nom de fichier (gestionnaire fopen non activé).
-	// Dans ce cas on utilise la bibliothèque cURL en remplacement
-	if($requete_reponse==false)
-	{
-		$ch = curl_init();
-		curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
-		curl_setopt($ch, CURLOPT_FOLLOWLOCATION, TRUE);
-		curl_setopt($ch, CURLOPT_HEADER, FALSE);
-		curl_setopt($ch, CURLOPT_TIMEOUT, 10);
-		curl_setopt($ch, CURLOPT_URL, $url);
-		$requete_reponse = curl_exec($ch);
-		curl_close($ch);
-	}
+	// Ne pas utiliser file_get_contents() car certains serveurs n'accepent pas d'utiliser une URL comme nom de fichier (gestionnaire fopen non activé).
+	// On utilise donc la bibliothèque cURL en remplacement
+	$ch = curl_init();
+	curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+	curl_setopt($ch, CURLOPT_FOLLOWLOCATION, TRUE);
+	curl_setopt($ch, CURLOPT_HEADER, FALSE);
+	curl_setopt($ch, CURLOPT_TIMEOUT, 10);
+	curl_setopt($ch, CURLOPT_URL, $url);
+	$requete_reponse = curl_exec($ch);
+	curl_close($ch);
 	return $requete_reponse;
 }
 

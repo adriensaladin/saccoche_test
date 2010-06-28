@@ -53,7 +53,7 @@ require_once('./_inc/fonction_affichage.php');
 $test_xml = (strpos($_SERVER['HTTP_ACCEPT'],'/xml')) ? TRUE : FALSE;
 $test_upload = ( (isset($_SERVER['CONTENT_TYPE'])) &&(strpos($_SERVER['CONTENT_TYPE'],'multipart/form-data')!==FALSE) ) ? TRUE : FALSE; // L'upload d'un fichier XML change le HTTP_ACCEPT, d'où ce second test
 $format = ( $test_xml && !$test_upload ) ? 'text/xml' : 'text/html' ;
-header('Content-Type: '.$format);header('Charset: utf-8');
+header('Content-Type: '.$format.' ; charset=utf-8');
 
 // Ouverture de la session et gestion des droits d'accès
 gestion_session($PROFIL_REQUIS = $DOSSIER);

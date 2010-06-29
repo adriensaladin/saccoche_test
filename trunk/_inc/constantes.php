@@ -65,10 +65,10 @@ define('CHARSET','utf-8');
 // SERVEUR_ADRESSE
 $protocole = ( isset($_SERVER['HTTPS']) && ($_SERVER['HTTPS']=='on') ) ? 'https://' : 'http://';
 $chemin = $protocole.$_SERVER["SERVER_NAME"].$_SERVER["SCRIPT_NAME"];
-$fin = mb_strpos($chemin,SACoche);
+$fin = strpos($chemin,SACoche); // éviter mb_strpos pour éviter une erreur fatale d'entrée.
 if($fin)
 {
-	$chemin = mb_substr($chemin,0,$fin-1);
+	$chemin = substr($chemin,0,$fin-1); // éviter mb_substr pour éviter une erreur fatale d'entrée.
 }
 define('SERVEUR_ADRESSE',$chemin);
 

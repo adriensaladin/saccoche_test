@@ -46,7 +46,7 @@ $(document).ready
 					var hashVal = window.location.hash.substr(1);
 					if(hashVal!="")
 					{
-						window.location.hash='';
+						window.location.hash='#';
 						if(hashVal=='maj_clock')
 						{
 							maj_clock(1);

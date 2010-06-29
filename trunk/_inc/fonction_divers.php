@@ -1096,6 +1096,7 @@ function Supprimer_Dossier($dossier)
 			}
 		}
 	}
+	rmdir($dossier);
 }
 
 

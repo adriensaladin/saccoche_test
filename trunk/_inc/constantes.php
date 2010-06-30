@@ -32,7 +32,7 @@
 
 // VERSION_PROG : version des fichiers installés, à comparer avec la dernière version disponible sur le serveur communautaire
 // VERSION_BASE : version de la base associée, à comparer avec la version de la base actuellement installée
-define('VERSION_PROG','2010-06-28');
+define('VERSION_PROG', @file_get_contents('VERSION.txt') );	// Ne pas mettre de chemin ! Dans un fichier texte pour permettre un appel au serveur communautaire sans le faire utiliser PHP.
 define('VERSION_BASE','2010-06-12');
 
 // VERSION_CSS_SCREEN / VERSION_CSS_PRINT / VERSION_JS_BIBLIO / VERSION_JS_GLOBAL / VERSION_JS_FILE
@@ -83,7 +83,7 @@ define('SERVEUR_TYPE',$serveur);
 define('SERVEUR_PROJET'        , 'http://sacoche.sesamath.net');
 define('SERVEUR_COMMUNAUTAIRE' , SERVEUR_PROJET.'/appel_externe.php');
 define('SERVEUR_DOCUMENTAIRE'  , SERVEUR_PROJET.'/appel_doc.php');
-define('SERVEUR_VERSION'       , SERVEUR_PROJET.'/appel_version.php');
+define('SERVEUR_VERSION'       , SERVEUR_PROJET.'/sacoche/VERSION.txt');
 
 // COOKIE_STRUCTURE : nom du cookie servant à retenir l'établissement sélectionné.
 define('COOKIE_STRUCTURE','SACoche-etablissement');

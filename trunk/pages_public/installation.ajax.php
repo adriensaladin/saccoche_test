@@ -298,34 +298,42 @@ elseif( $step==61 )
 	}
 	elseif(HEBERGEUR_INSTALLATION=='mono-structure')
 	{
-		$res = @mysql_query('SHOW DATABASES');
-		$num = mysql_num_rows($res);
-		if(!$num)
-		{
-			exit('Erreur : aucune base de données existante ne semble accessible à cet utilisateur !');
-		}
 		$tab_tables = array();
-		while($row = mysql_fetch_row($res))
+		// Récupérer, si l'hébergeur l'accepte, la liste des bases sur lequelles l'utilisateur a les droits
+		$res = @mysql_query('SHOW DATABASES');
+		if($res)
 		{
-			if( ($row[0]!='mysql') && ($row[0]!='information_schema') )
+			$num = mysql_num_rows($res);
+			if($num)
 			{
-				$tab_tables[] = $row[0];
+				while($row = mysql_fetch_row($res))
+				{
+					if( ($row[0]!='mysql') && ($row[0]!='information_schema') )
+					{
+						$tab_tables[] = $row[0];
+					}
+				}
 			}
 		}
-		if(!count($tab_tables))
-		{
-			exit('Erreur : aucune base de données existante ne semble accessible à cet utilisateur !');
-		}
 		// afficher le formulaire pour choisir le nom de la base
-		$options = '<option value=""></option>';
-		foreach($tab_tables as $table)
-		{
-			$options .= '<option value="'.html($table).'">'.html($table).'</option>';
-		}
 		$affichage .= '<fieldset>'."\r\n";
 		$affichage .= '<p><label for="rien" class="valide">Les paramètres de connexion MySQL ont été testés avec succès.</label></p>'."\r\n";
 		$affichage .= '<h2>Base à utiliser</h2>'."\r\n";
-		$affichage .= '<label class="tab" for="f_name">Nom de la base :</label><select id="f_name" name="f_name">'.$options.'</select><br />'."\r\n";
+		if(count($tab_tables))
+		{
+			// Si on a pu lister les bases accessible, on affiche un select
+			$options = '<option value=""></option>';
+			foreach($tab_tables as $table)
+			{
+				$options .= '<option value="'.html($table).'">'.html($table).'</option>';
+			}
+			$affichage .= '<label class="tab" for="f_name">Nom de la base :</label><select id="f_name" name="f_name">'.$options.'</select><br />'."\r\n";
+		}
+		else
+		{
+			// Sinon, c'est un input
+			$affichage .= '<label class="tab" for="f_name">Nom de la base :</label><input id="f_name" name="f_name" size="20" type="text" value="" /><br />'."\r\n";
+		}
 		$affichage .= '<span class="tab"></span><input id="f_host" name="f_host" size="20" type="hidden" value="'.html($BD_host).'" /><input id="f_user" name="f_user" size="20" type="hidden" value="'.html($BD_user).'" /><input id="f_pass" name="f_pass" size="20" type="hidden" value="'.html($BD_pass).'" /><input id="f_step" name="f_step" type="hidden" value="62" /><input id="f_submit" type="submit" value="Valider." /><label id="ajax_msg">&nbsp;</label>'."\r\n";
 		$affichage .= '</fieldset>'."\r\n";
 	}

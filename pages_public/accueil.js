@@ -59,7 +59,7 @@ $(document).ready
 					},
 					success : function(responseHTML)
 					{
-						if(responseHTML.length!=10)
+						if( (responseHTML.length!=10) && (responseHTML.length!=11) )
 						{
 							$('#ajax_version').addClass("alerte").html(responseHTML);
 						}

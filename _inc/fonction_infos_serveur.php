@@ -30,7 +30,6 @@
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
 $tester_version = recuperer_numero_derniere_version();
-$tester_version = (mb_strlen($tester_version)==10) ? $tester_version : 'inconnue' ;
 $complement = ($_SESSION['USER_PROFIL']!='webmestre') ? '' : ( (HEBERGEUR_INSTALLATION=='multi-structures') ? 'La valeur peut dépendre de la structure...<br />' : 'Information disponible sous un profil administrateur.<br />' ) ;
 
 $tab_commentaires = array();

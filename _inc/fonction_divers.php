@@ -90,9 +90,10 @@ function compacter($chemin,$version,$methode)
 				$fichier_compacte = $fichier_contenu;
 			}
 			$fichier_compacte = utf8_encode($fichier_compacte);	// On réencode donc en UTF-8...
-			file_put_contents($chemin_fichier_compacte,$fichier_compacte);
+			$test_ecriture = @file_put_contents($chemin_fichier_compacte,$fichier_compacte);
 		}
-		return $chemin_fichier_compacte;
+		// Il se peut que le droit en écriture ne soit pas autorisé et que la procédure d'install ne l'ai pas encore vérifié.
+		return $test_ecriture ? $chemin_fichier_compacte : $chemin_fichier_original ;
 	}
 	else
 	{
@@ -991,11 +992,13 @@ function url_get_contents($url)
 	// Ne pas utiliser file_get_contents() car certains serveurs n'accepent pas d'utiliser une URL comme nom de fichier (gestionnaire fopen non activé).
 	// On utilise donc la bibliothèque cURL en remplacement
 	$ch = curl_init();
-	curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
-	curl_setopt($ch, CURLOPT_FOLLOWLOCATION, TRUE);
-	curl_setopt($ch, CURLOPT_HEADER, FALSE);
-	curl_setopt($ch, CURLOPT_TIMEOUT, 10);
-	curl_setopt($ch, CURLOPT_URL, $url);
+	
+	curl_setopt($ch, CURLOPT_DNS_CACHE_TIMEOUT, 3600); // Le temps en seconde que CURL doit conserver les entrées DNS en mémoire. Cette option est définie à 120 secondes (2 minutes) par défaut.
+	curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);    // TRUE retourne directement le transfert sous forme de chaîne de la valeur retournée par curl_exec() au lieu de l'afficher directement.
+	curl_setopt($ch, CURLOPT_FOLLOWLOCATION, TRUE);    // TRUE pour suivre toutes les en-têtes "Location: "  que le serveur envoie dans les en-têtes HTTP (notez que cette fonction est récursive et que PHP suivra toutes les en-têtes "Location: " qu'il trouvera à moins que CURLOPT_MAXREDIRS ne soit définie).
+	curl_setopt($ch, CURLOPT_HEADER, FALSE);           // FALSE pour ne pas inclure l'en-tête dans la valeur de retour.
+	curl_setopt($ch, CURLOPT_TIMEOUT, 1);              // Le temps maximum d'exécution de la fonction cURL (en s).
+	curl_setopt($ch, CURLOPT_URL, $url);               // L'URL à récupérer. Vous pouvez aussi choisir cette valeur lors de l'appel à curl_init().
 	$requete_reponse = curl_exec($ch);
 	curl_close($ch);
 	return $requete_reponse;
@@ -1011,7 +1014,7 @@ function url_get_contents($url)
 function recuperer_numero_derniere_version()
 {
 	$requete_reponse = url_get_contents(SERVEUR_VERSION);
-	return (mb_strlen($requete_reponse)==10) ? $requete_reponse : 'Dernière version non détectée...' ;
+	return (mb_strlen($requete_reponse)<10) ? 'Dernière version non détectée...' : $requete_reponse ;
 }
 
 /**

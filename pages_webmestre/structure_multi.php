@@ -26,7 +26,8 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-$TITRE = "Établissements : Ajouter / Éditer / Retirer";
+$TITRE = "Gestion des établissements";
+$VERSION_JS_FILE = 4;
 
 // Élément de formulaire "f_geo" pour le choix d'une zone géographique
 $options_geo = '';
@@ -43,10 +44,11 @@ foreach($DB_TAB as $DB_ROW)
 	// ]]>
 </script>
 
-<form action="">
+<form id="structures" action="">
 	<table class="bilan_synthese">
 		<thead>
 			<tr>
+				<th class="nu"></th>
 				<th>Id</th>
 				<th>Zone géo</th>
 				<th>Structure Localisation</th>
@@ -66,6 +68,7 @@ foreach($DB_TAB as $DB_ROW)
 			{
 				// Afficher une ligne du tableau
 				echo'<tr id="id_'.$DB_ROW['sacoche_base'].'">';
+				echo	'<td class="nu"><input type="checkbox" name="f_ids" value="'.$DB_ROW['sacoche_base'].'" /></td>';
 				echo	'<td>'.$DB_ROW['sacoche_base'].'</td>';
 				echo	'<td><i>'.sprintf("%02u",$DB_ROW['geo_ordre']).'</i>'.html($DB_ROW['geo_nom']).'</td>';
 				echo	'<td>'.html($DB_ROW['structure_localisation']).'</td>';
@@ -76,6 +79,7 @@ foreach($DB_TAB as $DB_ROW)
 				echo	'<td>'.html($DB_ROW['structure_contact_courriel']).'</td>';
 				echo	'<td class="nu">';
 				echo		'<q class="modifier" title="Modifier cet établissement."></q>';
+				echo		'<q class="initialiser_mdp" title="Initialiser le mdp d\'un admin."></q>';
 				echo		'<q class="supprimer" title="Supprimer cet établissement."></q>';
 				echo	'</td>';
 				echo'</tr>';
@@ -83,5 +87,12 @@ foreach($DB_TAB as $DB_ROW)
 			?>
 		</tbody>
 	</table>
+	<div id="zone_actions">
+		<a href="#zone_actions" id="all_check">[ Tout cocher. ]</a>
+		<a href="#zone_actions" id="all_uncheck">[ Tout décocher. ]</a>
+		Pour les structures cochées : <input id="listing_ids" name="listing_ids" type="hidden" value="" />
+		<button id="button_newsletter" name="button_newsletter" type="button"><img alt="Rechercher" src="./_img/menu/webmestre_newsletter.png" /> Envoyer un courriel.</button>
+		<button id="button_stats" name="button_stats" type="button"><img alt="Rechercher" src="./_img/menu/webmestre_stats.png" /> Calculer les statistiques.</button>
+	</div>
 </form>
 <p />

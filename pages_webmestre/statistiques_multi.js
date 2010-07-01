@@ -35,8 +35,8 @@ $(document).ready
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
 		// tri du tableau (avec jquery.tablesorter.js).
-		var sorting = [[0,0]];
-		$('table#resultat').tablesorter({ headers:{2:{sorter:false}} });
+		var sorting = [[1,0]];
+		$('table#resultat').tablesorter({ headers:{0:{sorter:false},3:{sorter:false}} });
 		function trier_tableau()
 		{
 			if($('table#resultat tbody tr').length)
@@ -51,7 +51,7 @@ $(document).ready
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
 		// Le formulaire qui va être analysé et traité en AJAX
-		var formulaire = $("#structures");
+		var formulaire = $("#statistiques");
 
 		// Vérifier la validité du formulaire (avec jquery.validate.js)
 		var validation = formulaire.validate
@@ -87,7 +87,7 @@ $(document).ready
 		};
 
 		// Envoi du formulaire (avec jquery.form.js)
-    formulaire.submit
+		formulaire.submit
 		(
 			function()
 			{
@@ -147,7 +147,7 @@ $(document).ready
 				$('#ajax_num').html(1);
 				$('#ajax_max').html(max);
 				$('#ajax_info').show('fast');
-				$('#resultat').hide('fast').children('tbody').html('');
+				$('#structures').hide('fast').children('#resultat').children('tbody').html('');
 				calculer();
 			}
 		} 
@@ -183,9 +183,8 @@ $(document).ready
 							{
 								$('#ajax_msg1').removeAttr("class").addClass("valide").html('Calcul des statistiques terminé.');
 								$('#ajax_msg2').html('');
-								format_liens('#resultat tbody');
 								trier_tableau();
-								$('#resultat').show('fast');
+								$('#structures').show('fast');
 								$('#expli').show('fast');
 								$('#ajax_info').hide('fast');
 								$('#f_submit').show();
@@ -220,6 +219,52 @@ $(document).ready
 				$('#ajax_msg1').removeAttr("class").addClass("loader").html('Structures à l\'étude : étape ' + num + ' sur ' + max + '...');
 				$('#ajax_msg2').html('Ne pas interrompre la procédure avant la fin du traitement !');
 				calculer();
+			}
+		);
+
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+//	Initialisation
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
+		if( $('#f_base option:selected').length )
+		{
+			formulaire.submit();
+		}
+
+//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
+//	Éléments dynamiques du formulaire
+//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
+
+		// Tout cocher ou tout décocher
+		$('#all_check').click
+		(
+			function()
+			{
+				$('input[type=checkbox]').attr('checked',true);
+			}
+		);
+		$('#all_uncheck').click
+		(
+			function()
+			{
+				$('input[type=checkbox]').attr('checked',false);
+			}
+		);
+
+//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
+//	Appeler la page de newsletter
+//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
+
+		$('button').click
+		(
+			function()
+			{
+				var check_ids = new Array(); $("input[type=checkbox]:checked").each(function(){check_ids.push($(this).val());});
+				$('#listing_ids').val(check_ids);
+				var form = document.getElementById('structures');
+				form.action = './index.php?dossier='+DOSSIER+'&fichier=newsletter_multi';
+				form.method = 'post';
+				form.submit();
 			}
 		);
 

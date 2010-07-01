@@ -37,8 +37,8 @@ $(document).ready
 		var mode = false;
 
 		// tri du tableau (avec jquery.tablesorter.js).
-		var sorting = [[1,0],[2,0],[3,0]];
-		$('table.bilan_synthese').tablesorter({ headers:{8:{sorter:false}} });
+		var sorting = [[2,0],[3,0],[4,0]];
+		$('table.bilan_synthese').tablesorter({ headers:{0:{sorter:false},9:{sorter:false}} });
 		function trier_tableau()
 		{
 			if($('table.bilan_synthese tbody tr').length)
@@ -63,6 +63,7 @@ $(document).ready
 			// Fabriquer la ligne avec les éléments de formulaires
 			afficher_masquer_images_action('hide');
 			new_tr  = '<tr>';
+			new_tr += '<td class="nu"></td>';
 			new_tr += '<td></td>';
 			new_tr += '<td><select id="f_geo" name="f_geo">'+options_geo+'</select></td>';
 			new_tr += '<td><input id="f_localisation" name="f_localisation" size="40" type="text" value="" /></td>';
@@ -99,6 +100,7 @@ $(document).ready
 			geo = geo.substring(9,geo.length); // enlever l'indice de tri caché
 			// Fabriquer la ligne avec les éléments de formulaires
 			new_tr  = '<tr>';
+			new_tr += '<td class="nu"></td>';
 			new_tr += '<td>'+base_id+'<input id="f_base_id" name="f_base_id" type="hidden" value="'+base_id+'" /></td>';
 			new_tr += '<td><select id="f_geo" name="f_geo">'+options_geo.replace('>'+geo+'<',' selected="selected">'+geo+'<')+'</select></td>';
 			new_tr += '<td><input id="f_localisation" name="f_localisation" size="'+Math.max(localisation.length,30)+'" type="text" value="'+localisation+'" /></td>';
@@ -131,6 +133,45 @@ $(document).ready
 		};
 
 		/**
+		 * Initialiser un mdp admin : mise en place du formulaire
+		 * @return void
+		 */
+		var initialiser_mdp = function()
+		{
+			mode = $(this).attr('class');
+			afficher_masquer_images_action('hide');
+			base_id = $(this).parent().parent().attr('id').substring(3);
+			new_span  = '<span id="init_form"><label id="ajax_msg" class="loader">Chargement en cours... Veuillez patienter.</label></span>';
+			$(this).after(new_span);
+			$.ajax
+			(
+				{
+					type : 'POST',
+					url : 'ajax.php?dossier='+DOSSIER+'&fichier='+FICHIER,
+					data : 'f_action=lister_admin&f_base_id='+base_id,
+					dataType : "html",
+					error : function(msg,string)
+					{
+						$('#init_form').html('<label id="ajax_msg" class="alerte">Echec de la connexion !</label><q class="annuler" title="Annuler."></q>')
+					},
+					success : function(responseHTML)
+					{
+						maj_clock(1);
+						if(responseHTML.substring(0,7)=='<option')	// Attention aux caractères accentués : l'utf-8 pose des pbs pour ce test
+						{
+							$('#init_form').html('<input id="f_action" name="f_action" type="hidden" value="'+mode+'" /><select id="f_admin_id" name="f_admin_id"><option value="">administrateurs</option>'+responseHTML+'</select><input id="f_base_id" name="f_base_id" type="hidden" value="'+base_id+'" /><q class="valider" title="Confirmer l\'initialisation du de mot de passe."></q><q class="annuler" title="Annuler l\'initialisation du de mot de passe."></q> <label id="ajax_msg">&nbsp;</label>')
+						}
+					else
+						{
+							$('#init_form').html('<label id="ajax_msg" class="alerte">'+responseHTML+'</label><q class="annuler" title="Annuler."></q>')
+						}
+					}
+				}
+			);
+			infobulle();
+		};
+
+		/**
 		 * Annuler une action
 		 * @return void
 		 */
@@ -147,7 +188,8 @@ $(document).ready
 					$("table.bilan_synthese tr").show(); // $(this).parent().parent().prev().show(); pose pb si tri du tableau entre temps
 					break;
 				case 'supprimer':
-					$(this).parent().remove();
+				case 'initialiser_mdp':
+					$(this).parent().remove().html('<q class="modifier" title="Modifier cet établissement."></q><q class="initialiser_mdp" title="Initialiser le mdp d\'un admin."></q><q class="supprimer" title="Supprimer cet établissement."></q>');
 					break;
 			};
 			afficher_masquer_images_action('show');
@@ -176,18 +218,57 @@ $(document).ready
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
 		$('q.ajouter').click( ajouter );
-		$('q.modifier').live(  'click' , modifier );
-		$('q.supprimer').live( 'click' , supprimer );
-		$('q.annuler').live(   'click' , annuler );
-		$('q.valider').live(   'click' , function(){formulaire.submit();} );
+		$('q.modifier').live(        'click' , modifier );
+		$('q.supprimer').live(       'click' , supprimer );
+		$('q.initialiser_mdp').live( 'click' , initialiser_mdp );
+		$('q.annuler').live(         'click' , annuler );
+		$('q.valider').live(         'click' , function(){formulaire.submit();} );
 		$('table.bilan_synthese input , table.bilan_synthese select').live( 'keyup' , function(e){intercepter(e);} );
+
+//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
+//	Éléments dynamiques du formulaire
+//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
+
+		// Tout cocher ou tout décocher
+		$('#all_check').click
+		(
+			function()
+			{
+				$('input[type=checkbox]').attr('checked',true);
+			}
+		);
+		$('#all_uncheck').click
+		(
+			function()
+			{
+				$('input[type=checkbox]').attr('checked',false);
+			}
+		);
+
+//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
+//	Appeler la page de stats ou de newsletter
+//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
+
+		$('button').click
+		(
+			function()
+			{
+				page = ($(this).attr('id')=='button_stats') ? 'statistiques_multi' : 'newsletter_multi' ;
+				var check_ids = new Array(); $("input[type=checkbox]:checked").each(function(){check_ids.push($(this).val());});
+				$('#listing_ids').val(check_ids);
+				var form = document.getElementById('structures');
+				form.action = './index.php?dossier='+DOSSIER+'&fichier='+page;
+				form.method = 'post';
+				form.submit();
+			}
+		);
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 //	Traitement du formulaire
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
 		// Le formulaire qui va être analysé et traité en AJAX
-		var formulaire = $('form');
+		var formulaire = $("#structures");
 
 		// Ajout d'une méthode pour vérifier le format du numéro UAI
 		jQuery.validator.addMethod
@@ -257,7 +338,8 @@ $(document).ready
 					f_uai :              { required:false , uai_format:true , uai_clef:true },
 					f_contact_nom :      { required:true , maxlength:20 },
 					f_contact_prenom :   { required:true , maxlength:20 },
-					f_contact_courriel : { required:true , email:true , maxlength:60 }
+					f_contact_courriel : { required:true , email:true , maxlength:60 },
+					f_admin_id :         { required:true }
 				},
 				messages :
 				{
@@ -267,7 +349,8 @@ $(document).ready
 					f_uai :              { uai_format:"n°UAI invalide" , uai_clef:"n°UAI invalide" },
 					f_contact_nom :      { required:"nom manquant" , maxlength:"20 caractères maximum" },
 					f_contact_prenom :   { required:"prénom manquant" , maxlength:"20 caractères maximum" },
-					f_contact_courriel : { required:"courriel manquant" , email:"courriel invalide", maxlength:"60 caractères maximum" }
+					f_contact_courriel : { required:"courriel manquant" , email:"courriel invalide", maxlength:"60 caractères maximum" },
+					f_admin_id :         { required:"admin manquant" }
 				},
 				errorElement : "label",
 				errorClass : "erreur",
@@ -351,6 +434,12 @@ $(document).ready
 					case 'modifier':
 						$('q.valider').parent().parent().prev().addClass("new").html(responseHTML).show();
 						$('q.valider').parent().parent().remove();
+						break;
+					case 'initialiser_mdp':
+						$('q.valider').parent().remove();
+						var reg = new RegExp('<BR />',"g");	// Si on transmet les retours à la ligne en ajax alors ils se font pas...
+						var message = responseHTML.replace(reg,'\n').substring(4);
+						alert( message );
 						break;
 					case 'supprimer':
 						$('q.valider').parent().parent().parent().remove();

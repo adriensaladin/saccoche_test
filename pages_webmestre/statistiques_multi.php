@@ -28,15 +28,17 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = "Statistiques d'utilisation";
 
-$select_structure = afficher_select(DB_WEBMESTRE_OPT_structures_sacoche() , $select_nom=false , $option_first='non' , $selection=false , $optgroup='oui') ;
+$selection = (isset($_POST['listing_ids'])) ? explode(',',$_POST['listing_ids']) : false ; // demande de stats depuis structure_multi.php
+$select_structure = afficher_select(DB_WEBMESTRE_OPT_structures_sacoche() , $select_nom=false , $option_first='non' , $selection , $optgroup='oui') ;
 ?>
 
 <style type="text/css">
 	table#resultat td {text-align:center}
 </style>
 
-<form id="structures" action=""><fieldset>
+<form id="statistiques" action=""><fieldset>
 	<label class="tab" for="f_basic">Structure(s) :</label><select id="f_base" name="f_base" multiple="multiple" size="10"><?php echo $select_structure ?></select><br />
+	<span class="tab"></span><span class="astuce">Utiliser "<i>Shift + clic</i>" ou "<i>Ctrl + clic</i>" pour une sélection multiple.</span><br />
 	<span class="tab"></span><input type="hidden" id="bases" name="bases" value="" /><input id="f_submit" type="submit" value="Envoyer." /><label id="ajax_msg">&nbsp;</label>
 </fieldset></form>
 
@@ -50,26 +52,34 @@ $select_structure = afficher_select(DB_WEBMESTRE_OPT_structures_sacoche() , $sel
 
 <p />
 
-<table id="resultat" class="hide">
-	<thead>
-		<tr>
-			<th>Id</th>
-			<th>Structure</th>
-			<th>Contact</th>
-			<th>Ancienneté</th>
-			<th>professeurs<br />enregistrés</th>
-			<th>professeurs<br />connectés</th>
-			<th>élèves<br />enregistrés</th>
-			<th>élèves<br />connectés</th>
-			<th>saisies<br />enregistrées</th>
-		</tr>
-	</thead>
-	<tbody>
-		<tr>
-		</tr>
-	</tbody>
-</table>
-
+<form id="structures" action="" class="hide">
+	<table id="resultat">
+		<thead>
+			<tr>
+				<th class="nu"></th>
+				<th>Id</th>
+				<th>Structure</th>
+				<th>Contact</th>
+				<th>Ancienneté</th>
+				<th>professeurs<br />enregistrés</th>
+				<th>professeurs<br />connectés</th>
+				<th>élèves<br />enregistrés</th>
+				<th>élèves<br />connectés</th>
+				<th>saisies<br />enregistrées</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+			</tr>
+		</tbody>
+	</table>
+	<div id="zone_actions">
+		<a href="#zone_actions" id="all_check">[ Tout cocher. ]</a>
+		<a href="#zone_actions" id="all_uncheck">[ Tout décocher. ]</a>
+		Pour les structures cochées : <input id="listing_ids" name="listing_ids" type="hidden" value="" />
+		<button id="button_newsletter" name="button_newsletter" type="button"><img alt="Rechercher" src="./_img/menu/webmestre_newsletter.png" /> Envoyer un courriel.</button>
+	</div>
+</form>
 
 <div id="expli" class="hide">
 	<hr />

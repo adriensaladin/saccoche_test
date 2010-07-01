@@ -36,11 +36,12 @@ $uai              = (isset($_POST['f_uai']))              ? clean_uai($_POST['f_
 $contact_nom      = (isset($_POST['f_contact_nom']))      ? clean_nom($_POST['f_contact_nom'])           : '';
 $contact_prenom   = (isset($_POST['f_contact_prenom']))   ? clean_prenom($_POST['f_contact_prenom'])     : '';
 $contact_courriel = (isset($_POST['f_contact_courriel'])) ? clean_courriel($_POST['f_contact_courriel']) : '';
+$admin_id         = (isset($_POST['f_admin_id']))         ? clean_entier($_POST['f_admin_id'])           : 0;
 
 // On récupère les zones géographiques pour 2 raisons :
 // => vérifier que l'identifiant transmis est cohérent
 // => pouvoir retourner la cellule correspondante du tableau
-if($action!='supprimer')
+if( ($action!='supprimer') && ($action!='lister_admin') && ($action!='initialiser_mdp') )
 {
 	$DB_TAB = DB_WEBMESTRE_lister_zones();
 	foreach($DB_TAB as $DB_ROW)
@@ -99,6 +100,7 @@ if( ($action=='ajouter') && isset($tab_geo[$geo_id]) && $localisation && $denomi
 	file_put_contents('./__tmp/badge/'.$base_id.'/index.htm','Circulez, il n\'y a rien à voir par ici !');
 	// On affiche le retour
 	echo'<tr id="id_'.$base_id.'" class="new">';
+	echo	'<td class="nu"><input type="checkbox" name="f_ids" value="'.$base_id.'" /></td>';
 	echo	'<td>'.$base_id.'</td>';
 	echo	'<td><i>'.sprintf("%02u",$tab_geo[$geo_id]['ordre']).'</i>'.html($tab_geo[$geo_id]['nom']).'</td>';
 	echo	'<td>'.html($localisation).'</td>';
@@ -109,6 +111,7 @@ if( ($action=='ajouter') && isset($tab_geo[$geo_id]) && $localisation && $denomi
 	echo	'<td>'.html($contact_courriel).'</td>';
 	echo	'<td class="nu">';
 	echo		'<q class="modifier" title="Modifier cet établissement."></q>';
+	echo		'<q class="initialiser_mdp" title="Initialiser le mdp d\'un admin."></q>';
 	echo		'<q class="supprimer" title="Supprimer cet établissement."></q>';
 	echo	'</td>';
 	echo'</tr>';
@@ -136,6 +139,7 @@ else if( ($action=='modifier') && $base_id && isset($tab_geo[$geo_id]) && $local
 	$tab_parametres['denomination'] = $denomination;
 	DB_STRUCTURE_modifier_parametres($tab_parametres);
 	// On affiche le retour
+	echo'<td class="nu"><input type="checkbox" name="f_ids" value="'.$base_id.'" /></td>';
 	echo'<td>'.$base_id.'</td>';
 	echo'<td><i>'.sprintf("%02u",$tab_geo[$geo_id]['ordre']).'</i>'.html($tab_geo[$geo_id]['nom']).'</td>';
 	echo'<td>'.html($localisation).'</td>';
@@ -146,8 +150,66 @@ else if( ($action=='modifier') && $base_id && isset($tab_geo[$geo_id]) && $local
 	echo'<td>'.html($contact_courriel).'</td>';
 	echo'<td class="nu">';
 	echo	'<q class="modifier" title="Modifier cet établissement."></q>';
+	echo	'<q class="initialiser_mdp" title="Initialiser le mdp d\'un admin."></q>';
 	echo	'<q class="supprimer" title="Supprimer cet établissement."></q>';
 	echo'</td>';
+}
+
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+//	Charger la liste des administrateurs d'un établissement pour remplir un select (liste d'options)
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+else if( ($action=='lister_admin') && $base_id )
+{
+	charger_parametres_mysql_supplementaires($base_id);
+	exit( afficher_select(DB_STRUCTURE_OPT_administrateurs_etabl() , $select_nom=false , $option_first='non' , $selection=false , $optgroup='non') );
+}
+
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+//	Modifier le mdp d'un administrateur et envoyer les identifiants par courriel au contact
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+else if( ($action=='initialiser_mdp') && $base_id && $admin_id )
+{
+	charger_parametres_mysql_supplementaires($base_id);
+	// Informations sur la structure, notamment coordonnées du contact.
+	$DB_ROW = DB_WEBMESTRE_recuperer_structure($base_id);
+	if(!count($DB_ROW))
+	{
+		exit('Erreur : structure introuvable !');
+	}
+	$denomination     = $DB_ROW['structure_denomination'];
+	$contact_nom      = $DB_ROW['structure_contact_nom'];
+	$contact_prenom   = $DB_ROW['structure_contact_prenom'];
+	$contact_courriel = $DB_ROW['structure_contact_courriel'];
+	// Informations sur l'admin : nom / prénom / login.
+	$DB_TAB = DB_STRUCTURE_lister_users_cibles($admin_id,$info_classe=false);
+	if(!count($DB_TAB))
+	{
+		exit('Erreur : administrateur introuvable !');
+	}
+	$admin_nom    = $DB_TAB[0]['user_nom'];
+	$admin_prenom = $DB_TAB[0]['user_prenom'];
+	$admin_login  = $DB_TAB[0]['user_login'];
+	// Initialiser le mdp de l'admin
+	$admin_password = fabriquer_mdp();
+	DB_STRUCTURE_modifier_utilisateur($admin_id, array(':password'=>$admin_password) );
+	// Envoyer un courriel au contact
+	$texte = 'Bonjour '.$contact_prenom.' '.$contact_nom.'.'."\r\n\r\n";
+	$texte.= 'Je viens de réinitialiser le mot de passe de '.$admin_prenom.' '.$admin_nom.', administrateur de SACoche pour l\'établissement "'.$denomination.'" sur le site hébergé par '.HEBERGEUR_DENOMINATION.'.'."\r\n\r\n";
+	$texte.= 'Pour se connecter comme administrateur, cet administrateur doit utiliser le lien'."\r\n".SERVEUR_ADRESSE.'?id='.$base_id.'&admin'."\r\n".'et entrer les identifiants'."\r\n".'nom d\'utilisateur :   '.$admin_login."\r\n".'mot de passe :   '.$admin_password."\r\n\r\n";
+	$texte.= 'Ce mot de passe est modifiable depuis l\'espace d\'administration.'."\r\n".'Un administrateur peut déléguer son rôle en créant d\'autres administrateurs.'."\r\n\r\n";
+	$texte.= 'Rappel : ce logiciel est mis à votre disposition gratuitement, mais sans aucune garantie, conformément à la licence libre GNU GPL3.'."\r\n".'De plus les administrateurs et les professeurs sont responsables de toute conséquence d\'une mauvaise manipulation de leur part.'."\r\n\r\n";
+	$texte.= 'N\'hésitez pas à consulter la documentation disponible depuis le site du projet :'."\r\n".SERVEUR_PROJET."\r\n\r\n";
+	$texte.= 'Cordialement'."\r\n";
+	$texte.= WEBMESTRE_PRENOM.' '.WEBMESTRE_NOM."\r\n\r\n";
+	$courriel_bilan = envoyer_webmestre_courriel($contact_courriel,'Création compte',$texte,false);
+	if(!$courriel_bilan)
+	{
+		exit('Erreur lors de l\'envoi du courriel !');
+	}
+	// On affiche le retour
+	echo'<ok>';
+	echo'Le mot de passe de '.html($admin_prenom).' '.html($admin_nom).',<BR />administrateur de l\'établissement '.html($denomination).',<BR />vient d\'être réinitialisé.<BR /><BR />';
+	echo'Les nouveaux identifiants ont été envoyés au contact '.html($contact_prenom).' '.html($contact_nom).',<BR />à son adresse de courriel '.html($contact_courriel).'.';
 }
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-

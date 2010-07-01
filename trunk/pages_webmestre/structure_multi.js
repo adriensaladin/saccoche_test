@@ -159,9 +159,9 @@ $(document).ready
 						maj_clock(1);
 						if(responseHTML.substring(0,7)=='<option')	// Attention aux caractères accentués : l'utf-8 pose des pbs pour ce test
 						{
-							$('#init_form').html('<input id="f_action" name="f_action" type="hidden" value="'+mode+'" /><select id="f_admin_id" name="f_admin_id"><option value="">administrateurs</option>'+responseHTML+'</select><input id="f_base_id" name="f_base_id" type="hidden" value="'+base_id+'" /><q class="valider" title="Confirmer l\'initialisation du de mot de passe."></q><q class="annuler" title="Annuler l\'initialisation du de mot de passe."></q> <label id="ajax_msg">&nbsp;</label>')
+							$('#init_form').html('<input id="f_action" name="f_action" type="hidden" value="'+mode+'" /><select id="f_admin_id" name="f_admin_id"><option value="">administrateurs</option>'+responseHTML+'</select><input id="f_base_id" name="f_base_id" type="hidden" value="'+base_id+'" /><q class="valider" title="Confirmer l\'initialisation du de mot de passe."></q><q class="annuler" title="Annuler l\'initialisation du de mot de passe."></q> <label id="ajax_msg">&nbsp;</label>');
 						}
-					else
+						else
 						{
 							$('#init_form').html('<label id="ajax_msg" class="alerte">'+responseHTML+'</label><q class="annuler" title="Annuler."></q>')
 						}

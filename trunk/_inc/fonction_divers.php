@@ -91,9 +91,10 @@ function compacter($chemin,$version,$methode)
 			}
 			$fichier_compacte = utf8_encode($fichier_compacte);	// On réencode donc en UTF-8...
 			$test_ecriture = @file_put_contents($chemin_fichier_compacte,$fichier_compacte);
+			// Il se peut que le droit en écriture ne soit pas autorisé et que la procédure d'install ne l'ai pas encore vérifié.
+			return $test_ecriture ? $chemin_fichier_compacte : $chemin_fichier_original ;
 		}
-		// Il se peut que le droit en écriture ne soit pas autorisé et que la procédure d'install ne l'ai pas encore vérifié.
-		return $test_ecriture ? $chemin_fichier_compacte : $chemin_fichier_original ;
+		return $chemin_fichier_compacte;
 	}
 	else
 	{

@@ -589,7 +589,7 @@ else if( ($action=='Imprimer_cartouche') && $devoir_id && $groupe_type && $group
 		{
 			foreach($tab_comp_id as $comp_id=>$val_comp)
 			{
-				$tab_result[$comp_id][$user_id] = '';
+				$tab_result[$comp_id][$user_id] = '-';
 			}
 		}
 		// compléter avec les résultats

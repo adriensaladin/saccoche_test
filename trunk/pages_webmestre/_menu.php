@@ -37,34 +37,33 @@ $arbre='
 			<li class="compte_password"><a href="./index.php?dossier='.$DOSSIER.'&amp;fichier=compte_password">Mot de passe du webmestre</a></li>
 			<li class="compte_identite_installation"><a href="./index.php?dossier='.$DOSSIER.'&amp;fichier=compte_identite_installation">Identité de l\'installation</a></li>
 			<li class="compte_info_serveur"><a href="./index.php?dossier='.$DOSSIER.'&amp;fichier=compte_info_serveur">Informations serveur</a></li>
-			<li class="webmestre_stats"><a href="./index.php?dossier='.$DOSSIER.'&amp;fichier=statistiques">Statistiques d\'utilisation</a></li>
+			<li class="webmestre_maintenance"><a href="./index.php?dossier='.$DOSSIER.'&amp;fichier=blocage-maintenance">Maintenance &amp; mise à jour</a></li>
 			</ul>
 	</li>
 ';
 if(HEBERGEUR_INSTALLATION=='multi-structures')
 {
 	$arbre.='
-		<li>Gestion des établissements
-			<ul>
-				<li class="webmestre_geographie"><a href="./index.php?dossier='.$DOSSIER.'&amp;fichier=geographie">Zones géographiques</a></li>
-				<li class="webmestre_structure"><a href="./index.php?dossier='.$DOSSIER.'&amp;fichier=structure_multi">Établissements</a></li>
-				<li class="webmestre_newsletter"><a href="./index.php?dossier='.$DOSSIER.'&amp;fichier=newsletter">Lettre d\'information</a></li>
-				<li class="admin_administrateur"><a href="./index.php?dossier='.$DOSSIER.'&amp;fichier=init-mdp_multi">Mot de passe administrateur</a></li>
-				<li class="webmestre_maintenance"><a href="./index.php?dossier='.$DOSSIER.'&amp;fichier=blocage-maintenance">Maintenance &amp; mise à jour</a></li>
-			</ul>
-		</li>
+	<li>Gestion des établissements
+		<ul>
+			<li class="webmestre_geographie"><a href="./index.php?dossier='.$DOSSIER.'&amp;fichier=geographie">Zones géographiques</a></li>
+			<li class="webmestre_structure"><a href="./index.php?dossier='.$DOSSIER.'&amp;fichier=structure_multi">Établissements</a></li>
+			<li class="webmestre_stats"><a href="./index.php?dossier='.$DOSSIER.'&amp;fichier=statistiques_multi">Statistiques d\'utilisation</a></li>
+			<li class="webmestre_newsletter"><a href="./index.php?dossier='.$DOSSIER.'&amp;fichier=newsletter_multi">Lettre d\'information</a></li>
+		</ul>
+	</li>
 	';
 }
 elseif(HEBERGEUR_INSTALLATION=='mono-structure')
 {
 	$arbre.='
-		<li>Gestion de l\'établissement
-			<ul>
-				<li class="admin_administrateur"><a href="./index.php?dossier='.$DOSSIER.'&amp;fichier=init-mdp_mono">Mot de passe administrateur</a></li>
-				<li class="webmestre_maintenance"><a href="./index.php?dossier='.$DOSSIER.'&amp;fichier=blocage-maintenance">Maintenance &amp; mise à jour</a></li>
-				<li class="admin_resilier"><a href="./index.php?dossier='.$DOSSIER.'&amp;fichier=structure_mono_resilier">Résilier l\'inscription</a></li>
-			</ul>
-		</li>
+	<li>Gestion de l\'établissement
+		<ul>
+			<li class="webmestre_stats"><a href="./index.php?dossier='.$DOSSIER.'&amp;fichier=statistiques_mono">Statistiques d\'utilisation</a></li>
+			<li class="admin_administrateur"><a href="./index.php?dossier='.$DOSSIER.'&amp;fichier=init-mdp_mono">Mot de passe administrateur</a></li>
+			<li class="admin_resilier"><a href="./index.php?dossier='.$DOSSIER.'&amp;fichier=structure_resilier_mono">Résilier l\'inscription</a></li>
+		</ul>
+	</li>
 	';
 }
 $arbre.='</ul>';

@@ -49,7 +49,7 @@ if( $nb_bases )
 	$DB_TAB = DB_WEBMESTRE_lister_structures( implode(',',$tab_bases) );
 	foreach($DB_TAB as $DB_ROW)
 	{
-		$fichier_texte .= '<'.$DB_ROW['sacoche_base'].'>-<'.$DB_ROW['structure_denomination'].'>-<'.$DB_ROW['structure_contact_courriel'].'>-<'.$DB_ROW['structure_inscription_date'].'>'."\r\n";
+		$fichier_texte .= '<'.$DB_ROW['sacoche_base'].'>-<'.$DB_ROW['structure_denomination'].'>-<'.$DB_ROW['structure_contact_nom'].' '.$DB_ROW['structure_contact_prenom'].'>-<'.$DB_ROW['structure_inscription_date'].'>'."\r\n";
 	}
 	file_put_contents($dossier.$fichier_info,$fichier_texte);
 	$max = $nb_bases + 1 ; // La dernière étape consiste uniquement à effacer le fichier
@@ -67,10 +67,10 @@ elseif( $num && $max && ($num<$max) )
 	$tab_ligne = explode("\r\n",$fichier_texte);
 	// Envoyer une série de courriels
 	$num_ligne = $num-1;
-	list($base_id,$structure_denomination,$contact_courriel,$inscription_date) = explode('>-<',substr($tab_ligne[$num_ligne],1,-1));
+	list($base_id,$structure_denomination,$contact,$inscription_date) = explode('>-<',substr($tab_ligne[$num_ligne],1,-1));
 	charger_parametres_mysql_supplementaires($base_id);
 	list($prof_nb,$prof_use,$eleve_nb,$eleve_use,$score_nb) = DB_STRUCTURE_recuperer_statistiques();
-	exit('ok-<tr><td>'.$base_id.'</td><td>'.html($structure_denomination).'</td><td>'.mailto($contact_courriel,'SACoche - Inscription inutilisée','contact').'</td><td>'.$inscription_date.'</td><td>'.$prof_nb.'</td><td>'.$prof_use.'</td><td>'.$eleve_nb.'</td><td>'.$eleve_use.'</td><td><i>'.sprintf("%07u",$score_nb).'</i>'.number_format($score_nb,0,'',' ').'</td></tr>');
+	exit('ok-<tr><td class="nu"><input type="checkbox" name="f_ids" value="'.$base_id.'" /></td><td>'.$base_id.'</td><td>'.html($structure_denomination).'</td><td>'.html($contact).'</td><td>'.$inscription_date.'</td><td>'.$prof_nb.'</td><td>'.$prof_use.'</td><td>'.$eleve_nb.'</td><td>'.$eleve_use.'</td><td><i>'.sprintf("%07u",$score_nb).'</i>'.number_format($score_nb,0,'',' ').'</td></tr>');
 }
 elseif( $num && $max && ($num==$max) )
 {

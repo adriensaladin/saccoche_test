@@ -26,12 +26,13 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
+$TITRE = "Statistiques d'utilisation";
 
 list($prof_nb,$prof_use,$eleve_nb,$eleve_use,$score_nb) = DB_STRUCTURE_recuperer_statistiques();
 
 ?>
 
-<ul id="result_mono" class="puce">
+<ul class="puce">
 	<li>Il y a <b id="prof_nb"><?php echo $prof_nb ?></b> professeurs enregistrés, dont <b id="prof_use"><?php echo $prof_use ?></b> professeurs connectés.</li>
 	<li>Il y a <b id="eleve_nb"><?php echo $eleve_nb ?></b> élèves enregistrés, dont <b id="eleve_use"><?php echo $eleve_use ?></b> élèves connectés.</li>
 	<li>Il y a <b id="score_nb"><?php echo $score_nb ?></b> saisies enregistrées.</li>

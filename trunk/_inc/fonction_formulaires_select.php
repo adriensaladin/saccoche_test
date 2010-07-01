@@ -135,11 +135,11 @@ function load_cookie_select($structure_id,$user_id)
 /**
  * Afficher un élément select de formulaire à partir d'un tableau de données et d'options
  * 
- * @param array       $DB_TAB       tableau des données [valeur texte]
- * @param string|bool $select_nom   chaine à utiliser pour l'id/nom du select, ou false si on retourne juste les options sans les encapsuler dans un select
- * @param string      $option_first 1ère option éventuelle [non] [oui] [val]
- * @param string|bool $selection    préselection éventuelle [false] [true] [val] [ou $...]
- * @param string      $optgroup     regroupement d'options éventuel [non] [oui]
+ * @param array             $DB_TAB       tableau des données [valeur texte]
+ * @param string|bool       $select_nom   chaine à utiliser pour l'id/nom du select, ou false si on retourne juste les options sans les encapsuler dans un select
+ * @param string            $option_first 1ère option éventuelle [non] [oui] [val]
+ * @param string|bool|array $selection    préselection éventuelle [false] [true] [val] [ou $...] [ou array(...)]
+ * @param string            $optgroup     regroupement d'options éventuel [non] [oui]
  * @return string
  */
 
@@ -200,9 +200,19 @@ function afficher_select($DB_TAB,$select_nom,$option_first,$selection,$optgroup)
 		}
 		else
 		{
-			// ... sélectionner une option ; soit $selection contient la valeur à sélectionner soit elle a été définie avant
+			// ... sélectionner une ou plusieurs option ; soit $selection contient la valeur / le tableau à sélectionner soit elle a été définie avant
 			$selection = ($selection=='val') ? $GLOBALS['select_option_selected'] : $selection ;
-			$options = str_replace('value="'.$selection.'"' , 'value="'.$selection.'" selected="selected"' , $options);
+			if(!is_array($selection))
+			{
+				$options = str_replace('value="'.$selection.'"' , 'value="'.$selection.'" selected="selected"' , $options);
+			}
+			else
+			{
+				foreach($selection as $selection_val)
+				{
+					$options = str_replace('value="'.$selection_val.'"' , 'value="'.$selection_val.'" selected="selected"' , $options);
+				}
+			}
 		}
 	}
 	// Si $DB_TAB n'est pas un tableau alors c'est une chaine avec un message d'erreur affichée sous la forme d'une option disable

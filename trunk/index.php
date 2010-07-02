@@ -132,7 +132,7 @@ ob_end_clean();
 
 // Chargement du js associé de la page
 $filename_js_normal = './pages_'.$DOSSIER.'/'.$FICHIER.'.js';
-$SCRIPT = (is_file($filename_js_normal)) ? '<script type="text/javascript" charset="utf-8" src="'.compacter($filename_js_normal,$VERSION_JS_FILE,'pack').'"></script>' : '' ;
+$SCRIPT = (is_file($filename_js_normal)) ? '<script type="text/javascript" charset="utf-8" src="'.compacter2($filename_js_normal,$VERSION_JS_FILE,'pack').'"></script>' : '' ;
 
 // Titre du navigateur
 $TITRE_NAVIGATEUR = 'SACoche - Espace '.$DOSSIER.' - ';

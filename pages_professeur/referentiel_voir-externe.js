@@ -39,8 +39,9 @@ $(document).ready
 
 		function surveiller_url_et_hauteur()
 		{
+			// Attention à ne pas mettre un délai trop faible ; pour 1ds par exemple, certains anciens navigateurs réappellent en bouble la fonction faute d'avoir eu le temps d'enlever le hash
 			$("body").everyTime
-			('1ds', 'surveillance', function()
+			('1s', 'surveillance', function()
 				{
 					// Surveillance de l'URL
 					var hashVal = window.location.hash.substr(1);

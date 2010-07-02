@@ -27,7 +27,7 @@
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = "Gestion des établissements";
-$VERSION_JS_FILE = 4;
+$VERSION_JS_FILE += 2;
 
 // Élément de formulaire "f_geo" pour le choix d'une zone géographique
 $options_geo = '';

@@ -202,6 +202,7 @@ elseif($action=='uploader')
 	$taille_maximale = verifier_dossier($dossier_temp);
 	if(!$taille_maximale)
 	{
+		Supprimer_Dossier($dossier_temp); // Pas seulement vider, au cas où il y aurait des sous-dossiers créés par l'archive.
 		exit('<li><label class="alerte">Erreur : votre archive ZIP ne semble pas contenir les fichiers d\'une sauvegarde de la base effectuée par SACoche !</label></li>');
 	}
 	// Vérifier le contenu : taille des requêtes

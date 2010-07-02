@@ -1211,6 +1211,24 @@ function DB_STRUCTURE_compter_professeurs_directeurs_suivant_statut()
 }
 
 /**
+ * DB_STRUCTURE_tester_referentiel
+ * 
+ * @param int    $matiere_id
+ * @param int    $niveau_id
+ * @return int
+ */
+
+function DB_STRUCTURE_tester_referentiel($matiere_id,$niveau_id)
+{
+	$DB_SQL = 'SELECT matiere_id FROM sacoche_referentiel ';
+	$DB_SQL.= 'WHERE matiere_id=:matiere_id AND niveau_id=:niveau_id ';
+	$DB_SQL.= 'LIMIT 1';
+	$DB_VAR = array(':matiere_id'=>$matiere_id,':niveau_id'=>$niveau_id);
+	$DB_ROW = DB::queryRow(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+	return count($DB_ROW) ;
+}
+
+/**
  * DB_STRUCTURE_tester_demande
  * 
  * @param int    $eleve_id

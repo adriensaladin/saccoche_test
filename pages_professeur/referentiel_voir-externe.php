@@ -27,6 +27,7 @@
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = "Référentiels partagés sur le serveur communautaire";
+$VERSION_JS_FILE += 1;
 ?>
 
 <script type="text/javascript">

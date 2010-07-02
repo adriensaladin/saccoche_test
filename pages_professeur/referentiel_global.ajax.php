@@ -171,6 +171,10 @@ elseif( ($action=='Calculer') && $matiere_id && $niveau_id && in_array($methode,
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 elseif( ($action=='Ajouter') && $matiere_id && $niveau_id )
 {
+	if( !DB_STRUCTURE_tester_referentiel($matiere_id,$niveau_id) )
+	{
+		exit('Ce référentiel existe déjà ! Un autre administrateur de la même matière vient probablement de l\'importer... Acualisez cette page.');
+	}
 	if( ($perso==1) || ($referentiel_id==0) )
 	{
 		// C'est une matière spécifique à l'établissement, ou une demande de partir d'un référentiel vierge : on ne peut que créer un nouveau référentiel

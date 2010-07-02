@@ -27,6 +27,7 @@
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = "Gérer les référentiels";
+$VERSION_JS_FILE += 1;
 ?>
 
 <script type="text/javascript">

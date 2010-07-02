@@ -992,10 +992,10 @@ function url_get_contents($url)
 {
 	// Ne pas utiliser file_get_contents() car certains serveurs n'accepent pas d'utiliser une URL comme nom de fichier (gestionnaire fopen non activé).
 	// On utilise donc la bibliothèque cURL en remplacement
+	// Option CURLOPT_FOLLOWLOCATION retirée car certaines installations renvoient "CURLOPT_FOLLOWLOCATION cannot be activated when in safe_mode or an open_basedir is set"
 	$ch = curl_init();
 	curl_setopt($ch, CURLOPT_DNS_CACHE_TIMEOUT, 3600); // Le temps en seconde que CURL doit conserver les entrées DNS en mémoire. Cette option est définie à 120 secondes (2 minutes) par défaut.
 	curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);    // TRUE retourne directement le transfert sous forme de chaîne de la valeur retournée par curl_exec() au lieu de l'afficher directement.
-	curl_setopt($ch, CURLOPT_FOLLOWLOCATION, TRUE);    // TRUE pour suivre toutes les en-têtes "Location: "  que le serveur envoie dans les en-têtes HTTP (notez que cette fonction est récursive et que PHP suivra toutes les en-têtes "Location: " qu'il trouvera à moins que CURLOPT_MAXREDIRS ne soit définie).
 	curl_setopt($ch, CURLOPT_HEADER, FALSE);           // FALSE pour ne pas inclure l'en-tête dans la valeur de retour.
 	curl_setopt($ch, CURLOPT_TIMEOUT, 5);              // Le temps maximum d'exécution de la fonction cURL (en s).
 	curl_setopt($ch, CURLOPT_URL, $url);               // L'URL à récupérer. Vous pouvez aussi choisir cette valeur lors de l'appel à curl_init().

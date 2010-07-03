@@ -58,7 +58,7 @@ function alert_redirection_exit($texte_alert,$adresse='index.php')
 		echo'<body><script type="text/javascript">';
 		if($texte_alert)
 		{
-			echo'alert("'.utf8_encode($texte_alert).'");';
+			echo'alert("'.$texte_alert.'");';
 		}
 		echo'window.document.location.href="./'.$adresse.'"';
 		echo'</script></body>';

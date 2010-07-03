@@ -101,14 +101,14 @@ if( ($action=='ajouter') && isset($tab_geo[$geo_id]) && $localisation && $denomi
 	// On affiche le retour
 	echo'<tr id="id_'.$base_id.'" class="new">';
 	echo	'<td class="nu"><input type="checkbox" name="f_ids" value="'.$base_id.'" /></td>';
-	echo	'<td>'.$base_id.'</td>';
-	echo	'<td><i>'.sprintf("%02u",$tab_geo[$geo_id]['ordre']).'</i>'.html($tab_geo[$geo_id]['nom']).'</td>';
-	echo	'<td>'.html($localisation).'</td>';
-	echo	'<td>'.html($denomination).'</td>';
-	echo	'<td>'.html($uai).'</td>';
-	echo	'<td>'.html($contact_nom).'</td>';
-	echo	'<td>'.html($contact_prenom).'</td>';
-	echo	'<td>'.html($contact_courriel).'</td>';
+	echo	'<td class="label">'.$base_id.'</td>';
+	echo	'<td class="label"><i>'.sprintf("%02u",$tab_geo[$geo_id]['ordre']).'</i>'.html($tab_geo[$geo_id]['nom']).'</td>';
+	echo	'<td class="label">'.html($localisation).'</td>';
+	echo	'<td class="label">'.html($denomination).'</td>';
+	echo	'<td class="label">'.html($uai).'</td>';
+	echo	'<td class="label">'.html($contact_nom).'</td>';
+	echo	'<td class="label">'.html($contact_prenom).'</td>';
+	echo	'<td class="label">'.html($contact_courriel).'</td>';
 	echo	'<td class="nu">';
 	echo		'<q class="modifier" title="Modifier cet établissement."></q>';
 	echo		'<q class="initialiser_mdp" title="Initialiser le mdp d\'un admin."></q>';
@@ -140,14 +140,14 @@ else if( ($action=='modifier') && $base_id && isset($tab_geo[$geo_id]) && $local
 	DB_STRUCTURE_modifier_parametres($tab_parametres);
 	// On affiche le retour
 	echo'<td class="nu"><input type="checkbox" name="f_ids" value="'.$base_id.'" /></td>';
-	echo'<td>'.$base_id.'</td>';
-	echo'<td><i>'.sprintf("%02u",$tab_geo[$geo_id]['ordre']).'</i>'.html($tab_geo[$geo_id]['nom']).'</td>';
-	echo'<td>'.html($localisation).'</td>';
-	echo'<td>'.html($denomination).'</td>';
-	echo'<td>'.html($uai).'</td>';
-	echo'<td>'.html($contact_nom).'</td>';
-	echo'<td>'.html($contact_prenom).'</td>';
-	echo'<td>'.html($contact_courriel).'</td>';
+	echo'<td class="label">'.$base_id.'</td>';
+	echo'<td class="label"><i>'.sprintf("%02u",$tab_geo[$geo_id]['ordre']).'</i>'.html($tab_geo[$geo_id]['nom']).'</td>';
+	echo'<td class="label">'.html($localisation).'</td>';
+	echo'<td class="label">'.html($denomination).'</td>';
+	echo'<td class="label">'.html($uai).'</td>';
+	echo'<td class="label">'.html($contact_nom).'</td>';
+	echo'<td class="label">'.html($contact_prenom).'</td>';
+	echo'<td class="label">'.html($contact_courriel).'</td>';
 	echo'<td class="nu">';
 	echo	'<q class="modifier" title="Modifier cet établissement."></q>';
 	echo	'<q class="initialiser_mdp" title="Initialiser le mdp d\'un admin."></q>';

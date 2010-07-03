@@ -27,7 +27,7 @@
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = "Gestion des établissements";
-$VERSION_JS_FILE += 2;
+$VERSION_JS_FILE += 3;
 
 // Élément de formulaire "f_geo" pour le choix d'une zone géographique
 $options_geo = '';
@@ -45,7 +45,7 @@ foreach($DB_TAB as $DB_ROW)
 </script>
 
 <form id="structures" action="">
-	<table class="bilan_synthese">
+	<table class="form bilan_synthese">
 		<thead>
 			<tr>
 				<th class="nu"></th>
@@ -69,14 +69,14 @@ foreach($DB_TAB as $DB_ROW)
 				// Afficher une ligne du tableau
 				echo'<tr id="id_'.$DB_ROW['sacoche_base'].'">';
 				echo	'<td class="nu"><input type="checkbox" name="f_ids" value="'.$DB_ROW['sacoche_base'].'" /></td>';
-				echo	'<td>'.$DB_ROW['sacoche_base'].'</td>';
-				echo	'<td><i>'.sprintf("%02u",$DB_ROW['geo_ordre']).'</i>'.html($DB_ROW['geo_nom']).'</td>';
-				echo	'<td>'.html($DB_ROW['structure_localisation']).'</td>';
-				echo	'<td>'.html($DB_ROW['structure_denomination']).'</td>';
-				echo	'<td>'.html($DB_ROW['structure_uai']).'</td>';
-				echo	'<td>'.html($DB_ROW['structure_contact_nom']).'</td>';
-				echo	'<td>'.html($DB_ROW['structure_contact_prenom']).'</td>';
-				echo	'<td>'.html($DB_ROW['structure_contact_courriel']).'</td>';
+				echo	'<td class="label">'.$DB_ROW['sacoche_base'].'</td>';
+				echo	'<td class="label"><i>'.sprintf("%02u",$DB_ROW['geo_ordre']).'</i>'.html($DB_ROW['geo_nom']).'</td>';
+				echo	'<td class="label">'.html($DB_ROW['structure_localisation']).'</td>';
+				echo	'<td class="label">'.html($DB_ROW['structure_denomination']).'</td>';
+				echo	'<td class="label">'.html($DB_ROW['structure_uai']).'</td>';
+				echo	'<td class="label">'.html($DB_ROW['structure_contact_nom']).'</td>';
+				echo	'<td class="label">'.html($DB_ROW['structure_contact_prenom']).'</td>';
+				echo	'<td class="label">'.html($DB_ROW['structure_contact_courriel']).'</td>';
 				echo	'<td class="nu">';
 				echo		'<q class="modifier" title="Modifier cet établissement."></q>';
 				echo		'<q class="initialiser_mdp" title="Initialiser le mdp d\'un admin."></q>';

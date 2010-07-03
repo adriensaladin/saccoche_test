@@ -39,7 +39,7 @@ $(document).ready
 
 		function surveiller_url_et_hauteur()
 		{
-			// Attention à ne pas mettre un délai trop faible ; pour 1ds par exemple, certains anciens navigateurs réappellent en bouble la fonction faute d'avoir eu le temps d'enlever le hash
+			// Attention à ne pas mettre un délai trop faible ; pour 1ds par exemple, certains anciens navigateurs appellent en boucle la fonction faute d'avoir eu le temps d'enlever le hash
 			$("body").everyTime
 			('1s', 'surveillance', function()
 				{

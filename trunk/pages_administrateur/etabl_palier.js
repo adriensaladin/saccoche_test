@@ -50,7 +50,7 @@ $(document).ready
 		(
 			function()
 			{
-				$(this).parent().find("input").click();
+				$(this).parent().find("input[type=checkbox]").click();
 			}
 		);
 

@@ -34,7 +34,7 @@ $TITRE = "Choix des niveaux";
 <hr />
 
 <form id="niveau" action="">
-	<table class="form">
+	<table class="form check">
 		<thead>
 			<tr><th class="nu"></th><th>Codage</th><th>Dénomination</th></tr>
 		</thead>

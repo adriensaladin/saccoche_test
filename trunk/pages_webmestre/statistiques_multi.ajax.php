@@ -70,7 +70,7 @@ elseif( $num && $max && ($num<$max) )
 	list($base_id,$structure_denomination,$contact,$inscription_date) = explode('>-<',substr($tab_ligne[$num_ligne],1,-1));
 	charger_parametres_mysql_supplementaires($base_id);
 	list($prof_nb,$prof_use,$eleve_nb,$eleve_use,$score_nb) = DB_STRUCTURE_recuperer_statistiques();
-	exit('ok-<tr><td class="nu"><input type="checkbox" name="f_ids" value="'.$base_id.'" /></td><td>'.$base_id.'</td><td>'.html($structure_denomination).'</td><td>'.html($contact).'</td><td>'.$inscription_date.'</td><td>'.$prof_nb.'</td><td>'.$prof_use.'</td><td>'.$eleve_nb.'</td><td>'.$eleve_use.'</td><td><i>'.sprintf("%07u",$score_nb).'</i>'.number_format($score_nb,0,'',' ').'</td></tr>');
+	exit('ok-<tr><td class="nu"><input type="checkbox" name="f_ids" value="'.$base_id.'" /></td><td class="label">'.$base_id.'</td><td class="label">'.html($structure_denomination).'</td><td class="label">'.html($contact).'</td><td class="label">'.$inscription_date.'</td><td class="label">'.$prof_nb.'</td><td class="label">'.$prof_use.'</td><td class="label">'.$eleve_nb.'</td><td class="label">'.$eleve_use.'</td><td class="label"><i>'.sprintf("%07u",$score_nb).'</i>'.number_format($score_nb,0,'',' ').'</td></tr>');
 }
 elseif( $num && $max && ($num==$max) )
 {

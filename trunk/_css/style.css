@@ -173,6 +173,9 @@ table td {border:1px solid #66F;vertical-align:top}
 th.nu , td.nu {background:#F7F7F7;border:none;text-align:center;height:1.6em;}	/* le height évite que la hauteur des lignes varie lors de la modification de leur contenu en ajax */
 tr.new{background:#CFC}
 td.new{font-weight:bold}
+/* colorer une ligne au survol */
+table.form tbody tr:hover td {background:#FCC}
+table.form tbody tr:hover td.nu {background:#F7F7F7}
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 /* Tableau résultat d'une affectation (professeurs / élèves / matières)                                */

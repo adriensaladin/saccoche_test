@@ -82,10 +82,10 @@ if( ($action=='ajouter') && isset($tab_geo[$geo_id]) && $localisation && $denomi
 	$user_id = DB_STRUCTURE_ajouter_utilisateur($num_sconet=0,$reference='','administrateur',$contact_nom,$contact_prenom,$login='admin',$password,$classe_id=0,$id_ent='',$id_gepi='');
 	// Et lui envoyer un courriel
 	$texte = 'Bonjour '.$contact_prenom.' '.$contact_nom.'.'."\r\n\r\n";
-	$texte.= 'Je viens de créer une base SACoche pour l\'établissement "'.$denomination.'" sur le site hébergé par '.HEBERGEUR_DENOMINATION.'. Pour accéder au site sans avoir besoin de sélectionner votre établissement, utilisez le lien suivant :'."\r\n".SERVEUR_ADRESSE.'?id='.$base_id."\r\n\r\n";
+	$texte.= 'Je viens de créer une base SACoche pour l\'établissement "'.$denomination.'" sur le site hébergé par "'.HEBERGEUR_DENOMINATION.'". Pour accéder au site sans avoir besoin de sélectionner votre établissement, utilisez le lien suivant :'."\r\n".SERVEUR_ADRESSE.'?id='.$base_id."\r\n\r\n";
 	$texte.= 'Vous êtes maintenant le contact de votre établissement pour cette installation de SACoche.'."\r\n".'Pour modifier l\'identité de la personne référente, il suffit de me contacter.'."\r\n\r\n";
 	$texte.= 'Un premier compte administrateur a été créé. Pour se connecter comme administrateur, utiliser le lien'."\r\n".SERVEUR_ADRESSE.'?id='.$base_id.'&admin'."\r\n".'et entrer les identifiants'."\r\n".'nom d\'utilisateur :   admin'."\r\n".'mot de passe :   '.$password."\r\n\r\n";
-	$texte.= 'Ce mot de passe est modifiable depuis l\'espace d\'administration.'."\r\n".'Un administrateur peut déléguer son rôle en créant d\'autres administrateurs.'."\r\n\r\n";
+	$texte.= 'Cet identifiant et ce mot de passe sont modifiables depuis l\'espace d\'administration.'."\r\n".'Un administrateur peut déléguer son rôle en créant d\'autres administrateurs.'."\r\n\r\n";
 	$texte.= 'Ce logiciel est mis à votre disposition gratuitement, mais sans aucune garantie, conformément à la licence libre GNU GPL3.'."\r\n".'De plus les administrateurs et les professeurs sont responsables de toute conséquence d\'une mauvaise manipulation de leur part.'."\r\n\r\n";
 	$texte.= 'N\'hésitez pas à consulter la documentation disponible depuis le site du projet :'."\r\n".SERVEUR_PROJET."\r\n\r\n";
 	$texte.= 'Cordialement'."\r\n";
@@ -194,9 +194,9 @@ else if( ($action=='initialiser_mdp') && $base_id && $admin_id )
 	DB_STRUCTURE_modifier_utilisateur($admin_id, array(':password'=>$admin_password) );
 	// Envoyer un courriel au contact
 	$texte = 'Bonjour '.$contact_prenom.' '.$contact_nom.'.'."\r\n\r\n";
-	$texte.= 'Je viens de réinitialiser le mot de passe de '.$admin_prenom.' '.$admin_nom.', administrateur de SACoche pour l\'établissement "'.$denomination.'" sur le site hébergé par '.HEBERGEUR_DENOMINATION.'.'."\r\n\r\n";
+	$texte.= 'Je viens de réinitialiser le mot de passe de '.$admin_prenom.' '.$admin_nom.', administrateur de SACoche pour l\'établissement "'.$denomination.'" sur le site hébergé par "'.HEBERGEUR_DENOMINATION.'".'."\r\n\r\n";
 	$texte.= 'Pour se connecter comme administrateur, cet administrateur doit utiliser le lien'."\r\n".SERVEUR_ADRESSE.'?id='.$base_id.'&admin'."\r\n".'et entrer les identifiants'."\r\n".'nom d\'utilisateur :   '.$admin_login."\r\n".'mot de passe :   '.$admin_password."\r\n\r\n";
-	$texte.= 'Ce mot de passe est modifiable depuis l\'espace d\'administration.'."\r\n".'Un administrateur peut déléguer son rôle en créant d\'autres administrateurs.'."\r\n\r\n";
+	$texte.= 'Cet identifiant et ce mot de passe sont modifiables depuis l\'espace d\'administration.'."\r\n".'Un administrateur peut déléguer son rôle en créant d\'autres administrateurs.'."\r\n\r\n";
 	$texte.= 'Rappel : ce logiciel est mis à votre disposition gratuitement, mais sans aucune garantie, conformément à la licence libre GNU GPL3.'."\r\n".'De plus les administrateurs et les professeurs sont responsables de toute conséquence d\'une mauvaise manipulation de leur part.'."\r\n\r\n";
 	$texte.= 'N\'hésitez pas à consulter la documentation disponible depuis le site du projet :'."\r\n".SERVEUR_PROJET."\r\n\r\n";
 	$texte.= 'Cordialement'."\r\n";

@@ -795,8 +795,8 @@ function DB_STRUCTURE_lister_users_cibles($listing_user_id,$info_classe=false)
 /**
  * DB_STRUCTURE_lister_eleves_cibles
  * 
- * @param int    $listing_eleve_id   id des élèves séparés par des virgules
- * @return array|string              le tableau est de la forme [i] => array('eleve_id'=>...,'eleve_nom'=>...,'eleve_prenom'=>...,'eleve_id_gepi'=>...);
+ * @param string   $listing_eleve_id   id des élèves séparés par des virgules
+ * @return array|string                le tableau est de la forme [i] => array('eleve_id'=>...,'eleve_nom'=>...,'eleve_prenom'=>...,'eleve_id_gepi'=>...);
  */
 
 function DB_STRUCTURE_lister_eleves_cibles($listing_eleve_id)
@@ -812,7 +812,7 @@ function DB_STRUCTURE_lister_eleves_cibles($listing_eleve_id)
 /**
  * DB_STRUCTURE_lister_eleves_classes
  * 
- * @param int    $listing_classe_id   id des classes séparés par des virgules
+ * @param string   $listing_classe_id   id des classes séparés par des virgules
  * @return array
  */
 
@@ -828,7 +828,7 @@ function DB_STRUCTURE_lister_eleves_classes($listing_classe_id)
 /**
  * DB_STRUCTURE_lister_eleves_groupes
  * 
- * @param int    $listing_groupe_id   id des classes séparés par des virgules
+ * @param string   $listing_groupe_id   id des groupes séparés par des virgules
  * @return array
  */
 
@@ -922,6 +922,20 @@ function DB_STRUCTURE_lister_jointure_professeurs_principaux()
 	$DB_SQL.= 'WHERE jointure_pp=:pp AND user_statut=:statut ';
 	$DB_VAR = array(':pp'=>1,':statut'=>1);
 	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+}
+
+/**
+ * DB_STRUCTURE_lister_jointure_groupe_periode
+ * 
+ * @param string   $listing_groupe_id   id des groupes séparés par des virgules
+ * @return array
+ */
+
+function DB_STRUCTURE_lister_jointure_groupe_periode($listing_groupe_id)
+{
+	$DB_SQL = 'SELECT * FROM sacoche_jointure_groupe_periode ';
+	$DB_SQL.= 'WHERE groupe_id IN ('.$listing_groupe_id.') ';
+	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , null);
 }
 
 /**

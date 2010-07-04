@@ -1188,7 +1188,7 @@ $(document).ready
 			}
 			else
 			{
-				$('#ajax_msg0').removeAttr("class").addClass("valide").html("Demande réalisée !");
+				$('#ajax_msg0').removeAttr("class").addClass("valide").html("Demande réalisée !").fadeOut(3000,function(){$(this).removeAttr("class").html("").show();});
 				$('table.form tbody').html(responseHTML);
 				trier_tableau();
 				afficher_masquer_images_action('show');

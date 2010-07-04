@@ -81,25 +81,37 @@ $(document).ready
 			}
 		);
 
+		var autoperiode = true; // Tant qu'on ne modifie pas manuellement le choix des périodes, modification automatique du formulaire
+
+		function view_dates_perso()
+		{
+			var periode_val = $("#f_periode").val();
+			if(periode_val!=0)
+			{
+				$("#dates_perso").attr("class","hide");
+			}
+			else
+			{
+				$("#dates_perso").attr("class","show");
+			}
+		}
+
 		$('#f_periode').change
 		(
 			function()
 			{
-				var periode_val = $("#f_periode").val();
-				if(periode_val!=0)
-				{
-					$("#dates_perso").attr("class","hide");
-				}
-				else
-				{
-					$("#dates_perso").attr("class","show");
-				}
+				view_dates_perso();
+				autoperiode = false;
 			}
 		);
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-//	Changement de groupe -> desactiver les périodes prédéfinies en cas de groue de besoin
+//	Changement de groupe
+//	-> desactiver les périodes prédéfinies en cas de groupe de besoin
+//	-> choisir automatiquement la meilleure période si un changement manuel de période n'a jamais été effectué
+//	-> afficher le formulaire de périodes s'il est masqué
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
 		$('#f_groupe').change
 		(
 			function()
@@ -126,11 +138,37 @@ $(document).ready
 						}
 					}
 				);
-				// Sélectionner si besion la période personnalisée
+				// Sélectionner si besoin la période personnalisée
 				if(groupe_type=='Besoins')
 				{
 					$("#f_periode option[value=0]").attr('selected',true);
 					$("#dates_perso").attr("class","show");
+				}
+				// Modification automatique du formulaire
+				if(autoperiode)
+				{
+					if(groupe_type=='Classes')
+					{
+						// Rechercher automatiquement la meilleure période
+						var id_classe = $('#f_groupe option:selected').val();
+						if(typeof(tab_groupe_periode[id_classe])!='undefined')
+						{
+							for(var id_periode in tab_groupe_periode[id_classe]) // Parcourir un tableau associatif...
+							{
+								var tab_split = tab_groupe_periode[id_classe][id_periode].split('_');
+								if( (date_mysql>=tab_split[0]) && (date_mysql<=tab_split[1]) )
+								{
+									$("#f_periode option[value="+id_periode+"]").attr('selected',true);
+									view_dates_perso();
+								}
+							}
+						}
+					}
+					// Afficher la zone de choix des périodes
+					if($('#zone_periodes').hasClass("hide"))
+					{
+						$('#zone_periodes').removeAttr("class");
+					}
 				}
 			}
 		);

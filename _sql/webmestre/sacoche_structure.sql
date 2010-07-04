@@ -11,5 +11,6 @@ CREATE TABLE sacoche_structure (
   structure_contact_courriel VARCHAR(60) COLLATE utf8_unicode_ci NOT NULL,
   structure_inscription_date DATE NOT NULL,
   PRIMARY KEY (sacoche_base),
-  KEY geo_id (geo_id)
+  KEY geo_id (geo_id),
+  KEY structure_uai (structure_uai)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;

@@ -33,6 +33,7 @@ $VERSION_JS_FILE += 1;
 <ul class="puce">
 	<li><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=referentiels_competences__modifier_contenu">DOC : Modifier le contenu des référentiels.</a></span></li>
 	<li><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=referentiels_competences__liaison_matiere_socle">DOC : Liaison matières &amp; socle commun.</a></span></li>
+	<li><span class="astuce">Pour mettre à jour un référentiel modifié sur le serveur communautaire, utiliser la page "<a href="./index.php?dossier=<?php echo $DOSSIER ?>&amp;fichier=referentiel&amp;section=global">gérer les référentiels</a>".</span></li>
 	<li><span class="danger">Retirer des items supprime les résultats associés de tous les élèves !</span></li>
 </ul>
 

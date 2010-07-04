@@ -27,15 +27,16 @@
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = "Évaluer une classe ou un groupe";
-$VERSION_JS_FILE += 1;
+$VERSION_JS_FILE += 2;
 ?>
 
 <?php
 // Élément de formulaire "f_aff_classe" pour le choix des élèves (liste des classes / groupes / besoins) du professeur, enregistré dans une variable javascript pour utilisation suivant le besoin, et utilisé pour un tri initial
-// Fabrication de tableaux javascript "tab_niveau" et "tab_groupes" indiquant le niveau et le nom d'un groupe
+// Fabrication de tableaux javascript "tab_niveau" et "tab_groupe" indiquant le niveau et le nom d'un groupe
 $select_eleve  = '<option value=""></option>';
 $tab_niveau_js = 'var tab_niveau = new Array();';
-$tab_groupe_js = 'var tab_groupes = new Array();';
+$tab_groupe_js = 'var tab_groupe = new Array();';
+$tab_id_classe_groupe = array();
 $DB_TAB = DB_STRUCTURE_lister_groupes_professeur($_SESSION['USER_ID']);
 $tab_options = array('classe'=>'','groupe'=>'','besoin'=>'');
 foreach($DB_TAB as $DB_ROW)
@@ -43,7 +44,11 @@ foreach($DB_TAB as $DB_ROW)
 	$groupe = strtoupper($DB_ROW['groupe_type']{0}).$DB_ROW['groupe_id'];
 	$tab_options[$DB_ROW['groupe_type']] .= '<option value="'.$groupe.'">'.html($DB_ROW['groupe_nom']).'</option>';
 	$tab_niveau_js .= 'tab_niveau["'.$groupe.'"]="'.sprintf("%02u",$DB_ROW['niveau_ordre']).'";';
-	$tab_groupe_js .= 'tab_groupes["'.$groupe.'"]="'.html($DB_ROW['groupe_nom']).'";';
+	$tab_groupe_js .= 'tab_groupe["'.$groupe.'"]="'.html($DB_ROW['groupe_nom']).'";';
+	if($DB_ROW['groupe_type']!='besoin')
+	{
+		$tab_id_classe_groupe[] = $DB_ROW['groupe_id'];
+	}
 }
 foreach($tab_options as $type => $contenu)
 {
@@ -52,12 +57,27 @@ foreach($tab_options as $type => $contenu)
 		$select_eleve .= '<optgroup label="'.ucwords($type).'s">'.$contenu.'</optgroup>';
 	}
 }
+
 // Élément de formulaire "f_aff_periode" pour le choix d'une période
 $select_periode = afficher_select(DB_STRUCTURE_OPT_periodes_etabl() , $select_nom='f_aff_periode' , $option_first='val' , $selection=false , $optgroup='non');
 // Dates par défaut de début et de fin
 $annee_debut = (date('n')>8) ? date('Y') : date('Y')-1 ;
 $date_debut  = '01/09/'.$annee_debut;
 $date_fin    = date("d/m/Y");
+
+// Fabrication du tableau javascript "tab_groupe_periode" pour les jointures groupes/périodes
+$tab_groupe_periode_js = 'var tab_groupe_periode = new Array();';
+$tab_memo_groupes = array();
+$DB_TAB = DB_STRUCTURE_lister_jointure_groupe_periode($listing_groupe_id = implode(',',$tab_id_classe_groupe));
+foreach($DB_TAB as $DB_ROW)
+{
+	if(!isset($tab_memo_groupes[$DB_ROW['groupe_id']]))
+	{
+		$tab_memo_groupes[$DB_ROW['groupe_id']] = true;
+		$tab_groupe_periode_js .= 'tab_groupe_periode['.$DB_ROW['groupe_id'].'] = new Array();';
+	}
+	$tab_groupe_periode_js .= 'tab_groupe_periode['.$DB_ROW['groupe_id'].']['.$DB_ROW['periode_id'].']="'.$DB_ROW['jointure_date_debut'].'_'.$DB_ROW['jointure_date_fin'].'";';
+}
 ?>
 
 <script type="text/javascript">
@@ -65,25 +85,31 @@ $date_fin    = date("d/m/Y");
 	var select_groupe="<?php echo str_replace('"','\"',$select_eleve); ?>";
 	// ]]>
 	var input_date="<?php echo date("d/m/Y") ?>";
-	<?php echo $tab_niveau_js ?>
-	<?php echo $tab_groupe_js ?>
+	var date_mysql="<?php echo date("Y-m-d") ?>";
+	<?php echo $tab_niveau_js ?> 
+	<?php echo $tab_groupe_js ?> 
+	<?php echo $tab_groupe_periode_js ?> 
 </script>
 
 <ul class="puce">
 	<li><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_professeur__evaluations_gestion">DOC : Gestion des évaluations.</a></span></li>
+	<li><span class="astuce">Choisir des evaluations existantes à afficher, ou cliquer sur le "<span style="background:transparent url(./_img/sprite9.png) 0 0 no-repeat;background-position:-20px 0;width:16px;height:16px;display:inline-block;vertical-align:middle"></span>" pour créer une nouvelle évaluation.</span></li>
 	<li><span class="danger">Une évaluation dont la saisie a commencé ne devrait pas voir ses élèves ou ses items modifiés (sinon vous n'aurez plus accès à certaines données) !</span></li>
+</p>
 </ul>
 
 <hr />
 
 <form action="" id="form0"><fieldset>
-	<label class="tab" for="f_aff_classe">Classe / groupe :</label><select id="f_aff_classe" name="f_aff_classe"><?php echo $select_eleve ?></select><br />
-	<label class="tab" for="f_aff_periode">Période :</label><?php echo $select_periode ?>
-	<span id="dates_perso" class="show">
-		du <input id="f_date_debut" name="f_date_debut" size="9" type="text" value="<?php echo $date_debut ?>" /><q class="date_calendrier" title="Cliquez sur cette image pour importer une date depuis un calendrier !"></q>
-		au <input id="f_date_fin" name="f_date_fin" size="9" type="text" value="<?php echo $date_fin ?>" /><q class="date_calendrier" title="Cliquez sur cette image pour importer une date depuis un calendrier !"></q>
-	</span><br />
-	<span class="tab"></span><input type="hidden" name="f_action" value="Afficher_evaluations" /><input type="submit" value="Actualiser l'affichage." /><label id="ajax_msg0">&nbsp;</label>
+	<label class="tab" for="f_aff_classe">Classe / groupe :</label><select id="f_aff_classe" name="f_aff_classe"><?php echo $select_eleve ?></select>
+	<div id="zone_periodes" class="hide">
+		<label class="tab" for="f_aff_periode">Période :</label><?php echo $select_periode ?>
+		<span id="dates_perso" class="show">
+			du <input id="f_date_debut" name="f_date_debut" size="9" type="text" value="<?php echo $date_debut ?>" /><q class="date_calendrier" title="Cliquez sur cette image pour importer une date depuis un calendrier !"></q>
+			au <input id="f_date_fin" name="f_date_fin" size="9" type="text" value="<?php echo $date_fin ?>" /><q class="date_calendrier" title="Cliquez sur cette image pour importer une date depuis un calendrier !"></q>
+		</span><br />
+		<span class="tab"></span><input type="hidden" name="f_action" value="Afficher_evaluations" /><input type="submit" value="Actualiser l'affichage." /><label id="ajax_msg0">&nbsp;</label>
+	</div>
 </fieldset></form>
 
 <form action="" id="form1">

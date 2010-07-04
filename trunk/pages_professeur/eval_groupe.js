@@ -1006,14 +1006,14 @@ $(document).ready
 					case 'ajouter':
 					case 'dupliquer':
 						groupe_id = $("#f_groupe option:selected").val();
-						new_td  = responseHTML.replace('<td>{{GROUPE_NOM}}</td>','<td>'+tab_groupes[groupe_id]+'</td>');
+						new_td  = responseHTML.replace('<td>{{GROUPE_NOM}}</td>','<td>'+tab_groupe[groupe_id]+'</td>');
 						new_tr  = '<tr class="new">'+new_td+'</tr>';
 						$('table.form tbody').append(new_tr);
 						$('q.valider').parent().parent().remove();
 						break;
 					case 'modifier':
 						groupe_id = $("#f_groupe option:selected").val();
-						new_td  = responseHTML.replace('<td>{{GROUPE_NOM}}</td>','<td>'+tab_groupes[groupe_id]+'</td>');
+						new_td  = responseHTML.replace('<td>{{GROUPE_NOM}}</td>','<td>'+tab_groupe[groupe_id]+'</td>');
 						$('q.valider').parent().parent().prev().addClass("new").html(new_td).show();
 						$('q.valider').parent().parent().remove();
 						break;
@@ -1034,23 +1034,34 @@ $(document).ready
 
 		//	Afficher masquer des options de la grille
 
+		var autoperiode = true; // Tant qu'on ne modifie pas manuellement le choix des périodes, modification automatique du formulaire
+
+		function view_dates_perso()
+		{
+			var periode_val = $("#f_aff_periode").val();
+			if(periode_val!=0)
+			{
+				$("#dates_perso").attr("class","hide");
+			}
+			else
+			{
+				$("#dates_perso").attr("class","show");
+			}
+		}
+
 		$('#f_aff_periode').change
 		(
 			function()
 			{
-				var periode_val = $("#f_aff_periode").val();
-				if(periode_val!=0)
-				{
-					$("#dates_perso").attr("class","hide");
-				}
-				else
-				{
-					$("#dates_perso").attr("class","show");
-				}
+				view_dates_perso();
+				autoperiode = false;
 			}
 		);
 
-		//	Changement de groupe -> desactiver les périodes prédéfinies en cas de groue de besoin
+		//	Changement de groupe
+		// -> desactiver les périodes prédéfinies en cas de groupe de besoin
+		// -> choisir automatiquement la meilleure période et chercher les évaluations si un changement manuel de période n'a jamais été effectué
+		// -> afficher le formulaire de périodes s'il est masqué
 
 		$('#f_aff_classe').change
 		(
@@ -1078,11 +1089,42 @@ $(document).ready
 						}
 					}
 				);
-				// Sélectionner si besion la période personnalisée
+				// Sélectionner si besoin la période personnalisée
 				if(groupe_type=='Besoins')
 				{
 					$("#f_aff_periode option[value=0]").attr('selected',true);
 					$("#dates_perso").attr("class","show");
+				}
+				// Modification automatique du formulaire
+				if(autoperiode)
+				{
+					if(groupe_type=='Classes')
+					{
+						// Rechercher automatiquement la meilleure période
+						var id_classe = $('#f_aff_classe option:selected').val().substring(1);
+						if(typeof(tab_groupe_periode[id_classe])!='undefined')
+						{
+							for(var id_periode in tab_groupe_periode[id_classe]) // Parcourir un tableau associatif...
+							{
+								var tab_split = tab_groupe_periode[id_classe][id_periode].split('_');
+								if( (date_mysql>=tab_split[0]) && (date_mysql<=tab_split[1]) )
+								{
+									$("#f_aff_periode option[value="+id_periode+"]").attr('selected',true);
+									view_dates_perso();
+								}
+							}
+						}
+					}
+					// Afficher la zone de choix des périodes
+					if($('#zone_periodes').hasClass("hide"))
+					{
+						$('#zone_periodes').removeAttr("class");
+					}
+					// Soumettre le formulaire
+					if(autoperiode)
+					{
+						formulaire0.submit();
+					}
 				}
 			}
 		);
@@ -1171,7 +1213,7 @@ $(document).ready
 			}
 			else
 			{
-				$('#ajax_msg0').removeAttr("class").addClass("valide").html("Demande réalisée !");
+				$('#ajax_msg0').removeAttr("class").addClass("valide").html("Demande réalisée !").fadeOut(3000,function(){$(this).removeAttr("class").html("").show();});
 				$('table.form tbody').html(responseHTML);
 				trier_tableau();
 				afficher_masquer_images_action('show');

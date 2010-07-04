@@ -406,6 +406,7 @@ $(document).ready
 									$('#'+ids).prev().removeAttr("class").addClass("v").attr('lang',methode_calcul_langue).html(methode_calcul_texte);
 									$('#'+ids).prev().prev().removeAttr("class").addClass("v").attr('lang','hs').html('Référentiel présent. <img title="Référentiel dont le partage est sans objet (matière spécifique)." src="./_img/partage0.gif" />');
 									afficher_masquer_images_action('show');
+									$('#voir_referentiel').html('<ul class="puce"><li><label class="valide">Référentiel importé</label></li><li><span class="astuce">Pour éditer ce nouveau référentiel, utiliser la page "<a href="./index.php?dossier='+DOSSIER+'&amp;fichier=referentiel&amp;section=detail">modifier le contenu des référentiels</a>".</span></li></ul>');
 									infobulle();
 								}
 							}
@@ -602,6 +603,7 @@ $(document).ready
 								}
 								infobulle();
 								$('#choisir_annuler').click();
+								$('#voir_referentiel').html('<ul class="puce"><li><label class="valide">Référentiel importé</label></li><li><span class="astuce">Pour éditer ce nouveau référentiel, utiliser la page "<a href="./index.php?dossier='+DOSSIER+'&amp;fichier=referentiel&amp;section=detail">modifier le contenu des référentiels</a>".</span></li></ul>');
 							}
 						}
 					}

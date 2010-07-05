@@ -27,7 +27,7 @@
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = "Bilans sur une matière";
-$VERSION_JS_FILE += 1;
+$VERSION_JS_FILE += 2;
 ?>
 
 <?php
@@ -51,25 +51,28 @@ $date_debut = '01/09/'.$annee_debut;
 $date_fin   = date("d/m/Y");
 
 // Fabrication du tableau javascript "tab_groupe_periode" pour les jointures groupes/périodes
-$tab_id_classe_groupe = array();
-foreach($tab_groupes_prof as $tab_groupe_infos)
-{
-	if($tab_groupe_infos['optgroup']!='besoin')
-	{
-		$tab_id_classe_groupe[] = $tab_groupe_infos['valeur'];
-	}
-}
 $tab_groupe_periode_js = 'var tab_groupe_periode = new Array();';
-$tab_memo_groupes = array();
-$DB_TAB = DB_STRUCTURE_lister_jointure_groupe_periode($listing_groupe_id = implode(',',$tab_id_classe_groupe));
-foreach($DB_TAB as $DB_ROW)
+if(is_array($tab_groupes_prof))
 {
-	if(!isset($tab_memo_groupes[$DB_ROW['groupe_id']]))
+	$tab_id_classe_groupe = array();
+	foreach($tab_groupes_prof as $tab_groupe_infos)
 	{
-		$tab_memo_groupes[$DB_ROW['groupe_id']] = true;
-		$tab_groupe_periode_js .= 'tab_groupe_periode['.$DB_ROW['groupe_id'].'] = new Array();';
+		if($tab_groupe_infos['optgroup']!='besoin')
+		{
+			$tab_id_classe_groupe[] = $tab_groupe_infos['valeur'];
+		}
 	}
-	$tab_groupe_periode_js .= 'tab_groupe_periode['.$DB_ROW['groupe_id'].']['.$DB_ROW['periode_id'].']="'.$DB_ROW['jointure_date_debut'].'_'.$DB_ROW['jointure_date_fin'].'";';
+	$tab_memo_groupes = array();
+	$DB_TAB = DB_STRUCTURE_lister_jointure_groupe_periode($listing_groupe_id = implode(',',$tab_id_classe_groupe));
+	foreach($DB_TAB as $DB_ROW)
+	{
+		if(!isset($tab_memo_groupes[$DB_ROW['groupe_id']]))
+		{
+			$tab_memo_groupes[$DB_ROW['groupe_id']] = true;
+			$tab_groupe_periode_js .= 'tab_groupe_periode['.$DB_ROW['groupe_id'].'] = new Array();';
+		}
+		$tab_groupe_periode_js .= 'tab_groupe_periode['.$DB_ROW['groupe_id'].']['.$DB_ROW['periode_id'].']="'.$DB_ROW['jointure_date_debut'].'_'.$DB_ROW['jointure_date_fin'].'";';
+	}
 }
 ?>
 

@@ -63,6 +63,26 @@ $(document).ready
 			}
 		);
 
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+//	Rechercher automatiquement la meilleure période au chargement de la page
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
+		if(id_groupe)
+		{
+			if(tab_periode.length)
+			{
+				for(var id_periode in tab_periode) // Parcourir un tableau associatif...
+				{
+					var tab_split = tab_periode[id_periode].split('_');
+					if( (date_mysql>=tab_split[0]) && (date_mysql<=tab_split[1]) )
+					{
+						$("#f_periode option[value="+id_periode+"]").attr('selected',true);
+						$('#f_periode').change();
+					}
+				}
+			}
+		}
+
 		//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
 		//	Soumettre le formulaire principal
 		//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*

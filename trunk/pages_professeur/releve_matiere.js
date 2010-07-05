@@ -147,15 +147,15 @@ $(document).ready
 				// Modification automatique du formulaire
 				if(autoperiode)
 				{
-					if(groupe_type=='Classes')
+					if(groupe_type!='Besoins')
 					{
 						// Rechercher automatiquement la meilleure période
-						var id_classe = $('#f_groupe option:selected').val();
-						if(typeof(tab_groupe_periode[id_classe])!='undefined')
+						var id_groupe = $('#f_groupe option:selected').val();
+						if(typeof(tab_groupe_periode[id_groupe])!='undefined')
 						{
-							for(var id_periode in tab_groupe_periode[id_classe]) // Parcourir un tableau associatif...
+							for(var id_periode in tab_groupe_periode[id_groupe]) // Parcourir un tableau associatif...
 							{
-								var tab_split = tab_groupe_periode[id_classe][id_periode].split('_');
+								var tab_split = tab_groupe_periode[id_groupe][id_periode].split('_');
 								if( (date_mysql>=tab_split[0]) && (date_mysql<=tab_split[1]) )
 								{
 									$("#f_periode option[value="+id_periode+"]").attr('selected',true);

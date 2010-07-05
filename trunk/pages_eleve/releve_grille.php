@@ -32,15 +32,17 @@ $TITRE = "Grilles de compétences sur un niveau";
 <?php
 // Fabrication des éléments select du formulaire
 $tab_cookie = load_cookie_select($_SESSION['BASE'],$_SESSION['USER_ID']);
-$select_matiere     = afficher_select(DB_STRUCTURE_OPT_matieres_eleve($_SESSION['USER_ID'])                                                  , $select_nom='f_matiere'     , $option_first='oui' , $selection=false                        , $optgroup='non');
-$select_niveau      = afficher_select(DB_STRUCTURE_OPT_niveaux_eleve($_SESSION['NIVEAUX'],$_SESSION['PALIERS'],$_SESSION['ELEVE_CLASSE_ID']) , $select_nom='f_niveau'      , $option_first='oui' , $selection='val'                        , $optgroup='non');
-$select_orientation = afficher_select($tab_select_orientation                                                                      , $select_nom='f_orientation' , $option_first='non' , $selection=$tab_cookie['orientation']   , $optgroup='non');
-$select_marge_min   = afficher_select($tab_select_marge_min                                                                        , $select_nom='f_marge_min'   , $option_first='non' , $selection=$tab_cookie['marge_min']     , $optgroup='non');
-$select_couleur     = afficher_select($tab_select_couleur                                                                          , $select_nom='f_couleur'     , $option_first='non' , $selection=$tab_cookie['couleur']       , $optgroup='non');
-$select_cases_nb    = afficher_select($tab_select_cases_nb                                                                         , $select_nom='f_cases_nb'    , $option_first='non' , $selection=$tab_cookie['cases_nb']      , $optgroup='non');
-$select_cases_larg  = afficher_select($tab_select_cases_size                                                                       , $select_nom='f_cases_larg'  , $option_first='non' , $selection=$tab_cookie['cases_largeur'] , $optgroup='non');
-$select_cases_haut  = afficher_select($tab_select_cases_size                                                                       , $select_nom='f_cases_haut'  , $option_first='non' , $selection=$tab_cookie['cases_hauteur'] , $optgroup='non');
-$select_remplissage = afficher_select($tab_select_remplissage                                                                      , $select_nom='f_remplissage' , $option_first='non' , $selection='plein'                      , $optgroup='non');
+$tab_matieres_eleve = DB_STRUCTURE_OPT_matieres_eleve($_SESSION['USER_ID']);
+$tab_niveaux_eleve  = DB_STRUCTURE_OPT_niveaux_eleve($_SESSION['NIVEAUX'],$_SESSION['PALIERS'],$_SESSION['ELEVE_CLASSE_ID']);
+$select_matiere     = afficher_select($tab_matieres_eleve     , $select_nom='f_matiere'     , $option_first='oui' , $selection=false                        , $optgroup='non');
+$select_niveau      = afficher_select($tab_niveaux_eleve      , $select_nom='f_niveau'      , $option_first='oui' , $selection='val'                        , $optgroup='non');
+$select_orientation = afficher_select($tab_select_orientation , $select_nom='f_orientation' , $option_first='non' , $selection=$tab_cookie['orientation']   , $optgroup='non');
+$select_marge_min   = afficher_select($tab_select_marge_min   , $select_nom='f_marge_min'   , $option_first='non' , $selection=$tab_cookie['marge_min']     , $optgroup='non');
+$select_couleur     = afficher_select($tab_select_couleur     , $select_nom='f_couleur'     , $option_first='non' , $selection=$tab_cookie['couleur']       , $optgroup='non');
+$select_cases_nb    = afficher_select($tab_select_cases_nb    , $select_nom='f_cases_nb'    , $option_first='non' , $selection=$tab_cookie['cases_nb']      , $optgroup='non');
+$select_cases_larg  = afficher_select($tab_select_cases_size  , $select_nom='f_cases_larg'  , $option_first='non' , $selection=$tab_cookie['cases_largeur'] , $optgroup='non');
+$select_cases_haut  = afficher_select($tab_select_cases_size  , $select_nom='f_cases_haut'  , $option_first='non' , $selection=$tab_cookie['cases_hauteur'] , $optgroup='non');
+$select_remplissage = afficher_select($tab_select_remplissage , $select_nom='f_remplissage' , $option_first='non' , $selection='plein'                      , $optgroup='non');
 ?>
 
 <script type="text/javascript">

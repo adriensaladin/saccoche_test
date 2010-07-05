@@ -2712,32 +2712,33 @@ function DB_STRUCTURE_OPT_matieres_professeur($user_id)
 
 function DB_STRUCTURE_OPT_matieres_eleve($user_id)
 {
-	// On commence par récupérer la classe et les groupes associés à l'élève
+	// On connait la classe ($_SESSION['ELEVE_CLASSE_ID']), donc on commence par récupérer les groupes éventuels associés à l'élève
 	// DB::query(SACOCHE_STRUCTURE_BD_NAME , 'SET group_concat_max_len = ...'); // Pour lever si besoin une limitation de GROUP_CONCAT (group_concat_max_len est par défaut limité à une chaine de 1024 caractères).
-	$DB_SQL = 'SELECT eleve_classe_id, GROUP_CONCAT(DISTINCT groupe_id SEPARATOR ",") AS sacoche_liste_groupe_id FROM sacoche_user ';
-	$DB_SQL.= 'LEFT JOIN sacoche_jointure_user_groupe USING (user_id) ';
-	$DB_SQL.= 'WHERE user_id=:user_id ';
+	$DB_SQL = 'SELECT GROUP_CONCAT(DISTINCT groupe_id SEPARATOR ",") AS sacoche_liste_groupe_id ';
+	$DB_SQL.= 'FROM sacoche_jointure_user_groupe ';
+	$DB_SQL.= 'LEFT JOIN sacoche_groupe USING (groupe_id) ';
+	$DB_SQL.= 'WHERE user_id=:user_id AND groupe_type=:type2 ';
 	$DB_SQL.= 'GROUP BY user_id ';
-	$DB_VAR = array(':user_id'=>$user_id);
+	$DB_VAR = array(':user_id'=>$user_id,':type2'=>'groupe');
 	$DB_ROW = DB::queryRow(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-	if( ($DB_ROW['eleve_classe_id']==0) && (is_null($DB_ROW['sacoche_liste_groupe_id'])) )
+	if( (!$_SESSION['ELEVE_CLASSE_ID']) && (!count($DB_ROW)) )
 	{
 		// élève sans classe et sans groupe
 		return 'Aucune classe et aucun groupe ne vous est affecté !';
 	}
 	else
 	{
-		if(is_null($DB_ROW['sacoche_liste_groupe_id']))
+		if(!count($DB_ROW))
 		{
-			$liste_groupes = $DB_ROW['eleve_classe_id'];
+			$liste_groupes = $_SESSION['ELEVE_CLASSE_ID'];
 		}
-		elseif($DB_ROW['eleve_classe_id']==0)
+		elseif(!$_SESSION['ELEVE_CLASSE_ID'])
 		{
 			$liste_groupes = $DB_ROW['sacoche_liste_groupe_id'];
 		}
 		else
 		{
-			$liste_groupes = $DB_ROW['eleve_classe_id'].','.$DB_ROW['sacoche_liste_groupe_id'];
+			$liste_groupes = $_SESSION['ELEVE_CLASSE_ID'].','.$DB_ROW['sacoche_liste_groupe_id'];
 		}
 		// Ensuite on récupère les matières des professeurs qui sont associés à la liste des groupes récupérés
 		$DB_SQL = 'SELECT matiere_id AS valeur, matiere_nom AS texte FROM sacoche_user ';

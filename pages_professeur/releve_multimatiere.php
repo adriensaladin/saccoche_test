@@ -27,7 +27,7 @@
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = "Bilans transdisciplinaires (P.P.)";
-$VERSION_JS_FILE += 1;
+$VERSION_JS_FILE += 2;
 // Remarque : on ne peut être pp que d'une classe, pas d'un groupe, donc seuls des bilans par classes peuvent être effectués
 ?>
 
@@ -50,22 +50,25 @@ $date_debut = '01/09/'.$annee_debut;
 $date_fin   = date("d/m/Y");
 
 // Fabrication du tableau javascript "tab_groupe_periode" pour les jointures groupes/périodes
-$tab_id_classe = array();
-foreach($tab_classes_prof_prin as $tab_classe_infos)
-{
-	$tab_id_classe[] = $tab_classe_infos['valeur'];
-}
 $tab_groupe_periode_js = 'var tab_groupe_periode = new Array();';
-$tab_memo_groupes = array();
-$DB_TAB = DB_STRUCTURE_lister_jointure_groupe_periode($listing_groupe_id = implode(',',$tab_id_classe));
-foreach($DB_TAB as $DB_ROW)
+if(is_array($tab_classes_prof_prin))
 {
-	if(!isset($tab_memo_groupes[$DB_ROW['groupe_id']]))
+	$tab_id_classe_groupe = array();
+	foreach($tab_classes_prof_prin as $tab_groupe_infos)
 	{
-		$tab_memo_groupes[$DB_ROW['groupe_id']] = true;
-		$tab_groupe_periode_js .= 'tab_groupe_periode['.$DB_ROW['groupe_id'].'] = new Array();';
+		$tab_id_classe_groupe[] = $tab_groupe_infos['valeur'];
 	}
-	$tab_groupe_periode_js .= 'tab_groupe_periode['.$DB_ROW['groupe_id'].']['.$DB_ROW['periode_id'].']="'.$DB_ROW['jointure_date_debut'].'_'.$DB_ROW['jointure_date_fin'].'";';
+	$tab_memo_groupes = array();
+	$DB_TAB = DB_STRUCTURE_lister_jointure_groupe_periode($listing_groupe_id = implode(',',$tab_id_classe_groupe));
+	foreach($DB_TAB as $DB_ROW)
+	{
+		if(!isset($tab_memo_groupes[$DB_ROW['groupe_id']]))
+		{
+			$tab_memo_groupes[$DB_ROW['groupe_id']] = true;
+			$tab_groupe_periode_js .= 'tab_groupe_periode['.$DB_ROW['groupe_id'].'] = new Array();';
+		}
+		$tab_groupe_periode_js .= 'tab_groupe_periode['.$DB_ROW['groupe_id'].']['.$DB_ROW['periode_id'].']="'.$DB_ROW['jointure_date_debut'].'_'.$DB_ROW['jointure_date_fin'].'";';
+	}
 }
 ?>
 
@@ -93,7 +96,6 @@ foreach($DB_TAB as $DB_ROW)
 		</span><br />
 		<span class="radio"><img alt="" src="./_img/bulle_aide.png" title="Le bilan peut être établi uniquement sur la période considérée<br />ou en tenant compte d'évaluations antérieures des items concernés." /> Prise en compte des évaluations antérieures :</span><label for="f_retro_oui"><input type="radio" id="f_retro_oui" name="f_retroactif" value="oui" checked="checked" /> oui</label>&nbsp;&nbsp;&nbsp;&nbsp;<label for="f_retro_non"><input type="radio" id="f_retro_non" name="f_retroactif" value="non" /> non</label>
 	</p>
-	<p>
 	<div class="toggle">
 		<span class="tab"></span><a href="#" class="puce_plus toggle">Afficher plus d'options</a>
 	</div>

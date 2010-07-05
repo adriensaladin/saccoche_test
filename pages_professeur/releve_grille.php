@@ -32,15 +32,18 @@ $TITRE = "Grilles de compétences sur un niveau";
 <?php
 // Fabrication des éléments select du formulaire
 $tab_cookie = load_cookie_select($_SESSION['BASE'],$_SESSION['USER_ID']);
-$select_matiere     = afficher_select(DB_STRUCTURE_OPT_matieres_professeur($_SESSION['USER_ID'])                , $select_nom='f_matiere'     , $option_first='non' , $selection=false                        , $optgroup='non');
-$select_niveau      = afficher_select(DB_STRUCTURE_OPT_niveaux_etabl($_SESSION['NIVEAUX'],$_SESSION['PALIERS']) , $select_nom='f_niveau'      , $option_first='oui' , $selection=false                        , $optgroup='non');
-$select_groupe      = afficher_select(DB_STRUCTURE_OPT_groupes_professeur($_SESSION['USER_ID'])                 , $select_nom='f_groupe'      , $option_first='val' , $selection=false                        , $optgroup='oui');
-$select_orientation = afficher_select($tab_select_orientation                                         , $select_nom='f_orientation' , $option_first='non' , $selection=$tab_cookie['orientation']   , $optgroup='non');
-$select_marge_min   = afficher_select($tab_select_marge_min                                           , $select_nom='f_marge_min'   , $option_first='non' , $selection=$tab_cookie['marge_min']     , $optgroup='non');
-$select_couleur     = afficher_select($tab_select_couleur                                             , $select_nom='f_couleur'     , $option_first='non' , $selection=$tab_cookie['couleur']       , $optgroup='non');
-$select_cases_nb    = afficher_select($tab_select_cases_nb                                            , $select_nom='f_cases_nb'    , $option_first='non' , $selection=$tab_cookie['cases_nb']      , $optgroup='non');
-$select_cases_larg  = afficher_select($tab_select_cases_size                                          , $select_nom='f_cases_larg'  , $option_first='non' , $selection=$tab_cookie['cases_largeur'] , $optgroup='non');
-$select_cases_haut  = afficher_select($tab_select_cases_size                                          , $select_nom='f_cases_haut'  , $option_first='non' , $selection=$tab_cookie['cases_hauteur'] , $optgroup='non');
+$tab_matieres_prof  = DB_STRUCTURE_OPT_matieres_professeur($_SESSION['USER_ID']);
+$tab_niveaux_etabl  = DB_STRUCTURE_OPT_niveaux_etabl($_SESSION['NIVEAUX'],$_SESSION['PALIERS']);
+$tab_groupes_prof   = DB_STRUCTURE_OPT_groupes_professeur($_SESSION['USER_ID']);
+$select_matiere     = afficher_select($tab_matieres_prof      , $select_nom='f_matiere'     , $option_first='non' , $selection=false                        , $optgroup='non');
+$select_niveau      = afficher_select($tab_niveaux_etabl      , $select_nom='f_niveau'      , $option_first='oui' , $selection=false                        , $optgroup='non');
+$select_groupe      = afficher_select($tab_groupes_prof       , $select_nom='f_groupe'      , $option_first='val' , $selection=false                        , $optgroup='oui');
+$select_orientation = afficher_select($tab_select_orientation , $select_nom='f_orientation' , $option_first='non' , $selection=$tab_cookie['orientation']   , $optgroup='non');
+$select_marge_min   = afficher_select($tab_select_marge_min   , $select_nom='f_marge_min'   , $option_first='non' , $selection=$tab_cookie['marge_min']     , $optgroup='non');
+$select_couleur     = afficher_select($tab_select_couleur     , $select_nom='f_couleur'     , $option_first='non' , $selection=$tab_cookie['couleur']       , $optgroup='non');
+$select_cases_nb    = afficher_select($tab_select_cases_nb    , $select_nom='f_cases_nb'    , $option_first='non' , $selection=$tab_cookie['cases_nb']      , $optgroup='non');
+$select_cases_larg  = afficher_select($tab_select_cases_size  , $select_nom='f_cases_larg'  , $option_first='non' , $selection=$tab_cookie['cases_largeur'] , $optgroup='non');
+$select_cases_haut  = afficher_select($tab_select_cases_size  , $select_nom='f_cases_haut'  , $option_first='non' , $selection=$tab_cookie['cases_hauteur'] , $optgroup='non');
 ?>
 
 <script type="text/javascript">

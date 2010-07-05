@@ -27,35 +27,57 @@
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = "Bilans sur une matière";
+$VERSION_JS_FILE += 1;
 ?>
 
 <?php
 // Fabrication des éléments select du formulaire
 $tab_cookie = load_cookie_select($_SESSION['BASE'],$_SESSION['USER_ID']);
-$select_matiere     = afficher_select(DB_STRUCTURE_OPT_matieres_eleve($_SESSION['USER_ID']) , $select_nom='f_matiere'     , $option_first='oui' , $selection=false                        , $optgroup='non');
-$select_periode     = afficher_select(DB_STRUCTURE_OPT_periodes_etabl()                     , $select_nom='f_periode'     , $option_first='val' , $selection=false                        , $optgroup='non');
-$select_orientation = afficher_select($tab_select_orientation                     , $select_nom='f_orientation' , $option_first='non' , $selection=$tab_cookie['orientation']   , $optgroup='non');
-$select_marge_min   = afficher_select($tab_select_marge_min                       , $select_nom='f_marge_min'   , $option_first='non' , $selection=$tab_cookie['marge_min']     , $optgroup='non');
-$select_couleur     = afficher_select($tab_select_couleur                         , $select_nom='f_couleur'     , $option_first='non' , $selection=$tab_cookie['couleur']       , $optgroup='non');
-$select_cases_nb    = afficher_select($tab_select_cases_nb                        , $select_nom='f_cases_nb'    , $option_first='non' , $selection=$tab_cookie['cases_nb']      , $optgroup='non');
-$select_cases_larg  = afficher_select($tab_select_cases_size                      , $select_nom='f_cases_larg'  , $option_first='non' , $selection=$tab_cookie['cases_largeur'] , $optgroup='non');
-$select_cases_haut  = afficher_select($tab_select_cases_size                      , $select_nom='f_cases_haut'  , $option_first='non' , $selection=$tab_cookie['cases_hauteur'] , $optgroup='non');
+$tab_matieres_eleve = DB_STRUCTURE_OPT_matieres_eleve($_SESSION['USER_ID']);
+$tab_periodes_etabl = DB_STRUCTURE_OPT_periodes_etabl();
+$select_matiere     = afficher_select($tab_matieres_eleve     , $select_nom='f_matiere'     , $option_first='oui' , $selection=false                        , $optgroup='non');
+$select_periode     = afficher_select($tab_periodes_etabl     , $select_nom='f_periode'     , $option_first='val' , $selection=false                        , $optgroup='non');
+$select_orientation = afficher_select($tab_select_orientation , $select_nom='f_orientation' , $option_first='non' , $selection=$tab_cookie['orientation']   , $optgroup='non');
+$select_marge_min   = afficher_select($tab_select_marge_min   , $select_nom='f_marge_min'   , $option_first='non' , $selection=$tab_cookie['marge_min']     , $optgroup='non');
+$select_couleur     = afficher_select($tab_select_couleur     , $select_nom='f_couleur'     , $option_first='non' , $selection=$tab_cookie['couleur']       , $optgroup='non');
+$select_cases_nb    = afficher_select($tab_select_cases_nb    , $select_nom='f_cases_nb'    , $option_first='non' , $selection=$tab_cookie['cases_nb']      , $optgroup='non');
+$select_cases_larg  = afficher_select($tab_select_cases_size  , $select_nom='f_cases_larg'  , $option_first='non' , $selection=$tab_cookie['cases_largeur'] , $optgroup='non');
+$select_cases_haut  = afficher_select($tab_select_cases_size  , $select_nom='f_cases_haut'  , $option_first='non' , $selection=$tab_cookie['cases_hauteur'] , $optgroup='non');
 // Dates par défaut de début et de fin
 $annee_debut = (date('n')>8) ? date('Y') : date('Y')-1 ;
 $date_debut = '01/09/'.$annee_debut;
 $date_fin   = date("d/m/Y");
+
+// Fabrication du tableau javascript "tab_periode" pour les jointures classe de l'élève / périodes
+$tab_periode_js = 'var tab_periode = new Array();';
+if($_SESSION['ELEVE_CLASSE_ID'])
+{
+	$DB_TAB = DB_STRUCTURE_lister_jointure_groupe_periode($listing_groupe_id = $_SESSION['ELEVE_CLASSE_ID']);
+	foreach($DB_TAB as $DB_ROW)
+	{
+		$tab_periode_js .= 'tab_periode['.$DB_ROW['periode_id'].']="'.$DB_ROW['jointure_date_debut'].'_'.$DB_ROW['jointure_date_fin'].'";';
+	}
+}
 ?>
+
+<script type="text/javascript">
+	var date_mysql="<?php echo date("Y-m-d") ?>";
+	var id_groupe="<?php echo $_SESSION['ELEVE_CLASSE_ID'] ?>";
+	<?php echo $tab_periode_js ?> 
+</script>
 
 <div class="hc"><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=releves_bilans__releve_matiere">DOC : Bilans sur une matière.</a></span></div>
 
 <form id="form_select" action=""><fieldset>
-	<label class="tab" for="f_periode"><img alt="" src="./_img/bulle_aide.png" title="Les items pris en compte sont ceux qui sont évalués<br />au moins une fois sur cette période." /> Période :</label><?php echo $select_periode ?>
-	<span id="dates_perso" class="show">
-		du <input id="f_date_debut" name="f_date_debut" size="9" type="text" value="<?php echo $date_debut ?>" /><q class="date_calendrier" title="Cliquez sur cette image pour importer une date depuis un calendrier !"></q>
-		au <input id="f_date_fin" name="f_date_fin" size="9" type="text" value="<?php echo $date_fin ?>" /><q class="date_calendrier" title="Cliquez sur cette image pour importer une date depuis un calendrier !"></q>
-	</span><p />
-	<label class="tab" for="f_matiere">Matière :</label><?php echo $select_matiere ?><input type="hidden" id="f_matiere_nom" name="f_matiere_nom" value="" /><br />
-	<span class="radio"><img alt="" src="./_img/bulle_aide.png" title="Le bilan peut être établi uniquement sur la période considérée<br />ou en tenant compte d'évaluations antérieures des items concernés." /> Prise en compte des évaluations antérieures :</span><label for="f_retro_oui"><input type="radio" id="f_retro_oui" name="f_retroactif" value="oui" checked="checked" /> oui</label>&nbsp;&nbsp;&nbsp;&nbsp;<label for="f_retro_non"><input type="radio" id="f_retro_non" name="f_retroactif" value="non" /> non</label><p />
+	<label class="tab" for="f_matiere">Matière :</label><?php echo $select_matiere ?><input type="hidden" id="f_matiere_nom" name="f_matiere_nom" value="" />
+	<p>
+		<label class="tab" for="f_periode"><img alt="" src="./_img/bulle_aide.png" title="Les items pris en compte sont ceux qui sont évalués<br />au moins une fois sur cette période." /> Période :</label><?php echo $select_periode ?>
+		<span id="dates_perso" class="show">
+			du <input id="f_date_debut" name="f_date_debut" size="9" type="text" value="<?php echo $date_debut ?>" /><q class="date_calendrier" title="Cliquez sur cette image pour importer une date depuis un calendrier !"></q>
+			au <input id="f_date_fin" name="f_date_fin" size="9" type="text" value="<?php echo $date_fin ?>" /><q class="date_calendrier" title="Cliquez sur cette image pour importer une date depuis un calendrier !"></q>
+		</span><br />
+		<span class="radio"><img alt="" src="./_img/bulle_aide.png" title="Le bilan peut être établi uniquement sur la période considérée<br />ou en tenant compte d'évaluations antérieures des items concernés." /> Prise en compte des évaluations antérieures :</span><label for="f_retro_oui"><input type="radio" id="f_retro_oui" name="f_retroactif" value="oui" checked="checked" /> oui</label>&nbsp;&nbsp;&nbsp;&nbsp;<label for="f_retro_non"><input type="radio" id="f_retro_non" name="f_retroactif" value="non" /> non</label>
+	</p>
 	<div class="toggle">
 		<span class="tab"></span><a href="#" class="puce_plus toggle">Afficher plus d'options</a>
 	</div>

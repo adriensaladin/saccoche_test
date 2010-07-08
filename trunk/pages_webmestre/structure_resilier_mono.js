@@ -68,15 +68,8 @@ $(document).ready
 		(
 			function()
 			{
-				if (!please_wait)
-				{
-					$(this).ajaxSubmit(ajaxOptions);
-					return false;
-				}
-				else
-				{
-					return false;
-				}
+				$(this).ajaxSubmit(ajaxOptions);
+				return false;
 			}
 		); 
 
@@ -86,7 +79,7 @@ $(document).ready
 			$('#ajax_msg').removeAttr("class").html("&nbsp;");
 			if(confirm("Etes-vous bien certain de vouloir supprimer irrémédiablement toutes les données ?"))
 			{
-				please_wait = true;
+				$("#bouton_valider").attr('disabled','disabled');
 				$('#ajax_msg').removeAttr("class").addClass("loader").html("Demande envoyée... Veuillez patienter.");
 				readytogo = true;
 			}
@@ -100,7 +93,7 @@ $(document).ready
 		// Fonction suivant l'envoi du formulaire (avec jquery.form.js)
 		function retour_form_erreur(msg,string)
 		{
-			please_wait = false;
+			$("#bouton_valider").removeAttr('disabled');
 			$('#ajax_msg').removeAttr("class").addClass("alerte").html("Echec de la connexion ! Veuillez recommencer.");
 		}
 
@@ -108,7 +101,6 @@ $(document).ready
 		function retour_form_valide(responseHTML)
 		{
 			maj_clock(1);
-			please_wait = false;
 			if((responseHTML=='ok'))
 			{
 				$('#ajax_msg').removeAttr("class").addClass("valide").html("Inscription supprimée !");
@@ -117,6 +109,7 @@ $(document).ready
 			}
 			else
 			{
+				$("#bouton_valider").removeAttr('disabled');
 				$('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);
 			}
 		} 

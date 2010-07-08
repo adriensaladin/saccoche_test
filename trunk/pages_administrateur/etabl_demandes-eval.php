@@ -45,5 +45,5 @@ for($nb_demandes=0 ; $nb_demandes<10 ; $nb_demandes++)
 
 <form id="delai" action=""><fieldset>
 	<label class="tab" for="f_demandes">Nombre maximal :</label><select id="f_demandes" name="f_demandes"><?php echo $options ?></select><br />
-	<span class="tab"></span><input id="f_submit" type="button" value="Valider ce choix." /><label id="ajax_msg">&nbsp;</label><br />
+	<span class="tab"></span><button id="bouton_valider" type="button"><img alt="" src="./_img/bouton/parametre.png" /> Valider ce choix.</button><label id="ajax_msg">&nbsp;</label>
 </fieldset></form>

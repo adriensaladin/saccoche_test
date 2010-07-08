@@ -62,7 +62,7 @@ $select_cases_haut  = afficher_select($tab_select_cases_size  , $select_nom='f_c
 		<label class="tab" for="f_orientation">Orientation :</label><?php echo $select_orientation ?> en <?php echo $select_couleur ?> avec marges minimales de </label><?php echo $select_marge_min ?><br />
 		<label class="tab" for="f_cases_nb">Évaluations :</label><?php echo $select_cases_nb ?> de largeur <?php echo $select_cases_larg ?> et de hauteur <?php echo $select_cases_haut ?><p />
 	</div>
-	<span class="tab"></span><input id="f_submit" type="submit" value="Valider." /><label id="ajax_msg">&nbsp;</label><br />
+	<span class="tab"></span><button id="bouton_valider" type="submit"><img alt="" src="./_img/bouton/generer.png" /> Générer.</button><label id="ajax_msg">&nbsp;</label><br />
 	<hr />
 </fieldset></form>
 
@@ -70,10 +70,9 @@ $select_cases_haut  = afficher_select($tab_select_cases_size  , $select_nom='f_c
 </div>
 
 <form action="" id="zone_compet" class="hide">
-	<div class="hc">
-		<a class="valider_compet" href="#"><img alt="Valider" src="./_img/action_valider.png" /> Valider ce choix</a><br />
-		<a class="annuler_compet" href="#"><img alt="Annuler" src="./_img/action_annuler.png" /> Annuler / Retour</a>
-	</div>
+	<p>
+		<span class="tab"></span><button id="valider_compet" type="button"><img alt="" src="./_img/bouton/valider.png" /> Valider ce choix</button>&nbsp;&nbsp;&nbsp;<button id="annuler_compet" type="button"><img alt="" src="./_img/bouton/annuler.png" /> Annuler / Retour</button>
+	</p>
 	<?php
 	// Affichage de la liste des items pour toutes les matières d'un professeur, sur tous les niveaux
 	$DB_TAB = DB_STRUCTURE_recuperer_arborescence($_SESSION['USER_ID'],$matiere_id=0,$niveau_id=0,$only_item=false,$socle_nom=false);

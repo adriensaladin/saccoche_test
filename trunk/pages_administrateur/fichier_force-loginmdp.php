@@ -32,11 +32,11 @@ $TITRE = "Imposer identifiants SACoche";
 <p class="hc"><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__force_login_mdp_tableur">DOC : Imposer identifiants SACoche avec un tableur</a></span></p>
 
 <form action="">
-	<div>
-		Pour commencer, vous pouvez <input id="user_export" type="button" value="récupérer un fichier csv avec les noms / prénoms / logins actuels" /> (le mot de passe, crypté, ne peut être restitué).<p />
-		Indiquez ci-dessous le fichier <b>nom-du-fichier.csv</b> (ou <b>nom-du-fichier.txt</b>) obtenu que vous souhaitez importer<br />
-		<label class="tab" for="user_import">Fichier à importer :</label><input id="user_import" type="button" value="Parcourir..." />
-	</div>
+	<fieldset>
+		Vous pouvez <button id="user_export" type="button"><img alt="" src="./_img/bouton/fichier_export.png" /> récupérer un fichier csv avec les noms / prénoms / logins actuels</button> (le mot de passe, crypté, ne peut être restitué).<p />
+		Modifiez les identifiants souhaités, puis indiquez ci-dessous le fichier <b>nom-du-fichier.csv</b> (ou <b>nom-du-fichier.txt</b>) obtenu que vous souhaitez importer.
+		<p><label class="tab" for="user_import">Envoyer le fichier :</label><button id="user_import" type="button"><img alt="" src="./_img/bouton/fichier_import.png" /> Parcourir...</button></p>
+	</fieldset>
 </form>
 
 <p><span class="astuce">Pour un traitement individuel, on peut aussi utiliser la page "<a href="./index.php?dossier=administrateur&amp;fichier=eleve&amp;section=gestion">Gérer les élèves</a>" ou "<a href="./index.php?dossier=administrateur&amp;fichier=professeur&amp;section=gestion">Gérer les professeurs</a>" ou "<a href="./index.php?dossier=administrateur&amp;fichier=directeur&amp;section=gestion">Gérer les directeurs</a>".</span></p>

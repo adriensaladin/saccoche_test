@@ -39,18 +39,20 @@ fieldset,img,hr {border:0}
 
 html {height:100%;background:#F7F7F7;font-size:13px;}
 body {background:#F7F7F7;margin-left:2px;margin-right:2px;font:1em "arial","liberation sans","dejavu sans","nimbus sans l";cursor:default;}
-table,select,textarea,input,div{font:100% "arial","liberation sans","dejavu sans","nimbus sans l"}
+table,select,textarea,input,button,div{font:100% "arial","liberation sans","dejavu sans","nimbus sans l"}
 p{margin:1em auto}
 img {vertical-align:text-top}
 td img , #aide_en_ligne img {vertical-align:middle}
 input[type=radio],input[type=checkbox],input[type=image] {vertical-align:-2px}
-input[readonly=readonly],input[disabled=disabled] {color:#666}
+input[readonly],input[disabled] {color:#666}
 h1{display:block;font-size:125%;text-align:center;font-weight:bold;font-variant:small-caps;color:#33A;letter-spacing:0.15em;}
 h1 img{vertical-align:middle}
 h1 a{margin:auto 1em}
 #titre_page{background:transparent url(../_img/logo_petit.png) no-repeat 60px 1px;line-height:62px}
 #titre_aide{background:transparent url(../_img/puce_manuel_ouvert.png) no-repeat left;padding-left:24px;margin:1ex 2em;text-align:left}
 h2{display:block;font-size:110%;text-align:left;font-weight:bold;font-variant:small-caps;color:#33A;letter-spacing:0.15em;margin-top:1ex;margin-bottom:1ex;}
+/* h3 réservé pour l'infobulle */
+h4{display:block;font-size:100%;text-align:left;font-weight:bold;font-variant:small-caps;color:#227;letter-spacing:0.05em;margin:1ex auto 1ex 1em;}
 a.anti_h2{background:transparent url(../_img/actualiser_small.png) no-repeat left;padding-left:15px;margin-left:1em;font-size:80%;font-weight:normal;font-variant:normal;letter-spacing:0;}
 a {color:#139;text-decoration:none}a:hover{color:#D41;text-decoration:underline}
 hr {display:block;height:1px;margin:1em 0;color:#66F;background:#66F}
@@ -150,10 +152,16 @@ label.loader {background:transparent url(../_img/ajax/ajax_loader.gif) no-repeat
 label.alerte {background:transparent url(../_img/ajax/ajax_alerte.png) no-repeat left;color:#A00;padding-left:18px;margin-left:5px}
 
 /* Mise en page tabulée des éléments */
-form label.tab{line-height:1.4em;display:inline-block;text-align:right;width:10em;margin-right:1em;font-weight:bold}
+form label.tab{line-height:1.4em;display:inline-block;text-align:right;width:11em;margin-right:1em;font-weight:bold}
 form span.radio{line-height:1.4em;display:inline-block;text-align:right;width:25em;margin-right:1em;font-weight:bold}
 form span.tab{line-height:2em;margin-left:12em}
 form label.mini{width:8em;}
+
+/* Boutons */
+button{padding:0 1px;margin:1px 0;background:#CCF;color:#139;border:1px solid #66F;}
+button{width:auto;overflow:visible;} /* patch pour IE : voir http://jehiah.cz/archive/button-width-in-ie */
+button:hover,button.hover{background:#DDF;color:#D41;cursor:pointer;} /* button.hover pour une compatibilité avec AjaxUpload (pour background, car pas mieux pour cursor */
+button[disabled]{background:#EEF;color:#888;border:1px solid #BBF} /* Attention à un bug de jquery : quand on lui demande de mettre disabled="disabled", il met disabled="" ! */ 
 
 /* formulaire en page d'accueil pour choisir son établissement */
 #f_structure {font-size:90%}

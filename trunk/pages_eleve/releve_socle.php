@@ -41,7 +41,7 @@ $select_groupe = afficher_select(DB_STRUCTURE_OPT_groupes_professeur($_SESSION['
 	<label class="tab" for="f_detail">Affichage :</label><label for="f_detail_complet"><input type="radio" id="f_detail_complet" name="f_detail" value="complet" checked="checked" /> Attestation complète</label>&nbsp;&nbsp;&nbsp;<label for="f_detail_extrait"><input type="radio" id="f_detail_extrait" name="f_detail" value="extrait" /> Uniquement les intitulés</label><br />
 	<label class="tab" for="f_remplissage">Remplissage :</label><select id="f_remplissage" name="f_remplissage"><option value="vide">attestation vierge de toute validation</option><option value="plein" selected="selected">attestation avec les états de validation</option></select><br />
 	<label class="tab" for="f_palier">Palier :</label><?php echo $select_palier ?><input type="hidden" id="f_palier_nom" name="f_palier_nom" value="" /><p />
-	<span class="tab"></span><input id="f_submit" type="submit" value="Valider." /><label id="ajax_msg">&nbsp;</label><br />
+	<span class="tab"></span><button id="bouton_valider" type="submit"><img alt="" src="./_img/bouton/generer.png" /> Générer.</button><label id="ajax_msg">&nbsp;</label><br />
 </fieldset></form>
 
 <hr />

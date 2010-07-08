@@ -154,7 +154,7 @@ $(document).ready
 					id = 'id_'+tab_id[i];
 					if($('#'+id).length)
 					{
-						$('#'+id).attr('checked',true);
+						$('#'+id).attr('checked','checked');
 						$('#'+id).parent().parent().css("display","block");	// les items
 						$('#'+id).parent().parent().parent().parent().css("display","block");	// le thème
 						$('#'+id).parent().parent().parent().parent().parent().parent().css("display","block");	// le domaine
@@ -167,9 +167,9 @@ $(document).ready
 		$('q.choisir_compet').click( choisir_compet );
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-//	Clic sur le lien pour fermer le cadre des items associés à une évaluation (annuler / retour)
+//	Clic sur le bouton pour fermer le cadre des items associés à une évaluation (annuler / retour)
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-		$('a.annuler_compet').click
+		$('#annuler_compet').click
 		(
 			function()
 			{
@@ -180,9 +180,9 @@ $(document).ready
 		);
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-//	Clic sur le lien pour valider le choix des items associés à une évaluation
+//	Clic sur le bouton pour valider le choix des items associés à une évaluation
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-		$('a.valider_compet').click
+		$('#valider_compet').click
 		(
 			function()
 			{
@@ -200,7 +200,7 @@ $(document).ready
 				s = (nombre>1) ? 's' : '';
 				$('#f_compet_liste').val(liste);
 				$('#f_compet_nombre').val(nombre+' item'+s);
-				$('a.annuler_compet').click();
+				$('#annuler_compet').click();
 			}
 		);
 
@@ -324,15 +324,8 @@ $(document).ready
 				// récupération du nom de la matière et du nom du groupe
 				$('#f_matiere_nom').val( $("#f_matiere option:selected").text() );
 				$('#f_groupe_nom').val( $("#f_groupe option:selected").text() );
-				if (!please_wait)
-				{
-					$(this).ajaxSubmit(ajaxOptions);
-					return false;
-				}
-				else
-				{
-					return false;
-				}
+				$(this).ajaxSubmit(ajaxOptions);
+				return false;
 			}
 		); 
 
@@ -343,8 +336,7 @@ $(document).ready
 			var readytogo = validation.form();
 			if(readytogo)
 			{
-				please_wait = true;
-				$('#f_submit').hide();
+				$('button').attr('disabled','disabled');
 				$('#ajax_msg').removeAttr("class").addClass("loader").html("Transmission du fichier en cours... Veuillez patienter.");
 				$('#bilan').html('');
 			}
@@ -354,8 +346,7 @@ $(document).ready
 		// Fonction suivant l'envoi du formulaire (avec jquery.form.js)
 		function retour_form_erreur(msg,string)
 		{
-			please_wait = false;
-			$('#f_submit').show();
+			$('button').removeAttr('disabled');
 			$('#ajax_msg').removeAttr("class").addClass("alerte").html("Echec de la connexion ! Veuillez valider de nouveau.");
 		}
 
@@ -363,8 +354,7 @@ $(document).ready
 		function retour_form_valide(responseHTML)
 		{
 			maj_clock(1);
-			please_wait = false;
-			$('#f_submit').show();
+			$('button').removeAttr('disabled');
 			if(responseHTML.substring(0,17)!='<ul class="puce">')
 			{
 				$('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);

@@ -43,7 +43,7 @@ $select_f_groupes = afficher_select(DB_STRUCTURE_OPT_regroupements_etabl() , $se
 </div>
 
 <form action="./index.php?dossier=<?php echo $DOSSIER ?>&amp;fichier=<?php echo $FICHIER ?>&amp;section=<?php echo $SECTION ?>" method="POST" id="form0">
-	<div>Restreindre l'affichage : <?php echo $select_f_groupes ?> <input type="submit" value="Actualiser." /></div>
+	<div>Restreindre l'affichage : <?php echo $select_f_groupes ?> <button id="actualiser" type="submit"><img alt="" src="./_img/bouton/actualiser.png" /> Actualiser.</button></div>
 </form>
 
 <hr />

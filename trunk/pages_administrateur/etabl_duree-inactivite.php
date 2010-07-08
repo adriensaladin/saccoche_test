@@ -44,5 +44,5 @@ for($delai=10 ; $delai<100 ; $delai+=10)
 
 <form id="delai" action=""><fieldset>
 	<label class="tab" for="f_delai">Délai :</label><select id="f_delai" name="f_delai"><?php echo $options ?></select><br />
-	<span class="tab"></span><input id="f_submit" type="button" value="Valider ce délai." /><label id="ajax_msg">&nbsp;</label><br />
+	<span class="tab"></span><button id="bouton_valider" type="button"><img alt="" src="./_img/bouton/parametre.png" /> Valider ce délai.</button><label id="ajax_msg">&nbsp;</label>
 </fieldset></form>

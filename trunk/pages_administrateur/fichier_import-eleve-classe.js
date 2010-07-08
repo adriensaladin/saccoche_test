@@ -38,58 +38,105 @@ $(document).ready
 
 		// Envoi du fichier avec jquery.ajaxupload.js
 		new AjaxUpload
-		('#f_submit_1',
+		('#bouton_sconet',
 			{
 				action: 'ajax.php?dossier='+DOSSIER+'&fichier='+FICHIER,
 				name: 'userfile',
-				data: {'f_step':1},
+				data: {'f_step':1,'f_action':'sconet'},
 				autoSubmit: true,
 				responseType: "html",
 				onChange: changer_fichier,
-				onSubmit: verifier_fichier,
-				onComplete: retourner_fichier
+				onSubmit: verifier_fichier_sconet,
+				onComplete: retourner_fichier_sconet
+			}
+		);
+		new AjaxUpload
+		('#bouton_tableur',
+			{
+				action: 'ajax.php?dossier='+DOSSIER+'&fichier='+FICHIER,
+				name: 'userfile',
+				data: {'f_step':1,'f_action':'tableur'},
+				autoSubmit: true,
+				responseType: "html",
+				onChange: changer_fichier,
+				onSubmit: verifier_fichier_tableur,
+				onComplete: retourner_fichier_tableur
 			}
 		);
 
 		function changer_fichier(fichier_nom,fichier_extension)
 		{
-			$('#f_submit_1').hide();
-			$('#ajax_msg').removeAttr("class").html('&nbsp;');
+			$('button').attr('disabled','disabled');
+			$('button').next('label').removeAttr("class").html('&nbsp;');
 			return true;
 		}
 
-		function verifier_fichier(fichier_nom,fichier_extension)
+		function verifier_fichier_sconet(fichier_nom,fichier_extension)
 		{
 			if (fichier_nom==null || fichier_nom.length<5)
 			{
-				$('#f_submit_1').show();
-				$('#ajax_msg').removeAttr("class").addClass("erreur").html('Cliquer sur "Parcourir..." pour indiquer un chemin de fichier correct.');
+				$('button').removeAttr('disabled');
+				$('#ajax_msg_sconet').removeAttr("class").addClass("erreur").html('Chemin de fichier incorrect.');
 				return false;
 			}
-			else if (fichier_extension!='xml' && fichier_extension!='zip' && fichier_extension!='csv' && fichier_extension!='txt')
+			else if ('.xml.zip.'.indexOf('.'+fichier_extension.toLowerCase()+'.')==-1)
 			{
-				$('#f_submit_1').show();
-				$('#ajax_msg').removeAttr("class").addClass("erreur").html('Le fichier "'+fichier_nom+'" n\'a pas l\'extension "zip" ou "xml" ou "csv" ou "txt".');
+				$('button').removeAttr('disabled');
+				$('#ajax_msg_sconet').removeAttr("class").addClass("erreur").html('Le fichier "'+fichier_nom+'" n\'a pas l\'extension "zip" ou "xml".');
 				return false;
 			}
 			else
 			{
-				$('#ajax_msg').removeAttr("class").addClass("loader").html('Fichier envoyé... Veuillez patienter.');
+				$('#ajax_msg_sconet').removeAttr("class").addClass("loader").html('Fichier envoyé... Veuillez patienter.');
+				return true;
+			}
+		}
+		function verifier_fichier_tableur(fichier_nom,fichier_extension)
+		{
+			if (fichier_nom==null || fichier_nom.length<5)
+			{
+				$('button').removeAttr('disabled');
+				$('#ajax_msg_tableur').removeAttr("class").addClass("erreur").html('Chemin de fichier incorrect.');
+				return false;
+			}
+			else if ('.csv.txt.'.indexOf('.'+fichier_extension.toLowerCase()+'.')==-1)
+			{
+				$('button').removeAttr('disabled');
+				$('#ajax_msg_tableur').removeAttr("class").addClass("erreur").html('Le fichier "'+fichier_nom+'" n\'a pas l\'extension "csv" ou "txt".');
+				return false;
+			}
+			else
+			{
+				$('#ajax_msg_tableur').removeAttr("class").addClass("loader").html('Fichier envoyé... Veuillez patienter.');
 				return true;
 			}
 		}
 
-		function retourner_fichier(fichier_nom,responseHTML)
+		function retourner_fichier_sconet(fichier_nom,responseHTML)
 		{
 			if(responseHTML.substring(0,13)!='<div id="ok">')
 			{
-				$('#f_submit_1').show();
-				$('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);
+				$('button').removeAttr('disabled');
+				$('#ajax_msg_sconet').removeAttr("class").addClass("alerte").html(responseHTML);
 			}
 			else
 			{
 				maj_clock(1);
-				$('#ajax_msg').removeAttr("class").html('&nbsp;');
+				$('button').next('label').removeAttr("class").html('&nbsp;');
+				$('#ajax').html(responseHTML);
+			}
+		}
+		function retourner_fichier_tableur(fichier_nom,responseHTML)
+		{
+			if(responseHTML.substring(0,13)!='<div id="ok">')
+			{
+				$('button').removeAttr('disabled');
+				$('#ajax_msg_tableur').removeAttr("class").addClass("alerte").html(responseHTML);
+			}
+			else
+			{
+				maj_clock(1);
+				$('button').next('label').removeAttr("class").html('&nbsp;');
 				$('#ajax').html(responseHTML);
 			}
 		}

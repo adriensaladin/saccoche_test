@@ -38,7 +38,7 @@ $select_palier = afficher_select(DB_STRUCTURE_OPT_paliers_etabl($_SESSION['PALIE
 
 <form action="" id="form_export"><fieldset>
 	<label class="tab" for="f_palier">Palier :</label><?php echo $select_palier ?><input type="hidden" id="f_palier_nom" name="f_palier_nom" value="" /><br />
-	<span class="tab"></span><input id="f_submit" type="submit" value="Valider." /><label id="ajax_msg">&nbsp;</label><br />
+	<span class="tab"></span><button id="bouton_exporter" type="submit"><img alt="" src="./_img/bouton/fichier_export.png" /> Générer le listing</button><label id="ajax_msg">&nbsp;</label><br />
 </fieldset></form>
 
 <hr />

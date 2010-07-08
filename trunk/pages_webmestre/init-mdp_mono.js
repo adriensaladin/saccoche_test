@@ -87,15 +87,8 @@ $(document).ready
 		(
 			function()
 			{
-				if (!please_wait)
-				{
-					$(this).ajaxSubmit(ajaxOptions);
-					return false;
-				}
-				else
-				{
-					return false;
-				}
+				$(this).ajaxSubmit(ajaxOptions);
+				return false;
 			}
 		); 
 
@@ -106,8 +99,7 @@ $(document).ready
 			var readytogo = validation.form();
 			if(readytogo)
 			{
-				please_wait = true;
-				$('#ajax_msg').parent().children('q').hide();
+				$("#bouton_valider").attr('disabled','disabled');
 				$('#ajax_msg').removeAttr("class").addClass("loader").html("Demande envoyée... Veuillez patienter.");
 			}
 			return readytogo;
@@ -116,8 +108,7 @@ $(document).ready
 		// Fonction suivant l'envoi du formulaire (avec jquery.form.js)
 		function retour_form_erreur(msg,string)
 		{
-			please_wait = false;
-			$('#ajax_msg').parent().children('q').show();
+			$("#bouton_valider").removeAttr('disabled');
 			$('#ajax_msg').removeAttr("class").addClass("alerte").html("Echec de la connexion ! Veuillez recommencer.");
 		}
 
@@ -125,8 +116,7 @@ $(document).ready
 		function retour_form_valide(responseHTML)
 		{
 			maj_clock(1);
-			please_wait = false;
-			$('#ajax_msg').parent().children('q').show();
+			$("#bouton_valider").removeAttr('disabled');
 			if(responseHTML.substring(0,17)!='<ul class="puce">')
 			{
 				$('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);

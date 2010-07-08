@@ -114,6 +114,7 @@ $(document).ready
 		('click',
 			function()
 			{
+				$('button').attr('disabled','disabled');
 				$('#ajax_msg').removeAttr("class").addClass("loader").html("Chargement en cours... Veuillez patienter.");
 				$.ajax
 				(
@@ -124,11 +125,13 @@ $(document).ready
 						dataType : "html",
 						error : function(msg,string)
 						{
+							$('button').removeAttr('disabled');
 							$('#ajax_msg').removeAttr("class").addClass("alerte").html('Echec de la connexion !');
 							return false;
 						},
 						success : function(responseHTML)
 						{
+							$('button').removeAttr('disabled');
 							if(responseHTML.substring(0,18)!='<label class="tab"')
 							{
 								$('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);
@@ -144,11 +147,12 @@ $(document).ready
 			}
 		);
 
-		// Clic sur le lien pour changer de structure
-		$('#structure_changer').live // live est utilisé pour prendre en compte les nouveaux éléments créés
+		// Clic sur le bouton pour changer de structure
+		$('#f_changer').live // live est utilisé pour prendre en compte les nouveaux éléments créés
 		('click',
 			function()
 			{
+				$('button').attr('disabled','disabled');
 				$('#ajax_msg').removeAttr("class").addClass("loader").html("Chargement en cours... Veuillez patienter.");
 				$.ajax
 				(
@@ -159,11 +163,13 @@ $(document).ready
 						dataType : "html",
 						error : function(msg,string)
 						{
+							$('button').removeAttr('disabled');
 							$('#ajax_msg').removeAttr("class").addClass("alerte").html('Echec de la connexion !');
 							return false;
 						},
 						success : function(responseHTML)
 						{
+							$('button').removeAttr('disabled');
 							if(responseHTML.substring(0,18)!='<label class="tab"')
 							{
 								$('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);
@@ -228,15 +234,8 @@ $(document).ready
 				mode_connexion = $('#f_mode').val();
 				if( (mode_connexion=='normal') || (profil=='administrateur') )
 				{
-					if (!please_wait)
-					{
-						$(this).ajaxSubmit(ajaxOptions);
-						return false;
-					}
-					else
-					{
-						return false;
-					}
+					$(this).ajaxSubmit(ajaxOptions);
+					return false;
 				}
 				else if(mode_connexion=='cas')
 				{
@@ -253,8 +252,7 @@ $(document).ready
 			var readytogo = validation.form();
 			if(readytogo)
 			{
-				please_wait = true;
-				$('#f_submit').hide();
+				$('button').attr('disabled','disabled');
 				$('#ajax_msg').removeAttr("class").addClass("loader").html("Soumission du formulaire en cours... Veuillez patienter.");
 			}
 			return readytogo;
@@ -263,16 +261,14 @@ $(document).ready
 		// Fonction suivant l'envoi du formulaire (avec jquery.form.js)
 		function retour_form_erreur(msg,string)
 		{
-			please_wait = false;
-			$('#f_submit').show();
+			$('button').removeAttr('disabled');
 			$('#ajax_msg').removeAttr("class").addClass("alerte").html("Echec de la connexion ! Veuillez valider de nouveau.");
 		}
 
 		// Fonction suivant l'envoi du formulaire (avec jquery.form.js)
 		function retour_form_valide(responseHTML)
 		{
-			please_wait = false;
-			$('#f_submit').show();
+			$('button').removeAttr('disabled');
 			if((responseHTML=='eleve')||(responseHTML=='professeur')||(responseHTML=='directeur')||(responseHTML=='administrateur')||(responseHTML=='webmestre'))
 			{
 				$('#ajax_msg').removeAttr("class").addClass("valide").html("Identification réussie !");

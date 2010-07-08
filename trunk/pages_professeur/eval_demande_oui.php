@@ -44,7 +44,7 @@ $select_groupe  = afficher_select(DB_STRUCTURE_OPT_groupes_professeur($_SESSION[
 <form action="" id="form0"><fieldset>
 	<label class="tab" for="f_matiere">Matière :</label><?php echo $select_matiere ?><input type="hidden" id="f_matiere_nom" name="f_matiere_nom" value="" /><br />
 	<label class="tab" for="f_groupe">Classe / groupe :</label><?php echo $select_groupe ?><input type="hidden" id="f_groupe_id" name="f_groupe_id" value="" /><input type="hidden" id="f_groupe_type" name="f_groupe_type" value="" /><input type="hidden" id="f_groupe_nom" name="f_groupe_nom" value="" /><br />
-	<span class="tab"></span><input type="hidden" name="f_action" value="Afficher_demandes" /><input type="submit" value="Actualiser l'affichage." /><label id="ajax_msg0">&nbsp;</label>
+	<span class="tab"></span><input type="hidden" name="f_action" value="Afficher_demandes" /><button id="actualiser" type="submit"><img alt="" src="./_img/bouton/actualiser.png" /> Actualiser l'affichage.</button><label id="ajax_msg0">&nbsp;</label>
 </fieldset></form>
 
 <form action="" id="form1">
@@ -90,7 +90,7 @@ $select_groupe  = afficher_select(DB_STRUCTURE_OPT_groupes_professeur($_SESSION[
 		</fieldset>
 		<p id="step_valider" class="hide">
 			<input type="hidden" id="f_groupe_id2" name="f_groupe_id" value="" /><input type="hidden" id="f_groupe_type2" name="f_groupe_type" value="" />
-			<span class="tab"></span><input type="submit" value="Valider." /><label id="ajax_msg1">&nbsp;</label>
+			<span class="tab"></span><button id="bouton_valider" type="submit"><img alt="" src="./_img/bouton/valider.png" /> Valider.</button><label id="ajax_msg1">&nbsp;</label>
 		</p>
 	</div>
 </form>

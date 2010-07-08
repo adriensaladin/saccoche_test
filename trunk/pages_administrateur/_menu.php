@@ -42,7 +42,8 @@ $arbre='
 		<ul>
 			<li class="admin_administrateur"><a href="./index.php?dossier='.$DOSSIER.'&amp;fichier=administrateur">Administrateurs</a></li>
 			<li class="admin_etabl"><a href="./index.php?dossier='.$DOSSIER.'&amp;fichier=etabl">Paramétrages</a></li>
-			<li class="admin_dump"><a href="./index.php?dossier='.$DOSSIER.'&amp;fichier=dump">Sauvegarde / Restauration</a></li>
+			<li class="admin_dump"><a href="./index.php?dossier='.$DOSSIER.'&amp;fichier=dump">Sauvegarde / Restauration de la base</a></li>
+			<li class="admin_nettoyage"><a href="./index.php?dossier='.$DOSSIER.'&amp;fichier=nettoyage">Nettoyage / Initialisation de la base</a></li>
 			<li class="admin_blocage"><a href="./index.php?dossier='.$DOSSIER.'&amp;fichier=blocage">Blocage de l\'application</a></li>
 			<li class="admin_resilier"><a href="./index.php?dossier='.$DOSSIER.'&amp;fichier=resilier">Résilier l\'inscription</a></li>
 		</ul>

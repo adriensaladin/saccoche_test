@@ -54,7 +54,7 @@ $VERSION_JS_FILE += 2;
 		<label class="tab" for="f_sesamath_uai">Code UAI <img alt="" src="./_img/bulle_aide.png" title="Valeur non modifiable manuellement.<br />Utilisez le lien ci-dessous." /> :</label><input id="f_sesamath_uai" name="f_sesamath_uai" size="8" type="text" value="<?php echo html($_SESSION['SESAMATH_UAI']); ?>" readonly="readonly" /><br />
 		<label class="tab" for="f_sesamath_type_nom">Dénomination <img alt="" src="./_img/bulle_aide.png" title="Valeur non modifiable manuellement.<br />Utilisez le lien ci-dessous." /> :</label><input id="f_sesamath_type_nom" name="f_sesamath_type_nom" size="50" type="text" value="<?php echo html($_SESSION['SESAMATH_TYPE_NOM']); ?>" readonly="readonly" /><br />
 		<label class="tab" for="f_sesamath_key">Clef de contrôle <img alt="" src="./_img/bulle_aide.png" title="Valeur non modifiable manuellement.<br />Utilisez le lien ci-dessous." /> :</label><input id="f_sesamath_key" name="f_sesamath_key" size="35" type="text" value="<?php echo html($_SESSION['SESAMATH_KEY']); ?>" readonly="readonly" /><br />
-		<span class="tab"></span><input id="f_submit" type="submit" value="Valider." /><label id="ajax_msg">&nbsp;</label>
+		<span class="tab"></span><button id="bouton_valider" type="submit"><img alt="" src="./_img/bouton/parametre.png" /> Valider.</button><label id="ajax_msg">&nbsp;</label>
 	</fieldset>
 	<p />
 	<ul class="puce"><li><a id="ouvrir_recherche" href="#"><img alt="" src="./_img/find.png" /> Rechercher l'établissement dans la base Sésamath</a> afin de pouvoir échanger ensuite avec le serveur communautaire.</li></ul>
@@ -70,7 +70,7 @@ $VERSION_JS_FILE += 2;
 
 <div id="object_container" class="hide">
 	<h2>Rechercher l'établissement dans la base Sésamath</h2>
-	<p><a id="rechercher_annuler" href="#"><img alt="" src="./_img/action_annuler.png" /> Annuler la recherche.</a></p>
+	<p><button id="rechercher_annuler" type="button"><img alt="" src="./_img/bouton/annuler.png" /> Annuler la recherche.</button></p>
 	<?php
 	// La balise object fonctionne sauf avec Internet Explorer qui n'affiche rien si on appelle une page provenant d'un autre domaine.
 	// Par ailleurs, il faut mettre une adresse valide au départ sous peine de se voir retirer la balise par son substitut (pour Opéra).

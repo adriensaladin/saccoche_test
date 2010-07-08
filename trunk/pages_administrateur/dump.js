@@ -34,12 +34,11 @@ $(document).ready
 		// Appel en ajax pour lancer une sauvegarde
 		//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
 
-		$('#f_form1').click
+		$('#bouton_form1').click
 		(
 			function()
 			{
-				$("#f_form1").fadeOut('fast');
-				$("#f_form2").fadeOut('fast');
+				$("button").attr('disabled','disabled');
 				$("#ajax_info").html('');
 				$('#ajax_msg1').removeAttr("class").addClass("loader").html("Demande envoyée... Veuillez patienter.");
 				$('#ajax_msg2').removeAttr("class").html('');
@@ -52,15 +51,13 @@ $(document).ready
 						dataType : "html",
 						error : function(msg,string)
 						{
-							$("#f_form1").fadeIn('fast');
-							$("#f_form2").fadeIn('fast');
+							$("button").removeAttr('disabled');
 							$('#ajax_msg1').removeAttr("class").addClass("alerte").html('Echec de la connexion ! Veuillez recommencer.');
 							return false;
 						},
 						success : function(responseHTML)
 						{
-							$("#f_form1").fadeIn('fast');
-							$("#f_form2").fadeIn('fast');
+							$("button").removeAttr('disabled');
 							if(responseHTML.substring(0,4)!='<li>')
 							{
 								$('#ajax_msg1').removeAttr("class").addClass("alerte").html(responseHTML);
@@ -83,7 +80,7 @@ $(document).ready
 		//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
 
 		new AjaxUpload
-		('#f_form2',
+		('#bouton_form2',
 			{
 				action: 'ajax.php?dossier='+DOSSIER+'&fichier='+FICHIER,
 				name: 'userfile',
@@ -98,8 +95,7 @@ $(document).ready
 
 		function changer_fichier(fichier_nom,fichier_extension)
 		{
-			$("#f_form1").fadeOut('fast');
-			$('#f_form2').fadeOut('fast');
+			$("button").attr('disabled','disabled');
 			$("#ajax_info").html('');
 			$('#ajax_msg1').removeAttr("class").html('');
 			$('#ajax_msg2').removeAttr("class").html('');
@@ -110,15 +106,13 @@ $(document).ready
 		{
 			if (fichier_nom==null || fichier_nom.length<5)
 			{
-				$("#f_form1").fadeIn('fast');
-				$('#f_form2').fadeIn('fast');
+				$("button").removeAttr('disabled');
 				$('#ajax_msg2').removeAttr("class").addClass("erreur").html('Cliquer sur "Parcourir..." pour indiquer un chemin de fichier correct.');
 				return false;
 			}
-			else if(fichier_extension!='zip')
+			else if(fichier_extension.toLowerCase()!='zip')
 			{
-				$("#f_form1").fadeIn('fast');
-				$('#f_form2').fadeIn('fast');
+				$("button").removeAttr('disabled');
 				$('#ajax_msg2').removeAttr("class").addClass("erreur").html('Le fichier "'+fichier_nom+'" n\'a pas l\'extension zip.');
 				return false;
 			}
@@ -133,8 +127,7 @@ $(document).ready
 		{
 			if(responseHTML.substring(0,26)!='<li><label class="valide">')
 			{
-				$("#f_form1").fadeIn('fast');
-				$('#f_form2').fadeIn('fast');
+				$("button").removeAttr('disabled');
 				$('#ajax_msg2').removeAttr("class").html('');
 				$('#ajax_info').html(responseHTML);
 			}
@@ -162,15 +155,13 @@ $(document).ready
 					dataType : "html",
 					error : function(msg,string)
 					{
-						$("#f_form1").fadeIn('fast');
-						$('#f_form2').fadeIn('fast');
+						$("button").removeAttr('disabled');
 						$('#ajax_msg2').removeAttr("class").addClass("alerte").html('Echec de la connexion ! Veuillez recommencer.');
 						return false;
 					},
 					success : function(responseHTML)
 					{
-						$("#f_form1").fadeIn('fast');
-						$("#f_form2").fadeIn('fast');
+						$("button").removeAttr('disabled');
 						if(responseHTML.substring(0,4)!='<li>')
 						{
 							$('#ajax_msg2').removeAttr("class").addClass("alerte").html(responseHTML);

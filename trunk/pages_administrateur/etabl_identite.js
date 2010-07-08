@@ -118,7 +118,7 @@ $(document).ready
 		}
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-//	Clic sur le lien pour Annuler la recherche sur le serveur communautaire
+//	Clic sur le bouton pour Annuler la recherche sur le serveur communautaire
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
 		$('#rechercher_annuler').click
@@ -247,15 +247,8 @@ $(document).ready
 		(
 			function()
 			{
-				if (!please_wait)
-				{
-					$(this).ajaxSubmit(ajaxOptions);
-					return false;
-				}
-				else
-				{
-					return false;
-				}
+				$(this).ajaxSubmit(ajaxOptions);
+				return false;
 			}
 		); 
 
@@ -266,8 +259,7 @@ $(document).ready
 			var readytogo = validation.form();
 			if(readytogo)
 			{
-				please_wait = true;
-				$('#f_submit').hide();
+				$("#bouton_valider").attr('disabled','disabled');
 				$('#ajax_msg').removeAttr("class").addClass("loader").html("Soumission du formulaire en cours... Veuillez patienter.");
 			}
 			return readytogo;
@@ -276,8 +268,7 @@ $(document).ready
 		// Fonction suivant l'envoi du formulaire (avec jquery.form.js)
 		function retour_form_erreur(msg,string)
 		{
-			please_wait = false;
-			$('#f_submit').show();
+			$("#bouton_valider").removeAttr('disabled');
 			$('#ajax_msg').removeAttr("class").addClass("alerte").html("Echec de la connexion ! Veuillez valider de nouveau.");
 		}
 
@@ -285,8 +276,7 @@ $(document).ready
 		function retour_form_valide(responseHTML)
 		{
 			maj_clock(1);
-			please_wait = false;
-			$('#f_submit').show();
+			$("#bouton_valider").removeAttr('disabled');
 			if((responseHTML=='ok'))
 			{
 				$('#ajax_msg').removeAttr("class").addClass("valide").html("Données enregistrées !");

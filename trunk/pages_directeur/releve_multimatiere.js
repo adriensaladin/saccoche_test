@@ -111,7 +111,7 @@ $(document).ready
 							var tab_split = tab_groupe_periode[id_classe][id_periode].split('_');
 							if( (date_mysql>=tab_split[0]) && (date_mysql<=tab_split[1]) )
 							{
-								$("#f_periode option[value="+id_periode+"]").attr('selected',true);
+								$("#f_periode option[value="+id_periode+"]").attr('selected','selected');
 								view_dates_perso();
 							}
 						}
@@ -299,15 +299,8 @@ $(document).ready
 				$('#types').val(f_type);
 				// récupération du nom du groupe
 				$('#f_groupe_nom').val( $("#f_groupe option:selected").text() );
-				if (!please_wait)
-				{
-					$(this).ajaxSubmit(ajaxOptions);
-					return false;
-				}
-				else
-				{
-					return false;
-				}
+				$(this).ajaxSubmit(ajaxOptions);
+				return false;
 			}
 		); 
 
@@ -318,8 +311,7 @@ $(document).ready
 			var readytogo = validation.form();
 			if(readytogo)
 			{
-				please_wait = true;
-				$('#f_submit').hide();
+				$('button').attr('disabled','disabled');
 				$('#ajax_msg').removeAttr("class").addClass("loader").html("Transmission du fichier en cours... Veuillez patienter.");
 				$('#bilan').html('');
 			}
@@ -329,8 +321,7 @@ $(document).ready
 		// Fonction suivant l'envoi du formulaire (avec jquery.form.js)
 		function retour_form_erreur(msg,string)
 		{
-			please_wait = false;
-			$('#f_submit').show();
+			$('button').removeAttr('disabled');
 			$('#ajax_msg').removeAttr("class").addClass("alerte").html("Echec de la connexion ! Veuillez valider de nouveau.");
 		}
 
@@ -338,8 +329,7 @@ $(document).ready
 		function retour_form_valide(responseHTML)
 		{
 			maj_clock(1);
-			please_wait = false;
-			$('#f_submit').show();
+			$('button').removeAttr('disabled');
 			if(responseHTML.substring(0,17)!='<ul class="puce">')
 			{
 				$('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);

@@ -34,7 +34,8 @@ $TITRE = "Initialiser identifiants élèves";
 $select_f_groupes = afficher_select(DB_STRUCTURE_OPT_regroupements_etabl() , $select_nom=false , $option_first='oui' , $selection=false , $optgroup='oui');
 ?>
 
-<p><span class="astuce">Pour un traitement individuel, on peut aussi utiliser la page "<a href="./index.php?dossier=administrateur&amp;fichier=eleve&amp;section=gestion">Gérer les élèves</a>".</span></p>
+<p class="astuce">Pour un traitement individuel, on peut aussi utiliser la page "<a href="./index.php?dossier=administrateur&amp;fichier=eleve&amp;section=gestion">Gérer les élèves</a>".</p>
+<p class="danger">Valider entraîne la génération de nouveaux identifiants pour tous les utilisateurs sélectionnés.</p>
 <form action="">
 	<table><tr>
 		<td class="nu" style="width:25em">
@@ -44,8 +45,8 @@ $select_f_groupes = afficher_select(DB_STRUCTURE_OPT_regroupements_etabl() , $se
 		</td>
 		<td class="nu" style="width:25em">
 			<p><span class="astuce">Utiliser "<i>Shift + clic</i>" ou "<i>Ctrl + clic</i>"<br />pour une sélection multiple.</span></p>
-			<p><input id="eleve_login" type="button" value="Initialiser" /> les noms d'utilisateurs de ces élèves.</p>
-			<p><input id="eleve_mdp" type="button" value="Initialiser" /> les mots de passe de ces élèves.</p>
+			<p><button id="eleve_login" type="button"><img alt="" src="./_img/bouton/mdp_groupe.png" /> Initialiser les noms d'utilisateurs</button> de ces élèves.</p>
+			<p><button id="eleve_mdp" type="button"><img alt="" src="./_img/bouton/mdp_groupe.png" /> Initialiser les mots de passe</button> de ces élèves.</p>
 		</td>
 	</tr></table>
 </form>

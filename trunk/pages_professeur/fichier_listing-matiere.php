@@ -38,7 +38,7 @@ $select_matiere = afficher_select(DB_STRUCTURE_OPT_matieres_professeur($_SESSION
 
 <form action="" id="form_export"><fieldset>
 	<label class="tab" for="f_matiere">Matière :</label><?php echo $select_matiere ?><input type="hidden" id="f_matiere_nom" name="f_matiere_nom" value="" /><br />
-	<span class="tab"></span><input id="f_submit" type="submit" value="Valider." /><label id="ajax_msg">&nbsp;</label><br />
+	<span class="tab"></span><button id="bouton_exporter" type="submit"><img alt="" src="./_img/bouton/fichier_export.png" /> Générer le listing</button><label id="ajax_msg">&nbsp;</label><br />
 </fieldset></form>
 
 <hr />

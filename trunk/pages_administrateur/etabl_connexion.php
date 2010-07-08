@@ -67,6 +67,6 @@ foreach($tab_connexion_info['cas'] as $connexion_nom => $tab_info)
 		<label class="tab" for="cas_serveur_root">Chemin :</label><input id="cas_serveur_root" name="cas_serveur_root" size="10" type="text" value="<?php echo html($_SESSION['CAS_SERVEUR_ROOT']) ?>" /><br />
 	</div>
 	<?php echo $choix ?>
-	<span class="tab"></span><input id="f_submit" type="button" value="Valider." /><label id="ajax_msg">&nbsp;</label>
+	<span class="tab"></span><button id="bouton_valider" type="button"><img alt="" src="./_img/bouton/parametre.png" /> Valider ce mode d'identification.</button><label id="ajax_msg">&nbsp;</label>
 	<p><span class="astuce">Pour importer les identifiants de l'ENT, utiliser ensuite la page "<a href="./index.php?dossier=administrateur&amp;fichier=fichier&amp;section=import-id-ent">Importer identifiant ENT</a>".</span></p>
 </fieldset></form>

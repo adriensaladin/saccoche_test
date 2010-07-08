@@ -55,7 +55,8 @@ $nom_fin_fichier = $_SESSION['UAI'].'_'.$nom_fin_fichier;
 		{
 			echo'Cette méthode est fortement recommandée.<br />'."\r\n";
 			echo'<span class="manuel"><a class="pop_up" href="'.SERVEUR_DOCUMENTAIRE.'?fichier=support_administrateur__import_professeurs_directeurs_Sconet">DOC : Import professeurs / directeurs depuis Sconet</a></span><br />'."\r\n";
-			echo'Indiquez ci-dessous le fichier <b>sts_emp_'.$nom_fin_fichier.'.xml</b> (ou <b>sts_emp_'.$nom_fin_fichier.'.zip</b>) obtenu.'."\r\n";
+			echo'Indiquez ci-dessous le fichier <em>sts_emp_'.$nom_fin_fichier.'.xml</em> (ou <em>sts_emp_'.$nom_fin_fichier.'.zip</em>) obtenu.'."\r\n";
+			echo'<p><label class="tab" for="bouton_sconet">Envoyer le fichier :</label><button id="bouton_sconet" type="button"><img alt="" src="./_img/bouton/fichier_import.png" /> Parcourir...</button><label id="ajax_msg_sconet">&nbsp;</label></p>'."\r\n";
 		}
 		else
 		{
@@ -63,15 +64,15 @@ $nom_fin_fichier = $_SESSION['UAI'].'_'.$nom_fin_fichier;
 			echo'<ul class="puce">'."\r\n";
 			echo'	<li><a href="./index.php?dossier='.$DOSSIER.'&amp;fichier=etabl&amp;section=identite">Voir l\'identification de l\'établissement.</a></li>'."\r\n";
 			echo'</ul>'."\r\n";
+			echo'<p />'."\r\n";
 		}
 		?>
-		<p />
+		<hr />
 		<h2>Seconde méthode : fichier tableur</h2>
 		Cette méthode n'est à utiliser que si l'établissement n'utilise pas SCONET (à l'étranger...).<br />
 		<span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__import_professeurs_directeurs_tableur">DOC : Import professeurs / directeurs avec un tableur</a></span><br />
-		Indiquez ci-dessous le fichier <b>nom-du-fichier.csv</b> (ou <b>nom-du-fichier.txt</b>) obtenu.
-		<p />
-		<h2>Démarrer la procédure</h2>
-		<label class="tab" for="f_submit_1">Fichier à importer :</label><input id="f_submit_1" type="button" value="Parcourir..." /><label id="ajax_msg">&nbsp;</label>
+		Indiquez ci-dessous le fichier <em>nom-du-fichier.csv</em> (ou <em>nom-du-fichier.txt</em>) obtenu.
+		<p><label class="tab" for="bouton_tableur">Envoyer le fichier :</label><button id="bouton_tableur" type="button"><img alt="" src="./_img/bouton/fichier_import.png" /> Parcourir...</button><label id="ajax_msg_tableur">&nbsp;</label></p>
+		<hr />
 	</div>
 </form>

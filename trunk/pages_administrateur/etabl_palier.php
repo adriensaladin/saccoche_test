@@ -58,7 +58,7 @@ $TITRE = "Choix des paliers du socle";
 		</tbody>
 	</table>
 	<p>
-		<input id="f_submit" type="button" value="Valider ce choix de paliers." /> <label id="ajax_msg">&nbsp;</label>
+		<span class="tab"></span><button id="bouton_valider" type="button"><img alt="" src="./_img/bouton/parametre.png" /> Valider ce choix de paliers.</button><label id="ajax_msg">&nbsp;</label>
 	</p>
 </form>
 

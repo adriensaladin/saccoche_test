@@ -50,7 +50,7 @@ $date_fin    = date("d/m/Y");
 		du <input id="f_date_debut" name="f_date_debut" size="9" type="text" value="<?php echo $date_debut ?>" /><q class="date_calendrier" title="Cliquez sur cette image pour importer une date depuis un calendrier !"></q>
 		au <input id="f_date_fin" name="f_date_fin" size="9" type="text" value="<?php echo $date_fin ?>" /><q class="date_calendrier" title="Cliquez sur cette image pour importer une date depuis un calendrier !"></q>
 	<br />
-	<span class="tab"></span><input type="hidden" name="f_action" value="Afficher_evaluations" /><input type="submit" value="Actualiser l'affichage." /><label id="ajax_msg0">&nbsp;</label>
+	<span class="tab"></span><input type="hidden" name="f_action" value="Afficher_evaluations" /><button id="actualiser" type="submit"><img alt="" src="./_img/bouton/actualiser.png" /> Actualiser l'affichage.</button><label id="ajax_msg0">&nbsp;</label>
 </fieldset></form>
 
 <form action="" id="form1">
@@ -73,10 +73,9 @@ $date_fin    = date("d/m/Y");
 <script type="text/javascript">var input_date="<?php echo date("d/m/Y") ?>";</script>
 
 <form action="" id="zone_compet" class="hide">
-	<div class="hc">
-		<a class="valider_compet" href="#"><img alt="Valider" src="./_img/action_valider.png" /> Valider ce choix</a><br />
-		<a class="annuler_compet" href="#"><img alt="Annuler" src="./_img/action_annuler.png" /> Annuler / Retour</a>
-	</div>
+	<p>
+		<span class="tab"></span><button id="valider_compet" type="button"><img alt="" src="./_img/bouton/valider.png" /> Valider ce choix</button>&nbsp;&nbsp;&nbsp;<button id="annuler_compet" type="button"><img alt="" src="./_img/bouton/annuler.png" /> Annuler / Retour</button>
+	</p>
 	<?php
 	// Affichage de la liste des items pour toutes les matières d'un professeur, sur tous les niveaux
 	$DB_TAB = DB_STRUCTURE_recuperer_arborescence($_SESSION['USER_ID'],$matiere_id=0,$niveau_id=0,$only_item=false,$socle_nom=false);
@@ -85,10 +84,9 @@ $date_fin    = date("d/m/Y");
 </form>
 
 <form action="" id="zone_eleve" class="hide">
-	<div class="hc">
-		<a class="valider_eleve" href="#"><img alt="Valider" src="./_img/action_valider.png" /> Valider ce choix</a><br />
-		<a class="annuler_eleve" href="#"><img alt="Annuler" src="./_img/action_annuler.png" /> Annuler / Retour</a>
-	</div>
+	<p>
+		<span class="tab"></span><button id="valider_eleve" type="button"><img alt="" src="./_img/bouton/valider.png" /> Valider ce choix</button>&nbsp;&nbsp;&nbsp;<button id="annuler_eleve" type="button"><img alt="" src="./_img/bouton/annuler.png" /> Annuler / Retour</button>
+	</p>
 	<?php
 	$tab_regroupements = array();
 	$tab_id = array('classe'=>'','groupe'=>'');
@@ -162,8 +160,8 @@ $date_fin    = date("d/m/Y");
 			<input type="hidden" name="filename" id="filename" value="<?php echo './__tmp/export/saisie_'.$_SESSION['BASE'].'_'.$_SESSION['USER_ID'].'_'; ?>" />
 			<span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_professeur__evaluations_saisie_deportee">DOC : Saisie déportée.</a></span>
 			<ul class="puce">
-				<li><a id="export_file" class="lien_ext" href="">Récupérer un fichier vierge au format CSV pour une saisie déportée.</a></li>
-				<li><input id="import_file" type="button" value="Envoyer un fichier complété au format CSV." /><label id="msg_import">&nbsp;</label></li>
+				<li><a id="export_file" class="lien_ext" href=""><img alt="" src="./_img/bouton/fichier_export.png" /> Récupérer un fichier vierge au format CSV pour une saisie déportée.</a></li>
+				<li><button id="import_file" type="button"><img alt="" src="./_img/bouton/fichier_import.png" /> Envoyer un fichier complété au format CSV.</button><label id="msg_import">&nbsp;</label></li>
 			</ul>
 		</div>
 	</div>
@@ -176,7 +174,7 @@ $date_fin    = date("d/m/Y");
 	</table>
 	<p />
 	<ul class="puce">
-		<li><a id="export_file2" class="lien_ext" href="">Récupérer un fichier des scores au format CSV pour archivage ou une saisie déportée.</a></li>
+		<li><a id="export_file2" class="lien_ext" href=""><img alt="" src="./_img/bouton/fichier_export.png" /> Récupérer un fichier des scores au format CSV pour archivage ou une saisie déportée.</a></li>
 	</ul>
 </div>
 
@@ -189,7 +187,7 @@ $select_couleur     = afficher_select($tab_select_couleur     , $select_nom='f_c
 ?>
 
 <form action="" id="zone_imprimer" class="hide"><fieldset>
-	<p class="hc"><b id="titre_imprimer"></b><br /><a class="fermer_zone_imprimer" href="#"><img alt="Retourner" src="./_img/action_retourner.png" /> Retour</a></p>
+	<p class="hc"><b id="titre_imprimer"></b><br /><button id="fermer_zone_imprimer" type="button"><img alt="" src="./_img/bouton/retourner.png" /> Retour</button></p>
 	<label class="tab" for="f_valeur">Remplissage :</label><select id="f_valeur" name="f_valeur"><option value="vide">cartouche vierge de tout résultat</option><option value="plein">cartouche avec les résultats des élèves (si saisis)</option></select><br />
 	<label class="tab" for="f_detail">Détail :</label><select id="f_detail" name="f_detail"><option value="complet">cartouche avec la dénomination complète de chaque item</option><option value="minimal">cartouche minimal avec uniquement les références des items</option></select><br />
 	<div class="toggle">
@@ -199,6 +197,6 @@ $select_couleur     = afficher_select($tab_select_couleur     , $select_nom='f_c
 		<span class="tab"></span><a href="#" class="puce_moins toggle">Afficher moins d'options</a><br />
 		<label class="tab" for="f_orientation">Orientation :</label><?php echo $select_orientation ?> en <?php echo $select_couleur ?> avec marges minimales de <?php echo $select_marge_min ?><br />
 	</div>
-	<span class="tab"></span><input id="f_submit_imprimer" type="button" value="Valider." /><label id="msg_imprimer">&nbsp;</label>
+	<span class="tab"></span><button id="f_submit_imprimer" type="button" value="'.$ref.'"><img alt="" src="./_img/bouton/valider.png" /> Générer le cartouche</button><label id="msg_imprimer">&nbsp;</label>
 	<p id="zone_imprimer_retour"></p>
 </fieldset></form>

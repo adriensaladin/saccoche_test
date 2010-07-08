@@ -95,6 +95,7 @@ $(document).ready
 						{
 							$('#ajax_listing').removeAttr("class").html('');
 							$("#listing_logos").html(responseHTML);
+							infobulle();
 						}
 					}
 				}
@@ -162,7 +163,7 @@ $(document).ready
 
 		function changer_fichier(fichier_nom,fichier_extension)
 		{
-			$('#f_upload').hide();
+			$("button").attr('disabled','disabled');
 			$('#ajax_upload').removeAttr("class").html('&nbsp;');
 			return true;
 		}
@@ -171,13 +172,13 @@ $(document).ready
 		{
 			if (fichier_nom==null || fichier_nom.length<5)
 			{
-				$('#f_upload').show();
+				$("button").removeAttr('disabled');
 				$('#ajax_upload').removeAttr("class").addClass("erreur").html('Cliquer sur "Parcourir..." pour indiquer un chemin de fichier correct.');
 				return false;
 			}
-			else if ('.bmp.gif.jpg.jpeg.png.svg.'.indexOf('.'+fichier_extension+'.')==-1)
+			else if ('.bmp.gif.jpg.jpeg.png.svg.'.indexOf('.'+fichier_extension.toLowerCase()+'.')==-1)
 			{
-				$('#f_upload').show();
+				$("button").removeAttr('disabled');
 				$('#ajax_upload').removeAttr("class").addClass("erreur").html('Le fichier "'+fichier_nom+'" n\'a pas une extension d\'image autorisée (bmp gif jpg jpeg png svg).');
 				return false;
 			}
@@ -192,13 +193,13 @@ $(document).ready
 		{
 			if(responseHTML!='ok')
 			{
-				$('#f_upload').show();
+				$("button").removeAttr('disabled');
 				$('#ajax_upload').removeAttr("class").addClass("alerte").html(responseHTML);
 			}
 			else
 			{
 				maj_clock(1);
-				$('#f_upload').show();
+				$("button").removeAttr('disabled');
 				$('#ajax_upload').removeAttr("class").html('&nbsp;');
 				chargement_select_logo();
 				chargement_ul_logo();
@@ -320,15 +321,8 @@ $(document).ready
 		(
 			function()
 			{
-				if (!please_wait)
-				{
-					$(this).ajaxSubmit(ajaxOptions);
-					return false;
-				}
-				else
-				{
-					return false;
-				}
+				$(this).ajaxSubmit(ajaxOptions);
+				return false;
 			}
 		); 
 
@@ -339,8 +333,7 @@ $(document).ready
 			var readytogo = validation.form();
 			if(readytogo)
 			{
-				please_wait = true;
-				$('#f_submit').hide();
+				$("button").attr('disabled','disabled');
 				$('#ajax_msg').removeAttr("class").addClass("loader").html("Soumission du formulaire en cours... Veuillez patienter.");
 			}
 			return readytogo;
@@ -349,8 +342,7 @@ $(document).ready
 		// Fonction suivant l'envoi du formulaire (avec jquery.form.js)
 		function retour_form_erreur(msg,string)
 		{
-			please_wait = false;
-			$('#f_submit').show();
+			$("button").removeAttr('disabled');
 			$('#ajax_msg').removeAttr("class").addClass("alerte").html("Echec de la connexion ! Veuillez valider de nouveau.");
 		}
 
@@ -358,8 +350,7 @@ $(document).ready
 		function retour_form_valide(responseHTML)
 		{
 			maj_clock(1);
-			please_wait = false;
-			$('#f_submit').show();
+			$("button").removeAttr('disabled');
 			if((responseHTML=='ok'))
 			{
 				$('#ajax_msg').removeAttr("class").addClass("valide").html("Données enregistrées !");

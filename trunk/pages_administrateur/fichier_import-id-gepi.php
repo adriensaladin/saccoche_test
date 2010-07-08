@@ -33,10 +33,10 @@ $TITRE = "Importer identifiant Gepi";
 
 <form action="">
 <ul class="puce">
-<li>Importer le fichier <b>base_eleves_gepi.csv</b> issu de Gepi (aide ci-dessus) : <input id="import_gepi_eleves" type="button" value="Parcourir..." /></li>
-<li>Importer le fichier <b>base_professeurs_gepi.csv</b> issu de Gepi (aide ci-dessus) : <input id="import_gepi_profs" type="button" value="Parcourir..." /></li>
-<li>Prendre et <input id="copy_id_ENT" type="button" value="recopier l'identifiant de l'ENT déjà importé" /> comme identifiant de Gepi pour tous les utilisateurs.</li>
-<li>Prendre et <input id="copy_login_SACoche" type="button" value="recopier le login de SACoche" /> comme identifiant de Gepi pour tous les utilisateurs.</li>
+<li>Importer le fichier <b>base_eleves_gepi.csv</b> issu de Gepi (aide ci-dessus) : <button id="import_gepi_eleves" type="button"><img alt="" src="./_img/bouton/fichier_import.png" /> Parcourir...</button></li>
+<li>Importer le fichier <b>base_professeurs_gepi.csv</b> issu de Gepi (aide ci-dessus) : <button id="import_gepi_profs" type="button"><img alt="" src="./_img/bouton/fichier_import.png" /> Parcourir...</button></li>
+<li><button id="copy_id_ENT" type="button"><img alt="" src="./_img/bouton/mdp_groupe.png" /> Dupliquer l'identifiant de l'ENT déjà importé</button> comme identifiant de Gepi pour tous les utilisateurs.</li>
+<li><button id="copy_login_SACoche" type="button"><img alt="" src="./_img/bouton/mdp_groupe.png" /> Dupliquer le login de SACoche</button> comme identifiant de Gepi pour tous les utilisateurs.</li>
 <li>Pour un traitement individuel, on peut aussi utiliser la page "<a href="./index.php?dossier=administrateur&amp;fichier=eleve&amp;section=gestion">Gérer les élèves</a>" ou "<a href="./index.php?dossier=administrateur&amp;fichier=professeur&amp;section=gestion">Gérer les professeurs</a>" ou "<a href="./index.php?dossier=administrateur&amp;fichier=directeur&amp;section=gestion">Gérer les directeurs</a>".</li>
 </ul>
 </form>

@@ -38,7 +38,7 @@ $select_groupe = afficher_select(DB_STRUCTURE_OPT_classes_groupes_etabl() , $sel
 
 <form action="" id="form_export"><fieldset>
 	<label class="tab" for="f_groupe">Classe / groupe :</label><?php echo $select_groupe ?><input type="hidden" id="f_groupe_type" name="f_groupe_type" value="" /><input type="hidden" id="f_groupe_nom" name="f_groupe_nom" value="" /><br />
-	<span class="tab"></span><input id="f_submit" type="submit" value="Valider." /><label id="ajax_msg">&nbsp;</label><br />
+	<span class="tab"></span><button id="bouton_exporter" type="submit"><img alt="" src="./_img/bouton/fichier_export.png" /> Générer le listing</button><label id="ajax_msg">&nbsp;</label><br />
 </fieldset></form>
 
 <hr />

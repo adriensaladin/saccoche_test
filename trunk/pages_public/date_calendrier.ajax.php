@@ -121,7 +121,7 @@ echo'	<h6>Choisir une période :</h6>';
 echo'	<div>'.$calendrier_navigation.'</div>';
 echo'	<h6>Puis cliquer sur une date :</h6>';
 echo'	<div>'.$calendrier_affichage.'</div>';
-echo'	<div><input class="but" type="button" name="fermer" value="Annuler et Fermer" /></div>';
+echo'	<div><button id="fermer_calque" type="button"><img alt="" src="./_img/bouton/annuler.png" /> Annuler / Fermer</button></div>';
 echo'</form>';
 
 ?>

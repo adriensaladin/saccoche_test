@@ -40,6 +40,7 @@ $(document).ready
 			{
 				f_action = $(this).attr('id');
 				$('#ajax_retour').html('&nbsp;');
+				$('button').attr('disabled','disabled');
 				$('#ajax_msg').removeAttr("class").addClass("loader").html("Demande envoyée... Veuillez patienter.");
 				$.ajax
 				(
@@ -49,6 +50,7 @@ $(document).ready
 						dataType : "html",
 						error : function(msg,string)
 						{
+							$('button').removeAttr('disabled');
 							$('#ajax_msg').removeAttr("class").addClass("alerte").html('Echec de la connexion ! Veuillez recommencer.');
 							return false;
 						},
@@ -57,10 +59,12 @@ $(document).ready
 							maj_clock(1);
 							if(responseHTML!='ok')
 							{
+								$('button').removeAttr('disabled');
 								$('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);
 							}
 							else
 							{
+								$('button').removeAttr('disabled');
 								$('#ajax_msg').removeAttr("class").addClass("valide").html("Demande réalisée !");
 							}
 						}
@@ -102,13 +106,14 @@ $(document).ready
 				$('#ajax_msg').removeAttr("class").addClass("erreur").html('Cliquer sur "Parcourir..." pour indiquer un chemin de fichier correct.');
 				return false;
 			}
-			else if (fichier_extension!='csv' && fichier_extension!='txt')
 			{
+			else if ('.csv.txt.'.indexOf('.'+fichier_extension.toLowerCase()+'.')==-1)
 				$('#ajax_msg').removeAttr("class").addClass("erreur").html('Le fichier "'+fichier_nom+'" n\'a pas l\'extension "csv" ou "txt".');
 				return false;
 			}
 			else
 			{
+				$('button').attr('disabled','disabled');
 				$('#ajax_msg').removeAttr("class").addClass("loader").html('Fichier envoyé... Veuillez patienter.');
 				return true;
 			}
@@ -116,6 +121,7 @@ $(document).ready
 
 		function retourner_fichier(fichier_nom,responseHTML)
 		{
+			$('button').removeAttr('disabled');
 			if(responseHTML.substring(0,5)!='<div>')
 			{
 				$('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);

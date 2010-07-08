@@ -107,7 +107,7 @@ $(document).ready
 // Soumission du formulaire
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
-		$('input').click
+		$('#desactiver').click
 		(
 			function()
 			{
@@ -123,6 +123,7 @@ $(document).ready
 				{
 					var select_users = new Array(); $("#select_eleves option:selected").each(function(){select_users.push($(this).val());});
 				}
+				$('#desactiver').attr('disabled','disabled');
 				$('#ajax_msg').removeAttr("class").addClass("loader").html("Demande envoyée... Veuillez patienter.");
 				$.ajax
 				(
@@ -133,12 +134,14 @@ $(document).ready
 						dataType : "html",
 						error : function(msg,string)
 						{
+							$('#desactiver').removeAttr('disabled');
 							$('#ajax_msg').removeAttr("class").addClass("alerte").html("Echec de la connexion ! Veuillez recommencer.");
 							return false;
 						},
 						success : function(responseHTML)
 						{
 							maj_clock(1);
+							$('#desactiver').removeAttr('disabled');
 							if(responseHTML.substring(0,6)!='<hr />')
 							{
 								$('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);

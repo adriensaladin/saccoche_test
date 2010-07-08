@@ -36,7 +36,7 @@ $select_admin = afficher_select(DB_STRUCTURE_OPT_administrateurs_etabl() , $sele
 
 <form action=""><fieldset>
 	<label class="tab" for="f_admin">Administrateur :</label><select id="f_admin" name="f_admin" size="5"><?php echo $select_admin ?></select><br />
-	<span class="tab"></span><input id="f_submit" type="submit" value="Initialiser le mot de passe." /><label id="ajax_msg">&nbsp;</label><br />
+	<span class="tab"></span><button id="bouton_valider" type="submit"><img alt="" src="./_img/bouton/mdp_perso.png" /> Initialiser le mot de passe.</button><label id="ajax_msg">&nbsp;</label><br />
 </fieldset></form>
 
 <hr />

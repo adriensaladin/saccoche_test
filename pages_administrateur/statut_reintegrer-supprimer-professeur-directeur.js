@@ -82,7 +82,7 @@ $(document).ready
 // Soumission du formulaire
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
-		$('input').click
+		$('button').click
 		(
 			function()
 			{
@@ -109,6 +109,7 @@ $(document).ready
 				}
 				if(continuer)
 				{
+					$('button').attr('disabled','disabled');
 					$('#ajax_msg').removeAttr("class").addClass("loader").html("Demande envoyée... Veuillez patienter.");
 					$.ajax
 					(
@@ -119,12 +120,14 @@ $(document).ready
 							dataType : "html",
 							error : function(msg,string)
 							{
+								$('button').removeAttr('disabled');
 								$('#ajax_msg').removeAttr("class").addClass("alerte").html("Echec de la connexion ! Veuillez recommencer.");
 								return false;
 							},
 							success : function(responseHTML)
 							{
 								maj_clock(1);
+								$('button').removeAttr('disabled');
 								if(responseHTML.substring(0,6)!='<hr />')
 								{
 									$('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);

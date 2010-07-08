@@ -49,7 +49,7 @@ $select_professeurs_directeurs = afficher_select(DB_STRUCTURE_OPT_professeurs_di
 		</td>
 		<td class="nu" style="width:25em">
 			<p><span class="astuce">Utiliser "<i>Shift + clic</i>" ou "<i>Ctrl + clic</i>"<br />pour une sélection multiple.</span></p>
-			<p><input name="action" type="button" value="Désactiver" /> ces comptes  professeurs / directeurs.</p>
+			<p><button id="desactiver" type="button"><img alt="" src="./_img/bouton/user_desactiver.png" /> Désactiver ces comptes.</button></p>
 		</td>
 	</tr></table>
 </form>

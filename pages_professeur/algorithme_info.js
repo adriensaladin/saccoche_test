@@ -54,7 +54,7 @@ $(document).ready
 					findme = '.'+limite_valeur+'.';
 					if(tableau_limites_autorisees[methode_valeur].indexOf(findme)==-1)
 					{
-						$(this).attr('disabled',true);
+						$(this).attr('disabled','disabled');
 					}
 					else
 					{
@@ -62,7 +62,7 @@ $(document).ready
 					}
 					if( (limite_valeur==5) && (modifier_limite_selected) )
 					{
-						$(this).attr('selected',true);
+						$(this).attr('selected','selected');
 					}
 				}
 			);
@@ -181,15 +181,8 @@ $(document).ready
 		(
 			function()
 			{
-				if (!please_wait)
-				{
-					$(this).ajaxSubmit(ajaxOptions);
-					return false;
-				}
-				else
-				{
-					return false;
-				}
+				$(this).ajaxSubmit(ajaxOptions);
+				return false;
 			}
 		); 
 
@@ -224,11 +217,11 @@ $(document).ready
 			}
 			if(readytogo)
 			{
-				please_wait = true;
 				if( $('#action').val()=='calculer' )
 				{
 					$('#bilan table tbody').hide();
 				}
+				$('button').attr('disabled','disabled');
 				$('#ajax_msg').removeAttr("class").addClass("loader").html("Demande envoyée... Veuillez patienter.").show();
 			}
 			return readytogo;
@@ -237,7 +230,7 @@ $(document).ready
 		// Fonction suivant l'envoi du formulaire (avec jquery.form.js)
 		function retour_form_erreur(msg,string)
 		{
-			please_wait = false;
+			$('button').removeAttr('disabled');
 			$('#ajax_msg').removeAttr("class").addClass("alerte").html("Echec de la connexion ! Veuillez valider de nouveau.");
 		}
 
@@ -245,7 +238,7 @@ $(document).ready
 		function retour_form_valide(responseHTML)
 		{
 			maj_clock(1);
-			please_wait = false;
+			$('button').removeAttr('disabled');
 			if(responseHTML.substring(0,1)!='<')
 			{
 				$('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);

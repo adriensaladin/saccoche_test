@@ -24,7 +24,10 @@
  * 
  */
 
-var please_wait = false; // Pour éviter une soumission d'un formulaire en double lors de l'appui sur "entrée" (constaté avec Chrome malgré l'usage de la biblio jquery.form.js)
+var please_wait = false;
+// Pour éviter une soumission d'un formulaire en double :
+// + lors de l'appui sur "entrée" (constaté avec Chrome, malgré l'usage de la biblio jquery.form.js, avant l'utilisation complémentaire de "disabled")
+// + lors d'un clic sur une image "q", même si elles sont normalement masquées...
 
 /**
  * Fonction pour afficher / masquer les images cliquables (en général dans la dernière colonne du tableau)
@@ -552,7 +555,7 @@ $(document).ready
 		);
 
 		// Fermer le calque
-		$("#form_calque input[name=fermer]").live // live est utilisé pour prendre en compte les nouveaux éléments créés
+		$("#form_calque #fermer_calque").live // live est utilisé pour prendre en compte les nouveaux éléments créés
 		('click',
 			function()
 			{

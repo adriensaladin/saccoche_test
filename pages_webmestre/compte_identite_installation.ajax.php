@@ -51,7 +51,7 @@ if($action=='select_logo')
 	$options_logo = '';
 	foreach($tab_files as $file)
 	{
-		$extension = pathinfo($file,PATHINFO_EXTENSION);
+		$extension = strtolower(pathinfo($file,PATHINFO_EXTENSION));
 		if(in_array($extension,$tab_ext_images))
 		{
 			$selected = ($file==HEBERGEUR_LOGO) ? ' selected="selected"' : '' ;
@@ -72,7 +72,7 @@ elseif($action=='listing_logos')
 	$li_logos = '';
 	foreach($tab_files as $file)
 	{
-		$extension = pathinfo($file,PATHINFO_EXTENSION);
+		$extension = strtolower(pathinfo($file,PATHINFO_EXTENSION));
 		if(in_array($extension,$tab_ext_images))
 		{
 			$li_logos .= '<li>'.html($file).' <q class="supprimer" title="Supprimer cette image du serveur (aucune confirmation ne sera demandée)."></q><br /><img style="margin:1ex 1ex 3ex" alt="'.html($file).'" src="'.$dossier_images.html($file).'" /></img></li>';
@@ -97,7 +97,7 @@ elseif($action=='upload_logo')
 	{
 		exit('Erreur : erreur avec le fichier transmis (taille dépassant probablement post_max_size ) !');
 	}
-	$extension = pathinfo($fnom_transmis,PATHINFO_EXTENSION);
+	$extension = strtolower(pathinfo($fnom_transmis,PATHINFO_EXTENSION));
 	if(!in_array($extension,$tab_ext_images))
 	{
 		exit('Erreur : l\'extension du fichier transmis est incorrecte !');

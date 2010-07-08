@@ -106,15 +106,8 @@ $(document).ready
 				// alors j'ai copié le tableau dans un champ hidden...
 				var bases = new Array(); $("#f_base option:selected").each(function(){bases.push($(this).val());});
 				$('#bases').val(bases);
-				if (!please_wait)
-				{
-					$(this).ajaxSubmit(ajaxOptions);
-					return false;
-				}
-				else
-				{
-					return false;
-				}
+				$(this).ajaxSubmit(ajaxOptions);
+				return false;
 			}
 		); 
 
@@ -125,8 +118,7 @@ $(document).ready
 			var readytogo = validation.form();
 			if(readytogo)
 			{
-				please_wait = true;
-				$('#f_submit').hide();
+				$("#bouton_valider").attr('disabled','disabled');
 				$('#ajax_msg').removeAttr("class").addClass("loader").html("Préparation des statistiques... Veuillez patienter.");
 			}
 			return readytogo;
@@ -135,8 +127,7 @@ $(document).ready
 		// Fonction suivant l'envoi du formulaire (avec jquery.form.js)
 		function retour_form_erreur(msg,string)
 		{
-			please_wait = false;
-			$('#f_submit').show();
+			$("#bouton_valider").removeAttr('disabled');
 			$('#ajax_msg').removeAttr("class").addClass("alerte").html("Echec de la connexion ! Veuillez valider de nouveau.");
 		}
 
@@ -144,10 +135,9 @@ $(document).ready
 		function retour_form_valide(responseHTML)
 		{
 			maj_clock(1);
-			please_wait = false;
 			if(responseHTML.substring(0,2)!='ok')
 			{
-				$('#f_submit').show();
+				$("#bouton_valider").removeAttr('disabled');
 				$('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);
 			}
 			else
@@ -164,7 +154,7 @@ $(document).ready
 		} 
 
 		//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-		// Etapes d'envoi de la newsletter
+		// Etapes de calcul des statistiques
 		//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 		function calculer()
 		{
@@ -198,7 +188,7 @@ $(document).ready
 								$('#structures').show('fast');
 								$('#expli').show('fast');
 								$('#ajax_info').hide('fast');
-								$('#f_submit').show();
+								$("#bouton_valider").removeAttr('disabled');
 								$('#ajax_msg').removeAttr("class").html("&nbsp;");
 							}
 							else
@@ -251,14 +241,14 @@ $(document).ready
 		(
 			function()
 			{
-				$('input[type=checkbox]').attr('checked',true);
+				$('input[type=checkbox]').attr('checked','checked');
 			}
 		);
 		$('#all_uncheck').click
 		(
 			function()
 			{
-				$('input[type=checkbox]').attr('checked',false);
+				$('input[type=checkbox]').removeAttr('checked');
 			}
 		);
 

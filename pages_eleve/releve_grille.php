@@ -65,7 +65,7 @@ $select_remplissage = afficher_select($tab_select_remplissage , $select_nom='f_r
 		<label class="tab" for="f_remplissage">Remplissage :</label><?php echo $select_remplissage ?><br />
 		<label class="tab" for="f_options">Affichage :</label><input type="checkbox" id="f_coef" name="f_coef" value="1" /> <label for="f_coef">Coefficients</label>&nbsp;&nbsp;&nbsp;<input type="checkbox" id="f_socle" name="f_socle" value="1" /> <label for="f_socle">Socle</label>&nbsp;&nbsp;&nbsp;<input type="checkbox" id="f_lien" name="f_lien" value="1" cheked="checked" /> <label for="f_lien">Liens de remédiation</label>
 	</div>
-	<span class="tab"></span><input id="f_submit" type="submit" value="Valider." /><label id="ajax_msg">&nbsp;</label><br />
+	<span class="tab"></span><button id="bouton_valider" type="submit"><img alt="" src="./_img/bouton/generer.png" /> Générer.</button><label id="ajax_msg">&nbsp;</label><br />
 </fieldset></form>
 
 <hr />

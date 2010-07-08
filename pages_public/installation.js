@@ -388,7 +388,7 @@ $(document).ready
 			var readytogo = validation5.form();
 			if(readytogo)
 			{
-				$('#f_submit').hide();
+				$('button').attr('disabled','disabled');
 				$('#ajax_msg').removeAttr("class").addClass("loader").html("Soumission du formulaire en cours... Veuillez patienter.");
 			}
 			return readytogo;
@@ -397,14 +397,14 @@ $(document).ready
 		// Fonction suivant l'envoi du formulaire (avec jquery.form.js)
 		function retour_form5_erreur(msg,string)
 		{
-			$('#f_submit').show();
+			$('button').removeAttr('disabled');
 			$('#ajax_msg').removeAttr("class").addClass("alerte").html("Echec de la connexion ! Veuillez valider de nouveau.");
 		}
 
 		// Fonction suivant l'envoi du formulaire (avec jquery.form.js)
 		function retour_form5_valide(responseHTML)
 		{
-			$('#f_submit').show();
+			$('button').removeAttr('disabled');
 			if(responseHTML.substring(0,6)=='Erreur')
 			{
 				$('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);
@@ -518,7 +518,7 @@ $(document).ready
 			var readytogo = validation6.form();
 			if(readytogo)
 			{
-				$('#f_submit').hide();
+				$('button').attr('disabled','disabled');
 				$('#ajax_msg').removeAttr("class").addClass("loader").html("Soumission du formulaire en cours... Veuillez patienter.");
 			}
 			return readytogo;
@@ -527,14 +527,14 @@ $(document).ready
 		// Fonction suivant l'envoi du formulaire (avec jquery.form.js)
 		function retour_form_erreur5(msg,string)
 		{
-			$('#f_submit').show();
+			$('button').removeAttr('disabled');
 			$('#ajax_msg').removeAttr("class").addClass("alerte").html("Echec de la connexion ! Veuillez valider de nouveau.");
 		}
 
 		// Fonction suivant l'envoi du formulaire (avec jquery.form.js)
 		function retour_form_valide5(responseHTML)
 		{
-			$('#f_submit').show();
+			$('button').removeAttr('disabled');
 			if(responseHTML.substring(0,6)=='Erreur')
 			{
 				$('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);

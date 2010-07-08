@@ -150,7 +150,7 @@ if($action=='sauvegarder')
 	// Afficher le retour
 	$top_arrivee = microtime(TRUE);
 	$duree = number_format($top_arrivee - $top_depart,2,',','');
-	echo'<li><label class="valide">Sauvegarde de la base réalisée avec succès en '.$duree.'s.</label></li>';
+	echo'<li><label class="valide">Sauvegarde de la base réalisée en '.$duree.'s.</label></li>';
 	echo'<li><a class="lien_ext" href="'.$dossier_dump.$fichier_zip_nom.'">Récupérez le fichier de sauvegarde au format ZIP.</a></li>';
 	echo'<li><label class="alerte">Attention : pour des raisons de sécurité et de confidentialité, ce fichier sera effacé du serveur dans 1h.</label></li>';
 	exit();
@@ -171,7 +171,7 @@ elseif($action=='uploader')
 	{
 		exit('<li><label class="alerte">Erreur : problème avec le fichier transmis (taille dépassant probablement post_max_size ) !</label></li>');
 	}
-	$extension = pathinfo($fnom_transmis,PATHINFO_EXTENSION);
+	$extension = strtolower(pathinfo($fnom_transmis,PATHINFO_EXTENSION));
 	if($extension!='zip')
 	{
 		exit('<li><label class="alerte">Erreur : l\'extension du fichier transmis est incorrecte !</label></li>');
@@ -218,9 +218,7 @@ elseif($action=='uploader')
 		exit('<li><label class="alerte">Erreur : votre archive ZIP contient une sauvegarde plus récente que celle supportée par cette installation ! Le webmestre doit préalablement mettre à jour le programme...</label></li>');
 	}
 	// Afficher le retour
-	$top_arrivee = microtime(TRUE);
-	$duree = number_format($top_arrivee - $top_depart,2,',','');
-	echo'<li><label class="valide">Contenu du fichier récupéré avec succès en '.$duree.'s.</label></li>';
+	echo'<li><label class="valide">Contenu du fichier récupéré avec succès.</label></li>';
 	exit();
 }
 
@@ -263,7 +261,7 @@ elseif($action=='restaurer')
 	// Afficher le retour
 	$top_arrivee = microtime(TRUE);
 	$duree = number_format($top_arrivee - $top_depart,2,',','');
-	echo'<li><label class="valide">Restauration de la base réalisée avec succès'.$texte_maj.' en '.$duree.'s.</label></li>';
+	echo'<li><label class="valide">Restauration de la base réalisée '.$texte_maj.' en '.$duree.'s.</label></li>';
 	exit();
 }
 

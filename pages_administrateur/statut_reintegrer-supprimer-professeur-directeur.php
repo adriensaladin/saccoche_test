@@ -49,8 +49,8 @@ $select_professeurs_directeurs = afficher_select(DB_STRUCTURE_OPT_professeurs_di
 		</td>
 		<td class="nu" style="width:25em">
 			<p><span class="astuce">Utiliser "<i>Shift + clic</i>" ou "<i>Ctrl + clic</i>"<br />pour une sélection multiple.</span></p>
-			<p><input id="reintegrer" type="button" value="Réintégrer" /> ces professeurs / directeurs.</p>
-			<p><input id="supprimer" type="button" value="Supprimer définitivement" /> ces comptes professeurs / directeurs.</p>
+			<p><button id="reintegrer" type="button"><img alt="" src="./_img/bouton/user_ajouter.png" /> Réintégrer ces comptes.</button></p>
+			<p><button id="supprimer" type="button"><img alt="" src="./_img/bouton/supprimer.png" /> Supprimer définitivement ces comptes.</button></p>
 		</td>
 	</tr></table>
 </form>

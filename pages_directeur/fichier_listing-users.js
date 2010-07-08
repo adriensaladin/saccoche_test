@@ -30,6 +30,14 @@ $(document).ready
 	function()
 	{
 
+		$('select').change
+		(
+			function()
+			{
+				$('#ajax_msg').removeAttr("class").html("&nbsp;");
+			}
+		);
+
 		//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
 		//	Soumettre le formulaire principal
 		//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
@@ -85,15 +93,8 @@ $(document).ready
 					nom  = $("#f_groupe option:selected").text();
 					$('#f_groupe_nom').val( nom );
 				}
-				if (!please_wait)
-				{
-					$(this).ajaxSubmit(ajaxOptions);
-					return false;
-				}
-				else
-				{
-					return false;
-				}
+				$(this).ajaxSubmit(ajaxOptions);
+				return false;
 			}
 		); 
 
@@ -104,8 +105,7 @@ $(document).ready
 			var readytogo = validation.form();
 			if(readytogo)
 			{
-				please_wait = true;
-				$('#f_submit').hide();
+				$("#bouton_exporter").attr('disabled','disabled');
 				$('#ajax_msg').removeAttr("class").addClass("loader").html("Transmission du fichier en cours... Veuillez patienter.");
 				$('#bilan').html('');
 			}
@@ -115,8 +115,7 @@ $(document).ready
 		// Fonction suivant l'envoi du formulaire (avec jquery.form.js)
 		function retour_form_erreur(msg,string)
 		{
-			please_wait = false;
-			$('#f_submit').show();
+			$("#bouton_exporter").removeAttr('disabled');
 			$('#ajax_msg').removeAttr("class").addClass("alerte").html("Echec de la connexion ! Veuillez valider de nouveau.");
 		}
 
@@ -124,8 +123,7 @@ $(document).ready
 		function retour_form_valide(responseHTML)
 		{
 			maj_clock(1);
-			please_wait = false;
-			$('#f_submit').show();
+			$("#bouton_exporter").removeAttr('disabled');
 			if(responseHTML.substring(0,17)!='<ul class="puce">')
 			{
 				$('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);

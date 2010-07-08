@@ -54,8 +54,8 @@ $select_groupes   = afficher_select(DB_STRUCTURE_OPT_groupes_etabl()       , $se
 		</td>
 		<td class="nu" style="width:25em">
 			<p><span class="astuce">Utiliser "<i>Shift + clic</i>" ou "<i>Ctrl + clic</i>"<br />pour une sélection multiple.</span></p>
-			<input id="ajouter" type="button" value="Ajouter" /> ces associations.<br />
-			<input id="retirer" type="button" value="Retirer" /> ces associations.
+			<button id="ajouter" type="button"><img alt="" src="./_img/bouton/groupe_ajouter.png" /> Ajouter ces associations.</button><br />
+			<button id="retirer" type="button"><img alt="" src="./_img/bouton/groupe_retirer.png" /> Retirer ces associations.</button>
 			<p><label id="ajax_msg">&nbsp;</label></p>
 		</td>
 	</tr></table>

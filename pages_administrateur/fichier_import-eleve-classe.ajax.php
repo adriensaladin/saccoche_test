@@ -48,7 +48,7 @@ if( $step==1 )
 	{
 		exit('Erreur : erreur avec le fichier transmis (taille dépassant probablement post_max_size ) !');
 	}
-	$extension = pathinfo($fnom_transmis,PATHINFO_EXTENSION);
+	$extension = strtolower(pathinfo($fnom_transmis,PATHINFO_EXTENSION));
 	if(!in_array($extension,array('zip','xml','txt','csv')))
 	{
 		exit('Erreur : l\'extension du fichier transmis est incorrecte !');

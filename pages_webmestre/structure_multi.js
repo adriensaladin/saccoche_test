@@ -245,14 +245,14 @@ $(document).ready
 		(
 			function()
 			{
-				$('input[type=checkbox]').attr('checked',true);
+				$('input[type=checkbox]').attr('checked','checked');
 			}
 		);
 		$('#all_uncheck').click
 		(
 			function()
 			{
-				$('input[type=checkbox]').attr('checked',false);
+				$('input[type=checkbox]').removeAttr('checked');
 			}
 		);
 
@@ -264,7 +264,7 @@ $(document).ready
 		(
 			function()
 			{
-				page = ($(this).attr('id')=='button_stats') ? 'statistiques_multi' : 'newsletter_multi' ;
+				page = ($(this).attr('id')=='bouton_stats') ? 'statistiques_multi' : 'newsletter_multi' ;
 				var check_ids = new Array(); $("input[type=checkbox]:checked").each(function(){check_ids.push($(this).val());});
 				$('#listing_ids').val(check_ids);
 				var form = document.getElementById('structures');

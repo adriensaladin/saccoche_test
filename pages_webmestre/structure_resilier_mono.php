@@ -32,5 +32,5 @@ $TITRE = "Résilier l'inscription de l'établissement";
 <p><span class="danger"> Si vous confirmez votre choix, alors toutes les données des élèves, professeurs, compétences, classes, etc. seront complètement effacées !</span></p>
 
 <form action=""><fieldset>
-	<span class="tab"></span><input id="f_submit" type="submit" value="Résilier l'inscription." /><label id="ajax_msg">&nbsp;</label>
+	<span class="tab"></span><button id="bouton_valider" type="submit"><img alt="" src="./_img/bouton/supprimer.png" /> Résilier l'inscription.</button><label id="ajax_msg">&nbsp;</label>
 </fieldset></form>

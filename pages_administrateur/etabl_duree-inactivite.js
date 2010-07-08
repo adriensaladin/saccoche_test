@@ -30,14 +30,23 @@ $(document).ready
 	function()
 	{
 
+		$('select').change
+		(
+			function()
+			{
+				$('#ajax_msg').removeAttr("class").html("&nbsp;");
+			}
+		);
+
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 //	Validation du formulaire
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-		$('#f_submit').click
+		$('#bouton_valider').click
 		(
 			function()
 			{
 				delai = $("#f_delai option:selected").val();
+				$("#bouton_valider").attr('disabled','disabled');
 				$('#ajax_msg').removeAttr("class").addClass("loader").html("Demande envoyée... Veuillez patienter.");
 				$.ajax
 				(
@@ -48,12 +57,14 @@ $(document).ready
 						dataType : "html",
 						error : function(msg,string)
 						{
+							$("#bouton_valider").removeAttr('disabled');
 							$('#ajax_msg').removeAttr("class").addClass("alerte").html("Echec de la connexion ! Veuillez recommencer.");
 							return false;
 						},
 						success : function(responseHTML)
 						{
 							maj_clock(1);
+							$("#bouton_valider").removeAttr('disabled');
 							if(responseHTML!='ok')
 							{
 								$('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);

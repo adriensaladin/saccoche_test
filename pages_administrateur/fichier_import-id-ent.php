@@ -41,9 +41,9 @@ else
 	echo'<hr />';
 	echo'<form action="">';
 	echo	'<ul class="puce">';
-	echo		'<li>Importer l\'identifiant avec le fichier <b>csv</b> provenant de l\'ENT (<span class="manuel"><a class="pop_up" href="'.SERVEUR_DOCUMENTAIRE.'?fichier=support_administrateur__gestion_mode_identification__integration_ENT_'.$_SESSION['CONNEXION_NOM'].'">documentation</a></span>) : <input id="import_ent" type="button" value="Parcourir..." /></li>';
-	echo		'<li>Prendre et <input id="copy_id_Gepi" type="button" value="recopier l\'identifiant de Gepi déjà importé" /> comme identifiant de l\'ENT pour tous les utilisateurs.</li>';
-	echo		'<li>Prendre et <input id="copy_login_SACoche" type="button" value="recopier le login de SACoche" /> comme identifiant de l\'ENT pour tous les utilisateurs.</li>';
+	echo		'<li>Importer l\'identifiant avec le fichier <b>csv</b> provenant de l\'ENT (<span class="manuel"><a class="pop_up" href="'.SERVEUR_DOCUMENTAIRE.'?fichier=support_administrateur__gestion_mode_identification__integration_ENT_'.$_SESSION['CONNEXION_NOM'].'">documentation</a></span>) : <button id="import_ent" type="button"><img alt="" src="./_img/bouton/fichier_import.png" /> Parcourir...</button></li>';
+	echo		'<li><button id="copy_id_Gepi" type="button"><img alt="" src="./_img/bouton/mdp_groupe.png" /> Dupliquer l\'identifiant de Gepi déjà importé</button> comme identifiant de l\'ENT pour tous les utilisateurs.</li>';
+	echo		'<li><button id="copy_login_SACoche" type="button"><img alt="" src="./_img/bouton/mdp_groupe.png" /> Dupliquer le login de SACoche</button> comme identifiant de l\'ENT pour tous les utilisateurs.</li>';
 	echo		'<li>Pour un traitement individuel, on peut aussi utiliser la page "<a href="./index.php?dossier=administrateur&amp;fichier=eleve&amp;section=gestion">Gérer les élèves</a>" ou "<a href="./index.php?dossier=administrateur&amp;fichier=professeur&amp;section=gestion">Gérer les professeurs</a>" ou "<a href="./index.php?dossier=administrateur&amp;fichier=directeur&amp;section=gestion">Gérer les directeurs</a>".</li>';
 	echo	'</ul>';
 	echo'</form>';

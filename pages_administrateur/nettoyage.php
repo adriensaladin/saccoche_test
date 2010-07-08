@@ -26,22 +26,34 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-$TITRE = "Export liens socle &amp; matières";
+$TITRE = "Nettoyage / Initialisation";
 ?>
 
-<?php
-// Fabrication des éléments select du formulaire
-$select_palier = afficher_select(DB_STRUCTURE_OPT_paliers_etabl($_SESSION['PALIERS']) , $select_nom='f_palier' , $option_first='non' , $selection=false , $optgroup='non');
-?>
+<p class="hc">
+	<span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__gestion_nettoyage">DOC : Nettoyage et initialisation annuelle de la base</a></span></p>
+</p>
 
-<div class="hc"><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_professeur__export_listings">DOC : Export listings.</a></span></div>
+<hr />
 
-<form action="" id="form_export"><fieldset>
-	<label class="tab" for="f_palier">Palier :</label><?php echo $select_palier ?><input type="hidden" id="f_palier_nom" name="f_palier_nom" value="" /><br />
-	<span class="tab"></span><button id="bouton_exporter" type="submit"><img alt="" src="./_img/bouton/fichier_export.png" /> Générer le listing</button><label id="ajax_msg">&nbsp;</label><br />
+<h2>Suppression de correspondances anormales</h2>
+
+<div class="astuce">Cet outil est facultatif ; il ne met pas à jour la structure ni les données de la base.</div>
+<form id="form_nettoyer" action=""><fieldset>
+	<span class="tab"></span><button id="bouton_nettoyer" type="button"><img alt="" src="./_img/bouton/nettoyage.png" /> Lancer le nettoyage d'éventuelles anomalies.</button><label id="ajax_msg_nettoyer">&nbsp;</label>
 </fieldset></form>
 
 <hr />
 
-<div id="bilan">
-</div>
+<h2>Initialisation annuelle des données</h2>
+
+<div class="astuce">Entre deux années scolaires, il faut purger la base avant d'importer les nouveaux utilisateurs.</div>
+<div class="danger">N'effectuez jamais une initialisation en cours d'année scolaire !</div>
+<form id="form_purger" action=""><fieldset>
+	<span class="tab"></span><button id="bouton_purger" type="button"><img alt="" src="./_img/bouton/nettoyage.png" /> Lancer l'initialisation annuelle des données.</button><label id="ajax_msg_purger">&nbsp;</label>
+</fieldset></form>
+
+<hr />
+
+<ul class="puce" id="ajax_info">
+</ul>
+<p />

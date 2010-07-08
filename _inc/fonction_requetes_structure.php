@@ -416,7 +416,7 @@ function DB_STRUCTURE_lister_result_eleve($eleve_id,$liste_item_id,$date_mysql_d
 	$sql_debut = ($date_mysql_debut) ? 'AND saisie_date>=:date_debut ' : '';
 	$sql_fin   = ($date_mysql_fin)   ? 'AND saisie_date<=:date_fin '   : '';
 	$DB_SQL = 'SELECT item_id , ';
-	$DB_SQL.= 'saisie_note AS note , saisie_date AS date , devoir_info AS info ';
+	$DB_SQL.= 'saisie_note AS note , saisie_date AS date , saisie_info AS info ';
 	$DB_SQL.= 'FROM sacoche_saisie ';
 	$DB_SQL.= 'LEFT JOIN sacoche_devoir USING (devoir_id) ';
 	$DB_SQL.= 'LEFT JOIN sacoche_referentiel_item USING (item_id) ';
@@ -445,7 +445,7 @@ function DB_STRUCTURE_lister_result_eleves_matiere($liste_eleve_id,$liste_item_i
 	$sql_debut = ($date_mysql_debut) ? 'AND saisie_date>=:date_debut ' : '';
 	$sql_fin   = ($date_mysql_fin)   ? 'AND saisie_date<=:date_fin '   : '';
 	$DB_SQL = 'SELECT eleve_id , item_id , ';
-	$DB_SQL.= 'saisie_note AS note , saisie_date AS date , devoir_info AS info ';
+	$DB_SQL.= 'saisie_note AS note , saisie_date AS date , saisie_info AS info ';
 	$DB_SQL.= 'FROM sacoche_saisie ';
 	$DB_SQL.= 'LEFT JOIN sacoche_devoir USING (devoir_id) ';
 	$DB_SQL.= 'LEFT JOIN sacoche_referentiel_item USING (item_id) ';
@@ -474,7 +474,7 @@ function DB_STRUCTURE_lister_result_eleves_matieres($liste_eleve_id,$liste_item_
 	$sql_debut = ($date_mysql_debut) ? 'AND saisie_date>=:date_debut ' : '';
 	$sql_fin   = ($date_mysql_fin)   ? 'AND saisie_date<=:date_fin '   : '';
 	$DB_SQL = 'SELECT eleve_id , matiere_id , item_id , ';
-	$DB_SQL.= 'saisie_note AS note , saisie_date AS date , devoir_info AS info ';
+	$DB_SQL.= 'saisie_note AS note , saisie_date AS date , saisie_info AS info ';
 	$DB_SQL.= 'FROM sacoche_saisie ';
 	$DB_SQL.= 'LEFT JOIN sacoche_devoir USING (devoir_id) ';
 	$DB_SQL.= 'LEFT JOIN sacoche_referentiel_item USING (item_id) ';
@@ -628,6 +628,22 @@ function DB_STRUCTURE_lister_periodes()
 	$DB_SQL = 'SELECT * FROM sacoche_periode ';
 	$DB_SQL.= 'ORDER BY periode_ordre ASC';
 	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , null);
+}
+
+/**
+ * DB_STRUCTURE_lister_groupes_sauf_classes
+ * 
+ * @param void
+ * @return array
+ */
+
+function DB_STRUCTURE_lister_groupes_sauf_classes()
+{
+	$DB_SQL = 'SELECT groupe_id,groupe_type FROM sacoche_groupe ';
+	$DB_SQL.= 'WHERE groupe_type!=:type ';
+	$DB_SQL.= 'ORDER BY groupe_ref ASC';
+	$DB_VAR = array(':type'=>'classe');
+	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
 /**
@@ -857,7 +873,7 @@ function DB_STRUCTURE_lister_eleves_tri_statut_classe()
 	$DB_SQL.= 'WHERE user_profil=:profil ';
 	$DB_SQL.= 'ORDER BY user_statut DESC, niveau_ordre ASC, groupe_ref ASC, user_nom ASC, user_prenom ASC';
 	$DB_VAR = array(':profil'=>'eleve');
-	return $DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
 /**
@@ -2268,11 +2284,11 @@ function DB_STRUCTURE_modifier_liaison_devoir_user($groupe_id,$tab_eleves,$mode)
 /**
  * DB_STRUCTURE_modifier_liaison_groupe_periode
  * 
- * @param int    $groupe_id
- * @param int    $periode_id
- * @param bool   $etat               'true' pour ajouter/modifier une liaison ; 'false' pour retirer une liaison
- * @param string $date_debut_mysql   date de début au format mysql (facultatif : obligatoire uniquement si $etat=true)
- * @param string $date_fin_mysql     date de fin au format mysql (facultatif : obligatoire uniquement si $etat=true)
+ * @param int|true   $groupe_id          id du groupe ou 'true' pour supprimer la jointure sur tous les groupes
+ * @param int|true   $periode_id         id de la période ou 'true' pour supprimer la jointure sur toutes les périodes
+ * @param bool       $etat               'true' pour ajouter/modifier une liaison ; 'false' pour retirer une liaison
+ * @param string     $date_debut_mysql   date de début au format mysql (facultatif : obligatoire uniquement si $etat=true)
+ * @param string     $date_fin_mysql     date de fin au format mysql (facultatif : obligatoire uniquement si $etat=true)
  * @return void
  */
 
@@ -2280,16 +2296,27 @@ function DB_STRUCTURE_modifier_liaison_groupe_periode($groupe_id,$periode_id,$et
 {
 	if($etat)
 	{
+		// Ajouter / modifier une liaison
 		$DB_SQL = 'REPLACE INTO sacoche_jointure_groupe_periode (groupe_id,periode_id,jointure_date_debut,jointure_date_fin) ';
 		$DB_SQL.= 'VALUES(:groupe_id,:periode_id,:date_debut,:date_fin)';
 		$DB_VAR = array(':groupe_id'=>$groupe_id,':periode_id'=>$periode_id,':date_debut'=>$date_debut_mysql,':date_fin'=>$date_fin_mysql);
 	}
 	else
 	{
-		$DB_SQL = 'DELETE FROM sacoche_jointure_groupe_periode ';
-		$DB_SQL.= 'WHERE groupe_id=:groupe_id AND periode_id=:periode_id ';
-		$DB_SQL.= 'LIMIT 1';
-		$DB_VAR = array(':groupe_id'=>$groupe_id,':periode_id'=>$periode_id);
+		if( ($groupe_id===true) && ($periode_id===true) )
+		{
+			// Retirer toutes les liaisons
+			$DB_SQL = 'DELETE FROM sacoche_jointure_groupe_periode ';
+			$DB_VAR = null;
+		}
+		else
+		{
+			// Retirer une liaison
+			$DB_SQL = 'DELETE FROM sacoche_jointure_groupe_periode ';
+			$DB_SQL.= 'WHERE groupe_id=:groupe_id AND periode_id=:periode_id ';
+			$DB_SQL.= 'LIMIT 1';
+			$DB_VAR = array(':groupe_id'=>$groupe_id,':periode_id'=>$periode_id);
+		}
 	}
 	DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
@@ -2406,7 +2433,7 @@ function DB_STRUCTURE_supprimer_groupe($groupe_id,$groupe_type,$with_devoir=true
  * @return void
  */
 
-function DB_STRUCTURE_supprimer_devoir_et_saisies($devoir_id,$prof_id)
+function DB_STRUCTURE_supprimer_devoirs_et_saisies($devoir_id,$prof_id)
 {
 	// Il faut aussi supprimer les jointures du devoir avec les items
 	$DB_SQL = 'DELETE sacoche_devoir, sacoche_jointure_devoir_item, sacoche_saisie ';
@@ -2418,6 +2445,24 @@ function DB_STRUCTURE_supprimer_devoir_et_saisies($devoir_id,$prof_id)
 	DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 	// Log de l'action
 	ajouter_log('Suppression d\'un devoir ('.$devoir_id.') avec les saisies associées.');
+}
+
+/**
+ * DB_STRUCTURE_supprimer_devoirs_sans_saisies
+ * Utilisé uniquement dans le cadre d'un nettoyage annuel ; les groupes de types 'besoin' et 'eval' sont supprimés dans un second temps.
+ * 
+ * @return void
+ */
+
+function DB_STRUCTURE_supprimer_devoirs_sans_saisies()
+{
+	// Il faut aussi supprimer les jointures du devoir avec les items
+	$DB_SQL = 'DELETE sacoche_devoir, sacoche_jointure_devoir_item ';
+	$DB_SQL.= 'FROM sacoche_devoir ';
+	$DB_SQL.= 'LEFT JOIN sacoche_jointure_devoir_item USING (devoir_id) ';
+	DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , null);
+	// Log de l'action
+	ajouter_log('Suppression de tous les devoirs sans les saisies associées.');
 }
 
 /**
@@ -2464,7 +2509,7 @@ function DB_STRUCTURE_supprimer_periode($periode_id)
 
 /**
  * DB_STRUCTURE_supprimer_demande
- * On transmet soit l'id de la demande (1 paramètre) soit l'id de l'élève suivi de l'id de la compétence (2 paramètres).
+ * On transmet soit l'id de la demande (1 paramètre) soit l'id de l'élève suivi de l'id de l'item (2 paramètres).
  * 
  * @param int      $id1
  * @param bool|int $id2
@@ -2491,16 +2536,19 @@ function DB_STRUCTURE_supprimer_demande($id1,$id2=false)
 /**
  * DB_STRUCTURE_supprimer_demandes
  * 
- * @param string $listing_demande_id   id des demandes séparées par des virgules
- * @param int    $nb_demandes          nb de demandes
+ * @param bool|string   $listing_demande_id   id des demandes séparées par des virgules, ou "true" pour supprimer toutes les demandes de l'établissement
+ * @param bool|int      $nb_demandes          nb de demandes
  * @return void
  */
 
-function DB_STRUCTURE_supprimer_demandes($listing_demande_id,$nb_demandes)
+function DB_STRUCTURE_supprimer_demandes($listing_demande_id,$nb_demandes=false)
 {
 	$DB_SQL = 'DELETE FROM sacoche_demande ';
-	$DB_SQL.= 'WHERE demande_id IN('.$listing_demande_id.') ';
-	$DB_SQL.= 'LIMIT '.$nb_demandes;
+	if($listing_demande_id!==true)
+	{
+		$DB_SQL.= 'WHERE demande_id IN('.$listing_demande_id.') ';
+		$DB_SQL.= 'LIMIT '.$nb_demandes;
+	}
 	DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , null);
 }
 
@@ -2642,6 +2690,197 @@ function DB_STRUCTURE_creer_remplir_tables_structure($dossier_requetes)
 }
 
 /**
+ * DB_STRUCTURE_optimiser_tables_structure
+ * 
+ * @param void
+ * @return void
+ */
+
+function DB_STRUCTURE_optimiser_tables_structure()
+{
+	$DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , 'SHOW TABLE STATUS LIKE "sacoche_%"');
+	if(count($DB_TAB))
+	{
+		foreach($DB_TAB as $DB_ROW)
+		{
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'OPTIMIZE TABLE '.$DB_ROW['Name']);
+		}
+	}
+}
+
+/**
+ * DB_STRUCTURE_corriger_anomalies
+ * 
+ * @param void
+ * @return array   tableau avec label et commentaire pour chaque recherche
+ */
+
+function DB_STRUCTURE_corriger_anomalies()
+{
+	$tab_bilan = array();
+	// Recherche d'anomalies : référentiels associés à une matière supprimée
+	$DB_SQL = 'DELETE sacoche_referentiel,sacoche_referentiel_domaine, sacoche_referentiel_theme, sacoche_referentiel_item, sacoche_jointure_devoir_item, sacoche_saisie, sacoche_demande ';
+	$DB_SQL.= 'FROM sacoche_referentiel ';
+	$DB_SQL.= 'LEFT JOIN sacoche_matiere USING (matiere_id) ';
+	$DB_SQL.= 'LEFT JOIN sacoche_referentiel_domaine USING (matiere_id,niveau_id) ';
+	$DB_SQL.= 'LEFT JOIN sacoche_referentiel_theme USING (domaine_id) ';
+	$DB_SQL.= 'LEFT JOIN sacoche_referentiel_item USING (theme_id) ';
+	$DB_SQL.= 'LEFT JOIN sacoche_jointure_devoir_item USING (item_id) ';
+	$DB_SQL.= 'LEFT JOIN sacoche_saisie USING (item_id) ';
+	$DB_SQL.= 'LEFT JOIN sacoche_demande USING (item_id) ';
+	$DB_SQL.= 'WHERE sacoche_matiere.matiere_id IS NULL ';
+	DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , null);
+	$nb_modifs = DB::rowCount(SACOCHE_STRUCTURE_BD_NAME);
+	$message = (!$nb_modifs) ? 'rien à signaler' : ( ($nb_modifs>1) ? $nb_modifs.' anomalies supprimées' : '1 anomalie supprimée' ) ;
+	$classe  = (!$nb_modifs) ? 'valide' : 'alerte' ;
+	$tab_bilan[] = '<label class="'.$classe.'">Référentiels : '.$message.'.</label>';
+	// Recherche d'anomalies : domaines associés à une matière supprimée...
+	$DB_SQL = 'DELETE sacoche_referentiel_domaine, sacoche_referentiel_theme, sacoche_referentiel_item, sacoche_jointure_devoir_item, sacoche_saisie, sacoche_demande ';
+	$DB_SQL.= 'FROM sacoche_referentiel_domaine ';
+	$DB_SQL.= 'LEFT JOIN sacoche_matiere USING (matiere_id) ';
+	$DB_SQL.= 'LEFT JOIN sacoche_referentiel_theme USING (domaine_id) ';
+	$DB_SQL.= 'LEFT JOIN sacoche_referentiel_item USING (theme_id) ';
+	$DB_SQL.= 'LEFT JOIN sacoche_jointure_devoir_item USING (item_id) ';
+	$DB_SQL.= 'LEFT JOIN sacoche_saisie USING (item_id) ';
+	$DB_SQL.= 'LEFT JOIN sacoche_demande USING (item_id) ';
+	$DB_SQL.= 'WHERE sacoche_matiere.matiere_id IS NULL ';
+	DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , null);
+	$nb_modifs = DB::rowCount(SACOCHE_STRUCTURE_BD_NAME);
+	$message = (!$nb_modifs) ? 'rien à signaler' : ( ($nb_modifs>1) ? $nb_modifs.' anomalies supprimées' : '1 anomalie supprimée' ) ;
+	$classe  = (!$nb_modifs) ? 'valide' : 'alerte' ;
+	$tab_bilan[] = '<label class="'.$classe.'">Domaines (arborescence) : '.$message.'.</label>';
+	// Recherche d'anomalies : thèmes associés à un domaine supprimé...
+	$DB_SQL = 'DELETE sacoche_referentiel_theme, sacoche_referentiel_item, sacoche_jointure_devoir_item, sacoche_saisie, sacoche_demande ';
+	$DB_SQL.= 'FROM sacoche_referentiel_theme ';
+	$DB_SQL.= 'LEFT JOIN sacoche_referentiel_domaine USING (domaine_id) ';
+	$DB_SQL.= 'LEFT JOIN sacoche_referentiel_item USING (theme_id) ';
+	$DB_SQL.= 'LEFT JOIN sacoche_jointure_devoir_item USING (item_id) ';
+	$DB_SQL.= 'LEFT JOIN sacoche_saisie USING (item_id) ';
+	$DB_SQL.= 'LEFT JOIN sacoche_demande USING (item_id) ';
+	$DB_SQL.= 'WHERE sacoche_referentiel_domaine.domaine_id IS NULL ';
+	DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , null);
+	$nb_modifs = DB::rowCount(SACOCHE_STRUCTURE_BD_NAME);
+	$message = (!$nb_modifs) ? 'rien à signaler' : ( ($nb_modifs>1) ? $nb_modifs.' anomalies supprimées' : '1 anomalie supprimée' ) ;
+	$classe  = (!$nb_modifs) ? 'valide' : 'alerte' ;
+	$tab_bilan[] = '<label class="'.$classe.'">Thèmes (arborescence) : '.$message.'.</label>';
+	// Recherche d'anomalies : items associés à un thème supprimé...
+	$DB_SQL = 'DELETE sacoche_referentiel_item, sacoche_jointure_devoir_item, sacoche_saisie, sacoche_demande ';
+	$DB_SQL.= 'FROM sacoche_referentiel_item ';
+	$DB_SQL.= 'LEFT JOIN sacoche_referentiel_theme USING (theme_id) ';
+	$DB_SQL.= 'LEFT JOIN sacoche_jointure_devoir_item USING (item_id) ';
+	$DB_SQL.= 'LEFT JOIN sacoche_saisie USING (item_id) ';
+	$DB_SQL.= 'LEFT JOIN sacoche_demande USING (item_id) ';
+	$DB_SQL.= 'WHERE sacoche_referentiel_theme.theme_id IS NULL ';
+	DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , null);
+	$nb_modifs = DB::rowCount(SACOCHE_STRUCTURE_BD_NAME);
+	$message = (!$nb_modifs) ? 'rien à signaler' : ( ($nb_modifs>1) ? $nb_modifs.' anomalies supprimées' : '1 anomalie supprimée' ) ;
+	$classe  = (!$nb_modifs) ? 'valide' : 'alerte' ;
+	$tab_bilan[] = '<label class="'.$classe.'">Items (arborescence) : '.$message.'.</label>';
+	// Recherche d'anomalies : demandes d'évaluations associées à un user ou une matière ou un item supprimé...
+	$DB_SQL = 'DELETE sacoche_demande ';
+	$DB_SQL.= 'FROM sacoche_demande ';
+	$DB_SQL.= 'LEFT JOIN sacoche_user USING (user_id) ';
+	$DB_SQL.= 'LEFT JOIN sacoche_matiere USING (matiere_id) ';
+	$DB_SQL.= 'LEFT JOIN sacoche_referentiel_item USING (item_id) ';
+	$DB_SQL.= 'WHERE ( (sacoche_user.user_id IS NULL) OR (sacoche_matiere.matiere_id IS NULL) OR (sacoche_referentiel_item.item_id IS NULL) ) ';
+	DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , null);
+	$nb_modifs = DB::rowCount(SACOCHE_STRUCTURE_BD_NAME);
+	$message = (!$nb_modifs) ? 'rien à signaler' : ( ($nb_modifs>1) ? $nb_modifs.' anomalies supprimées' : '1 anomalie supprimée' ) ;
+	$classe  = (!$nb_modifs) ? 'valide' : 'alerte' ;
+	$tab_bilan[] = '<label class="'.$classe.'">Demandes d\'évaluations : '.$message.'.</label>';
+	// Recherche d'anomalies : saisies de scores associées à un élève ou un item supprimé...
+	// Attention, on ne teste pas le professeur ou le devoir, car les saisies sont conservées au delà
+	$DB_SQL = 'DELETE sacoche_saisie ';
+	$DB_SQL.= 'FROM sacoche_saisie ';
+	$DB_SQL.= 'LEFT JOIN sacoche_user ON sacoche_saisie.eleve_id=sacoche_user.user_id ';
+	$DB_SQL.= 'LEFT JOIN sacoche_referentiel_item USING (item_id) ';
+	$DB_SQL.= 'WHERE ( (sacoche_user.user_id IS NULL) OR (sacoche_referentiel_item.item_id IS NULL) ) ';
+	DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , null);
+	$nb_modifs = DB::rowCount(SACOCHE_STRUCTURE_BD_NAME);
+	$message = (!$nb_modifs) ? 'rien à signaler' : ( ($nb_modifs>1) ? $nb_modifs.' anomalies supprimées' : '1 anomalie supprimée' ) ;
+	$classe  = (!$nb_modifs) ? 'valide' : 'alerte' ;
+	$tab_bilan[] = '<label class="'.$classe.'">Scores : '.$message.'.</label>';
+	// Recherche d'anomalies : devoirs associés à un prof ou un groupe supprimé...
+	$DB_SQL = 'DELETE sacoche_devoir, sacoche_jointure_devoir_item ';
+	$DB_SQL.= 'FROM sacoche_devoir ';
+	$DB_SQL.= 'LEFT JOIN sacoche_jointure_devoir_item USING (devoir_id) ';
+	$DB_SQL.= 'LEFT JOIN sacoche_user ON sacoche_devoir.prof_id=sacoche_user.user_id ';
+	$DB_SQL.= 'LEFT JOIN sacoche_groupe USING (groupe_id) ';
+	$DB_SQL.= 'WHERE ( (sacoche_user.user_id IS NULL) OR (sacoche_groupe.groupe_id IS NULL) ) ';
+	DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , null);
+	$nb_modifs = DB::rowCount(SACOCHE_STRUCTURE_BD_NAME);
+	$message = (!$nb_modifs) ? 'rien à signaler' : ( ($nb_modifs>1) ? $nb_modifs.' anomalies supprimées' : '1 anomalie supprimée' ) ;
+	$classe  = (!$nb_modifs) ? 'valide' : 'alerte' ;
+	$tab_bilan[] = '<label class="'.$classe.'">Évaluations : '.$message.'.</label>';
+	// Recherche d'anomalies : flux RSS associés à un user supprimé...
+	$DB_SQL = 'DELETE sacoche_rss ';
+	$DB_SQL.= 'FROM sacoche_rss ';
+	$DB_SQL.= 'LEFT JOIN sacoche_user USING (user_id) ';
+	$DB_SQL.= 'WHERE sacoche_user.user_id IS NULL ';
+	DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , null);
+	$nb_modifs = DB::rowCount(SACOCHE_STRUCTURE_BD_NAME);
+	$message = (!$nb_modifs) ? 'rien à signaler' : ( ($nb_modifs>1) ? $nb_modifs.' anomalies supprimées' : '1 anomalie supprimée' ) ;
+	$classe  = (!$nb_modifs) ? 'valide' : 'alerte' ;
+	$tab_bilan[] = '<label class="'.$classe.'">Flux RSS : '.$message.'.</label>';
+	// Recherche d'anomalies : jointures période/groupe associées à une période ou un groupe supprimé...
+	$DB_SQL = 'DELETE sacoche_jointure_groupe_periode ';
+	$DB_SQL.= 'FROM sacoche_jointure_groupe_periode ';
+	$DB_SQL.= 'LEFT JOIN sacoche_periode USING (periode_id) ';
+	$DB_SQL.= 'LEFT JOIN sacoche_groupe USING (groupe_id) ';
+	$DB_SQL.= 'WHERE ( (sacoche_periode.periode_id IS NULL) OR (sacoche_groupe.groupe_id IS NULL) ) ';
+	DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , null);
+	$nb_modifs = DB::rowCount(SACOCHE_STRUCTURE_BD_NAME);
+	$message = (!$nb_modifs) ? 'rien à signaler' : ( ($nb_modifs>1) ? $nb_modifs.' anomalies supprimées' : '1 anomalie supprimée' ) ;
+	$classe  = (!$nb_modifs) ? 'valide' : 'alerte' ;
+	$tab_bilan[] = '<label class="'.$classe.'">Jointures période/groupe : '.$message.'.</label>';
+	// Recherche d'anomalies : jointures user/groupe associées à un user ou un groupe supprimé...
+	$DB_SQL = 'DELETE sacoche_jointure_user_groupe ';
+	$DB_SQL.= 'FROM sacoche_jointure_user_groupe ';
+	$DB_SQL.= 'LEFT JOIN sacoche_user USING (user_id) ';
+	$DB_SQL.= 'LEFT JOIN sacoche_groupe USING (groupe_id) ';
+	$DB_SQL.= 'WHERE ( (sacoche_user.user_id IS NULL) OR (sacoche_groupe.groupe_id IS NULL) ) ';
+	DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , null);
+	$nb_modifs = DB::rowCount(SACOCHE_STRUCTURE_BD_NAME);
+	$message = (!$nb_modifs) ? 'rien à signaler' : ( ($nb_modifs>1) ? $nb_modifs.' anomalies supprimées' : '1 anomalie supprimée' ) ;
+	$classe  = (!$nb_modifs) ? 'valide' : 'alerte' ;
+	$tab_bilan[] = '<label class="'.$classe.'">Jointures utilisateur/groupe : '.$message.'.</label>';
+	// Recherche d'anomalies : jointures user/matière associées à un user ou une matière supprimée...
+	$DB_SQL = 'DELETE sacoche_jointure_user_matiere ';
+	$DB_SQL.= 'FROM sacoche_jointure_user_matiere ';
+	$DB_SQL.= 'LEFT JOIN sacoche_user USING (user_id) ';
+	$DB_SQL.= 'LEFT JOIN sacoche_matiere USING (matiere_id) ';
+	$DB_SQL.= 'WHERE ( (sacoche_user.user_id IS NULL) OR (sacoche_matiere.matiere_id IS NULL) ) ';
+	DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , null);
+	$nb_modifs = DB::rowCount(SACOCHE_STRUCTURE_BD_NAME);
+	$message = (!$nb_modifs) ? 'rien à signaler' : ( ($nb_modifs>1) ? $nb_modifs.' anomalies supprimées' : '1 anomalie supprimée' ) ;
+	$classe  = (!$nb_modifs) ? 'valide' : 'alerte' ;
+	$tab_bilan[] = '<label class="'.$classe.'">Jointures utilisateur/matière : '.$message.'.</label>';
+	// Recherche d'anomalies : jointures devoir/item associées à un devoir ou un item supprimé...
+	$DB_SQL = 'DELETE sacoche_jointure_devoir_item ';
+	$DB_SQL.= 'FROM sacoche_jointure_devoir_item ';
+	$DB_SQL.= 'LEFT JOIN sacoche_devoir USING (devoir_id) ';
+	$DB_SQL.= 'LEFT JOIN sacoche_referentiel_item USING (item_id) ';
+	$DB_SQL.= 'WHERE ( (sacoche_devoir.devoir_id IS NULL) OR (sacoche_referentiel_item.item_id IS NULL) ) ';
+	DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , null);
+	$nb_modifs = DB::rowCount(SACOCHE_STRUCTURE_BD_NAME);
+	$message = (!$nb_modifs) ? 'rien à signaler' : ( ($nb_modifs>1) ? $nb_modifs.' anomalies supprimées' : '1 anomalie supprimée' ) ;
+	$classe  = (!$nb_modifs) ? 'valide' : 'alerte' ;
+	$tab_bilan[] = '<label class="'.$classe.'">Jointures évaluation/item : '.$message.'.</label>';
+	// Recherche d'anomalies : élèves associés à une classe supprimée...
+	// Attention, on l'id de classe à 0 est normal pour un élève non affecté ou un autre statut
+	$DB_SQL = 'UPDATE sacoche_user ';
+	$DB_SQL.= 'LEFT JOIN sacoche_groupe ON sacoche_user.eleve_classe_id=sacoche_groupe.groupe_id ';
+	$DB_SQL.= 'SET sacoche_user.eleve_classe_id=0 ';
+	$DB_SQL.= 'WHERE ( (sacoche_user.eleve_classe_id!=0) AND (sacoche_groupe.groupe_id IS NULL) ) ';
+	DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , null);
+	$nb_modifs = DB::rowCount(SACOCHE_STRUCTURE_BD_NAME);
+	$message = (!$nb_modifs) ? 'rien à signaler' : ( ($nb_modifs>1) ? $nb_modifs.' anomalies supprimées' : '1 anomalie supprimée' ) ;
+	$classe  = (!$nb_modifs) ? 'valide' : 'alerte' ;
+	$tab_bilan[] = '<label class="'.$classe.'">Jointures élève/classe : '.$message.'.</label>';
+	return $tab_bilan;
+}
+
+/**
  * Retourner un tableau [valeur texte] des matières de l'établissement (communes choisies ou spécifiques ajoutées)
  * 
  * @param string $listing_matieres_communes   id des matières communes séparées par des virgules
@@ -2676,8 +2915,7 @@ function DB_STRUCTURE_OPT_matieres_communes($listing_matieres_communes)
 		$DB_SQL = 'SELECT matiere_id AS valeur, matiere_nom AS texte FROM sacoche_matiere ';
 		$DB_SQL.= 'WHERE matiere_id IN('.$listing_matieres_communes.') ';
 		$DB_SQL.= 'ORDER BY matiere_nom ASC';
-		$DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , null);
-		return $DB_TAB;
+		return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , null);
 	}
 	else
 	{
@@ -2791,8 +3029,7 @@ function DB_STRUCTURE_OPT_niveaux_etabl($listing_niveaux,$listing_paliers)
 		$DB_SQL.= 'WHERE niveau_id IN('.$listing_niveaux.') ';
 		$DB_SQL.= ($listing_paliers) ? 'OR palier_id IN('.$listing_paliers.') ' : '' ;
 		$DB_SQL.= 'ORDER BY niveau_ordre ASC';
-		$DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , null);
-		return $DB_TAB;
+		return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , null);
 	}
 	else
 	{
@@ -2814,8 +3051,7 @@ function DB_STRUCTURE_OPT_paliers_etabl($listing_paliers)
 		$DB_SQL = 'SELECT palier_id AS valeur, palier_nom AS texte FROM sacoche_socle_palier ';
 		$DB_SQL.= 'WHERE palier_id IN('.$listing_paliers.') ';
 		$DB_SQL.= 'ORDER BY palier_ordre ASC';
-		$DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , null);
-		return $DB_TAB;
+		return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , null);
 	}
 	else
 	{

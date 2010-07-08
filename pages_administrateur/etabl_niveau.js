@@ -55,10 +55,11 @@ $(document).ready
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 //	Validation du formulaire
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-		$('#f_submit').click
+		$('#bouton_valider').click
 		(
 			function()
 			{
+				$("#bouton_valider").attr('disabled','disabled');
 				$('#ajax_msg').removeAttr("class").addClass("loader").html("Demande envoyée... Veuillez patienter.");
 				var check_ids = new Array(); $("#niveau input[type=checkbox]:checked:enabled").each(function(){check_ids.push($(this).val());});
 				$.ajax
@@ -70,12 +71,14 @@ $(document).ready
 						dataType : "html",
 						error : function(msg,string)
 						{
+							$("#bouton_valider").removeAttr('disabled');
 							$('#ajax_msg').removeAttr("class").addClass("alerte").html("Echec de la connexion ! Veuillez recommencer.");
 							return false;
 						},
 						success : function(responseHTML)
 						{
 							maj_clock(1);
+							$("#bouton_valider").removeAttr('disabled');
 							if(responseHTML!='ok')
 							{
 								$('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);

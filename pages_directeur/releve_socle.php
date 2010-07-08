@@ -45,7 +45,7 @@ $select_groupe = afficher_select(DB_STRUCTURE_OPT_classes_groupes_etabl() , $sel
 		<label class="tab" for="f_remplissage">Remplissage :</label><select id="f_remplissage" name="f_remplissage"><option value="vide">attestation vierge de toute validation</option><option value="plein" selected="selected">attestation avec les états de validation</option></select><br />
 	</span>
 	<span class="tab"></span><select id="f_eleve" name="f_eleve[]" multiple="multiple" size="9"><option></option></select><input type="hidden" id="eleves" name="eleves" value="" /><p />
-	<span class="tab"></span><input id="f_submit" type="submit" value="Valider." /><label id="ajax_msg">&nbsp;</label><br />
+	<span class="tab"></span><button id="bouton_valider" type="submit"><img alt="" src="./_img/bouton/generer.png" /> Générer.</button><label id="ajax_msg">&nbsp;</label><br />
 </fieldset></form>
 
 <hr />

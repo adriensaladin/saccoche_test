@@ -166,7 +166,7 @@ else
 				}
 				else
 				{
-					$colonnes = (isset($tab_colonne[$matiere_id][$niveau_id])) ? $tab_colonne[$matiere_id][$niveau_id].'<td class="nu" id="'.$ids.'"><q class="voir" title="Voir le détail de ce référentiel."></q><q class="partager_non" title="Action réservée aux coordonnateurs."></q><q class="envoyer_non" title="Action réservée aux coordonnateurs."></q><q class="calculer_non" title="Action réservée aux coordonnateurs."></q><q class="supprimer_non" title="Action réservée aux coordonnateurs."></q></td>' : '<td class="r">Absence de référentiel.</td><td class="nu" id="'.$ids.'"><q class="ajouter_non" title="Action réservée aux coordonnateurs."></q></td>' ;
+					$colonnes = (isset($tab_colonne[$matiere_id][$niveau_id])) ? $tab_colonne[$matiere_id][$niveau_id].'<td class="nu" id="'.$ids.'"><q class="voir" title="Voir le détail de ce référentiel."></q><q class="partager_non" title="Action réservée aux coordonnateurs."></q><q class="envoyer_non" title="Action réservée aux coordonnateurs."></q><q class="calculer_non" title="Action réservée aux coordonnateurs."></q><q class="supprimer_non" title="Action réservée aux coordonnateurs."></q></td>' : '<td class="r">Absence de référentiel.</td><td class="r">Sans objet.</td><td class="nu" id="'.$ids.'"><q class="ajouter_non" title="Action réservée aux coordonnateurs."></q></td>' ;
 				}
 				if($affichage_suite===false)
 				{
@@ -190,19 +190,19 @@ else
 
 <div id="choisir_referentiel" class="hide">
 	<h2>Choisir un référentiel</h2>
-	<p><a class="choisir_valider" href="#" lang="id_0"><img alt=" vierge" src="./_img/action_valider.png" /> Démarrer avec un référentiel vierge.</a></p>
+	<p><button id="choisir_initialiser" type="button" value="id_0"><img alt="" src="./_img/bouton/valider.png" /> Démarrer avec un référentiel vierge.</button></p>
 	<?php
 	if( (!$_SESSION['SESAMATH_ID']) || (!$_SESSION['SESAMATH_KEY']) )
 	{
-		echo'<p><label for="rien" class="erreur">Pour pouvoir effectuer la recherche d\'un référentiel partagé sur le serveur communautaire, un administrateur doit identifier l\'établissement dans la base Sésamath.</label></p>';
+		echo'<p><label for="rien" class="erreur">Pour pouvoir effectuer la recherche d\'un référentiel partagé sur le serveur communautaire, un administrateur doit préalablement identifier l\'établissement dans la base Sésamath (<span class="manuel"><a class="pop_up" href="'.SERVEUR_DOCUMENTAIRE.'?fichier=support_administrateur__gestion_informations_structure">DOC : Gestion de l\'identité de l\'établissement</a></span>).</label></p>';
 	}
 	else
 	{
-		echo'<p><a id="choisir_rechercher" href="#"><img alt="" src="./_img/find.png" /> Rechercher parmi les référentiels partagés sur le serveur communautaire.</a><br />';
-		echo'<a class="choisir_valider" id="reporter_referentiel" href="#" lang="id_x"></a></p>';
+		echo'<p><button id="choisir_rechercher" type="button"><img alt="" src="./_img/bouton/rechercher.png" /> Rechercher parmi les référentiels partagés sur le serveur communautaire.</button></p>';
+		echo'<p><button id="choisir_importer" type="button" value="id_x"><img alt="" src="./_img/bouton/valider.png" /> Démarrer avec ce référentiel : <b id="reporter"></b></button></p>';
 	}
 	?>
-	<p><a id="choisir_annuler" href="#"><img alt="" src="./_img/action_annuler.png" /> Annuler la création d'un référentiel.</a></p>
+	<p><button id="choisir_annuler" type="button"><img alt="" src="./_img/bouton/annuler.png" /> Annuler la création d'un référentiel.</button></p>
 	<label id="ajax_msg_choisir">&nbsp;</label>
 </div>
 
@@ -213,7 +213,7 @@ else
 
 <div id="object_container" class="hide">
 	<h2>Rechercher un référentiel partagé sur le serveur communautaire</h2>
-	<p><a id="rechercher_annuler" href="#"><img alt="" src="./_img/action_annuler.png" /> Annuler la recherche d'un référentiel.</a></p>
+	<p><button id="rechercher_annuler" type="button"><img alt="" src="./_img/bouton/annuler.png" /> Annuler la recherche d'un référentiel.</button></p>
 	<?php
 	// La balise object fonctionne sauf avec Internet Explorer qui n'affiche rien si on appelle une page provenant d'un autre domaine.
 	// Par ailleurs, il faut mettre une adresse valide au départ sous peine de se voir retirer la balise par son substitut (pour Opéra).

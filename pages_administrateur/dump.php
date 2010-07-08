@@ -75,7 +75,7 @@ Néanmoins, plusieurs autres pistes peuvent toujours être explorées :
 
 <h2>Sauvegarder la base</h2>
 <form id="form1" action=""><fieldset>
-	<span class="tab"></span><input id="f_form1" type="button" value="Lancer la sauvegarde." /><label id="ajax_msg1">&nbsp;</label>
+	<span class="tab"></span><button id="bouton_form1" type="button"><img alt="" src="./_img/bouton/dump_export.png" /> Lancer la sauvegarde.</button><label id="ajax_msg1">&nbsp;</label>
 </fieldset></form>
 
 <hr />
@@ -83,7 +83,7 @@ Néanmoins, plusieurs autres pistes peuvent toujours être explorées :
 <h2>Restaurer la base</h2>
 <div class="danger">Restaurer une sauvegarde antérieure écrasera irrémédiablement les données actuelles !</div>
 <form id="form2" action=""><fieldset>
-	<label class="tab" for="f_form2">Uploader le fichier :</label><input id="f_form2" type="button" value="Parcourir..." /><label id="ajax_msg2">&nbsp;</label>
+	<label class="tab" for="bouton_form2">Uploader le fichier :</label><button id="bouton_form2" type="button"><img alt="" src="./_img/bouton/fichier_import.png" /> Parcourir...</button><label id="ajax_msg2">&nbsp;</label>
 </fieldset></form>
 
 <hr />

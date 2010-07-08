@@ -237,14 +237,14 @@ $(document).ready
 		(
 			function()
 			{
-				$('input[type=checkbox]').attr('checked',true);
+				$('input[type=checkbox]').attr('checked','checked');
 			}
 		);
 		$('#all_uncheck').click
 		(
 			function()
 			{
-				$('input[type=checkbox]').attr('checked',false);
+				$('input[type=checkbox]').removeAttr('checked');
 			}
 		);
 
@@ -369,15 +369,8 @@ $(document).ready
 				// alors j'ai copié le tableau dans un champ hidden...
 				var f_ids = new Array(); $("input[name=f_ids]:checked").each(function(){f_ids.push($(this).val());});
 				$('#ids').val(f_ids);
-				if (!please_wait)
-				{
-					$(this).ajaxSubmit(ajaxOptions);
-					return false;
-				}
-				else
-				{
-					return false;
-				}
+				$(this).ajaxSubmit(ajaxOptions);
+				return false;
 			}
 		); 
 
@@ -388,7 +381,7 @@ $(document).ready
 			var readytogo = validation.form();
 			if(readytogo)
 			{
-				please_wait = true;
+				$('button').attr('disabled','disabled');
 				$('#ajax_msg1').removeAttr("class").addClass("loader").html("Demande envoyée... Veuillez patienter.");
 			}
 			return readytogo;
@@ -397,7 +390,7 @@ $(document).ready
 		// Fonction suivant l'envoi du formulaire (avec jquery.form.js)
 		function retour_form_erreur(msg,string)
 		{
-			please_wait = false;
+			$('button').removeAttr('disabled');
 			$('#ajax_msg1').removeAttr("class").addClass("alerte").html("Echec de la connexion ! Veuillez recommencer.");
 		}
 
@@ -405,7 +398,7 @@ $(document).ready
 		function retour_form_valide(responseHTML)
 		{
 			maj_clock(1);
-			please_wait = false;
+			$('button').removeAttr('disabled');
 			if(responseHTML!='ok')
 			{
 				$('#ajax_msg1').removeAttr("class").addClass("alerte").html(responseHTML);

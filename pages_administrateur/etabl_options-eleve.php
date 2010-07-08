@@ -42,8 +42,8 @@ $TITRE = "Options de l'environnement élève";
 	{
 		$i_id++;
 		$checked = (in_array($option_code,$tab_check)) ? ' checked="checked"' : '' ;
-		echo'<label for="input_'.$i_id.'"><input type="checkbox" id="input_'.$i_id.'" name="eleve_options" value="'.$option_code.'"'.$checked.' /> '.$option_txt.'</label><br />'."\r\n";
+		echo'<label for="input_'.$i_id.'"><input type="checkbox" id="input_'.$i_id.'" name="eleve_options" value="'.$option_code.'"'.$checked.' /> '.$option_txt.'</label><p />'."\r\n";
 	}
 	?>
-	<span class="tab"></span><input id="f_submit" type="button" value="Valider." /><label id="ajax_msg">&nbsp;</label>
+	<span class="tab"></span><button id="bouton_valider" type="button"><img alt="" src="./_img/bouton/parametre.png" /> Valider ces options.</button><label id="ajax_msg">&nbsp;</label>
 </fieldset></form>

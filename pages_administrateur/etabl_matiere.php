@@ -64,7 +64,7 @@ $TITRE = "Choix des matières";
 		</tbody>
 	</table>
 	<p>
-		<input id="f_submit_partage" type="button" value="Valider ce choix de matières." /> <label id="ajax_msg_partage">&nbsp;</label>
+		<span class="tab"></span><button id="bouton_valider" type="button"><img alt="" src="./_img/bouton/parametre.png" /> Valider ce choix de matières.</button><label id="ajax_msg_partage">&nbsp;</label>
 	</p>
 </form>
 

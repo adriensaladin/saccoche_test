@@ -45,18 +45,22 @@ $select_classes_groupes = afficher_select(DB_STRUCTURE_OPT_classes_groupes_etabl
 	<table><tr>
 		<td class="nu" style="width:25em">
 			<b>Liste des périodes :</b><br />
-			<select id="select_periodes" name="select_periodes[]" multiple="multiple" size="10" class="t8"><?php echo $select_periodes; ?></select>
+			<select id="select_periodes" name="select_periodes[]" multiple="multiple" size="11" class="t8"><?php echo $select_periodes; ?></select>
 		</td>
 		<td class="nu" style="width:20em">
 			<b>Liste des classes &amp; groupes :</b><br />
-			<select id="select_classes_groupes" name="select_classes_groupes[]" multiple="multiple" size="10" class="t8"><?php echo $select_classes_groupes; ?></select>
+			<select id="select_classes_groupes" name="select_classes_groupes[]" multiple="multiple" size="11" class="t8"><?php echo $select_classes_groupes; ?></select>
 		</td>
 		<td class="nu" style="width:25em">
 			<p><span class="astuce">Utiliser "<i>Shift + clic</i>" ou "<i>Ctrl + clic</i>"<br />pour une sélection multiple.</span></p>
-			du <input id="f_date_debut" name="f_date_debut" size="9" type="text" value="<?php echo date("d/m/Y") ?>" /><q class="date_calendrier" title="Cliquez sur cette image pour importer une date depuis un calendrier !"></q><br />
-			au <input id="f_date_fin" name="f_date_fin" size="9" type="text" value="<?php echo date("d/m/Y") ?>" /><q class="date_calendrier" title="Cliquez sur cette image pour importer une date depuis un calendrier !"></q><br />
-			<input id="ajouter" type="button" value="Ajouter" /> ces associations.<p />
-			<input id="retirer" type="button" value="Retirer" /> ces associations.
+			<p>
+				<button id="ajouter" type="button"><img alt="" src="./_img/bouton/periode_ajouter.png" /> Ajouter ces associations.</button><br />
+				du <input id="f_date_debut" name="f_date_debut" size="9" type="text" value="<?php echo date("d/m/Y") ?>" /><q class="date_calendrier" title="Cliquez sur cette image pour importer une date depuis un calendrier !"></q><br />
+				au <input id="f_date_fin" name="f_date_fin" size="9" type="text" value="<?php echo date("d/m/Y") ?>" /><q class="date_calendrier" title="Cliquez sur cette image pour importer une date depuis un calendrier !"></q>
+			</p>
+			<p>
+				<button id="retirer" type="button"><img alt="" src="./_img/bouton/periode_retirer.png" /> Retirer ces associations.</button>
+			</p>
 			<p><label id="ajax_msg">&nbsp;</label></p>
 		</td>
 	</tr></table>

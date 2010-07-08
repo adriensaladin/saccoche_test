@@ -34,7 +34,8 @@ $TITRE = "Initialiser identifiants professeurs directeurs";
 $select_professeurs_directeurs = afficher_select(DB_STRUCTURE_OPT_professeurs_directeurs_etabl($statut=1) , $select_nom=false , $option_first='non' , $selection=true , $optgroup='oui');
 ?>
 
-<p><span class="astuce">Pour un traitement individuel, on peut aussi utiliser la page "<a href="./index.php?dossier=administrateur&amp;fichier=professeur&amp;section=gestion">Gérer les professeurs</a>" ou "<a href="./index.php?dossier=administrateur&amp;fichier=directeur&amp;section=gestion">Gérer les directeurs</a>".</span></p>
+<p class="astuce">Pour un traitement individuel, on peut aussi utiliser la page "<a href="./index.php?dossier=administrateur&amp;fichier=professeur&amp;section=gestion">Gérer les professeurs</a>" ou "<a href="./index.php?dossier=administrateur&amp;fichier=directeur&amp;section=gestion">Gérer les directeurs</a>".</p>
+<p class="danger">Valider entraîne la génération de nouveaux identifiants pour tous les utilisateurs sélectionnés.</p>
 <form action="">
 	<table><tr>
 		<td class="nu" style="width:25em">
@@ -43,8 +44,8 @@ $select_professeurs_directeurs = afficher_select(DB_STRUCTURE_OPT_professeurs_di
 		</td>
 		<td class="nu" style="width:25em">
 			<p><span class="astuce">Utiliser "<i>Shift + clic</i>" ou "<i>Ctrl + clic</i>"<br />pour une sélection multiple.</span></p>
-			<p><input id="prof_login" type="button" value="Initialiser" /> les noms d'utilisateurs de ces professeurs / directeurs.</p>
-			<p><input id="prof_mdp" type="button" value="Initialiser" /> les mots de passe de ces professeurs / directeurs.</p>
+			<p><button id="prof_login" type="button"><img alt="" src="./_img/bouton/mdp_groupe.png" /> Initialiser les noms d'utilisateurs</button> de ces professeurs / directeurs.</p>
+			<p><button id="prof_mdp" type="button"><img alt="" src="./_img/bouton/mdp_groupe.png" /> Initialiser les mots de passe</button> de ces professeurs / directeurs.</p>
 		</td>
 	</tr></table>
 </form>

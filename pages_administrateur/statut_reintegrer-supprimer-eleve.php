@@ -50,8 +50,8 @@ $select_f_groupes = afficher_select(DB_STRUCTURE_OPT_regroupements_etabl() , $se
 		</td>
 		<td class="nu" style="width:25em">
 			<p><span class="astuce">Utiliser "<i>Shift + clic</i>" ou "<i>Ctrl + clic</i>"<br />pour une sélection multiple.</span></p>
-			<p><input id="reintegrer" type="button" value="Réintégrer" /> ces élèves.</p>
-			<p><input id="supprimer" type="button" value="Supprimer définitivement" /> ces comptes élèves.</p>
+			<p><button id="reintegrer" type="button"><img alt="" src="./_img/bouton/user_ajouter.png" /> Réintégrer ces comptes.</button></p>
+			<p><button id="supprimer" type="button"><img alt="" src="./_img/bouton/supprimer.png" /> Supprimer définitivement ces comptes.</button></p>
 		</td>
 	</tr></table>
 </form>

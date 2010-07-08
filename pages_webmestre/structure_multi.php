@@ -91,8 +91,8 @@ foreach($DB_TAB as $DB_ROW)
 		<a href="#zone_actions" id="all_check">[ Tout cocher. ]</a>
 		<a href="#zone_actions" id="all_uncheck">[ Tout décocher. ]</a>
 		Pour les structures cochées : <input id="listing_ids" name="listing_ids" type="hidden" value="" />
-		<button id="button_newsletter" name="button_newsletter" type="button"><img alt="Rechercher" src="./_img/menu/webmestre_newsletter.png" /> Envoyer un courriel.</button>
-		<button id="button_stats" name="button_stats" type="button"><img alt="Rechercher" src="./_img/menu/webmestre_stats.png" /> Calculer les statistiques.</button>
+		<button id="bouton_newsletter" type="button"><img alt="" src="./_img/bouton/mail_ecrire.png" /> Écrire un courriel.</button>
+		<button id="bouton_stats" type="button"><img alt="" src="./_img/bouton/stats.png" /> Calculer les statistiques.</button>
 	</div>
 </form>
 <p />

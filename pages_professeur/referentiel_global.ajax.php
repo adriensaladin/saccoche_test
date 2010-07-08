@@ -68,7 +68,7 @@ elseif( ($action=='Partager') && ($perso==0) && $matiere_id && $niveau_id && in_
 {
 	if( ($partage=='oui') && ( (!$_SESSION['SESAMATH_ID']) || (!$_SESSION['SESAMATH_KEY']) ) )
 	{
-		exit('Pour pouvoir échanger avec le serveur communautaire, un administrateur doit identifier l\'établissement dans la base Sésamath.');
+		exit('Pour échanger avec le serveur communautaire, un administrateur doit identifier l\'établissement dans la base Sésamath.');
 	}
 	// Envoyer le référentiel (éventuellement vide pour l'effacer) vers le serveur de partage
 	if($partage=='oui')
@@ -101,7 +101,7 @@ elseif( ($action=='Envoyer') && ($perso==0) && $matiere_id && $niveau_id )
 {
 	if( (!$_SESSION['SESAMATH_ID']) || (!$_SESSION['SESAMATH_KEY']) )
 	{
-		exit('Pour pouvoir échanger avec le serveur communautaire, un administrateur doit identifier l\'établissement dans la base Sésamath.');
+		exit('Pour échanger avec le serveur communautaire, un administrateur doit identifier l\'établissement dans la base Sésamath.');
 	}
 	// Envoyer le référentiel vers le serveur de partage
 	$DB_TAB = DB_STRUCTURE_recuperer_arborescence(0,$matiere_id,$niveau_id,$only_item=FALSE,$socle_nom=FALSE);
@@ -129,7 +129,7 @@ elseif( ($action=='Retirer') && $matiere_id && $niveau_id && in_array($partage,$
 	{
 		if( (!$_SESSION['SESAMATH_ID']) || (!$_SESSION['SESAMATH_KEY']) )
 		{
-			exit('Pour pouvoir échanger avec le serveur communautaire, un administrateur doit identifier l\'établissement dans la base Sésamath.');
+			exit('Pour échanger avec le serveur communautaire, un administrateur doit identifier l\'établissement dans la base Sésamath.');
 		}
 		$reponse = envoyer_arborescence_XML($_SESSION['SESAMATH_ID'],$_SESSION['SESAMATH_KEY'],$matiere_id,$niveau_id,'');
 		if($reponse!='ok')
@@ -187,7 +187,7 @@ elseif( ($action=='Ajouter') && $matiere_id && $niveau_id )
 		// C'est une matière partagée, et une demande de récupérer un référentiel provenant du serveur communautaire pour se le dupliquer
 		if( (!$_SESSION['SESAMATH_ID']) || (!$_SESSION['SESAMATH_KEY']) )
 		{
-			exit('Pour pouvoir échanger avec le serveur communautaire, un administrateur doit identifier l\'établissement dans la base Sésamath.');
+			exit('Pour échanger avec le serveur communautaire, un administrateur doit identifier l\'établissement dans la base Sésamath.');
 		}
 		// Récupérer le référentiel
 		$arbreXML = recuperer_arborescence_XML($_SESSION['SESAMATH_ID'],$_SESSION['SESAMATH_KEY'],$referentiel_id);

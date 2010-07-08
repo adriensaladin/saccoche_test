@@ -70,7 +70,7 @@ $(document).ready
 					findme = '.'+limite_valeur+'.';
 					if(tableau_limites_autorisees[methode_valeur].indexOf(findme)==-1)
 					{
-						$(this).attr('disabled',true);
+						$(this).attr('disabled','disabled');
 					}
 					else
 					{
@@ -78,7 +78,7 @@ $(document).ready
 					}
 					if(limite_valeur==modifier_limite_selected)
 					{
-						$(this).attr('selected',true);
+						$(this).attr('selected','selected');
 					}
 				}
 			);
@@ -420,13 +420,14 @@ $(document).ready
 					afficher_masquer_images_action('hide');
 					new_span = '<span><input id="succes" name="succes" type="hidden" value="" /><label for="'+ids+'" class="valide">Faites votre choix ci-dessous...</label></span>';
 					$(this).after(new_span);
+					$('#choisir_importer').parent().hide();
 					$('#choisir_referentiel').show();
 				}
 			}
 		);
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-//	Clic sur le lien pour Annuler le choix d'un référentiel
+//	Clic sur le bouton pour Annuler le choix d'un référentiel
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
 		$('#choisir_annuler').click
@@ -436,10 +437,6 @@ $(document).ready
 				$('#voir_referentiel').html("&nbsp;");
 				$('#choisir_referentiel').hide();
 				$('#ajax_msg_choisir').removeAttr("class").html("&nbsp;");
-				if ( $('#choisir_existant').length )
-				{
-					$('#choisir_existant').html("&nbsp;");
-				}
 				$('#succes').parent().remove();
 				afficher_masquer_images_action('show');
 				return(false);
@@ -447,7 +444,7 @@ $(document).ready
 		);
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-//	Clic sur le lien pour Lancer une recherche sur le serveur communautaire
+//	Clic sur le bouton pour Lancer une recherche sur le serveur communautaire
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
 		$('#choisir_rechercher').click
@@ -506,7 +503,7 @@ $(document).ready
 							{
 								referentiel_id = hashVal.substring(0,position_separateur);
 								description    = hashVal.substr(position_separateur+1);
-								$('#reporter_referentiel').attr('lang','id_'+referentiel_id).html('<img alt=" vierge" src="./_img/action_valider.png" /> Démarrer avec ce référentiel : <b>'+description+'</b>');
+								$('#reporter').html(description).parent('#choisir_importer').val('id_'+referentiel_id).parent().show();
 								maj_clock(1);
 							}
 							$('#rechercher_annuler').click();
@@ -537,7 +534,7 @@ $(document).ready
 		}
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-//	Clic sur le lien pour Annuler la recherche sur le serveur communautaire
+//	Clic sur le bouton pour Annuler la recherche sur le serveur communautaire
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
 		$('#rechercher_annuler').click
@@ -560,15 +557,16 @@ $(document).ready
 		);
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-//	Clic sur un lien pour Valider le choix d'un referentiel (vierge ou issu du serveur communautaire)
+//	Clic sur un bouton pour Valider le choix d'un referentiel (vierge ou issu du serveur communautaire)
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
-		$('a.choisir_valider').click
+		$('#choisir_initialiser , #choisir_importer').click
 		(
 			function()
 			{
 				ids = $('#succes').parent().parent().attr('id');
-				referentiel_id = $(this).attr('lang').substring(3);
+				referentiel_id = $(this).val().substring(3);
+				$('button').attr('disabled','disabled');
 				$('#ajax_msg_choisir').removeAttr("class").addClass("loader").html("Demande envoyée... Veuillez patienter.");
 				$.ajax
 				(
@@ -579,12 +577,14 @@ $(document).ready
 						dataType : "html",
 						error : function(msg,string)
 						{
+							$('button').removeAttr('disabled');
 							$('#ajax_msg_choisir').removeAttr("class").addClass("alerte").html('Echec de la connexion ! Veuillez recommencer.');
 							return false;
 						},
 						success : function(responseHTML)
 						{
 							maj_clock(1);
+							$('button').removeAttr('disabled');
 							if(responseHTML!='ok')
 							{
 								$('#ajax_msg_choisir').removeAttr("class").addClass("alerte").html(responseHTML);

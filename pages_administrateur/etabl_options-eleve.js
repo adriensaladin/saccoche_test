@@ -39,7 +39,7 @@ $(document).ready
 			{
 				if(e.which==13)	// touche entrée
 				{
-					$('#f_submit').click();
+					$('#bouton_valider').click();
 				}
 			}
 		);
@@ -59,11 +59,12 @@ $(document).ready
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 //	Options de l'environnement élève
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-		$('#f_submit').click
+		$('#bouton_valider').click
 		(
 			function()
 			{
 				var tab_check = new Array(); $("input[name=eleve_options]:checked").each(function(){tab_check.push($(this).val());});
+				$("#bouton_valider").attr('disabled','disabled');
 				$('#ajax_msg').removeAttr("class").addClass("loader").html("Demande envoyée... Veuillez patienter.");
 				$.ajax
 				(
@@ -74,12 +75,14 @@ $(document).ready
 						dataType : "html",
 						error : function(msg,string)
 						{
+							$("#bouton_valider").removeAttr('disabled');
 							$('#ajax_msg').removeAttr("class").addClass("alerte").html("Echec de la connexion ! Veuillez recommencer.");
 							return false;
 						},
 						success : function(responseHTML)
 						{
 							maj_clock(1);
+							$("#bouton_valider").removeAttr('disabled');
 							if(responseHTML!='ok')
 							{
 								$('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);

@@ -60,20 +60,20 @@ function afficher_formulaire_etablissement($BASE,$profil)
 {
 	$options_structures = afficher_select(DB_WEBMESTRE_OPT_structures_sacoche() , $select_nom=false , $option_first='non' , $selection=$BASE , $optgroup='oui');
 	echo'<label class="tab" for="f_base">Établissement :</label><select id="f_base" name="f_base" tabindex="1" >'.$options_structures.'</select><br />'."\r\n";
-	echo'<span class="tab"></span><input id="f_choisir" type="button" value="Choisir cet établissement." tabindex="2" /><label id="ajax_msg">&nbsp;</label><br />'."\r\n";
+	echo'<span class="tab"></span><button id="f_choisir" type="button" tabindex="2"><img alt="" src="./_img/bouton/valider.png" /> Choisir cet établissement.</button><label id="ajax_msg">&nbsp;</label><br />'."\r\n";
 	echo'<input id="f_profil" name="f_profil" type="hidden" value="'.$profil.'" />'."\r\n";
 }
 
 function afficher_nom_etablissement($BASE,$denomination)
 {
-	$changer = (HEBERGEUR_INSTALLATION=='multi-structures') ? '&nbsp;&nbsp;&nbsp;<a href="#" id="structure_changer"><img src="./_img/action_retourner.png" alt="Serveur" /> Changer</a>' : '' ;
+	$changer = (HEBERGEUR_INSTALLATION=='multi-structures') ? '&nbsp;&nbsp;&nbsp;<button id="f_changer" type="button"><img alt="" src="./_img/bouton/retourner.png" /> Changer.</button>' : '' ;
 	echo'<label class="tab">Établissement :</label><input id="f_base" name="f_base" type="hidden" value="'.$BASE.'" /><em>'.html($denomination).'</em>'.$changer.'<br />'."\r\n";
 }
 
 function afficher_formulaire_identification_webmestre()
 {
 	echo'<label class="tab" for="f_password">Mot de passe :</label><input id="f_password" name="f_password" size="20" type="password" value="" tabindex="3" /><br />'."\r\n";
-	echo'<span class="tab"></span><input id="f_login" name="f_login" type="hidden" value="webmestre" /><input id="f_mode" name="f_mode" type="hidden" value="normal" /><input id="f_profil" name="f_profil" type="hidden" value="webmestre" /><input id="f_action" name="f_action" type="hidden" value="identifier" /><input id="f_submit" type="submit" value="Accéder à son espace." tabindex="4" /><label id="ajax_msg">&nbsp;</label><br />'."\r\n";
+	echo'<span class="tab"></span><input id="f_login" name="f_login" type="hidden" value="webmestre" /><input id="f_mode" name="f_mode" type="hidden" value="normal" /><input id="f_profil" name="f_profil" type="hidden" value="webmestre" /><input id="f_action" name="f_action" type="hidden" value="identifier" /><button id="f_submit" type="submit" tabindex="4"><img alt="" src="./_img/bouton/mdp_perso.png" /> Accéder à son espace.</button><label id="ajax_msg">&nbsp;</label><br />'."\r\n";
 }
 
 function afficher_formulaire_identification($profil,$mode)
@@ -82,7 +82,7 @@ function afficher_formulaire_identification($profil,$mode)
 	$input_password = (($mode=='normal')||($profil=='administrateur')) ? 'type="password" value=""' : 'type="text" value="connexion ENT" disabled="disabled"' ;
 	echo'<label class="tab" for="f_login">Nom d\'utilisateur :</label><input id="f_login" name="f_login" size="20" '.$input_login.' tabindex="2" /><br />'."\r\n";
 	echo'<label class="tab" for="f_password">Mot de passe :</label><input id="f_password" name="f_password" size="20" '.$input_password.' tabindex="3" /><br />'."\r\n";
-	echo'<span class="tab"></span><input id="f_mode" name="f_mode" type="hidden" value="'.$mode.'" /><input id="f_profil" name="f_profil" type="hidden" value="'.$profil.'" /><input id="f_action" name="f_action" type="hidden" value="identifier" /><input id="f_submit" type="submit" value="Accéder à son espace." tabindex="4" /><label id="ajax_msg">&nbsp;</label><br />'."\r\n";
+	echo'<span class="tab"></span><input id="f_mode" name="f_mode" type="hidden" value="'.$mode.'" /><input id="f_profil" name="f_profil" type="hidden" value="'.$profil.'" /><input id="f_action" name="f_action" type="hidden" value="identifier" /><button id="f_submit" type="submit" tabindex="4"><img alt="" src="./_img/bouton/mdp_perso.png" /> Accéder à son espace.</button><label id="ajax_msg">&nbsp;</label><br />'."\r\n";
 }
 
 //	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
@@ -167,7 +167,7 @@ elseif( ( ($action=='initialiser') && ($BASE>0) && (HEBERGEUR_INSTALLATION=='mul
 
 // Pour le webmestre d'un serveur
 
-elseif( ($action=='identifier') && ($profil=='webmestre') && ($login=='webmestre') && $password )
+elseif( ($action=='identifier') && ($profil=='webmestre') && ($login=='webmestre') && ($password!='') )
 {
 	$connexion = connecter_webmestre($password);
 	echo ($connexion=='ok') ? $_SESSION['USER_PROFIL'] : $connexion ;
@@ -175,7 +175,7 @@ elseif( ($action=='identifier') && ($profil=='webmestre') && ($login=='webmestre
 
 // Pour un utilisateur normal, y compris un administrateur
 
-elseif( ($action=='identifier') && ($profil!='webmestre') && $login && $password )
+elseif( ($action=='identifier') && ($profil!='webmestre') && ($login!='') && ($password!='') )
 {
 	$connexion = connecter_user($BASE,$profil,$login,$password,$mode_connection='normal');
 	echo ($connexion=='ok') ? $_SESSION['USER_PROFIL'] : $connexion ;

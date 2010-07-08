@@ -51,7 +51,7 @@ echo'<h5>Périodes</h5>';
 echo'<form id="form_calque" action="">';
 echo'	<h6>Cliquer sur un lien :</h6>';
 echo'	<p>'.$calendrier_affichage.'</p>';
-echo'	<div><input class="but" type="button" name="fermer" value="Annuler et Fermer" /></div>';
+echo'	<div><button id="fermer_calque" type="button"><img alt="" src="./_img/bouton/annuler.png" /> Annuler / Fermer</button></div>';
 echo'</form>';
 
 ?>

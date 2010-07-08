@@ -247,7 +247,7 @@ $(document).ready
 					dataType : "html",
 					error : function(msg,string)
 					{
-						$('#msg_saisir').removeAttr("class").addClass("alerte").html('Echec de la connexion ! Veuillez recommencer. <a class="fermer_zone_saisir" href="#"><img alt="Retourner" src="./_img/action_retourner.png" /> retour</a>');
+						$('#msg_saisir').removeAttr("class").addClass("alerte").html('Echec de la connexion ! Veuillez recommencer. <button id="fermer_zone_saisir" type="button"><img alt="" src="./_img/bouton/annuler.png" /> Annuler / Retour</button>');
 						return false;
 					},
 					success : function(responseHTML)
@@ -255,7 +255,7 @@ $(document).ready
 						maj_clock(1);
 						if(responseHTML.substring(0,1)!='<')
 						{
-							$('#msg_saisir').removeAttr("class").addClass("alerte").html(responseHTML+' <a class="fermer_zone_saisir" href="#"><img alt="Retourner" src="./_img/action_retourner.png" /> retour</a>');
+							$('#msg_saisir').removeAttr("class").addClass("alerte").html(responseHTML+' <button id="fermer_zone_saisir" type="button"><img alt="" src="./_img/bouton/annuler.png" /> Annuler / Retour</button>');
 						}
 						else
 						{
@@ -305,7 +305,7 @@ $(document).ready
 					dataType : "html",
 					error : function(msg,string)
 					{
-						$('#msg_voir').removeAttr("class").addClass("alerte").html('Echec de la connexion ! Veuillez recommencer. <a class="fermer_zone_voir" href="#"><img alt="Retourner" src="./_img/action_retourner.png" /> retour</a>');
+						$('#msg_voir').removeAttr("class").addClass("alerte").html('Echec de la connexion ! Veuillez recommencer. <button id="fermer_zone_voir" type="button"><img alt="" src="./_img/bouton/retourner.png" /> Retour</button>');
 						return false;
 					},
 					success : function(responseHTML)
@@ -313,7 +313,7 @@ $(document).ready
 						maj_clock(1);
 						if(responseHTML.substring(0,1)!='<')
 						{
-							$('#msg_voir').removeAttr("class").addClass("alerte").html(responseHTML+' <a class="fermer_zone_voir" href="#"><img alt="Retourner" src="./_img/action_retourner.png" /> retour</a>');
+							$('#msg_voir').removeAttr("class").addClass("alerte").html(responseHTML+' <button id="fermer_zone_voir" type="button"><img alt="" src="./_img/bouton/retourner.png" /> Retour</button>');
 						}
 						else
 						{
@@ -357,7 +357,7 @@ $(document).ready
 					id = 'id_'+tab_id[i];
 					if($('#'+id).length)
 					{
-						$('#'+id).attr('checked',true);
+						$('#'+id).attr('checked','checked');
 						$('#'+id).parent().parent().css("display","block");	// les items
 						$('#'+id).parent().parent().parent().parent().css("display","block");	// le thème
 						$('#'+id).parent().parent().parent().parent().parent().parent().css("display","block");	// le domaine
@@ -392,15 +392,15 @@ $(document).ready
 					dataType : "html",
 					error : function(msg,string)
 					{
-						$('#msg_ordonner').removeAttr("class").addClass("alerte").html('Echec de la connexion ! Veuillez recommencer. <a class="fermer_zone_ordonner" href="#"><img alt="Retourner" src="./_img/action_retourner.png" /> retour</a>');
+						$('#msg_ordonner').removeAttr("class").addClass("alerte").html('Echec de la connexion ! Veuillez recommencer. <button id="fermer_zone_ordonner" type="button"><img alt="" src="./_img/bouton/retourner.png" /> Retour</button>');
 						return false;
 					},
 					success : function(responseHTML)
 					{
 						maj_clock(1);
-						if(responseHTML.substring(0,16)!='<div class="hc">')
+						if(responseHTML.substring(0,10)!='<div id="i')
 						{
-							$('#msg_ordonner').removeAttr("class").addClass("alerte").html(responseHTML+' <a class="fermer_zone_ordonner" href="#"><img alt="Retourner" src="./_img/action_retourner.png" /> retour</a>');
+							$('#msg_ordonner').removeAttr("class").addClass("alerte").html(responseHTML+' <button id="fermer_zone_ordonner" type="button"><img alt="" src="./_img/bouton/retourner.png" /> Retour</button>');
 						}
 						else
 						{
@@ -435,9 +435,9 @@ $(document).ready
 		$('q.choisir_compet').live(  'click' , choisir_compet );
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-//	Clic sur le lien pour fermer le cadre des items associés à une évaluation (annuler / retour)
+//	Clic sur le bouton pour fermer le cadre des items associés à une évaluation (annuler / retour)
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-		$('a.annuler_compet').click
+		$('#annuler_compet').click
 		(
 			function()
 			{
@@ -448,9 +448,9 @@ $(document).ready
 		);
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-//	Clic sur le lien pour fermer le formulaire servant à saisir les acquisitions des élèves à une évaluation
+//	Clic sur le bouton pour fermer le formulaire servant à saisir les acquisitions des élèves à une évaluation
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-		$('a.fermer_zone_saisir').live // live est utilisé pour prendre en compte les nouveaux éléments créés
+		$('#fermer_zone_saisir').live // live est utilisé pour prendre en compte les nouveaux éléments créés
 		('click',
 			function()
 			{
@@ -463,9 +463,9 @@ $(document).ready
 		);
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-//	Clic sur le lien pour fermer le formulaire servant à réordonner les items d'une évaluation
+//	Clic sur le bouton pour fermer le formulaire servant à réordonner les items d'une évaluation
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-		$('a.fermer_zone_ordonner').live // live est utilisé pour prendre en compte les nouveaux éléments créés
+		$('#fermer_zone_ordonner').live // live est utilisé pour prendre en compte les nouveaux éléments créés
 		('click',
 			function()
 			{
@@ -478,9 +478,9 @@ $(document).ready
 		);
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-//	Clic sur le lien pour fermer le formulaire servant à voir les acquisitions des élèves à une évaluation
+//	Clic sur le bouton pour fermer le formulaire servant à voir les acquisitions des élèves à une évaluation
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-		$('a.fermer_zone_voir').live // live est utilisé pour prendre en compte les nouveaux éléments créés
+		$('#fermer_zone_voir').live // live est utilisé pour prendre en compte les nouveaux éléments créés
 		('click',
 			function()
 			{
@@ -493,9 +493,9 @@ $(document).ready
 		);
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-//	Clic sur le lien pour fermer le formulaire servant à imprimer le cartouche d'une évaluation
+//	Clic sur le bouton pour fermer le formulaire servant à imprimer le cartouche d'une évaluation
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-		$('a.fermer_zone_imprimer').click
+		$('#fermer_zone_imprimer').click
 		(
 			function()
 			{
@@ -509,9 +509,9 @@ $(document).ready
 		);
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-//	Clic sur le lien pour valider le choix des items associés à une évaluation
+//	Clic sur le bouton pour valider le choix des items associés à une évaluation
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-		$('a.valider_compet').click
+		$('#valider_compet').click
 		(
 			function()
 			{
@@ -529,7 +529,7 @@ $(document).ready
 				s = (nombre>1) ? 's' : '';
 				$('#f_compet_liste').val(liste);
 				$('#f_compet_nombre').val(nombre+' item'+s);
-				$('a.annuler_compet').click();
+				$('#annuler_compet').click();
 			}
 		);
 
@@ -561,6 +561,7 @@ $(document).ready
 		(
 			function()
 			{
+				$('button').attr('disabled','disabled');
 				$('#msg_imprimer').removeAttr("class").addClass("loader").html("Génération en cours... Veuillez patienter.");
 				$('#zone_imprimer_retour').html("&nbsp;");
 				$.ajax
@@ -572,12 +573,14 @@ $(document).ready
 						dataType : "html",
 						error : function(msg,string)
 						{
+							$('button').removeAttr('disabled');
 							$('#msg_imprimer').removeAttr("class").addClass("alerte").html('Echec de la connexion ! Veuillez recommencer.');
 							return false;
 						},
 						success : function(responseHTML)
 						{
 							maj_clock(1);
+							$('button').removeAttr('disabled');
 							if(responseHTML.substring(0,6)!='<hr />')
 							{
 								$('#msg_imprimer').removeAttr("class").addClass("alerte").html(responseHTML);
@@ -680,12 +683,12 @@ $(document).ready
 					else if(e.which==13)	// touche entrée
 					{
 						// La touche entrée a été pressée
-						$('a.Enregistrer_saisie').click();
+						$('#Enregistrer_saisie').click();
 					}
 					else if(e.which==27)
 					{
 						// La touche escape a été pressée
-						$('a.fermer_zone_saisir').click();
+						$('#fermer_zone_saisir').click();
 					}
 				}
 			}
@@ -766,6 +769,7 @@ $(document).ready
 				para_clic.before(para_next);
 				para_clic.after(para_prev);
 				modification = true;
+				$('#ajax_msg').removeAttr("class").html("&nbsp;");
 				return false;
 			}
 		);
@@ -774,13 +778,13 @@ $(document).ready
 //	Clic sur le lien pour mettre à jour l'ordre des items d'une évaluation
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
-		$('a.Enregistrer_ordre').live // live est utilisé pour prendre en compte les nouveaux éléments créés
+		$('#Enregistrer_ordre').live // live est utilisé pour prendre en compte les nouveaux éléments créés
 		('click',
 			function()
 			{
 				if(!modification)
 				{
-					$('#msg_ordonner').removeAttr("class").addClass("alerte").html("Aucune modification effectuée !");
+					$('#ajax_msg').removeAttr("class").addClass("alerte").html("Aucune modification effectuée !");
 				}
 				else
 				{
@@ -797,30 +801,33 @@ $(document).ready
 							}
 						}
 					);
-					$('#msg_ordonner').removeAttr("class").addClass("loader").html("Demande envoyée... Veuillez patienter.");
+					$('button').attr('disabled','disabled');
+					$('#ajax_msg').removeAttr("class").addClass("loader").html("Demande envoyée... Veuillez patienter.");
 					$.ajax
 					(
 						{
 							type : 'POST',
 							url : 'ajax.php?dossier='+DOSSIER+'&fichier='+FICHIER,
-							data : 'f_action=Enregistrer_ordre&f_ref='+$('#f_ref').val()+'&tab_id='+tab_id,
+							data : 'f_action=Enregistrer_ordre&f_ref='+$('#Enregistrer_ordre').val()+'&tab_id='+tab_id,
 							dataType : "html",
 							error : function(msg,string)
 							{
-								$('#msg_ordonner').removeAttr("class").addClass("alerte").html('Echec de la connexion ! Veuillez recommencer.');
+								$('button').removeAttr('disabled');
+								$('#ajax_msg').removeAttr("class").addClass("alerte").html('Echec de la connexion ! Veuillez recommencer.');
 								return false;
 							},
 							success : function(responseHTML)
 							{
 								maj_clock(1);
+								$('button').removeAttr('disabled');
 								if(responseHTML.substring(0,1)!='<')
 								{
-									$('#msg_ordonner').removeAttr("class").addClass("alerte").html(responseHTML);
+									$('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);
 								}
 								else
 								{
 									modification = false;
-									$('#msg_ordonner').removeAttr("class").addClass("valide").html("Ordre enregistré !");
+									$('#ajax_msg').removeAttr("class").addClass("valide").html("Ordre enregistré !");
 								}
 							}
 						}
@@ -833,7 +840,7 @@ $(document).ready
 //	Clic sur le lien pour mettre à jour les acquisitions des élèves à une évaluation
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
-		$('a.Enregistrer_saisie').live // live est utilisé pour prendre en compte les nouveaux éléments créés
+		$('#Enregistrer_saisie').live // live est utilisé pour prendre en compte les nouveaux éléments créés
 		('click',
 			function()
 			{
@@ -843,6 +850,7 @@ $(document).ready
 				}
 				else
 				{
+					$('button').attr('disabled','disabled');
 					$('#msg_saisir').removeAttr("class").addClass("loader").html("Demande envoyée... Veuillez patienter.");
 					$.ajax
 					(
@@ -853,12 +861,14 @@ $(document).ready
 							dataType : "html",
 							error : function(msg,string)
 							{
+								$('button').removeAttr('disabled');
 								$('#msg_saisir').removeAttr("class").addClass("alerte").html('Echec de la connexion ! Veuillez recommencer.');
 								return false;
 							},
 							success : function(responseHTML)
 							{
 								maj_clock(1);
+								$('button').removeAttr('disabled');
 								if(responseHTML.substring(0,1)!='<')
 								{
 									$('#msg_saisir').removeAttr("class").addClass("alerte").html(responseHTML);
@@ -1084,7 +1094,7 @@ $(document).ready
 							// groupe de besoin -> desactiver les périodes prédéfinies
 							else
 							{
-								$(this).attr('disabled',true);
+								$(this).attr('disabled','disabled');
 							}
 						}
 					}
@@ -1092,7 +1102,7 @@ $(document).ready
 				// Sélectionner si besoin la période personnalisée
 				if(groupe_type=='Besoins')
 				{
-					$("#f_aff_periode option[value=0]").attr('selected',true);
+					$("#f_aff_periode option[value=0]").attr('selected','selected');
 					$("#dates_perso").attr("class","show");
 				}
 				// Modification automatique du formulaire
@@ -1109,7 +1119,7 @@ $(document).ready
 								var tab_split = tab_groupe_periode[id_classe][id_periode].split('_');
 								if( (date_mysql>=tab_split[0]) && (date_mysql<=tab_split[1]) )
 								{
-									$("#f_aff_periode option[value="+id_periode+"]").attr('selected',true);
+									$("#f_aff_periode option[value="+id_periode+"]").attr('selected','selected');
 									view_dates_perso();
 								}
 							}
@@ -1253,13 +1263,14 @@ $(document).ready
 				$('#msg_import').removeAttr("class").addClass("erreur").html('"'+fichier_nom+'" n\'est pas un chemin de fichier correct.');
 				return false;
 			}
-			else if (fichier_extension!='csv' && fichier_extension!='txt')
+			else if ('.csv.txt.'.indexOf('.'+fichier_extension.toLowerCase()+'.')==-1)
 			{
 				$('#msg_import').removeAttr("class").addClass("erreur").html('Le fichier "'+fichier_nom+'" n\'a pas l\'extension "csv" ou "txt".');
 				return false;
 			}
 			else
 			{
+				$('button').attr('disabled','disabled');
 				$('#msg_import').removeAttr("class").addClass("loader").html('Fichier envoyé... Veuillez patienter.');
 				return true;
 			}
@@ -1267,6 +1278,7 @@ $(document).ready
 
 		function retourner_fichier(fichier_nom,responseHTML)
 		{
+			$('button').removeAttr('disabled');
 			if(responseHTML.substring(0,1)!='|')
 			{
 				$('#msg_import').removeAttr("class").addClass("alerte").html(responseHTML);

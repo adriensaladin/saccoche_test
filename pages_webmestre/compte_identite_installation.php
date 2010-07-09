@@ -30,8 +30,11 @@ $TITRE = "Identité de l'installation";
 
 $exemple_denomination = (HEBERGEUR_INSTALLATION=='mono-structure') ? 'Collège de Trucville' : 'Rectorat du paradis' ;
 $exemple_adresse_web  = (HEBERGEUR_INSTALLATION=='mono-structure') ? 'http://www.college-trucville.com' : 'http://www.ac-paradis.fr' ;
-$uai_div_hide_avant  = (HEBERGEUR_INSTALLATION=='mono-structure') ? '' : '<div class="hide">' ;
-$uai_div_hide_apres  = (HEBERGEUR_INSTALLATION=='mono-structure') ? '' : '</div>' ;
+$uai_div_hide_avant   = (HEBERGEUR_INSTALLATION=='mono-structure') ? '' : '<div class="hide">' ;
+$uai_div_hide_apres   = (HEBERGEUR_INSTALLATION=='mono-structure') ? '' : '</div>' ;
+$cnil_check_oui       = intval(HEBERGEUR_CNIL) ? ' checked="checked"' : '' ;
+$cnil_check_non       = intval(HEBERGEUR_CNIL) ? '' : ' checked="checked"' ;
+$cnil_numero          = intval(HEBERGEUR_CNIL) ? HEBERGEUR_CNIL : '' ;
 ?>
 
 <div class="hc">
@@ -48,7 +51,9 @@ $uai_div_hide_apres  = (HEBERGEUR_INSTALLATION=='mono-structure') ? '' : '</div>
 	<?php echo $uai_div_hide_apres ?>
 	<label class="tab" for="f_adresse_site">Adresse web <img alt="" src="./_img/bulle_aide.png" title="Exemple : <?php echo $exemple_adresse_web ?>" /> :</label><input id="f_adresse_site" name="f_adresse_site" size="60" type="text" value="<?php echo html(HEBERGEUR_ADRESSE_SITE); ?>" /><br />
 	<label class="tab" for="f_logo">Logo :</label><select id="f_logo" name="f_logo"><option value=""></option></select><label id="ajax_logo"></label><br />
-	<label class="tab" for="f_cnil">C.N.I.L. <img alt="" src="./_img/bulle_aide.png" title="Voir la documentation.<br />Mettre 'non renseignée' ou 'n°12345678'." /> :</label><input id="f_cnil" name="f_cnil" size="15" type="text" value="<?php echo html(HEBERGEUR_CNIL); ?>" /><br />
+	<label class="tab" for="f_cnil">C.N.I.L. <img alt="" src="./_img/bulle_aide.png" title="Voir la documentation." /> :</label>
+	<label for="f_cnil_non"><input type="radio" id="f_cnil_non" name="f_cnil_etat" value="non"<?php echo $cnil_check_non ?> /> non renseignée</label>&nbsp;&nbsp;&nbsp;
+	<label for="f_cnil_oui"><input type="radio" id="f_cnil_oui" name="f_cnil_etat" value="oui"<?php echo $cnil_check_oui ?> /> n°</label><input id="f_cnil_numero" name="f_cnil_numero" size="9" type="text" value="<?php echo $cnil_numero ?>" /><br />
 	<h2>Coordonnées du webmestre</h2>
 	<label class="tab" for="f_nom">Nom :</label><input id="f_nom" name="f_nom" size="20" type="text" value="<?php echo html(WEBMESTRE_NOM); ?>" /><br />
 	<label class="tab" for="f_prenom">Prénom :</label><input id="f_prenom" name="f_prenom" size="20" type="text" value="<?php echo html(WEBMESTRE_PRENOM); ?>" /><br />

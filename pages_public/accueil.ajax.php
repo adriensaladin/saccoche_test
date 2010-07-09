@@ -66,7 +66,7 @@ function afficher_formulaire_etablissement($BASE,$profil)
 
 function afficher_nom_etablissement($BASE,$denomination)
 {
-	$changer = (HEBERGEUR_INSTALLATION=='multi-structures') ? '&nbsp;&nbsp;&nbsp;<button id="f_changer" type="button"><img alt="" src="./_img/bouton/retourner.png" /> Changer.</button>' : '' ;
+	$changer = (HEBERGEUR_INSTALLATION=='multi-structures') ? '&nbsp;&nbsp;&nbsp;<a id="f_changer" href="#"><img alt="" src="./_img/bouton/retourner.png" /> Changer</a>' : '' ;
 	echo'<label class="tab">Établissement :</label><input id="f_base" name="f_base" type="hidden" value="'.$BASE.'" /><em>'.html($denomination).'</em>'.$changer.'<br />'."\r\n";
 }
 

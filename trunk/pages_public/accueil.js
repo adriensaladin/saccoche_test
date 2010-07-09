@@ -147,12 +147,12 @@ $(document).ready
 			}
 		);
 
-		// Clic sur le bouton pour changer de structure
+		// Clic sur le lien pour changer de structure
 		$('#f_changer').live // live est utilisé pour prendre en compte les nouveaux éléments créés
 		('click',
 			function()
 			{
-				$('button').attr('disabled','disabled');
+				$('#f_changer').hide();
 				$('#ajax_msg').removeAttr("class").addClass("loader").html("Chargement en cours... Veuillez patienter.");
 				$.ajax
 				(
@@ -163,13 +163,13 @@ $(document).ready
 						dataType : "html",
 						error : function(msg,string)
 						{
-							$('button').removeAttr('disabled');
+							$('#f_changer').show();
 							$('#ajax_msg').removeAttr("class").addClass("alerte").html('Echec de la connexion !');
 							return false;
 						},
 						success : function(responseHTML)
 						{
-							$('button').removeAttr('disabled');
+							$('#f_changer').show();
 							if(responseHTML.substring(0,18)!='<label class="tab"')
 							{
 								$('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);

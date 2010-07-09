@@ -33,7 +33,7 @@ $denomination = (isset($_POST['f_denomination'])) ? clean_texte($_POST['f_denomi
 $uai          = (isset($_POST['f_uai']))          ? clean_uai($_POST['f_uai'])            : '';
 $adresse_site = (isset($_POST['f_adresse_site'])) ? clean_url($_POST['f_adresse_site'])   : '';
 $logo         = (isset($_POST['f_logo']))         ? clean_texte($_POST['f_logo'])         : '';
-$cnil         = (isset($_POST['f_cnil']))         ? clean_texte($_POST['f_cnil'])         : '';
+$cnil         = (isset($_POST['f_cnil_numero']))  ? clean_entier($_POST['f_cnil_numero']) : 0;
 $nom          = (isset($_POST['f_nom']))          ? clean_nom($_POST['f_nom'])            : '';
 $prenom       = (isset($_POST['f_prenom']))       ? clean_prenom($_POST['f_prenom'])      : '';
 $courriel     = (isset($_POST['f_courriel']))     ? clean_courriel($_POST['f_courriel'])  : '';
@@ -128,7 +128,7 @@ elseif( ($action=='delete_logo') && $logo )
 // Enregistrer le nouveau fichier de paramètres
 //	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
 
-elseif( ($action=='enregistrer') && $denomination && $cnil && $nom && $prenom && $courriel )
+elseif( ($action=='enregistrer') && $denomination && $nom && $prenom && $courriel )
 {
 	fabriquer_fichier_hebergeur_info(HEBERGEUR_INSTALLATION,$denomination,$uai,$adresse_site,$logo,$cnil,$nom,$prenom,$courriel,WEBMESTRE_PASSWORD_MD5,WEBMESTRE_ERREUR_DATE);
 	if(HEBERGEUR_INSTALLATION=='mono-structure')

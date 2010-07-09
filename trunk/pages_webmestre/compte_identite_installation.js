@@ -206,6 +206,30 @@ $(document).ready
 			}
 		}
 
+		//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
+		//	Gérer les focus et click pour les boutons radio
+		//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
+
+		$('#f_cnil_numero').focus
+		(
+			function()
+			{
+				if($('#f_cnil_oui').is(':checked')==false)
+				{
+					$('#f_cnil_oui').attr('checked','checked');
+					return false; // important, sinon pb de récursivité
+				}
+			}
+		);
+
+		$('#f_cnil_oui').click
+		(
+			function()
+			{
+				$('#f_cnil_numero').focus();
+			}
+		);
+
 		//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
 		// Traitement du formulaire principal
 		//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
@@ -279,7 +303,8 @@ $(document).ready
 					f_uai :          { required:false , uai_format:true , uai_clef:true },
 					f_adresse_site : { required:false , maxlength:150 },
 					f_logo :         { required:false },
-					f_cnil :         { required:true },
+					f_cnil_etat :    { required:true },
+					f_cnil_numero :  { required:function(){return $('#f_cnil_oui').is(':checked');} , digits:true },
 					f_nom :          { required:true , maxlength:20 },
 					f_prenom :       { required:true , maxlength:20 },
 					f_courriel :     { required:true , email:true , maxlength:60 }
@@ -290,14 +315,19 @@ $(document).ready
 					f_uai :          { uai_format:"n°UAI invalide" , uai_clef:"n°UAI invalide" },
 					f_adresse_site : { maxlength:"150 caractères maximum" },
 					f_logo :         { },
-					f_cnil :         { required:"indication CNIL manquante" },
+					f_cnil_etat :    { required:"indication CNIL manquante" },
+					f_cnil_numero :  { required:"numéro CNIL manquant" , digits:"nombre entier requis" },
 					f_nom :          { required:"nom manquant" , maxlength:"20 caractères maximum" },
 					f_prenom :       { required:"prénom manquant" , maxlength:"20 caractères maximum" },
 					f_courriel :     { required:"courriel manquant" , email:"courriel invalide", maxlength:"63 caractères maximum" }
 				},
 				errorElement : "label",
 				errorClass : "erreur",
-				errorPlacement : function(error,element) { element.after(error); }
+				errorPlacement : function(error,element)
+				{
+					if(element.attr("type")=="radio") {$('#f_cnil_numero').after(error);}
+					else { element.after(error); }
+				}
 				// success: function(label) {label.text("ok").removeAttr("class").addClass("valide");} Pas pour des champs soumis à vérification PHP
 			}
 		);

@@ -27,7 +27,7 @@
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = ''; // Pas de titre pour que le logo s'affiche à la place
-$VERSION_JS_FILE += 3;
+$VERSION_JS_FILE += 4;
 ?>
 
 <?php
@@ -107,7 +107,7 @@ if($profil!='webmestre')
 <ul class="puce">
 	<li><em>SACoche</em> peut être téléchargé et installé sur différents serveurs.</li>
 	<li>Cette installation a été effectuée par : <?php echo (HEBERGEUR_ADRESSE_SITE) ? '<a class="lien_ext" href="'.html(HEBERGEUR_ADRESSE_SITE).'">'.html(HEBERGEUR_DENOMINATION).'</a>' : html(HEBERGEUR_DENOMINATION); ?> (<?php echo mailto(WEBMESTRE_COURRIEL,'SACoche','contact'); ?>).</li>
-	<li>Déclaration <a class="lien_ext" href="http://www.cnil.fr">CNIL</a> <?php echo HEBERGEUR_CNIL ?> (catégorie "Espace numérique de travail").</li>
+	<li>Déclaration <a class="lien_ext" href="http://www.cnil.fr">CNIL</a> <?php echo intval(HEBERGEUR_CNIL) ? 'n°'.HEBERGEUR_CNIL : 'non renseignée' ; ?>.</li>
 </ul>
 
 <hr />

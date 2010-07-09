@@ -172,6 +172,7 @@ function fabriquer_mdp()
 
 function crypter_mdp($password)
 {
+	// Le "salage" complique la recherche d'un mdp ) partir de son empreinte md5 en utilisant une table arc-en-ciel
 	return md5('grain_de_sel'.$password);
 }
 
@@ -324,15 +325,20 @@ function debloquer_application($profil_demandeur)
 function tester_blocage_application($BASE,$demande_connexion_profil)
 {
 	global $CHEMIN_CONFIG;
-	// Par le webmestre
+	// Blocage demandé par le webmestre : on ne laisse l'accès que
+	// + pour le webmestre déjà identifié
+	// + pour la partie publique, si pas une demande d'identification, sauf demande webmestre
 	$fichier_blocage_webmestre = $CHEMIN_CONFIG.'blocage_webmestre.txt';
-	if( (is_file($fichier_blocage_webmestre)) && (($_SESSION['USER_PROFIL']!='public')||($demande_connexion_profil!=false)) && ($_SESSION['USER_PROFIL']!='webmestre') )
+	if( (is_file($fichier_blocage_webmestre)) && ($_SESSION['USER_PROFIL']!='webmestre') && (($_SESSION['USER_PROFIL']!='public')||($demande_connexion_profil!=false)) )
 	{
 		affich_message_exit($titre='Blocage par le webmestre',$contenu='Blocage par le webmestre : '.file_get_contents($fichier_blocage_webmestre) );
 	}
-	// Par un administrateur
+	// Blocage demandé par un administrateur : on ne laisse l'accès que
+	// + pour le webmestre déjà identifié
+	// + pour un administrateur déjà identifié
+	// + pour la partie publique, si pas une demande d'identification, sauf demande webmestre ou administrateur
 	$fichier_blocage_administrateur = $CHEMIN_CONFIG.'blocage_admin_'.$BASE.'.txt';
-	if( (is_file($fichier_blocage_administrateur)) && (($_SESSION['USER_PROFIL']!='public')||($demande_connexion_profil!='administrateur')) && ($_SESSION['USER_PROFIL']!='webmestre') && ($_SESSION['USER_PROFIL']!='administrateur') )
+	if( (is_file($fichier_blocage_administrateur)) && ($_SESSION['USER_PROFIL']!='webmestre') && ($_SESSION['USER_PROFIL']!='administrateur') && (($_SESSION['USER_PROFIL']!='public')||($demande_connexion_profil!='administrateur')) )
 	{
 		affich_message_exit($titre='Blocage par un administrateur',$contenu='Blocage par un administrateur : '.file_get_contents($fichier_blocage_administrateur) );
 	}

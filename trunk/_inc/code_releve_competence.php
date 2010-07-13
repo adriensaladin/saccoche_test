@@ -99,7 +99,7 @@ require('./_fpdf/fpdf.php');
 require('./_inc/class.PDF.php');
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-// Tableaux et variables pour mémoriser les infos ; dans cette section on ne fait que les calculs (aucun affichage)
+// Tableaux et variables pour mémoriser les infos ; dans cette partie on ne fait que les calculs (aucun affichage)
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
 $tab_score_eleve_item              = array();	// Retenir les scores / élève / matière / item

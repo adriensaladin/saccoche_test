@@ -284,7 +284,7 @@ function DB_WEBMESTRE_supprimer_multi_structure($BASE)
 	// Supprimer la base associée à la structure
 	DB::query(SACOCHE_WEBMESTRE_BD_NAME , 'DROP DATABASE '.$BD_name );
 	// Retirer les droits et supprimer l'utilisateur pour la base de données de la structure
-	DB::query(SACOCHE_WEBMESTRE_BD_NAME , 'REVOKE ALL PRIVILEGES ON '.$BD_name.'.* FROM '.$BD_user );
+	DB::query(SACOCHE_WEBMESTRE_BD_NAME , 'REVOKE ALL PRIVILEGES ON '.$BD_name.'.* FROM '.$BD_user );	// Apparemment et curieusement, il faut le droit 'CREATE TEMPORARY TABLES' pour pouvoir effectuer un REVOKE...
 	DB::query(SACOCHE_WEBMESTRE_BD_NAME , 'DROP USER '.$BD_user );
 	// Supprimer le fichier de connexion
 	unlink($CHEMIN_MYSQL.'serveur_sacoche_structure_'.$BASE.'.php');

@@ -80,7 +80,7 @@ function calculer_note($tab_devoirs,$calcul_methode,$calcul_limite)
 }
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-// Tableaux et variables pour mémoriser les infos ; dans cette section on ne fait que les calculs (aucun affichage)
+// Tableaux et variables pour mémoriser les infos ; dans cette partie on ne fait que les calculs (aucun affichage)
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
 $tab_init_compet = array('A'=>0,'VA'=>0,'NA'=>0,'nb'=>0);

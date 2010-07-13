@@ -408,6 +408,7 @@ elseif( $step==7 )
 		if(HEBERGEUR_INSTALLATION=='mono-structure')
 		{
 			DB_STRUCTURE_creer_remplir_tables_structure('./_sql/structure/');
+			@sleep(1);	// Il est arrivé que la fonction DB_STRUCTURE_modifier_parametres() retourne une erreur disant que la table n'existe pas, comme si les requêtes de DB_STRUCTURE_creer_remplir_tables_structure() étaient en cache, et pas encore toutes passées (parcequ'au final, quand on va voir la base, toutes les tables sont bien là). Est-ce que c'est possible au vu du fonctionnement de la classe de connexion ? Et, bien sûr, y a-t-il quelque chose à faire pour éviter ce problème ? En attendant une réponse de SebR, j'ai tenté de mettre ce sleep(1)...
 			// Personnaliser certains paramètres de la structure
 			$tab_parametres = array();
 			$tab_parametres['version_base'] = VERSION_BASE;

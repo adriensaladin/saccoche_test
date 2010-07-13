@@ -256,7 +256,7 @@ $(document).ready
 //	Appeler la page de newsletter
 //	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
 
-		$('button').click
+		$('#bouton_newsletter').click
 		(
 			function()
 			{

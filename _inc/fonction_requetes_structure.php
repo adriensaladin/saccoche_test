@@ -2433,7 +2433,7 @@ function DB_STRUCTURE_supprimer_groupe($groupe_id,$groupe_type,$with_devoir=true
  * @return void
  */
 
-function DB_STRUCTURE_supprimer_devoirs_et_saisies($devoir_id,$prof_id)
+function DB_STRUCTURE_supprimer_devoir_et_saisies($devoir_id,$prof_id)
 {
 	// Il faut aussi supprimer les jointures du devoir avec les items
 	$DB_SQL = 'DELETE sacoche_devoir, sacoche_jointure_devoir_item, sacoche_saisie ';

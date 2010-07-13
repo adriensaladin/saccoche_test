@@ -829,46 +829,58 @@ function exporter_arborescence_to_XML($DB_TAB)
 }
 
 /**
- * compresser_arborescence_XML
+ * url_get_contents
+ * Équivalent de file_get_contents pour récupérer un fichier sur un serveur distant.
+ * On peut aussi l'utiliser pour récupérer le résultat d'un script PHP éxécuté sur un serveur distant.
+ * On peut alors envoyer au script des paramètres en POST.
  * 
- * << Problème >>
- * Attention, si on balance le xml tel quel en GET on obtient l'erreur "414 Request-URI Too Large : The requested URL's length exceeds the capacity limit for this server.".
- * En ce qui concerne Apache (v2), cette limite est dans la constante DEFAULT_LIMIT_REQUEST_LINE et correspond à la taille maximale de la ligne de requête.
- * Par défaut c’est 8190, ce qui si on retire les 14 caractères de « GET / HTTP/1.1″ nous donne exactement la limite observée empiriquement : 8176.
- * La directive d'Apache LimitRequestLine permet de modifier cette valeur (http://httpd.apache.org/docs/2.0/mod/core.html#limitrequestline).
- * Mais elle est inaccessible à PHP...
- * << Solution >>
- * Lors de l'expérimentation, la longueur moyenne de $arbreXML était de 9195, avec un maximum à 22806.
- * Les tests ont été effectués sur $arbreXML de longueur 17574 (donc assez lourd).
- * Suite à une compression utilisant gzcompress() la longueur est descendue à 3414 (-80%).
- * Mais pour obtenir des caractères transmissibles il a fallu utiliser base64_encode() et la longueur est remontée à 4552 (la doc indique +33% en moyenne).
- * Enfin pour le passer dans l'URL il a fallu utiliser urlencode() et la longueur est devenue 4796.
- * Au final on obtient 70%/75% de compression, ce qui permet normalement de résoudre ce problème !
- * 
- * @param string $arbreXML
+ * @param string $url
+ * @param array  $tab_post   tableau[nom]=>valeur de données à envoyer en POST (facultatif)
  * @return string
  */
 
-function compresser_arborescence_XML($arbreXML)
+function url_get_contents($url,$tab_post=false)
 {
-	return base64_encode(gzcompress($arbreXML,9));
+	// Ne pas utiliser file_get_contents() car certains serveurs n'accepent pas d'utiliser une URL comme nom de fichier (gestionnaire fopen non activé).
+	// On utilise donc la bibliothèque cURL en remplacement
+	// Option CURLOPT_FOLLOWLOCATION retirée car certaines installations renvoient "CURLOPT_FOLLOWLOCATION cannot be activated when in safe_mode or an open_basedir is set"
+	$ch = curl_init();
+	curl_setopt($ch, CURLOPT_DNS_CACHE_TIMEOUT, 3600); // Le temps en seconde que CURL doit conserver les entrées DNS en mémoire. Cette option est définie à 120 secondes (2 minutes) par défaut.
+	curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);    // TRUE retourne directement le transfert sous forme de chaîne de la valeur retournée par curl_exec() au lieu de l'afficher directement.
+	curl_setopt($ch, CURLOPT_HEADER, FALSE);           // FALSE pour ne pas inclure l'en-tête dans la valeur de retour.
+	curl_setopt($ch, CURLOPT_TIMEOUT, 5);              // Le temps maximum d'exécution de la fonction cURL (en s).
+	curl_setopt($ch, CURLOPT_URL, $url);               // L'URL à récupérer. Vous pouvez aussi choisir cette valeur lors de l'appel à curl_init().
+	if(is_array($tab_post))
+	{
+		curl_setopt($ch, CURLOPT_POST, TRUE);            // TRUE pour que PHP fasse un HTTP POST. Un POST est un encodage normal application/x-www-from-urlencoded, utilisé couramment par les formulaires HTML. 
+		curl_setopt($ch, CURLOPT_POSTFIELDS, $tab_post); // Toutes les données à passer lors d'une opération de HTTP POST. Peut être passé sous la forme d'une chaîne encodée URL, comme 'para1=val1&para2=val2&...' ou sous la forme d'un tableau dont le nom du champ est la clé, et les données du champ la valeur. Si le paramètre value est un tableau, l'en-tête Content-Type sera définie à multipart/form-data. 
+	}
+	$requete_reponse = curl_exec($ch);
+	if($requete_reponse === false)
+	{
+		$requete_reponse = 'Erreur : '.curl_error($ch);
+	}
+	curl_close($ch);
+	return $requete_reponse;
 }
 
 /**
- * decompresser_arborescence_XML
+ * recuperer_numero_derniere_version
+ * Récupérer le numéro de la dernière version de SACoche disponible auprès du serveur communautaire.
  * 
- * @param    string $arbreXML
- * @return   string|bool
+ * @param void
+ * @return string 'AAAA-MM-JJi' ou message d'erreur
  */
 
-function decompresser_arborescence_XML($arbreXML)
+function recuperer_numero_derniere_version()
 {
-	return @gzuncompress(base64_decode($arbreXML),35000);
+	$requete_reponse = url_get_contents(SERVEUR_VERSION);
+	return (preg_match('#^[0-9]{4}\-[0-9]{2}\-[0-9]{2}[a-z]?$#',$requete_reponse)) ? $requete_reponse : 'Dernière version non détectée...' ;
 }
 
 /**
  * envoyer_arborescence_XML
- * Transmettre le XML d'un référentiel d'un serveur à un autre (en bidouillant...).
+ * Transmettre le XML d'un référentiel au serveur communautaire.
  * 
  * @param int       $structure_id
  * @param string    $structure_key
@@ -880,27 +892,22 @@ function decompresser_arborescence_XML($arbreXML)
 
 function envoyer_arborescence_XML($structure_id,$structure_key,$matiere_id,$niveau_id,$arbreXML)
 {
-	require_once('class.httprequest.php');	// Ne pas mettre de chemin !
-	$tab_get = array();
-	$tab_get[] = 'mode=httprequest';
-	$tab_get[] = 'fichier=referentiel_uploader';
-	$tab_get[] = 'structure_id='.$structure_id;
-	$tab_get[] = 'structure_key='.$structure_key;
-	$tab_get[] = 'matiere_id='.$matiere_id;
-	$tab_get[] = 'niveau_id='.$niveau_id;
-	$tab_get[] = 'adresse_retour='.urlencode(SERVEUR_ADRESSE);
-	if($arbreXML)
-	{
-		$tab_get[] = 'arbreXML='.urlencode( compresser_arborescence_XML($arbreXML) );
-	}
-	$requete_envoi   = new HTTPRequest(SERVEUR_COMMUNAUTAIRE.'?'.implode('&',$tab_get));
-	$requete_reponse = $requete_envoi->DownloadToString();
-	return $requete_reponse;
+	$tab_post = array();
+	$tab_post['mode']           = 'httprequest';
+	$tab_post['fichier']        = 'referentiel_uploader';
+	$tab_post['structure_id']   = $structure_id;
+	$tab_post['structure_key']  = $structure_key;
+	$tab_post['matiere_id']     = $matiere_id;
+	$tab_post['niveau_id']      = $niveau_id;
+	$tab_post['arbreXML']       = $arbreXML;
+	$tab_post['version_base']   = VERSION_BASE; // La base doit être compatible (problème de socle modifié...)
+	$tab_post['adresse_retour'] = SERVEUR_ADRESSE;
+	return url_get_contents(SERVEUR_COMMUNAUTAIRE,$tab_post);
 }
 
 /**
  * recuperer_arborescence_XML
- * Demander à ce que nous soit retourné le XML d'un référentiel depuis un autre serveur (en bidouillant...).
+ * Demander à ce que nous soit retourné le XML d'un référentiel depuis le serveur communautaire.
  * 
  * @param int       $structure_id
  * @param string    $structure_key
@@ -910,29 +917,14 @@ function envoyer_arborescence_XML($structure_id,$structure_key,$matiere_id,$nive
 
 function recuperer_arborescence_XML($structure_id,$structure_key,$referentiel_id)
 {
-	/*
-	Comme pour la fonction envoyer_arborescence_XML(), l'arbre est compressé avant d'être transféré.
-	Il faut donc le décompresser une fois réceptionné.
-	*/
-	require_once('class.httprequest.php');	// Ne pas mettre de chemin !
-	$tab_get = array();
-	$tab_get[] = 'mode=httprequest';
-	$tab_get[] = 'fichier=referentiel_downloader';
-	$tab_get[] = 'structure_id='.$structure_id;
-	$tab_get[] = 'structure_key='.$structure_key;
-	$tab_get[] = 'referentiel_id='.$referentiel_id;
-	$requete_envoi   = new HTTPRequest(SERVEUR_COMMUNAUTAIRE.'?'.implode('&',$tab_get));
-	$requete_reponse = $requete_envoi->DownloadToString();
-	if(mb_substr($requete_reponse,0,6)=='Erreur')
-	{
-		return $requete_reponse;
-	}
-	$arbreXML = @gzuncompress( base64_decode( $requete_reponse ) , 35000 ) ;
-	if($arbreXML==false)
-	{
-		return 'Erreur lors de la décompression du référentiel transmis.';
-	}
-	return $arbreXML;
+	$tab_post = array();
+	$tab_post['mode']           = 'httprequest';
+	$tab_post['fichier']        = 'referentiel_downloader';
+	$tab_post['structure_id']   = $structure_id;
+	$tab_post['structure_key']  = $structure_key;
+	$tab_post['referentiel_id'] = $referentiel_id;
+	$tab_post['version_base']   = VERSION_BASE; // La base doit être compatible (problème de socle modifié...)
+	return url_get_contents(SERVEUR_COMMUNAUTAIRE,$tab_post);
 }
 
 /**
@@ -965,7 +957,7 @@ function verifier_arborescence_XML($arbreXML)
 
 /**
  * enregistrer_structure_Sesamath
- * Demander à ce que la structure soit identifiée et enregistrée dans la base du serveur partagée.
+ * Demander à ce que la structure soit identifiée et enregistrée dans la base du serveur communautaire.
  * 
  * @param int       $structure_id
  * @param string    $structure_key
@@ -974,53 +966,13 @@ function verifier_arborescence_XML($arbreXML)
 
 function enregistrer_structure_Sesamath($structure_id,$structure_key)
 {
-	require_once('class.httprequest.php');	// Ne pas mettre de chemin !
-	$tab_get = array();
-	$tab_get[] = 'mode=httprequest';
-	$tab_get[] = 'fichier=structure_enregistrer';
-	$tab_get[] = 'structure_id='.$structure_id;
-	$tab_get[] = 'structure_key='.$structure_key;
-	$tab_get[] = 'adresse_retour='.urlencode(SERVEUR_ADRESSE);
-	$requete_envoi   = new HTTPRequest(SERVEUR_COMMUNAUTAIRE.'?'.implode('&',$tab_get));
-	$requete_reponse = $requete_envoi->DownloadToString();
-	return $requete_reponse;
-}
-
-/**
- * url_get_contents
- * Équivalent de file_get_contents pour un fichier sur un serveur distant.
- * 
- * @param string $url
- * @return string
- */
-
-function url_get_contents($url)
-{
-	// Ne pas utiliser file_get_contents() car certains serveurs n'accepent pas d'utiliser une URL comme nom de fichier (gestionnaire fopen non activé).
-	// On utilise donc la bibliothèque cURL en remplacement
-	// Option CURLOPT_FOLLOWLOCATION retirée car certaines installations renvoient "CURLOPT_FOLLOWLOCATION cannot be activated when in safe_mode or an open_basedir is set"
-	$ch = curl_init();
-	curl_setopt($ch, CURLOPT_DNS_CACHE_TIMEOUT, 3600); // Le temps en seconde que CURL doit conserver les entrées DNS en mémoire. Cette option est définie à 120 secondes (2 minutes) par défaut.
-	curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);    // TRUE retourne directement le transfert sous forme de chaîne de la valeur retournée par curl_exec() au lieu de l'afficher directement.
-	curl_setopt($ch, CURLOPT_HEADER, FALSE);           // FALSE pour ne pas inclure l'en-tête dans la valeur de retour.
-	curl_setopt($ch, CURLOPT_TIMEOUT, 5);              // Le temps maximum d'exécution de la fonction cURL (en s).
-	curl_setopt($ch, CURLOPT_URL, $url);               // L'URL à récupérer. Vous pouvez aussi choisir cette valeur lors de l'appel à curl_init().
-	$requete_reponse = curl_exec($ch);
-	curl_close($ch);
-	return ($requete_reponse!==false) ? $requete_reponse : 'Le serveur a mis trop de temps à répondre.' ;
-}
-
-/**
- * recuperer_numero_derniere_version
- * 
- * @param void
- * @return string 'AAAA-MM-JJ' ou message d'erreur
- */
-
-function recuperer_numero_derniere_version()
-{
-	$requete_reponse = url_get_contents(SERVEUR_VERSION);
-	return (mb_strlen($requete_reponse)<10) ? 'Dernière version non détectée...' : $requete_reponse ;
+	$tab_post = array();
+	$tab_post['mode']           = 'httprequest';
+	$tab_post['fichier']        = 'structure_enregistrer';
+	$tab_post['structure_id']   = $structure_id;
+	$tab_post['structure_key']  = $structure_key;
+	$tab_post['adresse_retour'] = SERVEUR_ADRESSE;
+	return url_get_contents(SERVEUR_COMMUNAUTAIRE,$tab_post);
 }
 
 /**

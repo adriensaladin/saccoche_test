@@ -36,13 +36,13 @@ $(document).ready
 
 		// tri du tableau (avec jquery.tablesorter.js).
 		var sorting = [[1,0]];
-		$('table#resultat').tablesorter({ headers:{0:{sorter:false},3:{sorter:false}} });
+		$('table#statistiques').tablesorter({ headers:{0:{sorter:false},3:{sorter:false}} });
 		function trier_tableau()
 		{
-			if($('table#resultat tbody tr').length)
+			if($('table#statistiques tbody tr').length)
 			{
-				$('table#resultat').trigger('update');
-				$('table#resultat').trigger('sorton',[sorting]);
+				$('table#statistiques').trigger('update');
+				$('table#statistiques').trigger('sorton',[sorting]);
 			}
 		}
 
@@ -148,7 +148,7 @@ $(document).ready
 				$('#ajax_num').html(1);
 				$('#ajax_max').html(max);
 				$('#ajax_info').show('fast');
-				$('#structures').hide('fast').children('#resultat').children('tbody').html('');
+				$('#structures').hide('fast').children('#statistiques').children('tbody').html('');
 				calculer();
 			}
 		} 
@@ -178,7 +178,7 @@ $(document).ready
 						if(responseHTML.substring(0,2)=='ok')
 						{
 							var ligne = responseHTML.substring(3,responseHTML.length);
-							$('#resultat tbody').append(ligne);
+							$('#statistiques tbody').append(ligne);
 							num++;
 							if(num > max)	// Utilisation de parseInt obligatoire sinon la comparaison des valeurs pose ici pb
 							{

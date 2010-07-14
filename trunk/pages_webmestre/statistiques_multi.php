@@ -27,15 +27,11 @@
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = "Statistiques d'utilisation";
-$VERSION_JS_FILE += 2;
+$VERSION_JS_FILE += 3;
 
 $selection = (isset($_POST['listing_ids'])) ? explode(',',$_POST['listing_ids']) : false ; // demande de stats depuis structure_multi.php
 $select_structure = afficher_select(DB_WEBMESTRE_OPT_structures_sacoche() , $select_nom=false , $option_first='non' , $selection , $optgroup='oui') ;
 ?>
-
-<style type="text/css">
-	table#resultat td {text-align:center}
-</style>
 
 <form id="statistiques" action=""><fieldset>
 	<label class="tab" for="f_basic">Structure(s) :</label><select id="f_base" name="f_base" multiple="multiple" size="10"><?php echo $select_structure ?></select><br />
@@ -54,7 +50,7 @@ $select_structure = afficher_select(DB_WEBMESTRE_OPT_structures_sacoche() , $sel
 <p />
 
 <form id="structures" action="" class="hide">
-	<table class="form" id="resultat">
+	<table class="form" id="statistiques">
 		<thead>
 			<tr>
 				<th class="nu"></th>

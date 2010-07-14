@@ -257,6 +257,12 @@ table.bilan th.domaine {background:#99F;}
 table.comp_view td {vertical-align:middle}
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+/* Format du tableau webmestre présentant les statistisues                                             */
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
+table#statistiques td {text-align:center}
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 /* Marqueur invisible pour le tri d'un tableau                                                         */
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 

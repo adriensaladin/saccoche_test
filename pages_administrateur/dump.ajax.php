@@ -261,7 +261,7 @@ elseif($action=='restaurer')
 	// Afficher le retour
 	$top_arrivee = microtime(TRUE);
 	$duree = number_format($top_arrivee - $top_depart,2,',','');
-	echo'<li><label class="valide">Restauration de la base réalisée '.$texte_maj.' en '.$duree.'s.</label></li>';
+	echo'<li><label class="valide">Restauration de la base réalisée'.$texte_maj.' en '.$duree.'s.</label></li>';
 	exit();
 }
 

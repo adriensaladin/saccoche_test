@@ -62,6 +62,7 @@ $arbre='
 	</li>
 	<li>Référentiels
 		<ul>
+			<li class="codes_couleurs"><a href="./index.php?dossier='.$DOSSIER.'&amp;fichier=codes_couleurs">Choix des codes et des couleurs</a></li>
 			<li class="algorithme_gestion"><a href="./index.php?dossier='.$DOSSIER.'&amp;fichier=algorithme_gestion">Paramétrage de l\'algorithme</a></li>
 			<li class="referentiel_view"><a href="./index.php?dossier='.$DOSSIER.'&amp;fichier=referentiel_view">Référentiels en place (pour information)</a></li>
 		</ul>

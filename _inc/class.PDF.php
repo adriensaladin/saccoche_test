@@ -34,18 +34,10 @@ class PDF extends FPDF
 	//	Attributs de la classe (équivalents des "variables")
 	//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
-	// Couleurs utilisées pour la mise en page PDF
-	private static $tab_couleur = array(
-		'rouge_clair' => array('r'=>255,'v'=>100,'b'=>100),
-		'rouge_fonce' => array('r'=>255,'v'=>50 ,'b'=>50 ),
-		'vert_clair' => array('r'=>100,'v'=>255,'b'=>100),
-		'vert_fonce' => array('r'=>50 ,'v'=>255,'b'=>50 ),
-		'jaune_clair' => array('r'=>255,'v'=>255,'b'=>150),
-		'jaune_fonce' => array('r'=>255,'v'=>255,'b'=>50 ),
-		'gris_clair' => array('r'=>230,'v'=>230,'b'=>230),
-		'gris_fonce' => array('r'=>200,'v'=>200,'b'=>200),
-		'blanc' => array('r'=>255,'v'=>255,'b'=>255)
-	);
+	// Couleurs de fond
+	private $tab_couleur = array();
+	// Lettres utilisées en remplacement des images Lomer pour du noir et blanc
+	private $tab_lettre = array();
 	// Valeurs des marges principales pour la mise en page PDF
 	private $orientation   = '';
 	private $marge_min     = 5;
@@ -77,6 +69,9 @@ class PDF extends FPDF
 
 	private $eleve_largeur     = 0;
 	private $taille_police     = 8;
+
+	private $lomer_largeur     = 0;
+	private $lomer_hauteur     = 0;
 
 	//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 	//	Méthode Magique - Constructeur
@@ -111,6 +106,28 @@ class PDF extends FPDF
 			$this->marge_bas     = 12;
 			$this->distance_pied = 9;
 		}
+		// Couleurs de fond ; il faut convertir l'hexadécimal et RVB décimal
+		$rr = hexdec(substr($_SESSION['CSS_BACKGROUND-COLOR']['NA'],1,2));
+		$rv = hexdec(substr($_SESSION['CSS_BACKGROUND-COLOR']['NA'],3,2));
+		$rb = hexdec(substr($_SESSION['CSS_BACKGROUND-COLOR']['NA'],5,2));
+		$jr = hexdec(substr($_SESSION['CSS_BACKGROUND-COLOR']['VA'],1,2));
+		$jv = hexdec(substr($_SESSION['CSS_BACKGROUND-COLOR']['VA'],3,2));
+		$jb = hexdec(substr($_SESSION['CSS_BACKGROUND-COLOR']['VA'],5,2));
+		$vr = hexdec(substr($_SESSION['CSS_BACKGROUND-COLOR']['A'],1,2));
+		$vv = hexdec(substr($_SESSION['CSS_BACKGROUND-COLOR']['A'],3,2));
+		$vb = hexdec(substr($_SESSION['CSS_BACKGROUND-COLOR']['A'],5,2));
+		$this->tab_couleur['rouge'] = array('r'=>$rr,'v'=>$rv,'b'=>$rb);
+		$this->tab_couleur['jaune'] = array('r'=>$jr,'v'=>$jv,'b'=>$jb);
+		$this->tab_couleur['vert'] = array('r'=>$vr,'v'=>$vv,'b'=>$vb);
+		$this->tab_couleur['gris_clair'] = array('r'=>230,'v'=>230,'b'=>230);
+		$this->tab_couleur['gris_fonce'] = array('r'=>200,'v'=>200,'b'=>200);
+		$this->tab_couleur['blanc'] = array('r'=>255,'v'=>255,'b'=>255);
+		// Lettres utilisées en remplacement des images Lomer pour du noir et blanc
+		list($rr,$r,$v,$vv) = explode(',',file_get_contents('./_img/note/'.$_SESSION['CSS_NOTE_STYLE'].'/lettres_nb.txt'));
+		$this->tab_lettre['RR'] = $rr;
+		$this->tab_lettre['R'] = $r;
+		$this->tab_lettre['V'] = $v;
+		$this->tab_lettre['VV'] = $vv;
 	}
 
 	//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
@@ -132,17 +149,33 @@ class PDF extends FPDF
 	}
 
 	//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+	//	Méthodes pour calculer les dimensions d'une image Lomer
+	//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
+	public function calculer_dimensions_images()
+	{
+		// Une image a des dimensions initiales de 20px x 10px
+		$rapport_largeur = $this->cases_largeur / 20 ;
+		$rapport_hauteur = $this->cases_hauteur / 10 ;
+		$centrage = ($rapport_largeur<$rapport_hauteur) ? 'hauteur' : 'largeur';
+		$rapport_coef = ($centrage=='hauteur') ? $rapport_largeur : $rapport_hauteur ;
+		$rapport_coef = min( floor($rapport_coef*10)/10 , 0.5 ) ;	// A partir de PHP 5.3 on peut utiliser l'option PHP_ROUND_HALF_DOWN de round()
+		$this->lomer_largeur = floor(20*$rapport_coef) ;
+		$this->lomer_hauteur = floor(10*$rapport_coef) ;
+	}
+
+	//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 	//	Méthodes pour choisir une couleur de fond ou une couleur de tracé
 	//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
 	public function choisir_couleur_fond($couleur)
 	{
-		$this->SetFillColor(self::$tab_couleur[$couleur]['r'] , self::$tab_couleur[$couleur]['v'] , self::$tab_couleur[$couleur]['b']);
+		$this->SetFillColor($this->tab_couleur[$couleur]['r'] , $this->tab_couleur[$couleur]['v'] , $this->tab_couleur[$couleur]['b']);
 	}
 
 	public function choisir_couleur_trait($couleur)
 	{
-		$this->SetDrawColor(self::$tab_couleur[$couleur]['r'] , self::$tab_couleur[$couleur]['v'] , self::$tab_couleur[$couleur]['b']);
+		$this->SetDrawColor($this->tab_couleur[$couleur]['r'] , $this->tab_couleur[$couleur]['v'] , $this->tab_couleur[$couleur]['b']);
 	}
 
 	//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
@@ -159,6 +192,7 @@ class PDF extends FPDF
 		$this->intitule_largeur  = $this->page_largeur - $this->marge_gauche - $this->marge_droit - $this->reference_largeur - ($this->cases_nb * $this->cases_largeur);
 		$this->SetMargins($this->marge_gauche , $this->marge_haut , $this->marge_droit);
 		$this->SetAutoPageBreak(false);
+		$this->calculer_dimensions_images();
 	}
 
 	public function grille_niveau_entete($matiere_nom,$niveau_nom,$eleve_id,$eleve_nom,$eleve_prenom)
@@ -360,6 +394,7 @@ class PDF extends FPDF
 			$this->AddPage($this->orientation , 'A4');
 		}
 		$this->SetAutoPageBreak(true);
+		$this->calculer_dimensions_images();
 	}
 
 	public function bilan_periode_individuel_entete($matiere_nom,$texte_periode,$groupe_nom,$eleve_nom,$eleve_prenom)
@@ -476,6 +511,7 @@ class PDF extends FPDF
 		$this->SetMargins($this->marge_gauche , $this->marge_haut , $this->marge_droit);
 		$this->AddPage($this->orientation , 'A4');
 		$this->SetAutoPageBreak(true);
+		$this->calculer_dimensions_images();
 	}
 
 	public function bilan_periode_synthese_entete($titre_nom,$matiere_nom,$texte_periode,$groupe_nom)
@@ -523,46 +559,44 @@ class PDF extends FPDF
 	// aller à la ligne ou vers la droite après la 2ème case 
 	$direction_after_case2 = ($last_colonne) ? 1 : 0;
 
-	// cas de 2 cases vierges
+	// première case
 	if($moyenne_pourcent===false)
 	{
 		$this->choisir_couleur_fond('blanc');
 		$this->Cell($this->cases_largeur , $this->cases_hauteur , '-' , 1 , $direction_after_case1 , 'C' , true , '');
-		// pour les 2 cases en diagonales, une case invisible permet de se positionner correctement
-		if($last_colonne && $last_ligne)
-		{
-			$this->Cell($this->cases_largeur , $this->cases_hauteur , '' , 0 , 0 , 'C' , false , '');
-		}
-		$this->Cell($this->cases_largeur , $this->cases_hauteur , '-' , 1 , $direction_after_case2 , 'C' , true , '');
 	}
-
-	// cas de 2 cases à remplir
 	else
 	{
-		// case 1
-				if($moyenne_pourcent<$_SESSION['CALCUL_SEUIL']['R']) {$this->choisir_couleur_fond('rouge_fonce');}
-		elseif($moyenne_pourcent>$_SESSION['CALCUL_SEUIL']['V']) {$this->choisir_couleur_fond('vert_fonce');}
-		else                                                              {$this->choisir_couleur_fond('jaune_fonce');}
+				if($moyenne_pourcent<$_SESSION['CALCUL_SEUIL']['R']) {$this->choisir_couleur_fond('rouge');}
+		elseif($moyenne_pourcent>$_SESSION['CALCUL_SEUIL']['V']) {$this->choisir_couleur_fond('vert');}
+		else                                                     {$this->choisir_couleur_fond('jaune');}
 		$this->Cell($this->cases_largeur , $this->cases_hauteur , $moyenne_pourcent.'%' , 1 , $direction_after_case1 , 'C' , true , '');
+	}
 
-		// pour les 2 cases en diagonales, une case invisible permet de se positionner correctement
-		if($last_colonne && $last_ligne)
-		{
-			$this->Cell($this->cases_largeur , $this->cases_hauteur , '' , 0 , 0 , 'C' , false , '');
-		}
+	// pour les 2 cases en diagonales, une case invisible permet de se positionner correctement
+	if($last_colonne && $last_ligne)
+	{
+		$this->Cell($this->cases_largeur , $this->cases_hauteur , '' , 0 , 0 , 'C' , false , '');
+	}
 
-		// case 2
-				if($moyenne_nombre<$_SESSION['CALCUL_SEUIL']['R']) {$this->choisir_couleur_fond('rouge_fonce');}
-		elseif($moyenne_nombre>$_SESSION['CALCUL_SEUIL']['V']) {$this->choisir_couleur_fond('vert_fonce');}
-		else                                                            {$this->choisir_couleur_fond('jaune_fonce');}
+	// deuxième case
+	if($moyenne_pourcent===false)
+	{
+		$this->Cell($this->cases_largeur , $this->cases_hauteur , '-' , 1 , $direction_after_case2 , 'C' , true , '');
+	}
+	else
+	{
+				if($moyenne_nombre<$_SESSION['CALCUL_SEUIL']['R']) {$this->choisir_couleur_fond('rouge');}
+		elseif($moyenne_nombre>$_SESSION['CALCUL_SEUIL']['V']) {$this->choisir_couleur_fond('vert');}
+		else                                                   {$this->choisir_couleur_fond('jaune');}
 		$this->Cell($this->cases_largeur , $this->cases_hauteur , $moyenne_nombre.'%' , 1 , $direction_after_case2 , 'C' , true , '');
+	}
 
-		// pour la dernière ligne, mais pas pour les 2 dernières cases, se repositionner à la bonne ordonnée
-		if($last_ligne && !$last_colonne)
-		{
-			$memo_x = $this->GetX();
-			$this->SetXY($memo_x , $memo_y);
-		}
+	// pour la dernière ligne, mais pas pour les 2 dernières cases, se repositionner à la bonne ordonnée
+	if($last_ligne && !$last_colonne)
+	{
+		$memo_x = $this->GetX();
+		$this->SetXY($memo_x , $memo_y);
 	}
 }
 
@@ -581,6 +615,7 @@ class PDF extends FPDF
 		$this->SetMargins($this->marge_gauche , $this->marge_haut , $this->marge_droit);
 		$this->AddPage($this->orientation , 'A4');
 		$this->SetAutoPageBreak(false);
+		$this->calculer_dimensions_images();
 	}
 
 	public function cartouche_entete($texte_entete)
@@ -643,82 +678,32 @@ class PDF extends FPDF
 	{
 		$memo_x = $this->GetX();
 		$memo_y = $this->GetY();
-		$rect_largeur_demi  = $this->cases_largeur / 2;
-		$rect_largeur_quart = $this->cases_largeur / 4;
-		$couleur = ($this->couleur =='oui') ? true : false ;
 		switch ($note)
 		{
 			case 'RR' :
-				if($couleur)
-				{
-					$this->choisir_couleur_fond('rouge_clair');
-					$this->Cell($rect_largeur_demi , $this->cases_hauteur , 'R' , 0 , 0 , 'C' , true , '');
-					$this->Cell($rect_largeur_demi , $this->cases_hauteur , 'R' , 0 , 0 , 'C' , true , '');
-				}
-				else
-				{
-					$this->choisir_couleur_fond('blanc');
-					$this->Cell($this->cases_largeur , $this->cases_hauteur , 'RR' , 0 , 0 , 'C' , true , '');
-				}
-				break;
 			case 'R' :
-				if($couleur)
-				{
-					$this->choisir_couleur_fond('jaune_clair');
-					$this->Cell($rect_largeur_quart , $this->cases_hauteur , '' , 0 , 0 , 'C' , true , '');
-					$this->choisir_couleur_fond('rouge_clair');
-					$this->Cell($rect_largeur_demi , $this->cases_hauteur , 'R' , 0 , 0 , 'C' , true , '');
-					$this->choisir_couleur_fond('jaune_clair');
-					$this->Cell($rect_largeur_quart , $this->cases_hauteur , '' , 0 , 0 , 'C' , true , '');
-				}
-				else
-				{
-					$this->choisir_couleur_fond('blanc');
-					$this->Cell($this->cases_largeur , $this->cases_hauteur , 'R' , 0 , 0 , 'C' , true , '');
-				}
-				break;
 			case 'V' :
-				if($couleur)
-				{
-					$this->choisir_couleur_fond('jaune_clair');
-					$this->Cell($rect_largeur_quart , $this->cases_hauteur , '' , 0 , 0 , 'C' , true , '');
-					$this->choisir_couleur_fond('vert_clair');
-					$this->Cell($rect_largeur_demi , $this->cases_hauteur , 'V' , 0 , 0 , 'C' , true , '');
-					$this->choisir_couleur_fond('jaune_clair');
-					$this->Cell($rect_largeur_quart , $this->cases_hauteur , '' , 0 , 0 , 'C' , true , '');
-				}
-				else
-				{
-					$this->choisir_couleur_fond('blanc');
-					$this->Cell($this->cases_largeur , $this->cases_hauteur , 'V' , 0 , 0 , 'C' , true , '');
-				}
-				break;
 			case 'VV' :
-				if($couleur)
+				$this->choisir_couleur_fond('blanc');
+				if($this->couleur == 'oui')
 				{
-					$this->choisir_couleur_fond('vert_clair');
-					$this->Cell($rect_largeur_demi , $this->cases_hauteur , 'V' , 0 , 0 , 'C' , true , '');
-					$this->Cell($rect_largeur_demi , $this->cases_hauteur , 'V' , 0 , 0 , 'C' , true , '');
+					$img_pos_x = $memo_x + ( ($this->cases_largeur - $this->lomer_largeur) / 2 ) ;
+					$img_pos_y = $memo_y + ( ($this->cases_hauteur - $this->lomer_hauteur) / 2 ) ;
+					$this->Image('./_img/note/'.$_SESSION['CSS_NOTE_STYLE'].'/'.$note.'.gif',$img_pos_x,$img_pos_y,$this->lomer_largeur,$this->lomer_hauteur,'GIF');
 				}
 				else
 				{
-					$this->choisir_couleur_fond('blanc');
-					$this->Cell($this->cases_largeur , $this->cases_hauteur , 'VV' , 0 , 0 , 'C' , true , '');
+					if(strlen( $this->tab_lettre[$note]==3)) {$this->SetFont('Arial' , '' , 7);}
+					$this->Cell($this->cases_largeur , $this->cases_hauteur ,  $this->tab_lettre[$note] , 0 , 0 , 'C' , true , '');
+					if(strlen( $this->tab_lettre[$note]==3)) {$this->SetFont('Arial' , '' , 8);}
 				}
 				break;
 			case 'ABS' :
-				$this->SetFont('Arial' , '' , 6);
-				$this->Cell($this->cases_largeur , $this->cases_hauteur , 'Abs.' , 0 , 0 , 'C' , false , '');
-				$this->SetFont('Arial' , '' , 8);
-				break;
 			case 'NN' :
-				$this->SetFont('Arial' , '' , 6);
-				$this->Cell($this->cases_largeur , $this->cases_hauteur , 'N.N.' , 0 , 0 , 'C' , false , '');
-				$this->SetFont('Arial' , '' , 8);
-				break;
 			case 'DISP' :
+				$tab_texte = array('ABS'=>'Abs.','NN'=>'N.N.','DISP'=>'Disp.');
 				$this->SetFont('Arial' , '' , 6);
-				$this->Cell($this->cases_largeur , $this->cases_hauteur , 'Disp.' , 0 , 0 , 'C' , false , '');
+				$this->Cell($this->cases_largeur , $this->cases_hauteur , $tab_texte[$note] , 0 , 0 , 'C' , false , '');
 				$this->SetFont('Arial' , '' , 8);
 				break;
 		}
@@ -740,9 +725,9 @@ function afficher_validation_socle($gras,$tab_infos)
 	}
 	else
 	{
-		    if($tab_infos['%']<$_SESSION['CALCUL_SEUIL']['R']) {$this->choisir_couleur_fond('rouge_fonce');}
-		elseif($tab_infos['%']>$_SESSION['CALCUL_SEUIL']['V']) {$this->choisir_couleur_fond('vert_fonce');}
-		else                                                            {$this->choisir_couleur_fond('jaune_fonce');}
+		    if($tab_infos['%']<$_SESSION['CALCUL_SEUIL']['R']) {$this->choisir_couleur_fond('rouge');}
+		elseif($tab_infos['%']>$_SESSION['CALCUL_SEUIL']['V']) {$this->choisir_couleur_fond('vert');}
+		else                                                   {$this->choisir_couleur_fond('jaune');}
 		$this->Cell($this->attestation_largeur , $this->cases_hauteur , pdf($tab_infos['%'].'% validé ('.$tab_infos['A'].'A '.$tab_infos['VA'].'VA '.$tab_infos['NA'].'NA)') , 1 , 1 , 'C' , true , '');
 	}
 }
@@ -760,9 +745,9 @@ function afficher_validation_socle($gras,$tab_infos)
 		}
 		else
 		{
-					if($score<$_SESSION['CALCUL_SEUIL']['R']) {$this->choisir_couleur_fond('rouge_fonce');}
-			elseif($score>$_SESSION['CALCUL_SEUIL']['V']) {$this->choisir_couleur_fond('vert_fonce');}
-			else                                                   {$this->choisir_couleur_fond('jaune_fonce');}
+					if($score<$_SESSION['CALCUL_SEUIL']['R']) {$this->choisir_couleur_fond('rouge');}
+			elseif($score>$_SESSION['CALCUL_SEUIL']['V']) {$this->choisir_couleur_fond('vert');}
+			else                                          {$this->choisir_couleur_fond('jaune');}
 			$this->SetFont('Arial' , '' , $this->taille_police-2);
 			$this->Cell($this->cases_largeur , $this->cases_hauteur , $score , 1 , $br , 'C' , true , '');
 			$this->SetFont('Arial' , '' , $this->taille_police);
@@ -777,8 +762,8 @@ function afficher_validation_socle($gras,$tab_infos)
 	{
 		$this->SetXY(0 , -$this->distance_pied);
 		$this->SetFont('Arial' , 'I' , 7);
-		$this->choisir_couleur_fond('jaune_fonce');
-		$this->Cell($this->page_largeur , 3 , pdf('Imprimé le '.date("d/m/Y").' par '.$_SESSION['USER_DESCR'].' avec SACoche http://competences.sesamath.net') , 0 , 0 , 'C' , true , '');
+		$this->choisir_couleur_fond('jaune');
+		$this->Cell($this->page_largeur , 3 , pdf('Imprimé le '.date("d/m/Y").' par '.$_SESSION['USER_DESCR'].' avec SACoche http://sacoche.sesamath.net') , 0 , 0 , 'C' , true , '');
 	}
 
 }

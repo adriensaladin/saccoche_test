@@ -75,7 +75,6 @@ $(document).ready
 		actualiser_select_limite();
 		$('#f_methode').change( actualiser_select_limite );
 
-
 		// Demande de soumission du formulaire
 		$('#calculer').click
 		(

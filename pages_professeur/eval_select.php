@@ -148,10 +148,10 @@ $date_fin    = date("d/m/Y");
 		<tbody><tr><td></td></tr></tbody>
 	</table>
 	<div id="td_souris_container"><div class="td_souris">
-		<img alt="RR" src="./_img/note/note_RR.gif" /><img alt="ABS" src="./_img/note/note_ABS.gif" /><br />
-		<img alt="R" src="./_img/note/note_R.gif" /><img alt="NN" src="./_img/note/note_NN.gif" /><br />
-		<img alt="V" src="./_img/note/note_V.gif" /><img alt="DISP" src="./_img/note/note_DISP.gif" /><br />
-		<img alt="VV" src="./_img/note/note_VV.gif" /><img alt="X" src="./_img/note/note_X.gif" />
+		<img alt="RR" src="./_img/note/<?php echo $_SESSION['CSS_NOTE_STYLE'] ?>/RR.gif" /><img alt="ABS" src="./_img/note/ABS.gif" /><br />
+		<img alt="R" src="./_img/note/<?php echo $_SESSION['CSS_NOTE_STYLE'] ?>/R.gif" /><img alt="NN" src="./_img/note/NN.gif" /><br />
+		<img alt="V" src="./_img/note/<?php echo $_SESSION['CSS_NOTE_STYLE'] ?>/V.gif" /><img alt="DISP" src="./_img/note/DISP.gif" /><br />
+		<img alt="VV" src="./_img/note/<?php echo $_SESSION['CSS_NOTE_STYLE'] ?>/VV.gif" /><img alt="X" src="./_img/note/X.gif" />
 	</div></div>
 	<p />
 	<div>

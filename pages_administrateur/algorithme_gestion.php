@@ -71,10 +71,10 @@ foreach($tab_options as $value)
 	</thead>
 	<tbody>
 		<tr><td>
-			<label class="tab mini" for="valeurRR">acquisition <img alt="" src="./_img/note/note_RR.gif" /> :</label><input type="text" size="3" id="valeurRR" name="valeurRR" value="<?php echo $_SESSION['CALCUL_VALEUR']['RR'] ?>" /><br />
-			<label class="tab mini" for="valeurR" >acquisition <img alt="" src="./_img/note/note_R.gif" />  :</label><input type="text" size="3" id="valeurR"  name="valeurR"  value="<?php echo $_SESSION['CALCUL_VALEUR']['R']  ?>" /><br />
-			<label class="tab mini" for="valeurV" >acquisition <img alt="" src="./_img/note/note_V.gif" />  :</label><input type="text" size="3" id="valeurV"  name="valeurV"  value="<?php echo $_SESSION['CALCUL_VALEUR']['V']  ?>" /><br />
-			<label class="tab mini" for="valeurVV">acquisition <img alt="" src="./_img/note/note_VV.gif" /> :</label><input type="text" size="3" id="valeurVV" name="valeurVV" value="<?php echo $_SESSION['CALCUL_VALEUR']['VV'] ?>" /><br />
+			<label class="tab mini" for="valeurRR">acquisition <img alt="" src="./_img/note/<?php echo $_SESSION['CSS_NOTE_STYLE'] ?>/RR.gif" /> :</label><input type="text" size="3" id="valeurRR" name="valeurRR" value="<?php echo $_SESSION['CALCUL_VALEUR']['RR'] ?>" /><br />
+			<label class="tab mini" for="valeurR" >acquisition <img alt="" src="./_img/note/<?php echo $_SESSION['CSS_NOTE_STYLE'] ?>/R.gif" />  :</label><input type="text" size="3" id="valeurR"  name="valeurR"  value="<?php echo $_SESSION['CALCUL_VALEUR']['R']  ?>" /><br />
+			<label class="tab mini" for="valeurV" >acquisition <img alt="" src="./_img/note/<?php echo $_SESSION['CSS_NOTE_STYLE'] ?>/V.gif" />  :</label><input type="text" size="3" id="valeurV"  name="valeurV"  value="<?php echo $_SESSION['CALCUL_VALEUR']['V']  ?>" /><br />
+			<label class="tab mini" for="valeurVV">acquisition <img alt="" src="./_img/note/<?php echo $_SESSION['CSS_NOTE_STYLE'] ?>/VV.gif" /> :</label><input type="text" size="3" id="valeurVV" name="valeurVV" value="<?php echo $_SESSION['CALCUL_VALEUR']['VV'] ?>" /><br />
 		</td><td>
 			&nbsp;<br />
 			<select id="f_methode" name="f_methode"><?php echo $options_methode ?></select><br />

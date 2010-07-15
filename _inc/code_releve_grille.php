@@ -44,7 +44,8 @@ $texte_lien_apres = '';
 // Elaboration de la grille de compétences, en HTML et PDF
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
-$releve_html  = '<h1>Livret de connaissances et de compétences</h1>';
+$releve_html  = '<style type="text/css">'.$_SESSION['CSS'].'</style>';
+$releve_html .= '<h1>Livret de connaissances et de compétences</h1>';
 $releve_html .= '<h2>'.html($matiere_nom.' - Niveau '.$niveau_nom).'</h2>';
 // Appel de la classe et définition de qqs variables supplémentaires pour la mise en page PDF
 require('./_fpdf/fpdf.php');

@@ -87,7 +87,8 @@ function affich_note_html($note,$date,$info,$tri=false)
 {
 	global $tab_tri_note;
 	$insert_tri = ($tri) ? '<i>'.$tab_tri_note[$note].'</i>' : '';
-	return ($note=='-') ? '&nbsp;' : $insert_tri.'<img title="'.html($info).'<br />'.affich_date($date).'" alt="'.$note.'" src="./_img/note/note_'.$note.'.gif" />';
+	$sous_dossier = (in_array($note,array('RR','R','V','VV'))) ? $_SESSION['CSS_NOTE_STYLE'].'/' : '';
+	return ($note=='-') ? '&nbsp;' : $insert_tri.'<img title="'.html($info).'<br />'.affich_date($date).'" alt="'.$note.'" src="./_img/note/'.$sous_dossier.$note.'.gif" />';
 }
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
@@ -123,7 +124,7 @@ function affich_validation_html($type_cellule,$tab_infos)
 	}
 	elseif($tab_infos['%']<$_SESSION['CALCUL_SEUIL']['R']) {$etat = 'r';}
 	elseif($tab_infos['%']>$_SESSION['CALCUL_SEUIL']['V']) {$etat = 'v';}
-	else                                                            {$etat = 'o';}
+	else                                                   {$etat = 'o';}
 	return '<'.$type_cellule.' class="hc '.$etat.'">'.$tab_infos['%'].'% validé ('.$tab_infos['A'].'A '.$tab_infos['VA'].'VA '.$tab_infos['NA'].'NA)</'.$type_cellule.'>';
 }
 

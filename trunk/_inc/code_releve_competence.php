@@ -247,7 +247,8 @@ if( (in_array('synthese',$tab_type)) || (in_array('bulletin',$tab_type)) )
 
 if(in_array('individuel',$tab_type))
 {
-	$releve_html_individuel  = '<h1>Bilan '.$tab_titre[$format].'</h1>';
+	$releve_html_individuel  = '<style type="text/css">'.$_SESSION['CSS'].'</style>';
+	$releve_html_individuel .= '<h1>Bilan '.$tab_titre[$format].'</h1>';
 	if($texte_periode)
 	{
 		$releve_html_individuel .= '<h2>'.html($texte_periode).'</h2>';
@@ -400,7 +401,8 @@ if(in_array('individuel',$tab_type))
 
 if(in_array('synthese',$tab_type))
 {
-	$releve_html_synthese  = '<h1>Bilan '.$tab_titre[$format].'</h1>';
+	$releve_html_synthese  = '<style type="text/css">'.$_SESSION['CSS'].'</style>';
+	$releve_html_synthese .= '<h1>Bilan '.$tab_titre[$format].'</h1>';
 	$releve_html_synthese .= '<h2>'.html($matiere_nom.' - '.$groupe_nom).'</h2>';
 	if($texte_periode)
 	{

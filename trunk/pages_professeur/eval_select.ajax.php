@@ -395,13 +395,14 @@ else if( ($action=='voir') && $devoir_id && $groupe_id && $date ) // $date fran�
 		}
 		// ajouter le contenu
 		$tab_conversion = array( ''=>' ' , 'RR'=>'1' , 'R'=>'2' , 'V'=>'3' , 'VV'=>'4' , 'ABS'=>'A' , 'NN'=>'N' , 'DISP'=>'D' );
+		$tab_dossier = array( ''=>'' , 'RR'=>$_SESSION['CSS_NOTE_STYLE'].'/' , 'R'=>$_SESSION['CSS_NOTE_STYLE'].'/' , 'V'=>$_SESSION['CSS_NOTE_STYLE'].'/' , 'VV'=>$_SESSION['CSS_NOTE_STYLE'].'/' , 'ABS'=>'' , 'NN'=>'' , 'DISP'=>'' );
 		$DB_TAB = DB_STRUCTURE_lister_saisies_devoir($devoir_id);
 		foreach($DB_TAB as $DB_ROW)
 		{
 			// Test pour éviter les pbs des élèves changés de groupes ou des items modifiés en cours de route
 			if(isset($tab_affich[$DB_ROW['item_id']][$DB_ROW['eleve_id']]))
 			{
-				$tab_affich[$DB_ROW['item_id']][$DB_ROW['eleve_id']] = str_replace('>-<','><img alt="'.$DB_ROW['saisie_note'].'" src="./_img/note/note_'.$DB_ROW['saisie_note'].'.gif" /><',$tab_affich[$DB_ROW['item_id']][$DB_ROW['eleve_id']]);
+				$tab_affich[$DB_ROW['item_id']][$DB_ROW['eleve_id']] = str_replace('>-<','><img alt="'.$DB_ROW['saisie_note'].'" src="./_img/note/'.$tab_dossier[$DB_ROW['saisie_note']].$DB_ROW['saisie_note'].'.gif" /><',$tab_affich[$DB_ROW['item_id']][$DB_ROW['eleve_id']]);
 				$csv_lignes_scores[$DB_ROW['item_id']][$DB_ROW['eleve_id']] = $tab_conversion[$DB_ROW['saisie_note']];
 			}
 		}

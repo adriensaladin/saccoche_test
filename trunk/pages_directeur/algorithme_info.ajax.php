@@ -69,7 +69,7 @@ if( ($action=='calculer') && in_array($methode,$tab_methodes) && in_array($limit
 			for($num_devoir=1;$num_devoir<=$nb_devoirs;$num_devoir++)
 			{
 				$code = $tab_codes[$num_devoir];
-				$tab_lignes[$cas] .= '<td><img alt="" src="./_img/note/note_'.$code.'.gif" /></td>';
+				$tab_lignes[$cas] .= '<td><img alt="" src="./_img/note/'.$_SESSION['CSS_NOTE_STYLE'].'/'.$code.'.gif" /></td>';
 				// Si on prend ce devoir en compte
 				if( ($limite==0) || ($nb_devoirs-$num_devoir<$limite) )
 				{

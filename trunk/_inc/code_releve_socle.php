@@ -194,7 +194,8 @@ if($test_affichage_scores)
 // Elaboration de l'attestation relative au socle commun, en HTML et PDF
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-$releve_html  = '<h1>Attestation de maîtrise du socle commun</h1>';
+$releve_html  = '<style type="text/css">'.$_SESSION['CSS'].'</style>';
+$releve_html .= '<h1>Attestation de maîtrise du socle commun</h1>';
 $releve_html .= '<h2>'.html($palier_nom).'</h2>';
 // Appel de la classe et définition de qqs variables supplémentaires pour la mise en page PDF
 require('./_fpdf/fpdf.php');

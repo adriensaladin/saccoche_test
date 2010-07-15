@@ -193,6 +193,15 @@ table.affectation {font-size:85%}
 table.affectation tfoot td {background:#CCF;color:#333}
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+/* Tableau de simulation de calcul des scores, aussi utilisé pour dessiner les cellules d'un tableur.  */
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
+table.simulation {border-collapse:separate;border-spacing:3px;empty-cells:hide;text-align:center}
+table.simulation colgroup {margin:auto 10px}
+table.simulation th, table.simulation td {border:1px solid #000;text-align:center}
+table.simulation td.nu {border:none}
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 /* Tableau de saisie des compétences                                                                   */
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
@@ -206,31 +215,29 @@ table.scor_eval tbody tr th {text-align:left}
 table.scor_eval th, table.saisir td {padding:0}
 table.scor_eval tbody td img {vertical-align:middle;}
 table.scor_eval tbody td input {vertical-align:middle;width:23px;height:17px;font-size:0;color:#FFF;margin:0;border:2px solid #FFF}
-table.scor_eval tbody td input.X    {background:#FFF url('../_img/note/note_X.gif')    no-repeat center center;}
-table.scor_eval tbody td input.RR   {background:#FFF url('../_img/note/note_RR.gif')   no-repeat center center;}
-table.scor_eval tbody td input.R    {background:#FFF url('../_img/note/note_R.gif')    no-repeat center center;}
-table.scor_eval tbody td input.V    {background:#FFF url('../_img/note/note_V.gif')    no-repeat center center;}
-table.scor_eval tbody td input.VV   {background:#FFF url('../_img/note/note_VV.gif')   no-repeat center center;}
-table.scor_eval tbody td input.ABS  {background:#FFF url('../_img/note/note_ABS.gif')  no-repeat center center;}
-table.scor_eval tbody td input.NN   {background:#FFF url('../_img/note/note_NN.gif')   no-repeat center center;}
-table.scor_eval tbody td input.DISP {background:#FFF url('../_img/note/note_DISP.gif') no-repeat center center;}
 table.scor_eval tbody td input:focus {border:2px solid #00F}
-
-/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-/* Tableau de simulation de calcul des scores, aussi utilisé pour dessiner les cellules d'un tableur.  */
-/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-
-table.simulation {border-collapse:separate;border-spacing:3px;empty-cells:hide;text-align:center}
-table.simulation colgroup {margin:auto 10px}
-table.simulation th, table.simulation td {border:1px solid #000;text-align:center}
+table.scor_eval tbody td input.ABS  {background:#FFF url('../_img/note/ABS.gif')  no-repeat center center;}
+table.scor_eval tbody td input.NN   {background:#FFF url('../_img/note/NN.gif')   no-repeat center center;}
+table.scor_eval tbody td input.DISP {background:#FFF url('../_img/note/DISP.gif') no-repeat center center;}
+table.scor_eval tbody td input.X    {background:#FFF url('../_img/note/X.gif')    no-repeat center center;}
+/* Commenté car redéfini suivant les préférences de l'établissement */
+/*
+table.scor_eval tbody td input.RR   {background:#FFF url('../_img/note/Lomer/RR.gif')   no-repeat center center;}
+table.scor_eval tbody td input.R    {background:#FFF url('../_img/note/Lomer/R.gif')    no-repeat center center;}
+table.scor_eval tbody td input.V    {background:#FFF url('../_img/note/Lomer/V.gif')    no-repeat center center;}
+table.scor_eval tbody td input.VV   {background:#FFF url('../_img/note/Lomer/VV.gif')   no-repeat center center;}
+*/
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 /* Couleur de fond pour indiquer A / VA / NA                                                           */
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-table th.r , table td.r , span.r {background-color:#F99}
-table th.o , table td.o , span.o {background-color:#FD3}
-table th.v , table td.v , span.v {background-color:#9F9}
+/* Commenté car redéfini suivant les préférences de l'établissement */
+/*
+table th.r , table td.r , div.r , span.r {background-color:#F99}
+table th.o , table td.o , div.o , span.o {background-color:#FD3}
+table th.v , table td.v , div.v , span.v {background-color:#9F9}
+*/
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 /* Format des en-têtes de tableaux dont on peut trier les colonnes                                     */
@@ -358,3 +365,33 @@ div.td_souris img.on {background-color:#FF0}
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 #robustesse {border:1px solid #66F;margin:auto 10%;background-color:#F99;text-align:center;font-style:italic;white-space:nowrap}
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+/* Pour la gestion privée (livre d'or, RSS)                                                            */
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
+form.encadre fieldset{margin:3ex 0.5em 0 0.5em;padding:1em 0.5em 0.25ex;background:#DDF;border:1px solid #66F;}
+form.encadre legend{position:absolute;margin-top:-2em;margin-left:15em;padding:0 5px 0 0;background:#DDF;border:1px solid #66F;color:#D74C12;}
+form.encadre fieldset.new{background:#CFC}
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+/* Colorpicker                                                                                         */
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
+#colorpicker    {height:195px;width:200px;float:left;margin-left:1em}
+div.colorpicker {height:195px;width:200px;float:left;margin-left:1em;border:1px solid #000;text-align:center}
+div.colorpicker input {text-align:center;letter-spacing:2px}
+
+/**
+ * Farbtastic Color Picker 1.2
+ * © 2008 Steven Wittens
+ */
+
+.farbtastic {position:relative}
+.farbtastic * {position:absolute;cursor:crosshair}
+.farbtastic, .farbtastic .wheel {width:195px;height:195px}
+.farbtastic .color, .farbtastic .overlay {top:47px;left:47px;width:101px;height:101px}
+.farbtastic .wheel   {background:url(../_img/colorpicker/wheel.png) no-repeat;width:195px;height:195px}
+.farbtastic .overlay {background:url(../_img/colorpicker/mask.png) no-repeat}
+.farbtastic .marker  {background:url(../_img/colorpicker/marker.png) no-repeat;width:17px;height:17px;margin:-8px 0 0 -8px;overflow:hidden}
+

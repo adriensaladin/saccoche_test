@@ -36,11 +36,6 @@ require_once('./_inc/constantes.php');
 require_once('./_inc/fonction_redirection.php');
 require_once('./_inc/config_serveur.php');
 
-// Paramètres transmis
-$DOSSIER = (isset($_GET['dossier'])) ? $_GET['dossier'] : 'public';
-$FICHIER = (isset($_GET['fichier'])) ? $_GET['fichier'] : ( ($DOSSIER=='public') ? 'accueil' : 'compte_accueil' ) ;
-$SECTION = (isset($_GET['section'])) ? $_GET['section'] : '';
-
 // Fonctions
 require_once('./_inc/fonction_clean.php');
 require_once('./_inc/fonction_sessions.php');
@@ -50,8 +45,19 @@ require_once('./_inc/fonction_requetes_structure.php');
 require_once('./_inc/fonction_requetes_webmestre.php');
 require_once('./_inc/fonction_affichage.php');
 
+// Page appelée
+$PAGE    = (isset($_GET['page']))    ? $_GET['page']    : 'public_accueil' ;
+$SECTION = (isset($_GET['section'])) ? $_GET['section'] : '';
+
+
 // Ouverture de la session et gestion des droits d'accès
-gestion_session($PROFIL_REQUIS = $DOSSIER);
+require_once('./_inc/tableau_droits.php');
+if(!isset($tab_droits[$PAGE]))
+{
+	echo'<hr /><div class="danger o">Erreur : droits de la page "'.$PAGE.'" manquants.</div><hr />';
+	$PAGE = (substr($PAGE,0,6)=='public') ? 'public_accueil' :'compte_accueil' ;
+}
+gestion_session($TAB_PROFILS_AUTORISES = $tab_droits[$PAGE]);
 
 // Blocage éventuel par le webmestre ou un administrateur
 tester_blocage_application($_SESSION['BASE'],$demande_connexion_profil=false);
@@ -95,35 +101,30 @@ if(is_file($fichier_constantes))
 		require_once($fichier_mysql_config);
 		require_once($fichier_class_config);
 	}
-	elseif($FICHIER!='installation')
+	elseif($PAGE!='public_installation')
 	{
-		affich_message_exit($titre='Paramètres BDD manquants',$contenu='Paramètres de connexion à la base de données manquants.<br /><a href="./index.php?fichier=installation">Procédure d\'installation du site SACoche.</a>');
+		affich_message_exit($titre='Paramètres BDD manquants',$contenu='Paramètres de connexion à la base de données manquants.<br /><a href="./index.php?page=public_installation">Procédure d\'installation du site SACoche.</a>');
 	}
 }
-elseif($FICHIER!='installation')
+elseif($PAGE!='public_installation')
 {
-	affich_message_exit($titre='Informations hébergement manquantes',$contenu='Informations concernant l\'hébergeur manquantes.<br /><a href="./index.php?fichier=installation">Procédure d\'installation du site SACoche.</a>');
+	affich_message_exit($titre='Informations hébergement manquantes',$contenu='Informations concernant l\'hébergeur manquantes.<br /><a href="./index.php?page=public_installation">Procédure d\'installation du site SACoche.</a>');
 }
 
 ob_start();
 // Chargement du menu concerné
-$filename_php = './pages_'.$DOSSIER.'/_menu.php';
+$filename_php = './pages/__menu_'.$_SESSION['USER_PROFIL'].'.php';
 if(is_file($filename_php))
 {
 	require($filename_php);
 }
 // Chargement de la page concernée
-$filename_php = './pages_'.$DOSSIER.'/'.$FICHIER.'.php';
+$filename_php = './pages/'.$PAGE.'.php';
 if(!is_file($filename_php))
 {
-	echo'<p class="danger">Page "'.$filename_php.'" manquante (supprimée, déplacée, non créée...).</p>';
-	$FICHIER = ($DOSSIER!='public') ? 'compte_accueil' : 'accueil' ;
-	$filename_php = './pages_'.$DOSSIER.'/'.$FICHIER.'.php';
-	if(!is_file($filename_php))
-	{
-		$DOSSIER = 'public';
-		$filename_php = './pages_'.$DOSSIER.'/'.$FICHIER.'.php';
-	}
+	echo'<hr /><div class="danger o">Erreur : page "'.$filename_php.'" manquante (supprimée, déplacée, non créée...).</div><hr />';
+	$PAGE = ($_SESSION['USER_PROFIL']=='public') ? 'public_accueil' :'compte_accueil' ;
+	$filename_php = './pages/'.$PAGE.'.php';
 }
 require($filename_php);
 // Affichage dans une variable
@@ -131,15 +132,15 @@ $CONTENU_PAGE = ob_get_contents();
 ob_end_clean();
 
 // Chargement du js associé de la page
-$filename_js_normal = './pages_'.$DOSSIER.'/'.$FICHIER.'.js';
+$filename_js_normal = './pages/'.$PAGE.'.js';
 $SCRIPT = (is_file($filename_js_normal)) ? '<script type="text/javascript" charset="utf-8" src="'.compacter($filename_js_normal,$VERSION_JS_FILE,'pack').'"></script>' : '' ;
 
 // Titre du navigateur
-$TITRE_NAVIGATEUR = 'SACoche - Espace '.$DOSSIER.' - ';
+$TITRE_NAVIGATEUR = 'SACoche - Espace '.$_SESSION['USER_PROFIL'].' - ';
 $TITRE_NAVIGATEUR.= ($TITRE) ? $TITRE : 'Suivi d\'Acquisition de Compétences' ;
 
 // Titre de la page
-if($DOSSIER!='public')
+if($_SESSION['USER_PROFIL']!='public')
 {
 	// Espace identifié : titre indiqué et logo encadré en image de fond.
 	$TITRE_PAGE = '<h1 id="titre_page">'.$TITRE.'</h1>';
@@ -178,8 +179,7 @@ entete();
 	// echo'<pre>';var_dump($_SESSION);echo'</pre>';
 	?>
 	<script type="text/javascript">
-		var DOSSIER='<?php echo $DOSSIER ?>';
-		var FICHIER='<?php echo $FICHIER ?>';
+		var PAGE='<?php echo $PAGE ?>';
 		var DUREE_AUTORISEE='<?php echo $_SESSION['DUREE_INACTIVITE'] ?>';
 		var DUREE_RESTANTE='<?php echo $_SESSION['DUREE_INACTIVITE'] ?>';
 	</script>

@@ -161,7 +161,7 @@ function conserver_session_active()
 	(
 		{
 			type : 'GET',
-			url : 'ajax.php?dossier='+DOSSIER+'&fichier=conserver_session_active',
+			url : 'ajax.php?page=conserver_session_active',
 			data : '',
 			dataType : "html",
 			error : function(msg,string)
@@ -409,7 +409,7 @@ $(document).ready
 		//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
 
 		// Fonction maj_clock() à appeler une fois toutes les 1min = 60s
-		if(DOSSIER!='public')
+		if(PAGE.substring(0,6)!='public')
 		{
 			$("body").everyTime
 			('60s', function()
@@ -458,7 +458,7 @@ $(document).ready
 				(
 					{
 						type : 'GET',
-						url : 'ajax.php?dossier=public&fichier=date_calendrier',
+						url : 'ajax.php?page=public_date_calendrier',
 						data : get_data,
 						dataType : "html",
 						error : function(msg,string)
@@ -515,7 +515,7 @@ $(document).ready
 				(
 					{
 						type : 'GET',
-						url : 'ajax.php?dossier=public&fichier=demander_add',
+						url : 'ajax.php?page=eleve_eval_demande_ajout',
 						data : get_data,
 						dataType : "html",
 						error : function(msg,string)
@@ -584,7 +584,7 @@ $(document).ready
 			(
 				{
 					type : 'GET',
-					url : 'ajax.php?dossier=public&fichier=date_calendrier',
+					url : 'ajax.php?page=public_date_calendrier',
 					data : 'm='+mois+'&a='+annee,
 					dataType : "html",
 					success : function(responseHTML)

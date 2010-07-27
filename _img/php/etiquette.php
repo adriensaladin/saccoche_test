@@ -31,29 +31,39 @@ header("Content-type: image/png");
 
 require_once('../../_inc/fonction_clean.php');
 
-$dossier = isset($_GET['dossier']) ? $_GET['dossier'] : '';
-$nom     = isset($_GET['nom'])     ? $_GET['nom']     : '';
-$prenom  = isset($_GET['prenom'])  ? $_GET['prenom']  : '';
+$dossier = isset($_GET['dossier']) ? $_GET['dossier'] : '' ;
+$nom     = isset($_GET['nom'])     ? $_GET['nom']     : ' ' ;
+$prenom  = isset($_GET['prenom'])  ? $_GET['prenom']  : ' ' ;
+$br_line = isset($_GET['br'])      ? 2                : 1 ; // 2 pour nom/prénom sur 2 colonnes ; 1 pour nom prénom à la suite
 
-$fichier = '../../__tmp/badge/'.clean_entier($dossier).'/'.clean_login($nom).'_'.clean_login($prenom).'.png';
+$fichier = '../../__tmp/badge/'.clean_entier($dossier).'/'.clean_login($nom).'_'.clean_login($prenom).'_'.$br_line.'.png';
 
+// Créer l'image si elle n'existe pas
 if(!file_exists($fichier))
 {
-	$taille_police = 10;
-	$largeur       = 30;
-	$hauteur       = ceil(max($taille_police*strlen($nom),$taille_police*strlen($prenom)*0.75));
-	$image         = imagecreate($largeur,$hauteur);
-	$couleur_fond  = imagecolorallocatealpha($image,255,221,136,127);
-	$couleur_texte = imagecolorallocate($image,0,0,0);
-	$police        = './arial.ttf';
-	$tab = imagettftext($image,$taille_police,90,$largeur/2-4,$hauteur-2,$couleur_texte,$police,$nom."\r\n".$prenom);
-	imagepng($image,$fichier);
+	// On commence par créer une image temporaire plus haute que nécessaire
+	$taille_police  = 10;
+	$largeur        = 15*$br_line;
+	$hauteur_tmp    = $taille_police*40;
+	$image_tmp      = imagecreate($largeur,$hauteur_tmp);
+	$couleur_fond   = imagecolorallocatealpha($image_tmp,255,204,204,127);
+	$couleur_texte  = imagecolorallocate($image_tmp,0,0,0);
+	$police         = './arial.ttf';
+	$tab = ($br_line==1) ? imagettftext($image_tmp,$taille_police,90,$largeur-4,$hauteur_tmp-2,$couleur_texte,$police,$nom.' '.$prenom)
+	                     : imagettftext($image_tmp,$taille_police,90,$largeur/2-4,$hauteur_tmp-2,$couleur_texte,$police,$nom."\r\n".$prenom) ;
+	// Maintenant on peut connaître la hauteur requise et créer l'image finale aux bonnes dimensions
+	$hauteur_finale = $hauteur_tmp - $tab[3] + 2 ;
+	$image_finale   = imagecreate($largeur,$hauteur_finale);
+	imagecopy($image_finale,$image_tmp,0,0,0,$hauteur_tmp-$hauteur_finale,$largeur,$hauteur_finale);
+	imagepng($image_finale,$fichier);
+	imagedestroy($image_tmp);
 }
+// Récupérer l'image si elle existe déjà
 else
 {
-	$image = imagecreatefrompng($fichier);
+	$image_finale = imagecreatefrompng($fichier);
 }
 
-imagepng($image);
-imagedestroy($image);
+imagepng($image_finale);
+imagedestroy($image_finale);
 ?>

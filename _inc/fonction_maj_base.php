@@ -269,11 +269,42 @@ function maj_base($version_actuelle)
 	{
 		$version_actuelle = '2010-07-15';
 		// script pour migrer vers la version suivante : paramétrage codes Lomer / background-color
+		// La première instruction ayant été oubliée, quelques tentatives d'installations peuvent être corrompues => corrigé dans la v.2010-07-27.
 		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_parametre CHANGE parametre_nom parametre_nom VARCHAR(25) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL' );
 		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ("css_background-color_NA","#ff9999")' );
 		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ("css_background-color_VA","#ffdd33")' );
 		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ("css_background-color_A","#99ff99")' );
 		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ("css_note_style","Lomer")' );
+		// y compris la mise à jour du champ "version_base" justement
+		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_actuelle.'" WHERE parametre_nom="version_base" LIMIT 1' );
+	}
+	if($version_actuelle=='2010-07-15')
+	{
+		$version_actuelle = '2010-07-16';
+		// script pour migrer vers la version suivante : oubli d'une modification du socle
+		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_socle_entree SET entree_nom="Organisation et gestion de données : reconnaître des situations de proportionnalité, utiliser des pourcentages, des tableaux, des graphiques ; exploiter des données statistiques et aborder des situations simples de probabilité." , entree_ordre=0 WHERE entree_id=197 LIMIT 1' );
+		// y compris la mise à jour du champ "version_base" justement
+		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_actuelle.'" WHERE parametre_nom="version_base" LIMIT 1' );
+	}
+	if($version_actuelle=='2010-07-16')
+	{
+		$version_actuelle = '2010-07-27';
+		// Correction du bug signalé dans le passage de la v.2010-07-13 à la v.2010-07-15.
+		$DB_ROW = DB::queryRow(SACOCHE_STRUCTURE_BD_NAME , 'SELECT parametre_valeur FROM sacoche_parametre WHERE parametre_nom="css_background-color" LIMIT 1' , null);
+		if(count($DB_ROW))
+		{
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'DELETE FROM sacoche_parametre WHERE parametre_nom="css_background-color" LIMIT 1' );
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_parametre CHANGE parametre_nom parametre_nom VARCHAR(25) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL' );
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ("css_background-color_NA","#ff9999")' );
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ("css_background-color_VA","#ffdd33")' );
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ("css_background-color_A","#99ff99")' );
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ("css_note_style","Lomer")' );
+		}
+		// script pour migrer vers la version suivante : ajout de modes de calculs
+		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_referentiel CHANGE referentiel_calcul_methode referentiel_calcul_methode ENUM( "geometrique", "arithmetique", "classique", "bestof1", "bestof2", "bestof3" ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT "geometrique" COMMENT "Coefficients en progression géométrique, arithmetique, ou moyenne classique non pondérée, ou conservation des meilleurs scores. Valeur surclassant la configuration par défaut." ' );
+		// script pour migrer vers la version suivante : ajout de 2 tables pour la validation du socle
+		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'CREATE TABLE sacoche_jointure_user_entree (user_id MEDIUMINT(8) UNSIGNED NOT NULL,entree_id SMALLINT(5) UNSIGNED NOT NULL,validation_entree_etat TINYINT(1) NOT NULL COMMENT "1 si validation positive ; 0 si validation négative.",validation_entree_date DATE NOT NULL,validation_entree_info TINYTEXT COLLATE utf8_unicode_ci NOT NULL COMMENT "Enregistrement statique du nom du validateur, conservé les années suivantes.",UNIQUE KEY validation_entree_key (user_id,entree_id),KEY user_id (user_id),KEY entree_id (entree_id) ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci ' );
+		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'CREATE TABLE sacoche_jointure_user_pilier (user_id MEDIUMINT(8) UNSIGNED NOT NULL,pilier_id SMALLINT(5) UNSIGNED NOT NULL,validation_pilier_date DATE NOT NULL,validation_pilier_info TINYTEXT COLLATE utf8_unicode_ci NOT NULL COMMENT "Enregistrement statique du nom du validateur, conservé les années suivantes.",UNIQUE KEY validation_pilier_key (user_id,pilier_id),KEY user_id (user_id),KEY pilier_id (pilier_id) ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci ' );
 		// y compris la mise à jour du champ "version_base" justement
 		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_actuelle.'" WHERE parametre_nom="version_base" LIMIT 1' );
 	}

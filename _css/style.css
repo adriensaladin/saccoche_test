@@ -234,9 +234,9 @@ table.scor_eval tbody td input.VV   {background:#FFF url('../_img/note/Lomer/VV.
 
 /* Commenté car redéfini suivant les préférences de l'établissement */
 /*
-table th.r , table td.r , div.r , span.r {background-color:#F99}
-table th.o , table td.o , div.o , span.o {background-color:#FD3}
-table th.v , table td.v , div.v , span.v {background-color:#9F9}
+table th.r , table td.r , div.r , span.r , label.r {background-color:#F99}
+table th.o , table td.o , div.o , span.o , label.o {background-color:#FD3}
+table th.v , table td.v , div.v , span.v , label.v {background-color:#9F9}
 */
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
@@ -256,6 +256,23 @@ table.bilan tfoot th, table.bilan tfoot td {background:#CCF;text-align:right}
 table.bilan tfoot td.nu {background:#F7F7F7;}
 table.bilan_synthese {margin-top:1em;margin-bottom:1em}
 table.bilan th.domaine {background:#99F;}
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+/* Format des tableaux du socle                                                                        */
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
+#zone_bilan th {margin:0;padding:0}
+#zone_bilan thead th{vertical-align:bottom}
+#zone_bilan thead td{vertical-align:middle;font-weight:bold;font-size:110%}
+#zone_bilan tbody td {font-size:85%}
+#zone_bilan tbody th {width:15px;height:15px}
+#zone_bilan tbody th:hover {cursor:pointer}
+#zone_bilan tbody th.v0 {background:transparent url(../_img/socle/valid0.gif) top left}
+#zone_bilan tbody th.v1 {background:transparent url(../_img/socle/valid1.gif) top left}
+#zone_bilan tbody th.v2 {background:transparent url(../_img/socle/valid2.gif) top left}
+#zone_bilan tbody th.v0:hover{background:transparent url(../_img/socle/valid0h.gif) top left}
+#zone_bilan tbody th.v1:hover{background:transparent url(../_img/socle/valid1h.gif) top left}
+#zone_bilan tbody th.v2:hover{background:transparent url(../_img/socle/valid2h.gif) top left}
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 /* Format du tableau admin présentant les référentiels de compétences utilisés                         */
@@ -315,6 +332,15 @@ li.li_n3 {background:transparent url(../_img/folder/folder_n3.png) no-repeat top
 #zone_compet li {line-height:1.6em;}	/* le height évite que la hauteur des lignes varie lors de la modification de leur contenu en ajax */
 li.li_n3 b{font-weight:normal}
 li.li_n3 b img{margin-right:2px}
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+/* Affichage de l'item du socle dans la zone de validation d'un item                                   */
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
+#zone_validation span.span_n1 {background:transparent url(../_img/folder/folder_n1.png) no-repeat top left;color:#F00;white-space:nowrap;padding-left:18px}
+#zone_validation span.span_n2 {background:transparent url(../_img/folder/folder_n2.png) no-repeat top left;color:#D0C;white-space:nowrap;padding-left:18px;margin-left:13em}
+#zone_validation span.span_n3 {background:transparent url(../_img/folder/folder_n3.png) no-repeat top left;color:#70F;white-space:nowrap;padding-left:18px;margin-left:14em}
+#zone_validation #items {margin-left:12em;white-space:nowrap}
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 /* Liste à puce pour l'affichage d'une liste d'établissements proposant des référentiels               */

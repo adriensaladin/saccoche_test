@@ -401,35 +401,6 @@ function DB_STRUCTURE_lister_parametres($listing_param=false)
 }
 
 /**
- * DB_STRUCTURE_lister_result_eleve
- * Retourner les résultats pour un élève donné, pour des items donnés, sur une période donnée
- * 
- * @param int    $eleve_id
- * @param string $liste_item_id   id des items séparés par des virgules
- * @param string $date_mysql_debut
- * @param string $date_mysql_fin
- * @return array
- */
-
-function DB_STRUCTURE_lister_result_eleve($eleve_id,$liste_item_id,$date_mysql_debut,$date_mysql_fin)
-{
-	$sql_debut = ($date_mysql_debut) ? 'AND saisie_date>=:date_debut ' : '';
-	$sql_fin   = ($date_mysql_fin)   ? 'AND saisie_date<=:date_fin '   : '';
-	$DB_SQL = 'SELECT item_id , ';
-	$DB_SQL.= 'saisie_note AS note , saisie_date AS date , saisie_info AS info ';
-	$DB_SQL.= 'FROM sacoche_saisie ';
-	$DB_SQL.= 'LEFT JOIN sacoche_devoir USING (devoir_id) ';
-	$DB_SQL.= 'LEFT JOIN sacoche_referentiel_item USING (item_id) ';
-	$DB_SQL.= 'LEFT JOIN sacoche_referentiel_theme USING (theme_id) ';
-	$DB_SQL.= 'LEFT JOIN sacoche_referentiel_domaine USING (domaine_id) ';
-	$DB_SQL.= 'LEFT JOIN sacoche_niveau USING (niveau_id) ';
-	$DB_SQL.= 'WHERE eleve_id=:eleve_id AND item_id IN('.$liste_item_id.') '.$sql_debut.$sql_fin;
-	$DB_SQL.= 'ORDER BY niveau_ordre ASC, domaine_ordre ASC, theme_ordre ASC, item_ordre ASC, saisie_date ASC';
-	$DB_VAR = array(':eleve_id'=>$_SESSION['USER_ID'],':date_debut'=>$date_mysql_debut,':date_fin'=>$date_mysql_fin);
-	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-}
-
-/**
  * DB_STRUCTURE_lister_result_eleves_matiere
  * Retourner les résultats pour des élèves donnés, pour des items donnés d'une matiere donnée, sur une période donnée
  * 

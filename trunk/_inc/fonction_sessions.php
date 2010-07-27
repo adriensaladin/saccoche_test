@@ -78,7 +78,7 @@ function close_session()
 }
 
 // Recherche d'une session existante et gestion des cas possibles.
-function gestion_session($PROFIL_REQUIS)
+function gestion_session($TAB_PROFILS_AUTORISES)
 {
 	global $ALERTE_SSO;
 	// Messages d'erreurs possibles
@@ -96,7 +96,7 @@ function gestion_session($PROFIL_REQUIS)
 	{
 		// I. Aucune session transmise
 		open_new_session(); init_session();
-		if($PROFIL_REQUIS!='public')
+		if(!$TAB_PROFILS_AUTORISES['public'])
 		{
 			// I.2. Redirection : demande d'accès à une page réservée donc identification avant accès direct
 			alert_redirection_exit($tab_msg_alerte['I.2'][SACoche]);
@@ -109,7 +109,7 @@ function gestion_session($PROFIL_REQUIS)
 		if(!isset($_SESSION['USER_PROFIL']))
 		{
 			// II.1. Pas de session retrouvée (sinon cette variable serait renseignée)
-			if($PROFIL_REQUIS!='public')
+			if(!$TAB_PROFILS_AUTORISES['public'])
 			{
 				// II.1.a. Session perdue ou expirée et demande d'accès à une page réservée : redirection pour une nouvelle identification
 				$ALERTE_SSO = close_session(); open_new_session(); init_session();
@@ -124,7 +124,7 @@ function gestion_session($PROFIL_REQUIS)
 		elseif($_SESSION['USER_PROFIL'] == 'public')
 		{
 			// II.3. Personne non identifiée
-			if($PROFIL_REQUIS!='public')
+			if(!$TAB_PROFILS_AUTORISES['public'])
 			{
 				// II.3.a. Espace non identifié => Espace identifié : redirection pour identification
 				init_session();
@@ -138,11 +138,11 @@ function gestion_session($PROFIL_REQUIS)
 		else
 		{
 			// II.4. Personne identifiée
-			if($_SESSION['USER_PROFIL'] == $PROFIL_REQUIS)
+			if($TAB_PROFILS_AUTORISES[$_SESSION['USER_PROFIL']])
 			{
 				// II.4.a. Espace identifié => Espace identifié identique : RAS
 			}
-			elseif($PROFIL_REQUIS=='public')
+			elseif($TAB_PROFILS_AUTORISES['public'])
 			{
 				// II.4.b. Espace identifié => Espace non identifié : création d'une nouvelle session vierge (éventuellement un message d'alerte pour indiquer session perdue ?)
 				if (SACoche!='ajax')
@@ -151,7 +151,7 @@ function gestion_session($PROFIL_REQUIS)
 					$ALERTE_SSO = close_session();open_new_session();init_session();
 				}
 			}
-			elseif($PROFIL_REQUIS!='public')
+			elseif(!$TAB_PROFILS_AUTORISES['public'])
 			{
 				// II.4.c. Espace identifié => Autre espace identifié incompatible : redirection pour une nouvelle identification
 				init_session();

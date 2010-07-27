@@ -84,7 +84,7 @@ entete();
 <body>
 	<?php echo $CONTENU_PAGE; ?>
 	<script type="text/javascript">
-		var DOSSIER='public';
+		var PAGE='public_anti_maj_clock';
 	</script>
 </body>
 </html>

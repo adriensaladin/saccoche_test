@@ -36,10 +36,6 @@ require_once('./_inc/constantes.php');
 require_once('./_inc/fonction_redirection.php');
 require_once('./_inc/config_serveur.php');
 
-// Paramètres transmis
-$DOSSIER = (isset($_GET['dossier'])) ? $_GET['dossier'] : 'public';
-$FICHIER = (isset($_GET['fichier'])) ? $_GET['fichier'] : 'index';
-
 // Fonctions
 require_once('./_inc/fonction_clean.php');
 require_once('./_inc/fonction_sessions.php');
@@ -55,11 +51,23 @@ $test_upload = ( (isset($_SERVER['CONTENT_TYPE'])) &&(strpos($_SERVER['CONTENT_T
 $format = ( $test_xml && !$test_upload ) ? 'text/xml' : 'text/html' ;
 header('Content-Type: '.$format.'; charset=utf-8');
 
+// Page appelée
+if(!isset($_GET['page']))
+{
+	affich_message_exit($titre='Référence manquante',$contenu='Référence de page manquante.');
+}
+$PAGE = $_GET['page'];
+
 // Ouverture de la session et gestion des droits d'accès
-gestion_session($PROFIL_REQUIS = $DOSSIER);
+require_once('./_inc/tableau_droits.php');
+if(!isset($tab_droits[$PAGE]))
+{
+	affich_message_exit($titre='Droits manquants',$contenu='Droits de la page "'.$PAGE.'" manquants.');
+}
+gestion_session($TAB_PROFILS_AUTORISES = $tab_droits[$PAGE]);
 
 // Arrêt s'il fallait seulement mettre la session à jour (la session d'un user connecté n'a pas été perdue si on arrive jusqu'ici)
-if($FICHIER=='conserver_session_active')
+if($PAGE=='conserver_session_active')
 {
 	exit('ok');
 }
@@ -106,18 +114,18 @@ if(is_file($fichier_constantes))
 		require_once($fichier_mysql_config);
 		require_once($fichier_class_config);
 	}
-	elseif($FICHIER!='installation')
+	elseif($PAGE!='public_installation')
 	{
-		affich_message_exit($titre='Paramètres BDD manquants',$contenu='Paramètres de connexion à la base de données manquants.<br /><a href="./index.php?fichier=installation">Procédure d\'installation du site SACoche.</a>');
+		affich_message_exit($titre='Paramètres BDD manquants',$contenu='Paramètres de connexion à la base de données manquants.<br /><a href="./index.php?page=public_installation">Procédure d\'installation du site SACoche.</a>');
 	}
 }
-elseif($FICHIER!='installation')
+elseif($PAGE!='public_installation')
 {
-	affich_message_exit($titre='Informations hébergement manquantes',$contenu='Informations concernant l\'hébergeur manquantes.<br /><a href="./index.php?fichier=installation">Procédure d\'installation du site SACoche.</a>');
+	affich_message_exit($titre='Informations hébergement manquantes',$contenu='Informations concernant l\'hébergeur manquantes.<br /><a href="./index.php?page=public_installation">Procédure d\'installation du site SACoche.</a>');
 }
 
 // Chargement de la page concernée
-$filename_php = './pages_'.$DOSSIER.'/'.$FICHIER.'.ajax.php';
+$filename_php = './pages/'.$PAGE.'.ajax.php';
 if(is_file($filename_php))
 {
 	require($filename_php);

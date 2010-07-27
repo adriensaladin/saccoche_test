@@ -41,50 +41,7 @@ $format				matiere	selection	multimatiere
 $dossier         = './__tmp/export/';
 $fichier_lien    = 'bilan_'.$format.'_etabl'.$_SESSION['BASE'].'_user'.$_SESSION['USER_ID'].'_'.time();
 
-$tab_modele_bon = array('RR','R','V','VV');	// les notes prises en compte dans le calcul du score
-
 function non_nul($n)    {return $n!==false ;}
-function acquis($n)     {return $n>$_SESSION['CALCUL_SEUIL']['V'] ;}
-function non_acquis($n) {return $n<$_SESSION['CALCUL_SEUIL']['R'] ;}
-function calculer_note($tab_devoirs,$calcul_methode,$calcul_limite)
-{
-	// Attention !!! $tab_devoirs n'est pas sur le même modèle que dans le fichier code_releve_competence ; donc $tab_devoirs[$i] remplacé par $tab_devoirs[$i]['note']
-	global $tab_modele_bon;
-	$nb_devoir = count($tab_devoirs);
-	// on passe en revue les évaluations disponibles, et on retient les scores exploitables
-	$tab_note = array(); // pour les notes d'un élève
-	for($i=0;$i<$nb_devoir;$i++)
-	{
-		if(in_array($tab_devoirs[$i]['note'],$tab_modele_bon))
-		{
-			$tab_note[] = $_SESSION['CALCUL_VALEUR'][$tab_devoirs[$i]['note']];
-		}
-	}
-	// si pas de notes exploitables, on arrête de suite (sinon, on est certain de pouvoir renvoyer un score)
-	$nb_note = count($tab_note);
-	if($nb_note==0)
-	{
-		return false;
-	}
-	// si le paramétrage du référentiel l'indique, on tronque pour ne garder que les derniers résultats
-	if( ($calcul_limite) && ($nb_note>$calcul_limite) )
-	{
-		$tab_note = array_slice($tab_note,-$calcul_limite);
-		$nb_note = $calcul_limite;
-	}
-	// calcul de la note en fonction du mode du référentiel
-	$somme_point = 0;
-	$coef = 1;
-	$somme_coef = 0;
-	for($num_devoir=1 ; $num_devoir<=$nb_note ; $num_devoir++)
-	{
-		$somme_point += $tab_note[$num_devoir-1]*$coef;
-		$somme_coef += $coef;
-		// Calcul du coef de l'éventuel devoir suivant
-		$coef = ($calcul_methode=='geometrique') ? $coef*2 : ( ($calcul_methode=='arithmetique') ? $coef+1 : 1 ) ;
-	}
-	return round($somme_point/$somme_coef,0);
-}
 
 if(!$aff_coef)  { $texte_coef       = ''; }
 if(!$aff_socle) { $texte_socle      = ''; }
@@ -139,7 +96,7 @@ foreach($tab_eleve as $tab)
 				{
 					extract($tab_item[$item_id][0]);	// $item_ref $item_nom $item_coef $item_socle $item_lien $calcul_methode $calcul_limite
 					// calcul du bilan de l'item
-					$tab_score_eleve_item[$eleve_id][$matiere_id][$item_id] = calculer_note($tab_devoirs,$calcul_methode,$calcul_limite);
+					$tab_score_eleve_item[$eleve_id][$matiere_id][$item_id] = calculer_score($tab_devoirs,$calcul_methode,$calcul_limite);
 					$tab_score_item_eleve[$item_id][$eleve_id] = $tab_score_eleve_item[$eleve_id][$matiere_id][$item_id];
 				}
 				// calcul des bilans des scores
@@ -171,8 +128,8 @@ foreach($tab_eleve as $tab)
 				// ... un pour le nombre d\'items considérés acquis ou pas
 				if($nb_scores)
 				{
-					$nb_acquis      = count( array_filter($tableau_score_filtre,'acquis') );
-					$nb_non_acquis  = count( array_filter($tableau_score_filtre,'non_acquis') );
+					$nb_acquis      = count( array_filter($tableau_score_filtre,'test_A') );
+					$nb_non_acquis  = count( array_filter($tableau_score_filtre,'test_NA') );
 					$nb_voie_acquis = $nb_scores - $nb_acquis - $nb_non_acquis;
 					$tab_pourcentage_validations_eleve[$matiere_id][$eleve_id] = round( 50 * ( ($nb_acquis*2 + $nb_voie_acquis) / $nb_scores ) ,0);
 					$tab_infos_validations_eleve[$matiere_id][$eleve_id]       = $nb_acquis.'A '. $nb_voie_acquis.'VA '. $nb_non_acquis.'NA';
@@ -203,8 +160,8 @@ if(in_array('synthese',$tab_type))
 		if($nb_scores)
 		{
 			$somme_scores = array_sum($tableau_score_filtre);
-			$nb_acquis      = count( array_filter($tableau_score_filtre,'acquis') );
-			$nb_non_acquis  = count( array_filter($tableau_score_filtre,'non_acquis') );
+			$nb_acquis      = count( array_filter($tableau_score_filtre,'test_A') );
+			$nb_non_acquis  = count( array_filter($tableau_score_filtre,'test_NA') );
 			$nb_voie_acquis = $nb_scores - $nb_acquis - $nb_non_acquis;
 			$tab_moyenne_scores_item[$item_id]          = round($somme_scores/$nb_scores,0);
 			$tab_pourcentage_validations_item[$item_id] = round( 50 * ( ($nb_acquis*2 + $nb_voie_acquis) / $nb_scores ) ,0);

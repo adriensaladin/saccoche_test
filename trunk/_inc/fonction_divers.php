@@ -26,6 +26,108 @@
  */
 
 /**
+ * test_A
+ * Tester un item est considéré comme acquis au vu du score transmis.
+ * Le seuil peut être celui défini globalement (par défaut si rien de transmis) ou un seuil testé ; peut être appelé avec array_filter().
+ * 
+ * @param int $score
+ * @param int $seuil (facultatif)
+ * @return void
+ */
+
+function test_A($score,$seuil=null)
+{
+	$seuil = ($seuil===null) ? $_SESSION['CALCUL_SEUIL']['V'] : $seuil ;
+	return $score>$seuil ;
+}
+
+/**
+ * test_NA
+ * Tester un item est considéré comme non acquis au vu du score transmis.
+ * Le seuil peut être celui défini globalement (par défaut si rien de transmis) ou un seuil testé ; peut être appelé avec array_filter().
+ * 
+ * @param int $score
+ * @param int $seuil
+ * @return void
+ */
+
+function test_NA($score,$seuil=null)
+{
+	$seuil = ($seuil===null) ? $_SESSION['CALCUL_SEUIL']['R'] : $seuil ;
+	return $score<$seuil ;
+}
+
+/**
+ * calculer_score
+ * Calculer le score d'un item, à partir des notes transmises et des paramètres de calcul.
+ * 
+ * @param array  $tab_devoirs      $tab_devoirs[$i]['note'] = note
+ * @param string $calcul_methode   'geometrique' / 'arithmetique' / 'classique' / 'moyenne' / 'bestof'
+ * @param int    $calcul_limite    nb maxi d'éval à prendre en compte
+ * @return void
+ */
+
+function calculer_score($tab_devoirs,$calcul_methode,$calcul_limite)
+{
+	// on passe en revue les évaluations disponibles, et on retient les notes exploitables
+	$tab_modele_bon = array('RR','R','V','VV');	// les notes prises en compte dans le calcul du score
+	$tab_note = array(); // pour retenir les notes en question
+	$nb_devoir = count($tab_devoirs);
+	for($i=0;$i<$nb_devoir;$i++)
+	{
+		if(in_array($tab_devoirs[$i]['note'],$tab_modele_bon))
+		{
+			$tab_note[] = $_SESSION['CALCUL_VALEUR'][$tab_devoirs[$i]['note']];
+		}
+	}
+	// si pas de notes exploitables, on arrête de suite (sinon, on est certain de pouvoir renvoyer un score)
+	$nb_note = count($tab_note);
+	if($nb_note==0)
+	{
+		return false;
+	}
+	// si le paramétrage du référentiel l'indique, on tronque pour ne garder que les derniers résultats
+	if( ($calcul_limite) && ($nb_note>$calcul_limite) )
+	{
+		$tab_note = array_slice($tab_note,-$calcul_limite);
+		$nb_note = $calcul_limite;
+	}
+	// 1. Calcul de la note en fonction de la méthode du référentiel : 'geometrique','arithmetique','classique'
+	if(in_array($calcul_methode,array('geometrique','arithmetique','classique')))
+	{
+		// 1a. Initialisation
+		$somme_point = 0;
+		$somme_coef = 0;
+		$coef = 1;
+		// 1b. Pour chaque devoir (note)...
+		for($num_devoir=1 ; $num_devoir<=$nb_note ; $num_devoir++)
+		{
+			$somme_point += $tab_note[$num_devoir-1]*$coef;
+			$somme_coef += $coef;
+			$coef = ($calcul_methode=='geometrique') ? $coef*2 : ( ($calcul_methode=='arithmetique') ? $coef+1 : 1 ) ; // Calcul du coef de l'éventuel devoir suivant
+		}
+		// 1c. Calcul final du score
+		return round( $somme_point/$somme_coef , 0 );
+	}
+	// 2. Calcul de la note en fonction de la méthode du référentiel : 'bestof1','bestof2','bestof3'
+	if(in_array($calcul_methode,array('bestof1','bestof2','bestof3')))
+	{
+		// 2a. Initialisation
+		$tab_notes = array();
+		$nb_best = (int)substr($calcul_methode,-1);
+		// 2b. Pour chaque devoir (note)...
+		for($num_devoir=1 ; $num_devoir<=$nb_note ; $num_devoir++)
+		{
+			$tab_notes[] = $valeur[$code];
+		}
+		// 2c. Calcul final du score
+		rsort($tab_notes);
+		$tab_notes = array_slice( $tab_notes , 0 , $nb_best );
+		return round( array_sum($tab_notes)/count($tab_notes) , 0 );
+	}
+}
+
+/**
  * ajouter_log
  * Ajout d'un log dans un fichier d'actions critiques
  * 
@@ -107,7 +209,7 @@ function compacter($chemin,$version,$methode)
  * charger_parametres_mysql_supplementaires
  * 
  * Dans le cas d'une installation de type multi-structures, on peut avoir besoin d'effectuer une requête sur une base d'établissement sans y être connecté :
- * => pour savoir si le mode de connexion est SSO ou pas (./page_public/accueil.ajax.php)
+ * => pour savoir si le mode de connexion est SSO ou pas (./pages/public_accueil.ajax.php)
  * => pour l'identification (fonction connecter_user() dans ./_inc/fonction_requetes_administration)
  * => pour le webmestre (création d'un admin, info sur les admins, initialisation du mdp...)
  * 
@@ -521,9 +623,9 @@ function actualiser_style_session()
 	$_SESSION['CSS'] .= 'table.scor_eval tbody td input.R  {background:#FFF url("./_img/note/'.$_SESSION['CSS_NOTE_STYLE'].'/R.gif")  no-repeat center center;}';
 	$_SESSION['CSS'] .= 'table.scor_eval tbody td input.V  {background:#FFF url("./_img/note/'.$_SESSION['CSS_NOTE_STYLE'].'/V.gif")  no-repeat center center;}';
 	$_SESSION['CSS'] .= 'table.scor_eval tbody td input.VV {background:#FFF url("./_img/note/'.$_SESSION['CSS_NOTE_STYLE'].'/VV.gif") no-repeat center center;}';
-	$_SESSION['CSS'] .= 'table th.r , table td.r , div.r ,span.r {background-color:'.$_SESSION['CSS_BACKGROUND-COLOR']['NA'].'}';
-	$_SESSION['CSS'] .= 'table th.o , table td.o , div.o ,span.o {background-color:'.$_SESSION['CSS_BACKGROUND-COLOR']['VA'].'}';
-	$_SESSION['CSS'] .= 'table th.v , table td.v , div.v ,span.v {background-color:'.$_SESSION['CSS_BACKGROUND-COLOR']['A'].'}';
+	$_SESSION['CSS'] .= 'table th.r , table td.r , div.r ,span.r ,label.r {background-color:'.$_SESSION['CSS_BACKGROUND-COLOR']['NA'].'}';
+	$_SESSION['CSS'] .= 'table th.o , table td.o , div.o ,span.o ,label.o {background-color:'.$_SESSION['CSS_BACKGROUND-COLOR']['VA'].'}';
+	$_SESSION['CSS'] .= 'table th.v , table td.v , div.v ,span.v ,label.v {background-color:'.$_SESSION['CSS_BACKGROUND-COLOR']['A'].'}';
 }
 
 function envoyer_webmestre_courriel($adresse,$objet,$contenu)
@@ -693,10 +795,11 @@ function afficher_arborescence_matiere_from_SQL($DB_TAB,$dynamique,$reference,$a
  * @param bool        $dynamique   arborescence cliquable ou pas (plier/replier)
  * @param bool        $reference   afficher ou pas les références
  * @param bool        $aff_input   affichage ou pas des input radio avec label
+ * @param bool        $ids         indiquer ou pas les identifiants des éléments (Pxxx / Sxxx / Exxx)
  * @return string
  */
 
-function afficher_arborescence_socle_from_SQL($DB_TAB,$dynamique,$reference,$aff_input)
+function afficher_arborescence_socle_from_SQL($DB_TAB,$dynamique,$reference,$aff_input,$ids)
 {
 	$input_texte = '';
 	$label_texte_avant = '';
@@ -755,19 +858,22 @@ function afficher_arborescence_socle_from_SQL($DB_TAB,$dynamique,$reference,$aff
 			{
 				foreach($tab_pilier[$palier_id] as $pilier_id => $pilier_texte)
 				{
-					$retour .= '<li class="li_n1">'.$span_avant.html($pilier_texte).$span_apres."\r\n";
+					$aff_id = ($ids) ? ' id="P'.$pilier_id.'"' : '' ;
+					$retour .= '<li class="li_n1"'.$aff_id.'>'.$span_avant.html($pilier_texte).$span_apres."\r\n";
 					$retour .= '<ul class="ul_n2">'."\r\n";
 					if(isset($tab_section[$palier_id][$pilier_id]))
 					{
 						foreach($tab_section[$palier_id][$pilier_id] as $section_id => $section_texte)
 						{
-							$retour .= '<li class="li_n2">'.$span_avant.html($section_texte).$span_apres."\r\n";
+							$aff_id = ($ids) ? ' id="S'.$section_id.'"' : '' ;
+							$retour .= '<li class="li_n2"'.$aff_id.'>'.$span_avant.html($section_texte).$span_apres."\r\n";
 							$retour .= '<ul class="ul_n3">'."\r\n";
 							if(isset($tab_entree[$palier_id][$pilier_id][$section_id]))
 							{
-								foreach($tab_entree[$palier_id][$pilier_id][$section_id] as $socle_id => $entree_texte)
+								foreach($tab_entree[$palier_id][$pilier_id][$section_id] as $entree_id => $entree_texte)
 								{
-									$retour .= '<li class="li_n3">'.$entree_texte.'</li>'."\r\n";
+									$aff_id = ($ids) ? ' id="E'.$entree_id.'"' : '' ;
+									$retour .= '<li class="li_n3"'.$aff_id.'>'.$entree_texte.'</li>'."\r\n";
 									
 								}
 							}

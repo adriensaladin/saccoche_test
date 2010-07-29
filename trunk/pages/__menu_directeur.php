@@ -31,7 +31,7 @@ if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');
 
 $arbre='
 <ul id="treeview">
-	<li>Mon compte
+	<li>Accueil &amp; Informations
 		<ul>
 			<li class="compte_accueil"><a href="./index.php?page=compte_accueil">Accueil</a></li>
 			<li class="compte_password"><a href="./index.php?page=compte_password">Mot de passe</a></li>
@@ -39,12 +39,18 @@ $arbre='
 			<li class="export_fichier"><a href="./index.php?page=export_fichier">Export listings</a></li>
 		</ul>
 	</li>
+	<li>Validation du socle
+		<ul>
+			<li class="validation_socle_item"><a href="./index.php?page=validation_socle&amp;section=item">Valider le socle : items</a></li>
+			<li class="validation_socle_pilier"><a href="./index.php?page=validation_socle&amp;section=pilier">Valider le socle : compétences</a></li>
+		</ul>
+	</li>
 	<li>Relevés &amp; Bilans
 		<ul>
 			<li class="releve_grille"><a href="./index.php?page=releve&amp;section=grille">Grilles sur un niveau</a></li>
 			<li class="releve_matiere"><a href="./index.php?page=releve&amp;section=matiere">Bilans sur une matière</a></li>
 			<li class="releve_multimatiere"><a href="./index.php?page=releve&amp;section=multimatiere">Bilans transdisciplinaires (P.P.)</a></li>
-			<li class="releve_socle"><a href="./index.php?page=releve&amp;section=socle">Attestation de maîtrise du socle</a></li>
+			<li class="releve_socle"><a href="./index.php?page=releve&amp;section=socle">État de maîtrise du socle</a></li>
 		</ul>
 	</li>
 </ul>

@@ -26,12 +26,12 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-$TITRE = "Validation du socle";
+$TITRE = "Valider le socle";
 ?>
 
 <div class="hc">
-	<a href="./index.php?page=<?php echo $PAGE ?>&amp;section=item">Validation des items.</a>	||
-	<a href="./index.php?page=<?php echo $PAGE ?>&amp;section=pilier">Validation des compétences (ou piliers).</a>
+	<a href="./index.php?page=<?php echo $PAGE ?>&amp;section=item">Valider les items.</a>	||
+	<a href="./index.php?page=<?php echo $PAGE ?>&amp;section=pilier">Valider les compétences (ou piliers).</a>
 </div>
 
 <hr />

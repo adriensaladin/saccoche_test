@@ -25,24 +25,18 @@
  * 
  */
 
+// Mettre à jour l'élément de formulaire "f_pilier" et le renvoyer en HTML
+
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-$TITRE = "Groupes de besoin";
-?>
+if($_SESSION['SESAMATH_ID']==ID_DEMO) {}
 
-<div class="hc">
-	<a href="./index.php?page=<?php echo $PAGE ?>&amp;section=gestion">Gérer ses groupes de besoin.</a>	||
-	<a href="./index.php?page=<?php echo $PAGE ?>&amp;section=eleve">Élèves &amp; groupes de besoin.</a>||
-	<a href="./index.php?page=professeur_eval&amp;section=groupe">Évaluer un groupe de besoin.</a>
-</div>
+$palier  = (isset($_POST['f_palier']))  ? clean_entier($_POST['f_palier'])  : 0;
 
-<hr />
-
-<?php
-// Afficher la bonne page et appeler le bon js / ajax par la suite
-$fichier_section = './pages/'.$PAGE.'_'.$SECTION.'.php';
-if(is_file($fichier_section))
+if(!$palier)
 {
-	require($fichier_section);
-	$PAGE = $PAGE.'_'.$SECTION ;
+	exit('Erreur avec les données transmises !');
 }
+
+echo afficher_select(DB_STRUCTURE_OPT_piliers($palier) , $select_nom=false , $option_first='oui' , $selection=false , $optgroup='non');
+
 ?>

@@ -38,7 +38,8 @@ $TITRE = "Gestion de l'établissement";
 	<a href="./index.php?page=<?php echo $PAGE ?>&amp;section=connexion">Mode d'identification.</a>	||
 	<a href="./index.php?page=<?php echo $PAGE ?>&amp;section=duree_inactivite">Délai avant déconnexion.</a>	<br />
 	<a href="./index.php?page=<?php echo $PAGE ?>&amp;section=demandes_eval">Demandes d'évaluations.</a>	||
-	<a href="./index.php?page=<?php echo $PAGE ?>&amp;section=options_eleve">Options de l'environnement élève.</a>
+	<a href="./index.php?page=<?php echo $PAGE ?>&amp;section=options_eleve">Options de l'environnement élève.</a>	||
+	<a href="./index.php?page=<?php echo $PAGE ?>&amp;section=profils_validation">Profils autorisés à valider le socle.</a>
 </div>
 
 <hr />

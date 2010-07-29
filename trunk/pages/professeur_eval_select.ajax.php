@@ -113,6 +113,7 @@ if( ($action=='Afficher_evaluations') && $date_debut && $date_fin )
 		echo	'</td>';
 		echo'</tr>';
 	}
+	exit();
 }
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
@@ -146,6 +147,7 @@ elseif( (($action=='ajouter')||(($action=='dupliquer')&&($devoir_id))) && $date 
 	echo	'<q class="saisir" title="Saisir les acquisitions des élèves à cette évaluation."></q>';
 	echo	'<q class="voir" title="Voir les acquisitions des élèves à cette évaluation."></q>';
 	echo'</td>';
+	exit();
 }
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
@@ -180,6 +182,7 @@ else if( ($action=='modifier') && $devoir_id && $groupe_id && $date && $nb_eleve
 	echo	'<q class="saisir" title="Saisir les acquisitions des élèves à cette évaluation."></q>';
 	echo	'<q class="voir" title="Voir les acquisitions des élèves à cette évaluation."></q>';
 	echo'</td>';
+	exit();
 }
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
@@ -192,7 +195,7 @@ else if( ($action=='supprimer') && $devoir_id && $groupe_id )
 	// la suite est commune aux évals sur une classe ou un groupe
 	DB_STRUCTURE_supprimer_devoir_et_saisies($devoir_id,$_SESSION['USER_ID']);
 	// Afficher le retour
-	echo'<ok>';
+	exit('<ok>');
 }
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
@@ -204,24 +207,22 @@ else if( ($action=='ordonner') && $devoir_id )
 	$DB_TAB_COMP = DB_STRUCTURE_lister_items_devoir($devoir_id);
 	if(!count($DB_TAB_COMP))
 	{
-		echo'Aucun item n\'est associé à cette évaluation !';
+		exit('Aucun item n\'est associé à cette évaluation !');
 	}
-	else
+	$tab_affich  = array();
+	foreach($DB_TAB_COMP as $DB_ROW)
 	{
-		$tab_affich  = array();
-		foreach($DB_TAB_COMP as $DB_ROW)
-		{
-			$item_ref = $DB_ROW['item_ref'];
-			$texte_socle = ($DB_ROW['entree_id']) ? ' [S]' : ' [–]';
-			$tab_affich[] = '<div id="i'.$DB_ROW['item_id'].'"><b>'.html($item_ref.$texte_socle).'</b> - '.html($DB_ROW['item_nom']).'</div>';
-		}
-		echo implode('<div class="ti"><input type="image" src="./_img/action_ordonner.png" /></div>',$tab_affich);
-		echo'<p>';
-		echo	'<button id="Enregistrer_ordre" type="button" value="'.$ref.'"><img alt="" src="./_img/bouton/valider.png" /> Enregistrer cet ordre</button>&nbsp;&nbsp;&nbsp;';
-		echo	'<button id="fermer_zone_ordonner" type="button"><img alt="" src="./_img/bouton/annuler.png" /> Annuler / Retour</button>&nbsp;&nbsp;&nbsp;';
-		echo	'<label id="ajax_msg">&nbsp;</label>';
-		echo'</p>';
+		$item_ref = $DB_ROW['item_ref'];
+		$texte_socle = ($DB_ROW['entree_id']) ? ' [S]' : ' [–]';
+		$tab_affich[] = '<div id="i'.$DB_ROW['item_id'].'"><b>'.html($item_ref.$texte_socle).'</b> - '.html($DB_ROW['item_nom']).'</div>';
 	}
+	echo implode('<div class="ti"><input type="image" src="./_img/action_ordonner.png" /></div>',$tab_affich);
+	echo'<p>';
+	echo	'<button id="Enregistrer_ordre" type="button" value="'.$ref.'"><img alt="" src="./_img/bouton/valider.png" /> Enregistrer cet ordre</button>&nbsp;&nbsp;&nbsp;';
+	echo	'<button id="fermer_zone_ordonner" type="button"><img alt="" src="./_img/bouton/annuler.png" /> Annuler / Retour</button>&nbsp;&nbsp;&nbsp;';
+	echo	'<label id="ajax_msg">&nbsp;</label>';
+	echo'</p>';
+	exit();
 }
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
@@ -237,103 +238,101 @@ else if( ($action=='saisir') && $devoir_id && $groupe_id && $date ) // $date (au
 	// Let's go
 	if(!count($DB_TAB_COMP))
 	{
-		echo'Aucun item n\'est associé à cette évaluation !';
+		exit('Aucun item n\'est associé à cette évaluation !');
 	}
-	elseif(!count($DB_TAB_USER))
+	if(!count($DB_TAB_USER))
 	{
-		echo'Aucun élève n\'est associé à cette évaluation !';
+		exit('Aucun élève n\'est associé à cette évaluation !');
 	}
-	else
+	$separateur = ';';
+	$tab_affich  = array(); // tableau bi-dimensionnel [n°ligne=id_item][n°colonne=id_user]
+	$tab_user_id = array(); // pas indispensable, mais plus lisible
+	$tab_comp_id = array(); // pas indispensable, mais plus lisible
+	$tab_affich[0][0] = '<td>';
+	$tab_affich[0][0].= '<span class="manuel"><a class="pop_up" href="'.SERVEUR_DOCUMENTAIRE.'?fichier=support_professeur__evaluations_saisie_resultats">DOC : Saisie des résultats.</a></span><p />';
+	$tab_affich[0][0].= '<label for="radio_clavier"><input type="radio" id="radio_clavier" name="mode_saisie" value="clavier" /> <img alt="" src="./_img/pilot_keyboard.png" /> Pilotage au clavier</label> <img alt="" src="./_img/bulle_aide.png" title="Sélectionner un rectangle blanc<br />au clavier (flèches) ou à la souris<br />puis utiliser les touches suivantes :<br />&nbsp;1 ; 2 ; 3 ; 4 ; A ; N ; D ; suppr" /><br />';
+	$tab_affich[0][0].= '<label for="radio_souris"><input type="radio" id="radio_souris" name="mode_saisie" value="souris" /> <img alt="" src="./_img/pilot_mouse.png" /> Pilotage à la souris</label> <img alt="" src="./_img/bulle_aide.png" title="Survoler une case du tableau avec la souris<br />puis cliquer sur une des images proposées." /><p />';
+	$tab_affich[0][0].= '<button id="Enregistrer_saisie" type="button"><img alt="" src="./_img/bouton/valider.png" /> Enregistrer les saisies</button><input type="hidden" name="f_ref" id="f_ref" value="'.$ref.'" /><input id="f_date" name="f_date" type="hidden" value="'.$date.'" /><input id="f_info" name="f_info" type="hidden" value="'.html($info).'" /><br />';
+	$tab_affich[0][0].= '<button id="fermer_zone_saisir" type="button"><img alt="" src="./_img/bouton/annuler.png" /> Annuler / Retour</button><br />';
+	$tab_affich[0][0].= '<label id="ajax_msg">&nbsp;</label>';
+	$tab_affich[0][0].= '</td>';
+	// première ligne (noms prénoms des élèves)
+	$csv_ligne_eleve_nom = $separateur;
+	$csv_ligne_eleve_id  = $separateur;
+	$csv_nb_colonnes = 1;
+	foreach($DB_TAB_USER as $DB_ROW)
 	{
-		$separateur = ';';
-		$tab_affich  = array(); // tableau bi-dimensionnel [n°ligne=id_item][n°colonne=id_user]
-		$tab_user_id = array(); // pas indispensable, mais plus lisible
-		$tab_comp_id = array(); // pas indispensable, mais plus lisible
-		$tab_affich[0][0] = '<td>';
-		$tab_affich[0][0].= '<span class="manuel"><a class="pop_up" href="'.SERVEUR_DOCUMENTAIRE.'?fichier=support_professeur__evaluations_saisie_resultats">DOC : Saisie des résultats.</a></span><p />';
-		$tab_affich[0][0].= '<label for="radio_clavier"><input type="radio" id="radio_clavier" name="mode_saisie" value="clavier" /> <img alt="" src="./_img/pilot_keyboard.png" /> Pilotage au clavier</label> <img alt="" src="./_img/bulle_aide.png" title="Sélectionner un rectangle blanc<br />au clavier (flèches) ou à la souris<br />puis utiliser les touches suivantes :<br />&nbsp;1 ; 2 ; 3 ; 4 ; A ; N ; D ; suppr" /><br />';
-		$tab_affich[0][0].= '<label for="radio_souris"><input type="radio" id="radio_souris" name="mode_saisie" value="souris" /> <img alt="" src="./_img/pilot_mouse.png" /> Pilotage à la souris</label> <img alt="" src="./_img/bulle_aide.png" title="Survoler une case du tableau avec la souris<br />puis cliquer sur une des images proposées." /><p />';
-		$tab_affich[0][0].= '<button id="Enregistrer_saisie" type="button"><img alt="" src="./_img/bouton/valider.png" /> Enregistrer les saisies</button><input type="hidden" name="f_ref" id="f_ref" value="'.$ref.'" /><input id="f_date" name="f_date" type="hidden" value="'.$date.'" /><input id="f_info" name="f_info" type="hidden" value="'.html($info).'" /><br />';
-		$tab_affich[0][0].= '<button id="fermer_zone_saisir" type="button"><img alt="" src="./_img/bouton/annuler.png" /> Annuler / Retour</button><br />';
-		$tab_affich[0][0].= '<label id="ajax_msg">&nbsp;</label>';
-		$tab_affich[0][0].= '</td>';
-		// première ligne (noms prénoms des élèves)
-		$csv_ligne_eleve_nom = $separateur;
-		$csv_ligne_eleve_id  = $separateur;
-		$csv_nb_colonnes = 1;
-		foreach($DB_TAB_USER as $DB_ROW)
+		$tab_affich[0][$DB_ROW['user_id']] = '<th><img alt="'.html($DB_ROW['user_nom'].' '.$DB_ROW['user_prenom']).'" src="./_img/php/etiquette.php?dossier='.$_SESSION['BASE'].'&amp;nom='.urlencode($DB_ROW['user_nom']).'&amp;prenom='.urlencode($DB_ROW['user_prenom']).'&amp;br" /></th>';
+		$tab_user_id[$DB_ROW['user_id']] = html($DB_ROW['user_prenom'].' '.$DB_ROW['user_nom']);
+		$csv_ligne_eleve_nom .= '"'.$DB_ROW['user_prenom'].' '.$DB_ROW['user_nom'].'"'.$separateur;
+		$csv_ligne_eleve_id  .= $DB_ROW['user_id'].$separateur;
+		$csv_nb_colonnes++;
+	}
+	$export_csv = $csv_ligne_eleve_id."\r\n";
+	// première colonne (noms items)
+	foreach($DB_TAB_COMP as $DB_ROW)
+	{
+		$item_ref = $DB_ROW['item_ref'];
+		$texte_socle = ($DB_ROW['entree_id']) ? ' [S]' : ' [–]';
+		$tab_affich[$DB_ROW['item_id']][0] = '<th><b>'.html($item_ref.$texte_socle).'</b><br />'.html($DB_ROW['item_nom']).'</th>';
+		$tab_comp_id[$DB_ROW['item_id']] = $item_ref;
+		$export_csv .= $DB_ROW['item_id'].str_repeat($separateur,$csv_nb_colonnes).$item_ref.$texte_socle.' '.$DB_ROW['item_nom']."\r\n";
+	}
+	$export_csv .= $csv_ligne_eleve_nom."\r\n\r\n";
+	// cases centrales avec un champ input de base
+	$num_colonne = 0;
+	foreach($tab_user_id as $user_id=>$val_user)
+	{
+		$num_colonne++;
+		$num_ligne=0;
+		foreach($tab_comp_id as $comp_id=>$val_comp)
 		{
-			$tab_affich[0][$DB_ROW['user_id']] = '<th><img alt="'.html($DB_ROW['user_nom'].' '.$DB_ROW['user_prenom']).'" src="./_img/php/etiquette.php?dossier='.$_SESSION['BASE'].'&amp;nom='.urlencode($DB_ROW['user_nom']).'&amp;prenom='.urlencode($DB_ROW['user_prenom']).'&amp;br" /></th>';
-			$tab_user_id[$DB_ROW['user_id']] = html($DB_ROW['user_prenom'].' '.$DB_ROW['user_nom']);
-			$csv_ligne_eleve_nom .= '"'.$DB_ROW['user_prenom'].' '.$DB_ROW['user_nom'].'"'.$separateur;
-			$csv_ligne_eleve_id  .= $DB_ROW['user_id'].$separateur;
-			$csv_nb_colonnes++;
-		}
-		$export_csv = $csv_ligne_eleve_id."\r\n";
-		// première colonne (noms items)
-		foreach($DB_TAB_COMP as $DB_ROW)
-		{
-			$item_ref = $DB_ROW['item_ref'];
-			$texte_socle = ($DB_ROW['entree_id']) ? ' [S]' : ' [–]';
-			$tab_affich[$DB_ROW['item_id']][0] = '<th><b>'.html($item_ref.$texte_socle).'</b><br />'.html($DB_ROW['item_nom']).'</th>';
-			$tab_comp_id[$DB_ROW['item_id']] = $item_ref;
-			$export_csv .= $DB_ROW['item_id'].str_repeat($separateur,$csv_nb_colonnes).$item_ref.$texte_socle.' '.$DB_ROW['item_nom']."\r\n";
-		}
-		$export_csv .= $csv_ligne_eleve_nom."\r\n\r\n";
-		// cases centrales avec un champ input de base
-		$num_colonne = 0;
-		foreach($tab_user_id as $user_id=>$val_user)
-		{
-			$num_colonne++;
-			$num_ligne=0;
-			foreach($tab_comp_id as $comp_id=>$val_comp)
-			{
-				$num_ligne++;
-				$tab_affich[$comp_id][$user_id] = '<td class="td_clavier" lang="C'.$num_colonne.'L'.$num_ligne.'"><input type="text" class="X" value="X" id="C'.$num_colonne.'L'.$num_ligne.'" name="'.$comp_id.'x'.$user_id.'" readonly="readonly" /></td>';
-			}
-		}
-		// configurer le champ input
-		$DB_TAB = DB_STRUCTURE_lister_saisies_devoir($devoir_id);
-		$bad = 'class="X" value="X"';
-		foreach($DB_TAB as $DB_ROW)
-		{
-			// Test pour éviter les pbs des élèves changés de groupes ou des items modifiés en cours de route
-			if(isset($tab_affich[$DB_ROW['item_id']][$DB_ROW['eleve_id']]))
-			{
-				$bon = 'class="'.$DB_ROW['saisie_note'].'" value="'.$DB_ROW['saisie_note'].'"';
-				$tab_affich[$DB_ROW['item_id']][$DB_ROW['eleve_id']] = str_replace($bad,$bon,$tab_affich[$DB_ROW['item_id']][$DB_ROW['eleve_id']]);
-			}
-		}
-		// affichage
-		foreach($tab_affich as $comp_id => $tab_user)
-		{
-			if(!$comp_id)
-			{
-				echo'<thead>';
-			}
-			echo'<tr>';
-			foreach($tab_user as $user_id => $val)
-			{
-				echo $val;
-			}
-			echo'</tr>';
-			if(!$comp_id)
-			{
-				echo'</thead><tbody>';
-			}
-		}
-		echo'</tbody>';
-		// Enregistrer le csv
-		$export_csv .= 'SAISIE DÉPORTÉE '.$devoir_id.' DU '.convert_date_mysql_to_french($date).'.'."\r\n";
-		$export_csv .= 'CODAGES AUTORISÉS : 1 2 3 4 A N D'."\r\n\r\n";
-		$fnom = 'saisie_'.$_SESSION['BASE'].'_'.$_SESSION['USER_ID'].'_'.$ref;
-		$zip = new ZipArchive();
-		if ($zip->open($dossier_export.$fnom.'.zip', ZIPARCHIVE::CREATE)===TRUE)
-		{
-			$zip->addFromString($fnom.'.csv',csv($export_csv));
-			$zip->close();
+			$num_ligne++;
+			$tab_affich[$comp_id][$user_id] = '<td class="td_clavier" lang="C'.$num_colonne.'L'.$num_ligne.'"><input type="text" class="X" value="X" id="C'.$num_colonne.'L'.$num_ligne.'" name="'.$comp_id.'x'.$user_id.'" readonly="readonly" /></td>';
 		}
 	}
+	// configurer le champ input
+	$DB_TAB = DB_STRUCTURE_lister_saisies_devoir($devoir_id);
+	$bad = 'class="X" value="X"';
+	foreach($DB_TAB as $DB_ROW)
+	{
+		// Test pour éviter les pbs des élèves changés de groupes ou des items modifiés en cours de route
+		if(isset($tab_affich[$DB_ROW['item_id']][$DB_ROW['eleve_id']]))
+		{
+			$bon = 'class="'.$DB_ROW['saisie_note'].'" value="'.$DB_ROW['saisie_note'].'"';
+			$tab_affich[$DB_ROW['item_id']][$DB_ROW['eleve_id']] = str_replace($bad,$bon,$tab_affich[$DB_ROW['item_id']][$DB_ROW['eleve_id']]);
+		}
+	}
+	// affichage
+	foreach($tab_affich as $comp_id => $tab_user)
+	{
+		if(!$comp_id)
+		{
+			echo'<thead>';
+		}
+		echo'<tr>';
+		foreach($tab_user as $user_id => $val)
+		{
+			echo $val;
+		}
+		echo'</tr>';
+		if(!$comp_id)
+		{
+			echo'</thead><tbody>';
+		}
+	}
+	echo'</tbody>';
+	// Enregistrer le csv
+	$export_csv .= 'SAISIE DÉPORTÉE '.$devoir_id.' DU '.convert_date_mysql_to_french($date).'.'."\r\n";
+	$export_csv .= 'CODAGES AUTORISÉS : 1 2 3 4 A N D'."\r\n\r\n";
+	$fnom = 'saisie_'.$_SESSION['BASE'].'_'.$_SESSION['USER_ID'].'_'.$ref;
+	$zip = new ZipArchive();
+	if ($zip->open($dossier_export.$fnom.'.zip', ZIPARCHIVE::CREATE)===TRUE)
+	{
+		$zip->addFromString($fnom.'.csv',csv($export_csv));
+		$zip->close();
+	}
+	exit();
 }
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
@@ -348,105 +347,103 @@ else if( ($action=='voir') && $devoir_id && $groupe_id && $date ) // $date fran�
 	// Let's go
 	if(!count($DB_TAB_COMP))
 	{
-		echo'Aucun item n\'est associé à cette évaluation !';
+		exit('Aucun item n\'est associé à cette évaluation !');
 	}
-	elseif(!count($DB_TAB_USER))
+	if(!count($DB_TAB_USER))
 	{
-		echo'Aucun élève n\'est associé à cette évaluation !';
+		exit('Aucun élève n\'est associé à cette évaluation !');
 	}
-	else
+	$separateur = ';';
+	$tab_affich  = array(); // tableau bi-dimensionnel [n°ligne=id_item][n°colonne=id_user]
+	$tab_user_id = array(); // pas indispensable, mais plus lisible
+	$tab_comp_id = array(); // pas indispensable, mais plus lisible
+	$tab_affich[0][0] = '<td><button id="fermer_zone_voir" type="button"><img alt="" src="./_img/bouton/retourner.png" /> Retour</button></td>';
+	// première ligne (noms prénoms des élèves)
+	$csv_ligne_eleve_nom = $separateur;
+	$csv_ligne_eleve_id  = $separateur;
+	foreach($DB_TAB_USER as $DB_ROW)
 	{
-		$separateur = ';';
-		$tab_affich  = array(); // tableau bi-dimensionnel [n°ligne=id_item][n°colonne=id_user]
-		$tab_user_id = array(); // pas indispensable, mais plus lisible
-		$tab_comp_id = array(); // pas indispensable, mais plus lisible
-		$tab_affich[0][0] = '<td><button id="fermer_zone_voir" type="button"><img alt="" src="./_img/bouton/retourner.png" /> Retour</button></td>';
-		// première ligne (noms prénoms des élèves)
-		$csv_ligne_eleve_nom = $separateur;
-		$csv_ligne_eleve_id  = $separateur;
-		foreach($DB_TAB_USER as $DB_ROW)
-		{
-			$tab_affich[0][$DB_ROW['user_id']] = '<th><img alt="'.html($DB_ROW['user_nom'].' '.$DB_ROW['user_prenom']).'" src="./_img/php/etiquette.php?dossier='.$_SESSION['BASE'].'&amp;nom='.urlencode($DB_ROW['user_nom']).'&amp;prenom='.urlencode($DB_ROW['user_prenom']).'&amp;br" /></th>';
-			$tab_user_id[$DB_ROW['user_id']] = html($DB_ROW['user_prenom'].' '.$DB_ROW['user_nom']);
-			$csv_ligne_eleve_nom .= '"'.$DB_ROW['user_prenom'].' '.$DB_ROW['user_nom'].'"'.$separateur;
-			$csv_ligne_eleve_id  .= $DB_ROW['user_id'].$separateur;
-		}
-		$export_csv = $csv_ligne_eleve_id."\r\n";
-		$csv_lignes_scores = array();
-		$csv_colonne_texte = array();
-		// première colonne (noms items)
-		foreach($DB_TAB_COMP as $DB_ROW)
-		{
-			$item_ref = $DB_ROW['item_ref'];
-			$texte_socle = ($DB_ROW['entree_id']) ? ' [S]' : ' [–]';
-			$tab_affich[$DB_ROW['item_id']][0] = '<th><b>'.html($item_ref.$texte_socle).'</b><br />'.html($DB_ROW['item_nom']).'</th>';
-			$tab_comp_id[$DB_ROW['item_id']] = $item_ref;
-			$csv_lignes_scores[$DB_ROW['item_id']][0] = $DB_ROW['item_id'];
-			$csv_colonne_texte[$DB_ROW['item_id']]    = $item_ref.$texte_socle.' '.$DB_ROW['item_nom'];
-		}
-		// cases centrales vierges
-		foreach($tab_user_id as $user_id=>$val_user)
-		{
-			foreach($tab_comp_id as $comp_id=>$val_comp)
-			{
-				$tab_affich[$comp_id][$user_id] = '<td title="'.$val_user.'<br />'.$val_comp.'">-</td>';
-				$csv_lignes_scores[$comp_id][$user_id] = ' ';
-			}
-		}
-		// ajouter le contenu
-		$tab_conversion = array( ''=>' ' , 'RR'=>'1' , 'R'=>'2' , 'V'=>'3' , 'VV'=>'4' , 'ABS'=>'A' , 'NN'=>'N' , 'DISP'=>'D' );
-		$tab_dossier = array( ''=>'' , 'RR'=>$_SESSION['CSS_NOTE_STYLE'].'/' , 'R'=>$_SESSION['CSS_NOTE_STYLE'].'/' , 'V'=>$_SESSION['CSS_NOTE_STYLE'].'/' , 'VV'=>$_SESSION['CSS_NOTE_STYLE'].'/' , 'ABS'=>'' , 'NN'=>'' , 'DISP'=>'' );
-		$DB_TAB = DB_STRUCTURE_lister_saisies_devoir($devoir_id);
-		foreach($DB_TAB as $DB_ROW)
-		{
-			// Test pour éviter les pbs des élèves changés de groupes ou des items modifiés en cours de route
-			if(isset($tab_affich[$DB_ROW['item_id']][$DB_ROW['eleve_id']]))
-			{
-				$tab_affich[$DB_ROW['item_id']][$DB_ROW['eleve_id']] = str_replace('>-<','><img alt="'.$DB_ROW['saisie_note'].'" src="./_img/note/'.$tab_dossier[$DB_ROW['saisie_note']].$DB_ROW['saisie_note'].'.gif" /><',$tab_affich[$DB_ROW['item_id']][$DB_ROW['eleve_id']]);
-				$csv_lignes_scores[$DB_ROW['item_id']][$DB_ROW['eleve_id']] = $tab_conversion[$DB_ROW['saisie_note']];
-			}
-		}
-		// affichage
-		foreach($tab_affich as $comp_id => $tab_user)
-		{
-			if(!$comp_id)
-			{
-				echo'<thead>';
-			}
-			echo'<tr>';
-			foreach($tab_user as $user_id => $val)
-			{
-				echo $val;
-			}
-			echo'</tr>';
-			if(!$comp_id)
-			{
-				echo'</thead><tbody>';
-			}
-		}
-		echo'</tbody>';
-		// assemblage du csv
+		$tab_affich[0][$DB_ROW['user_id']] = '<th><img alt="'.html($DB_ROW['user_nom'].' '.$DB_ROW['user_prenom']).'" src="./_img/php/etiquette.php?dossier='.$_SESSION['BASE'].'&amp;nom='.urlencode($DB_ROW['user_nom']).'&amp;prenom='.urlencode($DB_ROW['user_prenom']).'&amp;br" /></th>';
+		$tab_user_id[$DB_ROW['user_id']] = html($DB_ROW['user_prenom'].' '.$DB_ROW['user_nom']);
+		$csv_ligne_eleve_nom .= '"'.$DB_ROW['user_prenom'].' '.$DB_ROW['user_nom'].'"'.$separateur;
+		$csv_ligne_eleve_id  .= $DB_ROW['user_id'].$separateur;
+	}
+	$export_csv = $csv_ligne_eleve_id."\r\n";
+	$csv_lignes_scores = array();
+	$csv_colonne_texte = array();
+	// première colonne (noms items)
+	foreach($DB_TAB_COMP as $DB_ROW)
+	{
+		$item_ref = $DB_ROW['item_ref'];
+		$texte_socle = ($DB_ROW['entree_id']) ? ' [S]' : ' [–]';
+		$tab_affich[$DB_ROW['item_id']][0] = '<th><b>'.html($item_ref.$texte_socle).'</b><br />'.html($DB_ROW['item_nom']).'</th>';
+		$tab_comp_id[$DB_ROW['item_id']] = $item_ref;
+		$csv_lignes_scores[$DB_ROW['item_id']][0] = $DB_ROW['item_id'];
+		$csv_colonne_texte[$DB_ROW['item_id']]    = $item_ref.$texte_socle.' '.$DB_ROW['item_nom'];
+	}
+	// cases centrales vierges
+	foreach($tab_user_id as $user_id=>$val_user)
+	{
 		foreach($tab_comp_id as $comp_id=>$val_comp)
 		{
-			$export_csv .= $csv_lignes_scores[$comp_id][0].$separateur;
-			foreach($tab_user_id as $user_id=>$val_user)
-			{
-				$export_csv .= $csv_lignes_scores[$comp_id][$user_id].$separateur;
-			}
-			$export_csv .= $csv_colonne_texte[$comp_id]."\r\n";
-		}
-		$export_csv .= $csv_ligne_eleve_nom."\r\n\r\n";
-		// Enregistrer le csv
-		$export_csv .= 'SAISIE ARCHIVÉE '.$devoir_id.' DU '.$date.'.'."\r\n";
-		$export_csv .= 'CODAGES AUTORISÉS : 1 2 3 4 A N D'."\r\n\r\n";
-		$fnom = 'saisie_'.$_SESSION['BASE'].'_'.$_SESSION['USER_ID'].'_'.$ref;
-		$zip = new ZipArchive();
-		if ($zip->open($dossier_export.$fnom.'.zip', ZIPARCHIVE::CREATE)===TRUE)
-		{
-			$zip->addFromString($fnom.'.csv',csv($export_csv));
-			$zip->close();
+			$tab_affich[$comp_id][$user_id] = '<td title="'.$val_user.'<br />'.$val_comp.'">-</td>';
+			$csv_lignes_scores[$comp_id][$user_id] = ' ';
 		}
 	}
+	// ajouter le contenu
+	$tab_conversion = array( ''=>' ' , 'RR'=>'1' , 'R'=>'2' , 'V'=>'3' , 'VV'=>'4' , 'ABS'=>'A' , 'NN'=>'N' , 'DISP'=>'D' );
+	$tab_dossier = array( ''=>'' , 'RR'=>$_SESSION['CSS_NOTE_STYLE'].'/' , 'R'=>$_SESSION['CSS_NOTE_STYLE'].'/' , 'V'=>$_SESSION['CSS_NOTE_STYLE'].'/' , 'VV'=>$_SESSION['CSS_NOTE_STYLE'].'/' , 'ABS'=>'' , 'NN'=>'' , 'DISP'=>'' );
+	$DB_TAB = DB_STRUCTURE_lister_saisies_devoir($devoir_id);
+	foreach($DB_TAB as $DB_ROW)
+	{
+		// Test pour éviter les pbs des élèves changés de groupes ou des items modifiés en cours de route
+		if(isset($tab_affich[$DB_ROW['item_id']][$DB_ROW['eleve_id']]))
+		{
+			$tab_affich[$DB_ROW['item_id']][$DB_ROW['eleve_id']] = str_replace('>-<','><img alt="'.$DB_ROW['saisie_note'].'" src="./_img/note/'.$tab_dossier[$DB_ROW['saisie_note']].$DB_ROW['saisie_note'].'.gif" /><',$tab_affich[$DB_ROW['item_id']][$DB_ROW['eleve_id']]);
+			$csv_lignes_scores[$DB_ROW['item_id']][$DB_ROW['eleve_id']] = $tab_conversion[$DB_ROW['saisie_note']];
+		}
+	}
+	// affichage
+	foreach($tab_affich as $comp_id => $tab_user)
+	{
+		if(!$comp_id)
+		{
+			echo'<thead>';
+		}
+		echo'<tr>';
+		foreach($tab_user as $user_id => $val)
+		{
+			echo $val;
+		}
+		echo'</tr>';
+		if(!$comp_id)
+		{
+			echo'</thead><tbody>';
+		}
+	}
+	echo'</tbody>';
+	// assemblage du csv
+	foreach($tab_comp_id as $comp_id=>$val_comp)
+	{
+		$export_csv .= $csv_lignes_scores[$comp_id][0].$separateur;
+		foreach($tab_user_id as $user_id=>$val_user)
+		{
+			$export_csv .= $csv_lignes_scores[$comp_id][$user_id].$separateur;
+		}
+		$export_csv .= $csv_colonne_texte[$comp_id]."\r\n";
+	}
+	$export_csv .= $csv_ligne_eleve_nom."\r\n\r\n";
+	// Enregistrer le csv
+	$export_csv .= 'SAISIE ARCHIVÉE '.$devoir_id.' DU '.$date.'.'."\r\n";
+	$export_csv .= 'CODAGES AUTORISÉS : 1 2 3 4 A N D'."\r\n\r\n";
+	$fnom = 'saisie_'.$_SESSION['BASE'].'_'.$_SESSION['USER_ID'].'_'.$ref;
+	$zip = new ZipArchive();
+	if ($zip->open($dossier_export.$fnom.'.zip', ZIPARCHIVE::CREATE)===TRUE)
+	{
+		$zip->addFromString($fnom.'.csv',csv($export_csv));
+		$zip->close();
+	}
+	exit();
 }
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
@@ -455,7 +452,7 @@ else if( ($action=='voir') && $devoir_id && $groupe_id && $date ) // $date fran�
 else if( ($action=='Enregistrer_ordre') && $devoir_id && count($tab_id) )
 {
 	DB_STRUCTURE_modifier_ordre_item($devoir_id,$tab_id);
-	echo'<ok>';
+	exit('<ok>');
 }
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
@@ -505,36 +502,33 @@ else if( ($action=='Enregistrer_saisie') && $devoir_id && $date )
 	function nonvide($note) {return ($note!='X') ? true : false;}
 	$tab_nouveau_ajouter = array_filter($tab_post,'nonvide');
 	// Il n'y a plus qu'à mettre à jour la base
-	if( count($tab_nouveau_ajouter) || count($tab_nouveau_modifier) || count($tab_nouveau_supprimer) )
+	if( !count($tab_nouveau_ajouter) && !count($tab_nouveau_modifier) && !count($tab_nouveau_supprimer) )
 	{
-		// L'information associée à la note comporte le nom de l'évaluation + celui du professeur (c'est une information statique, conservée sur plusieurs années)
-		$info = $info.' ('.$_SESSION['USER_NOM'].' '.$_SESSION['USER_PRENOM']{0}.'.)';
-		foreach($tab_nouveau_ajouter as $key => $note)
-		{
-			list($item_id,$eleve_id) = explode('x',$key);
-			DB_STRUCTURE_ajouter_saisie($_SESSION['USER_ID'],$eleve_id,$devoir_id,$item_id,$date,$note,$info);
-			// On supprime une éventuelle demande d'évaluation associée.
-			if($_SESSION['ELEVE_DEMANDES'])
-			{
-				DB_STRUCTURE_supprimer_demande($eleve_id,$item_id);
-			}
-		}
-		foreach($tab_nouveau_modifier as $key => $note)
-		{
-			list($item_id,$eleve_id) = explode('x',$key);
-			DB_STRUCTURE_modifier_saisie($eleve_id,$devoir_id,$item_id,$note,$info);
-		}
-		foreach($tab_nouveau_supprimer as $key => $key)
-		{
-			list($item_id,$eleve_id) = explode('x',$key);
-			DB_STRUCTURE_supprimer_saisie($eleve_id,$devoir_id,$item_id);
-		}
-		echo'<ok>';
+		exit('Aucune modification détectée !');
 	}
-	else
+	// L'information associée à la note comporte le nom de l'évaluation + celui du professeur (c'est une information statique, conservée sur plusieurs années)
+	$info = $info.' ('.$_SESSION['USER_NOM'].' '.$_SESSION['USER_PRENOM']{0}.'.)';
+	foreach($tab_nouveau_ajouter as $key => $note)
 	{
-		echo'Aucune modification détectée !';
+		list($item_id,$eleve_id) = explode('x',$key);
+		DB_STRUCTURE_ajouter_saisie($_SESSION['USER_ID'],$eleve_id,$devoir_id,$item_id,$date,$note,$info);
+		// On supprime une éventuelle demande d'évaluation associée.
+		if($_SESSION['ELEVE_DEMANDES'])
+		{
+			DB_STRUCTURE_supprimer_demande($eleve_id,$item_id);
+		}
 	}
+	foreach($tab_nouveau_modifier as $key => $note)
+	{
+		list($item_id,$eleve_id) = explode('x',$key);
+		DB_STRUCTURE_modifier_saisie($eleve_id,$devoir_id,$item_id,$note,$info);
+	}
+	foreach($tab_nouveau_supprimer as $key => $key)
+	{
+		list($item_id,$eleve_id) = explode('x',$key);
+		DB_STRUCTURE_supprimer_saisie($eleve_id,$devoir_id,$item_id);
+	}
+	exit('<ok>');
 }
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
@@ -549,118 +543,115 @@ else if( ($action=='Imprimer_cartouche') && $devoir_id && $groupe_id && $date &&
 	// Let's go
 	if(!count($DB_TAB_COMP))
 	{
-		echo'Aucun item n\'est associé à cette évaluation !';
+		exit('Aucun item n\'est associé à cette évaluation !');
 	}
-	elseif(!count($DB_TAB_USER))
+	if(!count($DB_TAB_USER))
 	{
-		echo'Aucun élève n\'est associé à cette évaluation !';
+		exit('Aucun élève n\'est associé à cette évaluation !');
 	}
-	else
+	$tab_result  = array(); // tableau bi-dimensionnel [n°ligne=id_item][n°colonne=id_user]
+	$tab_user_id = array(); // pas indispensable, mais plus lisible
+	$tab_comp_id = array(); // pas indispensable, mais plus lisible
+	// enregistrer noms prénoms des élèves
+	foreach($DB_TAB_USER as $DB_ROW)
 	{
-		$tab_result  = array(); // tableau bi-dimensionnel [n°ligne=id_item][n°colonne=id_user]
-		$tab_user_id = array(); // pas indispensable, mais plus lisible
-		$tab_comp_id = array(); // pas indispensable, mais plus lisible
-		// enregistrer noms prénoms des élèves
-		foreach($DB_TAB_USER as $DB_ROW)
+		$tab_user_id[$DB_ROW['user_id']] = html($DB_ROW['user_prenom'].' '.$DB_ROW['user_nom']);
+	}
+	// enregistrer refs noms items
+	foreach($DB_TAB_COMP as $DB_ROW)
+	{
+		$item_ref = $DB_ROW['item_ref'];
+		$texte_socle = ($DB_ROW['entree_id']) ? '[S] ' : '[–] ';
+		$tab_comp_id[$DB_ROW['item_id']] = array($item_ref,$texte_socle.$DB_ROW['item_nom']);
+	}
+	// résultats vierges
+	foreach($tab_user_id as $user_id=>$val_user)
+	{
+		foreach($tab_comp_id as $comp_id=>$val_comp)
 		{
-			$tab_user_id[$DB_ROW['user_id']] = html($DB_ROW['user_prenom'].' '.$DB_ROW['user_nom']);
+			$tab_result[$comp_id][$user_id] = '-';
 		}
-		// enregistrer refs noms items
-		foreach($DB_TAB_COMP as $DB_ROW)
+	}
+	// compléter avec les résultats
+	if($valeur=='plein')
+	{
+		$DB_TAB = DB_STRUCTURE_lister_saisies_devoir($devoir_id);
+		foreach($DB_TAB as $DB_ROW)
 		{
-			$item_ref = $DB_ROW['item_ref'];
-			$texte_socle = ($DB_ROW['entree_id']) ? '[S] ' : '[–] ';
-			$tab_comp_id[$DB_ROW['item_id']] = array($item_ref,$texte_socle.$DB_ROW['item_nom']);
+			// Test pour éviter les pbs des élèves changés de groupes ou des items modifiés en cours de route
+			if(isset($tab_result[$DB_ROW['item_id']][$DB_ROW['eleve_id']]))
+			{
+				$tab_result[$DB_ROW['item_id']][$DB_ROW['eleve_id']] = $DB_ROW['saisie_note'];
+			}
 		}
-		// résultats vierges
+	}
+	// On attaque l'élaboration des sorties HTML, CSV et PDF
+	$fnom = 'cartouche_'.$_SESSION['BASE'].'_'.$devoir_id.'_'.time();
+	$sacoche_htm = '<hr /><a class="lien_ext" href="'.$dossier_export.$fnom.'.pdf">Récupérez les cartouches de cette évaluation dans un fichier pdf (à imprimer).</a><br />';
+	$sacoche_htm.= '<a class="lien_ext" href="'.$dossier_export.$fnom.'.zip">Récupérez les cartouches de cette évaluation dans un fichier csv tabulé pour tableur.</a><p />';
+	$sacoche_csv = '';
+	// Appel de la classe et définition de qqs variables supplémentaires pour la mise en page PDF
+	$item_nb = count($tab_comp_id);
+	$colspan = ($detail=='minimal') ? $item_nb : 3 ;
+	require('./_fpdf/fpdf.php');
+	require('./_inc/class.PDF.php');
+	$sacoche_pdf = new PDF($orientation,$marge_min,$couleur);
+	$sacoche_pdf->cartouche_initialiser($detail,$item_nb);
+	if($detail=='minimal')
+	{
+		// dans le cas d'un cartouche minimal
 		foreach($tab_user_id as $user_id=>$val_user)
 		{
-			foreach($tab_comp_id as $comp_id=>$val_comp)
+			$texte_entete = $date.' - '.$info.' - '.$val_user;
+			$sacoche_htm .= '<table class="bilan"><thead><tr><th colspan="'.$colspan.'">'.html($texte_entete).'</th></tr></thead><tbody>';
+			$sacoche_csv .= $texte_entete."\r\n";
+			$sacoche_pdf->cartouche_entete($texte_entete);
+			$ligne1_csv = ''; $ligne1_html = '';
+			$ligne2_csv = ''; $ligne2_html = '';
+			foreach($tab_comp_id as $comp_id=>$tab_val_comp)
 			{
-				$tab_result[$comp_id][$user_id] = '-';
+				$ligne1_html .= '<td>'.html($tab_val_comp[0]).'</td>';
+				$ligne2_html .= '<td class="hc">'.affich_note_html($tab_result[$comp_id][$user_id],$date,$info,false).'</td>';
+				$ligne1_csv .= $tab_val_comp[0]."\t";
+				$ligne2_csv .= $tab_result[$comp_id][$user_id]."\t";
+				$sacoche_pdf->cartouche_minimal_competence($tab_val_comp[0] , $tab_result[$comp_id][$user_id]);
 			}
+			$sacoche_htm .= '<tr>'.$ligne1_html.'</tr><tr>'.$ligne2_html.'</tr></tbody></table><p />';
+			$sacoche_csv .= $ligne1_csv."\r\n".$ligne2_csv."\r\n\r\n";
+			$sacoche_pdf->cartouche_interligne(4);
 		}
-		// compléter avec les résultats
-		if($valeur=='plein')
-		{
-			$DB_TAB = DB_STRUCTURE_lister_saisies_devoir($devoir_id);
-			foreach($DB_TAB as $DB_ROW)
-			{
-				// Test pour éviter les pbs des élèves changés de groupes ou des items modifiés en cours de route
-				if(isset($tab_result[$DB_ROW['item_id']][$DB_ROW['eleve_id']]))
-				{
-					$tab_result[$DB_ROW['item_id']][$DB_ROW['eleve_id']] = $DB_ROW['saisie_note'];
-				}
-			}
-		}
-		// On attaque l'élaboration des sorties HTML, CSV et PDF
-		$fnom = 'cartouche_'.$_SESSION['BASE'].'_'.$devoir_id.'_'.time();
-		$sacoche_htm = '<hr /><a class="lien_ext" href="'.$dossier_export.$fnom.'.pdf">Récupérez les cartouches de cette évaluation dans un fichier pdf (à imprimer).</a><br />';
-		$sacoche_htm.= '<a class="lien_ext" href="'.$dossier_export.$fnom.'.zip">Récupérez les cartouches de cette évaluation dans un fichier csv tabulé pour tableur.</a><p />';
-		$sacoche_csv = '';
-		// Appel de la classe et définition de qqs variables supplémentaires pour la mise en page PDF
-		$item_nb = count($tab_comp_id);
-		$colspan = ($detail=='minimal') ? $item_nb : 3 ;
-		require('./_fpdf/fpdf.php');
-		require('./_inc/class.PDF.php');
-		$sacoche_pdf = new PDF($orientation,$marge_min,$couleur);
-		$sacoche_pdf->cartouche_initialiser($detail,$item_nb);
-		if($detail=='minimal')
-		{
-			// dans le cas d'un cartouche minimal
-			foreach($tab_user_id as $user_id=>$val_user)
-			{
-				$texte_entete = $date.' - '.$info.' - '.$val_user;
-				$sacoche_htm .= '<table class="bilan"><thead><tr><th colspan="'.$colspan.'">'.html($texte_entete).'</th></tr></thead><tbody>';
-				$sacoche_csv .= $texte_entete."\r\n";
-				$sacoche_pdf->cartouche_entete($texte_entete);
-				$ligne1_csv = ''; $ligne1_html = '';
-				$ligne2_csv = ''; $ligne2_html = '';
-				foreach($tab_comp_id as $comp_id=>$tab_val_comp)
-				{
-					$ligne1_html .= '<td>'.html($tab_val_comp[0]).'</td>';
-					$ligne2_html .= '<td class="hc">'.affich_note_html($tab_result[$comp_id][$user_id],$date,$info,false).'</td>';
-					$ligne1_csv .= $tab_val_comp[0]."\t";
-					$ligne2_csv .= $tab_result[$comp_id][$user_id]."\t";
-					$sacoche_pdf->cartouche_minimal_competence($tab_val_comp[0] , $tab_result[$comp_id][$user_id]);
-				}
-				$sacoche_htm .= '<tr>'.$ligne1_html.'</tr><tr>'.$ligne2_html.'</tr></tbody></table><p />';
-				$sacoche_csv .= $ligne1_csv."\r\n".$ligne2_csv."\r\n\r\n";
-				$sacoche_pdf->cartouche_interligne(4);
-			}
-		}
-		elseif($detail=='complet')
-		{
-			// dans le cas d'un cartouche complet
-			foreach($tab_user_id as $user_id=>$val_user)
-			{
-				$texte_entete = $date.' - '.$info.' - '.$val_user;
-				$sacoche_htm .= '<table class="bilan"><thead><tr><th colspan="'.$colspan.'">'.html($texte_entete).'</th></tr></thead><tbody>';
-				$sacoche_csv .= $texte_entete."\r\n";
-				$sacoche_pdf->cartouche_entete($texte_entete);
-				foreach($tab_comp_id as $comp_id=>$tab_val_comp)
-				{
-					$sacoche_htm .= '<tr><td>'.html($tab_val_comp[0]).'</td><td>'.html($tab_val_comp[1]).'</td><td>'.affich_note_html($tab_result[$comp_id][$user_id],$date,$info,false).'</td></tr>';
-					$sacoche_csv .= $tab_val_comp[0]."\t".$tab_val_comp[1]."\t".$tab_result[$comp_id][$user_id]."\r\n";
-					$sacoche_pdf->cartouche_complet_competence($tab_val_comp[0] , $tab_val_comp[1] , $tab_result[$comp_id][$user_id]);
-				}
-				$sacoche_htm .= '</tbody></table><p />';
-				$sacoche_csv .= "\r\n";
-				$sacoche_pdf->cartouche_interligne(2);
-			}
-		}
-		// On archive le cartouche dans un fichier tableur zippé (csv tabulé)
-		$zip = new ZipArchive();
-		if ($zip->open($dossier_export.$fnom.'.zip', ZIPARCHIVE::CREATE)===TRUE)
-		{
-			$zip->addFromString($fnom.'.csv',csv($sacoche_csv));
-			$zip->close();
-		}
-		// On archive le cartouche dans un fichier pdf
-		$sacoche_pdf->Output($dossier_export.$fnom.'.pdf','F');
-		// Affichage
-		echo $sacoche_htm;
 	}
+	elseif($detail=='complet')
+	{
+		// dans le cas d'un cartouche complet
+		foreach($tab_user_id as $user_id=>$val_user)
+		{
+			$texte_entete = $date.' - '.$info.' - '.$val_user;
+			$sacoche_htm .= '<table class="bilan"><thead><tr><th colspan="'.$colspan.'">'.html($texte_entete).'</th></tr></thead><tbody>';
+			$sacoche_csv .= $texte_entete."\r\n";
+			$sacoche_pdf->cartouche_entete($texte_entete);
+			foreach($tab_comp_id as $comp_id=>$tab_val_comp)
+			{
+				$sacoche_htm .= '<tr><td>'.html($tab_val_comp[0]).'</td><td>'.html($tab_val_comp[1]).'</td><td>'.affich_note_html($tab_result[$comp_id][$user_id],$date,$info,false).'</td></tr>';
+				$sacoche_csv .= $tab_val_comp[0]."\t".$tab_val_comp[1]."\t".$tab_result[$comp_id][$user_id]."\r\n";
+				$sacoche_pdf->cartouche_complet_competence($tab_val_comp[0] , $tab_val_comp[1] , $tab_result[$comp_id][$user_id]);
+			}
+			$sacoche_htm .= '</tbody></table><p />';
+			$sacoche_csv .= "\r\n";
+			$sacoche_pdf->cartouche_interligne(2);
+		}
+	}
+	// On archive le cartouche dans un fichier tableur zippé (csv tabulé)
+	$zip = new ZipArchive();
+	if ($zip->open($dossier_export.$fnom.'.zip', ZIPARCHIVE::CREATE)===TRUE)
+	{
+		$zip->addFromString($fnom.'.csv',csv($sacoche_csv));
+		$zip->close();
+	}
+	// On archive le cartouche dans un fichier pdf
+	$sacoche_pdf->Output($dossier_export.$fnom.'.pdf','F');
+	// Affichage
+	exit($sacoche_htm);
 }
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
@@ -739,7 +730,7 @@ else if( (isset($_GET['f_action'])) && ($_GET['f_action']=='importer_saisie_csv'
 			}
 		}
 	}
-	echo $retour;
+	exit($retour);
 }
 
 else

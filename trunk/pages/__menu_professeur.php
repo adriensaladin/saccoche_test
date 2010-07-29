@@ -31,7 +31,7 @@ if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');
 
 $arbre='
 <ul id="treeview">
-	<li>Mon compte
+	<li>Accueil &amp; Informations
 		<ul>
 			<li class="compte_accueil"><a href="./index.php?page=compte_accueil">Accueil</a></li>
 			<li class="compte_password"><a href="./index.php?page=compte_password">Mot de passe</a></li>
@@ -39,23 +39,29 @@ $arbre='
 			<li class="export_fichier"><a href="./index.php?page=export_fichier">Export listings</a></li>
 		</ul>
 	</li>
-	<li>Référentiels
+	<li>Gestion des référentiels
 		<ul>
-			<li class="professeur_referentiel_gestion"><a href="./index.php?page=professeur_referentiel&amp;section=gestion">Gérer les référentiels</a></li>
+			<li class="professeur_referentiel_gestion"><a href="./index.php?page=professeur_referentiel&amp;section=gestion">Créer / paramétrer les référentiels</a></li>
 			<li class="professeur_referentiel_edition"><a href="./index.php?page=professeur_referentiel&amp;section=edition">Modifier le contenu des référentiels</a></li>
 		</ul>
 	</li>
 	<li>Groupes de besoin
 		<ul>
-			<li class="professeur_groupe_gestion"><a href="./index.php?page=professeur_groupe&amp;section=gestion">Gérer les groupes</a></li>
+			<li class="professeur_groupe_gestion"><a href="./index.php?page=professeur_groupe&amp;section=gestion">Gérer ses groupes de besoin</a></li>
 			<li class="professeur_groupe_eleve"><a href="./index.php?page=professeur_groupe&amp;section=eleve">Élèves &amp; groupes de besoin</a></li>
 		</ul>
 	</li>
-	<li>Évaluations &amp; Saisie des résultats
+	<li>Évaluation des élèves
 		<ul>
-			<li class="professeur_eval_demande"><a href="./index.php?page=professeur_eval&amp;section=demande">Demandes d\'évaluations</a></li>
+			<li class="professeur_eval_demande"><a href="./index.php?page=professeur_eval_demande">Demandes d\'évaluations</a></li>
 			<li class="professeur_eval_groupe"><a href="./index.php?page=professeur_eval&amp;section=groupe">Évaluer une classe ou un groupe</a></li>
 			<li class="professeur_eval_select"><a href="./index.php?page=professeur_eval&amp;section=select">Évaluer des élèves sélectionnés</a></li>
+		</ul>
+	</li>
+	<li>Validation du socle
+		<ul>
+			<li class="validation_socle_item"><a href="./index.php?page=validation_socle&amp;section=item">Valider les items du socle</a></li>
+			<li class="validation_socle_pilier"><a href="./index.php?page=validation_socle&amp;section=pilier">Valider les compétences du socle</a></li>
 		</ul>
 	</li>
 	<li>Relevés &amp; Bilans
@@ -64,7 +70,7 @@ $arbre='
 			<li class="releve_matiere"><a href="./index.php?page=releve&amp;section=matiere">Bilans sur une matière</a></li>
 			<li class="releve_selection"><a href="./index.php?page=releve&amp;section=selection">Bilans sur une sélection d\'items</a></li>
 			<li class="releve_multimatiere"><a href="./index.php?page=releve&amp;section=multimatiere">Bilans transdisciplinaires (P.P.)</a></li>
-			<li class="releve_socle"><a href="./index.php?page=releve&amp;section=socle">Attestation de maîtrise du socle</a></li>
+			<li class="releve_socle"><a href="./index.php?page=releve&amp;section=socle">État de maîtrise du socle</a></li>
 		</ul>
 	</li>
 </ul>

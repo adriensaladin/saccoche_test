@@ -26,23 +26,31 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-$TITRE = "Groupes de besoin";
-?>
+if($_SESSION['SESAMATH_ID']==ID_DEMO) {exit('Action désactivée pour la démo...');}
 
-<div class="hc">
-	<a href="./index.php?page=<?php echo $PAGE ?>&amp;section=gestion">Gérer ses groupes de besoin.</a>	||
-	<a href="./index.php?page=<?php echo $PAGE ?>&amp;section=eleve">Élèves &amp; groupes de besoin.</a>||
-	<a href="./index.php?page=professeur_eval&amp;section=groupe">Évaluer un groupe de besoin.</a>
-</div>
+$f_entree_options = (isset($_POST['f_entree'])) ? clean_texte($_POST['f_entree']) : 'erreur';
+$f_pilier_options = (isset($_POST['f_pilier'])) ? clean_texte($_POST['f_pilier']) : 'erreur';
 
-<hr />
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+//	Options de l'environnement élève
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
-<?php
-// Afficher la bonne page et appeler le bon js / ajax par la suite
-$fichier_section = './pages/'.$PAGE.'_'.$SECTION.'.php';
-if(is_file($fichier_section))
+// f_entree_options et f_pilier_options ne peuvent être vides, et doivent contenir la chaine 'prof'
+$nettoyage = str_replace( array('directeur','aucunprof','profprincipal','professeur') , '*' , $f_entree_options.','.$f_pilier_options );
+$nettoyage = str_replace( '*,' , '' , $nettoyage.',' );
+$test_options = ( ($nettoyage=='') && (strpos($f_entree_options,'prof')!==false) && (strpos($f_pilier_options,'prof')!==false) ) ? true : false ;
+
+if($test_options)
 {
-	require($fichier_section);
-	$PAGE = $PAGE.'_'.$SECTION ;
+	DB_STRUCTURE_modifier_parametres( array('profil_validation_entree'=>$f_entree_options,'profil_validation_pilier'=>$f_pilier_options) );
+	// ne pas oublier de mettre aussi à jour la session
+	$_SESSION['PROFIL_VALIDATION_ENTREE'] = $f_entree_options;
+	$_SESSION['PROFIL_VALIDATION_PILIER'] = $f_pilier_options;
+	echo'ok';
+}
+
+else
+{
+	echo'Erreur avec les données transmises !';
 }
 ?>

@@ -301,6 +301,41 @@ function DB_STRUCTURE_recuperer_arborescence_palier($liste_palier_id=false)
 }
 
 /**
+ * DB_STRUCTURE_recuperer_piliers
+ * Retourner les piliers d'un palier donné
+ * 
+ * @param int $palier_id   id du palier
+ * @return array|string
+ */
+
+function DB_STRUCTURE_recuperer_piliers($palier_id)
+{
+	$DB_SQL = 'SELECT * FROM sacoche_socle_pilier ';
+	$DB_SQL.= 'WHERE palier_id=:palier_id ';
+	$DB_SQL.= 'ORDER BY pilier_ordre ASC';
+	$DB_VAR = array(':palier_id'=>$palier_id);
+	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+}
+
+/**
+ * DB_STRUCTURE_recuperer_arborescence_pilier
+ * 
+ * @param int   $pilier_id   id du pilier
+ * @return array
+ */
+
+function DB_STRUCTURE_recuperer_arborescence_pilier($pilier_id)
+{
+	$DB_SQL = 'SELECT * FROM sacoche_socle_pilier ';
+	$DB_SQL.= 'LEFT JOIN sacoche_socle_section USING (pilier_id) ';
+	$DB_SQL.= 'LEFT JOIN sacoche_socle_entree USING (section_id) ';
+	$DB_SQL.= 'WHERE pilier_id=:pilier_id ';
+	$DB_SQL.= 'ORDER BY section_ordre ASC, entree_ordre ASC';
+	$DB_VAR = array(':pilier_id'=>$pilier_id);
+	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+}
+
+/**
  * DB_STRUCTURE_recuperer_associations_entrees_socle
  * 
  * @param void
@@ -922,6 +957,66 @@ function DB_STRUCTURE_lister_jointure_groupe_periode($listing_groupe_id)
 {
 	$DB_SQL = 'SELECT * FROM sacoche_jointure_groupe_periode ';
 	$DB_SQL.= 'WHERE groupe_id IN ('.$listing_groupe_id.') ';
+	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , null);
+}
+
+/**
+ * DB_STRUCTURE_lister_jointure_user_entree
+ * Au choix à partir : d'une liste d'entrées / d'un pilier / d'un palier
+ * 
+ * @param string   $listing_eleves   id des élèves séparés par des virgules
+ * @param string   $listing_entrees  id des entrées séparées par des virgules
+ * @param int      $pilier_id        id d'un pilier
+ * @param int      $palier_id        id d'un palier
+ * @return array
+ */
+
+function DB_STRUCTURE_lister_jointure_user_entree($listing_eleves,$listing_entrees,$pilier_id,$palier_id)
+{
+	if($palier_id)
+	{
+		$DB_SQL = 'SELECT sacoche_jointure_user_entree.* ';
+		$DB_SQL.= 'FROM sacoche_socle_palier ';
+		$DB_SQL.= 'LEFT JOIN sacoche_socle_pilier USING (palier_id) ';
+		$DB_SQL.= 'LEFT JOIN sacoche_socle_section USING (pilier_id) ';
+		$DB_SQL.= 'LEFT JOIN sacoche_socle_entree USING (section_id) ';
+		$DB_SQL.= 'LEFT JOIN sacoche_jointure_user_entree USING (entree_id) ';
+		$DB_SQL.= 'WHERE user_id IN('.$listing_eleves.') AND palier_id=:palier_id ';
+		$DB_VAR = array(':palier_id'=>$palier_id);
+	}
+	elseif($pilier_id)
+	{
+		$DB_SQL = 'SELECT sacoche_jointure_user_entree.* ';
+		$DB_SQL.= 'FROM sacoche_socle_pilier ';
+		$DB_SQL.= 'LEFT JOIN sacoche_socle_section USING (pilier_id) ';
+		$DB_SQL.= 'LEFT JOIN sacoche_socle_entree USING (section_id) ';
+		$DB_SQL.= 'LEFT JOIN sacoche_jointure_user_entree USING (entree_id) ';
+		$DB_SQL.= 'WHERE user_id IN('.$listing_eleves.') AND pilier_id=:pilier_id ';
+		$DB_VAR = array(':pilier_id'=>$pilier_id);
+	}
+	elseif($listing_entrees)
+	{
+		$DB_SQL = 'SELECT sacoche_jointure_user_entree.* ';
+		$DB_SQL.= 'FROM sacoche_jointure_user_entree ';
+		$DB_SQL.= 'WHERE user_id IN('.$listing_eleves.') AND entree_id IN('.$listing_entrees.') ';
+		$DB_VAR = array();
+	}
+	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+}
+
+/**
+ * DB_STRUCTURE_lister_jointure_user_pilier
+ * 
+ * @param string   $listing_eleves   id des élèves séparés par des virgules
+ * @param string   $listing_piliers  id des piliers séparées par des virgules
+ * @return array
+ */
+
+function DB_STRUCTURE_lister_jointure_user_pilier($listing_eleves,$listing_piliers)
+{
+	$DB_SQL = 'SELECT * ';
+	$DB_SQL.= 'FROM sacoche_jointure_user_pilier ';
+	$DB_SQL.= 'WHERE user_id IN('.$listing_eleves.') AND pilier_id IN('.$listing_piliers.') ';
 	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , null);
 }
 
@@ -1622,6 +1717,26 @@ function DB_STRUCTURE_ajouter_saisie($prof_id,$eleve_id,$devoir_id,$item_id,$ite
 }
 
 /**
+ * DB_STRUCTURE_ajouter_validation
+ * 
+ * @param string $type   'entree' ou 'pilier'
+ * @param int    $user_id
+ * @param int    $element_id
+ * @param int    $validation_etat
+ * @param string $validation_date_mysql
+ * @param string $validation_info
+ * @return void
+ */
+
+function DB_STRUCTURE_ajouter_validation($type,$user_id,$element_id,$validation_etat,$validation_date_mysql,$validation_info)
+{
+	$DB_SQL = 'INSERT INTO sacoche_jointure_user_'.$type.' ';
+	$DB_SQL.= 'VALUES(:user_id,:'.$type.'_id,:validation_etat,:validation_date_mysql,:validation_info)';
+	$DB_VAR = array(':user_id'=>$user_id,':'.$type.'_id'=>$element_id,':validation_etat'=>$validation_etat,':validation_date_mysql'=>$validation_date_mysql,':validation_info'=>$validation_info);
+	DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+}
+
+/**
  * DB_STRUCTURE_ajouter_demande
  * 
  * @param int      $eleve_id
@@ -1960,6 +2075,27 @@ function DB_STRUCTURE_modifier_saisie($eleve_id,$devoir_id,$item_id,$saisie_note
 	$DB_SQL.= 'WHERE eleve_id=:eleve_id AND devoir_id=:devoir_id AND item_id=:item_id ';
 	$DB_SQL.= 'LIMIT 1';
 	$DB_VAR = array(':eleve_id'=>$eleve_id,':devoir_id'=>$devoir_id,':item_id'=>$item_id,':saisie_note'=>$saisie_note,':saisie_info'=>$saisie_info);
+	DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+}
+
+/**
+ * DB_STRUCTURE_modifier_validation
+ * 
+ * @param string $type   'entree' ou 'pilier'
+ * @param int    $user_id
+ * @param int    $element_id
+ * @param int    $validation_etat
+ * @param string $validation_date_mysql
+ * @param string $validation_info
+ * @return void
+ */
+
+function DB_STRUCTURE_modifier_validation($type,$user_id,$element_id,$validation_etat,$validation_date_mysql,$validation_info)
+{
+	$DB_SQL = 'UPDATE sacoche_jointure_user_'.$type.' SET validation_'.$type.'_etat=:validation_etat, validation_'.$type.'_date=:validation_date_mysql, validation_'.$type.'_info=:validation_info ';
+	$DB_SQL.= 'WHERE user_id=:user_id AND '.$type.'_id=:'.$type.'_id ';
+	$DB_SQL.= 'LIMIT 1';
+	$DB_VAR = array(':user_id'=>$user_id,':'.$type.'_id'=>$element_id,':validation_etat'=>$validation_etat,':validation_date_mysql'=>$validation_date_mysql,':validation_info'=>$validation_info);
 	DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
@@ -2447,11 +2583,28 @@ function DB_STRUCTURE_supprimer_devoirs_sans_saisies()
 
 function DB_STRUCTURE_supprimer_saisie($eleve_id,$devoir_id,$item_id)
 {
-	// Il faut aussi supprimer les jointures du devoir avec les items
 	$DB_SQL = 'DELETE FROM sacoche_saisie ';
 	$DB_SQL.= 'WHERE eleve_id=:eleve_id AND devoir_id=:devoir_id AND item_id=:item_id ';
 	$DB_SQL.= 'LIMIT 1';
 	$DB_VAR = array(':eleve_id'=>$eleve_id,':devoir_id'=>$devoir_id,':item_id'=>$item_id);
+	DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+}
+
+/**
+ * DB_STRUCTURE_supprimer_validation
+ * 
+ * @param string $type   'entree' ou 'pilier'
+ * @param int    $user_id
+ * @param int    $element_id
+ * @return void
+ */
+
+function DB_STRUCTURE_supprimer_validation($type,$user_id,$element_id)
+{
+	$DB_SQL = 'DELETE FROM sacoche_jointure_user_'.$type.' ';
+	$DB_SQL.= 'WHERE user_id=:user_id AND '.$type.'_id=:'.$type.'_id ';
+	$DB_SQL.= 'LIMIT 1';
+	$DB_VAR = array(':user_id'=>$user_id,':'.$type.'_id'=>$element_id);
 	DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
@@ -3028,6 +3181,23 @@ function DB_STRUCTURE_OPT_paliers_etabl($listing_paliers)
 	{
 		return 'Aucun palier du socle commun n\'est rattaché à l\'établissement !';
 	}
+}
+
+/**
+ * Retourner un tableau [valeur texte] des piliers du socle d'un palier donné
+ * 
+ * @param int $palier_id   id du palier
+ * @return array|string
+ */
+
+function DB_STRUCTURE_OPT_piliers($palier_id)
+{
+	$DB_SQL = 'SELECT pilier_id AS valeur, pilier_nom AS texte FROM sacoche_socle_pilier ';
+	$DB_SQL.= 'WHERE palier_id=:palier_id ';
+	$DB_SQL.= 'ORDER BY pilier_ordre ASC';
+	$DB_VAR = array(':palier_id'=>$palier_id);
+	$DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+	return count($DB_TAB) ? $DB_TAB : 'Aucune compétence trouvée pour ce palier !' ;
 }
 
 /**

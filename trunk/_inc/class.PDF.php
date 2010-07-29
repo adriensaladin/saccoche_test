@@ -316,7 +316,7 @@ class PDF extends FPDF
 		// Intitulé
 		$this->SetFont('Arial' , 'B' , 10);
 		$this->SetXY($this->marge_gauche,$this->marge_haut);
-		$this->Cell($this->page_largeur-$this->marge_droit-75 , 5 , pdf('Attestation de maîtrise du socle commun') , 0 , 2 , 'L' , false , '');
+		$this->Cell($this->page_largeur-$this->marge_droit-75 , 5 , pdf('État de maîtrise du socle commun') , 0 , 2 , 'L' , false , '');
 		$this->Cell($this->page_largeur-$this->marge_droit-75 , 5 , pdf($palier_nom) , 0 , 2 , 'L' , false , '');
 		// Nom / prénom
 		$this->eleve_id     = $eleve_id;

@@ -262,6 +262,7 @@ elseif($action=='restaurer')
 	$top_arrivee = microtime(TRUE);
 	$duree = number_format($top_arrivee - $top_depart,2,',','');
 	echo'<li><label class="valide">Restauration de la base réalisée'.$texte_maj.' en '.$duree.'s.</label></li>';
+	echo'<li><label class="alerte">Veuillez maintenant vous déconnecter / reconnecter pour mettre la session en conformité avec la base restaurée.</label></li>';
 	exit();
 }
 

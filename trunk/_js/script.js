@@ -458,7 +458,7 @@ $(document).ready
 				(
 					{
 						type : 'GET',
-						url : 'ajax.php?page=public_date_calendrier',
+						url : 'ajax.php?page=date_calendrier',
 						data : get_data,
 						dataType : "html",
 						error : function(msg,string)
@@ -584,7 +584,7 @@ $(document).ready
 			(
 				{
 					type : 'GET',
-					url : 'ajax.php?page=public_date_calendrier',
+					url : 'ajax.php?page=date_calendrier',
 					data : 'm='+mois+'&a='+annee,
 					dataType : "html",
 					success : function(responseHTML)

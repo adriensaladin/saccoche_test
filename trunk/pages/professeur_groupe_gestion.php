@@ -26,7 +26,7 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-$TITRE = "Gérer les groupes de besoin";
+$TITRE = "Gérer ses groupes de besoin";
 ?>
 
 <ul class="puce">

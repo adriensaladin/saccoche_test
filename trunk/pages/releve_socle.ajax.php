@@ -233,7 +233,7 @@ if( $detail && $palier_id && $palier_nom && $remplissage )
 	//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
 	$releve_html  = '<style type="text/css">'.$_SESSION['CSS'].'</style>';
-	$releve_html .= '<h1>Attestation de maîtrise du socle commun</h1>';
+	$releve_html .= '<h1>État de maîtrise du socle commun</h1>';
 	$releve_html .= '<h2>'.html($palier_nom).'</h2>';
 	// Appel de la classe et définition de qqs variables supplémentaires pour la mise en page PDF
 	require('./_fpdf/fpdf.php');
@@ -322,8 +322,8 @@ if( $detail && $palier_id && $palier_nom && $remplissage )
 	else
 	{
 	echo'<ul class="puce">';
-	echo'<li><a class="lien_ext" href="./releve-html.php?fichier='.$fichier_lien.'">Attestation de maîtrise du socle commun au format HTML (bulles d\'information, détail...).</a></li>';
-	echo'<li><a class="lien_ext" href="'.$dossier.$fichier_lien.'.pdf">Attestation de maîtrise du socle commun au format PDF (imprimable).</a></li>';
+	echo'<li><a class="lien_ext" href="./releve-html.php?fichier='.$fichier_lien.'">État de maîtrise du socle commun au format HTML (bulles d\'information, détail...).</a></li>';
+	echo'<li><a class="lien_ext" href="'.$dossier.$fichier_lien.'.pdf">État de maîtrise du socle commun au format PDF (imprimable).</a></li>';
 	echo'</ul><p />';
 	}
 

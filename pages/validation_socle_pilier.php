@@ -26,7 +26,7 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-$TITRE = "Valider les items du socle";
+$TITRE = "Valider les compétences (piliers) du socle";
 $VERSION_JS_FILE += 2;
 // Remarque : on ne peut être pp que d'une classe, pas d'un groupe, donc si seuls les PP ont un accès par mis les profs, ils ne peuvent trier les élèves que par classes
 ?>
@@ -34,7 +34,7 @@ $VERSION_JS_FILE += 2;
 <?php
 // Indication des profils ayant accès à cette validation
 $tab_texte = array( 'directeur'=>'les directeurs' , 'professeur'=>'les professeurs' , 'profprincipal'=>'les professeurs principaux' );
-$str_objet = str_replace( array(',aucunprof','aucunprof,','aucunprof') , '' , $_SESSION['PROFIL_VALIDATION_ENTREE'] );
+$str_objet = str_replace( array(',aucunprof','aucunprof,','aucunprof') , '' , $_SESSION['PROFIL_VALIDATION_PILIER'] );
 if($str_objet=='')
 {
 	$texte = 'aucun !!!';
@@ -50,17 +50,17 @@ else
 
 // Fabrication des éléments select du formulaire
 $tab_paliers = DB_STRUCTURE_OPT_paliers_etabl($_SESSION['PALIERS']);
-if( ($_SESSION['USER_PROFIL']=='directeur') && (strpos($_SESSION['PROFIL_VALIDATION_ENTREE'],'directeur')!==false) )
+if( ($_SESSION['USER_PROFIL']=='directeur') && (strpos($_SESSION['PROFIL_VALIDATION_PILIER'],'directeur')!==false) )
 {
 	$tab_groupes = DB_STRUCTURE_OPT_classes_groupes_etabl();
 	$of_g = 'oui'; $og_g = 'oui'; 
 }
-elseif( ($_SESSION['USER_PROFIL']=='professeur') && (strpos($_SESSION['PROFIL_VALIDATION_ENTREE'],'professeur')!==false) )
+elseif( ($_SESSION['USER_PROFIL']=='professeur') && (strpos($_SESSION['PROFIL_VALIDATION_PILIER'],'professeur')!==false) )
 {
 	$tab_groupes = DB_STRUCTURE_OPT_groupes_professeur($_SESSION['USER_ID']);
 	$of_g = 'oui'; $og_g = 'oui'; 
 }
-elseif( ($_SESSION['USER_PROFIL']=='professeur') && (strpos($_SESSION['PROFIL_VALIDATION_ENTREE'],'profprincipal')!==false) )
+elseif( ($_SESSION['USER_PROFIL']=='professeur') && (strpos($_SESSION['PROFIL_VALIDATION_PILIER'],'profprincipal')!==false) )
 {
 	$tab_groupes = DB_STRUCTURE_OPT_classes_prof_principal($_SESSION['USER_ID']);
 	$of_g = 'non'; $og_g = 'non'; 
@@ -75,11 +75,11 @@ $select_palier = afficher_select($tab_paliers , $select_nom='f_palier' , $option
 $select_groupe = afficher_select($tab_groupes , $select_nom='f_groupe' , $option_first=$of_g , $selection=false , $optgroup=$og_g);
 ?>
 
-<p class="hc"><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=referentiels_socle__socle_valider_item">DOC : Validation des items du socle.</a></span></p>
+<p class="hc"><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?referentiels_socle__socle_valider_pilier">DOC : Validation des compétences du socle.</a></span></p>
+
 <form action="" id="zone_choix"><fieldset>
-	<?php echo'<p><span class="tab"></span><span class="astuce">Profils autorisés par l\'administrateur pour valider les items du socle : '.$texte.'</span></p>'; ?>
+	<?php echo'<p><span class="tab"></span><span class="astuce">Profils autorisés par l\'administrateur pour valider les compétences du socle : '.$texte.'</span></p>'; ?>
 	<label class="tab" for="f_palier">Palier :</label><?php echo $select_palier ?><label id="ajax_maj_pilier">&nbsp;</label><br />
-	<label class="tab" for="f_pilier">Compétence :</label><select id="f_pilier" name="f_pilier" class="hide"><option></option></select><p />
 	<label class="tab" for="f_groupe">Classe / groupe :</label><?php echo $select_groupe ?><input type="hidden" id="f_groupe_type" name="f_groupe_type" value="" /><label id="ajax_maj_eleve">&nbsp;</label><br />
 	<label class="tab" for="f_eleve">Élève(s) :</label><select id="f_eleve" name="f_eleve[]" multiple="multiple" size="9" class="hide"><option></option></select><input type="hidden" id="eleves" name="eleves" value="" /><p />
 	<span class="tab"></span><input type="hidden" name="f_action" value="Afficher_bilan" /><button id="Afficher_validation" type="submit" class="hide"><img alt="" src="./_img/bouton/valider.png" /> Afficher le tableau des validations.</button><label id="ajax_msg_choix">&nbsp;</label>
@@ -91,11 +91,11 @@ $select_groupe = afficher_select($tab_groupes , $select_nom='f_groupe' , $option
 	</table>
 </form>
 
-<div id="zone_information" class="hide" style="height:25ex">
-	<h4>Aide à la décision : bilan des évaluations associées à un item du socle</h4>
+<div id="zone_information" class="hide" style="height:60ex">
+	<h4>Aide à la décision : états de validation des items d'une compétence du socle</h4>
 	<ul class="puce">
 		<li><img alt="" src="./_img/menu/profil_eleve.png" /> <span id="identite"></span></li>
-		<li><img alt="" src="./_img/folder/folder_n3.png" /> <span id="entree"></span></li>
+		<li><img alt="" src="./_img/folder/folder_n1.png" /> <span id="pilier"></span></li>
 		<li><img alt="" src="./_img/bouton/stats.png" /> <span id="stats"></span><label id="ajax_msg_information"></label></li>
 	</ul>
 	<div id="items">

@@ -31,7 +31,7 @@ if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');
 
 $arbre='
 <ul id="treeview">
-	<li>Mon compte
+	<li>Accueil &amp; Informations
 		<ul>
 			<li class="compte_accueil"><a href="./index.php?page=compte_accueil">Accueil</a></li>
 			<li class="compte_password"><a href="./index.php?page=compte_password">Mot de passe</a></li>
@@ -45,7 +45,7 @@ $arbre='
 if(mb_substr_count($_SESSION['ELEVE_OPTIONS'],'as'))
 {
 	$arbre.='
-			<li class="releve_socle"><a href="./index.php?page=releve&amp;section=socle">Attestation de maîtrise du socle</a></li>
+			<li class="releve_socle"><a href="./index.php?page=releve&amp;section=socle">État de maîtrise du socle</a></li>
 	';
 }
 $arbre.='

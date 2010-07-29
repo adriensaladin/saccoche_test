@@ -31,7 +31,7 @@ if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');
 
 $arbre='
 <ul id="treeview">
-	<li>Mon compte
+	<li>Accueil &amp; Informations
 		<ul>
 			<li class="compte_accueil"><a href="./index.php?page=compte_accueil">Accueil</a></li>
 			<li class="compte_password"><a href="./index.php?page=compte_password">Mot de passe du webmestre</a></li>

@@ -62,7 +62,7 @@ span.manuel,div.manuel,p.manuel {background:transparent url(../_img/puce_manuel.
 #aide_en_ligne {margin:1ex 1em}
 em {display:inline;font-style:normal;font-weight:bold;font-variant:small-caps} /* "SACoche" et divers noms propres */
 .hc{text-align:center} .hg{text-align:left} .hd{text-align:right} .ti{text-indent:3em}
-.i{font-style:italic} .u{text-decoration:underline}
+.i{font-style:italic} .u{text-decoration:underline} .b{font-weight:bold}
 .hide{display:none}
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
@@ -160,7 +160,7 @@ form label.mini{width:8em;}
 /* Boutons */
 button{padding:0 1px;margin:1px 0;background:#CCF;color:#139;border:1px solid #66F;}
 button{width:auto;overflow:visible;} /* patch pour IE : voir http://jehiah.cz/archive/button-width-in-ie */
-button:hover,button.hover{background:#DDF;color:#D41;cursor:pointer;} /* button.hover pour une compatibilité avec AjaxUpload (pour background, car pas mieux pour cursor */
+button:hover,button.hover{background:#DDF;color:#D41;cursor:pointer;} /* button.hover pour une compatibilité avec AjaxUpload (pour background, car pas mieux pour cursor) */
 button[disabled]{background:#EEF;color:#888;border:1px solid #BBF} /* Attention à un bug de jquery : quand on lui demande de mettre disabled="disabled", il met disabled="" ! */ 
 
 /* formulaire en page d'accueil pour choisir son établissement */
@@ -261,18 +261,29 @@ table.bilan th.domaine {background:#99F;}
 /* Format des tableaux du socle                                                                        */
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-#zone_bilan th {margin:0;padding:0}
-#zone_bilan thead th{vertical-align:bottom}
-#zone_bilan thead td{vertical-align:middle;font-weight:bold;font-size:110%}
-#zone_bilan tbody td {font-size:85%}
-#zone_bilan tbody th {width:15px;height:15px}
-#zone_bilan tbody th:hover {cursor:pointer}
-#zone_bilan tbody th.v0 {background:transparent url(../_img/socle/valid0.gif) top left}
-#zone_bilan tbody th.v1 {background:transparent url(../_img/socle/valid1.gif) top left}
-#zone_bilan tbody th.v2 {background:transparent url(../_img/socle/valid2.gif) top left}
-#zone_bilan tbody th.v0:hover{background:transparent url(../_img/socle/valid0h.gif) top left}
-#zone_bilan tbody th.v1:hover{background:transparent url(../_img/socle/valid1h.gif) top left}
-#zone_bilan tbody th.v2:hover{background:transparent url(../_img/socle/valid2h.gif) top left}
+#tableau_validation th {margin:0;padding:0;white-space:nowrap}
+#tableau_validation th.nu {background:#F7F7F7;border:0;text-align:left;font-weight:normal}
+#tableau_validation thead th{vertical-align:bottom}
+#tableau_validation tbody th {height:15px}
+#tableau_validation tbody th.down0 {background:#F99 url(../_img/socle/arrow_down.gif) no-repeat center center;opacity:0.2}
+#tableau_validation tbody th.down1 {background:#9F9 url(../_img/socle/arrow_down.gif) no-repeat center center;opacity:0.2}
+#tableau_validation tbody th.down2 {background:#BBF url(../_img/socle/arrow_down.gif) no-repeat center center;opacity:0.2}
+#tableau_validation tbody th.left0 {background:#F99 url(../_img/socle/arrow_left.gif) no-repeat center center;opacity:0.2}
+#tableau_validation tbody th.left1 {background:#9F9 url(../_img/socle/arrow_left.gif) no-repeat center center;opacity:0.2}
+#tableau_validation tbody th.left2 {background:#BBF url(../_img/socle/arrow_left.gif) no-repeat center center;opacity:0.2}
+#tableau_validation tbody th.diag0 {background:#F99 url(../_img/socle/arrow_diag.gif) no-repeat center center;opacity:0.2}
+#tableau_validation tbody th.diag1 {background:#9F9 url(../_img/socle/arrow_diag.gif) no-repeat center center;opacity:0.2}
+#tableau_validation tbody th.diag2 {background:#BBF url(../_img/socle/arrow_diag.gif) no-repeat center center;opacity:0.2}
+#tableau_validation tbody td.v0 {background:#F99}
+#tableau_validation tbody td.v1 {background:#9F9}
+#tableau_validation tbody td.v2 {background:#BBF}
+#tableau_validation tbody td[lang=lock] {background:#BBF url(../_img/socle/lock.gif) no-repeat center center;} /* surclasse une classe v0 ou v1 ou v2 car défini après */
+#tableau_validation tbody th:hover {opacity:1;cursor:pointer}
+#tableau_validation tbody th.nu:hover {cursor:default}
+#tableau_validation tbody td:hover {cursor:pointer}
+#zone_information .v0 {background:#F99;padding:0 1em;margin-right:1ex}
+#zone_information .v1 {background:#9F9;padding:0 1em;margin-right:1ex}
+#zone_information .v2 {background:#BBF;padding:0 1em;margin-right:1ex}
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 /* Format du tableau admin présentant les référentiels de compétences utilisés                         */
@@ -334,13 +345,20 @@ li.li_n3 b{font-weight:normal}
 li.li_n3 b img{margin-right:2px}
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-/* Affichage de l'item du socle dans la zone de validation d'un item                                   */
+/* Affichage de l'item du socle dans la zone de validation d'un item ou d'un pilier                    */
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-#zone_validation span.span_n1 {background:transparent url(../_img/folder/folder_n1.png) no-repeat top left;color:#F00;white-space:nowrap;padding-left:18px}
-#zone_validation span.span_n2 {background:transparent url(../_img/folder/folder_n2.png) no-repeat top left;color:#D0C;white-space:nowrap;padding-left:18px;margin-left:13em}
-#zone_validation span.span_n3 {background:transparent url(../_img/folder/folder_n3.png) no-repeat top left;color:#70F;white-space:nowrap;padding-left:18px;margin-left:14em}
-#zone_validation #items {margin-left:12em;white-space:nowrap}
+#zone_validation .m1 , #zone_information .m1 {background:transparent url(../_img/folder/folder_m1.png) no-repeat top left;padding-left:18px}
+#zone_validation .n1 , #zone_information .n1 {background:transparent url(../_img/folder/folder_n1.png) no-repeat top left;padding-left:18px}
+#zone_validation .n2 , #zone_information .n2 {background:transparent url(../_img/folder/folder_n2.png) no-repeat top left;padding-left:18px}
+#zone_validation .n3 , #zone_information .n3 {background:transparent url(../_img/folder/folder_n3.png) no-repeat top left;padding-left:18px;}
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+/* Zone d'information des évaluations associées à un item                                              */
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
+#zone_information {overflow:scroll;white-space:nowrap;margin:1ex;border:1px dotted #66F;background:#DDF;padding:0.5ex} /* height défini dans la page (différent suivant item / pilier) */
+#zone_information #items {margin-top:1ex;font-size:90%}
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 /* Liste à puce pour l'affichage d'une liste d'établissements proposant des référentiels               */

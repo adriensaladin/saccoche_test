@@ -31,7 +31,7 @@ if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');
 
 $arbre='
 <ul id="treeview">
-	<li>Mon compte
+	<li>Accueil &amp; Informations
 		<ul>
 			<li class="compte_accueil"><a href="./index.php?page=compte_accueil">Accueil</a></li>
 			<li class="compte_password"><a href="./index.php?page=compte_password">Changer mon mot de passe</a></li>
@@ -48,7 +48,7 @@ $arbre='
 			<li class="administrateur_resilier"><a href="./index.php?page=administrateur_resilier">Résilier l\'inscription</a></li>
 		</ul>
 	</li>
-	<li>Utilisateurs et affectations
+	<li>Utilisateurs &amp; Affectations
 		<ul>
 			<li class="administrateur_fichier"><a href="./index.php?page=administrateur_fichier">Import / Export</a></li>
 			<li class="administrateur_periode"><a href="./index.php?page=administrateur_periode">Périodes</a></li>
@@ -64,7 +64,7 @@ $arbre='
 		<ul>
 			<li class="administrateur_codes_couleurs"><a href="./index.php?page=administrateur_codes_couleurs">Choix des codes et des couleurs</a></li>
 			<li class="administrateur_algorithme_gestion"><a href="./index.php?page=administrateur_algorithme_gestion">Paramétrage de l\'algorithme</a></li>
-			<li class="consultation_referentiel_interne"><a href="./index.php?page=consultation_referentiel_interne">Référentiels en place (pour information)</a></li>
+			<li class="consultation_referentiel_interne"><a href="./index.php?page=consultation_referentiel_interne">Consultation des référentiels en place</a></li>
 		</ul>
 	</li>
 </ul>

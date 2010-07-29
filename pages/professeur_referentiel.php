@@ -30,7 +30,7 @@ $TITRE = "Référentiels";
 ?>
 
 <div class="hc">
-	<a href="./index.php?page=<?php echo $PAGE ?>&amp;section=gestion">Gérer les référentiels.</a>	||
+	<a href="./index.php?page=<?php echo $PAGE ?>&amp;section=gestion">Créer / paramétrer les référentiels.</a>	||
 	<a href="./index.php?page=<?php echo $PAGE ?>&amp;section=edition">Modifier le contenu des référentiels.</a>
 </div>
 
@@ -47,7 +47,7 @@ if(is_file($fichier_section))
 else
 {
 	echo'<ul class="puce">';
-	echo'	<li><a href="./index.php?page='.$PAGE.'&amp;section=gestion"><img alt="" src="./_img/menu/professeur_referentiel_gestion.png" /> Gérer les référentiels (créer / importer, supprimer, partager, mode de calcul).</a></li>';
+	echo'	<li><a href="./index.php?page='.$PAGE.'&amp;section=gestion"><img alt="" src="./_img/menu/professeur_referentiel_gestion.png" /> Créer / paramétrer les référentiels (importer, supprimer, partager, mode de calcul).</a></li>';
 	echo'	<li><a href="./index.php?page='.$PAGE.'&amp;section=edition"><img alt="" src="./_img/menu/professeur_referentiel_edition.png" /> Modifier le contenu des référentiels (domaines, thèmes, items).</a></li>';
 	echo'</ul>';
 }

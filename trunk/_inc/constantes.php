@@ -37,10 +37,10 @@ define('VERSION_BASE','2010-07-29');
 
 // VERSION_CSS_SCREEN / VERSION_CSS_PRINT / VERSION_JS_BIBLIO / VERSION_JS_GLOBAL / VERSION_JS_FILE
 // Pour éviter les problèmes de mise en cache (hors serveur localhost), modifier ces valeurs lors d'une mise à jour
-define('VERSION_CSS_SCREEN',33);
+define('VERSION_CSS_SCREEN',34);
 define('VERSION_CSS_PRINT',1);
 define('VERSION_JS_BIBLIO',3);
-define('VERSION_JS_GLOBAL',28);
+define('VERSION_JS_GLOBAL',29);
 $VERSION_JS_FILE = 4;	// Modifiée ensuite si besoin dans le script associé à la page
 
 // Quelques chemins... pouvant être modifiés dans un cadre particulier (installation Sésamath)

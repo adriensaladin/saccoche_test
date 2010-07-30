@@ -144,7 +144,7 @@ function maj_clock(evolution)
 		$("#clock").html('<img alt="" src="./_img/clock_anim.gif" /> '+DUREE_RESTANTE+' min');
 		if(DUREE_RESTANTE==0)
 		{
-			$('q.deconnecter').click();
+			$('#deconnecter').click();
 		}
 	}
 }
@@ -253,39 +253,32 @@ $(document).ready
 		infobulle();
 
 		// MENU - Styler les puces avec les images
-		$("#treeview li").each
+		$("#menu a").each
 		(
 			function()
 			{
 				classe = $(this).attr("class");
 				if(classe)
 				{
-					$(this).css("background","url(./_img/menu/"+classe+".png) no-repeat top left");
+					// On n'utilise pas "#CCF url(./_img/menu/menu.png) no-repeat 1px 1px" sinon le hover{background:#DDF} disparait
+					$(this).css({ 'background-image':'url(./_img/menu/'+classe+'.png)' , 'background-repeat':'no-repeat' , 'background-position':'1px 1px' });
 				}
 			}
 		);
 
-		// MENU - Afficher / Masquer
-		$("#appel_menu").hover
+		// MENU - Rendre transparente la page au survol ; on ne paut pas utiliser fadeTo('slow',0.25) fadeTo('normal',1) car une durée d'animation provoque un clignotement
+		$('#menu li').mouseover
 		(
 			function()
 			{
-				$("#treeview").show();
-			}
-			,
-			function()
-			{
+				$('#cadre_bas').css('opacity',0.25);
 			}
 		);
-		$("#treeview").hover
+		$('#menu li').mouseout
 		(
 			function()
 			{
-			}
-			,
-			function()
-			{
-				$("#treeview").hide();
+				$('#cadre_bas').css('opacity',1);
 			}
 		);
 
@@ -330,7 +323,7 @@ $(document).ready
 		);
 
 		// Lien pour se déconnecter
-		$('q.deconnecter').click
+		$('#deconnecter').click
 		(
 			function()
 			{

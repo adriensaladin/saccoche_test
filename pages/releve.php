@@ -49,7 +49,7 @@ $TITRE = "Relevés &amp; Bilans";
 	{
 		$tab_menu[] = '<a href="./index.php?page='.$PAGE.'&amp;section=multimatiere">Bilans transdisciplinaires (P.P.).</a>';
 	}
-	if( (in_array($_SESSION['USER_PROFIL'],array('professeur','directeur'))) || (($_SESSION['USER_PROFIL']=='eleve')&&(mb_substr_count($_SESSION['ELEVE_OPTIONS'],'as'))) )
+	if(in_array($_SESSION['USER_PROFIL'],array('professeur','directeur','eleve')))
 	{
 		$tab_menu[] = '<a href="./index.php?page='.$PAGE.'&amp;section=socle">État de maîtrise du socle.</a>';
 	}

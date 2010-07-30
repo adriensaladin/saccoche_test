@@ -112,12 +112,6 @@ elseif($PAGE!='public_installation')
 }
 
 ob_start();
-// Chargement du menu concerné
-$filename_php = './pages/__menu_'.$_SESSION['USER_PROFIL'].'.php';
-if(is_file($filename_php))
-{
-	require($filename_php);
-}
 // Chargement de la page concernée
 $filename_php = './pages/'.$PAGE.'.php';
 if(!is_file($filename_php))
@@ -139,21 +133,6 @@ $SCRIPT = (is_file($filename_js_normal)) ? '<script type="text/javascript" chars
 $TITRE_NAVIGATEUR = 'SACoche - Espace '.$_SESSION['USER_PROFIL'].' - ';
 $TITRE_NAVIGATEUR.= ($TITRE) ? $TITRE : 'Suivi d\'Acquisition de Compétences' ;
 
-// Titre de la page
-if($_SESSION['USER_PROFIL']!='public')
-{
-	// Espace identifié : titre indiqué et logo encadré en image de fond.
-	$TITRE_PAGE = '<h1 id="titre_page">'.$TITRE.'</h1>';
-}
-else
-{
-	// Accueil (identification) : image SACoche + image hébergeur.
-	$hebergeur_img  = ( (defined('HEBERGEUR_LOGO')) && (is_file('./__tmp/logo/'.HEBERGEUR_LOGO)) ) ? '<img alt="Hébergeur" src="./__tmp/logo/'.HEBERGEUR_LOGO.'" />' : '' ;
-	$hebergeur_lien = ( (defined('HEBERGEUR_ADRESSE_SITE')) && HEBERGEUR_ADRESSE_SITE && ($hebergeur_img) ) ? '<a href="'.html(HEBERGEUR_ADRESSE_SITE).'">'.$hebergeur_img.'</a>' : $hebergeur_img ;
-	$SACoche_lien   = '<a href="'.SERVEUR_PROJET.'"><img alt="Suivi d\'Acquisition de Compétences" src="./_img/logo_grand.gif" /></a>' ;
-	$TITRE_PAGE = '<h1>'.$SACoche_lien.$hebergeur_lien.'</h1>';
-}
-
 // Affichage de l'en-tête
 entete();
 ?>
@@ -173,10 +152,38 @@ entete();
 	<title><?php echo $TITRE_NAVIGATEUR ?></title>
 </head>
 <body>
-	<?php echo $TITRE_PAGE; ?>
-	<?php echo $CONTENU_PAGE; ?>
 	<?php 
-	// echo'<pre>';var_dump($_SESSION);echo'</pre>';
+	if($_SESSION['USER_PROFIL']!='public')
+	{
+		// Espace identifié : cadre_haut (avec le menu) et cadre_bas (avec le contenu).
+		echo'<div id="cadre_haut">'."\r\n";
+		echo'	<div id="info">'."\r\n";
+		echo'		<span class="button"><img alt="structure" src="./_img/home.png" /> '.html($_SESSION['DENOMINATION']).'</span>'."\r\n";
+		echo'		<span class="button"><img alt="'.$_SESSION['USER_PROFIL'].'" src="./_img/login.gif" /> '.html($_SESSION['USER_PRENOM'].' '.$_SESSION['USER_NOM']).' ('.$_SESSION['USER_PROFIL'].')</span>'."\r\n";
+		echo'		<span class="button"><span id="clock"><img alt="" src="./_img/clock_fixe.png" /> '.$_SESSION['DUREE_INACTIVITE'].' min</span><img alt="" src="./_img/point.gif" /></span>'."\r\n";
+		echo'		<button id="deconnecter"><img alt="" src="./_img/bouton/deconnecter.png" /> Déconnexion</button>'."\r\n";
+		echo'	</div>'."\r\n";
+		echo'	<img id="logo" src="./_img/logo_petit2.png" />'."\r\n";
+		$fichier_menu = ($_SESSION['USER_PROFIL']!='webmestre') ? '__menu_'.$_SESSION['USER_PROFIL'] : '__menu_'.$_SESSION['USER_PROFIL'].'_'.HEBERGEUR_INSTALLATION ;
+		require_once('./pages/'.$fichier_menu.'.html'); // Le menu '<ul id="menu">...</ul>
+		echo'</div>'."\r\n";
+		echo'<div id="cadre_bas">'."\r\n";
+		echo'	<h1>'.$TITRE.'</h1>';
+		echo 	$CONTENU_PAGE;
+		// echo'<pre>';var_dump($_SESSION);echo'</pre>';
+		echo'</div>'."\r\n";
+	}
+	else
+	{
+		// Accueil (identification) : cadre unique (avec image SACoche & image hébergeur).
+		echo'<div id="cadre_unique">'."\r\n";
+		$hebergeur_img  = ( (defined('HEBERGEUR_LOGO')) && (is_file('./__tmp/logo/'.HEBERGEUR_LOGO)) ) ? '<img alt="Hébergeur" src="./__tmp/logo/'.HEBERGEUR_LOGO.'" />' : '' ;
+		$hebergeur_lien = ( (defined('HEBERGEUR_ADRESSE_SITE')) && HEBERGEUR_ADRESSE_SITE && ($hebergeur_img) ) ? '<a href="'.html(HEBERGEUR_ADRESSE_SITE).'">'.$hebergeur_img.'</a>' : $hebergeur_img ;
+		$SACoche_lien   = '<a href="'.SERVEUR_PROJET.'"><img alt="Suivi d\'Acquisition de Compétences" src="./_img/logo_grand.gif" /></a>' ;
+		echo'	<h1>'.$SACoche_lien.$hebergeur_lien.'</h1>';
+		echo 	$CONTENU_PAGE;
+		echo'</div>'."\r\n";
+	}
 	?>
 	<script type="text/javascript">
 		var PAGE='<?php echo $PAGE ?>';

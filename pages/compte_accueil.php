@@ -29,14 +29,14 @@ if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');
 $TITRE = "Bienvenue dans votre espace identifié !";
 ?>
 
-<img id="look_menu" src="./_img/fleche_h1.gif" alt="look !" />
-
 <ul class="puce">
 	<li><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=environnement_generalites__ergonomie_generale">DOC : Ergonomie générale.</a></span></li>
 	<li><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=environnement_generalites__fonctionnalites_<?php echo $_SESSION['USER_PROFIL'] ?>">DOC : Fonctionnalités pour un <?php echo str_replace('eleve','élève',$_SESSION['USER_PROFIL']); ?>.</a></span></li>
 </ul>
 
 <hr />
+
+<p class="astuce">Utilisez le menu ci-dessus pour naviguer dans votre espace !</p>
 
 <?php
 if( in_array($_SESSION['USER_PROFIL'],array('eleve','professeur','directeur')) && (HEBERGEUR_INSTALLATION=='multi-structures') )

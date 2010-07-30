@@ -37,8 +37,8 @@ fieldset,img,hr {border:0}
 /* Personnalisations globales                                                                          */
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-html {height:100%;background:#F7F7F7;font-size:13px;}
-body {background:#F7F7F7;margin-left:2px;margin-right:2px;font:1em "arial","liberation sans","dejavu sans","nimbus sans l";cursor:default;}
+html {height:100%;width:100%;background:#F7F7F7;font-size:13px;}
+body {background:#F7F7F7;font:1em "arial","liberation sans","dejavu sans","nimbus sans l";cursor:default;}
 table,select,textarea,input,button,div{font:100% "arial","liberation sans","dejavu sans","nimbus sans l"}
 p{margin:1em auto}
 img {vertical-align:text-top}
@@ -48,14 +48,13 @@ input[readonly],input[disabled] {color:#666}
 h1{display:block;font-size:125%;text-align:center;font-weight:bold;font-variant:small-caps;color:#33A;letter-spacing:0.15em;}
 h1 img{vertical-align:middle}
 h1 a{margin:auto 1em}
-#titre_page{background:transparent url(../_img/logo_petit.png) no-repeat 60px 1px;line-height:62px}
 #titre_aide{background:transparent url(../_img/puce_manuel_ouvert.png) no-repeat left;padding-left:24px;margin:1ex 2em;text-align:left}
 h2{display:block;font-size:110%;text-align:left;font-weight:bold;font-variant:small-caps;color:#33A;letter-spacing:0.15em;margin-top:1ex;margin-bottom:1ex;}
 /* h3 réservé pour l'infobulle */
 h4{display:block;font-size:100%;text-align:left;font-weight:bold;font-variant:small-caps;color:#227;letter-spacing:0.05em;margin:1ex auto 1ex 1em;}
 a.anti_h2{background:transparent url(../_img/actualiser_small.png) no-repeat left;padding-left:15px;margin-left:1em;font-size:80%;font-weight:normal;font-variant:normal;letter-spacing:0;}
 a {color:#139;text-decoration:none}a:hover{color:#D41;text-decoration:underline}
-hr {display:block;height:1px;margin:1em 0;color:#66F;background:#66F}
+hr {display:block;height:1px;margin:1em 0;border-top:1px dotted #66F;}
 span.astuce,div.astuce,p.astuce {background:transparent url(../_img/puce_astuce.png) no-repeat top left;padding-left:18px}
 span.danger,div.danger,p.danger {background:transparent url(../_img/puce_danger.gif) no-repeat top left;padding-left:18px;color:#C00}
 span.manuel,div.manuel,p.manuel {background:transparent url(../_img/puce_manuel.png) no-repeat top left;padding-left:18px;color:#777}
@@ -122,24 +121,25 @@ body q.n3_move2        {background-position: -940px 0}
 body q:hover {cursor:pointer}	/* Curseur pointeur pour ces images qui sont des liens */
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-/* Cadres hors-flux (en jaune en haut)                                                                 */
+/* Cadres principaux (dont le menu déroulant)                                                          */
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-#cadre_identite {position:absolute;top:1px;right:1px;background:#FF6;border:1px solid #F93;padding:1px 3px;text-align:right}
-#appel_menu     {position:fixed;   top:1px;left:1px; background:#FF6;border:1px solid #F93;padding:1px 1ex}
-#treeview       {position:fixed;   top:1px;left:1px; background:#EEE;border:1px solid #139;padding:2px}
-#look_menu      {position:fixed;  top:21px;left:19px;z-index:0}
+#cadre_haut   {z-index:2;position:absolute;left:0;right:0;top:0;height:48px;background:#F7F7F7 url(../_img/background.gif) repeat 0 0;border-bottom:1px solid #66F;white-space:nowrap;min-width:1000px;}
+#cadre_bas    {z-index:1;position:absolute;left:0;right:0;top:49px;background:#F7F7F7 url(../_img/fond09.png) repeat-x 0 0;padding:5px 2px}
+#cadre_unique {padding:2px}
 
-/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-/* Puces des menus                                                                                     */
-/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+#cadre_haut #info {position:absolute;top:3px;left:4px}
+#cadre_haut #logo {position:absolute;top:1px;right:0}
+#cadre_haut #menu {position:absolute;bottom:-2px;left:3px;right:0}
 
-#treeview {padding-left:6px;display:none;z-index:99}
-#treeview li {margin:6px auto 1px -6px;padding-left:18px}
-#treeview li {background:transparent url(../_img/folder/folder_m1.png) no-repeat top left;color:#081;font-weight:bold}
-#treeview li li {margin-top:0;color:#000;font-weight:normal} /* les dossiers images des liens sont ajoutés en javascript */
-#treeview li a.actif {background:#FF2}
-#treeview img {vertical-align:text-top}
+#cadre_haut #info span.button{display:inline-block;padding:1px 3px;margin:1px 0;background:#DDF;border:1px solid #99F;color:#333}
+#cadre_haut #menu a {display:block;border:1px solid #66F;background:#CCF;padding:1px 1px 1px 18px;margin:1px;height:16px}
+#cadre_haut #menu a.menu {background:#CCF url(../_img/menu/menu.png) no-repeat 1px 1px} /* les images sont ajoutés en javascript, sauf pour le 1er niveau, pour un affichage immédiat */
+#cadre_haut #menu a:hover {background-color:#DDF;text-decoration:none}
+#cadre_haut #menu li {float:left;}
+#cadre_haut #menu li li {float:none}
+#cadre_haut #menu li ul {position:absolute;left:-999em;background:#F7F7F7;}
+#cadre_haut #menu li:hover ul {left:auto;}
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 /* Style pour les formulaires                                                                          */

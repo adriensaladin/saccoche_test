@@ -28,6 +28,12 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 if($_SESSION['SESAMATH_ID']==ID_DEMO) {}
 
+// Le formulaire peut quand même avoir été validé par un élève qui n'en n'a pas le droit car on ne teste pas groupes/élèves à cause du cas de la fiche générique
+if(($_SESSION['USER_PROFIL']=='eleve')&&(!mb_substr_count($_SESSION['ELEVE_OPTIONS'],'as')))
+{
+	exit('Accès non autorisé par l\'administrateur aux élèves !');
+}
+
 $detail       = (isset($_POST['f_detail']))      ? clean_texte($_POST['f_detail'])      : '';
 $palier_id    = (isset($_POST['f_palier']))      ? clean_entier($_POST['f_palier'])     : 0;
 $palier_nom   = (isset($_POST['f_palier_nom']))  ? clean_texte($_POST['f_palier_nom'])  : '';

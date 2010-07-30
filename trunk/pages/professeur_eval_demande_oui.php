@@ -76,7 +76,7 @@ $select_groupe  = afficher_select(DB_STRUCTURE_OPT_groupes_professeur($_SESSION[
 			<label class="tab" for="f_quoi">Action :</label><select id="f_quoi" name="f_quoi"><option value=""></option><option value="creer">Créer une nouvelle évaluation.</option><option value="completer">Compléter une évaluation existante.</option><option value="changer">Changer le statut pour "évaluation en préparation".</option><option value="retirer">Retirer de la liste des demandes.</option></select>
 		</fieldset>
 		<fieldset id="step_qui" class="hide">
-			<label class="tab" for="f_qui">Élève(s) :</label><select id="f_qui" name="f_qui"><option value="groupe"></option><option value="select">Élèves sélectionnés</option></select>
+			<label class="tab" for="f_qui">Élève(s) :</label><select id="f_qui" name="f_qui"><option value="select">Élèves sélectionnés</option><option value="groupe"></option></select>
 		</fieldset>
 		<fieldset id="step_creer" class="hide">
 			<label class="tab" for="f_date">Date :</label><input id="f_date" name="f_date" size="9" type="text" value="<?php echo date("d/m/Y") ?>" /><q class="date_calendrier" title="Cliquez sur cette image pour importer une date depuis un calendrier !"></q><br />

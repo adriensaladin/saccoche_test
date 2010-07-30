@@ -458,7 +458,7 @@ function DB_STRUCTURE_lister_result_eleves_matiere($liste_eleve_id,$liste_item_i
 	$DB_SQL.= 'LEFT JOIN sacoche_referentiel_theme USING (theme_id) ';
 	$DB_SQL.= 'LEFT JOIN sacoche_referentiel_domaine USING (domaine_id) ';
 	$DB_SQL.= 'LEFT JOIN sacoche_niveau USING (niveau_id) ';
-	$DB_SQL.= 'WHERE eleve_id IN('.$liste_eleve_id.') AND item_id IN('.$liste_item_id.') '.$sql_debut.$sql_fin;
+	$DB_SQL.= 'WHERE eleve_id IN('.$liste_eleve_id.') AND item_id IN('.$liste_item_id.') AND saisie_note!="REQ" '.$sql_debut.$sql_fin;
 	$DB_SQL.= 'ORDER BY niveau_ordre ASC, domaine_ordre ASC, theme_ordre ASC, item_ordre ASC, saisie_date ASC';
 	$DB_VAR = array(':date_debut'=>$date_mysql_debut,':date_fin'=>$date_mysql_fin);
 	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
@@ -488,7 +488,7 @@ function DB_STRUCTURE_lister_result_eleves_matieres($liste_eleve_id,$liste_item_
 	$DB_SQL.= 'LEFT JOIN sacoche_referentiel_domaine USING (domaine_id) ';
 	$DB_SQL.= 'LEFT JOIN sacoche_matiere USING (matiere_id) ';
 	$DB_SQL.= 'LEFT JOIN sacoche_niveau USING (niveau_id) ';
-	$DB_SQL.= 'WHERE eleve_id IN('.$liste_eleve_id.') AND item_id IN('.$liste_item_id.') '.$sql_debut.$sql_fin;
+	$DB_SQL.= 'WHERE eleve_id IN('.$liste_eleve_id.') AND item_id IN('.$liste_item_id.') AND saisie_note!="REQ" '.$sql_debut.$sql_fin;
 	$DB_SQL.= 'ORDER BY niveau_ordre ASC, domaine_ordre ASC, theme_ordre ASC, item_ordre ASC, saisie_date ASC';
 	$DB_VAR = array(':date_debut'=>$date_mysql_debut,':date_fin'=>$date_mysql_fin);
 	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
@@ -521,7 +521,7 @@ function DB_STRUCTURE_lister_result_eleves_palier($liste_eleve_id,$liste_item_id
 	$DB_SQL.= 'LEFT JOIN sacoche_matiere USING (matiere_id) ';
 	$DB_SQL.= 'LEFT JOIN sacoche_niveau USING (niveau_id) ';
 	$DB_SQL.= 'LEFT JOIN sacoche_referentiel USING (matiere_id,niveau_id) ';
-	$DB_SQL.= 'WHERE eleve_id IN('.$liste_eleve_id.') AND entree_id IN('.$liste_item_id.') '.$sql_debut.$sql_fin;
+	$DB_SQL.= 'WHERE eleve_id IN('.$liste_eleve_id.') AND entree_id IN('.$liste_item_id.') AND saisie_note!="REQ" '.$sql_debut.$sql_fin;
 	$DB_SQL.= 'ORDER BY matiere_nom ASC, niveau_ordre ASC, domaine_ordre ASC, theme_ordre ASC, item_ordre ASC, saisie_date ASC';
 	$DB_VAR = array(':date_debut'=>$date_mysql_debut,':date_fin'=>$date_mysql_fin);
 	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
@@ -1236,16 +1236,21 @@ function DB_STRUCTURE_lister_items_devoir($devoir_id)
 /**
  * DB_STRUCTURE_lister_saisies_devoir
  * 
- * @param int  $devoir_id
+ * @param int   $devoir_id
+ * @param bool  $with_REQ   // Avec ou sans les repères de demandes d'évaluations
  * @return array
  */
 
-function DB_STRUCTURE_lister_saisies_devoir($devoir_id)
+function DB_STRUCTURE_lister_saisies_devoir($devoir_id,$with_REQ)
 {
 	// On évite les élèves désactivés pour ces opérations effectuées sur les pages de saisies d'évaluations
 	$DB_SQL = 'SELECT eleve_id,item_id,saisie_note FROM sacoche_saisie ';
 	$DB_SQL.= 'LEFT JOIN sacoche_user ON sacoche_saisie.eleve_id=sacoche_user.user_id ';
 	$DB_SQL.= 'WHERE devoir_id=:devoir_id AND user_statut=:statut ';
+	if(!$with_REQ)
+	{
+		$DB_SQL.= 'AND saisie_note!="REQ" ';
+	}
 	$DB_VAR = array(':devoir_id'=>$devoir_id,':statut'=>1);
 	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
@@ -1697,6 +1702,7 @@ function DB_STRUCTURE_ajouter_devoir($prof_id,$groupe_id,$date_mysql,$info)
 
 /**
  * DB_STRUCTURE_ajouter_saisie
+ * Si la note est "REQ" (pour marquer une demande d'évaluation), on utilise un REPLACE au lieu d'un INSERT car une saisie peut déjà exister (si le prof ajoute les demandes à un devoir existant).
  * 
  * @param int    $prof_id
  * @param int    $eleve_id
@@ -1710,7 +1716,8 @@ function DB_STRUCTURE_ajouter_devoir($prof_id,$groupe_id,$date_mysql,$info)
 
 function DB_STRUCTURE_ajouter_saisie($prof_id,$eleve_id,$devoir_id,$item_id,$item_date_mysql,$item_note,$item_info)
 {
-	$DB_SQL = 'INSERT INTO sacoche_saisie ';
+	$commande = ($item_note!='REQ') ? 'INSERT' : 'REPLACE' ;
+	$DB_SQL = $commande.' INTO sacoche_saisie ';
 	$DB_SQL.= 'VALUES(:prof_id,:eleve_id,:devoir_id,:item_id,:item_date,:item_note,:item_info)';
 	$DB_VAR = array(':prof_id'=>$prof_id,':eleve_id'=>$eleve_id,':devoir_id'=>$devoir_id,':item_id'=>$item_id,':item_date'=>$item_date_mysql,':item_note'=>$item_note,':item_info'=>$item_info);
 	DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
@@ -2150,13 +2157,17 @@ function DB_STRUCTURE_modifier_liaison_user_groupe($user_id,$user_profil,$groupe
 	// Dans le cas d'un élève et d'une classe, ce n'est pas dans la table de jointure mais dans la table user que ça se passe
 	if( ($user_profil=='eleve') && ($groupe_type=='classe') )
 	{
-		if(!$etat)
-		{
-			$groupe_id = 0; // normalement c'est déjà transmis à 0 mais bon...
-		}
 		$DB_SQL = 'UPDATE sacoche_user ';
-		$DB_SQL.= 'SET eleve_classe_id=:groupe_id ';
-		$DB_SQL.= 'WHERE user_id=:user_id ';
+		if($etat)
+		{
+			$DB_SQL.= 'SET eleve_classe_id=:groupe_id ';
+			$DB_SQL.= 'WHERE user_id=:user_id ';
+		}
+		else
+		{
+			$DB_SQL.= 'SET eleve_classe_id=0 ';
+			$DB_SQL.= 'WHERE user_id=:user_id AND eleve_classe_id=:groupe_id ';
+		}
 		$DB_SQL.= 'LIMIT 1';
 	}
 	else
@@ -2257,7 +2268,7 @@ function DB_STRUCTURE_modifier_liaison_professeur_matiere($user_id,$matiere_id,$
  * 
  * @param int    $devoir_id
  * @param array  $tab_items   tableau des id des items
- * @param string $mode        'creer' ou 'dupliquer' pour un insert dans un nouveau devoir || 'substituer' pour une maj delete / insert || 'ajouter' pour maj insert uniquement
+ * @param string $mode        {creer;dupliquer} => insertion dans un nouveau devoir || {substituer} => maj avec delete / insert || {ajouter} => maj avec insert uniquement
  * @param int    $devoir_ordonne_id   Dans le cas d'une duplication, id du devoir dont il faut récupérer l'ordre des items.
  * @return void
  */

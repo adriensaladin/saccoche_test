@@ -542,7 +542,7 @@ $(document).ready
 			(
 				function ()
 				{
-					if( $(this).val()!='X' )
+					if( ($(this).val()!='X') && ($(this).val()!='REQ') )
 					{
 						$(this).parent().css("background-color","#AAF");
 					}
@@ -590,6 +590,7 @@ $(document).ready
 								$('#msg_imprimer').removeAttr("class").addClass("valide").html("Cartouches générés !");
 								$('#zone_imprimer_retour').html(responseHTML);
 								format_liens('#zone_imprimer_retour');
+								infobulle();
 							}
 						}
 					}

@@ -47,8 +47,8 @@ $TITRE = "Données en consultation";
 $fichier_section = './pages/'.$PAGE.'_'.$SECTION.'.php';
 if(is_file($fichier_section))
 {
-	require($fichier_section);
 	$PAGE = $PAGE.'_'.$SECTION ;
+	require($fichier_section);
 }
 else
 {

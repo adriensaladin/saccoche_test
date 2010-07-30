@@ -27,6 +27,7 @@
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = "Importer les professeurs et les directeurs";
+$VERSION_JS_FILE += 1;
 ?>
 
 <?php

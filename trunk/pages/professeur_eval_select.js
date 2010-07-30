@@ -312,7 +312,7 @@ $(document).ready
 					success : function(responseHTML)
 					{
 						maj_clock(1);
-						if(responseHTML.substring(0,1)!='<td>')
+						if(responseHTML.substring(0,1)!='<')
 						{
 							$('#msg_voir').removeAttr("class").addClass("alerte").html(responseHTML+' <button id="fermer_zone_voir" type="button"><img alt="" src="./_img/bouton/retourner.png" /> Retour</button>');
 						}
@@ -624,7 +624,7 @@ $(document).ready
 			(
 				function ()
 				{
-					if( $(this).val()!='X' )
+					if( ($(this).val()!='X') && ($(this).val()!='REQ') )
 					{
 						$(this).parent().css("background-color","#AAF");
 					}
@@ -672,6 +672,7 @@ $(document).ready
 								$('#msg_imprimer').removeAttr("class").addClass("valide").html("Cartouches générés !");
 								$('#zone_imprimer_retour').html(responseHTML);
 								format_liens('#zone_imprimer_retour');
+								infobulle();
 							}
 						}
 					}

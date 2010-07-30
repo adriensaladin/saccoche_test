@@ -240,6 +240,40 @@ function setVolume(volume)
 }
 
 /**
+ * Fonction pour arrondir les coins des boites avec bordures
+ * En CSS3 il y a la propriété border-radius : http://www.w3.org/TR/css3-background/#the-border-radius
+ * Actuellement elle est pré-déclinée par qqs navigateurs :
+ * => Gecko, 	avec -moz-border-radius 		(valable pour Firefox, Camino et tout navigateur basé sur Gecko),
+ * => Webkit, 	avec -webkit-border-radius 	(valable pour Safari, Chrome et tout navigateur basé sur Webkit).
+ * => KHTML, 	avec -khtml-border-radius 	(valable pour Konqueror),
+ * => Opera, 	avec -o-border-radius 	(valable pour Opéra depuis la version 10.50),
+ * Sinon (MSIE...) il y a des techniques tordues et pas universelles (div imbriqués, pixel par pixel...).
+ * => http://plugins.jquery.com/project/backgroundCanvas
+ * => http://plugins.jquery.com/project/roundCorners => fonctionne à peu près mais temps de calcul long + plante IE si masquage cadre_haut + fait disparaitre la ligne centrale et pb de bordures à cause de l'overflow...
+ * => http://plugins.jquery.com/project/DivCorners => reste figé en largeur et en hauteur
+ * => http://plugins.jquery.com/project/curvy-corners => erreur inexpliquée sous IE, marge sous FF (il faut ajouter un margin 10px), très joli sinon (http://www.curvycorners.net/instructions/)
+ * @param void
+ * @return void
+ */
+
+/*
+function arrondir_coins()
+{
+	// On cherche si le navigateur sait gérer cet attribut css3, éventuellement avec une syntaxe propriétaire
+	     if(document.body.style['BorderRadius'] !== undefined)       {style = 'border-radius';}
+	else if(document.body.style['MozBorderRadius'] !== undefined)    {style = '-moz-border-radius';}
+	else if(document.body.style['WebkitBorderRadius'] !== undefined) {style = '-webkit-border-radius';}
+	else if(document.body.style['KhtmlBorderRadius'] !== undefined)  {style = '-khtml-border-radius';}
+	else if(document.body.style['OBorderRadius'] !== undefined)      {style = '-o-border-radius';}
+	else {style = false;}
+	if(style !== false)
+	{
+		$("#info span.button").css(style,"4px");
+	}
+}
+*/
+
+/**
  * jQuery !
  */
 
@@ -251,6 +285,7 @@ $(document).ready
 		//	Initialisation
 		format_liens('body');
 		infobulle();
+		// arrondir_coins();
 
 		// MENU - Styler les puces avec les images
 		$("#menu a").each
@@ -260,27 +295,37 @@ $(document).ready
 				classe = $(this).attr("class");
 				if(classe)
 				{
-					// On n'utilise pas "#CCF url(./_img/menu/menu.png) no-repeat 1px 1px" sinon le hover{background:#DDF} disparait
+					// On n'utilise pas "#CCF url(./_img/menu/menu.png) no-repeat 1px 1px" sinon le hover{background:#DDF} ne fonctionne plus
 					$(this).css({ 'background-image':'url(./_img/menu/'+classe+'.png)' , 'background-repeat':'no-repeat' , 'background-position':'1px 1px' });
 				}
 			}
 		);
 
-		// MENU - Rendre transparente la page au survol ; on ne paut pas utiliser fadeTo('slow',0.25) fadeTo('normal',1) car une durée d'animation provoque un clignotement
-		$('#menu li').mouseover
-		(
-			function()
-			{
-				$('#cadre_bas').css('opacity',0.25);
-			}
-		);
-		$('#menu li').mouseout
-		(
-			function()
-			{
-				$('#cadre_bas').css('opacity',1);
-			}
-		);
+		// MENU - Rendre transparente la page au survol
+		// Difficultés pour utiliser fadeTo('slow',0.25) et fadeTo('normal',1) car une durée d'animation provoque des boucles
+		// Difficultés pour utiliser aussi css('opacity',0.25) et css('opacity',1) car un passage de la souris au dessus du menu provoque un clignotement désagréable
+		// Alors il a fallu ruser (compliquer) avec un marqueur et un timing...
+		var test_over = false;
+		$('#menu li').mouseover( function(){test_over = true; });
+		$('#menu li').mouseout(  function(){test_over = false;});
+		function page_transparente()
+		{
+			$("body").everyTime
+			('5ds', function()
+				{
+					if(test_over)
+					{
+						$('#cadre_bas').fadeTo('normal',0.25);
+					}
+					else
+					{
+						$('#cadre_bas').fadeTo('fast',1);
+					}
+				}
+			);
+		}
+		page_transparente();
+
 
 		// piocher dans un arbre de COMPETENCES - Réagir aux clics sur les dossiers
 		$('#zone_compet li span').siblings('ul').hide('fast');

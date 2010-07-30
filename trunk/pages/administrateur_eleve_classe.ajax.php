@@ -49,10 +49,13 @@ if($action=='ajouter')
 // Retirer des élèves à des classes
 elseif($action=='retirer')
 {
-	$classe_id = 0; // pas besoin de passer les classes en revue : il suffit de mettre $classe_id à 0
+	// on doit tout passer en revue car on ne sait pas si la classe de l'élève est dans la liste transmise
 	foreach($tab_select_eleves as $user_id)
 	{
-		DB_STRUCTURE_modifier_liaison_user_groupe($user_id,'eleve',$classe_id,'classe',false);
+		foreach($tab_select_classes as $classe_id)
+		{
+			DB_STRUCTURE_modifier_liaison_user_groupe($user_id,'eleve',$classe_id,'classe',false);
+		}
 	}
 }
 

@@ -30,7 +30,7 @@ $TITRE = "Gestion des évaluations et saisie des acquisitions";
 ?>
 
 <div class="hc">
-	<a href="./index.php?page=<?php echo $PAGE ?>_demande">Demandes d'évaluations.</a>	||
+	<a href="./index.php?page=<?php echo $PAGE ?>&amp;section=demande">Demandes d'évaluations.</a>	||
 	<a href="./index.php?page=<?php echo $PAGE ?>&amp;section=groupe">Évaluer une classe ou un groupe.</a>	||
 	<a href="./index.php?page=<?php echo $PAGE ?>&amp;section=select">Évaluer des élèves sélectionnés.</a>	||
 	<a href="./index.php?page=releve">Accéder aux bilans.</a>
@@ -43,8 +43,8 @@ $TITRE = "Gestion des évaluations et saisie des acquisitions";
 $fichier_section = './pages/'.$PAGE.'_'.$SECTION.'.php';
 if(is_file($fichier_section))
 {
-	require($fichier_section);
 	$PAGE = $PAGE.'_'.$SECTION ;
+	require($fichier_section);
 }
 else
 {

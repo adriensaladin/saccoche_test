@@ -34,7 +34,7 @@ $(document).ready
 		// Appel en ajax pour lancer un nettoyage
 		//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
 
-		$('button').click
+		$('#bouton_nettoyer , #bouton_purger').click
 		(
 			function()
 			{

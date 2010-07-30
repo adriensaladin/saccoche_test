@@ -45,6 +45,7 @@ $suite       = (isset($_POST['f_suite']))       ? clean_texte($_POST['f_suite'])
 $tab_demande_id = array();
 $tab_user_id    = array();
 $tab_item_id    = array();
+$tab_user_item  = array();
 // Récupérer et contrôler la liste des items transmis
 $tab_ids = (isset($_POST['ids'])) ? explode(',',$_POST['ids']) : array() ;
 if(count($tab_ids))
@@ -55,6 +56,7 @@ if(count($tab_ids))
 		$tab_demande_id[] = $tab_id[0];
 		$tab_user_id[]    = $tab_id[1];
 		$tab_item_id[]    = $tab_id[2];
+		$tab_user_item[]  = (int)$tab_id[1].'x'.(int)$tab_id[2];
 	}
 	function positif($n) {return $n;}
 	$tab_demande_id = array_filter( array_map('clean_entier',$tab_demande_id)            ,'positif');
@@ -104,14 +106,14 @@ if( ($action=='Afficher_demandes') && $matiere_id && $matiere_nom && $groupe_id 
 		// Afficher une ligne du tableau 
 		$retour .= '<tr'.$class.'>';
 		$retour .= '<td class="nu"><input type="checkbox" name="f_ids" value="'.$DB_ROW['demande_id'].'x'.$DB_ROW['user_id'].'x'.$DB_ROW['item_id'].'" lang="'.html($langue).'" /></td>';
-		$retour .= '<td>'.html($matiere_nom).'</td>';
-		$retour .= '<td>'.html($DB_ROW['item_ref']).' <img alt="" src="./_img/bulle_aide.png" title="'.html($DB_ROW['item_nom']).'" /></td>';
-		$retour .= '<td>$'.$DB_ROW['item_id'].'$</td>';
-		$retour .= '<td>'.html($groupe_nom).'</td>';
-		$retour .= '<td>'.html($tab_eleves[$DB_ROW['user_id']]).'</td>';
-		$retour .= affich_score_html($score,'score',$pourcent='');
-		$retour .= '<td><i>'.html($DB_ROW['demande_date']).'</i>'.convert_date_mysql_to_french($DB_ROW['demande_date']).'</td>';
-		$retour .= '<td>'.$statut.'</td>';
+		$retour .= '<td class="label">'.html($matiere_nom).'</td>';
+		$retour .= '<td class="label">'.html($DB_ROW['item_ref']).' <img alt="" src="./_img/bulle_aide.png" title="'.html($DB_ROW['item_nom']).'" /></td>';
+		$retour .= '<td class="label">$'.$DB_ROW['item_id'].'$</td>';
+		$retour .= '<td class="label">'.html($groupe_nom).'</td>';
+		$retour .= '<td class="label">'.html($tab_eleves[$DB_ROW['user_id']]).'</td>';
+		$retour .= str_replace( '<td class="' , '<td class="label ' , affich_score_html($score,'score',$pourcent='') );
+		$retour .= '<td class="label"><i>'.html($DB_ROW['demande_date']).'</i>'.convert_date_mysql_to_french($DB_ROW['demande_date']).'</td>';
+		$retour .= '<td class="label">'.$statut.'</td>';
 		$retour .= '</tr>';
 	}
 	// Calculer pour chaque item sa popularité (le nb de demandes pour les élèves affichés)
@@ -146,6 +148,13 @@ elseif( ($action=='creer') && $groupe_id && (isset($tab_types[$groupe_type])) &&
 	$devoir_id = DB_STRUCTURE_ajouter_devoir($_SESSION['USER_ID'],$groupe_id,$date_mysql,$info);
 	// Insérer les enregistrements des items de l'évaluation
 	DB_STRUCTURE_modifier_liaison_devoir_item($devoir_id,$tab_item_id,'creer');
+	// Insérer les scores 'REQ' pour indiquer au prof les demandes dans le tableau de saisie
+	$info = 'Demande en attente ('.$_SESSION['USER_NOM'].' '.$_SESSION['USER_PRENOM']{0}.'.)';
+	foreach($tab_user_item as $key)
+	{
+		list($eleve_id,$item_id) = explode('x',$key);
+		DB_STRUCTURE_ajouter_saisie($_SESSION['USER_ID'],$eleve_id,$devoir_id,$item_id,$date_mysql,'REQ',$info);
+	}
 	// Pour terminer, on change le statut des demandes ou on les supprime
 	$listing_demande_id = implode(',',$tab_demande_id);
 	if($suite=='changer')
@@ -162,17 +171,24 @@ elseif( ($action=='creer') && $groupe_id && (isset($tab_types[$groupe_type])) &&
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 //	Compléter une évaluation existante
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-elseif( ($action=='completer') && $groupe_id && (isset($tab_types[$groupe_type])) && in_array($qui,$tab_qui) && $devoir_id && in_array($suite,$tab_suite) && $nb_demandes && $nb_users && $nb_items )
+elseif( ($action=='completer') && $groupe_id && (isset($tab_types[$groupe_type])) && in_array($qui,$tab_qui) && $devoir_id && in_array($suite,$tab_suite) && $nb_demandes && $nb_users && $nb_items && $date )
 {
 	// Dans le cas d'une évaluation sur une liste d'élèves sélectionnés
 	if($qui=='select')
 	{
-		// sacoche_jointure_user_groupe
+		// Il faut ajouter tous les élèves choisis
 		DB_STRUCTURE_modifier_liaison_devoir_user($groupe_id,$tab_user_id,'ajouter');
 	}
 	// Maintenant on peut modifier les items de l'évaluation
-	// sacoche_jointure_devoir_item
 	DB_STRUCTURE_modifier_liaison_devoir_item($devoir_id,$tab_item_id,'ajouter');
+	// Insérer les scores 'REQ' pour indiquer au prof les demandes dans le tableau de saisie
+	$date_mysql = convert_date_french_to_mysql($date);
+	$info = 'Demande en attente ('.$_SESSION['USER_NOM'].' '.$_SESSION['USER_PRENOM']{0}.'.)';
+	foreach($tab_user_item as $key)
+	{
+		list($eleve_id,$item_id) = explode('x',$key);
+		DB_STRUCTURE_ajouter_saisie($_SESSION['USER_ID'],$eleve_id,$devoir_id,$item_id,$date_mysql,'REQ',$info);
+	}
 	// Pour terminer, on change le statut des demandes ou on les supprime
 	$listing_demande_id = implode(',',$tab_demande_id);
 	if($suite=='changer')

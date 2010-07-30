@@ -27,6 +27,7 @@
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = "Réintégrer / supprimer professeurs &amp; directeurs";
+$VERSION_JS_FILE += 1;
 ?>
 
 <?php

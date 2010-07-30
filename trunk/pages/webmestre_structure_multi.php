@@ -26,7 +26,7 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-$VERSION_JS_FILE += 3;
+$VERSION_JS_FILE += 4;
 
 // Élément de formulaire "f_geo" pour le choix d'une zone géographique
 $options_geo = '';

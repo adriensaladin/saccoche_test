@@ -260,7 +260,7 @@ $(document).ready
 //	Appeler la page de stats ou de newsletter
 //	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
 
-		$('button').click
+		$('#zone_actions button').click
 		(
 			function()
 			{

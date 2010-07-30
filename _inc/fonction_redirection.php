@@ -66,7 +66,7 @@ function alert_redirection_exit($texte_alert,$adresse='index.php')
 	}
 	else
 	{
-		echo utf8_encode($texte_alert);
+		echo $texte_alert;	// utf8_encode() retiré
 	}
 	exit();
 }

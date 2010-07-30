@@ -284,7 +284,7 @@ $(document).ready
 		function surveiller_id()
 		{
 			$("body").everyTime
-			('5ds', 'surveillance', function()
+			('5ds', function()
 				{
 					if( (last_id_survole=='') || (last_id_survole!=last_id_memorise) || (last_id_survole==last_id_affiche) )
 					{

@@ -305,7 +305,7 @@ else if( ($action=='saisir') && $devoir_id && $groupe_type && $groupe_id && $dat
 		}
 	}
 	// configurer le champ input
-	$DB_TAB = DB_STRUCTURE_lister_saisies_devoir($devoir_id);
+	$DB_TAB = DB_STRUCTURE_lister_saisies_devoir($devoir_id,$with_REQ=true);
 	$bad = 'class="X" value="X"';
 	foreach($DB_TAB as $DB_ROW)
 	{
@@ -404,9 +404,9 @@ else if( ($action=='voir') && $devoir_id && $groupe_type && $groupe_id && $date 
 		}
 	}
 	// ajouter le contenu
-	$tab_conversion = array( ''=>' ' , 'RR'=>'1' , 'R'=>'2' , 'V'=>'3' , 'VV'=>'4' , 'ABS'=>'A' , 'NN'=>'N' , 'DISP'=>'D' );
-	$tab_dossier = array( ''=>'' , 'RR'=>$_SESSION['CSS_NOTE_STYLE'].'/' , 'R'=>$_SESSION['CSS_NOTE_STYLE'].'/' , 'V'=>$_SESSION['CSS_NOTE_STYLE'].'/' , 'VV'=>$_SESSION['CSS_NOTE_STYLE'].'/' , 'ABS'=>'' , 'NN'=>'' , 'DISP'=>'' );
-	$DB_TAB = DB_STRUCTURE_lister_saisies_devoir($devoir_id);
+	$tab_conversion = array( ''=>' ' , 'RR'=>'1' , 'R'=>'2' , 'V'=>'3' , 'VV'=>'4' , 'ABS'=>'A' , 'NN'=>'N' , 'DISP'=>'D' , 'REQ'=>'?' );
+	$tab_dossier = array( ''=>'' , 'RR'=>$_SESSION['CSS_NOTE_STYLE'].'/' , 'R'=>$_SESSION['CSS_NOTE_STYLE'].'/' , 'V'=>$_SESSION['CSS_NOTE_STYLE'].'/' , 'VV'=>$_SESSION['CSS_NOTE_STYLE'].'/' , 'ABS'=>'' , 'NN'=>'' , 'DISP'=>'' , 'REQ'=>'' );
+	$DB_TAB = DB_STRUCTURE_lister_saisies_devoir($devoir_id,$with_REQ=true);
 	foreach($DB_TAB as $DB_ROW)
 	{
 		// Test pour éviter les pbs des élèves changés de groupes ou des items modifiés en cours de route
@@ -490,9 +490,11 @@ else if( ($action=='Enregistrer_saisie') && $devoir_id && $date )
 		}
 	}
 	// On recupère le contenu de la base déjà enregistré pour le comparer ; on remplit au fur et à mesure $tab_nouveau_modifier / $tab_nouveau_supprimer
+	// $tab_demande_supprimer sert à supprimer des demandes d'élèves dont on met une note.
 	$tab_nouveau_modifier = array();
 	$tab_nouveau_supprimer = array();
-	$DB_TAB = DB_STRUCTURE_lister_saisies_devoir($devoir_id);
+	$tab_demande_supprimer = array();
+	$DB_TAB = DB_STRUCTURE_lister_saisies_devoir($devoir_id,$with_REQ=true);
 	foreach($DB_TAB as $DB_ROW)
 	{
 		$key = $DB_ROW['item_id'].'x'.$DB_ROW['eleve_id'];
@@ -507,12 +509,17 @@ else if( ($action=='Enregistrer_saisie') && $devoir_id && $date )
 			{
 				// valeur de la base à modifier
 				$tab_nouveau_modifier[$key] = $tab_post[$key];
+				if($DB_ROW['saisie_note']=='REQ')
+				{
+					// demande d'évaluation à supprimer
+					$tab_demande_supprimer[$key] = $key;
+				}
 			}
 		}
 		unset($tab_post[$key]);
 	}
 	// Il reste dans $tab_post les données à ajouter (mises dans $tab_nouveau_ajouter) et les données vides qui ne servent pas (non enregistrées et non saisies)
-	function nonvide($note) {return ($note!='X') ? true : false;}
+	function nonvide($note) {return (($note!='X')&&($note!='REQ')) ? true : false;}
 	$tab_nouveau_ajouter = array_filter($tab_post,'nonvide');
 	// Il n'y a plus qu'à mettre à jour la base
 	if( !count($tab_nouveau_ajouter) && !count($tab_nouveau_modifier) && !count($tab_nouveau_supprimer) )
@@ -525,11 +532,6 @@ else if( ($action=='Enregistrer_saisie') && $devoir_id && $date )
 	{
 		list($item_id,$eleve_id) = explode('x',$key);
 		DB_STRUCTURE_ajouter_saisie($_SESSION['USER_ID'],$eleve_id,$devoir_id,$item_id,$date,$note,$info);
-		// On supprime une éventuelle demande d'évaluation associée.
-		if($_SESSION['ELEVE_DEMANDES'])
-		{
-			DB_STRUCTURE_supprimer_demande($eleve_id,$item_id);
-		}
 	}
 	foreach($tab_nouveau_modifier as $key => $note)
 	{
@@ -540,6 +542,11 @@ else if( ($action=='Enregistrer_saisie') && $devoir_id && $date )
 	{
 		list($item_id,$eleve_id) = explode('x',$key);
 		DB_STRUCTURE_supprimer_saisie($eleve_id,$devoir_id,$item_id);
+	}
+	foreach($tab_demande_supprimer as $key => $key)
+	{
+		list($item_id,$eleve_id) = explode('x',$key);
+		DB_STRUCTURE_supprimer_demande($eleve_id,$item_id);
 	}
 	exit('<ok>');
 }
@@ -588,7 +595,7 @@ else if( ($action=='Imprimer_cartouche') && $devoir_id && $groupe_type && $group
 	// compléter avec les résultats
 	if($valeur=='plein')
 	{
-		$DB_TAB = DB_STRUCTURE_lister_saisies_devoir($devoir_id);
+		$DB_TAB = DB_STRUCTURE_lister_saisies_devoir($devoir_id,$with_REQ=false);
 		foreach($DB_TAB as $DB_ROW)
 		{
 			// Test pour éviter les pbs des élèves changés de groupes ou des items modifiés en cours de route

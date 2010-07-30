@@ -27,6 +27,7 @@
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = "Initialiser identifiants élèves";
+$VERSION_JS_FILE += 1;
 ?>
 
 <?php

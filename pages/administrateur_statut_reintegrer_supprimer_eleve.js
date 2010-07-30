@@ -107,7 +107,7 @@ $(document).ready
 // Soumission du formulaire
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
-		$('button').click
+		$('#reintegrer , #supprimer').click
 		(
 			function()
 			{

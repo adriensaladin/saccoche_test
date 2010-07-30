@@ -124,18 +124,18 @@ body q:hover {cursor:pointer}	/* Curseur pointeur pour ces images qui sont des l
 /* Cadres principaux (dont le menu déroulant)                                                          */
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-#cadre_haut   {z-index:2;position:absolute;left:0;right:0;top:0;height:48px;background:#F7F7F7 url(../_img/background.gif) repeat 0 0;border-bottom:1px solid #66F;white-space:nowrap;min-width:1000px;}
+#cadre_haut   {z-index:2;position:absolute;left:0;right:0;top:0;height:48px;background:#F7F7F7 url(../_img/background.gif) repeat 0 0;border-bottom:1px solid #77F;white-space:nowrap;min-width:1000px;}
 #cadre_bas    {z-index:1;position:absolute;left:0;right:0;top:49px;background:#F7F7F7 url(../_img/fond09.png) repeat-x 0 0;padding:5px 2px}
 #cadre_unique {padding:2px}
 
 #cadre_haut #info {position:absolute;top:3px;left:4px}
-#cadre_haut #logo {position:absolute;top:1px;right:0}
+#cadre_haut #logo {position:absolute;top:1px;left:850px}
 #cadre_haut #menu {position:absolute;bottom:-2px;left:3px;right:0}
 
-#cadre_haut #info span.button{display:inline-block;padding:1px 3px;margin:1px 0;background:#DDF;border:1px solid #99F;color:#333}
-#cadre_haut #menu a {display:block;border:1px solid #66F;background:#CCF;padding:1px 1px 1px 18px;margin:1px;height:16px}
-#cadre_haut #menu a.menu {background:#CCF url(../_img/menu/menu.png) no-repeat 1px 1px} /* les images sont ajoutés en javascript, sauf pour le 1er niveau, pour un affichage immédiat */
-#cadre_haut #menu a:hover {background-color:#DDF;text-decoration:none}
+#cadre_haut #info span.button{display:inline-block;padding:1px 3px;margin:1px 0;background:#DDF;border:1px solid #99F;color:#333} /* coins arrondis via js */
+#cadre_haut #menu a {display:block;border:1px solid #77F;color:#FFF;background:#77F;padding:1px 1px 1px 18px;margin:1px;height:16px}
+#cadre_haut #menu a.menu {background:#77F url(../_img/menu/menu.png) no-repeat 1px 1px} /* les images sont ajoutés en javascript, sauf pour le 1er niveau, pour un affichage immédiat */
+#cadre_haut #menu a:hover {background-color:#99F;color:#FFF;text-decoration:none}
 #cadre_haut #menu li {float:left;}
 #cadre_haut #menu li li {float:none}
 #cadre_haut #menu li ul {position:absolute;left:-999em;background:#F7F7F7;}
@@ -220,6 +220,7 @@ table.scor_eval tbody td input.ABS  {background:#FFF url('../_img/note/ABS.gif')
 table.scor_eval tbody td input.NN   {background:#FFF url('../_img/note/NN.gif')   no-repeat center center;}
 table.scor_eval tbody td input.DISP {background:#FFF url('../_img/note/DISP.gif') no-repeat center center;}
 table.scor_eval tbody td input.X    {background:#FFF url('../_img/note/X.gif')    no-repeat center center;}
+table.scor_eval tbody td input.REQ  {background:#FFF url('../_img/note/REQ.gif')  no-repeat center center;}
 /* Commenté car redéfini suivant les préférences de l'établissement */
 /*
 table.scor_eval tbody td input.RR   {background:#FFF url('../_img/note/Lomer/RR.gif')   no-repeat center center;}

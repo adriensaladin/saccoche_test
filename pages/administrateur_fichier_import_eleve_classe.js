@@ -67,7 +67,7 @@ $(document).ready
 		function changer_fichier(fichier_nom,fichier_extension)
 		{
 			$('button').attr('disabled','disabled');
-			$('button').next('label').removeAttr("class").html('&nbsp;');
+			$('#ajax button').next('label').removeAttr("class").html('&nbsp;');
 			return true;
 		}
 
@@ -122,7 +122,7 @@ $(document).ready
 			else
 			{
 				maj_clock(1);
-				$('button').next('label').removeAttr("class").html('&nbsp;');
+				$('#bouton_sconet').next('label').removeAttr("class").html('&nbsp;');
 				$('#ajax').html(responseHTML);
 			}
 		}
@@ -136,7 +136,7 @@ $(document).ready
 			else
 			{
 				maj_clock(1);
-				$('button').next('label').removeAttr("class").html('&nbsp;');
+				$('#bouton_tableur').next('label').removeAttr("class").html('&nbsp;');
 				$('#ajax').html(responseHTML);
 			}
 		}

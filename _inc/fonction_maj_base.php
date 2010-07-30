@@ -322,6 +322,14 @@ function maj_base($version_actuelle)
 		// y compris la mise à jour du champ "version_base" justement
 		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_actuelle.'" WHERE parametre_nom="version_base" LIMIT 1' );
 	}
+	if($version_actuelle=='2010-07-29')
+	{
+		$version_actuelle = '2010-07-31';
+		// script pour migrer vers la version suivante : modification d'un champ afin de pouvoir repérer les demandes d'évaluations en attente de saisie
+		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_saisie CHANGE saisie_note saisie_note ENUM( "VV", "V", "R", "RR", "ABS", "NN", "DISP", "REQ" ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL ' );
+		// y compris la mise à jour du champ "version_base" justement
+		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_actuelle.'" WHERE parametre_nom="version_base" LIMIT 1' );
+	}
 	// Log de l'action
 	ajouter_log('Mise à jour automatique de la base '.SACOCHE_STRUCTURE_BD_NAME.'.');
 }

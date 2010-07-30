@@ -47,7 +47,7 @@ $(document).ready
 // Soumission du formulaire
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
-		$('button').click
+		$('#eleve_login , #eleve_mdp').click
 		(
 			function()
 			{

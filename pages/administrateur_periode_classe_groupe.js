@@ -78,7 +78,7 @@ $(document).ready
 
 		// Réagir au clic sur un bouton (soumission du formulaire)
 
-		$('button').click
+		$('#ajouter , #retirer').click
 		(
 			function()
 			{

@@ -24,6 +24,7 @@
  * si ce n’est pas le cas, consultez : <http://www.gnu.org/licenses/>.
  * 
  */
+$tab_messages_erreur = array();
 
 // Fichier appelé pour l'affichage de chaque page.
 // Passage en GET des paramètres pour savoir quelle page charger.
@@ -49,12 +50,11 @@ require_once('./_inc/fonction_affichage.php');
 $PAGE    = (isset($_GET['page']))    ? $_GET['page']    : 'public_accueil' ;
 $SECTION = (isset($_GET['section'])) ? $_GET['section'] : '';
 
-
 // Ouverture de la session et gestion des droits d'accès
 require_once('./_inc/tableau_droits.php');
 if(!isset($tab_droits[$PAGE]))
 {
-	echo'<hr /><div class="danger o">Erreur : droits de la page "'.$PAGE.'" manquants.</div><hr />';
+	$tab_messages_erreur[] = 'Erreur : droits de la page "'.$PAGE.'" manquants.';
 	$PAGE = (substr($PAGE,0,6)=='public') ? 'public_accueil' :'compte_accueil' ;
 }
 gestion_session($TAB_PROFILS_AUTORISES = $tab_droits[$PAGE]);
@@ -116,7 +116,7 @@ ob_start();
 $filename_php = './pages/'.$PAGE.'.php';
 if(!is_file($filename_php))
 {
-	echo'<hr /><div class="danger o">Erreur : page "'.$filename_php.'" manquante (supprimée, déplacée, non créée...).</div><hr />';
+	$tab_messages_erreur[] = 'Erreur : page "'.$filename_php.'" manquante (supprimée, déplacée, non créée...).';
 	$PAGE = ($_SESSION['USER_PROFIL']=='public') ? 'public_accueil' :'compte_accueil' ;
 	$filename_php = './pages/'.$PAGE.'.php';
 }
@@ -169,6 +169,10 @@ entete();
 		echo'</div>'."\r\n";
 		echo'<div id="cadre_bas">'."\r\n";
 		echo'	<h1>'.$TITRE.'</h1>';
+		if(count($tab_messages_erreur))
+		{
+			echo'<hr /><div class="danger o">'.implode('</div><div class="danger o">',$tab_messages_erreur).'</div><hr />';
+		}
 		echo 	$CONTENU_PAGE;
 		// echo'<pre>';var_dump($_SESSION);echo'</pre>';
 		echo'</div>'."\r\n";

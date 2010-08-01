@@ -27,32 +27,28 @@
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = "Données en consultation";
-?>
 
-<div class="hc">
-	<a href="./index.php?page=<?php echo $PAGE ?>&amp;section=algorithme">Algorithme de calcul.</a>	<br />
-	<a href="./index.php?page=<?php echo $PAGE ?>&amp;section=referentiel_interne">Référentiels en place (dans l'établissement).</a>
-	<?php
-	if($_SESSION['USER_PROFIL']!='eleve')
-	{
-		echo'||	<a href="./index.php?page='.$PAGE.'&amp;section=referentiel_externe">Référentiels partagés (serveur communautaire).</a>';
-	}
-	?>
-</div>
-
-<hr />
-
-<?php
 // Afficher la bonne page et appeler le bon js / ajax par la suite
 $fichier_section = './pages/'.$PAGE.'_'.$SECTION.'.php';
 if(is_file($fichier_section))
 {
+	// Cas d'une section : afficher les liens puis appeler la section
+	echo'<div class="hc">';
+	echo'	<a href="./index.php?page='.$PAGE.'&amp;section=algorithme">Algorithme de calcul</a>	<br />';
+	echo'	<a href="./index.php?page='.$PAGE.'&amp;section=referentiel_interne">Référentiels en place (dans l\'établissement)</a>	';
+	if($_SESSION['USER_PROFIL']!='eleve')
+	{
+		echo'||	<a href="./index.php?page='.$PAGE.'&amp;section=referentiel_externe">Référentiels partagés (serveur communautaire)</a>';
+	}
+	echo'</div>';
+	echo'<hr />';
 	$PAGE = $PAGE.'_'.$SECTION ;
 	require($fichier_section);
 }
 else
 {
-	echo'<p>Listes des données accessibles en consultation :</p>';
+	// Sinon, page d'accueil de la section
+	echo'<p>Voici, pour information, les éléments auxquels vous pouvez accéder :</p>';
 	echo'<ul class="puce">';
 	echo'	<li><a href="./index.php?page='.$PAGE.'&amp;section=algorithme"><img alt="" src="./_img/menu/consultation_algorithme.png" /> Algorithme de calcul.</a></li>';
 	echo'	<li><a href="./index.php?page='.$PAGE.'&amp;section=referentiel_interne"><img alt="" src="./_img/menu/consultation_referentiel_interne.png" /> Référentiels en place (dans l\'établissement).</a></li>';

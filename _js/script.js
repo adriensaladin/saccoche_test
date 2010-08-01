@@ -256,8 +256,7 @@ function setVolume(volume)
  * @return void
  */
 
-/*
-function arrondir_coins()
+function arrondir_coins(element,taille)
 {
 	// On cherche si le navigateur sait gérer cet attribut css3, éventuellement avec une syntaxe propriétaire
 	     if(document.body.style['BorderRadius'] !== undefined)       {style = 'border-radius';}
@@ -268,10 +267,9 @@ function arrondir_coins()
 	else {style = false;}
 	if(style !== false)
 	{
-		$("#info span.button").css(style,"4px");
+		$(element).css(style,taille);
 	}
 }
-*/
 
 /**
  * jQuery !
@@ -285,7 +283,6 @@ $(document).ready
 		//	Initialisation
 		format_liens('body');
 		infobulle();
-		// arrondir_coins();
 
 		// MENU - Styler les puces avec les images
 		$("#menu a").each
@@ -302,8 +299,8 @@ $(document).ready
 		);
 
 		// MENU - Rendre transparente la page au survol
-		// Difficultés pour utiliser fadeTo('slow',0.25) et fadeTo('normal',1) car une durée d'animation provoque des boucles
-		// Difficultés pour utiliser aussi css('opacity',0.25) et css('opacity',1) car un passage de la souris au dessus du menu provoque un clignotement désagréable
+		// Difficultés pour utiliser fadeTo('slow',0.2) et fadeTo('normal',1) car une durée d'animation provoque des boucles
+		// Difficultés pour utiliser aussi css('opacity',0.2) et css('opacity',1) car un passage de la souris au dessus du menu provoque un clignotement désagréable
 		// Alors il a fallu ruser (compliquer) avec un marqueur et un timing...
 		var test_over = false;
 		$('#menu li').mouseover( function(){test_over = true; });
@@ -315,7 +312,7 @@ $(document).ready
 				{
 					if(test_over)
 					{
-						$('#cadre_bas').fadeTo('normal',0.25);
+						$('#cadre_bas').fadeTo('normal',0.2);
 					}
 					else
 					{

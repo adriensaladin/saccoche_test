@@ -26,10 +26,10 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-$TITRE = "Choix des niveaux";
+$TITRE = "Niveaux utilisés";
 ?>
 
-<p class="hc"><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__gestion_niveaux">DOC : Gestion des niveaux</a></span></p>
+<div class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__gestion_niveaux">DOC : Niveaux utilisés</a></div>
 
 <hr />
 

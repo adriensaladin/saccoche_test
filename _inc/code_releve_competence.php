@@ -59,23 +59,23 @@ require('./_inc/class.PDF.php');
 // Tableaux et variables pour mémoriser les infos ; dans cette partie on ne fait que les calculs (aucun affichage)
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
-$tab_score_eleve_item              = array();	// Retenir les scores / élève / matière / item
-$tab_score_item_eleve              = array();	// Retenir les scores / item / élève
-$tab_moyenne_scores_eleve          = array();	// Retenir la moyenne des scores d'acquisitions calculés / matière / élève
-$tab_pourcentage_validations_eleve = array();	// Retenir le pourcentage d'items validés / matière / élève
-$tab_infos_validations_eleve       = array();	// Retenir les infos (nb A - VA - NA) à l'ogine du tableau précédent / matière / élève
-$tab_moyenne_scores_item           = array();	// Retenir la moyenne des scores d'acquisitions calculés / item
-$tab_pourcentage_validations_item  = array();	// Retenir le pourcentage d'items validés / item
-$moyenne_moyenne_scores            = 0;	// moyenne des moyennes des scores d'acquisitions calculés
-$moyenne_pourcentage_validations   = 0;	// moyenne des moyennes des pourcentages d'items validés
+$tab_score_eleve_item         = array();	// Retenir les scores / élève / matière / item
+$tab_score_item_eleve         = array();	// Retenir les scores / item / élève
+$tab_moyenne_scores_eleve     = array();	// Retenir la moyenne des scores d'acquisitions / matière / élève
+$tab_pourcentage_acquis_eleve = array();	// Retenir le pourcentage d'items acquis / matière / élève
+$tab_infos_acquis_eleve       = array();	// Retenir les infos (nb A - VA - NA) à l'ogine du tableau précédent / matière / élève
+$tab_moyenne_scores_item      = array();	// Retenir la moyenne des scores d'acquisitions / item
+$tab_pourcentage_acquis_item  = array();	// Retenir le pourcentage d'items acquis / item
+$moyenne_moyenne_scores       = 0;	// moyenne des moyennes des scores d'acquisitions
+$moyenne_pourcentage_acquis   = 0;	// moyenne des moyennes des pourcentages d'items acquis
 
 /*
 	On renseigne :
 	$tab_score_eleve_item[$eleve_id][$matiere_id][$item_id]
 	$tab_score_item_eleve[$item_id][$eleve_id]
 	$tab_moyenne_scores_eleve[$matiere_id][$eleve_id]
-	$tab_pourcentage_validations_eleve[$matiere_id][$eleve_id]
-	$tab_infos_validations_eleve[$matiere_id][$eleve_id]
+	$tab_pourcentage_acquis_eleve[$matiere_id][$eleve_id]
+	$tab_infos_acquis_eleve[$matiere_id][$eleve_id]
 */
 
 // Pour chaque élève...
@@ -131,13 +131,13 @@ foreach($tab_eleve as $tab)
 					$nb_acquis      = count( array_filter($tableau_score_filtre,'test_A') );
 					$nb_non_acquis  = count( array_filter($tableau_score_filtre,'test_NA') );
 					$nb_voie_acquis = $nb_scores - $nb_acquis - $nb_non_acquis;
-					$tab_pourcentage_validations_eleve[$matiere_id][$eleve_id] = round( 50 * ( ($nb_acquis*2 + $nb_voie_acquis) / $nb_scores ) ,0);
-					$tab_infos_validations_eleve[$matiere_id][$eleve_id]       = $nb_acquis.'A '. $nb_voie_acquis.'VA '. $nb_non_acquis.'NA';
+					$tab_pourcentage_acquis_eleve[$matiere_id][$eleve_id] = round( 50 * ( ($nb_acquis*2 + $nb_voie_acquis) / $nb_scores ) ,0);
+					$tab_infos_acquis_eleve[$matiere_id][$eleve_id]       = $nb_acquis.'A '. $nb_voie_acquis.'VA '. $nb_non_acquis.'NA';
 				}
 				else
 				{
-					$tab_pourcentage_validations_eleve[$matiere_id][$eleve_id] = false;
-					$tab_infos_validations_eleve[$matiere_id][$eleve_id]       = false;
+					$tab_pourcentage_acquis_eleve[$matiere_id][$eleve_id] = false;
+					$tab_infos_acquis_eleve[$matiere_id][$eleve_id]       = false;
 				}
 			}
 		}
@@ -147,7 +147,7 @@ foreach($tab_eleve as $tab)
 /*
 	On renseigne (uniquement utile pour le tableau de synthèse) :
 	$tab_moyenne_scores_item[$item_id]
-	$tab_pourcentage_validations_item[$item_id]
+	$tab_pourcentage_acquis_item[$item_id]
 */
 
 if(in_array('synthese',$tab_type))
@@ -163,13 +163,13 @@ if(in_array('synthese',$tab_type))
 			$nb_acquis      = count( array_filter($tableau_score_filtre,'test_A') );
 			$nb_non_acquis  = count( array_filter($tableau_score_filtre,'test_NA') );
 			$nb_voie_acquis = $nb_scores - $nb_acquis - $nb_non_acquis;
-			$tab_moyenne_scores_item[$item_id]          = round($somme_scores/$nb_scores,0);
-			$tab_pourcentage_validations_item[$item_id] = round( 50 * ( ($nb_acquis*2 + $nb_voie_acquis) / $nb_scores ) ,0);
+			$tab_moyenne_scores_item[$item_id]     = round($somme_scores/$nb_scores,0);
+			$tab_pourcentage_acquis_item[$item_id] = round( 50 * ( ($nb_acquis*2 + $nb_voie_acquis) / $nb_scores ) ,0);
 		}
 		else
 		{
-			$tab_moyenne_scores_item[$item_id]          = false;
-			$tab_pourcentage_validations_item[$item_id] = false;
+			$tab_moyenne_scores_item[$item_id]     = false;
+			$tab_pourcentage_acquis_item[$item_id] = false;
 		}
 	}
 }
@@ -177,7 +177,7 @@ if(in_array('synthese',$tab_type))
 /*
 	On renseigne (utile pour le tableau de synthèse et le bulletin) :
 	$moyenne_moyenne_scores
-	$moyenne_pourcentage_validations
+	$moyenne_pourcentage_acquis
 */
 /*
 	on pourrait calculer de 2 façons chacune des deux valeurs...
@@ -192,10 +192,10 @@ if( (in_array('synthese',$tab_type)) || (in_array('bulletin',$tab_type)) )
 	$somme  = array_sum($tab_moyenne_scores_eleve[$matiere_id]);
 	$nombre = count( array_filter($tab_moyenne_scores_eleve[$matiere_id],'non_nul') );
 	$moyenne_moyenne_scores = ($nombre) ? round($somme/$nombre,0) : false;
-	// $moyenne_pourcentage_validations
-	$somme  = array_sum($tab_pourcentage_validations_eleve[$matiere_id]);
-	$nombre = count( array_filter($tab_pourcentage_validations_eleve[$matiere_id],'non_nul') );
-	$moyenne_pourcentage_validations = ($nombre) ? round($somme/$nombre,0) : false;
+	// $moyenne_pourcentage_acquis
+	$somme  = array_sum($tab_pourcentage_acquis_eleve[$matiere_id]);
+	$nombre = count( array_filter($tab_pourcentage_acquis_eleve[$matiere_id],'non_nul') );
+	$moyenne_pourcentage_acquis = ($nombre) ? round($somme/$nombre,0) : false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -212,7 +212,7 @@ if(in_array('individuel',$tab_type))
 	}
 	// Appel de la classe et définition de qqs variables supplémentaires pour la mise en page PDF
 	$releve_pdf = new PDF($orientation,$marge_min,$couleur);
-	if($format=='matiere')      {$releve_pdf->bilan_periode_individuel_initialiser($cases_nb,$cases_largeur,$cases_hauteur,$lignes_nb=$item_nb+$aff_bilan_ms+$aff_bilan_pv,$new_page=true);}
+	if($format=='matiere')      {$releve_pdf->bilan_periode_individuel_initialiser($cases_nb,$cases_largeur,$cases_hauteur,$lignes_nb=$item_nb+$aff_bilan_MS+$aff_bilan_PA,$new_page=true);}
 	if($format=='multimatiere') {$releve_pdf->bilan_periode_individuel_initialiser($cases_nb,$cases_largeur,$cases_hauteur,$lignes_nb=0,$new_page=false);}
 	if($format=='selection')    {$releve_pdf->bilan_periode_individuel_initialiser($cases_nb,$cases_largeur,$cases_hauteur,$lignes_nb=0,$new_page=false);}
 	$bilan_colspan = $cases_nb + 2 ;
@@ -237,7 +237,7 @@ if(in_array('individuel',$tab_type))
 					if( ($format=='multimatiere') || ($format=='selection') )
 					{
 						$item_matiere_nb = count($tab_eval[$eleve_id][$matiere_id]);
-						$releve_pdf->bilan_periode_individuel_entete_transdisciplinaire_secondaire($matiere_nom,$lignes_nb=$item_matiere_nb+$aff_bilan_ms+$aff_bilan_pv);
+						$releve_pdf->bilan_periode_individuel_entete_transdisciplinaire_secondaire($matiere_nom,$lignes_nb=$item_matiere_nb+$aff_bilan_MS+$aff_bilan_PA);
 					}
 					$releve_html_individuel .= '<h3>'.html($matiere_nom).'</h3>';
 					// On passe au tableau
@@ -310,7 +310,7 @@ if(in_array('individuel',$tab_type))
 					$releve_html_table_foot = '';
 					// affichage des bilans des scores
 					// ... un pour la moyenne des pourcentages d'acquisition
-					if( $aff_bilan_ms )
+					if( $aff_bilan_MS )
 					{
 						if($tab_moyenne_scores_eleve[$matiere_id][$eleve_id] !== false)
 						{
@@ -321,23 +321,23 @@ if(in_array('individuel',$tab_type))
 						{
 							$texte_bilan = '---';
 						}
-						$releve_html_table_foot .= '<tr><td class="nu">&nbsp;</td><td colspan="'.$bilan_colspan.'">Moyenne pondérée des scores d\'acquisitions calculés : '.$texte_bilan.'</td><td class="nu"></td></tr>'."\r\n";
-						$releve_pdf->bilan_periode_individuel_synthese('Moyenne pondérée des scores d\'acquisitions calculés : '.$texte_bilan);
+						$releve_html_table_foot .= '<tr><td class="nu">&nbsp;</td><td colspan="'.$bilan_colspan.'">Moyenne pondérée des scores d\'acquisitions : '.$texte_bilan.'</td><td class="nu"></td></tr>'."\r\n";
+						$releve_pdf->bilan_periode_individuel_synthese('Moyenne pondérée des scores d\'acquisitions : '.$texte_bilan);
 					}
 					// ... un pour le nombre d'items considérés acquis ou pas
-					if( $aff_bilan_pv )
+					if( $aff_bilan_PA )
 					{
-						if($tab_pourcentage_validations_eleve[$matiere_id][$eleve_id] !== false)
+						if($tab_pourcentage_acquis_eleve[$matiere_id][$eleve_id] !== false)
 						{
-							$texte_bilan  = '('.$tab_infos_validations_eleve[$matiere_id][$eleve_id].') : '.$tab_pourcentage_validations_eleve[$matiere_id][$eleve_id].'%';
-							$texte_bilan .= ($aff_conv_sur20) ? ' soit '.sprintf("%04.1f",$tab_pourcentage_validations_eleve[$matiere_id][$eleve_id]/5).'/20' : '' ;
+							$texte_bilan  = '('.$tab_infos_acquis_eleve[$matiere_id][$eleve_id].') : '.$tab_pourcentage_acquis_eleve[$matiere_id][$eleve_id].'%';
+							$texte_bilan .= ($aff_conv_sur20) ? ' soit '.sprintf("%04.1f",$tab_pourcentage_acquis_eleve[$matiere_id][$eleve_id]/5).'/20' : '' ;
 						}
 						else
 						{
 							$texte_bilan = '---';
 						}
-						$releve_html_table_foot .= '<tr><td class="nu">&nbsp;</td><td colspan="'.$bilan_colspan.'">Pourcentage d\'items validés '.$texte_bilan.'</td><td class="nu"></td></tr>'."\r\n";
-						$releve_pdf->bilan_periode_individuel_synthese('Pourcentage d\'items validés : '.$texte_bilan);
+						$releve_html_table_foot .= '<tr><td class="nu">&nbsp;</td><td colspan="'.$bilan_colspan.'">Pourcentage d\'items acquis '.$texte_bilan.'</td><td class="nu"></td></tr>'."\r\n";
+						$releve_pdf->bilan_periode_individuel_synthese('Pourcentage d\'items acquis : '.$texte_bilan);
 					}
 					$releve_html_table_foot = ($releve_html_table_foot) ? '<tfoot>'.$releve_html_table_foot.'</tfoot>'."\r\n" : '';
 					$releve_html_individuel .= '<table id="table'.$eleve_id.'x'.$matiere_id.'" class="bilan">'.$releve_html_table_head.$releve_html_table_foot.$releve_html_table_body.'</table><p />';
@@ -415,9 +415,9 @@ if(in_array('synthese',$tab_type))
 			$releve_html_table_body1 .= affich_score_html($score,'score');
 			$releve_html_table_body2 .= affich_score_html($score,'etat');
 		}
-		$releve_pdf->bilan_periode_synthese_pourcentages($tab_moyenne_scores_eleve[$matiere_id][$eleve_id],$tab_pourcentage_validations_eleve[$matiere_id][$eleve_id],false,true);
-		$releve_html_table_body1 .= '<td class="nu">&nbsp;</td>'.affich_score_html($tab_moyenne_scores_eleve[$matiere_id][$eleve_id],'score','%').affich_score_html($tab_pourcentage_validations_eleve[$matiere_id][$eleve_id],'score','%').'</tr>'."\r\n";
-		$releve_html_table_body2 .= '<td class="nu">&nbsp;</td>'.affich_score_html($tab_moyenne_scores_eleve[$matiere_id][$eleve_id],'etat','%').affich_score_html($tab_pourcentage_validations_eleve[$matiere_id][$eleve_id],'etat','%').'</tr>'."\r\n";
+		$releve_pdf->bilan_periode_synthese_pourcentages($tab_moyenne_scores_eleve[$matiere_id][$eleve_id],$tab_pourcentage_acquis_eleve[$matiere_id][$eleve_id],false,true);
+		$releve_html_table_body1 .= '<td class="nu">&nbsp;</td>'.affich_score_html($tab_moyenne_scores_eleve[$matiere_id][$eleve_id],'score','%').affich_score_html($tab_pourcentage_acquis_eleve[$matiere_id][$eleve_id],'score','%').'</tr>'."\r\n";
+		$releve_html_table_body2 .= '<td class="nu">&nbsp;</td>'.affich_score_html($tab_moyenne_scores_eleve[$matiere_id][$eleve_id],'etat','%').affich_score_html($tab_pourcentage_acquis_eleve[$matiere_id][$eleve_id],'etat','%').'</tr>'."\r\n";
 	}
 	$releve_html_table_body1 = '<tbody>'.$releve_html_table_body1.'</tbody>'."\r\n";
 	$releve_html_table_body2 = '<tbody>'.$releve_html_table_body2.'</tbody>'."\r\n";
@@ -435,14 +435,14 @@ if(in_array('synthese',$tab_type))
 	// Pour chaque item...
 	foreach($tab_liste_item as $item_id)
 	{
-		$releve_pdf->bilan_periode_synthese_pourcentages($tab_moyenne_scores_item[$item_id],$tab_pourcentage_validations_item[$item_id],true,false);
+		$releve_pdf->bilan_periode_synthese_pourcentages($tab_moyenne_scores_item[$item_id],$tab_pourcentage_acquis_item[$item_id],true,false);
 		$releve_html_table_foot1 .= affich_score_html($tab_moyenne_scores_item[$item_id],'score','%');
-		$releve_html_table_foot2 .= affich_score_html($tab_pourcentage_validations_item[$item_id],'score','%');
+		$releve_html_table_foot2 .= affich_score_html($tab_pourcentage_acquis_item[$item_id],'score','%');
 	}
 	// les deux dernières cases (moyenne des moyennes)
-	$releve_pdf->bilan_periode_synthese_pourcentages($moyenne_moyenne_scores,$moyenne_pourcentage_validations,true,true);
+	$releve_pdf->bilan_periode_synthese_pourcentages($moyenne_moyenne_scores,$moyenne_pourcentage_acquis,true,true);
 	$releve_html_table_foot1 .= '<th class="nu">&nbsp;</th>'.affich_score_html($moyenne_moyenne_scores,'score','%').'<th class="nu">&nbsp;</th></tr>';
-	$releve_html_table_foot2 .= '<th class="nu">&nbsp;</th><th class="nu">&nbsp;</th>'.affich_score_html($moyenne_pourcentage_validations,'score','%').'</tr>';
+	$releve_html_table_foot2 .= '<th class="nu">&nbsp;</th><th class="nu">&nbsp;</th>'.affich_score_html($moyenne_pourcentage_acquis,'score','%').'</tr>';
 	$releve_html_table_foot = '<tfoot><tr><td class="nu" colspan="'.$colspan.'" style="font-size:0;height:9px">&nbsp;</td></tr>'.$releve_html_table_foot1.$releve_html_table_foot2.'</tfoot>'."\r\n";
 	$num_hide = $item_nb+1;
 	// pour la sortie HTML, on peut placer les tableaux de synthèse au début
@@ -473,7 +473,7 @@ if(in_array('bulletin',$tab_type))
 	$tab_bad[] =  '0A'; $tab_bon[] = '0 acquise ;';
 	$tab_bad[] =  '1A'; $tab_bon[] = '1 acquise ;';
 	$tab_bad[] =   'A'; $tab_bon[] = ' acquises ;';
-	// pour str_replace($tab_bad,$tab_bon,$tab_infos_validations_eleve[$matiere_id][$eleve_id])
+	// pour str_replace($tab_bad,$tab_bon,$tab_infos_acquis_eleve[$matiere_id][$eleve_id])
 	*/
 	$bulletin_body = '';
 	$bulletin_csv_gepi = 'GEPI_IDENTIFIANT;NOTE;APPRECIATION'."\r\n";	// Ajout du préfixe 'GEPI_' pour éviter un bug avec M$ Excel « SYLK : Format de fichier non valide » (http://support.microsoft.com/kb/323626/fr)
@@ -482,14 +482,14 @@ if(in_array('bulletin',$tab_type))
 	{
 		extract($tab);	// $eleve_id $eleve_nom $eleve_prenom $eleve_id_gepi
 		$note         = ($tab_moyenne_scores_eleve[$matiere_id][$eleve_id] !== false)          ? sprintf("%04.1f",$tab_moyenne_scores_eleve[$matiere_id][$eleve_id]/5)                                                                             : '-' ;
-		$appreciation = ($tab_pourcentage_validations_eleve[$matiere_id][$eleve_id] !== false) ? $tab_pourcentage_validations_eleve[$matiere_id][$eleve_id].'% d\'items validés ('.$tab_infos_validations_eleve[$matiere_id][$eleve_id].')' : '-' ;
+		$appreciation = ($tab_pourcentage_acquis_eleve[$matiere_id][$eleve_id] !== false) ? $tab_pourcentage_acquis_eleve[$matiere_id][$eleve_id].'% d\'items acquis ('.$tab_infos_acquis_eleve[$matiere_id][$eleve_id].')' : '-' ;
 		$bulletin_body     .= '<tr><th>'.html($eleve_nom.' '.$eleve_prenom).'</th><td>'.$note.'</td><td>'.$appreciation.'</td></tr>'."\r\n";
 		// Pour gépi je remplace le point décimal par une virgule sinon le tableur convertit en date...
 		$bulletin_csv_gepi .= $eleve_id_gepi.';'.str_replace('.',',',$note).';'.$appreciation."\r\n";
 	}
-	$bulletin_head  = '<thead><tr><th>Elève</th><th>Moyenne pondérée sur 20<br />(des scores d\'acquisitions)</th><th>Élément d\'appréciation<br />(pourcentage d\'items validés)</th></tr></thead>'."\r\n";
+	$bulletin_head  = '<thead><tr><th>Elève</th><th>Moyenne pondérée sur 20<br />(des scores d\'acquisitions)</th><th>Élément d\'appréciation<br />(pourcentage d\'items acquis)</th></tr></thead>'."\r\n";
 	$bulletin_body  = '<tbody>'."\r\n".$bulletin_body.'</tbody>'."\r\n";
-	$bulletin_foot  = '<tfoot><tr><th>Moyenne sur 20</th><th>'.sprintf("%04.1f",$moyenne_moyenne_scores/5).'</th><th>'.$moyenne_pourcentage_validations.'% d\'items validés</th></tr></tfoot>'."\r\n";
+	$bulletin_foot  = '<tfoot><tr><th>Moyenne sur 20</th><th>'.sprintf("%04.1f",$moyenne_moyenne_scores/5).'</th><th>'.$moyenne_pourcentage_acquis.'% d\'items acquis</th></tr></tfoot>'."\r\n";
 	$bulletin_html  = '<h1>Bilan disciplinaire</h1>';
 	$bulletin_html .= '<h2>'.html($matiere_nom.' - '.$groupe_nom).'</h2>';
 	$bulletin_html .= '<h2>Du '.$date_debut.' au '.$date_fin.$date_complement.'</h2>';

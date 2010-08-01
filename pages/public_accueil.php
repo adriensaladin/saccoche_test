@@ -27,7 +27,7 @@
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = ''; // Pas de titre pour que le logo s'affiche à la place
-$VERSION_JS_FILE += 4;
+$VERSION_JS_FILE += 5;
 ?>
 
 <?php
@@ -118,8 +118,6 @@ if($profil!='webmestre')
 	<li>Consulter <a href="<?php echo SERVEUR_PROJET ?>">le site officiel de <em>SACoche</em></a> pour tout renseignement.</li>
 	<li>Version installée <em><?php echo VERSION_PROG ?></em>.<label id="ajax_version" for="version"></label></li>
 </ul>
-
-<hr />
 
 <script type="text/javascript">
 	var VERSION_PROG = "<?php echo VERSION_PROG ?>";

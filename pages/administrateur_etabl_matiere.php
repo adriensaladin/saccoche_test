@@ -26,10 +26,10 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-$TITRE = "Choix des matières";
+$TITRE = "Matières utilisées";
 ?>
 
-<p class="hc"><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__gestion_matieres">DOC : Gestion des matières</a></span></p>
+<div class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__gestion_matieres">DOC : Matières utilisées</a></div>
 
 <hr />
 

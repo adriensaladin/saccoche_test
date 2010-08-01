@@ -32,7 +32,7 @@ $VERSION_JS_FILE += 2;
 
 <form id="form" action="">
 
-	<p class="hc"><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__gestion_informations_structure">DOC : Gestion de l'identité de l'établissement</a></span></p>
+	<div class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__gestion_informations_structure">DOC : Gestion de l'identité de l'établissement</a></div>
 
 	<hr />
 

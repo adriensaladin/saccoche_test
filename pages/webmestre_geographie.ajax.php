@@ -71,6 +71,7 @@ else if( ($action=='modifier') && $id && $ordre && $nom )
 	// Mettre à jour l'enregistrement
 	DB_WEBMESTRE_modifier_zone($id,$ordre,$nom);
 	// Afficher le retour
+	echo'<td>'.$id.'</td>';
 	echo'<td>'.$ordre.'</td>';
 	echo'<td>'.html($nom).'</td>';
 	echo'<td class="nu">';

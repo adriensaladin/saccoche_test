@@ -228,7 +228,7 @@ elseif( $step==6 )
 	else
 	{
 		// afficher le formulaire pour entrer les paramètres
-		$texte_alerte = (HEBERGEUR_INSTALLATION=='multi-structures') ? 'ce compte mysql doit avoir des droits d\'administration de bases et d\'utilisateurs (utilisateur "root" typique)' : 'la base à utiliser doit déjà exister (elle ne sera pas créée par SACoche) ; veuillez la créer manuellement maintenant si besoin' ;
+		$texte_alerte = (HEBERGEUR_INSTALLATION=='multi-structures') ? 'ce compte mysql doit avoir des droits d\'administration de bases et d\'utilisateurs (typiquement un utilisateur "root")' : 'la base à utiliser doit déjà exister (elle ne sera pas créée par SACoche) ; veuillez la créer manuellement maintenant si besoin' ;
 		$affichage .= '<p><label for="rien" class="alerte">Le fichier &laquo;&nbsp;<b>'.$fichier_mysql_config.'</b>&nbsp;&raquo; n\'existant pas, indiquez ci-dessous vos paramètres de connexion à la base de données.</label></p>'."\r\n";
 		$affichage .= '<p class="danger">Comme indiqué précédemment, '.$texte_alerte.'.</p>'."\r\n";
 		$affichage .= '<fieldset>'."\r\n";

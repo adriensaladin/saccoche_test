@@ -93,7 +93,7 @@ if( ($action=='Afficher_bilan') && $palier_id && count($tab_eleve) )
 	// Récupérer la liste des jointures (validations)
 	$listing_eleve_id  = implode(',',$tab_eleve_id);
 	$listing_pilier_id = implode(',',$tab_pilier_id);
-	$DB_TAB = DB_STRUCTURE_lister_jointure_user_pilier($listing_eleve_id,$listing_pilier_id);
+	$DB_TAB = DB_STRUCTURE_lister_jointure_user_pilier($listing_eleve_id,$listing_pilier_id,$palier_id=0); // en fait on connait aussi le palier mais le requete est plus simple (pas de jointure) avec les piliers
 	$tab_bad = array();
 	$tab_bon = array();
 	foreach($DB_TAB as $DB_ROW)
@@ -185,7 +185,7 @@ elseif($action=='Enregistrer_validation')
 	// On recupère le contenu de la base déjà enregistré pour le comparer
 	$listing_eleve_id  = implode(',',$tab_eleve_id);
 	$listing_pilier_id = implode(',',$tab_pilier_id);
-	$DB_TAB = DB_STRUCTURE_lister_jointure_user_pilier($listing_eleve_id,$listing_pilier_id);
+	$DB_TAB = DB_STRUCTURE_lister_jointure_user_pilier($listing_eleve_id,$listing_pilier_id,$palier_id=0);
 	// On remplit au fur et à mesure $tab_nouveau_modifier et $tab_nouveau_supprimer
 	$tab_nouveau_modifier = array();
 	$tab_nouveau_supprimer = array();

@@ -75,10 +75,14 @@ $select_palier = afficher_select($tab_paliers , $select_nom='f_palier' , $option
 $select_groupe = afficher_select($tab_groupes , $select_nom='f_groupe' , $option_first=$of_g , $selection=false , $optgroup=$og_g);
 ?>
 
-<p class="hc"><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?referentiels_socle__socle_valider_pilier">DOC : Validation des compétences du socle.</a></span></p>
+<ul class="puce">
+	<li><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=referentiels_socle__socle_valider_pilier">DOC : Valider des compétences du socle.</a></span></li>
+	<li><span class="astuce">Profils autorisés par l'administrateur pour valider les compétences du socle : <?php echo $texte ?></span></li>
+</ul>
+
+<hr />
 
 <form action="" id="zone_choix"><fieldset>
-	<?php echo'<p><span class="tab"></span><span class="astuce">Profils autorisés par l\'administrateur pour valider les compétences du socle : '.$texte.'</span></p>'; ?>
 	<label class="tab" for="f_palier">Palier :</label><?php echo $select_palier ?><label id="ajax_maj_pilier">&nbsp;</label><br />
 	<label class="tab" for="f_groupe">Classe / groupe :</label><?php echo $select_groupe ?><input type="hidden" id="f_groupe_type" name="f_groupe_type" value="" /><label id="ajax_maj_eleve">&nbsp;</label><br />
 	<label class="tab" for="f_eleve">Élève(s) :</label><select id="f_eleve" name="f_eleve[]" multiple="multiple" size="9" class="hide"><option></option></select><input type="hidden" id="eleves" name="eleves" value="" /><p />

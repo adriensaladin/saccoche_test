@@ -85,7 +85,7 @@ if(is_array($tab_groupes))
 	<?php echo $tab_groupe_periode_js ?> 
 </script>
 
-<div class="hc"><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=releves_bilans__releve_multimatiere">DOC : Bilans transdisciplinaires (P.P.).</a></span></div>
+<p class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=releves_bilans__releve_multimatiere">DOC : Bilans transdisciplinaires (P.P.).</a></p>
 
 <form id="form_select" action=""><fieldset>
 	<p>

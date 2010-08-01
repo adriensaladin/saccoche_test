@@ -12,7 +12,6 @@ ALTER TABLE sacoche_socle_palier DISABLE KEYS;
 INSERT INTO sacoche_socle_palier VALUES 
 ( 1, 1, "Palier 1 (fin CE1)"),
 ( 2, 2, "Palier 2 (fin CM2)"),
-( 3, 3, "Palier 3 (fin troisième)"),
-( 4, 4, "Palier 4 (lycée, indéfini)");
+( 3, 3, "Palier 3 (fin troisième)");
 
 ALTER TABLE sacoche_socle_palier ENABLE KEYS;

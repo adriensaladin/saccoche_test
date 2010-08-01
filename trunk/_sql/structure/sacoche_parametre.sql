@@ -25,7 +25,7 @@ INSERT INTO sacoche_parametre VALUES
 ( "paliers"                  , "3" ),
 ( "profil_validation_entree" , "directeur,professeur" ),
 ( "profil_validation_pilier" , "directeur,profprincipal" ),
-( "eleve_options"            , "ms,pv" ),
+( "eleve_options"            , "BilanMoyenneScore,BilanPourcentageAcquis,SoclePourcentageAcquis,SocleEtatValidation" ),
 ( "eleve_demandes"           , "0" ),
 ( "duree_inactivite"         , "30" ),
 ( "calcul_valeur_RR"         , "0" ),

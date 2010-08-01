@@ -37,32 +37,57 @@ fieldset,img,hr {border:0}
 /* Personnalisations globales                                                                          */
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-html {height:100%;width:100%;background:#F7F7F7;font-size:13px;}
-body {background:#F7F7F7;font:1em "arial","liberation sans","dejavu sans","nimbus sans l";cursor:default;}
+html {height:100%;width:100%;background:#EAEAFF;font-size:13px;}
+body {background:#EAEAFF;font:1em "arial","liberation sans","dejavu sans","nimbus sans l";cursor:default;}
 table,select,textarea,input,button,div{font:100% "arial","liberation sans","dejavu sans","nimbus sans l"}
 p{margin:1em auto}
 img {vertical-align:text-top}
 td img , #aide_en_ligne img {vertical-align:middle}
 input[type=radio],input[type=checkbox],input[type=image] {vertical-align:-2px}
 input[readonly],input[disabled] {color:#666}
-h1{display:block;font-size:125%;text-align:center;font-weight:bold;font-variant:small-caps;color:#33A;letter-spacing:0.15em;}
-h1 img{vertical-align:middle}
-h1 a{margin:auto 1em}
+h1{display:block;font-size:120%;text-align:left;font-weight:bold;font-variant:small-caps;color:#33A;letter-spacing:0.15em;margin:1ex 2em;}
+h2{display:block;font-size:110%;text-align:left;font-weight:bold;font-variant:small-caps;color:#33A;letter-spacing:0.15em;margin:1ex auto 1ex 1em;}
+h1.logo{vertical-align:middle;text-align:center}
+h1.logo a{margin:auto 1em}
 #titre_aide{background:transparent url(../_img/puce_manuel_ouvert.png) no-repeat left;padding-left:24px;margin:1ex 2em;text-align:left}
-h2{display:block;font-size:110%;text-align:left;font-weight:bold;font-variant:small-caps;color:#33A;letter-spacing:0.15em;margin-top:1ex;margin-bottom:1ex;}
 /* h3 réservé pour l'infobulle */
 h4{display:block;font-size:100%;text-align:left;font-weight:bold;font-variant:small-caps;color:#227;letter-spacing:0.05em;margin:1ex auto 1ex 1em;}
 a.anti_h2{background:transparent url(../_img/actualiser_small.png) no-repeat left;padding-left:15px;margin-left:1em;font-size:80%;font-weight:normal;font-variant:normal;letter-spacing:0;}
 a {color:#139;text-decoration:none}a:hover{color:#D41;text-decoration:underline}
 hr {display:block;height:1px;margin:1em 0;border-top:1px dotted #66F;}
-span.astuce,div.astuce,p.astuce {background:transparent url(../_img/puce_astuce.png) no-repeat top left;padding-left:18px}
-span.danger,div.danger,p.danger {background:transparent url(../_img/puce_danger.gif) no-repeat top left;padding-left:18px;color:#C00}
-span.manuel,div.manuel,p.manuel {background:transparent url(../_img/puce_manuel.png) no-repeat top left;padding-left:18px;color:#777}
+span.astuce,div.astuce,p.astuce {background:transparent url(../_img/puce_astuce.png) no-repeat top left;padding-left:19px}
+span.danger,div.danger,p.danger {background:transparent url(../_img/puce_danger.gif) no-repeat top left;padding-left:19px;color:#C00}
+span.manuel,div.manuel,p.manuel {background:transparent url(../_img/puce_manuel.png) no-repeat top left;padding-left:19px;color:#777}
 #aide_en_ligne {margin:1ex 1em}
 em {display:inline;font-style:normal;font-weight:bold;font-variant:small-caps} /* "SACoche" et divers noms propres */
+del{text-decoration:line-through;color:#666}
 .hc{text-align:center} .hg{text-align:left} .hd{text-align:right} .ti{text-indent:3em}
 .i{font-style:italic} .u{text-decoration:underline} .b{font-weight:bold}
 .hide{display:none}
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+/* Cadres principaux (dont le menu déroulant)                                                          */
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
+/* page accueil (identification) */
+#cadre_milieu {width:796px;margin:20px auto auto auto;padding:10px;background:#E0E0FF;border:2px solid #99F} /* coins arrondis via js */
+
+/* zone identifiée */
+#cadre_haut {z-index:2;position:absolute;left:0;right:0;top:0;height:48px;background:#EAEAFF url(../_img/background.gif) repeat 0 0;border-bottom:1px solid #77F;white-space:nowrap;min-width:980px;}
+#cadre_bas  {z-index:1;position:absolute;left:0;right:0;top:49px;background:#EAEAFF url(../_img/fond09.png) repeat-x 0 0;padding:4px}
+
+#cadre_haut #info {position:absolute;top:3px;left:4px}
+#cadre_haut #logo {position:absolute;top:1px;left:843px}
+#cadre_haut #menu {position:absolute;bottom:-2px;left:3px;right:0}
+
+#cadre_haut #info span.button{display:inline-block;padding:1px 3px;margin:1px 0;background:#DDF;border:1px solid #99F;color:#333}
+#cadre_haut #menu a {display:block;border:1px solid #77F;color:#FFF;background:#77F;padding:1px 1px 1px 19px;margin:1px;height:16px}
+#cadre_haut #menu a.menu {background:#77F url(../_img/menu/menu.png) no-repeat 1px 1px} /* les images sont ajoutés en javascript, sauf pour le 1er niveau, pour un affichage immédiat */
+#cadre_haut #menu a:hover {background-color:#99F;color:#FFF;text-decoration:none}
+#cadre_haut #menu li {float:left;}
+#cadre_haut #menu li li {float:none}
+#cadre_haut #menu li ul {position:absolute;left:-9999em;background:#EAEAFF;}
+#cadre_haut #menu li:hover ul {left:auto;}
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 /* Images sprites utilisées comme images cliquables ; http://fr.spritegen.website-performance.org/     */
@@ -121,35 +146,14 @@ body q.n3_move2        {background-position: -940px 0}
 body q:hover {cursor:pointer}	/* Curseur pointeur pour ces images qui sont des liens */
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-/* Cadres principaux (dont le menu déroulant)                                                          */
-/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-
-#cadre_haut   {z-index:2;position:absolute;left:0;right:0;top:0;height:48px;background:#F7F7F7 url(../_img/background.gif) repeat 0 0;border-bottom:1px solid #77F;white-space:nowrap;min-width:1000px;}
-#cadre_bas    {z-index:1;position:absolute;left:0;right:0;top:49px;background:#F7F7F7 url(../_img/fond09.png) repeat-x 0 0;padding:5px 2px}
-#cadre_unique {padding:2px}
-
-#cadre_haut #info {position:absolute;top:3px;left:4px}
-#cadre_haut #logo {position:absolute;top:1px;left:850px}
-#cadre_haut #menu {position:absolute;bottom:-2px;left:3px;right:0}
-
-#cadre_haut #info span.button{display:inline-block;padding:1px 3px;margin:1px 0;background:#DDF;border:1px solid #99F;color:#333} /* coins arrondis via js */
-#cadre_haut #menu a {display:block;border:1px solid #77F;color:#FFF;background:#77F;padding:1px 1px 1px 18px;margin:1px;height:16px}
-#cadre_haut #menu a.menu {background:#77F url(../_img/menu/menu.png) no-repeat 1px 1px} /* les images sont ajoutés en javascript, sauf pour le 1er niveau, pour un affichage immédiat */
-#cadre_haut #menu a:hover {background-color:#99F;color:#FFF;text-decoration:none}
-#cadre_haut #menu li {float:left;}
-#cadre_haut #menu li li {float:none}
-#cadre_haut #menu li ul {position:absolute;left:-999em;background:#F7F7F7;}
-#cadre_haut #menu li:hover ul {left:auto;}
-
-/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 /* Style pour les formulaires                                                                          */
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 /* Affichage des message ajax */
-label.erreur {background:transparent url(../_img/ajax/ajax_erreur.png) no-repeat left;color:#A00;padding-left:18px;margin-left:5px}
-label.valide {background:transparent url(../_img/ajax/ajax_valide.png) no-repeat left;color:#080;padding-left:18px;margin-left:5px}
-label.loader {background:transparent url(../_img/ajax/ajax_loader.gif) no-repeat left;color:#080;padding-left:18px;margin-left:5px}
-label.alerte {background:transparent url(../_img/ajax/ajax_alerte.png) no-repeat left;color:#A00;padding-left:18px;margin-left:5px}
+label.erreur {background:transparent url(../_img/ajax/ajax_erreur.png) no-repeat left;color:#A00;padding-left:19px;margin-left:5px}
+label.valide {background:transparent url(../_img/ajax/ajax_valide.png) no-repeat left;color:#080;padding-left:19px;margin-left:5px}
+label.loader {background:transparent url(../_img/ajax/ajax_loader.gif) no-repeat left;color:#080;padding-left:19px;margin-left:5px}
+label.alerte {background:transparent url(../_img/ajax/ajax_alerte.png) no-repeat left;color:#A00;padding-left:19px;margin-left:5px}
 
 /* Mise en page tabulée des éléments */
 form label.tab{line-height:1.4em;display:inline-block;text-align:right;width:11em;margin-right:1em;font-weight:bold}
@@ -161,7 +165,7 @@ form label.mini{width:8em;}
 button{padding:0 1px;margin:1px 0;background:#CCF;color:#139;border:1px solid #66F;}
 button{width:auto;overflow:visible;} /* patch pour IE : voir http://jehiah.cz/archive/button-width-in-ie */
 button:hover,button.hover{background:#DDF;color:#D41;cursor:pointer;} /* button.hover pour une compatibilité avec AjaxUpload (pour background, car pas mieux pour cursor) */
-button[disabled]{background:#EEF;color:#888;border:1px solid #BBF} /* Attention à un bug de jquery : quand on lui demande de mettre disabled="disabled", il met disabled="" ! */ 
+button[disabled]{background:#EAEAFF;color:#888;border:1px solid #BBF} /* Attention à un bug de jquery : quand on lui demande de mettre disabled="disabled", il met disabled="" ! */ 
 
 /* formulaire en page d'accueil pour choisir son établissement */
 #f_structure {font-size:90%}
@@ -178,12 +182,12 @@ th,td {padding:0 2px;text-align:left;white-space:nowrap}
 table tr {background:#DDF}
 table th {border:1px solid #66F;background:#CCF}
 table td {border:1px solid #66F;vertical-align:top}
-th.nu , td.nu {background:#F7F7F7;border:none;text-align:center;height:1.6em;}	/* le height évite que la hauteur des lignes varie lors de la modification de leur contenu en ajax */
+th.nu , td.nu {background:#EAEAFF;border:none;text-align:center;height:1.6em;}	/* le height évite que la hauteur des lignes varie lors de la modification de leur contenu en ajax */
 tr.new{background:#CFC}
 td.new{font-weight:bold}
 /* colorer une ligne au survol */
 table.form tbody tr:hover td {background:#FCC}
-table.form tbody tr:hover td.nu {background:#F7F7F7}
+table.form tbody tr:hover td.nu {background:#EAEAFF}
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 /* Tableau résultat d'une affectation (professeurs / élèves / matières)                                */
@@ -208,7 +212,7 @@ table.simulation td.nu {border:none}
 table.scor_eval td {font-size:90%}
 table.scor_eval th, table.scor_eval td {text-align:center}
 table.scor_eval thead th {vertical-align:bottom}
-table.scor_eval thead td {background:#F7F7F7;border:none;}
+table.scor_eval thead td {background:#EAEAFF;border:none;}
 table.scor_eval tbody th {white-space:normal;font-weight:normal}
 table.scor_eval tbody td {vertical-align:middle;font-weight:bold;background:#CCF;font-size:90%}
 table.scor_eval tbody tr th {text-align:left}
@@ -254,7 +258,7 @@ th.headerSortDown {background:#99F url(../_img/ts_desc.gif) no-repeat center rig
 
 table.bilan, table.bilan_synthese {font-size:85%}
 table.bilan tfoot th, table.bilan tfoot td {background:#CCF;text-align:right}
-table.bilan tfoot td.nu {background:#F7F7F7;}
+table.bilan tfoot td.nu {background:#EAEAFF;}
 table.bilan_synthese {margin-top:1em;margin-bottom:1em}
 table.bilan th.domaine {background:#99F;}
 
@@ -263,7 +267,7 @@ table.bilan th.domaine {background:#99F;}
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 #tableau_validation th {margin:0;padding:0;white-space:nowrap}
-#tableau_validation th.nu {background:#F7F7F7;border:0;text-align:left;font-weight:normal}
+#tableau_validation th.nu {background:#EAEAFF;border:0;text-align:left;font-weight:normal}
 #tableau_validation thead th{vertical-align:bottom}
 #tableau_validation tbody th {height:15px}
 #tableau_validation tbody th.down0 {background:#F99 url(../_img/socle/arrow_down.gif) no-repeat center center;opacity:0.2}
@@ -275,9 +279,9 @@ table.bilan th.domaine {background:#99F;}
 #tableau_validation tbody th.diag0 {background:#F99 url(../_img/socle/arrow_diag.gif) no-repeat center center;opacity:0.2}
 #tableau_validation tbody th.diag1 {background:#9F9 url(../_img/socle/arrow_diag.gif) no-repeat center center;opacity:0.2}
 #tableau_validation tbody th.diag2 {background:#BBF url(../_img/socle/arrow_diag.gif) no-repeat center center;opacity:0.2}
-#tableau_validation tbody td.v0 {background:#F99}
-#tableau_validation tbody td.v1 {background:#9F9}
-#tableau_validation tbody td.v2 {background:#BBF}
+th.v0 , td.v0 {background:#F99}
+th.v1 , td.v1 {background:#9F9}
+th.v2 , td.v2 {background:#BBF}
 #tableau_validation tbody td[lang=lock] {background:#BBF url(../_img/socle/lock.gif) no-repeat center center;} /* surclasse une classe v0 ou v1 ou v2 car défini après */
 #tableau_validation tbody th:hover {opacity:1;cursor:pointer}
 #tableau_validation tbody th.nu:hover {cursor:default}
@@ -293,7 +297,7 @@ table.bilan th.domaine {background:#99F;}
 table.comp_view td {vertical-align:middle}
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-/* Format du tableau webmestre présentant les statistisues                                             */
+/* Format du tableau webmestre présentant les statistiques                                             */
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 table#statistiques td {text-align:center}
@@ -333,7 +337,7 @@ table.form i, table.bilan i, table.bilan_synthese i, table#resultat i {display:n
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 ul.ul_m1 {font-size:95%}
-ul.ul_m1 li, ul.ul_n1 li {margin:0;padding-left:18px}
+ul.ul_m1 li, ul.ul_n1 li {margin:0;padding-left:19px}
 ul.ul_m1 li span:hover {cursor:pointer}
 ul.ul_n1 li span:hover {cursor:pointer}
 li.li_m1 {background:transparent url(../_img/folder/folder_m1.png) no-repeat top left;color:#081}	/* matiere ; socle_palier */
@@ -349,10 +353,10 @@ li.li_n3 b img{margin-right:2px}
 /* Affichage de l'item du socle dans la zone de validation d'un item ou d'un pilier                    */
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-#zone_validation .m1 , #zone_information .m1 {background:transparent url(../_img/folder/folder_m1.png) no-repeat top left;padding-left:18px}
-#zone_validation .n1 , #zone_information .n1 {background:transparent url(../_img/folder/folder_n1.png) no-repeat top left;padding-left:18px}
-#zone_validation .n2 , #zone_information .n2 {background:transparent url(../_img/folder/folder_n2.png) no-repeat top left;padding-left:18px}
-#zone_validation .n3 , #zone_information .n3 {background:transparent url(../_img/folder/folder_n3.png) no-repeat top left;padding-left:18px;}
+#zone_validation .m1 , #zone_information .m1 {background:transparent url(../_img/folder/folder_m1.png) no-repeat top left;padding-left:19px}
+#zone_validation .n1 , #zone_information .n1 {background:transparent url(../_img/folder/folder_n1.png) no-repeat top left;padding-left:19px}
+#zone_validation .n2 , #zone_information .n2 {background:transparent url(../_img/folder/folder_n2.png) no-repeat top left;padding-left:19px}
+#zone_validation .n3 , #zone_information .n3 {background:transparent url(../_img/folder/folder_n3.png) no-repeat top left;padding-left:19px;}
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 /* Zone d'information des évaluations associées à un item                                              */
@@ -409,7 +413,7 @@ div.td_souris img.on {background-color:#FF0}
 /* Indicateur de robustesse d'un mot de passe                                                          */
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-#robustesse {border:1px solid #66F;margin:auto 10%;background-color:#F99;text-align:center;font-style:italic;white-space:nowrap}
+#robustesse {border:1px solid #66F;margin:auto 10% auto 1em;background-color:#F99;text-align:center;font-style:italic;white-space:nowrap}
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 /* Pour la gestion privée (livre d'or, RSS)                                                            */

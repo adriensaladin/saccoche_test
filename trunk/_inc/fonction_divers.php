@@ -465,14 +465,14 @@ function connecter_webmestre($password)
 	elseif($delai_attente_consomme<10)
 	{
 		$delai_attente_restant = 10-$delai_attente_consomme ;
-		return'Merci d\'attendre encore '.$delai_attente_restant.'s avant toute nouvelle tentative.';
+		return'Merci d\'attendre encore '.$delai_attente_restant.'s avant une nouvelle tentative.';
 	}
 	// Si mdp incorrect...
 	$password_crypte = crypter_mdp($password);
 	if($password_crypte!=WEBMESTRE_PASSWORD_MD5)
 	{
 		fabriquer_fichier_hebergeur_info(HEBERGEUR_INSTALLATION,HEBERGEUR_DENOMINATION,HEBERGEUR_UAI,HEBERGEUR_ADRESSE_SITE,'',HEBERGEUR_CNIL,WEBMESTRE_NOM,WEBMESTRE_PRENOM,WEBMESTRE_COURRIEL,WEBMESTRE_PASSWORD_MD5,time());
-		return 'Mot de passe incorrect ! Veuillez patienter 10s avant toute nouvelle tentative.';
+		return 'Mot de passe incorrect ! Patientez 10s avant une nouvelle tentative.';
 	}
 	// Si on arrive ici c'est que l'identification s'est bien effectuée !
 	// Numéro de la base
@@ -529,13 +529,13 @@ function connecter_user($BASE,$profil,$login,$password,$mode_connection)
 	elseif($delai_attente_consomme<10)
 	{
 		$delai_attente_restant = 10-$delai_attente_consomme ;
-		return'Merci d\'attendre encore '.$delai_attente_restant.'s avant toute nouvelle tentative.';
+		return'Merci d\'attendre encore '.$delai_attente_restant.'s avant une nouvelle tentative.';
 	}
 	// Si mdp incorrect...
 	if( ($mode_connection=='normal') && ($DB_ROW['user_password']!=crypter_mdp($password)) )
 	{
 		DB_STRUCTURE_modifier_date('tentative',$DB_ROW['user_id']);
-		return'Mot de passe incorrect ! Veuillez patienter 10s avant toute nouvelle tentative.';
+		return'Mot de passe incorrect ! Patientez 10s avant une nouvelle tentative.';
 	}
 	// Si compte desactivé...
 	if($DB_ROW['user_statut']!=1)

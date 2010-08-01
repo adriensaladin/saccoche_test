@@ -26,29 +26,36 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-$TITRE = "Export listings";
+$TITRE = "Export de données";
+
+// Fabrication des éléments select du formulaire
+if($_SESSION['USER_PROFIL']=='professeur')
+{
+	$select_matiere = afficher_select(DB_STRUCTURE_OPT_matieres_professeur($_SESSION['USER_ID']) , $select_nom='f_matiere' , $option_first='non' , $selection=false , $optgroup='non');
+	$select_groupe  = afficher_select(DB_STRUCTURE_OPT_groupes_professeur($_SESSION['USER_ID'])  , $select_nom='f_groupe'  , $option_first='oui' , $selection=false , $optgroup='oui');
+	$select_palier  = afficher_select(DB_STRUCTURE_OPT_paliers_etabl($_SESSION['PALIERS'])       , $select_nom='f_palier'  , $option_first='non' , $selection=false , $optgroup='non');
+}
+elseif($_SESSION['USER_PROFIL']=='directeur')
+{
+	$select_matiere = afficher_select(DB_STRUCTURE_OPT_matieres_etabl($_SESSION['MATIERES'],$transversal=true) , $select_nom='f_matiere' , $option_first='oui' , $selection=false , $optgroup='non');
+	$select_groupe  = afficher_select(DB_STRUCTURE_OPT_classes_groupes_etabl()                                 , $select_nom='f_groupe'  , $option_first='oui' , $selection=false , $optgroup='oui');
+	$select_palier  = afficher_select(DB_STRUCTURE_OPT_paliers_etabl($_SESSION['PALIERS'])                     , $select_nom='f_palier'  , $option_first='non' , $selection=false , $optgroup='non');
+}
 ?>
 
-<div class="hc">
-	<a href="./index.php?page=<?php echo $PAGE ?>&amp;section=listing_users">Listes des élèves par classe.</a>	||
-	<a href="./index.php?page=<?php echo $PAGE ?>&amp;section=listing_matiere">Listes des items par matière.</a><br />
-	<a href="./index.php?page=<?php echo $PAGE ?>&amp;section=arbre_matiere">Arborescence des items par matière.</a>	||
-	<a href="./index.php?page=<?php echo $PAGE ?>&amp;section=arbre_socle">Arborescence des items du socle.</a><br />
-	<a href="./index.php?page=<?php echo $PAGE ?>&amp;section=jointure_socle_matieres">Liens socle &amp; matières.</a>
-</div>
+<div class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_professeur__export_listings">DOC : Export de données.</a></div>
 
 <hr />
 
-<?php
-// Afficher la bonne page et appeler le bon js / ajax par la suite
-$fichier_section = './pages/'.$PAGE.'_'.$SECTION.'.php';
-if(is_file($fichier_section))
-{
-	$PAGE = $PAGE.'_'.$SECTION ;
-	require($fichier_section);
-}
-else
-{
-	echo'<p><span class="astuce">Choisissez une rubrique ci-dessus...</span></p>';
-}
-?>
+<form action="" id="form_export"><fieldset>
+	<p><label class="tab" for="f_type">Type de données :</label><select id="f_type" name="f_type"><option value=""></option><option value="listing_users">listes des élèves par classe</option><option value="listing_matiere">listes des items par matière</option><option value="arbre_matiere">arborescence des items par matière</option><option value="arbre_socle">arborescence des items du socle</option><option value="jointure_socle_matiere">liens socle &amp; matières</option></select></p>
+	<div id="div_groupe" class="hide"><label class="tab" for="f_groupe">Classe / groupe :</label><?php echo $select_groupe ?><input type="hidden" id="f_groupe_type" name="f_groupe_type" value="" /><input type="hidden" id="f_groupe_nom" name="f_groupe_nom" value="" /></div>
+	<div id="div_matiere" class="hide"><label class="tab" for="f_matiere">Matière :</label><?php echo $select_matiere ?><input type="hidden" id="f_matiere_nom" name="f_matiere_nom" value="" /></div>
+	<div id="div_palier" class="hide"><label class="tab" for="f_palier">Palier :</label><?php echo $select_palier ?><input type="hidden" id="f_palier_nom" name="f_palier_nom" value="" /></div>
+	<p id="p_submit" class="hide"><span class="tab"></span><button id="bouton_exporter" type="submit"><img alt="" src="./_img/bouton/fichier_export.png" /> Générer le listing de données</button><label id="ajax_msg">&nbsp;</label></p>
+</fieldset></form>
+
+<div id="bilan">
+</div>
+
+

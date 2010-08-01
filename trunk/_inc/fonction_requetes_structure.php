@@ -1006,18 +1006,33 @@ function DB_STRUCTURE_lister_jointure_user_entree($listing_eleves,$listing_entre
 
 /**
  * DB_STRUCTURE_lister_jointure_user_pilier
+ * Au choix à partir : d'une liste de piliers / d'un palier
  * 
  * @param string   $listing_eleves   id des élèves séparés par des virgules
  * @param string   $listing_piliers  id des piliers séparées par des virgules
+ * @param int      $palier_id        id d'un palier
  * @return array
  */
 
-function DB_STRUCTURE_lister_jointure_user_pilier($listing_eleves,$listing_piliers)
+function DB_STRUCTURE_lister_jointure_user_pilier($listing_eleves,$listing_piliers,$palier_id)
 {
-	$DB_SQL = 'SELECT * ';
-	$DB_SQL.= 'FROM sacoche_jointure_user_pilier ';
-	$DB_SQL.= 'WHERE user_id IN('.$listing_eleves.') AND pilier_id IN('.$listing_piliers.') ';
-	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , null);
+	if($palier_id)
+	{
+		$DB_SQL = 'SELECT sacoche_jointure_user_pilier.* ';
+		$DB_SQL.= 'FROM sacoche_socle_palier ';
+		$DB_SQL.= 'LEFT JOIN sacoche_socle_pilier USING (palier_id) ';
+		$DB_SQL.= 'LEFT JOIN sacoche_jointure_user_pilier USING (pilier_id) ';
+		$DB_SQL.= 'WHERE user_id IN('.$listing_eleves.') AND palier_id=:palier_id ';
+		$DB_VAR = array(':palier_id'=>$palier_id);
+	}
+	elseif($listing_piliers)
+	{
+		$DB_SQL = 'SELECT * ';
+		$DB_SQL.= 'FROM sacoche_jointure_user_pilier ';
+		$DB_SQL.= 'WHERE user_id IN('.$listing_eleves.') AND pilier_id IN('.$listing_piliers.') ';
+		$DB_VAR = array();
+	}
+	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
 /**

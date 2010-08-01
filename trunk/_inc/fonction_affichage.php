@@ -112,20 +112,33 @@ function affich_score_html($score,$methode_tri,$pourcent='')
 }
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-// Afficher un état d'acquisition du socle pour une sortie HTML
+// Afficher un pourcentage d'items acquis pour une sortie socle HTML
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
-function affich_validation_html($type_cellule,$tab_infos)
+function affich_pourcentage_html($type_cellule,$tab_infos)
 {
 	// $tab_infos contient 'A' / 'VA' / 'NA' / 'nb' / '%'
 	if($tab_infos['%']===false)
 	{
-		return '<'.$type_cellule.' class="hc">-</'.$type_cellule.'>';
+		return '<'.$type_cellule.' class="hc">---</'.$type_cellule.'>';
 	}
 	elseif($tab_infos['%']<$_SESSION['CALCUL_SEUIL']['R']) {$etat = 'r';}
 	elseif($tab_infos['%']>$_SESSION['CALCUL_SEUIL']['V']) {$etat = 'v';}
 	else                                                   {$etat = 'o';}
-	return '<'.$type_cellule.' class="hc '.$etat.'">'.$tab_infos['%'].'% validé ('.$tab_infos['A'].'A '.$tab_infos['VA'].'VA '.$tab_infos['NA'].'NA)</'.$type_cellule.'>';
+	return '<'.$type_cellule.' class="hc '.$etat.'">'.$tab_infos['%'].'% acquis ('.$tab_infos['A'].'A '.$tab_infos['VA'].'VA '.$tab_infos['NA'].'NA)</'.$type_cellule.'>';
+}
+
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+// Afficher un état de validation pour une sortie socle HTML
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
+function affich_validation_html($type_cellule,$tab_infos)
+{
+	// $tab_infos contient 'etat' / 'date' / 'info'
+	$etat  = ($tab_infos['etat']==1) ? 'Validé' : 'Invalidé' ;
+	$texte = ($tab_infos['etat']==2) ? '---' : $tab_infos['date'] ;
+	$bulle = ($tab_infos['etat']==2) ? '' : ' title="'.$etat.' le '.$tab_infos['date'].' par '.html($tab_infos['info']).'"' ;
+	return '<'.$type_cellule.' class="hc v'.$tab_infos['etat'].'"'.$bulle.'>'.$texte.'</'.$type_cellule.'>';
 }
 
 ?>

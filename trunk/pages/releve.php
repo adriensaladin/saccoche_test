@@ -51,7 +51,7 @@ $TITRE = "Relevés &amp; Bilans";
 	}
 	if(in_array($_SESSION['USER_PROFIL'],array('professeur','directeur','eleve')))
 	{
-		$tab_menu[] = '<a href="./index.php?page='.$PAGE.'&amp;section=socle">État de maîtrise du socle.</a>';
+		$tab_menu[] = '<a href="./index.php?page='.$PAGE.'&amp;section=socle">État de maîtrise du socle commun.</a>';
 	}
 	echo implode(' || ',$tab_menu);
 	?>

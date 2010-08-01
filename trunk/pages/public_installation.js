@@ -30,6 +30,8 @@ $(document).ready
 	function()
 	{
 
+		arrondir_coins('#cadre_milieu','10px');
+
 		// ********************
 		// * Départ | Étape n -> Étape 1
 		// ********************

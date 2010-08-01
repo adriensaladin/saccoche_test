@@ -127,22 +127,17 @@ $(document).ready
 			{
 				rules :
 				{
-					f_detail      : { required:true },
-					f_palier      : { required:true },
-					f_remplissage : { required:true }
+					f_palier : { required:true }
 				},
 				messages :
 				{
-					f_detail      : { required:"choix manquant" },
-					f_palier      : { required:"palier manquant" },
-					f_remplissage : { required:"remplissage manquant" }
+					f_palier : { required:"palier manquant" }
 				},
 				errorElement : "label",
 				errorClass : "erreur",
 				errorPlacement : function(error,element)
 				{
-					if(element.is("select")) {element.after(error);}
-					else if(element.attr("type")=="radio") {element.parent().next().after(error);}
+					element.after(error);
 				}
 				// success: function(label) {label.text("ok").removeAttr("class").addClass("valide");} Pas pour des champs soumis à vérification PHP
 			}

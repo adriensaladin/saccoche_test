@@ -26,31 +26,20 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-if($_SESSION['SESAMATH_ID']==ID_DEMO) {exit('Action désactivée pour la démo...');}
+$TITRE = "Mot de passe administrateur";
 
-$f_entree_options = (isset($_POST['f_entree'])) ? clean_texte($_POST['f_entree']) : 'erreur';
-$f_pilier_options = (isset($_POST['f_pilier'])) ? clean_texte($_POST['f_pilier']) : 'erreur';
-
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-//	Options de l'environnement élève
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-
-// f_entree_options et f_pilier_options ne peuvent être vides, et doivent contenir la chaine 'prof'
-$nettoyage = str_replace( array('directeur','aucunprof','profprincipal','professeur') , '*' , $f_entree_options.','.$f_pilier_options );
-$nettoyage = str_replace( '*,' , '' , $nettoyage.',' );
-$test_options = ( ($nettoyage=='') && (strpos($f_entree_options,'prof')!==false) && (strpos($f_pilier_options,'prof')!==false) ) ? true : false ;
-
-if($test_options)
-{
-	DB_STRUCTURE_modifier_parametres( array('profil_validation_entree'=>$f_entree_options,'profil_validation_pilier'=>$f_pilier_options) );
-	// ne pas oublier de mettre aussi à jour la session
-	$_SESSION['PROFIL_VALIDATION_ENTREE'] = $f_entree_options;
-	$_SESSION['PROFIL_VALIDATION_PILIER'] = $f_pilier_options;
-	echo'ok';
-}
-
-else
-{
-	echo'Erreur avec les données transmises !';
-}
+// Uniquement pour une installation de type mono-structure ; pour du multi-structures, cela se fait à la page de gestion des établissements.
+$select_admin = afficher_select(DB_STRUCTURE_OPT_administrateurs_etabl() , $select_nom=false , $option_first='non' , $selection=false , $optgroup='non');
 ?>
+
+<hr />
+
+<form action=""><fieldset>
+	<label class="tab" for="f_admin">Administrateur :</label><select id="f_admin" name="f_admin" size="5"><?php echo $select_admin ?></select><br />
+	<span class="tab"></span><button id="bouton_valider" type="submit"><img alt="" src="./_img/bouton/mdp_perso.png" /> Initialiser le mot de passe.</button><label id="ajax_msg">&nbsp;</label><br />
+</fieldset></form>
+
+<hr />
+
+<div id="bilan">
+</div>

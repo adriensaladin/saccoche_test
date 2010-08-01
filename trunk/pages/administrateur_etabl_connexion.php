@@ -52,7 +52,7 @@ foreach($tab_connexion_info['cas'] as $connexion_nom => $tab_info)
 
 ?>
 
-<p class="hc"><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__gestion_mode_identification">DOC : Gestion du mode d'identification</a></span></p>
+<div class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__gestion_mode_identification">DOC : Mode d'identification</a></div>
 
 <hr />
 

@@ -26,7 +26,7 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-$TITRE = "Choix des codes et des couleurs";
+$TITRE = "Codes de notation et couleurs";
 
 // Liste des jeux de codes de couleur
 $lignes = '';
@@ -62,7 +62,9 @@ $color_v = $_SESSION['CSS_BACKGROUND-COLOR']['A'];
 ?>
 
 
-<p class="hc"><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__gestion_codes_couleurs">DOC : Choix des codes et des couleurs</a></span></p>
+<div class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__gestion_codes_couleurs">DOC : Codes de notation et couleurs</a></div>
+
+<hr />
 
 <form id="form" action="">
 

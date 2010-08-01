@@ -30,6 +30,8 @@ $TITRE = "Procédure d'installation";
 $VERSION_JS_FILE += 1;
 ?>
 
+<p />
+
 <ul id="step">
 	<li id="step1">Étape 1 - Vérification des droits d'accès en écriture des dossiers</li>
 	<li id="step2">Étape 2 - Création de dossiers supplémentaires et de leurs droits</li>
@@ -45,7 +47,7 @@ $VERSION_JS_FILE += 1;
 <form action="" id="form0">
 	<h2>Bienvenue dans la procédure d'installation de <em>SACoche</em> !</h2>
 	<p class="astuce"><em>SACoche</em> est une web-application distribuée gratuitement dans l’espoir qu’elle vous sera utile, mais sans aucune garantie, conformément à la <a class="lien_ext" href="http://www.rodage.org/gpl-3.0.fr.html">licence libre GNU GPL3</a>.</p>
-	<p class="danger">De plus, le webmestre et les administrateurs sont responsables de toute conséquence d'une mauvaise manipulation ou négligence de leur part.</p>
+	<p class="danger">Webmestre et administrateurs sont responsables de toute conséquence d'une mauvaise manipulation ou négligence de leur part.</p>
 	<p><span class="tab"><a href="#" class="step1">Passer à l'étape 1.</a><label id="ajax_msg">&nbsp;</label></span></p>
 </form>
 <form action="" id="form4">

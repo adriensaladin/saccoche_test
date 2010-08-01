@@ -330,6 +330,20 @@ function maj_base($version_actuelle)
 		// y compris la mise à jour du champ "version_base" justement
 		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_actuelle.'" WHERE parametre_nom="version_base" LIMIT 1' );
 	}
+	if($version_actuelle=='2010-07-31')
+	{
+		$version_actuelle = '2010-08-01';
+		// script pour migrer vers la version suivante : renommage d'un champ pour davantage de clarté en vu de l'ajout d'options
+		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur=REPLACE(parametre_valeur,"ms","BilanMoyenneScore") WHERE parametre_nom="eleve_options" LIMIT 1' );
+		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur=REPLACE(parametre_valeur,"pv","BilanPourcentageAcquis") WHERE parametre_nom="eleve_options" LIMIT 1' );
+		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur=REPLACE(parametre_valeur,"as","SoclePourcentageAcquis") WHERE parametre_nom="eleve_options" LIMIT 1' );
+		// script pour migrer vers la version suivante : suppression du palier 4 qui ne sert à rien
+		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'DELETE FROM sacoche_socle_palier WHERE palier_id=4 LIMIT 1' );
+		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur=REPLACE(parametre_valeur,",4","") WHERE parametre_nom="paliers" LIMIT 1' );
+		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur=REPLACE(parametre_valeur,"4","3") WHERE parametre_nom="paliers" LIMIT 1' );
+		// y compris la mise à jour du champ "version_base" justement
+		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_actuelle.'" WHERE parametre_nom="version_base" LIMIT 1' );
+	}
 	// Log de l'action
 	ajouter_log('Mise à jour automatique de la base '.SACOCHE_STRUCTURE_BD_NAME.'.');
 }

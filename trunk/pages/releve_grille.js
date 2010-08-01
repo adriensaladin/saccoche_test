@@ -161,7 +161,7 @@ $(document).ready
 					f_cases_nb    : { required:true },
 					f_cases_larg  : { required:true },
 					f_cases_haut  : { required:true },
-					f_remplissage : { required:true },
+					f_restriction : { required:false },
 					f_coef        : { required:false },
 					f_socle       : { required:false },
 					f_lien        : { required:false }
@@ -176,7 +176,7 @@ $(document).ready
 					f_cases_nb    : { required:"nombre manquant" },
 					f_cases_larg  : { required:"largeur manquante" },
 					f_cases_haut  : { required:"hauteur manquante" },
-					f_remplissage : { required:"remplissage manquant" },
+					f_restriction : { },
 					f_coef        : { },
 					f_socle       : { },
 					f_lien        : { }

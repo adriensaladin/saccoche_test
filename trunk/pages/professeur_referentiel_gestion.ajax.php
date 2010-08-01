@@ -60,7 +60,7 @@ $tab_limites['bestof3']      = array(    3,4,5,6,7,8,9,10,15,20,30,40,50,0);
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 if( ($action=='Voir') && $matiere_id && $niveau_id )
 {
-	$DB_TAB = DB_STRUCTURE_recuperer_arborescence($prof_id=0,$matiere_id,$niveau_id,$only_item=false,$socle_nom=true);
+	$DB_TAB = DB_STRUCTURE_recuperer_arborescence($prof_id=0,$matiere_id,$niveau_id,$only_socle=false,$only_item=false,$socle_nom=true);
 	exit( afficher_arborescence_matiere_from_SQL($DB_TAB,$dynamique=false,$reference=false,$aff_coef='image',$aff_socle='image',$aff_lien='image',$aff_input=false) );
 }
 
@@ -76,7 +76,7 @@ elseif( ($action=='Partager') && ($perso==0) && $matiere_id && $niveau_id && in_
 	// Envoyer le référentiel (éventuellement vide pour l'effacer) vers le serveur de partage
 	if($partage=='oui')
 	{
-		$DB_TAB = DB_STRUCTURE_recuperer_arborescence(0,$matiere_id,$niveau_id,$only_item=FALSE,$socle_nom=FALSE);
+		$DB_TAB = DB_STRUCTURE_recuperer_arborescence(0,$matiere_id,$niveau_id,$only_socle=false,$only_item=false,$socle_nom=false);
 		$arbreXML = exporter_arborescence_to_XML($DB_TAB);
 		$reponse = envoyer_arborescence_XML($_SESSION['SESAMATH_ID'],$_SESSION['SESAMATH_KEY'],$matiere_id,$niveau_id,$arbreXML);
 	}
@@ -107,7 +107,7 @@ elseif( ($action=='Envoyer') && ($perso==0) && $matiere_id && $niveau_id )
 		exit('Pour échanger avec le serveur communautaire, un administrateur doit identifier l\'établissement dans la base Sésamath.');
 	}
 	// Envoyer le référentiel vers le serveur de partage
-	$DB_TAB = DB_STRUCTURE_recuperer_arborescence(0,$matiere_id,$niveau_id,$only_item=FALSE,$socle_nom=FALSE);
+	$DB_TAB = DB_STRUCTURE_recuperer_arborescence(0,$matiere_id,$niveau_id,$only_socle=false,$only_item=false,$socle_nom=false);
 	$arbreXML = exporter_arborescence_to_XML($DB_TAB);
 	$reponse = envoyer_arborescence_XML($_SESSION['SESAMATH_ID'],$_SESSION['SESAMATH_KEY'],$matiere_id,$niveau_id,$arbreXML);
 	// Analyse de la réponse retournée par le serveur de partage

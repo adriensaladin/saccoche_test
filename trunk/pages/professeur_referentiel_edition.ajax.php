@@ -50,7 +50,7 @@ $tab_id2 = array_filter($tab_id2,'positif');
 if( ($action=='Voir') && $matiere_id )
 {
 	// Affichage du référentiel pour la matière sélectionnée
-	$DB_TAB = DB_STRUCTURE_recuperer_arborescence($prof_id=0,$matiere_id,$niveau_id=0,$only_item=false,$socle_nom=true);
+	$DB_TAB = DB_STRUCTURE_recuperer_arborescence($prof_id=0,$matiere_id,$niveau_id=0,$only_socle=false,$only_item=false,$socle_nom=true);
 	$tab_niveau  = array();
 	$tab_domaine = array();
 	$tab_theme   = array();

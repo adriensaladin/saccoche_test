@@ -39,6 +39,7 @@ $couleur       = (isset($_POST['f_couleur']))     ? clean_texte($_POST['f_couleu
 $cases_nb      = (isset($_POST['f_cases_nb']))    ? clean_entier($_POST['f_cases_nb'])   : 0;
 $cases_largeur = (isset($_POST['f_cases_larg']))  ? clean_entier($_POST['f_cases_larg']) : 0;
 $cases_hauteur = (isset($_POST['f_cases_haut']))  ? clean_entier($_POST['f_cases_haut']) : 0;
+$only_socle    = (isset($_POST['f_restriction'])) ? 1                                    : 0;
 $aff_coef      = (isset($_POST['f_coef']))        ? 1                                    : 0;
 $aff_socle     = (isset($_POST['f_socle']))       ? 1                                    : 0;
 $aff_lien      = (isset($_POST['f_lien']))        ? 1                                    : 0;
@@ -64,7 +65,7 @@ if( $matiere_id && $niveau_id && $matiere_nom && $niveau_nom && $remplissage && 
 	//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 	// Récupération de la liste des items pour la matière et le niveau sélectionné
 	//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-	$DB_TAB = DB_STRUCTURE_recuperer_arborescence($prof_id=0,$matiere_id,$niveau_id,$only_item=false,$socle_nom=false);
+	$DB_TAB = DB_STRUCTURE_recuperer_arborescence($prof_id=0,$matiere_id,$niveau_id,$only_socle,$only_item=false,$socle_nom=false);
 	if(count($DB_TAB))
 	{
 		$domaine_id = 0;
@@ -159,9 +160,10 @@ if( $matiere_id && $niveau_id && $matiere_nom && $niveau_nom && $remplissage && 
 	$texte_lien_avant = '';
 	$texte_lien_apres = '';
 	// Les variables $releve_html et $releve_pdf vont contenir les sorties
+	$only_socle = ($only_socle) ? ' - Socle uniquement' : '' ;
 	$releve_html  = '<style type="text/css">'.$_SESSION['CSS'].'</style>';
 	$releve_html .= '<h1>Livret de connaissances et de compétences</h1>';
-	$releve_html .= '<h2>'.html($matiere_nom.' - Niveau '.$niveau_nom).'</h2>';
+	$releve_html .= '<h2>'.html($matiere_nom.' - Niveau '.$niveau_nom.$only_socle).'</h2>';
 	// Appel de la classe et définition de qqs variables supplémentaires pour la mise en page PDF
 	require('./_fpdf/fpdf.php');
 	require('./_inc/class.PDF.php');

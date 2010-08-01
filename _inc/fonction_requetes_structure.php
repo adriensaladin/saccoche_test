@@ -95,12 +95,13 @@ function DB_STRUCTURE_recuperer_amplitude_periodes()
  * @param int  $prof_id      passer 0 pour une recherche sur une matière plutôt que sur toutes les matières d'un prof
  * @param int  $matiere_id   passer 0 pour une recherche sur toutes les matières d'un prof plutôt que sur une matière
  * @param int  $niveau_id    passer 0 pour une recherche sur tous les niveaux
- * @param bool $only_item    "true" pour ne retourner que les lignes d'items, "false" pour l'arborescence complète, sans forcément descendre jusqu'à l'items (valeurs NULL retournées).
+ * @param bool $only_socle   "true" pour ne retourner que les items reliés au socle
+ * @param bool $only_item    "true" pour ne retourner que les lignes d'items, "false" pour l'arborescence complète, sans forcément descendre jusqu'à l'items (valeurs NULL retournées)
  * @param bool $socle_nom    avec ou pas le nom des items du socle associés
  * @return array
  */
 
-function DB_STRUCTURE_recuperer_arborescence($prof_id,$matiere_id,$niveau_id,$only_item,$socle_nom)
+function DB_STRUCTURE_recuperer_arborescence($prof_id,$matiere_id,$niveau_id,$only_socle,$only_item,$socle_nom)
 {
 	$select_socle_nom  = ($socle_nom)  ? 'entree_id,entree_nom ' : 'entree_id ' ;
 	$join_user_matiere = ($prof_id)    ? 'LEFT JOIN sacoche_jointure_user_matiere USING (matiere_id) ' : '' ;
@@ -109,6 +110,7 @@ function DB_STRUCTURE_recuperer_arborescence($prof_id,$matiere_id,$niveau_id,$on
 	$where_matiere     = ($matiere_id) ? 'matiere_id=:matiere_id ' : '' ;
 	$where_niveau      = ($niveau_id)  ? 'AND niveau_id=:niveau_id ' : 'AND (niveau_id IN('.$_SESSION['NIVEAUX'].') OR palier_id IN('.$_SESSION['PALIERS'].')) ' ;
 	$where_item        = ($only_item)  ? 'AND item_id IS NOT NULL ' : '' ;
+	$where_socle       = ($only_socle) ? 'AND entree_id !=0 ' : '' ;
 	$order_matiere     = ($prof_id)    ? 'matiere_nom ASC, ' : '' ;
 	$order_niveau      = (!$niveau_id) ? 'niveau_ordre ASC, ' : '' ;
 	$DB_SQL = 'SELECT ';
@@ -126,7 +128,7 @@ function DB_STRUCTURE_recuperer_arborescence($prof_id,$matiere_id,$niveau_id,$on
 	$DB_SQL.= 'LEFT JOIN sacoche_referentiel_theme USING (domaine_id) ';
 	$DB_SQL.= 'LEFT JOIN sacoche_referentiel_item USING (theme_id) ';
 	$DB_SQL.= $join_socle_item;
-	$DB_SQL.= 'WHERE '.$where_user.$where_matiere.$where_niveau.$where_item;
+	$DB_SQL.= 'WHERE '.$where_user.$where_matiere.$where_niveau.$where_item.$where_socle;
 	$DB_SQL.= 'ORDER BY '.$order_matiere.$order_niveau.'domaine_ordre ASC, theme_ordre ASC, item_ordre ASC';
 	$DB_VAR = array();
 	if($prof_id)    {$DB_VAR[':user_id']    = $prof_id;}
@@ -141,13 +143,15 @@ function DB_STRUCTURE_recuperer_arborescence($prof_id,$matiere_id,$niveau_id,$on
  * 
  * @param int    $eleve_id
  * @param int    $matiere_id
+ * @param bool   $only_socle   "true" pour ne retourner que les items reliés au socle
  * @param string $date_mysql_debut
  * @param string $date_mysql_fin
  * @return array
  */
 
-function DB_STRUCTURE_recuperer_arborescence_eleve_periode_matiere($eleve_id,$matiere_id,$date_mysql_debut,$date_mysql_fin)
+function DB_STRUCTURE_recuperer_arborescence_eleve_periode_matiere($eleve_id,$matiere_id,$only_socle,$date_mysql_debut,$date_mysql_fin)
 {
+	$where_socle = ($only_socle) ? 'AND entree_id !=0 ' : '' ;
 	$sql_debut = ($date_mysql_debut) ? 'AND saisie_date>=:date_debut ' : '';
 	$sql_fin   = ($date_mysql_fin)   ? 'AND saisie_date<=:date_fin '   : '';
 	$DB_SQL = 'SELECT item_id , ';
@@ -161,7 +165,7 @@ function DB_STRUCTURE_recuperer_arborescence_eleve_periode_matiere($eleve_id,$ma
 	$DB_SQL.= 'LEFT JOIN sacoche_matiere USING (matiere_id) ';
 	$DB_SQL.= 'LEFT JOIN sacoche_niveau USING (niveau_id) ';
 	$DB_SQL.= 'LEFT JOIN sacoche_referentiel USING (matiere_id,niveau_id) ';
-	$DB_SQL.= 'WHERE eleve_id=:eleve_id AND matiere_id=:matiere '.$sql_debut.$sql_fin;
+	$DB_SQL.= 'WHERE eleve_id=:eleve_id AND matiere_id=:matiere '.$where_socle.$sql_debut.$sql_fin;
 	$DB_SQL.= 'GROUP BY item_id ';
 	$DB_SQL.= 'ORDER BY matiere_nom ASC, niveau_ordre ASC, domaine_ordre ASC, theme_ordre ASC, item_ordre ASC';
 	$DB_VAR = array(':eleve_id'=>$eleve_id,':matiere'=>$matiere_id,':date_debut'=>$date_mysql_debut,':date_fin'=>$date_mysql_fin);
@@ -174,13 +178,15 @@ function DB_STRUCTURE_recuperer_arborescence_eleve_periode_matiere($eleve_id,$ma
  * 
  * @param string $liste_eleve_id   id des élèves séparés par des virgules
  * @param int    $matiere_id
+ * @param bool   $only_socle   "true" pour ne retourner que les items reliés au socle
  * @param string $date_mysql_debut
  * @param string $date_mysql_fin
  * @return array
  */
 
-function DB_STRUCTURE_recuperer_arborescence_eleves_periode_matiere($liste_eleve_id,$matiere_id,$date_mysql_debut,$date_mysql_fin)
+function DB_STRUCTURE_recuperer_arborescence_eleves_periode_matiere($liste_eleve_id,$matiere_id,$only_socle,$date_mysql_debut,$date_mysql_fin)
 {
+	$where_socle = ($only_socle) ? 'AND entree_id !=0 ' : '' ;
 	$sql_debut = ($date_mysql_debut) ? 'AND saisie_date>=:date_debut ' : '';
 	$sql_fin   = ($date_mysql_fin)   ? 'AND saisie_date<=:date_fin '   : '';
 	$DB_SQL = 'SELECT item_id , ';
@@ -194,7 +200,7 @@ function DB_STRUCTURE_recuperer_arborescence_eleves_periode_matiere($liste_eleve
 	$DB_SQL.= 'LEFT JOIN sacoche_matiere USING (matiere_id) ';
 	$DB_SQL.= 'LEFT JOIN sacoche_niveau USING (niveau_id) ';
 	$DB_SQL.= 'LEFT JOIN sacoche_referentiel USING (matiere_id,niveau_id) ';
-	$DB_SQL.= 'WHERE eleve_id IN('.$liste_eleve_id.') AND matiere_id=:matiere '.$sql_debut.$sql_fin;
+	$DB_SQL.= 'WHERE eleve_id IN('.$liste_eleve_id.') AND matiere_id=:matiere '.$where_socle.$sql_debut.$sql_fin;
 	$DB_SQL.= 'GROUP BY item_id ';
 	$DB_SQL.= 'ORDER BY matiere_nom ASC, niveau_ordre ASC, domaine_ordre ASC, theme_ordre ASC, item_ordre ASC';
 	$DB_VAR = array(':matiere'=>$matiere_id,':date_debut'=>$date_mysql_debut,':date_fin'=>$date_mysql_fin);

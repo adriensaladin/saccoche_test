@@ -93,7 +93,7 @@ if( ($type_export=='listing_matiere') && $matiere_id && $matiere_nom )
 	// Préparation de l'export HTML
 	$export_html = '<table><thead><tr><th>Id</th><th>Matière</th><th>Niveau</th><th>Référence</th><th>Nom</th></tr></thead><tbody>'."\r\n";
 
-	$DB_TAB = DB_STRUCTURE_recuperer_arborescence($prof_id=0,$matiere_id,$niveau_id=0,$only_item=true,$socle_nom=false);
+	$DB_TAB = DB_STRUCTURE_recuperer_arborescence($prof_id=0,$matiere_id,$niveau_id=0,$only_socle=false,$only_item=true,$socle_nom=false);
 	if(count($DB_TAB))
 	{
 		foreach($DB_TAB as $DB_ROW)
@@ -139,7 +139,7 @@ if( ($type_export=='arbre_matiere') && $matiere_id && $matiere_nom )
 	$tab_theme   = array();
 	$tab_item    = array();
 	$niveau_id = 0;
-	$DB_TAB = DB_STRUCTURE_recuperer_arborescence($prof_id=0,$matiere_id,$niveau_id=0,$only_item=false,$socle_nom=false);
+	$DB_TAB = DB_STRUCTURE_recuperer_arborescence($prof_id=0,$matiere_id,$niveau_id=0,$only_socle=false,$only_item=false,$socle_nom=false);
 	foreach($DB_TAB as $DB_ROW)
 	{
 		if($DB_ROW['niveau_id']!=$niveau_id)

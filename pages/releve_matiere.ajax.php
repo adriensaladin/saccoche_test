@@ -40,6 +40,7 @@ $date_fin       = (isset($_POST['f_date_fin']))    ? clean_texte($_POST['f_date_
 $retroactif     = (isset($_POST['f_retroactif']))  ? clean_texte($_POST['f_retroactif'])  : '';
 $matiere_id     = (isset($_POST['f_matiere']))     ? clean_entier($_POST['f_matiere'])    : 0;
 $matiere_nom    = (isset($_POST['f_matiere_nom'])) ? clean_texte($_POST['f_matiere_nom']) : '';
+$only_socle     = (isset($_POST['f_restriction'])) ? 1                                    : 0;
 $aff_coef       = (isset($_POST['f_coef']))        ? 1                                    : 0;
 $aff_socle      = (isset($_POST['f_socle']))       ? 1                                    : 0;
 $aff_lien       = (isset($_POST['f_lien']))        ? 1                                    : 0;
@@ -93,8 +94,8 @@ if( $orientation && $marge_min && $couleur && $cases_nb && $cases_largeur && $ca
 	//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 	// Récupération de la liste des items travaillés durant la période choisie, pour la matière et les élèves selectionnés
 	//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-	$tab_item = ($_SESSION['USER_PROFIL']=='eleve') ? DB_STRUCTURE_recuperer_arborescence_eleve_periode_matiere($_SESSION['USER_ID'],$matiere_id,$date_mysql_debut,$date_mysql_fin)
-	                                                : DB_STRUCTURE_recuperer_arborescence_eleves_periode_matiere($liste_eleve,$matiere_id,$date_mysql_debut,$date_mysql_fin) ;
+	$tab_item = ($_SESSION['USER_PROFIL']=='eleve') ? DB_STRUCTURE_recuperer_arborescence_eleve_periode_matiere($_SESSION['USER_ID'],$matiere_id,$only_socle,$date_mysql_debut,$date_mysql_fin)
+	                                                : DB_STRUCTURE_recuperer_arborescence_eleves_periode_matiere($liste_eleve,$matiere_id,$only_socle,$date_mysql_debut,$date_mysql_fin) ;
 	$item_nb = count($tab_item);
 	if(!$item_nb)
 	{

@@ -234,6 +234,7 @@ elseif( $step==6 )
 		$affichage .= '<fieldset>'."\r\n";
 		$affichage .= '<h2>Paramètres MySQL</h2>'."\r\n";
 		$affichage .= '<label class="tab" for="f_host"><img alt="" src="./_img/bulle_aide.png" title="Parfois \'localhost\' sur un serveur que l\'on administre." /> Hôte ou IP :</label><input id="f_host" name="f_host" size="20" type="text" value="" /><br />'."\r\n";
+		$affichage .= '<label class="tab" for="f_port"><img alt="" src="./_img/bulle_aide.png" title="Valeur 3306 par défaut (dans 99,99% des situations)." /> Port :</label><input id="f_port" name="f_port" size="20" type="text" value="3306" /><label for="rien" class="alerte">Ne changez pas cette valeur, sauf rares exceptions !</label><br />'."\r\n";
 		$affichage .= '<label class="tab" for="f_user">Nom d\'utilisateur :</label><input id="f_user" name="f_user" size="20" type="text" value="" /><br />'."\r\n";
 		$affichage .= '<label class="tab" for="f_pass">Mot de passe :</label><input id="f_pass" name="f_pass" size="20" type="password" value="" /><br />'."\r\n";
 		$affichage .= '<span class="tab"></span><input id="f_name" name="f_name" size="20" type="hidden" value="remplissage bidon" /><input id="f_step" name="f_step" type="hidden" value="61" /><button id="f_submit" type="submit"><img alt="" src="./_img/bouton/valider.png" /> Valider.</button><label id="ajax_msg">&nbsp;</label>'."\r\n";
@@ -251,11 +252,12 @@ elseif( $step==61 )
 	}
 	// récupérer et tester les paramètres
 	$BD_host = (isset($_POST['f_host'])) ? clean_texte($_POST['f_host']) : '';
+	$BD_port = (isset($_POST['f_port'])) ? clean_entier($_POST['f_port']) : 0;
 	$BD_name = (isset($_POST['f_name'])) ? clean_texte($_POST['f_name']) : '';
 	$BD_user = (isset($_POST['f_user'])) ? clean_texte($_POST['f_user']) : '';
 	$BD_pass = (isset($_POST['f_pass'])) ? clean_texte($_POST['f_pass']) : '';
 	// tester la connexion
-	$BDlink = @mysql_connect($BD_host,$BD_user,$BD_pass);
+	$BDlink = @mysql_connect($BD_host.':'.$BD_port,$BD_user,$BD_pass);
 	if(!$BDlink)
 	{
 		exit('Erreur : impossible de se connecter à MySQL ["'.html(trim(mysql_error())).'"] !');
@@ -292,7 +294,7 @@ elseif( $step==61 )
 			}
 		}
 		// Créer le fichier de connexion de la base de données du webmestre, installation multi-structures
-		fabriquer_fichier_connexion_base(0,$BD_host,$BD_name,$BD_user,$BD_pass);
+		fabriquer_fichier_connexion_base(0,$BD_host,$BD_port,$BD_name,$BD_user,$BD_pass);
 		$affichage .= '<p><label for="rien" class="valide">Les paramètres de connexion MySQL, testés avec succès, sont maintenant enregistrés.</label></p>'."\r\n";
 		$affichage .= '<p><span class="tab"><a href="#" class="step7">Passer à l\'étape 7.</a><label id="ajax_msg">&nbsp;</label></span></p>' ;
 	}
@@ -334,7 +336,7 @@ elseif( $step==61 )
 			// Sinon, c'est un input
 			$affichage .= '<label class="tab" for="f_name">Nom de la base :</label><input id="f_name" name="f_name" size="20" type="text" value="" /><br />'."\r\n";
 		}
-		$affichage .= '<span class="tab"></span><input id="f_host" name="f_host" size="20" type="hidden" value="'.html($BD_host).'" /><input id="f_user" name="f_user" size="20" type="hidden" value="'.html($BD_user).'" /><input id="f_pass" name="f_pass" size="20" type="hidden" value="'.html($BD_pass).'" /><input id="f_step" name="f_step" type="hidden" value="62" /><button id="f_submit" type="submit"><img alt="" src="./_img/bouton/valider.png" /> Valider.</button><label id="ajax_msg">&nbsp;</label>'."\r\n";
+		$affichage .= '<span class="tab"></span><input id="f_host" name="f_host" size="20" type="hidden" value="'.html($BD_host).'" /><input id="f_port" name="f_port" size="20" type="hidden" value="'.$BD_port.'" /><input id="f_user" name="f_user" size="20" type="hidden" value="'.html($BD_user).'" /><input id="f_pass" name="f_pass" size="20" type="hidden" value="'.html($BD_pass).'" /><input id="f_step" name="f_step" type="hidden" value="62" /><button id="f_submit" type="submit"><img alt="" src="./_img/bouton/valider.png" /> Valider.</button><label id="ajax_msg">&nbsp;</label>'."\r\n";
 		$affichage .= '</fieldset>'."\r\n";
 	}
 	echo $affichage;
@@ -349,11 +351,12 @@ elseif( $step==62 )
 	}
 	// récupérer et tester les paramètres
 	$BD_host = (isset($_POST['f_host'])) ? clean_texte($_POST['f_host']) : '';
+	$BD_port = (isset($_POST['f_port'])) ? clean_entier($_POST['f_port']) : 0;
 	$BD_name = (isset($_POST['f_name'])) ? clean_texte($_POST['f_name']) : '';
 	$BD_user = (isset($_POST['f_user'])) ? clean_texte($_POST['f_user']) : '';
 	$BD_pass = (isset($_POST['f_pass'])) ? clean_texte($_POST['f_pass']) : '';
 	// tester la connexion
-	$BDlink = @mysql_connect($BD_host,$BD_user,$BD_pass);
+	$BDlink = @mysql_connect($BD_host.':'.$BD_port,$BD_user,$BD_pass);
 	if(!$BDlink)
 	{
 		exit('Erreur : impossible de se connecter à MySQL ["'.html(trim(mysql_error())).'"] !');
@@ -369,7 +372,7 @@ elseif( $step==62 )
 		exit('Erreur : impossible d\'accéder à la base "'.html($BD_name).'" ["'.html(trim(mysql_error())).'"] !');
 	}
 	// Créer le fichier de connexion de la base de données du webmestre, installation multi-structures
-	fabriquer_fichier_connexion_base(0,$BD_host,$BD_name,$BD_user,$BD_pass);
+	fabriquer_fichier_connexion_base(0,$BD_host,$BD_port,$BD_name,$BD_user,$BD_pass);
 	$affichage .= '<p><label for="rien" class="valide">Les paramètres de connexion MySQL sont maintenant enregistrés.</label></p>'."\r\n";
 	$affichage .= '<p><span class="tab"><a href="#" class="step7">Passer à l\'étape 7.</a><label id="ajax_msg">&nbsp;</label></span></p>' ;
 	echo $affichage;

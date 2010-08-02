@@ -187,7 +187,7 @@ function DB_WEBMESTRE_ajouter_structure($base_id,$geo_id,$structure_uai,$localis
 	$BD_user = 'sac_user_'.$base_id; // Limité à 16 caractères (attention !)
 	$BD_pass = fabriquer_mdp();
 	// Créer le fichier de connexion de la base de données de la structure
-	fabriquer_fichier_connexion_base($base_id,SACOCHE_WEBMESTRE_BD_HOST,$BD_name,$BD_user,$BD_pass);
+	fabriquer_fichier_connexion_base($base_id,SACOCHE_WEBMESTRE_BD_HOST,SACOCHE_WEBMESTRE_BD_PORT,$BD_name,$BD_user,$BD_pass);
 	// Créer la base de données de la structure
 	DB::query(SACOCHE_WEBMESTRE_BD_NAME , 'CREATE DATABASE sac_base_'.$base_id );
 	// Créer un utilisateur pour la base de données de la structure et lui attribuer ses droits

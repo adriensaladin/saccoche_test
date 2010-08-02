@@ -327,7 +327,7 @@ function fabriquer_fichier_hebergeur_info($hebergeur_installation,$hebergeur_den
  * @return void
  */
 
-function fabriquer_fichier_connexion_base($base_id,$BD_host,$BD_name,$BD_user,$BD_pass)
+function fabriquer_fichier_connexion_base($base_id,$BD_host,$BD_port,$BD_name,$BD_user,$BD_pass)
 {
 	global $CHEMIN_MYSQL;
 	if( (HEBERGEUR_INSTALLATION=='multi-structures') && ($base_id>0) )
@@ -351,6 +351,7 @@ function fabriquer_fichier_connexion_base($base_id,$BD_host,$BD_name,$BD_user,$B
 	$fichier_contenu  = '<?php'."\r\n";
 	$fichier_contenu .= '// '.$fichier_descriptif."\r\n";
 	$fichier_contenu .= 'define(\'SACOCHE_'.$prefixe.'_BD_HOST\',\''.$BD_host.'\');	// Nom d\'hôte / serveur'."\r\n";
+	$fichier_contenu .= 'define(\'SACOCHE_'.$prefixe.'_BD_PORT\',\''.$BD_port.'\');	// Port de connexion'."\r\n";
 	$fichier_contenu .= 'define(\'SACOCHE_'.$prefixe.'_BD_NAME\',\''.$BD_name.'\');	// Nom de la base'."\r\n";
 	$fichier_contenu .= 'define(\'SACOCHE_'.$prefixe.'_BD_USER\',\''.$BD_user.'\');	// Nom d\'utilisateur'."\r\n";
 	$fichier_contenu .= 'define(\'SACOCHE_'.$prefixe.'_BD_PASS\',\''.$BD_pass.'\');	// Mot de passe'."\r\n";

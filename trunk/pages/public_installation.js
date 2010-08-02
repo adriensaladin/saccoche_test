@@ -471,6 +471,7 @@ $(document).ready
 				rules :
 				{
 					f_host : { required:true },
+					f_port : { required:true , digits:true },
 					f_name : { required:true },
 					f_user : { required:true },
 					f_pass : { required:false }
@@ -478,6 +479,7 @@ $(document).ready
 				messages :
 				{
 					f_host : { required:"champ obligatoire" },
+					f_port : { required:"champ obligatoire" , digits:"nombre entier requis" },
 					f_name : { required:"champ obligatoire" },
 					f_user : { required:"champ obligatoire" },
 					f_pass : { }
@@ -540,6 +542,10 @@ $(document).ready
 			if(responseHTML.substring(0,6)=='Erreur')
 			{
 				$('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);
+			}
+			else if(responseHTML=='') // En cas de port incorrect, le test de la connexion peut durer longtemps, et on récupère une chaine vide à la place de l'erreur, qui devrait être "Une tentative de connexion a échoué car le parti connecté n’a pas répondu convenablement au-delà d’une certaine durée ou une connexion établie a échoué car l’hôte de connexion n’a pas répondu."
+			{
+				$('#ajax_msg').removeAttr("class").addClass("alerte").html('Erreur : impossible de se connecter à  MySQL ["La tentative de connexion a échoué : MySQL n\'a pas répondu (port probablement incorrect)."] !');
 			}
 			else if(responseHTML.substring(0,10)=='<fieldset>')
 			{

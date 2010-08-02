@@ -260,10 +260,10 @@ function arrondir_coins(element,taille)
 {
 	// On cherche si le navigateur sait gérer cet attribut css3, éventuellement avec une syntaxe propriétaire
 	     if(document.body.style['BorderRadius'] !== undefined)       {style = 'border-radius';}
+	else if(document.body.style['borderRadius'] !== undefined)       {style = 'border-radius';} // Opéra (commence par une minuscule...)
 	else if(document.body.style['MozBorderRadius'] !== undefined)    {style = '-moz-border-radius';}
 	else if(document.body.style['WebkitBorderRadius'] !== undefined) {style = '-webkit-border-radius';}
 	else if(document.body.style['KhtmlBorderRadius'] !== undefined)  {style = '-khtml-border-radius';}
-	else if(document.body.style['borderRadius'] !== undefined)       {style = 'border-radius';} // Opéra (commence par une minuscule...)
 	else if(document.body.style['OBorderRadius'] !== undefined)      {style = '-o-border-radius';}
 	else {style = false;}
 	if(style !== false)

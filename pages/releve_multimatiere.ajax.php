@@ -40,11 +40,12 @@ $date_fin       = (isset($_POST['f_date_fin']))    ? clean_texte($_POST['f_date_
 $retroactif     = (isset($_POST['f_retroactif']))  ? clean_texte($_POST['f_retroactif'])  : '';
 $matiere_id     = true;
 $matiere_nom    = '';
+$only_socle     = (isset($_POST['f_restriction'])) ? 1                                    : 0;
 $aff_coef       = (isset($_POST['f_coef']))        ? 1                                    : 0;
 $aff_socle      = (isset($_POST['f_socle']))       ? 1                                    : 0;
 $aff_lien       = (isset($_POST['f_lien']))        ? 1                                    : 0;
-$aff_bilan_ms   = (isset($_POST['f_bilan_ms']))    ? 1                                    : 0;
-$aff_bilan_pv   = (isset($_POST['f_bilan_pv']))    ? 1                                    : 0;
+$aff_bilan_MS   = (isset($_POST['f_bilan_MS']))    ? 1                                    : 0;
+$aff_bilan_PA   = (isset($_POST['f_bilan_PA']))    ? 1                                    : 0;
 $aff_conv_sur20 = (isset($_POST['f_conv_sur20']))  ? 1                                    : 0;
 $groupe_id      = (isset($_POST['f_groupe']))      ? clean_entier($_POST['f_groupe'])     : 0;
 $groupe_nom     = (isset($_POST['f_groupe_nom']))  ? clean_texte($_POST['f_groupe_nom'])  : '';
@@ -93,7 +94,7 @@ if( $orientation && $marge_min && $couleur && $cases_nb && $cases_largeur && $ca
 	//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 	// Récupération de la liste des items travaillés durant la période choisie, pour les élèves selectionnés, toutes matières confondues
 	//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-	list($tab_item,$tab_matiere) = DB_STRUCTURE_recuperer_arborescence_et_matieres_eleves_periode($liste_eleve,$date_mysql_debut,$date_mysql_fin);
+	list($tab_item,$tab_matiere) = DB_STRUCTURE_recuperer_arborescence_et_matieres_eleves_periode($liste_eleve,$only_socle,$date_mysql_debut,$date_mysql_fin);
 	$item_nb = count($tab_item);
 	if(!$item_nb)
 	{

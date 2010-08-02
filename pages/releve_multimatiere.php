@@ -27,7 +27,7 @@
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = "Bilans transdisciplinaires (P.P.)";
-$VERSION_JS_FILE += 2;
+$VERSION_JS_FILE += 3;
 // Remarque : on ne peut être pp que d'une classe, pas d'un groupe, donc seuls des bilans par classes peuvent être effectués
 ?>
 
@@ -90,7 +90,7 @@ if(is_array($tab_groupes))
 <form id="form_select" action=""><fieldset>
 	<p>
 		<label class="tab" for="f_opt_grille">Opt. relevé <img alt="" src="./_img/bulle_aide.png" title="Les paramètres des items peuvent être affichés." /> :</label><label for="f_coef"><input type="checkbox" id="f_coef" name="f_coef" value="1" /> Coefficients</label>&nbsp;&nbsp;&nbsp;<label for="f_socle"><input type="checkbox" id="f_socle" name="f_socle" value="1" checked="checked" /> Socle</label>&nbsp;&nbsp;&nbsp;<label for="f_lien"><input type="checkbox" id="f_lien" name="f_lien" value="1" /> Liens de remédiation</label><br />
-		<label class="tab" for="f_opt_bilan">Opt. relevé <img alt="" src="./_img/bulle_aide.png" title="Deux lignes de synthèse peuvent être ajoutées.<br />Dans ce cas, une note sur 20 peut aussi être affichée." /> :</label><label for="f_bilan_ms"><input type="checkbox" id="f_bilan_ms" name="f_bilan_ms" value="1" checked="checked" /> Moyenne des scores</label>&nbsp;&nbsp;&nbsp;<label for="f_bilan_pv"><input type="checkbox" id="f_bilan_pv" name="f_bilan_pv" value="1" checked="checked" /> Pourcentage d'acquisitions validées</label>&nbsp;&nbsp;&nbsp;<label for="f_conv_sur20"><input type="checkbox" id="f_conv_sur20" name="f_conv_sur20" value="1" /> Proposition de note sur 20</label>
+		<label class="tab" for="f_opt_bilan">Opt. relevé <img alt="" src="./_img/bulle_aide.png" title="Deux lignes de synthèse peuvent être ajoutées.<br />Dans ce cas, une note sur 20 peut aussi être affichée." /> :</label><label for="f_bilan_MS"><input type="checkbox" id="f_bilan_MS" name="f_bilan_MS" value="1" checked="checked" /> Moyenne des scores</label>&nbsp;&nbsp;&nbsp;<label for="f_bilan_PA"><input type="checkbox" id="f_bilan_PA" name="f_bilan_PA" value="1" checked="checked" /> Pourcentage d'acquisitions validées</label>&nbsp;&nbsp;&nbsp;<label for="f_conv_sur20"><input type="checkbox" id="f_conv_sur20" name="f_conv_sur20" value="1" /> Proposition de note sur 20</label>
 	</p>
 	<p>
 		<label class="tab" for="f_groupe">Élève(s) :</label><?php echo $select_groupe ?><input type="hidden" id="f_groupe_nom" name="f_groupe_nom" value="" /><label id="ajax_maj">&nbsp;</label><br />
@@ -109,6 +109,7 @@ if(is_array($tab_groupes))
 	</div>
 	<div class="toggle hide">
 		<span class="tab"></span><a href="#" class="puce_moins toggle">Afficher moins d'options</a><br />
+		<label class="tab" for="f_restriction">Restriction :</label><input type="checkbox" id="f_restriction" name="f_restriction" value="1" /> <label for="f_restriction">Uniquement les items liés du socle</label><br />
 		<label class="tab" for="f_orientation">Orientation :</label><?php echo $select_orientation ?> en <?php echo $select_couleur ?> avec marges minimales de </label><?php echo $select_marge_min ?><br />
 		<label class="tab" for="f_cases_nb">Évaluations :</label><?php echo $select_cases_nb ?> de largeur <?php echo $select_cases_larg ?> et de hauteur <?php echo $select_cases_haut ?><p />
 	</div>

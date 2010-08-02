@@ -330,7 +330,7 @@ table.form i, table.bilan i, table.bilan_synthese i, table#resultat i {display:n
 /* Style pour la zone de choix d'association d'une compétence du socle.                                */
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-#zone_socle{position:fixed;z-index:9999;left:0;top:0;right:0;bottom:0;border:0;background:#EEE;font-size:13px;padding:0.25em;overflow:auto;display:none}
+#zone_socle{position:absolute;z-index:9999;left:0;top:10px;right:0;bottom:0;border:0;background:#EEE;font-size:13px;padding:0.25em;overflow:auto;display:none}
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 /* Liste à puce pour l'affichage de l'arborescence des compétences ou du socle                         */

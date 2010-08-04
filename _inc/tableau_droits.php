@@ -39,6 +39,7 @@ $tab_droits['public_installation']                                             =
 $tab_droits['public_login_CAS']                                                = array( 'public'=>1 , 'eleve'=>0 , 'professeur'=>0 , 'directeur'=>0 , 'administrateur'=>0 , 'webmestre'=>0 );
 $tab_droits['public_logout_SSO']                                               = array( 'public'=>1 , 'eleve'=>0 , 'professeur'=>0 , 'directeur'=>0 , 'administrateur'=>0 , 'webmestre'=>0 );
 // Profil élève
+$tab_droits['eleve_eval_bilan']                                                = array( 'public'=>0 , 'eleve'=>1 , 'professeur'=>0 , 'directeur'=>0 , 'administrateur'=>0 , 'webmestre'=>0 );
 $tab_droits['eleve_eval_demande']                                              = array( 'public'=>0 , 'eleve'=>1 , 'professeur'=>0 , 'directeur'=>0 , 'administrateur'=>0 , 'webmestre'=>0 );
 $tab_droits['eleve_eval_demande_ajout']                                        = array( 'public'=>0 , 'eleve'=>1 , 'professeur'=>0 , 'directeur'=>0 , 'administrateur'=>0 , 'webmestre'=>0 );
 // Profil professeur

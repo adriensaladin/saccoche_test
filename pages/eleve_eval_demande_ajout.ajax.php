@@ -51,9 +51,14 @@ else
 	if($nb_demandes_possibles>0)
 	{
 		// Vérifier que cet item n'est pas déjà en attente d'évaluation pour cet élève
-		if( DB_STRUCTURE_tester_demande($eleve_id,$matiere_id,$item_id) )
+		if( DB_STRUCTURE_tester_demande_existante($eleve_id,$matiere_id,$item_id) )
 		{
 			$reponse = 'Cette demande est déjà enregistrée !';
+		}
+		// Vérifier que cet item n'est pas interdit à la sollitation
+		elseif( DB_STRUCTURE_tester_demande_interdite($item_id) )
+		{
+			$reponse = 'La demande de cet item est interdite !';
 		}
 		else
 		{

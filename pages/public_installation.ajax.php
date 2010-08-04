@@ -423,7 +423,7 @@ elseif( $step==7 )
 			$user_id = DB_STRUCTURE_ajouter_utilisateur($num_sconet=0,$reference='','administrateur',WEBMESTRE_NOM,WEBMESTRE_PRENOM,$login='admin',$password,$classe_id=0,$id_ent='',$id_gepi='');
 			// Créer un dossier accueillir pour les vignettes verticales avec l'identité des élèves
 			Creer_Dossier('./__tmp/badge/'.'0');
-			file_put_contents('./__tmp/badge/'.'0'.'/index.htm','Circulez, il n\'y a rien à voir par ici !');
+			Ecrire_Fichier('./__tmp/badge/'.'0'.'/index.htm','Circulez, il n\'y a rien à voir par ici !');
 			// Affichage du retour
 			$affichage .= '<p><label class="valide">Les tables de la base de données ont été installées.</label></p>'."\r\n";
 			$affichage .= '<span class="astuce">Le premier compte administrateur a été créé avec votre identité :</span>'."\r\n";

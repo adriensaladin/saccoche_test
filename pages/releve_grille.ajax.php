@@ -57,7 +57,7 @@ if( $matiere_id && $niveau_id && $matiere_nom && $niveau_nom && $remplissage && 
 
 	$tab_domaine    = array();	// [domaine_id] => array(domaine_ref,domaine_nom,domaine_nb_lignes);
 	$tab_theme      = array();	// [domaine_id][theme_id] => array(theme_ref,theme_nom,theme_nb_lignes);
-	$tab_item       = array();	// [theme_id][item_id] => array(item_ref,item_nom,item_coef,item_socle,item_lien);
+	$tab_item       = array();	// [theme_id][item_id] => array(item_ref,item_nom,item_coef,item_cart,item_socle,item_lien);
 	$tab_liste_item = array();	// [i] => item_id
 	$tab_eleve      = array();	// [i] => array(eleve_id,eleve_nom,eleve_prenom)
 	$tab_eval       = array();	// [eleve_id][item_id] => array(note,date,info)
@@ -90,7 +90,7 @@ if( $matiere_id && $niveau_id && $matiere_nom && $niveau_nom && $remplissage && 
 			{
 				$item_id = $DB_ROW['item_id'];
 				$item_ref = $DB_ROW['niveau_ref'].'.'.$DB_ROW['domaine_ref'].$DB_ROW['theme_ordre'].$DB_ROW['item_ordre'];
-				$tab_item[$theme_id][$item_id] = array('item_ref'=>$item_ref,'item_nom'=>$DB_ROW['item_nom'],'item_coef'=>$DB_ROW['item_coef'],'item_socle'=>$DB_ROW['entree_id'],'item_lien'=>$DB_ROW['item_lien']);
+				$tab_item[$theme_id][$item_id] = array('item_ref'=>$item_ref,'item_nom'=>$DB_ROW['item_nom'],'item_coef'=>$DB_ROW['item_coef'],'item_cart'=>$DB_ROW['item_cart'],'item_socle'=>$DB_ROW['entree_id'],'item_lien'=>$DB_ROW['item_lien']);
 				$tab_theme[$domaine_id][$theme_id]['theme_nb_lignes']++;
 				if($first_theme_of_domaine)
 				{
@@ -162,7 +162,7 @@ if( $matiere_id && $niveau_id && $matiere_nom && $niveau_nom && $remplissage && 
 	// Les variables $releve_html et $releve_pdf vont contenir les sorties
 	$only_socle = ($only_socle) ? ' - Socle uniquement' : '' ;
 	$releve_html  = '<style type="text/css">'.$_SESSION['CSS'].'</style>';
-	$releve_html .= '<h1>Livret de connaissances et de compétences</h1>';
+	$releve_html .= '<h1>Grille de compétences</h1>';
 	$releve_html .= '<h2>'.html($matiere_nom.' - Niveau '.$niveau_nom.$only_socle).'</h2>';
 	// Appel de la classe et définition de qqs variables supplémentaires pour la mise en page PDF
 	require('./_fpdf/fpdf.php');
@@ -199,7 +199,7 @@ if( $matiere_id && $niveau_id && $matiere_nom && $niveau_nom && $remplissage && 
 						{
 							foreach($tab_item[$theme_id] as $item_id => $tab)
 							{
-								extract($tab);	// $item_ref $item_nom $item_coef $item_socle $item_lien
+								extract($tab);	// $item_ref $item_nom $item_coef $item_cart $item_socle $item_lien
 								if($aff_coef)
 								{
 									$texte_coef = '['.$item_coef.'] ';
@@ -252,7 +252,7 @@ if( $matiere_id && $niveau_id && $matiere_nom && $niveau_nom && $remplissage && 
 	$dossier      = './__tmp/export/';
 	$fichier_lien = 'grille_niveau_etabl'.$_SESSION['BASE'].'_user'.$_SESSION['USER_ID'].'_'.time();
 	// On enregistre les sorties HTML et PDF
-	file_put_contents($dossier.$fichier_lien.'.html',$releve_html);
+	Ecrire_Fichier($dossier.$fichier_lien.'.html',$releve_html);
 	$releve_pdf->Output($dossier.$fichier_lien.'.pdf','F');
 	// Affichage du résultat
 	if($_SESSION['USER_PROFIL']=='eleve')

@@ -27,6 +27,7 @@
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = "Gérer les élèves";
+$VERSION_JS_FILE += 1;
 ?>
 
 <?php
@@ -89,7 +90,7 @@ $select_f_groupes = afficher_select(DB_STRUCTURE_OPT_regroupements_etabl() , $se
 					echo	'<td class="i">champ crypté</td>';
 					echo	'<td class="nu">';
 					echo		'<q class="modifier" title="Modifier cet élève."></q>';
-					echo		'<q class="desactiver" title="Enlever cet élève."></q>';
+					echo		'<q class="supprimer" title="Enlever cet élève."></q>';
 					echo	'</td>';
 					echo'</tr>';
 				}

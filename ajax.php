@@ -127,7 +127,7 @@ if(is_file($fichier_constantes))
 				{
 					$fichier_contenu = file_get_contents($CHEMIN_MYSQL.'/'.$fichier);
 					$fichier_contenu = str_replace($bad,$bon,$fichier_contenu);
-					file_put_contents($CHEMIN_MYSQL.'/'.$fichier,$fichier_contenu);
+					Ecrire_Fichier($CHEMIN_MYSQL.'/'.$fichier,$fichier_contenu);
 				}
 			}
 			define('SACOCHE_'.$PATCH.'_BD_PORT','3306');	// Port de connexion

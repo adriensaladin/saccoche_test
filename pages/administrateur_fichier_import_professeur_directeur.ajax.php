@@ -189,7 +189,7 @@ elseif( $step==2 )
 	array_multisort($tab_professeurs_directeurs['nom'],SORT_ASC,SORT_STRING,$tab_professeurs_directeurs['prenom'],SORT_ASC,SORT_STRING,$tab_professeurs_directeurs['num_sconet'],$tab_professeurs_directeurs['reference'],$tab_professeurs_directeurs['profil']);
 	// On enregistre
 	$tab_professeurs_directeurs_fichier = array('num_sconet'=>$tab_professeurs_directeurs['num_sconet'],'reference'=>$tab_professeurs_directeurs['reference'],'nom'=>$tab_professeurs_directeurs['nom'],'prenom'=>$tab_professeurs_directeurs['prenom'],'profil'=>$tab_professeurs_directeurs['profil']);
-	file_put_contents($dossier_import.'import_'.$_SESSION['BASE'].'_professeurs_directeurs.txt',serialize($tab_professeurs_directeurs_fichier));
+	Ecrire_Fichier($dossier_import.'import_'.$_SESSION['BASE'].'_professeurs_directeurs.txt',serialize($tab_professeurs_directeurs_fichier));
 	echo'<div id="ok">';
 	echo' <p><label class="valide">Les données ont été correctement extraites.</label></p>';
 	echo' <p><span class="tab"><a href="#" class="step3">Passer à l\'étape 3.</a><label id="ajax_msg">&nbsp;</label></span></p>';
@@ -343,7 +343,7 @@ elseif( $step==3 )
 	}
 	// On enregistre
 	$tab_traitement = array('modif'=>$tab_professeurs_directeurs_modif,'ajout'=>$tab_professeurs_directeurs_ajout);
-	file_put_contents($dossier_import.'import_'.$_SESSION['BASE'].'_traitement_professeur_directeur.txt',serialize($tab_traitement));
+	Ecrire_Fichier($dossier_import.'import_'.$_SESSION['BASE'].'_traitement_professeur_directeur.txt',serialize($tab_traitement));
 	// On affiche
 	echo'<div id="ok">';
 	echo	'<p><label class="valide">Veuillez vérifier le résultat de l\'analyse des professeurs et des directeurs puis valider.</label></p>';

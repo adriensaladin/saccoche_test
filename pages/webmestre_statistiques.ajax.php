@@ -51,7 +51,7 @@ if( $nb_bases )
 	{
 		$fichier_texte .= '<'.$DB_ROW['sacoche_base'].'>-<'.$DB_ROW['structure_denomination'].'>-<'.$DB_ROW['structure_contact_nom'].' '.$DB_ROW['structure_contact_prenom'].'>-<'.$DB_ROW['structure_inscription_date'].'>'."\r\n";
 	}
-	file_put_contents($dossier.$fichier_info,$fichier_texte);
+	Ecrire_Fichier($dossier.$fichier_info,$fichier_texte);
 	$max = $nb_bases + 1 ; // La dernière étape consiste uniquement à effacer le fichier
 	exit('ok-'.$max);
 }

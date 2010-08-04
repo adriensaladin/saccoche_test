@@ -49,15 +49,16 @@ h1{display:block;font-size:120%;text-align:left;font-weight:bold;font-variant:sm
 h2{display:block;font-size:110%;text-align:left;font-weight:bold;font-variant:small-caps;color:#33A;letter-spacing:0.15em;margin:1ex auto 1ex 1em;}
 h1.logo{vertical-align:middle;text-align:center}
 h1.logo a{margin:auto 1em}
-#titre_aide{background:transparent url(../_img/puce_manuel_ouvert.png) no-repeat left;padding-left:24px;margin:1ex 2em;text-align:left}
 /* h3 réservé pour l'infobulle */
 h4{display:block;font-size:100%;text-align:left;font-weight:bold;font-variant:small-caps;color:#227;letter-spacing:0.05em;margin:1ex auto 1ex 1em;}
 a.anti_h2{background:transparent url(../_img/actualiser_small.png) no-repeat left;padding-left:15px;margin-left:1em;font-size:80%;font-weight:normal;font-variant:normal;letter-spacing:0;}
 a {color:#139;text-decoration:none}a:hover{color:#D41;text-decoration:underline}
 hr {display:block;height:1px;margin:1em 0;border-top:1px dotted #66F;}
-span.astuce,div.astuce,p.astuce {background:transparent url(../_img/puce_astuce.png) no-repeat top left;padding-left:19px}
-span.danger,div.danger,p.danger {background:transparent url(../_img/puce_danger.gif) no-repeat top left;padding-left:19px;color:#C00}
-span.manuel,div.manuel,p.manuel {background:transparent url(../_img/puce_manuel.png) no-repeat top left;padding-left:19px;color:#777}
+*.astuce {background:transparent url(../_img/puce_astuce.png) no-repeat top left;padding-left:19px}
+*.danger {background:transparent url(../_img/puce_danger.gif) no-repeat top left;padding-left:19px;color:#C00}
+*.manuel {background:transparent url(../_img/puce_manuel.png) no-repeat top left;padding-left:19px;color:#777}
+*.manuel:hover {background:transparent url(../_img/puce_manuel_ouvert.png) no-repeat top left;}
+#titre_aide{background:transparent url(../_img/puce_manuel_ouvert.png) no-repeat left;padding-left:24px;margin:1ex 2em;text-align:left}
 #aide_en_ligne {margin:1ex 1em}
 em {display:inline;font-style:normal;font-weight:bold;font-variant:small-caps} /* "SACoche" et divers noms propres */
 del{text-decoration:line-through;color:#666}
@@ -105,8 +106,8 @@ body q.date_calendrier {background-position: -120px 0}
 body q.date_periode    {background-position: -140px 0}
 body q.deconnecter     {background-position: -160px 0}
 body q.demander_add    {background-position: -180px 0} 
-body q.demander_del    {background-position: -200px 0} 
-body q.desactiver      {background-position: -220px 0}
+body q.demander_non    {background-position: -200px 0}
+/* body q.desactiver      {background-position: -220px 0} */
 body q.detailler       {background-position: -240px 0}
 body q.dupliquer       {background-position: -260px 0}
 body q.imprimer        {background-position: -280px 0}
@@ -306,7 +307,7 @@ table#statistiques td {text-align:center}
 /* Marqueur invisible pour le tri d'un tableau                                                         */
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-table.form i, table.bilan i, table.bilan_synthese i, table#resultat i {display:none}
+table i {display:none}
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 /* Style pour les infobulles                                                                           */

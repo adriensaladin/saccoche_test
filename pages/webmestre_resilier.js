@@ -101,7 +101,7 @@ $(document).ready
 		function retour_form_valide(responseHTML)
 		{
 			maj_clock(1);
-			if((responseHTML=='ok'))
+			if(responseHTML=='ok')
 			{
 				$('#ajax_msg').removeAttr("class").addClass("valide").html("Inscription supprimée !");
 				alert("Toutes les données ont été effacées !\nDéconnexion du compte webmestre...");

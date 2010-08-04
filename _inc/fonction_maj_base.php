@@ -317,8 +317,8 @@ function maj_base($version_actuelle)
 		// script pour migrer vers la version suivante : ajout d'un champ qui va finalement servir pour valider les piliers
 		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_jointure_user_pilier ADD validation_pilier_etat TINYINT(1) NOT NULL COMMENT "1 si validation positive ; 0 si validation négative." AFTER pilier_id' );
 		// script pour migrer vers la version suivante : ajout de 2 entrées pour gérer les droits de validation
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ("profil_validation_entree" , "directeur,professeur")' );
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ("profil_validation_pilier" , "directeur,profprincipal")' );
+		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ("profil_validation_entree" , "directeur,professeur")' );
+		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ("profil_validation_pilier" , "directeur,profprincipal")' );
 		// y compris la mise à jour du champ "version_base" justement
 		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_actuelle.'" WHERE parametre_nom="version_base" LIMIT 1' );
 	}
@@ -341,6 +341,14 @@ function maj_base($version_actuelle)
 		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'DELETE FROM sacoche_socle_palier WHERE palier_id=4 LIMIT 1' );
 		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur=REPLACE(parametre_valeur,",4","") WHERE parametre_nom="paliers" LIMIT 1' );
 		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur=REPLACE(parametre_valeur,"4","3") WHERE parametre_nom="paliers" LIMIT 1' );
+		// y compris la mise à jour du champ "version_base" justement
+		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_actuelle.'" WHERE parametre_nom="version_base" LIMIT 1' );
+	}
+	if($version_actuelle=='2010-08-01')
+	{
+		$version_actuelle = '2010-08-04';
+		// script pour migrer vers la version suivante : ajout d'un champ pour pouvoir décider si un item est disponible ou non à la réévaluation
+		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_referentiel_item ADD item_cart TINYINT(1) NOT NULL DEFAULT "1" COMMENT "0 pour empêcher les élèves de demander une évaluation sur cet item." AFTER item_coef' );
 		// y compris la mise à jour du champ "version_base" justement
 		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_actuelle.'" WHERE parametre_nom="version_base" LIMIT 1' );
 	}

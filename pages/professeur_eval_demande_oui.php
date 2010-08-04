@@ -47,8 +47,12 @@ $select_groupe  = afficher_select(DB_STRUCTURE_OPT_groupes_professeur($_SESSION[
 	<span class="tab"></span><input type="hidden" name="f_action" value="Afficher_demandes" /><button id="actualiser" type="submit"><img alt="" src="./_img/bouton/actualiser.png" /> Actualiser l'affichage.</button><label id="ajax_msg0">&nbsp;</label>
 </fieldset></form>
 
-<form action="" id="form1">
+<form action="" id="form1" class="hide">
 	<hr />
+	<table class="bilan_synthese" style="float:right;margin-left:1em;margin-right:1ex">
+		<thead><tr><th>élève(s) sans demande</th></tr></thead>
+		<tbody><tr id="tr_sans"><td class="nu"></td></tr></tbody>
+	</table>
 	<table class="form">
 		<thead>
 			<tr>
@@ -64,6 +68,7 @@ $select_groupe  = afficher_select(DB_STRUCTURE_OPT_groupes_professeur($_SESSION[
 			</tr>
 		</thead>
 		<tbody>
+			<tr><td class="nu" colspan="9"></td></tr>
 		</tbody>
 	</table>
 	<div id="zone_actions" class="hide">

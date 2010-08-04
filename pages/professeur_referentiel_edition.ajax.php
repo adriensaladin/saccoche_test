@@ -38,6 +38,7 @@ $ordre       = (isset($_POST['ordre']))    ? clean_entier($_POST['ordre'])    : 
 $ref         = (isset($_POST['ref']))      ? clean_texte($_POST['ref'])       : '';
 $nom         = (isset($_POST['nom']))      ? clean_texte($_POST['nom'])       : '';
 $coef        = (isset($_POST['coef']))     ? clean_entier($_POST['coef'])     : -1;
+$cart        = (isset($_POST['cart']))     ? clean_entier($_POST['cart'])     : -1;
 $lien        = (isset($_POST['lien']))     ? clean_texte($_POST['lien'])      : '';
 $socle_id    = (isset($_POST['socle']))    ? clean_entier($_POST['socle'])    : -1;
 
@@ -80,13 +81,15 @@ if( ($action=='Voir') && $matiere_id )
 		{
 			$item_id     = $DB_ROW['item_id'];
 			$coef_texte  = '<img src="./_img/x'.$DB_ROW['item_coef'].'.gif" alt="" title="Coefficient '.$DB_ROW['item_coef'].'." />';
+			$cart_title  = ($DB_ROW['item_cart']) ? 'Demande possible.' : 'Demande interdite.' ;
+			$cart_texte  = '<img src="./_img/cart'.$DB_ROW['item_cart'].'.png" title="'.$cart_title.'" /> ';
 			$socle_image = ($DB_ROW['entree_id']==0) ? 'off' : 'on' ;
 			$socle_nom   = ($DB_ROW['entree_id']==0) ? 'Hors-socle.' : html($DB_ROW['entree_nom']) ;
 			$socle_texte = '<img src="./_img/socle_'.$socle_image.'.png" alt="" title="'.$socle_nom.'" lang="id_'.$DB_ROW['entree_id'].'" />';
 			$lien_image  = ($DB_ROW['item_lien']=='') ? 'off' : 'on' ;
 			$lien_nom    = ($DB_ROW['item_lien']=='') ? 'Absence de ressource.' : html($DB_ROW['item_lien']) ;
 			$lien_texte  = '<img src="./_img/link_'.$lien_image.'.png" alt="" title="'.$lien_nom.'" />';
-			$tab_item[$niveau_id][$domaine_id][$theme_id][$item_id] = $coef_texte.$socle_texte.$lien_texte.html($DB_ROW['item_nom']);
+			$tab_item[$niveau_id][$domaine_id][$theme_id][$item_id] = $coef_texte.$cart_texte.$socle_texte.$lien_texte.html($DB_ROW['item_nom']);
 		}
 	}
 	// Attention : envoyer des balises vides sous la forme <q ... /> plante jquery 1.4 (ça marchait avec la 1.3.2).
@@ -105,7 +108,7 @@ if( ($action=='Voir') && $matiere_id )
 	$images_theme .= '<q class="n2_del" lang="del" title="Supprimer ce thème ainsi que tout son contenu (et renuméroter)."></q>';
 	$images_theme .= '<q class="n3_add" lang="add" title="Ajouter un item au début de ce thème (et renuméroter)."></q>';
 	$images_item  = '';
-	$images_item .= '<q class="n3_edit" lang="edit" title="Renommer, coefficienter, lier cet item."></q>';
+	$images_item .= '<q class="n3_edit" lang="edit" title="Renommer, coefficienter, autoriser, lier cet item."></q>';
 	$images_item .= '<q class="n3_add" lang="add" title="Ajouter un item à la suite (et renuméroter)."></q>';
 	$images_item .= '<q class="n3_move" lang="move" title="Déplacer cet item (et renuméroter)."></q>';
 	$images_item .= '<q class="n3_fus" lang="fus" title="Fusionner avec un autre item (et renuméroter)."></q>';
@@ -154,7 +157,7 @@ if( ($action=='Voir') && $matiere_id )
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 // Ajouter un domaine / un thème / un item
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-elseif( ($action=='add') && (in_array($contexte,array('n1','n2','n3'))) && $matiere_id && $parent_id && ($ref || ($contexte!='n1')) && $nom && ($ordre!=-1) && ($socle_id!=-1) && ($coef!=-1) )
+elseif( ($action=='add') && (in_array($contexte,array('n1','n2','n3'))) && $matiere_id && $parent_id && ($ref || ($contexte!='n1')) && $nom && ($ordre!=-1) && ($socle_id!=-1) && ($coef!=-1) && ($cart!=-1) )
 {
 	// exécution !
 	if($contexte=='n1')	// domaine
@@ -171,9 +174,9 @@ elseif( ($action=='add') && (in_array($contexte,array('n1','n2','n3'))) && $mati
 	}
 	elseif($contexte=='n3')	// item
 	{
-		$DB_SQL = 'INSERT INTO sacoche_referentiel_item(theme_id,entree_id,item_ordre,item_nom,item_coef,item_lien) ';
-		$DB_SQL.= 'VALUES(:theme,:socle,:ordre,:nom,:coef,:lien)';
-		$DB_VAR = array(':theme'=>$parent_id,':socle'=>$socle_id,':ordre'=>$ordre,':nom'=>$nom,':coef'=>$coef,':lien'=>$lien);
+		$DB_SQL = 'INSERT INTO sacoche_referentiel_item(theme_id,entree_id,item_ordre,item_nom,item_coef,item_cart,item_lien) ';
+		$DB_SQL.= 'VALUES(:theme,:socle,:ordre,:nom,:coef,:cart,:lien)';
+		$DB_VAR = array(':theme'=>$parent_id,':socle'=>$socle_id,':ordre'=>$ordre,':nom'=>$nom,':coef'=>$coef,':cart'=>$cart,':lien'=>$lien);
 	}
 	DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 	$element_id = DB::getLastOid(SACOCHE_STRUCTURE_BD_NAME);
@@ -207,7 +210,7 @@ elseif( ($action=='add') && (in_array($contexte,array('n1','n2','n3'))) && $mati
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 // Renommer un domaine / un thème / un item
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-elseif( ($action=='edit') && (in_array($contexte,array('n1','n2','n3'))) && $element_id && ($ref || ($contexte!='n1')) && $nom && ($socle_id!=-1) && ($coef!=-1) )
+elseif( ($action=='edit') && (in_array($contexte,array('n1','n2','n3'))) && $element_id && ($ref || ($contexte!='n1')) && $nom && ($socle_id!=-1) && ($coef!=-1) && ($cart!=-1) )
 {
 	// exécution !
 	if($contexte=='n1')	// domaine
@@ -229,10 +232,10 @@ elseif( ($action=='edit') && (in_array($contexte,array('n1','n2','n3'))) && $ele
 	elseif($contexte=='n3')	// item
 	{
 		$DB_SQL = 'UPDATE sacoche_referentiel_item ';
-		$DB_SQL.= 'SET entree_id=:socle, item_nom=:nom, item_coef=:coef, item_lien=:lien ';
+		$DB_SQL.= 'SET entree_id=:socle, item_nom=:nom, item_coef=:coef, item_cart=:cart, item_lien=:lien ';
 		$DB_SQL.= 'WHERE item_id=:element_id ';
 		$DB_SQL.= 'LIMIT 1';
-		$DB_VAR = array(':element_id'=>$element_id,':socle'=>$socle_id,':nom'=>$nom,':coef'=>$coef,':lien'=>$lien);
+		$DB_VAR = array(':element_id'=>$element_id,':socle'=>$socle_id,':nom'=>$nom,':coef'=>$coef,':cart'=>$cart,':lien'=>$lien);
 	}
 	DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 	$test_modif = DB::rowCount(SACOCHE_STRUCTURE_BD_NAME);

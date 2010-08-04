@@ -26,7 +26,7 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-$TITRE = "Demandes d'évaluations";
+$TITRE = "Demandes d'évaluations formulées";
 ?>
 
 <?php

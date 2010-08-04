@@ -27,6 +27,7 @@
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = "Gérer les directeurs";
+$VERSION_JS_FILE += 1;
 ?>
 
 <p class="hc">
@@ -66,7 +67,7 @@ $TITRE = "Gérer les directeurs";
 				echo	'<td class="i">champ crypté</td>';
 				echo	'<td class="nu">';
 				echo		'<q class="modifier" title="Modifier ce directeur."></q>';
-				echo		'<q class="desactiver" title="Enlever ce directeur."></q>';
+				echo		'<q class="supprimer" title="Enlever ce directeur."></q>';
 				echo	'</td>';
 				echo'</tr>';
 			}

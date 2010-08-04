@@ -51,7 +51,7 @@ if( $palier_id && $palier_nom )
 	$tab_liste_entree = array();	// [i] => entree_id
 	$tab_eleve        = array();	// [i] => array(eleve_id,eleve_nom,eleve_prenom)
 	$tab_eval         = array();	// [eleve_id][socle_id][item_id][]['note'] => note
-	$tab_item         = array();	// [item_id] => array(item_ref,item_nom,calcul_methode,calcul_limite);
+	$tab_item         = array();	// [item_id] => array(item_ref,item_nom,item_cart,matiere_id,calcul_methode,calcul_limite);
 	$tab_user_entree  = array();	// [eleve_id][entree_id] => array(etat,date,info);
 	$tab_user_pilier  = array();	// [eleve_id][pilier_id] => array(etat,date,info);
 
@@ -117,7 +117,7 @@ if( $palier_id && $palier_nom )
 		foreach($DB_TAB as $DB_ROW)
 		{
 			$tab_eval[$DB_ROW['eleve_id']][$DB_ROW['socle_id']][$DB_ROW['item_id']][]['note'] = $DB_ROW['note'];
-			$tab_item[$DB_ROW['item_id']] = array('item_ref'=>$DB_ROW['item_ref'],'item_nom'=>$DB_ROW['item_nom'],'matiere_id'=>$DB_ROW['matiere_id'],'calcul_methode'=>$DB_ROW['calcul_methode'],'calcul_limite'=>$DB_ROW['calcul_limite']);
+			$tab_item[$DB_ROW['item_id']] = array('item_ref'=>$DB_ROW['item_ref'],'item_nom'=>$DB_ROW['item_nom'],'item_cart'=>$DB_ROW['item_cart'],'matiere_id'=>$DB_ROW['matiere_id'],'calcul_methode'=>$DB_ROW['calcul_methode'],'calcul_limite'=>$DB_ROW['calcul_limite']);
 		}
 	}
 
@@ -197,7 +197,7 @@ if( $palier_id && $palier_nom )
 								{
 									foreach($tab_eval[$eleve_id][$socle_id] as $item_id => $tab_devoirs)
 									{
-										extract($tab_item[$item_id]);	// $item_ref $item_nom $matiere_id $calcul_methode $calcul_limite
+										extract($tab_item[$item_id]);	// $item_ref $item_nom $item_cart $matiere_id $calcul_methode $calcul_limite
 										// calcul du bilan de l'item
 										$score = calculer_score($tab_devoirs,$calcul_methode,$calcul_limite);
 										if($score!==false)
@@ -205,7 +205,7 @@ if( $palier_id && $palier_nom )
 											// on détermine si elle est acquise ou pas
 											$indice = test_A($score) ? 'A' : ( test_NA($score) ? 'NA' : 'VA' ) ;
 											// on enregistre les infos
-											$texte_demande_eval = ( ($_SESSION['USER_PROFIL']=='eleve') && ($_SESSION['ELEVE_DEMANDES']>0) ) ? '<q class="demander_add" lang="ids_'.$eleve_id.'_'.$matiere_id.'_'.$item_id.'_'.$score.'" title="Ajouter aux demandes d\'évaluations."></q>' : '' ;
+											$texte_demande_eval = ( ($_SESSION['USER_PROFIL']!='eleve') || ($_SESSION['ELEVE_DEMANDES']==0) ) ? '' : ( ($item_cart) ? '<q class="demander_add" lang="ids_'.$eleve_id.'_'.$matiere_id.'_'.$item_id.'_'.$score.'" title="Ajouter aux demandes d\'évaluations."></q>' : '<q class="demander_non" title="Demande interdite."></q>' ) ;
 											$tab_infos_socle_eleve[$socle_id][$eleve_id][] = '<span class="'.$tab_etat[$indice].'">'.html($item_ref.' || '.$item_nom.' ['.$score.'%]').'</span>'.$texte_demande_eval;
 											$tab_score_socle_eleve[$socle_id][$eleve_id][$indice]++;
 											$tab_score_socle_eleve[$socle_id][$eleve_id]['nb']++;
@@ -332,7 +332,7 @@ if( $palier_id && $palier_nom )
 	$dossier      = './__tmp/export/';
 	$fichier_lien = 'grille_niveau_etabl'.$_SESSION['BASE'].'_user'.$_SESSION['USER_ID'].'_'.time();
 	// On enregistre les sorties HTML et PDF
-	file_put_contents($dossier.$fichier_lien.'.html',$releve_html);
+	Ecrire_Fichier($dossier.$fichier_lien.'.html',$releve_html);
 	$releve_pdf->Output($dossier.$fichier_lien.'.pdf','F');
 	// Affichage du résultat
 	if($_SESSION['USER_PROFIL']=='eleve')

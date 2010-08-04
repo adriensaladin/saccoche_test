@@ -62,7 +62,7 @@ if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');
 				echo	'<td>'.html($DB_ROW['item_ref']).' <img alt="" src="./_img/bulle_aide.png" title="'.html($DB_ROW['item_nom']).'" /></td>';
 				echo	affich_score_html($score,'score',$pourcent='');
 				echo	'<td>'.$statut.'</td>';
-				echo	'<td class="nu"><q class="demander_del" title="Supprimer cette demande d\'évaluation."></q></td>';
+				echo	'<td class="nu"><q class="supprimer" title="Supprimer cette demande d\'évaluation."></q></td>';
 				echo'</tr>';
 			}
 			?>

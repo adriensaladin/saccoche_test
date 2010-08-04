@@ -84,9 +84,11 @@ if( ($action=='Afficher_demandes') && $matiere_id && $matiere_nom && $groupe_id 
 		exit($DB_TAB);	// Erreur : aucun élève de ce regroupement n\'est enregistré !
 	}
 	$tab_eleves = array();
+	$tab_autres = array();
 	foreach($DB_TAB as $DB_ROW)
 	{
 		$tab_eleves[$DB_ROW['valeur']] = $DB_ROW['texte'];
+		$tab_autres[$DB_ROW['valeur']] = $DB_ROW['texte'];
 	}
 	$listing_user_id = implode(',', array_keys($tab_eleves) );
 	// Lister les demandes
@@ -98,6 +100,7 @@ if( ($action=='Afficher_demandes') && $matiere_id && $matiere_nom && $groupe_id 
 	}
 	foreach($DB_TAB as $DB_ROW)
 	{
+		unset($tab_autres[$DB_ROW['user_id']]);
 		$tab_demandes[] = $DB_ROW['demande_id'] ;
 		$score  = ($DB_ROW['demande_score']!==null) ? $DB_ROW['demande_score'] : false ;
 		$statut = ($DB_ROW['demande_statut']=='eleve') ? 'demande non traitée' : 'évaluation en préparation' ;
@@ -127,7 +130,8 @@ if( ($action=='Afficher_demandes') && $matiere_id && $matiere_nom && $groupe_id 
 		$tab_bad[] = '$'.$DB_ROW['item_id'].'$';
 		$tab_bon[] = '<i>'.sprintf("%02u",$DB_ROW['popularite']).'</i>'.$DB_ROW['popularite'].' demande'.$s;
 	}
-	echo str_replace($tab_bad,$tab_bon,$retour);
+	// Inclure dans le retour la liste des élèves sans demandes
+	echo '<td>'.implode('<br />',$tab_autres).'</td>'.'◄■►'.str_replace($tab_bad,$tab_bon,$retour);
 }
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-

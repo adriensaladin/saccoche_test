@@ -277,7 +277,7 @@ $(document).ready
 		{
 			maj_clock(1);
 			$("#bouton_valider").removeAttr('disabled');
-			if((responseHTML=='ok'))
+			if(responseHTML=='ok')
 			{
 				$('#ajax_msg').removeAttr("class").addClass("valide").html("Données enregistrées !");
 			}

@@ -27,6 +27,7 @@
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = "Gérer les professeurs";
+$VERSION_JS_FILE += 1;
 ?>
 
 <p class="hc">
@@ -66,7 +67,7 @@ $TITRE = "Gérer les professeurs";
 				echo	'<td class="i">champ crypté</td>';
 				echo	'<td class="nu">';
 				echo		'<q class="modifier" title="Modifier ce professeur."></q>';
-				echo		'<q class="desactiver" title="Enlever ce professeur."></q>';
+				echo		'<q class="supprimer" title="Enlever ce professeur."></q>';
 				echo	'</td>';
 				echo'</tr>';
 			}

@@ -214,9 +214,9 @@ elseif( $step==2 )
 	array_multisort($tab_classes['niveau'],SORT_DESC,SORT_STRING,$tab_classes['ref']);
 	// On enregistre
 	$tab_eleves_fichier = array('num_sconet'=>$tab_eleves['num_sconet'],'reference'=>$tab_eleves['reference'],'nom'=>$tab_eleves['nom'],'prenom'=>$tab_eleves['prenom'],'classe'=>$tab_eleves['classe']);
-	file_put_contents($dossier_import.'import_'.$_SESSION['BASE'].'_eleves.txt',serialize($tab_eleves_fichier));
+	Ecrire_Fichier($dossier_import.'import_'.$_SESSION['BASE'].'_eleves.txt',serialize($tab_eleves_fichier));
 	$tab_classes_fichier = array('ref'=>$tab_classes['ref'],'niveau'=>$tab_classes['niveau']);
-	file_put_contents($dossier_import.'import_'.$_SESSION['BASE'].'_classes.txt',serialize($tab_classes_fichier));
+	Ecrire_Fichier($dossier_import.'import_'.$_SESSION['BASE'].'_classes.txt',serialize($tab_classes_fichier));
 	echo'<div id="ok">';
 	echo' <p><label class="valide">Les données ont été correctement extraites.</label></p>';
 	echo' <p><span class="tab"><a href="#" class="step3">Passer à l\'étape 3.</a><label id="ajax_msg">&nbsp;</label></span></p>';
@@ -580,7 +580,7 @@ elseif( $step==5 )
 	}
 	// On enregistre
 	$tab_traitement = array('modif'=>$tab_eleves_modif,'ajout'=>$tab_eleves_ajout);
-	file_put_contents($dossier_import.'import_'.$_SESSION['BASE'].'_traitement_eleve.txt',serialize($tab_traitement));
+	Ecrire_Fichier($dossier_import.'import_'.$_SESSION['BASE'].'_traitement_eleve.txt',serialize($tab_traitement));
 	// On affiche
 	echo'<div id="ok">';
 	echo	'<p><label class="valide">Veuillez vérifier le résultat de l\'analyse des élèves puis valider.</label></p>';

@@ -129,7 +129,7 @@ if($action=='sauvegarder')
 			}
 			// Enregistrer le fichier
 			$fichier_sql_nom = 'dump_'.$tab_table_info['Nom'].'_'.$i.'.sql';
-			file_put_contents($dossier_temp.$fichier_sql_nom,$fichier_contenu);
+			Ecrire_Fichier($dossier_temp.$fichier_sql_nom,$fichier_contenu);
 		}
 	}
 	// Débloquer l'application

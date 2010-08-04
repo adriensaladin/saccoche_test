@@ -65,7 +65,7 @@ if( $orientation && $marge_min && $couleur && $cases_nb && $cases_largeur && $ca
 	// $tab_date = explode('/',$date_fin);
 	$date_mysql_fin = false;
 
-	$tab_item = array();	// [item_id] => array(item_ref,item_nom,item_coef,item_socle,item_lien,calcul_methode,calcul_limite);
+	$tab_item = array();	// [item_id] => array(item_ref,item_nom,item_coef,item_cart,item_socle,item_lien,calcul_methode,calcul_limite);
 	$tab_liste_item = array();	// [i] => item_id
 	$tab_eleve      = array();	// [i] => array(eleve_id,eleve_nom,eleve_prenom)
 	$tab_matiere    = array();	// [matiere_id] => matiere_nom

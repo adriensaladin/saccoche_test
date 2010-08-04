@@ -32,10 +32,10 @@ $(document).ready
 
 		// tri du tableau (avec jquery.tablesorter.js).
 		var sorting = [[8,0],[3,1],[2,0]];
-		$('table.form').tablesorter({ headers:{0:{sorter:false}} });
+		$('table.form').tablesorter({ headers:{0:{sorter:false},4:{sorter:false}} });
 		function trier_tableau()
 		{
-			if($('table.form tbody tr').length)
+			if($('table.form tbody tr td').length>1)
 			{
 				$('table.form').trigger('update');
 				$('table.form').trigger('sorton',[sorting]);
@@ -139,7 +139,8 @@ $(document).ready
 			function()
 			{
 				$('table.form tbody').html('');
-				$("#zone_actions").hide("slow");
+				$('#tr_sans').html('<td class="nu"></td>');
+				$("#zone_actions").hide(0);
 				$('#ajax_msg1').removeAttr("class").html("&nbsp;");
 				// Mémoriser le nom de la matière + le type de groupe + le nom du groupe
 				$('#f_matiere_nom').val(  $("#f_matiere option:selected").text() );
@@ -161,6 +162,7 @@ $(document).ready
 			if(readytogo)
 			{
 				$('#ajax_msg0').removeAttr("class").addClass("loader").html("Demande envoyée... Veuillez patienter.");
+				$('#form1').hide();
 			}
 			return readytogo;
 		}
@@ -175,18 +177,23 @@ $(document).ready
 		function retour_form_valide0(responseHTML)
 		{
 			maj_clock(1);
-			if( (responseHTML.substring(0,3)!='<tr') && (responseHTML!='') )
+			tab_response = responseHTML.split('◄■►');
+			if( tab_response.length!=2 )
 			{
 				$('#ajax_msg0').removeAttr("class").addClass("alerte").html(responseHTML);
 			}
 			else
 			{
+				response_td = tab_response[0];
+				response_tr = tab_response[1];
 				$('#ajax_msg0').removeAttr("class").addClass("valide").html("Demande réalisée !");
-				$('table.form tbody').html(responseHTML);
+				$('table.form tbody').html(response_tr);
+				$('#tr_sans').html(response_td);
 				trier_tableau();
 				infobulle();
+				$('#form1').show();
 				$("#f_qui option[value=groupe]").text($("#f_groupe_nom").val());
-				$("#zone_actions").show("slow");
+				$("#zone_actions").show(0);
 			}
 		}
 
@@ -292,11 +299,11 @@ $(document).ready
 			{
 				quoi = $("#f_quoi option:selected").val();
 				if(quoi=='completer')                        {maj_evaluation();}
-				if( (quoi=='creer') || (quoi=='completer') ) {$("#step_qui").show("slow");}       else {$("#step_qui").hide("slow");}
-				if(quoi=='creer')                            {$("#step_creer").show("slow");}     else {$("#step_creer").hide("slow");}
-				if(quoi=='completer')                        {$("#step_completer").show("slow");} else {$("#step_completer").hide("slow");}
-				if( (quoi=='creer') || (quoi=='completer') ) {$("#step_suite").show("slow");}     else {$("#step_suite").hide("slow");}
-				if(quoi!='')                                 {$("#step_valider").show("slow");}
+				if( (quoi=='creer') || (quoi=='completer') ) {$("#step_qui").show(0);}       else {$("#step_qui").hide(0);}
+				if(quoi=='creer')                            {$("#step_creer").show(0);}     else {$("#step_creer").hide(0);}
+				if(quoi=='completer')                        {$("#step_completer").show(0);} else {$("#step_completer").hide(0);}
+				if( (quoi=='creer') || (quoi=='completer') ) {$("#step_suite").show(0);}     else {$("#step_suite").hide(0);}
+				if(quoi!='')                                 {$("#step_valider").show(0);}
 			}
 		);
 

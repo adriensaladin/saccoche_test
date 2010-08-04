@@ -114,7 +114,7 @@ if( ($action=='Afficher_evaluations') && $aff_classe_txt && $aff_classe_id && ( 
 		$date_fin_mysql   = $DB_ROW['jointure_date_fin'];
 	}
 	// Lister les évaluations
-	$DB_TAB = DB_STRUCTURE_lister_devoirs($_SESSION['USER_ID'],$aff_classe_id,$date_debut_mysql,$date_fin_mysql);
+	$DB_TAB = DB_STRUCTURE_lister_devoirs_prof($_SESSION['USER_ID'],$aff_classe_id,$date_debut_mysql,$date_fin_mysql);
 	foreach($DB_TAB as $DB_ROW)
 	{
 		// Formater la date et la référence de l'évaluation

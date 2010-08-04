@@ -214,7 +214,7 @@ class PDF extends FPDF
 		// Intitulé
 		$this->SetFont('Arial' , 'B' , 12);
 		$this->SetXY($this->marge_gauche,$this->marge_haut);
-		$this->Cell($this->page_largeur-$this->marge_droit-75 , 5 , pdf('Livret de connaissances et de compétences') , 0 , 2 , 'L' , false , '');
+		$this->Cell($this->page_largeur-$this->marge_droit-75 , 5 , pdf('Grille de compétences') , 0 , 2 , 'L' , false , '');
 		$this->Cell($this->page_largeur-$this->marge_droit-75 , 5 , pdf($matiere_nom.' - Niveau '.$niveau_nom) , 0 , 2 , 'L' , false , '');
 		// Nom prénom
 		$this->SetFont('Arial' , '' , 12);

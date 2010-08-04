@@ -125,7 +125,7 @@ $(document).ready
 		 * Désactiver un élève : mise en place du formulaire
 		 * @return void
 		 */
-		var desactiver = function()
+		var supprimer = function()
 		{
 			mode = $(this).attr('class');
 			afficher_masquer_images_action('hide');
@@ -151,7 +151,7 @@ $(document).ready
 					$(this).parent().parent().remove();
 					$("table.form tr").show(); // $(this).parent().parent().prev().show(); pose pb si tri du tableau entre temps
 					break;
-				case 'desactiver':
+				case 'supprimer':
 					$(this).parent().remove();
 					break;
 			}
@@ -182,7 +182,7 @@ $(document).ready
 
 		$('q.ajouter').click( ajouter );
 		$('q.modifier').live(   'click' , modifier );
-		$('q.desactiver').live( 'click' , desactiver );
+		$('q.supprimer').live( 'click' , supprimer );
 		$('q.annuler').live(    'click' , annuler );
 		$('q.valider').live(    'click' , function(){formulaire.submit();} );
 		$('table.form input , table.form select').live( 'keyup' , function(e){intercepter(e);} );
@@ -303,7 +303,7 @@ $(document).ready
 						$('q.valider').parent().parent().prev().addClass("new").html(responseHTML).show();
 						$('q.valider').parent().parent().remove();
 						break;
-					case 'desactiver':
+					case 'supprimer':
 						$('q.valider').parent().parent().parent().remove();
 						break;
 				}

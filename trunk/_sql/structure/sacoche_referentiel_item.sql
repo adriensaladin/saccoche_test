@@ -7,6 +7,7 @@ CREATE TABLE sacoche_referentiel_item (
 	item_ordre TINYINT(3) UNSIGNED NOT NULL COMMENT "Commence à 0.",
 	item_nom TINYTEXT COLLATE utf8_unicode_ci NOT NULL,
 	item_coef TINYINT(3) UNSIGNED NOT NULL DEFAULT 1,
+	item_cart TINYINT(1) NOT NULL DEFAULT 1 COMMENT "0 pour empêcher les élèves de demander une évaluation sur cet item.",
 	item_lien TINYTEXT COLLATE utf8_unicode_ci NOT NULL,
 	PRIMARY KEY (item_id),
 	KEY theme_id (theme_id),

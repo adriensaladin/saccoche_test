@@ -50,7 +50,7 @@ if( $titre && $contenu && $nb_bases )
 {
 	// Mémoriser dans un fichier le titre et le contenu de la lettre d'informations
 	$fichier_texte = $titre.' ◄■► '.$contenu."\r\n";
-	file_put_contents($dossier.$fichier_contenu,$fichier_texte);
+	Ecrire_Fichier($dossier.$fichier_contenu,$fichier_texte);
 	// Mémoriser dans un fichier les données des contacts concernés par la lettre
 	$fichier_texte = '';
 	$DB_TAB = DB_WEBMESTRE_lister_contacts_cibles( implode(',',$tab_bases) );
@@ -58,7 +58,7 @@ if( $titre && $contenu && $nb_bases )
 	{
 		$fichier_texte .= '<'.$DB_ROW['contact_id'].'>-<'.$DB_ROW['contact_nom'].'>-<'.$DB_ROW['contact_prenom'].'>-<'.$DB_ROW['contact_courriel'].'>'."\r\n";
 	}
-	file_put_contents($dossier.$fichier_contact,$fichier_texte);
+	Ecrire_Fichier($dossier.$fichier_contact,$fichier_texte);
 	$max = 1 + floor($nb_bases/$pack) + 1 ; // La dernière étape consiste uniquement à effacer les fichiers
 	exit('ok-'.$max);
 }

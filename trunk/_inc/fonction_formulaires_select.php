@@ -122,7 +122,7 @@ function load_cookie_select($structure_id,$user_id)
 {
 	global $orientation,$marge_min,$couleur,$cases_nb,$cases_largeur,$cases_hauteur;
 	$tab_cookie = array('orientation'=>$orientation,'marge_min'=>$marge_min,'couleur'=>$couleur,'cases_nb'=>$cases_nb,'cases_largeur'=>$cases_largeur,'cases_hauteur'=>$cases_hauteur);
-	file_put_contents('./__tmp/cookie/etabl'.$structure_id.'_user'.$user_id.'.txt',serialize($tab_cookie));
+	Ecrire_Fichier('./__tmp/cookie/etabl'.$structure_id.'_user'.$user_id.'.txt',serialize($tab_cookie));
 	/*
 		Remarque : il y a un problème de serialize avec les type float : voir http://fr2.php.net/manual/fr/function.serialize.php#85988
 		Dans ce cas il faut remplacer

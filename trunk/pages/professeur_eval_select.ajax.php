@@ -88,7 +88,7 @@ if( ($action=='Afficher_evaluations') && $date_debut && $date_fin )
 	{
 		exit('Erreur : la date de début est postérieure à la date de fin !');
 	}
-	$DB_TAB = DB_STRUCTURE_lister_devoirs($_SESSION['USER_ID'],0,$date_debut_mysql,$date_fin_mysql);
+	$DB_TAB = DB_STRUCTURE_lister_devoirs_prof($_SESSION['USER_ID'],0,$date_debut_mysql,$date_fin_mysql);
 	foreach($DB_TAB as $DB_ROW)
 	{
 		// Formater la date et la référence de l'évaluation

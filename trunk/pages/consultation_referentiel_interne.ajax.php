@@ -43,7 +43,7 @@ if( $matiere_id && $niveau_id )
 {
 	// Affichage du bilan de la liste des items pour la matière et le niveau sélectionnés
 	$DB_TAB = DB_STRUCTURE_recuperer_arborescence($prof_id=0,$matiere_id,$niveau_id,$only_socle=false,$only_item=false,$socle_nom=true);
-	echo afficher_arborescence_matiere_from_SQL($DB_TAB,$dynamique=false,$reference=false,$aff_coef='image',$aff_socle='image',$aff_lien='image',$aff_input=false);
+	echo afficher_arborescence_matiere_from_SQL($DB_TAB,$dynamique=false,$reference=false,$aff_coef=true,$aff_cart=true,$aff_socle='image',$aff_lien='image',$aff_input=false);
 }
 
 else

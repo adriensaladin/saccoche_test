@@ -144,7 +144,7 @@ function ajouter_log($contenu)
 	$tab_ligne[] = html($_SESSION['USER_PROFIL'].' ['.$_SESSION['USER_ID'].'] '.$_SESSION['USER_NOM'].' '.$_SESSION['USER_PRENOM']);
 	$tab_ligne[] = html($contenu);
 	$tab_ligne[] = '*/ ?>'."\r\n";
-	file_put_contents($chemin_fichier, implode("\t",$tab_ligne), FILE_APPEND);
+	Ecrire_Fichier($chemin_fichier, implode("\t",$tab_ligne), FILE_APPEND);
 }
 
 /**
@@ -313,7 +313,7 @@ function fabriquer_fichier_hebergeur_info($hebergeur_installation,$hebergeur_den
 	$fichier_contenu.= 'define(\'WEBMESTRE_PASSWORD_MD5\',\''.str_replace('\'','\\\'',$webmestre_password_md5).'\');'."\r\n";
 	$fichier_contenu.= 'define(\'WEBMESTRE_ERREUR_DATE\' ,\''.str_replace('\'','\\\'',$webmestre_erreur_date) .'\');'."\r\n";
 	$fichier_contenu.= '?>'."\r\n";
-	file_put_contents($fichier_nom,$fichier_contenu);
+	Ecrire_Fichier($fichier_nom,$fichier_contenu);
 }
 
 /**
@@ -356,7 +356,7 @@ function fabriquer_fichier_connexion_base($base_id,$BD_host,$BD_port,$BD_name,$B
 	$fichier_contenu .= 'define(\'SACOCHE_'.$prefixe.'_BD_USER\',\''.$BD_user.'\');	// Nom d\'utilisateur'."\r\n";
 	$fichier_contenu .= 'define(\'SACOCHE_'.$prefixe.'_BD_PASS\',\''.$BD_pass.'\');	// Mot de passe'."\r\n";
 	$fichier_contenu .= '?>'."\r\n";
-	file_put_contents($fichier_nom,$fichier_contenu);
+	Ecrire_Fichier($fichier_nom,$fichier_contenu);
 }
 
 /**
@@ -393,7 +393,7 @@ function bloquer_application($profil_demandeur,$motif)
 {
 	global $CHEMIN_CONFIG;
 	$fichier_nom = ($profil_demandeur=='webmestre') ? $CHEMIN_CONFIG.'blocage_webmestre.txt' : $CHEMIN_CONFIG.'blocage_admin_'.$_SESSION['BASE'].'.txt' ;
-	file_put_contents($fichier_nom,$motif);
+	Ecrire_Fichier($fichier_nom,$motif);
 	// Log de l'action
 	ajouter_log('Blocage de l\'accès à l\'application ['.$motif.'].');
 }
@@ -650,17 +650,19 @@ function envoyer_webmestre_courriel($adresse,$objet,$contenu)
  * @param tab         $DB_TAB
  * @param bool        $dynamique   arborescence cliquable ou pas (plier/replier)
  * @param bool        $reference   afficher ou pas les références
- * @param bool|string $aff_coef    false | 'texte' | 'image' : affichage des coefficients des items
+ * @param bool        $aff_coef    affichage des coefficients des items (sous forme d'image)
+ * @param bool        $aff_cart    affichage des possibilités de demandes d'évaluation des items (sous forme d'image)
  * @param bool|string $aff_socle   false | 'texte' | 'image' : affichage de la liaison au socle
  * @param bool|string $aff_lien    false | 'image' | 'click' : affichage des ressources de remédiation
  * @param bool        $aff_input   affichage ou pas des input checkbox avec label
  * @return string
  */
 
-function afficher_arborescence_matiere_from_SQL($DB_TAB,$dynamique,$reference,$aff_coef,$aff_socle,$aff_lien,$aff_input)
+function afficher_arborescence_matiere_from_SQL($DB_TAB,$dynamique,$reference,$aff_coef,$aff_cart,$aff_socle,$aff_lien,$aff_input)
 {
 	$input_texte = '';
 	$coef_texte  = '';
+	$cart_texte  = '';
 	$socle_texte = '';
 	$lien_texte  = '';
 	$lien_texte_avant = '';
@@ -703,11 +705,14 @@ function afficher_arborescence_matiere_from_SQL($DB_TAB,$dynamique,$reference,$a
 		if( (!is_null($DB_ROW['item_id'])) && ($DB_ROW['item_id']!=$item_id) )
 		{
 			$item_id = $DB_ROW['item_id'];
-			switch($aff_coef)
+			if($aff_coef)
 			{
-				case 'texte' :	$coef_texte = '['.$DB_ROW['item_coef'].'] ';
-												break;
-				case 'image' :	$coef_texte = '<img src="./_img/x'.$DB_ROW['item_coef'].'.gif" title="Coefficient '.$DB_ROW['item_coef'].'." /> ';
+				$coef_texte = '<img src="./_img/x'.$DB_ROW['item_coef'].'.gif" title="Coefficient '.$DB_ROW['item_coef'].'." /> ';
+			}
+			if($aff_cart)
+			{
+				$title = ($DB_ROW['item_cart']) ? 'Demande possible.' : 'Demande interdite.' ;
+				$cart_texte = '<img src="./_img/cart'.$DB_ROW['item_cart'].'.png" title="'.$title.'" /> ';
 			}
 			switch($aff_socle)
 			{
@@ -732,7 +737,7 @@ function afficher_arborescence_matiere_from_SQL($DB_TAB,$dynamique,$reference,$a
 				$label_texte_apres = '</label>';
 			}
 			$item_texte = ($reference) ? $DB_ROW['domaine_ref'].$DB_ROW['theme_ordre'].$DB_ROW['item_ordre'].' - '.$DB_ROW['item_nom'] : $DB_ROW['item_nom'] ;
-			$tab_item[$matiere_id][$niveau_id][$domaine_id][$theme_id][$item_id] = $input_texte.$label_texte_avant.$coef_texte.$socle_texte.$lien_texte.$lien_texte_avant.html($item_texte).$lien_texte_apres.$label_texte_apres;
+			$tab_item[$matiere_id][$niveau_id][$domaine_id][$theme_id][$item_id] = $input_texte.$label_texte_avant.$coef_texte.$cart_texte.$socle_texte.$lien_texte.$lien_texte_avant.html($item_texte).$lien_texte_apres.$label_texte_apres;
 		}
 	}
 	// Affichage de l'arborescence
@@ -929,7 +934,7 @@ function exporter_arborescence_to_XML($DB_TAB)
 		if( (!is_null($DB_ROW['item_id'])) && ($DB_ROW['item_id']!=$item_id) )
 		{
 			$item_id = $DB_ROW['item_id'];
-			$tab_item[$domaine_id][$theme_id][$item_id] = array('socle'=>$DB_ROW['entree_id'],'nom'=>$DB_ROW['item_nom'],'coef'=>$DB_ROW['item_coef'],'lien'=>$DB_ROW['item_lien']);
+			$tab_item[$domaine_id][$theme_id][$item_id] = array('socle'=>$DB_ROW['entree_id'],'nom'=>$DB_ROW['item_nom'],'coef'=>$DB_ROW['item_coef'],'cart'=>$DB_ROW['item_cart'],'lien'=>$DB_ROW['item_lien']);
 		}
 	}
 	// Fabrication de l'arbre XML
@@ -948,7 +953,7 @@ function exporter_arborescence_to_XML($DB_TAB)
 					{
 						foreach($tab_item[$domaine_id][$theme_id] as $item_id => $tab_item_info)
 						{
-							$arbreXML .= "\t\t\t".'<item socle="'.$tab_item_info['socle'].'" nom="'.html($tab_item_info['nom']).'" coef="'.$tab_item_info['coef'].'" lien="'.html($tab_item_info['lien']).'" />'."\r\n";
+							$arbreXML .= "\t\t\t".'<item socle="'.$tab_item_info['socle'].'" nom="'.html($tab_item_info['nom']).'" coef="'.$tab_item_info['coef'].'" cart="'.$tab_item_info['cart'].'" lien="'.html($tab_item_info['lien']).'" />'."\r\n";
 						}
 					}
 					$arbreXML .= "\t\t".'</theme>'."\r\n";
@@ -1071,7 +1076,7 @@ function verifier_arborescence_XML($arbreXML)
 {
 	// On ajoute déclaration et doctype au fichier (évite que l'utilisateur ait à se soucier de cette ligne et permet de le modifier en cas de réorganisation
 	// Attention, le chemin du DTD est relatif par rapport à l'emplacement du fichier XML (pas celui du script en cours) !
-	$fichier_adresse = './__tmp/import/referentiel_'.date('Y-m-d_H-i-s').'_'.mt_rand().'_xml';
+	$fichier_adresse = './__tmp/import/referentiel_'.date('Y-m-d_H-i-s').'_'.mt_rand().'.xml';
 	$fichier_contenu = '<?xml version="1.0" encoding="UTF-8"?>'."\r\n".'<!DOCTYPE arbre SYSTEM "../../_dtd/referentiel.dtd">'."\r\n".$arbreXML;
 	// On convertit en UTF-8 si besoin
 	if( (mb_detect_encoding($fichier_contenu,"auto",TRUE)!='UTF-8') || (!mb_check_encoding($fichier_contenu,'UTF-8')) )
@@ -1079,7 +1084,7 @@ function verifier_arborescence_XML($arbreXML)
 		$fichier_contenu = mb_convert_encoding($fichier_contenu,'UTF-8','Windows-1252'); // Si on utilise utf8_encode() ou mb_convert_encoding() sans le paramètre 'Windows-1252' ça pose des pbs pour '’' 'Œ' 'œ' etc.
 	}
 	// On enregistre temporairement dans un fichier pour analyse
-	file_put_contents($fichier_adresse,$fichier_contenu);
+	Ecrire_Fichier($fichier_adresse,$fichier_contenu);
 	// On lance le test
 	require('class.domdocument.php');	// Ne pas mettre de chemin !
 	$test_XML_valide = analyser_XML($fichier_adresse);
@@ -1191,6 +1196,25 @@ function Supprimer_Dossier($dossier)
 		}
 	}
 	rmdir($dossier);
+}
+
+/**
+ * Ecrire_Fichier
+ * Ecrire du contenu dans un fichier, exit() en cas d'erreur
+ * 
+ * @param string   $fichier_chemin
+ * @param string   $fichier_contenu
+ * @param int      facultatif ; si constante FILE_APPEND envoyée, alors ajoute en fin de fichier au lieu d'écraser le contenu
+ * @return void
+ */
+
+function Ecrire_Fichier($fichier_chemin,$fichier_contenu,$file_append=0)
+{
+	$test_ecriture = @file_put_contents($fichier_chemin,$fichier_contenu,$file_append);
+	if($test_ecriture===false)
+	{
+		exit('Erreur : problème de création du fichier '.$fichier_chemin.' !');
+	}
 }
 
 

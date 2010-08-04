@@ -100,7 +100,7 @@ if( ($action=='ajouter') && $nom && $prenom )
 	echo	'<td class="new">'.html($password).' <img alt="" title="Pensez à relever le mot de passe !" src="./_img/bulle_aide.png" /></td>';
 	echo	'<td class="nu">';
 	echo		'<q class="modifier" title="Modifier cet élève."></q>';
-	echo		'<q class="desactiver" title="Enlever cet élève."></q>';
+	echo		'<q class="supprimer" title="Enlever cet élève."></q>';
 	echo	'</td>';
 	echo'</tr>';
 }
@@ -165,14 +165,14 @@ else if( ($action=='modifier') && $id && $nom && $prenom && $login )
 	echo (!$password) ? '<td class="i">champ crypté</td>' : '<td class="new">'.html($tab_donnees[':password']).' <img alt="" src="./_img/bulle_aide.png" title="Pensez à relever le mot de passe !" /></td>' ;
 	echo'<td class="nu">';
 	echo	'<q class="modifier" title="Modifier cet élève."></q>';
-	echo	'<q class="desactiver" title="Enlever cet élève."></q>';
+	echo	'<q class="supprimer" title="Enlever cet élève."></q>';
 	echo'</td>';
 }
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 //	Désactiver un élève existant
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-else if( ($action=='desactiver') && $id )
+else if( ($action=='supprimer') && $id )
 {
 	// Mettre à jour l'enregistrement
 	DB_STRUCTURE_modifier_utilisateur( $id , array(':statut'=>0) );

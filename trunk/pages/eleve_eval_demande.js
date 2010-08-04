@@ -83,7 +83,7 @@ $(document).ready
 //	Appel des fonctions en fonction des événements ; live est utilisé pour prendre en compte les nouveaux éléments créés
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
-		$('q.demander_del').click( supprimer );
+		$('q.supprimer').click( supprimer );
 		$('q.annuler').live( 'click' , annuler );
 		$('q.valider').live( 'click' , function(){formulaire.submit();} );
 

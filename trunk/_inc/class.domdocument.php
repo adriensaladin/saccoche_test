@@ -104,7 +104,7 @@ function analyser_XML($fichier_adresse)
 	if( (!perso_mb_detect_encoding_utf8($fichier_contenu)) || (!mb_check_encoding($fichier_contenu,'UTF-8')) )
 	{
 		$fichier_contenu = mb_convert_encoding($fichier_contenu,'UTF-8','Windows-1252'); // Si on utilise utf8_encode() ou mb_convert_encoding() sans le paramètre 'Windows-1252' ça pose des pbs pour '’' 'Œ' 'œ' etc.
-		file_put_contents($fichier_adresse,$fichier_contenu);
+		Ecrire_Fichier($fichier_adresse,$fichier_contenu);
 	}
 	// Analyse XML (s'arrête à la 1ère erreur trouvée)
 	$xml_parser = xml_parser_create();
@@ -121,7 +121,7 @@ function analyser_XML($fichier_adresse)
 	$valid_DTD = $xml->validate();
 	if(!$valid_DTD)
 	{
-		return "Erreur DTD : ".end($xml->errors);
+		return 'Erreur DTD : '.end($xml->errors);
 	}
 	// Tout est ok
 	return 'ok';

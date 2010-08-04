@@ -175,7 +175,7 @@ function deleteBOM($file)
 	$fcontenu = file_get_contents($file);
 	if (substr($fcontenu,0,3) == "\xEF\xBB\xBF")	// Ne pas utiliser mb_substr() sinon ça ne fonctionne pas
 	{
-		file_put_contents($file, substr($fcontenu,3));	// Ne pas utiliser mb_substr() sinon ça ne fonctionne pas
+		Ecrire_Fichier($file, substr($fcontenu,3));	// Ne pas utiliser mb_substr() sinon ça ne fonctionne pas
 	}
 }
 

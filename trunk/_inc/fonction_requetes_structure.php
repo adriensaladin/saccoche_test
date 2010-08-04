@@ -118,7 +118,7 @@ function DB_STRUCTURE_recuperer_arborescence($prof_id,$matiere_id,$niveau_id,$on
 	$DB_SQL.= 'niveau_id, niveau_ref, niveau_nom, ';
 	$DB_SQL.= 'domaine_id, domaine_ordre, domaine_ref, domaine_nom, ';
 	$DB_SQL.= 'theme_id, theme_ordre, theme_nom, ';
-	$DB_SQL.= 'item_id, item_ordre, item_nom, item_coef, item_lien, ';
+	$DB_SQL.= 'item_id, item_ordre, item_nom, item_coef, item_cart, item_lien, ';
 	$DB_SQL.= $select_socle_nom;
 	$DB_SQL.= 'FROM sacoche_referentiel ';
 	$DB_SQL.= $join_user_matiere;
@@ -156,7 +156,7 @@ function DB_STRUCTURE_recuperer_arborescence_eleve_periode_matiere($eleve_id,$ma
 	$sql_fin   = ($date_mysql_fin)   ? 'AND saisie_date<=:date_fin '   : '';
 	$DB_SQL = 'SELECT item_id , ';
 	$DB_SQL.= 'CONCAT(matiere_ref,".",niveau_ref,".",domaine_ref,theme_ordre,item_ordre) AS item_ref , ';
-	$DB_SQL.= 'item_nom , item_coef , entree_id AS item_socle , item_lien , ';
+	$DB_SQL.= 'item_nom , item_coef , item_cart , entree_id AS item_socle , item_lien , ';
 	$DB_SQL.= 'referentiel_calcul_methode AS calcul_methode , referentiel_calcul_limite AS calcul_limite ';
 	$DB_SQL.= 'FROM sacoche_saisie ';
 	$DB_SQL.= 'LEFT JOIN sacoche_referentiel_item USING (item_id) ';
@@ -191,7 +191,7 @@ function DB_STRUCTURE_recuperer_arborescence_eleves_periode_matiere($liste_eleve
 	$sql_fin   = ($date_mysql_fin)   ? 'AND saisie_date<=:date_fin '   : '';
 	$DB_SQL = 'SELECT item_id , ';
 	$DB_SQL.= 'CONCAT(matiere_ref,".",niveau_ref,".",domaine_ref,theme_ordre,item_ordre) AS item_ref , ';
-	$DB_SQL.= 'item_nom , item_coef , entree_id AS item_socle , item_lien , ';
+	$DB_SQL.= 'item_nom , item_coef , item_cart , entree_id AS item_socle , item_lien , ';
 	$DB_SQL.= 'referentiel_calcul_methode AS calcul_methode , referentiel_calcul_limite AS calcul_limite ';
 	$DB_SQL.= 'FROM sacoche_saisie ';
 	$DB_SQL.= 'LEFT JOIN sacoche_referentiel_item USING (item_id) ';
@@ -225,7 +225,7 @@ function DB_STRUCTURE_recuperer_arborescence_et_matieres_eleves_periode($liste_e
 	$sql_fin   = ($date_mysql_fin)   ? 'AND saisie_date<=:date_fin '   : '';
 	$DB_SQL = 'SELECT item_id , ';
 	$DB_SQL.= 'CONCAT(matiere_ref,".",niveau_ref,".",domaine_ref,theme_ordre,item_ordre) AS item_ref , ';
-	$DB_SQL.= 'item_nom , item_coef , entree_id AS item_socle , item_lien , ';
+	$DB_SQL.= 'item_nom , item_coef , item_cart , entree_id AS item_socle , item_lien , ';
 	$DB_SQL.= 'matiere_id , matiere_nom , ';
 	$DB_SQL.= 'referentiel_calcul_methode AS calcul_methode , referentiel_calcul_limite AS calcul_limite ';
 	$DB_SQL.= 'FROM sacoche_saisie ';
@@ -265,7 +265,7 @@ function DB_STRUCTURE_recuperer_arborescence_et_matieres_eleves_item($liste_elev
 {
 	$DB_SQL = 'SELECT item_id , ';
 	$DB_SQL.= 'CONCAT(matiere_ref,".",niveau_ref,".",domaine_ref,theme_ordre,item_ordre) AS item_ref , ';
-	$DB_SQL.= 'item_nom , item_coef , entree_id AS item_socle , item_lien , ';
+	$DB_SQL.= 'item_nom , item_coef , item_cart , entree_id AS item_socle , item_lien , ';
 	$DB_SQL.= 'matiere_id , matiere_nom , ';
 	$DB_SQL.= 'referentiel_calcul_methode AS calcul_methode , referentiel_calcul_limite AS calcul_limite ';
 	$DB_SQL.= 'FROM sacoche_saisie ';
@@ -444,6 +444,25 @@ function DB_STRUCTURE_lister_parametres($listing_param=false)
 }
 
 /**
+ * DB_STRUCTURE_lister_result_eleve_items
+ * Retourner les résultats pour un élève, pour des items donnés
+ * 
+ * @param int    $eleve_id
+ * @param string $liste_item_id   id des items séparés par des virgules
+ * @return array
+ */
+
+function DB_STRUCTURE_lister_result_eleve_items($eleve_id,$liste_item_id)
+{
+	$DB_SQL = 'SELECT item_id , saisie_note AS note ';
+	$DB_SQL.= 'FROM sacoche_saisie ';
+	$DB_SQL.= 'WHERE eleve_id=:eleve_id AND item_id IN('.$liste_item_id.') AND saisie_note!="REQ" ';
+	$DB_SQL.= 'ORDER BY saisie_date ASC ';
+	$DB_VAR = array(':eleve_id'=>$eleve_id);
+	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+}
+
+/**
  * DB_STRUCTURE_lister_result_eleves_matiere
  * Retourner les résultats pour des élèves donnés, pour des items donnés d'une matiere donnée, sur une période donnée
  * 
@@ -519,6 +538,7 @@ function DB_STRUCTURE_lister_result_eleves_palier($liste_eleve_id,$liste_item_id
 	$sql_fin   = ($date_mysql_fin)   ? 'AND saisie_date<=:date_fin '   : '';
 	$DB_SQL = 'SELECT eleve_id , entree_id AS socle_id , item_id , saisie_note AS note , item_nom , ';
 	$DB_SQL.= 'CONCAT(matiere_ref,".",niveau_ref,".",domaine_ref,theme_ordre,item_ordre) AS item_ref , ';
+	$DB_SQL.= 'item_cart , '; // Besoin pour l'élève s'il veut formuler une demande d'évaluation
 	$DB_SQL.= 'matiere_id , '; // Besoin pour l'élève s'il ajoute l'item aux demandes d'évaluations
 	$DB_SQL.= 'referentiel_calcul_methode AS calcul_methode , referentiel_calcul_limite AS calcul_limite ';
 	$DB_SQL.= 'FROM sacoche_saisie ';
@@ -1196,7 +1216,7 @@ function DB_STRUCTURE_lister_demandes_eleve($user_id)
 }
 
 /**
- * DB_STRUCTURE_lister_devoirs
+ * DB_STRUCTURE_lister_devoirs_prof
  * 
  * @param int    $prof_id
  * @param int    $groupe_id        id du groupe ou de la classe pour un devoir sur une classe ou un groupe ; 0 pour un devoir sur une sélection d'élèves
@@ -1205,7 +1225,7 @@ function DB_STRUCTURE_lister_demandes_eleve($user_id)
  * @return array
  */
 
-function DB_STRUCTURE_lister_devoirs($prof_id,$groupe_id,$date_debut_mysql,$date_fin_mysql)
+function DB_STRUCTURE_lister_devoirs_prof($prof_id,$groupe_id,$date_debut_mysql,$date_fin_mysql)
 {
 	// DB::query(SACOCHE_STRUCTURE_BD_NAME , 'SET group_concat_max_len = ...'); // Pour lever si besoin une limitation de GROUP_CONCAT (group_concat_max_len est par défaut limité à une chaine de 1024 caractères).
 	// Il faut ajouter dans la requête des "DISTINCT" sinon la liaison avec "sacoche_jointure_user_groupe" duplique tout x le nb d'élèves associés pour une évaluation sur une sélection d'élèves.
@@ -1232,17 +1252,47 @@ function DB_STRUCTURE_lister_devoirs($prof_id,$groupe_id,$date_debut_mysql,$date
 }
 
 /**
- * DB_STRUCTURE_lister_items_devoir
- * Retourner les items d'une devoir et les infos associées (tableau issu de la requête SQL)
+ * DB_STRUCTURE_lister_devoirs_eleve
  * 
- * @param int  $devoir_id
+ * @param int    $eleve_id
+ * @param int    $classe_id   id de la classe de l'élève ; en effet sacoche_jointure_user_groupe ne contient que les liens aux groupes, donc il faut tester aussi la classe
+ * @param string $date_debut_mysql
+ * @param string $date_fin_mysql
  * @return array
  */
 
-function DB_STRUCTURE_lister_items_devoir($devoir_id)
+function DB_STRUCTURE_lister_devoirs_eleve($eleve_id,$classe_id,$date_debut_mysql,$date_fin_mysql)
 {
+	$where_classe = ($classe_id) ? 'sacoche_devoir.groupe_id='.$classe_id.' OR ' : '';
+	$DB_SQL = 'SELECT sacoche_devoir.* , sacoche_user.user_nom AS prof_nom , sacoche_user.user_prenom AS prof_prenom ';
+	$DB_SQL.= 'FROM sacoche_devoir ';
+	$DB_SQL.= 'LEFT JOIN sacoche_jointure_user_groupe USING (groupe_id) ';
+	$DB_SQL.= 'LEFT JOIN sacoche_user ON sacoche_devoir.prof_id=sacoche_user.user_id ';
+	$DB_SQL.= 'WHERE ('.$where_classe.'sacoche_jointure_user_groupe.user_id=:eleve_id) ';
+	$DB_SQL.= 'AND devoir_date>="'.$date_debut_mysql.'" AND devoir_date<="'.$date_fin_mysql.'" ' ;
+	$DB_SQL.= 'GROUP BY devoir_id ';
+	$DB_SQL.= 'ORDER BY devoir_date DESC ';
+	$DB_VAR = array(':eleve_id'=>$eleve_id);
+	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+}
+
+/**
+ * DB_STRUCTURE_lister_items_devoir
+ * Retourner les items d'un devoir et les infos associées (tableau issu de la requête SQL)
+ * Dans le cas où $info_pour_eleve=TRUE, en plus d'informations supplémentaires retournées, les clefs du tableau sont les item_id car on en a besoin.
+ * 
+ * @param int  $devoir_id
+ * @param bool $info_pour_eleve   facultatif ; pour un élève, qui liste ses notes d'une éval, il faut en particulier pouvoir ensuite lui calculer son score
+ * @return array
+ */
+
+function DB_STRUCTURE_lister_items_devoir($devoir_id,$info_pour_eleve=false)
+{
+	$select   = ($info_pour_eleve) ? 'item_cart, item_lien, matiere_id, referentiel_calcul_methode, referentiel_calcul_limite, ' : '' ;
+	$leftjoin = ($info_pour_eleve) ? 'LEFT JOIN sacoche_referentiel USING (matiere_id,niveau_id) ' : '' ;
 	$DB_SQL = 'SELECT ';
 	$DB_SQL.= 'item_id, item_nom, entree_id, ';
+	$DB_SQL.= $select;
 	$DB_SQL.= 'CONCAT(matiere_ref,".",niveau_ref,".",domaine_ref,theme_ordre,item_ordre) AS item_ref ';
 	$DB_SQL.= 'FROM sacoche_jointure_devoir_item ';
 	$DB_SQL.= 'LEFT JOIN sacoche_referentiel_item USING (item_id) ';
@@ -1250,10 +1300,11 @@ function DB_STRUCTURE_lister_items_devoir($devoir_id)
 	$DB_SQL.= 'LEFT JOIN sacoche_referentiel_domaine USING (domaine_id) ';
 	$DB_SQL.= 'LEFT JOIN sacoche_niveau USING (niveau_id) ';
 	$DB_SQL.= 'LEFT JOIN sacoche_matiere USING (matiere_id) ';
+	$DB_SQL.= $leftjoin;
 	$DB_SQL.= 'WHERE devoir_id=:devoir_id ';
 	$DB_SQL.= 'ORDER BY jointure_ordre ASC, matiere_ref ASC, niveau_ordre ASC, domaine_ordre ASC, theme_ordre ASC, item_ordre ASC';
 	$DB_VAR = array(':devoir_id'=>$devoir_id);
-	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR , $info_pour_eleve);
 }
 
 /**
@@ -1275,6 +1326,22 @@ function DB_STRUCTURE_lister_saisies_devoir($devoir_id,$with_REQ)
 		$DB_SQL.= 'AND saisie_note!="REQ" ';
 	}
 	$DB_VAR = array(':devoir_id'=>$devoir_id,':statut'=>1);
+	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+}
+
+/**
+ * DB_STRUCTURE_lister_saisies_devoir_eleve
+ * 
+ * @param int   $devoir_id
+ * @param int   $eleve_id
+ * @return array
+ */
+
+function DB_STRUCTURE_lister_saisies_devoir_eleve($devoir_id,$eleve_id)
+{
+	$DB_SQL = 'SELECT item_id,saisie_note FROM sacoche_saisie ';
+	$DB_SQL.= 'WHERE devoir_id=:devoir_id AND eleve_id=:eleve_id AND saisie_note!="REQ" ';
+	$DB_VAR = array(':devoir_id'=>$devoir_id,':eleve_id'=>$eleve_id);
 	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
@@ -1353,7 +1420,7 @@ function DB_STRUCTURE_tester_referentiel($matiere_id,$niveau_id)
 }
 
 /**
- * DB_STRUCTURE_tester_demande
+ * DB_STRUCTURE_tester_demande_existante
  * 
  * @param int    $eleve_id
  * @param int    $matiere_id
@@ -1361,12 +1428,29 @@ function DB_STRUCTURE_tester_referentiel($matiere_id,$niveau_id)
  * @return int
  */
 
-function DB_STRUCTURE_tester_demande($eleve_id,$matiere_id,$item_id)
+function DB_STRUCTURE_tester_demande_existante($eleve_id,$matiere_id,$item_id)
 {
 	$DB_SQL = 'SELECT demande_id FROM sacoche_demande ';
 	$DB_SQL.= 'WHERE user_id=:eleve_id AND matiere_id=:matiere_id AND item_id=:item_id ';
 	$DB_SQL.= 'LIMIT 1';
 	$DB_VAR = array(':eleve_id'=>$eleve_id,':matiere_id'=>$matiere_id,':item_id'=>$item_id);
+	$DB_ROW = DB::queryRow(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+	return count($DB_ROW) ;
+}
+
+/**
+ * DB_STRUCTURE_tester_demande_interdite
+ * 
+ * @param int   $item_id
+ * @return int
+ */
+
+function DB_STRUCTURE_tester_demande_interdite($item_id)
+{
+	$DB_SQL = 'SELECT item_id FROM sacoche_referentiel_item ';
+	$DB_SQL.= 'WHERE item_id=:item_id AND item_cart=:item_cart ';
+	$DB_SQL.= 'LIMIT 1';
+	$DB_VAR = array(':item_id'=>$item_id,':item_cart'=>0);
 	$DB_ROW = DB::queryRow(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 	return count($DB_ROW) ;
 }
@@ -1853,10 +1937,11 @@ function DB_STRUCTURE_importer_arborescence_from_XML($arbreXML,$matiere_id,$nive
 				$item_socle = $item_xml -> getAttribute('socle');
 				$item_nom   = $item_xml -> getAttribute('nom');
 				$item_coef  = $item_xml -> getAttribute('coef');
+				$item_cart  = $item_xml -> getAttribute('cart');
 				$item_lien  = $item_xml -> getAttribute('lien');
-				$DB_SQL = 'INSERT INTO sacoche_referentiel_item(theme_id,entree_id,item_ordre,item_nom,item_coef,item_lien) ';
-				$DB_SQL.= 'VALUES(:theme,:socle,:ordre,:nom,:coef,:lien)';
-				$DB_VAR = array(':theme'=>$theme_id,':socle'=>$item_socle,':ordre'=>$item_ordre,':nom'=>$item_nom,':coef'=>$item_coef,':lien'=>$item_lien);
+				$DB_SQL = 'INSERT INTO sacoche_referentiel_item(theme_id,entree_id,item_ordre,item_nom,item_coef,item_cart,item_lien) ';
+				$DB_SQL.= 'VALUES(:theme,:socle,:ordre,:nom,:coef,:cart,:lien)';
+				$DB_VAR = array(':theme'=>$theme_id,':socle'=>$item_socle,':ordre'=>$item_ordre,':nom'=>$item_nom,':coef'=>$item_coef,':cart'=>$item_cart,':lien'=>$item_lien);
 				DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 				// $item_id = DB::getLastOid(SACOCHE_STRUCTURE_BD_NAME); // inutile
 			}

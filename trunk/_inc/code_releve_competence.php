@@ -251,7 +251,7 @@ if(in_array('individuel',$tab_type))
 					// Pour chaque item...
 					foreach($tab_eval[$eleve_id][$matiere_id] as $item_id => $tab_devoirs)
 					{
-						extract($tab_item[$item_id][0]);	// $item_ref $item_nom $item_coef $item_socle $item_lien $calcul_methode $calcul_limite
+						extract($tab_item[$item_id][0]);	// $item_ref $item_nom $item_coef $item_cart $item_socle $item_lien $calcul_methode $calcul_limite
 						// cases référence et nom
 						if($aff_coef)
 						{
@@ -266,7 +266,7 @@ if(in_array('individuel',$tab_type))
 							$texte_lien_avant = ($item_lien) ? '<a class="lien_ext" href="'.html($item_lien).'">' : '';
 							$texte_lien_apres = ($item_lien) ? '</a>' : '';
 						}
-						$texte_demande_eval = ( ($_SESSION['USER_PROFIL']=='eleve') && ($_SESSION['ELEVE_DEMANDES']>0) ) ? '<q class="demander_add" lang="ids_'.$eleve_id.'_'.$matiere_id.'_'.$item_id.'_'.$tab_score_eleve_item[$eleve_id][$matiere_id][$item_id].'" title="Ajouter aux demandes d\'évaluations."></q>' : '' ;
+						$texte_demande_eval = ( ($_SESSION['USER_PROFIL']!='eleve') || ($_SESSION['ELEVE_DEMANDES']==0) ) ? '' : ( ($item_cart) ? '<q class="demander_add" lang="ids_'.$eleve_id.'_'.$matiere_id.'_'.$item_id.'_'.$tab_score_eleve_item[$eleve_id][$matiere_id][$item_id].'" title="Ajouter aux demandes d\'évaluations."></q>' : '<q class="demander_non" title="Demande interdite."></q>' ) ;
 						$releve_html_table_body .= '<tr><td>'.$item_ref.'</td><td>'.$texte_coef.$texte_socle.$texte_lien_avant.html($item_nom).$texte_lien_apres.$texte_demande_eval.'</td>';
 						$releve_pdf->bilan_periode_individuel_competence($item_ref,$texte_coef.$texte_socle.$item_nom);
 						// cases d'évaluations
@@ -348,7 +348,7 @@ if(in_array('individuel',$tab_type))
 		}
 	}
 	// On enregistre les sorties HTML et PDF
-	file_put_contents($dossier.$fichier_lien.'_individuel.html',$releve_html_individuel);
+	Ecrire_Fichier($dossier.$fichier_lien.'_individuel.html',$releve_html_individuel);
 	$releve_pdf->Output($dossier.$fichier_lien.'_individuel.pdf','F');
 }
 
@@ -453,7 +453,7 @@ if(in_array('synthese',$tab_type))
 	$releve_html_synthese .= '<table id="table_s2" class="bilan_synthese">'.$releve_html_table_head.$releve_html_table_foot.$releve_html_table_body2.'</table>';
 	$releve_html_synthese .= '<script type="text/javascript">$("#table_s2").tablesorter({ headers:{'.$num_hide.':{sorter:false}} });</script>'; // Non placé dans le fichier js car mettre une valeur à la place d'une variable pour $num_hide ne fonctionne pas
 	// On enregistre les sorties HTML et PDF
-	file_put_contents($dossier.$fichier_lien.'_synthese.html',$releve_html_synthese);
+	Ecrire_Fichier($dossier.$fichier_lien.'_synthese.html',$releve_html_synthese);
 	$releve_pdf->Output($dossier.$fichier_lien.'_synthese.pdf','F');
 }
 
@@ -497,8 +497,8 @@ if(in_array('bulletin',$tab_type))
 	$bulletin_html .= '<table id="export20">'."\r\n".$bulletin_head.$bulletin_foot.$bulletin_body.'</table>'."\r\n";
 	$bulletin_html .= '<script type="text/javascript">$("#export20").tablesorter({ headers:{2:{sorter:false}} });</script>';
 	// On enregistre la sortie HTML et CSV
-	file_put_contents($dossier.$fichier_lien.'_bulletin.html',$bulletin_html);
-	file_put_contents($dossier.$fichier_lien.'_bulletin.csv',utf8_decode($bulletin_csv_gepi));
+	Ecrire_Fichier($dossier.$fichier_lien.'_bulletin.html',$bulletin_html);
+	Ecrire_Fichier($dossier.$fichier_lien.'_bulletin.csv',utf8_decode($bulletin_csv_gepi));
 }
 
 ?>

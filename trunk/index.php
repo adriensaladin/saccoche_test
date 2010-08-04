@@ -114,7 +114,7 @@ if(is_file($fichier_constantes))
 				{
 					$fichier_contenu = file_get_contents($CHEMIN_MYSQL.'/'.$fichier);
 					$fichier_contenu = str_replace($bad,$bon,$fichier_contenu);
-					file_put_contents($CHEMIN_MYSQL.'/'.$fichier,$fichier_contenu);
+					Ecrire_Fichier($CHEMIN_MYSQL.'/'.$fichier,$fichier_contenu);
 				}
 			}
 			define('SACOCHE_'.$PATCH.'_BD_PORT','3306');	// Port de connexion
@@ -180,7 +180,7 @@ entete();
 		echo'<div id="cadre_haut">'."\r\n";
 		echo'	<div id="info">'."\r\n";
 		echo'		<span class="button"><img alt="structure" src="./_img/home.png" /> '.html($_SESSION['DENOMINATION']).'</span>'."\r\n";
-		echo'		<span class="button"><img alt="'.$_SESSION['USER_PROFIL'].'" src="./_img/login.gif" /> '.html($_SESSION['USER_PRENOM'].' '.$_SESSION['USER_NOM']).' ('.$_SESSION['USER_PROFIL'].')</span>'."\r\n";
+		echo'		<span class="button"><img alt="'.$_SESSION['USER_PROFIL'].'" src="./_img/login.gif" /> '.html($_SESSION['USER_PRENOM'].' '.$_SESSION['USER_NOM']).' ('.str_replace('eleve','élève',$_SESSION['USER_PROFIL']).')</span>'."\r\n";
 		echo'		<span class="button"><span id="clock"><img alt="" src="./_img/clock_fixe.png" /> '.$_SESSION['DUREE_INACTIVITE'].' min</span><img alt="" src="./_img/point.gif" /></span>'."\r\n";
 		echo'		<button id="deconnecter"><img alt="" src="./_img/bouton/deconnecter.png" /> Déconnexion</button>'."\r\n";
 		echo'	</div>'."\r\n";

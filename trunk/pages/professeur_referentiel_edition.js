@@ -80,7 +80,7 @@ $(document).ready
 		images[2] += '<q class="n2_del" lang="del" title="Supprimer ce thème ainsi que tout son contenu (et renuméroter)."></q>';
 		images[2] += '<q class="n3_add" lang="add" title="Ajouter un item au début de ce thème (et renuméroter)."></q>';
 		images[3]  = '';
-		images[3] += '<q class="n3_edit" lang="edit" title="Renommer, coefficienter, lier cet item."></q>';
+		images[3] += '<q class="n3_edit" lang="edit" title="Renommer, coefficienter, autoriser, lier cet item."></q>';
 		images[3] += '<q class="n3_add" lang="add" title="Ajouter un item à la suite (et renuméroter)."></q>';
 		images[3] += '<q class="n3_move" lang="move" title="Déplacer cet item (et renuméroter)."></q>';
 		images[3] += '<q class="n3_fus" lang="fus" title="Fusionner avec un autre item (et renuméroter)."></q>';
@@ -165,9 +165,9 @@ $(document).ready
 						texte = 'ce thème';
 						break;
 					case 'n3' :	// item
-						new_li += '<i>Coef.</i> <input id="f_coef" name="f_coef" type="text" value="1" size="1" maxlength="1" /> <i>Nom</i> <input id="f_nom" name="f_nom" size="100" maxlength="256" type="text" value="" /> <img alt="" src="./_img/bulle_aide.png" title="Indiquer un coefficient (entier entre 0 et 5) et un nom d\'item." /><br />';
-						new_li += '<i>Socle</i> <input id="f_intitule" name="f_intitule" size="100" maxlength="256" type="text" value="Hors-socle." readonly="readonly" /><input id="f_socle" name="f_socle" type="hidden" value="0" /><q class="choisir_compet" title="Sélectionner un item du socle commun."></q> <img alt="" src="./_img/bulle_aide.png" title="Indiquer l\'appartenance éventuelle au socle commun." /><br />';
-						new_li += '<i>Lien</i> <input id="f_lien" name="f_lien" type="text" value="" size="90" /> <img alt="" src="./_img/bulle_aide.png" title="Indiquer un lien vers une ressource de remédiation (facultatif)." />';
+						new_li += '<i>Nom</i> <input id="f_nom" name="f_nom" size="125" maxlength="256" type="text" value="" /> <img alt="" src="./_img/bulle_aide.png" title="Indiquer un coefficient (entier entre 0 et 5) et un nom d\'item." /><br />';
+						new_li += '<i>Socle</i> <input id="f_intitule" name="f_intitule" size="125" maxlength="256" type="text" value="Hors-socle." readonly="readonly" /><input id="f_socle" name="f_socle" type="hidden" value="0" /><q class="choisir_compet" title="Sélectionner un item du socle commun."></q> <img alt="" src="./_img/bulle_aide.png" title="Indiquer l\'appartenance éventuelle au socle commun." /><br />';
+						new_li += '<i>Coef.</i> <input id="f_coef" name="f_coef" type="text" value="1" size="1" maxlength="1" /> - <input id="f_cart1" name="f_cart" type="radio" value="1" checked="checked" /><label for="f_cart1"><img src="./_img/cart1.png" title="Demande possible." /></label> <input id="f_cart0" name="f_cart" type="radio" value="0" /><label for="f_cart0"><img src="./_img/cart0.png" title="Demande interdite." /></label> - <i>Lien</i> <input id="f_lien" name="f_lien" type="text" value="" size="100" /> <img alt="" src="./_img/bulle_aide.png" title="Indiquer un lien vers une ressource de remédiation (facultatif)." />';
 						texte = 'cet item';
 						break;
 					default :
@@ -231,15 +231,19 @@ $(document).ready
 						nom = $(this).parent().children('b').text();
 						// On récupère le coefficient
 						coef = $(this).parent().children('b').children('img:eq(0)').attr('src').substring(8,9);
+						// On récupère l'autorisation de demande
+						cart = $(this).parent().children('b').children('img:eq(1)').attr('src').substring(11,12);
+						check1 = (cart=='1') ? ' checked="checked"' : '' ;
+						check0 = (cart=='0') ? ' checked="checked"' : '' ;
 						// On récupère le socle
-						socle_id  = $(this).parent().children('b').children('img:eq(1)').attr('lang').substring(3);
+						socle_id  = $(this).parent().children('b').children('img:eq(2)').attr('lang').substring(3);
 						socle_txt = $('label[for=socle_'+socle_id+']').text();
 						// On récupère le lien
 						item_id = $(this).parent().attr('id').substring(3);
 						lien = tab_ressources[item_id];
-						new_div += '<i>Coef.</i> <input id="f_coef" name="f_coef" type="text" value="'+coef+'" size="1" maxlength="1" /> <i>Nom</i> <input id="f_nom" name="f_nom" size="'+Math.min(10+nom.length,128)+'" maxlength="256" type="text" value="'+nom+'" /> <img alt="" src="./_img/bulle_aide.png" title="Indiquer un coefficient (entier entre 0 et 5) et un nom d\'item." /><br />';
+						new_div += '<i>Nom</i> <input id="f_nom" name="f_nom" size="'+Math.min(10+nom.length,128)+'" maxlength="256" type="text" value="'+nom+'" /> <img alt="" src="./_img/bulle_aide.png" title="Indiquer un coefficient (entier entre 0 et 5) et un nom d\'item." /><br />';
 						new_div += '<i>Socle</i> <input id="f_intitule" name="f_intitule" size="110" maxlength="256" type="text" value="'+socle_txt+'" readonly="readonly" /><input id="f_socle" name="f_socle" type="hidden" value="'+socle_id+'" /><q class="choisir_compet" title="Sélectionner un item du socle commun."></q> <img alt="" src="./_img/bulle_aide.png" title="Indiquer l\'appartenance éventuelle au socle commun." /><br />';
-						new_div += '<i>Lien</i> <input id="f_lien" name="f_lien" type="text" value="'+lien+'" size="90" /> <img alt="" src="./_img/bulle_aide.png" title="Indiquer un lien vers une ressource de remédiation (facultatif)." />';
+						new_div += '<i>Coef.</i> <input id="f_coef" name="f_coef" type="text" value="'+coef+'" size="1" maxlength="1" /> - <input id="f_cart1" name="f_cart" type="radio" value="1"'+check1+' /><label for="f_cart1"><img src="./_img/cart1.png" title="Demande possible." /></label> <input id="f_cart0" name="f_cart" type="radio" value="0"'+check0+'+ /><label for="f_cart0"><img src="./_img/cart0.png" title="Demande interdite." /></label> - <i>Lien</i> <input id="f_lien" name="f_lien" type="text" value="'+lien+'" size="90" /> <img alt="" src="./_img/bulle_aide.png" title="Indiquer un lien vers une ressource de remédiation (facultatif)." />';
 						texte = 'cet item';
 						break;
 					default :
@@ -391,10 +395,10 @@ $(document).ready
 				item_id  = $(this).parent().parent().attr('id').substring(3);
 				item_nom = htmlspecialchars( entity_convert( $('#f_nom').val() ) );
 				$('#zone_socle span.f_nom').html(item_nom);
-				// récupérer la relation au socle commun et le cocher
+				// récupérer la relation au socle commun et la cocher
 				socle_id = $(this).prev().val();
 				// 1. Décocher tout
-				$("#zone_compet input[type=radio]").each
+				$("#zone_socle input[type=radio]").each
 				(
 					function()
 					{
@@ -490,10 +494,11 @@ $(document).ready
 					$('#f_nom').focus();
 					return false;
 				}
-				// On récupère le coefficient, le lien au socle et le lien de remédiation de l'élément (item uniquement)
+				// On récupère le coefficient, l'autorisation de demande, le lien au socle et le lien de remédiation de l'élément (item uniquement)
 				if(contexte=='n3')
 				{
 					coef  = $('#f_coef').val();
+					cart  = $("input[name=f_cart]:checked").val()
 					socle = $('#f_socle').val();
 					lien  = $('#f_lien').val();
 					if(coef=='')
@@ -508,10 +513,16 @@ $(document).ready
 						$('#f_coef').focus();
 						return false;
 					}
+					if(isNaN(cart))	// normalement impossible, sauf si par exemple on triche avec la barre d'outils Web Developer...
+					{
+						$('#ajax_msg').removeAttr("class").addClass("erreur").html("Cocher si l'élève peut ou non demander une évaluation !");
+						return false;
+					}
 				}
 				else
 				{
 					coef  = 1;
+					cart  = 0;
 					socle = 0;
 					lien  = '';
 				}
@@ -540,7 +551,7 @@ $(document).ready
 					{
 						type : 'POST',
 						url : 'ajax.php?page='+PAGE,
-						data : 'action=add&contexte='+contexte+'&matiere='+matiere_id+'&parent='+parent_id+'&ordre='+ordre+'&tab_id='+tab_id+'&ref='+ref+'&coef='+coef+'&socle='+socle+'&nom='+encodeURIComponent(nom)+'&lien='+encodeURIComponent(lien),
+						data : 'action=add&contexte='+contexte+'&matiere='+matiere_id+'&parent='+parent_id+'&ordre='+ordre+'&tab_id='+tab_id+'&ref='+ref+'&coef='+coef+'&cart='+cart+'&socle='+socle+'&nom='+encodeURIComponent(nom)+'&lien='+encodeURIComponent(lien),
 						dataType : "html",
 						error : function(msg,string)
 						{
@@ -561,13 +572,15 @@ $(document).ready
 										break;
 									case 'n3' :	// item
 										coef_texte  = '<img src="./_img/x'+coef+'.gif" alt="" title="Coefficient '+coef+'." />';
-										socle_image = (socle==0) ? 'off' : 'on' ;
+										cart_title  = (cart=='1') ? 'Demande possible.' : 'Demande interdite.' ;
+										cart_texte  = '<img src="./_img/cart'+cart+'.png" title="'+cart_title+'" /> ';
+										socle_image = (socle=='1') ? 'on' : 'off' ;
 										socle_nom   = $('#f_intitule').val();
 										socle_texte = '<img src="./_img/socle_'+socle_image+'.png" alt="" title="'+socle_nom+'" lang="id_'+socle+'" />';
 										lien_image  = (lien=='') ? 'off' : 'on' ;
 										lien_nom    = (lien=='') ? 'Absence de ressource.' : htmlspecialchars(lien) ;
 										lien_texte  = '<img src="./_img/link_'+lien_image+'.png" alt="" title="'+lien_nom+'" />';
-										texte = '<b>' + coef_texte + socle_texte + lien_texte + htmlspecialchars(nom) + '</b>' + images[contexte.charAt(1)];
+										texte = '<b>' + coef_texte + cart_texte + socle_texte + lien_texte + htmlspecialchars(nom) + '</b>' + images[contexte.charAt(1)];
 										element_id = responseHTML.substring(3);
 										tab_ressources[element_id] = (lien=='') ? '' : lien_nom ;
 										break;
@@ -630,6 +643,7 @@ $(document).ready
 				if(contexte=='n3')
 				{
 					coef  = $('#f_coef').val();
+					cart  = $("input[name=f_cart]:checked").val()
 					socle = $('#f_socle').val();
 					lien  = $('#f_lien').val();
 					if(coef=='')
@@ -644,10 +658,16 @@ $(document).ready
 						$('#f_coef').focus();
 						return false;
 					}
+					if(isNaN(cart))	// normalement impossible, sauf si par exemple on triche avec la barre d'outils Web Developer...
+					{
+						$('#ajax_msg').removeAttr("class").addClass("erreur").html("Cocher si l'élève peut ou non demander une évaluation !");
+						return false;
+					}
 				}
 				else
 				{
 					coef  = 1;
+					cart  = 0;
 					socle = 0;
 					lien  = '';
 				}
@@ -660,7 +680,7 @@ $(document).ready
 					{
 						type : 'POST',
 						url : 'ajax.php?page='+PAGE,
-						data : 'action=edit&contexte='+contexte+'&element='+element_id+'&ref='+ref+'&coef='+coef+'&socle='+socle+'&nom='+encodeURIComponent(nom)+'&lien='+encodeURIComponent(lien),
+						data : 'action=edit&contexte='+contexte+'&element='+element_id+'&ref='+ref+'&coef='+coef+'&cart='+cart+'&socle='+socle+'&nom='+encodeURIComponent(nom)+'&lien='+encodeURIComponent(lien),
 						dataType : "html",
 						error : function(msg,string)
 						{
@@ -675,13 +695,15 @@ $(document).ready
 								if(contexte=='n3')
 								{
 									coef_texte  = '<img src="./_img/x'+coef+'.gif" alt="" title="Coefficient '+coef+'." />';
-									socle_image = (socle==0) ? 'off' : 'on' ;
+									cart_title  = (cart=='1') ? 'Demande possible.' : 'Demande interdite.' ;
+									cart_texte  = '<img src="./_img/cart'+cart+'.png" title="'+cart_title+'" /> ';
+									socle_image = (socle=='1') ? 'on' : 'off' ;
 									socle_nom   = $('#f_intitule').val();
 									socle_texte = '<img src="./_img/socle_'+socle_image+'.png" alt="" title="'+socle_nom+'" lang="id_'+socle_id+'" />';
 									lien_image  = (lien=='') ? 'off' : 'on' ;
 									lien_nom    = (lien=='') ? 'Absence de ressource.' : htmlspecialchars(lien) ;
 									lien_texte  = '<img src="./_img/link_'+lien_image+'.png" alt="" title="'+lien_nom+'" />';
-									$('#ajax_msg').parent().parent().children('b').html(coef_texte+socle_texte+lien_texte+texte).show();
+									$('#ajax_msg').parent().parent().children('b').html(coef_texte+cart_texte+socle_texte+lien_texte+texte).show();
 									tab_ressources[element_id] = (lien=='') ? '' : lien_nom ;
 									infobulle();
 								}

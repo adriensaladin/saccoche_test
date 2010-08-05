@@ -371,7 +371,7 @@ $(document).ready
 		);
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-//	Clic sur l'image pour Ajouter un référentiel ; cas d'une matière spécifique à l'établissement traité, ou affichage de choisir_referentiel sinon
+//	Clic sur l'image pour Ajouter un référentiel ; => affichage de choisir_referentiel même dans le cas d'une matière spécifique à l'établissement
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
 		$('q.ajouter').live // live est utilisé pour prendre en compte les nouveaux éléments créés
@@ -379,54 +379,12 @@ $(document).ready
 			function()
 			{
 				ids = $(this).parent().attr('id');
-				if(ids.substring(0,5)=='ids_1')
-				{
-					// C'est une matière spécifique à l'établissement : on ne peut que créer un nouveau référentiel
-					afficher_masquer_images_action('hide');
-					new_span = '<span><input id="succes" name="succes" type="hidden" value="0" /><label for="'+ids+'" class="loader">Demande envoyée... Veuillez patienter.</label></span>';
-					$(this).after(new_span);
-					$.ajax
-					(
-						{
-							type : 'POST',
-							url : 'ajax.php?page='+PAGE,
-							data : 'action=Ajouter&ids='+ids,
-							dataType : "html",
-							error : function(msg,string)
-							{
-								$('label[for='+ids+']').removeAttr("class").addClass("alerte").html('Echec de la connexion ! Veuillez recommencer.').fadeOut(2000,function(){$('label[for='+ids+']').remove();afficher_masquer_images_action('show');});
-								return false;
-							},
-							success : function(responseHTML)
-							{
-								maj_clock(1);
-								if(responseHTML!='ok')
-								{
-									$('label[for='+ids+']').removeAttr("class").addClass("alerte").html(responseHTML).fadeOut(2000,function(){$('label[for='+ids+']').remove();afficher_masquer_images_action('show');});
-								}
-								else
-								{
-									$('#'+ids).html('<q class="voir" title="Voir le détail de ce référentiel."></q><q class="partager_non" title="Le référentiel d\'une matière spécifique à l\'établissement ne peut être partagé."></q><q class="calculer" title="Modifier le mode de calcul associé à ce référentiel."></q><q class="supprimer" title="Supprimer ce référentiel."></q>');
-									$('#'+ids).prev().removeAttr("class").addClass("v").attr('lang',methode_calcul_langue).html(methode_calcul_texte);
-									$('#'+ids).prev().prev().removeAttr("class").addClass("v").attr('lang','hs').html('Référentiel présent. <img title="Référentiel dont le partage est sans objet (matière spécifique)." src="./_img/partage0.gif" />');
-									afficher_masquer_images_action('show');
-									$('#voir_referentiel').html('<ul class="puce"><li><label class="valide">Référentiel importé</label></li><li><span class="astuce">Pour éditer ce nouveau référentiel, utiliser la page "<a href="./index.php?page=referentiel&amp;section=detail">modifier le contenu des référentiels</a>".</span></li></ul>');
-									infobulle();
-								}
-							}
-						}
-					);
-				}
-				else
-				{
-					// C'est une matière commune : on propose d'importer un référentiel partagé existant si c'est possible
-					$('#voir_referentiel').html("&nbsp;");
-					afficher_masquer_images_action('hide');
-					new_span = '<span><input id="succes" name="succes" type="hidden" value="" /><label for="'+ids+'" class="valide">Faites votre choix ci-dessous...</label></span>';
-					$(this).after(new_span);
-					$('#choisir_importer').parent().hide();
-					$('#choisir_referentiel').show();
-				}
+				$('#voir_referentiel').html("&nbsp;");
+				afficher_masquer_images_action('hide');
+				new_span = '<span><input id="succes" name="succes" type="hidden" value="" /><label for="'+ids+'" class="valide">Faites votre choix ci-dessous...</label></span>';
+				$(this).after(new_span);
+				$('#choisir_importer').parent().hide();
+				$('#choisir_referentiel').show();
 			}
 		);
 
@@ -595,9 +553,15 @@ $(document).ready
 							}
 							else
 							{
-								$('#'+ids).html('<q class="voir" title="Voir le détail de ce référentiel."></q><q class="partager" title="Modifier le partage de ce référentiel."></q><q class="envoyer_non" title="Un référentiel non partagé ne peut pas être transmis à la collectivité."></q><q class="calculer" title="Modifier le mode de calcul associé à ce référentiel."></q><q class="supprimer" title="Supprimer ce référentiel."></q>');
+								test_matiere_perso = (ids.substring(0,5)=='ids_1') ? true : false ;
+								q_partager = (test_matiere_perso) ? '<q class="partager_non" title="Le référentiel d\'une matière spécifique à l\'établissement ne peut être partagé."></q>' : '<q class="partager" title="Modifier le partage de ce référentiel."></q>' ;
+								$('#'+ids).html('<q class="voir" title="Voir le détail de ce référentiel."></q>'+q_partager+'<q class="envoyer_non" title="Un référentiel non partagé ne peut pas être transmis à la collectivité."></q><q class="calculer" title="Modifier le mode de calcul associé à ce référentiel."></q><q class="supprimer" title="Supprimer ce référentiel."></q>');
 								$('#'+ids).prev().removeAttr("class").addClass("v").attr('lang',methode_calcul_langue).html(methode_calcul_texte);
-								if(referentiel_id!='0')
+								if(test_matiere_perso)
+								{
+									$('#'+ids).prev().prev().removeAttr("class").addClass("v").attr('lang','hs').html('Référentiel présent. <img title="Référentiel dont le partage est sans objet (matière spécifique)." src="./_img/partage0.gif" />');
+								}
+								else if(referentiel_id!='0')
 								{
 									$('#'+ids).prev().prev().removeAttr("class").addClass("v").attr('lang','bof').html('Référentiel présent. <img title="Référentiel dont le partage est sans intérêt (pas novateur)." src="./_img/partage0.gif" />');
 								}

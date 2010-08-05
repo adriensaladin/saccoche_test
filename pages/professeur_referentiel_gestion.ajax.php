@@ -185,16 +185,16 @@ elseif( ($action=='Ajouter') && $matiere_id && $niveau_id )
 	{
 		exit('Ce référentiel existe déjà ! Un autre administrateur de la même matière vient probablement de l\'importer... Actualisez cette page.');
 	}
-	if( ($perso==1) || ($referentiel_id==0) )
+	if($referentiel_id==0)
 	{
-		// C'est une matière spécifique à l'établissement, ou une demande de partir d'un référentiel vierge : on ne peut que créer un nouveau référentiel
+		// C'est une demande de partir d'un référentiel vierge : on ne peut que créer un nouveau référentiel
 		$partage = ($perso==1) ? 'hs' : 'non' ;
 		DB_STRUCTURE_ajouter_referentiel($matiere_id,$niveau_id,$partage);
 		exit('ok');
 	}
 	elseif($referentiel_id>0)
 	{
-		// C'est une matière partagée, et une demande de récupérer un référentiel provenant du serveur communautaire pour se le dupliquer
+		// C'est une demande de récupérer un référentiel provenant du serveur communautaire pour se le dupliquer
 		if( (!$_SESSION['SESAMATH_ID']) || (!$_SESSION['SESAMATH_KEY']) )
 		{
 			exit('Pour échanger avec le serveur communautaire, un administrateur doit identifier l\'établissement dans la base Sésamath.');
@@ -212,12 +212,13 @@ elseif( ($action=='Ajouter') && $matiere_id && $niveau_id )
 			exit($test_XML_valide);
 		}
 		DB_STRUCTURE_importer_arborescence_from_XML($arbreXML,$matiere_id,$niveau_id);
-		DB_STRUCTURE_ajouter_referentiel($matiere_id,$niveau_id,$partage='bof');
+		$partage = ($perso==1) ? 'hs' : 'bof' ;
+		DB_STRUCTURE_ajouter_referentiel($matiere_id,$niveau_id,$partage);
 		exit('ok');
 	}
-	elseif($referentiel_id==-1)
+	else
 	{
-		// C'est une matière partagée, et une demande de dupliquer le référentiel d'un autre établissement, mais rien n'est transmis (normalement impossible)
+		// C'est une demande de dupliquer le référentiel d'un autre établissement, mais rien n'est transmis (normalement impossible)
 		exit('Erreur avec les données transmises !');
 	}
 }

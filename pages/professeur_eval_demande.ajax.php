@@ -32,14 +32,14 @@ $action      = (isset($_POST['f_action']))      ? clean_texte($_POST['f_action']
 $action      = (isset($_POST['f_quoi']))        ? clean_texte($_POST['f_quoi'])        : $action;	// pour le form1
 $matiere_id  = (isset($_POST['f_matiere']))     ? clean_entier($_POST['f_matiere'])    : 0;
 $matiere_nom = (isset($_POST['f_matiere_nom'])) ? clean_texte($_POST['f_matiere_nom']) : '';
-$groupe_id   = (isset($_POST['f_groupe_id']))   ? clean_entier($_POST['f_groupe_id'])  : 0;
+$groupe_id   = (isset($_POST['f_groupe_id']))   ? clean_entier($_POST['f_groupe_id'])  : 0;			// C'est l'id du groupe d'appartenance de l'élève, pas l'id du groupe associé à un devoir
 $groupe_type = (isset($_POST['f_groupe_type'])) ? clean_texte($_POST['f_groupe_type']) : '';
 $groupe_nom  = (isset($_POST['f_groupe_nom']))  ? clean_texte($_POST['f_groupe_nom'])  : '';
 
 $qui         = (isset($_POST['f_qui']))         ? clean_texte($_POST['f_qui'])         : '';
 $date        = (isset($_POST['f_date']))        ? clean_texte($_POST['f_date'])        : '';
 $info        = (isset($_POST['f_info']))        ? clean_texte($_POST['f_info'])        : '';
-$devoir_id   = (isset($_POST['f_devoir']))      ? clean_entier($_POST['f_devoir'])     : 0;
+$devoir_ids  = (isset($_POST['f_devoir']))      ? clean_texte($_POST['f_devoir'])      : '';
 $suite       = (isset($_POST['f_suite']))       ? clean_texte($_POST['f_suite'])       : '';
 
 $tab_demande_id = array();
@@ -70,6 +70,8 @@ $nb_items    = count($tab_item_id);
 $tab_types = array('Classes'=>'classe' , 'Groupes'=>'groupe' , 'Besoins'=>'groupe');
 $tab_qui   = array('groupe','select');
 $tab_suite = array('changer','retirer');
+
+list($devoir_id,$devoir_groupe_id) = (substr_count($devoir_ids,'_')==1) ? explode('_',$devoir_ids) : array(0,0);
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 //	Afficher une liste de demandes
@@ -131,7 +133,7 @@ if( ($action=='Afficher_demandes') && $matiere_id && $matiere_nom && $groupe_id 
 		$tab_bon[] = '<i>'.sprintf("%02u",$DB_ROW['popularite']).'</i>'.$DB_ROW['popularite'].' demande'.$s;
 	}
 	// Inclure dans le retour la liste des élèves sans demandes
-	echo '<td>'.implode('<br />',$tab_autres).'</td>'.'◄■►'.str_replace($tab_bad,$tab_bon,$retour);
+	echo '<td>'.implode('<br />',$tab_autres).'</td>'.'<¤>'.str_replace($tab_bad,$tab_bon,$retour);
 }
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
@@ -175,13 +177,13 @@ elseif( ($action=='creer') && $groupe_id && (isset($tab_types[$groupe_type])) &&
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 //	Compléter une évaluation existante
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-elseif( ($action=='completer') && $groupe_id && (isset($tab_types[$groupe_type])) && in_array($qui,$tab_qui) && $devoir_id && in_array($suite,$tab_suite) && $nb_demandes && $nb_users && $nb_items && $date )
+elseif( ($action=='completer') && (isset($tab_types[$groupe_type])) && in_array($qui,$tab_qui) && $devoir_id && $devoir_groupe_id && in_array($suite,$tab_suite) && $nb_demandes && $nb_users && $nb_items && $date )
 {
 	// Dans le cas d'une évaluation sur une liste d'élèves sélectionnés
 	if($qui=='select')
 	{
 		// Il faut ajouter tous les élèves choisis
-		DB_STRUCTURE_modifier_liaison_devoir_user($groupe_id,$tab_user_id,'ajouter');
+		DB_STRUCTURE_modifier_liaison_devoir_user($devoir_groupe_id,$tab_user_id,'ajouter'); // ($devoir_groupe_id et non $groupe_id qui correspond à la classe d'origine des élèves...)
 	}
 	// Maintenant on peut modifier les items de l'évaluation
 	DB_STRUCTURE_modifier_liaison_devoir_item($devoir_id,$tab_item_id,'ajouter');

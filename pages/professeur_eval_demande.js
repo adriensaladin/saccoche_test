@@ -177,7 +177,7 @@ $(document).ready
 		function retour_form_valide0(responseHTML)
 		{
 			maj_clock(1);
-			tab_response = responseHTML.split('◄■►');
+			tab_response = responseHTML.split('<¤>');
 			if( tab_response.length!=2 )
 			{
 				$('#ajax_msg0').removeAttr("class").addClass("alerte").html(responseHTML);

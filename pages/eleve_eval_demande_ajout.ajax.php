@@ -28,13 +28,12 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 if($_SESSION['SESAMATH_ID']==ID_DEMO) {}
 
-$eleve_id   = (isset($_GET['eleve_id']))   ? clean_entier($_GET['eleve_id'])   : 0;
 $matiere_id = (isset($_GET['matiere_id'])) ? clean_entier($_GET['matiere_id']) : 0;
 $item_id    = (isset($_GET['item_id']))    ? clean_entier($_GET['item_id'])    : 0;
 $score      = (isset($_GET['score']))      ? clean_entier($_GET['score'])      : -2; // normalement entier entre 0 et 100 ou -1 si non évalué
 
 // Un élève demande souhaite ajouter une demande d'évaluation.
-if( ($eleve_id==0) || ($matiere_id==0) || ($item_id==0) || ($score==-2) )
+if( ($matiere_id==0) || ($item_id==0) || ($score==-2) )
 {
 	$reponse = 'Erreur avec les données transmises !';
 }
@@ -46,30 +45,46 @@ elseif($_SESSION['ELEVE_DEMANDES']==0)
 // Vérifier qu'il reste des demandes disponibles pour l'élève et la matière concernés (on compte le nb de demandes en attente)
 else
 {
-	$nb_demandes_attente = DB_STRUCTURE_compter_demandes_eleve_matiere($eleve_id,$matiere_id);
+	$nb_demandes_attente = DB_STRUCTURE_compter_demandes_eleve_matiere($_SESSION['USER_ID'],$matiere_id);
 	$nb_demandes_possibles = $_SESSION['ELEVE_DEMANDES'] - $nb_demandes_attente ;
 	if($nb_demandes_possibles>0)
 	{
 		// Vérifier que cet item n'est pas déjà en attente d'évaluation pour cet élève
-		if( DB_STRUCTURE_tester_demande_existante($eleve_id,$matiere_id,$item_id) )
+		if( DB_STRUCTURE_tester_demande_existante($_SESSION['USER_ID'],$matiere_id,$item_id) )
 		{
 			$reponse = 'Cette demande est déjà enregistrée !';
 		}
-		// Vérifier que cet item n'est pas interdit à la sollitation
-		elseif( DB_STRUCTURE_tester_demande_interdite($item_id) )
-		{
-			$reponse = 'La demande de cet item est interdite !';
-		}
 		else
 		{
-			$score = ($score!=-1) ? $score : NULL ;
-			$date_mysql = date("Y-m-d");	// date_mysql de la forme aaaa-mm-jj
-			DB_STRUCTURE_ajouter_demande($eleve_id,$matiere_id,$item_id,$date_mysql,$score,$statut='eleve');
-			$nb_demandes_attente++;
-			$nb_demandes_possibles--;
-			$reponse = 'Votre demande a été ajoutée.<br />';
-			$s = ($nb_demandes_possibles>1) ? 's' : '' ;
-			$reponse .= ($nb_demandes_possibles==0) ? 'Vous ne pouvez plus formuler d\'autres demandes pour cette matière.' : 'Vous pouvez encore formuler '.$nb_demandes_possibles.' demande'.$s.' pour cette matière.' ;
+			// Vérifier que cet item n'est pas interdit à la sollitation et récupérer sa référence et son nom
+			$DB_ROW = DB_STRUCTURE_recuperer_item_infos($item_id);
+			if($DB_ROW['item_cart']==0)
+			{
+				$reponse = 'La demande de cet item est interdite !';
+			}
+			else
+			{
+				// Enregistrement
+				$score = ($score!=-1) ? $score : NULL ;
+				$date_mysql = date("Y-m-d");	// date_mysql de la forme aaaa-mm-jj
+				$demande_id = DB_STRUCTURE_ajouter_demande($_SESSION['USER_ID'],$matiere_id,$item_id,$date_mysql,$score,$statut='eleve');
+				// Ajout aux flux RSS des profs concernés
+				$titre = 'Demande ajoutée par '.$_SESSION['USER_NOM'].' '.$_SESSION['USER_PRENOM']{0}.'.';
+				$texte = $_SESSION['USER_PRENOM'].' '.$_SESSION['USER_NOM'].' demande à être évalué sur l\'item '.$DB_ROW['item_ref'].' intitulé "'.$DB_ROW['item_nom'].'"';
+				$guid  = 'demande_'.$demande_id.'_add';
+				// On récupère les profs...
+				$DB_TAB = DB_STRUCTURE_recuperer_professeurs_eleve_matiere($_SESSION['USER_ID'],$matiere_id);
+				foreach($DB_TAB as $DB_ROW)
+				{
+					Modifier_RSS(adresse_RSS($DB_ROW['user_id']),$titre,$texte,$guid);
+				}
+				// Affichage du retour
+				$nb_demandes_attente++;
+				$nb_demandes_possibles--;
+				$reponse = 'Votre demande a été ajoutée.<br />';
+				$s = ($nb_demandes_possibles>1) ? 's' : '' ;
+				$reponse .= ($nb_demandes_possibles==0) ? 'Vous ne pouvez plus formuler d\'autres demandes pour cette matière.' : 'Vous pouvez encore formuler '.$nb_demandes_possibles.' demande'.$s.' pour cette matière.' ;
+			}
 		}
 	}
 	else

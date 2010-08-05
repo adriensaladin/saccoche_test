@@ -274,7 +274,7 @@ function fabriquer_mdp()
 
 function crypter_mdp($password)
 {
-	// Le "salage" complique la recherche d'un mdp ) partir de son empreinte md5 en utilisant une table arc-en-ciel
+	// Le "salage" complique la recherche d'un mdp à partir de son empreinte md5 en utilisant une table arc-en-ciel
 	return md5('grain_de_sel'.$password);
 }
 
@@ -546,7 +546,7 @@ function connecter_user($BASE,$profil,$login,$password,$mode_connection)
 	// Si erreur de profil...
 	if( ( ($profil!='administrateur')&&($DB_ROW['user_profil']=='administrateur') ) || ( ($profil=='administrateur')&&($DB_ROW['user_profil']!='administrateur') ) )
 	{
-		return'Ces identifiants sont ceux d\'un '.$DB_ROW['user_profil'].' : utilisez le formulaire approprié !';
+		return'Utilisez le formulaire approprié aux '.str_replace('eleve','élève',$DB_ROW['user_profil']).'s !';
 	}
 	// Si on arrive ici c'est que l'identification s'est bien effectuée !
 	// Enregistrer le numéro de la base
@@ -1217,5 +1217,84 @@ function Ecrire_Fichier($fichier_chemin,$fichier_contenu,$file_append=0)
 	}
 }
 
+/**
+ * Nommer_RSS
+ * Retourne ne chemin du fichier RSS d'un prof ; s'il n'existe pas, en créer un vierge (pour recueillir les demandes d'évaluations des élèves).
+ * 
+ * @param int     $prof_id
+ * @return string
+ */
+
+function adresse_RSS($prof_id)
+{
+	// Le nom du RSS est tordu pour le rendre un minimum privé ; il peut être retrouvé, mais très difficilement, par un bidouilleur qui met le nez dans le code, mais il n'y a rien de confidentiel non plus.
+	$fichier_nom_debut = 'rss_'.$_SESSION['BASE'].'_'.$prof_id;
+	$fichier_nom_fin = md5($fichier_nom_debut.$_SERVER['DOCUMENT_ROOT']);
+	$fichier_chemin = './__tmp/rss/'.$fichier_nom_debut.'_'.$fichier_nom_fin.'.xml';
+	if(!file_exists($fichier_chemin))
+	{
+		$fichier_contenu ='<?xml version="1.0" encoding="utf-8"?>'."\r\n";
+		$fichier_contenu.='<rss version="2.0">'."\r\n";
+		$fichier_contenu.='<channel>'."\r\n\r\n";
+		$fichier_contenu.='	<title>SACoche</title>'."\r\n";
+		$fichier_contenu.='	<link>'.SERVEUR_ADRESSE.'</link>'."\r\n";
+		$fichier_contenu.='	<description>Demandes d\'évaluations.</description>'."\r\n";
+		$fichier_contenu.='	<language>fr-FR</language>'."\r\n";
+		$fichier_contenu.='	<lastBuildDate>'.date("r",time()).'</lastBuildDate>'."\r\n";
+		$fichier_contenu.='	<docs>http://www.scriptol.fr/rss/RSS-2.0.html</docs>'."\r\n";
+		$fichier_contenu.='	<image>'."\r\n";
+		$fichier_contenu.='		<url>http://sacoche.sesamath.net/_img/logo_grand.gif</url>'."\r\n";
+		$fichier_contenu.='		<title>SACoche</title>'."\r\n";
+		$fichier_contenu.='		<link>http://sacoche.sesamath.net</link>'."\r\n";
+		$fichier_contenu.='		<width>208</width>'."\r\n";
+		$fichier_contenu.='		<height>71</height>'."\r\n";
+		$fichier_contenu.='		<description></description>'."\r\n";
+		$fichier_contenu.='	</image>'."\r\n\r\n";
+		$fichier_contenu.='</channel>'."\r\n";
+		$fichier_contenu.='</rss>'."\r\n";
+		Ecrire_Fichier($fichier_chemin,$fichier_contenu);
+	}
+	return $fichier_chemin;
+}
+
+/**
+ * Modifier_RSS
+ * Mettre à jour le fichier RSS vierge d'un prof avec une demande d'évaluation d'élève.
+ * 
+ * @param string   $fichier_chemin
+ * @param string   $titre
+ * @param string   $texte
+ * @param string   $guid
+ * @return void
+ */
+
+function Modifier_RSS($fichier_chemin,$titre,$texte,$guid)
+{
+	// Ajouter l'article
+	$date = date("r",time());
+	$fichier_contenu = file_get_contents($fichier_chemin); // Il existe déjà car adresse_RSS() a forcément été appelée avant
+	$article ='	<item>'."\r\n";
+	$article.='		<title>'.html($titre).'</title>'."\r\n";
+	$article.='		<link>'.SERVEUR_ADRESSE.'</link>'."\r\n";
+	$article.='		<description>'.html($texte).'</description>'."\r\n";
+	$article.='		<pubDate>'.$date.'</pubDate>'."\r\n";
+	$article.='		<guid isPermaLink="false">'.$guid.'</guid>'."\r\n";
+	$article.='	</item>'."\r\n\r\n";
+	$bad = '	</image>'."\r\n\r\n";
+	$bon = '	</image>'."\r\n\r\n".$article;
+	$fichier_contenu = str_replace($bad,$bon,$fichier_contenu);
+	// Mettre à jour la date de reconstruction
+	$pbad = '#<lastBuildDate>(.*?)</lastBuildDate>#';
+	$pbon = '<lastBuildDate>'.$date.'</lastBuildDate>';
+	$fichier_contenu = preg_replace($pbad,$pbon,$fichier_contenu);
+	// Couper si le fichier est long (on le ramène à 100Ko)
+	if(mb_strlen($fichier_contenu)>120000)
+	{
+		$pos = mb_strpos($fichier_contenu,'</item>',100000);
+		$fichier_contenu = mb_substr($fichier_contenu,0,$pos).'</item>'."\r\n\r\n".'</channel>'."\r\n";
+	}
+	// Enregistrer
+	Ecrire_Fichier($fichier_chemin,$fichier_contenu);
+}
 
 ?>

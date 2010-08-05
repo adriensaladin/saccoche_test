@@ -26,46 +26,54 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
+$TITRE = "Résultats aux évaluations";
+$VERSION_JS_FILE += 0;
 ?>
 
-<ul class="puce">
-	<li><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=environnement_generalites__demandes_evaluations">DOC : Demandes d'évaluations.</a></span></li>
-	<li><span class="astuce">Vous avez la possibilité de formuler au maximum <?php echo $_SESSION['ELEVE_DEMANDES'] ?> demande<?php echo ($_SESSION['ELEVE_DEMANDES']>1) ? 's' : '' ; ?> par matière.</span></li>
-</ul>
+<?php
+// Dates par défaut de début et de fin
+$date_debut  = date("d/m/Y",mktime(0,0,0,date("m")-1,date("d"),date("Y"))); // Il y a 1 mois
+$date_fin    = date("d/m/Y");
+?>
 
-<hr />
+<form action="" id="form"><fieldset>
+	<label class="tab" for="f_periode">Période :</label>du <input id="f_date_debut" name="f_date_debut" size="9" type="text" value="<?php echo $date_debut ?>" /><q class="date_calendrier" title="Cliquez sur cette image pour importer une date depuis un calendrier !"></q> au <input id="f_date_fin" name="f_date_fin" size="9" type="text" value="<?php echo $date_fin ?>" /><q class="date_calendrier" title="Cliquez sur cette image pour importer une date depuis un calendrier !"></q><br />
+	<span class="tab"></span><input type="hidden" name="f_action" value="Afficher_evaluations" /><button id="actualiser" type="submit"><img alt="" src="./_img/bouton/actualiser.png" /> Actualiser l'affichage.</button><label id="ajax_msg">&nbsp;</label>
+</fieldset></form>
 
-<form action="">
+
+<form id="zone_eval_choix" class="hide" action="">
+	<hr />
 	<table class="form">
 		<thead>
 			<tr>
 				<th>Date</th>
-				<th>Matière</th>
-				<th>Item</th>
-				<th>Score</th>
-				<th>Statut</th>
+				<th>Professeur</th>
+				<th>Description</th>
 				<th class="nu"></th>
 			</tr>
 		</thead>
 		<tbody>
-			<?php
-			// Lister les demandes d'évaluation
-			$DB_TAB = DB_STRUCTURE_lister_demandes_eleve($_SESSION['USER_ID']);
-			foreach($DB_TAB as $DB_ROW)
-			{
-				$score  = ($DB_ROW['demande_score']!==null) ? $DB_ROW['demande_score'] : false ;
-				$statut = ($DB_ROW['demande_statut']=='eleve') ? 'demande non traitée' : 'évaluation en préparation' ;
-				// Afficher une ligne du tableau 
-				echo'<tr id="ids_'.$DB_ROW['demande_id'].'_'.$DB_ROW['item_id'].'_'.$DB_ROW['matiere_id'].'">';
-				echo	'<td><i>'.html($DB_ROW['demande_date']).'</i>'.convert_date_mysql_to_french($DB_ROW['demande_date']).'</td>';
-				echo	'<td>'.html($DB_ROW['matiere_nom']).'</td>';
-				echo	'<td>'.html($DB_ROW['item_ref']).' <img alt="" src="./_img/bulle_aide.png" title="'.html($DB_ROW['item_nom']).'" /></td>';
-				echo	affich_score_html($score,'score',$pourcent='');
-				echo	'<td>'.$statut.'</td>';
-				echo	'<td class="nu"><q class="supprimer" title="Supprimer cette demande d\'évaluation."></q></td>';
-				echo'</tr>';
-			}
-			?>
+			<tr><td class="nu" colspan="4"></td></tr>
 		</tbody>
 	</table>
 </form>
+
+<div id="zone_eval_detail" class="comp_view hide">
+	<hr />
+	<p id="titre_voir" class="ti b"></p>
+	<table id="table_voir">
+		<thead>
+			<tr>
+				<th>Ref.</th>
+				<th>Nom de l'item</th>
+				<th>Note à<br />ce devoir</th>
+				<th>Score<br />cumulé</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr><td class="nu" colspan="4"></td></tr>
+		</tbody>
+	</table>
+	<p />
+</div>

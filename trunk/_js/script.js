@@ -526,15 +526,14 @@ $(document).ready
 			function(e)
 			{
 				// Récupérer les infos associées
-				infos = $(this).attr("lang");    // 'ids_' + eleve_id + '_' + matiere_id + '_' + item_id + '_' + score
+				infos = $(this).attr("lang");    // 'ids_' + matiere_id + '_' + item_id + '_' + score
 				tab_infos = infos.split('_');
-				if(tab_infos.length==5)
+				if(tab_infos.length==4)
 				{
-					eleve_id   = tab_infos[1];
-					matiere_id = tab_infos[2];
-					item_id    = tab_infos[3];
-					score      = (tab_infos[4]!='') ? tab_infos[4] : -1 ; // si absence de score...
-					get_data   = 'eleve_id='+eleve_id+'&matiere_id='+matiere_id+'&item_id='+item_id+'&score='+score;
+					matiere_id = tab_infos[1];
+					item_id    = tab_infos[2];
+					score      = (tab_infos[3]!='') ? tab_infos[3] : -1 ; // si absence de score...
+					get_data   = 'matiere_id='+matiere_id+'&item_id='+item_id+'&score='+score;
 				}
 				else
 				{

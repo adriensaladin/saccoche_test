@@ -61,8 +61,12 @@ $(document).ready
 		{
 			mode = $(this).attr('class');
 			afficher_masquer_images_action('hide');
-			id = $(this).parent().parent().attr('id').substring(3);
-			new_span  = '<span class="danger"><input id="f_action" name="f_action" type="hidden" value="'+mode+'" /><input id="f_id" name="f_id" type="hidden" value="'+id+'" />Confirmez vous ?<q class="valider" title="Confirmer la suppression de cette demande."></q><q class="annuler" title="Annuler la suppression de cette demande."></q> <label id="ajax_msg">&nbsp;</label></span>';
+			ids = $(this).parent().parent().attr('id');
+			tableau = ids.split('_');
+			demande_id = tableau[1];
+			item_id    = tableau[2];
+			matiere_id = tableau[3];
+			new_span  = '<span class="danger"><input id="f_action" name="f_action" type="hidden" value="'+mode+'" /><input id="f_demande_id" name="f_demande_id" type="hidden" value="'+demande_id+'" /><input id="f_item_id" name="f_item_id" type="hidden" value="'+item_id+'" /><input id="f_matiere_id" name="f_matiere_id" type="hidden" value="'+matiere_id+'" />Confirmez vous ?<q class="valider" title="Confirmer la suppression de cette demande."></q><q class="annuler" title="Annuler la suppression de cette demande."></q> <label id="ajax_msg">&nbsp;</label></span>';
 			$(this).after(new_span);
 			infobulle();
 		};

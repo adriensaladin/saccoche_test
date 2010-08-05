@@ -368,6 +368,28 @@ function DB_STRUCTURE_recuperer_associations_entrees_socle()
 }
 
 /**
+ * DB_STRUCTURE_recuperer_item_infos
+ * 
+ * @param int   $item_id
+ * @return int
+ */
+
+function DB_STRUCTURE_recuperer_item_infos($item_id)
+{
+	$DB_SQL = 'SELECT item_nom , item_cart , ';
+	$DB_SQL.= 'CONCAT(matiere_ref,".",niveau_ref,".",domaine_ref,theme_ordre,item_ordre) AS item_ref ';
+	$DB_SQL.= 'FROM sacoche_referentiel_item ';
+	$DB_SQL.= 'LEFT JOIN sacoche_referentiel_theme USING (theme_id) ';
+	$DB_SQL.= 'LEFT JOIN sacoche_referentiel_domaine USING (domaine_id) ';
+	$DB_SQL.= 'LEFT JOIN sacoche_matiere USING (matiere_id) ';
+	$DB_SQL.= 'LEFT JOIN sacoche_niveau USING (niveau_id) ';
+	$DB_SQL.= 'WHERE item_id=:item_id ';
+	$DB_SQL.= 'LIMIT 1';
+	$DB_VAR = array(':item_id'=>$item_id);
+	return DB::queryRow(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+}
+
+/**
  * DB_version_base
  * 
  * @param void
@@ -424,6 +446,54 @@ function DB_STRUCTURE_recuperer_item_popularite($listing_demande_id,$listing_use
 	$DB_SQL.= 'WHERE demande_id IN('.$listing_demande_id.') AND user_id IN('.$listing_user_id.') ';
 	$DB_SQL.= 'GROUP BY item_id ';
 	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , null);
+}
+
+/**
+ * DB_STRUCTURE_recuperer_professeurs_eleve_matiere
+ * Retourner une liste de professeurs attachés à un élève identifié et une matière donnée.
+ * 
+ * @param int $eleve_id
+ * @param int $matiere_id
+ * @return array
+ */
+
+function DB_STRUCTURE_recuperer_professeurs_eleve_matiere($eleve_id,$matiere_id)
+{
+	// On connait la classe ($_SESSION['ELEVE_CLASSE_ID']), donc on commence par récupérer les groupes éventuels associés à l'élève
+	// DB::query(SACOCHE_STRUCTURE_BD_NAME , 'SET group_concat_max_len = ...'); // Pour lever si besoin une limitation de GROUP_CONCAT (group_concat_max_len est par défaut limité à une chaine de 1024 caractères).
+	$DB_SQL = 'SELECT GROUP_CONCAT(DISTINCT groupe_id SEPARATOR ",") AS sacoche_liste_groupe_id ';
+	$DB_SQL.= 'FROM sacoche_jointure_user_groupe ';
+	$DB_SQL.= 'LEFT JOIN sacoche_groupe USING (groupe_id) ';
+	$DB_SQL.= 'WHERE user_id=:user_id AND groupe_type=:type2 ';
+	$DB_SQL.= 'GROUP BY user_id ';
+	$DB_VAR = array(':user_id'=>$eleve_id,':type2'=>'groupe');
+	$DB_ROW = DB::queryRow(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+	if( (!$_SESSION['ELEVE_CLASSE_ID']) && (!count($DB_ROW)) )
+	{
+		// élève sans classe et sans groupe
+		return false;
+	}
+	if(!count($DB_ROW))
+	{
+		$liste_groupes = $_SESSION['ELEVE_CLASSE_ID'];
+	}
+	elseif(!$_SESSION['ELEVE_CLASSE_ID'])
+	{
+		$liste_groupes = $DB_ROW['sacoche_liste_groupe_id'];
+	}
+	else
+	{
+		$liste_groupes = $_SESSION['ELEVE_CLASSE_ID'].','.$DB_ROW['sacoche_liste_groupe_id'];
+	}
+	// Maintenant qu'on a la matière et la classe / les groupes, on cherche les profs à la fois dans sacoche_jointure_user_matiere et sacoche_jointure_user_groupe .
+	// On part de sacoche_jointure_user_matiere qui en contient que des profs.
+	$DB_SQL = 'SELECT DISTINCT(user_id) ';
+	$DB_SQL.= 'FROM sacoche_jointure_user_matiere ';
+	$DB_SQL.= 'LEFT JOIN sacoche_user USING (user_id) ';
+	$DB_SQL.= 'LEFT JOIN sacoche_jointure_user_groupe USING (user_id) ';
+	$DB_SQL.= 'WHERE matiere_id=:matiere_id AND groupe_id IN('.$liste_groupes.') ';
+	$DB_VAR = array(':matiere_id'=>$matiere_id);
+	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
 /**
@@ -1202,7 +1272,7 @@ function DB_STRUCTURE_lister_demandes_eleve($user_id)
 {
 	$DB_SQL = 'SELECT sacoche_demande.*, ';
 	$DB_SQL.= 'CONCAT(niveau_ref,".",domaine_ref,theme_ordre,item_ordre) AS item_ref , ';
-	$DB_SQL.= 'item_nom , matiere_nom ';
+	$DB_SQL.= 'item_id , item_nom , sacoche_matiere.matiere_id AS matiere_id  , matiere_nom ';
 	$DB_SQL.= 'FROM sacoche_demande ';
 	$DB_SQL.= 'LEFT JOIN sacoche_referentiel_item USING (item_id) ';
 	$DB_SQL.= 'LEFT JOIN sacoche_referentiel_theme USING (theme_id) ';
@@ -1434,23 +1504,6 @@ function DB_STRUCTURE_tester_demande_existante($eleve_id,$matiere_id,$item_id)
 	$DB_SQL.= 'WHERE user_id=:eleve_id AND matiere_id=:matiere_id AND item_id=:item_id ';
 	$DB_SQL.= 'LIMIT 1';
 	$DB_VAR = array(':eleve_id'=>$eleve_id,':matiere_id'=>$matiere_id,':item_id'=>$item_id);
-	$DB_ROW = DB::queryRow(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-	return count($DB_ROW) ;
-}
-
-/**
- * DB_STRUCTURE_tester_demande_interdite
- * 
- * @param int   $item_id
- * @return int
- */
-
-function DB_STRUCTURE_tester_demande_interdite($item_id)
-{
-	$DB_SQL = 'SELECT item_id FROM sacoche_referentiel_item ';
-	$DB_SQL.= 'WHERE item_id=:item_id AND item_cart=:item_cart ';
-	$DB_SQL.= 'LIMIT 1';
-	$DB_VAR = array(':item_id'=>$item_id,':item_cart'=>0);
 	$DB_ROW = DB::queryRow(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 	return count($DB_ROW) ;
 }
@@ -1859,7 +1912,7 @@ function DB_STRUCTURE_ajouter_validation($type,$user_id,$element_id,$validation_
  * @param string   $demande_date_mysql
  * @param int|null $demande_score
  * @param string   $demande_statut
- * @return void
+ * @return int
  */
 
 function DB_STRUCTURE_ajouter_demande($eleve_id,$matiere_id,$item_id,$demande_date_mysql,$demande_score,$demande_statut)
@@ -1868,6 +1921,7 @@ function DB_STRUCTURE_ajouter_demande($eleve_id,$matiere_id,$item_id,$demande_da
 	$DB_SQL.= 'VALUES(:eleve_id,:matiere_id,:item_id,:demande_date,:demande_score,:demande_statut)';
 	$DB_VAR = array(':eleve_id'=>$eleve_id,':matiere_id'=>$matiere_id,':item_id'=>$item_id,':demande_date'=>$demande_date_mysql,':demande_score'=>$demande_score,':demande_statut'=>$demande_statut);
 	DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+	return DB::getLastOid(SACOCHE_STRUCTURE_BD_NAME);
 }
 
 /**
@@ -2469,10 +2523,12 @@ function DB_STRUCTURE_modifier_liaison_devoir_user($groupe_id,$tab_eleves,$mode)
 	if($mode!='creer')
 	{
 		// DB::query(SACOCHE_STRUCTURE_BD_NAME , 'SET group_concat_max_len = ...'); // Pour lever si besoin une limitation de GROUP_CONCAT (group_concat_max_len est par défaut limité à une chaine de 1024 caractères).
-		$DB_SQL = 'SELECT GROUP_CONCAT(user_id SEPARATOR " ") AS users_listing FROM sacoche_jointure_user_groupe ';
-		$DB_SQL.= 'WHERE groupe_id=:groupe_id ';
+		$DB_SQL = 'SELECT GROUP_CONCAT(user_id SEPARATOR " ") AS users_listing ';
+		$DB_SQL.= 'FROM sacoche_jointure_user_groupe ';
+		$DB_SQL.= 'LEFT JOIN sacoche_user USING(user_id) ';
+		$DB_SQL.= 'WHERE groupe_id=:groupe_id AND user_profil=:profil ';
 		$DB_SQL.= 'GROUP BY groupe_id';
-		$DB_VAR = array(':groupe_id'=>$groupe_id);
+		$DB_VAR = array(':groupe_id'=>$groupe_id,':profil'=>'eleve');
 		$DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 		$tab_eleves_avant = (count($DB_TAB)) ? explode(' ',$DB_TAB[0]['users_listing']) : array() ;
 	}
@@ -3207,31 +3263,28 @@ function DB_STRUCTURE_OPT_matieres_eleve($user_id)
 		// élève sans classe et sans groupe
 		return 'Aucune classe et aucun groupe ne vous est affecté !';
 	}
+	if(!count($DB_ROW))
+	{
+		$liste_groupes = $_SESSION['ELEVE_CLASSE_ID'];
+	}
+	elseif(!$_SESSION['ELEVE_CLASSE_ID'])
+	{
+		$liste_groupes = $DB_ROW['sacoche_liste_groupe_id'];
+	}
 	else
 	{
-		if(!count($DB_ROW))
-		{
-			$liste_groupes = $_SESSION['ELEVE_CLASSE_ID'];
-		}
-		elseif(!$_SESSION['ELEVE_CLASSE_ID'])
-		{
-			$liste_groupes = $DB_ROW['sacoche_liste_groupe_id'];
-		}
-		else
-		{
-			$liste_groupes = $_SESSION['ELEVE_CLASSE_ID'].','.$DB_ROW['sacoche_liste_groupe_id'];
-		}
-		// Ensuite on récupère les matières des professeurs qui sont associés à la liste des groupes récupérés
-		$DB_SQL = 'SELECT matiere_id AS valeur, matiere_nom AS texte FROM sacoche_user ';
-		$DB_SQL.= 'LEFT JOIN sacoche_jointure_user_groupe USING (user_id) ';
-		$DB_SQL.= 'LEFT JOIN sacoche_jointure_user_matiere USING (user_id) ';
-		$DB_SQL.= 'LEFT JOIN sacoche_matiere USING (matiere_id) ';
-		$DB_SQL.= 'WHERE groupe_id IN('.$liste_groupes.') ';
-		$DB_SQL.= 'GROUP BY matiere_id ';
-		$DB_SQL.= 'ORDER BY matiere_nom ASC';
-		$DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , null);
-		return count($DB_TAB) ? $DB_TAB : 'Vous n\'avez pas de professeur rattaché à une matière !' ;
+		$liste_groupes = $_SESSION['ELEVE_CLASSE_ID'].','.$DB_ROW['sacoche_liste_groupe_id'];
 	}
+	// Ensuite on récupère les matières des professeurs qui sont associés à la liste des groupes récupérés
+	$DB_SQL = 'SELECT matiere_id AS valeur, matiere_nom AS texte FROM sacoche_user ';
+	$DB_SQL.= 'LEFT JOIN sacoche_jointure_user_groupe USING (user_id) ';
+	$DB_SQL.= 'LEFT JOIN sacoche_jointure_user_matiere USING (user_id) ';
+	$DB_SQL.= 'LEFT JOIN sacoche_matiere USING (matiere_id) ';
+	$DB_SQL.= 'WHERE groupe_id IN('.$liste_groupes.') ';
+	$DB_SQL.= 'GROUP BY matiere_id ';
+	$DB_SQL.= 'ORDER BY matiere_nom ASC';
+	$DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , null);
+	return count($DB_TAB) ? $DB_TAB : 'Vous n\'avez pas de professeur rattaché à une matière !' ;
 }
 
 /**

@@ -360,6 +360,15 @@ function maj_base($version_actuelle)
 		// y compris la mise à jour du champ "version_base" justement
 		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_actuelle.'" WHERE parametre_nom="version_base" LIMIT 1' );
 	}
+	if($version_actuelle=='2010-08-05')
+	{
+		$version_actuelle = '2010-08-06';
+		// script pour migrer vers la version suivante : ajouter deux matières communes
+		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (40 , 1 , 0 , "VSPRO" , "Vie sociale et professionnelle")' );
+		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (41 , 1 , 0 , "G-TPR" , "Enseignement technologique-professionnel")' );
+		// y compris la mise à jour du champ "version_base" justement
+		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_actuelle.'" WHERE parametre_nom="version_base" LIMIT 1' );
+	}
 	// Log de l'action
 	ajouter_log('Mise à jour automatique de la base '.SACOCHE_STRUCTURE_BD_NAME.'.');
 }

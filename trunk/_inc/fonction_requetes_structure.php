@@ -3111,16 +3111,6 @@ function DB_STRUCTURE_corriger_anomalies()
 	$message = (!$nb_modifs) ? 'rien à signaler' : ( ($nb_modifs>1) ? $nb_modifs.' anomalies supprimées' : '1 anomalie supprimée' ) ;
 	$classe  = (!$nb_modifs) ? 'valide' : 'alerte' ;
 	$tab_bilan[] = '<label class="'.$classe.'">Évaluations : '.$message.'.</label>';
-	// Recherche d'anomalies : flux RSS associés à un user supprimé...
-	$DB_SQL = 'DELETE sacoche_rss ';
-	$DB_SQL.= 'FROM sacoche_rss ';
-	$DB_SQL.= 'LEFT JOIN sacoche_user USING (user_id) ';
-	$DB_SQL.= 'WHERE sacoche_user.user_id IS NULL ';
-	DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , null);
-	$nb_modifs = DB::rowCount(SACOCHE_STRUCTURE_BD_NAME);
-	$message = (!$nb_modifs) ? 'rien à signaler' : ( ($nb_modifs>1) ? $nb_modifs.' anomalies supprimées' : '1 anomalie supprimée' ) ;
-	$classe  = (!$nb_modifs) ? 'valide' : 'alerte' ;
-	$tab_bilan[] = '<label class="'.$classe.'">Flux RSS : '.$message.'.</label>';
 	// Recherche d'anomalies : jointures période/groupe associées à une période ou un groupe supprimé...
 	$DB_SQL = 'DELETE sacoche_jointure_groupe_periode ';
 	$DB_SQL.= 'FROM sacoche_jointure_groupe_periode ';

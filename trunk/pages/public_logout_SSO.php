@@ -64,8 +64,8 @@ if($mode=='cas')
 	require_once('./_inc/class.CAS.1.1.2.php');
 	// Pour tester, cette méthode statique créé un fichier de log sur ce qui se passe avec CAS
 	// phpCAS::setDebug('debugcas.txt');
-	// Initialiser la connexion avec CAS  ; le premier argument est la version du protocole CAS ; passer false comme dernier paramètre fait boucler phpCAS 1.1.1 (RAS avec phpCAS 1.0.1)
-	phpCAS::client(CAS_VERSION_2_0, $cas_serveur_host, (int)$cas_serveur_port, $cas_serveur_root, true);
+	// Initialiser la connexion avec CAS  ; le premier argument est la version du protocole CAS ; le dernier argument indique qu'on utilise la session existante
+	phpCAS::client(CAS_VERSION_2_0, $cas_serveur_host, (int)$cas_serveur_port, $cas_serveur_root, false);
 	phpCAS::setLang(PHPCAS_LANG_FRENCH);
 	// On indique qu'il n'y a pas de validation du certificat SSL à faire
 	phpCAS::setNoCasServerValidation();

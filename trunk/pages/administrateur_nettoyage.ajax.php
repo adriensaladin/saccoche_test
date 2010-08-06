@@ -59,7 +59,7 @@ if($action=='purger')
 	echo'<li><label class="valide">Jointures classes / périodes supprimées.</label></li>';
 	// Supprimer les demandes d'évaluations, ainsi que les reliquats de notes 'REQ'
 	DB_STRUCTURE_supprimer_demandes(true);
-	DB::query(SACOCHE_STRUCTURE_BD_NAME , 'DELETE FROM sacoche_jointure_devoir_item WHERE saisie_note="REQ"' , null);
+	DB::query(SACOCHE_STRUCTURE_BD_NAME , 'DELETE FROM sacoche_saisie WHERE saisie_note="REQ"' , null);
 	echo'<li><label class="valide">Demandes d\'évaluations supprimées.</label></li>';
 	// En profiter pour optimiser les tables (1 fois par an, ça ne peut pas faire de mal)
 	DB_STRUCTURE_optimiser_tables_structure();

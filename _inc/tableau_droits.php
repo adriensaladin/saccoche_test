@@ -36,7 +36,6 @@ $tab_droits['compte_password']                                                 =
 // Profil public
 $tab_droits['public_accueil']                                                  = array( 'public'=>1 , 'eleve'=>0 , 'professeur'=>0 , 'directeur'=>0 , 'administrateur'=>0 , 'webmestre'=>0 );
 $tab_droits['public_installation']                                             = array( 'public'=>1 , 'eleve'=>0 , 'professeur'=>0 , 'directeur'=>0 , 'administrateur'=>0 , 'webmestre'=>0 );
-$tab_droits['public_login_CAS']                                                = array( 'public'=>1 , 'eleve'=>0 , 'professeur'=>0 , 'directeur'=>0 , 'administrateur'=>0 , 'webmestre'=>0 );
 $tab_droits['public_logout_SSO']                                               = array( 'public'=>1 , 'eleve'=>0 , 'professeur'=>0 , 'directeur'=>0 , 'administrateur'=>0 , 'webmestre'=>0 );
 // Profil élève
 $tab_droits['eleve_eval_bilan']                                                = array( 'public'=>0 , 'eleve'=>1 , 'professeur'=>0 , 'directeur'=>0 , 'administrateur'=>0 , 'webmestre'=>0 );
@@ -126,6 +125,7 @@ $tab_droits['consultation_referentiel_interne']                                =
 $tab_droits['consultation_referentiel_externe']                                = array( 'public'=>0 , 'eleve'=>0 , 'professeur'=>1 , 'directeur'=>1 , 'administrateur'=>0 , 'webmestre'=>0 );
 $tab_droits['date_calendrier']                                                 = array( 'public'=>0 , 'eleve'=>1 , 'professeur'=>1 , 'directeur'=>1 , 'administrateur'=>1 , 'webmestre'=>0 );
 $tab_droits['export_fichier']                                                  = array( 'public'=>0 , 'eleve'=>0 , 'professeur'=>1 , 'directeur'=>1 , 'administrateur'=>0 , 'webmestre'=>0 );
+$tab_droits['public_login_CAS']                                                = array( 'public'=>1 , 'eleve'=>1 , 'professeur'=>1 , 'directeur'=>1 , 'administrateur'=>0 , 'webmestre'=>0 ); // Particulier ! Un échange est encore effecué avec ce fichier après enregistrement des données de session...
 $tab_droits['releve']                                                          = array( 'public'=>0 , 'eleve'=>1 , 'professeur'=>1 , 'directeur'=>1 , 'administrateur'=>0 , 'webmestre'=>0 );
 $tab_droits['releve_grille']                                                   = array( 'public'=>0 , 'eleve'=>1 , 'professeur'=>1 , 'directeur'=>1 , 'administrateur'=>0 , 'webmestre'=>0 );
 $tab_droits['releve_matiere']                                                  = array( 'public'=>0 , 'eleve'=>1 , 'professeur'=>1 , 'directeur'=>1 , 'administrateur'=>0 , 'webmestre'=>0 );

@@ -61,7 +61,7 @@ if($mode=='cas')
 	//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
 	// Inclure la classe phpCAS
-	require_once('./_inc/class.CAS.1.0.1.php');
+	require_once('./_inc/class.CAS.1.1.2.php');
 	// Pour tester, cette méthode statique créé un fichier de log sur ce qui se passe avec CAS
 	// phpCAS::setDebug('debugcas.txt');
 	// Initialiser la connexion avec CAS  ; le premier argument est la version du protocole CAS ; passer false comme dernier paramètre fait boucler phpCAS 1.1.1 (RAS avec phpCAS 1.0.1)

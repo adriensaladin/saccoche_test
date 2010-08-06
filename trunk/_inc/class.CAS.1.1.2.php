@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright © 2003-2010, The ESUP-Portail consortium & the JA-SIG Collaborative.
+ * Copyright Â© 2003-2010, The ESUP-Portail consortium & the JA-SIG Collaborative.
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -39,8 +39,8 @@ if (!$_SERVER['REQUEST_URI']) {
 //
 // another one by Vangelis Haniotakis also to make phpCAS work with PHP5
 //
-if (version_compare(PHP_VERSION, '5', '>=')) {
-	require_once (dirname(__FILE__) . '/CAS.1.1.1/domxml-php4-to-php5.php');
+if (version_compare(PHP_VERSION, '5', '>=') && !(function_exists('domxml_new_doc'))) {
+	require_once (dirname(__FILE__) . '/CAS/domxml-php4-to-php5.php');
 }
 
 /**
@@ -61,7 +61,7 @@ if (version_compare(PHP_VERSION, '5', '>=')) {
 /**
  * phpCAS version. accessible for the user by phpCAS::getVersion().
  */
-define('PHPCAS_VERSION', '1.1.1');
+define('PHPCAS_VERSION', '1.1.2');
 
 // ------------------------------------------------------------------------
 //  CAS VERSIONS
@@ -320,7 +320,7 @@ $GLOBALS['PHPCAS_DEBUG'] = array (
 // ########################################################################
 
 // include client class
-include_once (dirname(__FILE__) . '/CAS.1.1.1/client.php');
+include_once (dirname(__FILE__) . '/CAS/client.php');
 
 // ########################################################################
 //  INTERFACE CLASS
@@ -491,7 +491,7 @@ class phpCAS {
 
 		$PHPCAS_DEBUG['filename'] = $filename;
 
-		phpCAS :: trace('START ******************');
+		phpCAS :: trace('START phpCAS-' . PHPCAS_VERSION . ' ******************');
 	}
 
 	/** @} */

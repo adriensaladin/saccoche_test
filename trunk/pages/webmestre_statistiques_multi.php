@@ -34,7 +34,7 @@ $select_structure = afficher_select(DB_WEBMESTRE_OPT_structures_sacoche() , $sel
 
 <form id="statistiques" action=""><fieldset>
 	<label class="tab" for="f_basic">Structure(s) :</label><select id="f_base" name="f_base" multiple="multiple" size="10"><?php echo $select_structure ?></select><br />
-	<span class="tab"></span><span class="astuce">Utiliser "<i>Shift + clic</i>" ou "<i>Ctrl + clic</i>" pour une sélection multiple.</span><br />
+	<span class="tab"></span><span class="astuce">Utiliser "<span class="i">Shift + clic</span>" ou "<span class="i">Ctrl + clic</span>" pour une sélection multiple.</span><br />
 	<span class="tab"></span><input type="hidden" id="bases" name="bases" value="" /><button id="bouton_valider" type="submit"><img alt="" src="./_img/bouton/stats.png" /> Calculer les statistiques.</button><label id="ajax_msg">&nbsp;</label>
 </fieldset></form>
 

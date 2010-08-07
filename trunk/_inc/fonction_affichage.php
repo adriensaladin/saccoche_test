@@ -82,14 +82,14 @@ function affich_date($date)
 // Afficher une note Lomer pour une sortie HTML
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
-$tab_tri_note = array_flip(array('RR','R','V','VV','ABS','NN','DISP'));	// sert pour le tri du tableau
+$tab_tri_note = array_flip(array('RR','R','V','VV','ABS','NN','DISP','REQ','-',''));	// sert pour le tri du tableau
 function affich_note_html($note,$date,$info,$tri=false)
 {
 	global $tab_tri_note;
 	$insert_tri = ($tri) ? '<i>'.$tab_tri_note[$note].'</i>' : '';
 	$sous_dossier = (in_array($note,array('RR','R','V','VV'))) ? $_SESSION['CSS_NOTE_STYLE'].'/' : '';
 	$title = ( ($date!='') || ($info!='') ) ? ' title="'.html($info).'<br />'.affich_date($date).'"' : '' ;
-	return ($note=='-') ? '&nbsp;' : $insert_tri.'<img'.$title.' alt="'.$note.'" src="./_img/note/'.$sous_dossier.$note.'.gif" />';
+	return (in_array($note,array('REQ','-',''))) ? '&nbsp;' : $insert_tri.'<img'.$title.' alt="'.$note.'" src="./_img/note/'.$sous_dossier.$note.'.gif" />';
 }
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-

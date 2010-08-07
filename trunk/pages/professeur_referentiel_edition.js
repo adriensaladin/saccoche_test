@@ -126,7 +126,7 @@ $(document).ready
 									function()
 									{
 										id = $(this).attr('id').substring(3);
-										titre = $(this).children('b').children('img:eq(2)').attr('title');
+										titre = $(this).children('b').children('img:eq(3)').attr('title');
 										tab_ressources[id] = (titre=='Absence de ressource.') ? '' : titre ;
 									}
 								);

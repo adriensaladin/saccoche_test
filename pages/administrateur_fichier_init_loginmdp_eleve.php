@@ -45,7 +45,7 @@ $select_f_groupes = afficher_select(DB_STRUCTURE_OPT_regroupements_etabl() , $se
 			<select id="select_eleves" name="select_eleves[]" multiple="multiple" size="10" class="hide"><option value=""></option></select>
 		</td>
 		<td class="nu" style="width:25em">
-			<p><span class="astuce">Utiliser "<i>Shift + clic</i>" ou "<i>Ctrl + clic</i>"<br />pour une sélection multiple.</span></p>
+			<p><span class="astuce">Utiliser "<span class="i">Shift + clic</span>" ou "<span class="i">Ctrl + clic</span>"<br />pour une sélection multiple.</span></p>
 			<p><button id="eleve_login" type="button"><img alt="" src="./_img/bouton/mdp_groupe.png" /> Initialiser les noms d'utilisateurs</button> de ces élèves.</p>
 			<p><button id="eleve_mdp" type="button"><img alt="" src="./_img/bouton/mdp_groupe.png" /> Initialiser les mots de passe</button> de ces élèves.</p>
 		</td>

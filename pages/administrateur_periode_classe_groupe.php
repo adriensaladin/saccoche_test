@@ -53,7 +53,7 @@ $select_classes_groupes = afficher_select(DB_STRUCTURE_OPT_classes_groupes_etabl
 			<select id="select_classes_groupes" name="select_classes_groupes[]" multiple="multiple" size="11" class="t8"><?php echo $select_classes_groupes; ?></select>
 		</td>
 		<td class="nu" style="width:25em">
-			<p><span class="astuce">Utiliser "<i>Shift + clic</i>" ou "<i>Ctrl + clic</i>"<br />pour une sélection multiple.</span></p>
+			<p><span class="astuce">Utiliser "<span class="i">Shift + clic</span>" ou "<span class="i">Ctrl + clic</span>"<br />pour une sélection multiple.</span></p>
 			<p>
 				<button id="ajouter" type="button"><img alt="" src="./_img/bouton/periode_ajouter.png" /> Ajouter ces associations.</button><br />
 				du <input id="f_date_debut" name="f_date_debut" size="9" type="text" value="<?php echo date("d/m/Y") ?>" /><q class="date_calendrier" title="Cliquez sur cette image pour importer une date depuis un calendrier !"></q><br />

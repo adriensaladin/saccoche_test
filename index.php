@@ -152,14 +152,14 @@ $SCRIPT = (is_file($filename_js_normal)) ? '<script type="text/javascript" chars
 
 // Titre du navigateur
 $TITRE_NAVIGATEUR = 'SACoche » Espace '.$_SESSION['USER_PROFIL'].' » ';
-$TITRE_NAVIGATEUR.= ($TITRE) ? $TITRE : 'Suivi d\'Acquisition de Compétences' ;
+$TITRE_NAVIGATEUR.= ($TITRE) ? $TITRE : 'Evaluer par comptétences et valider le socle commun' ;
 
 // Affichage de l'en-tête
 entete();
 ?>
 <head>
-	<meta name="Description" content="SACoche -  Suivi d'Acquisition de Compétences" />
-	<meta name="Keywords" content="SACoche Sésamath évaluation compétences validation socle commun collège points Lomer" />
+	<meta name="Description" content="SACoche - Suivi d'Acquisition de Compétences - Evaluer par compétences - Valider le socle commun" />
+	<meta name="Keywords" content="SACoche Sésamath évaluer évaluation compétences compétence validation valider socle commun collège points Lomer" />
 	<meta name="Author-Personal" content="Thomas Crespin pour Sésamath" />
 	<meta name="Robots" content="index,follow" />
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />

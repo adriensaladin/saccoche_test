@@ -43,8 +43,6 @@ table,select,textarea,input,button,div{font:100% "arial","liberation sans","deja
 p{margin:1em auto}
 img {vertical-align:text-top}
 td img , #aide_en_ligne img {vertical-align:middle}
-input[type=radio],input[type=checkbox],input[type=image] {vertical-align:-2px}
-input[readonly],input[disabled] {color:#666}
 h1{display:block;font-size:120%;text-align:left;font-weight:bold;font-variant:small-caps;color:#33A;letter-spacing:0.15em;margin:1ex 2em;}
 h2{display:block;font-size:110%;text-align:left;font-weight:bold;font-variant:small-caps;color:#33A;letter-spacing:0.15em;margin:1ex auto 1ex 1em;}
 h1.logo{vertical-align:middle;text-align:center}
@@ -72,7 +70,7 @@ del{text-decoration:line-through;color:#666}
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 /* page accueil (identification) */
-#cadre_milieu {width:796px;margin:20px auto auto auto;padding:10px;background:#E0E0FF;border:2px solid #99F} /* coins arrondis via js */
+#cadre_milieu {width:776px;margin:20px auto auto auto;padding:10px;background:#E0E0FF;border:2px solid #99F} /* coins arrondis via js */
 
 /* zone identifiée */
 #cadre_haut {z-index:2;position:absolute;left:0;right:0;top:0;height:48px;background:#EAEAFF url(../_img/background.gif) repeat 0 0;border-bottom:1px solid #77F;white-space:nowrap;min-width:980px;}
@@ -163,14 +161,19 @@ form span.radio{line-height:1.4em;display:inline-block;text-align:right;width:25
 form span.tab{line-height:2em;margin-left:12em}
 form label.mini{width:8em;}
 
-/* Boutons */
+/* Boutons de validation */
 button{padding:0 1px;margin:1px 0;background:#CCF;color:#139;border:1px solid #66F;}
 button{width:auto;overflow:visible;} /* patch pour IE : voir http://jehiah.cz/archive/button-width-in-ie */
 button:hover,button.hover{background:#DDF;color:#D41;cursor:pointer;} /* button.hover pour une compatibilité avec AjaxUpload (pour background, car pas mieux pour cursor) */
 button[disabled]{background:#EAEAFF;color:#888;border:1px solid #BBF} /* Attention à un bug de jquery : quand on lui demande de mettre disabled="disabled", il met disabled="" ! */ 
 
+/* Input / Select */
+input[type=radio],input[type=checkbox],input[type=image] {vertical-align:-1px}
+input[type=text],input[type=password],select {margin:1px 0;background:#FFF;color:#000;border:1px solid #66F;}
+input[readonly],input[disabled] {color:#666;border:1px solid #666;}
+
 /* formulaire en page d'accueil pour choisir son établissement */
-#f_structure {font-size:90%}
+#f_base {font-size:90%}
 
 /* réduire la taille des select multiple (professeurs / élèves / matières) */
 select.t8 {font-size:90%}

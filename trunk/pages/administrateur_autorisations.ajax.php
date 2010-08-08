@@ -24,6 +24,7 @@
  * si ce n’est pas le cas, consultez : <http://www.gnu.org/licenses/>.
  * 
  */
+if($_SESSION['SESAMATH_ID']==ID_DEMO){exit('Action désactivée pour la démo...');}
 
 $f_objet = (isset($_POST['f_objet'])) ? clean_texte($_POST['f_objet']) : '';
 

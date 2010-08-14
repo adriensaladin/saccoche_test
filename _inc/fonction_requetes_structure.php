@@ -1136,7 +1136,7 @@ function DB_STRUCTURE_lister_jointure_user_pilier($listing_eleves,$listing_pilie
 /**
  * DB_STRUCTURE_lister_users
  * 
- * @param string   $profil        'eleve' ou 'professeur' ou 'directeur' ou 'administrateur' ou 'tous'
+ * @param string   $profil        'eleve' / 'professeur' / 'directeur' / 'administrateur' / 'tous' pour eleve + professeur + directeur
  * @param bool     $only_actifs   true pour statut actif uniquement / false pour tout le monde qq soit le statut
  * @param bool     $with_classe   true pour récupérer le nom de la classe de l'élève / false sinon
  * @return array
@@ -1145,22 +1145,35 @@ function DB_STRUCTURE_lister_jointure_user_pilier($listing_eleves,$listing_pilie
 function DB_STRUCTURE_lister_users($profil,$only_actifs,$with_classe)
 {
 	$DB_VAR = array();
-	$DB_SQL = 'SELECT * FROM sacoche_user ';
-	if($with_classe)
-	{
-		$DB_SQL.= 'LEFT JOIN sacoche_groupe ON sacoche_user.eleve_classe_id=sacoche_groupe.groupe_id ';
-	}
+	$left_join = '';
+	$where     = '';
+	$order_by  = '';
 	if($profil!='tous')
 	{
-		$DB_SQL.= 'WHERE user_profil=:profil ';
+		$where .= 'user_profil=:profil ';
 		$DB_VAR[':profil'] = $profil;
+	}
+	else
+	{
+		$where .= 'user_profil!=:profil ';
+		$DB_VAR[':profil'] = 'administrateur';
+		$order_by .= 'user_profil ASC, ';
+	}
+	if($with_classe)
+	{
+		$left_join .= 'LEFT JOIN sacoche_groupe ON sacoche_user.eleve_classe_id=sacoche_groupe.groupe_id ';
+		$order_by  .= 'groupe_ref ASC, ';
 	}
 	if($only_actifs)
 	{
-		$DB_SQL.= 'AND user_statut=:statut ';
+		$where .= 'AND user_statut=:statut ';
 		$DB_VAR[':statut'] = 1;
 	}
-	$DB_SQL.= 'ORDER BY user_nom ASC, user_prenom ASC';
+	// On peut maintenant assembler les morceaux de la requête !
+	$DB_SQL = 'SELECT * FROM sacoche_user ';
+	$DB_SQL.= $left_join;
+	$DB_SQL.= 'WHERE '.$where;
+	$DB_SQL.= 'ORDER BY '.$order_by.'user_nom ASC, user_prenom ASC ';
 	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
@@ -2034,7 +2047,7 @@ function DB_STRUCTURE_modifier_parametres($tab_parametres)
 }
 
 /**
- * DB_STRUCTURE_recopier_identifiants (exemples : id_gepi=id_ent id_gepi=login id_ent=id_gepi id_ent=login 
+ * DB_STRUCTURE_recopier_identifiants (exemples : id_gepi=id_ent | id_gepi=login | id_ent=id_gepi | id_ent=login )
  * 
  * @param string $champ_depart
  * @param string $champ_arrive
@@ -2045,6 +2058,7 @@ function DB_STRUCTURE_recopier_identifiants($champ_depart,$champ_arrive)
 {
 	$DB_SQL = 'UPDATE sacoche_user ';
 	$DB_SQL.= 'SET user_'.$champ_arrive.'=user_'.$champ_depart.' ';
+	$DB_SQL.= 'WHERE user_'.$champ_depart.'!="" ';
 	DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , null);
 }
 

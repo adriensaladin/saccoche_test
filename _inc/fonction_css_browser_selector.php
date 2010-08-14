@@ -138,4 +138,28 @@ function css_browser_selector($UserAgent=null)
 	return join(' ', $tab_retour);
 }
 
+function afficher_navigateurs_modernes($chemin_image)
+{
+	$tab_navigateurs = array();
+	$tab_navigateurs[] = '<a class="lien_ext" href="http://www.google.fr/chrome"><img src="'.$chemin_image.'/navigateur/chrome18.gif" alt="Chrome" /> Chrome 5</a>';
+	$tab_navigateurs[] = '<a class="lien_ext" href="http://www.mozilla-europe.org/fr/"><img src="'.$chemin_image.'/navigateur/firefox18.gif" alt="Firefox" /> Firefox 3</a>';
+	$tab_navigateurs[] = '<a class="lien_ext" href="http://www.opera-fr.com/telechargements/"><img src="'.$chemin_image.'/navigateur/opera18.gif" alt="Opéra" /> Opéra 10</a>';
+	$tab_navigateurs[] = '<a class="lien_ext" href="http://www.apple.com/fr/safari/"><img src="'.$chemin_image.'/navigateur/safari18.gif" alt="Safari" /> Safari 4</a>';
+	return implode(' ou ',$tab_navigateurs);
+}
+
+function afficher_navigateurs_alertes($hr_avant='',$chemin_image='./_img',$hr_apres='')
+{
+	$chaine_detection = css_browser_selector();
+	$alertes = '';
+	if( strpos($chaine_detection,'ie')!==false )
+	{
+		$alertes .= '<div class="danger">Votre navigateur <img src="'.$chemin_image.'/navigateur/explorer18.gif" alt="Explorer" /> Internet Explorer est irrespectueux des normes et dysfonctionne.</div>';
+	}
+	if( strpos($chaine_detection,'ie4') || strpos($chaine_detection,'ie5') || strpos($chaine_detection,'ie6') || strpos($chaine_detection,'ff0') || strpos($chaine_detection,'ff1') || strpos($chaine_detection,'ff2') || strpos($chaine_detection,'opera8') )
+	{
+		$alertes .= '<div class="danger">Votre navigateur est trop ancien pour permettre d\'utiliser <em>SACoche</em> correctement !</div>';
+	}
+	return ($alertes) ? $hr_avant.$alertes.'<div class="astuce">Utilisez '.afficher_navigateurs_modernes($chemin_image).'.</div>'.$hr_apres : '' ;
+}
 ?>

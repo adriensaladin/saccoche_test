@@ -26,9 +26,10 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-if(($_SESSION['SESAMATH_ID']==ID_DEMO)&&($_GET['action']!='initialiser')){exit('Action désactivée pour la démo...');}
+if($_SESSION['SESAMATH_ID']==ID_DEMO){exit('Action désactivée pour la démo...');}
 
-$action = (isset($_GET['action'])) ? $_GET['action'] : '';
+$action = (isset($_GET['action']))  ? $_GET['action']  : '';
+$profil = (isset($_POST['profil'])) ? $_POST['profil'] : '';
 $tab_select_users = (isset($_POST['select_users'])) ? array_map('clean_entier',explode(',',$_POST['select_users'])) : array() ;
 
 function positif($n) {return $n;}
@@ -36,39 +37,32 @@ $tab_select_users = array_filter($tab_select_users,'positif');
 $nb = count($tab_select_users);
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-//	Réintégrer des élèves
+//	Désactiver des comptes élèves
+//	Désactiver des comptes professeurs et/ou directeurs
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
-if( ($action=='reintegrer') && $nb )
+if( ($action=='desactiver') && $nb )
 {
 	foreach($tab_select_users as $user_id)
 	{
 		// Mettre à jour l'enregistrement
-		DB_STRUCTURE_modifier_utilisateur( $user_id , array(':statut'=>1) );
+		DB_STRUCTURE_modifier_utilisateur( $user_id , array(':statut'=>0) );
 	}
-	// Afficher le retour
 	$s = ($nb>1) ? 's' : '';
-	echo'<hr />'.$nb.' élève'.$s.' réintégré'.$s.'.';
-}
-
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-//	Supprimer des élèves
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-
-elseif( ($action=='supprimer') && $nb )
-{
-	foreach($tab_select_users as $user_id)
+	if($profil=='eleves')
 	{
-		// Effacer l'enregistrement et les jointures associées
-		DB_STRUCTURE_supprimer_utilisateur($user_id,'eleve');
+		exit('OK'.$nb.' élève'.$s.' désactivé'.$s.'.');
 	}
-	// Afficher le retour
-	$s = ($nb>1) ? 's' : '';
-	echo'<hr />'.$nb.' élève'.$s.' supprimé'.$s.'.';
+	else
+	{
+		exit('OK'.$nb.' professeur'.$s.' et/ou directeur'.$s.' désactivé'.$s.'.');
+	}
 }
 
-else
-{
-	echo'Erreur avec les données transmises !';
-}
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+//	On ne devrait pas en arriver là...
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
+exit('Erreur avec les données transmises !');
+
 ?>

@@ -125,17 +125,20 @@ function clean_symboles($text)
 	En général il s'agit d'harmoniser les données de la base ou d'aider l'utilisateur (en évitant les problèmes de casse par exemple).
 	Le login est davantage nettoyé car il y a un risque d'engendrer des comportements incertains (à l'affichage ou à l'enregistrement) avec les applications externes (pmwiki, phpbb...).
 */
-function clean_login($text)    { return str_replace(' ','', perso_strtolower( clean_accents( clean_diacris( clean_symboles( trim($text) ) ) ) ) ); }
-function clean_password($text) { return trim($text); }
-function clean_ref($text)      { return perso_strtoupper( trim($text) ); }
-function clean_nom($text)      { return perso_strtoupper( trim($text) ); }
-function clean_uai($text)      { return perso_strtoupper( trim($text) ); }
-function clean_prenom($text)   { return perso_ucwords( trim($text) ); }
-function clean_texte($text)    { return trim($text); }
-function clean_courriel($text) { return perso_strtolower( trim($text) ); }
-function clean_url($text)      { return perso_strtolower( trim($text) ); }
-function clean_entier($text)   { return intval($text); }
-function clean_decimal($text)  { return floatval($text); }
+function clean_login($text)     { return str_replace(' ','', perso_strtolower( clean_accents( clean_diacris( clean_symboles( trim($text) ) ) ) ) ); }
+function clean_password($text)  { return trim($text); }
+function clean_ref($text)       { return perso_strtoupper( trim($text) ); }
+function clean_nom($text)       { return perso_strtoupper( trim($text) ); }
+function clean_uai($text)       { return perso_strtoupper( trim($text) ); }
+function clean_prenom($text)    { return perso_ucwords( trim($text) ); }
+function clean_structure($text) { return perso_ucwords( trim($text) ); }    // Non utilisé pour SACoche
+function clean_commune($text)   { return perso_ucwords( trim($text) ); }    // Non utilisé pour SACoche
+function clean_code($text)      { return perso_strtolower( trim($text) ); } // Non utilisé pour SACoche
+function clean_texte($text)     { return trim($text); }
+function clean_courriel($text)  { return perso_strtolower( clean_accents( trim($text) ) ); }
+function clean_url($text)       { return perso_strtolower( trim($text) ); }
+function clean_entier($text)    { return intval($text); }
+function clean_decimal($text)   { return floatval($text); }
 
 /*
 	Convertit les caractères spéciaux (&"'<>) en entité HTML pour éviter des problèmes d'affichage (INPUT, SELECT, TEXTAREA, XML...).
@@ -163,6 +166,15 @@ function csv($text)
 {
 	mb_substitute_character(0x00A0);	// Pour mettre " " au lieu de "?" en remplacement des caractères non convertis.
 	return mb_convert_encoding($text,'Windows-1252','UTF-8');
+}
+
+/*
+	Convertit un contenu en UTF-8 si besoin ; à effectuer en particulier pour les imports tableur.
+	Remarque : si on utilise utf8_encode() ou mb_convert_encoding() sans le paramètre 'Windows-1252' ça pose des pbs pour '’' 'Œ' 'œ' etc.
+*/
+function utf8($text)
+{
+	return ( (!perso_mb_detect_encoding_utf8($text)) || (!mb_check_encoding($text,'UTF-8')) ) ? mb_convert_encoding($text,'UTF-8','Windows-1252') : $text ;
 }
 
 /*

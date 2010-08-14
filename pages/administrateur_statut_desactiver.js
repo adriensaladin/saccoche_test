@@ -30,13 +30,87 @@ $(document).ready
 	function()
 	{
 
+	var conserver_message = false;
+
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+// Réagir au clic sur un bouton radio
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
+		$('input[type=radio]').change
+		(
+			function()
+			{
+				var profil = $(this).val();
+				if(profil=='eleves')
+				{
+					$('#p_eleves').show();
+					$('#p_professeurs_directeurs').hide();
+					$('#td_bouton').show();
+				}
+				else if(profil=='professeurs_directeurs')
+				{
+					$('#p_professeurs_directeurs').show();
+					$('#p_eleves').hide();
+					$('#td_bouton').show();
+				}
+				else	// Normalement impossible
+				{
+					$('#p_professeurs_directeurs').hide();
+					$('#p_eleves').hide();
+					$('#td_bouton').hide();
+				}
+				$('#td_bouton').show();
+				$('#ajax_msg').removeAttr("class").html("&nbsp;");
+			}
+		);
+
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+//	Charger le select_professeurs_directeurs en ajax
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
+		function maj_professeur_directeur()
+		{
+			$.ajax
+			(
+				{
+					type : 'POST',
+					url : 'ajax.php?page=_maj_select_professeurs_directeurs',
+					data : 'f_statut=1',
+					dataType : "html",
+					error : function(msg,string)
+					{
+						$('#ajax_msg').removeAttr("class").addClass("alerte").html("Echec de la connexion ! Veuillez essayer de nouveau.");
+					},
+					success : function(responseHTML)
+					{
+						maj_clock(1);
+						if(responseHTML.substring(0,4)=='<opt')	// option ou optgroup !
+						{
+							if(conserver_message)
+							{
+								conserver_message = false;
+							}
+							else
+							{
+								$('#ajax_msg').removeAttr("class").addClass("valide").html("Affichage actualisé !");
+							}
+							$('#select_professeurs_directeurs').html(responseHTML);
+						}
+						else
+						{
+							$('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);
+						}
+					}
+				}
+			);
+		}
+
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 //	Charger le select_eleves en ajax
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
 		function maj_eleve(groupe_id,groupe_type)
 		{
-			$('#ajax_retour').html("&nbsp;");
 			$.ajax
 			(
 				{
@@ -53,10 +127,17 @@ $(document).ready
 						maj_clock(1);
 						if(responseHTML.substring(0,7)=='<option')	// Attention aux caractères accentués : l'utf-8 pose des pbs pour ce test
 						{
-							$('#ajax_msg').removeAttr("class").addClass("valide").html("Affichage actualisé !");
+							if(conserver_message)
+							{
+								conserver_message = false;
+							}
+							else
+							{
+								$('#ajax_msg').removeAttr("class").addClass("valide").html("Affichage actualisé !");
+							}
 							$('#select_eleves').html(responseHTML).show();
 						}
-					else
+						else
 						{
 							$('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);
 						}
@@ -66,7 +147,6 @@ $(document).ready
 		}
 		function changer_groupe()
 		{
-			$('#ajax_retour').html("&nbsp;");
 			$("#select_eleves").html('<option value=""></option>').hide();
 			var groupe_val = $("#f_groupe").val();
 			if(groupe_val)
@@ -74,7 +154,10 @@ $(document).ready
 				// type = $("#f_groupe option:selected").parent().attr('label');
 				groupe_type = groupe_val.substring(0,1);
 				groupe_id   = groupe_val.substring(1);
-				$('#ajax_msg').removeAttr("class").addClass("loader").html("Actualisation en cours... Veuillez patienter.");
+				if(!conserver_message)
+				{
+					$('#ajax_msg').removeAttr("class").addClass("loader").html("Actualisation en cours... Veuillez patienter.");
+				}
 				maj_eleve(groupe_id,groupe_type);
 			}
 			else
@@ -99,7 +182,6 @@ $(document).ready
 			function()
 			{
 				$('#ajax_msg').removeAttr("class").html("&nbsp;");
-				$('#ajax_retour').html("&nbsp;");
 			}
 		);
 
@@ -111,47 +193,60 @@ $(document).ready
 		(
 			function()
 			{
-				id = $(this).attr('id');
+				var id = $(this).attr('id');
+				// Récupérer le profil
+				var profil = $('input[type=radio]:checked').val();
+				if(typeof(profil)=='undefined')	// normalement impossible, sauf si par exemple on triche avec la barre d'outils Web Developer...
+				{
+					$('#ajax_msg').removeAttr("class").addClass("erreur").html("Sélectionnez un profil d'utilisateur !");
+					return(false);
+				}
 				// grouper les select multiples => normalement pas besoin si name de la forme nom[], mais ça plante curieusement sur le serveur competences.sesamath.net
 				// alors j'ai remplacé le $("form").serialize() par les tableaux maison et mis un explode dans le fichier ajax
-				if( $("#select_eleves option:selected").length==0 )
+				if( $("#select_"+profil+" option:selected").length==0 )
 				{
-					$('#ajax_msg').removeAttr("class").addClass("erreur").html("Sélectionnez au moins un élève !");
+					$('#ajax_msg').removeAttr("class").addClass("erreur").html("Sélectionnez au moins un utilisateur !");
 					return(false);
 				}
 				else
 				{
-					var select_users = new Array(); $("#select_eleves option:selected").each(function(){select_users.push($(this).val());});
+					var select_users = new Array(); $("#select_"+profil+" option:selected").each(function(){select_users.push($(this).val());});
 				}
-				$('#desactiver').attr('disabled','disabled');
+				$('button').attr('disabled','disabled');
 				$('#ajax_msg').removeAttr("class").addClass("loader").html("Demande envoyée... Veuillez patienter.");
 				$.ajax
 				(
 					{
 						type : 'POST',
 						url : 'ajax.php?page='+PAGE+'&action='+id,
-						data : 'select_users=' + select_users,
+						data : 'profil=' + profil + '&select_users=' + select_users,
 						dataType : "html",
 						error : function(msg,string)
 						{
-							$('#desactiver').removeAttr('disabled');
+							$('button').removeAttr('disabled');
 							$('#ajax_msg').removeAttr("class").addClass("alerte").html("Echec de la connexion ! Veuillez recommencer.");
 							return false;
 						},
 						success : function(responseHTML)
 						{
 							maj_clock(1);
-							$('#desactiver').removeAttr('disabled');
-							if(responseHTML.substring(0,6)!='<hr />')
+							$('button').removeAttr('disabled');
+							if(responseHTML.substring(0,2)!='OK')
 							{
 								$('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);
 							}
 							else
 							{
-								$('#ajax_msg').removeAttr("class").addClass("valide").html("Demande réalisée !");
-								$('#ajax_retour').html(responseHTML);
-								format_liens('#ajax_retour');
-								changer_groupe();
+								$('#ajax_msg').removeAttr("class").addClass("valide").html(responseHTML.substring(2));
+								conserver_message = true;
+								if(profil=='eleves')
+								{
+									changer_groupe();
+								}
+								else if(profil=='professeurs_directeurs')
+								{
+									maj_professeur_directeur();
+								}
 							}
 						}
 					}

@@ -140,27 +140,11 @@ elseif( $step==2 )
 	elseif(is_file($dossier_import.$fichier_src_tableur))
 	{
 		// Cas d'un CSV
-		function extraire_lignes($texte)
-		{
-			$texte = trim($texte);
-			$texte = str_replace('"','',$texte);
-			$texte = str_replace(array("\r\n","\r","\n"),'®',$texte);
-			return explode('®',$texte);
-		}
 		$contenu = file_get_contents($dossier_import.$fichier_src_tableur);
-		// Mettre en UTF-8 si besoin ; pose surtout pb pour les import tableur
-		if( (!perso_mb_detect_encoding_utf8($contenu)) || (!mb_check_encoding($contenu,'UTF-8')) )
-		{
-			$contenu = mb_convert_encoding($contenu,'UTF-8','Windows-1252'); // Si on utilise utf8_encode() ou mb_convert_encoding() sans le paramètre 'Windows-1252' ça pose des pbs pour '’' 'Œ' 'œ' etc.
-		}
-		$tab_lignes = extraire_lignes($contenu);
-		// Utiliser la ligne d'en-tête pour déterminer la nature du séparateur, puis la supprimer
-				if(mb_substr_count($tab_lignes[0],';')>2)  {$separateur = ';';}
-		elseif(mb_substr_count($tab_lignes[0],',')>2)  {$separateur = ',';}
-		elseif(mb_substr_count($tab_lignes[0],':')>2)  {$separateur = ':';}
-		elseif(mb_substr_count($tab_lignes[0],"\t")>2) {$separateur = "\t";}
-		else {exit('Erreur : séparateur du fichier csv indéterminé !');}
-		unset($tab_lignes[0]);
+		$contenu = utf8($contenu); // Mettre en UTF-8 si besoin
+		$tab_lignes = extraire_lignes($contenu); // Extraire les lignes du fichier
+		$separateur = extraire_separateur_csv($tab_lignes[0]); // Déterminer la nature du séparateur
+		unset($tab_lignes[0]); // Supprimer la 1e ligne
 		foreach ($tab_lignes as $ligne_contenu)
 		{
 			$tab_elements = explode($separateur,$ligne_contenu);

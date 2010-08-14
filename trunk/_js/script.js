@@ -370,7 +370,8 @@ $(document).ready
 		(
 			function()
 			{
-				window.document.location.href='./index.php';
+				var profil = $(this).val();
+				window.document.location.href='./index.php?'+profil;
 			}
 		);
 

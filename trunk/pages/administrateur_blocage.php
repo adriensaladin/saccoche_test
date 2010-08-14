@@ -26,7 +26,7 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-$TITRE = "Blocage de l'application";
+$TITRE = "Blocage des connexions";
 
 // Initialisation de l'état de l'accès
 $fichier_blocage_administrateur = $CHEMIN_CONFIG.'blocage_admin_'.$_SESSION['BASE'].'.txt';

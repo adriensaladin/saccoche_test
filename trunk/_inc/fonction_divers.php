@@ -985,6 +985,9 @@ function url_get_contents($url,$tab_post=false)
 	$ch = curl_init();
 	curl_setopt($ch, CURLOPT_DNS_CACHE_TIMEOUT, 3600); // Le temps en seconde que CURL doit conserver les entrées DNS en mémoire. Cette option est définie à 120 secondes (2 minutes) par défaut.
 	curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);    // TRUE retourne directement le transfert sous forme de chaîne de la valeur retournée par curl_exec() au lieu de l'afficher directement.
+	curl_setopt($ch, CURLOPT_FAILONERROR, TRUE);       // TRUE pour que PHP traite silencieusement les codes HTTP supérieurs ou égaux à 400. Le comportement par défaut est de retourner la page normalement, en ignorant ce code.
+	curl_setopt($ch, CURLOPT_FOLLOWLOCATION, TRUE);    // TRUE pour suivre toutes les en-têtes "Location: " que le serveur envoie dans les en-têtes HTTP (notez que cette fonction est récursive et que PHP suivra toutes les en-têtes "Location: " qu'il trouvera à moins que CURLOPT_MAXREDIRS ne soit définie).
+	curl_setopt($ch, CURLOPT_MAXREDIRS, 3);            // Le nombre maximal de redirections HTTP à suivre. Utilisez cette option avec l'option CURLOPT_FOLLOWLOCATION.
 	curl_setopt($ch, CURLOPT_HEADER, FALSE);           // FALSE pour ne pas inclure l'en-tête dans la valeur de retour.
 	curl_setopt($ch, CURLOPT_TIMEOUT, 5);              // Le temps maximum d'exécution de la fonction cURL (en s).
 	curl_setopt($ch, CURLOPT_URL, $url);               // L'URL à récupérer. Vous pouvez aussi choisir cette valeur lors de l'appel à curl_init().
@@ -1078,11 +1081,7 @@ function verifier_arborescence_XML($arbreXML)
 	// Attention, le chemin du DTD est relatif par rapport à l'emplacement du fichier XML (pas celui du script en cours) !
 	$fichier_adresse = './__tmp/import/referentiel_'.date('Y-m-d_H-i-s').'_'.mt_rand().'.xml';
 	$fichier_contenu = '<?xml version="1.0" encoding="UTF-8"?>'."\r\n".'<!DOCTYPE arbre SYSTEM "../../_dtd/referentiel.dtd">'."\r\n".$arbreXML;
-	// On convertit en UTF-8 si besoin
-	if( (mb_detect_encoding($fichier_contenu,"auto",TRUE)!='UTF-8') || (!mb_check_encoding($fichier_contenu,'UTF-8')) )
-	{
-		$fichier_contenu = mb_convert_encoding($fichier_contenu,'UTF-8','Windows-1252'); // Si on utilise utf8_encode() ou mb_convert_encoding() sans le paramètre 'Windows-1252' ça pose des pbs pour '’' 'Œ' 'œ' etc.
-	}
+	$fichier_contenu = utf8($fichier_contenu); // Mettre en UTF-8 si besoin
 	// On enregistre temporairement dans un fichier pour analyse
 	Ecrire_Fichier($fichier_adresse,$fichier_contenu);
 	// On lance le test
@@ -1218,8 +1217,8 @@ function Ecrire_Fichier($fichier_chemin,$fichier_contenu,$file_append=0)
 }
 
 /**
- * Nommer_RSS
- * Retourne ne chemin du fichier RSS d'un prof ; s'il n'existe pas, en créer un vierge (pour recueillir les demandes d'évaluations des élèves).
+ * adresse_RSS
+ * Retourne le chemin du fichier RSS d'un prof ; s'il n'existe pas, en créer un vierge (pour recueillir les demandes d'évaluations des élèves).
  * 
  * @param int     $prof_id
  * @return string
@@ -1295,6 +1294,43 @@ function Modifier_RSS($fichier_chemin,$titre,$texte,$guid)
 	}
 	// Enregistrer
 	Ecrire_Fichier($fichier_chemin,$fichier_contenu);
+}
+
+/**
+ * extraire_lignes
+ * Pour retourner un tableau de lignes à partir d'un texte en se basant sur les retours chariot.
+ * Utilisé notamment lors de la récupération d'un fichier CSS.
+ * 
+ * @param string   $texte
+ * @return array
+ */
+
+function extraire_lignes($texte)
+{
+	$texte = trim($texte);
+	$texte = str_replace('"','',$texte);
+	$texte = str_replace(array("\r\n","\n\n","\r\r","\r","\n"),'®',$texte);
+	return explode('®',$texte);
+}
+
+/**
+ * extraire_separateur_csv
+ * Déterminer la nature du séparateur d'un fichier CSV.
+ * 
+ * @param string   $ligne   la première ligne du fichier
+ * @return string
+ */
+
+function extraire_separateur_csv($ligne)
+{
+	$tab_separateur = array( ';'=>0 , ','=>0 , ':'=>0 , "\t"=>0 );
+	foreach($tab_separateur as $separateur => $occurrence)
+	{
+		$tab_separateur[$separateur] = mb_substr_count($ligne,$separateur);
+	}
+	arsort($tab_separateur);
+	reset($tab_separateur);
+	return key($tab_separateur);
 }
 
 ?>

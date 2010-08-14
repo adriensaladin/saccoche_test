@@ -100,12 +100,8 @@ function analyser_XML($fichier_adresse)
 {
 	// Récupération du contenu du fichier
 	$fichier_contenu = file_get_contents($fichier_adresse);
-	// Convertir en UTF-8 si besoin (la chaine + le fichier)
-	if( (!perso_mb_detect_encoding_utf8($fichier_contenu)) || (!mb_check_encoding($fichier_contenu,'UTF-8')) )
-	{
-		$fichier_contenu = mb_convert_encoding($fichier_contenu,'UTF-8','Windows-1252'); // Si on utilise utf8_encode() ou mb_convert_encoding() sans le paramètre 'Windows-1252' ça pose des pbs pour '’' 'Œ' 'œ' etc.
-		Ecrire_Fichier($fichier_adresse,$fichier_contenu);
-	}
+	$fichier_contenu = utf8($fichier_contenu); // Mettre en UTF-8 si besoin
+	Ecrire_Fichier($fichier_adresse,$fichier_contenu); // Mettre à jour le fichier au cas où.
 	// Analyse XML (s'arrête à la 1ère erreur trouvée)
 	$xml_parser = xml_parser_create();
 	$valid_XML = xml_parse($xml_parser , $fichier_contenu , TRUE);

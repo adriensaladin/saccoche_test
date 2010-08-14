@@ -51,29 +51,7 @@ effacer_fichiers_temporaires('./__tmp/rss'       ,  43800); // Nettoyer ce dossi
 <?php
 // Alerte si navigateur trop ancien
 require_once('./_inc/fonction_css_browser_selector.php');
-$chaine_detection = css_browser_selector();
-$tab_alerte = array();
-if( strpos($chaine_detection,'ie')!==false )
-{
-	$tab_alerte[] = '<div class="danger">Attention : votre navigateur Internet Explorer est lent et ne respecte pas les normes du web !</div>';
-}
-if( strpos($chaine_detection,'ie4') || strpos($chaine_detection,'ie5') || strpos($chaine_detection,'ie6') || strpos($chaine_detection,'ff0') || strpos($chaine_detection,'ff1') || strpos($chaine_detection,'ff2') || strpos($chaine_detection,'opera8') )
-{
-	$tab_alerte[] = '<div class="danger">Attention : votre navigateur est trop ancien pour permettre d\'utiliser <em>SACoche</em> correctement !</div>';
-}
-$nb_alertes = count($tab_alerte);
-if($nb_alertes)
-{
-	$proposition_ie = ($nb_alertes==2) ? ' ou au pire <a class="lien_ext" href="http://www.windows.fr/ie8"><img src="./_img/navigateur/explorer18.gif" alt="Explorer" /> Explorer 8</a>..' : '' ;
-	echo'<hr />';
-	echo implode('',$tab_alerte);
-	echo'<div class="astuce">Utilisez 
-	<a class="lien_ext" href="http://www.google.fr/chrome"><img src="./_img/navigateur/chrome18.gif" alt="Chrome" /> Chrome 5</a> ou 
-	<a class="lien_ext" href="http://www.mozilla-europe.org/fr/"><img src="./_img/navigateur/firefox18.gif" alt="Firefox" /> Firefox 3</a> ou 
-	<a class="lien_ext" href="http://www.opera-fr.com/telechargements/"><img src="./_img/navigateur/opera18.gif" alt="Opéra" /> Opéra 10</a> ou 
-	<a class="lien_ext" href="http://www.apple.com/fr/safari/"><img src="./_img/navigateur/safari18.gif" alt="Safari" /> Safari 4</a>'.$proposition_ie.'.
-	</div>';
-}
+echo afficher_navigateurs_alertes($hr_avant='<hr />',$chemin_image='./_img',$hr_apres='');
 ?>
 
 <?php

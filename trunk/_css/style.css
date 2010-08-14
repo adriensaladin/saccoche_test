@@ -45,8 +45,9 @@ img {vertical-align:text-top}
 td img , #aide_en_ligne img {vertical-align:middle}
 h1{display:block;font-size:120%;text-align:left;font-weight:bold;font-variant:small-caps;color:#33A;letter-spacing:0.15em;margin:1ex 2em;}
 h2{display:block;font-size:110%;text-align:left;font-weight:bold;font-variant:small-caps;color:#33A;letter-spacing:0.15em;margin:1ex auto 1ex 1em;}
-h1.logo{vertical-align:middle;text-align:center}
+h1.logo{text-align:center}
 h1.logo a{margin:auto 1em}
+h1.logo img{vertical-align:middle}
 /* h3 réservé pour l'infobulle */
 h4{display:block;font-size:100%;text-align:left;font-weight:bold;font-variant:small-caps;color:#227;letter-spacing:0.05em;margin:1ex auto 1ex 1em;}
 a.anti_h2{background:transparent url(../_img/actualiser_small.png) no-repeat left;padding-left:15px;margin-left:1em;font-size:80%;font-weight:normal;font-variant:normal;letter-spacing:0;}

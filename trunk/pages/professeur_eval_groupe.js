@@ -35,9 +35,8 @@ $(document).ready
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 		var mode = false;
 		var modification = false;
-		var pilotage = 'clavier';
+		var memo_pilotage = 'clavier';
 		var memo_input_id = false;
-		var memo_td_html = '';
 		// tri du tableau (avec jquery.tablesorter.js).
 		var sorting = [[0,1],[1,0]];
 		$('table.form').tablesorter({ headers:{3:{sorter:false},4:{sorter:false}} });
@@ -65,7 +64,8 @@ $(document).ready
 			// Fabriquer la ligne avec les éléments de formulaires
 			afficher_masquer_images_action('hide');
 			$('#form0').css('visibility','hidden');
-			new_tr  = '<tr>';
+			var new_tr = '';
+			new_tr += '<tr>';
 			new_tr += '<td><input id="f_date" name="f_date" size="9" type="text" value="'+input_date+'" /><q class="date_calendrier" title="Cliquez sur cette image pour importer une date depuis un calendrier !"></td>';
 			new_tr += '<td><select id="f_groupe" name="f_groupe">'+select_groupe+'</select></td>';
 			new_tr += '<td><input id="f_info" name="f_info" size="20" type="text" value="" /></td>';
@@ -88,15 +88,16 @@ $(document).ready
 			afficher_masquer_images_action('hide');
 			$('#form0').css('visibility','hidden');
 			// Récupérer les informations de la ligne concernée
-			ref    = $(this).parent().attr('lang');
-			date   = $(this).parent().prev().prev().prev().prev().html();
-			groupe = $(this).parent().prev().prev().prev().html();
-			info   = $(this).parent().prev().prev().html();
-			nombre = $(this).parent().prev().html();
-			liste  = $(this).parent().prev().attr('lang');
-			date   = date.substring(17,date.length); // enlever la date mysql cachée
+			var ref    = $(this).parent().attr('lang');
+			var date   = $(this).parent().prev().prev().prev().prev().html();
+			var groupe = $(this).parent().prev().prev().prev().html();
+			var info   = $(this).parent().prev().prev().html();
+			var nombre = $(this).parent().prev().html();
+			var liste  = $(this).parent().prev().attr('lang');
+			    date   = date.substring(17,date.length); // enlever la date mysql cachée
 			// Fabriquer la ligne avec les éléments de formulaires
-			new_tr  = '<tr>';
+			var new_tr = '';
+			new_tr += '<tr>';
 			new_tr += '<td><input id="f_date" name="f_date" size="9" type="text" value="'+date+'" /><q class="date_calendrier" title="Cliquez sur cette image pour importer une date depuis un calendrier !"></td>';
 			new_tr += '<td><select id="f_groupe" name="f_groupe">'+select_groupe.replace('>'+groupe+'<',' selected="selected">'+groupe+'<')+'</select></td>';
 			new_tr += '<td><input id="f_info" name="f_info" size="'+Math.max(info.length,20)+'" type="text" value="'+info+'" /></td>';
@@ -120,14 +121,15 @@ $(document).ready
 			afficher_masquer_images_action('hide');
 			$('#form0').css('visibility','hidden');
 			// Récupérer les informations de la ligne concernée
-			ref    = $(this).parent().attr('lang');
-			date   = $(this).parent().prev().prev().prev().prev().html();
-			info   = $(this).parent().prev().prev().html();
-			nombre = $(this).parent().prev().html();
-			liste  = $(this).parent().prev().attr('lang');
-			date   = date.substring(17,date.length); // enlever la date mysql cachée
+			var ref    = $(this).parent().attr('lang');
+			var date   = $(this).parent().prev().prev().prev().prev().html();
+			var info   = $(this).parent().prev().prev().html();
+			var nombre = $(this).parent().prev().html();
+			var liste  = $(this).parent().prev().attr('lang');
+			    date   = date.substring(17,date.length); // enlever la date mysql cachée
 			// Fabriquer la ligne avec les éléments de formulaires
-			new_tr  = '<tr>';
+			var new_tr = '';
+			new_tr += '<tr>';
 			new_tr += '<td><input id="f_date" name="f_date" size="9" type="text" value="'+date+'" /><q class="date_calendrier" title="Cliquez sur cette image pour importer une date depuis un calendrier !"></td>';
 			new_tr += '<td><select id="f_groupe" name="f_groupe">'+select_groupe+'</select></td>';
 			new_tr += '<td><input id="f_info" name="f_info" size="'+Math.max(info.length,20)+'" type="text" value="'+info+'" /></td>';
@@ -149,8 +151,8 @@ $(document).ready
 			mode = $(this).attr('class');
 			afficher_masquer_images_action('hide');
 			$('#form0').css('visibility','hidden');
-			ref = $(this).parent().attr('lang');
-			new_span  = '<span class="danger"><input id="f_action" name="f_action" type="hidden" value="'+mode+'" /><input id="f_ref" name="f_ref" type="hidden" value="'+ref+'" />Toutes les saisies associées seront perdues !<q class="valider" title="Confirmer la suppression de cette évaluation."></q><q class="annuler" title="Annuler la suppression de cette évaluation."></q> <label id="ajax_msg">&nbsp;</label></span>';
+			var ref = $(this).parent().attr('lang');
+			var new_span = '<span class="danger"><input id="f_action" name="f_action" type="hidden" value="'+mode+'" /><input id="f_ref" name="f_ref" type="hidden" value="'+ref+'" />Toutes les saisies associées seront perdues !<q class="valider" title="Confirmer la suppression de cette évaluation."></q><q class="annuler" title="Annuler la suppression de cette évaluation."></q> <label id="ajax_msg">&nbsp;</label></span>';
 			$(this).after(new_span);
 			infobulle();
 		};
@@ -163,11 +165,11 @@ $(document).ready
 		{
 			mode = $(this).attr('class');
 			// Récupérer les informations de la ligne concernée
-			ref    = $(this).parent().attr('lang');
-			date   = $(this).parent().prev().prev().prev().prev().html();
-			groupe = $(this).parent().prev().prev().prev().html();
-			info   = $(this).parent().prev().prev().html();
-			date   = date.substring(17,date.length); // garder la date française
+			var ref    = $(this).parent().attr('lang');
+			var date   = $(this).parent().prev().prev().prev().prev().html();
+			var groupe = $(this).parent().prev().prev().prev().html();
+			var info   = $(this).parent().prev().prev().html();
+			    date   = date.substring(17,date.length); // garder la date française
 			// Masquer le tableau et Afficher la zone associée
 			$('#form0 , #form1').hide('fast');
 			$('#zone_imprimer').css("display","block");
@@ -227,11 +229,11 @@ $(document).ready
 		{
 			mode = $(this).attr('class');
 			// Récupérer les informations de la ligne concernée
-			ref    = $(this).parent().attr('lang');
-			date   = $(this).parent().prev().prev().prev().prev().html();
-			groupe = $(this).parent().prev().prev().prev().html();
-			info   = $(this).parent().prev().prev().html();
-			date   = date.substring(3,13); // garder la date mysql
+			var ref    = $(this).parent().attr('lang');
+			var date   = $(this).parent().prev().prev().prev().prev().html();
+			var groupe = $(this).parent().prev().prev().prev().html();
+			var info   = $(this).parent().prev().prev().html();
+			    date   = date.substring(3,13); // garder la date mysql
 			// Masquer le tableau ; Afficher la zone associée et charger son contenu
 			$('#form0 , #form1').hide('fast');
 			$('#msg_import').removeAttr("class").html('&nbsp;');
@@ -267,8 +269,8 @@ $(document).ready
 							colorer_cellules();
 							format_liens('#table_saisir');
 							infobulle();
-							$('#radio_'+pilotage).click();
-							if(pilotage=='clavier')
+							$('#radio_'+memo_pilotage).click();
+							if(memo_pilotage=='clavier')
 							{
 								$('#C1L1').focus();
 							}
@@ -286,11 +288,11 @@ $(document).ready
 		{
 			mode = $(this).attr('class');
 			// Récupérer les informations de la ligne concernée
-			ref    = $(this).parent().attr('lang');
-			date   = $(this).parent().prev().prev().prev().prev().html();
-			groupe = $(this).parent().prev().prev().prev().html();
-			info   = $(this).parent().prev().prev().html();
-			date   = date.substring(17,date.length); // garder la date française
+			var ref    = $(this).parent().attr('lang');
+			var date   = $(this).parent().prev().prev().prev().prev().html();
+			var groupe = $(this).parent().prev().prev().prev().html();
+			var info   = $(this).parent().prev().prev().html();
+			    date   = date.substring(17,date.length); // garder la date française
 			// Masquer le tableau ; Afficher la zone associée et charger son contenu
 			$('#form0 , #form1').hide('fast');
 			$('#zone_voir').css("display","block");
@@ -339,7 +341,7 @@ $(document).ready
 			$('#zone_compet ul').css("display","none");
 			$('#zone_compet').css("display","block");
 			$('#zone_compet ul.ul_m1').css("display","block");
-			liste = $('#f_compet_liste').val();
+			var liste = $('#f_compet_liste').val();
 			// Décocher tout
 			$("#zone_compet input[type=checkbox]").each
 			(
@@ -354,7 +356,7 @@ $(document).ready
 				var tab_id = liste.split('_');
 				for(i in tab_id)
 				{
-					id = 'id_'+tab_id[i];
+					var id = 'id_'+tab_id[i];
 					if($('#'+id).length)
 					{
 						$('#'+id).attr('checked','checked');
@@ -375,9 +377,9 @@ $(document).ready
 		{
 			mode = $(this).attr('class');
 			// Récupérer les informations de la ligne concernée
-			ref    = $(this).parent().attr('lang');
-			groupe = $(this).parent().prev().prev().prev().html();
-			info   = $(this).parent().prev().prev().html();
+			var ref    = $(this).parent().attr('lang');
+			var groupe = $(this).parent().prev().prev().prev().html();
+			var info   = $(this).parent().prev().prev().html();
 			// Masquer le tableau ; Afficher la zone associée et charger son contenu
 			$('#form0 , #form1').hide('fast');
 			$('#zone_ordonner').css("display","block");
@@ -526,7 +528,7 @@ $(document).ready
 					}
 				);
 				liste = liste.substring(0,liste.length-1);
-				s = (nombre>1) ? 's' : '';
+				var s = (nombre>1) ? 's' : '';
 				$('#f_compet_liste').val(liste);
 				$('#f_compet_nombre').val(nombre+' item'+s);
 				$('#annuler_compet').click();
@@ -605,8 +607,8 @@ $(document).ready
 		('click',
 			function()
 			{
-				pilotage = $(this).val();
-				if(pilotage=='clavier')
+				memo_pilotage = $(this).val();
+				if(memo_pilotage=='clavier')
 				{
 					$("#C1L1").focus();
 				}
@@ -620,12 +622,12 @@ $(document).ready
 		('keydown',	// keydown au lieu de keyup permet de laisser appuyer sur la touche pour répéter une action
 			function(e)
 			{
-				if(pilotage=='clavier')
+				if(memo_pilotage=='clavier')
 				{
-					id = $(this).attr("id");
-					colonne = parseInt(id.substring(1,id.indexOf('L')));
-					ligne   = parseInt(id.substring(id.indexOf('L')+1));
-					findme = '.'+e.which+'.';
+					var id = $(this).attr("id");
+					var colonne = parseInt(id.substring(1,id.indexOf('L')));
+					var ligne   = parseInt(id.substring(id.indexOf('L')+1));
+					var findme = '.'+e.which+'.';
 					if('.8.46.49.50.51.52.65.68.78.97.98.99.100.'.indexOf(findme)!=-1)
 					{
 						// Une touche d'item a été pressée
@@ -649,7 +651,7 @@ $(document).ready
 						modification = true;
 						// Passer à la case suivante
 						ligne++;
-						new_id = 'C'+colonne+'L'+ligne;
+						var new_id = 'C'+colonne+'L'+ligne;
 						if($('#'+new_id).length)
 						{
 							$('#'+new_id).focus();
@@ -675,7 +677,7 @@ $(document).ready
 							case 39: colonne++; break; // flèche droit
 							case 40: ligne++;   break; // flèche bas
 						}
-						new_id = 'C'+colonne+'L'+ligne;
+						var new_id = 'C'+colonne+'L'+ligne;
 						if($('#'+new_id).length)
 						{
 							$('#'+new_id).focus();
@@ -704,7 +706,7 @@ $(document).ready
 		('mouseover',
 			function(e)
 			{
-				if(pilotage=='souris')
+				if(memo_pilotage=='souris')
 				{
 					// Test si un précédent td n'a pas été remis en place (js a du mal à suivre le mouseleave sinon)
 					if(memo_input_id)
@@ -718,7 +720,7 @@ $(document).ready
 						// Récupérer les infos associées
 						// adresse = $(this).attr("lang");
 						memo_input_id = $(this).children("input").attr("id");
-						valeur = $(this).children("input").val();
+						var valeur = $(this).children("input").val();
 						$(this).children("input").hide();
 						$(this).removeAttr("class").addClass("td_souris").append( $("#td_souris_container").html() ).find("img[alt="+valeur+"]").addClass("on");
 					}
@@ -731,7 +733,7 @@ $(document).ready
 		('mouseleave',
 			function()
 			{
-				if(pilotage=='souris')
+				if(memo_pilotage=='souris')
 				{
 					if(memo_input_id)
 					{
@@ -748,7 +750,7 @@ $(document).ready
 		('click',
 			function()
 			{
-				valeur = $(this).attr("alt");
+				var valeur = $(this).attr("alt");
 				$("input#"+memo_input_id).val(valeur).removeAttr("class").addClass(valeur);
 				$(this).parent().children("img").removeAttr("class");
 				$(this).addClass("on").parent().parent().css("background-color","#F6D");
@@ -790,12 +792,12 @@ $(document).ready
 				else
 				{
 					// On récupère la liste des items dans l'ordre de la page
-					tab_id = new Array();
+					var tab_id = new Array();
 					$('#div_ordonner').children('div').each
 					(
 						function()
 						{
-							test_id = $(this).attr('id').substring(1);
+							var test_id = $(this).attr('id').substring(1);
 							if(test_id)
 							{
 								tab_id.push(test_id);
@@ -1011,14 +1013,14 @@ $(document).ready
 			else
 			{
 				$('#ajax_msg').removeAttr("class").addClass("valide").html("Demande réalisée !");
-				action = $('#f_action').val();
+				var action = $('#f_action').val();
 				switch (action)
 				{
 					case 'ajouter':
 					case 'dupliquer':
-						groupe_id = $("#f_groupe option:selected").val();
-						new_td  = responseHTML.replace('<td>{{GROUPE_NOM}}</td>','<td>'+tab_groupe[groupe_id]+'</td>');
-						new_tr  = '<tr class="new">'+new_td+'</tr>';
+						var groupe_id = $("#f_groupe option:selected").val();
+						var new_td = responseHTML.replace('<td>{{GROUPE_NOM}}</td>','<td>'+tab_groupe[groupe_id]+'</td>');
+						var new_tr = '<tr class="new">'+new_td+'</tr>';
 						$('table.form tbody').append(new_tr);
 						$('q.valider').parent().parent().remove();
 						break;
@@ -1078,12 +1080,12 @@ $(document).ready
 		(
 			function()
 			{
-				groupe_type = $("#f_aff_classe option:selected").parent().attr('label');
+				var groupe_type = $("#f_aff_classe option:selected").parent().attr('label');
 				$("#f_aff_periode option").each
 				(
 					function()
 					{
-						periode_id = $(this).val();
+						var periode_id = $(this).val();
 						// La période personnalisée est tout le temps accessible
 						if(periode_id!=0)
 						{
@@ -1296,9 +1298,9 @@ $(document).ready
 						tab_valeur = tab_resultat[i].split('.');
 						if(tab_valeur.length==3)
 						{
-							eleve_id = tab_valeur[0];
-							item_id  = tab_valeur[1];
-							score    = tab_valeur[2];
+							var eleve_id = tab_valeur[0];
+							var item_id  = tab_valeur[1];
+							var score    = tab_valeur[2];
 							champ = $('#table_saisir input[name='+item_id+'x'+eleve_id+']');
 							if(champ.length)
 							{

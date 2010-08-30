@@ -77,16 +77,6 @@ $tab_droits['administrateur_etabl_niveau']             = array( 'public'=>0 , 'e
 $tab_droits['administrateur_etabl_palier']             = array( 'public'=>0 , 'eleve'=>0 , 'professeur'=>0 , 'directeur'=>0 , 'administrateur'=>1 , 'webmestre'=>0 );
 $tab_droits['administrateur_fichier_identifiant']      = array( 'public'=>0 , 'eleve'=>0 , 'professeur'=>0 , 'directeur'=>0 , 'administrateur'=>1 , 'webmestre'=>0 );
 $tab_droits['administrateur_fichier_user']             = array( 'public'=>0 , 'eleve'=>0 , 'professeur'=>0 , 'directeur'=>0 , 'administrateur'=>1 , 'webmestre'=>0 );
-/*
-$tab_droits['administrateur_fichier']
-$tab_droits['administrateur_fichier_force_loginmdp']
-$tab_droits['administrateur_fichier_import_eleve_classe']
-$tab_droits['administrateur_fichier_import_id_ent']
-$tab_droits['administrateur_fichier_import_id_gepi']
-$tab_droits['administrateur_fichier_import_professeur_directeur']
-$tab_droits['administrateur_fichier_init_loginmdp_eleve']
-$tab_droits['administrateur_fichier_init_loginmdp_professeur_directeur']
-*/
 $tab_droits['administrateur_groupe']                   = array( 'public'=>0 , 'eleve'=>0 , 'professeur'=>0 , 'directeur'=>0 , 'administrateur'=>1 , 'webmestre'=>0 );
 $tab_droits['administrateur_groupe_gestion']           = array( 'public'=>0 , 'eleve'=>0 , 'professeur'=>0 , 'directeur'=>0 , 'administrateur'=>1 , 'webmestre'=>0 );
 $tab_droits['administrateur_nettoyage']                = array( 'public'=>0 , 'eleve'=>0 , 'professeur'=>0 , 'directeur'=>0 , 'administrateur'=>1 , 'webmestre'=>0 );

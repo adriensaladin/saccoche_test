@@ -31,7 +31,7 @@ if(version_compare(PHP_VERSION,$version_php_mini,'<'))
 {
 	affich_message_exit($titre='PHP trop ancien',$contenu='Version de PHP utilisée sur ce serveur : '.PHP_VERSION.'<br />Version de PHP requise au minimum : '.$version_php_mini);
 }
-$version_mysql_mini = '4.1'; // Pour l'installation
+$version_mysql_mini = '5.0'; // Pour l'installation
 
 // Vérifier la présence des modules nécessaires
 $extensions_chargees = get_loaded_extensions();

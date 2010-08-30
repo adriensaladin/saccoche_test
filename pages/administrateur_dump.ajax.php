@@ -198,6 +198,7 @@ elseif($action=='uploader')
 	}
 	$zip->extractTo($dossier_temp);
 	$zip->close();
+	unlink($dossier_import.$fichier_upload_nom);
 	// Vérifier le contenu : noms des fichiers
 	$taille_maximale = verifier_dossier($dossier_temp);
 	if(!$taille_maximale)

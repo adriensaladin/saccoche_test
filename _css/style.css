@@ -379,17 +379,18 @@ ul.donneur {height:30ex;width:90%;background:#DDF;padding:1ex;overflow:auto}
 ul.donneur li span:hover {cursor:pointer}
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-/* Liste à puce pour les étapes lors de l'importe sconet                                               */
+/* Liste à puce pour les étapes lors de l'import sconet                                                */
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 #step li {color:#777;margin-left:2em;}
 #step li.on {color:#000;font-weight:bold;list-style:url(../_img/puce_li.png);}
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-/* Liste à puce avec flèches vertes                                                                    */
+/* Liste à puce avec flèches bleues                                                                    */
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 ul.puce li {margin-left:2em;list-style:url(../_img/puce_li.png);}
+*.li       {padding-left:2em;background:transparent url(../_img/puce_li.png) no-repeat left;}
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 /* Puces des liens pour masquer ou montrer des options                                                 */

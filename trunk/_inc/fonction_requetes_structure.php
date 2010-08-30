@@ -26,6 +26,20 @@
  */
 
 /**
+ * DB_STRUCTURE_compter_devoirs
+ * 
+ * @param void
+ * @return int
+ */
+
+function DB_STRUCTURE_compter_devoirs()
+{
+	$DB_SQL = 'SELECT COUNT(*) AS nombre FROM sacoche_devoir';
+	$DB_ROW = DB::queryRow(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , null);
+	return $DB_ROW['nombre'];
+}
+
+/**
  * DB_STRUCTURE_recuperer_donnees_utilisateur
  * 
  * @param string $mode_connection   'normal' ou 'cas' ou ...
@@ -407,7 +421,7 @@ function DB_version_base()
  * DB_STRUCTURE_recuperer_statistiques
  * 
  * @param void
- * @return array array($prof_nb,$prof_use,$eleve_nb,$eleve_use,$score_nb)
+ * @return array($prof_nb,$prof_use,$eleve_nb,$eleve_use,$score_nb)
  */
 
 function DB_STRUCTURE_recuperer_statistiques()
@@ -767,6 +781,22 @@ function DB_STRUCTURE_lister_classes()
 }
 
 /**
+ * DB_STRUCTURE_lister_groupes
+ * 
+ * @param void
+ * @return array
+ */
+
+function DB_STRUCTURE_lister_groupes()
+{
+	$DB_SQL = 'SELECT * FROM sacoche_groupe ';
+	$DB_SQL.= 'WHERE groupe_type=:type ';
+	$DB_SQL.= 'ORDER BY groupe_ref ASC';
+	$DB_VAR = array(':type'=>'groupe');
+	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+}
+
+/**
  * DB_STRUCTURE_lister_classes_avec_niveaux
  * 
  * @param void
@@ -1013,6 +1043,22 @@ function DB_STRUCTURE_lister_professeurs_et_directeurs_tri_statut()
 }
 
 /**
+ * DB_STRUCTURE_lister_jointure_professeurs_matieres
+ * 
+ * @param void
+ * @return array
+ */
+
+function DB_STRUCTURE_lister_jointure_professeurs_matieres()
+{
+	$DB_SQL = 'SELECT user_id,matiere_id FROM sacoche_jointure_user_matiere ';
+	$DB_SQL.= 'LEFT JOIN sacoche_user USING (user_id) ';
+	$DB_SQL.= 'WHERE user_statut=:statut ';
+	$DB_VAR = array(':statut'=>1);
+	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+}
+
+/**
  * DB_STRUCTURE_lister_jointure_professeurs_coordonnateurs
  * 
  * @param void
@@ -1178,21 +1224,23 @@ function DB_STRUCTURE_lister_users($profil,$only_actifs,$with_classe)
 }
 
 /**
- * DB_STRUCTURE_lister_eleves_actifs_avec_groupe
+ * DB_STRUCTURE_lister_users_avec_groupe
  * 
+ * @param bool   $profil_eleve  true pour eleve / false pour professeur + directeur
  * @param int    $prof_id       0 pour les élèves des groupes type "groupe" , l'id du prof pour les élèves des groupes type "besoin" d'un prof
  * @param bool   $only_actifs   true pour statut actif uniquement / false pour tout le monde qq soit le statut
  * @return array
  */
 
-function DB_STRUCTURE_lister_eleves_avec_groupe($prof_id,$only_actifs)
+function DB_STRUCTURE_lister_users_avec_groupe($profil_eleve,$prof_id,$only_actifs)
 {
 	$groupe_type = ($prof_id) ? 'besoin' : 'groupe' ;
+	$egal_eleve = $profil_eleve ? '=' : '!=' ;
 	$DB_VAR = array(':profil'=>'eleve',':type'=>$groupe_type);
 	$DB_SQL = 'SELECT * FROM sacoche_user ';
 	$DB_SQL.= 'LEFT JOIN sacoche_jointure_user_groupe USING (user_id) ';
 	$DB_SQL.= 'LEFT JOIN sacoche_groupe USING (groupe_id) ';
-	$DB_SQL.= 'WHERE user_profil=:profil AND groupe_type=:type ';
+	$DB_SQL.= 'WHERE user_profil'.$egal_eleve.':profil AND groupe_type=:type ';
 	if($prof_id)
 	{
 		$DB_SQL.= 'AND groupe_prof_id=:prof_id ';
@@ -1204,6 +1252,23 @@ function DB_STRUCTURE_lister_eleves_avec_groupe($prof_id,$only_actifs)
 		$DB_VAR[':statut'] = 1;
 	}
 	$DB_SQL.= 'ORDER BY user_nom ASC, user_prenom ASC';
+	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+}
+
+/**
+ * DB_STRUCTURE_lister_professeurs_avec_classes
+ * 
+ * @param void
+ * @return array
+ */
+
+function DB_STRUCTURE_lister_professeurs_avec_classes()
+{
+	$DB_SQL = 'SELECT * FROM sacoche_user ';
+	$DB_SQL.= 'LEFT JOIN sacoche_jointure_user_groupe USING (user_id) ';
+	$DB_SQL.= 'LEFT JOIN sacoche_groupe USING (groupe_id) ';
+	$DB_SQL.= 'WHERE user_profil=:profil AND groupe_type=:type AND user_statut=:statut ';
+	$DB_VAR = array(':profil'=>'professeur',':type'=>'classe',':statut'=>1);
 	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 

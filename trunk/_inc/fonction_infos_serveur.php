@@ -33,8 +33,8 @@ $tester_version = recuperer_numero_derniere_version();
 $complement = ($_SESSION['USER_PROFIL']!='webmestre') ? '' : ( (HEBERGEUR_INSTALLATION=='multi-structures') ? 'La valeur peut dépendre de la structure...<br />' : 'Information disponible sous un profil administrateur.<br />' ) ;
 
 $tab_commentaires = array();
-$tab_commentaires['version_php']          = 'Version 5.1 ou ultérieure requise.<br \>Avec la version 5.3 des bugs peuvent subsister.';
-$tab_commentaires['version_mysql']        = 'Version 5.1 ou ultérieure conseillée.<br \>Version 4.1 ou ultérieure requise.';
+$tab_commentaires['version_php']          = 'Version 5.1 ou ultérieure requise.<br \>Version 6.0 non testée.';
+$tab_commentaires['version_mysql']        = 'Version 5.1 ou ultérieure conseillée.<br \>Version 5.0 ou ultérieure requise.';
 $tab_commentaires['version_sacoche_prog'] = 'Dernière version disponible : '.$tester_version;
 $tab_commentaires['version_sacoche_base'] = $complement.'Version attendue : '.VERSION_BASE;
 $tab_commentaires['max_execution_time']   = 'Par défaut 30 secondes.<br />Une valeur trop faible pourrait gêner les sauvegardes / restaurations de grosses bases.';

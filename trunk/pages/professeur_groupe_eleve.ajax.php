@@ -71,7 +71,7 @@ foreach($DB_TAB as $DB_ROW)
 	$tab_user[$DB_ROW['groupe_id']] = '';
 }
 // Récupérer la liste des élèves / groupes de besoin
-$DB_TAB = DB_STRUCTURE_lister_eleves_avec_groupe($prof_id=$_SESSION['USER_ID'],$only_actifs=true);;
+$DB_TAB = DB_STRUCTURE_lister_users_avec_groupe($profil_eleve=true,$prof_id=$_SESSION['USER_ID'],$only_actifs=true);;
 foreach($DB_TAB as $DB_ROW)
 {
 	$tab_user[$DB_ROW['groupe_id']]  .= html($DB_ROW['user_nom'].' '.$DB_ROW['user_prenom']).'<br />';

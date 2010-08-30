@@ -68,8 +68,6 @@ $color_v = $_SESSION['CSS_BACKGROUND-COLOR']['A'];
 
 <form id="form" action="">
 
-	<hr />
-
 	<h2>Jeu de codes de couleur</h2>
 
 	<table class="simulation"><tbody>

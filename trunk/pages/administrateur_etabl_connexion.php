@@ -68,5 +68,5 @@ foreach($tab_connexion_info['cas'] as $connexion_nom => $tab_info)
 	</div>
 	<?php echo $choix ?>
 	<span class="tab"></span><button id="bouton_valider" type="button"><img alt="" src="./_img/bouton/parametre.png" /> Valider ce mode d'identification.</button><label id="ajax_msg">&nbsp;</label>
-	<p><span class="astuce">Pour importer les identifiants de l'ENT, utiliser ensuite la page "<a href="./index.php?page=administrateur_fichier&amp;section=import-id-ent">Importer identifiant ENT</a>".</span></p>
+	<p><span class="astuce">Pour importer les identifiants de l'ENT, utiliser ensuite la page permettant <a href="./index.php?page=administrateur_fichier_identifiant">d'importer / les identifiants de l'ENT</a>.</span></p>
 </fieldset></form>

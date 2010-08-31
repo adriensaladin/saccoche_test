@@ -202,7 +202,7 @@ else if( ($action=='initialiser_mdp') && $base_id && $admin_id )
 	$texte.= 'N\'hésitez pas à consulter la documentation disponible depuis le site du projet :'."\r\n".SERVEUR_PROJET."\r\n\r\n";
 	$texte.= 'Cordialement'."\r\n";
 	$texte.= WEBMESTRE_PRENOM.' '.WEBMESTRE_NOM."\r\n\r\n";
-	$courriel_bilan = envoyer_webmestre_courriel($contact_courriel,'Création compte',$texte,false);
+	$courriel_bilan = envoyer_webmestre_courriel($contact_courriel,'Modification mdp administrateur',$texte,false);
 	if(!$courriel_bilan)
 	{
 		exit('Erreur lors de l\'envoi du courriel !');

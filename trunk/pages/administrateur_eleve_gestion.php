@@ -43,7 +43,7 @@ $select_f_groupes = afficher_select(DB_STRUCTURE_OPT_regroupements_etabl() , $se
 	<span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__gestion_eleves">DOC : Gestion des élèves</a></span>
 </div>
 
-<form action="./index.php?page=<?php echo $PAGE ?>&amp;section=<?php echo $SECTION ?>" method="POST" id="form0">
+<form action="./index.php?page=<?php echo $PAGE ?>" method="POST" id="form0">
 	<div>Restreindre l'affichage : <?php echo $select_f_groupes ?> <button id="actualiser" type="submit"><img alt="" src="./_img/bouton/actualiser.png" /> Actualiser.</button></div>
 </form>
 

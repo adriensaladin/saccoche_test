@@ -236,67 +236,73 @@ if( $step==2 )
 		 *    => Le tableau $tab_matiere_code_matiere_TO_matiere_code_gestion liste ce contenu des nomenclatures.
 		 */
 		$tab_matiere_code_matiere_TO_matiere_code_gestion = array();
-		foreach ($xml->NOMENCLATURES->MATIERES->MATIERE as $matiere)
+		if( ($xml->NOMENCLATURES) && ($xml->NOMENCLATURES->MATIERES) && ($xml->NOMENCLATURES->MATIERES->MATIERE) )
 		{
-			$matiere_code_matiere = (string) $matiere->attributes()->CODE; // (string) obligatoire sinon il n'aime pas une clef commençant par 0...
-			$matiere_code_gestion = (string) $matiere->CODE_GESTION; // (string) obligatoire sinon il n'aime pas une clef commençant par 0...
-			$tab_matiere_code_matiere_TO_matiere_code_gestion[$matiere_code_matiere] = $matiere_code_gestion;
+			foreach ($xml->NOMENCLATURES->MATIERES->MATIERE as $matiere)
+			{
+				$matiere_code_matiere = (string) $matiere->attributes()->CODE; // (string) obligatoire sinon il n'aime pas une clef commençant par 0...
+				$matiere_code_gestion = (string) $matiere->CODE_GESTION; // (string) obligatoire sinon il n'aime pas une clef commençant par 0...
+				$tab_matiere_code_matiere_TO_matiere_code_gestion[$matiere_code_matiere] = $matiere_code_gestion;
+			}
 		}
 		//
 		// On passe les utilisateurs en revue : on mémorise leurs infos, y compris les PP, d'éventuelles matières affectées, d'éventuelles classes présentes
 		//
 		$date_aujourdhui = date('Y-m-d');
-		foreach ($xml->DONNEES->INDIVIDUS->INDIVIDU as $individu)
+		if( ($xml->DONNEES) && ($xml->DONNEES->INDIVIDUS) && ($xml->DONNEES->INDIVIDUS->INDIVIDU) )
 		{
-			$fonction = $individu->FONCTION ;
-			// Prendre les professeurs, les CPE, le personnel de direction (je ne sais pas s'il y a d'autres cas)
-			if(in_array( $fonction , array('ENS','EDU','DIR') ))
+			foreach ($xml->DONNEES->INDIVIDUS->INDIVIDU as $individu)
 			{
-				$num_sconet = clean_entier($individu->attributes()->ID);
-				$i_fichier  = $num_sconet;
-				$tab_users_fichier['num_sconet'][$i_fichier] = $num_sconet;
-				$tab_users_fichier['reference'][$i_fichier]  = '';
-				$tab_users_fichier['profil'][$i_fichier]     = ( ($fonction=='ENS') || ($fonction=='EDU') ) ? 'professeur' : 'directeur' ;
-				$tab_users_fichier['nom'][$i_fichier]        = clean_nom($individu->NOM_USAGE);
-				$tab_users_fichier['prenom'][$i_fichier]     = clean_prenom($individu->PRENOM);
-				$tab_users_fichier['classe'][$i_fichier]     = array();
-				$tab_users_fichier['groupe'][$i_fichier]     = array();
-				$tab_users_fichier['matiere'][$i_fichier]    = array();
-				// Indication éventuelle de professeur principal
-				if( ($individu->PROFS_PRINC) && ($individu->PROFS_PRINC->PROF_PRINC) )
+				$fonction = $individu->FONCTION ;
+				// Prendre les professeurs, les CPE, le personnel de direction (je ne sais pas s'il y a d'autres cas)
+				if(in_array( $fonction , array('ENS','EDU','DIR') ))
 				{
-					foreach ($individu->PROFS_PRINC->PROF_PRINC as $prof_princ)
+					$num_sconet = clean_entier($individu->attributes()->ID);
+					$i_fichier  = $num_sconet;
+					$tab_users_fichier['num_sconet'][$i_fichier] = $num_sconet;
+					$tab_users_fichier['reference'][$i_fichier]  = '';
+					$tab_users_fichier['profil'][$i_fichier]     = ( ($fonction=='ENS') || ($fonction=='EDU') ) ? 'professeur' : 'directeur' ;
+					$tab_users_fichier['nom'][$i_fichier]        = clean_nom($individu->NOM_USAGE);
+					$tab_users_fichier['prenom'][$i_fichier]     = clean_prenom($individu->PRENOM);
+					$tab_users_fichier['classe'][$i_fichier]     = array();
+					$tab_users_fichier['groupe'][$i_fichier]     = array();
+					$tab_users_fichier['matiere'][$i_fichier]    = array();
+					// Indication éventuelle de professeur principal
+					if( ($individu->PROFS_PRINC) && ($individu->PROFS_PRINC->PROF_PRINC) )
 					{
-						$classe_ref = clean_ref($prof_princ->CODE_STRUCTURE);
-						$date_fin = clean_ref($prof_princ->DATE_FIN);
-						if($date_fin <= $date_aujourdhui)
+						foreach ($individu->PROFS_PRINC->PROF_PRINC as $prof_princ)
 						{
-							$tab_users_fichier['classe'][$i_fichier][$classe_ref] = 'PP';
-						}
-						// Au passage on ajoute la classe trouvée
-						if(!isset($tab_classes_fichier['ref'][$classe_ref]))
-						{
-							$tab_classes_fichier['ref'][$classe_ref]    = $classe_ref;
-							$tab_classes_fichier['nom'][$classe_ref]    = $classe_ref;
-							$tab_classes_fichier['niveau'][$classe_ref] = $classe_ref;
+							$classe_ref = clean_ref($prof_princ->CODE_STRUCTURE);
+							$date_fin = clean_ref($prof_princ->DATE_FIN);
+							if($date_fin <= $date_aujourdhui)
+							{
+								$tab_users_fichier['classe'][$i_fichier][$classe_ref] = 'PP';
+							}
+							// Au passage on ajoute la classe trouvée
+							if(!isset($tab_classes_fichier['ref'][$classe_ref]))
+							{
+								$tab_classes_fichier['ref'][$classe_ref]    = $classe_ref;
+								$tab_classes_fichier['nom'][$classe_ref]    = $classe_ref;
+								$tab_classes_fichier['niveau'][$classe_ref] = $classe_ref;
+							}
 						}
 					}
-				}
-				// Indication éventuelle des matières du professeur (toujours renseigné pour les profs, mais matières potentielles et non effectivement enseignées, et usage d'un code discipline pas commode à décrypter)
-				if( ($individu->DISCIPLINES) && ($individu->DISCIPLINES->DISCIPLINE) )
-				{
-					foreach ($individu->DISCIPLINES->DISCIPLINE as $discipline)
+					// Indication éventuelle des matières du professeur (toujours renseigné pour les profs, mais matières potentielles et non effectivement enseignées, et usage d'un code discipline pas commode à décrypter)
+					if( ($individu->DISCIPLINES) && ($individu->DISCIPLINES->DISCIPLINE) )
 					{
-						$discipline_code_discipline = (string) $discipline->attributes()->CODE;
-						foreach ($tab_discipline_code_discipline_TO_matiere_code_gestion as $masque_recherche => $tab_matiere_code_gestion)
+						foreach ($individu->DISCIPLINES->DISCIPLINE as $discipline)
 						{
-							if(preg_match('/^'.$masque_recherche.'$/',$discipline_code_discipline))
+							$discipline_code_discipline = (string) $discipline->attributes()->CODE;
+							foreach ($tab_discipline_code_discipline_TO_matiere_code_gestion as $masque_recherche => $tab_matiere_code_gestion)
 							{
-								foreach ($tab_matiere_code_gestion as $matiere_code_gestion)
+								if(preg_match('/^'.$masque_recherche.'$/',$discipline_code_discipline))
 								{
-									$tab_users_fichier['matiere'][$i_fichier][$matiere_code_gestion] = 'discipline';
+									foreach ($tab_matiere_code_gestion as $matiere_code_gestion)
+									{
+										$tab_users_fichier['matiere'][$i_fichier][$matiere_code_gestion] = 'discipline';
+									}
+									break;
 								}
-								break;
 							}
 						}
 					}
@@ -306,7 +312,7 @@ if( $step==2 )
 		//
 		// On passe les classes en revue : on mémorise leurs infos, y compris les profs rattachés éventuels, et les matières associées
 		//
-		if( ($xml->DONNEES->STRUCTURE->DIVISIONS) && ($xml->DONNEES->STRUCTURE->DIVISIONS->DIVISION) )
+		if( ($xml->DONNEES) && ($xml->DONNEES->STRUCTURE) && ($xml->DONNEES->STRUCTURE->DIVISIONS) && ($xml->DONNEES->STRUCTURE->DIVISIONS->DIVISION) )
 		{
 			foreach ($xml->DONNEES->STRUCTURE->DIVISIONS->DIVISION as $division)
 			{
@@ -353,7 +359,7 @@ if( $step==2 )
 		//
 		// On passe les groupes en revue : on mémorise leurs infos, y compris les profs rattachés éventuels, et les matières associées
 		//
-		if( ($xml->DONNEES->STRUCTURE->GROUPES) && ($xml->DONNEES->STRUCTURE->GROUPES->GROUPE) )
+		if( ($xml->DONNEES) && ($xml->DONNEES->STRUCTURE) && ($xml->DONNEES->STRUCTURE->GROUPES) && ($xml->DONNEES->STRUCTURE->GROUPES->GROUPE) )
 		{
 			foreach ($xml->DONNEES->STRUCTURE->GROUPES->GROUPE as $groupe)
 			{
@@ -414,58 +420,64 @@ if( $step==2 )
 		//
 		// On passe les utilisateurs en revue : on mémorise leurs infos, plus leur niveau
 		//
-		foreach ($xml->DONNEES->ELEVES->ELEVE as $eleve)
+		if( ($xml->DONNEES) && ($xml->DONNEES->ELEVES) && ($xml->DONNEES->ELEVES->ELEVE) )
 		{
-			$i_fichier = clean_entier($eleve->attributes()->ELEVE_ID);
-			$tab_users_fichier['num_sconet'][$i_fichier] = clean_entier($eleve->attributes()->ELENOET);
-			$tab_users_fichier['reference'][$i_fichier]  = clean_ref($eleve->ID_NATIONAL);
-			$tab_users_fichier['profil'][$i_fichier]     = 'eleve' ;
-			$tab_users_fichier['nom'][$i_fichier]        = clean_nom($eleve->NOM);
-			$tab_users_fichier['prenom'][$i_fichier]     = clean_prenom($eleve->PRENOM);
-			$tab_users_fichier['classe'][$i_fichier]     = array();
-			$tab_users_fichier['groupe'][$i_fichier]     = array();
-			$tab_users_fichier['matiere'][$i_fichier]    = array();
-			$tab_users_fichier['niveau'][$i_fichier]     = clean_ref($eleve->CODE_MEF);
+			foreach ($xml->DONNEES->ELEVES->ELEVE as $eleve)
+			{
+				$i_fichier = clean_entier($eleve->attributes()->ELEVE_ID);
+				$tab_users_fichier['num_sconet'][$i_fichier] = clean_entier($eleve->attributes()->ELENOET);
+				$tab_users_fichier['reference'][$i_fichier]  = clean_ref($eleve->ID_NATIONAL);
+				$tab_users_fichier['profil'][$i_fichier]     = 'eleve' ;
+				$tab_users_fichier['nom'][$i_fichier]        = clean_nom($eleve->NOM);
+				$tab_users_fichier['prenom'][$i_fichier]     = clean_prenom($eleve->PRENOM);
+				$tab_users_fichier['classe'][$i_fichier]     = array();
+				$tab_users_fichier['groupe'][$i_fichier]     = array();
+				$tab_users_fichier['matiere'][$i_fichier]    = array();
+				$tab_users_fichier['niveau'][$i_fichier]     = clean_ref($eleve->CODE_MEF);
+			}
 		}
 		//
 		// On passe les liaisons élèves/classes-groupes en revue : on mémorise leurs infos, et les élèves rattachés
 		//
-		foreach ($xml->DONNEES->STRUCTURES->STRUCTURES_ELEVE as $structures_eleve)
+		if( ($xml->DONNEES) && ($xml->DONNEES->STRUCTURES) && ($xml->DONNEES->STRUCTURES->STRUCTURES_ELEVE) )
 		{
-			$i_fichier = clean_entier($structures_eleve->attributes()->ELEVE_ID);
-			foreach ($structures_eleve->STRUCTURE as $structure)
+			foreach ($xml->DONNEES->STRUCTURES->STRUCTURES_ELEVE as $structures_eleve)
 			{
-				if($structure->TYPE_STRUCTURE == 'D')
+				$i_fichier = clean_entier($structures_eleve->attributes()->ELEVE_ID);
+				foreach ($structures_eleve->STRUCTURE as $structure)
 				{
-					$classe_ref = clean_ref($structure->CODE_STRUCTURE);
-					$tab_users_fichier['classe'][$i_fichier] = $classe_ref;
-					if(!isset($tab_classes_fichier['ref'][$classe_ref]))
+					if($structure->TYPE_STRUCTURE == 'D')
 					{
-						$tab_classes_fichier['ref'][$classe_ref]    = $classe_ref;
-						$tab_classes_fichier['nom'][$classe_ref]    = $classe_ref;
-						$tab_classes_fichier['niveau'][$classe_ref] = '';
+						$classe_ref = clean_ref($structure->CODE_STRUCTURE);
+						$tab_users_fichier['classe'][$i_fichier] = $classe_ref;
+						if(!isset($tab_classes_fichier['ref'][$classe_ref]))
+						{
+							$tab_classes_fichier['ref'][$classe_ref]    = $classe_ref;
+							$tab_classes_fichier['nom'][$classe_ref]    = $classe_ref;
+							$tab_classes_fichier['niveau'][$classe_ref] = '';
+						}
+						if($tab_users_fichier['niveau'][$i_fichier])
+						{
+							$tab_classes_fichier['niveau'][$classe_ref] = $tab_users_fichier['niveau'][$i_fichier];
+						}
 					}
-					if($tab_users_fichier['niveau'][$i_fichier])
+					elseif($structure->TYPE_STRUCTURE == 'G')
 					{
-						$tab_classes_fichier['niveau'][$classe_ref] = $tab_users_fichier['niveau'][$i_fichier];
-					}
-				}
-				elseif($structure->TYPE_STRUCTURE == 'G')
-				{
-					$groupe_ref = clean_ref($structure->CODE_STRUCTURE);
-					if(!isset($tab_users_fichier['groupe'][$i_fichier][$groupe_ref]))
-					{
-						$tab_users_fichier['groupe'][$i_fichier][$groupe_ref] = $groupe_ref;
-					}
-					if(!isset($tab_groupes_fichier['ref'][$groupe_ref]))
-					{
-						$tab_groupes_fichier['ref'][$groupe_ref]    = $groupe_ref;
-						$tab_groupes_fichier['nom'][$groupe_ref]    = $groupe_ref;
-						$tab_groupes_fichier['niveau'][$groupe_ref] = '';
-					}
-					if($tab_users_fichier['niveau'][$i_fichier])
-					{
-						$tab_groupes_fichier['niveau'][$groupe_ref] = $tab_users_fichier['niveau'][$i_fichier];
+						$groupe_ref = clean_ref($structure->CODE_STRUCTURE);
+						if(!isset($tab_users_fichier['groupe'][$i_fichier][$groupe_ref]))
+						{
+							$tab_users_fichier['groupe'][$i_fichier][$groupe_ref] = $groupe_ref;
+						}
+						if(!isset($tab_groupes_fichier['ref'][$groupe_ref]))
+						{
+							$tab_groupes_fichier['ref'][$groupe_ref]    = $groupe_ref;
+							$tab_groupes_fichier['nom'][$groupe_ref]    = $groupe_ref;
+							$tab_groupes_fichier['niveau'][$groupe_ref] = '';
+						}
+						if($tab_users_fichier['niveau'][$i_fichier])
+						{
+							$tab_groupes_fichier['niveau'][$groupe_ref] = $tab_users_fichier['niveau'][$i_fichier];
+						}
 					}
 				}
 			}

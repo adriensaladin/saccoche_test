@@ -264,7 +264,7 @@ $(document).ready
 		(
 			function()
 			{
-				page = ($(this).attr('id')=='bouton_stats') ? 'statistiques_multi' : 'newsletter_multi' ;
+				page = ($(this).attr('id')=='bouton_stats') ? 'webmestre_statistiques' : 'webmestre_newsletter' ;
 				var check_ids = new Array(); $("input[type=checkbox]:checked").each(function(){check_ids.push($(this).val());});
 				$('#listing_ids').val(check_ids);
 				var form = document.getElementById('structures');

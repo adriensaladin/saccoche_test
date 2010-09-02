@@ -263,7 +263,7 @@ $(document).ready
 				var check_ids = new Array(); $("input[type=checkbox]:checked").each(function(){check_ids.push($(this).val());});
 				$('#listing_ids').val(check_ids);
 				var form = document.getElementById('structures');
-				form.action = './index.php?page=newsletter_multi';
+				form.action = './index.php?page=webmestre_newsletter';
 				form.method = 'post';
 				form.submit();
 			}

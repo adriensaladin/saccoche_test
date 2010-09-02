@@ -182,7 +182,7 @@ if($action=='import_loginmdp')
 	$ferreur = $tab_file['error'];
 	if( (!file_exists($fnom_serveur)) || (!$ftaille) || ($ferreur) )
 	{
-		exit('Erreur : problème avec le fichier (taille dépassant probablement post_max_size ) !');
+		exit('Erreur : problème avec le fichier (taille dépassant probablement upload_max_filesize ) !');
 	}
 	$extension = strtolower(pathinfo($fnom_transmis,PATHINFO_EXTENSION));
 	if(!in_array($extension,array('txt','csv')))
@@ -389,7 +389,7 @@ if( ($action=='import_gepi_eleves') || ($action=='import_gepi_profs') )
 	$ferreur = $tab_file['error'];
 	if( (!file_exists($fnom_serveur)) || (!$ftaille) || ($ferreur) )
 	{
-		exit('Erreur : problème avec le fichier (taille dépassant probablement post_max_size ) !');
+		exit('Erreur : problème avec le fichier (taille dépassant probablement upload_max_filesize ) !');
 	}
 	$fnom_attendu = ($action=='import_gepi_eleves') ? 'base_eleves_gepi.csv' : 'base_professeurs_gepi.csv' ;
 	if($fnom_transmis!=$fnom_attendu)
@@ -546,7 +546,7 @@ if($action=='import_ent')
 	$ferreur = $tab_file['error'];
 	if( (!file_exists($fnom_serveur)) || (!$ftaille) || ($ferreur) )
 	{
-		exit('Erreur : erreur avec le fichier transmis (taille dépassant probablement post_max_size ) !');
+		exit('Erreur : erreur avec le fichier transmis (taille dépassant probablement upload_max_filesize ) !');
 	}
 	$extension = strtolower(pathinfo($fnom_transmis,PATHINFO_EXTENSION));
 	if(!in_array($extension,array('txt','csv')))

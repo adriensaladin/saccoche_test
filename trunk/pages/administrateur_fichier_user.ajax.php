@@ -98,7 +98,7 @@ if( $step==1 )
 	$ferreur = $tab_file['error'];
 	if( (!file_exists($fnom_serveur)) || (!$ftaille) || ($ferreur) )
 	{
-		exit('Erreur : problème avec le fichier (taille dépassant probablement post_max_size ) !');
+		exit('Erreur : problème avec le fichier (taille dépassant probablement upload_max_filesize ) !');
 	}
 	$extension = strtolower(pathinfo($fnom_transmis,PATHINFO_EXTENSION));
 	if(!in_array($extension,$tab_extensions_autorisees))

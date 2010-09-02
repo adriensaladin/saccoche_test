@@ -571,7 +571,7 @@ $(document).ready
 								}
 								infobulle();
 								$('#choisir_annuler').click();
-								$('#voir_referentiel').html('<ul class="puce"><li><label class="valide">Référentiel importé</label></li><li><span class="astuce">Pour éditer ce nouveau référentiel, utiliser la page "<a href="./index.php?page=referentiel&amp;section=detail">modifier le contenu des référentiels</a>".</span></li></ul>');
+								$('#voir_referentiel').html('<ul class="puce"><li><label class="valide">Référentiel importé</label></li><li><span class="astuce">Pour éditer ce nouveau référentiel, utiliser la page "<a href="./index.php?page=professeur_referentiel&amp;section=edition">modifier le contenu des référentiels</a>".</span></li></ul>');
 							}
 						}
 					}

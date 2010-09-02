@@ -169,7 +169,7 @@ elseif($action=='uploader')
 	$ferreur = $tab_file['error'];
 	if( (!file_exists($fnom_serveur)) || (!$ftaille) || ($ferreur) )
 	{
-		exit('<li><label class="alerte">Erreur : problème avec le fichier transmis (taille dépassant probablement post_max_size ) !</label></li>');
+		exit('<li><label class="alerte">Erreur : problème avec le fichier transmis (taille dépassant probablement upload_max_filesize ) !</label></li>');
 	}
 	$extension = strtolower(pathinfo($fnom_transmis,PATHINFO_EXTENSION));
 	if($extension!='zip')

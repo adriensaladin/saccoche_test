@@ -95,7 +95,7 @@ elseif($action=='upload_logo')
 	$ferreur = $tab_file['error'];
 	if( (!file_exists($fnom_serveur)) || (!$ftaille) || ($ferreur) )
 	{
-		exit('Erreur : erreur avec le fichier transmis (taille dépassant probablement post_max_size ) !');
+		exit('Erreur : erreur avec le fichier transmis (taille dépassant probablement upload_max_filesize ) !');
 	}
 	$extension = strtolower(pathinfo($fnom_transmis,PATHINFO_EXTENSION));
 	if(!in_array($extension,$tab_ext_images))

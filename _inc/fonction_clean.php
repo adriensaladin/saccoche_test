@@ -115,7 +115,7 @@ function clean_csv($text)
 
 function clean_symboles($text)
 {
-	$bad = array('&','<','>','\\','"','\'','`','’');
+	$bad = array('&','<','>','\\','"','\'','/','`','’');
 	$bon = '';
 	return str_replace($bad,$bon,$text);
 }

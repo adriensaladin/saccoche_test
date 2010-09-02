@@ -144,7 +144,7 @@ function afficher_navigateurs_modernes($chemin_image)
 	$tab_navigateurs[] = '<a class="lien_ext" href="http://www.google.fr/chrome"><img src="'.$chemin_image.'/navigateur/chrome18.gif" alt="Chrome" /> Chrome 5</a>';
 	$tab_navigateurs[] = '<a class="lien_ext" href="http://www.mozilla-europe.org/fr/"><img src="'.$chemin_image.'/navigateur/firefox18.gif" alt="Firefox" /> Firefox 3</a>';
 	$tab_navigateurs[] = '<a class="lien_ext" href="http://www.opera-fr.com/telechargements/"><img src="'.$chemin_image.'/navigateur/opera18.gif" alt="Opéra" /> Opéra 10</a>';
-	$tab_navigateurs[] = '<a class="lien_ext" href="http://www.apple.com/fr/safari/"><img src="'.$chemin_image.'/navigateur/safari18.gif" alt="Safari" /> Safari 4</a>';
+	$tab_navigateurs[] = '<a class="lien_ext" href="http://www.apple.com/fr/safari/"><img src="'.$chemin_image.'/navigateur/safari18.gif" alt="Safari" /> Safari 5</a>';
 	return implode(' ou ',$tab_navigateurs);
 }
 

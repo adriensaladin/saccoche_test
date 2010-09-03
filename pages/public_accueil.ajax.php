@@ -83,11 +83,17 @@ function afficher_formulaire_identification_webmestre()
 
 function afficher_formulaire_identification($profil,$mode)
 {
-	$input_login    = (($mode=='normal')||($profil=='administrateur')) ? 'type="text" value=""' : 'type="text" value="connexion ENT" disabled="disabled"' ;
-	$input_password = (($mode=='normal')||($profil=='administrateur')) ? 'type="password" value=""' : 'type="text" value="connexion ENT" disabled="disabled"' ;
-	echo'<label class="tab" for="f_login">Nom d\'utilisateur :</label><input id="f_login" name="f_login" size="20" '.$input_login.' tabindex="2" /><br />'."\r\n";
-	echo'<label class="tab" for="f_password">Mot de passe :</label><input id="f_password" name="f_password" size="20" '.$input_password.' tabindex="3" /><br />'."\r\n";
-	echo'<span class="tab"></span><input id="f_mode" name="f_mode" type="hidden" value="'.$mode.'" /><input id="f_profil" name="f_profil" type="hidden" value="'.$profil.'" /><input id="f_action" name="f_action" type="hidden" value="identifier" /><button id="f_submit" type="submit" tabindex="4"><img alt="" src="./_img/bouton/mdp_perso.png" /> Accéder à son espace.</button><label id="ajax_msg">&nbsp;</label><br />'."\r\n";
+	if(($mode=='normal')||($profil=='administrateur'))
+	{
+		echo'<label class="tab" for="f_login">Nom d\'utilisateur :</label><input id="f_login" name="f_login" size="20" type="text" value="" tabindex="2" /><br />'."\r\n";
+		echo'<label class="tab" for="f_password">Mot de passe :</label><input id="f_password" name="f_password" size="20" type="password" value="" tabindex="3" /><br />'."\r\n";
+		echo'<span class="tab"></span>';
+	}
+	else
+	{
+		echo'<span class="tab"></span><input id="f_login" name="f_login" type="hidden" value="connexion ENT" /><input id="f_password" name="f_password" type="hidden" value="connexion ENT" />';
+	}
+	echo'<input id="f_mode" name="f_mode" type="hidden" value="'.$mode.'" /><input id="f_profil" name="f_profil" type="hidden" value="'.$profil.'" /><input id="f_action" name="f_action" type="hidden" value="identifier" /><button id="f_submit" type="submit" tabindex="4"><img alt="" src="./_img/bouton/mdp_perso.png" /> Accéder à son espace.</button><label id="ajax_msg">&nbsp;</label><br />'."\r\n";
 }
 
 //	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*

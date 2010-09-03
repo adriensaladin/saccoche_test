@@ -38,8 +38,8 @@ fieldset,img,hr {border:0}
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 html {height:100%;width:100%;background:#EAEAFF;font-size:13px;}
-body {background:#EAEAFF;font:1em "arial","liberation sans","dejavu sans","nimbus sans l";cursor:default;}
-table,select,textarea,input,button,div{font:100% "arial","liberation sans","dejavu sans","nimbus sans l"}
+body {background:#EAEAFF;font:1em "arial","helvetica","nimbus sans l","liberation sans","freesans","garuda",sans-serif;cursor:default;} /* Arial pour windows, Helvetica pour Mac, Nimbus pour Linux, d'autres libres ensuite, et sans-serif en dernier recours (à écrire sans "" car mot clef générique) ; ne pas mettre Verdana ou Deja Vu, trop larges */
+table,select,textarea,input,button,div{font:100% "arial","helvetica","nimbus sans l","liberation sans","freesans","garuda",sans-serif}
 p{margin:1em auto}
 img {vertical-align:text-top}
 td img , #aide_en_ligne img {vertical-align:middle}

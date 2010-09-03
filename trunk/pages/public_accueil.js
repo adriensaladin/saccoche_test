@@ -97,7 +97,7 @@ $(document).ready
 					},
 					success : function(responseHTML)
 					{
-						if(responseHTML.substring(0,18)!='<label class="tab"')
+						if( (responseHTML.substring(0,18)!='<label class="tab"') && (responseHTML.substring(0,17)!='<span class="tab"') )
 						{
 							$('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);
 						}
@@ -135,7 +135,7 @@ $(document).ready
 						success : function(responseHTML)
 						{
 							$('button').removeAttr('disabled');
-							if(responseHTML.substring(0,18)!='<label class="tab"')
+							if( (responseHTML.substring(0,18)!='<label class="tab"') && (responseHTML.substring(0,17)!='<span class="tab"') )
 							{
 								$('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);
 							}

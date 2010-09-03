@@ -64,11 +64,11 @@ $(document).ready
 		(
 			function()
 			{
-				$('#cas_options').hide();
+				$('#cas_options').hide(0);
 				var valeur = $(this).val();
 				var tab_infos = valeur.split('|');
 				var connexion_mode = tab_infos[0];
-				var connexion_nom = tab_infos[1];
+				var connexion_nom  = tab_infos[1];
 				if(connexion_mode=='cas')
 				{
 					var valeur = tab_cas[connexion_nom];
@@ -76,8 +76,11 @@ $(document).ready
 					$('#cas_serveur_host').val( tab_infos[0] );
 					$('#cas_serveur_port').val( tab_infos[1] );
 					$('#cas_serveur_root').val( tab_infos[2] );
-					$(this).parent().parent().next().after( $('#cas_options') );
-					$('#cas_options').show();
+					if(connexion_nom=='perso')
+					{
+						$(this).parent().parent().next().after( $('#cas_options') );
+						$('#cas_options').show();
+					}
 				}
 			}
 		);
@@ -90,7 +93,8 @@ $(document).ready
 				var valeur = $(this).val();
 				var tab_infos = valeur.split('|');
 				var connexion_mode = tab_infos[0];
-				if(connexion_mode=='cas')
+				var connexion_nom  = tab_infos[1];
+				if( (connexion_mode=='cas') && (connexion_nom=='perso') )
 				{
 					$(this).parent().parent().next().after( $('#cas_options') );
 					$('#cas_options').show();
@@ -115,7 +119,7 @@ $(document).ready
 				var connexion_mode_nom = $('input[name=connexion_mode_nom]:checked').val();
 				var tab_infos = connexion_mode_nom.split('|');
 				var connexion_mode = tab_infos[0];
-				var connexion_nom = tab_infos[1];
+				var connexion_nom  = tab_infos[1];
 				$("#bouton_valider").attr('disabled','disabled');
 				$('#ajax_msg').removeAttr("class").addClass("loader").html("Demande envoyée... Veuillez patienter.");
 				$.ajax

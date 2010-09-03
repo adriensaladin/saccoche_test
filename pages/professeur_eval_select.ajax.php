@@ -34,7 +34,7 @@ $date_fin    = (isset($_POST['f_date_fin']))    ? clean_texte($_POST['f_date_fin
 $ref         = (isset($_POST['f_ref']))         ? clean_texte($_POST['f_ref'])         : '';
 $date        = (isset($_POST['f_date']))        ? clean_texte($_POST['f_date'])        : '';
 $info        = (isset($_POST['f_info']))        ? clean_texte($_POST['f_info'])        : '';
-$valeur      = (isset($_POST['f_valeur']))      ? clean_texte($_POST['f_valeur'])      : '';
+$contenu     = (isset($_POST['f_contenu']))     ? clean_texte($_POST['f_contenu'])     : '';
 $detail      = (isset($_POST['f_detail']))      ? clean_texte($_POST['f_detail'])      : '';
 $orientation = (isset($_POST['f_orientation'])) ? clean_texte($_POST['f_orientation']) : '';
 $marge_min   = (isset($_POST['f_marge_min']))   ? clean_texte($_POST['f_marge_min'])   : '';
@@ -601,7 +601,7 @@ else if( ($action=='Enregistrer_saisie') && $devoir_id && $date )
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 //	Imprimer un cartouche d'une évaluation
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-else if( ($action=='Imprimer_cartouche') && $devoir_id && $groupe_id && $date && $valeur && $detail && $orientation && $marge_min && $couleur )
+else if( ($action=='Imprimer_cartouche') && $devoir_id && $groupe_id && $date && $contenu && $detail && $orientation && $marge_min && $couleur )
 {
 	// liste des items
 	$DB_TAB_COMP = DB_STRUCTURE_lister_items_devoir($devoir_id);
@@ -622,7 +622,7 @@ else if( ($action=='Imprimer_cartouche') && $devoir_id && $groupe_id && $date &&
 	// enregistrer noms prénoms des élèves
 	foreach($DB_TAB_USER as $DB_ROW)
 	{
-		$tab_user_id[$DB_ROW['user_id']] = html($DB_ROW['user_prenom'].' '.$DB_ROW['user_nom']);
+		$tab_user_id[$DB_ROW['user_id']] = (substr($contenu,0,8)=='AVEC_nom') ? html($DB_ROW['user_prenom'].' '.$DB_ROW['user_nom']) : '' ;
 	}
 	// enregistrer refs noms items
 	foreach($DB_TAB_COMP as $DB_ROW)
@@ -640,7 +640,7 @@ else if( ($action=='Imprimer_cartouche') && $devoir_id && $groupe_id && $date &&
 		}
 	}
 	// compléter avec les résultats
-	if($valeur=='plein')
+	if(strpos($contenu,'AVEC_result')!==false)
 	{
 		$DB_TAB = DB_STRUCTURE_lister_saisies_devoir($devoir_id,$with_REQ=false);
 		foreach($DB_TAB as $DB_ROW)

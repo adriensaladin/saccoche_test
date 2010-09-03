@@ -196,7 +196,7 @@ $select_couleur     = afficher_select($tab_select_couleur     , $select_nom='f_c
 
 <form action="" id="zone_imprimer" class="hide"><fieldset>
 	<p class="hc"><b id="titre_imprimer"></b><br /><button id="fermer_zone_imprimer" type="button"><img alt="" src="./_img/bouton/retourner.png" /> Retour</button></p>
-	<label class="tab" for="f_valeur">Remplissage :</label><select id="f_valeur" name="f_valeur"><option value="vide">cartouche vierge de tout résultat</option><option value="plein">cartouche avec les résultats des élèves (si saisis)</option></select><br />
+	<label class="tab" for="f_contenu">Remplissage :</label><select id="f_contenu" name="f_contenu"><option value="SANS_nom_SANS_result">cartouche SANS les noms d'élèves et SANS les résultats</option><option value="AVEC_nom_SANS_result">cartouche AVEC les noms d'élèves mais SANS les résultats</option><option value="AVEC_nom_AVEC_result">cartouche AVEC les noms d'élèves et AVEC les résultats (si saisis)</option></select><br />
 	<label class="tab" for="f_detail">Détail :</label><select id="f_detail" name="f_detail"><option value="complet">cartouche avec la dénomination complète de chaque item</option><option value="minimal">cartouche minimal avec uniquement les références des items</option></select><br />
 	<div class="toggle">
 		<span class="tab"></span><a href="#" class="puce_plus toggle">Afficher plus d'options</a>

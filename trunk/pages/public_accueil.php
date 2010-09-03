@@ -103,7 +103,7 @@ if($profil!='webmestre')
 <h2><img src="./_img/puce_astuce.png" alt="Informations" /> Informations</h2>
 <ul class="puce">
 	<li><em>SACoche</em> est un logiciel gratuit, libre, développé avec le soutien de <a class="lien_ext" href="http://www.sesamath.net"><em>Sésamath</em></a>.</li>
-	<li>Consulter <a href="<?php echo SERVEUR_PROJET ?>">le site officiel de <em>SACoche</em></a> pour tout renseignement.</li>
+	<li class="b">Consulter <a href="<?php echo SERVEUR_PROJET ?>">le site officiel de <em>SACoche</em></a> pour tout renseignement.</li>
 	<li>Version installée <em><?php echo VERSION_PROG ?></em>.<label id="ajax_version" for="version"></label></li>
 </ul>
 

@@ -27,7 +27,7 @@
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = "Évaluer une classe ou un groupe";
-$VERSION_JS_FILE += 5;
+$VERSION_JS_FILE += 6;
 ?>
 
 <?php
@@ -163,12 +163,13 @@ if(count($tab_id_classe_groupe))
 	</div></div>
 	<p />
 	<div>
-		<a lang="zone_deport" href="#td_souris_container"><img src="./_img/toggle_plus.gif" alt="" title="Voir / masquer la saisie déportée." class="toggle" /></a> Saisie déportée
-		<div id="zone_deport" class="hide">
+		<a lang="zone_saisir_deport" href="#td_souris_container"><img src="./_img/toggle_plus.gif" alt="" title="Voir / masquer la saisie déportée." class="toggle" /></a> Saisie déportée
+		<div id="zone_saisir_deport" class="hide">
 			<input type="hidden" name="filename" id="filename" value="<?php echo './__tmp/export/saisie_'.$_SESSION['BASE'].'_'.$_SESSION['USER_ID'].'_'; ?>" />
 			<span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_professeur__evaluations_saisie_deportee">DOC : Saisie déportée.</a></span>
 			<ul class="puce">
-				<li><a id="export_file" class="lien_ext" href=""><img alt="" src="./_img/bouton/fichier_export.png" /> Récupérer un fichier vierge au format CSV pour une saisie déportée.</a></li>
+				<li><a id="export_file1" class="lien_ext" href=""><img alt="" src="./_img/bouton/fichier_export.png" /> Récupérer un fichier vierge au format CSV pour une saisie déportée.</a></li>
+				<li><a id="export_file4" class="lien_ext" href=""><img alt="" src="./_img/bouton/fichier_export.png" /> Récupérer au format PDF un tableau vierge utilisable pour un report manuel des notes.</a></li>
 				<li><button id="import_file" type="button"><img alt="" src="./_img/bouton/fichier_import.png" /> Envoyer un fichier complété au format CSV.</button><label id="msg_import">&nbsp;</label></li>
 			</ul>
 		</div>
@@ -180,10 +181,16 @@ if(count($tab_id_classe_groupe))
 	<table id="table_voir" class="scor_eval">
 		<tbody><tr><td></td></tr></tbody>
 	</table>
-	<p />
-	<ul class="puce">
-		<li><a id="export_file2" class="lien_ext" href=""><img alt="" src="./_img/bouton/fichier_export.png" /> Récupérer un fichier des scores au format CSV pour archivage ou une saisie déportée.</a></li>
-	</ul>
+	<p>
+		<a lang="zone_voir_deport" href="#td_souris_container"><img src="./_img/toggle_plus.gif" alt="" title="Voir / masquer la saisie déportée." class="toggle" /></a> Saisie déportée
+		<div id="zone_voir_deport" class="hide">
+			<span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_professeur__evaluations_saisie_deportee">DOC : Saisie déportée.</a></span>
+			<ul class="puce">
+				<li><a id="export_file2" class="lien_ext" href=""><img alt="" src="./_img/bouton/fichier_export.png" /> Récupérer un fichier des scores au format CSV pour archivage ou une saisie déportée.</a></li>
+				<li><a id="export_file3" class="lien_ext" href=""><img alt="" src="./_img/bouton/fichier_export.png" /> Récupérer au format PDF un tableau vierge utilisable pour un report manuel des notes.</a></li>
+			</ul>
+		</div>
+	</p>
 </div>
 
 <?php

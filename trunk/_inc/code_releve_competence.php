@@ -53,6 +53,7 @@ $texte_periode   = ($format!='selection') ? 'Du '.$date_debut.' au '.$date_fin.$
 $tab_titre       = array('matiere'=>'sur une matière' , 'multimatiere'=>'transdisciplinaire' , 'selection'=>'sur une sélection d\'items');
 
 require('./_fpdf/fpdf.php');
+require('./_fpdf/rpdf.php');
 require('./_inc/class.PDF.php');
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-

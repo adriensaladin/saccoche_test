@@ -166,6 +166,7 @@ if( $matiere_id && $niveau_id && $matiere_nom && $niveau_nom && $remplissage && 
 	$releve_html .= '<h2>'.html($matiere_nom.' - Niveau '.$niveau_nom.$only_socle).'</h2>';
 	// Appel de la classe et définition de qqs variables supplémentaires pour la mise en page PDF
 	require('./_fpdf/fpdf.php');
+	require('./_fpdf/rpdf.php');
 	require('./_inc/class.PDF.php');
 	$releve_pdf = new PDF($orientation,$marge_min,$couleur);
 	$releve_pdf->grille_niveau_initialiser($cases_nb,$cases_largeur,$cases_hauteur);

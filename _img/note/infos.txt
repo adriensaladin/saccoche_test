@@ -1,6 +1,0 @@
-Brèves infos sur les jeux de codes de couleurs.
-
-Blaye   -> Demandé par Cathy Munier pour la ZAP de Blaye en Gironde (muniercathy@hotmail.com).
-Leon    -> Demandé par Lise-Marie Le Maux pour le CLG Leon Blum de Villepreux en Yvelines (Lise-Marie.Le-Maux@ac-versailles.fr).
-Lomer   -> Jeu par défaut (cf http://michel.vauquois.free.fr/).
-Mistral -> Demandé par Magalie Caron pour le CLG Frederic Mistral de Saint-Maurice-l'Exil en Isère (caron_mag@yahoo.fr).

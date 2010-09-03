@@ -25,9 +25,9 @@
  * 
  */
 
-// Extension de classe de FPDF
+// Extension de classe de RPDF qui étant elle-même FPDF
 
-class PDF extends FPDF
+class PDF extends RPDF
 {
 
 	//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
@@ -61,6 +61,7 @@ class PDF extends FPDF
 	private $reference_largeur = 0;
 	private $intitule_largeur  = 0;
 	private $synthese_largeur  = 0;
+	private $etiquette_hauteur = 0;
 
 	private $pilier_largeur      = 0;
 	private $section_largeur     = 0;
@@ -157,7 +158,7 @@ class PDF extends FPDF
 
 	public function calculer_dimensions_images()
 	{
-		// Une image a des dimensions initiales de 20px x 10px
+		// Une image a des dimensions initiales de 20px sur 10px
 		$rapport_largeur = $this->cases_largeur / 20 ;
 		$rapport_hauteur = $this->cases_hauteur / 10 ;
 		$centrage = ($rapport_largeur<$rapport_hauteur) ? 'hauteur' : 'largeur';
@@ -590,67 +591,121 @@ class PDF extends FPDF
 	}
 
 	public function bilan_periode_synthese_pourcentages($moyenne_pourcent,$moyenne_nombre,$last_ligne,$last_colonne)
-{
-	// $last_ligne = true si on veut afficher les deux dernières lignes
-	// $last_colonne = true si on veut afficher les deux dernières colonnes
-	// si $last_ligne = $last_colonne = true alors ce sont les deux dernières cases en diagonale
+	{
+		// $last_ligne = true si on veut afficher les deux dernières lignes
+		// $last_colonne = true si on veut afficher les deux dernières colonnes
+		// si $last_ligne = $last_colonne = true alors ce sont les deux dernières cases en diagonale
 
-	// sauter 2mm pour la dernière colonne ; pour la ligne cela a déjà été fait avec l'étiquette de ligne
-	if($last_colonne)
-	{
-		$this->SetX( $this->GetX()+2 );
-	}
-	// pour la dernière ligne, mais pas pour les 2 dernières cases, mémoriser l'ordonnée pour s'y repositionner à la fin
-	elseif($last_ligne)
-	{
-		$memo_y = $this->GetY();
+		// sauter 2mm pour la dernière colonne ; pour la ligne cela a déjà été fait avec l'étiquette de ligne
+		if($last_colonne)
+		{
+			$this->SetX( $this->GetX()+2 );
+		}
+		// pour la dernière ligne, mais pas pour les 2 dernières cases, mémoriser l'ordonnée pour s'y repositionner à la fin
+		elseif($last_ligne)
+		{
+			$memo_y = $this->GetY();
+		}
+
+		// aller vers le bas ou vers la droite après la 1ère case 
+		$direction_after_case1 = ($last_ligne) ? 2 : 0;
+		// aller à la ligne ou vers la droite après la 2ème case 
+		$direction_after_case2 = ($last_colonne) ? 1 : 0;
+
+		// première case
+		if($moyenne_pourcent===false)
+		{
+			$this->choisir_couleur_fond('blanc');
+			$this->Cell($this->cases_largeur , $this->cases_hauteur , '-' , 1 , $direction_after_case1 , 'C' , true , '');
+		}
+		else
+		{
+					if($moyenne_pourcent<$_SESSION['CALCUL_SEUIL']['R']) {$this->choisir_couleur_fond('rouge');}
+			elseif($moyenne_pourcent>$_SESSION['CALCUL_SEUIL']['V']) {$this->choisir_couleur_fond('vert');}
+			else                                                     {$this->choisir_couleur_fond('jaune');}
+			$this->Cell($this->cases_largeur , $this->cases_hauteur , $moyenne_pourcent.'%' , 1 , $direction_after_case1 , 'C' , true , '');
+		}
+
+		// pour les 2 cases en diagonales, une case invisible permet de se positionner correctement
+		if($last_colonne && $last_ligne)
+		{
+			$this->Cell($this->cases_largeur , $this->cases_hauteur , '' , 0 , 0 , 'C' , false , '');
+		}
+
+		// deuxième case
+		if($moyenne_pourcent===false)
+		{
+			$this->Cell($this->cases_largeur , $this->cases_hauteur , '-' , 1 , $direction_after_case2 , 'C' , true , '');
+		}
+		else
+		{
+					if($moyenne_nombre<$_SESSION['CALCUL_SEUIL']['R']) {$this->choisir_couleur_fond('rouge');}
+			elseif($moyenne_nombre>$_SESSION['CALCUL_SEUIL']['V']) {$this->choisir_couleur_fond('vert');}
+			else                                                   {$this->choisir_couleur_fond('jaune');}
+			$this->Cell($this->cases_largeur , $this->cases_hauteur , $moyenne_nombre.'%' , 1 , $direction_after_case2 , 'C' , true , '');
+		}
+
+		// pour la dernière ligne, mais pas pour les 2 dernières cases, se repositionner à la bonne ordonnée
+		if($last_ligne && !$last_colonne)
+		{
+			$memo_x = $this->GetX();
+			$this->SetXY($memo_x , $memo_y);
+		}
 	}
 
-	// aller vers le bas ou vers la droite après la 1ère case 
-	$direction_after_case1 = ($last_ligne) ? 2 : 0;
-	// aller à la ligne ou vers la droite après la 2ème case 
-	$direction_after_case2 = ($last_colonne) ? 1 : 0;
+	//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+	//	Méthodes pour la mise en page d'un tableau vierge de saisie d'évaluation
+	//	tableau_saisie_initialiser() tableau_saisie_reference_devoir() tableau_saisie_reference_eleve() tableau_saisie_reference_item() tableau_saisie_cellule()
+	//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
-	// première case
-	if($moyenne_pourcent===false)
+	public function tableau_saisie_initialiser($eleve_nb,$item_nb)
 	{
-		$this->choisir_couleur_fond('blanc');
-		$this->Cell($this->cases_largeur , $this->cases_hauteur , '-' , 1 , $direction_after_case1 , 'C' , true , '');
-	}
-	else
-	{
-				if($moyenne_pourcent<$_SESSION['CALCUL_SEUIL']['R']) {$this->choisir_couleur_fond('rouge');}
-		elseif($moyenne_pourcent>$_SESSION['CALCUL_SEUIL']['V']) {$this->choisir_couleur_fond('vert');}
-		else                                                     {$this->choisir_couleur_fond('jaune');}
-		$this->Cell($this->cases_largeur , $this->cases_hauteur , $moyenne_pourcent.'%' , 1 , $direction_after_case1 , 'C' , true , '');
-	}
-
-	// pour les 2 cases en diagonales, une case invisible permet de se positionner correctement
-	if($last_colonne && $last_ligne)
-	{
-		$this->Cell($this->cases_largeur , $this->cases_hauteur , '' , 0 , 0 , 'C' , false , '');
-	}
-
-	// deuxième case
-	if($moyenne_pourcent===false)
-	{
-		$this->Cell($this->cases_largeur , $this->cases_hauteur , '-' , 1 , $direction_after_case2 , 'C' , true , '');
-	}
-	else
-	{
-				if($moyenne_nombre<$_SESSION['CALCUL_SEUIL']['R']) {$this->choisir_couleur_fond('rouge');}
-		elseif($moyenne_nombre>$_SESSION['CALCUL_SEUIL']['V']) {$this->choisir_couleur_fond('vert');}
-		else                                                   {$this->choisir_couleur_fond('jaune');}
-		$this->Cell($this->cases_largeur , $this->cases_hauteur , $moyenne_nombre.'%' , 1 , $direction_after_case2 , 'C' , true , '');
+		$reference_largeur_minimum = 50;
+		$cases_hauteur_maximum     = 25;
+		$this->cases_largeur     = 10; // valeur par défaut ; diminué si pas assez de place pour la référence de l'item
+		$this->etiquette_hauteur = 40; // valeur fixe
+		$this->reference_largeur = $this->page_largeur - $this->marge_gauche - $this->marge_droit - ($eleve_nb * $this->cases_largeur);
+		if($this->reference_largeur < $reference_largeur_minimum)
+		{
+			$this->reference_largeur = $reference_largeur_minimum;
+			$this->cases_largeur     = ($this->page_largeur - $this->marge_gauche - $this->marge_droit - $this->reference_largeur) / $eleve_nb;
+		}
+		$this->cases_hauteur     = ($this->page_hauteur - $this->marge_haut - $this->marge_bas - $this->etiquette_hauteur) / $item_nb;
+		$this->cases_hauteur     = min($this->cases_hauteur,$cases_hauteur_maximum);
+		$this->SetMargins($this->marge_gauche , $this->marge_haut , $this->marge_droit);
+		$this->AddPage($this->orientation , 'A4');
+		$this->SetAutoPageBreak(true);
+		$this->SetFont('Arial' , '' , $this->taille_police);
+		$this->choisir_couleur_fond('gris_clair');
 	}
 
-	// pour la dernière ligne, mais pas pour les 2 dernières cases, se repositionner à la bonne ordonnée
-	if($last_ligne && !$last_colonne)
+	public function tableau_saisie_reference_devoir($texte)
+	{
+		$this->SetXY($this->marge_gauche , $this->marge_haut);
+		$this->Cell($this->reference_largeur , $this->etiquette_hauteur , pdf($texte) , 0 , 0 , 'C' , false , '');
+	}
+
+	public function tableau_saisie_reference_eleve($texte)
 	{
 		$memo_x = $this->GetX();
-		$this->SetXY($memo_x , $memo_y);
+		$memo_y = $this->GetY();
+		$this->Cell($this->cases_largeur , $this->etiquette_hauteur , '' , 1 , 0 , 'C' , true , '');
+		$this->TextWithDirection($memo_x+($this->cases_largeur)/2 +1 , $memo_y+$this->etiquette_hauteur-2, pdf($texte) , $direction='U');
+		$this->SetXY($memo_x+$this->cases_largeur , $memo_y);
 	}
-}
+
+	public function tableau_saisie_reference_item($item_intro,$item_nom)
+	{
+		$memo_x = $this->GetX();
+		$memo_y = $this->GetY();
+		$this->Cell($this->reference_largeur , $this->cases_hauteur , '' , 1 , 0 , 'L' , true , '');
+		$this->SetXY($memo_x , $memo_y+1);
+		$this->SetFont('Arial' , 'B' , $this->taille_police);
+		$this->Cell($this->reference_largeur , 3 , pdf($item_intro) , 0 , 1 , 'L' , false , '');
+		$this->SetFont('Arial' , '' , $this->taille_police);
+		$this->MultiCell($this->reference_largeur , 3 , pdf($item_nom) , 0 , 'L' , false , '');
+		$this->SetXY($memo_x+$this->reference_largeur , $memo_y);
+	}
 
 	//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 	//	Méthodes pour la mise en page d'un cartouche

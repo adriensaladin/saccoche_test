@@ -45,6 +45,7 @@ $marge_min      = (isset($_POST['f_marge_min']))   ? clean_texte($_POST['f_marge
 $couleur        = (isset($_POST['f_couleur']))     ? clean_texte($_POST['f_couleur'])               : '';
 
 $dossier_export = './__tmp/export/';
+$fnom = 'saisie_'.$_SESSION['BASE'].'_'.$_SESSION['USER_ID'].'_'.$ref;
 
 // Si "ref" est renseigné (pour Éditer ou Retirer ou Saisir ou ...), il contient l'id de l'évaluation + '_' + l'initiale du type de groupe + l'id du groupe
 // Dans le cas d'une duplication, "ref" sert à retrouver l'évaluation d'origine pour évenuellement récupérer l'ordre des items
@@ -249,11 +250,13 @@ else if( ($action=='saisir') && $devoir_id && $groupe_type && $groupe_id && $dat
 	// liste des élèves
 	$DB_TAB_USER = DB_STRUCTURE_lister_eleves_actifs_regroupement($groupe_type,$groupe_id);
 	// Let's go
-	if(!count($DB_TAB_COMP))
+	$item_nb = count($DB_TAB_COMP);
+	if(!$item_nb)
 	{
 		exit('Aucun item n\'est associé à cette évaluation !');
 	}
-	if(!count($DB_TAB_USER))
+	$eleve_nb = count($DB_TAB_USER);
+	if(!$eleve_nb)
 	{
 		exit('Aucun élève n\'est associé à cette évaluation !');
 	}
@@ -338,13 +341,40 @@ else if( ($action=='saisir') && $devoir_id && $groupe_type && $groupe_id && $dat
 	// Enregistrer le csv
 	$export_csv .= 'SAISIE DÉPORTÉE '.$devoir_id.' DU '.convert_date_mysql_to_french($date).'.'."\r\n";
 	$export_csv .= 'CODAGES AUTORISÉS : 1 2 3 4 A N D'."\r\n\r\n";
-	$fnom = 'saisie_'.$_SESSION['BASE'].'_'.$_SESSION['USER_ID'].'_'.$ref;
 	$zip = new ZipArchive();
 	if ($zip->open($dossier_export.$fnom.'.zip', ZIPARCHIVE::CREATE)===TRUE)
 	{
 		$zip->addFromString($fnom.'.csv',csv($export_csv));
 		$zip->close();
 	}
+	//
+	// pdf contenant un tableau de saisie vide ; on a besoin de tourner du texte à 90°
+	//
+	require('./_fpdf/fpdf.php');
+	require('./_fpdf/rpdf.php');
+	require('./_inc/class.PDF.php');
+	$sacoche_pdf = new PDF($orientation='landscape',$marge_min=10,$couleur='non');
+	$sacoche_pdf->tableau_saisie_initialiser($eleve_nb,$item_nb);
+	// 1ère ligne : référence devoir, noms élèves
+	$sacoche_pdf->tableau_saisie_reference_devoir('Évaluation du '.$date);
+	foreach($DB_TAB_USER as $DB_ROW)
+	{
+		$sacoche_pdf->tableau_saisie_reference_eleve($DB_ROW['user_nom'].' '.$DB_ROW['user_prenom']);
+	}
+	// ligne suivantes : référence item, cases vides
+	$sacoche_pdf->SetXY($sacoche_pdf->marge_gauche , $sacoche_pdf->marge_haut+$sacoche_pdf->etiquette_hauteur);
+	foreach($DB_TAB_COMP as $DB_ROW)
+	{
+		$item_ref = $DB_ROW['item_ref'];
+		$texte_socle = ($DB_ROW['entree_id']) ? ' [S]' : ' [–]';
+		$sacoche_pdf->tableau_saisie_reference_item($item_ref.$texte_socle,$DB_ROW['item_nom']);
+		for($i=0 ; $i<$eleve_nb ; $i++)
+		{
+			$sacoche_pdf->Cell($sacoche_pdf->cases_largeur , $sacoche_pdf->cases_hauteur , '' , 1 , 0 , 'C' , false , '');
+		}
+		$sacoche_pdf->SetXY($sacoche_pdf->marge_gauche , $sacoche_pdf->GetY()+$sacoche_pdf->cases_hauteur);
+	}
+	$sacoche_pdf->Output($dossier_export.$fnom.'.pdf','F');
 	exit();
 }
 
@@ -358,11 +388,13 @@ else if( ($action=='voir') && $devoir_id && $groupe_type && $groupe_id && $date 
 	// liste des élèves
 	$DB_TAB_USER = DB_STRUCTURE_lister_eleves_actifs_regroupement($groupe_type,$groupe_id);
 	// Let's go
-	if(!count($DB_TAB_COMP))
+	$item_nb = count($DB_TAB_COMP);
+	if(!$item_nb)
 	{
 		exit('Aucun item n\'est associé à cette évaluation !');
 	}
-	if(!count($DB_TAB_USER))
+	$eleve_nb = count($DB_TAB_USER);
+	if(!$eleve_nb)
 	{
 		exit('Aucun élève n\'est associé à cette évaluation !');
 	}
@@ -456,6 +488,34 @@ else if( ($action=='voir') && $devoir_id && $groupe_type && $groupe_id && $date 
 		$zip->addFromString($fnom.'.csv',csv($export_csv));
 		$zip->close();
 	}
+	//
+	// pdf contenant un tableau de saisie vide ; on a besoin de tourner du texte à 90°
+	//
+	require('./_fpdf/fpdf.php');
+	require('./_fpdf/rpdf.php');
+	require('./_inc/class.PDF.php');
+	$sacoche_pdf = new PDF($orientation='landscape',$marge_min=10,$couleur='non');
+	$sacoche_pdf->tableau_saisie_initialiser($eleve_nb,$item_nb);
+	// 1ère ligne : référence devoir, noms élèves
+	$sacoche_pdf->tableau_saisie_reference_devoir('Évaluation du '.$date);
+	foreach($DB_TAB_USER as $DB_ROW)
+	{
+		$sacoche_pdf->tableau_saisie_reference_eleve($DB_ROW['user_nom'].' '.$DB_ROW['user_prenom']);
+	}
+	// ligne suivantes : référence item, cases vides
+	$sacoche_pdf->SetXY($sacoche_pdf->marge_gauche , $sacoche_pdf->marge_haut+$sacoche_pdf->etiquette_hauteur);
+	foreach($DB_TAB_COMP as $DB_ROW)
+	{
+		$item_ref = $DB_ROW['item_ref'];
+		$texte_socle = ($DB_ROW['entree_id']) ? ' [S]' : ' [–]';
+		$sacoche_pdf->tableau_saisie_reference_item($item_ref.$texte_socle,$DB_ROW['item_nom']);
+		for($i=0 ; $i<$eleve_nb ; $i++)
+		{
+			$sacoche_pdf->Cell($sacoche_pdf->cases_largeur , $sacoche_pdf->cases_hauteur , '' , 1 , 0 , 'C' , false , '');
+		}
+		$sacoche_pdf->SetXY($sacoche_pdf->marge_gauche , $sacoche_pdf->GetY()+$sacoche_pdf->cases_hauteur);
+	}
+	$sacoche_pdf->Output($dossier_export.$fnom.'.pdf','F');
 	exit();
 }
 
@@ -614,6 +674,7 @@ else if( ($action=='Imprimer_cartouche') && $devoir_id && $groupe_type && $group
 	$item_nb = count($tab_comp_id);
 	$colspan = ($detail=='minimal') ? $item_nb : 3 ;
 	require('./_fpdf/fpdf.php');
+	require('./_fpdf/rpdf.php');
 	require('./_inc/class.PDF.php');
 	$sacoche_pdf = new PDF($orientation,$marge_min,$couleur);
 	$sacoche_pdf->cartouche_initialiser($detail,$item_nb);
@@ -687,7 +748,7 @@ else if( (isset($_GET['f_action'])) && ($_GET['f_action']=='importer_saisie_csv'
 	$ferreur = $tab_file['error'];
 	if( (!file_exists($fnom_serveur)) || (!$ftaille) || ($ferreur) )
 	{
-		exit('Erreur : erreur avec le fichier transmis (taille dépassant probablement post_max_size ) !');
+		exit('Erreur : erreur avec le fichier transmis (taille dépassant probablement upload_max_filesize ) !');
 	}
 	$extension = strtolower(pathinfo($fnom_transmis,PATHINFO_EXTENSION));
 	if(!in_array($extension,array('txt','csv')))

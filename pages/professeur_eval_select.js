@@ -267,7 +267,8 @@ $(document).ready
 							$('#msg_saisir').removeAttr("class").html('&nbsp;');
 							$('#table_saisir').html(responseHTML);
 							$('img[title]').tooltip({showURL:false});
-							$('#export_file').attr("href", $("#filename").val()+ref+'.zip' );
+							$('#export_file1').attr("href", $("#filename").val()+ref+'.zip' );
+							$('#export_file4').attr("href", $("#filename").val()+ref+'.pdf' );
 							colorer_cellules();
 							format_liens('#table_saisir');
 							infobulle();
@@ -323,6 +324,7 @@ $(document).ready
 							$('#msg_voir').removeAttr("class").html('&nbsp;');
 							$('#table_voir').html(responseHTML);
 							$('#export_file2').attr("href", $("#filename").val()+ref+'.zip' );
+							$('#export_file3').attr("href", $("#filename").val()+ref+'.pdf' );
 							$('#table_voir tbody td').css({"background-color":"#DDF","text-align":"center","vertical-align":"middle","font-size":"110%"});
 							infobulle();
 						}
@@ -396,11 +398,11 @@ $(document).ready
 				var tab_id = liste.split('_');
 				for(i in tab_id)
 				{
-					var id = 'id_'+tab_id[i];
-					if($('input[id^='+id+']').length)
+					var id_debut = 'id_'+tab_id[i]+'_';
+					if($('input[id^='+id_debut+']').length)
 					{
-						$('input[id^='+id+']').attr('checked','checked');
-						$('input[id^='+id+']').parent().parent().css("display","block");	// le regroupement
+						$('input[id^='+id_debut+']').attr('checked','checked');
+						$('input[id^='+id_debut+']').parent().parent().css("display","block");	// le regroupement
 					}
 				}
 			}

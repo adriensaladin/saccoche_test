@@ -123,9 +123,9 @@ $(document).ready
 			}
 		}
 
-		function retourner_fichier(fichier_nom,responseHTML)
+		function retourner_fichier(fichier_nom,responseHTML)	// Attention : avec jquery.ajaxupload.js, IE supprime mystérieusement les guillemets et met les éléments en majuscules dans responseHTML.
 		{
-			if(responseHTML.substring(0,26)!='<li><label class="valide">')
+			if( (responseHTML.substring(0,26)!='<li><label class="valide">') && (responseHTML.substring(0,24)!='<LI><LABEL class=valide>') )
 			{
 				$("button").removeAttr('disabled');
 				$('#ajax_msg2').removeAttr("class").html('');

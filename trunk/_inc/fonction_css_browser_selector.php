@@ -141,10 +141,27 @@ function css_browser_selector($UserAgent=null)
 function afficher_navigateurs_modernes($chemin_image)
 {
 	$tab_navigateurs = array();
-	$tab_navigateurs[] = '<a class="lien_ext" href="http://www.google.fr/chrome"><img src="'.$chemin_image.'/navigateur/chrome18.gif" alt="Chrome" /> Chrome 5</a>';
-	$tab_navigateurs[] = '<a class="lien_ext" href="http://www.mozilla-europe.org/fr/"><img src="'.$chemin_image.'/navigateur/firefox18.gif" alt="Firefox" /> Firefox 3</a>';
-	$tab_navigateurs[] = '<a class="lien_ext" href="http://www.opera-fr.com/telechargements/"><img src="'.$chemin_image.'/navigateur/opera18.gif" alt="Opéra" /> Opéra 10</a>';
-	$tab_navigateurs[] = '<a class="lien_ext" href="http://www.apple.com/fr/safari/"><img src="'.$chemin_image.'/navigateur/safari18.gif" alt="Safari" /> Safari 5</a>';
+	// Chrome
+	$version_page = url_get_contents('http://googlechromereleases.blogspot.com/search/label/Beta%20updates'); // Marche pô
+	$nb_match = preg_match( '#'.'Google Chrome '.'(.*?)'.' has been released'.'#' , $version_page , $tab_matches );
+	$version_numero = ($nb_match) ? (float)$tab_matches[1] : '6' ;
+	$tab_navigateurs[] = '<a class="lien_ext" href="http://www.google.fr/chrome"><img src="'.$chemin_image.'/navigateur/chrome18.gif" alt="Chrome" /> Chrome '.$version_numero.'</a>';
+	// Firefox
+	$version_page = url_get_contents('http://www.mozilla-europe.org/fr/');
+	$nb_match = preg_match( '#'.'product=firefox-'.'(.*?)'.'&amp;os=win'.'#' , $version_page , $tab_matches );
+	$version_numero = ($nb_match) ? (float)$tab_matches[1] : '3' ;
+	$tab_navigateurs[] = '<a class="lien_ext" href="http://www.mozilla-europe.org/fr/"><img src="'.$chemin_image.'/navigateur/firefox18.gif" alt="Firefox" /> Firefox '.$version_numero.'</a>';
+	// Opéra
+	$version_page = url_get_contents('http://www.opera-fr.com/telechargements/');
+	$nb_match = preg_match( '#'.'<h2>Version finale actuelle : '.'(.*?)'.'</h2>'.'#' , $version_page , $tab_matches );
+	$version_numero = ($nb_match) ? (float)$tab_matches[1] : '10' ;
+	$tab_navigateurs[] = '<a class="lien_ext" href="http://www.opera-fr.com/telechargements/"><img src="'.$chemin_image.'/navigateur/opera18.gif" alt="Opéra" /> Opéra '.$version_numero.'</a>';
+	// Safari
+	$version_page = url_get_contents('http://swdlp.apple.com/cgi-bin/WebObjects/SoftwareDownloadApp.woa/wa/getProductData?localang=fr_fr&grp_code=safari'); // Marche pô
+	$nb_match = preg_match( '#'.'<LABEL CLASS=platform>Safari '.'(.*?)'.' pour '.'#' , $version_page , $tab_matches );
+	$version_numero = ($nb_match) ? (float)$tab_matches[1] : '5' ;
+	$tab_navigateurs[] = '<a class="lien_ext" href="http://www.apple.com/fr/safari/download/"><img src="'.$chemin_image.'/navigateur/safari18.gif" alt="Safari" /> Safari '.$version_numero.'</a>';
+	// Affichage
 	return implode(' ou ',$tab_navigateurs);
 }
 
@@ -156,9 +173,17 @@ function afficher_navigateurs_alertes($hr_avant='',$chemin_image='./_img',$hr_ap
 	{
 		$alertes .= '<div class="danger">Votre navigateur <img src="'.$chemin_image.'/navigateur/explorer18.gif" alt="Explorer" /> Internet Explorer est irrespectueux des normes et dysfonctionne.</div>';
 	}
-	if( strpos($chaine_detection,'ie4') || strpos($chaine_detection,'ie5') || strpos($chaine_detection,'ie6') || strpos($chaine_detection,'ff0') || strpos($chaine_detection,'ff1') || strpos($chaine_detection,'ff2') || strpos($chaine_detection,'opera8') )
+	if( strpos($chaine_detection,'ie4') || strpos($chaine_detection,'ie5') || strpos($chaine_detection,'ie6') )
 	{
-		$alertes .= '<div class="danger">Votre navigateur est trop ancien pour permettre d\'utiliser <em>SACoche</em> correctement !</div>';
+		$alertes .= '<div class="danger">Votre navigateur est trop ancien pour utiliser <em>SACoche</em> ! Internet Explorer est utilisable à partir de sa version 7.</div>';
+	}
+	if( strpos($chaine_detection,'ff0') || strpos($chaine_detection,'ff1') || strpos($chaine_detection,'ff2') )
+	{
+		$alertes .= '<div class="danger">Votre navigateur est trop ancien pour utiliser <em>SACoche</em> ! Firefox est utilisable à partir de sa version 3.</div>';
+	}
+	if( strpos($chaine_detection,'opera8') )
+	{
+		$alertes .= '<div class="danger">Votre navigateur est trop ancien pour utiliser <em>SACoche</em> ! Opéra est utilisable à partir de sa version 9.</div>';
 	}
 	return ($alertes) ? $hr_avant.$alertes.'<div class="astuce">Utilisez '.afficher_navigateurs_modernes($chemin_image).'.</div>'.$hr_apres : '' ;
 }

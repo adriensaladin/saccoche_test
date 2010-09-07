@@ -27,6 +27,7 @@
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = "Sauvegarde / Restauration";
+$VERSION_JS_FILE += 1;
 
 /*
 

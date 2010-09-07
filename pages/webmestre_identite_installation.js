@@ -189,7 +189,7 @@ $(document).ready
 			}
 		}
 
-		function retourner_fichier(fichier_nom,responseHTML)
+		function retourner_fichier(fichier_nom,responseHTML)	// Attention : avec jquery.ajaxupload.js, IE supprime mystérieusement les guillemets et met les éléments en majuscules dans responseHTML.
 		{
 			if(responseHTML!='ok')
 			{

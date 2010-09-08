@@ -142,24 +142,28 @@ function afficher_navigateurs_modernes($chemin_image)
 {
 	$tab_navigateurs = array();
 	// Chrome
-	$version_page = url_get_contents('http://googlechromereleases.blogspot.com/search/label/Beta%20updates'); // Marche pô
+	$version_page = url_get_contents('http://googlechromereleases.blogspot.com/search/label/Beta%20updates');
 	$nb_match = preg_match( '#'.'Google Chrome '.'(.*?)'.' has been released'.'#' , $version_page , $tab_matches );
-	$version_numero = ($nb_match) ? (float)$tab_matches[1] : '6' ;
+	$version_numero = ($nb_match) ? (float)$tab_matches[1] : 6 ;
 	$tab_navigateurs[] = '<a class="lien_ext" href="http://www.google.fr/chrome"><img src="'.$chemin_image.'/navigateur/chrome18.gif" alt="Chrome" /> Chrome '.$version_numero.'</a>';
 	// Firefox
 	$version_page = url_get_contents('http://www.mozilla-europe.org/fr/');
 	$nb_match = preg_match( '#'.'product=firefox-'.'(.*?)'.'&amp;os=win'.'#' , $version_page , $tab_matches );
-	$version_numero = ($nb_match) ? (float)$tab_matches[1] : '3' ;
+	$version_numero = ($nb_match) ? (float)$tab_matches[1] : 3 ;
 	$tab_navigateurs[] = '<a class="lien_ext" href="http://www.mozilla-europe.org/fr/"><img src="'.$chemin_image.'/navigateur/firefox18.gif" alt="Firefox" /> Firefox '.$version_numero.'</a>';
 	// Opéra
 	$version_page = url_get_contents('http://www.opera-fr.com/telechargements/');
 	$nb_match = preg_match( '#'.'<h2>Version finale actuelle : '.'(.*?)'.'</h2>'.'#' , $version_page , $tab_matches );
-	$version_numero = ($nb_match) ? (float)$tab_matches[1] : '10' ;
+	$version_numero = ($nb_match) ? (float)$tab_matches[1] : 10 ;
 	$tab_navigateurs[] = '<a class="lien_ext" href="http://www.opera-fr.com/telechargements/"><img src="'.$chemin_image.'/navigateur/opera18.gif" alt="Opéra" /> Opéra '.$version_numero.'</a>';
 	// Safari
-	$version_page = url_get_contents('http://swdlp.apple.com/cgi-bin/WebObjects/SoftwareDownloadApp.woa/wa/getProductData?localang=fr_fr&grp_code=safari'); // Marche pô
+	/* Marche pô
+	$version_page = url_get_contents('http://swdlp.apple.com/cgi-bin/WebObjects/SoftwareDownloadApp.woa/wa/getProductData?localang=fr_fr&grp_code=safari');
 	$nb_match = preg_match( '#'.'<LABEL CLASS=platform>Safari '.'(.*?)'.' pour '.'#' , $version_page , $tab_matches );
-	$version_numero = ($nb_match) ? (float)$tab_matches[1] : '5' ;
+	*/
+	$version_page = url_get_contents('http://www.commentcamarche.net/download/telecharger-34055514-safari');
+	$nb_match = preg_match( '#'.'<td>'.'(.*?)'.' \(derni&egrave;re version\)</td>'.'#' , $version_page , $tab_matches );
+	$version_numero = ($nb_match) ? (float)$tab_matches[1] : 5 ;
 	$tab_navigateurs[] = '<a class="lien_ext" href="http://www.apple.com/fr/safari/download/"><img src="'.$chemin_image.'/navigateur/safari18.gif" alt="Safari" /> Safari '.$version_numero.'</a>';
 	// Affichage
 	return implode(' ou ',$tab_navigateurs);

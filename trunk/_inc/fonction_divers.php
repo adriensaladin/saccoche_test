@@ -192,6 +192,7 @@ function compacter($chemin,$version,$methode)
 				$fichier_compacte = $fichier_contenu;
 			}
 			$fichier_compacte = utf8_encode($fichier_compacte);	// On réencode donc en UTF-8...
+			@umask(0002); // Met le chmod à 666 - 002 = 664 pour les fichiers prochains fichiers créés (et à 777 - 002 = 775 pour les dossiers).
 			$test_ecriture = @file_put_contents($chemin_fichier_compacte,$fichier_compacte);
 			// Il se peut que le droit en écriture ne soit pas autorisé et que la procédure d'install ne l'ai pas encore vérifié.
 			return $test_ecriture ? $chemin_fichier_compacte : $chemin_fichier_original ;
@@ -1131,6 +1132,7 @@ function Creer_Dossier($dossier)
 		return true;
 	}
 	// Le dossier a-t-il bien été créé ?
+	@umask(0002); // Met le chmod à 666 - 002 = 664 pour les fichiers prochains fichiers créés (et à 777 - 002 = 775 pour les dossiers).
 	$test = @mkdir($dossier);
 	if(!$test)
 	{
@@ -1210,10 +1212,11 @@ function Supprimer_Dossier($dossier)
 
 function Ecrire_Fichier($fichier_chemin,$fichier_contenu,$file_append=0)
 {
+	@umask(0002); // Met le chmod à 666 - 002 = 664 pour les fichiers prochains fichiers créés (et à 777 - 002 = 775 pour les dossiers).
 	$test_ecriture = @file_put_contents($fichier_chemin,$fichier_contenu,$file_append);
 	if($test_ecriture===false)
 	{
-		exit('Erreur : problème de création du fichier '.$fichier_chemin.' !');
+		exit('Erreur : problème lors de l\'écriture du fichier '.$fichier_chemin.' !');
 	}
 }
 

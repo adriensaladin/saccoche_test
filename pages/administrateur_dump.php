@@ -68,9 +68,7 @@ Néanmoins, plusieurs autres pistes peuvent toujours être explorées :
 */
 ?>
 
-<p class="hc">
-	<span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__gestion_dump">DOC : Sauvegarde et restauration de la base</a></span></p>
-</p>
+<p class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__gestion_dump">DOC : Sauvegarde et restauration de la base</a></p>
 
 <hr />
 

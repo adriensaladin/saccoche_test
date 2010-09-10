@@ -34,7 +34,7 @@ $(document).ready
 		// Appel en ajax pour lancer un nettoyage
 		//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
 
-		$('#bouton_nettoyer , #bouton_purger').click
+		$('#bouton_nettoyer , #bouton_purger , #bouton_supprimer').click
 		(
 			function()
 			{
@@ -42,6 +42,10 @@ $(document).ready
 				if(action=='purger')
 				{
 					var continuer = (confirm("Attention : les scores déjà saisis ne seront plus modifiables !\nConfirmez-vous l'initialisation annuelle des données ?")) ? true : false ;
+				}
+				else if(action=='supprimer')
+				{
+					var continuer = (confirm("Attention : toutes les notes des élèves seront effacées !\nConfirmez-vous la suppression des scores et des validations ?")) ? true : false ;
 				}
 				else
 				{

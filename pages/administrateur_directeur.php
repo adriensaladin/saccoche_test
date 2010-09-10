@@ -30,9 +30,7 @@ $TITRE = "Gérer les directeurs";
 $VERSION_JS_FILE += 1;
 ?>
 
-<p class="hc">
-	<span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__gestion_directeurs">DOC : Gestion des directeurs</a></span>
-</p>
+<p class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__gestion_directeurs">DOC : Gestion des directeurs</a></p>
 
 <form action="">
 	<table class="form">

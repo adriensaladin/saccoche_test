@@ -36,9 +36,7 @@ $select_professeurs = afficher_select(DB_STRUCTURE_OPT_professeurs_etabl()      
 $select_matieres    = afficher_select(DB_STRUCTURE_OPT_matieres_etabl($_SESSION['MATIERES'],$transversal=false) , $select_nom=false , $option_first='non' , $selection=false , $optgroup='non');
 ?>
 
-<p class="hc">
-	<span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__gestion_professeurs">DOC : Gestion des professeurs</a></span>
-</p>
+<p class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__gestion_professeurs">DOC : Gestion des professeurs</a></p>
 
 <form action="">
 	<table><tr>

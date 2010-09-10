@@ -2863,6 +2863,31 @@ function DB_STRUCTURE_supprimer_validation($type,$user_id,$element_id)
 }
 
 /**
+ * DB_STRUCTURE_supprimer_saisies
+ * 
+ * @param void
+ * @return void
+ */
+
+function DB_STRUCTURE_supprimer_saisies()
+{
+	DB::query(SACOCHE_STRUCTURE_BD_NAME , 'TRUNCATE sacoche_saisie' , null);
+}
+
+/**
+ * DB_STRUCTURE_supprimer_validations
+ * 
+ * @param void
+ * @return void
+ */
+
+function DB_STRUCTURE_supprimer_validations()
+{
+	DB::query(SACOCHE_STRUCTURE_BD_NAME , 'TRUNCATE sacoche_jointure_user_entree' , null);
+	DB::query(SACOCHE_STRUCTURE_BD_NAME , 'TRUNCATE sacoche_jointure_user_pilier' , null);
+}
+
+/**
  * DB_STRUCTURE_supprimer_periode
  * 
  * @param int $periode_id

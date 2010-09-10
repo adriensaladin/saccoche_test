@@ -36,9 +36,7 @@ $select_f_groupes = afficher_select(DB_STRUCTURE_OPT_regroupements_etabl() , $se
 $select_classes   = afficher_select(DB_STRUCTURE_OPT_classes_etabl()       , $select_nom=false , $option_first='non' , $selection=false , $optgroup='non');
 ?>
 
-<p class="hc">
-	<span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__gestion_classes">DOC : Gestion des classes</a></span><br />
-</p>
+<p class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__gestion_classes">DOC : Gestion des classes</a></p>
 
 <hr />
 

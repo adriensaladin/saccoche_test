@@ -27,18 +27,16 @@
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = "Nettoyage / Initialisation";
-$VERSION_JS_FILE += 1;
+$VERSION_JS_FILE += 2;
 ?>
 
-<p class="hc">
-	<span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__gestion_nettoyage">DOC : Nettoyage et initialisation annuelle de la base</a></span></p>
-</p>
+<p class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__gestion_nettoyage">DOC : Nettoyage et initialisation annuelle de la base</a></p>
 
 <hr />
 
-<h2>Suppression de correspondances anormales</h2>
+<h2>Recherche et suppression de correspondances anormales</h2>
 
-<div class="astuce">Cet outil est facultatif ; il ne met pas à jour la structure ni les données de la base.</div>
+<div class="astuce">Cet outil est facultatif ; il ne met pas à jour la structure ni les données de la base (voir documentation ci-dessus).</div>
 <form id="form_nettoyer" action=""><fieldset>
 	<span class="tab"></span><button id="bouton_nettoyer" type="button"><img alt="" src="./_img/bouton/nettoyage.png" /> Lancer le nettoyage d'éventuelles anomalies.</button><label id="ajax_msg_nettoyer">&nbsp;</label>
 </fieldset></form>
@@ -47,10 +45,19 @@ $VERSION_JS_FILE += 1;
 
 <h2>Initialisation annuelle des données</h2>
 
-<div class="astuce">Entre deux années scolaires, il faut purger la base avant d'importer les nouveaux utilisateurs.</div>
+<div class="astuce">Entre deux années scolaires, il faut purger la base avant d'importer les nouveaux utilisateurs (voir documentation ci-dessus).</div>
 <div class="danger">N'effectuez jamais une initialisation en cours d'année scolaire !</div>
 <form id="form_purger" action=""><fieldset>
 	<span class="tab"></span><button id="bouton_purger" type="button"><img alt="" src="./_img/bouton/nettoyage.png" /> Lancer l'initialisation annuelle des données.</button><label id="ajax_msg_purger">&nbsp;</label>
+</fieldset></form>
+
+<hr />
+
+<h2>Suppression des notes et des validations</h2>
+
+<div class="danger">Cet fonctionnalité ne doit être utilisée qu'exceptionnellement, pour repartir à zéro après une année de test (voir documentation ci-dessus) !</div>
+<form id="form_supprimer" action=""><fieldset>
+	<span class="tab"></span><button id="bouton_supprimer" type="button"><img alt="" src="./_img/bouton/nettoyage.png" /> Supprimer les scores d'évaluations et les validations.</button><label id="ajax_msg_supprimer">&nbsp;</label>
 </fieldset></form>
 
 <hr />

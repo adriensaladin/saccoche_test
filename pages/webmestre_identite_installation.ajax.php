@@ -133,7 +133,7 @@ elseif( ($action=='enregistrer') && $denomination && $nom && $prenom && $courrie
 	fabriquer_fichier_hebergeur_info(HEBERGEUR_INSTALLATION,$denomination,$uai,$adresse_site,$logo,$cnil,$nom,$prenom,$courriel,WEBMESTRE_PASSWORD_MD5,WEBMESTRE_ERREUR_DATE);
 	if(HEBERGEUR_INSTALLATION=='mono-structure')
 	{
-		// Personnaliser certains paramètres de la structure (pour une installation de type multi-structures, ça ce fait à la page de gestion des établissements)
+		// Personnaliser certains paramètres de la structure (pour une installation de type multi-structures, ça se fait à la page de gestion des établissements)
 		$tab_parametres = array();
 		$tab_parametres['denomination'] = HEBERGEUR_DENOMINATION;
 		$tab_parametres['uai']          = HEBERGEUR_UAI;

@@ -61,13 +61,14 @@ $(document).ready
 		var ajouter = function()
 		{
 			mode = $(this).attr('class');
+			var groupe = $('#f_aff_classe option:selected').val();
 			// Fabriquer la ligne avec les éléments de formulaires
 			afficher_masquer_images_action('hide');
 			$('#form0').css('visibility','hidden');
 			var new_tr = '';
 			new_tr += '<tr>';
 			new_tr += '<td><input id="f_date" name="f_date" size="9" type="text" value="'+input_date+'" /><q class="date_calendrier" title="Cliquez sur cette image pour importer une date depuis un calendrier !"></td>';
-			new_tr += '<td><select id="f_groupe" name="f_groupe">'+select_groupe+'</select></td>';
+			new_tr += '<td><select id="f_groupe" name="f_groupe">'+select_groupe.replace('value="'+groupe+'"','value="'+groupe+'" selected="selected"')+'</select></td>';
 			new_tr += '<td><input id="f_info" name="f_info" size="20" type="text" value="" /></td>';
 			new_tr += '<td><input id="f_compet_nombre" name="f_compet_nombre" size="10" type="text" value="0 item" readonly="readonly" /><input id="f_compet_liste" name="f_compet_liste" type="hidden" value="" /><q class="choisir_compet" title="Voir ou choisir les items."></q></td>';
 			new_tr += '<td class="nu"><input id="f_action" name="f_action" type="hidden" value="'+mode+'" /><q class="valider" title="Valider l\'ajout de cette évaluation."></q><q class="annuler" title="Annuler l\'ajout de cette évaluation."></q> <label id="ajax_msg">&nbsp;</label></td>';

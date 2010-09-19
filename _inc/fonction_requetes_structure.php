@@ -3295,25 +3295,21 @@ function DB_STRUCTURE_OPT_matieres_etabl($listing_matieres_communes,$transversal
 }
 
 /**
- * Retourner un tableau [valeur texte] des matières communes choisies par l'établissement
+ * Retourner un tableau [valeur texte] des matières communes (choisies ou pas par l'établissement)
  * 
- * @param string $listing_matieres_communes   id des matières communes séparées par des virgules
- * @return array|string
+ * @param void
+ * @return array
  */
 
-function DB_STRUCTURE_OPT_matieres_communes($listing_matieres_communes)
+function DB_STRUCTURE_OPT_matieres_communes()
 {
-	if($listing_matieres_communes)
-	{
-		$DB_SQL = 'SELECT matiere_id AS valeur, matiere_nom AS texte FROM sacoche_matiere ';
-		$DB_SQL.= 'WHERE matiere_id IN('.$listing_matieres_communes.') ';
-		$DB_SQL.= 'ORDER BY matiere_nom ASC';
-		return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , null);
-	}
-	else
-	{
-		return 'Aucune matière commune n\'est rattachée à l\'établissement !';
-	}
+	$GLOBALS['tab_select_option_first'] = array(0,'Toutes les matières','');
+
+	$DB_SQL = 'SELECT matiere_id AS valeur, matiere_nom AS texte FROM sacoche_matiere ';
+	$DB_SQL.= 'WHERE matiere_partage=:partage ';
+	$DB_SQL.= 'ORDER BY matiere_nom ASC';
+	$DB_VAR = array(':partage'=>1);
+	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
 /**
@@ -3425,6 +3421,21 @@ function DB_STRUCTURE_OPT_niveaux_etabl($listing_niveaux,$listing_paliers)
 	{
 		return 'Aucun niveau n\'est rattaché à l\'établissement !';
 	}
+}
+
+/**
+ * Retourner un tableau [valeur texte] des niveaux (choisis ou pas par l'établissement)
+ * 
+ * @param void
+ * @return array
+ */
+
+function DB_STRUCTURE_OPT_niveaux()
+{
+	$GLOBALS['tab_select_option_first'] = array(0,'Tous les niveaux','');
+	$DB_SQL = 'SELECT niveau_id AS valeur, niveau_nom AS texte FROM sacoche_niveau ';
+	$DB_SQL.= 'ORDER BY niveau_ordre ASC';
+	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , null);
 }
 
 /**

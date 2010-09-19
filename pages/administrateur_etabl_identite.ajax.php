@@ -28,10 +28,53 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 if($_SESSION['SESAMATH_ID']==ID_DEMO) {exit('Action désactivée pour la démo...');}
 
+$action             = (isset($_POST['action']))              ? $_POST['action']                           : '';
+$geo1               = (isset($_POST['f_geo1']))              ? clean_entier($_POST['f_geo1'])             : 0;
+$geo2               = (isset($_POST['f_geo2']))              ? clean_entier($_POST['f_geo2'])             : 0;
+$geo3               = (isset($_POST['f_geo3']))              ? clean_entier($_POST['f_geo3'])             : 0;
+$uai                = (isset($_POST['f_uai']))               ? clean_uai($_POST['f_uai'])                 : '';
 $sesamath_id        = (isset($_POST['f_sesamath_id']))       ? clean_entier($_POST['f_sesamath_id'])      : 0;
 $sesamath_uai       = (isset($_POST['f_sesamath_uai']))      ? clean_uai($_POST['f_sesamath_uai'])        : '';
 $sesamath_type_nom  = (isset($_POST['f_sesamath_type_nom'])) ? clean_texte($_POST['f_sesamath_type_nom']) : '';
 $sesamath_key       = (isset($_POST['f_sesamath_key']))      ? clean_texte($_POST['f_sesamath_key'])      : '';
+
+
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+// Mettre à jour le formulaire f_geo1 et le renvoyer en HTML
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
+if($action=='Afficher_form_geo1')
+{
+	exit( Sesamath_afficher_formulaire_geo1() );
+}
+
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+// Mettre à jour le formulaire f_geo2 et le renvoyer en HTML
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
+if( ($action=='Afficher_form_geo2') && ($geo1>0) )
+{
+	exit( Sesamath_afficher_formulaire_geo2($geo1) );
+}
+
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+// Mettre à jour le formulaire f_geo3 et le renvoyer en HTML
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
+if( ($action=='Afficher_form_geo3') && ($geo1>0) && ($geo2>0) )
+{
+	exit( Sesamath_afficher_formulaire_geo3($geo1,$geo2) );
+}
+
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+// Afficher le résultat de la recherche de structure, soit à partir du n°UAI soit à partir du code de commune
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
+if( ($action=='Afficher_structures') && ( ($geo3>0) || ($uai!='') ) )
+{
+	echo ($geo3) ? Sesamath_lister_structures_by_commune($geo3) : Sesamath_recuperer_structure_by_UAI($uai) ;
+	exit();
+}
 
 //	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
 // Mettre à jour les informations
@@ -39,7 +82,7 @@ $sesamath_key       = (isset($_POST['f_sesamath_key']))      ? clean_texte($_POS
 
 if( $sesamath_id && $sesamath_type_nom && $sesamath_key )
 {
-	$retour = enregistrer_structure_Sesamath($sesamath_id,$sesamath_key);
+	$retour = Sesamath_enregistrer_structure($sesamath_id,$sesamath_key);
 	if($retour!='ok')
 	{
 		exit($retour);
@@ -56,7 +99,7 @@ if( $sesamath_id && $sesamath_type_nom && $sesamath_key )
 	$_SESSION['SESAMATH_UAI']      = $sesamath_uai ;
 	$_SESSION['SESAMATH_TYPE_NOM'] = $sesamath_type_nom ;
 	$_SESSION['SESAMATH_KEY']      = $sesamath_key ;
-	echo'ok';
+	exit('ok');
 }
 
 else

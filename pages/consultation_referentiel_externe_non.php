@@ -26,29 +26,6 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-$TITRE = "Référentiels";
 ?>
 
-<div class="hc noprint">
-	<a href="./index.php?page=<?php echo $PAGE ?>&amp;section=gestion">Créer / paramétrer les référentiels.</a>	||
-	<a href="./index.php?page=<?php echo $PAGE ?>&amp;section=edition">Modifier le contenu des référentiels.</a>
-	<hr />
-</div>
-
-
-<?php
-// Afficher la bonne page et appeler le bon js / ajax par la suite
-$fichier_section = './pages/'.$PAGE.'_'.$SECTION.'.php';
-if(is_file($fichier_section))
-{
-	$PAGE = $PAGE.'_'.$SECTION ;
-	require($fichier_section);
-}
-else
-{
-	echo'<ul class="puce">';
-	echo'	<li><a href="./index.php?page='.$PAGE.'&amp;section=gestion"><img alt="" src="./_img/menu/professeur_referentiel_gestion.png" /> Créer / paramétrer les référentiels (importer, supprimer, partager, mode de calcul).</a></li>';
-	echo'	<li><a href="./index.php?page='.$PAGE.'&amp;section=edition"><img alt="" src="./_img/menu/professeur_referentiel_edition.png" /> Modifier le contenu des référentiels (domaines, thèmes, items).</a></li>';
-	echo'</ul>';
-}
-?>
+<p><label for="rien" class="erreur">Pour pouvoir effectuer la recherche d'un référentiel partagé sur le serveur communautaire, un administrateur doit préalablement identifier l'établissement dans la base Sésamath (<span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__gestion_informations_structure">DOC : Gestion de l'identité de l'établissement</a></span>).</label></p>

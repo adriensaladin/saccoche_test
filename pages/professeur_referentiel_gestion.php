@@ -27,7 +27,7 @@
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = "Créer / paramétrer les référentiels";
-$VERSION_JS_FILE += 56;
+$VERSION_JS_FILE += 7;
 ?>
 
 <script type="text/javascript">
@@ -62,13 +62,9 @@ $VERSION_JS_FILE += 56;
 	var methode_calcul_texte       = "<?php echo $methode_calcul_texte ?>";
 	var id_matiere_transversale    = "<?php echo ID_MATIERE_TRANSVERSALE ?>";
 	var listing_id_niveaux_paliers = "<?php echo LISTING_ID_NIVEAUX_PALIERS ?>";
-	// Pour appeler le serveur communautaire
-	var url_debut    = "<?php echo html(SERVEUR_COMMUNAUTAIRE) ?>";
-	var sesamath_id  = "<?php echo $_SESSION['SESAMATH_ID'] ?>";
-	var sesamath_key = "<?php echo $_SESSION['SESAMATH_KEY'] ?>";
 </script>
 
-<form action="">
+<form id="form_instance" action="">
 
 <ul class="puce">
 	<li><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=referentiels_socle__referentiel_organisation">DOC : Organisation des items dans les référentiels.</a></span></li>
@@ -200,9 +196,9 @@ else
 }
 ?>
 
-<hr />
 
 <div id="choisir_referentiel" class="hide">
+	<hr />
 	<h2>Choisir un référentiel</h2>
 	<p><button id="choisir_initialiser" type="button" value="id_0"><img alt="" src="./_img/bouton/valider.png" /> Démarrer avec un référentiel vierge.</button></p>
 	<?php
@@ -224,25 +220,41 @@ else
 </div>
 
 </form>
+<form id="form_communautaire" action="" class="hide">
 
-<div id="object_container" class="hide">
-	<h2>Rechercher un référentiel partagé sur le serveur communautaire</h2>
-	<p><button id="rechercher_annuler" type="button"><img alt="" src="./_img/bouton/annuler.png" /> Annuler la recherche d'un référentiel.</button></p>
-	<?php
-	// La balise object fonctionne sauf avec Internet Explorer qui n'affiche rien si on appelle une page provenant d'un autre domaine.
-	// Par ailleurs, il faut mettre une adresse valide au départ sous peine de se voir retirer la balise par son substitut (pour Opéra).
-	require_once('./_inc/fonction_css_browser_selector.php');
-	$chaine_detection = css_browser_selector();
-	if(substr($chaine_detection,0,3)!='ie ')
-	{
-		$balise   = 'object';
-		$attribut = 'data';
-	}
-	else
-	{
-		$balise   = 'iframe';
-		$attribut = 'src';
-	}
-	echo'<'.$balise.' id="cadre" '.$attribut.'="./_img/ajax/ajax_loader.gif" type="text/html" height="350px" style="width:100%;border:none;"><img src="./_img/ajax/ajax_loader.gif" alt="Chargement..." /> Appel au serveur communautaire...</'.$balise.'>';
-	?>
+<?php
+// Fabrication des éléments select du formulaire, pour pouvoir prendre un référentiel d'une autre matière ou d'un autre niveau (demandé...).
+$select_matiere = afficher_select(DB_STRUCTURE_OPT_matieres_communes() , $select_nom='f_matiere' , $option_first='val' , $selection=false , $optgroup='non');
+$select_niveau  = afficher_select(DB_STRUCTURE_OPT_niveaux()           , $select_nom='f_niveau'  , $option_first='val' , $selection=false , $optgroup='non');
+?>
+
+<div class="noprint">
+	<div id="choisir_referentiel_communautaire">
+		<h2>Rechercher un référentiel partagé sur le serveur communautaire</h2>
+		<p><button id="rechercher_annuler" type="button"><img alt="" src="./_img/bouton/annuler.png" /> Annuler la recherche d'un référentiel.</button></p>
+		<fieldset>
+			<label class="tab" for="f_matiere">Matière :</label><?php echo $select_matiere ?><br />
+			<label class="tab" for="f_niveau">Niveau :</label><?php echo $select_niveau ?><br />
+			<label class="tab" for="f_structure"><img alt="" src="./_img/bulle_aide.png" title="Seules les structures partageant au moins un référentiel apparaissent." /> Structure :</label><select id="f_structure" name="f_structure"><option></option></select><br />
+			<span class="tab"></span><button id="rechercher" type="button" class="hide"><img alt="" src="./_img/bouton/rechercher.png" /> Lancer / Actualiser la recherche.</button><label id="ajax_msg">&nbsp;</label>
+		</fieldset>
+		<hr />
+		<div id="lister_referentiel_communautaire" class="hide">
+			<h2>Liste des référentiels trouvés</h2>
+			<div class="danger">Les référentiels partagés ne sont pas des modèles exemplaires à suivre ! Ils peuvent être améliorables, voir inadaptés...</div>
+			<ul>
+				<li></li>
+			</ul>
+		</div>
+	</div>
 </div>
+
+<div id="voir_referentiel_communautaire" class="hide">
+	<hr />
+	<ul class="ul_m1">
+		<li class="li_m1">
+		</li>
+	</ul>
+</div>
+
+</form>

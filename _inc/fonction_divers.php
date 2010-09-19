@@ -461,7 +461,7 @@ function connecter_webmestre($password)
 	$delai_attente_consomme = time() - WEBMESTRE_ERREUR_DATE ;
 	if($delai_attente_consomme<3)
 	{
-		fabriquer_fichier_hebergeur_info(HEBERGEUR_INSTALLATION,HEBERGEUR_DENOMINATION,HEBERGEUR_UAI,HEBERGEUR_ADRESSE_SITE,'',HEBERGEUR_CNIL,WEBMESTRE_NOM,WEBMESTRE_PRENOM,WEBMESTRE_COURRIEL,WEBMESTRE_PASSWORD_MD5,time());
+		fabriquer_fichier_hebergeur_info(HEBERGEUR_INSTALLATION,HEBERGEUR_DENOMINATION,HEBERGEUR_UAI,HEBERGEUR_ADRESSE_SITE,HEBERGEUR_LOGO,HEBERGEUR_CNIL,WEBMESTRE_NOM,WEBMESTRE_PRENOM,WEBMESTRE_COURRIEL,WEBMESTRE_PASSWORD_MD5,time());
 		return'Calmez-vous et patientez 10s avant toute nouvelle tentative !';
 	}
 	elseif($delai_attente_consomme<10)
@@ -473,7 +473,7 @@ function connecter_webmestre($password)
 	$password_crypte = crypter_mdp($password);
 	if($password_crypte!=WEBMESTRE_PASSWORD_MD5)
 	{
-		fabriquer_fichier_hebergeur_info(HEBERGEUR_INSTALLATION,HEBERGEUR_DENOMINATION,HEBERGEUR_UAI,HEBERGEUR_ADRESSE_SITE,'',HEBERGEUR_CNIL,WEBMESTRE_NOM,WEBMESTRE_PRENOM,WEBMESTRE_COURRIEL,WEBMESTRE_PASSWORD_MD5,time());
+		fabriquer_fichier_hebergeur_info(HEBERGEUR_INSTALLATION,HEBERGEUR_DENOMINATION,HEBERGEUR_UAI,HEBERGEUR_ADRESSE_SITE,HEBERGEUR_LOGO,HEBERGEUR_CNIL,WEBMESTRE_NOM,WEBMESTRE_PRENOM,WEBMESTRE_COURRIEL,WEBMESTRE_PASSWORD_MD5,time());
 		return 'Mot de passe incorrect ! Patientez 10s avant une nouvelle tentative.';
 	}
 	// Si on arrive ici c'est que l'identification s'est bien effectuée !
@@ -982,16 +982,19 @@ function url_get_contents($url,$tab_post=false)
 {
 	// Ne pas utiliser file_get_contents() car certains serveurs n'accepent pas d'utiliser une URL comme nom de fichier (gestionnaire fopen non activé).
 	// On utilise donc la bibliothèque cURL en remplacement
-	// Option CURLOPT_FOLLOWLOCATION retirée car certaines installations renvoient "CURLOPT_FOLLOWLOCATION cannot be activated when in safe_mode or an open_basedir is set"
+	// Option CURLOPT_FOLLOWLOCATION sous conditions car certaines installations renvoient "CURLOPT_FOLLOWLOCATION cannot be activated when in safe_mode or an open_basedir is set" (http://www.php.net/manual/fr/features.safe-mode.functions.php#92192)
 	$ch = curl_init();
 	curl_setopt($ch, CURLOPT_DNS_CACHE_TIMEOUT, 3600);        // Le temps en seconde que CURL doit conserver les entrées DNS en mémoire. Cette option est définie à 120 secondes (2 minutes) par défaut.
 	curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);           // TRUE retourne directement le transfert sous forme de chaîne de la valeur retournée par curl_exec() au lieu de l'afficher directement.
 	curl_setopt($ch, CURLOPT_FAILONERROR, TRUE);              // TRUE pour que PHP traite silencieusement les codes HTTP supérieurs ou égaux à 400. Le comportement par défaut est de retourner la page normalement, en ignorant ce code.
-	curl_setopt($ch, CURLOPT_FOLLOWLOCATION, TRUE);           // TRUE pour suivre toutes les en-têtes "Location: " que le serveur envoie dans les en-têtes HTTP (notez que cette fonction est récursive et que PHP suivra toutes les en-têtes "Location: " qu'il trouvera à moins que CURLOPT_MAXREDIRS ne soit définie).
-	curl_setopt($ch, CURLOPT_MAXREDIRS, 3);                   // Le nombre maximal de redirections HTTP à suivre. Utilisez cette option avec l'option CURLOPT_FOLLOWLOCATION.
 	curl_setopt($ch, CURLOPT_HEADER, FALSE);                  // FALSE pour ne pas inclure l'en-tête dans la valeur de retour.
 	curl_setopt($ch, CURLOPT_TIMEOUT, 5);                     // Le temps maximum d'exécution de la fonction cURL (en s).
 	curl_setopt($ch, CURLOPT_URL, $url);                      // L'URL à récupérer. Vous pouvez aussi choisir cette valeur lors de l'appel à curl_init().
+	if(!ini_get('safe_mode'))
+	{
+		curl_setopt($ch, CURLOPT_FOLLOWLOCATION, TRUE);           // TRUE pour suivre toutes les en-têtes "Location: " que le serveur envoie dans les en-têtes HTTP (notez que cette fonction est récursive et que PHP suivra toutes les en-têtes "Location: " qu'il trouvera à moins que CURLOPT_MAXREDIRS ne soit définie).
+		curl_setopt($ch, CURLOPT_MAXREDIRS, 3);                   // Le nombre maximal de redirections HTTP à suivre. Utilisez cette option avec l'option CURLOPT_FOLLOWLOCATION.
+	}
 	if(is_array($tab_post))
 	{
 		curl_setopt($ch, CURLOPT_POST, TRUE);                   // TRUE pour que PHP fasse un HTTP POST. Un POST est un encodage normal application/x-www-from-urlencoded, utilisé couramment par les formulaires HTML. 
@@ -1025,24 +1028,24 @@ function recuperer_numero_derniere_version()
  * envoyer_arborescence_XML
  * Transmettre le XML d'un référentiel au serveur communautaire.
  * 
- * @param int       $structure_id
- * @param string    $structure_key
+ * @param int       $sesamath_id
+ * @param string    $sesamath_key
  * @param int       $matiere_id
  * @param int       $niveau_id
  * @param string    $arbreXML       si fourni vide, provoquera l'effacement du référentiel mis en partage
  * @return string   "ok" ou un message d'erreur
  */
 
-function envoyer_arborescence_XML($structure_id,$structure_key,$matiere_id,$niveau_id,$arbreXML)
+function envoyer_arborescence_XML($sesamath_id,$sesamath_key,$matiere_id,$niveau_id,$arbreXML)
 {
 	$tab_post = array();
-	$tab_post['mode']           = 'httprequest';
 	$tab_post['fichier']        = 'referentiel_uploader';
-	$tab_post['structure_id']   = $structure_id;
-	$tab_post['structure_key']  = $structure_key;
+	$tab_post['sesamath_id']    = $sesamath_id;
+	$tab_post['sesamath_key']   = $sesamath_key;
 	$tab_post['matiere_id']     = $matiere_id;
 	$tab_post['niveau_id']      = $niveau_id;
 	$tab_post['arbreXML']       = $arbreXML;
+	$tab_post['version_prog']   = VERSION_PROG; // Le service web doit être compatible
 	$tab_post['version_base']   = VERSION_BASE; // La base doit être compatible (problème de socle modifié...)
 	$tab_post['adresse_retour'] = SERVEUR_ADRESSE;
 	return url_get_contents(SERVEUR_COMMUNAUTAIRE,$tab_post);
@@ -1052,20 +1055,20 @@ function envoyer_arborescence_XML($structure_id,$structure_key,$matiere_id,$nive
  * recuperer_arborescence_XML
  * Demander à ce que nous soit retourné le XML d'un référentiel depuis le serveur communautaire.
  * 
- * @param int       $structure_id
- * @param string    $structure_key
+ * @param int       $sesamath_id
+ * @param string    $sesamath_key
  * @param int       $referentiel_id
  * @return string   le XML ou un message d'erreur
  */
 
-function recuperer_arborescence_XML($structure_id,$structure_key,$referentiel_id)
+function recuperer_arborescence_XML($sesamath_id,$sesamath_key,$referentiel_id)
 {
 	$tab_post = array();
-	$tab_post['mode']           = 'httprequest';
 	$tab_post['fichier']        = 'referentiel_downloader';
-	$tab_post['structure_id']   = $structure_id;
-	$tab_post['structure_key']  = $structure_key;
+	$tab_post['sesamath_id']    = $sesamath_id;
+	$tab_post['sesamath_key']   = $sesamath_key;
 	$tab_post['referentiel_id'] = $referentiel_id;
+	$tab_post['version_prog']   = VERSION_PROG; // Le service web doit être compatible
 	$tab_post['version_base']   = VERSION_BASE; // La base doit être compatible (problème de socle modifié...)
 	return url_get_contents(SERVEUR_COMMUNAUTAIRE,$tab_post);
 }
@@ -1095,22 +1098,178 @@ function verifier_arborescence_XML($arbreXML)
 }
 
 /**
- * enregistrer_structure_Sesamath
+ * Sesamath_enregistrer_structure
  * Demander à ce que la structure soit identifiée et enregistrée dans la base du serveur communautaire.
  * 
- * @param int       $structure_id
- * @param string    $structure_key
+ * @param int       $sesamath_id
+ * @param string    $sesamath_key
  * @return string   'ok' ou un message d'erreur
  */
 
-function enregistrer_structure_Sesamath($structure_id,$structure_key)
+function Sesamath_enregistrer_structure($sesamath_id,$sesamath_key)
 {
 	$tab_post = array();
-	$tab_post['mode']           = 'httprequest';
 	$tab_post['fichier']        = 'structure_enregistrer';
-	$tab_post['structure_id']   = $structure_id;
-	$tab_post['structure_key']  = $structure_key;
+	$tab_post['sesamath_id']    = $sesamath_id;
+	$tab_post['sesamath_key']   = $sesamath_key;
+	$tab_post['version_prog']   = VERSION_PROG; // Le service web doit être compatible
 	$tab_post['adresse_retour'] = SERVEUR_ADRESSE;
+	return url_get_contents(SERVEUR_COMMUNAUTAIRE,$tab_post);
+}
+
+/**
+ * Sesamath_afficher_formulaire_geo1
+ * Appel au serveur communautaire pour afficher le formulaire géographique n°1.
+ * 
+ * @param void
+ * @return string   '<option>...</option>' ou un message d'erreur
+ */
+
+function Sesamath_afficher_formulaire_geo1()
+{
+	$tab_post = array();
+	$tab_post['fichier']      = 'Sesamath_afficher_formulaire_geo';
+	$tab_post['etape']        = 1;
+	$tab_post['version_prog'] = VERSION_PROG; // Le service web doit être compatible
+	return url_get_contents(SERVEUR_COMMUNAUTAIRE,$tab_post);
+}
+
+/**
+ * Sesamath_afficher_formulaire_geo2
+ * Appel au serveur communautaire pour afficher le formulaire géographique n°2.
+ * 
+ * @param int       $geo1
+ * @return string   '<option>...</option>' ou un message d'erreur
+ */
+
+function Sesamath_afficher_formulaire_geo2($geo1)
+{
+	$tab_post = array();
+	$tab_post['fichier']      = 'Sesamath_afficher_formulaire_geo';
+	$tab_post['etape']        = 2;
+	$tab_post['geo1']         = $geo1;
+	$tab_post['version_prog'] = VERSION_PROG; // Le service web doit être compatible
+	return url_get_contents(SERVEUR_COMMUNAUTAIRE,$tab_post);
+}
+
+/**
+ * Sesamath_afficher_formulaire_geo3
+ * Appel au serveur communautaire pour afficher le formulaire géographique n°3.
+ * 
+ * @param int       $geo1
+ * @param int       $geo2
+ * @return string   '<option>...</option>' ou un message d'erreur
+ */
+
+function Sesamath_afficher_formulaire_geo3($geo1,$geo2)
+{
+	$tab_post = array();
+	$tab_post['fichier']      = 'Sesamath_afficher_formulaire_geo';
+	$tab_post['etape']        = 3;
+	$tab_post['geo1']         = $geo1;
+	$tab_post['geo2']         = $geo2;
+	$tab_post['version_prog'] = VERSION_PROG; // Le service web doit être compatible
+	return url_get_contents(SERVEUR_COMMUNAUTAIRE,$tab_post);
+}
+
+/**
+ * Sesamath_lister_structures_by_commune
+ * Appel au serveur communautaire pour lister les structures de la commune indiquée.
+ * 
+ * @param int       $geo3
+ * @return string   '<option>...</option>' ou un message d'erreur
+ */
+
+function Sesamath_lister_structures_by_commune($geo3)
+{
+	$tab_post = array();
+	$tab_post['fichier']      = 'Sesamath_lister_structures';
+	$tab_post['methode']      = 'commune';
+	$tab_post['geo3']         = $geo3;
+	$tab_post['version_prog'] = VERSION_PROG; // Le service web doit être compatible
+	return url_get_contents(SERVEUR_COMMUNAUTAIRE,$tab_post);
+}
+
+/**
+ * Sesamath_recuperer_structure_by_UAI
+ * Appel au serveur communautaire pour récupérer la structure du numéro UAI indiqué.
+ * 
+ * @param string    $uai
+ * @return string   '<option>...</option>' ou un message d'erreur
+ */
+
+function Sesamath_recuperer_structure_by_UAI($uai)
+{
+	$tab_post = array();
+	$tab_post['fichier']      = 'Sesamath_lister_structures';
+	$tab_post['methode']      = 'UAI';
+	$tab_post['uai']          = $uai;
+	$tab_post['version_prog'] = VERSION_PROG; // Le service web doit être compatible
+	return url_get_contents(SERVEUR_COMMUNAUTAIRE,$tab_post);
+}
+
+/**
+ * afficher_formulaire_structures_communautaires
+ * Appel au serveur communautaire pour afficher le formulaire des structures ayant partagées au moins un référentiel.
+ * 
+ * @param int       $sesamath_id
+ * @param string    $sesamath_key
+ * @return string   '<option>...</option>' ou un message d'erreur
+ */
+
+function afficher_formulaire_structures_communautaires($sesamath_id,$sesamath_key)
+{
+	$tab_post = array();
+	$tab_post['fichier']      = 'structures_afficher_formulaire';
+	$tab_post['sesamath_id']  = $sesamath_id;
+	$tab_post['sesamath_key'] = $sesamath_key;
+	$tab_post['version_prog'] = VERSION_PROG; // Le service web doit être compatible
+	return url_get_contents(SERVEUR_COMMUNAUTAIRE,$tab_post);
+}
+
+/**
+ * afficher_liste_referentiels
+ * Appel au serveur communautaire pour lister les référentiels partagés trouvés selon les critères retenus (matière / niveau / structure).
+ * 
+ * @param int       $sesamath_id
+ * @param string    $sesamath_key
+ * @param int       $matiere_id
+ * @param int       $niveau_id
+ * @param int       $structure_id
+ * @return string   listing ou un message d'erreur
+ */
+
+function afficher_liste_referentiels($sesamath_id,$sesamath_key,$matiere_id,$niveau_id,$structure_id)
+{
+	$tab_post = array();
+	$tab_post['fichier']      = 'referentiels_afficher_liste';
+	$tab_post['sesamath_id']  = $sesamath_id;
+	$tab_post['sesamath_key'] = $sesamath_key;
+	$tab_post['matiere_id']   = $matiere_id;
+	$tab_post['niveau_id']    = $niveau_id;
+	$tab_post['structure_id'] = $structure_id;
+	$tab_post['version_prog'] = VERSION_PROG; // Le service web doit être compatible
+	return url_get_contents(SERVEUR_COMMUNAUTAIRE,$tab_post);
+}
+
+/**
+ * afficher_contenu_referentiel
+ * Appel au serveur communautaire voir le contenu d'un référentiel partagé.
+ * 
+ * @param int       $sesamath_id
+ * @param string    $sesamath_key
+ * @param int       $referentiel_id
+ * @return string   arborescence ou un message d'erreur
+ */
+
+function afficher_contenu_referentiel($sesamath_id,$sesamath_key,$referentiel_id)
+{
+	$tab_post = array();
+	$tab_post['fichier']        = 'referentiel_afficher_contenu';
+	$tab_post['sesamath_id']    = $sesamath_id;
+	$tab_post['sesamath_key']   = $sesamath_key;
+	$tab_post['referentiel_id'] = $referentiel_id;
+	$tab_post['version_prog']   = VERSION_PROG; // Le service web doit être compatible
 	return url_get_contents(SERVEUR_COMMUNAUTAIRE,$tab_post);
 }
 

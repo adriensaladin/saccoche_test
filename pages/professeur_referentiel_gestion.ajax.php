@@ -28,14 +28,47 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 if(($_SESSION['SESAMATH_ID']==ID_DEMO)&&($_POST['action']!='Voir')){exit('Action désactivée pour la démo...');}
 
-$action  = (isset($_POST['action']))  ? $_POST['action'] : '';
-$ids     = (isset($_POST['ids']))     ? $_POST['ids']    : '';
-
+$action         = (isset($_POST['action']))         ? $_POST['action'] : '';
+$matiere_id     = (isset($_POST['matiere_id']))     ? clean_entier($_POST['matiere_id'])     : 0;
+$niveau_id      = (isset($_POST['niveau_id']))      ? clean_entier($_POST['niveau_id'])      : 0;
+$structure_id   = (isset($_POST['structure_id']))   ? clean_entier($_POST['structure_id'])   : 0;
 $partage        = (isset($_POST['partage']))        ? clean_texte($_POST['partage'])         : '';	// Changer l'état de partage
 $methode        = (isset($_POST['methode']))        ? clean_texte($_POST['methode'])         : '';	// Changer le mode de calcul
 $limite         = (isset($_POST['limite']))         ? clean_entier($_POST['limite'])         : -1;	// Changer le nb d'items pris en compte
-$referentiel_id = (isset($_POST['referentiel_id'])) ? clean_entier($_POST['referentiel_id']) : -1;	// Référence du référentiel importé (0 si vierge)
+$referentiel_id = (isset($_POST['referentiel_id'])) ? clean_entier($_POST['referentiel_id']) : -1;	// Référence du référentiel importé (0 si vierge), ou référence du référentiel à consulter
 
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+// Afficher le formulaire des structures ayant partagées au moins un référentiel
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
+if($action=='Afficher_structures') // La vérification concernant le nombre de contraintes s'effectue après
+{
+	exit( afficher_formulaire_structures_communautaires($_SESSION['SESAMATH_ID'],$_SESSION['SESAMATH_KEY']) );
+}
+
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+// Lister les référentiels partagés trouvés selon les critères retenus (matière / niveau / structure)
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
+if($action=='Lister_referentiels') // La vérification concernant le nombre de contraintes s'effectue après
+{
+	exit( afficher_liste_referentiels($_SESSION['SESAMATH_ID'],$_SESSION['SESAMATH_KEY'],$matiere_id,$niveau_id,$structure_id) );
+}
+
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+// Voir le contenu d'un référentiel partagé
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
+if( ($action=='Voir_referentiel') && $referentiel_id )
+{
+	exit( afficher_contenu_referentiel($_SESSION['SESAMATH_ID'],$_SESSION['SESAMATH_KEY'],$referentiel_id) );
+}
+
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+// Pour les autres cas on doit récupérer le paramètre ids
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
+$ids = (isset($_POST['ids'])) ? $_POST['ids'] : '';
 if(mb_substr_count($ids,'_')!=3)
 {
 	exit('Erreur avec les données transmises !');
@@ -58,6 +91,7 @@ $tab_limites['bestof3']      = array(    3,4,5,6,7,8,9,10,15,20,30,40,50,0);
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 // Affichage du détail d'un référentiel pour une matière et un niveau donnés
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
 if( ($action=='Voir') && $matiere_id && $niveau_id )
 {
 	$DB_TAB = DB_STRUCTURE_recuperer_arborescence($prof_id=0,$matiere_id,$niveau_id,$only_socle=false,$only_item=false,$socle_nom=true);
@@ -67,7 +101,8 @@ if( ($action=='Voir') && $matiere_id && $niveau_id )
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 // Modifier le partage d'un référentiel
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-elseif( ($action=='Partager') && ($perso==0) && $matiere_id && $niveau_id && in_array($partage,$tab_partages) && ($partage!='hs') )
+
+if( ($action=='Partager') && ($perso==0) && $matiere_id && $niveau_id && in_array($partage,$tab_partages) && ($partage!='hs') )
 {
 	if( ($partage=='oui') && ( (!$_SESSION['SESAMATH_ID']) || (!$_SESSION['SESAMATH_KEY']) ) )
 	{
@@ -100,7 +135,8 @@ elseif( ($action=='Partager') && ($perso==0) && $matiere_id && $niveau_id && in_
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 // Mettre à jour sur le serveur de partage la dernière version d'un référentiel
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-elseif( ($action=='Envoyer') && ($perso==0) && $matiere_id && $niveau_id )
+
+if( ($action=='Envoyer') && ($perso==0) && $matiere_id && $niveau_id )
 {
 	if( (!$_SESSION['SESAMATH_ID']) || (!$_SESSION['SESAMATH_KEY']) )
 	{
@@ -125,7 +161,8 @@ elseif( ($action=='Envoyer') && ($perso==0) && $matiere_id && $niveau_id )
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 // Supprimer un référentiel
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-elseif( ($action=='Retirer') && $matiere_id && $niveau_id && in_array($partage,$tab_partages) )
+
+if( ($action=='Retirer') && $matiere_id && $niveau_id && in_array($partage,$tab_partages) )
 {
 	// S'il était partagé, il faut le retirer du serveur communautaire
 	if($partage=='oui')
@@ -147,7 +184,8 @@ elseif( ($action=='Retirer') && $matiere_id && $niveau_id && in_array($partage,$
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 // Modifier le mode de calcul d'un référentiel
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-elseif( ($action=='Calculer') && $matiere_id && $niveau_id && in_array($methode,$tab_methodes) && in_array($limite,$tab_limites[$methode]) )
+
+if( ($action=='Calculer') && $matiere_id && $niveau_id && in_array($methode,$tab_methodes) && in_array($limite,$tab_limites[$methode]) )
 {
 	DB_STRUCTURE_modifier_referentiel( $matiere_id , $niveau_id , array(':calcul_methode'=>$methode,':calcul_limite'=>$limite) );
 	if($limite==1)	// si une seule saisie prise en compte
@@ -179,7 +217,8 @@ elseif( ($action=='Calculer') && $matiere_id && $niveau_id && in_array($methode,
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 // Ajouter un référentiel
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-elseif( ($action=='Ajouter') && $matiere_id && $niveau_id )
+
+if( ($action=='Ajouter') && $matiere_id && $niveau_id )
 {
 	if( DB_STRUCTURE_tester_referentiel($matiere_id,$niveau_id) )
 	{
@@ -223,8 +262,10 @@ elseif( ($action=='Ajouter') && $matiere_id && $niveau_id )
 	}
 }
 
-else
-{
-	exit('Erreur avec les données transmises !');
-}
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+// On en devrait pas en arriver là
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
+exit('Erreur avec les données transmises !');
+
 ?>

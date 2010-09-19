@@ -33,15 +33,15 @@ $fichier_section = './pages/'.$PAGE.'_'.$SECTION.'.php';
 if(is_file($fichier_section))
 {
 	// Cas d'une section : afficher les liens puis appeler la section
-	echo'<div class="hc">';
+	echo'<div class="hc noprint">';
 	echo'	<a href="./index.php?page='.$PAGE.'&amp;section=algorithme">Algorithme de calcul</a>	<br />';
 	echo'	<a href="./index.php?page='.$PAGE.'&amp;section=referentiel_interne">Référentiels en place (dans l\'établissement)</a>	';
 	if($_SESSION['USER_PROFIL']!='eleve')
 	{
 		echo'||	<a href="./index.php?page='.$PAGE.'&amp;section=referentiel_externe">Référentiels partagés (serveur communautaire)</a>';
 	}
-	echo'</div>';
 	echo'<hr />';
+	echo'</div>';
 	$PAGE = $PAGE.'_'.$SECTION ;
 	require($fichier_section);
 }

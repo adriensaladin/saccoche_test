@@ -372,13 +372,6 @@ li.li_n3 b img{margin-right:2px}
 #zone_information #items {margin-top:1ex;font-size:90%}
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-/* Liste à puce pour l'affichage d'une liste d'établissements proposant des référentiels               */
-/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-
-ul.donneur {height:30ex;width:90%;background:#DDF;padding:1ex;overflow:auto}
-ul.donneur li span:hover {cursor:pointer}
-
-/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 /* Liste à puce pour les étapes lors de l'import sconet                                                */
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 

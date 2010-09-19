@@ -77,11 +77,11 @@ $(document).ready
 			new_tr += '<td class="nu"></td>';
 			new_tr += '<td></td>';
 			new_tr += '<td><select id="f_geo" name="f_geo">'+options_geo+'</select></td>';
-			new_tr += '<td><input id="f_localisation" name="f_localisation" size="40" type="text" value="" /></td>';
-			new_tr += '<td><input id="f_denomination" name="f_denomination" size="30" type="text" value="" /></td>';
+			new_tr += '<td><input id="f_localisation" name="f_localisation" size="30" type="text" value="" /></td>';
+			new_tr += '<td><input id="f_denomination" name="f_denomination" size="20" type="text" value="" /></td>';
 			new_tr += '<td><input id="f_uai" name="f_uai" size="8" type="text" value="" /></td>';
-			new_tr += '<td><input id="f_contact_nom" name="f_contact_nom" size="15" type="text" value="" /></td>';
-			new_tr += '<td><input id="f_contact_prenom" name="f_contact_prenom" size="15" type="text" value="" /></td>';
+			new_tr += '<td><input id="f_contact_nom" name="f_contact_nom" size="10" type="text" value="" /></td>';
+			new_tr += '<td><input id="f_contact_prenom" name="f_contact_prenom" size="10" type="text" value="" /></td>';
 			new_tr += '<td><input id="f_contact_courriel" name="f_contact_courriel" size="30" type="text" value="" /></td>';
 			new_tr += '<td class="nu"><input id="f_action" name="f_action" type="hidden" value="'+mode+'" /><q class="valider" title="Valider l\'ajout de cet établissement."></q><q class="annuler" title="Annuler l\'ajout de cet établissement."></q> <label id="ajax_msg">&nbsp;</label></td>';
 			new_tr += '</tr>';
@@ -119,7 +119,7 @@ $(document).ready
 			new_tr += '<td><input id="f_uai" name="f_uai" size="8" type="text" value="'+uai+'" /></td>';
 			new_tr += '<td><input id="f_contact_nom" name="f_contact_nom" size="'+Math.max(contact_nom.length,10)+'" type="text" value="'+contact_nom+'" /></td>';
 			new_tr += '<td><input id="f_contact_prenom" name="f_contact_prenom" size="'+Math.max(contact_prenom.length,10)+'" type="text" value="'+contact_prenom+'" /></td>';
-			new_tr += '<td><input id="f_contact_courriel" name="f_contact_courriel" size="'+Math.max(contact_courriel.length,20)+'" type="text" value="'+contact_courriel+'" /></td>';
+			new_tr += '<td><input id="f_contact_courriel" name="f_contact_courriel" size="'+Math.max(contact_courriel.length,30)+'" type="text" value="'+contact_courriel+'" /></td>';
 			new_tr += '<td class="nu"><input id="f_action" name="f_action" type="hidden" value="'+mode+'" /><q class="valider" title="Valider les modifications de cet établissement."></q><q class="annuler" title="Annuler les modifications de cet établissement."></q> <label id="ajax_msg">&nbsp;</label></td>';
 			new_tr += '</tr>';
 			// Cacher la ligne en cours et ajouter la nouvelle

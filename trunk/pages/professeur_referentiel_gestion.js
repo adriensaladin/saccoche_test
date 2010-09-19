@@ -406,7 +406,49 @@ $(document).ready
 		);
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-//	Clic sur le bouton pour Lancer une recherche sur le serveur communautaire
+//	Charger le formulaire listant les structures ayant partagées un référentiel (appel au serveur communautaire)
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
+		var charger_formulaire_structures = function()
+		{
+			$('#rechercher').hide("fast");
+			$('#ajax_msg').removeAttr("class").addClass("loader").html('Chargement du formulaire... Veuillez patienter.');
+			$.ajax
+			(
+				{
+					type : 'POST',
+					url : 'ajax.php?page='+PAGE,
+					data : 'action=Afficher_structures',
+					dataType : "html",
+					error : function(msg,string)
+					{
+						$('#ajax_msg').removeAttr("class").addClass("alerte").html('Echec de la connexion ! <a href="#" id="charger_formulaire_structures">Veuillez essayer de nouveau.</a>');
+						return false;
+					},
+					success : function(responseHTML)
+					{
+						maj_clock(1);
+						if(responseHTML.substring(0,7)!='<option')
+						{
+							$('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML+' <a href="#" id="charger_formulaire_structures">Veuillez essayer de nouveau.</a>');
+						}
+						else
+						{
+							modification = false;
+							$('#ajax_msg').removeAttr("class").html('&nbsp;');
+							$('#f_structure').html(responseHTML);
+							$('#rechercher').show("fast");
+						}
+					}
+				}
+			);
+		};
+
+		// Charger au clic sur le lien obtenu si échec
+		$('#charger_formulaire_structures').live(  'click' , charger_formulaire_structures );
+
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+//	Clic sur le bouton pour Afficher le formulaire de recherche sur le serveur communautaire
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
 		$('#choisir_rechercher').click
@@ -418,82 +460,206 @@ $(document).ready
 				tab_ids = ids.split('_');
 				matiere_id = tab_ids[2];
 				niveau_id  = tab_ids[3];
-				adresse = url_debut + '?mode=object' + '&fichier=referentiel_choisir' + '&structure_id=' + sesamath_id + '&structure_key=' + sesamath_key + '&matiere_id=' + matiere_id + '&niveau_id=' + niveau_id + '&adresse_retour=' + encodeURIComponent(document.location.href);	// Mettre href sinon c'est le dernier appel ajax (non visible dans la barre d'adresse) qui compte...
-				// Afficher / masquer ce qu'il faut et appeler l'objet
-				$('form').hide();
-				if($('#object_container object').length)
-				{
-					$('#cadre').attr('data',adresse).parent().show();
-				}
-				else
-				{
-					$('#cadre').attr('src',adresse).parent().show();
-				}
-				surveiller_url_et_hauteur();
+				//MAJ et affichage du formulaire
+				charger_formulaire_structures();
+				$('#f_matiere option[value='+matiere_id+']').attr('selected',true);
+				$('#f_niveau option[value='+niveau_id+']').attr('selected',true);
+				$('#choisir_referentiel_communautaire ul').html('<li></li>');
+				$('#lister_referentiel_communautaire').hide("fast");
+				$('#voir_referentiel_communautaire ul li.li_m1').html('').parent().parent().hide();
+				$('#form_instance').hide();
+				$('#form_communautaire').show();
 				maj_clock(1);
 				return(false);
 			}
 		);
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-//	Inspection de l'URL : l'ajout d'un hash indique un retour de l'iframe suite à un choix de référentiel ou pour maj le compteur de session
-//	Pour les explications : http://softwareas.com/cross-domain-communication-with-iframes (démo 1 : http://ajaxify.com/run/crossframe/ )
-//	Attention, seule la 1e méthode fonctionne, la 2nde avec les iframes ajouté n'est pas compatible avec tous les navigateurs.
-//	Voir aussi cette librairie : http://easyxdm.net/wp/
+//	Réagir au changement dans un select
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
-		function surveiller_url_et_hauteur()
-		{
-			// Attention à ne pas mettre un délai trop faible ; pour 1ds par exemple, certains anciens navigateurs appellent en boucle la fonction faute d'avoir eu le temps d'enlever le hash
-			$("body").everyTime
-			('1s', 'surveillance', function()
-				{
-					// Surveillance de l'URL
-					var hashVal = window.location.hash.substr(1);
-					if(hashVal!="")
+		$('#choisir_referentiel_communautaire select').change
+		(
+			function()
+			{
+				$('#ajax_msg').removeAttr("class").html("&nbsp;");
+				$('#choisir_referentiel_communautaire ul').html('<li></li>');
+				$('#voir_referentiel_communautaire').hide("fast");
+				$('#lister_referentiel_communautaire').hide("fast");
+			}
+		);
+
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+//	Changement de matière -> desactiver les niveaux classiques en cas de matière transversale
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
+		$('#f_matiere').change
+		(
+			function()
+			{
+				modif_niveau_selected = 0; // 0 = pas besoin modifier / 1 = à modifier / 2 = déjà modifié
+				matiere_id = $('#f_matiere').val();
+				$("#f_niveau option").each
+				(
+					function()
 					{
-						window.location.hash='#';
-						if(hashVal=='maj_clock')
+						niveau_id = $(this).val();
+						findme = '.'+niveau_id+'.';
+						// Les niveaux "paliers" sont tout le temps accessibles
+						if(listing_id_niveaux_paliers.indexOf(findme) == -1)
+						{
+							// matière classique -> tous niveaux actifs
+							if(matiere_id != id_matiere_transversale)
+							{
+								$(this).removeAttr('disabled');
+							}
+							// matière transversale -> desactiver les autres niveaux
+							else
+							{
+								$(this).attr('disabled','disabled');
+								modif_niveau_selected = Math.max(modif_niveau_selected,1);
+							}
+						}
+						// C'est un niveau palier ; le sélectionner si besoin
+						else if(modif_niveau_selected==1)
+						{
+							$(this).attr('selected','selected');
+							modif_niveau_selected = 2;
+						}
+					}
+				);
+			}
+		);
+
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+//	Clic sur le bouton pour chercher des référentiels partagés sur d'autres niveaux ou matières
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
+		$('#rechercher').click
+		(
+			function()
+			{
+				$('#voir_referentiel_communautaire').hide();
+				matiere_id   = $('#f_matiere').val();
+				niveau_id    = $('#f_niveau').val();
+				structure_id = $('#f_structure').val();
+				if( (matiere_id==0) && (niveau_id==0) && (structure_id==0) )
+				{
+					$('#ajax_msg').removeAttr("class").addClass("erreur").html("Il faut préciser au moins un critère !");
+					return false;
+				}
+				$('#rechercher').attr('disabled','disabled');
+				$('#ajax_msg').removeAttr("class").addClass("loader").html('Demande envoyée... Veuillez patienter.');
+				$.ajax
+				(
+					{
+						type : 'POST',
+						url : 'ajax.php?page='+PAGE,
+						data : 'action=Lister_referentiels&matiere_id='+matiere_id+'&niveau_id='+niveau_id+'&structure_id='+structure_id,
+						dataType : "html",
+						error : function(msg,string)
+						{
+							$('#rechercher').removeAttr('disabled');
+							$('#ajax_msg').removeAttr("class").addClass("alerte").html('Echec de la connexion ! Veuillez recommencer.');
+							return false;
+						},
+						success : function(responseHTML)
+						{
+							$('#rechercher').removeAttr('disabled');
+							if(responseHTML.substring(0,3)!='<li')
+							{
+								$('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);
+							}
+							else
+							{
+								maj_clock(1);
+								$('#ajax_msg').removeAttr("class").html("&nbsp;");
+								var reg = new RegExp('</q>',"g"); // Si on ne prend pas une expression régulière alors replace() ne remplace que la 1e occurence
+								responseHTML = responseHTML.replace(reg,'</q><q class="valider" title="Sélectionner ce référentiel.<br />(choix à confirmer de retour à la page principale)"></q>'); // Ajouter les paniers
+								$('#choisir_referentiel_communautaire ul').html(responseHTML);
+								$('#lister_referentiel_communautaire').show("fast");
+								infobulle();
+							}
+						}
+					}
+				);
+			}
+		);
+
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+//	Clic sur une image pour choisir un référentiel donné
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
+		$('#choisir_referentiel_communautaire q.valider').live // live est utilisé pour prendre en compte les nouveaux éléments créés
+		('click',
+			function()
+			{
+				referentiel_id = $(this).parent().attr('id').substr(3);
+				description    = $(this).parent().text(); // Pb : il prend le contenu du <sup> avec
+				longueur_sup   = $(this).prev().prev().text().length;
+				description    = description.substring(0,description.length-longueur_sup);
+				$('#reporter').html(description).parent('#choisir_importer').val('id_'+referentiel_id).parent().show();
+				maj_clock(1);
+				$('#rechercher_annuler').click();
+			}
+		);
+
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+//	Clic sur l'image pour Voir le détail d'un référentiel partagé
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
+		$('#choisir_referentiel_communautaire q.voir').live // live est utilisé pour prendre en compte les nouveaux éléments créés
+		('click',
+			function()
+			{
+				referentiel_id = $(this).parent().attr('id').substr(3);
+				description    = $(this).parent().text(); // Pb : il prend le contenu du <sup> avec
+				longueur_sup   = $(this).prev().text().length;
+				description    = description.substring(0,description.length-longueur_sup);
+				new_label = '<label id="temp" class="loader">Demande envoyée... Veuillez patienter.</label>';
+				$(this).next().after(new_label);
+				$.ajax
+				(
+					{
+						type : 'POST',
+						url : 'ajax.php?page='+PAGE,
+						data : 'action=Voir_referentiel&referentiel_id='+referentiel_id,
+						dataType : "html",
+						error : function(msg,string)
+						{
+							$('label[id=temp]').removeAttr("class").addClass("alerte").html('Echec de la connexion ! Veuillez recommencer.').fadeOut(2000,function(){$('label[id=temp]').remove();});
+							return false;
+						},
+						success : function(responseHTML)
 						{
 							maj_clock(1);
-						}
-						else
-						{
-							$("body").stopTime('surveillance');
-							position_separateur = hashVal.indexOf('_');
-							if(position_separateur != -1)
+							if(responseHTML.substring(0,18)!='<ul class="ul_n1">')
 							{
-								referentiel_id = hashVal.substring(0,position_separateur);
-								description    = hashVal.substr(position_separateur+1);
-								$('#reporter').html(description).parent('#choisir_importer').val('id_'+referentiel_id).parent().show();
-								maj_clock(1);
+								$('label[id=temp]').removeAttr("class").addClass("alerte").html(responseHTML).fadeOut(2000,function(){$('label[id=temp]').remove();});
 							}
-							$('#rechercher_annuler').click();
+							else
+							{
+								$('#voir_referentiel_communautaire ul li.li_m1').html('<b>'+description+'</b><q class="imprimer" title="Imprimer le référentiel."></q>'+responseHTML).parent().parent().show();
+								infobulle();
+								$('label[id=temp]').removeAttr("class").addClass("valide").html("Contenu affiché ci-dessous !").fadeOut(2000,function(){$('label[id=temp]').remove();});
+							}
 						}
 					}
-					// Surveillance du redimensionnement
-					var hauteur_entete = 180;
-					var hauteur_object_mini = 350;
-					var hauteur_document = hauteur_entete+hauteur_object_mini;
-					// hauteur_document = $(document).height() pose problème si on retrécit la fenêtre en hauteur : il s'adapte très lentement...
-					// D'où la procédure suivante récupérée à l'adresse http://www.howtocreate.co.uk/tutorials/javascript/browserwindow
-					if( typeof( window.innerHeight ) == 'number' )
-					{
-						hauteur_document = window.innerHeight;	//Non-IE
-					}
-					else if( document.documentElement && document.documentElement.clientHeight )
-					{
-						hauteur_document = document.documentElement.clientHeight;	//IE 6+ in 'standards compliant mode'
-					}
-					else if( document.body && document.body.clientHeight )
-					{
-						hauteur_document = document.body.clientHeight;	//IE 4 compatible
-					}
-					var hauteur_object = Math.max(hauteur_document-hauteur_entete,hauteur_object_mini);
-					$('#cadre').css('height',hauteur_object);
-				}
-			);
-		}
+				);
+			}
+		);
+
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+//	Clic sur une image pour Imprimer un referentiel
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
+		$('#voir_referentiel_communautaire q.imprimer').live // live est utilisé pour prendre en compte les nouveaux éléments créés
+		('click',
+			function()
+			{
+				window.print();
+			}
+		);
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 //	Clic sur le bouton pour Annuler la recherche sur le serveur communautaire
@@ -503,17 +669,9 @@ $(document).ready
 		(
 			function()
 			{
-				$('form').show();
-				adresse = './_img/ajax/ajax_loader.gif';
-				if($('#object_container object').length)
-				{
-					$('#cadre').attr('data',adresse).parent().hide();
-				}
-				else
-				{
-					$('#cadre').attr('src',adresse).parent().hide();
-				}
-				$("body").stopTime('surveillance');
+				$('#form_instance').show();
+				$('#form_communautaire').hide();
+				$('#lister_referentiel_communautaire').hide();
 				return(false);
 			}
 		);

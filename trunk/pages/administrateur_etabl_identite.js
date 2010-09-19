@@ -31,91 +31,31 @@ $(document).ready
 	{
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-//	Clic sur le lien pour Lancer une recherche sur le serveur communautaire
+//	Clic sur le lien pour Lancer une recherche de structure sur le serveur communautaire
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
 		$('#ouvrir_recherche').click
 		(
 			function()
 			{
-				adresse = url_debut + '?mode=object' + '&fichier=structure_rechercher' + '&adresse_retour=' + encodeURIComponent(document.location.href);	// Mettre href sinon c'est le dernier appel ajax (non visible dans la barre d'adresse) qui compte...
-				$('#form').hide();
-				$('#ajax_msg').removeAttr("class").html("&nbsp;");
-				if($('#object_container object').length)
-				{
-					$('#cadre').attr('data',adresse).parent().show();
-				}
-				else
-				{
-					$('#cadre').attr('src',adresse).parent().show();
-				}
-				surveiller_url_et_hauteur();
+				$('#form_instance').hide();
+				$('#ajax_msg_instance').removeAttr("class").html("&nbsp;");
+				// Décocher tous les boutons radio
+				$('#f_recherche_mode input[type=radio]').each
+				(
+					function()
+					{
+						this.checked = false;
+					}
+				);
+				$('#f_recherche_uai').hide();
+				$('#f_recherche_geo').hide();
+				$('#f_recherche_resultat').html('<li></li>').hide();
+				$('#form_communautaire').show();
 				maj_clock(1);
 				return(false);
 			}
 		);
-
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-//	Inspection de l'URL : l'ajout d'un hash indique un retour de l'iframe suite à un renvoi d'informations ou pour maj le compteur de session
-//	Pour les explications : http://softwareas.com/cross-domain-communication-with-iframes (démo 1 : http://ajaxify.com/run/crossframe/ )
-//	Attention, seule la 1e méthode fonctionne, la 2nde avec les iframes ajouté n'est pas compatible avec tous les navigateurs.
-//	Voir aussi cette librairie : http://easyxdm.net/wp/
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-
-		function surveiller_url_et_hauteur()
-		{
-			// Attention à ne pas mettre un délai trop faible ; pour 1ds par exemple, certains anciens navigateurs appellent en boucle la fonction faute d'avoir eu le temps d'enlever le hash
-			$("body").everyTime
-			('1s', 'surveillance', function()
-				{
-					// Surveillance de l'URL
-					var hashVal = window.location.hash.substr(1);
-					if(hashVal!="")
-					{
-						window.location.hash='#';
-						if(hashVal=='maj_clock')
-						{
-							maj_clock(1);
-						}
-						else
-						{
-							$("body").stopTime('surveillance');
-							tab_infos = hashVal.split('-+');
-							if(tab_infos.length == 4)
-							{
-								$('#f_sesamath_id').val(tab_infos[0]);
-								$('#f_sesamath_key').val(tab_infos[1]);
-								$('#f_sesamath_uai').val(tab_infos[2]); // (peut être vide)
-								$('#f_sesamath_type_nom').val(tab_infos[3]);
-								$('#ajax_msg').removeAttr("class").addClass("alerte").html('Pensez à valider pour confirmer votre sélection !');
-								maj_clock(1);
-							}
-							$('#rechercher_annuler').click();
-						}
-					}
-					// Surveillance du redimensionnement
-					var hauteur_entete = 230;
-					var hauteur_object_mini = 350;
-					var hauteur_document = hauteur_entete+hauteur_object_mini;
-					// hauteur_document = $(document).height() pose problème si on retrécit la fenêtre en hauteur : il s'adapte très lentement...
-					// D'où la procédure suivante récupérée à l'adresse http://www.howtocreate.co.uk/tutorials/javascript/browserwindow
-					if( typeof( window.innerHeight ) == 'number' )
-					{
-						hauteur_document = window.innerHeight;	//Non-IE
-					}
-					else if( document.documentElement && document.documentElement.clientHeight )
-					{
-						hauteur_document = document.documentElement.clientHeight;	//IE 6+ in 'standards compliant mode'
-					}
-					else if( document.body && document.body.clientHeight )
-					{
-						hauteur_document = document.body.clientHeight;	//IE 4 compatible
-					}
-					var hauteur_object = Math.max(hauteur_document-hauteur_entete,hauteur_object_mini);
-					$('#cadre').css('height',hauteur_object);
-				}
-			);
-		}
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 //	Clic sur le bouton pour Annuler la recherche sur le serveur communautaire
@@ -125,17 +65,8 @@ $(document).ready
 		(
 			function()
 			{
-				$('form').show();
-				adresse = './_img/ajax/ajax_loader.gif';
-				if($('#object_container object').length)
-				{
-					$('#cadre').attr('data',adresse).parent().hide();
-				}
-				else
-				{
-					$('#cadre').attr('src',adresse).parent().hide();
-				}
-				$("body").stopTime('surveillance');
+				$('#form_instance').show();
+				$('#form_communautaire').hide();
 				return(false);
 			}
 		);
@@ -145,7 +76,7 @@ $(document).ready
 		//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
 
 		// Le formulaire qui va être analysé et traité en AJAX
-		var formulaire = $('#form');
+		var formulaire = $('#form_instance');
 
 		// Ajout d'une méthode pour vérifier le format du numéro UAI
 		jQuery.validator.addMethod
@@ -236,7 +167,7 @@ $(document).ready
 			dataType : "html",
 			clearForm : false,
 			resetForm : false,
-			target : "#ajax_msg",
+			target : "#ajax_msg_instance",
 			beforeSubmit : test_form_avant_envoi,
 			error : retour_form_erreur,
 			success : retour_form_valide
@@ -255,12 +186,12 @@ $(document).ready
 		// Fonction précédent l'envoi du formulaire (avec jquery.form.js)
 		function test_form_avant_envoi(formData, jqForm, options)
 		{
-			$('#ajax_msg').removeAttr("class").html("&nbsp;");
+			$('#ajax_msg_instance').removeAttr("class").html("&nbsp;");
 			var readytogo = validation.form();
 			if(readytogo)
 			{
 				$("#bouton_valider").attr('disabled','disabled');
-				$('#ajax_msg').removeAttr("class").addClass("loader").html("Soumission du formulaire en cours... Veuillez patienter.");
+				$('#ajax_msg_instance').removeAttr("class").addClass("loader").html("Soumission du formulaire en cours... Veuillez patienter.");
 			}
 			return readytogo;
 		}
@@ -269,7 +200,7 @@ $(document).ready
 		function retour_form_erreur(msg,string)
 		{
 			$("#bouton_valider").removeAttr('disabled');
-			$('#ajax_msg').removeAttr("class").addClass("alerte").html("Echec de la connexion ! Veuillez valider de nouveau.");
+			$('#ajax_msg_instance').removeAttr("class").addClass("alerte").html("Echec de la connexion ! Veuillez valider de nouveau.");
 		}
 
 		// Fonction suivant l'envoi du formulaire (avec jquery.form.js)
@@ -279,13 +210,387 @@ $(document).ready
 			$("#bouton_valider").removeAttr('disabled');
 			if(responseHTML=='ok')
 			{
-				$('#ajax_msg').removeAttr("class").addClass("valide").html("Données enregistrées !");
+				$('#ajax_msg_instance').removeAttr("class").addClass("valide").html("Données enregistrées !");
 			}
 			else
 			{
-				$('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);
+				$('#ajax_msg_instance').removeAttr("class").addClass("alerte").html(responseHTML);
 			}
 		} 
+
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+//	Intercepter la touche entrée pour éviter une soumission d'un formulaire sans contrôle
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
+		$('#form_communautaire').submit
+		(
+			function()
+			{
+				if( $('#f_mode_uai').attr('checked')==true )
+				{
+					$("#rechercher_uai").click();
+				}
+				return false;
+			}
+		);
+
+//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
+//	Charger le select geo1 en ajax (appel au serveur communautaire)
+//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
+
+		function maj_geo1()
+		{
+			$.ajax
+			(
+				{
+					type : 'POST',
+					url : 'ajax.php?page='+PAGE,
+					data : 'action=Afficher_form_geo1',
+					dataType : "html",
+					error : function(msg,string)
+					{
+						$('#ajax_msg_communautaire').removeAttr("class").addClass("alerte").html("Echec de la connexion ! Veuillez essayer de nouveau.");
+					},
+					success : function(responseHTML)
+					{
+						if(responseHTML.substring(0,26)=='<option value=""></option>')	// Attention aux caractères accentués : l'utf-8 pose des pbs pour ce test
+						{
+							$('#ajax_msg_communautaire').removeAttr("class").html("&nbsp;");
+							$('#f_geo1').html(responseHTML).fadeIn('fast').focus();
+							maj_clock(1);
+						}
+						else
+						{
+							$('#ajax_msg_communautaire').removeAttr("class").addClass("alerte").html(responseHTML);
+						}
+					}
+				}
+			);
+		}
+
+		//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
+		//	Charger le select geo2 en ajax (appel au serveur communautaire)
+		//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
+
+		function maj_geo2(geo1_val)
+		{
+			$.ajax
+			(
+				{
+					type : 'POST',
+					url : 'ajax.php?page='+PAGE,
+					data : 'action=Afficher_form_geo2&f_geo1='+geo1_val,
+					dataType : "html",
+					error : function(msg,string)
+					{
+						$('#f_recherche_geo select').removeAttr('disabled');
+						$('#ajax_msg_communautaire').removeAttr("class").addClass("alerte").html("Echec de la connexion ! Veuillez essayer de nouveau.");
+					},
+					success : function(responseHTML)
+					{
+						$('#f_recherche_geo select').removeAttr('disabled');
+						if(responseHTML.substring(0,26)=='<option value=""></option>')	// Attention aux caractères accentués : l'utf-8 pose des pbs pour ce test
+						{
+							$('#ajax_msg_communautaire').removeAttr("class").html("&nbsp;");
+							$('#f_geo2').html(responseHTML).fadeIn('fast').focus();
+							maj_clock(1);
+						}
+						else
+						{
+							$('#ajax_msg_communautaire').removeAttr("class").addClass("alerte").html(responseHTML);
+						}
+					}
+				}
+			);
+		}
+
+		//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
+		//	Charger le select geo3 en ajax (appel au serveur communautaire)
+		//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
+
+		function maj_geo3(geo1_val,geo2_val)
+		{
+			$.ajax
+			(
+				{
+					type : 'POST',
+					url : 'ajax.php?page='+PAGE,
+					data : 'action=Afficher_form_geo3&f_geo1='+geo1_val+'&f_geo2='+geo2_val,
+					dataType : "html",
+					error : function(msg,string)
+					{
+						$('#f_recherche_geo select').removeAttr('disabled');
+						$('#ajax_msg_communautaire').removeAttr("class").addClass("alerte").html("Echec de la connexion ! Veuillez essayer de nouveau.");
+					},
+					success : function(responseHTML)
+					{
+						$('#f_recherche_geo select').removeAttr('disabled');
+						if(responseHTML.substring(0,26)=='<option value=""></option>')	// Attention aux caractères accentués : l'utf-8 pose des pbs pour ce test
+						{
+							$('#ajax_msg_communautaire').removeAttr("class").html("&nbsp;");
+							$('#f_geo3').html(responseHTML).fadeIn('fast').focus();
+							maj_clock(1);
+						}
+						else
+						{
+							$('#ajax_msg_communautaire').removeAttr("class").addClass("alerte").html(responseHTML);
+						}
+					}
+				}
+			);
+		}
+
+		//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
+		//	Rechercher les structures à partir du select geo3 en ajax (appel au serveur communautaire)
+		//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
+
+		function maj_resultat_geo(geo3_val)
+		{
+			$.ajax
+			(
+				{
+					type : 'POST',
+					url : 'ajax.php?page='+PAGE,
+					data : 'action=Afficher_structures&f_geo3='+geo3_val,
+					dataType : "html",
+					error : function(msg,string)
+					{
+						$('#f_recherche_geo select').removeAttr('disabled');
+						$('#ajax_msg_communautaire').removeAttr("class").addClass("alerte").html("Echec de la connexion ! Veuillez essayer de nouveau.");
+					},
+					success : function(responseHTML)
+					{
+						$('#f_recherche_geo select').removeAttr('disabled');
+						if(responseHTML.substring(0,3)=='<li')	// Attention aux caractères accentués : l'utf-8 pose des pbs pour ce test
+						{
+							$('#ajax_msg_communautaire').removeAttr("class").html("&nbsp;");
+							$('#f_recherche_resultat').html(responseHTML).show();
+							format_liens('#f_recherche_resultat');
+							infobulle();
+							maj_clock(1);
+						}
+						else
+						{
+							$('#ajax_msg_communautaire').removeAttr("class").addClass("alerte").html(responseHTML);
+						}
+					}
+				}
+			);
+		}
+
+		//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
+		//	Rechercher les structures à partir du select uai en ajax (appel au serveur communautaire)
+		//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
+
+		function maj_resultat_uai(uai_val)
+		{
+			$.ajax
+			(
+				{
+					type : 'POST',
+					url : 'ajax.php?page='+PAGE,
+					data : 'action=Afficher_structures&f_uai='+uai_val,
+					dataType : "html",
+					error : function(msg,string)
+					{
+						$('#rechercher_uai').removeAttr('disabled');
+						$('#ajax_msg_communautaire').removeAttr("class").addClass("alerte").html("Echec de la connexion ! Veuillez essayer de nouveau.");
+					},
+					success : function(responseHTML)
+					{
+						$('#rechercher_uai').removeAttr('disabled');
+						if(responseHTML.substring(0,3)=='<li')	// Attention aux caractères accentués : l'utf-8 pose des pbs pour ce test
+						{
+							$('#ajax_msg_communautaire').removeAttr("class").html("&nbsp;");
+							$('#f_recherche_resultat').html(responseHTML).show();
+							format_liens('#f_recherche_resultat');
+							infobulle();
+							maj_clock(1);
+						}
+						else
+						{
+							$('#ajax_msg_communautaire').removeAttr("class").addClass("alerte").html(responseHTML);
+						}
+					}
+				}
+			);
+		}
+
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+//	Choix du mode de recherche de la structure => demande d'actualisation éventuelle du select geo1
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
+		$('#f_recherche_mode input').click
+		(
+			function()
+			{
+				mode = $(this).val();
+				$("#f_recherche_resultat").html('<li></li>').hide();
+				if(mode=='geo')
+				{
+					$('#ajax_msg_communautaire').removeAttr("class").addClass("loader").html("Actualisation en cours... Veuillez patienter.");
+					$('#f_geo1').html('<option value=""></option>').fadeOut('fast'); // Ne pas utiliser "hide()" sinon pb de display block
+					$('#f_geo2').html('<option value=""></option>').fadeOut('fast'); // Ne pas utiliser "hide()" sinon pb de display block
+					$('#f_geo3').html('<option value=""></option>').fadeOut('fast'); // Ne pas utiliser "hide()" sinon pb de display block
+					$("#f_recherche_uai").hide();
+					$("#f_recherche_geo").show();
+					maj_geo1();
+				}
+				else if(mode=='uai')
+				{
+					$('#ajax_msg_communautaire').removeAttr("class").html("&nbsp;");
+					$("#f_recherche_geo").hide();
+					$("#f_recherche_uai").show();
+					$("#f_uai2").focus();
+					maj_clock(1);
+				}
+			}
+		);
+
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+//	Changement du select geo1 => demande d'actualisation du select geo2
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
+		$("#f_geo1").change
+		(
+			function()
+			{
+				$("#f_recherche_resultat").html('<li></li>').hide();
+				$('#f_geo2').html('<option value=""></option>').fadeOut('fast');
+				$('#f_geo3').html('<option value=""></option>').fadeOut('fast');
+				var geo1_val = $("#f_geo1").val();
+				if(geo1_val)
+				{
+					$('#f_recherche_geo select').attr('disabled','disabled');
+					$('#ajax_msg_communautaire').removeAttr("class").addClass("loader").html("Actualisation en cours... Veuillez patienter.");
+					maj_geo2(geo1_val);
+				}
+				else
+				{
+					$('#ajax_msg_communautaire').removeAttr("class").html("&nbsp;");
+				}
+			}
+		);
+
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+//	Changement du select geo2 => demande d'actualisation du select geo3
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
+		$("#f_geo2").change
+		(
+			function()
+			{
+				$("#f_recherche_resultat").html('<li></li>').hide();
+				$('#f_geo3').html('<option value=""></option>').fadeOut('fast');
+				var geo1_val = $("#f_geo1").val();
+				var geo2_val = $("#f_geo2").val();
+				if(geo1_val && geo2_val)
+				{
+					$('#f_recherche_geo select').attr('disabled','disabled');
+					$('#ajax_msg_communautaire').removeAttr("class").addClass("loader").html("Actualisation en cours... Veuillez patienter.");
+					maj_geo3(geo1_val,geo2_val);
+				}
+				else
+				{
+					$('#ajax_msg_communautaire').removeAttr("class").html("&nbsp;");
+				}
+			}
+		);
+
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+//	Changement du select geo3 => demande d'actualisation du résultat de la recherche
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
+		$("#f_geo3").change
+		(
+			function()
+			{
+				$("#f_recherche_resultat").html('<li></li>').hide();
+				var geo3_val = $("#f_geo3").val();
+				if(geo3_val)
+				{
+					$('#f_recherche_geo select').attr('disabled','disabled');
+					$('#ajax_msg_communautaire').removeAttr("class").addClass("loader").html("Actualisation en cours... Veuillez patienter.");
+					maj_resultat_geo(geo3_val);
+				}
+				else
+				{
+					$('#ajax_msg_communautaire').removeAttr("class").html("&nbsp;");
+				}
+			}
+		);
+
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+//	Validation du numéro uai => demande d'actualisation du résultat de la recherche
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
+		$("#rechercher_uai").click
+		(
+			function()
+			{
+				$("#f_recherche_resultat").html('<li></li>').hide();
+				var uai_val = $("#f_uai2").val();
+				// Vérifier le format du numéro UAI
+				uai_val = uai_val.toUpperCase();
+				if(uai_val.length!=8)
+				{
+					$('#ajax_msg_communautaire').removeAttr("class").addClass("alerte").html("Erreur : il faut 7 chiffres suivis d'une lettre !");
+					return false;
+				}
+				var uai_fin = uai_val.substring(7,8);
+				if((uai_fin<"A")||(uai_fin>"Z"))
+				{
+					$('#ajax_msg_communautaire').removeAttr("class").addClass("alerte").html("Erreur : il faut 7 chiffres suivis d'une lettre !");
+					return false;
+				}
+				for(i=0;i<7;i++)
+				{
+					var t = uai_val.substring(i,i+1);
+					if((t<"0")||(t>"9"))
+					{
+						$('#ajax_msg_communautaire').removeAttr("class").addClass("alerte").html("Erreur : il faut 7 chiffres suivis d'une lettre !");
+						return false;
+					}
+				}
+				// Vérifier la géographie du numéro UAI
+				// => sans objet
+				// Vérifier la clef de contrôle du numéro UAI
+				var uai_nombre = uai_val.substring(0,7);
+				alphabet = "ABCDEFGHJKLMNPRSTUVWXYZ";
+				reste = uai_nombre-(23*Math.floor(uai_nombre/23));
+				clef = alphabet.substring(reste,reste+1);;
+				if(clef!=uai_fin )
+				{
+					$('#ajax_msg_communautaire').removeAttr("class").addClass("alerte").html("Erreur : clef de contrôle incompatible !");
+					return false;
+				}
+				// Si on arrive jusque là c'est que le n° UAI est valide
+				$('#rechercher_uai').attr('disabled','disabled');
+				$('#ajax_msg_communautaire').removeAttr("class").addClass("loader").html("Actualisation en cours... Veuillez patienter.");
+				maj_resultat_uai(uai_val);
+			}
+		);
+
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+//	Clic sur une image pour Valider le choix d'une structure
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
+		$('#f_recherche_resultat q.valider').live // live est utilisé pour prendre en compte les nouveaux éléments créés
+		('click',
+			function()
+			{
+				var id_key_uai = $(this).parent().attr('id').substr(3); // id ; key ; uai séparés par '_' ; attention, le n°UAI peut être vide...
+				var denomination = $(this).parent().text();
+				var tab_infos = id_key_uai.split('_');
+				$('#f_sesamath_id').val(tab_infos[0]);
+				$('#f_sesamath_key').val(tab_infos[1]);
+				$('#f_sesamath_uai').val(tab_infos[2]); // (peut être vide)
+				$('#f_sesamath_type_nom').val(denomination);
+				$('#ajax_msg_instance').removeAttr("class").addClass("alerte").html('Pensez à valider pour confirmer votre sélection !');
+				maj_clock(1);
+				$('#rechercher_annuler').click();
+			}
+		);
 
 	}
 );

@@ -118,7 +118,7 @@ function calculer_score($tab_devoirs,$calcul_methode,$calcul_limite)
 		// 2b. Pour chaque devoir (note)...
 		for($num_devoir=1 ; $num_devoir<=$nb_note ; $num_devoir++)
 		{
-			$tab_notes[] = $valeur[$code];
+			$tab_notes[] = $tab_note[$num_devoir-1];
 		}
 		// 2c. Calcul final du score
 		rsort($tab_notes);

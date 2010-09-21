@@ -3365,15 +3365,16 @@ function DB_STRUCTURE_OPT_matieres_eleve($user_id)
 	{
 		$liste_groupes = $_SESSION['ELEVE_CLASSE_ID'].','.$DB_ROW['sacoche_liste_groupe_id'];
 	}
-	// Ensuite on récupère les matières des professeurs qui sont associés à la liste des groupes récupérés
+	// Ensuite on récupère les matières des professeurs (actifs !) qui sont associés à la liste des groupes récupérés
 	$DB_SQL = 'SELECT matiere_id AS valeur, matiere_nom AS texte FROM sacoche_user ';
 	$DB_SQL.= 'LEFT JOIN sacoche_jointure_user_groupe USING (user_id) ';
 	$DB_SQL.= 'LEFT JOIN sacoche_jointure_user_matiere USING (user_id) ';
 	$DB_SQL.= 'LEFT JOIN sacoche_matiere USING (matiere_id) ';
-	$DB_SQL.= 'WHERE groupe_id IN('.$liste_groupes.') ';
+	$DB_SQL.= 'WHERE groupe_id IN('.$liste_groupes.') AND user_statut=:statut ';
 	$DB_SQL.= 'GROUP BY matiere_id ';
 	$DB_SQL.= 'ORDER BY matiere_nom ASC';
-	$DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , null);
+	$DB_VAR = array(':statut'=>1);
+	$DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 	return count($DB_TAB) ? $DB_TAB : 'Vous n\'avez pas de professeur rattaché à une matière !' ;
 }
 

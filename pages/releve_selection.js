@@ -58,11 +58,11 @@ $(document).ready
 			}
 		);
 
-		$('#f_bilan_ms , #f_bilan_pv').click
+		$('#f_bilan_MS , #f_bilan_PA').click
 		(
 			function()
 			{
-				if( ($('#f_bilan_ms').is(':checked')) || ($('#f_bilan_pv').is(':checked')) )
+				if( ($('#f_bilan_MS').is(':checked')) || ($('#f_bilan_PA').is(':checked')) )
 				{
 					$('label[for=f_conv_sur20]').css('visibility','visible');
 				}
@@ -254,8 +254,8 @@ $(document).ready
 					f_coef         : { required:false },
 					f_socle        : { required:false },
 					f_lien         : { required:false },
-					f_bilan_ms     : { required:false },
-					f_bilan_pv     : { required:false },
+					f_bilan_MS     : { required:false },
+					f_bilan_PA     : { required:false },
 					f_conv_sur20   : { required:false },
 					f_compet_liste : { required:true },
 					f_groupe       : { required:true },
@@ -273,8 +273,8 @@ $(document).ready
 					f_coef         : { },
 					f_socle        : { },
 					f_lien         : { },
-					f_bilan_ms     : { },
-					f_bilan_pv     : { },
+					f_bilan_MS     : { },
+					f_bilan_PA     : { },
 					f_conv_sur20   : { },
 					f_compet_liste : { required:"item(s) manquant(s)" },
 					f_groupe       : { required:"groupe manquant" },

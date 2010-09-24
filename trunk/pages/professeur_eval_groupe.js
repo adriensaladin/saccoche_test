@@ -1020,6 +1020,7 @@ $(document).ready
 				switch (action)
 				{
 					case 'ajouter':
+						$('table.form tbody tr td.nu').parent().remove(); // En cas de tableau avec une ligne vide pour la conformité XHTML
 					case 'dupliquer':
 						var groupe_id = $("#f_groupe option:selected").val();
 						var new_td = responseHTML.replace('<td>{{GROUPE_NOM}}</td>','<td>'+tab_groupe[groupe_id]+'</td>');

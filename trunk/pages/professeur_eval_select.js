@@ -1101,6 +1101,7 @@ $(document).ready
 				switch (action)
 				{
 					case 'ajouter':
+						$('table.form tbody tr td.nu').parent().remove(); // En cas de tableau avec une ligne vide pour la conformité XHTML
 					case 'dupliquer':
 						var new_tr = '<tr class="new">'+responseHTML+'</tr>';
 						$('table.form tbody').append(new_tr);

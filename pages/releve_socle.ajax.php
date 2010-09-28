@@ -30,8 +30,8 @@ if($_SESSION['SESAMATH_ID']==ID_DEMO) {}
 
 $palier_id    = (isset($_POST['f_palier']))      ? clean_entier($_POST['f_palier'])     : 0;
 $palier_nom   = (isset($_POST['f_palier_nom']))  ? clean_texte($_POST['f_palier_nom'])  : '';
-$aff_socle_PA = (isset($_POST['f_socle_PA']))    ? 1                                    : 0;	// en cas de manipulation type Firebug, peut être forcé pour l'élève avec (mb_substr_count($_SESSION['ELEVE_OPTIONS'],'SoclePourcentageAcquis'))
-$aff_socle_EV = (isset($_POST['f_socle_EV']))    ? 1                                    : 0;	// en cas de manipulation type Firebug, peut être forcé pour l'élève avec (mb_substr_count($_SESSION['ELEVE_OPTIONS'],'SocleEtatValidation'))
+$aff_socle_PA = (isset($_POST['f_socle_PA']))    ? 1                                    : 0;	// en cas de manipulation type Firebug, peut être forcé pour l'élève avec (mb_substr_count($_SESSION['DROIT_ELEVE_SOCLE'],'SoclePourcentageAcquis'))
+$aff_socle_EV = (isset($_POST['f_socle_EV']))    ? 1                                    : 0;	// en cas de manipulation type Firebug, peut être forcé pour l'élève avec (mb_substr_count($_SESSION['DROIT_ELEVE_SOCLE'],'SocleEtatValidation'))
 $groupe_id    = (isset($_POST['f_groupe']))      ? clean_entier($_POST['f_groupe'])     : 0;	// en cas de manipulation type Firebug, peut être forcé pour l'élève à $_SESSION['ELEVE_CLASSE_ID']
 $tab_eleve_id = (isset($_POST['eleves']))        ? array_map('clean_entier',explode(',',$_POST['eleves'])) : array() ;	// en cas de manipulation type Firebug, peut être forcé pour l'élève avec $_SESSION['USER_ID']
 
@@ -205,7 +205,7 @@ if( $palier_id && $palier_nom )
 											// on détermine si elle est acquise ou pas
 											$indice = test_A($score) ? 'A' : ( test_NA($score) ? 'NA' : 'VA' ) ;
 											// on enregistre les infos
-											$texte_demande_eval = ( ($_SESSION['USER_PROFIL']!='eleve') || ($_SESSION['ELEVE_DEMANDES']==0) ) ? '' : ( ($item_cart) ? '<q class="demander_add" lang="ids_'.$matiere_id.'_'.$item_id.'_'.$score.'" title="Ajouter aux demandes d\'évaluations."></q>' : '<q class="demander_non" title="Demande interdite."></q>' ) ;
+											$texte_demande_eval = ( ($_SESSION['USER_PROFIL']!='eleve') || ($_SESSION['DROIT_ELEVE_DEMANDES']==0) ) ? '' : ( ($item_cart) ? '<q class="demander_add" lang="ids_'.$matiere_id.'_'.$item_id.'_'.$score.'" title="Ajouter aux demandes d\'évaluations."></q>' : '<q class="demander_non" title="Demande interdite."></q>' ) ;
 											$tab_infos_socle_eleve[$socle_id][$eleve_id][] = '<span class="'.$tab_etat[$indice].'">'.html($item_ref.' || '.$item_nom.' ['.$score.'%]').'</span>'.$texte_demande_eval;
 											$tab_score_socle_eleve[$socle_id][$eleve_id][$indice]++;
 											$tab_score_socle_eleve[$socle_id][$eleve_id]['nb']++;

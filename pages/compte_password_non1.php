@@ -26,10 +26,6 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-$TITRE = "Demandes d'évaluations formulées";
 ?>
 
-<?php
-$fin = ($_SESSION['DROIT_ELEVE_DEMANDES']) ? 'oui' : 'non' ;
-require('./pages/'.$PAGE.'_'.$fin.'.php');
-?>
+<p class="astuce">Le mode d'identification n'étant pas celui de <em>SACoche</em>, cette fonctionnalité de est sans objet pour les <?php echo str_replace('eleve','élève',$_SESSION['USER_PROFIL']) ?>s.</p>

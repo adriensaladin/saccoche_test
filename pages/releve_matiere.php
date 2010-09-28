@@ -44,6 +44,7 @@ if($_SESSION['USER_PROFIL']=='directeur')
 	$check_option_lien     = '';
 	$check_bilan_MS        = ' checked="checked"';
 	$check_bilan_PA        = ' checked="checked"';
+	$check_conv_sur20      = '';
 }
 if($_SESSION['USER_PROFIL']=='professeur')
 {
@@ -55,6 +56,7 @@ if($_SESSION['USER_PROFIL']=='professeur')
 	$check_option_lien     = '';
 	$check_bilan_MS        = ' checked="checked"';
 	$check_bilan_PA        = ' checked="checked"';
+	$check_conv_sur20      = '';
 }
 if($_SESSION['USER_PROFIL']=='eleve')
 {
@@ -64,8 +66,9 @@ if($_SESSION['USER_PROFIL']=='eleve')
 	$select_eleves = '<option value="'.$_SESSION['USER_ID'].'" selected="selected">'.html($_SESSION['USER_NOM'].' '.$_SESSION['USER_PRENOM']).'</option>';
 	$check_type_individuel = ' checked="checked"';
 	$check_option_lien     = ' checked="checked"';
-	$check_bilan_MS        = (mb_substr_count($_SESSION['ELEVE_OPTIONS'],'BilanMoyenneScore'))      ? ' checked="checked"' : '';
-	$check_bilan_PA        = (mb_substr_count($_SESSION['ELEVE_OPTIONS'],'BilanPourcentageAcquis')) ? ' checked="checked"' : '';
+	$check_bilan_MS        = (mb_substr_count($_SESSION['DROIT_ELEVE_BILANS'],'BilanMoyenneScore'))      ? ' checked="checked"' : '';
+	$check_bilan_PA        = (mb_substr_count($_SESSION['DROIT_ELEVE_BILANS'],'BilanPourcentageAcquis')) ? ' checked="checked"' : '';
+	$check_conv_sur20      = (mb_substr_count($_SESSION['DROIT_ELEVE_BILANS'],'BilanNoteSurVingt'))      ? ' checked="checked"' : '';
 }
 $tab_periodes = DB_STRUCTURE_OPT_periodes_etabl();
 
@@ -121,7 +124,7 @@ if(is_array($tab_groupes))
 	<p class="<?php echo $class_form_type ?>">
 		<label class="tab" for="f_type">Type de bilan :</label><label for="f_type_individuel"><input type="checkbox" id="f_type_individuel" name="f_type" value="individuel"<?php echo $check_type_individuel ?> /> Relevé individuel</label>&nbsp;&nbsp;&nbsp;<label for="f_type_synthese"><input type="checkbox" id="f_type_synthese" name="f_type" value="synthese" /> Synthèse collective</label>&nbsp;&nbsp;&nbsp;<label for="f_type_bulletin"><input type="checkbox" id="f_type_bulletin" name="f_type" value="bulletin" /> Bulletin (moyenne &amp; appréciation)</label><input type="hidden" id="types" name="types" value="" /><br />
 		<span id="options_individuel" class="hide">
-			<label class="tab" for="f_opt_bilan">Opt. relevé <img alt="" src="./_img/bulle_aide.png" title="Pour le relévé individuel, deux lignes de synthèse peuvent être ajoutées.<br />Dans ce cas, une note sur 20 peut aussi être affichée." /> :</label><label for="f_bilan_MS"><input type="checkbox" id="f_bilan_MS" name="f_bilan_MS" value="1"<?php echo $check_bilan_MS ?> /> Moyenne des scores</label>&nbsp;&nbsp;&nbsp;<label for="f_bilan_PA"><input type="checkbox" id="f_bilan_PA" name="f_bilan_PA" value="1"<?php echo $check_bilan_PA ?> /> Pourcentage d'items acquis</label>&nbsp;&nbsp;&nbsp;<label for="f_conv_sur20"><input type="checkbox" id="f_conv_sur20" name="f_conv_sur20" value="1" /> Proposition de note sur 20</label><br />
+			<label class="tab" for="f_opt_bilan">Opt. relevé <img alt="" src="./_img/bulle_aide.png" title="Pour le relévé individuel, deux lignes de synthèse peuvent être ajoutées.<br />Dans ce cas, une note sur 20 peut aussi être affichée." /> :</label><label for="f_bilan_MS"><input type="checkbox" id="f_bilan_MS" name="f_bilan_MS" value="1"<?php echo $check_bilan_MS ?> /> Moyenne des scores</label>&nbsp;&nbsp;&nbsp;<label for="f_bilan_PA"><input type="checkbox" id="f_bilan_PA" name="f_bilan_PA" value="1"<?php echo $check_bilan_PA ?> /> Pourcentage d'items acquis</label>&nbsp;&nbsp;&nbsp;<label for="f_conv_sur20"><input type="checkbox" id="f_conv_sur20" name="f_conv_sur20" value="1"<?php echo $check_conv_sur20 ?> /> Proposition de note sur 20</label><br />
 		</span>
 		<span id="astuce_bulletin" class="hide">
 			<span class="tab"></span><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=releves_bilans__transfert_bulletin_SACoche_Gepi">DOC : Transfert du bulletin de SACoche dans GEPI.</a></span>

@@ -127,11 +127,10 @@ class PDF extends RPDF
 		$this->tab_couleur['v1'] = array('r'=>153,'v'=>255,'b'=>153);
 		$this->tab_couleur['v2'] = array('r'=>187,'v'=>187,'b'=>255);
 		// Lettres utilisées en remplacement des images Lomer pour du noir et blanc
-		list($rr,$r,$v,$vv) = explode(',',file_get_contents('./_img/note/'.$_SESSION['CSS_NOTE_STYLE'].'/lettres_nb.txt'));
-		$this->tab_lettre['RR'] = $rr;
-		$this->tab_lettre['R'] = $r;
-		$this->tab_lettre['V'] = $v;
-		$this->tab_lettre['VV'] = $vv;
+		$this->tab_lettre['RR'] = $_SESSION['NOTE_TEXTE']['RR'];
+		$this->tab_lettre['R']  = $_SESSION['NOTE_TEXTE']['R'];
+		$this->tab_lettre['V']  = $_SESSION['NOTE_TEXTE']['V'];
+		$this->tab_lettre['VV'] = $_SESSION['NOTE_TEXTE']['VV'];
 	}
 
 	//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
@@ -808,7 +807,7 @@ class PDF extends RPDF
 				{
 					$img_pos_x = $memo_x + ( ($this->cases_largeur - $this->lomer_largeur) / 2 ) ;
 					$img_pos_y = $memo_y + ( ($this->cases_hauteur - $this->lomer_hauteur) / 2 ) ;
-					$this->Image('./_img/note/'.$_SESSION['CSS_NOTE_STYLE'].'/'.$note.'.gif',$img_pos_x,$img_pos_y,$this->lomer_largeur,$this->lomer_hauteur,'GIF');
+					$this->Image('./_img/note/'.$_SESSION['NOTE_IMAGE_STYLE'].'/'.$note.'.gif',$img_pos_x,$img_pos_y,$this->lomer_largeur,$this->lomer_hauteur,'GIF');
 				}
 				else
 				{

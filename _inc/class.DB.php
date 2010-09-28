@@ -4,9 +4,8 @@
  *
  * Cet objet permet d'accéder directement aux méthodes begin, query, queryTab, queryRow, commit, rollback
  * en passant le nom de la connection
- * Dernière version disponible à l'adresse https://svn.devsesamath.net/svn/labomep/trunk/includes/classes/
  *
- * @version 1.0
+ * @version 2.0
  * @author Sébastien ROMMENS
  * @package Lib
  * @subpackage Database
@@ -14,35 +13,16 @@
  */
 
 // Classe de gestion des connexions aux pools
-require_once("database/DatabaseManager.class.php");
-
-/*
-SELECT une LIGNE			:	$DB_ROW = DB::queryRow(SACOCHE_STRUCTURE_BD_NAME , 'SELECT ... FROM ... WHERE ... LIMIT 1' , $DB_VAR );
-nb lignes retournées	:	count($DB_ROW)
-
-SELECT multi LIGNE		:	$DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , 'SELECT ... FROM ... WHERE ...' , $DB_VAR [, bool $indexkey] );
-nb lignes retournées	:	count($DB_TAB)
-
-UPDATE								:	DB::query(SACOCHE_STRUCTURE_BD_NAME, 'UPDATE ... SET ... WHERE ...' , $DB_VAR );
-nb lignes modifiées		:	DB::rowCount(SACOCHE_STRUCTURE_BD_NAME);
-
-DELETE								:	DB::query(SACOCHE_STRUCTURE_BD_NAME, 'DELETE ... FROM ... WHERE ...' , $DB_VAR );
-nb lignes modifiées		:	DB::rowCount(SACOCHE_STRUCTURE_BD_NAME);
-
-REPLACE								:	DB::query(SACOCHE_STRUCTURE_BD_NAME, 'REPLACE INTO ... VALUES ...' , $DB_VAR );
-nb lignes modifiées		:	DB::rowCount(SACOCHE_STRUCTURE_BD_NAME);	// (comme un REPLACE c'est un DELETE + un INSERT, à tester si ça renvoie le double de lignes remplacées ou pas...)
-
-INSERT								:	DB::query(SACOCHE_STRUCTURE_BD_NAME, 'INSERT INTO ... VALUES ...' , $DB_VAR );
-valeur AUTO-INCREMENT	: DB::getLastOid(SACOCHE_STRUCTURE_BD_NAME);
-
-Pour fermer la connexion (évite un bug avec les requêtes multiples) :
-DB::close(SACOCHE_STRUCTURE_BD_NAME);
-
-Dans ./satabase/DatabaseFactory.class.php correction d'un pb dû à l'oubli de la constante MYSQL_ATTR_INIT_COMMAND en PHP 5.3, et sa valeur 1002 ne passe pas : http://bugs.php.net/bug.php?id=47224
-
-*/
-
+require_once("DB/DB_Manager.class.php");
+ 
+ 
 class DB {
+	
+	/**
+	 * Constructeur
+	*/
+	private function __construct(){
+	}
 	
 	/**
 	 * Permet d'exécuter une requête.
@@ -52,42 +32,48 @@ class DB {
 	 * autres fonctions de la classe comme queryRow() et queryTab().
 	 *
 	 * @param string $connection_name nom de la connection définie dans le fichier de configuration
-	 * @param string $query chaine SQL
+	 * @param string $query reqête SQL où les valeurs sont désignées par :ma_variable, sans apostrophe/guillemet (quoting ajouté au besoin)
 	 * @param mixed $param variables bind de type array(":bind"=>"value")
-	 * @return void
+	 * @return $res
+	 *   Le résultat de la méthode query sur l'objet PDO
 	 */
 	public static function query($connection_name, $query, $param=""){
-		$databaseManager = DatabaseManager::getInstance();
-		$connection = $databaseManager->getConnexion($connection_name);
-		if(is_object($connection)){
-			$time_start = microtime(true);
-			$connection->query($query, $param);
-			DatabaseManager::setLog($connection, microtime(true) - $time_start);			
+		try{
+			$databaseManager = DB_Manager::getInstance();
+			$connection = $databaseManager->getConnexion($connection_name);
+			if(is_object($connection)){
+				$time_start = microtime(true);
+				$res = $connection->query($query, $param);
+				DB_Manager::debug($connection, microtime(true) - $time_start);			
+				return $res;
+			}
+		}catch(DatabaseException $e){
+			DB_Manager::handleError($connection, $e);
+			return false;
 		}
 	}
 
 	/**
-	 *
 	 * Permet d'exécuter une requête devant renvoyer une seule ligne de résultat.
-	 * le tableau de résultat est à 2 niveaux (lignes, champs)
 	 *
 	 * @param string $connection_name nom de la connection définie dans le fichier de configuration
-	 * @param string $query chaine SQL
-	 * @param mixed $param variables bind de type array(":bind"=>"value")
-	 * @return mixed
+	 * @param string $query reqête SQL où les valeurs sont désignées par :ma_variable, sans apostrophe/guillemet (quoting ajouté au besoin)
+	 * @param mixed $param variables bind de type array(":ma_variable"=>"sa_valeur")
+	 * @return array
+	 *   Un tableau associatif à 1 niveau (champs ou alias du select comme clés), FALSE si erreur
 	 */
-	public static function queryRow ($connection_name, $query, $param=""){
-
-		$databaseManager = DatabaseManager::getInstance();
-		$connection = $databaseManager->getConnexion($connection_name);
-		$rs = false;
-		if(is_object($connection)){
+	public static function queryRow($connection_name, $query, $param=""){
+		try{
+			$databaseManager = DB_Manager::getInstance();
+			$connection = $databaseManager->getConnexion($connection_name);
 			$time_start = microtime(true);
 			$rs = $connection->queryRow($query, $param);
-			DatabaseManager::setLog($connection, microtime(true) - $time_start);
+			DB_Manager::debug($connection, microtime(true) - $time_start);
+			return $rs;
+		}catch(DatabaseException $e){
+			DB_Manager::handleError($connection, $e);
+			return false;
 		}
-
-		return $rs;
 	}
 
 	/**
@@ -101,19 +87,41 @@ class DB {
 	 * @param bool $indexkey si true alors prend la première colonne des resultats comme indice du tableau de resultats
 	 * @return mixed
 	 */
-	public static function queryTab ($connection_name, $query, $param="", $indexkey=false){
-
-		$databaseManager = DatabaseManager::getInstance();
-		$connection = $databaseManager->getConnexion($connection_name);
-		$rs = false;
-		if(is_object($connection)){			
+	public static function queryTab($connection_name, $query, $param="", $indexkey=false){
+		try{
+			$databaseManager = DB_Manager::getInstance();
+			$connection = $databaseManager->getConnexion($connection_name);
 			$time_start = microtime(true);
 			$rs = $connection->queryTab($query, $param, $indexkey);		
-			DatabaseManager::setLog($connection, microtime(true) - $time_start);
-			
+			DB_Manager::debug($connection, microtime(true) - $time_start);
+			return $rs;
+		}catch(DatabaseException $e){
+			DB_Manager::handleError($connection, $e);
+			return false;
 		}
-		
-		return $rs;
+	}
+	
+	/**
+	 *
+	 * Permet d'exécuter une requête devant renvoyer une seule colonne de résultat.
+	 *
+	 * @param string $connection_name nom de la connection définie dans le fichier de configuration
+	 * @param string $query chaine SQL
+	 * @param mixed $param variables bind de type array(":bind"=>"value")
+	 * @return mixed
+	 */
+	public static function queryCol($connection_name, $query, $param=""){
+		try{
+			$databaseManager = DB_Manager::getInstance();
+			$connection = $databaseManager->getConnexion($connection_name);
+			$time_start = microtime(true);
+			$rs = $connection->queryRow($query, $param);
+			DB_Manager::debug($connection, microtime(true) - $time_start);
+			return array_shift($rs);
+		}catch(DatabaseException $e){
+			DB_Manager::handleError($connection, $e);
+			return false;
+		}
 	}
 
 	/**
@@ -122,15 +130,15 @@ class DB {
 	 * @param string $connection_name nom de la connection définie dans le fichier de configuration
 	 * @return boolean
 	 */
-	public static function begin ($connection_name){
-
-		$databaseManager = DatabaseManager::getInstance();
-		$connection = $databaseManager->getConnexion($connection_name);
-		$rs = false;
-		if(is_object($connection)){
-			$rs = $connection->beginTransaction();
+	public static function begin($connection_name){
+		try{
+			$databaseManager = DB_Manager::getInstance();
+			$connection = $databaseManager->getConnexion($connection_name);
+			return $connection->beginTransaction();
+		}catch(DatabaseException $e){
+			DB_Manager::handleError($connection, $e);
+			return false;
 		}
-		return $rs;
 	}
 
 	/**
@@ -140,13 +148,14 @@ class DB {
 	 * @return boolean
 	 */
 	public static function commit($connection_name){
-		$databaseManager = DatabaseManager::getInstance();
-		$connection = $databaseManager->getConnexion($connection_name);
-		$rs = false;
-		if(is_object($connection)){
-			$rs = $connection->commit();
+		try{
+			$databaseManager = DB_Manager::getInstance();
+			$connection = $databaseManager->getConnexion($connection_name);
+			return $connection->commit();
+		}catch(DatabaseException $e){
+			DB_Manager::handleError($connection, $e);
+			return false;
 		}
-		return $rs;
 	}
 
 	/**
@@ -156,13 +165,14 @@ class DB {
 	 * @return boolean
 	 */
 	public static  function rollback($connection_name) {
-		$databaseManager = DatabaseManager::getInstance();
-		$connection = $databaseManager->getConnexion($connection_name);
-		$rs = false;
-		if(is_object($connection)){
-			$rs = $connection->rollback();
+		try{
+			$databaseManager = DB_Manager::getInstance();
+			$connection = $databaseManager->getConnexion($connection_name);
+			return $connection->rollback();
+		}catch(DatabaseException $e){
+			DB_Manager::handleError($connection, $e);
+			return false;
 		}
-		return $rs;
 	}
 
 	/**
@@ -172,12 +182,14 @@ class DB {
 	 * @return mixed
 	 */
 	public static  function getLastOid($connection_name) {
-		$databaseManager = DatabaseManager::getInstance();
-		$connection = $databaseManager->getConnexion($connection_name);
-
-		$result = $connection->getLastOid();
-
-		return $result;
+		try{
+			$databaseManager = DB_Manager::getInstance();
+			$connection = $databaseManager->getConnexion($connection_name);
+			return $connection->getLastOid();
+		}catch(DatabaseException $e){
+			DB_Manager::handleError($connection, $e);
+			return false;
+		}
 	}
 	
 	/**
@@ -187,12 +199,25 @@ class DB {
 	 * @return mixed
    */
   public static  function rowCount($connection_name) {
-  	$databaseManager = DatabaseManager::getInstance();
-  	$connection = $databaseManager->getConnexion($connection_name);
-  	
-  	$result = $connection->rowCount();
-  	
-  	return $result;
+  		try{
+			$databaseManager = DB_Manager::getInstance();
+			$connection = $databaseManager->getConnexion($connection_name);
+			return $connection->rowCount();
+		}catch(DatabaseException $e){
+			DB_Manager::handleError($connection, $e);
+			return false;
+		}
+  }
+  
+  /**
+   * Pour récupérer le code d'erreur de la dernière requête exécutée sur cette connexion
+   * @param $connection_name
+   */
+  public static function errorCode($connection_name) {
+		$databaseManager = DB_Manager::getInstance();
+		$connection = $databaseManager->getConnexion($connection_name);
+		return $connection->errorCode();
+		
   }
   
   /**
@@ -200,9 +225,18 @@ class DB {
    *
    * @param string $connection_name nom de la connection définie dans le fichier de configuration
    */
-  public static  function close($connection_name) {
-  	$databaseManager = DatabaseManager::getInstance();
-  	return $databaseManager->closeConnexion($connection_name);
+  public static function close($connection_name) {
+  		try{
+  			$databaseManager = DB_Manager::getInstance();
+  			return $databaseManager->closeConnexion($connection_name);
+  		}catch(DatabaseException $e){
+			DB_Manager::handleError($connection, $e);
+			return false;
+		}	
   }
+  
+  
+  
+  
+	
 }
-?>

@@ -31,6 +31,6 @@ $VERSION_JS_FILE += 10;
 ?>
 
 <?php
-$fin = ($_SESSION['ELEVE_DEMANDES']) ? 'oui' : 'non' ;
+$fin = ($_SESSION['DROIT_ELEVE_DEMANDES']) ? 'oui' : 'non' ;
 require('./pages/'.$PAGE.'_'.$fin.'.php');
 ?>

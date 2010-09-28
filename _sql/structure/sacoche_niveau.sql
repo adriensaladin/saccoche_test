@@ -18,8 +18,7 @@ ALTER TABLE sacoche_niveau DISABLE KEYS;
 INSERT INTO sacoche_niveau VALUES 
 (   1, 1,   9,    "P1",            "", "Palier 1 (PS - CE1)"),
 (   2, 2,  29,    "P2",            "", "Palier 2 (CE2 - CM2)"),
-(   3, 3,  69,    "P3",            "", "Palier 3 (6e - 3e)"),
-(   4, 4, 159,    "P4",            "", "Palier 4 (2nde - Tle)");
+(   3, 3,  69,    "P3",            "", "Palier 3 (6e - 3e)");
 
 -- Primaire
 

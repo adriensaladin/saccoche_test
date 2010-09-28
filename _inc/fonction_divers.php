@@ -192,7 +192,7 @@ function compacter($chemin,$version,$methode)
 				$fichier_compacte = $fichier_contenu;
 			}
 			$fichier_compacte = utf8_encode($fichier_compacte);	// On réencode donc en UTF-8...
-			@umask(0002); // Met le chmod à 666 - 002 = 664 pour les fichiers prochains fichiers créés (et à 777 - 002 = 775 pour les dossiers).
+			@umask(0000); // Met le chmod à 666 - 000 = 666 pour les fichiers prochains fichiers créés (et à 777 - 000 = 777 pour les dossiers).
 			$test_ecriture = @file_put_contents($chemin_fichier_compacte,$fichier_compacte);
 			// Il se peut que le droit en écriture ne soit pas autorisé et que la procédure d'install ne l'ai pas encore vérifié.
 			return $test_ecriture ? $chemin_fichier_compacte : $chemin_fichier_original ;
@@ -583,10 +583,13 @@ function connecter_user($BASE,$profil,$login,$password,$mode_connection)
 			case 'matieres':                 $_SESSION['MATIERES']                   =       $DB_ROW['parametre_valeur']; break;
 			case 'niveaux':                  $_SESSION['NIVEAUX']                    =       $DB_ROW['parametre_valeur']; break;
 			case 'paliers':                  $_SESSION['PALIERS']                    =       $DB_ROW['parametre_valeur']; break;
-			case 'profil_validation_entree': $_SESSION['PROFIL_VALIDATION_ENTREE']   =       $DB_ROW['parametre_valeur']; break;
-			case 'profil_validation_pilier': $_SESSION['PROFIL_VALIDATION_PILIER']   =       $DB_ROW['parametre_valeur']; break;
-			case 'eleve_options':            $_SESSION['ELEVE_OPTIONS']              =       $DB_ROW['parametre_valeur']; break;
-			case 'eleve_demandes':           $_SESSION['ELEVE_DEMANDES']             = (int) $DB_ROW['parametre_valeur']; break;
+			case 'droit_validation_entree':  $_SESSION['DROIT_VALIDATION_ENTREE']    =       $DB_ROW['parametre_valeur']; break;
+			case 'droit_validation_pilier':  $_SESSION['DROIT_VALIDATION_PILIER']    =       $DB_ROW['parametre_valeur']; break;
+			case 'droit_modifier_mdp':       $_SESSION['DROIT_MODIFIER_MDP']         =       $DB_ROW['parametre_valeur']; break;
+			case 'droit_voir_referentiels':  $_SESSION['DROIT_VOIR_REFERENTIELS']    =       $DB_ROW['parametre_valeur']; break;
+			case 'droit_eleve_bilans':       $_SESSION['DROIT_ELEVE_BILANS']         =       $DB_ROW['parametre_valeur']; break;
+			case 'droit_eleve_socle':        $_SESSION['DROIT_ELEVE_SOCLE']          =       $DB_ROW['parametre_valeur']; break;
+			case 'droit_eleve_demandes':     $_SESSION['DROIT_ELEVE_DEMANDES']       = (int) $DB_ROW['parametre_valeur']; break;
 			case 'duree_inactivite':         $_SESSION['DUREE_INACTIVITE']           = (int) $DB_ROW['parametre_valeur']; break;
 			case 'calcul_valeur_RR':         $_SESSION['CALCUL_VALEUR']['RR']        = (int) $DB_ROW['parametre_valeur']; break;
 			case 'calcul_valeur_R':          $_SESSION['CALCUL_VALEUR']['R']         = (int) $DB_ROW['parametre_valeur']; break;
@@ -602,7 +605,11 @@ function connecter_user($BASE,$profil,$login,$password,$mode_connection)
 			case 'css_background-color_NA':  $_SESSION['CSS_BACKGROUND-COLOR']['NA'] =       $DB_ROW['parametre_valeur']; break;
 			case 'css_background-color_VA':  $_SESSION['CSS_BACKGROUND-COLOR']['VA'] =       $DB_ROW['parametre_valeur']; break;
 			case 'css_background-color_A':   $_SESSION['CSS_BACKGROUND-COLOR']['A']  =       $DB_ROW['parametre_valeur']; break;
-			case 'css_note_style':           $_SESSION['CSS_NOTE_STYLE']             =       $DB_ROW['parametre_valeur']; break;
+			case 'note_image_style':         $_SESSION['NOTE_IMAGE_STYLE']           =       $DB_ROW['parametre_valeur']; break;
+			case 'note_texte_RR':            $_SESSION['NOTE_TEXTE']['RR']           =       $DB_ROW['parametre_valeur']; break;
+			case 'note_texte_R':             $_SESSION['NOTE_TEXTE']['R']            =       $DB_ROW['parametre_valeur']; break;
+			case 'note_texte_V':             $_SESSION['NOTE_TEXTE']['V']            =       $DB_ROW['parametre_valeur']; break;
+			case 'note_texte_VV':            $_SESSION['NOTE_TEXTE']['VV']           =       $DB_ROW['parametre_valeur']; break;
 		}
 	}
 	actualiser_style_session();
@@ -623,10 +630,10 @@ function connecter_user($BASE,$profil,$login,$password,$mode_connection)
 function actualiser_style_session()
 {
 	$_SESSION['CSS']  = '';
-	$_SESSION['CSS'] .= 'table.scor_eval tbody td input.RR {background:#FFF url("./_img/note/'.$_SESSION['CSS_NOTE_STYLE'].'/RR.gif") no-repeat center center;}';
-	$_SESSION['CSS'] .= 'table.scor_eval tbody td input.R  {background:#FFF url("./_img/note/'.$_SESSION['CSS_NOTE_STYLE'].'/R.gif")  no-repeat center center;}';
-	$_SESSION['CSS'] .= 'table.scor_eval tbody td input.V  {background:#FFF url("./_img/note/'.$_SESSION['CSS_NOTE_STYLE'].'/V.gif")  no-repeat center center;}';
-	$_SESSION['CSS'] .= 'table.scor_eval tbody td input.VV {background:#FFF url("./_img/note/'.$_SESSION['CSS_NOTE_STYLE'].'/VV.gif") no-repeat center center;}';
+	$_SESSION['CSS'] .= 'table.scor_eval tbody td input.RR {background:#FFF url("./_img/note/'.$_SESSION['NOTE_IMAGE_STYLE'].'/RR.gif") no-repeat center center;}';
+	$_SESSION['CSS'] .= 'table.scor_eval tbody td input.R  {background:#FFF url("./_img/note/'.$_SESSION['NOTE_IMAGE_STYLE'].'/R.gif")  no-repeat center center;}';
+	$_SESSION['CSS'] .= 'table.scor_eval tbody td input.V  {background:#FFF url("./_img/note/'.$_SESSION['NOTE_IMAGE_STYLE'].'/V.gif")  no-repeat center center;}';
+	$_SESSION['CSS'] .= 'table.scor_eval tbody td input.VV {background:#FFF url("./_img/note/'.$_SESSION['NOTE_IMAGE_STYLE'].'/VV.gif") no-repeat center center;}';
 	$_SESSION['CSS'] .= 'table th.r , table td.r , div.r ,span.r ,label.r {background-color:'.$_SESSION['CSS_BACKGROUND-COLOR']['NA'].'}';
 	$_SESSION['CSS'] .= 'table th.o , table td.o , div.o ,span.o ,label.o {background-color:'.$_SESSION['CSS_BACKGROUND-COLOR']['VA'].'}';
 	$_SESSION['CSS'] .= 'table th.v , table td.v , div.v ,span.v ,label.v {background-color:'.$_SESSION['CSS_BACKGROUND-COLOR']['A'].'}';
@@ -1291,7 +1298,7 @@ function Creer_Dossier($dossier)
 		return true;
 	}
 	// Le dossier a-t-il bien été créé ?
-	@umask(0002); // Met le chmod à 666 - 002 = 664 pour les fichiers prochains fichiers créés (et à 777 - 002 = 775 pour les dossiers).
+	@umask(0000); // Met le chmod à 666 - 000 = 666 pour les fichiers prochains fichiers créés (et à 777 - 000 = 777 pour les dossiers).
 	$test = @mkdir($dossier);
 	if(!$test)
 	{
@@ -1371,7 +1378,7 @@ function Supprimer_Dossier($dossier)
 
 function Ecrire_Fichier($fichier_chemin,$fichier_contenu,$file_append=0)
 {
-	@umask(0002); // Met le chmod à 666 - 002 = 664 pour les fichiers prochains fichiers créés (et à 777 - 002 = 775 pour les dossiers).
+	@umask(0000); // Met le chmod à 666 - 000 = 666 pour les fichiers prochains fichiers créés (et à 777 - 000 = 777 pour les dossiers).
 	$test_ecriture = @file_put_contents($fichier_chemin,$fichier_contenu,$file_append);
 	if($test_ecriture===false)
 	{

@@ -27,30 +27,42 @@
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = "Codes de notation et couleurs";
+$VERSION_JS_FILE += 1;
 
 // Liste des jeux de codes de couleur
+
+require_once('./_inc/tableau_notes_txt.php');
+
 $lignes = '';
 $dossier = './_img/note/';
-$tab_files = scandir($dossier);
-foreach($tab_files as $file)
+$tab_notes_txt_js = 'var tab_notes_txt = new Array();';
+
+foreach($tab_notes_txt as $note_nom => $tab_note_texte)
 {
-	if( (is_dir($dossier.$file)) && ($file!='.') && ($file!='..') )
+	if(is_dir($dossier.$note_nom))
 	{
-		$fichier = $dossier.$file.'/lettres_nb.txt';
-		if(is_file($fichier))
-		{
-			list($rr,$r,$v,$vv) = explode(',',file_get_contents($fichier));
-			$checked = ($file==$_SESSION['CSS_NOTE_STYLE']) ? ' checked="checked"' : '' ;
-			$lignes .= '<tr>';
-			$lignes .= 	'<td>'.$file.'<br /><input type="radio" id="dossier_'.$file.'" name="jeu_codes" value="'.$file.'"'.$checked.' /></td>';
-			$lignes .= 	'<td><img alt="'.$rr.'" src="'.$dossier.$file.'/RR.gif" /><br />'.$rr.'</td>';
-			$lignes .= 	'<td><img alt="'.$r.'" src="'.$dossier.$file.'/R.gif" /><br />'.$r.'</td>';
-			$lignes .= 	'<td><img alt="'.$v.'" src="'.$dossier.$file.'/V.gif" /><br />'.$v.'</td>';
-			$lignes .= 	'<td><img alt="'.$vv.'" src="'.$dossier.$file.'/VV.gif" /><br />'.$vv.'</td>';
-			$lignes .= '</tr>';
-		}
+		$checked = ($note_nom==$_SESSION['NOTE_IMAGE_STYLE']) ? ' checked="checked"' : '' ;
+		$listing_notes_texte = implode('/',$tab_note_texte);
+		$lignes .= '<tr>';
+		$lignes .= 	'<td>'.$note_nom.'<br /><input type="radio" id="dossier_'.$note_nom.'" name="image_style" value="'.$note_nom.'"'.$checked.' lang="'.$listing_notes_texte.'" /></td>';
+		$lignes .= 	'<td><img alt="'.$tab_note_texte['RR'].'" src="'.$dossier.$note_nom.'/RR.gif" /><br />'.$tab_note_texte['RR'].'</td>';
+		$lignes .= 	'<td><img alt="'.$tab_note_texte['R'].'" src="'.$dossier.$note_nom.'/R.gif" /><br />'.$tab_note_texte['R'].'</td>';
+		$lignes .= 	'<td><img alt="'.$tab_note_texte['V'].'" src="'.$dossier.$note_nom.'/V.gif" /><br />'.$tab_note_texte['V'].'</td>';
+		$lignes .= 	'<td><img alt="'.$tab_note_texte['VV'].'" src="'.$dossier.$note_nom.'/VV.gif" /><br />'.$tab_note_texte['VV'].'</td>';
+		$lignes .= '</tr>';
+		$tab_notes_txt_js .= 'tab_notes_txt["'.html($note_nom).'"] = new Array();';
+		$tab_notes_txt_js .= 'tab_notes_txt["'.$note_nom.'"]["RR"]="'.$tab_note_texte['RR'].'";';
+		$tab_notes_txt_js .= 'tab_notes_txt["'.$note_nom.'"]["R"]="'.$tab_note_texte['R'].'";';
+		$tab_notes_txt_js .= 'tab_notes_txt["'.$note_nom.'"]["V"]="'.$tab_note_texte['V'].'";';
+		$tab_notes_txt_js .= 'tab_notes_txt["'.$note_nom.'"]["VV"]="'.$tab_note_texte['VV'].'";';
 	}
 }
+
+// Équivalents texte
+$texte_rr = $_SESSION['NOTE_TEXTE']['RR'];
+$texte_r  = $_SESSION['NOTE_TEXTE']['R'];
+$texte_v  = $_SESSION['NOTE_TEXTE']['V'];
+$texte_vv = $_SESSION['NOTE_TEXTE']['VV'];
 
 // Couleurs d'initialisation
 $defaut_r = '#ff9999';
@@ -61,6 +73,9 @@ $color_o = $_SESSION['CSS_BACKGROUND-COLOR']['VA'];
 $color_v = $_SESSION['CSS_BACKGROUND-COLOR']['A'];
 ?>
 
+<script type="text/javascript">
+	<?php echo $tab_notes_txt_js ?>
+</script>
 
 <div class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__gestion_codes_couleurs">DOC : Codes de notation et couleurs</a></div>
 
@@ -68,11 +83,20 @@ $color_v = $_SESSION['CSS_BACKGROUND-COLOR']['A'];
 
 <form id="form" action="">
 
-	<h2>Jeu de codes de couleur</h2>
+	<h2>Jeu de symboles colorés</h2>
 
 	<table class="simulation"><tbody>
 		<?php echo $lignes ?>
 	</tbody></table>
+
+	<h2>Équivalents texte (modifiables)</h2>
+
+	<div id="equiv_txt">
+		<input type="text" size="2" maxlength="3" id="texte_RR" name="texte_RR" value="<?php echo $texte_rr ?>" class="hc" />
+		<input type="text" size="2" maxlength="3" id="texte_R" name="texte_R" value="<?php echo $texte_r ?>" class="hc" />
+		<input type="text" size="2" maxlength="3" id="texte_V" name="texte_V" value="<?php echo $texte_v ?>" class="hc" />
+		<input type="text" size="2" maxlength="3" id="texte_VV" name="texte_VV" value="<?php echo $texte_vv ?>" class="hc" />
+	</div>
 
 	<hr />
 

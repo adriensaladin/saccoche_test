@@ -31,6 +31,22 @@ $(document).ready
 	{
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+//	Reporter dans les input equiv_txt les valeurs préféfinies lors du clic sur un bouton radio (jeu de symboles colorés).
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
+		$('table.simulation input[type=radio]').click
+		(
+			function()
+			{
+				var note_nom = $(this).val();
+				$('#texte_RR').val( tab_notes_txt[note_nom]['RR'] );
+				$('#texte_R').val( tab_notes_txt[note_nom]['R'] );
+				$('#texte_V').val( tab_notes_txt[note_nom]['V'] );
+				$('#texte_VV').val( tab_notes_txt[note_nom]['VV'] );
+			}
+		);
+
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 //	Activation du colorpicker pour les 3 champs input.
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
@@ -45,7 +61,7 @@ $(document).ready
 		);
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-//	Reporter dans un input une valeur préféfinie lors du clic sur un bouton.
+//	Reporter dans un input colorpicker une valeur préféfinie lors du clic sur un bouton (couleur de fond).
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
 		$('div.colorpicker button').click
@@ -101,23 +117,32 @@ $(document).ready
 			{
 				rules :
 				{
-					jeu_codes : { required:true },
-					color_NA  : { required:true , hexa_format:true },
-					color_VA  : { required:true , hexa_format:true },
-					color_A   : { required:true , hexa_format:true }
+					image_style : { required:true },
+					texte_RR    : { required:true , maxlength:3 }, // restriction alphabétique non imposée pour permettre - + etc.
+					texte_R     : { required:true , maxlength:3 }, // restriction alphabétique non imposée pour permettre - + etc.
+					texte_V     : { required:true , maxlength:3 }, // restriction alphabétique non imposée pour permettre - + etc.
+					texte_VV    : { required:true , maxlength:3 }, // restriction alphabétique non imposée pour permettre - + etc.
+					color_NA    : { required:true , hexa_format:true },
+					color_VA    : { required:true , hexa_format:true },
+					color_A     : { required:true , hexa_format:true }
 				},
 				messages :
 				{
-					jeu_codes : { required:"codes de couleur manquant" },
-					color_NA  : { required:"couleur manquante" , hexa_format:"format incorrect" },
-					color_VA  : { required:"couleur manquante" , hexa_format:"format incorrect" },
-					color_A   : { required:"couleur manquante" , hexa_format:"format incorrect" }
+					image_style : { required:"codes de couleur manquant" },
+					texte_RR    : { required:"texte manquant" , maxlength:"3 caractères maximum" },
+					texte_R     : { required:"texte manquant" , maxlength:"3 caractères maximum" },
+					texte_V     : { required:"texte manquant" , maxlength:"3 caractères maximum" },
+					texte_VV    : { required:"texte manquant" , maxlength:"3 caractères maximum" },
+					color_NA    : { required:"couleur manquante" , hexa_format:"format incorrect" },
+					color_VA    : { required:"couleur manquante" , hexa_format:"format incorrect" },
+					color_A     : { required:"couleur manquante" , hexa_format:"format incorrect" }
 				},
 				errorElement : "label",
 				errorClass : "erreur",
 				errorPlacement : function(error,element)
 				{
 					if(element.attr("type")=="radio") { $('#ajax_msg').html(error); }
+					else if(element.parent().attr("id")=="equiv_txt") {element.after(error);}
 					else if(element.attr("type")=="text") {element.parent().next().children('label').html(error);}
 				}
 			}

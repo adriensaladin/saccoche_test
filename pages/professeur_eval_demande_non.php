@@ -32,4 +32,4 @@ if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');
 
 <hr />
 
-<p class="astuce">Cette fonctionnalité n'a pas été activée par l'administrateur de <em>SACoche</em> pour votre établissement.</p>
+<p class="astuce">L'administrateur de <em>SACoche</em> pour votre établissement n'a pas activé cette fonctionnalité.</p>

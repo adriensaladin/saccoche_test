@@ -689,6 +689,24 @@ if( ($action=='COPY_id_gepi_TO_id_ent') || ($action=='COPY_login_TO_id_ent') || 
 	exit('ok');
 }
 
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+//	Dupliquer l'identifiant récupéré su LCS comme identifiant de l'ENT (COPY_id_lcs_TO_id_ent)
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
+if($action=='COPY_id_lcs_TO_id_ent')
+{
+	$fichier = './lcs/import_lcs.php';
+	if(is_file($fichier))
+	{
+		require($fichier);
+		exit('ok');
+	}
+	else
+	{
+		exit('Erreur : le fichier "'.$fichier.'" n\'a pas été trouvé !');
+	}
+}
+
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 //	On ne devrait pas en arriver là...
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-

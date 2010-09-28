@@ -48,6 +48,7 @@ $(document).ready
 					case 'init_loginmdp_eleves':                 $('#fieldset_init_loginmdp , #p_eleves , #td_bouton').show(); break;
 					case 'init_loginmdp_professeurs_directeurs': $('#fieldset_init_loginmdp , #p_professeurs_directeurs , #td_bouton').show(); break;
 					case 'import_loginmdp':                      $('#fieldset_import_loginmdp').show(); break;
+					case 'import_id_lcs':                        $('#fieldset_import_id_lcs').show(); break;
 					case 'import_id_ent_normal':                 $('#fieldset_import_id_ent_normal').show(); break;
 					case 'import_id_ent_cas':                    $('#fieldset_import_id_ent_cas').show(); break;
 					case 'import_id_gepi':                       $('#fieldset_import_id_gepi').show(); break;

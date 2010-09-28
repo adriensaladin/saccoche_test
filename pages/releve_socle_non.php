@@ -26,10 +26,6 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-$TITRE = "Demandes d'évaluations formulées";
 ?>
 
-<?php
-$fin = ($_SESSION['DROIT_ELEVE_DEMANDES']) ? 'oui' : 'non' ;
-require('./pages/'.$PAGE.'_'.$fin.'.php');
-?>
+<p class="astuce">L'administrateur de <em>SACoche</em> pour votre établissement n'a pas ouvert cet accès aux élèves.</p>

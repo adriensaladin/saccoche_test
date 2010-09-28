@@ -92,7 +92,7 @@ elseif( $step==3 )
 	$tab_dossier = array('badge','cookie','dump-base','export','import','login-mdp','logo','rss');
 	foreach($tab_dossier as $dossier)
 	{
-		@umask(0002); // Met le chmod à 666 - 002 = 664 pour les fichiers prochains fichiers créés (et à 777 - 002 = 775 pour les dossiers).
+		@umask(0000); // Met le chmod à 666 - 000 = 666 pour les fichiers prochains fichiers créés (et à 777 - 000 = 777 pour les dossiers).
 		$test = @file_put_contents('./__tmp/'.$dossier.'/index.htm','Circulez, il n\'y a rien à voir par ici !');
 		$poursuivre1 = ($test) ? $poursuivre1 : false ;
 	}
@@ -105,7 +105,7 @@ elseif( $step==3 )
 		$affichage .= '<label for="rien" class="erreur">Echec lors de la création d\'un ou plusieurs fichiers &laquo;&nbsp;<b>index.htm</b>&nbsp;&raquo; dans chaque dossier précédent.</label><br />'."\r\n";
 	}
 	// Création du fichier .htaccess
-	@umask(0002); // Met le chmod à 666 - 002 = 664 pour les fichiers prochains fichiers créés (et à 777 - 002 = 775 pour les dossiers).
+	@umask(0000); // Met le chmod à 666 - 000 = 666 pour les fichiers prochains fichiers créés (et à 777 - 000 = 777 pour les dossiers).
 	$test = @file_put_contents('./__private/.htaccess','deny from all'."\r\n");
 	$poursuivre2 = ($test) ? true : false ;
 	if($poursuivre2)

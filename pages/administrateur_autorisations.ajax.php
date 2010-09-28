@@ -29,10 +29,27 @@ if($_SESSION['SESAMATH_ID']==ID_DEMO){exit('Action désactivée pour la démo...
 $f_objet = (isset($_POST['f_objet'])) ? clean_texte($_POST['f_objet']) : '';
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+//	Demandes d'évaluations des élèves
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
+if($f_objet=='eleve_demandes')
+{
+	$nb_demandes = (isset($_POST['f_demandes'])) ? clean_entier($_POST['f_demandes']) : -1;
+
+	if( ($nb_demandes!=-1) && ($nb_demandes<10) )
+	{
+		DB_STRUCTURE_modifier_parametres( array('droit_eleve_demandes'=>$nb_demandes) );
+		// ne pas oublier de mettre aussi à jour la session
+		$_SESSION['DROIT_ELEVE_DEMANDES'] = $nb_demandes;
+		exit('ok');
+	}
+}
+
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 //	Profils autorisés à valider le socle
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
-if($f_objet=='profils')
+if($f_objet=='validation_socle')
 {
 	$f_entree_options = (isset($_POST['f_entree'])) ? clean_texte($_POST['f_entree']) : 'erreur';
 	$f_pilier_options = (isset($_POST['f_pilier'])) ? clean_texte($_POST['f_pilier']) : 'erreur';
@@ -44,38 +61,77 @@ if($f_objet=='profils')
 
 	if($test_options)
 	{
-		DB_STRUCTURE_modifier_parametres( array('profil_validation_entree'=>$f_entree_options,'profil_validation_pilier'=>$f_pilier_options) );
+		DB_STRUCTURE_modifier_parametres( array('droit_validation_entree'=>$f_entree_options,'droit_validation_pilier'=>$f_pilier_options) );
 		// ne pas oublier de mettre aussi à jour la session
-		$_SESSION['PROFIL_VALIDATION_ENTREE'] = $f_entree_options;
-		$_SESSION['PROFIL_VALIDATION_PILIER'] = $f_pilier_options;
+		$_SESSION['DROIT_VALIDATION_ENTREE'] = $f_entree_options;
+		$_SESSION['DROIT_VALIDATION_PILIER'] = $f_pilier_options;
 		exit('ok');
 	}
 }
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-//	Demandes d'évaluations des élèves
+//	Profils autorisés à consulter tous les référentiels de l'établissement
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
-if($f_objet=='demandes')
+if($f_objet=='voir_referentiels')
 {
-	$nb_demandes = (isset($_POST['f_demandes'])) ? clean_entier($_POST['f_demandes']) : -1;
+	$f_options = (isset($_POST['f_options'])) ? clean_texte($_POST['f_options']) : 'erreur';
 
-	if( ($nb_demandes!=-1) && ($nb_demandes<10) )
+	if($f_options=='')
 	{
-		DB_STRUCTURE_modifier_parametres( array('eleve_demandes'=>$nb_demandes) );
+		$test_options = true;
+	}
+	else
+	{
+		$nettoyage = str_replace( array('directeur','professeur','eleve') , '*' , $f_options );
+		$nettoyage = str_replace( '*,' , '' , $nettoyage.',' );
+		$test_options = ($nettoyage=='') ? true : false;
+	}
+
+	if($test_options)
+	{
+		DB_STRUCTURE_modifier_parametres( array('droit_voir_referentiels'=>$f_options) );
 		// ne pas oublier de mettre aussi à jour la session
-		$_SESSION['ELEVE_DEMANDES'] = $nb_demandes;
+		$_SESSION['DROIT_VOIR_REFERENTIELS'] = $f_options;
 		exit('ok');
 	}
 }
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-//	Options de l'environnement élève
+//	Profils autorisés à modifier leur mot de passe
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
-if($f_objet=='options')
+if($f_objet=='modifier_mdp')
 {
-	$f_eleve_options = (isset($_POST['f_eleve_options'])) ? clean_texte($_POST['f_eleve_options']) : 'erreur';
+	$f_options = (isset($_POST['f_options'])) ? clean_texte($_POST['f_options']) : 'erreur';
+
+	if($f_options=='')
+	{
+		$test_options = true;
+	}
+	else
+	{
+		$nettoyage = str_replace( array('directeur','professeur','eleve') , '*' , $f_options );
+		$nettoyage = str_replace( '*,' , '' , $nettoyage.',' );
+		$test_options = ($nettoyage=='') ? true : false;
+	}
+
+	if($test_options)
+	{
+		DB_STRUCTURE_modifier_parametres( array('droit_modifier_mdp'=>$f_options) );
+		// ne pas oublier de mettre aussi à jour la session
+		$_SESSION['DROIT_MODIFIER_MDP'] = $f_options;
+		exit('ok');
+	}
+}
+
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+//	Environnement élève - Bilan sur une matière
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
+if($f_objet=='eleve_bilans')
+{
+	$f_eleve_options = (isset($_POST['f_options'])) ? clean_texte($_POST['f_options']) : 'erreur';
 
 	if($f_eleve_options=='')
 	{
@@ -83,16 +139,44 @@ if($f_objet=='options')
 	}
 	else
 	{
-		$nettoyage = str_replace( array('BilanMoyenneScore','BilanPourcentageAcquis','SoclePourcentageAcquis','SocleEtatValidation') , '*' , $f_eleve_options );
+		$nettoyage = str_replace( array('BilanMoyenneScore','BilanPourcentageAcquis','BilanNoteSurVingt') , '*' , $f_eleve_options );
 		$nettoyage = str_replace( '*,' , '' , $nettoyage.',' );
 		$test_options = ($nettoyage=='') ? true : false;
 	}
 
 	if($test_options)
 	{
-		DB_STRUCTURE_modifier_parametres( array('eleve_options'=>$f_eleve_options) );
+		DB_STRUCTURE_modifier_parametres( array('droit_eleve_bilans'=>$f_eleve_options) );
 		// ne pas oublier de mettre aussi à jour la session
-		$_SESSION['ELEVE_OPTIONS'] = $f_eleve_options;
+		$_SESSION['DROIT_ELEVE_BILANS'] = $f_eleve_options;
+		exit('ok');
+	}
+}
+
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+//	Environnement élève - Attestation de socle
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
+if($f_objet=='eleve_socle')
+{
+	$f_eleve_options = (isset($_POST['f_options'])) ? clean_texte($_POST['f_options']) : 'erreur';
+
+	if($f_eleve_options=='')
+	{
+		$test_options = true;
+	}
+	else
+	{
+		$nettoyage = str_replace( array('SocleAcces','SoclePourcentageAcquis','SocleEtatValidation') , '*' , $f_eleve_options );
+		$nettoyage = str_replace( '*,' , '' , $nettoyage.',' );
+		$test_options = ($nettoyage=='') ? true : false;
+	}
+
+	if($test_options)
+	{
+		DB_STRUCTURE_modifier_parametres( array('droit_eleve_socle'=>$f_eleve_options) );
+		// ne pas oublier de mettre aussi à jour la session
+		$_SESSION['DROIT_ELEVE_SOCLE'] = $f_eleve_options;
 		exit('ok');
 	}
 }

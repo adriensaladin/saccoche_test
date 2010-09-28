@@ -424,7 +424,7 @@ else if( ($action=='voir') && $devoir_id && $groupe_id && $date ) // $date franÃ
 	}
 	// ajouter le contenu
 	$tab_conversion = array( ''=>' ' , 'RR'=>'1' , 'R'=>'2' , 'V'=>'3' , 'VV'=>'4' , 'ABS'=>'A' , 'NN'=>'N' , 'DISP'=>'D' , 'REQ'=>'?' );
-	$tab_dossier = array( ''=>'' , 'RR'=>$_SESSION['CSS_NOTE_STYLE'].'/' , 'R'=>$_SESSION['CSS_NOTE_STYLE'].'/' , 'V'=>$_SESSION['CSS_NOTE_STYLE'].'/' , 'VV'=>$_SESSION['CSS_NOTE_STYLE'].'/' , 'ABS'=>'' , 'NN'=>'' , 'DISP'=>'' , 'REQ'=>'' );
+	$tab_dossier = array( ''=>'' , 'RR'=>$_SESSION['NOTE_IMAGE_STYLE'].'/' , 'R'=>$_SESSION['NOTE_IMAGE_STYLE'].'/' , 'V'=>$_SESSION['NOTE_IMAGE_STYLE'].'/' , 'VV'=>$_SESSION['NOTE_IMAGE_STYLE'].'/' , 'ABS'=>'' , 'NN'=>'' , 'DISP'=>'' , 'REQ'=>'' );
 	$DB_TAB = DB_STRUCTURE_lister_saisies_devoir($devoir_id,$with_REQ=true);
 	foreach($DB_TAB as $DB_ROW)
 	{

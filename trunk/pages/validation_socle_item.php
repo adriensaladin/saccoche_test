@@ -34,7 +34,7 @@ $VERSION_JS_FILE += 3;
 <?php
 // Indication des profils ayant accès à cette validation
 $tab_texte = array( 'directeur'=>'les directeurs' , 'professeur'=>'les professeurs' , 'profprincipal'=>'les professeurs principaux' );
-$str_objet = str_replace( array(',aucunprof','aucunprof,','aucunprof') , '' , $_SESSION['PROFIL_VALIDATION_ENTREE'] );
+$str_objet = str_replace( array(',aucunprof','aucunprof,','aucunprof') , '' , $_SESSION['DROIT_VALIDATION_ENTREE'] );
 if($str_objet=='')
 {
 	$texte = 'aucun !!!';
@@ -50,17 +50,17 @@ else
 
 // Fabrication des éléments select du formulaire
 $tab_paliers = DB_STRUCTURE_OPT_paliers_etabl($_SESSION['PALIERS']);
-if( ($_SESSION['USER_PROFIL']=='directeur') && (strpos($_SESSION['PROFIL_VALIDATION_ENTREE'],'directeur')!==false) )
+if( ($_SESSION['USER_PROFIL']=='directeur') && (strpos($_SESSION['DROIT_VALIDATION_ENTREE'],'directeur')!==false) )
 {
 	$tab_groupes = DB_STRUCTURE_OPT_classes_groupes_etabl();
 	$of_g = 'oui'; $og_g = 'oui'; 
 }
-elseif( ($_SESSION['USER_PROFIL']=='professeur') && (strpos($_SESSION['PROFIL_VALIDATION_ENTREE'],'professeur')!==false) )
+elseif( ($_SESSION['USER_PROFIL']=='professeur') && (strpos($_SESSION['DROIT_VALIDATION_ENTREE'],'professeur')!==false) )
 {
 	$tab_groupes = DB_STRUCTURE_OPT_groupes_professeur($_SESSION['USER_ID']);
 	$of_g = 'oui'; $og_g = 'oui'; 
 }
-elseif( ($_SESSION['USER_PROFIL']=='professeur') && (strpos($_SESSION['PROFIL_VALIDATION_ENTREE'],'profprincipal')!==false) )
+elseif( ($_SESSION['USER_PROFIL']=='professeur') && (strpos($_SESSION['DROIT_VALIDATION_ENTREE'],'profprincipal')!==false) )
 {
 	$tab_groupes = DB_STRUCTURE_OPT_classes_prof_principal($_SESSION['USER_ID']);
 	$of_g = 'non'; $og_g = 'non'; 

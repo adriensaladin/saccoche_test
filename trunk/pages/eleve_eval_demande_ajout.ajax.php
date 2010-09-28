@@ -38,7 +38,7 @@ if( ($matiere_id==0) || ($item_id==0) || ($score==-2) )
 	$reponse = 'Erreur avec les données transmises !';
 }
 // Vérifier que c'est autorisé par l'administrateur.
-elseif($_SESSION['ELEVE_DEMANDES']==0)
+elseif($_SESSION['DROIT_ELEVE_DEMANDES']==0)
 {
 	$reponse = 'Action non autorisée par l\'administrateur !';
 }
@@ -46,7 +46,7 @@ elseif($_SESSION['ELEVE_DEMANDES']==0)
 else
 {
 	$nb_demandes_attente = DB_STRUCTURE_compter_demandes_eleve_matiere($_SESSION['USER_ID'],$matiere_id);
-	$nb_demandes_possibles = $_SESSION['ELEVE_DEMANDES'] - $nb_demandes_attente ;
+	$nb_demandes_possibles = $_SESSION['DROIT_ELEVE_DEMANDES'] - $nb_demandes_attente ;
 	if($nb_demandes_possibles>0)
 	{
 		// Vérifier que cet item n'est pas déjà en attente d'évaluation pour cet élève
@@ -89,7 +89,7 @@ else
 	}
 	else
 	{
-		$reponse = ($_SESSION['ELEVE_DEMANDES']>1) ? 'Vous avez déjà formulé les '.$nb_demandes_attente.' demandes autorisées pour cette matière.<br /><a href="./index.php?page=eleve_eval_demande">Veuillez en supprimer pour en ajouter d\'autres !</a>' : 'Vous avez déjà formulé la demande autorisée pour cette matière.<br /><a href="./index.php?page=eleve_eval_demande">Veuillez la supprimer pour en demander une autre !</a>' ;
+		$reponse = ($_SESSION['DROIT_ELEVE_DEMANDES']>1) ? 'Vous avez déjà formulé les '.$nb_demandes_attente.' demandes autorisées pour cette matière.<br /><a href="./index.php?page=eleve_eval_demande">Veuillez en supprimer pour en ajouter d\'autres !</a>' : 'Vous avez déjà formulé la demande autorisée pour cette matière.<br /><a href="./index.php?page=eleve_eval_demande">Veuillez la supprimer pour en demander une autre !</a>' ;
 	}
 }
 echo'<form id="form_calque" action="#">';

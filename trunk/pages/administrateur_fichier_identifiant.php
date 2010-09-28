@@ -27,7 +27,7 @@
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = "Importer / Imposer des identifiants";
-$VERSION_JS_FILE += 4;
+$VERSION_JS_FILE += 5;
 ?>
 
 <?php
@@ -54,6 +54,7 @@ $select_professeurs_directeurs = afficher_select(DB_STRUCTURE_OPT_professeurs_di
 			<option value="init_loginmdp_eleves">Initialiser les identifiants SACoche des élèves.</option>
 			<option value="init_loginmdp_professeurs_directeurs">Initialiser les identifiants SACoche des professeurs &amp; directeurs.</option>
 			<option value="import_loginmdp">Importer / Imposer des identifiants SACoche.</option>
+			<option value="import_id_lcs">Importer / Imposer les identifiants LCS.</option>
 			<option value="import_id_ent_<?php echo $_SESSION['CONNEXION_MODE'] ?>">Importer / Imposer les identifiants de l'ENT.</option>
 			<option value="import_id_gepi">Importer / Imposer les identifiants de Gepi.</option>
 		</select><br />
@@ -90,6 +91,16 @@ $select_professeurs_directeurs = afficher_select(DB_STRUCTURE_OPT_professeurs_di
 		Vous pouvez <button id="user_export" type="button"><img alt="" src="./_img/bouton/fichier_export.png" /> récupérer un fichier csv avec les noms / prénoms / logins actuels</button> (le mot de passe, crypté, ne peut être restitué).<p />
 		Modifiez les identifiants souhaités, puis indiquez ci-dessous le fichier <b>nom-du-fichier.csv</b> (ou <b>nom-du-fichier.txt</b>) obtenu que vous souhaitez importer.
 		<p><label class="tab" for="import_loginmdp">Envoyer le fichier :</label><button id="import_loginmdp" type="button"><img alt="" src="./_img/bouton/fichier_import.png" /> Parcourir...</button></p>
+	</fieldset>
+
+	<fieldset id="fieldset_import_id_lcs" class="hide">
+		<hr />
+		<p class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__gestion_mode_identification__LCS">DOC : Intégration de SACoche dans un LCS</a></p>
+		<?php
+		$dossier_lcs = './lcs';
+		echo (is_dir($dossier_lcs)) ? '<button name="dupliquer" id="COPY_id_lcs_TO_id_ent" type="button"><img alt="" src="./_img/bouton/mdp_groupe.png" /> Dupliquer l\'identifiant LCS</button> comme identifiant de l\'ENT pour tous les utilisateurs.'
+		                            : '<div class="danger">Le dossier &laquo;&nbsp;<b>'.$dossier_lcs.'</b>&nbsp;&raquo; devant figurer dans le paquet lcs-sacoche n\'a pas été détecté !</div>' ;
+		?>
 	</fieldset>
 
 	<fieldset id="fieldset_import_id_ent_normal" class="hide">

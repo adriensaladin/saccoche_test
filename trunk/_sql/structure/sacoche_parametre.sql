@@ -23,10 +23,13 @@ INSERT INTO sacoche_parametre VALUES
 ( "matieres"                 , "1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,99" ),
 ( "niveaux"                  , "31,32,33,35" ),
 ( "paliers"                  , "3" ),
-( "profil_validation_entree" , "directeur,professeur" ),
-( "profil_validation_pilier" , "directeur,profprincipal" ),
-( "eleve_options"            , "BilanMoyenneScore,BilanPourcentageAcquis,SoclePourcentageAcquis,SocleEtatValidation" ),
-( "eleve_demandes"           , "0" ),
+( "droit_eleve_demandes"     , "0" ),
+( "droit_eleve_bilans"       , "BilanMoyenneScore,BilanPourcentageAcquis" ),
+( "droit_eleve_socle"        , "SocleAcces,SoclePourcentageAcquis" ),
+( "droit_modifier_mdp"       , "directeur,professeur,eleve" ),
+( "droit_validation_entree"  , "directeur,professeur" ),
+( "droit_validation_pilier"  , "directeur,profprincipal" ),
+( "droit_voir_referentiels"  , "directeur,professeur,eleve" ),
 ( "duree_inactivite"         , "30" ),
 ( "calcul_valeur_RR"         , "0" ),
 ( "calcul_valeur_R"          , "33" ),
@@ -42,6 +45,10 @@ INSERT INTO sacoche_parametre VALUES
 ( "css_background-color_NA"  , "#ff9999" ),
 ( "css_background-color_VA"  , "#ffdd33" ),
 ( "css_background-color_A"   , "#99ff99" ),
-( "css_note_style"           , "Lomer" );
+( "note_image_style"         , "Lomer" ),
+( "note_texte_RR"            , "RR" ),
+( "note_texte_R"             , "R" ),
+( "note_texte_V"             , "V" ),
+( "note_texte_VV"            , "VV" );
 
 ALTER TABLE sacoche_parametre ENABLE KEYS;

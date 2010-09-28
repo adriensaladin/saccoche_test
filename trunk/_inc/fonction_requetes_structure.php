@@ -1505,7 +1505,7 @@ function DB_STRUCTURE_compter_demandes_eleve_matiere($eleve_id,$matiere_id)
 {
 	$DB_SQL = 'SELECT demande_id FROM sacoche_demande ';
 	$DB_SQL.= 'WHERE user_id=:eleve_id AND matiere_id=:matiere_id ';
-	$DB_SQL.= 'LIMIT '.$_SESSION['ELEVE_DEMANDES'];
+	$DB_SQL.= 'LIMIT '.$_SESSION['DROIT_ELEVE_DEMANDES'];
 	$DB_VAR = array(':eleve_id'=>$eleve_id,':matiere_id'=>$matiere_id);
 	$DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 	return count($DB_TAB);

@@ -30,7 +30,7 @@ if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');
 
 <ul class="puce">
 	<li><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=environnement_generalites__demandes_evaluations">DOC : Demandes d'évaluations.</a></span></li>
-	<li><span class="astuce">Les élèves peuvent formuler au maximum <?php echo $_SESSION['ELEVE_DEMANDES'] ?> demande<?php echo ($_SESSION['ELEVE_DEMANDES']>1) ? 's' : '' ; ?> par matière.</span></li>
+	<li><span class="astuce">Les élèves peuvent formuler au maximum <?php echo $_SESSION['DROIT_ELEVE_DEMANDES'] ?> demande<?php echo ($_SESSION['DROIT_ELEVE_DEMANDES']>1) ? 's' : '' ; ?> par matière.</span></li>
 	<li><span class="astuce">Tenez-vous au courant des demandes grace à <a class="lien_ext" href="<?php echo adresse_RSS($_SESSION['USER_ID']); ?>"><span class="rss">un flux RSS dédié</span></a> !</span></li>
 </ul>
 

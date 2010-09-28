@@ -48,7 +48,7 @@ if(is_file($fichier_section))
 else
 {
 	// Sinon, page d'accueil de la section
-	echo'<p>Voici, pour information, les éléments auxquels vous pouvez accéder :</p>';
+	echo'<p>Choisissez ce que vous souhaitez consulter :</p>';
 	echo'<ul class="puce">';
 	echo'	<li><a href="./index.php?page='.$PAGE.'&amp;section=algorithme"><img alt="" src="./_img/menu/consultation_algorithme.png" /> Algorithme de calcul.</a></li>';
 	echo'	<li><a href="./index.php?page='.$PAGE.'&amp;section=referentiel_interne"><img alt="" src="./_img/menu/consultation_referentiel_interne.png" /> Référentiels en place (dans l\'établissement).</a></li>';

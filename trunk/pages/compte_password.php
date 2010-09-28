@@ -28,6 +28,12 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = "Changer son mot de passe";
 
-$fin = ( ($_SESSION['CONNEXION_MODE']=='normal') || ($_SESSION['USER_PROFIL']=='administrateur') || ($_SESSION['USER_PROFIL']=='webmestre') ) ? 'oui' : 'non' ;
+if ( ($_SESSION['CONNEXION_MODE']!='normal') && ($_SESSION['USER_PROFIL']!='administrateur') && ($_SESSION['USER_PROFIL']!='webmestre') )
+{ $fin = 'non1'; }
+elseif ( (strpos($_SESSION['DROIT_MODIFIER_MDP'],$_SESSION['USER_PROFIL'])!==false) || ($_SESSION['USER_PROFIL']=='administrateur') || ($_SESSION['USER_PROFIL']=='webmestre') )
+{ $fin = 'oui'; }
+else
+{ $fin = 'non2'; }
+
 require('./pages/'.$PAGE.'_'.$fin.'.php');
 ?>

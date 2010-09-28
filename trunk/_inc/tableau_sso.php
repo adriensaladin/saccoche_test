@@ -35,6 +35,7 @@ $tab_connexion_mode['ldap']   = 'Annuaire LDAP';
 $tab_connexion_mode['itop']   = 'Machine virtuelle itop';
 */
 
+$tab_connexion_info = array();
 $tab_connexion_info['normal']['sacoche']       = array( 'txt'=>'Connexion avec les identifiants enregistrés dans SACoche.' );
 
 $tab_connexion_info['cas']['argos']            = array( 'serveur_host'=>'ent-auth.ac-bordeaux.fr' , 'serveur_port'=>443  , 'serveur_root'=>''    , 'csv_nom'=>3 , 'csv_prenom'=>4 , 'csv_id_ent'=>1 , 'txt'=>'ENT Argos (académie de Bordeaux, départements 24 33 40 47).' );

@@ -369,6 +369,38 @@ function maj_base($version_actuelle)
 		// y compris la mise à jour du champ "version_base" justement
 		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_actuelle.'" WHERE parametre_nom="version_base" LIMIT 1' );
 	}
+	if($version_actuelle=='2010-08-06')
+	{
+		$version_actuelle = '2010-09-27';
+		// script pour migrer vers la version suivante : oubli d'une entrée à supprimer dans sacoche_niveau() pour l'ex-palier 4
+		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'DELETE FROM sacoche_niveau WHERE niveau_id=4 LIMIT 1' );
+		// script pour migrer vers la version suivante : récupérer qq infos pour maj la suite
+		$DB_ROW = DB::queryRow(SACOCHE_STRUCTURE_BD_NAME , 'SELECT parametre_valeur FROM sacoche_parametre WHERE parametre_nom="css_note_style" LIMIT 1' );
+		require_once('./_inc/tableau_notes_txt.php');
+		$rr = $tab_notes_txt[$DB_ROW['parametre_valeur']]['RR'];
+		$r  = $tab_notes_txt[$DB_ROW['parametre_valeur']]['R'];
+		$v  = $tab_notes_txt[$DB_ROW['parametre_valeur']]['V'];
+		$vv = $tab_notes_txt[$DB_ROW['parametre_valeur']]['VV'];
+		$DB_ROW = DB::queryRow(SACOCHE_STRUCTURE_BD_NAME , 'SELECT parametre_valeur FROM sacoche_parametre WHERE parametre_nom="eleve_options" LIMIT 1' );
+		$eleve_bilans = str_replace( array(',SoclePourcentageAcquis',',SocleEtatValidation','SoclePourcentageAcquis,','SocleEtatValidation,','SoclePourcentageAcquis','SocleEtatValidation') , '' , $DB_ROW['parametre_valeur'] );
+		$eleve_socle  = 'SocleAcces,'.str_replace( array(',BilanMoyenneScore',',BilanPourcentageAcquis','BilanMoyenneScore,','BilanPourcentageAcquis,','BilanMoyenneScore','BilanPourcentageAcquis') , '' , $DB_ROW['parametre_valeur'] );
+		// script pour migrer vers la version suivante : ajouter des gestions de droits
+		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_nom="droit_validation_entree" WHERE parametre_nom="profil_validation_entree" LIMIT 1' );
+		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_nom="droit_validation_pilier" WHERE parametre_nom="profil_validation_pilier" LIMIT 1' );
+		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ("droit_modifier_mdp"      , "directeur,professeur,eleve")' );
+		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ("droit_voir_referentiels" , "directeur,professeur,eleve")' );
+		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'DELETE FROM sacoche_parametre WHERE parametre_nom="eleve_options" LIMIT 1' );
+		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ("droit_eleve_bilans" , "'.$eleve_bilans.'")' );
+		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ("droit_eleve_socle"  , "'.$eleve_socle.'")' );
+		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_nom="droit_eleve_demandes" WHERE parametre_nom="eleve_demandes" LIMIT 1' );
+		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_nom="note_image_style"     WHERE parametre_nom="css_note_style" LIMIT 1' );
+		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ("note_texte_RR" , "'.$rr.'")' );
+		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ("note_texte_R"  , "'.$r.'")' );
+		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ("note_texte_V"  , "'.$v.'")' );
+		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ("note_texte_VV" , "'.$vv.'")' );
+		// y compris la mise à jour du champ "version_base" justement
+		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_actuelle.'" WHERE parametre_nom="version_base" LIMIT 1' );
+	}
 	// Log de l'action
 	ajouter_log('Mise à jour automatique de la base '.SACOCHE_STRUCTURE_BD_NAME.'.');
 }

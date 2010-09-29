@@ -989,24 +989,23 @@ function url_get_contents($url,$tab_post=false)
 {
 	// Ne pas utiliser file_get_contents() car certains serveurs n'accepent pas d'utiliser une URL comme nom de fichier (gestionnaire fopen non activé).
 	// On utilise donc la bibliothèque cURL en remplacement
-	// Option CURLOPT_FOLLOWLOCATION sous conditions car certaines installations renvoient "CURLOPT_FOLLOWLOCATION cannot be activated when in safe_mode or an open_basedir is set" (http://www.php.net/manual/fr/features.safe-mode.functions.php#92192)
 	$ch = curl_init();
-	curl_setopt($ch, CURLOPT_DNS_CACHE_TIMEOUT, 3600);        // Le temps en seconde que CURL doit conserver les entrées DNS en mémoire. Cette option est définie à 120 secondes (2 minutes) par défaut.
-	curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);           // TRUE retourne directement le transfert sous forme de chaîne de la valeur retournée par curl_exec() au lieu de l'afficher directement.
-	curl_setopt($ch, CURLOPT_FAILONERROR, TRUE);              // TRUE pour que PHP traite silencieusement les codes HTTP supérieurs ou égaux à 400. Le comportement par défaut est de retourner la page normalement, en ignorant ce code.
-	curl_setopt($ch, CURLOPT_HEADER, FALSE);                  // FALSE pour ne pas inclure l'en-tête dans la valeur de retour.
-	curl_setopt($ch, CURLOPT_TIMEOUT, 5);                     // Le temps maximum d'exécution de la fonction cURL (en s).
-	curl_setopt($ch, CURLOPT_URL, $url);                      // L'URL à récupérer. Vous pouvez aussi choisir cette valeur lors de l'appel à curl_init().
-	if(!ini_get('safe_mode'))
+	curl_setopt($ch, CURLOPT_DNS_CACHE_TIMEOUT, 3600);          // Le temps en seconde que CURL doit conserver les entrées DNS en mémoire. Cette option est définie à 120 secondes (2 minutes) par défaut.
+	curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);             // TRUE retourne directement le transfert sous forme de chaîne de la valeur retournée par curl_exec() au lieu de l'afficher directement.
+	curl_setopt($ch, CURLOPT_FAILONERROR, TRUE);                // TRUE pour que PHP traite silencieusement les codes HTTP supérieurs ou égaux à 400. Le comportement par défaut est de retourner la page normalement, en ignorant ce code.
+	curl_setopt($ch, CURLOPT_HEADER, FALSE);                    // FALSE pour ne pas inclure l'en-tête dans la valeur de retour.
+	curl_setopt($ch, CURLOPT_TIMEOUT, 5);                       // Le temps maximum d'exécution de la fonction cURL (en s).
+	curl_setopt($ch, CURLOPT_URL, $url);                        // L'URL à récupérer. Vous pouvez aussi choisir cette valeur lors de l'appel à curl_init().
+	if( (!ini_get('safe_mode')) && (!ini_get('open_basedir')) ) // Option CURLOPT_FOLLOWLOCATION sous conditions car certaines installations renvoient "CURLOPT_FOLLOWLOCATION cannot be activated when in safe_mode or an open_basedir is set" (http://www.php.net/manual/fr/features.safe-mode.functions.php#92192)
 	{
 		curl_setopt($ch, CURLOPT_FOLLOWLOCATION, TRUE);           // TRUE pour suivre toutes les en-têtes "Location: " que le serveur envoie dans les en-têtes HTTP (notez que cette fonction est récursive et que PHP suivra toutes les en-têtes "Location: " qu'il trouvera à moins que CURLOPT_MAXREDIRS ne soit définie).
 		curl_setopt($ch, CURLOPT_MAXREDIRS, 3);                   // Le nombre maximal de redirections HTTP à suivre. Utilisez cette option avec l'option CURLOPT_FOLLOWLOCATION.
 	}
 	if(is_array($tab_post))
 	{
-		curl_setopt($ch, CURLOPT_POST, TRUE);                   // TRUE pour que PHP fasse un HTTP POST. Un POST est un encodage normal application/x-www-from-urlencoded, utilisé couramment par les formulaires HTML. 
-		curl_setopt($ch, CURLOPT_POSTFIELDS, $tab_post);        // Toutes les données à passer lors d'une opération de HTTP POST. Peut être passé sous la forme d'une chaîne encodée URL, comme 'para1=val1&para2=val2&...' ou sous la forme d'un tableau dont le nom du champ est la clé, et les données du champ la valeur. Si le paramètre value est un tableau, l'en-tête Content-Type sera définie à multipart/form-data. 
-		curl_setopt($ch, CURLOPT_HTTPHEADER, array('Expect:')); // Eviter certaines erreurs curl 417 ; voir explication http://fr.php.net/manual/fr/function.curl-setopt.php#82418 ou http://www.gnegg.ch/2007/02/the-return-of-except-100-continue/
+		curl_setopt($ch, CURLOPT_POST, TRUE);                     // TRUE pour que PHP fasse un HTTP POST. Un POST est un encodage normal application/x-www-from-urlencoded, utilisé couramment par les formulaires HTML. 
+		curl_setopt($ch, CURLOPT_POSTFIELDS, $tab_post);          // Toutes les données à passer lors d'une opération de HTTP POST. Peut être passé sous la forme d'une chaîne encodée URL, comme 'para1=val1&para2=val2&...' ou sous la forme d'un tableau dont le nom du champ est la clé, et les données du champ la valeur. Si le paramètre value est un tableau, l'en-tête Content-Type sera définie à multipart/form-data. 
+		curl_setopt($ch, CURLOPT_HTTPHEADER, array('Expect:'));   // Eviter certaines erreurs curl 417 ; voir explication http://fr.php.net/manual/fr/function.curl-setopt.php#82418 ou http://www.gnegg.ch/2007/02/the-return-of-except-100-continue/
 	}
 	$requete_reponse = curl_exec($ch);
 	if($requete_reponse === false)

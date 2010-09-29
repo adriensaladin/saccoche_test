@@ -699,7 +699,7 @@ if($action=='COPY_id_lcs_TO_id_ent')
 	if(is_file($fichier))
 	{
 		require($fichier);
-		exit('ok');
+		exit(); // La chaine 'ok' est déjà renvoyée par le script inclus en cas de succès.
 	}
 	else
 	{

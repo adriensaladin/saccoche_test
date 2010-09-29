@@ -52,7 +52,11 @@ if(!file_exists($fichier))
 	$tab = ($br_line==1) ? imagettftext($image_tmp,$taille_police,90,$largeur-4,$hauteur_tmp-2,$couleur_texte,$police,$nom.' '.$prenom)
 	                     : imagettftext($image_tmp,$taille_police,90,$largeur/2-4,$hauteur_tmp-2,$couleur_texte,$police,$nom."\r\n".$prenom) ;
 	// Maintenant on peut connaître la hauteur requise et créer l'image finale aux bonnes dimensions
-	$hauteur_finale = $hauteur_tmp - $tab[3] + 2 ;
+	// $tab = array( bas_gauche_x , bas_gauche_y , bas_droite_x , bas_droite_y , haut_droite_x , haut_droite_y , haut_gauche_x , haut_gauche_y );
+	// Normalement bas_gauche_y et haut_gauche_y valent $hauteur_tmp-2
+	// Mais mystérieusement, pour des librairies gd rigoureusement identiques ( test gd_info() ), il y a un décalage sur certains serveurs
+	$hauteur_ajustement = ($tab[1]==$hauteur_tmp-2) ? 2 : $tab[1]-$hauteur_tmp + 3 ;
+	$hauteur_finale = $hauteur_tmp - $tab[3] + $hauteur_ajustement ;
 	$image_finale   = imagecreate($largeur,$hauteur_finale);
 	imagecopy($image_finale,$image_tmp,0,0,0,$hauteur_tmp-$hauteur_finale,$largeur,$hauteur_finale);
 	imagepng($image_finale,$fichier);

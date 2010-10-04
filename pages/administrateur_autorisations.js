@@ -58,6 +58,14 @@ $(document).ready
 			}
 		);
 
+		$("#form_voir_score_bilan input").change
+		(
+			function()
+			{
+				$('#ajax_msg_voir_score_bilan').removeAttr("class").addClass("alerte").html("Penser à enregistrer les modifications.");
+			}
+		);
+
 		$("#form_modifier_mdp input").change
 		(
 			function()
@@ -108,6 +116,17 @@ $(document).ready
 				$('#form_voir_referentiels input[value="professeur"]').attr('checked','checked');
 				$('#form_voir_referentiels input[value="eleve"]').attr('checked','checked');
 				$('#ajax_msg_voir_referentiels').removeAttr("class").addClass("alerte").html("Penser à enregistrer les modifications.");
+			}
+		);
+
+		$('#initialiser_voir_score_bilan').click
+		(
+			function()
+			{
+				$('#form_voir_score_bilan input[value="directeur"]').attr('checked','checked');
+				$('#form_voir_score_bilan input[value="professeur"]').attr('checked','checked');
+				$('#form_voir_score_bilan input[value="eleve"]').attr('checked','checked');
+				$('#ajax_msg_voir_score_bilan').removeAttr("class").addClass("alerte").html("Penser à enregistrer les modifications.");
 			}
 		);
 
@@ -285,6 +304,48 @@ $(document).ready
 							else
 							{
 								$('#ajax_msg_voir_referentiels').removeAttr("class").addClass("valide").html("Profils autorisés enregistrés !");
+							}
+						}
+					}
+				);
+			}
+		);
+
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+//	Profils autorisés à voir les scores bilan des items => soumission du formulaire
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
+		$('#valider_voir_score_bilan').click
+		(
+			function()
+			{
+				var tab_check = new Array(); $("input[name=droit_voir_score_bilan]:checked").each(function(){tab_check.push($(this).val());});
+				$("button").attr('disabled','disabled');
+				$('#ajax_msg_voir_score_bilan').removeAttr("class").addClass("loader").html("Demande envoyée... Veuillez patienter.");
+				$.ajax
+				(
+					{
+						type : 'POST',
+						url : 'ajax.php?page='+PAGE,
+						data : 'f_objet=voir_score_bilan&f_options='+tab_check,
+						dataType : "html",
+						error : function(msg,string)
+						{
+							$("button").removeAttr('disabled');
+							$('#ajax_msg_voir_score_bilan').removeAttr("class").addClass("alerte").html("Echec de la connexion ! Veuillez recommencer.");
+							return false;
+						},
+						success : function(responseHTML)
+						{
+							maj_clock(1);
+							$("button").removeAttr('disabled');
+							if(responseHTML!='ok')
+							{
+								$('#ajax_msg_voir_score_bilan').removeAttr("class").addClass("alerte").html(responseHTML);
+							}
+							else
+							{
+								$('#ajax_msg_voir_score_bilan').removeAttr("class").addClass("valide").html("Profils autorisés enregistrés !");
 							}
 						}
 					}

@@ -235,19 +235,20 @@ $(document).ready
 			var ref  = $(this).parent().attr('lang');
 			var date = $(this).parent().prev().prev().prev().prev().html();
 			var info = $(this).parent().prev().prev().html();
-			    date = date.substring(3,13); // garder la date mysql
+			    date1  = date.substring(3,13); // garder la date mysql
+			    date2  = date.substring(17,date.length); // garder la date française
 			// Masquer le tableau ; Afficher la zone associée et charger son contenu
 			$('#form0 , #form1').hide('fast');
 			$('#msg_import').removeAttr("class").html('&nbsp;');
 			$('#zone_saisir').css("display","block");
-			$('#titre_saisir').html('Saisir les acquisitions d\'une évaluation | '+date+' | '+info);
+			$('#titre_saisir').html('Saisir les acquisitions d\'une évaluation | '+date2+' | '+info);
 			$('#msg_saisir').removeAttr("class").addClass("loader").html("Demande envoyée... Veuillez patienter.");
 			$.ajax
 			(
 				{
 					type : 'POST',
 					url : 'ajax.php?page='+PAGE,
-					data : 'f_action='+mode+'&f_ref='+ref+'&f_date='+date+'&f_info='+info,
+					data : 'f_action='+mode+'&f_ref='+ref+'&f_date='+date+'&f_info='+info+'&f_descriptif='+'Élèves sélectionnés'+':::'+info+':::'+date2,
 					dataType : "html",
 					error : function(msg,string)
 					{
@@ -268,7 +269,7 @@ $(document).ready
 							$('#table_saisir').html(responseHTML);
 							$('img[title]').tooltip({showURL:false});
 							$('#export_file1').attr("href", $("#filename").val()+ref+'.zip' );
-							$('#export_file4').attr("href", $("#filename").val()+ref+'.pdf' );
+							$('#export_file4').attr("href", $("#filename").val()+ref+'_sans_notes.pdf' );
 							colorer_cellules();
 							format_liens('#table_saisir');
 							infobulle();
@@ -305,7 +306,7 @@ $(document).ready
 				{
 					type : 'POST',
 					url : 'ajax.php?page='+PAGE,
-					data : 'f_action='+mode+'&f_ref='+ref+'&f_date='+date,
+					data : 'f_action='+mode+'&f_ref='+ref+'&f_date='+date+'&f_descriptif='+'Élèves sélectionnés'+':::'+info+':::'+date,
 					dataType : "html",
 					error : function(msg,string)
 					{
@@ -324,7 +325,8 @@ $(document).ready
 							$('#msg_voir').removeAttr("class").html('&nbsp;');
 							$('#table_voir').html(responseHTML);
 							$('#export_file2').attr("href", $("#filename").val()+ref+'.zip' );
-							$('#export_file3').attr("href", $("#filename").val()+ref+'.pdf' );
+							$('#export_file3').attr("href", $("#filename").val()+ref+'_sans_notes.pdf' );
+							$('#export_file5').attr("href", $("#filename").val()+ref+'_avec_notes.pdf' );
 							$('#table_voir tbody td').css({"background-color":"#DDF","text-align":"center","vertical-align":"middle","font-size":"110%"});
 							infobulle();
 						}

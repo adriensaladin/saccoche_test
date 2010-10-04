@@ -103,13 +103,15 @@ function affich_score_html($score,$methode_tri,$pourcent='')
 	// $methode_tri vaut 'score' ou 'etat'
 	if($score===false)
 	{
-		return '<td class="hc">-</td>';
+		$score_affiche = (strpos($_SESSION['DROIT_VOIR_SCORE_BILAN'],$_SESSION['USER_PROFIL'])!==false) ? '-' : '' ;
+		return '<td class="hc">'.$score_affiche.'</td>';
 	}
 	elseif($score<$_SESSION['CALCUL_SEUIL']['R']) {$etat = 'r';}
 	elseif($score>$_SESSION['CALCUL_SEUIL']['V']) {$etat = 'v';}
 	else                                                   {$etat = 'o';}
+	$score_affiche = (strpos($_SESSION['DROIT_VOIR_SCORE_BILAN'],$_SESSION['USER_PROFIL'])!==false) ? $score.$pourcent : '' ;
 	$tri = ($methode_tri=='score') ? sprintf("%03u",$score) : $tab_tri_etat[$etat] ;	// le sprintf et le tab_tri_etat servent pour le tri du tableau
-	return '<td class="hc '.$etat.'"><i>'.$tri.'</i>'.$score.$pourcent.'</td>';
+	return '<td class="hc '.$etat.'"><i>'.$tri.'</i>'.$score_affiche.'</td>';
 }
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-

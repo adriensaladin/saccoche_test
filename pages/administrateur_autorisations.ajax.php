@@ -98,6 +98,34 @@ if($f_objet=='voir_referentiels')
 }
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+//	Profils autorisés à voir les scores bilan des items
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
+if($f_objet=='voir_score_bilan')
+{
+	$f_options = (isset($_POST['f_options'])) ? clean_texte($_POST['f_options']) : 'erreur';
+
+	if($f_options=='')
+	{
+		$test_options = true;
+	}
+	else
+	{
+		$nettoyage = str_replace( array('directeur','professeur','eleve') , '*' , $f_options );
+		$nettoyage = str_replace( '*,' , '' , $nettoyage.',' );
+		$test_options = ($nettoyage=='') ? true : false;
+	}
+
+	if($test_options)
+	{
+		DB_STRUCTURE_modifier_parametres( array('droit_voir_score_bilan'=>$f_options) );
+		// ne pas oublier de mettre aussi à jour la session
+		$_SESSION['DROIT_VOIR_SCORE_BILAN'] = $f_options;
+		exit('ok');
+	}
+}
+
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 //	Profils autorisés à modifier leur mot de passe
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 

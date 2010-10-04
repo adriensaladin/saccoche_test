@@ -162,7 +162,7 @@ class PDF extends RPDF
 		$rapport_hauteur = $this->cases_hauteur / 10 ;
 		$centrage = ($rapport_largeur<$rapport_hauteur) ? 'hauteur' : 'largeur';
 		$rapport_coef = ($centrage=='hauteur') ? $rapport_largeur : $rapport_hauteur ;
-		$rapport_coef = min( floor($rapport_coef*10)/10 , 0.5 ) ;	// A partir de PHP 5.3 on peut utiliser l'option PHP_ROUND_HALF_DOWN de round()
+		$rapport_coef = min( floor($rapport_coef*10)/10 , 0.4 ) ;	// A partir de PHP 5.3 on peut utiliser l'option PHP_ROUND_HALF_DOWN de round()
 		$this->lomer_largeur = floor(20*$rapport_coef) ;
 		$this->lomer_hauteur = floor(10*$rapport_coef) ;
 	}
@@ -622,7 +622,8 @@ class PDF extends RPDF
 					if($moyenne_pourcent<$_SESSION['CALCUL_SEUIL']['R']) {$this->choisir_couleur_fond('rouge');}
 			elseif($moyenne_pourcent>$_SESSION['CALCUL_SEUIL']['V']) {$this->choisir_couleur_fond('vert');}
 			else                                                     {$this->choisir_couleur_fond('jaune');}
-			$this->Cell($this->cases_largeur , $this->cases_hauteur , $moyenne_pourcent.'%' , 1 , $direction_after_case1 , 'C' , true , '');
+			$score_affiche = (strpos($_SESSION['DROIT_VOIR_SCORE_BILAN'],$_SESSION['USER_PROFIL'])!==false) ? $moyenne_pourcent.'%' : '' ;
+			$this->Cell($this->cases_largeur , $this->cases_hauteur , $score_affiche , 1 , $direction_after_case1 , 'C' , true , '');
 		}
 
 		// pour les 2 cases en diagonales, une case invisible permet de se positionner correctement
@@ -641,7 +642,8 @@ class PDF extends RPDF
 					if($moyenne_nombre<$_SESSION['CALCUL_SEUIL']['R']) {$this->choisir_couleur_fond('rouge');}
 			elseif($moyenne_nombre>$_SESSION['CALCUL_SEUIL']['V']) {$this->choisir_couleur_fond('vert');}
 			else                                                   {$this->choisir_couleur_fond('jaune');}
-			$this->Cell($this->cases_largeur , $this->cases_hauteur , $moyenne_nombre.'%' , 1 , $direction_after_case2 , 'C' , true , '');
+			$score_affiche = (strpos($_SESSION['DROIT_VOIR_SCORE_BILAN'],$_SESSION['USER_PROFIL'])!==false) ? $moyenne_nombre.'%' : '' ;
+			$this->Cell($this->cases_largeur , $this->cases_hauteur , $score_affiche , 1 , $direction_after_case2 , 'C' , true , '');
 		}
 
 		// pour la dernière ligne, mais pas pour les 2 dernières cases, se repositionner à la bonne ordonnée
@@ -674,20 +676,28 @@ class PDF extends RPDF
 		$this->SetMargins($this->marge_gauche , $this->marge_haut , $this->marge_droit);
 		$this->AddPage($this->orientation , 'A4');
 		$this->SetAutoPageBreak(true);
-		$this->SetFont('Arial' , '' , $this->taille_police);
-		$this->choisir_couleur_fond('gris_clair');
+		$this->calculer_dimensions_images();
 	}
 
 	public function tableau_saisie_reference_devoir($texte)
 	{
+		$hauteur_tiers = $this->etiquette_hauteur / 3 ;
+		$tab_lignes = explode(':::',$texte);
 		$this->SetXY($this->marge_gauche , $this->marge_haut);
-		$this->Cell($this->reference_largeur , $this->etiquette_hauteur , pdf($texte) , 0 , 0 , 'C' , false , '');
+		$this->SetFont('Arial' , 'B' , $this->taille_police);
+		$this->Cell($this->reference_largeur , $hauteur_tiers , pdf($tab_lignes[0]) , 0 , 2 , 'C' , false , '');
+		$this->Cell($this->reference_largeur , $hauteur_tiers , pdf($tab_lignes[1]) , 0 , 2 , 'C' , false , '');
+		$this->Cell($this->reference_largeur , $hauteur_tiers , pdf($tab_lignes[2]) , 0 , 2 , 'C' , false , '');
+		$this->SetXY($this->marge_gauche , $this->marge_haut);
+		$this->SetFont('Arial' , '' , $this->taille_police);
+		$this->Cell($this->reference_largeur , $this->etiquette_hauteur , '' , 0 , 0 , 'C' , false , '');
 	}
 
 	public function tableau_saisie_reference_eleve($texte)
 	{
 		$memo_x = $this->GetX();
 		$memo_y = $this->GetY();
+		$this->choisir_couleur_fond('gris_clair');
 		$this->Cell($this->cases_largeur , $this->etiquette_hauteur , '' , 1 , 0 , 'C' , true , '');
 		$this->TextWithDirection($memo_x+($this->cases_largeur)/2 +1 , $memo_y+$this->etiquette_hauteur-2, pdf($texte) , $direction='U');
 		$this->SetXY($memo_x+$this->cases_largeur , $memo_y);
@@ -697,6 +707,7 @@ class PDF extends RPDF
 	{
 		$memo_x = $this->GetX();
 		$memo_y = $this->GetY();
+		$this->choisir_couleur_fond('gris_clair');
 		$this->Cell($this->reference_largeur , $this->cases_hauteur , '' , 1 , 0 , 'L' , true , '');
 		$this->SetXY($memo_x , $memo_y+1);
 		$this->SetFont('Arial' , 'B' , $this->taille_police);
@@ -871,16 +882,18 @@ function afficher_pourcentage_acquis($gras,$tab_infos)
 	{
 		if($score===false)
 		{
+			$score_affiche = (strpos($_SESSION['DROIT_VOIR_SCORE_BILAN'],$_SESSION['USER_PROFIL'])!==false) ? '-' : '' ;
 			$this->choisir_couleur_fond('blanc');
-			$this->Cell($this->cases_largeur , $this->cases_hauteur , '-' , 1 , $br , 'C' , true , '');
+			$this->Cell($this->cases_largeur , $this->cases_hauteur , $score_affiche , 1 , $br , 'C' , true , '');
 		}
 		else
 		{
 					if($score<$_SESSION['CALCUL_SEUIL']['R']) {$this->choisir_couleur_fond('rouge');}
 			elseif($score>$_SESSION['CALCUL_SEUIL']['V']) {$this->choisir_couleur_fond('vert');}
 			else                                          {$this->choisir_couleur_fond('jaune');}
+			$score_affiche = (strpos($_SESSION['DROIT_VOIR_SCORE_BILAN'],$_SESSION['USER_PROFIL'])!==false) ? $score : '' ;
 			$this->SetFont('Arial' , '' , $this->taille_police-2);
-			$this->Cell($this->cases_largeur , $this->cases_hauteur , $score , 1 , $br , 'C' , true , '');
+			$this->Cell($this->cases_largeur , $this->cases_hauteur , $score_affiche , 1 , $br , 'C' , true , '');
 			$this->SetFont('Arial' , '' , $this->taille_police);
 		}
 	}

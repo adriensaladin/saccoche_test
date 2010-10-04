@@ -27,7 +27,7 @@
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = "Évaluer une classe ou un groupe";
-$VERSION_JS_FILE += 8;
+$VERSION_JS_FILE += 9;
 ?>
 
 <?php
@@ -182,12 +182,13 @@ if(count($tab_id_classe_groupe))
 		<tbody><tr><td></td></tr></tbody>
 	</table>
 	<p>
-		<a lang="zone_voir_deport" href="#td_souris_container"><img src="./_img/toggle_plus.gif" alt="" title="Voir / masquer la saisie déportée." class="toggle" /></a> Saisie déportée
+		<a lang="zone_voir_deport" href="#td_souris_container"><img src="./_img/toggle_plus.gif" alt="" title="Voir / masquer la saisie déportée." class="toggle" /></a> Saisie déportée &amp; archivage
 		<div id="zone_voir_deport" class="hide">
 			<span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_professeur__evaluations_saisie_deportee">DOC : Saisie déportée.</a></span>
 			<ul class="puce">
 				<li><a id="export_file2" class="lien_ext" href=""><img alt="" src="./_img/bouton/fichier_export.png" /> Récupérer un fichier des scores au format CSV pour archivage ou une saisie déportée.</a></li>
 				<li><a id="export_file3" class="lien_ext" href=""><img alt="" src="./_img/bouton/fichier_export.png" /> Récupérer au format PDF un tableau vierge utilisable pour un report manuel des notes.</a></li>
+				<li><a id="export_file5" class="lien_ext" href=""><img alt="" src="./_img/bouton/fichier_export.png" /> Récupérer au format PDF le tableau avec les scores pour archivage.</a></li>
 			</ul>
 		</div>
 	</p>

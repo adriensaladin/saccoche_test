@@ -34,6 +34,7 @@ $date_fin    = (isset($_POST['f_date_fin']))    ? clean_texte($_POST['f_date_fin
 $ref         = (isset($_POST['f_ref']))         ? clean_texte($_POST['f_ref'])         : '';
 $date        = (isset($_POST['f_date']))        ? clean_texte($_POST['f_date'])        : '';
 $info        = (isset($_POST['f_info']))        ? clean_texte($_POST['f_info'])        : '';
+$descriptif  = (isset($_POST['f_descriptif']))  ? clean_texte($_POST['f_descriptif'])  : '';
 $contenu     = (isset($_POST['f_contenu']))     ? clean_texte($_POST['f_contenu'])     : '';
 $detail      = (isset($_POST['f_detail']))      ? clean_texte($_POST['f_detail'])      : '';
 $orientation = (isset($_POST['f_orientation'])) ? clean_texte($_POST['f_orientation']) : '';
@@ -79,6 +80,7 @@ $nb_eleves  = count($tab_eleves);
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 //	Afficher une liste d'évaluations
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
 if( ($action=='Afficher_evaluations') && $date_debut && $date_fin )
 {
 	// Formater les dates
@@ -120,6 +122,7 @@ if( ($action=='Afficher_evaluations') && $date_debut && $date_fin )
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 //	Ajouter une nouvelle évaluation
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
 elseif( (($action=='ajouter')||(($action=='dupliquer')&&($devoir_id))) && $date && $nb_eleves && $nb_items )
 {
 	// Il faut commencer par créer un nouveau groupe de type "eval", utilisé uniquement pour cette évaluation (c'est transparent pour le professeur)
@@ -154,6 +157,7 @@ elseif( (($action=='ajouter')||(($action=='dupliquer')&&($devoir_id))) && $date 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 //	Modifier une évaluation existante
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
 else if( ($action=='modifier') && $devoir_id && $groupe_id && $date && $nb_eleves && $nb_items )
 {
 	// On commence par modifier l'affectation des élèves choisis
@@ -189,6 +193,7 @@ else if( ($action=='modifier') && $devoir_id && $groupe_id && $date && $nb_eleve
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 //	Supprimer une évaluation existante
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
 else if( ($action=='supprimer') && $devoir_id && $groupe_id )
 {
 	// supprimer le groupe spécialement associé (invisible à l'utilisateur) et les entrées dans sacoche_jointure_user_groupe pour une évaluation avec des élèves piochés en dehors de tout groupe prédéfini
@@ -202,6 +207,7 @@ else if( ($action=='supprimer') && $devoir_id && $groupe_id )
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 //	Afficher le formulaire pour réordonner les items d'une évaluation
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
 else if( ($action=='ordonner') && $devoir_id )
 {
 	// liste des items
@@ -229,8 +235,10 @@ else if( ($action=='ordonner') && $devoir_id )
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 //	Afficher le formulaire pour saisir les items acquis par les élèves à une évaluation
 //	Générer en même temps un csv à récupérer pour une saisie déportée
+//	Générer en même temps un pdf contenant un tableau de saisie vide
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-else if( ($action=='saisir') && $devoir_id && $groupe_id && $date ) // $date (au format MySQL) et $info (facultative) reportées dans input hidden
+
+else if( ($action=='saisir') && $devoir_id && $groupe_id && $date && $descriptif ) // $date au format MySQL ; $descriptif séparé par ::: ; $info (facultative) reportées dans input hidden
 {
 	// liste des items
 	$DB_TAB_COMP = DB_STRUCTURE_lister_items_devoir($devoir_id);
@@ -326,8 +334,8 @@ else if( ($action=='saisir') && $devoir_id && $groupe_id && $date ) // $date (au
 	}
 	echo'</tbody>';
 	// Enregistrer le csv
-	$export_csv .= 'SAISIE DÉPORTÉE '.$devoir_id.' DU '.convert_date_mysql_to_french($date).'.'."\r\n";
-	$export_csv .= 'CODAGES AUTORISÉS : 1 2 3 4 A N D'."\r\n\r\n";
+	$export_csv .= str_replace(':::',"\r\n",$descriptif)."\r\n\r\n";
+	$export_csv .= 'CODAGES AUTORISÉS : 1 2 3 4 A N D'."\r\n";
 	$zip = new ZipArchive();
 	if ($zip->open($dossier_export.$fnom.'.zip', ZIPARCHIVE::CREATE)===TRUE)
 	{
@@ -343,7 +351,7 @@ else if( ($action=='saisir') && $devoir_id && $groupe_id && $date ) // $date (au
 	$sacoche_pdf = new PDF($orientation='landscape',$marge_min=10,$couleur='non');
 	$sacoche_pdf->tableau_saisie_initialiser($eleve_nb,$item_nb);
 	// 1ère ligne : référence devoir, noms élèves
-	$sacoche_pdf->tableau_saisie_reference_devoir('Évaluation du '.$date);
+	$sacoche_pdf->tableau_saisie_reference_devoir($descriptif);
 	foreach($DB_TAB_USER as $DB_ROW)
 	{
 		$sacoche_pdf->tableau_saisie_reference_eleve($DB_ROW['user_nom'].' '.$DB_ROW['user_prenom']);
@@ -361,14 +369,18 @@ else if( ($action=='saisir') && $devoir_id && $groupe_id && $date ) // $date (au
 		}
 		$sacoche_pdf->SetXY($sacoche_pdf->marge_gauche , $sacoche_pdf->GetY()+$sacoche_pdf->cases_hauteur);
 	}
-	$sacoche_pdf->Output($dossier_export.$fnom.'.pdf','F');
+	$sacoche_pdf->Output($dossier_export.$fnom.'_sans_notes.pdf','F');
 	exit();
 }
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 //	Voir les items acquis par les élèves à une évaluation
+//	Générer en même temps un csv à récupérer pour une saisie déportée
+//	Générer en même temps un pdf contenant un tableau de saisie vide
+//	Générer en même temps un pdf contenant un tableau de saisie plein
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-else if( ($action=='voir') && $devoir_id && $groupe_id && $date ) // $date française pour le csv
+
+else if( ($action=='voir') && $devoir_id && $groupe_id && $date && $descriptif ) // $date française pour le csv ; $descriptif séparé par :::
 {
 	// liste des items
 	$DB_TAB_COMP = DB_STRUCTURE_lister_items_devoir($devoir_id);
@@ -419,11 +431,10 @@ else if( ($action=='voir') && $devoir_id && $groupe_id && $date ) // $date fran�
 		foreach($tab_comp_id as $comp_id=>$val_comp)
 		{
 			$tab_affich[$comp_id][$user_id] = '<td title="'.$val_user.'<br />'.$val_comp.'">-</td>';
-			$csv_lignes_scores[$comp_id][$user_id] = ' ';
+			$csv_lignes_scores[$comp_id][$user_id] = '';
 		}
 	}
 	// ajouter le contenu
-	$tab_conversion = array( ''=>' ' , 'RR'=>'1' , 'R'=>'2' , 'V'=>'3' , 'VV'=>'4' , 'ABS'=>'A' , 'NN'=>'N' , 'DISP'=>'D' , 'REQ'=>'?' );
 	$tab_dossier = array( ''=>'' , 'RR'=>$_SESSION['NOTE_IMAGE_STYLE'].'/' , 'R'=>$_SESSION['NOTE_IMAGE_STYLE'].'/' , 'V'=>$_SESSION['NOTE_IMAGE_STYLE'].'/' , 'VV'=>$_SESSION['NOTE_IMAGE_STYLE'].'/' , 'ABS'=>'' , 'NN'=>'' , 'DISP'=>'' , 'REQ'=>'' );
 	$DB_TAB = DB_STRUCTURE_lister_saisies_devoir($devoir_id,$with_REQ=true);
 	foreach($DB_TAB as $DB_ROW)
@@ -432,7 +443,7 @@ else if( ($action=='voir') && $devoir_id && $groupe_id && $date ) // $date fran�
 		if(isset($tab_affich[$DB_ROW['item_id']][$DB_ROW['eleve_id']]))
 		{
 			$tab_affich[$DB_ROW['item_id']][$DB_ROW['eleve_id']] = str_replace('>-<','><img alt="'.$DB_ROW['saisie_note'].'" src="./_img/note/'.$tab_dossier[$DB_ROW['saisie_note']].$DB_ROW['saisie_note'].'.gif" /><',$tab_affich[$DB_ROW['item_id']][$DB_ROW['eleve_id']]);
-			$csv_lignes_scores[$DB_ROW['item_id']][$DB_ROW['eleve_id']] = $tab_conversion[$DB_ROW['saisie_note']];
+			$csv_lignes_scores[$DB_ROW['item_id']][$DB_ROW['eleve_id']] = $DB_ROW['saisie_note'];
 		}
 	}
 	// affichage
@@ -455,19 +466,20 @@ else if( ($action=='voir') && $devoir_id && $groupe_id && $date ) // $date fran�
 	}
 	echo'</tbody>';
 	// assemblage du csv
+	$tab_conversion = array( ''=>' ' , 'RR'=>'1' , 'R'=>'2' , 'V'=>'3' , 'VV'=>'4' , 'ABS'=>'A' , 'NN'=>'N' , 'DISP'=>'D' , 'REQ'=>'?' );
 	foreach($tab_comp_id as $comp_id=>$val_comp)
 	{
 		$export_csv .= $csv_lignes_scores[$comp_id][0].$separateur;
 		foreach($tab_user_id as $user_id=>$val_user)
 		{
-			$export_csv .= $csv_lignes_scores[$comp_id][$user_id].$separateur;
+			$export_csv .= $tab_conversion[$csv_lignes_scores[$comp_id][$user_id]].$separateur;
 		}
 		$export_csv .= $csv_colonne_texte[$comp_id]."\r\n";
 	}
 	$export_csv .= $csv_ligne_eleve_nom."\r\n\r\n";
 	// Enregistrer le csv
-	$export_csv .= 'SAISIE ARCHIVÉE '.$devoir_id.' DU '.$date.'.'."\r\n";
-	$export_csv .= 'CODAGES AUTORISÉS : 1 2 3 4 A N D'."\r\n\r\n";
+	$export_csv .= str_replace(':::',"\r\n",$descriptif)."\r\n\r\n";
+	$export_csv .= 'CODAGES AUTORISÉS : 1 2 3 4 A N D'."\r\n";
 	$fnom = 'saisie_'.$_SESSION['BASE'].'_'.$_SESSION['USER_ID'].'_'.$ref;
 	$zip = new ZipArchive();
 	if ($zip->open($dossier_export.$fnom.'.zip', ZIPARCHIVE::CREATE)===TRUE)
@@ -484,7 +496,7 @@ else if( ($action=='voir') && $devoir_id && $groupe_id && $date ) // $date fran�
 	$sacoche_pdf = new PDF($orientation='landscape',$marge_min=10,$couleur='non');
 	$sacoche_pdf->tableau_saisie_initialiser($eleve_nb,$item_nb);
 	// 1ère ligne : référence devoir, noms élèves
-	$sacoche_pdf->tableau_saisie_reference_devoir('Évaluation du '.$date);
+	$sacoche_pdf->tableau_saisie_reference_devoir($descriptif);
 	foreach($DB_TAB_USER as $DB_ROW)
 	{
 		$sacoche_pdf->tableau_saisie_reference_eleve($DB_ROW['user_nom'].' '.$DB_ROW['user_prenom']);
@@ -502,13 +514,41 @@ else if( ($action=='voir') && $devoir_id && $groupe_id && $date ) // $date fran�
 		}
 		$sacoche_pdf->SetXY($sacoche_pdf->marge_gauche , $sacoche_pdf->GetY()+$sacoche_pdf->cases_hauteur);
 	}
-	$sacoche_pdf->Output($dossier_export.$fnom.'.pdf','F');
+	$sacoche_pdf->Output($dossier_export.$fnom.'_sans_notes.pdf','F');
+	//
+	// pdf contenant un tableau de saisie plein ; on a besoin de tourner du texte à 90°
+	//
+	$sacoche_pdf = new PDF($orientation='landscape',$marge_min=10,$couleur='oui');
+	$sacoche_pdf->tableau_saisie_initialiser($eleve_nb,$item_nb);
+	// 1ère ligne : référence devoir, noms élèves
+	$sacoche_pdf->tableau_saisie_reference_devoir($descriptif);
+	foreach($DB_TAB_USER as $DB_ROW)
+	{
+		$sacoche_pdf->tableau_saisie_reference_eleve($DB_ROW['user_nom'].' '.$DB_ROW['user_prenom']);
+	}
+	// ligne suivantes : référence item, cases vides
+	$sacoche_pdf->SetXY($sacoche_pdf->marge_gauche , $sacoche_pdf->marge_haut+$sacoche_pdf->etiquette_hauteur);
+	foreach($DB_TAB_COMP as $DB_ROW_COMP)
+	{
+		$item_ref = $DB_ROW_COMP['item_ref'];
+		$texte_socle = ($DB_ROW_COMP['entree_id']) ? ' [S]' : ' [–]';
+		$sacoche_pdf->tableau_saisie_reference_item($item_ref.$texte_socle,$DB_ROW_COMP['item_nom']);
+		foreach($DB_TAB_USER as $DB_ROW_USER)
+		{
+			
+			$sacoche_pdf->afficher_note_lomer( $csv_lignes_scores[$DB_ROW_COMP['item_id']][$DB_ROW_USER['user_id']] );
+			$sacoche_pdf->Cell($sacoche_pdf->cases_largeur , $sacoche_pdf->cases_hauteur , '' , 1 , 0 , 'C' , false , '');
+		}
+		$sacoche_pdf->SetXY($sacoche_pdf->marge_gauche , $sacoche_pdf->GetY()+$sacoche_pdf->cases_hauteur);
+	}
+	$sacoche_pdf->Output($dossier_export.$fnom.'_avec_notes.pdf','F');
 	exit();
 }
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 //	Mettre à jour l'ordre des items d'une évaluation
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
 else if( ($action=='Enregistrer_ordre') && $devoir_id && count($tab_id) )
 {
 	DB_STRUCTURE_modifier_ordre_item($devoir_id,$tab_id);
@@ -518,6 +558,7 @@ else if( ($action=='Enregistrer_ordre') && $devoir_id && count($tab_id) )
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 //	Mettre à jour les items acquis par les élèves à une évaluation
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
 else if( ($action=='Enregistrer_saisie') && $devoir_id && $date )
 {
 	// Tout est transmis : il faut comparer avec le contenu de la base pour ne mettre à jour que ce dont il y a besoin
@@ -601,6 +642,7 @@ else if( ($action=='Enregistrer_saisie') && $devoir_id && $date )
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 //	Imprimer un cartouche d'une évaluation
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
 else if( ($action=='Imprimer_cartouche') && $devoir_id && $groupe_id && $date && $contenu && $detail && $orientation && $marge_min && $couleur )
 {
 	// liste des items
@@ -725,6 +767,7 @@ else if( ($action=='Imprimer_cartouche') && $devoir_id && $groupe_id && $date &&
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 //	Traiter une demande d'importation d'une saisie déportée ; on n'enregistre rien, on ne fait que le décrypter pour que javascript le traite
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
 else if( (isset($_GET['f_action'])) && ($_GET['f_action']=='importer_saisie_csv') )
 {
 	// Récupérer le contenu du fichier
@@ -784,6 +827,10 @@ else if( (isset($_GET['f_action'])) && ($_GET['f_action']=='importer_saisie_csv'
 	}
 	exit($retour);
 }
+
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+//	On ne devrait pas en arriver là !
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
 else
 {

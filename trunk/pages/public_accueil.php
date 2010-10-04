@@ -40,12 +40,20 @@ $profil = ( isset($_GET['admin']) || isset($_GET['administrateur']) ) ? 'adminis
 ?>
 
 <?php
-// Fichiers temporaires à effacer ; il y a ausi le dossier './__tmp/cookie/' auquel on ne touche pas, et les sous-dossiers de './__tmp/badge/' traités ailleurs
-effacer_fichiers_temporaires('./__tmp/login-mdp' ,     10); // Nettoyer ce dossier des fichiers antérieurs à 10 minutes
-effacer_fichiers_temporaires('./__tmp/export'    ,     60); // Nettoyer ce dossier des fichiers antérieurs à 1 heure
-effacer_fichiers_temporaires('./__tmp/dump-base' ,     60); // Nettoyer ce dossier des fichiers antérieurs à 1 heure
-effacer_fichiers_temporaires('./__tmp/import'    ,  10080); // Nettoyer ce dossier des fichiers antérieurs à 1 semaine
-effacer_fichiers_temporaires('./__tmp/rss'       ,  43800); // Nettoyer ce dossier des fichiers antérieurs à 1 mois
+// Fichiers temporaires à effacer
+// Il y a ausi le dossier './__tmp/cookie/' auquel on ne touche pas, et les sous-dossiers de './__tmp/badge/' traités ailleurs
+// On fait en sorte que plusieurs utilisateurs ne lancent pas le nettoyage simultanément (sinon on trouve qqs warning php dans les logs)
+$fichier_lock = './__tmp/lock.txt';
+if(!file_exists($fichier_lock))
+{
+	Ecrire_Fichier($fichier_lock,'');
+	effacer_fichiers_temporaires('./__tmp/login-mdp' ,     10); // Nettoyer ce dossier des fichiers antérieurs à 10 minutes
+	effacer_fichiers_temporaires('./__tmp/export'    ,     60); // Nettoyer ce dossier des fichiers antérieurs à 1 heure
+	effacer_fichiers_temporaires('./__tmp/dump-base' ,     60); // Nettoyer ce dossier des fichiers antérieurs à 1 heure
+	effacer_fichiers_temporaires('./__tmp/import'    ,  10080); // Nettoyer ce dossier des fichiers antérieurs à 1 semaine
+	effacer_fichiers_temporaires('./__tmp/rss'       ,  43800); // Nettoyer ce dossier des fichiers antérieurs à 1 mois
+	unlink($fichier_lock);
+}
 ?>
 
 <?php

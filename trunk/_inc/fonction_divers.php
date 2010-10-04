@@ -550,9 +550,9 @@ function connecter_user($BASE,$profil,$login,$password,$mode_connection)
 		return'Utilisez le formulaire approprié aux '.str_replace('eleve','élève',$DB_ROW['user_profil']).'s !';
 	}
 	// Si on arrive ici c'est que l'identification s'est bien effectuée !
-	// Enregistrer le numéro de la base
+	// Enregistrer en session le numéro de la base
 	$_SESSION['BASE']             = $BASE;
-	// Enregistrer les données associées à l'utilisateur.
+	// Enregistrer en session les données associées à l'utilisateur (indices du tableau de session en majuscules).
 	$_SESSION['USER_PROFIL']      = $DB_ROW['user_profil'];
 	$_SESSION['USER_ID']          = (int) $DB_ROW['user_id'];
 	$_SESSION['USER_NOM']         = $DB_ROW['user_nom'];
@@ -563,53 +563,34 @@ function connecter_user($BASE,$profil,$login,$password,$mode_connection)
 	$_SESSION['USER_ID_GEPI']     = $DB_ROW['user_id_gepi'];
 	$_SESSION['ELEVE_CLASSE_ID']  = (int) $DB_ROW['eleve_classe_id'];
 	$_SESSION['ELEVE_CLASSE_NOM'] = $DB_ROW['groupe_nom'];
-	// Récupérer et Enregistrer les données associées à l'établissement.
+	// Récupérer et Enregistrer en session les données associées à l'établissement (indices du tableau de session en majuscules).
 	$DB_TAB = DB_STRUCTURE_lister_parametres();
+	$tab_type_entier = array('SESAMATH_ID','DROIT_ELEVE_DEMANDES','DUREE_INACTIVITE','CALCUL_VALEUR_RR','CALCUL_VALEUR_R','CALCUL_VALEUR_V','CALCUL_VALEUR_VV','CALCUL_SEUIL_R','CALCUL_SEUIL_V','CALCUL_LIMITE','CAS_SERVEUR_PORT');
 	foreach($DB_TAB as $DB_ROW)
 	{
-		switch($DB_ROW['parametre_nom'])
+		$parametre_nom = strtoupper($DB_ROW['parametre_nom']);
+		// Certains paramètres sont de type entier.
+		$parametre_valeur = (in_array($parametre_nom,$tab_type_entier)) ? (int) $DB_ROW['parametre_valeur'] : $DB_ROW['parametre_valeur'] ;
+		// Certains paramètres sont à enregistrer sous forme de tableau.
+		if(substr($parametre_nom,0,20)=='CSS_BACKGROUND-COLOR')
 		{
-			case 'version_base':             $_SESSION['VERSION_BASE']               =       $DB_ROW['parametre_valeur']; break;
-			case 'sesamath_id' :             $_SESSION['SESAMATH_ID']                = (int) $DB_ROW['parametre_valeur']; break;
-			case 'sesamath_uai' :            $_SESSION['SESAMATH_UAI']               =       $DB_ROW['parametre_valeur']; break;
-			case 'sesamath_type_nom' :       $_SESSION['SESAMATH_TYPE_NOM']          =       $DB_ROW['parametre_valeur']; break;
-			case 'sesamath_key' :            $_SESSION['SESAMATH_KEY']               =       $DB_ROW['parametre_valeur']; break;
-			case 'uai' :                     $_SESSION['UAI']                        =       $DB_ROW['parametre_valeur']; break;
-			case 'denomination':             $_SESSION['DENOMINATION']               =       $DB_ROW['parametre_valeur']; break;
-			case 'connexion_mode':           $_SESSION['CONNEXION_MODE']             =       $DB_ROW['parametre_valeur']; break;
-			case 'connexion_nom':            $_SESSION['CONNEXION_NOM']              =       $DB_ROW['parametre_valeur']; break;
-			case 'modele_professeur':        $_SESSION['MODELE_PROF']                =       $DB_ROW['parametre_valeur']; break;
-			case 'modele_eleve':             $_SESSION['MODELE_ELEVE']               =       $DB_ROW['parametre_valeur']; break;
-			case 'matieres':                 $_SESSION['MATIERES']                   =       $DB_ROW['parametre_valeur']; break;
-			case 'niveaux':                  $_SESSION['NIVEAUX']                    =       $DB_ROW['parametre_valeur']; break;
-			case 'paliers':                  $_SESSION['PALIERS']                    =       $DB_ROW['parametre_valeur']; break;
-			case 'droit_validation_entree':  $_SESSION['DROIT_VALIDATION_ENTREE']    =       $DB_ROW['parametre_valeur']; break;
-			case 'droit_validation_pilier':  $_SESSION['DROIT_VALIDATION_PILIER']    =       $DB_ROW['parametre_valeur']; break;
-			case 'droit_modifier_mdp':       $_SESSION['DROIT_MODIFIER_MDP']         =       $DB_ROW['parametre_valeur']; break;
-			case 'droit_voir_referentiels':  $_SESSION['DROIT_VOIR_REFERENTIELS']    =       $DB_ROW['parametre_valeur']; break;
-			case 'droit_eleve_bilans':       $_SESSION['DROIT_ELEVE_BILANS']         =       $DB_ROW['parametre_valeur']; break;
-			case 'droit_eleve_socle':        $_SESSION['DROIT_ELEVE_SOCLE']          =       $DB_ROW['parametre_valeur']; break;
-			case 'droit_eleve_demandes':     $_SESSION['DROIT_ELEVE_DEMANDES']       = (int) $DB_ROW['parametre_valeur']; break;
-			case 'duree_inactivite':         $_SESSION['DUREE_INACTIVITE']           = (int) $DB_ROW['parametre_valeur']; break;
-			case 'calcul_valeur_RR':         $_SESSION['CALCUL_VALEUR']['RR']        = (int) $DB_ROW['parametre_valeur']; break;
-			case 'calcul_valeur_R':          $_SESSION['CALCUL_VALEUR']['R']         = (int) $DB_ROW['parametre_valeur']; break;
-			case 'calcul_valeur_V':          $_SESSION['CALCUL_VALEUR']['V']         = (int) $DB_ROW['parametre_valeur']; break;
-			case 'calcul_valeur_VV':         $_SESSION['CALCUL_VALEUR']['VV']        = (int) $DB_ROW['parametre_valeur']; break;
-			case 'calcul_seuil_R':           $_SESSION['CALCUL_SEUIL']['R']          = (int) $DB_ROW['parametre_valeur']; break;
-			case 'calcul_seuil_V':           $_SESSION['CALCUL_SEUIL']['V']          = (int) $DB_ROW['parametre_valeur']; break;
-			case 'calcul_methode':           $_SESSION['CALCUL_METHODE']             =       $DB_ROW['parametre_valeur']; break;
-			case 'calcul_limite':            $_SESSION['CALCUL_LIMITE']              = (int) $DB_ROW['parametre_valeur']; break;
-			case 'cas_serveur_host':         $_SESSION['CAS_SERVEUR_HOST']           =       $DB_ROW['parametre_valeur']; break;
-			case 'cas_serveur_port':         $_SESSION['CAS_SERVEUR_PORT']           = (int) $DB_ROW['parametre_valeur']; break;
-			case 'cas_serveur_root':         $_SESSION['CAS_SERVEUR_ROOT']           =       $DB_ROW['parametre_valeur']; break;
-			case 'css_background-color_NA':  $_SESSION['CSS_BACKGROUND-COLOR']['NA'] =       $DB_ROW['parametre_valeur']; break;
-			case 'css_background-color_VA':  $_SESSION['CSS_BACKGROUND-COLOR']['VA'] =       $DB_ROW['parametre_valeur']; break;
-			case 'css_background-color_A':   $_SESSION['CSS_BACKGROUND-COLOR']['A']  =       $DB_ROW['parametre_valeur']; break;
-			case 'note_image_style':         $_SESSION['NOTE_IMAGE_STYLE']           =       $DB_ROW['parametre_valeur']; break;
-			case 'note_texte_RR':            $_SESSION['NOTE_TEXTE']['RR']           =       $DB_ROW['parametre_valeur']; break;
-			case 'note_texte_R':             $_SESSION['NOTE_TEXTE']['R']            =       $DB_ROW['parametre_valeur']; break;
-			case 'note_texte_V':             $_SESSION['NOTE_TEXTE']['V']            =       $DB_ROW['parametre_valeur']; break;
-			case 'note_texte_VV':            $_SESSION['NOTE_TEXTE']['VV']           =       $DB_ROW['parametre_valeur']; break;
+			$_SESSION[substr($parametre_nom,0,20)][substr($parametre_nom,21)] = $parametre_valeur ;
+		}
+		elseif(substr($parametre_nom,0,13)=='CALCUL_VALEUR')
+		{
+			$_SESSION[substr($parametre_nom,0,13)][substr($parametre_nom,14)] = $parametre_valeur ;
+		}
+		elseif(substr($parametre_nom,0,12)=='CALCUL_SEUIL')
+		{
+			$_SESSION[substr($parametre_nom,0,12)][substr($parametre_nom,13)] = $parametre_valeur ;
+		}
+		elseif(substr($parametre_nom,0,10)=='NOTE_TEXTE')
+		{
+			$_SESSION[substr($parametre_nom,0,10)][substr($parametre_nom,11)] = $parametre_valeur ;
+		}
+		else
+		{
+			$_SESSION[$parametre_nom] = $parametre_valeur ;
 		}
 	}
 	actualiser_style_session();

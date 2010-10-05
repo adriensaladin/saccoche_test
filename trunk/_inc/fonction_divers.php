@@ -149,7 +149,7 @@ function ajouter_log($contenu)
 
 /**
  * compacter
- * Compression si d'un fichier css ou js sur le serveur en production
+ * Compression d'un fichier css ou js sur le serveur en production
  * 
  * @param string $chemin    chemin complet vers le fichier
  * @param string $version   $version éventuelle du fichier pour éviter un pb de mise en cache
@@ -159,10 +159,11 @@ function ajouter_log($contenu)
 
 function compacter($chemin,$version,$methode)
 {
-	$extension = pathinfo($chemin,PATHINFO_EXTENSION);
-	$chemin_sans_extension   = substr($chemin,0,-(strlen($extension)+1)); // PATHINFO_FILENAME ajouté en PHP 5.2.0 seulement...
-	$chemin_fichier_original = $chemin;
-	$chemin_fichier_compacte = $chemin_sans_extension.'.'.$methode.$version.'.'.$extension; // Pour un css l'extension doit être conservée (pour un js peu importe)
+	$chemin_fichier_original  = $chemin;
+	$extension                = pathinfo($chemin,PATHINFO_EXTENSION);
+	$dossier_fichier_compacte = './__tmp/'; // On peut se permettre d'enregistrer les js et css en dehors de leur dossier d'origine car les répertoires sont tous de mêmes niveaux
+	$nom_fichier_compacte     = substr( str_replace( array('./','/') , array('','__') , $chemin_fichier_original ) ,0,-(strlen($extension)+1));
+	$chemin_fichier_compacte  = $dossier_fichier_compacte.$nom_fichier_compacte.'.'.$methode.$version.'.'.$extension; // Pour un css l'extension doit être conservée (pour un js peu importe)
 	if(SERVEUR_TYPE == 'PROD')
 	{
 		// Sur le serveur en production, on compresse le fichier s'il ne l'est pas
@@ -194,7 +195,7 @@ function compacter($chemin,$version,$methode)
 			$fichier_compacte = utf8_encode($fichier_compacte);	// On réencode donc en UTF-8...
 			@umask(0000); // Met le chmod à 666 - 000 = 666 pour les fichiers prochains fichiers créés (et à 777 - 000 = 777 pour les dossiers).
 			$test_ecriture = @file_put_contents($chemin_fichier_compacte,$fichier_compacte);
-			// Il se peut que le droit en écriture ne soit pas autorisé et que la procédure d'install ne l'ai pas encore vérifié.
+			// Il se peut que le droit en écriture ne soit pas autorisé et que la procédure d'install ne l'ai pas encore vérifié ou que le dossier __tmp n'ait pas encore été créé.
 			return $test_ecriture ? $chemin_fichier_compacte : $chemin_fichier_original ;
 		}
 		return $chemin_fichier_compacte;

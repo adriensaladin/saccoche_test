@@ -64,10 +64,10 @@ $(document).ready
 							else
 							{
 								$('#ajax_msg').removeAttr("class").html('&nbsp;');
-								$('#form0').html(responseHTML);
-								$('#form4').html('');
-								$('#form5').html('');
-								$('#form6').html('');
+								$('#form_start').html(responseHTML);
+								$('#form_type_install').html('');
+								$('#form_info_heberg').html('');
+								$('#form_param_mysql').html('');
 							}
 						}
 					}
@@ -76,7 +76,7 @@ $(document).ready
 		);
 
 		// ********************
-		// * Étape 1 -> Étape 2
+		// * Étape 1|n -> Étape 2
 		// ********************
 
 		$('a.step2').live // live est utilisé pour prendre en compte les nouveaux éléments créés
@@ -107,10 +107,10 @@ $(document).ready
 							else
 							{
 								$('#ajax_msg').removeAttr("class").html('&nbsp;');
-								$('#form0').html(responseHTML);
-								$('#form4').html('');
-								$('#form5').html('');
-								$('#form6').html('');
+								$('#form_start').html(responseHTML);
+								$('#form_type_install').html('');
+								$('#form_info_heberg').html('');
+								$('#form_param_mysql').html('');
 							}
 						}
 					}
@@ -143,49 +143,6 @@ $(document).ready
 						},
 						success : function(responseHTML)
 						{
-							if(responseHTML.substring(0,6)!='<label')
-							{
-								$('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);
-							}
-							else
-							{
-								$('#ajax_msg').removeAttr("class").html('&nbsp;');
-								$('#form0').html(responseHTML);
-								$('#form4').html('');
-								$('#form5').html('');
-								$('#form6').html('');
-							}
-						}
-					}
-				);
-			}
-		);
-
-		// ********************
-		// * Étape 3|n -> Étape 4
-		// ********************
-
-		$('a.step4').live // live est utilisé pour prendre en compte les nouveaux éléments créés
-		('click',
-			function()
-			{
-				$("#step li").removeAttr("class");
-				$("#step4").addClass("on");
-				$('#ajax_msg').removeAttr("class").addClass("loader").html("Demande envoyée... Veuillez patienter.");
-				$.ajax
-				(
-					{
-						type : 'POST',
-						url : 'ajax.php?page='+PAGE,
-						data : 'f_step=4',
-						dataType : "html",
-						error : function(msg,string)
-						{
-							$('#ajax_msg').removeAttr("class").addClass("alerte").html('Echec de la connexion ! Veuillez recommencer.');
-							return false;
-						},
-						success : function(responseHTML)
-						{
 							if(responseHTML.substring(0,20)!='<p><label for="rien"')
 							{
 								$('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);
@@ -193,10 +150,10 @@ $(document).ready
 							else
 							{
 								$('#ajax_msg').removeAttr("class").html('&nbsp;');
-								$('#form0').html('');
-								$('#form4').html(responseHTML);
-								$('#form5').html('');
-								$('#form6').html('');
+								$('#form_start').html('');
+								$('#form_type_install').html(responseHTML);
+								$('#form_info_heberg').html('');
+								$('#form_param_mysql').html('');
 								infobulle();
 								$('#f_installation').focus();
 							}
@@ -207,23 +164,23 @@ $(document).ready
 		);
 
 		// ********************
-		// * Étape 4 -> Étape 5
+		// * Étape 3 -> Étape 4
 		// ********************
 
-		$('a.step5').live // live est utilisé pour prendre en compte les nouveaux éléments créés
+		$('a.step4').live // live est utilisé pour prendre en compte les nouveaux éléments créés
 		('click',
 			function()
 			{
 				var f_installation = $(this).attr('id');
 				$("#step li").removeAttr("class");
-				$("#step5").addClass("on");
+				$("#step4").addClass("on");
 				$('#ajax_msg').removeAttr("class").addClass("loader").html("Demande envoyée... Veuillez patienter.");
 				$.ajax
 				(
 					{
 						type : 'POST',
 						url : 'ajax.php?page='+PAGE,
-						data : 'f_step=5&f_installation='+f_installation,
+						data : 'f_step=4&f_installation='+f_installation,
 						dataType : "html",
 						error : function(msg,string)
 						{
@@ -239,10 +196,10 @@ $(document).ready
 							else
 							{
 								$('#ajax_msg').removeAttr("class").html('&nbsp;');
-								$('#form0').html('');
-								$('#form4').html('');
-								$('#form5').html(responseHTML);
-								$('#form6').html('');
+								$('#form_start').html('');
+								$('#form_type_install').html('');
+								$('#form_info_heberg').html(responseHTML);
+								$('#form_param_mysql').html('');
 								infobulle();
 								$('#f_denomination').focus();
 							}
@@ -253,7 +210,7 @@ $(document).ready
 		);
 
 		// ********************
-		// * Étape 5 -> Étape 51
+		// * Étape 4 -> Étape 41
 		// ********************
 
 		//	Analyse de la robustesse du mot de passe
@@ -266,7 +223,7 @@ $(document).ready
 		);
 
 		// Le formulaire qui va être analysé et traité en AJAX
-		var formulaire5 = $('#form5');
+		var formulaire_info_heberg = $('#form_info_heberg');
 
 		// Ajout d'une méthode pour vérifier le format du numéro UAI
 		jQuery.validator.addMethod
@@ -325,7 +282,7 @@ $(document).ready
 		); 
 
 		// Vérifier la validité du formulaire (avec jquery.validate.js)
-		var validation5 = formulaire5.validate
+		var validation_info_heberg = formulaire_info_heberg.validate
 		(
 			{
 				rules :
@@ -360,7 +317,7 @@ $(document).ready
 		);
 
 		// Options d'envoi du formulaire (avec jquery.form.js)
-		var ajaxOptions5 =
+		var ajaxOptions_info_heberg =
 		{
 			url : 'ajax.php?page='+PAGE,
 			type : 'POST',
@@ -368,26 +325,26 @@ $(document).ready
 			clearForm : false,
 			resetForm : false,
 			target : "#ajax_msg",
-			beforeSubmit : test_form5_avant_envoi,
-			error : retour_form5_erreur,
-			success : retour_form5_valide
+			beforeSubmit : test_form_info_heberg_avant_envoi,
+			error : retour_form_info_heberg_erreur,
+			success : retour_form_info_heberg_valide
 		};
 
 		// Envoi du formulaire (avec jquery.form.js)
-    formulaire5.submit
+    formulaire_info_heberg.submit
 		(
 			function()
 			{
-				$(this).ajaxSubmit(ajaxOptions5);
+				$(this).ajaxSubmit(ajaxOptions_info_heberg);
 				return false;
 			}
 		); 
 
 		// Fonction précédent l'envoi du formulaire (avec jquery.form.js)
-		function test_form5_avant_envoi(formData, jqForm, options)
+		function test_form_info_heberg_avant_envoi(formData, jqForm, options)
 		{
 			$('#ajax_msg').removeAttr("class").html("&nbsp;");
-			var readytogo = validation5.form();
+			var readytogo = validation_info_heberg.form();
 			if(readytogo)
 			{
 				$('button').attr('disabled','disabled');
@@ -397,14 +354,14 @@ $(document).ready
 		}
 
 		// Fonction suivant l'envoi du formulaire (avec jquery.form.js)
-		function retour_form5_erreur(msg,string)
+		function retour_form_info_heberg_erreur(msg,string)
 		{
 			$('button').removeAttr('disabled');
 			$('#ajax_msg').removeAttr("class").addClass("alerte").html("Echec de la connexion ! Veuillez valider de nouveau.");
 		}
 
 		// Fonction suivant l'envoi du formulaire (avec jquery.form.js)
-		function retour_form5_valide(responseHTML)
+		function retour_form_info_heberg_valide(responseHTML)
 		{
 			$('button').removeAttr('disabled');
 			if(responseHTML.substring(0,6)=='Erreur')
@@ -413,30 +370,30 @@ $(document).ready
 			}
 			else
 			{
-				$('#form0').html(responseHTML);
-				$('#form4').html('');
-				$('#form5').html('');
-				$('#form6').html('');
+				$('#form_start').html(responseHTML);
+				$('#form_type_install').html('');
+				$('#form_info_heberg').html('');
+				$('#form_param_mysql').html('');
 			}
 		} 
 
 		// ********************
-		// * Étape 5|51|n -> Étape 6
+		// * Étape 4|41|n -> Étape 5
 		// ********************
 
-		$('a.step6').live // live est utilisé pour prendre en compte les nouveaux éléments créés
+		$('a.step5').live // live est utilisé pour prendre en compte les nouveaux éléments créés
 		('click',
 			function()
 			{
 				$("#step li").removeAttr("class");
-				$("#step6").addClass("on");
+				$("#step5").addClass("on");
 				$('#ajax_msg').removeAttr("class").addClass("loader").html("Demande envoyée... Veuillez patienter.");
 				$.ajax
 				(
 					{
 						type : 'POST',
 						url : 'ajax.php?page='+PAGE,
-						data : 'f_step=6',
+						data : 'f_step=5',
 						dataType : "html",
 						error : function(msg,string)
 						{
@@ -445,10 +402,10 @@ $(document).ready
 						},
 						success : function(responseHTML)
 						{
-							$('#form0').html('');
-							$('#form4').html('');
-							$('#form5').html('');
-							$('#form6').html(responseHTML);
+							$('#form_start').html('');
+							$('#form_type_install').html('');
+							$('#form_info_heberg').html('');
+							$('#form_param_mysql').html(responseHTML);
 							infobulle();
 							$('#f_host').focus();
 						}
@@ -458,14 +415,14 @@ $(document).ready
 		);
 
 		// ********************
-		// * Étape 6|61 -> Étape 61|62
+		// * Étape 5|51 -> Étape 51|52
 		// ********************
 
 		// Le formulaire qui va être analysé et traité en AJAX
-		var formulaire6 = $('#form6');
+		var formulaire_param_mysql = $('#form_param_mysql');
 
 		// Vérifier la validité du formulaire (avec jquery.validate.js)
-		var validation6 = formulaire6.validate
+		var validation_param_mysql = formulaire_param_mysql.validate
 		(
 			{
 				rules :
@@ -492,7 +449,7 @@ $(document).ready
 		);
 
 		// Options d'envoi du formulaire (avec jquery.form.js)
-		var ajaxOptions6 =
+		var ajaxOptions_param_mysql =
 		{
 			url : 'ajax.php?page='+PAGE,
 			type : 'POST',
@@ -500,26 +457,26 @@ $(document).ready
 			clearForm : false,
 			resetForm : false,
 			target : "#ajax_msg",
-			beforeSubmit : test_form_avant_envoi5,
-			error : retour_form_erreur5,
-			success : retour_form_valide5
+			beforeSubmit : test_form_param_mysql_avant_envoi,
+			error : retour_form_param_mysql_erreur,
+			success : retour_form_param_mysql_valide
 		};
 
 		// Envoi du formulaire (avec jquery.form.js)
-    formulaire6.submit
+    formulaire_param_mysql.submit
 		(
 			function()
 			{
-				$(this).ajaxSubmit(ajaxOptions6);
+				$(this).ajaxSubmit(ajaxOptions_param_mysql);
 				return false;
 			}
 		); 
 
 		// Fonction précédent l'envoi du formulaire (avec jquery.form.js)
-		function test_form_avant_envoi5(formData, jqForm, options)
+		function test_form_param_mysql_avant_envoi(formData, jqForm, options)
 		{
 			$('#ajax_msg').removeAttr("class").html("&nbsp;");
-			var readytogo = validation6.form();
+			var readytogo = validation_param_mysql.form();
 			if(readytogo)
 			{
 				$('button').attr('disabled','disabled');
@@ -529,14 +486,14 @@ $(document).ready
 		}
 
 		// Fonction suivant l'envoi du formulaire (avec jquery.form.js)
-		function retour_form_erreur5(msg,string)
+		function retour_form_param_mysql_erreur(msg,string)
 		{
 			$('button').removeAttr('disabled');
 			$('#ajax_msg').removeAttr("class").addClass("alerte").html("Echec de la connexion ! Veuillez valider de nouveau.");
 		}
 
 		// Fonction suivant l'envoi du formulaire (avec jquery.form.js)
-		function retour_form_valide5(responseHTML)
+		function retour_form_param_mysql_valide(responseHTML)
 		{
 			$('button').removeAttr('disabled');
 			if(responseHTML.substring(0,6)=='Erreur')
@@ -550,40 +507,40 @@ $(document).ready
 			else if(responseHTML.substring(0,10)=='<fieldset>')
 			{
 				// choix de la base (mono-structure)
-				$('#form0').html('');
-				$('#form4').html('');
-				$('#form5').html('');
-				$('#form6').html(responseHTML);
+				$('#form_start').html('');
+				$('#form_type_install').html('');
+				$('#form_info_heberg').html('');
+				$('#form_param_mysql').html(responseHTML);
 				infobulle();
 				$('#f_name').focus();
 			}
 			else
 			{
 				// paramètres mysql et base ok
-				$('#form0').html(responseHTML);
-				$('#form4').html('');
-				$('#form5').html('');
-				$('#form6').html('');
+				$('#form_start').html(responseHTML);
+				$('#form_type_install').html('');
+				$('#form_info_heberg').html('');
+				$('#form_param_mysql').html('');
 			}
 		} 
 
 		// ********************
-		// * Étape 6|61|62|n -> Étape 7
+		// * Étape 5|51|52|n -> Étape 6
 		// ********************
 
-		$('a.step7').live // live est utilisé pour prendre en compte les nouveaux éléments créés
+		$('a.step6').live // live est utilisé pour prendre en compte les nouveaux éléments créés
 		('click',
 			function()
 			{
 				$("#step li").removeAttr("class");
-				$("#step7").addClass("on");
+				$("#step6").addClass("on");
 				$('#ajax_msg').removeAttr("class").addClass("loader").html("Demande envoyée... Veuillez patienter.");
 				$.ajax
 				(
 					{
 						type : 'POST',
 						url : 'ajax.php?page='+PAGE,
-						data : 'f_step=7',
+						data : 'f_step=6',
 						dataType : "html",
 						error : function(msg,string)
 						{
@@ -592,10 +549,10 @@ $(document).ready
 						},
 						success : function(responseHTML)
 						{
-							$('#form0').html(responseHTML);
-							$('#form4').html('');
-							$('#form5').html('');
-							$('#form6').html('');
+							$('#form_start').html(responseHTML);
+							$('#form_type_install').html('');
+							$('#form_info_heberg').html('');
+							$('#form_param_mysql').html('');
 						}
 					}
 				);

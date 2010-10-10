@@ -226,17 +226,17 @@ table.scor_eval th, table.saisir td {padding:0}
 table.scor_eval tbody td img {vertical-align:middle;}
 table.scor_eval tbody td input {vertical-align:middle;width:23px;height:17px;font-size:0;color:#FFF;margin:0;border:2px solid #FFF}
 table.scor_eval tbody td input:focus {border:2px solid #00F}
-table.scor_eval tbody td input.ABS  {background:#FFF url('../_img/note/ABS.gif')  no-repeat center center;}
-table.scor_eval tbody td input.NN   {background:#FFF url('../_img/note/NN.gif')   no-repeat center center;}
-table.scor_eval tbody td input.DISP {background:#FFF url('../_img/note/DISP.gif') no-repeat center center;}
-table.scor_eval tbody td input.X    {background:#FFF url('../_img/note/X.gif')    no-repeat center center;}
-table.scor_eval tbody td input.REQ  {background:#FFF url('../_img/note/REQ.gif')  no-repeat center center;}
+table.scor_eval tbody td input.ABS , select#f_defaut option.ABS  {background:#FFF url('../_img/note/ABS.gif')  no-repeat center center;}
+table.scor_eval tbody td input.NN  , select#f_defaut option.NN   {background:#FFF url('../_img/note/NN.gif')   no-repeat center center;}
+table.scor_eval tbody td input.DISP, select#f_defaut option.DISP {background:#FFF url('../_img/note/DISP.gif') no-repeat center center;}
+table.scor_eval tbody td input.X                                 {background:#FFF url('../_img/note/X.gif')    no-repeat center center;}
+table.scor_eval tbody td input.REQ                               {background:#FFF url('../_img/note/REQ.gif')  no-repeat center center;}
 /* Commenté car redéfini suivant les préférences de l'établissement */
 /*
-table.scor_eval tbody td input.RR   {background:#FFF url('../_img/note/Lomer/RR.gif')   no-repeat center center;}
-table.scor_eval tbody td input.R    {background:#FFF url('../_img/note/Lomer/R.gif')    no-repeat center center;}
-table.scor_eval tbody td input.V    {background:#FFF url('../_img/note/Lomer/V.gif')    no-repeat center center;}
-table.scor_eval tbody td input.VV   {background:#FFF url('../_img/note/Lomer/VV.gif')   no-repeat center center;}
+table.scor_eval tbody td input.RR, select#f_defaut option.RR     {background:#FFF url('../_img/note/?/RR.gif') no-repeat center center;}
+table.scor_eval tbody td input.R , select#f_defaut option.R      {background:#FFF url('../_img/note/?/R.gif')  no-repeat center center;}
+table.scor_eval tbody td input.V , select#f_defaut option.V      {background:#FFF url('../_img/note/?/V.gif')  no-repeat center center;}
+table.scor_eval tbody td input.VV, select#f_defaut option.VV     {background:#FFF url('../_img/note/?/VV.gif') no-repeat center center;}
 */
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
@@ -393,13 +393,20 @@ a.puce_plus  {background:transparent url(../_img/puce_plus.gif) no-repeat left;f
 a.puce_moins {background:transparent url(../_img/puce_moins.gif) no-repeat left;font-weight:normal;padding-left:12px;}
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-/* Zone affichée pour le choix d'une compétences à la souris                                           */
+/* Zone affichée pour le choix d'une note à la souris                                                  */
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 div#td_souris_container{display:none;}
 div.td_souris {font-size:0}
 div.td_souris img {padding:2px;margin:1px;background-color:#FFF}
 div.td_souris img.on {background-color:#FF0}
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+/* Fromulaire pour remplir avec une note par défaut                                                    */
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
+select#f_defaut {background:transparent url(../_img/note/X.gif) no-repeat 4px center;}
+select#f_defaut option{width:20px;height:10px;background:transparent url(../_img/note/X.gif) no-repeat center center;}
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 /* Zone avec barres de progressions pour des intervalles de dates                                      */

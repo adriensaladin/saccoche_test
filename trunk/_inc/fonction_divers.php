@@ -612,10 +612,10 @@ function connecter_user($BASE,$profil,$login,$password,$mode_connection)
 function actualiser_style_session()
 {
 	$_SESSION['CSS']  = '';
-	$_SESSION['CSS'] .= 'table.scor_eval tbody td input.RR {background:#FFF url("./_img/note/'.$_SESSION['NOTE_IMAGE_STYLE'].'/RR.gif") no-repeat center center;}';
-	$_SESSION['CSS'] .= 'table.scor_eval tbody td input.R  {background:#FFF url("./_img/note/'.$_SESSION['NOTE_IMAGE_STYLE'].'/R.gif")  no-repeat center center;}';
-	$_SESSION['CSS'] .= 'table.scor_eval tbody td input.V  {background:#FFF url("./_img/note/'.$_SESSION['NOTE_IMAGE_STYLE'].'/V.gif")  no-repeat center center;}';
-	$_SESSION['CSS'] .= 'table.scor_eval tbody td input.VV {background:#FFF url("./_img/note/'.$_SESSION['NOTE_IMAGE_STYLE'].'/VV.gif") no-repeat center center;}';
+	$_SESSION['CSS'] .= 'table.scor_eval tbody td input.RR, select#f_defaut option.RR {background:#FFF url("./_img/note/'.$_SESSION['NOTE_IMAGE_STYLE'].'/RR.gif") no-repeat center center;}';
+	$_SESSION['CSS'] .= 'table.scor_eval tbody td input.R , select#f_defaut option.R  {background:#FFF url("./_img/note/'.$_SESSION['NOTE_IMAGE_STYLE'].'/R.gif")  no-repeat center center;}';
+	$_SESSION['CSS'] .= 'table.scor_eval tbody td input.V , select#f_defaut option.V  {background:#FFF url("./_img/note/'.$_SESSION['NOTE_IMAGE_STYLE'].'/V.gif")  no-repeat center center;}';
+	$_SESSION['CSS'] .= 'table.scor_eval tbody td input.VV, select#f_defaut option.VV {background:#FFF url("./_img/note/'.$_SESSION['NOTE_IMAGE_STYLE'].'/VV.gif") no-repeat center center;}';
 	$_SESSION['CSS'] .= 'table th.r , table td.r , div.r ,span.r ,label.r {background-color:'.$_SESSION['CSS_BACKGROUND-COLOR']['NA'].'}';
 	$_SESSION['CSS'] .= 'table th.o , table td.o , div.o ,span.o ,label.o {background-color:'.$_SESSION['CSS_BACKGROUND-COLOR']['VA'].'}';
 	$_SESSION['CSS'] .= 'table th.v , table td.v , div.v ,span.v ,label.v {background-color:'.$_SESSION['CSS_BACKGROUND-COLOR']['A'].'}';

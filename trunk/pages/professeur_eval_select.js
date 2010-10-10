@@ -49,6 +49,12 @@ $(document).ready
 			}
 		}
 		trier_tableau();
+		function actualiser_background_select()
+		{
+			var backgroundImage = $('#f_defaut option:selected').css('background-image');
+			$('#f_defaut').css('background-image',backgroundImage);
+		}
+		actualiser_background_select();
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 //	Fonctions utilisées
@@ -841,6 +847,41 @@ $(document).ready
 				$(this).parent().children("img").removeAttr("class");
 				$(this).addClass("on").parent().parent().css("background-color","#F6D");
 				modification = true;
+			}
+		);
+
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+//	Mettre à jour l'arrière plan du select f_defaut
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
+		$('#f_defaut').change
+		(
+			function()
+			{
+				actualiser_background_select();
+			}
+		);
+
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+//	Reporter une note dans toutes les cellules sans saisie
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
+		$('#report_note').click
+		(
+			function()
+			{
+				var note = $('#f_defaut option:selected').val();
+				$("#table_saisir tbody td input").each
+				(
+					function ()
+					{
+						if($(this).val()=='X')
+						{
+							$(this).val(note).removeAttr("class").addClass(note);
+							$(this).parent().css("background-color","#F6D");
+						}
+					}
+				);
 			}
 		);
 

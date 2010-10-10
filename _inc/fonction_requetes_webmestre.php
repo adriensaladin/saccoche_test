@@ -42,6 +42,21 @@ function DB_WEBMESTRE_recuperer_structure($base_id)
 }
 
 /**
+ * DB_WEBMESTRE_compter_structure
+ * 
+ * @param void
+ * @return string   n structures
+ */
+
+function DB_WEBMESTRE_compter_structure()
+{
+	$DB_SQL = 'SELECT COUNT(sacoche_base) AS nombre FROM sacoche_structure ';
+	$DB_ROW = DB::queryRow(SACOCHE_WEBMESTRE_BD_NAME , $DB_SQL , null);
+	$s = ($DB_ROW['nombre']>1) ? 's' : '' ;
+	return $DB_ROW['nombre'].' structure'.$s;
+}
+
+/**
  * DB_WEBMESTRE_lister_zones
  * 
  * @param void
@@ -351,7 +366,7 @@ function DB_WEBMESTRE_OPT_structures_sacoche()
 	}
 	else
 	{
-		return 'Aucun autre établissement n\'est enregistré !';
+		return 'Aucun établissement n\'est enregistré !';
 	}
 }
 

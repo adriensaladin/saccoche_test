@@ -27,7 +27,7 @@
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = "Nettoyage / Initialisation";
-$VERSION_JS_FILE += 2;
+$VERSION_JS_FILE += 3;
 ?>
 
 <p class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__gestion_nettoyage">DOC : Nettoyage et initialisation annuelle de la base</a></p>
@@ -62,6 +62,16 @@ $VERSION_JS_FILE += 2;
 
 <hr />
 
-<ul class="puce" id="ajax_info">
+<h2>Effacement des étiquettes nom &amp; prénom</h2>
+
+<div class="astuce">Cet outil est inutile sauf si un problème spécifique est survenu (voir documentation ci-dessus).</div>
+<form id="form_effacer" action=""><fieldset>
+	<span class="tab"></span><button id="bouton_effacer" type="button"><img alt="" src="./_img/bouton/nettoyage.png" /> Effacer les étiquettes nom &amp; prénom.</button><label id="ajax_msg_effacer">&nbsp;</label>
+</fieldset></form>
+
+<hr />
+
+<ul class="puce hide" id="ajax_info">
+	<li></li>
 </ul>
 <p />

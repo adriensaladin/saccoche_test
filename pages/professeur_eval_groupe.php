@@ -27,7 +27,7 @@
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = "Évaluer une classe ou un groupe";
-$VERSION_JS_FILE += 9;
+$VERSION_JS_FILE += 10;
 ?>
 
 <?php
@@ -161,7 +161,15 @@ if(count($tab_id_classe_groupe))
 		<img alt="V" src="./_img/note/<?php echo $_SESSION['NOTE_IMAGE_STYLE'] ?>/V.gif" /><img alt="DISP" src="./_img/note/DISP.gif" /><br />
 		<img alt="VV" src="./_img/note/<?php echo $_SESSION['NOTE_IMAGE_STYLE'] ?>/VV.gif" /><img alt="X" src="./_img/note/X.gif" />
 	</div></div>
-	<p />
+	<p class="ti"><button id="report_note" type="button">Reporter</button> la note <select id="f_defaut" name="f_defaut">
+		<option value="VV" style="background-image:url(./_img/note/<?php echo $_SESSION['NOTE_IMAGE_STYLE'] ?>/VV.gif)"></option>
+		<option value="V" style="background-image:url(./_img/note/<?php echo $_SESSION['NOTE_IMAGE_STYLE'] ?>/V.gif)"></option>
+		<option value="R" style="background-image:url(./_img/note/<?php echo $_SESSION['NOTE_IMAGE_STYLE'] ?>/R.gif)"></option>
+		<option value="RR" style="background-image:url(./_img/note/<?php echo $_SESSION['NOTE_IMAGE_STYLE'] ?>/RR.gif)"></option>
+		<option value="ABS" style="background-image:url(./_img/note/ABS.gif)"></option>
+		<option value="NN" style="background-image:url(./_img/note/NN.gif)"></option>
+		<option value="DISP" style="background-image:url(./_img/note/DISP.gif)"></option>
+	</select> dans toutes les cellules vides.</p>
 	<div>
 		<a lang="zone_saisir_deport" href="#td_souris_container"><img src="./_img/toggle_plus.gif" alt="" title="Voir / masquer la saisie déportée." class="toggle" /></a> Saisie déportée
 		<div id="zone_saisir_deport" class="hide">

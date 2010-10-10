@@ -34,11 +34,11 @@ $(document).ready
 		// Appel en ajax pour lancer un nettoyage
 		//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
 
-		$('#bouton_nettoyer , #bouton_purger , #bouton_supprimer').click
+		$('#bouton_nettoyer , #bouton_purger , #bouton_supprimer , #bouton_effacer').click
 		(
 			function()
 			{
-				var action = $(this).attr('id').substring(7); // "purger" ou "nettoyer"
+				var action = $(this).attr('id').substring(7); // "nettoyer" ou "purger" ou "supprimer" ou "effacer"
 				if(action=='purger')
 				{
 					var continuer = (confirm("Attention : les scores déjà saisis ne seront plus modifiables !\nConfirmez-vous l'initialisation annuelle des données ?")) ? true : false ;
@@ -55,7 +55,7 @@ $(document).ready
 				{
 					$("button").attr('disabled','disabled');
 					$("label").removeAttr("class").html('');
-					$("#ajax_info").html('');
+					$("#ajax_info").html('<li></li>').hide();
 					$('#ajax_msg_'+action).addClass("loader").html("Demande envoyée... Veuillez patienter.");
 					$.ajax
 					(
@@ -80,7 +80,7 @@ $(document).ready
 								else
 								{
 									$('#ajax_msg_'+action).removeAttr("class").html('');
-									$('#ajax_info').html(responseHTML);
+									$('#ajax_info').html(responseHTML).show();
 									maj_clock(1);
 								}
 							}

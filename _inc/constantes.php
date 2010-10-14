@@ -37,7 +37,7 @@ define('VERSION_BASE','2010-10-04');
 
 // VERSION_CSS_SCREEN / VERSION_CSS_PRINT / VERSION_JS_BIBLIO / VERSION_JS_GLOBAL / VERSION_JS_FILE
 // Pour éviter les problèmes de mise en cache (hors serveur localhost), modifier ces valeurs lors d'une mise à jour
-define('VERSION_CSS_SCREEN',47);
+define('VERSION_CSS_SCREEN',48);
 define('VERSION_CSS_PRINT',2);
 define('VERSION_JS_BIBLIO',3);
 define('VERSION_JS_GLOBAL',34);

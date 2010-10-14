@@ -27,7 +27,7 @@
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = "Évaluer des élèves sélectionnés";
-$VERSION_JS_FILE += 9;
+$VERSION_JS_FILE += 10;
 ?>
 
 <?php
@@ -154,15 +154,15 @@ $date_fin    = date("d/m/Y");
 		<img alt="V" src="./_img/note/<?php echo $_SESSION['NOTE_IMAGE_STYLE'] ?>/V.gif" /><img alt="DISP" src="./_img/note/DISP.gif" /><br />
 		<img alt="VV" src="./_img/note/<?php echo $_SESSION['NOTE_IMAGE_STYLE'] ?>/VV.gif" /><img alt="X" src="./_img/note/X.gif" />
 	</div></div>
-	<p class="ti"><button id="report_note" type="button">Reporter</button> la note <select id="f_defaut" name="f_defaut">
-		<option value="VV" style="background-image:url(./_img/note/<?php echo $_SESSION['NOTE_IMAGE_STYLE'] ?>/VV.gif)"></option>
-		<option value="V" style="background-image:url(./_img/note/<?php echo $_SESSION['NOTE_IMAGE_STYLE'] ?>/V.gif)"></option>
-		<option value="R" style="background-image:url(./_img/note/<?php echo $_SESSION['NOTE_IMAGE_STYLE'] ?>/R.gif)"></option>
-		<option value="RR" style="background-image:url(./_img/note/<?php echo $_SESSION['NOTE_IMAGE_STYLE'] ?>/RR.gif)"></option>
-		<option value="ABS" style="background-image:url(./_img/note/ABS.gif)"></option>
-		<option value="NN" style="background-image:url(./_img/note/NN.gif)"></option>
-		<option value="DISP" style="background-image:url(./_img/note/DISP.gif)"></option>
-	</select> dans toutes les cellules vides.</p>
+	<p class="ti" id="aide_en_ligne"><button id="report_note" type="button">Reporter</button> le code 
+		<label for="f_defaut_VV"><input type="radio" id="f_defaut_VV" name="f_defaut" value="VV" checked="checked" /><img alt="VV" src="./_img/note/<?php echo $_SESSION['NOTE_IMAGE_STYLE'] ?>/VV.gif" /></label>
+		<label for="f_defaut_V"><input type="radio" id="f_defaut_V" name="f_defaut" value="V" /><img alt="V" src="./_img/note/<?php echo $_SESSION['NOTE_IMAGE_STYLE'] ?>/V.gif" /></label>
+		<label for="f_defaut_R"><input type="radio" id="f_defaut_R" name="f_defaut" value="R" /><img alt="R" src="./_img/note/<?php echo $_SESSION['NOTE_IMAGE_STYLE'] ?>/R.gif" /></label>
+		<label for="f_defaut_RR"><input type="radio" id="f_defaut_RR" name="f_defaut" value="RR" /><img alt="RR" src="./_img/note/<?php echo $_SESSION['NOTE_IMAGE_STYLE'] ?>/RR.gif" /></label>
+		<label for="f_defaut_ABS"><input type="radio" id="f_defaut_ABS" name="f_defaut" value="ABS" /><img alt="ABS" src="./_img/note/ABS.gif" /></label>
+		<label for="f_defaut_NN"><input type="radio" id="f_defaut_NN" name="f_defaut" value="NN" /><img alt="NN" src="./_img/note/NN.gif" /></label>
+		<label for="f_defaut_DISP"><input type="radio" id="f_defaut_DISP" name="f_defaut" value="DISP" /><img alt="DISP" src="./_img/note/DISP.gif" /></label>
+	dans toutes les cellules vides.<label id="msg_report">&nbsp;</label></p>
 	<div>
 		<a lang="zone_saisir_deport" href="#td_souris_container"><img src="./_img/toggle_plus.gif" alt="" title="Voir / masquer la saisie déportée." class="toggle" /></a> Saisie déportée
 		<div id="zone_saisir_deport" class="hide">

@@ -49,12 +49,6 @@ $(document).ready
 			}
 		}
 		trier_tableau();
-		function actualiser_background_select()
-		{
-			var backgroundImage = $('#f_defaut option:selected').css('background-image');
-			$('#f_defaut').css('background-image',backgroundImage);
-		}
-		actualiser_background_select();
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 //	Fonctions utilisées
@@ -851,18 +845,6 @@ $(document).ready
 		);
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-//	Mettre à jour l'arrière plan du select f_defaut
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-
-		$('#f_defaut').change
-		(
-			function()
-			{
-				actualiser_background_select();
-			}
-		);
-
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 //	Reporter une note dans toutes les cellules sans saisie
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
@@ -870,18 +852,38 @@ $(document).ready
 		(
 			function()
 			{
-				var note = $('#f_defaut option:selected').val();
-				$("#table_saisir tbody td input").each
-				(
-					function ()
-					{
-						if($(this).val()=='X')
+				var note = $("input[name=f_defaut]:checked").val();
+				var findme = '.'+note+'.';
+				if( (typeof(note)=='undefined') || ('.VV.V.R.RR.ABS.NN.DISP.'.indexOf(findme)==-1) )
+				{
+					$('#msg_report').removeAttr("class").addClass("alerte").html('Aucun code coché !');
+					return false;
+				}
+				else
+				{
+					var compteur = 0;
+					$("#table_saisir tbody td input").each
+					(
+						function ()
 						{
-							$(this).val(note).removeAttr("class").addClass(note);
-							$(this).parent().css("background-color","#F6D");
+							if($(this).val()=='X')
+							{
+								$(this).val(note).removeAttr("class").addClass(note);
+								$(this).parent().css("background-color","#F6D");
+								compteur++;
+							}
 						}
+					);
+					if(!compteur)
+					{
+						$('#msg_report').removeAttr("class").addClass("alerte").html('Aucune cellule vide trouvée !');
 					}
-				);
+					else
+					{
+						var s = (compteur>1) ? 's' : '' ;
+						$('#msg_report').removeAttr("class").addClass("valide").html(compteur+' report'+s+' effectué'+s+'.');
+					}
+				}
 			}
 		);
 

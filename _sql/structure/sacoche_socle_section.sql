@@ -1,10 +1,10 @@
 DROP TABLE IF EXISTS sacoche_socle_section;
 
 CREATE TABLE sacoche_socle_section (
-	section_id SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
-	pilier_id TINYINT(3) UNSIGNED NOT NULL,
-	section_ordre TINYINT(3) UNSIGNED NOT NULL COMMENT "Commence à 1.",
-	section_nom VARCHAR(128) COLLATE utf8_unicode_ci NOT NULL,
+	section_id    SMALLINT(5)  UNSIGNED                NOT NULL AUTO_INCREMENT,
+	pilier_id     TINYINT(3)   UNSIGNED                NOT NULL DEFAULT 0,
+	section_ordre TINYINT(3)   UNSIGNED                NOT NULL DEFAULT 1 COMMENT "Commence à 1.",
+	section_nom   VARCHAR(165) COLLATE utf8_unicode_ci NOT NULL DEFAULT "",
 	PRIMARY KEY (section_id),
 	KEY pilier_id (pilier_id)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;

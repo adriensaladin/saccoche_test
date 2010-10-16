@@ -1,9 +1,9 @@
 DROP TABLE IF EXISTS sacoche_geo;
 
 CREATE TABLE sacoche_geo (
-	geo_id TINYINT(3) UNSIGNED NOT NULL AUTO_INCREMENT,
-	geo_ordre TINYINT(3) UNSIGNED NOT NULL,
-	geo_nom VARCHAR(25) COLLATE utf8_unicode_ci NOT NULL,
+	geo_id    TINYINT(3)  UNSIGNED                NOT NULL AUTO_INCREMENT,
+	geo_ordre TINYINT(3)  UNSIGNED                NOT NULL DEFAULT 0,
+	geo_nom   VARCHAR(25) COLLATE utf8_unicode_ci NOT NULL DEFAULT "",
 	PRIMARY KEY (geo_id)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 

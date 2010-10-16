@@ -246,7 +246,7 @@ function charger_parametres_mysql_supplementaires($BASE)
 
 function fabriquer_login($prenom,$nom,$profil)
 {
-	$modele = ($profil=='eleve') ? $_SESSION['MODELE_ELEVE'] : $_SESSION['MODELE_PROF'] ;
+	$modele = ($profil=='eleve') ? $_SESSION['MODELE_ELEVE'] : $_SESSION['MODELE_PROFESSEUR'] ;
 	$login_prenom = mb_substr( clean_login($prenom) , 0 , mb_substr_count($modele,'p') );
 	$login_nom    = mb_substr( clean_login($nom)    , 0 , mb_substr_count($modele,'n') );
 	$login_separe = str_replace(array('p','n'),'',$modele);
@@ -964,19 +964,20 @@ function exporter_arborescence_to_XML($DB_TAB)
  * 
  * @param string $url
  * @param array  $tab_post   tableau[nom]=>valeur de données à envoyer en POST (facultatif)
+ * @param int    $timeout    valeur du timeout en s ; facultatif, par défaut 5 ; pour l'interrogation du LDAP (Bx) je suis obligé de monter à 30 ; éviter de monter cette valeur car...
  * @return string
  */
 
-function url_get_contents($url,$tab_post=false)
+function url_get_contents($url,$tab_post=false,$timeout=5)
 {
 	// Ne pas utiliser file_get_contents() car certains serveurs n'accepent pas d'utiliser une URL comme nom de fichier (gestionnaire fopen non activé).
 	// On utilise donc la bibliothèque cURL en remplacement
 	$ch = curl_init();
-	curl_setopt($ch, CURLOPT_DNS_CACHE_TIMEOUT, 3600);          // Le temps en seconde que CURL doit conserver les entrées DNS en mémoire. Cette option est définie à 120 secondes (2 minutes) par défaut.
+	curl_setopt($ch, CURLOPT_DNS_CACHE_TIMEOUT, 3600);          // Le temps en seconde que cURL doit conserver les entrées DNS en mémoire. Cette option est définie à 120 secondes (2 minutes) par défaut.
 	curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);             // TRUE retourne directement le transfert sous forme de chaîne de la valeur retournée par curl_exec() au lieu de l'afficher directement.
 	curl_setopt($ch, CURLOPT_FAILONERROR, TRUE);                // TRUE pour que PHP traite silencieusement les codes HTTP supérieurs ou égaux à 400. Le comportement par défaut est de retourner la page normalement, en ignorant ce code.
 	curl_setopt($ch, CURLOPT_HEADER, FALSE);                    // FALSE pour ne pas inclure l'en-tête dans la valeur de retour.
-	curl_setopt($ch, CURLOPT_TIMEOUT, 5);                       // Le temps maximum d'exécution de la fonction cURL (en s).
+	curl_setopt($ch, CURLOPT_TIMEOUT, $timeout);                // Le temps maximum d'exécution de la fonction cURL (en s).
 	curl_setopt($ch, CURLOPT_URL, $url);                        // L'URL à récupérer. Vous pouvez aussi choisir cette valeur lors de l'appel à curl_init().
 	if( (!ini_get('safe_mode')) && (!ini_get('open_basedir')) ) // Option CURLOPT_FOLLOWLOCATION sous conditions car certaines installations renvoient "CURLOPT_FOLLOWLOCATION cannot be activated when in safe_mode or an open_basedir is set" (http://www.php.net/manual/fr/features.safe-mode.functions.php#92192)
 	{

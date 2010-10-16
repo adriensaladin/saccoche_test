@@ -409,6 +409,66 @@ function maj_base($version_actuelle)
 		// y compris la mise à jour du champ "version_base" justement
 		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_actuelle.'" WHERE parametre_nom="version_base" LIMIT 1' );
 	}
+	if($version_actuelle=='2010-10-04')
+	{
+		$version_actuelle = '2010-10-16';
+		// script pour migrer vers la version suivante : modif de champs TINYTEXT en VARCHAR
+		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_socle_entree CHANGE entree_nom entree_nom VARCHAR( 250 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL' );
+		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_saisie CHANGE saisie_info saisie_info VARCHAR( 100 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL COMMENT "Enregistrement statique du nom du devoir et du professeur, conservé les années suivantes."' );
+		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_referentiel_item CHANGE item_nom item_nom VARCHAR( 255 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL' );
+		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_referentiel_item CHANGE item_lien item_lien VARCHAR( 255 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL' );
+		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_parametre CHANGE parametre_valeur parametre_valeur VARCHAR( 150 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL' );
+		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_jointure_user_pilier CHANGE validation_pilier_info validation_pilier_info VARCHAR( 25 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL COMMENT "Enregistrement statique du nom du validateur, conservé les années suivantes."' );
+		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_jointure_user_entree CHANGE validation_entree_info validation_entree_info VARCHAR( 25 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL COMMENT "Enregistrement statique du nom du validateur, conservé les années suivantes."' );
+		// script pour migrer vers la version suivante : réparation de la table "sacoche_socle_section"
+		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_socle_section CHANGE section_nom section_nom VARCHAR( 165 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL' );
+		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'DELETE FROM sacoche_socle_section WHERE section_id>28' );
+		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_socle_section VALUES 
+																					( 29,  7, 2, "Maîtriser des connaissances dans divers domaines scientifiques et les mobiliser dans des contextes scientifiques différents et dans des activités de la vie courante"),
+																					( 30,  7, 3, "Environnement et développement durable"),
+																					( 31,  8, 1, "S’approprier un environnement informatique de travail"),
+																					( 32,  8, 2, "Adopter une attitude responsable"),
+																					( 33,  8, 3, "Créer, produire, traiter, exploiter des données"),
+																					( 34,  8, 4, "S’informer, se documenter"),
+																					( 35,  8, 5, "Communiquer, échanger"),
+																					( 36,  9, 1, "Avoir des repères relevant du temps et de l’espace"),
+																					( 37,  9, 2, "Avoir des repères littéraires"),
+																					( 73,  9, 3, "Lire et pratiquer différents langages"),
+																					( 38,  9, 4, "Pratiquer les arts et avoir des repères en histoire des arts"),
+																					( 39, 10, 1, "Connaître les principes et fondements de la vie civique et sociale"),
+																					( 40, 10, 2, "Avoir un comportement responsable"),
+																					( 41, 11, 1, "S’appuyer sur des méthodes de travail pour être autonome"),
+																					( 42, 11, 2, "Faire preuve d’initiative"),
+																					( 43, 11, 3, "Avoir une bonne maîtrise de son corps et une pratique physique (sportive ou artistique)"),
+																					( 44, 12, 1, "Lire"),
+																					( 45, 12, 2, "Écrire"),
+																					( 46, 12, 3, "Dire"),
+																					( 48, 13, 1, "Réagir et dialoguer"),
+																					( 49, 13, 2, "Écouter et comprendre"),
+																					( 50, 13, 3, "Parler en continu"),
+																					( 51, 13, 4, "Lire"),
+																					( 52, 13, 5, "Écrire"),
+																					( 53, 14, 1, "Pratiquer une démarche scientifique et technologique, résoudre des problèmes"),
+																					( 54, 14, 2, "Savoir utiliser des connaissances et des compétences mathématiques"),
+																					( 55, 14, 3, "Savoir utiliser des connaissances dans divers domaines scientifiques"),
+																					( 56, 14, 4, "Environnement et développement durable"),
+																					( 57, 15, 1, "S’approprier un environnement informatique de travail"),
+																					( 58, 15, 2, "Adopter une attitude responsable"),
+																					( 59, 15, 3, "Créer, produire, traiter, exploiter des données"),
+																					( 60, 15, 4, "S’informer, se documenter"),
+																					( 61, 15, 5, "Communiquer, échanger"),
+																					( 62, 16, 1, "Avoir des connaissances et des repères"),
+																					( 67, 16, 2, "Situer dans le temps, l’espace, les civilisations"),
+																					( 66, 16, 3, "Lire et pratiquer différents langages"),
+																					( 74, 16, 4, "Faire preuve de sensibilité, d’esprit critique, de curiosité"),
+																					( 68, 17, 1, "Connaître les principes et fondements de la vie civique et sociale"),
+																					( 69, 17, 2, "Avoir un comportement responsable"),
+																					( 70, 18, 1, "Être acteur de son parcours de formation et d’orientation"),
+																					( 71, 18, 2, "Être capable de mobiliser ses ressources intellectuelles et physiques dans diverses situations"),
+																					( 72, 18, 3, "Faire preuve d’initiative")' );
+		// y compris la mise à jour du champ "version_base" justement
+		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_actuelle.'" WHERE parametre_nom="version_base" LIMIT 1' );
+	}
 	// Log de l'action
 	ajouter_log('Mise à jour automatique de la base '.SACOCHE_STRUCTURE_BD_NAME.'.');
 }

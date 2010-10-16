@@ -45,8 +45,8 @@ if( $f_login_professeur && $f_login_eleve )
 	{
 		DB_STRUCTURE_modifier_parametres( array('modele_professeur'=>$f_login_professeur,'modele_eleve'=>$f_login_eleve) );
 		// ne pas oublier de mettre aussi à jour la session
-		$_SESSION['MODELE_PROF']  = $f_login_professeur;
-		$_SESSION['MODELE_ELEVE'] = $f_login_eleve;
+		$_SESSION['MODELE_PROFESSEUR'] = $f_login_professeur;
+		$_SESSION['MODELE_ELEVE']      = $f_login_eleve;
 		echo'ok';
 	}
 	else

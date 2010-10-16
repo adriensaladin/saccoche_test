@@ -34,7 +34,7 @@ $TITRE = "Format des noms d'utilisateurs";
 <hr />
 
 <form action=""><fieldset>
-	<label class="tab" for="f_login_professeur">Format professeur :</label><input id="f_login_professeur" name="f_login_professeur" value="<?php echo $_SESSION['MODELE_PROF']; ?>" size="20" maxlength="20" /><br />
+	<label class="tab" for="f_login_professeur">Format professeur :</label><input id="f_login_professeur" name="f_login_professeur" value="<?php echo $_SESSION['MODELE_PROFESSEUR']; ?>" size="20" maxlength="20" /><br />
 	<label class="tab" for="f_login_eleve">Format élève :</label><input id="f_login_eleve" name="f_login_eleve" value="<?php echo $_SESSION['MODELE_ELEVE']; ?>" size="20" maxlength="20" /><br />
 	<span class="tab"></span><button id="bouton_valider" type="button"><img alt="" src="./_img/bouton/parametre.png" /> Valider ces formats.</button><label id="ajax_msg">&nbsp;</label>
 </fieldset></form>

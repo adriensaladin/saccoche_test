@@ -1,12 +1,12 @@
 DROP TABLE IF EXISTS sacoche_niveau;
 
 CREATE TABLE sacoche_niveau (
-	niveau_id TINYINT(3) UNSIGNED NOT NULL AUTO_INCREMENT,
-	palier_id TINYINT(3) UNSIGNED NOT NULL,
-	niveau_ordre TINYINT(3) UNSIGNED NOT NULL,
-	niveau_ref VARCHAR(5) COLLATE utf8_unicode_ci NOT NULL,
-	code_mef CHAR(11) COLLATE utf8_unicode_ci NOT NULL COMMENT "Masque à comparer avec le code_mef d'une classe (nomenclature Sconet).",
-	niveau_nom VARCHAR(55) COLLATE utf8_unicode_ci NOT NULL,
+	niveau_id    TINYINT(3)  UNSIGNED                NOT NULL AUTO_INCREMENT,
+	palier_id    TINYINT(3)  UNSIGNED                NOT NULL DEFAULT 0,
+	niveau_ordre TINYINT(3)  UNSIGNED                NOT NULL DEFAULT 0,
+	niveau_ref   VARCHAR(5)  COLLATE utf8_unicode_ci NOT NULL DEFAULT "",
+	code_mef     CHAR(11)    COLLATE utf8_unicode_ci NOT NULL DEFAULT "" COMMENT "Masque à comparer avec le code_mef d'une classe (nomenclature Sconet).",
+	niveau_nom   VARCHAR(55) COLLATE utf8_unicode_ci NOT NULL DEFAULT "",
 	PRIMARY KEY (niveau_id),
 	KEY palier_id (palier_id)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;

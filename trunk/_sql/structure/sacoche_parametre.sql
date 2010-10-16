@@ -1,8 +1,8 @@
 DROP TABLE IF EXISTS sacoche_parametre;
 
 CREATE TABLE sacoche_parametre (
-	parametre_nom VARCHAR(25) COLLATE utf8_unicode_ci NOT NULL,
-	parametre_valeur TINYTEXT COLLATE utf8_unicode_ci NOT NULL,
+	parametre_nom    VARCHAR(25)  COLLATE utf8_unicode_ci NOT NULL DEFAULT "",
+	parametre_valeur VARCHAR(150) COLLATE utf8_unicode_ci NOT NULL DEFAULT "",
 	PRIMARY KEY (parametre_nom)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 

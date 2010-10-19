@@ -31,19 +31,18 @@ $tab_connexion_mode = array();
 $tab_connexion_mode['normal'] = 'Normal';
 $tab_connexion_mode['cas']    = 'Serveur CAS';
 /*
-$tab_connexion_mode['ldap']   = 'Annuaire LDAP';
 $tab_connexion_mode['itop']   = 'Machine virtuelle itop';
 */
 
 $tab_connexion_info = array();
 $tab_connexion_info['normal']['sacoche']       = array( 'txt'=>'Connexion avec les identifiants enregistrés dans SACoche.' );
 
-$tab_connexion_info['cas']['argos']            = array( 'serveur_host'=>'ent-auth.ac-bordeaux.fr' , 'serveur_port'=>443  , 'serveur_root'=>''    , 'csv_nom'=>3 , 'csv_prenom'=>4 , 'csv_id_ent'=>1 , 'txt'=>'ENT Argos (académie de Bordeaux, départements 24 33 40 47).' );
-$tab_connexion_info['cas']['argos64']          = array( 'serveur_host'=>'cas.argos64.fr'          , 'serveur_port'=>443  , 'serveur_root'=>''    , 'csv_nom'=>3 , 'csv_prenom'=>4 , 'csv_id_ent'=>1 , 'txt'=>'ENT Argos64 (département des Pyrénées-Atlantiques).' );
+$tab_connexion_info['cas']['argos']            = array( 'serveur_host'=>'ent-cas.ac-bordeaux.fr'  , 'serveur_port'=>443  , 'serveur_root'=>'cas' , 'csv_nom'=>1 , 'csv_prenom'=>2 , 'csv_id_ent'=>0 , 'txt'=>'ENT Argos (académie de Bordeaux, départements 24 33 40 47).' ); // ex- ent-auth.ac-bordeaux.fr sans root
+$tab_connexion_info['cas']['argos64']          = array( 'serveur_host'=>'ent-cas.ac-bordeaux.fr'  , 'serveur_port'=>443  , 'serveur_root'=>'cas' , 'csv_nom'=>1 , 'csv_prenom'=>2 , 'csv_id_ent'=>0 , 'txt'=>'ENT Argos64 (département des Pyrénées-Atlantiques).' ); // ex- cas.argos64.fr sans root
 $tab_connexion_info['cas']['e-lyco']           = array( 'serveur_host'=>'cas.e-lyco.fr'           , 'serveur_port'=>443  , 'serveur_root'=>''    , 'csv_nom'=>4 , 'csv_prenom'=>3 , 'csv_id_ent'=>1 , 'txt'=>'ENT e-lyco (académie de Nantes).' );
 $tab_connexion_info['cas']['entmip']           = array( 'serveur_host'=>'cas.entmip.fr'           , 'serveur_port'=>443  , 'serveur_root'=>''    , 'csv_nom'=>4 , 'csv_prenom'=>3 , 'csv_id_ent'=>1 , 'txt'=>'ENT Midi-Pyrénées K-d\'Ecole (académie de Toulouse).' );
 $tab_connexion_info['cas']['cybercolleges42']  = array( 'serveur_host'=>'cas.cybercolleges42.fr'  , 'serveur_port'=>443  , 'serveur_root'=>''    , 'csv_nom'=>4 , 'csv_prenom'=>3 , 'csv_id_ent'=>1 , 'txt'=>'ENT Cybercollège 42 (département de la Loire).' );
-$tab_connexion_info['cas']['perso']            = array( 'serveur_host'=>'domaine.ext'             , 'serveur_port'=>443  , 'serveur_root'=>''    , 'csv_nom'=>0 , 'csv_prenom'=>0 , 'csv_id_ent'=>0 , 'txt'=>'Configuration CAS manuelle.' );
+$tab_connexion_info['cas']['perso']            = array( 'serveur_host'=>''                        , 'serveur_port'=>443  , 'serveur_root'=>''    , 'csv_nom'=>1 , 'csv_prenom'=>2 , 'csv_id_ent'=>0 , 'txt'=>'Configuration CAS manuelle.' );
 
 /*
 $tab_connexion_info['cas']['laclasse']         = array( 'serveur_host'=>'sso.laclasse.com'        , 'serveur_port'=>443  , 'serveur_root'=>'cas' , 'csv_nom'=>0 , 'csv_prenom'=>0 , 'csv_id_ent'=>0 , 'txt'=>'ENT Laclasse.com du Rhône.' );

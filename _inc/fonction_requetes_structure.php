@@ -1182,9 +1182,9 @@ function DB_STRUCTURE_lister_jointure_user_pilier($listing_eleves,$listing_pilie
 /**
  * DB_STRUCTURE_lister_users
  * 
- * @param string   $profil        'eleve' / 'professeur' / 'directeur' / 'administrateur' / 'tous' pour eleve + professeur + directeur
- * @param bool     $only_actifs   true pour statut actif uniquement / false pour tout le monde qq soit le statut
- * @param bool     $with_classe   true pour récupérer le nom de la classe de l'élève / false sinon
+ * @param string|array   $profil        'eleve' / 'professeur' / 'directeur' / 'administrateur' / ou par exemple array('eleve','professeur','directeur')
+ * @param bool           $only_actifs   true pour statut actif uniquement / false pour tout le monde qq soit le statut
+ * @param bool           $with_classe   true pour récupérer le nom de la classe de l'élève / false sinon
  * @return array
  */
 
@@ -1194,15 +1194,20 @@ function DB_STRUCTURE_lister_users($profil,$only_actifs,$with_classe)
 	$left_join = '';
 	$where     = '';
 	$order_by  = '';
-	if($profil!='tous')
+	if(is_string($profil))
 	{
 		$where .= 'user_profil=:profil ';
 		$DB_VAR[':profil'] = $profil;
 	}
 	else
 	{
-		$where .= 'user_profil!=:profil ';
-		$DB_VAR[':profil'] = 'administrateur';
+		foreach($profil as $key => $val)
+		{
+			$or = ($key) ? 'OR ' : '( ' ;
+			$where .= $or.'user_profil=:profil'.$key.' ';
+			$DB_VAR[':profil'.$key] = $val;
+		}
+		$where .= ') ';
 		$order_by .= 'user_profil ASC, ';
 	}
 	if($with_classe)

@@ -964,7 +964,7 @@ function exporter_arborescence_to_XML($DB_TAB)
  * 
  * @param string $url
  * @param array  $tab_post   tableau[nom]=>valeur de données à envoyer en POST (facultatif)
- * @param int    $timeout    valeur du timeout en s ; facultatif, par défaut 5 ; pour l'interrogation du LDAP (Bx) je suis obligé de monter à 30 ; éviter de monter cette valeur car...
+ * @param int    $timeout    valeur du timeout en s ; facultatif, par défaut 5 ; pour l'interrogation du LDAP (Bx) je suis obligé de monter à 30
  * @return string
  */
 
@@ -977,7 +977,7 @@ function url_get_contents($url,$tab_post=false,$timeout=5)
 	curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);             // TRUE retourne directement le transfert sous forme de chaîne de la valeur retournée par curl_exec() au lieu de l'afficher directement.
 	curl_setopt($ch, CURLOPT_FAILONERROR, TRUE);                // TRUE pour que PHP traite silencieusement les codes HTTP supérieurs ou égaux à 400. Le comportement par défaut est de retourner la page normalement, en ignorant ce code.
 	curl_setopt($ch, CURLOPT_HEADER, FALSE);                    // FALSE pour ne pas inclure l'en-tête dans la valeur de retour.
-	curl_setopt($ch, CURLOPT_TIMEOUT, $timeout);                // Le temps maximum d'exécution de la fonction cURL (en s).
+	curl_setopt($ch, CURLOPT_TIMEOUT, $timeout);                // Le temps maximum d'exécution de la fonction cURL (en s) ; éviter de monter cette valeur pour libérer des ressources plus rapidement : 'classiquement', le serveur doit répondre en qq ms, donc si au bout de 5s il a pas répondu c'est qu'il ne répondra plus, alors pas la peine de bloquer une connexion et de la RAM pendant plus longtemps.
 	curl_setopt($ch, CURLOPT_URL, $url);                        // L'URL à récupérer. Vous pouvez aussi choisir cette valeur lors de l'appel à curl_init().
 	if( (!ini_get('safe_mode')) && (!ini_get('open_basedir')) ) // Option CURLOPT_FOLLOWLOCATION sous conditions car certaines installations renvoient "CURLOPT_FOLLOWLOCATION cannot be activated when in safe_mode or an open_basedir is set" (http://www.php.net/manual/fr/features.safe-mode.functions.php#92192)
 	{

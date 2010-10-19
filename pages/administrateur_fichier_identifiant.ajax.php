@@ -40,12 +40,12 @@ $dossier_export    = './__tmp/export/';
 $dossier_import    = './__tmp/import/';
 $dossier_login_mdp = './__tmp/login-mdp/';
 
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //	Initialiser plusieurs noms d'utilisateurs élèves
 //	Initialiser plusieurs noms d'utilisateurs professeurs et/ou directeurs
 //	Initialiser plusieurs mots de passe élèves
 //	Initialiser plusieurs mots de passe professeurs et/ou directeurs
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 if( (($action=='init_login')||($action=='init_mdp')) && (($profil=='eleves')||($profil=='professeurs_directeurs')) && $nb )
 {
@@ -143,15 +143,15 @@ if( (($action=='init_login')||($action=='init_mdp')) && (($profil=='eleves')||($
 	exit();
 }
 
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //	Export CSV du contenu de la base des utilisateurs (login nom prénom de SACoche)
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 if($action=='user_export')
 {
 	$separateur = ';';
 	// Récupérer les données des utilisateurs
-	$DB_TAB = DB_STRUCTURE_lister_users('tous',$only_actifs=true,$with_classe=true);
+	$DB_TAB = DB_STRUCTURE_lister_users(array('eleve','professeur','directeur'),$only_actifs=true,$with_classe=true);
 	// Générer le csv
 	$fcontenu_csv = 'LOGIN'.$separateur.'MOT DE PASSE'.$separateur.'NOM'.$separateur.'PRENOM'.$separateur.'PROFIL (INFO)'.$separateur.'CLASSE (INFO)'."\r\n\r\n";
 	foreach($DB_TAB as $DB_ROW)
@@ -169,9 +169,9 @@ if($action=='user_export')
 	exit('<ul class="puce"><li><a class="lien_ext" href="'.$dossier_export.$fnom.'.zip">Récupérez le fichier exporté de la base SACoche.</a></li></ul>');
 }
 
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //	Import CSV du contenu d'un fichier pour forcer les logins ou/et mdp utilisateurs de SACoche
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 if($action=='import_loginmdp')
 {
@@ -231,7 +231,7 @@ if($action=='import_loginmdp')
 	$tab_users_base['nom']    = array();
 	$tab_users_base['prenom'] = array();
 	$tab_users_base['info']   = array();
-	$DB_TAB = DB_STRUCTURE_lister_users('tous',$only_actifs=false,$with_classe=true);
+	$DB_TAB = DB_STRUCTURE_lister_users(array('eleve','professeur','directeur'),$only_actifs=false,$with_classe=true);
 	foreach($DB_TAB as $DB_ROW)
 	{
 		$tab_users_base['login'][$DB_ROW['user_id']]  = $DB_ROW['user_login'];
@@ -376,9 +376,9 @@ if($action=='import_loginmdp')
 	exit();
 }
 
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //	Import CSV du contenu d'un fichier pour forcer les identifiants élèves ou professeurs de GEPI
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 if( ($action=='import_gepi_eleves') || ($action=='import_gepi_profs') )
 {
@@ -479,12 +479,12 @@ if( ($action=='import_gepi_eleves') || ($action=='import_gepi_profs') )
 				if($nb_homonymes == 0)
 				{
 					// Contenu du fichier à ignorer : utilisateur non trouvé dans la base
-					$lignes_pb .= '<tr><td>'.html($tab_users_fichier['nom'][$i_fichier].' '.$tab_users_fichier['prenom'][$i_fichier]).'</td><td>nom et prénom non trouvés dans la base</td></tr>';
+					$lignes_pb .= '<tr><td>'.html($tab_users_fichier['nom'][$i_fichier].' '.$tab_users_fichier['prenom'][$i_fichier].' ['.$tab_users_fichier['id_gepi'][$i_fichier].']').'</td><td>nom et prénom non trouvés dans la base</td></tr>';
 				}
 				elseif($nb_homonymes > 1 )
 				{
 					// Contenu du fichier à ignorer : plusieurs homonymes trouvés dans la base
-					$lignes_pb .= '<tr><td>'.html($tab_users_fichier['nom'][$i_fichier].' '.$tab_users_fichier['prenom'][$i_fichier]).'</td><td>homonymes trouvés dans la base : traiter ce cas manuellement</td></tr>';
+					$lignes_pb .= '<tr><td>'.html($tab_users_fichier['nom'][$i_fichier].' '.$tab_users_fichier['prenom'][$i_fichier].' ['.$tab_users_fichier['id_gepi'][$i_fichier].']').'</td><td>homonymes trouvés dans la base : traiter ce cas manuellement</td></tr>';
 				}
 				else
 				{
@@ -496,7 +496,7 @@ if( ($action=='import_gepi_eleves') || ($action=='import_gepi_profs') )
 				if($tab_users_fichier['id_gepi'][$i_fichier]==$tab_users_base['id_gepi'][$id_base])
 				{
 					// Contenu du fichier à ignorer : id_gepi identique
-					$lignes_ras .= '<tr><td>'.html($tab_users_fichier['nom'][$i_fichier].' '.$tab_users_fichier['prenom'][$i_fichier]).'</td><td>identifiant de GEPI identique</td></tr>';
+					$lignes_ras .= '<tr><td>'.html($tab_users_fichier['nom'][$i_fichier].' '.$tab_users_fichier['prenom'][$i_fichier].' ['.$tab_users_fichier['id_gepi'][$i_fichier].']').'</td><td>identifiant de GEPI identique</td></tr>';
 				}
 				else
 				{
@@ -504,7 +504,7 @@ if( ($action=='import_gepi_eleves') || ($action=='import_gepi_profs') )
 					if(in_array($tab_users_fichier['id_gepi'][$i_fichier],$tab_users_base['id_gepi']))
 					{
 						// Contenu du fichier à problème : id_gepi déjà pris
-						$lignes_pb .= '<tr><td>'.html($tab_users_fichier['nom'][$i_fichier].' '.$tab_users_fichier['prenom'][$i_fichier]).'</td><td>identifiant de GEPI déjà affecté à un autre utilisateur</td></tr>';
+						$lignes_pb .= '<tr><td>'.html($tab_users_fichier['nom'][$i_fichier].' '.$tab_users_fichier['prenom'][$i_fichier].' ['.$tab_users_fichier['id_gepi'][$i_fichier].']').'</td><td>identifiant de GEPI déjà affecté à un autre utilisateur</td></tr>';
 					}
 					else
 					{
@@ -533,9 +533,9 @@ if( ($action=='import_gepi_eleves') || ($action=='import_gepi_profs') )
 	exit();
 }
 
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //	Import CSV du contenu d'un fichier pour forcer les identifiants d'un ENT
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 if($action=='import_ent')
 {
@@ -590,13 +590,13 @@ if($action=='import_ent')
 	}
 	// On trie
 	array_multisort($tab_users_fichier['nom'],SORT_ASC,SORT_STRING,$tab_users_fichier['prenom'],SORT_ASC,SORT_STRING,$tab_users_fichier['id_ent']);
-	// On récupère le contenu de la base pour comparer, y compris les professeurs afin de comparer avec leurs id ent
+	// On récupère le contenu de la base pour comparer
 	$tab_users_base           = array();
 	$tab_users_base['id_ent'] = array();
 	$tab_users_base['nom']    = array();
 	$tab_users_base['prenom'] = array();
 	$tab_users_base['info']   = array();
-	$DB_TAB = DB_STRUCTURE_lister_users('tous',$only_actifs=false,$with_classe=true);
+	$DB_TAB = DB_STRUCTURE_lister_users(array('eleve','professeur','directeur'),$only_actifs=false,$with_classe=true);
 	foreach($DB_TAB as $DB_ROW)
 	{
 		$tab_users_base['id_ent'][$DB_ROW['user_id']] = $DB_ROW['user_id_ent'];
@@ -625,12 +625,12 @@ if($action=='import_ent')
 			if($nb_homonymes == 0)
 			{
 				// Contenu du fichier à ignorer : utilisateur non trouvé dans la base
-				$lignes_pb .= '<tr><td>'.html($tab_users_fichier['nom'][$i_fichier].' '.$tab_users_fichier['prenom'][$i_fichier]).'</td><td>nom et prénom non trouvés dans la base</td></tr>';
+				$lignes_pb .= '<tr><td>'.html($tab_users_fichier['nom'][$i_fichier].' '.$tab_users_fichier['prenom'][$i_fichier].' ['.$tab_users_fichier['id_ent'][$i_fichier].']').'</td><td>nom et prénom non trouvés dans la base</td></tr>';
 			}
 			elseif($nb_homonymes > 1 )
 			{
 				// Contenu du fichier à ignorer : plusieurs homonymes trouvés dans la base
-				$lignes_pb .= '<tr><td>'.html($tab_users_fichier['nom'][$i_fichier].' '.$tab_users_fichier['prenom'][$i_fichier]).'</td><td>homonymes trouvés dans la base : traiter ce cas manuellement</td></tr>';
+				$lignes_pb .= '<tr><td>'.html($tab_users_fichier['nom'][$i_fichier].' '.$tab_users_fichier['prenom'][$i_fichier].' ['.$tab_users_fichier['id_ent'][$i_fichier].']').'</td><td>homonymes trouvés dans la base : traiter ce cas manuellement</td></tr>';
 			}
 			else
 			{
@@ -638,7 +638,7 @@ if($action=='import_ent')
 				if($tab_users_fichier['id_ent'][$i_fichier]==$tab_users_base['id_ent'][$id_base])
 				{
 					// Contenu du fichier à ignorer : id_ent identique
-					$lignes_ras .= '<tr><td>'.html($tab_users_fichier['nom'][$i_fichier].' '.$tab_users_fichier['prenom'][$i_fichier]).'</td><td>identifiant d\'ENT identique</td></tr>';
+					$lignes_ras .= '<tr><td>'.html($tab_users_fichier['nom'][$i_fichier].' '.$tab_users_fichier['prenom'][$i_fichier].' ['.$tab_users_fichier['id_ent'][$i_fichier].']').'</td><td>identifiant d\'ENT identique</td></tr>';
 				}
 				else
 				{
@@ -646,7 +646,7 @@ if($action=='import_ent')
 					if(in_array($tab_users_fichier['id_ent'][$i_fichier],$tab_users_base['id_ent']))
 					{
 						// Contenu du fichier à problème : id_ent déjà pris
-						$lignes_pb .= '<tr><td>'.html($tab_users_fichier['nom'][$i_fichier].' '.$tab_users_fichier['prenom'][$i_fichier]).'</td><td>identifiant d\'ENT déjà affecté à un autre utilisateur</td></tr>';
+						$lignes_pb .= '<tr><td>'.html($tab_users_fichier['nom'][$i_fichier].' '.$tab_users_fichier['prenom'][$i_fichier].' ['.$tab_users_fichier['id_ent'][$i_fichier].']').'</td><td>identifiant d\'ENT déjà affecté à un autre utilisateur</td></tr>';
 					}
 					else
 					{
@@ -675,12 +675,12 @@ if($action=='import_ent')
 	exit();
 }
 
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //	Dupliquer l'identifiant de Gepi enregistré comme identifiant de l'ENT (COPY_id_gepi_TO_id_ent)
 //	Dupliquer le login de SACoche enregistré comme identifiant de l'ENT (COPY_login_TO_id_ent)
 //	Dupliquer l'identifiant de l'ENT enregistré comme identifiant de Gepi (COPY_id_ent_TO_id_gepi)
 //	Dupliquer le login de SACoche enregistré comme identifiant de Gepi (COPY_login_TO_id_gepi)
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 if( ($action=='COPY_id_gepi_TO_id_ent') || ($action=='COPY_login_TO_id_ent') || ($action=='COPY_id_ent_TO_id_gepi') || ($action=='COPY_login_TO_id_gepi') )
 {
@@ -689,27 +689,230 @@ if( ($action=='COPY_id_gepi_TO_id_ent') || ($action=='COPY_login_TO_id_ent') || 
 	exit('ok');
 }
 
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-//	Dupliquer l'identifiant récupéré su LCS comme identifiant de l'ENT (COPY_id_lcs_TO_id_ent)
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//	Dupliquer l'identifiant récupéré du LCS comme identifiant de l'ENT (COPY_id_lcs_TO_id_ent)
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 if($action=='COPY_id_lcs_TO_id_ent')
 {
-	$fichier = './lcs/import_lcs.php';
-	if(is_file($fichier))
-	{
-		require($fichier);
-		exit(); // La chaine 'ok' est déjà renvoyée par le script inclus en cas de succès.
-	}
-	else
+	$fichier = './webservices/import_lcs.php';
+	if(!is_file($fichier))
 	{
 		exit('Erreur : le fichier "'.$fichier.'" n\'a pas été trouvé !');
 	}
+	require($fichier); // Charge la fonction "recuperer_infos_user_LCS_by_NumSconet()"
+	// On récupère le contenu de la base, on va passer les users en revue un par un
+	$DB_TAB = DB_STRUCTURE_lister_users(array('eleve','professeur','directeur'),$only_actifs=true,$with_classe=true);
+	// Pour chaque user de la base, rechercher son uid dans le LCS
+	$lignes_ras     = '';
+	$lignes_modif   = '';
+	$lignes_pb      = '';
+	$lignes_inconnu = ''; // de SACoche non trouvé dans LCS
+	foreach($DB_TAB as $DB_ROW)
+	{
+		if($DB_ROW['user_profil']=='directeur')
+		{
+			// Contenu de SACoche à ignorer : utilisateur non cherché dans le LCS car profil 'directeur'
+			$lignes_inconnu .= '<tr><td>'.html($DB_ROW['user_nom'].' '.$DB_ROW['user_prenom'].' ['.$DB_ROW['user_id_ent'].']').'</td><td>non cherché car profil directeur</td></tr>';
+		}
+		elseif(!$DB_ROW['user_num_sconet'])
+		{
+			// Contenu de SACoche à ignorer : utilisateur non cherché dans le LCS car pas de numéro Sconet
+			$lignes_inconnu .= '<tr><td>'.html($DB_ROW['user_nom'].' '.$DB_ROW['user_prenom'].' ['.$DB_ROW['user_id_ent'].']').'</td><td>non cherché car pas de numéro Sconet</td></tr>';
+		}
+		else
+		{
+			list($code_erreur,$tab_valeurs_retournees) = recuperer_infos_user_LCS_by_NumSconet($DB_ROW['user_profil'],$DB_ROW['user_num_sconet']);
+			if($code_erreur)
+			{
+				// Contenu de SACoche à problème : retour erroné du LCS
+				$lignes_pb .= '<tr><td>'.html($DB_ROW['user_nom'].' '.$DB_ROW['user_prenom'].' ['.$DB_ROW['user_id_ent'].']').'</td><td>non trouvé : erreur LCS n°'.html($code_erreur).'</td></tr>';
+			}
+			elseif(count($tab_valeurs_retournees)==0)
+			{
+				// Contenu de SACoche à ignorer : utilisateur non trouvé dans le LCS
+				$lignes_inconnu .= '<tr><td>'.html($DB_ROW['user_nom'].' '.$DB_ROW['user_prenom'].' ['.$DB_ROW['user_id_ent'].']').'</td><td>numéro Sconet '.html($DB_ROW['user_num_sconet']).' non trouvé dans le LCS</td></tr>';
+			}
+			elseif(count($tab_valeurs_retournees)!=1)
+			{
+				// Contenu de SACoche à problème : plusieurs réponses retournées par le LCS
+				$lignes_pb .= '<tr><td>'.html($DB_ROW['user_nom'].' '.$DB_ROW['user_prenom'].' ['.$DB_ROW['user_id_ent'].']').'</td><td>numéro Sconet '.html($DB_ROW['user_num_sconet']).' trouvé plusieurs fois dans le LCS</td></tr>';
+			}
+			else
+			{
+				$id_ent_LCS = mb_substr($tab_valeurs_retournees[0],0,32);
+				if($DB_ROW['user_id_ent']==$id_ent_LCS)
+				{
+					// Contenu de SACoche à ignorer : id_ent identique
+					$lignes_ras .= '<tr><td>'.html($DB_ROW['user_nom'].' '.$DB_ROW['user_prenom'].' ['.$DB_ROW['user_id_ent'].']').'</td><td>identifiant du LCS identique</td></tr>';
+				}
+				else
+				{
+					// Contenu de SACoche à modifier : id_ent nouveau
+					DB_STRUCTURE_modifier_utilisateur( $DB_ROW['user_id'] , array(':id_ent'=>$id_ent_LCS) );
+					$user_info = ($DB_ROW['user_profil']=='eleve') ? $DB_ROW['groupe_nom'] : mb_strtoupper($DB_ROW['user_profil']) ;
+					$lignes_modif .= '<tr class="new"><td>'.html($DB_ROW['user_nom'].' '.$DB_ROW['user_prenom'].' ['.$DB_ROW['user_id_ent'].']').'</td><td class="b">Id ENT : '.html($id_ent_LCS).'</td></tr>';
+				}
+			}
+		}
+	}
+	// On affiche le bilan
+	echo'<ul class="puce"><li><b>Résultat de l\'analyse et des opérations effectuées :</b></li></ul>';
+	echo'<table>';
+	echo' <tbody>';
+	echo'  <tr><th colspan="2">Utilisateurs de SACoche trouvés dans le LCS dont l\'identifiant ENT a été modifié.</th></tr>';
+	echo($lignes_modif) ? $lignes_modif : '<tr><td colspan="2">Aucun</td></tr>';
+	echo' </tbody><tbody>';
+	echo'  <tr><th colspan="2">Utilisateurs de SACoche trouvés dans le LCS dont l\'identifiant ENT est inchangé.</th></tr>';
+	echo($lignes_ras) ? $lignes_ras : '<tr><td colspan="2">Aucun</td></tr>';
+	echo' </tbody><tbody>';
+	echo'  <tr><th colspan="2">Utilisateurs de SACoche non trouvés dans le LCS.</th></tr>';
+	echo($lignes_inconnu) ? $lignes_inconnu : '<tr><td colspan="2">Aucun</td></tr>';
+	echo' </tbody><tbody>';
+	echo'  <tr><th colspan="2">Utilisateurs de SACoche dont l\'identifiant ENT n\'a pas pu être modifié.</th></tr>';
+	echo($lignes_pb) ? $lignes_pb : '<tr><td colspan="2">Aucun</td></tr>';
+	echo' </tbody>';
+	echo'</table>';
+	exit();
 }
 
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//	Dupliquer l'identifiant récupéré d'Argos comme identifiant de l'ENT (COPY_id_argos_TO_id_ent)
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+if( ($action=='COPY_id_argos_profs_TO_id_ent') || ($action=='COPY_id_argos_eleves_TO_id_ent') )
+{
+	$fichier = './webservices/import_argos.php';
+	if(!is_file($fichier))
+	{
+		exit('Erreur : le fichier "'.$fichier.'" n\'a pas été trouvé !');
+	}
+	require($fichier); // Charge la fonction "recuperer_infos_LDAP()"
+	$Profil = ($action=='COPY_id_argos_profs_TO_id_ent') ? 'Professeurs' : 'Eleves' ;
+	$xml = @simplexml_load_string( recuperer_infos_LDAP($_SESSION['UAI'],$Profil) );
+	if($xml===false)
+	{
+		exit('Erreur : le fichier récupéré n\'est pas un XML valide : problème possible de délai d\'attente trop long !');
+	}
+	if($xml->description->resultat != 'succes')
+	{
+		exit('Erreur : le LDAP a rencontré une erreur lors de la tentative d\'extraction des données !');
+	}
+	// Pour récupérer les données des utilisateurs
+	$tab_users_ldap           = array();
+	$tab_users_ldap['id_ent'] = array();
+	$tab_users_ldap['nom']    = array();
+	$tab_users_ldap['prenom'] = array();
+	if( ($xml->reponses) && ($xml->reponses->utilisateur) )
+	{
+		foreach ($xml->reponses->utilisateur as $utilisateur)
+		{
+			$tab_users_ldap['id_ent'][] = mb_substr((string)$utilisateur->uid,0,32);
+			$tab_users_ldap['nom'][]    = mb_substr(clean_nom($utilisateur->nom),0,20);
+			$tab_users_ldap['prenom'][] = mb_substr(clean_prenom($utilisateur->prenom),0,20);
+		}
+	}
+	// On trie
+	array_multisort($tab_users_ldap['nom'],SORT_ASC,SORT_STRING,$tab_users_ldap['prenom'],SORT_ASC,SORT_STRING,$tab_users_ldap['id_ent']);
+	// On récupère le contenu de la base pour comparer
+	$tab_users_base           = array();
+	$tab_users_base['id_ent'] = array();
+	$tab_users_base['nom']    = array();
+	$tab_users_base['prenom'] = array();
+	$tab_users_base['info']   = array();
+	$profil      = ($action=='COPY_id_argos_profs_TO_id_ent') ? array('professeur','directeur') : 'eleve' ;
+	$with_classe = ($action=='COPY_id_argos_profs_TO_id_ent') ? false : true ;
+	$DB_TAB = DB_STRUCTURE_lister_users($profil,$only_actifs=true,$with_classe);
+	foreach($DB_TAB as $DB_ROW)
+	{
+		$tab_users_base['id_ent'][$DB_ROW['user_id']] = $DB_ROW['user_id_ent'];
+		$tab_users_base['nom'][$DB_ROW['user_id']]    = $DB_ROW['user_nom'];
+		$tab_users_base['prenom'][$DB_ROW['user_id']] = $DB_ROW['user_prenom'];
+		$tab_users_base['info'][$DB_ROW['user_id']]   = ($DB_ROW['user_profil']=='eleve') ? $DB_ROW['groupe_nom'] : mb_strtoupper($DB_ROW['user_profil']) ;
+	}
+	// Observer le contenu de Argos et comparer avec le contenu de la base
+	$lignes_ras     = '';
+	$lignes_modif   = '';
+	$lignes_pb      = '';
+	$lignes_inconnu = ''; // de SACoche non trouvé dans LDAP
+	$lignes_reste   = ''; // du LDAP non trouvé dans SACoche
+	foreach($tab_users_base['id_ent'] as $user_id => $id_ent_SACoche)
+	{
+		// Pour chaque user SACoche on recherche un utilisateur de l'ENT de même nom et prénom
+		$tab_id_nom    = array_keys($tab_users_ldap['nom'],$tab_users_base['nom'][$user_id]);
+		$tab_id_prenom = array_keys($tab_users_ldap['prenom'],$tab_users_base['prenom'][$user_id]);
+		$tab_id_commun = array_intersect($tab_id_nom,$tab_id_prenom);
+		$nb_homonymes  = count($tab_id_commun);
+		if($nb_homonymes == 0)
+		{
+			// Contenu de SACoche à ignorer : utilisateur non trouvé dans Argos
+			$lignes_inconnu .= '<tr><td>'.html($tab_users_base['nom'][$user_id].' '.$tab_users_base['prenom'][$user_id].' ['.$id_ent_SACoche.']').'</td><td>nom et prénom non trouvés dans Argos</td></tr>';
+		}
+		elseif($nb_homonymes > 1 )
+		{
+			// Contenu de SACoche à problème : plusieurs homonymes trouvés dans Argos
+			$lignes_pb .= '<tr><td>'.html($tab_users_base['nom'][$user_id].' '.$tab_users_base['prenom'][$user_id].' ['.$id_ent_SACoche.']').'</td><td>homonymes trouvés dans la base : traiter ce cas manuellement</td></tr>';
+		}
+		else
+		{
+			list($inutile,$i_ldap) = each($tab_id_commun);
+			$id_ent_LDAP = $tab_users_ldap['id_ent'][$i_ldap];
+			if($id_ent_SACoche==$id_ent_LDAP)
+			{
+				// Contenu de SACoche à ignorer : id_ent identique
+				$lignes_ras .= '<tr><td>'.html($tab_users_base['nom'][$user_id].' '.$tab_users_base['prenom'][$user_id].' ['.$id_ent_SACoche.']').'</td><td>identifiant d\'ENT identique</td></tr>';
+			}
+			else
+			{
+				// id_ent différents...
+				if(in_array($id_ent_LDAP,$tab_users_base['id_ent']))
+				{
+					// Contenu de SACoche à problème : id_ent déjà pris
+					$lignes_pb .= '<tr><td>'.html($tab_users_base['nom'][$user_id].' '.$tab_users_base['prenom'][$user_id].' ['.$id_ent_SACoche.']').'</td><td>identifiant d\'ENT ['.html($id_ent_LDAP).'] déjà affecté à un autre utilisateur</td></tr>';
+				}
+				else
+				{
+					// Contenu de SACoche à modifier : id_ent nouveau
+					DB_STRUCTURE_modifier_utilisateur( $user_id , array(':id_ent'=>$id_ent_LDAP) );
+					$lignes_modif .= '<tr class="new"><td>'.html($tab_users_base['nom'][$user_id].' '.$tab_users_base['prenom'][$user_id].' ('.$tab_users_base['info'][$user_id].')').'</td><td class="b">Id ENT : '.html($id_ent_LDAP).'</td></tr>';
+				}
+			}
+			unset($tab_users_ldap['id_ent'][$i_ldap] , $tab_users_ldap['nom'][$i_ldap] , $tab_users_ldap['prenom'][$i_ldap]);
+		}
+	}
+	if(count($tab_users_ldap['id_ent']))
+	{
+		foreach($tab_users_ldap['id_ent'] as $i_ldap => $id_ent_LDAP)
+		{
+			$lignes_reste .= '<tr><td>'.html($tab_users_ldap['nom'][$i_ldap].' '.$tab_users_ldap['prenom'][$i_ldap].' ['.$id_ent_LDAP.']').'</td><td>nom et prénom non trouvés dans SACoche</td></tr>';
+		}
+	}
+	// On affiche le bilan
+	echo'<ul class="puce"><li><b>Résultat de l\'analyse et des opérations effectuées :</b></li></ul>';
+	echo'<table>';
+	echo' <tbody>';
+	echo'  <tr><th colspan="2">Utilisateurs de SACoche trouvés dans Argos dont l\'identifiant ENT a été modifié.</th></tr>';
+	echo($lignes_modif) ? $lignes_modif : '<tr><td colspan="2">Aucun</td></tr>';
+	echo' </tbody><tbody>';
+	echo'  <tr><th colspan="2">Utilisateurs de SACoche trouvés dans Argos dont l\'identifiant ENT n\'a pas pu être modifié.</th></tr>';
+	echo($lignes_pb) ? $lignes_pb : '<tr><td colspan="2">Aucun</td></tr>';
+	echo' </tbody><tbody>';
+	echo'  <tr><th colspan="2">Utilisateurs de SACoche trouvés dans Argos dont l\'identifiant ENT est inchangé.</th></tr>';
+	echo($lignes_ras) ? $lignes_ras : '<tr><td colspan="2">Aucun</td></tr>';
+	echo' </tbody><tbody>';
+	echo'  <tr><th colspan="2">Utilisateurs de SACoche non trouvé dans Argos.</th></tr>';
+	echo($lignes_inconnu) ? $lignes_inconnu : '<tr><td colspan="2">Aucun</td></tr>';
+	echo' </tbody><tbody>';
+	echo'  <tr><th colspan="2">Utilisateurs de Argos non trouvés dans SACoche.</th></tr>';
+	echo($lignes_reste) ? $lignes_reste : '<tr><td colspan="2">Aucun</td></tr>';
+	echo' </tbody>';
+	echo'</table>';
+	exit();
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //	On ne devrait pas en arriver là...
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 exit('Erreur avec les données transmises !');
 

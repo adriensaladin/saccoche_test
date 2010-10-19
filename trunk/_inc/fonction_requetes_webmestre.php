@@ -42,6 +42,22 @@ function DB_WEBMESTRE_recuperer_structure($base_id)
 }
 
 /**
+ * DB_WEBMESTRE_recuperer_structure_by_UAI (besoin particulier hors installation classique de SACoche)
+ * 
+ * @param string uai
+ * @return array
+ */
+
+function DB_WEBMESTRE_recuperer_structure_by_UAI($uai)
+{
+	$DB_SQL = 'SELECT * FROM sacoche_structure ';
+	$DB_SQL.= 'WHERE structure_uai=:uai ';
+	$DB_SQL.= 'LIMIT 1 ';
+	$DB_VAR = array(':uai'=>$uai);
+	return DB::queryRow(SACOCHE_WEBMESTRE_BD_NAME , $DB_SQL , $DB_VAR);
+}
+
+/**
  * DB_WEBMESTRE_compter_structure
  * 
  * @param void

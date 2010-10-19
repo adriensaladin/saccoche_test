@@ -40,7 +40,7 @@ $(document).ready
 			{
 				// Masquer tout
 				$('#p_eleves , #p_professeurs_directeurs , #td_bouton').hide(0); // bug mystérieux si on échange avec la ligne suivante...
-				$('#fieldset_init_loginmdp , #fieldset_import_loginmdp , #fieldset_import_id_ent_normal , #fieldset_import_id_ent_cas , #fieldset_import_id_gepi').hide(0);
+				$('fieldset[id^=fieldset]').hide(0);
 				// Puis afficher ce qu'il faut
 				var objet = $(this).val();
 				switch (objet)
@@ -49,6 +49,7 @@ $(document).ready
 					case 'init_loginmdp_professeurs_directeurs': $('#fieldset_init_loginmdp , #p_professeurs_directeurs , #td_bouton').show(); break;
 					case 'import_loginmdp':                      $('#fieldset_import_loginmdp').show(); break;
 					case 'import_id_lcs':                        $('#fieldset_import_id_lcs').show(); break;
+					case 'import_id_argos':                      $('#fieldset_import_id_argos').show(); break;
 					case 'import_id_ent_normal':                 $('#fieldset_import_id_ent_normal').show(); break;
 					case 'import_id_ent_cas':                    $('#fieldset_import_id_ent_cas').show(); break;
 					case 'import_id_gepi':                       $('#fieldset_import_id_gepi').show(); break;
@@ -383,7 +384,8 @@ $(document).ready
 				var action = $(this).attr('id');
 				$('#ajax_retour').html('&nbsp;');
 				$('button').attr('disabled','disabled');
-				$('#ajax_msg').removeAttr("class").addClass("loader").html("Demande envoyée... Veuillez patienter.");
+				var duree = (action.indexOf('_argos_')!=-1) ? ' <span class="u">30 secondes</span>' : '' ;
+				$('#ajax_msg').removeAttr("class").addClass("loader").html("Demande envoyée... Veuillez patienter"+duree+".");
 				$.ajax
 				(
 					{
@@ -400,15 +402,19 @@ $(document).ready
 						success : function(responseHTML)
 						{
 							maj_clock(1);
-							if(responseHTML!='ok')
+							$('button').removeAttr('disabled');
+							if(responseHTML=='ok')
 							{
-								$('button').removeAttr('disabled');
-								$('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);
+								$('#ajax_msg').removeAttr("class").addClass("valide").html("Demande réalisée !");
+							}
+							else if(responseHTML.substring(0,3)=='<ul') // pour le webservice argos ou lcs
+							{
+								$('#ajax_msg').removeAttr("class").addClass("valide").html("Demande réalisée !");
+								$('#ajax_retour').html(responseHTML);
 							}
 							else
 							{
-								$('button').removeAttr('disabled');
-								$('#ajax_msg').removeAttr("class").addClass("valide").html("Demande réalisée !");
+								$('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);
 							}
 						}
 					}

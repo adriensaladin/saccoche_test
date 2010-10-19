@@ -27,7 +27,7 @@
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = "Importer / Imposer des identifiants";
-$VERSION_JS_FILE += 5;
+$VERSION_JS_FILE += 6;
 ?>
 
 <?php
@@ -54,9 +54,10 @@ $select_professeurs_directeurs = afficher_select(DB_STRUCTURE_OPT_professeurs_di
 			<option value="init_loginmdp_eleves">Initialiser les identifiants SACoche des élèves.</option>
 			<option value="init_loginmdp_professeurs_directeurs">Initialiser les identifiants SACoche des professeurs &amp; directeurs.</option>
 			<option value="import_loginmdp">Importer / Imposer des identifiants SACoche.</option>
-			<option value="import_id_lcs">Importer / Imposer les identifiants LCS.</option>
-			<option value="import_id_ent_<?php echo $_SESSION['CONNEXION_MODE'] ?>">Importer / Imposer les identifiants de l'ENT.</option>
-			<option value="import_id_gepi">Importer / Imposer les identifiants de Gepi.</option>
+			<option value="import_id_lcs">Récupérer les identifiants du LCS.</option>
+			<option value="import_id_argos">Récupérer les identifiants d'ARGOS.</option>
+			<option value="import_id_ent_<?php echo $_SESSION['CONNEXION_MODE'] ?>">Importer / Imposer les identifiants d'un ENT.</option>
+			<option value="import_id_gepi">Récupérer les identifiants de Gepi.</option>
 		</select><br />
 	</fieldset>
 
@@ -97,9 +98,20 @@ $select_professeurs_directeurs = afficher_select(DB_STRUCTURE_OPT_professeurs_di
 		<hr />
 		<p class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__gestion_mode_identification__LCS">DOC : Intégration de SACoche dans un LCS</a></p>
 		<?php
-		$dossier_lcs = './lcs';
-		echo (is_dir($dossier_lcs)) ? '<button name="dupliquer" id="COPY_id_lcs_TO_id_ent" type="button"><img alt="" src="./_img/bouton/mdp_groupe.png" /> Dupliquer l\'identifiant LCS</button> comme identifiant de l\'ENT pour tous les utilisateurs.'
-		                            : '<div class="danger">Le dossier &laquo;&nbsp;<b>'.$dossier_lcs.'</b>&nbsp;&raquo; devant figurer dans le paquet lcs-sacoche n\'a pas été détecté !</div>' ;
+		$fichier = './webservices/import_lcs.php';
+		echo (is_file($fichier)) ? '<button name="dupliquer" id="COPY_id_lcs_TO_id_ent" type="button"><img alt="" src="./_img/bouton/mdp_groupe.png" /> Récupérer l\'identifiant LCS</button> comme identifiant de l\'ENT pour tous les utilisateurs.'
+		                         : '<div class="danger">Le fichier &laquo;&nbsp;<b>'.$fichier.'</b>&nbsp;&raquo; devant figurer dans le paquet lcs-sacoche n\'a pas été détecté !</div>' ;
+		?>
+	</fieldset>
+
+	<fieldset id="fieldset_import_id_argos" class="hide">
+		<hr />
+		<p class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__gestion_mode_identification__argos">DOC : Intégration de SACoche dans Argos</a></p>
+		<?php
+		$fichier = './webservices/import_argos.php';
+		echo (is_file($fichier)) ? '<button name="dupliquer" id="COPY_id_argos_profs_TO_id_ent" type="button"><img alt="" src="./_img/bouton/mdp_groupe.png" /> Récupérer l\'identifiant Argos</button> comme identifiant de l\'ENT pour tous les professeurs &amp; directeurs.<br />
+		                            <button name="dupliquer" id="COPY_id_argos_eleves_TO_id_ent" type="button"><img alt="" src="./_img/bouton/mdp_groupe.png" /> Récupérer l\'identifiant Argos</button> comme identifiant de l\'ENT pour tous les élèves.'
+		                         : '<div class="danger">Le fichier &laquo;&nbsp;<b>'.$fichier.'</b>&nbsp;&raquo; devant figurer dans l\'installation académique Argos n\'a pas été détecté !</div>' ;
 		?>
 	</fieldset>
 

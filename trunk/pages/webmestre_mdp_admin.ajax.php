@@ -43,7 +43,7 @@ if($admin_id)
 	$admin_nom    = $DB_TAB[0]['user_nom'];
 	$admin_prenom = $DB_TAB[0]['user_prenom'];
 	$admin_login  = $DB_TAB[0]['user_login'];
-	// Initialiser le mdp de l'admin
+	// Générer un nouveau mdp de l'admin
 	$admin_password = fabriquer_mdp();
 	DB_STRUCTURE_modifier_utilisateur($admin_id, array(':password'=>$admin_password) );
 	// On affiche le retour

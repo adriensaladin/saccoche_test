@@ -26,7 +26,7 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-$VERSION_JS_FILE += 6;
+$VERSION_JS_FILE += 7;
 
 // Élément de formulaire "f_geo" pour le choix d'une zone géographique
 $options_geo = '';
@@ -78,7 +78,7 @@ foreach($DB_TAB as $DB_ROW)
 				echo	'<td class="label">'.html($DB_ROW['structure_contact_courriel']).'</td>';
 				echo	'<td class="nu">';
 				echo		'<q class="modifier" title="Modifier cet établissement."></q>';
-				echo		'<q class="initialiser_mdp" title="Initialiser le mdp d\'un admin."></q>';
+				echo		'<q class="initialiser_mdp" title="Générer un nouveau mdp d\'un admin."></q>';
 				echo		'<q class="supprimer" title="Supprimer cet établissement."></q>';
 				echo	'</td>';
 				echo'</tr>';

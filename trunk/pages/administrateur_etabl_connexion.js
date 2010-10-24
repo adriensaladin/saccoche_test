@@ -57,7 +57,7 @@ $(document).ready
 		);
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-// Déplacer / afficher / masquer le formulaire CAS
+// Déplacer / afficher / masquer le formulaire CAS ; afficher / masquer l'adresse de connexion directe
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
 		$("input[type=radio]").click
@@ -81,6 +81,11 @@ $(document).ready
 						$(this).parent().parent().next().after( $('#cas_options') );
 						$('#cas_options').show();
 					}
+					$('#lien_direct').show();
+				}
+				else
+				{
+					$('#lien_direct').hide();
 				}
 			}
 		);

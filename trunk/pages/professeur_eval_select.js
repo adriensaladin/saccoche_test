@@ -779,6 +779,7 @@ $(document).ready
 						// La touche escape a été pressée
 						$('#fermer_zone_saisir').click();
 					}
+					return false; // Permet notamment qu'IE fasse "page précédente" si on appuie sur backspace.
 				}
 			}
 		);

@@ -54,3 +54,11 @@ elseif($_SESSION['USER_PROFIL']=='webmestre')
 	echo'<p class="astuce">Pour vous connecter à cet espace, utilisez l\'adresse <b>'.SERVEUR_ADRESSE.'?webmestre</b></p>';
 }
 ?>
+
+<?php
+if( in_array($_SESSION['USER_PROFIL'],array('eleve','professeur','directeur')) && ($_SESSION['CONNEXION_MODE']=='cas') )
+{
+	echo'<div class="astuce">Adresse à utiliser pour une connexion automatique avec les identifiants de l\'ENT :</div>';
+	echo'<p class="hc"><b>'.SERVEUR_ADRESSE.'?page=public_login_CAS&amp;f_base='.$_SESSION['BASE'].'</b></p>';
+}
+?>

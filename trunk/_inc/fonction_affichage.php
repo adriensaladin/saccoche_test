@@ -29,9 +29,11 @@
 // Afficher un lien mailto en masquant l'adresse de courriel pour les robots
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
-function mailto($email,$sujet,$affichage,$message='')
+function mailto($email,$sujet,$affichage,$message='',$copy='')
 {
-	$mailto = 'mailto:'.$email.'?subject='.$sujet.'&body='.$message;
+	$mailto = 'mailto:'.$email.'?subject='.$sujet;
+	$mailto.= ($copy) ? '&cc='.$copy : '' ;
+	$mailto.= ($message) ? '&body='.$message : '' ;
 	$tab_unicode_valeurs = utf8ToUnicode($mailto);
 	$href = '&#'.implode(';'.'&#',$tab_unicode_valeurs).';';
 	return '<a href="'.$href.'" class="lien_mail">'.$affichage.'</a>';

@@ -91,7 +91,8 @@ if( ($action=='ajouter') && isset($tab_geo[$geo_id]) && $localisation && $denomi
 	$texte.= 'Merci de consulter la documentation disponible depuis le site du projet :'."\r\n".SERVEUR_PROJET."\r\n\r\n";
 	$texte.= 'Cordialement'."\r\n";
 	$texte.= WEBMESTRE_PRENOM.' '.WEBMESTRE_NOM."\r\n\r\n";
-	$courriel_bilan = envoyer_webmestre_courriel($contact_courriel,'Création compte',$texte,false);
+	$courriel_bilan = true;
+//	$courriel_bilan = envoyer_webmestre_courriel($contact_courriel,'Création compte',$texte,false);
 	if(!$courriel_bilan)
 	{
 		exit('Erreur lors de l\'envoi du courriel !');
@@ -112,7 +113,7 @@ if( ($action=='ajouter') && isset($tab_geo[$geo_id]) && $localisation && $denomi
 	echo	'<td class="label">'.html($contact_courriel).'</td>';
 	echo	'<td class="nu">';
 	echo		'<q class="modifier" title="Modifier cet établissement."></q>';
-	echo		'<q class="initialiser_mdp" title="Initialiser le mdp d\'un admin."></q>';
+	echo		'<q class="initialiser_mdp" title="Générer un nouveau mdp d\'un admin."></q>';
 	echo		'<q class="supprimer" title="Supprimer cet établissement."></q>';
 	echo	'</td>';
 	echo'</tr>';
@@ -151,7 +152,7 @@ else if( ($action=='modifier') && $base_id && isset($tab_geo[$geo_id]) && $local
 	echo'<td class="label">'.html($contact_courriel).'</td>';
 	echo'<td class="nu">';
 	echo	'<q class="modifier" title="Modifier cet établissement."></q>';
-	echo	'<q class="initialiser_mdp" title="Initialiser le mdp d\'un admin."></q>';
+	echo	'<q class="initialiser_mdp" title="Générer un nouveau mdp d\'un admin."></q>';
 	echo	'<q class="supprimer" title="Supprimer cet établissement."></q>';
 	echo'</td>';
 }
@@ -190,7 +191,7 @@ else if( ($action=='initialiser_mdp') && $base_id && $admin_id )
 	$admin_nom    = $DB_TAB[0]['user_nom'];
 	$admin_prenom = $DB_TAB[0]['user_prenom'];
 	$admin_login  = $DB_TAB[0]['user_login'];
-	// Initialiser le mdp de l'admin
+	// Générer un nouveau mdp de l'admin
 	$admin_password = fabriquer_mdp();
 	DB_STRUCTURE_modifier_utilisateur($admin_id, array(':password'=>$admin_password) );
 	// Envoyer un courriel au contact

@@ -27,7 +27,7 @@
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = "Mode d'identification";
-$VERSION_JS_FILE += 1;
+$VERSION_JS_FILE += 2;
 
 require_once('./_inc/tableau_sso.php');
 
@@ -69,5 +69,11 @@ foreach($tab_connexion_info['cas'] as $connexion_nom => $tab_info)
 	</div>
 	<?php echo $choix ?>
 	<span class="tab"></span><button id="bouton_valider" type="button"><img alt="" src="./_img/bouton/parametre.png" /> Valider ce mode d'identification.</button><label id="ajax_msg">&nbsp;</label>
-	<p><span class="astuce">Pour importer les identifiants de l'ENT, utiliser ensuite la page "<a href="./index.php?page=administrateur_fichier_identifiant">importer / imposer des identifiants</a>".</span></p>
 </fieldset></form>
+
+<p><span class="astuce">Pour importer les identifiants de l'ENT, utiliser ensuite la page "<a href="./index.php?page=administrateur_fichier_identifiant">importer / imposer des identifiants</a>".</span></p>
+
+<div id="lien_direct" class="<?php echo ($_SESSION['CONNEXION_MODE']=='cas') ? 'show' : 'hide' ; ?>">
+	<span class="astuce">Une fois <em>SACoche</em> convenablement configuré, pour une connexion automatique avec les identifiants de l'ENT (eleves / professeurs / directeurs), utiliser cette adresse&nbsp;:</span>
+	<ul class="puce"><li class="b"><?php echo SERVEUR_ADRESSE ?>?page=public_login_CAS&amp;f_base=<?php echo $_SESSION['BASE'] ?></li></ul>
+</div>

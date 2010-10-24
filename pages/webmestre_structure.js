@@ -144,7 +144,7 @@ $(document).ready
 		};
 
 		/**
-		 * Initialiser un mdp admin : mise en place du formulaire
+		 * Générer un nouveau mdp admin : mise en place du formulaire
 		 * @return void
 		 */
 		var initialiser_mdp = function()
@@ -200,7 +200,7 @@ $(document).ready
 					break;
 				case 'supprimer':
 				case 'initialiser_mdp':
-					$(this).parent().remove().html('<q class="modifier" title="Modifier cet établissement."></q><q class="initialiser_mdp" title="Initialiser le mdp d\'un admin."></q><q class="supprimer" title="Supprimer cet établissement."></q>');
+					$(this).parent().remove().html('<q class="modifier" title="Modifier cet établissement."></q><q class="initialiser_mdp" title="Générer un nouveau mdp d\'un admin."></q><q class="supprimer" title="Supprimer cet établissement."></q>');
 					break;
 			};
 			afficher_masquer_images_action('show');

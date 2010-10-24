@@ -27,7 +27,7 @@
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = "Évaluer une classe ou un groupe";
-$VERSION_JS_FILE += 11;
+$VERSION_JS_FILE += 12;
 ?>
 
 <?php

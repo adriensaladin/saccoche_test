@@ -25,7 +25,14 @@
  * 
  */
 
-// Fabrique, ou récupère si elle existe, une image png inclinée à 90° à partir du nom et du prénom de l'élève
+/**
+ * Fabrique, ou récupère si elle existe, une image png inclinée à 90° à partir du nom et du prénom de l'élève.
+ * Pour tourner le texte de 90° il y a 2 solutions :
+ * 1. mettre à 90 le 3e paramètre de imagettftext() ; problème -> il y a des décalages par exemple quand le prénom comporte un "y"
+ * 2. utiliser imagerotate() ; problème -> on perd la transparence alpha car le 4e paramètre de imagerotate() ne passe pas sur les png
+ * L'issue à consister à utiliser la méthode 2 en ajoutant ensuite imagealphablending() et imagesavealpha() [http://fr.php.net/manual/fr/function.imagerotate.php#64531]
+ * Et il faut aussi appeler ces deux fonctions au chargement de l'image déjà créée...
+ */
 
 header("Content-type: image/png");
 
@@ -41,24 +48,67 @@ $fichier = '../../__tmp/badge/'.clean_entier($dossier).'/'.clean_login($nom).'_'
 // Créer l'image si elle n'existe pas
 if(!file_exists($fichier))
 {
-	// On commence par créer une image temporaire plus haute que nécessaire
+	// On commence par créer une image temporaire plus large et plus haute que nécessaire
 	$taille_police  = 10;
-	$largeur        = 15*$br_line;
-	$hauteur_tmp    = $taille_police*40;
-	$image_tmp      = imagecreate($largeur,$hauteur_tmp);
+	$interligne     = $taille_police*1.2;
+	$hauteur_tmp    = $taille_police*2*$br_line;
+	$largeur_tmp    = $taille_police*40;
+	$image_tmp      = imagecreate($largeur_tmp,$hauteur_tmp);
 	$couleur_fond   = imagecolorallocatealpha($image_tmp,255,204,204,127);
 	$couleur_texte  = imagecolorallocate($image_tmp,0,0,0);
 	$police         = './arial.ttf';
-	$tab = ($br_line==1) ? imagettftext($image_tmp,$taille_police,90,$largeur-4,$hauteur_tmp-2,$couleur_texte,$police,$nom.' '.$prenom)
-	                     : imagettftext($image_tmp,$taille_police,90,$largeur/2-4,$hauteur_tmp-2,$couleur_texte,$police,$nom."\r\n".$prenom) ;
+	// imagettftext() : 3e param = angle de rotation ; 4e et 5e param = coordonnées du coin inférieur gauche du premier caractère
+	if($br_line==1)
+	{
+		$b_g_y_demande = $hauteur_tmp - 5 ;
+		list($b_g_x , $b_g_y , $b_d_x , $b_d_y , $h_d_x , $h_d_y , $h_g_x , $h_g_y) = imagettftext($image_tmp,$taille_police,0,5,$b_g_y_demande,$couleur_texte,$police,$nom.' '.$prenom);
+	}
+	else
+	{
+		// en deux fois au lieu d'utiliser $nom."\r\n".$prenom car l'interligne est sinon trop important
+		$b_g_y_demande = 5 + $interligne ;
+		list($b_g_x1 , $delete , $b_d_x1 , $delete , $h_d_x1 , $h_d_y1 , $h_g_x1 , $h_g_y ) = imagettftext($image_tmp,$taille_police,0,5,$b_g_y_demande,$couleur_texte,$police,$nom);
+		$b_g_y_demande += $interligne ;
+		list($b_g_x2 , $b_g_y2 , $b_d_x2 , $b_d_y  , $h_d_x2 , $delete , $h_g_x2 , $delete) = imagettftext($image_tmp,$taille_police,0,5,$b_g_y_demande,$couleur_texte,$police,$prenom);
+		$b_d_x = max($b_d_x1,$b_d_x2);
+		$h_g_x = min($h_g_x1,$h_g_x2);
+	}
 	// Maintenant on peut connaître la hauteur requise et créer l'image finale aux bonnes dimensions
-	// $tab = array( bas_gauche_x , bas_gauche_y , bas_droite_x , bas_droite_y , haut_droite_x , haut_droite_y , haut_gauche_x , haut_gauche_y );
-	// Normalement bas_gauche_y et haut_gauche_y valent $hauteur_tmp-2
-	// Mais mystérieusement, pour des librairies gd rigoureusement identiques ( test gd_info() ), il y a un décalage sur certains serveurs
-	$hauteur_ajustement = ($tab[1]==$hauteur_tmp-2) ? 2 : $tab[1]-$hauteur_tmp + 3 ;
-	$hauteur_finale = $hauteur_tmp - $tab[3] + $hauteur_ajustement ;
-	$image_finale   = imagecreate($largeur,$hauteur_finale);
-	imagecopy($image_finale,$image_tmp,0,0,0,$hauteur_tmp-$hauteur_finale,$largeur,$hauteur_finale);
+	$largeur_finale = $b_d_x - $h_g_x + 2 ; // +2 car 1px de marge en bordure
+	$hauteur_finale = $b_d_y - $h_g_y + 2 ; // idem
+	// Les caractères minuscules parmi g,j,p,q,y provoquent un décalage non pris en compte par imagettftext()
+	// sur certains serveurs pour des librairies gd pourtant rigoureusement identiques (gd_info() renvoyant [GD Version] => bundled 2.0.34 compatible).
+	// On peut lire qu'appeler avant imagealphablending() est censé réglé le problème [http://fr.php.net/manual/fr/function.imagettftext.php#100184], mais ce n'est pas le cas.
+	// Enfin, sur les serveurs qui prennent en compte le décalage, il est d'1px trop grand.
+	$test_pb_serveur = ($b_g_y_demande == $b_d_y) ? true : false ;
+	$prenom_amoindri = str_replace( array('g','j','p','q','y') , '' , mb_substr($prenom,1) , $test_pb_lettres );
+	if($test_pb_lettres && !$test_pb_serveur)
+	{
+		if($br_line==2) {$hauteur_finale -= 1;}
+		if($br_line==1) {$h_g_y -= 1;}
+	}
+	elseif($test_pb_lettres && $test_pb_serveur)
+	{
+		if($br_line==2) {$hauteur_finale += 3;}
+		if($br_line==1) {$h_g_y += 3;}
+	}
+	// Dans le cas d'une seule colonne, prévoir exactement 15px de hauteur (donc de largeur une fois tourné, ce qui centre et normalise la largeur de colonne)
+	if($br_line==1)
+	{
+		$marge_complementaire = 15 - $hauteur_finale;
+		if($marge_complementaire)
+		{
+			$arrondi_pair = ($test_pb_lettres) ? 1 : -1 ;
+			$h_g_y -= ($marge_complementaire%2) ? ($marge_complementaire+$arrondi_pair)/2 : $marge_complementaire/2 ;
+			$hauteur_finale = 15;
+		}
+	}
+	$image_finale = imagecreate($largeur_finale,$hauteur_finale);
+	// imagettftext() : 3e et 4e param = coordonnées du point de destination ; 5e et 6e param = coordonnées du point source
+	imagecopy($image_finale,$image_tmp,0,0,$h_g_x-1,$h_g_y-1,$largeur_finale,$hauteur_finale);
+	$image_finale = imagerotate($image_finale,90,0);
+	imagealphablending($image_finale, true);
+	imagesavealpha($image_finale, true); 
 	imagepng($image_finale,$fichier);
 	imagedestroy($image_tmp);
 }
@@ -66,6 +116,8 @@ if(!file_exists($fichier))
 else
 {
 	$image_finale = imagecreatefrompng($fichier);
+	imagealphablending($image_finale, true);
+	imagesavealpha($image_finale, true); 
 }
 
 imagepng($image_finale);

@@ -60,7 +60,7 @@ elseif( ($_SESSION['USER_PROFIL']=='professeur') && (strpos($_SESSION['DROIT_VAL
 	$tab_groupes = DB_STRUCTURE_OPT_groupes_professeur($_SESSION['USER_ID']);
 	$of_g = 'oui'; $og_g = 'oui'; 
 }
-elseif( ($_SESSION['USER_PROFIL']=='professeur') && (strpos($_SESSION['DROIT_VALIDATION_ENTREE'],'profprincipal')!==false) )
+elseif( (DB_STRUCTURE_tester_prof_principal($_SESSION['USER_ID'])) && (strpos($_SESSION['DROIT_VALIDATION_ENTREE'],'profprincipal')!==false) )
 {
 	$tab_groupes = DB_STRUCTURE_OPT_classes_prof_principal($_SESSION['USER_ID']);
 	$of_g = 'non'; $og_g = 'non'; 

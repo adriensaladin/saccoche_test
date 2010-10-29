@@ -31,7 +31,7 @@ $VERSION_JS_FILE += 1;
 
 <?php
 $socle_PA = '<label for="f_socle_PA"><input type="checkbox" id="f_socle_PA" name="f_socle_PA" value="1" checked="checked" /> Pourcentage d\'items acquis</label>';
-$socle_EV = '<label for="f_socle_EV"><input type="checkbox" id="f_socle_EV" name="f_socle_EV" value="1" checked="checked" /> États de validation</label>';
+$socle_EV = '<label for="f_socle_EV"><input type="checkbox" id="f_socle_EV" name="f_socle_EV" value="1" checked="checked" /> État de validation</label>';
 // Fabrication des éléments select du formulaire
 $tab_paliers = DB_STRUCTURE_OPT_paliers_etabl($_SESSION['PALIERS']);
 if($_SESSION['USER_PROFIL']=='directeur')
@@ -39,12 +39,14 @@ if($_SESSION['USER_PROFIL']=='directeur')
 	$tab_groupes  = DB_STRUCTURE_OPT_classes_groupes_etabl();
 	$select_eleves = '<option></option>'; // maj en ajax suivant le choix du groupe
 	$of_g = 'val'; $sel_g = false; $og_g = 'oui'; $class_form_eleve = 'show'; $class_option_groupe = 'hide';
+	$check_option_lien = '';
 }
 elseif($_SESSION['USER_PROFIL']=='professeur')
 {
 	$tab_groupes  = DB_STRUCTURE_OPT_groupes_professeur($_SESSION['USER_ID']);
 	$select_eleves = '<option></option>'; // maj en ajax suivant le choix du groupe
 	$of_g = 'val'; $sel_g = false; $og_g = 'oui'; $class_form_eleve = 'show'; $class_option_groupe = 'hide';
+	$check_option_lien = '';
 }
 elseif($_SESSION['USER_PROFIL']=='eleve')
 {
@@ -52,14 +54,15 @@ elseif($_SESSION['USER_PROFIL']=='eleve')
 	$select_eleves = '<option value="'.$_SESSION['USER_ID'].'" selected="selected">'.html($_SESSION['USER_NOM'].' '.$_SESSION['USER_PRENOM']).'</option>';
 	$of_g = 'non'; $sel_g = true;  $og_g = 'non'; $class_form_eleve = 'hide'; $class_option_groupe = 'true';
 	$socle_PA = (mb_substr_count($_SESSION['DROIT_ELEVE_SOCLE'],'SoclePourcentageAcquis')) ? $socle_PA : '<del>Pourcentage d\'items acquis</del>' ;
-	$socle_EV = (mb_substr_count($_SESSION['DROIT_ELEVE_SOCLE'],'SocleEtatValidation'))    ? $socle_EV : '<del>États de validation</del>' ;
+	$socle_EV = (mb_substr_count($_SESSION['DROIT_ELEVE_SOCLE'],'SocleEtatValidation'))    ? $socle_EV : '<del>État de validation</del>' ;
+	$check_option_lien = ' checked="checked"';
 }
 
 $select_palier = afficher_select($tab_paliers , $select_nom='f_palier' , $option_first='non' , $selection=false  , $optgroup='non');
 $select_groupe = afficher_select($tab_groupes , $select_nom='f_groupe' , $option_first=$of_g , $selection=$sel_g , $optgroup=$og_g);
 ?>
 
-<p class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=releves_bilans__releve_socle">DOC : État de maîtrise du socle commun.</a></p>
+<p class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=releves_bilans__releve_socle">DOC : État de maîtrise du socle.</a></p>
 
 <form id="form_select" action=""><fieldset>
 	<label class="tab" for="f_palier">Palier :</label><?php echo $select_palier ?><input type="hidden" id="f_palier_nom" name="f_palier_nom" value="" /><p />
@@ -67,7 +70,10 @@ $select_groupe = afficher_select($tab_groupes , $select_nom='f_groupe' , $option
 		<label class="tab" for="f_groupe">Élève(s) :</label><?php echo $select_groupe ?><label id="ajax_maj">&nbsp;</label><br />
 		<span class="tab"></span><select id="f_eleve" name="f_eleve[]" multiple="multiple" size="9"><?php echo $select_eleves ?></select><input type="hidden" id="eleves" name="eleves" value="" /><p />
 	</div>
-	<p id="option_groupe" class="<?php echo $class_option_groupe ?>"><label class="tab" for="f_remplissage">Indications :</label><?php echo $socle_PA.'&nbsp;&nbsp;&nbsp;'.$socle_EV ?></p>
+	<p id="option_groupe" class="<?php echo $class_option_groupe ?>">
+		<label class="tab" for="f_remplissage">Indications :</label><?php echo $socle_PA.'&nbsp;&nbsp;&nbsp;'.$socle_EV ?><br />
+		<label class="tab" for="f_opt_html"><img alt="" src="./_img/bulle_aide.png" title="Pour le format html, le détail des items peut être affiché." /> Infos items :</label><label for="f_coef"><input type="checkbox" id="f_coef" name="f_coef" value="1" /> Coefficients</label>&nbsp;&nbsp;&nbsp;<label for="f_socle"><input type="checkbox" id="f_socle" name="f_socle" value="1" checked="checked" /> Socle</label>&nbsp;&nbsp;&nbsp;<label for="f_lien"><input type="checkbox" id="f_lien" name="f_lien" value="1"<?php echo $check_option_lien ?> /> Liens de remédiation</label>
+	</p>
 	<span class="tab"></span><button id="bouton_valider" type="submit"><img alt="" src="./_img/bouton/generer.png" /> Générer.</button><label id="ajax_msg">&nbsp;</label><br />
 </fieldset></form>
 

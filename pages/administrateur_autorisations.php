@@ -165,7 +165,7 @@ for($nb_demandes=0 ; $nb_demandes<10 ; $nb_demandes++)
 
 <hr />
 
-<h4>Environnement élève - Bilan sur une matière</h4>
+<h4>Environnement élève - Bilan d'items d'une matière</h4>
 
 <form id="form_eleve_bilans" action=""><fieldset>
 	<?php

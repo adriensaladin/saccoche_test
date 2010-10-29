@@ -42,7 +42,6 @@ $cart        = (isset($_POST['cart']))     ? clean_entier($_POST['cart'])     : 
 $lien        = (isset($_POST['lien']))     ? clean_texte($_POST['lien'])      : '';
 $socle_id    = (isset($_POST['socle']))    ? clean_entier($_POST['socle'])    : -1;
 
-function positif($n) {return $n;}
 $tab_id = (isset($_POST['tab_id'])) ? array_map('clean_entier',explode(',',$_POST['tab_id'])) : array() ;
 $tab_id = array_filter($tab_id,'positif');
 $tab_id2 = (isset($_POST['tab_id2'])) ? array_map('clean_entier',explode(',',$_POST['tab_id2'])) : array() ;
@@ -395,7 +394,7 @@ elseif( ($action=='del') && (in_array($contexte,array('n1','n2','n3'))) && $elem
 		DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , null);
 	}
 	// Log de l'action
-	ajouter_log('Suppression d\'un élément de référentiel ('.$contexte.' / '.$element_id.').');
+	ajouter_log_SACoche('Suppression d\'un élément de référentiel ('.$contexte.' / '.$element_id.').');
 	// retour
 	echo ($test_delete) ? 'ok' : 'Élément non trouvé !';
 }

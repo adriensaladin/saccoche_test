@@ -26,6 +26,32 @@
  */
 
 /**
+ * non_nul() non_zero() positif() non_vide() is_renseigne()
+ * Fonctions utilisées avec array_filter()
+ */
+
+function non_nul($n)
+{
+	return $n!==false ;
+}
+function non_zero($n)
+{
+	return $n!=0 ;
+}
+function positif($n)
+{
+	return $n>0 ;
+}
+function non_vide($note)
+{
+	return ($note!='X')&&($note!='REQ') ;
+}
+function is_renseigne($etat)
+{
+	return $etat!=2 ;
+}
+
+/**
  * test_A
  * Tester un item est considéré comme acquis au vu du score transmis.
  * Le seuil peut être celui défini globalement (par défaut si rien de transmis) ou un seuil testé ; peut être appelé avec array_filter().
@@ -128,14 +154,14 @@ function calculer_score($tab_devoirs,$calcul_methode,$calcul_limite)
 }
 
 /**
- * ajouter_log
- * Ajout d'un log dans un fichier d'actions critiques
+ * ajouter_log_SACoche
+ * Ajout d'un log dans un fichier d'actions sensibles (un fichier par structure)
  * 
  * @param string $contenu   description de l'action
  * @return void
  */
 
-function ajouter_log($contenu)
+function ajouter_log_SACoche($contenu)
 {
 	$chemin_fichier = './__private/log/base_'.$_SESSION['BASE'].'.php';
 	$tab_ligne = array();
@@ -145,6 +171,26 @@ function ajouter_log($contenu)
 	$tab_ligne[] = html($contenu);
 	$tab_ligne[] = '*/ ?>'."\r\n";
 	Ecrire_Fichier($chemin_fichier, implode("\t",$tab_ligne), FILE_APPEND);
+}
+
+/**
+ * ajouter_log_PHP
+ * Ajout d'un log PHP dans le fichier du serveur Web ; serveur Sésamath uniquement
+ * 
+ * @param string $log_objet    objet du log
+ * @param string $log_contenu  contenu du log
+ * @param string $log_fichier  transmettre __FILE__
+ * @param string $log_ligne    transmettre __LINE__
+ * @return void
+ */
+
+function ajouter_log_PHP($log_objet,$log_contenu,$log_fichier,$log_ligne)
+{
+	if(strpos(SERVEUR_ADRESSE,SERVEUR_PROJET)===0)
+	{
+		$SEP = ' ║ ';
+		error_log('SACoche info' . $SEP . $log_objet . $SEP . 'base '.$_SESSION['BASE'] . $SEP . 'user '.$_SESSION['USER_ID'] . $SEP . basename($log_fichier).' '.$log_ligne . $SEP . $log_contenu,0);
+	}
 }
 
 /**
@@ -397,7 +443,7 @@ function bloquer_application($profil_demandeur,$motif)
 	$fichier_nom = ($profil_demandeur=='webmestre') ? $CHEMIN_CONFIG.'blocage_webmestre.txt' : $CHEMIN_CONFIG.'blocage_admin_'.$_SESSION['BASE'].'.txt' ;
 	Ecrire_Fichier($fichier_nom,$motif);
 	// Log de l'action
-	ajouter_log('Blocage de l\'accès à l\'application ['.$motif.'].');
+	ajouter_log_SACoche('Blocage de l\'accès à l\'application ['.$motif.'].');
 }
 
 /**
@@ -413,7 +459,7 @@ function debloquer_application($profil_demandeur)
 	$fichier_nom = ($profil_demandeur=='webmestre') ? $CHEMIN_CONFIG.'blocage_webmestre.txt' : $CHEMIN_CONFIG.'blocage_admin_'.$_SESSION['BASE'].'.txt' ;
 	@unlink($fichier_nom);
 	// Log de l'action
-	ajouter_log('Déblocage de l\'accès à l\'application.');
+	ajouter_log_SACoche('Déblocage de l\'accès à l\'application.');
 }
 
 /**
@@ -612,10 +658,14 @@ function connecter_user($BASE,$profil,$login,$password,$mode_connection)
 function actualiser_style_session()
 {
 	$_SESSION['CSS']  = '';
-	$_SESSION['CSS'] .= 'table.scor_eval tbody td input.RR {background:#FFF url("./_img/note/'.$_SESSION['NOTE_IMAGE_STYLE'].'/RR.gif") no-repeat center center;}';
-	$_SESSION['CSS'] .= 'table.scor_eval tbody td input.R  {background:#FFF url("./_img/note/'.$_SESSION['NOTE_IMAGE_STYLE'].'/R.gif")  no-repeat center center;}';
-	$_SESSION['CSS'] .= 'table.scor_eval tbody td input.V  {background:#FFF url("./_img/note/'.$_SESSION['NOTE_IMAGE_STYLE'].'/V.gif")  no-repeat center center;}';
-	$_SESSION['CSS'] .= 'table.scor_eval tbody td input.VV {background:#FFF url("./_img/note/'.$_SESSION['NOTE_IMAGE_STYLE'].'/VV.gif") no-repeat center center;}';
+	$_SESSION['CSS'] .= 'table.scor_eval tbody.h td input.RR {background:#FFF url("./_img/note/'.$_SESSION['NOTE_IMAGE_STYLE'].'/h/RR.gif") no-repeat center center;}';
+	$_SESSION['CSS'] .= 'table.scor_eval tbody.v td input.RR {background:#FFF url("./_img/note/'.$_SESSION['NOTE_IMAGE_STYLE'].'/v/RR.gif") no-repeat center center;}';
+	$_SESSION['CSS'] .= 'table.scor_eval tbody.h td input.R  {background:#FFF url("./_img/note/'.$_SESSION['NOTE_IMAGE_STYLE'].'/h/R.gif")  no-repeat center center;}';
+	$_SESSION['CSS'] .= 'table.scor_eval tbody.v td input.R  {background:#FFF url("./_img/note/'.$_SESSION['NOTE_IMAGE_STYLE'].'/v/R.gif")  no-repeat center center;}';
+	$_SESSION['CSS'] .= 'table.scor_eval tbody.h td input.V  {background:#FFF url("./_img/note/'.$_SESSION['NOTE_IMAGE_STYLE'].'/h/V.gif")  no-repeat center center;}';
+	$_SESSION['CSS'] .= 'table.scor_eval tbody.v td input.V  {background:#FFF url("./_img/note/'.$_SESSION['NOTE_IMAGE_STYLE'].'/v/V.gif")  no-repeat center center;}';
+	$_SESSION['CSS'] .= 'table.scor_eval tbody.h td input.VV {background:#FFF url("./_img/note/'.$_SESSION['NOTE_IMAGE_STYLE'].'/h/VV.gif") no-repeat center center;}';
+	$_SESSION['CSS'] .= 'table.scor_eval tbody.v td input.VV {background:#FFF url("./_img/note/'.$_SESSION['NOTE_IMAGE_STYLE'].'/v/VV.gif") no-repeat center center;}';
 	$_SESSION['CSS'] .= 'table th.r , table td.r , div.r ,span.r ,label.r {background-color:'.$_SESSION['CSS_BACKGROUND-COLOR']['NA'].'}';
 	$_SESSION['CSS'] .= 'table th.o , table td.o , div.o ,span.o ,label.o {background-color:'.$_SESSION['CSS_BACKGROUND-COLOR']['VA'].'}';
 	$_SESSION['CSS'] .= 'table th.v , table td.v , div.v ,span.v ,label.v {background-color:'.$_SESSION['CSS_BACKGROUND-COLOR']['A'].'}';

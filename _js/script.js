@@ -563,7 +563,10 @@ $(document).ready
 						{
 							if(responseHTML.substring(0,5)=='<form')	// Attention aux caractères accentués : l'utf-8 pose des pbs pour ce test
 							{
-								maj_clock(1);
+								if (typeof(DUREE_AUTORISEE)!=='undefined')
+								{
+									maj_clock(1); // Ne modifier l'état du compteur que si l'appel ne provient pas d'une page HTML de bilan
+								}
 								$('#calque').html(responseHTML);
 								leave_erreur = true;
 							}

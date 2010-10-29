@@ -1819,7 +1819,7 @@ if( $step==61 )
 		// En deux requêtes sinon on ne récupère pas les matieres sans utilisateurs affectés.
 		$tab_base_matiere = array();
 		$tab_matiere_ref_TO_id_base = array();
-		$DB_TAB = DB_STRUCTURE_lister_matieres_etablissement($_SESSION['MATIERES'],$with_transversal=false);
+		$DB_TAB = DB_STRUCTURE_lister_matieres_etablissement($_SESSION['MATIERES'],$with_transversal=false,$order_by_name=true);
 		foreach($DB_TAB as $DB_ROW)
 		{
 			$tab_base_matiere[$DB_ROW['matiere_id']] = $DB_ROW['matiere_nom'];

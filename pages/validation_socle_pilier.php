@@ -28,7 +28,7 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = "Valider les compétences (piliers) du socle";
 $VERSION_JS_FILE += 3;
-// Remarque : on ne peut être pp que d'une classe, pas d'un groupe, donc si seuls les PP ont un accès par mis les profs, ils ne peuvent trier les élèves que par classes
+// Remarque : on ne peut être pp que d'une classe, pas d'un groupe, donc si seuls les PP ont un accès parmi les profs, ils ne peuvent trier les élèves que par classes
 ?>
 
 <?php
@@ -60,7 +60,7 @@ elseif( ($_SESSION['USER_PROFIL']=='professeur') && (strpos($_SESSION['DROIT_VAL
 	$tab_groupes = DB_STRUCTURE_OPT_groupes_professeur($_SESSION['USER_ID']);
 	$of_g = 'oui'; $og_g = 'oui'; 
 }
-elseif( ($_SESSION['USER_PROFIL']=='professeur') && (strpos($_SESSION['DROIT_VALIDATION_PILIER'],'profprincipal')!==false) )
+elseif( (DB_STRUCTURE_tester_prof_principal($_SESSION['USER_ID'])) && (strpos($_SESSION['DROIT_VALIDATION_PILIER'],'profprincipal')!==false) )
 {
 	$tab_groupes = DB_STRUCTURE_OPT_classes_prof_principal($_SESSION['USER_ID']);
 	$of_g = 'non'; $og_g = 'non'; 

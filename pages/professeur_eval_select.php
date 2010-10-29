@@ -27,7 +27,7 @@
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = "Évaluer des élèves sélectionnés";
-$VERSION_JS_FILE += 11;
+$VERSION_JS_FILE += 12;
 ?>
 
 <?php
@@ -39,7 +39,7 @@ $date_fin    = date("d/m/Y");
 
 <ul class="puce">
 	<li><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_professeur__evaluations_gestion">DOC : Gestion des évaluations.</a></span></li>
-	<li><span class="astuce">Choisir des evaluations existantes à afficher, ou cliquer sur le "<span style="background:transparent url(./_img/sprite9.png) 0 0 no-repeat;background-position:-20px 0;width:16px;height:16px;display:inline-block;vertical-align:middle"></span>" pour créer une nouvelle évaluation.</span></li>
+	<li><span class="astuce">Choisir des evaluations existantes à afficher, ou cliquer sur le "<span style="background:transparent url(./_img/sprite10.png) 0 0 no-repeat;background-position:-20px 0;width:16px;height:16px;display:inline-block;vertical-align:middle"></span>" pour créer une nouvelle évaluation.</span></li>
 	<li><span class="danger">Une évaluation dont la saisie a commencé ne devrait pas voir ses élèves ou ses items modifiés (sinon vous n'aurez plus accès à certaines données) !</span></li>
 </ul>
 
@@ -149,22 +149,22 @@ $date_fin    = date("d/m/Y");
 		<tbody><tr><td></td></tr></tbody>
 	</table>
 	<div id="td_souris_container"><div class="td_souris">
-		<img alt="RR" src="./_img/note/<?php echo $_SESSION['NOTE_IMAGE_STYLE'] ?>/RR.gif" /><img alt="ABS" src="./_img/note/ABS.gif" /><br />
-		<img alt="R" src="./_img/note/<?php echo $_SESSION['NOTE_IMAGE_STYLE'] ?>/R.gif" /><img alt="NN" src="./_img/note/NN.gif" /><br />
-		<img alt="V" src="./_img/note/<?php echo $_SESSION['NOTE_IMAGE_STYLE'] ?>/V.gif" /><img alt="DISP" src="./_img/note/DISP.gif" /><br />
-		<img alt="VV" src="./_img/note/<?php echo $_SESSION['NOTE_IMAGE_STYLE'] ?>/VV.gif" /><img alt="X" src="./_img/note/X.gif" />
+		<img alt="RR" src="./_img/note/<?php echo $_SESSION['NOTE_IMAGE_STYLE'] ?>/h/RR.gif" /><img alt="ABS" src="./_img/note/commun/h/ABS.gif" /><br />
+		<img alt="R" src="./_img/note/<?php echo $_SESSION['NOTE_IMAGE_STYLE'] ?>/h/R.gif" /><img alt="NN" src="./_img/note/commun/h/NN.gif" /><br />
+		<img alt="V" src="./_img/note/<?php echo $_SESSION['NOTE_IMAGE_STYLE'] ?>/h/V.gif" /><img alt="DISP" src="./_img/note/commun/h/DISP.gif" /><br />
+		<img alt="VV" src="./_img/note/<?php echo $_SESSION['NOTE_IMAGE_STYLE'] ?>/h/VV.gif" /><img alt="X" src="./_img/note/commun/h/X.gif" />
 	</div></div>
 	<p class="ti" id="aide_en_ligne"><button id="report_note" type="button">Reporter</button> le code 
-		<label for="f_defaut_VV"><input type="radio" id="f_defaut_VV" name="f_defaut" value="VV" checked="checked" /><img alt="VV" src="./_img/note/<?php echo $_SESSION['NOTE_IMAGE_STYLE'] ?>/VV.gif" /></label>
-		<label for="f_defaut_V"><input type="radio" id="f_defaut_V" name="f_defaut" value="V" /><img alt="V" src="./_img/note/<?php echo $_SESSION['NOTE_IMAGE_STYLE'] ?>/V.gif" /></label>
-		<label for="f_defaut_R"><input type="radio" id="f_defaut_R" name="f_defaut" value="R" /><img alt="R" src="./_img/note/<?php echo $_SESSION['NOTE_IMAGE_STYLE'] ?>/R.gif" /></label>
-		<label for="f_defaut_RR"><input type="radio" id="f_defaut_RR" name="f_defaut" value="RR" /><img alt="RR" src="./_img/note/<?php echo $_SESSION['NOTE_IMAGE_STYLE'] ?>/RR.gif" /></label>
-		<label for="f_defaut_ABS"><input type="radio" id="f_defaut_ABS" name="f_defaut" value="ABS" /><img alt="ABS" src="./_img/note/ABS.gif" /></label>
-		<label for="f_defaut_NN"><input type="radio" id="f_defaut_NN" name="f_defaut" value="NN" /><img alt="NN" src="./_img/note/NN.gif" /></label>
-		<label for="f_defaut_DISP"><input type="radio" id="f_defaut_DISP" name="f_defaut" value="DISP" /><img alt="DISP" src="./_img/note/DISP.gif" /></label>
+		<label for="f_defaut_VV"><input type="radio" id="f_defaut_VV" name="f_defaut" value="VV" checked="checked" /><img alt="VV" src="./_img/note/<?php echo $_SESSION['NOTE_IMAGE_STYLE'] ?>/h/VV.gif" /></label>
+		<label for="f_defaut_V"><input type="radio" id="f_defaut_V" name="f_defaut" value="V" /><img alt="V" src="./_img/note/<?php echo $_SESSION['NOTE_IMAGE_STYLE'] ?>/h/V.gif" /></label>
+		<label for="f_defaut_R"><input type="radio" id="f_defaut_R" name="f_defaut" value="R" /><img alt="R" src="./_img/note/<?php echo $_SESSION['NOTE_IMAGE_STYLE'] ?>/h/R.gif" /></label>
+		<label for="f_defaut_RR"><input type="radio" id="f_defaut_RR" name="f_defaut" value="RR" /><img alt="RR" src="./_img/note/<?php echo $_SESSION['NOTE_IMAGE_STYLE'] ?>/h/RR.gif" /></label>
+		<label for="f_defaut_ABS"><input type="radio" id="f_defaut_ABS" name="f_defaut" value="ABS" /><img alt="ABS" src="./_img/note/commun/h/ABS.gif" /></label>
+		<label for="f_defaut_NN"><input type="radio" id="f_defaut_NN" name="f_defaut" value="NN" /><img alt="NN" src="./_img/note/commun/h/NN.gif" /></label>
+		<label for="f_defaut_DISP"><input type="radio" id="f_defaut_DISP" name="f_defaut" value="DISP" /><img alt="DISP" src="./_img/note/commun/h/DISP.gif" /></label>
 	dans toutes les cellules vides.<label id="msg_report">&nbsp;</label></p>
 	<div>
-		<a lang="zone_saisir_deport" href="#td_souris_container"><img src="./_img/toggle_plus.gif" alt="" title="Voir / masquer la saisie déportée." class="toggle" /></a> Saisie déportée
+		<a lang="zone_saisir_deport" href="#"><img src="./_img/toggle_plus.gif" alt="" title="Voir / masquer la saisie déportée." class="toggle" /></a> Saisie déportée
 		<div id="zone_saisir_deport" class="hide">
 			<input type="hidden" name="filename" id="filename" value="<?php echo './__tmp/export/saisie_'.$_SESSION['BASE'].'_'.$_SESSION['USER_ID'].'_'; ?>" />
 			<span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_professeur__evaluations_saisie_deportee">DOC : Saisie déportée.</a></span>
@@ -183,16 +183,36 @@ $date_fin    = date("d/m/Y");
 		<tbody><tr><td></td></tr></tbody>
 	</table>
 	<p>
-		<a lang="zone_voir_deport" href="#td_souris_container"><img src="./_img/toggle_plus.gif" alt="" title="Voir / masquer la saisie déportée." class="toggle" /></a> Saisie déportée &amp; archivage
+		<a lang="zone_voir_deport" href="#"><img src="./_img/toggle_plus.gif" alt="" title="Voir / masquer la saisie déportée." class="toggle" /></a> Saisie déportée &amp; archivage
 		<div id="zone_voir_deport" class="hide">
 			<span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_professeur__evaluations_saisie_deportee">DOC : Saisie déportée.</a></span>
 			<ul class="puce">
 				<li><a id="export_file2" class="lien_ext" href=""><img alt="" src="./_img/bouton/fichier_export.png" /> Récupérer un fichier des scores au format CSV pour archivage ou une saisie déportée.</a></li>
-				<li><a id="export_file3" class="lien_ext" href=""><img alt="" src="./_img/bouton/fichier_export.png" /> Récupérer au format PDF le tableau vierge utilisable pour un report manuel des notes.</a></li>
-				<li><a id="export_file5" class="lien_ext" href=""><img alt="" src="./_img/bouton/fichier_export.png" /> Récupérer au format PDF le tableau des scores pour archivage.</a></li>
+				<li><a id="export_file3" class="lien_ext" href=""><img alt="" src="./_img/bouton/fichier_export.png" /> Récupérer au format PDF un tableau vierge utilisable pour un report manuel des notes.</a></li>
+				<li><a id="export_file5" class="lien_ext" href=""><img alt="" src="./_img/bouton/fichier_export.png" /> Récupérer au format PDF le tableau avec les scores pour archivage.</a></li>
 			</ul>
 		</div>
 	</p>
+</div>
+
+<div id="zone_voir_repart" class="hide">
+	<p class="hc"><b id="titre_voir_repart"></b><br /><label id="msg_voir_repart"></label></p>
+	<table id="table_voir_repart1" class="scor_eval">
+		<tbody><tr><td></td></tr></tbody>
+	</table>
+	<p />
+	<ul class="puce">
+		<li><a id="export_file6" class="lien_ext" href=""><img alt="" src="./_img/bouton/fichier_export.png" /> Récupérer au format PDF le tableau avec la répartition quantitative des scores.</a></li>
+	</ul>
+	<p />
+	<table id="table_voir_repart2" class="scor_eval">
+		<tbody><tr><td></td></tr></tbody>
+	</table>
+	<p />
+	<ul class="puce">
+		<li><a id="export_file7" class="lien_ext" href=""><img alt="" src="./_img/bouton/fichier_export.png" /> Récupérer au format PDF le tableau avec la répartition nominative des scores.</a></li>
+	</ul>
+	<p />
 </div>
 
 <?php

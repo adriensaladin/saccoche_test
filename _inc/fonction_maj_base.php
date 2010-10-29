@@ -31,6 +31,11 @@
 
 function maj_base($version_actuelle)
 {
+
+	//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	//	MAJ 2010-05-15 => 2010-06-03
+	//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 	if($version_actuelle=='2010-05-15')
 	{
 		$version_actuelle = '2010-06-03';
@@ -39,6 +44,11 @@ function maj_base($version_actuelle)
 		// y compris la mise à jour du champ "version_base" justement
 		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_actuelle.'" WHERE parametre_nom="version_base" LIMIT 1' );
 	}
+
+	//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	//	MAJ 2010-06-03 => 2010-06-12
+	//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 	if($version_actuelle=='2010-06-03')
 	{
 		$version_actuelle = '2010-06-12';
@@ -47,6 +57,11 @@ function maj_base($version_actuelle)
 		// y compris la mise à jour du champ "version_base" justement
 		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_actuelle.'" WHERE parametre_nom="version_base" LIMIT 1' );
 	}
+
+	//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	//	MAJ 2010-06-12 => 2010-07-04
+	//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 	if($version_actuelle=='2010-06-12')
 	{
 		$version_actuelle = '2010-07-04';
@@ -61,6 +76,11 @@ function maj_base($version_actuelle)
 		// y compris la mise à jour du champ "version_base" justement
 		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_actuelle.'" WHERE parametre_nom="version_base" LIMIT 1' );
 	}
+
+	//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	//	MAJ 2010-07-04 => 2010-07-13
+	//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 	if($version_actuelle=='2010-07-04')
 	{
 		$version_actuelle = '2010-07-13';
@@ -265,6 +285,11 @@ function maj_base($version_actuelle)
 		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'OPTIMIZE TABLE sacoche_socle_entree');
 		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_actuelle.'" WHERE parametre_nom="version_base" LIMIT 1' );
 	}
+
+	//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	//	MAJ 2010-07-13 => 2010-07-15
+	//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 	if($version_actuelle=='2010-07-13')
 	{
 		$version_actuelle = '2010-07-15';
@@ -278,6 +303,11 @@ function maj_base($version_actuelle)
 		// y compris la mise à jour du champ "version_base" justement
 		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_actuelle.'" WHERE parametre_nom="version_base" LIMIT 1' );
 	}
+
+	//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	//	MAJ 2010-07-15 => 2010-07-16
+	//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 	if($version_actuelle=='2010-07-15')
 	{
 		$version_actuelle = '2010-07-16';
@@ -286,6 +316,11 @@ function maj_base($version_actuelle)
 		// y compris la mise à jour du champ "version_base" justement
 		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_actuelle.'" WHERE parametre_nom="version_base" LIMIT 1' );
 	}
+
+	//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	//	MAJ 2010-07-16 => 2010-07-27
+	//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 	if($version_actuelle=='2010-07-16')
 	{
 		$version_actuelle = '2010-07-27';
@@ -311,6 +346,11 @@ function maj_base($version_actuelle)
 		// y compris la mise à jour du champ "version_base" justement
 		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_actuelle.'" WHERE parametre_nom="version_base" LIMIT 1' );
 	}
+
+	//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	//	MAJ 2010-07-27 => 2010-07-29
+	//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 	if($version_actuelle=='2010-07-27')
 	{
 		$version_actuelle = '2010-07-29';
@@ -322,6 +362,11 @@ function maj_base($version_actuelle)
 		// y compris la mise à jour du champ "version_base" justement
 		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_actuelle.'" WHERE parametre_nom="version_base" LIMIT 1' );
 	}
+
+	//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	//	MAJ 2010-07-29 => 2010-07-31
+	//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 	if($version_actuelle=='2010-07-29')
 	{
 		$version_actuelle = '2010-07-31';
@@ -330,6 +375,11 @@ function maj_base($version_actuelle)
 		// y compris la mise à jour du champ "version_base" justement
 		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_actuelle.'" WHERE parametre_nom="version_base" LIMIT 1' );
 	}
+
+	//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	//	MAJ 2010-07-31 => 2010-08-01
+	//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 	if($version_actuelle=='2010-07-31')
 	{
 		$version_actuelle = '2010-08-01';
@@ -344,6 +394,11 @@ function maj_base($version_actuelle)
 		// y compris la mise à jour du champ "version_base" justement
 		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_actuelle.'" WHERE parametre_nom="version_base" LIMIT 1' );
 	}
+
+	//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	//	MAJ 2010-08-01 => 2010-08-04
+	//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 	if($version_actuelle=='2010-08-01')
 	{
 		$version_actuelle = '2010-08-04';
@@ -352,6 +407,11 @@ function maj_base($version_actuelle)
 		// y compris la mise à jour du champ "version_base" justement
 		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_actuelle.'" WHERE parametre_nom="version_base" LIMIT 1' );
 	}
+
+	//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	//	MAJ 2010-08-04 => 2010-08-05
+	//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 	if($version_actuelle=='2010-08-04')
 	{
 		$version_actuelle = '2010-08-05';
@@ -360,6 +420,11 @@ function maj_base($version_actuelle)
 		// y compris la mise à jour du champ "version_base" justement
 		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_actuelle.'" WHERE parametre_nom="version_base" LIMIT 1' );
 	}
+
+	//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	//	MAJ 2010-08-05 => 2010-08-06
+	//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 	if($version_actuelle=='2010-08-05')
 	{
 		$version_actuelle = '2010-08-06';
@@ -369,6 +434,11 @@ function maj_base($version_actuelle)
 		// y compris la mise à jour du champ "version_base" justement
 		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_actuelle.'" WHERE parametre_nom="version_base" LIMIT 1' );
 	}
+
+	//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	//	MAJ 2010-08-06 => 2010-09-27
+	//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 	if($version_actuelle=='2010-08-06')
 	{
 		$version_actuelle = '2010-09-27';
@@ -401,6 +471,11 @@ function maj_base($version_actuelle)
 		// y compris la mise à jour du champ "version_base" justement
 		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_actuelle.'" WHERE parametre_nom="version_base" LIMIT 1' );
 	}
+
+	//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	//	MAJ 2010-09-27 => 2010-10-04
+	//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 	if($version_actuelle=='2010-09-27')
 	{
 		$version_actuelle = '2010-10-04';
@@ -409,6 +484,11 @@ function maj_base($version_actuelle)
 		// y compris la mise à jour du champ "version_base" justement
 		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_actuelle.'" WHERE parametre_nom="version_base" LIMIT 1' );
 	}
+
+	//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	//	MAJ 2010-08-06 => 2010-10-16
+	//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 	if($version_actuelle=='2010-10-04')
 	{
 		$version_actuelle = '2010-10-16';
@@ -469,8 +549,48 @@ function maj_base($version_actuelle)
 		// y compris la mise à jour du champ "version_base" justement
 		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_actuelle.'" WHERE parametre_nom="version_base" LIMIT 1' );
 	}
+
+	//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	//	MAJ 2010-10-16 => 2010-10-29
+	//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	if($version_actuelle=='2010-10-16')
+	{
+		$version_actuelle = '2010-10-29';
+		// script pour migrer vers la version suivante : ajouter une entrée dans sacoche_referentiel pour paramétrer le bulletin de synthèse
+		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_referentiel ADD referentiel_mode_synthese ENUM( "inconnu", "sans", "domaine", "theme" ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT "inconnu" ' );
+		// script pour migrer vers la version suivante : ajouter une entrée dans sacoche_matiere pour ordonner les matières dans le bulletin de synthèse
+		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_matiere ADD matiere_ordre TINYINT UNSIGNED NOT NULL DEFAULT "255" AFTER matiere_transversal ' );
+		// script pour migrer vers la version suivante : ajout de valeurs par défaut dans les champs...  en tout cas de la base de la structure...
+		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_demande CHANGE user_id user_id MEDIUMINT( 8 ) UNSIGNED NOT NULL DEFAULT "0" , CHANGE matiere_id matiere_id SMALLINT( 5 ) UNSIGNED NOT NULL DEFAULT "0" , CHANGE item_id item_id MEDIUMINT( 8 ) UNSIGNED NOT NULL DEFAULT "0" , CHANGE demande_date demande_date DATE NOT NULL DEFAULT "0000-00-00" , CHANGE demande_statut demande_statut ENUM( "eleve", "prof" ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT "eleve" COMMENT "[eleve] pour une demande d\'élève ; [prof] pour une prévision d\'évaluation par le prof ; une annulation de l\'élève ou du prof efface l\'enregistrement" ' );
+		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_devoir CHANGE prof_id prof_id MEDIUMINT( 8 ) UNSIGNED NOT NULL DEFAULT "0" , CHANGE groupe_id groupe_id MEDIUMINT( 8 ) UNSIGNED NOT NULL DEFAULT "0" , CHANGE devoir_date devoir_date DATE NOT NULL DEFAULT "0000-00-00" , CHANGE devoir_info devoir_info VARCHAR( 60 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT "" ' );
+		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_groupe CHANGE groupe_type groupe_type ENUM( "classe", "groupe", "besoin", "eval" ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT "classe" , CHANGE groupe_prof_id groupe_prof_id MEDIUMINT( 8 ) UNSIGNED NOT NULL DEFAULT "0" COMMENT "Id du prof dans le cas d\'un groupe de type [eval] ; 0 sinon." , CHANGE groupe_ref groupe_ref CHAR( 8 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT "" , CHANGE groupe_nom groupe_nom VARCHAR( 20 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT "" , CHANGE niveau_id niveau_id TINYINT( 3 ) UNSIGNED NOT NULL DEFAULT "0" ' );
+		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_jointure_devoir_item CHANGE devoir_id devoir_id MEDIUMINT( 8 ) UNSIGNED NOT NULL DEFAULT "0" , CHANGE item_id item_id MEDIUMINT( 8 ) UNSIGNED NOT NULL DEFAULT "0" , CHANGE jointure_ordre jointure_ordre TINYINT( 3 ) UNSIGNED NOT NULL DEFAULT "0" ' );
+		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_jointure_groupe_periode CHANGE groupe_id groupe_id MEDIUMINT( 8 ) UNSIGNED NOT NULL DEFAULT "0" , CHANGE periode_id periode_id MEDIUMINT( 8 ) UNSIGNED NOT NULL DEFAULT "0" , CHANGE jointure_date_debut jointure_date_debut DATE NOT NULL DEFAULT "0000-00-00" , CHANGE jointure_date_fin jointure_date_fin DATE NOT NULL DEFAULT "0000-00-00" ' );
+		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_jointure_user_entree CHANGE user_id user_id MEDIUMINT( 8 ) UNSIGNED NOT NULL DEFAULT "0" , CHANGE entree_id entree_id SMALLINT( 5 ) UNSIGNED NOT NULL DEFAULT "0" , CHANGE validation_entree_etat validation_entree_etat TINYINT( 1 ) NOT NULL DEFAULT "1" COMMENT "1 si validation positive ; 0 si validation négative." , CHANGE validation_entree_date validation_entree_date DATE NOT NULL DEFAULT "0000-00-00" , CHANGE validation_entree_info validation_entree_info VARCHAR( 25 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT "" COMMENT "Enregistrement statique du nom du validateur, conservé les années suivantes." ' );
+		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_jointure_user_groupe CHANGE user_id user_id MEDIUMINT( 8 ) UNSIGNED NOT NULL DEFAULT "0" , CHANGE groupe_id groupe_id MEDIUMINT( 8 ) UNSIGNED NOT NULL DEFAULT "0" , CHANGE jointure_pp jointure_pp TINYINT( 1 ) NOT NULL DEFAULT "0" ' );
+		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_jointure_user_matiere CHANGE user_id user_id MEDIUMINT( 8 ) UNSIGNED NOT NULL DEFAULT "0" , CHANGE matiere_id matiere_id SMALLINT( 5 ) UNSIGNED NOT NULL DEFAULT "0" , CHANGE jointure_coord jointure_coord TINYINT( 1 ) NOT NULL DEFAULT "0" ' );
+		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_jointure_user_pilier CHANGE user_id user_id MEDIUMINT( 8 ) UNSIGNED NOT NULL DEFAULT "0" , CHANGE pilier_id pilier_id SMALLINT( 5 ) UNSIGNED NOT NULL DEFAULT "0" , CHANGE validation_pilier_etat validation_pilier_etat TINYINT( 1 ) NOT NULL DEFAULT "1" COMMENT "1 si validation positive ; 0 si validation négative." , CHANGE validation_pilier_date validation_pilier_date DATE NOT NULL DEFAULT "0000-00-00" , CHANGE validation_pilier_info validation_pilier_info VARCHAR( 25 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT "" COMMENT "Enregistrement statique du nom du validateur, conservé les années suivantes." ' );
+		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_matiere CHANGE matiere_ref matiere_ref VARCHAR( 5 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT "" , CHANGE matiere_nom matiere_nom VARCHAR( 50 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT "" ' );
+		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_niveau CHANGE palier_id palier_id TINYINT( 3 ) UNSIGNED NOT NULL DEFAULT "0" , CHANGE niveau_ordre niveau_ordre TINYINT( 3 ) UNSIGNED NOT NULL DEFAULT "0" , CHANGE niveau_ref niveau_ref VARCHAR( 5 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT "" , CHANGE code_mef code_mef CHAR( 11 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT "" , CHANGE niveau_nom niveau_nom VARCHAR( 55 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT "" ' );
+		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_parametre CHANGE parametre_nom parametre_nom VARCHAR( 25 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT ""  , CHANGE parametre_valeur parametre_valeur VARCHAR( 150 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT "" ' );
+		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_periode CHANGE periode_nom periode_nom VARCHAR( 40 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT "" ' );
+		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_referentiel CHANGE matiere_id matiere_id SMALLINT( 5 ) UNSIGNED NOT NULL DEFAULT "0" , CHANGE niveau_id niveau_id TINYINT( 3 ) UNSIGNED NOT NULL DEFAULT "0" , CHANGE referentiel_partage_etat referentiel_partage_etat ENUM( "bof", "non", "oui", "hs" ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT "non" COMMENT "[oui] = référentiel partagé sur le serveur communautaire ; [non] = référentiel non partagé avec la communauté ; [bof] = référentiel dont le partage est sans intérêt (pas novateur) ; [hs] = référentiel dont le partage est sans objet (matière spécifique)" , CHANGE referentiel_partage_date referentiel_partage_date DATE NOT NULL DEFAULT "0000-00-00" ' );
+		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_referentiel_domaine CHANGE matiere_id matiere_id SMALLINT( 5 ) UNSIGNED NOT NULL DEFAULT "0" , CHANGE niveau_id niveau_id TINYINT( 3 ) UNSIGNED NOT NULL DEFAULT "0" , CHANGE domaine_ordre domaine_ordre TINYINT( 3 ) UNSIGNED NOT NULL DEFAULT "1" COMMENT "Commence à 1." , CHANGE domaine_ref domaine_ref CHAR( 1 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT "" , CHANGE domaine_nom domaine_nom VARCHAR( 128 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT "" ' );
+		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_referentiel_item CHANGE theme_id theme_id SMALLINT( 5 ) UNSIGNED NOT NULL DEFAULT "0" , CHANGE entree_id entree_id SMALLINT( 5 ) UNSIGNED NOT NULL DEFAULT "0" , CHANGE item_ordre item_ordre TINYINT( 3 ) UNSIGNED NOT NULL DEFAULT "0" COMMENT "Commence à 0." , CHANGE item_nom item_nom VARCHAR( 255 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT "" , CHANGE item_lien item_lien VARCHAR( 255 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT "" ' );
+		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_referentiel_theme CHANGE domaine_id domaine_id SMALLINT( 5 ) UNSIGNED NOT NULL DEFAULT "0" , CHANGE theme_ordre theme_ordre TINYINT( 3 ) UNSIGNED NOT NULL DEFAULT "1" COMMENT "Commence à 1." , CHANGE theme_nom theme_nom VARCHAR( 128 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT "" ' );
+		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_saisie CHANGE prof_id prof_id MEDIUMINT( 8 ) UNSIGNED NOT NULL DEFAULT "0" , CHANGE eleve_id eleve_id MEDIUMINT( 8 ) UNSIGNED NOT NULL DEFAULT "0" , CHANGE devoir_id devoir_id MEDIUMINT( 8 ) UNSIGNED NOT NULL DEFAULT "0" , CHANGE item_id item_id MEDIUMINT( 8 ) UNSIGNED NOT NULL DEFAULT "0" , CHANGE saisie_date saisie_date DATE NOT NULL DEFAULT "0000-00-00" , CHANGE saisie_note saisie_note ENUM( "VV", "V", "R", "RR", "ABS", "NN", "DISP", "REQ" ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT "NN" , CHANGE saisie_info saisie_info VARCHAR( 100 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT "" COMMENT "Enregistrement statique du nom du devoir et du professeur, conservé les années suivantes." ' );
+		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_socle_entree CHANGE section_id section_id SMALLINT( 5 ) UNSIGNED NOT NULL DEFAULT "0" , CHANGE entree_ordre entree_ordre TINYINT( 3 ) UNSIGNED NOT NULL DEFAULT "0" COMMENT "Commence à 0." , CHANGE entree_nom entree_nom VARCHAR( 250 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT "" ' );
+		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_socle_palier CHANGE palier_ordre palier_ordre TINYINT( 3 ) UNSIGNED NOT NULL DEFAULT "0" , CHANGE palier_nom palier_nom VARCHAR( 30 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT "" ' );
+		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_socle_pilier CHANGE palier_id palier_id TINYINT( 3 ) UNSIGNED NOT NULL DEFAULT "0" , CHANGE pilier_ordre pilier_ordre TINYINT( 3 ) UNSIGNED NOT NULL DEFAULT "1" COMMENT "Commence à 1." , CHANGE pilier_ref pilier_ref VARCHAR( 2 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT "" , CHANGE pilier_nom pilier_nom VARCHAR( 128 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT "" ' );
+		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_socle_section CHANGE pilier_id pilier_id TINYINT( 3 ) UNSIGNED NOT NULL DEFAULT "0" , CHANGE section_ordre section_ordre TINYINT( 3 ) UNSIGNED NOT NULL DEFAULT "1" COMMENT "Commence à 1."  , CHANGE section_nom section_nom VARCHAR( 165 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT "" ' );
+		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_user CHANGE user_num_sconet user_num_sconet MEDIUMINT( 8 ) UNSIGNED NOT NULL DEFAULT "0" COMMENT "ELENOET pour un élève (entre 2000 et 5000 ; parfois appelé n° GEP avec un 0 devant) ou INDIVIDU_ID pour un prof (dépasse parfois une capacité SMALLINT UNSIGNED)" , CHANGE user_reference user_reference CHAR( 11 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT "" COMMENT "Dans Sconet, ID_NATIONAL pour un élève (pour un prof ce pourrait être le NUMEN mais il n\'est pas renseigné et il faudrait deux caractères de plus). Ce champ sert aussi pour un import tableur." , CHANGE user_profil user_profil ENUM( "eleve", "professeur", "directeur", "administrateur" ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT "eleve" , CHANGE user_nom user_nom VARCHAR( 20 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT "" , CHANGE user_prenom user_prenom VARCHAR( 20 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT "" , CHANGE user_login user_login VARCHAR( 20 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT "" , CHANGE user_password user_password CHAR( 32 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT "" , CHANGE user_tentative_date user_tentative_date DATETIME NOT NULL DEFAULT "0000-00-00 00:00:00" , CHANGE user_connexion_date user_connexion_date DATETIME NOT NULL DEFAULT "0000-00-00 00:00:00" , CHANGE eleve_classe_id eleve_classe_id MEDIUMINT( 8 ) UNSIGNED NOT NULL DEFAULT "0"  , CHANGE user_id_ent user_id_ent VARCHAR( 32 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT "" COMMENT "Paramètre renvoyé après une identification CAS depuis un ENT (ça peut être le login, mais ça peut aussi être un numéro interne à l\'ENT...)." , CHANGE user_id_gepi user_id_gepi VARCHAR( 32 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT "" COMMENT "Login de l\'utilisateur dans Gepi utilisé pour un transfert note/moyenne vers un bulletin." ' );
+		// y compris la mise à jour du champ "version_base" justement
+		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_actuelle.'" WHERE parametre_nom="version_base" LIMIT 1' );
+	}
 	// Log de l'action
-	ajouter_log('Mise à jour automatique de la base '.SACOCHE_STRUCTURE_BD_NAME.'.');
+	ajouter_log_SACoche('Mise à jour automatique de la base '.SACOCHE_STRUCTURE_BD_NAME.'.');
+
 }
 
 ?>

@@ -33,17 +33,21 @@ $palier_nom   = (isset($_POST['f_palier_nom']))  ? clean_texte($_POST['f_palier_
 $aff_socle_PA = (isset($_POST['f_socle_PA']))    ? 1                                    : 0;	// en cas de manipulation type Firebug, peut être forcé pour l'élève avec (mb_substr_count($_SESSION['DROIT_ELEVE_SOCLE'],'SoclePourcentageAcquis'))
 $aff_socle_EV = (isset($_POST['f_socle_EV']))    ? 1                                    : 0;	// en cas de manipulation type Firebug, peut être forcé pour l'élève avec (mb_substr_count($_SESSION['DROIT_ELEVE_SOCLE'],'SocleEtatValidation'))
 $groupe_id    = (isset($_POST['f_groupe']))      ? clean_entier($_POST['f_groupe'])     : 0;	// en cas de manipulation type Firebug, peut être forcé pour l'élève à $_SESSION['ELEVE_CLASSE_ID']
+$aff_coef    = (isset($_POST['f_coef']))         ? 1                                    : 0;
+$aff_socle   = (isset($_POST['f_socle']))        ? 1                                    : 0;
+$aff_lien    = (isset($_POST['f_lien']))         ? 1                                    : 0;
 $tab_eleve_id = (isset($_POST['eleves']))        ? array_map('clean_entier',explode(',',$_POST['eleves'])) : array() ;	// en cas de manipulation type Firebug, peut être forcé pour l'élève avec $_SESSION['USER_ID']
 
-function positif($n) {return $n;}
 $tab_eleve_id  = array_filter($tab_eleve_id,'positif');
 $liste_eleve   = implode(',',$tab_eleve_id);
 
 $test_affichage_Pourcentage = ($groupe_id && count($tab_eleve_id) && $aff_socle_PA) ? true : false;
 $test_affichage_Validation  = ($groupe_id && count($tab_eleve_id) && $aff_socle_EV) ? true : false;
 
-if( $palier_id && $palier_nom )
+if( $palier_id && $palier_nom && $groupe_id && count($tab_eleve_id) )
 {
+
+	ajouter_log_PHP( $log_objet='Demande de bilan' , $log_contenu=serialize($_POST) , $log_fichier=__FILE__ , $log_ligne=__LINE__ );
 
 	$tab_pilier       = array();	// [pilier_id] => array(pilier_nom,pilier_nb_lignes);
 	$tab_section      = array();	// [pilier_id][section_id] => section_nom;
@@ -117,7 +121,7 @@ if( $palier_id && $palier_nom )
 		foreach($DB_TAB as $DB_ROW)
 		{
 			$tab_eval[$DB_ROW['eleve_id']][$DB_ROW['socle_id']][$DB_ROW['item_id']][]['note'] = $DB_ROW['note'];
-			$tab_item[$DB_ROW['item_id']] = array('item_ref'=>$DB_ROW['item_ref'],'item_nom'=>$DB_ROW['item_nom'],'item_cart'=>$DB_ROW['item_cart'],'matiere_id'=>$DB_ROW['matiere_id'],'calcul_methode'=>$DB_ROW['calcul_methode'],'calcul_limite'=>$DB_ROW['calcul_limite']);
+			$tab_item[$DB_ROW['item_id']] = array('item_ref'=>$DB_ROW['item_ref'],'item_nom'=>$DB_ROW['item_nom'],'item_coef'=>$DB_ROW['item_coef'],'item_cart'=>$DB_ROW['item_cart'],'item_socle'=>$DB_ROW['socle_id'],'item_lien'=>$DB_ROW['item_lien'],'matiere_id'=>$DB_ROW['matiere_id'],'calcul_methode'=>$DB_ROW['calcul_methode'],'calcul_limite'=>$DB_ROW['calcul_limite']);
 		}
 	}
 
@@ -161,6 +165,11 @@ if( $palier_id && $palier_nom )
 	// Elaboration du bilan relatif au socle, en HTML et PDF => Tableaux et variables pour mémoriser les infos ; dans cette partie on ne fait que les calculs (aucun affichage)
 	//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
+	if(!$aff_coef)  { $texte_coef       = ''; }
+	if(!$aff_socle) { $texte_socle      = ''; }
+	if(!$aff_lien)  { $texte_lien_avant = ''; }
+	if(!$aff_lien)  { $texte_lien_apres = ''; }
+
 	$tab_etat = array('A'=>'v','VA'=>'o','NA'=>'r');
 	$tab_init_compet = array('A'=>0,'VA'=>0,'NA'=>0,'nb'=>0);
 //	$tab_score_pilier_eleve  = array();	// [pilier_id][eleve_id] => array(A,VA,NA,nb,%)  // Retenir le nb d'items acquis ou pas / pilier / élève
@@ -197,16 +206,30 @@ if( $palier_id && $palier_nom )
 								{
 									foreach($tab_eval[$eleve_id][$socle_id] as $item_id => $tab_devoirs)
 									{
-										extract($tab_item[$item_id]);	// $item_ref $item_nom $item_cart $matiere_id $calcul_methode $calcul_limite
+										extract($tab_item[$item_id]);	// $item_ref $item_nom $item_coef $item_cart $item_socle $item_lien $matiere_id $calcul_methode $calcul_limite
 										// calcul du bilan de l'item
 										$score = calculer_score($tab_devoirs,$calcul_methode,$calcul_limite);
 										if($score!==false)
 										{
+											// le détail HTML
+											if($aff_coef)
+											{
+												$texte_coef = '['.$item_coef.'] ';
+											}
+											if($aff_socle)
+											{
+												$texte_socle = ($item_socle) ? '[S] ' : '[–] ';
+											}
+											if($aff_lien)
+											{
+												$texte_lien_avant = ($item_lien) ? '<a class="lien_ext" href="'.html($item_lien).'">' : '';
+												$texte_lien_apres = ($item_lien) ? '</a>' : '';
+											}
 											// on détermine si elle est acquise ou pas
 											$indice = test_A($score) ? 'A' : ( test_NA($score) ? 'NA' : 'VA' ) ;
 											// on enregistre les infos
 											$texte_demande_eval = ( ($_SESSION['USER_PROFIL']!='eleve') || ($_SESSION['DROIT_ELEVE_DEMANDES']==0) ) ? '' : ( ($item_cart) ? '<q class="demander_add" lang="ids_'.$matiere_id.'_'.$item_id.'_'.$score.'" title="Ajouter aux demandes d\'évaluations."></q>' : '<q class="demander_non" title="Demande interdite."></q>' ) ;
-											$tab_infos_socle_eleve[$socle_id][$eleve_id][] = '<span class="'.$tab_etat[$indice].'">'.html($item_ref.' || '.$item_nom.' ['.$score.'%]').'</span>'.$texte_demande_eval;
+											$tab_infos_socle_eleve[$socle_id][$eleve_id][] = '<span class="'.$tab_etat[$indice].'">'.$texte_coef.$texte_socle.$texte_lien_avant.html($item_ref.' || '.$item_nom.' ['.$score.'%]').'</span>'.$texte_lien_apres.$texte_demande_eval;
 											$tab_score_socle_eleve[$socle_id][$eleve_id][$indice]++;
 											$tab_score_socle_eleve[$socle_id][$eleve_id]['nb']++;
 											// $tab_score_section_eleve[$section_id][$eleve_id][$indice]++;
@@ -263,7 +286,6 @@ if( $palier_id && $palier_nom )
 	$releve_html .= '<h2>'.html($palier_nom).'</h2>';
 	// Appel de la classe et définition de qqs variables supplémentaires pour la mise en page PDF
 	require('./_fpdf/fpdf.php');
-	require('./_fpdf/rpdf.php');
 	require('./_inc/class.PDF.php');
 	$releve_pdf = new PDF($orientation='portrait',$marge_min=7.5,$couleur='oui');
 	$releve_pdf->releve_socle_initialiser($test_affichage_Pourcentage,$test_affichage_Validation);

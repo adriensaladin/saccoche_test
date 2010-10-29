@@ -32,7 +32,6 @@ $tab_bases = (isset($_POST['bases'])) ? array_map('clean_entier',explode(',',$_P
 $num  = (isset($_GET['num'])) ? (int)$_GET['num'] : 0 ;	// Numéro de l'étape en cours
 $max  = (isset($_GET['max'])) ? (int)$_GET['max'] : 0 ;	// Nombre d'étapes à effectuer
 
-function positif($n) {return $n;}
 $tab_bases = array_filter($tab_bases,'positif');
 $nb_bases  = count($tab_bases);
 

@@ -25,10 +25,85 @@
  * 
  */
 
-// Extension de classe de RPDF qui étant elle-même FPDF
+// Extension de classe qui étend FPDF
 
-class PDF extends RPDF
+class PDF extends FPDF
 {
+
+//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//	Pour écrire un texte tourné
+//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+/**
+ * Consulter  http://www.fpdf.org/fr/script/script31.php
+ * Voir aussi http://www.fpdf.org/fr/script/script2.php
+**/
+
+	function TextWithDirection($x, $y, $txt, $direction='R')
+	{
+		if ($direction=='R')
+			$s = sprintf('BT %.2F %.2F %.2F %.2F %.2F %.2F Tm (%s) Tj ET',1,0,0,1,$x*$this->k,($this->h-$y)*$this->k,$this->_escape($txt));
+		elseif ($direction=='L')
+			$s = sprintf('BT %.2F %.2F %.2F %.2F %.2F %.2F Tm (%s) Tj ET',-1,0,0,-1,$x*$this->k,($this->h-$y)*$this->k,$this->_escape($txt));
+		elseif ($direction=='U')
+			$s = sprintf('BT %.2F %.2F %.2F %.2F %.2F %.2F Tm (%s) Tj ET',0,1,-1,0,$x*$this->k,($this->h-$y)*$this->k,$this->_escape($txt));
+		elseif ($direction=='D')
+			$s = sprintf('BT %.2F %.2F %.2F %.2F %.2F %.2F Tm (%s) Tj ET',0,-1,1,0,$x*$this->k,($this->h-$y)*$this->k,$this->_escape($txt));
+		else
+			$s = sprintf('BT %.2F %.2F Td (%s) Tj ET',$x*$this->k,($this->h-$y)*$this->k,$this->_escape($txt));
+		if ($this->ColorFlag)
+			$s = 'q '.$this->TextColor.' '.$s.' Q';
+		$this->_out($s);
+	}
+
+	function TextWithRotation($x, $y, $txt, $txt_angle, $font_angle=0)
+	{
+		$font_angle += 90+$txt_angle;
+		$txt_angle  *= M_PI/180;
+		$font_angle *= M_PI/180;
+
+		$txt_dx  = cos($txt_angle);
+		$txt_dy  = sin($txt_angle);
+		$font_dx = cos($font_angle);
+		$font_dy = sin($font_angle);
+
+		$s = sprintf('BT %.2F %.2F %.2F %.2F %.2F %.2F Tm (%s) Tj ET',$txt_dx,$txt_dy,$font_dx,$font_dy,$x*$this->k,($this->h-$y)*$this->k,$this->_escape($txt));
+		if ($this->ColorFlag)
+			$s = 'q '.$this->TextColor.' '.$s.' Q';
+		$this->_out($s);
+	}
+
+//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//	Pour tracer un cercle
+//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+/**
+ * Consulter  http://www.fpdf.org/fr/script/script6.php
+ * Voir aussi http://www.fpdf.org/fr/script/script28.php
+ * Voir aussi http://www.fpdf.org/fr/script/script69.php
+**/
+	function Circle($x, $y, $r, $style='D')
+	{
+		$this->Ellipse($x,$y,$r,$r,$style);
+	}
+
+	function Ellipse($x, $y, $rx, $ry, $style='D')
+	{
+		if($style=='F')
+			$op = 'f';
+		elseif($style=='FD' || $style=='DF')
+			$op = 'B';
+		else
+			$op = 'S';
+		$lx = 4/3*(M_SQRT2-1)*$rx;
+		$ly = 4/3*(M_SQRT2-1)*$ry;
+		$k = $this->k;
+		$h = $this->h;
+		$this->_out(sprintf('%.2F %.2F m %.2F %.2F %.2F %.2F %.2F %.2F c', ($x+$rx)*$k, ($h-$y)*$k,       ($x+$rx)*$k, ($h-($y-$ly))*$k, ($x+$lx)*$k, ($h-($y-$ry))*$k,$x*$k, ($h-($y-$ry))*$k));
+		$this->_out(sprintf('%.2F %.2F %.2F %.2F %.2F %.2F c',             ($x-$lx)*$k, ($h-($y-$ry))*$k, ($x-$rx)*$k, ($h-($y-$ly))*$k, ($x-$rx)*$k, ($h-$y)*$k));
+		$this->_out(sprintf('%.2F %.2F %.2F %.2F %.2F %.2F c',             ($x-$rx)*$k, ($h-($y+$ly))*$k, ($x-$lx)*$k, ($h-($y+$ry))*$k, $x*$k,       ($h-($y+$ry))*$k));
+		$this->_out(sprintf('%.2F %.2F %.2F %.2F %.2F %.2F c %s',          ($x+$lx)*$k, ($h-($y+$ry))*$k, ($x+$rx)*$k, ($h-($y+$ly))*$k, ($x+$rx)*$k, ($h-$y)*$k,             $op));
+	}
 
 	//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 	//	Attributs de la classe (équivalents des "variables")
@@ -57,6 +132,7 @@ class PDF extends RPDF
 	private $cases_nb          = 0;
 	private $cases_largeur     = 0;
 	private $cases_hauteur     = 0;
+	private $lignes_hauteur    = 0;
 	private $lignes_nb         = 0;
 	private $reference_largeur = 0;
 	private $intitule_largeur  = 0;
@@ -120,9 +196,10 @@ class PDF extends RPDF
 		$this->tab_couleur['rouge'] = array('r'=>$rr,'v'=>$rv,'b'=>$rb);
 		$this->tab_couleur['jaune'] = array('r'=>$jr,'v'=>$jv,'b'=>$jb);
 		$this->tab_couleur['vert']  = array('r'=>$vr,'v'=>$vv,'b'=>$vb);
-		$this->tab_couleur['gris_clair'] = array('r'=>230,'v'=>230,'b'=>230);
-		$this->tab_couleur['gris_fonce'] = array('r'=>200,'v'=>200,'b'=>200);
 		$this->tab_couleur['blanc']      = array('r'=>255,'v'=>255,'b'=>255);
+		$this->tab_couleur['gris_clair'] = array('r'=>230,'v'=>230,'b'=>230);
+		$this->tab_couleur['gris_moyen'] = array('r'=>200,'v'=>200,'b'=>200);
+		$this->tab_couleur['gris_fonce'] = array('r'=>170,'v'=>170,'b'=>170);
 		$this->tab_couleur['v0'] = array('r'=>255,'v'=>153,'b'=>153);
 		$this->tab_couleur['v1'] = array('r'=>153,'v'=>255,'b'=>153);
 		$this->tab_couleur['v2'] = array('r'=>187,'v'=>187,'b'=>255);
@@ -231,7 +308,7 @@ class PDF extends RPDF
 		}
 		else
 		{
-			$this->choisir_couleur_trait('gris_fonce');
+			$this->choisir_couleur_trait('gris_moyen');
 			$this->SetLineWidth(0.1);
 			$this->Line($this->page_largeur-$this->marge_droit-50 , $this->marge_haut+5 , $this->page_largeur-$this->marge_droit , $this->marge_haut+5);
 			$this->Line($this->page_largeur-$this->marge_droit-50 , $this->marge_haut+10 , $this->page_largeur-$this->marge_droit , $this->marge_haut+10);
@@ -264,7 +341,7 @@ class PDF extends RPDF
 			$this->AddPage($this->orientation , 'A4');
 		}
 		$this->SetFont('Arial' , 'B' , 8);
-		$this->choisir_couleur_fond('gris_fonce');
+		$this->choisir_couleur_fond('gris_moyen');
 		$this->Cell($this->reference_largeur , $this->cases_hauteur , pdf($theme_ref) , 1 , 0 , 'C' , true , '');
 		$this->Cell($this->intitule_largeur , $this->cases_hauteur , pdf($theme_nom) , 1 , 1 , 'L' , true , '');
 		$this->SetFont('Arial' , '' , 8);
@@ -326,7 +403,7 @@ class PDF extends RPDF
 			$this->SetXY($this->page_largeur-$this->marge_droit-70 , $this->marge_haut);
 			$this->Cell(20 , 5 , pdf('Nom :') , 0 , 2 , 'R' , false , '');
 			$this->Cell(20 , 5 , pdf('Prénom :') , 0 , 2 , 'R' , false , '');
-			$this->choisir_couleur_trait('gris_fonce');
+			$this->choisir_couleur_trait('gris_moyen');
 			$this->SetLineWidth(0.1);
 			$this->Line($this->page_largeur-$this->marge_droit-50 , $this->marge_haut+5 , $this->page_largeur-$this->marge_droit , $this->marge_haut+5);
 			$this->Line($this->page_largeur-$this->marge_droit-50 , $this->marge_haut+10 , $this->page_largeur-$this->marge_droit , $this->marge_haut+10);
@@ -364,7 +441,7 @@ class PDF extends RPDF
 			$this->SetXY($this->marge_gauche+$this->retrait_pourcentage , $this->GetY()+2);
 		}
 		$this->SetFont('Arial' , 'B' , $this->taille_police + 1);
-		$this->choisir_couleur_fond('gris_fonce');
+		$this->choisir_couleur_fond('gris_moyen');
 		$br = $test_affichage_Validation ? 0 : 1 ;
 		$this->Cell($this->pilier_largeur , $this->cases_hauteur , pdf($pilier_nom) , 1 , $br , 'L' , true , '');
 		if($test_affichage_Validation)
@@ -377,7 +454,7 @@ class PDF extends RPDF
 	{
 		$this->SetXY($this->marge_gauche+$this->retrait_pourcentage , $this->GetY());
 		$this->SetFont('Arial' , 'B' , $this->taille_police);
-		$this->choisir_couleur_fond('gris_fonce');
+		$this->choisir_couleur_fond('gris_moyen');
 		$this->Cell($this->section_largeur , $this->cases_hauteur , pdf($section_nom) , 1 , 1 , 'L' , true , '');
 	}
 
@@ -451,21 +528,25 @@ class PDF extends RPDF
 		// Intitulé
 		$this->SetFont('Arial' , 'B' , 12);
 		$this->SetXY($this->marge_gauche , $ordonnee);
-		$this->Cell($this->page_largeur-$this->marge_droit-75 , 5 , pdf('Bilan sur une matière') , 0 , 2 , 'L' , false , '');
-		$this->Cell($this->page_largeur-$this->marge_droit-75 , 5 , pdf($matiere_nom.' - '.$groupe_nom) , 0 , 2 , 'L' , false , '');
+		$this->Cell($this->page_largeur-$this->marge_droit-75 , 5 , pdf('Bilan d\'items d\'une matière') , 0 , 2 , 'L' , false , '');
+		$this->Cell($this->page_largeur-$this->marge_droit-75 , 5 , pdf($matiere_nom.' - '.$groupe_nom)  , 0 , 2 , 'L' , false , '');
 		// Période
 		$this->SetFont('Arial' , '' , 10);
 		$this->Cell($this->page_largeur-$this->marge_droit-75 , 5 , pdf($texte_periode) , 0 , 2 , 'L' , false , '');
+		// Structure
+		$this->SetFont('Arial' , 'B' , 12);
+		$this->SetXY($this->page_largeur-$this->marge_droit-70 , $ordonnee);
+		$this->Cell(70 , 5 , pdf($_SESSION['DENOMINATION']) , 0 , 2 , 'R' , false , '');
 		// Nom prénom
 		$this->SetFont('Arial' , '' , 12);
-		$this->SetXY($this->page_largeur-$this->marge_droit-70 , $ordonnee);
-		$this->Cell(20 , 5 , pdf('Nom :') , 0 , 2 , 'R' , false , '');
+		$this->SetXY($this->page_largeur-$this->marge_droit-70 , $ordonnee+5);
+		$this->Cell(20 , 5 , pdf('Nom :')    , 0 , 2 , 'R' , false , '');
 		$this->Cell(20 , 5 , pdf('Prénom :') , 0 , 2 , 'R' , false , '');
 		// On met le document au nom de l'élève
 		$this->SetFont('Arial' , 'B' , 12);
-		$this->SetXY($this->page_largeur-$this->marge_droit-50 , $ordonnee);
-		$this->Cell(50 , 5 , pdf($eleve_nom) , 0 , 2 , 'L' , false , '');
-		$this->Cell(50 , 5 , pdf($eleve_prenom) , 0 , 2 , 'L' , false , '');
+		$this->SetXY($this->page_largeur-$this->marge_droit-50 , $ordonnee+5);
+		$this->Cell(50 , 5 , pdf($eleve_nom)                , 0 , 2 , 'L' , false , '');
+		$this->Cell(50 , 5 , pdf($eleve_prenom)             , 0 , 2 , 'L' , false , '');
 		// On se positionne sous l'entête
 		$this->SetXY($this->marge_gauche , $ordonnee+$hauteur_entete);
 		$this->SetFont('Arial' , '' , 8);
@@ -477,7 +558,8 @@ class PDF extends RPDF
 		$this->AddPage($this->orientation , 'A4');
 		// Intitulé
 		$this->SetFont('Arial' , 'B' , 12);
-		$this->Cell($this->page_largeur-$this->marge_droit-75 , 5 , pdf('Bilan '.$texte_format) , 0 , 2 , 'L' , false , '');
+		$this->Cell($this->page_largeur-$this->marge_droit-75 , 5 , pdf('Bilan '.$texte_format)                         , 0 , 0 , 'L' , false , '');
+		$this->Cell(75-$this->marge_gauche                    , 5 , pdf($_SESSION['DENOMINATION'])                      , 0 , 1 , 'R' , false , '');
 		$this->Cell($this->page_largeur-$this->marge_droit-75 , 5 , pdf($groupe_nom.' - '.$eleve_nom.' '.$eleve_prenom) , 0 , 2 , 'L' , false , '');
 		// Période
 		$this->SetFont('Arial' , '' , 10);
@@ -534,7 +616,7 @@ class PDF extends RPDF
 	public function bilan_periode_individuel_synthese($bilan_texte)
 	{
 		$this->SetFont('Arial' , '' , 8);
-		$this->choisir_couleur_fond('gris_fonce');
+		$this->choisir_couleur_fond('gris_moyen');
 		$this->Cell($this->reference_largeur , $this->cases_hauteur , '' , 0 , 0 , 'C' , false , '');
 		$this->Cell($this->synthese_largeur , $this->cases_hauteur , pdf($bilan_texte) , 1 , 1 , 'R' , true , '');
 	}
@@ -718,6 +800,46 @@ class PDF extends RPDF
 	}
 
 	//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+	//	Méthodes pour la mise en page d'un bilan d'un devoir : répartition quantitative ou nominative
+	//	tableau_devoir_repartition_quantitative_initialiser() tableau_devoir_repartition_nominative_initialiser()
+	//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
+	public function tableau_devoir_repartition_quantitative_initialiser($item_nb)
+	{
+		$cases_hauteur_maximum   = 20;
+		$this->cases_largeur     = 20; // valeur fixe
+		$this->reference_largeur = $this->page_largeur - $this->marge_gauche - $this->marge_droit - (4 * $this->cases_largeur);
+		$this->etiquette_hauteur = 10; // valeur fixe
+		$this->cases_hauteur     = ($this->page_hauteur - $this->marge_haut - $this->marge_bas - $this->etiquette_hauteur) / $item_nb;
+		$this->cases_hauteur     = min($this->cases_hauteur,$cases_hauteur_maximum);
+		$this->SetMargins($this->marge_gauche , $this->marge_haut , $this->marge_droit);
+		$this->AddPage($this->orientation , 'A4');
+		$this->SetAutoPageBreak(true);
+		// Attention : une note Lomer étant affichée dans une case de taille cases_largeur x cases_hauteur, on doit bidouiller...
+		// cases_hauteur est pris temporairement pour la 1e ligne et est restitué ensuite à sa bonne valeur
+		$this->cases_hauteur_memo = $this->cases_hauteur;
+		$this->cases_hauteur      = $this->etiquette_hauteur;
+		$this->calculer_dimensions_images();
+	}
+
+	public function tableau_devoir_repartition_nominative_initialiser($lignes_nb)
+	{
+		$this->cases_largeur     = 35; // valeur fixe
+		$this->reference_largeur = $this->page_largeur - $this->marge_gauche - $this->marge_droit - (4 * $this->cases_largeur);
+		$this->etiquette_hauteur = 10; // valeur fixe
+		$lignes_hauteur_maximum  = 5;
+		$this->lignes_hauteur    = ($this->page_hauteur - $this->marge_haut - $this->marge_bas - $this->etiquette_hauteur) / $lignes_nb;
+		$this->lignes_hauteur    = min($this->lignes_hauteur,$lignes_hauteur_maximum);
+		$this->SetMargins($this->marge_gauche , $this->marge_haut , $this->marge_droit);
+		$this->AddPage($this->orientation , 'A4');
+		$this->SetAutoPageBreak(true);
+		// Attention : une note Lomer étant affichée dans une case de taille cases_largeur x cases_hauteur, on doit bidouiller...
+		// cases_hauteur est pris temporairement pour la 1e ligne et est restitué ensuite à sa bonne valeur
+		$this->cases_hauteur = $this->etiquette_hauteur;
+		$this->calculer_dimensions_images();
+	}
+
+	//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 	//	Méthodes pour la mise en page d'un cartouche
 	//	cartouche_initialiser() cartouche_entete() cartouche_minimal_competence() cartouche_complet_competence() cartouche_interligne()
 	//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
@@ -800,6 +922,131 @@ class PDF extends RPDF
 	}
 
 	//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+	//	Méthode pour afficher une barre aves les états des items acquis (rectangles A VA NA et couleur de fond suivant le seuil)
+	//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
+	public function afficher_proportion_acquis($largeur,$hauteur,$tab_infos,$total)
+	{
+		$abscisse = $this->GetX();
+		$ordonnee = $this->GetY();
+		// $tab_infos contient 'A' / 'VA' / 'NA'
+		$tab_couleur = array( 'oui' => array('NA'=>'rouge','VA'=>'jaune','A'=>'vert') , 'non' => array('NA'=>'gris_fonce','VA'=>'gris_moyen','A'=>'gris_clair') );
+		// Couleurs de fond + textes
+		foreach($tab_infos as $etat => $nb)
+		{
+			$this->choisir_couleur_fond($tab_couleur[$this->couleur][$etat]);
+			$largeur_case = $largeur*$nb/$total ;
+			$texte = ($largeur_case>$hauteur) ? $nb.' '.$etat : $nb ;
+			$this->Cell($largeur_case , $hauteur , pdf($texte) , 0 , 0 , 'C' , true , '');
+		}
+		// Bordure unique autour
+		$this->SetXY($abscisse , $ordonnee);
+		$this->Cell($largeur , $hauteur , '' , 1 , 0 , 'C' , false , '');
+	}
+
+	//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+	//	Méthodes pour la mise en page d'une synthèse matiere ou multi-matières
+	//	bilan_synthese_matiere_initialiser() bilan_synthese_entete() bilan_synthese_matiere() bilan_synthese_synthese()
+	//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
+	public function bilan_synthese_matiere_initialiser($format,$nb_syntheses_total,$eleves_nb)
+	{
+		$this->SetMargins($this->marge_gauche , $this->marge_haut , $this->marge_droit);
+		$this->SetAutoPageBreak(false);
+		if($format=='matiere')
+		{
+			// Dans ce cas on met plusieurs élèves par page : on calcule maintenant combien et la hauteur de ligne à prendre
+			$hauteur_dispo_par_page = $this->page_hauteur - $this->marge_haut - $this->marge_bas ;
+			$lignes_nb = $eleves_nb * ( 1.5 + 1.5 + 1 + 1*(2+1.5) ) + $nb_syntheses_total ; // eleves * [ intitulé-structure + classe-élève + date + matières(marge+intitulé) ] + toutes_synthèses
+			$hauteur_ligne_moyenne = 5.5;
+			$lignes_nb_moyen_par_page = $hauteur_dispo_par_page / $hauteur_ligne_moyenne ;
+			$nb_page_moyen = max( 1 , round( $lignes_nb / $lignes_nb_moyen_par_page ) ); // max 1 pour éviter une division par zéro
+			$eleves_nb_par_page = ceil( $eleves_nb / $nb_page_moyen ) ;
+			$nb_page_calcule = ceil( $eleves_nb / $eleves_nb_par_page ) ;
+			$lignes_nb_calcule_par_page = $lignes_nb / $nb_page_calcule ;
+			$hauteur_ligne_calcule = $hauteur_dispo_par_page / $lignes_nb_calcule_par_page ;
+			$this->lignes_hauteur = floor($hauteur_ligne_calcule*10)/10 ; // round($hauteur_ligne_calcule,1,PHP_ROUND_HALF_DOWN) à partir de PHP 5.3
+			$this->lignes_hauteur = min ( $this->lignes_hauteur , 7.5 ) ;
+			// On s'occupe aussi maintenant de la taille de la police
+			$this->taille_police  = $this->lignes_hauteur * 1.6 ; // 5mm de hauteur par ligne donne une taille de 8
+			$this->taille_police  = min ( $this->taille_police , 10 ) ;
+			// Pour forcer à prendre une nouvelle page au 1er élève
+			$this->SetXY(0,$this->page_hauteur);
+		}
+	}
+
+	public function bilan_synthese_entete($format,$matieres_nb,$syntheses_nb,$texte_format,$texte_periode,$groupe_nom,$eleve_nom,$eleve_prenom)
+	{
+		if($format=='matiere')
+		{
+			// La hauteur de ligne a déjà été calculée ; mais il reste à déterminer si on saute une page ou non en fonction de la place restante (et sinon => interligne)
+			$hauteur_dispo_restante = $this->page_hauteur - $this->GetY() - $this->marge_bas ;
+			$lignes_nb = 1.5 + 1.5 + 1 + $matieres_nb*(2+1.5) + $syntheses_nb ; // intitulé-structure + classe-élève + date + matières(marge+intitulé) + synthèses
+			if($this->lignes_hauteur*$lignes_nb > $hauteur_dispo_restante)
+			{
+				$this->AddPage($this->orientation , 'A4');
+			}
+			else
+			{
+				// Interligne
+				$this->SetXY($this->marge_gauche , $this->GetY() + $this->lignes_hauteur*2);
+			}
+		}
+		elseif($format=='multimatiere')
+		{
+			// On prend une nouvelle page PDF
+			$this->AddPage($this->orientation , 'A4');
+			// On calcule la hauteur de la ligne et la taille de la police pour tout faire rentrer sur une page (personnalisé par élèves)
+			$hauteur_dispo_par_page = $this->page_hauteur - $this->marge_haut - $this->marge_bas ;
+			$lignes_nb = 1.5 + 1.5 + 1 + $matieres_nb*(2+1.5) + $syntheses_nb ; // intitulé-structure + classe-élève + date + matières(marge+intitulé) + synthèses
+			$this->lignes_hauteur = $hauteur_dispo_par_page / $lignes_nb ;
+			$this->lignes_hauteur = min ( $this->lignes_hauteur , 7.5 ) ;
+			$this->taille_police  = $this->lignes_hauteur * 1.6 ; // 5mm de hauteur par ligne donne une taille de 8
+			$this->taille_police  = min ( $this->taille_police , 10 ) ;
+		}
+		// Intitulé / structure
+		$this->SetFont('Arial' , 'B' , $this->taille_police*1.5);
+		$this->Cell(80  , $this->lignes_hauteur*1.5 , pdf('Synthèse '.$texte_format) , 0 , 0 , 'L' , false , '');
+		$this->Cell(116 , $this->lignes_hauteur*1.5 , pdf($_SESSION['DENOMINATION']) , 0 , 1 , 'R' , false , ''); // 210 - 7 - 7 - 80
+		// Classe / élève
+		$this->Cell(196 , $this->lignes_hauteur*1.5 , pdf($groupe_nom.' - '.$eleve_nom.' '.$eleve_prenom) , 0 , 2 , 'L' , false , ''); // 210 - 7 - 7
+		// Période
+		$this->SetFont('Arial' , '' , $this->taille_police);
+		$this->Cell($this->page_largeur-$this->marge_droit-75 , 5 , pdf($texte_periode) , 0 , 1 , 'L' , false , '');
+	}
+
+	public function bilan_synthese_matiere($format,$matiere_nom,$tab_infos_matiere,$total)
+	{
+		if($format=='multimatiere')
+		{
+			// Interligne
+			$this->SetXY($this->marge_gauche , $this->GetY() + $this->lignes_hauteur*2);
+		}
+		// Intitulé matière
+		$this->SetFont('Arial' , 'B' , $this->taille_police*1.25);
+		$couleur_fond = ($this->couleur=='oui') ? 'gris_moyen' : 'blanc' ;
+		$this->choisir_couleur_fond($couleur_fond);
+		$this->Cell(116 , $this->lignes_hauteur*1.5 , pdf($matiere_nom) , 1 , 0 , 'L' , true , '');
+		// Diagramme matière
+		$this->SetFont('Arial' , 'B' , $this->taille_police);
+		$this->afficher_proportion_acquis(80,$this->lignes_hauteur*1.5,$tab_infos_matiere,$total); // 210 - 7 - 7 - 116
+		$this->SetXY($this->marge_gauche , $this->GetY() + $this->lignes_hauteur*1.5);
+	}
+
+	public function bilan_synthese_synthese($synthese_nom,$tab_infos_synthese,$total)
+	{
+		$this->SetFont('Arial' , '' , $this->taille_police);
+		// Diagramme synthèse
+		$this->SetFont('Arial' , '' , $this->taille_police*0.8);
+		$this->afficher_proportion_acquis(40,$this->lignes_hauteur,$tab_infos_synthese,$total);
+		// Intitulé synthèse
+		$this->SetFont('Arial' , '' , $this->taille_police);
+		$couleur_fond = ($this->couleur=='oui') ? 'gris_clair' : 'blanc' ;
+		$this->choisir_couleur_fond($couleur_fond);
+		$this->Cell(156 , $this->lignes_hauteur , pdf($synthese_nom) , 1 , 1 , 'L' , true , ''); // 210 - 7 - 7 - 40
+	}
+
+	//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 	//	Méthode pour afficher une note Lomer
 	//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
@@ -818,7 +1065,7 @@ class PDF extends RPDF
 				{
 					$img_pos_x = $memo_x + ( ($this->cases_largeur - $this->lomer_largeur) / 2 ) ;
 					$img_pos_y = $memo_y + ( ($this->cases_hauteur - $this->lomer_hauteur) / 2 ) ;
-					$this->Image('./_img/note/'.$_SESSION['NOTE_IMAGE_STYLE'].'/'.$note.'.gif',$img_pos_x,$img_pos_y,$this->lomer_largeur,$this->lomer_hauteur,'GIF');
+					$this->Image('./_img/note/'.$_SESSION['NOTE_IMAGE_STYLE'].'/h/'.$note.'.gif',$img_pos_x,$img_pos_y,$this->lomer_largeur,$this->lomer_hauteur,'GIF');
 				}
 				else
 				{
@@ -905,9 +1152,10 @@ function afficher_pourcentage_acquis($gras,$tab_infos)
 	public function Footer()
 	{
 		$this->SetXY(0 , -$this->distance_pied);
-		$this->SetFont('Arial' , 'I' , 7);
-		$this->choisir_couleur_fond('jaune');
-		$this->Cell($this->page_largeur , 3 , pdf('Imprimé le '.date("d/m/Y").' par '.$_SESSION['USER_DESCR'].' avec SACoche http://sacoche.sesamath.net') , 0 , 0 , 'C' , true , '');
+		$this->SetFont('Arial' , '' , 7);
+		$this->choisir_couleur_fond('gris_clair');
+		$this->choisir_couleur_trait('gris_moyen');
+		$this->Cell($this->page_largeur , 3 , pdf('Imprimé le '.date("d/m/Y \à H\hi\m\i\\n").' par '.$_SESSION['USER_PRENOM']{0}.'. '.$_SESSION['USER_NOM'].' ('.$_SESSION['USER_PROFIL'].') avec SACoche [ http://sacoche.sesamath.net ].') , 'TB' , 0 , 'C' , true , 'http://sacoche.sesamath.net');
 	}
 
 }

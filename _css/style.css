@@ -94,7 +94,7 @@ del{text-decoration:line-through;color:#666}
 /* Images sprites utilisées comme images cliquables ; http://fr.spritegen.website-performance.org/     */
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-body q {background:transparent url(../_img/sprite9.png) 0 0 no-repeat;width:16px;height:16px;display:inline-block;vertical-align:middle;margin-left:5px;quotes:none}
+body q {background:transparent url(../_img/sprite10.png) 0 0 no-repeat;width:16px;height:16px;display:inline-block;vertical-align:middle;margin-left:5px;quotes:none}
 body q:before, body q:after {content: "";} /* patch pour Safari : voir par exemple http://forum.alsacreations.com/topic-4-41216-1-Resolu-Modifier-le-style-des-citations-quotqquot.html */
 body q.activer         {background-position:    0px 0}
 body q.ajouter         {background-position:  -20px 0}
@@ -107,26 +107,26 @@ body q.date_periode    {background-position: -140px 0}
 body q.deconnecter     {background-position: -160px 0}
 body q.demander_add    {background-position: -180px 0} 
 body q.demander_non    {background-position: -200px 0}
-/* body q.desactiver      {background-position: -220px 0} */
-body q.detailler       {background-position: -240px 0}
-body q.dupliquer       {background-position: -260px 0}
-body q.imprimer        {background-position: -280px 0}
-body q.initialiser_mdp {background-position: -300px 0}
-body q.modifier        {background-position: -320px 0}
-body q.modifier_non    {background-position: -340px 0}
-body q.ordonner        {background-position: -360px 0}
-body q.calculer        {background-position: -380px 0} 
-body q.calculer_non    {background-position: -400px 0} 
-body q.envoyer         {background-position: -420px 0} 
-body q.envoyer_non     {background-position: -440px 0} 
-body q.partager        {background-position: -460px 0} 
-body q.partager_non    {background-position: -480px 0} 
-body q.retourner       {background-position: -500px 0} 
-body q.saisir          {background-position: -520px 0} 
-body q.supprimer       {background-position: -540px 0} 
-body q.supprimer_non   {background-position: -560px 0} 
-body q.valider         {background-position: -580px 0} 
-body q.voir            {background-position: -600px 0} 
+body q.detailler       {background-position: -220px 0}
+body q.dupliquer       {background-position: -240px 0}
+body q.imprimer        {background-position: -260px 0}
+body q.initialiser_mdp {background-position: -280px 0}
+body q.modifier        {background-position: -300px 0}
+body q.modifier_non    {background-position: -320px 0}
+body q.ordonner        {background-position: -340px 0}
+body q.calculer        {background-position: -360px 0} 
+body q.calculer_non    {background-position: -380px 0} 
+body q.envoyer         {background-position: -400px 0} 
+body q.envoyer_non     {background-position: -420px 0} 
+body q.partager        {background-position: -440px 0} 
+body q.partager_non    {background-position: -460px 0} 
+body q.retourner       {background-position: -480px 0} 
+body q.saisir          {background-position: -500px 0} 
+body q.supprimer       {background-position: -520px 0} 
+body q.supprimer_non   {background-position: -540px 0} 
+body q.valider         {background-position: -560px 0} 
+body q.voir            {background-position: -580px 0} 
+body q.voir_repart     {background-position: -600px 0} 
 body q.n1_add          {background-position: -620px 0} 
 body q.n1_del          {background-position: -640px 0} 
 body q.n1_edit         {background-position: -660px 0} 
@@ -224,13 +224,19 @@ table.scor_eval tbody td {vertical-align:middle;font-weight:bold;background:#CCF
 table.scor_eval tbody tr th {text-align:left}
 table.scor_eval th, table.saisir td {padding:0}
 table.scor_eval tbody td img {vertical-align:middle;}
-table.scor_eval tbody td input {vertical-align:middle;width:23px;height:17px;font-size:0;color:#FFF;margin:0;border:2px solid #FFF}
+table.scor_eval tbody td input {vertical-align:middle;font-size:0;color:#FFF;margin:0;border:2px solid #FFF}
 table.scor_eval tbody td input:focus {border:2px solid #00F}
-table.scor_eval tbody td input.ABS  {background:#FFF url('../_img/note/ABS.gif')  no-repeat center center;}
-table.scor_eval tbody td input.NN   {background:#FFF url('../_img/note/NN.gif')   no-repeat center center;}
-table.scor_eval tbody td input.DISP {background:#FFF url('../_img/note/DISP.gif') no-repeat center center;}
-table.scor_eval tbody td input.X    {background:#FFF url('../_img/note/X.gif')    no-repeat center center;}
-table.scor_eval tbody td input.REQ  {background:#FFF url('../_img/note/REQ.gif')  no-repeat center center;}
+table.scor_eval tbody.h td input {width:22px;height:16px}
+table.scor_eval tbody.v td input {width:12px;height:22px}
+table.scor_eval tbody.h td input.ABS  {background:#FFF url('../_img/note/commun/h/ABS.gif')  no-repeat center center;}
+table.scor_eval tbody.v td input.ABS  {background:#FFF url('../_img/note/commun/v/ABS.gif')  no-repeat center center;}
+table.scor_eval tbody.h td input.NN   {background:#FFF url('../_img/note/commun/h/NN.gif')   no-repeat center center;}
+table.scor_eval tbody.v td input.NN   {background:#FFF url('../_img/note/commun/v/NN.gif')   no-repeat center center;}
+table.scor_eval tbody.h td input.DISP {background:#FFF url('../_img/note/commun/h/DISP.gif') no-repeat center center;}
+table.scor_eval tbody.v td input.DISP {background:#FFF url('../_img/note/commun/v/DISP.gif') no-repeat center center;}
+table.scor_eval tbody.h td input.X    {background:#FFF url('../_img/note/commun/h/X.gif')    no-repeat center center;}
+table.scor_eval tbody.v td input.X    {background:#FFF url('../_img/note/commun/v/X.gif')    no-repeat center center;}
+table.scor_eval tbody   td input.REQ  {background:#FFF url('../_img/note/REQ.gif')           no-repeat center center;}
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 /* Couleur de fond pour indiquer A / VA / NA                                                           */

@@ -31,8 +31,6 @@ if(($_SESSION['SESAMATH_ID']==ID_DEMO)&&($_GET['action']!='initialiser')){exit('
 $action = (isset($_GET['action'])) ? $_GET['action'] : '';
 $tab_select_professeurs = (isset($_POST['select_professeurs'])) ? array_map('clean_entier',explode(',',$_POST['select_professeurs'])) : array() ;
 $tab_select_classes     = (isset($_POST['select_classes']))     ? array_map('clean_entier',explode(',',$_POST['select_classes']))     : array() ;
-
-function positif($n) {return $n;}
 $tab_select_professeurs = array_filter($tab_select_professeurs,'positif');
 $tab_select_classes     = array_filter($tab_select_classes,'positif');
 

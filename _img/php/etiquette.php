@@ -78,7 +78,7 @@ if(!file_exists($fichier))
 	$hauteur_finale = $b_d_y - $h_g_y + 2 ; // idem
 	// Les caractères minuscules parmi g,j,p,q,y provoquent un décalage non pris en compte par imagettftext()
 	// sur certains serveurs pour des librairies gd pourtant rigoureusement identiques (gd_info() renvoyant [GD Version] => bundled 2.0.34 compatible).
-	// On peut lire qu'appeler avant imagealphablending() est censé réglé le problème [http://fr.php.net/manual/fr/function.imagettftext.php#100184], mais ce n'est pas le cas.
+	// On peut lire qu'appeler avant imagealphablending() est censé réglé le problème [http://fr.php.net/manual/fr/function.imagettftext.php#100184], mais un décalage demeure.
 	// Enfin, sur les serveurs qui prennent en compte le décalage, il est d'1px trop grand.
 	$test_pb_serveur = ($b_g_y_demande == $b_d_y) ? true : false ;
 	$prenom_amoindri = str_replace( array('g','j','p','q','y') , '' , mb_substr($prenom,1) , $test_pb_lettres );
@@ -106,9 +106,28 @@ if(!file_exists($fichier))
 	$image_finale = imagecreate($largeur_finale,$hauteur_finale);
 	// imagettftext() : 3e et 4e param = coordonnées du point de destination ; 5e et 6e param = coordonnées du point source
 	imagecopy($image_finale,$image_tmp,0,0,$h_g_x-1,$h_g_y-1,$largeur_finale,$hauteur_finale);
-	$image_finale = imagerotate($image_finale,90,0);
-	imagealphablending($image_finale, true);
-	imagesavealpha($image_finale, true); 
+	// Attention : la fonction imagerotate() n'est disponible que si PHP est compilé avec la version embarquée de la bibliothèque GD. 
+	function imagerotateEmulation($image_depart)
+	{
+		$largeur = imagesx($image_depart);
+		$hauteur = imagesy($image_depart);
+		$image_tournee = imagecreate($hauteur,$largeur);
+		$couleur_fond  = imagecolorallocatealpha($image_tournee,255,204,204,127);
+		if($image_tournee)
+		{
+			for( $i=0 ; $i<$largeur ; $i++)
+			{
+				for( $j=0 ; $j<$hauteur ; $j++)
+				{
+					imagecopy($image_tournee , $image_depart , $j , $largeur-1-$i , $i , $j , 1 , 1);
+				}
+			}
+		}
+		return $image_tournee;
+	}
+	$image_finale = (function_exists("imagerotate")) ? imagerotate($image_finale,90,0) : imagerotateEmulation($image_finale) ;
+	@imagealphablending($image_finale, false);
+	@imagesavealpha($image_finale, true); 
 	imagepng($image_finale,$fichier);
 	imagedestroy($image_tmp);
 }
@@ -116,8 +135,8 @@ if(!file_exists($fichier))
 else
 {
 	$image_finale = imagecreatefrompng($fichier);
-	imagealphablending($image_finale, true);
-	imagesavealpha($image_finale, true); 
+	@imagealphablending($image_finale, false);
+	@imagesavealpha($image_finale, true); 
 }
 
 imagepng($image_finale);

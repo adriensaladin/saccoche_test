@@ -336,6 +336,59 @@ $(document).ready
 		};
 
 		/**
+		 * Voir les répartitions des élèves à une évaluation : chargement des données
+		 * @return void
+		 */
+		var voir_repart = function()
+		{
+			mode = $(this).attr('class');
+			// Récupérer les informations de la ligne concernée
+			var ref  = $(this).parent().attr('lang');
+			var date = $(this).parent().prev().prev().prev().prev().html();
+			var info = $(this).parent().prev().prev().html();
+			    date = date.substring(17,date.length); // garder la date française
+			// Masquer le tableau ; Afficher la zone associée et charger son contenu
+			$('#form0 , #form1').hide('fast');
+			$('#zone_voir_repart').css("display","block");
+			$('#titre_voir_repart').html('Voir les répartitions des élèves à une évaluation | '+date+' | '+info);
+			$('#msg_voir_repart').removeAttr("class").addClass("loader").html("Demande envoyée... Veuillez patienter.");
+			$.ajax
+			(
+				{
+					type : 'POST',
+					url : 'ajax.php?page='+PAGE,
+					data : 'f_action='+mode+'&f_ref='+ref+'&f_date='+date+'&f_descriptif='+'Élèves sélectionnés'+':::'+info+':::'+date,
+					dataType : "html",
+					error : function(msg,string)
+					{
+						$('#msg_voir_repart').removeAttr("class").addClass("alerte").html('Echec de la connexion ! Veuillez recommencer. <button id="fermer_zone_voir_repart" type="button"><img alt="" src="./_img/bouton/retourner.png" /> Retour</button>');
+						return false;
+					},
+					success : function(responseHTML)
+					{
+						maj_clock(1);
+						tab_response = responseHTML.split('<SEP>');
+						if( tab_response.length!=2 )
+						{
+							$('#msg_voir_repart').removeAttr("class").addClass("alerte").html(responseHTML+' <button id="fermer_zone_voir_repart" type="button"><img alt="" src="./_img/bouton/retourner.png" /> Retour</button>');
+						}
+						else
+						{
+							$('#msg_voir_repart').removeAttr("class").html('<button id="fermer_zone_voir_repart" type="button"><img alt="" src="./_img/bouton/retourner.png" /> Retour</button>');
+							$('#table_voir_repart1').html(tab_response[0]);
+							$('#table_voir_repart2').html(tab_response[1]);
+							$('#export_file6').attr("href", $("#filename").val()+ref+'_repartition_quantitative.pdf' );
+							$('#export_file7').attr("href", $("#filename").val()+ref+'_repartition_nominative.pdf' );
+							$('#table_voir_repart1 tbody td').css({"background-color":"#DDF","font-weight":"normal","text-align":"center"});
+							$('#table_voir_repart2 tbody td').css({"background-color":"#DDF","font-weight":"normal","font-size":"85%"});
+							infobulle();
+						}
+					}
+				}
+			);
+		};
+
+		/**
 		 * Choisir les items associés à une évaluation : mise en place du formulaire
 		 * @return void
 		 */
@@ -475,6 +528,7 @@ $(document).ready
 		$('q.imprimer').live(        'click' , imprimer );
 		$('q.saisir').live(          'click' , saisir );
 		$('q.voir').live(            'click' , voir );
+		$('q.voir_repart').live(     'click' , voir_repart );
 		$('q.choisir_compet').live(  'click' , choisir_compet );
 		$('q.choisir_eleve').live(   'click' , choisir_eleve );
 
@@ -535,7 +589,7 @@ $(document).ready
 		);
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-//	Clic sur le bouton pour fermer le formulaire servant à voir les acquisitions des élèves à une évaluation
+//	Clic sur le bouton pour fermer le bloc pour voir les acquisitions des élèves à une évaluation
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 		$('#fermer_zone_voir').live // live est utilisé pour prendre en compte les nouveaux éléments créés
 		('click',
@@ -544,6 +598,21 @@ $(document).ready
 				$('#titre_voir').html("&nbsp;");
 				$('#zone_voir table').html("&nbsp;");
 				$('#zone_voir').css("display","none");
+				$('#form0 , #form1').show('fast');
+				return(false);
+			}
+		);
+
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+//	Clic sur le bouton pour fermer le bloc pour voir les répartitions des élèves à une évaluation
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+		$('#fermer_zone_voir_repart').live // live est utilisé pour prendre en compte les nouveaux éléments créés
+		('click',
+			function()
+			{
+				$('#titre_voir_repart').html("&nbsp;");
+				$('#zone_voir_repart table').html("&nbsp;");
+				$('#zone_voir_repart').css("display","none");
 				$('#form0 , #form1').show('fast');
 				return(false);
 			}
@@ -689,7 +758,7 @@ $(document).ready
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 //	Choix du mode de pilotage pour la saisie des résultats
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-		$('#table_saisir thead tr td input').live // live est utilisé pour prendre en compte les nouveaux éléments créés
+		$('#table_saisir thead tr td input[type="radio"]').live // live est utilisé pour prendre en compte les nouveaux éléments créés
 		('click',
 			function()
 			{
@@ -698,6 +767,56 @@ $(document).ready
 				{
 					$("#C1L1").focus();
 				}
+			}
+		);
+
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+//	Choix de rétrécir ou pas l'affichage sur #table_saisir
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+		$('#table_saisir thead tr td input[type="checkbox"]').live // live est utilisé pour prendre en compte les nouveaux éléments créés
+		('click',
+			function()
+			{
+				var condense = ($(this).is(':checked')) ? 'v' : 'h' ; // h ou v pour horizontal (non condensé) ou vertical (condensé)
+				$('#table_saisir tbody').removeAttr("class").addClass(condense);
+				$("#table_saisir thead tr th img").each
+				(
+					function ()
+					{
+						img_src_old = $(this).attr('src');
+						img_src_new = (condense=='v') ? img_src_old.substring(0,img_src_old.length-3) : img_src_old+'&br' ;
+						$(this).attr('src',img_src_new);
+					}
+				);
+			}
+		);
+
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+//	Choix de rétrécir ou pas l'affichage sur #table_voir
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+		$('#table_voir thead tr td input[type="checkbox"]').live // live est utilisé pour prendre en compte les nouveaux éléments créés
+		('click',
+			function()
+			{
+				var condense = ($(this).is(':checked')) ? 'v' : 'h' ; // h ou v pour horizontal (non condensé) ou vertical (condensé)
+				$("#table_voir thead tr th img").each
+				(
+					function ()
+					{
+						img_src_old = $(this).attr('src');
+						img_src_new = (condense=='v') ? img_src_old.substring(0,img_src_old.length-3) : img_src_old+'&br' ;
+						$(this).attr('src',img_src_new);
+					}
+				);
+				$("#table_voir tbody tr td img").each
+				(
+					function ()
+					{
+						img_src_old = $(this).attr('src');
+						img_src_new = (condense=='v') ? img_src_old.replace('/h/','/v/') : img_src_old.replace('/v/','/h/') ; // Pas besoin d'expression régulière car une seule occurence
+						$(this).attr('src',img_src_new);
+					}
+				);
 			}
 		);
 

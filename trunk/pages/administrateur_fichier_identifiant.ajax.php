@@ -31,8 +31,6 @@ if($_SESSION['SESAMATH_ID']==ID_DEMO){exit('Action désactivée pour la démo...
 $action = (isset($_POST['action'])) ? $_POST['action'] : '';
 $profil = (isset($_POST['profil'])) ? $_POST['profil'] : '';
 $tab_select_users = (isset($_POST['select_users'])) ? array_map('clean_entier',explode(',',$_POST['select_users'])) : array() ;
-
-function positif($n) {return $n;}
 $tab_select_users = array_filter($tab_select_users,'positif');
 $nb = count($tab_select_users);
 

@@ -45,10 +45,10 @@ foreach($tab_notes_txt as $note_nom => $tab_note_texte)
 		$listing_notes_texte = implode('/',$tab_note_texte);
 		$lignes .= '<tr>';
 		$lignes .= 	'<td>'.$note_nom.'<br /><input type="radio" id="dossier_'.$note_nom.'" name="image_style" value="'.$note_nom.'"'.$checked.' lang="'.$listing_notes_texte.'" /></td>';
-		$lignes .= 	'<td><img alt="'.$tab_note_texte['RR'].'" src="'.$dossier.$note_nom.'/RR.gif" /><br />'.$tab_note_texte['RR'].'</td>';
-		$lignes .= 	'<td><img alt="'.$tab_note_texte['R'].'" src="'.$dossier.$note_nom.'/R.gif" /><br />'.$tab_note_texte['R'].'</td>';
-		$lignes .= 	'<td><img alt="'.$tab_note_texte['V'].'" src="'.$dossier.$note_nom.'/V.gif" /><br />'.$tab_note_texte['V'].'</td>';
-		$lignes .= 	'<td><img alt="'.$tab_note_texte['VV'].'" src="'.$dossier.$note_nom.'/VV.gif" /><br />'.$tab_note_texte['VV'].'</td>';
+		$lignes .= 	'<td><img alt="'.$tab_note_texte['RR'].'" src="'.$dossier.$note_nom.'/h/RR.gif" /><br />'.$tab_note_texte['RR'].'</td>';
+		$lignes .= 	'<td><img alt="'.$tab_note_texte['R'].'" src="'.$dossier.$note_nom.'/h/R.gif" /><br />'.$tab_note_texte['R'].'</td>';
+		$lignes .= 	'<td><img alt="'.$tab_note_texte['V'].'" src="'.$dossier.$note_nom.'/h/V.gif" /><br />'.$tab_note_texte['V'].'</td>';
+		$lignes .= 	'<td><img alt="'.$tab_note_texte['VV'].'" src="'.$dossier.$note_nom.'/h/VV.gif" /><br />'.$tab_note_texte['VV'].'</td>';
 		$lignes .= '</tr>';
 		$tab_notes_txt_js .= 'tab_notes_txt["'.html($note_nom).'"] = new Array();';
 		$tab_notes_txt_js .= 'tab_notes_txt["'.$note_nom.'"]["RR"]="'.$tab_note_texte['RR'].'";';

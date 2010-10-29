@@ -62,7 +62,6 @@ else
 $groupe_type = 'eval';
 $groupe_id   = ($groupe) ? clean_entier(mb_substr($groupe,1)) : 0 ;
 
-function positif($n) {return $n;}
 // Contrôler la liste des items transmis
 $tab_id = (isset($_POST['tab_id'])) ? array_map('clean_entier',explode(',',$_POST['tab_id'])) : array() ;
 $tab_id = array_filter($tab_id,'positif');
@@ -77,9 +76,9 @@ $tab_eleves = array_map('clean_entier',$tab_eleves);
 $tab_eleves = array_filter($tab_eleves,'positif');
 $nb_eleves  = count($tab_eleves);
 
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //	Afficher une liste d'évaluations
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 if( ($action=='Afficher_evaluations') && $date_debut && $date_fin )
 {
@@ -113,17 +112,18 @@ if( ($action=='Afficher_evaluations') && $date_debut && $date_fin )
 		echo		'<q class="imprimer" title="Imprimer un cartouche pour cette évaluation."></q>';
 		echo		'<q class="saisir" title="Saisir les acquisitions des élèves à cette évaluation."></q>';
 		echo		'<q class="voir" title="Voir les acquisitions des élèves à cette évaluation."></q>';
+		echo		'<q class="voir_repart" title="Voir les répartitions des élèves à cette évaluation."></q>';
 		echo	'</td>';
 		echo'</tr>';
 	}
 	exit();
 }
 
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //	Ajouter une nouvelle évaluation
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-elseif( (($action=='ajouter')||(($action=='dupliquer')&&($devoir_id))) && $date && $nb_eleves && $nb_items )
+if( (($action=='ajouter')||(($action=='dupliquer')&&($devoir_id))) && $date && $nb_eleves && $nb_items )
 {
 	// Il faut commencer par créer un nouveau groupe de type "eval", utilisé uniquement pour cette évaluation (c'est transparent pour le professeur)
 	$groupe_id = DB_STRUCTURE_ajouter_groupe($groupe_type,$_SESSION['USER_ID'],'','',0);
@@ -150,15 +150,16 @@ elseif( (($action=='ajouter')||(($action=='dupliquer')&&($devoir_id))) && $date 
 	echo	'<q class="imprimer" title="Imprimer un cartouche pour cette évaluation."></q>';
 	echo	'<q class="saisir" title="Saisir les acquisitions des élèves à cette évaluation."></q>';
 	echo	'<q class="voir" title="Voir les acquisitions des élèves à cette évaluation."></q>';
+	echo	'<q class="voir_repart" title="Voir les répartitions des élèves à cette évaluation."></q>';
 	echo'</td>';
 	exit();
 }
 
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //	Modifier une évaluation existante
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-else if( ($action=='modifier') && $devoir_id && $groupe_id && $date && $nb_eleves && $nb_items )
+if( ($action=='modifier') && $devoir_id && $groupe_id && $date && $nb_eleves && $nb_items )
 {
 	// On commence par modifier l'affectation des élèves choisis
 	// sacoche_jointure_user_groupe (maj)
@@ -186,15 +187,16 @@ else if( ($action=='modifier') && $devoir_id && $groupe_id && $date && $nb_eleve
 	echo	'<q class="imprimer" title="Imprimer un cartouche pour cette évaluation."></q>';
 	echo	'<q class="saisir" title="Saisir les acquisitions des élèves à cette évaluation."></q>';
 	echo	'<q class="voir" title="Voir les acquisitions des élèves à cette évaluation."></q>';
+	echo	'<q class="voir_repart" title="Voir les répartitions des élèves à cette évaluation."></q>';
 	echo'</td>';
 	exit();
 }
 
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //	Supprimer une évaluation existante
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-else if( ($action=='supprimer') && $devoir_id && $groupe_id )
+if( ($action=='supprimer') && $devoir_id && $groupe_id )
 {
 	// supprimer le groupe spécialement associé (invisible à l'utilisateur) et les entrées dans sacoche_jointure_user_groupe pour une évaluation avec des élèves piochés en dehors de tout groupe prédéfini
 	DB_STRUCTURE_supprimer_groupe($groupe_id,$groupe_type,$with_devoir=false);
@@ -204,11 +206,11 @@ else if( ($action=='supprimer') && $devoir_id && $groupe_id )
 	exit('<ok>');
 }
 
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //	Afficher le formulaire pour réordonner les items d'une évaluation
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-else if( ($action=='ordonner') && $devoir_id )
+if( ($action=='ordonner') && $devoir_id )
 {
 	// liste des items
 	$DB_TAB_COMP = DB_STRUCTURE_lister_items_devoir($devoir_id);
@@ -232,13 +234,13 @@ else if( ($action=='ordonner') && $devoir_id )
 	exit();
 }
 
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //	Afficher le formulaire pour saisir les items acquis par les élèves à une évaluation
 //	Générer en même temps un csv à récupérer pour une saisie déportée
 //	Générer en même temps un pdf contenant un tableau de saisie vide
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-else if( ($action=='saisir') && $devoir_id && $groupe_id && $date && $descriptif ) // $date au format MySQL ; $descriptif séparé par ::: ; $info (facultative) reportées dans input hidden
+if( ($action=='saisir') && $devoir_id && $groupe_id && $date && $descriptif ) // $date au format MySQL ; $descriptif séparé par ::: ; $info (facultative) reportées dans input hidden
 {
 	// liste des items
 	$DB_TAB_COMP = DB_STRUCTURE_lister_items_devoir($devoir_id);
@@ -261,8 +263,9 @@ else if( ($action=='saisir') && $devoir_id && $groupe_id && $date && $descriptif
 	$tab_comp_id = array(); // pas indispensable, mais plus lisible
 	$tab_affich[0][0] = '<td>';
 	$tab_affich[0][0].= '<span class="manuel"><a class="pop_up" href="'.SERVEUR_DOCUMENTAIRE.'?fichier=support_professeur__evaluations_saisie_resultats">DOC : Saisie des résultats.</a></span><p />';
-	$tab_affich[0][0].= '<label for="radio_clavier"><input type="radio" id="radio_clavier" name="mode_saisie" value="clavier" /> <img alt="" src="./_img/pilot_keyboard.png" /> Pilotage au clavier</label> <img alt="" src="./_img/bulle_aide.png" title="Sélectionner un rectangle blanc<br />au clavier (flèches) ou à la souris<br />puis utiliser les touches suivantes :<br />&nbsp;1 ; 2 ; 3 ; 4 ; A ; N ; D ; suppr" /><br />';
-	$tab_affich[0][0].= '<label for="radio_souris"><input type="radio" id="radio_souris" name="mode_saisie" value="souris" /> <img alt="" src="./_img/pilot_mouse.png" /> Pilotage à la souris</label> <img alt="" src="./_img/bulle_aide.png" title="Survoler une case du tableau avec la souris<br />puis cliquer sur une des images proposées." /><p />';
+	$tab_affich[0][0].= '<label for="radio_clavier"><input type="radio" id="radio_clavier" name="mode_saisie" value="clavier" /> <img alt="" src="./_img/pilot_keyboard.png" /> Piloter au clavier</label> <img alt="" src="./_img/bulle_aide.png" title="Sélectionner un rectangle blanc<br />au clavier (flèches) ou à la souris<br />puis utiliser les touches suivantes :<br />&nbsp;1 ; 2 ; 3 ; 4 ; A ; N ; D ; suppr" /><br />';
+	$tab_affich[0][0].= '<label for="radio_souris"><input type="radio" id="radio_souris" name="mode_saisie" value="souris" /> <img alt="" src="./_img/pilot_mouse.png" /> Piloter à la souris</label> <img alt="" src="./_img/bulle_aide.png" title="Survoler une case du tableau avec la souris<br />puis cliquer sur une des images proposées." /><p />';
+	$tab_affich[0][0].= '<label for="check_largeur"><input type="checkbox" id="check_largeur" name="check_largeur" value="retrecir" /> <img alt="" src="./_img/retrecir.gif" /> Rétrécir les colonnes</label> <img alt="" src="./_img/bulle_aide.png" title="Rétrécir l\'affichage des colonnes<br />pour les écrans de faible largeur." /><p />';
 	$tab_affich[0][0].= '<button id="Enregistrer_saisie" type="button"><img alt="" src="./_img/bouton/valider.png" /> Enregistrer les saisies</button><input type="hidden" name="f_ref" id="f_ref" value="'.$ref.'" /><input id="f_date" name="f_date" type="hidden" value="'.$date.'" /><input id="f_info" name="f_info" type="hidden" value="'.html($info).'" /><br />';
 	$tab_affich[0][0].= '<button id="fermer_zone_saisir" type="button"><img alt="" src="./_img/bouton/annuler.png" /> Annuler / Retour</button><br />';
 	$tab_affich[0][0].= '<label id="ajax_msg">&nbsp;</label>';
@@ -329,7 +332,7 @@ else if( ($action=='saisir') && $devoir_id && $groupe_id && $date && $descriptif
 		echo'</tr>';
 		if(!$comp_id)
 		{
-			echo'</thead><tbody>';
+			echo'</thead><tbody class="h">';
 		}
 	}
 	echo'</tbody>';
@@ -346,7 +349,6 @@ else if( ($action=='saisir') && $devoir_id && $groupe_id && $date && $descriptif
 	// pdf contenant un tableau de saisie vide ; on a besoin de tourner du texte à 90°
 	//
 	require('./_fpdf/fpdf.php');
-	require('./_fpdf/rpdf.php');
 	require('./_inc/class.PDF.php');
 	$sacoche_pdf = new PDF($orientation='landscape',$marge_min=10,$couleur='non');
 	$sacoche_pdf->tableau_saisie_initialiser($eleve_nb,$item_nb);
@@ -373,14 +375,14 @@ else if( ($action=='saisir') && $devoir_id && $groupe_id && $date && $descriptif
 	exit();
 }
 
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //	Voir les items acquis par les élèves à une évaluation
 //	Générer en même temps un csv à récupérer pour une saisie déportée
 //	Générer en même temps un pdf contenant un tableau de saisie vide
 //	Générer en même temps un pdf contenant un tableau de saisie plein
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-else if( ($action=='voir') && $devoir_id && $groupe_id && $date && $descriptif ) // $date française pour le csv ; $descriptif séparé par :::
+if( ($action=='voir') && $devoir_id && $groupe_id && $date && $descriptif ) // $date française pour le csv ; $descriptif séparé par :::
 {
 	// liste des items
 	$DB_TAB_COMP = DB_STRUCTURE_lister_items_devoir($devoir_id);
@@ -401,14 +403,17 @@ else if( ($action=='voir') && $devoir_id && $groupe_id && $date && $descriptif )
 	$tab_affich  = array(); // tableau bi-dimensionnel [n°ligne=id_item][n°colonne=id_user]
 	$tab_user_id = array(); // pas indispensable, mais plus lisible
 	$tab_comp_id = array(); // pas indispensable, mais plus lisible
-	$tab_affich[0][0] = '<td><button id="fermer_zone_voir" type="button"><img alt="" src="./_img/bouton/retourner.png" /> Retour</button></td>';
+	$tab_affich[0][0] = '<td>';
+	$tab_affich[0][0].= '<p><label for="check_largeur"><input type="checkbox" id="check_largeur" name="check_largeur" value="retrecir" /> <img alt="" src="./_img/retrecir.gif" /> Rétrécir les colonnes</label> <img alt="" src="./_img/bulle_aide.png" title="Rétrécir l\'affichage des colonnes<br />pour les écrans de faible largeur." /></p>';
+	$tab_affich[0][0].= '<button id="fermer_zone_voir" type="button"><img alt="" src="./_img/bouton/retourner.png" /> Retour</button>';
+	$tab_affich[0][0].= '</td>';
 	// première ligne (noms prénoms des élèves)
 	$csv_ligne_eleve_nom = $separateur;
 	$csv_ligne_eleve_id  = $separateur;
 	foreach($DB_TAB_USER as $DB_ROW)
 	{
 		$tab_affich[0][$DB_ROW['user_id']] = '<th><img alt="'.html($DB_ROW['user_nom'].' '.$DB_ROW['user_prenom']).'" src="./_img/php/etiquette.php?dossier='.$_SESSION['BASE'].'&amp;nom='.urlencode($DB_ROW['user_nom']).'&amp;prenom='.urlencode($DB_ROW['user_prenom']).'&amp;br" /></th>';
-		$tab_user_id[$DB_ROW['user_id']] = html($DB_ROW['user_prenom'].' '.$DB_ROW['user_nom']);
+		$tab_user_id[$DB_ROW['user_id']] = html($DB_ROW['user_nom'].' '.$DB_ROW['user_prenom']);
 		$csv_ligne_eleve_nom .= '"'.$DB_ROW['user_prenom'].' '.$DB_ROW['user_nom'].'"'.$separateur;
 		$csv_ligne_eleve_id  .= $DB_ROW['user_id'].$separateur;
 	}
@@ -435,7 +440,7 @@ else if( ($action=='voir') && $devoir_id && $groupe_id && $date && $descriptif )
 		}
 	}
 	// ajouter le contenu
-	$tab_dossier = array( ''=>'' , 'RR'=>$_SESSION['NOTE_IMAGE_STYLE'].'/' , 'R'=>$_SESSION['NOTE_IMAGE_STYLE'].'/' , 'V'=>$_SESSION['NOTE_IMAGE_STYLE'].'/' , 'VV'=>$_SESSION['NOTE_IMAGE_STYLE'].'/' , 'ABS'=>'' , 'NN'=>'' , 'DISP'=>'' , 'REQ'=>'' );
+	$tab_dossier = array( ''=>'' , 'RR'=>$_SESSION['NOTE_IMAGE_STYLE'].'/h/' , 'R'=>$_SESSION['NOTE_IMAGE_STYLE'].'/h/' , 'V'=>$_SESSION['NOTE_IMAGE_STYLE'].'/h/' , 'VV'=>$_SESSION['NOTE_IMAGE_STYLE'].'/h/' , 'ABS'=>'commun/h/' , 'NN'=>'commun/h/' , 'DISP'=>'commun/h/' , 'REQ'=>'' );
 	$DB_TAB = DB_STRUCTURE_lister_saisies_devoir($devoir_id,$with_REQ=true);
 	foreach($DB_TAB as $DB_ROW)
 	{
@@ -487,12 +492,11 @@ else if( ($action=='voir') && $devoir_id && $groupe_id && $date && $descriptif )
 		$zip->addFromString($fnom.'.csv',csv($export_csv));
 		$zip->close();
 	}
-	//
-	// pdf contenant un tableau de saisie vide ; on a besoin de tourner du texte à 90°
-	//
 	require('./_fpdf/fpdf.php');
-	require('./_fpdf/rpdf.php');
 	require('./_inc/class.PDF.php');
+	// / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / /
+	// pdf contenant un tableau de saisie vide ; on a besoin de tourner du texte à 90°
+	// / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / /
 	$sacoche_pdf = new PDF($orientation='landscape',$marge_min=10,$couleur='non');
 	$sacoche_pdf->tableau_saisie_initialiser($eleve_nb,$item_nb);
 	// 1ère ligne : référence devoir, noms élèves
@@ -515,9 +519,9 @@ else if( ($action=='voir') && $devoir_id && $groupe_id && $date && $descriptif )
 		$sacoche_pdf->SetXY($sacoche_pdf->marge_gauche , $sacoche_pdf->GetY()+$sacoche_pdf->cases_hauteur);
 	}
 	$sacoche_pdf->Output($dossier_export.$fnom.'_sans_notes.pdf','F');
-	//
+	// / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / /
 	// pdf contenant un tableau de saisie plein ; on a besoin de tourner du texte à 90°
-	//
+	// / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / /
 	$sacoche_pdf = new PDF($orientation='landscape',$marge_min=10,$couleur='oui');
 	$sacoche_pdf->tableau_saisie_initialiser($eleve_nb,$item_nb);
 	// 1ère ligne : référence devoir, noms élèves
@@ -535,31 +539,224 @@ else if( ($action=='voir') && $devoir_id && $groupe_id && $date && $descriptif )
 		$sacoche_pdf->tableau_saisie_reference_item($item_ref.$texte_socle,$DB_ROW_COMP['item_nom']);
 		foreach($DB_TAB_USER as $DB_ROW_USER)
 		{
-			
 			$sacoche_pdf->afficher_note_lomer( $csv_lignes_scores[$DB_ROW_COMP['item_id']][$DB_ROW_USER['user_id']] );
 			$sacoche_pdf->Cell($sacoche_pdf->cases_largeur , $sacoche_pdf->cases_hauteur , '' , 1 , 0 , 'C' , false , '');
 		}
 		$sacoche_pdf->SetXY($sacoche_pdf->marge_gauche , $sacoche_pdf->GetY()+$sacoche_pdf->cases_hauteur);
 	}
 	$sacoche_pdf->Output($dossier_export.$fnom.'_avec_notes.pdf','F');
+	//
+	// c'est fini...
+	//
 	exit();
 }
 
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-//	Mettre à jour l'ordre des items d'une évaluation
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//	Voir en proportion la répartition, nominative ou quantitative, des élèves par item (html + pdf)
+//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-else if( ($action=='Enregistrer_ordre') && $devoir_id && count($tab_id) )
+if( ($action=='voir_repart') && $devoir_id && $groupe_id && $date && $descriptif ) // $date française pour le csv ; $descriptif séparé par :::
+{
+	// liste des items
+	$DB_TAB_ITEM = DB_STRUCTURE_lister_items_devoir($devoir_id);
+	// liste des élèves
+	$DB_TAB_USER = DB_STRUCTURE_lister_eleves_actifs_regroupement($groupe_type,$groupe_id);
+	// Let's go
+	$item_nb = count($DB_TAB_ITEM);
+	if(!$item_nb)
+	{
+		exit('Aucun item n\'est associé à cette évaluation !');
+	}
+	$eleve_nb = count($DB_TAB_USER);
+	if(!$eleve_nb)
+	{
+		exit('Aucun élève n\'est associé à cette évaluation !');
+	}
+	$tab_user_id = array(); // pas indispensable, mais plus lisible
+	$tab_item_id = array(); // pas indispensable, mais plus lisible
+	// noms prénoms des élèves
+	foreach($DB_TAB_USER as $DB_ROW)
+	{
+		$tab_user_id[$DB_ROW['user_id']] = html($DB_ROW['user_nom'].' '.$DB_ROW['user_prenom']);
+	}
+	// noms des items
+	foreach($DB_TAB_ITEM as $DB_ROW)
+	{
+		$texte_socle = ($DB_ROW['entree_id']) ? ' [S]' : ' [–]';
+		$tab_item_id[$DB_ROW['item_id']] = array( $DB_ROW['item_ref'].$texte_socle , $DB_ROW['item_nom'] );
+	}
+	// tableaux utiles ou pour conserver les infos
+	$tab_dossier = array( 'RR'=>$_SESSION['NOTE_IMAGE_STYLE'].'/h/' , 'R'=>$_SESSION['NOTE_IMAGE_STYLE'].'/h/' , 'V'=>$_SESSION['NOTE_IMAGE_STYLE'].'/h/' , 'VV'=>$_SESSION['NOTE_IMAGE_STYLE'].'/h/' );
+	$tab_init_nominatif   = array('RR'=>array(),'R'=>array(),'V'=>array(),'VV'=>array());
+	$tab_init_quantitatif = array('RR'=>0 ,'R'=>0 ,'V'=>0 ,'VV'=>0 );
+	$tab_repartition_nominatif   = array();
+	$tab_repartition_quantitatif = array();
+	// initialisation
+	foreach($tab_item_id as $item_id=>$tab_infos_item)
+	{
+		$tab_repartition_nominatif[$item_id]   = $tab_init_nominatif;
+		$tab_repartition_quantitatif[$item_id] = $tab_init_quantitatif;
+	}
+	// 1e ligne : référence des codes
+	$affichage_repartition_head = '<th class="nu"></th>';
+	foreach($tab_init_quantitatif as $note=>$vide)
+	{
+		$affichage_repartition_head .= '<th><img alt="'.$note.'" src="./_img/note/'.$tab_dossier[$note].$note.'.gif" /></th>';
+	}
+	// ligne suivantes
+	$DB_TAB = DB_STRUCTURE_lister_saisies_devoir($devoir_id,$with_REQ=false);
+	foreach($DB_TAB as $DB_ROW)
+	{
+		// Test pour éviter les pbs des élèves changés de groupes ou des items modifiés en cours de route
+		if( isset($tab_user_id[$DB_ROW['eleve_id']]) && isset($tab_item_id[$DB_ROW['item_id']]) )
+		{
+			if(isset($tab_init_quantitatif[$DB_ROW['saisie_note']])) // On ne garde que RR R V VV
+			{
+				$tab_repartition_nominatif[$DB_ROW['item_id']][$DB_ROW['saisie_note']][] = $tab_user_id[$DB_ROW['eleve_id']];
+				$tab_repartition_quantitatif[$DB_ROW['item_id']][$DB_ROW['saisie_note']]++;
+			}
+		}
+	}
+	// assemblage / affichage du tableau avec la répartition quantitative
+	echo'<thead><tr>'.$affichage_repartition_head.'</tr></thead><tbody>';
+	foreach($tab_item_id as $item_id=>$tab_infos_item)
+	{
+		echo'<tr>';
+		echo'<th><b>'.html($tab_infos_item[0]).'</b><br />'.html($tab_infos_item[1]).'</th>';
+		foreach($tab_repartition_quantitatif[$item_id] as $code=>$note_nb)
+		{
+			echo'<td style="font-size:'.round(75+100*$note_nb/$eleve_nb).'%">'.round(100*$note_nb/$eleve_nb).'%</td>';
+		}
+		echo'</tr>';
+	}
+	echo'</tbody>';
+	// Séparateur
+	echo'<SEP>';
+	// assemblage / affichage du tableau avec la répartition nominative
+	echo'<thead><tr>'.$affichage_repartition_head.'</tr></thead><tbody>';
+	foreach($tab_item_id as $item_id=>$tab_infos_item)
+	{
+		echo'<tr>';
+		echo'<th><b>'.html($tab_infos_item[0]).'</b><br />'.html($tab_infos_item[1]).'</th>';
+		foreach($tab_repartition_nominatif[$item_id] as $code=>$tab_eleves)
+		{
+			echo'<td>'.implode('<br />',$tab_eleves).'</td>';
+		}
+		echo'</tr>';
+	}
+	echo'</tbody>';
+	require('./_fpdf/fpdf.php');
+	require('./_inc/class.PDF.php');
+	// / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / /
+	// pdf contenant un tableau avec la répartition quantitative
+	// / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / /
+	$sacoche_pdf = new PDF($orientation='portrait',$marge_min=10,$couleur='oui');
+	$sacoche_pdf->tableau_devoir_repartition_quantitative_initialiser($item_nb);
+	// 1ère ligne : référence des codes
+	$sacoche_pdf->tableau_saisie_reference_devoir($descriptif);
+	$sacoche_pdf->SetXY($sacoche_pdf->marge_gauche+$sacoche_pdf->reference_largeur , $sacoche_pdf->marge_haut);
+	foreach($tab_init_quantitatif as $note=>$vide)
+	{
+		$sacoche_pdf->afficher_note_lomer($note);
+		$sacoche_pdf->Cell($sacoche_pdf->cases_largeur , $sacoche_pdf->etiquette_hauteur , '' , 1 , 0 , 'C' , false , '');
+	}
+	// ligne suivantes : référence item, cases répartition quantitative
+	$sacoche_pdf->SetXY($sacoche_pdf->marge_gauche , $sacoche_pdf->marge_haut+$sacoche_pdf->etiquette_hauteur);
+	$sacoche_pdf->cases_hauteur = $sacoche_pdf->cases_hauteur_memo;
+	foreach($tab_item_id as $item_id=>$tab_infos_item)
+	{
+		$sacoche_pdf->tableau_saisie_reference_item($tab_infos_item[0],$tab_infos_item[1]);
+		foreach($tab_repartition_quantitatif[$item_id] as $code=>$note_nb)
+		{
+			$coefficient = $note_nb/$eleve_nb ;
+			// Tracer un rectangle coloré d'aire et d'intensité de niveau de gris proportionnels
+			$teinte_gris = 255-128*$coefficient ;
+			$sacoche_pdf->SetFillColor($teinte_gris,$teinte_gris,$teinte_gris);
+			$memo_X = $sacoche_pdf->GetX();
+			$memo_Y = $sacoche_pdf->GetY();
+			$rect_largeur = $sacoche_pdf->cases_largeur * sqrt( $coefficient ) ;
+			$rect_hauteur = $sacoche_pdf->cases_hauteur * sqrt( $coefficient ) ;
+			$pos_X = $memo_X + ($sacoche_pdf->cases_largeur - $rect_largeur) / 2 ;
+			$pos_Y = $memo_Y + ($sacoche_pdf->cases_hauteur - $rect_hauteur) / 2 ;
+			$sacoche_pdf->SetXY($pos_X , $pos_Y);
+			$sacoche_pdf->Cell($rect_largeur , $rect_hauteur , '' , 0 , 0 , 'C' , true , '');
+			// Écrire le %
+			$sacoche_pdf->SetXY($memo_X , $memo_Y);
+			$sacoche_pdf->SetFont('Arial' , '' , $sacoche_pdf->taille_police*(1+$coefficient));
+			$sacoche_pdf->Cell($sacoche_pdf->cases_largeur , $sacoche_pdf->cases_hauteur , pdf(round(100*$coefficient).'%') , 1 , 0 , 'C' , false , '');
+		}
+		$sacoche_pdf->SetXY($sacoche_pdf->marge_gauche , $sacoche_pdf->GetY()+$sacoche_pdf->cases_hauteur);
+	}
+	$sacoche_pdf->Output($dossier_export.$fnom.'_repartition_quantitative.pdf','F');
+	// / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / /
+	// pdf contenant un tableau avec la répartition nominative
+	// / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / /
+	$sacoche_pdf = new PDF($orientation='portrait',$marge_min=10,$couleur='oui');
+	// il faut additionner le nombre maxi d'élèves par case de chaque item (sans descendre en dessous de 4 pour avoir la place d'afficher l'intitulé de l'item) afin de prévoir le nb de lignes nécessaires
+	$somme = 0;
+	foreach($tab_repartition_quantitatif as $item_id => $tab_effectifs)
+	{
+		$somme += max(4,max($tab_effectifs));
+	}
+	$sacoche_pdf->tableau_devoir_repartition_nominative_initialiser($somme);
+	// 1ère ligne : référence des codes
+	$sacoche_pdf->tableau_saisie_reference_devoir($descriptif);
+	$sacoche_pdf->SetXY($sacoche_pdf->marge_gauche+$sacoche_pdf->reference_largeur , $sacoche_pdf->marge_haut);
+	foreach($tab_init_quantitatif as $note=>$vide)
+	{
+		$sacoche_pdf->afficher_note_lomer($note);
+		$sacoche_pdf->Cell($sacoche_pdf->cases_largeur , $sacoche_pdf->etiquette_hauteur , '' , 1 , 0 , 'C' , false , '');
+	}
+	// ligne suivantes : référence item, cases répartition nominative
+	$sacoche_pdf->SetXY($sacoche_pdf->marge_gauche , $sacoche_pdf->marge_haut+$sacoche_pdf->etiquette_hauteur);
+	foreach($tab_item_id as $item_id=>$tab_infos_item)
+	{
+		// il faut calculer la hauteur de la case
+		$sacoche_pdf->cases_hauteur = $sacoche_pdf->lignes_hauteur * max(4,max($tab_repartition_quantitatif[$item_id]));
+		$sacoche_pdf->tableau_saisie_reference_item($tab_infos_item[0],$tab_infos_item[1]);
+		foreach($tab_repartition_nominatif[$item_id] as $code=>$tab_eleves)
+		{
+			// Ecrire les noms ; plus court avec MultiCell() mais pb des retours à la ligne pour les noms trop longs
+			$memo_X = $sacoche_pdf->GetX();
+			$memo_Y = $sacoche_pdf->GetY();
+			foreach($tab_eleves as $key => $eleve_texte)
+			{
+				$taille_police = $sacoche_pdf->taille_police;
+				while($sacoche_pdf->test_pas_trop_long($eleve_texte,$taille_police,$sacoche_pdf->cases_largeur-10)==false) // -10 car à cause des majuscules ça a tendance à déborder...
+				{
+					$taille_police -= 0.5 ;
+				}
+				$sacoche_pdf->SetFont('Arial' , '' , $taille_police);
+				$sacoche_pdf->Cell($sacoche_pdf->cases_largeur , $sacoche_pdf->lignes_hauteur , pdf($eleve_texte) , 0 , 2 , 'L' , false , '');
+			}
+			// Ajouter la bordure
+			$sacoche_pdf->SetXY($memo_X , $memo_Y);
+			$sacoche_pdf->Cell($sacoche_pdf->cases_largeur , $sacoche_pdf->cases_hauteur , '' , 1 , 0 , 'C' , false , '');
+		}
+		$sacoche_pdf->SetXY($sacoche_pdf->marge_gauche , $sacoche_pdf->GetY()+$sacoche_pdf->cases_hauteur);
+	}
+	$sacoche_pdf->Output($dossier_export.$fnom.'_repartition_nominative.pdf','F');
+	//
+	// c'est fini...
+	//
+	exit();
+}
+
+//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//	Mettre à jour l'ordre des items d'une évaluation
+//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+if( ($action=='Enregistrer_ordre') && $devoir_id && count($tab_id) )
 {
 	DB_STRUCTURE_modifier_ordre_item($devoir_id,$tab_id);
 	exit('<ok>');
 }
 
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //	Mettre à jour les items acquis par les élèves à une évaluation
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-else if( ($action=='Enregistrer_saisie') && $devoir_id && $date )
+if( ($action=='Enregistrer_saisie') && $devoir_id && $date )
 {
 	// Tout est transmis : il faut comparer avec le contenu de la base pour ne mettre à jour que ce dont il y a besoin
 	// On récupère les données transmises dans $tab_post
@@ -607,8 +804,7 @@ else if( ($action=='Enregistrer_saisie') && $devoir_id && $date )
 		unset($tab_post[$key]);
 	}
 	// Il reste dans $tab_post les données à ajouter (mises dans $tab_nouveau_ajouter) et les données vides qui ne servent pas (non enregistrées et non saisies)
-	function nonvide($note) {return (($note!='X')&&($note!='REQ')) ? true : false;}
-	$tab_nouveau_ajouter = array_filter($tab_post,'nonvide');
+	$tab_nouveau_ajouter = array_filter($tab_post,'non_vide');
 	// Il n'y a plus qu'à mettre à jour la base
 	if( !count($tab_nouveau_ajouter) && !count($tab_nouveau_modifier) && !count($tab_nouveau_supprimer) )
 	{
@@ -639,11 +835,11 @@ else if( ($action=='Enregistrer_saisie') && $devoir_id && $date )
 	exit('<ok>');
 }
 
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //	Imprimer un cartouche d'une évaluation
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-else if( ($action=='Imprimer_cartouche') && $devoir_id && $groupe_id && $date && $contenu && $detail && $orientation && $marge_min && $couleur )
+if( ($action=='Imprimer_cartouche') && $devoir_id && $groupe_id && $date && $contenu && $detail && $orientation && $marge_min && $couleur )
 {
 	// liste des items
 	$DB_TAB_COMP = DB_STRUCTURE_lister_items_devoir($devoir_id);
@@ -703,7 +899,6 @@ else if( ($action=='Imprimer_cartouche') && $devoir_id && $groupe_id && $date &&
 	$item_nb = count($tab_comp_id);
 	$colspan = ($detail=='minimal') ? $item_nb : 3 ;
 	require('./_fpdf/fpdf.php');
-	require('./_fpdf/rpdf.php');
 	require('./_inc/class.PDF.php');
 	$sacoche_pdf = new PDF($orientation,$marge_min,$couleur);
 	$sacoche_pdf->cartouche_initialiser($detail,$item_nb);
@@ -764,11 +959,11 @@ else if( ($action=='Imprimer_cartouche') && $devoir_id && $groupe_id && $date &&
 	exit($sacoche_htm);
 }
 
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-//	Traiter une demande d'importation d'une saisie déportée ; on n'enregistre rien, on ne fait que le décrypter pour que javascript le traite
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//	Traiter une demande d'importation d'une saisie déportée ; on n'enregistre rien, on ne fait que le décrypter et renvoyer une chaine résultante au javascript
+//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-else if( (isset($_GET['f_action'])) && ($_GET['f_action']=='importer_saisie_csv') )
+if( (isset($_GET['f_action'])) && ($_GET['f_action']=='importer_saisie_csv') )
 {
 	// Récupérer le contenu du fichier
 	$tab_file = $_FILES['userfile'];
@@ -828,12 +1023,10 @@ else if( (isset($_GET['f_action'])) && ($_GET['f_action']=='importer_saisie_csv'
 	exit($retour);
 }
 
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //	On ne devrait pas en arriver là !
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-else
-{
-	echo'Erreur avec les données transmises !';
-}
+exit('Erreur avec les données transmises !');
+
 ?>

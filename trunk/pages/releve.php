@@ -30,31 +30,17 @@ $TITRE = "Relevés &amp; Bilans";
 ?>
 
 <div class="hc">
-	<?php
-	$tab_menu = array();
-	// Menu variable suivant le profil
-	if(in_array($_SESSION['USER_PROFIL'],array('professeur','directeur','eleve')))
-	{
-		$tab_menu[] = '<a href="./index.php?page='.$PAGE.'&amp;section=grille">Grilles sur un niveau.</a>';
-	}
-	if(in_array($_SESSION['USER_PROFIL'],array('professeur','directeur','eleve')))
-	{
-		$tab_menu[] = '<a href="./index.php?page='.$PAGE.'&amp;section=matiere">Bilans sur une matière.</a>';
-	}
-	if($_SESSION['USER_PROFIL']=='professeur')
-	{
-		$tab_menu[] = '<a href="./index.php?page='.$PAGE.'&amp;section=selection">Bilans sur une sélection d\'items.</a>';
-	}
-	if(in_array($_SESSION['USER_PROFIL'],array('professeur','directeur')))
-	{
-		$tab_menu[] = '<a href="./index.php?page='.$PAGE.'&amp;section=multimatiere">Bilans transdisciplinaires (P.P.).</a>';
-	}
-	if(in_array($_SESSION['USER_PROFIL'],array('professeur','directeur','eleve')))
-	{
-		$tab_menu[] = '<a href="./index.php?page='.$PAGE.'&amp;section=socle">État de maîtrise du socle commun.</a>';
-	}
-	echo implode(' || ',$tab_menu);
-	?>
+	<a href="./index.php?page=<?php echo $PAGE ?>&amp;section=items_matiere">Bilan d'items d'une matière.</a> || 
+	<a href="./index.php?page=<?php echo $PAGE ?>&amp;section=items_multimatiere">Bilan d'items pluridisciplinaire.</a>
+	<!-- items_selection est volontairement laissé de côté -->
+</div>
+<div class="hc">
+	<a href="./index.php?page=<?php echo $PAGE ?>&amp;section=synthese_matiere">Synthèse d'une matière.</a> || 
+	<a href="./index.php?page=<?php echo $PAGE ?>&amp;section=synthese_multimatiere">Synthèse pluridisciplinaire.</a>
+</div>
+<div class="hc">
+	<a href="./index.php?page=<?php echo $PAGE ?>&amp;section=grille_referentiel">Grille d'items d'un référentiel.</a> || 
+	<a href="./index.php?page=<?php echo $PAGE ?>&amp;section=socle">État de maîtrise du socle.</a>
 </div>
 
 <hr />

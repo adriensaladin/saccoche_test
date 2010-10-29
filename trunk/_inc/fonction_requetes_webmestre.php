@@ -296,7 +296,7 @@ function DB_WEBMESTRE_supprimer_zone($geo_id)
 	$DB_VAR = array(':geo_id'=>$geo_id);
 	DB::query(SACOCHE_WEBMESTRE_BD_NAME , $DB_SQL , $DB_VAR);
 	// Log de l'action
-	ajouter_log('Suppression de la zone géographique '.$geo_id.'.');
+	ajouter_log_SACoche('Suppression de la zone géographique '.$geo_id.'.');
 }
 
 /**
@@ -327,7 +327,7 @@ function DB_WEBMESTRE_supprimer_multi_structure($BASE)
 	// Supprimer le dossier pour accueillir les vignettes verticales avec l'identité des élèves
 	Supprimer_Dossier('./__tmp/badge/'.$BASE);
 	// Log de l'action
-	ajouter_log('Suppression de la structure '.$BASE.'.');
+	ajouter_log_SACoche('Suppression de la structure '.$BASE.'.');
 }
 
 /**

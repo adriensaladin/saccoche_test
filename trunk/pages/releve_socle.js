@@ -127,17 +127,30 @@ $(document).ready
 			{
 				rules :
 				{
-					f_palier : { required:true }
+					f_palier : { required:true },
+					f_groupe             : { required:true },
+					f_eleve              : { required:true },
+					f_coef               : { required:false },
+					f_socle              : { required:false },
+					f_lien               : { required:false }
 				},
 				messages :
 				{
-					f_palier : { required:"palier manquant" }
+					f_palier : { required:"palier manquant" },
+					f_groupe             : { required:"groupe manquant" },
+					f_eleve              : { required:"élève(s) manquant(s)" },
+					f_coef               : { },
+					f_socle              : { },
+					f_lien               : { }
 				},
 				errorElement : "label",
 				errorClass : "erreur",
 				errorPlacement : function(error,element)
 				{
-					element.after(error);
+					if(element.is("select")) {element.after(error);}
+					else if(element.attr("type")=="text") {element.next().after(error);}
+					else if(element.attr("type")=="radio") {element.parent().next().after(error);}
+					else if(element.attr("type")=="checkbox") {element.parent().next().after(error);}
 				}
 				// success: function(label) {label.text("ok").removeAttr("class").addClass("valide");} Pas pour des champs soumis à vérification PHP
 			}
@@ -181,7 +194,7 @@ $(document).ready
 			if(readytogo)
 			{
 				$('button').attr('disabled','disabled');
-				$('#ajax_msg').removeAttr("class").addClass("loader").html("Transmission du fichier en cours... Veuillez patienter.");
+				$('#ajax_msg').removeAttr("class").addClass("loader").html("Génération du relevé en cours... Veuillez patienter.");
 			}
 			return readytogo;
 		}

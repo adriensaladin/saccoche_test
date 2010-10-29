@@ -43,7 +43,7 @@ $tab_niveau  = array();
 $tab_colonne = array();
 
 // On récupère la liste des matières utilisées par l'établissement
-$DB_TAB = DB_STRUCTURE_lister_matieres_etablissement($_SESSION['MATIERES'],$with_transversal=true);
+$DB_TAB = DB_STRUCTURE_lister_matieres_etablissement($_SESSION['MATIERES'],$with_transversal=true,$order_by_name=true);
 if(count($DB_TAB))
 {
 	foreach($DB_TAB as $DB_ROW)

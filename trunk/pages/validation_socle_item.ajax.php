@@ -225,7 +225,6 @@ elseif($action=='Enregistrer_validation')
 	}
 	// Il reste dans $tab_post les validations à ajouter (mises dans $tab_nouveau_ajouter) et les validations à ignorer (non effectuées par le formulaire)
 	// On remplit $tab_nouveau_ajouter
-	function is_renseigne($etat) {return ($etat!=2) ? true : false;}
 	// Validation absente dans la base mais effectuée par le formulaire
 	$tab_nouveau_ajouter = array_filter($tab_post,'is_renseigne');
 	// Sinon, validation absente dans la base et absente du formulaire : RAS

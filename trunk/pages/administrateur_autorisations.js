@@ -396,7 +396,7 @@ $(document).ready
 		);
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-//	Environnement élève - Bilan sur une matière => soumission du formulaire
+//	Environnement élève - Bilan d'items d'une matière => soumission du formulaire
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
 		$('#valider_eleve_bilans').click

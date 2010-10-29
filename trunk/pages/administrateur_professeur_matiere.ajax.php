@@ -31,8 +31,6 @@ if(($_SESSION['SESAMATH_ID']==ID_DEMO)&&($_GET['action']!='initialiser')){exit('
 $action = (isset($_GET['action'])) ? $_GET['action'] : '';
 $tab_select_professeurs = (isset($_POST['select_professeurs'])) ? array_map('clean_entier',explode(',',$_POST['select_professeurs'])) : array() ;
 $tab_select_matieres    = (isset($_POST['select_matieres']))    ? array_map('clean_entier',explode(',',$_POST['select_matieres']))    : array() ;
-
-function positif($n) {return $n;}
 $tab_select_professeurs = array_filter($tab_select_professeurs,'positif');
 $tab_select_matieres    = array_filter($tab_select_matieres,'positif');
 // Ajouter des professeurs à des matières
@@ -65,7 +63,7 @@ $tab_user   = array();
 $tab_matiere[0] = '<i>sans affectation</i>';
 $tab_user[0]   = '';
 // Récupérer la liste des matières utilisées
-$DB_TAB = DB_STRUCTURE_lister_matieres_etablissement($_SESSION['MATIERES'],$with_transversal=false);
+$DB_TAB = DB_STRUCTURE_lister_matieres_etablissement($_SESSION['MATIERES'],$with_transversal=false,$order_by_name=true);
 foreach($DB_TAB as $DB_ROW)
 {
 	$tab_matiere[$DB_ROW['matiere_id']] = html($DB_ROW['matiere_nom']);

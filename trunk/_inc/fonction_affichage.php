@@ -285,9 +285,9 @@ function affich_note_html($note,$date,$info,$tri=false)
 {
 	global $tab_tri_note;
 	$insert_tri = ($tri) ? '<i>'.$tab_tri_note[$note].'</i>' : '';
-	$sous_dossier = (in_array($note,array('RR','R','V','VV'))) ? $_SESSION['NOTE_IMAGE_STYLE'].'/' : '';
+	$dossier = (in_array($note,array('RR','R','V','VV'))) ? $_SESSION['NOTE_IMAGE_STYLE'].'/h/' : 'commun/h/';
 	$title = ( ($date!='') || ($info!='') ) ? ' title="'.html($info).'<br />'.affich_date($date).'"' : '' ;
-	return (in_array($note,array('REQ','-',''))) ? '&nbsp;' : $insert_tri.'<img'.$title.' alt="'.$note.'" src="./_img/note/'.$sous_dossier.$note.'.gif" />';
+	return (in_array($note,array('REQ','-',''))) ? '&nbsp;' : $insert_tri.'<img'.$title.' alt="'.$note.'" src="./_img/note/'.$dossier.$note.'.gif" />';
 }
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
@@ -310,6 +310,24 @@ function affich_score_html($score,$methode_tri,$pourcent='')
 	$score_affiche = (strpos($_SESSION['DROIT_VOIR_SCORE_BILAN'],$_SESSION['USER_PROFIL'])!==false) ? $score.$pourcent : '' ;
 	$tri = ($methode_tri=='score') ? sprintf("%03u",$score) : $tab_tri_etat[$etat] ;	// le sprintf et le tab_tri_etat servent pour le tri du tableau
 	return '<td class="hc '.$etat.'"><i>'.$tri.'</i>'.$score_affiche.'</td>';
+}
+
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+// Afficher une barre colorée de synthèse NA VA A pour une sortie HTML
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
+function affich_barre_synthese_html($td_width,$tab_infos,$total)
+{
+	// $tab_infos contient 'A' / 'VA' / 'NA'
+	$tab_couleur = array('NA'=>'r','VA'=>'o','A'=>'v');
+	$span = '';
+	foreach($tab_infos as $etat => $nb)
+	{
+		$span_width = $td_width * $nb / $total ;
+		$texte = ($span_width>30) ? $nb.' '.$etat : $nb ;
+		$span .= '<span class="'.$tab_couleur[$etat].'" style="display:inline-block;width:'.$span_width.'px">'.$texte.'</span>';
+	}
+	return '<td style="padding:0;width:'.$td_width.'px" class="hc">'.$span.'</td>';
 }
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-

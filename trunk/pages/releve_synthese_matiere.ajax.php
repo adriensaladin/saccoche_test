@@ -50,7 +50,7 @@ $mode_synthese = (isset($_POST['f_mode_synthese']))      ? clean_texte($_POST['f
 $couleur       = (isset($_POST['f_couleur']))            ? clean_texte($_POST['f_couleur'])       : '';
 $tab_eleve     = (isset($_POST['eleves'])) ? array_map('clean_entier',explode(',',$_POST['eleves'])) : array() ;
 
-save_cookie_select($_SESSION['BASE'],$_SESSION['USER_ID']);
+// save_cookie_select($_SESSION['BASE'],$_SESSION['USER_ID']); // A ne pas appeler ici
 
 $tab_eleve     = array_filter($tab_eleve,'positif');
 $liste_eleve   = implode(',',$tab_eleve);

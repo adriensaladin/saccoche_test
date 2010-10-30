@@ -37,11 +37,13 @@ $motif  = (isset($_POST['f_motif']))  ? clean_texte($_POST['f_motif'])  : '';
 
 if($action=='debloquer')
 {
+	ajouter_log_PHP( $log_objet='Maintenance' , $log_contenu='Application accessible.' , $log_fichier=__FILE__ , $log_ligne=__LINE__ , $only_sesamath=false );
 	debloquer_application($_SESSION['USER_PROFIL']);
 	exit('<label class="valide">Application accessible.</label>');
 }
 elseif($action=='bloquer')
 {
+	ajouter_log_PHP( $log_objet='Maintenance' , $log_contenu='Application fermée.' , $log_fichier=__FILE__ , $log_ligne=__LINE__ , $only_sesamath=false );
 	bloquer_application($_SESSION['USER_PROFIL'],$motif);
 	exit('<label class="erreur">Application fermée : '.html($motif).'</label>');
 }

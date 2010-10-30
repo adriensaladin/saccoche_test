@@ -177,14 +177,15 @@ function ajouter_log_SACoche($contenu)
  * ajouter_log_PHP
  * Ajout d'un log PHP dans le fichier du serveur Web ; serveur Sésamath uniquement
  * 
- * @param string $log_objet    objet du log
- * @param string $log_contenu  contenu du log
- * @param string $log_fichier  transmettre __FILE__
- * @param string $log_ligne    transmettre __LINE__
+ * @param string $log_objet       objet du log
+ * @param string $log_contenu     contenu du log
+ * @param string $log_fichier     transmettre __FILE__
+ * @param string $log_ligne       transmettre __LINE__
+ * @param bool   $only_sesamath   [true] pour une inscription uniquement sur le serveur Sésamath (par défaut), [false] sinon
  * @return void
  */
 
-function ajouter_log_PHP($log_objet,$log_contenu,$log_fichier,$log_ligne)
+function ajouter_log_PHP($log_objet,$log_contenu,$log_fichier,$log_ligne,$only_sesamath=true)
 {
 	if(strpos(SERVEUR_ADRESSE,SERVEUR_PROJET)===0)
 	{

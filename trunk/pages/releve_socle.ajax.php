@@ -47,7 +47,7 @@ $test_affichage_Validation  = ($groupe_id && count($tab_eleve_id) && $aff_socle_
 if( $palier_id && $palier_nom && $groupe_id && count($tab_eleve_id) )
 {
 
-	ajouter_log_PHP( $log_objet='Demande de bilan' , $log_contenu=serialize($_POST) , $log_fichier=__FILE__ , $log_ligne=__LINE__ );
+	ajouter_log_PHP( $log_objet='Demande de bilan' , $log_contenu=serialize($_POST) , $log_fichier=__FILE__ , $log_ligne=__LINE__ , $only_sesamath=true );
 
 	$tab_pilier       = array();	// [pilier_id] => array(pilier_nom,pilier_nb_lignes);
 	$tab_section      = array();	// [pilier_id][section_id] => section_nom;

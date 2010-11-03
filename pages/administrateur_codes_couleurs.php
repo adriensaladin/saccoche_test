@@ -26,30 +26,28 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-$TITRE = "Codes de notation et couleurs";
-$VERSION_JS_FILE += 1;
+$TITRE = "Notation : codes, couleurs, légendes";
+$VERSION_JS_FILE += 2;
 
-// Liste des jeux de codes de couleur
+// Évaluation : symboles colorés
 
 require_once('./_inc/tableau_notes_txt.php');
 
-$lignes = '';
 $dossier = './_img/note/';
 $tab_notes_txt_js = 'var tab_notes_txt = new Array();';
 
+$simulation_lignes = array('','','','','','');
 foreach($tab_notes_txt as $note_nom => $tab_note_texte)
 {
 	if(is_dir($dossier.$note_nom))
 	{
 		$checked = ($note_nom==$_SESSION['NOTE_IMAGE_STYLE']) ? ' checked="checked"' : '' ;
 		$listing_notes_texte = implode('/',$tab_note_texte);
-		$lignes .= '<tr>';
-		$lignes .= 	'<td>'.$note_nom.'<br /><input type="radio" id="dossier_'.$note_nom.'" name="image_style" value="'.$note_nom.'"'.$checked.' lang="'.$listing_notes_texte.'" /></td>';
-		$lignes .= 	'<td><img alt="'.$tab_note_texte['RR'].'" src="'.$dossier.$note_nom.'/h/RR.gif" /><br />'.$tab_note_texte['RR'].'</td>';
-		$lignes .= 	'<td><img alt="'.$tab_note_texte['R'].'" src="'.$dossier.$note_nom.'/h/R.gif" /><br />'.$tab_note_texte['R'].'</td>';
-		$lignes .= 	'<td><img alt="'.$tab_note_texte['V'].'" src="'.$dossier.$note_nom.'/h/V.gif" /><br />'.$tab_note_texte['V'].'</td>';
-		$lignes .= 	'<td><img alt="'.$tab_note_texte['VV'].'" src="'.$dossier.$note_nom.'/h/VV.gif" /><br />'.$tab_note_texte['VV'].'</td>';
-		$lignes .= '</tr>';
+		$simulation_lignes[0] .= 	'<td style="width:5em"><label for="dossier_'.$note_nom.'">'.$note_nom.'</label><br /><input type="radio" id="dossier_'.$note_nom.'" name="note_image_style" value="'.$note_nom.'"'.$checked.' lang="'.$listing_notes_texte.'" /></td>';
+		$simulation_lignes[1] .= 	'<td><img alt="'.$tab_note_texte['RR'].'" src="'.$dossier.$note_nom.'/h/RR.gif" /><br />'.$tab_note_texte['RR'].'</td>';
+		$simulation_lignes[2] .= 	'<td><img alt="'.$tab_note_texte['R'].'" src="'.$dossier.$note_nom.'/h/R.gif" /><br />'.$tab_note_texte['R'].'</td>';
+		$simulation_lignes[3] .= 	'<td><img alt="'.$tab_note_texte['V'].'" src="'.$dossier.$note_nom.'/h/V.gif" /><br />'.$tab_note_texte['V'].'</td>';
+		$simulation_lignes[4] .= 	'<td><img alt="'.$tab_note_texte['VV'].'" src="'.$dossier.$note_nom.'/h/VV.gif" /><br />'.$tab_note_texte['VV'].'</td>';
 		$tab_notes_txt_js .= 'tab_notes_txt["'.html($note_nom).'"] = new Array();';
 		$tab_notes_txt_js .= 'tab_notes_txt["'.$note_nom.'"]["RR"]="'.$tab_note_texte['RR'].'";';
 		$tab_notes_txt_js .= 'tab_notes_txt["'.$note_nom.'"]["R"]="'.$tab_note_texte['R'].'";';
@@ -58,79 +56,63 @@ foreach($tab_notes_txt as $note_nom => $tab_note_texte)
 	}
 }
 
-// Équivalents texte
-$texte_rr = $_SESSION['NOTE_TEXTE']['RR'];
-$texte_r  = $_SESSION['NOTE_TEXTE']['R'];
-$texte_v  = $_SESSION['NOTE_TEXTE']['V'];
-$texte_vv = $_SESSION['NOTE_TEXTE']['VV'];
+// Évaluation : équivalents textes & légende
 
-// Couleurs d'initialisation
-$defaut_r = '#ff9999';
-$defaut_o = '#ffdd33';
-$defaut_v = '#99ff99';
-$color_r = $_SESSION['CSS_BACKGROUND-COLOR']['NA'];
-$color_o = $_SESSION['CSS_BACKGROUND-COLOR']['VA'];
-$color_v = $_SESSION['CSS_BACKGROUND-COLOR']['A'];
+$note_equiv_div = '';
+$tab_note = array('RR','R','V','VV');
+foreach($tab_note as $note)
+{
+	$note_equiv_div .= '<div class="ti"><input type="text" class="hc" size="2" maxlength="3" id="note_texte_'.$note.'" name="note_texte_'.$note.'" value="'.html($_SESSION['NOTE_TEXTE'][$note]).'" /> <input type="text" size="30" maxlength="40" id="note_legende_'.$note.'" name="note_legende_'.$note.'" value="'.html($_SESSION['NOTE_LEGENDE'][$note]).'" /></div>';
+}
+
+// Degrés d'acquisitions calculés : couleurs de fond, équivalents textes, légende
+
+$tab_acquis = array('NA'=>'r','VA'=>'o','A'=>'v');
+$tab_defaut = array('NA'=>'#ff9999','VA'=>'#ffdd33','A'=>'#99ff99');
+
+$acquis_box = '';
+foreach($tab_acquis as $acquis => $class)
+{
+	$acquis_box .= '<div class="colorpicker '.$class.'">';
+	$acquis_box .= '<p><input type="text" class="hc" size="2" maxlength="3" id="acquis_texte_'.$note.'" name="acquis_texte_'.$acquis.'" value="'.html($_SESSION['ACQUIS_TEXTE'][$acquis]).'" /><br /><input type="text" class="hc" size="25" maxlength="40" id="acquis_legende_'.$acquis.'" name="acquis_legende_'.$acquis.'" value="'.html($_SESSION['ACQUIS_LEGENDE'][$acquis]).'" /></p>';
+	$acquis_box .= '<div><button type="button" name="color_'.$acquis.'" value="'.$_SESSION['CSS_BACKGROUND-COLOR'][$acquis].'"><img alt="" src="./_img/bouton/colorer.png" /> Couleur de l\'établissement.</button></div>';
+	$acquis_box .= '<div><button type="button" name="color_'.$acquis.'" value="'.$tab_defaut[$acquis].'"><img alt="" src="./_img/bouton/colorer.png" /> Couleur par défaut.</button></div>';
+	$acquis_box .= '<p><input type="text" class="stretch" size="8" id="acquis_color_'.$acquis.'" name="acquis_color_'.$acquis.'" value="'.$_SESSION['CSS_BACKGROUND-COLOR'][$acquis].'" style="background-color:'.$_SESSION['CSS_BACKGROUND-COLOR'][$acquis].'" /><br /></p>';
+	$acquis_box .= '</div>';
+}
+
 ?>
 
 <script type="text/javascript">
 	<?php echo $tab_notes_txt_js ?>
 </script>
 
-<div class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__gestion_codes_couleurs">DOC : Codes de notation et couleurs</a></div>
+<div class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__gestion_codes_couleurs">DOC : Notation : codes, couleurs, légendes</a></div>
 
 <hr />
 
-<form id="form" action="">
-
-	<h2>Jeu de symboles colorés</h2>
-
-	<table class="simulation"><tbody>
-		<?php echo $lignes ?>
-	</tbody></table>
-
-	<h2>Équivalents texte (modifiables)</h2>
-
-	<div id="equiv_txt">
-		<input type="text" size="2" maxlength="3" id="texte_RR" name="texte_RR" value="<?php echo $texte_rr ?>" class="hc" />
-		<input type="text" size="2" maxlength="3" id="texte_R" name="texte_R" value="<?php echo $texte_r ?>" class="hc" />
-		<input type="text" size="2" maxlength="3" id="texte_V" name="texte_V" value="<?php echo $texte_v ?>" class="hc" />
-		<input type="text" size="2" maxlength="3" id="texte_VV" name="texte_VV" value="<?php echo $texte_vv ?>" class="hc" />
+<form id="form_notes" action="">
+	<h2>Notes aux évaluations : symboles colorés, équivalents textes, légende</h2>
+	<table class="simulation"><tbody><tr><?php echo implode('</tr><tr>',$simulation_lignes) ?></tr></tbody></table>
+	<label id="ajax_msg_note_symbole"></label>
+	<p />
+	<div id="note_equiv_div">
+		<?php echo $note_equiv_div ?>
 	</div>
+	<p />
+	<fieldset><span class="tab"></span><input type="hidden" id="objet" name="objet" value="notes" /><button id="bouton_valider_notes" type="submit"><img alt="" src="./_img/bouton/parametre.png" /> Enregistrer ces choix.</button><label id="ajax_msg_notes">&nbsp;</label></fieldset>
+</form>
 
 	<hr />
 
-	<h2>Couleurs de fond</h2>
-
-	<!-- Pas mis dans le tableau, sinon colorpicker bugue avec IE -->
-	<div class="colorpicker r">
-		<p><b>Non Acquis</b></p>
-		<p><input type="text" size="8" id="color_NA" name="color_NA" value="<?php echo $color_r ?>" style="background-color:<?php echo $color_r ?>" /></p>
-		<p><label>&nbsp;</label></p>
-		<p><button type="button" name="color_NA" value="<?php echo $color_r ?>"><img alt="" src="./_img/bouton/colorer.png" /> Couleur de l'établissement.</button></p>
-		<p><button type="button" name="color_NA" value="<?php echo $defaut_r ?>"><img alt="" src="./_img/bouton/colorer.png" /> Couleur par défaut.</button></p>
-	</div>
-	<div class="colorpicker o">
-		<p><b>Partiellement Acquis</b></p>
-		<p><input type="text" size="8" id="color_VA" name="color_VA" value="<?php echo $color_o ?>" style="background-color:<?php echo $color_o ?>" /></p>
-		<p><label>&nbsp;</label></p>
-		<p><button type="button" name="color_VA" value="<?php echo $color_o ?>"><img alt="" src="./_img/bouton/colorer.png" /> Couleur de l'établissement.</button></p>
-		<p><button type="button" name="color_VA" value="<?php echo $defaut_o ?>"><img alt="" src="./_img/bouton/colorer.png" /> Couleur par défaut.</button></p>
-	</div>
-	<div class="colorpicker v">
-		<p><b>Acquis</b></p>
-		<p><input type="text" size="8" id="color_A" name="color_A" value="<?php echo $color_v ?>" style="background-color:<?php echo $color_v ?>" /></p>
-		<p><label>&nbsp;</label></p>
-		<p><button type="button" name="color_A" value="<?php echo $color_v ?>"><img alt="" src="./_img/bouton/colorer.png" /> Couleur de l'établissement.</button></p>
-		<p><button type="button" name="color_A" value="<?php echo $defaut_v ?>"><img alt="" src="./_img/bouton/colorer.png" /> Couleur par défaut.</button></p>
-	</div>
+<form id="form_acquis" action="">
+	<h2>Degrés d'acquisitions calculés : couleurs de fond, équivalents textes, légende</h2>
+	<!-- Pas mis dans un tableau, sinon colorpicker bugue avec IE -->
+	<?php echo $acquis_box; ?>
 	<div id="colorpicker" class="hide"></div>
 	<div style="clear:both"></div>
+	<p />
+	<fieldset><span class="tab"></span><input type="hidden" id="objet" name="objet" value="acquis" /><button id="bouton_valider_acquis" type="submit"><img alt="" src="./_img/bouton/parametre.png" /> Enregistrer ces choix.</button><label id="ajax_msg_acquis">&nbsp;</label></fieldset>
+</form>
 
 	<hr />
-
-	<fieldset>
-		<span class="tab"></span><button id="bouton_valider" type="submit"><img alt="" src="./_img/bouton/parametre.png" /> Enregistrer ces choix.</button><label id="ajax_msg">&nbsp;</label>
-	</fieldset>
-
-</form>

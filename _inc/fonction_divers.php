@@ -613,30 +613,28 @@ function connecter_user($BASE,$profil,$login,$password,$mode_connection)
 	$_SESSION['ELEVE_CLASSE_NOM'] = $DB_ROW['groupe_nom'];
 	// Récupérer et Enregistrer en session les données associées à l'établissement (indices du tableau de session en majuscules).
 	$DB_TAB = DB_STRUCTURE_lister_parametres();
-	$tab_type_entier = array('SESAMATH_ID','DROIT_ELEVE_DEMANDES','DUREE_INACTIVITE','CALCUL_VALEUR_RR','CALCUL_VALEUR_R','CALCUL_VALEUR_V','CALCUL_VALEUR_VV','CALCUL_SEUIL_R','CALCUL_SEUIL_V','CALCUL_LIMITE','CAS_SERVEUR_PORT');
+	$tab_type_entier  = array('SESAMATH_ID','DROIT_ELEVE_DEMANDES','DUREE_INACTIVITE','CALCUL_VALEUR_RR','CALCUL_VALEUR_R','CALCUL_VALEUR_V','CALCUL_VALEUR_VV','CALCUL_SEUIL_R','CALCUL_SEUIL_V','CALCUL_LIMITE','CAS_SERVEUR_PORT');
+	$tab_type_tableau = array('CSS_BACKGROUND-COLOR','CALCUL_VALEUR','CALCUL_SEUIL','NOTE_TEXTE','NOTE_LEGENDE','ACQUIS_TEXTE','ACQUIS_LEGENDE');
 	foreach($DB_TAB as $DB_ROW)
 	{
 		$parametre_nom = strtoupper($DB_ROW['parametre_nom']);
 		// Certains paramètres sont de type entier.
 		$parametre_valeur = (in_array($parametre_nom,$tab_type_entier)) ? (int) $DB_ROW['parametre_valeur'] : $DB_ROW['parametre_valeur'] ;
 		// Certains paramètres sont à enregistrer sous forme de tableau.
-		if(substr($parametre_nom,0,20)=='CSS_BACKGROUND-COLOR')
+		$find = false;
+		foreach($tab_type_tableau as $key1)
 		{
-			$_SESSION[substr($parametre_nom,0,20)][substr($parametre_nom,21)] = $parametre_valeur ;
+			$longueur_key1 = strlen($key1);
+			if(substr($parametre_nom,0,$longueur_key1)==$key1)
+			{
+				$key2 = substr($parametre_nom,$longueur_key1+1);
+				$_SESSION[$key1][$key2] = $parametre_valeur ;
+				$find = true;
+				break;
+			}
 		}
-		elseif(substr($parametre_nom,0,13)=='CALCUL_VALEUR')
-		{
-			$_SESSION[substr($parametre_nom,0,13)][substr($parametre_nom,14)] = $parametre_valeur ;
-		}
-		elseif(substr($parametre_nom,0,12)=='CALCUL_SEUIL')
-		{
-			$_SESSION[substr($parametre_nom,0,12)][substr($parametre_nom,13)] = $parametre_valeur ;
-		}
-		elseif(substr($parametre_nom,0,10)=='NOTE_TEXTE')
-		{
-			$_SESSION[substr($parametre_nom,0,10)][substr($parametre_nom,11)] = $parametre_valeur ;
-		}
-		else
+		// Les autres paramètres sont à enregistrer tels quels.
+		if(!$find)
 		{
 			$_SESSION[$parametre_nom] = $parametre_valeur ;
 		}

@@ -27,12 +27,12 @@
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = "Bilan d'items pluridisciplinaire";
-$VERSION_JS_FILE += 3;
+$VERSION_JS_FILE += 5;
 ?>
 
 <?php
 // Fabrication des éléments select du formulaire
-$tab_cookie = load_cookie_select($_SESSION['BASE'],$_SESSION['USER_ID']);
+$tab_cookie = load_cookie_select('releve_items');
 if($_SESSION['USER_PROFIL']=='directeur')
 {
 	$tab_groupes  = DB_STRUCTURE_OPT_classes_groupes_etabl();
@@ -70,9 +70,9 @@ $select_periode     = afficher_select($tab_periodes           , $select_nom='f_p
 $select_orientation = afficher_select($tab_select_orientation , $select_nom='f_orientation' , $option_first='non' , $selection=$tab_cookie['orientation']   , $optgroup='non');
 $select_marge_min   = afficher_select($tab_select_marge_min   , $select_nom='f_marge_min'   , $option_first='non' , $selection=$tab_cookie['marge_min']     , $optgroup='non');
 $select_couleur     = afficher_select($tab_select_couleur     , $select_nom='f_couleur'     , $option_first='non' , $selection=$tab_cookie['couleur']       , $optgroup='non');
+$select_legende     = afficher_select($tab_select_legende     , $select_nom='f_legende'     , $option_first='non' , $selection=$tab_cookie['legende']       , $optgroup='non');
 $select_cases_nb    = afficher_select($tab_select_cases_nb    , $select_nom='f_cases_nb'    , $option_first='non' , $selection=$tab_cookie['cases_nb']      , $optgroup='non');
 $select_cases_larg  = afficher_select($tab_select_cases_size  , $select_nom='f_cases_larg'  , $option_first='non' , $selection=$tab_cookie['cases_largeur'] , $optgroup='non');
-$select_cases_haut  = afficher_select($tab_select_cases_size  , $select_nom='f_cases_haut'  , $option_first='non' , $selection=$tab_cookie['cases_hauteur'] , $optgroup='non');
 // Dates par défaut de début et de fin
 $annee_debut = (date('n')>8) ? date('Y') : date('Y')-1 ;
 $date_debut = '01/09/'.$annee_debut;
@@ -134,8 +134,8 @@ if(is_array($tab_groupes))
 		<span class="tab"></span><a href="#" class="puce_moins toggle">Afficher moins d'options</a><br />
 		<label class="tab" for="f_restriction">Restriction :</label><input type="checkbox" id="f_restriction" name="f_restriction" value="1" /> <label for="f_restriction">Uniquement les items liés du socle</label><br />
 		<label class="tab" for="f_indication">Indications <img alt="" src="./_img/bulle_aide.png" title="Les paramètres des items peuvent être affichés." /> :</label><label for="f_coef"><input type="checkbox" id="f_coef" name="f_coef" value="1" /> Coefficients</label>&nbsp;&nbsp;&nbsp;<label for="f_socle"><input type="checkbox" id="f_socle" name="f_socle" value="1" checked="checked" /> Socle</label>&nbsp;&nbsp;&nbsp;<label for="f_lien"><input type="checkbox" id="f_lien" name="f_lien" value="1"<?php echo $check_option_lien ?> /> Liens de remédiation</label><br />
-		<label class="tab" for="f_orientation">Orientation :</label><?php echo $select_orientation ?> en <?php echo $select_couleur ?> avec marges minimales de </label><?php echo $select_marge_min ?><br />
-		<label class="tab" for="f_cases_nb">Évaluations :</label><?php echo $select_cases_nb ?> de largeur <?php echo $select_cases_larg ?> et de hauteur <?php echo $select_cases_haut ?><p />
+		<label class="tab" for="f_impression"><img alt="" src="./_img/bulle_aide.png" title="Pour le format pdf." /> Impression :</label><?php echo $select_orientation ?> <?php echo $select_couleur ?> <?php echo $select_legende ?> avec marges minimales de </label><?php echo $select_marge_min ?><br />
+		<label class="tab" for="f_cases_nb">Évaluations :</label><?php echo $select_cases_nb ?> de largeur <?php echo $select_cases_larg ?><p />
 	</div>
 	<span class="tab"></span><button id="bouton_valider" type="submit"><img alt="" src="./_img/bouton/generer.png" /> Générer.</button><label id="ajax_msg">&nbsp;</label><br />
 </fieldset></form>

@@ -169,7 +169,7 @@ elseif( ($action=='Afficher_information') && $eleve_id && $entree_id )
 	    if($tab_score_socle_eleve['%']<$_SESSION['CALCUL_SEUIL']['R']) {$etat = 'r';}
 	elseif($tab_score_socle_eleve['%']>$_SESSION['CALCUL_SEUIL']['V']) {$etat = 'v';}
 	else                                                               {$etat = 'o';}
-	echo'<span class="'.$etat.'">&nbsp;'.$tab_score_socle_eleve['%'].'% validé ('.$tab_score_socle_eleve['A'].'A '.$tab_score_socle_eleve['VA'].'VA '.$tab_score_socle_eleve['NA'].'NA)&nbsp;</span>';
+	echo'<span class="'.$etat.'">&nbsp;'.$tab_score_socle_eleve['%'].'% acquis ('.$tab_score_socle_eleve['A'].html($_SESSION['ACQUIS_TEXTE']['A']).' '.$tab_score_socle_eleve['VA'].html($_SESSION['ACQUIS_TEXTE']['VA']).' '.$tab_score_socle_eleve['NA'].html($_SESSION['ACQUIS_TEXTE']['NA']).')&nbsp;</span>';
 	// Elaboration du bilan relatif au socle : mise en page, paragraphe des items
 	if( count($tab_infos_socle_eleve) )
 	{

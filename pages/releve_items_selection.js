@@ -244,12 +244,12 @@ $(document).ready
 			{
 				rules :
 				{
-					f_orientation : { required:true },
-					f_marge_min   : { required:true },
-					f_couleur     : { required:true },
-					f_cases_nb     : { required:true },
+					f_orientation  : { required:true },
+					f_marge_min    : { required:true },
+					f_couleur      : { required:true },
+					f_legende      : { required:true },
+ 					f_cases_nb     : { required:true },
 					f_cases_larg   : { required:true },
-					f_cases_haut   : { required:true },
 					f_type         : { required:true },
 					f_coef         : { required:false },
 					f_socle        : { required:false },
@@ -263,12 +263,12 @@ $(document).ready
 				},
 				messages :
 				{
-					f_orientation : { required:"orientation manquante" },
-					f_marge_min   : { required:"marge mini manquante" },
-					f_couleur     : { required:"couleur manquante" },
+					f_orientation  : { required:"orientation manquante" },
+					f_marge_min    : { required:"marge mini manquante" },
+					f_couleur      : { required:"couleur manquante" },
+					f_legende      : { required:"légende manquante" },
 					f_cases_nb     : { required:"nombre manquant" },
 					f_cases_larg   : { required:"largeur manquante" },
-					f_cases_haut   : { required:"hauteur manquante" },
 					f_type         : { required:"type(s) manquant(s)" },
 					f_coef         : { },
 					f_socle        : { },

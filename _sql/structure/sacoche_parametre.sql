@@ -50,6 +50,16 @@ INSERT INTO sacoche_parametre VALUES
 ( "note_texte_RR"            , "RR" ),
 ( "note_texte_R"             , "R" ),
 ( "note_texte_V"             , "V" ),
-( "note_texte_VV"            , "VV" );
+( "note_texte_VV"            , "VV" ),
+( "note_legende_RR"          , "A complètement échoué." ),
+( "note_legende_R"           , "A plutôt échoué." ),
+( "note_legende_V"           , "A plutôt réussi." ),
+( "note_legende_VV"          , "A complètement réussi." ),
+( "acquis_texte_NA"          , "NA" ),
+( "acquis_texte_VA"          , "VA" ),
+( "acquis_texte_A"           , "A" ),
+( "acquis_legende_NA"        , "Non acquis." ),
+( "acquis_legende_VA"        , "Partiellement acquis." ),
+( "acquis_legende_A"         , "Acquis." );
 
 ALTER TABLE sacoche_parametre ENABLE KEYS;

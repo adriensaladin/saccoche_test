@@ -428,7 +428,7 @@ form.encadre fieldset.new{background:#CFC}
 
 #colorpicker    {height:195px;width:200px;float:left;margin-left:1em}
 div.colorpicker {height:195px;width:200px;float:left;margin-left:1em;border:1px solid #000;text-align:center}
-div.colorpicker input {text-align:center;letter-spacing:2px}
+div.colorpicker input.stretch {text-align:center;letter-spacing:2px}
 
 /**
  * Farbtastic Color Picker 1.2

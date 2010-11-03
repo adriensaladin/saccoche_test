@@ -324,7 +324,7 @@ function affich_barre_synthese_html($td_width,$tab_infos,$total)
 	foreach($tab_infos as $etat => $nb)
 	{
 		$span_width = $td_width * $nb / $total ;
-		$texte = ($span_width>30) ? $nb.' '.$etat : $nb ;
+		$texte = ($span_width>30) ? $nb.' '.$_SESSION['ACQUIS_TEXTE'][$etat] : $nb ;
 		$span .= '<span class="'.$tab_couleur[$etat].'" style="display:inline-block;width:'.$span_width.'px">'.$texte.'</span>';
 	}
 	return '<td style="padding:0;width:'.$td_width.'px" class="hc">'.$span.'</td>';
@@ -344,7 +344,7 @@ function affich_pourcentage_html($type_cellule,$tab_infos)
 	elseif($tab_infos['%']<$_SESSION['CALCUL_SEUIL']['R']) {$etat = 'r';}
 	elseif($tab_infos['%']>$_SESSION['CALCUL_SEUIL']['V']) {$etat = 'v';}
 	else                                                   {$etat = 'o';}
-	return '<'.$type_cellule.' class="hc '.$etat.'">'.$tab_infos['%'].'% acquis ('.$tab_infos['A'].'A '.$tab_infos['VA'].'VA '.$tab_infos['NA'].'NA)</'.$type_cellule.'>';
+	return '<'.$type_cellule.' class="hc '.$etat.'">'.$tab_infos['%'].'% acquis ('.$tab_infos['A'].$_SESSION['ACQUIS_TEXTE']['A'].' '.$tab_infos['VA'].$_SESSION['ACQUIS_TEXTE']['VA'].' '.$tab_infos['NA'].$_SESSION['ACQUIS_TEXTE']['NA'].')</'.$type_cellule.'>';
 }
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-

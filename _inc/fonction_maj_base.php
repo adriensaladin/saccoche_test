@@ -588,6 +588,29 @@ function maj_base($version_actuelle)
 		// y compris la mise à jour du champ "version_base" justement
 		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_actuelle.'" WHERE parametre_nom="version_base" LIMIT 1' );
 	}
+
+	//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	//	MAJ 2010-10-29 => 2010-11-03
+	//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	if($version_actuelle=='2010-10-29')
+	{
+		$version_actuelle = '2010-11-03';
+		// script pour migrer vers la version suivante : ajout de paramètres
+		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ("note_legende_RR"   , "A complètement échoué.")' );
+		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ("note_legende_R"    , "A plutôt échoué.")' );
+		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ("note_legende_V"    , "A plutôt réussi.")' );
+		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ("note_legende_VV"   , "A complètement réussi.")' );
+		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ("acquis_texte_NA"   , "NA")' );
+		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ("acquis_texte_VA"   , "VA")' );
+		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ("acquis_texte_A"    , "A")' );
+		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ("acquis_legende_NA" , "Non acquis.")' );
+		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ("acquis_legende_VA" , "Partiellement acquis.")' );
+		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ("acquis_legende_A"  , "Acquis.")' );
+		// y compris la mise à jour du champ "version_base" justement
+		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_actuelle.'" WHERE parametre_nom="version_base" LIMIT 1' );
+	}
+
 	// Log de l'action
 	ajouter_log_SACoche('Mise à jour automatique de la base '.SACOCHE_STRUCTURE_BD_NAME.'.');
 

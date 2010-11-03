@@ -44,7 +44,7 @@ $liste_eleve   = implode(',',$tab_eleve_id);
 $test_affichage_Pourcentage = ($groupe_id && count($tab_eleve_id) && $aff_socle_PA) ? true : false;
 $test_affichage_Validation  = ($groupe_id && count($tab_eleve_id) && $aff_socle_EV) ? true : false;
 
-if( $palier_id && $palier_nom && $groupe_id && count($tab_eleve_id) )
+if( $palier_id && $palier_nom )
 {
 
 	ajouter_log_PHP( $log_objet='Demande de bilan' , $log_contenu=serialize($_POST) , $log_fichier=__FILE__ , $log_ligne=__LINE__ , $only_sesamath=true );
@@ -353,7 +353,7 @@ if( $palier_id && $palier_nom && $groupe_id && count($tab_eleve_id) )
 
 	// Chemins d'enregistrement
 	$dossier      = './__tmp/export/';
-	$fichier_lien = 'grille_niveau_etabl'.$_SESSION['BASE'].'_user'.$_SESSION['USER_ID'].'_'.time();
+	$fichier_lien = 'releve_socle_etabl'.$_SESSION['BASE'].'_user'.$_SESSION['USER_ID'].'_'.time();
 	// On enregistre les sorties HTML et PDF
 	Ecrire_Fichier($dossier.$fichier_lien.'.html',$releve_html);
 	$releve_pdf->Output($dossier.$fichier_lien.'.pdf','F');
@@ -361,7 +361,7 @@ if( $palier_id && $palier_nom && $groupe_id && count($tab_eleve_id) )
 	if($_SESSION['USER_PROFIL']=='eleve')
 	{
 		echo'<ul class="puce">';
-		echo'<li><label class="alerte"><a class="lien_ext" href="'.$dossier.$fichier_lien.'.pdf">Téléchargez au format PDF l\'attestation de maîtrise du socle commun (selon les options choisies).</a></label></li>';
+		echo'<li><label class="alerte"><a class="lien_ext" href="'.$dossier.$fichier_lien.'.pdf">Télécharger le document au format PDF (imprimable).</a></label></li>';
 		echo'</ul><p />';
 		echo $releve_html;
 	}

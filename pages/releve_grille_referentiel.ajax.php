@@ -34,11 +34,11 @@ $matiere_nom   = (isset($_POST['f_matiere_nom'])) ? clean_texte($_POST['f_matier
 $niveau_nom    = (isset($_POST['f_niveau_nom']))  ? clean_texte($_POST['f_niveau_nom'])  : '';
 $remplissage   = (isset($_POST['f_remplissage'])) ? clean_texte($_POST['f_remplissage']) : '';
 $orientation   = (isset($_POST['f_orientation'])) ? clean_texte($_POST['f_orientation']) : '';
-$marge_min     = (isset($_POST['f_marge_min']))   ? clean_texte($_POST['f_marge_min'])   : '';
 $couleur       = (isset($_POST['f_couleur']))     ? clean_texte($_POST['f_couleur'])     : '';
+$legende       = (isset($_POST['f_legende']))     ? clean_texte($_POST['f_legende'])     : '';
+$marge_min     = (isset($_POST['f_marge_min']))   ? clean_texte($_POST['f_marge_min'])   : '';
 $cases_nb      = (isset($_POST['f_cases_nb']))    ? clean_entier($_POST['f_cases_nb'])   : 0;
 $cases_largeur = (isset($_POST['f_cases_larg']))  ? clean_entier($_POST['f_cases_larg']) : 0;
-$cases_hauteur = (isset($_POST['f_cases_haut']))  ? clean_entier($_POST['f_cases_haut']) : 0;
 $only_socle    = (isset($_POST['f_restriction'])) ? 1                                    : 0;
 $aff_coef      = (isset($_POST['f_coef']))        ? 1                                    : 0;
 $aff_socle     = (isset($_POST['f_socle']))       ? 1                                    : 0;
@@ -46,12 +46,12 @@ $aff_lien      = (isset($_POST['f_lien']))        ? 1                           
 $groupe_id     = (isset($_POST['f_groupe']))      ? clean_entier($_POST['f_groupe'])     : 0;	// en cas de manipulation type Firebug, peut être forcé pour l'élève à $_SESSION['ELEVE_CLASSE_ID']
 $tab_eleve_id  = (isset($_POST['eleves']))        ? array_map('clean_entier',explode(',',$_POST['eleves'])) : array() ;	// en cas de manipulation type Firebug, peut être forcé pour l'élève avec $_SESSION['USER_ID']
 
-save_cookie_select($_SESSION['BASE'],$_SESSION['USER_ID']);
+save_cookie_select('grille_referentiel');
 
 $tab_eleve_id  = array_filter($tab_eleve_id,'positif');
 $liste_eleve   = implode(',',$tab_eleve_id);
 
-if( $matiere_id && $niveau_id && $matiere_nom && $niveau_nom && $remplissage && $orientation && $marge_min && $couleur && $cases_nb && $cases_largeur && $cases_hauteur )
+if( $matiere_id && $niveau_id && $matiere_nom && $niveau_nom && $remplissage && $orientation && $couleur && $legende && $marge_min && $cases_nb && $cases_largeur )
 {
 
 	ajouter_log_PHP( $log_objet='Demande de bilan' , $log_contenu=serialize($_POST) , $log_fichier=__FILE__ , $log_ligne=__LINE__ , $only_sesamath=true );
@@ -66,6 +66,7 @@ if( $matiere_id && $niveau_id && $matiere_nom && $niveau_nom && $remplissage && 
 	//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 	// Récupération de la liste des items pour la matière et le niveau sélectionné
 	//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+	$lignes_nb = 0;
 	$DB_TAB = DB_STRUCTURE_recuperer_arborescence($prof_id=0,$matiere_id,$niveau_id,$only_socle,$only_item=false,$socle_nom=false);
 	if(count($DB_TAB))
 	{
@@ -79,6 +80,7 @@ if( $matiere_id && $niveau_id && $matiere_nom && $niveau_nom && $remplissage && 
 				$domaine_id  = $DB_ROW['domaine_id'];
 				$domaine_ref = $DB_ROW['niveau_ref'].'.'.$DB_ROW['domaine_ref'];
 				$tab_domaine[$domaine_id] = array('domaine_ref'=>$domaine_ref,'domaine_nom'=>$DB_ROW['domaine_nom'],'domaine_nb_lignes'=>2);
+				$lignes_nb++;
 			}
 			if( (!is_null($DB_ROW['theme_id'])) && ($DB_ROW['theme_id']!=$theme_id) )
 			{
@@ -86,6 +88,7 @@ if( $matiere_id && $niveau_id && $matiere_nom && $niveau_nom && $remplissage && 
 				$theme_ref = $DB_ROW['niveau_ref'].'.'.$DB_ROW['domaine_ref'].$DB_ROW['theme_ordre'];
 				$first_theme_of_domaine = (isset($tab_theme[$domaine_id])) ? false : true ;
 				$tab_theme[$domaine_id][$theme_id] = array('theme_ref'=>$theme_ref,'theme_nom'=>$DB_ROW['theme_nom'],'theme_nb_lignes'=>1);
+				$lignes_nb++;
 			}
 			if( (!is_null($DB_ROW['item_id'])) && ($DB_ROW['item_id']!=$item_id) )
 			{
@@ -98,6 +101,7 @@ if( $matiere_id && $niveau_id && $matiere_nom && $niveau_nom && $remplissage && 
 					$tab_domaine[$domaine_id]['domaine_nb_lignes']++;
 				}
 				$tab_liste_item[] = $item_id;
+				$lignes_nb++;
 			}
 		}
 	}
@@ -152,7 +156,7 @@ if( $matiere_id && $niveau_id && $matiere_nom && $niveau_nom && $remplissage && 
 	}
 
 	//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-	// Elaboration de la grille de compétences, en HTML et PDF
+	// Elaboration de la grille d'items d'un référentiel, en HTML et PDF
 	//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
 	// Initialiser au cas où $aff_coef / $aff_socle / $aff_lien sont à 0
@@ -160,41 +164,41 @@ if( $matiere_id && $niveau_id && $matiere_nom && $niveau_nom && $remplissage && 
 	$texte_socle      = '';
 	$texte_lien_avant = '';
 	$texte_lien_apres = '';
-	// Les variables $releve_html et $releve_pdf vont contenir les sorties
+	// Les variables $releve_HTML et $releve_PDF vont contenir les sorties
 	$only_socle = ($only_socle) ? ' - Socle uniquement' : '' ;
-	$releve_html  = '<style type="text/css">'.$_SESSION['CSS'].'</style>';
-	$releve_html .= '<h1>Grille de compétences</h1>';
-	$releve_html .= '<h2>'.html($matiere_nom.' - Niveau '.$niveau_nom.$only_socle).'</h2>';
+	$releve_HTML  = '<style type="text/css">'.$_SESSION['CSS'].'</style>';
+	$releve_HTML .= '<h1>Grille d\'items d\'un référentiel</h1>';
+	$releve_HTML .= '<h2>'.html($matiere_nom.' - Niveau '.$niveau_nom.$only_socle).'</h2>';
 	// Appel de la classe et définition de qqs variables supplémentaires pour la mise en page PDF
 	require('./_fpdf/fpdf.php');
 	require('./_inc/class.PDF.php');
-	$releve_pdf = new PDF($orientation,$marge_min,$couleur);
-	$releve_pdf->grille_niveau_initialiser($cases_nb,$cases_largeur,$cases_hauteur);
+	$releve_PDF = new PDF($orientation,$marge_min,$couleur,$legende);
+	$releve_PDF->grille_referentiel_initialiser($cases_nb,$cases_largeur,$lignes_nb);
 
 	// Pour chaque élève...
 	foreach($tab_eleve as $tab)
 	{
 		extract($tab);	// $eleve_id $eleve_nom $eleve_prenom
 		// On met le document au nom de l'élève, ou on établit un document générique
-		$releve_pdf->grille_niveau_entete($matiere_nom,$niveau_nom,$eleve_id,$eleve_nom,$eleve_prenom);
-		$releve_html .= ($eleve_id) ? '<hr /><h2>'.html($eleve_nom).' '.html($eleve_prenom).'</h2>' : '<hr /><h2>Grille générique</h2>' ;
-		$releve_html .= '<table class="bilan">';
+		$releve_PDF->grille_referentiel_entete($matiere_nom,$niveau_nom,$eleve_id,$eleve_nom,$eleve_prenom);
+		$releve_HTML .= ($eleve_id) ? '<hr /><h2>'.html($eleve_nom).' '.html($eleve_prenom).'</h2>' : '<hr /><h2>Grille générique</h2>' ;
+		$releve_HTML .= '<table class="bilan">';
 		// Pour chaque domaine...
 		if(count($tab_domaine))
 		{
 			foreach($tab_domaine as $domaine_id => $tab)
 			{
 				extract($tab);	// $domaine_ref $domaine_nom $domaine_nb_lignes
-				$releve_html .= '<tr><th colspan="2" class="domaine">'.html($domaine_nom).'</th><th colspan="'.$cases_nb.'" class="nu"></th></tr>'."\r\n";
-				$releve_pdf->grille_niveau_domaine($domaine_nom,$domaine_nb_lignes);
+				$releve_HTML .= '<tr><th colspan="2" class="domaine">'.html($domaine_nom).'</th><th colspan="'.$cases_nb.'" class="nu"></th></tr>'."\r\n";
+				$releve_PDF->grille_referentiel_domaine($domaine_nom,$domaine_nb_lignes);
 				// Pour chaque thème...
 				if(isset($tab_theme[$domaine_id]))
 				{
 					foreach($tab_theme[$domaine_id] as $theme_id => $tab)
 					{
 						extract($tab);	// $theme_ref $theme_nom $theme_nb_lignes
-						$releve_html .= '<tr><th>'.$theme_ref.'</th><th>'.html($theme_nom).'</th><th colspan="'.$cases_nb.'" class="nu"></th></tr>'."\r\n";
-						$releve_pdf->grille_niveau_theme($theme_ref,$theme_nom,$theme_nb_lignes);
+						$releve_HTML .= '<tr><th>'.$theme_ref.'</th><th>'.html($theme_nom).'</th><th colspan="'.$cases_nb.'" class="nu"></th></tr>'."\r\n";
+						$releve_PDF->grille_referentiel_theme($theme_ref,$theme_nom,$theme_nb_lignes);
 						// Pour chaque item...
 						if(isset($tab_item[$theme_id]))
 						{
@@ -214,8 +218,8 @@ if( $matiere_id && $niveau_id && $matiere_nom && $niveau_nom && $remplissage && 
 									$texte_lien_avant = ($item_lien) ? '<a class="lien_ext" href="'.html($item_lien).'">' : '';
 									$texte_lien_apres = ($item_lien) ? '</a>' : '';
 								}
-								$releve_html .= '<tr><td>'.$item_ref.'</td><td>'.$texte_coef.$texte_socle.$texte_lien_avant.html($item_nom).$texte_lien_apres.'</td>';
-								$releve_pdf->grille_niveau_competence($item_ref,$texte_coef.$texte_socle.$item_nom);
+								$releve_HTML .= '<tr><td>'.$item_ref.'</td><td>'.$texte_coef.$texte_socle.$texte_lien_avant.html($item_nom).$texte_lien_apres.'</td>';
+								$releve_PDF->grille_referentiel_item($item_ref,$texte_coef.$texte_socle.$item_nom);
 								// Pour chaque case...
 								for($i=0;$i<$cases_nb;$i++)
 								{
@@ -229,39 +233,42 @@ if( $matiere_id && $niveau_id && $matiere_nom && $niveau_nom && $remplissage && 
 									}
 									if($remplissage=='plein')
 									{
-										$releve_html .= '<td>'.affich_note_html($note,$date,$info,false).'</td>';
-										$releve_pdf->afficher_note_lomer($note);
-										$releve_pdf->Cell($cases_largeur , $cases_hauteur , '' , 1 , floor(($i+1)/$cases_nb) , 'C' , false , '');
+										$releve_HTML .= '<td>'.affich_note_html($note,$date,$info,false).'</td>';
+										$releve_PDF->afficher_note_lomer($note,$border=1,$br=floor(($i+1)/$cases_nb));
 									}
 									else
 									{
-										$releve_html .= '<td>&nbsp;</td>';
-										$releve_pdf->Cell($cases_largeur , $cases_hauteur , '' , 1 , floor(($i+1)/$cases_nb) , 'C' , true , '');
+										$releve_HTML .= '<td>&nbsp;</td>';
+										$releve_PDF->Cell($cases_largeur , $cases_hauteur , '' , 1 , floor(($i+1)/$cases_nb) , 'C' , true , '');
 									}
 								}
-								$releve_html .= '</tr>'."\r\n";
+								$releve_HTML .= '</tr>'."\r\n";
 							}
 						}
 					}
 				}
 			}
 		}
-		$releve_html .= '</table><p />';
+		if($legende=='oui')
+		{
+			$releve_PDF->grille_referentiel_legende();
+		}
+		$releve_HTML .= '</table><p />';
 	}
 
 	// Chemins d'enregistrement
 	$dossier      = './__tmp/export/';
-	$fichier_lien = 'grille_niveau_etabl'.$_SESSION['BASE'].'_user'.$_SESSION['USER_ID'].'_'.time();
+	$fichier_lien = 'releve_grille_etabl'.$_SESSION['BASE'].'_user'.$_SESSION['USER_ID'].'_'.time();
 	// On enregistre les sorties HTML et PDF
-	Ecrire_Fichier($dossier.$fichier_lien.'.html',$releve_html);
-	$releve_pdf->Output($dossier.$fichier_lien.'.pdf','F');
+	Ecrire_Fichier($dossier.$fichier_lien.'.html',$releve_HTML);
+	$releve_PDF->Output($dossier.$fichier_lien.'.pdf','F');
 	// Affichage du résultat
 	if($_SESSION['USER_PROFIL']=='eleve')
 	{
 		echo'<ul class="puce">';
-		echo'<li><label class="alerte"><a class="lien_ext" href="'.$dossier.$fichier_lien.'.pdf">Téléchargez au format PDF le fichier généré avec la grille de compétences (selon les options choisies).</a></label></li>';
+		echo'<li><label class="alerte"><a class="lien_ext" href="'.$dossier.$fichier_lien.'.pdf">Télécharger la grille au format PDF (imprimable).</a></label></li>';
 		echo'</ul><p />';
-		echo $releve_html;
+		echo $releve_HTML;
 	}
 	else
 	{

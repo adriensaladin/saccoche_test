@@ -224,22 +224,24 @@ if(count($tab_id_classe_groupe))
 
 <?php
 // Fabrication des éléments select du formulaire
-$tab_cookie = load_cookie_select($_SESSION['BASE'],$_SESSION['USER_ID']);
-$select_orientation = afficher_select($tab_select_orientation , $select_nom='f_orientation' , $option_first='non' , $selection=$tab_cookie['orientation'] , $optgroup='non');
-$select_marge_min   = afficher_select($tab_select_marge_min   , $select_nom='f_marge_min'   , $option_first='non' , $selection=$tab_cookie['marge_min']   , $optgroup='non');
-$select_couleur     = afficher_select($tab_select_couleur     , $select_nom='f_couleur'     , $option_first='non' , $selection=$tab_cookie['couleur']     , $optgroup='non');
+$tab_cookie = load_cookie_select('cartouche');
+$select_cart_contenu = afficher_select($tab_select_cart_contenu , $select_nom='f_contenu'     , $option_first='non' , $selection=$tab_cookie['cart_contenu'] , $optgroup='non');
+$select_cart_detail  = afficher_select($tab_select_cart_detail  , $select_nom='f_detail'      , $option_first='non' , $selection=$tab_cookie['cart_detail']  , $optgroup='non');
+$select_orientation  = afficher_select($tab_select_orientation  , $select_nom='f_orientation' , $option_first='non' , $selection=$tab_cookie['orientation']  , $optgroup='non');
+$select_couleur      = afficher_select($tab_select_couleur      , $select_nom='f_couleur'     , $option_first='non' , $selection=$tab_cookie['couleur']      , $optgroup='non');
+$select_marge_min    = afficher_select($tab_select_marge_min    , $select_nom='f_marge_min'   , $option_first='non' , $selection=$tab_cookie['marge_min']    , $optgroup='non');
 ?>
 
 <form action="" id="zone_imprimer" class="hide"><fieldset>
 	<p class="hc"><b id="titre_imprimer"></b><br /><button id="fermer_zone_imprimer" type="button"><img alt="" src="./_img/bouton/retourner.png" /> Retour</button></p>
-	<label class="tab" for="f_contenu">Remplissage :</label><select id="f_contenu" name="f_contenu"><option value="SANS_nom_SANS_result">cartouche SANS les noms d'élèves et SANS les résultats</option><option value="AVEC_nom_SANS_result">cartouche AVEC les noms d'élèves mais SANS les résultats</option><option value="AVEC_nom_AVEC_result">cartouche AVEC les noms d'élèves et AVEC les résultats (si saisis)</option></select><br />
-	<label class="tab" for="f_detail">Détail :</label><select id="f_detail" name="f_detail"><option value="complet">cartouche avec la dénomination complète de chaque item</option><option value="minimal">cartouche minimal avec uniquement les références des items</option></select><br />
+	<label class="tab" for="f_contenu">Remplissage :</label><?php echo $select_cart_contenu ?><br />
+	<label class="tab" for="f_detail">Détail :</label><?php echo $select_cart_detail ?><br />
 	<div class="toggle">
 		<span class="tab"></span><a href="#" class="puce_plus toggle">Afficher plus d'options</a>
 	</div>
 	<div class="toggle hide">
 		<span class="tab"></span><a href="#" class="puce_moins toggle">Afficher moins d'options</a><br />
-		<label class="tab" for="f_orientation">Orientation :</label><?php echo $select_orientation ?> en <?php echo $select_couleur ?> avec marges minimales de <?php echo $select_marge_min ?><br />
+		<label class="tab" for="f_orientation">Orientation :</label><?php echo $select_orientation ?> <?php echo $select_couleur ?> avec marges minimales de <?php echo $select_marge_min ?><br />
 	</div>
 	<span class="tab"></span><button id="f_submit_imprimer" type="button" value="'.$ref.'"><img alt="" src="./_img/bouton/valider.png" /> Générer le cartouche</button><label id="msg_imprimer">&nbsp;</label>
 	<p id="zone_imprimer_retour"></p>

@@ -27,13 +27,13 @@
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = "Synthèse pluridisciplinaire";
-$VERSION_JS_FILE += 0;
+$VERSION_JS_FILE += 1;
 ?>
 
 <?php
 // Fabrication des éléments select du formulaire
 // L'élève ne choisit évidemment pas sa classe ni nom nom, mais on construit qd même les formulaires, on les remplit et on les cache (permet un code unique et une transmission des infos en ajax comme pour les autres profils).
-$tab_cookie = load_cookie_select($_SESSION['BASE'],$_SESSION['USER_ID']);
+$tab_cookie = load_cookie_select('releve_synthese');
 if($_SESSION['USER_PROFIL']=='directeur')
 {
 	$tab_groupes = DB_STRUCTURE_OPT_classes_groupes_etabl();
@@ -60,6 +60,7 @@ $tab_periodes = DB_STRUCTURE_OPT_periodes_etabl();
 $select_groupe  = afficher_select($tab_groupes        , $select_nom='f_groupe'  , $option_first=$of_g , $selection=$sel_g                 , $optgroup='oui'); // optgroup à oui y compris pour les élèves (formulaire invisible) car recherche du type de groupe dans le js
 $select_periode = afficher_select($tab_periodes       , $select_nom='f_periode' , $option_first='val' , $selection=false                  , $optgroup='non');
 $select_couleur = afficher_select($tab_select_couleur , $select_nom='f_couleur' , $option_first='non' , $selection=$tab_cookie['couleur'] , $optgroup='non');
+$select_legende = afficher_select($tab_select_legende , $select_nom='f_legende' , $option_first='non' , $selection=$tab_cookie['legende'] , $optgroup='non');
 
 // Dates par défaut de début et de fin
 $annee_debut = (date('n')>8) ? date('Y') : date('Y')-1 ;
@@ -138,7 +139,7 @@ echo ($nb_inconnu) ? '<label class="alerte">Il y a '.$nb_inconnu.' référentiel
 			<label class="tab" for="f_opt_html"><img alt="" src="./_img/bulle_aide.png" title="Pour le format html, le détail des items peut être affiché." /> Indications :</label><label for="f_coef"><input type="checkbox" id="f_coef" name="f_coef" value="1" /> Coefficients</label>&nbsp;&nbsp;&nbsp;<label for="f_socle"><input type="checkbox" id="f_socle" name="f_socle" value="1" checked="checked" /> Socle</label>&nbsp;&nbsp;&nbsp;<label for="f_lien"><input type="checkbox" id="f_lien" name="f_lien" value="1"<?php echo $check_option_lien ?> /> Liens de remédiation</label><br />
 			<label class="tab" for="f_restriction">Restrictions :</label><input type="checkbox" id="f_restriction_socle" name="f_restriction_socle" value="1" /> <label for="f_restriction_socle">Utiliser uniquement les items liés du socle</label><br />
 			<label class="tab"></label><input type="checkbox" id="f_restriction_niveau" name="f_restriction_niveau" value="1" /> <label for="f_restriction_niveau">Utiliser uniquement les items du niveau <em id="niveau_nom"></em><input type="hidden" id="f_niveau" name="f_niveau" value="" /></label><br />
-			<label class="tab" for="f_orientation"><img alt="" src="./_img/bulle_aide.png" title="Pour le format pdf." /> Impression :</label>En <?php echo $select_couleur ?>
+			<label class="tab" for="f_impression"><img alt="" src="./_img/bulle_aide.png" title="Pour le format pdf." /> Impression :</label><?php echo $select_couleur ?> <?php echo $select_legende ?>
 		</div>
 	</div>
 	<p>

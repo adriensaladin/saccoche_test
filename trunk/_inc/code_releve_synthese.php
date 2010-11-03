@@ -129,56 +129,56 @@ foreach($tab_eleve as $key => $tab)
 //	Elaboration de la synthèse matière ou multi-matières, en HTML et PDF
 //	////////////////////////////////////////////////////////////////////////////////////////////////////
 
-$releve_html  = '<style type="text/css">'.$_SESSION['CSS'].'</style>';
-$releve_html .= '<h1>Synthèse '.$tab_titre[$format].'</h1>';
-$releve_html .= '<h2>'.html($texte_periode).'</h2>';
-// Appel de la classe et définition de qqs variables supplémentaires pour la mise en page PDF
-$releve_pdf = new PDF($orientation='portrait',$marge_min=7,$couleur);
-$releve_pdf->bilan_synthese_matiere_initialiser($format,$nb_syntheses_total,$eleve_nb);
+// Préparatifs
+$releve_HTML  = '<style type="text/css">'.$_SESSION['CSS'].'</style>';
+$releve_HTML .= '<h1>Synthèse '.$tab_titre[$format].'</h1>';
+$releve_HTML .= '<h2>'.html($texte_periode).'</h2>';
+$releve_PDF = new PDF($orientation='portrait',$marge_min=7,$couleur,$legende);
+$releve_PDF->bilan_synthese_initialiser($format,$nb_syntheses_total,$eleve_nb);
 // Pour chaque élève...
 foreach($tab_eleve as $tab)
 {
 	extract($tab);	// $eleve_id $eleve_nom $eleve_prenom $eleve_id_gepi $nb_matieres $nb_syntheses
+	$releve_PDF->bilan_synthese_entete($format,$nb_matieres,$nb_syntheses,$tab_titre[$format],$texte_periode,$groupe_nom,$eleve_nom,$eleve_prenom);
+	// Intitulé
+	$releve_HTML .= '<hr class="breakafter" /><h2>'.html($groupe_nom).' - '.html($eleve_nom).' '.html($eleve_prenom).'</h2>';
 	// Si cet élève a été évalué...
-	if(isset($tab_eval[$eleve_id]))
+	if(isset($tab_infos_acquis_eleve[$eleve_id]))
 	{
-		// Indiquer le nombre de rubriques pour que tout tienne automatiquement sur une seule page.
-		$releve_pdf->bilan_synthese_entete($format,$nb_matieres,$nb_syntheses,$tab_titre[$format],$texte_periode,$groupe_nom,$eleve_nom,$eleve_prenom);
-		// Intitulé
-		$releve_html .= '<hr class="breakafter" /><h2>'.html($groupe_nom).' - '.html($eleve_nom).' '.html($eleve_prenom).'</h2>';
 		// On passe en revue les matières...
-		if(isset($tab_infos_acquis_eleve[$eleve_id]))
+		foreach($tab_infos_acquis_eleve[$eleve_id] as $matiere_id => $tab_infos_matiere)
 		{
-			foreach($tab_infos_acquis_eleve[$eleve_id] as $matiere_id => $tab_infos_matiere)
+			$tab_infos_matiere['total'] = array_filter($tab_infos_matiere['total'],'non_zero'); // Retirer les valeurs nulles
+			$total = array_sum($tab_infos_matiere['total']) ; // La somme ne peut être nulle, sinon la matière ne se serait pas affichée
+			$releve_PDF->bilan_synthese_ligne_matiere($format,$tab_matiere[$matiere_id],$tab_infos_matiere['total'],$total);
+			$releve_HTML .= '<table class="bilan" style="width:900px"><tbody>';
+			$releve_HTML .= '<tr><th style="width:540px">'.html($tab_matiere[$matiere_id]).'</th>'.affich_barre_synthese_html($width=360,$tab_infos_matiere['total'],$total).'</tr>';
+			$releve_HTML .= '</tbody></table>'; // Utilisation de 2 tableaux sinon bugs constatés lors de l'affichage des détails...
+			$releve_HTML .= '<table class="bilan" style="width:900px"><tbody>';
+			//  On passe en revue les synthèses...
+			unset($tab_infos_matiere['total']);
+			foreach($tab_infos_matiere as $synthese_ref => $tab_infos_synthese)
 			{
-				$tab_infos_matiere['total'] = array_filter($tab_infos_matiere['total'],'non_zero'); // Retirer les valeurs nulles
-				$total = array_sum($tab_infos_matiere['total']) ; // La somme ne peut être nulle, sinon la matière ne se serait pas affichée
-				$releve_pdf->bilan_synthese_matiere($format,$tab_matiere[$matiere_id],$tab_infos_matiere['total'],$total);
-				$releve_html .= '<table class="bilan" style="width:900px"><tbody>';
-				$releve_html .= '<tr><th style="width:540px">'.html($tab_matiere[$matiere_id]).'</th>'.affich_barre_synthese_html($width=360,$tab_infos_matiere['total'],$total).'</tr>';
-				$releve_html .= '</tbody></table>'; // Utilisation de 2 tableaux sinon bugs constatés lors de l'affichage des détails...
-				$releve_html .= '<table class="bilan" style="width:900px"><tbody>';
-				//  On passe en revue les synthèses...
-				unset($tab_infos_matiere['total']);
-				foreach($tab_infos_matiere as $synthese_ref => $tab_infos_synthese)
-				{
-					$tab_infos_synthese = array_filter($tab_infos_synthese,'non_zero'); // Retirer les valeurs nulles
-					$total = array_sum($tab_infos_synthese) ; // La somme ne peut être nulle, sinon la matière ne se serait pas affichée
-					$releve_pdf->bilan_synthese_synthese($tab_synthese[$synthese_ref],$tab_infos_synthese,$total);
-					$releve_html .= '<tr>'.affich_barre_synthese_html($width=180,$tab_infos_synthese,$total).'<td style="width:720px">';
-					$releve_html .= '<a href="#" lang="'.$synthese_ref.'_'.$eleve_id.'"><img src="./_img/toggle_plus.gif" alt="" title="Voir / masquer le détail des items associés." class="toggle" /></a> ';
-					$releve_html .= html($tab_synthese[$synthese_ref]);
-					$releve_html .= '<div id="'.$synthese_ref.'_'.$eleve_id.'" class="hide">'.implode('<br />',$tab_infos_detail_synthese[$eleve_id][$synthese_ref]).'</div>';
-					$releve_html .= '</td></tr>';
-				}
-				$releve_html .= '</tbody></table>';
-				$releve_html .= '<p />';
+				$tab_infos_synthese = array_filter($tab_infos_synthese,'non_zero'); // Retirer les valeurs nulles
+				$total = array_sum($tab_infos_synthese) ; // La somme ne peut être nulle (sinon la matière ne se serait pas affichée)
+				$releve_PDF->bilan_synthese_ligne_synthese($tab_synthese[$synthese_ref],$tab_infos_synthese,$total);
+				$releve_HTML .= '<tr>'.affich_barre_synthese_html($width=180,$tab_infos_synthese,$total).'<td style="width:720px">';
+				$releve_HTML .= '<a href="#" lang="'.$synthese_ref.'_'.$eleve_id.'"><img src="./_img/toggle_plus.gif" alt="" title="Voir / masquer le détail des items associés." class="toggle" /></a> ';
+				$releve_HTML .= html($tab_synthese[$synthese_ref]);
+				$releve_HTML .= '<div id="'.$synthese_ref.'_'.$eleve_id.'" class="hide">'.implode('<br />',$tab_infos_detail_synthese[$eleve_id][$synthese_ref]).'</div>';
+				$releve_HTML .= '</td></tr>';
 			}
+			$releve_HTML .= '</tbody></table>';
+			$releve_HTML .= '<p />';
+		}
+		if($legende=='oui')
+		{
+			$releve_PDF->bilan_synthese_legende($format);
 		}
 	}
 }
 // On enregistre les sorties HTML et PDF
-Ecrire_Fichier($dossier.$fichier_lien.'.html',$releve_html);
-$releve_pdf->Output($dossier.$fichier_lien.'.pdf','F');
+Ecrire_Fichier($dossier.$fichier_lien.'.html',$releve_HTML);
+$releve_PDF->Output($dossier.$fichier_lien.'.pdf','F');
 
 ?>

@@ -41,6 +41,8 @@ $orientation = (isset($_POST['f_orientation'])) ? clean_texte($_POST['f_orientat
 $marge_min   = (isset($_POST['f_marge_min']))   ? clean_texte($_POST['f_marge_min'])   : '';
 $couleur     = (isset($_POST['f_couleur']))     ? clean_texte($_POST['f_couleur'])     : '';
 
+save_cookie_select('cartouche');
+
 $dossier_export = './__tmp/export/';
 $fnom = 'saisie_'.$_SESSION['BASE'].'_'.$_SESSION['USER_ID'].'_'.$ref;
 
@@ -539,8 +541,7 @@ if( ($action=='voir') && $devoir_id && $groupe_id && $date && $descriptif ) // $
 		$sacoche_pdf->tableau_saisie_reference_item($item_ref.$texte_socle,$DB_ROW_COMP['item_nom']);
 		foreach($DB_TAB_USER as $DB_ROW_USER)
 		{
-			$sacoche_pdf->afficher_note_lomer( $csv_lignes_scores[$DB_ROW_COMP['item_id']][$DB_ROW_USER['user_id']] );
-			$sacoche_pdf->Cell($sacoche_pdf->cases_largeur , $sacoche_pdf->cases_hauteur , '' , 1 , 0 , 'C' , false , '');
+			$sacoche_pdf->afficher_note_lomer( $csv_lignes_scores[$DB_ROW_COMP['item_id']][$DB_ROW_USER['user_id']] , $border=1 , $br=0 );
 		}
 		$sacoche_pdf->SetXY($sacoche_pdf->marge_gauche , $sacoche_pdf->GetY()+$sacoche_pdf->cases_hauteur);
 	}
@@ -657,12 +658,10 @@ if( ($action=='voir_repart') && $devoir_id && $groupe_id && $date && $descriptif
 	$sacoche_pdf->SetXY($sacoche_pdf->marge_gauche+$sacoche_pdf->reference_largeur , $sacoche_pdf->marge_haut);
 	foreach($tab_init_quantitatif as $note=>$vide)
 	{
-		$sacoche_pdf->afficher_note_lomer($note);
-		$sacoche_pdf->Cell($sacoche_pdf->cases_largeur , $sacoche_pdf->etiquette_hauteur , '' , 1 , 0 , 'C' , false , '');
+		$sacoche_pdf->afficher_note_lomer($note,$border=1,$br=0);
 	}
 	// ligne suivantes : référence item, cases répartition quantitative
 	$sacoche_pdf->SetXY($sacoche_pdf->marge_gauche , $sacoche_pdf->marge_haut+$sacoche_pdf->etiquette_hauteur);
-	$sacoche_pdf->cases_hauteur = $sacoche_pdf->cases_hauteur_memo;
 	foreach($tab_item_id as $item_id=>$tab_infos_item)
 	{
 		$sacoche_pdf->tableau_saisie_reference_item($tab_infos_item[0],$tab_infos_item[1]);
@@ -704,8 +703,7 @@ if( ($action=='voir_repart') && $devoir_id && $groupe_id && $date && $descriptif
 	$sacoche_pdf->SetXY($sacoche_pdf->marge_gauche+$sacoche_pdf->reference_largeur , $sacoche_pdf->marge_haut);
 	foreach($tab_init_quantitatif as $note=>$vide)
 	{
-		$sacoche_pdf->afficher_note_lomer($note);
-		$sacoche_pdf->Cell($sacoche_pdf->cases_largeur , $sacoche_pdf->etiquette_hauteur , '' , 1 , 0 , 'C' , false , '');
+		$sacoche_pdf->afficher_note_lomer($note,$border=1,$br=0);
 	}
 	// ligne suivantes : référence item, cases répartition nominative
 	$sacoche_pdf->SetXY($sacoche_pdf->marge_gauche , $sacoche_pdf->marge_haut+$sacoche_pdf->etiquette_hauteur);

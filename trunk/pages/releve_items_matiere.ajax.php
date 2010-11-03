@@ -29,11 +29,11 @@ if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');
 if($_SESSION['SESAMATH_ID']==ID_DEMO) {}
 
 $orientation    = (isset($_POST['f_orientation'])) ? clean_texte($_POST['f_orientation']) : '';
-$marge_min      = (isset($_POST['f_marge_min']))   ? clean_texte($_POST['f_marge_min'])   : '';
 $couleur        = (isset($_POST['f_couleur']))     ? clean_texte($_POST['f_couleur'])     : '';
+$legende        = (isset($_POST['f_legende']))     ? clean_texte($_POST['f_legende'])     : '';
+$marge_min      = (isset($_POST['f_marge_min']))   ? clean_texte($_POST['f_marge_min'])   : '';
 $cases_nb       = (isset($_POST['f_cases_nb']))    ? clean_entier($_POST['f_cases_nb'])   : 0;
 $cases_largeur  = (isset($_POST['f_cases_larg']))  ? clean_entier($_POST['f_cases_larg']) : 0;
-$cases_hauteur  = (isset($_POST['f_cases_haut']))  ? clean_entier($_POST['f_cases_haut']) : 0;
 $periode_id     = (isset($_POST['f_periode']))     ? clean_entier($_POST['f_periode'])    : 0;
 $date_debut     = (isset($_POST['f_date_debut']))  ? clean_texte($_POST['f_date_debut'])  : '';
 $date_fin       = (isset($_POST['f_date_fin']))    ? clean_texte($_POST['f_date_fin'])    : '';
@@ -53,12 +53,12 @@ $tab_eleve      = (isset($_POST['eleves']))        ? array_map('clean_entier',ex
 $tab_type       = (isset($_POST['types']))         ? array_map('clean_texte',explode(',',$_POST['types']))   : array() ;	// en cas de manipulation type Firebug, peut être forcé pour l'élève à 'individuel'
 $format         = 'matiere';
 
-save_cookie_select($_SESSION['BASE'],$_SESSION['USER_ID']);
+save_cookie_select('releve_items');
 
 $tab_eleve     = array_filter($tab_eleve,'positif');
 $liste_eleve   = implode(',',$tab_eleve);
 
-if( $orientation && $marge_min && $couleur && $cases_nb && $cases_largeur && $cases_hauteur && ( $periode_id || ($date_debut && $date_fin) ) && $retroactif && $matiere_id && $matiere_nom && $groupe_id && $groupe_nom && count($tab_eleve) && count($tab_type) )
+if( $orientation && $couleur && $legende && $marge_min && $cases_nb && $cases_largeur && ( $periode_id || ($date_debut && $date_fin) ) && $retroactif && $matiere_id && $matiere_nom && $groupe_id && $groupe_nom && count($tab_eleve) && count($tab_type) )
 {
 
 	ajouter_log_PHP( $log_objet='Demande de bilan' , $log_contenu=serialize($_POST) , $log_fichier=__FILE__ , $log_ligne=__LINE__ , $only_sesamath=true );
@@ -143,9 +143,9 @@ if( $orientation && $marge_min && $couleur && $cases_nb && $cases_largeur && $ca
 	if($_SESSION['USER_PROFIL']=='eleve')
 	{
 		echo'<ul class="puce">';
-		echo'<li><label class="alerte"><a class="lien_ext" href="'.$dossier.$fichier_lien.'_individuel.pdf">Téléchargez le relevé individuel au format PDF (imprimable).</a></label></li>';
+		echo'<li><label class="alerte"><a class="lien_ext" href="'.$dossier.$fichier_lien.'_individuel.pdf">Télécharger le bilan d\'items au format PDF (imprimable).</a></label></li>';
 		echo'</ul><p />';
-		echo $releve_html_individuel;
+		echo $releve_HTML_individuel;
 	}
 	else
 	{

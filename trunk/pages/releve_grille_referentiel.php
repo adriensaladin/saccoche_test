@@ -27,13 +27,13 @@
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = "Grille d'items d'un référentiel";
-$VERSION_JS_FILE += 1;
+$VERSION_JS_FILE += 2;
 ?>
 
 <?php
 // Fabrication des éléments select du formulaire
 // L'élève ne choisit évidemment pas sa classe ni nom nom, mais on construit qd même les formulaires, on les remplit et on les cache (permet un code unique et une transmission des infos en ajax comme pour les autres profils).
-$tab_cookie = load_cookie_select($_SESSION['BASE'],$_SESSION['USER_ID']);
+$tab_cookie = load_cookie_select('grille_referentiel');
 if($_SESSION['USER_PROFIL']=='directeur')
 {
 	$tab_matieres = DB_STRUCTURE_OPT_matieres_etabl($_SESSION['MATIERES'],$transversal=true);
@@ -68,9 +68,9 @@ $select_groupe      = afficher_select($tab_groupes            , $select_nom='f_g
 $select_orientation = afficher_select($tab_select_orientation , $select_nom='f_orientation' , $option_first='non' , $selection=$tab_cookie['orientation']   , $optgroup='non');
 $select_marge_min   = afficher_select($tab_select_marge_min   , $select_nom='f_marge_min'   , $option_first='non' , $selection=$tab_cookie['marge_min']     , $optgroup='non');
 $select_couleur     = afficher_select($tab_select_couleur     , $select_nom='f_couleur'     , $option_first='non' , $selection=$tab_cookie['couleur']       , $optgroup='non');
+$select_legende     = afficher_select($tab_select_legende     , $select_nom='f_legende'     , $option_first='non' , $selection=$tab_cookie['legende']       , $optgroup='non');
 $select_cases_nb    = afficher_select($tab_select_cases_nb    , $select_nom='f_cases_nb'    , $option_first='non' , $selection=$tab_cookie['cases_nb']      , $optgroup='non');
 $select_cases_larg  = afficher_select($tab_select_cases_size  , $select_nom='f_cases_larg'  , $option_first='non' , $selection=$tab_cookie['cases_largeur'] , $optgroup='non');
-$select_cases_haut  = afficher_select($tab_select_cases_size  , $select_nom='f_cases_haut'  , $option_first='non' , $selection=$tab_cookie['cases_hauteur'] , $optgroup='non');
 $select_remplissage = afficher_select($tab_select_remplissage , $select_nom='f_remplissage' , $option_first='non' , $selection='plein'                      , $optgroup='non');
 ?>
 
@@ -95,9 +95,8 @@ $select_remplissage = afficher_select($tab_select_remplissage , $select_nom='f_r
 		<span class="tab"></span><a href="#" class="puce_moins toggle">Afficher moins d'options</a><br />
 		<label class="tab" for="f_restriction">Restriction :</label><input type="checkbox" id="f_restriction" name="f_restriction" value="1" /> <label for="f_restriction">Uniquement les items liés du socle</label><br />
 		<label class="tab" for="f_options">Indications :</label><input type="checkbox" id="f_coef" name="f_coef" value="1" /> <label for="f_coef">Coefficients</label>&nbsp;&nbsp;&nbsp;<input type="checkbox" id="f_socle" name="f_socle" value="1" checked="checked" /> <label for="f_socle">Socle</label>&nbsp;&nbsp;&nbsp;<input type="checkbox" id="f_lien" name="f_lien" value="1"<?php echo $check_option_lien ?> /> <label for="f_lien">Liens de remédiation</label><br />
-		<label class="tab" for="f_remplissage">Remplissage :</label><?php echo $select_remplissage ?><br />
-		<label class="tab" for="f_orientation">Orientation :</label><?php echo $select_orientation ?> en <?php echo $select_couleur ?> avec marges minimales de </label><?php echo $select_marge_min ?><br />
-		<label class="tab" for="f_cases_nb">Évaluations :</label><?php echo $select_cases_nb ?> de largeur <?php echo $select_cases_larg ?> et de hauteur <?php echo $select_cases_haut ?><p />
+		<label class="tab" for="f_cases_nb">Évaluations :</label><?php echo $select_cases_nb ?> de largeur <?php echo $select_cases_larg ?> <?php echo $select_remplissage ?><br />
+		<label class="tab" for="f_impression"><img alt="" src="./_img/bulle_aide.png" title="Pour le format pdf." /> Impression :</label><?php echo $select_orientation ?> <?php echo $select_couleur ?> <?php echo $select_legende ?> avec marges minimales de </label><?php echo $select_marge_min ?><p />
 	</div>
 	<span class="tab"></span><button id="bouton_valider" type="submit"><img alt="" src="./_img/bouton/generer.png" /> Générer.</button><label id="ajax_msg">&nbsp;</label><br />
 </fieldset></form>

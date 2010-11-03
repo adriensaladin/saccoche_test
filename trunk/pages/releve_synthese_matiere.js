@@ -344,7 +344,8 @@ $(document).ready
 					f_lien               : { required:false },
 					f_restriction_socle  : { required:false },
 					f_restriction_niveau : { required:false },
-					f_couleur            : { required:true }
+					f_couleur            : { required:true },
+					f_legende            : { required:true }
 				},
 				messages :
 				{
@@ -361,7 +362,8 @@ $(document).ready
 					f_lien               : { },
 					f_restriction_socle  : { },
 					f_restriction_niveau : { },
-					f_couleur            : { required:"couleur manquante" }
+					f_couleur            : { required:"couleur manquante" },
+					f_legende            : { required:"légende manquante" }
 				},
 				errorElement : "label",
 				errorClass : "erreur",

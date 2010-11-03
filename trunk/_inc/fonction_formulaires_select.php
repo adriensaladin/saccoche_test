@@ -53,12 +53,24 @@ $tab_select_orientation[] = array('valeur'=>'landscape' , 'texte'=>'Paysage (hor
 
 $tab_select_marge_min   = array();
 $tab_select_marge_min[] = array('valeur'=>5  , 'texte'=>'5 mm');
+$tab_select_marge_min[] = array('valeur'=>6  , 'texte'=>'6 mm');
+$tab_select_marge_min[] = array('valeur'=>7  , 'texte'=>'7 mm');
+$tab_select_marge_min[] = array('valeur'=>8  , 'texte'=>'8 mm');
+$tab_select_marge_min[] = array('valeur'=>9  , 'texte'=>'9 mm');
 $tab_select_marge_min[] = array('valeur'=>10 , 'texte'=>'10 mm');
+$tab_select_marge_min[] = array('valeur'=>11 , 'texte'=>'11 mm');
+$tab_select_marge_min[] = array('valeur'=>12 , 'texte'=>'12 mm');
+$tab_select_marge_min[] = array('valeur'=>13 , 'texte'=>'13 mm');
+$tab_select_marge_min[] = array('valeur'=>14 , 'texte'=>'14 mm');
 $tab_select_marge_min[] = array('valeur'=>15 , 'texte'=>'15 mm');
 
 $tab_select_couleur   = array();
-$tab_select_couleur[] = array('valeur'=>'oui' , 'texte'=>'couleur');
-$tab_select_couleur[] = array('valeur'=>'non' , 'texte'=>'noir et blanc');
+$tab_select_couleur[] = array('valeur'=>'oui' , 'texte'=>'en couleurs');
+$tab_select_couleur[] = array('valeur'=>'non' , 'texte'=>'en niveaux de gris');
+
+$tab_select_legende   = array();
+$tab_select_legende[] = array('valeur'=>'oui' , 'texte'=>'avec légende');
+$tab_select_legende[] = array('valeur'=>'non' , 'texte'=>'sans légende');
 
 $tab_select_cases_nb   = array();
 $tab_select_cases_nb[] = array('valeur'=>1  , 'texte'=>'1 case');
@@ -73,32 +85,41 @@ $tab_select_cases_nb[] = array('valeur'=>9  , 'texte'=>'9 cases');
 $tab_select_cases_nb[] = array('valeur'=>10 , 'texte'=>'10 cases');
 
 $tab_select_cases_size   = array();
-$tab_select_cases_size[] = array('valeur'=>4  , 'texte'=>'4 mm');
 $tab_select_cases_size[] = array('valeur'=>5  , 'texte'=>'5 mm');
 $tab_select_cases_size[] = array('valeur'=>6  , 'texte'=>'6 mm');
 $tab_select_cases_size[] = array('valeur'=>7  , 'texte'=>'7 mm');
 $tab_select_cases_size[] = array('valeur'=>8  , 'texte'=>'8 mm');
 $tab_select_cases_size[] = array('valeur'=>9  , 'texte'=>'9 mm');
 $tab_select_cases_size[] = array('valeur'=>10 , 'texte'=>'10 mm');
+$tab_select_cases_size[] = array('valeur'=>11 , 'texte'=>'11 mm');
 $tab_select_cases_size[] = array('valeur'=>12 , 'texte'=>'12 mm');
+$tab_select_cases_size[] = array('valeur'=>13 , 'texte'=>'13 mm');
 $tab_select_cases_size[] = array('valeur'=>14 , 'texte'=>'14 mm');
-$tab_select_cases_size[] = array('valeur'=>16 , 'texte'=>'16 mm');
+$tab_select_cases_size[] = array('valeur'=>15 , 'texte'=>'15 mm');
 
 $tab_select_remplissage   = array();
-$tab_select_remplissage[] = array('valeur'=>'vide'  , 'texte'=>'fiche vierge de tout résultat');
-$tab_select_remplissage[] = array('valeur'=>'plein' , 'texte'=>'fiche avec les notes des dernières évaluations');
+$tab_select_remplissage[] = array('valeur'=>'vide'  , 'texte'=>'sans indication des notes antérieures');
+$tab_select_remplissage[] = array('valeur'=>'plein' , 'texte'=>'avec les notes des dernières évaluations');
+
+$tab_select_cart_contenu   = array();
+$tab_select_cart_contenu[] = array('valeur'=>'SANS_nom_SANS_result' , 'texte'=>'cartouche SANS les noms d\'élèves et SANS les résultats');
+$tab_select_cart_contenu[] = array('valeur'=>'AVEC_nom_SANS_result' , 'texte'=>'cartouche AVEC les noms d\'élèves mais SANS les résultats');
+$tab_select_cart_contenu[] = array('valeur'=>'AVEC_nom_AVEC_result' , 'texte'=>'cartouche AVEC les noms d\'élèves et AVEC les résultats (si saisis)');
+
+$tab_select_cart_detail   = array();
+$tab_select_cart_detail[] = array('valeur'=>'complet' , 'texte'=>'cartouche avec la dénomination complète de chaque item');
+$tab_select_cart_detail[] = array('valeur'=>'minimal' , 'texte'=>'cartouche minimal avec uniquement les références des items');
 
 /**
  * Charger un cookie avec des options de mise en page pdf
  * 
- * @param int $structure_id
- * @param int $user_id
+ * @param string $page
  * @return array
  */
 
-function load_cookie_select($structure_id,$user_id)
+function load_cookie_select($page)
 {
-	$filename = './__tmp/cookie/etabl'.$structure_id.'_user'.$user_id.'.txt';
+	$filename = './__tmp/cookie/etabl'.$_SESSION['BASE'].'_user'.$_SESSION['USER_ID'].'_'.$page.'.txt';
 	if(is_file($filename))
 	{
 		$contenu = file_get_contents($filename);
@@ -106,23 +127,45 @@ function load_cookie_select($structure_id,$user_id)
 	}
 	else
 	{
-		return array( 'orientation'=>'portrait' , 'marge_min'=>5 ,  'couleur'=>'oui' , 'cases_nb'=>5 , 'cases_largeur'=>5 , 'cases_hauteur'=>5 );
+		switch($page)
+		{
+			case 'releve_synthese' :
+				return array( 'couleur'=>'oui' , 'legende'=>'oui' );
+			case 'releve_items' :
+				return array( 'orientation'=>'portrait' , 'couleur'=>'oui' , 'legende'=>'oui' , 'marge_min'=>5 , 'cases_nb'=>5 , 'cases_largeur'=>5 );
+			case 'grille_referentiel' :
+				return array( 'orientation'=>'portrait' , 'couleur'=>'oui' , 'legende'=>'oui' , 'marge_min'=>5 , 'cases_nb'=>3 , 'cases_largeur'=>5 );
+			case 'cartouche' :
+				return array( 'orientation'=>'portrait' , 'couleur'=>'oui' , 'marge_min'=>5 , 'cart_contenu'=>'AVEC_nom_SANS_result' , 'cart_detail'=>'complet' );
+		}
 	}
 }
 
 /**
  * Sauver un cookie avec des options de mise en page pdf
  * 
- * @param int $structure_id
- * @param int $user_id
+ * @param string $page
  * @return void
  */
 
- function save_cookie_select($structure_id,$user_id)
+ function save_cookie_select($page)
 {
-	global $orientation,$marge_min,$couleur,$cases_nb,$cases_largeur,$cases_hauteur;
-	$tab_cookie = array('orientation'=>$orientation,'marge_min'=>$marge_min,'couleur'=>$couleur,'cases_nb'=>$cases_nb,'cases_largeur'=>$cases_largeur,'cases_hauteur'=>$cases_hauteur);
-	Ecrire_Fichier('./__tmp/cookie/etabl'.$structure_id.'_user'.$user_id.'.txt',serialize($tab_cookie));
+	switch($page)
+	{
+		case 'releve_synthese' :
+			global $couleur,$legende;
+			$tab_cookie = array('couleur'=>$couleur,'legende'=>$legende);
+			break;
+		case 'releve_items' :
+		case 'grille_referentiel' :
+			global $orientation,$couleur,$legende,$marge_min,$cases_nb,$cases_largeur;
+			$tab_cookie = array('orientation'=>$orientation,'couleur'=>$couleur,'legende'=>$legende,'marge_min'=>$marge_min,'cases_nb'=>$cases_nb,'cases_largeur'=>$cases_largeur);
+			break;
+			case 'cartouche' :
+			global $orientation,$couleur,$legende,$marge_min,$contenu,$detail;
+			$tab_cookie = array('orientation'=>$orientation,'couleur'=>$couleur,'legende'=>$legende,'marge_min'=>$marge_min,'cart_contenu'=>$contenu,'cart_detail'=>$detail);
+			break;
+	}
 	/*
 		Remarque : il y a un problème de serialize avec les type float : voir http://fr2.php.net/manual/fr/function.serialize.php#85988
 		Dans ce cas il faut remplacer
@@ -130,6 +173,8 @@ function load_cookie_select($structure_id,$user_id)
 		par
 		preg_replace( '/d:([0-9]+(\.[0-9]+)?([Ee][+-]?[0-9]+)?);/e', "'d:'.(round($1,9)).';'", serialize($tab_cookie) );
 	*/
+	$filename = './__tmp/cookie/etabl'.$_SESSION['BASE'].'_user'.$_SESSION['USER_ID'].'_'.$page.'.txt';
+	Ecrire_Fichier($filename,serialize($tab_cookie));
 }
 
 /**

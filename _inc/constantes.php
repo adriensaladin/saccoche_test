@@ -33,7 +33,7 @@
 // VERSION_PROG : version des fichiers installés, à comparer avec la dernière version disponible sur le serveur communautaire
 // VERSION_BASE : version de la base associée, à comparer avec la version de la base actuellement installée
 define('VERSION_PROG', @file_get_contents('VERSION.txt') );	// Ne pas mettre de chemin ! Dans un fichier texte pour permettre un appel au serveur communautaire sans lui faire utiliser PHP.
-define('VERSION_BASE','2010-11-03');
+define('VERSION_BASE','2010-11-04');
 
 // VERSION_CSS_SCREEN / VERSION_CSS_PRINT / VERSION_JS_BIBLIO / VERSION_JS_GLOBAL / VERSION_JS_FILE
 // Pour éviter les problèmes de mise en cache (hors serveur localhost), modifier ces valeurs lors d'une mise à jour
@@ -43,7 +43,7 @@ define('VERSION_JS_BIBLIO',3);
 define('VERSION_JS_GLOBAL',35);
 $VERSION_JS_FILE = 4;	// Modifiée ensuite si besoin dans le script associé à la page
 
-// Quelques chemins... pouvant être modifiés dans un cadre particulier (installation Sésamath)
+// Quelques chemins... en variables et non constantes car pouvant être modifiés ensuite dans un cadre particulier (installation Sésamath)
 $CHEMIN_MYSQL  = './__private/mysql/';
 $CHEMIN_CONFIG = './__private/config/';
 
@@ -59,7 +59,8 @@ define('ID_DEMO',9999);
 define('ID_MATIERE_TRANSVERSALE',99);
 define('LISTING_ID_NIVEAUX_PALIERS','.1.2.3.4.');
 
-// CHARSET : "iso-8859-1" ou "utf-8" suivant l'encodage utilisé ; ajouter si besoin "AddDefaultCharset ..." dans le fichier .htaccess
+// CHARSET : "iso-8859-1" ou "utf-8" suivant l'encodage utilisé ; présence aussi d'un "AddDefaultCharset ..." dans le fichier .htaccess
+// Cependant, tout le site ayant été prévu et conçu en UTF-8, changer le CHARSET est assez hasardeux pour ne pas dire risqué...
 define('CHARSET','utf-8');
 
 // SERVEUR_ADRESSE

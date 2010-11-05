@@ -27,20 +27,58 @@
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = "Connexion serveur CAS";
+/*
+ * URL directe mono-structure           : http://adresse.com?page=public_login_CAS
+ * URL directe multi-structure publique : http://adresse.com?page=public_login_CAS&f_base=...
+ * URL directe multi-structure spéciale : http://adresse.com?page=public_login_CAS&uai=...
+ */
 ?>
 
 <?php
-$BASE = (isset($_GET['f_base'])) ? intval($_GET['f_base']) : 0;
+
+/*
+ * Dans le cadre d'une installation académique multi-structure, depuis un portail ENT où un user serait déjà connecté,
+ * il se peut qu'une connection directe ne puisse être établie qu'avec l'UAI (connu de l'ENT) en non avec le numéro de la base SACoche (inconnu de l'ENT).
+ * Dans ce cas, on récupère le numéro de la base et on rappelle la page avec, pour ne pas avoir à recommencer à chaque échange avec le serveur CAS pendant l'authentification.
+ */
+
+$UAI = (isset($_GET['uai'])) ? clean_uai($_GET['uai']) : '' ;
+
+if( (HEBERGEUR_INSTALLATION=='multi-structures') && ($UAI!='' ) )
+{
+	$DB_ROW = DB_WEBMESTRE_recuperer_structure_by_UAI($UAI);
+	if(count($DB_ROW))
+	{
+		alert_redirection_exit($texte_alert='',$adresse='index.php?page=public_login_CAS&f_base='.$DB_ROW['sacoche_base']);
+	}
+	else
+	{
+		affich_message_exit($titre='Donnée incorrecte',$contenu='Le numéro UAI transmis n\'est pas référencé sur cette installation.');
+	}
+}
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 // Préparation de la connexion au serveur CAS
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
-// En cas de multi-structures, il faut charger les paramètres de connexion du serveur CAS
-if($BASE)
+$BASE = (isset($_GET['f_base'])) ? intval($_GET['f_base']) : 0 ;
+
+// En cas de multi-structures, il faut savoir dans quelle base récupérer les informations
+
+if(HEBERGEUR_INSTALLATION=='multi-structures')
 {
-	charger_parametres_mysql_supplementaires($BASE);
+	if($BASE)
+	{
+		charger_parametres_mysql_supplementaires($BASE);
+	}
+	else
+	{
+		affich_message_exit($titre='Donnée manquante',$contenu='Paramètre indiquant la base concernée non transmis.');
+	}
 }
+
+// On charge les paramètres de connexion du serveur CAS
+
 $DB_TAB = DB_STRUCTURE_lister_parametres('"connexion_mode","cas_serveur_host","cas_serveur_port","cas_serveur_root"');
 foreach($DB_TAB as $DB_ROW)
 {

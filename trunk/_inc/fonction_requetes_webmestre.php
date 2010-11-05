@@ -42,7 +42,7 @@ function DB_WEBMESTRE_recuperer_structure($base_id)
 }
 
 /**
- * DB_WEBMESTRE_recuperer_structure_by_UAI (besoin particulier hors installation classique de SACoche)
+ * DB_WEBMESTRE_recuperer_structure_by_UAI
  * 
  * @param string uai
  * @return array

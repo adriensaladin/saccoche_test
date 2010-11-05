@@ -92,7 +92,7 @@ if( ($action=='ajouter') && isset($tab_geo[$geo_id]) && $localisation && $denomi
 	$texte.= 'Cordialement'."\r\n";
 	$texte.= WEBMESTRE_PRENOM.' '.WEBMESTRE_NOM."\r\n\r\n";
 	$courriel_bilan = true;
-//	$courriel_bilan = envoyer_webmestre_courriel($contact_courriel,'Création compte',$texte,false);
+	$courriel_bilan = envoyer_webmestre_courriel($contact_courriel,'Création compte',$texte,false);
 	if(!$courriel_bilan)
 	{
 		exit('Erreur lors de l\'envoi du courriel !');

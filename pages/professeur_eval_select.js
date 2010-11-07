@@ -252,7 +252,7 @@ $(document).ready
 					dataType : "html",
 					error : function(msg,string)
 					{
-						$('#msg_saisir').removeAttr("class").addClass("alerte").html('Echec de la connexion ! Veuillez recommencer. <button id="fermer_zone_saisir" type="button"><img alt="" src="./_img/bouton/annuler.png" /> Annuler / Retour</button>');
+						$('#msg_saisir').removeAttr("class").addClass("alerte").html('Echec de la connexion ! Veuillez recommencer. <button id="fermer_zone_saisir" type="button"><img alt="" src="./_img/bouton/retourner.png" /> Retour</button>');
 						return false;
 					},
 					success : function(responseHTML)
@@ -260,7 +260,7 @@ $(document).ready
 						maj_clock(1);
 						if(responseHTML.substring(0,1)!='<')
 						{
-							$('#msg_saisir').removeAttr("class").addClass("alerte").html(responseHTML+' <button id="fermer_zone_saisir" type="button"><img alt="" src="./_img/bouton/annuler.png" /> Annuler / Retour</button>');
+							$('#msg_saisir').removeAttr("class").addClass("alerte").html(responseHTML+' <button id="fermer_zone_saisir" type="button"><img alt="" src="./_img/bouton/retourner.png" /> Retour</button>');
 						}
 						else
 						{
@@ -853,7 +853,12 @@ $(document).ready
 							case 68: $(this).val('DISP').removeAttr("class").addClass('DISP'); break;	// D
 						}
 						$(this).parent().css("background-color","#F6D").focus();
-						modification = true;
+						if(modification==false)
+						{
+							$('#fermer_zone_saisir').html('<img alt="" src="./_img/bouton/annuler.png" /> Annuler / Retour');
+							modification = true;
+						}
+						$('#msg_saisir').removeAttr("class").html("&nbsp;");
 						// Passer à la case suivante
 						ligne++;
 						var new_id = 'C'+colonne+'L'+ligne;
@@ -960,7 +965,12 @@ $(document).ready
 				$("input#"+memo_input_id).val(valeur).removeAttr("class").addClass(valeur);
 				$(this).parent().children("img").removeAttr("class");
 				$(this).addClass("on").parent().parent().css("background-color","#F6D");
-				modification = true;
+				if(modification==false)
+				{
+					$('#fermer_zone_saisir').html('<img alt="" src="./_img/bouton/annuler.png" /> Annuler / Retour');
+					modification = true;
+				}
+				$('#msg_saisir').removeAttr("class").html("&nbsp;");
 			}
 		);
 
@@ -1002,6 +1012,12 @@ $(document).ready
 					{
 						var s = (compteur>1) ? 's' : '' ;
 						$('#msg_report').removeAttr("class").addClass("valide").html(compteur+' report'+s+' effectué'+s+'.');
+						if(modification==false)
+						{
+							$('#fermer_zone_saisir').html('<img alt="" src="./_img/bouton/annuler.png" /> Annuler / Retour');
+							modification = true;
+						}
+						$('#msg_saisir').removeAttr("class").html("&nbsp;");
 					}
 				}
 			}
@@ -1020,8 +1036,12 @@ $(document).ready
 				para_next = para_clic.next('div');
 				para_clic.before(para_next);
 				para_clic.after(para_prev);
-				modification = true;
-				$('#ajax_msg').removeAttr("class").html("&nbsp;");
+				if(modification==false)
+				{
+					$('#fermer_zone_ordonner').html('<img alt="" src="./_img/bouton/annuler.png" /> Annuler / Retour');
+					modification = true;
+					$('#ajax_msg').removeAttr("class").html("&nbsp;");
+				}
 				return false;
 			}
 		);
@@ -1034,7 +1054,7 @@ $(document).ready
 		('click',
 			function()
 			{
-				if(!modification)
+				if(modification==false)
 				{
 					$('#ajax_msg').removeAttr("class").addClass("alerte").html("Aucune modification effectuée !");
 				}
@@ -1080,6 +1100,7 @@ $(document).ready
 								{
 									modification = false;
 									$('#ajax_msg').removeAttr("class").addClass("valide").html("Ordre enregistré !");
+									$('#fermer_zone_ordonner').html('<img alt="" src="./_img/bouton/retourner.png" /> Retour');
 								}
 							}
 						}
@@ -1096,7 +1117,7 @@ $(document).ready
 		('click',
 			function()
 			{
-				if(!modification)
+				if(modification==false)
 				{
 					$('#msg_saisir').removeAttr("class").addClass("alerte").html("Aucune modification effectuée !");
 				}
@@ -1129,6 +1150,7 @@ $(document).ready
 								{
 									modification = false;
 									$('#msg_saisir').removeAttr("class").addClass("valide").html("Saisies enregistrées !");
+									$('#fermer_zone_saisir').html('<img alt="" src="./_img/bouton/retourner.png" /> Retour');
 									colorer_cellules();
 								}
 							}
@@ -1266,7 +1288,7 @@ $(document).ready
 				switch (action)
 				{
 					case 'ajouter':
-						$('table.form tbody tr td.nu').parent().remove(); // En cas de tableau avec une ligne vide pour la conformité XHTML
+						$('table.form tbody tr td[colspan]').parent().remove(); // En cas de tableau avec une ligne vide pour la conformité XHTML
 					case 'dupliquer':
 						var new_tr = '<tr class="new">'+responseHTML+'</tr>';
 						$('table.form tbody').append(new_tr);

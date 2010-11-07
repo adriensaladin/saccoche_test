@@ -248,7 +248,7 @@ $(document).ready
 				{
 					type : 'POST',
 					url : 'ajax.php?page='+PAGE,
-					data : 'f_action='+mode+'&f_ref='+ref+'&f_date='+date+'&f_info='+info+'&f_descriptif='+'Élèves sélectionnés'+':::'+info+':::'+date2,
+					data : 'f_action='+mode+'&f_ref='+ref+'&f_date='+date1+'&f_info='+info+'&f_descriptif='+'Élèves sélectionnés'+':::'+info+':::'+date2,
 					dataType : "html",
 					error : function(msg,string)
 					{

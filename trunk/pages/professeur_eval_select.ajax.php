@@ -230,7 +230,7 @@ if( ($action=='ordonner') && $devoir_id )
 	echo implode('<div class="ti"><input type="image" src="./_img/action_ordonner.png" /></div>',$tab_affich);
 	echo'<p>';
 	echo	'<button id="Enregistrer_ordre" type="button" value="'.$ref.'"><img alt="" src="./_img/bouton/valider.png" /> Enregistrer cet ordre</button>&nbsp;&nbsp;&nbsp;';
-	echo	'<button id="fermer_zone_ordonner" type="button"><img alt="" src="./_img/bouton/annuler.png" /> Annuler / Retour</button>&nbsp;&nbsp;&nbsp;';
+	echo	'<button id="fermer_zone_ordonner" type="button"><img alt="" src="./_img/bouton/retourner.png" /> Retour</button>&nbsp;&nbsp;&nbsp;';
 	echo	'<label id="ajax_msg">&nbsp;</label>';
 	echo'</p>';
 	exit();
@@ -269,7 +269,7 @@ if( ($action=='saisir') && $devoir_id && $groupe_id && $date && $descriptif ) //
 	$tab_affich[0][0].= '<label for="radio_souris"><input type="radio" id="radio_souris" name="mode_saisie" value="souris" /> <img alt="" src="./_img/pilot_mouse.png" /> Piloter à la souris</label> <img alt="" src="./_img/bulle_aide.png" title="Survoler une case du tableau avec la souris<br />puis cliquer sur une des images proposées." /><p />';
 	$tab_affich[0][0].= '<label for="check_largeur"><input type="checkbox" id="check_largeur" name="check_largeur" value="retrecir" /> <img alt="" src="./_img/retrecir.gif" /> Rétrécir les colonnes</label> <img alt="" src="./_img/bulle_aide.png" title="Rétrécir l\'affichage des colonnes<br />pour les écrans de faible largeur." /><p />';
 	$tab_affich[0][0].= '<button id="Enregistrer_saisie" type="button"><img alt="" src="./_img/bouton/valider.png" /> Enregistrer les saisies</button><input type="hidden" name="f_ref" id="f_ref" value="'.$ref.'" /><input id="f_date" name="f_date" type="hidden" value="'.$date.'" /><input id="f_info" name="f_info" type="hidden" value="'.html($info).'" /><br />';
-	$tab_affich[0][0].= '<button id="fermer_zone_saisir" type="button"><img alt="" src="./_img/bouton/annuler.png" /> Annuler / Retour</button><br />';
+	$tab_affich[0][0].= '<button id="fermer_zone_saisir" type="button"><img alt="" src="./_img/bouton/retourner.png" /> Retour</button><br />';
 	$tab_affich[0][0].= '<label id="ajax_msg">&nbsp;</label>';
 	$tab_affich[0][0].= '</td>';
 	// première ligne (noms prénoms des élèves)

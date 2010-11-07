@@ -143,7 +143,7 @@ if( $orientation && $couleur && $legende && $marge_min && $cases_nb && $cases_la
 	if($_SESSION['USER_PROFIL']=='eleve')
 	{
 		echo'<ul class="puce">';
-		echo'<li><label class="alerte"><a class="lien_ext" href="'.$dossier.$fichier_lien.'_individuel.pdf">Télécharger le bilan d\'items au format PDF (imprimable).</a></label></li>';
+		echo'<li><label class="alerte"><a class="lien_ext" href="'.$dossier.$fichier_lien.'_individuel.pdf">Archiver / Imprimer (format <em>pdf</em>).</a></label></li>';
 		echo'</ul><p />';
 		echo $releve_HTML_individuel;
 	}
@@ -152,22 +152,22 @@ if( $orientation && $couleur && $legende && $marge_min && $cases_nb && $cases_la
 		if(in_array('bulletin',$tab_type))
 		{
 			echo'<ul class="puce">';
-			echo'<li><a class="lien_ext" href="./releve-html.php?fichier='.$fichier_lien.'_bulletin">Bulletin au format HTML (tableaux triables, liens...).</a></li>';
-			echo'<li><a class="lien_ext" href="'.$dossier.$fichier_lien.'_bulletin.csv">Bulletin au format CSV importable dans GEPI.</a></li>';
+			echo'<li><a class="lien_ext" href="'.$dossier.$fichier_lien.'_bulletin.csv">Bulletin &rarr; Récupérer pour importer dans GEPI (format <em>csv</em>).</a></li>';
+			echo'<li><a class="lien_ext" href="./releve-html.php?fichier='.$fichier_lien.'_bulletin">Bulletin &rarr; Explorer / Manipuler (format <em>html</em>).</a></li>';
 			echo'</ul><p />';
 		}
 		if(in_array('synthese',$tab_type))
 		{
 			echo'<ul class="puce">';
-			echo'<li><a class="lien_ext" href="./releve-html.php?fichier='.$fichier_lien.'_synthese">Synthèse collective au format HTML (tableaux triables, liens...).</a></li>';
-			echo'<li><a class="lien_ext" href="'.$dossier.$fichier_lien.'_synthese.pdf">Synthèse collective au format PDF (imprimable).</a></li>';
+			echo'<li><a class="lien_ext" href="'.$dossier.$fichier_lien.'_synthese.pdf">Synthèse collective &rarr; Archiver / Imprimer (format <em>pdf</em>).</a></li>';
+			echo'<li><a class="lien_ext" href="./releve-html.php?fichier='.$fichier_lien.'_synthese">Synthèse collective &rarr; Explorer / Manipuler (format <em>html</em>).</a></li>';
 			echo'</ul><p />';
 		}
 		if(in_array('individuel',$tab_type))
 		{
 			echo'<ul class="puce">';
-			echo'<li><a class="lien_ext" href="./releve-html.php?fichier='.$fichier_lien.'_individuel">Relevé individuel au format HTML (tableaux triables, liens...).</a></li>';
-			echo'<li><a class="lien_ext" href="'.$dossier.$fichier_lien.'_individuel.pdf">Relevé individuel au format PDF (imprimable).</a></li>';
+			echo'<li><a class="lien_ext" href="'.$dossier.$fichier_lien.'_individuel.pdf">Relevé individuel &rarr; Archiver / Imprimer (format <em>pdf</em>).</a></li>';
+			echo'<li><a class="lien_ext" href="./releve-html.php?fichier='.$fichier_lien.'_individuel">Relevé individuel &rarr; Explorer / Manipuler (format <em>html</em>).</a></li>';
 			echo'</ul><p />';
 		}
 	}

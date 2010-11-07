@@ -361,15 +361,15 @@ if( $palier_id && $palier_nom )
 	if($_SESSION['USER_PROFIL']=='eleve')
 	{
 		echo'<ul class="puce">';
-		echo'<li><label class="alerte"><a class="lien_ext" href="'.$dossier.$fichier_lien.'.pdf">Télécharger le document au format PDF (imprimable).</a></label></li>';
+		echo'<li><label class="alerte"><a class="lien_ext" href="'.$dossier.$fichier_lien.'.pdf">Archiver / Imprimer (format <em>pdf</em>).</a></label></li>';
 		echo'</ul><p />';
 		echo $releve_html;
 	}
 	else
 	{
 	echo'<ul class="puce">';
-	echo'<li><a class="lien_ext" href="./releve-html.php?fichier='.$fichier_lien.'">État de maîtrise du socle commun au format HTML (bulles d\'information, détail...).</a></li>';
-	echo'<li><a class="lien_ext" href="'.$dossier.$fichier_lien.'.pdf">État de maîtrise du socle commun au format PDF (imprimable).</a></li>';
+	echo'<li><a class="lien_ext" href="'.$dossier.$fichier_lien.'.pdf">Archiver / Imprimer (format <em>pdf</em>).</a></li>';
+	echo'<li><a class="lien_ext" href="./releve-html.php?fichier='.$fichier_lien.'">Explorer / Détailler (format <em>html</em>).</a></li>';
 	echo'</ul><p />';
 	}
 

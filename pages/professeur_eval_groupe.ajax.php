@@ -903,8 +903,8 @@ if( ($action=='Imprimer_cartouche') && $devoir_id && $groupe_type && $groupe_id 
 	}
 	// On attaque l'élaboration des sorties HTML, CSV et PDF
 	$fnom = 'cartouche_'.$_SESSION['BASE'].'_'.$devoir_id.'_'.time();
-	$sacoche_htm = '<hr /><a class="lien_ext" href="'.$dossier_export.$fnom.'.pdf">Récupérez les cartouches de cette évaluation dans un fichier pdf (à imprimer).</a><br />';
-	$sacoche_htm.= '<a class="lien_ext" href="'.$dossier_export.$fnom.'.zip">Récupérez les cartouches de cette évaluation dans un fichier csv tabulé pour tableur.</a><p />';
+	$sacoche_htm = '<hr /><a class="lien_ext" href="'.$dossier_export.$fnom.'.pdf">Cartouches &rarr; Archiver / Imprimer (format <em>pdf</em>).</a><br />';
+	$sacoche_htm.= '<a class="lien_ext" href="'.$dossier_export.$fnom.'.zip">Cartouches &rarr; Récupérer / Manipuler (fichier <em>csv</em> pour tableur).</a><p />';
 	$sacoche_csv = '';
 	// Appel de la classe et définition de qqs variables supplémentaires pour la mise en page PDF
 	$item_nb = count($tab_comp_id);

@@ -131,8 +131,8 @@ if( (($action=='init_login')||($action=='init_mdp')) && (($profil=='eleves')||($
 	//	Affichage du résultat
 	//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 	echo'<ul class="puce">';
-	echo'<li><a class="lien_ext" href="'.$dossier_login_mdp.$fnom.'.zip">Récupérez les nouveaux identifiants dans un fichier csv tabulé pour tableur.</a></li>';
-	echo'<li><a class="lien_ext" href="'.$dossier_login_mdp.$fnom.'.pdf">Récupérez les nouveaux identifiants dans un fichier pdf (étiquettes à imprimer).</a></li>';
+	echo'<li><a class="lien_ext" href="'.$dossier_login_mdp.$fnom.'.pdf">Nouveaux identifiants &rarr; Archiver / Imprimer (étiquettes <em>pdf</em>)</a></li>';
+	echo'<li><a class="lien_ext" href="'.$dossier_login_mdp.$fnom.'.zip">Nouveaux identifiants &rarr; Récupérer / Manipuler (fichier <em>csv</em> pour tableur).</a></li>';
 	if($action=='init_mdp')
 	{
 		echo'<li><label class="alerte">Attention : les mots de passe, cryptés, ne sont plus accessibles ultérieurement !</label></li>';
@@ -353,7 +353,7 @@ if($action=='import_loginmdp')
 			$pdf -> Add_Label(pdf($text));
 		}
 		$pdf->Output($dossier_login_mdp.$fnom.'.pdf','F');
-		echo'<li><a class="lien_ext" href="'.$dossier_login_mdp.$fnom.'.pdf">Récupérez les identifiants modifiés dans un fichier pdf (étiquettes à imprimer).</a></li>';
+		echo'<li><a class="lien_ext" href="'.$dossier_login_mdp.$fnom.'.pdf">Archiver / Imprimer les identifiants modifiés (étiquettes <em>pdf</em>).</a></li>';
 		echo'<li><label class="alerte">Attention : les mots de passe, cryptés, ne sont plus accessibles ultérieurement !</label></li>';
 	}
 	// On affiche le bilan

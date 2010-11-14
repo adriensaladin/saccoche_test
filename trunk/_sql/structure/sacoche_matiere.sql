@@ -54,6 +54,7 @@ INSERT INTO sacoche_matiere VALUES
 ( 39, 1, 0, 255,  "OCCR", "Occitan"),
 ( 40, 1, 0, 255, "VSPRO", "Vie sociale et professionnelle"),
 ( 41, 1, 0, 255, "G-TPR", "Enseignement technologique-professionnel"),
+( 42, 1, 0, 255,  "INFO", "Informatique"),
 ( 99, 1, 1, 255, "TRANS", "Transversal");
 
 ALTER TABLE sacoche_matiere ENABLE KEYS;

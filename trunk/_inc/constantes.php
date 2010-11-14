@@ -33,7 +33,7 @@
 // VERSION_PROG : version des fichiers installés, à comparer avec la dernière version disponible sur le serveur communautaire
 // VERSION_BASE : version de la base associée, à comparer avec la version de la base actuellement installée
 define('VERSION_PROG', @file_get_contents('VERSION.txt') );	// Ne pas mettre de chemin ! Dans un fichier texte pour permettre un appel au serveur communautaire sans lui faire utiliser PHP.
-define('VERSION_BASE','2010-11-04');
+define('VERSION_BASE','2010-11-14');
 
 // VERSION_CSS_SCREEN / VERSION_CSS_PRINT / VERSION_JS_BIBLIO / VERSION_JS_GLOBAL / VERSION_JS_FILE
 // Pour éviter les problèmes de mise en cache (hors serveur localhost), modifier ces valeurs lors d'une mise à jour
@@ -66,10 +66,10 @@ define('CHARSET','utf-8');
 // SERVEUR_ADRESSE
 $protocole = ( isset($_SERVER['HTTPS']) && ($_SERVER['HTTPS']=='on') ) ? 'https://' : 'http://';
 $chemin = $protocole.$_SERVER["SERVER_NAME"].$_SERVER["SCRIPT_NAME"];
-$fin = strpos($chemin,SACoche); // éviter mb_strpos pour ne pas risquer une erreur fatale d'entrée.
+$fin = strpos($chemin,SACoche); // pas mb_strpos pour éviter une erreur fatale d'entrée.
 if($fin)
 {
-	$chemin = substr($chemin,0,$fin-1); // éviter mb_substr pour ne pas risquer une erreur fatale d'entrée.
+	$chemin = substr($chemin,0,$fin-1); // pas mb_substr pour éviter une erreur fatale d'entrée.
 }
 define('SERVEUR_ADRESSE',$chemin);
 

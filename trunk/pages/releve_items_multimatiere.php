@@ -27,7 +27,7 @@
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = "Bilan d'items pluridisciplinaire";
-$VERSION_JS_FILE += 5;
+$VERSION_JS_FILE += 6;
 ?>
 
 <?php

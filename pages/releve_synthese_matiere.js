@@ -153,13 +153,13 @@ $(document).ready
 				// Modification automatique du formulaire : périodes
 				if(autoperiode)
 				{
-					if(groupe_type!='Besoins')
+					if( (typeof(groupe_type)!='undefined') && (groupe_type!='Besoins') )
 					{
 						// Rechercher automatiquement la meilleure période
 						selectionner_periode_adaptee();
 					}
 					// Afficher la zone de choix des périodes
-					if($('#zone_periodes').hasClass("hide"))
+					if(typeof(groupe_type)!='undefined')
 					{
 						$('#zone_periodes').removeAttr("class");
 					}

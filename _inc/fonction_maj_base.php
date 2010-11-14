@@ -634,7 +634,40 @@ function maj_base($version_actuelle)
 		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_actuelle.'" WHERE parametre_nom="version_base" LIMIT 1' );
 	}
 
+	//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	//	MAJ 2010-11-04 => 2010-11-14
+	//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	if($version_actuelle=='2010-11-04')
+	{
+		$version_actuelle = '2010-11-14';
+		// remise du niveau P4 pour que les lycées puissent disposer d'un "niveau transversal"
+		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_niveau VALUES (4,4,159,"P4","","Palier 4 (2nde - Tle)")' );
+		// ajout d'une matière "Informatique" pour gérer le b2i
+		// Si une matière similaire spécifique est trouvée, la convertir... surtout si sa référence est "INFO" (sinon conflit en vue)
+		$DB_ROW = DB::queryRow(SACOCHE_STRUCTURE_BD_NAME , 'SELECT matiere_id FROM sacoche_matiere WHERE matiere_ref="INFO" LIMIT 1' );
+		if(!count($DB_ROW))
+		{
+			$DB_ROW = DB::queryRow(SACOCHE_STRUCTURE_BD_NAME , 'SELECT matiere_id FROM sacoche_matiere WHERE matiere_ref IN("INFOR","B2I","ORDI","MICRO") LIMIT 1' );
+		}
+		if(count($DB_ROW))
+		{
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_jointure_user_matiere SET matiere_id=42 WHERE matiere_id='.$DB_ROW['matiere_id'] );
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_referentiel_domaine   SET matiere_id=42 WHERE matiere_id='.$DB_ROW['matiere_id'] );
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_demande               SET matiere_id=42 WHERE matiere_id='.$DB_ROW['matiere_id'] );
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_referentiel           SET matiere_id=42 , referentiel_partage_etat="non" WHERE matiere_id='.$DB_ROW['matiere_id'] );
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre             SET parametre_valeur=REPLACE(parametre_valeur,",99",",42,99") WHERE parametre_nom="matieres" LIMIT 1' );
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'DELETE FROM sacoche_matiere WHERE matiere_id='.$DB_ROW['matiere_id'].' LIMIT 1' );
+		}
+		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (42,1,0,255,"INFO","Informatique")' );
+		// mise à jour du champ "version_base" (obligatoire)
+		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_actuelle.'" WHERE parametre_nom="version_base" LIMIT 1' );
+	}
+
+	//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Log de l'action
+	//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 	ajouter_log_SACoche('Mise à jour automatique de la base '.SACOCHE_STRUCTURE_BD_NAME.'.');
 
 }

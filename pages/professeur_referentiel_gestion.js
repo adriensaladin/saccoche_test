@@ -505,8 +505,8 @@ $(document).ready
 					{
 						niveau_id = $(this).val();
 						findme = '.'+niveau_id+'.';
-						// Les niveaux "paliers" sont tout le temps accessibles
-						if(listing_id_niveaux_paliers.indexOf(findme) == -1)
+						// Les niveaux "cycles" sont tout le temps accessibles
+						if(listing_id_niveaux_cycles.indexOf(findme) == -1)
 						{
 							// matière classique -> tous niveaux actifs
 							if(matiere_id != id_matiere_transversale)
@@ -520,7 +520,7 @@ $(document).ready
 								modif_niveau_selected = Math.max(modif_niveau_selected,1);
 							}
 						}
-						// C'est un niveau palier ; le sélectionner si besoin
+						// C'est un niveau cycle ; le sélectionner si besoin
 						else if(modif_niveau_selected==1)
 						{
 							$(this).attr('selected','selected');

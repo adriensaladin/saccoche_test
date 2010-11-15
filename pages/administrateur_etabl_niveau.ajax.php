@@ -33,22 +33,49 @@ $action = (isset($_POST['f_action'])) ? clean_texte($_POST['f_action']) : '';
 $tab_id = (isset($_POST['tab_id']))   ? array_map('clean_entier',explode(',',$_POST['tab_id'])) : array() ;
 $tab_id = array_filter($tab_id,'positif');
 sort($tab_id);
-$tab_paliers = explode( '.' , substr(LISTING_ID_NIVEAUX_PALIERS,1,-1) );
+
+$tab_cycles = explode( '.' , substr(LISTING_ID_NIVEAUX_CYCLES,1,-1) );
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-//	Choix de niveaux (excepté les niveaux transversaux liés aux paliers)
+//	Choix de cycles (pas les autres niveaux)
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-if( ($action=='Choisir') && (count(array_intersect($tab_paliers,$tab_id))==0) )
+
+if($action=='Choix_cycles')
 {
+	$tab_id = array_intersect($tab_cycles,$tab_id);
+	if(count($tab_id)==0)
+	{
+		exit('Erreur avec les données transmises !');
+	}
+	$listing_cycles = implode(',',$tab_id);
+	DB_STRUCTURE_modifier_parametres( array('cycles'=>$listing_cycles) );
+	// ne pas oublier de mettre aussi à jour la session
+	$_SESSION['CYCLES'] = $listing_cycles;
+	exit('ok');
+}
+
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+//	Choix de niveaux (excepté les cycles)
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
+if($action=='Choix_niveaux')
+{
+	$tab_id = array_diff($tab_id,$tab_cycles);
+	if(count($tab_id)==0)
+	{
+		exit('Erreur avec les données transmises !');
+	}
 	$listing_niveaux = implode(',',$tab_id);
 	DB_STRUCTURE_modifier_parametres( array('niveaux'=>$listing_niveaux) );
 	// ne pas oublier de mettre aussi à jour la session
 	$_SESSION['NIVEAUX'] = $listing_niveaux;
-	echo'ok';
+	exit('ok');
 }
 
-else
-{
-	echo'Erreur avec les données transmises !';
-}
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+//	On ne devrait pas en arriver là...
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
+exit('Erreur avec les données transmises !');
+
 ?>

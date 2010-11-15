@@ -22,6 +22,7 @@ INSERT INTO sacoche_parametre VALUES
 ( "modele_eleve"             , "ppp.nnnnnnnn" ),
 ( "matieres"                 , "1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,99" ),
 ( "niveaux"                  , "31,32,33,35" ),
+( "cycles"                   , "3" ),
 ( "paliers"                  , "3" ),
 ( "droit_eleve_demandes"     , "0" ),
 ( "droit_eleve_bilans"       , "BilanMoyenneScore,BilanPourcentageAcquis" ),

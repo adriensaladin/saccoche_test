@@ -2,7 +2,7 @@ DROP TABLE IF EXISTS sacoche_niveau;
 
 CREATE TABLE sacoche_niveau (
 	niveau_id    TINYINT(3)  UNSIGNED                NOT NULL AUTO_INCREMENT,
-	palier_id    TINYINT(3)  UNSIGNED                NOT NULL DEFAULT 0,
+	niveau_cycle TINYINT(1)  UNSIGNED                NOT NULL DEFAULT 0 COMMENT "Indique un niveau 'longitudinal' nommé 'cycle'.",
 	niveau_ordre TINYINT(3)  UNSIGNED                NOT NULL DEFAULT 0,
 	niveau_ref   VARCHAR(5)  COLLATE utf8_unicode_ci NOT NULL DEFAULT "",
 	code_mef     CHAR(11)    COLLATE utf8_unicode_ci NOT NULL DEFAULT "" COMMENT "Masque à comparer avec le code_mef d'une classe (nomenclature Sconet).",
@@ -13,13 +13,13 @@ CREATE TABLE sacoche_niveau (
 
 ALTER TABLE sacoche_niveau DISABLE KEYS;
 
--- Socle
+-- Niveaux "longitudinaux" nommés "cycles"
 
 INSERT INTO sacoche_niveau VALUES 
-(   1, 1,   9,    "P1",            "", "Palier 1 (PS - CE1)"),
-(   2, 2,  29,    "P2",            "", "Palier 2 (CE2 - CM2)"),
-(   3, 3,  69,    "P3",            "", "Palier 3 (6e - 3e)");
-(   4, 4, 159,    "P4",            "", "Palier 4 (2nde - Tle)");
+(   1, 1,   9,    "P1",            "", "Cycle 2 (GS-CE1)"),
+(   2, 1,  29,    "P2",            "", "Cycle 3 (CE2-CM2)"),
+(   3, 1,  69,    "P3",            "", "Cycle Collège"),
+(   4, 1, 159,    "P4",            "", "Cycle Lycée");
 
 -- Primaire
 

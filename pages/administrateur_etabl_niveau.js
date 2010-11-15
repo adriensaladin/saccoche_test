@@ -48,44 +48,52 @@ $(document).ready
 		(
 			function()
 			{
-				$('#ajax_msg').removeAttr("class").addClass("alerte").html("Pensez à valider vos modifications !");
+				$(this).parent().parent().parent().parent().next().children('label').removeAttr("class").addClass("alerte").html("Pensez à valider vos modifications !");
 			}
 		);
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-//	Validation du formulaire
+//	Validation d'un formulaire
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-		$('#bouton_valider').click
+
+		$('#bouton_valider_cycles , #bouton_valider_niveaux').click
 		(
 			function()
 			{
-				$("#bouton_valider").attr('disabled','disabled');
-				$('#ajax_msg').removeAttr("class").addClass("loader").html("Demande envoyée... Veuillez patienter.");
-				var check_ids = new Array(); $("#niveau input[type=checkbox]:checked:enabled").each(function(){check_ids.push($(this).val());});
+				var objet = $(this).attr('id').substring(15);
+				$('#bouton_valider_'+objet).attr('disabled','disabled');
+				$('#ajax_msg_'+objet).removeAttr("class").addClass("loader").html("Demande envoyée... Veuillez patienter.");
+				var check_ids = new Array(); $("#"+objet+" input[type=checkbox]:checked").each(function(){check_ids.push($(this).val());});
+				if(check_ids.length==0)
+				{
+					$('#ajax_msg_'+objet).removeAttr("class").addClass("erreur").html("Il faut cocher au moins une case !");
+					$('#bouton_valider_'+objet).removeAttr('disabled');
+					return false;
+				}
 				$.ajax
 				(
 					{
 						type : 'POST',
 						url : 'ajax.php?page='+PAGE,
-						data : 'f_action=Choisir&tab_id='+check_ids,
+						data : 'f_action=Choix_'+objet+'&tab_id='+check_ids,
 						dataType : "html",
 						error : function(msg,string)
 						{
-							$("#bouton_valider").removeAttr('disabled');
-							$('#ajax_msg').removeAttr("class").addClass("alerte").html("Echec de la connexion ! Veuillez recommencer.");
+							$('#bouton_valider_'+objet).removeAttr('disabled');
+							$('#ajax_msg_'+objet).removeAttr("class").addClass("alerte").html("Echec de la connexion ! Veuillez recommencer.");
 							return false;
 						},
 						success : function(responseHTML)
 						{
 							maj_clock(1);
-							$("#bouton_valider").removeAttr('disabled');
+							$('#bouton_valider_'+objet).removeAttr('disabled');
 							if(responseHTML!='ok')
 							{
-								$('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);
+								$('#ajax_msg_'+objet).removeAttr("class").addClass("alerte").html(responseHTML);
 							}
 							else
 							{
-								$('#ajax_msg').removeAttr("class").addClass("valide").html("Demande enregistrée !");
+								$('#ajax_msg_'+objet).removeAttr("class").addClass("valide").html("Demande enregistrée !");
 							}
 						}
 					}

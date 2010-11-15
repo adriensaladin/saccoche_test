@@ -75,17 +75,12 @@ $(document).ready
 				$("#bouton_valider").attr('disabled','disabled');
 				$('#ajax_msg').removeAttr("class").addClass("loader").html("Demande envoyée... Veuillez patienter.");
 				var check_ids = new Array(); $("#socle input[type=checkbox]:checked").each(function(){check_ids.push($(this).val());});
-				if(check_ids.length==0)
-				{
-					$('#ajax_msg').removeAttr("class").addClass("erreur").html("Il faut cocher au moins un palier !");
-					return false;
-				}
 				$.ajax
 				(
 					{
 						type : 'POST',
 						url : 'ajax.php?page='+PAGE,
-						data : 'f_action=Choisir&tab_id='+check_ids,
+						data : 'f_action=Choix_paliers&tab_id='+check_ids,
 						dataType : "html",
 						error : function(msg,string)
 						{

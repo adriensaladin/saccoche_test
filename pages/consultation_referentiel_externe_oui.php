@@ -26,7 +26,7 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-$VERSION_JS_FILE += 7;
+$VERSION_JS_FILE += 8;
 
 // Fabrication des éléments select du formulaire, pour pouvoir prendre un référentiel d'une autre matière ou d'un autre niveau (demandé...).
 $select_matiere = afficher_select(DB_STRUCTURE_OPT_matieres_communes() , $select_nom='f_matiere' , $option_first='val' , $selection=false , $optgroup='non');
@@ -34,8 +34,8 @@ $select_niveau  = afficher_select(DB_STRUCTURE_OPT_niveaux()           , $select
 ?>
 
 <script type="text/javascript">
-	var listing_id_niveaux_paliers = "<?php echo LISTING_ID_NIVEAUX_PALIERS ?>";
-	var id_matiere_transversale    = "<?php echo ID_MATIERE_TRANSVERSALE ?>";
+	var listing_id_niveaux_cycles = "<?php echo LISTING_ID_NIVEAUX_CYCLES ?>";
+	var id_matiere_transversale   = "<?php echo ID_MATIERE_TRANSVERSALE ?>";
 </script>
 
 <form action="" class="noprint">

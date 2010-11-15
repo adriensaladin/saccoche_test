@@ -138,7 +138,7 @@ function DB_STRUCTURE_recuperer_arborescence($prof_id,$matiere_id,$niveau_id,$on
 	$join_socle_item   = ($socle_nom)  ? 'LEFT JOIN sacoche_socle_entree USING (entree_id) ' : '' ;
 	$where_user        = ($prof_id)    ? 'user_id=:user_id ' : '' ;
 	$where_matiere     = ($matiere_id) ? 'matiere_id=:matiere_id ' : '' ;
-	$where_niveau      = ($niveau_id)  ? 'AND niveau_id=:niveau_id ' : 'AND (niveau_id IN('.$_SESSION['NIVEAUX'].') OR palier_id IN('.$_SESSION['PALIERS'].')) ' ;
+	$where_niveau      = ($niveau_id)  ? 'AND niveau_id=:niveau_id ' : 'AND niveau_id IN('.$_SESSION['CYCLES'].','.$_SESSION['NIVEAUX'].') ' ;
 	$where_item        = ($only_item)  ? 'AND item_id IS NOT NULL ' : '' ;
 	$where_socle       = ($only_socle) ? 'AND entree_id !=0 ' : '' ;
 	$order_matiere     = ($prof_id)    ? 'matiere_nom ASC, ' : '' ;
@@ -779,6 +779,7 @@ function DB_STRUCTURE_lister_paliers_SACoche()
 
 /**
  * DB_STRUCTURE_lister_niveaux_SACoche
+ * Sans les niveaux de type 'cycles'.
  * 
  * @param void
  * @return array
@@ -787,6 +788,22 @@ function DB_STRUCTURE_lister_paliers_SACoche()
 function DB_STRUCTURE_lister_niveaux_SACoche()
 {
 	$DB_SQL = 'SELECT * FROM sacoche_niveau ';
+	$DB_SQL.= 'WHERE cycle_id=0 ';
+	$DB_SQL.= 'ORDER BY niveau_ordre ASC';
+	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , null);
+}
+
+/**
+ * DB_STRUCTURE_lister_cycles_SACoche
+ * 
+ * @param void
+ * @return array
+ */
+
+function DB_STRUCTURE_lister_cycles_SACoche()
+{
+	$DB_SQL = 'SELECT * FROM sacoche_niveau ';
+	$DB_SQL.= 'WHERE cycle_id=1 ';
 	$DB_SQL.= 'ORDER BY niveau_ordre ASC';
 	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , null);
 }
@@ -794,16 +811,16 @@ function DB_STRUCTURE_lister_niveaux_SACoche()
 /**
  * DB_STRUCTURE_lister_niveaux_etablissement
  * 
- * @param string      $listing_niveaux   id des niveaux séparés par des virgules
- * @param string|bool $listing_paliers   id des paliers séparés par des virgules ; false pour ne pas retourner les paliers
+ * @param string      $listing_niveaux   id des niveaux séparés par des virgules ; ne peut pas être vide
+ * @param string|bool $listing_cycles    id des cycles séparés par des virgules ; false pour ne pas retourner les cycles
  * @return array
  */
 
-function DB_STRUCTURE_lister_niveaux_etablissement($listing_niveaux,$listing_paliers)
+function DB_STRUCTURE_lister_niveaux_etablissement($listing_niveaux,$listing_cycles)
 {
+	$listing = ($listing_cycles) ? $listing_niveaux.','.$listing_cycles : $listing_niveaux ;
 	$DB_SQL = 'SELECT * FROM sacoche_niveau ';
-	$DB_SQL.= 'WHERE niveau_id IN('.$listing_niveaux.') ';
-	$DB_SQL.= ($listing_paliers) ? 'OR palier_id IN('.$_SESSION['PALIERS'].') ' : '' ;
+	$DB_SQL.= 'WHERE niveau_id IN('.$listing.') ';
 	$DB_SQL.= 'ORDER BY niveau_ordre ASC';
 	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , null);
 }
@@ -3550,25 +3567,18 @@ function DB_STRUCTURE_OPT_matieres_groupe($groupe_id)
 /**
  * Retourner un tableau [valeur texte] des niveaux de l'établissement
  * 
- * @param string $listing_niveaux   id des niveaux séparés par des virgules
- * @param string $listing_paliers   id des paliers séparés par des virgules
- * @return array|string
+ * @param string      $listing_niveaux   id des niveaux séparés par des virgules ; ne peut pas être vide
+ * @param string|bool $listing_cycles    id des cycles séparés par des virgules ; false pour ne pas retourner les cycles
+ * @return array
  */
 
-function DB_STRUCTURE_OPT_niveaux_etabl($listing_niveaux,$listing_paliers)
+function DB_STRUCTURE_OPT_niveaux_etabl($listing_niveaux,$listing_cycles)
 {
-	if($listing_niveaux)
-	{
-		$DB_SQL = 'SELECT niveau_id AS valeur, niveau_nom AS texte FROM sacoche_niveau ';
-		$DB_SQL.= 'WHERE niveau_id IN('.$listing_niveaux.') ';
-		$DB_SQL.= ($listing_paliers) ? 'OR palier_id IN('.$listing_paliers.') ' : '' ;
-		$DB_SQL.= 'ORDER BY niveau_ordre ASC';
-		return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , null);
-	}
-	else
-	{
-		return 'Aucun niveau n\'est rattaché à l\'établissement !';
-	}
+	$listing = ($listing_cycles) ? $listing_niveaux.','.$listing_cycles : $listing_niveaux ;
+	$DB_SQL = 'SELECT niveau_id AS valeur, niveau_nom AS texte FROM sacoche_niveau ';
+	$DB_SQL.= 'WHERE niveau_id IN('.$listing.') ';
+	$DB_SQL.= 'ORDER BY niveau_ordre ASC';
+	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , null);
 }
 
 /**
@@ -3629,39 +3639,32 @@ function DB_STRUCTURE_OPT_piliers($palier_id)
  * Retourner un tableau [valeur texte liste_groupe_id] des niveaux de l'établissement pour un élève identifié
  * liste_groupe_id sert pour faire une recherche de l'id de la classe dedans afin de pouvoir préselectionner le niveau de la classe de l'élève
  * 
- * @param string $listing_niveaux   id des niveaux séparés par des virgules
- * @param string $listing_paliers   id des paliers séparés par des virgules
- * @param string $eleve_classe_id   id de la classe de l'élève
+ * @param string      $listing_niveaux   id des niveaux séparés par des virgules ; ne peut pas être vide
+ * @param string|bool $listing_cycles    id des cycles séparés par des virgules ; false pour ne pas retourner les cycles
+ * @param string $eleve_classe_id        id de la classe de l'élève
  * @return array|string
  */
 
-function DB_STRUCTURE_OPT_niveaux_eleve($listing_niveaux,$listing_paliers,$eleve_classe_id)
+function DB_STRUCTURE_OPT_niveaux_eleve($listing_niveaux,$listing_cycles,$eleve_classe_id)
 {
-	if($listing_niveaux)
+	$listing = ($listing_cycles) ? $listing_niveaux.','.$listing_cycles : $listing_niveaux ;
+	$DB_SQL = 'SELECT niveau_id AS valeur, niveau_nom AS texte, GROUP_CONCAT(groupe_id SEPARATOR ",") AS liste_groupe_id FROM sacoche_niveau ';
+	$DB_SQL.= 'LEFT JOIN sacoche_groupe USING (niveau_id) ';
+	$DB_SQL.= 'WHERE niveau_id IN('.$listing.') ';
+	$DB_SQL.= 'GROUP BY niveau_id ';
+	$DB_SQL.= 'ORDER BY niveau_ordre ASC';
+	$DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , null);
+	// Tester la présence de la classe parmi la liste des id de groupes
+	$search_valeur = ','.$eleve_classe_id.',';
+	foreach($DB_TAB as $DB_ROW)
 	{
-		$DB_SQL = 'SELECT niveau_id AS valeur, niveau_nom AS texte, GROUP_CONCAT(groupe_id SEPARATOR ",") AS liste_groupe_id FROM sacoche_niveau ';
-		$DB_SQL.= 'LEFT JOIN sacoche_groupe USING (niveau_id) ';
-		$DB_SQL.= 'WHERE niveau_id IN('.$listing_niveaux.') ';
-		$DB_SQL.= ($listing_paliers) ? 'OR palier_id IN('.$listing_paliers.') ' : '' ;
-		$DB_SQL.= 'GROUP BY niveau_id ';
-		$DB_SQL.= 'ORDER BY niveau_ordre ASC';
-		$DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , null);
-		// Tester la présence de la classe parmi la liste des id de groupes
-		$search_valeur = ','.$eleve_classe_id.',';
-		foreach($DB_TAB as $DB_ROW)
+		if(mb_substr_count(','.$DB_ROW['liste_groupe_id'].',',$search_valeur))
 		{
-			if(mb_substr_count(','.$DB_ROW['liste_groupe_id'].',',$search_valeur))
-			{
-				$GLOBALS['select_option_selected'] = $DB_ROW['valeur'];
-			}
-			unset($DB_ROW['liste_groupe_id']);
+			$GLOBALS['select_option_selected'] = $DB_ROW['valeur'];
 		}
-		return $DB_TAB;
+		unset($DB_ROW['liste_groupe_id']);
 	}
-	else
-	{
-		return 'Aucun niveau n\'est rattaché à l\'établissement !';
-	}
+	return $DB_TAB;
 }
 
 /**

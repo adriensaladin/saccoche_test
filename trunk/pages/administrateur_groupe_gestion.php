@@ -68,7 +68,7 @@ $tab_niveau_ordre_js = 'var tab_niveau_ordre = new Array();';
 
 if($_SESSION['NIVEAUX'])
 {
-	$DB_TAB = DB_STRUCTURE_lister_niveaux_etablissement($_SESSION['NIVEAUX'],$listing_paliers=false);
+	$DB_TAB = DB_STRUCTURE_lister_niveaux_etablissement($_SESSION['NIVEAUX'],$listing_cycles=false);
 	foreach($DB_TAB as $DB_ROW)
 	{
 		$select_niveau .= '<option value="'.$DB_ROW['niveau_id'].'">'.html($DB_ROW['niveau_nom']).'</option>';

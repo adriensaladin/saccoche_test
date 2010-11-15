@@ -33,7 +33,7 @@
 // VERSION_PROG : version des fichiers installés, à comparer avec la dernière version disponible sur le serveur communautaire
 // VERSION_BASE : version de la base associée, à comparer avec la version de la base actuellement installée
 define('VERSION_PROG', @file_get_contents('VERSION.txt') );	// Ne pas mettre de chemin ! Dans un fichier texte pour permettre un appel au serveur communautaire sans lui faire utiliser PHP.
-define('VERSION_BASE','2010-11-14');
+define('VERSION_BASE','2010-11-15');
 
 // VERSION_CSS_SCREEN / VERSION_CSS_PRINT / VERSION_JS_BIBLIO / VERSION_JS_GLOBAL / VERSION_JS_FILE
 // Pour éviter les problèmes de mise en cache (hors serveur localhost), modifier ces valeurs lors d'une mise à jour
@@ -55,9 +55,11 @@ $ALERTE_SSO = false;
 define('ID_DEMO',9999);
 
 // ID_MATIERE_TRANSVERSALE : id de la matière transversale dans la table "sacoche_matiere"
-// LISTING_ID_NIVEAUX_PALIERS : tableau des id des niveaux des paliers dans la table "sacoche_niveau"
+// LISTING_ID_NIVEAUX_CYCLES : listing des id des cycles dans la table "sacoche_niveau"
+// LISTING_ID_PALIERS : listing des id des paliers dans la table "sacoche_socle_palier"
 define('ID_MATIERE_TRANSVERSALE',99);
-define('LISTING_ID_NIVEAUX_PALIERS','.1.2.3.4.');
+define('LISTING_ID_NIVEAUX_CYCLES','.1.2.3.4.');
+define('LISTING_ID_PALIERS','.1.2.3.');
 
 // CHARSET : "iso-8859-1" ou "utf-8" suivant l'encodage utilisé ; présence aussi d'un "AddDefaultCharset ..." dans le fichier .htaccess
 // Cependant, tout le site ayant été prévu et conçu en UTF-8, changer le CHARSET est assez hasardeux pour ne pas dire risqué...

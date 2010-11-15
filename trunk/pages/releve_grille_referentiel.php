@@ -27,7 +27,7 @@
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = "Grille d'items d'un référentiel";
-$VERSION_JS_FILE += 2;
+$VERSION_JS_FILE += 3;
 ?>
 
 <?php
@@ -37,7 +37,7 @@ $tab_cookie = load_cookie_select('grille_referentiel');
 if($_SESSION['USER_PROFIL']=='directeur')
 {
 	$tab_matieres = DB_STRUCTURE_OPT_matieres_etabl($_SESSION['MATIERES'],$transversal=true);
-	$tab_niveaux  = DB_STRUCTURE_OPT_niveaux_etabl($_SESSION['NIVEAUX'],$_SESSION['PALIERS']);
+	$tab_niveaux  = DB_STRUCTURE_OPT_niveaux_etabl($_SESSION['NIVEAUX'],$_SESSION['CYCLES']);
 	$tab_groupes  = DB_STRUCTURE_OPT_classes_groupes_etabl();
 	$of_m = 'oui'; $of_g = 'val'; $sel_g = false; $og_g = 'oui'; $class_form_eleve = 'show'; $sel_n = false;
 	$select_eleves = '<option></option>'; // maj en ajax suivant le choix du groupe
@@ -46,7 +46,7 @@ if($_SESSION['USER_PROFIL']=='directeur')
 if($_SESSION['USER_PROFIL']=='professeur')
 {
 	$tab_matieres = DB_STRUCTURE_OPT_matieres_professeur($_SESSION['USER_ID']);
-	$tab_niveaux  = DB_STRUCTURE_OPT_niveaux_etabl($_SESSION['NIVEAUX'],$_SESSION['PALIERS']);
+	$tab_niveaux  = DB_STRUCTURE_OPT_niveaux_etabl($_SESSION['NIVEAUX'],$_SESSION['CYCLES']);
 	$tab_groupes  = DB_STRUCTURE_OPT_groupes_professeur($_SESSION['USER_ID']);
 	$of_m = 'non'; $of_g = 'val'; $sel_g = false; $og_g = 'oui'; $class_form_eleve = 'show'; $sel_n = false;
 	$select_eleves = '<option></option>'; // maj en ajax suivant le choix du groupe
@@ -55,7 +55,7 @@ if($_SESSION['USER_PROFIL']=='professeur')
 if($_SESSION['USER_PROFIL']=='eleve')
 {
 	$tab_matieres = DB_STRUCTURE_OPT_matieres_eleve($_SESSION['USER_ID']);
-	$tab_niveaux  = DB_STRUCTURE_OPT_niveaux_eleve($_SESSION['NIVEAUX'],$_SESSION['PALIERS'],$_SESSION['ELEVE_CLASSE_ID']);
+	$tab_niveaux  = DB_STRUCTURE_OPT_niveaux_eleve($_SESSION['NIVEAUX'],$_SESSION['CYCLES'],$_SESSION['ELEVE_CLASSE_ID']);
 	$tab_groupes  = array(0=>array('valeur'=>$_SESSION['ELEVE_CLASSE_ID'],'texte'=>$_SESSION['ELEVE_CLASSE_NOM']));
 	$of_m = 'oui'; $of_g = 'non'; $sel_g = true;  $og_g = 'non'; $class_form_eleve = 'hide'; $sel_n = 'val';
 	$select_eleves = '<option value="'.$_SESSION['USER_ID'].'" selected="selected">'.html($_SESSION['USER_NOM'].' '.$_SESSION['USER_PRENOM']).'</option>';
@@ -75,8 +75,8 @@ $select_remplissage = afficher_select($tab_select_remplissage , $select_nom='f_r
 ?>
 
 <script type="text/javascript">
-	var id_matiere_transversale    = "<?php echo ID_MATIERE_TRANSVERSALE ?>";
-	var listing_id_niveaux_paliers = "<?php echo LISTING_ID_NIVEAUX_PALIERS ?>";
+	var id_matiere_transversale   = "<?php echo ID_MATIERE_TRANSVERSALE ?>";
+	var listing_id_niveaux_cycles = "<?php echo LISTING_ID_NIVEAUX_CYCLES ?>";
 </script>
 
 <p class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=releves_bilans__releve_grille_referentiel">DOC : Grille d'items d'un référentiel.</a></p>

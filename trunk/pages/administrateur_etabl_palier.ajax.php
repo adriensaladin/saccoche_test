@@ -34,20 +34,25 @@ $tab_id = (isset($_POST['tab_id']))   ? array_map('clean_entier',explode(',',$_P
 $tab_id = array_filter($tab_id,'positif');
 sort($tab_id);
 
+$tab_paliers = explode( '.' , substr(LISTING_ID_PALIERS,1,-1) );
+
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 //	Choix de paliers du socle
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-if( ($action=='Choisir') && count($tab_id) )
+if($action=='Choix_paliers')
 {
+	$tab_id = array_intersect($tab_paliers,$tab_id);
 	$listing_paliers = implode(',',$tab_id);
 	DB_STRUCTURE_modifier_parametres( array('paliers'=>$listing_paliers) );
 	// ne pas oublier de mettre aussi à jour la session
 	$_SESSION['PALIERS'] = $listing_paliers;
-	echo'ok';
+	exit('ok');
 }
 
-else
-{
-	echo'Erreur avec les données transmises !';
-}
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+//	On ne devrait pas en arriver là...
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
+exit('Erreur avec les données transmises !');
+
 ?>

@@ -67,14 +67,18 @@ if(!$liste_matieres)
 {
 	echo'<p><span class="danger">Vous n\'êtes coordonnateur d\'aucune matière de cet établissement !</span></p>';
 }
-elseif(!$_SESSION['NIVEAUX'])
+elseif(!$_SESSION['NIVEAUX']) // normalement impossible
 {
 	echo'<p><span class="danger">Aucun niveau n\'est rattaché à l\'établissement !</span></p>';
+}
+elseif(!$_SESSION['CYCLES']) // normalement impossible
+{
+	echo'<p><span class="danger">Aucun cycle n\'est rattaché à l\'établissement !</span></p>';
 }
 else
 {
 	// On récupère la liste des niveaux utilisés par l'établissement
-	$DB_TAB = DB_STRUCTURE_lister_niveaux_etablissement($_SESSION['NIVEAUX'],$_SESSION['PALIERS']);
+	$DB_TAB = DB_STRUCTURE_lister_niveaux_etablissement($_SESSION['NIVEAUX'],$_SESSION['CYCLES']);
 	$nb_niveaux = count($DB_TAB);
 	foreach($DB_TAB as $DB_ROW)
 	{
@@ -84,7 +88,7 @@ else
 	$tab_partage = array('oui'=>'<img title="Référentiel partagé sur le serveur communautaire (MAJ le ◄DATE►)." alt="" src="./_img/partage1.gif" />','non'=>'<img title="Référentiel non partagé avec la communauté (choix du ◄DATE►)." alt="" src="./_img/partage0.gif" />','bof'=>'<img title="Référentiel dont le partage est sans intérêt (pas novateur)." alt="" src="./_img/partage0.gif" />','hs'=>'<img title="Référentiel dont le partage est sans objet (matière spécifique)." alt="" src="./_img/partage0.gif" />');
 	$DB_SQL = 'SELECT matiere_id,COUNT(niveau_id) AS niveau_nb FROM sacoche_referentiel ';
 	$DB_SQL.= 'LEFT JOIN sacoche_niveau USING (niveau_id) ';
-	$DB_SQL.= 'WHERE matiere_id IN('.$liste_matieres.') AND ( niveau_id IN('.$_SESSION['NIVEAUX'].') OR palier_id IN('.$_SESSION['PALIERS'].') ) ';
+	$DB_SQL.= 'WHERE matiere_id IN('.$liste_matieres.') AND ( niveau_id IN('.$_SESSION['CYCLES'].','.$_SESSION['NIVEAUX'].') ) ';
 	$DB_SQL.= 'GROUP BY matiere_id ';
 	$DB_SQL.= 'ORDER BY matiere_id ASC';
 	$DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , null);

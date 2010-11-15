@@ -26,14 +26,17 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-$TITRE = "Niveaux utilisés";
+$TITRE = "Niveaux &amp; Cycles";
+$VERSION_JS_FILE += 1;
 ?>
 
-<div class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__gestion_niveaux">DOC : Niveaux utilisés</a></div>
+<div class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__gestion_niveaux">DOC : Niveaux &amp; Cycles</a></div>
 
 <hr />
 
-<form id="niveau" action="">
+<h2>Niveaux "Cycles"</h2>
+
+<form id="cycles" action="">
 	<table class="form check">
 		<thead>
 			<tr><th class="nu"></th><th>Codage</th><th>Dénomination</th></tr>
@@ -41,27 +44,54 @@ $TITRE = "Niveaux utilisés";
 		<tbody>
 			<?php
 			// Cases à cocher
-			$tab_check_niveaux = explode(',',$_SESSION['NIVEAUX']);
-			$tab_check_paliers = explode(',',$_SESSION['PALIERS']);
+			$tab_check = explode(',',$_SESSION['CYCLES']);
 			// Lister les niveaux
-			$DB_TAB = DB_STRUCTURE_lister_niveaux_SACoche();
+			$DB_TAB = DB_STRUCTURE_lister_cycles_SACoche();
 			foreach($DB_TAB as $DB_ROW)
 			{
-				$checked  = ( (in_array($DB_ROW['niveau_id'],$tab_check_niveaux)) || (in_array($DB_ROW['palier_id'],$tab_check_paliers)) ) ? ' checked="checked"' : '' ;
-				$disabled = ($DB_ROW['palier_id']) ? ' disabled="disabled"' : '' ;
-				$tr_class = ($DB_ROW['palier_id']) ? ' class="new"' : '' ;
-				$td_label = ($DB_ROW['palier_id']) ? '' : ' class="label"' ;
-				$indic    = ($DB_ROW['palier_id']) ? ' <b>[automatique]</b>' : '' ;
-				echo'<tr'.$tr_class.'>';
-				echo'	<td class="nu"><input type="checkbox" name="f_tab_id" value="'.$DB_ROW['niveau_id'].'"'.$disabled.$checked.' /></td>';
-				echo'	<td'.$td_label.'>'.html($DB_ROW['niveau_ref']).'</td>';
-				echo'	<td'.$td_label.'>'.html($DB_ROW['niveau_nom']).$indic.'</td>';
+				$checked  = (in_array($DB_ROW['niveau_id'],$tab_check)) ? ' checked="checked"' : '' ;
+				echo'<tr>';
+				echo'	<td class="nu"><input type="checkbox" name="f_tab_id" value="'.$DB_ROW['niveau_id'].'"'.$checked.' /></td>';
+				echo'	<td class="label">'.html($DB_ROW['niveau_ref']).'</td>';
+				echo'	<td class="label">'.html($DB_ROW['niveau_nom']).'</td>';
 				echo'</tr>';
 			}
 			?>
 		</tbody>
 	</table>
 	<p>
-		<span class="tab"></span><button id="bouton_valider" type="button"><img alt="" src="./_img/bouton/parametre.png" /> Valider ce choix de niveaux.</button><label id="ajax_msg">&nbsp;</label>
+		<span class="tab"></span><button id="bouton_valider_cycles" type="button"><img alt="" src="./_img/bouton/parametre.png" /> Valider ce choix de cycles.</button><label id="ajax_msg_cycles">&nbsp;</label>
+	</p>
+</form>
+
+<hr />
+
+<h2>Niveaux annuels</h2>
+
+<form id="niveaux" action="">
+	<table class="form check">
+		<thead>
+			<tr><th class="nu"></th><th>Codage</th><th>Dénomination</th></tr>
+		</thead>
+		<tbody>
+			<?php
+			// Cases à cocher
+			$tab_check = explode(',',$_SESSION['NIVEAUX']);
+			// Lister les niveaux
+			$DB_TAB = DB_STRUCTURE_lister_niveaux_SACoche();
+			foreach($DB_TAB as $DB_ROW)
+			{
+				$checked  = (in_array($DB_ROW['niveau_id'],$tab_check)) ? ' checked="checked"' : '' ;
+				echo'<tr>';
+				echo'	<td class="nu"><input type="checkbox" name="f_tab_id" value="'.$DB_ROW['niveau_id'].'"'.$checked.' /></td>';
+				echo'	<td class="label">'.html($DB_ROW['niveau_ref']).'</td>';
+				echo'	<td class="label">'.html($DB_ROW['niveau_nom']).'</td>';
+				echo'</tr>';
+			}
+			?>
+		</tbody>
+	</table>
+	<p>
+		<span class="tab"></span><button id="bouton_valider_niveaux" type="button"><img alt="" src="./_img/bouton/parametre.png" /> Valider ce choix de niveaux.</button><label id="ajax_msg_niveaux">&nbsp;</label>
 	</p>
 </form>

@@ -665,6 +665,28 @@ function maj_base($version_actuelle)
 	}
 
 	//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	//	MAJ 2010-11-14 => 2010-11-15
+	//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	if($version_actuelle=='2010-11-14')
+	{
+		$version_actuelle = '2010-11-15';
+		// Niveaux 'longitudinaux' renommés en 'cycles' pour éviter la confusion avec la notion de palier du socle
+		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_niveau SET niveau_nom="Cycle 2 (GS-CE1)"  WHERE niveau_id=1' );
+		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_niveau SET niveau_nom="Cycle 3 (CE2-CM2)" WHERE niveau_id=2' );
+		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_niveau SET niveau_nom="Cycle Collège"     WHERE niveau_id=3' );
+		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_niveau SET niveau_nom="Cycle Lycée"       WHERE niveau_id=4' );
+		// Modification du nom d'un champ qui devient en conséquence inapproprié
+		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_niveau SET palier_id=1 WHERE palier_id>0' );
+		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_niveau CHANGE palier_id cycle_id TINYINT(1) UNSIGNED NOT NULL DEFAULT "0" COMMENT "Indique un niveau \'longitudinal\' nommé \'cycle\'."' );
+		// ajout d'un paramètre "cycles" disctinct du paramètre "paliers"
+		$DB_ROW = DB::queryRow(SACOCHE_STRUCTURE_BD_NAME , 'SELECT parametre_valeur FROM sacoche_parametre WHERE parametre_nom="paliers" LIMIT 1' );
+		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ("cycles" , "'.$DB_ROW['parametre_valeur'].'")' );
+		// mise à jour du champ "version_base" (obligatoire)
+		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_actuelle.'" WHERE parametre_nom="version_base" LIMIT 1' );
+	}
+
+	//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Log de l'action
 	//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

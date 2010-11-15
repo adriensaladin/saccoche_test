@@ -26,10 +26,11 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-$TITRE = "Paliers du socle évalués";
+$TITRE = "Paliers du socle";
+$VERSION_JS_FILE += 1;
 ?>
 
-<div class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__gestion_paliers_socle">DOC : Paliers du socle évalués</a></div>
+<div class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__gestion_paliers_socle">DOC : Paliers du socle</a></div>
 
 <hr />
 

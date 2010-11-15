@@ -27,7 +27,7 @@
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = "Créer / paramétrer les référentiels";
-$VERSION_JS_FILE += 8;
+$VERSION_JS_FILE += 9;
 ?>
 
 <script type="text/javascript">
@@ -58,10 +58,10 @@ $VERSION_JS_FILE += 8;
 		$methode_calcul_texte = ($_SESSION['CALCUL_LIMITE']==0) ? 'Moyenne des '.$nb_best.' meilleures saisies.' : 'Moyenne des '.$nb_best.' meilleures saisies parmi les '.$_SESSION['CALCUL_LIMITE'].' dernières.';
 	}
 	?>
-	var methode_calcul_langue      = "<?php echo $methode_calcul_langue ?>";
-	var methode_calcul_texte       = "<?php echo $methode_calcul_texte ?>";
-	var id_matiere_transversale    = "<?php echo ID_MATIERE_TRANSVERSALE ?>";
-	var listing_id_niveaux_paliers = "<?php echo LISTING_ID_NIVEAUX_PALIERS ?>";
+	var methode_calcul_langue     = "<?php echo $methode_calcul_langue ?>";
+	var methode_calcul_texte      = "<?php echo $methode_calcul_texte ?>";
+	var id_matiere_transversale   = "<?php echo ID_MATIERE_TRANSVERSALE ?>";
+	var listing_id_niveaux_cycles = "<?php echo LISTING_ID_NIVEAUX_CYCLES ?>";
 </script>
 
 <form id="form_instance" action="">
@@ -101,14 +101,18 @@ if(!$liste_matieres)
 {
 	echo'<p><span class="danger">Vous n\'êtes coordonnateur d\'aucune matière de cet établissement !</span></p>';
 }
-elseif(!$_SESSION['NIVEAUX'])
+elseif(!$_SESSION['NIVEAUX']) // normalement impossible
 {
 	echo'<p><span class="danger">Aucun niveau n\'est rattaché à l\'établissement !</span></p>';
+}
+elseif(!$_SESSION['CYCLES']) // normalement impossible
+{
+	echo'<p><span class="danger">Aucun cycle n\'est rattaché à l\'établissement !</span></p>';
 }
 else
 {
 	// On récupère la liste des niveaux utilisés par l'établissement
-	$DB_TAB = DB_STRUCTURE_lister_niveaux_etablissement($_SESSION['NIVEAUX'],$_SESSION['PALIERS']);
+	$DB_TAB = DB_STRUCTURE_lister_niveaux_etablissement($_SESSION['NIVEAUX'],$_SESSION['CYCLES']);
 	$nb_niveaux = count($DB_TAB);
 	foreach($DB_TAB as $DB_ROW)
 	{
@@ -118,7 +122,7 @@ else
 	$tab_partage = array('oui'=>'<img title="Référentiel partagé sur le serveur communautaire (MAJ le ◄DATE►)." alt="" src="./_img/partage1.gif" />','non'=>'<img title="Référentiel non partagé avec la communauté (choix du ◄DATE►)." alt="" src="./_img/partage0.gif" />','bof'=>'<img title="Référentiel dont le partage est sans intérêt (pas novateur)." alt="" src="./_img/partage0.gif" />','hs'=>'<img title="Référentiel dont le partage est sans objet (matière spécifique)." alt="" src="./_img/partage0.gif" />');
 	$DB_SQL = 'SELECT matiere_id,niveau_id,niveau_nom,referentiel_partage_etat,referentiel_partage_date,referentiel_calcul_methode,referentiel_calcul_limite FROM sacoche_referentiel ';
 	$DB_SQL.= 'LEFT JOIN sacoche_niveau USING (niveau_id) ';
-	$DB_SQL.= 'WHERE matiere_id IN('.$liste_matieres.') AND ( niveau_id IN('.$_SESSION['NIVEAUX'].') OR palier_id IN('.$_SESSION['PALIERS'].') ) ';
+	$DB_SQL.= 'WHERE matiere_id IN('.$liste_matieres.') AND ( niveau_id IN('.$_SESSION['CYCLES'].','.$_SESSION['NIVEAUX'].') ) ';
 	$DB_SQL.= 'ORDER BY matiere_id ASC, niveau_ordre ASC';
 	$DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , null);
 	if(count($DB_TAB))
@@ -156,7 +160,7 @@ else
 	$affichage = '<table class="comp_view"><thead><tr><th>Matière</th><th>Niveau</th><th>Référentiel</th><th>Méthode de calcul</th><th class="nu"></th></tr></thead><tbody>'."\r\n";
 	foreach($tab_matiere as $matiere_id => $tab)
 	{
-		$rowspan = ($matiere_id!=ID_MATIERE_TRANSVERSALE) ? $nb_niveaux : mb_substr_count($_SESSION['PALIERS'],',','UTF-8')+1 ;
+		$rowspan = ($matiere_id!=ID_MATIERE_TRANSVERSALE) ? $nb_niveaux : mb_substr_count($_SESSION['CYCLES'],',','UTF-8')+1 ;
 		$matiere_nom   = $tab['nom'];
 		$matiere_coord = $tab['coord'];
 		$matiere_perso = ($tab['partage']) ? 0 : 1 ;
@@ -165,7 +169,7 @@ else
 		$affichage_suite = false;
 		foreach($tab_niveau as $niveau_id => $niveau_nom)
 		{
-			if( ($matiere_id!=ID_MATIERE_TRANSVERSALE) || (strpos(LISTING_ID_NIVEAUX_PALIERS,'.'.$niveau_id.'.')!==FALSE) )
+			if( ($matiere_id!=ID_MATIERE_TRANSVERSALE) || (strpos(LISTING_ID_NIVEAUX_CYCLES,'.'.$niveau_id.'.')!==FALSE) )
 			{
 				$ids = 'ids_'.$matiere_perso.'_'.$matiere_id.'_'.$niveau_id;
 				if($matiere_coord)

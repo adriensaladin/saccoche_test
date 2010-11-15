@@ -41,7 +41,7 @@ $tab_paliers = explode( '.' , substr(LISTING_ID_PALIERS,1,-1) );
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 if($action=='Choix_paliers')
 {
-	$tab_id = array_intersect($tab_paliers,$tab_id);
+	$tab_id = array_intersect($tab_paliers,$tab_id); // On autorise qu'aucun palier ne soit coché (lycée, pas besoin de socle, etc.).
 	$listing_paliers = implode(',',$tab_id);
 	DB_STRUCTURE_modifier_parametres( array('paliers'=>$listing_paliers) );
 	// ne pas oublier de mettre aussi à jour la session

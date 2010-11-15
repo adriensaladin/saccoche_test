@@ -45,7 +45,7 @@ if($action=='Choix_cycles')
 	$tab_id = array_intersect($tab_cycles,$tab_id);
 	if(count($tab_id)==0)
 	{
-		exit('Erreur avec les données transmises !');
+		exit('Erreur avec les données transmises !'); // Besoin d'au moins un cycle pour la matière transversale.
 	}
 	$listing_cycles = implode(',',$tab_id);
 	DB_STRUCTURE_modifier_parametres( array('cycles'=>$listing_cycles) );
@@ -63,7 +63,7 @@ if($action=='Choix_niveaux')
 	$tab_id = array_diff($tab_id,$tab_cycles);
 	if(count($tab_id)==0)
 	{
-		exit('Erreur avec les données transmises !');
+		exit('Erreur avec les données transmises !'); // Besoin d'au moins un niveau pour y associer les classes et les groupes
 	}
 	$listing_niveaux = implode(',',$tab_id);
 	DB_STRUCTURE_modifier_parametres( array('niveaux'=>$listing_niveaux) );

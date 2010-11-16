@@ -687,6 +687,29 @@ function maj_base($version_actuelle)
 	}
 
 	//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	//	MAJ 2010-11-15 => 2010-11-16
+	//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	if($version_actuelle=='2010-11-15')
+	{
+		$version_actuelle = '2010-11-16';
+		// Double erreur dans la maj précédente : "cycle_id" au lieu de "niveau_cycle" et erreur dans la requête pour créer sacoche_niveau sur les nouvelles installations
+		$DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , 'SHOW TABLES FROM '.SACOCHE_STRUCTURE_BD_NAME.' LIKE "sacoche_niveau"');
+		if(count($DB_TAB))
+		{
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_niveau CHANGE cycle_id niveau_cycle TINYINT(1) UNSIGNED NOT NULL DEFAULT "0" COMMENT "Indique un niveau \'longitudinal\' nommé \'cycle\'."' );
+		}
+		else
+		{
+			$requetes = file_get_contents('./_sql/structure/sacoche_niveau.sql');
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , $requetes );
+			DB::close(SACOCHE_STRUCTURE_BD_NAME);
+		}
+		// mise à jour du champ "version_base" (obligatoire)
+		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_actuelle.'" WHERE parametre_nom="version_base" LIMIT 1' );
+	}
+
+	//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Log de l'action
 	//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

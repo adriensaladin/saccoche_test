@@ -7,8 +7,7 @@ CREATE TABLE sacoche_niveau (
 	niveau_ref   VARCHAR(5)  COLLATE utf8_unicode_ci NOT NULL DEFAULT "",
 	code_mef     CHAR(11)    COLLATE utf8_unicode_ci NOT NULL DEFAULT "" COMMENT "Masque à comparer avec le code_mef d'une classe (nomenclature Sconet).",
 	niveau_nom   VARCHAR(55) COLLATE utf8_unicode_ci NOT NULL DEFAULT "",
-	PRIMARY KEY (niveau_id),
-	KEY palier_id (palier_id)
+	PRIMARY KEY (niveau_id)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 ALTER TABLE sacoche_niveau DISABLE KEYS;

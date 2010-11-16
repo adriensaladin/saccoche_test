@@ -788,7 +788,7 @@ function DB_STRUCTURE_lister_paliers_SACoche()
 function DB_STRUCTURE_lister_niveaux_SACoche()
 {
 	$DB_SQL = 'SELECT * FROM sacoche_niveau ';
-	$DB_SQL.= 'WHERE cycle_id=0 ';
+	$DB_SQL.= 'WHERE niveau_cycle=0 ';
 	$DB_SQL.= 'ORDER BY niveau_ordre ASC';
 	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , null);
 }
@@ -803,7 +803,7 @@ function DB_STRUCTURE_lister_niveaux_SACoche()
 function DB_STRUCTURE_lister_cycles_SACoche()
 {
 	$DB_SQL = 'SELECT * FROM sacoche_niveau ';
-	$DB_SQL.= 'WHERE cycle_id=1 ';
+	$DB_SQL.= 'WHERE niveau_cycle=1 ';
 	$DB_SQL.= 'ORDER BY niveau_ordre ASC';
 	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , null);
 }
@@ -3233,7 +3233,7 @@ function DB_STRUCTURE_supprimer_mono_structure()
 /**
  * DB_STRUCTURE_creer_remplir_tables_structure
  * 
- * @param string $dossier_requetes   '...../structure/' ou '...../webmestre/'
+ * @param string $dossier_requetes   './_sql/structure/' ou './_sql/webmestre/'
  * @return void
  */
 

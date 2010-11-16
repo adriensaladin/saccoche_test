@@ -86,7 +86,7 @@ foreach($DB_TAB as $DB_ROW)
 }
 if( (isset($connexion_mode,$cas_serveur_host,$cas_serveur_port,$cas_serveur_root)==false) || ($connexion_mode!='cas') )
 {
-	affich_message_exit($titre='Données incompatibles',$contenu='Base de l\'établissement non configurée pour une connexion CAS.');
+	affich_message_exit($titre='Données incompatibles',$contenu='Base de l\'établissement non configurée par l\'administrateur pour une connexion CAS.');
 }
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-

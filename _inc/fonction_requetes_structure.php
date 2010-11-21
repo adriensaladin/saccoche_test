@@ -1836,7 +1836,6 @@ function DB_STRUCTURE_tester_utilisateur_idENT($user_id_ent,$user_id=false)
 	$DB_SQL = 'SELECT user_id FROM sacoche_user ';
 	$DB_SQL.= 'WHERE user_id_ent=:user_id_ent ';
 	$DB_VAR = array(':user_id_ent'=>$user_id_ent);
-	$DB_ROW = DB::queryRow(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 	if($user_id)
 	{
 		$DB_SQL.= 'AND user_id!=:user_id ';
@@ -1860,7 +1859,6 @@ function DB_STRUCTURE_tester_utilisateur_idGepi($user_id_gepi,$user_id=false)
 	$DB_SQL = 'SELECT user_id FROM sacoche_user ';
 	$DB_SQL.= 'WHERE user_id_gepi=:user_id_gepi ';
 	$DB_VAR = array(':user_id_gepi'=>$user_id_gepi);
-	$DB_ROW = DB::queryRow(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 	if($user_id)
 	{
 		$DB_SQL.= 'AND user_id!=:user_id ';
@@ -1885,7 +1883,6 @@ function DB_STRUCTURE_tester_utilisateur_numSconet($user_num_sconet,$user_profil
 	$DB_SQL = 'SELECT user_id FROM sacoche_user ';
 	$DB_SQL.= 'WHERE user_num_sconet=:user_num_sconet AND user_profil=:user_profil ';
 	$DB_VAR = array(':user_num_sconet'=>$user_num_sconet,':user_profil'=>$user_profil);
-	$DB_ROW = DB::queryRow(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 	if($user_id)
 	{
 		$DB_SQL.= 'AND user_id!=:user_id ';
@@ -1910,7 +1907,6 @@ function DB_STRUCTURE_tester_utilisateur_reference($user_reference,$user_profil,
 	$DB_SQL = 'SELECT user_id FROM sacoche_user ';
 	$DB_SQL.= 'WHERE user_reference=:user_reference AND user_profil=:user_profil ';
 	$DB_VAR = array(':user_reference'=>$user_reference,':user_profil'=>$user_profil);
-	$DB_ROW = DB::queryRow(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 	if($user_id)
 	{
 		$DB_SQL.= 'AND user_id!=:user_id ';
@@ -1934,7 +1930,6 @@ function DB_STRUCTURE_tester_login($user_login,$user_id=false)
 	$DB_SQL = 'SELECT user_id FROM sacoche_user ';
 	$DB_SQL.= 'WHERE user_login=:user_login ';
 	$DB_VAR = array(':user_login'=>$user_login);
-	$DB_ROW = DB::queryRow(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 	if($user_id)
 	{
 		$DB_SQL.= 'AND user_id!=:user_id ';

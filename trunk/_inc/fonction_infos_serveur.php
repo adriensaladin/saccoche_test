@@ -38,7 +38,7 @@ $tab_commentaires['version_mysql']        = 'Version 5.1 ou ultérieure conseill
 $tab_commentaires['version_sacoche_prog'] = 'Dernière version disponible : '.$tester_version;
 $tab_commentaires['version_sacoche_base'] = $complement.'Version attendue : '.VERSION_BASE;
 $tab_commentaires['max_execution_time']   = 'Par défaut 30 secondes.<br />Une valeur trop faible pourrait gêner les sauvegardes / restaurations de grosses bases.';
-$tab_commentaires['memory_limit']         = 'Par défaut 128Mo (bien suffisant).<br />Doit être plus grand que post_max_size (ci-dessous).';
+$tab_commentaires['memory_limit']         = 'Par défaut 128Mo (largement assez) mais souvent placée à 32Mo.<br />Doit être plus grand que post_max_size (ci-dessous).<br />Une valeur inférieure à 32Mo peut poser problème (pour générer des bilans ou sauvegarder/restaurer).';
 $tab_commentaires['post_max_size']        = 'Par défaut 8Mo.<br />Doit être plus grand que upload_max_filesize (ci-dessous).';
 $tab_commentaires['upload_max_filesize']  = 'Par défaut 2Mo.<br />A augmenter si on doit envoyer un fichier d\'une taille supérieure.';
 $tab_commentaires['max_allowed_packet']   = 'Par défaut 1Mo (1 048 576 octets).<br />Pour restaurer une sauvegarde, les fichiers contenus dans le zip ne doivent pas dépasser cette taille.';
@@ -68,8 +68,8 @@ function version_mysql()
 	*/
 	$HOST = defined('SACOCHE_STRUCTURE_BD_NAME') ? SACOCHE_STRUCTURE_BD_NAME : SACOCHE_WEBMESTRE_BD_NAME ;
 	// Avec une connexion classique style mysql_connect() on peut utiliser mysql_get_server_info() .
-	$DB_ROW = DB::queryRow($HOST , 'SELECT VERSION() AS version');
-	$version = $DB_ROW['version'];
+	$version = DB::queryCol($HOST , 'SELECT VERSION()');
+	// $version = $DB_ROW['version'];
 	$fin = strpos($version,'-');
 	return ($fin) ? substr($version,0,$fin) : $version;
 }

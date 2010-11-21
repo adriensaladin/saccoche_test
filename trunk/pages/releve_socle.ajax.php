@@ -47,7 +47,8 @@ $test_affichage_Validation  = ($groupe_id && count($tab_eleve_id) && $aff_socle_
 if( $palier_id && $palier_nom )
 {
 
-	ajouter_log_PHP( $log_objet='Demande de bilan' , $log_contenu=serialize($_POST) , $log_fichier=__FILE__ , $log_ligne=__LINE__ , $only_sesamath=true );
+	// Permet d'avoir des informations accessibles en cas d'erreur type « PHP Fatal error : Allowed memory size of ... bytes exhausted ».
+	// ajouter_log_PHP( $log_objet='Demande de bilan' , $log_contenu=serialize($_POST) , $log_fichier=__FILE__ , $log_ligne=__LINE__ , $only_sesamath=true );
 
 	$tab_pilier       = array();	// [pilier_id] => array(pilier_nom,pilier_nb_lignes);
 	$tab_section      = array();	// [pilier_id][section_id] => section_nom;
@@ -160,6 +161,16 @@ if( $palier_id && $palier_nom )
 			$tab_user_pilier[$DB_ROW['user_id']][$DB_ROW['pilier_id']] = array('etat'=>$DB_ROW['validation_pilier_etat'],'date'=>convert_date_mysql_to_french($DB_ROW['validation_pilier_date']),'info'=>$DB_ROW['validation_pilier_info']);
 		}
 	}
+
+	//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+	/* 
+	 * Libérer de la place mémoire car les scripts de bilans sont assez gourmands.
+	 * Supprimer $DB_TAB ne fonctionne pas si on ne force pas auparavant la fermeture de la connexion.
+	 * SebR devrait peut-être envisager d'ajouter une méthode qui libère cette mémoire, si c'est possible...
+	 */
+	//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+	DB::close(SACOCHE_STRUCTURE_BD_NAME);
+	unset($DB_TAB);
 
 	//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 	// Elaboration du bilan relatif au socle, en HTML et PDF => Tableaux et variables pour mémoriser les infos ; dans cette partie on ne fait que les calculs (aucun affichage)

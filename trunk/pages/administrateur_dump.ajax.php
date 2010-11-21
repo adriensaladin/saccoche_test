@@ -72,14 +72,19 @@ function version_base_fichier_svg()
 
 if($action=='sauvegarder')
 {
+	// Nombre d'enregistrements à récupérer par "SELECT * FROM table_nom" et donc ensuite inséré par "INSERT INTO table_nom VALUES (...),(...),(...)"
 	/*
-		Attention ! Augmenter le paramètre suivant peut poser de multiples problèmes !
+		Attention ! Augmenter le paramètre $limit peut poser de multiples problèmes !
 		D'une part, pour une restauration de secours via phpmyadmin, on risque de dépasser le temps d'exécution autorisé par PHP.
 		D'autre part, si la chaine dépasse 1Mo, soit environ 1 million de caractères, lors de l'INSERT multiple ça ne passe plus, même en utilisant mysql_query().
 		-> C'est dû au "max_allowed_packet = 1M" présent dans le my.ini
+		D'où le plafond à 10000 lignes.
+		Enfin, les tests ont montrés qu'il fallait aussi adapter la valeur en fonction de la variable serveur memory_limit.
+		-> pour 16Mo ça coince à partir de 7000 lignes
+		-> pour  8Mo ça coince à partir de 2800 lignes
 	*/
-	// Nombre d'enregistrements à récupérer par "SELECT * FROM table_nom" et donc ensuite inséré par "INSERT INTO table_nom VALUES (...),(...),(...)"
-	$limit = 10000;
+	$memory_limit = (int)ini_get('memory_limit'); // Par exemple 32M => 32 ; -1 si illimité.
+	$limit = ($memory_limit==-1) ? 10000 : min(10000,$memory_limit*250) ; // Ainsi 8 => 2000 ; 16 => 4000 ; 32 => 8000 ; -1 => 10000
 	// Créer ou vider le dossier temporaire
 	if(!is_dir($dossier_temp))
 	{

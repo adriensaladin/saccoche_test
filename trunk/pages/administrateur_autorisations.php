@@ -27,7 +27,7 @@
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = "Réglage des autorisations";
-$VERSION_JS_FILE += 2;
+$VERSION_JS_FILE += 3;
 
 $i_id = 0;	// Pour donner des ids aux checkbox et radio
 ?>
@@ -138,6 +138,29 @@ for($nb_demandes=0 ; $nb_demandes<10 ; $nb_demandes++)
 	<button id="initialiser_voir_score_bilan" type="button"><img alt="" src="./_img/bouton/retourner.png" /> Remettre les droits par défaut.</button>
 	<button id="valider_voir_score_bilan" type="button"><img alt="" src="./_img/bouton/parametre.png" /> Enregistrer ces droits.</button>
 	<label id="ajax_msg_voir_score_bilan">&nbsp;</label>
+</fieldset></form>
+
+<hr />
+
+<h4>Profils autorisés à voir et simuler l'algorithme de calcul d'un état d'acquisition</h4>
+
+<form id="form_voir_algorithme" action=""><fieldset>
+	<p><span class="tab"></span>
+	<?php
+	$tab_options = array( 'directeur'=>'Directeurs' , 'professeur'=>'Professeurs' , 'eleve'=>'Élèves' );
+	$tab_check = explode(',',$_SESSION['DROIT_VOIR_ALGORITHME']);
+	foreach($tab_options as $option_code => $option_txt)
+	{
+		$i_id++;
+		$checked = (in_array($option_code,$tab_check)) ? ' checked="checked"' : '' ;
+		echo'<label for="input_'.$i_id.'"><input type="checkbox" id="input_'.$i_id.'" name="droit_voir_algorithme" value="'.$option_code.'"'.$checked.' /> '.$option_txt.'</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
+	}
+	?>
+	</p>
+	<span class="tab"></span>
+	<button id="initialiser_voir_algorithme" type="button"><img alt="" src="./_img/bouton/retourner.png" /> Remettre les droits par défaut.</button>
+	<button id="valider_voir_algorithme" type="button"><img alt="" src="./_img/bouton/parametre.png" /> Enregistrer ces droits.</button>
+	<label id="ajax_msg_voir_algorithme">&nbsp;</label>
 </fieldset></form>
 
 <hr />

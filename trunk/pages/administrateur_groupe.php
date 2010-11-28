@@ -45,7 +45,7 @@ if(($SECTION=='eleve')||($SECTION=='professeur'))
 	$PAGE    = 'administrateur_'.$SECTION;
 	$SECTION = 'groupe';
 }
-elseif($SECTION=='classe-groupe')
+elseif($SECTION=='classe_groupe')
 {
 	// remplacer $PAGE pour piocher le bon fichier sans avoir besoin de le dupliquer, tout en gardant ce menu
 	$PAGE = 'administrateur_periode';

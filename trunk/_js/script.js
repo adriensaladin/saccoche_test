@@ -285,8 +285,8 @@ $(document).ready
 		format_liens('body');
 		infobulle();
 
-		// MENU - Styler les puces avec les images
-		$("#menu a").each
+		// MENU - Styler les puces avec les images ; span pourrait servir pour un menu inactif, mais il n'est pas utilisé.
+		$("#menu a , #menu span").each
 		(
 			function()
 			{

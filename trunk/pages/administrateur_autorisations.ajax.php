@@ -126,6 +126,34 @@ if($f_objet=='voir_score_bilan')
 }
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+//	Profils autorisés à voir et simuler l'algorithme de calcul d'un état d'acquisition
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
+if($f_objet=='voir_algorithme')
+{
+	$f_options = (isset($_POST['f_options'])) ? clean_texte($_POST['f_options']) : 'erreur';
+
+	if($f_options=='')
+	{
+		$test_options = true;
+	}
+	else
+	{
+		$nettoyage = str_replace( array('directeur','professeur','eleve') , '*' , $f_options );
+		$nettoyage = str_replace( '*,' , '' , $nettoyage.',' );
+		$test_options = ($nettoyage=='') ? true : false;
+	}
+
+	if($test_options)
+	{
+		DB_STRUCTURE_modifier_parametres( array('droit_voir_algorithme'=>$f_options) );
+		// ne pas oublier de mettre aussi à jour la session
+		$_SESSION['DROIT_VOIR_ALGORITHME'] = $f_options;
+		exit('ok');
+	}
+}
+
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 //	Profils autorisés à modifier leur mot de passe
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 

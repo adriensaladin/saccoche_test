@@ -285,7 +285,7 @@ function affich_note_html($note,$date,$info,$tri=false)
 {
 	global $tab_tri_note;
 	$insert_tri = ($tri) ? '<i>'.$tab_tri_note[$note].'</i>' : '';
-	$dossier = (in_array($note,array('RR','R','V','VV'))) ? $_SESSION['NOTE_IMAGE_STYLE'].'/h/' : 'commun/h/';
+	$dossier = (in_array($note,array('RR','R','V','VV'))) ? $_SESSION['NOTE_DOSSIER'].'/h/' : 'commun/h/';
 	$title = ( ($date!='') || ($info!='') ) ? ' title="'.html($info).'<br />'.affich_date($date).'"' : '' ;
 	return (in_array($note,array('REQ','-',''))) ? '&nbsp;' : $insert_tri.'<img'.$title.' alt="'.$note.'" src="./_img/note/'.$dossier.$note.'.gif" />';
 }

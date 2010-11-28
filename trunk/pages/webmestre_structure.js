@@ -37,8 +37,8 @@ $(document).ready
 		var mode = false;
 
 		// tri du tableau (avec jquery.tablesorter.js).
-		var sorting = [[2,0],[3,0],[4,0]];
-		$('table.bilan_synthese').tablesorter({ headers:{0:{sorter:false},9:{sorter:false}} });
+		var sorting = [[2,0],[3,0]];
+		$('table.bilan_synthese').tablesorter({ headers:{0:{sorter:false},7:{sorter:false}} });
 		function trier_tableau()
 		{
 			if($('table.bilan_synthese tbody tr').length)
@@ -77,12 +77,10 @@ $(document).ready
 			new_tr += '<td class="nu"></td>';
 			new_tr += '<td></td>';
 			new_tr += '<td><select id="f_geo" name="f_geo">'+options_geo+'</select></td>';
-			new_tr += '<td><input id="f_localisation" name="f_localisation" size="30" type="text" value="" /></td>';
-			new_tr += '<td><input id="f_denomination" name="f_denomination" size="20" type="text" value="" /></td>';
+			new_tr += '<td><input id="f_localisation" name="f_localisation" size="30" type="text" value="" />'+'<br />'+'<input id="f_denomination" name="f_denomination" size="30" type="text" value="" /></td>';
 			new_tr += '<td><input id="f_uai" name="f_uai" size="8" type="text" value="" /></td>';
-			new_tr += '<td><input id="f_contact_nom" name="f_contact_nom" size="10" type="text" value="" /></td>';
-			new_tr += '<td><input id="f_contact_prenom" name="f_contact_prenom" size="10" type="text" value="" /></td>';
-			new_tr += '<td><input id="f_contact_courriel" name="f_contact_courriel" size="30" type="text" value="" /></td>';
+			new_tr += '<td><input id="f_contact_nom" name="f_contact_nom" size="15" type="text" value="" />'+'<br />'+'<input id="f_contact_prenom" name="f_contact_prenom" size="15" type="text" value="" /></td>';
+			new_tr += '<td><input id="f_contact_courriel" name="f_contact_courriel" size="30" type="text" value="" />'+'<br />'+'<input id="f_courriel_envoi" name="f_courriel_envoi" type="checkbox" value="1" checked="checked" /><label for="f_courriel_envoi"> envoyer le courriel d\'inscription</label></td>';
 			new_tr += '<td class="nu"><input id="f_action" name="f_action" type="hidden" value="'+mode+'" /><q class="valider" title="Valider l\'ajout de cet établissement."></q><q class="annuler" title="Annuler l\'ajout de cet établissement."></q> <label id="ajax_msg">&nbsp;</label></td>';
 			new_tr += '</tr>';
 			// Ajouter cette nouvelle ligne
@@ -100,25 +98,31 @@ $(document).ready
 			mode = $(this).attr('class');
 			afficher_masquer_images_action('hide');
 			// Récupérer les informations de la ligne concernée
-			base_id          = $(this).parent().prev().prev().prev().prev().prev().prev().prev().prev().html();
-			geo              = $(this).parent().prev().prev().prev().prev().prev().prev().prev().html();
-			localisation     = $(this).parent().prev().prev().prev().prev().prev().prev().html();
-			denomination     = $(this).parent().prev().prev().prev().prev().prev().html();
-			uai              = $(this).parent().prev().prev().prev().prev().html();
-			contact_nom      = $(this).parent().prev().prev().prev().html();
-			contact_prenom   = $(this).parent().prev().prev().html();
+			base_id          = $(this).parent().prev().prev().prev().prev().prev().prev().html();
+			geo              = $(this).parent().prev().prev().prev().prev().prev().html();
+			structure        = $(this).parent().prev().prev().prev().prev().html();
+			uai              = $(this).parent().prev().prev().prev().html();
+			contact          = $(this).parent().prev().prev().html();
 			contact_courriel = $(this).parent().prev().html();
-			geo = geo.substring(9,geo.length); // enlever l'indice de tri caché
+			// séparer localisation et denomination
+			var reg = new RegExp('<br ?/?>',"g");	// Le navigateur semble transformer <br /> en <br> ...
+			tab_infos        = structure.split(reg);
+			localisation     = tab_infos[0];
+			denomination     = tab_infos[1];
+			// séparer contact_nom et contact_prenom
+			tab_infos        = contact.split(reg);
+			contact_nom      = tab_infos[0];
+			contact_prenom   = tab_infos[1];
+			// enlever l'indice de tri caché
+			geo = geo.substring(9,geo.length); 
 			// Fabriquer la ligne avec les éléments de formulaires
 			new_tr  = '<tr>';
 			new_tr += '<td class="nu"></td>';
 			new_tr += '<td>'+base_id+'<input id="f_base_id" name="f_base_id" type="hidden" value="'+base_id+'" /></td>';
 			new_tr += '<td><select id="f_geo" name="f_geo">'+options_geo.replace('>'+geo+'<',' selected="selected">'+geo+'<')+'</select></td>';
-			new_tr += '<td><input id="f_localisation" name="f_localisation" size="'+Math.max(localisation.length,30)+'" type="text" value="'+localisation+'" /></td>';
-			new_tr += '<td><input id="f_denomination" name="f_denomination" size="'+Math.max(denomination.length,20)+'" type="text" value="'+denomination+'" /></td>';
+			new_tr += '<td><input id="f_localisation" name="f_localisation" size="'+Math.max(localisation.length,30)+'" type="text" value="'+localisation+'" />'+'<br />'+'<input id="f_denomination" name="f_denomination" size="'+Math.max(denomination.length,30)+'" type="text" value="'+denomination+'" /></td>';
 			new_tr += '<td><input id="f_uai" name="f_uai" size="8" type="text" value="'+uai+'" /></td>';
-			new_tr += '<td><input id="f_contact_nom" name="f_contact_nom" size="'+Math.max(contact_nom.length,10)+'" type="text" value="'+contact_nom+'" /></td>';
-			new_tr += '<td><input id="f_contact_prenom" name="f_contact_prenom" size="'+Math.max(contact_prenom.length,10)+'" type="text" value="'+contact_prenom+'" /></td>';
+			new_tr += '<td><input id="f_contact_nom" name="f_contact_nom" size="'+Math.max(contact_nom.length,15)+'" type="text" value="'+contact_nom+'" />'+'<br />'+'<input id="f_contact_prenom" name="f_contact_prenom" size="'+Math.max(contact_prenom.length,15)+'" type="text" value="'+contact_prenom+'" /></td>';
 			new_tr += '<td><input id="f_contact_courriel" name="f_contact_courriel" size="'+Math.max(contact_courriel.length,30)+'" type="text" value="'+contact_courriel+'" /></td>';
 			new_tr += '<td class="nu"><input id="f_action" name="f_action" type="hidden" value="'+mode+'" /><q class="valider" title="Valider les modifications de cet établissement."></q><q class="annuler" title="Annuler les modifications de cet établissement."></q> <label id="ajax_msg">&nbsp;</label></td>';
 			new_tr += '</tr>';
@@ -343,25 +347,27 @@ $(document).ready
 			{
 				rules :
 				{
-					f_geo :              { required:true },
-					f_localisation :     { required:true , maxlength:100 },
-					f_denomination :     { required:true , maxlength:50 },
-					f_uai :              { required:false , uai_format:true , uai_clef:true },
-					f_contact_nom :      { required:true , maxlength:20 },
-					f_contact_prenom :   { required:true , maxlength:20 },
+					f_geo              : { required:true },
+					f_localisation     : { required:true , maxlength:100 },
+					f_denomination     : { required:true , maxlength:50 },
+					f_uai              : { required:false , uai_format:true , uai_clef:true },
+					f_contact_nom      : { required:true , maxlength:20 },
+					f_contact_prenom   : { required:true , maxlength:20 },
 					f_contact_courriel : { required:true , email:true , maxlength:60 },
-					f_admin_id :         { required:true }
+					f_courriel_envoi   : { required:false },
+					f_admin_id         : { required:true }
 				},
 				messages :
 				{
-					f_geo :              { required:"zone manquante" },
-					f_localisation :     { required:"localisation manquante" , maxlength:"100 caractères maximum" },
-					f_denomination :     { required:"dénomination manquante" , maxlength:"50 caractères maximum" },
-					f_uai :              { uai_format:"n°UAI invalide" , uai_clef:"n°UAI invalide" },
-					f_contact_nom :      { required:"nom manquant" , maxlength:"20 caractères maximum" },
-					f_contact_prenom :   { required:"prénom manquant" , maxlength:"20 caractères maximum" },
+					f_geo              : { required:"zone manquante" },
+					f_localisation     : { required:"localisation manquante" , maxlength:"100 caractères maximum" },
+					f_denomination     : { required:"dénomination manquante" , maxlength:"50 caractères maximum" },
+					f_uai              : { uai_format:"n°UAI invalide" , uai_clef:"n°UAI invalide" },
+					f_contact_nom      : { required:"nom manquant" , maxlength:"20 caractères maximum" },
+					f_contact_prenom   : { required:"prénom manquant" , maxlength:"20 caractères maximum" },
 					f_contact_courriel : { required:"courriel manquant" , email:"courriel invalide", maxlength:"60 caractères maximum" },
-					f_admin_id :         { required:"admin manquant" }
+					f_courriel_envoi   : { },
+					f_admin_id         : { required:"admin manquant" }
 				},
 				errorElement : "label",
 				errorClass : "erreur",

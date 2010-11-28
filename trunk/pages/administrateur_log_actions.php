@@ -30,6 +30,7 @@ $TITRE = "Log des actions sensibles";
 ?>
 
 <p class="astuce">Les actions sensibles sont enregistrées, ce qui permet aux administrateurs de rechercher quel compte est fautif en cas de problème...</p>
+<p class="astuce">Ces logs sont enregistrés dans un fichier (pas dans la base) ; ils sont donc propres à un serveur et ne sont pas transférés lors d'une sauvegarde / restauration de base.</p>
 
 <?php
 $fichier_log_chemin = './__private/log/base_'.$_SESSION['BASE'].'.php';

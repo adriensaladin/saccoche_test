@@ -80,6 +80,8 @@ if( ($objet=='notes') && $test_jeu && $note_texte_RR && $note_texte_R && $note_t
 	$_SESSION['NOTE_LEGENDE']['V']          = $note_legende_V;    $tab_parametres['note_legende_V']                 = $note_legende_V;
 	$_SESSION['NOTE_LEGENDE']['VV']         = $note_legende_VV;   $tab_parametres['note_legende_VV']                = $note_legende_VV;
 	DB_STRUCTURE_modifier_parametres( $tab_parametres );
+	// Enregistrer en session le CSS personnalisé
+	adapter_session_daltonisme();
 	actualiser_style_session();
 	exit('ok');
 }
@@ -106,6 +108,8 @@ if( ($objet=='acquis') && $test_color_NA && $test_color_VA && $test_color_A && $
 	$_SESSION['CSS_BACKGROUND-COLOR']['VA'] = $acquis_color_VA;   $tab_parametres['css_background-acquis_color_VA'] = $acquis_color_VA;
 	$_SESSION['CSS_BACKGROUND-COLOR']['A']  = $acquis_color_A;    $tab_parametres['css_background-acquis_color_NA'] = $acquis_color_NA;
 	DB_STRUCTURE_modifier_parametres( $tab_parametres );
+	// Enregistrer en session le CSS personnalisé
+	adapter_session_daltonisme();
 	actualiser_style_session();
 	exit('ok');
 }

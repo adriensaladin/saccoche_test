@@ -787,7 +787,15 @@ if( ($action=='COPY_id_argos_profs_TO_id_ent') || ($action=='COPY_id_argos_eleve
 	}
 	require($fichier); // Charge la fonction "recuperer_infos_LDAP()"
 	$Profil = ($action=='COPY_id_argos_profs_TO_id_ent') ? 'Professeurs' : 'Eleves' ;
-	$xml = @simplexml_load_string( recuperer_infos_LDAP($_SESSION['UAI'],$Profil) );
+	// Appeler le serveur LDAP et enregistrer le fichier temporairement pour aider au débuggage
+	$retour_Sarapis = recuperer_infos_LDAP($_SESSION['UAI'],$Profil);
+	Ecrire_Fichier( './__tmp/import/import_Sarapis_'.$_SESSION['UAI'].'_'.$Profil.'.xml' , $retour_Sarapis );
+	// Maintenant on regarde ce qu'il contient
+	if(mb_substr($retour_Sarapis,0,6)=='Erreur')
+	{
+		exit($retour_Sarapis); // Erreur retournée par cURL
+	}
+	$xml = @simplexml_load_string($retour_Sarapis);
 	if($xml===false)
 	{
 		exit('Erreur : le fichier récupéré n\'est pas un XML valide : problème possible de délai d\'attente trop long !');

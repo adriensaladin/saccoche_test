@@ -65,7 +65,7 @@ foreach($tab_note as $note)
 	$note_equiv_div .= '<div class="ti"><input type="text" class="hc" size="2" maxlength="3" id="note_texte_'.$note.'" name="note_texte_'.$note.'" value="'.html($_SESSION['NOTE_TEXTE'][$note]).'" /> <input type="text" size="30" maxlength="40" id="note_legende_'.$note.'" name="note_legende_'.$note.'" value="'.html($_SESSION['NOTE_LEGENDE'][$note]).'" /></div>';
 }
 
-// Degrés d'acquisitions calculés : couleurs de fond, équivalents textes, légende
+// États d'acquisitions calculés : couleurs de fond, équivalents textes, légende
 
 $tab_acquis = array('NA'=>'r','VA'=>'o','A'=>'v');
 $tab_defaut = array('NA'=>'#ff9999','VA'=>'#ffdd33','A'=>'#99ff99');
@@ -75,9 +75,9 @@ foreach($tab_acquis as $acquis => $class)
 {
 	$acquis_box .= '<div class="colorpicker '.$class.'">';
 	$acquis_box .= '<p><input type="text" class="hc" size="2" maxlength="3" id="acquis_texte_'.$note.'" name="acquis_texte_'.$acquis.'" value="'.html($_SESSION['ACQUIS_TEXTE'][$acquis]).'" /><br /><input type="text" class="hc" size="25" maxlength="40" id="acquis_legende_'.$acquis.'" name="acquis_legende_'.$acquis.'" value="'.html($_SESSION['ACQUIS_LEGENDE'][$acquis]).'" /></p>';
-	$acquis_box .= '<div><button type="button" name="color_'.$acquis.'" value="'.$_SESSION['CSS_BACKGROUND-COLOR'][$acquis].'"><img alt="" src="./_img/bouton/colorer.png" /> Couleur de l\'établissement.</button></div>';
+	$acquis_box .= '<div><button type="button" name="color_'.$acquis.'" value="'.$_SESSION['BACKGROUND_'.$acquis].'"><img alt="" src="./_img/bouton/colorer.png" /> Couleur de l\'établissement.</button></div>';
 	$acquis_box .= '<div><button type="button" name="color_'.$acquis.'" value="'.$tab_defaut[$acquis].'"><img alt="" src="./_img/bouton/colorer.png" /> Couleur par défaut.</button></div>';
-	$acquis_box .= '<p><input type="text" class="stretch" size="8" id="acquis_color_'.$acquis.'" name="acquis_color_'.$acquis.'" value="'.$_SESSION['CSS_BACKGROUND-COLOR'][$acquis].'" style="background-color:'.$_SESSION['CSS_BACKGROUND-COLOR'][$acquis].'" /><br /></p>';
+	$acquis_box .= '<p><input type="text" class="stretch" size="8" id="acquis_color_'.$acquis.'" name="acquis_color_'.$acquis.'" value="'.$_SESSION['BACKGROUND_'.$acquis].'" style="background-color:'.$_SESSION['BACKGROUND_'.$acquis].'" /><br /></p>';
 	$acquis_box .= '</div>';
 }
 

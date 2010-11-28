@@ -36,6 +36,7 @@ $uai              = (isset($_POST['f_uai']))              ? clean_uai($_POST['f_
 $contact_nom      = (isset($_POST['f_contact_nom']))      ? clean_nom($_POST['f_contact_nom'])           : '';
 $contact_prenom   = (isset($_POST['f_contact_prenom']))   ? clean_prenom($_POST['f_contact_prenom'])     : '';
 $contact_courriel = (isset($_POST['f_contact_courriel'])) ? clean_courriel($_POST['f_contact_courriel']) : '';
+$courriel_envoi   = (isset($_POST['f_courriel_envoi']))   ? clean_entier($_POST['f_courriel_envoi'])     : 0;
 $admin_id         = (isset($_POST['f_admin_id']))         ? clean_entier($_POST['f_admin_id'])           : 0;
 
 // On récupère les zones géographiques pour 2 raisons :
@@ -53,6 +54,7 @@ if( ($action!='supprimer') && ($action!='lister_admin') && ($action!='initialise
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 //	Ajouter un nouvel établissement
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
 if( ($action=='ajouter') && isset($tab_geo[$geo_id]) && $localisation && $denomination && $contact_nom && $contact_prenom && $contact_courriel )
 {
 	if($uai)
@@ -68,10 +70,17 @@ if( ($action=='ajouter') && isset($tab_geo[$geo_id]) && $localisation && $denomi
 	// Créer la base de données de la structure
 	// Créer un utilisateur pour la base de données de la structure et lui attribuer ses droits
 	$base_id = DB_WEBMESTRE_ajouter_structure($base_id=0,$geo_id,$uai,$localisation,$denomination,$contact_nom,$contact_prenom,$contact_courriel);
+	// Créer un dossier pour accueillir les vignettes verticales avec l'identité des élèves
+	Creer_Dossier('./__tmp/badge/'.$base_id);
+	Ecrire_Fichier('./__tmp/badge/'.$base_id.'/index.htm','Circulez, il n\'y a rien à voir par ici !');
 	// Lancer les requêtes pour créer et remplir les tables
 	charger_parametres_mysql_supplementaires($base_id);
 	DB_STRUCTURE_creer_remplir_tables_structure('./_sql/structure/');
-	@sleep(1);	// Il est arrivé que la fonction DB_STRUCTURE_modifier_parametres() retourne une erreur disant que la table n'existe pas, comme si les requêtes de DB_STRUCTURE_creer_remplir_tables_structure() étaient en cache, et pas encore toutes passées (parcequ'au final, quand on va voir la base, toutes les tables sont bien là). Est-ce que c'est possible au vu du fonctionnement de la classe de connexion ? Et, bien sûr, y a-t-il quelque chose à faire pour éviter ce problème ? En attendant une réponse de SebR, j'ai tenté de mettre ce sleep(1)...
+	// Il est arrivé que la fonction DB_STRUCTURE_modifier_parametres() retourne une erreur disant que la table n'existe pas.
+	// Comme si les requêtes de DB_STRUCTURE_creer_remplir_tables_structure() étaient en cache, et pas encore toutes passées (parcequ'au final, quand on va voir la base, toutes les tables sont bien là).
+	// Est-ce que c'est possible au vu du fonctionnement de la classe de connexion ? Et, bien sûr, y a-t-il quelque chose à faire pour éviter ce problème ?
+	// En attendant une réponse de SebR, j'ai mis ce sleep(1)... sans trop savoir si cela pouvait aider...
+	@sleep(1);
 	// Personnaliser certains paramètres de la structure
 	$tab_parametres = array();
 	$tab_parametres['version_base'] = VERSION_BASE;
@@ -82,34 +91,31 @@ if( ($action=='ajouter') && isset($tab_geo[$geo_id]) && $localisation && $denomi
 	$password = fabriquer_mdp();
 	$user_id = DB_STRUCTURE_ajouter_utilisateur($num_sconet=0,$reference='','administrateur',$contact_nom,$contact_prenom,$login='admin',$password,$classe_id=0,$id_ent='',$id_gepi='');
 	// Et lui envoyer un courriel
-	$texte = 'Bonjour '.$contact_prenom.' '.$contact_nom.'.'."\r\n\r\n";
-	$texte.= 'Je viens de créer une base SACoche pour l\'établissement "'.$denomination.'" sur le site hébergé par "'.HEBERGEUR_DENOMINATION.'". Pour accéder au site sans avoir besoin de sélectionner votre établissement, utilisez le lien suivant :'."\r\n".SERVEUR_ADRESSE.'?id='.$base_id."\r\n\r\n";
-	$texte.= 'Vous êtes maintenant le contact de votre établissement pour cette installation de SACoche.'."\r\n".'Pour modifier l\'identité de la personne référente, il suffit de me communiquer ses coordonnées.'."\r\n\r\n";
-	$texte.= 'Un premier compte administrateur a été créé. Pour se connecter comme administrateur, utiliser le lien'."\r\n".SERVEUR_ADRESSE.'?id='.$base_id.'&admin'."\r\n".'et entrer les identifiants'."\r\n".'nom d\'utilisateur :   admin'."\r\n".'mot de passe :   '.$password."\r\n\r\n";
-	$texte.= 'Ces identifiants sont modifiables depuis l\'espace d\'administration.'."\r\n".'Un administrateur peut déléguer son rôle en créant d\'autres administrateurs.'."\r\n\r\n";
-	$texte.= 'Ce logiciel est mis à votre disposition gratuitement, mais sans garantie, conformément à la licence libre GNU GPL3.'."\r\n".'De plus les administrateurs et les professeurs sont responsables de toute conséquence d\'une mauvaise manipulation de leur part.'."\r\n\r\n";
-	$texte.= 'Merci de consulter la documentation disponible depuis le site du projet :'."\r\n".SERVEUR_PROJET."\r\n\r\n";
-	$texte.= 'Cordialement'."\r\n";
-	$texte.= WEBMESTRE_PRENOM.' '.WEBMESTRE_NOM."\r\n\r\n";
-	$courriel_bilan = true;
-	$courriel_bilan = envoyer_webmestre_courriel($contact_courriel,'Création compte',$texte,false);
-	if(!$courriel_bilan)
+	if($courriel_envoi)
 	{
-		exit('Erreur lors de l\'envoi du courriel !');
+		$texte = 'Bonjour '.$contact_prenom.' '.$contact_nom.'.'."\r\n\r\n";
+		$texte.= 'Je viens de créer une base SACoche pour l\'établissement "'.$denomination.'" sur le site hébergé par "'.HEBERGEUR_DENOMINATION.'". Pour accéder au site sans avoir besoin de sélectionner votre établissement, utilisez le lien suivant :'."\r\n".SERVEUR_ADRESSE.'?id='.$base_id."\r\n\r\n";
+		$texte.= 'Vous êtes maintenant le contact de votre établissement pour cette installation de SACoche.'."\r\n".'Pour modifier l\'identité de la personne référente, il suffit de me communiquer ses coordonnées.'."\r\n\r\n";
+		$texte.= 'Un premier compte administrateur a été créé. Pour se connecter comme administrateur, utiliser le lien'."\r\n".SERVEUR_ADRESSE.'?id='.$base_id.'&admin'."\r\n".'et entrer les identifiants'."\r\n".'nom d\'utilisateur :   admin'."\r\n".'mot de passe :   '.$password."\r\n\r\n";
+		$texte.= 'Ces identifiants sont modifiables depuis l\'espace d\'administration.'."\r\n".'Un administrateur peut déléguer son rôle en créant d\'autres administrateurs.'."\r\n\r\n";
+		$texte.= 'Ce logiciel est mis à votre disposition gratuitement, mais sans garantie, conformément à la licence libre GNU GPL3.'."\r\n".'De plus les administrateurs et les professeurs sont responsables de toute conséquence d\'une mauvaise manipulation de leur part.'."\r\n\r\n";
+		$texte.= 'Merci de consulter la documentation disponible depuis le site du projet :'."\r\n".SERVEUR_PROJET."\r\n\r\n";
+		$texte.= 'Cordialement'."\r\n";
+		$texte.= WEBMESTRE_PRENOM.' '.WEBMESTRE_NOM."\r\n\r\n";
+		$courriel_bilan = envoyer_webmestre_courriel($contact_courriel,'Création compte',$texte,false);
+		if(!$courriel_bilan)
+		{
+			exit('Erreur lors de l\'envoi du courriel !');
+		}
 	}
-	// Créer un dossier pour accueillir les vignettes verticales avec l'identité des élèves
-	Creer_Dossier('./__tmp/badge/'.$base_id);
-	Ecrire_Fichier('./__tmp/badge/'.$base_id.'/index.htm','Circulez, il n\'y a rien à voir par ici !');
 	// On affiche le retour
 	echo'<tr id="id_'.$base_id.'" class="new">';
 	echo	'<td class="nu"><input type="checkbox" name="f_ids" value="'.$base_id.'" /></td>';
 	echo	'<td class="label">'.$base_id.'</td>';
 	echo	'<td class="label"><i>'.sprintf("%02u",$tab_geo[$geo_id]['ordre']).'</i>'.html($tab_geo[$geo_id]['nom']).'</td>';
-	echo	'<td class="label">'.html($localisation).'</td>';
-	echo	'<td class="label">'.html($denomination).'</td>';
+	echo	'<td class="label">'.html($localisation).'<br />'.html($denomination).'</td>';
 	echo	'<td class="label">'.html($uai).'</td>';
-	echo	'<td class="label">'.html($contact_nom).'</td>';
-	echo	'<td class="label">'.html($contact_prenom).'</td>';
+	echo	'<td class="label">'.html($contact_nom).'<br />'.html($contact_prenom).'</td>';
 	echo	'<td class="label">'.html($contact_courriel).'</td>';
 	echo	'<td class="nu">';
 	echo		'<q class="modifier" title="Modifier cet établissement."></q>';
@@ -117,12 +123,14 @@ if( ($action=='ajouter') && isset($tab_geo[$geo_id]) && $localisation && $denomi
 	echo		'<q class="supprimer" title="Supprimer cet établissement."></q>';
 	echo	'</td>';
 	echo'</tr>';
+	exit();
 }
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 //	Modifier un établissement existant
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-else if( ($action=='modifier') && $base_id && isset($tab_geo[$geo_id]) && $localisation && $denomination && $contact_nom && $contact_prenom && $contact_courriel )
+
+if( ($action=='modifier') && $base_id && isset($tab_geo[$geo_id]) && $localisation && $denomination && $contact_nom && $contact_prenom && $contact_courriel )
 {
 		// Vérifier que le n°UAI est disponible
 	if($uai)
@@ -144,23 +152,23 @@ else if( ($action=='modifier') && $base_id && isset($tab_geo[$geo_id]) && $local
 	echo'<td class="nu"><input type="checkbox" name="f_ids" value="'.$base_id.'" /></td>';
 	echo'<td class="label">'.$base_id.'</td>';
 	echo'<td class="label"><i>'.sprintf("%02u",$tab_geo[$geo_id]['ordre']).'</i>'.html($tab_geo[$geo_id]['nom']).'</td>';
-	echo'<td class="label">'.html($localisation).'</td>';
-	echo'<td class="label">'.html($denomination).'</td>';
+	echo'<td class="label">'.html($localisation).'<br />'.html($denomination).'</td>';
 	echo'<td class="label">'.html($uai).'</td>';
-	echo'<td class="label">'.html($contact_nom).'</td>';
-	echo'<td class="label">'.html($contact_prenom).'</td>';
+	echo'<td class="label">'.html($contact_nom).'<br />'.html($contact_prenom).'</td>';
 	echo'<td class="label">'.html($contact_courriel).'</td>';
 	echo'<td class="nu">';
 	echo	'<q class="modifier" title="Modifier cet établissement."></q>';
 	echo	'<q class="initialiser_mdp" title="Générer un nouveau mdp d\'un admin."></q>';
 	echo	'<q class="supprimer" title="Supprimer cet établissement."></q>';
 	echo'</td>';
+	exit();
 }
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 //	Charger la liste des administrateurs d'un établissement pour remplir un select (liste d'options)
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-else if( ($action=='lister_admin') && $base_id )
+
+if( ($action=='lister_admin') && $base_id )
 {
 	charger_parametres_mysql_supplementaires($base_id);
 	exit( afficher_select(DB_STRUCTURE_OPT_administrateurs_etabl() , $select_nom=false , $option_first='non' , $selection=false , $optgroup='non') );
@@ -169,7 +177,8 @@ else if( ($action=='lister_admin') && $base_id )
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 //	Modifier le mdp d'un administrateur et envoyer les identifiants par courriel au contact
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-else if( ($action=='initialiser_mdp') && $base_id && $admin_id )
+
+if( ($action=='initialiser_mdp') && $base_id && $admin_id )
 {
 	charger_parametres_mysql_supplementaires($base_id);
 	// Informations sur la structure, notamment coordonnées du contact.
@@ -212,19 +221,23 @@ else if( ($action=='initialiser_mdp') && $base_id && $admin_id )
 	echo'<ok>';
 	echo'Le mot de passe de '.html($admin_prenom).' '.html($admin_nom).',<BR />administrateur de l\'établissement '.html($denomination).',<BR />vient d\'être réinitialisé.<BR /><BR />';
 	echo'Les nouveaux identifiants ont été envoyés au contact '.html($contact_prenom).' '.html($contact_nom).',<BR />à son adresse de courriel '.html($contact_courriel).'.';
+	exit();
 }
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 //	Supprimer une structure existante
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-else if( ($action=='supprimer') && $base_id )
+
+if( ($action=='supprimer') && $base_id )
 {
 	DB_WEBMESTRE_supprimer_multi_structure($base_id);
-	echo'<ok>';
+	exit('<ok>');
 }
 
-else
-{
-	echo'Erreur avec les données transmises !';
-}
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+//	On ne devrait pas en arriver là...
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
+exit('Erreur avec les données transmises !');
+
 ?>

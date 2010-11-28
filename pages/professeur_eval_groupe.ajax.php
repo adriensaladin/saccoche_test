@@ -455,7 +455,7 @@ if( ($action=='voir') && $devoir_id && $groupe_type && $groupe_id && $date && $d
 		}
 	}
 	// ajouter le contenu
-	$tab_dossier = array( ''=>'' , 'RR'=>$_SESSION['NOTE_IMAGE_STYLE'].'/h/' , 'R'=>$_SESSION['NOTE_IMAGE_STYLE'].'/h/' , 'V'=>$_SESSION['NOTE_IMAGE_STYLE'].'/h/' , 'VV'=>$_SESSION['NOTE_IMAGE_STYLE'].'/h/' , 'ABS'=>'commun/h/' , 'NN'=>'commun/h/' , 'DISP'=>'commun/h/' , 'REQ'=>'' );
+	$tab_dossier = array( ''=>'' , 'RR'=>$_SESSION['NOTE_DOSSIER'].'/h/' , 'R'=>$_SESSION['NOTE_DOSSIER'].'/h/' , 'V'=>$_SESSION['NOTE_DOSSIER'].'/h/' , 'VV'=>$_SESSION['NOTE_DOSSIER'].'/h/' , 'ABS'=>'commun/h/' , 'NN'=>'commun/h/' , 'DISP'=>'commun/h/' , 'REQ'=>'' );
 	$DB_TAB = DB_STRUCTURE_lister_saisies_devoir($devoir_id,$with_REQ=true);
 	foreach($DB_TAB as $DB_ROW)
 	{
@@ -600,7 +600,7 @@ if( ($action=='voir_repart') && $devoir_id && $groupe_type && $groupe_id && $dat
 		$tab_item_id[$DB_ROW['item_id']] = array( $DB_ROW['item_ref'].$texte_socle , $DB_ROW['item_nom'] );
 	}
 	// tableaux utiles ou pour conserver les infos
-	$tab_dossier = array( 'RR'=>$_SESSION['NOTE_IMAGE_STYLE'].'/h/' , 'R'=>$_SESSION['NOTE_IMAGE_STYLE'].'/h/' , 'V'=>$_SESSION['NOTE_IMAGE_STYLE'].'/h/' , 'VV'=>$_SESSION['NOTE_IMAGE_STYLE'].'/h/' );
+	$tab_dossier = array( 'RR'=>$_SESSION['NOTE_DOSSIER'].'/h/' , 'R'=>$_SESSION['NOTE_DOSSIER'].'/h/' , 'V'=>$_SESSION['NOTE_DOSSIER'].'/h/' , 'VV'=>$_SESSION['NOTE_DOSSIER'].'/h/' );
 	$tab_init_nominatif   = array('RR'=>array(),'R'=>array(),'V'=>array(),'VV'=>array());
 	$tab_init_quantitatif = array('RR'=>0 ,'R'=>0 ,'V'=>0 ,'VV'=>0 );
 	$tab_repartition_nominatif   = array();

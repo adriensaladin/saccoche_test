@@ -26,7 +26,7 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-$VERSION_JS_FILE += 7;
+$VERSION_JS_FILE += 8;
 
 // Élément de formulaire "f_geo" pour le choix d'une zone géographique
 $options_geo = '';
@@ -44,18 +44,16 @@ foreach($DB_TAB as $DB_ROW)
 </script>
 
 <form id="structures" action="">
-	<table class="form bilan_synthese">
+	<table class="form bilan_synthese comp_view">
 		<thead>
 			<tr>
 				<th class="nu"></th>
 				<th>Id</th>
 				<th>Zone géo</th>
-				<th>Structure Localisation</th>
-				<th>Structure Dénomination</th>
-				<th>n°UAI</th>
-				<th>Contact Nom</th>
-				<th>Contact Prénom</th>
-				<th>Contact Courriel</th>
+				<th>Localisation<br />Dénomination</th>
+				<th>UAI</th>
+				<th>Nom<br />Prénom</th>
+				<th>Courriel</th>
 				<th class="nu"><q class="ajouter" title="Ajouter un établissement."></q></th>
 			</tr>
 		</thead>
@@ -70,11 +68,9 @@ foreach($DB_TAB as $DB_ROW)
 				echo	'<td class="nu"><input type="checkbox" name="f_ids" value="'.$DB_ROW['sacoche_base'].'" /></td>';
 				echo	'<td class="label">'.$DB_ROW['sacoche_base'].'</td>';
 				echo	'<td class="label"><i>'.sprintf("%02u",$DB_ROW['geo_ordre']).'</i>'.html($DB_ROW['geo_nom']).'</td>';
-				echo	'<td class="label">'.html($DB_ROW['structure_localisation']).'</td>';
-				echo	'<td class="label">'.html($DB_ROW['structure_denomination']).'</td>';
+				echo	'<td class="label">'.html($DB_ROW['structure_localisation']).'<br />'.html($DB_ROW['structure_denomination']).'</td>';
 				echo	'<td class="label">'.html($DB_ROW['structure_uai']).'</td>';
-				echo	'<td class="label">'.html($DB_ROW['structure_contact_nom']).'</td>';
-				echo	'<td class="label">'.html($DB_ROW['structure_contact_prenom']).'</td>';
+				echo	'<td class="label">'.html($DB_ROW['structure_contact_nom']).'<br />'.html($DB_ROW['structure_contact_prenom']).'</td>';
 				echo	'<td class="label">'.html($DB_ROW['structure_contact_courriel']).'</td>';
 				echo	'<td class="nu">';
 				echo		'<q class="modifier" title="Modifier cet établissement."></q>';

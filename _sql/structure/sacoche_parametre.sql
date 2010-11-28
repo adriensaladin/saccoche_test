@@ -32,6 +32,7 @@ INSERT INTO sacoche_parametre VALUES
 ( "droit_validation_pilier"  , "directeur,profprincipal" ),
 ( "droit_voir_referentiels"  , "directeur,professeur,eleve" ),
 ( "droit_voir_score_bilan"   , "directeur,professeur,eleve" ),
+( "droit_voir_algorithme"    , "directeur,professeur,eleve" ),
 ( "duree_inactivite"         , "30" ),
 ( "calcul_valeur_RR"         , "0" ),
 ( "calcul_valeur_R"          , "33" ),

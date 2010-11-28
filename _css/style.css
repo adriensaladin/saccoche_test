@@ -82,7 +82,8 @@ del{text-decoration:line-through;color:#666}
 #cadre_haut #menu {position:absolute;bottom:-2px;left:3px;right:0}
 
 #cadre_haut #info span.button{display:inline-block;padding:1px 3px;margin:1px 0;background:#DDF;border:1px solid #99F;color:#333}
-#cadre_haut #menu a {display:block;border:1px solid #77F;color:#FFF;background:#77F;padding:1px 1px 1px 19px;margin:1px;height:16px}
+#cadre_haut #menu a    {display:block;border:1px solid #77F;color:#FFF;background:#77F;padding:1px 1px 1px 19px;margin:1px;height:16px}
+#cadre_haut #menu span {display:block;border:1px solid #77F;color:#DDF;background:#AAF;padding:1px 1px 1px 19px;margin:1px;height:16px} /* test inutilisé pour un menu inactif */
 #cadre_haut #menu a.menu {background:#77F url(../_img/menu/menu.png) no-repeat 1px 1px} /* les images sont ajoutés en javascript, sauf pour le 1er niveau, pour un affichage immédiat */
 #cadre_haut #menu a:hover {background-color:#99F;color:#FFF;text-decoration:none}
 #cadre_haut #menu li {float:left;}
@@ -237,16 +238,18 @@ table.scor_eval tbody.v td input.DISP {background:#FFF url('../_img/note/commun/
 table.scor_eval tbody.h td input.X    {background:#FFF url('../_img/note/commun/h/X.gif')    no-repeat center center;}
 table.scor_eval tbody.v td input.X    {background:#FFF url('../_img/note/commun/v/X.gif')    no-repeat center center;}
 table.scor_eval tbody   td input.REQ  {background:#FFF url('../_img/note/REQ.gif')           no-repeat center center;}
+/* Défini suivant les préférences de l'établissement : cf actualiser_style_session() dans fonction_divers.php */
+/*
+table.scor_eval tbody.- td input.--   {background:#FFF url("./_img/note/-----/h/RR.gif")     no-repeat center center;}
+*/
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 /* Couleur de fond pour indiquer A / VA / NA                                                           */
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-/* Commenté car redéfini suivant les préférences de l'établissement */
+/* Défini suivant les préférences de l'établissement : cf actualiser_style_session() dans fonction_divers.php */
 /*
-table th.r , table td.r , div.r , span.r , label.r {background-color:#F99}
-table th.o , table td.o , div.o , span.o , label.o {background-color:#FD3}
-table th.v , table td.v , div.v , span.v , label.v {background-color:#9F9}
+table th.- , table td.- , div.- , span.- , label.- {background-color:#---}
 */
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
@@ -275,28 +278,20 @@ table.bilan th.domaine {background:#99F;}
 #tableau_validation th.nu {background:#EAEAFF;border:0;text-align:left;font-weight:normal}
 #tableau_validation thead th{vertical-align:bottom}
 #tableau_validation tbody th {height:15px}
-#tableau_validation tbody th.down0 {background:#F99 url(../_img/socle/arrow_down.gif) no-repeat center center;opacity:0.2}
-#tableau_validation tbody th.down1 {background:#9F9 url(../_img/socle/arrow_down.gif) no-repeat center center;opacity:0.2}
-#tableau_validation tbody th.down2 {background:#BBF url(../_img/socle/arrow_down.gif) no-repeat center center;opacity:0.2}
-#tableau_validation tbody th.left0 {background:#F99 url(../_img/socle/arrow_left.gif) no-repeat center center;opacity:0.2}
-#tableau_validation tbody th.left1 {background:#9F9 url(../_img/socle/arrow_left.gif) no-repeat center center;opacity:0.2}
-#tableau_validation tbody th.left2 {background:#BBF url(../_img/socle/arrow_left.gif) no-repeat center center;opacity:0.2}
-#tableau_validation tbody th.diag0 {background:#F99 url(../_img/socle/arrow_diag.gif) no-repeat center center;opacity:0.2}
-#tableau_validation tbody th.diag1 {background:#9F9 url(../_img/socle/arrow_diag.gif) no-repeat center center;opacity:0.2}
-#tableau_validation tbody th.diag2 {background:#BBF url(../_img/socle/arrow_diag.gif) no-repeat center center;opacity:0.2}
-th.v0 , td.v0 {background:#F99}
-th.v1 , td.v1 {background:#9F9}
-th.v2 , td.v2 {background:#BBF}
-#tableau_validation tbody td[lang=lock] {background:#BBF url(../_img/socle/lock.gif) no-repeat center center;} /* surclasse une classe v0 ou v1 ou v2 car défini après */
 #tableau_validation tbody th:hover {opacity:1;cursor:pointer}
 #tableau_validation tbody th.nu:hover {cursor:default}
 #tableau_validation tbody td:hover {cursor:pointer}
-#zone_information .v0 {background:#F99;padding:0 1em;margin-right:1ex}
-#zone_information .v1 {background:#9F9;padding:0 1em;margin-right:1ex}
-#zone_information .v2 {background:#BBF;padding:0 1em;margin-right:1ex}
+/* Défini suivant les préférences de l'établissement : cf actualiser_style_session() dans fonction_divers.php */
+/*
+#tableau_validation tbody th.----- {background:#--- url(./_img/socle/arrow_----.gif) no-repeat center center;opacity:0.2}
+th.v- , td.v- {background:#---}
+#zone_information .v- {background:#---;padding:0 1em;margin-right:1ex}
+#tableau_validation tbody td[lang=lock] {background:#BBF url(./_img/socle/lock.gif) no-repeat center center;}
+*/
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 /* Format du tableau admin présentant les référentiels de compétences utilisés                         */
+/* Format du tableau webmestre de gestion des établissements                                           */
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 table.comp_view td {vertical-align:middle}

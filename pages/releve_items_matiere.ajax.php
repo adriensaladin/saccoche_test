@@ -150,7 +150,7 @@ if( $orientation && $couleur && $legende && $marge_min && $cases_nb && $cases_la
 		if(in_array('bulletin',$tab_type))
 		{
 			echo'<ul class="puce">';
-			echo'<li><a class="lien_ext" href="'.$dossier.$fichier_lien.'_bulletin.csv">Bulletin &rarr; Récupérer pour importer dans GEPI (format <em>csv</em>).</a></li>';
+			echo'<li><a class="lien_ext" href="'.$dossier.$fichier_lien.'_bulletin.csv">Bulletin &rarr; Récupérer pour importer dans GEPI (format <em>csv</em> <img alt="" src="./_img/bulle_aide.png" title="Si le navigateur ouvre le fichier au lieu de l\'enregistrer, cliquer avec le bouton droit et choisir «&nbsp;Enregistrer&nbsp;sous...&nbsp;»." />).</a></li>';
 			echo'<li><a class="lien_ext" href="./releve-html.php?fichier='.$fichier_lien.'_bulletin">Bulletin &rarr; Explorer / Manipuler (format <em>html</em>).</a></li>';
 			echo'</ul><p />';
 		}

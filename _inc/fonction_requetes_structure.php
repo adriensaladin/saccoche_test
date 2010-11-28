@@ -2271,7 +2271,7 @@ function DB_STRUCTURE_recopier_identifiants($champ_depart,$champ_arrive)
  * DB_STRUCTURE_modifier_utilisateur (on ne touche pas à 'user_profil' ni à 'connexion_date')
  * 
  * @param int     $user_id
- * @param array   array(':num_sconet'=>$val, ':reference'=>$val , ':nom'=>$val , ':prenom'=>$val , ':login'=>$val , ':password'=>$val , ':statut'=>$val , ':classe'=>$val , ':id_ent'=>$val , ':id_gepi'=>$val );
+ * @param array   array(':num_sconet'=>$val, ':reference'=>$val , ':nom'=>$val , ':prenom'=>$val , ':login'=>$val , ':password'=>$val , ':statut'=>$val , ':daltonisme'=>$val , ':classe'=>$val , ':id_ent'=>$val , ':id_gepi'=>$val );
  * @return void
  */
 
@@ -2289,6 +2289,7 @@ function DB_STRUCTURE_modifier_utilisateur($user_id,$DB_VAR)
 			case ':login' :          $tab_set[] = 'user_login='.$key;          break;
 			case ':password' :       $tab_set[] = 'user_password=:password_crypte'; $DB_VAR[':password_crypte'] = crypter_mdp($DB_VAR[':password']); unset($DB_VAR[':password']); break;
 			case ':statut' :         $tab_set[] = 'user_statut='.$key;         break;
+			case ':daltonisme' :     $tab_set[] = 'user_daltonisme='.$key;     break;
 			case ':classe' :         $tab_set[] = 'eleve_classe_id='.$key;     break;
 			case ':id_ent' :         $tab_set[] = 'user_id_ent='.$key;         break;
 			case ':id_gepi' :        $tab_set[] = 'user_id_gepi='.$key;        break;
@@ -3666,16 +3667,23 @@ function DB_STRUCTURE_OPT_niveaux_eleve($listing_niveaux,$listing_cycles,$eleve_
  * Retourner un tableau [valeur texte optgroup] des niveaux / classes / groupes d'un établissement
  * optgroup sert à pouvoir regrouper les options
  *
- * @param void
+ * @param string   $divers   'eleves' par défaut ou 'profs' => sert à définir les premiers choix
  * @return array|string
  */
 
-function DB_STRUCTURE_OPT_regroupements_etabl()
+function DB_STRUCTURE_OPT_regroupements_etabl($divers='eleves')
 {
 	// Options du select : catégorie "Divers"
-	$DBTAB_divers = array();
-	$DBTAB_divers[] = array('valeur'=>'d1','texte'=>'Élèves sans classe','optgroup'=>'divers');
-	$DBTAB_divers[] = array('valeur'=>'d2','texte'=>'Tout l\'établissement','optgroup'=>'divers');
+	$DB_TAB_divers = array();
+	if($divers=='eleves')
+	{
+		$DB_TAB_divers[] = array('valeur'=>'d1','texte'=>'Élèves sans classe','optgroup'=>'divers');
+		$DB_TAB_divers[] = array('valeur'=>'d2','texte'=>'Tout l\'établissement','optgroup'=>'divers');
+	}
+	elseif($divers=='profs')
+	{
+		$DB_TAB_divers[] = array('valeur'=>'d3','texte'=>'Professeurs et directeurs','optgroup'=>'divers');
+	}
 	// Options du select : catégorie "Niveaux" (contenant des classes ou des groupes)
 	$DB_SQL = 'SELECT CONCAT("n",niveau_id) AS valeur, niveau_nom AS texte, "niveau" AS optgroup FROM sacoche_groupe ';
 	$DB_SQL.= 'LEFT JOIN sacoche_niveau USING (niveau_id) ';
@@ -3692,7 +3700,7 @@ function DB_STRUCTURE_OPT_regroupements_etabl()
 	$DB_VAR = array(':type1'=>'classe',':type2'=>'groupe');
 	$DB_TAB_classe_groupe = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 	// On assemble tous ces tableaux à la suite
-	$DB_TAB = array_merge($DBTAB_divers,$DB_TAB_niveau,$DB_TAB_classe_groupe);
+	$DB_TAB = array_merge($DB_TAB_divers,$DB_TAB_niveau,$DB_TAB_classe_groupe);
 	$GLOBALS['tab_select_optgroup'] = array('divers'=>'Divers','niveau'=>'Niveaux','classe'=>'Classes','groupe'=>'Groupes');
 	return $DB_TAB ;
 

@@ -105,6 +105,7 @@ $tab_droits['administrateur_resilier']                 = $tab_droits_profil_admi
 $tab_droits['administrateur_statut_desactiver']        = $tab_droits_profil_administrateur;
 $tab_droits['administrateur_statut_traiter']           = $tab_droits_profil_administrateur;
 // Profil webmestre
+$tab_droits['webmestre_database_test']                 = $tab_droits_profil_webmestre;
 $tab_droits['webmestre_mdp_admin']                     = $tab_droits_profil_webmestre;
 $tab_droits['webmestre_geographie']                    = $tab_droits_profil_webmestre;
 $tab_droits['webmestre_identite_installation']         = $tab_droits_profil_webmestre;
@@ -120,9 +121,11 @@ $tab_droits['_maj_select_piliers']                     = array( 'public'=>0 , 'e
 $tab_droits['_maj_select_matieres']                    = array( 'public'=>0 , 'eleve'=>0 , 'professeur'=>0 , 'directeur'=>1 , 'administrateur'=>0 , 'webmestre'=>0 );
 $tab_droits['_maj_select_professeurs']                 = array( 'public'=>0 , 'eleve'=>0 , 'professeur'=>0 , 'directeur'=>0 , 'administrateur'=>1 , 'webmestre'=>0 );
 $tab_droits['_maj_select_professeurs_directeurs']      = array( 'public'=>0 , 'eleve'=>0 , 'professeur'=>0 , 'directeur'=>0 , 'administrateur'=>1 , 'webmestre'=>0 );
+$tab_droits['compte_daltonisme']                       = array( 'public'=>0 , 'eleve'=>1 , 'professeur'=>1 , 'directeur'=>1 , 'administrateur'=>0 , 'webmestre'=>0 );
 $tab_droits['compte_info_serveur']                     = array( 'public'=>0 , 'eleve'=>0 , 'professeur'=>0 , 'directeur'=>0 , 'administrateur'=>1 , 'webmestre'=>1 );
-$tab_droits['consultation']                            = array( 'public'=>0 , 'eleve'=>1 , 'professeur'=>1 , 'directeur'=>1 , 'administrateur'=>0 , 'webmestre'=>0 );
 $tab_droits['consultation_algorithme']                 = array( 'public'=>0 , 'eleve'=>1 , 'professeur'=>1 , 'directeur'=>1 , 'administrateur'=>0 , 'webmestre'=>0 );
+$tab_droits['consultation_date_connexion']             = array( 'public'=>0 , 'eleve'=>0 , 'professeur'=>1 , 'directeur'=>1 , 'administrateur'=>1 , 'webmestre'=>0 );
+$tab_droits['consultation_groupe_periode']             = array( 'public'=>0 , 'eleve'=>1 , 'professeur'=>1 , 'directeur'=>1 , 'administrateur'=>0 , 'webmestre'=>0 );
 $tab_droits['consultation_referentiel_interne']        = array( 'public'=>0 , 'eleve'=>1 , 'professeur'=>1 , 'directeur'=>1 , 'administrateur'=>1 , 'webmestre'=>0 );
 $tab_droits['consultation_referentiel_externe']        = array( 'public'=>0 , 'eleve'=>0 , 'professeur'=>1 , 'directeur'=>1 , 'administrateur'=>0 , 'webmestre'=>0 );
 $tab_droits['date_calendrier']                         = array( 'public'=>0 , 'eleve'=>1 , 'professeur'=>1 , 'directeur'=>1 , 'administrateur'=>1 , 'webmestre'=>0 );

@@ -58,14 +58,6 @@ $(document).ready
 			}
 		);
 
-		$('#f_type_bulletin').click
-		(
-			function()
-			{
-				$("#astuce_bulletin").toggle("slow");
-			}
-		);
-
 		$('#f_bilan_MS , #f_bilan_PA').click
 		(
 			function()

@@ -284,27 +284,38 @@ function _endpage()
 			$this->marge_bas     = 12;
 			$this->distance_pied = 9;
 		}
-		// Couleurs de fond ; il faut convertir l'hexadécimal et RVB décimal
+		// Couleurs prédéfinies
 		$this->tab_choix_couleur = ($this->couleur=='oui') ? array('NA'=>'rouge','VA'=>'jaune','A'=>'vert') : array('NA'=>'gris_fonce','VA'=>'gris_moyen','A'=>'gris_clair') ;
-		$rr = hexdec(substr($_SESSION['CSS_BACKGROUND-COLOR']['NA'],1,2));
-		$rv = hexdec(substr($_SESSION['CSS_BACKGROUND-COLOR']['NA'],3,2));
-		$rb = hexdec(substr($_SESSION['CSS_BACKGROUND-COLOR']['NA'],5,2));
-		$jr = hexdec(substr($_SESSION['CSS_BACKGROUND-COLOR']['VA'],1,2));
-		$jv = hexdec(substr($_SESSION['CSS_BACKGROUND-COLOR']['VA'],3,2));
-		$jb = hexdec(substr($_SESSION['CSS_BACKGROUND-COLOR']['VA'],5,2));
-		$vr = hexdec(substr($_SESSION['CSS_BACKGROUND-COLOR']['A'],1,2));
-		$vv = hexdec(substr($_SESSION['CSS_BACKGROUND-COLOR']['A'],3,2));
-		$vb = hexdec(substr($_SESSION['CSS_BACKGROUND-COLOR']['A'],5,2));
-		$this->tab_couleur['rouge'] = array('r'=>$rr,'v'=>$rv,'b'=>$rb);
-		$this->tab_couleur['jaune'] = array('r'=>$jr,'v'=>$jv,'b'=>$jb);
-		$this->tab_couleur['vert']  = array('r'=>$vr,'v'=>$vv,'b'=>$vb);
 		$this->tab_couleur['blanc']      = array('r'=>255,'v'=>255,'b'=>255);
 		$this->tab_couleur['gris_clair'] = array('r'=>230,'v'=>230,'b'=>230);
 		$this->tab_couleur['gris_moyen'] = array('r'=>190,'v'=>190,'b'=>190);
 		$this->tab_couleur['gris_fonce'] = array('r'=>150,'v'=>150,'b'=>150);
-		$this->tab_couleur['v0'] = array('r'=>255,'v'=>153,'b'=>153);
-		$this->tab_couleur['v1'] = array('r'=>153,'v'=>255,'b'=>153);
-		$this->tab_couleur['v2'] = array('r'=>187,'v'=>187,'b'=>255);
+		// Couleurs des états d'acquisition ; il faut convertir l'hexadécimal en RVB décimal
+		$rr = hexdec(substr($_SESSION['BACKGROUND_NA'],1,2));
+		$rv = hexdec(substr($_SESSION['BACKGROUND_NA'],3,2));
+		$rb = hexdec(substr($_SESSION['BACKGROUND_NA'],5,2));
+		$jr = hexdec(substr($_SESSION['BACKGROUND_VA'],1,2));
+		$jv = hexdec(substr($_SESSION['BACKGROUND_VA'],3,2));
+		$jb = hexdec(substr($_SESSION['BACKGROUND_VA'],5,2));
+		$vr = hexdec(substr($_SESSION['BACKGROUND_A'] ,1,2));
+		$vv = hexdec(substr($_SESSION['BACKGROUND_A'] ,3,2));
+		$vb = hexdec(substr($_SESSION['BACKGROUND_A'] ,5,2));
+		$this->tab_couleur['rouge'] = array('r'=>$rr,'v'=>$rv,'b'=>$rb);
+		$this->tab_couleur['jaune'] = array('r'=>$jr,'v'=>$jv,'b'=>$jb);
+		$this->tab_couleur['vert']  = array('r'=>$vr,'v'=>$vv,'b'=>$vb);
+		// Couleurs des états de validation ; il faut convertir l'hexadécimal en RVB décimal
+		$rr = hexdec(substr($_SESSION['BACKGROUND_V0'],1,2));
+		$rv = hexdec(substr($_SESSION['BACKGROUND_V0'],3,2));
+		$rb = hexdec(substr($_SESSION['BACKGROUND_V0'],5,2));
+		$vr = hexdec(substr($_SESSION['BACKGROUND_V1'],1,2));
+		$vv = hexdec(substr($_SESSION['BACKGROUND_V1'],3,2));
+		$vb = hexdec(substr($_SESSION['BACKGROUND_V1'],5,2));
+		$br = hexdec(substr($_SESSION['BACKGROUND_V2'],1,2));
+		$bv = hexdec(substr($_SESSION['BACKGROUND_V2'],3,2));
+		$bb = hexdec(substr($_SESSION['BACKGROUND_V2'],5,2));
+		$this->tab_couleur['v0'] = array('r'=>$rr,'v'=>$rv,'b'=>$rb);
+		$this->tab_couleur['v1'] = array('r'=>$vr,'v'=>$vv,'b'=>$vb);
+		$this->tab_couleur['v2'] = array('r'=>$br,'v'=>$bv,'b'=>$bb);
 		// Lettres utilisées en remplacement des images Lomer pour du noir et blanc
 		$this->tab_lettre['RR'] = $_SESSION['NOTE_TEXTE']['RR'];
 		$this->tab_lettre['R']  = $_SESSION['NOTE_TEXTE']['R'];
@@ -381,7 +392,7 @@ function _endpage()
 				{
 					$img_pos_x = $memo_x + ( ($this->lomer_espace_largeur - $this->lomer_image_largeur) / 2 ) ;
 					$img_pos_y = $memo_y + ( ($this->lomer_espace_hauteur - $this->lomer_image_hauteur) / 2 ) ;
-					$this->Image('./_img/note/'.$_SESSION['NOTE_IMAGE_STYLE'].'/h/'.$note.'.gif',$img_pos_x,$img_pos_y,$this->lomer_image_largeur,$this->lomer_image_hauteur,'GIF');
+					$this->Image('./_img/note/'.$_SESSION['NOTE_DOSSIER'].'/h/'.$note.'.gif',$img_pos_x,$img_pos_y,$this->lomer_image_largeur,$this->lomer_image_hauteur,'GIF');
 				}
 				else
 				{

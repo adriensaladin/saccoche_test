@@ -27,7 +27,6 @@
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = "Gestion des établissements";
-$VERSION_JS_FILE += 1;
 
 // Page réservée aux installations multi-structures ; le menu webmestre d'une installation mono-structure ne permet normalement pas d'arriver ici
 if(HEBERGEUR_INSTALLATION=='multi-structures')

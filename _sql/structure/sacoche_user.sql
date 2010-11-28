@@ -10,6 +10,7 @@ CREATE TABLE sacoche_user (
 	user_login          VARCHAR(20)                                             COLLATE utf8_unicode_ci NOT NULL DEFAULT "",
 	user_password       CHAR(32)                                                COLLATE utf8_unicode_ci NOT NULL DEFAULT "",
 	user_statut         TINYINT(1)                                              UNSIGNED                NOT NULL DEFAULT 1,
+	user_daltonisme     TINYINT(1)                                              UNSIGNED                NOT NULL DEFAULT 0,
 	user_tentative_date DATETIME                                                                        NOT NULL DEFAULT "0000-00-00 00:00:00",
 	user_connexion_date DATETIME                                                                        NOT NULL DEFAULT "0000-00-00 00:00:00",
 	eleve_classe_id     MEDIUMINT(8)                                            UNSIGNED                NOT NULL DEFAULT 0,

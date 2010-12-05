@@ -126,6 +126,46 @@ if(is_file($fichier_constantes))
 	{
 		affich_message_exit($titre='Paramètres BDD manquants',$contenu='Paramètres de connexion à la base de données manquants.<br /><a href="./index.php?page=public_installation">Procédure d\'installation du site SACoche.</a>');
 	}
+	// DEBUT A compter du 05/12/2010, ajout de paramètres dans le fichier de constantes pour paramétrer cURL. [à retirer dans quelques mois]
+	if(!defined('SERVEUR_PROXY_USED') && function_exists('enregistrer_informations_session'))
+	{
+		fabriquer_fichier_hebergeur_info( array('SERVEUR_PROXY_USED'=>'','SERVEUR_PROXY_NAME'=>'','SERVEUR_PROXY_PORT'=>'','SERVEUR_PROXY_TYPE'=>'','SERVEUR_PROXY_AUTH_USED'=>'','SERVEUR_PROXY_AUTH_METHOD'=>'','SERVEUR_PROXY_AUTH_USER'=>'','SERVEUR_PROXY_AUTH_PASS'=>'') );
+	}
+	// FIN A compter du 05/12/2010, ajout de paramètres dans le fichier de constantes pour paramétrer cURL. [à retirer dans quelques mois]
+	// DEBUT A compter du 05/12/2010, 2 users MySQL sont créés par établissement (localhost & %) ; il faut créer les manquants antérieurs sinon erreur lors de la suppression. [à retirer dans quelques mois]
+	if(defined('SACOCHE_WEBMESTRE_BD_HOST'))
+	{
+		$nb_structures = (int)DB_WEBMESTRE_compter_structure();
+		if($nb_structures)
+		{
+			$BDlink = mysql_connect(SACOCHE_WEBMESTRE_BD_HOST.':'.SACOCHE_WEBMESTRE_BD_PORT,SACOCHE_WEBMESTRE_BD_USER,SACOCHE_WEBMESTRE_BD_PASS);
+			$BDres  = mysql_query('SELECT host, user FROM mysql.user WHERE user LIKE "sac_user_%"');
+			$nb_users = mysql_num_rows($BDres);
+			if($nb_users < $nb_structures*2)
+			{
+				$tab_user_host = array();
+				while($BDrow = mysql_fetch_array($BDres,MYSQL_ASSOC))
+				{
+					$tab_user_host[$BDrow['user']][] = $BDrow['host'];
+				}
+				foreach($tab_user_host as $user => $tab_host)
+				{
+					if(count($tab_host)==1)
+					{
+						$fichier_mdp = file_get_contents('./__private/mysql/'.str_replace('sac_user','serveur_sacoche_structure',$user).'.php');
+						$nb_match = preg_match( '#'."SACOCHE_STRUCTURE_BD_PASS','".'(.*?)'."'".'#' , $fichier_mdp , $tab_matches );
+						$host = ($tab_host[0]=='%') ? 'localhost' : '%';
+						$base = str_replace('user','base',$user);
+						$pass = $tab_matches[1];
+						mysql_query('CREATE USER '.$user.'@"'.$host.'" IDENTIFIED BY "'.$pass.'"');
+						mysql_query('GRANT ALTER, CREATE, DELETE, DROP, INDEX, INSERT, SELECT, UPDATE ON '.$base.'.* TO '.$user.'@"'.$host.'"');
+					}
+				}
+			}
+			mysql_close($BDlink);
+		}
+	}
+	// FIN A compter du 05/12/2010, 2 users MySQL sont créés par établissement (localhost & %) ; il faut créer les manquants antérieurs sinon erreur lors de la suppression. [à retirer dans quelques mois]
 }
 elseif($PAGE!='public_installation')
 {

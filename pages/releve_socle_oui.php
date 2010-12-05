@@ -26,7 +26,7 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-$VERSION_JS_FILE += 1;
+$VERSION_JS_FILE += 2;
 ?>
 
 <?php
@@ -65,7 +65,8 @@ $select_groupe = afficher_select($tab_groupes , $select_nom='f_groupe' , $option
 <p class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=releves_bilans__releve_socle">DOC : État de maîtrise du socle.</a></p>
 
 <form id="form_select" action=""><fieldset>
-	<label class="tab" for="f_palier">Palier :</label><?php echo $select_palier ?><input type="hidden" id="f_palier_nom" name="f_palier_nom" value="" /><p />
+	<label class="tab" for="f_palier">Palier :</label><?php echo $select_palier ?><input type="hidden" id="f_palier_nom" name="f_palier_nom" value="" /><label id="ajax_maj_pilier">&nbsp;</label><br />
+	<label class="tab" for="f_pilier">Compétence :</label><select id="f_pilier" name="f_pilier" class="hide"><option></option></select><input type="hidden" id="f_pilier_nom" name="f_pilier_nom" value="" /><p />
 	<div class="<?php echo $class_form_eleve ?>">
 		<label class="tab" for="f_groupe">Élève(s) :</label><?php echo $select_groupe ?><label id="ajax_maj">&nbsp;</label><br />
 		<span class="tab"></span><select id="f_eleve" name="f_eleve[]" multiple="multiple" size="9"><?php echo $select_eleves ?></select><input type="hidden" id="eleves" name="eleves" value="" /><p />

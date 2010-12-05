@@ -27,7 +27,10 @@
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = "Identité de l'installation";
+$VERSION_JS_FILE += 0;
+?>
 
+<?php
 $exemple_denomination = (HEBERGEUR_INSTALLATION=='mono-structure') ? 'Collège de Trucville' : 'Rectorat du paradis' ;
 $exemple_adresse_web  = (HEBERGEUR_INSTALLATION=='mono-structure') ? 'http://www.college-trucville.com' : 'http://www.ac-paradis.fr' ;
 $uai_div_hide_avant   = (HEBERGEUR_INSTALLATION=='mono-structure') ? '' : '<div class="hide">' ;

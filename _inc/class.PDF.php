@@ -987,7 +987,7 @@ function afficher_pourcentage_acquis($gras,$tab_infos)
 
 	public function releve_socle_initialiser($test_affichage_Pourcentage,$test_affichage_Validation)
 	{
-		$this->cases_hauteur       = 4.5;
+		$this->cases_hauteur       = 4.5; // Dans le cas d'un bilan juste sur un pilier, il faudrait oprimiser la hauteur de ligne...
 		$this->taille_police       = 6;
 		$this->pourcentage_largeur = 27.5;
 		$this->validation_largeur  = 17.5;
@@ -997,6 +997,7 @@ function afficher_pourcentage_acquis($gras,$tab_infos)
 		$this->section_largeur     = $this->item_largeur;
 		$this->pilier_largeur      = $this->section_largeur - $retrait_validation;
 		$this->SetMargins($this->marge_gauche , $this->marge_haut , $this->marge_droit);
+		$this->SetAutoPageBreak(false);
 		// $this->AddFont('ArialNarrow');
 	}
 
@@ -1007,25 +1008,41 @@ function afficher_pourcentage_acquis($gras,$tab_infos)
 		{
 			$this->choisir_couleur_trait('gris_moyen');
 			$this->SetLineWidth(0.1);
-			$this->Line($this->page_largeur-$this->marge_droit-75 , $this->marge_haut+10 , $this->page_largeur-$this->marge_droit , $this->marge_haut+10);
-			$this->SetXY($this->marge_gauche , $this->marge_haut+15);
+			$this->Line($this->page_largeur-$this->marge_droit-75 , $this->marge_haut+2*$this->cases_hauteur , $this->page_largeur-$this->marge_droit , $this->marge_haut+2*$this->cases_hauteur);
 			$this->SetDrawColor(0 , 0 , 0);
 		}
 		$this->SetFont('Arial' , 'B' , $this->taille_police*1.5);
-		$this->SetXY($this->page_largeur-$this->marge_droit-50 , $this->marge_haut);
-		$this->Cell(50 , 5 , pdf($_SESSION['DENOMINATION']) , 0 , 2 , 'R' , false , '');
-		$this->Cell(50 , 5 , pdf($this->eleve_nom.' '.$this->eleve_prenom) , 0 , 2 , 'R' , false , '');
+		$this->SetXY($this->page_largeur-$this->marge_droit-50 , max($this->marge_haut,$this->GetY()-2*$this->cases_hauteur) ); // Soit c'est une nouvelle page, soit il ne faut pas se mettre en haut de la page
+		$this->Cell(50 , $this->cases_hauteur , pdf($_SESSION['DENOMINATION']) , 0 , 2 , 'R' , false , '');
+		$this->Cell(50 , $this->cases_hauteur , pdf($this->eleve_nom.' '.$this->eleve_prenom) , 0 , 2 , 'R' , false , '');
 	}
 
-	public function releve_socle_entete($palier_nom,$eleve_id,$eleve_nom,$eleve_prenom)
+	public function releve_socle_entete($palier_nom,$break,$eleve_id,$eleve_nom,$eleve_prenom)
 	{
-		// On prend une nouvelle page PDF pour chaque élève
-		$this->AddPage($this->orientation , 'A4');
+		// On prend une nouvelle page PDF pour chaque élève en cas d'affichage d'un palier avec tous les piliers ; pour un seul pilier, on étudie la place restante... tout en forçant une nouvelle page pour le 1er élève
+		if( ($break==0) || ($this->GetY()==0) )
+		{
+			$this->AddPage($this->orientation , 'A4');
+			$this->SetXY($this->marge_gauche,$this->marge_haut);
+		}
+		else
+		{
+			$hauteur_requise = $this->cases_hauteur * ($break + 2 + 0.5 + 1); // titres + marge + interligne
+			$hauteur_restante = $this->page_hauteur - $this->GetY() - $this->marge_bas;
+			if($hauteur_requise > $hauteur_restante)
+			{
+				$this->AddPage($this->orientation , 'A4');
+				$this->SetXY($this->marge_gauche,$this->marge_haut);
+			}
+			else
+			{
+				$this->SetXY($this->marge_gauche,$this->GetY()+$this->cases_hauteur);
+			}
+		}
 		// Intitulé
 		$this->SetFont('Arial' , 'B' , $this->taille_police*1.5);
-		$this->SetXY($this->marge_gauche,$this->marge_haut);
-		$this->Cell($this->page_largeur-$this->marge_droit-75 , 5 , pdf('État de maîtrise du socle commun') , 0 , 2 , 'L' , false , '');
-		$this->Cell($this->page_largeur-$this->marge_droit-75 , 5 , pdf($palier_nom) , 0 , 2 , 'L' , false , '');
+		$this->Cell($this->page_largeur-$this->marge_droit-75 , $this->cases_hauteur , pdf('État de maîtrise du socle commun') , 0 , 2 , 'L' , false , '');
+		$this->Cell($this->page_largeur-$this->marge_droit-75 , $this->cases_hauteur , pdf($palier_nom) , 0 , 2 , 'L' , false , '');
 		// Nom / prénom
 		$this->eleve_id     = $eleve_id;
 		$this->eleve_nom    = $eleve_nom;
@@ -1035,7 +1052,7 @@ function afficher_pourcentage_acquis($gras,$tab_infos)
 
 	public function releve_socle_pilier($pilier_nom,$pilier_nb_lignes,$test_affichage_Validation,$tab_pilier_validation)
 	{
-		$this->SetXY($this->marge_gauche+$this->retrait_pourcentage , $this->GetY() + $this->cases_hauteur);
+		$this->SetXY($this->marge_gauche+$this->retrait_pourcentage , $this->GetY() + 0.5*$this->cases_hauteur);
 		$hauteur_requise = $this->cases_hauteur * $pilier_nb_lignes;
 		$hauteur_restante = $this->page_hauteur - $this->GetY() - $this->marge_bas;
 		if($hauteur_requise > $hauteur_restante)

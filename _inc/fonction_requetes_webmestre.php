@@ -222,8 +222,11 @@ function DB_WEBMESTRE_ajouter_structure($base_id,$geo_id,$structure_uai,$localis
 	// Créer la base de données de la structure
 	DB::query(SACOCHE_WEBMESTRE_BD_NAME , 'CREATE DATABASE sac_base_'.$base_id );
 	// Créer un utilisateur pour la base de données de la structure et lui attribuer ses droits
-	DB::query(SACOCHE_WEBMESTRE_BD_NAME , 'CREATE USER '.$BD_user.' IDENTIFIED BY "'.$BD_pass.'"' );
-	DB::query(SACOCHE_WEBMESTRE_BD_NAME , 'GRANT ALTER, CREATE, DELETE, DROP, INDEX, INSERT, SELECT, UPDATE ON '.$BD_name.'.* TO '.$BD_user );
+	// On doit créer en réalité un user sur "localhost" et un autre sur "%" car on doit pouvoir se connecter suivant les configurations depuis la machine locale comme depuis n'importe quel autre serveur (http://dev.mysql.com/doc/refman/5.0/fr/adding-users.html).
+	DB::query(SACOCHE_WEBMESTRE_BD_NAME , 'CREATE USER '.$BD_user.'@"localhost" IDENTIFIED BY "'.$BD_pass.'"' );
+	DB::query(SACOCHE_WEBMESTRE_BD_NAME , 'CREATE USER '.$BD_user.'@"%" IDENTIFIED BY "'.$BD_pass.'"' );
+	DB::query(SACOCHE_WEBMESTRE_BD_NAME , 'GRANT ALTER, CREATE, DELETE, DROP, INDEX, INSERT, SELECT, UPDATE ON '.$BD_name.'.* TO '.$BD_user.'@"localhost"' );
+	DB::query(SACOCHE_WEBMESTRE_BD_NAME , 'GRANT ALTER, CREATE, DELETE, DROP, INDEX, INSERT, SELECT, UPDATE ON '.$BD_name.'.* TO '.$BD_user.'@"%"' );
 	/* Il reste à :
 		+ Lancer les requêtes pour installer et remplir les tables, éventuellement personnaliser certains paramètres de la structure
 		+ Insérer le compte administrateur dans la base de cette structure, éventuellement lui envoyer un courriel
@@ -315,8 +318,11 @@ function DB_WEBMESTRE_supprimer_multi_structure($BASE)
 	// Supprimer la base associée à la structure
 	DB::query(SACOCHE_WEBMESTRE_BD_NAME , 'DROP DATABASE '.$BD_name );
 	// Retirer les droits et supprimer l'utilisateur pour la base de données de la structure
-	DB::query(SACOCHE_WEBMESTRE_BD_NAME , 'REVOKE ALL PRIVILEGES, GRANT OPTION FROM '.$BD_user );	// Apparemment et curieusement, il faut le droit 'CREATE TEMPORARY TABLES' pour pouvoir effectuer un REVOKE...
-	DB::query(SACOCHE_WEBMESTRE_BD_NAME , 'DROP USER '.$BD_user );
+	// Apparemment et curieusement, il faut le droit 'CREATE TEMPORARY TABLES' pour pouvoir effectuer un REVOKE...
+	DB::query(SACOCHE_WEBMESTRE_BD_NAME , 'REVOKE ALL PRIVILEGES, GRANT OPTION FROM '.$BD_user.'@"localhost"' );
+	DB::query(SACOCHE_WEBMESTRE_BD_NAME , 'REVOKE ALL PRIVILEGES, GRANT OPTION FROM '.$BD_user.'@"%"' );
+	DB::query(SACOCHE_WEBMESTRE_BD_NAME , 'DROP USER '.$BD_user.'@"localhost"' );
+	DB::query(SACOCHE_WEBMESTRE_BD_NAME , 'DROP USER '.$BD_user.'@"%"' );
 	// Supprimer le fichier de connexion
 	unlink($CHEMIN_MYSQL.'serveur_sacoche_structure_'.$BASE.'.php');
 	// Supprimer la structure dans la base du webmestre

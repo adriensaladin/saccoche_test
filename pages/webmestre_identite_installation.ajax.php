@@ -119,7 +119,7 @@ elseif( ($action=='delete_logo') && $logo )
 	// Si on supprime l'image actuellement utilisée, alors la retirer du fichier
 	if($logo==HEBERGEUR_LOGO)
 	{
-		fabriquer_fichier_hebergeur_info(HEBERGEUR_INSTALLATION,HEBERGEUR_DENOMINATION,HEBERGEUR_UAI,HEBERGEUR_ADRESSE_SITE,'',HEBERGEUR_CNIL,WEBMESTRE_NOM,WEBMESTRE_PRENOM,WEBMESTRE_COURRIEL,WEBMESTRE_PASSWORD_MD5,WEBMESTRE_ERREUR_DATE);
+		fabriquer_fichier_hebergeur_info( array('HEBERGEUR_LOGO'=>'') );
 	}
 	echo'ok';
 }
@@ -130,7 +130,7 @@ elseif( ($action=='delete_logo') && $logo )
 
 elseif( ($action=='enregistrer') && $denomination && $nom && $prenom && $courriel )
 {
-	fabriquer_fichier_hebergeur_info(HEBERGEUR_INSTALLATION,$denomination,$uai,$adresse_site,$logo,$cnil,$nom,$prenom,$courriel,WEBMESTRE_PASSWORD_MD5,WEBMESTRE_ERREUR_DATE);
+	fabriquer_fichier_hebergeur_info( array('HEBERGEUR_DENOMINATION'=>$denomination,'HEBERGEUR_UAI'=>$uai,'HEBERGEUR_ADRESSE_SITE'=>$adresse_site,'HEBERGEUR_LOGO'=>$logo,'HEBERGEUR_CNIL'=>$cnil,'WEBMESTRE_NOM'=>$nom,'WEBMESTRE_PRENOM'=>$prenom,'WEBMESTRE_COURRIEL'=>$courriel) );
 	if(HEBERGEUR_INSTALLATION=='mono-structure')
 	{
 		// Personnaliser certains paramètres de la structure (pour une installation de type multi-structures, ça se fait à la page de gestion des établissements)

@@ -64,7 +64,7 @@ $(document).ready
 					{
 						type : 'POST',
 						url : 'ajax.php?page=_maj_select_piliers',
-						data : 'f_palier='+palier_id,
+						data : 'f_palier='+palier_id+'&f_first='+'oui',
 						dataType : "html",
 						error : function(msg,string)
 						{

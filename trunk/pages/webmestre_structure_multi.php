@@ -37,6 +37,8 @@ foreach($DB_TAB as $DB_ROW)
 }
 ?>
 
+<p class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_webmestre__gestion_multi_etablissements">DOC : Gestion des établissements (multi-structures)</a></p>
+
 <script type="text/javascript">
 	// <![CDATA[
 	var options_geo="<?php echo str_replace('"','\"',$options_geo); ?>";

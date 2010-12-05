@@ -27,7 +27,7 @@
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = "Valider les items du socle";
-$VERSION_JS_FILE += 3;
+$VERSION_JS_FILE += 4;
 // Remarque : on ne peut être pp que d'une classe, pas d'un groupe, donc si seuls les PP ont un accès par mis les profs, ils ne peuvent trier les élèves que par classes
 ?>
 

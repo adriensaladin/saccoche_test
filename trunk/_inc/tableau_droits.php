@@ -105,6 +105,7 @@ $tab_droits['administrateur_resilier']                 = $tab_droits_profil_admi
 $tab_droits['administrateur_statut_desactiver']        = $tab_droits_profil_administrateur;
 $tab_droits['administrateur_statut_traiter']           = $tab_droits_profil_administrateur;
 // Profil webmestre
+$tab_droits['webmestre_configuration_proxy']           = $tab_droits_profil_webmestre;
 $tab_droits['webmestre_database_test']                 = $tab_droits_profil_webmestre;
 $tab_droits['webmestre_mdp_admin']                     = $tab_droits_profil_webmestre;
 $tab_droits['webmestre_geographie']                    = $tab_droits_profil_webmestre;
@@ -117,7 +118,7 @@ $tab_droits['webmestre_structure']                     = $tab_droits_profil_webm
 // Profils particuliers à gérer au cas par cas
 $tab_droits['_maj_select_eleves']                      = array( 'public'=>0 , 'eleve'=>0 , 'professeur'=>1 , 'directeur'=>1 , 'administrateur'=>1 , 'webmestre'=>0 );
 $tab_droits['_maj_select_eval']                        = array( 'public'=>0 , 'eleve'=>0 , 'professeur'=>1 , 'directeur'=>0 , 'administrateur'=>0 , 'webmestre'=>0 );
-$tab_droits['_maj_select_piliers']                     = array( 'public'=>0 , 'eleve'=>0 , 'professeur'=>1 , 'directeur'=>1 , 'administrateur'=>0 , 'webmestre'=>0 );
+$tab_droits['_maj_select_piliers']                     = array( 'public'=>0 , 'eleve'=>1 , 'professeur'=>1 , 'directeur'=>1 , 'administrateur'=>0 , 'webmestre'=>0 );
 $tab_droits['_maj_select_matieres']                    = array( 'public'=>0 , 'eleve'=>0 , 'professeur'=>0 , 'directeur'=>1 , 'administrateur'=>0 , 'webmestre'=>0 );
 $tab_droits['_maj_select_professeurs']                 = array( 'public'=>0 , 'eleve'=>0 , 'professeur'=>0 , 'directeur'=>0 , 'administrateur'=>1 , 'webmestre'=>0 );
 $tab_droits['_maj_select_professeurs_directeurs']      = array( 'public'=>0 , 'eleve'=>0 , 'professeur'=>0 , 'directeur'=>0 , 'administrateur'=>1 , 'webmestre'=>0 );

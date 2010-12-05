@@ -31,3 +31,5 @@ $TITRE = "Statistiques d'utilisation";
 $fin = (HEBERGEUR_INSTALLATION=='multi-structures') ? 'multi' : 'mono' ;
 require('./pages/'.$PAGE.'_'.$fin.'.php');
 ?>
+
+<p class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_webmestre__statistiques">DOC : Statistiques d'utilisation</a></p>

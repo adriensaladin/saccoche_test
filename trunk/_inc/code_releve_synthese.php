@@ -143,6 +143,7 @@ foreach($tab_eleve as $key => $tab)
 $releve_HTML  = '<style type="text/css">'.$_SESSION['CSS'].'</style>';
 $releve_HTML .= '<h1>Synthèse '.$tab_titre[$format].'</h1>';
 $releve_HTML .= '<h2>'.html($texte_periode).'</h2>';
+$releve_HTML .= '<div class="astuce">Cliquer sur les icones &laquo;<img src="./_img/toggle_plus.gif" alt="+" />&raquo; pour accéder au détail.';
 $releve_PDF = new PDF($orientation='portrait',$marge_min=7,$couleur,$legende);
 $releve_PDF->bilan_synthese_initialiser($format,$nb_syntheses_total,$eleve_nb);
 // Pour chaque élève...

@@ -3623,6 +3623,7 @@ function DB_STRUCTURE_OPT_paliers_etabl($listing_paliers)
 
 function DB_STRUCTURE_OPT_piliers($palier_id)
 {
+	$GLOBALS['tab_select_option_first'] = array(0,'Toutes les compétences','');
 	$DB_SQL = 'SELECT pilier_id AS valeur, pilier_nom AS texte FROM sacoche_socle_pilier ';
 	$DB_SQL.= 'WHERE palier_id=:palier_id ';
 	$DB_SQL.= 'ORDER BY pilier_ordre ASC';

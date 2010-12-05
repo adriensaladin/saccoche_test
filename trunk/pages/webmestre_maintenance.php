@@ -27,7 +27,10 @@
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = "Maintenance &amp; mise à jour";
+$VERSION_JS_FILE += 0;
+?>
 
+<?php
 // Initialisation de l'état de l'accès
 $fichier_blocage_webmestre = $CHEMIN_CONFIG.'blocage_webmestre.txt';
 if(is_file($fichier_blocage_webmestre))

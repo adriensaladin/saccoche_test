@@ -619,6 +619,24 @@ function DB_STRUCTURE_lister_result_eleve_items($eleve_id,$liste_item_id)
 }
 
 /**
+ * DB_STRUCTURE_lister_date_last_eleves_items
+ * Retourner, pour des élèves et les items donnés, la date de la dernière évaluation (pour vérifier qu'il faut bien prendre l'item en compte)
+ * 
+ * @param string $liste_eleve_id  id des élèves séparés par des virgules
+ * @param string $liste_item_id   id des items séparés par des virgules
+ * @return array
+ */
+
+function DB_STRUCTURE_lister_date_last_eleves_items($liste_eleve_id,$liste_item_id)
+{
+	$DB_SQL = 'SELECT eleve_id , item_id , MAX(saisie_date) AS date_last ';
+	$DB_SQL.= 'FROM sacoche_saisie ';
+	$DB_SQL.= 'WHERE eleve_id IN('.$liste_eleve_id.') AND item_id IN('.$liste_item_id.') AND saisie_note!="REQ" ';
+	$DB_SQL.= 'GROUP BY eleve_id, item_id ';
+	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , null);
+}
+
+/**
  * DB_STRUCTURE_lister_result_eleves_matiere
  * Retourner les résultats pour des élèves donnés, pour des items donnés d'une matiere donnée, sur une période donnée
  * 

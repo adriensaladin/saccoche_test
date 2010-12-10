@@ -28,27 +28,28 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 if($_SESSION['SESAMATH_ID']==ID_DEMO) {}
 
-$orientation    = (isset($_POST['f_orientation']))                 ? clean_texte($_POST['f_orientation']) : '';
-$couleur        = (isset($_POST['f_couleur']))                     ? clean_texte($_POST['f_couleur'])     : '';
-$legende        = (isset($_POST['f_legende']))                     ? clean_texte($_POST['f_legende'])     : '';
-$marge_min      = (isset($_POST['f_marge_min']))                   ? clean_texte($_POST['f_marge_min'])   : '';
-$cases_nb       = (isset($_POST['f_cases_nb']))                    ? clean_entier($_POST['f_cases_nb'])   : 0;
-$cases_largeur  = (isset($_POST['f_cases_larg']))                  ? clean_entier($_POST['f_cases_larg']) : 0;
+$orientation    = (isset($_POST['f_orientation'])) ? clean_texte($_POST['f_orientation'])  : '';
+$couleur        = (isset($_POST['f_couleur']))     ? clean_texte($_POST['f_couleur'])      : '';
+$legende        = (isset($_POST['f_legende']))     ? clean_texte($_POST['f_legende'])      : '';
+$marge_min      = (isset($_POST['f_marge_min']))   ? clean_entier($_POST['f_marge_min'])   : 0;
+$pages_nb       = (isset($_POST['f_pages_nb']))    ? clean_texte($_POST['f_pages_nb'])     : '';
+$cases_nb       = (isset($_POST['f_cases_nb']))    ? clean_entier($_POST['f_cases_nb'])    : 0;
+$cases_largeur  = (isset($_POST['f_cases_larg']))  ? clean_entier($_POST['f_cases_larg'])  : 0;
 $date_debut     = true;
 $date_fin       = true;
 $retroactif     = true;
 $matiere_id     = true;
 $matiere_nom    = '';
-$aff_coef       = (isset($_POST['f_coef']))                        ? 1                                    : 0;
-$aff_socle      = (isset($_POST['f_socle']))                       ? 1                                    : 0;
-$aff_lien       = (isset($_POST['f_lien']))                        ? 1                                    : 0;
-$aff_bilan_MS   = (isset($_POST['f_bilan_MS']))                    ? 1                                    : 0;
-$aff_bilan_PA   = (isset($_POST['f_bilan_PA']))                    ? 1                                    : 0;
-$aff_conv_sur20 = (isset($_POST['f_conv_sur20']))                  ? 1                                    : 0;
-$groupe_id      = (isset($_POST['f_groupe']))                      ? clean_entier($_POST['f_groupe'])     : 0;
-$groupe_nom     = (isset($_POST['f_groupe_nom']))                  ? clean_texte($_POST['f_groupe_nom'])  : '';
-$tab_eleve      = (isset($_POST['eleves']))                        ? array_map('clean_entier',explode(',',$_POST['eleves'])) : array() ;
-$tab_type       = (isset($_POST['types']))                         ? array_map('clean_texte',explode(',',$_POST['types']))   : array() ;
+$aff_coef       = (isset($_POST['f_coef']))        ? 1                                     : 0;
+$aff_socle      = (isset($_POST['f_socle']))       ? 1                                     : 0;
+$aff_lien       = (isset($_POST['f_lien']))        ? 1                                     : 0;
+$aff_bilan_MS   = (isset($_POST['f_bilan_MS']))    ? 1                                     : 0;
+$aff_bilan_PA   = (isset($_POST['f_bilan_PA']))    ? 1                                     : 0;
+$aff_conv_sur20 = (isset($_POST['f_conv_sur20']))  ? 1                                     : 0;
+$groupe_id      = (isset($_POST['f_groupe']))      ? clean_entier($_POST['f_groupe'])      : 0;
+$groupe_nom     = (isset($_POST['f_groupe_nom']))  ? clean_texte($_POST['f_groupe_nom'])   : '';
+$tab_eleve      = (isset($_POST['eleves']))        ? array_map('clean_entier',explode(',',$_POST['eleves'])) : array() ;
+$tab_type       = (isset($_POST['types']))         ? array_map('clean_texte',explode(',',$_POST['types']))   : array() ;
 $format         = 'selection';
 
 save_cookie_select('releve_items');
@@ -56,7 +57,7 @@ save_cookie_select('releve_items');
 $tab_eleve     = array_filter($tab_eleve,'positif');
 $liste_eleve   = implode(',',$tab_eleve);
 
-if( $orientation && $couleur && $legende && $marge_min && $cases_nb && $cases_largeur && $date_debut && $date_fin && $retroactif && $matiere_id && $groupe_id && $groupe_nom && count($tab_eleve) && count($tab_type) )
+if( $orientation && $couleur && $legende && $marge_min && $pages_nb && $cases_nb && $cases_largeur && $date_debut && $date_fin && $retroactif && $matiere_id && $groupe_id && $groupe_nom && count($tab_eleve) && count($tab_type) )
 {
 
 	// $tab_date = explode('/',$date_debut);
@@ -86,7 +87,7 @@ if( $orientation && $couleur && $legende && $marge_min && $cases_nb && $cases_la
 		exit('Aucun item sélectionné n\'a été évalué pour ces élèves !');
 	}
 	$tab_liste_item = array_keys($tab_item);
-	$liste_comp = implode(',',$tab_liste_item);
+	$liste_item = implode(',',$tab_liste_item);
 
 	//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 	// Récupération de la liste des élèves
@@ -100,12 +101,23 @@ if( $orientation && $couleur && $legende && $marge_min && $cases_nb && $cases_la
 
 	//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 	// Récupération de la liste des résultats des évaluations associées à ces items donnés d'une matiere donnée, pour les élèves selectionnés, sur la période sélectionnée
+	// Attention, il faut éliminer certains items qui peuvent potentiellement apparaitre dans des relevés d'élèves alors qu'ils n'ont pas été interrogés sur la période considérée (mais un camarade oui).
 	//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-	$date_mysql_debut = ($retroactif=='non') ? $date_mysql_debut : false;
-	$DB_TAB = DB_STRUCTURE_lister_result_eleves_matieres($liste_eleve , $liste_comp , $date_mysql_debut , $date_mysql_fin);
+	$tab_score_a_garder = array();
+	$DB_TAB = DB_STRUCTURE_lister_date_last_eleves_items($liste_eleve,$liste_item);
 	foreach($DB_TAB as $DB_ROW)
 	{
-		$tab_eval[$DB_ROW['eleve_id']][$DB_ROW['matiere_id']][$DB_ROW['item_id']][] = array('note'=>$DB_ROW['note'],'date'=>$DB_ROW['date'],'info'=>$DB_ROW['info']);
+		$tab_score_a_garder[$DB_ROW['eleve_id']][$DB_ROW['item_id']] = ($DB_ROW['date_last']<$date_mysql_debut) ? false : true ;
+	}
+
+	$date_mysql_debut = ($retroactif=='non') ? $date_mysql_debut : false;
+	$DB_TAB = DB_STRUCTURE_lister_result_eleves_matieres($liste_eleve , $liste_item , $date_mysql_debut , $date_mysql_fin);
+	foreach($DB_TAB as $DB_ROW)
+	{
+		if($tab_score_a_garder[$DB_ROW['eleve_id']][$DB_ROW['item_id']])
+		{
+			$tab_eval[$DB_ROW['eleve_id']][$DB_ROW['matiere_id']][$DB_ROW['item_id']][] = array('note'=>$DB_ROW['note'],'date'=>$DB_ROW['date'],'info'=>$DB_ROW['info']);
+		}
 	}
 
 	//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-

@@ -150,12 +150,12 @@ $releve_PDF->bilan_synthese_initialiser($format,$nb_syntheses_total,$eleve_nb);
 foreach($tab_eleve as $tab)
 {
 	extract($tab);	// $eleve_id $eleve_nom $eleve_prenom $eleve_id_gepi $nb_matieres $nb_syntheses
-	$releve_PDF->bilan_synthese_entete($format,$nb_matieres,$nb_syntheses,$tab_titre[$format],$texte_periode,$groupe_nom,$eleve_nom,$eleve_prenom);
-	// Intitulé
-	$releve_HTML .= '<hr class="breakafter" /><h2>'.html($groupe_nom).' - '.html($eleve_nom).' '.html($eleve_prenom).'</h2>';
 	// Si cet élève a été évalué...
 	if(isset($tab_infos_acquis_eleve[$eleve_id]))
 	{
+		// Intitulé
+		$releve_PDF->bilan_synthese_entete($format,$nb_matieres,$nb_syntheses,$tab_titre[$format],$texte_periode,$groupe_nom,$eleve_nom,$eleve_prenom);
+		$releve_HTML .= '<hr class="breakafter" /><h2>'.html($groupe_nom).' - '.html($eleve_nom).' '.html($eleve_prenom).'</h2>';
 		// On passe en revue les matières...
 		foreach($tab_infos_acquis_eleve[$eleve_id] as $matiere_id => $tab_infos_matiere)
 		{

@@ -497,7 +497,7 @@ function afficher_pourcentage_acquis($gras,$tab_infos)
 	}
 
 	//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	//	Méthode pour afficher la légende ($type_legende vaut 'notes' ou 'acquis'
+	//	Méthode pour afficher la légende ($type_legende vaut 'notes' ou 'acquis')
 	//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	public function afficher_legende($type_legende,$ordonnee)
@@ -561,7 +561,7 @@ function afficher_pourcentage_acquis($gras,$tab_infos)
 	}
 
 	//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	//	Méthodes pour la mise en page d'une synthèse matiere ou pluridisciplinaire
+	//	Méthodes pour la mise en page d'une synthèse matiere ou pluridisciplinaire ; a priori pas de pb avec la hauteur de ligne minimale
 	//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	//	bilan_synthese_initialiser()   c'est là que les calculs se font pour une sortie "matiere"
 	//	bilan_synthese_entete()        c'est là que les calculs se font pour une sortie "multimatiere"
@@ -688,7 +688,7 @@ function afficher_pourcentage_acquis($gras,$tab_infos)
 	//	bilan_item_individuel_legende()
 	//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	public function bilan_item_individuel_initialiser($format,$cases_nb,$cases_largeur,$lignes_nb,$eleves_nb)
+	public function bilan_item_individuel_initialiser($format,$cases_nb,$cases_largeur,$lignes_nb,$eleves_nb,$pages_nb_methode)
 	{
 		$this->SetMargins($this->marge_gauche , $this->marge_haut , $this->marge_droit);
 		$this->SetAutoPageBreak(false);
@@ -706,9 +706,13 @@ function afficher_pourcentage_acquis($gras,$tab_infos)
 			$lignes_nb_moyen_par_page = $hauteur_dispo_par_page / $hauteur_ligne_moyenne ;
 			$nb_page_moyen = max( 1 , round( $lignes_nb_tous_eleves / $lignes_nb_moyen_par_page ) ); // max 1 pour éviter une division par zéro
 			$eleves_nb_par_page = ceil( $eleves_nb / $nb_page_moyen ) ;
+			if($pages_nb_methode=='augmente')
+			{
+				$eleves_nb_par_page = max( 1 , $eleves_nb_par_page-1 ) ; // Sans doute à revoir... un élève demeure forcé sur 1 page...
+			}
 			// $nb_page_calcule = ceil( $eleves_nb / $eleves_nb_par_page ) ; // devenu inutile
 			$lignes_nb_moyen_eleve = $lignes_nb_tous_eleves / $eleves_nb ;
-			$lignes_nb_calcule_par_page = $eleves_nb_par_page * $lignes_nb_moyen_eleve ; // $lignes_nb/$nb_page_calcule ne va pas à cause un élève peut alors être considéré à cheval sur 2 pages
+			$lignes_nb_calcule_par_page = $eleves_nb_par_page * $lignes_nb_moyen_eleve ; // $lignes_nb/$nb_page_calcule ne va pas car un élève peut alors être considéré à cheval sur 2 pages
 			$hauteur_ligne_calcule = $hauteur_dispo_par_page / $lignes_nb_calcule_par_page ;
 			$this->lignes_hauteur = floor($hauteur_ligne_calcule*10)/10 ; // round($hauteur_ligne_calcule,1,PHP_ROUND_HALF_DOWN) à partir de PHP 5.3
 			$this->lignes_hauteur = min ( $this->lignes_hauteur , 7.5 ) ;
@@ -723,7 +727,7 @@ function afficher_pourcentage_acquis($gras,$tab_infos)
 		}
 	}
 
-	public function bilan_item_individuel_entete($format,$matieres_nb,$items_nb,$texte_format,$texte_periode,$groupe_nom,$eleve_nom,$eleve_prenom)
+	public function bilan_item_individuel_entete($format,$matieres_nb,$items_nb,$pages_nb_methode,$texte_format,$texte_periode,$groupe_nom,$eleve_nom,$eleve_prenom)
 	{
 		if($format=='matiere')
 		{
@@ -748,7 +752,7 @@ function afficher_pourcentage_acquis($gras,$tab_infos)
 			$hauteur_dispo_par_page = $this->page_hauteur - $this->marge_haut - $this->marge_bas ;
 			$lignes_nb = 1 + 1 + 1 + $matieres_nb*1.5 + $items_nb + ($this->legende*2*1) ; // intitulé-structure + classe-élève + date + matières(marge+intitulé) + lignes dont résumés + légendes
 			$hauteur_ligne_minimale = 3;
-			$hauteur_ligne_maximale = 5;
+			$hauteur_ligne_maximale = 3+2;
 			$nb_pages = 0;
 			do
 			{
@@ -756,6 +760,11 @@ function afficher_pourcentage_acquis($gras,$tab_infos)
 				$hauteur_ligne_calcule = $nb_pages*$hauteur_dispo_par_page / $lignes_nb ;
 			}
 			while($hauteur_ligne_calcule < $hauteur_ligne_minimale);
+			if($pages_nb_methode=='augmente')
+			{
+				$nb_pages++;
+				$hauteur_ligne_calcule = $nb_pages*$hauteur_dispo_par_page / $lignes_nb ;
+			}
 			$this->lignes_hauteur = floor($hauteur_ligne_calcule*10)/10 ; // round($hauteur_ligne_calcule,1,PHP_ROUND_HALF_DOWN) à partir de PHP 5.3
 			$this->lignes_hauteur = min ( $this->lignes_hauteur , $hauteur_ligne_maximale ) ;
 			$this->taille_police  = $this->lignes_hauteur * 1.6 ; // 5mm de hauteur par ligne donne une taille de 8

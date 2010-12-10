@@ -246,6 +246,7 @@ $(document).ready
 				{
 					f_orientation  : { required:true },
 					f_marge_min    : { required:true },
+					f_pages_nb     : { required:true },
 					f_couleur      : { required:true },
 					f_legende      : { required:true },
  					f_cases_nb     : { required:true },
@@ -265,6 +266,7 @@ $(document).ready
 				{
 					f_orientation  : { required:"orientation manquante" },
 					f_marge_min    : { required:"marge mini manquante" },
+					f_pages_nb     : { required:"choix manquant" },
 					f_couleur      : { required:"couleur manquante" },
 					f_legende      : { required:"légende manquante" },
 					f_cases_nb     : { required:"nombre manquant" },

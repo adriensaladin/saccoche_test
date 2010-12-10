@@ -118,13 +118,23 @@ if( $matiere_id && $matiere_nom && $groupe_id && $groupe_nom && count($tab_eleve
 
 	//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 	// Récupération de la liste des résultats des évaluations associées à ces items donnés de plusieurs matieres, pour les élèves selectionnés, sur la période sélectionnée
+	// Attention, il faut éliminer certains items qui peuvent potentiellement apparaitre dans des relevés d'élèves alors qu'ils n'ont pas été interrogés sur la période considérée (mais un camarade oui).
 	//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+	$tab_score_a_garder = array();
+	$DB_TAB = DB_STRUCTURE_lister_date_last_eleves_items($liste_eleve,$liste_item);
+	foreach($DB_TAB as $DB_ROW)
+	{
+		$tab_score_a_garder[$DB_ROW['eleve_id']][$DB_ROW['item_id']] = ($DB_ROW['date_last']<$date_mysql_debut) ? false : true ;
+	}
 
 	$date_mysql_debut = ($retroactif=='non') ? $date_mysql_debut : false;
 	$DB_TAB = DB_STRUCTURE_lister_result_eleves_matieres($liste_eleve , $liste_item , $date_mysql_debut , $date_mysql_fin);
 	foreach($DB_TAB as $DB_ROW)
 	{
-		$tab_eval[$DB_ROW['eleve_id']][$DB_ROW['item_id']][] = array('note'=>$DB_ROW['note'],'date'=>$DB_ROW['date'],'info'=>$DB_ROW['info']);
+		if($tab_score_a_garder[$DB_ROW['eleve_id']][$DB_ROW['item_id']])
+		{
+			$tab_eval[$DB_ROW['eleve_id']][$DB_ROW['item_id']][] = array('note'=>$DB_ROW['note'],'date'=>$DB_ROW['date'],'info'=>$DB_ROW['info']);
+		}
 	}
 
 	//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-

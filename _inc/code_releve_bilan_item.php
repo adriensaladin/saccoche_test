@@ -220,7 +220,7 @@ if(in_array('individuel',$tab_type))
 	$releve_HTML_individuel .= '<h2>'.html($texte_periode).'</h2>';
 	// Appel de la classe et définition de qqs variables supplémentaires pour la mise en page PDF
 	$releve_PDF = new PDF($orientation,$marge_min,$couleur,$legende);
-	$releve_PDF->bilan_item_individuel_initialiser($format,$cases_nb,$cases_largeur,$lignes_nb=$item_nb+$aff_bilan_MS+$aff_bilan_PA,$eleve_nb);
+	$releve_PDF->bilan_item_individuel_initialiser($format,$cases_nb,$cases_largeur,$lignes_nb=$item_nb+$aff_bilan_MS+$aff_bilan_PA,$eleve_nb,$pages_nb);
 	$bilan_colspan = $cases_nb + 2 ;
 	// Pour chaque élève...
 	foreach($tab_eleve as $tab)
@@ -229,8 +229,8 @@ if(in_array('individuel',$tab_type))
 		// Si cet élève a été évalué...
 		if(isset($tab_eval[$eleve_id]))
 		{
-			$releve_PDF->bilan_item_individuel_entete($format,$nb_matieres,$nb_items+($aff_bilan_MS+$aff_bilan_PA)*$nb_matieres,$tab_titre[$format],$texte_periode,$groupe_nom,$eleve_nom,$eleve_prenom);
 			// Intitulé
+			$releve_PDF->bilan_item_individuel_entete($format,$nb_matieres,$nb_items+($aff_bilan_MS+$aff_bilan_PA)*$nb_matieres,$pages_nb,$tab_titre[$format],$texte_periode,$groupe_nom,$eleve_nom,$eleve_prenom);
 			$releve_HTML_individuel .= '<hr class="breakafter" /><h2>'.html($groupe_nom).' - '.html($eleve_nom).' '.html($eleve_prenom).'</h2>';
 			// Pour chaque matiere...
 			foreach($tab_matiere as $matiere_id => $matiere_nom)
@@ -408,21 +408,25 @@ if(in_array('synthese',$tab_type))
 	foreach($tab_eleve as $tab)
 	{
 		extract($tab);	// $eleve_id $eleve_nom $eleve_prenom $eleve_id_gepi
-		$releve_PDF->choisir_couleur_fond('gris_clair');
-		$releve_PDF->Cell($releve_PDF->eleve_largeur , $releve_PDF->cases_hauteur , pdf($eleve_nom.' '.$eleve_prenom) , 1 , 0 , 'L' , true , '');
-		$releve_HTML_table_body1 .= '<tr><td>'.html($eleve_nom.' '.$eleve_prenom).'</td>';
-		$releve_HTML_table_body2 .= '<tr><td>'.html($eleve_nom.' '.$eleve_prenom).'</td>';
-		// Pour chaque item...
-		foreach($tab_liste_item as $item_id)
+		// Si cet élève a été évalué...
+		if(isset($tab_eval[$eleve_id]))
 		{
-			$score = (isset($tab_score_eleve_item[$eleve_id][$matiere_id][$item_id])) ? $tab_score_eleve_item[$eleve_id][$matiere_id][$item_id] : false ;
-			$releve_PDF->afficher_score_bilan($score,$br=0);
-			$releve_HTML_table_body1 .= affich_score_html($score,'score');
-			$releve_HTML_table_body2 .= affich_score_html($score,'etat');
+			$releve_PDF->choisir_couleur_fond('gris_clair');
+			$releve_PDF->Cell($releve_PDF->eleve_largeur , $releve_PDF->cases_hauteur , pdf($eleve_nom.' '.$eleve_prenom) , 1 , 0 , 'L' , true , '');
+			$releve_HTML_table_body1 .= '<tr><td>'.html($eleve_nom.' '.$eleve_prenom).'</td>';
+			$releve_HTML_table_body2 .= '<tr><td>'.html($eleve_nom.' '.$eleve_prenom).'</td>';
+			// Pour chaque item...
+			foreach($tab_liste_item as $item_id)
+			{
+				$score = (isset($tab_score_eleve_item[$eleve_id][$matiere_id][$item_id])) ? $tab_score_eleve_item[$eleve_id][$matiere_id][$item_id] : false ;
+				$releve_PDF->afficher_score_bilan($score,$br=0);
+				$releve_HTML_table_body1 .= affich_score_html($score,'score');
+				$releve_HTML_table_body2 .= affich_score_html($score,'etat');
+			}
+			$releve_PDF->bilan_periode_synthese_pourcentages($tab_moyenne_scores_eleve[$matiere_id][$eleve_id],$tab_pourcentage_acquis_eleve[$matiere_id][$eleve_id],false,true);
+			$releve_HTML_table_body1 .= '<td class="nu">&nbsp;</td>'.affich_score_html($tab_moyenne_scores_eleve[$matiere_id][$eleve_id],'score','%').affich_score_html($tab_pourcentage_acquis_eleve[$matiere_id][$eleve_id],'score','%').'</tr>'."\r\n";
+			$releve_HTML_table_body2 .= '<td class="nu">&nbsp;</td>'.affich_score_html($tab_moyenne_scores_eleve[$matiere_id][$eleve_id],'etat','%').affich_score_html($tab_pourcentage_acquis_eleve[$matiere_id][$eleve_id],'etat','%').'</tr>'."\r\n";
 		}
-		$releve_PDF->bilan_periode_synthese_pourcentages($tab_moyenne_scores_eleve[$matiere_id][$eleve_id],$tab_pourcentage_acquis_eleve[$matiere_id][$eleve_id],false,true);
-		$releve_HTML_table_body1 .= '<td class="nu">&nbsp;</td>'.affich_score_html($tab_moyenne_scores_eleve[$matiere_id][$eleve_id],'score','%').affich_score_html($tab_pourcentage_acquis_eleve[$matiere_id][$eleve_id],'score','%').'</tr>'."\r\n";
-		$releve_HTML_table_body2 .= '<td class="nu">&nbsp;</td>'.affich_score_html($tab_moyenne_scores_eleve[$matiere_id][$eleve_id],'etat','%').affich_score_html($tab_pourcentage_acquis_eleve[$matiere_id][$eleve_id],'etat','%').'</tr>'."\r\n";
 	}
 	$releve_HTML_table_body1 = '<tbody>'.$releve_HTML_table_body1.'</tbody>'."\r\n";
 	$releve_HTML_table_body2 = '<tbody>'.$releve_HTML_table_body2.'</tbody>'."\r\n";
@@ -486,11 +490,15 @@ if(in_array('bulletin',$tab_type))
 	foreach($tab_eleve as $tab)
 	{
 		extract($tab);	// $eleve_id $eleve_nom $eleve_prenom $eleve_id_gepi
-		$note         = ($tab_moyenne_scores_eleve[$matiere_id][$eleve_id] !== false)          ? sprintf("%04.1f",$tab_moyenne_scores_eleve[$matiere_id][$eleve_id]/5)                                                                             : '-' ;
-		$appreciation = ($tab_pourcentage_acquis_eleve[$matiere_id][$eleve_id] !== false) ? $tab_pourcentage_acquis_eleve[$matiere_id][$eleve_id].'% d\'items acquis ('.$tab_infos_acquis_eleve[$matiere_id][$eleve_id].')' : '-' ;
-		$bulletin_body     .= '<tr><th>'.html($eleve_nom.' '.$eleve_prenom).'</th><td>'.$note.'</td><td>'.$appreciation.'</td></tr>'."\r\n";
-		// Pour gépi je remplace le point décimal par une virgule sinon le tableur convertit en date...
-		$bulletin_csv_gepi .= $eleve_id_gepi.';'.str_replace('.',',',$note).';'.$appreciation."\r\n";
+		// Si cet élève a été évalué...
+		if(isset($tab_eval[$eleve_id]))
+		{
+			$note         = ($tab_moyenne_scores_eleve[$matiere_id][$eleve_id] !== false)          ? sprintf("%04.1f",$tab_moyenne_scores_eleve[$matiere_id][$eleve_id]/5)                                                                             : '-' ;
+			$appreciation = ($tab_pourcentage_acquis_eleve[$matiere_id][$eleve_id] !== false) ? $tab_pourcentage_acquis_eleve[$matiere_id][$eleve_id].'% d\'items acquis ('.$tab_infos_acquis_eleve[$matiere_id][$eleve_id].')' : '-' ;
+			$bulletin_body     .= '<tr><th>'.html($eleve_nom.' '.$eleve_prenom).'</th><td>'.$note.'</td><td>'.$appreciation.'</td></tr>'."\r\n";
+			// Pour GEPI je remplace le point décimal par une virgule sinon le tableur convertit en date...
+			$bulletin_csv_gepi .= $eleve_id_gepi.';'.str_replace('.',',',$note).';'.$appreciation."\r\n";
+		}
 	}
 	$bulletin_head  = '<thead><tr><th>Elève</th><th>Moyenne pondérée sur 20<br />(des scores d\'acquisitions)</th><th>Élément d\'appréciation<br />(pourcentage d\'items acquis)</th></tr></thead>'."\r\n";
 	$bulletin_body  = '<tbody>'."\r\n".$bulletin_body.'</tbody>'."\r\n";

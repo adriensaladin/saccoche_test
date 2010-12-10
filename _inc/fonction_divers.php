@@ -1085,7 +1085,6 @@ function url_get_contents($url,$tab_post=false,$timeout=5)
 	}
 	if(SERVEUR_PROXY_USED)
 	{                                                                    // Serveur qui nécessite d'utiliser un tunnel à travers un proxy HTTP.
-		curl_setopt($ch, CURLOPT_HTTPPROXYTUNNEL, TRUE);                   // TRUE pour effectuer un tunnel à travers un proxy HTTP.
 		curl_setopt($ch, CURLOPT_PROXY, SERVEUR_PROXY_NAME);               // Le nom du proxy HTTP au tunnel qui le demande.
 		curl_setopt($ch, CURLOPT_PROXYPORT, (int)SERVEUR_PROXY_PORT);      // Le numéro du port du proxy à utiliser pour la connexion. Ce numéro de port peut également être défini dans l'option CURLOPT_PROXY.
 		curl_setopt($ch, CURLOPT_PROXYTYPE, constant(SERVEUR_PROXY_TYPE)); // Soit CURLPROXY_HTTP (par défaut), soit CURLPROXY_SOCKS5.

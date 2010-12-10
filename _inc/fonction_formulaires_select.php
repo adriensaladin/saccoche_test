@@ -52,17 +52,21 @@ $tab_select_orientation[] = array('valeur'=>'portrait'  , 'texte'=>'Portrait (ve
 $tab_select_orientation[] = array('valeur'=>'landscape' , 'texte'=>'Paysage (horizontal)');
 
 $tab_select_marge_min   = array();
-$tab_select_marge_min[] = array('valeur'=>5  , 'texte'=>'5 mm');
-$tab_select_marge_min[] = array('valeur'=>6  , 'texte'=>'6 mm');
-$tab_select_marge_min[] = array('valeur'=>7  , 'texte'=>'7 mm');
-$tab_select_marge_min[] = array('valeur'=>8  , 'texte'=>'8 mm');
-$tab_select_marge_min[] = array('valeur'=>9  , 'texte'=>'9 mm');
-$tab_select_marge_min[] = array('valeur'=>10 , 'texte'=>'10 mm');
-$tab_select_marge_min[] = array('valeur'=>11 , 'texte'=>'11 mm');
-$tab_select_marge_min[] = array('valeur'=>12 , 'texte'=>'12 mm');
-$tab_select_marge_min[] = array('valeur'=>13 , 'texte'=>'13 mm');
-$tab_select_marge_min[] = array('valeur'=>14 , 'texte'=>'14 mm');
-$tab_select_marge_min[] = array('valeur'=>15 , 'texte'=>'15 mm');
+$tab_select_marge_min[] = array('valeur'=>5  , 'texte'=>'marges de 5 mm');
+$tab_select_marge_min[] = array('valeur'=>6  , 'texte'=>'marges de 6 mm');
+$tab_select_marge_min[] = array('valeur'=>7  , 'texte'=>'marges de 7 mm');
+$tab_select_marge_min[] = array('valeur'=>8  , 'texte'=>'marges de 8 mm');
+$tab_select_marge_min[] = array('valeur'=>9  , 'texte'=>'marges de 9 mm');
+$tab_select_marge_min[] = array('valeur'=>10 , 'texte'=>'marges de 10 mm');
+$tab_select_marge_min[] = array('valeur'=>11 , 'texte'=>'marges de 11 mm');
+$tab_select_marge_min[] = array('valeur'=>12 , 'texte'=>'marges de 12 mm');
+$tab_select_marge_min[] = array('valeur'=>13 , 'texte'=>'marges de 13 mm');
+$tab_select_marge_min[] = array('valeur'=>14 , 'texte'=>'marges de 14 mm');
+$tab_select_marge_min[] = array('valeur'=>15 , 'texte'=>'marges de 15 mm');
+
+$tab_select_pages_nb   = array();
+$tab_select_pages_nb[] = array('valeur'=>'optimise' , 'texte'=>'nombre de pages optimisé');
+$tab_select_pages_nb[] = array('valeur'=>'augmente' , 'texte'=>'nombre de pages augmenté');
 
 $tab_select_couleur   = array();
 $tab_select_couleur[] = array('valeur'=>'oui' , 'texte'=>'en couleurs');

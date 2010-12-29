@@ -81,7 +81,7 @@ if( ($action=='Voir') && $matiere_id )
 			$item_id     = $DB_ROW['item_id'];
 			$coef_texte  = '<img src="./_img/x'.$DB_ROW['item_coef'].'.gif" alt="" title="Coefficient '.$DB_ROW['item_coef'].'." />';
 			$cart_title  = ($DB_ROW['item_cart']) ? 'Demande possible.' : 'Demande interdite.' ;
-			$cart_texte  = '<img src="./_img/cart'.$DB_ROW['item_cart'].'.png" title="'.$cart_title.'" /> ';
+			$cart_texte  = '<img src="./_img/cart'.$DB_ROW['item_cart'].'.png" title="'.$cart_title.'" />';
 			$socle_image = ($DB_ROW['entree_id']==0) ? 'off' : 'on' ;
 			$socle_nom   = ($DB_ROW['entree_id']==0) ? 'Hors-socle.' : html($DB_ROW['entree_nom']) ;
 			$socle_texte = '<img src="./_img/socle_'.$socle_image.'.png" alt="" title="'.$socle_nom.'" lang="id_'.$DB_ROW['entree_id'].'" />';

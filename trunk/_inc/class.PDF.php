@@ -1120,7 +1120,77 @@ function afficher_pourcentage_acquis($gras,$tab_infos)
 		}
 	}
 
+	//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	//	Méthodes pour la mise en page d'une synthèse des validations du socle commun
+	//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	//	releve_synthese_socle_initialiser()
+	//	releve_synthese_socle_entete()
+	//	releve_synthese_socle_eleve()
+	//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+	public function releve_synthese_socle_initialiser($groupe_nom,$palier_nom,$eleves_nb,$items_nb)
+	{
+		$this->SetMargins($this->marge_gauche , $this->marge_haut , $this->marge_droit);
+		$this->AddPage($this->orientation , 'A4');
+		$this->SetAutoPageBreak(true);
+		$this->eleve_largeur = 40;
+		$this->cases_largeur = ($this->page_largeur - $this->marge_gauche - $this->marge_droit - $this->eleve_largeur) / ($items_nb);
+		$this->cases_hauteur = ($this->page_hauteur - $this->marge_haut - $this->marge_bas - $this->taille_police - $eleves_nb) / (2*($eleves_nb+1)); // - titre de 5 - ( interligne de 1 * nb élèves )
+		$this->cases_hauteur = min($this->cases_hauteur,6);
+		$this->taille_police = 8;
+		// Intitulés
+		$this->SetFont('Arial' , 'B' , $this->taille_police*1.5);
+		$this->Cell(0 , $this->taille_police , pdf('Synthèse des validations du socle'.' - '.$groupe_nom.' - '.$palier_nom) , 0 , 2 , 'L' , false , '');
+	}
+
+	public function releve_synthese_socle_entete($tab_pilier)
+	{
+		$this->SetFont('Arial' , 'B' , $this->taille_police);
+		$this->SetXY($this->marge_gauche+$this->eleve_largeur,$this->marge_haut+$this->taille_police);
+		$this->choisir_couleur_fond('gris_fonce');
+		foreach($tab_pilier as $tab)
+		{
+			extract($tab);	// $pilier_ref $pilier_nom $pilier_nb_entrees
+			$texte = ($pilier_nb_entrees>10) ? 'Compétence ' : 'Comp. ' ;
+			$this->Cell($pilier_nb_entrees*$this->cases_largeur , 2*$this->cases_hauteur , pdf($texte.$pilier_ref) , 1 , 0 , 'C' , true , '');
+		}
+		// positionnement pour la suite
+		$this->SetFont('Arial' , '' , $this->taille_police);
+		$this->SetXY( $this->marge_gauche , $this->GetY()+2*$this->cases_hauteur+1 );
+	}
+
+	public function releve_synthese_socle_eleve($eleve_id,$eleve_nom,$eleve_prenom,$tab_user_pilier,$tab_user_entree,$tab_pilier,$tab_socle)
+	{
+		$this->choisir_couleur_fond('gris_moyen');
+		$this->Cell($this->eleve_largeur , 2*$this->cases_hauteur , pdf($eleve_nom.' '.$eleve_prenom) , 1 , 0 , 'L' , true , '');
+		// - - - - -
+		// Validation des compétences
+		// - - - - -
+		// Pour chaque pilier...
+		foreach($tab_pilier as $pilier_id => $tab)
+		{
+			extract($tab);	// $pilier_ref $pilier_nom $pilier_nb_entrees
+			$this->choisir_couleur_fond('v'.$tab_user_pilier[$eleve_id][$pilier_id]['etat']);
+			$this->Cell($pilier_nb_entrees*$this->cases_largeur , $this->cases_hauteur , '' , 1 , 0 , 'C' , true , '');
+		}
+		// positionnement pour la suite
+		$this->SetXY( $this->marge_gauche+$this->eleve_largeur , $this->GetY()+$this->cases_hauteur );
+		// - - - - -
+		// Validation des items
+		// - - - - -
+		// Pour chaque entrée du socle...
+		foreach($tab_socle as $pilier_id => $tab)
+		{
+			foreach($tab as $socle_id => $socle_nom)
+			{
+				$couleur = ( ($tab_user_pilier[$eleve_id][$pilier_id]['etat']==1) && ($tab_user_entree[$eleve_id][$socle_id]['etat']==2) && (!$_SESSION['USER_DALTONISME']) ) ? 'gris_clair' : 'v'.$tab_user_entree[$eleve_id][$socle_id]['etat'] ;
+				$this->choisir_couleur_fond($couleur);
+				$this->Cell($this->cases_largeur , $this->cases_hauteur , '' , 1 , 0 , 'C' , true , '');
+			}
+		}
+		// positionnement pour la suite
+		$this->SetXY( $this->marge_gauche , $this->GetY()+$this->cases_hauteur+1 );
+	}
 
 	//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 	//	Méthodes pour la mise en page d'un bilan de synthèse d'un groupe sur une période

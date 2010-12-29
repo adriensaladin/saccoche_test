@@ -78,6 +78,7 @@ $(document).ready
 								$('#ajax_maj_pilier').removeAttr("class").html('&nbsp;');
 								$('#f_pilier').html(responseHTML).show();
 								maj_bouton_validation();
+								maj_domaine();
 							}
 							else
 							{
@@ -91,13 +92,58 @@ $(document).ready
 			else
 			{
 				$('#ajax_maj_pilier').removeAttr("class").html("&nbsp;");
-				maj_bouton_validation();
 			}
 		};
 
 		$("#f_palier").change( maj_pilier );
 
 		maj_pilier();
+
+//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
+//	Charger le select f_domaine en ajax
+//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
+
+		var maj_domaine = function()
+		{
+			$("#f_domaine").html('<option value=""></option>').hide();
+			pilier_id = $("#f_pilier").val();
+			if(pilier_id)
+			{
+				$('#ajax_maj_domaine').removeAttr("class").addClass("loader").html("Actualisation en cours... Veuillez patienter.");
+				$.ajax
+				(
+					{
+						type : 'POST',
+						url : 'ajax.php?page=_maj_select_domaines',
+						data : 'f_pilier='+pilier_id+'&f_first='+'val',
+						dataType : "html",
+						error : function(msg,string)
+						{
+							$('#ajax_maj_domaine').removeAttr("class").addClass("alerte").html("Echec de la connexion ! Veuillez essayer de nouveau.");
+						},
+						success : function(responseHTML)
+						{
+							maj_clock(1);
+							if(responseHTML.substring(0,7)=='<option')	// Attention aux caractères accentués : l'utf-8 pose des pbs pour ce test
+							{
+								$('#ajax_maj_domaine').removeAttr("class").html('&nbsp;');
+								$('#f_domaine').html(responseHTML).show();
+							}
+							else
+							{
+								$('#ajax_maj_domaine').removeAttr("class").addClass("alerte").html(responseHTML);
+							}
+						}
+					}
+				);
+			}
+			else
+			{
+				$('#ajax_maj_domaine').removeAttr("class").html("&nbsp;");
+			}
+		};
+
+		$("#f_pilier").change( maj_domaine );
 
 //	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
 //	Charger le select f_eleve en ajax
@@ -165,17 +211,19 @@ $(document).ready
 			{
 				rules :
 				{
-					f_palier : { required:true },
-					f_pilier : { required:true },
-					f_groupe : { required:true },
-					f_eleve  : { required:true }
+					f_palier  : { required:true },
+					f_pilier  : { required:true },
+					f_domaine : { required:false },
+					f_groupe  : { required:true },
+					f_eleve   : { required:true }
 				},
 				messages :
 				{
-					f_palier : { required:"palier manquant" },
-					f_pilier : { required:"pilier manquant" },
-					f_groupe : { required:"classe / groupe manquant" },
-					f_eleve  : { required:"élève(s) manquant(s)" }
+					f_palier  : { required:"palier manquant" },
+					f_pilier  : { required:"pilier manquant" },
+					f_domaine : { },
+					f_groupe  : { required:"classe / groupe manquant" },
+					f_eleve   : { required:"élève(s) manquant(s)" }
 				},
 				errorElement : "label",
 				errorClass : "erreur",
@@ -255,6 +303,68 @@ $(document).ready
 		}
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+//	Afficher / Masquer les pourcentages d\'items acquis
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
+		var cell_font_size = 0;
+
+		$('#Afficher_pourcentage').live // live est utilisé pour prendre en compte les nouveaux éléments créés
+		('click',
+			function()
+			{
+				cell_font_size = cell_font_size ? 0 : 50 ;
+				$('#tableau_validation tbody td').css('font-size',cell_font_size+'%');
+				return false;
+			}
+		);
+
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+//	Ajuster les validations à partir des pourcentages d'items acquis.
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
+		$('#Ajuster_validation').live // live est utilisé pour prendre en compte les nouveaux éléments créés
+		('click',
+			function()
+			{
+				var modif = 0;
+				$("td").each
+				(
+					function()
+					{
+						var pourcent = parseInt($(this).html());
+						if(isNaN(pourcent))
+						{
+							var classe = 'v2';
+						}
+						else if (pourcent > seuil_V)
+						{
+							var classe = 'v1';
+						}
+						else if (pourcent < seuil_R)
+						{
+							var classe = 'v0';
+						}
+						else
+						{
+							var classe = 'v2';
+						}
+						if( $(this).attr('class') != classe )
+						{
+							$(this).removeAttr("class").addClass(classe);
+							modif++;
+						}
+					}
+				);
+				if(modif)
+				{
+					$('#ajax_msg_validation').removeAttr("class").addClass("alerte").html('Penser à valider les modifications !');
+					$('#fermer_zone_validation').html('<img alt="" src="./_img/bouton/annuler.png" /> Annuler / Retour');
+				}
+				return false;
+			}
+		);
+
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 //	Clic sur une cellule du tableau => Modifier visuellement des états de validation
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
@@ -272,6 +382,7 @@ $(document).ready
 				var new_classe = classe.charAt(0) + tab_class_next[classe.charAt(1)] ;
 				$(this).removeAttr("class").addClass(new_classe);
 				$('#ajax_msg_validation').removeAttr("class").addClass("alerte").html('Penser à valider les modifications !');
+				$('#fermer_zone_validation').html('<img alt="" src="./_img/bouton/annuler.png" /> Annuler / Retour');
 				return false;
 			}
 		);
@@ -287,6 +398,7 @@ $(document).ready
 					return false;
 				}
 				$('#ajax_msg_validation').removeAttr("class").addClass("alerte").html('Penser à valider les modifications !');
+				$('#fermer_zone_validation').html('<img alt="" src="./_img/bouton/annuler.png" /> Annuler / Retour');
 				var classe_debut = classe.substring(0,4);
 				var classe_fin   = classe.charAt(4);
 				var new_classe_th = classe_debut + tab_class_next[classe_fin] ;
@@ -467,6 +579,7 @@ $(document).ready
 							else
 							{
 								$('#ajax_msg_validation').removeAttr("class").addClass("valide").html("Validations enregistrées !");
+								$('#fermer_zone_validation').html('<img alt="" src="./_img/bouton/retourner.png" /> Retour');
 							}
 						}
 					}

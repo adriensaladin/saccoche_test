@@ -27,7 +27,7 @@
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = "Valider les items du socle";
-$VERSION_JS_FILE += 4;
+$VERSION_JS_FILE += 5;
 // Remarque : on ne peut être pp que d'une classe, pas d'un groupe, donc si seuls les PP ont un accès par mis les profs, ils ne peuvent trier les élèves que par classes
 ?>
 
@@ -75,6 +75,11 @@ $select_palier = afficher_select($tab_paliers , $select_nom='f_palier' , $option
 $select_groupe = afficher_select($tab_groupes , $select_nom='f_groupe' , $option_first=$of_g , $selection=false , $optgroup=$og_g);
 ?>
 
+<script type="text/javascript">
+	var seuil_R = parseInt("<?php echo $_SESSION['CALCUL_SEUIL']['R'] ?>");
+	var seuil_V = parseInt("<?php echo $_SESSION['CALCUL_SEUIL']['V'] ?>");
+</script>
+
 <ul class="puce">
 	<li><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=referentiels_socle__socle_valider_item">DOC : Valider des items du socle.</a></span></li>
 	<li><span class="astuce">Profils autorisés par l'administrateur pour valider les items du socle : <?php echo $texte ?></span></li>
@@ -84,7 +89,8 @@ $select_groupe = afficher_select($tab_groupes , $select_nom='f_groupe' , $option
 
 <form action="" id="zone_choix"><fieldset>
 	<label class="tab" for="f_palier">Palier :</label><?php echo $select_palier ?><label id="ajax_maj_pilier">&nbsp;</label><br />
-	<label class="tab" for="f_pilier">Compétence :</label><select id="f_pilier" name="f_pilier" class="hide"><option></option></select><p />
+	<label class="tab" for="f_pilier">Compétence :</label><select id="f_pilier" name="f_pilier" class="hide"><option></option></select><label id="ajax_maj_domaine">&nbsp;</label><br />
+	<label class="tab" for="f_domaine">Domaine :</label><select id="f_domaine" name="f_domaine" class="hide"><option></option></select><p />
 	<label class="tab" for="f_groupe">Classe / groupe :</label><?php echo $select_groupe ?><input type="hidden" id="f_groupe_type" name="f_groupe_type" value="" /><label id="ajax_maj_eleve">&nbsp;</label><br />
 	<label class="tab" for="f_eleve">Élève(s) :</label><select id="f_eleve" name="f_eleve[]" multiple="multiple" size="9" class="hide"><option></option></select><input type="hidden" id="eleves" name="eleves" value="" /><p />
 	<span class="tab"></span><input type="hidden" name="f_action" value="Afficher_bilan" /><button id="Afficher_validation" type="submit" class="hide"><img alt="" src="./_img/bouton/valider.png" /> Afficher le tableau des validations.</button><label id="ajax_msg_choix">&nbsp;</label>

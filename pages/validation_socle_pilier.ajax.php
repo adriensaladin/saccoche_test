@@ -59,7 +59,11 @@ if( ($action=='Afficher_bilan') && $palier_id && count($tab_eleve) )
 		$tab_eleve_id[] = $eleve_id;
 	}
 	$affichage .= '<th><img alt="Tous les élèves" src="./_img/php/etiquette.php?dossier='.$_SESSION['BASE'].'&amp;nom='.urlencode('TOUS LES ÉLÈVES').'" /></th>';
-	$affichage .= '<th class="nu"><p class="ti"><span class="danger">Rappel : la validation d\'une compétence est irréversible (une invalidation peut être changée).</span></p><p class="ti"><button id="fermer_zone_validation" type="button"><img alt="" src="./_img/bouton/retourner.png" /> Annuler / Retour</button> <button id="Enregistrer_validation" type="button"><img alt="" src="./_img/bouton/valider.png" /> Enregistrer les validations.</button><label id="ajax_msg_validation"></label></p></th>';
+	$affichage .= '<th class="nu">&nbsp;&nbsp;&nbsp;</th>';
+	$affichage .= '<th class="nu">';
+	$affichage .=   '<p class="danger">Rappel : la validation d\'une compétence est irréversible (une invalidation peut être changée).</p>';
+	$affichage .=   '<p><button id="Enregistrer_validation" type="button"><img alt="" src="./_img/bouton/valider.png" /> Enregistrer les validations</button> <button id="fermer_zone_validation" type="button"><img alt="" src="./_img/bouton/retourner.png" /> Retour</button><label id="ajax_msg_validation"></label></p>';
+	$affichage .= '</th>';
 	$affichage .= '</tr></thead>';
 	$affichage .= '<tbody>';
 	// Afficher la ligne du tableau avec les validations pour tout un palier
@@ -69,7 +73,7 @@ if( ($action=='Afficher_bilan') && $palier_id && count($tab_eleve) )
 		$affichage .= '<th id="U'.$eleve_id.'" class="down1" title="Modifier la validation de tout le palier pour cet élève." /></th>';
 	}
 	$affichage .= '<th id="P'.$palier_id.'" class="diag1" title="Modifier la validation de tout le palier pour tous les élèves." /></th>';
-	$affichage .= '<th class="nu"><div class="m1 b">@PALIER@</div></th>';
+	$affichage .= '<th class="nu" colspan="2"><div class="m1 b">@PALIER@</div></th>';
 	$affichage .= '</tr>';
 	// Récupérer l'arborescence du palier du socle (enfin... uniquement les piliers, ça suffit ici)
 	$tab_pilier_id = array();
@@ -86,14 +90,14 @@ if( ($action=='Afficher_bilan') && $palier_id && count($tab_eleve) )
 			$affichage .= '<td id="U'.$eleve_id.'C'.$pilier_id.'" class="v2"></td>';
 		}
 		$affichage .= '<th id="C'.$pilier_id.'" class="left1" title="Modifier la validation de cette compétence pour tous les élèves." /></th>';
-		$affichage .= '<th class="nu"><div class="n1">'.html($DB_ROW['pilier_nom']).'</div></th>';
+		$affichage .= '<th class="nu" colspan="2"><div class="n1">'.html($DB_ROW['pilier_nom']).'</div></th>';
 		$affichage .= '</tr>';
 	}
 	$affichage .= '</tbody>';
 	// Récupérer la liste des jointures (validations)
 	$listing_eleve_id  = implode(',',$tab_eleve_id);
 	$listing_pilier_id = implode(',',$tab_pilier_id);
-	$DB_TAB = DB_STRUCTURE_lister_jointure_user_pilier($listing_eleve_id,$listing_pilier_id,$palier_id=0); // en fait on connait aussi le palier mais le requete est plus simple (pas de jointure) avec les piliers
+	$DB_TAB = DB_STRUCTURE_lister_jointure_user_pilier($listing_eleve_id,$listing_pilier_id,$palier_id=0); // en fait on connait aussi le palier mais la requête est plus simple (pas de jointure) avec les piliers
 	$tab_bad = array();
 	$tab_bon = array();
 	foreach($DB_TAB as $DB_ROW)
@@ -117,7 +121,7 @@ elseif( ($action=='Afficher_information') && $eleve_id && $pilier_id )
 {
 	// Récupération de la liste des validations des items du palier
 	$tab_item = array();	// [entree_id] => 0/1;
-	$DB_TAB = DB_STRUCTURE_lister_jointure_user_entree($eleve_id,$listing_entree_id='',$pilier_id,$palier_id=0);
+	$DB_TAB = DB_STRUCTURE_lister_jointure_user_entree($eleve_id,$listing_entree_id='',$domaine_id=0,$pilier_id,$palier_id=0);
 	if(!count($DB_TAB))
 	{
 		exit('Aucune validation d\'item n\'est renseignée pour cette compétence !');

@@ -216,6 +216,7 @@ $(document).ready
 				var new_classe = classe.charAt(0) + tab_class_next[classe.charAt(1)] ;
 				$(this).removeAttr("class").addClass(new_classe);
 				$('#ajax_msg_validation').removeAttr("class").addClass("alerte").html('Penser à valider les modifications !');
+				$('#fermer_zone_validation').html('<img alt="" src="./_img/bouton/annuler.png" /> Annuler / Retour');
 				return false;
 			}
 		);
@@ -231,6 +232,7 @@ $(document).ready
 					return false;
 				}
 				$('#ajax_msg_validation').removeAttr("class").addClass("alerte").html('Penser à valider les modifications !');
+				$('#fermer_zone_validation').html('<img alt="" src="./_img/bouton/annuler.png" /> Annuler / Retour');
 				var classe_debut = classe.substring(0,4);
 				var classe_fin   = classe.charAt(4);
 				var new_classe_th = classe_debut + tab_class_next[classe_fin] ;
@@ -410,6 +412,7 @@ $(document).ready
 							{
 								$('td.v1').attr('lang','lock');
 								$('#ajax_msg_validation').removeAttr("class").addClass("valide").html("Validations enregistrées !");
+								$('#fermer_zone_validation').html('<img alt="" src="./_img/bouton/retourner.png" /> Retour');
 							}
 						}
 					}

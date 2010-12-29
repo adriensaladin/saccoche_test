@@ -247,6 +247,7 @@ function setVolume(volume)
  * => Webkit, 	avec -webkit-border-radius 	(valable pour Safari, Chrome et tout navigateur basé sur Webkit).
  * => KHTML, 	avec -khtml-border-radius 	(valable pour Konqueror),
  * => Opera, 	avec -o-border-radius 	(valable pour Opéra depuis la version 10.50),
+ * => MSIE à partir de sa version 9
  * Sinon (MSIE...) il y a des techniques tordues et pas universelles (div imbriqués, pixel par pixel...).
  * => http://plugins.jquery.com/project/backgroundCanvas
  * => http://plugins.jquery.com/project/roundCorners => fonctionne à peu près mais temps de calcul long + plante IE si masquage cadre_haut + fait disparaitre la ligne centrale et pb de bordures à cause de l'overflow...

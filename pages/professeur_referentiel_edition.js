@@ -165,9 +165,9 @@ $(document).ready
 						texte = 'ce thème';
 						break;
 					case 'n3' :	// item
-						new_li += '<i>Nom</i> <input id="f_nom" name="f_nom" size="125" maxlength="256" type="text" value="" /> <img alt="" src="./_img/bulle_aide.png" title="Indiquer un coefficient (entier entre 0 et 5) et un nom d\'item." /><br />';
-						new_li += '<i>Socle</i> <input id="f_intitule" name="f_intitule" size="125" maxlength="256" type="text" value="Hors-socle." readonly="readonly" /><input id="f_socle" name="f_socle" type="hidden" value="0" /><q class="choisir_compet" title="Sélectionner un item du socle commun."></q> <img alt="" src="./_img/bulle_aide.png" title="Indiquer l\'appartenance éventuelle au socle commun." /><br />';
-						new_li += '<i>Coef.</i> <input id="f_coef" name="f_coef" type="text" value="1" size="1" maxlength="1" /> - <input id="f_cart1" name="f_cart" type="radio" value="1" checked="checked" /><label for="f_cart1"><img src="./_img/cart1.png" title="Demande possible." /></label> <input id="f_cart0" name="f_cart" type="radio" value="0" /><label for="f_cart0"><img src="./_img/cart0.png" title="Demande interdite." /></label> - <i>Lien</i> <input id="f_lien" name="f_lien" type="text" value="" size="100" /> <img alt="" src="./_img/bulle_aide.png" title="Indiquer un lien vers une ressource de remédiation (facultatif)." />';
+						new_li += '<i>Nom</i> <input id="f_nom" name="f_nom" size="125" maxlength="256" type="text" value="" /> <img alt="" src="./_img/bulle_aide.png" title="Indiquer un nom d\'item." /><br />';
+						new_li += '<i>Socle</i> <input id="f_intitule" name="f_intitule" size="125" maxlength="256" type="text" value="Hors-socle." readonly="readonly" /><input id="f_socle" name="f_socle" type="hidden" value="0" /><q class="choisir_compet" title="Sélectionner un item du socle commun."></q> <img alt="" src="./_img/bulle_aide.png" title="Appartenance éventuelle au socle commun." /><br />';
+						new_li += '<i>Coef.</i> <input id="f_coef" name="f_coef" type="text" value="1" size="1" maxlength="1" /> <img alt="" src="./_img/bulle_aide.png" title="Coefficient facultatif (entier entre 0 et 5)." /> - <input id="f_cart1" name="f_cart" type="radio" value="1" checked="checked" /><label for="f_cart1"><img src="./_img/cart1.png" title="Demande possible." /></label> <input id="f_cart0" name="f_cart" type="radio" value="0" /><label for="f_cart0"><img src="./_img/cart0.png" title="Demande interdite." /></label> - <i>Lien</i> <input id="f_lien" name="f_lien" type="text" value="" size="100" /> <img alt="" src="./_img/bulle_aide.png" title="Lien (facultatif) vers une ressource internet (entraînement, remédiation&hellip;).." />';
 						texte = 'cet item';
 						break;
 					default :
@@ -241,9 +241,9 @@ $(document).ready
 						// On récupère le lien
 						item_id = $(this).parent().attr('id').substring(3);
 						lien = tab_ressources[item_id];
-						new_div += '<i>Nom</i> <input id="f_nom" name="f_nom" size="'+Math.min(10+nom.length,128)+'" maxlength="256" type="text" value="'+nom+'" /> <img alt="" src="./_img/bulle_aide.png" title="Indiquer un coefficient (entier entre 0 et 5) et un nom d\'item." /><br />';
-						new_div += '<i>Socle</i> <input id="f_intitule" name="f_intitule" size="110" maxlength="256" type="text" value="'+socle_txt+'" readonly="readonly" /><input id="f_socle" name="f_socle" type="hidden" value="'+socle_id+'" /><q class="choisir_compet" title="Sélectionner un item du socle commun."></q> <img alt="" src="./_img/bulle_aide.png" title="Indiquer l\'appartenance éventuelle au socle commun." /><br />';
-						new_div += '<i>Coef.</i> <input id="f_coef" name="f_coef" type="text" value="'+coef+'" size="1" maxlength="1" /> - <input id="f_cart1" name="f_cart" type="radio" value="1"'+check1+' /><label for="f_cart1"><img src="./_img/cart1.png" title="Demande possible." /></label> <input id="f_cart0" name="f_cart" type="radio" value="0"'+check0+'+ /><label for="f_cart0"><img src="./_img/cart0.png" title="Demande interdite." /></label> - <i>Lien</i> <input id="f_lien" name="f_lien" type="text" value="'+lien+'" size="90" /> <img alt="" src="./_img/bulle_aide.png" title="Indiquer un lien vers une ressource de remédiation (facultatif)." />';
+						new_div += '<i>Nom</i> <input id="f_nom" name="f_nom" size="'+Math.min(10+nom.length,128)+'" maxlength="256" type="text" value="'+nom+'" /> <img alt="" src="./_img/bulle_aide.png" title="Indiquer un nom d\'item." /><br />';
+						new_div += '<i>Socle</i> <input id="f_intitule" name="f_intitule" size="110" maxlength="256" type="text" value="'+socle_txt+'" readonly="readonly" /><input id="f_socle" name="f_socle" type="hidden" value="'+socle_id+'" /><q class="choisir_compet" title="Sélectionner un item du socle commun."></q> <img alt="" src="./_img/bulle_aide.png" title="Appartenance éventuelle au socle commun." /><br />';
+						new_div += '<i>Coef.</i> <input id="f_coef" name="f_coef" type="text" value="'+coef+'" size="1" maxlength="1" /> <img alt="" src="./_img/bulle_aide.png" title="Coefficient facultatif (entier entre 0 et 5)." /> - <input id="f_cart1" name="f_cart" type="radio" value="1"'+check1+' /><label for="f_cart1"><img src="./_img/cart1.png" title="Demande possible." /></label> <input id="f_cart0" name="f_cart" type="radio" value="0"'+check0+'+ /><label for="f_cart0"><img src="./_img/cart0.png" title="Demande interdite." /></label> - <i>Lien</i> <input id="f_lien" name="f_lien" type="text" value="'+lien+'" size="90" /> <img alt="" src="./_img/bulle_aide.png" title="Lien (facultatif) vers une ressource internet (entraînement, remédiation&hellip;)." />';
 						texte = 'cet item';
 						break;
 					default :
@@ -471,7 +471,7 @@ $(document).ready
 					ref = $('#f_ref').val();
 					if(ref=='')
 					{
-						$('#ajax_msg').removeAttr("class").addClass("erreur").html("Veuillez entrer une référence !");
+						$('#ajax_msg').removeAttr("class").addClass("erreur").html("Référence manquante !");
 						$('#f_ref').focus();
 						return false;
 					}
@@ -490,7 +490,7 @@ $(document).ready
 				nom = entity_convert($('#f_nom').val());
 				if(nom=='')
 				{
-					$('#ajax_msg').removeAttr("class").addClass("erreur").html("Veuillez entrer un nom !");
+					$('#ajax_msg').removeAttr("class").addClass("erreur").html("Nom manquant !");
 					$('#f_nom').focus();
 					return false;
 				}
@@ -503,7 +503,7 @@ $(document).ready
 					lien  = $('#f_lien').val();
 					if(coef=='')
 					{
-						$('#ajax_msg').removeAttr("class").addClass("erreur").html("Veuillez entrer un coefficient !");
+						$('#ajax_msg').removeAttr("class").addClass("erreur").html("Coefficient manquant !");
 						$('#f_coef').focus();
 						return false;
 					}
@@ -616,7 +616,7 @@ $(document).ready
 					ref = $('#f_ref').val();
 					if(ref=='')
 					{
-						$('#ajax_msg').removeAttr("class").addClass("erreur").html("Veuillez entrer une référence !");
+						$('#ajax_msg').removeAttr("class").addClass("erreur").html("Référence manquante !");
 						$('#f_ref').focus();
 						return false;
 					}
@@ -635,7 +635,7 @@ $(document).ready
 				nom = entity_convert($('#f_nom').val());
 				if(nom=='')
 				{
-					$('#ajax_msg').removeAttr("class").addClass("erreur").html("Veuillez entrer un nom !");
+					$('#ajax_msg').removeAttr("class").addClass("erreur").html("Nom manquant !");
 					$('#f_nom').focus();
 					return false;
 				}
@@ -648,7 +648,7 @@ $(document).ready
 					lien  = $('#f_lien').val();
 					if(coef=='')
 					{
-						$('#ajax_msg').removeAttr("class").addClass("erreur").html("Veuillez entrer un coefficient !");
+						$('#ajax_msg').removeAttr("class").addClass("erreur").html("Coefficient manquant !");
 						$('#f_coef').focus();
 						return false;
 					}

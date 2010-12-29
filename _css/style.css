@@ -229,18 +229,18 @@ table.scor_eval tbody td input {vertical-align:middle;font-size:0;color:#FFF;mar
 table.scor_eval tbody td input:focus {border:2px solid #00F}
 table.scor_eval tbody.h td input {width:22px;height:16px}
 table.scor_eval tbody.v td input {width:12px;height:22px}
-table.scor_eval tbody.h td input.ABS  {background:#FFF url('../_img/note/commun/h/ABS.gif')  no-repeat center center;}
-table.scor_eval tbody.v td input.ABS  {background:#FFF url('../_img/note/commun/v/ABS.gif')  no-repeat center center;}
-table.scor_eval tbody.h td input.NN   {background:#FFF url('../_img/note/commun/h/NN.gif')   no-repeat center center;}
-table.scor_eval tbody.v td input.NN   {background:#FFF url('../_img/note/commun/v/NN.gif')   no-repeat center center;}
-table.scor_eval tbody.h td input.DISP {background:#FFF url('../_img/note/commun/h/DISP.gif') no-repeat center center;}
-table.scor_eval tbody.v td input.DISP {background:#FFF url('../_img/note/commun/v/DISP.gif') no-repeat center center;}
-table.scor_eval tbody.h td input.X    {background:#FFF url('../_img/note/commun/h/X.gif')    no-repeat center center;}
-table.scor_eval tbody.v td input.X    {background:#FFF url('../_img/note/commun/v/X.gif')    no-repeat center center;}
-table.scor_eval tbody   td input.REQ  {background:#FFF url('../_img/note/REQ.gif')           no-repeat center center;}
+table.scor_eval tbody.h td input.ABS  {background:#FFF url(../_img/note/commun/h/ABS.gif)  no-repeat center center;}
+table.scor_eval tbody.v td input.ABS  {background:#FFF url(../_img/note/commun/v/ABS.gif)  no-repeat center center;}
+table.scor_eval tbody.h td input.NN   {background:#FFF url(../_img/note/commun/h/NN.gif)   no-repeat center center;}
+table.scor_eval tbody.v td input.NN   {background:#FFF url(../_img/note/commun/v/NN.gif)   no-repeat center center;}
+table.scor_eval tbody.h td input.DISP {background:#FFF url(../_img/note/commun/h/DISP.gif) no-repeat center center;}
+table.scor_eval tbody.v td input.DISP {background:#FFF url(../_img/note/commun/v/DISP.gif) no-repeat center center;}
+table.scor_eval tbody.h td input.X    {background:#FFF url(../_img/note/commun/h/X.gif)    no-repeat center center;}
+table.scor_eval tbody.v td input.X    {background:#FFF url(../_img/note/commun/v/X.gif)    no-repeat center center;}
+table.scor_eval tbody   td input.REQ  {background:#FFF url(../_img/note/REQ.gif)           no-repeat center center;}
 /* Défini suivant les préférences de l'établissement : cf actualiser_style_session() dans fonction_divers.php */
 /*
-table.scor_eval tbody.- td input.--   {background:#FFF url("./_img/note/-----/h/RR.gif")     no-repeat center center;}
+table.scor_eval tbody.- td input.--   {background:#FFF url(./_img/note/-----/h/RR.gif)     no-repeat center center;}
 */
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
@@ -269,6 +269,7 @@ table.bilan tfoot th, table.bilan tfoot td {background:#CCF;text-align:right}
 table.bilan tfoot td.nu {background:#EAEAFF;}
 table.bilan_synthese {margin-top:1em;margin-bottom:1em}
 table.bilan th.domaine {background:#99F;}
+table.bilan th.info {width:9px;height:9px;background:#CCF url(../_img/info_mini.gif) no-repeat center center;}
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 /* Format des tableaux du socle                                                                        */
@@ -280,6 +281,7 @@ table.bilan th.domaine {background:#99F;}
 #tableau_validation tbody th {height:15px}
 #tableau_validation tbody th:hover {opacity:1;cursor:pointer}
 #tableau_validation tbody th.nu:hover {cursor:default}
+#tableau_validation tbody td {text-align:center;vertical-align:middle;font-size:0} /* Pour indiquer les scores calculés sans les faire afficher. */
 #tableau_validation tbody td:hover {cursor:pointer}
 /* Défini suivant les préférences de l'établissement : cf actualiser_style_session() dans fonction_divers.php */
 /*
@@ -287,6 +289,7 @@ table.bilan th.domaine {background:#99F;}
 th.v- , td.v- {background:#---}
 #zone_information .v- {background:#---;padding:0 1em;margin-right:1ex}
 #tableau_validation tbody td[lang=lock] {background:#BBF url(./_img/socle/lock.gif) no-repeat center center;}
+#tableau_validation tbody td[lang=done] {background-image:url(./_img/socle/done.gif) no-repeat center center;}
 */
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */

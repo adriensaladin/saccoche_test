@@ -36,14 +36,20 @@
  * 
  */
 
-// Obsolète depuis PHP 5.3.0, supprimé depuis PHP 6.0.0.
+// Fonction pour remédier à l'éventuelle configuration de magic_quotes_gpc à On (directive obsolète depuis PHP 5.3.0 et supprimée depuis PHP 6.0.0).
+// array_map() génère une erreur si le tableau contient lui-même un tableau ; à la place on peut utiliser array_walk_recursive() ou la fonction ci-dessous présente dans le code de MySQL_Dumper et PunBB) :
+// function stripslashes_array($val){$val = is_array($val) ? array_map('stripslashes_array',$val) : stripslashes($val);return $val;}
 function anti_magic_quotes_gpc()
 {
 	if(get_magic_quotes_gpc())
 	{
-		$_POST = array_map('stripslashes',$_POST);
-		$_GET = array_map('stripslashes',$_GET);
-		$_COOKIE = array_map('stripslashes',$_COOKIE);
+		function tab_stripslashes(&$val,$key)
+		{
+			$val = stripslashes($val);
+		}
+		array_walk_recursive($_POST  ,'tab_stripslashes');
+		array_walk_recursive($_GET   ,'tab_stripslashes');
+		array_walk_recursive($_COOKIE,'tab_stripslashes');
 	}
 }
 anti_magic_quotes_gpc();

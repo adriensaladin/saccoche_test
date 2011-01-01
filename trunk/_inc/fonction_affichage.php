@@ -334,30 +334,49 @@ function affich_barre_synthese_html($td_width,$tab_infos,$total)
 // Afficher un pourcentage d'items acquis pour une sortie socle HTML
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
-function affich_pourcentage_html($type_cellule,$tab_infos)
+function affich_pourcentage_html($type_cellule,$tab_infos,$detail)
 {
 	// $tab_infos contient 'A' / 'VA' / 'NA' / 'nb' / '%'
 	if($tab_infos['%']===false)
 	{
-		return '<'.$type_cellule.' class="hc">---</'.$type_cellule.'>';
+		$texte = ($detail) ? '---' : '-' ; // Mettre qq chose sinon en mode daltonien le gris de la case se confond avec les autres couleurs.
+		return '<'.$type_cellule.' class="hc">'.$texte.'</'.$type_cellule.'>' ;
 	}
 	elseif($tab_infos['%']<$_SESSION['CALCUL_SEUIL']['R']) {$etat = 'r';}
 	elseif($tab_infos['%']>$_SESSION['CALCUL_SEUIL']['V']) {$etat = 'v';}
 	else                                                   {$etat = 'o';}
-	return '<'.$type_cellule.' class="hc '.$etat.'">'.$tab_infos['%'].'% acquis ('.$tab_infos['A'].$_SESSION['ACQUIS_TEXTE']['A'].' '.$tab_infos['VA'].$_SESSION['ACQUIS_TEXTE']['VA'].' '.$tab_infos['NA'].$_SESSION['ACQUIS_TEXTE']['NA'].')</'.$type_cellule.'>';
+	$texte = html($tab_infos['%'].'% acquis ('.$tab_infos['A'].$_SESSION['ACQUIS_TEXTE']['A'].' '.$tab_infos['VA'].$_SESSION['ACQUIS_TEXTE']['VA'].' '.$tab_infos['NA'].$_SESSION['ACQUIS_TEXTE']['NA'].')');
+	return ($detail) ? '<'.$type_cellule.' class="hc '.$etat.'">'.$texte.'</'.$type_cellule.'>' : '<'.$type_cellule.' class="'.$etat.'" title="'.$texte.'"></'.$type_cellule.'>';
 }
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 // Afficher un état de validation pour une sortie socle HTML
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
-function affich_validation_html($type_cellule,$tab_infos)
+function affich_validation_html($type_cellule,$tab_infos,$detail,$etat_pilier=false,$colspan=false)
 {
 	// $tab_infos contient 'etat' / 'date' / 'info'
 	$etat  = ($tab_infos['etat']==1) ? 'Validé' : 'Invalidé' ;
-	$texte = ($tab_infos['etat']==2) ? '---' : $tab_infos['date'] ;
 	$bulle = ($tab_infos['etat']==2) ? '' : ' title="'.$etat.' le '.$tab_infos['date'].' par '.html($tab_infos['info']).'"' ;
-	return '<'.$type_cellule.' class="hc v'.$tab_infos['etat'].'"'.$bulle.'>'.$texte.'</'.$type_cellule.'>';
+	if($detail)
+	{
+		$texte = ($tab_infos['etat']==2) ? '---' : $tab_infos['date'] ;
+		return '<'.$type_cellule.' class="hc v'.$tab_infos['etat'].'"'.$bulle.'>'.$texte.'</'.$type_cellule.'>';
+	}
+	else
+	{
+		if($colspan)
+		{
+			// État de validation d'un pilier dans un colspan
+			$colspan_et_classe = ' colspan="'.$colspan.'" class="v'.$tab_infos['etat'].'"' ;
+		}
+		else
+		{
+			// État de validation d'un item à indiquer comme inutile si le pilier est validé
+			$colspan_et_classe = ( ($etat_pilier==1) && ($tab_infos['etat']==2) && (!$_SESSION['USER_DALTONISME']) ) ? '' : ' class="v'.$tab_infos['etat'].'"' ;
+		}
+		return '<'.$type_cellule.$colspan_et_classe.$bulle.'></'.$type_cellule.'>';
+	}
 }
 
 ?>

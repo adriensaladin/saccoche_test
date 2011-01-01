@@ -28,6 +28,7 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 if($_SESSION['SESAMATH_ID']==ID_DEMO) {}
 
+$type         = (isset($_POST['f_type']))       ? clean_texte($_POST['f_type'])       : '';
 $palier_id    = (isset($_POST['f_palier']))     ? clean_entier($_POST['f_palier'])    : 0;
 $palier_nom   = (isset($_POST['f_palier_nom'])) ? clean_texte($_POST['f_palier_nom']) : '';
 $groupe_id    = (isset($_POST['f_groupe']))     ? clean_entier($_POST['f_groupe'])    : 0;
@@ -37,17 +38,19 @@ $tab_eleve_id = (isset($_POST['eleves']))       ? array_map('clean_entier',explo
 $tab_eleve_id = array_filter($tab_eleve_id,'positif');
 $liste_eleve  = implode(',',$tab_eleve_id);
 
-if( (!$palier_id) || (!$palier_nom) || (!$groupe_id) || (!$groupe_nom) || (!count($tab_eleve_id)) )
+if( (!$palier_id) || (!$palier_nom) || (!$groupe_id) || (!$groupe_nom) || (!count($tab_eleve_id)) || (!in_array($type,array('pourcentage','validation'))) )
 {
 	exit('Erreur avec les données transmises !');
 }
 
 $tab_pilier       = array();	// [pilier_id] => array(pilier_ref,pilier_nom,pilier_nb_entrees);
 $tab_socle        = array();	// [pilier_id][socle_id] => array(section_nom,socle_nom);
-$tab_liste_entree = array();	// [i] => entree_id
+$tab_entree_id    = array();	// [i] => entree_id
 $tab_eleve        = array();	// [i] => array(eleve_id,eleve_nom,eleve_prenom)
-$tab_user_entree  = array();	// [eleve_id][entree_id] => array(etat,date,info);
-$tab_user_pilier  = array();	// [eleve_id][pilier_id] => array(etat,date,info);
+$tab_eval         = array();	// [eleve_id][socle_id][item_id][]['note'] => note   [type "pourcentage" uniquement]
+$tab_item         = array();	// [item_id] => array(calcul_methode,calcul_limite); [type "pourcentage" uniquement]
+$tab_user_entree  = array();	// [eleve_id][entree_id] => array(etat,date,info);   [type "validation" uniquement]
+$tab_user_pilier  = array();	// [eleve_id][pilier_id] => array(etat,date,info);   [type "validation" uniquement]
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 // Récupération de la liste des items du socle pour le palier sélectionné
@@ -76,10 +79,10 @@ foreach($DB_TAB as $DB_ROW)
 		$socle_id = $DB_ROW['entree_id'];
 		$tab_socle[$pilier_id][$socle_id] = $section_nom.' » '.$DB_ROW['entree_nom'];
 		$tab_pilier[$pilier_id]['pilier_nb_entrees']++;
-		$tab_liste_entree[] = $socle_id;
+		$tab_entree_id[] = $socle_id;
 	}
 }
-$listing_entree_id = implode(',',$tab_liste_entree);
+$listing_entree_id = implode(',',$tab_entree_id);
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 // Récupération de la liste des élèves
@@ -88,37 +91,54 @@ $listing_entree_id = implode(',',$tab_liste_entree);
 $tab_eleve = DB_STRUCTURE_lister_eleves_cibles($liste_eleve);
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-// Récupération de la liste des validations
+// Récupération de la liste des résultats [type "pourcentage" uniquement]
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
-// On commence par remplir tout le tableau des items pour ne pas avoir ensuite à tester tout le temps si le champ existe
-foreach($tab_eleve_id as $eleve_id)
+if($type=='pourcentage')
 {
-	foreach($tab_liste_entree as $entree_id)
+	$DB_TAB = DB_STRUCTURE_lister_result_eleves_palier($liste_eleve , $listing_entree_id , $date_debut=false , $date_fin=false);
+	foreach($DB_TAB as $DB_ROW)
 	{
-		$tab_user_entree[$eleve_id][$entree_id] = array('etat'=>2,'date'=>'','info'=>'');
+		$tab_eval[$DB_ROW['eleve_id']][$DB_ROW['socle_id']][$DB_ROW['item_id']][]['note'] = $DB_ROW['note'];
+		$tab_item[$DB_ROW['item_id']] = array('calcul_methode'=>$DB_ROW['calcul_methode'],'calcul_limite'=>$DB_ROW['calcul_limite']);
 	}
 }
-//Maintenant on complète avec les valeurs de la base
-$DB_TAB = DB_STRUCTURE_lister_jointure_user_entree($liste_eleve,$listing_entree_id,$domaine_id=0,$pilier_id=0,$palier_id=0); // en fait on connait aussi le palier mais la requête est plus simple (pas de jointure) avec les entrées
-foreach($DB_TAB as $DB_ROW)
+
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+// Récupération de la liste des validations [type "validation" uniquement]
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
+if($type=='validation')
 {
-	$tab_user_entree[$DB_ROW['user_id']][$DB_ROW['entree_id']] = array('etat'=>$DB_ROW['validation_entree_etat'],'date'=>convert_date_mysql_to_french($DB_ROW['validation_entree_date']),'info'=>$DB_ROW['validation_entree_info']);
-}
-// On commence par remplir tout le tableau des piliers pour ne pas avoir ensuite à tester tout le temps si le champ existe
-foreach($tab_eleve_id as $eleve_id)
-{
-	foreach($tab_pilier as $pilier_id => $tab)
+	// On commence par remplir tout le tableau des items pour ne pas avoir ensuite à tester tout le temps si le champ existe
+	foreach($tab_eleve_id as $eleve_id)
 	{
-		$tab_user_pilier[$eleve_id][$pilier_id] = array('etat'=>2,'date'=>'','info'=>'');
+		foreach($tab_entree_id as $entree_id)
+		{
+			$tab_user_entree[$eleve_id][$entree_id] = array('etat'=>2,'date'=>'','info'=>'');
+		}
 	}
-}
-//Maintenant on complète avec les valeurs de la base
-$listing_pilier_id = implode(',',array_keys($tab_pilier));
-$DB_TAB = DB_STRUCTURE_lister_jointure_user_pilier($liste_eleve,$listing_pilier_id,$palier_id=0); // en fait on connait aussi le palier mais la requête est plus simple (pas de jointure) avec les piliers
-foreach($DB_TAB as $DB_ROW)
-{
-	$tab_user_pilier[$DB_ROW['user_id']][$DB_ROW['pilier_id']] = array('etat'=>$DB_ROW['validation_pilier_etat'],'date'=>convert_date_mysql_to_french($DB_ROW['validation_pilier_date']),'info'=>$DB_ROW['validation_pilier_info']);
+	//Maintenant on complète avec les valeurs de la base
+	$DB_TAB = DB_STRUCTURE_lister_jointure_user_entree($liste_eleve,$listing_entree_id,$domaine_id=0,$pilier_id=0,$palier_id=0); // en fait on connait aussi le palier mais la requête est plus simple (pas de jointure) avec les entrées
+	foreach($DB_TAB as $DB_ROW)
+	{
+		$tab_user_entree[$DB_ROW['user_id']][$DB_ROW['entree_id']] = array('etat'=>$DB_ROW['validation_entree_etat'],'date'=>convert_date_mysql_to_french($DB_ROW['validation_entree_date']),'info'=>$DB_ROW['validation_entree_info']);
+	}
+	// On commence par remplir tout le tableau des piliers pour ne pas avoir ensuite à tester tout le temps si le champ existe
+	foreach($tab_eleve_id as $eleve_id)
+	{
+		foreach($tab_pilier as $pilier_id => $tab)
+		{
+			$tab_user_pilier[$eleve_id][$pilier_id] = array('etat'=>2,'date'=>'','info'=>'');
+		}
+	}
+	//Maintenant on complète avec les valeurs de la base
+	$listing_pilier_id = implode(',',array_keys($tab_pilier));
+	$DB_TAB = DB_STRUCTURE_lister_jointure_user_pilier($liste_eleve,$listing_pilier_id,$palier_id=0); // en fait on connait aussi le palier mais la requête est plus simple (pas de jointure) avec les piliers
+	foreach($DB_TAB as $DB_ROW)
+	{
+		$tab_user_pilier[$DB_ROW['user_id']][$DB_ROW['pilier_id']] = array('etat'=>$DB_ROW['validation_pilier_etat'],'date'=>convert_date_mysql_to_french($DB_ROW['validation_pilier_date']),'info'=>$DB_ROW['validation_pilier_info']);
+	}
 }
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
@@ -132,34 +152,78 @@ DB::close(SACOCHE_STRUCTURE_BD_NAME);
 unset($DB_TAB);
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-// Elaboration du bilan relatif au socle, en HTML et PDF => Production et mise en page
+// Elaboration de la synthèse de maîtrise du socle, en HTML et PDF => Tableaux, variables, calculs (aucun affichage). [type "pourcentage" uniquement]
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
+if($type=='pourcentage')
+{
+	// Tableaux et variables pour mémoriser les infos
+	$tab_etat = array('A'=>'v','VA'=>'o','NA'=>'r');
+	$tab_init_compet = array('A'=>0,'VA'=>0,'NA'=>0,'nb'=>0); // et ensuite '%'=>
+	$tab_score_socle_eleve = array();
+	// Pour chaque élève...
+	foreach($tab_eleve_id as $eleve_id)
+	{
+		// Pour chaque item du socle...
+		foreach($tab_entree_id as $socle_id)
+		{
+			$tab_score_socle_eleve[$socle_id][$eleve_id] = $tab_init_compet;
+			// Pour chaque item associé à cet item du socle, ayant été évalué pour cet élève...
+			if(isset($tab_eval[$eleve_id][$socle_id]))
+			{
+				foreach($tab_eval[$eleve_id][$socle_id] as $item_id => $tab_devoirs)
+				{
+					extract($tab_item[$item_id]);	// $calcul_methode $calcul_limite
+					// calcul du bilan de l'item
+					$score = calculer_score($tab_devoirs,$calcul_methode,$calcul_limite);
+					if($score!==false)
+					{
+						// on détermine si elle est acquise ou pas
+						$indice = test_A($score) ? 'A' : ( test_NA($score) ? 'NA' : 'VA' ) ;
+						// on enregistre les infos
+						$tab_score_socle_eleve[$socle_id][$eleve_id][$indice]++;
+						$tab_score_socle_eleve[$socle_id][$eleve_id]['nb']++;
+					}
+				}
+			}
+			// On calcule les états d'acquisition à partir des A / VA / NA
+			$tab_score_socle_eleve[$socle_id][$eleve_id]['%'] = ($tab_score_socle_eleve[$socle_id][$eleve_id]['nb']) ? round( 50 * ( ($tab_score_socle_eleve[$socle_id][$eleve_id]['A']*2 + $tab_score_socle_eleve[$socle_id][$eleve_id]['VA']) / $tab_score_socle_eleve[$socle_id][$eleve_id]['nb'] ) ,0) : false ;
+		}
+	}
+}
+
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+// Elaboration de la synthèse de maîtrise du socle, en HTML et PDF => Production et mise en page
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
 $eleves_nb   = count($tab_eleve_id);
-$items_nb    = count($tab_liste_entree);
+$items_nb    = count($tab_entree_id);
+$piliers_nb  = count($tab_pilier);
 $cellules_nb = $items_nb+1;
+$titre_info  = ($type=='pourcentage') ? 'pourcentage d\'items disciplinaires acquis' : 'validation des items et des compétences' ;
 $releve_html  = '<style type="text/css">'.$_SESSION['CSS'].'</style>';
-$releve_html .= '<style type="text/css">th{text-align:center}tbody td{width:8px;height:8px}</style>';
-$releve_html .= '<h1>Synthèse des validations du socle</h1>';
+$releve_html .= '<style type="text/css">thead th{text-align:center}tbody th,tbody td{width:8px;height:8px;vertical-align:middle}.nu2{background:#EAEAFF;border:none;}	/* classe existante nu non utilisée à cause de son height imposé */</style>';
+$releve_html .= '<h1>Synthèse de maîtrise du socle : '.$titre_info.'</h1>';
 $releve_html .= '<h2>'.html($groupe_nom).' - '.html($palier_nom).'</h2>';
 // Appel de la classe et définition de qqs variables supplémentaires pour la mise en page PDF
 require('./_fpdf/fpdf.php');
 require('./_inc/class.PDF.php');
 $releve_pdf = new PDF($orientation='landscape',$marge_min=7.5,$couleur='oui');
-$releve_pdf->releve_synthese_socle_initialiser($groupe_nom,$palier_nom,$eleves_nb,$items_nb);
+$releve_pdf->releve_synthese_socle_initialiser($titre_info,$groupe_nom,$palier_nom,$eleves_nb,$items_nb,$piliers_nb);
 // - - - - - - - - - -
 // Lignes d'en-tête
 // - - - - - - - - - -
-$releve_html_head = '<tr><td class="nu" rowspan="2"></td>';
+$releve_html_head = '<tr><td class="nu2" rowspan="2"></td>';
 foreach($tab_pilier as $tab)
 {
 	extract($tab);	// $pilier_ref $pilier_nom $pilier_nb_entrees
 	$texte = ($pilier_nb_entrees>10) ? 'Compétence ' : 'Comp. ' ;
-	$releve_html_head .= '<th colspan="'.$pilier_nb_entrees.'" title="'.html($pilier_nom).'">'.$texte.$pilier_ref.'</th>';
+	$releve_html_head .= '<th class="nu2"></th><th colspan="'.$pilier_nb_entrees.'" title="'.html($pilier_nom).'">'.$texte.$pilier_ref.'</th>';
 }
 $releve_html_head .= '</tr><tr>';
 foreach($tab_socle as $tab)
 {
+	$releve_html_head .= '<th class="nu2"></th>';
 	foreach($tab as $socle_nom)
 	{
 		$releve_html_head .= '<th class="info" title="'.html($socle_nom).'"></th>';
@@ -175,52 +239,60 @@ $releve_html_body = '';
 foreach($tab_eleve as $tab)
 {
 	extract($tab);	// $eleve_id $eleve_nom $eleve_prenom
-	$releve_html_body .= '<tr><td class="nu" colspan="'.$cellules_nb.'" style="height:4px"></td></tr>';
-	$releve_html_body .= '<tr><td rowspan="2">'.html($eleve_nom).' '.html($eleve_prenom).'</td>';
-	// - - - - -
-	// Validation des compétences
-	// - - - - -
-	// Pour chaque pilier...
-	foreach($tab_pilier as $pilier_id => $tab)
+	$releve_html_body .= '<tr><td class="nu2" colspan="'.$cellules_nb.'" style="height:4px"></td></tr>';
+	if($type=='pourcentage')
 	{
-		extract($tab);	// $pilier_ref $pilier_nom $pilier_nb_entrees
-		$etat = $tab_user_pilier[$eleve_id][$pilier_id]['etat'];
-		$title = '';
-		if($etat!=2)
+		// - - - - -
+		// Indication des pourcentages
+		// - - - - -
+		$releve_html_body .= '<tr><th>'.html($eleve_nom.' '.$eleve_prenom).'</th>';
+		// Pour chaque entrée du socle...
+		foreach($tab_socle as $pilier_id => $tab)
 		{
-			$nature = ($etat) ? 'Validé' : 'Invalidé' ;
-			$title  = ' title="'.$nature.' le '.$tab_user_pilier[$eleve_id][$pilier_id]['date'].' par '.html($tab_user_pilier[$eleve_id][$pilier_id]['info']).'"';
-		}
-		$releve_html_body .= '<td colspan="'.$pilier_nb_entrees.'" class="v'.$etat.'"'.$title.'></td>';
-	}
-	$releve_html_body .= '</tr><tr>';
-	// - - - - -
-	// Validation des items
-	// - - - - -
-	// Pour chaque entrée du socle...
-	foreach($tab_socle as $pilier_id => $tab)
-	{
-		foreach($tab as $socle_id => $socle_nom)
-		{
-			$etat = $tab_user_entree[$eleve_id][$socle_id]['etat'];
-			$title = '';
-			if($etat!=2)
+			$releve_html_body .= '<td class="nu2"></td>';
+			foreach($tab as $socle_id => $socle_nom)
 			{
-				$nature = ($etat) ? 'Validé' : 'Invalidé' ;
-				$title  = ' title="'.$nature.' le '.$tab_user_entree[$eleve_id][$socle_id]['date'].' par '.html($tab_user_entree[$eleve_id][$socle_id]['info']).'"';
+				$releve_html_body .= affich_pourcentage_html( 'td' , $tab_score_socle_eleve[$socle_id][$eleve_id] , $detail=false );
 			}
-			$classe = ( ($tab_user_pilier[$eleve_id][$pilier_id]['etat']==1) && ($etat==2) && (!$_SESSION['USER_DALTONISME']) ) ? '' : ' class="v'.$etat.'"' ;
-			$releve_html_body .= '<td '.$classe.$title.'></td>';
 		}
+		$releve_html_body .= '</tr>';
+		$releve_pdf->releve_synthese_socle_pourcentage_eleve($eleve_id,$eleve_nom,$eleve_prenom,$tab_score_socle_eleve,$tab_socle);
 	}
-	$releve_html_body .= '</tr>';
-	$releve_pdf->releve_synthese_socle_eleve($eleve_id,$eleve_nom,$eleve_prenom,$tab_user_pilier,$tab_user_entree,$tab_pilier,$tab_socle);
+	if($type=='validation')
+	{
+		// - - - - -
+		// Indication des compétences validées
+		// - - - - -
+		$releve_html_body .= '<tr><th rowspan="2">'.html($eleve_nom.' '.$eleve_prenom).'</th>';
+		// Pour chaque pilier...
+		foreach($tab_pilier as $pilier_id => $tab)
+		{
+			extract($tab);	// $pilier_ref $pilier_nom $pilier_nb_entrees
+			$releve_html_body .= '<td class="nu2"></td>';
+			$releve_html_body .= affich_validation_html( 'td' , $tab_user_pilier[$eleve_id][$pilier_id] , $detail=false , $etat_pilier=false , $colspan=$pilier_nb_entrees );
+		}
+		$releve_html_body .= '</tr><tr>';
+		// - - - - -
+		// Indication des items validés
+		// - - - - -
+		// Pour chaque entrée du socle...
+		foreach($tab_socle as $pilier_id => $tab)
+		{
+			$releve_html_body .= '<td class="nu2"></td>';
+			foreach($tab as $socle_id => $socle_nom)
+			{
+				$releve_html_body .= affich_validation_html( 'td' , $tab_user_entree[$eleve_id][$socle_id] , $detail=false , $tab_user_pilier[$eleve_id][$pilier_id]['etat'] );
+			}
+		}
+		$releve_html_body .= '</tr>';
+		$releve_pdf->releve_synthese_socle_validation_eleve($eleve_id,$eleve_nom,$eleve_prenom,$tab_user_pilier,$tab_user_entree,$tab_pilier,$tab_socle);
+	}
 }
 $releve_html .= '<table class="bilan"><thead>'.$releve_html_head.'</thead><tbody>'.$releve_html_body.'</tbody></table><p />';
 
 // Chemins d'enregistrement
 $dossier      = './__tmp/export/';
-$fichier_lien = 'releve_synthese_socle_etabl'.$_SESSION['BASE'].'_user'.$_SESSION['USER_ID'].'_'.time();
+$fichier_lien = 'releve_synthese_socle_'.$type.'_etabl'.$_SESSION['BASE'].'_user'.$_SESSION['USER_ID'].'_'.time();
 // On enregistre les sorties HTML et PDF
 Ecrire_Fichier($dossier.$fichier_lien.'.html',$releve_html);
 $releve_pdf->Output($dossier.$fichier_lien.'.pdf','F');

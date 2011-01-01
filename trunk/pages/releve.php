@@ -29,7 +29,7 @@ if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');
 $TITRE = "Relevés &amp; Bilans";
 
 $menu_items_selection = ($_SESSION['USER_PROFIL']=='professeur') ? '<a href="./index.php?page='.$PAGE.'&amp;section=items_selection">Bilan d\'items sélectionnés.</a> || ' : '' ;
-$menu_synthese_socle  = ($_SESSION['USER_PROFIL']!='eleve') ? ' || <a href="./index.php?page='.$PAGE.'&amp;section=synthese_socle">Synthèse des validations du socle.</a>' : '' ;
+$menu_synthese_socle  = ($_SESSION['USER_PROFIL']!='eleve') ? ' || <a href="./index.php?page='.$PAGE.'&amp;section=synthese_socle">Synthèse de maîtrise du socle.</a>' : '' ;
 ?>
 
 <div class="hc">

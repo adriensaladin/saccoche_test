@@ -58,7 +58,7 @@ if( (!$palier_id) || (!$palier_nom) || ($pilier_id==-1) || (!$pilier_nom) )
 $tab_pilier       = array();	// [pilier_id] => array(pilier_nom,pilier_nb_lignes);
 $tab_section      = array();	// [pilier_id][section_id] => section_nom;
 $tab_socle        = array();	// [section_id][socle_id] => socle_nom;
-$tab_liste_entree = array();	// [i] => entree_id
+$tab_entree_id    = array();	// [i] => entree_id
 $tab_eleve        = array();	// [i] => array(eleve_id,eleve_nom,eleve_prenom)
 $tab_eval         = array();	// [eleve_id][socle_id][item_id][]['note'] => note
 $tab_item         = array();	// [item_id] => array(item_ref,item_nom,item_cart,matiere_id,calcul_methode,calcul_limite);
@@ -91,10 +91,10 @@ if($pilier_id)
 			$socle_id = $DB_ROW['entree_id'];
 			$tab_socle[$section_id][$socle_id] = $DB_ROW['entree_nom'];
 			$tab_pilier[$pilier_id]['pilier_nb_lignes']++;
-			$tab_liste_entree[] = $socle_id;
+			$tab_entree_id[] = $socle_id;
 		}
 	}
-	$listing_entree_id = implode(',',$tab_liste_entree);
+	$listing_entree_id = implode(',',$tab_entree_id);
 }
 else
 {
@@ -124,10 +124,10 @@ else
 			$socle_id = $DB_ROW['entree_id'];
 			$tab_socle[$section_id][$socle_id] = $DB_ROW['entree_nom'];
 			$tab_pilier[$pilier_id]['pilier_nb_lignes']++;
-			$tab_liste_entree[] = $socle_id;
+			$tab_entree_id[] = $socle_id;
 		}
 	}
-	$listing_entree_id = implode(',',$tab_liste_entree);
+	$listing_entree_id = implode(',',$tab_entree_id);
 }
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
@@ -167,7 +167,7 @@ if($test_affichage_Validation)
 	// On commence par remplir tout le tableau des items pour ne pas avoir ensuite à tester tout le temps si le champ existe
 	foreach($tab_eleve_id as $eleve_id)
 	{
-		foreach($tab_liste_entree as $entree_id)
+		foreach($tab_entree_id as $entree_id)
 		{
 			$tab_user_entree[$eleve_id][$entree_id] = array('etat'=>2,'date'=>'','info'=>'');
 		}
@@ -351,7 +351,7 @@ foreach($tab_eleve as $tab)
 		{
 			extract($tab);	// $pilier_nom $pilier_nb_lignes
 			$case_score = $test_affichage_Pourcentage ? '<th class="nu"></th>' : '' ;
-			$case_valid = $test_affichage_Validation ? affich_validation_html('th',$tab_user_pilier[$eleve_id][$pilier_id]) : '' ;
+			$case_valid = $test_affichage_Validation ? affich_validation_html( 'th' , $tab_user_pilier[$eleve_id][$pilier_id] , $detail=true ) : '' ;
 			$releve_html .= '<tr>'.$case_score.'<th>'.html($pilier_nom).'</th>'.$case_valid.'<th class="nu"></th></tr>'."\r\n";
 			$tab_pilier_validation = $test_affichage_Validation ? $tab_user_pilier[$eleve_id][$pilier_id] : array() ;
 			$releve_pdf->releve_socle_pilier($pilier_nom,$pilier_nb_lignes,$test_affichage_Validation,$tab_pilier_validation);
@@ -384,8 +384,8 @@ foreach($tab_eleve as $tab)
 								$lien_toggle = '<img src="./_img/toggle_none.gif" alt="" /> ';
 								$div_competences = '';
 							}
-							$case_score = $test_affichage_Pourcentage ? affich_pourcentage_html('td',$tab_score_socle_eleve[$socle_id][$eleve_id]) : '' ;
-							$case_valid = $test_affichage_Validation ? affich_validation_html('td',$tab_user_entree[$eleve_id][$socle_id]) : '' ;
+							$case_score = $test_affichage_Pourcentage ? affich_pourcentage_html( 'td' , $tab_score_socle_eleve[$socle_id][$eleve_id] , $detail=true) : '' ;
+							$case_valid = $test_affichage_Validation ? affich_validation_html( 'td' , $tab_user_entree[$eleve_id][$socle_id] , $detail=true ) : '' ;
 							$releve_html .= '<tr>'.$case_score.'<td colspan="2">'.$lien_toggle.$socle_nom.$div_competences.'</td>'.$case_valid.'</tr>'."\r\n";
 						}
 					}

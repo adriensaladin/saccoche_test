@@ -133,7 +133,7 @@ if( ($action=='Afficher_bilan') && $pilier_id && count($tab_eleve) )
 		$tab_eval[$DB_ROW['eleve_id']][$DB_ROW['socle_id']][$DB_ROW['item_id']][]['note'] = $DB_ROW['note'];
 		$tab_item[$DB_ROW['item_id']] = array('calcul_methode'=>$DB_ROW['calcul_methode'],'calcul_limite'=>$DB_ROW['calcul_limite']);
 	}
-	// Ttableaux et variables pour mémoriser les infos
+	// Tableaux et variables pour mémoriser les infos
 	$tab_etat = array('A'=>'v','VA'=>'o','NA'=>'r');
 	$tab_init_compet = array('A'=>0,'VA'=>0,'NA'=>0,'nb'=>0); // et ensuite '%'=>
 	$tab_score_socle_eleve = array();

@@ -126,19 +126,25 @@ $(document).ready
 			{
 				rules :
 				{
+					f_type   : { required:true },
 					f_palier : { required:true },
 					f_groupe : { required:true },
 					f_eleve  : { required:true }
 				},
 				messages :
 				{
+					f_type   : { required:"type manquant" },
 					f_palier : { required:"palier manquant" },
 					f_groupe : { required:"groupe manquant" },
 					f_eleve  : { required:"élève(s) manquant(s)" }
 				},
 				errorElement : "label",
 				errorClass : "erreur",
-				errorPlacement : function(error,element) { element.after(error); }
+				errorPlacement : function(error,element)
+				{
+					if(element.is("select")) {element.after(error);}
+					else if(element.attr("type")=="radio") {element.parent().next().after(error);}
+				}
 				// success: function(label) {label.text("ok").removeAttr("class").addClass("valide");} Pas pour des champs soumis à vérification PHP
 			}
 		);

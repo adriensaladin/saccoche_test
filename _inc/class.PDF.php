@@ -432,10 +432,11 @@ function afficher_etat_validation($gras,$tab_infos)
 	//	Méthode pour afficher un pourcentage d'items acquis (texte A VA NA et couleur de fond suivant le seuil)
 	//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-function afficher_pourcentage_acquis($gras,$tab_infos)
+function afficher_pourcentage_acquis($gras,$tab_infos,$detail)
 {
 	// $tab_infos contient 'A' / 'VA' / 'NA' / 'nb' / '%'
-	$this->SetFont('Arial' , $gras , $this->taille_police);
+	$taille_police = $detail ? $this->taille_police : $this->taille_police/2 ;
+	$this->SetFont('Arial' , $gras , $taille_police);
 	if($tab_infos['%']===false)
 	{
 		$this->choisir_couleur_fond('blanc');
@@ -446,7 +447,14 @@ function afficher_pourcentage_acquis($gras,$tab_infos)
 				if($tab_infos['%']<$_SESSION['CALCUL_SEUIL']['R']) {$this->choisir_couleur_fond($this->tab_choix_couleur['NA']);}
 		elseif($tab_infos['%']>$_SESSION['CALCUL_SEUIL']['V']) {$this->choisir_couleur_fond($this->tab_choix_couleur['A']);}
 		else                                                   {$this->choisir_couleur_fond($this->tab_choix_couleur['VA']);}
-		$this->Cell($this->pourcentage_largeur , $this->cases_hauteur , pdf($tab_infos['%'].'% acquis ('.$tab_infos['A'].$_SESSION['ACQUIS_TEXTE']['A'].' '.$tab_infos['VA'].$_SESSION['ACQUIS_TEXTE']['VA'].' '.$tab_infos['NA'].$_SESSION['ACQUIS_TEXTE']['NA'].')') , 1 , 0 , 'C' , true , '');
+		if($detail)
+		{
+			$this->Cell($this->pourcentage_largeur , $this->cases_hauteur , pdf($tab_infos['%'].'% acquis ('.$tab_infos['A'].$_SESSION['ACQUIS_TEXTE']['A'].' '.$tab_infos['VA'].$_SESSION['ACQUIS_TEXTE']['VA'].' '.$tab_infos['NA'].$_SESSION['ACQUIS_TEXTE']['NA'].')') , 1 , 0 , 'C' , true , '');
+		}
+		else
+		{
+			$this->Cell($this->pourcentage_largeur , $this->cases_hauteur , pdf($tab_infos['%']) , 1 , 0 , 'C' , true , '');
+		}
 	}
 }
 
@@ -548,7 +556,7 @@ function afficher_pourcentage_acquis($gras,$tab_infos)
 		$this->SetFont('Arial' , '' , 7);
 		$this->choisir_couleur_fond('gris_clair');
 		$this->choisir_couleur_trait('gris_moyen');
-		$this->Cell($this->page_largeur , 3 , pdf('Imprimé le '.date("d/m/Y \à H\hi\m\i\\n").' par '.$_SESSION['USER_PRENOM']{0}.'. '.$_SESSION['USER_NOM'].' ('.$_SESSION['USER_PROFIL'].') avec SACoche [ http://sacoche.sesamath.net ].') , 'TB' , 0 , 'C' , true , 'http://sacoche.sesamath.net');
+		$this->Cell($this->page_largeur , 3 , pdf('Généré le '.date("d/m/Y \à H\hi\m\i\\n").' par '.$_SESSION['USER_PRENOM']{0}.'. '.$_SESSION['USER_NOM'].' ('.$_SESSION['USER_PROFIL'].') avec SACoche [ http://sacoche.sesamath.net ].') , 'TB' , 0 , 'C' , true , 'http://sacoche.sesamath.net');
 	}
 
 	//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1094,7 +1102,7 @@ function afficher_pourcentage_acquis($gras,$tab_infos)
 		// Case pourcentage
 		if($test_affichage_Pourcentage)
 		{
-			$this->afficher_pourcentage_acquis('',$tab_item_pourcentage);
+			$this->afficher_pourcentage_acquis('',$tab_item_pourcentage,$detail=true);
 		}
 		// Case intitulé
 		$this->choisir_couleur_fond('gris_clair');
@@ -1125,22 +1133,23 @@ function afficher_pourcentage_acquis($gras,$tab_infos)
 	//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	//	releve_synthese_socle_initialiser()
 	//	releve_synthese_socle_entete()
-	//	releve_synthese_socle_eleve()
+	//	releve_synthese_socle_validation_eleve()
+	//	releve_synthese_socle_pourcentage_eleve()
 	//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	public function releve_synthese_socle_initialiser($groupe_nom,$palier_nom,$eleves_nb,$items_nb)
+	public function releve_synthese_socle_initialiser($titre_info,$groupe_nom,$palier_nom,$eleves_nb,$items_nb,$piliers_nb)
 	{
 		$this->SetMargins($this->marge_gauche , $this->marge_haut , $this->marge_droit);
 		$this->AddPage($this->orientation , 'A4');
 		$this->SetAutoPageBreak(true);
 		$this->eleve_largeur = 40;
-		$this->cases_largeur = ($this->page_largeur - $this->marge_gauche - $this->marge_droit - $this->eleve_largeur) / ($items_nb);
-		$this->cases_hauteur = ($this->page_hauteur - $this->marge_haut - $this->marge_bas - $this->taille_police - $eleves_nb) / (2*($eleves_nb+1)); // - titre de 5 - ( interligne de 1 * nb élèves )
-		$this->cases_hauteur = min($this->cases_hauteur,6);
+		$this->cases_largeur = ($this->page_largeur - $this->marge_gauche - $this->marge_droit - $this->eleve_largeur - $piliers_nb) / ($items_nb); // - intercolonne de 1 * nb piliers
+		$this->cases_hauteur = ($this->page_hauteur - $this->marge_haut - $this->marge_bas - $this->taille_police - $eleves_nb) / ($eleves_nb+1); // - titre de 5 - ( interligne de 1 * nb élèves )
+		$this->cases_hauteur = min($this->cases_hauteur,10);
 		$this->taille_police = 8;
 		// Intitulés
 		$this->SetFont('Arial' , 'B' , $this->taille_police*1.5);
-		$this->Cell(0 , $this->taille_police , pdf('Synthèse des validations du socle'.' - '.$groupe_nom.' - '.$palier_nom) , 0 , 2 , 'L' , false , '');
+		$this->Cell(0 , $this->taille_police , pdf('Synthèse de maîtrise du socle : '.$titre_info.' - '.$groupe_nom.' - '.$palier_nom) , 0 , 2 , 'L' , false , '');
 	}
 
 	public function releve_synthese_socle_entete($tab_pilier)
@@ -1152,40 +1161,66 @@ function afficher_pourcentage_acquis($gras,$tab_infos)
 		{
 			extract($tab);	// $pilier_ref $pilier_nom $pilier_nb_entrees
 			$texte = ($pilier_nb_entrees>10) ? 'Compétence ' : 'Comp. ' ;
-			$this->Cell($pilier_nb_entrees*$this->cases_largeur , 2*$this->cases_hauteur , pdf($texte.$pilier_ref) , 1 , 0 , 'C' , true , '');
+			$this->SetX( $this->GetX()+1 );
+			$this->Cell($pilier_nb_entrees*$this->cases_largeur , $this->cases_hauteur , pdf($texte.$pilier_ref) , 1 , 0 , 'C' , true , '');
 		}
 		// positionnement pour la suite
 		$this->SetFont('Arial' , '' , $this->taille_police);
-		$this->SetXY( $this->marge_gauche , $this->GetY()+2*$this->cases_hauteur+1 );
+		$this->SetXY( $this->marge_gauche , $this->GetY()+$this->cases_hauteur+1 );
 	}
 
-	public function releve_synthese_socle_eleve($eleve_id,$eleve_nom,$eleve_prenom,$tab_user_pilier,$tab_user_entree,$tab_pilier,$tab_socle)
+	public function releve_synthese_socle_validation_eleve($eleve_id,$eleve_nom,$eleve_prenom,$tab_user_pilier,$tab_user_entree,$tab_pilier,$tab_socle)
 	{
 		$this->choisir_couleur_fond('gris_moyen');
-		$this->Cell($this->eleve_largeur , 2*$this->cases_hauteur , pdf($eleve_nom.' '.$eleve_prenom) , 1 , 0 , 'L' , true , '');
+		$this->Cell($this->eleve_largeur , $this->cases_hauteur , pdf($eleve_nom.' '.$eleve_prenom) , 1 , 0 , 'L' , true , '');
+		$demi_hauteur = $this->cases_hauteur / 2 ;
 		// - - - - -
-		// Validation des compétences
+		// Indication des compétences validées
 		// - - - - -
 		// Pour chaque pilier...
 		foreach($tab_pilier as $pilier_id => $tab)
 		{
 			extract($tab);	// $pilier_ref $pilier_nom $pilier_nb_entrees
+			$this->SetX( $this->GetX()+1 );
 			$this->choisir_couleur_fond('v'.$tab_user_pilier[$eleve_id][$pilier_id]['etat']);
-			$this->Cell($pilier_nb_entrees*$this->cases_largeur , $this->cases_hauteur , '' , 1 , 0 , 'C' , true , '');
+			$this->Cell($pilier_nb_entrees*$this->cases_largeur , $demi_hauteur , '' , 1 , 0 , 'C' , true , '');
 		}
 		// positionnement pour la suite
-		$this->SetXY( $this->marge_gauche+$this->eleve_largeur , $this->GetY()+$this->cases_hauteur );
+		$this->SetXY( $this->marge_gauche+$this->eleve_largeur , $this->GetY()+$demi_hauteur );
 		// - - - - -
-		// Validation des items
+		// Indication des items validés
 		// - - - - -
 		// Pour chaque entrée du socle...
 		foreach($tab_socle as $pilier_id => $tab)
 		{
+			$this->SetX( $this->GetX()+1 );
 			foreach($tab as $socle_id => $socle_nom)
 			{
 				$couleur = ( ($tab_user_pilier[$eleve_id][$pilier_id]['etat']==1) && ($tab_user_entree[$eleve_id][$socle_id]['etat']==2) && (!$_SESSION['USER_DALTONISME']) ) ? 'gris_clair' : 'v'.$tab_user_entree[$eleve_id][$socle_id]['etat'] ;
 				$this->choisir_couleur_fond($couleur);
-				$this->Cell($this->cases_largeur , $this->cases_hauteur , '' , 1 , 0 , 'C' , true , '');
+				$this->Cell($this->cases_largeur , $demi_hauteur , '' , 1 , 0 , 'C' , true , '');
+			}
+		}
+		// positionnement pour la suite
+		$this->SetXY( $this->marge_gauche , $this->GetY()+$demi_hauteur+1 );
+	}
+
+	public function releve_synthese_socle_pourcentage_eleve($eleve_id,$eleve_nom,$eleve_prenom,$tab_score_socle_eleve,$tab_socle)
+	{
+		$this->pourcentage_largeur = $this->cases_largeur;
+		$this->choisir_couleur_fond('gris_moyen');
+		$this->SetFont('Arial' , '' , $this->taille_police);
+		$this->Cell($this->eleve_largeur , $this->cases_hauteur , pdf($eleve_nom.' '.$eleve_prenom) , 1 , 0 , 'L' , true , '');
+		// - - - - -
+		// Indication des pourcentages
+		// - - - - -
+		// Pour chaque entrée du socle...
+		foreach($tab_socle as $pilier_id => $tab)
+		{
+			$this->SetX( $this->GetX()+1 );
+			foreach($tab as $socle_id => $socle_nom)
+			{
+				$this->afficher_pourcentage_acquis('',$tab_score_socle_eleve[$socle_id][$eleve_id],$detail=false);
 			}
 		}
 		// positionnement pour la suite

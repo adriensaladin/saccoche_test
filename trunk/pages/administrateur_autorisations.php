@@ -213,7 +213,7 @@ for($nb_demandes=0 ; $nb_demandes<10 ; $nb_demandes++)
 
 <hr />
 
-<h4>Environnement élève - Attestation de socle</h4>
+<h4>Environnement élève - Détail de maîtrise de socle</h4>
 
 <form id="form_eleve_socle" action=""><fieldset>
 	<?php

@@ -62,7 +62,7 @@ $select_palier = afficher_select($tab_paliers , $select_nom='f_palier' , $option
 $select_groupe = afficher_select($tab_groupes , $select_nom='f_groupe' , $option_first=$of_g , $selection=$sel_g , $optgroup=$og_g);
 ?>
 
-<p class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=releves_bilans__releve_socle">DOC : État de maîtrise du socle.</a></p>
+<p class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=releves_bilans__releve_socle">DOC : Détail de maîtrise du socle.</a></p>
 
 <form id="form_select" action=""><fieldset>
 	<label class="tab" for="f_palier">Palier :</label><?php echo $select_palier ?><input type="hidden" id="f_palier_nom" name="f_palier_nom" value="" /><label id="ajax_maj_pilier">&nbsp;</label><br />

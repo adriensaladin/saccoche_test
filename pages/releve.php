@@ -41,7 +41,7 @@ $menu_synthese_socle  = ($_SESSION['USER_PROFIL']!='eleve') ? ' || <a href="./in
 <div class="hc">
 	<a href="./index.php?page=<?php echo $PAGE ?>&amp;section=synthese_matiere">Synthèse d'une matière.</a> || 
 	<a href="./index.php?page=<?php echo $PAGE ?>&amp;section=synthese_multimatiere">Synthèse pluridisciplinaire.</a> || 
-	<a href="./index.php?page=<?php echo $PAGE ?>&amp;section=socle">État de maîtrise du socle.</a>
+	<a href="./index.php?page=<?php echo $PAGE ?>&amp;section=socle">Détail de maîtrise du socle.</a>
 	<?php echo $menu_synthese_socle ?>
 </div>
 

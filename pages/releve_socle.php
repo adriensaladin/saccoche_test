@@ -26,7 +26,7 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-$TITRE = "État de maîtrise du socle";
+$TITRE = "Détail de maîtrise du socle";
 
 $fin = ( ($_SESSION['USER_PROFIL']!='eleve') || (strpos($_SESSION['DROIT_ELEVE_SOCLE'],'SocleAcces')!==false) ) ? 'oui' : 'non' ;
 require('./pages/'.$PAGE.'_'.$fin.'.php');

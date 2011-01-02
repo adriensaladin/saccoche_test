@@ -328,7 +328,7 @@ if($test_affichage_Pourcentage)
 $titre = ($memo_demande=='palier') ? $palier_nom : $palier_nom.' – '.mb_substr($pilier_nom,0,mb_strpos($pilier_nom,'–')) ;
 $break = ($memo_demande=='palier') ? 0 : $tab_pilier[$pilier_id]['pilier_nb_lignes'] ;
 $releve_html  = '<style type="text/css">'.$_SESSION['CSS'].'</style>';
-$releve_html .= '<h1>État de maîtrise du socle commun</h1>';
+$releve_html .= '<h1>Détail de maîtrise du socle commun</h1>';
 $releve_html .= '<h2>'.html($titre).'</h2>';
 // Appel de la classe et définition de qqs variables supplémentaires pour la mise en page PDF
 require('./_fpdf/fpdf.php');

@@ -1058,7 +1058,7 @@ function afficher_pourcentage_acquis($gras,$tab_infos,$detail)
 		}
 		// Intitulé
 		$this->SetFont('Arial' , 'B' , $this->taille_police*1.5);
-		$this->Cell($this->page_largeur-$this->marge_droit-75 , $this->cases_hauteur , pdf('État de maîtrise du socle commun') , 0 , 2 , 'L' , false , '');
+		$this->Cell($this->page_largeur-$this->marge_droit-75 , $this->cases_hauteur , pdf('Détail de maîtrise du socle commun') , 0 , 2 , 'L' , false , '');
 		$this->Cell($this->page_largeur-$this->marge_droit-75 , $this->cases_hauteur , pdf($palier_nom) , 0 , 2 , 'L' , false , '');
 		// Nom / prénom
 		$this->eleve_id     = $eleve_id;

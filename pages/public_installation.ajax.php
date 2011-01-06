@@ -418,6 +418,11 @@ if( $step==6 )
 			$password = fabriquer_mdp();
 			$user_id = DB_STRUCTURE_ajouter_utilisateur($num_sconet=0,$reference='','administrateur',WEBMESTRE_NOM,WEBMESTRE_PRENOM,$login='admin',$password,$classe_id=0,$id_ent='',$id_gepi='');
 			// Créer un dossier accueillir pour les vignettes verticales avec l'identité des élèves
+			/*
+				Petit problème : on ne passe pas par ici si la base est existante mais les fichiers effacés... donc dans ce cas ce dossier n'est pas recréé...
+				De même, en multi-structures, il faudrait tester la présence de tous les dossiers éventuels...
+				Peut-être qu'une étape supplémentaire serait bienvenue, même si dans ce cas on  n'a plsu ensuite les identifiants admin sous les yeux...
+			*/
 			Creer_Dossier('./__tmp/badge/'.'0');
 			Ecrire_Fichier('./__tmp/badge/'.'0'.'/index.htm','Circulez, il n\'y a rien à voir par ici !');
 			// Affichage du retour

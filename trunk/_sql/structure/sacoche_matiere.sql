@@ -52,9 +52,10 @@ INSERT INTO sacoche_matiere VALUES
 ( 37, 1, 0, 255,  "CHI1", "Chinois LV1"),
 ( 38, 1, 0, 255,  "CHI2", "Chinois LV2"),
 ( 39, 1, 0, 255,  "OCCR", "Occitan"),
-( 40, 1, 0, 255, "VSPRO", "Vie sociale et professionnelle"),
+( 40, 1, 0, 255,   "PSE", "Prévention-Santé-Environnement"),
 ( 41, 1, 0, 255, "G-TPR", "Enseignement technologique-professionnel"),
 ( 42, 1, 0, 255,  "INFO", "Informatique"),
+( 43, 1, 0, 255, "SCIEN", "Sciences"),
 ( 99, 1, 1, 255, "TRANS", "Transversal");
 
 ALTER TABLE sacoche_matiere ENABLE KEYS;

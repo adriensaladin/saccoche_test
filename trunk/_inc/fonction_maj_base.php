@@ -725,6 +725,21 @@ function maj_base($version_actuelle)
 	}
 
 	//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	//	MAJ 2010-11-28 => 2011-01-06
+	//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	if($version_actuelle=='2010-11-28')
+	{
+		$version_actuelle = '2011-01-06';
+		// ajouter la matière Sciences
+		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES ( 43, 1, 0, 255, "SCIEN", "Sciences")' );
+		// convertir la matière "Vie sociale et professionnelle" en "Prévention-Santé-Environnement" (http://media.education.gouv.fr/file/special_2/25/5/prevention_sante_environnement_44255.pdf)
+		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_matiere SET matiere_ref="PSE", matiere_nom="Prévention-Santé-Environnement" WHERE matiere_id=40 LIMIT 1' );
+		// mise à jour du champ "version_base" (obligatoire)
+		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_actuelle.'" WHERE parametre_nom="version_base" LIMIT 1' );
+	}
+
+	//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Log de l'action
 	//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

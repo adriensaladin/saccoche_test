@@ -219,6 +219,7 @@ $(document).ready
 							{
 								$('#titre_voir').html('Devoir du ' + texte_date + ' par ' + texte_prof + ' [ ' + texte_info + ' ]');
 								$('#table_voir tbody').html(responseHTML);
+								format_liens('#table_voir');
 								trier_tableau2();
 								infobulle();
 								$('#zone_eval_detail').show();

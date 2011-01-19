@@ -55,8 +55,8 @@ a {color:#139;text-decoration:none}a:hover{color:#D41;text-decoration:underline}
 hr {display:block;height:1px;margin:1em 0;border-top:1px dotted #66F;}
 *.astuce {background:transparent url(../_img/puce_astuce.png) no-repeat top left;padding-left:19px}
 *.danger {background:transparent url(../_img/puce_danger.gif) no-repeat top left;padding-left:19px;color:#C00}
-*.manuel {background:transparent url(../_img/puce_manuel.png) no-repeat top left;padding-left:19px;color:#777}
-*.rss    {background:transparent url(../_img/rss.gif)         no-repeat top left;padding-left:19px;}
+*.manuel {background:transparent url(../_img/puce_manuel.png) no-repeat top left;padding-left:19px}
+*.rss    {background:transparent url(../_img/rss.gif)         no-repeat top left;padding-left:19px}
 *.manuel:hover {background:transparent url(../_img/puce_manuel_ouvert.png) no-repeat top left;}
 #titre_aide{background:transparent url(../_img/puce_manuel_ouvert.png) no-repeat left;padding-left:24px;margin:1ex 2em;text-align:left}
 #aide_en_ligne {margin:1ex 1em}

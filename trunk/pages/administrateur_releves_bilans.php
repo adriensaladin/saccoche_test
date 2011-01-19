@@ -38,7 +38,7 @@ $TITRE = "Réglages relevés &amp; bilans";
 <form id="form_ordonner" action=""><fieldset>
 
 <?php
-// liste des items
+// liste des matières
 $DB_TAB = DB_STRUCTURE_lister_matieres_etablissement($_SESSION['MATIERES'],$with_transversal=true,$order_by_name=false);
 if(!count($DB_TAB))
 {

@@ -76,7 +76,7 @@ if($action=='purger')
 	DB_STRUCTURE_modifier_liaison_groupe_periode($groupe_id=true,$periode_id=true,$etat=false,$date_debut_mysql='',$date_fin_mysql='');
 	// Supprimer les demandes d'évaluations, ainsi que les reliquats de notes 'REQ'
 	DB_STRUCTURE_supprimer_demandes(true);
-	DB::query(SACOCHE_STRUCTURE_BD_NAME , 'DELETE FROM sacoche_saisie WHERE saisie_note="REQ"' , null);
+	DB_STRUCTURE_supprimer_saisies_REQ();
 	// En profiter pour optimiser les tables (1 fois par an, ça ne peut pas faire de mal)
 	DB_STRUCTURE_optimiser_tables_structure();
 	// Débloquer l'application

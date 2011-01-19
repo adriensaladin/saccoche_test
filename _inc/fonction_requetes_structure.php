@@ -136,7 +136,7 @@ function DB_STRUCTURE_recuperer_arborescence($prof_id,$matiere_id,$niveau_id,$on
 	$select_socle_nom  = ($socle_nom)  ? 'entree_id,entree_nom ' : 'entree_id ' ;
 	$join_user_matiere = ($prof_id)    ? 'LEFT JOIN sacoche_jointure_user_matiere USING (matiere_id) ' : '' ;
 	$join_socle_item   = ($socle_nom)  ? 'LEFT JOIN sacoche_socle_entree USING (entree_id) ' : '' ;
-	$where_user        = ($prof_id)    ? 'user_id=:user_id ' : '' ;
+	$where_user        = ($prof_id)    ? 'user_id=:user_id AND matiere_id IN('.$_SESSION['MATIERES'].') ' : '' ; // Test sur matiere_id car un prof peut être encore relié à des matières décochées par l'admin.
 	$where_matiere     = ($matiere_id) ? 'matiere_id=:matiere_id ' : '' ;
 	$where_niveau      = ($niveau_id)  ? 'AND niveau_id=:niveau_id ' : 'AND niveau_id IN('.$_SESSION['CYCLES'].','.$_SESSION['NIVEAUX'].') ' ;
 	$where_item        = ($only_item)  ? 'AND item_id IS NOT NULL ' : '' ;
@@ -222,7 +222,8 @@ function DB_STRUCTURE_recuperer_arborescence_selection($liste_eleve_id,$liste_it
 function DB_STRUCTURE_recuperer_arborescence_bilan($liste_eleve_id,$matiere_id,$only_socle,$date_mysql_debut,$date_mysql_fin)
 {
 	$where_eleve      = (strpos($liste_eleve_id,',')) ? 'eleve_id IN('.$liste_eleve_id.') '    : 'eleve_id='.$liste_eleve_id.' ' ; // Pour IN(...) NE PAS passer la liste dans $DB_VAR sinon elle est convertie en nb entier
-	$where_matiere    = ($matiere_id)                 ? 'AND matiere_id=:matiere '             : '' ;
+	$where_matiere    = ($matiere_id)                 ? 'AND matiere_id=:matiere '             : 'AND matiere_id IN('.$_SESSION['MATIERES'].') ' ;
+	$where_niveau     = 'AND niveau_id IN('.$_SESSION['CYCLES'].','.$_SESSION['NIVEAUX'].') ' ;
 	$where_socle      = ($only_socle)                 ? 'AND entree_id !=0 '                   : '' ;
 	$where_date_debut = ($date_mysql_debut)           ? 'AND saisie_date>=:date_debut '        : '';
 	$where_date_fin   = ($date_mysql_fin)             ? 'AND saisie_date<=:date_fin '          : '';
@@ -239,7 +240,7 @@ function DB_STRUCTURE_recuperer_arborescence_bilan($liste_eleve_id,$matiere_id,$
 	$DB_SQL.= 'LEFT JOIN sacoche_matiere USING (matiere_id) ';
 	$DB_SQL.= 'LEFT JOIN sacoche_niveau USING (niveau_id) ';
 	$DB_SQL.= 'LEFT JOIN sacoche_referentiel USING (matiere_id,niveau_id) ';
-	$DB_SQL.= 'WHERE '.$where_eleve.$where_matiere.$where_socle.$where_date_debut.$where_date_fin;
+	$DB_SQL.= 'WHERE '.$where_eleve.$where_matiere.$where_niveau.$where_socle.$where_date_debut.$where_date_fin;
 	$DB_SQL.= 'GROUP BY item_id ';
 	$DB_SQL.= 'ORDER BY '.$order_matiere.'niveau_ordre ASC, domaine_ordre ASC, theme_ordre ASC, item_ordre ASC';
 	$DB_VAR = array(':matiere'=>$matiere_id,':date_debut'=>$date_mysql_debut,':date_fin'=>$date_mysql_fin);
@@ -284,9 +285,9 @@ function DB_STRUCTURE_recuperer_arborescence_synthese($liste_eleve_id,$matiere_i
 	$select_matiere    = (!$matiere_id)                ? 'matiere_id , matiere_nom , '                          : '' ;
 	$select_synthese   = ($mode_synthese=='predefini') ? ', referentiel_mode_synthese AS mode_synthese '        : '' ;
 	$where_eleve       = (strpos($liste_eleve_id,',')) ? 'eleve_id IN('.$liste_eleve_id.') '                    : 'eleve_id='.$liste_eleve_id.' ' ; // Pour IN(...) NE PAS passer la liste dans $DB_VAR sinon elle est convertie en nb entier
-	$where_matiere     = ($matiere_id)                 ? 'AND matiere_id=:matiere '                             : '' ;
+	$where_matiere     = ($matiere_id)                 ? 'AND matiere_id=:matiere '                             : 'AND matiere_id IN('.$_SESSION['MATIERES'].') ' ;
 	$where_socle       = ($only_socle)                 ? 'AND entree_id!=0 '                                    : '' ;
-	$where_niveau      = ($only_niveau)                ? 'AND niveau_id='.$only_niveau.' '                      : '' ;
+	$where_niveau      = ($only_niveau)                ? 'AND niveau_id='.$only_niveau.' '                      : 'AND niveau_id IN('.$_SESSION['CYCLES'].','.$_SESSION['NIVEAUX'].') ' ;
 	$where_date_debut  = ($date_mysql_debut)           ? 'AND saisie_date>=:date_debut '                        : '';
 	$where_date_fin    = ($date_mysql_fin)             ? 'AND saisie_date<=:date_fin '                          : '';
 	$where_synthese    = ($mode_synthese=='predefini') ? 'AND referentiel_mode_synthese IN("domaine","theme") ' : '';
@@ -449,7 +450,7 @@ function DB_STRUCTURE_recuperer_associations_entrees_socle()
 	$DB_SQL.= 'LEFT JOIN sacoche_referentiel_domaine USING (matiere_id,niveau_id) ';
 	$DB_SQL.= 'LEFT JOIN sacoche_referentiel_theme USING (domaine_id) ';
 	$DB_SQL.= 'LEFT JOIN sacoche_referentiel_item USING (theme_id) ';
-	$DB_SQL.= 'WHERE entree_id>0 ';
+	$DB_SQL.= 'WHERE entree_id>0 AND matiere_id IN('.$_SESSION['MATIERES'].') AND niveau_id IN('.$_SESSION['CYCLES'].','.$_SESSION['NIVEAUX'].') ' ;
 	$DB_SQL.= 'GROUP BY item_id ';
 	$DB_SQL.= 'ORDER BY matiere_nom ASC, niveau_ordre ASC, domaine_ordre ASC, theme_ordre ASC, item_ordre ASC';
 	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , null);
@@ -661,7 +662,7 @@ function DB_STRUCTURE_lister_result_eleves_matiere($liste_eleve_id,$liste_item_i
 	$DB_SQL.= 'LEFT JOIN sacoche_referentiel_theme USING (theme_id) ';
 	$DB_SQL.= 'LEFT JOIN sacoche_referentiel_domaine USING (domaine_id) ';
 	$DB_SQL.= 'LEFT JOIN sacoche_niveau USING (niveau_id) ';
-	$DB_SQL.= 'WHERE eleve_id IN('.$liste_eleve_id.') AND item_id IN('.$liste_item_id.') AND saisie_note!="REQ" '.$sql_debut.$sql_fin;
+	$DB_SQL.= 'WHERE eleve_id IN('.$liste_eleve_id.') AND item_id IN('.$liste_item_id.') AND niveau_id IN('.$_SESSION['CYCLES'].','.$_SESSION['NIVEAUX'].') AND saisie_note!="REQ" '.$sql_debut.$sql_fin;
 	$DB_SQL.= 'ORDER BY niveau_ordre ASC, domaine_ordre ASC, theme_ordre ASC, item_ordre ASC, saisie_date ASC';
 	$DB_VAR = array(':date_debut'=>$date_mysql_debut,':date_fin'=>$date_mysql_fin);
 	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
@@ -691,7 +692,7 @@ function DB_STRUCTURE_lister_result_eleves_matieres($liste_eleve_id,$liste_item_
 	$DB_SQL.= 'LEFT JOIN sacoche_referentiel_domaine USING (domaine_id) ';
 	$DB_SQL.= 'LEFT JOIN sacoche_matiere USING (matiere_id) ';
 	$DB_SQL.= 'LEFT JOIN sacoche_niveau USING (niveau_id) ';
-	$DB_SQL.= 'WHERE eleve_id IN('.$liste_eleve_id.') AND item_id IN('.$liste_item_id.') AND saisie_note!="REQ" '.$sql_debut.$sql_fin;
+	$DB_SQL.= 'WHERE eleve_id IN('.$liste_eleve_id.') AND item_id IN('.$liste_item_id.') AND niveau_id IN('.$_SESSION['CYCLES'].','.$_SESSION['NIVEAUX'].') AND saisie_note!="REQ" '.$sql_debut.$sql_fin;
 	$DB_SQL.= 'ORDER BY matiere_ordre ASC, niveau_ordre ASC, domaine_ordre ASC, theme_ordre ASC, item_ordre ASC, saisie_date ASC';
 	$DB_VAR = array(':date_debut'=>$date_mysql_debut,':date_fin'=>$date_mysql_fin);
 	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
@@ -725,7 +726,7 @@ function DB_STRUCTURE_lister_result_eleves_palier($liste_eleve_id,$liste_item_id
 	$DB_SQL.= 'LEFT JOIN sacoche_matiere USING (matiere_id) ';
 	$DB_SQL.= 'LEFT JOIN sacoche_niveau USING (niveau_id) ';
 	$DB_SQL.= 'LEFT JOIN sacoche_referentiel USING (matiere_id,niveau_id) ';
-	$DB_SQL.= 'WHERE eleve_id IN('.$liste_eleve_id.') AND entree_id IN('.$liste_item_id.') AND saisie_note!="REQ" '.$sql_debut.$sql_fin;
+	$DB_SQL.= 'WHERE eleve_id IN('.$liste_eleve_id.') AND entree_id IN('.$liste_item_id.') AND niveau_id IN('.$_SESSION['CYCLES'].','.$_SESSION['NIVEAUX'].') AND saisie_note!="REQ" '.$sql_debut.$sql_fin;
 	$DB_SQL.= 'ORDER BY matiere_nom ASC, niveau_ordre ASC, domaine_ordre ASC, theme_ordre ASC, item_ordre ASC, saisie_date ASC';
 	$DB_VAR = array(':date_debut'=>$date_mysql_debut,':date_fin'=>$date_mysql_fin);
 	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
@@ -780,6 +781,25 @@ function DB_STRUCTURE_lister_matieres_etablissement($listing_matieres,$with_tran
 	$DB_SQL.= ($listing_matieres) ? 'WHERE (matiere_id IN('.$listing_matieres.') OR matiere_partage=:partage) '.$where_trans : 'WHERE matiere_partage=:partage '.$where_trans;
 	$DB_SQL.= 'ORDER BY '.$order_champ.'matiere_nom ASC';
 	$DB_VAR = array(':partage'=>0);
+	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+}
+
+/**
+ * DB_STRUCTURE_lister_matieres_professeur_infos_referentiel
+ * 
+ * @param string $listing_matieres   id des matières de l'établissement séparées par des virgules
+ * @param int $user_id
+ * @return array|string
+ */
+
+function DB_STRUCTURE_lister_matieres_professeur_infos_referentiel($listing_matieres,$user_id)
+{
+	$DB_SQL = 'SELECT matiere_id,matiere_nom,matiere_partage,jointure_coord ';
+	$DB_SQL.= 'FROM sacoche_jointure_user_matiere ';
+	$DB_SQL.= 'LEFT JOIN sacoche_matiere USING (matiere_id) ';
+	$DB_SQL.= 'WHERE matiere_id IN('.$listing_matieres.') AND user_id=:user_id '; // Test sur matiere_id car un prof peut être encore relié à des matières décochées par l'admin.
+	$DB_SQL.= 'ORDER BY matiere_nom ASC';
+	$DB_VAR = array(':user_id'=>$user_id);
 	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
@@ -1150,6 +1170,23 @@ function DB_STRUCTURE_lister_professeurs_et_directeurs_tri_statut()
 	$DB_SQL.= 'WHERE user_profil IN(:profil1,:profil2) ';
 	$DB_SQL.= 'ORDER BY user_statut DESC, user_nom ASC, user_prenom ASC';
 	$DB_VAR = array(':profil1'=>'professeur',':profil2'=>'directeur');
+	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+}
+
+/**
+ * DB_STRUCTURE_lister_identite_coordonnateurs_par_matiere
+ * 
+ * @param string   $listing_matieres_id   id des matières séparés par des virgules
+ * @return array   matiere_id et coord_liste avec identités séparées par "]["
+ */
+
+function DB_STRUCTURE_lister_identite_coordonnateurs_par_matiere($listing_matieres_id)
+{
+	$DB_SQL = 'SELECT matiere_id, GROUP_CONCAT(CONCAT(user_nom," ",user_prenom) SEPARATOR "][") AS coord_liste FROM sacoche_jointure_user_matiere ';
+	$DB_SQL.= 'LEFT JOIN sacoche_user USING (user_id) ';
+	$DB_SQL.= 'WHERE matiere_id IN('.$listing_matieres_id.') AND jointure_coord=:coord AND user_statut=:statut '; // Test sur matiere_id car un prof peut être encore relié à des matières décochées par l'admin.
+	$DB_SQL.= 'GROUP BY matiere_id';
+	$DB_VAR = array(':coord'=>1,':statut'=>1);
 	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
@@ -1632,7 +1669,49 @@ function DB_STRUCTURE_lister_referentiels()
 	$DB_SQL.= 'FROM sacoche_referentiel ';
 	$DB_SQL.= 'LEFT JOIN sacoche_matiere USING (matiere_id) ';
 	$DB_SQL.= 'LEFT JOIN sacoche_niveau USING (niveau_id) ';
+	$DB_SQL.= 'WHERE matiere_id IN('.$_SESSION['MATIERES'].') AND niveau_id IN('.$_SESSION['CYCLES'].','.$_SESSION['NIVEAUX'].') ';
 	$DB_SQL.= 'ORDER BY matiere_nom ASC, niveau_ordre ASC ';
+	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , null);
+}
+
+/**
+ * DB_STRUCTURE_lister_referentiels_infos_details_matieres_niveaux
+ * 
+ * @param string   $listing_matieres_id   id des matières séparés par des virgules
+ * @param string   $listing_niveaux_id    id des niveaux séparés par des virgules ; ne peut pas être vide
+ * @param string   $listing_cycles_id     id des cycles séparés par des virgules ; false pour ne pas retourner les cycles
+ * @return array
+ */
+
+function DB_STRUCTURE_lister_referentiels_infos_details_matieres_niveaux($listing_matieres_id,$listing_niveaux_id,$listing_cycles_id)
+{
+	$listing_cycles_niveaux = ($listing_cycles_id) ? $listing_niveaux_id.','.$listing_cycles_id : $listing_niveaux_id ;
+	$DB_SQL = 'SELECT matiere_id,niveau_id,niveau_nom,referentiel_partage_etat,referentiel_partage_date,referentiel_calcul_methode,referentiel_calcul_limite ';
+	$DB_SQL.= 'FROM sacoche_referentiel ';
+	$DB_SQL.= 'LEFT JOIN sacoche_niveau USING (niveau_id) ';
+	$DB_SQL.= 'WHERE matiere_id IN('.$listing_matieres_id.') AND niveau_id IN('.$listing_cycles_niveaux.') '; // Test sur matiere_id car un prof peut être encore relié à des matières décochées par l'admin.
+	$DB_SQL.= 'ORDER BY matiere_id ASC, niveau_ordre ASC';
+	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , null);
+}
+
+/**
+ * DB_STRUCTURE_lister_referentiels_infos_groupement_matieres
+ * 
+ * @param string   $listing_matieres_id   id des matières séparés par des virgules
+ * @param string   $listing_niveaux_id    id des niveaux séparés par des virgules ; ne peut pas être vide
+ * @param string   $listing_cycles_id     id des cycles séparés par des virgules ; false pour ne pas retourner les cycles
+ * @return array
+ */
+
+function DB_STRUCTURE_lister_referentiels_infos_groupement_matieres($listing_matieres_id,$listing_niveaux_id,$listing_cycles_id)
+{
+	$listing_cycles_niveaux = ($listing_cycles_id) ? $listing_niveaux_id.','.$listing_cycles_id : $listing_niveaux_id ;
+	$DB_SQL = 'SELECT matiere_id,COUNT(niveau_id) AS niveau_nb ';
+	$DB_SQL.= 'FROM sacoche_referentiel ';
+	$DB_SQL.= 'LEFT JOIN sacoche_niveau USING (niveau_id) ';
+	$DB_SQL.= 'WHERE matiere_id IN('.$listing_matieres_id.') AND niveau_id IN('.$listing_cycles_niveaux.') '; // Test sur matiere_id car un prof peut être encore relié à des matières décochées par l'admin.
+	$DB_SQL.= 'GROUP BY matiere_id ';
+	$DB_SQL.= 'ORDER BY matiere_id ASC';
 	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , null);
 }
 
@@ -1702,7 +1781,7 @@ function DB_STRUCTURE_compter_professeurs_directeurs_suivant_statut()
 function DB_STRUCTURE_compter_modes_synthese_inconnu()
 {
 	$DB_SQL = 'SELECT COUNT(*) AS nombre FROM sacoche_referentiel ';
-	$DB_SQL.= 'WHERE referentiel_mode_synthese=:mode_inconnu ';
+	$DB_SQL.= 'WHERE referentiel_mode_synthese=:mode_inconnu AND matiere_id IN('.$_SESSION['MATIERES'].') ';
 	$DB_VAR = array(':mode_inconnu'=>'inconnu');
 	$DB_ROW = DB::queryRow(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 	return $DB_ROW['nombre'] ;
@@ -3017,6 +3096,18 @@ function DB_STRUCTURE_supprimer_devoirs_sans_saisies()
 }
 
 /**
+ * DB_STRUCTURE_supprimer_saisies_REQ
+ * Utilisé uniquement dans le cadre d'un nettoyage annuel (reliquats de notes 'REQ').
+ * 
+ * @return void
+ */
+
+function DB_STRUCTURE_supprimer_saisies_REQ()
+{
+	DB::query(SACOCHE_STRUCTURE_BD_NAME , 'DELETE FROM sacoche_saisie WHERE saisie_note="REQ"' , null);
+}
+
+/**
  * DB_STRUCTURE_supprimer_saisie
  * 
  * @param int   $eleve_id
@@ -3505,15 +3596,16 @@ function DB_STRUCTURE_OPT_matieres_communes()
 /**
  * Retourner un tableau [valeur texte] des matières du professeur identifié
  * 
+ * @param string $listing_matieres_communes   id des matières communes séparées par des virgules
  * @param int $user_id
  * @return array|string
  */
 
-function DB_STRUCTURE_OPT_matieres_professeur($user_id)
+function DB_STRUCTURE_OPT_matieres_professeur($listing_matieres_communes,$user_id)
 {
 	$DB_SQL = 'SELECT matiere_id AS valeur, matiere_nom AS texte FROM sacoche_jointure_user_matiere ';
 	$DB_SQL.= 'LEFT JOIN sacoche_matiere USING (matiere_id) ';
-	$DB_SQL.= 'WHERE user_id=:user_id ';
+	$DB_SQL.= 'WHERE matiere_id IN('.$listing_matieres_communes.') AND user_id=:user_id '; // Test sur matiere_id car un prof peut être encore relié à des matières décochées par l'admin.
 	$DB_SQL.= 'ORDER BY matiere_nom ASC';
 	$DB_VAR = array(':user_id'=>$user_id);
 	$DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
@@ -3523,11 +3615,12 @@ function DB_STRUCTURE_OPT_matieres_professeur($user_id)
 /**
  * Retourner un tableau [valeur texte] des matières d'un élève identifié
  * 
+ * @param string $listing_matieres_communes   id des matières communes séparées par des virgules
  * @param int $user_id
  * @return array|string
  */
 
-function DB_STRUCTURE_OPT_matieres_eleve($user_id)
+function DB_STRUCTURE_OPT_matieres_eleve($listing_matieres_communes,$user_id)
 {
 	// On connait la classe ($_SESSION['ELEVE_CLASSE_ID']), donc on commence par récupérer les groupes éventuels associés à l'élève
 	// DB::query(SACOCHE_STRUCTURE_BD_NAME , 'SET group_concat_max_len = ...'); // Pour lever si besoin une limitation de GROUP_CONCAT (group_concat_max_len est par défaut limité à une chaine de 1024 caractères).
@@ -3560,7 +3653,7 @@ function DB_STRUCTURE_OPT_matieres_eleve($user_id)
 	$DB_SQL.= 'LEFT JOIN sacoche_jointure_user_groupe USING (user_id) ';
 	$DB_SQL.= 'LEFT JOIN sacoche_jointure_user_matiere USING (user_id) ';
 	$DB_SQL.= 'LEFT JOIN sacoche_matiere USING (matiere_id) ';
-	$DB_SQL.= 'WHERE groupe_id IN('.$liste_groupes.') AND user_statut=:statut ';
+	$DB_SQL.= 'WHERE matiere_id IN('.$listing_matieres_communes.') AND groupe_id IN('.$liste_groupes.') AND user_statut=:statut '; // Test sur matiere_id car un prof peut être encore relié à des matières décochées par l'admin.
 	$DB_SQL.= 'GROUP BY matiere_id ';
 	$DB_SQL.= 'ORDER BY matiere_nom ASC';
 	$DB_VAR = array(':statut'=>1);

@@ -51,9 +51,9 @@ if(count($DB_TAB))
 		$tab_matiere[$DB_ROW['matiere_id']]['nom'] = html($DB_ROW['matiere_nom']);
 	}
 }
-$liste_matieres = implode(',',array_keys($tab_matiere));
+$listing_matieres_id = implode(',',array_keys($tab_matiere));
 
-if(!$liste_matieres)
+if(!$listing_matieres_id)
 {
 	echo'<p><span class="danger">Aucune matière enregistrée ou associée à l\'établissement !</span></p>';
 }
@@ -76,26 +76,17 @@ else
 		$tab_niveau[$DB_ROW['niveau_id']] = html($DB_ROW['niveau_nom']);
 	}
 	// On récupère la liste des coordonnateurs responsables par matières
-	$DB_SQL = 'SELECT matiere_id, GROUP_CONCAT(CONCAT(user_nom," ",user_prenom) SEPARATOR ";") AS coord_liste FROM sacoche_jointure_user_matiere ';
-	$DB_SQL.= 'LEFT JOIN sacoche_user USING (user_id) ';
-	$DB_SQL.= 'WHERE matiere_id IN('.$liste_matieres.') AND jointure_coord=:coord AND user_statut=:statut ';
-	$DB_SQL.= 'GROUP BY matiere_id';
-	$DB_VAR = array(':coord'=>1,':statut'=>1);
-	$DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+	$DB_TAB = DB_STRUCTURE_lister_identite_coordonnateurs_par_matiere($listing_matieres_id);
 	if(count($DB_TAB))
 	{
 		foreach($DB_TAB as $DB_ROW)
 		{
-			$tab_matiere[$DB_ROW['matiere_id']]['coord'] = str_replace(';','<br />',html($DB_ROW['coord_liste']));
+			$tab_matiere[$DB_ROW['matiere_id']]['coord'] = str_replace('][','<br />',html($DB_ROW['coord_liste']));
 		}
 	}
 	// On récupère la liste des référentiels par matière et niveau
 	$tab_partage = array('oui'=>'<img title="Référentiel partagé sur le serveur communautaire (MAJ le ◄DATE►)." alt="" src="./_img/partage1.gif" />','non'=>'<img title="Référentiel non partagé avec la communauté (choix du ◄DATE►)." alt="" src="./_img/partage0.gif" />','bof'=>'<img title="Référentiel dont le partage est sans intérêt (pas novateur)." alt="" src="./_img/partage0.gif" />','hs'=>'<img title="Référentiel dont le partage est sans objet (matière spécifique)." alt="" src="./_img/partage0.gif" />');
-	$DB_SQL = 'SELECT matiere_id,niveau_id,niveau_nom,referentiel_partage_etat,referentiel_partage_date,referentiel_calcul_methode,referentiel_calcul_limite FROM sacoche_referentiel ';
-	$DB_SQL.= 'LEFT JOIN sacoche_niveau USING (niveau_id) ';
-	$DB_SQL.= 'WHERE matiere_id IN('.$liste_matieres.') AND ( niveau_id IN('.$_SESSION['CYCLES'].','.$_SESSION['NIVEAUX'].') ) ';
-	$DB_SQL.= 'ORDER BY matiere_id ASC, niveau_ordre ASC';
-	$DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , null);
+	$DB_TAB = DB_STRUCTURE_lister_referentiels_infos_details_matieres_niveaux($listing_matieres_id,$_SESSION['NIVEAUX'],$_SESSION['CYCLES']);
 	if(count($DB_TAB))
 	{
 		foreach($DB_TAB as $DB_ROW)

@@ -50,7 +50,7 @@ if($_SESSION['USER_PROFIL']=='directeur')
 if($_SESSION['USER_PROFIL']=='professeur')
 {
 	$tab_groupes  = DB_STRUCTURE_OPT_groupes_professeur($_SESSION['USER_ID']);
-	$tab_matieres = DB_STRUCTURE_OPT_matieres_professeur($_SESSION['USER_ID']);
+	$tab_matieres = DB_STRUCTURE_OPT_matieres_professeur($_SESSION['MATIERES'],$_SESSION['USER_ID']);
 	$of_m = 'non'; $of_g = 'oui'; $sel_g = false; $class_form_type = 'show'; $class_form_eleve = 'show'; $class_form_periode = 'hide';
 	$select_eleves = '<option></option>'; // maj en ajax suivant le choix du groupe
 	$check_type_individuel = '';
@@ -62,7 +62,7 @@ if($_SESSION['USER_PROFIL']=='professeur')
 if($_SESSION['USER_PROFIL']=='eleve')
 {
 	$tab_groupes  = array(0=>array('valeur'=>$_SESSION['ELEVE_CLASSE_ID'],'texte'=>$_SESSION['ELEVE_CLASSE_NOM'],'optgroup'=>'classe')); $GLOBALS['tab_select_optgroup'] = array('classe'=>'Classes');
-	$tab_matieres = DB_STRUCTURE_OPT_matieres_eleve($_SESSION['USER_ID']);
+	$tab_matieres = DB_STRUCTURE_OPT_matieres_eleve($_SESSION['MATIERES'],$_SESSION['USER_ID']);
 	$of_m = 'oui'; $of_g = 'non'; $sel_g = true; $class_form_type = 'hide'; $class_form_eleve = 'hide'; $class_form_periode = 'show';
 	$select_eleves = '<option value="'.$_SESSION['USER_ID'].'" selected="selected">'.html($_SESSION['USER_NOM'].' '.$_SESSION['USER_PRENOM']).'</option>';
 	$check_type_individuel = ' checked="checked"';

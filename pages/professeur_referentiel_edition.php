@@ -46,14 +46,8 @@ $VERSION_JS_FILE += 7;
 // La recherche ne s'effectue que sur les matières et niveaux utilisés, sans débusquer des référentiels résiduels.
 $tab_matiere = array();
 $tab_niveau  = array();
-
 // On récupère la liste des matières où le professeur est rattaché, et s'il en est coordonnateur
-$DB_SQL = 'SELECT matiere_id,matiere_nom,jointure_coord FROM sacoche_jointure_user_matiere ';
-$DB_SQL.= 'LEFT JOIN sacoche_matiere USING (matiere_id) ';
-$DB_SQL.= 'WHERE user_id=:user_id ';
-$DB_SQL.= 'ORDER BY matiere_nom ASC';
-$DB_VAR = array(':user_id'=>$_SESSION['USER_ID']);
-$DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+$DB_TAB = DB_STRUCTURE_lister_matieres_professeur_infos_referentiel($_SESSION['MATIERES'],$_SESSION['USER_ID']);
 if(count($DB_TAB))
 {
 	foreach($DB_TAB as $DB_ROW)
@@ -61,11 +55,11 @@ if(count($DB_TAB))
 		$tab_matiere[$DB_ROW['matiere_id']] = array( 'nom'=>html($DB_ROW['matiere_nom']) , 'coord'=>$DB_ROW['jointure_coord'] , 'niveau_nb'=>0 );
 	}
 }
-$liste_matieres = implode(',',array_keys($tab_matiere));
+$listing_matieres_id = implode(',',array_keys($tab_matiere));
 
-if(!$liste_matieres)
+if(!$listing_matieres_id)
 {
-	echo'<p><span class="danger">Vous n\'êtes coordonnateur d\'aucune matière de cet établissement !</span></p>';
+	echo'<p><span class="danger">Vous n\'êtes rattaché à aucune matière de l\'établissement !</span></p>';
 }
 elseif(!$_SESSION['NIVEAUX']) // normalement impossible
 {
@@ -84,14 +78,9 @@ else
 	{
 		$tab_niveau[$DB_ROW['niveau_id']] = html($DB_ROW['niveau_nom']);
 	}
-	// On récupère la liste des référentiels par matière et niveau
+	// On récupère la liste des référentiels par matière avec indication du nombre de niveau
 	$tab_partage = array('oui'=>'<img title="Référentiel partagé sur le serveur communautaire (MAJ le ◄DATE►)." alt="" src="./_img/partage1.gif" />','non'=>'<img title="Référentiel non partagé avec la communauté (choix du ◄DATE►)." alt="" src="./_img/partage0.gif" />','bof'=>'<img title="Référentiel dont le partage est sans intérêt (pas novateur)." alt="" src="./_img/partage0.gif" />','hs'=>'<img title="Référentiel dont le partage est sans objet (matière spécifique)." alt="" src="./_img/partage0.gif" />');
-	$DB_SQL = 'SELECT matiere_id,COUNT(niveau_id) AS niveau_nb FROM sacoche_referentiel ';
-	$DB_SQL.= 'LEFT JOIN sacoche_niveau USING (niveau_id) ';
-	$DB_SQL.= 'WHERE matiere_id IN('.$liste_matieres.') AND ( niveau_id IN('.$_SESSION['CYCLES'].','.$_SESSION['NIVEAUX'].') ) ';
-	$DB_SQL.= 'GROUP BY matiere_id ';
-	$DB_SQL.= 'ORDER BY matiere_id ASC';
-	$DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , null);
+	$DB_TAB = DB_STRUCTURE_lister_referentiels_infos_groupement_matieres($listing_matieres_id,$_SESSION['NIVEAUX'],$_SESSION['CYCLES']);
 	if(count($DB_TAB))
 	{
 		foreach($DB_TAB as $DB_ROW)

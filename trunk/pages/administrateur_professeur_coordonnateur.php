@@ -43,7 +43,7 @@ $TITRE = "Gérer les professeurs coordonnateurs";
 	$DB_SQL.= 'LEFT JOIN sacoche_jointure_user_matiere USING (matiere_id) ';
 	$DB_SQL.= 'LEFT JOIN sacoche_user USING (user_id) ';
 	$DB_SQL.= 'WHERE user_profil=:profil AND user_statut=:statut ';
-	$DB_SQL.= ($_SESSION['MATIERES']) ? 'AND (matiere_id IN('.$_SESSION['MATIERES'].') OR matiere_partage=:partage) ' : 'AND matiere_partage=:partage ';
+	$DB_SQL.= 'AND (matiere_id IN('.$_SESSION['MATIERES'].') OR matiere_partage=:partage) '; // Test matiere car un prof peut être encore relié à des matières décochées par l'admin.
 	$DB_SQL.= 'ORDER BY matiere_transversal DESC, matiere_nom ASC, user_nom ASC, user_prenom ASC';
 	$DB_VAR = array(':profil'=>'professeur',':statut'=>1,':partage'=>0);
 	$DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);

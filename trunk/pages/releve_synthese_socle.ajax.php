@@ -28,17 +28,19 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 if($_SESSION['SESAMATH_ID']==ID_DEMO) {}
 
-$type         = (isset($_POST['f_type']))       ? clean_texte($_POST['f_type'])       : '';
-$palier_id    = (isset($_POST['f_palier']))     ? clean_entier($_POST['f_palier'])    : 0;
-$palier_nom   = (isset($_POST['f_palier_nom'])) ? clean_texte($_POST['f_palier_nom']) : '';
-$groupe_id    = (isset($_POST['f_groupe']))     ? clean_entier($_POST['f_groupe'])    : 0;
-$groupe_nom   = (isset($_POST['f_groupe_nom'])) ? clean_texte($_POST['f_groupe_nom']) : '';
+$type         = (isset($_POST['f_type']))       ? clean_texte($_POST['f_type'])        : '';
+$palier_id    = (isset($_POST['f_palier']))     ? clean_entier($_POST['f_palier'])     : 0;
+$palier_nom   = (isset($_POST['f_palier_nom'])) ? clean_texte($_POST['f_palier_nom'])  : '';
+$pilier_id    = (isset($_POST['f_pilier']))      ? clean_entier($_POST['f_pilier'])    : -1;
+$groupe_id    = (isset($_POST['f_groupe']))     ? clean_entier($_POST['f_groupe'])     : 0;
+$groupe_nom   = (isset($_POST['f_groupe_nom'])) ? clean_texte($_POST['f_groupe_nom'])  : '';
 $tab_eleve_id = (isset($_POST['eleves']))       ? array_map('clean_entier',explode(',',$_POST['eleves'])) : array() ;
 
-$tab_eleve_id = array_filter($tab_eleve_id,'positif');
-$liste_eleve  = implode(',',$tab_eleve_id);
+$memo_demande  = ($pilier_id==0) ? 'palier' : 'pilier' ;
+$tab_eleve_id  = array_filter($tab_eleve_id,'positif');
+$liste_eleve   = implode(',',$tab_eleve_id);
 
-if( (!$palier_id) || (!$palier_nom) || (!$groupe_id) || (!$groupe_nom) || (!count($tab_eleve_id)) || (!in_array($type,array('pourcentage','validation'))) )
+if( (!$palier_id) || (!$palier_nom) || ($pilier_id==-1) || (!$groupe_id) || (!$groupe_nom) || (!count($tab_eleve_id)) || (!in_array($type,array('pourcentage','validation'))) )
 {
 	exit('Erreur avec les données transmises !');
 }
@@ -53,13 +55,12 @@ $tab_user_entree  = array();	// [eleve_id][entree_id] => array(etat,date,info); 
 $tab_user_pilier  = array();	// [eleve_id][pilier_id] => array(etat,date,info);   [type "validation" uniquement]
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-// Récupération de la liste des items du socle pour le palier sélectionné
+// Récupération de la liste des items du socle pour le palier ou le pilier sélectionné
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-
-$DB_TAB = DB_STRUCTURE_recuperer_arborescence_palier($palier_id);
+$DB_TAB = ($pilier_id) ? DB_STRUCTURE_recuperer_arborescence_pilier($pilier_id) : DB_STRUCTURE_recuperer_arborescence_palier($palier_id) ;
 if(!count($DB_TAB))
 {
-	exit('Aucun item référencé pour ce palier du socle commun !');
+	exit('Aucun item référencé pour cette partie du socle commun !');
 }
 $pilier_id  = 0;
 $socle_id   = 0;
@@ -200,16 +201,17 @@ $eleves_nb   = count($tab_eleve_id);
 $items_nb    = count($tab_entree_id);
 $piliers_nb  = count($tab_pilier);
 $cellules_nb = $items_nb+1;
-$titre_info  = ($type=='pourcentage') ? 'pourcentage d\'items disciplinaires acquis' : 'validation des items et des compétences' ;
+$titre_info1 = ($type=='pourcentage') ? 'pourcentage d\'items disciplinaires acquis' : 'validation des items et des compétences' ;
+$titre_info2 = ($memo_demande=='palier') ? $palier_nom : $palier_nom.' – '.mb_substr($tab_pilier[$pilier_id]['pilier_nom'],0,mb_strpos($tab_pilier[$pilier_id]['pilier_nom'],'–')) ;
 $releve_html  = '<style type="text/css">'.$_SESSION['CSS'].'</style>';
 $releve_html .= '<style type="text/css">thead th{text-align:center}tbody th,tbody td{width:8px;height:8px;vertical-align:middle}.nu2{background:#EAEAFF;border:none;}	/* classe existante nu non utilisée à cause de son height imposé */</style>';
-$releve_html .= '<h1>Synthèse de maîtrise du socle : '.$titre_info.'</h1>';
-$releve_html .= '<h2>'.html($groupe_nom).' - '.html($palier_nom).'</h2>';
+$releve_html .= '<h1>Synthèse de maîtrise du socle : '.$titre_info1.'</h1>';
+$releve_html .= '<h2>'.html($groupe_nom).' - '.html($titre_info2).'</h2>';
 // Appel de la classe et définition de qqs variables supplémentaires pour la mise en page PDF
 require('./_fpdf/fpdf.php');
 require('./_inc/class.PDF.php');
 $releve_pdf = new PDF($orientation='landscape',$marge_min=7.5,$couleur='oui');
-$releve_pdf->releve_synthese_socle_initialiser($titre_info,$groupe_nom,$palier_nom,$eleves_nb,$items_nb,$piliers_nb);
+$releve_pdf->releve_synthese_socle_initialiser($titre_info1,$groupe_nom,$titre_info2,$eleves_nb,$items_nb,$piliers_nb);
 // - - - - - - - - - -
 // Lignes d'en-tête
 // - - - - - - - - - -

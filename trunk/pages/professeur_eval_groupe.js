@@ -266,6 +266,7 @@ $(document).ready
 							modification = false;
 							$('#msg_saisir').removeAttr("class").html('&nbsp;');
 							$('#table_saisir').html(responseHTML);
+							$('#table_saisir tbody tr th img').hide(0);
 							$('img[title]').tooltip({showURL:false});
 							$('#export_file1').attr("href", $("#filename").val()+ref+'.zip' );
 							$('#export_file4').attr("href", $("#filename").val()+ref+'_sans_notes.pdf' );
@@ -324,6 +325,7 @@ $(document).ready
 						{
 							$('#msg_voir').removeAttr("class").html('&nbsp;');
 							$('#table_voir').html(responseHTML);
+							$('#table_voir tbody tr th img').hide(0);
 							$('#export_file2').attr("href", $("#filename").val()+ref+'.zip' );
 							$('#export_file3').attr("href", $("#filename").val()+ref+'_sans_notes.pdf' );
 							$('#export_file5').attr("href", $("#filename").val()+ref+'_avec_notes.pdf' );
@@ -691,13 +693,13 @@ $(document).ready
 		);
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-//	Choix de rétrécir ou pas l'affichage sur #table_saisir
+//	Choix de rétrécir ou pas les colonnes sur #table_saisir
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-		$('#table_saisir thead tr td input[type="checkbox"]').live // live est utilisé pour prendre en compte les nouveaux éléments créés
+		$('#table_saisir #check_largeur').live // live est utilisé pour prendre en compte les nouveaux éléments créés
 		('click',
 			function()
 			{
-				var condense = ($(this).is(':checked')) ? 'v' : 'h' ; // h ou v pour horizontal (non condensé) ou vertical (condensé)
+				var condense = ($(this).is(':checked')) ? 'v' : 'h' ; // 'h' ou 'v' pour horizontal (non condensé) ou vertical (condensé)
 				$('#table_saisir tbody').removeAttr("class").addClass(condense);
 				$("#table_saisir thead tr th img").each
 				(
@@ -712,13 +714,13 @@ $(document).ready
 		);
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-//	Choix de rétrécir ou pas l'affichage sur #table_voir
+//	Choix de rétrécir ou pas les colonnes sur #table_voir
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-		$('#table_voir thead tr td input[type="checkbox"]').live // live est utilisé pour prendre en compte les nouveaux éléments créés
+		$('#table_voir #check_largeur').live // live est utilisé pour prendre en compte les nouveaux éléments créés
 		('click',
 			function()
 			{
-				var condense = ($(this).is(':checked')) ? 'v' : 'h' ; // h ou v pour horizontal (non condensé) ou vertical (condensé)
+				var condense = ($(this).is(':checked')) ? 'v' : 'h' ; // 'h' ou 'v' pour horizontal (non condensé) ou vertical (condensé)
 				$("#table_voir thead tr th img").each
 				(
 					function ()
@@ -737,6 +739,27 @@ $(document).ready
 						$(this).attr('src',img_src_new);
 					}
 				);
+			}
+		);
+
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+//	Choix de rétrécir ou pas les lignes sur #table_saisir ou #table_voir
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+		$('#check_hauteur').live // live est utilisé pour prendre en compte les nouveaux éléments créés
+		('click',
+			function()
+			{
+				var table_id = $(this).parent().parent().parent().parent().parent().attr('id');
+				if($(this).is(':checked'))
+				{
+					$("#"+table_id+" tbody tr th div").hide(0);
+					$("#"+table_id+" tbody tr th img").show(0);
+				}
+				else
+				{
+					$("#"+table_id+" tbody tr th img").hide(0);
+					$("#"+table_id+" tbody tr th div").show(0);
+				}
 			}
 		);
 

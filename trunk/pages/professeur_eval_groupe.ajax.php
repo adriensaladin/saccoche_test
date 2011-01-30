@@ -280,10 +280,10 @@ if( ($action=='saisir') && $devoir_id && $groupe_type && $groupe_id && $date && 
 	$tab_affich[0][0].= '<span class="manuel"><a class="pop_up" href="'.SERVEUR_DOCUMENTAIRE.'?fichier=support_professeur__evaluations_saisie_resultats">DOC : Saisie des résultats.</a></span><p />';
 	$tab_affich[0][0].= '<label for="radio_clavier"><input type="radio" id="radio_clavier" name="mode_saisie" value="clavier" /> <img alt="" src="./_img/pilot_keyboard.png" /> Piloter au clavier</label> <img alt="" src="./_img/bulle_aide.png" title="Sélectionner un rectangle blanc<br />au clavier (flèches) ou à la souris<br />puis utiliser les touches suivantes :<br />&nbsp;1 ; 2 ; 3 ; 4 ; A ; N ; D ; suppr" /><br />';
 	$tab_affich[0][0].= '<label for="radio_souris"><input type="radio" id="radio_souris" name="mode_saisie" value="souris" /> <img alt="" src="./_img/pilot_mouse.png" /> Piloter à la souris</label> <img alt="" src="./_img/bulle_aide.png" title="Survoler une case du tableau avec la souris<br />puis cliquer sur une des images proposées." /><p />';
-	$tab_affich[0][0].= '<label for="check_largeur"><input type="checkbox" id="check_largeur" name="check_largeur" value="retrecir" /> <img alt="" src="./_img/retrecir.gif" /> Rétrécir les colonnes</label> <img alt="" src="./_img/bulle_aide.png" title="Rétrécir l\'affichage des colonnes<br />pour les écrans de faible largeur." /><p />';
+	$tab_affich[0][0].= '<label for="check_largeur"><input type="checkbox" id="check_largeur" name="check_largeur" value="retrecir_largeur" /> <img alt="" src="./_img/retrecir_largeur.gif" /> Largeur optimale</label> <img alt="" src="./_img/bulle_aide.png" title="Diminuer la largeur des colonnes<br />si les élèves sont nombreux." /><br />';
+	$tab_affich[0][0].= '<label for="check_hauteur"><input type="checkbox" id="check_hauteur" name="check_hauteur" value="retrecir_hauteur" /> <img alt="" src="./_img/retrecir_hauteur.gif" /> Hauteur optimale</label> <img alt="" src="./_img/bulle_aide.png" title="Diminuer la hauteur des lignes<br />si les items sont nombreux." /><p />';
 	$tab_affich[0][0].= '<button id="Enregistrer_saisie" type="button"><img alt="" src="./_img/bouton/valider.png" /> Enregistrer les saisies</button><input type="hidden" name="f_ref" id="f_ref" value="'.$ref.'" /><input id="f_date" name="f_date" type="hidden" value="'.$date.'" /><input id="f_info" name="f_info" type="hidden" value="'.html($info).'" /><br />';
-	$tab_affich[0][0].= '<button id="fermer_zone_saisir" type="button"><img alt="" src="./_img/bouton/retourner.png" /> Retour</button><br />';
-	$tab_affich[0][0].= '<label id="ajax_msg">&nbsp;</label>';
+	$tab_affich[0][0].= '<button id="fermer_zone_saisir" type="button"><img alt="" src="./_img/bouton/retourner.png" /> Retour</button>';
 	$tab_affich[0][0].= '</td>';
 	// première ligne (noms prénoms des élèves)
 	$csv_ligne_eleve_nom = $separateur;
@@ -303,7 +303,7 @@ if( ($action=='saisir') && $devoir_id && $groupe_type && $groupe_id && $date && 
 	{
 		$item_ref = $DB_ROW['item_ref'];
 		$texte_socle = ($DB_ROW['entree_id']) ? ' [S]' : ' [–]';
-		$tab_affich[$DB_ROW['item_id']][0] = '<th><b>'.html($item_ref.$texte_socle).'</b><br />'.html($DB_ROW['item_nom']).'</th>';
+		$tab_affich[$DB_ROW['item_id']][0] = '<th><b>'.html($item_ref.$texte_socle).'</b> <img alt="" src="./_img/bulle_aide.png" title="'.html($DB_ROW['item_nom']).'" /><div>'.html($DB_ROW['item_nom']).'</div></th>';
 		$tab_comp_id[$DB_ROW['item_id']] = $item_ref;
 		$export_csv .= $DB_ROW['item_id'].str_repeat($separateur,$csv_nb_colonnes).$item_ref.$texte_socle.' '.$DB_ROW['item_nom']."\r\n";
 	}
@@ -419,7 +419,8 @@ if( ($action=='voir') && $devoir_id && $groupe_type && $groupe_id && $date && $d
 	$tab_user_id = array(); // pas indispensable, mais plus lisible
 	$tab_comp_id = array(); // pas indispensable, mais plus lisible
 	$tab_affich[0][0] = '<td>';
-	$tab_affich[0][0].= '<p><label for="check_largeur"><input type="checkbox" id="check_largeur" name="check_largeur" value="retrecir" /> <img alt="" src="./_img/retrecir.gif" /> Rétrécir les colonnes</label> <img alt="" src="./_img/bulle_aide.png" title="Rétrécir l\'affichage des colonnes<br />pour les écrans de faible largeur." /></p>';
+	$tab_affich[0][0].= '<label for="check_largeur"><input type="checkbox" id="check_largeur" name="check_largeur" value="retrecir_largeur" /> <img alt="" src="./_img/retrecir_largeur.gif" /> Largeur optimale</label> <img alt="" src="./_img/bulle_aide.png" title="Diminuer la largeur des colonnes<br />si les élèves sont nombreux." /><br />';
+	$tab_affich[0][0].= '<label for="check_hauteur"><input type="checkbox" id="check_hauteur" name="check_hauteur" value="retrecir_hauteur" /> <img alt="" src="./_img/retrecir_hauteur.gif" /> Hauteur optimale</label> <img alt="" src="./_img/bulle_aide.png" title="Diminuer la hauteur des lignes<br />si les items sont nombreux." /><p />';
 	$tab_affich[0][0].= '<button id="fermer_zone_voir" type="button"><img alt="" src="./_img/bouton/retourner.png" /> Retour</button>';
 	$tab_affich[0][0].= '</td>';
 	// première ligne (noms prénoms des élèves)
@@ -440,7 +441,7 @@ if( ($action=='voir') && $devoir_id && $groupe_type && $groupe_id && $date && $d
 	{
 		$item_ref = $DB_ROW['item_ref'];
 		$texte_socle = ($DB_ROW['entree_id']) ? ' [S]' : ' [–]';
-		$tab_affich[$DB_ROW['item_id']][0] = '<th><b>'.html($item_ref.$texte_socle).'</b><br />'.html($DB_ROW['item_nom']).'</th>';
+		$tab_affich[$DB_ROW['item_id']][0] = '<th><b>'.html($item_ref.$texte_socle).'</b> <img alt="" src="./_img/bulle_aide.png" title="'.html($DB_ROW['item_nom']).'" /><div>'.html($DB_ROW['item_nom']).'</div></th>';
 		$tab_comp_id[$DB_ROW['item_id']] = $item_ref;
 		$csv_lignes_scores[$DB_ROW['item_id']][0] = $DB_ROW['item_id'];
 		$csv_colonne_texte[$DB_ROW['item_id']]    = $item_ref.$texte_socle.' '.$DB_ROW['item_nom'];

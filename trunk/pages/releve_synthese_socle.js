@@ -63,6 +63,54 @@ $(document).ready
 		};
 
 //	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
+//	Charger le select f_pilier en ajax
+//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
+
+		var maj_pilier = function()
+		{
+			$("#f_pilier").html('<option value=""></option>').hide();
+			palier_id = $("#f_palier").val();
+			if(palier_id)
+			{
+				$('#ajax_maj_pilier').removeAttr("class").addClass("loader").html("Actualisation en cours... Veuillez patienter.");
+				$.ajax
+				(
+					{
+						type : 'POST',
+						url : 'ajax.php?page=_maj_select_piliers',
+						data : 'f_palier='+palier_id+'&f_first='+'val',
+						dataType : "html",
+						error : function(msg,string)
+						{
+							$('#ajax_maj_pilier').removeAttr("class").addClass("alerte").html("Echec de la connexion ! Veuillez essayer de nouveau.");
+						},
+						success : function(responseHTML)
+						{
+							maj_clock(1);
+							if(responseHTML.substring(0,7)=='<option')	// Attention aux caractères accentués : l'utf-8 pose des pbs pour ce test
+							{
+								$('#ajax_maj_pilier').removeAttr("class").html('&nbsp;');
+								$('#f_pilier').html(responseHTML).show();
+							}
+							else
+							{
+								$('#ajax_maj_pilier').removeAttr("class").addClass("alerte").html(responseHTML);
+							}
+						}
+					}
+				);
+			}
+			else
+			{
+				$('#ajax_maj_pilier').removeAttr("class").html("&nbsp;");
+			}
+		};
+
+		$("#f_palier").change( maj_pilier );
+
+		maj_pilier();
+
+//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
 //	Charger le select f_eleve en ajax
 //	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
 
@@ -128,6 +176,7 @@ $(document).ready
 				{
 					f_type   : { required:true },
 					f_palier : { required:true },
+					f_pilier : { required:false },
 					f_groupe : { required:true },
 					f_eleve  : { required:true }
 				},
@@ -135,6 +184,7 @@ $(document).ready
 				{
 					f_type   : { required:"type manquant" },
 					f_palier : { required:"palier manquant" },
+					f_pilier : { },
 					f_groupe : { required:"groupe manquant" },
 					f_eleve  : { required:"élève(s) manquant(s)" }
 				},

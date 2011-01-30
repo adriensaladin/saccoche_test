@@ -229,9 +229,8 @@ $(document).ready
 				// alors j'ai copié le tableau dans un champ hidden...
 				var f_eleve = new Array(); $("#f_eleve option:selected").each(function(){f_eleve.push($(this).val());});
 				$('#eleves').val(f_eleve);
-				// récupération du nom du palier et du nom du pilier
+				// récupération du nom du palier
 				$('#f_palier_nom').val( $("#f_palier option:selected").text() );
-				$('#f_pilier_nom').val( $("#f_pilier option:selected").text() );
 				$(this).ajaxSubmit(ajaxOptions);
 				return false;
 			}

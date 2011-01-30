@@ -394,7 +394,7 @@ if(in_array('synthese',$tab_type))
 		$releve_PDF->SetFont('Arial' , '' , $releve_PDF->taille_police);
 		$releve_PDF->SetXY($memo_x , $memo_y);
 		$releve_PDF->Cell($releve_PDF->cases_largeur , $releve_PDF->cases_hauteur , '' , 1 , 0 , 'C' , false , '');
-		$releve_HTML_table_head .= '<th title="'.html($tab_item[$item_id][0]['item_nom']).'">'.html($tab_item[$item_id][0]['item_ref']).'</th>';
+		$releve_HTML_table_head .= '<th title="'.html($tab_item[$item_id][0]['item_nom']).'">'.html($ref_matiere).'<br />'.html($ref_suite).'</th>';
 	}
 	$releve_PDF->SetX( $releve_PDF->GetX()+2 );
 	$releve_PDF->choisir_couleur_fond('gris_moyen');

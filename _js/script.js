@@ -304,21 +304,26 @@ $(document).ready
 		// Difficultés pour utiliser fadeTo('slow',0.2) et fadeTo('normal',1) car une durée d'animation provoque des boucles
 		// Difficultés pour utiliser aussi css('opacity',0.2) et css('opacity',1) car un passage de la souris au dessus du menu provoque un clignotement désagréable
 		// Alors il a fallu ruser (compliquer) avec un marqueur et un timing...
-		var test_over = false;
-		$('#menu li').mouseover( function(){test_over = true; });
-		$('#menu li').mouseout(  function(){test_over = false;});
+		var test_over_avant = false;
+		var test_over_apres = false;
+		$('#menu li').mouseenter( function(){test_over_apres = true; });
+		$('#menu li').mouseleave( function(){test_over_apres = false;});
 		function page_transparente()
 		{
 			$("body").everyTime
 			('5ds', function()
 				{
-					if(test_over)
+					if( test_over_avant != test_over_apres )
 					{
-						$('#cadre_bas').fadeTo('normal',0.2);
-					}
-					else
-					{
-						$('#cadre_bas').fadeTo('fast',1);
+						test_over_avant = test_over_apres ;
+						if(test_over_apres)
+						{
+							$('#cadre_bas').fadeTo('normal',0.2);
+						}
+						else
+						{
+							$('#cadre_bas').fadeTo('fast',1);
+						}
 					}
 				}
 			);

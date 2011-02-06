@@ -55,11 +55,13 @@ if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');
 			{
 				$score  = ($DB_ROW['demande_score']!==null) ? $DB_ROW['demande_score'] : false ;
 				$statut = ($DB_ROW['demande_statut']=='eleve') ? 'demande non traitée' : 'évaluation en préparation' ;
+				$texte_lien_avant = ($DB_ROW['item_lien']) ? '<a class="lien_ext" href="'.html($DB_ROW['item_lien']).'">' : '';
+				$texte_lien_apres = ($DB_ROW['item_lien']) ? '</a>' : '';
 				// Afficher une ligne du tableau 
 				echo'<tr id="ids_'.$DB_ROW['demande_id'].'_'.$DB_ROW['item_id'].'_'.$DB_ROW['matiere_id'].'">';
 				echo	'<td><i>'.html($DB_ROW['demande_date']).'</i>'.convert_date_mysql_to_french($DB_ROW['demande_date']).'</td>';
 				echo	'<td>'.html($DB_ROW['matiere_nom']).'</td>';
-				echo	'<td>'.html($DB_ROW['item_ref']).' <img alt="" src="./_img/bulle_aide.png" title="'.html($DB_ROW['item_nom']).'" /></td>';
+				echo	'<td>'.$texte_lien_avant.html($DB_ROW['item_ref']).$texte_lien_apres.' <img alt="" src="./_img/bulle_aide.png" title="'.html($DB_ROW['item_nom']).'" /></td>';
 				echo	affich_score_html($score,'score',$pourcent='');
 				echo	'<td>'.$statut.'</td>';
 				echo	'<td class="nu"><q class="supprimer" title="Supprimer cette demande d\'évaluation."></q></td>';

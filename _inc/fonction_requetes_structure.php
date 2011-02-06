@@ -1515,7 +1515,7 @@ function DB_STRUCTURE_lister_demandes_eleve($user_id)
 {
 	$DB_SQL = 'SELECT sacoche_demande.*, ';
 	$DB_SQL.= 'CONCAT(niveau_ref,".",domaine_ref,theme_ordre,item_ordre) AS item_ref , ';
-	$DB_SQL.= 'item_id , item_nom , sacoche_matiere.matiere_id AS matiere_id  , matiere_nom ';
+	$DB_SQL.= 'item_id , item_nom , item_lien , sacoche_matiere.matiere_id AS matiere_id  , matiere_nom ';
 	$DB_SQL.= 'FROM sacoche_demande ';
 	$DB_SQL.= 'LEFT JOIN sacoche_referentiel_item USING (item_id) ';
 	$DB_SQL.= 'LEFT JOIN sacoche_referentiel_theme USING (theme_id) ';

@@ -28,18 +28,19 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 if(($_SESSION['SESAMATH_ID']==ID_DEMO)&&($_POST['f_action']!='Afficher_evaluations')&&($_POST['f_action']!='ordonner')&&($_POST['f_action']!='saisir')&&($_POST['f_action']!='voir')&&($_POST['f_action']!='voir_repart')){exit('Action désactivée pour la démo...');}
 
-$action      = (isset($_POST['f_action']))      ? clean_texte($_POST['f_action'])      : '';
-$date_debut  = (isset($_POST['f_date_debut']))  ? clean_texte($_POST['f_date_debut'])  : '';
-$date_fin    = (isset($_POST['f_date_fin']))    ? clean_texte($_POST['f_date_fin'])    : '';
-$ref         = (isset($_POST['f_ref']))         ? clean_texte($_POST['f_ref'])         : '';
-$date        = (isset($_POST['f_date']))        ? clean_texte($_POST['f_date'])        : '';
-$info        = (isset($_POST['f_info']))        ? clean_texte($_POST['f_info'])        : '';
-$descriptif  = (isset($_POST['f_descriptif']))  ? clean_texte($_POST['f_descriptif'])  : '';
-$contenu     = (isset($_POST['f_contenu']))     ? clean_texte($_POST['f_contenu'])     : '';
-$detail      = (isset($_POST['f_detail']))      ? clean_texte($_POST['f_detail'])      : '';
-$orientation = (isset($_POST['f_orientation'])) ? clean_texte($_POST['f_orientation']) : '';
-$marge_min   = (isset($_POST['f_marge_min']))   ? clean_texte($_POST['f_marge_min'])   : '';
-$couleur     = (isset($_POST['f_couleur']))     ? clean_texte($_POST['f_couleur'])     : '';
+$action      = (isset($_POST['f_action']))          ? clean_texte($_POST['f_action'])      : '';
+$date_debut  = (isset($_POST['f_date_debut']))      ? clean_texte($_POST['f_date_debut'])  : '';
+$date_fin    = (isset($_POST['f_date_fin']))        ? clean_texte($_POST['f_date_fin'])    : '';
+$ref         = (isset($_POST['f_ref']))             ? clean_texte($_POST['f_ref'])         : '';
+$date        = (isset($_POST['f_date']))            ? clean_texte($_POST['f_date'])        : '';
+$info        = (isset($_POST['f_info']))            ? clean_texte($_POST['f_info'])        : '';
+$descriptif  = (isset($_POST['f_descriptif']))      ? clean_texte($_POST['f_descriptif'])  : '';
+$contenu     = (isset($_POST['f_contenu']))         ? clean_texte($_POST['f_contenu'])     : '';
+$detail      = (isset($_POST['f_detail']))          ? clean_texte($_POST['f_detail'])      : '';
+$orientation = (isset($_POST['f_orientation']))     ? clean_texte($_POST['f_orientation']) : '';
+$marge_min   = (isset($_POST['f_marge_min']))       ? clean_texte($_POST['f_marge_min'])   : '';
+$couleur     = (isset($_POST['f_couleur']))         ? clean_texte($_POST['f_couleur'])     : '';
+$only_req    = (isset($_POST['f_restriction_req'])) ? true                                 : false;
 
 save_cookie_select('cartouche');
 
@@ -840,6 +841,8 @@ if( ($action=='Enregistrer_saisie') && $devoir_id && $date )
 
 if( ($action=='Imprimer_cartouche') && $devoir_id && $groupe_id && $date && $contenu && $detail && $orientation && $marge_min && $couleur )
 {
+	$with_nom    = (substr($contenu,0,8)=='AVEC_nom')  ? true : false ;
+	$with_result = (substr($contenu,9)=='AVEC_result') ? true : false ;
 	// liste des items
 	$DB_TAB_COMP = DB_STRUCTURE_lister_items_devoir($devoir_id);
 	// liste des élèves
@@ -856,10 +859,12 @@ if( ($action=='Imprimer_cartouche') && $devoir_id && $groupe_id && $date && $con
 	$tab_result  = array(); // tableau bi-dimensionnel [n°ligne=id_item][n°colonne=id_user]
 	$tab_user_id = array(); // pas indispensable, mais plus lisible
 	$tab_comp_id = array(); // pas indispensable, mais plus lisible
+	$tab_user_nb_req = array(); // pour retenir le nb d'items par utilisateur : variable et utile uniquement si cartouche avec les demandes d'évaluations 
 	// enregistrer noms prénoms des élèves
 	foreach($DB_TAB_USER as $DB_ROW)
 	{
-		$tab_user_id[$DB_ROW['user_id']] = (substr($contenu,0,8)=='AVEC_nom') ? html($DB_ROW['user_prenom'].' '.$DB_ROW['user_nom']) : '' ;
+		$tab_user_id[$DB_ROW['user_id']] = ($with_nom) ? html($DB_ROW['user_prenom'].' '.$DB_ROW['user_nom']) : '' ;
+		$tab_user_nb_req[$DB_ROW['user_id']] = 0 ;
 	}
 	// enregistrer refs noms items
 	foreach($DB_TAB_COMP as $DB_ROW)
@@ -873,19 +878,24 @@ if( ($action=='Imprimer_cartouche') && $devoir_id && $groupe_id && $date && $con
 	{
 		foreach($tab_comp_id as $comp_id=>$val_comp)
 		{
-			$tab_result[$comp_id][$user_id] = '-';
+			$tab_result[$comp_id][$user_id] = '';
 		}
 	}
-	// compléter avec les résultats
-	if(strpos($contenu,'AVEC_result')!==false)
+	// compléter si demandé avec les résultats et/ou les demandes d'évaluations
+	if($with_result || $only_req)
 	{
-		$DB_TAB = DB_STRUCTURE_lister_saisies_devoir($devoir_id,$with_REQ=false);
+		$DB_TAB = DB_STRUCTURE_lister_saisies_devoir($devoir_id,$with_REQ=$only_req);
 		foreach($DB_TAB as $DB_ROW)
 		{
 			// Test pour éviter les pbs des élèves changés de groupes ou des items modifiés en cours de route
 			if(isset($tab_result[$DB_ROW['item_id']][$DB_ROW['eleve_id']]))
 			{
-				$tab_result[$DB_ROW['item_id']][$DB_ROW['eleve_id']] = $DB_ROW['saisie_note'];
+				$valeur = ($with_result) ? $DB_ROW['saisie_note'] : ( ($DB_ROW['saisie_note']) ? 'REQ' : '' ) ;
+				if($valeur)
+				{
+					$tab_result[$DB_ROW['item_id']][$DB_ROW['eleve_id']] = $valeur ;
+					$tab_user_nb_req[$DB_ROW['eleve_id']]++;
+				}
 			}
 		}
 	}
@@ -896,7 +906,10 @@ if( ($action=='Imprimer_cartouche') && $devoir_id && $groupe_id && $date && $con
 	$sacoche_csv = '';
 	// Appel de la classe et définition de qqs variables supplémentaires pour la mise en page PDF
 	$item_nb = count($tab_comp_id);
-	$colspan = ($detail=='minimal') ? $item_nb : 3 ;
+	if(!$only_req)
+	{
+		$tab_user_nb_req = array_fill_keys( array_keys($tab_user_nb_req) , $item_nb );
+	}
 	require('./_fpdf/fpdf.php');
 	require('./_inc/class.PDF.php');
 	$sacoche_pdf = new PDF($orientation,$marge_min,$couleur);
@@ -906,23 +919,29 @@ if( ($action=='Imprimer_cartouche') && $devoir_id && $groupe_id && $date && $con
 		// dans le cas d'un cartouche minimal
 		foreach($tab_user_id as $user_id=>$val_user)
 		{
-			$texte_entete = $date.' - '.$info.' - '.$val_user;
-			$sacoche_htm .= '<table class="bilan"><thead><tr><th colspan="'.$colspan.'">'.html($texte_entete).'</th></tr></thead><tbody>';
-			$sacoche_csv .= $texte_entete."\r\n";
-			$sacoche_pdf->cartouche_entete($texte_entete);
-			$ligne1_csv = ''; $ligne1_html = '';
-			$ligne2_csv = ''; $ligne2_html = '';
-			foreach($tab_comp_id as $comp_id=>$tab_val_comp)
+			if($tab_user_nb_req[$user_id])
 			{
-				$ligne1_html .= '<td>'.html($tab_val_comp[0]).'</td>';
-				$ligne2_html .= '<td class="hc">'.affich_note_html($tab_result[$comp_id][$user_id],$date,$info,false).'</td>';
-				$ligne1_csv .= $tab_val_comp[0]."\t";
-				$ligne2_csv .= $tab_result[$comp_id][$user_id]."\t";
-				$sacoche_pdf->cartouche_minimal_competence($tab_val_comp[0] , $tab_result[$comp_id][$user_id]);
+				$texte_entete = $date.' - '.$info.' - '.$val_user;
+				$sacoche_htm .= '<table class="bilan"><thead><tr><th colspan="'.$tab_user_nb_req[$user_id].'">'.html($texte_entete).'</th></tr></thead><tbody>';
+				$sacoche_csv .= $texte_entete."\r\n";
+				$sacoche_pdf->cartouche_entete( $texte_entete , $lignes_nb=4 );
+				$ligne1_csv = ''; $ligne1_html = '';
+				$ligne2_csv = ''; $ligne2_html = '';
+				foreach($tab_comp_id as $comp_id=>$tab_val_comp)
+				{
+					if( ($only_req==false) || ($tab_result[$comp_id][$user_id]) )
+					{
+						$ligne1_html .= '<td>'.html($tab_val_comp[0]).'</td>';
+						$ligne2_html .= '<td class="hc">'.affich_note_html($tab_result[$comp_id][$user_id],$date,$info,false).'</td>';
+						$ligne1_csv .= $tab_val_comp[0]."\t";
+						$ligne2_csv .= $tab_result[$comp_id][$user_id]."\t";
+						$sacoche_pdf->cartouche_minimal_competence($tab_val_comp[0] , $tab_result[$comp_id][$user_id]);
+					}
+				}
+				$sacoche_htm .= '<tr>'.$ligne1_html.'</tr><tr>'.$ligne2_html.'</tr></tbody></table><p />';
+				$sacoche_csv .= $ligne1_csv."\r\n".$ligne2_csv."\r\n\r\n";
+				$sacoche_pdf->cartouche_interligne(4);
 			}
-			$sacoche_htm .= '<tr>'.$ligne1_html.'</tr><tr>'.$ligne2_html.'</tr></tbody></table><p />';
-			$sacoche_csv .= $ligne1_csv."\r\n".$ligne2_csv."\r\n\r\n";
-			$sacoche_pdf->cartouche_interligne(4);
 		}
 	}
 	elseif($detail=='complet')
@@ -930,19 +949,25 @@ if( ($action=='Imprimer_cartouche') && $devoir_id && $groupe_id && $date && $con
 		// dans le cas d'un cartouche complet
 		foreach($tab_user_id as $user_id=>$val_user)
 		{
-			$texte_entete = $date.' - '.$info.' - '.$val_user;
-			$sacoche_htm .= '<table class="bilan"><thead><tr><th colspan="'.$colspan.'">'.html($texte_entete).'</th></tr></thead><tbody>';
-			$sacoche_csv .= $texte_entete."\r\n";
-			$sacoche_pdf->cartouche_entete($texte_entete);
-			foreach($tab_comp_id as $comp_id=>$tab_val_comp)
+			if($tab_user_nb_req[$user_id])
 			{
-				$sacoche_htm .= '<tr><td>'.html($tab_val_comp[0]).'</td><td>'.html($tab_val_comp[1]).'</td><td>'.affich_note_html($tab_result[$comp_id][$user_id],$date,$info,false).'</td></tr>';
-				$sacoche_csv .= $tab_val_comp[0]."\t".$tab_val_comp[1]."\t".$tab_result[$comp_id][$user_id]."\r\n";
-				$sacoche_pdf->cartouche_complet_competence($tab_val_comp[0] , $tab_val_comp[1] , $tab_result[$comp_id][$user_id]);
+				$texte_entete = $date.' - '.$info.' - '.$val_user;
+				$sacoche_htm .= '<table class="bilan"><thead><tr><th colspan="3">'.html($texte_entete).'</th></tr></thead><tbody>';
+				$sacoche_csv .= $texte_entete."\r\n";
+				$sacoche_pdf->cartouche_entete( $texte_entete , $lignes_nb=$tab_user_nb_req[$user_id]+1 );
+				foreach($tab_comp_id as $comp_id=>$tab_val_comp)
+				{
+					if( ($only_req==false) || ($tab_result[$comp_id][$user_id]) )
+					{
+						$sacoche_htm .= '<tr><td>'.html($tab_val_comp[0]).'</td><td>'.html($tab_val_comp[1]).'</td><td>'.affich_note_html($tab_result[$comp_id][$user_id],$date,$info,false).'</td></tr>';
+						$sacoche_csv .= $tab_val_comp[0]."\t".$tab_val_comp[1]."\t".$tab_result[$comp_id][$user_id]."\r\n";
+						$sacoche_pdf->cartouche_complet_competence($tab_val_comp[0] , $tab_val_comp[1] , $tab_result[$comp_id][$user_id]);
+					}
+				}
+				$sacoche_htm .= '</tbody></table><p />';
+				$sacoche_csv .= "\r\n";
+				$sacoche_pdf->cartouche_interligne(2);
 			}
-			$sacoche_htm .= '</tbody></table><p />';
-			$sacoche_csv .= "\r\n";
-			$sacoche_pdf->cartouche_interligne(2);
 		}
 	}
 	// On archive le cartouche dans un fichier tableur zippé (csv tabulé)

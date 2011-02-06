@@ -234,7 +234,8 @@ $select_marge_min    = afficher_select($tab_select_marge_min    , $select_nom='f
 	</div>
 	<div class="toggle hide">
 		<span class="tab"></span><a href="#" class="puce_moins toggle">Afficher moins d'options</a><br />
-		<label class="tab" for="f_orientation">Orientation :</label><?php echo $select_orientation ?> <?php echo $select_couleur ?> <?php echo $select_marge_min ?><br />
+		<label class="tab">Orientation :</label><?php echo $select_orientation ?> <?php echo $select_couleur ?> <?php echo $select_marge_min ?><br />
+		<label class="tab">Restriction :</label><input type="checkbox" id="f_restriction_req" name="f_restriction_req" value="1" /> <label for="f_restriction_req">Uniquement les items ayant fait l'objet d'une demande d'évaluation (ou dont une note est saisie).</label>
 	</div>
 	<span class="tab"></span><button id="f_submit_imprimer" type="button" value="'.$ref.'"><img alt="" src="./_img/bouton/valider.png" /> Générer le cartouche</button><label id="msg_imprimer">&nbsp;</label>
 	<p id="zone_imprimer_retour"></p>

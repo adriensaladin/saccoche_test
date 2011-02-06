@@ -1440,7 +1440,6 @@ function afficher_pourcentage_acquis($gras,$tab_infos,$detail)
 
 	public function cartouche_initialiser($detail,$item_nb)
 	{
-		$this->lignes_nb         = ($detail=='minimal') ? 4 : $item_nb+1 ;
 		$this->cases_largeur     = ($detail=='minimal') ? ($this->page_largeur - $this->marge_gauche - $this->marge_droit) / $item_nb : 10 ;
 		$this->cases_hauteur     = 5 ;
 		$this->reference_largeur = 15 ;
@@ -1451,10 +1450,10 @@ function afficher_pourcentage_acquis($gras,$tab_infos,$detail)
 		$this->calculer_dimensions_images($this->cases_largeur,$this->cases_hauteur);
 	}
 
-	public function cartouche_entete($texte_entete)
+	public function cartouche_entete($texte_entete,$lignes_nb)
 	{
 		// On prend une nouvelle page PDF si besoin
-		$hauteur_requise = $this->cases_hauteur * $this->lignes_nb;
+		$hauteur_requise = $this->cases_hauteur * $lignes_nb;
 		$hauteur_restante = $this->page_hauteur - $this->GetY() - $this->marge_bas;
 		if($hauteur_requise > $hauteur_restante)
 		{

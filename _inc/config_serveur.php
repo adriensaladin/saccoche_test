@@ -42,6 +42,15 @@ if(count($extensions_manquantes))
 	affich_message_exit($titre='PHP incomplet',$contenu='Les modules PHP suivants sont manquants : '.implode($extensions_manquantes,' '));
 }
 
+// La fonction array_fill_keys() n'est disponible que depuis PHP 5.2 ; SACoche exigeant PHP 5.1, la définir si besoin.
+if(!function_exists('array_fill_keys'))
+{
+	function array_fill_keys($tab_clefs,$valeur)
+	{
+		return array_combine( $tab_clefs , array_fill(0,count($tab_clefs),$valeur) );
+	}
+}
+
 // Fixer le niveau de rapport d'erreurs PHP
 if(SERVEUR_TYPE == 'PROD')
 {

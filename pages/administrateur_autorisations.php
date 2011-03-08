@@ -27,31 +27,12 @@
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = "Réglage des autorisations";
-$VERSION_JS_FILE += 3;
+$VERSION_JS_FILE += 4;
 
 $i_id = 0;	// Pour donner des ids aux checkbox et radio
 ?>
 
 <div class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__gestion_autorisations">DOC : Réglage des autorisations</a></div>
-<div class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=environnement_generalites__demandes_evaluations">DOC : Demandes d'évaluations</a></div>
-
-<hr />
-
-<h4>Demandes d'évaluations des élèves</h4>
-
-<?php
-$options = '';
-for($nb_demandes=0 ; $nb_demandes<10 ; $nb_demandes++)
-{
-	$selected = ($nb_demandes==$_SESSION['DROIT_ELEVE_DEMANDES']) ? ' selected="selected"' : '' ;
-	$texte = ($nb_demandes>0) ? ( ($nb_demandes>1) ? $nb_demandes.' demandes simultanées autorisées par matière' : '1 seule demande à la fois autorisée par matière' ) : 'Aucune demande autorisée (fonctionnalité desactivée).' ;
-	$options .= '<option value="'.$nb_demandes.'"'.$selected.'>'.$texte.'</option>';
-}
-?>
-<form id="form_eleve_demandes" action=""><fieldset>
-	<label class="tab" for="f_eleve_demandes">Nombre maximal :</label><select id="f_eleve_demandes" name="f_eleve_demandes"><?php echo $options ?></select><br />
-	<span class="tab"></span><button id="valider_eleve_demandes" type="button"><img alt="" src="./_img/bouton/parametre.png" /> Enregistrer cette valeur.</button><label id="ajax_msg_eleve_demandes">&nbsp;</label>
-</fieldset></form>
 
 <hr />
 

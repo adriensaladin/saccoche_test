@@ -102,7 +102,7 @@ if( ($action=='Voir_notes') && $devoir_id )
 		$texte_lien_avant = ($DB_ROW['item_lien']) ? '<a class="lien_ext" href="'.html($DB_ROW['item_lien']).'">' : '';
 		$texte_lien_apres = ($DB_ROW['item_lien']) ? '</a>' : '';
 		$score = calculer_score($tab_devoirs[$item_id],$DB_ROW['referentiel_calcul_methode'],$DB_ROW['referentiel_calcul_limite']);
-		$texte_demande_eval = ($_SESSION['DROIT_ELEVE_DEMANDES']==0) ? '' : ( ($DB_ROW['item_cart']) ? '<q class="demander_add" lang="ids_'.$DB_ROW['matiere_id'].'_'.$item_id.'_'.$score.'" title="Ajouter aux demandes d\'évaluations."></q>' : '<q class="demander_non" title="Demande interdite."></q>' ) ;
+		$texte_demande_eval = ($DB_ROW['item_cart']) ? '<q class="demander_add" lang="ids_'.$DB_ROW['matiere_id'].'_'.$item_id.'_'.$score.'" title="Ajouter aux demandes d\'évaluations."></q>' : '<q class="demander_non" title="Demande interdite."></q>' ;
 		$tab_affich[$item_id] = '<tr><td>'.html($item_ref).'</td><td>'.$texte_socle.$texte_lien_avant.html($DB_ROW['item_nom']).$texte_lien_apres.$texte_demande_eval.'</td><td class="hc">-</td>'.affich_score_html($score,$methode_tri='score',$pourcent='').'</tr>';
 	}
 	// récupérer les saisies et les ajouter

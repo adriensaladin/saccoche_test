@@ -32,10 +32,21 @@ $action         = (isset($_POST['action']))         ? $_POST['action'] : '';
 $matiere_id     = (isset($_POST['matiere_id']))     ? clean_entier($_POST['matiere_id'])     : 0;
 $niveau_id      = (isset($_POST['niveau_id']))      ? clean_entier($_POST['niveau_id'])      : 0;
 $structure_id   = (isset($_POST['structure_id']))   ? clean_entier($_POST['structure_id'])   : 0;
+$nb_demandes    = (isset($_POST['nb_demandes']))    ? clean_entier($_POST['nb_demandes'])    : -1;	// Changer le nb de demandes
 $partage        = (isset($_POST['partage']))        ? clean_texte($_POST['partage'])         : '';	// Changer l'état de partage
 $methode        = (isset($_POST['methode']))        ? clean_texte($_POST['methode'])         : '';	// Changer le mode de calcul
 $limite         = (isset($_POST['limite']))         ? clean_entier($_POST['limite'])         : -1;	// Changer le nb d'items pris en compte
 $referentiel_id = (isset($_POST['referentiel_id'])) ? clean_entier($_POST['referentiel_id']) : -1;	// Référence du référentiel importé (0 si vierge), ou référence du référentiel à consulter
+
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+// Modifier le nb de demandes autorisées pour une matière
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
+if( ($action=='NbDemandes') && $matiere_id && ($nb_demandes!=-1) && ($nb_demandes<10) )
+{
+	DB_STRUCTURE_modifier_matiere_nb_demandes($matiere_id,$nb_demandes);
+	exit('ok');
+}
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 // Afficher le formulaire des structures ayant partagées au moins un référentiel

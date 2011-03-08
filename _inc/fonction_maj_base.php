@@ -740,6 +740,27 @@ function maj_base($version_actuelle)
 	}
 
 	//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	//	MAJ 2011-01-06 => 2011-03-08
+	//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	if($version_actuelle=='2011-01-06')
+	{
+		$version_actuelle = '2011-03-08';
+		// changement des dénominations par défaut associées aux codes de couleur
+		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="Très insuffisant."  WHERE parametre_valeur="A complètement échoué."' );
+		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="Insuffisant."       WHERE parametre_valeur="A plutôt échoué."' );
+		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="Satisfaisant."      WHERE parametre_valeur="A plutôt réussi."' );
+		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="Très satisfaisant." WHERE parametre_valeur="A complètement réussi."' );
+		// ajout de la possibilité de personnaliser suivant les matières le nombre maximal de demandes autorisées
+		$valeur = (int)DB::queryCol(SACOCHE_STRUCTURE_BD_NAME , 'SELECT parametre_valeur FROM sacoche_parametre WHERE parametre_nom="droit_eleve_demandes" LIMIT 1' );
+		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'DELETE FROM sacoche_parametre WHERE parametre_nom="droit_eleve_demandes" LIMIT 1' );
+		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_matiere ADD matiere_nb_demandes TINYINT UNSIGNED NOT NULL DEFAULT "0" AFTER matiere_transversal ' );
+		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_matiere SET matiere_nb_demandes='.$valeur );
+		// mise à jour du champ "version_base" (obligatoire)
+		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_actuelle.'" WHERE parametre_nom="version_base" LIMIT 1' );
+	}
+
+	//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Log de l'action
 	//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

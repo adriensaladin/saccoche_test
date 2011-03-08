@@ -3,45 +3,48 @@
  * @version $Id$
  * @author Thomas Crespin <thomas.crespin@sesamath.net>
  * @copyright Thomas Crespin 2010
- * 
+ *
  * ****************************************************************************************************
  * SACoche <http://sacoche.sesamath.net> - Suivi d'Acquisitions de Compétences
  * © Thomas Crespin pour Sésamath <http://www.sesamath.net> - Tous droits réservés.
  * Logiciel placé sous la licence libre GPL 3 <http://www.rodage.org/gpl-3.0.fr.html>.
  * ****************************************************************************************************
- * 
+ *
  * Ce fichier est une partie de SACoche.
- * 
+ *
  * SACoche est un logiciel libre ; vous pouvez le redistribuer ou le modifier suivant les termes 
  * de la “GNU General Public License” telle que publiée par la Free Software Foundation :
  * soit la version 3 de cette licence, soit (à votre gré) toute version ultérieure.
- * 
+ *
  * SACoche est distribué dans l’espoir qu’il vous sera utile, mais SANS AUCUNE GARANTIE :
  * sans même la garantie implicite de COMMERCIALISABILITÉ ni d’ADÉQUATION À UN OBJECTIF PARTICULIER.
  * Consultez la Licence Générale Publique GNU pour plus de détails.
- * 
+ *
  * Vous devriez avoir reçu une copie de la Licence Générale Publique GNU avec SACoche ;
  * si ce n’est pas le cas, consultez : <http://www.gnu.org/licenses/>.
- * 
+ *
  */
 
 /**
- * DB_STRUCTURE_compter_devoirs
- * 
- * @param void
- * @return int
+ * DB_STRUCTURE_recuperer_demandes_autorisees_matiere
+ *
+ * @param int   $matiere_id
+ * @return array
  */
 
-function DB_STRUCTURE_compter_devoirs()
+function DB_STRUCTURE_recuperer_demandes_autorisees_matiere($matiere_id)
 {
-	$DB_SQL = 'SELECT COUNT(*) AS nombre FROM sacoche_devoir';
-	$DB_ROW = DB::queryRow(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , null);
-	return $DB_ROW['nombre'];
+	$DB_SQL = 'SELECT matiere_nb_demandes ';
+	$DB_SQL.= 'FROM sacoche_matiere ';
+	$DB_SQL.= 'WHERE matiere_id=:matiere_id ';
+	$DB_SQL.= 'LIMIT 1';
+	$DB_VAR = array(':matiere_id'=>$matiere_id);
+	return DB::queryCol(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
 /**
  * DB_STRUCTURE_recuperer_donnees_utilisateur
- * 
+ *
  * @param string $mode_connection   'normal' ou 'cas' ou ...
  * @param string $login
  * @return array
@@ -62,7 +65,7 @@ function DB_STRUCTURE_recuperer_donnees_utilisateur($mode_connection,$login)
 
 /**
  * DB_STRUCTURE_recuperer_dates_periode
- * 
+ *
  * @param int    $groupe_id    id du groupe
  * @param int    $periode_id   id de la période
  * @return array
@@ -80,7 +83,7 @@ function DB_STRUCTURE_recuperer_dates_periode($groupe_id,$periode_id)
 
 /**
  * DB_STRUCTURE_recuperer_amplitude_periodes
- * 
+ *
  * @param void
  * @return array  de la forme array('tout_debut'=>... , ['toute_fin']=>... , ['nb_jours_total']=>...)
  */
@@ -102,7 +105,7 @@ function DB_STRUCTURE_recuperer_amplitude_periodes()
 
 /**
  * DB_STRUCTURE_recuperer_niveau_groupes
- * 
+ *
  * @param string   $listing_groupe_id   id des groupes séparés par des virgules
  * @return array
  */
@@ -121,7 +124,7 @@ function DB_STRUCTURE_recuperer_niveau_groupes($listing_groupe_id)
  * Retourner l'arborescence d'un référentiel (tableau issu de la requête SQL)
  * + pour une matière donnée / pour toutes les matières d'un professeur donné
  * + pour un niveau donné / pour tous les niveaux concernés
- * 
+ *
  * @param int  $prof_id      passer 0 pour une recherche sur une matière plutôt que sur toutes les matières d'un prof
  * @param int  $matiere_id   passer 0 pour une recherche sur toutes les matières d'un prof plutôt que sur une matière
  * @param int  $niveau_id    passer 0 pour une recherche sur tous les niveaux
@@ -171,7 +174,7 @@ function DB_STRUCTURE_recuperer_arborescence($prof_id,$matiere_id,$niveau_id,$on
  * DB_STRUCTURE_recuperer_arborescence_selection
  * Retourner l'arborescence des items travaillés et des matières concernées par des élèves selectionnés, pour les items choisis !
  * Appelé par [ releve_items_selection.ajax.php ]
- * 
+ *
  * @param string $liste_eleve_id  id des élèves séparés par des virgules
  * @param string $liste_item_id   id des items séparés par des virgules
  * @return array
@@ -210,7 +213,7 @@ function DB_STRUCTURE_recuperer_arborescence_selection($liste_eleve_id,$liste_it
  * DB_STRUCTURE_recuperer_arborescence_bilan
  * Retourner l'arborescence des items travaillés par des élèves donnés (ou un seul), pour une matière donnée (ou toutes), durant une période donnée
  * Appelé par [ releve_items_matiere.ajax.php ] [ releve_items_multimatiere.ajax.php ]
- * 
+ *
  * @param string $liste_eleve_id   id des élèves séparés par des virgules ; il peut n'y avoir qu'un id, en particulier si c'est un élève qui demande un bilan
  * @param int    $matiere_id       id de la matière ; false pour toutes les matières
  * @param bool   $only_socle       1 pour ne retourner que les items reliés au socle, 0 sinon
@@ -269,7 +272,7 @@ function DB_STRUCTURE_recuperer_arborescence_bilan($liste_eleve_id,$matiere_id,$
  * DB_STRUCTURE_recuperer_arborescence_synthese
  * Retourner l'arborescence des items travaillés par des élèves selectionnés, durant la période choisie => pour la synthèse matière ou multi-matières
  * Appelé par [ releve_synthese_matiere.ajax.php ] [ releve_synthese_multimatiere.ajax.php ]
- * 
+ *
  * @param string $liste_eleve_id   id des élèves séparés par des virgules ; il peut n'y avoir qu'un id, en particulier si c'est un élève qui demande un bilan
  * @param int    $matiere_id       id de la matière ; false pour toutes les matières
  * @param int    $only_socle       1 pour ne retourner que les items reliés au socle, 0 sinon
@@ -350,7 +353,7 @@ function DB_STRUCTURE_recuperer_arborescence_synthese($liste_eleve_id,$matiere_i
 
 /**
  * DB_STRUCTURE_recuperer_arborescence_palier
- * 
+ *
  * @param string|bool $liste_palier_id   id des paliers séparés par des virgules ; false pour retourner tous les paliers
  * @return array
  */
@@ -369,7 +372,7 @@ function DB_STRUCTURE_recuperer_arborescence_palier($liste_palier_id=false)
 /**
  * DB_STRUCTURE_recuperer_piliers
  * Retourner les piliers d'un palier donné
- * 
+ *
  * @param int $palier_id   id du palier
  * @return array|string
  */
@@ -385,7 +388,7 @@ function DB_STRUCTURE_recuperer_piliers($palier_id)
 
 /**
  * DB_STRUCTURE_recuperer_arborescence_pilier
- * 
+ *
  * @param int   $pilier_id    id du pilier
  * @param int   $domaine_id   facultatif, pour restreindre à un domaine précis
  * @return array
@@ -405,7 +408,7 @@ function DB_STRUCTURE_recuperer_arborescence_pilier($pilier_id,$domaine_id=0)
 
 /**
  * DB_STRUCTURE_recuperer_referentiels_domaines
- * 
+ *
  * @param void
  * @return array
  */
@@ -419,7 +422,7 @@ function DB_STRUCTURE_recuperer_referentiels_domaines()
 
 /**
  * DB_STRUCTURE_recuperer_referentiels_themes
- * 
+ *
  * @param void
  * @return array
  */
@@ -434,7 +437,7 @@ function DB_STRUCTURE_recuperer_referentiels_themes()
 
 /**
  * DB_STRUCTURE_recuperer_associations_entrees_socle
- * 
+ *
  * @param void
  * @return array
  */
@@ -459,7 +462,7 @@ function DB_STRUCTURE_recuperer_associations_entrees_socle()
 
 /**
  * DB_STRUCTURE_recuperer_item_infos
- * 
+ *
  * @param int   $item_id
  * @return int
  */
@@ -481,7 +484,7 @@ function DB_STRUCTURE_recuperer_item_infos($item_id)
 
 /**
  * DB_version_base
- * 
+ *
  * @param void
  * @return string
  */
@@ -489,13 +492,12 @@ function DB_STRUCTURE_recuperer_item_infos($item_id)
 function DB_version_base()
 {
 	$DB_SQL = 'SELECT parametre_valeur FROM sacoche_parametre WHERE parametre_nom="version_base" LIMIT 1';
-	$DB_ROW = DB::queryRow(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , null);
-	return $DB_ROW['parametre_valeur'];
+	return DB::queryCol(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , null);
 }
 
 /**
  * DB_STRUCTURE_recuperer_statistiques
- * 
+ *
  * @param void
  * @return array($prof_nb,$prof_use,$eleve_nb,$eleve_use,$score_nb)
  */
@@ -523,7 +525,7 @@ function DB_STRUCTURE_recuperer_statistiques()
 /**
  * DB_STRUCTURE_recuperer_item_popularite
  * Calculer pour chaque item sa popularité, i.e. le nb de demandes pour les élèves concernés.
- * 
+ *
  * @param string $listing_demande_id   id des demandes séparés par des virgules
  * @param string $listing_user_id      id des élèves séparés par des virgules
  * @return array   [i]=>array('item_id','popularite')
@@ -541,7 +543,7 @@ function DB_STRUCTURE_recuperer_item_popularite($listing_demande_id,$listing_use
 /**
  * DB_STRUCTURE_recuperer_professeurs_eleve_matiere
  * Retourner une liste de professeurs attachés à un élève identifié et une matière donnée.
- * 
+ *
  * @param int $eleve_id
  * @param int $matiere_id
  * @return array
@@ -588,7 +590,7 @@ function DB_STRUCTURE_recuperer_professeurs_eleve_matiere($eleve_id,$matiere_id)
 
 /**
  * DB_STRUCTURE_lister_parametres (contenu de la table 'sacoche_parametre')
- * 
+ *
  * @param void|string $listing_param   nom des paramètres entourés de guillemets et séparés par des virgules (tout si rien de transmis)
  * @return array
  */
@@ -606,7 +608,7 @@ function DB_STRUCTURE_lister_parametres($listing_param=false)
 /**
  * DB_STRUCTURE_lister_result_eleve_items
  * Retourner les résultats pour un élève, pour des items donnés
- * 
+ *
  * @param int    $eleve_id
  * @param string $liste_item_id   id des items séparés par des virgules
  * @return array
@@ -625,7 +627,7 @@ function DB_STRUCTURE_lister_result_eleve_items($eleve_id,$liste_item_id)
 /**
  * DB_STRUCTURE_lister_date_last_eleves_items
  * Retourner, pour des élèves et les items donnés, la date de la dernière évaluation (pour vérifier qu'il faut bien prendre l'item en compte)
- * 
+ *
  * @param string $liste_eleve_id  id des élèves séparés par des virgules
  * @param string $liste_item_id   id des items séparés par des virgules
  * @return array
@@ -643,7 +645,7 @@ function DB_STRUCTURE_lister_date_last_eleves_items($liste_eleve_id,$liste_item_
 /**
  * DB_STRUCTURE_lister_result_eleves_matiere
  * Retourner les résultats pour des élèves donnés, pour des items donnés d'une matiere donnée, sur une période donnée
- * 
+ *
  * @param string $liste_eleve_id  id des élèves séparés par des virgules
  * @param string $liste_item_id   id des items séparés par des virgules
  * @param string $date_mysql_debut
@@ -672,7 +674,7 @@ function DB_STRUCTURE_lister_result_eleves_matiere($liste_eleve_id,$liste_item_i
 /**
  * DB_STRUCTURE_lister_result_eleves_matieres
  * Retourner les résultats pour des élèves donnés, pour des items donnés de plusieurs matieres, sur une période donnée
- * 
+ *
  * @param string $liste_eleve_id  id des élèves séparés par des virgules
  * @param string $liste_item_id   id des items séparés par des virgules
  * @param string $date_mysql_debut
@@ -702,7 +704,7 @@ function DB_STRUCTURE_lister_result_eleves_matieres($liste_eleve_id,$liste_item_
 /**
  * DB_STRUCTURE_lister_result_eleves_palier
  * Retourner les résultats pour des élèves donnés, pour des items du socle donnés d'un certain palier
- * 
+ *
  * @param string $liste_eleve_id  id des élèves séparés par des virgules
  * @param string $liste_item_id   id des items séparés par des virgules
  * @param string $date_mysql_debut
@@ -735,7 +737,7 @@ function DB_STRUCTURE_lister_result_eleves_palier($liste_eleve_id,$liste_item_id
 
 /**
  * DB_STRUCTURE_lister_matieres_partagees_SACoche
- * 
+ *
  * @param void
  * @return array
  */
@@ -751,7 +753,7 @@ function DB_STRUCTURE_lister_matieres_partagees_SACoche()
 
 /**
  * DB_STRUCTURE_lister_matieres_specifiques
- * 
+ *
  * @param void
  * @return array
  */
@@ -767,7 +769,7 @@ function DB_STRUCTURE_lister_matieres_specifiques()
 
 /**
  * DB_STRUCTURE_lister_matieres_etablissement
- * 
+ *
  * @param string $listing_matieres   id des matières communes choisies séparés par des virgules
  * @param bool   $with_transversal   avec ou non la matière tranversale
  * @param bool   $order_by_name      si false, prendre le champ matiere_ordre
@@ -787,7 +789,7 @@ function DB_STRUCTURE_lister_matieres_etablissement($listing_matieres,$with_tran
 
 /**
  * DB_STRUCTURE_lister_matieres_professeur_infos_referentiel
- * 
+ *
  * @param string $listing_matieres   id des matières de l'établissement séparées par des virgules
  * @param int $user_id
  * @return array|string
@@ -795,7 +797,7 @@ function DB_STRUCTURE_lister_matieres_etablissement($listing_matieres,$with_tran
 
 function DB_STRUCTURE_lister_matieres_professeur_infos_referentiel($listing_matieres,$user_id)
 {
-	$DB_SQL = 'SELECT matiere_id,matiere_nom,matiere_partage,jointure_coord ';
+	$DB_SQL = 'SELECT matiere_id,matiere_nom,matiere_partage,matiere_nb_demandes,jointure_coord ';
 	$DB_SQL.= 'FROM sacoche_jointure_user_matiere ';
 	$DB_SQL.= 'LEFT JOIN sacoche_matiere USING (matiere_id) ';
 	$DB_SQL.= 'WHERE (matiere_id IN('.$listing_matieres.') OR matiere_partage=:partage) AND user_id=:user_id '; // Test matiere car un prof peut être encore relié à des matières décochées par l'admin.
@@ -806,7 +808,7 @@ function DB_STRUCTURE_lister_matieres_professeur_infos_referentiel($listing_mati
 
 /**
  * DB_STRUCTURE_lister_paliers_SACoche
- * 
+ *
  * @param void
  * @return array
  */
@@ -821,7 +823,7 @@ function DB_STRUCTURE_lister_paliers_SACoche()
 /**
  * DB_STRUCTURE_lister_niveaux_SACoche
  * Sans les niveaux de type 'cycles'.
- * 
+ *
  * @param void
  * @return array
  */
@@ -836,7 +838,7 @@ function DB_STRUCTURE_lister_niveaux_SACoche()
 
 /**
  * DB_STRUCTURE_lister_cycles_SACoche
- * 
+ *
  * @param void
  * @return array
  */
@@ -851,7 +853,7 @@ function DB_STRUCTURE_lister_cycles_SACoche()
 
 /**
  * DB_STRUCTURE_lister_niveaux_etablissement
- * 
+ *
  * @param string      $listing_niveaux   id des niveaux séparés par des virgules ; ne peut pas être vide
  * @param string|bool $listing_cycles    id des cycles séparés par des virgules ; false pour ne pas retourner les cycles
  * @return array
@@ -868,7 +870,7 @@ function DB_STRUCTURE_lister_niveaux_etablissement($listing_niveaux,$listing_cyc
 
 /**
  * DB_STRUCTURE_lister_periodes
- * 
+ *
  * @param void
  * @return array
  */
@@ -882,7 +884,7 @@ function DB_STRUCTURE_lister_periodes()
 
 /**
  * DB_STRUCTURE_lister_groupes_sauf_classes
- * 
+ *
  * @param void
  * @return array
  */
@@ -898,7 +900,7 @@ function DB_STRUCTURE_lister_groupes_sauf_classes()
 
 /**
  * DB_STRUCTURE_lister_classes
- * 
+ *
  * @param void
  * @return array
  */
@@ -914,7 +916,7 @@ function DB_STRUCTURE_lister_classes()
 
 /**
  * DB_STRUCTURE_lister_groupes
- * 
+ *
  * @param void
  * @return array
  */
@@ -930,7 +932,7 @@ function DB_STRUCTURE_lister_groupes()
 
 /**
  * DB_STRUCTURE_lister_classes_avec_niveaux
- * 
+ *
  * @param void
  * @return array
  */
@@ -947,7 +949,7 @@ function DB_STRUCTURE_lister_classes_avec_niveaux()
 
 /**
  * DB_STRUCTURE_lister_groupes_avec_niveaux
- * 
+ *
  * @param void
  * @return array
  */
@@ -1001,7 +1003,7 @@ function DB_STRUCTURE_lister_classes_groupes_professeur($prof_id)
 
 /**
  * DB_STRUCTURE_lister_groupes_besoins
- * 
+ *
  * @param int    $prof_id
  * @return array
  */
@@ -1018,7 +1020,7 @@ function DB_STRUCTURE_lister_groupes_besoins($prof_id)
 
 /**
  * DB_STRUCTURE_lister_classes_et_groupes_avec_niveaux
- * 
+ *
  * @param void
  * @return array
  */
@@ -1035,7 +1037,7 @@ function DB_STRUCTURE_lister_classes_et_groupes_avec_niveaux()
 
 /**
  * DB_STRUCTURE_lister_classes_avec_professeurs
- * 
+ *
  * @param void
  * @return array
  */
@@ -1054,7 +1056,7 @@ function DB_STRUCTURE_lister_classes_avec_professeurs()
 
 /**
  * DB_STRUCTURE_lister_users_cibles
- * 
+ *
  * @param string   $listing_user_id   id des utilisateurs séparés par des virgules
  * @param bool     $info_classe       pour les élèves, récupérer la classe associée
  * @return array
@@ -1076,7 +1078,7 @@ function DB_STRUCTURE_lister_users_cibles($listing_user_id,$info_classe=false)
 
 /**
  * DB_STRUCTURE_lister_eleves_cibles
- * 
+ *
  * @param string   $listing_eleve_id   id des élèves séparés par des virgules
  * @return array|string                le tableau est de la forme [i] => array('eleve_id'=>...,'eleve_nom'=>...,'eleve_prenom'=>...,'eleve_id_gepi'=>...);
  */
@@ -1093,7 +1095,7 @@ function DB_STRUCTURE_lister_eleves_cibles($listing_eleve_id)
 
 /**
  * DB_STRUCTURE_lister_eleves_classes
- * 
+ *
  * @param string   $listing_classe_id   id des classes séparés par des virgules
  * @return array
  */
@@ -1109,7 +1111,7 @@ function DB_STRUCTURE_lister_eleves_classes($listing_classe_id)
 
 /**
  * DB_STRUCTURE_lister_eleves_groupes
- * 
+ *
  * @param string   $listing_groupe_id   id des groupes séparés par des virgules
  * @return array
  */
@@ -1126,7 +1128,7 @@ function DB_STRUCTURE_lister_eleves_groupes($listing_groupe_id)
 
 /**
  * DB_STRUCTURE_lister_eleves_tri_statut_classe
- * 
+ *
  * @param void
  * @return array
  */
@@ -1144,7 +1146,7 @@ function DB_STRUCTURE_lister_eleves_tri_statut_classe()
 
 /**
  * DB_STRUCTURE_lister_professeurs_et_directeurs
- * 
+ *
  * @param void
  * @return array
  */
@@ -1160,7 +1162,7 @@ function DB_STRUCTURE_lister_professeurs_et_directeurs()
 
 /**
  * DB_STRUCTURE_lister_professeurs_et_directeurs_tri_statut
- * 
+ *
  * @param void
  * @return array
  */
@@ -1176,7 +1178,7 @@ function DB_STRUCTURE_lister_professeurs_et_directeurs_tri_statut()
 
 /**
  * DB_STRUCTURE_lister_identite_coordonnateurs_par_matiere
- * 
+ *
  * @param string   $listing_matieres_id   id des matières séparés par des virgules
  * @return array   matiere_id et coord_liste avec identités séparées par "]["
  */
@@ -1194,7 +1196,7 @@ function DB_STRUCTURE_lister_identite_coordonnateurs_par_matiere($listing_matier
 
 /**
  * DB_STRUCTURE_lister_jointure_professeurs_matieres
- * 
+ *
  * @param void
  * @return array
  */
@@ -1210,7 +1212,7 @@ function DB_STRUCTURE_lister_jointure_professeurs_matieres()
 
 /**
  * DB_STRUCTURE_lister_jointure_professeurs_coordonnateurs
- * 
+ *
  * @param void
  * @return array
  */
@@ -1226,7 +1228,7 @@ function DB_STRUCTURE_lister_jointure_professeurs_coordonnateurs()
 
 /**
  * DB_STRUCTURE_lister_jointure_professeurs_principaux
- * 
+ *
  * @param void
  * @return array
  */
@@ -1242,7 +1244,7 @@ function DB_STRUCTURE_lister_jointure_professeurs_principaux()
 
 /**
  * DB_STRUCTURE_lister_jointure_groupe_periode
- * 
+ *
  * @param string   $listing_groupe_id   id des groupes séparés par des virgules
  * @return array
  */
@@ -1257,7 +1259,7 @@ function DB_STRUCTURE_lister_jointure_groupe_periode($listing_groupe_id)
 /**
  * DB_STRUCTURE_lister_jointure_user_entree
  * Au choix à partir : d'une liste d'entrées / d'un domaine / d'un pilier / d'un palier
- * 
+ *
  * @param string   $listing_eleves   id des élèves séparés par des virgules
  * @param string   $listing_entrees  id des entrées séparées par des virgules
  * @param int      $domaine_id       id d'un domaine
@@ -1311,7 +1313,7 @@ function DB_STRUCTURE_lister_jointure_user_entree($listing_eleves,$listing_entre
 /**
  * DB_STRUCTURE_lister_jointure_user_pilier
  * Au choix à partir : d'une liste de piliers / d'un palier
- * 
+ *
  * @param string   $listing_eleves   id des élèves séparés par des virgules
  * @param string   $listing_piliers  id des piliers séparées par des virgules
  * @param int      $palier_id        id d'un palier
@@ -1341,7 +1343,7 @@ function DB_STRUCTURE_lister_jointure_user_pilier($listing_eleves,$listing_pilie
 
 /**
  * DB_STRUCTURE_lister_users
- * 
+ *
  * @param string|array   $profil        'eleve' / 'professeur' / 'directeur' / 'administrateur' / ou par exemple array('eleve','professeur','directeur')
  * @param bool           $only_actifs   true pour statut actif uniquement / false pour tout le monde qq soit le statut
  * @param bool           $with_classe   true pour récupérer le nom de la classe de l'élève / false sinon
@@ -1390,7 +1392,7 @@ function DB_STRUCTURE_lister_users($profil,$only_actifs,$with_classe)
 
 /**
  * DB_STRUCTURE_lister_users_avec_groupe
- * 
+ *
  * @param bool   $profil_eleve  true pour eleve / false pour professeur + directeur
  * @param int    $prof_id       0 pour les élèves des groupes type "groupe" , l'id du prof pour les élèves des groupes type "besoin" d'un prof
  * @param bool   $only_actifs   true pour statut actif uniquement / false pour tout le monde qq soit le statut
@@ -1422,7 +1424,7 @@ function DB_STRUCTURE_lister_users_avec_groupe($profil_eleve,$prof_id,$only_acti
 
 /**
  * DB_STRUCTURE_lister_professeurs_avec_classes
- * 
+ *
  * @param void
  * @return array
  */
@@ -1439,7 +1441,7 @@ function DB_STRUCTURE_lister_professeurs_avec_classes()
 
 /**
  * DB_STRUCTURE_lister_eleves_actifs_regroupement
- * 
+ *
  * @param string $groupe_type   valeur parmi [sdf] [all] [niveau] [classe] [groupe] [besoin] 
  * @param int    $groupe_id     id du niveau ou de la classe ou du groupe
  * @return array
@@ -1481,7 +1483,7 @@ function DB_STRUCTURE_lister_eleves_actifs_regroupement($groupe_type,$groupe_id)
 
 /**
  * DB_STRUCTURE_lister_demandes_prof
- * 
+ *
  * @param int    $matiere_id        id de la matière du prof
  * @param int    $listing_user_id   id des élèves du prof séparés par des virgules
  * @return array
@@ -1506,7 +1508,7 @@ function DB_STRUCTURE_lister_demandes_prof($matiere_id,$listing_user_id)
 
 /**
  * DB_STRUCTURE_lister_demandes_eleve
- * 
+ *
  * @param int    $user_id   id de l'élève
  * @return array
  */
@@ -1530,7 +1532,7 @@ function DB_STRUCTURE_lister_demandes_eleve($user_id)
 
 /**
  * DB_STRUCTURE_lister_devoirs_prof
- * 
+ *
  * @param int    $prof_id
  * @param int    $groupe_id        id du groupe ou de la classe pour un devoir sur une classe ou un groupe ; 0 pour un devoir sur une sélection d'élèves
  * @param string $date_debut_mysql
@@ -1566,7 +1568,7 @@ function DB_STRUCTURE_lister_devoirs_prof($prof_id,$groupe_id,$date_debut_mysql,
 
 /**
  * DB_STRUCTURE_lister_devoirs_eleve
- * 
+ *
  * @param int    $eleve_id
  * @param int    $classe_id   id de la classe de l'élève ; en effet sacoche_jointure_user_groupe ne contient que les liens aux groupes, donc il faut tester aussi la classe
  * @param string $date_debut_mysql
@@ -1593,7 +1595,7 @@ function DB_STRUCTURE_lister_devoirs_eleve($eleve_id,$classe_id,$date_debut_mysq
  * DB_STRUCTURE_lister_items_devoir
  * Retourner les items d'un devoir et les infos associées (tableau issu de la requête SQL)
  * Dans le cas où $info_pour_eleve=TRUE, en plus d'informations supplémentaires retournées, les clefs du tableau sont les item_id car on en a besoin.
- * 
+ *
  * @param int  $devoir_id
  * @param bool $info_pour_eleve   facultatif ; pour un élève, qui liste ses notes d'une éval, il faut en particulier pouvoir ensuite lui calculer son score
  * @return array
@@ -1622,7 +1624,7 @@ function DB_STRUCTURE_lister_items_devoir($devoir_id,$info_pour_eleve=false)
 
 /**
  * DB_STRUCTURE_lister_saisies_devoir
- * 
+ *
  * @param int   $devoir_id
  * @param bool  $with_REQ   // Avec ou sans les repères de demandes d'évaluations
  * @return array
@@ -1644,7 +1646,7 @@ function DB_STRUCTURE_lister_saisies_devoir($devoir_id,$with_REQ)
 
 /**
  * DB_STRUCTURE_lister_saisies_devoir_eleve
- * 
+ *
  * @param int   $devoir_id
  * @param int   $eleve_id
  * @return array
@@ -1660,7 +1662,7 @@ function DB_STRUCTURE_lister_saisies_devoir_eleve($devoir_id,$eleve_id)
 
 /**
  * DB_STRUCTURE_lister_referentiels
- * 
+ *
  * @param void
  * @return array
  */
@@ -1679,7 +1681,7 @@ function DB_STRUCTURE_lister_referentiels()
 
 /**
  * DB_STRUCTURE_lister_referentiels_infos_details_matieres_niveaux
- * 
+ *
  * @param string   $listing_matieres_id   id des matières séparés par des virgules
  * @param string   $listing_niveaux_id    id des niveaux séparés par des virgules ; ne peut pas être vide
  * @param string   $listing_cycles_id     id des cycles séparés par des virgules ; false pour ne pas retourner les cycles
@@ -1701,7 +1703,7 @@ function DB_STRUCTURE_lister_referentiels_infos_details_matieres_niveaux($listin
 
 /**
  * DB_STRUCTURE_lister_referentiels_infos_groupement_matieres
- * 
+ *
  * @param string   $listing_matieres_id   id des matières séparés par des virgules
  * @param string   $listing_niveaux_id    id des niveaux séparés par des virgules ; ne peut pas être vide
  * @param string   $listing_cycles_id     id des cycles séparés par des virgules ; false pour ne pas retourner les cycles
@@ -1723,26 +1725,39 @@ function DB_STRUCTURE_lister_referentiels_infos_groupement_matieres($listing_mat
 }
 
 /**
- * DB_STRUCTURE_compter_demandes_eleve_matiere
- * 
+ * DB_STRUCTURE_compter_devoirs
+ *
+ * @param void
+ * @return int
+ */
+
+function DB_STRUCTURE_compter_devoirs()
+{
+	$DB_SQL = 'SELECT COUNT(*) AS nombre FROM sacoche_devoir';
+	return DB::queryCol(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , null);
+}
+
+/**
+ * DB_STRUCTURE_compter_demandes_formulees_eleve_matiere
+ *
  * @param int   $eleve_id
  * @param int   $matiere_id
  * @return int
  */
 
-function DB_STRUCTURE_compter_demandes_eleve_matiere($eleve_id,$matiere_id)
+function DB_STRUCTURE_compter_demandes_formulees_eleve_matiere($eleve_id,$matiere_id)
 {
-	$DB_SQL = 'SELECT demande_id FROM sacoche_demande ';
+	$DB_SQL = 'SELECT COUNT(*) AS nombre ';
+	$DB_SQL.= 'FROM sacoche_demande ';
 	$DB_SQL.= 'WHERE user_id=:eleve_id AND matiere_id=:matiere_id ';
-	$DB_SQL.= 'LIMIT '.$_SESSION['DROIT_ELEVE_DEMANDES'];
+	$DB_SQL.= 'GROUP BY matiere_id';
 	$DB_VAR = array(':eleve_id'=>$eleve_id,':matiere_id'=>$matiere_id);
-	$DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-	return count($DB_TAB);
+	return DB::queryCol(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
 /**
  * DB_STRUCTURE_compter_eleves_suivant_statut
- * 
+ *
  * @param void
  * @return array   [0]=>nb actifs , [1]=>nb inactifs
  */
@@ -1761,7 +1776,7 @@ function DB_STRUCTURE_compter_eleves_suivant_statut()
 
 /**
  * DB_STRUCTURE_compter_professeurs_directeurs_suivant_statut
- * 
+ *
  * @param void
  * @return array   [0]=>nb actifs , [1]=>nb inactifs
  */
@@ -1780,7 +1795,7 @@ function DB_STRUCTURE_compter_professeurs_directeurs_suivant_statut()
 
 /**
  * DB_STRUCTURE_compter_modes_synthese_inconnu
- * 
+ *
  * @param void
  * @return int
  */
@@ -1791,13 +1806,12 @@ function DB_STRUCTURE_compter_modes_synthese_inconnu()
 	$DB_SQL.= 'LEFT JOIN sacoche_matiere USING (matiere_id) ';
 	$DB_SQL.= 'WHERE referentiel_mode_synthese=:mode_inconnu AND (matiere_id IN('.$_SESSION['MATIERES'].') OR matiere_partage=:partage) '; // Test matiere pour éviter des matières décochées par l'admin.
 	$DB_VAR = array(':mode_inconnu'=>'inconnu',':partage'=>0);
-	$DB_ROW = DB::queryRow(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-	return $DB_ROW['nombre'] ;
+	return DB::queryCol(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
 /**
  * DB_STRUCTURE_tester_referentiel
- * 
+ *
  * @param int    $matiere_id
  * @param int    $niveau_id
  * @return int
@@ -1815,7 +1829,7 @@ function DB_STRUCTURE_tester_referentiel($matiere_id,$niveau_id)
 
 /**
  * DB_STRUCTURE_tester_prof_principal
- * 
+ *
  * @param int $user_id
  * @return int
  */
@@ -1831,7 +1845,7 @@ function DB_STRUCTURE_tester_prof_principal($user_id)
 
 /**
  * DB_STRUCTURE_tester_demande_existante
- * 
+ *
  * @param int    $eleve_id
  * @param int    $matiere_id
  * @param int    $item_id
@@ -1850,7 +1864,7 @@ function DB_STRUCTURE_tester_demande_existante($eleve_id,$matiere_id,$item_id)
 
 /**
  * DB_STRUCTURE_tester_matiere_reference
- * 
+ *
  * @param string $matiere_ref
  * @param int    $matiere_id    inutile si recherche pour un ajout, mais id à éviter si recherche pour une modification
  * @return int
@@ -1873,7 +1887,7 @@ function DB_STRUCTURE_tester_matiere_reference($matiere_ref,$matiere_id=false)
 
 /**
  * DB_STRUCTURE_tester_classe_reference
- * 
+ *
  * @param string $groupe_ref
  * @param int    $groupe_id    inutile si recherche pour un ajout, mais id à éviter si recherche pour une modification
  * @return int
@@ -1896,7 +1910,7 @@ function DB_STRUCTURE_tester_classe_reference($groupe_ref,$groupe_id=false)
 
 /**
  * DB_STRUCTURE_tester_groupe_nom
- * 
+ *
  * @param string $groupe_nom
  * @param int    $groupe_id    inutile si recherche pour un ajout, mais id à éviter si recherche pour une modification
  * @return int
@@ -1919,7 +1933,7 @@ function DB_STRUCTURE_tester_groupe_nom($groupe_nom,$groupe_id=false)
 
 /**
  * DB_STRUCTURE_tester_periode_nom
- * 
+ *
  * @param string $periode_nom
  * @param int    $periode_id    inutile si recherche pour un ajout, mais id à éviter si recherche pour une modification
  * @return int
@@ -1942,7 +1956,7 @@ function DB_STRUCTURE_tester_periode_nom($periode_nom,$periode_id=false)
 
 /**
  * DB_STRUCTURE_tester_utilisateur_idENT (parmi tout le personnel de l'établissement, sauf éventuellement l'utilisateur concerné)
- * 
+ *
  * @param string $user_id_ent
  * @param int    $user_id       inutile si recherche pour un ajout, mais id à éviter si recherche pour une modification
  * @return int
@@ -1965,7 +1979,7 @@ function DB_STRUCTURE_tester_utilisateur_idENT($user_id_ent,$user_id=false)
 
 /**
  * DB_STRUCTURE_tester_utilisateur_idGepi (parmi tout le personnel de l'établissement, sauf éventuellement l'utilisateur concerné)
- * 
+ *
  * @param string $user_id_gepi
  * @param int    $user_id       inutile si recherche pour un ajout, mais id à éviter si recherche pour une modification
  * @return int
@@ -1988,7 +2002,7 @@ function DB_STRUCTURE_tester_utilisateur_idGepi($user_id_gepi,$user_id=false)
 
 /**
  * DB_STRUCTURE_tester_utilisateur_numSconet (parmi tout le personnel de l'établissement de même profil, sauf éventuellement l'utilisateur concerné)
- * 
+ *
  * @param int    $user_num_sconet
  * @param string $user_profil
  * @param int    $user_id       inutile si recherche pour un ajout, mais id à éviter si recherche pour une modification
@@ -2012,7 +2026,7 @@ function DB_STRUCTURE_tester_utilisateur_numSconet($user_num_sconet,$user_profil
 
 /**
  * DB_STRUCTURE_tester_utilisateur_reference (parmi tout le personnel de l'établissement de même profil, sauf éventuellement l'utilisateur concerné)
- * 
+ *
  * @param string $user_reference
  * @param string $user_profil
  * @param int    $user_id       inutile si recherche pour un ajout, mais id à éviter si recherche pour une modification
@@ -2036,7 +2050,7 @@ function DB_STRUCTURE_tester_utilisateur_reference($user_reference,$user_profil,
 
 /**
  * DB_STRUCTURE_tester_login (parmi tout le personnel de l'établissement)
- * 
+ *
  * @param string $user_login
  * @param int    $user_id     inutile si recherche pour un ajout, mais id à éviter si recherche pour une modification
  * @return int
@@ -2059,7 +2073,7 @@ function DB_STRUCTURE_tester_login($user_login,$user_id=false)
 
 /**
  * DB_STRUCTURE_rechercher_login_disponible (parmi tout le personnel de l'établissement)
- * 
+ *
  * @param string $login
  * @return string
  */
@@ -2089,7 +2103,7 @@ function DB_STRUCTURE_rechercher_login_disponible($login)
 
 /**
  * DB_STRUCTURE_ajouter_matiere_specifique
- * 
+ *
  * @param string $matiere_ref
  * @param string $matiere_nom
  * @return int
@@ -2097,16 +2111,16 @@ function DB_STRUCTURE_rechercher_login_disponible($login)
 
 function DB_STRUCTURE_ajouter_matiere_specifique($matiere_ref,$matiere_nom)
 {
-	$DB_SQL = 'INSERT INTO sacoche_matiere(matiere_partage,matiere_transversal,matiere_ref,matiere_nom) ';
-	$DB_SQL.= 'VALUES(:matiere_partage,:matiere_transversal,:matiere_ref,:matiere_nom)';
-	$DB_VAR = array(':matiere_partage'=>0,':matiere_transversal'=>0,':matiere_ref'=>$matiere_ref,':matiere_nom'=>$matiere_nom);
+	$DB_SQL = 'INSERT INTO sacoche_matiere(matiere_partage,matiere_transversal,matiere_nb_demandes,matiere_ref,matiere_nom) ';
+	$DB_SQL.= 'VALUES(:matiere_partage,:matiere_transversal,:matiere_nb_demandes,:matiere_ref,:matiere_nom)';
+	$DB_VAR = array(':matiere_partage'=>0,':matiere_transversal'=>0,':matiere_nb_demandes'=>0,':matiere_ref'=>$matiere_ref,':matiere_nom'=>$matiere_nom);
 	DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 	return DB::getLastOid(SACOCHE_STRUCTURE_BD_NAME);
 }
 
 /**
  * DB_STRUCTURE_ajouter_groupe
- * 
+ *
  * @param string $groupe_type      'classe' ou 'groupe' ou 'besoin' ou 'eval'
  * @param int    $groupe_prof_id   id du prof dans le cas d'un groupe de besoin ou pour une évaluation (0 sinon)
  * @param string $groupe_ref
@@ -2126,7 +2140,7 @@ function DB_STRUCTURE_ajouter_groupe($groupe_type,$groupe_prof_id,$groupe_ref,$g
 
 /**
  * DB_STRUCTURE_ajouter_periode
- * 
+ *
  * @param int    $periode_ordre
  * @param string $periode_nom
  * @return int
@@ -2143,7 +2157,7 @@ function DB_STRUCTURE_ajouter_periode($periode_ordre,$periode_nom)
 
 /**
  * DB_STRUCTURE_ajouter_utilisateur
- * 
+ *
  * @param string $user_num_sconet
  * @param string $user_reference
  * @param string $user_profil
@@ -2178,7 +2192,7 @@ function DB_STRUCTURE_ajouter_utilisateur($user_num_sconet,$user_reference,$user
 
 /**
  * DB_STRUCTURE_ajouter_devoir
- * 
+ *
  * @param int    $prof_id
  * @param int    $groupe_id
  * @param string $date_mysql
@@ -2198,7 +2212,7 @@ function DB_STRUCTURE_ajouter_devoir($prof_id,$groupe_id,$date_mysql,$info)
 /**
  * DB_STRUCTURE_ajouter_saisie
  * Si la note est "REQ" (pour marquer une demande d'évaluation), on utilise un REPLACE au lieu d'un INSERT car une saisie peut déjà exister (si le prof ajoute les demandes à un devoir existant).
- * 
+ *
  * @param int    $prof_id
  * @param int    $eleve_id
  * @param int    $devoir_id
@@ -2220,7 +2234,7 @@ function DB_STRUCTURE_ajouter_saisie($prof_id,$eleve_id,$devoir_id,$item_id,$ite
 
 /**
  * DB_STRUCTURE_ajouter_validation
- * 
+ *
  * @param string $type   'entree' ou 'pilier'
  * @param int    $user_id
  * @param int    $element_id
@@ -2240,7 +2254,7 @@ function DB_STRUCTURE_ajouter_validation($type,$user_id,$element_id,$validation_
 
 /**
  * DB_STRUCTURE_ajouter_demande
- * 
+ *
  * @param int      $eleve_id
  * @param int      $matiere_id
  * @param int      $item_id
@@ -2261,7 +2275,7 @@ function DB_STRUCTURE_ajouter_demande($eleve_id,$matiere_id,$item_id,$demande_da
 
 /**
  * DB_STRUCTURE_ajouter_referentiel
- * 
+ *
  * @param int    $matiere_id
  * @param int    $niveau_id
  * @param string $partage_etat
@@ -2280,7 +2294,7 @@ function DB_STRUCTURE_ajouter_referentiel($matiere_id,$niveau_id,$partage_etat)
  * DB_STRUCTURE_importer_arborescence_from_XML
  * Importer dans la base l'arborescence d'un référentiel à partir d'un XML récupéré sur le serveur communautaire.
  * Remarque : les ordres des domaines / thèmes / items ne sont pas dans le XML car il sont générés par leur position dans l'arborescence
- * 
+ *
  * @param string $arbreXML
  * @param int    $matiere_id
  * @param int    $niveau_id
@@ -2340,7 +2354,7 @@ function DB_STRUCTURE_importer_arborescence_from_XML($arbreXML,$matiere_id,$nive
 
 /**
  * DB_STRUCTURE_modifier_parametres
- * 
+ *
  * @param array tableau $parametre_nom => $parametre_valeur des paramètres à modfifier
  * @return void
  */
@@ -2370,7 +2384,7 @@ function DB_STRUCTURE_modifier_parametres($tab_parametres)
 
 /**
  * DB_STRUCTURE_recopier_identifiants (exemples : id_gepi=id_ent | id_gepi=login | id_ent=id_gepi | id_ent=login )
- * 
+ *
  * @param string $champ_depart
  * @param string $champ_arrive
  * @return void
@@ -2386,7 +2400,7 @@ function DB_STRUCTURE_recopier_identifiants($champ_depart,$champ_arrive)
 
 /**
  * DB_STRUCTURE_modifier_utilisateur (on ne touche pas à 'user_profil' ni à 'connexion_date')
- * 
+ *
  * @param int     $user_id
  * @param array   array(':num_sconet'=>$val, ':reference'=>$val , ':nom'=>$val , ':prenom'=>$val , ':login'=>$val , ':password'=>$val , ':statut'=>$val , ':daltonisme'=>$val , ':classe'=>$val , ':id_ent'=>$val , ':id_gepi'=>$val );
  * @return void
@@ -2422,7 +2436,7 @@ function DB_STRUCTURE_modifier_utilisateur($user_id,$DB_VAR)
 
 /**
  * DB_STRUCTURE_modifier_date
- * 
+ *
  * @param string  $champ   'connexion' ou 'tentative'
  * @param int     $user_id
  * @return void
@@ -2440,7 +2454,7 @@ function DB_STRUCTURE_modifier_date($champ,$user_id)
 
 /**
  * DB_STRUCTURE_modifier_referentiel (juste ses paramètres, pas le contenu de son arborescence)
- * 
+ *
  * @param int     $matiere_id
  * @param int     $niveau_id
  * @param array   array(':partage_etat'=>$val, ':partage_date'=>$val , ':calcul_methode'=>$val , ':calcul_limite'=>$val , ':mode_synthese'=>$val );
@@ -2473,7 +2487,7 @@ function DB_STRUCTURE_modifier_referentiel($matiere_id,$niveau_id,$DB_VAR)
 /**
  * DB_STRUCTURE_modifier_mdp_utilisateur
  * Remarque : cette fonction n'est pas appelée pour un professeur ou un élève si le mode de connexion est SSO
- * 
+ *
  * @param int    $user_id
  * @param string $password_ancien
  * @param string $password_nouveau
@@ -2506,7 +2520,7 @@ function DB_STRUCTURE_modifier_mdp_utilisateur($user_id,$password_ancien,$passwo
 
 /**
  * DB_STRUCTURE_modifier_matiere_specifique
- * 
+ *
  * @param int    $matiere_id
  * @param string $matiere_ref
  * @param string $matiere_nom
@@ -2525,7 +2539,7 @@ function DB_STRUCTURE_modifier_matiere_specifique($matiere_id,$matiere_ref,$mati
 
 /**
  * DB_STRUCTURE_modifier_matiere_ordre
- * 
+ *
  * @param int   $matiere_id
  * @param int   $matiere_ordre
  * @return void
@@ -2542,8 +2556,26 @@ function DB_STRUCTURE_modifier_matiere_ordre($matiere_id,$matiere_ordre)
 }
 
 /**
+ * DB_STRUCTURE_modifier_matiere_nb_demandes
+ *
+ * @param int   $matiere_id
+ * @param int   $matiere_nb_demandes
+ * @return void
+ */
+
+function DB_STRUCTURE_modifier_matiere_nb_demandes($matiere_id,$matiere_nb_demandes)
+{
+	$DB_SQL = 'UPDATE sacoche_matiere ';
+	$DB_SQL.= 'SET matiere_nb_demandes=:matiere_nb_demandes ';
+	$DB_SQL.= 'WHERE matiere_id=:matiere_id ';
+	$DB_SQL.= 'LIMIT 1';
+	$DB_VAR = array(':matiere_id'=>$matiere_id,':matiere_nb_demandes'=>$matiere_nb_demandes);
+	DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+}
+
+/**
  * DB_STRUCTURE_modifier_groupe ; on ne touche pas à 'groupe_type' ni à 'groupe_prof_id'
- * 
+ *
  * @param int    $groupe_id
  * @param string $groupe_ref
  * @param string $groupe_nom
@@ -2563,7 +2595,7 @@ function DB_STRUCTURE_modifier_groupe($groupe_id,$groupe_ref,$groupe_nom,$niveau
 
 /**
  * DB_STRUCTURE_modifier_ordre_item
- * 
+ *
  * @param int    $devoir_id
  * @param array  $tab_items   tableau des id des items
  * @return void
@@ -2585,7 +2617,7 @@ function DB_STRUCTURE_modifier_ordre_item($devoir_id,$tab_items)
 
 /**
  * DB_STRUCTURE_modifier_saisie
- * 
+ *
  * @param int    $eleve_id
  * @param int    $devoir_id
  * @param int    $item_id
@@ -2605,7 +2637,7 @@ function DB_STRUCTURE_modifier_saisie($eleve_id,$devoir_id,$item_id,$saisie_note
 
 /**
  * DB_STRUCTURE_modifier_validation
- * 
+ *
  * @param string $type   'entree' ou 'pilier'
  * @param int    $user_id
  * @param int    $element_id
@@ -2626,7 +2658,7 @@ function DB_STRUCTURE_modifier_validation($type,$user_id,$element_id,$validation
 
 /**
  * DB_STRUCTURE_modifier_devoir
- * 
+ *
  * @param int    $devoir_id
  * @param int    $prof_id
  * @param string $date_mysql
@@ -2661,7 +2693,7 @@ function DB_STRUCTURE_modifier_devoir($devoir_id,$prof_id,$date_mysql,$info,$tab
 
 /**
  * DB_STRUCTURE_modifier_liaison_user_groupe
- * 
+ *
  * @param int    $user_id
  * @param string $user_profil   'eleve' ou 'professeur'
  * @param int    $groupe_id
@@ -2708,7 +2740,7 @@ function DB_STRUCTURE_modifier_liaison_user_groupe($user_id,$user_profil,$groupe
 
 /**
  * DB_STRUCTURE_modifier_liaison_professeur_coordonnateur
- * 
+ *
  * @param int    $user_id
  * @param int    $matiere_id
  * @param bool   $etat          'true' pour ajouter/modifier une liaison ; 'false' pour retirer une liaison
@@ -2727,7 +2759,7 @@ function DB_STRUCTURE_modifier_liaison_professeur_coordonnateur($user_id,$matier
 
 /**
  * DB_STRUCTURE_modifier_liaison_professeur_principal
- * 
+ *
  * @param int    $user_id
  * @param int    $groupe_id
  * @param bool   $etat          'true' pour ajouter/modifier une liaison ; 'false' pour retirer une liaison
@@ -2746,7 +2778,7 @@ function DB_STRUCTURE_modifier_liaison_professeur_principal($user_id,$groupe_id,
 
 /**
  * DB_STRUCTURE_modifier_liaison_professeur_matiere
- * 
+ *
  * @param int    $user_id
  * @param int    $matiere_id
  * @param bool   $etat          'true' pour ajouter/modifier une liaison ; 'false' pour retirer une liaison
@@ -2783,7 +2815,7 @@ function DB_STRUCTURE_modifier_liaison_professeur_matiere($user_id,$matiere_id,$
 
 /**
  * DB_STRUCTURE_modifier_liaison_devoir_item
- * 
+ *
  * @param int    $devoir_id
  * @param array  $tab_items   tableau des id des items
  * @param string $mode        {creer;dupliquer} => insertion dans un nouveau devoir || {substituer} => maj avec delete / insert || {ajouter} => maj avec insert uniquement
@@ -2866,7 +2898,7 @@ function DB_STRUCTURE_modifier_liaison_devoir_item($devoir_id,$tab_items,$mode,$
 /**
  * DB_STRUCTURE_modifier_liaison_devoir_user
  * Uniquement pour des évaluations de type 'eval' ; pour les autres, c'est géré par DB_STRUCTURE_modifier_liaison_user_groupe()
- * 
+ *
  * @param int    $groupe_id
  * @param array  $tab_eleves   tableau des id des élèves
  * @param string $mode         'creer' pour un insert dans un nouveau devoir || 'substituer' pour une maj delete / insert || 'ajouter' pour maj insert uniquement
@@ -2921,7 +2953,7 @@ function DB_STRUCTURE_modifier_liaison_devoir_user($groupe_id,$tab_eleves,$mode)
 
 /**
  * DB_STRUCTURE_modifier_liaison_groupe_periode
- * 
+ *
  * @param int|true   $groupe_id          id du groupe ou 'true' pour supprimer la jointure sur tous les groupes
  * @param int|true   $periode_id         id de la période ou 'true' pour supprimer la jointure sur toutes les périodes
  * @param bool       $etat               'true' pour ajouter/modifier une liaison ; 'false' pour retirer une liaison
@@ -2961,7 +2993,7 @@ function DB_STRUCTURE_modifier_liaison_groupe_periode($groupe_id,$periode_id,$et
 
 /**
  * DB_STRUCTURE_modifier_periode
- * 
+ *
  * @param int    $periode_id
  * @param int    $periode_ordre
  * @param string $periode_nom
@@ -2980,7 +3012,7 @@ function DB_STRUCTURE_modifier_periode($periode_id,$periode_ordre,$periode_nom)
 
 /**
  * DB_STRUCTURE_modifier_statut_demandes
- * 
+ *
  * @param string $listing_demande_id   id des demandes séparées par des virgules
  * @param int    $nb_demandes          nb de demandes
  * @param string $statut               parmi 'prof' ou ...
@@ -2998,7 +3030,7 @@ function DB_STRUCTURE_modifier_statut_demandes($listing_demande_id,$nb_demandes,
 
 /**
  * DB_STRUCTURE_supprimer_matiere_specifique
- * 
+ *
  * @param int $matiere_id
  * @return void
  */
@@ -3025,7 +3057,7 @@ function DB_STRUCTURE_supprimer_matiere_specifique($matiere_id)
  * DB_STRUCTURE_supprimer_groupe
  * Par défaut, on supprime aussi les devoirs associés ($with_devoir=true), mais on conserve les notes, sui deviennent orphelines et non éditables ultérieurement.
  * Mais on peut aussi vouloir dans un second temps ($with_devoir=false) supprimer les devoirs associés avec leurs notes en utilisant DB_STRUCTURE_supprimer_devoir_et_saisies().
- * 
+ *
  * @param int    $groupe_id
  * @param string $groupe_type   valeur parmi 'classe' ; 'groupe' ; 'besoin' ; 'eval'
  * @param bool   $with_devoir
@@ -3065,7 +3097,7 @@ function DB_STRUCTURE_supprimer_groupe($groupe_id,$groupe_type,$with_devoir=true
 
 /**
  * DB_STRUCTURE_supprimer_devoir_et_saisies
- * 
+ *
  * @param int   $devoir_id
  * @param int   $prof_id   Seul un prof peut se supprimer une évaluation avec ses scores ; son id sert de sécurité.
  * @return void
@@ -3088,7 +3120,7 @@ function DB_STRUCTURE_supprimer_devoir_et_saisies($devoir_id,$prof_id)
 /**
  * DB_STRUCTURE_supprimer_devoirs_sans_saisies
  * Utilisé uniquement dans le cadre d'un nettoyage annuel ; les groupes de types 'besoin' et 'eval' sont supprimés dans un second temps.
- * 
+ *
  * @return void
  */
 
@@ -3106,7 +3138,7 @@ function DB_STRUCTURE_supprimer_devoirs_sans_saisies()
 /**
  * DB_STRUCTURE_supprimer_saisies_REQ
  * Utilisé uniquement dans le cadre d'un nettoyage annuel (reliquats de notes 'REQ').
- * 
+ *
  * @return void
  */
 
@@ -3117,7 +3149,7 @@ function DB_STRUCTURE_supprimer_saisies_REQ()
 
 /**
  * DB_STRUCTURE_supprimer_saisie
- * 
+ *
  * @param int   $eleve_id
  * @param int   $devoir_id
  * @param int   $item_id
@@ -3135,7 +3167,7 @@ function DB_STRUCTURE_supprimer_saisie($eleve_id,$devoir_id,$item_id)
 
 /**
  * DB_STRUCTURE_supprimer_validation
- * 
+ *
  * @param string $type   'entree' ou 'pilier'
  * @param int    $user_id
  * @param int    $element_id
@@ -3153,7 +3185,7 @@ function DB_STRUCTURE_supprimer_validation($type,$user_id,$element_id)
 
 /**
  * DB_STRUCTURE_supprimer_saisies
- * 
+ *
  * @param void
  * @return void
  */
@@ -3165,7 +3197,7 @@ function DB_STRUCTURE_supprimer_saisies()
 
 /**
  * DB_STRUCTURE_supprimer_validations
- * 
+ *
  * @param void
  * @return void
  */
@@ -3178,7 +3210,7 @@ function DB_STRUCTURE_supprimer_validations()
 
 /**
  * DB_STRUCTURE_supprimer_periode
- * 
+ *
  * @param int $periode_id
  * @return void
  */
@@ -3202,7 +3234,7 @@ function DB_STRUCTURE_supprimer_periode($periode_id)
 /**
  * DB_STRUCTURE_supprimer_demande
  * On transmet soit l'id de la demande (1 paramètre) soit l'id de l'élève suivi de l'id de l'item (2 paramètres).
- * 
+ *
  * @param int      $id1
  * @param bool|int $id2
  * @return void
@@ -3227,7 +3259,7 @@ function DB_STRUCTURE_supprimer_demande($id1,$id2=false)
 
 /**
  * DB_STRUCTURE_supprimer_demandes
- * 
+ *
  * @param bool|string   $listing_demande_id   id des demandes séparées par des virgules, ou "true" pour supprimer toutes les demandes de l'établissement
  * @param bool|int      $nb_demandes          nb de demandes
  * @return void
@@ -3246,7 +3278,7 @@ function DB_STRUCTURE_supprimer_demandes($listing_demande_id,$nb_demandes=false)
 
 /**
  * DB_STRUCTURE_supprimer_utilisateur
- * 
+ *
  * @param int    $user_id
  * @param string $user_profil   'eleve' ou 'professeur' ou 'directeur' ou 'administrateur'
  * @return void
@@ -3301,7 +3333,7 @@ function DB_STRUCTURE_supprimer_utilisateur($user_id,$user_profil)
 
 /**
  * DB_STRUCTURE_supprimer_referentiel_matiere_niveau
- * 
+ *
  * @param int $matiere_id
  * @param int $niveau_id    facultatif : si non fourni, tous les niveaux seront concernés
  * @return void
@@ -3331,7 +3363,7 @@ function DB_STRUCTURE_supprimer_referentiel_matiere_niveau($matiere_id,$niveau_i
 
 /**
  * DB_STRUCTURE_supprimer_mono_structure
- * 
+ *
  * @param void
  * @return void
  */
@@ -3357,7 +3389,7 @@ function DB_STRUCTURE_supprimer_mono_structure()
 
 /**
  * DB_STRUCTURE_creer_remplir_tables_structure
- * 
+ *
  * @param string $dossier_requetes   './_sql/structure/' ou './_sql/webmestre/'
  * @return void
  */
@@ -3383,7 +3415,7 @@ function DB_STRUCTURE_creer_remplir_tables_structure($dossier_requetes)
 
 /**
  * DB_STRUCTURE_optimiser_tables_structure
- * 
+ *
  * @param void
  * @return void
  */
@@ -3402,7 +3434,7 @@ function DB_STRUCTURE_optimiser_tables_structure()
 
 /**
  * DB_STRUCTURE_corriger_anomalies
- * 
+ *
  * @param void
  * @return array   tableau avec label et commentaire pour chaque recherche
  */
@@ -3549,7 +3581,7 @@ function DB_STRUCTURE_corriger_anomalies()
 	$classe  = (!$nb_modifs) ? 'valide' : 'alerte' ;
 	$tab_bilan[] = '<label class="'.$classe.'">Jointures évaluation/item : '.$message.'.</label>';
 	// Recherche d'anomalies : élèves associés à une classe supprimée...
-	// Attention, on l'id de classe à 0 est normal pour un élève non affecté ou un autre statut
+	// Attention, l'id de classe à 0 est normal pour un élève non affecté ou un autre statut
 	$DB_SQL = 'UPDATE sacoche_user ';
 	$DB_SQL.= 'LEFT JOIN sacoche_groupe ON sacoche_user.eleve_classe_id=sacoche_groupe.groupe_id ';
 	$DB_SQL.= 'SET sacoche_user.eleve_classe_id=0 ';
@@ -3564,7 +3596,7 @@ function DB_STRUCTURE_corriger_anomalies()
 
 /**
  * Retourner un tableau [valeur texte] des matières de l'établissement (communes choisies ou spécifiques ajoutées)
- * 
+ *
  * @param string $listing_matieres_communes   id des matières communes séparées par des virgules
  * @param bool   $transversal                 inclure ou pas la matière tranversale à la liste
  * @return array|string
@@ -3585,7 +3617,7 @@ function DB_STRUCTURE_OPT_matieres_etabl($listing_matieres_communes,$transversal
 
 /**
  * Retourner un tableau [valeur texte] des matières communes (choisies ou pas par l'établissement)
- * 
+ *
  * @param void
  * @return array
  */
@@ -3602,8 +3634,8 @@ function DB_STRUCTURE_OPT_matieres_communes()
 }
 
 /**
- * Retourner un tableau [valeur texte] des matières du professeur identifié
- * 
+ * Retourner un tableau [valeur texte info] des matières du professeur identifié ; info représente le nb de demandes (utilisé par ailleurs)
+ *
  * @param string $listing_matieres_communes   id des matières communes séparées par des virgules
  * @param int $user_id
  * @return array|string
@@ -3611,7 +3643,7 @@ function DB_STRUCTURE_OPT_matieres_communes()
 
 function DB_STRUCTURE_OPT_matieres_professeur($listing_matieres_communes,$user_id)
 {
-	$DB_SQL = 'SELECT matiere_id AS valeur, matiere_nom AS texte FROM sacoche_jointure_user_matiere ';
+	$DB_SQL = 'SELECT matiere_id AS valeur, matiere_nom AS texte, matiere_nb_demandes AS info FROM sacoche_jointure_user_matiere ';
 	$DB_SQL.= 'LEFT JOIN sacoche_matiere USING (matiere_id) ';
 	$DB_SQL.= 'WHERE (matiere_id IN('.$listing_matieres_communes.') OR matiere_partage=:partage) AND user_id=:user_id '; // Test matiere car un prof peut être encore relié à des matières décochées par l'admin.
 	$DB_SQL.= 'ORDER BY matiere_nom ASC';
@@ -3621,8 +3653,8 @@ function DB_STRUCTURE_OPT_matieres_professeur($listing_matieres_communes,$user_i
 }
 
 /**
- * Retourner un tableau [valeur texte] des matières d'un élève identifié
- * 
+ * Retourner un tableau [valeur texte info] des matières d'un professeur identifié ; info représente le nb de demandes (utilisé par ailleurs)
+ *
  * @param string $listing_matieres_communes   id des matières communes séparées par des virgules
  * @param int $user_id
  * @return array|string
@@ -3657,7 +3689,7 @@ function DB_STRUCTURE_OPT_matieres_eleve($listing_matieres_communes,$user_id)
 		$liste_groupes = $_SESSION['ELEVE_CLASSE_ID'].','.$DB_ROW['sacoche_liste_groupe_id'];
 	}
 	// Ensuite on récupère les matières des professeurs (actifs !) qui sont associés à la liste des groupes récupérés
-	$DB_SQL = 'SELECT matiere_id AS valeur, matiere_nom AS texte FROM sacoche_user ';
+	$DB_SQL = 'SELECT matiere_id AS valeur, matiere_nom AS texte, matiere_nb_demandes AS info FROM sacoche_user ';
 	$DB_SQL.= 'LEFT JOIN sacoche_jointure_user_groupe USING (user_id) ';
 	$DB_SQL.= 'LEFT JOIN sacoche_jointure_user_matiere USING (user_id) ';
 	$DB_SQL.= 'LEFT JOIN sacoche_matiere USING (matiere_id) ';
@@ -3671,7 +3703,7 @@ function DB_STRUCTURE_OPT_matieres_eleve($listing_matieres_communes,$user_id)
 
 /**
  * Retourner un tableau [valeur texte] des matières d'une classe ou d'un groupe
- * 
+ *
  * @param int $groupe_id     id de la classe ou du groupe
  * @return array|string
  */
@@ -3693,7 +3725,7 @@ function DB_STRUCTURE_OPT_matieres_groupe($groupe_id)
 
 /**
  * Retourner un tableau [valeur texte] des niveaux de l'établissement
- * 
+ *
  * @param string      $listing_niveaux   id des niveaux séparés par des virgules ; ne peut pas être vide
  * @param string|bool $listing_cycles    id des cycles séparés par des virgules ; false pour ne pas retourner les cycles
  * @return array
@@ -3710,7 +3742,7 @@ function DB_STRUCTURE_OPT_niveaux_etabl($listing_niveaux,$listing_cycles)
 
 /**
  * Retourner un tableau [valeur texte] des niveaux (choisis ou pas par l'établissement)
- * 
+ *
  * @param void
  * @return array
  */
@@ -3725,7 +3757,7 @@ function DB_STRUCTURE_OPT_niveaux()
 
 /**
  * Retourner un tableau [valeur texte] des paliers du socle de l'établissement
- * 
+ *
  * @param string $listing_paliers   id des paliers séparés par des virgules
  * @return array|string
  */
@@ -3747,7 +3779,7 @@ function DB_STRUCTURE_OPT_paliers_etabl($listing_paliers)
 
 /**
  * Retourner un tableau [valeur texte] des piliers du socle d'un palier donné
- * 
+ *
  * @param int $palier_id   id du palier
  * @return array|string
  */
@@ -3765,7 +3797,7 @@ function DB_STRUCTURE_OPT_piliers($palier_id)
 
 /**
  * Retourner un tableau [valeur texte] des domaines du socle d'un pilier donné
- * 
+ *
  * @param int $pilier_id   id du pilier
  * @return array|string
  */
@@ -3784,7 +3816,7 @@ function DB_STRUCTURE_OPT_domaines($pilier_id)
 /**
  * Retourner un tableau [valeur texte liste_groupe_id] des niveaux de l'établissement pour un élève identifié
  * liste_groupe_id sert pour faire une recherche de l'id de la classe dedans afin de pouvoir préselectionner le niveau de la classe de l'élève
- * 
+ *
  * @param string      $listing_niveaux   id des niveaux séparés par des virgules ; ne peut pas être vide
  * @param string|bool $listing_cycles    id des cycles séparés par des virgules ; false pour ne pas retourner les cycles
  * @param string $eleve_classe_id        id de la classe de l'élève
@@ -3899,7 +3931,7 @@ function DB_STRUCTURE_OPT_groupes_professeur($user_id)
 
 /**
  * Retourner un tableau [valeur texte] des groupes de besoin d'un professeur identifié
- * 
+ *
  * @param int $user_id
  * @return array|string
  */
@@ -3956,7 +3988,7 @@ function DB_STRUCTURE_OPT_classes_groupes_etabl()
 
 /**
  * Retourner un tableau [valeur texte] des classes où un professeur identifié est professeur principal
- * 
+ *
  * @param int $user_id
  * @return array|string
  */
@@ -3992,7 +4024,7 @@ function DB_STRUCTURE_OPT_periodes_etabl()
 
 /**
  * Retourner un tableau [valeur texte] des administrateurs (forcément actifs) de l'établissement
- * 
+ *
  * @param void
  * @return array|string
  */
@@ -4009,7 +4041,7 @@ function DB_STRUCTURE_OPT_administrateurs_etabl()
 
 /**
  * Retourner un tableau [valeur texte] des professeurs actifs de l'établissement
- * 
+ *
  * @param void
  * @return array|string
  */
@@ -4027,7 +4059,7 @@ function DB_STRUCTURE_OPT_professeurs_etabl()
 /**
  * Retourner un tableau [valeur texte] des professeurs et directeurs de l'établissement
  * optgroup sert à pouvoir regrouper les options
- * 
+ *
  * @param int $user_statut   statut des utilisateurs (1 pour actif, 0 pour inactif)
  * @return array|string
  */
@@ -4046,7 +4078,7 @@ function DB_STRUCTURE_OPT_professeurs_directeurs_etabl($user_statut)
 
 /**
  * Retourner un tableau [valeur texte] des élèves d'un regroupement préselectionné
- * 
+ *
  * @param string $groupe_type   valeur parmi [sdf] [all] [niveau] [classe] [groupe] [besoin] 
  * @param int    $groupe_id     id du niveau ou de la classe ou du groupe
  * @param int    $user_statut   statut des utilisateurs (1 pour actif, 0 pour inactif)

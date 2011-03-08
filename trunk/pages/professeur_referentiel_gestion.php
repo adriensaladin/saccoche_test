@@ -27,7 +27,7 @@
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = "Créer / paramétrer les référentiels";
-$VERSION_JS_FILE += 9;
+$VERSION_JS_FILE += 10;
 ?>
 
 <script type="text/javascript">
@@ -67,6 +67,7 @@ $VERSION_JS_FILE += 9;
 <form id="form_instance" action="">
 
 <ul class="puce">
+	<li><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=referentiels_socle__referentiel_creer_parametrer">DOC : Créer / paramétrer les référentiels.</a></span></li>
 	<li><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=referentiels_socle__referentiel_organisation">DOC : Organisation des items dans les référentiels.</a></span></li>
 	<li><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=environnement_generalites__calcul_scores_etats_acquisitions">DOC : Calcul des scores et des états d'acquisitions.</a></span></li>
 	<li><span class="danger">Détruire un référentiel supprime les résultats associés de tous les élèves !</span></li>
@@ -87,7 +88,7 @@ if(count($DB_TAB))
 {
 	foreach($DB_TAB as $DB_ROW)
 	{
-		$tab_matiere[$DB_ROW['matiere_id']] = array( 'nom'=>html($DB_ROW['matiere_nom']) , 'partage'=>$DB_ROW['matiere_partage'] , 'coord'=>$DB_ROW['jointure_coord'] );
+		$tab_matiere[$DB_ROW['matiere_id']] = array( 'nom'=>html($DB_ROW['matiere_nom']) , 'partage'=>$DB_ROW['matiere_partage'] , 'nb_demandes'=>$DB_ROW['matiere_nb_demandes'] , 'coord'=>$DB_ROW['jointure_coord'] );
 	}
 }
 $listing_matieres_id = implode(',',array_keys($tab_matiere));
@@ -147,16 +148,26 @@ else
 			$tab_colonne[$DB_ROW['matiere_id']][$DB_ROW['niveau_id']] = '<td lang="'.$DB_ROW['referentiel_partage_etat'].'" class="v">Référentiel présent. '.str_replace('◄DATE►',affich_date($DB_ROW['referentiel_partage_date']),$tab_partage[$DB_ROW['referentiel_partage_etat']]).'</td>'.'<td lang="'.$DB_ROW['referentiel_calcul_methode'].'_'.$DB_ROW['referentiel_calcul_limite'].'" class="v">'.$methode_calcul_texte.'</td>';
 		}
 	}
+	// Construction du formulaire select du nombre de demandes
+	$select_demandes = '<select name="f_eleve_demandes" class="t8">';
+	for($nb_demandes=0 ; $nb_demandes<10 ; $nb_demandes++)
+	{
+		$texte = ($nb_demandes>0) ? ( ($nb_demandes>1) ? $nb_demandes.' demandes' : '1 seule demande' ) : 'aucune demande' ;
+		$select_demandes .= '<option value="'.$nb_demandes.'">'.$texte.'</option>';
+	}
+	$select_demandes .= '</select>';
+	$infobulle = '<img src="./_img/bulle_aide.png" alt="" title="Nombre maximal de demandes d\'évaluations simultanées autorisées pour un élève." />';
 	// On construit et affiche le tableau résultant
 	$affichage = '<table class="comp_view"><thead><tr><th>Matière</th><th>Niveau</th><th>Référentiel</th><th>Méthode de calcul</th><th class="nu"></th></tr></thead><tbody>'."\r\n";
 	foreach($tab_matiere as $matiere_id => $tab)
 	{
 		$rowspan = ($matiere_id!=ID_MATIERE_TRANSVERSALE) ? $nb_niveaux : mb_substr_count($_SESSION['CYCLES'],',','UTF-8')+1 ;
-		$matiere_nom   = $tab['nom'];
-		$matiere_coord = $tab['coord'];
-		$matiere_perso = ($tab['partage']) ? 0 : 1 ;
+		$matiere_nom    = $tab['nom'];
+		$matiere_coord  = $tab['coord'];
+		$matiere_perso  = ($tab['partage']) ? 0 : 1 ;
+		$matiere_nombre = ($matiere_coord) ? str_replace('value="'.$tab['nb_demandes'].'"','value="'.$tab['nb_demandes'].'" selected="selected"',$select_demandes) : str_replace('<select','<select disabled="disabled"',$select_demandes) ;
 		$affichage .= '<tr><td colspan="5" class="nu">&nbsp;</td></tr>'."\r\n";
-		$affichage .= '<tr><td rowspan="'.$rowspan.'">'.$matiere_nom.'</td>';
+		$affichage .= '<tr><td rowspan="'.$rowspan.'" id="mat_'.$matiere_id.'"><b>'.$matiere_nom.'</b><br />'.$matiere_nombre.$infobulle.'</td>';
 		$affichage_suite = false;
 		foreach($tab_niveau as $niveau_id => $niveau_nom)
 		{

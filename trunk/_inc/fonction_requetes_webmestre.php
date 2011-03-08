@@ -3,31 +3,31 @@
  * @version $Id$
  * @author Thomas Crespin <thomas.crespin@sesamath.net>
  * @copyright Thomas Crespin 2010
- * 
+ *
  * ****************************************************************************************************
  * SACoche <http://sacoche.sesamath.net> - Suivi d'Acquisitions de Compétences
  * © Thomas Crespin pour Sésamath <http://www.sesamath.net> - Tous droits réservés.
  * Logiciel placé sous la licence libre GPL 3 <http://www.rodage.org/gpl-3.0.fr.html>.
  * ****************************************************************************************************
- * 
+ *
  * Ce fichier est une partie de SACoche.
- * 
+ *
  * SACoche est un logiciel libre ; vous pouvez le redistribuer ou le modifier suivant les termes 
  * de la “GNU General Public License” telle que publiée par la Free Software Foundation :
  * soit la version 3 de cette licence, soit (à votre gré) toute version ultérieure.
- * 
+ *
  * SACoche est distribué dans l’espoir qu’il vous sera utile, mais SANS AUCUNE GARANTIE :
  * sans même la garantie implicite de COMMERCIALISABILITÉ ni d’ADÉQUATION À UN OBJECTIF PARTICULIER.
  * Consultez la Licence Générale Publique GNU pour plus de détails.
- * 
+ *
  * Vous devriez avoir reçu une copie de la Licence Générale Publique GNU avec SACoche ;
  * si ce n’est pas le cas, consultez : <http://www.gnu.org/licenses/>.
- * 
+ *
  */
 
 /**
  * DB_WEBMESTRE_recuperer_structure (complémentaire à DB_WEBMESTRE_lister_structures car utilisation de queryRow à la place de queryTab)
- * 
+ *
  * @param int base_id
  * @return array
  */
@@ -43,7 +43,7 @@ function DB_WEBMESTRE_recuperer_structure($base_id)
 
 /**
  * DB_WEBMESTRE_recuperer_structure_by_UAI
- * 
+ *
  * @param string uai
  * @return array
  */
@@ -59,7 +59,7 @@ function DB_WEBMESTRE_recuperer_structure_by_UAI($uai)
 
 /**
  * DB_WEBMESTRE_compter_structure
- * 
+ *
  * @param void
  * @return string   n structures
  */
@@ -74,7 +74,7 @@ function DB_WEBMESTRE_compter_structure()
 
 /**
  * DB_WEBMESTRE_lister_zones
- * 
+ *
  * @param void
  * @return array
  */
@@ -88,7 +88,7 @@ function DB_WEBMESTRE_lister_zones()
 
 /**
  * DB_WEBMESTRE_lister_structures (complémentaire à DB_WEBMESTRE_recuperer_structure car utilisation de queryTab à la place de queryRow)
- * 
+ *
  * @param void|string $listing_base_id   id des bases séparés par des virgules (tout si rien de transmis)
  * @return array
  */
@@ -106,7 +106,7 @@ function DB_WEBMESTRE_lister_structures($listing_base_id=false)
 
 /**
  * DB_WEBMESTRE_lister_contacts_cibles
- * 
+ *
  * @param string $listing_base_id   id des bases séparés par des virgules
  * @return array                    le tableau est de la forme [i] => array('contact_id'=>...,'contact_nom'=>...,'contact_prenom'=>...,'contact_courriel'=>...);
  */
@@ -120,7 +120,7 @@ function DB_WEBMESTRE_lister_contacts_cibles($listing_base_id)
 
 /**
  * DB_WEBMESTRE_tester_zone_nom
- * 
+ *
  * @param string $geo_nom
  * @param int    $geo_id    inutile si recherche pour un ajout, mais id à éviter si recherche pour une modification
  * @return int
@@ -143,7 +143,7 @@ function DB_WEBMESTRE_tester_zone_nom($geo_nom,$geo_id=false)
 
 /**
  * DB_WEBMESTRE_tester_structure_UAI
- * 
+ *
  * @param string $structure_uai
  * @param int    $base_id       inutile si recherche pour un ajout, mais id à éviter si recherche pour une modification
  * @return int
@@ -166,7 +166,7 @@ function DB_WEBMESTRE_tester_structure_UAI($structure_uai,$base_id=false)
 
 /**
  * DB_WEBMESTRE_ajouter_zone
- * 
+ *
  * @param int    $geo_ordre
  * @param string $geo_nom
  * @return int
@@ -183,7 +183,7 @@ function DB_WEBMESTRE_ajouter_zone($geo_ordre,$geo_nom)
 
 /**
  * DB_WEBMESTRE_ajouter_structure
- * 
+ *
  * @param int    $base_id   Pour forcer l'id de la base de la structure ; normalement transmis à 0 (=> auto-increment), sauf dans un cadre de gestion interne à Sésamath
  * @param int    $geo_id
  * @param string $structure_uai
@@ -237,7 +237,7 @@ function DB_WEBMESTRE_ajouter_structure($base_id,$geo_id,$structure_uai,$localis
 
 /**
  * DB_WEBMESTRE_modifier_structure
- * 
+ *
  * @param int    $base_id
  * @param int    $geo_id
  * @param string $structure_uai
@@ -261,7 +261,7 @@ function DB_WEBMESTRE_modifier_structure($base_id,$geo_id,$structure_uai,$locali
 
 /**
  * DB_WEBMESTRE_modifier_zone
- * 
+ *
  * @param int    $geo_id
  * @param int    $geo_ordre
  * @param string $geo_nom
@@ -280,7 +280,7 @@ function DB_WEBMESTRE_modifier_zone($geo_id,$geo_ordre,$geo_nom)
 
 /**
  * DB_WEBMESTRE_supprimer_zone
- * 
+ *
  * @param int $geo_id
  * @return void
  */
@@ -304,7 +304,7 @@ function DB_WEBMESTRE_supprimer_zone($geo_id)
 
 /**
  * DB_WEBMESTRE_supprimer_multi_structure
- * 
+ *
  * @param int    $BASE 
  * @return void
  */
@@ -338,7 +338,7 @@ function DB_WEBMESTRE_supprimer_multi_structure($BASE)
 
 /**
  * DB_WEBMESTRE_creer_remplir_tables_webmestre
- * 
+ *
  * @param string $dossier_requetes   '...../structure/' ou '...../webmestre/'
  * @return void
  */
@@ -365,7 +365,7 @@ function DB_WEBMESTRE_creer_remplir_tables_webmestre($dossier_requetes)
 /**
  * Retourner un tableau [valeur texte optgroup] des structures (choix d'établissements en page d'accueil)
  * l'indice géographique sert à pouvoir regrouper les options
- * 
+ *
  * @param void
  * @return array|string
  */

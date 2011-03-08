@@ -49,6 +49,7 @@ if(count($DB_TAB))
 	foreach($DB_TAB as $DB_ROW)
 	{
 		$tab_matiere[$DB_ROW['matiere_id']]['nom'] = html($DB_ROW['matiere_nom']);
+		$tab_matiere[$DB_ROW['matiere_id']]['nb_demandes'] = $DB_ROW['matiere_nb_demandes'];
 	}
 }
 $listing_matieres_id = implode(',',array_keys($tab_matiere));
@@ -120,14 +121,16 @@ else
 	}
 	// On construit et affiche le tableau résultant
 	$tab_paliers = explode( '.' , substr(LISTING_ID_NIVEAUX_CYCLES,1,-1) );
-	$affichage = '<table class="comp_view"><thead><tr><th>Matière</th><th>Coordonnateur(s)</th><th>Niveau</th><th>Référentiel</th><th>Méthode de calcul</th><th class="nu"></th></tr></thead><tbody>'."\r\n";
+	$affichage = '<table class="comp_view"><thead><tr><th>Matière</th><th>Nb</th><th>Coordonnateur(s)</th><th>Niveau</th><th>Référentiel</th><th>Méthode de calcul</th><th class="nu"></th></tr></thead><tbody>'."\r\n";
+	$infobulle = '<img src="./_img/bulle_aide.png" alt="" title="Nombre maximal de demandes d\'évaluations simultanées autorisées pour un élève." />';
 	foreach($tab_matiere as $matiere_id => $tab)
 	{
 		$rowspan = ($matiere_id!=ID_MATIERE_TRANSVERSALE) ? $nb_niveaux : mb_substr_count($_SESSION['CYCLES'],',','UTF-8')+1 ;
 		$matiere_nom   = $tab['nom'];
+		$matiere_nb    = $tab['nb_demandes'].' '.$infobulle;
 		$matiere_coord = (isset($tab['coord'])) ? '>'.$tab['coord'] : ' class="r">Absence de coordonnateur.' ;
 		$affichage .= '<tr><td colspan="6" class="nu">&nbsp;</td></tr>'."\r\n";
-		$affichage .= '<tr><td rowspan="'.$rowspan.'">'.$matiere_nom.'</td><td rowspan="'.$rowspan.'"'.$matiere_coord.'</td>';
+		$affichage .= '<tr><td rowspan="'.$rowspan.'">'.$matiere_nom.'</td><td rowspan="'.$rowspan.'">'.$matiere_nb.'</td><td rowspan="'.$rowspan.'"'.$matiere_coord.'</td>';
 		$affichage_suite = false;
 		foreach($tab_niveau as $niveau_id => $niveau_nom)
 		{

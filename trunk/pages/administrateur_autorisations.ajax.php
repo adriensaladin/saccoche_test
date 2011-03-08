@@ -29,23 +29,6 @@ if($_SESSION['SESAMATH_ID']==ID_DEMO){exit('Action désactivée pour la démo...
 $f_objet = (isset($_POST['f_objet'])) ? clean_texte($_POST['f_objet']) : '';
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-//	Demandes d'évaluations des élèves
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-
-if($f_objet=='eleve_demandes')
-{
-	$nb_demandes = (isset($_POST['f_demandes'])) ? clean_entier($_POST['f_demandes']) : -1;
-
-	if( ($nb_demandes!=-1) && ($nb_demandes<10) )
-	{
-		DB_STRUCTURE_modifier_parametres( array('droit_eleve_demandes'=>$nb_demandes) );
-		// ne pas oublier de mettre aussi à jour la session
-		$_SESSION['DROIT_ELEVE_DEMANDES'] = $nb_demandes;
-		exit('ok');
-	}
-}
-
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 //	Profils autorisés à valider le socle
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 

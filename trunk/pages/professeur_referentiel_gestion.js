@@ -57,11 +57,11 @@ $(document).ready
 		var actualiser_select_limite = function()
 		{
 			// Déterminer s'il faut modifier l'option sélectionnée
-			limite_valeur = $('#f_limite option:selected').val();
-			findme = '.'+limite_valeur+'.';
-			methode_valeur = $('#f_methode option:selected').val();
-			chaine_autorisee = tableau_limites_autorisees[methode_valeur];
-			modifier_limite_selected = (chaine_autorisee.indexOf(findme)==-1) ? true : false ; // 1|3 Si true alors il faudra changer le selected actuel qui ne sera plus dans les nouveaux choix.
+			var limite_valeur            = $('#f_limite option:selected').val();
+			var findme                   = '.'+limite_valeur+'.';
+			var methode_valeur           = $('#f_methode option:selected').val();
+			var chaine_autorisee         = tableau_limites_autorisees[methode_valeur];
+			var modifier_limite_selected = (chaine_autorisee.indexOf(findme)==-1) ? true : false ; // 1|3 Si true alors il faudra changer le selected actuel qui ne sera plus dans les nouveaux choix.
 			if(modifier_limite_selected)
 			{
 				modifier_limite_selected = chaine_autorisee.substr(chaine_autorisee.length-2,1) ; // 2|3 On prendra alors la valeur maximale dans les nouveaux choix.
@@ -91,6 +91,61 @@ $(document).ready
 		$('#f_methode').live('change', actualiser_select_limite );
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+//	Changement de nb de demandes autorisées pour une matière -> ajouter un bouton de validation
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
+		$('select[name=f_eleve_demandes]').change
+		(
+			function()
+			{
+				$(this).parent().find('div').remove();
+				$(this).parent().append('<div><button name="enregistrer" type="button" value="'+$(this).val()+'"><img alt="" src="./_img/bouton/valider.png" /> Enregistrer.</button></div>');
+			}
+		);
+
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+//	Clic sur le bouton pour maj le nb de demandes autorisées pour une matière
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
+		$('button[name=enregistrer]').live // live est utilisé pour prendre en compte les nouveaux éléments créés
+		('click',
+			function()
+			{
+				var bouton = $(this);
+				var nb_demandes = $(this).attr('value');
+				var td_id = $(this).parent().parent().attr('id');
+				var matiere_id = td_id.substring(4);
+				bouton.html('<img alt="" src="./_img/ajax/ajax_loader.gif" /> Patienter...');
+				$.ajax
+				(
+					{
+						type : 'POST',
+						url : 'ajax.php?page='+PAGE,
+						data : 'action=NbDemandes&matiere_id='+matiere_id+'&nb_demandes='+nb_demandes,
+						dataType : "html",
+						error : function(msg,string)
+						{
+							bouton.html('<img alt="" src="./_img/ajax/ajax_alerte.png" /> Erreur ! Recommencer.');
+							return false;
+						},
+						success : function(responseHTML)
+						{
+							maj_clock(1);
+							if(responseHTML!='ok')
+							{
+								bouton.html('<img alt="" src="./_img/ajax/ajax_alerte.png" /> Erreur ! Recommencer.');
+							}
+							else
+							{
+								bouton.parent().remove();
+							}
+						}
+					}
+				);
+			}
+		);
+
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 //	Clic sur l'image pour Voir un référentiel de son établissement
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
@@ -98,9 +153,9 @@ $(document).ready
 		('click',
 			function()
 			{
-				ids = $(this).parent().attr('id');
+				var ids = $(this).parent().attr('id');
 				afficher_masquer_images_action('hide');
-				new_label = '<label for="'+ids+'" class="loader">Demande envoyée... Veuillez patienter.</label>';
+				var new_label = '<label for="'+ids+'" class="loader">Demande envoyée... Veuillez patienter.</label>';
 				$(this).after(new_label);
 				$.ajax
 				(
@@ -142,11 +197,10 @@ $(document).ready
 			function()
 			{
 				afficher_masquer_images_action('hide');
-				partage = $(this).parent().prev().prev().attr('lang');
-				new_span = '<span>'+select_partage.replace('"'+partage+'"','"'+partage+'" selected="selected"')+'<q class="valider" lang="partager" title="Valider les modifications du partage de ce référentiel."></q><q class="annuler" title="Annuler la modification du partage de ce référentiel."></q> <label id="ajax_msg">&nbsp;</label></span>';
+				var partage = $(this).parent().prev().prev().attr('lang');
+				var new_span = '<span>'+select_partage.replace('"'+partage+'"','"'+partage+'" selected="selected"')+'<q class="valider" lang="partager" title="Valider les modifications du partage de ce référentiel."></q><q class="annuler" title="Annuler la modification du partage de ce référentiel."></q> <label id="ajax_msg">&nbsp;</label></span>';
 				$(this).after(new_span);
 				infobulle();
-				mode = 'partager';
 			}
 		);
 
@@ -158,9 +212,9 @@ $(document).ready
 		('click',
 			function()
 			{
-				ids = $(this).parent().attr('id');
+				var ids = $(this).parent().attr('id');
 				afficher_masquer_images_action('hide');
-				new_label = '<label for="'+ids+'" class="loader">Demande envoyée... Veuillez patienter.</label>';
+				var new_label = '<label for="'+ids+'" class="loader">Demande envoyée... Veuillez patienter.</label>';
 				$(this).after(new_label);
 				$.ajax
 				(
@@ -202,15 +256,14 @@ $(document).ready
 			function()
 			{
 				afficher_masquer_images_action('hide');
-				param   = $(this).parent().prev().attr('lang');
-				tableau = param.split('_');
-				methode = tableau[0];
-				limite  = tableau[1];
-				new_span = '<span>'+select_methode.replace('"'+methode+'"','"'+methode+'" selected="selected"')+select_limite.replace('"'+limite+'"','"'+limite+'" selected="selected"')+'<q class="valider" lang="calculer" title="Valider les modifications du mode de calcul de ce référentiel."></q><q class="annuler" title="Annuler la modification du mode de calcul de ce référentiel."></q> <label id="ajax_msg">&nbsp;</label></span>';
+				var param   = $(this).parent().prev().attr('lang');
+				var tableau = param.split('_');
+				var methode = tableau[0];
+				var limite  = tableau[1];
+				var new_span = '<span>'+select_methode.replace('"'+methode+'"','"'+methode+'" selected="selected"')+select_limite.replace('"'+limite+'"','"'+limite+'" selected="selected"')+'<q class="valider" lang="calculer" title="Valider les modifications du mode de calcul de ce référentiel."></q><q class="annuler" title="Annuler la modification du mode de calcul de ce référentiel."></q> <label id="ajax_msg">&nbsp;</label></span>';
 				$(this).after(new_span);
 				actualiser_select_limite();
 				infobulle();
-				mode = 'calculer';
 			}
 		);
 
@@ -223,10 +276,9 @@ $(document).ready
 			function()
 			{
 				afficher_masquer_images_action('hide');
-				new_span = '<span class="danger">Tous les items et les résultats associés des élèves seront perdus !<q class="valider" lang="retirer" title="Confirmer la suppression de ce référentiel."></q><q class="annuler" title="Annuler la suppression de ce référentiel."></q> <label id="ajax_msg">&nbsp;</label></span>';
+				var new_span = '<span class="danger">Tous les items et les résultats associés des élèves seront perdus !<q class="valider" lang="retirer" title="Confirmer la suppression de ce référentiel."></q><q class="annuler" title="Annuler la suppression de ce référentiel."></q> <label id="ajax_msg">&nbsp;</label></span>';
 				$(this).after(new_span);
 				infobulle();
-				mode = 'retirer';
 			}
 		);
 
@@ -238,8 +290,8 @@ $(document).ready
 		('click',
 			function()
 			{
-				ids = $(this).parent().parent().attr('id');
-				partage = $('#f_partage').val();
+				var ids = $(this).parent().parent().attr('id');
+				var partage = $('#f_partage').val();
 				$('#ajax_msg').removeAttr("class").addClass("loader").html('Demande envoyée... Veuillez patienter.');
 				$.ajax
 				(
@@ -289,9 +341,9 @@ $(document).ready
 		('click',
 			function()
 			{
-				ids = $(this).parent().parent().attr('id');
-				methode = $('#f_methode').val();
-				limite  = $('#f_limite').val();
+				var ids = $(this).parent().parent().attr('id');
+				var methode = $('#f_methode').val();
+				var limite  = $('#f_limite').val();
 				$('#ajax_msg').removeAttr("class").addClass("loader").html('Demande envoyée... Veuillez patienter.');
 				$.ajax
 				(
@@ -333,8 +385,8 @@ $(document).ready
 		('click',
 			function()
 			{
-				ids = $(this).parent().parent().attr('id');
-				partage = $(this).parent().parent().prev().prev().attr('lang');
+				var ids = $(this).parent().parent().attr('id');
+				var partage = $(this).parent().parent().prev().prev().attr('lang');
 				$('#ajax_msg').removeAttr("class").addClass("loader").html('Demande envoyée... Veuillez patienter.');
 				$.ajax
 				(
@@ -357,7 +409,7 @@ $(document).ready
 							}
 							else
 							{
-								proposition = (ids.substring(0,5)=='ids_1') ? '' : ' ou importer un référentiel existant' ;
+								var proposition = (ids.substring(0,5)=='ids_1') ? '' : ' ou importer un référentiel existant' ;
 								$('#'+ids).html('<q class="ajouter" title="Créer un référentiel vierge'+proposition+'."></q>');
 								$('#'+ids).prev().removeAttr("class").addClass("r").html('Sans objet.');
 								$('#'+ids).prev().prev().removeAttr("class").addClass("r").html('Absence de référentiel.');
@@ -378,10 +430,10 @@ $(document).ready
 		('click',
 			function()
 			{
-				ids = $(this).parent().attr('id');
+				var ids = $(this).parent().attr('id');
 				$('#voir_referentiel').html("&nbsp;");
 				afficher_masquer_images_action('hide');
-				new_span = '<span><input id="succes" name="succes" type="hidden" value="" /><label for="'+ids+'" class="valide">Faites votre choix ci-dessous...</label></span>';
+				var new_span = '<span><input id="succes" name="succes" type="hidden" value="" /><label for="'+ids+'" class="valide">Faites votre choix ci-dessous...</label></span>';
 				$(this).after(new_span);
 				$('#choisir_importer').parent().hide();
 				$('#choisir_referentiel').show();
@@ -434,7 +486,6 @@ $(document).ready
 						}
 						else
 						{
-							modification = false;
 							$('#ajax_msg').removeAttr("class").html('&nbsp;');
 							$('#f_structure').html(responseHTML);
 							$('#rechercher').removeAttr("class").show("fast"); // Pour IE7 le show() ne suffit pas
@@ -456,10 +507,10 @@ $(document).ready
 			function()
 			{
 				// Récup des infos
-				ids = $('#succes').parent().parent().attr('id');
-				tab_ids = ids.split('_');
-				matiere_id = tab_ids[2];
-				niveau_id  = tab_ids[3];
+				var ids = $('#succes').parent().parent().attr('id');
+				var tab_ids = ids.split('_');
+				var matiere_id = tab_ids[2];
+				var niveau_id  = tab_ids[3];
 				//MAJ et affichage du formulaire
 				charger_formulaire_structures();
 				$('#f_matiere option[value='+matiere_id+']').attr('selected',true);
@@ -497,14 +548,14 @@ $(document).ready
 		(
 			function()
 			{
-				modif_niveau_selected = 0; // 0 = pas besoin modifier / 1 = à modifier / 2 = déjà modifié
-				matiere_id = $('#f_matiere').val();
+				var modif_niveau_selected = 0; // 0 = pas besoin modifier / 1 = à modifier / 2 = déjà modifié
+				var matiere_id = $('#f_matiere').val();
 				$("#f_niveau option").each
 				(
 					function()
 					{
-						niveau_id = $(this).val();
-						findme = '.'+niveau_id+'.';
+						var niveau_id = $(this).val();
+						var findme = '.'+niveau_id+'.';
 						// Les niveaux "cycles" sont tout le temps accessibles
 						if(listing_id_niveaux_cycles.indexOf(findme) == -1)
 						{
@@ -540,9 +591,9 @@ $(document).ready
 			function()
 			{
 				$('#voir_referentiel_communautaire').hide();
-				matiere_id   = $('#f_matiere').val();
-				niveau_id    = $('#f_niveau').val();
-				structure_id = $('#f_structure').val();
+				var matiere_id   = $('#f_matiere').val();
+				var niveau_id    = $('#f_niveau').val();
+				var structure_id = $('#f_structure').val();
 				if( (matiere_id==0) && (niveau_id==0) && (structure_id==0) )
 				{
 					$('#ajax_msg').removeAttr("class").addClass("erreur").html("Il faut préciser au moins un critère !");
@@ -594,10 +645,10 @@ $(document).ready
 		('click',
 			function()
 			{
-				referentiel_id = $(this).parent().attr('id').substr(3);
-				description    = $(this).parent().text(); // Pb : il prend le contenu du <sup> avec
-				longueur_sup   = $(this).prev().prev().text().length;
-				description    = description.substring(0,description.length-longueur_sup);
+				var referentiel_id = $(this).parent().attr('id').substr(3);
+				var description    = $(this).parent().text(); // Pb : il prend le contenu du <sup> avec
+				var longueur_sup   = $(this).prev().prev().text().length;
+				var description    = description.substring(0,description.length-longueur_sup);
 				$('#reporter').html(description).parent('#choisir_importer').val('id_'+referentiel_id).parent().show();
 				maj_clock(1);
 				$('#rechercher_annuler').click();
@@ -612,11 +663,11 @@ $(document).ready
 		('click',
 			function()
 			{
-				referentiel_id = $(this).parent().attr('id').substr(3);
-				description    = $(this).parent().text(); // Pb : il prend le contenu du <sup> avec
-				longueur_sup   = $(this).prev().text().length;
-				description    = description.substring(0,description.length-longueur_sup);
-				new_label = '<label id="temp" class="loader">Demande envoyée... Veuillez patienter.</label>';
+				var referentiel_id = $(this).parent().attr('id').substr(3);
+				var description    = $(this).parent().text(); // Pb : il prend le contenu du <sup> avec
+				var longueur_sup   = $(this).prev().text().length;
+				var description    = description.substring(0,description.length-longueur_sup);
+				var new_label = '<label id="temp" class="loader">Demande envoyée... Veuillez patienter.</label>';
 				$(this).next().after(new_label);
 				$.ajax
 				(
@@ -684,8 +735,8 @@ $(document).ready
 		(
 			function()
 			{
-				ids = $('#succes').parent().parent().attr('id');
-				referentiel_id = $(this).val().substring(3);
+				var ids = $('#succes').parent().parent().attr('id');
+				var referentiel_id = $(this).val().substring(3);
 				$('button').attr('disabled','disabled');
 				$('#ajax_msg_choisir').removeAttr("class").addClass("loader").html("Demande envoyée... Veuillez patienter.");
 				$.ajax
@@ -711,8 +762,8 @@ $(document).ready
 							}
 							else
 							{
-								test_matiere_perso = (ids.substring(0,5)=='ids_1') ? true : false ;
-								q_partager = (test_matiere_perso) ? '<q class="partager_non" title="Le référentiel d\'une matière spécifique à l\'établissement ne peut être partagé."></q>' : '<q class="partager" title="Modifier le partage de ce référentiel."></q>' ;
+								var test_matiere_perso = (ids.substring(0,5)=='ids_1') ? true : false ;
+								var q_partager = (test_matiere_perso) ? '<q class="partager_non" title="Le référentiel d\'une matière spécifique à l\'établissement ne peut être partagé."></q>' : '<q class="partager" title="Modifier le partage de ce référentiel."></q>' ;
 								$('#'+ids).html('<q class="voir" title="Voir le détail de ce référentiel."></q>'+q_partager+'<q class="envoyer_non" title="Un référentiel non partagé ne peut pas être transmis à la collectivité."></q><q class="calculer" title="Modifier le mode de calcul associé à ce référentiel."></q><q class="supprimer" title="Supprimer ce référentiel."></q>');
 								$('#'+ids).prev().removeAttr("class").addClass("v").attr('lang',methode_calcul_langue).html(methode_calcul_texte);
 								if(test_matiere_perso)

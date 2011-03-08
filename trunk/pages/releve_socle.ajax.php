@@ -240,7 +240,7 @@ foreach($tab_eleve as $tab)
 										// on détermine si elle est acquise ou pas
 										$indice = test_A($score) ? 'A' : ( test_NA($score) ? 'NA' : 'VA' ) ;
 										// on enregistre les infos
-										$texte_demande_eval = ( ($_SESSION['USER_PROFIL']!='eleve') || ($_SESSION['DROIT_ELEVE_DEMANDES']==0) ) ? '' : ( ($item_cart) ? '<q class="demander_add" lang="ids_'.$matiere_id.'_'.$item_id.'_'.$score.'" title="Ajouter aux demandes d\'évaluations."></q>' : '<q class="demander_non" title="Demande interdite."></q>' ) ;
+										$texte_demande_eval = ($_SESSION['USER_PROFIL']!='eleve') ? '' : ( ($item_cart) ? '<q class="demander_add" lang="ids_'.$matiere_id.'_'.$item_id.'_'.$score.'" title="Ajouter aux demandes d\'évaluations."></q>' : '<q class="demander_non" title="Demande interdite."></q>' ) ;
 										$tab_infos_socle_eleve[$socle_id][$eleve_id][] = '<span class="'.$tab_etat[$indice].'">'.$texte_coef.$texte_socle.$texte_lien_avant.html($item_ref.' || '.$item_nom.' ['.$score.'%]').'</span>'.$texte_lien_apres.$texte_demande_eval;
 										$tab_score_socle_eleve[$socle_id][$eleve_id][$indice]++;
 										$tab_score_socle_eleve[$socle_id][$eleve_id]['nb']++;

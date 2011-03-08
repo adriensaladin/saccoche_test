@@ -33,8 +33,7 @@ $VERSION_JS_FILE += 15;
 <?php
 // Dates par défaut de début et de fin
 $annee_debut = (date('n')>8) ? date('Y') : date('Y')-1 ;
-$date_debut  = '01/09/'.$annee_debut;
-$date_fin    = date("d/m/Y");
+$annee_fin   = $annee_debut+1 ;
 ?>
 
 <ul class="puce">
@@ -47,8 +46,8 @@ $date_fin    = date("d/m/Y");
 
 <form action="" id="form0"><fieldset>
 	<label class="tab" for="f_aff_periode">Période :</label>
-		du <input id="f_date_debut" name="f_date_debut" size="9" type="text" value="<?php echo $date_debut ?>" /><q class="date_calendrier" title="Cliquez sur cette image pour importer une date depuis un calendrier !"></q>
-		au <input id="f_date_fin" name="f_date_fin" size="9" type="text" value="<?php echo $date_fin ?>" /><q class="date_calendrier" title="Cliquez sur cette image pour importer une date depuis un calendrier !"></q>
+		du <input id="f_date_debut" name="f_date_debut" size="9" type="text" value="01/09/<?php echo $annee_debut ?>" /><q class="date_calendrier" title="Cliquez sur cette image pour importer une date depuis un calendrier !"></q>
+		au <input id="f_date_fin" name="f_date_fin" size="9" type="text" value="01/09/<?php echo $annee_fin ?>" /><q class="date_calendrier" title="Cliquez sur cette image pour importer une date depuis un calendrier !"></q>
 	<br />
 	<span class="tab"></span><input type="hidden" name="f_action" value="Afficher_evaluations" /><button id="actualiser" type="submit"><img alt="" src="./_img/bouton/actualiser.png" /> Actualiser l'affichage.</button><label id="ajax_msg0">&nbsp;</label>
 </fieldset></form>

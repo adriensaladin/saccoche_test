@@ -34,14 +34,6 @@ $(document).ready
 // Alerter sur la nécessité de valider
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
-		$('#form_eleve_demandes select').change
-		(
-			function()
-			{
-				$('#ajax_msg_eleve_demandes').removeAttr("class").addClass("alerte").html("Penser à enregistrer les modifications.");
-			}
-		);
-
 		$("#form_validation_socle input").change
 		(
 			function()
@@ -202,48 +194,6 @@ $(document).ready
 			$('#form_eleve_socle input[value="SocleEtatValidation"]').parent().parent().fadeTo(0,opacite);
 		}
 		view_eleve_socle();
-
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-//	Demandes d'évaluations des élèves => soumission du formulaire
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-
-		$('#valider_eleve_demandes').click
-		(
-			function()
-			{
-				demandes = $("#form_eleve_demandes option:selected").val();
-				$("button").attr('disabled','disabled');
-				$('#ajax_msg_eleve_demandes').removeAttr("class").addClass("loader").html("Demande envoyée... Veuillez patienter.");
-				$.ajax
-				(
-					{
-						type : 'POST',
-						url : 'ajax.php?page='+PAGE,
-						data : 'f_objet=eleve_demandes&f_demandes='+demandes,
-						dataType : "html",
-						error : function(msg,string)
-						{
-							$("button").removeAttr('disabled');
-							$('#ajax_msg_eleve_demandes').removeAttr("class").addClass("alerte").html("Echec de la connexion ! Veuillez recommencer.");
-							return false;
-						},
-						success : function(responseHTML)
-						{
-							maj_clock(1);
-							$("button").removeAttr('disabled');
-							if(responseHTML!='ok')
-							{
-								$('#ajax_msg_eleve_demandes').removeAttr("class").addClass("alerte").html(responseHTML);
-							}
-							else
-							{
-								$('#ajax_msg_eleve_demandes').removeAttr("class").addClass("valide").html("Choix enregistré !");
-							}
-						}
-					}
-				);
-			}
-		);
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 //	Profils autorisés à valider le socle => soumission du formulaire

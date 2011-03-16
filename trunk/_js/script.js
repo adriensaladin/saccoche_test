@@ -649,6 +649,7 @@ $(document).ready
 				m = $("#m option:selected").val();
 				a = $("#a option:selected").val();
 				reload_calendrier(m,a);
+				return false;
 			}
 		);
 		$("#form_calque input.actu").live // live est utilisé pour prendre en compte les nouveaux éléments créés

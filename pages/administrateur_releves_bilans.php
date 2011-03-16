@@ -27,6 +27,7 @@
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = "Réglages relevés &amp; bilans";
+$VERSION_JS_FILE += 1;
 ?>
 
 <div class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__gestion_releves_bilans">DOC : Réglages relevés &amp; bilans</a></div>

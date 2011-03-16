@@ -65,7 +65,7 @@ $(document).ready
 
 		// Réagir au clic sur une image pour reporter des dates
 
-		$('input[type=image]').live
+		$('#bilan input[type=image]').live
 		('click',
 			function()
 			{

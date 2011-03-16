@@ -4,7 +4,7 @@ CREATE TABLE sacoche_matiere (
 	matiere_id          SMALLINT(5) UNSIGNED                NOT NULL AUTO_INCREMENT,
 	matiere_partage     TINYINT(1)  UNSIGNED                NOT NULL DEFAULT 1,
 	matiere_transversal TINYINT(1)  UNSIGNED                NOT NULL DEFAULT 0,
-	matiere_nb_demandes TINYINT(1)  UNSIGNED                NOT NULL DEFAULT 0,
+	matiere_nb_demandes TINYINT(3)  UNSIGNED                NOT NULL DEFAULT 0,
 	matiere_ordre       TINYINT(3)  UNSIGNED                NOT NULL DEFAULT 255,
 	matiere_ref         VARCHAR(5)  COLLATE utf8_unicode_ci NOT NULL DEFAULT "",
 	matiere_nom         VARCHAR(50) COLLATE utf8_unicode_ci NOT NULL DEFAULT "",

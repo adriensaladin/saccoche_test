@@ -36,7 +36,7 @@ $(document).ready
 
 		var modification = false;
 
-		$('input[type=image]').click
+		$('#form_ordonner input[type=image]').click
 		(
 			function()
 			{

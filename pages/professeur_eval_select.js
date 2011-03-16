@@ -1050,7 +1050,7 @@ $(document).ready
 //	Clic sur une image pour modifier l'ordre des items d'une évaluation
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
-		$('input[type=image]').live
+		$('#div_ordonner input[type=image]').live
 		('click',
 			function()
 			{

@@ -96,7 +96,7 @@ foreach($tab_options as $value)
 		<button id="calculer" type="button"><img alt="" src="./_img/bouton/actualiser.png" /> Simuler avec ces valeurs.</button>
 		<label id="ajax_msg">&nbsp;</label>
 	</p>
-	<p class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=environnement_generalites__calcul_scores_etats_acquisitions">DOC : Calcul des scores et des états d'acquisitions.</a></p>
+	<p><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=environnement_generalites__calcul_scores_etats_acquisitions">DOC : Calcul des scores et des états d'acquisitions.</a></span></p>
 </form>
 
 <hr />

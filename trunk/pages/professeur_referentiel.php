@@ -26,15 +26,8 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-$TITRE = "Référentiels";
+$TITRE = "Gestion des référentiels";
 ?>
-
-<div class="hc noprint">
-	<a href="./index.php?page=<?php echo $PAGE ?>&amp;section=gestion">Créer / paramétrer les référentiels.</a>	||
-	<a href="./index.php?page=<?php echo $PAGE ?>&amp;section=edition">Modifier le contenu des référentiels.</a>
-	<hr />
-</div>
-
 
 <?php
 // Afficher la bonne page et appeler le bon js / ajax par la suite
@@ -46,9 +39,6 @@ if(is_file($fichier_section))
 }
 else
 {
-	echo'<ul class="puce">';
-	echo'	<li><a href="./index.php?page='.$PAGE.'&amp;section=gestion"><img alt="" src="./_img/menu/professeur_referentiel_gestion.png" /> Créer / paramétrer les référentiels (importer, supprimer, partager, mode de calcul).</a></li>';
-	echo'	<li><a href="./index.php?page='.$PAGE.'&amp;section=edition"><img alt="" src="./_img/menu/professeur_referentiel_edition.png" /> Modifier le contenu des référentiels (domaines, thèmes, items).</a></li>';
-	echo'</ul>';
+	echo'<p><span class="astuce">Choisissez une rubrique dans le menu déroulant&hellip;</span></p>';
 }
 ?>

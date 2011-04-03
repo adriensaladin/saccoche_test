@@ -77,7 +77,7 @@ $(document).ready
 		function test_form_avant_envoi(formData, jqForm, options)
 		{
 			$('#ajax_msg').removeAttr("class").html("&nbsp;");
-			if(confirm("Etes-vous bien certain de vouloir supprimer irrémédiablement toutes les données ?"))
+			if(confirm("Confirmez-vous vouloir supprimer toutes vos données ?"))
 			{
 				$("#bouton_valider").attr('disabled','disabled');
 				$('#ajax_msg').removeAttr("class").addClass("loader").html("Demande envoyée... Veuillez patienter.");

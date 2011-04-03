@@ -27,7 +27,7 @@
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = "Demandes d'évaluations";
-$VERSION_JS_FILE += 10;
+$VERSION_JS_FILE += 11;
 
 // Lister le nb de demandes d'évaluations autorisées suivant les matières
 $infobulle = '';
@@ -71,10 +71,10 @@ $select_groupe  = afficher_select(DB_STRUCTURE_OPT_groupes_professeur($_SESSION[
 		<thead><tr><th>élève(s) sans demande</th></tr></thead>
 		<tbody><tr id="tr_sans"><td class="nu"></td></tr></tbody>
 	</table>
-	<table class="form">
+	<table id="table_demandes" class="form">
 		<thead>
 			<tr>
-				<th class="nu"></th>
+				<th class="nu"><input id="all_check" type="image" src="./_img/all_check.gif" title="Tout cocher." /> <input id="all_uncheck" type="image" src="./_img/all_uncheck.gif" title="Tout décocher." /></th>
 				<th>Matière</th>
 				<th>Item</th>
 				<th>Popularité</th>
@@ -90,10 +90,6 @@ $select_groupe  = afficher_select(DB_STRUCTURE_OPT_groupes_professeur($_SESSION[
 		</tbody>
 	</table>
 	<div id="zone_actions" class="hide">
-		<div class="ti">
-			<a href="#zone_actions" id="all_check">[ Tout cocher. ]</a>
-			<a href="#zone_actions" id="all_uncheck">[ Tout décocher. ]</a>
-		</div>
 		<h2>Avec les demandes cochées :<input type="hidden" id="ids" name="ids" value="" /></h2>
 		<fieldset>
 			<label class="tab" for="f_quoi">Action :</label><select id="f_quoi" name="f_quoi"><option value=""></option><option value="creer">Créer une nouvelle évaluation.</option><option value="completer">Compléter une évaluation existante.</option><option value="changer">Changer le statut pour "évaluation en préparation".</option><option value="retirer">Retirer de la liste des demandes.</option></select>

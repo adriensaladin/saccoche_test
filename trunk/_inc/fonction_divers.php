@@ -1374,6 +1374,19 @@ function afficher_contenu_referentiel($sesamath_id,$sesamath_key,$referentiel_id
 }
 
 /**
+ * Lister_Fichiers
+ * Liste les noms des fichiers contenus dans un dossier.
+ * 
+ * @param string   $dossier
+ * @return array
+ */
+
+function Lister_Fichiers($dossier)
+{
+	return array_diff( scandir($dossier) , array('.','..') );
+}
+
+/**
  * Creer_Dossier
  * Tester l'existence d'un dossier, le créer, tester son accès en écriture.
  * 
@@ -1421,11 +1434,30 @@ function Creer_Dossier($dossier)
 
 function Vider_Dossier($dossier)
 {
-	$tab_fichier = scandir($dossier);
-	unset($tab_fichier[0],$tab_fichier[1]);	// fichiers '.' et '..'
+	$tab_fichier = Lister_Fichiers($dossier);
 	foreach($tab_fichier as $fichier_nom)
 	{
 		unlink($dossier.'/'.$fichier_nom);
+	}
+}
+
+/**
+ * Creer_ou_Vider_Dossier
+ * Créer un dossier s'il n'existe pas, le vider de ses éventueles fichiers sinon.
+ * 
+ * @param string   $dossier
+ * @return void
+ */
+
+function Creer_ou_Vider_Dossier($dossier)
+{
+	if(!is_dir($dossier))
+	{
+		Creer_Dossier($dossier);
+	}
+	else
+	{
+		Vider_Dossier($dossier);
 	}
 }
 
@@ -1439,21 +1471,18 @@ function Vider_Dossier($dossier)
 
 function Supprimer_Dossier($dossier)
 {
-	$tab_contenu = scandir($dossier);
+	$tab_contenu = Lister_Fichiers($dossier);
 	foreach($tab_contenu as $contenu)
 	{
-		if( ($contenu!='.') && ($contenu!='..') )
+		$chemin_contenu = $dossier.'/'.$contenu;
+		if(is_dir($chemin_contenu))
 		{
-			$chemin_contenu = $dossier.'/'.$contenu;
-			if(is_dir($chemin_contenu))
-			{
-				Supprimer_Dossier($chemin_contenu);
-				rmdir($chemin_contenu);
-			}
-			else
-			{
-				unlink($chemin_contenu);
-			}
+			Supprimer_Dossier($chemin_contenu);
+			rmdir($chemin_contenu);
+		}
+		else
+		{
+			unlink($chemin_contenu);
 		}
 	}
 	rmdir($dossier);
@@ -1562,7 +1591,7 @@ function Modifier_RSS($fichier_chemin,$titre,$texte,$guid)
 /**
  * extraire_lignes
  * Pour retourner un tableau de lignes à partir d'un texte en se basant sur les retours chariot.
- * Utilisé notamment lors de la récupération d'un fichier CSS.
+ * Utilisé notamment lors de la récupération d'un fichier CSV.
  * 
  * @param string   $texte
  * @return array
@@ -1594,6 +1623,61 @@ function extraire_separateur_csv($ligne)
 	arsort($tab_separateur);
 	reset($tab_separateur);
 	return key($tab_separateur);
+}
+
+/**
+ * tester_courriel
+ * Tester si une adresse de courriel semble normale.
+ * Utilisé pour une récupération via un CSV parce que pour un champ de saisie javascript fait déjà le ménage.
+ * http://fr2.php.net/manual/fr/function.preg-match.php#96910
+ * 
+ * @param string   $courriel
+ * @return bool
+ */
+
+function tester_courriel($courriel)
+{
+	return preg_match('/^[^@]+@[a-zA-Z0-9._-]+\.[a-zA-Z]+$/',$courriel) ? TRUE : FALSE;
+}
+
+/**
+ * tester_UAI
+ * Tester si un numéro UAI est valide.
+ * Utilisé pour une récupération via un CSV parce que pour un champ de saisie javascript fait déjà le ménage.
+ * 
+ * @param string   $uai
+ * @return bool
+ */
+
+function tester_UAI($uai)
+{
+	// Il faut 7 chiffres suivis d'une lettre.
+	if(!preg_match('#^[0-9]{7}[A-Z]{1}$#',$uai))
+	{
+		return FALSE;
+	}
+	// Il faut vérifier la clef de contrôle.
+	$uai_nombre = substr($uai,0,7);
+	$uai_lettre = substr($uai,-1);
+	$reste = $uai_nombre - (23*floor($uai_nombre/23));
+	$alphabet = "ABCDEFGHJKLMNPRSTUVWXYZ";
+	$clef = substr($alphabet,$reste,1);
+	return ($clef==$uai_lettre) ? TRUE : FALSE;
+}
+
+/**
+ * tester_date
+ * Tester si une date est valide : format AAAA-MM-JJ par exemple.
+ * Utilisé pour une récupération via un CSV parce que pour un champ de saisie javascript fait déjà le ménage.
+ * 
+ * @param string   $date
+ * @return bool
+ */
+
+function tester_date($date)
+{
+	$date_unix = strtotime($date);
+	return ( ($date_unix!==FALSE) && ($date_unix!==-1) ) ? TRUE : FALSE ;
 }
 
 ?>

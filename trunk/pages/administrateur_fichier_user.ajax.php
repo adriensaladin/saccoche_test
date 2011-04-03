@@ -98,7 +98,8 @@ if( $step==1 )
 	$ferreur = $tab_file['error'];
 	if( (!file_exists($fnom_serveur)) || (!$ftaille) || ($ferreur) )
 	{
-		exit('Erreur : problème avec le fichier (taille dépassant probablement upload_max_filesize ) !');
+		require_once('./_inc/fonction_infos_serveur.php');
+		exit('Erreur : problème de transfert ! Fichier trop lourd ? min(memory_limit,post_max_size,upload_max_filesize)='.minimum_limitations_upload());
 	}
 	$extension = strtolower(pathinfo($fnom_transmis,PATHINFO_EXTENSION));
 	if(!in_array($extension,$tab_extensions_autorisees))
@@ -1674,7 +1675,7 @@ if( $step==53 )
 	echo' <li><a class="lien_ext" href="'.$dossier_login_mdp.$archive.'.pdf">Archiver / Imprimer (étiquettes <em>pdf</em>).</a></li>';
 	echo' <li><a class="lien_ext" href="'.$dossier_login_mdp.$archive.'.zip">Récupérer / Manipuler (fichier <em>csv</em> pour tableur).</a></li>';
 	echo'</ul>';
-	echo'<p class="danger">Attention : les mots de passe, cryptés, ne sont plus accessibles ultérieurement !</p>';
+	echo'<p class="danger">Les mots de passe, cryptés, ne sont plus accessibles ultérieurement !</p>';
 	switch($action)
 	{
 		case 'sconet_eleves' :                  $etape = 6; $step = 61; break;

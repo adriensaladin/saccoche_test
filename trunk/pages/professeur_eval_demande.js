@@ -255,14 +255,16 @@ $(document).ready
 		(
 			function()
 			{
-				$('input[type=checkbox]').attr('checked','checked');
+				$('#table_demandes input[type=checkbox]').attr('checked','checked');
+				return false;
 			}
 		);
 		$('#all_uncheck').click
 		(
 			function()
 			{
-				$('input[type=checkbox]').removeAttr('checked');
+				$('#table_demandes input[type=checkbox]').removeAttr('checked');
+				return false;
 			}
 		);
 

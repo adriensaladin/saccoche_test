@@ -48,7 +48,7 @@ $select_groupe  = afficher_select($tab_groupes  , $select_nom='f_groupe'  , $opt
 $select_palier  = afficher_select($tab_paliers  , $select_nom='f_palier'  , $option_first='non' , $selection=false , $optgroup='non');
 ?>
 
-<div class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_professeur__export_listings">DOC : Export de données.</a></div>
+<div><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_professeur__export_listings">DOC : Export de données.</a></span></div>
 
 <hr />
 

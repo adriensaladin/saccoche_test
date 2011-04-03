@@ -26,7 +26,7 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-$VERSION_JS_FILE += 0;
+$VERSION_JS_FILE += 1;
 ?>
 
 <?php
@@ -34,7 +34,7 @@ $selection = (isset($_POST['listing_ids'])) ? explode(',',$_POST['listing_ids'])
 $select_structure = afficher_select(DB_WEBMESTRE_OPT_structures_sacoche() , $select_nom=false , $option_first='non' , $selection , $optgroup='oui');
 ?>
 
-<p class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_webmestre__publipostage">DOC : Lettre d'information (multi-structures)</a></p>
+<p><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_webmestre__publipostage">DOC : Lettre d'information (multi-structures)</a></span></p>
 
 <div id="ajax_info" class="hide">
 	<h2>Envoi de la lettre</h2>
@@ -49,5 +49,16 @@ $select_structure = afficher_select(DB_WEBMESTRE_OPT_structures_sacoche() , $sel
 	<span class="tab"></span><span class="astuce">Utiliser "<span class="i">Shift + clic</span>" ou "<span class="i">Ctrl + clic</span>" pour une sélection multiple.</span><br />
 	<label class="tab" for="f_titre">Titre :</label><input id="f_titre" name="f_titre" value="" size="50" /><br />
 	<label class="tab" for="f_contenu">Contenu :</label><textarea id="f_contenu" name="f_contenu" rows="15" cols="100">message ici, sans bonjour ni au revoir, car l'en-tête et le pied du message sont automatiquement ajoutés</textarea><br />
-	<span class="tab"></span><input type="hidden" id="bases" name="bases" value="" /><button id="bouton_valider" type="submit"><img alt="" src="./_img/bouton/mail_envoyer.png" /> Envoyer la lettre.</button><label id="ajax_msg">&nbsp;</label>
+	<span class="tab"></span><input type="hidden" id="f_action" name="f_action" value="envoyer" /><input type="hidden" id="f_listing_id" name="f_listing_id" value="" /><button id="bouton_valider" type="submit"><img alt="" src="./_img/bouton/mail_envoyer.png" /> Envoyer la lettre.</button><label id="ajax_msg">&nbsp;</label>
+	<hr />
 </fieldset></form>
+
+<form id="structures" action="">
+	<p id="zone_actions">
+		Pour les structures sélectionnées : <input id="listing_ids" name="listing_ids" type="hidden" value="" />
+		<button id="bouton_stats" type="button"><img alt="" src="./_img/bouton/stats.png" /> Calculer les statistiques.</button>
+		<button id="bouton_transfert" type="button"><img alt="" src="./_img/bouton/fichier_export.png" /> Exporter données &amp; bases.</button>
+		<button id="bouton_supprimer" type="button"><img alt="" src="./_img/bouton/supprimer.png" /> Supprimer.</button>
+		<label id="ajax_supprimer">&nbsp;</label>
+	</p>
+</form>

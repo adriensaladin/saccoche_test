@@ -45,7 +45,7 @@ $select_cases_nb    = afficher_select($tab_select_cases_nb    , $select_nom='f_c
 $select_cases_larg  = afficher_select($tab_select_cases_size  , $select_nom='f_cases_larg'  , $option_first='non' , $selection=$tab_cookie['cases_largeur'] , $optgroup='non');
 ?>
 
-<div class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=releves_bilans__releve_items_selection">DOC : Bilan d'items sélectionnés.</a></div>
+<div><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=releves_bilans__releve_items_selection">DOC : Bilan d'items sélectionnés.</a></span></div>
 <div class="astuce">Le codage de ce bilan est à revoir (il y a un bug dans le tableau de synthèse avec des items de différentes matières).</div>
 
 <hr />

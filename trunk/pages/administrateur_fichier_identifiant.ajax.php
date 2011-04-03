@@ -135,7 +135,7 @@ if( (($action=='init_login')||($action=='init_mdp')) && (($profil=='eleves')||($
 	echo'<li><a class="lien_ext" href="'.$dossier_login_mdp.$fnom.'.zip">Nouveaux identifiants &rarr; Récupérer / Manipuler (fichier <em>csv</em> pour tableur).</a></li>';
 	if($action=='init_mdp')
 	{
-		echo'<li><label class="alerte">Attention : les mots de passe, cryptés, ne sont plus accessibles ultérieurement !</label></li>';
+		echo'<li><label class="alerte">Les mots de passe, cryptés, ne sont plus accessibles ultérieurement !</label></li>';
 	}
 	echo'</ul>';
 	exit();
@@ -180,7 +180,8 @@ if($action=='import_loginmdp')
 	$ferreur = $tab_file['error'];
 	if( (!file_exists($fnom_serveur)) || (!$ftaille) || ($ferreur) )
 	{
-		exit('Erreur : problème avec le fichier (taille dépassant probablement upload_max_filesize ) !');
+		require_once('./_inc/fonction_infos_serveur.php');
+		exit('Erreur : problème de transfert ! Fichier trop lourd ? min(memory_limit,post_max_size,upload_max_filesize)='.minimum_limitations_upload());
 	}
 	$extension = strtolower(pathinfo($fnom_transmis,PATHINFO_EXTENSION));
 	if(!in_array($extension,array('txt','csv')))
@@ -354,7 +355,7 @@ if($action=='import_loginmdp')
 		}
 		$pdf->Output($dossier_login_mdp.$fnom.'.pdf','F');
 		echo'<li><a class="lien_ext" href="'.$dossier_login_mdp.$fnom.'.pdf">Archiver / Imprimer les identifiants modifiés (étiquettes <em>pdf</em>).</a></li>';
-		echo'<li><label class="alerte">Attention : les mots de passe, cryptés, ne sont plus accessibles ultérieurement !</label></li>';
+		echo'<li><label class="alerte">Les mots de passe, cryptés, ne sont plus accessibles ultérieurement !</label></li>';
 	}
 	// On affiche le bilan
 	echo'<li><b>Résultat de l\'analyse et des opérations effectuées :</b></li>';
@@ -387,7 +388,8 @@ if( ($action=='import_gepi_eleves') || ($action=='import_gepi_profs') )
 	$ferreur = $tab_file['error'];
 	if( (!file_exists($fnom_serveur)) || (!$ftaille) || ($ferreur) )
 	{
-		exit('Erreur : problème avec le fichier (taille dépassant probablement upload_max_filesize ) !');
+		require_once('./_inc/fonction_infos_serveur.php');
+		exit('Erreur : problème de transfert ! Fichier trop lourd ? min(memory_limit,post_max_size,upload_max_filesize)='.minimum_limitations_upload());
 	}
 	$fnom_attendu = ($action=='import_gepi_eleves') ? 'base_eleves_gepi.csv' : 'base_professeurs_gepi.csv' ;
 	if($fnom_transmis!=$fnom_attendu)
@@ -544,7 +546,8 @@ if($action=='import_ent')
 	$ferreur = $tab_file['error'];
 	if( (!file_exists($fnom_serveur)) || (!$ftaille) || ($ferreur) )
 	{
-		exit('Erreur : erreur avec le fichier transmis (taille dépassant probablement upload_max_filesize ) !');
+		require_once('./_inc/fonction_infos_serveur.php');
+		exit('Erreur : problème de transfert ! Fichier trop lourd ? min(memory_limit,post_max_size,upload_max_filesize)='.minimum_limitations_upload());
 	}
 	$extension = strtolower(pathinfo($fnom_transmis,PATHINFO_EXTENSION));
 	if(!in_array($extension,array('txt','csv')))

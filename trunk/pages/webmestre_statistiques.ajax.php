@@ -27,59 +27,82 @@
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 
-$tab_bases = (isset($_POST['bases'])) ? array_map('clean_entier',explode(',',$_POST['bases'])) : array() ;
+$tab_base_id = (isset($_POST['f_listing_id'])) ? array_filter( array_map( 'clean_entier' , explode(',',$_POST['f_listing_id']) ) , 'positif' ) : array() ;
+$nb_bases    = count($tab_base_id);
 
-$num  = (isset($_GET['num'])) ? (int)$_GET['num'] : 0 ;	// Numéro de l'étape en cours
-$max  = (isset($_GET['max'])) ? (int)$_GET['max'] : 0 ;	// Nombre d'étapes à effectuer
+$action = (isset($_POST['f_action'])) ? clean_texte($_POST['f_action']) : '';
+$num    = (isset($_POST['num']))      ? clean_entier($_POST['num'])     : 0 ;	// Numéro de l'étape en cours
+$max    = (isset($_POST['max']))      ? clean_entier($_POST['max'])     : 0 ;	// Nombre d'étapes à effectuer
 
-$tab_bases = array_filter($tab_bases,'positif');
-$nb_bases  = count($tab_bases);
-
-$dossier = './__tmp/export/';
-$fichier_info = 'bases_contenu.txt';
-
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 // Récupération de la liste des structures avant recherche des stats
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-if( $nb_bases )
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
+if( ($action=='calculer') && $nb_bases )
 {
-	// Mémoriser dans un fichier les données des structures concernées par les stats
-	$fichier_texte = '';
-	$DB_TAB = DB_WEBMESTRE_lister_structures( implode(',',$tab_bases) );
+	// Pour mémoriser les totaux
+	$_SESSION['tmp']['totaux'] = array( 'prof_nb'=>0 , 'prof_use'=>0 , 'eleve_nb'=>0 , 'eleve_use'=>0 , 'score_nb'=>0 );
+	// Mémoriser les données des structures concernées par les stats
+	$_SESSION['tmp']['infos'] = array();
+	$DB_TAB = DB_WEBMESTRE_lister_structures( implode(',',$tab_base_id) );
 	foreach($DB_TAB as $DB_ROW)
 	{
-		$fichier_texte .= '<'.$DB_ROW['sacoche_base'].'>-<'.$DB_ROW['structure_denomination'].'>-<'.$DB_ROW['structure_contact_nom'].' '.$DB_ROW['structure_contact_prenom'].'>-<'.$DB_ROW['structure_inscription_date'].'>'."\r\n";
+		$_SESSION['tmp']['infos'][] = array(
+			'base_id'                => $DB_ROW['sacoche_base'] ,
+			'structure_denomination' => $DB_ROW['structure_denomination'] ,
+			'contact'                => $DB_ROW['structure_contact_nom'].' '.$DB_ROW['structure_contact_prenom'] ,
+			'inscription_date'       => $DB_ROW['structure_inscription_date']
+		);
 	}
-	Ecrire_Fichier($dossier.$fichier_info,$fichier_texte);
-	$max = $nb_bases + 1 ; // La dernière étape consiste uniquement à effacer le fichier
+	// Retour
+	$max = $nb_bases + 1 ; // La dernière étape consistera à vider la session temporaire et à renvoyer les totaux
 	exit('ok-'.$max);
 }
 
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 // Etape de récupération des stats
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-elseif( $num && $max && ($num<$max) )
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
+if( ($action=='calculer') && $num && $max && ($num<$max) )
 {
-	// Récupérer la ligne de données
-	$fichier_texte = file_get_contents($dossier.$fichier_info);
-	$fichier_texte = file_get_contents($dossier.$fichier_info);
-	$tab_ligne = explode("\r\n",$fichier_texte);
-	// Envoyer une série de courriels
-	$num_ligne = $num-1;
-	list($base_id,$structure_denomination,$contact,$inscription_date) = explode('>-<',substr($tab_ligne[$num_ligne],1,-1));
+	// Récupérer les infos ($base_id $structure_denomination $contact $inscription_date)
+	extract($_SESSION['tmp']['infos'][$num-1]);
+	// Récupérer une série de stats
 	charger_parametres_mysql_supplementaires($base_id);
 	list($prof_nb,$prof_use,$eleve_nb,$eleve_use,$score_nb) = DB_STRUCTURE_recuperer_statistiques();
+	// maj les totaux
+	$_SESSION['tmp']['totaux']['prof_nb']   += $prof_nb;
+	$_SESSION['tmp']['totaux']['prof_use']  += $prof_use;
+	$_SESSION['tmp']['totaux']['eleve_nb']  += $eleve_nb;
+	$_SESSION['tmp']['totaux']['eleve_use'] += $eleve_use;
+	$_SESSION['tmp']['totaux']['score_nb']  += $score_nb;
+	// Retour
 	exit('ok-<tr><td class="nu"><input type="checkbox" name="f_ids" value="'.$base_id.'" /></td><td class="label">'.$base_id.'</td><td class="label">'.html($structure_denomination).'</td><td class="label">'.html($contact).'</td><td class="label">'.$inscription_date.'</td><td class="label">'.$prof_nb.'</td><td class="label">'.$prof_use.'</td><td class="label">'.$eleve_nb.'</td><td class="label">'.$eleve_use.'</td><td class="label"><i>'.sprintf("%07u",$score_nb).'</i>'.number_format($score_nb,0,'',' ').'</td></tr>');
 }
-elseif( $num && $max && ($num==$max) )
+if( ($action=='calculer') && $num && $max && ($num==$max) )
 {
-	// Supprimer les fichiers dont on n'a plus besoin
-	unlink($dossier.$fichier_info);
-	exit('ok');
+	$ligne_total = '<tr><td class="nu"></td><th colspan="4" class="hc">Total</th><th class="hc">'.number_format($_SESSION['tmp']['totaux']['prof_nb'],0,'',' ').'</th><th class="hc">'.number_format($_SESSION['tmp']['totaux']['prof_use'],0,'',' ').'</th><th class="hc">'.number_format($_SESSION['tmp']['totaux']['eleve_nb'],0,'',' ').'</th><th class="hc">'.number_format($_SESSION['tmp']['totaux']['eleve_use'],0,'',' ').'</th><th class="hc">'.number_format($_SESSION['tmp']['totaux']['score_nb'],0,'',' ').'</th></tr>';
+	unset($_SESSION['tmp']);
+	exit('ok-'.$ligne_total);
 }
 
-else
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+//	Supprimer plusieurs structures existantes
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
+if( ($action=='supprimer') && $nb_bases )
 {
-	echo'Erreur avec les données transmises !';
+	foreach($tab_base_id as $base_id)
+	{
+		DB_WEBMESTRE_supprimer_multi_structure($base_id);
+	}
+	exit('<ok>');
 }
+
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+//	On ne devrait pas en arriver là...
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
+exit('Erreur avec les données transmises !');
+
 ?>

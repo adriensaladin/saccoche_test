@@ -30,6 +30,10 @@ $(document).ready
 	function()
 	{
 
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+//	Formulaire et traitement
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
 		// Le formulaire qui va être analysé et traité en AJAX
 		var formulaire = $("#newsletter");
 
@@ -78,7 +82,7 @@ $(document).ready
 				// grouper les select multiples => normalement pas besoin si name de la forme nom[], mais ça plante curieusement sur le serveur competences.sesamath.net
 				// alors j'ai copié le tableau dans un champ hidden...
 				var bases = new Array(); $("#f_base option:selected").each(function(){bases.push($(this).val());});
-				$('#bases').val(bases);
+				$('#f_listing_id').val(bases);
 				$(this).ajaxSubmit(ajaxOptions);
 				return false;
 			}
@@ -126,9 +130,10 @@ $(document).ready
 			}
 		} 
 
-		//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-		// Etapes d'envoi de la newsletter
-		//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+// Etapes d'envoi de la newsletter
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
 		function envoyer()
 		{
 			var num = parseInt( $('#ajax_num').html() );
@@ -137,9 +142,9 @@ $(document).ready
 			$.ajax
 			(
 				{
-					type : 'GET',
+					type : 'POST',
 					url : 'ajax.php?page='+PAGE,
-					data : 'num=' + num + '&max=' + max,
+					data : 'f_action=' + 'envoyer' + '&num=' + num + '&max=' + max,
 					dataType : "html",
 					error : function(msg,string)
 					{
@@ -196,6 +201,89 @@ $(document).ready
 				$("#bouton_valider").removeAttr('disabled');
 				$('#ajax_info').hide('fast');
 				$('#newsletter').show('fast');
+			}
+		);
+
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+//	Clic sur un bouton pour effectuer une action sur les structures sélectionnées
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
+		var supprimer_structures_selectionnees = function(listing_id)
+		{
+			$("button").attr('disabled','disabled');
+			// afficher_masquer_images_action('hide');
+			$('#ajax_supprimer').removeAttr("class").addClass("loader").html("Demande envoyée... Veuillez patienter.");
+			$.ajax
+			(
+				{
+					type : 'POST',
+					url : 'ajax.php?page='+PAGE,
+					data : 'f_action=supprimer&f_listing_id='+listing_id,
+					dataType : "html",
+					error : function(msg,string)
+					{
+						$('#ajax_supprimer').removeAttr("class").addClass("alerte").html("Echec de la connexion ! Veuillez recommencer.");
+						$("button").removeAttr('disabled');
+						// afficher_masquer_images_action('show');
+					},
+					success : function(responseHTML)
+					{
+						maj_clock(1);
+						if(responseHTML!='<ok>')	// Attention aux caractères accentués : l'utf-8 pose des pbs pour ce test
+						{
+							$('#ajax_supprimer').removeAttr("class").addClass("alerte").html(responseHTML);
+						}
+						else
+						{
+							$("#f_base option:selected").each
+							(
+								function()
+								{
+									$(this).remove();
+								}
+							);
+							$('#ajax_supprimer').removeAttr("class").html('&nbsp;');
+							$("button").removeAttr('disabled');
+							// afficher_masquer_images_action('show');
+						}
+					}
+				}
+			);
+		};
+
+		$('#zone_actions button').click
+		(
+			function()
+			{
+				var listing_id = new Array(); $("#f_base option:selected").each(function(){listing_id.push($(this).val());});
+				if(!listing_id.length)
+				{
+					$('#ajax_supprimer').removeAttr("class").addClass("erreur").html("Aucune structure sélectionnée !");
+					return false;
+				}
+				$('#ajax_supprimer').removeAttr("class").html('&nbsp;');
+				var id = $(this).attr('id');
+				if(id=='bouton_supprimer')
+				{
+					if(confirm("Toutes les bases des structures sélectionnées seront supprimées !\nConfirmez-vous vouloir effacer les données de ces structures ?"))
+					{
+						supprimer_structures_selectionnees(listing_id);
+					}
+				}
+				else
+				{
+					$('#listing_ids').val(listing_id);
+					var tab = new Array;
+					// tab['bouton_newsletter'] = "webmestre_newsletter";
+					tab['bouton_stats']      = "webmestre_statistiques";
+					tab['bouton_transfert']  = "webmestre_structure_transfert";
+					var page = tab[id];
+					var form = document.getElementById('structures');
+					form.action = './index.php?page='+page;
+					form.method = 'post';
+					// form.target = '_blank';
+					form.submit();
+				}
 			}
 		);
 

@@ -114,7 +114,9 @@ $tab_droits['webmestre_maintenance']                   = $tab_droits_profil_webm
 $tab_droits['webmestre_newsletter']                    = $tab_droits_profil_webmestre;
 $tab_droits['webmestre_resilier']                      = $tab_droits_profil_webmestre;
 $tab_droits['webmestre_statistiques']                  = $tab_droits_profil_webmestre;
-$tab_droits['webmestre_structure']                     = $tab_droits_profil_webmestre;
+$tab_droits['webmestre_structure_ajout_csv']           = $tab_droits_profil_webmestre;
+$tab_droits['webmestre_structure_gestion']             = $tab_droits_profil_webmestre;
+$tab_droits['webmestre_structure_transfert']           = $tab_droits_profil_webmestre;
 // Profils particuliers à gérer au cas par cas
 $tab_droits['_maj_select_domaines']                    = array( 'public'=>0 , 'eleve'=>0 , 'professeur'=>1 , 'directeur'=>1 , 'administrateur'=>0 , 'webmestre'=>0 );
 $tab_droits['_maj_select_eleves']                      = array( 'public'=>0 , 'eleve'=>0 , 'professeur'=>1 , 'directeur'=>1 , 'administrateur'=>1 , 'webmestre'=>0 );

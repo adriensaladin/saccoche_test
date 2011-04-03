@@ -40,7 +40,7 @@ $cnil_check_non       = intval(HEBERGEUR_CNIL) ? '' : ' checked="checked"' ;
 $cnil_numero          = intval(HEBERGEUR_CNIL) ? HEBERGEUR_CNIL : '' ;
 ?>
 
-<p class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_webmestre__identite_installation">DOC : Identité de l'installation (page d'accueil)</a></p>
+<p><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_webmestre__identite_installation">DOC : Identité de l'installation (page d'accueil)</a></span></p>
 
 <hr />
 

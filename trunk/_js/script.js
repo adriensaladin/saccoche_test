@@ -73,11 +73,7 @@ function format_liens(element)
 
 function infobulle()
 {
-	$('img[title]').tooltip({showURL:false});
-	$('th[title]').tooltip({showURL:false});
-	$('td[title]').tooltip({showURL:false});
-	$('a[title]').tooltip({showURL:false});
-	$('q[title]').tooltip({showURL:false});
+	$('img[title] , th[title] , td[title] , a[title] , q[title] , input[title]').tooltip({showURL:false});
 }
 
 /**

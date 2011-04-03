@@ -88,7 +88,7 @@ $select_professeurs_directeurs = afficher_select(DB_STRUCTURE_OPT_professeurs_di
 
 	<fieldset id="fieldset_import_loginmdp" class="hide">
 		<hr />
-		<p class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__force_login_mdp_tableur">DOC : Imposer identifiants SACoche avec un tableur</a></p>
+		<p><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__force_login_mdp_tableur">DOC : Imposer identifiants SACoche avec un tableur</a></span></p>
 		Vous pouvez <button id="user_export" type="button"><img alt="" src="./_img/bouton/fichier_export.png" /> récupérer un fichier csv avec les noms / prénoms / logins actuels</button> (le mot de passe, crypté, ne peut être restitué).<p />
 		Modifiez les identifiants souhaités, puis indiquez ci-dessous le fichier <b>nom-du-fichier.csv</b> (ou <b>nom-du-fichier.txt</b>) obtenu que vous souhaitez importer.
 		<p><label class="tab" for="import_loginmdp">Envoyer le fichier :</label><button id="import_loginmdp" type="button"><img alt="" src="./_img/bouton/fichier_import.png" /> Parcourir...</button></p>
@@ -96,7 +96,7 @@ $select_professeurs_directeurs = afficher_select(DB_STRUCTURE_OPT_professeurs_di
 
 	<fieldset id="fieldset_import_id_lcs" class="hide">
 		<hr />
-		<p class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__gestion_mode_identification__LCS">DOC : Intégration de SACoche dans un LCS</a></p>
+		<p><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__gestion_mode_identification__LCS">DOC : Intégration de SACoche dans un LCS</a></span></p>
 		<?php
 		$fichier = './webservices/import_lcs.php';
 		echo (is_file($fichier)) ? '<button name="dupliquer" id="COPY_id_lcs_TO_id_ent" type="button"><img alt="" src="./_img/bouton/mdp_groupe.png" /> Récupérer l\'identifiant LCS</button> comme identifiant de l\'ENT pour tous les utilisateurs.'
@@ -106,7 +106,7 @@ $select_professeurs_directeurs = afficher_select(DB_STRUCTURE_OPT_professeurs_di
 
 	<fieldset id="fieldset_import_id_argos" class="hide">
 		<hr />
-		<p class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__gestion_mode_identification__argos">DOC : Intégration de SACoche dans Argos</a></p>
+		<p><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__gestion_mode_identification__argos">DOC : Intégration de SACoche dans Argos</a></span></p>
 		<?php
 		$fichier = './webservices/import_argos.php';
 		echo (is_file($fichier)) ? '<button name="dupliquer" id="COPY_id_argos_profs_TO_id_ent" type="button"><img alt="" src="./_img/bouton/mdp_groupe.png" /> Récupérer l\'identifiant Argos</button> comme identifiant de l\'ENT pour tous les professeurs &amp; directeurs.<br />

@@ -26,17 +26,8 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-$TITRE = "Gestion des évaluations et saisie des acquisitions";
+$TITRE = "Évaluation des élèves";
 ?>
-
-<div class="hc">
-	<a href="./index.php?page=<?php echo $PAGE ?>&amp;section=demande">Demandes d'évaluations.</a>	||
-	<a href="./index.php?page=<?php echo $PAGE ?>&amp;section=groupe">Évaluer une classe ou un groupe.</a>	||
-	<a href="./index.php?page=<?php echo $PAGE ?>&amp;section=select">Évaluer des élèves sélectionnés.</a>	||
-	<a href="./index.php?page=releve">Accéder aux bilans.</a>
-</div>
-
-<hr />
 
 <?php
 // Afficher la bonne page et appeler le bon js / ajax par la suite
@@ -48,12 +39,6 @@ if(is_file($fichier_section))
 }
 else
 {
-	echo'
-		<p>Vous pouvez soit :</p>
-		<ul class="puce">
-			<li>évaluer une classe, un groupe, ou un groupe de besoin que vous auriez créé.</li>
-			<li>évaluer ponctuellement un ou plusieurs élèves (en dehors du cadre d\'une classe ou d\'un groupe).</li>
-		</ul>
-	';
+	echo'<p><span class="astuce">Choisissez une rubrique dans le menu déroulant&hellip;</span></p>';
 }
 ?>

@@ -30,7 +30,7 @@ $TITRE = "Paliers du socle";
 $VERSION_JS_FILE += 1;
 ?>
 
-<div class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__gestion_paliers_socle">DOC : Paliers du socle</a></div>
+<div><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__gestion_paliers_socle">DOC : Paliers du socle</a></span></div>
 
 <hr />
 

@@ -26,26 +26,8 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-$TITRE = "Relevés &amp; Bilans";
-
-$menu_items_selection = ($_SESSION['USER_PROFIL']=='professeur') ? '<a href="./index.php?page='.$PAGE.'&amp;section=items_selection">Bilan d\'items sélectionnés.</a> || ' : '' ;
-$menu_synthese_socle  = ($_SESSION['USER_PROFIL']!='eleve') ? ' || <a href="./index.php?page='.$PAGE.'&amp;section=synthese_socle">Synthèse de maîtrise du socle.</a>' : '' ;
+$TITRE = "Relevés / Bilans";
 ?>
-
-<div class="hc">
-	<a href="./index.php?page=<?php echo $PAGE ?>&amp;section=grille_referentiel">Grille d'items d'un référentiel.</a> || 
-	<?php echo $menu_items_selection ?>
-	<a href="./index.php?page=<?php echo $PAGE ?>&amp;section=items_matiere">Bilan d'items d'une matière.</a> || 
-	<a href="./index.php?page=<?php echo $PAGE ?>&amp;section=items_multimatiere">Bilan d'items pluridisciplinaire.</a>
-</div>
-<div class="hc">
-	<a href="./index.php?page=<?php echo $PAGE ?>&amp;section=synthese_matiere">Synthèse d'une matière.</a> || 
-	<a href="./index.php?page=<?php echo $PAGE ?>&amp;section=synthese_multimatiere">Synthèse pluridisciplinaire.</a> || 
-	<a href="./index.php?page=<?php echo $PAGE ?>&amp;section=socle">Détail de maîtrise du socle.</a>
-	<?php echo $menu_synthese_socle ?>
-</div>
-
-<hr />
 
 <?php
 // Afficher la bonne page et appeler le bon js / ajax par la suite
@@ -57,6 +39,6 @@ if(is_file($fichier_section))
 }
 else
 {
-	echo'<p><span class="astuce">Choisissez une rubrique ci-dessus...</span></p>';
+	echo'<p><span class="astuce">Choisissez une rubrique dans le menu déroulant&hellip;</span></p>';
 }
 ?>

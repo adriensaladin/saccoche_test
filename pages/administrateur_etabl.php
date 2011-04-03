@@ -29,21 +29,6 @@ if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');
 $TITRE = "Paramétrages";
 ?>
 
-<div class="hc">
-	<a href="./index.php?page=<?php echo $PAGE ?>&amp;section=identite">Identité de l'établissement.</a>	||
-	<a href="./index.php?page=<?php echo $PAGE ?>&amp;section=matiere">Matières.</a>	||
-	<a href="./index.php?page=<?php echo $PAGE ?>&amp;section=palier">Paliers du socle.</a>	||
-	<a href="./index.php?page=<?php echo $PAGE ?>&amp;section=niveau">Niveaux.</a>	<br />
-	<a href="./index.php?page=<?php echo $PAGE ?>&amp;section=login">Format des noms d'utilisateurs.</a>	||
-	<a href="./index.php?page=<?php echo $PAGE ?>&amp;section=connexion">Mode d'identification.</a>	||
-	<a href="./index.php?page=<?php echo $PAGE ?>&amp;section=duree_inactivite">Délai avant déconnexion.</a>	<br />
-	<a href="./index.php?page=<?php echo $PAGE ?>&amp;section=demandes_eval">Demandes d'évaluations.</a>	||
-	<a href="./index.php?page=<?php echo $PAGE ?>&amp;section=options_eleve">Options de l'environnement élève.</a>	||
-	<a href="./index.php?page=<?php echo $PAGE ?>&amp;section=profils_validation">Profils autorisés à valider le socle.</a>
-</div>
-
-<hr />
-
 <?php
 // Afficher la bonne page et appeler le bon js / ajax par la suite
 $fichier_section = './pages/'.$PAGE.'_'.$SECTION.'.php';
@@ -51,9 +36,5 @@ if(is_file($fichier_section))
 {
 	$PAGE = $PAGE.'_'.$SECTION ;
 	require($fichier_section);
-}
-else
-{
-	echo'<p><span class="astuce">Choisissez une rubrique ci-dessus...</span></p>';
 }
 ?>

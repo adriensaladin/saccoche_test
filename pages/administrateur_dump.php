@@ -28,47 +28,9 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = "Sauvegarde / Restauration";
 $VERSION_JS_FILE += 1;
-
-/*
-
-Ce que j'ai programmé semble propre, efficace et assez rapide.
-Néanmoins, plusieurs autres pistes peuvent toujours être explorées :
-
-1. Utiliser "SELECT ... INTO OUTFILE" & "LOAD DATA INFILE"
-	=> TB et très rapide sauf que le user MySQL doit avoir le droit de FILE sur le serveur, ce qui est rarement autorisé car pas bon pour la sécurité
-
-2. Utiliser "LOCK TABLES table_nom WRITE" & "UNLOCK TABLES"
-	=> Améliore un peu le process sauf que le user MySQL doit avoir le droit de LOCK TABLES sur le serveur, ce qui est n'est pas forcément le cas
-
-3. Le nec plus ultra, et le plus rapide, est d'utiliser mysqldump en ligne de commande : voir http://dev.mysql.com/doc/refman/5.0/fr/mysqldump.html
-	=> Sauf qu'il faut avoir le droit d'utiliser exec() ou shell_exec() ou system() ou passthru()
-	=> Sauf que la commande "mysqldump" n'est pas forcément accessible (si j'ai bien compris il faut que le chemin figure dans $_SERVER["PATH"])
-	=> Voici un exemple :
-		// Pour la sauvegarde
-		$commande  = 'mysqldump'; (normalement)
-		$commande  = 'M:\WEB\bin\mysql\mysql5.1.36\bin\mysqldump.exe';	// exemple de chamin complet avec wampserver sous windows (http://forum.topflood.com/hebergement/mysql-dump-2711.html)
-		$commande .= ' --quick';
-		$commande .= ' --add-drop-table';
-		$commande .= ' --skip-comments';
-		$commande .= ' --disable-keys';
-		$commande .= ' --extended-insert';
-		$commande .= ' --host='.SACOCHE_STRUCTURE_BD_HOST;
-		$commande .= ' --user='.SACOCHE_STRUCTURE_BD_USER;
-		$commande .= ' --password='.SACOCHE_STRUCTURE_BD_PASS;
-		$commande .= ' '.SACOCHE_STRUCTURE_BD_NAME;
-		$commande .= ' '.implode(' ',$tab_tables_base);
-		$commande .= ' > '.$dossier.$fichier;
-		$exec = exec($commande);
-		// Pour la restauration :
-		$commande  = 'mysql';
-		$commande .= ' '.SACOCHE_STRUCTURE_BD_NAME;
-		$commande .= ' < '.$dossier.$fichier;
-		$exec = exec($commande);
-
-*/
 ?>
 
-<p class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__gestion_dump">DOC : Sauvegarde et restauration de la base</a></p>
+<p><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__gestion_dump">DOC : Sauvegarde et restauration de la base</a></span></p>
 
 <hr />
 

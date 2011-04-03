@@ -67,7 +67,7 @@ echo afficher_navigateurs_alertes($hr_avant='<hr />',$chemin_image='./_img',$hr_
 if($ALERTE_SSO)
 {
 	echo'<hr />';
-	echo'<div class="danger">Attention : vous n\'êtes pas déconnecté de l\'ENT ! On peut retourner dans <em>SACoche</em> sans s\'identifier ! Fermez votre navigateur ou <a href="index.php?page=public_logout_SSO&amp;'.$ALERTE_SSO.'">déconnectez-vous de l\'ENT</a>.</div>';
+	echo'<div class="danger">Attention : vous n\'êtes pas déconnecté de l\'ENT et on peut revenir dans <em>SACoche</em> sans s\'identifier ! Fermez votre navigateur ou <a href="index.php?page=public_logout_SSO&amp;'.$ALERTE_SSO.'">déconnectez-vous de l\'ENT</a>.</div>';
 }
 ?>
 

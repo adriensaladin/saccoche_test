@@ -27,67 +27,64 @@
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 
-$titre     = (isset($_POST['f_titre']))   ? clean_texte($_POST['f_titre'])   : '';
-$contenu   = (isset($_POST['f_contenu'])) ? clean_texte($_POST['f_contenu']) : '';
-$tab_bases = (isset($_POST['bases']))     ? array_map('clean_entier',explode(',',$_POST['bases'])) : array() ;
+$tab_base_id = (isset($_POST['f_listing_id'])) ? array_filter( array_map( 'clean_entier' , explode(',',$_POST['f_listing_id']) ) , 'positif' ) : array() ;
+$nb_bases    = count($tab_base_id);
 
-$num  = (isset($_GET['num'])) ? (int)$_GET['num'] : 0 ;	// Numéro de l'étape en cours
-$max  = (isset($_GET['max'])) ? (int)$_GET['max'] : 0 ;	// Nombre d'étapes à effectuer
-$pack = 10 ;	// Nombre de mails envoyés à chaque étape
+$action  = (isset($_POST['f_action']))  ? clean_texte($_POST['f_action'])  : '';
+$titre   = (isset($_POST['f_titre']))   ? clean_texte($_POST['f_titre'])   : '';
+$contenu = (isset($_POST['f_contenu'])) ? clean_texte($_POST['f_contenu']) : '';
+$num     = (isset($_POST['num']))       ? clean_entier($_POST['num'])      : 0 ;	// Numéro de l'étape en cours
+$max     = (isset($_POST['max']))       ? clean_entier($_POST['max'])      : 0 ;	// Nombre d'étapes à effectuer
+$pack    = 10 ;	// Nombre de mails envoyés à chaque étape
 
-$tab_bases = array_filter($tab_bases,'positif');
-$nb_bases  = count($tab_bases);
-
-$dossier = './__tmp/export/';
-$fichier_contenu = 'lettre_contenu.txt';
-$fichier_contact = 'lettre_contact.txt';
-
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 // Préparation d'une lettre d'informations avant envoi
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-if( $titre && $contenu && $nb_bases )
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
+if( ($action=='envoyer') && $titre && $contenu && $nb_bases )
 {
-	// Mémoriser dans un fichier le titre et le contenu de la lettre d'informations
-	$fichier_texte = $titre.' ◄■► '.$contenu."\r\n";
-	Ecrire_Fichier($dossier.$fichier_contenu,$fichier_texte);
-	// Mémoriser dans un fichier les données des contacts concernés par la lettre
-	$fichier_texte = '';
-	$DB_TAB = DB_WEBMESTRE_lister_contacts_cibles( implode(',',$tab_bases) );
+	// Mémoriser en session le nb d'envoi / le titre / le contenu de la lettre d'informations
+	$_SESSION['tmp']['nombre']  = $nb_bases ;
+	$_SESSION['tmp']['titre']   = $titre ;
+	$_SESSION['tmp']['contenu'] = $contenu ;
+	// Mémoriser en session les données des contacts concernés par la lettre
+	$_SESSION['tmp']['infos'] = array();
+	$DB_TAB = DB_WEBMESTRE_lister_contacts_cibles( implode(',',$tab_base_id) );
 	foreach($DB_TAB as $DB_ROW)
 	{
-		$fichier_texte .= '<'.$DB_ROW['contact_id'].'>-<'.$DB_ROW['contact_nom'].'>-<'.$DB_ROW['contact_prenom'].'>-<'.$DB_ROW['contact_courriel'].'>'."\r\n";
+		$_SESSION['tmp']['infos'][] = array(
+			'base_id'          => $DB_ROW['contact_id'] ,
+			'contact_nom'      => $DB_ROW['contact_nom'] ,
+			'contact_prenom'   => $DB_ROW['contact_prenom'] ,
+			'contact_courriel' => $DB_ROW['contact_courriel']
+		);
 	}
-	Ecrire_Fichier($dossier.$fichier_contact,$fichier_texte);
-	$max = 1 + floor($nb_bases/$pack) + 1 ; // La dernière étape consiste uniquement à effacer les fichiers
+	// Retour
+	$max = 1 + floor($nb_bases/$pack) + 1 ; // La dernière étape consistera uniquement à vider la session temporaire
 	exit('ok-'.$max);
 }
 
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 // Etape d'envoi d'une lettre d'informations
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-elseif( $num && $max && ($num<$max) )
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
+if( ($action=='envoyer') && $num && $max && ($num<$max) )
 {
-	// Récupérer le titre et le contenu de la lettre d'informations
-	$fichier_texte = file_get_contents($dossier.$fichier_contenu);
-	list($titre,$contenu) = explode(' ◄■► ',$fichier_texte);
-	// Récupérer une série de données des contacts concernés par la lettre
-	$fichier_texte = file_get_contents($dossier.$fichier_contact);
-	$tab_ligne = explode("\r\n",$fichier_texte);
 	// Envoyer une série de courriels
 	$i_min = ($num-1)*10;
-	$i_max = min( count($tab_ligne)-1 , $num*10); // -1 à cause du dernier retour chariot dans $fichier_contact qui créé une ligne de trop
+	$i_max = min( $_SESSION['tmp']['nombre'] , $num*10);
 	for($i=$i_min ; $i<$i_max ; $i++)
 	{
-		list($base_id,$contact_nom,$contact_prenom,$contact_courriel) = explode('>-<',substr($tab_ligne[$i],1,-1));
+		extract($_SESSION['tmp']['infos'][$i]); // $base_id $contact_nom $contact_prenom $contact_courriel
 		$texte = 'Bonjour '.$contact_prenom.' '.$contact_nom.'.'."\r\n\r\n";
-		$texte.= $contenu."\r\n\r\n";
+		$texte.= $_SESSION['tmp']['contenu']."\r\n\r\n";
 		$texte.= 'Rappel des adresses à utiliser :'."\r\n";
 		$texte.= SERVEUR_ADRESSE.'?id='.$base_id.' (hébergement de l\'établissement)'."\r\n";
 		$texte.= SERVEUR_ADRESSE.'?id='.$base_id.'&admin'.' (connexion administrateur)'."\r\n";
 		$texte.= SERVEUR_PROJET.' (site du projet SACoche)'."\r\n\r\n";
 		$texte.= 'Cordialement'."\r\n";
 		$texte.= WEBMESTRE_PRENOM.' '.WEBMESTRE_NOM."\r\n\r\n";
-		$courriel_bilan = envoyer_webmestre_courriel($contact_courriel,$titre,$texte,false);
+		$courriel_bilan = envoyer_webmestre_courriel($contact_courriel,$_SESSION['tmp']['titre'],$texte,false);
 		if(!$courriel_bilan)
 		{
 			exit('Erreur lors de l\'envoi du courriel !');
@@ -95,16 +92,29 @@ elseif( $num && $max && ($num<$max) )
 	}
 	exit('ok');
 }
-elseif( $num && $max && ($num==$max) )
+if( ($action=='envoyer') && $num && $max && ($num==$max) )
 {
-	// Supprimer les fichiers dont on n'a plus besoin
-	unlink($dossier.$fichier_contenu);
-	unlink($dossier.$fichier_contact);
+	unset($_SESSION['tmp']);
 	exit('ok');
 }
 
-else
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+//	Supprimer plusieurs structures existantes
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
+if( ($action=='supprimer') && $nb_bases )
 {
-	echo'Erreur avec les données transmises !';
+	foreach($tab_base_id as $base_id)
+	{
+		DB_WEBMESTRE_supprimer_multi_structure($base_id);
+	}
+	exit('<ok>');
 }
+
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+//	On ne devrait pas en arriver là...
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
+exit('Erreur avec les données transmises !');
+
 ?>

@@ -205,8 +205,7 @@ function deleteBOM($file)
 function effacer_fichiers_temporaires($dossier,$nb_minutes)
 {
 	$date_limite = time() - $nb_minutes*60;
-	$tab_fichier = scandir($dossier);
-	unset($tab_fichier[0],$tab_fichier[1]);	// fichiers '.' et '..'
+	$tab_fichier = Lister_Fichiers($dossier);
 	foreach($tab_fichier as $fichier_nom)
 	{
 		$chemin_fichier = $dossier.'/'.$fichier_nom;

@@ -120,7 +120,7 @@ if(is_array($tab_groupes))
 	<?php echo $tab_groupe_periode_js ?> 
 </script>
 
-<div class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=releves_bilans__releve_items_matiere">DOC : Bilan d'items d'une matière.</a></div>
+<div><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=releves_bilans__releve_items_matiere">DOC : Bilan d'items d'une matière.</a></span></div>
 <div class="manuel <?php echo $class_form_type ?>"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=releves_bilans__transfert_bulletin_SACoche_Gepi">DOC : Transfert du bulletin de SACoche vers GEPI.</a></div>
 <div class="manuel <?php echo $class_form_type ?>"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=releves_bilans__transfert_note_SACoche_Gepi">DOC : Transfert d'une note bilan de SACoche vers GEPI.</a></div>
 

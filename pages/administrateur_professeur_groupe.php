@@ -36,7 +36,7 @@ $select_professeurs = afficher_select(DB_STRUCTURE_OPT_professeurs_etabl() , $se
 $select_groupes     = afficher_select(DB_STRUCTURE_OPT_groupes_etabl()     , $select_nom=false , $option_first='non' , $selection=false , $optgroup='non');
 ?>
 
-<p class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__gestion_groupes">DOC : Gestion des groupes</a></p>
+<p><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__gestion_groupes">DOC : Gestion des groupes</a></span></p>
 
 <hr />
 

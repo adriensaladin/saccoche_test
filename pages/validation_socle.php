@@ -26,15 +26,8 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-$TITRE = "Valider le socle";
+$TITRE = "Validation du socle";
 ?>
-
-<div class="hc">
-	<a href="./index.php?page=<?php echo $PAGE ?>&amp;section=item">Valider les items.</a>	||
-	<a href="./index.php?page=<?php echo $PAGE ?>&amp;section=pilier">Valider les compétences (ou piliers).</a>
-</div>
-
-<hr />
 
 <?php
 // Afficher la bonne page et appeler le bon js / ajax par la suite
@@ -43,5 +36,9 @@ if(is_file($fichier_section))
 {
 	$PAGE = $PAGE.'_'.$SECTION ;
 	require($fichier_section);
+}
+else
+{
+	echo'<p><span class="astuce">Choisissez une rubrique dans le menu déroulant&hellip;</span></p>';
 }
 ?>

@@ -56,7 +56,7 @@ foreach($tab_select_proxy_auth_method as $option_value => $option_texte)
 
 ?>
 
-<p class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_webmestre__configuration_proxy">DOC : Configuration d'un proxy</a></p>
+<p><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_webmestre__configuration_proxy">DOC : Configuration d'un proxy</a></span></p>
 
 <hr />
 

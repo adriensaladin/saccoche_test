@@ -3396,7 +3396,7 @@ function DB_STRUCTURE_supprimer_mono_structure()
 
 function DB_STRUCTURE_creer_remplir_tables_structure($dossier_requetes)
 {
-	$tab_files = scandir($dossier_requetes);
+	$tab_files = Lister_Fichiers($dossier_requetes);
 	foreach($tab_files as $file)
 	{
 		$extension = pathinfo($file,PATHINFO_EXTENSION);

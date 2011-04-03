@@ -69,6 +69,10 @@ function css_browser_selector($UserAgent=null)
 	{
 		$tab_retour[] = $gecko.' ff3';
 	}
+	elseif( strstr($UserAgent, 'firefox/4') || strstr($UserAgent, 'iceweasel/4') || strstr($UserAgent, 'icecat/4') )
+	{
+		$tab_retour[] = $gecko.' ff4';
+	}
 	elseif(strstr($UserAgent,'gecko/'))
 	{
 		$tab_retour[] = $gecko;

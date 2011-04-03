@@ -26,7 +26,7 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-$VERSION_JS_FILE += 5;
+$VERSION_JS_FILE += 7;
 ?>
 
 <?php
@@ -37,7 +37,7 @@ $select_structure = afficher_select(DB_WEBMESTRE_OPT_structures_sacoche() , $sel
 <form id="statistiques" action=""><fieldset>
 	<label class="tab" for="f_basic">Structure(s) :</label><select id="f_base" name="f_base" multiple="multiple" size="10"><?php echo $select_structure ?></select><br />
 	<span class="tab"></span><span class="astuce">Utiliser "<span class="i">Shift + clic</span>" ou "<span class="i">Ctrl + clic</span>" pour une sélection multiple.</span><br />
-	<span class="tab"></span><input type="hidden" id="bases" name="bases" value="" /><button id="bouton_valider" type="submit"><img alt="" src="./_img/bouton/stats.png" /> Calculer les statistiques.</button><label id="ajax_msg">&nbsp;</label>
+	<span class="tab"></span><input type="hidden" id="f_action" name="f_action" value="calculer" /><input type="hidden" id="f_listing_id" name="f_listing_id" value="" /><button id="bouton_valider" type="submit"><img alt="" src="./_img/bouton/stats.png" /> Calculer les statistiques.</button><label id="ajax_msg">&nbsp;</label>
 </fieldset></form>
 
 <div id="ajax_info" class="hide">
@@ -51,10 +51,11 @@ $select_structure = afficher_select(DB_WEBMESTRE_OPT_structures_sacoche() , $sel
 <p />
 
 <form id="structures" action="" class="hide">
+	<hr />
 	<table class="form" id="statistiques">
 		<thead>
 			<tr>
-				<th class="nu"></th>
+				<th class="nu"><input id="all_check" type="image" src="./_img/all_check.gif" title="Tout cocher." /><br /><input id="all_uncheck" type="image" src="./_img/all_uncheck.gif" title="Tout décocher." /></th>
 				<th>Id</th>
 				<th>Structure</th>
 				<th>Contact</th>
@@ -66,21 +67,23 @@ $select_structure = afficher_select(DB_WEBMESTRE_OPT_structures_sacoche() , $sel
 				<th>saisies<br />enregistrées</th>
 			</tr>
 		</thead>
+		<tfoot>
+			<tr>
+			</tr>
+		</tfoot>
 		<tbody>
 			<tr>
 			</tr>
 		</tbody>
 	</table>
-	<div id="zone_actions">
-		<a href="#zone_actions" id="all_check">[ Tout cocher. ]</a>
-		<a href="#zone_actions" id="all_uncheck">[ Tout décocher. ]</a>
+	<p id="zone_actions">
 		Pour les structures cochées : <input id="listing_ids" name="listing_ids" type="hidden" value="" />
 		<button id="bouton_newsletter" type="button"><img alt="" src="./_img/bouton/mail_ecrire.png" /> Écrire un courriel.</button>
-	</div>
+		<button id="bouton_transfert" type="button"><img alt="" src="./_img/bouton/fichier_export.png" /> Exporter données &amp; bases.</button>
+		<button id="bouton_supprimer" type="button"><img alt="" src="./_img/bouton/supprimer.png" /> Supprimer.</button>
+		<label id="ajax_supprimer">&nbsp;</label>
+	</p>
+	<div class="astuce">Concernant les <b>utilisateurs enregistrés</b>, seuls sont comptés ceux au statut "actif".</div>
+	<div class="astuce">Les <b>utilisateurs connectés</b> sont ceux s'étant identifiés au cours du dernier semestre.</div>
+	</p>
 </form>
-
-<div id="expli" class="hide">
-	<hr />
-	<span class="astuce">Concernant les <b>utilisateurs enregistrés</b>, seuls sont comptés ceux au statut "actif".</span><br />
-	<span class="astuce">Les <b>utilisateurs connectés</b> sont ceux s'étant identifiés au cours du dernier semestre.</span>
-</div>

@@ -29,6 +29,7 @@ if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');
 
 $action           = (isset($_POST['f_action']))           ? clean_texte($_POST['f_action'])              : '';
 $base_id          = (isset($_POST['f_base_id']))          ? clean_entier($_POST['f_base_id'])            : 0;
+$listing_base_id  = (isset($_POST['f_listing_id']))       ? $_POST['f_listing_id']                       : '';
 $geo_id           = (isset($_POST['f_geo']))              ? clean_entier($_POST['f_geo'])                : 0;
 $localisation     = (isset($_POST['f_localisation']))     ? $_POST['f_localisation']                     : ''; // Ne pas appliquer trim()
 $denomination     = (isset($_POST['f_denomination']))     ? clean_texte($_POST['f_denomination'])        : '';
@@ -57,9 +58,9 @@ if( ($action!='supprimer') && ($action!='lister_admin') && ($action!='initialise
 
 if( ($action=='ajouter') && isset($tab_geo[$geo_id]) && $localisation && $denomination && $contact_nom && $contact_prenom && $contact_courriel )
 {
+	// Vérifier que le n°UAI est disponible
 	if($uai)
 	{
-		// Vérifier que le n°UAI est disponible
 		if( DB_WEBMESTRE_tester_structure_UAI($uai) )
 		{
 			exit('Erreur : numéro UAI déjà utilisé !');
@@ -73,8 +74,9 @@ if( ($action=='ajouter') && isset($tab_geo[$geo_id]) && $localisation && $denomi
 	// Créer un dossier pour accueillir les vignettes verticales avec l'identité des élèves
 	Creer_Dossier('./__tmp/badge/'.$base_id);
 	Ecrire_Fichier('./__tmp/badge/'.$base_id.'/index.htm','Circulez, il n\'y a rien à voir par ici !');
-	// Lancer les requêtes pour créer et remplir les tables
+	// Charger les paramètres de connexion à cette base afin de pouvoir y effectuer des requêtes
 	charger_parametres_mysql_supplementaires($base_id);
+	// Lancer les requêtes pour créer et remplir les tables
 	DB_STRUCTURE_creer_remplir_tables_structure('./_sql/structure/');
 	// Il est arrivé que la fonction DB_STRUCTURE_modifier_parametres() retourne une erreur disant que la table n'existe pas.
 	// Comme si les requêtes de DB_STRUCTURE_creer_remplir_tables_structure() étaient en cache, et pas encore toutes passées (parcequ'au final, quand on va voir la base, toutes les tables sont bien là).
@@ -231,6 +233,20 @@ if( ($action=='initialiser_mdp') && $base_id && $admin_id )
 if( ($action=='supprimer') && $base_id )
 {
 	DB_WEBMESTRE_supprimer_multi_structure($base_id);
+	exit('<ok>');
+}
+
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+//	Supprimer plusieurs structures existantes
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
+if( ($action=='supprimer') && $listing_base_id )
+{
+	$tab_base_id = array_filter( array_map( 'clean_entier' , explode(',',$listing_base_id) ) , 'positif' );
+	foreach($tab_base_id as $base_id)
+	{
+		DB_WEBMESTRE_supprimer_multi_structure($base_id);
+	}
 	exit('<ok>');
 }
 

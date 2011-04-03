@@ -39,7 +39,7 @@ $groupe_id   = clean_entier( substr($groupe,1) );
 $select_f_groupes = afficher_select(DB_STRUCTURE_OPT_regroupements_etabl() , $select_nom='f_groupes' , $option_first='non' , $selection=$groupe , $optgroup='oui');
 ?>
 
-<p class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__gestion_eleves">DOC : Gestion des élèves</a></p>
+<p><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__gestion_eleves">DOC : Gestion des élèves</a></span></p>
 
 <form action="./index.php?page=<?php echo $PAGE ?>" method="POST" id="form0">
 	<div>Restreindre l'affichage : <?php echo $select_f_groupes ?> <button id="actualiser" type="submit"><img alt="" src="./_img/bouton/actualiser.png" /> Actualiser.</button></div>

@@ -35,6 +35,7 @@ $(document).ready
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
 		var mode = false;
+		var please_wait = false;
 
 		// tri du tableau (avec jquery.tablesorter.js).
 		var sorting = [[2,0],[3,0]];
@@ -52,6 +53,7 @@ $(document).ready
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 //	Clic sur une cellule (remplace un champ label, impossible à définir sur plusieurs colonnes)
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
 		$('td.label').live
 		('click',
 			function()
@@ -240,41 +242,108 @@ $(document).ready
 		$('q.valider').live(         'click' , function(){formulaire.submit();} );
 		$('table.bilan_synthese input , table.bilan_synthese select').live( 'keyup' , function(e){intercepter(e);} );
 
-//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 //	Éléments dynamiques du formulaire
-//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
 		// Tout cocher ou tout décocher
 		$('#all_check').click
 		(
 			function()
 			{
-				$('input[type=checkbox]').attr('checked','checked');
+				$('#structures input[type=checkbox]').attr('checked','checked');
+				return false;
 			}
 		);
 		$('#all_uncheck').click
 		(
 			function()
 			{
-				$('input[type=checkbox]').removeAttr('checked');
+				$('#structures input[type=checkbox]').removeAttr('checked');
+				return false;
 			}
 		);
 
-//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
-//	Appeler la page de stats ou de newsletter
-//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+//	Clic sur un bouton pour effectuer une action sur les structures cochées
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
+		var supprimer_structures_cochees = function(listing_id)
+		{
+			$("button").attr('disabled','disabled');
+			afficher_masquer_images_action('hide');
+			$('#ajax_supprimer').removeAttr("class").addClass("loader").html("Demande envoyée... Veuillez patienter.");
+			$.ajax
+			(
+				{
+					type : 'POST',
+					url : 'ajax.php?page='+PAGE,
+					data : 'f_action=supprimer&f_listing_id='+listing_id,
+					dataType : "html",
+					error : function(msg,string)
+					{
+						$('#ajax_supprimer').removeAttr("class").addClass("alerte").html("Echec de la connexion ! Veuillez recommencer.");
+						$("button").removeAttr('disabled');
+						afficher_masquer_images_action('show');
+					},
+					success : function(responseHTML)
+					{
+						maj_clock(1);
+						if(responseHTML!='<ok>')	// Attention aux caractères accentués : l'utf-8 pose des pbs pour ce test
+						{
+							$('#ajax_supprimer').removeAttr("class").addClass("alerte").html(responseHTML);
+						}
+						else
+						{
+							$("input[type=checkbox]:checked").each
+							(
+								function()
+								{
+									$(this).parent().parent().remove();
+								}
+							);
+							$('#ajax_supprimer').removeAttr("class").html('&nbsp;');
+							$("button").removeAttr('disabled');
+							afficher_masquer_images_action('show');
+						}
+					}
+				}
+			);
+		};
 
 		$('#zone_actions button').click
 		(
 			function()
 			{
-				page = ($(this).attr('id')=='bouton_stats') ? 'webmestre_statistiques' : 'webmestre_newsletter' ;
-				var check_ids = new Array(); $("input[type=checkbox]:checked").each(function(){check_ids.push($(this).val());});
-				$('#listing_ids').val(check_ids);
-				var form = document.getElementById('structures');
-				form.action = './index.php?page='+page;
-				form.method = 'post';
-				form.submit();
+				var listing_id = new Array(); $("input[type=checkbox]:checked").each(function(){listing_id.push($(this).val());});
+				if(!listing_id.length)
+				{
+					$('#ajax_supprimer').removeAttr("class").addClass("erreur").html("Aucune structure cochée !");
+					return false;
+				}
+				$('#ajax_supprimer').removeAttr("class").html('&nbsp;');
+				var id = $(this).attr('id');
+				if(id=='bouton_supprimer')
+				{
+					if(confirm("Toutes les bases des structures cochées seront supprimées !\nConfirmez-vous vouloir effacer les données de ces structures ?"))
+					{
+						supprimer_structures_cochees(listing_id);
+					}
+				}
+				else
+				{
+					$('#listing_ids').val(listing_id);
+					var tab = new Array;
+					tab['bouton_newsletter'] = "webmestre_newsletter";
+					tab['bouton_stats']      = "webmestre_statistiques";
+					tab['bouton_transfert']  = "webmestre_structure_transfert";
+					var page = tab[id];
+					var form = document.getElementById('structures');
+					form.action = './index.php?page='+page;
+					form.method = 'post';
+					// form.target = '_blank';
+					form.submit();
+				}
 			}
 		);
 
@@ -410,7 +479,14 @@ $(document).ready
 		function test_form_avant_envoi(formData, jqForm, options)
 		{
 			$('#ajax_msg').removeAttr("class").html("&nbsp;");
-			var readytogo = validation.form();
+			if( (mode!='ajouter') || ($('#f_courriel_envoi').is(':checked')) || confirm("Le mot de passe du premier administrateur, non récupérable ultérieurement, ne sera pas transmis !\nConfirmez-vous ne pas vouloir envoyer le courriel d'inscription ?") )
+			{
+				var readytogo = validation.form();
+			}
+			else
+			{
+				var readytogo = false;
+			}
 			if(readytogo)
 			{
 				please_wait = true;

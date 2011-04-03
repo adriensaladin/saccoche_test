@@ -26,7 +26,7 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-$VERSION_JS_FILE += 9;
+$VERSION_JS_FILE += 12;
 
 // Élément de formulaire "f_geo" pour le choix d'une zone géographique
 $options_geo = '';
@@ -37,7 +37,7 @@ foreach($DB_TAB as $DB_ROW)
 }
 ?>
 
-<p class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_webmestre__gestion_multi_etablissements">DOC : Gestion des établissements (multi-structures)</a></p>
+<p><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_webmestre__gestion_multi_etablissements">DOC : Gestion des établissements (multi-structures)</a></span></p>
 
 <script type="text/javascript">
 	// <![CDATA[
@@ -49,7 +49,7 @@ foreach($DB_TAB as $DB_ROW)
 	<table class="form bilan_synthese comp_view">
 		<thead>
 			<tr>
-				<th class="nu"></th>
+				<th class="nu"><input id="all_check" type="image" src="./_img/all_check.gif" title="Tout cocher." /><br /><input id="all_uncheck" type="image" src="./_img/all_uncheck.gif" title="Tout décocher." /></th>
 				<th>Id</th>
 				<th>Zone géo</th>
 				<th>Localisation<br />Dénomination</th>
@@ -85,11 +85,12 @@ foreach($DB_TAB as $DB_ROW)
 		</tbody>
 	</table>
 	<div id="zone_actions">
-		<a href="#zone_actions" id="all_check">[ Tout cocher. ]</a>
-		<a href="#zone_actions" id="all_uncheck">[ Tout décocher. ]</a>
 		Pour les structures cochées : <input id="listing_ids" name="listing_ids" type="hidden" value="" />
 		<button id="bouton_newsletter" type="button"><img alt="" src="./_img/bouton/mail_ecrire.png" /> Écrire un courriel.</button>
 		<button id="bouton_stats" type="button"><img alt="" src="./_img/bouton/stats.png" /> Calculer les statistiques.</button>
+		<button id="bouton_transfert" type="button"><img alt="" src="./_img/bouton/fichier_export.png" /> Exporter données &amp; bases.</button>
+		<button id="bouton_supprimer" type="button"><img alt="" src="./_img/bouton/supprimer.png" /> Supprimer.</button>
+		<label id="ajax_supprimer">&nbsp;</label>
 	</div>
 </form>
 <p />

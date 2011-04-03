@@ -36,7 +36,7 @@ $select_periodes        = afficher_select(DB_STRUCTURE_OPT_periodes_etabl()     
 $select_classes_groupes = afficher_select(DB_STRUCTURE_OPT_classes_groupes_etabl() , $select_nom=false , $option_first='non' , $selection=false , $optgroup='oui');
 ?>
 
-<p class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__gestion_periodes">DOC : Gestion des périodes</a></p>
+<p><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__gestion_periodes">DOC : Gestion des périodes</a></span></p>
 
 <hr />
 

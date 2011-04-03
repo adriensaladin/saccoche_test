@@ -63,7 +63,7 @@ foreach($tab_valid as $etat => $tab_style)
 }
 ?>
 
-<div class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=environnement_generalites__daltonisme">DOC : Daltonisme</a></div>
+<div><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=environnement_generalites__daltonisme">DOC : Daltonisme</a></span></div>
 
 <hr />
 

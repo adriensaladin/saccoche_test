@@ -27,9 +27,11 @@
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = "Statistiques d'utilisation";
+?>
 
+<p><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_webmestre__statistiques">DOC : Statistiques d'utilisation</a></span></p>
+
+<?php
 $fin = (HEBERGEUR_INSTALLATION=='multi-structures') ? 'multi' : 'mono' ;
 require('./pages/'.$PAGE.'_'.$fin.'.php');
 ?>
-
-<p class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_webmestre__statistiques">DOC : Statistiques d'utilisation</a></p>

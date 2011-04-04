@@ -57,6 +57,14 @@ INSERT INTO sacoche_matiere VALUES
 ( 41, 1, 0, 0, 255, "G-TPR", "Enseignement technologique-professionnel"),
 ( 42, 1, 0, 0, 255,  "INFO", "Informatique"),
 ( 43, 1, 0, 0, 255, "SCIEN", "Sciences"),
+( 90, 1, 0, 0, 255,    "P1", "1 Maîtrise de la langue française"),
+( 91, 1, 0, 0, 255,    "P2", "2 Pratique d'une langue vivante étrangère"),
+( 92, 1, 0, 0, 255,   "P3A", "3 Principaux éléments de mathématiques"),
+( 93, 1, 0, 0, 255,   "P3B", "3 Culture scientifique et technologique"),
+( 94, 1, 0, 0, 255,    "P4", "4 Maîtrise des TICE"),
+( 95, 1, 0, 0, 255,    "P5", "5 Culture humaniste"),
+( 96, 1, 0, 0, 255,    "P6", "6 Compétences sociales et civiques"),
+( 97, 1, 0, 0, 255,    "P7", "7 Autonomie et l'initiative"),
 ( 99, 1, 1, 0, 255, "TRANS", "Transversal");
 
 ALTER TABLE sacoche_matiere ENABLE KEYS;

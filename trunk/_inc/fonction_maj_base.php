@@ -774,6 +774,26 @@ function maj_base($version_actuelle)
 	}
 
 	//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	//	MAJ 2011-03-16 => 2011-04-04
+	//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	if($version_actuelle=='2011-03-16')
+	{
+		$version_actuelle = '2011-04-04';
+		// ajout des matières correspondant aux piliers, utiles pour organiser les référentiels à l'école primaire
+		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES ( 90, 1, 0, 0, 255,  "P1", "1 Maîtrise de la langue française")' );
+		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES ( 91, 1, 0, 0, 255,  "P2", "2 Pratique d\'une langue vivante étrangère")' );
+		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES ( 92, 1, 0, 0, 255, "P3A", "3 Principaux éléments de mathématiques")' );
+		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES ( 93, 1, 0, 0, 255, "P3B", "3 Culture scientifique et technologique")' );
+		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES ( 94, 1, 0, 0, 255,  "P4", "4 Maîtrise des TICE")' );
+		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES ( 95, 1, 0, 0, 255,  "P5", "5 Culture humaniste")' );
+		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES ( 96, 1, 0, 0, 255,  "P6", "6 Compétences sociales et civiques")' );
+		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES ( 97, 1, 0, 0, 255,  "P7", "7 Autonomie et l\'initiative")' );
+		// mise à jour du champ "version_base" (obligatoire)
+		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_actuelle.'" WHERE parametre_nom="version_base" LIMIT 1' );
+	}
+
+	//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Log de l'action
 	//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

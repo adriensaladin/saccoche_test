@@ -32,7 +32,7 @@ $VERSION_JS_FILE += 0;
 
 <?php
 // Initialisation de l'état de l'accès
-$fichier_blocage_webmestre = $CHEMIN_CONFIG.'blocage_webmestre.txt';
+$fichier_blocage_webmestre = $CHEMIN_CONFIG.'blocage_webmestre_0.txt';
 if(is_file($fichier_blocage_webmestre))
 {
 	$label = '<label class="erreur">Application fermée : '.html(file_get_contents($fichier_blocage_webmestre)).'</label>';

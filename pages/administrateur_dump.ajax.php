@@ -49,11 +49,11 @@ if($action=='sauvegarder')
 	// Créer ou vider le dossier temporaire
 	Creer_ou_Vider_Dossier($dossier_temp);
 	// Bloquer l'application
-	bloquer_application($_SESSION['USER_PROFIL'],'Sauvegarde de la base en cours.');
+	bloquer_application('automate',$_SESSION['BASE'],'Sauvegarde de la base en cours.');
 	// Remplir le dossier temporaire avec les fichiers de svg des tables
 	sauvegarder_tables_base_etablissement($dossier_temp,$nb_lignes_maxi);
 	// Débloquer l'application
-	debloquer_application($_SESSION['USER_PROFIL']);
+	debloquer_application('automate',$_SESSION['BASE']);
 	// Zipper les fichiers de svg
 	$fichier_zip_nom = 'dump_SACoche_'.$_SESSION['BASE'].'_'.date('Y-m-d_H-i-s').'_'.mt_rand().'.zip';
 	zipper_fichiers_sauvegarde($dossier_temp,$dossier_dump,$fichier_zip_nom);
@@ -136,11 +136,11 @@ elseif($action=='uploader')
 elseif($action=='restaurer')
 {
 	// Bloquer l'application
-	bloquer_application($_SESSION['USER_PROFIL'],'Restauration de la base en cours.');
+	bloquer_application('automate',$_SESSION['BASE'],'Restauration de la base en cours.');
 	// Restaurer des fichiers de svg et mettre la base à jour si besoin.
 	$texte_maj = restaurer_tables_base_etablissement($dossier_temp);
 	// Débloquer l'application
-	debloquer_application($_SESSION['USER_PROFIL']);
+	debloquer_application('automate',$_SESSION['BASE']);
 	// Supprimer le dossier temporaire
 	Supprimer_Dossier($dossier_temp);
 	// Afficher le retour

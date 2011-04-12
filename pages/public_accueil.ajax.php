@@ -44,15 +44,15 @@ function maj_base_si_besoin($profil)
 	{
 		// On ne met pas à jour la base tant que le webmestre bloque l'accès à l'application, car sinon cela pourrait se produire avant le transfert de tous les fichiers.
 		global $CHEMIN_CONFIG;
-		if(!is_file($CHEMIN_CONFIG.'blocage_webmestre.txt'))
+		if(!is_file($CHEMIN_CONFIG.'blocage_webmestre_0.txt'))
 		{
 			// Bloquer l'application
-			bloquer_application($profil,'Mise à jour de la base en cours.');
+			bloquer_application('automate',$_SESSION['BASE'],'Mise à jour de la base en cours.');
 			// Lancer une mise à jour de la base
 			require_once('./_inc/fonction_maj_base.php');
 			maj_base($version_base);
 			// Débloquer l'application
-			debloquer_application($profil);
+			debloquer_application('automate',$_SESSION['BASE']);
 		}
 	}
 }

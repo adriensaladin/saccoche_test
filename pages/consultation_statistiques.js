@@ -1,4 +1,3 @@
-<?php
 /**
  * @version $Id$
  * @author Thomas Crespin <thomas.crespin@sesamath.net>
@@ -25,28 +24,24 @@
  * 
  */
 
-if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-if($_SESSION['SESAMATH_ID']==ID_DEMO) {exit('Action désactivée pour la démo...');}
+// jQuery !
+$(document).ready
+(
+	function()
+	{
 
-$action = (isset($_POST['f_action'])) ? clean_texte($_POST['f_action']) : '';
-$motif  = (isset($_POST['f_motif']))  ? clean_texte($_POST['f_motif'])  : '';
+		// tri du tableau (avec jquery.tablesorter.js).
+		var sorting = [[1,1],[0,1]];
+		$('table#bilan').tablesorter({ headers:{} });
+		function trier_tableau()
+		{
+			if($('table#bilan tbody tr td').length>1)
+			{
+				$('table#bilan').trigger('update');
+				$('table#bilan').trigger('sorton',[sorting]);
+			}
+		}
+		trier_tableau();
 
-//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
-// Bloquer ou débloquer l'application
-//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
-
-if($action=='debloquer')
-{
-	debloquer_application($_SESSION['USER_PROFIL'],$_SESSION['BASE']);
-	exit('<label class="valide">Application accessible.</label>');
-}
-elseif($action=='bloquer')
-{
-	bloquer_application($_SESSION['USER_PROFIL'],$_SESSION['BASE'],$motif);
-	exit('<label class="erreur">Application fermée : '.html($motif).'</label>');
-}
-else
-{
-	echo'Erreur avec les données transmises !';
-}
-?>
+	}
+);

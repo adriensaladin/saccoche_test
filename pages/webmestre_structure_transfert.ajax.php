@@ -92,11 +92,11 @@ if( ($action=='exporter') && $num && $max && ($num<$max) )
 	// Créer ou vider le dossier temporaire des sql
 	Creer_ou_Vider_Dossier($dossier_temp_sql);
 	// Bloquer l'application
-	bloquer_application($_SESSION['USER_PROFIL'],'Sauvegarde de la base en cours.');
+	bloquer_application('automate',$export_id,'Sauvegarde de la base en cours.');
 	// Remplir le dossier temporaire avec les fichiers de svg des tables
 	sauvegarder_tables_base_etablissement($dossier_temp_sql,$nb_lignes_maxi);
 	// Débloquer l'application
-	debloquer_application($_SESSION['USER_PROFIL']);
+	debloquer_application('automate',$export_id);
 	// Zipper les fichiers de svg
 	zipper_fichiers_sauvegarde($dossier_temp_sql,$dossier_temp_zip,$fichier_nom);
 	// Appel suivant

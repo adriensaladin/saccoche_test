@@ -39,11 +39,11 @@ $action = (isset($_POST['f_action'])) ? clean_texte($_POST['f_action']) : '';
 if($action=='nettoyer')
 {
 	// Bloquer l'application
-	bloquer_application($_SESSION['USER_PROFIL'],'Recherche et suppression de données orphelines en cours.');
+	bloquer_application('automate',$_SESSION['BASE'],'Recherche et suppression de données orphelines en cours.');
 	// Rechercher et corriger les anomalies
 	$tab_bilan = DB_STRUCTURE_corriger_anomalies();
 	// Débloquer l'application
-	debloquer_application($_SESSION['USER_PROFIL']);
+	debloquer_application('automate',$_SESSION['BASE']);
 	// Afficher le retour
 	echo'<li>'.implode('</li><li>',$tab_bilan).'</li>';
 	$top_arrivee = microtime(TRUE);
@@ -60,7 +60,7 @@ if($action=='purger')
 {
 
 	// Bloquer l'application
-	bloquer_application($_SESSION['USER_PROFIL'],'Purge annuelle de la base en cours.');
+	bloquer_application('automate',$_SESSION['BASE'],'Purge annuelle de la base en cours.');
 	// Supprimer tous les devoirs associés aux classes, mais pas les saisies associées
 	DB_STRUCTURE_supprimer_devoirs_sans_saisies();
 	// Supprimer tous les types de groupes, sauf les classes (donc 'groupe' ; 'besoin' ; 'eval'), ainsi que les jointures avec les périodes.
@@ -80,7 +80,7 @@ if($action=='purger')
 	// En profiter pour optimiser les tables (1 fois par an, ça ne peut pas faire de mal)
 	DB_STRUCTURE_optimiser_tables_structure();
 	// Débloquer l'application
-	debloquer_application($_SESSION['USER_PROFIL']);
+	debloquer_application('automate',$_SESSION['BASE']);
 	// Afficher le retour
 	echo'<li><label class="valide">Évaluations supprimées (saisies associées conservées).</label></li>';
 	echo'<li><label class="valide">Groupes supprimés (avec leurs associations).</label></li>';
@@ -100,13 +100,13 @@ if($action=='purger')
 if($action=='supprimer')
 {
 	// Bloquer l'application
-	bloquer_application($_SESSION['USER_PROFIL'],'Suppression des notes et des validations en cours.');
+	bloquer_application('automate',$_SESSION['BASE'],'Suppression des notes et des validations en cours.');
 	// Supprimer toutes les saisies aux évaluations
 	DB_STRUCTURE_supprimer_saisies();
 	// Supprimer toutes les validations du socle
 	DB_STRUCTURE_supprimer_validations();
 	// Débloquer l'application
-	debloquer_application($_SESSION['USER_PROFIL']);
+	debloquer_application('automate',$_SESSION['BASE']);
 	// Afficher le retour
 	echo'<li><label class="valide">Notes saisies aux évaluations supprimées.</label></li>';
 	echo'<li><label class="valide">Validations des items et des compétences du socle supprimées.</label></li>';

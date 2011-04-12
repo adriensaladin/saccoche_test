@@ -1756,6 +1756,26 @@ function DB_STRUCTURE_compter_demandes_formulees_eleve_matiere($eleve_id,$matier
 }
 
 /**
+ * DB_STRUCTURE_compter_saisies_prof_classe
+ *
+ * @param void
+ * @return array
+ */
+
+function DB_STRUCTURE_compter_saisies_prof_classe()
+{
+	$DB_SQL = 'SELECT CONCAT(user_nom," ",user_prenom) AS professeur, groupe_nom, COUNT(saisie_note) AS nombre ';
+	$DB_SQL.= 'FROM sacoche_user ';
+	$DB_SQL.= 'LEFT JOIN sacoche_devoir ON sacoche_user.user_id=sacoche_devoir.prof_id ';
+	$DB_SQL.= 'LEFT JOIN sacoche_saisie USING (devoir_id) ';
+	$DB_SQL.= 'LEFT JOIN sacoche_groupe USING (groupe_id) ';
+	$DB_SQL.= 'WHERE user_profil=:user_profil AND groupe_type=:groupe_type ';
+	$DB_SQL.= 'GROUP BY user_id,groupe_id';
+	$DB_VAR = array(':user_profil'=>'professeur',':groupe_type'=>'classe');
+	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+}
+
+/**
  * DB_STRUCTURE_compter_eleves_suivant_statut
  *
  * @param void
@@ -2676,12 +2696,6 @@ function DB_STRUCTURE_modifier_devoir($devoir_id,$prof_id,$date_mysql,$info,$tab
 	$DB_SQL.= 'LIMIT 1';
 	$DB_VAR = array(':date'=>$date_mysql,':devoir_info'=>$info,':devoir_id'=>$devoir_id,':prof_id'=>$prof_id);
 	DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-	// sacoche_saisie (retirer superflu)
-	$chaine_id = implode(',',$tab_items);
-	$DB_SQL = 'DELETE FROM sacoche_saisie ';
-	$DB_SQL.= 'WHERE prof_id=:prof_id AND devoir_id=:devoir_id AND item_id NOT IN('.$chaine_id.')';
-	$DB_VAR = array(':prof_id'=>$prof_id,':devoir_id'=>$devoir_id);
-	DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 	// sacoche_saisie (maj)
 	$saisie_info = $info.' ('.$_SESSION['USER_NOM'].' '.$_SESSION['USER_PRENOM']{0}.'.)';
 	$DB_SQL = 'UPDATE sacoche_saisie ';
@@ -2867,15 +2881,22 @@ function DB_STRUCTURE_modifier_liaison_devoir_item($devoir_id,$tab_items,$mode,$
 		{
 			$tab_old_items[] = $DB_ROW['item_id'];
 		}
-		// -> on supprime les anciens items non nouvellement sélectionnées
-		if($mode!='ajouter')
+		// -> on supprime si besoin les anciens items associés à ce devoir qui ne sont plus dans la liste transmise
+		// -> on supprime si besoin les saisies des anciens items associés à ce devoir qui ne sont plus dans la liste transmise
+		//   (concernant les saisies superflues concernant les items, voir DB_STRUCTURE_modifier_liaison_devoir_item)
+		if($mode=='substituer')
 		{
 			$tab_items_supprimer = array_diff($tab_old_items,$tab_items);
 			if(count($tab_items_supprimer))
 			{
-				$chaine_supprimer_id = implode(',',$tab_items_supprimer);
+				$chaine_item_id = implode(',',$tab_items_supprimer);
 				$DB_SQL = 'DELETE FROM sacoche_jointure_devoir_item ';
-				$DB_SQL.= 'WHERE devoir_id=:devoir_id AND item_id IN('.$chaine_supprimer_id.')';
+				$DB_SQL.= 'WHERE devoir_id=:devoir_id AND item_id IN('.$chaine_item_id.')';
+				$DB_VAR = array(':devoir_id'=>$devoir_id);
+				DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+				// sacoche_saisie (retirer superflu concernant les items ; concernant les élèves voir DB_STRUCTURE_modifier_liaison_devoir_user)
+				$DB_SQL = 'DELETE FROM sacoche_saisie ';
+				$DB_SQL.= 'WHERE devoir_id=:devoir_id AND item_id IN('.$chaine_item_id.')';
 				$DB_VAR = array(':devoir_id'=>$devoir_id);
 				DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 			}
@@ -2897,15 +2918,16 @@ function DB_STRUCTURE_modifier_liaison_devoir_item($devoir_id,$tab_items,$mode,$
 
 /**
  * DB_STRUCTURE_modifier_liaison_devoir_user
- * Uniquement pour des évaluations de type 'eval' ; pour les autres, c'est géré par DB_STRUCTURE_modifier_liaison_user_groupe()
+ * Uniquement pour les évaluations de type 'eval' ; voir DB_STRUCTURE_modifier_liaison_devoir_groupe() pour les autres
  *
+ * @param int    $devoir_id
  * @param int    $groupe_id
  * @param array  $tab_eleves   tableau des id des élèves
  * @param string $mode         'creer' pour un insert dans un nouveau devoir || 'substituer' pour une maj delete / insert || 'ajouter' pour maj insert uniquement
  * @return void
  */
 
-function DB_STRUCTURE_modifier_liaison_devoir_user($groupe_id,$tab_eleves,$mode)
+function DB_STRUCTURE_modifier_liaison_devoir_user($devoir_id,$groupe_id,$tab_eleves,$mode)
 {
 	// -> on récupère la liste des élèves actuels déjà associés au groupe (pour la comparer à la liste transmise)
 	if($mode!='creer')
@@ -2924,7 +2946,9 @@ function DB_STRUCTURE_modifier_liaison_devoir_user($groupe_id,$tab_eleves,$mode)
 	{
 		$tab_eleves_avant = array() ;
 	}
-	// -> on supprime si besoin les anciens élèves associés à ce groupe qui ne le sont plus dans la liste transmise
+	// -> on supprime si besoin les anciens élèves associés à ce groupe qui ne sont plus dans la liste transmise
+	// -> on supprime si besoin les saisies des anciens élèves associés à ce devoir qui ne sont plus dans la liste transmise
+	//   (concernant les saisies superflues concernant les items, voir DB_STRUCTURE_modifier_liaison_devoir_item)
 	if($mode=='substituer')
 	{
 		$tab_eleves_moins = array_diff($tab_eleves_avant,$tab_eleves);
@@ -2934,6 +2958,10 @@ function DB_STRUCTURE_modifier_liaison_devoir_user($groupe_id,$tab_eleves,$mode)
 			$DB_SQL = 'DELETE FROM sacoche_jointure_user_groupe ';
 			$DB_SQL.= 'WHERE user_id IN('.$chaine_user_id.') AND groupe_id=:groupe_id ';
 			$DB_VAR = array(':groupe_id'=>$groupe_id);
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+			$DB_SQL = 'DELETE FROM sacoche_saisie ';
+			$DB_SQL.= 'WHERE devoir_id=:devoir_id AND user_id IN('.$chaine_user_id.')';
+			$DB_VAR = array(':devoir_id'=>$devoir_id);
 			DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 		}
 	}
@@ -2950,6 +2978,43 @@ function DB_STRUCTURE_modifier_liaison_devoir_user($groupe_id,$tab_eleves,$mode)
 		}
 	}
 }
+
+/**
+ * DB_STRUCTURE_modifier_liaison_devoir_groupe
+ * Uniquement pour les évaluations sur une classe ou un groupe (pas de type 'eval')
+ * RETIRÉ APRÈS REFLEXION : IL N'Y A PAS DE RAISON DE CARRÉMENT CHANGER LE GROUPE D'UNE ÉVALUATION => AU PIRE ON LA DUPLIQUE POUR UN AUTRE GROUPE PUIS ON LA SUPPRIME.
+ *
+ * @param int    $devoir_id
+ * @param int    $groupe_id
+ * @return void
+ */
+
+/*
+function DB_STRUCTURE_modifier_liaison_devoir_groupe($devoir_id,$groupe_id)
+{
+	// -> on récupère l'id du groupe antérieurement associé au devoir
+	$DB_SQL = 'SELECT groupe_id ';
+	$DB_SQL.= 'FROM sacoche_devoir ';
+	$DB_SQL.= 'WHERE devoir_id=:devoir_id ';
+	$DB_SQL.= 'LIMIT 1';
+	$DB_VAR = array(':devoir_id'=>$devoir_id);
+	if( $groupe_id != DB::queryCol(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR) )
+	{
+		// sacoche_devoir (maj)
+		$DB_SQL = 'UPDATE sacoche_devoir ';
+		$DB_SQL.= 'SET groupe_id=:groupe_id ';
+		$DB_SQL.= 'WHERE devoir_id=:devoir_id ';
+		$DB_SQL.= 'LIMIT 1';
+		$DB_VAR = array(':devoir_id'=>$devoir_id,':groupe_id'=>$groupe_id);
+		DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+		// sacoche_saisie : on ne s'embête pas à essayer de voir s'il y aurait intersection entre les deux groupes, on supprime les saisies du groupe antérieur...
+		$DB_SQL = 'DELETE FROM sacoche_saisie ';
+		$DB_SQL.= 'WHERE devoir_id=:devoir_id ';
+		$DB_VAR = array(':devoir_id'=>$devoir_id);
+		DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+	}
+}
+*/
 
 /**
  * DB_STRUCTURE_modifier_liaison_groupe_periode
@@ -3383,6 +3448,10 @@ function DB_STRUCTURE_supprimer_mono_structure()
 	unlink($CHEMIN_MYSQL.'serveur_sacoche_structure.php');
 	// Supprimer le dossier pour accueillir les vignettes verticales avec l'identité des élèves
 	Supprimer_Dossier('./__tmp/badge/'.'0');
+	// Supprimer les éventuels fichiers de blocage
+	@unlink($CHEMIN_CONFIG.'blocage_webmestre_0.txt');
+	@unlink($CHEMIN_CONFIG.'blocage_administrateur_0.txt');
+	@unlink($CHEMIN_CONFIG.'blocage_automate_0.txt');
 	// Log de l'action
 	ajouter_log_SACoche('Résiliation de l\'inscription.');
 }

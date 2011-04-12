@@ -26,7 +26,7 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-$VERSION_JS_FILE += 12;
+$VERSION_JS_FILE += 13;
 
 // Élément de formulaire "f_geo" pour le choix d'une zone géographique
 $options_geo = '';
@@ -49,6 +49,7 @@ foreach($DB_TAB as $DB_ROW)
 	<table class="form bilan_synthese comp_view">
 		<thead>
 			<tr>
+				<th class="nu"></th>
 				<th class="nu"><input id="all_check" type="image" src="./_img/all_check.gif" title="Tout cocher." /><br /><input id="all_uncheck" type="image" src="./_img/all_uncheck.gif" title="Tout décocher." /></th>
 				<th>Id</th>
 				<th>Zone géo</th>
@@ -66,7 +67,9 @@ foreach($DB_TAB as $DB_ROW)
 			foreach($DB_TAB as $DB_ROW)
 			{
 				// Afficher une ligne du tableau
+				$img = (!is_file($CHEMIN_CONFIG.'blocage_webmestre_'.$DB_ROW['sacoche_base'].'.txt')) ? '<img class="bloquer" src="./_img/blocage_non.png" title="Bloquer cet établissement." />' : '<img class="debloquer" src="./_img/blocage_oui.png" title="Débloquer cet établissement." />' ;
 				echo'<tr id="id_'.$DB_ROW['sacoche_base'].'">';
+				echo	'<td class="nu"><a href="#id_0">'.$img.'</a></td>';
 				echo	'<td class="nu"><input type="checkbox" name="f_ids" value="'.$DB_ROW['sacoche_base'].'" /></td>';
 				echo	'<td class="label">'.$DB_ROW['sacoche_base'].'</td>';
 				echo	'<td class="label"><i>'.sprintf("%02u",$DB_ROW['geo_ordre']).'</i>'.html($DB_ROW['geo_nom']).'</td>';

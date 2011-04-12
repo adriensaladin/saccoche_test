@@ -128,13 +128,13 @@ if( ($action=='Afficher_evaluations') && $date_debut && $date_fin )
 
 if( (($action=='ajouter')||(($action=='dupliquer')&&($devoir_id))) && $date && $nb_eleves && $nb_items )
 {
-	// Il faut commencer par créer un nouveau groupe de type "eval", utilisé uniquement pour cette évaluation (c'est transparent pour le professeur)
+	// Commencer par créer un nouveau groupe de type "eval", utilisé uniquement pour cette évaluation (c'est transparent pour le professeur)
 	$groupe_id = DB_STRUCTURE_ajouter_groupe($groupe_type,$_SESSION['USER_ID'],'','',0);
-	// Il faut y affecter tous les élèves choisis
-	DB_STRUCTURE_modifier_liaison_devoir_user($groupe_id,$tab_eleves,'creer');
-	// Maintenant on peut insérer l'enregistrement de l'évaluation
+	// Insèrer l'enregistrement de l'évaluation
 	$date_mysql = convert_date_french_to_mysql($date);
 	$devoir_id2 = DB_STRUCTURE_ajouter_devoir($_SESSION['USER_ID'],$groupe_id,$date_mysql,$info);
+	// Affecter tous les élèves choisis
+	DB_STRUCTURE_modifier_liaison_devoir_user($devoir_id2,$groupe_id,$tab_eleves,'creer');
 	// Insérer les enregistrements des items de l'évaluation
 	DB_STRUCTURE_modifier_liaison_devoir_item($devoir_id2,$tab_items,'dupliquer',$devoir_id);
 	// Afficher le retour
@@ -164,16 +164,14 @@ if( (($action=='ajouter')||(($action=='dupliquer')&&($devoir_id))) && $date && $
 
 if( ($action=='modifier') && $devoir_id && $groupe_id && $date && $nb_eleves && $nb_items )
 {
-	// On commence par modifier l'affectation des élèves choisis
-	// sacoche_jointure_user_groupe (maj)
-	DB_STRUCTURE_modifier_liaison_devoir_user($groupe_id,$tab_eleves,'substituer');
-	// Maintenant on peut modifier les autres données de l'évaluation (paramètres, items)
+	// sacoche_devoir (maj des paramètres date & info)
 	$date_mysql = convert_date_french_to_mysql($date);
-	// sacoche_devoir (maj) ainsi que sacoche_saisie (retirer superflu + maj)
 	DB_STRUCTURE_modifier_devoir($devoir_id,$_SESSION['USER_ID'],$date_mysql,$info,$tab_items);
-	// ************************ dans sacoche_saisie faut-il aussi virer certains scores élèves en cas de changement de groupe ... ???
-	// sacoche_jointure_devoir_item
+	// sacoche_jointure_user_groupe + sacoche_saisie pour les users supprimés
+	DB_STRUCTURE_modifier_liaison_devoir_user($devoir_id,$groupe_id,$tab_eleves,'substituer');
+	// sacoche_jointure_devoir_item + sacoche_saisie pour les items supprimés
 	DB_STRUCTURE_modifier_liaison_devoir_item($devoir_id,$tab_items,'substituer');
+	// ************************ dans sacoche_saisie faut-il aussi virer certains scores élèves en cas de changement de groupe ... ???
 	// Afficher le retour
 	$ref = $devoir_id.'_'.strtoupper($groupe_type{0}).$groupe_id;
 	$cs = ($nb_items>1) ? 's' : '';

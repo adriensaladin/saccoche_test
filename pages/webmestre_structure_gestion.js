@@ -38,8 +38,8 @@ $(document).ready
 		var please_wait = false;
 
 		// tri du tableau (avec jquery.tablesorter.js).
-		var sorting = [[2,0],[3,0]];
-		$('table.bilan_synthese').tablesorter({ headers:{0:{sorter:false},7:{sorter:false}} });
+		var sorting = [[3,0],[4,0]];
+		$('table.bilan_synthese').tablesorter({ headers:{0:{sorter:false},1:{sorter:false},8:{sorter:false}} });
 		function trier_tableau()
 		{
 			if($('table.bilan_synthese tbody tr').length)
@@ -76,6 +76,7 @@ $(document).ready
 			// Fabriquer la ligne avec les éléments de formulaires
 			afficher_masquer_images_action('hide');
 			new_tr  = '<tr>';
+			new_tr += '<td class="nu"></td>';
 			new_tr += '<td class="nu"></td>';
 			new_tr += '<td></td>';
 			new_tr += '<td><select id="f_geo" name="f_geo">'+options_geo+'</select></td>';
@@ -119,6 +120,7 @@ $(document).ready
 			geo = geo.substring(9,geo.length); 
 			// Fabriquer la ligne avec les éléments de formulaires
 			new_tr  = '<tr>';
+			new_tr += '<td class="nu"></td>';
 			new_tr += '<td class="nu"></td>';
 			new_tr += '<td>'+base_id+'<input id="f_base_id" name="f_base_id" type="hidden" value="'+base_id+'" /></td>';
 			new_tr += '<td><select id="f_geo" name="f_geo">'+options_geo.replace('>'+geo+'<',' selected="selected">'+geo+'<')+'</select></td>';
@@ -222,7 +224,6 @@ $(document).ready
 			if(e.which==13)	// touche entrée
 			{
 				$('q.valider').click();
-
 			}
 			else if(e.which==27)	// touche escape
 			{
@@ -261,6 +262,50 @@ $(document).ready
 			{
 				$('#structures input[type=checkbox]').removeAttr('checked');
 				return false;
+			}
+		);
+
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+//	Clic sur un bouton pour bloquer ou débloquer une structure
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
+		$('img[class=bloquer] , img[class=debloquer]').live
+		('click',
+			function()
+			{
+				var objet   = $(this);
+				var action  = $(this).attr('class');
+				var base_id = $(this).parent().parent().next().next().html();
+				var img_src = $(this).attr('src');
+				$(this).removeAttr("class").attr('src','./_img/ajax/ajax_loader.gif');
+				$.ajax
+				(
+					{
+						type : 'POST',
+						url : 'ajax.php?page='+PAGE,
+						data : 'f_action='+action+'&f_base_id='+base_id,
+						dataType : "html",
+						error : function(msg,string)
+						{
+							objet.addClass(action).attr('src',img_src);
+							return false;
+						},
+						success : function(responseHTML)
+						{
+							maj_clock(1);
+							if(responseHTML.substring(0,4)!='<img')	// Attention aux caractères accentués : l'utf-8 pose des pbs pour ce test
+							{
+								objet.addClass(action).attr('src',img_src);
+							}
+							else
+							{
+								objet.parent().html(responseHTML);
+								infobulle();
+							}
+							return false;
+						}
+					}
+				);
 			}
 		);
 

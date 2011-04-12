@@ -313,7 +313,7 @@ function DB_WEBMESTRE_supprimer_zone($geo_id)
 
 function DB_WEBMESTRE_supprimer_multi_structure($BASE)
 {
-	global $CHEMIN_MYSQL;
+	global $CHEMIN_MYSQL,$CHEMIN_CONFIG;
 	// Paramètres de connexion à la base de données
 	$BD_name = 'sac_base_'.$BASE;
 	$BD_user = 'sac_user_'.$BASE; // Limité à 16 caractères
@@ -334,6 +334,10 @@ function DB_WEBMESTRE_supprimer_multi_structure($BASE)
 	DB::query(SACOCHE_WEBMESTRE_BD_NAME , $DB_SQL , $DB_VAR);
 	// Supprimer le dossier pour accueillir les vignettes verticales avec l'identité des élèves
 	Supprimer_Dossier('./__tmp/badge/'.$BASE);
+	// Supprimer les éventuels fichiers de blocage
+	@unlink($CHEMIN_CONFIG.'blocage_webmestre_'.$BASE.'.txt');
+	@unlink($CHEMIN_CONFIG.'blocage_administrateur_'.$BASE.'.txt');
+	@unlink($CHEMIN_CONFIG.'blocage_automate_'.$BASE.'.txt');
 	// Log de l'action
 	ajouter_log_SACoche('Suppression de la structure '.$BASE.'.');
 }

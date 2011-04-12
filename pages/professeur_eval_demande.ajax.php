@@ -140,17 +140,21 @@ if( ($action=='Afficher_demandes') && $matiere_id && $matiere_nom && $groupe_id 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 elseif( ($action=='creer') && $groupe_id && (isset($tab_types[$groupe_type])) && in_array($qui,$tab_qui) && $date && $info && in_array($suite,$tab_suite) && $nb_demandes && $nb_users && $nb_items )
 {
-	// Dans le cas d'une évaluation sur une liste d'élèves sélectionnés
+	// Dans le cas d'une évaluation sur une liste d'élèves sélectionnés,
+	// Commencer par créer un nouveau groupe de type "eval", utilisé uniquement pour cette évaluation (c'est transparent pour le professeur)
 	if($qui=='select')
 	{
-		// Il faut commencer par créer un nouveau groupe de type "eval", utilisé uniquement pour cette évaluation (c'est transparent pour le professeur)
 		$groupe_id = DB_STRUCTURE_ajouter_groupe('eval',$_SESSION['USER_ID'],'','',0);
-		// Il faut y affecter tous les élèves choisis
-		DB_STRUCTURE_modifier_liaison_devoir_user($groupe_id,$tab_user_id,'creer');
 	}
-	// Maintenant on peut insérer l'enregistrement de l'évaluation
+	// Insérer l'enregistrement de l'évaluation
 	$date_mysql = convert_date_french_to_mysql($date);
 	$devoir_id = DB_STRUCTURE_ajouter_devoir($_SESSION['USER_ID'],$groupe_id,$date_mysql,$info);
+	// Dans le cas d'une évaluation sur une liste d'élèves sélectionnés,
+	// Affecter tous les élèves choisis
+	if($qui=='select')
+	{
+		DB_STRUCTURE_modifier_liaison_devoir_user($devoir_id,$groupe_id,$tab_user_id,'creer');
+	}
 	// Insérer les enregistrements des items de l'évaluation
 	DB_STRUCTURE_modifier_liaison_devoir_item($devoir_id,$tab_item_id,'creer');
 	// Insérer les scores 'REQ' pour indiquer au prof les demandes dans le tableau de saisie
@@ -182,7 +186,7 @@ elseif( ($action=='completer') && (isset($tab_types[$groupe_type])) && in_array(
 	if($qui=='select')
 	{
 		// Il faut ajouter tous les élèves choisis
-		DB_STRUCTURE_modifier_liaison_devoir_user($devoir_groupe_id,$tab_user_id,'ajouter'); // ($devoir_groupe_id et non $groupe_id qui correspond à la classe d'origine des élèves...)
+		DB_STRUCTURE_modifier_liaison_devoir_user($devoir_id,$devoir_groupe_id,$tab_user_id,'ajouter'); // ($devoir_groupe_id et non $groupe_id qui correspond à la classe d'origine des élèves...)
 	}
 	// Maintenant on peut modifier les items de l'évaluation
 	DB_STRUCTURE_modifier_liaison_devoir_item($devoir_id,$tab_item_id,'ajouter');

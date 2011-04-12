@@ -184,12 +184,14 @@ if( (($action=='ajouter')||(($action=='dupliquer')&&($devoir_id))) && $date && $
 
 if( ($action=='modifier') && $devoir_id && $date && $groupe_type && $groupe_id && $nb_items )
 {
+	// sacoche_devoir (maj des paramètres date & info)
 	$date_mysql = convert_date_french_to_mysql($date);
-	// sacoche_devoir (maj) ainsi que sacoche_saisie (retirer superflu + maj)
 	DB_STRUCTURE_modifier_devoir($devoir_id,$_SESSION['USER_ID'],$date_mysql,$info,$tab_items);
-	// ************************ dans sacoche_saisie faut-il aussi virer certains scores élèves en cas de changement de groupe ... ???
-	// sacoche_jointure_devoir_item
+	// sacoche_devoir (maj groupe_id) + sacoche_saisie pour les users supprimés
+	// DB_STRUCTURE_modifier_liaison_devoir_groupe($devoir_id,$groupe_id); // RETIRÉ APRÈS REFLEXION : IL N'Y A PAS DE RAISON DE CARRÉMENT CHANGER LE GROUPE D'UNE ÉVALUATION => AU PIRE ON LA DUPLIQUE POUR UN AUTRE GROUPE PUIS ON LA SUPPRIME.
+	// sacoche_jointure_devoir_item + sacoche_saisie pour les items supprimés
 	DB_STRUCTURE_modifier_liaison_devoir_item($devoir_id,$tab_items,'substituer');
+	// ************************ dans sacoche_saisie faut-il aussi virer certains scores élèves en cas de changement de groupe ... ???
 	// Afficher le retour
 	$ref = $devoir_id.'_'.strtoupper($groupe_type{0}).$groupe_id;
 	$s = (count($tab_items)>1) ? 's' : '';

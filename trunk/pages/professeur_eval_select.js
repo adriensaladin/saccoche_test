@@ -87,6 +87,7 @@ $(document).ready
 			mode = $(this).attr('class');
 			afficher_masquer_images_action('hide');
 			$('#form0').css('visibility','hidden');
+			$('#p_alerte').show();
 			// Récupérer les informations de la ligne concernée
 			var ref           = $(this).parent().attr('lang');
 			var date          = $(this).parent().prev().prev().prev().prev().html();
@@ -195,6 +196,7 @@ $(document).ready
 				case 'modifier':
 					$(this).parent().parent().remove();
 					$("table.form tr").show(); // $(this).parent().parent().prev().show(); pose pb si tri du tableau entre temps
+					$('#p_alerte').hide();
 					break;
 				case 'supprimer':
 					$(this).parent().remove();
@@ -1320,6 +1322,7 @@ $(document).ready
 					case 'modifier':
 						$('q.valider').parent().parent().prev().addClass("new").html(responseHTML).show();
 						$('q.valider').parent().parent().remove();
+						$('#p_alerte').hide();
 						break;
 					case 'supprimer':
 						$('q.valider').parent().parent().parent().remove();

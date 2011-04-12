@@ -62,7 +62,7 @@ $tab_droits['professeur_referentiel']                  = $tab_droits_profil_prof
 $tab_droits['professeur_referentiel_gestion']          = $tab_droits_profil_professeur;
 $tab_droits['professeur_referentiel_edition']          = $tab_droits_profil_professeur;
 // Profil directeur
-                              /* pas de page dédiée */
+$tab_droits['consultation_statistiques']               = $tab_droits_profil_directeur;
 // Profil administrateur
 $tab_droits['administrateur_administrateur']           = $tab_droits_profil_administrateur;
 $tab_droits['administrateur_algorithme_gestion']       = $tab_droits_profil_administrateur;

@@ -26,27 +26,38 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-if($_SESSION['SESAMATH_ID']==ID_DEMO) {exit('Action désactivée pour la démo...');}
-
-$action = (isset($_POST['f_action'])) ? clean_texte($_POST['f_action']) : '';
-$motif  = (isset($_POST['f_motif']))  ? clean_texte($_POST['f_motif'])  : '';
-
-//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
-// Bloquer ou débloquer l'application
-//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
-
-if($action=='debloquer')
-{
-	debloquer_application($_SESSION['USER_PROFIL'],$_SESSION['BASE']);
-	exit('<label class="valide">Application accessible.</label>');
-}
-elseif($action=='bloquer')
-{
-	bloquer_application($_SESSION['USER_PROFIL'],$_SESSION['BASE'],$motif);
-	exit('<label class="erreur">Application fermée : '.html($motif).'</label>');
-}
-else
-{
-	echo'Erreur avec les données transmises !';
-}
+$TITRE = "Nombre de saisies";
+$VERSION_JS_FILE += 0;
 ?>
+
+<table id="bilan">
+	<thead>
+		<tr>
+			<th>Professeur</th>
+			<th>Classe</th>
+			<th>Saisies</th>
+		</tr>
+	</thead>
+	<tbody>
+		<?php
+		$DB_TAB = DB_STRUCTURE_compter_saisies_prof_classe();
+		if(count($DB_TAB))
+		{
+			foreach($DB_TAB as $DB_ROW)
+			{
+				// Afficher une ligne du tableau
+				echo'<tr>';
+				echo	'<td>'.html($DB_ROW['professeur']).'</td>';
+				echo	'<td>'.html($DB_ROW['groupe_nom']).'</td>';
+				echo	'<td class="hc">'.$DB_ROW['nombre'].'</td>';
+				echo'</tr>';
+			}
+		}
+		else
+		{
+			echo'<tr><td colspan="3" class="hc">Aucune saisie effectuée...</td></tr>';
+		}
+		?>
+	</tbody>
+</table>
+

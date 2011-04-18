@@ -398,6 +398,11 @@ if( ($type_export=='jointure_socle_matiere') && $palier_id && $palier_nom )
 							}
 							$export_html .= '								</ul>'."\r\n";
 						}
+						else
+						{
+							$export_csv .= $separateur.$separateur.$separateur.$separateur.'"AUCUN ITEM ASSOCIÉ"'."\r\n";
+							$export_html .= '									<br /><label class="alerte"><span style="background-color:#EE7">Aucun item associé.</span></label>'."\r\n";
+						}
 						$export_html .= '							</li>'."\r\n";
 					}
 				}

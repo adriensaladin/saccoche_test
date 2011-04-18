@@ -68,6 +68,18 @@ $(document).ready
 			}
 		);
 
+		//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
+		//	Mise à jour des label comparant la version installée et la version disponible
+		//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
+
+		function maj_label_versions()
+		{
+			var classe = ( $('#ajax_version_installee').text() == $('#ajax_version_disponible').text() ) ? 'valide' : 'alerte' ;
+			$('#ajax_version_installee').removeAttr("class").addClass(classe);
+		}
+
+		maj_label_versions();
+
 		//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
 		// Traitement du formulaire principal
 		//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
@@ -153,6 +165,76 @@ $(document).ready
 				$('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);
 			}
 		} 
+
+		//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
+		//	Mise à jour automatique des fichiers
+		//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
+
+		var etape_numero = 0 ;
+
+		function maj_etape(etape_info)
+		{
+			etape_numero++;
+			if(etape_numero==6)
+			{
+				$('#ajax_maj').removeAttr("class").addClass("valide").html('Mise à jour terminée !');
+				$('#ajax_version_installee').html(etape_info);
+				maj_label_versions();
+				$('button').removeAttr('disabled');
+				return false;
+			}
+			$('#puces_maj').append('<li>Etape '+etape_numero+' : '+etape_info+'</li>');
+			format_liens('#puces_maj');
+			$.ajax
+			(
+				{
+					type : 'POST',
+					url : 'ajax.php?page='+PAGE,
+					data : 'f_action=maj_etape'+etape_numero,
+					dataType : "html",
+					error : function(msg,string)
+					{
+						$('button').removeAttr('disabled');
+						$('#ajax_maj').removeAttr("class").addClass("alerte").html('Echec de la connexion !');
+						return false;
+					},
+					success : function(responseHTML)
+					{
+						var tab_infos = responseHTML.split(']¤[');
+						if( (tab_infos.length!=3) || (tab_infos[0]!='') )
+						{
+							$('button').removeAttr('disabled');
+							$('#ajax_maj').removeAttr("class").addClass("alerte").html(tab_infos[0]);
+							return false;
+						}
+						if(tab_infos[1]!='ok')
+						{
+							$('button').removeAttr('disabled');
+							$('#ajax_maj').removeAttr("class").addClass("alerte").html(tab_infos[2]);
+							return false;
+						}
+						maj_etape(tab_infos[2]);
+					}
+				}
+			);
+		}
+
+		$('#bouton_maj').click
+		(
+			function()
+			{
+				etape_numero = 0 ;
+				$('#puces_maj').html('').show();
+				if( $('#ajax_version_installee').text() > $('#ajax_version_disponible').text() )
+				{
+					$('#ajax_maj').removeAttr("class").addClass("erreur").html("Version installée postérieure à la version disponible !");
+					return false;
+				}
+				$('button').attr('disabled','disabled');
+				$('#ajax_maj').removeAttr("class").addClass("loader").html("Mise à jour en cours&hellip; Veuillez patienter.");
+				maj_etape("Récupération de l'archive <em>zip</em>&hellip;");
+			}
+		);
 
 	}
 );

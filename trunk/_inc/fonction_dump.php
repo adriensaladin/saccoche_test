@@ -170,7 +170,7 @@ function zipper_fichiers_sauvegarde($dossier_temp,$dossier_dump,$fichier_zip_nom
 {
 	$zip = new ZipArchive();
 	$zip->open($dossier_dump.$fichier_zip_nom, ZIPARCHIVE::CREATE);
-	$tab_fichier = Lister_Fichiers($dossier_temp);
+	$tab_fichier = Lister_Contenu_Dossier($dossier_temp);
 	foreach($tab_fichier as $fichier_sql_nom)
 	{
 		$zip->addFile($dossier_temp.$fichier_sql_nom,$fichier_sql_nom);
@@ -189,7 +189,7 @@ function zipper_fichiers_sauvegarde($dossier_temp,$dossier_dump,$fichier_zip_nom
 function verifier_dossier_decompression_sauvegarde($dossier)
 {
 	$fichier_taille_maximale = 0;
-	$tab_fichier = Lister_Fichiers($dossier);
+	$tab_fichier = Lister_Contenu_Dossier($dossier);
 	foreach($tab_fichier as $fichier_nom)
 	{
 		$prefixe   = substr($fichier_nom,0,13);
@@ -243,7 +243,7 @@ function version_base_fichier_svg($dossier)
 function restaurer_tables_base_etablissement($dossier_temp)
 {
 	// Pour chaque fichier...
-	$tab_fichier = Lister_Fichiers($dossier_temp);
+	$tab_fichier = Lister_Contenu_Dossier($dossier_temp);
 	natsort($tab_fichier); // Si plusieurs fichiers correspondent à une table, il faut que la requête de création soit lancée avant les requêtes d'insertion
 	foreach($tab_fichier as $fichier_nom)
 	{

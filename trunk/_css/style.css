@@ -168,6 +168,7 @@ button{padding:0 1px;margin:1px 0;background:#CCF;color:#139;border:1px solid #6
 button{width:auto;overflow:visible;} /* patch pour IE : voir http://jehiah.cz/archive/button-width-in-ie */
 button:hover,button.hover{background:#DDF;color:#D41;cursor:pointer;} /* button.hover pour une compatibilité avec AjaxUpload (pour background, car pas mieux pour cursor) */
 button[disabled]{background:#EAEAFF;color:#888;border:1px solid #BBF} /* Attention à un bug de jquery : quand on lui demande de mettre disabled="disabled", il met disabled="" ! */ 
+button img{width:16px;height:16px}
 
 /* Input / Select */
 input[type=radio],input[type=checkbox],input[type=image] {vertical-align:-1px}

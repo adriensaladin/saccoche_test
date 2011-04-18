@@ -1403,16 +1403,29 @@ function afficher_contenu_referentiel($sesamath_id,$sesamath_key,$referentiel_id
 }
 
 /**
- * Lister_Fichiers
- * Liste les noms des fichiers contenus dans un dossier.
+ * Lister_Contenu_Dossier
+ * Liste le contenu d'un dossier (fichiers et dossiers).
  * 
  * @param string   $dossier
  * @return array
  */
 
-function Lister_Fichiers($dossier)
+function Lister_Contenu_Dossier($dossier)
 {
 	return array_diff( scandir($dossier) , array('.','..') );
+}
+
+/**
+ * Lister_Contenu_Dossier_Programme
+ * Liste les noms des fichiers contenus dans un dossier, sans le contenu temporaire ou personnel.
+ * 
+ * @param string   $dossier
+ * @return array
+ */
+
+function Lister_Contenu_Dossier_Programme($dossier)
+{
+	return array_diff( scandir($dossier) , array('.','..','__private','__tmp','webservices','.svn') );
 }
 
 /**
@@ -1463,7 +1476,7 @@ function Creer_Dossier($dossier)
 
 function Vider_Dossier($dossier)
 {
-	$tab_fichier = Lister_Fichiers($dossier);
+	$tab_fichier = Lister_Contenu_Dossier($dossier);
 	foreach($tab_fichier as $fichier_nom)
 	{
 		unlink($dossier.'/'.$fichier_nom);
@@ -1500,14 +1513,13 @@ function Creer_ou_Vider_Dossier($dossier)
 
 function Supprimer_Dossier($dossier)
 {
-	$tab_contenu = Lister_Fichiers($dossier);
+	$tab_contenu = Lister_Contenu_Dossier($dossier);
 	foreach($tab_contenu as $contenu)
 	{
 		$chemin_contenu = $dossier.'/'.$contenu;
 		if(is_dir($chemin_contenu))
 		{
 			Supprimer_Dossier($chemin_contenu);
-			rmdir($chemin_contenu);
 		}
 		else
 		{
@@ -1515,6 +1527,34 @@ function Supprimer_Dossier($dossier)
 		}
 	}
 	rmdir($dossier);
+}
+
+/**
+ * Analyser_Dossier
+ * Recense récursivement les dossiers présents et les md5 des fichiers (utiliser pour la maj automatique par le webmestre).
+ * 
+ * @param string   $dossier
+ * @param int      $longueur_prefixe   longueur de $dossier lors du premier appel
+ * @param string   $indice   "avant" ou "apres"
+ * @return void
+ */
+
+function Analyser_Dossier($dossier,$longueur_prefixe,$indice)
+{
+	$tab_contenu = Lister_Contenu_Dossier_Programme($dossier);
+	foreach($tab_contenu as $contenu)
+	{
+		$chemin_contenu = $dossier.'/'.$contenu;
+		if(is_dir($chemin_contenu))
+		{
+			Analyser_Dossier($chemin_contenu,$longueur_prefixe,$indice);
+		}
+		else
+		{
+			$_SESSION['tmp']['fichier'][substr($chemin_contenu,$longueur_prefixe)][$indice] = md5_file($chemin_contenu);
+		}
+	}
+	$_SESSION['tmp']['dossier'][substr($dossier,$longueur_prefixe)][$indice] = TRUE;
 }
 
 /**

@@ -27,7 +27,7 @@
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = "Maintenance &amp; mise à jour";
-$VERSION_JS_FILE += 0;
+$VERSION_JS_FILE += 1;
 ?>
 
 <?php
@@ -43,15 +43,31 @@ else
 }
 ?>
 
-<p><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=environnement_generalites__verrouillage">DOC : Verrouillage de l'application</a></span></p>
+<hr />
+
+<h2>Version de SACoche</h2>
+
+<ul class="puce">
+	<li>Version actuellement installée : <label id="ajax_version_installee"><?php echo VERSION_PROG ?></label></li>
+	<li>Dernière version disponible : <span id="ajax_version_disponible" class="astuce"><?php echo recuperer_numero_derniere_version() ?></span></li>
+</ul>
+
+<h2>Mise à jour des fichiers</h2>
+
+<form id="form_maj" action=""><fieldset>
+	<span class="tab"></span><button id="bouton_maj" type="button"><img alt="" src="./_img/bouton/parametre.png" /> Lancer la mise à jour automatique.</button><label id="ajax_maj">&nbsp;</label>
+</fieldset></form>
+
+<ul id="puces_maj" class="puce hide">
+	<li></li>
+</ul>
 
 <hr />
 
 <h2>État de l'accès actuel</h2>
 
+<p><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=environnement_generalites__verrouillage">DOC : Verrouillage de l'application</a></span></p>
 <p id="ajax_acces_actuel"><?php echo $label ?></p>
-
-<hr />
 
 <h2>Verrouillage de l'application</h2>
 
@@ -71,4 +87,4 @@ else
 	<span class="tab"></span><button id="bouton_valider" type="submit"><img alt="" src="./_img/bouton/parametre.png" /> Valider cet état.</button><label id="ajax_msg">&nbsp;</label>
 </fieldset></form>
 
-<p />
+<hr />

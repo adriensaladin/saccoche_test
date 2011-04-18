@@ -294,7 +294,7 @@ if($action=='importer_zip')
 	$zip->close();
 	unlink($dossier_import.$fichier_zip_nom);
 	// Vérifier le contenu : noms des fichiers
-	$tab_fichier = Lister_Fichiers($dossier_dump);
+	$tab_fichier = Lister_Contenu_Dossier($dossier_dump);
 	$nb_fichiers_introuvables = 0;
 	foreach($_SESSION['tab_info'] as $key => $tab_infos)
 	{

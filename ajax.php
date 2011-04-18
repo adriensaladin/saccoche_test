@@ -118,7 +118,7 @@ if(is_file($fichier_constantes))
 		// DEBUT A compter du 02/08/2010, déplacement du port dans le fichier créé à l'installation. [à retirer dans quelques mois]
 		if(!defined('SACOCHE_'.$PATCH.'_BD_PORT'))
 		{
-			$tab_fichier = Lister_Fichiers($CHEMIN_MYSQL);
+			$tab_fichier = Lister_Contenu_Dossier($CHEMIN_MYSQL);
 			$bad = array( "define('SACOCHE_STRUCTURE_BD_NAME" , "define('SACOCHE_WEBMESTRE_BD_NAME" );
 			$bon = array( "define('SACOCHE_STRUCTURE_BD_PORT','3306');	// Port de connexion\r\ndefine('SACOCHE_STRUCTURE_BD_NAME" , "define('SACOCHE_WEBMESTRE_BD_PORT','3306');	// Port de connexion\r\ndefine('SACOCHE_WEBMESTRE_BD_NAME" );
 			foreach($tab_fichier as $fichier)

@@ -47,7 +47,7 @@ $tab_ext_images = array('bmp','gif','jpg','jpeg','png','svg');
 
 if($action=='select_logo')
 {
-	$tab_files = Lister_Fichiers($dossier_images);
+	$tab_files = Lister_Contenu_Dossier($dossier_images);
 	$options_logo = '';
 	foreach($tab_files as $file)
 	{
@@ -68,7 +68,7 @@ if($action=='select_logo')
 
 elseif($action=='listing_logos')
 {
-	$tab_files = Lister_Fichiers($dossier_images);
+	$tab_files = Lister_Contenu_Dossier($dossier_images);
 	$li_logos = '';
 	foreach($tab_files as $file)
 	{

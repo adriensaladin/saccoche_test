@@ -351,7 +351,7 @@ function DB_WEBMESTRE_supprimer_multi_structure($BASE)
 
 function DB_WEBMESTRE_creer_remplir_tables_webmestre($dossier_requetes)
 {
-	$tab_files = Lister_Fichiers($dossier_requetes);
+	$tab_files = Lister_Contenu_Dossier($dossier_requetes);
 	foreach($tab_files as $file)
 	{
 		$extension = pathinfo($file,PATHINFO_EXTENSION);

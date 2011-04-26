@@ -26,7 +26,7 @@
  */
 
 /**
- * lien_mailto
+ * mailto
  * Afficher un lien mailto en masquant l'adresse de courriel pour les robots.
  *
  * @param string $mail_adresse
@@ -37,7 +37,7 @@
  * @return string
  */
 
-function lien_mailto($mail_adresse,$mail_sujet,$texte_lien,$mail_contenu='',$mail_copy='')
+function mailto($mail_adresse,$mail_sujet,$texte_lien,$mail_contenu='',$mail_copy='')
 {
 	$mailto = 'mailto:'.$mail_adresse.'?subject='.$mail_sujet;
 	$mailto.= ($mail_copy) ? '&cc='.$mail_copy : '' ;

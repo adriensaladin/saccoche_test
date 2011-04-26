@@ -31,7 +31,7 @@ $(document).ready
 	{
 
 		// tri du tableau (avec jquery.tablesorter.js).
-		var sorting = [[1,1],[0,1]];
+		var sorting = [[1,1],[0,0]];
 		$('table#bilan').tablesorter({ headers:{} });
 		function trier_tableau()
 		{

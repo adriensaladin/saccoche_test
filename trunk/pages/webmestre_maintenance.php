@@ -41,6 +41,20 @@ else
 {
 	$label = '<label class="valide">Application accessible.</label>';
 }
+// Tests de droits suffisants pour la maj automatique
+$fichier_test_chemin_tmp = './__tmp/index.htm';
+$fichier_test_chemin_new = './_dtd/index.htm';
+Ecrire_Fichier($fichier_test_chemin_tmp,'Circulez, il n\'y a rien à voir par ici !');
+if( !copy( $fichier_test_chemin_tmp , $fichier_test_chemin_new ) )
+{
+	$test_droits = '<label class="erreur">Echec lors du test des droits en écriture !</label>';
+}
+else
+{
+	$test_droits = '<label class="valide">Réussite lors du test des droits en écriture !</label>';
+	unlink($fichier_test_chemin_new);
+}
+unlink($fichier_test_chemin_tmp);
 ?>
 
 <hr />
@@ -54,10 +68,11 @@ else
 
 <h2>Mise à jour des fichiers</h2>
 
+<p><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_webmestre__maj">DOC : Mise à jour de l'application</a></span></p>
+<p><?php echo $test_droits ?></p>
 <form id="form_maj" action=""><fieldset>
 	<span class="tab"></span><button id="bouton_maj" type="button"><img alt="" src="./_img/bouton/parametre.png" /> Lancer la mise à jour automatique.</button><label id="ajax_maj">&nbsp;</label>
 </fieldset></form>
-
 <ul id="puces_maj" class="puce hide">
 	<li></li>
 </ul>

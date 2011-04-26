@@ -25,18 +25,26 @@
  * 
  */
 
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-// Afficher un lien mailto en masquant l'adresse de courriel pour les robots
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+/**
+ * lien_mailto
+ * Afficher un lien mailto en masquant l'adresse de courriel pour les robots.
+ *
+ * @param string $mail_adresse
+ * @param string $mail_sujet
+ * @param string $texte_lien
+ * @param string $mail_contenu
+ * @param string $mail_copy
+ * @return string
+ */
 
-function mailto($email,$sujet,$affichage,$message='',$copy='')
+function lien_mailto($mail_adresse,$mail_sujet,$texte_lien,$mail_contenu='',$mail_copy='')
 {
-	$mailto = 'mailto:'.$email.'?subject='.$sujet;
-	$mailto.= ($copy) ? '&cc='.$copy : '' ;
-	$mailto.= ($message) ? '&body='.$message : '' ;
+	$mailto = 'mailto:'.$mail_adresse.'?subject='.$mail_sujet;
+	$mailto.= ($mail_copy) ? '&cc='.$mail_copy : '' ;
+	$mailto.= ($mail_contenu) ? '&body='.$mail_contenu : '' ;
 	$tab_unicode_valeurs = utf8ToUnicode($mailto);
 	$href = '&#'.implode(';'.'&#',$tab_unicode_valeurs).';';
-	return '<a href="'.$href.'" class="lien_mail">'.$affichage.'</a>';
+	return '<a href="'.$href.'" class="lien_mail">'.$texte_lien.'</a>';
 }
 
 /**
@@ -241,46 +249,63 @@ function unicodeToUtf8(&$arr)
 	return $dest;
 }
 
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-// Passer d'une date MySQL AAAA-MM-JJ à une date française JJ/MM/AAAA et inversement
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+/**
+ * convert_date_mysql_to_french
+ * Passer d'une date MySQL AAAA-MM-JJ à une date française JJ/MM/AAAA.
+ *
+ * @param string $date   AAAA-MM-JJ
+ * @return string        JJ/MM/AAAA
+ */
 
 function convert_date_mysql_to_french($date)
 {
-	list($annee,$mois,$jour) = explode('-',$date);	// date_mysql de la forme aaaa-mm-jj
-	return $jour.'/'.$mois.'/'.$annee;	// date_française de la forme jj/mm/aaaa
+	list($annee,$mois,$jour) = explode('-',$date);
+	return $jour.'/'.$mois.'/'.$annee;
 }
+
+/**
+ * convert_date_french_to_mysql
+ * Passer d'une date française JJ/MM/AAAA à une date MySQL AAAA-MM-JJ.
+ *
+ * @param string $date   JJ/MM/AAAA
+ * @return string        AAAA-MM-JJ
+ */
 
 function convert_date_french_to_mysql($date)
 {
-	list($jour,$mois,$annee) = explode('/',$date);	// date_française de la forme jj/mm/aaaa
-	return $annee.'-'.$mois.'-'.$jour;	// date_mysql de la forme aaaa-mm-jj
+	list($jour,$mois,$annee) = explode('/',$date);
+	return $annee.'-'.$mois.'-'.$jour;
 }
 
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-// Convertir une date MySQL en un texte bien formaté pour l'infobulle (sortie HTML)
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+/**
+ * affich_date
+ * Convertir une date MySQL ou française en un texte bien formaté pour l'infobulle (sortie HTML).
+ *
+ * @param string $date   AAAA-MM-JJ ou JJ/MM/AAAA
+ * @return string        JJ nom_du mois AAAA
+ */
 
 function affich_date($date)
 {
-	if(mb_strpos($date,'-'))
-	{
-		list($annee,$mois,$jour) = explode('-',$date);	// date_mysql de la forme aaaa-mm-jj
-	}
-	else
-	{
-		list($jour,$mois,$annee) = explode('/',$date);	// date_française de la forme jj/mm/aaaa
-	}
-
+	if(mb_strpos($date,'-')) { list($annee,$mois,$jour) = explode('-',$date); }
+	else                     { list($jour,$mois,$annee) = explode('/',$date); }
 	$tab_mois = array('01'=>'janvier','02'=>'février','03'=>'mars','04'=>'avril','05'=>'mai','06'=>'juin','07'=>'juillet','08'=>'août','09'=>'septembre','10'=>'octobre','11'=>'novembre','12'=>'décembre');
 	return $jour.' '.$tab_mois[$mois].' '.$annee;
 }
 
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-// Afficher une note Lomer pour une sortie HTML
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+/**
+ * affich_note_html
+ * Afficher une note Lomer pour une sortie HTML.
+ *
+ * @param string $note
+ * @param string $date
+ * @param string $info
+ * @param bool   $tri
+ * @return string
+ */
 
 $tab_tri_note = array_flip(array('RR','R','V','VV','ABS','NN','DISP','REQ','-',''));	// sert pour le tri du tableau
+
 function affich_note_html($note,$date,$info,$tri=false)
 {
 	global $tab_tri_note;
@@ -290,15 +315,21 @@ function affich_note_html($note,$date,$info,$tri=false)
 	return (in_array($note,array('REQ','-',''))) ? '&nbsp;' : $insert_tri.'<img'.$title.' alt="'.$note.'" src="./_img/note/'.$dossier.$note.'.gif" />';
 }
 
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-// Afficher un score bilan pour une sortie HTML
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+/**
+ * affich_score_html
+ * Afficher un score bilan pour une sortie HTML.
+ *
+ * @param int|FALSE $score
+ * @param string    $methode_tri   'score' | 'etat'
+ * @param string    $pourcent      '%' | ''
+ * @return string
+ */
 
 $tab_tri_etat = array_flip(array('r','o','v'));	// sert pour le tri du tableau dans le cas d'un tri par état d'acquisition
+
 function affich_score_html($score,$methode_tri,$pourcent='')
 {
 	global $tab_tri_etat;
-	// $methode_tri vaut 'score' ou 'etat'
 	if($score===false)
 	{
 		$score_affiche = (strpos($_SESSION['DROIT_VOIR_SCORE_BILAN'],$_SESSION['USER_PROFIL'])!==false) ? '-' : '' ;
@@ -312,13 +343,18 @@ function affich_score_html($score,$methode_tri,$pourcent='')
 	return '<td class="hc '.$etat.'"><i>'.$tri.'</i>'.$score_affiche.'</td>';
 }
 
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-// Afficher une barre colorée de synthèse NA VA A pour une sortie HTML
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+/**
+ * affich_barre_synthese_html
+ * Afficher une barre colorée de synthèse NA VA A pour une sortie HTML.
+ *
+ * @param int     $td_width
+ * @param array   $tab_infos   array( 'A' , 'VA' , 'NA' )
+ * @param int     $total
+ * @return string
+ */
 
 function affich_barre_synthese_html($td_width,$tab_infos,$total)
 {
-	// $tab_infos contient 'A' / 'VA' / 'NA'
 	$tab_couleur = array('NA'=>'r','VA'=>'o','A'=>'v');
 	$span = '';
 	foreach($tab_infos as $etat => $nb)
@@ -330,13 +366,18 @@ function affich_barre_synthese_html($td_width,$tab_infos,$total)
 	return '<td style="padding:0;width:'.$td_width.'px" class="hc">'.$span.'</td>';
 }
 
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-// Afficher un pourcentage d'items acquis pour une sortie socle HTML
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+/**
+ * affich_pourcentage_html
+ * Afficher un pourcentage d'items acquis pour une sortie socle HTML.
+ *
+ * @param string   $type_cellule   'td' | 'th'
+ * @param array    $tab_infos      array( 'A' , 'VA' , 'NA' , 'nb' , '%' )
+ * @param bool     $detail
+ * @return string
+ */
 
 function affich_pourcentage_html($type_cellule,$tab_infos,$detail)
 {
-	// $tab_infos contient 'A' / 'VA' / 'NA' / 'nb' / '%'
 	if($tab_infos['%']===false)
 	{
 		$texte = ($detail) ? '---' : '-' ; // Mettre qq chose sinon en mode daltonien le gris de la case se confond avec les autres couleurs.
@@ -349,13 +390,20 @@ function affich_pourcentage_html($type_cellule,$tab_infos,$detail)
 	return ($detail) ? '<'.$type_cellule.' class="hc '.$etat.'">'.$texte.'</'.$type_cellule.'>' : '<'.$type_cellule.' class="'.$etat.'" title="'.$texte.'"></'.$type_cellule.'>';
 }
 
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-// Afficher un état de validation pour une sortie socle HTML
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+/**
+ * affich_validation_html
+ * Afficher un état de validation pour une sortie socle HTML.
+ *
+ * @param string   $type_cellule   'td' | 'th'
+ * @param array    $tab_infos      array( 'etat' , 'date' , 'info' )
+ * @param bool     $detail
+ * @param int      $etat_pilier    0 | 1
+ * @param bool     $colspan
+ * @return string
+ */
 
 function affich_validation_html($type_cellule,$tab_infos,$detail,$etat_pilier=false,$colspan=false)
 {
-	// $tab_infos contient 'etat' / 'date' / 'info'
 	$etat  = ($tab_infos['etat']==1) ? 'Validé' : 'Invalidé' ;
 	$bulle = ($tab_infos['etat']==2) ? '' : ' title="'.$etat.' le '.$tab_infos['date'].' par '.html($tab_infos['info']).'"' ;
 	if($detail)

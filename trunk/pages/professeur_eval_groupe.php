@@ -27,7 +27,7 @@
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = "Évaluer une classe ou un groupe";
-$VERSION_JS_FILE += 17;
+$VERSION_JS_FILE += 18;
 ?>
 
 <?php
@@ -119,7 +119,8 @@ if(count($tab_id_classe_groupe))
 	<table class="form">
 		<thead>
 			<tr>
-				<th>Date</th>
+				<th>Date devoir</th>
+				<th>Date visible</th>
 				<th>Classe / Groupe</th>
 				<th>Description</th>
 				<th>Items</th>
@@ -127,7 +128,7 @@ if(count($tab_id_classe_groupe))
 			</tr>
 		</thead>
 		<tbody>
-			<tr><td class="nu" colspan="5"></td></tr>
+			<tr><td class="nu" colspan="6"></td></tr>
 		</tbody>
 	</table>
 </form>
@@ -162,7 +163,7 @@ if(count($tab_id_classe_groupe))
 		<img alt="VV" src="./_img/note/<?php echo $_SESSION['NOTE_DOSSIER'] ?>/h/VV.gif" /><img alt="X" src="./_img/note/commun/h/X.gif" />
 	</div></div>
 	<p class="ti" id="aide_en_ligne"><button id="report_note" type="button">Reporter</button> le code 
-		<label for="f_defaut_VV"><input type="radio" id="f_defaut_VV" name="f_defaut" value="VV" checked="checked" /><img alt="VV" src="./_img/note/<?php echo $_SESSION['NOTE_DOSSIER'] ?>/h/VV.gif" /></label>
+		<label for="f_defaut_VV"><input type="radio" id="f_defaut_VV" name="f_defaut" value="VV" checked /><img alt="VV" src="./_img/note/<?php echo $_SESSION['NOTE_DOSSIER'] ?>/h/VV.gif" /></label>
 		<label for="f_defaut_V"><input type="radio" id="f_defaut_V" name="f_defaut" value="V" /><img alt="V" src="./_img/note/<?php echo $_SESSION['NOTE_DOSSIER'] ?>/h/V.gif" /></label>
 		<label for="f_defaut_R"><input type="radio" id="f_defaut_R" name="f_defaut" value="R" /><img alt="R" src="./_img/note/<?php echo $_SESSION['NOTE_DOSSIER'] ?>/h/R.gif" /></label>
 		<label for="f_defaut_RR"><input type="radio" id="f_defaut_RR" name="f_defaut" value="RR" /><img alt="RR" src="./_img/note/<?php echo $_SESSION['NOTE_DOSSIER'] ?>/h/RR.gif" /></label>

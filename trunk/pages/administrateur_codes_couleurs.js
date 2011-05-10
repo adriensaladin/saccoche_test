@@ -170,7 +170,7 @@ $(document).ready
 			var readytogo = validation1.form();
 			if(readytogo)
 			{
-				$("#bouton_valider_notes").attr('disabled','disabled');
+				$("#bouton_valider_notes").prop('disabled',true);
 				$('#ajax_msg_notes').removeAttr("class").addClass("loader").html("Traitement de la demande en cours... Veuillez patienter.");
 			}
 			return readytogo;
@@ -179,7 +179,7 @@ $(document).ready
 		// Fonction suivant l'envoi du formulaire (avec jquery.form.js)
 		function retour_form_erreur1(msg,string)
 		{
-			$("#bouton_valider_notes").removeAttr('disabled');
+			$("#bouton_valider_notes").prop('disabled',false);
 			$('#ajax_msg_notes').removeAttr("class").addClass("alerte").html("Echec de la connexion ! Veuillez valider de nouveau.");
 		}
 
@@ -187,7 +187,7 @@ $(document).ready
 		function retour_form_valide1(responseHTML)
 		{
 			maj_clock(1);
-			$("#bouton_valider_notes").removeAttr('disabled');
+			$("#bouton_valider_notes").prop('disabled',false);
 			if(responseHTML=='ok')
 			{
 				$('#ajax_msg_notes').removeAttr("class").addClass("valide").html("Choix mémorisés !");
@@ -284,7 +284,7 @@ $(document).ready
 			var readytogo = validation2.form();
 			if(readytogo)
 			{
-				$("#bouton_valider_acquis").attr('disabled','disabled');
+				$("#bouton_valider_acquis").prop('disabled',true);
 				$('#ajax_msg_acquis').removeAttr("class").addClass("loader").html("Traitement de la demande en cours... Veuillez patienter.");
 			}
 			return readytogo;
@@ -293,7 +293,7 @@ $(document).ready
 		// Fonction suivant l'envoi du formulaire (avec jquery.form.js)
 		function retour_form_erreur2(msg,string)
 		{
-			$("#bouton_valider_acquis").removeAttr('disabled');
+			$("#bouton_valider_acquis").prop('disabled',false);
 			$('#ajax_msg_acquis').removeAttr("class").addClass("alerte").html("Echec de la connexion ! Veuillez valider de nouveau.");
 		}
 
@@ -301,7 +301,7 @@ $(document).ready
 		function retour_form_valide2(responseHTML)
 		{
 			maj_clock(1);
-			$("#bouton_valider_acquis").removeAttr('disabled');
+			$("#bouton_valider_acquis").prop('disabled',false);
 			if(responseHTML=='ok')
 			{
 				$('#ajax_msg_acquis').removeAttr("class").addClass("valide").html("Choix mémorisés !");

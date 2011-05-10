@@ -44,6 +44,60 @@ $(document).ready
 		trier_tableau();
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+//	Clic sur le checkbox pour choisir ou non une date visible différente de la date du devoir
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
+
+		function maj_visible()
+		{
+			// Emploi de css() au lieu de show() hide() car sinon conflits constatés avec $("#step_creer").show() et $("#step_creer").hide() vers ligne 360.
+			if($('#box_date').is(':checked'))
+			{
+				$('#f_date_visible').val($('#f_date').val());
+				$('#box_date').next().css('display','inline-block').next().css('display','none');
+			}
+			else
+			{
+				$('#box_date').next().css('display','none').next().css('display','inline-block');
+			}
+		}
+
+		function maj_dates()
+		{
+			tab_infos = $('#f_devoir option:selected').text().split(' || ');
+			if(tab_infos.length>2)
+			{
+				$('#f_date').val(tab_infos[0]);
+				$('#f_date_visible').val(tab_infos[1]);
+				// Simuler un clic sur #box_date pour un appel de maj_visible() deconne (dans maj_visible() le test .is(':checked') ne renvoie pas ce qui est attendu) :
+				/*
+				if( ( (tab_infos[0]==tab_infos[1])&&(!$('#box_date').is(':checked')) ) || ( (tab_infos[0]!=tab_infos[1])&&($('#box_date').is(':checked')) ) )
+				{
+					$('#box_date').click();
+				}
+				*/
+				// Alors j'ai réécrit ici une partie de maj_visible() :
+				// Emploi de css() au lieu de show() hide() car sinon conflits constatés avec $("#step_creer").show() et $("#step_creer").hide() vers ligne 360.
+				if(tab_infos[0]==tab_infos[1])
+				{
+					$('#box_date').prop('checked',true).next().css('display','inline-block').next().css('display','none');
+				}
+				else
+				{
+					$('#box_date').prop('checked',false).next().css('display','none').next().css('display','inline-block');
+				}
+			}
+		}
+
+		$('#box_date').click
+		(
+			function()
+			{
+				maj_visible();
+			}
+		);
+
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 //	Traitement du premier formulaire pour afficher le tableau avec la liste des demandes
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
@@ -236,6 +290,7 @@ $(document).ready
 						{
 							$('#ajax_maj1').removeAttr("class").html("&nbsp;");
 							$('#f_devoir').html(responseHTML).show();
+							maj_dates();
 						}
 					else
 						{
@@ -255,7 +310,7 @@ $(document).ready
 		(
 			function()
 			{
-				$('#table_demandes input[type=checkbox]').attr('checked','checked');
+				$('#table_demandes input[type=checkbox]').prop('checked',true);
 				return false;
 			}
 		);
@@ -263,19 +318,19 @@ $(document).ready
 		(
 			function()
 			{
-				$('#table_demandes input[type=checkbox]').removeAttr('checked');
+				$('#table_demandes input[type=checkbox]').prop('checked',false);
 				return false;
 			}
 		);
 
 		// Récupérer les noms de items des checkbox cochés pour la description de l'évaluation
-		$('input[type=checkbox]').live // live est utilisé pour prendre en compte les nouveaux éléments créés
+		$('#table_demandes input[type=checkbox]').live // live est utilisé pour prendre en compte les nouveaux éléments créés
 		('click',
 			function()
 			{
 				// Récupérer les checkbox cochés
 				var listing_refs = '';
-				$('input[type=checkbox]:checked').each
+				$('#table_demandes input[type=checkbox]:checked').each
 				(
 					function()
 					{
@@ -321,6 +376,14 @@ $(document).ready
 			}
 		);
 
+		$('#f_devoir').change
+		(
+			function()
+			{
+				maj_dates();
+			}
+		);
+
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 //	Traitement du formulaire principal
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
@@ -337,23 +400,25 @@ $(document).ready
 			{
 				rules :
 				{
-					f_ids    : { required:true },
-					f_quoi   : { required:true },
-					f_qui    : { required:function(){quoi=$("#f_quoi").val(); return ((quoi=='creer')||(quoi=='completer'));} },
-					f_date   : { required:function(){return $("#f_quoi").val()=='creer';} , dateITA:true },
-					f_info   : { required:false , maxlength:60 },
-					f_devoir : { required:function(){return $("#f_quoi").val()=='completer';} },
-					f_suite  : { required:function(){quoi=$("#f_quoi").val(); return ((quoi=='creer')||(quoi=='completer'));} }
+					f_ids          : { required:true },
+					f_quoi         : { required:true },
+					f_qui          : { required:function(){quoi=$("#f_quoi").val(); return ((quoi=='creer')||(quoi=='completer'));} },
+					f_date         : { required:function(){return $("#f_quoi").val()=='creer';} , dateITA:true },
+					f_date_visible : { required:function(){return (($("#f_quoi").val()=='creer')&&(!$('#box_date').is(':checked')));} , dateITA:true },
+					f_info         : { required:false , maxlength:60 },
+					f_devoir       : { required:function(){return $("#f_quoi").val()=='completer';} },
+					f_suite        : { required:function(){quoi=$("#f_quoi").val(); return ((quoi=='creer')||(quoi=='completer'));} }
 				},
 				messages :
 				{
-					f_ids    : { required:"demandes manquantes" },
-					f_quoi   : { required:"action manquante" },
-					f_qui    : { required:"groupe manquant" },
-					f_date   : { required:"date manquante" , dateITA:"format JJ/MM/AAAA non respecté" },
-					f_info   : { maxlength:"60 caractères maximum" },
-					f_devoir : { required:"évaluation manquante" },
-					f_suite  : { required:"suite manquante" }
+					f_ids          : { required:"demandes manquantes" },
+					f_quoi         : { required:"action manquante" },
+					f_qui          : { required:"groupe manquant" },
+					f_date         : { required:"date manquante" , dateITA:"format JJ/MM/AAAA non respecté" },
+					f_date_visible : { required:"date manquante" , dateITA:"format JJ/MM/AAAA non respecté" },
+					f_info         : { maxlength:"60 caractères maximum" },
+					f_devoir       : { required:"évaluation manquante" },
+					f_suite        : { required:"suite manquante" }
 				},
 				errorElement : "label",
 				errorClass : "erreur",
@@ -401,7 +466,7 @@ $(document).ready
 			var readytogo = validation.form();
 			if(readytogo)
 			{
-				$('button').attr('disabled','disabled');
+				$('button').prop('disabled',true);
 				$('#ajax_msg1').removeAttr("class").addClass("loader").html("Demande envoyée... Veuillez patienter.");
 			}
 			return readytogo;
@@ -410,7 +475,7 @@ $(document).ready
 		// Fonction suivant l'envoi du formulaire (avec jquery.form.js)
 		function retour_form_erreur(msg,string)
 		{
-			$('button').removeAttr('disabled');
+			$('button').prop('disabled',false);
 			$('#ajax_msg1').removeAttr("class").addClass("alerte").html("Echec de la connexion ! Veuillez recommencer.");
 		}
 
@@ -418,7 +483,7 @@ $(document).ready
 		function retour_form_valide(responseHTML)
 		{
 			maj_clock(1);
-			$('button').removeAttr('disabled');
+			$('button').prop('disabled',false);
 			if(responseHTML!='ok')
 			{
 				$('#ajax_msg1').removeAttr("class").addClass("alerte").html(responseHTML);
@@ -430,7 +495,7 @@ $(document).ready
 				if( ((quoi=='creer')&&(suite=='changer')) || ((quoi=='completer')&&(suite=='changer')) || (quoi=='changer') )
 				{
 					// Changer le statut des demandes cochées
-					$('input[type=checkbox]:checked').each
+					$('#table_demandes input[type=checkbox]:checked').each
 					(
 						function()
 						{
@@ -442,7 +507,7 @@ $(document).ready
 				else if( ((quoi=='creer')&&(suite=='retirer')) || ((quoi=='completer')&&(suite=='retirer')) || (quoi=='retirer') )
 				{
 					// Retirer les demandes cochées
-					$('input[type=checkbox]:checked').each
+					$('#table_demandes input[type=checkbox]:checked').each
 					(
 						function()
 						{

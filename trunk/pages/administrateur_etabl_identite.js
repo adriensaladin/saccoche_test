@@ -190,7 +190,7 @@ $(document).ready
 			var readytogo = validation.form();
 			if(readytogo)
 			{
-				$("#bouton_valider").attr('disabled','disabled');
+				$("#bouton_valider").prop('disabled',true);
 				$('#ajax_msg_instance').removeAttr("class").addClass("loader").html("Soumission du formulaire en cours... Veuillez patienter.");
 			}
 			return readytogo;
@@ -199,7 +199,7 @@ $(document).ready
 		// Fonction suivant l'envoi du formulaire (avec jquery.form.js)
 		function retour_form_erreur(msg,string)
 		{
-			$("#bouton_valider").removeAttr('disabled');
+			$("#bouton_valider").prop('disabled',false);
 			$('#ajax_msg_instance').removeAttr("class").addClass("alerte").html("Echec de la connexion ! Veuillez valider de nouveau.");
 		}
 
@@ -207,7 +207,7 @@ $(document).ready
 		function retour_form_valide(responseHTML)
 		{
 			maj_clock(1);
-			$("#bouton_valider").removeAttr('disabled');
+			$("#bouton_valider").prop('disabled',false);
 			if(responseHTML=='ok')
 			{
 				$('#ajax_msg_instance').removeAttr("class").addClass("valide").html("Données enregistrées !");
@@ -283,12 +283,12 @@ $(document).ready
 					dataType : "html",
 					error : function(msg,string)
 					{
-						$('#f_recherche_geo select').removeAttr('disabled');
+						$('#f_recherche_geo select').prop('disabled',false);
 						$('#ajax_msg_communautaire').removeAttr("class").addClass("alerte").html("Echec de la connexion ! Veuillez essayer de nouveau.");
 					},
 					success : function(responseHTML)
 					{
-						$('#f_recherche_geo select').removeAttr('disabled');
+						$('#f_recherche_geo select').prop('disabled',false);
 						if(responseHTML.substring(0,26)=='<option value=""></option>')	// Attention aux caractères accentués : l'utf-8 pose des pbs pour ce test
 						{
 							$('#ajax_msg_communautaire').removeAttr("class").html("&nbsp;");
@@ -319,12 +319,12 @@ $(document).ready
 					dataType : "html",
 					error : function(msg,string)
 					{
-						$('#f_recherche_geo select').removeAttr('disabled');
+						$('#f_recherche_geo select').prop('disabled',false);
 						$('#ajax_msg_communautaire').removeAttr("class").addClass("alerte").html("Echec de la connexion ! Veuillez essayer de nouveau.");
 					},
 					success : function(responseHTML)
 					{
-						$('#f_recherche_geo select').removeAttr('disabled');
+						$('#f_recherche_geo select').prop('disabled',false);
 						if(responseHTML.substring(0,26)=='<option value=""></option>')	// Attention aux caractères accentués : l'utf-8 pose des pbs pour ce test
 						{
 							$('#ajax_msg_communautaire').removeAttr("class").html("&nbsp;");
@@ -355,12 +355,12 @@ $(document).ready
 					dataType : "html",
 					error : function(msg,string)
 					{
-						$('#f_recherche_geo select').removeAttr('disabled');
+						$('#f_recherche_geo select').prop('disabled',false);
 						$('#ajax_msg_communautaire').removeAttr("class").addClass("alerte").html("Echec de la connexion ! Veuillez essayer de nouveau.");
 					},
 					success : function(responseHTML)
 					{
-						$('#f_recherche_geo select').removeAttr('disabled');
+						$('#f_recherche_geo select').prop('disabled',false);
 						if(responseHTML.substring(0,3)=='<li')	// Attention aux caractères accentués : l'utf-8 pose des pbs pour ce test
 						{
 							$('#ajax_msg_communautaire').removeAttr("class").html("&nbsp;");
@@ -393,12 +393,12 @@ $(document).ready
 					dataType : "html",
 					error : function(msg,string)
 					{
-						$('#rechercher_uai').removeAttr('disabled');
+						$('#rechercher_uai').prop('disabled',false);
 						$('#ajax_msg_communautaire').removeAttr("class").addClass("alerte").html("Echec de la connexion ! Veuillez essayer de nouveau.");
 					},
 					success : function(responseHTML)
 					{
-						$('#rechercher_uai').removeAttr('disabled');
+						$('#rechercher_uai').prop('disabled',false);
 						if(responseHTML.substring(0,3)=='<li')	// Attention aux caractères accentués : l'utf-8 pose des pbs pour ce test
 						{
 							$('#ajax_msg_communautaire').removeAttr("class").html("&nbsp;");
@@ -461,7 +461,7 @@ $(document).ready
 				var geo1_val = $("#f_geo1").val();
 				if(geo1_val)
 				{
-					$('#f_recherche_geo select').attr('disabled','disabled');
+					$('#f_recherche_geo select').prop('disabled',true);
 					$('#ajax_msg_communautaire').removeAttr("class").addClass("loader").html("Actualisation en cours... Veuillez patienter.");
 					maj_geo2(geo1_val);
 				}
@@ -486,7 +486,7 @@ $(document).ready
 				var geo2_val = $("#f_geo2").val();
 				if(geo1_val && geo2_val)
 				{
-					$('#f_recherche_geo select').attr('disabled','disabled');
+					$('#f_recherche_geo select').prop('disabled',true);
 					$('#ajax_msg_communautaire').removeAttr("class").addClass("loader").html("Actualisation en cours... Veuillez patienter.");
 					maj_geo3(geo1_val,geo2_val);
 				}
@@ -509,7 +509,7 @@ $(document).ready
 				var geo3_val = $("#f_geo3").val();
 				if(geo3_val)
 				{
-					$('#f_recherche_geo select').attr('disabled','disabled');
+					$('#f_recherche_geo select').prop('disabled',true);
 					$('#ajax_msg_communautaire').removeAttr("class").addClass("loader").html("Actualisation en cours... Veuillez patienter.");
 					maj_resultat_geo(geo3_val);
 				}
@@ -565,7 +565,7 @@ $(document).ready
 					return false;
 				}
 				// Si on arrive jusque là c'est que le n° UAI est valide
-				$('#rechercher_uai').attr('disabled','disabled');
+				$('#rechercher_uai').prop('disabled',true);
 				$('#ajax_msg_communautaire').removeAttr("class").addClass("loader").html("Actualisation en cours... Veuillez patienter.");
 				maj_resultat_uai(uai_val);
 			}

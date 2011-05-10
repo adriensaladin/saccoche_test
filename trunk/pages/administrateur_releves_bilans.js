@@ -78,7 +78,7 @@ $(document).ready
 							}
 						}
 					);
-					$('#form_ordonner button').attr('disabled','disabled');
+					$('#form_ordonner button').prop('disabled',true);
 					$('#ajax_msg_ordre').removeAttr("class").addClass("loader").html("Demande envoyée... Veuillez patienter.");
 					$.ajax
 					(
@@ -89,14 +89,14 @@ $(document).ready
 							dataType : "html",
 							error : function(msg,string)
 							{
-								$('#form_ordonner button').removeAttr('disabled');
+								$('#form_ordonner button').prop('disabled',false);
 								$('#ajax_msg_ordre').removeAttr("class").addClass("alerte").html('Echec de la connexion ! Veuillez recommencer.');
 								return false;
 							},
 							success : function(responseHTML)
 							{
 								maj_clock(1);
-								$('#form_ordonner button').removeAttr('disabled');
+								$('#form_ordonner button').prop('disabled',false);
 								if(responseHTML!='ok')
 								{
 									$('#ajax_msg_ordre').removeAttr("class").addClass("alerte").html(responseHTML);
@@ -152,7 +152,7 @@ $(document).ready
 			function()
 			{
 				var ids = $(this).attr('id').substr(7);
-				if( $('input[name=f_'+ids+']').is(":checked")!=true )	// normalement impossible, sauf si par exemple on triche avec la barre d'outils Web Developer...
+				if( $('input[name=f_'+ids+']').is(':checked')!=true )	// normalement impossible, sauf si par exemple on triche avec la barre d'outils Web Developer...
 				{
 					$('#label_'+ids).removeAttr("class").addClass("erreur").html("Cocher une option !");
 					return(false);
@@ -161,7 +161,7 @@ $(document).ready
 				var tab_infos = ids.split('_');
 				var f_matiere = tab_infos[0];
 				var f_niveau  = tab_infos[1];
-				$("#form_synthese button").attr('disabled','disabled');
+				$("#form_synthese button").prop('disabled',true);
 				$('#label_'+ids).removeAttr("class").addClass("loader").html("Demande envoyée... Veuillez patienter.");
 				$.ajax
 				(
@@ -172,14 +172,14 @@ $(document).ready
 						dataType : "html",
 						error : function(msg,string)
 						{
-							$("#form_synthese button").removeAttr('disabled');
+							$("#form_synthese button").prop('disabled',false);
 							$('#ajax_msg').removeAttr("class").addClass("alerte").html("Echec de la connexion ! Veuillez recommencer.");
 							return false;
 						},
 						success : function(responseHTML)
 						{
 							maj_clock(1);
-							$("#form_synthese button").removeAttr('disabled');
+							$("#form_synthese button").prop('disabled',false);
 							if(responseHTML!='ok')
 							{
 								$('#label_'+ids).removeAttr("class").addClass("alerte").html(responseHTML);

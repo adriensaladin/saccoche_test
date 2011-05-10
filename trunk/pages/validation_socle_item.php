@@ -92,7 +92,7 @@ $select_groupe = afficher_select($tab_groupes , $select_nom='f_groupe' , $option
 	<label class="tab" for="f_pilier">Compétence :</label><select id="f_pilier" name="f_pilier" class="hide"><option></option></select><label id="ajax_maj_domaine">&nbsp;</label><br />
 	<label class="tab" for="f_domaine">Domaine :</label><select id="f_domaine" name="f_domaine" class="hide"><option></option></select><p />
 	<label class="tab" for="f_groupe">Classe / groupe :</label><?php echo $select_groupe ?><input type="hidden" id="f_groupe_type" name="f_groupe_type" value="" /><label id="ajax_maj_eleve">&nbsp;</label><br />
-	<label class="tab" for="f_eleve">Élève(s) :</label><select id="f_eleve" name="f_eleve[]" multiple="multiple" size="9" class="hide"><option></option></select><input type="hidden" id="eleves" name="eleves" value="" /><p />
+	<label class="tab" for="f_eleve">Élève(s) :</label><select id="f_eleve" name="f_eleve[]" multiple size="9" class="hide"><option></option></select><input type="hidden" id="eleves" name="eleves" value="" /><p />
 	<span class="tab"></span><input type="hidden" name="f_action" value="Afficher_bilan" /><button id="Afficher_validation" type="submit" class="hide"><img alt="" src="./_img/bouton/valider.png" /> Afficher le tableau des validations.</button><label id="ajax_msg_choix">&nbsp;</label>
 </fieldset></form>
 

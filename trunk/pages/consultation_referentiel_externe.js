@@ -108,19 +108,19 @@ $(document).ready
 							// matière classique -> tous niveaux actifs
 							if(matiere_id != id_matiere_transversale)
 							{
-								$(this).removeAttr('disabled');
+								$(this).prop('disabled',false);
 							}
 							// matière transversale -> desactiver les autres niveaux
 							else
 							{
-								$(this).attr('disabled','disabled');
+								$(this).prop('disabled',true);
 								modif_niveau_selected = Math.max(modif_niveau_selected,1);
 							}
 						}
 						// C'est un niveau cycle ; le sélectionner si besoin
 						else if(modif_niveau_selected==1)
 						{
-							$(this).attr('selected','selected');
+							$(this).prop('selected',true);
 							modif_niveau_selected = 2;
 						}
 					}
@@ -145,7 +145,7 @@ $(document).ready
 					$('#ajax_msg').removeAttr("class").addClass("erreur").html("Il faut préciser au moins un critère !");
 					return false;
 				}
-				$('#rechercher').attr('disabled','disabled');
+				$('#rechercher').prop('disabled',true);
 				$('#ajax_msg').removeAttr("class").addClass("loader").html('Demande envoyée... Veuillez patienter.');
 				$.ajax
 				(
@@ -156,13 +156,13 @@ $(document).ready
 						dataType : "html",
 						error : function(msg,string)
 						{
-							$('#rechercher').removeAttr('disabled');
+							$('#rechercher').prop('disabled',false);
 							$('#ajax_msg').removeAttr("class").addClass("alerte").html('Echec de la connexion ! Veuillez recommencer.');
 							return false;
 						},
 						success : function(responseHTML)
 						{
-							$('#rechercher').removeAttr('disabled');
+							$('#rechercher').prop('disabled',false);
 							if(responseHTML.substring(0,3)!='<li')
 							{
 								$('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);

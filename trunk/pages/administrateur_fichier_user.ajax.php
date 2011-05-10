@@ -775,7 +775,7 @@ if( $step==31 )
 		{
 			if($action!='sconet_professeurs_directeurs')
 			{
-				$lignes_del .= '<tr><th>'.html($ref).'</th><td>Supprimer <input id="del_'.$id_base.'" name="del_'.$id_base.'" type="checkbox" value="1" checked="checked" /> '.html($tab_classes_base['nom'][$id_base]).'</td></tr>';
+				$lignes_del .= '<tr><th>'.html($ref).'</th><td>Supprimer <input id="del_'.$id_base.'" name="del_'.$id_base.'" type="checkbox" value="1" checked /> '.html($tab_classes_base['nom'][$id_base]).'</td></tr>';
 			}
 			else
 			{
@@ -824,7 +824,7 @@ if( $step==31 )
 				}
 			}
 			$nom_classe = ($tab_classes_fichier['nom'][$i_fichier]) ? $tab_classes_fichier['nom'][$i_fichier] : $ref ;
-			$lignes_add .= '<tr><th>'.html($ref).'<input id="add_ref_'.$i_fichier.'" name="add_ref_'.$i_fichier.'" type="hidden" value="'.html($ref).'" /></th><td>Niveau : <select id="add_niv_'.$i_fichier.'" name="add_niv_'.$i_fichier.'">'.str_replace('value="'.$id_checked.'"','value="'.$id_checked.'" selected="selected"',$select_niveau).'</select> Nom complet : <input id="add_nom_'.$i_fichier.'" name="add_nom_'.$i_fichier.'" size="15" type="text" value="'.html($nom_classe).'" maxlength="20" /></td></tr>';
+			$lignes_add .= '<tr><th>'.html($ref).'<input id="add_ref_'.$i_fichier.'" name="add_ref_'.$i_fichier.'" type="hidden" value="'.html($ref).'" /></th><td>Niveau : <select id="add_niv_'.$i_fichier.'" name="add_niv_'.$i_fichier.'">'.str_replace('value="'.$id_checked.'"','value="'.$id_checked.'" selected',$select_niveau).'</select> Nom complet : <input id="add_nom_'.$i_fichier.'" name="add_nom_'.$i_fichier.'" size="15" type="text" value="'.html($nom_classe).'" maxlength="20" /></td></tr>';
 		}
 	}
 	// On enregistre (tableau mis à jour)
@@ -1018,7 +1018,7 @@ if( $step==41 )
 		{
 			if($action!='sconet_professeurs_directeurs')
 			{
-				$lignes_del .= '<tr><th>'.html($ref).'</th><td>Supprimer <input id="del_'.$id_base.'" name="del_'.$id_base.'" type="checkbox" value="1" checked="checked" /> '.html($tab_groupes_base['nom'][$id_base]).'</td></tr>';
+				$lignes_del .= '<tr><th>'.html($ref).'</th><td>Supprimer <input id="del_'.$id_base.'" name="del_'.$id_base.'" type="checkbox" value="1" checked /> '.html($tab_groupes_base['nom'][$id_base]).'</td></tr>';
 			}
 			else
 			{
@@ -1063,7 +1063,7 @@ if( $step==41 )
 				}
 			}
 			$nom_groupe = ($tab_groupes_fichier['nom'][$i_fichier]) ? $tab_groupes_fichier['nom'][$i_fichier] : $ref ;
-			$lignes_add .= '<tr><th>'.html($ref).'<input id="add_ref_'.$i_fichier.'" name="add_ref_'.$i_fichier.'" type="hidden" value="'.html($ref).'" /></th><td>Niveau : <select id="add_niv_'.$i_fichier.'" name="add_niv_'.$i_fichier.'">'.str_replace('value="'.$id_checked.'"','value="'.$id_checked.'" selected="selected"',$select_niveau).'</select> Nom complet : <input id="add_nom_'.$i_fichier.'" name="add_nom_'.$i_fichier.'" size="15" type="text" value="'.html($nom_groupe).'" maxlength="20" /></td></tr>';
+			$lignes_add .= '<tr><th>'.html($ref).'<input id="add_ref_'.$i_fichier.'" name="add_ref_'.$i_fichier.'" type="hidden" value="'.html($ref).'" /></th><td>Niveau : <select id="add_niv_'.$i_fichier.'" name="add_niv_'.$i_fichier.'">'.str_replace('value="'.$id_checked.'"','value="'.$id_checked.'" selected',$select_niveau).'</select> Nom complet : <input id="add_nom_'.$i_fichier.'" name="add_nom_'.$i_fichier.'" size="15" type="text" value="'.html($nom_groupe).'" maxlength="20" /></td></tr>';
 		}
 	}
 	// On enregistre (tableau mis à jour)
@@ -1303,7 +1303,7 @@ if( $step==51 )
 		elseif( (!$id_base) && ( (!$is_profil_eleve) || ($tab_users_fichier['classe'][$i_fichier]) ) )
 		{
 			$indication = ($is_profil_eleve) ? $tab_users_fichier['classe'][$i_fichier] : $tab_users_fichier['profil'][$i_fichier] ;
-			$lignes_ajouter .= '<tr><th>Ajouter <input id="add_'.$i_fichier.'" name="add_'.$i_fichier.'" type="checkbox" value="1" checked="checked" /></th><td>'.html($tab_users_fichier['num_sconet'][$i_fichier].' / '.$tab_users_fichier['reference'][$i_fichier].' || '.$tab_users_fichier['nom'][$i_fichier].' '.$tab_users_fichier['prenom'][$i_fichier].' ('.$indication.')').'</td></tr>';
+			$lignes_ajouter .= '<tr><th>Ajouter <input id="add_'.$i_fichier.'" name="add_'.$i_fichier.'" type="checkbox" value="1" checked /></th><td>'.html($tab_users_fichier['num_sconet'][$i_fichier].' / '.$tab_users_fichier['reference'][$i_fichier].' || '.$tab_users_fichier['nom'][$i_fichier].' '.$tab_users_fichier['prenom'][$i_fichier].' ('.$indication.')').'</td></tr>';
 			$id_classe = ($is_profil_eleve) ? $tab_classe_ref[$tab_users_fichier['classe'][$i_fichier]] : 0 ;
 			$tab_users_ajout[$i_fichier] = array( 'num_sconet'=>$tab_users_fichier['num_sconet'][$i_fichier] , 'reference'=>$tab_users_fichier['reference'][$i_fichier] , 'nom'=>$tab_users_fichier['nom'][$i_fichier] , 'prenom'=>$tab_users_fichier['prenom'][$i_fichier] , 'profil'=>$tab_users_fichier['profil'][$i_fichier] , 'classe'=>$id_classe );
 		}
@@ -1311,7 +1311,7 @@ if( $step==51 )
 		elseif( ($is_profil_eleve) && (!$tab_users_fichier['classe'][$i_fichier]) && ($tab_users_base['statut'][$id_base]) )
 		{
 			$indication = ($is_profil_eleve) ? $tab_users_base['classe'][$id_base] : $tab_users_base['profil'][$id_base] ;
-			$lignes_retirer .= '<tr><th>Retirer <input id="del_'.$id_base.'" name="del_'.$id_base.'" type="checkbox" value="1" checked="checked" /></th><td>'.html($tab_users_base['num_sconet'][$id_base].' / '.$tab_users_base['reference'][$id_base].' || '.$tab_users_base['nom'][$id_base].' '.$tab_users_base['prenom'][$id_base].' ('.$indication.')').' || <b>Statut : actif => inactif</b></td></tr>';
+			$lignes_retirer .= '<tr><th>Retirer <input id="del_'.$id_base.'" name="del_'.$id_base.'" type="checkbox" value="1" checked /></th><td>'.html($tab_users_base['num_sconet'][$id_base].' / '.$tab_users_base['reference'][$id_base].' || '.$tab_users_base['nom'][$id_base].' '.$tab_users_base['prenom'][$id_base].' ('.$indication.')').' || <b>Statut : actif => inactif</b></td></tr>';
 		}
 		// Cas [4] : présent dans le fichier, présent dans la base, pas de classe dans le fichier (élèves uniquements), statut inactif dans la base : contenu inchangé (probablement des anciens élèves déjà écartés)
 		elseif( ($is_profil_eleve) && (!$tab_users_fichier['classe'][$i_fichier]) && (!$tab_users_base['statut'][$id_base]) )
@@ -1352,7 +1352,7 @@ if( $step==51 )
 			// Cas [5] : présent dans le fichier, présent dans la base, classe indiquée dans le fichier si élève, statut inactif dans la base et/ou différence constatée : contenu à modifier (user revenant ou mise à jour)
 			if($nb_modif)
 			{
-				$lignes_modifier .= '<tr><th>Modifier <input id="mod_'.$id_base.'" name="mod_'.$id_base.'" type="checkbox" value="1" checked="checked" /></th><td>'.mb_substr($td_modif,4).'</td></tr>';
+				$lignes_modifier .= '<tr><th>Modifier <input id="mod_'.$id_base.'" name="mod_'.$id_base.'" type="checkbox" value="1" checked /></th><td>'.mb_substr($td_modif,4).'</td></tr>';
 			}
 			// Cas [6] : présent dans le fichier, présent dans la base, classe indiquée dans le fichier si élève, statut actif dans la base et aucune différence constatée : contenu à conserver (contenu identique)
 			else
@@ -1379,7 +1379,7 @@ if( $step==51 )
 			if($tab_users_base['statut'][$id_base])
 			{
 				$indication = ($is_profil_eleve) ? $tab_users_base['classe'][$id_base] : $tab_users_base['profil'][$id_base] ;
-				$lignes_retirer .= '<tr><th>Retirer <input id="del_'.$id_base.'" name="del_'.$id_base.'" type="checkbox" value="1" checked="checked" /></th><td>'.html($tab_users_base['num_sconet'][$id_base].' / '.$tab_users_base['reference'][$id_base].' || '.$tab_users_base['nom'][$id_base].' '.$tab_users_base['prenom'][$id_base].' ('.$indication.')').' || <b>Statut : actif => inactif</b></td></tr>';
+				$lignes_retirer .= '<tr><th>Retirer <input id="del_'.$id_base.'" name="del_'.$id_base.'" type="checkbox" value="1" checked /></th><td>'.html($tab_users_base['num_sconet'][$id_base].' / '.$tab_users_base['reference'][$id_base].' || '.$tab_users_base['nom'][$id_base].' '.$tab_users_base['prenom'][$id_base].' ('.$indication.')').' || <b>Statut : actif => inactif</b></td></tr>';
 			}
 			// Cas [8] : absent dans le fichier, présent dans la base, statut inactif : contenu inchangé (contenu restant inactif)
 			else
@@ -1769,7 +1769,7 @@ if( $step==61 )
 						else
 						{
 							$tab_ajout_asso_prof_classe[$user_id.'_'.$groupe_id] = true;
-							$lignes_classes .= '<tr><th>Ajouter <input id="add_classe_'.$user_id.'_'.$groupe_id.'" name="add_classe_'.$user_id.'_'.$groupe_id.'" type="checkbox" value="1" checked="checked" /></th><td>'.html($tab_users_fichier['nom'][$i_fichier].' '.$tab_users_fichier['prenom'][$i_fichier]).'</td><td>'.html($tab_base_classe[$groupe_id]).'</td></tr>';
+							$lignes_classes .= '<tr><th>Ajouter <input id="add_classe_'.$user_id.'_'.$groupe_id.'" name="add_classe_'.$user_id.'_'.$groupe_id.'" type="checkbox" value="1" checked /></th><td>'.html($tab_users_fichier['nom'][$i_fichier].' '.$tab_users_fichier['prenom'][$i_fichier]).'</td><td>'.html($tab_base_classe[$groupe_id]).'</td></tr>';
 						}
 					}
 				}
@@ -1806,7 +1806,7 @@ if( $step==61 )
 							else
 							{
 								$value = (isset($tab_ajout_asso_prof_classe[$user_id.'_'.$groupe_id])) ? 2 : 1 ;
-								$lignes_principal .= '<tr><th>Ajouter <input id="add_pp_'.$user_id.'_'.$groupe_id.'" name="add_pp_'.$user_id.'_'.$groupe_id.'" type="checkbox" value="'.$value.'" checked="checked" /></th><td>'.html($tab_users_fichier['nom'][$i_fichier].' '.$tab_users_fichier['prenom'][$i_fichier]).'</td><td>'.html($tab_base_classe[$groupe_id]).'</td></tr>';
+								$lignes_principal .= '<tr><th>Ajouter <input id="add_pp_'.$user_id.'_'.$groupe_id.'" name="add_pp_'.$user_id.'_'.$groupe_id.'" type="checkbox" value="'.$value.'" checked /></th><td>'.html($tab_users_fichier['nom'][$i_fichier].' '.$tab_users_fichier['prenom'][$i_fichier]).'</td><td>'.html($tab_base_classe[$groupe_id]).'</td></tr>';
 							}
 						}
 					}
@@ -1850,7 +1850,7 @@ if( $step==61 )
 						}
 						else
 						{
-							$lignes_matieres .= '<tr><th>Ajouter <input id="add_matiere_'.$user_id.'_'.$matiere_id.'" name="add_matiere_'.$user_id.'_'.$matiere_id.'" type="checkbox" value="1" checked="checked" /></th><td>'.html($tab_users_fichier['nom'][$i_fichier].' '.$tab_users_fichier['prenom'][$i_fichier]).'</td><td>'.html($tab_base_matiere[$matiere_id]).'</td></tr>';
+							$lignes_matieres .= '<tr><th>Ajouter <input id="add_matiere_'.$user_id.'_'.$matiere_id.'" name="add_matiere_'.$user_id.'_'.$matiere_id.'" type="checkbox" value="1" checked /></th><td>'.html($tab_users_fichier['nom'][$i_fichier].' '.$tab_users_fichier['prenom'][$i_fichier]).'</td><td>'.html($tab_base_matiere[$matiere_id]).'</td></tr>';
 						}
 					}
 				}
@@ -1893,7 +1893,7 @@ if( $step==61 )
 					}
 					else
 					{
-						$lignes_groupes .= '<tr><th>Ajouter <input id="add_groupe_'.$user_id.'_'.$groupe_id.'" name="add_groupe_'.$user_id.'_'.$groupe_id.'" type="checkbox" value="1" checked="checked" /></th><td>'.html($tab_users_fichier['nom'][$i_fichier].' '.$tab_users_fichier['prenom'][$i_fichier]).'</td><td>'.html($tab_base_groupe[$groupe_id]).'</td></tr>';
+						$lignes_groupes .= '<tr><th>Ajouter <input id="add_groupe_'.$user_id.'_'.$groupe_id.'" name="add_groupe_'.$user_id.'_'.$groupe_id.'" type="checkbox" value="1" checked /></th><td>'.html($tab_users_fichier['nom'][$i_fichier].' '.$tab_users_fichier['prenom'][$i_fichier]).'</td><td>'.html($tab_base_groupe[$groupe_id]).'</td></tr>';
 					}
 				}
 			}

@@ -116,7 +116,7 @@ $(document).ready
 		(
 			function()
 			{
-				if( $('input[name=connexion_mode_nom]').is(":checked")!=true )	// normalement impossible, sauf si par exemple on triche avec la barre d'outils Web Developer...
+				if( $('input[name=connexion_mode_nom]').is(':checked')!=true )	// normalement impossible, sauf si par exemple on triche avec la barre d'outils Web Developer...
 				{
 					$('#ajax_msg').removeAttr("class").addClass("erreur").html("Cocher un mode de connexion !");
 					return(false);
@@ -125,7 +125,7 @@ $(document).ready
 				var tab_infos = connexion_mode_nom.split('|');
 				var connexion_mode = tab_infos[0];
 				var connexion_nom  = tab_infos[1];
-				$("#bouton_valider").attr('disabled','disabled');
+				$("#bouton_valider").prop('disabled',true);
 				$('#ajax_msg').removeAttr("class").addClass("loader").html("Demande envoyée... Veuillez patienter.");
 				$.ajax
 				(
@@ -136,14 +136,14 @@ $(document).ready
 						dataType : "html",
 						error : function(msg,string)
 						{
-							$("#bouton_valider").removeAttr('disabled');
+							$("#bouton_valider").prop('disabled',false);
 							$('#ajax_msg').removeAttr("class").addClass("alerte").html("Echec de la connexion ! Veuillez recommencer.");
 							return false;
 						},
 						success : function(responseHTML)
 						{
 							maj_clock(1);
-							$("#bouton_valider").removeAttr('disabled');
+							$("#bouton_valider").prop('disabled',false);
 							if(responseHTML!='ok')
 							{
 								$('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);

@@ -72,7 +72,7 @@ $(document).ready
 			}
 			else
 			{
-				$('button').attr('disabled','disabled');
+				$('button').prop('disabled',true);
 				$('#ajax_msg_csv').removeAttr("class").addClass("loader").html('Fichier envoyé... Veuillez patienter.');
 				return true;
 			}
@@ -80,7 +80,7 @@ $(document).ready
 
 		function retourner_fichier_csv(fichier_nom,responseHTML)	// Attention : avec jquery.ajaxupload.js, IE supprime mystérieusement les guillemets et met les éléments en majuscules dans responseHTML.
 		{
-			$('button').removeAttr('disabled');
+			$('button').prop('disabled',false);
 			var tab_infos = responseHTML.split(']¤[');
 			if( (tab_infos.length!=2) || (tab_infos[0]!='') )
 			{
@@ -110,7 +110,7 @@ $(document).ready
 				courriel_envoi = $('#f_courriel_envoi').is(':checked') ? 1 : 0 ;
 				if( courriel_envoi || confirm("Le mot de passe du premier administrateur, non récupérable ultérieurement, ne sera pas transmis !\nConfirmez-vous ne pas vouloir envoyer le courriel d'inscription ?") )
 				{
-					$("button").attr('disabled','disabled');
+					$("button").prop('disabled',true);
 					var num = $('#ajax_import_num').html();
 					var max = $('#ajax_import_max').html();
 					$('#ajax_msg_import').removeAttr("class").addClass("loader").html('Import en cours : étape ' + num + ' sur ' + max + '...');
@@ -158,7 +158,7 @@ $(document).ready
 								$('#ajax_msg_csv , #ajax_msg_import').removeAttr("class").html('&nbsp;');
 								$('#div_import').hide('fast');
 								$('#structures').show('fast');
-								$("button").removeAttr('disabled');
+								$("button").prop('disabled',false);
 							}
 							else
 							{
@@ -201,7 +201,7 @@ $(document).ready
 		(
 			function()
 			{
-				$('#structures input[type=checkbox]').attr('checked','checked');
+				$('#structures input[type=checkbox]').prop('checked',true);
 				return false;
 			}
 		);
@@ -209,7 +209,7 @@ $(document).ready
 		(
 			function()
 			{
-				$('#structures input[type=checkbox]').removeAttr('checked');
+				$('#structures input[type=checkbox]').prop('checked',false);
 				return false;
 			}
 		);
@@ -232,7 +232,7 @@ $(document).ready
 
 		var supprimer_structures_cochees = function(listing_id)
 		{
-			$("button").attr('disabled','disabled');
+			$("button").prop('disabled',true);
 			// afficher_masquer_images_action('hide');
 			$('#ajax_supprimer').removeAttr("class").addClass("loader").html("Demande envoyée... Veuillez patienter.");
 			$.ajax
@@ -245,7 +245,7 @@ $(document).ready
 					error : function(msg,string)
 					{
 						$('#ajax_supprimer').removeAttr("class").addClass("alerte").html("Echec de la connexion ! Veuillez recommencer.");
-						$("button").removeAttr('disabled');
+						$("button").prop('disabled',false);
 						// afficher_masquer_images_action('show');
 					},
 					success : function(responseHTML)
@@ -266,7 +266,7 @@ $(document).ready
 								}
 							);
 							$('#ajax_supprimer').removeAttr("class").html('&nbsp;');
-							$("button").removeAttr('disabled');
+							$("button").prop('disabled',false);
 							// afficher_masquer_images_action('show');
 						}
 					}

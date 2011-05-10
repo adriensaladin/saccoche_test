@@ -27,7 +27,7 @@
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = "Demandes d'évaluations";
-$VERSION_JS_FILE += 11;
+$VERSION_JS_FILE += 12;
 
 // Lister le nb de demandes d'évaluations autorisées suivant les matières
 $infobulle = '';
@@ -98,7 +98,8 @@ $select_groupe  = afficher_select(DB_STRUCTURE_OPT_groupes_professeur($_SESSION[
 			<label class="tab" for="f_qui">Élève(s) :</label><select id="f_qui" name="f_qui"><option value="select">Élèves sélectionnés</option><option value="groupe"></option></select>
 		</fieldset>
 		<fieldset id="step_creer" class="hide">
-			<label class="tab" for="f_date">Date :</label><input id="f_date" name="f_date" size="9" type="text" value="<?php echo date("d/m/Y") ?>" /><q class="date_calendrier" title="Cliquez sur cette image pour importer une date depuis un calendrier !"></q><br />
+			<label class="tab" for="f_date">Date devoir :</label><input id="f_date" name="f_date" size="9" type="text" value="<?php echo date("d/m/Y") ?>" /><q class="date_calendrier" title="Cliquez sur cette image pour importer une date depuis un calendrier !"></q><br />
+			<label class="tab" for="f_date_visible">Date visible :</label><input id="box_date" type="checkbox" checked /> <span>identique</span><span class="hide"><input id="f_date_visible" name="f_date_visible" size="9" type="text" value="<?php echo date("d/m/Y") ?>" /><q class="date_calendrier" title="Cliquez sur cette image pour importer une date depuis un calendrier !"></q></span><br />
 			<label class="tab" for="f_info">Description :</label><input id="f_info" name="f_info" size="30" type="text" value="" />
 		</fieldset>
 		<fieldset id="step_completer" class="hide">

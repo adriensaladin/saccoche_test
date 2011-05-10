@@ -49,7 +49,7 @@ $VERSION_JS_FILE += 1;
 			$DB_TAB = DB_STRUCTURE_lister_cycles_SACoche();
 			foreach($DB_TAB as $DB_ROW)
 			{
-				$checked  = (in_array($DB_ROW['niveau_id'],$tab_check)) ? ' checked="checked"' : '' ;
+				$checked  = (in_array($DB_ROW['niveau_id'],$tab_check)) ? ' checked' : '' ;
 				echo'<tr>';
 				echo'	<td class="nu"><input type="checkbox" name="f_tab_id" value="'.$DB_ROW['niveau_id'].'"'.$checked.' /></td>';
 				echo'	<td class="label">'.html($DB_ROW['niveau_ref']).'</td>';
@@ -81,7 +81,7 @@ $VERSION_JS_FILE += 1;
 			$DB_TAB = DB_STRUCTURE_lister_niveaux_SACoche();
 			foreach($DB_TAB as $DB_ROW)
 			{
-				$checked  = (in_array($DB_ROW['niveau_id'],$tab_check)) ? ' checked="checked"' : '' ;
+				$checked  = (in_array($DB_ROW['niveau_id'],$tab_check)) ? ' checked' : '' ;
 				echo'<tr>';
 				echo'	<td class="nu"><input type="checkbox" name="f_tab_id" value="'.$DB_ROW['niveau_id'].'"'.$checked.' /></td>';
 				echo'	<td class="label">'.html($DB_ROW['niveau_ref']).'</td>';

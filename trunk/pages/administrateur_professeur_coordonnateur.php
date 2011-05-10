@@ -63,7 +63,7 @@ $TITRE = "Gérer les professeurs coordonnateurs";
 				// Nouveau professeur
 				if($DB_ROW['user_statut'])
 				{
-					$checked = ($DB_ROW['jointure_coord']) ? ' checked="checked"' : '' ;
+					$checked = ($DB_ROW['jointure_coord']) ? ' checked' : '' ;
 					$id = $DB_ROW['matiere_id'].'x'.$DB_ROW['user_id'];
 					$tab_user[$DB_ROW['matiere_id']] .= '<input type="checkbox" id="id_'.$id.'" name="f_tab_id" value="'.$id.'"'.$checked.' /> <label for="id_'.$id.'">'.html($DB_ROW['user_nom'].' '.$DB_ROW['user_prenom']).'</label><br />';
 					$nb_professeurs++;

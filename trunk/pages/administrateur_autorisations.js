@@ -100,10 +100,10 @@ $(document).ready
 		(
 			function()
 			{
-				$('#form_validation_socle input').removeAttr('checked');
-				$('#form_validation_socle input[value="directeur"]').attr('checked','checked');
-				$('#form_validation_socle input[name="droit_validation_entree"][value="professeur"]').attr("checked",'checked');
-				$('#form_validation_socle input[name="droit_validation_pilier"][value="profprincipal"]').attr("checked",'checked');
+				$('#form_validation_socle input').prop('checked',false);
+				$('#form_validation_socle input[value="directeur"]').prop('checked',true);
+				$('#form_validation_socle input[name="droit_validation_entree"][value="professeur"]').prop('checked',true);
+				$('#form_validation_socle input[name="droit_validation_pilier"][value="profprincipal"]').prop('checked',true);
 				$('#ajax_msg_validation_socle').removeAttr("class").addClass("alerte").html("Penser à enregistrer les modifications.");
 			}
 		);
@@ -112,9 +112,9 @@ $(document).ready
 		(
 			function()
 			{
-				$('#form_voir_referentiels input[value="directeur"]').attr('checked','checked');
-				$('#form_voir_referentiels input[value="professeur"]').attr('checked','checked');
-				$('#form_voir_referentiels input[value="eleve"]').attr('checked','checked');
+				$('#form_voir_referentiels input[value="directeur"]').prop('checked',true);
+				$('#form_voir_referentiels input[value="professeur"]').prop('checked',true);
+				$('#form_voir_referentiels input[value="eleve"]').prop('checked',true);
 				$('#ajax_msg_voir_referentiels').removeAttr("class").addClass("alerte").html("Penser à enregistrer les modifications.");
 			}
 		);
@@ -123,9 +123,9 @@ $(document).ready
 		(
 			function()
 			{
-				$('#form_voir_score_bilan input[value="directeur"]').attr('checked','checked');
-				$('#form_voir_score_bilan input[value="professeur"]').attr('checked','checked');
-				$('#form_voir_score_bilan input[value="eleve"]').attr('checked','checked');
+				$('#form_voir_score_bilan input[value="directeur"]').prop('checked',true);
+				$('#form_voir_score_bilan input[value="professeur"]').prop('checked',true);
+				$('#form_voir_score_bilan input[value="eleve"]').prop('checked',true);
 				$('#ajax_msg_voir_score_bilan').removeAttr("class").addClass("alerte").html("Penser à enregistrer les modifications.");
 			}
 		);
@@ -134,9 +134,9 @@ $(document).ready
 		(
 			function()
 			{
-				$('#form_voir_algorithme input[value="directeur"]').attr('checked','checked');
-				$('#form_voir_algorithme input[value="professeur"]').attr('checked','checked');
-				$('#form_voir_algorithme input[value="eleve"]').attr('checked','checked');
+				$('#form_voir_algorithme input[value="directeur"]').prop('checked',true);
+				$('#form_voir_algorithme input[value="professeur"]').prop('checked',true);
+				$('#form_voir_algorithme input[value="eleve"]').prop('checked',true);
 				$('#ajax_msg_voir_algorithme').removeAttr("class").addClass("alerte").html("Penser à enregistrer les modifications.");
 			}
 		);
@@ -145,9 +145,9 @@ $(document).ready
 		(
 			function()
 			{
-				$('#form_modifier_mdp input[value="directeur"]').attr('checked','checked');
-				$('#form_modifier_mdp input[value="professeur"]').attr('checked','checked');
-				$('#form_modifier_mdp input[value="eleve"]').attr('checked','checked');
+				$('#form_modifier_mdp input[value="directeur"]').prop('checked',true);
+				$('#form_modifier_mdp input[value="professeur"]').prop('checked',true);
+				$('#form_modifier_mdp input[value="eleve"]').prop('checked',true);
 				$('#ajax_msg_modifier_mdp').removeAttr("class").addClass("alerte").html("Penser à enregistrer les modifications.");
 			}
 		);
@@ -156,9 +156,9 @@ $(document).ready
 		(
 			function()
 			{
-				$('#form_eleve_bilans input[value="BilanMoyenneScore"]').attr('checked','checked');
-				$('#form_eleve_bilans input[value="BilanPourcentageAcquis"]').attr('checked','checked');
-				$('#form_eleve_bilans input[value="BilanNoteSurVingt"]').removeAttr('checked');
+				$('#form_eleve_bilans input[value="BilanMoyenneScore"]').prop('checked',true);
+				$('#form_eleve_bilans input[value="BilanPourcentageAcquis"]').prop('checked',true);
+				$('#form_eleve_bilans input[value="BilanNoteSurVingt"]').prop('checked',false);
 				$('#ajax_msg_eleve_bilans').removeAttr("class").addClass("alerte").html("Penser à enregistrer les modifications.");
 				view_eleve_bilans();
 			}
@@ -168,9 +168,9 @@ $(document).ready
 		(
 			function()
 			{
-				$('#form_eleve_socle input[value="SocleAcces"]').attr('checked','checked');
-				$('#form_eleve_socle input[value="SoclePourcentageAcquis"]').attr('checked','checked');
-				$('#form_eleve_socle input[value="SocleEtatValidation"]').removeAttr('checked');
+				$('#form_eleve_socle input[value="SocleAcces"]').prop('checked',true);
+				$('#form_eleve_socle input[value="SoclePourcentageAcquis"]').prop('checked',true);
+				$('#form_eleve_socle input[value="SocleEtatValidation"]').prop('checked',false);
 				$('#ajax_msg_eleve_socle').removeAttr("class").addClass("alerte").html("Penser à enregistrer les modifications.");
 				view_eleve_socle();
 			}
@@ -205,7 +205,7 @@ $(document).ready
 			{
 				var tab_entree = new Array(); $("#form_validation_socle input[name=droit_validation_entree]:checked").each(function(){tab_entree.push($(this).val());});
 				var tab_pilier = new Array(); $("#form_validation_socle input[name=droit_validation_pilier]:checked").each(function(){tab_pilier.push($(this).val());});
-				$("button").attr('disabled','disabled');
+				$("button").prop('disabled',true);
 				$('#ajax_msg_validation_socle').removeAttr("class").addClass("loader").html("Demande envoyée... Veuillez patienter.");
 				$.ajax
 				(
@@ -216,14 +216,14 @@ $(document).ready
 						dataType : "html",
 						error : function(msg,string)
 						{
-							$("button").removeAttr('disabled');
+							$("button").prop('disabled',false);
 							$('#ajax_msg_validation_socle').removeAttr("class").addClass("alerte").html("Echec de la connexion ! Veuillez recommencer.");
 							return false;
 						},
 						success : function(responseHTML)
 						{
 							maj_clock(1);
-							$("button").removeAttr('disabled');
+							$("button").prop('disabled',false);
 							if(responseHTML!='ok')
 							{
 								$('#ajax_msg_validation_socle').removeAttr("class").addClass("alerte").html(responseHTML);
@@ -247,7 +247,7 @@ $(document).ready
 			function()
 			{
 				var tab_check = new Array(); $("input[name=droit_voir_referentiels]:checked").each(function(){tab_check.push($(this).val());});
-				$("button").attr('disabled','disabled');
+				$("button").prop('disabled',true);
 				$('#ajax_msg_voir_referentiels').removeAttr("class").addClass("loader").html("Demande envoyée... Veuillez patienter.");
 				$.ajax
 				(
@@ -258,14 +258,14 @@ $(document).ready
 						dataType : "html",
 						error : function(msg,string)
 						{
-							$("button").removeAttr('disabled');
+							$("button").prop('disabled',false);
 							$('#ajax_msg_voir_referentiels').removeAttr("class").addClass("alerte").html("Echec de la connexion ! Veuillez recommencer.");
 							return false;
 						},
 						success : function(responseHTML)
 						{
 							maj_clock(1);
-							$("button").removeAttr('disabled');
+							$("button").prop('disabled',false);
 							if(responseHTML!='ok')
 							{
 								$('#ajax_msg_voir_referentiels').removeAttr("class").addClass("alerte").html(responseHTML);
@@ -289,7 +289,7 @@ $(document).ready
 			function()
 			{
 				var tab_check = new Array(); $("input[name=droit_voir_score_bilan]:checked").each(function(){tab_check.push($(this).val());});
-				$("button").attr('disabled','disabled');
+				$("button").prop('disabled',true);
 				$('#ajax_msg_voir_score_bilan').removeAttr("class").addClass("loader").html("Demande envoyée... Veuillez patienter.");
 				$.ajax
 				(
@@ -300,14 +300,14 @@ $(document).ready
 						dataType : "html",
 						error : function(msg,string)
 						{
-							$("button").removeAttr('disabled');
+							$("button").prop('disabled',false);
 							$('#ajax_msg_voir_score_bilan').removeAttr("class").addClass("alerte").html("Echec de la connexion ! Veuillez recommencer.");
 							return false;
 						},
 						success : function(responseHTML)
 						{
 							maj_clock(1);
-							$("button").removeAttr('disabled');
+							$("button").prop('disabled',false);
 							if(responseHTML!='ok')
 							{
 								$('#ajax_msg_voir_score_bilan').removeAttr("class").addClass("alerte").html(responseHTML);
@@ -331,7 +331,7 @@ $(document).ready
 			function()
 			{
 				var tab_check = new Array(); $("input[name=droit_voir_algorithme]:checked").each(function(){tab_check.push($(this).val());});
-				$("button").attr('disabled','disabled');
+				$("button").prop('disabled',true);
 				$('#ajax_msg_voir_algorithme').removeAttr("class").addClass("loader").html("Demande envoyée... Veuillez patienter.");
 				$.ajax
 				(
@@ -342,14 +342,14 @@ $(document).ready
 						dataType : "html",
 						error : function(msg,string)
 						{
-							$("button").removeAttr('disabled');
+							$("button").prop('disabled',false);
 							$('#ajax_msg_voir_algorithme').removeAttr("class").addClass("alerte").html("Echec de la connexion ! Veuillez recommencer.");
 							return false;
 						},
 						success : function(responseHTML)
 						{
 							maj_clock(1);
-							$("button").removeAttr('disabled');
+							$("button").prop('disabled',false);
 							if(responseHTML!='ok')
 							{
 								$('#ajax_msg_voir_algorithme').removeAttr("class").addClass("alerte").html(responseHTML);
@@ -373,7 +373,7 @@ $(document).ready
 			function()
 			{
 				var tab_check = new Array(); $("input[name=droit_modifier_mdp]:checked").each(function(){tab_check.push($(this).val());});
-				$("button").attr('disabled','disabled');
+				$("button").prop('disabled',true);
 				$('#ajax_msg_modifier_mdp').removeAttr("class").addClass("loader").html("Demande envoyée... Veuillez patienter.");
 				$.ajax
 				(
@@ -384,14 +384,14 @@ $(document).ready
 						dataType : "html",
 						error : function(msg,string)
 						{
-							$("button").removeAttr('disabled');
+							$("button").prop('disabled',false);
 							$('#ajax_msg_modifier_mdp').removeAttr("class").addClass("alerte").html("Echec de la connexion ! Veuillez recommencer.");
 							return false;
 						},
 						success : function(responseHTML)
 						{
 							maj_clock(1);
-							$("button").removeAttr('disabled');
+							$("button").prop('disabled',false);
 							if(responseHTML!='ok')
 							{
 								$('#ajax_msg_modifier_mdp').removeAttr("class").addClass("alerte").html(responseHTML);
@@ -415,7 +415,7 @@ $(document).ready
 			function()
 			{
 				var tab_check = new Array(); $("input[name=droit_eleve_bilans]:checked").each(function(){tab_check.push($(this).val());});
-				$("button").attr('disabled','disabled');
+				$("button").prop('disabled',true);
 				$('#ajax_msg_eleve_bilans').removeAttr("class").addClass("loader").html("Demande envoyée... Veuillez patienter.");
 				$.ajax
 				(
@@ -426,14 +426,14 @@ $(document).ready
 						dataType : "html",
 						error : function(msg,string)
 						{
-							$("button").removeAttr('disabled');
+							$("button").prop('disabled',false);
 							$('#ajax_msg_eleve_bilans').removeAttr("class").addClass("alerte").html("Echec de la connexion ! Veuillez recommencer.");
 							return false;
 						},
 						success : function(responseHTML)
 						{
 							maj_clock(1);
-							$("button").removeAttr('disabled');
+							$("button").prop('disabled',false);
 							if(responseHTML!='ok')
 							{
 								$('#ajax_msg_eleve_bilans').removeAttr("class").addClass("alerte").html(responseHTML);
@@ -457,7 +457,7 @@ $(document).ready
 			function()
 			{
 				var tab_check = new Array(); $("input[name=droit_eleve_socle]:checked").each(function(){tab_check.push($(this).val());});
-				$("button").attr('disabled','disabled');
+				$("button").prop('disabled',true);
 				$('#ajax_msg_eleve_socle').removeAttr("class").addClass("loader").html("Demande envoyée... Veuillez patienter.");
 				$.ajax
 				(
@@ -468,14 +468,14 @@ $(document).ready
 						dataType : "html",
 						error : function(msg,string)
 						{
-							$("button").removeAttr('disabled');
+							$("button").prop('disabled',false);
 							$('#ajax_msg_eleve_socle').removeAttr("class").addClass("alerte").html("Echec de la connexion ! Veuillez recommencer.");
 							return false;
 						},
 						success : function(responseHTML)
 						{
 							maj_clock(1);
-							$("button").removeAttr('disabled');
+							$("button").prop('disabled',false);
 							if(responseHTML!='ok')
 							{
 								$('#ajax_msg_eleve_socle').removeAttr("class").addClass("alerte").html(responseHTML);

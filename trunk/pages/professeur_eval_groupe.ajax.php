@@ -36,6 +36,7 @@ $date_debut     = (isset($_POST['f_date_debut']))      ? clean_texte($_POST['f_d
 $date_fin       = (isset($_POST['f_date_fin']))        ? clean_texte($_POST['f_date_fin'])              : '';
 $ref            = (isset($_POST['f_ref']))             ? clean_texte($_POST['f_ref'])                   : '';
 $date           = (isset($_POST['f_date']))            ? clean_texte($_POST['f_date'])                  : '';
+$date_visible   = (isset($_POST['f_date_visible']))    ? clean_texte($_POST['f_date_visible'])          : ''; // Peut valoir une date (JJ/MM/AAAA) ou "identique"
 $groupe         = (isset($_POST['f_groupe']))          ? clean_texte($_POST['f_groupe'])                : '';
 $info           = (isset($_POST['f_info']))            ? clean_texte($_POST['f_info'])                  : '';
 $descriptif     = (isset($_POST['f_descriptif']))      ? clean_texte($_POST['f_descriptif'])            : '';
@@ -124,11 +125,13 @@ if( ($action=='Afficher_evaluations') && $aff_classe_txt && $aff_classe_id && ( 
 	{
 		// Formater la date et la référence de l'évaluation
 		$date_affich = convert_date_mysql_to_french($DB_ROW['devoir_date']);
+		$date_visible = ($DB_ROW['devoir_date']==$DB_ROW['devoir_visible_date']) ? 'identique' : convert_date_mysql_to_french($DB_ROW['devoir_visible_date']);
 		$ref = $DB_ROW['devoir_id'].'_'.strtoupper($DB_ROW['groupe_type']{0}).$DB_ROW['groupe_id'];
 		$s = ($DB_ROW['items_nombre']>1) ? 's' : '';
 		// Afficher une ligne du tableau
 		echo'<tr>';
 		echo	'<td><i>'.html($DB_ROW['devoir_date']).'</i>'.html($date_affich).'</td>';
+		echo	'<td>'.html($date_visible).'</td>';
 		echo	'<td>'.html($DB_ROW['groupe_nom']).'</td>';
 		echo	'<td>'.html($DB_ROW['devoir_info']).'</td>';
 		echo	'<td lang="'.html($DB_ROW['items_listing']).'">'.html($DB_ROW['items_nombre']).' item'.$s.'</td>';
@@ -151,17 +154,20 @@ if( ($action=='Afficher_evaluations') && $aff_classe_txt && $aff_classe_id && ( 
 //	Ajouter une nouvelle évaluation
 //	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-if( (($action=='ajouter')||(($action=='dupliquer')&&($devoir_id))) && $date && $groupe_type && $groupe_id && $nb_items )
+if( (($action=='ajouter')||(($action=='dupliquer')&&($devoir_id))) && $date && $date_visible && $groupe_type && $groupe_id && $nb_items )
 {
 	// Insérer l'enregistrement de l'évaluation
-	$date_mysql = convert_date_french_to_mysql($date);
-	$devoir_id2 = DB_STRUCTURE_ajouter_devoir($_SESSION['USER_ID'],$groupe_id,$date_mysql,$info);
+	$date_mysql         = convert_date_french_to_mysql($date);
+	$date_visible_mysql = convert_date_french_to_mysql($date_visible);
+	$devoir_id2 = DB_STRUCTURE_ajouter_devoir($_SESSION['USER_ID'],$groupe_id,$date_mysql,$info,$date_visible_mysql);
 	// Insérer les enregistrements des items de l'évaluation
 	DB_STRUCTURE_modifier_liaison_devoir_item($devoir_id2,$tab_items,'dupliquer',$devoir_id);
 	// Afficher le retour
+	$date_visible = ($date==$date_visible) ? 'identique' : $date_visible;
 	$ref = $devoir_id2.'_'.strtoupper($groupe_type{0}).$groupe_id;
 	$s = ($nb_items>1) ? 's' : '';
 	echo'<td><i>'.html($date_mysql).'</i>'.html($date).'</td>';
+	echo'<td>'.html($date_visible).'</td>';
 	echo'<td>{{GROUPE_NOM}}</td>';
 	echo'<td>'.html($info).'</td>';
 	echo'<td lang="'.implode('_',$tab_items).'">'.$nb_items.' item'.$s.'</td>';
@@ -182,20 +188,23 @@ if( (($action=='ajouter')||(($action=='dupliquer')&&($devoir_id))) && $date && $
 //	Modifier une évaluation existante
 //	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-if( ($action=='modifier') && $devoir_id && $date && $groupe_type && $groupe_id && $nb_items )
+if( ($action=='modifier') && $devoir_id && $date && $date_visible && $groupe_type && $groupe_id && $nb_items )
 {
 	// sacoche_devoir (maj des paramètres date & info)
 	$date_mysql = convert_date_french_to_mysql($date);
-	DB_STRUCTURE_modifier_devoir($devoir_id,$_SESSION['USER_ID'],$date_mysql,$info,$tab_items);
+	$date_visible_mysql = convert_date_french_to_mysql($date_visible);
+	DB_STRUCTURE_modifier_devoir($devoir_id,$_SESSION['USER_ID'],$date_mysql,$info,$date_visible_mysql,$tab_items);
 	// sacoche_devoir (maj groupe_id) + sacoche_saisie pour les users supprimés
 	// DB_STRUCTURE_modifier_liaison_devoir_groupe($devoir_id,$groupe_id); // RETIRÉ APRÈS REFLEXION : IL N'Y A PAS DE RAISON DE CARRÉMENT CHANGER LE GROUPE D'UNE ÉVALUATION => AU PIRE ON LA DUPLIQUE POUR UN AUTRE GROUPE PUIS ON LA SUPPRIME.
 	// sacoche_jointure_devoir_item + sacoche_saisie pour les items supprimés
 	DB_STRUCTURE_modifier_liaison_devoir_item($devoir_id,$tab_items,'substituer');
 	// ************************ dans sacoche_saisie faut-il aussi virer certains scores élèves en cas de changement de groupe ... ???
 	// Afficher le retour
+	$date_visible = ($date==$date_visible) ? 'identique' : $date_visible;
 	$ref = $devoir_id.'_'.strtoupper($groupe_type{0}).$groupe_id;
 	$s = (count($tab_items)>1) ? 's' : '';
 	echo'<td><i>'.html($date_mysql).'</i>'.html($date).'</td>';
+	echo'<td>'.html($date_visible).'</td>';
 	echo'<td>{{GROUPE_NOM}}</td>';
 	echo'<td>'.html($info).'</td>';
 	echo'<td lang="'.implode('_',$tab_items).'">'.$nb_items.' item'.$s.'</td>';
@@ -258,7 +267,7 @@ if( ($action=='ordonner') && $devoir_id )
 //	Générer en même temps un pdf contenant un tableau de saisie vide
 //	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-if( ($action=='saisir') && $devoir_id && $groupe_type && $groupe_id && $date && $descriptif ) // $date au format MySQL ; $descriptif séparé par ::: ; $info (facultative) reportées dans input hidden
+if( ($action=='saisir') && $devoir_id && $groupe_type && $groupe_id && $date && $date_visible && $descriptif ) // $date au format MySQL ; $descriptif séparé par ::: ; $info (facultative) reportées dans input hidden
 {
 	// liste des items
 	$DB_TAB_COMP = DB_STRUCTURE_lister_items_devoir($devoir_id);
@@ -285,7 +294,7 @@ if( ($action=='saisir') && $devoir_id && $groupe_type && $groupe_id && $date && 
 	$tab_affich[0][0].= '<label for="radio_souris"><input type="radio" id="radio_souris" name="mode_saisie" value="souris" /> <img alt="" src="./_img/pilot_mouse.png" /> Piloter à la souris</label> <img alt="" src="./_img/bulle_aide.png" title="Survoler une case du tableau avec la souris<br />puis cliquer sur une des images proposées." /><p />';
 	$tab_affich[0][0].= '<label for="check_largeur"><input type="checkbox" id="check_largeur" name="check_largeur" value="retrecir_largeur" /> <img alt="" src="./_img/retrecir_largeur.gif" /> Largeur optimale</label> <img alt="" src="./_img/bulle_aide.png" title="Diminuer la largeur des colonnes<br />si les élèves sont nombreux." /><br />';
 	$tab_affich[0][0].= '<label for="check_hauteur"><input type="checkbox" id="check_hauteur" name="check_hauteur" value="retrecir_hauteur" /> <img alt="" src="./_img/retrecir_hauteur.gif" /> Hauteur optimale</label> <img alt="" src="./_img/bulle_aide.png" title="Diminuer la hauteur des lignes<br />si les items sont nombreux." /><p />';
-	$tab_affich[0][0].= '<button id="Enregistrer_saisie" type="button"><img alt="" src="./_img/bouton/valider.png" /> Enregistrer les saisies</button><input type="hidden" name="f_ref" id="f_ref" value="'.$ref.'" /><input id="f_date" name="f_date" type="hidden" value="'.$date.'" /><input id="f_info" name="f_info" type="hidden" value="'.html($info).'" /><br />';
+	$tab_affich[0][0].= '<button id="Enregistrer_saisie" type="button"><img alt="" src="./_img/bouton/valider.png" /> Enregistrer les saisies</button><input type="hidden" name="f_ref" id="f_ref" value="'.$ref.'" /><input id="f_date" name="f_date" type="hidden" value="'.$date.'" /><input id="f_date_visible" name="f_date_visible" type="hidden" value="'.$date_visible.'" /><input id="f_info" name="f_info" type="hidden" value="'.html($info).'" /><br />';
 	$tab_affich[0][0].= '<button id="fermer_zone_saisir" type="button"><img alt="" src="./_img/bouton/retourner.png" /> Retour</button>';
 	$tab_affich[0][0].= '</td>';
 	// première ligne (noms prénoms des élèves)
@@ -320,7 +329,7 @@ if( ($action=='saisir') && $devoir_id && $groupe_type && $groupe_id && $date && 
 		foreach($tab_comp_id as $comp_id=>$val_comp)
 		{
 			$num_ligne++;
-			$tab_affich[$comp_id][$user_id] = '<td class="td_clavier" lang="C'.$num_colonne.'L'.$num_ligne.'"><input type="text" class="X" value="X" id="C'.$num_colonne.'L'.$num_ligne.'" name="'.$comp_id.'x'.$user_id.'" readonly="readonly" /></td>';
+			$tab_affich[$comp_id][$user_id] = '<td class="td_clavier" lang="C'.$num_colonne.'L'.$num_ligne.'"><input type="text" class="X" value="X" id="C'.$num_colonne.'L'.$num_ligne.'" name="'.$comp_id.'x'.$user_id.'" readonly /></td>';
 		}
 	}
 	// configurer le champ input
@@ -771,7 +780,7 @@ if( ($action=='Enregistrer_ordre') && $devoir_id && count($tab_id) )
 //	Mettre à jour les items acquis par les élèves à une évaluation
 //	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-if( ($action=='Enregistrer_saisie') && $devoir_id && $date )
+if( ($action=='Enregistrer_saisie') && $devoir_id && $date && $date_visible )
 {
 	// Tout est transmis : il faut comparer avec le contenu de la base pour ne mettre à jour que ce dont il y a besoin
 	// On récupère les données transmises dans $tab_post
@@ -826,11 +835,12 @@ if( ($action=='Enregistrer_saisie') && $devoir_id && $date )
 		exit('Aucune modification détectée !');
 	}
 	// L'information associée à la note comporte le nom de l'évaluation + celui du professeur (c'est une information statique, conservée sur plusieurs années)
+	$date_visible_mysql = ($date_visible=='identique') ? $date : convert_date_french_to_mysql($date_visible);
 	$info = $info.' ('.$_SESSION['USER_NOM'].' '.$_SESSION['USER_PRENOM']{0}.'.)';
 	foreach($tab_nouveau_ajouter as $key => $note)
 	{
 		list($item_id,$eleve_id) = explode('x',$key);
-		DB_STRUCTURE_ajouter_saisie($_SESSION['USER_ID'],$eleve_id,$devoir_id,$item_id,$date,$note,$info);
+		DB_STRUCTURE_ajouter_saisie($_SESSION['USER_ID'],$eleve_id,$devoir_id,$item_id,$date,$note,$info,$date_visible_mysql);
 	}
 	foreach($tab_nouveau_modifier as $key => $note)
 	{

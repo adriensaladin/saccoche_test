@@ -347,7 +347,7 @@ $(document).ready
 			var readytogo = validation_info_heberg.form();
 			if(readytogo)
 			{
-				$('button').attr('disabled','disabled');
+				$('button').prop('disabled',true);
 				$('#ajax_msg').removeAttr("class").addClass("loader").html("Soumission du formulaire en cours... Veuillez patienter.");
 			}
 			return readytogo;
@@ -356,14 +356,14 @@ $(document).ready
 		// Fonction suivant l'envoi du formulaire (avec jquery.form.js)
 		function retour_form_info_heberg_erreur(msg,string)
 		{
-			$('button').removeAttr('disabled');
+			$('button').prop('disabled',false);
 			$('#ajax_msg').removeAttr("class").addClass("alerte").html("Echec de la connexion ! Veuillez valider de nouveau.");
 		}
 
 		// Fonction suivant l'envoi du formulaire (avec jquery.form.js)
 		function retour_form_info_heberg_valide(responseHTML)
 		{
-			$('button').removeAttr('disabled');
+			$('button').prop('disabled',false);
 			if(responseHTML.substring(0,6)=='Erreur')
 			{
 				$('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);
@@ -479,7 +479,7 @@ $(document).ready
 			var readytogo = validation_param_mysql.form();
 			if(readytogo)
 			{
-				$('button').attr('disabled','disabled');
+				$('button').prop('disabled',true);
 				$('#ajax_msg').removeAttr("class").addClass("loader").html("Soumission du formulaire en cours... Veuillez patienter.");
 			}
 			return readytogo;
@@ -488,14 +488,14 @@ $(document).ready
 		// Fonction suivant l'envoi du formulaire (avec jquery.form.js)
 		function retour_form_param_mysql_erreur(msg,string)
 		{
-			$('button').removeAttr('disabled');
+			$('button').prop('disabled',false);
 			$('#ajax_msg').removeAttr("class").addClass("alerte").html("Echec de la connexion ! Veuillez valider de nouveau.");
 		}
 
 		// Fonction suivant l'envoi du formulaire (avec jquery.form.js)
 		function retour_form_param_mysql_valide(responseHTML)
 		{
-			$('button').removeAttr('disabled');
+			$('button').prop('disabled',false);
 			if(responseHTML.substring(0,6)=='Erreur')
 			{
 				$('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);

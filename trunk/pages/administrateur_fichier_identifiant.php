@@ -70,11 +70,11 @@ $select_professeurs_directeurs = afficher_select(DB_STRUCTURE_OPT_professeurs_di
 					<p id="p_eleves" class="hide">
 						<b>Liste des élèves :</b><br />
 						<select id="f_groupe" name="f_groupe"><?php echo $select_f_groupes ?></select><br />
-						<select id="select_eleves" name="select_eleves[]" multiple="multiple" size="10" class="hide"><option value=""></option></select>
+						<select id="select_eleves" name="select_eleves[]" multiple size="10" class="hide"><option value=""></option></select>
 					</p>
 					<p id="p_professeurs_directeurs" class="hide">
 						<b>Liste des professeurs / directeurs :</b><br />
-						<select id="select_professeurs_directeurs" name="select_professeurs_directeurs[]" multiple="multiple" size="10"><?php echo $select_professeurs_directeurs; ?></select>
+						<select id="select_professeurs_directeurs" name="select_professeurs_directeurs[]" multiple size="10"><?php echo $select_professeurs_directeurs; ?></select>
 					</p>
 				</td>
 				<td id="td_bouton" class="nu hide" style="width:25em">

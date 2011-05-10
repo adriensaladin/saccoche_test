@@ -41,7 +41,7 @@ $select_structure = afficher_select(DB_WEBMESTRE_OPT_structures_sacoche() , $sel
 <h2>Exporter des établissements (données &amp; bases)</h2>
 
 <form id="form_exporter" action=""><fieldset>
-	<label class="tab" for="f_basic">Structure(s) :</label><select id="f_base" name="f_base" multiple="multiple" size="10"><?php echo $select_structure ?></select><br />
+	<label class="tab" for="f_basic">Structure(s) :</label><select id="f_base" name="f_base" multiple size="10"><?php echo $select_structure ?></select><br />
 	<span class="tab"></span><span class="astuce">Utiliser "<span class="i">Shift + clic</span>" ou "<span class="i">Ctrl + clic</span>" pour une sélection multiple.</span><br />
 	<span class="tab"></span><button id="bouton_exporter" type="button"><img alt="" src="./_img/bouton/dump_export.png" /> Créer les fichiers d'export.</button><label id="ajax_msg_export">&nbsp;</label>
 	<div id="div_info_export" class="hide">

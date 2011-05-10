@@ -61,13 +61,13 @@ $(document).ready
 			function()
 			{
 				var objet = $(this).attr('id').substring(15);
-				$('#bouton_valider_'+objet).attr('disabled','disabled');
+				$('#bouton_valider_'+objet).prop('disabled',true);
 				$('#ajax_msg_'+objet).removeAttr("class").addClass("loader").html("Demande envoyée... Veuillez patienter.");
 				var check_ids = new Array(); $("#"+objet+" input[type=checkbox]:checked").each(function(){check_ids.push($(this).val());});
 				if(check_ids.length==0)
 				{
 					$('#ajax_msg_'+objet).removeAttr("class").addClass("erreur").html("Il faut cocher au moins une case !");
-					$('#bouton_valider_'+objet).removeAttr('disabled');
+					$('#bouton_valider_'+objet).prop('disabled',false);
 					return false;
 				}
 				$.ajax
@@ -79,14 +79,14 @@ $(document).ready
 						dataType : "html",
 						error : function(msg,string)
 						{
-							$('#bouton_valider_'+objet).removeAttr('disabled');
+							$('#bouton_valider_'+objet).prop('disabled',false);
 							$('#ajax_msg_'+objet).removeAttr("class").addClass("alerte").html("Echec de la connexion ! Veuillez recommencer.");
 							return false;
 						},
 						success : function(responseHTML)
 						{
 							maj_clock(1);
-							$('#bouton_valider_'+objet).removeAttr('disabled');
+							$('#bouton_valider_'+objet).prop('disabled',false);
 							if(responseHTML!='ok')
 							{
 								$('#ajax_msg_'+objet).removeAttr("class").addClass("alerte").html(responseHTML);

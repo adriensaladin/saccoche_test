@@ -223,7 +223,7 @@ $(document).ready
 				}
 				if(continuer)
 				{
-					$('button').attr('disabled','disabled');
+					$('button').prop('disabled',true);
 					$('#ajax_msg').removeAttr("class").addClass("loader").html("Demande envoyée... Veuillez patienter.");
 					$.ajax
 					(
@@ -234,14 +234,14 @@ $(document).ready
 							dataType : "html",
 							error : function(msg,string)
 							{
-								$('button').removeAttr('disabled');
+								$('button').prop('disabled',false);
 								$('#ajax_msg').removeAttr("class").addClass("alerte").html("Echec de la connexion ! Veuillez recommencer.");
 								return false;
 							},
 							success : function(responseHTML)
 							{
 								maj_clock(1);
-								$('button').removeAttr('disabled');
+								$('button').prop('disabled',false);
 								if(responseHTML.substring(0,2)!='OK')
 								{
 									$('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);

@@ -122,7 +122,7 @@ $(document).ready
 			var readytogo = validation.form();
 			if(readytogo)
 			{
-				$("#bouton_valider").attr('disabled','disabled');
+				$("#bouton_valider").prop('disabled',true);
 				$('#ajax_msg').removeAttr("class").addClass("loader").html("Traitement de la demande en cours... Veuillez patienter.");
 			}
 			return readytogo;
@@ -131,7 +131,7 @@ $(document).ready
 		// Fonction suivant l'envoi du formulaire (avec jquery.form.js)
 		function retour_form_erreur(msg,string)
 		{
-			$("#bouton_valider").removeAttr('disabled');
+			$("#bouton_valider").prop('disabled',false);
 			$('#ajax_msg').removeAttr("class").addClass("alerte").html("Echec de la connexion ! Veuillez valider de nouveau.");
 		}
 
@@ -139,7 +139,7 @@ $(document).ready
 		function retour_form_valide(responseHTML)
 		{
 			maj_clock(1);
-			$("#bouton_valider").removeAttr('disabled');
+			$("#bouton_valider").prop('disabled',false);
 			if(responseHTML.substring(0,13)=='<label class=')
 			{
 				

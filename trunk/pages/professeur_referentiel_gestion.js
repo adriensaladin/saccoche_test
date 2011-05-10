@@ -74,15 +74,15 @@ $(document).ready
 					findme = '.'+limite_valeur+'.';
 					if(chaine_autorisee.indexOf(findme)==-1)
 					{
-						$(this).attr('disabled','disabled');
+						$(this).prop('disabled',true);
 					}
 					else
 					{
-						$(this).removeAttr('disabled');
+						$(this).prop('disabled',false);
 					}
 					if(limite_valeur===modifier_limite_selected) // === pour éviter un (false==0) qui sélectionne la 1ère option...
 					{
-						$(this).attr('selected','selected'); // 3|3 C'est ici que le selected se fait.
+						$(this).prop('selected',true); // 3|3 C'est ici que le selected se fait.
 					}
 				}
 			);
@@ -198,7 +198,7 @@ $(document).ready
 			{
 				afficher_masquer_images_action('hide');
 				var partage = $(this).parent().prev().prev().attr('lang');
-				var new_span = '<span>'+select_partage.replace('"'+partage+'"','"'+partage+'" selected="selected"')+'<q class="valider" lang="partager" title="Valider les modifications du partage de ce référentiel."></q><q class="annuler" title="Annuler la modification du partage de ce référentiel."></q> <label id="ajax_msg">&nbsp;</label></span>';
+				var new_span = '<span>'+select_partage.replace('"'+partage+'"','"'+partage+'" selected')+'<q class="valider" lang="partager" title="Valider les modifications du partage de ce référentiel."></q><q class="annuler" title="Annuler la modification du partage de ce référentiel."></q> <label id="ajax_msg">&nbsp;</label></span>';
 				$(this).after(new_span);
 				infobulle();
 			}
@@ -260,7 +260,7 @@ $(document).ready
 				var tableau = param.split('_');
 				var methode = tableau[0];
 				var limite  = tableau[1];
-				var new_span = '<span>'+select_methode.replace('"'+methode+'"','"'+methode+'" selected="selected"')+select_limite.replace('"'+limite+'"','"'+limite+'" selected="selected"')+'<q class="valider" lang="calculer" title="Valider les modifications du mode de calcul de ce référentiel."></q><q class="annuler" title="Annuler la modification du mode de calcul de ce référentiel."></q> <label id="ajax_msg">&nbsp;</label></span>';
+				var new_span = '<span>'+select_methode.replace('"'+methode+'"','"'+methode+'" selected')+select_limite.replace('"'+limite+'"','"'+limite+'" selected')+'<q class="valider" lang="calculer" title="Valider les modifications du mode de calcul de ce référentiel."></q><q class="annuler" title="Annuler la modification du mode de calcul de ce référentiel."></q> <label id="ajax_msg">&nbsp;</label></span>';
 				$(this).after(new_span);
 				actualiser_select_limite();
 				infobulle();
@@ -513,8 +513,8 @@ $(document).ready
 				var niveau_id  = tab_ids[3];
 				//MAJ et affichage du formulaire
 				charger_formulaire_structures();
-				$('#f_matiere option[value='+matiere_id+']').attr('selected',true);
-				$('#f_niveau option[value='+niveau_id+']').attr('selected',true);
+				$('#f_matiere option[value='+matiere_id+']').prop('selected',true);
+				$('#f_niveau option[value='+niveau_id+']').prop('selected',true);
 				$('#choisir_referentiel_communautaire ul').html('<li></li>');
 				$('#lister_referentiel_communautaire').hide("fast");
 				$('#voir_referentiel_communautaire ul li.li_m1').html('').parent().parent().hide();
@@ -562,19 +562,19 @@ $(document).ready
 							// matière classique -> tous niveaux actifs
 							if(matiere_id != id_matiere_transversale)
 							{
-								$(this).removeAttr('disabled');
+								$(this).prop('disabled',false);
 							}
 							// matière transversale -> desactiver les autres niveaux
 							else
 							{
-								$(this).attr('disabled','disabled');
+								$(this).prop('disabled',true);
 								modif_niveau_selected = Math.max(modif_niveau_selected,1);
 							}
 						}
 						// C'est un niveau cycle ; le sélectionner si besoin
 						else if(modif_niveau_selected==1)
 						{
-							$(this).attr('selected','selected');
+							$(this).prop('selected',true);
 							modif_niveau_selected = 2;
 						}
 					}
@@ -599,7 +599,7 @@ $(document).ready
 					$('#ajax_msg').removeAttr("class").addClass("erreur").html("Il faut préciser au moins un critère !");
 					return false;
 				}
-				$('#rechercher').attr('disabled','disabled');
+				$('#rechercher').prop('disabled',true);
 				$('#ajax_msg').removeAttr("class").addClass("loader").html('Demande envoyée... Veuillez patienter.');
 				$.ajax
 				(
@@ -610,13 +610,13 @@ $(document).ready
 						dataType : "html",
 						error : function(msg,string)
 						{
-							$('#rechercher').removeAttr('disabled');
+							$('#rechercher').prop('disabled',false);
 							$('#ajax_msg').removeAttr("class").addClass("alerte").html('Echec de la connexion ! Veuillez recommencer.');
 							return false;
 						},
 						success : function(responseHTML)
 						{
-							$('#rechercher').removeAttr('disabled');
+							$('#rechercher').prop('disabled',false);
 							if(responseHTML.substring(0,3)!='<li')
 							{
 								$('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);
@@ -737,7 +737,7 @@ $(document).ready
 			{
 				var ids = $('#succes').parent().parent().attr('id');
 				var referentiel_id = $(this).val().substring(3);
-				$('button').attr('disabled','disabled');
+				$('button').prop('disabled',true);
 				$('#ajax_msg_choisir').removeAttr("class").addClass("loader").html("Demande envoyée... Veuillez patienter.");
 				$.ajax
 				(
@@ -748,14 +748,14 @@ $(document).ready
 						dataType : "html",
 						error : function(msg,string)
 						{
-							$('button').removeAttr('disabled');
+							$('button').prop('disabled',false);
 							$('#ajax_msg_choisir').removeAttr("class").addClass("alerte").html('Echec de la connexion ! Veuillez recommencer.');
 							return false;
 						},
 						success : function(responseHTML)
 						{
 							maj_clock(1);
-							$('button').removeAttr('disabled');
+							$('button').prop('disabled',false);
 							if(responseHTML!='ok')
 							{
 								$('#ajax_msg_choisir').removeAttr("class").addClass("alerte").html(responseHTML);

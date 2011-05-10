@@ -166,8 +166,8 @@ $(document).ready
 						break;
 					case 'n3' :	// item
 						new_li += '<i>Nom</i> <input id="f_nom" name="f_nom" size="125" maxlength="256" type="text" value="" /> <img alt="" src="./_img/bulle_aide.png" title="Indiquer un nom d\'item." /><br />';
-						new_li += '<i>Socle</i> <input id="f_intitule" name="f_intitule" size="125" maxlength="256" type="text" value="Hors-socle." readonly="readonly" /><input id="f_socle" name="f_socle" type="hidden" value="0" /><q class="choisir_compet" title="Sélectionner un item du socle commun."></q> <img alt="" src="./_img/bulle_aide.png" title="Appartenance éventuelle au socle commun." /><br />';
-						new_li += '<i>Coef.</i> <input id="f_coef" name="f_coef" type="text" value="1" size="1" maxlength="1" /> <img alt="" src="./_img/bulle_aide.png" title="Coefficient facultatif (entier entre 0 et 5)." /> - <input id="f_cart1" name="f_cart" type="radio" value="1" checked="checked" /><label for="f_cart1"><img src="./_img/cart1.png" title="Demande possible." /></label> <input id="f_cart0" name="f_cart" type="radio" value="0" /><label for="f_cart0"><img src="./_img/cart0.png" title="Demande interdite." /></label> - <i>Lien</i> <input id="f_lien" name="f_lien" type="text" value="" size="100" /> <img alt="" src="./_img/bulle_aide.png" title="Lien (facultatif) vers une ressource internet (entraînement, remédiation&hellip;).." />';
+						new_li += '<i>Socle</i> <input id="f_intitule" name="f_intitule" size="125" maxlength="256" type="text" value="Hors-socle." readonly /><input id="f_socle" name="f_socle" type="hidden" value="0" /><q class="choisir_compet" title="Sélectionner un item du socle commun."></q> <img alt="" src="./_img/bulle_aide.png" title="Appartenance éventuelle au socle commun." /><br />';
+						new_li += '<i>Coef.</i> <input id="f_coef" name="f_coef" type="text" value="1" size="1" maxlength="1" /> <img alt="" src="./_img/bulle_aide.png" title="Coefficient facultatif (entier entre 0 et 5)." /> - <input id="f_cart1" name="f_cart" type="radio" value="1" checked /><label for="f_cart1"><img src="./_img/cart1.png" title="Demande possible." /></label> <input id="f_cart0" name="f_cart" type="radio" value="0" /><label for="f_cart0"><img src="./_img/cart0.png" title="Demande interdite." /></label> - <i>Lien</i> <input id="f_lien" name="f_lien" type="text" value="" size="100" /> <img alt="" src="./_img/bulle_aide.png" title="Lien (facultatif) vers une ressource internet (entraînement, remédiation&hellip;).." />';
 						texte = 'cet item';
 						break;
 					default :
@@ -233,8 +233,8 @@ $(document).ready
 						coef = $(this).parent().children('b').children('img:eq(0)').attr('src').substring(8,9);
 						// On récupère l'autorisation de demande
 						cart = $(this).parent().children('b').children('img:eq(1)').attr('src').substring(11,12);
-						check1 = (cart=='1') ? ' checked="checked"' : '' ;
-						check0 = (cart=='0') ? ' checked="checked"' : '' ;
+						check1 = (cart=='1') ? ' checked' : '' ;
+						check0 = (cart=='0') ? ' checked' : '' ;
 						// On récupère le socle
 						socle_id  = $(this).parent().children('b').children('img:eq(2)').attr('lang').substring(3);
 						socle_txt = $('label[for=socle_'+socle_id+']').text();
@@ -242,7 +242,7 @@ $(document).ready
 						item_id = $(this).parent().attr('id').substring(3);
 						lien = tab_ressources[item_id];
 						new_div += '<i>Nom</i> <input id="f_nom" name="f_nom" size="'+Math.min(10+nom.length,128)+'" maxlength="256" type="text" value="'+nom+'" /> <img alt="" src="./_img/bulle_aide.png" title="Indiquer un nom d\'item." /><br />';
-						new_div += '<i>Socle</i> <input id="f_intitule" name="f_intitule" size="110" maxlength="256" type="text" value="'+socle_txt+'" readonly="readonly" /><input id="f_socle" name="f_socle" type="hidden" value="'+socle_id+'" /><q class="choisir_compet" title="Sélectionner un item du socle commun."></q> <img alt="" src="./_img/bulle_aide.png" title="Appartenance éventuelle au socle commun." /><br />';
+						new_div += '<i>Socle</i> <input id="f_intitule" name="f_intitule" size="110" maxlength="256" type="text" value="'+socle_txt+'" readonly /><input id="f_socle" name="f_socle" type="hidden" value="'+socle_id+'" /><q class="choisir_compet" title="Sélectionner un item du socle commun."></q> <img alt="" src="./_img/bulle_aide.png" title="Appartenance éventuelle au socle commun." /><br />';
 						new_div += '<i>Coef.</i> <input id="f_coef" name="f_coef" type="text" value="'+coef+'" size="1" maxlength="1" /> <img alt="" src="./_img/bulle_aide.png" title="Coefficient facultatif (entier entre 0 et 5)." /> - <input id="f_cart1" name="f_cart" type="radio" value="1"'+check1+' /><label for="f_cart1"><img src="./_img/cart1.png" title="Demande possible." /></label> <input id="f_cart0" name="f_cart" type="radio" value="0"'+check0+'+ /><label for="f_cart0"><img src="./_img/cart0.png" title="Demande interdite." /></label> - <i>Lien</i> <input id="f_lien" name="f_lien" type="text" value="'+lien+'" size="90" /> <img alt="" src="./_img/bulle_aide.png" title="Lien (facultatif) vers une ressource internet (entraînement, remédiation&hellip;)." />';
 						texte = 'cet item';
 						break;
@@ -410,7 +410,7 @@ $(document).ready
 				{
 					if($('#socle_'+socle_id).length)
 					{
-						$('#socle_'+socle_id).attr('checked','checked');
+						$('#socle_'+socle_id).prop('checked',true);
 						$('#socle_'+socle_id).parent().parent().css("display","block");	// les items
 						$('#socle_'+socle_id).parent().parent().parent().parent().css("display","block");	// le section
 						$('#socle_'+socle_id).parent().parent().parent().parent().parent().parent().css("display","block");	// le pilier
@@ -418,7 +418,7 @@ $(document).ready
 				}
 				else
 				{
-					$('#socle_0').attr('checked','checked');
+					$('#socle_0').prop('checked',true);
 				}
 				// montrer le cadre
 				$('#zone_socle q').show();

@@ -78,7 +78,7 @@ $(document).ready
 		(
 			function()
 			{
-				$("#bouton_valider").attr('disabled','disabled');
+				$("#bouton_valider").prop('disabled',true);
 				$('#ajax_msg_partage').removeAttr("class").addClass("loader").html("Demande envoyée... Veuillez patienter.");
 				var check_ids = new Array(); $("#partage input[type=checkbox]:checked").each(function(){check_ids.push($(this).val());});
 				$.ajax
@@ -90,14 +90,14 @@ $(document).ready
 						dataType : "html",
 						error : function(msg,string)
 						{
-							$("#bouton_valider").removeAttr('disabled');
+							$("#bouton_valider").prop('disabled',false);
 							$('#ajax_msg_partage').removeAttr("class").addClass("alerte").html("Echec de la connexion ! Veuillez recommencer.");
 							return false;
 						},
 						success : function(responseHTML)
 						{
 							maj_clock(1);
-							$("#bouton_valider").removeAttr('disabled');
+							$("#bouton_valider").prop('disabled',false);
 							if(responseHTML!='ok')
 							{
 								$('#ajax_msg_partage').removeAttr("class").addClass("alerte").html(responseHTML);

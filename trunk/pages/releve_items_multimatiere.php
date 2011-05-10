@@ -39,8 +39,8 @@ if($_SESSION['USER_PROFIL']=='directeur')
 	$of_g = 'oui'; $sel_g = false; $class_form_option = 'show'; $class_form_eleve = 'show'; $class_form_periode = 'hide';
 	$select_eleves = '<option></option>'; // maj en ajax suivant le choix du groupe
 	$check_option_lien = '';
-	$check_bilan_MS        = ' checked="checked"';
-	$check_bilan_PA        = ' checked="checked"';
+	$check_bilan_MS        = ' checked';
+	$check_bilan_PA        = ' checked';
 	$check_conv_sur20      = '';
 }
 if($_SESSION['USER_PROFIL']=='professeur')
@@ -49,19 +49,19 @@ if($_SESSION['USER_PROFIL']=='professeur')
 	$of_g = 'oui'; $sel_g = false; $class_form_option = 'show'; $class_form_eleve = 'show'; $class_form_periode = 'hide';
 	$select_eleves = '<option></option>'; // maj en ajax suivant le choix du groupe
 	$check_option_lien = '';
-	$check_bilan_MS        = ' checked="checked"';
-	$check_bilan_PA        = ' checked="checked"';
+	$check_bilan_MS        = ' checked';
+	$check_bilan_PA        = ' checked';
 	$check_conv_sur20      = '';
 }
 if($_SESSION['USER_PROFIL']=='eleve')
 {
 	$tab_groupes = array(0=>array('valeur'=>$_SESSION['ELEVE_CLASSE_ID'],'texte'=>$_SESSION['ELEVE_CLASSE_NOM'],'optgroup'=>'classe')); $GLOBALS['tab_select_optgroup'] = array('classe'=>'Classes');
 	$of_g = 'non'; $sel_g = true; $class_form_option = 'hide'; $class_form_eleve = 'hide'; $class_form_periode = 'show';
-	$select_eleves = '<option value="'.$_SESSION['USER_ID'].'" selected="selected">'.html($_SESSION['USER_NOM'].' '.$_SESSION['USER_PRENOM']).'</option>';
-	$check_option_lien = ' checked="checked"';
-	$check_bilan_MS        = (mb_substr_count($_SESSION['DROIT_ELEVE_BILANS'],'BilanMoyenneScore'))      ? ' checked="checked"' : '';
-	$check_bilan_PA        = (mb_substr_count($_SESSION['DROIT_ELEVE_BILANS'],'BilanPourcentageAcquis')) ? ' checked="checked"' : '';
-	$check_conv_sur20      = (mb_substr_count($_SESSION['DROIT_ELEVE_BILANS'],'BilanNoteSurVingt'))      ? ' checked="checked"' : '';
+	$select_eleves = '<option value="'.$_SESSION['USER_ID'].'" selected>'.html($_SESSION['USER_NOM'].' '.$_SESSION['USER_PRENOM']).'</option>';
+	$check_option_lien = ' checked';
+	$check_bilan_MS        = (mb_substr_count($_SESSION['DROIT_ELEVE_BILANS'],'BilanMoyenneScore'))      ? ' checked' : '';
+	$check_bilan_PA        = (mb_substr_count($_SESSION['DROIT_ELEVE_BILANS'],'BilanPourcentageAcquis')) ? ' checked' : '';
+	$check_conv_sur20      = (mb_substr_count($_SESSION['DROIT_ELEVE_BILANS'],'BilanNoteSurVingt'))      ? ' checked' : '';
 }
 $tab_periodes          = DB_STRUCTURE_OPT_periodes_etabl();
 
@@ -118,7 +118,7 @@ if(is_array($tab_groupes))
 	</p>
 	<p class="<?php echo $class_form_eleve ?>">
 		<label class="tab" for="f_groupe">Élève(s) :</label><?php echo $select_groupe ?><input type="hidden" id="f_groupe_nom" name="f_groupe_nom" value="" /><label id="ajax_maj">&nbsp;</label><br />
-		<span class="tab"></span><select id="f_eleve" name="f_eleve[]" multiple="multiple" size="9"><?php echo $select_eleves ?></select><input type="hidden" id="eleves" name="eleves" value="" />
+		<span class="tab"></span><select id="f_eleve" name="f_eleve[]" multiple size="9"><?php echo $select_eleves ?></select><input type="hidden" id="eleves" name="eleves" value="" />
 	</p>
 	<p id="zone_periodes" class="<?php echo $class_form_periode ?>">
 		<label class="tab" for="f_periode"><img alt="" src="./_img/bulle_aide.png" title="Les items pris en compte sont ceux qui sont évalués<br />au moins une fois sur cette période." /> Période :</label><?php echo $select_periode ?>
@@ -126,7 +126,7 @@ if(is_array($tab_groupes))
 			du <input id="f_date_debut" name="f_date_debut" size="9" type="text" value="<?php echo $date_debut ?>" /><q class="date_calendrier" title="Cliquez sur cette image pour importer une date depuis un calendrier !"></q>
 			au <input id="f_date_fin" name="f_date_fin" size="9" type="text" value="<?php echo $date_fin ?>" /><q class="date_calendrier" title="Cliquez sur cette image pour importer une date depuis un calendrier !"></q>
 		</span><br />
-		<span class="radio"><img alt="" src="./_img/bulle_aide.png" title="Le bilan peut être établi uniquement sur la période considérée<br />ou en tenant compte d'évaluations antérieures des items concernés." /> Prise en compte des évaluations antérieures :</span><label for="f_retro_oui"><input type="radio" id="f_retro_oui" name="f_retroactif" value="oui" checked="checked" /> oui</label>&nbsp;&nbsp;&nbsp;&nbsp;<label for="f_retro_non"><input type="radio" id="f_retro_non" name="f_retroactif" value="non" /> non</label>
+		<span class="radio"><img alt="" src="./_img/bulle_aide.png" title="Le bilan peut être établi uniquement sur la période considérée<br />ou en tenant compte d'évaluations antérieures des items concernés." /> Prise en compte des évaluations antérieures :</span><label for="f_retro_oui"><input type="radio" id="f_retro_oui" name="f_retroactif" value="oui" checked /> oui</label>&nbsp;&nbsp;&nbsp;&nbsp;<label for="f_retro_non"><input type="radio" id="f_retro_non" name="f_retroactif" value="non" /> non</label>
 	</p>
 	<div class="toggle">
 		<span class="tab"></span><a href="#" class="puce_plus toggle">Afficher plus d'options</a>
@@ -134,7 +134,7 @@ if(is_array($tab_groupes))
 	<div class="toggle hide">
 		<span class="tab"></span><a href="#" class="puce_moins toggle">Afficher moins d'options</a><br />
 		<label class="tab" for="f_restriction">Restriction :</label><input type="checkbox" id="f_restriction" name="f_restriction" value="1" /> <label for="f_restriction">Uniquement les items liés du socle</label><br />
-		<label class="tab" for="f_indication">Indications <img alt="" src="./_img/bulle_aide.png" title="Les paramètres des items peuvent être affichés." /> :</label><label for="f_coef"><input type="checkbox" id="f_coef" name="f_coef" value="1" /> Coefficients</label>&nbsp;&nbsp;&nbsp;<label for="f_socle"><input type="checkbox" id="f_socle" name="f_socle" value="1" checked="checked" /> Socle</label>&nbsp;&nbsp;&nbsp;<label for="f_lien"><input type="checkbox" id="f_lien" name="f_lien" value="1"<?php echo $check_option_lien ?> /> Liens de remédiation</label><br />
+		<label class="tab" for="f_indication">Indications <img alt="" src="./_img/bulle_aide.png" title="Les paramètres des items peuvent être affichés." /> :</label><label for="f_coef"><input type="checkbox" id="f_coef" name="f_coef" value="1" /> Coefficients</label>&nbsp;&nbsp;&nbsp;<label for="f_socle"><input type="checkbox" id="f_socle" name="f_socle" value="1" checked /> Socle</label>&nbsp;&nbsp;&nbsp;<label for="f_lien"><input type="checkbox" id="f_lien" name="f_lien" value="1"<?php echo $check_option_lien ?> /> Liens de remédiation</label><br />
 		<label class="tab" for="f_impression"><img alt="" src="./_img/bulle_aide.png" title="Pour le format pdf." /> Impression :</label><?php echo $select_orientation ?> <?php echo $select_couleur ?> <?php echo $select_legende ?> <?php echo $select_marge_min ?> <?php echo $select_pages_nb ?></label><br />
 		<label class="tab" for="f_cases_nb">Évaluations :</label><?php echo $select_cases_nb ?> de largeur <?php echo $select_cases_larg ?><p />
 	</div>

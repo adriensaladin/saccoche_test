@@ -77,7 +77,7 @@ entete();
 	<link rel="stylesheet" type="text/css" href="<?php echo compacter('./_css/style.css',VERSION_CSS_SCREEN,'mini') ?>" />
 	<link rel="stylesheet" type="text/css" href="<?php echo compacter('./_css/style_print.css',VERSION_CSS_SCREEN,'mini') ?>" media="print" />
 	<?php if($position_css){echo $CSS_PERSO;} ?>
-	<script type="text/javascript" charset="utf-8" src="./_js/jquery-librairies-<?php echo VERSION_JS_BIBLIO ?>.js"></script>
+	<script type="text/javascript" charset="utf-8" src="<?php echo compacter('./_js/jquery-librairies.js',VERSION_JS_BIBLIO,'mini') ?>"></script>
 	<script type="text/javascript" charset="utf-8" src="<?php echo compacter('./_js/script.js',VERSION_JS_GLOBAL,'mini') ?>"></script>
 	<title>SACoche - Relevé HTML</title>
 </head>

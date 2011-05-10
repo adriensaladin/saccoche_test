@@ -101,7 +101,7 @@ else
 		echo'<ul class="puce"><li>Traitement :&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
 		foreach($tab_choix as $option_valeur => $option_texte)
 		{
-			$checked = ($DB_ROW['referentiel_mode_synthese']==$option_valeur) ? ' checked="checked"' : '' ;
+			$checked = ($DB_ROW['referentiel_mode_synthese']==$option_valeur) ? ' checked' : '' ;
 			echo'<label for="f_'.$ids.'_'.$option_valeur.'"><input type="radio" id="f_'.$ids.'_'.$option_valeur.'" name="f_'.$ids.'" value="'.$option_valeur.'"'.$checked.' /> '.$option_texte.'</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
 		}
 		echo ($DB_ROW['referentiel_mode_synthese']=='inconnu') ? '<button id="bouton_'.$ids.'" type="button" class="hide"><img alt="" src="./_img/bouton/valider.png" /> Valider.</button><label id="label_'.$ids.'" class="erreur">Choix manquant !</label>' : '<button id="bouton_'.$ids.'" type="button"><img alt="" src="./_img/bouton/valider.png" /> Valider.</button><label id="label_'.$ids.'" class="valide">ok</label>' ;

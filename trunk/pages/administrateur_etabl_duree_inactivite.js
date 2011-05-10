@@ -46,7 +46,7 @@ $(document).ready
 			function()
 			{
 				delai = $("#f_delai option:selected").val();
-				$("#bouton_valider").attr('disabled','disabled');
+				$("#bouton_valider").prop('disabled',true);
 				$('#ajax_msg').removeAttr("class").addClass("loader").html("Demande envoyée... Veuillez patienter.");
 				$.ajax
 				(
@@ -57,14 +57,14 @@ $(document).ready
 						dataType : "html",
 						error : function(msg,string)
 						{
-							$("#bouton_valider").removeAttr('disabled');
+							$("#bouton_valider").prop('disabled',false);
 							$('#ajax_msg').removeAttr("class").addClass("alerte").html("Echec de la connexion ! Veuillez recommencer.");
 							return false;
 						},
 						success : function(responseHTML)
 						{
 							maj_clock(1);
-							$("#bouton_valider").removeAttr('disabled');
+							$("#bouton_valider").prop('disabled',false);
 							if(responseHTML!='ok')
 							{
 								$('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);

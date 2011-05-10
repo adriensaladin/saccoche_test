@@ -87,6 +87,11 @@ $tab_select_cases_nb[] = array('valeur'=>7  , 'texte'=>'7 cases');
 $tab_select_cases_nb[] = array('valeur'=>8  , 'texte'=>'8 cases');
 $tab_select_cases_nb[] = array('valeur'=>9  , 'texte'=>'9 cases');
 $tab_select_cases_nb[] = array('valeur'=>10 , 'texte'=>'10 cases');
+$tab_select_cases_nb[] = array('valeur'=>11 , 'texte'=>'11 cases');
+$tab_select_cases_nb[] = array('valeur'=>12 , 'texte'=>'12 cases');
+$tab_select_cases_nb[] = array('valeur'=>13 , 'texte'=>'13 cases');
+$tab_select_cases_nb[] = array('valeur'=>14 , 'texte'=>'14 cases');
+$tab_select_cases_nb[] = array('valeur'=>15 , 'texte'=>'15 cases');
 
 $tab_select_cases_size   = array();
 $tab_select_cases_size[] = array('valeur'=>5  , 'texte'=>'5 mm');
@@ -245,7 +250,7 @@ function afficher_select($DB_TAB,$select_nom,$option_first,$selection,$optgroup)
 		elseif($selection===true)
 		{
 			// ... tout sélectionner
-			$options = str_replace('<option' , '<option selected="selected"' , $options);
+			$options = str_replace('<option' , '<option selected' , $options);
 		}
 		else
 		{
@@ -253,13 +258,13 @@ function afficher_select($DB_TAB,$select_nom,$option_first,$selection,$optgroup)
 			$selection = ($selection=='val') ? $GLOBALS['select_option_selected'] : $selection ;
 			if(!is_array($selection))
 			{
-				$options = str_replace('value="'.$selection.'"' , 'value="'.$selection.'" selected="selected"' , $options);
+				$options = str_replace('value="'.$selection.'"' , 'value="'.$selection.'" selected' , $options);
 			}
 			else
 			{
 				foreach($selection as $selection_val)
 				{
-					$options = str_replace('value="'.$selection_val.'"' , 'value="'.$selection_val.'" selected="selected"' , $options);
+					$options = str_replace('value="'.$selection_val.'"' , 'value="'.$selection_val.'" selected' , $options);
 				}
 			}
 		}
@@ -267,7 +272,7 @@ function afficher_select($DB_TAB,$select_nom,$option_first,$selection,$optgroup)
 	// Si $DB_TAB n'est pas un tableau alors c'est une chaine avec un message d'erreur affichée sous la forme d'une option disable
 	else
 	{
-		$options .= '<option value="" disabled="disabled">'.$DB_TAB.'</option>';
+		$options .= '<option value="" disabled>'.$DB_TAB.'</option>';
 	}
 	// On insère dans un select si demandé
 	return ($select_nom) ? '<select id="'.$select_nom.'" name="'.$select_nom.'">'.$options.'</select>' : $options ;

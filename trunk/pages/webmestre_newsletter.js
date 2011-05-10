@@ -95,7 +95,7 @@ $(document).ready
 			var readytogo = validation.form();
 			if(readytogo)
 			{
-				$("#bouton_valider").attr('disabled','disabled');
+				$("#bouton_valider").prop('disabled',true);
 				$('#ajax_msg').removeAttr("class").addClass("loader").html("Préparation de l'envoi... Veuillez patienter.");
 			}
 			return readytogo;
@@ -104,7 +104,7 @@ $(document).ready
 		// Fonction suivant l'envoi du formulaire (avec jquery.form.js)
 		function retour_form_erreur(msg,string)
 		{
-			$("#bouton_valider").removeAttr('disabled');
+			$("#bouton_valider").prop('disabled',false);
 			$('#ajax_msg').removeAttr("class").addClass("alerte").html("Echec de la connexion ! Veuillez valider de nouveau.");
 		}
 
@@ -114,7 +114,7 @@ $(document).ready
 			maj_clock(1);
 			if(responseHTML.substring(0,2)!='ok')
 			{
-				$("#bouton_valider").removeAttr('disabled');
+				$("#bouton_valider").prop('disabled',false);
 				$('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);
 			}
 			else
@@ -198,7 +198,7 @@ $(document).ready
 			function()
 			{
 				$('#ajax_msg').removeAttr("class").html("&nbsp;");
-				$("#bouton_valider").removeAttr('disabled');
+				$("#bouton_valider").prop('disabled',false);
 				$('#ajax_info').hide('fast');
 				$('#newsletter').show('fast');
 			}
@@ -210,7 +210,7 @@ $(document).ready
 
 		var supprimer_structures_selectionnees = function(listing_id)
 		{
-			$("button").attr('disabled','disabled');
+			$("button").prop('disabled',true);
 			// afficher_masquer_images_action('hide');
 			$('#ajax_supprimer').removeAttr("class").addClass("loader").html("Demande envoyée... Veuillez patienter.");
 			$.ajax
@@ -223,7 +223,7 @@ $(document).ready
 					error : function(msg,string)
 					{
 						$('#ajax_supprimer').removeAttr("class").addClass("alerte").html("Echec de la connexion ! Veuillez recommencer.");
-						$("button").removeAttr('disabled');
+						$("button").prop('disabled',false);
 						// afficher_masquer_images_action('show');
 					},
 					success : function(responseHTML)
@@ -243,7 +243,7 @@ $(document).ready
 								}
 							);
 							$('#ajax_supprimer').removeAttr("class").html('&nbsp;');
-							$("button").removeAttr('disabled');
+							$("button").prop('disabled',false);
 							// afficher_masquer_images_action('show');
 						}
 					}

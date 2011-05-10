@@ -167,7 +167,7 @@ form label.mini{width:8em;}
 button{padding:0 1px;margin:1px 0;background:#CCF;color:#139;border:1px solid #66F;}
 button{width:auto;overflow:visible;} /* patch pour IE : voir http://jehiah.cz/archive/button-width-in-ie */
 button:hover,button.hover{background:#DDF;color:#D41;cursor:pointer;} /* button.hover pour une compatibilité avec AjaxUpload (pour background, car pas mieux pour cursor) */
-button[disabled]{background:#EAEAFF;color:#888;border:1px solid #BBF} /* Attention à un bug de jquery : quand on lui demande de mettre disabled="disabled", il met disabled="" ! */ 
+button[disabled]{background:#EAEAFF;color:#888;border:1px solid #BBF}
 button img{width:16px;height:16px}
 
 /* Input / Select */

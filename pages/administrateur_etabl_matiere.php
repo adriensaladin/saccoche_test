@@ -49,8 +49,8 @@ $TITRE = "Matières";
 			foreach($DB_TAB as $DB_ROW)
 			{
 				// Afficher une ligne du tableau
-				$checked  = (in_array($DB_ROW['matiere_id'],$tab_check)) ? ' checked="checked"' : '' ;
-				$disabled = ($DB_ROW['matiere_transversal']) ? ' disabled="disabled"' : '' ;
+				$checked  = (in_array($DB_ROW['matiere_id'],$tab_check)) ? ' checked' : '' ;
+				$disabled = ($DB_ROW['matiere_transversal']) ? ' disabled' : '' ;
 				$tr_class = ($DB_ROW['matiere_transversal']) ? ' class="new"' : '' ;
 				$td_label = ($DB_ROW['matiere_transversal']) ? '' : ' class="label"' ;
 				$indic    = ($DB_ROW['matiere_transversal']) ? ' <b>[obligatoire]</b>' : '' ;

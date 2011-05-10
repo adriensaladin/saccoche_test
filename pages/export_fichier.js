@@ -139,7 +139,7 @@ $(document).ready
 			var readytogo = validation.form();
 			if(readytogo)
 			{
-				$("#bouton_exporter").attr('disabled','disabled');
+				$("#bouton_exporter").prop('disabled',true);
 				$('#ajax_msg').removeAttr("class").addClass("loader").html("Transmission du fichier en cours... Veuillez patienter.");
 				$('#bilan').html('');
 			}
@@ -149,7 +149,7 @@ $(document).ready
 		// Fonction suivant l'envoi du formulaire (avec jquery.form.js)
 		function retour_form_erreur(msg,string)
 		{
-			$("#bouton_exporter").removeAttr('disabled');
+			$("#bouton_exporter").prop('disabled',false);
 			$('#ajax_msg').removeAttr("class").addClass("alerte").html("Echec de la connexion ! Veuillez valider de nouveau.");
 		}
 
@@ -157,7 +157,7 @@ $(document).ready
 		function retour_form_valide(responseHTML)
 		{
 			maj_clock(1);
-			$("#bouton_exporter").removeAttr('disabled');
+			$("#bouton_exporter").prop('disabled',false);
 			if(responseHTML.substring(0,23)!='<hr /><ul class="puce">')
 			{
 				$('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);

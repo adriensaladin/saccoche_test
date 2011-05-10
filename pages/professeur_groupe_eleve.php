@@ -48,11 +48,11 @@ $select_groupe_besoin = afficher_select(DB_STRUCTURE_OPT_besoins_professeur($_SE
 		<td class="nu" style="width:25em">
 			<b>Liste des élèves :</b><br />
 			<select id="f_groupe" name="f_groupe" class="t8"><?php echo $select_groupe ?></select><br />
-			<select id="select_users" name="select_users[]" multiple="multiple" size="8" class="t8"><option value=""></option></select>
+			<select id="select_users" name="select_users[]" multiple size="8" class="t8"><option value=""></option></select>
 		</td>
 		<td class="nu" style="width:20em">
 			<b>Liste des groupes de besoin :</b><br />
-			<select id="select_groupes" name="select_groupes[]" multiple="multiple" size="10" class="t8"><?php echo $select_groupe_besoin; ?></select>
+			<select id="select_groupes" name="select_groupes[]" multiple size="10" class="t8"><?php echo $select_groupe_besoin; ?></select>
 		</td>
 		<td class="nu" style="width:25em">
 			<p><span class="astuce">Utiliser "<span class="i">Shift + clic</span>" ou "<span class="i">Ctrl + clic</span>"<br />pour une sélection multiple.</span></p>

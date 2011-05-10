@@ -58,7 +58,7 @@ $i_id = 0;	// Pour donner des ids aux checkbox et radio
 			$tab_check = explode(',',$_SESSION[strtoupper($objet_key)]);
 			foreach($tab_profils as $profil_key => $profil_txt)
 			{
-				$checked = (in_array($profil_key,$tab_check)) ? ' checked="checked"' : '' ;
+				$checked = (in_array($profil_key,$tab_check)) ? ' checked' : '' ;
 				$type = ($profil_key=='directeur') ? 'checkbox' : 'radio' ;
 				echo'<td class="hc"><input type="'.$type.'" name="'.$objet_key.'" value="'.$profil_key.'"'.$checked.' /></td>';
 			}
@@ -87,7 +87,7 @@ $i_id = 0;	// Pour donner des ids aux checkbox et radio
 	foreach($tab_options as $option_code => $option_txt)
 	{
 		$i_id++;
-		$checked = (in_array($option_code,$tab_check)) ? ' checked="checked"' : '' ;
+		$checked = (in_array($option_code,$tab_check)) ? ' checked' : '' ;
 		echo'<label for="input_'.$i_id.'"><input type="checkbox" id="input_'.$i_id.'" name="droit_voir_referentiels" value="'.$option_code.'"'.$checked.' /> '.$option_txt.'</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
 	}
 	?>
@@ -110,7 +110,7 @@ $i_id = 0;	// Pour donner des ids aux checkbox et radio
 	foreach($tab_options as $option_code => $option_txt)
 	{
 		$i_id++;
-		$checked = (in_array($option_code,$tab_check)) ? ' checked="checked"' : '' ;
+		$checked = (in_array($option_code,$tab_check)) ? ' checked' : '' ;
 		echo'<label for="input_'.$i_id.'"><input type="checkbox" id="input_'.$i_id.'" name="droit_voir_score_bilan" value="'.$option_code.'"'.$checked.' /> '.$option_txt.'</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
 	}
 	?>
@@ -133,7 +133,7 @@ $i_id = 0;	// Pour donner des ids aux checkbox et radio
 	foreach($tab_options as $option_code => $option_txt)
 	{
 		$i_id++;
-		$checked = (in_array($option_code,$tab_check)) ? ' checked="checked"' : '' ;
+		$checked = (in_array($option_code,$tab_check)) ? ' checked' : '' ;
 		echo'<label for="input_'.$i_id.'"><input type="checkbox" id="input_'.$i_id.'" name="droit_voir_algorithme" value="'.$option_code.'"'.$checked.' /> '.$option_txt.'</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
 	}
 	?>
@@ -156,7 +156,7 @@ $i_id = 0;	// Pour donner des ids aux checkbox et radio
 	foreach($tab_options as $option_code => $option_txt)
 	{
 		$i_id++;
-		$checked = (in_array($option_code,$tab_check)) ? ' checked="checked"' : '' ;
+		$checked = (in_array($option_code,$tab_check)) ? ' checked' : '' ;
 		echo'<label for="input_'.$i_id.'"><input type="checkbox" id="input_'.$i_id.'" name="droit_modifier_mdp" value="'.$option_code.'"'.$checked.' /> '.$option_txt.'</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
 	}
 	?>
@@ -182,7 +182,7 @@ $i_id = 0;	// Pour donner des ids aux checkbox et radio
 	foreach($tab_options as $option_code => $option_txt)
 	{
 		$i_id++;
-		$checked = (in_array($option_code,$tab_check)) ? ' checked="checked"' : '' ;
+		$checked = (in_array($option_code,$tab_check)) ? ' checked' : '' ;
 		echo'<p><label for="input_'.$i_id.'"><input type="checkbox" id="input_'.$i_id.'" name="droit_eleve_bilans" value="'.$option_code.'"'.$checked.' /> '.$option_txt.'</label></p>'."\r\n";
 	}
 	?>
@@ -207,7 +207,7 @@ $i_id = 0;	// Pour donner des ids aux checkbox et radio
 	foreach($tab_options as $option_code => $option_txt)
 	{
 		$i_id++;
-		$checked = (in_array($option_code,$tab_check)) ? ' checked="checked"' : '' ;
+		$checked = (in_array($option_code,$tab_check)) ? ' checked' : '' ;
 		echo'<p><label for="input_'.$i_id.'"><input type="checkbox" id="input_'.$i_id.'" name="droit_eleve_socle" value="'.$option_code.'"'.$checked.' /> '.$option_txt.'</label></p>'."\r\n";
 	}
 	?>

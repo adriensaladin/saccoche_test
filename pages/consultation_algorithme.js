@@ -63,15 +63,15 @@ $(document).ready
 					findme = '.'+limite_valeur+'.';
 					if(chaine_autorisee.indexOf(findme)==-1)
 					{
-						$(this).attr('disabled','disabled');
+						$(this).prop('disabled',true);
 					}
 					else
 					{
-						$(this).removeAttr('disabled');
+						$(this).prop('disabled',false);
 					}
 					if(limite_valeur===modifier_limite_selected) // === pour éviter un (false==0) qui sélectionne la 1ère option...
 					{
-						$(this).attr('selected','selected'); // 3|3 C'est ici que le selected se fait.
+						$(this).prop('selected',true); // 3|3 C'est ici que le selected se fait.
 					}
 				}
 			);
@@ -101,8 +101,8 @@ $(document).ready
 				$('#valeurR').val(memo_valeurR);
 				$('#valeurV').val(memo_valeurV);
 				$('#valeurVV').val(memo_valeurVV);
-				$('#f_methode option[value='+memo_methode+']').attr("selected",true);
-				$('#f_limite option[value='+memo_limite+']').attr("selected",true);
+				$('#f_methode option[value='+memo_methode+']').prop('selected',true);
+				$('#f_limite option[value='+memo_limite+']').prop('selected',true);
 				$('#seuilR').val(memo_seuilR);
 				$('#seuilV').val(memo_seuilV);
 				actualiser_select_limite();
@@ -127,8 +127,8 @@ $(document).ready
 				$('#valeurR').val(33);
 				$('#valeurV').val(67);
 				$('#valeurVV').val(100);
-				$('#f_methode option[value="geometrique"]').attr("selected",true);
-				$('#f_limite option[value="5"]').attr("selected",true);
+				$('#f_methode option[value="geometrique"]').prop('selected',true);
+				$('#f_limite option[value="5"]').prop('selected',true);
 				$('#seuilR').val(40);
 				$('#seuilV').val(60);
 				actualiser_select_limite();
@@ -230,7 +230,7 @@ $(document).ready
 				{
 					$('#bilan table tbody').hide();
 				}
-				$('button').attr('disabled','disabled');
+				$('button').prop('disabled',true);
 				$('#ajax_msg').removeAttr("class").addClass("loader").html("Demande envoyée... Veuillez patienter.").show();
 			}
 			return readytogo;
@@ -239,7 +239,7 @@ $(document).ready
 		// Fonction suivant l'envoi du formulaire (avec jquery.form.js)
 		function retour_form_erreur(msg,string)
 		{
-			$('button').removeAttr('disabled');
+			$('button').prop('disabled',false);
 			$('#ajax_msg').removeAttr("class").addClass("alerte").html("Echec de la connexion ! Veuillez valider de nouveau.");
 		}
 
@@ -247,7 +247,7 @@ $(document).ready
 		function retour_form_valide(responseHTML)
 		{
 			maj_clock(1);
-			$('button').removeAttr('disabled');
+			$('button').prop('disabled',false);
 			if(responseHTML.substring(0,1)!='<')
 			{
 				$('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);

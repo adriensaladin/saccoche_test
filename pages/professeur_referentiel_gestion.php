@@ -165,7 +165,7 @@ else
 		$matiere_nom    = $tab['nom'];
 		$matiere_coord  = $tab['coord'];
 		$matiere_perso  = ($tab['partage']) ? 0 : 1 ;
-		$matiere_nombre = ($matiere_coord) ? str_replace('value="'.$tab['nb_demandes'].'"','value="'.$tab['nb_demandes'].'" selected="selected"',$select_demandes) : str_replace('<select','<select disabled="disabled"',$select_demandes) ;
+		$matiere_nombre = ($matiere_coord) ? str_replace('value="'.$tab['nb_demandes'].'"','value="'.$tab['nb_demandes'].'" selected',$select_demandes) : str_replace('<select','<select disabled',$select_demandes) ;
 		$affichage .= '<tr><td colspan="5" class="nu">&nbsp;</td></tr>'."\r\n";
 		$affichage .= '<tr><td rowspan="'.$rowspan.'" id="mat_'.$matiere_id.'"><b>'.$matiere_nom.'</b><br />'.$matiere_nombre.$infobulle.'</td>';
 		$affichage_suite = false;

@@ -163,7 +163,7 @@ $(document).ready
 			var readytogo = validation0.form();
 			if(readytogo)
 			{
-				$("button").attr('disabled','disabled');
+				$("button").prop('disabled',true);
 				$('#ajax_msg_choix').removeAttr("class").addClass("loader").html("Demande envoyée... Veuillez patienter.");
 			}
 			return readytogo;
@@ -172,7 +172,7 @@ $(document).ready
 		// Fonction suivant l'envoi du formulaire (avec jquery.form.js)
 		function retour_form_erreur0(msg,string)
 		{
-			$("button").removeAttr('disabled');
+			$("button").prop('disabled',false);
 			$('#ajax_msg_choix').removeAttr("class").addClass("alerte").html("Echec de la connexion ! Veuillez recommencer.");
 		}
 
@@ -180,7 +180,7 @@ $(document).ready
 		function retour_form_valide0(responseHTML)
 		{
 			maj_clock(1);
-			$("button").removeAttr('disabled');
+			$("button").prop('disabled',false);
 			if(responseHTML.substring(0,7)!='<thead>')
 			{
 				$('#ajax_msg_choix').removeAttr("class").addClass("alerte").html(responseHTML);
@@ -375,7 +375,7 @@ $(document).ready
 		('click',
 			function()
 			{
-				$("button").attr('disabled','disabled');
+				$("button").prop('disabled',true);
 				$('#ajax_msg_validation').removeAttr("class").addClass("loader").html("Demande envoyée... Veuillez patienter.");
 				// Récupérer les infos
 				var tab_valid = new Array();
@@ -396,14 +396,14 @@ $(document).ready
 						dataType : "html",
 						error : function(msg,string)
 						{
-							$("button").removeAttr('disabled');
+							$("button").prop('disabled',false);
 							$('#ajax_msg_validation').removeAttr("class").addClass("alerte").html('Echec de la connexion ! Veuillez recommencer.');
 							return false;
 						},
 						success : function(responseHTML)
 						{
 							maj_clock(1);
-							$("button").removeAttr('disabled');
+							$("button").prop('disabled',false);
 							if(responseHTML.substring(0,2)!='OK')
 							{
 								$('#ajax_msg_validation').removeAttr("class").addClass("alerte").html(responseHTML);

@@ -44,7 +44,7 @@ $(document).ready
 					return false;
 				}
 				var bases = new Array(); $("#f_base option:selected").each(function(){bases.push($(this).val());});
-				$("button").attr('disabled','disabled');
+				$("button").prop('disabled',true);
 				$('#ajax_msg_export').removeAttr("class").addClass("loader").html("Préparation de l'export... Veuillez patienter.");
 				$.ajax
 				(
@@ -55,14 +55,14 @@ $(document).ready
 						dataType : "html",
 						error : function(msg,string)
 						{
-							$("button").removeAttr('disabled');
+							$("button").prop('disabled',false);
 							$('#ajax_msg_export').removeAttr("class").addClass("alerte").html("Echec de la connexion ! Veuillez recommencer.");
 							return false;
 						},
 						success : function(responseHTML)
 						{
 							maj_clock(1);
-							$("button").removeAttr('disabled');
+							$("button").prop('disabled',false);
 							var tab_infos = responseHTML.split(']¤[');
 							if( (tab_infos.length!=2) || (tab_infos[0]!='') )
 							{
@@ -123,7 +123,7 @@ $(document).ready
 								$('#puce_info_export').html(li1+li2);
 								format_liens('#puce_info_export');
 								$('#zone_actions_export').show('fast');
-								$("button").removeAttr('disabled');
+								$("button").prop('disabled',false);
 							}
 							else
 							{
@@ -224,7 +224,7 @@ $(document).ready
 			}
 			else
 			{
-				$('button').attr('disabled','disabled');
+				$('button').prop('disabled',true);
 				$('#ajax_msg_csv').removeAttr("class").addClass("loader").html('Fichier envoyé... Veuillez patienter.');
 				return true;
 			}
@@ -244,7 +244,7 @@ $(document).ready
 			}
 			else
 			{
-				$('button').attr('disabled','disabled');
+				$('button').prop('disabled',true);
 				$('#ajax_msg_zip').removeAttr("class").addClass("loader").html('Fichier envoyé... Veuillez patienter.');
 				return true;
 			}
@@ -252,7 +252,7 @@ $(document).ready
 
 		function retourner_fichier_csv(fichier_nom,responseHTML)	// Attention : avec jquery.ajaxupload.js, IE supprime mystérieusement les guillemets et met les éléments en majuscules dans responseHTML.
 		{
-			$('button').removeAttr('disabled');
+			$('button').prop('disabled',false);
 			var tab_infos = responseHTML.split(']¤[');
 			if( (tab_infos.length!=2) || (tab_infos[0]!='') )
 			{
@@ -271,7 +271,7 @@ $(document).ready
 
 		function retourner_fichier_zip(fichier_nom,responseHTML)	// Attention : avec jquery.ajaxupload.js, IE supprime mystérieusement les guillemets et met les éléments en majuscules dans responseHTML.
 		{
-			$('button').removeAttr('disabled');
+			$('button').prop('disabled',false);
 			var tab_infos = responseHTML.split(']¤[');
 			if( (tab_infos.length!=2) || (tab_infos[0]!='') )
 			{
@@ -297,7 +297,7 @@ $(document).ready
 		(
 			function()
 			{
-				$("button").attr('disabled','disabled');
+				$("button").prop('disabled',true);
 				var num = $('#ajax_import_num').html();
 				var max = $('#ajax_import_max').html();
 				$('#ajax_msg_import').removeAttr("class").addClass("loader").html('Import en cours : étape ' + num + ' sur ' + max + '...');
@@ -343,7 +343,7 @@ $(document).ready
 								$('#ajax_msg_csv , #ajax_msg_zip , #ajax_msg_import').removeAttr("class").html('&nbsp;');
 								$('#div_zip , #div_import').hide('fast');
 								$('#structures').show('fast');
-								$("button").removeAttr('disabled');
+								$("button").prop('disabled',false);
 							}
 							else
 							{
@@ -387,7 +387,7 @@ $(document).ready
 		(
 			function()
 			{
-				$('#structures input[type=checkbox]').attr('checked','checked');
+				$('#structures input[type=checkbox]').prop('checked',true);
 				return false;
 			}
 		);
@@ -395,7 +395,7 @@ $(document).ready
 		(
 			function()
 			{
-				$('#structures input[type=checkbox]').removeAttr('checked');
+				$('#structures input[type=checkbox]').prop('checked',false);
 				return false;
 			}
 		);
@@ -418,7 +418,7 @@ $(document).ready
 
 		var supprimer_structures_selectionnees = function(listing_id)
 		{
-			$("button").attr('disabled','disabled');
+			$("button").prop('disabled',true);
 			// afficher_masquer_images_action('hide');
 			$('#ajax_supprimer_export').removeAttr("class").addClass("loader").html("Demande envoyée... Veuillez patienter.");
 			$.ajax
@@ -431,7 +431,7 @@ $(document).ready
 					error : function(msg,string)
 					{
 						$('#ajax_supprimer_export').removeAttr("class").addClass("alerte").html("Echec de la connexion ! Veuillez recommencer.");
-						$("button").removeAttr('disabled');
+						$("button").prop('disabled',false);
 						// afficher_masquer_images_action('show');
 					},
 					success : function(responseHTML)
@@ -451,7 +451,7 @@ $(document).ready
 								}
 							);
 							$('#ajax_supprimer_export').removeAttr("class").html('&nbsp;');
-							$("button").removeAttr('disabled');
+							$("button").prop('disabled',false);
 							// afficher_masquer_images_action('show');
 						}
 					}
@@ -501,7 +501,7 @@ $(document).ready
 
 		var supprimer_structures_cochees = function(listing_id)
 		{
-			$("button").attr('disabled','disabled');
+			$("button").prop('disabled',true);
 			// afficher_masquer_images_action('hide');
 			$('#ajax_supprimer_import').removeAttr("class").addClass("loader").html("Demande envoyée... Veuillez patienter.");
 			$.ajax
@@ -514,7 +514,7 @@ $(document).ready
 					error : function(msg,string)
 					{
 						$('#ajax_supprimer_import').removeAttr("class").addClass("alerte").html("Echec de la connexion ! Veuillez recommencer.");
-						$("button").removeAttr('disabled');
+						$("button").prop('disabled',false);
 						// afficher_masquer_images_action('show');
 					},
 					success : function(responseHTML)
@@ -534,7 +534,7 @@ $(document).ready
 								}
 							);
 							$('#ajax_supprimer_import').removeAttr("class").html('&nbsp;');
-							$("button").removeAttr('disabled');
+							$("button").prop('disabled',false);
 							// afficher_masquer_images_action('show');
 						}
 					}

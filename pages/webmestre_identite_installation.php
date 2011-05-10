@@ -35,8 +35,8 @@ $exemple_denomination = (HEBERGEUR_INSTALLATION=='mono-structure') ? 'Collège d
 $exemple_adresse_web  = (HEBERGEUR_INSTALLATION=='mono-structure') ? 'http://www.college-trucville.com' : 'http://www.ac-paradis.fr' ;
 $uai_div_hide_avant   = (HEBERGEUR_INSTALLATION=='mono-structure') ? '' : '<div class="hide">' ;
 $uai_div_hide_apres   = (HEBERGEUR_INSTALLATION=='mono-structure') ? '' : '</div>' ;
-$cnil_check_oui       = intval(HEBERGEUR_CNIL) ? ' checked="checked"' : '' ;
-$cnil_check_non       = intval(HEBERGEUR_CNIL) ? '' : ' checked="checked"' ;
+$cnil_check_oui       = intval(HEBERGEUR_CNIL) ? ' checked' : '' ;
+$cnil_check_non       = intval(HEBERGEUR_CNIL) ? '' : ' checked' ;
 $cnil_numero          = intval(HEBERGEUR_CNIL) ? HEBERGEUR_CNIL : '' ;
 ?>
 

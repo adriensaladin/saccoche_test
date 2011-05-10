@@ -83,7 +83,7 @@ $(document).ready
 			new_tr += '<td><input id="f_localisation" name="f_localisation" size="30" type="text" value="" />'+'<br />'+'<input id="f_denomination" name="f_denomination" size="30" type="text" value="" /></td>';
 			new_tr += '<td><input id="f_uai" name="f_uai" size="8" type="text" value="" /></td>';
 			new_tr += '<td><input id="f_contact_nom" name="f_contact_nom" size="15" type="text" value="" />'+'<br />'+'<input id="f_contact_prenom" name="f_contact_prenom" size="15" type="text" value="" /></td>';
-			new_tr += '<td><input id="f_contact_courriel" name="f_contact_courriel" size="30" type="text" value="" />'+'<br />'+'<input id="f_courriel_envoi" name="f_courriel_envoi" type="checkbox" value="1" checked="checked" /><label for="f_courriel_envoi"> envoyer le courriel d\'inscription</label></td>';
+			new_tr += '<td><input id="f_contact_courriel" name="f_contact_courriel" size="30" type="text" value="" />'+'<br />'+'<input id="f_courriel_envoi" name="f_courriel_envoi" type="checkbox" value="1" checked /><label for="f_courriel_envoi"> envoyer le courriel d\'inscription</label></td>';
 			new_tr += '<td class="nu"><input id="f_action" name="f_action" type="hidden" value="'+mode+'" /><q class="valider" title="Valider l\'ajout de cet établissement."></q><q class="annuler" title="Annuler l\'ajout de cet établissement."></q> <label id="ajax_msg">&nbsp;</label></td>';
 			new_tr += '</tr>';
 			// Ajouter cette nouvelle ligne
@@ -123,7 +123,7 @@ $(document).ready
 			new_tr += '<td class="nu"></td>';
 			new_tr += '<td class="nu"></td>';
 			new_tr += '<td>'+base_id+'<input id="f_base_id" name="f_base_id" type="hidden" value="'+base_id+'" /></td>';
-			new_tr += '<td><select id="f_geo" name="f_geo">'+options_geo.replace('>'+geo+'<',' selected="selected">'+geo+'<')+'</select></td>';
+			new_tr += '<td><select id="f_geo" name="f_geo">'+options_geo.replace('>'+geo+'<',' selected>'+geo+'<')+'</select></td>';
 			new_tr += '<td><input id="f_localisation" name="f_localisation" size="'+Math.max(localisation.length,30)+'" type="text" value="'+localisation+'" />'+'<br />'+'<input id="f_denomination" name="f_denomination" size="'+Math.max(denomination.length,30)+'" type="text" value="'+denomination+'" /></td>';
 			new_tr += '<td><input id="f_uai" name="f_uai" size="8" type="text" value="'+uai+'" /></td>';
 			new_tr += '<td><input id="f_contact_nom" name="f_contact_nom" size="'+Math.max(contact_nom.length,15)+'" type="text" value="'+contact_nom+'" />'+'<br />'+'<input id="f_contact_prenom" name="f_contact_prenom" size="'+Math.max(contact_prenom.length,15)+'" type="text" value="'+contact_prenom+'" /></td>';
@@ -252,7 +252,7 @@ $(document).ready
 		(
 			function()
 			{
-				$('#structures input[type=checkbox]').attr('checked','checked');
+				$('#structures input[type=checkbox]').prop('checked',true);
 				return false;
 			}
 		);
@@ -260,7 +260,7 @@ $(document).ready
 		(
 			function()
 			{
-				$('#structures input[type=checkbox]').removeAttr('checked');
+				$('#structures input[type=checkbox]').prop('checked',false);
 				return false;
 			}
 		);
@@ -315,7 +315,7 @@ $(document).ready
 
 		var supprimer_structures_cochees = function(listing_id)
 		{
-			$("button").attr('disabled','disabled');
+			$("button").prop('disabled',true);
 			afficher_masquer_images_action('hide');
 			$('#ajax_supprimer').removeAttr("class").addClass("loader").html("Demande envoyée... Veuillez patienter.");
 			$.ajax
@@ -328,7 +328,7 @@ $(document).ready
 					error : function(msg,string)
 					{
 						$('#ajax_supprimer').removeAttr("class").addClass("alerte").html("Echec de la connexion ! Veuillez recommencer.");
-						$("button").removeAttr('disabled');
+						$("button").prop('disabled',false);
 						afficher_masquer_images_action('show');
 					},
 					success : function(responseHTML)
@@ -348,7 +348,7 @@ $(document).ready
 								}
 							);
 							$('#ajax_supprimer').removeAttr("class").html('&nbsp;');
-							$("button").removeAttr('disabled');
+							$("button").prop('disabled',false);
 							afficher_masquer_images_action('show');
 						}
 					}

@@ -31,17 +31,17 @@ $VERSION_JS_FILE += 0;
 ?>
 
 <?php
-$check_proxy_used = SERVEUR_PROXY_USED ? ' checked="checked"' : '' ;
+$check_proxy_used = SERVEUR_PROXY_USED ? ' checked' : '' ;
 $class_proxy_used = SERVEUR_PROXY_USED ? 'show' : 'hide' ;
 
-$check_proxy_auth_used = SERVEUR_PROXY_AUTH_USED ? ' checked="checked"' : '' ;
+$check_proxy_auth_used = SERVEUR_PROXY_AUTH_USED ? ' checked' : '' ;
 $class_proxy_auth_used = SERVEUR_PROXY_AUTH_USED ? 'show' : 'hide' ;
 
 $tab_select_proxy_type = array('CURLPROXY_HTTP'=>'HTTP','CURLPROXY_SOCKS5'=>'SOCKS5');
 $select_proxy_type = '';
 foreach($tab_select_proxy_type as $option_value => $option_texte)
 {
-	$selected = ($option_value==SERVEUR_PROXY_TYPE) ? ' selected="selected"' : '' ;
+	$selected = ($option_value==SERVEUR_PROXY_TYPE) ? ' selected' : '' ;
 	$select_proxy_type .= '<option value="'.$option_value.'"'.$selected.'>'.$option_texte.'</option>';
 }
 
@@ -49,8 +49,8 @@ $tab_select_proxy_auth_method = array('CURLAUTH_BASIC'=>'BASIC','CURLAUTH_DIGEST
 $select_proxy_auth_method = '';
 foreach($tab_select_proxy_auth_method as $option_value => $option_texte)
 {
-	$selected = ($option_value==SERVEUR_PROXY_AUTH_METHOD) ? ' selected="selected"' : '' ;
-	$disabled = (($option_value=='CURLAUTH_BASIC')||($option_value=='CURLAUTH_NTLM')) ? '' : ' disabled="disabled"' ;
+	$selected = ($option_value==SERVEUR_PROXY_AUTH_METHOD) ? ' selected' : '' ;
+	$disabled = (($option_value=='CURLAUTH_BASIC')||($option_value=='CURLAUTH_NTLM')) ? '' : ' disabled' ;
 	$select_proxy_auth_method .= '<option value="'.$option_value.'"'.$selected.$disabled.'>'.$option_texte.'</option>';
 }
 

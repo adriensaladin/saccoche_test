@@ -45,11 +45,11 @@ $select_groupes   = afficher_select(DB_STRUCTURE_OPT_groupes_etabl()       , $se
 		<td class="nu" style="width:25em">
 			<b>Liste des élèves :</b><br />
 			<select id="f_groupe" name="f_groupe" class="t8"><?php echo $select_f_groupes ?></select><br />
-			<select id="select_eleves" name="select_eleves[]" multiple="multiple" size="8" class="t8"><option value=""></option></select>
+			<select id="select_eleves" name="select_eleves[]" multiple size="8" class="t8"><option value=""></option></select>
 		</td>
 		<td class="nu" style="width:20em">
 			<b>Liste des groupes :</b><br />
-			<select id="select_groupes" name="select_groupes[]" multiple="multiple" size="10" class="t8"><?php echo $select_groupes; ?></select>
+			<select id="select_groupes" name="select_groupes[]" multiple size="10" class="t8"><?php echo $select_groupes; ?></select>
 		</td>
 		<td class="nu" style="width:25em">
 			<p><span class="astuce">Utiliser "<span class="i">Shift + clic</span>" ou "<span class="i">Ctrl + clic</span>"<br />pour une sélection multiple.</span></p>

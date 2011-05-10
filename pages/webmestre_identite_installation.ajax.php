@@ -54,11 +54,11 @@ if($action=='select_logo')
 		$extension = strtolower(pathinfo($file,PATHINFO_EXTENSION));
 		if(in_array($extension,$tab_ext_images))
 		{
-			$selected = ($file==HEBERGEUR_LOGO) ? ' selected="selected"' : '' ;
+			$selected = ($file==HEBERGEUR_LOGO) ? ' selected' : '' ;
 			$options_logo .= '<option value="'.html($file).'"'.$selected.'>'.html($file).'</option>';
 		}
 	}
-	$options_logo = ($options_logo) ? '<option value=""></option>'.$options_logo : '<option value="" disabled="disabled">Aucun fichier image trouvé !</option>';
+	$options_logo = ($options_logo) ? '<option value=""></option>'.$options_logo : '<option value="" disabled>Aucun fichier image trouvé !</option>';
 	exit($options_logo);
 }
 

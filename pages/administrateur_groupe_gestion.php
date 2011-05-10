@@ -77,7 +77,7 @@ if($_SESSION['NIVEAUX'])
 }
 else
 {
-	$select_niveau .= '<option value="" disabled="disabled">Aucun niveau n\'est rattaché à l\'établissement !</option>';
+	$select_niveau .= '<option value="" disabled>Aucun niveau n\'est rattaché à l\'établissement !</option>';
 }
 ?>
 

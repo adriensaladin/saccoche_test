@@ -65,7 +65,7 @@ $(document).ready
 					groupe_type = $("#f_groupe option:selected").parent().attr('label').substring(0,1).toLowerCase();
 					groupe_id   = groupe_val;
 				}
-				$('button').attr('disabled','disabled');
+				$('button').prop('disabled',true);
 				$('#ajax_msg').removeAttr("class").addClass("loader").html("Veuillez patienter...");
 				$('#bilan tbody').html('');
 				$.ajax
@@ -77,13 +77,13 @@ $(document).ready
 						dataType : "html",
 						error : function(msg,string)
 						{
-							$('button').removeAttr('disabled');
+							$('button').prop('disabled',false);
 							$('#ajax_msg').removeAttr("class").addClass("alerte").html("Echec de la connexion ! Veuillez valider de nouveau.");
 						},
 						success : function(responseHTML)
 						{
 							maj_clock(1);
-							$('button').removeAttr('disabled');
+							$('button').prop('disabled',false);
 							if( (responseHTML.substring(0,4)!='<tr>') && (responseHTML!='') )
 							{
 								$('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);

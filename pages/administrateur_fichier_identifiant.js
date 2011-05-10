@@ -171,7 +171,7 @@ $(document).ready
 		(
 			function()
 			{
-				$('button').attr('disabled','disabled');
+				$('button').prop('disabled',true);
 				$('#ajax_msg').removeAttr("class").addClass("loader").html("Demande envoyée... Veuillez patienter.");
 				$.ajax
 				(
@@ -182,7 +182,7 @@ $(document).ready
 						dataType : "html",
 						error : function(msg,string)
 						{
-							$('button').removeAttr('disabled');
+							$('button').prop('disabled',false);
 							$('#ajax_msg').removeAttr("class").addClass("alerte").html('Echec de la connexion ! Veuillez recommencer.');
 							return false;
 						},
@@ -191,12 +191,12 @@ $(document).ready
 							maj_clock(1);
 							if(responseHTML.substring(0,3)!='<ul')
 							{
-								$('button').removeAttr('disabled');
+								$('button').prop('disabled',false);
 								$('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);
 							}
 							else
 							{
-								$('button').removeAttr('disabled');
+								$('button').prop('disabled',false);
 								$('#ajax_msg').removeAttr("class").addClass("valide").html("Demande réalisée !");
 								$('#ajax_retour').html(responseHTML);
 								format_liens('#ajax_retour');
@@ -235,7 +235,7 @@ $(document).ready
 				{
 					var select_users = new Array(); $("#select_"+profil+" option:selected").each(function(){select_users.push($(this).val());});
 				}
-				$('button').attr('disabled','disabled');
+				$('button').prop('disabled',true);
 				$('#ajax_msg').removeAttr("class").addClass("loader").html("Demande envoyée... Veuillez patienter.");
 				$.ajax
 				(
@@ -246,14 +246,14 @@ $(document).ready
 						dataType : "html",
 						error : function(msg,string)
 						{
-							$('button').removeAttr('disabled');
+							$('button').prop('disabled',false);
 							$('#ajax_msg').removeAttr("class").addClass("alerte").html("Echec de la connexion ! Veuillez recommencer.");
 							return false;
 						},
 						success : function(responseHTML)
 						{
 							maj_clock(1);
-							$('button').removeAttr('disabled');
+							$('button').prop('disabled',false);
 							if(responseHTML.substring(0,3)!='<ul')
 							{
 								$('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);
@@ -351,7 +351,7 @@ $(document).ready
 			}
 			else
 			{
-				$('button').attr('disabled','disabled');
+				$('button').prop('disabled',true);
 				$('#ajax_msg').removeAttr("class").addClass("loader").html('Fichier envoyé... Veuillez patienter.');
 				return true;
 			}
@@ -359,7 +359,7 @@ $(document).ready
 
 		function retourner_fichier(fichier_nom,responseHTML)	// Attention : avec jquery.ajaxupload.js, IE supprime mystérieusement les guillemets et met les éléments en majuscules dans responseHTML.
 		{
-			$('button').removeAttr('disabled');
+			$('button').prop('disabled',false);
 			if( (responseHTML.substring(0,3)!='<ul') && (responseHTML.substring(0,3)!='<UL') )
 			{
 				$('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);
@@ -383,7 +383,7 @@ $(document).ready
 			{
 				var action = $(this).attr('id');
 				$('#ajax_retour').html('&nbsp;');
-				$('button').attr('disabled','disabled');
+				$('button').prop('disabled',true);
 				var duree = (action.indexOf('_argos_')!=-1) ? ' <span class="u">30 secondes</span>' : '' ;
 				$('#ajax_msg').removeAttr("class").addClass("loader").html("Demande envoyée... Veuillez patienter"+duree+".");
 				$.ajax
@@ -395,14 +395,14 @@ $(document).ready
 						dataType : "html",
 						error : function(msg,string)
 						{
-							$('button').removeAttr('disabled');
+							$('button').prop('disabled',false);
 							$('#ajax_msg').removeAttr("class").addClass("alerte").html('Echec de la connexion ! Veuillez recommencer.');
 							return false;
 						},
 						success : function(responseHTML)
 						{
 							maj_clock(1);
-							$('button').removeAttr('disabled');
+							$('button').prop('disabled',false);
 							if(responseHTML=='ok')
 							{
 								$('#ajax_msg').removeAttr("class").addClass("valide").html("Demande réalisée !");

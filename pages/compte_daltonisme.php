@@ -29,8 +29,8 @@ if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');
 $TITRE = "Daltonisme";
 $VERSION_JS_FILE += 0;
 
-$checked_normal = $_SESSION['USER_DALTONISME'] ? '' : ' checked="checked"' ;
-$checked_dalton = $_SESSION['USER_DALTONISME'] ? ' checked="checked"' : '' ;
+$checked_normal = $_SESSION['USER_DALTONISME'] ? '' : ' checked' ;
+$checked_dalton = $_SESSION['USER_DALTONISME'] ? ' checked' : '' ;
 
 // codes de notation
 $td_normal = '<td class="nu">&nbsp;</td>';

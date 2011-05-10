@@ -136,7 +136,7 @@ $(document).ready
 			var readytogo = validation.form();
 			if(readytogo)
 			{
-				$("#bouton_valider").attr('disabled','disabled');
+				$("#bouton_valider").prop('disabled',true);
 				$('#ajax_msg').removeAttr("class").addClass("loader").html("Traitement de la demande en cours... Veuillez patienter.");
 			}
 			return readytogo;
@@ -145,7 +145,7 @@ $(document).ready
 		// Fonction suivant l'envoi du formulaire (avec jquery.form.js)
 		function retour_form_erreur(msg,string)
 		{
-			$("#bouton_valider").removeAttr('disabled');
+			$("#bouton_valider").prop('disabled',false);
 			$('#ajax_msg').removeAttr("class").addClass("alerte").html("Echec de la connexion ! Veuillez valider de nouveau.");
 		}
 
@@ -153,7 +153,7 @@ $(document).ready
 		function retour_form_valide(responseHTML)
 		{
 			maj_clock(1);
-			$("#bouton_valider").removeAttr('disabled');
+			$("#bouton_valider").prop('disabled',false);
 			if(responseHTML.substring(0,13)=='<label class=')
 			{
 				
@@ -180,7 +180,7 @@ $(document).ready
 				$('#ajax_maj').removeAttr("class").addClass("valide").html('Mise à jour terminée !');
 				$('#ajax_version_installee').html(etape_info);
 				maj_label_versions();
-				$('button').removeAttr('disabled');
+				$('button').prop('disabled',false);
 				return false;
 			}
 			$('#puces_maj').append('<li>Etape '+etape_numero+' : '+etape_info+'</li>');
@@ -194,7 +194,7 @@ $(document).ready
 					dataType : "html",
 					error : function(msg,string)
 					{
-						$('button').removeAttr('disabled');
+						$('button').prop('disabled',false);
 						$('#ajax_maj').removeAttr("class").addClass("alerte").html('Echec de la connexion !');
 						return false;
 					},
@@ -203,13 +203,13 @@ $(document).ready
 						var tab_infos = responseHTML.split(']¤[');
 						if( (tab_infos.length!=3) || (tab_infos[0]!='') )
 						{
-							$('button').removeAttr('disabled');
+							$('button').prop('disabled',false);
 							$('#ajax_maj').removeAttr("class").addClass("alerte").html(tab_infos[0]);
 							return false;
 						}
 						if(tab_infos[1]!='ok')
 						{
-							$('button').removeAttr('disabled');
+							$('button').prop('disabled',false);
 							$('#ajax_maj').removeAttr("class").addClass("alerte").html(tab_infos[2]);
 							return false;
 						}
@@ -230,7 +230,7 @@ $(document).ready
 					$('#ajax_maj').removeAttr("class").addClass("erreur").html("Version installée postérieure à la version disponible !");
 					return false;
 				}
-				$('button').attr('disabled','disabled');
+				$('button').prop('disabled',true);
 				$('#ajax_maj').removeAttr("class").addClass("loader").html("Mise à jour en cours&hellip; Veuillez patienter.");
 				maj_etape("Récupération de l'archive <em>zip</em>&hellip;");
 			}

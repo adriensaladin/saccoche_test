@@ -40,7 +40,7 @@ $tab_options['bestof3']      = 'Utiliser seulement les 3 meilleures saisies (don
 $options_methode = '';
 foreach($tab_options as $value => $texte)
 {
-	$selected = ($value==$_SESSION['CALCUL_METHODE']) ? ' selected="selected"' : '' ;
+	$selected = ($value==$_SESSION['CALCUL_METHODE']) ? ' selected' : '' ;
 	$options_methode .= '<option value="'.$value.'"'.$selected.'>'.$texte.'</option>';
 }
 
@@ -56,7 +56,7 @@ foreach($tab_options as $value)
 	{
 		$texte = ($value) ? 'Prendre en compte uniquement la dernière évaluation.' : 'Prendre en compte toutes les évaluations.' ;
 	}
-	$selected = ($value==$_SESSION['CALCUL_LIMITE']) ? ' selected="selected"' : '' ;
+	$selected = ($value==$_SESSION['CALCUL_LIMITE']) ? ' selected' : '' ;
 	$options_limite .= '<option value="'.$value.'"'.$selected.'>'.$texte.'</option>';
 }
 ?>

@@ -51,12 +51,15 @@ $DB_VAR = array(':prof_id'=>$_SESSION['USER_ID'],':groupe_id'=>$groupe_id,':type
 $DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 if(!count($DB_TAB))
 {
-	exit('<option value="" disabled="disabled">Aucun devoir n\'a été trouvé pour ce groupe d\'élèves !</option>');
+	exit('<option value="" disabled>Aucun devoir n\'a été trouvé pour ce groupe d\'élèves !</option>');
 }
-foreach($DB_TAB as $DB_ROW)
+foreach($DB_TAB as $key => $DB_ROW)
 {
+	// Le code js a besoin qu'une option soit sélectionnée
+	$selected = $key ? '' : ' selected' ;
 	// Formater la date et la référence de l'évaluation
-	$date_affich = convert_date_mysql_to_french($DB_ROW['devoir_date']);
-	echo'<option value="'.$DB_ROW['devoir_id'].'_'.$DB_ROW['groupe_id'].'">'.$date_affich.' | '.html($DB_ROW['devoir_info']).'</option>';
+	$date_affich         = convert_date_mysql_to_french($DB_ROW['devoir_date']);
+	$date_visible_affich = convert_date_mysql_to_french($DB_ROW['devoir_visible_date']);
+	echo'<option value="'.$DB_ROW['devoir_id'].'_'.$DB_ROW['groupe_id'].'"'.$selected.'>'.$date_affich.' || '.$date_visible_affich.' || '.html($DB_ROW['devoir_info']).'</option>';
 }
 ?>

@@ -159,7 +159,7 @@ $(document).ready
 			}
 			else
 			{
-				$('button').attr('disabled','disabled');
+				$('button').prop('disabled',true);
 				$('#ajax_msg').removeAttr("class").addClass("loader").html('Fichier envoyé... Veuillez patienter.');
 				return true;
 			}
@@ -179,7 +179,7 @@ $(document).ready
 			}
 			else
 			{
-				$('button').attr('disabled','disabled');
+				$('button').prop('disabled',true);
 				$('#ajax_msg').removeAttr("class").addClass("loader").html('Fichier envoyé... Veuillez patienter.');
 				return true;
 			}
@@ -187,7 +187,7 @@ $(document).ready
 
 		function retourner_fichier(fichier_nom,responseHTML)	// Attention : avec jquery.ajaxupload.js, IE supprime mystérieusement les guillemets et met les éléments en majuscules dans responseHTML.
 		{
-			$('button').removeAttr('disabled');
+			$('button').prop('disabled',false);
 			if( (responseHTML.substring(0,14)!='<ul id="step">') && (responseHTML.substring(0,12)!='<UL id=step>') )
 			{
 				$('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);
@@ -199,7 +199,7 @@ $(document).ready
 				var texte1 = $('#f_choix_principal option:selected').parent('optgroup').attr('label');
 				var texte2 = $('#f_choix_principal option:selected').text();
 				$('#form1').hide();
-				$('#form2').html('<p><input name="report_objet" readonly="readonly" size="80" value="'+texte1.substring(0,texte1.indexOf('(')-1)+' &rarr; '+texte2.substring(0,texte2.indexOf('(')-1)+'" class="b" /> <button id="bouton_annuler"><img alt="" src="./_img/bouton/retourner.png" /> Annuler / Retour</button></p>'+responseHTML);
+				$('#form2').html('<p><input name="report_objet" readonly size="80" value="'+texte1.substring(0,texte1.indexOf('(')-1)+' &rarr; '+texte2.substring(0,texte2.indexOf('(')-1)+'" class="b" /> <button id="bouton_annuler"><img alt="" src="./_img/bouton/retourner.png" /> Annuler / Retour</button></p>'+responseHTML);
 				$("#step1").addClass("on");
 			}
 		}

@@ -53,7 +53,7 @@ $(document).ready
 				}
 				if(continuer)
 				{
-					$("button").attr('disabled','disabled');
+					$("button").prop('disabled',true);
 					$("label").removeAttr("class").html('');
 					$("#ajax_info").html('<li></li>').hide();
 					$('#ajax_msg_'+action).addClass("loader").html("Demande envoyée... Veuillez patienter.");
@@ -66,13 +66,13 @@ $(document).ready
 							dataType : "html",
 							error : function(msg,string)
 							{
-								$("button").removeAttr('disabled');
+								$("button").prop('disabled',false);
 								$('#ajax_msg_'+action).removeAttr("class").addClass("alerte").html('Echec de la connexion ! Veuillez recommencer.');
 								return false;
 							},
 							success : function(responseHTML)
 							{
-								$("button").removeAttr('disabled');
+								$("button").prop('disabled',false);
 								if(responseHTML.substring(0,4)!='<li>')
 								{
 									$('#ajax_msg_'+action).removeAttr("class").addClass("alerte").html(responseHTML);

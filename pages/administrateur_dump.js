@@ -38,7 +38,7 @@ $(document).ready
 		(
 			function()
 			{
-				$("button").attr('disabled','disabled');
+				$("button").prop('disabled',true);
 				$("#ajax_info").html('');
 				$('#ajax_msg1').removeAttr("class").addClass("loader").html("Demande envoyée... Veuillez patienter.");
 				$('#ajax_msg2').removeAttr("class").html('');
@@ -51,13 +51,13 @@ $(document).ready
 						dataType : "html",
 						error : function(msg,string)
 						{
-							$("button").removeAttr('disabled');
+							$("button").prop('disabled',false);
 							$('#ajax_msg1').removeAttr("class").addClass("alerte").html('Echec de la connexion ! Veuillez recommencer.');
 							return false;
 						},
 						success : function(responseHTML)
 						{
-							$("button").removeAttr('disabled');
+							$("button").prop('disabled',false);
 							if(responseHTML.substring(0,4)!='<li>')
 							{
 								$('#ajax_msg1').removeAttr("class").addClass("alerte").html(responseHTML);
@@ -95,7 +95,7 @@ $(document).ready
 
 		function changer_fichier(fichier_nom,fichier_extension)
 		{
-			$("button").attr('disabled','disabled');
+			$("button").prop('disabled',true);
 			$("#ajax_info").html('');
 			$('#ajax_msg1').removeAttr("class").html('');
 			$('#ajax_msg2').removeAttr("class").html('');
@@ -106,13 +106,13 @@ $(document).ready
 		{
 			if (fichier_nom==null || fichier_nom.length<5)
 			{
-				$("button").removeAttr('disabled');
+				$("button").prop('disabled',false);
 				$('#ajax_msg2').removeAttr("class").addClass("erreur").html('Cliquer sur "Parcourir..." pour indiquer un chemin de fichier correct.');
 				return false;
 			}
 			else if(fichier_extension.toLowerCase()!='zip')
 			{
-				$("button").removeAttr('disabled');
+				$("button").prop('disabled',false);
 				$('#ajax_msg2').removeAttr("class").addClass("erreur").html('Le fichier "'+fichier_nom+'" n\'a pas l\'extension zip.');
 				return false;
 			}
@@ -127,7 +127,7 @@ $(document).ready
 		{
 			if( (responseHTML.substring(0,26)!='<li><label class="valide">') && (responseHTML.substring(0,24)!='<LI><LABEL class=valide>') )
 			{
-				$("button").removeAttr('disabled');
+				$("button").prop('disabled',false);
 				$('#ajax_msg2').removeAttr("class").html('');
 				$('#ajax_info').html(responseHTML);
 			}
@@ -155,13 +155,13 @@ $(document).ready
 					dataType : "html",
 					error : function(msg,string)
 					{
-						$("button").removeAttr('disabled');
+						$("button").prop('disabled',false);
 						$('#ajax_msg2').removeAttr("class").addClass("alerte").html('Echec de la connexion ! Veuillez recommencer.');
 						return false;
 					},
 					success : function(responseHTML)
 					{
-						$("button").removeAttr('disabled');
+						$("button").prop('disabled',false);
 						if(responseHTML.substring(0,4)!='<li>')
 						{
 							$('#ajax_msg2').removeAttr("class").addClass("alerte").html(responseHTML);

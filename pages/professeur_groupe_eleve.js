@@ -109,7 +109,7 @@ $(document).ready
 					$('#ajax_msg').removeAttr("class").addClass("erreur").html("Sélectionnez dans les deux listes !");
 					return(false);
 				}
-				$('button').attr('disabled','disabled');
+				$('button').prop('disabled',true);
 				$('#ajax_msg').removeAttr("class").addClass("loader").html("Demande envoyée... Veuillez patienter.");
 				// grouper les select multiples => normalement pas besoin si name de la forme nom[], mais ça plante curieusement sur le serveur competences.sesamath.net
 				// alors j'ai remplacé le $("form").serialize() par les tableaux maison et mis un explode dans le fichier ajax
@@ -124,14 +124,14 @@ $(document).ready
 						dataType : "html",
 						error : function(msg,string)
 						{
-							$('button').removeAttr('disabled');
+							$('button').prop('disabled',false);
 							$('#ajax_msg').removeAttr("class").addClass("alerte").html("Echec de la connexion ! Veuillez recommencer.");
 							return false;
 						},
 						success : function(responseHTML)
 						{
 							maj_clock(1);
-							$('button').removeAttr('disabled');
+							$('button').prop('disabled',false);
 							if(responseHTML.substring(0,6)!='<hr />')
 							{
 								$('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);

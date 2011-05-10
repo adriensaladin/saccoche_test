@@ -39,8 +39,8 @@ $VERSION_JS_FILE += 3;
 	<h2>Données saisies par le webmestre</h2>
 
 	<fieldset>
-		<label class="tab" for="f_uai">Code UAI (ex-RNE) :</label><input id="f_uai" name="f_uai" size="8" type="text" value="<?php echo html($_SESSION['UAI']); ?>" disabled="disabled" /><br />
-		<label class="tab" for="f_denomination">Dénomination :</label><input id="f_denomination" name="f_denomination" size="50" type="text" value="<?php echo html($_SESSION['DENOMINATION']); ?>" disabled="disabled" /><br />
+		<label class="tab" for="f_uai">Code UAI (ex-RNE) :</label><input id="f_uai" name="f_uai" size="8" type="text" value="<?php echo html($_SESSION['UAI']); ?>" disabled /><br />
+		<label class="tab" for="f_denomination">Dénomination :</label><input id="f_denomination" name="f_denomination" size="50" type="text" value="<?php echo html($_SESSION['DENOMINATION']); ?>" disabled /><br />
 	</fieldset>
 	<p />
 	<ul class="puce"><li>En cas d'erreur, <?php echo mailto(WEBMESTRE_COURRIEL,'Modifier données SACoche '.$_SESSION['BASE'],'contactez le webmestre'); ?> responsable de <em>SACoche</em> sur ce serveur.</li></ul>
@@ -50,10 +50,10 @@ $VERSION_JS_FILE += 3;
 	<h2>Identification de l'établissement dans la base Sésamath</h2>
 
 	<fieldset>
-		<label class="tab" for="f_sesamath_id">Identifiant <img alt="" src="./_img/bulle_aide.png" title="Valeur non modifiable manuellement.<br />Utilisez le lien ci-dessous." /> :</label><input id="f_sesamath_id" name="f_sesamath_id" size="5" type="text" value="<?php echo html($_SESSION['SESAMATH_ID']); ?>" readonly="readonly" /><br />
-		<label class="tab" for="f_sesamath_uai">Code UAI <img alt="" src="./_img/bulle_aide.png" title="Valeur non modifiable manuellement.<br />Utilisez le lien ci-dessous." /> :</label><input id="f_sesamath_uai" name="f_sesamath_uai" size="8" type="text" value="<?php echo html($_SESSION['SESAMATH_UAI']); ?>" readonly="readonly" /><br />
-		<label class="tab" for="f_sesamath_type_nom">Dénomination <img alt="" src="./_img/bulle_aide.png" title="Valeur non modifiable manuellement.<br />Utilisez le lien ci-dessous." /> :</label><input id="f_sesamath_type_nom" name="f_sesamath_type_nom" size="50" type="text" value="<?php echo html($_SESSION['SESAMATH_TYPE_NOM']); ?>" readonly="readonly" /><br />
-		<label class="tab" for="f_sesamath_key">Clef de contrôle <img alt="" src="./_img/bulle_aide.png" title="Valeur non modifiable manuellement.<br />Utilisez le lien ci-dessous." /> :</label><input id="f_sesamath_key" name="f_sesamath_key" size="35" type="text" value="<?php echo html($_SESSION['SESAMATH_KEY']); ?>" readonly="readonly" /><br />
+		<label class="tab" for="f_sesamath_id">Identifiant <img alt="" src="./_img/bulle_aide.png" title="Valeur non modifiable manuellement.<br />Utilisez le lien ci-dessous." /> :</label><input id="f_sesamath_id" name="f_sesamath_id" size="5" type="text" value="<?php echo html($_SESSION['SESAMATH_ID']); ?>" readonly /><br />
+		<label class="tab" for="f_sesamath_uai">Code UAI <img alt="" src="./_img/bulle_aide.png" title="Valeur non modifiable manuellement.<br />Utilisez le lien ci-dessous." /> :</label><input id="f_sesamath_uai" name="f_sesamath_uai" size="8" type="text" value="<?php echo html($_SESSION['SESAMATH_UAI']); ?>" readonly /><br />
+		<label class="tab" for="f_sesamath_type_nom">Dénomination <img alt="" src="./_img/bulle_aide.png" title="Valeur non modifiable manuellement.<br />Utilisez le lien ci-dessous." /> :</label><input id="f_sesamath_type_nom" name="f_sesamath_type_nom" size="50" type="text" value="<?php echo html($_SESSION['SESAMATH_TYPE_NOM']); ?>" readonly /><br />
+		<label class="tab" for="f_sesamath_key">Clef de contrôle <img alt="" src="./_img/bulle_aide.png" title="Valeur non modifiable manuellement.<br />Utilisez le lien ci-dessous." /> :</label><input id="f_sesamath_key" name="f_sesamath_key" size="35" type="text" value="<?php echo html($_SESSION['SESAMATH_KEY']); ?>" readonly /><br />
 		<span class="tab"></span><button id="bouton_valider" type="submit"><img alt="" src="./_img/bouton/parametre.png" /> Valider.</button><label id="ajax_msg_instance">&nbsp;</label>
 	</fieldset>
 	<p />

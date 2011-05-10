@@ -68,19 +68,19 @@ $(document).ready
 							// matière classique -> tous niveaux actifs
 							if(matiere_id != id_matiere_transversale)
 							{
-								$(this).removeAttr('disabled');
+								$(this).prop('disabled',false);
 							}
 							// matière transversale -> desactiver les autres niveaux
 							else
 							{
-								$(this).attr('disabled','disabled');
+								$(this).prop('disabled',true);
 								modif_niveau_selected = Math.max(modif_niveau_selected,1);
 							}
 						}
 						// C'est un niveau cycle ; le sélectionner si besoin
 						else if(modif_niveau_selected==1)
 						{
-							$(this).attr('selected','selected');
+							$(this).prop('selected',true);
 							modif_niveau_selected = 2;
 						}
 					}
@@ -228,7 +228,7 @@ $(document).ready
 			var readytogo = validation.form();
 			if(readytogo)
 			{
-				$('button').attr('disabled','disabled');
+				$('button').prop('disabled',true);
 				$('#bilan').html("&nbsp;");
 				$('#ajax_msg').removeAttr("class").addClass("loader").html("Génération du relevé en cours... Veuillez patienter.");
 			}
@@ -238,7 +238,7 @@ $(document).ready
 		// Fonction suivant l'envoi du formulaire (avec jquery.form.js)
 		function retour_form_erreur(msg,string)
 		{
-			$('button').removeAttr('disabled');
+			$('button').prop('disabled',false);
 			$('#ajax_msg').removeAttr("class").addClass("alerte").html("Echec de la connexion ! Veuillez valider de nouveau.");
 		}
 
@@ -246,7 +246,7 @@ $(document).ready
 		function retour_form_valide(responseHTML)
 		{
 			maj_clock(1);
-			$('button').removeAttr('disabled');
+			$('button').prop('disabled',false);
 			if(responseHTML.substring(0,17)!='<ul class="puce">')
 			{
 				$('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);

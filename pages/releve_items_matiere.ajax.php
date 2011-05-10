@@ -135,7 +135,7 @@ if( $orientation && $couleur && $legende && $marge_min && $pages_nb && $cases_nb
 	}
 
 	$date_mysql_debut = ($retroactif=='non') ? $date_mysql_debut : false;
-	$DB_TAB = DB_STRUCTURE_lister_result_eleves_matiere($liste_eleve , $liste_item , $date_mysql_debut , $date_mysql_fin) ;
+	$DB_TAB = DB_STRUCTURE_lister_result_eleves_matiere($liste_eleve , $liste_item , $date_mysql_debut , $date_mysql_fin , $_SESSION['USER_PROFIL']) ;
 	foreach($DB_TAB as $DB_ROW)
 	{
 		if($tab_score_a_garder[$DB_ROW['eleve_id']][$DB_ROW['item_id']])

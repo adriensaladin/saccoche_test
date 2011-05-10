@@ -57,7 +57,7 @@ else
 	<span id="span_motif" class="hide">
 		<label class="tab" for="f_motif">Motif :</label>
 			<select id="f_proposition" name="f_proposition">
-				<option value="rien" selected="selected">autre motif</option>
+				<option value="rien" selected>autre motif</option>
 				<option value="demenagement">déménagement</option>
 			</select>
 			<input id="f_motif" name="f_motif" size="50" maxlength="100" type="text" value="" />

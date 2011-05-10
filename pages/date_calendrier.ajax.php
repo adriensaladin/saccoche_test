@@ -60,7 +60,7 @@ $calendrier_navigation = '<div>';
 $calendrier_navigation.= '<select id="m" name="m" class="actu">';
 for($i=1;$i<=12;$i++)
 {
-	$selected = ($i==$m) ? ' selected="selected"' : '';
+	$selected = ($i==$m) ? ' selected' : '';
 	$calendrier_navigation .= '<option value="'.$i.'"'.$selected.'>'.$tab_mois[$i].'</option>';
 }
 $calendrier_navigation .= '</select>';
@@ -72,7 +72,7 @@ for($i=$a-5;$i<=$a+5;$i++)
 {
 	if( ($i>=$annee_mini) && ($i<=$annee_maxi) )
 	{
-		$selected = ($i==$a) ? ' selected="selected"' : '';
+		$selected = ($i==$a) ? ' selected' : '';
 		$calendrier_navigation .= '<option value="'.$i.'"'.$selected.'>'.$i.'</option>';
 	}
 }

@@ -38,8 +38,8 @@ $(document).ready
 		var memo_pilotage = 'clavier';
 		var memo_input_id = false;
 		// tri du tableau (avec jquery.tablesorter.js).
-		var sorting = [[0,1],[1,0]];
-		$('table.form').tablesorter({ headers:{3:{sorter:false},4:{sorter:false}} });
+		var sorting = [[0,1],[2,0]];
+		$('table.form').tablesorter({ headers:{1:{sorter:false},4:{sorter:false},5:{sorter:false}} });
 		function trier_tableau()
 		{
 			if($('table.form tbody tr td').length>1)
@@ -67,10 +67,11 @@ $(document).ready
 			$('#form0').css('visibility','hidden');
 			var new_tr = '';
 			new_tr += '<tr>';
-			new_tr += '<td><input id="f_date" name="f_date" size="9" type="text" value="'+input_date+'" /><q class="date_calendrier" title="Cliquez sur cette image pour importer une date depuis un calendrier !"></td>';
-			new_tr += '<td><select id="f_groupe" name="f_groupe">'+select_groupe.replace('value="'+groupe+'"','value="'+groupe+'" selected="selected"')+'</select></td>';
+			new_tr += '<td><input id="f_date" name="f_date" size="9" type="text" value="'+input_date+'" /><q class="date_calendrier" title="Cliquez sur cette image pour importer une date depuis un calendrier !"></q></td>';
+			new_tr += '<td><input id="box_date" type="checkbox" checked style="vertical-align:-3px" /> <span style="vertical-align:-2px">identique</span><span class="hide"><input id="f_date_visible" name="f_date_visible" size="9" type="text" value="'+input_date+'" /><q class="date_calendrier" title="Cliquez sur cette image pour importer une date depuis un calendrier !"></q></span></td>';
+			new_tr += '<td><select id="f_groupe" name="f_groupe">'+select_groupe.replace('value="'+groupe+'"','value="'+groupe+'" selected')+'</select></td>';
 			new_tr += '<td><input id="f_info" name="f_info" size="20" type="text" value="" /></td>';
-			new_tr += '<td><input id="f_compet_nombre" name="f_compet_nombre" size="10" type="text" value="0 item" readonly="readonly" /><input id="f_compet_liste" name="f_compet_liste" type="hidden" value="" /><q class="choisir_compet" title="Voir ou choisir les items."></q></td>';
+			new_tr += '<td><input id="f_compet_nombre" name="f_compet_nombre" size="10" type="text" value="0 item" readonly /><input id="f_compet_liste" name="f_compet_liste" type="hidden" value="" /><q class="choisir_compet" title="Voir ou choisir les items."></q></td>';
 			new_tr += '<td class="nu"><input id="f_action" name="f_action" type="hidden" value="'+mode+'" /><q class="valider" title="Valider l\'ajout de cette évaluation."></q><q class="annuler" title="Annuler l\'ajout de cette évaluation."></q> <label id="ajax_msg">&nbsp;</label></td>';
 			new_tr += '</tr>';
 			// Ajouter cette nouvelle ligne
@@ -90,20 +91,35 @@ $(document).ready
 			$('#form0').css('visibility','hidden');
 			$('#p_alerte').show();
 			// Récupérer les informations de la ligne concernée
-			var ref    = $(this).parent().attr('lang');
-			var date   = $(this).parent().prev().prev().prev().prev().html();
-			var groupe = $(this).parent().prev().prev().prev().html();
-			var info   = $(this).parent().prev().prev().html();
-			var nombre = $(this).parent().prev().html();
-			var liste  = $(this).parent().prev().attr('lang');
-			    date   = date.substring(17,date.length); // enlever la date mysql cachée
+			var ref          = $(this).parent().attr('lang');
+			var date         = $(this).parent().prev().prev().prev().prev().prev().html();
+			var date_visible = $(this).parent().prev().prev().prev().prev().html();
+			var groupe       = $(this).parent().prev().prev().prev().html();
+			var info         = $(this).parent().prev().prev().html();
+			var nombre       = $(this).parent().prev().html();
+			var liste        = $(this).parent().prev().attr('lang');
+			date = date.substring(17,date.length); // enlever la date mysql cachée
+			if(date_visible=='identique')
+			{
+				var checked = ' checked';
+				var classe1 = '';
+				var classe2 = ' class="hide"';
+				date_visible = date;
+			}
+			else
+			{
+				var checked = '';
+				var classe1 = ' class="hide"';
+				var classe2 = '';
+			}
 			// Fabriquer la ligne avec les éléments de formulaires
 			var new_tr = '';
 			new_tr += '<tr>';
-			new_tr += '<td><input id="f_date" name="f_date" size="9" type="text" value="'+date+'" /><q class="date_calendrier" title="Cliquez sur cette image pour importer une date depuis un calendrier !"></td>';
-			new_tr += '<td>'+groupe+'<select id="f_groupe" name="f_groupe" class="hide">'+select_groupe.replace('>'+groupe+'<',' selected="selected">'+groupe+'<')+'</select></td>';
+			new_tr += '<td><input id="f_date" name="f_date" size="9" type="text" value="'+date+'" /><q class="date_calendrier" title="Cliquez sur cette image pour importer une date depuis un calendrier !"></q></td>';
+			new_tr += '<td><input id="box_date" type="checkbox"'+checked+' style="vertical-align:-3px" /> <span'+classe1+' style="vertical-align:-2px">identique</span><span'+classe2+'><input id="f_date_visible" name="f_date_visible" size="9" type="text" value="'+date_visible+'" /><q class="date_calendrier" title="Cliquez sur cette image pour importer une date depuis un calendrier !"></q></span></td>';
+			new_tr += '<td>'+groupe+'<select id="f_groupe" name="f_groupe" class="hide">'+select_groupe.replace('>'+groupe+'<',' selected>'+groupe+'<')+'</select></td>';
 			new_tr += '<td><input id="f_info" name="f_info" size="'+Math.max(info.length,20)+'" type="text" value="'+info+'" /></td>';
-			new_tr += '<td><input id="f_compet_nombre" name="f_compet_nombre" size="10" type="text" value="'+nombre+'" readonly="readonly" /><input id="f_compet_liste" name="f_compet_liste" type="hidden" value="'+liste+'" /><q class="choisir_compet" title="Voir ou choisir les items."></q></td>';
+			new_tr += '<td><input id="f_compet_nombre" name="f_compet_nombre" size="10" type="text" value="'+nombre+'" readonly /><input id="f_compet_liste" name="f_compet_liste" type="hidden" value="'+liste+'" /><q class="choisir_compet" title="Voir ou choisir les items."></q></td>';
 			new_tr += '<td class="nu"><input id="f_action" name="f_action" type="hidden" value="'+mode+'" /><input id="f_ref" name="f_ref" type="hidden" value="'+ref+'" /><q class="valider" title="Valider les modifications de cette évaluation."></q><q class="annuler" title="Annuler les modifications de cette évaluation."></q> <label id="ajax_msg">&nbsp;</label></td>';
 			new_tr += '</tr>';
 			// Cacher la ligne en cours et ajouter la nouvelle
@@ -123,19 +139,34 @@ $(document).ready
 			afficher_masquer_images_action('hide');
 			$('#form0').css('visibility','hidden');
 			// Récupérer les informations de la ligne concernée
-			var ref    = $(this).parent().attr('lang');
-			var date   = $(this).parent().prev().prev().prev().prev().html();
-			var info   = $(this).parent().prev().prev().html();
-			var nombre = $(this).parent().prev().html();
-			var liste  = $(this).parent().prev().attr('lang');
-			    date   = date.substring(17,date.length); // enlever la date mysql cachée
+			var ref          = $(this).parent().attr('lang');
+			var date         = $(this).parent().prev().prev().prev().prev().prev().html();
+			var date_visible = $(this).parent().prev().prev().prev().prev().html();
+			var info         = $(this).parent().prev().prev().html();
+			var nombre       = $(this).parent().prev().html();
+			var liste        = $(this).parent().prev().attr('lang');
+			date = date.substring(17,date.length); // enlever la date mysql cachée
+			if(date_visible=='identique')
+			{
+				var checked = ' checked';
+				var classe1 = '';
+				var classe2 = ' class="hide"';
+				date_visible = date;
+			}
+			else
+			{
+				var checked = '';
+				var classe1 = ' class="hide"';
+				var classe2 = '';
+			}
 			// Fabriquer la ligne avec les éléments de formulaires
 			var new_tr = '';
 			new_tr += '<tr>';
-			new_tr += '<td><input id="f_date" name="f_date" size="9" type="text" value="'+date+'" /><q class="date_calendrier" title="Cliquez sur cette image pour importer une date depuis un calendrier !"></td>';
+			new_tr += '<td><input id="f_date" name="f_date" size="9" type="text" value="'+date+'" /><q class="date_calendrier" title="Cliquez sur cette image pour importer une date depuis un calendrier !"></q></td>';
+			new_tr += '<td><input id="box_date" type="checkbox"'+checked+' style="vertical-align:-3px" /> <span'+classe1+' style="vertical-align:-2px">identique</span><span'+classe2+'><input id="f_date_visible" name="f_date_visible" size="9" type="text" value="'+date_visible+'" /><q class="date_calendrier" title="Cliquez sur cette image pour importer une date depuis un calendrier !"></q></span></td>';
 			new_tr += '<td><select id="f_groupe" name="f_groupe">'+select_groupe+'</select></td>';
 			new_tr += '<td><input id="f_info" name="f_info" size="'+Math.max(info.length,20)+'" type="text" value="'+info+'" /></td>';
-			new_tr += '<td><input id="f_compet_nombre" name="f_compet_nombre" size="10" type="text" value="'+nombre+'" readonly="readonly" /><input id="f_compet_liste" name="f_compet_liste" type="hidden" value="'+liste+'" /><q class="choisir_compet" title="Voir ou choisir les items."></q></td>';
+			new_tr += '<td><input id="f_compet_nombre" name="f_compet_nombre" size="10" type="text" value="'+nombre+'" readonly /><input id="f_compet_liste" name="f_compet_liste" type="hidden" value="'+liste+'" /><q class="choisir_compet" title="Voir ou choisir les items."></q></td>';
 			new_tr += '<td class="nu"><input id="f_action" name="f_action" type="hidden" value="'+mode+'" /><input id="f_ref" name="f_ref" type="hidden" value="'+ref+'" /><q class="valider" title="Valider l\'ajout de cette évaluation."></q><q class="annuler" title="Annuler l\'ajout de cette évaluation."></q> <label id="ajax_msg">&nbsp;</label></td>';
 			new_tr += '</tr>';
 			// Ajouter cette nouvelle ligne
@@ -168,7 +199,7 @@ $(document).ready
 			mode = $(this).attr('class');
 			// Récupérer les informations de la ligne concernée
 			var ref    = $(this).parent().attr('lang');
-			var date   = $(this).parent().prev().prev().prev().prev().html();
+			var date   = $(this).parent().prev().prev().prev().prev().prev().html();
 			var groupe = $(this).parent().prev().prev().prev().html();
 			var info   = $(this).parent().prev().prev().html();
 			    date   = date.substring(17,date.length); // garder la date française
@@ -232,12 +263,13 @@ $(document).ready
 		{
 			mode = $(this).attr('class');
 			// Récupérer les informations de la ligne concernée
-			var ref    = $(this).parent().attr('lang');
-			var date   = $(this).parent().prev().prev().prev().prev().html();
-			var groupe = $(this).parent().prev().prev().prev().html();
-			var info   = $(this).parent().prev().prev().html();
-			    date1  = date.substring(3,13); // garder la date mysql
-			    date2  = date.substring(17,date.length); // garder la date française
+			var ref          = $(this).parent().attr('lang');
+			var date         = $(this).parent().prev().prev().prev().prev().prev().html();
+			var date_visible = $(this).parent().prev().prev().prev().prev().html();
+			var groupe       = $(this).parent().prev().prev().prev().html();
+			var info         = $(this).parent().prev().prev().html();
+			date1 = date.substring(3,13); // garder la date mysql
+			date2 = date.substring(17,date.length); // garder la date française
 			// Masquer le tableau ; Afficher la zone associée et charger son contenu
 			$('#form0 , #form1').hide('fast');
 			$('#msg_import').removeAttr("class").html('&nbsp;');
@@ -249,7 +281,7 @@ $(document).ready
 				{
 					type : 'POST',
 					url : 'ajax.php?page='+PAGE,
-					data : 'f_action='+mode+'&f_ref='+ref+'&f_date='+date1+'&f_info='+info+'&f_descriptif='+groupe+':::'+info+':::'+date2,
+					data : 'f_action='+mode+'&f_ref='+ref+'&f_date='+date1+'&f_info='+info+'&f_date_visible='+date_visible+'&f_descriptif='+groupe+':::'+info+':::'+date2,
 					dataType : "html",
 					error : function(msg,string)
 					{
@@ -295,7 +327,7 @@ $(document).ready
 			mode = $(this).attr('class');
 			// Récupérer les informations de la ligne concernée
 			var ref    = $(this).parent().attr('lang');
-			var date   = $(this).parent().prev().prev().prev().prev().html();
+			var date   = $(this).parent().prev().prev().prev().prev().prev().html();
 			var groupe = $(this).parent().prev().prev().prev().html();
 			var info   = $(this).parent().prev().prev().html();
 			    date   = date.substring(17,date.length); // garder la date française
@@ -348,7 +380,7 @@ $(document).ready
 			mode = $(this).attr('class');
 			// Récupérer les informations de la ligne concernée
 			var ref    = $(this).parent().attr('lang');
-			var date   = $(this).parent().prev().prev().prev().prev().html();
+			var date   = $(this).parent().prev().prev().prev().prev().prev().html();
 			var groupe = $(this).parent().prev().prev().prev().html();
 			var info   = $(this).parent().prev().prev().html();
 			    date   = date.substring(17,date.length); // garder la date française
@@ -422,7 +454,7 @@ $(document).ready
 					var id = 'id_'+tab_id[i];
 					if($('#'+id).length)
 					{
-						$('#'+id).attr('checked','checked');
+						$('#'+id).prop('checked',true);
 						$('#'+id).parent().parent().css("display","block");	// les items
 						$('#'+id).parent().parent().parent().parent().css("display","block");	// le thème
 						$('#'+id).parent().parent().parent().parent().parent().parent().css("display","block");	// le domaine
@@ -499,6 +531,25 @@ $(document).ready
 		$('q.voir').live(            'click' , voir );
 		$('q.voir_repart').live(     'click' , voir_repart );
 		$('q.choisir_compet').live(  'click' , choisir_compet );
+
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+//	Clic sur le checkbox pour choisir ou non une date visible différente de la date du devoir
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+		$('#box_date').live // live est utilisé pour prendre en compte les nouveaux éléments créés
+		('click',
+			function()
+			{
+				if($(this).is(':checked'))
+				{
+					$('#f_date_visible').val($('#f_date').val());
+					$(this).next().show(0).next().hide(0);
+				}
+				else
+				{
+					$(this).next().hide(0).next().show(0);
+				}
+			}
+		);
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 //	Clic sur le bouton pour fermer le cadre des items associés à une évaluation (annuler / retour)
@@ -642,7 +693,7 @@ $(document).ready
 		(
 			function()
 			{
-				$('button').attr('disabled','disabled');
+				$('button').prop('disabled',true);
 				$('#msg_imprimer').removeAttr("class").addClass("loader").html("Génération en cours... Veuillez patienter.");
 				$('#zone_imprimer_retour').html("&nbsp;");
 				$.ajax
@@ -654,14 +705,14 @@ $(document).ready
 						dataType : "html",
 						error : function(msg,string)
 						{
-							$('button').removeAttr('disabled');
+							$('button').prop('disabled',false);
 							$('#msg_imprimer').removeAttr("class").addClass("alerte").html('Echec de la connexion ! Veuillez recommencer.');
 							return false;
 						},
 						success : function(responseHTML)
 						{
 							maj_clock(1);
-							$('button').removeAttr('disabled');
+							$('button').prop('disabled',false);
 							if(responseHTML.substring(0,6)!='<hr />')
 							{
 								$('#msg_imprimer').removeAttr("class").addClass("alerte").html(responseHTML);
@@ -783,19 +834,19 @@ $(document).ready
 						// Une touche d'item a été pressée
 						switch (e.which)
 						{
-							case 8: $(this).val('X').removeAttr("class").addClass('X'); break;				// backspace
-							case 46: $(this).val('X').removeAttr("class").addClass('X'); break;				// suppr
-							case 49: $(this).val('RR').removeAttr("class").addClass('RR'); break;			// 1
-							case 97: $(this).val('RR').removeAttr("class").addClass('RR'); break;			// 1
-							case 50: $(this).val('R').removeAttr("class").addClass('R'); break;				// 2
-							case 98: $(this).val('R').removeAttr("class").addClass('R'); break;				// 2
-							case 51: $(this).val('V').removeAttr("class").addClass('V'); break;				// 3
-							case 99: $(this).val('V').removeAttr("class").addClass('V'); break;				// 3
-							case 52: $(this).val('VV').removeAttr("class").addClass('VV'); break;			// 4
-							case 100: $(this).val('VV').removeAttr("class").addClass('VV'); break;		// 4
-							case 65: $(this).val('ABS').removeAttr("class").addClass('ABS'); break;		// A
-							case 78: $(this).val('NN').removeAttr("class").addClass('NN'); break; 		// N
-							case 68: $(this).val('DISP').removeAttr("class").addClass('DISP'); break;	// D
+							case   8: $(this).val('X').removeAttr("class").addClass('X'); break;				// backspace
+							case  46: $(this).val('X').removeAttr("class").addClass('X'); break;				// suppr
+							case  49: $(this).val('RR').removeAttr("class").addClass('RR'); break;			// 1
+							case  97: $(this).val('RR').removeAttr("class").addClass('RR'); break;			// 1
+							case  50: $(this).val('R').removeAttr("class").addClass('R'); break;				// 2
+							case  98: $(this).val('R').removeAttr("class").addClass('R'); break;				// 2
+							case  51: $(this).val('V').removeAttr("class").addClass('V'); break;				// 3
+							case  99: $(this).val('V').removeAttr("class").addClass('V'); break;				// 3
+							case  52: $(this).val('VV').removeAttr("class").addClass('VV'); break;			// 4
+							case 100: $(this).val('VV').removeAttr("class").addClass('VV'); break;			// 4
+							case  65: $(this).val('ABS').removeAttr("class").addClass('ABS'); break;		// A
+							case  78: $(this).val('NN').removeAttr("class").addClass('NN'); break; 			// N
+							case  68: $(this).val('DISP').removeAttr("class").addClass('DISP'); break;	// D
 						}
 						$(this).parent().css("background-color","#F6D").focus();
 						if(modification==false)
@@ -1011,14 +1062,14 @@ $(document).ready
 					(
 						function()
 						{
-							var test_id = $(this).attr('id').substring(1);
-							if(test_id)
+							var test_id = $(this).attr('id');
+							if(typeof(test_id)!='undefined')
 							{
-								tab_id.push(test_id);
+								tab_id.push(test_id.substring(1));
 							}
 						}
 					);
-					$('button').attr('disabled','disabled');
+					$('button').prop('disabled',true);
 					$('#ajax_msg').removeAttr("class").addClass("loader").html("Demande envoyée... Veuillez patienter.");
 					$.ajax
 					(
@@ -1029,14 +1080,14 @@ $(document).ready
 							dataType : "html",
 							error : function(msg,string)
 							{
-								$('button').removeAttr('disabled');
+								$('button').prop('disabled',false);
 								$('#ajax_msg').removeAttr("class").addClass("alerte").html('Echec de la connexion ! Veuillez recommencer.');
 								return false;
 							},
 							success : function(responseHTML)
 							{
 								maj_clock(1);
-								$('button').removeAttr('disabled');
+								$('button').prop('disabled',false);
 								if(responseHTML.substring(0,1)!='<')
 								{
 									$('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);
@@ -1068,7 +1119,7 @@ $(document).ready
 				}
 				else
 				{
-					$('button').attr('disabled','disabled');
+					$('button').prop('disabled',true);
 					$('#msg_saisir').removeAttr("class").addClass("loader").html("Demande envoyée... Veuillez patienter.");
 					$.ajax
 					(
@@ -1079,14 +1130,14 @@ $(document).ready
 							dataType : "html",
 							error : function(msg,string)
 							{
-								$('button').removeAttr('disabled');
+								$('button').prop('disabled',false);
 								$('#msg_saisir').removeAttr("class").addClass("alerte").html('Echec de la connexion ! Veuillez recommencer.');
 								return false;
 							},
 							success : function(responseHTML)
 							{
 								maj_clock(1);
-								$('button').removeAttr('disabled');
+								$('button').prop('disabled',false);
 								if(responseHTML.substring(0,1)!='<')
 								{
 									$('#msg_saisir').removeAttr("class").addClass("alerte").html(responseHTML);
@@ -1146,6 +1197,7 @@ $(document).ready
 				rules :
 				{
 					f_date         : { required:true , dateITA:true },
+					f_date_visible : { required:function(){return !$('#box_date').is(':checked');} , dateITA:true },
 					f_groupe       : { required:true },
 					f_info         : { required:false , maxlength:60 },
 					f_compet_liste : { required:true }
@@ -1153,6 +1205,7 @@ $(document).ready
 				messages :
 				{
 					f_date         : { required:"date manquante" , dateITA:"format JJ/MM/AAAA non respecté" },
+					f_date_visible : { required:"date manquante" , dateITA:"format JJ/MM/AAAA non respecté" },
 					f_groupe       : { required:"groupe manquant" },
 					f_info         : { maxlength:"60 caractères maximum" },
 					f_compet_liste : { required:"item(s) manquant(s)" }
@@ -1310,12 +1363,12 @@ $(document).ready
 							// classe ou groupe classique -> toutes périodes accessibles
 							if(groupe_type!='Besoins')
 							{
-								$(this).removeAttr('disabled');
+								$(this).prop('disabled',false);
 							}
 							// groupe de besoin -> desactiver les périodes prédéfinies
 							else
 							{
-								$(this).attr('disabled','disabled');
+								$(this).prop('disabled',true);
 							}
 						}
 					}
@@ -1323,7 +1376,7 @@ $(document).ready
 				// Sélectionner si besoin la période personnalisée
 				if(groupe_type=='Besoins')
 				{
-					$("#f_aff_periode option[value=0]").attr('selected','selected');
+					$("#f_aff_periode option[value=0]").prop('selected',true);
 					$("#dates_perso").attr("class","show");
 				}
 				// Modification automatique du formulaire
@@ -1340,7 +1393,7 @@ $(document).ready
 								var tab_split = tab_groupe_periode[id_classe][id_periode].split('_');
 								if( (date_mysql>=tab_split[0]) && (date_mysql<=tab_split[1]) )
 								{
-									$("#f_aff_periode option[value="+id_periode+"]").attr('selected','selected');
+									$("#f_aff_periode option[value="+id_periode+"]").prop('selected',true);
 									view_dates_perso();
 								}
 							}
@@ -1491,7 +1544,7 @@ $(document).ready
 			}
 			else
 			{
-				$('button').attr('disabled','disabled');
+				$('button').prop('disabled',true);
 				$('#msg_import').removeAttr("class").addClass("loader").html('Fichier envoyé... Veuillez patienter.');
 				return true;
 			}
@@ -1499,7 +1552,7 @@ $(document).ready
 
 		function retourner_fichier(fichier_nom,responseHTML)	// Attention : avec jquery.ajaxupload.js, IE supprime mystérieusement les guillemets et met les éléments en majuscules dans responseHTML.
 		{
-			$('button').removeAttr('disabled');
+			$('button').prop('disabled',false);
 			if(responseHTML.substring(0,1)!='|')
 			{
 				$('#msg_import').removeAttr("class").addClass("alerte").html(responseHTML);

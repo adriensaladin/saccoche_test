@@ -92,7 +92,7 @@ unlink($fichier_test_chemin_tmp);
 		<label class="tab" for="f_motif">Motif :</label>
 			<select id="f_proposition" name="f_proposition">
 				<option value="rien">autre motif</option>
-				<option value="mise-a-jour" selected="selected">mise à jour</option>
+				<option value="mise-a-jour" selected>mise à jour</option>
 				<option value="maintenance">maintenance</option>
 				<option value="demenagement">déménagement</option>
 			</select>

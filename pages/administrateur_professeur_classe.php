@@ -44,11 +44,11 @@ $select_classes     = afficher_select(DB_STRUCTURE_OPT_classes_etabl()     , $se
 	<table><tr>
 		<td class="nu" style="width:25em">
 			<b>Liste des professeurs :</b><br />
-			<select id="select_professeurs" name="select_professeurs[]" multiple="multiple" size="10" class="t8"><?php echo $select_professeurs; ?></select>
+			<select id="select_professeurs" name="select_professeurs[]" multiple size="10" class="t8"><?php echo $select_professeurs; ?></select>
 		</td>
 		<td class="nu" style="width:20em">
 			<b>Liste des classes :</b><br />
-			<select id="select_classes" name="select_classes[]" multiple="multiple" size="10" class="t8"><?php echo $select_classes; ?></select>
+			<select id="select_classes" name="select_classes[]" multiple size="10" class="t8"><?php echo $select_classes; ?></select>
 		</td>
 		<td class="nu" style="width:25em">
 			<p><span class="astuce">Utiliser "<span class="i">Shift + clic</span>" ou "<span class="i">Ctrl + clic</span>"<br />pour une sélection multiple.</span></p>

@@ -48,7 +48,7 @@ $VERSION_JS_FILE += 1;
 			foreach($DB_TAB as $DB_ROW)
 			{
 				// Afficher une ligne du tableau
-				$checked = (in_array($DB_ROW['palier_id'],$tab_check)) ? ' checked="checked"' : '' ;
+				$checked = (in_array($DB_ROW['palier_id'],$tab_check)) ? ' checked' : '' ;
 				echo'<tr>';
 				echo	'<td class="nu"><input type="checkbox" name="f_tab_id" value="'.$DB_ROW['palier_id'].'"'.$checked.' /></td>';
 				echo	'<td class="label">'.html($DB_ROW['palier_nom']).'</td>';

@@ -127,7 +127,7 @@ if( ($action=='Afficher_bilan') && $pilier_id && count($tab_eleve) )
 	// - - - - - - - - - - - - - - - - - - - - - - - - -
 	$tab_eval = array();	// [eleve_id][socle_id][item_id][]['note'] => note
 	$tab_item = array();	// [item_id] => array(calcul_methode,calcul_limite);
-	$DB_TAB = DB_STRUCTURE_lister_result_eleves_palier($listing_eleve_id , $listing_entree_id , $date_debut=false , $date_fin=false);
+	$DB_TAB = DB_STRUCTURE_lister_result_eleves_palier($listing_eleve_id , $listing_entree_id , $date_debut=false , $date_fin=false , $_SESSION['USER_PROFIL']);
 	foreach($DB_TAB as $DB_ROW)
 	{
 		$tab_eval[$DB_ROW['eleve_id']][$DB_ROW['socle_id']][$DB_ROW['item_id']][]['note'] = $DB_ROW['note'];
@@ -232,7 +232,7 @@ elseif( ($action=='Afficher_information') && $eleve_id && $entree_id )
 	// Récupération de la liste des résultats
 	$tab_eval = array();	// [item_id][]['note'] => note
 	$tab_item = array();	// [item_id] => array(item_ref,item_nom,calcul_methode,calcul_limite);
-	$DB_TAB = DB_STRUCTURE_lister_result_eleves_palier($eleve_id , $entree_id , $date_debut=false , $date_fin=false);
+	$DB_TAB = DB_STRUCTURE_lister_result_eleves_palier($eleve_id , $entree_id , $date_debut=false , $date_fin=false , $_SESSION['USER_PROFIL']);
 	foreach($DB_TAB as $DB_ROW)
 	{
 		$tab_eval[$DB_ROW['item_id']][]['note'] = $DB_ROW['note'];

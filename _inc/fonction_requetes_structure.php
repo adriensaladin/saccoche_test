@@ -177,10 +177,12 @@ function DB_STRUCTURE_recuperer_arborescence($prof_id,$matiere_id,$niveau_id,$on
  *
  * @param string $liste_eleve_id  id des élèves séparés par des virgules
  * @param string $liste_item_id   id des items séparés par des virgules
+ * @param string $date_mysql_debut
+ * @param string $date_mysql_fin
  * @return array
  */
 
-function DB_STRUCTURE_recuperer_arborescence_selection($liste_eleve_id,$liste_item_id)
+function DB_STRUCTURE_recuperer_arborescence_selection($liste_eleve_id,$liste_item_id,$date_mysql_debut,$date_mysql_fin)
 {
 	$DB_SQL = 'SELECT item_id , ';
 	$DB_SQL.= 'CONCAT(matiere_ref,".",niveau_ref,".",domaine_ref,theme_ordre,item_ordre) AS item_ref , ';
@@ -194,9 +196,10 @@ function DB_STRUCTURE_recuperer_arborescence_selection($liste_eleve_id,$liste_it
 	$DB_SQL.= 'LEFT JOIN sacoche_matiere USING (matiere_id) ';
 	$DB_SQL.= 'LEFT JOIN sacoche_niveau USING (niveau_id) ';
 	$DB_SQL.= 'LEFT JOIN sacoche_referentiel USING (matiere_id,niveau_id) ';
-	$DB_SQL.= 'WHERE eleve_id IN('.$liste_eleve_id.') AND item_id IN('.$liste_item_id.') ';
+	$DB_SQL.= 'WHERE eleve_id IN('.$liste_eleve_id.') AND item_id IN('.$liste_item_id.') AND saisie_date>=:date_debut AND saisie_date<=:date_fin ';
 	$DB_SQL.= 'ORDER BY matiere_ordre ASC, matiere_nom ASC, niveau_ordre ASC, domaine_ordre ASC, theme_ordre ASC, item_ordre ASC';
-	$DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , null , TRUE);
+	$DB_VAR = array(':date_debut'=>$date_mysql_debut,':date_fin'=>$date_mysql_fin);
+	$DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR , TRUE);
 	$tab_matiere = array();
 	foreach($DB_TAB as $item_id => $tab)
 	{
@@ -4087,17 +4090,17 @@ function DB_STRUCTURE_OPT_classes_prof_principal($user_id)
 /**
  * Retourner un tableau [valeur texte] des périodes de l'établissement, indépendamment des rattachements aux classes
  *
- * @param void
+ * @param bool   $alerte   affiche un message d'erreur si aucune periode n'est trouvée
  * @return array|string
  */
 
-function DB_STRUCTURE_OPT_periodes_etabl()
+function DB_STRUCTURE_OPT_periodes_etabl($alerte=FALSE)
 {
 	$GLOBALS['tab_select_option_first'] = array(0,'Personnalisée','');
 	$DB_SQL = 'SELECT periode_id AS valeur, periode_nom AS texte FROM sacoche_periode ';
 	$DB_SQL.= 'ORDER BY periode_ordre ASC';
 	$DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , null);
-	return count($DB_TAB) ? $DB_TAB : 'Aucune période n\'est enregistrée !' ;
+	return count($DB_TAB) ? $DB_TAB : ( ($alerte) ? 'Aucune période n\'est enregistrée !' : array() ) ;
 }
 
 /**

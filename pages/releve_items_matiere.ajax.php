@@ -95,7 +95,7 @@ if( $orientation && $couleur && $legende && $marge_min && $pages_nb && $cases_nb
 	// Récupération de la liste des items travaillés durant la période choisie, pour la matière et les élèves selectionnés
 	// Récupération de la liste des matières travaillées
 	//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-	$tab_item = DB_STRUCTURE_recuperer_arborescence_bilan($liste_eleve ,$matiere_id,$only_socle,$date_mysql_debut,$date_mysql_fin) ; // $liste_eleve ne vaut que $_SESSION['USER_ID'] si $_SESSION['USER_PROFIL']=='eleve'
+	$tab_item = DB_STRUCTURE_recuperer_arborescence_bilan($liste_eleve,$matiere_id,$only_socle,$date_mysql_debut,$date_mysql_fin) ; // $liste_eleve ne vaut que $_SESSION['USER_ID'] si $_SESSION['USER_PROFIL']=='eleve'
 	$tab_matiere[$matiere_id] = $matiere_nom;
 
 	$item_nb = count($tab_item);

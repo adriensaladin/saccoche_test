@@ -73,8 +73,109 @@ $(document).ready
 			}
 		);
 
+		var autoperiode = true; // Tant qu'on ne modifie pas manuellement le choix des périodes, modification automatique du formulaire
+
+		function view_dates_perso()
+		{
+			var periode_val = $("#f_periode").val();
+			if(periode_val!=0)
+			{
+				$("#dates_perso").attr("class","hide");
+			}
+			else
+			{
+				$("#dates_perso").attr("class","show");
+			}
+		}
+
+		$('#f_periode').change
+		(
+			function()
+			{
+				view_dates_perso();
+				autoperiode = false;
+			}
+		);
+
 		//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
-		//	Charger le select f_eleve en ajax
+		//	Changement de groupe
+		//	-> desactiver les périodes prédéfinies en cas de groupe de besoin
+		//	-> choisir automatiquement la meilleure période si un changement manuel de période n'a jamais été effectué
+		//	-> afficher le formulaire de périodes s'il est masqué
+		//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
+
+		function selectionner_periode_adaptee()
+		{
+			var id_groupe = $('#f_groupe option:selected').val();
+			if(typeof(tab_groupe_periode[id_groupe])!='undefined')
+			{
+				for(var id_periode in tab_groupe_periode[id_groupe]) // Parcourir un tableau associatif...
+				{
+					var tab_split = tab_groupe_periode[id_groupe][id_periode].split('_');
+					if( (date_mysql>=tab_split[0]) && (date_mysql<=tab_split[1]) )
+					{
+						$("#f_periode option[value="+id_periode+"]").prop('selected',true);
+						view_dates_perso();
+					}
+				}
+			}
+		}
+
+		$('#f_groupe').change
+		(
+			function()
+			{
+				groupe_type = $("#f_groupe option:selected").parent().attr('label');
+				$("#f_periode option").each
+				(
+					function()
+					{
+						periode_id = $(this).val();
+						// La période personnalisée est tout le temps accessible
+						if(periode_id!=0)
+						{
+							// classe ou groupe classique -> toutes périodes accessibles
+							if(groupe_type!='Besoins')
+							{
+								$(this).prop('disabled',false);
+							}
+							// groupe de besoin -> desactiver les périodes prédéfinies
+							else
+							{
+								$(this).prop('disabled',true);
+							}
+						}
+					}
+				);
+				// Sélectionner si besoin la période personnalisée
+				if(groupe_type=='Besoins')
+				{
+					$("#f_periode option[value=0]").prop('selected',true);
+					$("#dates_perso").attr("class","show");
+				}
+				// Modification automatique du formulaire : périodes
+				if(autoperiode)
+				{
+					if( (typeof(groupe_type)!='undefined') && (groupe_type!='Besoins') )
+					{
+						// Rechercher automatiquement la meilleure période
+						selectionner_periode_adaptee();
+					}
+					// Afficher la zone de choix des périodes
+					if(typeof(groupe_type)!='undefined')
+					{
+						$('#zone_periodes').removeAttr("class");
+					}
+					else
+					{
+						$('#zone_periodes').addClass("hide");
+					}
+				}
+			}
+		);
+
+		//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
+		//	Charger le select f_eleve
 		//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
 
 		function maj_eleve(groupe_val,type)
@@ -106,6 +207,7 @@ $(document).ready
 				}
 			);
 		}
+
 		$("#f_groupe").change
 		(
 			function()
@@ -114,9 +216,9 @@ $(document).ready
 				var groupe_val = $("#f_groupe").val();
 				if(groupe_val)
 				{
-					type = $("#f_groupe option:selected").parent().attr('label');
+					groupe_type = $("#f_groupe option:selected").parent().attr('label');
 					$('#ajax_maj').removeAttr("class").addClass("loader").html("Actualisation en cours... Veuillez patienter.");
-					maj_eleve(groupe_val,type);
+					maj_eleve(groupe_val,groupe_type);
 				}
 				else
 				{
@@ -125,10 +227,10 @@ $(document).ready
 			}
 		);
 
-		/**
-		 * Choisir les items associés à une évaluation : mise en place du formulaire
-		 * @return void
-		 */
+		//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
+		//	Choisir les items associés à une évaluation : mise en place du formulaire
+		//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
+
 		var choisir_compet = function()
 		{
 			// Ne pas changer ici la valeur de "mode" (qui est à "ajouter" ou "modifier" ou "dupliquer").
@@ -258,6 +360,9 @@ $(document).ready
 					f_bilan_MS     : { required:false },
 					f_bilan_PA     : { required:false },
 					f_conv_sur20   : { required:false },
+					f_periode      : { required:true },
+					f_date_debut   : { required:function(){return $("#f_periode").val()==0;} , dateITA:true },
+					f_date_fin     : { required:function(){return $("#f_periode").val()==0;} , dateITA:true },
 					f_compet_liste : { required:true },
 					f_groupe       : { required:true },
 					f_eleve        : { required:true }
@@ -278,6 +383,9 @@ $(document).ready
 					f_bilan_MS     : { },
 					f_bilan_PA     : { },
 					f_conv_sur20   : { },
+					f_periode      : { required:"période manquante" },
+					f_date_debut   : { required:"date manquante" , dateITA:"format JJ/MM/AAAA non respecté" },
+					f_date_fin     : { required:"date manquante" , dateITA:"format JJ/MM/AAAA non respecté" },
 					f_compet_liste : { required:"item(s) manquant(s)" },
 					f_groupe       : { required:"groupe manquant" },
 					f_eleve        : { required:"élève(s) manquant(s)" }

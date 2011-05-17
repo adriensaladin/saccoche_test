@@ -286,7 +286,7 @@ $(document).ready
 			if('.eleve.professeur.directeur.administrateur.webmestre.'.indexOf(findme)!=-1)
 			{
 				$('#ajax_msg').removeAttr("class").addClass("valide").html("Identification réussie !");
-				document.location.href = './index.php?page=compte_accueil';
+				document.location.href = './index.php?page=compte_accueil&verif_cookie';
 			}
 			else
 			{

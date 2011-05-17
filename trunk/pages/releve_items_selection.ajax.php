@@ -35,8 +35,9 @@ $marge_min      = (isset($_POST['f_marge_min']))   ? clean_entier($_POST['f_marg
 $pages_nb       = (isset($_POST['f_pages_nb']))    ? clean_texte($_POST['f_pages_nb'])     : '';
 $cases_nb       = (isset($_POST['f_cases_nb']))    ? clean_entier($_POST['f_cases_nb'])    : 0;
 $cases_largeur  = (isset($_POST['f_cases_larg']))  ? clean_entier($_POST['f_cases_larg'])  : 0;
-$date_debut     = true;
-$date_fin       = true;
+$periode_id     = (isset($_POST['f_periode']))     ? clean_entier($_POST['f_periode'])     : 0;
+$date_debut     = (isset($_POST['f_date_debut']))  ? clean_texte($_POST['f_date_debut'])   : '';
+$date_fin       = (isset($_POST['f_date_fin']))    ? clean_texte($_POST['f_date_fin'])     : '';
 $retroactif     = true;
 $matiere_id     = true;
 $matiere_nom    = '';
@@ -57,13 +58,31 @@ save_cookie_select('releve_items');
 $tab_eleve     = array_filter($tab_eleve,'positif');
 $liste_eleve   = implode(',',$tab_eleve);
 
-if( $orientation && $couleur && $legende && $marge_min && $pages_nb && $cases_nb && $cases_largeur && $date_debut && $date_fin && $retroactif && $matiere_id && $groupe_id && $groupe_nom && count($tab_eleve) && count($tab_type) )
+if( $orientation && $couleur && $legende && $marge_min && $pages_nb && $cases_nb && $cases_largeur && ( $periode_id || ($date_debut && $date_fin) ) && $retroactif && $matiere_id && $groupe_id && $groupe_nom && count($tab_eleve) && count($tab_type) )
 {
 
-	// $tab_date = explode('/',$date_debut);
-	$date_mysql_debut = false;
-	// $tab_date = explode('/',$date_fin);
-	$date_mysql_fin = false;
+	// Période concernée
+	if($periode_id==0)
+	{
+		$date_mysql_debut = convert_date_french_to_mysql($date_debut);
+		$date_mysql_fin   = convert_date_french_to_mysql($date_fin);
+	}
+	else
+	{
+		$DB_ROW = DB_STRUCTURE_recuperer_dates_periode($groupe_id,$periode_id);
+		if(!count($DB_ROW))
+		{
+			exit('La classe et la période ne sont pas reliées !');
+		}
+		$date_mysql_debut = $DB_ROW['jointure_date_debut'];
+		$date_mysql_fin   = $DB_ROW['jointure_date_fin'];
+		$date_debut = convert_date_mysql_to_french($date_mysql_debut);
+		$date_fin   = convert_date_mysql_to_french($date_mysql_fin);
+	}
+	if($date_mysql_debut>$date_mysql_fin)
+	{
+		exit('La date de début est postérieure à la date de fin !');
+	}
 
 	$tab_item = array();	// [item_id] => array(item_ref,item_nom,item_coef,item_cart,item_socle,item_lien,calcul_methode,calcul_limite);
 	$tab_liste_item = array();	// [i] => item_id
@@ -78,13 +97,13 @@ if( $orientation && $couleur && $legende && $marge_min && $pages_nb && $cases_nb
 	$tab_compet_liste = (isset($_POST['f_compet_liste'])) ? explode('_',$_POST['f_compet_liste']) : array() ;
 	$tab_compet_liste = array_map('clean_entier',$tab_compet_liste);
 	$liste_compet = implode(',',$tab_compet_liste);
-	list($tab_item,$tab_matiere) = DB_STRUCTURE_recuperer_arborescence_selection($liste_eleve,$liste_compet);
+	list($tab_item,$tab_matiere) = DB_STRUCTURE_recuperer_arborescence_selection($liste_eleve,$liste_compet,$date_mysql_debut,$date_mysql_fin);
 	// $tab_matiere déjà renseigné à la requête précédente.
 
 	$item_nb = count($tab_item);
 	if(!$item_nb)
 	{
-		exit('Aucun item sélectionné n\'a été évalué pour ces élèves !');
+		exit('Aucun item sélectionné n\'a été évalué pour ces élèves durant cette période !');
 	}
 	$tab_liste_item = array_keys($tab_item);
 	$liste_item = implode(',',$tab_liste_item);

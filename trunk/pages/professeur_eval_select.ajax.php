@@ -131,11 +131,21 @@ if( ($action=='Afficher_evaluations') && $date_debut && $date_fin )
 
 if( (($action=='ajouter')||(($action=='dupliquer')&&($devoir_id))) && $date && $date_visible && $nb_eleves && $nb_items )
 {
+	$date_mysql         = convert_date_french_to_mysql($date);
+	$date_visible_mysql = convert_date_french_to_mysql($date_visible);
+	// Tester les dates
+	$date_stamp         = strtotime($date_mysql);
+	$date_visible_stamp = strtotime($date_visible_mysql);
+	$mini_stamp         = strtotime("-3 month");
+	$maxi_stamp         = strtotime("+3 month");
+	$maxi_visible_stamp = strtotime("+10 month");
+	if( ($date_stamp<$mini_stamp) || ($date_visible_stamp<$mini_stamp) || ($date_stamp>$maxi_stamp) || ($date_visible_stamp>$maxi_visible_stamp) )
+	{
+		exit('Erreur : date trop éloignée !');
+	}
 	// Commencer par créer un nouveau groupe de type "eval", utilisé uniquement pour cette évaluation (c'est transparent pour le professeur)
 	$groupe_id = DB_STRUCTURE_ajouter_groupe($groupe_type,$_SESSION['USER_ID'],'','',0);
 	// Insèrer l'enregistrement de l'évaluation
-	$date_mysql         = convert_date_french_to_mysql($date);
-	$date_visible_mysql = convert_date_french_to_mysql($date_visible);
 	$devoir_id2 = DB_STRUCTURE_ajouter_devoir($_SESSION['USER_ID'],$groupe_id,$date_mysql,$info,$date_visible_mysql);
 	// Affecter tous les élèves choisis
 	DB_STRUCTURE_modifier_liaison_devoir_user($devoir_id2,$groupe_id,$tab_eleves,'creer');
@@ -170,9 +180,18 @@ if( (($action=='ajouter')||(($action=='dupliquer')&&($devoir_id))) && $date && $
 
 if( ($action=='modifier') && $devoir_id && $groupe_id && $date && $date_visible && $nb_eleves && $nb_items )
 {
-	// sacoche_devoir (maj des paramètres date & info)
-	$date_mysql = convert_date_french_to_mysql($date);
+	$date_mysql         = convert_date_french_to_mysql($date);
 	$date_visible_mysql = convert_date_french_to_mysql($date_visible);
+	// Tester les dates
+	$date_stamp         = strtotime($date_mysql);
+	$date_visible_stamp = strtotime($date_visible_mysql);
+	$mini_stamp         = strtotime("-10 month");
+	$maxi_stamp         = strtotime("+10 month");
+	if( ($date_stamp<$mini_stamp) || ($date_visible_stamp<$mini_stamp) || ($date_stamp>$maxi_stamp) || ($date_visible_stamp>$maxi_stamp) )
+	{
+		exit('Erreur : date trop éloignée !');
+	}
+	// sacoche_devoir (maj des paramètres date & info)
 	DB_STRUCTURE_modifier_devoir($devoir_id,$_SESSION['USER_ID'],$date_mysql,$info,$date_visible_mysql,$tab_items);
 	// sacoche_jointure_user_groupe + sacoche_saisie pour les users supprimés
 	DB_STRUCTURE_modifier_liaison_devoir_user($devoir_id,$groupe_id,$tab_eleves,'substituer');
@@ -213,7 +232,7 @@ if( ($action=='supprimer') && $devoir_id && $groupe_id )
 	// la suite est commune aux évals sur une classe ou un groupe
 	DB_STRUCTURE_supprimer_devoir_et_saisies($devoir_id,$_SESSION['USER_ID']);
 	// Afficher le retour
-	exit('<ok>');
+	exit('<td>ok</td>');
 }
 
 //	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

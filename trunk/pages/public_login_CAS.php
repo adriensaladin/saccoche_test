@@ -122,7 +122,7 @@ $connexion = connecter_user($BASE,$profil='normal',$login,$password=false,$mode_
 if($connexion=='ok')
 {
 	// Redirection vers l'espace en cas de succès
-	alert_redirection_exit($texte_alert='',$adresse='index.php?page=compte_accueil');
+	alert_redirection_exit($texte_alert='',$adresse='index.php?page=compte_accueil&verif_cookie');
 }
 else
 {

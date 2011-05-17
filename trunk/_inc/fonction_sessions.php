@@ -83,8 +83,10 @@ function gestion_session($TAB_PROFILS_AUTORISES)
 	global $ALERTE_SSO;
 	// Messages d'erreurs possibles
 	$tab_msg_alerte = array();
-	$tab_msg_alerte['I.2']['index'] = 'Tentative d\'accès direct à une page réservée !\nRedirection vers l\'accueil...';
-	$tab_msg_alerte['I.2']['ajax']  = 'Session perdue. Déconnectez-vous et reconnectez-vous...';
+	$tab_msg_alerte[ 'I.2.a']['index'] = 'Session non retrouvée.\nConfigurez votre navigateur pour qu\'il accepte les cookies !\nRedirection vers l\'accueil...';
+	$tab_msg_alerte[ 'I.2.a']['ajax']  = 'Session non retrouvée. Vérifiez l\'acceptation des cookies ! Retournez à l\'accueil...';
+	$tab_msg_alerte[ 'I.2.b']['index'] = 'Tentative d\'accès direct à une page réservée !\nRedirection vers l\'accueil...';
+	$tab_msg_alerte[ 'I.2.b']['ajax']  = 'Session perdue. Déconnectez-vous et reconnectez-vous...';
 	$tab_msg_alerte['II.1.a']['index'] = 'Votre session a expiré !\nRedirection vers l\'accueil...';
 	$tab_msg_alerte['II.1.a']['ajax']  = 'Session expirée. Déconnectez-vous et reconnectez-vous...';
 	$tab_msg_alerte['II.3.a']['index'] = 'Tentative d\'accès direct à une page réservée !\nRedirection vers l\'accueil...';
@@ -99,7 +101,16 @@ function gestion_session($TAB_PROFILS_AUTORISES)
 		if(!$TAB_PROFILS_AUTORISES['public'])
 		{
 			// I.2. Redirection : demande d'accès à une page réservée donc identification avant accès direct
-			alert_redirection_exit($tab_msg_alerte['I.2'][SACoche]);
+			if(isset($_GET['verif_cookie']))
+			{
+				// I.2.a. L'utilisateur vient de s'identifier : c'est donc anormal, le cookie de session n'a pas été trouvé car le navigateur client n'enregistre pas les cookies
+				alert_redirection_exit($tab_msg_alerte['I.2.a'][SACoche]);
+			}
+			else
+			{
+				// I.2.b. Session perdue ou expirée pour une raison diverse (cookies effacés, plusieurs onglets, expiration, ...)
+				alert_redirection_exit($tab_msg_alerte['I.2.b'][SACoche]);
+			}
 		}
 	}
 	else

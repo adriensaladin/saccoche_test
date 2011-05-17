@@ -588,6 +588,20 @@ $(document).ready
 		);
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+//	Reporter la date visible si modif date du devoir et demande dates identiques
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+		$('#f_date').live // live est utilisé pour prendre en compte les nouveaux éléments créés
+		('change',
+			function()
+			{
+				if($('#box_date').is(':checked'))
+				{
+					$('#f_date_visible').val($('#f_date').val());
+				}
+			}
+		);
+
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 //	Clic sur le bouton pour fermer le cadre des items associés à une évaluation (annuler / retour)
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 		$('#annuler_compet').click
@@ -1355,7 +1369,7 @@ $(document).ready
 			maj_clock(1);
 			please_wait = false;
 			$('#ajax_msg').parent().children('q').show();
-			if(responseHTML.substring(0,1)!='<')
+			if(responseHTML.substring(0,2)!='<t')
 			{
 				$('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);
 			}

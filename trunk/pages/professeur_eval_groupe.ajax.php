@@ -156,9 +156,19 @@ if( ($action=='Afficher_evaluations') && $aff_classe_txt && $aff_classe_id && ( 
 
 if( (($action=='ajouter')||(($action=='dupliquer')&&($devoir_id))) && $date && $date_visible && $groupe_type && $groupe_id && $nb_items )
 {
-	// Insérer l'enregistrement de l'évaluation
 	$date_mysql         = convert_date_french_to_mysql($date);
 	$date_visible_mysql = convert_date_french_to_mysql($date_visible);
+	// Tester les dates
+	$date_stamp         = strtotime($date_mysql);
+	$date_visible_stamp = strtotime($date_visible_mysql);
+	$mini_stamp         = strtotime("-3 month");
+	$maxi_stamp         = strtotime("+3 month");
+	$maxi_visible_stamp = strtotime("+10 month");
+	if( ($date_stamp<$mini_stamp) || ($date_visible_stamp<$mini_stamp) || ($date_stamp>$maxi_stamp) || ($date_visible_stamp>$maxi_visible_stamp) )
+	{
+		exit('Erreur : date trop éloignée !');
+	}
+	// Insérer l'enregistrement de l'évaluation
 	$devoir_id2 = DB_STRUCTURE_ajouter_devoir($_SESSION['USER_ID'],$groupe_id,$date_mysql,$info,$date_visible_mysql);
 	// Insérer les enregistrements des items de l'évaluation
 	DB_STRUCTURE_modifier_liaison_devoir_item($devoir_id2,$tab_items,'dupliquer',$devoir_id);
@@ -190,9 +200,18 @@ if( (($action=='ajouter')||(($action=='dupliquer')&&($devoir_id))) && $date && $
 
 if( ($action=='modifier') && $devoir_id && $date && $date_visible && $groupe_type && $groupe_id && $nb_items )
 {
-	// sacoche_devoir (maj des paramètres date & info)
-	$date_mysql = convert_date_french_to_mysql($date);
+	$date_mysql         = convert_date_french_to_mysql($date);
 	$date_visible_mysql = convert_date_french_to_mysql($date_visible);
+	// Tester les dates
+	$date_stamp         = strtotime($date_mysql);
+	$date_visible_stamp = strtotime($date_visible_mysql);
+	$mini_stamp         = strtotime("-10 month");
+	$maxi_stamp         = strtotime("+10 month");
+	if( ($date_stamp<$mini_stamp) || ($date_visible_stamp<$mini_stamp) || ($date_stamp>$maxi_stamp) || ($date_visible_stamp>$maxi_stamp) )
+	{
+		exit('Erreur : date trop éloignée !');
+	}
+	// sacoche_devoir (maj des paramètres date & info)
 	DB_STRUCTURE_modifier_devoir($devoir_id,$_SESSION['USER_ID'],$date_mysql,$info,$date_visible_mysql,$tab_items);
 	// sacoche_devoir (maj groupe_id) + sacoche_saisie pour les users supprimés
 	// DB_STRUCTURE_modifier_liaison_devoir_groupe($devoir_id,$groupe_id); // RETIRÉ APRÈS REFLEXION : IL N'Y A PAS DE RAISON DE CARRÉMENT CHANGER LE GROUPE D'UNE ÉVALUATION => AU PIRE ON LA DUPLIQUE POUR UN AUTRE GROUPE PUIS ON LA SUPPRIME.
@@ -230,7 +249,7 @@ if( ($action=='supprimer') && $devoir_id )
 	// comme c'est une éval sur une classe ou un groupe ou un groupe de besoin, pas besoin de supprimer ce groupe et les entrées dans sacoche_jointure_user_groupe
 	DB_STRUCTURE_supprimer_devoir_et_saisies($devoir_id,$_SESSION['USER_ID']);
 	// Afficher le retour
-	exit('<ok>');
+	exit('<td>ok</td>');
 }
 
 //	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

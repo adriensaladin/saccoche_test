@@ -806,7 +806,21 @@ function maj_base($version_actuelle)
 		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_devoir SET devoir_visible_date=devoir_date' );
 		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_saisie SET saisie_visible_date=saisie_date' );
 		// suppression de cette clef qui n'accélère probablement rien et qui prend de la place (grosse table)
+		// remarque : cette modification de table n'est pas anodine et prends un certain temps si beaucoup de notes sont saisies
 		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_saisie DROP INDEX saisie_key' );
+		// mise à jour du champ "version_base" (obligatoire)
+		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_actuelle.'" WHERE parametre_nom="version_base" LIMIT 1' );
+	}
+
+	//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	//	MAJ 2011-05-10 => 2011-05-20
+	//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	if($version_actuelle=='2011-05-10')
+	{
+		$version_actuelle = '2011-05-20';
+		// mise à jour d'un champ du socle
+		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_socle_entree SET entree_nom="Adopter des comportements favorables à sa santé et sa sécurité." WHERE entree_id=268 LIMIT 1' );
 		// mise à jour du champ "version_base" (obligatoire)
 		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_actuelle.'" WHERE parametre_nom="version_base" LIMIT 1' );
 	}

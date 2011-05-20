@@ -46,16 +46,15 @@ $select_groupe_besoin = afficher_select(DB_STRUCTURE_OPT_besoins_professeur($_SE
 <form action="">
 	<table><tr>
 		<td class="nu" style="width:25em">
-			<b>Liste des élèves :</b><br />
+			<b>Liste des élèves :</b> <img alt="" src="./_img/bulle_aide.png" title="Utiliser la touche <i>Shift</i> pour une sélection multiple contiguë.<br />Utiliser la touche <i>Ctrl</i> pour une sélection multiple non contiguë." /><br />
 			<select id="f_groupe" name="f_groupe" class="t8"><?php echo $select_groupe ?></select><br />
 			<select id="select_users" name="select_users[]" multiple size="8" class="t8"><option value=""></option></select>
 		</td>
 		<td class="nu" style="width:20em">
-			<b>Liste des groupes de besoin :</b><br />
+			<b>Liste des groupes de besoin :</b> <img alt="" src="./_img/bulle_aide.png" title="Utiliser la touche <i>Shift</i> pour une sélection multiple contiguë.<br />Utiliser la touche <i>Ctrl</i> pour une sélection multiple non contiguë." /><br />
 			<select id="select_groupes" name="select_groupes[]" multiple size="10" class="t8"><?php echo $select_groupe_besoin; ?></select>
 		</td>
 		<td class="nu" style="width:25em">
-			<p><span class="astuce">Utiliser "<span class="i">Shift + clic</span>" ou "<span class="i">Ctrl + clic</span>"<br />pour une sélection multiple.</span></p>
 			<button id="ajouter" type="button"><img alt="" src="./_img/bouton/groupe_ajouter.png" /> Ajouter ces associations.</button><br />
 			<button id="retirer" type="button"><img alt="" src="./_img/bouton/groupe_retirer.png" /> Retirer ces associations.</button>
 			<p><label id="ajax_msg">&nbsp;</label></p>

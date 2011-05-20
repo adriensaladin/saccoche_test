@@ -252,7 +252,7 @@ INSERT INTO sacoche_socle_entree VALUES
 ( 265, 68,  5, "Fonctionnement et rôle de différents médias."),
 ( 266, 69,  0, "Respecter les règles de la vie collective."),
 ( 267, 69,  1, "Comprendre l’importance du respect mutuel et accepter toutes les différences."),
-( 268, 69,  2, "Connaître des comportements favorables à sa santé et sa sécurité."),
+( 268, 69,  2, "Adopter des comportements favorables à sa santé et sa sécurité."),
 ( 269, 69,  3, "Connaître quelques notions juridiques de base."),
 ( 270, 69,  4, "Savoir utiliser quelques notions économiques et budgétaires de base."),
 ( 272, 70,  0, "Se familiariser avec l’environnement économique, les entreprises, les métiers de secteurs et de niveaux de qualification variés."),

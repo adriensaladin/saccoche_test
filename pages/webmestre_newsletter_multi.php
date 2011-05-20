@@ -45,8 +45,7 @@ $select_structure = afficher_select(DB_WEBMESTRE_OPT_structures_sacoche() , $sel
 </div>
 
 <form id="newsletter" action=""><fieldset>
-	<label class="tab" for="f_basic">Destinataire(s) :</label><select id="f_base" name="f_base" multiple size="10"><?php echo $select_structure ?></select><br />
-	<span class="tab"></span><span class="astuce">Utiliser "<span class="i">Shift + clic</span>" ou "<span class="i">Ctrl + clic</span>" pour une sélection multiple.</span><br />
+	<label class="tab" for="f_basic">Destinataire(s) <img alt="" src="./_img/bulle_aide.png" title="Utiliser la touche <i>Shift</i> pour une sélection multiple contiguë.<br />Utiliser la touche <i>Ctrl</i> pour une sélection multiple non contiguë." /> :</label><select id="f_base" name="f_base" multiple size="10"><?php echo $select_structure ?></select><br />
 	<label class="tab" for="f_titre">Titre :</label><input id="f_titre" name="f_titre" value="" size="50" /><br />
 	<label class="tab" for="f_contenu">Contenu :</label><textarea id="f_contenu" name="f_contenu" rows="15" cols="100">message ici, sans bonjour ni au revoir, car l'en-tête et le pied du message sont automatiquement ajoutés</textarea><br />
 	<span class="tab"></span><input type="hidden" id="f_action" name="f_action" value="envoyer" /><input type="hidden" id="f_listing_id" name="f_listing_id" value="" /><button id="bouton_valider" type="submit"><img alt="" src="./_img/bouton/mail_envoyer.png" /> Envoyer la lettre.</button><label id="ajax_msg">&nbsp;</label>

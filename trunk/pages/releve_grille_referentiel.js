@@ -110,7 +110,7 @@ $(document).ready
 						maj_clock(1);
 						if(responseHTML.substring(0,7)=='<option')	// Attention aux caractères accentués : l'utf-8 pose des pbs pour ce test
 						{
-							$('#ajax_maj').removeAttr("class").html('&nbsp;<span class="astuce">Utiliser "<i>Shift + clic</i>" ou "<i>Ctrl + clic</i>" pour une sélection multiple.</span>');
+							$('#ajax_maj').removeAttr("class").html("&nbsp;");
 							$('#f_eleve').html(responseHTML).show();
 						}
 					else

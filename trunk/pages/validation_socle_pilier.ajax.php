@@ -28,11 +28,12 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 if(($_SESSION['SESAMATH_ID']==ID_DEMO)&&($_POST['f_action']!='Afficher_bilan')&&($_POST['f_action']!='Afficher_information')){exit('Action désactivée pour la démo...');}
 
-$action    = (isset($_POST['f_action'])) ? clean_texte($_POST['f_action'])  : '';
-$palier_id = (isset($_POST['f_palier'])) ? clean_entier($_POST['f_palier']) : 0;
-$eleve_id  = (isset($_POST['f_user']))   ? clean_entier($_POST['f_user'])   : 0;
-$pilier_id = (isset($_POST['f_pilier'])) ? clean_entier($_POST['f_pilier']) : 0;
-$tab_eleve = (isset($_POST['eleves']))   ? array_map('clean_entier',explode(',',$_POST['eleves'])) : array() ;
+$action     = (isset($_POST['f_action'])) ? clean_texte($_POST['f_action'])  : '';
+$eleve_id   = (isset($_POST['f_user']))   ? clean_entier($_POST['f_user'])   : 0;
+$palier_id  = (isset($_POST['f_palier'])) ? clean_entier($_POST['f_palier']) : 0;
+$pilier_id  = (isset($_POST['f_pilier'])) ? clean_entier($_POST['f_pilier']) : 0;
+$tab_pilier = (isset($_POST['piliers']))  ? array_map('clean_entier',explode(',',$_POST['piliers'])) : array() ;
+$tab_eleve  = (isset($_POST['eleves']))   ? array_map('clean_entier',explode(',',$_POST['eleves']))  : array() ;
 
 $listing_eleve_id = implode(',',$tab_eleve);
 
@@ -40,7 +41,7 @@ $listing_eleve_id = implode(',',$tab_eleve);
 //	Afficher le tableau avec les états de validations
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
-if( ($action=='Afficher_bilan') && $palier_id && count($tab_eleve) )
+if( ($action=='Afficher_bilan') && $palier_id && count($tab_pilier) && count($tab_eleve) )
 {
 	$affichage = '';
 	// Récupérer les données des élèves
@@ -66,32 +67,34 @@ if( ($action=='Afficher_bilan') && $palier_id && count($tab_eleve) )
 	$affichage .= '</th>';
 	$affichage .= '</tr></thead>';
 	$affichage .= '<tbody>';
-	// Afficher la ligne du tableau avec les validations pour tout un palier
+	// Afficher la ligne du tableau avec les validations pour des piliers choisis
 	$affichage .= '<tr>';
 	foreach($tab_eleve_id as $eleve_id)
 	{
-		$affichage .= '<th id="U'.$eleve_id.'" class="down1" title="Modifier la validation de tout le palier pour cet élève." /></th>';
+		$affichage .= '<th id="U'.$eleve_id.'" class="down1" title="Modifier la validation de toutes les compétences pour cet élève." /></th>';
 	}
-	$affichage .= '<th id="P'.$palier_id.'" class="diag1" title="Modifier la validation de tout le palier pour tous les élèves." /></th>';
+	$affichage .= '<th id="P'.$palier_id.'" class="diag1" title="Modifier la validation de toutes les compétences pour tous les élèves." /></th>';
 	$affichage .= '<th class="nu" colspan="2"><div class="m1 b">@PALIER@</div></th>';
 	$affichage .= '</tr>';
-	// Récupérer l'arborescence du palier du socle (enfin... uniquement les piliers, ça suffit ici)
-	$tab_pilier_id = array();
+	// Récupérer l'arborescence des piliers du palier du socle (enfin... uniquement les piliers, ça suffit ici)
+	$tab_pilier_id = array(); // listing des ids des piliers mis à jour au cas où la récupération dans la base soit différente des ids transmis...
 	$DB_TAB = DB_STRUCTURE_recuperer_piliers($palier_id);
-	$pilier_id = 0;
 	foreach($DB_TAB as $DB_ROW)
 	{
-		$pilier_id  = $DB_ROW['pilier_id'];
-		$tab_pilier_id[] = $pilier_id;
-		// Afficher la ligne du tableau avec les validations des piliers, puis le nom du pilier (officiellement compétence)
-		$affichage .= '<tr>';
-		foreach($tab_eleve_id as $eleve_id)
+		$pilier_id = $DB_ROW['pilier_id'];
+		if(in_array($pilier_id,$tab_pilier))
 		{
-			$affichage .= '<td id="U'.$eleve_id.'C'.$pilier_id.'" class="v2"></td>';
+			$tab_pilier_id[] = $pilier_id;
+			// Afficher la ligne du tableau avec les validations des piliers, puis le nom du pilier (officiellement compétence)
+			$affichage .= '<tr>';
+			foreach($tab_eleve_id as $eleve_id)
+			{
+				$affichage .= '<td id="U'.$eleve_id.'C'.$pilier_id.'" class="v2"></td>';
+			}
+			$affichage .= '<th id="C'.$pilier_id.'" class="left1" title="Modifier la validation de cette compétence pour tous les élèves." /></th>';
+			$affichage .= '<th class="nu" colspan="2"><div class="n1">'.html($DB_ROW['pilier_nom']).'</div></th>';
+			$affichage .= '</tr>';
 		}
-		$affichage .= '<th id="C'.$pilier_id.'" class="left1" title="Modifier la validation de cette compétence pour tous les élèves." /></th>';
-		$affichage .= '<th class="nu" colspan="2"><div class="n1">'.html($DB_ROW['pilier_nom']).'</div></th>';
-		$affichage .= '</tr>';
 	}
 	$affichage .= '</tbody>';
 	// Récupérer la liste des jointures (validations)

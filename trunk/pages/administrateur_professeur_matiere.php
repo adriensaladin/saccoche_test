@@ -41,15 +41,14 @@ $select_matieres    = afficher_select(DB_STRUCTURE_OPT_matieres_etabl($_SESSION[
 <form action="">
 	<table><tr>
 		<td class="nu" style="width:25em">
-			<b>Liste des professeurs :</b><br />
+			<b>Liste des professeurs :</b> <img alt="" src="./_img/bulle_aide.png" title="Utiliser la touche <i>Shift</i> pour une sélection multiple contiguë.<br />Utiliser la touche <i>Ctrl</i> pour une sélection multiple non contiguë." /><br />
 			<select id="select_professeurs" name="select_professeurs[]" multiple size="10" class="t8"><?php echo $select_professeurs; ?></select>
 		</td>
 		<td class="nu" style="width:20em">
-			<b>Liste des matières :</b><br />
+			<b>Liste des matières :</b> <img alt="" src="./_img/bulle_aide.png" title="Utiliser la touche <i>Shift</i> pour une sélection multiple contiguë.<br />Utiliser la touche <i>Ctrl</i> pour une sélection multiple non contiguë." /><br />
 			<select id="select_matieres" name="select_matieres[]" multiple size="10" class="t8"><?php echo $select_matieres; ?></select>
 		</td>
 		<td class="nu" style="width:25em">
-			<p><span class="astuce">Utiliser "<span class="i">Shift + clic</span>" ou "<span class="i">Ctrl + clic</span>"<br />pour une sélection multiple.</span></p>
 			<button id="ajouter" type="button"><img alt="" src="./_img/bouton/groupe_ajouter.png" /> Ajouter ces associations.</button><br />
 			<button id="retirer" type="button"><img alt="" src="./_img/bouton/groupe_retirer.png" /> Retirer ces associations.</button>
 			<p><label id="ajax_msg">&nbsp;</label></p>

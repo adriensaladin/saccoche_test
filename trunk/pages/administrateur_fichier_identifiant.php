@@ -68,17 +68,16 @@ $select_professeurs_directeurs = afficher_select(DB_STRUCTURE_OPT_professeurs_di
 			<tr>
 				<td class="nu" style="width:30em">
 					<p id="p_eleves" class="hide">
-						<b>Liste des élèves :</b><br />
+						<b>Liste des élèves :</b> <img alt="" src="./_img/bulle_aide.png" title="Utiliser la touche <i>Shift</i> pour une sélection multiple contiguë.<br />Utiliser la touche <i>Ctrl</i> pour une sélection multiple non contiguë." /><br />
 						<select id="f_groupe" name="f_groupe"><?php echo $select_f_groupes ?></select><br />
 						<select id="select_eleves" name="select_eleves[]" multiple size="10" class="hide"><option value=""></option></select>
 					</p>
 					<p id="p_professeurs_directeurs" class="hide">
-						<b>Liste des professeurs / directeurs :</b><br />
+						<b>Liste des professeurs / directeurs :</b> <img alt="" src="./_img/bulle_aide.png" title="Utiliser la touche <i>Shift</i> pour une sélection multiple contiguë.<br />Utiliser la touche <i>Ctrl</i> pour une sélection multiple non contiguë." /><br />
 						<select id="select_professeurs_directeurs" name="select_professeurs_directeurs[]" multiple size="10"><?php echo $select_professeurs_directeurs; ?></select>
 					</p>
 				</td>
 				<td id="td_bouton" class="nu hide" style="width:25em">
-					<p><span class="astuce">Utiliser "<span class="i">Shift + clic</span>" ou "<span class="i">Ctrl + clic</span>"<br />pour une sélection multiple.</span></p>
 					<p><button id="init_login" type="button"><img alt="" src="./_img/bouton/mdp_groupe.png" /> Initialiser les noms d'utilisateurs.</button></p>
 					<p><button id="init_mdp" type="button"><img alt="" src="./_img/bouton/mdp_groupe.png" /> Initialiser les mots de passe.</button></p>
 				</td>

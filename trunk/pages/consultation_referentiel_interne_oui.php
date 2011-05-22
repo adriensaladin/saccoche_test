@@ -26,12 +26,30 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
+
+// Indication des profils ayant accès à cette page
+$tab_texte = array( 'directeur'=>'les directeurs' , 'professeur'=>'les professeurs' , 'eleve'=>'les élèves' );
+$str_objet = $_SESSION['DROIT_VOIR_REFERENTIELS'];
+if($str_objet=='')
+{
+	$texte = 'aucun';
+}
+elseif(strpos($str_objet,',')===false)
+{
+	$texte = 'uniquement '.$tab_texte[$str_objet];
+}
+else
+{
+	$texte = str_replace( array('directeur','professeur','eleve',',') , array($tab_texte['directeur'],$tab_texte['professeur'],$tab_texte['eleve'],' et ') , $str_objet );
+}
 ?>
 
 <ul class="puce">
 	<li><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=referentiels_socle__referentiel_organisation">DOC : Organisation des items dans les référentiels.</a></span></li>
 	<li><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=environnement_generalites__calcul_scores_etats_acquisitions">DOC : Calcul des scores et des états d'acquisitions.</a></span></li>
+	<li><span class="astuce">Profils autorisés par les administrateurs : <span class="u"><?php echo $texte ?></span>.</span></li>
 </ul>
+<hr />
 
 <form action="">
 

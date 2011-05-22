@@ -82,7 +82,7 @@ $(document).ready
 					{
 						type : 'POST',
 						url : 'ajax.php?page=_maj_select_piliers',
-						data : 'f_palier='+palier_id+'&f_first='+'val',
+						data : 'f_palier='+palier_id+'&f_first='+'non',
 						dataType : "html",
 						error : function(msg,string)
 						{
@@ -94,7 +94,7 @@ $(document).ready
 							if(responseHTML.substring(0,7)=='<option')	// Attention aux caractères accentués : l'utf-8 pose des pbs pour ce test
 							{
 								$('#ajax_maj_pilier').removeAttr("class").html('&nbsp;');
-								$('#f_pilier').html(responseHTML).show();
+								$('#f_pilier').html(responseHTML).attr('size',$('#f_pilier option').size()).show();
 							}
 							else
 							{
@@ -176,7 +176,7 @@ $(document).ready
 				rules :
 				{
 					f_palier : { required:true },
-					f_pilier : { required:false },
+					f_pilier : { required:true },
 					f_groupe : { required:true },
 					f_eleve  : { required:true },
 					f_coef   : { required:false },
@@ -186,7 +186,7 @@ $(document).ready
 				messages :
 				{
 					f_palier : { required:"palier manquant" },
-					f_pilier : { },
+					f_pilier : { required:"compétence(s) manquante(s)" },
 					f_groupe : { required:"groupe manquant" },
 					f_eleve  : { required:"élève(s) manquant(s)" },
 					f_coef   : { },
@@ -229,6 +229,8 @@ $(document).ready
 				// alors j'ai copié le tableau dans un champ hidden...
 				var f_eleve = new Array(); $("#f_eleve option:selected").each(function(){f_eleve.push($(this).val());});
 				$('#eleves').val(f_eleve);
+				var tab_pilier = new Array(); $("#f_pilier option:selected").each(function(){tab_pilier.push($(this).val());});
+				$('#piliers').val(tab_pilier);
 				// récupération du nom du palier
 				$('#f_palier_nom').val( $("#f_palier option:selected").text() );
 				$(this).ajaxSubmit(ajaxOptions);

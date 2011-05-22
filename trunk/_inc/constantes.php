@@ -33,11 +33,11 @@
 // VERSION_PROG : version des fichiers installés, à comparer avec la dernière version disponible sur le serveur communautaire
 // VERSION_BASE : version de la base associée, à comparer avec la version de la base actuellement installée
 define('VERSION_PROG', @file_get_contents('VERSION.txt') );	// Ne pas mettre de chemin ! Dans un fichier texte pour permettre un appel au serveur communautaire sans lui faire utiliser PHP.
-define('VERSION_BASE','2011-05-20');
+define('VERSION_BASE','2011-05-22');
 
 // VERSION_CSS_SCREEN / VERSION_CSS_PRINT / VERSION_JS_BIBLIO / VERSION_JS_GLOBAL / VERSION_JS_FILE
 // Pour éviter les problèmes de mise en cache (hors serveur localhost), modifier ces valeurs lors d'une mise à jour
-define('VERSION_CSS_SCREEN',54); // A changer lors de la mise à jour de ./_css/style.css
+define('VERSION_CSS_SCREEN',55); // A changer lors de la mise à jour de ./_css/style.css
 define('VERSION_CSS_PRINT',2);   // A changer lors de la mise à jour de ./_css/style_print.css
 define('VERSION_JS_BIBLIO',8);   // A changer lors de la mise à jour de ./_js/jquery-librairies.js
 define('VERSION_JS_GLOBAL',40);  // A changer lors de la mise à jour de ./_js/script.js

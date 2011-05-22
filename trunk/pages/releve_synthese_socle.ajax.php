@@ -28,19 +28,20 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 if($_SESSION['SESAMATH_ID']==ID_DEMO) {}
 
-$type         = (isset($_POST['f_type']))       ? clean_texte($_POST['f_type'])        : '';
-$palier_id    = (isset($_POST['f_palier']))     ? clean_entier($_POST['f_palier'])     : 0;
-$palier_nom   = (isset($_POST['f_palier_nom'])) ? clean_texte($_POST['f_palier_nom'])  : '';
-$pilier_id    = (isset($_POST['f_pilier']))      ? clean_entier($_POST['f_pilier'])    : -1;
-$groupe_id    = (isset($_POST['f_groupe']))     ? clean_entier($_POST['f_groupe'])     : 0;
-$groupe_nom   = (isset($_POST['f_groupe_nom'])) ? clean_texte($_POST['f_groupe_nom'])  : '';
-$tab_eleve_id = (isset($_POST['eleves']))       ? array_map('clean_entier',explode(',',$_POST['eleves'])) : array() ;
+$type          = (isset($_POST['f_type']))       ? clean_texte($_POST['f_type'])        : '';
+$palier_id     = (isset($_POST['f_palier']))     ? clean_entier($_POST['f_palier'])     : 0;
+$palier_nom    = (isset($_POST['f_palier_nom'])) ? clean_texte($_POST['f_palier_nom'])  : '';
+$pilier_id     = (isset($_POST['f_pilier']))     ? clean_entier($_POST['f_pilier'])     : -1;
+$groupe_id     = (isset($_POST['f_groupe']))     ? clean_entier($_POST['f_groupe'])     : 0;
+$groupe_nom    = (isset($_POST['f_groupe_nom'])) ? clean_texte($_POST['f_groupe_nom'])  : '';
+$tab_pilier_id = (isset($_POST['piliers']))      ? array_map('clean_entier',explode(',',$_POST['piliers'])) : array() ;
+$tab_eleve_id  = (isset($_POST['eleves']))       ? array_map('clean_entier',explode(',',$_POST['eleves'])) : array() ;
 
-$memo_demande  = ($pilier_id==0) ? 'palier' : 'pilier' ;
+$memo_demande  = (count($tab_pilier_id)>1) ? 'palier' : 'pilier' ;
 $tab_eleve_id  = array_filter($tab_eleve_id,'positif');
 $liste_eleve   = implode(',',$tab_eleve_id);
 
-if( (!$palier_id) || (!$palier_nom) || ($pilier_id==-1) || (!$groupe_id) || (!$groupe_nom) || (!count($tab_eleve_id)) || (!in_array($type,array('pourcentage','validation'))) )
+if( (!$palier_id) || (!$palier_nom) || (!$groupe_id) || (!$groupe_nom) || (!count($tab_eleve_id)) || (!count($tab_pilier_id)) || (!in_array($type,array('pourcentage','validation'))) )
 {
 	exit('Erreur avec les données transmises !');
 }
@@ -57,7 +58,7 @@ $tab_user_pilier  = array();	// [eleve_id][pilier_id] => array(etat,date,info); 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 // Récupération de la liste des items du socle pour le palier ou le pilier sélectionné
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-$DB_TAB = ($pilier_id) ? DB_STRUCTURE_recuperer_arborescence_pilier($pilier_id) : DB_STRUCTURE_recuperer_arborescence_palier($palier_id) ;
+$DB_TAB = ($memo_demande=='pilier') ? DB_STRUCTURE_recuperer_arborescence_pilier($pilier_id) : DB_STRUCTURE_recuperer_arborescence_palier($palier_id,implode(',',$tab_pilier_id)) ;
 if(!count($DB_TAB))
 {
 	exit('Aucun item référencé pour cette partie du socle commun !');

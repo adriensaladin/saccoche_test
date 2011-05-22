@@ -43,11 +43,11 @@ $select_classes     = afficher_select(DB_STRUCTURE_OPT_classes_etabl()     , $se
 <form action="">
 	<table><tr>
 		<td class="nu" style="width:25em">
-			<b>Liste des professeurs :</b> <img alt="" src="./_img/bulle_aide.png" title="Utiliser la touche <i>Shift</i> pour une sélection multiple contiguë.<br />Utiliser la touche <i>Ctrl</i> pour une sélection multiple non contiguë." /><br />
+			<b>Liste des professeurs :</b> <img alt="" src="./_img/bulle_aide.png" title="Utiliser la touche &laquo&nbsp;Shift&nbsp;&raquo; pour une sélection multiple contiguë.<br />Utiliser la touche &laquo&nbsp;Ctrl&nbsp;&raquo; pour une sélection multiple non contiguë." /><br />
 			<select id="select_professeurs" name="select_professeurs[]" multiple size="10" class="t8"><?php echo $select_professeurs; ?></select>
 		</td>
 		<td class="nu" style="width:20em">
-			<b>Liste des classes :</b> <img alt="" src="./_img/bulle_aide.png" title="Utiliser la touche <i>Shift</i> pour une sélection multiple contiguë.<br />Utiliser la touche <i>Ctrl</i> pour une sélection multiple non contiguë." /><br />
+			<b>Liste des classes :</b> <img alt="" src="./_img/bulle_aide.png" title="Utiliser la touche &laquo&nbsp;Shift&nbsp;&raquo; pour une sélection multiple contiguë.<br />Utiliser la touche &laquo&nbsp;Ctrl&nbsp;&raquo; pour une sélection multiple non contiguë." /><br />
 			<select id="select_classes" name="select_classes[]" multiple size="10" class="t8"><?php echo $select_classes; ?></select>
 		</td>
 		<td class="nu" style="width:25em">

@@ -62,7 +62,7 @@ if( ($action=='Afficher_bilan') && $palier_id && count($tab_pilier) && count($ta
 	$affichage .= '<th><img alt="Tous les élèves" src="./_img/php/etiquette.php?dossier='.$_SESSION['BASE'].'&amp;nom='.urlencode('TOUS LES ÉLÈVES').'" /></th>';
 	$affichage .= '<th class="nu">&nbsp;&nbsp;&nbsp;</th>';
 	$affichage .= '<th class="nu">';
-	$affichage .=   '<p class="danger">Rappel : la validation d\'une compétence est irréversible (une invalidation peut être changée).</p>';
+	$affichage .=   '<p class="danger">Rappel : la validation d\'une compétence est définitive (une invalidation peut être changée).</p>';
 	$affichage .=   '<p><button id="Enregistrer_validation" type="button"><img alt="" src="./_img/bouton/valider.png" /> Enregistrer les validations</button> <button id="fermer_zone_validation" type="button"><img alt="" src="./_img/bouton/retourner.png" /> Retour</button><label id="ajax_msg_validation"></label></p>';
 	$affichage .= '</th>';
 	$affichage .= '</tr></thead>';
@@ -71,9 +71,9 @@ if( ($action=='Afficher_bilan') && $palier_id && count($tab_pilier) && count($ta
 	$affichage .= '<tr>';
 	foreach($tab_eleve_id as $eleve_id)
 	{
-		$affichage .= '<th id="U'.$eleve_id.'" class="down1" title="Modifier la validation de toutes les compétences pour cet élève." /></th>';
+		$affichage .= '<th id="U'.$eleve_id.'" class="down1" title="Modifier la validation de toutes les compétences pour cet élève."></th>';
 	}
-	$affichage .= '<th id="P'.$palier_id.'" class="diag1" title="Modifier la validation de toutes les compétences pour tous les élèves." /></th>';
+	$affichage .= '<th id="P'.$palier_id.'" class="diag1" title="Modifier la validation de toutes les compétences pour tous les élèves."></th>';
 	$affichage .= '<th class="nu" colspan="2"><div class="m1 b">@PALIER@</div></th>';
 	$affichage .= '</tr>';
 	// Récupérer l'arborescence des piliers du palier du socle (enfin... uniquement les piliers, ça suffit ici)
@@ -91,7 +91,7 @@ if( ($action=='Afficher_bilan') && $palier_id && count($tab_pilier) && count($ta
 			{
 				$affichage .= '<td id="U'.$eleve_id.'C'.$pilier_id.'" class="v2"></td>';
 			}
-			$affichage .= '<th id="C'.$pilier_id.'" class="left1" title="Modifier la validation de cette compétence pour tous les élèves." /></th>';
+			$affichage .= '<th id="C'.$pilier_id.'" class="left1" title="Modifier la validation de cette compétence pour tous les élèves."></th>';
 			$affichage .= '<th class="nu" colspan="2"><div class="n1">'.html($DB_ROW['pilier_nom']).'</div></th>';
 			$affichage .= '</tr>';
 		}
@@ -106,7 +106,7 @@ if( ($action=='Afficher_bilan') && $palier_id && count($tab_pilier) && count($ta
 	foreach($DB_TAB as $DB_ROW)
 	{
 		$etat = ($DB_ROW['validation_pilier_etat']) ? 'Validé' : 'Invalidé' ;
-		$lang = ($DB_ROW['validation_pilier_etat']) ? ' lang="lock" ' : '' ;
+		$lang = ($DB_ROW['validation_pilier_etat']) ? ' lang="lock"' : '' ;
 		$tab_bad[] = 'U'.$DB_ROW['user_id'].'C'.$DB_ROW['pilier_id'].'" class="v2">';
 		$tab_bon[] = 'U'.$DB_ROW['user_id'].'C'.$DB_ROW['pilier_id'].'" class="v'.$DB_ROW['validation_pilier_etat'].'" title="'.$etat.' le '.convert_date_mysql_to_french($DB_ROW['validation_pilier_date']).' par '.html($DB_ROW['validation_pilier_info']).'"'.$lang.'>';
 	}

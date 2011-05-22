@@ -27,7 +27,7 @@
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = "Valider les items du socle";
-$VERSION_JS_FILE += 6;
+$VERSION_JS_FILE += 7;
 // Remarque : on ne peut être pp que d'une classe, pas d'un groupe, donc si seuls les PP ont un accès par mis les profs, ils ne peuvent trier les élèves que par classes
 ?>
 
@@ -37,15 +37,15 @@ $tab_texte = array( 'directeur'=>'les directeurs' , 'professeur'=>'les professeu
 $str_objet = str_replace( array(',aucunprof','aucunprof,','aucunprof') , '' , $_SESSION['DROIT_VALIDATION_ENTREE'] );
 if($str_objet=='')
 {
-	$texte = 'aucun !!!';
+	$texte = 'aucun';
 }
 elseif(strpos($str_objet,',')===false)
 {
-	$texte = 'uniquement '.$tab_texte[$str_objet].'.';
+	$texte = 'uniquement '.$tab_texte[$str_objet];
 }
 else
 {
-	$texte = str_replace( array('directeur','professeur','profprincipal',',') , array($tab_texte['directeur'],$tab_texte['professeur'],$tab_texte['profprincipal'],' et ') , $str_objet ).'.';
+	$texte = str_replace( array('directeur','professeur','profprincipal',',') , array($tab_texte['directeur'],$tab_texte['professeur'],$tab_texte['profprincipal'],' et ') , $str_objet );
 }
 
 // Fabrication des éléments select du formulaire
@@ -82,7 +82,7 @@ $select_groupe = afficher_select($tab_groupes , $select_nom='f_groupe' , $option
 
 <ul class="puce">
 	<li><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=referentiels_socle__socle_valider_item">DOC : Valider des items du socle.</a></span></li>
-	<li><span class="astuce">Profils autorisés par l'administrateur pour valider les items du socle : <?php echo $texte ?></span></li>
+	<li><span class="astuce">Profils autorisés par les administrateurs : <span class="u"><?php echo $texte ?></span>.</span></li>
 </ul>
 
 <hr />
@@ -90,9 +90,9 @@ $select_groupe = afficher_select($tab_groupes , $select_nom='f_groupe' , $option
 <form action="" id="zone_choix"><fieldset>
 	<label class="tab" for="f_palier">Palier :</label><?php echo $select_palier ?><label id="ajax_maj_pilier">&nbsp;</label><br />
 	<label class="tab" for="f_pilier">Compétence :</label><select id="f_pilier" name="f_pilier" class="hide"><option></option></select><label id="ajax_maj_domaine">&nbsp;</label><br />
-	<label class="tab" for="f_domaine">Domaine :</label><select id="f_domaine" name="f_domaine" class="hide"><option></option></select><p />
+	<label class="tab" for="f_domaine"><img alt="" src="./_img/bulle_aide.png" title="Utiliser la touche &laquo&nbsp;Shift&nbsp;&raquo; pour une sélection multiple contiguë.<br />Utiliser la touche &laquo&nbsp;Ctrl&nbsp;&raquo; pour une sélection multiple non contiguë." /> Domaine(s) :</label><select id="f_domaine" name="f_domaine" multiple size="5" class="hide"><option></option></select><input type="hidden" id="domaines" name="domaines" value="" /><p />
 	<label class="tab" for="f_groupe">Classe / groupe :</label><?php echo $select_groupe ?><input type="hidden" id="f_groupe_type" name="f_groupe_type" value="" /><label id="ajax_maj_eleve">&nbsp;</label><br />
-	<label class="tab" for="f_eleve"><img alt="" src="./_img/bulle_aide.png" title="Utiliser la touche <i>Shift</i> pour une sélection multiple contiguë.<br />Utiliser la touche <i>Ctrl</i> pour une sélection multiple non contiguë." /> Élève(s) :</label><select id="f_eleve" name="f_eleve[]" multiple size="9" class="hide"><option></option></select><input type="hidden" id="eleves" name="eleves" value="" /><p />
+	<label class="tab" for="f_eleve"><img alt="" src="./_img/bulle_aide.png" title="Utiliser la touche &laquo&nbsp;Shift&nbsp;&raquo; pour une sélection multiple contiguë.<br />Utiliser la touche &laquo&nbsp;Ctrl&nbsp;&raquo; pour une sélection multiple non contiguë." /> Élève(s) :</label><select id="f_eleve" name="f_eleve[]" multiple size="9" class="hide"><option></option></select><input type="hidden" id="eleves" name="eleves" value="" /><p />
 	<span class="tab"></span><input type="hidden" name="f_action" value="Afficher_bilan" /><button id="Afficher_validation" type="submit" class="hide"><img alt="" src="./_img/bouton/valider.png" /> Afficher le tableau des validations.</button><label id="ajax_msg_choix">&nbsp;</label>
 </fieldset></form>
 

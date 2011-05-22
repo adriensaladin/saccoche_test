@@ -86,7 +86,7 @@ $select_remplissage = afficher_select($tab_select_remplissage , $select_nom='f_r
 	<label class="tab" for="f_niveau">Niveau :</label><?php echo $select_niveau ?><input type="hidden" id="f_niveau_nom" name="f_niveau_nom" value="" /><p />
 	<div class="<?php echo $class_form_eleve ?>">
 		<label class="tab" for="f_groupe">Classe / groupe :</label><?php echo $select_groupe ?><label id="ajax_maj">&nbsp;</label><br />
-		<label class="tab" for="f_eleve"><img alt="" src="./_img/bulle_aide.png" title="Utiliser la touche <i>Shift</i> pour une sélection multiple contiguë.<br />Utiliser la touche <i>Ctrl</i> pour une sélection multiple non contiguë." /> Élève(s) :</label><select id="f_eleve" name="f_eleve[]" multiple size="9"><?php echo $select_eleves ?></select><input type="hidden" id="eleves" name="eleves" value="" /><p />
+		<label class="tab" for="f_eleve"><img alt="" src="./_img/bulle_aide.png" title="Utiliser la touche &laquo&nbsp;Shift&nbsp;&raquo; pour une sélection multiple contiguë.<br />Utiliser la touche &laquo&nbsp;Ctrl&nbsp;&raquo; pour une sélection multiple non contiguë." /> Élève(s) :</label><select id="f_eleve" name="f_eleve[]" multiple size="9"><?php echo $select_eleves ?></select><input type="hidden" id="eleves" name="eleves" value="" /><p />
 	</div>
 	<div class="toggle">
 		<span class="tab"></span><a href="#" class="puce_plus toggle">Afficher plus d'options</a>

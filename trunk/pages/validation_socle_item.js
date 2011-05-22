@@ -115,7 +115,7 @@ $(document).ready
 					{
 						type : 'POST',
 						url : 'ajax.php?page=_maj_select_domaines',
-						data : 'f_pilier='+pilier_id+'&f_first='+'val',
+						data : 'f_pilier='+pilier_id+'&f_first='+'non',
 						dataType : "html",
 						error : function(msg,string)
 						{
@@ -127,7 +127,7 @@ $(document).ready
 							if(responseHTML.substring(0,7)=='<option')	// Attention aux caractères accentués : l'utf-8 pose des pbs pour ce test
 							{
 								$('#ajax_maj_domaine').removeAttr("class").html('&nbsp;');
-								$('#f_domaine').html(responseHTML).show();
+								$('#f_domaine').html(responseHTML).attr('size',$('#f_domaine option').size()).show();
 							}
 							else
 							{
@@ -213,15 +213,15 @@ $(document).ready
 				{
 					f_palier  : { required:true },
 					f_pilier  : { required:true },
-					f_domaine : { required:false },
+					f_domaine : { required:true },
 					f_groupe  : { required:true },
 					f_eleve   : { required:true }
 				},
 				messages :
 				{
 					f_palier  : { required:"palier manquant" },
-					f_pilier  : { required:"pilier manquant" },
-					f_domaine : { },
+					f_pilier  : { required:"pilier(s) manquant(s)" },
+					f_domaine : { required:"domaine(s) manquant(s)" },
 					f_groupe  : { required:"classe / groupe manquant" },
 					f_eleve   : { required:"élève(s) manquant(s)" }
 				},
@@ -254,6 +254,8 @@ $(document).ready
 				// alors j'ai copié le tableau dans un champ hidden...
 				var tab_eleve = new Array(); $("#f_eleve option:selected").each(function(){tab_eleve.push($(this).val());});
 				$('#eleves').val(tab_eleve);
+				var tab_domaine = new Array(); $("#f_domaine option:selected").each(function(){tab_domaine.push($(this).val());});
+				$('#domaines').val(tab_domaine);
 				$(this).ajaxSubmit(ajaxOptions0);
 				return false;
 			}

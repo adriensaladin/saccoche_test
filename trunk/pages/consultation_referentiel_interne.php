@@ -28,6 +28,7 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = "Référentiels en place (dans l'établissement)";
 
-$fin = ( (strpos($_SESSION['DROIT_VOIR_REFERENTIELS'],$_SESSION['USER_PROFIL'])!==false) || ($_SESSION['USER_PROFIL']=='administrateur') || ($_SESSION['USER_PROFIL']=='webmestre') ) ? 'oui' : 'non' ;
+$fin = ( (strpos($_SESSION['DROIT_VOIR_REFERENTIELS'],$_SESSION['USER_PROFIL'])!==false) || ($_SESSION['USER_PROFIL']=='administrateur') ) ? 'oui' : 'non' ;
+
 require('./pages/'.$PAGE.'_'.$fin.'.php');
 ?>

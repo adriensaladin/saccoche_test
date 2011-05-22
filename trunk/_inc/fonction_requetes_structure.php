@@ -358,16 +358,20 @@ function DB_STRUCTURE_recuperer_arborescence_synthese($liste_eleve_id,$matiere_i
  * DB_STRUCTURE_recuperer_arborescence_palier
  *
  * @param string|bool $liste_palier_id   id des paliers séparés par des virgules ; false pour retourner tous les paliers
+ * @param string|bool $liste_pilier_id   id des piliers séparés par des virgules (facultatif, pour restreindre à des piliers précis)
  * @return array
  */
 
-function DB_STRUCTURE_recuperer_arborescence_palier($liste_palier_id=false)
+function DB_STRUCTURE_recuperer_arborescence_palier($liste_palier_id=false,$liste_pilier_id=false)
 {
+	$tab_where = array();
+	if($liste_palier_id) { $tab_where[] = 'palier_id IN('.$liste_palier_id.') '; }
+	if($liste_pilier_id) { $tab_where[] = 'pilier_id IN('.$liste_pilier_id.') '; }
 	$DB_SQL = 'SELECT * FROM sacoche_socle_palier ';
 	$DB_SQL.= 'LEFT JOIN sacoche_socle_pilier USING (palier_id) ';
 	$DB_SQL.= 'LEFT JOIN sacoche_socle_section USING (pilier_id) ';
 	$DB_SQL.= 'LEFT JOIN sacoche_socle_entree USING (section_id) ';
-	$DB_SQL.= ($liste_palier_id) ? 'WHERE palier_id IN('.$liste_palier_id.') ' : '' ;
+	$DB_SQL.= (count($tab_where)) ? 'WHERE '.implode('AND ',$tab_where) : '' ;
 	$DB_SQL.= 'ORDER BY palier_ordre ASC, pilier_ordre ASC, section_ordre ASC, entree_ordre ASC';
 	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , null);
 }
@@ -392,20 +396,20 @@ function DB_STRUCTURE_recuperer_piliers($palier_id)
 /**
  * DB_STRUCTURE_recuperer_arborescence_pilier
  *
- * @param int   $pilier_id    id du pilier
- * @param int   $domaine_id   facultatif, pour restreindre à un domaine précis
+ * @param int         $pilier_id            id du pilier
+ * @param string|bool $listing_domaine_id   id des domaines séparés par des virgules (facultatif, pour restreindre à des domaines précis)
  * @return array
  */
 
-function DB_STRUCTURE_recuperer_arborescence_pilier($pilier_id,$domaine_id=0)
+function DB_STRUCTURE_recuperer_arborescence_pilier($pilier_id,$listing_domaine_id='')
 {
-	$where_domaine = ($domaine_id) ? 'AND section_id=:section_id ' : '';
+	$where_domaine = ($listing_domaine_id) ? 'AND section_id IN('.$listing_domaine_id.') ' : '';
 	$DB_SQL = 'SELECT * FROM sacoche_socle_pilier ';
 	$DB_SQL.= 'LEFT JOIN sacoche_socle_section USING (pilier_id) ';
 	$DB_SQL.= 'LEFT JOIN sacoche_socle_entree USING (section_id) ';
 	$DB_SQL.= 'WHERE pilier_id=:pilier_id '.$where_domaine;
 	$DB_SQL.= 'ORDER BY section_ordre ASC, entree_ordre ASC';
-	$DB_VAR = array(':pilier_id'=>$pilier_id,':section_id'=>$domaine_id);
+	$DB_VAR = array(':pilier_id'=>$pilier_id);
 	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 

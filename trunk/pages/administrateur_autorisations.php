@@ -27,7 +27,7 @@
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = "Réglage des autorisations";
-$VERSION_JS_FILE += 4;
+$VERSION_JS_FILE += 5;
 
 $i_id = 0;	// Pour donner des ids aux checkbox et radio
 ?>
@@ -42,7 +42,7 @@ $i_id = 0;	// Pour donner des ids aux checkbox et radio
 	<table>
 		<?php
 		$tab_profils = array( 'directeur'=>'directeurs' , 'professeur'=>'tous les professeurs' , 'profprincipal'=>'seulement les<br />professeurs principaux' , 'aucunprof'=>'aucun professeur' );
-		$tab_objets  = array( 'droit_validation_entree'=>'validation des items du socle' , 'droit_validation_pilier'=>'validation des compétences du socle (ou piliers)' );
+		$tab_objets  = array( 'droit_validation_entree'=>'validation des items du socle' , 'droit_validation_pilier'=>'validation des compétences du socle (ou piliers)' , 'droit_annulation_pilier'=>'annulation de validations de compétences du socle' );
 		// 1ère ligne
 		echo'<thead><tr><th class="nu"></th>';
 		foreach($tab_profils as $profil_key => $profil_txt)

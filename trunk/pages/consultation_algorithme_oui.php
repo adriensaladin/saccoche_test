@@ -59,7 +59,29 @@ foreach($tab_options as $value)
 	$selected = ($value==$_SESSION['CALCUL_LIMITE']) ? ' selected' : '' ;
 	$options_limite .= '<option value="'.$value.'"'.$selected.'>'.$texte.'</option>';
 }
+
+// Indication des profils ayant accès à cette page
+$tab_texte = array( 'directeur'=>'les directeurs' , 'professeur'=>'les professeurs' , 'eleve'=>'les élèves' );
+$str_objet = $_SESSION['DROIT_VOIR_ALGORITHME'];
+if($str_objet=='')
+{
+	$texte = 'aucun';
+}
+elseif(strpos($str_objet,',')===false)
+{
+	$texte = 'uniquement '.$tab_texte[$str_objet];
+}
+else
+{
+	$texte = str_replace( array('directeur','professeur','eleve',',') , array($tab_texte['directeur'],$tab_texte['professeur'],$tab_texte['eleve'],' et ') , $str_objet );
+}
 ?>
+
+<ul class="puce">
+	<li><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=environnement_generalites__calcul_scores_etats_acquisitions">DOC : Calcul des scores et des états d'acquisitions.</a></span></li>
+	<li><span class="astuce">Profils autorisés par les administrateurs : <span class="u"><?php echo $texte ?></span>.</span></li>
+</ul>
+<hr />
 
 <form id="form_input" action="">
 	<table summary="">
@@ -96,7 +118,6 @@ foreach($tab_options as $value)
 		<button id="calculer" type="button"><img alt="" src="./_img/bouton/actualiser.png" /> Simuler avec ces valeurs.</button>
 		<label id="ajax_msg">&nbsp;</label>
 	</p>
-	<p><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=environnement_generalites__calcul_scores_etats_acquisitions">DOC : Calcul des scores et des états d'acquisitions.</a></span></p>
 </form>
 
 <hr />

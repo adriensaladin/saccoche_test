@@ -28,25 +28,26 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 if($_SESSION['SESAMATH_ID']==ID_DEMO) {}
 
-$palier_id    = (isset($_POST['f_palier']))      ? clean_entier($_POST['f_palier'])    : 0;
-$palier_nom   = (isset($_POST['f_palier_nom']))  ? clean_texte($_POST['f_palier_nom']) : '';
-$pilier_id    = (isset($_POST['f_pilier']))      ? clean_entier($_POST['f_pilier'])    : -1;
-$aff_socle_PA = (isset($_POST['f_socle_PA']))    ? 1                                   : 0;	// en cas de manipulation type Firebug, peut être forcé pour l'élève avec (mb_substr_count($_SESSION['DROIT_ELEVE_SOCLE'],'SoclePourcentageAcquis'))
-$aff_socle_EV = (isset($_POST['f_socle_EV']))    ? 1                                   : 0;	// en cas de manipulation type Firebug, peut être forcé pour l'élève avec (mb_substr_count($_SESSION['DROIT_ELEVE_SOCLE'],'SocleEtatValidation'))
-$groupe_id    = (isset($_POST['f_groupe']))      ? clean_entier($_POST['f_groupe'])    : 0;	// en cas de manipulation type Firebug, peut être forcé pour l'élève à $_SESSION['ELEVE_CLASSE_ID']
-$aff_coef    = (isset($_POST['f_coef']))         ? 1                                   : 0;
-$aff_socle   = (isset($_POST['f_socle']))        ? 1                                   : 0;
-$aff_lien    = (isset($_POST['f_lien']))         ? 1                                   : 0;
-$tab_eleve_id = (isset($_POST['eleves']))        ? array_map('clean_entier',explode(',',$_POST['eleves'])) : array() ;	// en cas de manipulation type Firebug, peut être forcé pour l'élève avec $_SESSION['USER_ID']
+$palier_id     = (isset($_POST['f_palier']))     ? clean_entier($_POST['f_palier'])    : 0;
+$palier_nom    = (isset($_POST['f_palier_nom'])) ? clean_texte($_POST['f_palier_nom']) : '';
+$pilier_id     = (isset($_POST['f_pilier']))     ? clean_entier($_POST['f_pilier'])    : -1;
+$aff_socle_PA  = (isset($_POST['f_socle_PA']))   ? 1                                   : 0;	// en cas de manipulation type Firebug, peut être forcé pour l'élève avec (mb_substr_count($_SESSION['DROIT_ELEVE_SOCLE'],'SoclePourcentageAcquis'))
+$aff_socle_EV  = (isset($_POST['f_socle_EV']))   ? 1                                   : 0;	// en cas de manipulation type Firebug, peut être forcé pour l'élève avec (mb_substr_count($_SESSION['DROIT_ELEVE_SOCLE'],'SocleEtatValidation'))
+$groupe_id     = (isset($_POST['f_groupe']))     ? clean_entier($_POST['f_groupe'])    : 0;	// en cas de manipulation type Firebug, peut être forcé pour l'élève à $_SESSION['ELEVE_CLASSE_ID']
+$aff_coef      = (isset($_POST['f_coef']))       ? 1                                   : 0;
+$aff_socle     = (isset($_POST['f_socle']))      ? 1                                   : 0;
+$aff_lien      = (isset($_POST['f_lien']))       ? 1                                   : 0;
+$tab_pilier_id = (isset($_POST['piliers']))      ? array_map('clean_entier',explode(',',$_POST['piliers'])) : array() ;
+$tab_eleve_id  = (isset($_POST['eleves']))       ? array_map('clean_entier',explode(',',$_POST['eleves']))  : array() ;	// en cas de manipulation type Firebug, peut être forcé pour l'élève avec $_SESSION['USER_ID']
 
-$memo_demande  = ($pilier_id==0) ? 'palier' : 'pilier' ;
+$memo_demande  = (count($tab_pilier_id)>1) ? 'palier' : 'pilier' ;
 $tab_eleve_id  = array_filter($tab_eleve_id,'positif');
 $liste_eleve   = implode(',',$tab_eleve_id);
 
 $test_affichage_Pourcentage = ($groupe_id && count($tab_eleve_id) && $aff_socle_PA) ? true : false;
 $test_affichage_Validation  = ($groupe_id && count($tab_eleve_id) && $aff_socle_EV) ? true : false;
 
-if( (!$palier_id) || (!$palier_nom) || ($pilier_id==-1) )
+if( (!$palier_id) || (!$palier_nom) || (!count($tab_pilier_id)) )
 {
 	exit('Erreur avec les données transmises !');
 }
@@ -67,7 +68,7 @@ $tab_user_pilier  = array();	// [eleve_id][pilier_id] => array(etat,date,info);
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 // Récupération de la liste des items du socle pour le palier ou le pilier sélectionné
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-$DB_TAB = ($pilier_id) ? DB_STRUCTURE_recuperer_arborescence_pilier($pilier_id) : DB_STRUCTURE_recuperer_arborescence_palier($palier_id) ;
+$DB_TAB = ($memo_demande=='pilier') ? DB_STRUCTURE_recuperer_arborescence_pilier($pilier_id) : DB_STRUCTURE_recuperer_arborescence_palier($palier_id,implode(',',$tab_pilier_id)) ;
 if(!count($DB_TAB))
 {
 	exit('Aucun item référencé pour cette partie du socle commun !');

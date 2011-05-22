@@ -30,22 +30,6 @@ $(document).ready
 	function()
 	{
 
-		// Initialisation
-		$("#f_eleve").hide();
-
-		//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
-		//	Enlever le message ajax et le résultat précédent au changement d'un select
-		//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
-
-		$('select').change
-		(
-			function()
-			{
-				$('#ajax_msg').removeAttr("class").html("&nbsp;");
-				$('#bilan').html("&nbsp;");
-			}
-		);
-
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 //	Tester l'affichage du bouton de validation au changement des formulaires
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
@@ -54,11 +38,11 @@ $(document).ready
 		{
 			if($("#f_eleve").val())
 			{
-				$('#bouton_valider').show();
+				$('#Afficher_validation').show();
 			}
 			else
 			{
-				$('#bouton_valider').hide();
+				$('#Afficher_validation').hide();
 			}
 		};
 
@@ -161,113 +145,186 @@ $(document).ready
 
 		$("#f_groupe").change( maj_eleve );
 
+		maj_eleve(); // Dans le cas d'un P.P.
+
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-//	Traitement du formulaire
+//	Traitement du premier formulaire pour afficher le tableau avec les états de validations
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
 		// Le formulaire qui va être analysé et traité en AJAX
-		var formulaire = $("#form_select");
+		var formulaire0 = $('#zone_choix');
 
 		// Vérifier la validité du formulaire (avec jquery.validate.js)
-		var validation = formulaire.validate
+		var validation0 = formulaire0.validate
 		(
 			{
 				rules :
 				{
-					f_type   : { required:true },
-					f_palier : { required:true },
 					f_pilier : { required:true },
 					f_groupe : { required:true },
 					f_eleve  : { required:true }
 				},
 				messages :
 				{
-					f_type   : { required:"type manquant" },
-					f_palier : { required:"palier manquant" },
 					f_pilier : { required:"compétence(s) manquante(s)" },
-					f_groupe : { required:"groupe manquant" },
+					f_groupe : { required:"classe / groupe manquant" },
 					f_eleve  : { required:"élève(s) manquant(s)" }
 				},
 				errorElement : "label",
 				errorClass : "erreur",
-				errorPlacement : function(error,element)
-				{
-					if(element.is("select")) {element.after(error);}
-					else if(element.attr("type")=="radio") {element.parent().next().after(error);}
-				}
-				// success: function(label) {label.text("ok").removeAttr("class").addClass("valide");} Pas pour des champs soumis à vérification PHP
+				errorPlacement : function(error,element){element.after(error);}
 			}
 		);
 
 		// Options d'envoi du formulaire (avec jquery.form.js)
-		var ajaxOptions =
+		var ajaxOptions0 =
 		{
-			url : 'ajax.php?page='+PAGE,
 			type : 'POST',
+			url : 'ajax.php?page='+PAGE,
 			dataType : "html",
 			clearForm : false,
 			resetForm : false,
-			target : "#ajax_msg",
-			beforeSubmit : test_form_avant_envoi,
-			error : retour_form_erreur,
-			success : retour_form_valide
+			target : "#ajax_msg_choix",
+			beforeSubmit : test_form_avant_envoi0,
+			error : retour_form_erreur0,
+			success : retour_form_valide0
 		};
 
 		// Envoi du formulaire (avec jquery.form.js)
-    formulaire.submit
+		formulaire0.submit
 		(
 			function()
 			{
 				// grouper les select multiples => normalement pas besoin si name de la forme nom[], mais ça plante curieusement sur le serveur competences.sesamath.net
 				// alors j'ai copié le tableau dans un champ hidden...
-				var f_eleve = new Array(); $("#f_eleve option:selected").each(function(){f_eleve.push($(this).val());});
-				$('#eleves').val(f_eleve);
+				var tab_eleve = new Array(); $("#f_eleve option:selected").each(function(){tab_eleve.push($(this).val());});
+				$('#eleves').val(tab_eleve);
 				var tab_pilier = new Array(); $("#f_pilier option:selected").each(function(){tab_pilier.push($(this).val());});
 				$('#piliers').val(tab_pilier);
-				// récupération du nom du palier et du nom du groupe
-				$('#f_palier_nom').val( $("#f_palier option:selected").text() );
-				$('#f_groupe_nom').val( $("#f_groupe option:selected").text() );
-				$(this).ajaxSubmit(ajaxOptions);
+				$(this).ajaxSubmit(ajaxOptions0);
 				return false;
 			}
 		); 
 
 		// Fonction précédent l'envoi du formulaire (avec jquery.form.js)
-		function test_form_avant_envoi(formData, jqForm, options)
+		function test_form_avant_envoi0(formData, jqForm, options)
 		{
-			$('#ajax_msg').removeAttr("class").html("&nbsp;");
-			var readytogo = validation.form();
+			$('#ajax_msg_choix').removeAttr("class").html("&nbsp;");
+			var readytogo = validation0.form();
 			if(readytogo)
 			{
-				$('button').prop('disabled',true);
-				$('#ajax_msg').removeAttr("class").addClass("loader").html("Génération du relevé en cours... Veuillez patienter.");
+				$("button").prop('disabled',true);
+				$('#ajax_msg_choix').removeAttr("class").addClass("loader").html("Demande envoyée... Veuillez patienter.");
 			}
 			return readytogo;
 		}
 
 		// Fonction suivant l'envoi du formulaire (avec jquery.form.js)
-		function retour_form_erreur(msg,string)
+		function retour_form_erreur0(msg,string)
 		{
-			$('button').prop('disabled',false);
-			$('#ajax_msg').removeAttr("class").addClass("alerte").html("Echec de la connexion ! Veuillez valider de nouveau.");
+			$("button").prop('disabled',false);
+			$('#ajax_msg_choix').removeAttr("class").addClass("alerte").html("Echec de la connexion ! Veuillez recommencer.");
 		}
 
 		// Fonction suivant l'envoi du formulaire (avec jquery.form.js)
-		function retour_form_valide(responseHTML)
+		function retour_form_valide0(responseHTML)
 		{
 			maj_clock(1);
-			$('button').prop('disabled',false);
-			if(responseHTML.substring(0,17)!='<ul class="puce">')
+			$("button").prop('disabled',false);
+			if(responseHTML.substring(0,7)!='<thead>')
 			{
-				$('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);
+				$('#ajax_msg_choix').removeAttr("class").addClass("alerte").html(responseHTML);
 			}
 			else
 			{
-				$('#ajax_msg').removeAttr("class").addClass("valide").html("Demande réalisée !");
-				$('#bilan').html(responseHTML);
-				format_liens('#bilan');
+				$('#ajax_msg_choix').removeAttr("class").addClass("valide").html("Affichage réalisé !").fadeOut(3000,function(){$(this).removeAttr("class").html("").show();});
+				responseHTML = responseHTML.replace( '@PALIER@' , $("#f_palier option:selected").text() );
+				$('#tableau_validation').html(responseHTML);
+				infobulle();
+				$('#zone_validation').show('fast');
+				$('#zone_choix').hide('fast');
+				$("body").oneTime("1s", function() {window.scrollTo(0,1000);} );
 			}
-		} 
+		}
+
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+//	Clic sur une cellule validée du tableau => Afficher le message de confirmation
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
+		var td_id = '';
+
+		$('td.v1').live // live est utilisé pour prendre en compte les nouveaux éléments créés
+		('click',
+			function()
+			{
+				td_id = $(this).attr('id');
+				var user_id  = td_id.substring(1,td_id.indexOf('C'));
+				$('#report_nom').html( $('#I'+user_id).attr('alt') );
+				$('#report_compet').html( $(this).parent().children('th').text().substring(0,12) );
+				$('#confirmation').css('opacity',1);
+				$('#fermer_zone_validation').html('<img alt="" src="./_img/bouton/annuler.png" /> Annuler / Retour');
+				return false;
+			}
+		);
+
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+//	Clic sur le bouton pour fermer la zone de validation
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
+		$('#fermer_zone_validation').live // live est utilisé pour prendre en compte les nouveaux éléments créés
+		('click',
+			function()
+			{
+				$('#zone_choix').show('fast');
+				$('#zone_validation').hide('fast');
+				$('#tableau_validation').html('<tbody><tr><td></td></tr></tbody>');
+				return(false);
+			}
+		);
+
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+//	Clic sur le bouton pour envoyer les validations
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
+		$('#Enregistrer_validation').live // live est utilisé pour prendre en compte les nouveaux éléments créés
+		('click',
+			function()
+			{
+				$("button").prop('disabled',true);
+				$('#ajax_msg_validation').removeAttr("class").addClass("loader").html("Demande envoyée... Veuillez patienter.");
+				$.ajax
+				(
+					{
+						type : 'POST',
+						url : 'ajax.php?page='+PAGE,
+						data : 'f_action=Enregistrer_validation&delete_id='+td_id,
+						dataType : "html",
+						error : function(msg,string)
+						{
+							$("button").prop('disabled',false);
+							$('#ajax_msg_validation').removeAttr("class").addClass("alerte").html('Echec de la connexion ! Veuillez recommencer.');
+							return false;
+						},
+						success : function(responseHTML)
+						{
+							maj_clock(1);
+							$("button").prop('disabled',false);
+							if(responseHTML.substring(0,2)!='OK')
+							{
+								$('#ajax_msg_validation').removeAttr("class").addClass("alerte").html(responseHTML);
+							}
+							else
+							{
+								$('#'+td_id).removeAttr("class").removeAttr("lang").addClass("v3");
+								$('#fermer_zone_validation').html('<img alt="" src="./_img/bouton/retourner.png" /> Retour');
+								$('#confirmation').css('opacity',0);
+								$('#ajax_msg_validation').removeAttr("class").html("&nbsp;");
+							}
+						}
+					}
+				);
+			}
+		);
 
 	}
 );

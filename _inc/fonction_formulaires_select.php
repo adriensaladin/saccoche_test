@@ -106,6 +106,11 @@ $tab_select_cases_size[] = array('valeur'=>13 , 'texte'=>'13 mm');
 $tab_select_cases_size[] = array('valeur'=>14 , 'texte'=>'14 mm');
 $tab_select_cases_size[] = array('valeur'=>15 , 'texte'=>'15 mm');
 
+// $tab_select_colonne_vide   = array();
+// $tab_select_colonne_vide[] = array('valeur'=>0   , 'texte'=>'sans colonne');
+// $tab_select_colonne_vide[] = array('valeur'=>50  , 'texte'=>'largeur 5cm');
+// $tab_select_colonne_vide[] = array('valeur'=>100 , 'texte'=>'largeur 10cm');
+
 $tab_select_remplissage   = array();
 $tab_select_remplissage[] = array('valeur'=>'vide'  , 'texte'=>'sans indication des notes antérieures');
 $tab_select_remplissage[] = array('valeur'=>'plein' , 'texte'=>'avec les notes des dernières évaluations');
@@ -128,26 +133,26 @@ $tab_select_cart_detail[] = array('valeur'=>'minimal' , 'texte'=>'cartouche mini
 
 function load_cookie_select($page)
 {
+	// Initialisation du tableau retourné au cas où le cookie n'existerait pas ou au cas ou des informations manquerait dans le cookie (ajout ultérieur d'une fonctionnalité)
+	switch($page)
+	{
+		case 'releve_synthese' :
+			$tab_return = array( 'couleur'=>'oui' , 'legende'=>'oui' );
+		case 'releve_items' :
+			$tab_return = array( 'orientation'=>'portrait' , 'couleur'=>'oui' , 'legende'=>'oui' , 'marge_min'=>5 , 'cases_nb'=>5 , 'cases_largeur'=>5 );
+		case 'grille_referentiel' :
+			$tab_return = array( 'orientation'=>'portrait' , 'couleur'=>'oui' , 'legende'=>'oui' , 'marge_min'=>5 , 'cases_nb'=>3 , 'cases_largeur'=>5 , 'colonne_vide'=>0 );
+		case 'cartouche' :
+			$tab_return = array( 'orientation'=>'portrait' , 'couleur'=>'oui' , 'marge_min'=>5 , 'cart_contenu'=>'AVEC_nom_SANS_result' , 'cart_detail'=>'complet' );
+	}
+	// Récupération du contenu du cookie
 	$filename = './__tmp/cookie/etabl'.$_SESSION['BASE'].'_user'.$_SESSION['USER_ID'].'_'.$page.'.txt';
 	if(is_file($filename))
 	{
 		$contenu = file_get_contents($filename);
-		return @unserialize($contenu);
+		$tab_return = array_merge( $tab_return, @unserialize($contenu) );
 	}
-	else
-	{
-		switch($page)
-		{
-			case 'releve_synthese' :
-				return array( 'couleur'=>'oui' , 'legende'=>'oui' );
-			case 'releve_items' :
-				return array( 'orientation'=>'portrait' , 'couleur'=>'oui' , 'legende'=>'oui' , 'marge_min'=>5 , 'cases_nb'=>5 , 'cases_largeur'=>5 );
-			case 'grille_referentiel' :
-				return array( 'orientation'=>'portrait' , 'couleur'=>'oui' , 'legende'=>'oui' , 'marge_min'=>5 , 'cases_nb'=>3 , 'cases_largeur'=>5 );
-			case 'cartouche' :
-				return array( 'orientation'=>'portrait' , 'couleur'=>'oui' , 'marge_min'=>5 , 'cart_contenu'=>'AVEC_nom_SANS_result' , 'cart_detail'=>'complet' );
-		}
-	}
+	return $tab_return;
 }
 
 /**

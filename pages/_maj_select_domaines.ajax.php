@@ -38,6 +38,8 @@ if( (!$pilier) || (!in_array($option_first,array('oui','val','non'))) )
 	exit('Erreur avec les données transmises !');
 }
 
-echo afficher_select(DB_STRUCTURE_OPT_domaines($pilier) , $select_nom=false , $option_first , $selection=false , $optgroup='non');
+$selection = ($option_first=='non') ? true : false ;
+
+echo afficher_select(DB_STRUCTURE_OPT_domaines($pilier) , $select_nom=false , $option_first , $selection , $optgroup='non');
 
 ?>

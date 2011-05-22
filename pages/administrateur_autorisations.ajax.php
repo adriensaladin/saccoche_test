@@ -34,20 +34,22 @@ $f_objet = (isset($_POST['f_objet'])) ? clean_texte($_POST['f_objet']) : '';
 
 if($f_objet=='validation_socle')
 {
-	$f_entree_options = (isset($_POST['f_entree'])) ? clean_texte($_POST['f_entree']) : 'erreur';
-	$f_pilier_options = (isset($_POST['f_pilier'])) ? clean_texte($_POST['f_pilier']) : 'erreur';
+	$f_entree_options  = (isset($_POST['f_entree']))  ? clean_texte($_POST['f_entree'])  : 'erreur';
+	$f_pilier_options  = (isset($_POST['f_pilier']))  ? clean_texte($_POST['f_pilier'])  : 'erreur';
+	$f_annuler_options = (isset($_POST['f_annuler'])) ? clean_texte($_POST['f_annuler']) : 'erreur';
 
-	// f_entree_options et f_pilier_options ne peuvent être vides, et doivent contenir la chaine 'prof'
-	$nettoyage = str_replace( array('directeur','aucunprof','profprincipal','professeur') , '*' , $f_entree_options.','.$f_pilier_options );
+	// f_entree_options + f_pilier_options + f_annuler_options ne peuvent être vides, et doivent contenir la chaine 'prof'
+	$nettoyage = str_replace( array('directeur','aucunprof','profprincipal','professeur') , '*' , $f_entree_options.','.$f_pilier_options.','.$f_annuler_options );
 	$nettoyage = str_replace( '*,' , '' , $nettoyage.',' );
-	$test_options = ( ($nettoyage=='') && (strpos($f_entree_options,'prof')!==false) && (strpos($f_pilier_options,'prof')!==false) ) ? true : false ;
+	$test_options = ( ($nettoyage=='') && (strpos($f_entree_options,'prof')!==false) && (strpos($f_pilier_options,'prof')!==false) && (strpos($f_annuler_options,'prof')!==false) ) ? true : false ;
 
 	if($test_options)
 	{
-		DB_STRUCTURE_modifier_parametres( array('droit_validation_entree'=>$f_entree_options,'droit_validation_pilier'=>$f_pilier_options) );
+		DB_STRUCTURE_modifier_parametres( array('droit_validation_entree'=>$f_entree_options,'droit_validation_pilier'=>$f_pilier_options,'droit_annulation_pilier'=>$f_annuler_options) );
 		// ne pas oublier de mettre aussi à jour la session
 		$_SESSION['DROIT_VALIDATION_ENTREE'] = $f_entree_options;
 		$_SESSION['DROIT_VALIDATION_PILIER'] = $f_pilier_options;
+		$_SESSION['DROIT_ANNULATION_PILIER'] = $f_annuler_options;
 		exit('ok');
 	}
 }

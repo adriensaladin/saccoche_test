@@ -284,6 +284,8 @@ table.bilan th.info {width:9px;height:9px;background:#CCF url(../_img/info_mini.
 #tableau_validation tbody th.nu:hover {cursor:default}
 #tableau_validation tbody td {text-align:center;vertical-align:middle;font-size:0} /* Pour indiquer les scores calculés sans les faire afficher. */
 #tableau_validation tbody td:hover {cursor:pointer}
+#tableau_validation tbody td.v3 {background:#EAEAFF;}
+#tableau_validation tbody td.v3:hover {cursor:default}
 /* Défini suivant les préférences de l'établissement : cf actualiser_style_session() dans fonction_divers.php */
 /*
 #tableau_validation tbody th.----- {background:#--- url(./_img/socle/arrow_----.gif) no-repeat center center;opacity:0.2}

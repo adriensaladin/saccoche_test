@@ -28,20 +28,22 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 if(($_SESSION['SESAMATH_ID']==ID_DEMO)&&($_POST['f_action']!='Afficher_bilan')&&($_POST['f_action']!='Afficher_information')){exit('Action désactivée pour la démo...');}
 
-$action     = (isset($_POST['f_action']))  ? clean_texte($_POST['f_action'])   : '';
-$pilier_id  = (isset($_POST['f_pilier']))  ? clean_entier($_POST['f_pilier'])  : 0;
-$domaine_id = (isset($_POST['f_domaine'])) ? clean_entier($_POST['f_domaine']) : 0;
-$eleve_id   = (isset($_POST['f_user']))    ? clean_entier($_POST['f_user'])    : 0;
-$entree_id  = (isset($_POST['f_item']))    ? clean_entier($_POST['f_item'])    : 0;
-$tab_eleve  = (isset($_POST['eleves']))    ? array_map('clean_entier',explode(',',$_POST['eleves'])) : array() ;
+$action      = (isset($_POST['f_action']))  ? clean_texte($_POST['f_action'])   : '';
+$pilier_id   = (isset($_POST['f_pilier']))  ? clean_entier($_POST['f_pilier'])  : 0;
+$domaine_id  = (isset($_POST['f_domaine'])) ? clean_entier($_POST['f_domaine']) : 0;
+$eleve_id    = (isset($_POST['f_user']))    ? clean_entier($_POST['f_user'])    : 0;
+$entree_id   = (isset($_POST['f_item']))    ? clean_entier($_POST['f_item'])    : 0;
+$tab_eleve   = (isset($_POST['eleves']))    ? array_map('clean_entier',explode(',',$_POST['eleves']))   : array() ;
+$tab_domaine = (isset($_POST['domaines']))  ? array_map('clean_entier',explode(',',$_POST['domaines'])) : array() ;
 
-$listing_eleve_id = implode(',',$tab_eleve);
+$listing_eleve_id   = implode(',',$tab_eleve);
+$listing_domaine_id = implode(',',$tab_domaine);
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 //	Afficher le tableau avec les états de validations
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
-if( ($action=='Afficher_bilan') && $pilier_id && count($tab_eleve) )
+if( ($action=='Afficher_bilan') && $pilier_id && count($tab_domaine) && count($tab_eleve) )
 {
 	$affichage = '';
 	// Récupérer les données des élèves
@@ -70,12 +72,12 @@ if( ($action=='Afficher_bilan') && $pilier_id && count($tab_eleve) )
 	$affichage .= '</th>';
 	$affichage .= '</tr></thead>';
 	$affichage .= '<tbody>';
-	// Récupérer l'arborescence du pilier du socle sélectionné (éventuellement restreint à un domaine précisé)
+	// Récupérer l'arborescence du pilier du socle sélectionné (éventuellement restreint à des domaines précisés)
 	// Mémoriser au passage le listing des entrées du socle
 	// Mémoriser au passage la liste des entrées du socle par pilier
 	$tab_entree_id = array();
 	$tab_pilier_entree = array();
-	$DB_TAB = DB_STRUCTURE_recuperer_arborescence_pilier($pilier_id,$domaine_id);
+	$DB_TAB = DB_STRUCTURE_recuperer_arborescence_pilier($pilier_id,$listing_domaine_id);
 	$pilier_id = 0;
 	foreach($DB_TAB as $DB_ROW)
 	{
@@ -92,9 +94,9 @@ if( ($action=='Afficher_bilan') && $pilier_id && count($tab_eleve) )
 			$affichage .= '<tr>';
 			foreach($tab_eleve_id as $eleve_id)
 			{
-				$affichage .= '<th id="S'.$section_id.'U'.$eleve_id.'" class="down1" title="Modifier la validation de tout le domaine pour cet élève." /></th>';
+				$affichage .= '<th id="S'.$section_id.'U'.$eleve_id.'" class="down1" title="Modifier la validation de tout le domaine pour cet élève."></th>';
 			}
-			$affichage .= '<th id="S'.$section_id.'" class="diag1" title="Modifier la validation de tout le domaine pour tous les élèves." /></th>';
+			$affichage .= '<th id="S'.$section_id.'" class="diag1" title="Modifier la validation de tout le domaine pour tous les élèves."></th>';
 			$affichage .= '<th class="nu" colspan="2"><div class="n2 b">'.html($DB_ROW['section_nom']).'</div></th>';
 			$affichage .= '</tr>';
 		}
@@ -109,7 +111,7 @@ if( ($action=='Afficher_bilan') && $pilier_id && count($tab_eleve) )
 			{
 				$affichage .= '<td id="S'.$section_id.'U'.$eleve_id.'E'.$entree_id.'"></td>'; // class/title + lang + contenu seront ajoutés ensuite 
 			}
-			$affichage .= '<th id="E'.$entree_id.'" class="left1" title="Modifier la validation de cet item pour tous les élèves." /></th>';
+			$affichage .= '<th id="E'.$entree_id.'" class="left1" title="Modifier la validation de cet item pour tous les élèves."></th>';
 			$affichage .= '<th class="nu" colspan="2"><div class="n3">'.html($DB_ROW['entree_nom']).'</div></th>';
 			$affichage .= '</tr>';
 		}
@@ -181,7 +183,7 @@ if( ($action=='Afficher_bilan') && $pilier_id && count($tab_eleve) )
 	// - - - - - - - - - - - - - - - - - - - - - - - - -
 	// Récupérer la liste des jointures : validations d'entrées
 	// - - - - - - - - - - - - - - - - - - - - - - - - -
-	$DB_TAB = DB_STRUCTURE_lister_jointure_user_entree($listing_eleve_id,$listing_entree_id='',$domaine_id,$pilier_id,$palier_id=0);
+	$DB_TAB = DB_STRUCTURE_lister_jointure_user_entree($listing_eleve_id,$listing_entree_id,$domaine_id,$pilier_id,$palier_id=0);
 	$tab_bad = array();
 	$tab_bon = array();
 	foreach($DB_TAB as $DB_ROW)

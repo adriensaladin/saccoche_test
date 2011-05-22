@@ -30,6 +30,7 @@ INSERT INTO sacoche_parametre VALUES
 ( "droit_modifier_mdp"       , "directeur,professeur,eleve" ),
 ( "droit_validation_entree"  , "directeur,professeur" ),
 ( "droit_validation_pilier"  , "directeur,profprincipal" ),
+( "droit_annulation_pilier"  , "directeur,aucunprof" ),
 ( "droit_voir_referentiels"  , "directeur,professeur,eleve" ),
 ( "droit_voir_score_bilan"   , "directeur,professeur,eleve" ),
 ( "droit_voir_algorithme"    , "directeur,professeur,eleve" ),

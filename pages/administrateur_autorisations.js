@@ -104,6 +104,7 @@ $(document).ready
 				$('#form_validation_socle input[value="directeur"]').prop('checked',true);
 				$('#form_validation_socle input[name="droit_validation_entree"][value="professeur"]').prop('checked',true);
 				$('#form_validation_socle input[name="droit_validation_pilier"][value="profprincipal"]').prop('checked',true);
+				$('#form_validation_socle input[name="droit_annulation_pilier"][value="aucunprof"]').prop('checked',true);
 				$('#ajax_msg_validation_socle').removeAttr("class").addClass("alerte").html("Penser à enregistrer les modifications.");
 			}
 		);
@@ -203,8 +204,9 @@ $(document).ready
 		(
 			function()
 			{
-				var tab_entree = new Array(); $("#form_validation_socle input[name=droit_validation_entree]:checked").each(function(){tab_entree.push($(this).val());});
-				var tab_pilier = new Array(); $("#form_validation_socle input[name=droit_validation_pilier]:checked").each(function(){tab_pilier.push($(this).val());});
+				var tab_entree  = new Array(); $("#form_validation_socle input[name=droit_validation_entree]:checked").each(function(){tab_entree.push($(this).val());});
+				var tab_pilier  = new Array(); $("#form_validation_socle input[name=droit_validation_pilier]:checked").each(function(){tab_pilier.push($(this).val());});
+				var tab_annuler = new Array(); $("#form_validation_socle input[name=droit_annulation_pilier]:checked").each(function(){tab_annuler.push($(this).val());});
 				$("button").prop('disabled',true);
 				$('#ajax_msg_validation_socle').removeAttr("class").addClass("loader").html("Demande envoyée... Veuillez patienter.");
 				$.ajax
@@ -212,7 +214,7 @@ $(document).ready
 					{
 						type : 'POST',
 						url : 'ajax.php?page='+PAGE,
-						data : 'f_objet=validation_socle&f_entree='+tab_entree+'&f_pilier='+tab_pilier,
+						data : 'f_objet=validation_socle&f_entree='+tab_entree+'&f_pilier='+tab_pilier+'&f_annuler='+tab_annuler,
 						dataType : "html",
 						error : function(msg,string)
 						{

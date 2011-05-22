@@ -28,4 +28,4 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 ?>
 
-<p class="astuce">L'administrateur de <em>SACoche</em> pour votre établissement n'a pas ouvert cette fonctionnalité aux <?php echo str_replace('eleve','élève',$_SESSION['USER_PROFIL']) ?>s.</p>
+<p class="astuce">Les administrateurs de <em>SACoche</em> pour votre établissement n'ont pas ouvert cette fonctionnalité aux <?php echo str_replace('eleve','élève',$_SESSION['USER_PROFIL']) ?>s.</p>

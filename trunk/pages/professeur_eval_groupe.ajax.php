@@ -40,8 +40,8 @@ $date_visible   = (isset($_POST['f_date_visible']))    ? clean_texte($_POST['f_d
 $groupe         = (isset($_POST['f_groupe']))          ? clean_texte($_POST['f_groupe'])                : '';
 $info           = (isset($_POST['f_info']))            ? clean_texte($_POST['f_info'])                  : '';
 $descriptif     = (isset($_POST['f_descriptif']))      ? clean_texte($_POST['f_descriptif'])            : '';
-$contenu        = (isset($_POST['f_contenu']))         ? clean_texte($_POST['f_contenu'])               : '';
-$detail         = (isset($_POST['f_detail']))          ? clean_texte($_POST['f_detail'])                : '';
+$cart_contenu   = (isset($_POST['f_contenu']))         ? clean_texte($_POST['f_contenu'])               : '';
+$cart_detail    = (isset($_POST['f_detail']))          ? clean_texte($_POST['f_detail'])                : '';
 $orientation    = (isset($_POST['f_orientation']))     ? clean_texte($_POST['f_orientation'])           : '';
 $marge_min      = (isset($_POST['f_marge_min']))       ? clean_texte($_POST['f_marge_min'])             : '';
 $couleur        = (isset($_POST['f_couleur']))         ? clean_texte($_POST['f_couleur'])               : '';
@@ -883,10 +883,10 @@ if( ($action=='Enregistrer_saisie') && $devoir_id && $date && $date_visible )
 //	Imprimer un cartouche d'une évaluation
 //	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-if( ($action=='Imprimer_cartouche') && $devoir_id && $groupe_type && $groupe_id && $date && $contenu && $detail && $orientation && $marge_min && $couleur )
+if( ($action=='Imprimer_cartouche') && $devoir_id && $groupe_type && $groupe_id && $date && $cart_contenu && $cart_detail && $orientation && $marge_min && $couleur )
 {
-	$with_nom    = (substr($contenu,0,8)=='AVEC_nom')  ? true : false ;
-	$with_result = (substr($contenu,9)=='AVEC_result') ? true : false ;
+	$with_nom    = (substr($cart_contenu,0,8)=='AVEC_nom')  ? true : false ;
+	$with_result = (substr($cart_contenu,9)=='AVEC_result') ? true : false ;
 	// liste des items
 	$DB_TAB_COMP = DB_STRUCTURE_lister_items_devoir($devoir_id);
 	// liste des élèves
@@ -957,8 +957,8 @@ if( ($action=='Imprimer_cartouche') && $devoir_id && $groupe_type && $groupe_id 
 	require('./_fpdf/fpdf.php');
 	require('./_inc/class.PDF.php');
 	$sacoche_pdf = new PDF($orientation,$marge_min,$couleur);
-	$sacoche_pdf->cartouche_initialiser($detail,$item_nb);
-	if($detail=='minimal')
+	$sacoche_pdf->cartouche_initialiser($cart_detail,$item_nb);
+	if($cart_detail=='minimal')
 	{
 		// dans le cas d'un cartouche minimal
 		foreach($tab_user_id as $user_id=>$val_user)
@@ -988,7 +988,7 @@ if( ($action=='Imprimer_cartouche') && $devoir_id && $groupe_type && $groupe_id 
 			}
 		}
 	}
-	elseif($detail=='complet')
+	elseif($cart_detail=='complet')
 	{
 		// dans le cas d'un cartouche complet
 		foreach($tab_user_id as $user_id=>$val_user)

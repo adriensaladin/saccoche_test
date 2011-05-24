@@ -28,23 +28,24 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 if($_SESSION['SESAMATH_ID']==ID_DEMO) {}
 
-$matiere_id    = (isset($_POST['f_matiere']))     ? clean_entier($_POST['f_matiere'])    : 0;
-$niveau_id     = (isset($_POST['f_niveau']))      ? clean_entier($_POST['f_niveau'])     : 0;
-$matiere_nom   = (isset($_POST['f_matiere_nom'])) ? clean_texte($_POST['f_matiere_nom']) : '';
-$niveau_nom    = (isset($_POST['f_niveau_nom']))  ? clean_texte($_POST['f_niveau_nom'])  : '';
-$remplissage   = (isset($_POST['f_remplissage'])) ? clean_texte($_POST['f_remplissage']) : '';
-$orientation   = (isset($_POST['f_orientation'])) ? clean_texte($_POST['f_orientation']) : '';
-$couleur       = (isset($_POST['f_couleur']))     ? clean_texte($_POST['f_couleur'])     : '';
-$legende       = (isset($_POST['f_legende']))     ? clean_texte($_POST['f_legende'])     : '';
-$marge_min     = (isset($_POST['f_marge_min']))   ? clean_texte($_POST['f_marge_min'])   : '';
-$cases_nb      = (isset($_POST['f_cases_nb']))    ? clean_entier($_POST['f_cases_nb'])   : 0;
-$cases_largeur = (isset($_POST['f_cases_larg']))  ? clean_entier($_POST['f_cases_larg']) : 0;
-$only_socle    = (isset($_POST['f_restriction'])) ? 1                                    : 0;
-$aff_coef      = (isset($_POST['f_coef']))        ? 1                                    : 0;
-$aff_socle     = (isset($_POST['f_socle']))       ? 1                                    : 0;
-$aff_lien      = (isset($_POST['f_lien']))        ? 1                                    : 0;
-$groupe_id     = (isset($_POST['f_groupe']))      ? clean_entier($_POST['f_groupe'])     : 0;	// en cas de manipulation type Firebug, peut être forcé pour l'élève à $_SESSION['ELEVE_CLASSE_ID']
-$tab_eleve_id  = (isset($_POST['eleves']))        ? array_map('clean_entier',explode(',',$_POST['eleves'])) : array() ;	// en cas de manipulation type Firebug, peut être forcé pour l'élève avec $_SESSION['USER_ID']
+$matiere_id    = (isset($_POST['f_matiere']))      ? clean_entier($_POST['f_matiere'])      : 0;
+$niveau_id     = (isset($_POST['f_niveau']))       ? clean_entier($_POST['f_niveau'])       : 0;
+$matiere_nom   = (isset($_POST['f_matiere_nom']))  ? clean_texte($_POST['f_matiere_nom'])   : '';
+$niveau_nom    = (isset($_POST['f_niveau_nom']))   ? clean_texte($_POST['f_niveau_nom'])    : '';
+$only_socle    = (isset($_POST['f_restriction']))  ? 1                                      : 0;
+$aff_coef      = (isset($_POST['f_coef']))         ? 1                                      : 0;
+$aff_socle     = (isset($_POST['f_socle']))        ? 1                                      : 0;
+$aff_lien      = (isset($_POST['f_lien']))         ? 1                                      : 0;
+$cases_nb      = (isset($_POST['f_cases_nb']))     ? clean_entier($_POST['f_cases_nb'])     : 0;
+$cases_largeur = (isset($_POST['f_cases_larg']))   ? clean_entier($_POST['f_cases_larg'])   : 0;
+$remplissage   = (isset($_POST['f_remplissage']))  ? clean_texte($_POST['f_remplissage'])   : '';
+$colonne_vide  = (isset($_POST['f_colonne_vide'])) ? clean_entier($_POST['f_colonne_vide']) : 0;
+$orientation   = (isset($_POST['f_orientation']))  ? clean_texte($_POST['f_orientation'])   : '';
+$couleur       = (isset($_POST['f_couleur']))      ? clean_texte($_POST['f_couleur'])       : '';
+$legende       = (isset($_POST['f_legende']))      ? clean_texte($_POST['f_legende'])       : '';
+$marge_min     = (isset($_POST['f_marge_min']))    ? clean_texte($_POST['f_marge_min'])     : '';
+$groupe_id     = (isset($_POST['f_groupe']))       ? clean_entier($_POST['f_groupe'])       : 0;	// en cas de manipulation type Firebug, peut être forcé pour l'élève à $_SESSION['ELEVE_CLASSE_ID']
+$tab_eleve_id  = (isset($_POST['eleves']))         ? array_map('clean_entier',explode(',',$_POST['eleves'])) : array() ;	// en cas de manipulation type Firebug, peut être forcé pour l'élève avec $_SESSION['USER_ID']
 
 save_cookie_select('grille_referentiel');
 
@@ -181,7 +182,7 @@ if( $matiere_id && $niveau_id && $matiere_nom && $niveau_nom && $remplissage && 
 	require('./_fpdf/fpdf.php');
 	require('./_inc/class.PDF.php');
 	$releve_PDF = new PDF($orientation,$marge_min,$couleur,$legende);
-	$releve_PDF->grille_referentiel_initialiser($cases_nb,$cases_largeur,$lignes_nb);
+	$releve_PDF->grille_referentiel_initialiser($cases_nb,$cases_largeur,$lignes_nb,$colonne_vide);
 
 	// Pour chaque élève...
 	foreach($tab_eleve as $tab)

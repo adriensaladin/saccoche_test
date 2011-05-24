@@ -27,7 +27,7 @@
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = "Grille d'items d'un référentiel";
-$VERSION_JS_FILE += 4;
+$VERSION_JS_FILE += 5;
 ?>
 
 <?php
@@ -62,16 +62,17 @@ if($_SESSION['USER_PROFIL']=='eleve')
 	$check_option_lien = ' checked';
 }
 
-$select_matiere     = afficher_select($tab_matieres           , $select_nom='f_matiere'     , $option_first=$of_m , $selection=false                        , $optgroup='non');
-$select_niveau      = afficher_select($tab_niveaux            , $select_nom='f_niveau'      , $option_first='oui' , $selection=$sel_n                       , $optgroup='non');
-$select_groupe      = afficher_select($tab_groupes            , $select_nom='f_groupe'      , $option_first=$of_g , $selection=$sel_g                       , $optgroup=$og_g);
-$select_orientation = afficher_select($tab_select_orientation , $select_nom='f_orientation' , $option_first='non' , $selection=$tab_cookie['orientation']   , $optgroup='non');
-$select_marge_min   = afficher_select($tab_select_marge_min   , $select_nom='f_marge_min'   , $option_first='non' , $selection=$tab_cookie['marge_min']     , $optgroup='non');
-$select_couleur     = afficher_select($tab_select_couleur     , $select_nom='f_couleur'     , $option_first='non' , $selection=$tab_cookie['couleur']       , $optgroup='non');
-$select_legende     = afficher_select($tab_select_legende     , $select_nom='f_legende'     , $option_first='non' , $selection=$tab_cookie['legende']       , $optgroup='non');
-$select_cases_nb    = afficher_select($tab_select_cases_nb    , $select_nom='f_cases_nb'    , $option_first='non' , $selection=$tab_cookie['cases_nb']      , $optgroup='non');
-$select_cases_larg  = afficher_select($tab_select_cases_size  , $select_nom='f_cases_larg'  , $option_first='non' , $selection=$tab_cookie['cases_largeur'] , $optgroup='non');
-$select_remplissage = afficher_select($tab_select_remplissage , $select_nom='f_remplissage' , $option_first='non' , $selection='plein'                      , $optgroup='non');
+$select_matiere      = afficher_select($tab_matieres            , $select_nom='f_matiere'      , $option_first=$of_m , $selection=false                        , $optgroup='non');
+$select_niveau       = afficher_select($tab_niveaux             , $select_nom='f_niveau'       , $option_first='oui' , $selection=$sel_n                       , $optgroup='non');
+$select_groupe       = afficher_select($tab_groupes             , $select_nom='f_groupe'       , $option_first=$of_g , $selection=$sel_g                       , $optgroup=$og_g);
+$select_orientation  = afficher_select($tab_select_orientation  , $select_nom='f_orientation'  , $option_first='non' , $selection=$tab_cookie['orientation']   , $optgroup='non');
+$select_marge_min    = afficher_select($tab_select_marge_min    , $select_nom='f_marge_min'    , $option_first='non' , $selection=$tab_cookie['marge_min']     , $optgroup='non');
+$select_couleur      = afficher_select($tab_select_couleur      , $select_nom='f_couleur'      , $option_first='non' , $selection=$tab_cookie['couleur']       , $optgroup='non');
+$select_legende      = afficher_select($tab_select_legende      , $select_nom='f_legende'      , $option_first='non' , $selection=$tab_cookie['legende']       , $optgroup='non');
+$select_cases_nb     = afficher_select($tab_select_cases_nb     , $select_nom='f_cases_nb'     , $option_first='non' , $selection=$tab_cookie['cases_nb']      , $optgroup='non');
+$select_cases_larg   = afficher_select($tab_select_cases_size   , $select_nom='f_cases_larg'   , $option_first='non' , $selection=$tab_cookie['cases_largeur'] , $optgroup='non');
+$select_remplissage  = afficher_select($tab_select_remplissage  , $select_nom='f_remplissage'  , $option_first='non' , $selection='plein'                      , $optgroup='non');
+$select_colonne_vide = afficher_select($tab_select_colonne_vide , $select_nom='f_colonne_vide' , $option_first='non' , $selection=$tab_cookie['colonne_vide']  , $optgroup='non');
 ?>
 
 <script type="text/javascript">
@@ -95,7 +96,7 @@ $select_remplissage = afficher_select($tab_select_remplissage , $select_nom='f_r
 		<span class="tab"></span><a href="#" class="puce_moins toggle">Afficher moins d'options</a><br />
 		<label class="tab" for="f_restriction">Restriction :</label><input type="checkbox" id="f_restriction" name="f_restriction" value="1" /> <label for="f_restriction">Uniquement les items liés du socle</label><br />
 		<label class="tab" for="f_options">Indications :</label><input type="checkbox" id="f_coef" name="f_coef" value="1" /> <label for="f_coef">Coefficients</label>&nbsp;&nbsp;&nbsp;<input type="checkbox" id="f_socle" name="f_socle" value="1" checked /> <label for="f_socle">Socle</label>&nbsp;&nbsp;&nbsp;<input type="checkbox" id="f_lien" name="f_lien" value="1"<?php echo $check_option_lien ?> /> <label for="f_lien">Liens de remédiation</label><br />
-		<label class="tab" for="f_cases_nb">Évaluations :</label><?php echo $select_cases_nb ?> de largeur <?php echo $select_cases_larg ?> <?php echo $select_remplissage ?><br />
+		<label class="tab" for="f_cases_nb">Évaluations :</label><?php echo $select_cases_nb ?> de largeur <?php echo $select_cases_larg ?> <?php echo $select_remplissage ?> <?php echo $select_colonne_vide ?><br />
 		<label class="tab" for="f_impression"><img alt="" src="./_img/bulle_aide.png" title="Pour le format pdf." /> Impression :</label><?php echo $select_orientation ?> <?php echo $select_couleur ?> <?php echo $select_legende ?> </label><?php echo $select_marge_min ?><p />
 	</div>
 	<span class="tab"></span><button id="bouton_valider" type="submit"><img alt="" src="./_img/bouton/generer.png" /> Générer.</button><label id="ajax_msg">&nbsp;</label><br />

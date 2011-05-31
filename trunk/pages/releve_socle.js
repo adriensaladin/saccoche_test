@@ -66,6 +66,22 @@ $(document).ready
 			}
 		);
 
+		$('#f_mode_auto').click
+		(
+			function()
+			{
+				$("#div_matiere").hide();
+			}
+		);
+
+		$('#f_mode_manuel').click
+		(
+			function()
+			{
+				$("#div_matiere").show();
+			}
+		);
+
 //	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
 //	Charger le select f_pilier en ajax
 //	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
@@ -175,23 +191,27 @@ $(document).ready
 			{
 				rules :
 				{
-					f_palier : { required:true },
-					f_pilier : { required:true },
-					f_groupe : { required:true },
-					f_eleve  : { required:true },
-					f_coef   : { required:false },
-					f_socle  : { required:false },
-					f_lien   : { required:false }
+					f_palier  : { required:true },
+					f_pilier  : { required:true },
+					f_groupe  : { required:true },
+					f_eleve   : { required:true },
+					f_mode    : { required:true },
+					f_matiere : { required:function(){return $('#f_mode_manuel').is(':checked');} },
+					f_coef    : { required:false },
+					f_socle   : { required:false },
+					f_lien    : { required:false }
 				},
 				messages :
 				{
-					f_palier : { required:"palier manquant" },
-					f_pilier : { required:"compétence(s) manquante(s)" },
-					f_groupe : { required:"groupe manquant" },
-					f_eleve  : { required:"élève(s) manquant(s)" },
-					f_coef   : { },
-					f_socle  : { },
-					f_lien   : { }
+					f_palier  : { required:"palier manquant" },
+					f_pilier  : { required:"compétence(s) manquante(s)" },
+					f_groupe  : { required:"groupe manquant" },
+					f_eleve   : { required:"élève(s) manquant(s)" },
+					f_mode    : { required:"choix manquant" },
+					f_matiere : { required:"matiere(s) manquant(e)" },
+					f_coef    : { },
+					f_socle   : { },
+					f_lien    : { }
 				},
 				errorElement : "label",
 				errorClass : "erreur",
@@ -231,6 +251,11 @@ $(document).ready
 				$('#eleves').val(f_eleve);
 				var tab_pilier = new Array(); $("#f_pilier option:selected").each(function(){tab_pilier.push($(this).val());});
 				$('#piliers').val(tab_pilier);
+				if($('#f_mode_manuel').is(':checked'))
+				{
+					var tab_matiere = new Array(); $("#f_matiere option:selected").each(function(){tab_matiere.push($(this).val());});
+					$('#matieres').val(tab_matiere);
+				}
 				// récupération du nom du palier
 				$('#f_palier_nom').val( $("#f_palier option:selected").text() );
 				$(this).ajaxSubmit(ajaxOptions);

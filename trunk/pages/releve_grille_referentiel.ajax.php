@@ -122,7 +122,7 @@ if( $matiere_id && $niveau_id && $matiere_nom && $niveau_nom && $remplissage && 
 	}
 	elseif($groupe_id && count($tab_eleve_id))
 	{
-		$tab_eleve = DB_STRUCTURE_lister_eleves_cibles($liste_eleve);
+		$tab_eleve = DB_STRUCTURE_lister_eleves_cibles($liste_eleve,$with_gepi=FALSE,$with_langue=FALSE);
 	}
 	else
 	{

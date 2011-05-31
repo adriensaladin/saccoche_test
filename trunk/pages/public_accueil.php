@@ -103,7 +103,7 @@ if($profil!='webmestre')
 <ul class="puce">
 	<li><em>SACoche</em> peut être téléchargé et installé sur différents serveurs.</li>
 	<li>Cette installation (<?php echo (HEBERGEUR_INSTALLATION=='mono-structure') ? HEBERGEUR_INSTALLATION : DB_WEBMESTRE_compter_structure() ; ?>) a été effectuée par : <?php echo (HEBERGEUR_ADRESSE_SITE) ? '<a class="lien_ext" href="'.html(HEBERGEUR_ADRESSE_SITE).'">'.html(HEBERGEUR_DENOMINATION).'</a>' : html(HEBERGEUR_DENOMINATION); ?> (<?php echo mailto(WEBMESTRE_COURRIEL,'SACoche','contact','Attention ! Si vous êtes élève, professeur ou directeur, alors il ne faut pas contacter le webmestre du serveur, mais l\'administrateur de votre établissement qui a créé les comptes utilisateurs.'); ?>).</li>
-	<li>Déclaration <a class="lien_ext" href="http://www.cnil.fr">CNIL</a> <?php echo intval(HEBERGEUR_CNIL) ? 'n°'.HEBERGEUR_CNIL : 'non renseignée' ; ?>.</li>
+	<li><a class="lien_ext" href="http://sacoche.sesamath.net/index.php?dossier=presentation&amp;fichier=accueil__cnil">Information CNIL</a>. Déclaration <?php echo intval(CNIL_NUMERO) ? 'n°'.CNIL_NUMERO : 'non renseignée' ; ?>.</li>
 </ul>
 
 <hr />
@@ -111,7 +111,7 @@ if($profil!='webmestre')
 <h2><img src="./_img/puce_astuce.png" alt="Informations" /> Informations</h2>
 <ul class="puce">
 	<li><em>SACoche</em> est un logiciel gratuit, libre, développé avec le soutien de <a class="lien_ext" href="http://www.sesamath.net"><em>Sésamath</em></a>.</li>
-	<li class="b">Consulter <a href="<?php echo SERVEUR_PROJET ?>">le site officiel de <em>SACoche</em></a> pour tout renseignement.</li>
+	<li class="b">Consulter <a href="<?php echo SERVEUR_PROJET ?>" class="lien_ext">le site officiel de <em>SACoche</em></a> pour tout renseignement.</li>
 	<li>Version installée <em><?php echo VERSION_PROG ?></em>.<label id="ajax_version" for="version"></label></li>
 </ul>
 

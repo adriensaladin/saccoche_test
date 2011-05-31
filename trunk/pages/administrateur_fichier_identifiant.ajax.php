@@ -95,13 +95,13 @@ if( (($action=='init_login')||($action=='init_mdp')) && (($profil=='eleves')||($
 	//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 	$separateur = ';';
 	$champ_nom = ($profil=='eleves') ? 'CLASSE' : 'PROFIL' ;
-	$fcontenu = 'N°SCONET'.$separateur.'REFERENCE'.$separateur.$champ_nom.$separateur.'NOM'.$separateur.'PRENOM'.$separateur.'LOGIN'.$separateur.'MOT DE PASSE'."\r\n\r\n";
+	$fcontenu = 'SCONET_ID'.$separateur.'SCONET_N°'.$separateur.'REFERENCE'.$separateur.$champ_nom.$separateur.'NOM'.$separateur.'PRENOM'.$separateur.'LOGIN'.$separateur.'MOT DE PASSE'."\r\n\r\n";
 	foreach($DB_TAB as $DB_ROW)
 	{
 		$champ_val = ($profil=='eleves') ? $DB_ROW['groupe_nom'] : $DB_ROW['user_profil'] ;
 		$login = ($action=='init_login') ? $tab_login[$DB_ROW['user_id']] : $DB_ROW['user_login'] ;
 		$mdp   = ($action=='init_mdp')   ? $tab_password[$DB_ROW['user_id']] : 'inchangé' ;
-		$fcontenu .= $DB_ROW['user_num_sconet'].$separateur.$DB_ROW['user_reference'].$separateur.$champ_val.$separateur.$DB_ROW['user_nom'].$separateur.$DB_ROW['user_prenom'].$separateur.$login.$separateur.$mdp."\r\n";
+		$fcontenu .= $DB_ROW['user_sconet_id'].$separateur.$DB_ROW['user_sconet_elenoet'].$separateur.$DB_ROW['user_reference'].$separateur.$champ_val.$separateur.$DB_ROW['user_nom'].$separateur.$DB_ROW['user_prenom'].$separateur.$login.$separateur.$mdp."\r\n";
 	}
 	$zip = new ZipArchive();
 	if ($zip->open($dossier_login_mdp.$fnom.'.zip', ZIPARCHIVE::CREATE)===TRUE)
@@ -407,7 +407,7 @@ if( ($action=='import_gepi_eleves') || ($action=='import_gepi_profs') )
 	$tab_users_fichier['id_gepi']    = array();
 	$tab_users_fichier['nom']        = array();
 	$tab_users_fichier['prenom']     = array();
-	$tab_users_fichier['num_sconet'] = array(); // Ne servira que pour les élèves
+	$tab_users_fichier['sconet_num'] = array(); // Ne servira que pour les élèves
 	$contenu = file_get_contents($dossier_import.$fichier_dest);
 	$contenu = utf8($contenu); // Mettre en UTF-8 si besoin
 	$tab_lignes = extraire_lignes($contenu); // Extraire les lignes du fichier
@@ -423,24 +423,24 @@ if( ($action=='import_gepi_eleves') || ($action=='import_gepi_profs') )
 			$id_gepi    = $tab_elements[2];
 			$nom        = $tab_elements[0];
 			$prenom     = $tab_elements[1];
-			$num_sconet = (isset($tab_elements[4])) ? $tab_elements[4] : 0;
+			$sconet_num = (isset($tab_elements[4])) ? $tab_elements[4] : 0;
 			if( ($id_gepi!='') && ($nom!='') && ($prenom!='') )
 			{
 				$tab_users_fichier['id_gepi'][] = mb_substr(clean_texte($id_gepi),0,32);
 				$tab_users_fichier['nom'][]     = mb_substr(clean_nom($nom),0,20);
 				$tab_users_fichier['prenom'][]  = mb_substr(clean_prenom($prenom),0,20);
-				$tab_users_fichier['num_sconet'][] = clean_entier($num_sconet);
+				$tab_users_fichier['sconet_num'][] = clean_entier($sconet_num);
 			}
 		}
 	}
 	// On trie
-	array_multisort($tab_users_fichier['nom'],SORT_ASC,SORT_STRING,$tab_users_fichier['prenom'],SORT_ASC,SORT_STRING,$tab_users_fichier['id_gepi'],$tab_users_fichier['num_sconet']);
+	array_multisort($tab_users_fichier['nom'],SORT_ASC,SORT_STRING,$tab_users_fichier['prenom'],SORT_ASC,SORT_STRING,$tab_users_fichier['id_gepi'],$tab_users_fichier['sconet_num']);
 	// On récupère le contenu de la base pour comparer (la recherche d'éventuels doublons d'ids gepi ne se fera que sur les profs...)
 	$tab_users_base               = array();
 	$tab_users_base['id_gepi']    = array();
 	$tab_users_base['nom']        = array();
 	$tab_users_base['prenom']     = array();
-	$tab_users_base['num_sconet'] = array(); // Ne servira que pour les élèves
+	$tab_users_base['sconet_num'] = array(); // Ne servira que pour les élèves
 	$profil = ($action=='import_gepi_eleves') ? 'eleve' : 'professeur' ;
 	$DB_TAB = DB_STRUCTURE_lister_users($profil,$only_actifs=false,$with_classe=false);
 	foreach($DB_TAB as $DB_ROW)
@@ -448,7 +448,7 @@ if( ($action=='import_gepi_eleves') || ($action=='import_gepi_profs') )
 		$tab_users_base['id_gepi'][$DB_ROW['user_id']]    = $DB_ROW['user_id_gepi'];
 		$tab_users_base['nom'][$DB_ROW['user_id']]        = $DB_ROW['user_nom'];
 		$tab_users_base['prenom'][$DB_ROW['user_id']]     = $DB_ROW['user_prenom'];
-		$tab_users_base['num_sconet'][$DB_ROW['user_id']] = $DB_ROW['user_num_sconet'];
+		$tab_users_base['sconet_num'][$DB_ROW['user_id']] = $DB_ROW['user_sconet_elenoet'];
 	}
 	// Observer le contenu du fichier et comparer avec le contenu de la base
 	$lignes_ras = '';
@@ -464,10 +464,10 @@ if( ($action=='import_gepi_eleves') || ($action=='import_gepi_profs') )
 		else
 		{
 			$id_base = 0;
-			// Si le num_sconet est renseigné (élèves uniquement), on recherche l'id de l'utilisateur de la base de même num_sconet
-			if($tab_users_fichier['num_sconet'][$i_fichier])
+			// Si sconet_num (elenoet) est renseigné (élèves uniquement), on recherche l'id de l'utilisateur de la base de même sconet_num
+			if($tab_users_fichier['sconet_num'][$i_fichier])
 			{
-				$id_base = array_search($tab_users_fichier['num_sconet'][$i_fichier],$tab_users_base['num_sconet']);
+				$id_base = array_search($tab_users_fichier['sconet_num'][$i_fichier],$tab_users_base['sconet_num']);
 			}
 			if(!$id_base)
 			{
@@ -701,7 +701,7 @@ if($action=='COPY_id_lcs_TO_id_ent')
 	{
 		exit('Erreur : le fichier "'.$fichier.'" n\'a pas été trouvé !');
 	}
-	require($fichier); // Charge la fonction "recuperer_infos_user_LCS_by_NumSconet()"
+	require($fichier); // Charge la fonction "recuperer_infos_user_LCS_by_SconetId()"
 	// On récupère le contenu de la base, on va passer les users en revue un par un
 	$DB_TAB = DB_STRUCTURE_lister_users(array('eleve','professeur','directeur'),$only_actifs=true,$with_classe=true);
 	// Pour chaque user de la base, rechercher son uid dans le LCS
@@ -716,14 +716,14 @@ if($action=='COPY_id_lcs_TO_id_ent')
 			// Contenu de SACoche à ignorer : utilisateur non cherché dans le LCS car profil 'directeur'
 			$lignes_inconnu .= '<tr><td>'.html($DB_ROW['user_nom'].' '.$DB_ROW['user_prenom'].' ['.$DB_ROW['user_id_ent'].']').'</td><td>non cherché car profil directeur</td></tr>';
 		}
-		elseif(!$DB_ROW['user_num_sconet'])
+		elseif(!$DB_ROW['user_sconet_id'])
 		{
-			// Contenu de SACoche à ignorer : utilisateur non cherché dans le LCS car pas de numéro Sconet
-			$lignes_inconnu .= '<tr><td>'.html($DB_ROW['user_nom'].' '.$DB_ROW['user_prenom'].' ['.$DB_ROW['user_id_ent'].']').'</td><td>non cherché car pas de numéro Sconet</td></tr>';
+			// Contenu de SACoche à ignorer : utilisateur non cherché dans le LCS car pas d'identifiant Sconet
+			$lignes_inconnu .= '<tr><td>'.html($DB_ROW['user_nom'].' '.$DB_ROW['user_prenom'].' ['.$DB_ROW['user_id_ent'].']').'</td><td>non cherché car pas d\'identifiant Sconet</td></tr>';
 		}
 		else
 		{
-			list($code_erreur,$tab_valeurs_retournees) = recuperer_infos_user_LCS_by_NumSconet($DB_ROW['user_profil'],$DB_ROW['user_num_sconet']);
+			list($code_erreur,$tab_valeurs_retournees) = recuperer_infos_user_LCS_by_SconetId($DB_ROW['user_profil'],$DB_ROW['user_sconet_id']);
 			if($code_erreur)
 			{
 				// Contenu de SACoche à problème : retour erroné du LCS
@@ -732,12 +732,12 @@ if($action=='COPY_id_lcs_TO_id_ent')
 			elseif(count($tab_valeurs_retournees)==0)
 			{
 				// Contenu de SACoche à ignorer : utilisateur non trouvé dans le LCS
-				$lignes_inconnu .= '<tr><td>'.html($DB_ROW['user_nom'].' '.$DB_ROW['user_prenom'].' ['.$DB_ROW['user_id_ent'].']').'</td><td>numéro Sconet '.html($DB_ROW['user_num_sconet']).' non trouvé dans le LCS</td></tr>';
+				$lignes_inconnu .= '<tr><td>'.html($DB_ROW['user_nom'].' '.$DB_ROW['user_prenom'].' ['.$DB_ROW['user_id_ent'].']').'</td><td>identifiant Sconet '.html($DB_ROW['user_sconet_id']).' non trouvé dans le LCS</td></tr>';
 			}
 			elseif(count($tab_valeurs_retournees)!=1)
 			{
 				// Contenu de SACoche à problème : plusieurs réponses retournées par le LCS
-				$lignes_pb .= '<tr><td>'.html($DB_ROW['user_nom'].' '.$DB_ROW['user_prenom'].' ['.$DB_ROW['user_id_ent'].']').'</td><td>numéro Sconet '.html($DB_ROW['user_num_sconet']).' trouvé plusieurs fois dans le LCS</td></tr>';
+				$lignes_pb .= '<tr><td>'.html($DB_ROW['user_nom'].' '.$DB_ROW['user_prenom'].' ['.$DB_ROW['user_id_ent'].']').'</td><td>identifiant Sconet '.html($DB_ROW['user_sconet_id']).' trouvé plusieurs fois dans le LCS</td></tr>';
 			}
 			else
 			{

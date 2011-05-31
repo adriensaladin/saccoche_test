@@ -48,7 +48,7 @@ if( ($action=='ajouter') && $nom && $prenom && $login )
 	// Construire le password
 	$password = fabriquer_mdp();
 	// Insérer l'enregistrement
-	$user_id = DB_STRUCTURE_ajouter_utilisateur($num_sconet=0,$reference='','administrateur',$nom,$prenom,$login,$password,$classe_id=0,$id_ent='',$id_gepi='');
+	$user_id = DB_STRUCTURE_ajouter_utilisateur($user_sconet_id=0,$user_sconet_elenoet=0,$reference='','administrateur',$nom,$prenom,$login,$password,$classe_id=0,$id_ent='',$id_gepi='');
 	// Afficher le retour
 	echo'<tr id="id_'.$user_id.'" class="new">';
 	echo	'<td>'.html($nom).'</td>';

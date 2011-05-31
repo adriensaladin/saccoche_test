@@ -839,6 +839,71 @@ function maj_base($version_actuelle)
 	}
 
 	//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	//	MAJ 2011-05-22 => 2011-05-31
+	//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	if($version_actuelle=='2011-05-22')
+	{
+		$version_actuelle = '2011-05-31';
+		// modification/réorganisation de la table user pour gérer les champs de sconet eleve_id et individu_fonction
+		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_user ADD user_sconet_id MEDIUMINT UNSIGNED NOT NULL DEFAULT "0" COMMENT "ELEVE.ELEVE.ID pour un élève ; INDIVIDU_ID pour un prof" AFTER user_num_sconet' );
+		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_user ADD user_sconet_elenoet SMALLINT UNSIGNED NOT NULL DEFAULT "0" COMMENT "ELENOET pour un élève (entre 2000 et 5000 ; parfois appelé n° GEP avec un 0 devant)" AFTER user_sconet_id' );
+		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_user SET user_sconet_id=user_num_sconet WHERE user_profil!="eleve"' );
+		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_user SET user_sconet_elenoet=user_num_sconet WHERE user_profil="eleve"' );
+		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_user DROP user_num_sconet' );
+		// ajout d'un champ dans la table user pour gérer le choix de la langue du socle
+		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_user ADD eleve_langue TINYINT UNSIGNED NOT NULL DEFAULT "132" COMMENT "Langue choisie pour le socle." AFTER eleve_classe_id' );
+		// ajout d'un champ dans la table user pour gérer la date de sortie (CNIL) ; pas de date par défaut possible dans la création du champ ou pour l'insertion d'une nouvelle ligne...
+		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_user ADD user_statut_date DATE NOT NULL DEFAULT "0000-00-00" AFTER user_connexion_date' );
+		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_user SET user_statut_date=NOW()' );
+		// ajout de 2 niveaux "Première générale" et "Terminale générale"
+		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_niveau VALUES (  68, 0,  84,     "1", "2011....11.", "Première générale")' );
+		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_niveau VALUES (  69, 0,  94,     "T", "2021....11.", "Terminale générale")' );
+		// Je renonce aux fonctions car la liste n'est pas claire + ça ne sert à rien sans le libellé court de la matière (qui ne correspond pas à ce qu'on trouve dans STS, il est dans Nomenclature.xml mais pas dans SACoche) + ça fait assez de modifs comme ça + ça pose problème pour le 1er degré + un prof peut avoir quitté l'établissement + on peut faire un export LPC sans spécifier qui a validé.
+		// DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_user ADD user_fonction ENUM( "", "ENS", "DIR", "EDU", "DOC", "COP", "ORI", "FIJ", "AED", "SUR" ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT "" COMMENT "INDIVIDU.FONCTION dans le fichier Sconet-STS des personnels" AFTER user_reference' );
+		// DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_user SET user_fonction="ENS" WHERE user_profil="professeur"' );
+		// DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_user SET user_fonction="DIR" WHERE user_profil="directeur"' );
+		// correctif : passage du champ pilier_id de SMALLINT en TINYINT
+		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_socle_pilier CHANGE pilier_id pilier_id TINYINT(3) UNSIGNED NOT NULL AUTO_INCREMENT ' );
+		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_jointure_user_pilier CHANGE pilier_id pilier_id TINYINT(3) UNSIGNED NOT NULL DEFAULT "0" ' );
+		// correctif : dénominations d'items
+		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_socle_entree SET entree_nom="Organisation et gestion de données : reconnaître des situations de proportionnalité, utiliser des pourcentages, des tableaux, des graphiques. Exploiter des données statistiques et aborder des situations simples de probabilité." WHERE entree_id=197 LIMIT 1' );
+		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_socle_entree SET entree_nom="Nombres et calculs : connaître et utiliser les nombres entiers, décimaux et fractionnaires. Mener à bien un calcul : mental, à la main, à la calculatrice, avec un ordinateur." WHERE entree_id=202 LIMIT 1' );
+		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_socle_entree SET entree_nom="Géométrie : connaître et représenter des figures géométriques et des objets de l’espace. Utiliser leurs propriétés." WHERE entree_id=205 LIMIT 1' );
+		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_socle_entree SET entree_nom="Relevant du temps : les différentes périodes de l’histoire de l’humanité - Les grands traits de l’histoire (politique, sociale, économique, littéraire, artistique, culturelle) de la France et de l’Europe." WHERE entree_id=249 LIMIT 1' );
+		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_socle_entree SET entree_nom="Relevant de la culture civique : Droits de l’Homme - Formes d’organisation politique, économique et sociale dans l’Union européenne - Place et rôle de l’État en France - Mondialisation - Développement durable." WHERE entree_id=285 LIMIT 1' );
+		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_socle_entree SET entree_nom="Respecter des comportements favorables à sa santé et sa sécurité." WHERE entree_id=268 LIMIT 1' );
+		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_socle_entree SET entree_nom="Respecter quelques notions juridiques de base." WHERE entree_id=269 LIMIT 1' );
+		// modification des identifiants de compétence pour qu'ils correspondent à ceux de LPC (pas d'info sur le palier 1...)
+		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_socle_pilier SET pilier_id=pilier_id+20' );
+		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_socle_pilier SET pilier_id=pilier_id-31 WHERE pilier_id>31' );
+		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_socle_pilier SET pilier_id=pilier_id-16 WHERE pilier_id>23' );
+		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_socle_pilier SET pilier_id=pilier_id-5  WHERE pilier_id>20' );
+		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_socle_section SET pilier_id=pilier_id+20' );
+		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_socle_section SET pilier_id=pilier_id-31 WHERE pilier_id>31' );
+		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_socle_section SET pilier_id=pilier_id-16 WHERE pilier_id>23' );
+		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_socle_section SET pilier_id=pilier_id-5  WHERE pilier_id>20' );
+		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_jointure_user_pilier SET pilier_id=pilier_id+20' );
+		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_jointure_user_pilier SET pilier_id=pilier_id-31 WHERE pilier_id>31' );
+		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_jointure_user_pilier SET pilier_id=pilier_id-16 WHERE pilier_id>23' );
+		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_jointure_user_pilier SET pilier_id=pilier_id-5  WHERE pilier_id>20' );
+		// modification des identifiants d'item pour qu'ils correspondent à ceux de LPC (pas d'info sur le palier 1...)
+		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_socle_entree SET entree_id=entree_id+1000' );
+		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_referentiel_item SET entree_id=entree_id+1000' );
+		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_jointure_user_entree SET entree_id=entree_id+1000' );
+		$tab_conv_items = array(1=>3111,2=>3112,3=>3113,4=>3121,5=>3122,6=>3123,7=>3124,8=>3125,9=>3131,10=>3132,11=>3133,12=>3141,13=>3142,14=>3143,15=>3144,16=>3145,17=>3151,18=>3152,19=>3153,20=>3154,21=>3161,22=>3162,23=>3163,24=>3311,25=>3312,26=>3313,27=>3314,28=>3315,29=>3316,30=>3317,31=>3318,32=>3321,33=>3322,34=>3323,35=>3324,36=>3325,37=>3326,38=>3331,39=>3332,40=>3333,41=>3341,42=>3342,43=>3611,44=>3621,45=>3622,46=>3623,47=>2111,48=>2112,49=>2113,50=>2114,51=>2115,52=>2121,53=>2122,54=>2123,55=>2124,56=>2125,57=>2126,58=>2127,59=>2128,60=>2129,61=>21210,62=>2131,63=>2132,64=>2133,65=>2134,66=>2141,67=>2142,68=>2143,69=>2144,70=>2151,71=>2152,72=>2153,73=>2161,74=>2162,75=>2163,76=>2211,77=>2212,78=>2213,79=>2214,80=>2221,81=>2222,82=>2223,83=>2231,84=>2232,85=>2233,86=>2241,87=>2242,88=>2251,89=>2252,90=>2253,91=>2254,92=>2255,93=>2311,94=>2312,95=>2313,96=>2314,97=>2315,98=>2316,99=>2317,100=>2318,101=>2321,102=>2322,103=>2323,104=>2324,105=>2331,106=>2332,107=>2333,108=>2334,109=>2341,110=>2342,111=>2343,112=>2351,113=>2352,114=>2353,115=>2361,116=>2362,117=>2363,118=>2364,119=>2365,120=>2366,121=>2367,122=>2368,123=>2371,124=>2411,125=>2421,126=>2431,127=>2432,128=>2441,129=>2442,130=>2443,131=>2451,133=>2511,134=>2512,135=>2513,136=>2514,137=>2521,138=>2522,132=>2531,139=>2541,140=>2542,141=>2543,142=>2544,143=>2545,144=>2611,145=>2612,146=>2613,147=>2621,148=>2622,149=>2711,150=>2712,151=>2713,152=>2714,153=>2721,154=>2731,155=>2732,156=>2733,157=>111,282=>112,158=>113,159=>114,160=>115,163=>121,164=>122,166=>123,167=>124,283=>131,170=>132,171=>133,172=>134,177=>211,178=>212,179=>213,180=>214,181=>221,182=>222,183=>231,184=>232,185=>233,186=>241,187=>242,188=>251,189=>252,190=>253,191=>254,192=>255,193=>311,194=>312,195=>313,196=>314,197=>321,202=>322,205=>323,208=>324,210=>331,211=>332,212=>333,213=>334,214=>335,215=>341,218=>411,220=>412,216=>413,222=>421,223=>422,225=>423,228=>424,229=>431,235=>432,231=>433,234=>434,236=>441,239=>442,238=>443,243=>453,242=>454,284=>455,245=>511,249=>512,251=>513,252=>514,285=>515,286=>521,256=>522,287=>523,259=>524,255=>531,293=>532,254=>533,288=>541,289=>542,290=>543,291=>544,260=>611,261=>612,262=>613,263=>614,264=>615,265=>616,266=>621,267=>622,268=>623,269=>624,270=>625,272=>711,273=>712,292=>713,274=>721,275=>722,277=>723,276=>724,278=>731,279=>732,280=>733,281=>734);
+		foreach($tab_conv_items as $old => $new)
+		{
+			$old+=1000;
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_socle_entree SET entree_id='.$new.' WHERE entree_id='.$old.' LIMIT 1' );
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_referentiel_item SET entree_id='.$new.' WHERE entree_id='.$old );
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_jointure_user_entree SET entree_id='.$new.' WHERE entree_id='.$old );
+		}
+		// mise à jour du champ "version_base" (obligatoire)
+		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_actuelle.'" WHERE parametre_nom="version_base" LIMIT 1' );
+	}
+
+	//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Log de l'action
 	//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

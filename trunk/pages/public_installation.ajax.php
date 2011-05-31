@@ -106,7 +106,7 @@ if( $step==2 )
 
 if( $step==3 )
 {
-	if( defined('HEBERGEUR_INSTALLATION') && defined('HEBERGEUR_DENOMINATION') && defined('HEBERGEUR_UAI') && defined('HEBERGEUR_ADRESSE_SITE') && defined('HEBERGEUR_LOGO') && defined('HEBERGEUR_CNIL') && defined('WEBMESTRE_NOM') && defined('WEBMESTRE_PRENOM') && defined('WEBMESTRE_COURRIEL') && defined('WEBMESTRE_PASSWORD_MD5') )
+	if( defined('HEBERGEUR_INSTALLATION') && defined('HEBERGEUR_DENOMINATION') && defined('HEBERGEUR_UAI') && defined('HEBERGEUR_ADRESSE_SITE') && defined('HEBERGEUR_LOGO') && defined('CNIL_NUMERO') && defined('CNIL_NUMERO') && defined('CNIL_DATE_ENGAGEMENT') && defined('CNIL_DATE_RECEPISSE') && defined('WEBMESTRE_PRENOM') && defined('WEBMESTRE_COURRIEL') && defined('WEBMESTRE_PASSWORD_MD5') )
 	{
 		$affichage .= '<p><label for="rien" class="valide">Les informations concernant le type d\'installation, l\'hébergement et le webmestre sont déjà renseignées.</label></p>'."\r\n";
 		$affichage .= '<p><span class="tab"><a href="#" class="step5">Passer à l\'étape 5.</a><label id="ajax_msg">&nbsp;</label></span></p>' ;
@@ -183,7 +183,7 @@ if( $step==41 )
 	if( in_array($installation,array('mono-structure','multi-structures')) && $denomination && $nom && $prenom && $courriel && $password )
 	{
 		// Il faut tout transmettre car à ce stade le fichier n'existe pas.
-		fabriquer_fichier_hebergeur_info( array('HEBERGEUR_INSTALLATION'=>$installation,'HEBERGEUR_DENOMINATION'=>$denomination,'HEBERGEUR_UAI'=>$uai,'HEBERGEUR_ADRESSE_SITE'=>$adresse_site,'HEBERGEUR_LOGO'=>'','HEBERGEUR_CNIL'=>'non renseignée','WEBMESTRE_NOM'=>$nom,'WEBMESTRE_PRENOM'=>$prenom,'WEBMESTRE_COURRIEL'=>$courriel,'WEBMESTRE_PASSWORD_MD5'=>crypter_mdp($password),'WEBMESTRE_ERREUR_DATE'=>0,'SERVEUR_PROXY_USED'=>'','SERVEUR_PROXY_NAME'=>'','SERVEUR_PROXY_PORT'=>'','SERVEUR_PROXY_TYPE'=>'','SERVEUR_PROXY_AUTH_USED'=>'','SERVEUR_PROXY_AUTH_METHOD'=>'','SERVEUR_PROXY_AUTH_USER'=>'','SERVEUR_PROXY_AUTH_PASS'=>'') );
+		fabriquer_fichier_hebergeur_info( array('HEBERGEUR_INSTALLATION'=>$installation,'HEBERGEUR_DENOMINATION'=>$denomination,'HEBERGEUR_UAI'=>$uai,'HEBERGEUR_ADRESSE_SITE'=>$adresse_site,'HEBERGEUR_LOGO'=>'','CNIL_NUMERO'=>'non renseignée','CNIL_DATE_ENGAGEMENT'=>'','CNIL_DATE_RECEPISSE'=>'','WEBMESTRE_NOM'=>$nom,'WEBMESTRE_PRENOM'=>$prenom,'WEBMESTRE_COURRIEL'=>$courriel,'WEBMESTRE_PASSWORD_MD5'=>crypter_mdp($password),'WEBMESTRE_ERREUR_DATE'=>0,'SERVEUR_PROXY_USED'=>'','SERVEUR_PROXY_NAME'=>'','SERVEUR_PROXY_PORT'=>'','SERVEUR_PROXY_TYPE'=>'','SERVEUR_PROXY_AUTH_USED'=>'','SERVEUR_PROXY_AUTH_METHOD'=>'','SERVEUR_PROXY_AUTH_USER'=>'','SERVEUR_PROXY_AUTH_PASS'=>'') );
 		$affichage .= '<p><label for="rien" class="valide">Les informations concernant le webmestre et l\'hébergement sont maintenant renseignées.</label></p>'."\r\n";
 		$affichage .= '<div class="astuce">Vous pourrez les modifier depuis l\'espace du webmestre, en particulier ajouter un logo et un numéro de déclaration à la CNIL.</div>'."\r\n";
 		$affichage .= '<p><span class="tab"><a href="#" class="step5">Passer à l\'étape 5.</a><label id="ajax_msg">&nbsp;</label></span></p>' ;
@@ -416,7 +416,7 @@ if( $step==6 )
 			DB_STRUCTURE_modifier_parametres($tab_parametres);
 			// Insérer un compte administrateur dans la base de la structure
 			$password = fabriquer_mdp();
-			$user_id = DB_STRUCTURE_ajouter_utilisateur($num_sconet=0,$reference='','administrateur',WEBMESTRE_NOM,WEBMESTRE_PRENOM,$login='admin',$password,$classe_id=0,$id_ent='',$id_gepi='');
+			$user_id = DB_STRUCTURE_ajouter_utilisateur($user_sconet_id=0,$user_sconet_elenoet=0,$reference='','administrateur',WEBMESTRE_NOM,WEBMESTRE_PRENOM,$login='admin',$password,$classe_id=0,$id_ent='',$id_gepi='');
 			// Créer un dossier accueillir pour les vignettes verticales avec l'identité des élèves
 			/*
 				Petit problème : on ne passe pas par ici si la base est existante mais les fichiers effacés... donc dans ce cas ce dossier n'est pas recréé...

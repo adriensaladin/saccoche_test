@@ -45,7 +45,8 @@ else
 $fichier_test_chemin_tmp = './__tmp/index.htm';
 $fichier_test_chemin_new = './_dtd/index.htm';
 Ecrire_Fichier($fichier_test_chemin_tmp,'Circulez, il n\'y a rien à voir par ici !');
-if( !copy( $fichier_test_chemin_tmp , $fichier_test_chemin_new ) )
+$test_copie = @copy( $fichier_test_chemin_tmp , $fichier_test_chemin_new );
+if( !$test_copie )
 {
 	$test_droits = '<label class="erreur">Echec lors du test des droits en écriture !</label>';
 }

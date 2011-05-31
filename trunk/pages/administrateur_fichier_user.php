@@ -91,7 +91,7 @@ $nom_fin_fichier = $_SESSION['UAI'].'_'.$annee_scolaire;
 	<fieldset id="fieldset_sconet_professeurs_directeurs_oui" class="hide">
 		<hr />
 		<ul class="puce">
-			<li><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__import_users_sconet">DOC : Import d'utilisateurs depuis Base élèves (1<sup>er</sup> degré)</a></span></li>
+			<li><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__import_users_sconet">DOC : Import d'utilisateurs depuis Sconet / STS-Web</a></span></li>
 			<li>Indiquez le fichier <em>sts_emp_<?php echo $nom_fin_fichier ?>.xml</em> (ou <em>sts_emp_<?php echo $nom_fin_fichier ?>.zip</em>) : <button id="sconet_professeurs_directeurs" type="button"><img alt="" src="./_img/bouton/fichier_import.png" /> Parcourir...</button></li>
 		</ul>
 	</fieldset>

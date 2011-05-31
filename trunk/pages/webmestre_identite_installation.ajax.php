@@ -28,15 +28,17 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 if($_SESSION['SESAMATH_ID']==ID_DEMO) {exit('Action désactivée pour la démo...');}
 
-$action       = (isset($_POST['f_action']))       ? clean_texte($_POST['f_action'])       : '';
-$denomination = (isset($_POST['f_denomination'])) ? clean_texte($_POST['f_denomination']) : '';
-$uai          = (isset($_POST['f_uai']))          ? clean_uai($_POST['f_uai'])            : '';
-$adresse_site = (isset($_POST['f_adresse_site'])) ? clean_url($_POST['f_adresse_site'])   : '';
-$logo         = (isset($_POST['f_logo']))         ? clean_texte($_POST['f_logo'])         : '';
-$cnil         = (isset($_POST['f_cnil_numero']))  ? clean_entier($_POST['f_cnil_numero']) : 0;
-$nom          = (isset($_POST['f_nom']))          ? clean_nom($_POST['f_nom'])            : '';
-$prenom       = (isset($_POST['f_prenom']))       ? clean_prenom($_POST['f_prenom'])      : '';
-$courriel     = (isset($_POST['f_courriel']))     ? clean_courriel($_POST['f_courriel'])  : '';
+$action               = (isset($_POST['f_action']))               ? clean_texte($_POST['f_action'])               : '';
+$denomination         = (isset($_POST['f_denomination']))         ? clean_texte($_POST['f_denomination'])         : '';
+$uai                  = (isset($_POST['f_uai']))                  ? clean_uai($_POST['f_uai'])                    : '';
+$adresse_site         = (isset($_POST['f_adresse_site']))         ? clean_url($_POST['f_adresse_site'])           : '';
+$logo                 = (isset($_POST['f_logo']))                 ? clean_texte($_POST['f_logo'])                 : '';
+$cnil_numero          = (isset($_POST['f_cnil_numero']))          ? clean_entier($_POST['f_cnil_numero'])         : 0;
+$cnil_date_engagement = (isset($_POST['f_cnil_date_engagement'])) ? clean_texte($_POST['f_cnil_date_engagement']) : '';
+$cnil_date_recepisse  = (isset($_POST['f_cnil_date_recepisse']))  ? clean_texte($_POST['f_cnil_date_recepisse'])  : '';
+$nom                  = (isset($_POST['f_nom']))                  ? clean_nom($_POST['f_nom'])                    : '';
+$prenom               = (isset($_POST['f_prenom']))               ? clean_prenom($_POST['f_prenom'])              : '';
+$courriel             = (isset($_POST['f_courriel']))             ? clean_courriel($_POST['f_courriel'])          : '';
 
 $dossier_images = './__tmp/logo/';
 $tab_ext_images = array('bmp','gif','jpg','jpeg','png','svg');
@@ -131,7 +133,7 @@ elseif( ($action=='delete_logo') && $logo )
 
 elseif( ($action=='enregistrer') && $denomination && $nom && $prenom && $courriel )
 {
-	fabriquer_fichier_hebergeur_info( array('HEBERGEUR_DENOMINATION'=>$denomination,'HEBERGEUR_UAI'=>$uai,'HEBERGEUR_ADRESSE_SITE'=>$adresse_site,'HEBERGEUR_LOGO'=>$logo,'HEBERGEUR_CNIL'=>$cnil,'WEBMESTRE_NOM'=>$nom,'WEBMESTRE_PRENOM'=>$prenom,'WEBMESTRE_COURRIEL'=>$courriel) );
+	fabriquer_fichier_hebergeur_info( array('HEBERGEUR_DENOMINATION'=>$denomination,'HEBERGEUR_UAI'=>$uai,'HEBERGEUR_ADRESSE_SITE'=>$adresse_site,'HEBERGEUR_LOGO'=>$logo,'CNIL_NUMERO'=>$cnil_numero,'CNIL_DATE_ENGAGEMENT'=>$cnil_date_engagement,'CNIL_DATE_RECEPISSE'=>$cnil_date_recepisse,'WEBMESTRE_NOM'=>$nom,'WEBMESTRE_PRENOM'=>$prenom,'WEBMESTRE_COURRIEL'=>$courriel) );
 	if(HEBERGEUR_INSTALLATION=='mono-structure')
 	{
 		// Personnaliser certains paramètres de la structure (pour une installation de type multi-structures, ça se fait à la page de gestion des établissements)

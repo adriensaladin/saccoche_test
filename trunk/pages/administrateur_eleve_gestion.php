@@ -27,7 +27,7 @@
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = "Gérer les élèves";
-$VERSION_JS_FILE += 1;
+$VERSION_JS_FILE += 2;
 ?>
 
 <?php
@@ -48,12 +48,13 @@ $select_f_groupes = afficher_select(DB_STRUCTURE_OPT_regroupements_etabl() , $se
 <hr />
 
 <form action="" id="form1">
-	<table class="form">
+	<table class="form t9">
 		<thead>
 			<tr>
 				<th>Id. ENT</th>
 				<th>Id. GEPI</th>
-				<th>n° Sconet</th>
+				<th>Id Sconet</th>
+				<th>N° Sconet</th>
 				<th>Référence</th>
 				<th>Nom</th>
 				<th>Prénom</th>
@@ -80,7 +81,8 @@ $select_f_groupes = afficher_select(DB_STRUCTURE_OPT_regroupements_etabl() , $se
 					echo'<tr id="id_'.$DB_ROW['user_id'].'">';
 					echo	'<td>'.html($DB_ROW['user_id_ent']).'</td>';
 					echo	'<td>'.html($DB_ROW['user_id_gepi']).'</td>';
-					echo	'<td>'.html($DB_ROW['user_num_sconet']).'</td>';
+					echo	'<td>'.html($DB_ROW['user_sconet_id']).'</td>';
+					echo	'<td>'.html($DB_ROW['user_sconet_elenoet']).'</td>';
 					echo	'<td>'.html($DB_ROW['user_reference']).'</td>';
 					echo	'<td>'.html($DB_ROW['user_nom']).'</td>';
 					echo	'<td>'.html($DB_ROW['user_prenom']).'</td>';

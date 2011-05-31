@@ -163,6 +163,12 @@ if(is_file($fichier_constantes))
 		}
 	}
 	// FIN A compter du 05/12/2010, 2 users MySQL sont créés par établissement (localhost & %) ; il faut créer les manquants antérieurs sinon erreur lors de la suppression. [à retirer dans quelques mois]
+	// DEBUT A compter du 26/05/2011, ajout de paramètres dans le fichier de constantes pour les dates CNIL. [à retirer dans quelques mois]
+	if(!defined('CNIL_NUMERO') && function_exists('enregistrer_informations_session'))
+	{
+		fabriquer_fichier_hebergeur_info( array('CNIL_NUMERO'=>HEBERGEUR_CNIL,'CNIL_DATE_ENGAGEMENT'=>'','CNIL_DATE_RECEPISSE'=>'') );
+	}
+	// FIN A compter du 26/05/2011, ajout de paramètres dans le fichier de constantes pour les dates CNIL. [à retirer dans quelques mois]
 }
 elseif($PAGE!='public_installation')
 {

@@ -187,7 +187,7 @@ function ajouter_log_SACoche($contenu)
 
 function ajouter_log_PHP($log_objet,$log_contenu,$log_fichier,$log_ligne,$only_sesamath=true)
 {
-	if(strpos(SERVEUR_ADRESSE,SERVEUR_PROJET)===0)
+	if( (!$only_sesamath) || (strpos(SERVEUR_ADRESSE,SERVEUR_PROJET)===0) )
 	{
 		$SEP = ' ║ ';
 		error_log('SACoche info' . $SEP . $log_objet . $SEP . 'base '.$_SESSION['BASE'] . $SEP . 'user '.$_SESSION['USER_ID'] . $SEP . basename($log_fichier).' '.$log_ligne . $SEP . $log_contenu,0);
@@ -343,7 +343,7 @@ function fabriquer_fichier_hebergeur_info($tab_constantes_modifiees)
 {
 	global $CHEMIN_CONFIG;
 	$fichier_nom     = $CHEMIN_CONFIG.'constantes.php';
-	$tab_constantes_requises = array('HEBERGEUR_INSTALLATION','HEBERGEUR_DENOMINATION','HEBERGEUR_UAI','HEBERGEUR_ADRESSE_SITE','HEBERGEUR_LOGO','HEBERGEUR_CNIL','WEBMESTRE_NOM','WEBMESTRE_PRENOM','WEBMESTRE_COURRIEL','WEBMESTRE_PASSWORD_MD5','WEBMESTRE_ERREUR_DATE','SERVEUR_PROXY_USED','SERVEUR_PROXY_NAME','SERVEUR_PROXY_PORT','SERVEUR_PROXY_TYPE','SERVEUR_PROXY_AUTH_USED','SERVEUR_PROXY_AUTH_METHOD','SERVEUR_PROXY_AUTH_USER','SERVEUR_PROXY_AUTH_PASS');
+	$tab_constantes_requises = array('HEBERGEUR_INSTALLATION','HEBERGEUR_DENOMINATION','HEBERGEUR_UAI','HEBERGEUR_ADRESSE_SITE','HEBERGEUR_LOGO','CNIL_NUMERO','CNIL_DATE_ENGAGEMENT','CNIL_DATE_RECEPISSE','WEBMESTRE_NOM','WEBMESTRE_PRENOM','WEBMESTRE_COURRIEL','WEBMESTRE_PASSWORD_MD5','WEBMESTRE_ERREUR_DATE','SERVEUR_PROXY_USED','SERVEUR_PROXY_NAME','SERVEUR_PROXY_PORT','SERVEUR_PROXY_TYPE','SERVEUR_PROXY_AUTH_USED','SERVEUR_PROXY_AUTH_METHOD','SERVEUR_PROXY_AUTH_USER','SERVEUR_PROXY_AUTH_PASS');
 	$fichier_contenu = '<?php'."\r\n";
 	$fichier_contenu.= '// Informations concernant l\'hébergement et son webmestre (n°UAI uniquement pour une installation de type mono-structure)'."\r\n";
 	foreach($tab_constantes_requises as $constante_nom)
@@ -650,6 +650,7 @@ function enregistrer_informations_session($BASE,$DB_ROW)
 	$_SESSION['USER_ID_GEPI']     = $DB_ROW['user_id_gepi'];
 	$_SESSION['ELEVE_CLASSE_ID']  = (int) $DB_ROW['eleve_classe_id'];
 	$_SESSION['ELEVE_CLASSE_NOM'] = $DB_ROW['groupe_nom'];
+	$_SESSION['ELEVE_LANGUE']     = (int) $DB_ROW['eleve_langue'];
 	// Récupérer et Enregistrer en session les données associées à l'établissement (indices du tableau de session en majuscules).
 	$DB_TAB = DB_STRUCTURE_lister_parametres();
 	$tab_type_entier  = array('SESAMATH_ID','DUREE_INACTIVITE','CALCUL_VALEUR_RR','CALCUL_VALEUR_R','CALCUL_VALEUR_V','CALCUL_VALEUR_VV','CALCUL_SEUIL_R','CALCUL_SEUIL_V','CALCUL_LIMITE','CAS_SERVEUR_PORT');

@@ -109,7 +109,7 @@ if( $matiere_id && $matiere_nom && $groupe_id && $groupe_nom && count($tab_eleve
 	//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 	// Récupération de la liste des élèves
 	//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-	$tab_eleve = DB_STRUCTURE_lister_eleves_cibles($liste_eleve);
+	$tab_eleve = DB_STRUCTURE_lister_eleves_cibles($liste_eleve,$with_gepi=FALSE,$with_langue=FALSE);
 	if(!is_array($tab_eleve))
 	{
 		exit('Aucun élève trouvé correspondant aux identifiants transmis !');

@@ -63,6 +63,8 @@ $tab_droits['professeur_referentiel_gestion']          = $tab_droits_profil_prof
 $tab_droits['professeur_referentiel_edition']          = $tab_droits_profil_professeur;
 // Profil directeur
 $tab_droits['consultation_statistiques']               = $tab_droits_profil_directeur;
+$tab_droits['validation_socle_fichier']                = $tab_droits_profil_directeur;
+
 // Profil administrateur
 $tab_droits['administrateur_administrateur']           = $tab_droits_profil_administrateur;
 $tab_droits['administrateur_algorithme_gestion']       = $tab_droits_profil_administrateur;
@@ -77,6 +79,7 @@ $tab_droits['administrateur_eleve']                    = $tab_droits_profil_admi
 $tab_droits['administrateur_eleve_classe']             = $tab_droits_profil_administrateur;
 $tab_droits['administrateur_eleve_gestion']            = $tab_droits_profil_administrateur;
 $tab_droits['administrateur_eleve_groupe']             = $tab_droits_profil_administrateur;
+$tab_droits['administrateur_eleve_langue']             = $tab_droits_profil_administrateur;
 $tab_droits['administrateur_etabl_connexion']          = $tab_droits_profil_administrateur;
 $tab_droits['administrateur_etabl_duree_inactivite']   = $tab_droits_profil_administrateur;
 $tab_droits['administrateur_etabl_identite']           = $tab_droits_profil_administrateur;
@@ -132,7 +135,7 @@ $tab_droits['consultation_date_connexion']             = array( 'public'=>0 , 'e
 $tab_droits['consultation_groupe_periode']             = array( 'public'=>0 , 'eleve'=>1 , 'professeur'=>1 , 'directeur'=>1 , 'administrateur'=>0 , 'webmestre'=>0 );
 $tab_droits['consultation_referentiel_interne']        = array( 'public'=>0 , 'eleve'=>1 , 'professeur'=>1 , 'directeur'=>1 , 'administrateur'=>1 , 'webmestre'=>0 );
 $tab_droits['consultation_referentiel_externe']        = array( 'public'=>0 , 'eleve'=>0 , 'professeur'=>1 , 'directeur'=>1 , 'administrateur'=>0 , 'webmestre'=>0 );
-$tab_droits['date_calendrier']                         = array( 'public'=>0 , 'eleve'=>1 , 'professeur'=>1 , 'directeur'=>1 , 'administrateur'=>1 , 'webmestre'=>0 );
+$tab_droits['date_calendrier']                         = array( 'public'=>0 , 'eleve'=>1 , 'professeur'=>1 , 'directeur'=>1 , 'administrateur'=>1 , 'webmestre'=>1 );
 $tab_droits['export_fichier']                          = array( 'public'=>0 , 'eleve'=>0 , 'professeur'=>1 , 'directeur'=>1 , 'administrateur'=>0 , 'webmestre'=>0 );
 $tab_droits['public_login_CAS']                        = array( 'public'=>1 , 'eleve'=>1 , 'professeur'=>1 , 'directeur'=>1 , 'administrateur'=>0 , 'webmestre'=>0 ); // Particulier ! Un échange est encore effecué avec ce fichier après enregistrement des données de session...
 $tab_droits['releve']                                  = array( 'public'=>0 , 'eleve'=>1 , 'professeur'=>1 , 'directeur'=>1 , 'administrateur'=>0 , 'webmestre'=>0 );

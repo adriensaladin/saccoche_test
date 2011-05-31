@@ -32,7 +32,7 @@ $action     = (isset($_POST['f_action']))     ? clean_texte($_POST['f_action']) 
 $id         = (isset($_POST['f_id']))         ? clean_entier($_POST['f_id'])         : 0;
 $id_ent     = (isset($_POST['f_id_ent']))     ? clean_texte($_POST['f_id_ent'])      : '';
 $id_gepi    = (isset($_POST['f_id_gepi']))    ? clean_texte($_POST['f_id_gepi'])     : '';
-$num_sconet = (isset($_POST['f_num_sconet'])) ? clean_entier($_POST['f_num_sconet']) : 0;
+$sconet_id  = (isset($_POST['f_sconet_id']))  ? clean_entier($_POST['f_sconet_id'])  : 0;
 $reference  = (isset($_POST['f_reference']))  ? clean_ref($_POST['f_reference'])     : '';
 $nom        = (isset($_POST['f_nom']))        ? clean_nom($_POST['f_nom'])           : '';
 $prenom     = (isset($_POST['f_prenom']))     ? clean_prenom($_POST['f_prenom'])     : '';
@@ -60,10 +60,10 @@ if( ($action=='ajouter') && $nom && $prenom )
 			exit('Erreur : identifiant Gepi déjà utilisé !');
 		}
 	}
-	// Vérifier que le n° sconet est disponible (parmi les directeurs de cet établissement)
-	if($num_sconet)
+	// Vérifier que l'identifiant sconet est disponible (parmi les professeurs de cet établissement)
+	if($sconet_id)
 	{
-		if( DB_STRUCTURE_tester_utilisateur_numSconet($num_sconet,'directeur') )
+		if( DB_STRUCTURE_tester_utilisateur_SconetId($sconet_id,'directeur') )
 		{
 			exit('Erreur : n° sconet déjà utilisé !');
 		}
@@ -87,12 +87,12 @@ if( ($action=='ajouter') && $nom && $prenom )
 	// Construire le password
 	$password = fabriquer_mdp();
 	// Insérer l'enregistrement
-	$user_id = DB_STRUCTURE_ajouter_utilisateur($num_sconet,$reference,'directeur',$nom,$prenom,$login,$password,0,$id_ent,$id_gepi);
+	$user_id = DB_STRUCTURE_ajouter_utilisateur($sconet_id,$sconet_num=0,$reference,'directeur',$nom,$prenom,$login,$password,0,$id_ent,$id_gepi);
 	// Afficher le retour
 	echo'<tr id="id_'.$user_id.'" class="new">';
 	echo	'<td>'.html($id_ent).'</td>';
 	echo	'<td>'.html($id_gepi).'</td>';
-	echo	'<td>'.html($num_sconet).'</td>';
+	echo	'<td>'.html($sconet_id).'</td>';
 	echo	'<td>'.html($reference).'</td>';
 	echo	'<td>'.html($nom).'</td>';
 	echo	'<td>'.html($prenom).'</td>';
@@ -126,12 +126,12 @@ else if( ($action=='modifier') && $id && $nom && $prenom && $login )
 			exit('Erreur : identifiant Gepi déjà utilisé !');
 		}
 	}
-	// Vérifier que le n° sconet est disponible (parmi les directeurs de cet établissement)
-	if($num_sconet)
+	// Vérifier que l'identifiant sconet est disponible (parmi les directeurs de cet établissement)
+	if($sconet_id)
 	{
-		if( DB_STRUCTURE_tester_utilisateur_numSconet($num_sconet,'directeur',$id) )
+		if( DB_STRUCTURE_tester_utilisateur_SconetId($sconet_id,'directeur',$id) )
 		{
-			exit('Erreur : n° sconet déjà utilisé !');
+			exit('Erreur : identifiant Sconet déjà utilisé !');
 		}
 	}
 	// Vérifier que la référence est disponible (parmi les directeurs de cet établissement)
@@ -148,7 +148,7 @@ else if( ($action=='modifier') && $id && $nom && $prenom && $login )
 		exit('Erreur : login déjà existant !');
 	}
 	// Mettre à jour l'enregistrement avec ou sans génération d'un nouveau mot de passe
-	$tab_donnees = array(':num_sconet'=>$num_sconet,':reference'=>$reference,':nom'=>$nom,':prenom'=>$prenom,':login'=>$login,':id_ent'=>$id_ent,':id_gepi'=>$id_gepi);
+	$tab_donnees = array(':sconet_id'=>$sconet_id,':reference'=>$reference,':nom'=>$nom,':prenom'=>$prenom,':login'=>$login,':id_ent'=>$id_ent,':id_gepi'=>$id_gepi);
 	if($password)
 	{
 		$tab_donnees[':password'] = fabriquer_mdp() ;
@@ -157,7 +157,7 @@ else if( ($action=='modifier') && $id && $nom && $prenom && $login )
 	// Afficher le retour
 	echo'<td>'.html($id_ent).'</td>';
 	echo'<td>'.html($id_gepi).'</td>';
-	echo'<td>'.html($num_sconet).'</td>';
+	echo'<td>'.html($sconet_id).'</td>';
 	echo'<td>'.html($reference).'</td>';
 	echo'<td>'.html($nom).'</td>';
 	echo'<td>'.html($prenom).'</td>';

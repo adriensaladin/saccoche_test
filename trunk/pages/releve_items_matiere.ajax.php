@@ -115,7 +115,7 @@ if( $orientation && $couleur && $legende && $marge_min && $pages_nb && $cases_nb
 	}
 	else
 	{
-		$tab_eleve = DB_STRUCTURE_lister_eleves_cibles($liste_eleve);
+		$tab_eleve = DB_STRUCTURE_lister_eleves_cibles($liste_eleve,$with_gepi=TRUE,$with_langue=FALSE);
 		if(!is_array($tab_eleve))
 		{
 			exit('Aucun élève trouvé correspondant aux identifiants transmis !');

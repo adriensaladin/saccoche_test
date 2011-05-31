@@ -25,30 +25,18 @@
  * 
  */
 
-if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-$TITRE = "Élèves";
-?>
+// Tableau avec la liste des langues qu'il est possible de choisir pour le socle
 
-<div class="hc">
-	<a href="./index.php?page=<?php echo $PAGE ?>&amp;section=gestion">Élèves (gestion).</a>	||
-	<a href="./index.php?page=<?php echo $PAGE ?>&amp;section=classe">Élèves &amp; classes.</a>	||
-	<a href="./index.php?page=<?php echo $PAGE ?>&amp;section=groupe">Élèves &amp; groupes.</a>	||
-	<a href="./index.php?page=<?php echo $PAGE ?>&amp;section=langue">Élèves &amp; langues.</a>
-</div>
+$tab_langues[132] = array( 'valeur'=>132 , 'texte'=>'Anglais'    , 'tab_matiere_id'=>array(91, 2, 3) );
+$tab_langues[134] = array( 'valeur'=>134 , 'texte'=>'Espagnol'   , 'tab_matiere_id'=>array(91, 9,10) );
+$tab_langues[109] = array( 'valeur'=>109 , 'texte'=>'Allemand'   , 'tab_matiere_id'=>array(91, 4, 5) );
+$tab_langues[127] = array( 'valeur'=>127 , 'texte'=>'Italien'    , 'tab_matiere_id'=>array(91,21,22) );
+$tab_langues[139] = array( 'valeur'=>139 , 'texte'=>'Portuguais' , 'tab_matiere_id'=>array(91,35,36) );
+$tab_langues[123] = array( 'valeur'=>123 , 'texte'=>'Russe'      , 'tab_matiere_id'=>array(91,32,33) );
+$tab_langues[216] = array( 'valeur'=>216 , 'texte'=>'Chinois'    , 'tab_matiere_id'=>array(91,37,38) );
 
-<hr />
+// Tableau avec la liste des piliers (compétences) en rapport avec la pratique d'une langue vivante étrangère.
 
-<?php
-// Afficher la bonne page et appeler le bon js / ajax par la suite
-$fichier_section = './pages/'.$PAGE.'_'.$SECTION.'.php';
-if(is_file($fichier_section))
-{
-	$PAGE = $PAGE.'_'.$SECTION ;
-	require($fichier_section);
-}
-else
-{
-	echo'<p><span class="astuce">Choisissez une rubrique ci-dessus...</span></p>';
-	echo'<p><span class="manuel"><a class="pop_up" href="'.SERVEUR_DOCUMENTAIRE.'?fichier=support_administrateur__gestion_eleves">DOC : Gestion des élèves</a></span></p>';
-}
+$tab_langue_piliers = array(2,9);
+
 ?>

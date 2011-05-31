@@ -46,6 +46,42 @@ $(document).ready
 			}
 		);
 
+		//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
+		//	Afficher masquer des options de la grille
+		//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
+
+		$('#f_type_pourcentage').click
+		(
+			function()
+			{
+				$("#option_mode").show();
+			}
+		);
+
+		$('#f_type_validation').click
+		(
+			function()
+			{
+				$("#option_mode").hide();
+			}
+		);
+
+		$('#f_mode_auto').click
+		(
+			function()
+			{
+				$("#div_matiere").hide();
+			}
+		);
+
+		$('#f_mode_manuel').click
+		(
+			function()
+			{
+				$("#div_matiere").show();
+			}
+		);
+
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 //	Tester l'affichage du bouton de validation au changement des formulaires
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
@@ -174,19 +210,23 @@ $(document).ready
 			{
 				rules :
 				{
-					f_type   : { required:true },
-					f_palier : { required:true },
-					f_pilier : { required:true },
-					f_groupe : { required:true },
-					f_eleve  : { required:true }
+					f_type    : { required:true },
+					f_mode    : { required:function(){return $('#f_type_pourcentage').is(':checked');} },
+					f_matiere : { required:function(){return $('#f_mode_manuel').is(':checked');} },
+					f_palier  : { required:true },
+					f_pilier  : { required:true },
+					f_groupe  : { required:true },
+					f_eleve   : { required:true }
 				},
 				messages :
 				{
-					f_type   : { required:"type manquant" },
-					f_palier : { required:"palier manquant" },
-					f_pilier : { required:"compétence(s) manquante(s)" },
-					f_groupe : { required:"groupe manquant" },
-					f_eleve  : { required:"élève(s) manquant(s)" }
+					f_type    : { required:"type manquant" },
+					f_mode    : { required:"choix manquant" },
+					f_matiere : { required:"matiere(s) manquant(e)" },
+					f_palier  : { required:"palier manquant" },
+					f_pilier  : { required:"compétence(s) manquante(s)" },
+					f_groupe  : { required:"groupe manquant" },
+					f_eleve   : { required:"élève(s) manquant(s)" }
 				},
 				errorElement : "label",
 				errorClass : "erreur",
@@ -224,6 +264,11 @@ $(document).ready
 				$('#eleves').val(f_eleve);
 				var tab_pilier = new Array(); $("#f_pilier option:selected").each(function(){tab_pilier.push($(this).val());});
 				$('#piliers').val(tab_pilier);
+				if($('#f_mode_manuel').is(':checked'))
+				{
+					var tab_matiere = new Array(); $("#f_matiere option:selected").each(function(){tab_matiere.push($(this).val());});
+					$('#matieres').val(tab_matiere);
+				}
 				// récupération du nom du palier et du nom du groupe
 				$('#f_palier_nom').val( $("#f_palier option:selected").text() );
 				$('#f_groupe_nom').val( $("#f_groupe option:selected").text() );

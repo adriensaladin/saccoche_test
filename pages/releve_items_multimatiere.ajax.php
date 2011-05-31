@@ -62,6 +62,9 @@ $liste_eleve   = implode(',',$tab_eleve);
 if( $orientation && $couleur && $legende && $marge_min && $pages_nb && $cases_nb && $cases_largeur && ( $periode_id || ($date_debut && $date_fin) ) && $retroactif && $matiere_id && $groupe_id && $groupe_nom && count($tab_eleve) && count($tab_type) )
 {
 
+	// Permet d'avoir des informations accessibles en cas d'erreur type « PHP Fatal error : Allowed memory size of ... bytes exhausted ».
+	ajouter_log_PHP( $log_objet='Demande de bilan' , $log_contenu=serialize($_POST) , $log_fichier=__FILE__ , $log_ligne=__LINE__ , $only_sesamath=true );
+
 	// Période concernée
 	if($periode_id==0)
 	{
@@ -109,7 +112,7 @@ if( $orientation && $couleur && $legende && $marge_min && $pages_nb && $cases_nb
 	//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 	// Récupération de la liste des élèves
 	//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-	$tab_eleve = DB_STRUCTURE_lister_eleves_cibles($liste_eleve);
+	$tab_eleve = DB_STRUCTURE_lister_eleves_cibles($liste_eleve,$with_gepi=FALSE,$with_langue=FALSE);
 	if(!is_array($tab_eleve))
 	{
 		exit('Aucun élève trouvé correspondant aux identifiants transmis !');

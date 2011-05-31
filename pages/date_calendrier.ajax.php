@@ -47,8 +47,6 @@ if( ($a<$annee_mini) || ($a>$annee_maxi) )
 {
 	$a = $annee_actuelle;
 }
-// Pour éventuellement mettre en valeur le jour actuel
-$test_jour_actuel = ( ($j==$jour_actuel) && ($m==$mois_actuel) && ($a==$annee_actuelle) ) ? true : false ;
 // Jour de la semaine
 $dayone = date('w',mktime(1,1,1,$m,1,$a));
 if($dayone==0)
@@ -106,7 +104,7 @@ for($i=1;$i<=42;$i++)
 	if( ($i<(cal_days_in_month(CAL_GREGORIAN,$m,$a)+$dayone)) && ($i>=$dayone) )
 	{
 		$val = $i-$dayone+1;
-		$class = ( ($val==$jour_actuel) && ($m==$mois_actuel) && ($a==$annee_actuelle) ) ? ' class="v"' : '';
+		$class = ( ($val==$jour_actuel) && ($m==$mois_actuel) && ($a==$annee_actuelle) ) ? ' class="hoy"' : '';
 		$calendrier_affichage .= '<td'.$class.'><a class="actu" href="'.sprintf("%02u",$val).'-'.sprintf("%02u",$m).'-'.$a.'">'.$val.'</a></td>';
 	} 
 	else

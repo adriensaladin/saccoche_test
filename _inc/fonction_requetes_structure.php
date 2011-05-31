@@ -732,7 +732,7 @@ function DB_STRUCTURE_lister_result_eleves_palier($liste_eleve_id,$liste_item_id
 	$DB_SQL = 'SELECT eleve_id , entree_id AS socle_id , item_id , saisie_note AS note , item_nom , ';
 	$DB_SQL.= 'CONCAT(matiere_ref,".",niveau_ref,".",domaine_ref,theme_ordre,item_ordre) AS item_ref , ';
 	$DB_SQL.= 'item_coef , item_cart , item_lien , '; // Besoin pour l'élève s'il veut formuler une demande d'évaluation
-	$DB_SQL.= 'matiere_id , '; // Besoin pour l'élève s'il ajoute l'item aux demandes d'évaluations
+	$DB_SQL.= 'matiere_id , '; // Besoin pour l'élève s'il ajoute l'item aux demandes d'évaluations, besoin aussi s'il faut filtrer à une langue précise pour la compétence 2
 	$DB_SQL.= 'referentiel_calcul_methode AS calcul_methode , referentiel_calcul_limite AS calcul_limite ';
 	$DB_SQL.= 'FROM sacoche_saisie ';
 	$DB_SQL.= 'LEFT JOIN sacoche_referentiel_item USING (item_id) ';
@@ -946,16 +946,16 @@ function DB_STRUCTURE_lister_groupes()
 /**
  * DB_STRUCTURE_lister_classes_avec_niveaux
  *
- * @param void
+ * @param string   $niveau_ordre   facultatif, ASC par défaut, DESC possible
  * @return array
  */
 
-function DB_STRUCTURE_lister_classes_avec_niveaux()
+function DB_STRUCTURE_lister_classes_avec_niveaux($niveau_ordre='ASC')
 {
 	$DB_SQL = 'SELECT * FROM sacoche_groupe ';
 	$DB_SQL.= 'LEFT JOIN sacoche_niveau USING (niveau_id) ';
 	$DB_SQL.= 'WHERE groupe_type=:type ';
-	$DB_SQL.= 'ORDER BY niveau_ordre ASC, groupe_ref ASC';
+	$DB_SQL.= 'ORDER BY niveau_ordre '.$niveau_ordre.', groupe_ref ASC';
 	$DB_VAR = array(':type'=>'classe');
 	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
@@ -1093,12 +1093,17 @@ function DB_STRUCTURE_lister_users_cibles($listing_user_id,$info_classe=false)
  * DB_STRUCTURE_lister_eleves_cibles
  *
  * @param string   $listing_eleve_id   id des élèves séparés par des virgules
- * @return array|string                le tableau est de la forme [i] => array('eleve_id'=>...,'eleve_nom'=>...,'eleve_prenom'=>...,'eleve_id_gepi'=>...);
+ * @param bool     $with_gepi
+ * @param bool     $with_langue
+ * @return array|string                le tableau est de la forme [i] => array('eleve_id'=>...,'eleve_nom'=>...,'eleve_prenom'=>...,'eleve_id_gepi'=>...,'eleve_langue'=>...);
  */
 
-function DB_STRUCTURE_lister_eleves_cibles($listing_eleve_id)
+function DB_STRUCTURE_lister_eleves_cibles($listing_eleve_id,$with_gepi,$with_langue)
 {
-	$DB_SQL = 'SELECT user_id AS eleve_id , user_nom AS eleve_nom , user_prenom AS eleve_prenom , user_id_gepi AS eleve_id_gepi FROM sacoche_user ';
+	$DB_SQL = 'SELECT user_id AS eleve_id , user_nom AS eleve_nom , user_prenom AS eleve_prenom ';
+	$DB_SQL.= ($with_gepi)   ? ', eleve_langue AS eleve_id_gepi ' : '' ;
+	$DB_SQL.= ($with_langue) ? ', eleve_langue ' : '' ;
+	$DB_SQL.= 'FROM sacoche_user ';
 	$DB_SQL.= 'WHERE user_id IN('.$listing_eleve_id.') AND user_profil=:profil ';
 	$DB_SQL.= 'ORDER BY user_nom ASC, user_prenom ASC';
 	$DB_VAR = array(':profil'=>'eleve');
@@ -1432,6 +1437,22 @@ function DB_STRUCTURE_lister_users_avec_groupe($profil_eleve,$prof_id,$only_acti
 		$DB_VAR[':statut'] = 1;
 	}
 	$DB_SQL.= 'ORDER BY user_nom ASC, user_prenom ASC';
+	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+}
+
+/**
+ * DB_STRUCTURE_lister_users_desactives_obsoletes
+ *
+ * @param void
+ * @return array
+ */
+
+function DB_STRUCTURE_lister_users_desactives_obsoletes()
+{
+	$DB_SQL = 'SELECT user_id, user_profil ';
+	$DB_SQL.= 'FROM sacoche_user ';
+	$DB_SQL.= 'WHERE user_statut=:user_statut AND DATE_ADD(user_statut_date,INTERVAL 3 YEAR)<NOW() ';
+	$DB_VAR = array(':user_statut'=>0);
 	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
@@ -1827,6 +1848,21 @@ function DB_STRUCTURE_compter_professeurs_directeurs_suivant_statut()
 }
 
 /**
+ * DB_STRUCTURE_compter_eleves_actifs_sans_id_sconet
+ *
+ * @param void
+ * @return int
+ */
+
+function DB_STRUCTURE_compter_eleves_actifs_sans_id_sconet()
+{
+	$DB_SQL = 'SELECT COUNT(*) AS nombre FROM sacoche_user ';
+	$DB_SQL.= 'WHERE user_profil=:profil AND user_statut=:statut AND user_sconet_id=:sconet_id ';
+	$DB_VAR = array(':profil'=>'eleve',':statut'=>1,':sconet_id'=>0);
+	return DB::queryCol(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+}
+
+/**
  * DB_STRUCTURE_compter_modes_synthese_inconnu
  *
  * @param void
@@ -2034,19 +2070,42 @@ function DB_STRUCTURE_tester_utilisateur_idGepi($user_id_gepi,$user_id=false)
 }
 
 /**
- * DB_STRUCTURE_tester_utilisateur_numSconet (parmi tout le personnel de l'établissement de même profil, sauf éventuellement l'utilisateur concerné)
+ * DB_STRUCTURE_tester_utilisateur_SconetId (parmi tout le personnel de l'établissement de même profil, sauf éventuellement l'utilisateur concerné)
  *
- * @param int    $user_num_sconet
+ * @param int    $user_sconet_id
  * @param string $user_profil
  * @param int    $user_id       inutile si recherche pour un ajout, mais id à éviter si recherche pour une modification
  * @return int
  */
 
-function DB_STRUCTURE_tester_utilisateur_numSconet($user_num_sconet,$user_profil,$user_id=false)
+function DB_STRUCTURE_tester_utilisateur_SconetId($user_sconet_id,$user_profil,$user_id=false)
 {
 	$DB_SQL = 'SELECT user_id FROM sacoche_user ';
-	$DB_SQL.= 'WHERE user_num_sconet=:user_num_sconet AND user_profil=:user_profil ';
-	$DB_VAR = array(':user_num_sconet'=>$user_num_sconet,':user_profil'=>$user_profil);
+	$DB_SQL.= 'WHERE user_sconet_id=:user_sconet_id AND user_profil=:user_profil ';
+	$DB_VAR = array(':user_sconet_id'=>$user_sconet_id,':user_profil'=>$user_profil);
+	if($user_id)
+	{
+		$DB_SQL.= 'AND user_id!=:user_id ';
+		$DB_VAR[':user_id'] = $user_id;
+	}
+	$DB_SQL.= 'LIMIT 1';
+	$DB_ROW = DB::queryRow(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+	return count($DB_ROW) ;
+}
+
+/**
+ * DB_STRUCTURE_tester_utilisateur_SconetElenoet (parmi tous les élèves, sauf éventuellement l'utilisateur concerné)
+ *
+ * @param int    $user_sconet_elenoet
+ * @param int    $user_id       inutile si recherche pour un ajout, mais id à éviter si recherche pour une modification
+ * @return int
+ */
+
+function DB_STRUCTURE_tester_utilisateur_SconetElenoet($user_sconet_elenoet,$user_id=false)
+{
+	$DB_SQL = 'SELECT user_id FROM sacoche_user ';
+	$DB_SQL.= 'WHERE user_sconet_elenoet=:user_sconet_elenoet AND user_profil=:user_profil ';
+	$DB_VAR = array(':user_sconet_elenoet'=>$user_sconet_elenoet,':user_profil'=>'eleve');
 	if($user_id)
 	{
 		$DB_SQL.= 'AND user_id!=:user_id ';
@@ -2191,7 +2250,8 @@ function DB_STRUCTURE_ajouter_periode($periode_ordre,$periode_nom)
 /**
  * DB_STRUCTURE_ajouter_utilisateur
  *
- * @param string $user_num_sconet
+ * @param string $user_sconet_id
+ * @param string $user_sconet_elenoet
  * @param string $user_reference
  * @param string $user_profil
  * @param string $user_nom
@@ -2204,12 +2264,12 @@ function DB_STRUCTURE_ajouter_periode($periode_ordre,$periode_nom)
  * @return int
  */
 
-function DB_STRUCTURE_ajouter_utilisateur($user_num_sconet,$user_reference,$user_profil,$user_nom,$user_prenom,$user_login,$user_password,$eleve_classe_id=0,$user_id_ent='',$user_id_gepi='')
+function DB_STRUCTURE_ajouter_utilisateur($user_sconet_id,$user_sconet_elenoet,$user_reference,$user_profil,$user_nom,$user_prenom,$user_login,$user_password,$eleve_classe_id=0,$user_id_ent='',$user_id_gepi='')
 {
 	$password_crypte = crypter_mdp($user_password);
-	$DB_SQL = 'INSERT INTO sacoche_user(user_num_sconet,user_reference,user_profil,user_nom,user_prenom,user_login,user_password,eleve_classe_id,user_id_ent,user_id_gepi) ';
-	$DB_SQL.= 'VALUES(:user_num_sconet,:user_reference,:user_profil,:user_nom,:user_prenom,:user_login,:password_crypte,:eleve_classe_id,:user_id_ent,:user_id_gepi)';
-	$DB_VAR = array(':user_num_sconet'=>$user_num_sconet,':user_reference'=>$user_reference,':user_profil'=>$user_profil,':user_nom'=>$user_nom,':user_prenom'=>$user_prenom,':user_login'=>$user_login,':password_crypte'=>$password_crypte,':eleve_classe_id'=>$eleve_classe_id,':user_id_ent'=>$user_id_ent,':user_id_gepi'=>$user_id_gepi);
+	$DB_SQL = 'INSERT INTO sacoche_user(user_sconet_id,user_sconet_elenoet,user_reference,user_profil,user_nom,user_prenom,user_login,user_password,eleve_classe_id,user_statut_date,user_id_ent,user_id_gepi) ';
+	$DB_SQL.= 'VALUES(:user_sconet_id,:user_sconet_elenoet,:user_reference,:user_profil,:user_nom,:user_prenom,:user_login,:password_crypte,:eleve_classe_id,NOW(),:user_id_ent,:user_id_gepi)';
+	$DB_VAR = array(':user_sconet_id'=>$user_sconet_id,':user_sconet_elenoet'=>$user_sconet_elenoet,':user_reference'=>$user_reference,':user_profil'=>$user_profil,':user_nom'=>$user_nom,':user_prenom'=>$user_prenom,':user_login'=>$user_login,':password_crypte'=>$password_crypte,':eleve_classe_id'=>$eleve_classe_id,':user_id_ent'=>$user_id_ent,':user_id_gepi'=>$user_id_gepi);
 	DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 	$user_id = DB::getLastOid(SACOCHE_STRUCTURE_BD_NAME);
 	// Pour un professeur, l'affecter obligatoirement à la matière transversale
@@ -2434,10 +2494,10 @@ function DB_STRUCTURE_recopier_identifiants($champ_depart,$champ_arrive)
 }
 
 /**
- * DB_STRUCTURE_modifier_utilisateur (on ne touche pas à 'user_profil' ni à 'connexion_date')
+ * DB_STRUCTURE_modifier_utilisateur (on ne touche pas à "user_profil" ni à "connexion_date" ; par contre on maj "user_statut_date" si "statut" modifié)
  *
  * @param int     $user_id
- * @param array   array(':num_sconet'=>$val, ':reference'=>$val , ':nom'=>$val , ':prenom'=>$val , ':login'=>$val , ':password'=>$val , ':statut'=>$val , ':daltonisme'=>$val , ':classe'=>$val , ':id_ent'=>$val , ':id_gepi'=>$val );
+ * @param array   array(':sconet_id'=>$val, ':sconet_num'=>$val, ':reference'=>$val , ':nom'=>$val , ':prenom'=>$val , ':login'=>$val , ':password'=>$val , ':statut'=>$val , ':daltonisme'=>$val , ':classe'=>$val , ':id_ent'=>$val , ':id_gepi'=>$val );
  * @return void
  */
 
@@ -2448,17 +2508,18 @@ function DB_STRUCTURE_modifier_utilisateur($user_id,$DB_VAR)
 	{
 		switch($key)
 		{
-			case ':num_sconet' :     $tab_set[] = 'user_num_sconet='.$key;     break;
-			case ':reference' :      $tab_set[] = 'user_reference='.$key;      break;
-			case ':nom' :            $tab_set[] = 'user_nom='.$key;            break;
-			case ':prenom' :         $tab_set[] = 'user_prenom='.$key;         break;
-			case ':login' :          $tab_set[] = 'user_login='.$key;          break;
-			case ':password' :       $tab_set[] = 'user_password=:password_crypte'; $DB_VAR[':password_crypte'] = crypter_mdp($DB_VAR[':password']); unset($DB_VAR[':password']); break;
-			case ':statut' :         $tab_set[] = 'user_statut='.$key;         break;
-			case ':daltonisme' :     $tab_set[] = 'user_daltonisme='.$key;     break;
-			case ':classe' :         $tab_set[] = 'eleve_classe_id='.$key;     break;
-			case ':id_ent' :         $tab_set[] = 'user_id_ent='.$key;         break;
-			case ':id_gepi' :        $tab_set[] = 'user_id_gepi='.$key;        break;
+			case ':sconet_id' :  $tab_set[] = 'user_sconet_id='.$key;      break;
+			case ':sconet_num' : $tab_set[] = 'user_sconet_elenoet='.$key; break;
+			case ':reference' :  $tab_set[] = 'user_reference='.$key;      break;
+			case ':nom' :        $tab_set[] = 'user_nom='.$key;            break;
+			case ':prenom' :     $tab_set[] = 'user_prenom='.$key;         break;
+			case ':login' :      $tab_set[] = 'user_login='.$key;          break;
+			case ':password' :   $tab_set[] = 'user_password=:password_crypte'; $DB_VAR[':password_crypte'] = crypter_mdp($DB_VAR[':password']); unset($DB_VAR[':password']); break;
+			case ':statut' :     $tab_set[] = 'user_statut='.$key; $tab_set[] = 'user_statut_date=NOW()'; break;
+			case ':daltonisme' : $tab_set[] = 'user_daltonisme='.$key;     break;
+			case ':classe' :     $tab_set[] = 'eleve_classe_id='.$key;     break;
+			case ':id_ent' :     $tab_set[] = 'user_id_ent='.$key;         break;
+			case ':id_gepi' :    $tab_set[] = 'user_id_gepi='.$key;        break;
 		}
 	}
 	$DB_SQL = 'UPDATE sacoche_user ';
@@ -2551,6 +2612,23 @@ function DB_STRUCTURE_modifier_mdp_utilisateur($user_id,$password_ancien,$passwo
 	$DB_VAR = array(':user_id'=>$user_id,':password_crypte'=>$password_nouveau_crypte);
 	DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 	return 'ok';
+}
+
+/**
+ * DB_STRUCTURE_modifier_user_langue
+ *
+ * @param string $listing_user_id
+ * @param int    $langue
+ * @return void
+ */
+
+function DB_STRUCTURE_modifier_user_langue($listing_user_id,$langue)
+{
+	$DB_SQL = 'UPDATE sacoche_user ';
+	$DB_SQL.= 'SET eleve_langue=:langue ';
+	$DB_SQL.= 'WHERE user_id IN('.$listing_user_id.') ';
+	$DB_VAR = array(':langue'=>$langue);
+	DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
 /**

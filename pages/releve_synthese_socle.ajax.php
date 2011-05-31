@@ -29,31 +29,41 @@ if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');
 if($_SESSION['SESAMATH_ID']==ID_DEMO) {}
 
 $type          = (isset($_POST['f_type']))       ? clean_texte($_POST['f_type'])        : '';
+$mode          = (isset($_POST['f_mode']))       ? clean_texte($_POST['f_mode'])        : '';
 $palier_id     = (isset($_POST['f_palier']))     ? clean_entier($_POST['f_palier'])     : 0;
 $palier_nom    = (isset($_POST['f_palier_nom'])) ? clean_texte($_POST['f_palier_nom'])  : '';
 $pilier_id     = (isset($_POST['f_pilier']))     ? clean_entier($_POST['f_pilier'])     : -1;
 $groupe_id     = (isset($_POST['f_groupe']))     ? clean_entier($_POST['f_groupe'])     : 0;
 $groupe_nom    = (isset($_POST['f_groupe_nom'])) ? clean_texte($_POST['f_groupe_nom'])  : '';
-$tab_pilier_id = (isset($_POST['piliers']))      ? array_map('clean_entier',explode(',',$_POST['piliers'])) : array() ;
-$tab_eleve_id  = (isset($_POST['eleves']))       ? array_map('clean_entier',explode(',',$_POST['eleves'])) : array() ;
+$tab_pilier_id = (isset($_POST['piliers']))      ? array_map('clean_entier',explode(',',$_POST['piliers']))  : array() ;
+$tab_eleve_id  = (isset($_POST['eleves']))       ? array_map('clean_entier',explode(',',$_POST['eleves']))   : array() ;
+$tab_matiere   = (isset($_POST['matieres']))     ? array_map('clean_entier',explode(',',$_POST['matieres'])) : array() ;
 
 $memo_demande  = (count($tab_pilier_id)>1) ? 'palier' : 'pilier' ;
 $tab_eleve_id  = array_filter($tab_eleve_id,'positif');
 $liste_eleve   = implode(',',$tab_eleve_id);
 
-if( (!$palier_id) || (!$palier_nom) || (!$groupe_id) || (!$groupe_nom) || (!count($tab_eleve_id)) || (!count($tab_pilier_id)) || (!in_array($type,array('pourcentage','validation'))) )
+if( (!$palier_id) || (!$palier_nom) || (!$groupe_id) || (!$groupe_nom) || (!count($tab_eleve_id)) || (!count($tab_pilier_id)) || (!in_array($type,array('pourcentage','validation'))) || (!in_array($mode,array('auto','manuel'))) )
 {
 	exit('Erreur avec les données transmises !');
 }
 
+// Permet d'avoir des informations accessibles en cas d'erreur type « PHP Fatal error : Allowed memory size of ... bytes exhausted ».
+ajouter_log_PHP( $log_objet='Demande de bilan' , $log_contenu=serialize($_POST) , $log_fichier=__FILE__ , $log_ligne=__LINE__ , $only_sesamath=true );
+
 $tab_pilier       = array();	// [pilier_id] => array(pilier_ref,pilier_nom,pilier_nb_entrees);
 $tab_socle        = array();	// [pilier_id][socle_id] => array(section_nom,socle_nom);
 $tab_entree_id    = array();	// [i] => entree_id
-$tab_eleve        = array();	// [i] => array(eleve_id,eleve_nom,eleve_prenom)
+$tab_eleve        = array();	// [i] => array(eleve_id,eleve_nom,eleve_prenom,eleve_langue)
 $tab_eval         = array();	// [eleve_id][socle_id][item_id][]['note'] => note   [type "pourcentage" uniquement]
 $tab_item         = array();	// [item_id] => array(calcul_methode,calcul_limite); [type "pourcentage" uniquement]
 $tab_user_entree  = array();	// [eleve_id][entree_id] => array(etat,date,info);   [type "validation" uniquement]
 $tab_user_pilier  = array();	// [eleve_id][pilier_id] => array(etat,date,info);   [type "validation" uniquement]
+
+// Tableau des langues
+require_once('./_inc/tableau_langues.php');
+$tab_eleve_langue = array(); // id de l'élève => id de la langue
+$tab_item_pilier  = array(); // id de l'item => id du pilier
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 // Récupération de la liste des items du socle pour le palier ou le pilier sélectionné
@@ -82,6 +92,10 @@ foreach($DB_TAB as $DB_ROW)
 		$tab_socle[$pilier_id][$socle_id] = $section_nom.' » '.$DB_ROW['entree_nom'];
 		$tab_pilier[$pilier_id]['pilier_nb_entrees']++;
 		$tab_entree_id[] = $socle_id;
+		if( ($type=='pourcentage') && ($mode=='auto') )
+		{
+			$tab_item_pilier[$socle_id] = $pilier_id;
+		}
 	}
 }
 $listing_entree_id = implode(',',$tab_entree_id);
@@ -90,7 +104,14 @@ $listing_entree_id = implode(',',$tab_entree_id);
 // Récupération de la liste des élèves
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
-$tab_eleve = DB_STRUCTURE_lister_eleves_cibles($liste_eleve);
+$tab_eleve = DB_STRUCTURE_lister_eleves_cibles($liste_eleve,$with_gepi=FALSE,$with_langue=TRUE);
+if( ($type=='pourcentage') && ($mode=='auto') )
+{
+	foreach($tab_eleve as $key => $tab)
+	{
+		$tab_eleve_langue[$tab['eleve_id']] = $tab['eleve_langue'];
+	}
+}
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 // Récupération de la liste des résultats [type "pourcentage" uniquement]
@@ -101,10 +122,17 @@ if($type=='pourcentage')
 	$DB_TAB = DB_STRUCTURE_lister_result_eleves_palier($liste_eleve , $listing_entree_id , $date_debut=false , $date_fin=false , $_SESSION['USER_PROFIL']);
 	foreach($DB_TAB as $DB_ROW)
 	{
-		$tab_eval[$DB_ROW['eleve_id']][$DB_ROW['socle_id']][$DB_ROW['item_id']][]['note'] = $DB_ROW['note'];
-		$tab_item[$DB_ROW['item_id']] = array('calcul_methode'=>$DB_ROW['calcul_methode'],'calcul_limite'=>$DB_ROW['calcul_limite']);
+		$test_comptabilise = ($mode=='auto') ? ( !in_array($tab_item_pilier[$DB_ROW['socle_id']],$tab_langue_piliers) || in_array($DB_ROW['matiere_id'],$tab_langues[$tab_eleve_langue[$DB_ROW['eleve_id']]]['tab_matiere_id']) ) : in_array($DB_ROW['matiere_id'],$tab_matiere) ;
+		if($test_comptabilise)
+		{
+			$tab_eval[$DB_ROW['eleve_id']][$DB_ROW['socle_id']][$DB_ROW['item_id']][]['note'] = $DB_ROW['note'];
+			$tab_item[$DB_ROW['item_id']] = array('calcul_methode'=>$DB_ROW['calcul_methode'],'calcul_limite'=>$DB_ROW['calcul_limite']);
+		}
 	}
 }
+
+// Libérer un peu de mémoire : ces tableaux ne servent plus
+unset($tab_item_pilier,$tab_eleve_langue);
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 // Récupération de la liste des validations [type "validation" uniquement]
@@ -203,6 +231,7 @@ $items_nb    = count($tab_entree_id);
 $piliers_nb  = count($tab_pilier);
 $cellules_nb = $items_nb+1;
 $titre_info1 = ($type=='pourcentage') ? 'pourcentage d\'items disciplinaires acquis' : 'validation des items et des compétences' ;
+$titre_info1.= ( ($type=='pourcentage') && ($mode=='manuel') ) ? ' [matières resteintes]' : '' ;
 $titre_info2 = ($memo_demande=='palier') ? $palier_nom : $palier_nom.' – '.mb_substr($tab_pilier[$pilier_id]['pilier_nom'],0,mb_strpos($tab_pilier[$pilier_id]['pilier_nom'],'–')) ;
 $releve_html  = '<style type="text/css">'.$_SESSION['CSS'].'</style>';
 $releve_html .= '<style type="text/css">thead th{text-align:center}tbody th,tbody td{width:8px;height:8px;vertical-align:middle}.nu2{background:#EAEAFF;border:none;}	/* classe existante nu non utilisée à cause de son height imposé */</style>';
@@ -241,14 +270,16 @@ $releve_html_body = '';
 // Pour chaque élève...
 foreach($tab_eleve as $tab)
 {
-	extract($tab);	// $eleve_id $eleve_nom $eleve_prenom
+	extract($tab);	// $eleve_id $eleve_nom $eleve_prenom $eleve_langue
+	$drapeau_langue = count(array_intersect($tab_pilier_id,$tab_langue_piliers)) ? $eleve_langue : 0 ;
+	$image_langue = ($drapeau_langue) ? '<img src="./_img/drapeau/'.$drapeau_langue.'.gif" alt="" title="'.$tab_langues[$drapeau_langue]['texte'].'" /> ' : '' ;
 	$releve_html_body .= '<tr><td class="nu2" colspan="'.$cellules_nb.'" style="height:4px"></td></tr>';
 	if($type=='pourcentage')
 	{
 		// - - - - -
 		// Indication des pourcentages
 		// - - - - -
-		$releve_html_body .= '<tr><th>'.html($eleve_nom.' '.$eleve_prenom).'</th>';
+		$releve_html_body .= '<tr><th>'.$image_langue.html($eleve_nom.' '.$eleve_prenom).'</th>';
 		// Pour chaque entrée du socle...
 		foreach($tab_socle as $pilier_id => $tab)
 		{
@@ -259,14 +290,14 @@ foreach($tab_eleve as $tab)
 			}
 		}
 		$releve_html_body .= '</tr>';
-		$releve_pdf->releve_synthese_socle_pourcentage_eleve($eleve_id,$eleve_nom,$eleve_prenom,$tab_score_socle_eleve,$tab_socle);
+		$releve_pdf->releve_synthese_socle_pourcentage_eleve($eleve_id,$eleve_nom,$eleve_prenom,$tab_score_socle_eleve,$tab_socle,$drapeau_langue);
 	}
 	if($type=='validation')
 	{
 		// - - - - -
 		// Indication des compétences validées
 		// - - - - -
-		$releve_html_body .= '<tr><th rowspan="2">'.html($eleve_nom.' '.$eleve_prenom).'</th>';
+		$releve_html_body .= '<tr><th rowspan="2">'.$image_langue.html($eleve_nom.' '.$eleve_prenom).'</th>';
 		// Pour chaque pilier...
 		foreach($tab_pilier as $pilier_id => $tab)
 		{
@@ -288,7 +319,7 @@ foreach($tab_eleve as $tab)
 			}
 		}
 		$releve_html_body .= '</tr>';
-		$releve_pdf->releve_synthese_socle_validation_eleve($eleve_id,$eleve_nom,$eleve_prenom,$tab_user_pilier,$tab_user_entree,$tab_pilier,$tab_socle);
+		$releve_pdf->releve_synthese_socle_validation_eleve($eleve_id,$eleve_nom,$eleve_prenom,$tab_user_pilier,$tab_user_entree,$tab_pilier,$tab_socle,$drapeau_langue);
 	}
 }
 $releve_html .= '<table class="bilan"><thead>'.$releve_html_head.'</thead><tbody>'.$releve_html_body.'</tbody></table><p />';

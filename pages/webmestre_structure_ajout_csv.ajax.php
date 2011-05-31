@@ -197,7 +197,7 @@ if( ($action=='ajouter') && $num && $max )
 	DB_STRUCTURE_modifier_parametres($tab_parametres);
 	// Insérer le compte administrateur dans la base de cette structure
 	$password = fabriquer_mdp();
-	$user_id = DB_STRUCTURE_ajouter_utilisateur($num_sconet=0,$reference='','administrateur',$contact_nom,$contact_prenom,$login='admin',$password,$classe_id=0,$id_ent='',$id_gepi='');
+	$user_id = DB_STRUCTURE_ajouter_utilisateur($user_sconet_id=0,$user_sconet_elenoet=0,$reference='','administrateur',$contact_nom,$contact_prenom,$login='admin',$password,$classe_id=0,$id_ent='',$id_gepi='');
 	// Et lui envoyer un courriel
 	if($courriel_envoi)
 	{

@@ -68,7 +68,9 @@ INSERT INTO sacoche_niveau VALUES
 (  64, 0,  83,    "1L", "20113...11.", "Première L"),
 (  65, 0,  91,    "TS", "20211...11.", "Terminale S"),
 (  66, 0,  92,   "TES", "20212...11.", "Terminale ES"),
-(  67, 0,  93,    "TL", "20213...11.", "Terminale L");
+(  67, 0,  93,    "TL", "20213...11.", "Terminale L"),
+(  68, 0,  84,     "1", "2011....11.", "Première générale"),
+(  69, 0,  94,     "T", "2021....11.", "Terminale générale");
 
 -- Lycée technologique
 

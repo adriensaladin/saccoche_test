@@ -164,21 +164,22 @@ if( $step==2 )
 	{
 		exit('Erreur : le fichier récupéré et enregistré n\'a pas été retrouvé !');
 	}
-	// Pour récupérer les données des utilisateurs ; on prend comme indice $num_sconet ou $reference suivant le mode d'import
+	// Pour récupérer les données des utilisateurs ; on prend comme indice $sconet_id ou $reference suivant le mode d'import
 	/*
 	 * On utilise la forme moins commode   ['nom'][i]=... ['prenom'][i]=...
 	 * au lieu de la forme plus habituelle [i]['nom']=... [i]['prenom']=...
 	 * parce qu'ensuite cela permet d'effectuer un tri multicolonnes.
 	 */
 	$tab_users_fichier               = array();
-	$tab_users_fichier['num_sconet'] = array();
+	$tab_users_fichier['sconet_id']  = array();
+	$tab_users_fichier['sconet_num'] = array();
 	$tab_users_fichier['reference']  = array();
 	$tab_users_fichier['profil']     = array(); // Pour distinguer professeurs & directeurs
 	$tab_users_fichier['nom']        = array();
 	$tab_users_fichier['prenom']     = array();
-	$tab_users_fichier['classe']     = array(); // Avec id num_sconet ou reference // Classe de l'élève || Classes du professeur, avec indication PP
-	$tab_users_fichier['groupe']     = array(); // Avec id num_sconet // Groupes de l'élève || Groupes du professeur
-	$tab_users_fichier['matiere']    = array(); // Avec id num_sconet // Matières du professeur, avec indication méthode récupération
+	$tab_users_fichier['classe']     = array(); // Avec id sconet_id ou reference // Classe de l'élève || Classes du professeur, avec indication PP
+	$tab_users_fichier['groupe']     = array(); // Avec id sconet_id // Groupes de l'élève || Groupes du professeur
+	$tab_users_fichier['matiere']    = array(); // Avec id sconet_id // Matières du professeur, avec indication méthode récupération
 	// Pour récupérer les données des classes et des groupes
 	$tab_classes_fichier['ref']    = array();
 	$tab_classes_fichier['nom']    = array();
@@ -258,11 +259,12 @@ if( $step==2 )
 				// Prendre les professeurs, les CPE, le personnel de direction (je ne sais pas s'il y a d'autres cas)
 				if(in_array( $fonction , array('ENS','EDU','DIR') ))
 				{
-					$num_sconet = clean_entier($individu->attributes()->ID);
-					$i_fichier  = $num_sconet;
-					$tab_users_fichier['num_sconet'][$i_fichier] = $num_sconet;
+					$sconet_id = clean_entier($individu->attributes()->ID);
+					$i_fichier  = $sconet_id;
+					$tab_users_fichier['sconet_id'][$i_fichier]  = $sconet_id;
+					$tab_users_fichier['sconet_num'][$i_fichier] = 0;
 					$tab_users_fichier['reference'][$i_fichier]  = '';
-					$tab_users_fichier['profil'][$i_fichier]     = ( ($fonction=='ENS') || ($fonction=='EDU') ) ? 'professeur' : 'directeur' ;
+					$tab_users_fichier['profil'][$i_fichier]     = ($fonction=='DIRU') ? 'directeur' : 'professeur' ;
 					$tab_users_fichier['nom'][$i_fichier]        = clean_nom($individu->NOM_USAGE);
 					$tab_users_fichier['prenom'][$i_fichier]     = clean_prenom($individu->PRENOM);
 					$tab_users_fichier['classe'][$i_fichier]     = array();
@@ -418,6 +420,8 @@ if( $step==2 )
 		}
 		// tableau temporaire qui sera effacé, servant à retenir le niveau de l'élève en attendant de connaître sa classe.
 		$tab_users_fichier['niveau'] = array();
+		// tableau temporaire servant à retenir les élèves marqués comme sortis de l'établissement, mais encore dans le fichier et reliés à une classe et autres bricoles.
+		$tab_eleves_sortis = array();
 		//
 		// On passe les utilisateurs en revue : on mémorise leurs infos, plus leur niveau
 		//
@@ -426,15 +430,23 @@ if( $step==2 )
 			foreach ($xml->DONNEES->ELEVES->ELEVE as $eleve)
 			{
 				$i_fichier = clean_entier($eleve->attributes()->ELEVE_ID);
-				$tab_users_fichier['num_sconet'][$i_fichier] = clean_entier($eleve->attributes()->ELENOET);
-				$tab_users_fichier['reference'][$i_fichier]  = clean_ref($eleve->ID_NATIONAL);
-				$tab_users_fichier['profil'][$i_fichier]     = 'eleve' ;
-				$tab_users_fichier['nom'][$i_fichier]        = clean_nom($eleve->NOM);
-				$tab_users_fichier['prenom'][$i_fichier]     = clean_prenom($eleve->PRENOM);
-				$tab_users_fichier['classe'][$i_fichier]     = array();
-				$tab_users_fichier['groupe'][$i_fichier]     = array();
-				$tab_users_fichier['matiere'][$i_fichier]    = array();
-				$tab_users_fichier['niveau'][$i_fichier]     = clean_ref($eleve->CODE_MEF);
+				if($eleve->DATE_SORTIE)
+				{
+					$tab_eleves_sortis[$i_fichier] = TRUE;
+				}
+				else
+				{
+					$tab_users_fichier['sconet_id'][$i_fichier]  = $i_fichier;
+					$tab_users_fichier['sconet_num'][$i_fichier] = clean_entier($eleve->attributes()->ELENOET);
+					$tab_users_fichier['reference'][$i_fichier]  = clean_ref($eleve->ID_NATIONAL);
+					$tab_users_fichier['profil'][$i_fichier]     = 'eleve' ;
+					$tab_users_fichier['nom'][$i_fichier]        = clean_nom($eleve->NOM);
+					$tab_users_fichier['prenom'][$i_fichier]     = clean_prenom($eleve->PRENOM);
+					$tab_users_fichier['classe'][$i_fichier]     = array();
+					$tab_users_fichier['groupe'][$i_fichier]     = array();
+					$tab_users_fichier['matiere'][$i_fichier]    = array();
+					$tab_users_fichier['niveau'][$i_fichier]     = clean_ref($eleve->CODE_MEF);
+				}
 			}
 		}
 		//
@@ -445,39 +457,42 @@ if( $step==2 )
 			foreach ($xml->DONNEES->STRUCTURES->STRUCTURES_ELEVE as $structures_eleve)
 			{
 				$i_fichier = clean_entier($structures_eleve->attributes()->ELEVE_ID);
-				foreach ($structures_eleve->STRUCTURE as $structure)
+				if(!isset($tab_eleves_sortis[$i_fichier]))
 				{
-					if($structure->TYPE_STRUCTURE == 'D')
+					foreach ($structures_eleve->STRUCTURE as $structure)
 					{
-						$classe_ref = clean_ref($structure->CODE_STRUCTURE);
-						$tab_users_fichier['classe'][$i_fichier] = $classe_ref;
-						if(!isset($tab_classes_fichier['ref'][$classe_ref]))
+						if($structure->TYPE_STRUCTURE == 'D')
 						{
-							$tab_classes_fichier['ref'][$classe_ref]    = $classe_ref;
-							$tab_classes_fichier['nom'][$classe_ref]    = $classe_ref;
-							$tab_classes_fichier['niveau'][$classe_ref] = '';
+							$classe_ref = clean_ref($structure->CODE_STRUCTURE);
+							$tab_users_fichier['classe'][$i_fichier] = $classe_ref;
+							if(!isset($tab_classes_fichier['ref'][$classe_ref]))
+							{
+								$tab_classes_fichier['ref'][$classe_ref]    = $classe_ref;
+								$tab_classes_fichier['nom'][$classe_ref]    = $classe_ref;
+								$tab_classes_fichier['niveau'][$classe_ref] = '';
+							}
+							if($tab_users_fichier['niveau'][$i_fichier])
+							{
+								$tab_classes_fichier['niveau'][$classe_ref] = $tab_users_fichier['niveau'][$i_fichier];
+							}
 						}
-						if($tab_users_fichier['niveau'][$i_fichier])
+						elseif($structure->TYPE_STRUCTURE == 'G')
 						{
-							$tab_classes_fichier['niveau'][$classe_ref] = $tab_users_fichier['niveau'][$i_fichier];
-						}
-					}
-					elseif($structure->TYPE_STRUCTURE == 'G')
-					{
-						$groupe_ref = clean_ref($structure->CODE_STRUCTURE);
-						if(!isset($tab_users_fichier['groupe'][$i_fichier][$groupe_ref]))
-						{
-							$tab_users_fichier['groupe'][$i_fichier][$groupe_ref] = $groupe_ref;
-						}
-						if(!isset($tab_groupes_fichier['ref'][$groupe_ref]))
-						{
-							$tab_groupes_fichier['ref'][$groupe_ref]    = $groupe_ref;
-							$tab_groupes_fichier['nom'][$groupe_ref]    = $groupe_ref;
-							$tab_groupes_fichier['niveau'][$groupe_ref] = '';
-						}
-						if($tab_users_fichier['niveau'][$i_fichier])
-						{
-							$tab_groupes_fichier['niveau'][$groupe_ref] = $tab_users_fichier['niveau'][$i_fichier];
+							$groupe_ref = clean_ref($structure->CODE_STRUCTURE);
+							if(!isset($tab_users_fichier['groupe'][$i_fichier][$groupe_ref]))
+							{
+								$tab_users_fichier['groupe'][$i_fichier][$groupe_ref] = $groupe_ref;
+							}
+							if(!isset($tab_groupes_fichier['ref'][$groupe_ref]))
+							{
+								$tab_groupes_fichier['ref'][$groupe_ref]    = $groupe_ref;
+								$tab_groupes_fichier['nom'][$groupe_ref]    = $groupe_ref;
+								$tab_groupes_fichier['niveau'][$groupe_ref] = '';
+							}
+							if($tab_users_fichier['niveau'][$i_fichier])
+							{
+								$tab_groupes_fichier['niveau'][$groupe_ref] = $tab_users_fichier['niveau'][$i_fichier];
+							}
 						}
 					}
 				}
@@ -510,7 +525,8 @@ if( $step==2 )
 				$profil = perso_strtolower($profil);
 				if( ($nom!='') && ($prenom!='') && ( ($profil=='professeur') || ($profil=='directeur') ) )
 				{
-					$tab_users_fichier['num_sconet'][] = 0;
+					$tab_users_fichier['sconet_id'][]  = 0;
+					$tab_users_fichier['sconet_num'][] = 0;
 					$tab_users_fichier['reference'][]  = clean_ref($reference);
 					$tab_users_fichier['profil'][]     = $profil;
 					$tab_users_fichier['nom'][]        = clean_nom($nom);
@@ -546,7 +562,8 @@ if( $step==2 )
 				if( ($nom!='') && ($prenom!='') )
 				{
 					$classe_ref = mb_substr(clean_ref($classe),0,8);
-					$tab_users_fichier['num_sconet'][] = 0;
+					$tab_users_fichier['sconet_id'][]  = 0;
+					$tab_users_fichier['sconet_num'][] = 0;
 					$tab_users_fichier['reference'][]  = clean_ref($reference);
 					$tab_users_fichier['profil'][]     = 'eleve';
 					$tab_users_fichier['nom'][]        = clean_nom($nom);
@@ -640,7 +657,8 @@ if( $step==2 )
 					$niveau_ref = mb_substr(clean_ref($niveau),0,8);
 					$classe_nom = mb_substr('['.$niveau_ref.'] '.$classe,0,20); // On fait autant de classes que de groupes de niveaux par classes.
 					$classe_ref = mb_substr(clean_ref($niveau_ref.'_'.md5($niveau_ref.$classe)),0,8);
-					$tab_users_fichier['num_sconet'][] = 0;
+					$tab_users_fichier['sconet_id'][]  = 0;
+					$tab_users_fichier['sconet_num'][] = 0;
 					$tab_users_fichier['reference'][]  = '';
 					$tab_users_fichier['profil'][]     = 'eleve';
 					$tab_users_fichier['nom'][]        = mb_substr(clean_nom($nom),0,20);
@@ -667,9 +685,14 @@ if( $step==2 )
 	$tab_i_fichier_TO_id_base  = array();
 	$tab_traitement6 = array('classes'=>$tab_classe_ref_TO_id_base,'groupes'=>$tab_groupe_ref_TO_id_base,'users'=>$tab_i_fichier_TO_id_base);
 	// On trie
-	array_multisort($tab_users_fichier['nom'],SORT_ASC,SORT_STRING,$tab_users_fichier['prenom'],SORT_ASC,SORT_STRING,$tab_users_fichier['num_sconet'],$tab_users_fichier['reference'],$tab_users_fichier['profil'],$tab_users_fichier['classe'],$tab_users_fichier['groupe'],$tab_users_fichier['matiere']);
-	array_multisort($tab_classes_fichier['niveau'],SORT_DESC,SORT_STRING,$tab_classes_fichier['ref'],SORT_ASC,SORT_STRING,$tab_classes_fichier['nom'],SORT_ASC,SORT_STRING);
-	array_multisort($tab_groupes_fichier['niveau'],SORT_DESC,SORT_STRING,$tab_groupes_fichier['ref'],SORT_ASC,SORT_STRING,$tab_groupes_fichier['nom'],SORT_ASC,SORT_STRING);
+	$test1 = array_multisort($tab_users_fichier['nom'],SORT_ASC,SORT_STRING,$tab_users_fichier['prenom'],SORT_ASC,SORT_STRING,$tab_users_fichier['sconet_id'],$tab_users_fichier['sconet_num'],$tab_users_fichier['reference'],$tab_users_fichier['profil'],$tab_users_fichier['classe'],$tab_users_fichier['groupe'],$tab_users_fichier['matiere']);
+	$test2 = array_multisort($tab_classes_fichier['niveau'],SORT_DESC,SORT_STRING,$tab_classes_fichier['ref'],SORT_ASC,SORT_STRING,$tab_classes_fichier['nom'],SORT_ASC,SORT_STRING);
+	$test3 = array_multisort($tab_groupes_fichier['niveau'],SORT_DESC,SORT_STRING,$tab_groupes_fichier['ref'],SORT_ASC,SORT_STRING,$tab_groupes_fichier['nom'],SORT_ASC,SORT_STRING);
+	// Outil de résolution de bug ; le test1 provoque parfois l'erreur "Array sizes are inconsistent".
+	if(!$test1)
+	{
+		ajouter_log_PHP( $log_objet='Import Sconet élèves' , $log_contenu=serialize($tab_users_fichier) , $log_fichier=__FILE__ , $log_ligne=__LINE__ , $only_sesamath=true );
+	}
 	// On enregistre
 	Ecrire_Fichier($dossier_import.'import_'.$action.'_'.$_SESSION['BASE'].'_users.txt',serialize($tab_users_fichier));
 	Ecrire_Fichier($dossier_import.'import_'.$action.'_'.$_SESSION['BASE'].'_classes.txt',serialize($tab_classes_fichier));
@@ -1213,7 +1236,7 @@ if( $step==51 )
 	$tab_classe_ref_TO_id_base = $tab_traitement6['classes'];
 	$tab_groupe_ref_TO_id_base = $tab_traitement6['groupes'];
 	$tab_i_fichier_TO_id_base  = $tab_traitement6['users'];
-	// On récupère le fichier avec les utilisateurs : $tab_users_fichier['champ'] : i -> valeur, avec comme champs : num_sconet / reference / profil / nom / prenom / classe / groupes / matieres
+	// On récupère le fichier avec les utilisateurs : $tab_users_fichier['champ'] : i -> valeur, avec comme champs : sconet_id / sconet_num / reference / profil / nom / prenom / classe / groupes / matieres
 	$fnom = $dossier_import.'import_'.$action.'_'.$_SESSION['BASE'].'_users.txt';
 	if(!file_exists($fnom))
 	{
@@ -1225,9 +1248,10 @@ if( $step==51 )
 	{
 		exit('Erreur : le fichier contenant les utilisateurs est syntaxiquement incorrect !');
 	}
-	// On récupère le contenu de la base pour comparer : $tab_users_base['champ'] : id -> valeur, avec comme champs : num_sconet / reference / profil / nom / prenom / statut / classe
+	// On récupère le contenu de la base pour comparer : $tab_users_base['champ'] : id -> valeur, avec comme champs : sconet_id / sconet_num / reference / profil / nom / prenom / statut / classe
 	$tab_users_base               = array();
-	$tab_users_base['num_sconet'] = array();
+	$tab_users_base['sconet_id']  = array();
+	$tab_users_base['sconet_num'] = array();
 	$tab_users_base['reference']  = array();
 	$tab_users_base['profil']     = array();
 	$tab_users_base['nom']        = array();
@@ -1237,7 +1261,8 @@ if( $step==51 )
 	$DB_TAB = ($is_profil_eleve) ? DB_STRUCTURE_lister_users($profil='eleve',$only_actifs=false,$with_classe=true) : DB_STRUCTURE_lister_professeurs_et_directeurs() ;
 	foreach($DB_TAB as $DB_ROW)
 	{
-		$tab_users_base['num_sconet'][$DB_ROW['user_id']] = $DB_ROW['user_num_sconet'];
+		$tab_users_base['sconet_id'][$DB_ROW['user_id']]  = $DB_ROW['user_sconet_id'];
+		$tab_users_base['sconet_num'][$DB_ROW['user_id']] = $DB_ROW['user_sconet_elenoet'];
 		$tab_users_base['reference'][$DB_ROW['user_id']]  = $DB_ROW['user_reference'];
 		$tab_users_base['profil'][$DB_ROW['user_id']]     = $DB_ROW['user_profil'];
 		$tab_users_base['nom'][$DB_ROW['user_id']]        = $DB_ROW['user_nom'];
@@ -1266,15 +1291,20 @@ if( $step==51 )
 	$tab_users_ajout = array();
 	$tab_users_modif = array();
 	// Comparer fichier et base : c'est parti !
-	$tab_indices_fichier = array_keys($tab_users_fichier['num_sconet']);
+	$tab_indices_fichier = array_keys($tab_users_fichier['sconet_id']);
 	// Parcourir chaque entrée du fichier
 	foreach($tab_indices_fichier as $i_fichier)
 	{
 		$id_base = false;
-		// Recherche sur num_sconet
-		if( (!$id_base) && ($tab_users_fichier['num_sconet'][$i_fichier]) )
+		// Recherche sur sconet_id
+		if( (!$id_base) && ($tab_users_fichier['sconet_id'][$i_fichier]) )
 		{
-			$id_base = array_search($tab_users_fichier['num_sconet'][$i_fichier],$tab_users_base['num_sconet']);
+			$id_base = array_search($tab_users_fichier['sconet_id'][$i_fichier],$tab_users_base['sconet_id']);
+		}
+		// Recherche sur sconet_num
+		if( (!$id_base) && ($tab_users_fichier['sconet_num'][$i_fichier]) )
+		{
+			$id_base = array_search($tab_users_fichier['sconet_num'][$i_fichier],$tab_users_base['sconet_num']);
 		}
 		// Si pas trouvé, recherche sur reference
 		if( (!$id_base) && ($tab_users_fichier['reference'][$i_fichier]) )
@@ -1297,34 +1327,34 @@ if( $step==51 )
 		if( ($is_profil_eleve) && (!$id_base) && (!$tab_users_fichier['classe'][$i_fichier]) )
 		{
 			$indication = ($is_profil_eleve) ? $tab_users_fichier['classe'][$i_fichier] : $tab_users_fichier['profil'][$i_fichier] ;
-			$lignes_ignorer .= '<tr><th>Ignorer</th><td>'.html($tab_users_fichier['num_sconet'][$i_fichier].' / '.$tab_users_fichier['reference'][$i_fichier].' || '.$tab_users_fichier['nom'][$i_fichier].' '.$tab_users_fichier['prenom'][$i_fichier].' ('.$indication.')').'</td></tr>';
+			$lignes_ignorer .= '<tr><th>Ignorer</th><td>'.html($tab_users_fichier['sconet_id'][$i_fichier].' / '.$tab_users_fichier['sconet_num'][$i_fichier].' / '.$tab_users_fichier['reference'][$i_fichier].' || '.$tab_users_fichier['nom'][$i_fichier].' '.$tab_users_fichier['prenom'][$i_fichier].' ('.$indication.')').'</td></tr>';
 		}
 		// Cas [2] : présent dans le fichier, absent de la base, prof ou classe indiquée dans le fichier si élève : contenu à ajouter (nouvel élève ou nouveau professeur / directeur)
 		elseif( (!$id_base) && ( (!$is_profil_eleve) || ($tab_users_fichier['classe'][$i_fichier]) ) )
 		{
 			$indication = ($is_profil_eleve) ? $tab_users_fichier['classe'][$i_fichier] : $tab_users_fichier['profil'][$i_fichier] ;
-			$lignes_ajouter .= '<tr><th>Ajouter <input id="add_'.$i_fichier.'" name="add_'.$i_fichier.'" type="checkbox" value="1" checked /></th><td>'.html($tab_users_fichier['num_sconet'][$i_fichier].' / '.$tab_users_fichier['reference'][$i_fichier].' || '.$tab_users_fichier['nom'][$i_fichier].' '.$tab_users_fichier['prenom'][$i_fichier].' ('.$indication.')').'</td></tr>';
+			$lignes_ajouter .= '<tr><th>Ajouter <input id="add_'.$i_fichier.'" name="add_'.$i_fichier.'" type="checkbox" value="1" checked /></th><td>'.html($tab_users_fichier['sconet_id'][$i_fichier].' / '.$tab_users_fichier['sconet_num'][$i_fichier].' / '.$tab_users_fichier['reference'][$i_fichier].' || '.$tab_users_fichier['nom'][$i_fichier].' '.$tab_users_fichier['prenom'][$i_fichier].' ('.$indication.')').'</td></tr>';
 			$id_classe = ($is_profil_eleve) ? $tab_classe_ref[$tab_users_fichier['classe'][$i_fichier]] : 0 ;
-			$tab_users_ajout[$i_fichier] = array( 'num_sconet'=>$tab_users_fichier['num_sconet'][$i_fichier] , 'reference'=>$tab_users_fichier['reference'][$i_fichier] , 'nom'=>$tab_users_fichier['nom'][$i_fichier] , 'prenom'=>$tab_users_fichier['prenom'][$i_fichier] , 'profil'=>$tab_users_fichier['profil'][$i_fichier] , 'classe'=>$id_classe );
+			$tab_users_ajout[$i_fichier] = array( 'sconet_id'=>$tab_users_fichier['sconet_id'][$i_fichier] , 'sconet_num'=>$tab_users_fichier['sconet_num'][$i_fichier] , 'reference'=>$tab_users_fichier['reference'][$i_fichier] , 'nom'=>$tab_users_fichier['nom'][$i_fichier] , 'prenom'=>$tab_users_fichier['prenom'][$i_fichier] , 'profil'=>$tab_users_fichier['profil'][$i_fichier] , 'classe'=>$id_classe );
 		}
 		// Cas [3] : présent dans le fichier, présent dans la base, pas de classe dans le fichier (élèves uniquements), statut actif dans la base : contenu à retirer (probablement des élèves nouvellement sortants)
 		elseif( ($is_profil_eleve) && (!$tab_users_fichier['classe'][$i_fichier]) && ($tab_users_base['statut'][$id_base]) )
 		{
 			$indication = ($is_profil_eleve) ? $tab_users_base['classe'][$id_base] : $tab_users_base['profil'][$id_base] ;
-			$lignes_retirer .= '<tr><th>Retirer <input id="del_'.$id_base.'" name="del_'.$id_base.'" type="checkbox" value="1" checked /></th><td>'.html($tab_users_base['num_sconet'][$id_base].' / '.$tab_users_base['reference'][$id_base].' || '.$tab_users_base['nom'][$id_base].' '.$tab_users_base['prenom'][$id_base].' ('.$indication.')').' || <b>Statut : actif => inactif</b></td></tr>';
+			$lignes_retirer .= '<tr><th>Retirer <input id="del_'.$id_base.'" name="del_'.$id_base.'" type="checkbox" value="1" checked /></th><td>'.html($tab_users_fichier['sconet_id'][$i_fichier].' / '.$tab_users_fichier['sconet_num'][$i_fichier].' / '.$tab_users_base['reference'][$id_base].' || '.$tab_users_base['nom'][$id_base].' '.$tab_users_base['prenom'][$id_base].' ('.$indication.')').' || <b>Statut : actif => inactif</b></td></tr>';
 		}
 		// Cas [4] : présent dans le fichier, présent dans la base, pas de classe dans le fichier (élèves uniquements), statut inactif dans la base : contenu inchangé (probablement des anciens élèves déjà écartés)
 		elseif( ($is_profil_eleve) && (!$tab_users_fichier['classe'][$i_fichier]) && (!$tab_users_base['statut'][$id_base]) )
 		{
 			$indication = ($is_profil_eleve) ? $tab_users_fichier['classe'][$i_fichier] : $tab_users_fichier['profil'][$i_fichier] ;
-			$lignes_inchanger .= '<tr><th>Ignorer</th><td>'.html($tab_users_fichier['num_sconet'][$i_fichier].' / '.$tab_users_fichier['reference'][$i_fichier].' || '.$tab_users_fichier['nom'][$i_fichier].' '.$tab_users_fichier['prenom'][$i_fichier].' ('.$indication.')').'</td></tr>';
+			$lignes_inchanger .= '<tr><th>Ignorer</th><td>'.html($tab_users_fichier['sconet_id'][$i_fichier].' / '.$tab_users_fichier['sconet_num'][$i_fichier].' / '.$tab_users_fichier['reference'][$i_fichier].' || '.$tab_users_fichier['nom'][$i_fichier].' '.$tab_users_fichier['prenom'][$i_fichier].' ('.$indication.')').'</td></tr>';
 		}
 		else
 		{
 			// On compare les données de 2 enregistrements pour voir si des choses ont été modifiées
 			$td_modif = '';
 			$nb_modif = 0;
-			$tab_champs = ($is_profil_eleve) ? array( 'num_sconet'=>'n° Sconet' , 'reference'=>'Référence' , 'nom'=>'Nom' , 'prenom'=>'Prénom' , 'classe'=>'classe' ) : array( 'num_sconet'=>'n° Sconet' , 'reference'=>'Référence' , 'profil'=>'Profil' , 'nom'=>'Nom' , 'prenom'=>'Prénom' ) ;
+			$tab_champs = ($is_profil_eleve) ? array( 'sconet_id'=>'Id Sconet' , 'sconet_num'=>'n° Sconet' , 'reference'=>'Référence' , 'nom'=>'Nom' , 'prenom'=>'Prénom' , 'classe'=>'classe' ) : array( 'sconet_id'=>'Id Sconet' , 'reference'=>'Référence' , 'profil'=>'Profil' , 'nom'=>'Nom' , 'prenom'=>'Prénom' ) ;
 			foreach($tab_champs as $champ_ref => $champ_aff)
 			{
 				if($tab_users_base[$champ_ref][$id_base]!=$tab_users_fichier[$champ_ref][$i_fichier])
@@ -1358,36 +1388,36 @@ if( $step==51 )
 			else
 			{
 				$indication = ($is_profil_eleve) ? $tab_users_base['classe'][$id_base] : $tab_users_base['profil'][$id_base] ;
-				$lignes_conserver .= '<tr><th>Conserver</th><td>'.html($tab_users_base['num_sconet'][$id_base].' / '.$tab_users_base['reference'][$id_base].' || '.$tab_users_base['nom'][$id_base].' '.$tab_users_base['prenom'][$id_base].' ('.$indication.')').'</td></tr>';
+				$lignes_conserver .= '<tr><th>Conserver</th><td>'.html($tab_users_base['sconet_id'][$id_base].' / '.$tab_users_base['sconet_num'][$id_base].' / '.$tab_users_base['reference'][$id_base].' || '.$tab_users_base['nom'][$id_base].' '.$tab_users_base['prenom'][$id_base].' ('.$indication.')').'</td></tr>';
 			}
 		}
 		// Supprimer l'entrée du fichier et celle de la base éventuelle
-		unset( $tab_users_fichier['num_sconet'][$i_fichier] , $tab_users_fichier['reference'][$i_fichier] , $tab_users_fichier['nom'][$i_fichier] , $tab_users_fichier['prenom'][$i_fichier] , $tab_users_fichier['classe'][$i_fichier] );
+		unset( $tab_users_fichier['sconet_id'][$i_fichier] , $tab_users_fichier['sconet_num'][$i_fichier] , $tab_users_fichier['reference'][$i_fichier] , $tab_users_fichier['nom'][$i_fichier] , $tab_users_fichier['prenom'][$i_fichier] , $tab_users_fichier['classe'][$i_fichier] );
 		if($id_base)
 		{
 			$tab_i_fichier_TO_id_base[$i_fichier] = $id_base;
-			unset( $tab_users_base['num_sconet'][$id_base] , $tab_users_base['reference'][$id_base] , $tab_users_base['nom'][$id_base] , $tab_users_base['prenom'][$id_base] , $tab_users_base['classe'][$id_base] , $tab_users_base['statut'][$id_base] );
+			unset( $tab_users_base['sconet_id'][$id_base] , $tab_users_base['sconet_num'][$id_base] , $tab_users_base['reference'][$id_base] , $tab_users_base['nom'][$id_base] , $tab_users_base['prenom'][$id_base] , $tab_users_base['classe'][$id_base] , $tab_users_base['statut'][$id_base] );
 		}
 	}
 	// Parcourir chaque entrée de la base
-	if(count($tab_users_base['num_sconet']))
+	if(count($tab_users_base['sconet_id']))
 	{
-		$tab_indices_base = array_keys($tab_users_base['num_sconet']);
+		$tab_indices_base = array_keys($tab_users_base['sconet_id']);
 		foreach($tab_indices_base as $id_base)
 		{
 			// Cas [7] : absent dans le fichier, présent dans la base, statut actif : contenu à retirer (probablement un user nouvellement sortant)
 			if($tab_users_base['statut'][$id_base])
 			{
 				$indication = ($is_profil_eleve) ? $tab_users_base['classe'][$id_base] : $tab_users_base['profil'][$id_base] ;
-				$lignes_retirer .= '<tr><th>Retirer <input id="del_'.$id_base.'" name="del_'.$id_base.'" type="checkbox" value="1" checked /></th><td>'.html($tab_users_base['num_sconet'][$id_base].' / '.$tab_users_base['reference'][$id_base].' || '.$tab_users_base['nom'][$id_base].' '.$tab_users_base['prenom'][$id_base].' ('.$indication.')').' || <b>Statut : actif => inactif</b></td></tr>';
+				$lignes_retirer .= '<tr><th>Retirer <input id="del_'.$id_base.'" name="del_'.$id_base.'" type="checkbox" value="1" checked /></th><td>'.html($tab_users_base['sconet_id'][$id_base].' / '.$tab_users_base['sconet_num'][$id_base].' / '.$tab_users_base['reference'][$id_base].' || '.$tab_users_base['nom'][$id_base].' '.$tab_users_base['prenom'][$id_base].' ('.$indication.')').' || <b>Statut : actif => inactif</b></td></tr>';
 			}
 			// Cas [8] : absent dans le fichier, présent dans la base, statut inactif : contenu inchangé (contenu restant inactif)
 			else
 			{
 				$indication = ($is_profil_eleve) ? $tab_users_base['classe'][$id_base] : $tab_users_base['profil'][$id_base] ;
-				$lignes_inchanger .= '<tr><th>Conserver</th><td>'.html($tab_users_base['num_sconet'][$id_base].' / '.$tab_users_base['reference'][$id_base].' || '.$tab_users_base['nom'][$id_base].' '.$tab_users_base['prenom'][$id_base].' ('.$indication.')').'</td></tr>';
+				$lignes_inchanger .= '<tr><th>Conserver</th><td>'.html($tab_users_base['sconet_id'][$id_base].' / '.$tab_users_base['sconet_num'][$id_base].' / '.$tab_users_base['reference'][$id_base].' || '.$tab_users_base['nom'][$id_base].' '.$tab_users_base['prenom'][$id_base].' ('.$indication.')').'</td></tr>';
 			}
-			unset( $tab_users_base['num_sconet'][$id_base] , $tab_users_base['reference'][$id_base] , $tab_users_base['nom'][$id_base] , $tab_users_base['prenom'][$id_base] , $tab_users_base['classe'][$id_base] , $tab_users_base['statut'][$id_base] );
+			unset( $tab_users_base['sconet_id'][$id_base] , $tab_users_base['sconet_num'][$id_base] , $tab_users_base['reference'][$id_base] , $tab_users_base['nom'][$id_base] , $tab_users_base['prenom'][$id_base] , $tab_users_base['classe'][$id_base] , $tab_users_base['statut'][$id_base] );
 		}
 	}
 	// On enregistre
@@ -1512,7 +1542,7 @@ if( $step==52 )
 	$tab_password = array();
 	$separateur = ';';
 	$classe_ou_profil = ($is_profil_eleve) ? 'CLASSE' : 'PROFIL' ;
-	$fcontenu_csv = 'N°SCONET'.$separateur.'REFERENCE'.$separateur.$classe_ou_profil.$separateur.'NOM'.$separateur.'PRENOM'.$separateur.'LOGIN'.$separateur.'MOT DE PASSE'."\r\n\r\n";
+	$fcontenu_csv = 'SCONET_Id'.$separateur.'SCONET_N°'.$separateur.'REFERENCE'.$separateur.$classe_ou_profil.$separateur.'NOM'.$separateur.'PRENOM'.$separateur.'LOGIN'.$separateur.'MOT DE PASSE'."\r\n\r\n";
 	$fcontenu_pdf_tab = array();
 	if(count($tab_add))
 	{
@@ -1530,7 +1560,7 @@ if( $step==52 )
 		{
 			if( isset($tab_traitement5['ajout'][$i_fichier]) )
 			{
-				// Il peut théoriquement subsister un conflit de num_sconet pour des users ayant même reference, et réciproquement...
+				// Il peut théoriquement subsister un conflit de sconet_id pour des users ayant même reference, et réciproquement...
 				// Construire le login
 				$login = fabriquer_login($tab_traitement5['ajout'][$i_fichier]['prenom'] , $tab_traitement5['ajout'][$i_fichier]['nom'] , $tab_traitement5['ajout'][$i_fichier]['profil']);
 				// Puis tester le login (parmi tout le personnel de l'établissement)
@@ -1542,12 +1572,12 @@ if( $step==52 )
 				// Construire le password
 				$password = fabriquer_mdp();
 				// Ajouter l'utilisateur
-				$user_id = DB_STRUCTURE_ajouter_utilisateur($tab_traitement5['ajout'][$i_fichier]['num_sconet'],$tab_traitement5['ajout'][$i_fichier]['reference'],$tab_traitement5['ajout'][$i_fichier]['profil'],$tab_traitement5['ajout'][$i_fichier]['nom'],$tab_traitement5['ajout'][$i_fichier]['prenom'],$login,$password,$tab_traitement5['ajout'][$i_fichier]['classe']);
+				$user_id = DB_STRUCTURE_ajouter_utilisateur($tab_traitement5['ajout'][$i_fichier]['sconet_id'],$tab_traitement5['ajout'][$i_fichier]['sconet_num'],$tab_traitement5['ajout'][$i_fichier]['reference'],$tab_traitement5['ajout'][$i_fichier]['profil'],$tab_traitement5['ajout'][$i_fichier]['nom'],$tab_traitement5['ajout'][$i_fichier]['prenom'],$login,$password,$tab_traitement5['ajout'][$i_fichier]['classe']);
 				$tab_i_fichier_TO_id_base[$i_fichier] = (int) $user_id;
 				$nb_add++;
 				$tab_password[$user_id] = $password;
 				$classe_ou_profil = ($is_profil_eleve) ? $tab_nom_classe[$tab_traitement5['ajout'][$i_fichier]['classe']] : mb_strtoupper($tab_traitement5['ajout'][$i_fichier]['profil']) ;
-				$fcontenu_csv .= $tab_traitement5['ajout'][$i_fichier]['num_sconet'].$separateur.$tab_traitement5['ajout'][$i_fichier]['reference'].$separateur.$classe_ou_profil.$separateur.$tab_traitement5['ajout'][$i_fichier]['nom'].$separateur.$tab_traitement5['ajout'][$i_fichier]['prenom'].$separateur.$login.$separateur.$password."\r\n";
+				$fcontenu_csv .= $tab_traitement5['ajout'][$i_fichier]['sconet_id'].$tab_traitement5['ajout'][$i_fichier]['sconet_num'].$separateur.$tab_traitement5['ajout'][$i_fichier]['reference'].$separateur.$classe_ou_profil.$separateur.$tab_traitement5['ajout'][$i_fichier]['nom'].$separateur.$tab_traitement5['ajout'][$i_fichier]['prenom'].$separateur.$login.$separateur.$password."\r\n";
 				$ligne1 = $classe_ou_profil;
 				$ligne2 = $tab_traitement5['ajout'][$i_fichier]['nom'].' '.$tab_traitement5['ajout'][$i_fichier]['prenom'];
 				$ligne3 = 'Utilisateur : '.$login;
@@ -1562,8 +1592,8 @@ if( $step==52 )
 	{
 		foreach($tab_mod as $id_base)
 		{
-			// Il peut théoriquement subsister un conflit de num_sconet pour des users ayant même reference, et réciproquement...
-			$tab_champs = ($is_profil_eleve) ? array( 'num_sconet' , 'reference' , 'classe' , 'nom' , 'prenom' , 'statut' ) : array( 'num_sconet' , 'reference' , 'profil' , 'nom' , 'prenom' , 'statut' ) ;
+			// Il peut théoriquement subsister un conflit de sconet_id pour des users ayant même reference, et réciproquement...
+			$tab_champs = ($is_profil_eleve) ? array( 'sconet_id' , 'sconet_num' , 'reference' , 'classe' , 'nom' , 'prenom' , 'statut' ) : array( 'sconet_id' , 'reference' , 'profil' , 'nom' , 'prenom' , 'statut' ) ;
 			$DB_VAR  = array();
 			foreach($tab_champs as $champ_ref)
 			{
@@ -1595,7 +1625,7 @@ if( $step==52 )
 		$td_password = (isset($tab_password[$DB_ROW['user_id']])) ? '<td class="new">'.html($tab_password[$DB_ROW['user_id']]).'</td>' : '<td class="i">champ crypté</td>' ;
 		if($DB_ROW['user_statut']) {$nb_fin_actif++;} else {$nb_fin_inactif++;}
 		$champ = ($is_profil_eleve) ? $DB_ROW['groupe_ref'] : $DB_ROW['user_profil'] ;
-		$lignes .= '<tr'.$class.'><td>'.html($DB_ROW['user_num_sconet']).'</td><td>'.html($DB_ROW['user_reference']).'</td><td>'.html($champ).'</td><td>'.html($DB_ROW['user_nom']).'</td><td>'.html($DB_ROW['user_prenom']).'</td><td'.$class.'>'.html($DB_ROW['user_login']).'</td>'.$td_password.'<td>'.$tab_statut[$DB_ROW['user_statut']].'</td></tr>'."\r\n";
+		$lignes .= '<tr'.$class.'><td>'.html($DB_ROW['user_sconet_id']).'</td><td>'.html($DB_ROW['user_sconet_elenoet']).'</td><td>'.html($DB_ROW['user_reference']).'</td><td>'.html($champ).'</td><td>'.html($DB_ROW['user_nom']).'</td><td>'.html($DB_ROW['user_prenom']).'</td><td'.$class.'>'.html($DB_ROW['user_login']).'</td>'.$td_password.'<td>'.$tab_statut[$DB_ROW['user_statut']].'</td></tr>'."\r\n";
 	}
 	$s_debut_actif   = ($nb_debut_actif>1)   ? 's' : '';
 	$s_debut_inactif = ($nb_debut_inactif>1) ? 's' : '';
@@ -1633,7 +1663,7 @@ if( $step==52 )
 	echo'<p><label class="valide">'.$nb_debut_actif.' utilisateur'.$s_debut_actif.' actif'.$s_debut_actif.' et '.$nb_debut_inactif.' utilisateur'.$s_debut_inactif.' inactif'.$s_debut_inactif.' => '.$nb_mod.' utilisateur'.$s_mod.' modifié'.$s_mod.' + '.$nb_add.' utilisateur'.$s_add.' ajouté'.$s_add.' &minus; '.$nb_del.' utilisateur'.$s_del.' retiré'.$s_del.' => '.$nb_fin_actif.' utilisateur'.$s_fin_actif.' actif'.$s_fin_actif.' et '.$nb_fin_inactif.' utilisateur'.$s_fin_inactif.' inactif'.$s_fin_inactif.'.</label></p>';
 	echo'<table>';
 	echo' <thead>';
-	echo'  <tr><th>n° Sconet</th><th>Référence</th><th>'.$champ.'</th><th>Nom</th><th>Prénom</th><th>Login</th><th>Mot de passe</th><th>Statut</th></tr>';
+	echo'  <tr><th>Id Sconet</th><th>N° Sconet</th><th>Référence</th><th>'.$champ.'</th><th>Nom</th><th>Prénom</th><th>Login</th><th>Mot de passe</th><th>Statut</th></tr>';
 	echo' </thead>';
 	echo' <tbody>';
 	echo   $lignes;
@@ -1713,7 +1743,7 @@ if( $step==61 )
 	$tab_classe_ref_TO_id_base = $tab_traitement6['classes'];
 	$tab_groupe_ref_TO_id_base = $tab_traitement6['groupes'];
 	$tab_i_fichier_TO_id_base  = $tab_traitement6['users'];
-	// On récupère le fichier avec les utilisateurs : $tab_users_fichier['champ'] : i -> valeur, avec comme champs : num_sconet / reference / profil / nom / prenom / classe / groupes / matieres
+	// On récupère le fichier avec les utilisateurs : $tab_users_fichier['champ'] : i -> valeur, avec comme champs : sconet_id / sconet_num / reference / profil / nom / prenom / classe / groupes / matieres
 	$fnom = $dossier_import.'import_'.$action.'_'.$_SESSION['BASE'].'_users.txt';
 	if(!file_exists($fnom))
 	{

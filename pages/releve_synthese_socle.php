@@ -27,12 +27,13 @@
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = "Synthèse de maîtrise du socle";
-$VERSION_JS_FILE += 4;
+$VERSION_JS_FILE += 6;
 ?>
 
 <?php
 // Fabrication des éléments select du formulaire
-$tab_paliers = DB_STRUCTURE_OPT_paliers_etabl($_SESSION['PALIERS']);
+$tab_matieres = DB_STRUCTURE_OPT_matieres_etabl($_SESSION['MATIERES'],$transversal=true);
+$tab_paliers  = DB_STRUCTURE_OPT_paliers_etabl($_SESSION['PALIERS']);
 if($_SESSION['USER_PROFIL']=='directeur')
 {
 	$tab_groupes = DB_STRUCTURE_OPT_classes_groupes_etabl();
@@ -46,8 +47,9 @@ else
 	$tab_groupes = 'Vous n\'avez pas un profil autorisé pour accéder au formulaire !';
 }
 
-$select_palier = afficher_select($tab_paliers , $select_nom='f_palier' , $option_first='non' , $selection=false , $optgroup='non');
-$select_groupe = afficher_select($tab_groupes , $select_nom='f_groupe' , $option_first='oui' , $selection=false , $optgroup='oui');
+$select_matiere = afficher_select($tab_matieres , $select_nom=false      , $option_first='non' , $selection=true  , $optgroup='non');
+$select_palier  = afficher_select($tab_paliers  , $select_nom='f_palier' , $option_first='non' , $selection=false , $optgroup='non');
+$select_groupe  = afficher_select($tab_groupes  , $select_nom='f_groupe' , $option_first='oui' , $selection=false , $optgroup='oui');
 ?>
 
 <ul class="puce">
@@ -57,11 +59,15 @@ $select_groupe = afficher_select($tab_groupes , $select_nom='f_groupe' , $option
 <hr />
 
 <form action="" id="form_select"><fieldset>
-	<label class="tab" for="f_type">Type de synthèse :</label><label for="f_type_pourcentage"><input type="radio" id="f_type_pourcentage" name="f_type" value="pourcentage" /> Pourcentage d'items disciplinaires acquis</label>&nbsp;&nbsp;&nbsp;<label for="f_type_validation"><input type="radio" id="f_type_validation" name="f_type" value="validation" /> Validation des items et des compétences du socle</label><p />
+	<label class="tab" for="f_type">Type de synthèse :</label><label for="f_type_pourcentage"><input type="radio" id="f_type_pourcentage" name="f_type" value="pourcentage" /> Pourcentage d'items disciplinaires acquis</label>&nbsp;&nbsp;&nbsp;<label for="f_type_validation"><input type="radio" id="f_type_validation" name="f_type" value="validation" /> Validation des items et des compétences du socle</label><br />
+	<div id="option_mode" class="hide">
+		<label class="tab" for="f_mode">Items récoltés :</label><label for="f_mode_auto"><input type="radio" id="f_mode_auto" name="f_mode" value="auto" checked /> Automatique (recommandé) <img alt="" src="./_img/bulle_aide.png" title="Items de tous les référentiels, sauf pour la compétence 2 où on ne prend que les items des référentiels de la langue associée à l'élève." /></label>&nbsp;&nbsp;&nbsp;<label for="f_mode_manuel"><input type="radio" id="f_mode_manuel" name="f_mode" value="manuel" /> Sélection manuelle <img alt="" src="./_img/bulle_aide.png" title="Utiliser la touche &laquo&nbsp;Shift&nbsp;&raquo; pour une sélection multiple contiguë.<br />Utiliser la touche &laquo&nbsp;Ctrl&nbsp;&raquo; pour une sélection multiple non contiguë." /></label>
+		<div id="div_matiere" class="hide"><span class="tab"></span><select id="f_matiere" name="f_matiere[]" multiple size="5"><?php echo $select_matiere ?></select><input type="hidden" id="matieres" name="matieres" value="" /></div>
+	</div><p />
 	<label class="tab" for="f_palier">Palier :</label><?php echo $select_palier ?><input type="hidden" id="f_palier_nom" name="f_palier_nom" value="" /><label id="ajax_maj_pilier">&nbsp;</label><br />
 	<label class="tab" for="f_pilier"><img alt="" src="./_img/bulle_aide.png" title="Utiliser la touche &laquo&nbsp;Shift&nbsp;&raquo; pour une sélection multiple contiguë.<br />Utiliser la touche &laquo&nbsp;Ctrl&nbsp;&raquo; pour une sélection multiple non contiguë." /> Compétence(s) :</label><select id="f_pilier" name="f_pilier" multiple size="7" class="hide"><option></option></select><input type="hidden" id="piliers" name="piliers" value="" /><p />
 	<label class="tab" for="f_groupe">Classe / groupe :</label><?php echo $select_groupe ?><input type="hidden" id="f_groupe_type" name="f_groupe_type" value="" /><input type="hidden" id="f_groupe_nom" name="f_groupe_nom" value="" /><label id="ajax_maj_eleve">&nbsp;</label><br />
-	<label class="tab" for="f_eleve"><img alt="" src="./_img/bulle_aide.png" title="Utiliser la touche &laquo&nbsp;Shift&nbsp;&raquo; pour une sélection multiple contiguë.<br />Utiliser la touche &laquo&nbsp;Ctrl&nbsp;&raquo; pour une sélection multiple non contiguë." /> Élève(s) :</label><select id="f_eleve" name="f_eleve[]" multiple size="9" class="hide"><option></option></select><input type="hidden" id="eleves" name="eleves" value="" /><p />
+	<label class="tab" for="f_eleve"><img alt="" src="./_img/bulle_aide.png" title="Utiliser la touche &laquo&nbsp;Shift&nbsp;&raquo; pour une sélection multiple contiguë.<br />Utiliser la touche &laquo&nbsp;Ctrl&nbsp;&raquo; pour une sélection multiple non contiguë." /> Élève(s) :</label><select id="f_eleve" name="f_eleve[]" multiple size="7" class="hide"><option></option></select><input type="hidden" id="eleves" name="eleves" value="" /><p />
 	<span class="tab"></span><button id="bouton_valider" type="submit" class="hide"><img alt="" src="./_img/bouton/generer.png" /> Générer.</button><label id="ajax_msg">&nbsp;</label><br />
 </fieldset></form>
 

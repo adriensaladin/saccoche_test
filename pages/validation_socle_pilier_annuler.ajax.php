@@ -45,8 +45,11 @@ $listing_eleve_id = implode(',',$tab_eleve);
 if( ($action=='Afficher_bilan') && $palier_id && count($tab_pilier) && count($tab_eleve) )
 {
 	$affichage = '';
+	// Tableau des langues
+	$tfoot = '';
+	require_once('./_inc/tableau_langues.php');
 	// Récupérer les données des élèves
-	$tab_eleve = DB_STRUCTURE_lister_eleves_cibles($listing_eleve_id);
+	$tab_eleve = DB_STRUCTURE_lister_eleves_cibles($listing_eleve_id,$with_gepi=FALSE,$with_langue=TRUE);
 	if(!is_array($tab_eleve))
 	{
 		exit('Aucun élève trouvé correspondant aux identifiants transmis !');
@@ -58,6 +61,7 @@ if( ($action=='Afficher_bilan') && $palier_id && count($tab_pilier) && count($ta
 	{
 		extract($tab);	// $eleve_id $eleve_nom $eleve_prenom $eleve_id_gepi
 		$affichage .= '<th><img id="I'.$eleve_id.'" alt="'.html($eleve_nom.' '.$eleve_prenom).'" src="./_img/php/etiquette.php?dossier='.$_SESSION['BASE'].'&amp;nom='.urlencode($eleve_nom).'&amp;prenom='.urlencode($eleve_prenom).'" /></th>';
+		$tfoot .= '<td class="L'.$eleve_langue.'" title="'.$tab_langues[$eleve_langue]['texte'].'"></td>';
 		$tab_eleve_id[] = $eleve_id;
 	}
 	$affichage .= '<th class="nu">&nbsp;&nbsp;&nbsp;</th>';
@@ -92,6 +96,8 @@ if( ($action=='Afficher_bilan') && $palier_id && count($tab_pilier) && count($ta
 		}
 	}
 	$affichage .= '</tbody>';
+	// Ligne avec le drapeau de la LV, si compétence concernée sélectionnée.
+	$affichage .= count(array_intersect($tab_pilier_id,$tab_langue_piliers)) ? '<tfoot>'.$tfoot.'<th class="nu" colspan="3"></th></tfoot>' : '' ;
 	// Récupérer la liste des jointures (validations)
 	$listing_eleve_id  = implode(',',$tab_eleve_id);
 	$listing_pilier_id = implode(',',$tab_pilier_id);

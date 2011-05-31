@@ -65,7 +65,8 @@ del{text-decoration:line-through;color:#666}
 .hc{text-align:center} .hg{text-align:left} .hd{text-align:right} .ti{text-indent:3em}
 .i{font-style:italic} .u{text-decoration:underline} .b{font-weight:bold}
 .hide{display:none}
-
+ .t9{font-size:90%}
+ 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 /* Cadres principaux (dont le menu déroulant)                                                          */
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
@@ -282,10 +283,19 @@ table.bilan th.info {width:9px;height:9px;background:#CCF url(../_img/info_mini.
 #tableau_validation tbody th {height:15px}
 #tableau_validation tbody th:hover {opacity:1;cursor:pointer}
 #tableau_validation tbody th.nu:hover {cursor:default}
-#tableau_validation tbody td {text-align:center;vertical-align:middle;font-size:0} /* Pour indiquer les scores calculés sans les faire afficher. */
+#tableau_validation tbody td {text-align:center;vertical-align:middle;font-size:0%;padding:0} /* Pour indiquer les scores calculés. */
 #tableau_validation tbody td:hover {cursor:pointer}
 #tableau_validation tbody td.v3 {background:#EAEAFF;}
 #tableau_validation tbody td.v3:hover {cursor:default}
+#tableau_validation tfoot td{border:0}
+#tableau_validation tfoot td.L132{background:#EAEAFF url(../_img/drapeau/132.gif) no-repeat center center;}
+#tableau_validation tfoot td.L134{background:#EAEAFF url(../_img/drapeau/134.gif) no-repeat center center;}
+#tableau_validation tfoot td.L109{background:#EAEAFF url(../_img/drapeau/109.gif) no-repeat center center;}
+#tableau_validation tfoot td.L127{background:#EAEAFF url(../_img/drapeau/127.gif) no-repeat center center;}
+#tableau_validation tfoot td.L139{background:#EAEAFF url(../_img/drapeau/139.gif) no-repeat center center;}
+#tableau_validation tfoot td.L123{background:#EAEAFF url(../_img/drapeau/123.gif) no-repeat center center;}
+#tableau_validation tfoot td.L216{background:#EAEAFF url(../_img/drapeau/216.gif) no-repeat center center;}
+
 /* Défini suivant les préférences de l'établissement : cf actualiser_style_session() dans fonction_divers.php */
 /*
 #tableau_validation tbody th.----- {background:#--- url(./_img/socle/arrow_----.gif) no-repeat center center;opacity:0.2}
@@ -331,7 +341,7 @@ table i {display:none}
 #calque h5 {display:block;font-size:120%;color:#33A;letter-spacing:0.1em;} /* Titre de calque */
 #calque h6 {margin:0.5em auto;color:#33A;font-size:110%;} /* Consigne */
 #calque th,#calque td {text-align:center}
-
+#calque td.hoy {background-color:#99FF99}
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 /* Style pour la zone de choix d'association d'une compétence du socle.                                */
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */

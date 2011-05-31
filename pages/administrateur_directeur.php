@@ -27,18 +27,18 @@
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = "Gérer les directeurs";
-$VERSION_JS_FILE += 1;
+$VERSION_JS_FILE += 2;
 ?>
 
 <p><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__gestion_directeurs">DOC : Gestion des directeurs</a></span></p>
 
 <form action="">
-	<table class="form">
+	<table class="form t9">
 		<thead>
 			<tr>
 				<th>Id. ENT</th>
 				<th>Id. GEPI</th>
-				<th>n° Sconet</th>
+				<th>Id Sconet</th>
 				<th>Référence</th>
 				<th>Nom</th>
 				<th>Prénom</th>
@@ -57,7 +57,7 @@ $VERSION_JS_FILE += 1;
 				echo'<tr id="id_'.$DB_ROW['user_id'].'">';
 				echo	'<td>'.html($DB_ROW['user_id_ent']).'</td>';
 				echo	'<td>'.html($DB_ROW['user_id_gepi']).'</td>';
-				echo	'<td>'.html($DB_ROW['user_num_sconet']).'</td>';
+				echo	'<td>'.html($DB_ROW['user_sconet_id']).'</td>';
 				echo	'<td>'.html($DB_ROW['user_reference']).'</td>';
 				echo	'<td>'.html($DB_ROW['user_nom']).'</td>';
 				echo	'<td>'.html($DB_ROW['user_prenom']).'</td>';

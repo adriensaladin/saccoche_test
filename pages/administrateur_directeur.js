@@ -65,7 +65,7 @@ $(document).ready
 			new_tr  = '<tr>';
 			new_tr += '<td><input id="f_id_ent" name="f_id_ent" size="10" type="text" value="" /><img alt="" src="./_img/bulle_aide.png" title="Uniquement en cas d\'identification via un ENT." /></td>';
 			new_tr += '<td><input id="f_id_gepi" name="f_id_gepi" size="10" type="text" value="" /><img alt="" src="./_img/bulle_aide.png" title="Uniquement en cas d\'utilisation du logiciel GEPI." /></td>';
-			new_tr += '<td><input id="f_num_sconet" name="f_num_sconet" size="5" type="text" value="" /><img alt="" src="./_img/bulle_aide.png" title="Il est déconseillé de modifier ce champ manuellement (laisser vide si inconnu)." /></td>';
+			new_tr += '<td><input id="f_sconet_id" name="f_sconet_id" size="5" type="text" value="" /><img alt="" src="./_img/bulle_aide.png" title="Champ de STS-Web INDIVIDU.ID (laisser vide si inconnu)." /></td>';
 			new_tr += '<td><input id="f_reference" name="f_reference" size="10" type="text" value="" /><img alt="" src="./_img/bulle_aide.png" title="Sconet : champ inutilisé (laisser vide).<br />Tableur : référence dans l\'établissement." /></td>';
 			new_tr += '<td><input id="f_nom" name="f_nom" size="15" type="text" value="" /></td>';
 			new_tr += '<td><input id="f_prenom" name="f_prenom" size="15" type="text" value="" /></td>';
@@ -91,7 +91,7 @@ $(document).ready
 			id         = $(this).parent().parent().attr('id').substring(3);
 			id_ent     = $(this).parent().prev().prev().prev().prev().prev().prev().prev().prev().html();
 			id_gepi    = $(this).parent().prev().prev().prev().prev().prev().prev().prev().html();
-			num_sconet = $(this).parent().prev().prev().prev().prev().prev().prev().html();
+			sconet_id  = $(this).parent().prev().prev().prev().prev().prev().prev().html();
 			reference  = $(this).parent().prev().prev().prev().prev().prev().html();
 			nom        = $(this).parent().prev().prev().prev().prev().html();
 			prenom     = $(this).parent().prev().prev().prev().html();
@@ -106,7 +106,7 @@ $(document).ready
 			new_tr  = '<tr>';
 			new_tr += '<td><input id="f_id_ent" name="f_id_ent" size="'+Math.max(id_ent.length,10)+'" type="text" value="'+id_ent+'" /><img alt="" src="./_img/bulle_aide.png" title="Uniquement en cas d\'identification via un ENT." /></td>';
 			new_tr += '<td><input id="f_id_gepi" name="f_id_gepi" size="'+Math.max(id_gepi.length,10)+'" type="text" value="'+id_gepi+'" /><img alt="" src="./_img/bulle_aide.png" title="Uniquement en cas d\'utilisation du logiciel GEPI." /></td>';
-			new_tr += '<td><input id="f_num_sconet" name="f_num_sconet" size="5" type="text" value="'+num_sconet+'" /><img alt="" src="./_img/bulle_aide.png" title="Il est déconseillé de modifier ce champ manuellement (laisser à 0 si inconnu)." /></td>';
+			new_tr += '<td><input id="f_sconet_id" name="f_sconet_id" size="5" type="text" value="'+sconet_id+'" /><img alt="" src="./_img/bulle_aide.png" title="Champ de STS-Web INDIVIDU.ID (laisser à 0 si inconnu)." /></td>';
 			new_tr += '<td><input id="f_reference" name="f_reference" size="10" type="text" value="'+reference+'" /><img alt="" src="./_img/bulle_aide.png" title="Sconet : champ inutilisé (laisser vide).<br />Tableur : référence dans l\'établissement." /></td>';
 			new_tr += '<td><input id="f_nom" name="f_nom" size="'+Math.max(nom.length,5)+'" type="text" value="'+nom+'" /></td>';
 			new_tr += '<td><input id="f_prenom" name="f_prenom" size="'+Math.max(prenom.length,5)+'" type="text" value="'+prenom+'" /></td>';
@@ -202,7 +202,7 @@ $(document).ready
 				{
 					f_id_ent     : { required:false , maxlength:32 },
 					f_id_gepi    : { required:false , maxlength:32 },
-					f_num_sconet : { required:false , digits:true , max:999999 },
+					f_sconet_id  : { required:false , digits:true , max:16777215 },
 					f_reference  : { required:false , maxlength:11 },
 					f_nom        : { required:true , maxlength:20 },
 					f_prenom     : { required:true , maxlength:20 },
@@ -213,7 +213,7 @@ $(document).ready
 				{
 					f_id_ent     : { maxlength:"identifiant ENT de 32 caractères maximum" },
 					f_id_gepi    : { maxlength:"identifiant Gepi de 32 caractères maximum" },
-					f_num_sconet : { digits:"Id Sconet : nombre entier inférieur au million" },
+					f_sconet_id  : { digits:"Id Sconet : nombre entier inférieur à 2^24" },
 					f_reference  : { maxlength:"référence de 11 caractères maximum" },
 					f_nom        : { required:"nom manquant" , maxlength:"20 caractères maximum" },
 					f_prenom     : { required:"prénom manquant" , maxlength:"20 caractères maximum" },

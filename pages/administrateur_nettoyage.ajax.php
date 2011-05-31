@@ -74,6 +74,16 @@ if($action=='purger')
 	}
 	// Supprimer les jointures classes/périodes
 	DB_STRUCTURE_modifier_liaison_groupe_periode($groupe_id=true,$periode_id=true,$etat=false,$date_debut_mysql='',$date_fin_mysql='');
+	// Supprimer les comptes utilisateurs désactivés depuis plus de 3 ans
+	$DB_TAB = DB_STRUCTURE_lister_users_desactives_obsoletes();
+	if(count($DB_TAB))
+	{
+		foreach($DB_TAB as $DB_ROW)
+		{
+			$param_profil = ($DB_ROW['user_profil']=='eleve') ? 'eleve' : 'professeur' ; // On transmet 'professeur' y compris pour les directeurs.
+			DB_STRUCTURE_supprimer_utilisateur($DB_ROW['user_id'],$param_profil);
+		}
+	}
 	// Supprimer les demandes d'évaluations, ainsi que les reliquats de notes 'REQ'
 	DB_STRUCTURE_supprimer_demandes(true);
 	DB_STRUCTURE_supprimer_saisies_REQ();
@@ -85,6 +95,7 @@ if($action=='purger')
 	echo'<li><label class="valide">Évaluations supprimées (saisies associées conservées).</label></li>';
 	echo'<li><label class="valide">Groupes supprimés (avec leurs associations).</label></li>';
 	echo'<li><label class="valide">Jointures classes / périodes supprimées.</label></li>';
+	echo'<li><label class="valide">Comptes utilisateurs obsolètes supprimés.</label></li>';
 	echo'<li><label class="valide">Demandes d\'évaluations supprimées.</label></li>';
 	echo'<li><label class="valide">Tables optimisées par MySQL (équivalent d\'un défragmentage).</label></li>';
 	$top_arrivee = microtime(TRUE);

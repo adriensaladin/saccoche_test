@@ -561,11 +561,11 @@ function afficher_pourcentage_acquis($gras,$tab_infos,$detail)
 	}
 
 	//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	//	Méthode pour tester si un intitulé rentre dans une case sur une seule ligne (sinon => 2 lignes, pas prévu plus)
+	//	Méthode pour tester si un intitulé rentre dans une case sur une seule ligne (sinon => 2 lignes, pas prévu plus) [méthode publique car appelée depuis professeur_eval_*.ajax.php]
 	//	Méthode pour afficher un texte sur 1 ou 2 lignes maxi si pas la place.
 	//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	private function test_pas_trop_long($texte,$taille_police,$longueur_cellule)
+	public function test_pas_trop_long($texte,$taille_police,$longueur_cellule)
 	{
 		return (mb_strlen($texte)*$taille_police*0.15 < $longueur_cellule) ? true : false ;
 	}
@@ -1053,7 +1053,7 @@ function afficher_pourcentage_acquis($gras,$tab_infos,$detail)
 		$this->Cell(50 , $this->cases_hauteur , pdf($this->eleve_nom.' '.$this->eleve_prenom) , 0 , 2 , 'R' , false , '');
 	}
 
-	public function releve_socle_entete($palier_nom,$break,$eleve_id,$eleve_nom,$eleve_prenom)
+	public function releve_socle_entete($titre,$palier_nom,$break,$eleve_id,$eleve_nom,$eleve_prenom)
 	{
 		// On prend une nouvelle page PDF pour chaque élève en cas d'affichage d'un palier avec tous les piliers ; pour un seul pilier, on étudie la place restante... tout en forçant une nouvelle page pour le 1er élève
 		if( ($break==0) || ($this->GetY()==0) )
@@ -1077,7 +1077,7 @@ function afficher_pourcentage_acquis($gras,$tab_infos,$detail)
 		}
 		// Intitulé
 		$this->SetFont('Arial' , 'B' , $this->taille_police*1.5);
-		$this->Cell($this->page_largeur-$this->marge_droit-75 , $this->cases_hauteur , pdf('Détail de maîtrise du socle commun') , 0 , 2 , 'L' , false , '');
+		$this->Cell($this->page_largeur-$this->marge_droit-75 , $this->cases_hauteur , pdf($titre) , 0 , 2 , 'L' , false , '');
 		$this->Cell($this->page_largeur-$this->marge_droit-75 , $this->cases_hauteur , pdf($palier_nom) , 0 , 2 , 'L' , false , '');
 		// Nom / prénom
 		$this->eleve_id     = $eleve_id;
@@ -1086,7 +1086,7 @@ function afficher_pourcentage_acquis($gras,$tab_infos,$detail)
 		$this->releve_socle_identite();
 	}
 
-	public function releve_socle_pilier($pilier_nom,$pilier_nb_lignes,$test_affichage_Validation,$tab_pilier_validation)
+	public function releve_socle_pilier($pilier_nom,$pilier_nb_lignes,$test_affichage_Validation,$tab_pilier_validation,$drapeau_langue)
 	{
 		$this->SetXY($this->marge_gauche+$this->retrait_pourcentage , $this->GetY() + 0.5*$this->cases_hauteur);
 		$hauteur_requise = $this->cases_hauteur * $pilier_nb_lignes;
@@ -1105,6 +1105,10 @@ function afficher_pourcentage_acquis($gras,$tab_infos,$detail)
 		if($test_affichage_Validation)
 		{
 			$this->afficher_etat_validation('B',$tab_pilier_validation);
+		}
+		if($drapeau_langue)
+		{
+			$this->Image('./_img/drapeau/'.$drapeau_langue.'.gif',$this->GetX()+$this->pilier_largeur-$this->cases_hauteur-0.5,$this->GetY()-$this->cases_hauteur,$this->cases_hauteur,$this->cases_hauteur,'GIF');
 		}
 	}
 
@@ -1176,10 +1180,15 @@ function afficher_pourcentage_acquis($gras,$tab_infos,$detail)
 		$this->SetXY( $this->marge_gauche , $this->GetY()+$this->cases_hauteur+1 );
 	}
 
-	public function releve_synthese_socle_validation_eleve($eleve_id,$eleve_nom,$eleve_prenom,$tab_user_pilier,$tab_user_entree,$tab_pilier,$tab_socle)
+	public function releve_synthese_socle_validation_eleve($eleve_id,$eleve_nom,$eleve_prenom,$tab_user_pilier,$tab_user_entree,$tab_pilier,$tab_socle,$drapeau_langue)
 	{
 		$this->choisir_couleur_fond('gris_moyen');
 		$this->Cell($this->eleve_largeur , $this->cases_hauteur , pdf($eleve_nom.' '.$eleve_prenom) , 1 , 0 , 'L' , true , '');
+		if($drapeau_langue)
+		{
+			$taille_image = min($this->cases_hauteur,5);
+			$this->Image('./_img/drapeau/'.$drapeau_langue.'.gif',$this->GetX()-$taille_image-0.5,$this->GetY(),$taille_image,$taille_image,'GIF');
+		}
 		$demi_hauteur = $this->cases_hauteur / 2 ;
 		// - - - - -
 		// Indication des compétences validées
@@ -1212,12 +1221,17 @@ function afficher_pourcentage_acquis($gras,$tab_infos,$detail)
 		$this->SetXY( $this->marge_gauche , $this->GetY()+$demi_hauteur+1 );
 	}
 
-	public function releve_synthese_socle_pourcentage_eleve($eleve_id,$eleve_nom,$eleve_prenom,$tab_score_socle_eleve,$tab_socle)
+	public function releve_synthese_socle_pourcentage_eleve($eleve_id,$eleve_nom,$eleve_prenom,$tab_score_socle_eleve,$tab_socle,$drapeau_langue)
 	{
 		$this->pourcentage_largeur = $this->cases_largeur;
 		$this->choisir_couleur_fond('gris_moyen');
 		$this->SetFont('Arial' , '' , $this->taille_police);
 		$this->Cell($this->eleve_largeur , $this->cases_hauteur , pdf($eleve_nom.' '.$eleve_prenom) , 1 , 0 , 'L' , true , '');
+		if($drapeau_langue)
+		{
+			$taille_image = min($this->cases_hauteur,5);
+			$this->Image('./_img/drapeau/'.$drapeau_langue.'.gif',$this->GetX()-$taille_image-0.5,$this->GetY(),$taille_image,$taille_image,'GIF');
+		}
 		// - - - - -
 		// Indication des pourcentages
 		// - - - - -

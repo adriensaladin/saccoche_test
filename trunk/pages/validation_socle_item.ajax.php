@@ -244,7 +244,7 @@ if( ($action=='Afficher_bilan') && $pilier_id && count($tab_domaine) && count($t
 //	Afficher les informations pour aider à valider un item précis pour un élève donné
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
-elseif( ($action=='Afficher_information') && $eleve_id && $pilier_id && $entree_id && (in_array($mode,array('auto','manuel'))) && $langue )
+elseif( ($action=='Afficher_information') && $eleve_id && $pilier_id && $entree_id && (in_array($mode,array('auto','manuel'))) )
 {
 	// Tableau des langues
 	require_once('./_inc/tableau_langues.php');

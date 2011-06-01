@@ -476,7 +476,7 @@ $(document).ready
 			var pos_U = last_id_survole.indexOf('U');
 			var item_id = last_id_survole.substring(pos_E+1);
 			var user_id = last_id_survole.substring(pos_U+1,pos_E);
-			var langue  = $('#L'+user_id).attr('class').substring(1);
+			var langue  = ($('#L'+user_id).length) ? $('#L'+user_id).attr('class').substring(1) : 0 ;
 			$('#identite').html( $('#I'+user_id).attr('alt') );
 			$('#entree').html( $('#E'+item_id).next('th').children('div').text() );
 			$('#stats').html('');

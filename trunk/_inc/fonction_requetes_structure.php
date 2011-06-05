@@ -1112,6 +1112,23 @@ function DB_STRUCTURE_lister_eleves_cibles($listing_eleve_id,$with_gepi,$with_la
 }
 
 /**
+ * DB_STRUCTURE_lister_eleves_cibles_actifs_avec_sconet_id
+ *
+ * @param string   $listing_eleve_id   id des élèves séparés par des virgules
+ * @return array
+ */
+
+function DB_STRUCTURE_lister_eleves_cibles_actifs_avec_sconet_id($listing_eleve_id)
+{
+	$DB_SQL = 'SELECT user_id , user_nom , user_prenom , user_sconet_id ';
+	$DB_SQL.= 'FROM sacoche_user ';
+	$DB_SQL.= 'WHERE user_id IN('.$listing_eleve_id.') AND user_profil=:profil AND user_statut=:statut AND user_sconet_id>0 ';
+	$DB_SQL.= 'ORDER BY user_nom ASC, user_prenom ASC';
+	$DB_VAR = array(':profil'=>'eleve',':statut'=>1);
+	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+}
+
+/**
  * DB_STRUCTURE_lister_eleves_classes
  *
  * @param string   $listing_classe_id   id des classes séparés par des virgules
@@ -1357,6 +1374,44 @@ function DB_STRUCTURE_lister_jointure_user_pilier($listing_eleves,$listing_pilie
 		$DB_VAR = array();
 	}
 	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+}
+
+/**
+ * DB_STRUCTURE_lister_validations_items
+ *
+ * @param bool   $only_positives
+ * @return array
+ */
+
+function DB_STRUCTURE_lister_validations_items($only_positives)
+{
+	$DB_SQL = 'SELECT palier_id , pilier_id , sacoche_jointure_user_entree.* ';
+	$DB_SQL.= 'FROM sacoche_jointure_user_entree ';
+	$DB_SQL.= 'LEFT JOIN sacoche_socle_entree USING (entree_id) ';
+	$DB_SQL.= 'LEFT JOIN sacoche_socle_section USING (section_id) ';
+	$DB_SQL.= 'LEFT JOIN sacoche_socle_pilier USING (pilier_id) ';
+	$DB_SQL.= 'LEFT JOIN sacoche_socle_palier USING (palier_id) ';
+	$DB_SQL.= ($only_positives) ? 'WHERE validation_entree_etat=1 ' : '' ;
+	$DB_SQL.= 'ORDER BY palier_ordre, pilier_ordre, section_ordre, entree_ordre ';
+	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
+}
+
+/**
+ * DB_STRUCTURE_lister_validations_competences
+ *
+ * @param bool   $only_positives
+ * @return array
+ */
+
+function DB_STRUCTURE_lister_validations_competences($only_positives)
+{
+	$DB_SQL = 'SELECT palier_id , pilier_id , sacoche_jointure_user_pilier.* ';
+	$DB_SQL.= 'FROM sacoche_jointure_user_pilier ';
+	$DB_SQL.= 'LEFT JOIN sacoche_socle_pilier USING (pilier_id) ';
+	$DB_SQL.= 'LEFT JOIN sacoche_socle_palier USING (palier_id) ';
+	$DB_SQL.= ($only_positives) ? 'WHERE validation_pilier_etat=1 ' : '' ;
+	$DB_SQL.= 'ORDER BY palier_ordre, pilier_ordre ';
+	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
 }
 
 /**
@@ -2494,10 +2549,13 @@ function DB_STRUCTURE_recopier_identifiants($champ_depart,$champ_arrive)
 }
 
 /**
- * DB_STRUCTURE_modifier_utilisateur (on ne touche pas à "user_profil" ni à "connexion_date" ; par contre on maj "user_statut_date" si "statut" modifié)
+ * DB_STRUCTURE_modifier_utilisateur
+ * On ne touche pas à "connexion_date".
+ * Si "statut" modifié on maj "user_statut_date".
+ * On peut envisager une modification de "user_profil" (passage professeur -> directeur par exemple)
  *
  * @param int     $user_id
- * @param array   array(':sconet_id'=>$val, ':sconet_num'=>$val, ':reference'=>$val , ':nom'=>$val , ':prenom'=>$val , ':login'=>$val , ':password'=>$val , ':statut'=>$val , ':daltonisme'=>$val , ':classe'=>$val , ':id_ent'=>$val , ':id_gepi'=>$val );
+ * @param array   array(':sconet_id'=>$val, ':sconet_num'=>$val, ':reference'=>$val , ':profil'=>$val , ':nom'=>$val , ':prenom'=>$val , ':login'=>$val , ':password'=>$val , ':statut'=>$val , ':daltonisme'=>$val , ':classe'=>$val , ':id_ent'=>$val , ':id_gepi'=>$val );
  * @return void
  */
 
@@ -2511,6 +2569,7 @@ function DB_STRUCTURE_modifier_utilisateur($user_id,$DB_VAR)
 			case ':sconet_id' :  $tab_set[] = 'user_sconet_id='.$key;      break;
 			case ':sconet_num' : $tab_set[] = 'user_sconet_elenoet='.$key; break;
 			case ':reference' :  $tab_set[] = 'user_reference='.$key;      break;
+			case ':profil' :     $tab_set[] = 'user_profil='.$key;         break;
 			case ':nom' :        $tab_set[] = 'user_nom='.$key;            break;
 			case ':prenom' :     $tab_set[] = 'user_prenom='.$key;         break;
 			case ':login' :      $tab_set[] = 'user_login='.$key;          break;

@@ -467,7 +467,7 @@ function afficher_pourcentage_acquis($gras,$tab_infos,$detail)
 	{
 		if($score===false)
 		{
-			$score_affiche = (strpos($_SESSION['DROIT_VOIR_SCORE_BILAN'],$_SESSION['USER_PROFIL'])!==false) ? '-' : '' ;
+			$score_affiche = (mb_substr_count($_SESSION['DROIT_VOIR_SCORE_BILAN'],$_SESSION['USER_PROFIL'])) ? '-' : '' ;
 			$this->choisir_couleur_fond('blanc');
 			$this->Cell($this->cases_largeur , $this->cases_hauteur , $score_affiche , 1 , $br , 'C' , true , '');
 		}
@@ -476,7 +476,7 @@ function afficher_pourcentage_acquis($gras,$tab_infos,$detail)
 					if($score<$_SESSION['CALCUL_SEUIL']['R']) {$this->choisir_couleur_fond($this->tab_choix_couleur['NA']);}
 			elseif($score>$_SESSION['CALCUL_SEUIL']['V']) {$this->choisir_couleur_fond($this->tab_choix_couleur['A']);}
 			else                                          {$this->choisir_couleur_fond($this->tab_choix_couleur['VA']);}
-			$score_affiche = (strpos($_SESSION['DROIT_VOIR_SCORE_BILAN'],$_SESSION['USER_PROFIL'])!==false) ? $score : '' ;
+			$score_affiche = (mb_substr_count($_SESSION['DROIT_VOIR_SCORE_BILAN'],$_SESSION['USER_PROFIL'])) ? $score : '' ;
 			$this->SetFont('Arial' , '' , $this->taille_police-2);
 			$this->Cell($this->cases_largeur , $this->cases_hauteur , $score_affiche , 1 , $br , 'C' , true , '');
 			$this->SetFont('Arial' , '' , $this->taille_police);
@@ -1326,7 +1326,7 @@ function afficher_pourcentage_acquis($gras,$tab_infos,$detail)
 					if($moyenne_pourcent<$_SESSION['CALCUL_SEUIL']['R']) {$this->choisir_couleur_fond($this->tab_choix_couleur['NA']);}
 			elseif($moyenne_pourcent>$_SESSION['CALCUL_SEUIL']['V']) {$this->choisir_couleur_fond($this->tab_choix_couleur['A']);}
 			else                                                     {$this->choisir_couleur_fond($this->tab_choix_couleur['VA']);}
-			$score_affiche = (strpos($_SESSION['DROIT_VOIR_SCORE_BILAN'],$_SESSION['USER_PROFIL'])!==false) ? $moyenne_pourcent.'%' : '' ;
+			$score_affiche = (mb_substr_count($_SESSION['DROIT_VOIR_SCORE_BILAN'],$_SESSION['USER_PROFIL'])) ? $moyenne_pourcent.'%' : '' ;
 			$this->Cell($this->cases_largeur , $this->cases_hauteur , $score_affiche , 1 , $direction_after_case1 , 'C' , true , '');
 		}
 
@@ -1346,7 +1346,7 @@ function afficher_pourcentage_acquis($gras,$tab_infos,$detail)
 					if($moyenne_nombre<$_SESSION['CALCUL_SEUIL']['R']) {$this->choisir_couleur_fond($this->tab_choix_couleur['NA']);}
 			elseif($moyenne_nombre>$_SESSION['CALCUL_SEUIL']['V']) {$this->choisir_couleur_fond($this->tab_choix_couleur['A']);}
 			else                                                   {$this->choisir_couleur_fond($this->tab_choix_couleur['VA']);}
-			$score_affiche = (strpos($_SESSION['DROIT_VOIR_SCORE_BILAN'],$_SESSION['USER_PROFIL'])!==false) ? $moyenne_nombre.'%' : '' ;
+			$score_affiche = (mb_substr_count($_SESSION['DROIT_VOIR_SCORE_BILAN'],$_SESSION['USER_PROFIL'])) ? $moyenne_nombre.'%' : '' ;
 			$this->Cell($this->cases_largeur , $this->cases_hauteur , $score_affiche , 1 , $direction_after_case2 , 'C' , true , '');
 		}
 

@@ -26,206 +26,64 @@
  */
 if($_SESSION['SESAMATH_ID']==ID_DEMO){exit('Action désactivée pour la démo...');}
 
-$f_objet = (isset($_POST['f_objet'])) ? clean_texte($_POST['f_objet']) : '';
-
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-//	Profils autorisés à valider le socle
+//	Récupération des informations transmises
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
-if($f_objet=='validation_socle')
+$f_objet   = (isset($_POST['f_objet']))   ? clean_texte($_POST['f_objet'])   : '';
+$f_profils = (isset($_POST['f_profils'])) ? clean_texte($_POST['f_profils']) : 'erreur';
+
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+//	Vérification des informations transmises
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
+$tab_objet_profils = array();
+$tab_objet_profils['droit_validation_entree'] = array('directeur','professeur','profprincipal','aucunprof');
+$tab_objet_profils['droit_validation_pilier'] = array('directeur','professeur','profprincipal','aucunprof');
+$tab_objet_profils['droit_annulation_pilier'] = array('directeur','professeur','profprincipal','aucunprof');
+$tab_objet_profils['droit_voir_referentiels'] = array('directeur','professeur','parent','eleve');
+$tab_objet_profils['droit_voir_score_bilan']  = array('directeur','professeur','parent','eleve');
+$tab_objet_profils['droit_voir_algorithme']   = array('directeur','professeur','parent','eleve');
+$tab_objet_profils['droit_modifier_mdp']      = array('directeur','professeur','parent','eleve');
+$tab_objet_profils['droit_bilan_moyenne_score']      = array('parent','eleve');
+$tab_objet_profils['droit_bilan_pourcentage_acquis'] = array('parent','eleve');
+$tab_objet_profils['droit_bilan_note_sur_vingt']     = array('parent','eleve');
+$tab_objet_profils['droit_socle_acces']              = array('parent','eleve');
+$tab_objet_profils['droit_socle_pourcentage_acquis'] = array('parent','eleve');
+$tab_objet_profils['droit_socle_etat_validation']    = array('parent','eleve');
+
+$test_objet_socle = in_array($f_objet,array('droit_validation_entree','droit_validation_pilier','droit_annulation_pilier')) ? true : false ;
+
+if(!isset($tab_objet_profils[$f_objet]))
 {
-	$f_entree_options  = (isset($_POST['f_entree']))  ? clean_texte($_POST['f_entree'])  : 'erreur';
-	$f_pilier_options  = (isset($_POST['f_pilier']))  ? clean_texte($_POST['f_pilier'])  : 'erreur';
-	$f_annuler_options = (isset($_POST['f_annuler'])) ? clean_texte($_POST['f_annuler']) : 'erreur';
+	exit('Droit inconnu !');
+}
 
-	// f_entree_options + f_pilier_options + f_annuler_options ne peuvent être vides, et doivent contenir la chaine 'prof'
-	$nettoyage = str_replace( array('directeur','aucunprof','profprincipal','professeur') , '*' , $f_entree_options.','.$f_pilier_options.','.$f_annuler_options );
+if($f_profils=='')
+{
+	// Les profils peuvent être vides sauf pour les 3 paramètres du socle
+	$test_options = ($test_objet_socle) ? false : true ;
+}
+else
+{
+	$nettoyage = str_replace( $tab_objet_profils[$f_objet] , '*' , $f_profils );
 	$nettoyage = str_replace( '*,' , '' , $nettoyage.',' );
-	$test_options = ( ($nettoyage=='') && (strpos($f_entree_options,'prof')!==false) && (strpos($f_pilier_options,'prof')!==false) && (strpos($f_annuler_options,'prof')!==false) ) ? true : false ;
-
-	if($test_options)
-	{
-		DB_STRUCTURE_modifier_parametres( array('droit_validation_entree'=>$f_entree_options,'droit_validation_pilier'=>$f_pilier_options,'droit_annulation_pilier'=>$f_annuler_options) );
-		// ne pas oublier de mettre aussi à jour la session
-		$_SESSION['DROIT_VALIDATION_ENTREE'] = $f_entree_options;
-		$_SESSION['DROIT_VALIDATION_PILIER'] = $f_pilier_options;
-		$_SESSION['DROIT_ANNULATION_PILIER'] = $f_annuler_options;
-		exit('ok');
-	}
+	// Test supplémentaire : les 3 paramètres du socle doivent contenir la chaine 'prof'
+	$test_socle   = ( (!$test_objet_socle) || (strpos($f_profils,'prof')!==false) ) ? true : false ;
+	$test_options = ( ($nettoyage=='') && $test_socle ) ? true : false;
 }
-
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-//	Profils autorisés à consulter tous les référentiels de l'établissement
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-
-if($f_objet=='voir_referentiels')
+if(!$test_options)
 {
-	$f_options = (isset($_POST['f_options'])) ? clean_texte($_POST['f_options']) : 'erreur';
-
-	if($f_options=='')
-	{
-		$test_options = true;
-	}
-	else
-	{
-		$nettoyage = str_replace( array('directeur','professeur','eleve') , '*' , $f_options );
-		$nettoyage = str_replace( '*,' , '' , $nettoyage.',' );
-		$test_options = ($nettoyage=='') ? true : false;
-	}
-
-	if($test_options)
-	{
-		DB_STRUCTURE_modifier_parametres( array('droit_voir_referentiels'=>$f_options) );
-		// ne pas oublier de mettre aussi à jour la session
-		$_SESSION['DROIT_VOIR_REFERENTIELS'] = $f_options;
-		exit('ok');
-	}
+	exit('Profils incohérents !');
 }
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-//	Profils autorisés à voir les scores bilan des items
+//	Tout est ok : on applique la modification demandée
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
-if($f_objet=='voir_score_bilan')
-{
-	$f_options = (isset($_POST['f_options'])) ? clean_texte($_POST['f_options']) : 'erreur';
-
-	if($f_options=='')
-	{
-		$test_options = true;
-	}
-	else
-	{
-		$nettoyage = str_replace( array('directeur','professeur','eleve') , '*' , $f_options );
-		$nettoyage = str_replace( '*,' , '' , $nettoyage.',' );
-		$test_options = ($nettoyage=='') ? true : false;
-	}
-
-	if($test_options)
-	{
-		DB_STRUCTURE_modifier_parametres( array('droit_voir_score_bilan'=>$f_options) );
-		// ne pas oublier de mettre aussi à jour la session
-		$_SESSION['DROIT_VOIR_SCORE_BILAN'] = $f_options;
-		exit('ok');
-	}
-}
-
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-//	Profils autorisés à voir et simuler l'algorithme de calcul d'un état d'acquisition
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-
-if($f_objet=='voir_algorithme')
-{
-	$f_options = (isset($_POST['f_options'])) ? clean_texte($_POST['f_options']) : 'erreur';
-
-	if($f_options=='')
-	{
-		$test_options = true;
-	}
-	else
-	{
-		$nettoyage = str_replace( array('directeur','professeur','eleve') , '*' , $f_options );
-		$nettoyage = str_replace( '*,' , '' , $nettoyage.',' );
-		$test_options = ($nettoyage=='') ? true : false;
-	}
-
-	if($test_options)
-	{
-		DB_STRUCTURE_modifier_parametres( array('droit_voir_algorithme'=>$f_options) );
-		// ne pas oublier de mettre aussi à jour la session
-		$_SESSION['DROIT_VOIR_ALGORITHME'] = $f_options;
-		exit('ok');
-	}
-}
-
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-//	Profils autorisés à modifier leur mot de passe
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-
-if($f_objet=='modifier_mdp')
-{
-	$f_options = (isset($_POST['f_options'])) ? clean_texte($_POST['f_options']) : 'erreur';
-
-	if($f_options=='')
-	{
-		$test_options = true;
-	}
-	else
-	{
-		$nettoyage = str_replace( array('directeur','professeur','eleve') , '*' , $f_options );
-		$nettoyage = str_replace( '*,' , '' , $nettoyage.',' );
-		$test_options = ($nettoyage=='') ? true : false;
-	}
-
-	if($test_options)
-	{
-		DB_STRUCTURE_modifier_parametres( array('droit_modifier_mdp'=>$f_options) );
-		// ne pas oublier de mettre aussi à jour la session
-		$_SESSION['DROIT_MODIFIER_MDP'] = $f_options;
-		exit('ok');
-	}
-}
-
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-//	Environnement élève - Bilan d'items d'une matière
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-
-if($f_objet=='eleve_bilans')
-{
-	$f_eleve_options = (isset($_POST['f_options'])) ? clean_texte($_POST['f_options']) : 'erreur';
-
-	if($f_eleve_options=='')
-	{
-		$test_options = true;
-	}
-	else
-	{
-		$nettoyage = str_replace( array('BilanMoyenneScore','BilanPourcentageAcquis','BilanNoteSurVingt') , '*' , $f_eleve_options );
-		$nettoyage = str_replace( '*,' , '' , $nettoyage.',' );
-		$test_options = ($nettoyage=='') ? true : false;
-	}
-
-	if($test_options)
-	{
-		DB_STRUCTURE_modifier_parametres( array('droit_eleve_bilans'=>$f_eleve_options) );
-		// ne pas oublier de mettre aussi à jour la session
-		$_SESSION['DROIT_ELEVE_BILANS'] = $f_eleve_options;
-		exit('ok');
-	}
-}
-
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-//	Environnement élève - Attestation de socle
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-
-if($f_objet=='eleve_socle')
-{
-	$f_eleve_options = (isset($_POST['f_options'])) ? clean_texte($_POST['f_options']) : 'erreur';
-
-	if($f_eleve_options=='')
-	{
-		$test_options = true;
-	}
-	else
-	{
-		$nettoyage = str_replace( array('SocleAcces','SoclePourcentageAcquis','SocleEtatValidation') , '*' , $f_eleve_options );
-		$nettoyage = str_replace( '*,' , '' , $nettoyage.',' );
-		$test_options = ($nettoyage=='') ? true : false;
-	}
-
-	if($test_options)
-	{
-		DB_STRUCTURE_modifier_parametres( array('droit_eleve_socle'=>$f_eleve_options) );
-		// ne pas oublier de mettre aussi à jour la session
-		$_SESSION['DROIT_ELEVE_SOCLE'] = $f_eleve_options;
-		exit('ok');
-	}
-}
-
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-//	On ne devrait pas arriver ici
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-
-exit('Erreur avec les données transmises !');
+DB_STRUCTURE_modifier_parametres( array($f_objet=>$f_profils) );
+// ne pas oublier de mettre aussi à jour la session
+$_SESSION[strtoupper($f_objet)] = $f_profils;
+exit('ok');
 
 ?>

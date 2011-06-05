@@ -28,7 +28,7 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = "Algorithme de calcul";
 
-$fin = (strpos($_SESSION['DROIT_VOIR_ALGORITHME'],$_SESSION['USER_PROFIL'])!==false) ? 'oui' : 'non' ;
+$fin = (mb_substr_count($_SESSION['DROIT_VOIR_ALGORITHME'],$_SESSION['USER_PROFIL'])) ? 'oui' : 'non' ;
 
 require('./pages/'.$PAGE.'_'.$fin.'.php');
 ?>

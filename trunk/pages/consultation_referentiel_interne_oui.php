@@ -139,7 +139,7 @@ else
 	}
 	// On construit et affiche le tableau résultant
 	$tab_paliers = explode( '.' , substr(LISTING_ID_NIVEAUX_CYCLES,1,-1) );
-	$affichage = '<table class="comp_view"><thead><tr><th>Matière</th><th>Nb</th><th>Coordonnateur(s)</th><th>Niveau</th><th>Référentiel</th><th>Méthode de calcul</th><th class="nu"></th></tr></thead><tbody>'."\r\n";
+	$affichage = '<table class="vm_nug"><thead><tr><th>Matière</th><th>Nb</th><th>Coordonnateur(s)</th><th>Niveau</th><th>Référentiel</th><th>Méthode de calcul</th><th class="nu"></th></tr></thead><tbody>'."\r\n";
 	$infobulle = '<img src="./_img/bulle_aide.png" alt="" title="Nombre maximal de demandes d\'évaluations simultanées autorisées pour un élève." />';
 	foreach($tab_matiere as $matiere_id => $tab)
 	{

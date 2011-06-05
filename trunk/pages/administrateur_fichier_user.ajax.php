@@ -34,7 +34,7 @@ $step   = (isset($_POST['f_step']))   ? clean_entier($_POST['f_step']) : 0;
 $dossier_import    = './__tmp/import/';
 $dossier_login_mdp = './__tmp/login-mdp/';
 
-$tab_actions = array('sconet_professeurs_directeurs_oui'=>'sconet_professeurs_directeurs','tableur_professeurs_directeurs'=>'tableur_professeurs_directeurs','sconet_eleves_oui'=>'sconet_eleves','base-eleves_eleves'=>'base-eleves_eleves','tableur_eleves'=>'tableur_eleves');
+$tab_actions = array('sconet_professeurs_directeurs_oui'=>'sconet_professeurs_directeurs','tableur_professeurs_directeurs'=>'tableur_professeurs_directeurs','sconet_eleves_oui'=>'sconet_eleves','sconet_parents_oui'=>'sconet_parents','base-eleves_eleves'=>'base-eleves_eleves','tableur_eleves'=>'tableur_eleves');
 $tab_etapes  = array();
 
 if( !isset($tab_actions[$action]) )
@@ -58,12 +58,12 @@ $tab_etapes['sconet_professeurs_directeurs']  .= '<li id="step3">Étape 3 - Clas
 $tab_etapes['sconet_professeurs_directeurs']  .= '<li id="step4">Étape 4 - Groupes (ajouts éventuels)</li>';
 $tab_etapes['sconet_professeurs_directeurs']  .= '<li id="step5">Étape 5 - Utilisateurs (ajout / suppression)</li>';
 $tab_etapes['sconet_professeurs_directeurs']  .= '<li id="step6">Étape 6 - Affectations : ajouts éventuels</li>';
-$tab_etapes['sconet_professeurs_directeurs']  .= '<li id="step7">Étape 7 - Nettoyage des fichiers temporaires</li>';
+$tab_etapes['sconet_professeurs_directeurs']  .= '<li id="step9">Étape 7 - Nettoyage des fichiers temporaires</li>';
 
 $tab_etapes['tableur_professeurs_directeurs']  = '<li id="step1">Étape 1 - Récupération du fichier</li>';
 $tab_etapes['tableur_professeurs_directeurs'] .= '<li id="step2">Étape 2 - Extraction des données</li>';
 $tab_etapes['tableur_professeurs_directeurs'] .= '<li id="step5">Étape 3 - Utilisateurs (ajout / suppression)</li>';
-$tab_etapes['tableur_professeurs_directeurs'] .= '<li id="step7">Étape 4 - Nettoyage des fichiers temporaires</li>';
+$tab_etapes['tableur_professeurs_directeurs'] .= '<li id="step9">Étape 4 - Nettoyage des fichiers temporaires</li>';
 
 $tab_etapes['sconet_eleves']                   = '<li id="step1">Étape 1 - Récupération du fichier</li>';
 $tab_etapes['sconet_eleves']                  .= '<li id="step2">Étape 2 - Extraction des données</li>';
@@ -71,22 +71,28 @@ $tab_etapes['sconet_eleves']                  .= '<li id="step3">Étape 3 - Clas
 $tab_etapes['sconet_eleves']                  .= '<li id="step4">Étape 4 - Groupes (ajout / suppression)</li>';
 $tab_etapes['sconet_eleves']                  .= '<li id="step5">Étape 5 - Utilisateurs (ajout / suppression)</li>';
 $tab_etapes['sconet_eleves']                  .= '<li id="step6">Étape 6 - Affectations : ajouts éventuels</li>';
-$tab_etapes['sconet_eleves']                  .= '<li id="step7">Étape 7 - Nettoyage des fichiers temporaires</li>';
+$tab_etapes['sconet_eleves']                  .= '<li id="step9">Étape 7 - Nettoyage des fichiers temporaires</li>';
+
+$tab_etapes['sconet_parents']                  = '<li id="step1">Étape 1 - Récupération du fichier</li>';
+$tab_etapes['sconet_parents']                 .= '<li id="step2">Étape 2 - Extraction des données</li>';
+$tab_etapes['sconet_parents']                 .= '<li id="step5">Étape 3 - Utilisateurs (ajout / suppression)</li>';
+$tab_etapes['sconet_parents']                 .= '<li id="step7">Étape 4 - Responsabilités (ajout / suppression)</li>';
+$tab_etapes['sconet_parents']                 .= '<li id="step9">Étape 5 - Nettoyage des fichiers temporaires</li>';
 
 $tab_etapes['base-eleves_eleves']              = '<li id="step1">Étape 1 - Récupération du fichier</li>';
 $tab_etapes['base-eleves_eleves']             .= '<li id="step2">Étape 2 - Extraction des données</li>';
 $tab_etapes['base-eleves_eleves']             .= '<li id="step3">Étape 3 - Classes (ajout / suppression)</li>';
 $tab_etapes['base-eleves_eleves']             .= '<li id="step5">Étape 4 - Utilisateurs (ajout / suppression)</li>';
-$tab_etapes['base-eleves_eleves']             .= '<li id="step7">Étape 5 - Nettoyage des fichiers temporaires</li>';
+$tab_etapes['base-eleves_eleves']             .= '<li id="step9">Étape 5 - Nettoyage des fichiers temporaires</li>';
 
 $tab_etapes['tableur_eleves']                  = '<li id="step1">Étape 1 - Récupération du fichier</li>';
 $tab_etapes['tableur_eleves']                 .= '<li id="step2">Étape 2 - Extraction des données</li>';
 $tab_etapes['tableur_eleves']                 .= '<li id="step3">Étape 3 - Classes (ajout / suppression)</li>';
 $tab_etapes['tableur_eleves']                 .= '<li id="step5">Étape 4 - Utilisateurs (ajout / suppression)</li>';
-$tab_etapes['tableur_eleves']                 .= '<li id="step7">Étape 5 - Nettoyage des fichiers temporaires</li>';
+$tab_etapes['tableur_eleves']                 .= '<li id="step9">Étape 5 - Nettoyage des fichiers temporaires</li>';
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-//	Étape 1 - Récupération du fichier (sconet_professeurs_directeurs | tableur_professeurs_directeurs | sconet_eleves | base-eleves_eleves | tableur_eleves)
+//	Étape 1 - Récupération du fichier (sconet_professeurs_directeurs | tableur_professeurs_directeurs | sconet_eleves | sconet_parents | base-eleves_eleves | tableur_eleves)
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
 if( $step==1 )
@@ -129,6 +135,10 @@ if( $step==1 )
 		{
 			$nom_fichier_extrait = 'ElevesSansAdresses.xml';
 		}
+		elseif($action=='sconet_parents')
+		{
+			$nom_fichier_extrait = 'ResponsablesAvecAdresses.xml';
+		}
 		else
 		{
 			$annee_scolaire  = (date('n')>7) ? date('Y') : date('Y')-1 ;
@@ -155,7 +165,7 @@ if( $step==1 )
 }
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-//	Étape 2 - Extraction des données (sconet_professeurs_directeurs | tableur_professeurs_directeurs | sconet_eleves | base-eleves_eleves | tableur_eleves)
+//	Étape 2 - Extraction des données (sconet_professeurs_directeurs | tableur_professeurs_directeurs | sconet_eleves | sconet_parents | base-eleves_eleves | tableur_eleves)
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
 if( $step==2 )
@@ -180,6 +190,8 @@ if( $step==2 )
 	$tab_users_fichier['classe']     = array(); // Avec id sconet_id ou reference // Classe de l'élève || Classes du professeur, avec indication PP
 	$tab_users_fichier['groupe']     = array(); // Avec id sconet_id // Groupes de l'élève || Groupes du professeur
 	$tab_users_fichier['matiere']    = array(); // Avec id sconet_id // Matières du professeur, avec indication méthode récupération
+	$tab_users_fichier['adresse']    = array(); // Avec id sconet_id // Adresse du responsable légal
+	$tab_users_fichier['enfant']     = array(); // Avec id sconet_id // Liste des élèves rattachés
 	// Pour récupérer les données des classes et des groupes
 	$tab_classes_fichier['ref']    = array();
 	$tab_classes_fichier['nom']    = array();
@@ -187,7 +199,7 @@ if( $step==2 )
 	$tab_groupes_fichier['ref']    = array();
 	$tab_groupes_fichier['nom']    = array();
 	$tab_groupes_fichier['niveau'] = array();
-	// Il y a 5 procédures différentes suivant le mode d'import...
+	// Procédures différentes suivant le mode d'import...
 	if($action=='sconet_professeurs_directeurs')
 	{
 		//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
@@ -264,7 +276,7 @@ if( $step==2 )
 					$tab_users_fichier['sconet_id'][$i_fichier]  = $sconet_id;
 					$tab_users_fichier['sconet_num'][$i_fichier] = 0;
 					$tab_users_fichier['reference'][$i_fichier]  = '';
-					$tab_users_fichier['profil'][$i_fichier]     = ($fonction=='DIRU') ? 'directeur' : 'professeur' ;
+					$tab_users_fichier['profil'][$i_fichier]     = ($fonction=='DIR') ? 'directeur' : 'professeur' ;
 					$tab_users_fichier['nom'][$i_fichier]        = clean_nom($individu->NOM_USAGE);
 					$tab_users_fichier['prenom'][$i_fichier]     = clean_prenom($individu->PRENOM);
 					$tab_users_fichier['classe'][$i_fichier]     = array();
@@ -444,7 +456,6 @@ if( $step==2 )
 					$tab_users_fichier['prenom'][$i_fichier]     = clean_prenom($eleve->PRENOM);
 					$tab_users_fichier['classe'][$i_fichier]     = array();
 					$tab_users_fichier['groupe'][$i_fichier]     = array();
-					$tab_users_fichier['matiere'][$i_fichier]    = array();
 					$tab_users_fichier['niveau'][$i_fichier]     = clean_ref($eleve->CODE_MEF);
 				}
 			}
@@ -501,10 +512,72 @@ if( $step==2 )
 		// suppression du tableau temporaire
 		unset($tab_users_fichier['niveau']);
 	}
+	if($action=='sconet_parents')
+	{
+		//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+		//	Étape 2c - Extraction sconet_parents
+		//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+		$xml = @simplexml_load_file($dossier_import.$fichier_dest);
+		if($xml===false)
+		{
+			exit('Erreur : le fichier transmis n\'est pas un XML valide !');
+		}
+		$uai = $xml->PARAMETRES->UAJ;
+		if($uai===false)
+		{
+			exit('Erreur : le fichier transmis n\'est pas correct (erreur de numéro UAI) !');
+		}
+		//
+		// On recence les adresses dans un tableau temporaire.
+		//
+		$tab_adresses = array();
+		if( ($xml->DONNEES) && ($xml->DONNEES->ADRESSES) && ($xml->DONNEES->ADRESSES->ADRESSE) )
+		{
+			foreach ($xml->DONNEES->ADRESSES->ADRESSE as $adresse)
+			{
+				$tab_adresses[clean_entier($adresse->attributes()->ADRESSE_ID)] = array( clean_commune($adresse->LIGNE1_ADRESSE) , clean_commune($adresse->LIGNE2_ADRESSE) , clean_commune($adresse->LIGNE3_ADRESSE) , clean_commune($adresse->LIGNE4_ADRESSE) , clean_entier($adresse->CODE_POSTAL) , clean_nom($adresse->LIBELLE_POSTAL) , clean_nom($adresse->LL_PAYS) );
+			}
+		}
+		//
+		// On recence les liens de responsabilités dans un tableau temporaire.
+		//
+		$tab_enfants = array();
+		$nb_lien_responsabilite = 0;
+		if( ($xml->DONNEES) && ($xml->DONNEES->RESPONSABLES) && ($xml->DONNEES->RESPONSABLES->RESPONSABLE_ELEVE) )
+		{
+			foreach ($xml->DONNEES->RESPONSABLES->RESPONSABLE_ELEVE as $responsable)
+			{
+				if($responsable->RESP_LEGAL!='0')
+				{
+					$tab_enfants[clean_entier($responsable->PERSONNE_ID)][clean_entier($responsable->ELEVE_ID)] = clean_entier($responsable->RESP_LEGAL);
+					$nb_lien_responsabilite++;
+				}
+			}
+		}
+		//
+		// On passe les parents en revue : on mémorise leurs infos (dont adresses et enfants)
+		//
+		if( ($xml->DONNEES) && ($xml->DONNEES->PERSONNES) && ($xml->DONNEES->PERSONNES->PERSONNE) )
+		{
+			foreach ($xml->DONNEES->PERSONNES->PERSONNE as $personne)
+			{
+				$i_fichier = clean_entier($personne->attributes()->PERSONNE_ID);
+				$i_adresse = clean_entier($personne->ADRESSE_ID);
+				$tab_users_fichier['sconet_id'][$i_fichier]  = $i_fichier;
+				$tab_users_fichier['sconet_num'][$i_fichier] = 0;
+				$tab_users_fichier['reference'][$i_fichier]  = '';
+				$tab_users_fichier['profil'][$i_fichier]     = 'parent' ;
+				$tab_users_fichier['nom'][$i_fichier]        = clean_nom($personne->NOM);
+				$tab_users_fichier['prenom'][$i_fichier]     = clean_prenom($personne->PRENOM);
+				$tab_users_fichier['adresse'][$i_fichier]    = isset($tab_adresses[$i_adresse]) ? $tab_adresses[$i_adresse] : array('','','','',0,'','') ;
+				$tab_users_fichier['enfant'][$i_fichier]     = isset($tab_enfants[$i_fichier])  ? $tab_enfants[$i_fichier]  : array() ;
+			}
+		}
+	}
 	if($action=='tableur_professeurs_directeurs')
 	{
 		//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-		//	Étape 2c - Extraction tableur_professeurs_directeurs
+		//	Étape 2d - Extraction tableur_professeurs_directeurs
 		//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 		$contenu = file_get_contents($dossier_import.$fichier_dest);
 		$contenu = utf8($contenu); // Mettre en UTF-8 si besoin
@@ -531,9 +604,6 @@ if( $step==2 )
 					$tab_users_fichier['profil'][]     = $profil;
 					$tab_users_fichier['nom'][]        = clean_nom($nom);
 					$tab_users_fichier['prenom'][]     = clean_prenom($prenom);
-					$tab_users_fichier['classe'][]     = array();
-					$tab_users_fichier['groupe'][]     = array();
-					$tab_users_fichier['matiere'][]    = array();
 				}
 			}
 		}
@@ -541,7 +611,7 @@ if( $step==2 )
 	if($action=='tableur_eleves')
 	{
 		//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-		//	Étape 2d - Extraction tableur_eleves
+		//	Étape 2e - Extraction tableur_eleves
 		//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 		$contenu = file_get_contents($dossier_import.$fichier_dest);
 		$contenu = utf8($contenu); // Mettre en UTF-8 si besoin
@@ -569,8 +639,6 @@ if( $step==2 )
 					$tab_users_fichier['nom'][]        = clean_nom($nom);
 					$tab_users_fichier['prenom'][]     = clean_prenom($prenom);
 					$tab_users_fichier['classe'][]     = $classe_ref;
-					$tab_users_fichier['groupe'][]     = array();
-					$tab_users_fichier['matiere'][]    = array();
 					if( ($classe_ref) && (!isset($tab_classes_fichier['ref'][$classe_ref])) )
 					{
 						$tab_classes_fichier['ref'][$classe_ref]    = $classe_ref;
@@ -584,7 +652,7 @@ if( $step==2 )
 	if($action=='base-eleves_eleves')
 	{
 		//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-		//	Étape 2e - Extraction base-eleves_eleves
+		//	Étape 2f - Extraction base-eleves_eleves
 		//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 		$contenu = file_get_contents($dossier_import.$fichier_dest);
 		$contenu = utf8($contenu); // Mettre en UTF-8 si besoin
@@ -664,8 +732,6 @@ if( $step==2 )
 					$tab_users_fichier['nom'][]        = mb_substr(clean_nom($nom),0,20);
 					$tab_users_fichier['prenom'][]     = mb_substr(clean_prenom($prenom),0,20);
 					$tab_users_fichier['classe'][]     = $classe_ref;
-					$tab_users_fichier['groupe'][]     = array();
-					$tab_users_fichier['matiere'][]    = array();
 					if( ($classe_ref) && (!isset($tab_classes_fichier['ref'][$classe_ref])) )
 					{
 						$tab_classes_fichier['ref'][$classe_ref]    = $classe_ref;
@@ -677,28 +743,49 @@ if( $step==2 )
 		}
 	}
 	//
-	// Fin des 5 cas possibles
+	// Fin des différents cas possibles
 	//
-	// Tableaux pour les étapes 61/62 (donc juste pour Sconet)
+	// Tableaux pour les étapes 61/62 (donc juste pour Sconet élèves / profs)
 	$tab_classe_ref_TO_id_base = array();
 	$tab_groupe_ref_TO_id_base = array();
 	$tab_i_fichier_TO_id_base  = array();
 	$tab_traitement6 = array('classes'=>$tab_classe_ref_TO_id_base,'groupes'=>$tab_groupe_ref_TO_id_base,'users'=>$tab_i_fichier_TO_id_base);
 	// On trie
-	$test1 = array_multisort($tab_users_fichier['nom'],SORT_ASC,SORT_STRING,$tab_users_fichier['prenom'],SORT_ASC,SORT_STRING,$tab_users_fichier['sconet_id'],$tab_users_fichier['sconet_num'],$tab_users_fichier['reference'],$tab_users_fichier['profil'],$tab_users_fichier['classe'],$tab_users_fichier['groupe'],$tab_users_fichier['matiere']);
-	$test2 = array_multisort($tab_classes_fichier['niveau'],SORT_DESC,SORT_STRING,$tab_classes_fichier['ref'],SORT_ASC,SORT_STRING,$tab_classes_fichier['nom'],SORT_ASC,SORT_STRING);
-	$test3 = array_multisort($tab_groupes_fichier['niveau'],SORT_DESC,SORT_STRING,$tab_groupes_fichier['ref'],SORT_ASC,SORT_STRING,$tab_groupes_fichier['nom'],SORT_ASC,SORT_STRING);
+	switch($action)
+	{
+		case 'sconet_professeurs_directeurs' :
+			$test1 = array_multisort($tab_users_fichier['nom'],SORT_ASC,SORT_STRING,$tab_users_fichier['prenom'],SORT_ASC,SORT_STRING,$tab_users_fichier['sconet_id'],$tab_users_fichier['sconet_num'],$tab_users_fichier['reference'],$tab_users_fichier['profil'],$tab_users_fichier['classe'],$tab_users_fichier['groupe'],$tab_users_fichier['matiere']);
+			$test2 = array_multisort($tab_classes_fichier['niveau'],SORT_DESC,SORT_STRING,$tab_classes_fichier['ref'],SORT_ASC,SORT_STRING,$tab_classes_fichier['nom'],SORT_ASC,SORT_STRING);
+			$test3 = array_multisort($tab_groupes_fichier['niveau'],SORT_DESC,SORT_STRING,$tab_groupes_fichier['ref'],SORT_ASC,SORT_STRING,$tab_groupes_fichier['nom'],SORT_ASC,SORT_STRING);
+			break;
+		case 'sconet_eleves' :
+			$test1 = array_multisort($tab_users_fichier['nom'],SORT_ASC,SORT_STRING,$tab_users_fichier['prenom'],SORT_ASC,SORT_STRING,$tab_users_fichier['sconet_id'],$tab_users_fichier['sconet_num'],$tab_users_fichier['reference'],$tab_users_fichier['profil'],$tab_users_fichier['classe'],$tab_users_fichier['groupe']);
+			$test2 = array_multisort($tab_classes_fichier['niveau'],SORT_DESC,SORT_STRING,$tab_classes_fichier['ref'],SORT_ASC,SORT_STRING,$tab_classes_fichier['nom'],SORT_ASC,SORT_STRING);
+			$test3 = array_multisort($tab_groupes_fichier['niveau'],SORT_DESC,SORT_STRING,$tab_groupes_fichier['ref'],SORT_ASC,SORT_STRING,$tab_groupes_fichier['nom'],SORT_ASC,SORT_STRING);
+			break;
+		case 'tableur_eleves' :
+		case 'base-eleves_eleves' :
+			$test1 = array_multisort($tab_users_fichier['nom'],SORT_ASC,SORT_STRING,$tab_users_fichier['prenom'],SORT_ASC,SORT_STRING,$tab_users_fichier['sconet_id'],$tab_users_fichier['sconet_num'],$tab_users_fichier['reference'],$tab_users_fichier['profil'],$tab_users_fichier['classe']);
+			$test2 = array_multisort($tab_classes_fichier['niveau'],SORT_DESC,SORT_STRING,$tab_classes_fichier['ref'],SORT_ASC,SORT_STRING,$tab_classes_fichier['nom'],SORT_ASC,SORT_STRING);
+			break;
+		case 'sconet_parents' :
+			$test1 = array_multisort($tab_users_fichier['nom'],SORT_ASC,SORT_STRING,$tab_users_fichier['prenom'],SORT_ASC,SORT_STRING,$tab_users_fichier['sconet_id'],$tab_users_fichier['sconet_num'],$tab_users_fichier['reference'],$tab_users_fichier['profil'],$tab_users_fichier['adresse'],$tab_users_fichier['enfant']);
+			break;
+		case 'tableur_professeurs_directeurs' :
+			$test1 = array_multisort($tab_users_fichier['nom'],SORT_ASC,SORT_STRING,$tab_users_fichier['prenom'],SORT_ASC,SORT_STRING,$tab_users_fichier['sconet_id'],$tab_users_fichier['sconet_num'],$tab_users_fichier['reference'],$tab_users_fichier['profil']);
+			break;
+	}
 	// Outil de résolution de bug ; le test1 provoque parfois l'erreur "Array sizes are inconsistent".
 	if(!$test1)
 	{
-		ajouter_log_PHP( $log_objet='Import Sconet élèves' , $log_contenu=serialize($tab_users_fichier) , $log_fichier=__FILE__ , $log_ligne=__LINE__ , $only_sesamath=true );
+		ajouter_log_PHP( $log_objet='Import fichier '.$action , $log_contenu=serialize($tab_users_fichier) , $log_fichier=__FILE__ , $log_ligne=__LINE__ , $only_sesamath=true );
 	}
 	// On enregistre
 	Ecrire_Fichier($dossier_import.'import_'.$action.'_'.$_SESSION['BASE'].'_users.txt',serialize($tab_users_fichier));
 	Ecrire_Fichier($dossier_import.'import_'.$action.'_'.$_SESSION['BASE'].'_classes.txt',serialize($tab_classes_fichier));
 	Ecrire_Fichier($dossier_import.'import_'.$action.'_'.$_SESSION['BASE'].'_groupes.txt',serialize($tab_groupes_fichier));
 	Ecrire_Fichier($dossier_import.'import_'.$action.'_'.$_SESSION['BASE'].'_traitement6.txt',serialize($tab_traitement6));
-	// On affiche le bilan (utilisateurs et classes/groupes trouvés)
+	// On affiche le bilan des utilisateurs trouvés
 	if(count($tab_users_fichier['profil']))
 	{
 		$tab_profil_nombre = array_count_values($tab_users_fichier['profil']);
@@ -712,23 +799,59 @@ if( $step==2 )
 	{
 		echo'<div><label class="alerte">Aucun utilisateur trouvé !</label></div>';
 	}
-	$nombre = count($tab_classes_fichier['ref']);
-	if($nombre)
+	// On affiche le bilan des classes trouvées
+	if( ($action!='tableur_professeurs_directeurs') && ($action!='sconet_parents') )
 	{
-		$s = ($nombre>1) ? 's' : '' ;
-		echo'<div><label class="valide">'.$nombre.' classe'.$s.' trouvée'.$s.'.</label></div>';
+		$nombre = count($tab_classes_fichier['ref']);
+		if($nombre)
+		{
+			$s = ($nombre>1) ? 's' : '' ;
+			echo'<div><label class="valide">'.$nombre.' classe'.$s.' trouvée'.$s.'.</label></div>';
+		}
+		else
+		{
+			echo'<div><label class="alerte">Aucune classe trouvée !</label></div>';
+		}
 	}
-	elseif($action!='tableur_professeurs_directeurs')
+	// On affiche le bilan des groupes trouvés
+	if( ($action=='sconet_professeurs_directeurs') || ($action=='sconet_eleves') )
 	{
-		echo'<div><label class="alerte">Aucune classe trouvée !</label></div>';
+		$nombre = count($tab_groupes_fichier['ref']);
+		if($nombre)
+		{
+			$s = ($nombre>1) ? 's' : '' ;
+			echo'<div><label class="valide">'.$nombre.' groupe'.$s.' trouvé'.$s.'.</label></div>';
+		}
+		else
+		{
+			echo'<div><label class="alerte">Aucun groupe trouvé !</label></div>';
+		}
 	}
-	$nombre = count($tab_groupes_fichier['ref']);
-	if($nombre)
+	// On affiche le bilan des parents trouvés
+	if($action=='sconet_parents')
 	{
-		$s = ($nombre>1) ? 's' : '' ;
-		echo'<div><label class="valide">'.$nombre.' groupe'.$s.' trouvé'.$s.'.</label></div>';
+		$nombre = count($tab_adresses);
+		if($nombre)
+		{
+			$s = ($nombre>1) ? 's' : '' ;
+			echo'<div><label class="valide">'.$nombre.' adresse'.$s.' trouvée'.$s.'.</label></div>';
+		}
+		else
+		{
+			echo'<div><label class="alerte">Aucune adresse trouvée !</label></div>';
+		}
+		if($nb_lien_responsabilite)
+		{
+			$s = ($nb_lien_responsabilite>1) ? 's' : '' ;
+			echo'<div><label class="valide">'.$nb_lien_responsabilite.' lien'.$s.' de responsabilité'.$s.' trouvé'.$s.'.</label></div>';
+		}
+		else
+		{
+			echo'<div><label class="alerte">Aucun lien de responsabilité trouvé !</label></div>';
+		}
 	}
-	$step = ($action!='tableur_professeurs_directeurs') ? '3' : '5' ;
+	// Fin de l'extraction
+	$step = ( ($action!='tableur_professeurs_directeurs') && ($action!='sconet_parents') ) ? '3' : '5' ;
 	echo'<p class="li"><a href="#" class="step'.$step.'1">Passer à l\'étape 3.</a><label id="ajax_msg">&nbsp;</label></p>';
 	exit();
 }
@@ -1215,12 +1338,13 @@ if( $step==42 )
 }
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-//	Étape 51 - Analyse des données des utilisateurs (sconet_professeurs_directeurs | tableur_professeurs_directeurs | sconet_eleves | base-eleves_eleves | tableur_eleves)
+//	Étape 51 - Analyse des données des utilisateurs (sconet_professeurs_directeurs | tableur_professeurs_directeurs | sconet_eleves | sconet_parents | base-eleves_eleves | tableur_eleves)
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
 if( $step==51 )
 {
-	$is_profil_eleve = (mb_strpos($action,'eleves')) ? true : false ;
+	$is_profil_eleve  = (mb_strpos($action,'eleves'))  ? true : false ;
+	$is_profil_parent = (mb_strpos($action,'parents')) ? true : false ;
 	// On récupère le fichier avec des infos sur les correspondances : $tab_traitement6['classes'] -> $tab_classe_ref_TO_id_base ; $tab_traitement6['groupes'] -> $tab_groupe_ref_TO_id_base ; $tab_traitement6['users'] -> $tab_i_fichier_TO_id_base
 	$fnom = $dossier_import.'import_'.$action.'_'.$_SESSION['BASE'].'_traitement6.txt';
 	if(!file_exists($fnom))
@@ -1236,7 +1360,7 @@ if( $step==51 )
 	$tab_classe_ref_TO_id_base = $tab_traitement6['classes'];
 	$tab_groupe_ref_TO_id_base = $tab_traitement6['groupes'];
 	$tab_i_fichier_TO_id_base  = $tab_traitement6['users'];
-	// On récupère le fichier avec les utilisateurs : $tab_users_fichier['champ'] : i -> valeur, avec comme champs : sconet_id / sconet_num / reference / profil / nom / prenom / classe / groupes / matieres
+	// On récupère le fichier avec les utilisateurs : $tab_users_fichier['champ'] : i -> valeur, avec comme champs : sconet_id / sconet_num / reference / profil / nom / prenom / classe / groupes / matieres / adresse / enfant
 	$fnom = $dossier_import.'import_'.$action.'_'.$_SESSION['BASE'].'_users.txt';
 	if(!file_exists($fnom))
 	{
@@ -1248,7 +1372,7 @@ if( $step==51 )
 	{
 		exit('Erreur : le fichier contenant les utilisateurs est syntaxiquement incorrect !');
 	}
-	// On récupère le contenu de la base pour comparer : $tab_users_base['champ'] : id -> valeur, avec comme champs : sconet_id / sconet_num / reference / profil / nom / prenom / statut / classe
+	// On récupère le contenu de la base pour comparer : $tab_users_base['champ'] : id -> valeur, avec comme champs : sconet_id / sconet_num / reference / profil / nom / prenom / statut / classe / adresse
 	$tab_users_base               = array();
 	$tab_users_base['sconet_id']  = array();
 	$tab_users_base['sconet_num'] = array();
@@ -1258,6 +1382,7 @@ if( $step==51 )
 	$tab_users_base['prenom']     = array();
 	$tab_users_base['statut']     = array();
 	$tab_users_base['classe']     = array();
+	$tab_users_base['adresse']    = array();
 	$DB_TAB = ($is_profil_eleve) ? DB_STRUCTURE_lister_users($profil='eleve',$only_actifs=false,$with_classe=true) : DB_STRUCTURE_lister_professeurs_et_directeurs() ;
 	foreach($DB_TAB as $DB_ROW)
 	{
@@ -1680,9 +1805,9 @@ if( $step==52 )
 		{
 			case 'sconet_eleves' :                  $etape = 6; $step = 61; break;
 			case 'sconet_professeurs_directeurs' :  $etape = 6; $step = 61; break;
-			case 'tableur_eleves' :                 $etape = 5; $step = 7;  break;
-			case 'tableur_professeurs_directeurs' : $etape = 4; $step = 7;  break;
-			case 'base-eleves_eleves' :             $etape = 5; $step = 7;  break;
+			case 'tableur_eleves' :                 $etape = 5; $step = 9;  break;
+			case 'tableur_professeurs_directeurs' : $etape = 4; $step = 9;  break;
+			case 'base-eleves_eleves' :             $etape = 5; $step = 9;  break;
 		}
 		echo'<p class="li"><a href="#" class="step'.$step.'">Passer à l\'étape '.$etape.'.</a><label id="ajax_msg">&nbsp;</label></p>';
 	}
@@ -1710,9 +1835,9 @@ if( $step==53 )
 	{
 		case 'sconet_eleves' :                  $etape = 6; $step = 61; break;
 		case 'sconet_professeurs_directeurs' :  $etape = 6; $step = 61; break;
-		case 'tableur_eleves' :                 $etape = 5; $step = 7;  break;
-		case 'tableur_professeurs_directeurs' : $etape = 4; $step = 7;  break;
-		case 'base-eleves_eleves' :             $etape = 5; $step = 7;  break;
+		case 'tableur_eleves' :                 $etape = 5; $step = 9;  break;
+		case 'tableur_professeurs_directeurs' : $etape = 4; $step = 9;  break;
+		case 'base-eleves_eleves' :             $etape = 5; $step = 9;  break;
 	}
 	echo'<p class="li"><a href="#" class="step'.$step.'">Passer à l\'étape '.$etape.'.</a><label id="ajax_msg">&nbsp;</label></p>';
 	exit();
@@ -2033,15 +2158,15 @@ if( $step==62 )
 		echo'<p><label class="valide">Nouvelles associations utilisateurs / matières effectuées : '.$nb_asso_matieres.'</label></p>';
 	}
 	echo'<p><label class="valide">Nouvelles associations utilisateurs / groupes effectuées : '.$nb_asso_groupes.'</label></p>';
-	echo'<p class="li"><a href="#" class="step7">Passer à l\'étape 7.</a><label id="ajax_msg">&nbsp;</label></p>';
+	echo'<p class="li"><a href="#" class="step9">Passer à l\'étape 7.</a><label id="ajax_msg">&nbsp;</label></p>';
 	exit();
 }
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-//	Étape 7 - Nettoyage des fichiers temporaires (sconet_professeurs_directeurs | tableur_professeurs_directeurs | sconet_eleves | base-eleves_eleves | tableur_eleves)
+//	Étape 9 - Nettoyage des fichiers temporaires (sconet_professeurs_directeurs | tableur_professeurs_directeurs | sconet_eleves | base-eleves_eleves | tableur_eleves)
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
-if( $step==7 )
+if( $step==9 )
 {
 	unlink($dossier_import.$fichier_dest);
 	unlink($dossier_import.'import_'.$action.'_'.$_SESSION['BASE'].'_users.txt');

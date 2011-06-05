@@ -34,30 +34,6 @@ $login    = (isset($_POST['f_login']))    ? clean_login($_POST['f_login'])      
 $password = (isset($_POST['f_password'])) ? clean_password($_POST['f_password']) : '';
 
 //	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
-// Mettre à jour automatiquement la base si besoin ; à effectuer avant toute récupération des données sinon ça peut poser pb...
-//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
-
-function maj_base_si_besoin($profil)
-{
-	$version_base = DB_version_base();
-	if($version_base != VERSION_BASE)
-	{
-		// On ne met pas à jour la base tant que le webmestre bloque l'accès à l'application, car sinon cela pourrait se produire avant le transfert de tous les fichiers.
-		global $CHEMIN_CONFIG;
-		if(!is_file($CHEMIN_CONFIG.'blocage_webmestre_0.txt'))
-		{
-			// Bloquer l'application
-			bloquer_application('automate',$_SESSION['BASE'],'Mise à jour de la base en cours.');
-			// Lancer une mise à jour de la base
-			require_once('./_inc/fonction_maj_base.php');
-			maj_base($version_base);
-			// Débloquer l'application
-			debloquer_application('automate',$_SESSION['BASE']);
-		}
-	}
-}
-
-//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
 // Afficher un formulaire d'identification
 //	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
 
@@ -121,7 +97,7 @@ elseif( ($action=='initialiser') && ($profil=='webmestre') )
 elseif( ($action=='initialiser') && (HEBERGEUR_INSTALLATION=='mono-structure') && $profil )
 {
 	// Mettre à jour la base si nécessaire
-	maj_base_si_besoin($profil);
+	maj_base_si_besoin($BASE);
 	// Nettoyer le dossier des vignettes si nécessaire
 	effacer_fichiers_temporaires('./__tmp/badge/'.'0' , 525600); // Nettoyer ce dossier des fichiers antérieurs à 1 an
 	// Requête pour récupérer la dénomination et le mode de connexion
@@ -160,7 +136,7 @@ elseif( ( ($action=='initialiser') && ($BASE>0) && (HEBERGEUR_INSTALLATION=='mul
 	afficher_nom_etablissement($BASE,$DB_ROW['structure_denomination']);
 	// Mettre à jour la base si nécessaire
 	charger_parametres_mysql_supplementaires($BASE);
-	maj_base_si_besoin($profil);
+	maj_base_si_besoin($BASE);
 	// Nettoyer le dossier des vignettes si nécessaire
 	effacer_fichiers_temporaires('./__tmp/badge/'.$BASE , 525600); // Nettoyer ce dossier des fichiers antérieurs à 1 an
 	// Une deuxième requête sur SACOCHE_STRUCTURE_BD_NAME pour savoir si le mode de connexion est SSO ou pas

@@ -169,6 +169,7 @@ button{padding:0 1px;margin:1px 0;background:#CCF;color:#139;border:1px solid #6
 button{width:auto;overflow:visible;} /* patch pour IE : voir http://jehiah.cz/archive/button-width-in-ie */
 button:hover,button.hover{background:#DDF;color:#D41;cursor:pointer;} /* button.hover pour une compatibilité avec AjaxUpload (pour background, car pas mieux pour cursor) */
 button[disabled]{background:#EAEAFF;color:#888;border:1px solid #BBF}
+button[disabled]:hover,button[disabled]:hover{cursor:default}
 button img{width:16px;height:16px}
 
 /* Input / Select */
@@ -306,11 +307,11 @@ th.v- , td.v- {background:#---}
 */
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-/* Format du tableau admin présentant les référentiels de compétences utilisés                         */
-/* Format du tableau webmestre de gestion des établissements                                           */
+/* Format de divers tableaux                                                                           */
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-table.comp_view td {vertical-align:middle}
+table.vm_nug td {vertical-align:middle}
+table.vm_nug td.nu {text-align:left}
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 /* Format du tableau webmestre présentant les statistiques                                             */

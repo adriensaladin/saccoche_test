@@ -77,6 +77,9 @@ if(HEBERGEUR_INSTALLATION=='multi-structures')
 	}
 }
 
+// Mettre à jour la base si nécessaire
+maj_base_si_besoin($BASE);
+
 // On charge les paramètres de connexion du serveur CAS
 
 $DB_TAB = DB_STRUCTURE_lister_parametres('"connexion_mode","cas_serveur_host","cas_serveur_port","cas_serveur_root"');

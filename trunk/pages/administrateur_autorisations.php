@@ -27,195 +27,90 @@
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = "Réglage des autorisations";
-$VERSION_JS_FILE += 5;
+$VERSION_JS_FILE += 6;
 
-$i_id = 0;	// Pour donner des ids aux checkbox et radio
+$tab_titres  = array();
+$tab_profils = array();
+$tab_objets  = array();
+
+$tab_titres[]  = 'Validations du socle';
+$tab_profils[] = array( 'directeur'=>'directeurs' , 'professeur'=>'tous les<br />professeurs' , 'profprincipal'=>'professeurs<br />principaux' , 'aucunprof'=>'aucun<br />professeur' );
+$tab_objets[]  = array( 'droit_validation_entree'=>'valider des items du socle' , 'droit_validation_pilier'=>'valider des compétences du socle' , 'droit_annulation_pilier'=>'annuler des validations de compétences' );
+
+$tab_titres[]  = 'Référentiels en place dans l\'établissement';
+$tab_profils[] = array( 'directeur'=>'directeurs' , 'professeur'=>'professeurs' , 'parent'=>'parents' , 'eleve'=>'élèves' );
+$tab_objets[]  = array( 'droit_voir_referentiels'=>'consulter tous les référentiels' );
+
+$tab_titres[]  = 'Score d\'un item &amp; état d\'acquisition';
+$tab_profils[] = array( 'directeur'=>'directeurs' , 'professeur'=>'professeurs' , 'parent'=>'parents' , 'eleve'=>'élèves' );
+$tab_objets[]  = array( 'droit_voir_score_bilan'=>'voir les scores des items (bilans)' , 'droit_voir_algorithme'=>' voir et simuler l\'algorithme de calcul' );
+
+$tab_titres[]  = 'Mot de passe';
+$tab_profils[] = array( 'directeur'=>'directeurs' , 'professeur'=>'professeurs' , 'parent'=>'parents' , 'eleve'=>'élèves' );
+$tab_objets[]  = array( 'droit_modifier_mdp'=>'modifier son mot de passe' );
+
+$tab_titres[]  = 'Bilan d\'items d\'une matière';
+$tab_profils[] = array( 'parent'=>'parents' , 'eleve'=>'élèves' );
+$tab_objets[]  = array( 'droit_bilan_moyenne_score'=>'afficher la ligne avec la moyenne des scores d\'acquisitions' , 'droit_bilan_pourcentage_acquis'=>'afficher la ligne avec le pourcentage d\'items acquis' , 'droit_bilan_note_sur_vingt'=>'ajouter la conversion en note sur 20' );
+
+$tab_titres[]  = 'Détail de maîtrise de socle';
+$tab_profils[] = array( 'parent'=>'parents' , 'eleve'=>'élèves' );
+$tab_objets[]  = array( 'droit_socle_acces'=>'accéder au relevé avec les items évalués par item du socle' , 'droit_socle_pourcentage_acquis'=>'afficher les pourcentages d\'items acquis' , 'droit_socle_etat_validation'=>'afficher les états de validation saisis' );
+
+$tab_false = array(
+	'droit_validation_entree__profprincipal','droit_validation_entree__aucunprof',
+	'droit_validation_pilier__professeur','droit_validation_pilier__aucunprof',
+	'droit_annulation_pilier__professeur','droit_annulation_pilier__profprincipal',
+	'droit_bilan_note_sur_vingt__parent','droit_bilan_note_sur_vingt__eleve',
+	'droit_socle_etat_validation__parent','droit_socle_etat_validation__eleve'
+);
+
+$tab_init_js = 'var tab_init = new Array();';
+$affichage = '';
+
+foreach($tab_titres as $i => $titre)
+{
+	$affichage .= '<h4>'.$titre.'</h4>';
+	$affichage .= '<table class="vm_nug">';
+	// ligne en tête
+	$affichage .= '<thead><tr><th class="nu"></th>';
+	foreach($tab_profils[$i] as $profil_key => $profil_txt)
+	{
+		$affichage .= '<th class="hc">'.$profil_txt.'</th>';
+	}
+	$affichage .= '<th class="nu"></th></tr></thead>';
+	// lignes avec boutons
+	$affichage .= '<tbody>';
+	foreach($tab_objets[$i] as $objet_key => $objet_txt)
+	{
+		$tab_init_js .= 'tab_init["'.$objet_key.'"] = new Array();';
+		$affichage .= '<tr id="tr_'.$objet_key.'"><th>'.$objet_txt.'</th>';
+		$tab_check = explode(',',$_SESSION[strtoupper($objet_key)]);
+		foreach($tab_profils[$i] as $profil_key => $profil_txt)
+		{
+			$init = in_array($objet_key.'__'.$profil_key,$tab_false) ? 'false' : 'true' ;
+			$tab_init_js .= 'tab_init["'.$objet_key.'"]["'.$profil_key.'"] = '.$init.';';
+			$checked = (in_array($profil_key,$tab_check)) ? ' checked' : '' ;
+			$type = (($i!=0)||($profil_key=='directeur')) ? 'checkbox' : 'radio' ;
+			$affichage .= '<td class="hc"><input type="'.$type.'" name="'.$objet_key.'" value="'.$profil_key.'"'.$checked.' /></td>';
+		}
+		$affichage .= '<td class="nu">&nbsp;<button name="initialiser" type="button"><img alt="" src="./_img/bouton/retourner.png" /> Par défaut</button> <button name="valider" type="button"><img alt="" src="./_img/bouton/parametre.png" /> Enregistrer</button> <label id="ajax_msg_'.$objet_key.'">&nbsp;</label></td></tr>';
+	}
+	$affichage .= '</tbody>';
+	$affichage .= '</table>';
+	$affichage .= '<hr />';
+}
 ?>
+
+<script type="text/javascript">
+	<?php echo $tab_init_js ?> 
+</script>
 
 <div><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__gestion_autorisations">DOC : Réglage des autorisations</a></span></div>
 
 <hr />
 
-<h4>Profils autorisés à valider le socle</h4>
-
-<form id="form_validation_socle" action="">
-	<table>
-		<?php
-		$tab_profils = array( 'directeur'=>'directeurs' , 'professeur'=>'tous les professeurs' , 'profprincipal'=>'seulement les<br />professeurs principaux' , 'aucunprof'=>'aucun professeur' );
-		$tab_objets  = array( 'droit_validation_entree'=>'validation des items du socle' , 'droit_validation_pilier'=>'validation des compétences du socle (ou piliers)' , 'droit_annulation_pilier'=>'annulation de validations de compétences du socle' );
-		// 1ère ligne
-		echo'<thead><tr><th class="nu"></th>';
-		foreach($tab_profils as $profil_key => $profil_txt)
-		{
-			echo'<th class="hc">'.$profil_txt.'</th>';
-		}
-		echo'</tr></thead>';
-		// Les lignes avec boutons
-		echo'<tbody>';
-		foreach($tab_objets as $objet_key => $objet_txt)
-		{
-			echo'<tr><th>'.$objet_txt.'</th>';
-			$tab_check = explode(',',$_SESSION[strtoupper($objet_key)]);
-			foreach($tab_profils as $profil_key => $profil_txt)
-			{
-				$checked = (in_array($profil_key,$tab_check)) ? ' checked' : '' ;
-				$type = ($profil_key=='directeur') ? 'checkbox' : 'radio' ;
-				echo'<td class="hc"><input type="'.$type.'" name="'.$objet_key.'" value="'.$profil_key.'"'.$checked.' /></td>';
-			}
-			echo'</tr>';
-		}
-		echo'</tbody>';
-		?>
-	</table>
-	<p>
-		<span class="tab"></span>
-		<button id="initialiser_validation_socle" type="button"><img alt="" src="./_img/bouton/retourner.png" /> Remettre les droits par défaut.</button>
-		<button id="valider_validation_socle" type="button"><img alt="" src="./_img/bouton/parametre.png" /> Enregistrer ces droits.</button>
-		<label id="ajax_msg_validation_socle">&nbsp;</label>
-	</p>
+<form id="form_autorisations" action="">
+<?php echo $affichage ?>
 </form>
-
-<hr />
-
-<h4>Profils autorisés à consulter tous les référentiels de l'établissement</h4>
-
-<form id="form_voir_referentiels" action=""><fieldset>
-	<p><span class="tab"></span>
-	<?php
-	$tab_options = array( 'directeur'=>'Directeurs' , 'professeur'=>'Professeurs' , 'eleve'=>'Élèves' );
-	$tab_check = explode(',',$_SESSION['DROIT_VOIR_REFERENTIELS']);
-	foreach($tab_options as $option_code => $option_txt)
-	{
-		$i_id++;
-		$checked = (in_array($option_code,$tab_check)) ? ' checked' : '' ;
-		echo'<label for="input_'.$i_id.'"><input type="checkbox" id="input_'.$i_id.'" name="droit_voir_referentiels" value="'.$option_code.'"'.$checked.' /> '.$option_txt.'</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
-	}
-	?>
-	</p>
-	<span class="tab"></span>
-	<button id="initialiser_voir_referentiels" type="button"><img alt="" src="./_img/bouton/retourner.png" /> Remettre les droits par défaut.</button>
-	<button id="valider_voir_referentiels" type="button"><img alt="" src="./_img/bouton/parametre.png" /> Enregistrer ces droits.</button>
-	<label id="ajax_msg_voir_referentiels">&nbsp;</label>
-</fieldset></form>
-
-<hr />
-
-<h4>Profils autorisés à voir les scores bilan des items</h4>
-
-<form id="form_voir_score_bilan" action=""><fieldset>
-	<p><span class="tab"></span>
-	<?php
-	$tab_options = array( 'directeur'=>'Directeurs' , 'professeur'=>'Professeurs' , 'eleve'=>'Élèves' );
-	$tab_check = explode(',',$_SESSION['DROIT_VOIR_SCORE_BILAN']);
-	foreach($tab_options as $option_code => $option_txt)
-	{
-		$i_id++;
-		$checked = (in_array($option_code,$tab_check)) ? ' checked' : '' ;
-		echo'<label for="input_'.$i_id.'"><input type="checkbox" id="input_'.$i_id.'" name="droit_voir_score_bilan" value="'.$option_code.'"'.$checked.' /> '.$option_txt.'</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
-	}
-	?>
-	</p>
-	<span class="tab"></span>
-	<button id="initialiser_voir_score_bilan" type="button"><img alt="" src="./_img/bouton/retourner.png" /> Remettre les droits par défaut.</button>
-	<button id="valider_voir_score_bilan" type="button"><img alt="" src="./_img/bouton/parametre.png" /> Enregistrer ces droits.</button>
-	<label id="ajax_msg_voir_score_bilan">&nbsp;</label>
-</fieldset></form>
-
-<hr />
-
-<h4>Profils autorisés à voir et simuler l'algorithme de calcul d'un état d'acquisition</h4>
-
-<form id="form_voir_algorithme" action=""><fieldset>
-	<p><span class="tab"></span>
-	<?php
-	$tab_options = array( 'directeur'=>'Directeurs' , 'professeur'=>'Professeurs' , 'eleve'=>'Élèves' );
-	$tab_check = explode(',',$_SESSION['DROIT_VOIR_ALGORITHME']);
-	foreach($tab_options as $option_code => $option_txt)
-	{
-		$i_id++;
-		$checked = (in_array($option_code,$tab_check)) ? ' checked' : '' ;
-		echo'<label for="input_'.$i_id.'"><input type="checkbox" id="input_'.$i_id.'" name="droit_voir_algorithme" value="'.$option_code.'"'.$checked.' /> '.$option_txt.'</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
-	}
-	?>
-	</p>
-	<span class="tab"></span>
-	<button id="initialiser_voir_algorithme" type="button"><img alt="" src="./_img/bouton/retourner.png" /> Remettre les droits par défaut.</button>
-	<button id="valider_voir_algorithme" type="button"><img alt="" src="./_img/bouton/parametre.png" /> Enregistrer ces droits.</button>
-	<label id="ajax_msg_voir_algorithme">&nbsp;</label>
-</fieldset></form>
-
-<hr />
-
-<h4>Profils autorisés à modifier leur mot de passe</h4>
-
-<form id="form_modifier_mdp" action=""><fieldset>
-	<p><span class="tab"></span>
-	<?php
-	$tab_options = array( 'directeur'=>'Directeurs' , 'professeur'=>'Professeurs' , 'eleve'=>'Élèves' );
-	$tab_check = explode(',',$_SESSION['DROIT_MODIFIER_MDP']);
-	foreach($tab_options as $option_code => $option_txt)
-	{
-		$i_id++;
-		$checked = (in_array($option_code,$tab_check)) ? ' checked' : '' ;
-		echo'<label for="input_'.$i_id.'"><input type="checkbox" id="input_'.$i_id.'" name="droit_modifier_mdp" value="'.$option_code.'"'.$checked.' /> '.$option_txt.'</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
-	}
-	?>
-	</p>
-	<span class="tab"></span>
-	<button id="initialiser_modifier_mdp" type="button"><img alt="" src="./_img/bouton/retourner.png" /> Remettre les droits par défaut.</button>
-	<button id="valider_modifier_mdp" type="button"><img alt="" src="./_img/bouton/parametre.png" /> Enregistrer ces droits.</button>
-	<label id="ajax_msg_modifier_mdp">&nbsp;</label>
-</fieldset></form>
-
-<hr />
-
-<h4>Environnement élève - Bilan d'items d'une matière</h4>
-
-<form id="form_eleve_bilans" action=""><fieldset>
-	<?php
-	$tab_options = array(
-		'BilanMoyenneScore'=>'Affichage de la ligne avec la moyenne des scores d\'acquisitions.' ,
-		'BilanPourcentageAcquis'=>'Affichage de la ligne avec le pourcentage d\'items acquis.' ,
-		'BilanNoteSurVingt'=>'Ajout de la conversion en note sur 20.'
-	);
-	$tab_check = explode(',',$_SESSION['DROIT_ELEVE_BILANS']);
-	foreach($tab_options as $option_code => $option_txt)
-	{
-		$i_id++;
-		$checked = (in_array($option_code,$tab_check)) ? ' checked' : '' ;
-		echo'<p><label for="input_'.$i_id.'"><input type="checkbox" id="input_'.$i_id.'" name="droit_eleve_bilans" value="'.$option_code.'"'.$checked.' /> '.$option_txt.'</label></p>'."\r\n";
-	}
-	?>
-	<span class="tab"></span>
-	<button id="initialiser_eleve_bilans" type="button"><img alt="" src="./_img/bouton/retourner.png" /> Remettre les options par défaut.</button>
-	<button id="valider_eleve_bilans" type="button"><img alt="" src="./_img/bouton/parametre.png" /> Valider ces options.</button>
-	<label id="ajax_msg_eleve_bilans">&nbsp;</label>
-</fieldset></form>
-
-<hr />
-
-<h4>Environnement élève - Détail de maîtrise de socle</h4>
-
-<form id="form_eleve_socle" action=""><fieldset>
-	<?php
-	$tab_options = array(
-		'SocleAcces'=>'Accès à l\'attestation listant les résultats des évaluations par item du socle.' ,
-		'SoclePourcentageAcquis'=>'Affichage des cases avec le pourcentage d\'items acquis.',
-		'SocleEtatValidation'=>'Affichage des états de validation saisis par les professeurs.'
-	);
-	$tab_check = explode(',',$_SESSION['DROIT_ELEVE_SOCLE']);
-	foreach($tab_options as $option_code => $option_txt)
-	{
-		$i_id++;
-		$checked = (in_array($option_code,$tab_check)) ? ' checked' : '' ;
-		echo'<p><label for="input_'.$i_id.'"><input type="checkbox" id="input_'.$i_id.'" name="droit_eleve_socle" value="'.$option_code.'"'.$checked.' /> '.$option_txt.'</label></p>'."\r\n";
-	}
-	?>
-	<span class="tab"></span>
-	<button id="initialiser_eleve_socle" type="button"><img alt="" src="./_img/bouton/retourner.png" /> Remettre les options par défaut.</button>
-	<button id="valider_eleve_socle" type="button"><img alt="" src="./_img/bouton/parametre.png" /> Valider ces options.</button>
-	<label id="ajax_msg_eleve_socle">&nbsp;</label>
-</fieldset></form>
-
-<hr />
-
+<p />

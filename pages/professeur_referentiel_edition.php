@@ -89,7 +89,7 @@ else
 		}
 	}
 	// On construit et affiche le tableau résultant
-	$affichage = '<table class="comp_view"><thead><tr><th>Matière</th><th>Référentiel</th><th class="nu"></th></tr></thead><tbody>'."\r\n";
+	$affichage = '<table class="vm_nug"><thead><tr><th>Matière</th><th>Référentiel</th><th class="nu"></th></tr></thead><tbody>'."\r\n";
 	foreach($tab_matiere as $matiere_id => $tab)
 	{
 		$matiere_nom   = $tab['nom'];

@@ -31,64 +31,52 @@ $(document).ready
 	{
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+// Afficher ou masquer des éléments de formulaire
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
+		function view_bilans()
+		{
+			var opacite_parent = ( $('#form_autorisations input[name="droit_bilan_moyenne_score"][value="parent"]').is(':checked') || $('#form_autorisations input[name="droit_bilan_pourcentage_acquis"][value="parent"]').is(':checked') ) ? 1 : 0 ;
+			var opacite_eleve  = ( $('#form_autorisations input[name="droit_bilan_moyenne_score"][value="eleve"]' ).is(':checked') || $('#form_autorisations input[name="droit_bilan_pourcentage_acquis"][value="eleve"]' ).is(':checked') ) ? 1 : 0 ;
+			var opacite_ligne  = ( opacite_parent || opacite_eleve ) ? 1 : 0 ;
+			$('#form_autorisations input[name="droit_bilan_note_sur_vingt"][value="parent"]').parent().fadeTo(0,opacite_parent);
+			$('#form_autorisations input[name="droit_bilan_note_sur_vingt"][value="eleve"]' ).parent().fadeTo(0,opacite_eleve);
+			$('#tr_droit_bilan_note_sur_vingt').fadeTo(0,opacite_ligne);
+		}
+		view_bilans();
+
+		function view_socle()
+		{
+			var opacite_parent = $('#form_autorisations input[name="droit_socle_acces"][value="parent"]').is(':checked') ? 1 : 0 ;
+			var opacite_eleve  = $('#form_autorisations input[name="droit_socle_acces"][value="eleve"]' ).is(':checked') ? 1 : 0 ;
+			var opacite_ligne  = ( opacite_parent || opacite_eleve ) ? 1 : 0 ;
+			$('#form_autorisations input[name="droit_socle_pourcentage_acquis"][value="parent"]').parent().fadeTo(0,opacite_parent);
+			$('#form_autorisations input[name="droit_socle_pourcentage_acquis"][value="eleve"]' ).parent().fadeTo(0,opacite_eleve);
+			$('#form_autorisations input[name="droit_socle_etat_validation"][value="parent"]').parent().fadeTo(0,opacite_parent);
+			$('#form_autorisations input[name="droit_socle_etat_validation"][value="eleve"]' ).parent().fadeTo(0,opacite_eleve);
+			$('#tr_droit_socle_pourcentage_acquis').fadeTo(0,opacite_ligne);
+			$('#tr_droit_socle_etat_validation').fadeTo(0,opacite_ligne);
+		}
+		view_socle();
+
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 // Alerter sur la nécessité de valider
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
-		$("#form_validation_socle input").change
+		$("#form_autorisations input").change
 		(
 			function()
 			{
-				$('#ajax_msg_validation_socle').removeAttr("class").addClass("alerte").html("Penser à enregistrer les modifications.");
-			}
-		);
-
-		$("#form_voir_referentiels input").change
-		(
-			function()
-			{
-				$('#ajax_msg_voir_referentiels').removeAttr("class").addClass("alerte").html("Penser à enregistrer les modifications.");
-			}
-		);
-
-		$("#form_voir_score_bilan input").change
-		(
-			function()
-			{
-				$('#ajax_msg_voir_score_bilan').removeAttr("class").addClass("alerte").html("Penser à enregistrer les modifications.");
-			}
-		);
-
-		$("#form_voir_algorithme input").change
-		(
-			function()
-			{
-				$('#ajax_msg_voir_algorithme').removeAttr("class").addClass("alerte").html("Penser à enregistrer les modifications.");
-			}
-		);
-
-		$("#form_modifier_mdp input").change
-		(
-			function()
-			{
-				$('#ajax_msg_modifier_mdp').removeAttr("class").addClass("alerte").html("Penser à enregistrer les modifications.");
-			}
-		);
-
-		$("#form_eleve_bilans input").change
-		(
-			function()
-			{
-				$('#ajax_msg_eleve_bilans').removeAttr("class").addClass("alerte").html("Penser à enregistrer les modifications.");
-				view_eleve_bilans();
-			}
-		);
-
-		$("#form_eleve_socle input").change
-		(
-			function()
-			{
-				$('#ajax_msg_eleve_socle').removeAttr("class").addClass("alerte").html("Penser à enregistrer les modifications.");
-				view_eleve_socle();
+				var objet = $(this).attr('name');
+				$('#ajax_msg_'+objet).removeAttr("class").addClass("alerte").html("Enregistrer pour confirmer.");
+				if( (objet=='droit_bilan_moyenne_score') || (objet=='droit_bilan_pourcentage_acquis') )
+				{
+					view_bilans();
+				}
+				if(objet=='droit_socle_acces')
+				{
+					view_socle();
+				}
 			}
 		);
 
@@ -96,130 +84,50 @@ $(document).ready
 // Initialiser un formulaire avec les valeurs par défaut
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
-		$('#initialiser_validation_socle').click
+		$('#form_autorisations button[name=initialiser]').click
 		(
 			function()
 			{
-				$('#form_validation_socle input').prop('checked',false);
-				$('#form_validation_socle input[value="directeur"]').prop('checked',true);
-				$('#form_validation_socle input[name="droit_validation_entree"][value="professeur"]').prop('checked',true);
-				$('#form_validation_socle input[name="droit_validation_pilier"][value="profprincipal"]').prop('checked',true);
-				$('#form_validation_socle input[name="droit_annulation_pilier"][value="aucunprof"]').prop('checked',true);
-				$('#ajax_msg_validation_socle').removeAttr("class").addClass("alerte").html("Penser à enregistrer les modifications.");
-			}
-		);
-
-		$('#initialiser_voir_referentiels').click
-		(
-			function()
-			{
-				$('#form_voir_referentiels input[value="directeur"]').prop('checked',true);
-				$('#form_voir_referentiels input[value="professeur"]').prop('checked',true);
-				$('#form_voir_referentiels input[value="eleve"]').prop('checked',true);
-				$('#ajax_msg_voir_referentiels').removeAttr("class").addClass("alerte").html("Penser à enregistrer les modifications.");
-			}
-		);
-
-		$('#initialiser_voir_score_bilan').click
-		(
-			function()
-			{
-				$('#form_voir_score_bilan input[value="directeur"]').prop('checked',true);
-				$('#form_voir_score_bilan input[value="professeur"]').prop('checked',true);
-				$('#form_voir_score_bilan input[value="eleve"]').prop('checked',true);
-				$('#ajax_msg_voir_score_bilan').removeAttr("class").addClass("alerte").html("Penser à enregistrer les modifications.");
-			}
-		);
-
-		$('#initialiser_voir_algorithme').click
-		(
-			function()
-			{
-				$('#form_voir_algorithme input[value="directeur"]').prop('checked',true);
-				$('#form_voir_algorithme input[value="professeur"]').prop('checked',true);
-				$('#form_voir_algorithme input[value="eleve"]').prop('checked',true);
-				$('#ajax_msg_voir_algorithme').removeAttr("class").addClass("alerte").html("Penser à enregistrer les modifications.");
-			}
-		);
-
-		$('#initialiser_modifier_mdp').click
-		(
-			function()
-			{
-				$('#form_modifier_mdp input[value="directeur"]').prop('checked',true);
-				$('#form_modifier_mdp input[value="professeur"]').prop('checked',true);
-				$('#form_modifier_mdp input[value="eleve"]').prop('checked',true);
-				$('#ajax_msg_modifier_mdp').removeAttr("class").addClass("alerte").html("Penser à enregistrer les modifications.");
-			}
-		);
-
-		$('#initialiser_eleve_bilans').click
-		(
-			function()
-			{
-				$('#form_eleve_bilans input[value="BilanMoyenneScore"]').prop('checked',true);
-				$('#form_eleve_bilans input[value="BilanPourcentageAcquis"]').prop('checked',true);
-				$('#form_eleve_bilans input[value="BilanNoteSurVingt"]').prop('checked',false);
-				$('#ajax_msg_eleve_bilans').removeAttr("class").addClass("alerte").html("Penser à enregistrer les modifications.");
-				view_eleve_bilans();
-			}
-		);
-
-		$('#initialiser_eleve_socle').click
-		(
-			function()
-			{
-				$('#form_eleve_socle input[value="SocleAcces"]').prop('checked',true);
-				$('#form_eleve_socle input[value="SoclePourcentageAcquis"]').prop('checked',true);
-				$('#form_eleve_socle input[value="SocleEtatValidation"]').prop('checked',false);
-				$('#ajax_msg_eleve_socle').removeAttr("class").addClass("alerte").html("Penser à enregistrer les modifications.");
-				view_eleve_socle();
+				var objet = $(this).parent().parent().attr('id').substring(3);
+				for(var value in tab_init[objet]) // Parcourir un tableau associatif...
+				{
+					$('#form_autorisations input[name="'+objet+'"][value="'+value+'"]').prop('checked',tab_init[objet][value]);
+				}
+				$('#ajax_msg_'+objet).removeAttr("class").addClass("alerte").html("Enregistrer pour confirmer.");
+				if( (objet=='droit_bilan_moyenne_score') || (objet=='droit_bilan_pourcentage_acquis') )
+				{
+					view_bilans();
+				}
+				if(objet=='droit_socle_acces')
+				{
+					view_socle();
+				}
 			}
 		);
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-// Afficher ou masquer des éléments de formulaire
+//	Soumission du formulaire
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
-		function view_eleve_bilans()
-		{
-			var opacite = ( $('#form_eleve_bilans input[value="BilanMoyenneScore"]').is(':checked') || $('#form_eleve_bilans input[value="BilanPourcentageAcquis"]').is(':checked') ) ? 1 : 0 ;
-			$('#form_eleve_bilans input[value="BilanNoteSurVingt"]').parent().parent().fadeTo(0,opacite);
-		}
-		view_eleve_bilans();
-
-		function view_eleve_socle()
-		{
-			var opacite = $('#form_eleve_socle input[value="SocleAcces"]').is(':checked') ? 1 : 0 ;
-			$('#form_eleve_socle input[value="SoclePourcentageAcquis"]').parent().parent().fadeTo(0,opacite);
-			$('#form_eleve_socle input[value="SocleEtatValidation"]').parent().parent().fadeTo(0,opacite);
-		}
-		view_eleve_socle();
-
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-//	Profils autorisés à valider le socle => soumission du formulaire
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-
-		$('#valider_validation_socle').click
+		$('#form_autorisations button[name=valider]').click
 		(
 			function()
 			{
-				var tab_entree  = new Array(); $("#form_validation_socle input[name=droit_validation_entree]:checked").each(function(){tab_entree.push($(this).val());});
-				var tab_pilier  = new Array(); $("#form_validation_socle input[name=droit_validation_pilier]:checked").each(function(){tab_pilier.push($(this).val());});
-				var tab_annuler = new Array(); $("#form_validation_socle input[name=droit_annulation_pilier]:checked").each(function(){tab_annuler.push($(this).val());});
+				var objet = $(this).parent().parent().attr('id').substring(3);
+				var tab_check = new Array(); $('#form_autorisations input[name='+objet+']:checked').each(function(){tab_check.push($(this).val());});
 				$("button").prop('disabled',true);
-				$('#ajax_msg_validation_socle').removeAttr("class").addClass("loader").html("Demande envoyée... Veuillez patienter.");
+				$('#ajax_msg_'+objet).removeAttr("class").addClass("loader").html("Transmission en cours...");
 				$.ajax
 				(
 					{
 						type : 'POST',
 						url : 'ajax.php?page='+PAGE,
-						data : 'f_objet=validation_socle&f_entree='+tab_entree+'&f_pilier='+tab_pilier+'&f_annuler='+tab_annuler,
+						data : 'f_objet='+objet+'&f_profils='+tab_check,
 						dataType : "html",
 						error : function(msg,string)
 						{
 							$("button").prop('disabled',false);
-							$('#ajax_msg_validation_socle').removeAttr("class").addClass("alerte").html("Echec de la connexion ! Veuillez recommencer.");
+							$('#ajax_msg_'+objet).removeAttr("class").addClass("alerte").html("Echec ! Veuillez recommencer.");
 							return false;
 						},
 						success : function(responseHTML)
@@ -228,263 +136,11 @@ $(document).ready
 							$("button").prop('disabled',false);
 							if(responseHTML!='ok')
 							{
-								$('#ajax_msg_validation_socle').removeAttr("class").addClass("alerte").html(responseHTML);
+								$('#ajax_msg_'+objet).removeAttr("class").addClass("alerte").html(responseHTML);
 							}
 							else
 							{
-								$('#ajax_msg_validation_socle').removeAttr("class").addClass("valide").html("Profils autorisés enregistrés !");
-							}
-						}
-					}
-				);
-			}
-		);
-
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-//	Profils autorisés à consulter tous les référentiels de l'établissement => soumission du formulaire
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-
-		$('#valider_voir_referentiels').click
-		(
-			function()
-			{
-				var tab_check = new Array(); $("input[name=droit_voir_referentiels]:checked").each(function(){tab_check.push($(this).val());});
-				$("button").prop('disabled',true);
-				$('#ajax_msg_voir_referentiels').removeAttr("class").addClass("loader").html("Demande envoyée... Veuillez patienter.");
-				$.ajax
-				(
-					{
-						type : 'POST',
-						url : 'ajax.php?page='+PAGE,
-						data : 'f_objet=voir_referentiels&f_options='+tab_check,
-						dataType : "html",
-						error : function(msg,string)
-						{
-							$("button").prop('disabled',false);
-							$('#ajax_msg_voir_referentiels').removeAttr("class").addClass("alerte").html("Echec de la connexion ! Veuillez recommencer.");
-							return false;
-						},
-						success : function(responseHTML)
-						{
-							maj_clock(1);
-							$("button").prop('disabled',false);
-							if(responseHTML!='ok')
-							{
-								$('#ajax_msg_voir_referentiels').removeAttr("class").addClass("alerte").html(responseHTML);
-							}
-							else
-							{
-								$('#ajax_msg_voir_referentiels').removeAttr("class").addClass("valide").html("Profils autorisés enregistrés !");
-							}
-						}
-					}
-				);
-			}
-		);
-
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-//	Profils autorisés à voir les scores bilan des items => soumission du formulaire
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-
-		$('#valider_voir_score_bilan').click
-		(
-			function()
-			{
-				var tab_check = new Array(); $("input[name=droit_voir_score_bilan]:checked").each(function(){tab_check.push($(this).val());});
-				$("button").prop('disabled',true);
-				$('#ajax_msg_voir_score_bilan').removeAttr("class").addClass("loader").html("Demande envoyée... Veuillez patienter.");
-				$.ajax
-				(
-					{
-						type : 'POST',
-						url : 'ajax.php?page='+PAGE,
-						data : 'f_objet=voir_score_bilan&f_options='+tab_check,
-						dataType : "html",
-						error : function(msg,string)
-						{
-							$("button").prop('disabled',false);
-							$('#ajax_msg_voir_score_bilan').removeAttr("class").addClass("alerte").html("Echec de la connexion ! Veuillez recommencer.");
-							return false;
-						},
-						success : function(responseHTML)
-						{
-							maj_clock(1);
-							$("button").prop('disabled',false);
-							if(responseHTML!='ok')
-							{
-								$('#ajax_msg_voir_score_bilan').removeAttr("class").addClass("alerte").html(responseHTML);
-							}
-							else
-							{
-								$('#ajax_msg_voir_score_bilan').removeAttr("class").addClass("valide").html("Profils autorisés enregistrés !");
-							}
-						}
-					}
-				);
-			}
-		);
-
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-//	Profils autorisés à voir et simuler l'algorithme de calcul d'un état d'acquisition => soumission du formulaire
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-
-		$('#valider_voir_algorithme').click
-		(
-			function()
-			{
-				var tab_check = new Array(); $("input[name=droit_voir_algorithme]:checked").each(function(){tab_check.push($(this).val());});
-				$("button").prop('disabled',true);
-				$('#ajax_msg_voir_algorithme').removeAttr("class").addClass("loader").html("Demande envoyée... Veuillez patienter.");
-				$.ajax
-				(
-					{
-						type : 'POST',
-						url : 'ajax.php?page='+PAGE,
-						data : 'f_objet=voir_algorithme&f_options='+tab_check,
-						dataType : "html",
-						error : function(msg,string)
-						{
-							$("button").prop('disabled',false);
-							$('#ajax_msg_voir_algorithme').removeAttr("class").addClass("alerte").html("Echec de la connexion ! Veuillez recommencer.");
-							return false;
-						},
-						success : function(responseHTML)
-						{
-							maj_clock(1);
-							$("button").prop('disabled',false);
-							if(responseHTML!='ok')
-							{
-								$('#ajax_msg_voir_algorithme').removeAttr("class").addClass("alerte").html(responseHTML);
-							}
-							else
-							{
-								$('#ajax_msg_voir_algorithme').removeAttr("class").addClass("valide").html("Profils autorisés enregistrés !");
-							}
-						}
-					}
-				);
-			}
-		);
-
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-//	Profils autorisés à modifier leur mot de passe => soumission du formulaire
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-
-		$('#valider_modifier_mdp').click
-		(
-			function()
-			{
-				var tab_check = new Array(); $("input[name=droit_modifier_mdp]:checked").each(function(){tab_check.push($(this).val());});
-				$("button").prop('disabled',true);
-				$('#ajax_msg_modifier_mdp').removeAttr("class").addClass("loader").html("Demande envoyée... Veuillez patienter.");
-				$.ajax
-				(
-					{
-						type : 'POST',
-						url : 'ajax.php?page='+PAGE,
-						data : 'f_objet=modifier_mdp&f_options='+tab_check,
-						dataType : "html",
-						error : function(msg,string)
-						{
-							$("button").prop('disabled',false);
-							$('#ajax_msg_modifier_mdp').removeAttr("class").addClass("alerte").html("Echec de la connexion ! Veuillez recommencer.");
-							return false;
-						},
-						success : function(responseHTML)
-						{
-							maj_clock(1);
-							$("button").prop('disabled',false);
-							if(responseHTML!='ok')
-							{
-								$('#ajax_msg_modifier_mdp').removeAttr("class").addClass("alerte").html(responseHTML);
-							}
-							else
-							{
-								$('#ajax_msg_modifier_mdp').removeAttr("class").addClass("valide").html("Profils autorisés enregistrés !");
-							}
-						}
-					}
-				);
-			}
-		);
-
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-//	Environnement élève - Bilan d'items d'une matière => soumission du formulaire
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-
-		$('#valider_eleve_bilans').click
-		(
-			function()
-			{
-				var tab_check = new Array(); $("input[name=droit_eleve_bilans]:checked").each(function(){tab_check.push($(this).val());});
-				$("button").prop('disabled',true);
-				$('#ajax_msg_eleve_bilans').removeAttr("class").addClass("loader").html("Demande envoyée... Veuillez patienter.");
-				$.ajax
-				(
-					{
-						type : 'POST',
-						url : 'ajax.php?page='+PAGE,
-						data : 'f_objet=eleve_bilans&f_options='+tab_check,
-						dataType : "html",
-						error : function(msg,string)
-						{
-							$("button").prop('disabled',false);
-							$('#ajax_msg_eleve_bilans').removeAttr("class").addClass("alerte").html("Echec de la connexion ! Veuillez recommencer.");
-							return false;
-						},
-						success : function(responseHTML)
-						{
-							maj_clock(1);
-							$("button").prop('disabled',false);
-							if(responseHTML!='ok')
-							{
-								$('#ajax_msg_eleve_bilans').removeAttr("class").addClass("alerte").html(responseHTML);
-							}
-							else
-							{
-								$('#ajax_msg_eleve_bilans').removeAttr("class").addClass("valide").html("Options de l'environnement élève enregistrées !");
-							}
-						}
-					}
-				);
-			}
-		);
-
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-//	Environnement élève - Attestation de socle => soumission du formulaire
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-
-		$('#valider_eleve_socle').click
-		(
-			function()
-			{
-				var tab_check = new Array(); $("input[name=droit_eleve_socle]:checked").each(function(){tab_check.push($(this).val());});
-				$("button").prop('disabled',true);
-				$('#ajax_msg_eleve_socle').removeAttr("class").addClass("loader").html("Demande envoyée... Veuillez patienter.");
-				$.ajax
-				(
-					{
-						type : 'POST',
-						url : 'ajax.php?page='+PAGE,
-						data : 'f_objet=eleve_socle&f_options='+tab_check,
-						dataType : "html",
-						error : function(msg,string)
-						{
-							$("button").prop('disabled',false);
-							$('#ajax_msg_eleve_socle').removeAttr("class").addClass("alerte").html("Echec de la connexion ! Veuillez recommencer.");
-							return false;
-						},
-						success : function(responseHTML)
-						{
-							maj_clock(1);
-							$("button").prop('disabled',false);
-							if(responseHTML!='ok')
-							{
-								$('#ajax_msg_eleve_socle').removeAttr("class").addClass("alerte").html(responseHTML);
-							}
-							else
-							{
-								$('#ajax_msg_eleve_socle').removeAttr("class").addClass("valide").html("Options de l'environnement élève enregistrées !");
+								$('#ajax_msg_'+objet).removeAttr("class").addClass("valide").html("Droits enregistrés !");
 							}
 						}
 					}

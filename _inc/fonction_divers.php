@@ -283,6 +283,34 @@ function charger_parametres_mysql_supplementaires($BASE)
 }
 
 /**
+ * maj_base_si_besoin
+ * Mettre à jour automatiquement la base si besoin ; à effectuer avant toute récupération des données sinon ça peut poser pb...
+ * 
+ * @param int   $BASE
+ * @return void
+ */
+
+function maj_base_si_besoin($BASE)
+{
+	$version_base = DB_version_base();
+	if($version_base != VERSION_BASE)
+	{
+		// On ne met pas à jour la base tant que le webmestre bloque l'accès à l'application, car sinon cela pourrait se produire avant le transfert de tous les fichiers.
+		global $CHEMIN_CONFIG;
+		if(!is_file($CHEMIN_CONFIG.'blocage_webmestre_0.txt'))
+		{
+			// Bloquer l'application
+			bloquer_application('automate',$BASE,'Mise à jour de la base en cours.');
+			// Lancer une mise à jour de la base
+			require_once('./_inc/fonction_maj_base.php');
+			maj_base($version_base);
+			// Débloquer l'application
+			debloquer_application('automate',$BASE);
+		}
+	}
+}
+
+/**
  * fabriquer_login
  * 
  * @param string $prenom
@@ -680,7 +708,7 @@ function enregistrer_informations_session($BASE,$DB_ROW)
 		}
 	}
 	// Fabriquer $_SESSION['NOTE_DOSSIER'] et $_SESSION['BACKGROUND_...'] en fonction de $_SESSION['USER_DALTONISME'] à partir de $_SESSION['NOTE_IMAGE_STYLE'] et $_SESSION['CSS_BACKGROUND-COLOR']['...']
-	// remarque : $_SESSION['USER_DALTONISME'] ne peut être utilisé que pour les profils élèves/profs/directeurs, pas les admins ni le webmestre
+	// remarque : $_SESSION['USER_DALTONISME'] ne peut être utilisé que pour les profils élèves/parents/profs/directeurs, pas les admins ni le webmestre
 	adapter_session_daltonisme() ;
 	// Enregistrer en session le CSS personnalisé
 	actualiser_style_session();

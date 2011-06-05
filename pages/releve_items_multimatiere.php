@@ -59,9 +59,9 @@ if($_SESSION['USER_PROFIL']=='eleve')
 	$of_g = 'non'; $sel_g = true; $class_form_option = 'hide'; $class_form_eleve = 'hide'; $class_form_periode = 'show';
 	$select_eleves = '<option value="'.$_SESSION['USER_ID'].'" selected>'.html($_SESSION['USER_NOM'].' '.$_SESSION['USER_PRENOM']).'</option>';
 	$check_option_lien = ' checked';
-	$check_bilan_MS        = (mb_substr_count($_SESSION['DROIT_ELEVE_BILANS'],'BilanMoyenneScore'))      ? ' checked' : '';
-	$check_bilan_PA        = (mb_substr_count($_SESSION['DROIT_ELEVE_BILANS'],'BilanPourcentageAcquis')) ? ' checked' : '';
-	$check_conv_sur20      = (mb_substr_count($_SESSION['DROIT_ELEVE_BILANS'],'BilanNoteSurVingt'))      ? ' checked' : '';
+	$check_bilan_MS        = (mb_substr_count($_SESSION['DROIT_BILAN_MOYENNE_SCORE'],$_SESSION['USER_PROFIL']))      ? ' checked' : '';
+	$check_bilan_PA        = (mb_substr_count($_SESSION['DROIT_BILAN_POURCENTAGE_ACQUIS'],$_SESSION['USER_PROFIL'])) ? ' checked' : '';
+	$check_conv_sur20      = (mb_substr_count($_SESSION['DROIT_BILAN_NOTE_SUR_VINGT'],$_SESSION['USER_PROFIL']))     ? ' checked' : '';
 }
 $tab_periodes          = DB_STRUCTURE_OPT_periodes_etabl();
 

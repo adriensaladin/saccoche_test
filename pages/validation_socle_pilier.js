@@ -429,7 +429,7 @@ $(document).ready
 				$('#ajax_msg_validation').removeAttr("class").addClass("loader").html("Demande envoyée... Veuillez patienter.");
 				// Récupérer les infos
 				var tab_valid = new Array();
-				$("td").each
+				$("#tableau_validation tbody td").each
 				(
 					function()
 					{

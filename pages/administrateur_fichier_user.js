@@ -42,7 +42,7 @@ $(document).ready
 			{
 				$('#ajax_msg').removeAttr("class").html('&nbsp;');
 				// Masquer tout
-				$('#fieldset_sconet_eleves_non , #fieldset_sconet_eleves_oui , #fieldset_sconet_professeurs_directeurs_non , #fieldset_sconet_professeurs_directeurs_oui , #fieldset_base-eleves_eleves , #fieldset_tableur_eleves , #fieldset_tableur_professeurs_directeurs').hide(0);
+				$('#fieldset_sconet_eleves_non , #fieldset_sconet_eleves_oui , #fieldset_sconet_parents_non , #fieldset_sconet_parents_oui , #fieldset_sconet_professeurs_directeurs_non , #fieldset_sconet_professeurs_directeurs_oui , #fieldset_base-eleves_eleves , #fieldset_tableur_eleves , #fieldset_tableur_professeurs_directeurs').hide(0);
 				// Puis afficher ce qu'il faut
 				f_action = $(this).val();
 				if(f_action!='')
@@ -78,6 +78,19 @@ $(document).ready
 				action: 'ajax.php?page='+PAGE,
 				name: 'userfile',
 				data: {'f_step':1,'f_action':'sconet_eleves_oui'},
+				autoSubmit: true,
+				responseType: "html",
+				onChange: changer_fichier,
+				onSubmit: verifier_fichier_sconet,
+				onComplete: retourner_fichier
+			}
+		);
+		new AjaxUpload
+		('#sconet_parents',
+			{
+				action: 'ajax.php?page='+PAGE,
+				name: 'userfile',
+				data: {'f_step':1,'f_action':'sconet_parents_oui'},
 				autoSubmit: true,
 				responseType: "html",
 				onChange: changer_fichier,
@@ -684,16 +697,16 @@ $(document).ready
 		);
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-// step52 | step53 | step62 -> step7
+// step52 | step53 | step62 -> step9
 // Nettoyage des fichiers temporaires
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
-		$('a.step7').live // live est utilisé pour prendre en compte les nouveaux éléments créés
+		$('a.step9').live // live est utilisé pour prendre en compte les nouveaux éléments créés
 		('click',
 			function()
 			{
 				$("#step li").removeAttr("class");
-				$("#step7").addClass("on");
+				$("#step9").addClass("on");
 				$('#form2 fieldset table').remove();
 				$('#ajax_msg').removeAttr("class").addClass("loader").html("Demande envoyée... Veuillez patienter.");
 				$.ajax
@@ -701,7 +714,7 @@ $(document).ready
 					{
 						type : 'POST',
 						url : 'ajax.php?page='+PAGE,
-						data : 'f_step=7&f_action='+f_action,
+						data : 'f_step=9&f_action='+f_action,
 						dataType : "html",
 						error : function(msg,string)
 						{
@@ -727,7 +740,7 @@ $(document).ready
 		);
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-// step7 -> step0
+// step9 -> step0
 // Retour au départ
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 

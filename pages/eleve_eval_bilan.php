@@ -59,7 +59,7 @@ $date_fin    = date("d/m/Y");
 	</table>
 </form>
 
-<div id="zone_eval_detail" class="comp_view hide">
+<div id="zone_eval_detail" class="vm_nug hide">
 	<hr />
 	<p id="titre_voir" class="ti b"></p>
 	<table id="table_voir">

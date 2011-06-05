@@ -701,7 +701,7 @@ if($action=='COPY_id_lcs_TO_id_ent')
 	{
 		exit('Erreur : le fichier "'.$fichier.'" n\'a pas été trouvé !');
 	}
-	require($fichier); // Charge la fonction "recuperer_infos_user_LCS_by_SconetElenoet()"
+	require($fichier); // Charge la fonction "recuperer_infos_user_LCS()"
 	// On récupère le contenu de la base, on va passer les users en revue un par un
 	$DB_TAB = DB_STRUCTURE_lister_users(array('eleve','professeur','directeur'),$only_actifs=true,$with_classe=true);
 	// Pour chaque user de la base, rechercher son uid dans le LCS
@@ -716,14 +716,19 @@ if($action=='COPY_id_lcs_TO_id_ent')
 			// Contenu de SACoche à ignorer : utilisateur non cherché dans le LCS car profil 'directeur'
 			$lignes_inconnu .= '<tr><td>'.html($DB_ROW['user_nom'].' '.$DB_ROW['user_prenom'].' ['.$DB_ROW['user_id_ent'].']').'</td><td>non cherché car profil directeur</td></tr>';
 		}
-		elseif(!$DB_ROW['user_sconet_elenoet'])
+		elseif( ($DB_ROW['user_profil']=='eleve') && (!$DB_ROW['user_sconet_elenoet']) )
 		{
-			// Contenu de SACoche à ignorer : utilisateur non cherché dans le LCS car pas d'Elenoet (numéro Sconet)
-			$lignes_inconnu .= '<tr><td>'.html($DB_ROW['user_nom'].' '.$DB_ROW['user_prenom'].' ['.$DB_ROW['user_id_ent'].']').'</td><td>non cherché car pas d\'Elenoet</td></tr>';
+			// Contenu de SACoche à ignorer : élève non cherché dans le LCS car pas d'Elenoet (numéro Sconet)
+			$lignes_inconnu .= '<tr><td>'.html($DB_ROW['user_nom'].' '.$DB_ROW['user_prenom'].' ['.$DB_ROW['user_id_ent'].']').'</td><td>non cherché car élève sans Elenoet</td></tr>';
+		}
+		elseif( ($DB_ROW['user_profil']=='professeur') && (!$DB_ROW['user_sconet_id']) )
+		{
+			// Contenu de SACoche à ignorer : prof non cherché dans le LCS car pas d'Id Sconet
+			$lignes_inconnu .= '<tr><td>'.html($DB_ROW['user_nom'].' '.$DB_ROW['user_prenom'].' ['.$DB_ROW['user_id_ent'].']').'</td><td>non cherché car prof sans Id Sconet</td></tr>';
 		}
 		else
 		{
-			list($code_erreur,$tab_valeurs_retournees) = recuperer_infos_user_LCS_by_SconetElenoet($DB_ROW['user_profil'],$DB_ROW['user_sconet_elenoet']);
+			list($code_erreur,$tab_valeurs_retournees) = recuperer_infos_user_LCS($DB_ROW['user_profil'],$DB_ROW['user_sconet_elenoet'],$DB_ROW['user_sconet_id']);
 			if($code_erreur)
 			{
 				// Contenu de SACoche à problème : retour erroné du LCS
@@ -732,12 +737,14 @@ if($action=='COPY_id_lcs_TO_id_ent')
 			elseif(count($tab_valeurs_retournees)==0)
 			{
 				// Contenu de SACoche à ignorer : utilisateur non trouvé dans le LCS
-				$lignes_inconnu .= '<tr><td>'.html($DB_ROW['user_nom'].' '.$DB_ROW['user_prenom'].' ['.$DB_ROW['user_id_ent'].']').'</td><td>Elenoet '.html($DB_ROW['user_sconet_elenoet']).' non trouvé dans le LCS</td></tr>';
+				$identifiant = ($DB_ROW['user_profil']=='eleve') ? $DB_ROW['user_sconet_elenoet'] : $DB_ROW['user_sconet_id'] ;
+				$lignes_inconnu .= '<tr><td>'.html($DB_ROW['user_nom'].' '.$DB_ROW['user_prenom'].' ['.$DB_ROW['user_id_ent'].']').'</td><td>Identifiant '.html($identifiant).' non trouvé dans le LCS</td></tr>';
 			}
 			elseif(count($tab_valeurs_retournees)!=1)
 			{
 				// Contenu de SACoche à problème : plusieurs réponses retournées par le LCS
-				$lignes_pb .= '<tr><td>'.html($DB_ROW['user_nom'].' '.$DB_ROW['user_prenom'].' ['.$DB_ROW['user_id_ent'].']').'</td><td>Elenoet '.html($DB_ROW['user_sconet_elenoet']).' trouvé plusieurs fois dans le LCS</td></tr>';
+				$identifiant = ($DB_ROW['user_profil']=='eleve') ? $DB_ROW['user_sconet_elenoet'] : $DB_ROW['user_sconet_id'] ;
+				$lignes_pb .= '<tr><td>'.html($DB_ROW['user_nom'].' '.$DB_ROW['user_prenom'].' ['.$DB_ROW['user_id_ent'].']').'</td><td>Identifiant '.html($identifiant).' trouvé plusieurs fois dans le LCS</td></tr>';
 			}
 			else
 			{

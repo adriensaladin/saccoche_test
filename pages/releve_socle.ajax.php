@@ -116,6 +116,7 @@ $listing_entree_id = implode(',',$tab_entree_id);
 if($_SESSION['USER_PROFIL']=='eleve')
 {
 	$tab_eleve[] = array('eleve_id'=>$_SESSION['USER_ID'],'eleve_nom'=>$_SESSION['USER_NOM'],'eleve_prenom'=>$_SESSION['USER_PRENOM'],'eleve_langue'=>$_SESSION['ELEVE_LANGUE']);
+	$tab_eleve_langue[$_SESSION['USER_ID']] = $_SESSION['ELEVE_LANGUE'];
 }
 elseif($groupe_id && count($tab_eleve_id))
 {

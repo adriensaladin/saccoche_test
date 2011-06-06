@@ -289,6 +289,7 @@ table.bilan th.info {width:9px;height:9px;background:#CCF url(../_img/info_mini.
 #tableau_validation tbody td.v3 {background:#EAEAFF;}
 #tableau_validation tbody td.v3:hover {cursor:default}
 #tableau_validation tfoot td{border:0}
+#tableau_validation tfoot td.L100{background:#EAEAFF url(../_img/drapeau/100.gif) no-repeat center center;}
 #tableau_validation tfoot td.L132{background:#EAEAFF url(../_img/drapeau/132.gif) no-repeat center center;}
 #tableau_validation tfoot td.L134{background:#EAEAFF url(../_img/drapeau/134.gif) no-repeat center center;}
 #tableau_validation tfoot td.L109{background:#EAEAFF url(../_img/drapeau/109.gif) no-repeat center center;}

@@ -16,7 +16,7 @@ CREATE TABLE sacoche_user (
 	user_connexion_date DATETIME                                                                                 NOT NULL DEFAULT "0000-00-00 00:00:00",
 	user_statut_date    DATE                                                                                     NOT NULL DEFAULT "0000-00-00",
 	eleve_classe_id     MEDIUMINT(8)                                                     UNSIGNED                NOT NULL DEFAULT 0,
-	eleve_langue        TINYINT(3)                                                       UNSIGNED                NOT NULL DEFAULT 132 COMMENT "Langue choisie pour le socle.",
+	eleve_langue        TINYINT(3)                                                       UNSIGNED                NOT NULL DEFAULT 100 COMMENT "Langue choisie pour le socle.",
 	user_id_ent         VARCHAR(32)                                                      COLLATE utf8_unicode_ci NOT NULL DEFAULT "" COMMENT "Paramètre renvoyé après une identification CAS depuis un ENT (ça peut être le login, mais ça peut aussi être un numéro interne à l'ENT...).",
 	user_id_gepi        VARCHAR(32)                                                      COLLATE utf8_unicode_ci NOT NULL DEFAULT "" COMMENT "Login de l'utilisateur dans Gepi utilisé pour un transfert note/moyenne vers un bulletin.",
 	PRIMARY KEY (user_id),

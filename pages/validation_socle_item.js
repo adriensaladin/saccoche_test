@@ -350,7 +350,7 @@ $(document).ready
 		}
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-//	Afficher / Masquer les pourcentages d\'items acquis
+//	Afficher / Masquer les pourcentages d'items acquis
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
 		$('#Afficher_pourcentage').live // live est utilisé pour prendre en compte les nouveaux éléments créés
@@ -372,7 +372,7 @@ $(document).ready
 		tab_class_next['0'] = ['2'];
 		tab_class_next['2'] = ['1'];
 
-		$('tbody td').live // live est utilisé pour prendre en compte les nouveaux éléments créés
+		$('#tableau_validation tbody td').live // live est utilisé pour prendre en compte les nouveaux éléments créés
 		('click',
 			function()
 			{
@@ -386,7 +386,7 @@ $(document).ready
 			}
 		);
 
-		$('tbody th').live // live est utilisé pour prendre en compte les nouveaux éléments créés
+		$('#tableau_validation tbody th').live // live est utilisé pour prendre en compte les nouveaux éléments créés
 		('click',
 			function()
 			{
@@ -433,7 +433,7 @@ $(document).ready
 		var last_id_memorise = '';
 		var last_id_affiche = '';
 
-		$("td").live // live est utilisé pour prendre en compte les nouveaux éléments créés
+		$("#tableau_validation tbody td").live // live est utilisé pour prendre en compte les nouveaux éléments créés
 		('mouseout',
 			function()
 			{
@@ -441,7 +441,7 @@ $(document).ready
 			}
 		);
 
-		$("td").live // live est utilisé pour prendre en compte les nouveaux éléments créés
+		$("#tableau_validation tbody td").live // live est utilisé pour prendre en compte les nouveaux éléments créés
 		('mouseover',
 			function()
 			{
@@ -547,7 +547,7 @@ $(document).ready
 				$('#ajax_msg_validation').removeAttr("class").addClass("loader").html("Demande envoyée... Veuillez patienter.");
 				// Récupérer les infos
 				var tab_valid = new Array();
-				$("td").each
+				$("#tableau_validation tbody td").each
 				(
 					function()
 					{

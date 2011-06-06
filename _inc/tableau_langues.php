@@ -27,13 +27,14 @@
 
 // Tableau avec la liste des langues qu'il est possible de choisir pour le socle
 
-$tab_langues[132] = array( 'valeur'=>132 , 'texte'=>'Anglais'    , 'tab_matiere_id'=>array(91, 2, 3) );
-$tab_langues[134] = array( 'valeur'=>134 , 'texte'=>'Espagnol'   , 'tab_matiere_id'=>array(91, 9,10) );
-$tab_langues[109] = array( 'valeur'=>109 , 'texte'=>'Allemand'   , 'tab_matiere_id'=>array(91, 4, 5) );
-$tab_langues[127] = array( 'valeur'=>127 , 'texte'=>'Italien'    , 'tab_matiere_id'=>array(91,21,22) );
-$tab_langues[139] = array( 'valeur'=>139 , 'texte'=>'Portuguais' , 'tab_matiere_id'=>array(91,35,36) );
-$tab_langues[123] = array( 'valeur'=>123 , 'texte'=>'Russe'      , 'tab_matiere_id'=>array(91,32,33) );
-$tab_langues[216] = array( 'valeur'=>216 , 'texte'=>'Chinois'    , 'tab_matiere_id'=>array(91,37,38) );
+$tab_langues[100] = array( 'valeur'=>100 , 'texte'=>'LV non choisie' , 'tab_matiere_id'=>array(91, 2, 3, 4, 5, 9,10,21,22,32,33,35,36,37,38) );
+$tab_langues[132] = array( 'valeur'=>132 , 'texte'=>'Anglais'        , 'tab_matiere_id'=>array(91, 2, 3) );
+$tab_langues[134] = array( 'valeur'=>134 , 'texte'=>'Espagnol'       , 'tab_matiere_id'=>array(91, 9,10) );
+$tab_langues[109] = array( 'valeur'=>109 , 'texte'=>'Allemand'       , 'tab_matiere_id'=>array(91, 4, 5) );
+$tab_langues[127] = array( 'valeur'=>127 , 'texte'=>'Italien'        , 'tab_matiere_id'=>array(91,21,22) );
+$tab_langues[139] = array( 'valeur'=>139 , 'texte'=>'Portuguais'     , 'tab_matiere_id'=>array(91,35,36) );
+$tab_langues[123] = array( 'valeur'=>123 , 'texte'=>'Russe'          , 'tab_matiere_id'=>array(91,32,33) );
+$tab_langues[216] = array( 'valeur'=>216 , 'texte'=>'Chinois'        , 'tab_matiere_id'=>array(91,37,38) );
 
 // Tableau avec la liste des piliers (compétences) en rapport avec la pratique d'une langue vivante étrangère.
 

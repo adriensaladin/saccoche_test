@@ -257,7 +257,7 @@ $(document).ready
 		tab_class_next['0'] = ['2'];
 		tab_class_next['2'] = ['1'];
 
-		$('td').live // live est utilisé pour prendre en compte les nouveaux éléments créés
+		$('#tableau_validation tbody td').live // live est utilisé pour prendre en compte les nouveaux éléments créés
 		('click',
 			function()
 			{
@@ -271,7 +271,7 @@ $(document).ready
 			}
 		);
 
-		$('th').live // live est utilisé pour prendre en compte les nouveaux éléments créés
+		$('#tableau_validation tbody th').live // live est utilisé pour prendre en compte les nouveaux éléments créés
 		('click',
 			function()
 			{
@@ -317,7 +317,7 @@ $(document).ready
 		var last_id_memorise = '';
 		var last_id_affiche = '';
 
-		$("td").live // live est utilisé pour prendre en compte les nouveaux éléments créés
+		$("#tableau_validation tbody td").live // live est utilisé pour prendre en compte les nouveaux éléments créés
 		('mouseout',
 			function()
 			{
@@ -325,7 +325,7 @@ $(document).ready
 			}
 		);
 
-		$("td").live // live est utilisé pour prendre en compte les nouveaux éléments créés
+		$("#tableau_validation tbody td").live // live est utilisé pour prendre en compte les nouveaux éléments créés
 		('mouseover',
 			function()
 			{

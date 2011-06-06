@@ -143,31 +143,38 @@ else
 	$infobulle = '<img src="./_img/bulle_aide.png" alt="" title="Nombre maximal de demandes d\'évaluations simultanées autorisées pour un élève." />';
 	foreach($tab_matiere as $matiere_id => $tab)
 	{
-		$rowspan = ($matiere_id!=ID_MATIERE_TRANSVERSALE) ? $nb_niveaux : mb_substr_count($_SESSION['CYCLES'],',','UTF-8')+1 ;
+		$rowspan = (isset($tab_colonne[$matiere_id])) ? count($tab_colonne[$matiere_id]) : 1 ;
 		$matiere_nom   = $tab['nom'];
 		$matiere_nb    = $tab['nb_demandes'].' '.$infobulle;
 		$matiere_coord = (isset($tab['coord'])) ? '>'.$tab['coord'] : ' class="r">Absence de coordonnateur.' ;
 		$affichage .= '<tr><td colspan="6" class="nu">&nbsp;</td></tr>'."\r\n";
 		$affichage .= '<tr><td rowspan="'.$rowspan.'">'.$matiere_nom.'</td><td rowspan="'.$rowspan.'">'.$matiere_nb.'</td><td rowspan="'.$rowspan.'"'.$matiere_coord.'</td>';
 		$affichage_suite = false;
-		foreach($tab_niveau as $niveau_id => $niveau_nom)
+		if(isset($tab_colonne[$matiere_id]))
 		{
-			if( ($matiere_id!=ID_MATIERE_TRANSVERSALE) || (in_array($niveau_id,$tab_paliers)) )
+			foreach($tab_colonne[$matiere_id] as $niveau_id => $referentiel_info)
 			{
-				$ids = 'ids_'.$matiere_id.'_'.$niveau_id;
-				$colonnes = (isset($tab_colonne[$matiere_id][$niveau_id])) ? $tab_colonne[$matiere_id][$niveau_id].'<td class="nu" id="'.$ids.'"><q class="voir" title="Voir le détail de ce référentiel."></q></td>' : '<td class="r">Absence de référentiel.</td><td class="r">Sans objet.</td><td class="nu"></td></td>' ;
-				if($affichage_suite===false)
+				if( ($matiere_id!=ID_MATIERE_TRANSVERSALE) || (in_array($niveau_id,$tab_paliers)) )
 				{
-					$affichage .= '<td>'.$niveau_nom.'</td>'.$colonnes;
-					$affichage_suite = '';
-				}
-				else
-				{
-					$affichage_suite .= '<tr><td>'.$niveau_nom.'</td>'.$colonnes.'</tr>'."\r\n";
+					$ids = 'ids_'.$matiere_id.'_'.$niveau_id;
+					$colonnes = $referentiel_info.'<td class="nu" id="'.$ids.'"><q class="voir" title="Voir le détail de ce référentiel."></q></td>' ;
+					if($affichage_suite===false)
+					{
+						$affichage .= '<td>'.$tab_niveau[$niveau_id].'</td>'.$colonnes;
+						$affichage_suite = '';
+					}
+					else
+					{
+						$affichage_suite .= '<tr><td>'.$tab_niveau[$niveau_id].'</td>'.$colonnes.'</tr>'."\r\n";
+					}
 				}
 			}
+			$affichage .= '</tr>'."\r\n".$affichage_suite;
 		}
-		$affichage .= '</tr>'."\r\n".$affichage_suite;
+		else
+		{
+			$affichage .= '<td>-</td>'.'<td class="r">Absence de référentiel.</td><td class="r">Sans objet.</td><td class="nu"></td></td>'.'<td class="nu"></td>'.'</tr>'."\r\n";
+		}
 	}
 	$affichage .= '</tbody></table>'."\r\n";
 	echo $affichage;

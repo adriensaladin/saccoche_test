@@ -968,7 +968,7 @@ function maj_base($version_actuelle)
 	}
 
 	//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	//	MAJ 2011-05-31 => 2011-06-04
+	//	MAJ 2011-05-31 => 2011-06-05
 	//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	if($version_actuelle=='2011-05-31')
@@ -1011,6 +1011,27 @@ function maj_base($version_actuelle)
 			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ("droit_socle_acces"              , "'.$droit_socle_acces.'")' );
 			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ("droit_socle_pourcentage_acquis" , "'.$droit_socle_pourcentage_acquis.'")' );
 			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ("droit_socle_etat_validation"    , "'.$droit_socle_etat_validation.'")' );
+		}
+	}
+
+	//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	//	MAJ 2011-06-05 => 2011-06-06
+	//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	if($version_actuelle=='2011-06-05')
+	{
+		if($version_actuelle==DB_version_base())
+		{
+			$version_actuelle = '2011-06-06';
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_actuelle.'" WHERE parametre_nom="version_base" LIMIT 1' );
+			// modification de la valeur par défaut pour eleve_langue
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_user CHANGE eleve_langue eleve_langue TINYINT(3) UNSIGNED NOT NULL DEFAULT "100" COMMENT "Langue choisie pour le socle." ' );
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'SET group_concat_max_len = 5000');
+			$listing_id = DB::queryCol(SACOCHE_STRUCTURE_BD_NAME , 'SELECT GROUP_CONCAT(DISTINCT user_id SEPARATOR ",") AS listing_id FROM sacoche_user LEFT JOIN sacoche_groupe ON sacoche_user.eleve_classe_id=sacoche_groupe.groupe_id WHERE niveau_id NOT IN(35,36,44,51)' );
+			if($listing_id)
+			{
+				DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_user SET eleve_langue=100 WHERE user_id IN('.$listing_id.')' );
+			}
 		}
 	}
 

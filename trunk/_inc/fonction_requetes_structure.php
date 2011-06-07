@@ -1151,7 +1151,7 @@ function DB_STRUCTURE_lister_users_cibles($listing_user_id,$info_classe=false)
 function DB_STRUCTURE_lister_eleves_cibles($listing_eleve_id,$with_gepi,$with_langue)
 {
 	$DB_SQL = 'SELECT user_id AS eleve_id , user_nom AS eleve_nom , user_prenom AS eleve_prenom ';
-	$DB_SQL.= ($with_gepi)   ? ', eleve_langue AS eleve_id_gepi ' : '' ;
+	$DB_SQL.= ($with_gepi)   ? ', user_id_gepi AS eleve_id_gepi ' : '' ;
 	$DB_SQL.= ($with_langue) ? ', eleve_langue ' : '' ;
 	$DB_SQL.= 'FROM sacoche_user ';
 	$DB_SQL.= 'WHERE user_id IN('.$listing_eleve_id.') AND user_profil=:profil ';

@@ -140,13 +140,22 @@ if( ($action=='Afficher_bilan') && $pilier_id && count($tab_domaine) && count($t
 	// - - - - - - - - - - - - - - - - - - - - - - - - -
 	$tab_eval = array();	// [eleve_id][socle_id][item_id][]['note'] => note
 	$tab_item = array();	// [item_id] => array(calcul_methode,calcul_limite);
-	$DB_TAB = DB_STRUCTURE_lister_result_eleves_palier($listing_eleve_id , $listing_entree_id , $date_debut=false , $date_fin=false , $_SESSION['USER_PROFIL']);
+	$DB_TAB = DB_STRUCTURE_lister_result_eleves_palier_sans_infos_items($listing_eleve_id , $listing_entree_id , $_SESSION['USER_PROFIL']);
 	foreach($DB_TAB as $DB_ROW)
 	{
 		$test_comptabilise = ($mode=='auto') ? ( !$test_pilier_langue || in_array($DB_ROW['matiere_id'],$tab_langues[$tab_eleve_langue[$DB_ROW['eleve_id']]]['tab_matiere_id']) ) : in_array($DB_ROW['matiere_id'],$tab_matiere) ;
 		if($test_comptabilise)
 		{
 			$tab_eval[$DB_ROW['eleve_id']][$DB_ROW['socle_id']][$DB_ROW['item_id']][]['note'] = $DB_ROW['note'];
+			$tab_item[$DB_ROW['item_id']] = TRUE;
+		}
+	}
+	if(count($tab_item))
+	{
+		$listing_item_id = implode(',',array_keys($tab_item));
+		$DB_TAB = DB_STRUCTURE_lister_infos_items($listing_item_id,$detail=FALSE);
+		foreach($DB_TAB as $DB_ROW)
+		{
 			$tab_item[$DB_ROW['item_id']] = array('calcul_methode'=>$DB_ROW['calcul_methode'],'calcul_limite'=>$DB_ROW['calcul_limite']);
 		}
 	}

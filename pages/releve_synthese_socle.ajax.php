@@ -49,7 +49,7 @@ if( (!$palier_id) || (!$palier_nom) || (!$groupe_id) || (!$groupe_nom) || (!coun
 }
 
 // Permet d'avoir des informations accessibles en cas d'erreur type « PHP Fatal error : Allowed memory size of ... bytes exhausted ».
-ajouter_log_PHP( $log_objet='Demande de bilan' , $log_contenu=serialize($_POST) , $log_fichier=__FILE__ , $log_ligne=__LINE__ , $only_sesamath=true );
+// ajouter_log_PHP( $log_objet='Demande de bilan' , $log_contenu=serialize($_POST) , $log_fichier=__FILE__ , $log_ligne=__LINE__ , $only_sesamath=true );
 
 $tab_pilier       = array();	// [pilier_id] => array(pilier_ref,pilier_nom,pilier_nb_entrees);
 $tab_socle        = array();	// [pilier_id][socle_id] => array(section_nom,socle_nom);
@@ -119,19 +119,28 @@ if( ($type=='pourcentage') && ($mode=='auto') )
 
 if($type=='pourcentage')
 {
-	$DB_TAB = DB_STRUCTURE_lister_result_eleves_palier($liste_eleve , $listing_entree_id , $date_debut=false , $date_fin=false , $_SESSION['USER_PROFIL']);
+	$DB_TAB = DB_STRUCTURE_lister_result_eleves_palier_sans_infos_items($liste_eleve , $listing_entree_id , $_SESSION['USER_PROFIL']);
 	foreach($DB_TAB as $DB_ROW)
 	{
 		$test_comptabilise = ($mode=='auto') ? ( !in_array($tab_item_pilier[$DB_ROW['socle_id']],$tab_langue_piliers) || in_array($DB_ROW['matiere_id'],$tab_langues[$tab_eleve_langue[$DB_ROW['eleve_id']]]['tab_matiere_id']) ) : in_array($DB_ROW['matiere_id'],$tab_matiere) ;
 		if($test_comptabilise)
 		{
 			$tab_eval[$DB_ROW['eleve_id']][$DB_ROW['socle_id']][$DB_ROW['item_id']][]['note'] = $DB_ROW['note'];
+			$tab_item[$DB_ROW['item_id']] = TRUE;
+		}
+	}
+	if(count($tab_item))
+	{
+		$listing_item_id = implode(',',array_keys($tab_item));
+		$DB_TAB = DB_STRUCTURE_lister_infos_items($listing_item_id,$detail=FALSE);
+		foreach($DB_TAB as $DB_ROW)
+		{
 			$tab_item[$DB_ROW['item_id']] = array('calcul_methode'=>$DB_ROW['calcul_methode'],'calcul_limite'=>$DB_ROW['calcul_limite']);
 		}
 	}
 }
 
-// Libérer un peu de mémoire : ces tableaux ne servent plus
+// Ces tableaux ne servent plus
 unset($tab_item_pilier,$tab_eleve_langue);
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
@@ -149,7 +158,9 @@ if($type=='validation')
 		}
 	}
 	//Maintenant on complète avec les valeurs de la base
+																																					echo' Ligne '.sprintf("%03s",__LINE__).' : '.sprintf("%010s",number_format(memory_get_usage(),0,'',' ')).'<br />';
 	$DB_TAB = DB_STRUCTURE_lister_jointure_user_entree($liste_eleve,$listing_entree_id,$domaine_id=0,$pilier_id=0,$palier_id=0); // en fait on connait aussi le palier mais la requête est plus simple (pas de jointure) avec les entrées
+																																					echo' Ligne '.sprintf("%03s",__LINE__).' : '.sprintf("%010s",number_format(memory_get_usage(),0,'',' ')).'<br />';
 	foreach($DB_TAB as $DB_ROW)
 	{
 		$tab_user_entree[$DB_ROW['user_id']][$DB_ROW['entree_id']] = array('etat'=>$DB_ROW['validation_entree_etat'],'date'=>convert_date_mysql_to_french($DB_ROW['validation_entree_date']),'info'=>$DB_ROW['validation_entree_info']);
@@ -164,7 +175,9 @@ if($type=='validation')
 	}
 	//Maintenant on complète avec les valeurs de la base
 	$listing_pilier_id = implode(',',array_keys($tab_pilier));
+																																					echo' Ligne '.sprintf("%03s",__LINE__).' : '.sprintf("%010s",number_format(memory_get_usage(),0,'',' ')).'<br />';
 	$DB_TAB = DB_STRUCTURE_lister_jointure_user_pilier($liste_eleve,$listing_pilier_id,$palier_id=0); // en fait on connait aussi le palier mais la requête est plus simple (pas de jointure) avec les piliers
+																																					echo' Ligne '.sprintf("%03s",__LINE__).' : '.sprintf("%010s",number_format(memory_get_usage(),0,'',' ')).'<br />';
 	foreach($DB_TAB as $DB_ROW)
 	{
 		$tab_user_pilier[$DB_ROW['user_id']][$DB_ROW['pilier_id']] = array('etat'=>$DB_ROW['validation_pilier_etat'],'date'=>convert_date_mysql_to_french($DB_ROW['validation_pilier_date']),'info'=>$DB_ROW['validation_pilier_info']);

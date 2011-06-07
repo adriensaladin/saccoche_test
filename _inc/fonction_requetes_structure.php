@@ -713,39 +713,89 @@ function DB_STRUCTURE_lister_result_eleves_matieres($liste_eleve_id,$liste_item_
 }
 
 /**
- * DB_STRUCTURE_lister_result_eleves_palier
- * Retourner les résultats pour des élèves donnés, pour des items du socle donnés d'un certain palier
+ * DB_STRUCTURE_lister_result_eleve_palier
+ * Retourner les résultats pour 1 élève donné, pour 1 item du socle donné
  *
- * @param string $liste_eleve_id  id des élèves séparés par des virgules
- * @param string $liste_item_id   id des items séparés par des virgules
- * @param string $date_mysql_debut
- * @param string $date_mysql_fin
+ * @param string $eleve_id
+ * @param string $entree_id
  * @param string $user_profil
  * @return array
  */
 
-function DB_STRUCTURE_lister_result_eleves_palier($liste_eleve_id,$liste_item_id,$date_mysql_debut,$date_mysql_fin,$user_profil)
+function DB_STRUCTURE_lister_result_eleve_palier($eleve_id,$entree_id)
 {
-	$sql_debut = ($date_mysql_debut) ? 'AND saisie_date>=:date_debut ' : '';
-	$sql_fin   = ($date_mysql_fin)   ? 'AND saisie_date<=:date_fin '   : '';
-	$sql_view  = ($user_profil=='eleve') ? 'AND saisie_visible_date<=NOW() ' : '';
-	$DB_SQL = 'SELECT eleve_id , entree_id AS socle_id , item_id , saisie_note AS note , item_nom , ';
+	$DB_SQL = 'SELECT item_id , saisie_note AS note , item_nom , ';
 	$DB_SQL.= 'CONCAT(matiere_ref,".",niveau_ref,".",domaine_ref,theme_ordre,item_ordre) AS item_ref , ';
-	$DB_SQL.= 'item_coef , item_cart , item_lien , '; // Besoin pour l'élève s'il veut formuler une demande d'évaluation
-	$DB_SQL.= 'matiere_id , '; // Besoin pour l'élève s'il ajoute l'item aux demandes d'évaluations, besoin aussi s'il faut filtrer à une langue précise pour la compétence 2
+	$DB_SQL.= 'matiere_id , '; // Besoin s'il faut filtrer à une langue précise pour la compétence 2
 	$DB_SQL.= 'referentiel_calcul_methode AS calcul_methode , referentiel_calcul_limite AS calcul_limite ';
 	$DB_SQL.= 'FROM sacoche_saisie ';
 	$DB_SQL.= 'LEFT JOIN sacoche_referentiel_item USING (item_id) ';
-	$DB_SQL.= 'LEFT JOIN sacoche_socle_entree USING (entree_id) ';
 	$DB_SQL.= 'LEFT JOIN sacoche_referentiel_theme USING (theme_id) ';
 	$DB_SQL.= 'LEFT JOIN sacoche_referentiel_domaine USING (domaine_id) ';
 	$DB_SQL.= 'LEFT JOIN sacoche_matiere USING (matiere_id) ';
 	$DB_SQL.= 'LEFT JOIN sacoche_niveau USING (niveau_id) ';
 	$DB_SQL.= 'LEFT JOIN sacoche_referentiel USING (matiere_id,niveau_id) ';
-	$DB_SQL.= 'WHERE eleve_id IN('.$liste_eleve_id.') AND entree_id IN('.$liste_item_id.') AND niveau_id IN('.$_SESSION['CYCLES'].','.$_SESSION['NIVEAUX'].') AND saisie_note!="REQ" '.$sql_debut.$sql_fin.$sql_view;
+	$DB_SQL.= 'WHERE eleve_id=:eleve_id AND entree_id=:entree_id AND niveau_id IN('.$_SESSION['CYCLES'].','.$_SESSION['NIVEAUX'].') AND saisie_note!="REQ" ';
 	$DB_SQL.= 'ORDER BY matiere_nom ASC, niveau_ordre ASC, domaine_ordre ASC, theme_ordre ASC, item_ordre ASC, saisie_date ASC';
-	$DB_VAR = array(':date_debut'=>$date_mysql_debut,':date_fin'=>$date_mysql_fin);
+	$DB_VAR = array(':eleve_id'=>$eleve_id,':entree_id'=>$entree_id);
 	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+}
+
+/**
+ * DB_STRUCTURE_lister_result_eleves_palier_sans_infos_items
+ * Retourner les résultats pour des élèves donnés, pour des entrées du socle données d'un certain palier
+ * Les informations concernant les items sont collectés dans un second temps sinon on peut dépasser une capacité memory_limit de 32Mo.
+ *
+ * @param string $liste_eleve_id   id des élèves séparés par des virgules
+ * @param string $liste_entree_id  id des entrées séparées par des virgules
+ * @param string $user_profil
+ * @return array
+ */
+
+function DB_STRUCTURE_lister_result_eleves_palier_sans_infos_items($liste_eleve_id,$liste_entree_id,$user_profil)
+{
+	$sql_view  = ($user_profil=='eleve') ? 'AND saisie_visible_date<=NOW() ' : '';
+	$DB_SQL = 'SELECT eleve_id , entree_id AS socle_id , item_id , saisie_note AS note , ';
+	$DB_SQL.= 'matiere_id '; // Besoin s'il faut filtrer à une langue précise pour la compétence 2
+	$DB_SQL.= 'FROM sacoche_saisie ';
+	$DB_SQL.= 'LEFT JOIN sacoche_referentiel_item USING (item_id) ';
+	$DB_SQL.= 'LEFT JOIN sacoche_referentiel_theme USING (theme_id) ';
+	$DB_SQL.= 'LEFT JOIN sacoche_referentiel_domaine USING (domaine_id) ';
+	$DB_SQL.= 'LEFT JOIN sacoche_matiere USING (matiere_id) ';
+	$DB_SQL.= 'LEFT JOIN sacoche_niveau USING (niveau_id) ';
+	$DB_SQL.= 'WHERE eleve_id IN('.$liste_eleve_id.') AND entree_id IN('.$liste_entree_id.') AND niveau_id IN('.$_SESSION['CYCLES'].','.$_SESSION['NIVEAUX'].') AND saisie_note!="REQ" '.$sql_view;
+	$DB_SQL.= 'ORDER BY matiere_nom ASC, niveau_ordre ASC, domaine_ordre ASC, theme_ordre ASC, item_ordre ASC, saisie_date ASC';
+	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
+}
+
+/**
+ * DB_STRUCTURE_lister_infos_items
+ * Complément de la fonction DB_STRUCTURE_lister_result_eleves_palier_sans_infos_items()
+ *
+ * @param string $liste_item_id   id des items séparés par des virgules
+ * @param bool   $detail
+ * @return array
+ */
+
+function DB_STRUCTURE_lister_infos_items($liste_item_id,$detail)
+{
+	$DB_SQL = 'SELECT item_id , ';
+	if($detail)
+	{
+		$DB_SQL.= 'item_nom , entree_id AS socle_id , ';
+		$DB_SQL.= 'CONCAT(matiere_ref,".",niveau_ref,".",domaine_ref,theme_ordre,item_ordre) AS item_ref , ';
+		$DB_SQL.= 'item_coef , item_cart , item_lien , '; // Besoin pour l'élève s'il veut formuler une demande d'évaluation
+		$DB_SQL.= 'matiere_id , '; // Besoin pour l'élève s'il ajoute l'item aux demandes d'évaluations
+	}
+	$DB_SQL.= 'referentiel_calcul_methode AS calcul_methode , referentiel_calcul_limite AS calcul_limite ';
+	$DB_SQL.= 'FROM sacoche_referentiel_item ';
+	$DB_SQL.= 'LEFT JOIN sacoche_referentiel_theme USING (theme_id) ';
+	$DB_SQL.= 'LEFT JOIN sacoche_referentiel_domaine USING (domaine_id) ';
+	$DB_SQL.= 'LEFT JOIN sacoche_matiere USING (matiere_id) ';
+	$DB_SQL.= 'LEFT JOIN sacoche_niveau USING (niveau_id) ';
+	$DB_SQL.= 'LEFT JOIN sacoche_referentiel USING (matiere_id,niveau_id) ';
+	$DB_SQL.= 'WHERE item_id IN('.$liste_item_id.') ';
+	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
 }
 
 /**

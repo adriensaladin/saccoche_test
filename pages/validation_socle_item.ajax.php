@@ -252,7 +252,7 @@ elseif( ($action=='Afficher_information') && $eleve_id && $pilier_id && $entree_
 	// Récupération de la liste des résultats
 	$tab_eval = array();	// [item_id][]['note'] => note
 	$tab_item = array();	// [item_id] => array(item_ref,item_nom,calcul_methode,calcul_limite);
-	$DB_TAB = DB_STRUCTURE_lister_result_eleves_palier($eleve_id , $entree_id , $date_debut=false , $date_fin=false , $_SESSION['USER_PROFIL']);
+	$DB_TAB = DB_STRUCTURE_lister_result_eleve_palier($eleve_id,$entree_id);
 	foreach($DB_TAB as $DB_ROW)
 	{
 		$test_comptabilise = ($mode=='auto') ? ( !$test_pilier_langue || in_array($DB_ROW['matiere_id'],$tab_langues[$langue]['tab_matiere_id']) ) : in_array($DB_ROW['matiere_id'],$tab_matiere) ;

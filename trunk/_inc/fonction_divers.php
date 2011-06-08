@@ -315,13 +315,13 @@ function maj_base_si_besoin($BASE)
  * 
  * @param string $prenom
  * @param string $nom
- * @param string $profil   'eleve' ou 'professeur' (ou 'directeur')
+ * @param string $profil   eleve | parent | professeur | directeur
  * @return string
  */
 
 function fabriquer_login($prenom,$nom,$profil)
 {
-	$modele = ($profil=='eleve') ? $_SESSION['MODELE_ELEVE'] : $_SESSION['MODELE_PROFESSEUR'] ;
+	$modele = $_SESSION['MODELE_'.strtoupper($profil)];
 	$login_prenom = mb_substr( clean_login($prenom) , 0 , mb_substr_count($modele,'p') );
 	$login_nom    = mb_substr( clean_login($nom)    , 0 , mb_substr_count($modele,'n') );
 	$login_separe = str_replace(array('p','n'),'',$modele);

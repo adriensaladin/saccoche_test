@@ -158,9 +158,7 @@ if($type=='validation')
 		}
 	}
 	//Maintenant on complète avec les valeurs de la base
-																																					echo' Ligne '.sprintf("%03s",__LINE__).' : '.sprintf("%010s",number_format(memory_get_usage(),0,'',' ')).'<br />';
 	$DB_TAB = DB_STRUCTURE_lister_jointure_user_entree($liste_eleve,$listing_entree_id,$domaine_id=0,$pilier_id=0,$palier_id=0); // en fait on connait aussi le palier mais la requête est plus simple (pas de jointure) avec les entrées
-																																					echo' Ligne '.sprintf("%03s",__LINE__).' : '.sprintf("%010s",number_format(memory_get_usage(),0,'',' ')).'<br />';
 	foreach($DB_TAB as $DB_ROW)
 	{
 		$tab_user_entree[$DB_ROW['user_id']][$DB_ROW['entree_id']] = array('etat'=>$DB_ROW['validation_entree_etat'],'date'=>convert_date_mysql_to_french($DB_ROW['validation_entree_date']),'info'=>$DB_ROW['validation_entree_info']);
@@ -175,9 +173,7 @@ if($type=='validation')
 	}
 	//Maintenant on complète avec les valeurs de la base
 	$listing_pilier_id = implode(',',array_keys($tab_pilier));
-																																					echo' Ligne '.sprintf("%03s",__LINE__).' : '.sprintf("%010s",number_format(memory_get_usage(),0,'',' ')).'<br />';
 	$DB_TAB = DB_STRUCTURE_lister_jointure_user_pilier($liste_eleve,$listing_pilier_id,$palier_id=0); // en fait on connait aussi le palier mais la requête est plus simple (pas de jointure) avec les piliers
-																																					echo' Ligne '.sprintf("%03s",__LINE__).' : '.sprintf("%010s",number_format(memory_get_usage(),0,'',' ')).'<br />';
 	foreach($DB_TAB as $DB_ROW)
 	{
 		$tab_user_pilier[$DB_ROW['user_id']][$DB_ROW['pilier_id']] = array('etat'=>$DB_ROW['validation_pilier_etat'],'date'=>convert_date_mysql_to_french($DB_ROW['validation_pilier_date']),'info'=>$DB_ROW['validation_pilier_info']);

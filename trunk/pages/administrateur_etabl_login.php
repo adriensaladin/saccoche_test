@@ -27,14 +27,21 @@
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = "Format des noms d'utilisateurs";
+$VERSION_JS_FILE += 1;
+
+$tab_profils = array('directeur','professeur','eleve','parent');
+$affichage = '';
+foreach($tab_profils as $profil)
+{
+	$affichage .= '<p><label class="tab" for="f_login_'.$profil.'">Format '.str_replace('eleve','élève',$profil).' :</label><input type="text" id="f_login_'.$profil.'" name="f_login_'.$profil.'" value="'.$_SESSION[strtoupper('MODELE_'.$profil)].'" size="20" maxlength="20" /></p>';
+}
 ?>
 
 <div><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__gestion_format_logins">DOC : Format des noms d'utilisateurs</a></span></div>
 
 <hr />
 
-<form action=""><fieldset>
-	<label class="tab" for="f_login_professeur">Format professeur :</label><input id="f_login_professeur" name="f_login_professeur" value="<?php echo $_SESSION['MODELE_PROFESSEUR']; ?>" size="20" maxlength="20" /><br />
-	<label class="tab" for="f_login_eleve">Format élève :</label><input id="f_login_eleve" name="f_login_eleve" value="<?php echo $_SESSION['MODELE_ELEVE']; ?>" size="20" maxlength="20" /><br />
-	<span class="tab"></span><button id="bouton_valider" type="button"><img alt="" src="./_img/bouton/parametre.png" /> Valider ces formats.</button><label id="ajax_msg">&nbsp;</label>
-</fieldset></form>
+<form action="">
+	<?php echo $affichage; ?>
+	<p><span class="tab"></span><button id="bouton_valider" type="button"><img alt="" src="./_img/bouton/parametre.png" /> Valider ces formats.</button><label id="ajax_msg">&nbsp;</label></p>
+</form>

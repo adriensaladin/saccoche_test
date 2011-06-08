@@ -306,12 +306,13 @@ class DatabaseException extends Exception {
   }
 
   public function warn() {
-    trigger_error($this->message, E_USER_WARNING);
+    // trigger_error($this->message, E_USER_WARNING);
+    trigger_error(str_replace(array("\n",'        ','    ','  '),'',print_r($this,true)), E_USER_WARNING);
   }
    
   public function log() {
-  		//error_log(print_r($this,true));
-  		error_log($this->message);
+    // error_log($this->message);
+    error_log(str_replace(array("\n",'        ','    ','  '),'',print_r($this,true)));
   }
 }
 ?>

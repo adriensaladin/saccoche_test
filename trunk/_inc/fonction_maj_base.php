@@ -1036,6 +1036,31 @@ function maj_base($version_actuelle)
 	}
 
 	//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	//	MAJ 2011-06-06 => 2011-06-08
+	//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	if($version_actuelle=='2011-06-06')
+	{
+		if($version_actuelle==DB_version_base())
+		{
+			$version_actuelle = '2011-06-08';
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_actuelle.'" WHERE parametre_nom="version_base" LIMIT 1' );
+			// correctif de la modification des identifiants d'item du 2011-05-31
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_referentiel_item SET entree_id=0 WHERE entree_id=1000' );
+			// ajout de 2 paramètres
+			$valeur = DB::queryCol(SACOCHE_STRUCTURE_BD_NAME , 'SELECT parametre_valeur FROM sacoche_parametre WHERE parametre_nom="modele_eleve" LIMIT 1' );
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ("modele_parent" , "'.$valeur.'")' );
+			$valeur = DB::queryCol(SACOCHE_STRUCTURE_BD_NAME , 'SELECT parametre_valeur FROM sacoche_parametre WHERE parametre_nom="modele_professeur" LIMIT 1' );
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ("modele_directeur" , "'.$valeur.'")' );
+			// modifications de sacoche_jointure_parent_eleve
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_jointure_parent_eleve CHANGE resp_legal_num resp_legal_num ENUM( "0", "1", "2" ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT "0" ' );
+			// suppression des vignettes (sans rapport avec la base, mais à effectuer, à cause du changement de la couleur de fond)
+			list($x,$y,$dossier) = (HEBERGEUR_INSTALLATION=='multi-structures') ? explode('_',SACOCHE_STRUCTURE_BD_NAME) : '0' ;
+			effacer_fichiers_temporaires('./__tmp/badge/'.$dossier , 0);
+		}
+	}
+
+	//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Log de l'action
 	//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

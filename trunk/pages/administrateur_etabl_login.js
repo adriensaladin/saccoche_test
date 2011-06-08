@@ -72,17 +72,20 @@ $(document).ready
 		(
 			function()
 			{
-				f_login_professeur = $('#f_login_professeur').val();
-				f_login_eleve      = $('#f_login_eleve').val();
-				if( test_format_login(f_login_professeur)==false )
+				var tab_profil = new Array('directeur','professeur','eleve','parent');
+				var tab_value  = new Array();
+				var datas = '';
+				var imax = tab_profil.length;
+				for ( var i=0 ; i<imax ; i++ )
 				{
-					$('#ajax_msg').removeAttr("class").addClass("erreur").html("Le format du nom d\'utilisateur professeur est incorrect !");
-					return(false);
-				}
-				else if( test_format_login(f_login_eleve)==false )
-				{
-					$('#ajax_msg').removeAttr("class").addClass("erreur").html("Le format du nom d\'utilisateur professeur est incorrect !");
-					return(false);
+					tab_value[i] = $('#f_login_'+tab_profil[i]).val();
+					if( test_format_login(tab_value[i])==false )
+					{
+						$('#ajax_msg').removeAttr("class").addClass("erreur").html("Le format du nom d'utilisateur "+tab_profil[i]+" est incorrect !");
+						return(false);
+					}
+					datas += (i) ? '&' : '' ;
+					datas += 'f_login_'+tab_profil[i]+'='+tab_value[i];
 				}
 				$("#bouton_valider").prop('disabled',true);
 				$('#ajax_msg').removeAttr("class").addClass("loader").html("Demande envoyée... Veuillez patienter.");
@@ -91,7 +94,7 @@ $(document).ready
 					{
 						type : 'POST',
 						url : 'ajax.php?page='+PAGE,
-						data : 'f_login_professeur='+f_login_professeur+'&f_login_eleve='+f_login_eleve,
+						data : datas,
 						dataType : "html",
 						error : function(msg,string)
 						{
@@ -109,7 +112,7 @@ $(document).ready
 							}
 							else
 							{
-								$('#ajax_msg').removeAttr("class").addClass("valide").html("Formats par défaut enregistrés !");
+								$('#ajax_msg').removeAttr("class").addClass("valide").html("Formats enregistrés !");
 							}
 						}
 					}

@@ -54,41 +54,42 @@ $fichier_dest = 'import_'.$action.'_'.$_SESSION['BASE'].'.'.$extension_fichier_d
 
 $tab_etapes['sconet_professeurs_directeurs']   = '<li id="step1">Étape 1 - Récupération du fichier</li>';
 $tab_etapes['sconet_professeurs_directeurs']  .= '<li id="step2">Étape 2 - Extraction des données</li>';
-$tab_etapes['sconet_professeurs_directeurs']  .= '<li id="step3">Étape 3 - Classes (ajouts éventuels)</li>';
-$tab_etapes['sconet_professeurs_directeurs']  .= '<li id="step4">Étape 4 - Groupes (ajouts éventuels)</li>';
-$tab_etapes['sconet_professeurs_directeurs']  .= '<li id="step5">Étape 5 - Utilisateurs (ajout / suppression)</li>';
-$tab_etapes['sconet_professeurs_directeurs']  .= '<li id="step6">Étape 6 - Affectations : ajouts éventuels</li>';
+$tab_etapes['sconet_professeurs_directeurs']  .= '<li id="step3">Étape 3 - Classes (ajouts / modifications)</li>';
+$tab_etapes['sconet_professeurs_directeurs']  .= '<li id="step4">Étape 4 - Groupes (ajouts / modifications)</li>';
+$tab_etapes['sconet_professeurs_directeurs']  .= '<li id="step5">Étape 5 - Utilisateurs (ajouts / modifications / suppressions)</li>';
+$tab_etapes['sconet_professeurs_directeurs']  .= '<li id="step6">Étape 6 - Affectations (ajouts / modifications)</li>';
 $tab_etapes['sconet_professeurs_directeurs']  .= '<li id="step9">Étape 7 - Nettoyage des fichiers temporaires</li>';
 
 $tab_etapes['tableur_professeurs_directeurs']  = '<li id="step1">Étape 1 - Récupération du fichier</li>';
 $tab_etapes['tableur_professeurs_directeurs'] .= '<li id="step2">Étape 2 - Extraction des données</li>';
-$tab_etapes['tableur_professeurs_directeurs'] .= '<li id="step5">Étape 3 - Utilisateurs (ajout / suppression)</li>';
+$tab_etapes['tableur_professeurs_directeurs'] .= '<li id="step5">Étape 3 - Utilisateurs (ajouts / modifications / suppressions)</li>';
 $tab_etapes['tableur_professeurs_directeurs'] .= '<li id="step9">Étape 4 - Nettoyage des fichiers temporaires</li>';
 
 $tab_etapes['sconet_eleves']                   = '<li id="step1">Étape 1 - Récupération du fichier</li>';
 $tab_etapes['sconet_eleves']                  .= '<li id="step2">Étape 2 - Extraction des données</li>';
-$tab_etapes['sconet_eleves']                  .= '<li id="step3">Étape 3 - Classes (ajout / suppression)</li>';
-$tab_etapes['sconet_eleves']                  .= '<li id="step4">Étape 4 - Groupes (ajout / suppression)</li>';
-$tab_etapes['sconet_eleves']                  .= '<li id="step5">Étape 5 - Utilisateurs (ajout / suppression)</li>';
-$tab_etapes['sconet_eleves']                  .= '<li id="step6">Étape 6 - Affectations : ajouts éventuels</li>';
+$tab_etapes['sconet_eleves']                  .= '<li id="step3">Étape 3 - Classes (ajouts / modifications / suppressions)</li>';
+$tab_etapes['sconet_eleves']                  .= '<li id="step4">Étape 4 - Groupes (ajouts / modifications / suppressions)</li>';
+$tab_etapes['sconet_eleves']                  .= '<li id="step5">Étape 5 - Utilisateurs (ajouts / modifications / suppressions)</li>';
+$tab_etapes['sconet_eleves']                  .= '<li id="step6">Étape 6 - Affectations (ajouts / modifications)</li>';
 $tab_etapes['sconet_eleves']                  .= '<li id="step9">Étape 7 - Nettoyage des fichiers temporaires</li>';
 
 $tab_etapes['sconet_parents']                  = '<li id="step1">Étape 1 - Récupération du fichier</li>';
 $tab_etapes['sconet_parents']                 .= '<li id="step2">Étape 2 - Extraction des données</li>';
-$tab_etapes['sconet_parents']                 .= '<li id="step5">Étape 3 - Utilisateurs (ajout / suppression)</li>';
-$tab_etapes['sconet_parents']                 .= '<li id="step7">Étape 4 - Responsabilités (ajout / suppression)</li>';
-$tab_etapes['sconet_parents']                 .= '<li id="step9">Étape 5 - Nettoyage des fichiers temporaires</li>';
+$tab_etapes['sconet_parents']                 .= '<li id="step5">Étape 3 - Utilisateurs (ajouts / modifications / suppressions)</li>';
+$tab_etapes['sconet_parents']                 .= '<li id="step7">Étape 4 - Responsabilités (ajouts / modifications / suppressions)</li>';
+$tab_etapes['sconet_parents']                 .= '<li id="step8">Étape 5 - Adresses (ajouts / modifications / suppressions)</li>';
+$tab_etapes['sconet_parents']                 .= '<li id="step9">Étape 6 - Nettoyage des fichiers temporaires</li>';
 
 $tab_etapes['base-eleves_eleves']              = '<li id="step1">Étape 1 - Récupération du fichier</li>';
 $tab_etapes['base-eleves_eleves']             .= '<li id="step2">Étape 2 - Extraction des données</li>';
-$tab_etapes['base-eleves_eleves']             .= '<li id="step3">Étape 3 - Classes (ajout / suppression)</li>';
-$tab_etapes['base-eleves_eleves']             .= '<li id="step5">Étape 4 - Utilisateurs (ajout / suppression)</li>';
+$tab_etapes['base-eleves_eleves']             .= '<li id="step3">Étape 3 - Classes (ajouts / modifications / suppressions)</li>';
+$tab_etapes['base-eleves_eleves']             .= '<li id="step5">Étape 4 - Utilisateurs (ajouts / modifications / suppressions)</li>';
 $tab_etapes['base-eleves_eleves']             .= '<li id="step9">Étape 5 - Nettoyage des fichiers temporaires</li>';
 
 $tab_etapes['tableur_eleves']                  = '<li id="step1">Étape 1 - Récupération du fichier</li>';
 $tab_etapes['tableur_eleves']                 .= '<li id="step2">Étape 2 - Extraction des données</li>';
-$tab_etapes['tableur_eleves']                 .= '<li id="step3">Étape 3 - Classes (ajout / suppression)</li>';
-$tab_etapes['tableur_eleves']                 .= '<li id="step5">Étape 4 - Utilisateurs (ajout / suppression)</li>';
+$tab_etapes['tableur_eleves']                 .= '<li id="step3">Étape 3 - Classes (ajouts / modifications / suppressions)</li>';
+$tab_etapes['tableur_eleves']                 .= '<li id="step5">Étape 4 - Utilisateurs (ajouts / modifications / suppressions)</li>';
 $tab_etapes['tableur_eleves']                 .= '<li id="step9">Étape 5 - Nettoyage des fichiers temporaires</li>';
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
@@ -547,11 +548,8 @@ if( $step==2 )
 		{
 			foreach ($xml->DONNEES->RESPONSABLES->RESPONSABLE_ELEVE as $responsable)
 			{
-				if($responsable->RESP_LEGAL!='0')
-				{
-					$tab_enfants[clean_entier($responsable->PERSONNE_ID)][clean_entier($responsable->ELEVE_ID)] = clean_entier($responsable->RESP_LEGAL);
-					$nb_lien_responsabilite++;
-				}
+				$tab_enfants[clean_entier($responsable->PERSONNE_ID)][clean_entier($responsable->ELEVE_ID)] = clean_entier($responsable->RESP_LEGAL);
+				$nb_lien_responsabilite++;
 			}
 		}
 		//
@@ -1383,7 +1381,9 @@ if( $step==51 )
 	$tab_users_base['statut']     = array();
 	$tab_users_base['classe']     = array();
 	$tab_users_base['adresse']    = array();
-	$DB_TAB = ($is_profil_eleve) ? DB_STRUCTURE_lister_users($profil='eleve',$only_actifs=false,$with_classe=true) : DB_STRUCTURE_lister_professeurs_et_directeurs() ;
+	$profil = ($is_profil_eleve) ? 'eleve' : ( ($is_profil_parent) ? 'parent' : array('professeur','directeur') ) ;
+	$with_classe = ($is_profil_eleve) ? TRUE : FALSE ;
+	$DB_TAB = DB_STRUCTURE_lister_users($profil,$only_actifs=FALSE,$with_classe);
 	foreach($DB_TAB as $DB_ROW)
 	{
 		$tab_users_base['sconet_id'][$DB_ROW['user_id']]  = $DB_ROW['user_sconet_id'];
@@ -1594,12 +1594,13 @@ if( $step==51 )
 }
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-//	Étape 52 - Traitement des actions à effectuer sur les utilisateurs (sconet_professeurs_directeurs | tableur_professeurs_directeurs | sconet_eleves | base-eleves_eleves | tableur_eleves)
+//	Étape 52 - Traitement des actions à effectuer sur les utilisateurs (sconet_professeurs_directeurs | tableur_professeurs_directeurs | sconet_eleves | sconet_parents | base-eleves_eleves | tableur_eleves)
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
 if( $step==52 )
 {
-	$is_profil_eleve = (mb_strpos($action,'eleves')) ? true : false ;
+	$is_profil_eleve  = (mb_strpos($action,'eleves'))  ? true : false ;
+	$is_profil_parent = (mb_strpos($action,'parents')) ? true : false ;
 	// On récupère le fichier avec des infos sur les correspondances : $tab_traitement6['classes'] -> $tab_classe_ref_TO_id_base ; $tab_traitement6['groupes'] -> $tab_groupe_ref_TO_id_base ; $tab_traitement6['users'] -> $tab_i_fichier_TO_id_base
 	$fnom = $dossier_import.'import_'.$action.'_'.$_SESSION['BASE'].'_traitement6.txt';
 	if(!file_exists($fnom))
@@ -1647,7 +1648,8 @@ if( $step==52 )
 		}
 	}
 	// Dénombrer combien d'actifs et d'inactifs au départ
-	list($nb_debut_actif,$nb_debut_inactif) = ($is_profil_eleve) ? DB_STRUCTURE_compter_eleves_suivant_statut() : DB_STRUCTURE_compter_professeurs_directeurs_suivant_statut() ;
+	$profil = ($is_profil_eleve) ? 'eleve' : ( ($is_profil_parent) ? 'parent' : array('professeur','directeur') ) ;
+	list($nb_debut_actif,$nb_debut_inactif) = DB_STRUCTURE_compter_users_suivant_statut($profil);
 	// Retirer des users éventuels
 	$nb_del = 0;
 	if(count($tab_del))
@@ -1743,7 +1745,9 @@ if( $step==52 )
 	$lignes         = '';
 	$nb_fin_actif   = 0;
 	$nb_fin_inactif = 0;
-	$DB_TAB = ($is_profil_eleve) ? DB_STRUCTURE_lister_eleves_tri_statut_classe() : DB_STRUCTURE_lister_professeurs_et_directeurs_tri_statut() ;
+	$profil = ($is_profil_eleve) ? 'eleve' : ( ($is_profil_parent) ? 'parent' : array('professeur','directeur') ) ;
+	$with_classe = ($is_profil_eleve) ? TRUE : FALSE ;
+	$DB_TAB = DB_STRUCTURE_lister_users($profil,$only_actifs=FALSE,$with_classe,$tri_statut=TRUE);
 	foreach($DB_TAB as $DB_ROW)
 	{
 		$class       = (isset($tab_password[$DB_ROW['user_id']])) ? ' class="new"' : '' ;
@@ -1762,8 +1766,8 @@ if( $step==52 )
 	if($nb_add)
 	{
 		// On archive les nouveaux identifiants dans un fichier tableur zippé (csv tabulé)
-		$profils = ($is_profil_eleve) ? 'eleves' : 'professeurs_directeurs' ;
-		$fnom = 'identifiants_'.$_SESSION['BASE'].'_'.$profils.'_'.time();
+		$profil = ($is_profil_eleve) ? 'eleve' : ( ($is_profil_parent) ? 'parent' : array('professeur','directeur') ) ;
+		$fnom = 'identifiants_'.$_SESSION['BASE'].'_'.$profil.'_'.time();
 		$zip = new ZipArchive();
 		if ($zip->open($dossier_login_mdp.$fnom.'.zip', ZIPARCHIVE::CREATE)===TRUE)
 		{
@@ -1804,6 +1808,7 @@ if( $step==52 )
 		switch($action)
 		{
 			case 'sconet_eleves' :                  $etape = 6; $step = 61; break;
+			case 'sconet_parents' :                 $etape = 4; $step = 71; break;
 			case 'sconet_professeurs_directeurs' :  $etape = 6; $step = 61; break;
 			case 'tableur_eleves' :                 $etape = 5; $step = 9;  break;
 			case 'tableur_professeurs_directeurs' : $etape = 4; $step = 9;  break;

@@ -1212,56 +1212,6 @@ function DB_STRUCTURE_lister_eleves_groupes($listing_groupe_id)
 }
 
 /**
- * DB_STRUCTURE_lister_eleves_tri_statut_classe
- *
- * @param void
- * @return array
- */
-
-function DB_STRUCTURE_lister_eleves_tri_statut_classe()
-{
-	$DB_SQL = 'SELECT * FROM sacoche_user ';
-	$DB_SQL.= 'LEFT JOIN sacoche_groupe ON sacoche_user.eleve_classe_id=sacoche_groupe.groupe_id ';
-	$DB_SQL.= 'LEFT JOIN sacoche_niveau USING (niveau_id) ';
-	$DB_SQL.= 'WHERE user_profil=:profil ';
-	$DB_SQL.= 'ORDER BY user_statut DESC, niveau_ordre ASC, groupe_ref ASC, user_nom ASC, user_prenom ASC';
-	$DB_VAR = array(':profil'=>'eleve');
-	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-}
-
-/**
- * DB_STRUCTURE_lister_professeurs_et_directeurs
- *
- * @param void
- * @return array
- */
-
-function DB_STRUCTURE_lister_professeurs_et_directeurs()
-{
-	$DB_SQL = 'SELECT * FROM sacoche_user ';
-	$DB_SQL.= 'WHERE user_profil IN(:profil1,:profil2) ';
-	$DB_SQL.= 'ORDER BY user_nom ASC, user_prenom ASC';
-	$DB_VAR = array(':profil1'=>'professeur',':profil2'=>'directeur');
-	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-}
-
-/**
- * DB_STRUCTURE_lister_professeurs_et_directeurs_tri_statut
- *
- * @param void
- * @return array
- */
-
-function DB_STRUCTURE_lister_professeurs_et_directeurs_tri_statut()
-{
-	$DB_SQL = 'SELECT * FROM sacoche_user ';
-	$DB_SQL.= 'WHERE user_profil IN(:profil1,:profil2) ';
-	$DB_SQL.= 'ORDER BY user_statut DESC, user_nom ASC, user_prenom ASC';
-	$DB_VAR = array(':profil1'=>'professeur',':profil2'=>'directeur');
-	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-}
-
-/**
  * DB_STRUCTURE_lister_identite_coordonnateurs_par_matiere
  *
  * @param string   $listing_matieres_id   id des matières séparés par des virgules
@@ -1468,17 +1418,18 @@ function DB_STRUCTURE_lister_validations_competences($only_positives)
  * DB_STRUCTURE_lister_users
  *
  * @param string|array   $profil        'eleve' / 'professeur' / 'directeur' / 'administrateur' / ou par exemple array('eleve','professeur','directeur')
- * @param bool           $only_actifs   true pour statut actif uniquement / false pour tout le monde qq soit le statut
- * @param bool           $with_classe   true pour récupérer le nom de la classe de l'élève / false sinon
+ * @param bool           $only_actifs   TRUE pour statut actif uniquement / FALSE pour tout le monde qq soit le statut
+ * @param bool           $with_classe   TRUE pour récupérer le nom de la classe de l'élève / FALSE sinon
+ * @param bool           $tri_statut    TRUE pour trier par statut décroissant (les actifs en premier), FALSE par défaut
  * @return array
  */
 
-function DB_STRUCTURE_lister_users($profil,$only_actifs,$with_classe)
+function DB_STRUCTURE_lister_users($profil,$only_actifs,$with_classe,$tri_statut=FALSE)
 {
 	$DB_VAR = array();
 	$left_join = '';
 	$where     = '';
-	$order_by  = '';
+	$order_by  = ($tri_statut) ? 'user_statut DESC, ' : '' ;
 	if(is_string($profil))
 	{
 		$where .= 'user_profil=:profil ';
@@ -1498,7 +1449,8 @@ function DB_STRUCTURE_lister_users($profil,$only_actifs,$with_classe)
 	if($with_classe)
 	{
 		$left_join .= 'LEFT JOIN sacoche_groupe ON sacoche_user.eleve_classe_id=sacoche_groupe.groupe_id ';
-		$order_by  .= 'groupe_ref ASC, ';
+		$left_join .= 'LEFT JOIN sacoche_niveau USING (niveau_id) ';
+		$order_by  .= 'niveau_ordre ASC, groupe_ref ASC, ';
 	}
 	if($only_actifs)
 	{
@@ -1915,37 +1867,32 @@ function DB_STRUCTURE_compter_saisies_prof_classe()
 }
 
 /**
- * DB_STRUCTURE_compter_eleves_suivant_statut
+ * DB_STRUCTURE_compter_users_suivant_statut
  *
- * @param void
+ * @param string|array   $profil        'eleve' / 'professeur' / 'directeur' / 'administrateur' / ou par exemple array('eleve','professeur','directeur')
  * @return array   [0]=>nb actifs , [1]=>nb inactifs
  */
 
-function DB_STRUCTURE_compter_eleves_suivant_statut()
+function DB_STRUCTURE_compter_users_suivant_statut($profil)
 {
+	if(is_string($profil))
+	{
+		$where = 'user_profil=:profil ';
+		$DB_VAR[':profil'] = $profil;
+	}
+	else
+	{
+		$DB_VAR = array();
+		foreach($profil as $key => $val)
+		{
+			$DB_VAR[':profil'.$key] = $val;
+			$profil[$key] = ':'.$val;
+		}
+		$where = 'user_profil IN('.implode(',',$profil).') ';
+	}
 	$DB_SQL = 'SELECT user_statut, COUNT(*) AS nombre FROM sacoche_user ';
-	$DB_SQL.= 'WHERE user_profil=:profil ';
+	$DB_SQL.= 'WHERE '.$where;
 	$DB_SQL.= 'GROUP BY user_statut';
-	$DB_VAR = array(':profil'=>'eleve');
-	$DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR , TRUE);
-	$nb_actif   = ( (count($DB_TAB)) && (isset($DB_TAB[1])) ) ? $DB_TAB[1][0]['nombre'] : 0 ;
-	$nb_inactif = ( (count($DB_TAB)) && (isset($DB_TAB[0])) ) ? $DB_TAB[0][0]['nombre'] : 0 ;
-	return array($nb_actif,$nb_inactif);
-}
-
-/**
- * DB_STRUCTURE_compter_professeurs_directeurs_suivant_statut
- *
- * @param void
- * @return array   [0]=>nb actifs , [1]=>nb inactifs
- */
-
-function DB_STRUCTURE_compter_professeurs_directeurs_suivant_statut()
-{
-	$DB_SQL = 'SELECT user_statut, COUNT(*) AS nombre FROM sacoche_user ';
-	$DB_SQL.= 'WHERE user_profil IN(:profil1,:profil2) ';
-	$DB_SQL.= 'GROUP BY user_statut';
-	$DB_VAR = array(':profil1'=>'professeur',':profil2'=>'directeur');
 	$DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR , TRUE);
 	$nb_actif   = ( (count($DB_TAB)) && (isset($DB_TAB[1])) ) ? $DB_TAB[1][0]['nombre'] : 0 ;
 	$nb_inactif = ( (count($DB_TAB)) && (isset($DB_TAB[0])) ) ? $DB_TAB[0][0]['nombre'] : 0 ;
@@ -3163,7 +3110,7 @@ function DB_STRUCTURE_modifier_liaison_devoir_user($devoir_id,$groupe_id,$tab_el
 			$DB_VAR = array(':groupe_id'=>$groupe_id);
 			DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 			$DB_SQL = 'DELETE FROM sacoche_saisie ';
-			$DB_SQL.= 'WHERE devoir_id=:devoir_id AND user_id IN('.$chaine_user_id.')';
+			$DB_SQL.= 'WHERE devoir_id=:devoir_id AND eleve_id IN('.$chaine_user_id.')';
 			$DB_VAR = array(':devoir_id'=>$devoir_id);
 			DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 		}

@@ -73,7 +73,7 @@ if(!file_exists($fichier))
 	$hauteur_tmp    = $taille_police*2*$br_line;
 	$largeur_tmp    = $taille_police*40;
 	$image_tmp      = imagecreate($largeur_tmp,$hauteur_tmp);
-	$couleur_fond   = imagecolorallocate($image_tmp,204,204,255); // Le premier appel à imagecolorallocate() remplit la couleur de fond.
+	$couleur_fond   = imagecolorallocate($image_tmp,221,221,255); // Le premier appel à imagecolorallocate() remplit la couleur de fond.
 	$couleur_texte  = imagecolorallocate($image_tmp,0,0,0);
 	$police         = './arial.ttf';
 	// imagettftext() : 3e param = angle de rotation ; 4e et 5e param = coordonnées du coin inférieur gauche du premier caractère

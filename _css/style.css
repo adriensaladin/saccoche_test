@@ -37,8 +37,8 @@ fieldset,img,hr {border:0}
 /* Personnalisations globales                                                                          */
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-html {height:100%;width:100%;background:#EAEAFF;font-size:13px;}
-body {background:#EAEAFF;font:1em "arial","helvetica","nimbus sans l","liberation sans","freesans","garuda",sans-serif;cursor:default;} /* Arial pour windows, Helvetica pour Mac, Nimbus pour Linux, d'autres libres ensuite, et sans-serif en dernier recours (à écrire sans "" car mot clef générique) ; ne pas mettre Verdana ou Deja Vu, trop larges */
+html {height:100%;width:100%;background:#FFF;font-size:13px;}
+body {background:#FFF;font:1em "arial","helvetica","nimbus sans l","liberation sans","freesans","garuda",sans-serif;cursor:default;} /* Arial pour windows, Helvetica pour Mac, Nimbus pour Linux, d'autres libres ensuite, et sans-serif en dernier recours (à écrire sans "" car mot clef générique) ; ne pas mettre Verdana ou Deja Vu, trop larges */
 table,select,textarea,input,button,div{font:100% "arial","helvetica","nimbus sans l","liberation sans","freesans","garuda",sans-serif}
 p{margin:1em auto}
 img {vertical-align:text-top}
@@ -72,24 +72,24 @@ del{text-decoration:line-through;color:#666}
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 /* page accueil (identification) */
-#cadre_milieu {width:776px;margin:20px auto auto auto;padding:10px;background:#E0E0FF;border:2px solid #99F} /* coins arrondis via js */
+#cadre_milieu {width:776px;margin:20px auto auto auto;padding:10px;background:#E6E6FF;border:2px solid #99F} /* coins arrondis via js */
 
 /* zone identifiée */
-#cadre_haut {z-index:2;position:absolute;left:0;right:0;top:0;height:48px;background:#EAEAFF url(../_img/background.gif) repeat 0 0;border-bottom:1px solid #77F;white-space:nowrap;min-width:980px;}
-#cadre_bas  {z-index:1;position:absolute;left:0;right:0;top:49px;background:#EAEAFF url(../_img/fond09.png) repeat-x 0 0;padding:4px}
+#cadre_haut {z-index:2;position:absolute;left:0;right:0;top:0;height:48px;background:#FFF url(../_img/background.gif) repeat 0 0;border-bottom:1px solid #77F;white-space:nowrap;min-width:980px;}
+#cadre_bas  {z-index:1;position:absolute;left:0;right:0;top:49px;background:#FFF url(../_img/fond09.png) repeat-x 0 0;padding:4px}
 
 #cadre_haut #info {position:absolute;top:3px;left:4px}
 #cadre_haut #logo {position:absolute;top:1px;left:843px}
 #cadre_haut #menu {position:absolute;bottom:-2px;left:3px;right:0}
 
-#cadre_haut #info span.button{display:inline-block;padding:1px 3px;margin:1px 0;background:#DDF;border:1px solid #99F;color:#333}
+#cadre_haut #info span.button{display:inline-block;padding:1px 3px;margin:1px 0;background:#EEF;border:1px solid #99F;color:#333}
 #cadre_haut #menu a    {display:block;border:1px solid #77F;color:#FFF;background:#77F;padding:1px 1px 1px 19px;margin:1px;height:16px}
-#cadre_haut #menu span {display:block;border:1px solid #77F;color:#DDF;background:#AAF;padding:1px 1px 1px 19px;margin:1px;height:16px} /* test inutilisé pour un menu inactif */
+#cadre_haut #menu span {display:block;border:1px solid #77F;color:#EEF;background:#AAF;padding:1px 1px 1px 19px;margin:1px;height:16px} /* test inutilisé pour un menu inactif */
 #cadre_haut #menu a.menu {background:#77F url(../_img/menu/menu.png) no-repeat 1px 1px} /* les images sont ajoutés en javascript, sauf pour le 1er niveau, pour un affichage immédiat */
 #cadre_haut #menu a:hover {background-color:#99F;color:#FFF;text-decoration:none}
 #cadre_haut #menu li {float:left;}
 #cadre_haut #menu li li {float:none}
-#cadre_haut #menu li ul {position:absolute;left:-9999em;background:#EAEAFF;}
+#cadre_haut #menu li ul {position:absolute;left:-9999em;background:#FFF;}
 #cadre_haut #menu li:hover ul {left:auto;}
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
@@ -165,10 +165,10 @@ form span.tab{line-height:2em;margin-left:12em}
 form label.mini{width:8em;}
 
 /* Boutons de validation */
-button{padding:0 1px;margin:1px 0;background:#CCF;color:#139;border:1px solid #66F;}
+button{padding:0 1px;margin:1px 0;background:#DDF;color:#139;border:1px solid #66F;}
 button{width:auto;overflow:visible;} /* patch pour IE : voir http://jehiah.cz/archive/button-width-in-ie */
-button:hover,button.hover{background:#DDF;color:#D41;cursor:pointer;} /* button.hover pour une compatibilité avec AjaxUpload (pour background, car pas mieux pour cursor) */
-button[disabled]{background:#EAEAFF;color:#888;border:1px solid #BBF}
+button:hover,button.hover{background:#EEF;color:#D41;cursor:pointer;} /* button.hover pour une compatibilité avec AjaxUpload (pour background, car pas mieux pour cursor) */
+button[disabled]{background:#FFF;color:#888;border:1px solid #BBF}
 button[disabled]:hover,button[disabled]:hover{cursor:default}
 button img{width:16px;height:16px}
 
@@ -189,22 +189,22 @@ select.t8 {font-size:90%}
 
 table {margin-left:1ex}
 th,td {padding:0 2px;text-align:left;white-space:nowrap}
-table tr {background:#DDF}
-table th {border:1px solid #66F;background:#CCF}
+table tr {background:#EEF}
+table th {border:1px solid #66F;background:#DDF}
 table td {border:1px solid #66F;vertical-align:top}
-th.nu , td.nu {background:#EAEAFF;border:none;text-align:center;height:1.6em;}	/* le height évite que la hauteur des lignes varie lors de la modification de leur contenu en ajax */
+th.nu , td.nu {background:#FFF;border:none;text-align:center;height:1.6em;}	/* le height évite que la hauteur des lignes varie lors de la modification de leur contenu en ajax */
 tr.new{background:#CFC}
 td.new{font-weight:bold}
 /* colorer une ligne au survol */
 table.form tbody tr:hover td {background:#FCC}
-table.form tbody tr:hover td.nu {background:#EAEAFF}
+table.form tbody tr:hover td.nu {background:#FFF}
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 /* Tableau résultat d'une affectation (professeurs / élèves / matières)                                */
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 table.affectation {font-size:85%}
-table.affectation tfoot td {background:#CCF;color:#333}
+table.affectation tfoot td {background:#DDF;color:#333}
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 /* Tableau de simulation de calcul des scores, aussi utilisé pour dessiner les cellules d'un tableur.  */
@@ -222,9 +222,9 @@ table.simulation td.nu {border:none}
 table.scor_eval td {font-size:90%}
 table.scor_eval th, table.scor_eval td {text-align:center}
 table.scor_eval thead th {vertical-align:bottom}
-table.scor_eval thead td {background:#EAEAFF;border:none;}
+table.scor_eval thead td {background:#FFF;border:none;}
 table.scor_eval tbody th {white-space:normal;font-weight:normal}
-table.scor_eval tbody td {vertical-align:middle;font-weight:bold;background:#CCF;font-size:90%}
+table.scor_eval tbody td {vertical-align:middle;font-weight:bold;background:#DDF;font-size:90%}
 table.scor_eval tbody tr th {text-align:left}
 table.scor_eval th, table.saisir td {padding:0}
 table.scor_eval tbody td img {vertical-align:middle;}
@@ -259,7 +259,7 @@ table th.- , table td.- , div.- , span.- , label.- {background-color:#---}
 /* Format des en-têtes de tableaux dont on peut trier les colonnes                                     */
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-th.header         {background:#CCF url(../_img/ts_bg.gif)   no-repeat center right;padding-right:20px;cursor:pointer;} 
+th.header         {background:#DDF url(../_img/ts_bg.gif)   no-repeat center right;padding-right:20px;cursor:pointer;} 
 th.headerSortUp   {background:#99F url(../_img/ts_asc.gif)  no-repeat center right;}
 th.headerSortDown {background:#99F url(../_img/ts_desc.gif) no-repeat center right;}
 
@@ -268,35 +268,35 @@ th.headerSortDown {background:#99F url(../_img/ts_desc.gif) no-repeat center rig
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 table.bilan, table.bilan_synthese {font-size:85%}
-table.bilan tfoot th, table.bilan tfoot td {background:#CCF;text-align:right}
-table.bilan tfoot td.nu {background:#EAEAFF;}
+table.bilan tfoot th, table.bilan tfoot td {background:#DDF;text-align:right}
+table.bilan tfoot td.nu {background:#FFF;}
 table.bilan_synthese {margin-top:1em;margin-bottom:1em}
 table.bilan th.domaine {background:#99F;}
-table.bilan th.info {width:9px;height:9px;background:#CCF url(../_img/info_mini.gif) no-repeat center center;}
+table.bilan th.info {width:9px;height:9px;background:#DDF url(../_img/info_mini.gif) no-repeat center center;}
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 /* Format des tableaux du socle                                                                        */
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 #tableau_validation th {margin:0;padding:0;white-space:nowrap}
-#tableau_validation th.nu {background:#EAEAFF;border:0;text-align:left;font-weight:normal}
+#tableau_validation th.nu {background:#FFF;border:0;text-align:left;font-weight:normal}
 #tableau_validation thead th{vertical-align:bottom}
 #tableau_validation tbody th {height:15px}
 #tableau_validation tbody th:hover {opacity:1;cursor:pointer}
 #tableau_validation tbody th.nu:hover {cursor:default}
 #tableau_validation tbody td {text-align:center;vertical-align:middle;font-size:0%;padding:0} /* Pour indiquer les scores calculés. */
 #tableau_validation tbody td:hover {cursor:pointer}
-#tableau_validation tbody td.v3 {background:#EAEAFF;}
+#tableau_validation tbody td.v3 {background:#FFF;}
 #tableau_validation tbody td.v3:hover {cursor:default}
 #tableau_validation tfoot td{border:0}
-#tableau_validation tfoot td.L100{background:#EAEAFF url(../_img/drapeau/100.gif) no-repeat center center;}
-#tableau_validation tfoot td.L132{background:#EAEAFF url(../_img/drapeau/132.gif) no-repeat center center;}
-#tableau_validation tfoot td.L134{background:#EAEAFF url(../_img/drapeau/134.gif) no-repeat center center;}
-#tableau_validation tfoot td.L109{background:#EAEAFF url(../_img/drapeau/109.gif) no-repeat center center;}
-#tableau_validation tfoot td.L127{background:#EAEAFF url(../_img/drapeau/127.gif) no-repeat center center;}
-#tableau_validation tfoot td.L139{background:#EAEAFF url(../_img/drapeau/139.gif) no-repeat center center;}
-#tableau_validation tfoot td.L123{background:#EAEAFF url(../_img/drapeau/123.gif) no-repeat center center;}
-#tableau_validation tfoot td.L216{background:#EAEAFF url(../_img/drapeau/216.gif) no-repeat center center;}
+#tableau_validation tfoot td.L100{background:#FFF url(../_img/drapeau/100.gif) no-repeat center center;}
+#tableau_validation tfoot td.L132{background:#FFF url(../_img/drapeau/132.gif) no-repeat center center;}
+#tableau_validation tfoot td.L134{background:#FFF url(../_img/drapeau/134.gif) no-repeat center center;}
+#tableau_validation tfoot td.L109{background:#FFF url(../_img/drapeau/109.gif) no-repeat center center;}
+#tableau_validation tfoot td.L127{background:#FFF url(../_img/drapeau/127.gif) no-repeat center center;}
+#tableau_validation tfoot td.L139{background:#FFF url(../_img/drapeau/139.gif) no-repeat center center;}
+#tableau_validation tfoot td.L123{background:#FFF url(../_img/drapeau/123.gif) no-repeat center center;}
+#tableau_validation tfoot td.L216{background:#FFF url(../_img/drapeau/216.gif) no-repeat center center;}
 
 /* Défini suivant les préférences de l'établissement : cf actualiser_style_session() dans fonction_divers.php */
 /*
@@ -380,7 +380,7 @@ li.li_n3 b img{margin-right:2px}
 /* Zone d'information des évaluations associées à un item                                              */
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-#zone_information {overflow:scroll;white-space:nowrap;margin:1ex;border:1px dotted #66F;background:#DDF;padding:0.5ex} /* height défini dans la page (différent suivant item / pilier) */
+#zone_information {overflow:scroll;white-space:nowrap;margin:1ex;border:1px dotted #66F;background:#EEF;padding:0.5ex} /* height défini dans la page (différent suivant item / pilier) */
 #zone_information #items {margin-top:1ex;font-size:90%}
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
@@ -431,8 +431,8 @@ div.td_souris img.on {background-color:#FF0}
 /* Pour la gestion privée (livre d'or, RSS)                                                            */
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-form.encadre fieldset{margin:3ex 0.5em 0 0.5em;padding:1em 0.5em 0.25ex;background:#DDF;border:1px solid #66F;}
-form.encadre legend{position:absolute;margin-top:-2em;margin-left:15em;padding:0 5px 0 0;background:#DDF;border:1px solid #66F;color:#D74C12;}
+form.encadre fieldset{margin:3ex 0.5em 0 0.5em;padding:1em 0.5em 0.25ex;background:#EEF;border:1px solid #66F;}
+form.encadre legend{position:absolute;margin-top:-2em;margin-left:15em;padding:0 5px 0 0;background:#EEF;border:1px solid #66F;color:#D74C12;}
 form.encadre fieldset.new{background:#CFC}
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */

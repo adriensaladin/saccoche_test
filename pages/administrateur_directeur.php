@@ -74,4 +74,4 @@ $VERSION_JS_FILE += 2;
 	</table>
 </form>
 
-<script type="text/javascript">var select_login="<?php echo $_SESSION['MODELE_PROFESSEUR']; ?>";</script>
+<script type="text/javascript">var select_login="<?php echo $_SESSION['MODELE_DIRECTEUR']; ?>";</script>

@@ -392,7 +392,6 @@ $(document).ready
 			function()
 			{
 				// récupérer le nom de l'item et le reporter
-				item_id  = $(this).parent().parent().attr('id').substring(3);
 				item_nom = htmlspecialchars( entity_convert( $('#f_nom').val() ) );
 				$('#zone_socle span.f_nom').html(item_nom);
 				// récupérer la relation au socle commun et la cocher

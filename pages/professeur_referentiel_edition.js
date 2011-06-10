@@ -572,7 +572,7 @@ $(document).ready
 									case 'n3' :	// item
 										coef_texte  = '<img src="./_img/x'+coef+'.gif" alt="" title="Coefficient '+coef+'." />';
 										cart_title  = (cart>0) ? 'Demande possible.' : 'Demande interdite.' ;
-										cart_texte  = '<img src="./_img/cart'+cart+'.png" title="'+cart_title+'" /> ';
+										cart_texte  = '<img src="./_img/cart'+cart+'.png" title="'+cart_title+'" />';
 										socle_image = (socle>0) ? 'on' : 'off' ;
 										socle_nom   = $('#f_intitule').val();
 										socle_texte = '<img src="./_img/socle_'+socle_image+'.png" alt="" title="'+socle_nom+'" lang="id_'+socle+'" />';
@@ -695,7 +695,7 @@ $(document).ready
 								{
 									coef_texte  = '<img src="./_img/x'+coef+'.gif" alt="" title="Coefficient '+coef+'." />';
 									cart_title  = (cart>0) ? 'Demande possible.' : 'Demande interdite.' ;
-									cart_texte  = '<img src="./_img/cart'+cart+'.png" title="'+cart_title+'" /> ';
+									cart_texte  = '<img src="./_img/cart'+cart+'.png" title="'+cart_title+'" />';
 									socle_image = (socle>0) ? 'on' : 'off' ;
 									socle_nom   = $('#f_intitule').val();
 									socle_texte = '<img src="./_img/socle_'+socle_image+'.png" alt="" title="'+socle_nom+'" lang="id_'+socle_id+'" />';

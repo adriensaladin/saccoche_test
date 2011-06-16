@@ -41,7 +41,7 @@ if( ($action=='ajouter') && $niveau && $nom )
 	// Vérifier que le nom du groupe est disponible
 	if( DB_STRUCTURE_tester_groupe_nom($nom) )
 	{
-		exit('Erreur : nom de groupe de besoin déjà existant !');
+		exit('Erreur : nom de groupe déjà existant !');
 	}
 	// Insérer l'enregistrement
 	$id = DB_STRUCTURE_ajouter_groupe('besoin',$_SESSION['USER_ID'],'',$nom,$niveau);

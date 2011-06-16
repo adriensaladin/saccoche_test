@@ -149,7 +149,7 @@ $(document).ready
 //	Clic sur l'image pour Voir un référentiel de son établissement
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
-		$('table.comp_view q.voir').live // live est utilisé pour prendre en compte les nouveaux éléments créés
+		$('table.vm_nug q.voir').live // live est utilisé pour prendre en compte les nouveaux éléments créés
 		('click',
 			function()
 			{
@@ -178,7 +178,7 @@ $(document).ready
 							}
 							else
 							{
-								$('#voir_referentiel').html(responseHTML+'<p />');
+								$('#voir_referentiel').html('<hr />'+responseHTML.replace('<ul class="ul_m2">','<q class="imprimer" title="Imprimer le référentiel." />'+'<ul class="ul_m2">')+'<p />');
 								infobulle();
 								$('label[for='+ids+']').removeAttr("class").addClass("valide").html("Contenu affiché ci-dessous !").fadeOut(2000,function(){$('label[for='+ids+']').remove();afficher_masquer_images_action('show');});
 							}
@@ -518,7 +518,7 @@ $(document).ready
 				$('#choisir_referentiel_communautaire ul').html('<li></li>');
 				$('#lister_referentiel_communautaire').hide("fast");
 				$('#voir_referentiel_communautaire ul li.li_m1').html('').parent().parent().hide();
-				$('#form_instance').hide();
+				$('#form_instance , #voir_referentiel').hide();
 				$('#form_communautaire').show();
 				maj_clock(1);
 				return(false);
@@ -704,7 +704,7 @@ $(document).ready
 //	Clic sur une image pour Imprimer un referentiel
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
-		$('#voir_referentiel_communautaire q.imprimer').live // live est utilisé pour prendre en compte les nouveaux éléments créés
+		$('#voir_referentiel q.imprimer , #voir_referentiel_communautaire q.imprimer').live // live est utilisé pour prendre en compte les nouveaux éléments créés
 		('click',
 			function()
 			{
@@ -720,7 +720,7 @@ $(document).ready
 		(
 			function()
 			{
-				$('#form_instance').show();
+				$('#form_instance , #voir_referentiel').show();
 				$('#form_communautaire').hide();
 				$('#lister_referentiel_communautaire').hide();
 				return(false);

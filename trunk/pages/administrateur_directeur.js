@@ -204,9 +204,9 @@ $(document).ready
 					f_id_gepi    : { required:false , maxlength:32 },
 					f_sconet_id  : { required:false , digits:true , max:16777215 },
 					f_reference  : { required:false , maxlength:11 },
-					f_nom        : { required:true , maxlength:20 },
-					f_prenom     : { required:true , maxlength:20 },
-					f_login      : { required:true },
+					f_nom        : { required:true , maxlength:25 },
+					f_prenom     : { required:true , maxlength:25 },
+					f_login      : { required:true , maxlength:20 },
 					f_password   : { required:false }
 				},
 				messages :
@@ -215,9 +215,9 @@ $(document).ready
 					f_id_gepi    : { maxlength:"identifiant Gepi de 32 caractères maximum" },
 					f_sconet_id  : { digits:"Id Sconet : nombre entier inférieur à 2^24" },
 					f_reference  : { maxlength:"référence de 11 caractères maximum" },
-					f_nom        : { required:"nom manquant" , maxlength:"20 caractères maximum" },
-					f_prenom     : { required:"prénom manquant" , maxlength:"20 caractères maximum" },
-					f_login      : { required:"login manquant" },
+					f_nom        : { required:"nom manquant"    , maxlength:"25 caractères maximum" },
+					f_prenom     : { required:"prénom manquant" , maxlength:"25 caractères maximum" },
+					f_login      : { required:"login manquant"  , maxlength:"20 caractères maximum" },
 					f_password   : { }
 				},
 				errorElement : "label",

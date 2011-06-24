@@ -35,15 +35,7 @@ define('SACoche','ajax');
 require_once('./_inc/constantes.php');
 require_once('./_inc/fonction_redirection.php');
 require_once('./_inc/config_serveur.php');
-
-// Fonctions
-require_once('./_inc/fonction_clean.php');
 require_once('./_inc/fonction_sessions.php');
-require_once('./_inc/fonction_divers.php');
-require_once('./_inc/fonction_formulaires_select.php');
-require_once('./_inc/fonction_requetes_structure.php');
-require_once('./_inc/fonction_requetes_webmestre.php');
-require_once('./_inc/fonction_affichage.php');
 
 // Détermination du CHARSET d'en-tête
 $test_xml = (strpos($_SERVER['HTTP_ACCEPT'],'/xml')) ? TRUE : FALSE;
@@ -74,6 +66,17 @@ if($PAGE=='conserver_session_active')
 
 // Blocage éventuel par le webmestre ou un administrateur
 tester_blocage_application($_SESSION['BASE'],$demande_connexion_profil=false);
+
+// Autres fonctions à charger
+require_once('./_inc/fonction_clean.php');
+require_once('./_inc/fonction_divers.php');
+require_once('./_inc/fonction_formulaires_select.php');
+require_once('./_inc/fonction_requetes_structure.php');
+require_once('./_inc/fonction_requetes_webmestre.php');
+require_once('./_inc/fonction_affichage.php');
+
+// Annuler un blocage par l'automate anormalement long
+annuler_blocage_anormal();
 
 // Informations sur l'hébergement
 $fichier_constantes = $CHEMIN_CONFIG.'constantes.php';

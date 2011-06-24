@@ -66,8 +66,29 @@ $(document).ready
 		);
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-// depart -> step1
-// Réagir au clic sur un bouton pour envoyer un import (quel qu'il soit)
+//	Éléments dynamiques du formulaire
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
+		// Tout cocher ou tout décocher
+		$('input[name=all_check]').live // live est utilisé pour prendre en compte les nouveaux éléments créés
+		('click',
+			function()
+			{
+				$(this).parent().parent().parent().find('input[type=checkbox]').prop('checked',true);
+				return false;
+			}
+		);
+		$('input[name=all_uncheck]').live // live est utilisé pour prendre en compte les nouveaux éléments créés
+		('click',
+			function()
+			{
+				$(this).parent().parent().parent().find('input[type=checkbox]').prop('checked',false);
+				return false;
+			}
+		);
+
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+// depart -> step10     Réagir au clic sur un bouton pour envoyer un import (quel qu'il soit)
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
 		// Envoi du fichier avec jquery.ajaxupload.js
@@ -77,7 +98,7 @@ $(document).ready
 			{
 				action: 'ajax.php?page='+PAGE,
 				name: 'userfile',
-				data: {'f_step':1,'f_action':'sconet_eleves_oui'},
+				data: {'f_step':10,'f_action':'sconet_eleves_oui'},
 				autoSubmit: true,
 				responseType: "html",
 				onChange: changer_fichier,
@@ -90,7 +111,7 @@ $(document).ready
 			{
 				action: 'ajax.php?page='+PAGE,
 				name: 'userfile',
-				data: {'f_step':1,'f_action':'sconet_parents_oui'},
+				data: {'f_step':10,'f_action':'sconet_parents_oui'},
 				autoSubmit: true,
 				responseType: "html",
 				onChange: changer_fichier,
@@ -103,7 +124,7 @@ $(document).ready
 			{
 				action: 'ajax.php?page='+PAGE,
 				name: 'userfile',
-				data: {'f_step':1,'f_action':'sconet_professeurs_directeurs_oui'},
+				data: {'f_step':10,'f_action':'sconet_professeurs_directeurs_oui'},
 				autoSubmit: true,
 				responseType: "html",
 				onChange: changer_fichier,
@@ -116,7 +137,7 @@ $(document).ready
 			{
 				action: 'ajax.php?page='+PAGE,
 				name: 'userfile',
-				data: {'f_step':1,'f_action':'base-eleves_eleves'},
+				data: {'f_step':10,'f_action':'base-eleves_eleves'},
 				autoSubmit: true,
 				responseType: "html",
 				onChange: changer_fichier,
@@ -129,7 +150,7 @@ $(document).ready
 			{
 				action: 'ajax.php?page='+PAGE,
 				name: 'userfile',
-				data: {'f_step':1,'f_action':'tableur_eleves'},
+				data: {'f_step':10,'f_action':'tableur_eleves'},
 				autoSubmit: true,
 				responseType: "html",
 				onChange: changer_fichier,
@@ -142,7 +163,7 @@ $(document).ready
 			{
 				action: 'ajax.php?page='+PAGE,
 				name: 'userfile',
-				data: {'f_step':1,'f_action':'tableur_professeurs_directeurs'},
+				data: {'f_step':10,'f_action':'tableur_professeurs_directeurs'},
 				autoSubmit: true,
 				responseType: "html",
 				onChange: changer_fichier,
@@ -218,65 +239,32 @@ $(document).ready
 		}
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-// step1 -> step2
-// Passer à l'extraction des données
+// step10 -> step20                              Passer à l'extraction des données
+// step20 -> step31                              Passer à l'analyse des données des classes
+// step32 -> step41                              Passer à l'analyse des données des groupes
+// step20 | step32 | step42 -> step51            Passer à l'analyse des données des utilisateurs
+// step52 | step53 -> step61                     Passer aux ajouts d'affectations éventuelles (Sconet uniquement)
+// step52 | step53 -> step71                     Passer aux adresses des parents
+// step72 -> step81                              Passer aux liens de responsabilité des parents
+// step52 | step53 | step62 | step82 -> step90   Nettoyage des fichiers temporaires
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
-		$('a.step2').live // live est utilisé pour prendre en compte les nouveaux éléments créés
+		$('#passer_etape_suivante').live // live est utilisé pour prendre en compte les nouveaux éléments créés
 		('click',
 			function()
 			{
+				var li_step = $(this).attr('href').substring(5,6);
+				var f_step  = $(this).attr('href').substring(5);
 				$("#step li").removeAttr("class");
-				$("#step2").addClass("on");
+				$('#form2 fieldset table').remove();
+				$("#step"+li_step).addClass("on");
 				$('#ajax_msg').removeAttr("class").addClass("loader").html("Demande envoyée... Veuillez patienter.");
 				$.ajax
 				(
 					{
 						type : 'POST',
 						url : 'ajax.php?page='+PAGE,
-						data : 'f_step=2&f_action='+f_action,
-						dataType : "html",
-						error : function(msg,string)
-						{
-							$('#ajax_msg').removeAttr("class").addClass("alerte").html('Echec de la connexion ! Veuillez recommencer.');
-							return false;
-						},
-						success : function(responseHTML)
-						{
-							maj_clock(1);
-							if(responseHTML.substring(0,5)!='<div>')
-							{
-								$('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);
-							}
-							else
-							{
-								$('#ajax_msg').removeAttr("class").html('&nbsp;');
-								$('#form2 fieldset').html(responseHTML);
-							}
-						}
-					}
-				);
-			}
-		);
-
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-// step2 -> step31
-// Passer à l'analyse des données des classes
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-
-		$('a.step31').live // live est utilisé pour prendre en compte les nouveaux éléments créés
-		('click',
-			function()
-			{
-				$("#step li").removeAttr("class");
-				$("#step3").addClass("on");
-				$('#ajax_msg').removeAttr("class").addClass("loader").html("Demande envoyée... Veuillez patienter.");
-				$.ajax
-				(
-					{
-						type : 'POST',
-						url : 'ajax.php?page='+PAGE,
-						data : 'f_step=31&f_action='+f_action,
+						data : 'f_step='+f_step+'&f_action='+f_action,
 						dataType : "html",
 						error : function(msg,string)
 						{
@@ -294,6 +282,7 @@ $(document).ready
 							{
 								$('#ajax_msg').removeAttr("class").html('&nbsp;');
 								$('#form2 fieldset').html(responseHTML);
+								infobulle();
 							}
 						}
 					}
@@ -302,11 +291,11 @@ $(document).ready
 		);
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-// step31 -> step32
-// Envoyer les actions sur les classes
+// step31 -> step32     Envoyer les actions sur les classes
+// step41 -> step42     Envoyer les actions sur les groupes
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
-		$('a.step32').live // live est utilisé pour prendre en compte les nouveaux éléments créés
+		$('#envoyer_infos_regroupements').live // live est utilisé pour prendre en compte les nouveaux éléments créés
 		('click',
 			function()
 			{
@@ -339,6 +328,7 @@ $(document).ready
 				}
 				else
 				{
+					var f_step = $(this).attr('href').substring(5);
 					$('#form2 fieldset table').hide(0);
 					$('#ajax_msg').removeAttr("class").addClass("loader").html("Demande envoyée... Veuillez patienter.");
 					$.ajax
@@ -346,7 +336,8 @@ $(document).ready
 						{
 							type : 'POST',
 							url : 'ajax.php?page='+PAGE,
-							data : 'f_step=32&f_action='+f_action+'&'+$("#form2").serialize(),
+							data : 'f_step='+f_step+'&f_action='+f_action+'&'+$("#form2").serialize(),
+							data : 'f_step='+f_step+'&f_action='+f_action+'&'+$("#form2").serialize(),
 							dataType : "html",
 							error : function(msg,string)
 							{
@@ -373,171 +364,26 @@ $(document).ready
 		);
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-// step32 -> step41
-// Passer à l'analyse des données des groupes
+// step51 -> step52     Envoyer les actions sur les utilisateurs
+// step61 -> step62     Envoyer les actions sur les ajouts d'affectations éventuelles (Sconet uniquement)
+// step71 -> step72     Envoyer les actions sur les ajouts d'affectations éventuelles (Sconet uniquement)
+// step81 -> step82     Envoyer les modifications éventuelles sur les liens de responsabilité des parents (Sconet uniquement)
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
-		$('a.step41').live // live est utilisé pour prendre en compte les nouveaux éléments créés
+		$('#envoyer_infos_utilisateurs').live // live est utilisé pour prendre en compte les nouveaux éléments créés
 		('click',
 			function()
 			{
-				$("#step li").removeAttr("class");
-				$("#step4").addClass("on");
-				$('#form2 fieldset table').remove();
-				$('#ajax_msg').removeAttr("class").addClass("loader").html("Demande envoyée... Veuillez patienter.");
-				$.ajax
-				(
-					{
-						type : 'POST',
-						url : 'ajax.php?page='+PAGE,
-						data : 'f_step=41&f_action='+f_action,
-						dataType : "html",
-						error : function(msg,string)
-						{
-							$('#ajax_msg').removeAttr("class").addClass("alerte").html('Echec de la connexion ! Veuillez recommencer.');
-							return false;
-						},
-						success : function(responseHTML)
-						{
-							maj_clock(1);
-							if(responseHTML.substring(0,25)!='<p><label class="valide">')
-							{
-								$('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);
-							}
-							else
-							{
-								$('#ajax_msg').removeAttr("class").html('&nbsp;');
-								$('#form2 fieldset').html(responseHTML);
-							}
-						}
-					}
-				);
-			}
-		);
-
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-// step41 -> step42
-// Envoyer les actions sur les groupes
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-
-		$('a.step42').live // live est utilisé pour prendre en compte les nouveaux éléments créés
-		('click',
-			function()
-			{
-				nb_pb = 0;
-				$("select option:selected").each
+				var f_step = $(this).attr('href').substring(5);
+				// Grouper les checkbox dans un champ unique afin d'éviter tout problème avec une limitation du module "suhosin" (voir par exemple http://xuxu.fr/2008/12/04/nombre-de-variables-post-limite-ou-tronque).
+				var f_check = new Array();
+				$("#form2 input:checked").each
 				(
 					function()
 					{
-						if($(this).val()=="")
-						{
-							nb_pb++;
-						}
+						f_check.push($(this).attr('id'));
 					}
 				);
-				$("input[id^=add_nom_]").each
-				(
-					function()
-					{
-						if($(this).val()=="")
-						{
-							nb_pb++;
-						}
-					}
-				);
-				if(nb_pb)
-				{
-					$s = (nb_pb>1) ? 's' : '';
-					$('#ajax_msg').removeAttr("class").addClass("erreur").html('Il reste '+nb_pb+' élément'+$s+' de formulaire à compléter.');
-					return false;
-				}
-				else
-				{
-					$('#form2 fieldset table').hide(0);
-					$('#ajax_msg').removeAttr("class").addClass("loader").html("Demande envoyée... Veuillez patienter.");
-					$.ajax
-					(
-						{
-							type : 'POST',
-							url : 'ajax.php?page='+PAGE,
-							data : 'f_step=42&f_action='+f_action+'&'+$("#form2").serialize(),
-							dataType : "html",
-							error : function(msg,string)
-							{
-								$('#ajax_msg').removeAttr("class").addClass("alerte").html('Echec de la connexion ! Veuillez recommencer.');
-								return false;
-							},
-							success : function(responseHTML)
-							{
-								maj_clock(1);
-								if(responseHTML.substring(0,25)!='<p><label class="valide">')
-								{
-									$('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);
-								}
-								else
-								{
-									$('#ajax_msg').removeAttr("class").html('&nbsp;');
-									$('#form2 fieldset').html(responseHTML);
-								}
-							}
-						}
-					);
-				}
-			}
-		);
-
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-// step2 | step32 | step42 -> step51
-// Passer à l'analyse des données des utilisateurs
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-
-		$('a.step51').live // live est utilisé pour prendre en compte les nouveaux éléments créés
-		('click',
-			function()
-			{
-				$("#step li").removeAttr("class");
-				$("#step5").addClass("on");
-				$('#form2 fieldset table').remove();
-				$('#ajax_msg').removeAttr("class").addClass("loader").html("Demande envoyée... Veuillez patienter.");
-				$.ajax
-				(
-					{
-						type : 'POST',
-						url : 'ajax.php?page='+PAGE,
-						data : 'f_step=51&f_action='+f_action,
-						dataType : "html",
-						error : function(msg,string)
-						{
-							$('#ajax_msg').removeAttr("class").addClass("alerte").html('Echec de la connexion ! Veuillez recommencer.');
-							return false;
-						},
-						success : function(responseHTML)
-						{
-							maj_clock(1);
-							if(responseHTML.substring(0,25)!='<p><label class="valide">')
-							{
-								$('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);
-							}
-							else
-							{
-								$('#ajax_msg').removeAttr("class").html('&nbsp;');
-								$('#form2 fieldset').html(responseHTML);
-							}
-						}
-					}
-				);
-			}
-		);
-
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-// step51 -> step52
-// Envoyer les actions sur les utilisateurs
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-
-		$('a.step52').live // live est utilisé pour prendre en compte les nouveaux éléments créés
-		('click',
-			function()
-			{
 				$('#form2 fieldset table').hide(0);
 				$('#ajax_msg').removeAttr("class").addClass("loader").html("Demande envoyée... Veuillez patienter.");
 				$.ajax
@@ -545,7 +391,7 @@ $(document).ready
 					{
 						type : 'POST',
 						url : 'ajax.php?page='+PAGE,
-						data : 'f_step=52&f_action='+f_action+'&'+$("#form2").serialize(),
+						data : 'f_step='+f_step+'&f_action='+f_action+'&f_check='+f_check,
 						dataType : "html",
 						error : function(msg,string)
 						{
@@ -571,8 +417,7 @@ $(document).ready
 		);
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-// step52 -> step53
-// Récupérer les identifiants des nouveaux utilisateurs
+// step52 -> step53     Récupérer les identifiants des nouveaux utilisateurs
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
 		$('a.step53').live // live est utilisé pour prendre en compte les nouveaux éléments créés
@@ -613,138 +458,11 @@ $(document).ready
 		);
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-// step52 | step53 -> step61
-// Passer aux ajouts d'affectations éventuelles (Sconet uniquement)
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-
-		$('a.step61').live // live est utilisé pour prendre en compte les nouveaux éléments créés
-		('click',
-			function()
-			{
-				$("#step li").removeAttr("class");
-				$("#step6").addClass("on");
-				$('#form2 fieldset table').remove();
-				$('#ajax_msg').removeAttr("class").addClass("loader").html("Demande envoyée... Veuillez patienter.");
-				$.ajax
-				(
-					{
-						type : 'POST',
-						url : 'ajax.php?page='+PAGE,
-						data : 'f_step=61&f_action='+f_action,
-						dataType : "html",
-						error : function(msg,string)
-						{
-							$('#ajax_msg').removeAttr("class").addClass("alerte").html('Echec de la connexion ! Veuillez recommencer.');
-							return false;
-						},
-						success : function(responseHTML)
-						{
-							maj_clock(1);
-							if(responseHTML.substring(0,25)!='<p><label class="valide">')
-							{
-								$('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);
-							}
-							else
-							{
-								$('#ajax_msg').removeAttr("class").html('&nbsp;');
-								$('#form2 fieldset').html(responseHTML);
-							}
-						}
-					}
-				);
-			}
-		);
-
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-// 61->62
-// Envoyer les actions sur les ajouts d'affectations éventuelles (Sconet uniquement)
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-
-		$('a.step62').live // live est utilisé pour prendre en compte les nouveaux éléments créés
-		('click',
-			function()
-			{
-				$('#form2 fieldset table').hide(0);
-				$('#ajax_msg').removeAttr("class").addClass("loader").html("Demande envoyée... Veuillez patienter.");
-				$.ajax
-				(
-					{
-						type : 'POST',
-						url : 'ajax.php?page='+PAGE,
-						data : 'f_step=62&f_action='+f_action+'&'+$("#form2").serialize(),
-						dataType : "html",
-						error : function(msg,string)
-						{
-							$('#ajax_msg').removeAttr("class").addClass("alerte").html('Echec de la connexion ! Veuillez recommencer.');
-							return false;
-						},
-						success : function(responseHTML)
-						{
-							maj_clock(1);
-							if(responseHTML.substring(0,25)!='<p><label class="valide">')
-							{
-								$('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);
-							}
-							else
-							{
-								$('#ajax_msg').removeAttr("class").html('&nbsp;');
-								$('#form2 fieldset').html(responseHTML);
-							}
-						}
-					}
-				);
-			}
-		);
-
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-// step52 | step53 | step62 -> step9
-// Nettoyage des fichiers temporaires
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-
-		$('a.step9').live // live est utilisé pour prendre en compte les nouveaux éléments créés
-		('click',
-			function()
-			{
-				$("#step li").removeAttr("class");
-				$("#step9").addClass("on");
-				$('#form2 fieldset table').remove();
-				$('#ajax_msg').removeAttr("class").addClass("loader").html("Demande envoyée... Veuillez patienter.");
-				$.ajax
-				(
-					{
-						type : 'POST',
-						url : 'ajax.php?page='+PAGE,
-						data : 'f_step=9&f_action='+f_action,
-						dataType : "html",
-						error : function(msg,string)
-						{
-							$('#ajax_msg').removeAttr("class").addClass("alerte").html('Echec de la connexion ! Veuillez recommencer.');
-							return false;
-						},
-						success : function(responseHTML)
-						{
-							maj_clock(1);
-							if(responseHTML.substring(0,25)!='<p><label class="valide">')
-							{
-								$('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);
-							}
-							else
-							{
-								$('#ajax_msg').removeAttr("class").html('&nbsp;');
-								$('#form2 fieldset').html(responseHTML);
-							}
-						}
-					}
-				);
-			}
-		);
-
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-// step9 -> step0
+// step90 -> step0
 // Retour au départ
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
-		$('a.step0').live // live est utilisé pour prendre en compte les nouveaux éléments créés
+		$('#retourner_depart').live // live est utilisé pour prendre en compte les nouveaux éléments créés
 		('click',
 			function()
 			{

@@ -32,19 +32,11 @@ $tab_messages_erreur = array();
 // Atteste l'appel de cette page avant l'inclusion d'une autre
 define('SACoche','index');
 
-// Constantes / Fonctions de redirections / Configuration serveur
+// Constantes / Fonctions de redirections / Configuration serveur / Session
 require_once('./_inc/constantes.php');
 require_once('./_inc/fonction_redirection.php');
 require_once('./_inc/config_serveur.php');
-
-// Fonctions
-require_once('./_inc/fonction_clean.php');
 require_once('./_inc/fonction_sessions.php');
-require_once('./_inc/fonction_divers.php');
-require_once('./_inc/fonction_formulaires_select.php');
-require_once('./_inc/fonction_requetes_structure.php');
-require_once('./_inc/fonction_requetes_webmestre.php');
-require_once('./_inc/fonction_affichage.php');
 
 // Page appelée
 $PAGE    = (isset($_GET['page']))    ? $_GET['page']    : 'public_accueil' ;
@@ -59,8 +51,19 @@ if(!isset($tab_droits[$PAGE]))
 }
 gestion_session($TAB_PROFILS_AUTORISES = $tab_droits[$PAGE]);
 
-// Blocage éventuel par le webmestre ou un administrateur
+// Blocage éventuel par le webmestre ou un administrateur (ne peut pas se tester avant car il faut avoir récupéré les données de session)
 tester_blocage_application($_SESSION['BASE'],$demande_connexion_profil=false);
+
+// Autres fonctions à charger
+require_once('./_inc/fonction_clean.php');
+require_once('./_inc/fonction_divers.php');
+require_once('./_inc/fonction_formulaires_select.php');
+require_once('./_inc/fonction_requetes_structure.php');
+require_once('./_inc/fonction_requetes_webmestre.php');
+require_once('./_inc/fonction_affichage.php');
+
+// Annuler un blocage par l'automate anormalement long
+annuler_blocage_anormal();
 
 // Informations sur l'hébergement
 $fichier_constantes = $CHEMIN_CONFIG.'constantes.php';

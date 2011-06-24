@@ -27,19 +27,17 @@
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = ''; // Pas de titre pour que le logo s'affiche à la place
-$VERSION_JS_FILE += 7;
-?>
+$VERSION_JS_FILE += 8;
 
-<?php
 // Lecture d'un cookie sur le poste client servant à retenir le dernier établissement sélectionné si identification avec succès
 $BASE = (isset($_COOKIE[COOKIE_STRUCTURE])) ? clean_entier($_COOKIE[COOKIE_STRUCTURE]) : 0 ;
 // Test si id d'établissement transmis dans l'URL
 $BASE = (isset($_GET['id'])) ? clean_entier($_GET['id']) : $BASE ;
-// Test si affichage du formulaire spécial pour un administrateur d'une structure (pas de SSO) ou pour le webmestre
-$profil = ( isset($_GET['admin']) || isset($_GET['administrateur']) ) ? 'administrateur' : ( (isset($_GET['webmestre'])) ? 'webmestre' : 'normal' ) ;
-?>
+// Test si affichage du formulaire spécial pour le webmestre
+$profil = (isset($_GET['webmestre'])) ? 'webmestre' : 'normal' ;
+// Bascule profil webmestre / profils autres
+$liens_autres_profils = ($profil=='normal') ? '<a class="anti_h2" href="index.php?webmestre">profil webmestre</a>' : '<a class="anti_h2" href="index.php">profils classiques</a>' ;
 
-<?php
 // Fichiers temporaires à effacer
 // Il y a ausi le dossier './__tmp/cookie/' auquel on ne touche pas, et les sous-dossiers de './__tmp/badge/' traités ailleurs
 // On fait en sorte que plusieurs utilisateurs ne lancent pas le nettoyage simultanément (sinon on trouve qqs warning php dans les logs)
@@ -54,43 +52,23 @@ if(!file_exists($fichier_lock))
 	effacer_fichiers_temporaires('./__tmp/rss'       ,  43800); // Nettoyer ce dossier des fichiers antérieurs à 1 mois
 	unlink($fichier_lock);
 }
-?>
 
-<?php
 // Alerte si navigateur trop ancien
 require_once('./_inc/fonction_css_browser_selector.php');
 echo afficher_navigateurs_alertes($hr_avant='<hr />',$chemin_image='./_img',$hr_apres='');
-?>
 
-<?php
 // Alerte non déconnexion de l'ENT si deconnexion de SACoche depuis un compte connecté via un ENT
 if($ALERTE_SSO)
 {
 	echo'<hr />';
 	echo'<div class="danger">Attention : vous n\'êtes pas déconnecté de l\'ENT et on peut revenir dans <em>SACoche</em> sans s\'identifier ! Fermez votre navigateur ou <a href="index.php?page=public_logout_SSO&amp;'.$ALERTE_SSO.'">déconnectez-vous de l\'ENT</a>.</div>';
 }
-?>
 
-<?php
-// Liens vers les autres profils d'identification
-$liens_autres_profils = '';
-if($profil!='normal')
-{
-	$liens_autres_profils .= '<a class="anti_h2" href="index.php">normal</a>';
-}
-if($profil!='administrateur')
-{
-	$liens_autres_profils .= '<a class="anti_h2" href="index.php?administrateur">administrateur</a>';
-}
-if($profil!='webmestre')
-{
-	$liens_autres_profils .= '<a class="anti_h2" href="index.php?webmestre">webmestre</a>';
-}
 ?>
 
 <hr />
 
-<h2><img src="./_img/login.gif" alt="Identification" /> Identification <?php echo($profil=='normal')?'normale':'<span style="color:#C00">'.$profil.'</span>'; ?><?php echo $liens_autres_profils ?></h2>
+<h2><img src="./_img/login.gif" alt="Identification" /> <?php echo($profil=='normal')?'Identification':'<span style="color:#C00">Accès webmestre</span>'; ?><?php echo $liens_autres_profils ?></h2>
 <form action=""><fieldset>
 	<input id="f_base" name="f_base" type="hidden" value="<?php echo $BASE ?>" />
 	<input id="f_profil" name="f_profil" type="hidden" value="<?php echo $profil ?>" />

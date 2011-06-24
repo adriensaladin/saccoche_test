@@ -79,19 +79,22 @@ $(document).ready
 		// Importer un fichier de validations en provenance de LPC avec jquery.ajaxupload.js
 		//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
 
-		new AjaxUpload
-		('#bouton_import',
-			{
-				action: 'ajax.php?page='+PAGE,
-				name: 'userfile',
-				data: {'f_action':'uploader'},
-				autoSubmit: true,
-				responseType: "html",
-				onChange: changer_fichier,
-				onSubmit: verifier_fichier,
-				onComplete: retourner_fichier
-			}
-		);
+		if($('#bouton_import').length)
+		{
+			new AjaxUpload
+			('#bouton_import',
+				{
+					action: 'ajax.php?page='+PAGE,
+					name: 'userfile',
+					data: {'f_action':'uploader'},
+					autoSubmit: true,
+					responseType: "html",
+					onChange: changer_fichier,
+					onSubmit: verifier_fichier,
+					onComplete: retourner_fichier
+				}
+			);
+		}
 
 		function changer_fichier(fichier_nom,fichier_extension)
 		{

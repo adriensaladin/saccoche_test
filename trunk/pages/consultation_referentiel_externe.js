@@ -82,7 +82,6 @@ $(document).ready
 			{
 				$('#ajax_msg').removeAttr("class").html("&nbsp;");
 				$('#choisir_referentiel_communautaire').hide("fast");
-				$('#voir_referentiel_communautaire').hide("fast");
 			}
 		);
 
@@ -136,7 +135,6 @@ $(document).ready
 		(
 			function()
 			{
-				$('#voir_referentiel_communautaire').hide();
 				matiere_id   = $('#f_matiere').val();
 				niveau_id    = $('#f_niveau').val();
 				structure_id = $('#f_structure').val();
@@ -215,9 +213,9 @@ $(document).ready
 							}
 							else
 							{
-								$('#voir_referentiel_communautaire ul li.li_m1').html('<b>'+description+'</b><q class="imprimer" title="Imprimer le référentiel."></q>'+responseHTML).parent().parent().show();
+								$('#voir_referentiel_communautaire').addClass('calque_referentiel').html('<ul class="ul_m1"><li class="li_m1"><b>'+description+'</b><q class="imprimer" title="Imprimer le référentiel."></q><q class="retourner" title="Revenir page précédente." />'+responseHTML+'</li></ul>');
 								infobulle();
-								$('label[id=temp]').removeAttr("class").addClass("valide").html("Contenu affiché ci-dessous !").fadeOut(2000,function(){$('label[id=temp]').remove();});
+								$('label[id=temp]').remove();
 							}
 						}
 					}
@@ -234,6 +232,18 @@ $(document).ready
 			function()
 			{
 				window.print();
+			}
+		);
+
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+//	Clic sur une image pour Fermer le calque avec le détail d'un referentiel
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
+		$('#voir_referentiel_communautaire q.retourner').live // live est utilisé pour prendre en compte les nouveaux éléments créés
+		('click',
+			function()
+			{
+				$('#voir_referentiel_communautaire').removeAttr("class").html('');
 			}
 		);
 

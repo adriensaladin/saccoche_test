@@ -117,10 +117,10 @@ $auth = phpCAS::checkAuthentication();
 $login = phpCAS::getUser();
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-// Comparer avec les données de la base (demande de connexion comme élève ou professeur ou directeur)
+// Comparer avec les données de la base
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
-$connexion = connecter_user($BASE,$profil='normal',$login,$password=false,$mode_connection='cas');
+$connexion = connecter_user($BASE,$login,$password=false,$mode_connection='cas');
 
 if($connexion=='ok')
 {

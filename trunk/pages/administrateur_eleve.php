@@ -33,12 +33,19 @@ $TITRE = "Élèves";
 	<a href="./index.php?page=<?php echo $PAGE ?>&amp;section=gestion">Élèves (gestion).</a>	||
 	<a href="./index.php?page=<?php echo $PAGE ?>&amp;section=classe">Élèves &amp; classes.</a>	||
 	<a href="./index.php?page=<?php echo $PAGE ?>&amp;section=groupe">Élèves &amp; groupes.</a>	||
-	<a href="./index.php?page=<?php echo $PAGE ?>&amp;section=langue">Élèves &amp; langues.</a>
+	<a href="./index.php?page=<?php echo $PAGE ?>&amp;section=langue">Élèves &amp; langues.</a>	||
+	<a href="./index.php?page=<?php echo $PAGE ?>&amp;section=parent">Élèves &amp; parents.</a>
 </div>
 
 <hr />
 
 <?php
+if($SECTION=='parent')
+{
+	// échanger $PAGE et $SECTION pour piocher le bon fichier sans avoir besoin de le dupliquer, tout en gardant ce menu
+	$PAGE    = 'administrateur_'.$SECTION;
+	$SECTION = 'eleve';
+}
 // Afficher la bonne page et appeler le bon js / ajax par la suite
 $fichier_section = './pages/'.$PAGE.'_'.$SECTION.'.php';
 if(is_file($fichier_section))

@@ -38,27 +38,24 @@ $TITRE = "Bienvenue dans votre espace identifié !";
 <p class="astuce">Utilisez le menu ci-dessus pour naviguer dans votre espace !</p>
 
 <?php
-if( in_array($_SESSION['USER_PROFIL'],array('eleve','professeur','directeur')) && (HEBERGEUR_INSTALLATION=='multi-structures') )
-{
-	echo'<div class="astuce">Adresse à utiliser pour une sélection automatique de l\'établissement depuis n\'importe quel ordinateur :</div>';
-	echo'<p class="hc"><b>'.SERVEUR_ADRESSE.'?id='.$_SESSION['BASE'].'</b></p>';
-}
-elseif($_SESSION['USER_PROFIL']=='administrateur')
-{
-	$insert_id_base = (HEBERGEUR_INSTALLATION=='multi-structures') ? 'id='.$_SESSION['BASE'].'&amp;' : '' ;
-	echo'<div class="astuce">Adresse à utiliser pour une connexion facile à cet espace depuis n\'importe quel ordinateur :</div>';
-	echo'<p class="hc"><b>'.SERVEUR_ADRESSE.'?'.$insert_id_base.'admin'.'</b></p>';
-}
-elseif($_SESSION['USER_PROFIL']=='webmestre')
+if($_SESSION['USER_PROFIL']=='webmestre')
 {
 	echo'<p class="astuce">Pour vous connecter à cet espace, utilisez l\'adresse <b>'.SERVEUR_ADRESSE.'?webmestre</b></p>';
+}
+else
+{
+	if(HEBERGEUR_INSTALLATION=='multi-structures')
+	{
+		echo'<div class="astuce">Adresse à utiliser pour une sélection automatique de l\'établissement depuis n\'importe quel ordinateur :</div>';
+		echo'<p class="hc"><b>'.SERVEUR_ADRESSE.'?id='.$_SESSION['BASE'].'</b></p>';
+	}
+	if($_SESSION['CONNEXION_MODE']=='cas')
+	{
+		echo'<div class="astuce">Adresse à utiliser pour une connexion automatique avec les identifiants de l\'ENT :</div>';
+		echo'<p class="hc"><b>'.SERVEUR_ADRESSE.'?page=public_login_CAS&amp;f_base='.$_SESSION['BASE'].'</b></p>';
+	}
 }
 ?>
 
 <?php
-if( in_array($_SESSION['USER_PROFIL'],array('eleve','professeur','directeur')) && ($_SESSION['CONNEXION_MODE']=='cas') )
-{
-	echo'<div class="astuce">Adresse à utiliser pour une connexion automatique avec les identifiants de l\'ENT :</div>';
-	echo'<p class="hc"><b>'.SERVEUR_ADRESSE.'?page=public_login_CAS&amp;f_base='.$_SESSION['BASE'].'</b></p>';
-}
 ?>

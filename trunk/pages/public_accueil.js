@@ -198,6 +198,23 @@ $(document).ready
 			}
 		);
 
+		//	Afficher / masquer le formulaire d'identifiants SACoche si formulaire ENT possible
+		$('input[type=radio]').live // live est utilisé pour prendre en compte les nouveaux éléments créés
+		('change',
+			function()
+			{
+				if($('#f_mode_normal').is(':checked'))
+				{
+					$("#fieldset_normal").show();
+					$('#f_login').focus();
+				}
+				else
+				{
+					$("#fieldset_normal").hide();
+				}
+			}
+		);
+
 		// Le formulaire qui va être analysé et traité en AJAX
 		var formulaire = $('form');
 
@@ -214,7 +231,7 @@ $(document).ready
 				messages :
 				{
 					f_base     : { required:"établissement manquant" },
-					f_login    : { required:"login manquant" , maxlength:"20 caractères maximum" },
+					f_login    : { required:"nom d'utilisateur manquant" , maxlength:"20 caractères maximum" },
 					f_password : { required:"mot de passe manquant" , maxlength:"20 caractères maximum" }
 				},
 				errorElement : "label",
@@ -243,20 +260,18 @@ $(document).ready
 		(
 			function()
 			{
-				profil = $('#f_profil').val();
-				mode_connexion = $('#f_mode').val();
-				if( (mode_connexion=='normal') || (profil=='administrateur') )
-				{
-					$(this).ajaxSubmit(ajaxOptions);
-					return false;
-				}
-				else if(mode_connexion=='cas')
+				if( ($('#fieldset_normal').length) && !($('#f_mode_normal').is(':checked')) )
 				{
 					document.location.href = './index.php?page=public_login_CAS&f_base='+$('#f_base').val();
 					return false;
 				}
+				else
+				{
+					$(this).ajaxSubmit(ajaxOptions);
+					return false;
+				}
 			}
-		); 
+		);
 
 		// Fonction précédent l'envoi du formulaire (avec jquery.form.js)
 		function test_form_avant_envoi(formData, jqForm, options)

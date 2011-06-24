@@ -1212,6 +1212,20 @@ function DB_STRUCTURE_lister_eleves_groupes($listing_groupe_id)
 }
 
 /**
+ * DB_STRUCTURE_lister_adresses_parents
+ *
+ * @param void
+ * @return array
+ */
+
+function DB_STRUCTURE_lister_adresses_parents()
+{
+	$DB_SQL = 'SELECT * ';
+	$DB_SQL.= 'FROM sacoche_parent_adresse ';
+	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
+}
+
+/**
  * DB_STRUCTURE_lister_identite_coordonnateurs_par_matiere
  *
  * @param string   $listing_matieres_id   id des matières séparés par des virgules
@@ -1220,13 +1234,75 @@ function DB_STRUCTURE_lister_eleves_groupes($listing_groupe_id)
 
 function DB_STRUCTURE_lister_identite_coordonnateurs_par_matiere($listing_matieres_id)
 {
-	$DB_SQL = 'SELECT matiere_id, GROUP_CONCAT(CONCAT(user_nom," ",user_prenom) SEPARATOR "][") AS coord_liste FROM sacoche_jointure_user_matiere ';
+	$DB_SQL = 'SELECT matiere_id, GROUP_CONCAT(CONCAT(user_nom," ",user_prenom) SEPARATOR "][") AS coord_liste ';
+	$DB_SQL.= 'FROM sacoche_jointure_user_matiere ';
 	$DB_SQL.= 'LEFT JOIN sacoche_user USING (user_id) ';
 	$DB_SQL.= 'LEFT JOIN sacoche_matiere USING (matiere_id) ';
 	$DB_SQL.= 'WHERE (matiere_id IN('.$listing_matieres_id.') OR matiere_partage=:partage) AND jointure_coord=:coord AND user_statut=:statut '; // Test matiere car un prof peut être encore relié à des matières décochées par l'admin.
 	$DB_SQL.= 'GROUP BY matiere_id';
 	$DB_VAR = array(':coord'=>1,':statut'=>1,':partage'=>0);
 	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+}
+
+/**
+ * DB_STRUCTURE_lister_parents_par_eleve
+ *
+ * @param void
+ * @return array
+ */
+
+function DB_STRUCTURE_lister_parents_par_eleve()
+{
+	$DB_SQL = 'SELECT eleve.user_id AS eleve_id,   eleve.user_sconet_id AS eleve_sconet_id,   eleve.user_nom AS eleve_nom,   eleve.user_prenom AS eleve_prenom,   ';
+	$DB_SQL.=        'parent.user_id AS parent_id, parent.user_sconet_id AS parent_sconet_id, parent.user_nom AS parent_nom, parent.user_prenom AS parent_prenom, ';
+	$DB_SQL.=        'sacoche_jointure_parent_eleve.resp_legal_num ';
+	$DB_SQL.= 'FROM sacoche_user AS eleve ';
+	$DB_SQL.= 'LEFT JOIN sacoche_jointure_parent_eleve ON eleve.user_id=sacoche_jointure_parent_eleve.eleve_id ';
+	$DB_SQL.= 'LEFT JOIN sacoche_user AS parent ON sacoche_jointure_parent_eleve.parent_id=parent.user_id ';
+	$DB_SQL.= 'WHERE eleve.user_profil="eleve" AND eleve.user_sconet_id!=0 ';
+	$DB_SQL.= 'ORDER BY eleve_nom ASC, eleve_prenom ASC, resp_legal_num ASC ';
+	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , null);
+}
+
+/**
+ * DB_STRUCTURE_lister_parents_actifs_avec_infos_for_eleve
+ *
+ * @param int   $eleve_id
+ * @return array
+ */
+ 
+
+
+function DB_STRUCTURE_lister_parents_actifs_avec_infos_for_eleve($eleve_id)
+{
+	$DB_SQL = 'SELECT parent.user_id, parent.user_nom, parent.user_prenom, sacoche_parent_adresse.*, resp_legal_num ';
+	$DB_SQL.= 'FROM sacoche_user AS eleve ';
+	$DB_SQL.= 'LEFT JOIN sacoche_jointure_parent_eleve ON eleve.user_id=sacoche_jointure_parent_eleve.eleve_id ';
+	$DB_SQL.= 'LEFT JOIN sacoche_user AS parent ON sacoche_jointure_parent_eleve.parent_id=parent.user_id ';
+	$DB_SQL.= 'LEFT JOIN sacoche_parent_adresse ON sacoche_jointure_parent_eleve.parent_id=sacoche_parent_adresse.parent_id ';
+	$DB_SQL.= 'WHERE eleve.user_id=:eleve_id AND parent.user_statut=:statut ';
+	$DB_SQL.= 'GROUP BY parent.user_id ';
+	$DB_SQL.= 'ORDER BY resp_legal_num ASC ';
+	$DB_VAR = array(':eleve_id'=>$eleve_id,':statut'=>1);
+	$DB_TAB_parents = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR, TRUE);
+	if(!count($DB_TAB_parents))
+	{
+		return array();
+	}
+	$listing_enfant_id = implode(',',array_keys($DB_TAB_parents));
+	$DB_SQL = 'SELECT parent_id, GROUP_CONCAT( CONCAT(enfant.user_nom," ",enfant.user_prenom," @",resp_legal_num,"@") SEPARATOR "§BR§") AS enfants_liste ';
+	$DB_SQL.= 'FROM sacoche_jointure_parent_eleve ';
+	$DB_SQL.= 'LEFT JOIN sacoche_user AS enfant ON sacoche_jointure_parent_eleve.eleve_id=enfant.user_id ';
+	$DB_SQL.= 'WHERE sacoche_jointure_parent_eleve.parent_id IN('.$listing_enfant_id.') AND enfant.user_statut=:statut ';
+	$DB_SQL.= 'GROUP BY parent_id ';
+	$DB_VAR = array(':eleve_id'=>$eleve_id,':statut'=>1);
+	$DB_TAB_enfants = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR, TRUE);
+	$DB_TAB = array();
+	foreach($DB_TAB_parents AS $id => $tab)
+	{
+		$DB_TAB[] = array_merge($DB_TAB_parents[$id][0], $DB_TAB_enfants[$id][0]);
+	}
+	return $DB_TAB;
 }
 
 /**
@@ -1417,7 +1493,7 @@ function DB_STRUCTURE_lister_validations_competences($only_positives)
 /**
  * DB_STRUCTURE_lister_users
  *
- * @param string|array   $profil        'eleve' / 'professeur' / 'directeur' / 'administrateur' / ou par exemple array('eleve','professeur','directeur')
+ * @param string|array   $profil        'eleve' / 'parent' / 'professeur' / 'directeur' / 'administrateur' / ou par exemple array('eleve','professeur','directeur')
  * @param bool           $only_actifs   TRUE pour statut actif uniquement / FALSE pour tout le monde qq soit le statut
  * @param bool           $with_classe   TRUE pour récupérer le nom de la classe de l'élève / FALSE sinon
  * @param bool           $tri_statut    TRUE pour trier par statut décroissant (les actifs en premier), FALSE par défaut
@@ -1462,6 +1538,42 @@ function DB_STRUCTURE_lister_users($profil,$only_actifs,$with_classe,$tri_statut
 	$DB_SQL.= $left_join;
 	$DB_SQL.= 'WHERE '.$where;
 	$DB_SQL.= 'ORDER BY '.$order_by.'user_nom ASC, user_prenom ASC ';
+	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+}
+
+/**
+ * DB_STRUCTURE_lister_parents_actifs_avec_infos_enfants
+ *
+ * @param bool     $with_adresse
+ * @param string   $debut_nom      premières lettres du nom
+ * @param string   $debut_prenom   premières lettres du prénom
+ * @return array
+ */
+
+function DB_STRUCTURE_lister_parents_actifs_avec_infos_enfants($with_adresse,$debut_nom='',$debut_prenom='')
+{
+	$DB_SQL = 'SELECT ' ;
+	$DB_SQL.= ($with_adresse) ? 'parent.user_id, parent.user_nom, parent.user_prenom, sacoche_parent_adresse.*, ' : 'parent.*, ' ;
+	$DB_SQL.= 'GROUP_CONCAT( CONCAT(eleve.user_nom," ",eleve.user_prenom," @",resp_legal_num,"@") SEPARATOR "§BR§") AS enfants_liste, ';
+	$DB_SQL.= 'COUNT(eleve.user_id) AS enfants_nombre ';
+	$DB_SQL.= 'FROM sacoche_user AS parent ';
+	$DB_SQL.= ($with_adresse) ? 'LEFT JOIN sacoche_parent_adresse ON parent.user_id=sacoche_parent_adresse.parent_id ' : '' ;
+	$DB_SQL.= 'LEFT JOIN sacoche_jointure_parent_eleve ON parent.user_id=sacoche_jointure_parent_eleve.parent_id ';
+	$DB_SQL.= 'LEFT JOIN sacoche_user AS eleve ON sacoche_jointure_parent_eleve.eleve_id=eleve.user_id ';
+	$DB_SQL.= 'WHERE parent.user_profil=:profil AND parent.user_statut=:statut ';
+	$DB_VAR = array(':profil'=>'parent',':statut'=>1);
+	if($debut_nom)
+	{
+		$DB_SQL .= 'AND parent.user_nom LIKE :nom ';
+		$DB_VAR[':nom'] = $debut_nom.'%';
+	}
+	if($debut_prenom)
+	{
+		$DB_SQL .= 'AND parent.user_prenom LIKE :prenom ';
+		$DB_VAR[':prenom'] = $debut_prenom.'%';
+	}
+	$DB_SQL.= 'GROUP BY parent.user_id ';
+	$DB_SQL.= 'ORDER BY parent.user_nom ASC, parent.user_prenom ASC ';
 	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
@@ -1888,7 +2000,7 @@ function DB_STRUCTURE_compter_users_suivant_statut($profil)
 			$DB_VAR[':profil'.$key] = $val;
 			$profil[$key] = ':'.$val;
 		}
-		$where = 'user_profil IN('.implode(',',$profil).') ';
+		$where = 'user_profil IN('.implode(',',array_keys($profil)).') ';
 	}
 	$DB_SQL = 'SELECT user_statut, COUNT(*) AS nombre FROM sacoche_user ';
 	$DB_SQL.= 'WHERE '.$where;
@@ -2017,8 +2129,31 @@ function DB_STRUCTURE_tester_matiere_reference($matiere_ref,$matiere_id=false)
 function DB_STRUCTURE_tester_classe_reference($groupe_ref,$groupe_id=false)
 {
 	$DB_SQL = 'SELECT groupe_id FROM sacoche_groupe ';
-	$DB_SQL.= 'WHERE groupe_ref=:groupe_ref ';
-	$DB_VAR = array(':groupe_ref'=>$groupe_ref);
+	$DB_SQL.= 'WHERE groupe_type=:groupe_type AND groupe_ref=:groupe_ref ';
+	$DB_VAR = array(':groupe_type'=>'classe',':groupe_ref'=>$groupe_ref);
+	if($groupe_id)
+	{
+		$DB_SQL.= 'AND groupe_id!=:groupe_id ';
+		$DB_VAR[':groupe_id'] = $groupe_id;
+	}
+	$DB_SQL.= 'LIMIT 1';
+	$DB_ROW = DB::queryRow(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+	return count($DB_ROW) ;
+}
+
+/**
+ * DB_STRUCTURE_tester_groupe_reference
+ *
+ * @param string $groupe_ref
+ * @param int    $groupe_id    inutile si recherche pour un ajout, mais id à éviter si recherche pour une modification
+ * @return int
+ */
+
+function DB_STRUCTURE_tester_groupe_reference($groupe_ref,$groupe_id=false)
+{
+	$DB_SQL = 'SELECT groupe_id FROM sacoche_groupe ';
+	$DB_SQL.= 'WHERE groupe_type=:groupe_type AND groupe_ref=:groupe_ref ';
+	$DB_VAR = array(':groupe_type'=>'groupe',':groupe_ref'=>$groupe_ref);
 	if($groupe_id)
 	{
 		$DB_SQL.= 'AND groupe_id!=:groupe_id ';
@@ -2336,6 +2471,40 @@ function DB_STRUCTURE_ajouter_utilisateur($user_sconet_id,$user_sconet_elenoet,$
 }
 
 /**
+ * DB_STRUCTURE_ajouter_adresse_parent
+ *
+ * @param int    $parent_id
+ * @param array  $tab_adresse
+ * @return void
+ */
+
+function DB_STRUCTURE_ajouter_adresse_parent($parent_id,$tab_adresse)
+{
+	$DB_SQL = 'INSERT INTO sacoche_parent_adresse(parent_id,adresse_ligne1,adresse_ligne2,adresse_ligne3,adresse_ligne4,adresse_postal_code,adresse_postal_libelle,adresse_pays_nom) ';
+	$DB_SQL.= 'VALUES(:parent_id,:ligne1,:ligne2,:ligne3,:ligne4,:postal_code,:postal_libelle,:pays_nom)';
+	$DB_VAR = array(':parent_id'=>$parent_id,':ligne1'=>$tab_adresse[0],':ligne2'=>$tab_adresse[1],':ligne3'=>$tab_adresse[2],':ligne4'=>$tab_adresse[3],':postal_code'=>$tab_adresse[4],':postal_libelle'=>$tab_adresse[5],':pays_nom'=>$tab_adresse[6]);
+	DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+}
+
+/**
+ * DB_STRUCTURE_ajouter_jointure_parent_eleve
+ *
+ * @param int    $parent_id
+ * @param int    $eleve_id
+ * @param int    $resp_legal_num
+ * @param bool   $resp_legal_envoi
+ * @return void
+ */
+
+function DB_STRUCTURE_ajouter_jointure_parent_eleve($parent_id,$eleve_id,$resp_legal_num,$resp_legal_envoi)
+{
+	$DB_SQL = 'INSERT INTO sacoche_jointure_parent_eleve(parent_id,eleve_id,resp_legal_num,resp_legal_envoi) ';
+	$DB_SQL.= 'VALUES(:parent_id,:eleve_id,:resp_legal_num,:resp_legal_envoi)';
+	$DB_VAR = array(':parent_id'=>$parent_id,':eleve_id'=>$eleve_id,':resp_legal_num'=>$resp_legal_num,':resp_legal_envoi'=>$resp_legal_envoi);
+	DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+}
+
+/**
  * DB_STRUCTURE_ajouter_devoir
  *
  * @param int    $prof_id
@@ -2583,6 +2752,23 @@ function DB_STRUCTURE_modifier_utilisateur($user_id,$DB_VAR)
 	$DB_SQL.= 'WHERE user_id=:user_id ';
 	$DB_SQL.= 'LIMIT 1';
 	$DB_VAR[':user_id'] = $user_id;
+	DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+}
+
+/**
+ * DB_STRUCTURE_modifier_adresse_parent
+ *
+ * @param string $parent_id
+ * @param array  $tab_adresse
+ * @return int
+ */
+
+function DB_STRUCTURE_modifier_adresse_parent($parent_id,$tab_adresse)
+{
+	$DB_SQL = 'UPDATE sacoche_parent_adresse ';
+	$DB_SQL.= 'SET adresse_ligne1=:ligne1, adresse_ligne2=:ligne2, adresse_ligne3=:ligne3, adresse_ligne4=:ligne4, adresse_postal_code=:postal_code, adresse_postal_libelle=:postal_libelle, adresse_pays_nom=:pays_nom ';
+	$DB_SQL.= 'WHERE parent_id=:parent_id ';
+	$DB_VAR = array(':parent_id'=>$parent_id,':ligne1'=>$tab_adresse[0],':ligne2'=>$tab_adresse[1],':ligne3'=>$tab_adresse[2],':ligne4'=>$tab_adresse[3],':postal_code'=>$tab_adresse[4],':postal_libelle'=>$tab_adresse[5],':pays_nom'=>$tab_adresse[6]);
 	DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
@@ -3098,7 +3284,7 @@ function DB_STRUCTURE_modifier_liaison_devoir_user($devoir_id,$groupe_id,$tab_el
 	}
 	// -> on supprime si besoin les anciens élèves associés à ce groupe qui ne sont plus dans la liste transmise
 	// -> on supprime si besoin les saisies des anciens élèves associés à ce devoir qui ne sont plus dans la liste transmise
-	//   (concernant les saisies superflues concernant les items, voir DB_STRUCTURE_modifier_liaison_devoir_item)
+	//   (pour les saisies superflues concernant les items, voir DB_STRUCTURE_modifier_liaison_devoir_item)
 	if($mode=='substituer')
 	{
 		$tab_eleves_moins = array_diff($tab_eleves_avant,$tab_eleves);
@@ -3492,6 +3678,20 @@ function DB_STRUCTURE_supprimer_demandes($listing_demande_id,$nb_demandes=false)
 }
 
 /**
+ * DB_STRUCTURE_supprimer_jointures_parents_for_eleves
+ *
+ * @param bool|string   $listing_eleve_id   id des élèves séparés par des virgules
+ * @return void
+ */
+
+function DB_STRUCTURE_supprimer_jointures_parents_for_eleves($listing_eleve_id)
+{
+	$DB_SQL = 'DELETE FROM sacoche_jointure_parent_eleve ';
+	$DB_SQL.= 'WHERE eleve_id IN('.$listing_eleve_id.') ';
+	DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , null);
+}
+
+/**
  * DB_STRUCTURE_supprimer_utilisateur
  *
  * @param int    $user_id
@@ -3514,11 +3714,23 @@ function DB_STRUCTURE_supprimer_utilisateur($user_id,$user_profil)
 	}
 	if($user_profil=='eleve')
 	{
+		$DB_SQL = 'DELETE FROM sacoche_jointure_parent_eleve ';
+		$DB_SQL.= 'WHERE eleve_id=:user_id';
+		DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 		$DB_SQL = 'DELETE FROM sacoche_saisie ';
 		$DB_SQL.= 'WHERE eleve_id=:user_id';
 		DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 		$DB_SQL = 'DELETE FROM sacoche_demande ';
 		$DB_SQL.= 'WHERE user_id=:user_id';
+		DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+	}
+	if($user_profil=='parent')
+	{
+		$DB_SQL = 'DELETE FROM sacoche_jointure_parent_eleve ';
+		$DB_SQL.= 'WHERE parent_id=:user_id';
+		DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+		$DB_SQL = 'DELETE FROM sacoche_parent_adresse ';
+		$DB_SQL.= 'WHERE parent_id=:user_id';
 		DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 	}
 	if($user_profil=='professeur')
@@ -4293,6 +4505,24 @@ function DB_STRUCTURE_OPT_professeurs_directeurs_etabl($user_statut)
 	$GLOBALS['tab_select_optgroup'] = array('directeur'=>'Directeurs','professeur'=>'Professeurs');
 	$mot = ($user_statut) ? 'enregistré' : 'désactivé' ;
 	return count($DB_TAB) ? $DB_TAB : 'Aucun professeur ou directeur n\'est '.$mot.' !' ;
+}
+
+/**
+ * Retourner un tableau [valeur texte] des parents de l'établissement
+ *
+ * @param int $user_statut   statut des utilisateurs (1 pour actif, 0 pour inactif)
+ * @return array|string
+ */
+
+function DB_STRUCTURE_OPT_parents_etabl($user_statut)
+{
+	$DB_SQL = 'SELECT user_id AS valeur, CONCAT(user_nom," ",user_prenom) AS texte FROM sacoche_user ';
+	$DB_SQL.= 'WHERE user_profil=:profil AND user_statut=:user_statut ';
+	$DB_SQL.= 'ORDER BY user_profil DESC, user_nom ASC, user_prenom ASC';
+	$DB_VAR = array(':profil'=>'parent',':user_statut'=>$user_statut);
+	$DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+	$mot = ($user_statut) ? 'enregistré' : 'désactivé' ;
+	return count($DB_TAB) ? $DB_TAB : 'Aucun parent n\'est '.$mot.' !' ;
 }
 
 /**

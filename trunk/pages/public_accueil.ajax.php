@@ -29,7 +29,7 @@ if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');
 
 $action   = (isset($_POST['f_action']))   ? clean_texte($_POST['f_action'])      : '';
 $BASE     = (isset($_POST['f_base']))     ? clean_entier($_POST['f_base'])       : 0;
-$profil   = (isset($_POST['f_profil']))   ? clean_texte($_POST['f_profil'])      : '';	// normal / administrateur / webmestre
+$profil   = (isset($_POST['f_profil']))   ? clean_texte($_POST['f_profil'])      : '';	// normal | webmestre
 $login    = (isset($_POST['f_login']))    ? clean_login($_POST['f_login'])       : '';
 $password = (isset($_POST['f_password'])) ? clean_password($_POST['f_password']) : '';
 
@@ -51,25 +51,28 @@ function afficher_nom_etablissement($BASE,$denomination)
 	echo'<label class="tab">Établissement :</label><input id="f_base" name="f_base" type="hidden" value="'.$BASE.'" /><em>'.html($denomination).'</em>'.$changer.'<br />'."\r\n";
 }
 
-function afficher_formulaire_identification_webmestre()
-{
-	echo'<label class="tab" for="f_password">Mot de passe :</label><input id="f_password" name="f_password" size="20" type="password" value="" tabindex="3" /><br />'."\r\n";
-	echo'<span class="tab"></span><input id="f_login" name="f_login" type="hidden" value="webmestre" /><input id="f_mode" name="f_mode" type="hidden" value="normal" /><input id="f_profil" name="f_profil" type="hidden" value="webmestre" /><input id="f_action" name="f_action" type="hidden" value="identifier" /><button id="f_submit" type="submit" tabindex="4"><img alt="" src="./_img/bouton/mdp_perso.png" /> Accéder à son espace.</button><label id="ajax_msg">&nbsp;</label><br />'."\r\n";
-}
-
 function afficher_formulaire_identification($profil,$mode)
 {
-	if(($mode=='normal')||($profil=='administrateur'))
+	if($profil=='webmestre')
+	{
+		echo'<label class="tab" for="f_password">Mot de passe :</label><input id="f_password" name="f_password" size="20" type="password" value="" tabindex="3" /><br />'."\r\n";
+		echo'<span class="tab"></span><input id="f_login" name="f_login" type="hidden" value="webmestre" /><input id="f_mode" name="f_mode" type="hidden" value="normal" /><input id="f_profil" name="f_profil" type="hidden" value="webmestre" /><input id="f_action" name="f_action" type="hidden" value="identifier" /><button id="f_submit" type="submit" tabindex="4"><img alt="" src="./_img/bouton/mdp_perso.png" /> Accéder à son espace.</button><label id="ajax_msg">&nbsp;</label><br />'."\r\n";
+	}
+	elseif($mode=='normal')
 	{
 		echo'<label class="tab" for="f_login">Nom d\'utilisateur :</label><input id="f_login" name="f_login" size="20" type="text" value="" tabindex="2" /><br />'."\r\n";
 		echo'<label class="tab" for="f_password">Mot de passe :</label><input id="f_password" name="f_password" size="20" type="password" value="" tabindex="3" /><br />'."\r\n";
-		echo'<span class="tab"></span>';
+		echo'<span class="tab"></span><input id="f_mode" name="f_mode" type="hidden" value="normal" /><input id="f_profil" name="f_profil" type="hidden" value="normal" /><input id="f_action" name="f_action" type="hidden" value="identifier" /><button id="f_submit" type="submit" tabindex="4"><img alt="" src="./_img/bouton/mdp_perso.png" /> Accéder à son espace.</button><label id="ajax_msg">&nbsp;</label><br />'."\r\n";
 	}
 	else
 	{
-		echo'<span class="tab"></span><input id="f_login" name="f_login" type="hidden" value="connexion ENT" /><input id="f_password" name="f_password" type="hidden" value="connexion ENT" />';
+		echo'<label class="tab" for="f_mode">Mode de connexion :</label><label for="f_mode_'.$mode.'"><input type="radio" id="f_mode_'.$mode.'" name="f_mode" value="'.$mode.'" checked /> formulaire <em>ENT</em></label>&nbsp;&nbsp;&nbsp;<label for="f_mode_normal"><input type="radio" id="f_mode_normal" name="f_mode" value="normal" /> formulaire <em>SACoche</em></label><br />'."\r\n";
+		echo'<fieldset id="fieldset_normal" class="hide">'."\r\n";
+		echo'<label class="tab" for="f_login">Nom d\'utilisateur :</label><input id="f_login" name="f_login" size="20" type="text" value="" tabindex="2" /><br />'."\r\n";
+		echo'<label class="tab" for="f_password">Mot de passe :</label><input id="f_password" name="f_password" size="20" type="password" value="" tabindex="3" /><br />'."\r\n";
+		echo'</fieldset>'."\r\n";
+		echo'<span class="tab"></span><input id="f_profil" name="f_profil" type="hidden" value="normal" /><input id="f_action" name="f_action" type="hidden" value="identifier" /><button id="f_submit" type="submit" tabindex="4"><img alt="" src="./_img/bouton/mdp_perso.png" /> Accéder à son espace.</button><label id="ajax_msg">&nbsp;</label><br />'."\r\n";
 	}
-	echo'<input id="f_mode" name="f_mode" type="hidden" value="'.$mode.'" /><input id="f_profil" name="f_profil" type="hidden" value="'.$profil.'" /><input id="f_action" name="f_action" type="hidden" value="identifier" /><button id="f_submit" type="submit" tabindex="4"><img alt="" src="./_img/bouton/mdp_perso.png" /> Accéder à son espace.</button><label id="ajax_msg">&nbsp;</label><br />'."\r\n";
 }
 
 //	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
@@ -89,7 +92,7 @@ if($action=='tester_version')
 
 elseif( ($action=='initialiser') && ($profil=='webmestre') )
 {
-	afficher_formulaire_identification_webmestre();
+	afficher_formulaire_identification($profil,'normal');
 }
 
 // Charger le formulaire pour un établissement donné (installation mono-structure)
@@ -162,9 +165,9 @@ elseif( ($action=='identifier') && ($profil=='webmestre') && ($login=='webmestre
 
 // Pour un utilisateur normal, y compris un administrateur
 
-elseif( ($action=='identifier') && ($profil!='webmestre') && ($login!='') && ($password!='') )
+elseif( ($action=='identifier') && ($profil=='normal') && ($login!='') && ($password!='') )
 {
-	$connexion = connecter_user($BASE,$profil,$login,$password,$mode_connection='normal');
+	$connexion = connecter_user($BASE,$login,$password,$mode_connection='normal');
 	echo ($connexion=='ok') ? $_SESSION['USER_PROFIL'] : $connexion ;
 }
 

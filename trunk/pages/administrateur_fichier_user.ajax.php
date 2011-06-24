@@ -76,8 +76,8 @@ $tab_etapes['sconet_eleves']                  .= '<li id="step9">Étape 7 - Nett
 $tab_etapes['sconet_parents']                  = '<li id="step1">Étape 1 - Récupération du fichier</li>';
 $tab_etapes['sconet_parents']                 .= '<li id="step2">Étape 2 - Extraction des données</li>';
 $tab_etapes['sconet_parents']                 .= '<li id="step5">Étape 3 - Utilisateurs (ajouts / modifications / suppressions)</li>';
-$tab_etapes['sconet_parents']                 .= '<li id="step7">Étape 4 - Responsabilités (ajouts / modifications / suppressions)</li>';
-$tab_etapes['sconet_parents']                 .= '<li id="step8">Étape 5 - Adresses (ajouts / modifications / suppressions)</li>';
+$tab_etapes['sconet_parents']                 .= '<li id="step7">Étape 4 - Adresses (ajouts / modifications)</li>';
+$tab_etapes['sconet_parents']                 .= '<li id="step8">Étape 5 - Responsabilités (ajouts / modifications / suppressions)</li>';
 $tab_etapes['sconet_parents']                 .= '<li id="step9">Étape 6 - Nettoyage des fichiers temporaires</li>';
 
 $tab_etapes['base-eleves_eleves']              = '<li id="step1">Étape 1 - Récupération du fichier</li>';
@@ -93,10 +93,10 @@ $tab_etapes['tableur_eleves']                 .= '<li id="step5">Étape 4 - Util
 $tab_etapes['tableur_eleves']                 .= '<li id="step9">Étape 5 - Nettoyage des fichiers temporaires</li>';
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-//	Étape 1 - Récupération du fichier (sconet_professeurs_directeurs | tableur_professeurs_directeurs | sconet_eleves | sconet_parents | base-eleves_eleves | tableur_eleves)
+//	Étape 10 - Récupération du fichier (sconet_professeurs_directeurs | tableur_professeurs_directeurs | sconet_eleves | sconet_parents | base-eleves_eleves | tableur_eleves)
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
-if( $step==1 )
+if( $step==10 )
 {
 	$tab_file = $_FILES['userfile'];
 	$fnom_transmis = $tab_file['name'];
@@ -160,16 +160,16 @@ if( $step==1 )
 	echo'<hr />';
 	echo'<fieldset>';
 	echo'<div><label class="valide">Votre fichier a été correctement réceptionné.</label></div>';
-	echo'<p class="li"><a href="#" class="step2">Passer à l\'étape 2.</a><label id="ajax_msg">&nbsp;</label></p>';
+	echo'<p class="li"><a href="#step20" id="passer_etape_suivante">Passer à l\'étape 2.</a><label id="ajax_msg">&nbsp;</label></p>';
 	echo'</fieldset>';
 	exit();
 }
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-//	Étape 2 - Extraction des données (sconet_professeurs_directeurs | tableur_professeurs_directeurs | sconet_eleves | sconet_parents | base-eleves_eleves | tableur_eleves)
+//	Étape 20 - Extraction des données (sconet_professeurs_directeurs | tableur_professeurs_directeurs | sconet_eleves | sconet_parents | base-eleves_eleves | tableur_eleves)
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
-if( $step==2 )
+if( $step==20 )
 {
 	if(!is_file($dossier_import.$fichier_dest))
 	{
@@ -552,23 +552,43 @@ if( $step==2 )
 				$nb_lien_responsabilite++;
 			}
 		}
+		// L'import Sconet peut apporter beaucoup de parents rattachés à des élèves sortis de l'établissement et encore présents dans le fichier.
+		// Alors on récupère la liste des id_sconet des élèves actifs et on contrôle par la suite qu'il y en a au moins un dans la liste des enfants du parent.
+		$tab_eleves_actifs = array();
+		$DB_TAB = DB_STRUCTURE_lister_users($profil='eleve',$only_actifs=TRUE,$with_classe=FALSE,$tri_statut=FALSE);
+		foreach($DB_TAB as $DB_ROW)
+		{
+			$tab_eleves_actifs[$DB_ROW['user_sconet_id']] = TRUE;
+		}
 		//
 		// On passe les parents en revue : on mémorise leurs infos (dont adresses et enfants)
+		// Si pas d'enfant trouvé, on laisse tomber, c'est en effet le choix par défaut de Gepi qui indique : "ne pas proposer d'ajouter les responsables non associés à des élèves (de telles entrées peuvent subsister en très grand nombre dans Sconet)".
 		//
 		if( ($xml->DONNEES) && ($xml->DONNEES->PERSONNES) && ($xml->DONNEES->PERSONNES->PERSONNE) )
 		{
 			foreach ($xml->DONNEES->PERSONNES->PERSONNE as $personne)
 			{
 				$i_fichier = clean_entier($personne->attributes()->PERSONNE_ID);
-				$i_adresse = clean_entier($personne->ADRESSE_ID);
-				$tab_users_fichier['sconet_id'][$i_fichier]  = $i_fichier;
-				$tab_users_fichier['sconet_num'][$i_fichier] = 0;
-				$tab_users_fichier['reference'][$i_fichier]  = '';
-				$tab_users_fichier['profil'][$i_fichier]     = 'parent' ;
-				$tab_users_fichier['nom'][$i_fichier]        = clean_nom($personne->NOM);
-				$tab_users_fichier['prenom'][$i_fichier]     = clean_prenom($personne->PRENOM);
-				$tab_users_fichier['adresse'][$i_fichier]    = isset($tab_adresses[$i_adresse]) ? $tab_adresses[$i_adresse] : array('','','','',0,'','') ;
-				$tab_users_fichier['enfant'][$i_fichier]     = isset($tab_enfants[$i_fichier])  ? $tab_enfants[$i_fichier]  : array() ;
+				if(isset($tab_enfants[$i_fichier]))
+				{
+					$nb_enfants_actifs = 0;
+					foreach($tab_enfants[$i_fichier] as $eleve_sconet_id => $resp_legal)
+					{
+						$nb_enfants_actifs += (isset($tab_eleves_actifs[$eleve_sconet_id])) ? 1 : 0 ;
+					}
+					if($nb_enfants_actifs)
+					{
+						$i_adresse = clean_entier($personne->ADRESSE_ID);
+						$tab_users_fichier['sconet_id'][$i_fichier]  = $i_fichier;
+						$tab_users_fichier['sconet_num'][$i_fichier] = 0;
+						$tab_users_fichier['reference'][$i_fichier]  = '';
+						$tab_users_fichier['profil'][$i_fichier]     = 'parent' ;
+						$tab_users_fichier['nom'][$i_fichier]        = clean_nom($personne->NOM);
+						$tab_users_fichier['prenom'][$i_fichier]     = clean_prenom($personne->PRENOM);
+						$tab_users_fichier['adresse'][$i_fichier]    = isset($tab_adresses[$i_adresse]) ? $tab_adresses[$i_adresse] : array('','','','',0,'','') ;
+						$tab_users_fichier['enfant'][$i_fichier]     = $tab_enfants[$i_fichier];
+					}
+				}
 			}
 		}
 	}
@@ -727,8 +747,8 @@ if( $step==2 )
 					$tab_users_fichier['sconet_num'][] = 0;
 					$tab_users_fichier['reference'][]  = '';
 					$tab_users_fichier['profil'][]     = 'eleve';
-					$tab_users_fichier['nom'][]        = mb_substr(clean_nom($nom),0,20);
-					$tab_users_fichier['prenom'][]     = mb_substr(clean_prenom($prenom),0,20);
+					$tab_users_fichier['nom'][]        = mb_substr(clean_nom($nom),0,25);
+					$tab_users_fichier['prenom'][]     = mb_substr(clean_prenom($prenom),0,25);
 					$tab_users_fichier['classe'][]     = $classe_ref;
 					if( ($classe_ref) && (!isset($tab_classes_fichier['ref'][$classe_ref])) )
 					{
@@ -743,11 +763,11 @@ if( $step==2 )
 	//
 	// Fin des différents cas possibles
 	//
-	// Tableaux pour les étapes 61/62 (donc juste pour Sconet élèves / profs)
+	// Tableaux pour les étapes 61/62/71/72 (donc juste pour Sconet élèves / profs / parents)
 	$tab_classe_ref_TO_id_base = array();
 	$tab_groupe_ref_TO_id_base = array();
 	$tab_i_fichier_TO_id_base  = array();
-	$tab_traitement6 = array('classes'=>$tab_classe_ref_TO_id_base,'groupes'=>$tab_groupe_ref_TO_id_base,'users'=>$tab_i_fichier_TO_id_base);
+	$tab_liens_id_base = array('classes'=>$tab_classe_ref_TO_id_base,'groupes'=>$tab_groupe_ref_TO_id_base,'users'=>$tab_i_fichier_TO_id_base);
 	// On trie
 	switch($action)
 	{
@@ -782,7 +802,7 @@ if( $step==2 )
 	Ecrire_Fichier($dossier_import.'import_'.$action.'_'.$_SESSION['BASE'].'_users.txt',serialize($tab_users_fichier));
 	Ecrire_Fichier($dossier_import.'import_'.$action.'_'.$_SESSION['BASE'].'_classes.txt',serialize($tab_classes_fichier));
 	Ecrire_Fichier($dossier_import.'import_'.$action.'_'.$_SESSION['BASE'].'_groupes.txt',serialize($tab_groupes_fichier));
-	Ecrire_Fichier($dossier_import.'import_'.$action.'_'.$_SESSION['BASE'].'_traitement6.txt',serialize($tab_traitement6));
+	Ecrire_Fichier($dossier_import.'import_'.$action.'_'.$_SESSION['BASE'].'_liens_id_base.txt',serialize($tab_liens_id_base));
 	// On affiche le bilan des utilisateurs trouvés
 	if(count($tab_users_fichier['profil']))
 	{
@@ -790,12 +810,12 @@ if( $step==2 )
 		foreach ($tab_profil_nombre as $profil=>$nombre)
 		{
 			$s = ($nombre>1) ? 's' : '' ;
-			echo'<div><label class="valide">'.$nombre.' '.str_replace('eleve','élève',$profil).$s.' trouvé'.$s.'.</label></div>';
+			echo'<p><label class="valide">'.$nombre.' '.str_replace('eleve','élève',$profil).$s.' trouvé'.$s.'.</label></p>';
 		}
 	}
 	else
 	{
-		echo'<div><label class="alerte">Aucun utilisateur trouvé !</label></div>';
+		echo'<p><label class="alerte">Aucun utilisateur trouvé !</label></p>';
 	}
 	// On affiche le bilan des classes trouvées
 	if( ($action!='tableur_professeurs_directeurs') && ($action!='sconet_parents') )
@@ -804,11 +824,11 @@ if( $step==2 )
 		if($nombre)
 		{
 			$s = ($nombre>1) ? 's' : '' ;
-			echo'<div><label class="valide">'.$nombre.' classe'.$s.' trouvée'.$s.'.</label></div>';
+			echo'<p><label class="valide">'.$nombre.' classe'.$s.' trouvée'.$s.'.</label></p>';
 		}
 		else
 		{
-			echo'<div><label class="alerte">Aucune classe trouvée !</label></div>';
+			echo'<p><label class="alerte">Aucune classe trouvée !</label></p>';
 		}
 	}
 	// On affiche le bilan des groupes trouvés
@@ -818,11 +838,11 @@ if( $step==2 )
 		if($nombre)
 		{
 			$s = ($nombre>1) ? 's' : '' ;
-			echo'<div><label class="valide">'.$nombre.' groupe'.$s.' trouvé'.$s.'.</label></div>';
+			echo'<p><label class="valide">'.$nombre.' groupe'.$s.' trouvé'.$s.'.</label></p>';
 		}
 		else
 		{
-			echo'<div><label class="alerte">Aucun groupe trouvé !</label></div>';
+			echo'<p><label class="alerte">Aucun groupe trouvé !</label></p>';
 		}
 	}
 	// On affiche le bilan des parents trouvés
@@ -832,25 +852,25 @@ if( $step==2 )
 		if($nombre)
 		{
 			$s = ($nombre>1) ? 's' : '' ;
-			echo'<div><label class="valide">'.$nombre.' adresse'.$s.' trouvée'.$s.'.</label></div>';
+			echo'<p><label class="valide">'.$nombre.' adresse'.$s.' trouvée'.$s.'.</label></p>';
 		}
 		else
 		{
-			echo'<div><label class="alerte">Aucune adresse trouvée !</label></div>';
+			echo'<p><label class="alerte">Aucune adresse trouvée !</label></p>';
 		}
 		if($nb_lien_responsabilite)
 		{
 			$s = ($nb_lien_responsabilite>1) ? 's' : '' ;
-			echo'<div><label class="valide">'.$nb_lien_responsabilite.' lien'.$s.' de responsabilité'.$s.' trouvé'.$s.'.</label></div>';
+			echo'<p><label class="valide">'.$nb_lien_responsabilite.' lien'.$s.' de responsabilité'.$s.' trouvé'.$s.'.</label></p>';
 		}
 		else
 		{
-			echo'<div><label class="alerte">Aucun lien de responsabilité trouvé !</label></div>';
+			echo'<p><label class="alerte">Aucun lien de responsabilité trouvé !</label></p>';
 		}
 	}
 	// Fin de l'extraction
 	$step = ( ($action!='tableur_professeurs_directeurs') && ($action!='sconet_parents') ) ? '3' : '5' ;
-	echo'<p class="li"><a href="#" class="step'.$step.'1">Passer à l\'étape 3.</a><label id="ajax_msg">&nbsp;</label></p>';
+	echo'<p class="li"><a href="#step'.$step.'1" id="passer_etape_suivante">Passer à l\'étape 3.</a><label id="ajax_msg">&nbsp;</label></p>';
 	exit();
 }
 
@@ -860,21 +880,21 @@ if( $step==2 )
 
 if( $step==31 )
 {
-	// On récupère le fichier avec des infos sur les correspondances : $tab_traitement6['classes'] -> $tab_classe_ref_TO_id_base ; $tab_traitement6['groupes'] -> $tab_groupe_ref_TO_id_base ; $tab_traitement6['users'] -> $tab_i_fichier_TO_id_base
-	$fnom = $dossier_import.'import_'.$action.'_'.$_SESSION['BASE'].'_traitement6.txt';
+	// On récupère le fichier avec des infos sur les correspondances : $tab_liens_id_base['classes'] -> $tab_classe_ref_TO_id_base ; $tab_liens_id_base['groupes'] -> $tab_groupe_ref_TO_id_base ; $tab_liens_id_base['users'] -> $tab_i_fichier_TO_id_base
+	$fnom = $dossier_import.'import_'.$action.'_'.$_SESSION['BASE'].'_liens_id_base.txt';
 	if(!file_exists($fnom))
 	{
 		exit('Erreur : le fichier contenant les correspondances est introuvable !');
 	}
 	$contenu = file_get_contents($fnom);
-	$tab_traitement6 = @unserialize($contenu);
-	if($tab_traitement6===FALSE)
+	$tab_liens_id_base = @unserialize($contenu);
+	if($tab_liens_id_base===FALSE)
 	{
 		exit('Erreur : le fichier contenant les correspondances est syntaxiquement incorrect !');
 	}
-	$tab_classe_ref_TO_id_base = $tab_traitement6['classes'];
-	$tab_groupe_ref_TO_id_base = $tab_traitement6['groupes'];
-	$tab_i_fichier_TO_id_base  = $tab_traitement6['users'];
+	$tab_classe_ref_TO_id_base = $tab_liens_id_base['classes'];
+	$tab_groupe_ref_TO_id_base = $tab_liens_id_base['groupes'];
+	$tab_i_fichier_TO_id_base  = $tab_liens_id_base['users'];
 	// On récupère le fichier avec les classes : $tab_classes_fichier['ref'] : i -> ref ; $tab_classes_fichier['nom'] : i -> nom ; $tab_classes_fichier['niveau'] : i -> niveau
 	$fnom = $dossier_import.'import_'.$action.'_'.$_SESSION['BASE'].'_classes.txt';
 	if(!file_exists($fnom))
@@ -919,7 +939,7 @@ if( $step==31 )
 		{
 			if($action!='sconet_professeurs_directeurs')
 			{
-				$lignes_del .= '<tr><th>'.html($ref).'</th><td>Supprimer <input id="del_'.$id_base.'" name="del_'.$id_base.'" type="checkbox" value="1" checked /> '.html($tab_classes_base['nom'][$id_base]).'</td></tr>';
+				$lignes_del .= '<tr><th>'.html($ref).'</th><td>Supprimer <input id="del_'.$id_base.'" type="checkbox" checked /> '.html($tab_classes_base['nom'][$id_base]).'</td></tr>';
 			}
 			else
 			{
@@ -972,8 +992,8 @@ if( $step==31 )
 		}
 	}
 	// On enregistre (tableau mis à jour)
-	$tab_traitement6 = array('classes'=>$tab_classe_ref_TO_id_base,'groupes'=>$tab_groupe_ref_TO_id_base,'users'=>$tab_i_fichier_TO_id_base);
-	Ecrire_Fichier($dossier_import.'import_'.$action.'_'.$_SESSION['BASE'].'_traitement6.txt',serialize($tab_traitement6));
+	$tab_liens_id_base = array('classes'=>$tab_classe_ref_TO_id_base,'groupes'=>$tab_groupe_ref_TO_id_base,'users'=>$tab_i_fichier_TO_id_base);
+	Ecrire_Fichier($dossier_import.'import_'.$action.'_'.$_SESSION['BASE'].'_liens_id_base.txt',serialize($tab_liens_id_base));
 	// On affiche
 	echo'<p><label class="valide">Veuillez vérifier le résultat de l\'analyse des classes.</label></p>';
 	echo'<table>';
@@ -981,14 +1001,14 @@ if( $step==31 )
 	echo'  <tr><th colspan="2">Classes actuelles à conserver</th></tr>';
 	echo($lignes_ras) ? $lignes_ras : '<tr><td colspan="2">Aucune</td></tr>';
 	echo' </tbody><tbody>';
-	echo'  <tr><th colspan="2">Classes nouvelles à ajouter</th></tr>';
+	echo'  <tr><th colspan="2">Classes nouvelles à ajouter <input name="all_check" type="image" src="./_img/all_check.gif" title="Tout cocher." /> <input name="all_uncheck" type="image" src="./_img/all_uncheck.gif" title="Tout décocher." /></th></tr>';
 	echo($lignes_add) ? $lignes_add : '<tr><td colspan="2">Aucune</td></tr>';
 	echo' </tbody><tbody>';
-	echo'  <tr><th colspan="2">Classes anciennes à supprimer</th></tr>';
+	echo'  <tr><th colspan="2">Classes anciennes à supprimer <input name="all_check" type="image" src="./_img/all_check.gif" title="Tout cocher." /> <input name="all_uncheck" type="image" src="./_img/all_uncheck.gif" title="Tout décocher." /></th></tr>';
 	echo($lignes_del) ? $lignes_del : ( ($action!='sconet_professeurs_directeurs') ? '<tr><td colspan="2">Aucune</td></tr>' : '<tr><td colspan="2">Sans objet, les services n\'étant pas toujours présents.</td></tr>' );
 	echo' </tbody>';
 	echo'</table>';
-	echo'<p class="li"><a href="#" class="step32">Valider et afficher le bilan obtenu.</a><label id="ajax_msg">&nbsp;</label></p>';
+	echo'<p class="li"><a href="#step32" id="envoyer_infos_regroupements">Valider et afficher le bilan obtenu.</a><label id="ajax_msg">&nbsp;</label></p>';
 	exit();
 }
 
@@ -998,21 +1018,21 @@ if( $step==31 )
 
 if( $step==32 )
 {
-	// On récupère le fichier avec des infos sur les correspondances : $tab_traitement6['classes'] -> $tab_classe_ref_TO_id_base ; $tab_traitement6['groupes'] -> $tab_groupe_ref_TO_id_base ; $tab_traitement6['users'] -> $tab_i_fichier_TO_id_base
-	$fnom = $dossier_import.'import_'.$action.'_'.$_SESSION['BASE'].'_traitement6.txt';
+	// On récupère le fichier avec des infos sur les correspondances : $tab_liens_id_base['classes'] -> $tab_classe_ref_TO_id_base ; $tab_liens_id_base['groupes'] -> $tab_groupe_ref_TO_id_base ; $tab_liens_id_base['users'] -> $tab_i_fichier_TO_id_base
+	$fnom = $dossier_import.'import_'.$action.'_'.$_SESSION['BASE'].'_liens_id_base.txt';
 	if(!file_exists($fnom))
 	{
 		exit('Erreur : le fichier contenant les correspondances est introuvable !');
 	}
 	$contenu = file_get_contents($fnom);
-	$tab_traitement6 = @unserialize($contenu);
-	if($tab_traitement6===FALSE)
+	$tab_liens_id_base = @unserialize($contenu);
+	if($tab_liens_id_base===FALSE)
 	{
 		exit('Erreur : le fichier contenant les correspondances est syntaxiquement incorrect !');
 	}
-	$tab_classe_ref_TO_id_base = $tab_traitement6['classes'];
-	$tab_groupe_ref_TO_id_base = $tab_traitement6['groupes'];
-	$tab_i_fichier_TO_id_base  = $tab_traitement6['users'];
+	$tab_classe_ref_TO_id_base = $tab_liens_id_base['classes'];
+	$tab_groupe_ref_TO_id_base = $tab_liens_id_base['groupes'];
+	$tab_i_fichier_TO_id_base  = $tab_liens_id_base['users'];
 	// Récupérer les éléments postés
 	$tab_add = array();
 	$tab_del = array();
@@ -1067,8 +1087,8 @@ if( $step==32 )
 		}
 	}
 	// On enregistre (tableau mis à jour)
-	$tab_traitement6 = array('classes'=>$tab_classe_ref_TO_id_base,'groupes'=>$tab_groupe_ref_TO_id_base,'users'=>$tab_i_fichier_TO_id_base);
-	Ecrire_Fichier($dossier_import.'import_'.$action.'_'.$_SESSION['BASE'].'_traitement6.txt',serialize($tab_traitement6));
+	$tab_liens_id_base = array('classes'=>$tab_classe_ref_TO_id_base,'groupes'=>$tab_groupe_ref_TO_id_base,'users'=>$tab_i_fichier_TO_id_base);
+	Ecrire_Fichier($dossier_import.'import_'.$action.'_'.$_SESSION['BASE'].'_liens_id_base.txt',serialize($tab_liens_id_base));
 	// Afficher le bilan
 	$lignes = '';
 	$nb_fin = 0;
@@ -1093,7 +1113,7 @@ if( $step==32 )
 	echo' </tbody>';
 	echo'</table>';
 	$step = ( ($action=='sconet_eleves') || ($action=='sconet_professeurs_directeurs') ) ? '4' : '5' ;
-	echo'<p class="li"><a href="#" class="step'.$step.'1">Passer à l\'étape 4.</a><label id="ajax_msg">&nbsp;</label></p>';
+	echo'<p class="li"><a href="#step'.$step.'1" id="passer_etape_suivante">Passer à l\'étape 4.</a><label id="ajax_msg">&nbsp;</label></p>';
 	exit();
 }
 
@@ -1103,21 +1123,21 @@ if( $step==32 )
 
 if( $step==41 )
 {
-	// On récupère le fichier avec des infos sur les correspondances : $tab_traitement6['classes'] -> $tab_classe_ref_TO_id_base ; $tab_traitement6['groupes'] -> $tab_groupe_ref_TO_id_base ; $tab_traitement6['users'] -> $tab_i_fichier_TO_id_base
-	$fnom = $dossier_import.'import_'.$action.'_'.$_SESSION['BASE'].'_traitement6.txt';
+	// On récupère le fichier avec des infos sur les correspondances : $tab_liens_id_base['classes'] -> $tab_classe_ref_TO_id_base ; $tab_liens_id_base['groupes'] -> $tab_groupe_ref_TO_id_base ; $tab_liens_id_base['users'] -> $tab_i_fichier_TO_id_base
+	$fnom = $dossier_import.'import_'.$action.'_'.$_SESSION['BASE'].'_liens_id_base.txt';
 	if(!file_exists($fnom))
 	{
 		exit('Erreur : le fichier contenant les correspondances est introuvable !');
 	}
 	$contenu = file_get_contents($fnom);
-	$tab_traitement6 = @unserialize($contenu);
-	if($tab_traitement6===FALSE)
+	$tab_liens_id_base = @unserialize($contenu);
+	if($tab_liens_id_base===FALSE)
 	{
 		exit('Erreur : le fichier contenant les correspondances est syntaxiquement incorrect !');
 	}
-	$tab_classe_ref_TO_id_base = $tab_traitement6['classes'];
-	$tab_groupe_ref_TO_id_base = $tab_traitement6['groupes'];
-	$tab_i_fichier_TO_id_base  = $tab_traitement6['users'];
+	$tab_classe_ref_TO_id_base = $tab_liens_id_base['classes'];
+	$tab_groupe_ref_TO_id_base = $tab_liens_id_base['groupes'];
+	$tab_i_fichier_TO_id_base  = $tab_liens_id_base['users'];
 	// On récupère le fichier avec les groupes : $tab_groupes_fichier['ref'] : i -> ref ; $tab_groupes_fichier['nom'] : i -> nom ; $tab_groupes_fichier['niveau'] : i -> niveau
 	$fnom = $dossier_import.'import_'.$action.'_'.$_SESSION['BASE'].'_groupes.txt';
 	if(!file_exists($fnom))
@@ -1162,7 +1182,7 @@ if( $step==41 )
 		{
 			if($action!='sconet_professeurs_directeurs')
 			{
-				$lignes_del .= '<tr><th>'.html($ref).'</th><td>Supprimer <input id="del_'.$id_base.'" name="del_'.$id_base.'" type="checkbox" value="1" checked /> '.html($tab_groupes_base['nom'][$id_base]).'</td></tr>';
+				$lignes_del .= '<tr><th>'.html($ref).'</th><td>Supprimer <input id="del_'.$id_base.'" type="checkbox" checked /> '.html($tab_groupes_base['nom'][$id_base]).'</td></tr>';
 			}
 			else
 			{
@@ -1211,8 +1231,8 @@ if( $step==41 )
 		}
 	}
 	// On enregistre (tableau mis à jour)
-	$tab_traitement6 = array('classes'=>$tab_classe_ref_TO_id_base,'groupes'=>$tab_groupe_ref_TO_id_base,'users'=>$tab_i_fichier_TO_id_base);
-	Ecrire_Fichier($dossier_import.'import_'.$action.'_'.$_SESSION['BASE'].'_traitement6.txt',serialize($tab_traitement6));
+	$tab_liens_id_base = array('classes'=>$tab_classe_ref_TO_id_base,'groupes'=>$tab_groupe_ref_TO_id_base,'users'=>$tab_i_fichier_TO_id_base);
+	Ecrire_Fichier($dossier_import.'import_'.$action.'_'.$_SESSION['BASE'].'_liens_id_base.txt',serialize($tab_liens_id_base));
 	// On affiche
 	echo'<p><label class="valide">Veuillez vérifier le résultat de l\'analyse des groupes.</label></p>';
 	echo'<table>';
@@ -1220,14 +1240,14 @@ if( $step==41 )
 	echo'  <tr><th colspan="2">Groupes actuels à conserver</th></tr>';
 	echo($lignes_ras) ? $lignes_ras : '<tr><td colspan="2">Aucun</td></tr>';
 	echo' </tbody><tbody>';
-	echo'  <tr><th colspan="2">Groupes nouveaux à ajouter</th></tr>';
+	echo'  <tr><th colspan="2">Groupes nouveaux à ajouter <input name="all_check" type="image" src="./_img/all_check.gif" title="Tout cocher." /> <input name="all_uncheck" type="image" src="./_img/all_uncheck.gif" title="Tout décocher." /></th></tr>';
 	echo($lignes_add) ? $lignes_add : '<tr><td colspan="2">Aucun</td></tr>';
 	echo' </tbody><tbody>';
-	echo'  <tr><th colspan="2">Groupes anciens à supprimer</th></tr>';
+	echo'  <tr><th colspan="2">Groupes anciens à supprimer <input name="all_check" type="image" src="./_img/all_check.gif" title="Tout cocher." /> <input name="all_uncheck" type="image" src="./_img/all_uncheck.gif" title="Tout décocher." /></th></tr>';
 	echo($lignes_del) ? $lignes_del : ( ($action!='sconet_professeurs_directeurs') ? '<tr><td colspan="2">Aucun</td></tr>' : '<tr><td colspan="2">Sans objet, les services n\'étant pas toujours présents.</td></tr>' );
 	echo' </tbody>';
 	echo'</table>';
-	echo'<p class="li"><a href="#" class="step42">Valider et afficher le bilan obtenu.</a><label id="ajax_msg">&nbsp;</label></p>';
+	echo'<p class="li"><a href="#step42" id="envoyer_infos_regroupements">Valider et afficher le bilan obtenu.</a><label id="ajax_msg">&nbsp;</label></p>';
 	exit();
 }
 
@@ -1237,21 +1257,21 @@ if( $step==41 )
 
 if( $step==42 )
 {
-	// On récupère le fichier avec des infos sur les correspondances : $tab_traitement6['classes'] -> $tab_classe_ref_TO_id_base ; $tab_traitement6['groupes'] -> $tab_groupe_ref_TO_id_base ; $tab_traitement6['users'] -> $tab_i_fichier_TO_id_base
-	$fnom = $dossier_import.'import_'.$action.'_'.$_SESSION['BASE'].'_traitement6.txt';
+	// On récupère le fichier avec des infos sur les correspondances : $tab_liens_id_base['classes'] -> $tab_classe_ref_TO_id_base ; $tab_liens_id_base['groupes'] -> $tab_groupe_ref_TO_id_base ; $tab_liens_id_base['users'] -> $tab_i_fichier_TO_id_base
+	$fnom = $dossier_import.'import_'.$action.'_'.$_SESSION['BASE'].'_liens_id_base.txt';
 	if(!file_exists($fnom))
 	{
 		exit('Erreur : le fichier contenant les correspondances est introuvable !');
 	}
 	$contenu = file_get_contents($fnom);
-	$tab_traitement6 = @unserialize($contenu);
-	if($tab_traitement6===FALSE)
+	$tab_liens_id_base = @unserialize($contenu);
+	if($tab_liens_id_base===FALSE)
 	{
 		exit('Erreur : le fichier contenant les correspondances est syntaxiquement incorrect !');
 	}
-	$tab_classe_ref_TO_id_base = $tab_traitement6['classes'];
-	$tab_groupe_ref_TO_id_base = $tab_traitement6['groupes'];
-	$tab_i_fichier_TO_id_base  = $tab_traitement6['users'];
+	$tab_classe_ref_TO_id_base = $tab_liens_id_base['classes'];
+	$tab_groupe_ref_TO_id_base = $tab_liens_id_base['groupes'];
+	$tab_i_fichier_TO_id_base  = $tab_liens_id_base['users'];
 	// Récupérer les éléments postés
 	$tab_add = array();
 	$tab_del = array();
@@ -1306,8 +1326,8 @@ if( $step==42 )
 		}
 	}
 	// On enregistre (tableau mis à jour)
-	$tab_traitement6 = array('classes'=>$tab_classe_ref_TO_id_base,'groupes'=>$tab_groupe_ref_TO_id_base,'users'=>$tab_i_fichier_TO_id_base);
-	Ecrire_Fichier($dossier_import.'import_'.$action.'_'.$_SESSION['BASE'].'_traitement6.txt',serialize($tab_traitement6));
+	$tab_liens_id_base = array('classes'=>$tab_classe_ref_TO_id_base,'groupes'=>$tab_groupe_ref_TO_id_base,'users'=>$tab_i_fichier_TO_id_base);
+	Ecrire_Fichier($dossier_import.'import_'.$action.'_'.$_SESSION['BASE'].'_liens_id_base.txt',serialize($tab_liens_id_base));
 	// Afficher le bilan
 	$lignes = '';
 	$nb_fin = 0;
@@ -1331,7 +1351,7 @@ if( $step==42 )
 	echo   $lignes;
 	echo' </tbody>';
 	echo'</table>';
-	echo'<p class="li"><a href="#" class="step51">Passer à l\'étape 5.</a><label id="ajax_msg">&nbsp;</label></p>';
+	echo'<p class="li"><a href="#step51" id="passer_etape_suivante">Passer à l\'étape 5.</a><label id="ajax_msg">&nbsp;</label></p>';
 	exit();
 }
 
@@ -1343,21 +1363,21 @@ if( $step==51 )
 {
 	$is_profil_eleve  = (mb_strpos($action,'eleves'))  ? true : false ;
 	$is_profil_parent = (mb_strpos($action,'parents')) ? true : false ;
-	// On récupère le fichier avec des infos sur les correspondances : $tab_traitement6['classes'] -> $tab_classe_ref_TO_id_base ; $tab_traitement6['groupes'] -> $tab_groupe_ref_TO_id_base ; $tab_traitement6['users'] -> $tab_i_fichier_TO_id_base
-	$fnom = $dossier_import.'import_'.$action.'_'.$_SESSION['BASE'].'_traitement6.txt';
+	// On récupère le fichier avec des infos sur les correspondances : $tab_liens_id_base['classes'] -> $tab_classe_ref_TO_id_base ; $tab_liens_id_base['groupes'] -> $tab_groupe_ref_TO_id_base ; $tab_liens_id_base['users'] -> $tab_i_fichier_TO_id_base
+	$fnom = $dossier_import.'import_'.$action.'_'.$_SESSION['BASE'].'_liens_id_base.txt';
 	if(!file_exists($fnom))
 	{
 		exit('Erreur : le fichier contenant les correspondances est introuvable !');
 	}
 	$contenu = file_get_contents($fnom);
-	$tab_traitement6 = @unserialize($contenu);
-	if($tab_traitement6===FALSE)
+	$tab_liens_id_base = @unserialize($contenu);
+	if($tab_liens_id_base===FALSE)
 	{
 		exit('Erreur : le fichier contenant les correspondances est syntaxiquement incorrect !');
 	}
-	$tab_classe_ref_TO_id_base = $tab_traitement6['classes'];
-	$tab_groupe_ref_TO_id_base = $tab_traitement6['groupes'];
-	$tab_i_fichier_TO_id_base  = $tab_traitement6['users'];
+	$tab_classe_ref_TO_id_base = $tab_liens_id_base['classes'];
+	$tab_groupe_ref_TO_id_base = $tab_liens_id_base['groupes'];
+	$tab_i_fichier_TO_id_base  = $tab_liens_id_base['users'];
 	// On récupère le fichier avec les utilisateurs : $tab_users_fichier['champ'] : i -> valeur, avec comme champs : sconet_id / sconet_num / reference / profil / nom / prenom / classe / groupes / matieres / adresse / enfant
 	$fnom = $dossier_import.'import_'.$action.'_'.$_SESSION['BASE'].'_users.txt';
 	if(!file_exists($fnom))
@@ -1458,7 +1478,7 @@ if( $step==51 )
 		elseif( (!$id_base) && ( (!$is_profil_eleve) || ($tab_users_fichier['classe'][$i_fichier]) ) )
 		{
 			$indication = ($is_profil_eleve) ? $tab_users_fichier['classe'][$i_fichier] : $tab_users_fichier['profil'][$i_fichier] ;
-			$lignes_ajouter .= '<tr><th>Ajouter <input id="add_'.$i_fichier.'" name="add_'.$i_fichier.'" type="checkbox" value="1" checked /></th><td>'.html($tab_users_fichier['sconet_id'][$i_fichier].' / '.$tab_users_fichier['sconet_num'][$i_fichier].' / '.$tab_users_fichier['reference'][$i_fichier].' || '.$tab_users_fichier['nom'][$i_fichier].' '.$tab_users_fichier['prenom'][$i_fichier].' ('.$indication.')').'</td></tr>';
+			$lignes_ajouter .= '<tr><th>Ajouter <input id="add_'.$i_fichier.'" type="checkbox" checked /></th><td>'.html($tab_users_fichier['sconet_id'][$i_fichier].' / '.$tab_users_fichier['sconet_num'][$i_fichier].' / '.$tab_users_fichier['reference'][$i_fichier].' || '.$tab_users_fichier['nom'][$i_fichier].' '.$tab_users_fichier['prenom'][$i_fichier].' ('.$indication.')').'</td></tr>';
 			$id_classe = ($is_profil_eleve) ? $tab_classe_ref[$tab_users_fichier['classe'][$i_fichier]] : 0 ;
 			$tab_users_ajout[$i_fichier] = array( 'sconet_id'=>$tab_users_fichier['sconet_id'][$i_fichier] , 'sconet_num'=>$tab_users_fichier['sconet_num'][$i_fichier] , 'reference'=>$tab_users_fichier['reference'][$i_fichier] , 'nom'=>$tab_users_fichier['nom'][$i_fichier] , 'prenom'=>$tab_users_fichier['prenom'][$i_fichier] , 'profil'=>$tab_users_fichier['profil'][$i_fichier] , 'classe'=>$id_classe );
 		}
@@ -1466,7 +1486,7 @@ if( $step==51 )
 		elseif( ($is_profil_eleve) && (!$tab_users_fichier['classe'][$i_fichier]) && ($tab_users_base['statut'][$id_base]) )
 		{
 			$indication = ($is_profil_eleve) ? $tab_users_base['classe'][$id_base] : $tab_users_base['profil'][$id_base] ;
-			$lignes_retirer .= '<tr><th>Retirer <input id="del_'.$id_base.'" name="del_'.$id_base.'" type="checkbox" value="1" checked /></th><td>'.html($tab_users_fichier['sconet_id'][$i_fichier].' / '.$tab_users_fichier['sconet_num'][$i_fichier].' / '.$tab_users_base['reference'][$id_base].' || '.$tab_users_base['nom'][$id_base].' '.$tab_users_base['prenom'][$id_base].' ('.$indication.')').' || <b>Statut : actif => inactif</b></td></tr>';
+			$lignes_retirer .= '<tr><th>Retirer <input id="del_'.$id_base.'" type="checkbox" checked /></th><td>'.html($tab_users_fichier['sconet_id'][$i_fichier].' / '.$tab_users_fichier['sconet_num'][$i_fichier].' / '.$tab_users_base['reference'][$id_base].' || '.$tab_users_base['nom'][$id_base].' '.$tab_users_base['prenom'][$id_base].' ('.$indication.')').' || <b>Statut : actif => inactif</b></td></tr>';
 		}
 		// Cas [4] : présent dans le fichier, présent dans la base, pas de classe dans le fichier (élèves uniquements), statut inactif dans la base : contenu inchangé (probablement des anciens élèves déjà écartés)
 		elseif( ($is_profil_eleve) && (!$tab_users_fichier['classe'][$i_fichier]) && (!$tab_users_base['statut'][$id_base]) )
@@ -1507,7 +1527,7 @@ if( $step==51 )
 			// Cas [5] : présent dans le fichier, présent dans la base, classe indiquée dans le fichier si élève, statut inactif dans la base et/ou différence constatée : contenu à modifier (user revenant ou mise à jour)
 			if($nb_modif)
 			{
-				$lignes_modifier .= '<tr><th>Modifier <input id="mod_'.$id_base.'" name="mod_'.$id_base.'" type="checkbox" value="1" checked /></th><td>'.mb_substr($td_modif,4).'</td></tr>';
+				$lignes_modifier .= '<tr><th>Modifier <input id="mod_'.$id_base.'" type="checkbox" checked /></th><td>'.mb_substr($td_modif,4).'</td></tr>';
 			}
 			// Cas [6] : présent dans le fichier, présent dans la base, classe indiquée dans le fichier si élève, statut actif dans la base et aucune différence constatée : contenu à conserver (contenu identique)
 			else
@@ -1534,7 +1554,7 @@ if( $step==51 )
 			if($tab_users_base['statut'][$id_base])
 			{
 				$indication = ($is_profil_eleve) ? $tab_users_base['classe'][$id_base] : $tab_users_base['profil'][$id_base] ;
-				$lignes_retirer .= '<tr><th>Retirer <input id="del_'.$id_base.'" name="del_'.$id_base.'" type="checkbox" value="1" checked /></th><td>'.html($tab_users_base['sconet_id'][$id_base].' / '.$tab_users_base['sconet_num'][$id_base].' / '.$tab_users_base['reference'][$id_base].' || '.$tab_users_base['nom'][$id_base].' '.$tab_users_base['prenom'][$id_base].' ('.$indication.')').' || <b>Statut : actif => inactif</b></td></tr>';
+				$lignes_retirer .= '<tr><th>Retirer <input id="del_'.$id_base.'" type="checkbox" checked /></th><td>'.html($tab_users_base['sconet_id'][$id_base].' / '.$tab_users_base['sconet_num'][$id_base].' / '.$tab_users_base['reference'][$id_base].' || '.$tab_users_base['nom'][$id_base].' '.$tab_users_base['prenom'][$id_base].' ('.$indication.')').' || <b>Statut : actif => inactif</b></td></tr>';
 			}
 			// Cas [8] : absent dans le fichier, présent dans la base, statut inactif : contenu inchangé (contenu restant inactif)
 			else
@@ -1546,28 +1566,28 @@ if( $step==51 )
 		}
 	}
 	// On enregistre
-	$tab_traitement5 = array('modif'=>$tab_users_modif,'ajout'=>$tab_users_ajout);
-	Ecrire_Fichier($dossier_import.'import_'.$action.'_'.$_SESSION['BASE'].'_traitement5.txt',serialize($tab_traitement5));
+	$tab_memo_analyse = array('modif'=>$tab_users_modif,'ajout'=>$tab_users_ajout);
+	Ecrire_Fichier($dossier_import.'import_'.$action.'_'.$_SESSION['BASE'].'_memo_analyse.txt',serialize($tab_memo_analyse));
 	// On enregistre (tableau mis à jour)
-	$tab_traitement6 = array('classes'=>$tab_classe_ref_TO_id_base,'groupes'=>$tab_groupe_ref_TO_id_base,'users'=>$tab_i_fichier_TO_id_base);
-	Ecrire_Fichier($dossier_import.'import_'.$action.'_'.$_SESSION['BASE'].'_traitement6.txt',serialize($tab_traitement6));
+	$tab_liens_id_base = array('classes'=>$tab_classe_ref_TO_id_base,'groupes'=>$tab_groupe_ref_TO_id_base,'users'=>$tab_i_fichier_TO_id_base);
+	Ecrire_Fichier($dossier_import.'import_'.$action.'_'.$_SESSION['BASE'].'_liens_id_base.txt',serialize($tab_liens_id_base));
 	// On affiche
 	echo'<p><label class="valide">Veuillez vérifier le résultat de l\'analyse des utilisateurs.</label></p>';
 	echo'<table>';
 	// Cas [2]
 	echo		'<tbody>';
-	echo			'<tr><th colspan="2">Utilisateurs à ajouter (absents de la base, nouveaux dans le fichier).</th></tr>';
+	echo			'<tr><th colspan="2">Utilisateurs à ajouter (absents de la base, nouveaux dans le fichier). <input name="all_check" type="image" src="./_img/all_check.gif" title="Tout cocher." /> <input name="all_uncheck" type="image" src="./_img/all_uncheck.gif" title="Tout décocher." /></th></tr>';
 	echo($lignes_ajouter) ? $lignes_ajouter : '<tr><td colspan="2">Aucun</td></tr>';
 	echo		'</tbody>';
 	// Cas [3] et [7]
-	$texte = ($is_profil_eleve) ? ' ou sans classe affectée' : '' ;
+	$texte = ($is_profil_eleve) ? ' ou sans classe affectée' : ( ($is_profil_parent) ? ' ou sans enfant au compte actif' : '' ) ;
 	echo		'<tbody>';
-	echo			'<tr><th colspan="2">Utilisateurs à retirer (absents du fichier'.$texte.').</th></tr>';
+	echo			'<tr><th colspan="2">Utilisateurs à retirer (absents du fichier'.$texte.') <input name="all_check" type="image" src="./_img/all_check.gif" title="Tout cocher." /> <input name="all_uncheck" type="image" src="./_img/all_uncheck.gif" title="Tout décocher." /></th></tr>';
 	echo($lignes_retirer) ? $lignes_retirer : '<tr><td colspan="2">Aucun</td></tr>';
 	echo		'</tbody>';
 	// Cas [5]
 	echo		'<tbody>';
-	echo			'<tr><th colspan="2">Utilisateurs à modifier (ou à réintégrer)</th></tr>';
+	echo			'<tr><th colspan="2">Utilisateurs à modifier (ou à réintégrer) <input name="all_check" type="image" src="./_img/all_check.gif" title="Tout cocher." /> <input name="all_uncheck" type="image" src="./_img/all_uncheck.gif" title="Tout décocher." /></th></tr>';
 	echo($lignes_modifier) ? $lignes_modifier : '<tr><td colspan="2">Aucun</td></tr>';
 	echo		'</tbody>';
 	// Cas [6]
@@ -1589,7 +1609,7 @@ if( $step==51 )
 		echo		'</tbody>';
 	}
 	echo'</table>';
-	echo'<p class="li"><a href="#" class="step52">Valider et afficher le bilan obtenu.</a><label id="ajax_msg">&nbsp;</label></p>';
+	echo'<p class="li"><a href="#step52" id="envoyer_infos_utilisateurs">Valider et afficher le bilan obtenu.</a><label id="ajax_msg">&nbsp;</label></p>';
 	exit();
 }
 
@@ -1601,50 +1621,51 @@ if( $step==52 )
 {
 	$is_profil_eleve  = (mb_strpos($action,'eleves'))  ? true : false ;
 	$is_profil_parent = (mb_strpos($action,'parents')) ? true : false ;
-	// On récupère le fichier avec des infos sur les correspondances : $tab_traitement6['classes'] -> $tab_classe_ref_TO_id_base ; $tab_traitement6['groupes'] -> $tab_groupe_ref_TO_id_base ; $tab_traitement6['users'] -> $tab_i_fichier_TO_id_base
-	$fnom = $dossier_import.'import_'.$action.'_'.$_SESSION['BASE'].'_traitement6.txt';
+	// On récupère le fichier avec des infos sur les correspondances : $tab_liens_id_base['classes'] -> $tab_classe_ref_TO_id_base ; $tab_liens_id_base['groupes'] -> $tab_groupe_ref_TO_id_base ; $tab_liens_id_base['users'] -> $tab_i_fichier_TO_id_base
+	$fnom = $dossier_import.'import_'.$action.'_'.$_SESSION['BASE'].'_liens_id_base.txt';
 	if(!file_exists($fnom))
 	{
 		exit('Erreur : le fichier contenant les correspondances est introuvable !');
 	}
 	$contenu = file_get_contents($fnom);
-	$tab_traitement6 = @unserialize($contenu);
-	if($tab_traitement6===FALSE)
+	$tab_liens_id_base = @unserialize($contenu);
+	if($tab_liens_id_base===FALSE)
 	{
 		exit('Erreur : le fichier contenant les correspondances est syntaxiquement incorrect !');
 	}
-	$tab_classe_ref_TO_id_base = $tab_traitement6['classes'];
-	$tab_groupe_ref_TO_id_base = $tab_traitement6['groupes'];
-	$tab_i_fichier_TO_id_base  = $tab_traitement6['users'];
-	// On récupère le fichier avec des infos sur les utilisateurs : $tab_traitement5['modif'] : id -> array ; $tab_traitement5['ajout'] : i -> array
-	$fnom = $dossier_import.'import_'.$action.'_'.$_SESSION['BASE'].'_traitement5.txt';
+	$tab_classe_ref_TO_id_base = $tab_liens_id_base['classes'];
+	$tab_groupe_ref_TO_id_base = $tab_liens_id_base['groupes'];
+	$tab_i_fichier_TO_id_base  = $tab_liens_id_base['users'];
+	// On récupère le fichier avec des infos sur les utilisateurs : $tab_memo_analyse['modif'] : id -> array ; $tab_memo_analyse['ajout'] : i -> array
+	$fnom = $dossier_import.'import_'.$action.'_'.$_SESSION['BASE'].'_memo_analyse.txt';
 	if(!file_exists($fnom))
 	{
 		exit('Erreur : le fichier contenant les données à traiter est introuvable !');
 	}
 	$contenu = file_get_contents($fnom);
-	$tab_traitement5 = @unserialize($contenu);
-	if($tab_traitement5===FALSE)
+	$tab_memo_analyse = @unserialize($contenu);
+	if($tab_memo_analyse===FALSE)
 	{
 		exit('Erreur : le fichier contenant les données à traiter est syntaxiquement incorrect !');
 	}
 	// Récupérer les éléments postés
+	$tab_check = (isset($_POST['f_check'])) ? explode(',',$_POST['f_check']) : array() ;
 	$tab_mod = array();	// id à modifier
 	$tab_add = array();	// i à ajouter
 	$tab_del = array();	// id à supprimer
-	foreach($_POST as $key => $val)
+	foreach($tab_check as $check_infos)
 	{
-		if(substr($key,0,4)=='mod_')
+		if(substr($check_infos,0,4)=='mod_')
 		{
-			$tab_mod[] = clean_entier( substr($key,4) );
+			$tab_mod[] = clean_entier( substr($check_infos,4) );
 		}
-		elseif(substr($key,0,4)=='add_')
+		elseif(substr($check_infos,0,4)=='add_')
 		{
-			$tab_add[] = clean_entier( substr($key,4) );
+			$tab_add[] = clean_entier( substr($check_infos,4) );
 		}
-		elseif(substr($key,0,4)=='del_')
+		elseif(substr($check_infos,0,4)=='del_')
 		{
-			$tab_del[] = clean_entier( substr($key,4) );
+			$tab_del[] = clean_entier( substr($check_infos,4) );
 		}
 	}
 	// Dénombrer combien d'actifs et d'inactifs au départ
@@ -1685,11 +1706,11 @@ if( $step==52 )
 		}
 		foreach($tab_add as $i_fichier)
 		{
-			if( isset($tab_traitement5['ajout'][$i_fichier]) )
+			if( isset($tab_memo_analyse['ajout'][$i_fichier]) )
 			{
 				// Il peut théoriquement subsister un conflit de sconet_id pour des users ayant même reference, et réciproquement...
 				// Construire le login
-				$login = fabriquer_login($tab_traitement5['ajout'][$i_fichier]['prenom'] , $tab_traitement5['ajout'][$i_fichier]['nom'] , $tab_traitement5['ajout'][$i_fichier]['profil']);
+				$login = fabriquer_login($tab_memo_analyse['ajout'][$i_fichier]['prenom'] , $tab_memo_analyse['ajout'][$i_fichier]['nom'] , $tab_memo_analyse['ajout'][$i_fichier]['profil']);
 				// Puis tester le login (parmi tout le personnel de l'établissement)
 				if( DB_STRUCTURE_tester_login($login) )
 				{
@@ -1699,14 +1720,14 @@ if( $step==52 )
 				// Construire le password
 				$password = fabriquer_mdp();
 				// Ajouter l'utilisateur
-				$user_id = DB_STRUCTURE_ajouter_utilisateur($tab_traitement5['ajout'][$i_fichier]['sconet_id'],$tab_traitement5['ajout'][$i_fichier]['sconet_num'],$tab_traitement5['ajout'][$i_fichier]['reference'],$tab_traitement5['ajout'][$i_fichier]['profil'],$tab_traitement5['ajout'][$i_fichier]['nom'],$tab_traitement5['ajout'][$i_fichier]['prenom'],$login,$password,$tab_traitement5['ajout'][$i_fichier]['classe']);
+				$user_id = DB_STRUCTURE_ajouter_utilisateur($tab_memo_analyse['ajout'][$i_fichier]['sconet_id'],$tab_memo_analyse['ajout'][$i_fichier]['sconet_num'],$tab_memo_analyse['ajout'][$i_fichier]['reference'],$tab_memo_analyse['ajout'][$i_fichier]['profil'],$tab_memo_analyse['ajout'][$i_fichier]['nom'],$tab_memo_analyse['ajout'][$i_fichier]['prenom'],$login,$password,$tab_memo_analyse['ajout'][$i_fichier]['classe']);
 				$tab_i_fichier_TO_id_base[$i_fichier] = (int) $user_id;
 				$nb_add++;
 				$tab_password[$user_id] = $password;
-				$classe_ou_profil = ($is_profil_eleve) ? $tab_nom_classe[$tab_traitement5['ajout'][$i_fichier]['classe']] : mb_strtoupper($tab_traitement5['ajout'][$i_fichier]['profil']) ;
-				$fcontenu_csv .= $tab_traitement5['ajout'][$i_fichier]['sconet_id'].$tab_traitement5['ajout'][$i_fichier]['sconet_num'].$separateur.$tab_traitement5['ajout'][$i_fichier]['reference'].$separateur.$classe_ou_profil.$separateur.$tab_traitement5['ajout'][$i_fichier]['nom'].$separateur.$tab_traitement5['ajout'][$i_fichier]['prenom'].$separateur.$login.$separateur.$password."\r\n";
+				$classe_ou_profil = ($is_profil_eleve) ? $tab_nom_classe[$tab_memo_analyse['ajout'][$i_fichier]['classe']] : mb_strtoupper($tab_memo_analyse['ajout'][$i_fichier]['profil']) ;
+				$fcontenu_csv .= $tab_memo_analyse['ajout'][$i_fichier]['sconet_id'].$tab_memo_analyse['ajout'][$i_fichier]['sconet_num'].$separateur.$tab_memo_analyse['ajout'][$i_fichier]['reference'].$separateur.$classe_ou_profil.$separateur.$tab_memo_analyse['ajout'][$i_fichier]['nom'].$separateur.$tab_memo_analyse['ajout'][$i_fichier]['prenom'].$separateur.$login.$separateur.$password."\r\n";
 				$ligne1 = $classe_ou_profil;
-				$ligne2 = $tab_traitement5['ajout'][$i_fichier]['nom'].' '.$tab_traitement5['ajout'][$i_fichier]['prenom'];
+				$ligne2 = $tab_memo_analyse['ajout'][$i_fichier]['nom'].' '.$tab_memo_analyse['ajout'][$i_fichier]['prenom'];
 				$ligne3 = 'Utilisateur : '.$login;
 				$ligne4 = 'Mot de passe : '.$password;
 				$fcontenu_pdf_tab[] = $ligne1."\r\n".$ligne2."\r\n".$ligne3."\r\n".$ligne4;
@@ -1724,9 +1745,9 @@ if( $step==52 )
 			$DB_VAR  = array();
 			foreach($tab_champs as $champ_ref)
 			{
-				if($tab_traitement5['modif'][$id_base][$champ_ref] !== false)
+				if($tab_memo_analyse['modif'][$id_base][$champ_ref] !== false)
 				{
-					$DB_VAR[':'.$champ_ref] = $tab_traitement5['modif'][$id_base][$champ_ref];
+					$DB_VAR[':'.$champ_ref] = $tab_memo_analyse['modif'][$id_base][$champ_ref];
 				}
 			}
 			// bilan
@@ -1738,8 +1759,8 @@ if( $step==52 )
 		}
 	}
 	// On enregistre (tableau mis à jour)
-	$tab_traitement6 = array('classes'=>$tab_classe_ref_TO_id_base,'groupes'=>$tab_groupe_ref_TO_id_base,'users'=>$tab_i_fichier_TO_id_base);
-	Ecrire_Fichier($dossier_import.'import_'.$action.'_'.$_SESSION['BASE'].'_traitement6.txt',serialize($tab_traitement6));
+	$tab_liens_id_base = array('classes'=>$tab_classe_ref_TO_id_base,'groupes'=>$tab_groupe_ref_TO_id_base,'users'=>$tab_i_fichier_TO_id_base);
+	Ecrire_Fichier($dossier_import.'import_'.$action.'_'.$_SESSION['BASE'].'_liens_id_base.txt',serialize($tab_liens_id_base));
 	// Afficher le bilan
 	$tab_statut = array(0=>'inactif',1=>'actif');
 	$lignes         = '';
@@ -1810,11 +1831,11 @@ if( $step==52 )
 			case 'sconet_eleves' :                  $etape = 6; $step = 61; break;
 			case 'sconet_parents' :                 $etape = 4; $step = 71; break;
 			case 'sconet_professeurs_directeurs' :  $etape = 6; $step = 61; break;
-			case 'tableur_eleves' :                 $etape = 5; $step = 9;  break;
-			case 'tableur_professeurs_directeurs' : $etape = 4; $step = 9;  break;
-			case 'base-eleves_eleves' :             $etape = 5; $step = 9;  break;
+			case 'tableur_eleves' :                 $etape = 5; $step = 90; break;
+			case 'tableur_professeurs_directeurs' : $etape = 4; $step = 90; break;
+			case 'base-eleves_eleves' :             $etape = 5; $step = 90; break;
 		}
-		echo'<p class="li"><a href="#" class="step'.$step.'">Passer à l\'étape '.$etape.'.</a><label id="ajax_msg">&nbsp;</label></p>';
+		echo'<p class="li"><a href="#step'.$step.'" id="passer_etape_suivante">Passer à l\'étape '.$etape.'.</a><label id="ajax_msg">&nbsp;</label></p>';
 	}
 	exit();
 }
@@ -1839,12 +1860,13 @@ if( $step==53 )
 	switch($action)
 	{
 		case 'sconet_eleves' :                  $etape = 6; $step = 61; break;
+		case 'sconet_parents' :                 $etape = 4; $step = 71; break;
 		case 'sconet_professeurs_directeurs' :  $etape = 6; $step = 61; break;
-		case 'tableur_eleves' :                 $etape = 5; $step = 9;  break;
-		case 'tableur_professeurs_directeurs' : $etape = 4; $step = 9;  break;
-		case 'base-eleves_eleves' :             $etape = 5; $step = 9;  break;
+		case 'tableur_eleves' :                 $etape = 5; $step = 90; break;
+		case 'tableur_professeurs_directeurs' : $etape = 4; $step = 90; break;
+		case 'base-eleves_eleves' :             $etape = 5; $step = 90; break;
 	}
-	echo'<p class="li"><a href="#" class="step'.$step.'">Passer à l\'étape '.$etape.'.</a><label id="ajax_msg">&nbsp;</label></p>';
+	echo'<p class="li"><a href="#step'.$step.'" id="passer_etape_suivante">Passer à l\'étape '.$etape.'.</a><label id="ajax_msg">&nbsp;</label></p>';
 	exit();
 }
 
@@ -1858,22 +1880,22 @@ if( $step==61 )
 	$lignes_principal = '';
 	$lignes_matieres  = '';
 	$lignes_groupes   = '';
-	// On récupère le fichier avec des infos sur les correspondances : $tab_traitement6['classes'] -> $tab_classe_ref_TO_id_base ; $tab_traitement6['groupes'] -> $tab_groupe_ref_TO_id_base ; $tab_traitement6['users'] -> $tab_i_fichier_TO_id_base
-	$fnom = $dossier_import.'import_'.$action.'_'.$_SESSION['BASE'].'_traitement6.txt';
+	// On récupère le fichier avec des infos sur les correspondances : $tab_liens_id_base['classes'] -> $tab_classe_ref_TO_id_base ; $tab_liens_id_base['groupes'] -> $tab_groupe_ref_TO_id_base ; $tab_liens_id_base['users'] -> $tab_i_fichier_TO_id_base
+	$fnom = $dossier_import.'import_'.$action.'_'.$_SESSION['BASE'].'_liens_id_base.txt';
 	if(!file_exists($fnom))
 	{
 		exit('Erreur : le fichier contenant les correspondances est introuvable !');
 	}
 	$contenu = file_get_contents($fnom);
-	$tab_traitement6 = @unserialize($contenu);
-	if($tab_traitement6===FALSE)
+	$tab_liens_id_base = @unserialize($contenu);
+	if($tab_liens_id_base===FALSE)
 	{
 		exit('Erreur : le fichier contenant les correspondances est syntaxiquement incorrect !');
 	}
-	$tab_classe_ref_TO_id_base = $tab_traitement6['classes'];
-	$tab_groupe_ref_TO_id_base = $tab_traitement6['groupes'];
-	$tab_i_fichier_TO_id_base  = $tab_traitement6['users'];
-	// On récupère le fichier avec les utilisateurs : $tab_users_fichier['champ'] : i -> valeur, avec comme champs : sconet_id / sconet_num / reference / profil / nom / prenom / classe / groupes / matieres
+	$tab_classe_ref_TO_id_base = $tab_liens_id_base['classes'];
+	$tab_groupe_ref_TO_id_base = $tab_liens_id_base['groupes'];
+	$tab_i_fichier_TO_id_base  = $tab_liens_id_base['users'];
+	// On récupère le fichier avec les utilisateurs : $tab_users_fichier['champ'] : i -> valeur, avec comme champs : sconet_id / sconet_num / reference / profil / nom / prenom / classe / groupes / matieres / adresse / enfant
 	$fnom = $dossier_import.'import_'.$action.'_'.$_SESSION['BASE'].'_users.txt';
 	if(!file_exists($fnom))
 	{
@@ -1929,7 +1951,7 @@ if( $step==61 )
 						else
 						{
 							$tab_ajout_asso_prof_classe[$user_id.'_'.$groupe_id] = true;
-							$lignes_classes .= '<tr><th>Ajouter <input id="add_classe_'.$user_id.'_'.$groupe_id.'" name="add_classe_'.$user_id.'_'.$groupe_id.'" type="checkbox" value="1" checked /></th><td>'.html($tab_users_fichier['nom'][$i_fichier].' '.$tab_users_fichier['prenom'][$i_fichier]).'</td><td>'.html($tab_base_classe[$groupe_id]).'</td></tr>';
+							$lignes_classes .= '<tr><th>Ajouter <input id="add_classe_'.$user_id.'_'.$groupe_id.'_1" type="checkbox" checked /></th><td>'.html($tab_users_fichier['nom'][$i_fichier].' '.$tab_users_fichier['prenom'][$i_fichier]).'</td><td>'.html($tab_base_classe[$groupe_id]).'</td></tr>';
 						}
 					}
 				}
@@ -1965,8 +1987,8 @@ if( $step==61 )
 							}
 							else
 							{
-								$value = (isset($tab_ajout_asso_prof_classe[$user_id.'_'.$groupe_id])) ? 2 : 1 ;
-								$lignes_principal .= '<tr><th>Ajouter <input id="add_pp_'.$user_id.'_'.$groupe_id.'" name="add_pp_'.$user_id.'_'.$groupe_id.'" type="checkbox" value="'.$value.'" checked /></th><td>'.html($tab_users_fichier['nom'][$i_fichier].' '.$tab_users_fichier['prenom'][$i_fichier]).'</td><td>'.html($tab_base_classe[$groupe_id]).'</td></tr>';
+								$value = (isset($tab_ajout_asso_prof_classe[$user_id.'_'.$groupe_id])) ? 0 : 1 ;
+								$lignes_principal .= '<tr><th>Ajouter <input id="add_pp_'.$user_id.'_'.$groupe_id.'_'.$value.'" type="checkbox" checked /></th><td>'.html($tab_users_fichier['nom'][$i_fichier].' '.$tab_users_fichier['prenom'][$i_fichier]).'</td><td>'.html($tab_base_classe[$groupe_id]).'</td></tr>';
 							}
 						}
 					}
@@ -2010,7 +2032,7 @@ if( $step==61 )
 						}
 						else
 						{
-							$lignes_matieres .= '<tr><th>Ajouter <input id="add_matiere_'.$user_id.'_'.$matiere_id.'" name="add_matiere_'.$user_id.'_'.$matiere_id.'" type="checkbox" value="1" checked /></th><td>'.html($tab_users_fichier['nom'][$i_fichier].' '.$tab_users_fichier['prenom'][$i_fichier]).'</td><td>'.html($tab_base_matiere[$matiere_id]).'</td></tr>';
+							$lignes_matieres .= '<tr><th>Ajouter <input id="add_matiere_'.$user_id.'_'.$matiere_id.'_1" type="checkbox" checked /></th><td>'.html($tab_users_fichier['nom'][$i_fichier].' '.$tab_users_fichier['prenom'][$i_fichier]).'</td><td>'.html($tab_base_matiere[$matiere_id]).'</td></tr>';
 						}
 					}
 				}
@@ -2053,7 +2075,7 @@ if( $step==61 )
 					}
 					else
 					{
-						$lignes_groupes .= '<tr><th>Ajouter <input id="add_groupe_'.$user_id.'_'.$groupe_id.'" name="add_groupe_'.$user_id.'_'.$groupe_id.'" type="checkbox" value="1" checked /></th><td>'.html($tab_users_fichier['nom'][$i_fichier].' '.$tab_users_fichier['prenom'][$i_fichier]).'</td><td>'.html($tab_base_groupe[$groupe_id]).'</td></tr>';
+						$lignes_groupes .= '<tr><th>Ajouter <input id="add_groupe_'.$user_id.'_'.$groupe_id.'_1" type="checkbox" checked /></th><td>'.html($tab_users_fichier['nom'][$i_fichier].' '.$tab_users_fichier['prenom'][$i_fichier]).'</td><td>'.html($tab_base_groupe[$groupe_id]).'</td></tr>';
 					}
 				}
 			}
@@ -2065,24 +2087,24 @@ if( $step==61 )
 	if($action=='sconet_professeurs_directeurs')
 	{
 		echo		'<tbody>';
-		echo			'<tr><th colspan="3">Associations utilisateurs / classes.</th></tr>';
+		echo			'<tr><th colspan="3">Associations utilisateurs / classes. <input name="all_check" type="image" src="./_img/all_check.gif" title="Tout cocher." /> <input name="all_uncheck" type="image" src="./_img/all_uncheck.gif" title="Tout décocher." /></th></tr>';
 		echo($lignes_classes) ? $lignes_classes : '<tr><td colspan="3">Aucune</td></tr>';
 		echo		'</tbody>';
 		echo		'<tbody>';
-		echo			'<tr><th colspan="3">Associations utilisateurs / p.principal.</th></tr>';
+		echo			'<tr><th colspan="3">Associations utilisateurs / p.principal. <input name="all_check" type="image" src="./_img/all_check.gif" title="Tout cocher." /> <input name="all_uncheck" type="image" src="./_img/all_uncheck.gif" title="Tout décocher." /></th></tr>';
 		echo($lignes_principal) ? $lignes_principal : '<tr><td colspan="3">Aucune</td></tr>';
 		echo		'</tbody>';
 		echo		'<tbody>';
-		echo			'<tr><th colspan="3">Associations utilisateurs / matières.</th></tr>';
+		echo			'<tr><th colspan="3">Associations utilisateurs / matières. <input name="all_check" type="image" src="./_img/all_check.gif" title="Tout cocher." /> <input name="all_uncheck" type="image" src="./_img/all_uncheck.gif" title="Tout décocher." /></th></tr>';
 		echo($lignes_matieres) ? $lignes_matieres : '<tr><td colspan="3">Aucune</td></tr>';
 		echo		'</tbody>';
 	}
 	echo		'<tbody>';
-	echo			'<tr><th colspan="3">Associations utilisateurs / groupes.</th></tr>';
+	echo			'<tr><th colspan="3">Associations utilisateurs / groupes. <input name="all_check" type="image" src="./_img/all_check.gif" title="Tout cocher." /> <input name="all_uncheck" type="image" src="./_img/all_uncheck.gif" title="Tout décocher." /></th></tr>';
 	echo($lignes_groupes) ? $lignes_groupes : '<tr><td colspan="3">Aucune</td></tr>';
 	echo		'</tbody>';
 	echo'</table>';
-	echo'<p class="li"><a href="#" class="step62">Valider et afficher le bilan obtenu.</a><label id="ajax_msg">&nbsp;</label></p>';
+	echo'<p class="li"><a href="#step62" id="envoyer_infos_utilisateurs">Valider et afficher le bilan obtenu.</a><label id="ajax_msg">&nbsp;</label></p>';
 	exit();
 }
 
@@ -2094,12 +2116,13 @@ if( $step==62 )
 {
 	$user_profil = (mb_strpos($action,'eleves')) ? 'eleve' : 'professeur' ;
 	// Récupérer les éléments postés
+	$tab_check = (isset($_POST['f_check'])) ? explode(',',$_POST['f_check']) : array() ;
 	$tab_post = array( 'classe'=>array() , 'pp'=>array() , 'matiere'=>array() , 'groupe'=>array() );
-	foreach($_POST as $key => $val)
+	foreach($tab_check as $check_infos)
 	{
-		if(substr($key,0,4)=='add_')
+		if(substr($check_infos,0,4)=='add_')
 		{
-			list($add,$obj,$id1,$id2) = explode('_',$key);
+			list($add,$obj,$id1,$id2,$val) = explode('_',$check_infos);
 			$tab_post[$obj][$id1][$id2] = $val;
 		}
 	}
@@ -2124,7 +2147,7 @@ if( $step==62 )
 			foreach($tab_id2 as $classe_id => $val)
 			{
 				// Ne pas effectuer l'association de PP avec une classe si l'association avec cette classe a été décochée
-				if( ($_POST['add_pp_'.$user_id.'_'.$classe_id]==1) || isset($_POST['add_classe_'.$user_id.'_'.$classe_id]) )
+				if( ($val==1) || isset($tab_post['classe'][$user_id][$classe_id]) )
 				{
 					DB_STRUCTURE_modifier_liaison_professeur_principal($user_id,$classe_id,true);
 				}
@@ -2163,24 +2186,442 @@ if( $step==62 )
 		echo'<p><label class="valide">Nouvelles associations utilisateurs / matières effectuées : '.$nb_asso_matieres.'</label></p>';
 	}
 	echo'<p><label class="valide">Nouvelles associations utilisateurs / groupes effectuées : '.$nb_asso_groupes.'</label></p>';
-	echo'<p class="li"><a href="#" class="step9">Passer à l\'étape 7.</a><label id="ajax_msg">&nbsp;</label></p>';
+	echo'<p class="li"><a href="#step90" id="passer_etape_suivante">Passer à l\'étape 7.</a><label id="ajax_msg">&nbsp;</label></p>';
 	exit();
 }
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-//	Étape 9 - Nettoyage des fichiers temporaires (sconet_professeurs_directeurs | tableur_professeurs_directeurs | sconet_eleves | base-eleves_eleves | tableur_eleves)
+//	Étape 71 - Adresses des parents (sconet_parents)
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
-if( $step==9 )
+if( $step==71 )
+{
+	// On récupère le fichier avec des infos sur les correspondances : $tab_liens_id_base['users'] -> $tab_i_fichier_TO_id_base
+	$fnom = $dossier_import.'import_'.$action.'_'.$_SESSION['BASE'].'_liens_id_base.txt';
+	if(!file_exists($fnom))
+	{
+		exit('Erreur : le fichier contenant les correspondances est introuvable !');
+	}
+	$contenu = file_get_contents($fnom);
+	$tab_liens_id_base = @unserialize($contenu);
+	if($tab_liens_id_base===FALSE)
+	{
+		exit('Erreur : le fichier contenant les correspondances est syntaxiquement incorrect !');
+	}
+	$tab_i_fichier_TO_id_base  = $tab_liens_id_base['users'];
+	// On récupère le fichier avec les utilisateurs : $tab_users_fichier['champ'] : i -> valeur, avec comme champs : sconet_id / sconet_num / reference / profil / nom / prenom / classe / groupes / matieres / adresse / enfant
+	$fnom = $dossier_import.'import_'.$action.'_'.$_SESSION['BASE'].'_users.txt';
+	if(!file_exists($fnom))
+	{
+		exit('Erreur : le fichier contenant les utilisateurs est introuvable !');
+	}
+	$contenu = file_get_contents($fnom);
+	$tab_users_fichier = @unserialize($contenu);
+	if($tab_users_fichier===FALSE)
+	{
+		exit('Erreur : le fichier contenant les utilisateurs est syntaxiquement incorrect !');
+	}
+	// On récupère le contenu de la base pour comparer : $tab_base_adresse[user_id]=array()
+	$tab_base_adresse = array();
+	$DB_TAB = DB_STRUCTURE_lister_adresses_parents();
+	foreach($DB_TAB as $DB_ROW)
+	{
+		$tab_base_adresse[$DB_ROW['parent_id']] = array( $DB_ROW['adresse_ligne1'] , $DB_ROW['adresse_ligne2'] , $DB_ROW['adresse_ligne3'] , $DB_ROW['adresse_ligne4'] , (int)$DB_ROW['adresse_postal_code'] , $DB_ROW['adresse_postal_libelle'] , $DB_ROW['adresse_pays_nom'] );
+	}
+	// Pour préparer l'affichage
+	$lignes_ajouter   = '';
+	$lignes_modifier  = '';
+	$lignes_conserver = '';
+	// Pour préparer l'enregistrement des données
+	$tab_users_ajout = array();
+	$tab_users_modif = array();
+	// Parcourir chaque entrée du fichier
+	foreach($tab_i_fichier_TO_id_base as $i_fichier => $id_base)
+	{
+		// Cas [1] : parent présent dans le fichier, adresse absente de la base : il vient d'être ajouté, on ajoute aussi son adresse, sauf si elle est vide (on ne teste pas le pays qui vaut FRANCE par défaut dans l'export Sconet).
+		if(!isset($tab_base_adresse[$id_base]))
+		{
+			if( $tab_users_fichier['adresse'][$i_fichier][0] || $tab_users_fichier['adresse'][$i_fichier][1] || $tab_users_fichier['adresse'][$i_fichier][2] || $tab_users_fichier['adresse'][$i_fichier][3] || $tab_users_fichier['adresse'][$i_fichier][4] || $tab_users_fichier['adresse'][$i_fichier][5] )
+			{
+				$lignes_ajouter .= '<tr><th>Ajouter <input id="add_'.$i_fichier.'" type="checkbox" checked /></th><td>'.html($tab_users_fichier['nom'][$i_fichier].' '.$tab_users_fichier['prenom'][$i_fichier]).'</td><td>'.html($tab_users_fichier['adresse'][$i_fichier][0].' / '.$tab_users_fichier['adresse'][$i_fichier][1].' / '.$tab_users_fichier['adresse'][$i_fichier][2].' / '.$tab_users_fichier['adresse'][$i_fichier][3].' / '.$tab_users_fichier['adresse'][$i_fichier][4].' / '.$tab_users_fichier['adresse'][$i_fichier][5].' / '.$tab_users_fichier['adresse'][$i_fichier][6]).'</td></tr>';
+			}
+		}
+		// Cas [2] : parent présent dans le fichier, adresse présente de la base
+		else
+		{
+			$nb_differences = 0;
+			$td_contenu = array();
+			for($indice=0 ; $indice<7 ; $indice++)
+			{
+				if($tab_users_fichier['adresse'][$i_fichier][$indice]==$tab_base_adresse[$id_base][$indice])
+				{
+					$td_contenu[] = html($tab_base_adresse[$id_base][$indice]);
+				}
+				else
+				{
+					$td_contenu[] = '<b>'.html($tab_base_adresse[$id_base][$indice]).' => '.html($tab_users_fichier['adresse'][$i_fichier][$indice]).'</b>';
+					$nb_differences++;
+				}
+			}
+			if($nb_differences==0)
+			{
+				// Cas [2a] : adresses identiques => conserver
+				$lignes_conserver .= '<tr><th>Conserver</th><td>'.html($tab_users_fichier['nom'][$i_fichier].' '.$tab_users_fichier['prenom'][$i_fichier]).'</td><td>'.implode(' || ',$td_contenu).'</td></tr>';
+			}
+			else
+			{
+				// Cas [2b] : adresses différentes => modifier
+				$lignes_modifier .= '<tr><th>Modifier <input id="mod_'.$i_fichier.'" type="checkbox" checked /></th><td>'.html($tab_users_fichier['nom'][$i_fichier].' '.$tab_users_fichier['prenom'][$i_fichier]).'</td><td>'.implode(' || ',$td_contenu).'</td></tr>';
+			}
+		}
+	}
+	// On affiche
+	echo'<p><label class="valide">Veuillez vérifier le résultat de l\'analyse des adresses.</label></p>';
+	echo'<table>';
+	// Cas [1]
+	echo		'<tbody>';
+	echo			'<tr><th colspan="3">Adresses à ajouter <input name="all_check" type="image" src="./_img/all_check.gif" title="Tout cocher." /> <input name="all_uncheck" type="image" src="./_img/all_uncheck.gif" title="Tout décocher." /></th></tr>';
+	echo($lignes_ajouter) ? $lignes_ajouter : '<tr><td colspan="3">Aucune</td></tr>';
+	echo		'</tbody>';
+	// Cas [2b]
+	echo		'<tbody>';
+	echo			'<tr><th colspan="3">Adresses à modifier <input name="all_check" type="image" src="./_img/all_check.gif" title="Tout cocher." /> <input name="all_uncheck" type="image" src="./_img/all_uncheck.gif" title="Tout décocher." /></th></tr>';
+	echo($lignes_modifier) ? $lignes_modifier : '<tr><td colspan="3">Aucune</td></tr>';
+	echo		'</tbody>';
+	// Cas [2a]
+	echo		'<tbody>';
+	echo			'<tr><th colspan="3">Adresses à conserver</th></tr>';
+	echo($lignes_conserver) ? $lignes_conserver : '<tr><td colspan="3">Aucune</td></tr>';
+	echo		'</tbody>';
+	echo'</table>';
+	echo'<p class="li"><a href="#step72" id="envoyer_infos_utilisateurs">Valider et afficher le bilan obtenu.</a><label id="ajax_msg">&nbsp;</label></p>';
+	exit();
+}
+
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+//	Étape 72 - Traitement des ajouts/modifications d'adresses éventuelles (sconet_parents)
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
+if( $step==72 )
+{
+	// On récupère le fichier avec des infos sur les correspondances : $tab_liens_id_base['users'] -> $tab_i_fichier_TO_id_base
+	$fnom = $dossier_import.'import_'.$action.'_'.$_SESSION['BASE'].'_liens_id_base.txt';
+	if(!file_exists($fnom))
+	{
+		exit('Erreur : le fichier contenant les correspondances est introuvable !');
+	}
+	$contenu = file_get_contents($fnom);
+	$tab_liens_id_base = @unserialize($contenu);
+	if($tab_liens_id_base===FALSE)
+	{
+		exit('Erreur : le fichier contenant les correspondances est syntaxiquement incorrect !');
+	}
+	$tab_i_fichier_TO_id_base  = $tab_liens_id_base['users'];
+	// On récupère le fichier avec les utilisateurs : $tab_users_fichier['champ'] : i -> valeur, avec comme champs : sconet_id / sconet_num / reference / profil / nom / prenom / classe / groupes / matieres / adresse / enfant
+	$fnom = $dossier_import.'import_'.$action.'_'.$_SESSION['BASE'].'_users.txt';
+	if(!file_exists($fnom))
+	{
+		exit('Erreur : le fichier contenant les utilisateurs est introuvable !');
+	}
+	$contenu = file_get_contents($fnom);
+	$tab_users_fichier = @unserialize($contenu);
+	if($tab_users_fichier===FALSE)
+	{
+		exit('Erreur : le fichier contenant les utilisateurs est syntaxiquement incorrect !');
+	}
+	// Récupérer les éléments postés et ajouter/modifier les adresses
+	$tab_check = (isset($_POST['f_check'])) ? explode(',',$_POST['f_check']) : array() ;
+	$nb_add = 0;
+	$nb_mod = 0;
+	foreach($tab_check as $check_infos)
+	{
+		if(substr($check_infos,0,4)=='mod_')
+		{
+			$i_fichier = clean_entier( substr($check_infos,4) );
+			if( isset($tab_i_fichier_TO_id_base[$i_fichier]) && isset($tab_users_fichier['adresse'][$i_fichier]) )
+			{
+				DB_STRUCTURE_modifier_adresse_parent( $tab_i_fichier_TO_id_base[$i_fichier] , $tab_users_fichier['adresse'][$i_fichier] );
+				$nb_mod++;
+			}
+		}
+		elseif(substr($check_infos,0,4)=='add_')
+		{
+			$i_fichier = clean_entier( substr($check_infos,4) );
+			if( isset($tab_i_fichier_TO_id_base[$i_fichier]) && isset($tab_users_fichier['adresse'][$i_fichier]) )
+			{
+				DB_STRUCTURE_ajouter_adresse_parent( $tab_i_fichier_TO_id_base[$i_fichier] , $tab_users_fichier['adresse'][$i_fichier] );
+				$nb_add++;
+			}
+		}
+	}
+	// Afficher le résultat
+	echo'<p><label class="valide">Nouvelles adresses ajoutées : '.$nb_add.'</label></p>';
+	echo'<p><label class="valide">Anciennes adresses modifiées : '.$nb_mod.'</label></p>';
+	echo'<p class="li"><a href="#step81" id="passer_etape_suivante">Passer à l\'étape 5.</a><label id="ajax_msg">&nbsp;</label></p>';
+	exit();
+}
+
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+//	Étape 81 - Liens de responsabilités des parents (sconet_parents)
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
+if( $step==81 )
+{
+	// On récupère le fichier avec des infos sur les correspondances : $tab_liens_id_base['users'] -> $tab_i_fichier_TO_id_base
+	$fnom = $dossier_import.'import_'.$action.'_'.$_SESSION['BASE'].'_liens_id_base.txt';
+	if(!file_exists($fnom))
+	{
+		exit('Erreur : le fichier contenant les correspondances est introuvable !');
+	}
+	$contenu = file_get_contents($fnom);
+	$tab_liens_id_base = @unserialize($contenu);
+	if($tab_liens_id_base===FALSE)
+	{
+		exit('Erreur : le fichier contenant les correspondances est syntaxiquement incorrect !');
+	}
+	$tab_i_fichier_TO_id_base  = $tab_liens_id_base['users'];
+	// On récupère le fichier avec les utilisateurs : $tab_users_fichier['champ'] : i -> valeur, avec comme champs : sconet_id / sconet_num / reference / profil / nom / prenom / classe / groupes / matieres / adresse / enfant
+	$fnom = $dossier_import.'import_'.$action.'_'.$_SESSION['BASE'].'_users.txt';
+	if(!file_exists($fnom))
+	{
+		exit('Erreur : le fichier contenant les utilisateurs est introuvable !');
+	}
+	$contenu = file_get_contents($fnom);
+	$tab_users_fichier = @unserialize($contenu);
+	if($tab_users_fichier===FALSE)
+	{
+		exit('Erreur : le fichier contenant les utilisateurs est syntaxiquement incorrect !');
+	}
+	// On convertit les données du fichier parent=>enfant dans un tableau enfant=>parent
+	$tab_fichier_parents_par_eleve = array();
+	foreach($tab_i_fichier_TO_id_base as $i_fichier => $id_base)
+	{
+		if( (isset($tab_users_fichier['enfant'][$i_fichier])) && (count($tab_users_fichier['enfant'][$i_fichier])) )
+		{
+			foreach($tab_users_fichier['enfant'][$i_fichier] as $eleve_id => $resp_legal_num)
+			{
+				$tab_fichier_parents_par_eleve[$eleve_id][$i_fichier] = $resp_legal_num;
+			}
+		}
+	}
+	// On récupère le contenu de la base pour comparer : $tab_base_parents_par_eleve[eleve_sconet_id]=array( 'eleve'=>(eleve_id,eleve_nom,eleve_prenom) , 'parent'=>array(parent_sconet_id=>(parent_id,parent_nom,parent_prenom,num)) )
+	$tab_base_parents_par_eleve = array();
+	$DB_TAB = DB_STRUCTURE_lister_parents_par_eleve();
+	foreach($DB_TAB as $DB_ROW)
+	{
+		$tab_infos_eleve  = array( 'id'=>(int)$DB_ROW['eleve_id']  , 'nom'=>$DB_ROW['eleve_nom']  , 'prenom'=>$DB_ROW['eleve_prenom'] );
+		if( ($DB_ROW['parent_id']) && ($DB_ROW['parent_sconet_id']) ) // eleve_sconet_id est déjà filtré lors de la requête
+		{
+			$tab_infos_parent = array( 'id'=>(int)$DB_ROW['parent_id'] , 'nom'=>$DB_ROW['parent_nom'] , 'prenom'=>$DB_ROW['parent_prenom'] , 'sconet_id'=>(int)$DB_ROW['parent_sconet_id'] );
+			if(!isset($tab_base_parents_par_eleve[(int)$DB_ROW['eleve_sconet_id']]))
+			{
+				$tab_base_parents_par_eleve[(int)$DB_ROW['eleve_sconet_id']] = array( 'eleve'=>$tab_infos_eleve , 'parent'=>array((int)$DB_ROW['resp_legal_num']=>$tab_infos_parent) );
+			}
+			else
+			{
+				$tab_base_parents_par_eleve[(int)$DB_ROW['eleve_sconet_id']]['parent'][$DB_ROW['resp_legal_num']] = $tab_infos_parent;
+			}
+		}
+		else
+		{
+			// Cas d'un élève sans parent affecté ou un parent sans id Sconet
+			if(!isset($tab_base_parents_par_eleve[$DB_ROW['eleve_sconet_id']]))
+			{
+				$tab_base_parents_par_eleve[$DB_ROW['eleve_sconet_id']] = array( 'eleve'=>$tab_infos_eleve , 'parent'=>array() );
+			}
+		}
+	}
+	// On enregistre une copie du tableau $tab_fichier_parents_par_eleve mais en remplaçant les id sconet par les id de la base (on partira de lui pour récupérer les identifiants à ajouter / modifier).
+	// Il faut le faire maintenant car ensuite tab_base_parents_par_eleve est peu à peu vidé.
+	$tab_memo_analyse = array();
+	foreach($tab_fichier_parents_par_eleve as $eleve_sconet_id => $tab_parent)
+	{
+		$contact_num = 3;
+		foreach($tab_parent as $i_fichier => $resp_legal_num)
+		{
+			// Au passage, on vérifie que l'élève est dans la base avec son id sconet, sinon c'est cuit...
+			if(isset($tab_base_parents_par_eleve[$eleve_sconet_id]))
+			{
+				$eleve_id  = $tab_base_parents_par_eleve[$eleve_sconet_id]['eleve']['id'];
+				$parent_id = $tab_i_fichier_TO_id_base[$i_fichier];
+				if(($resp_legal_num!=1)&&($resp_legal_num!=2))
+				{
+					$resp_legal_num = $contact_num;
+					$contact_num++;
+				}
+				$tab_memo_analyse[$eleve_id][$parent_id] = $resp_legal_num;
+			}
+		}
+	}
+	Ecrire_Fichier($dossier_import.'import_'.$action.'_'.$_SESSION['BASE'].'_memo_analyse.txt',serialize($tab_memo_analyse));
+	// Pour préparer l'affichage
+	$lignes_modifier  = '';
+	$lignes_conserver = '';
+	// Pour préparer l'enregistrement des données
+	$tab_users_modif = array();
+	// Parcourir chaque élève de la base
+	foreach($tab_base_parents_par_eleve as $eleve_sconet_id => $tab_base_eleve_infos)
+	{
+		if(isset($tab_fichier_parents_par_eleve[$eleve_sconet_id])) // Si on ne trouve aucun parent dans le fichier, on laisse tomber, c'est peut être un vieux compte
+		{
+			$nb_differences = 0;
+			$td_contenu = array();
+			// On fait des modifs s'il n'y a pas le même nombre de responsables ou si un responsable est différent ou si l'ordre des responsables est différent
+			// On commence par les resp 1 et 2
+			for($num=1 ; $num<3 ; $num++)
+			{
+				$parent_id_fichier     = array_search($num,$tab_fichier_parents_par_eleve[$eleve_sconet_id]);
+				$parent_sconet_id_base = (isset($tab_base_eleve_infos['parent'][$num])) ? $tab_base_eleve_infos['parent'][$num]['sconet_id'] : FALSE ;
+				$parent_affich_fichier = ($parent_id_fichier===FALSE)     ? 'X' : $tab_users_fichier['nom'][$parent_id_fichier].' '.$tab_users_fichier['prenom'][$parent_id_fichier] ;
+				$parent_affich_base    = ($parent_sconet_id_base===FALSE) ? 'X' : $tab_base_eleve_infos['parent'][$num]['nom'].' '.$tab_base_eleve_infos['parent'][$num]['prenom'] ;
+				$parent_sconet_id_fichier = ($parent_id_fichier!==FALSE)  ? $tab_users_fichier['sconet_id'][$parent_id_fichier] : FALSE ;
+				if($parent_sconet_id_fichier===$parent_sconet_id_base)
+				{
+					if($parent_affich_base!='X')
+					{
+						$td_contenu[] = 'Responsable n°'.$num.' : '.html($parent_affich_base);
+					}
+				}
+				else
+				{
+					$td_contenu[] = 'Responsable n°'.$num.' : <b>'.html($parent_affich_base).' => '.html($parent_affich_fichier).'</b>';
+					$nb_differences++;
+				}
+				if($parent_id_fichier!==FALSE)
+				{
+					unset($tab_fichier_parents_par_eleve[$eleve_sconet_id][$parent_id_fichier]);
+				}
+				if($parent_sconet_id_base)
+				{
+					unset($tab_base_eleve_infos['parent'][$num]);
+				}
+			}
+			// on poursuit par les contacts supplémentaires éventuels s'il en reste (dans Sconet il peut y en avoir même sans resp 1 et 2)
+			$num = 1;
+			while( count($tab_fichier_parents_par_eleve[$eleve_sconet_id]) || count($tab_base_eleve_infos['parent']) )
+			{
+				$parent_id_fichier = (count($tab_fichier_parents_par_eleve[$eleve_sconet_id])) ? key($tab_fichier_parents_par_eleve[$eleve_sconet_id]) : FALSE ;
+				$parent_sconet_id_base    = (isset($tab_base_eleve_infos['parent'][$num+2])) ? $tab_base_eleve_infos['parent'][$num+2]['sconet_id'] : FALSE ;
+				$parent_affich_fichier = ($parent_id_fichier===FALSE)     ? 'X' : $tab_users_fichier['nom'][$parent_id_fichier].' '.$tab_users_fichier['prenom'][$parent_id_fichier] ;
+				$parent_affich_base    = ($parent_sconet_id_base===FALSE) ? 'X' : $tab_base_eleve_infos['parent'][$num+2]['nom'].' '.$tab_base_eleve_infos['parent'][$num+2]['prenom'] ;
+				$parent_sconet_id_fichier = ($parent_id_fichier!==FALSE)  ? $tab_users_fichier['sconet_id'][$parent_id_fichier] : FALSE ;
+				if($parent_sconet_id_fichier==$parent_sconet_id_base)
+				{
+					$td_contenu[] = 'Contact n°'.$num.' : '.html($parent_affich_base);
+				}
+				else
+				{
+					$td_contenu[] = 'Contact n°'.$num.' : <b>'.html($parent_affich_base).' => '.html($parent_affich_fichier).'</b>';
+					$nb_differences++;
+				}
+				if($parent_id_fichier!==FALSE)
+				{
+					unset($tab_fichier_parents_par_eleve[$eleve_sconet_id][$parent_id_fichier]);
+				}
+				if($parent_sconet_id_base)
+				{
+					unset($tab_base_eleve_infos['parent'][$num+2]);
+				}
+				$num++;
+			}
+			if($nb_differences==0)
+			{
+				// Cas [1] : responsables identiques => conserver
+				$lignes_conserver .= '<tr><th>Conserver</th><td>'.html($tab_base_eleve_infos['eleve']['nom'].' '.$tab_base_eleve_infos['eleve']['prenom']).'</td><td>'.implode('<br />',$td_contenu).'</td></tr>';
+			}
+			else
+			{
+				// Cas [2] : au moins une différence  => modifier
+				$lignes_modifier .= '<tr><th>Modifier <input id="mod_'.$tab_base_eleve_infos['eleve']['id'].'" type="checkbox" checked /></th><td>'.html($tab_base_eleve_infos['eleve']['nom'].' '.$tab_base_eleve_infos['eleve']['prenom']).'</td><td>'.implode('<br />',$td_contenu).'</td></tr>';
+			}
+		}
+	}
+	// On affiche
+	echo'<p><label class="valide">Veuillez vérifier le résultat de l\'analyse des liens de responsabilité.</label></p>';
+	echo'<table>';
+	// Cas [2]
+	echo		'<tbody>';
+	echo			'<tr><th colspan="3">Liens de responsabilité à modifier <input name="all_check" type="image" src="./_img/all_check.gif" title="Tout cocher." /> <input name="all_uncheck" type="image" src="./_img/all_uncheck.gif" title="Tout décocher." /></th></tr>';
+	echo($lignes_modifier) ? $lignes_modifier : '<tr><td colspan="3">Aucun</td></tr>';
+	echo		'</tbody>';
+	// Cas [1]
+	echo		'<tbody>';
+	echo			'<tr><th colspan="3">Liens de responsabilité à conserver</th></tr>';
+	echo($lignes_conserver) ? $lignes_conserver : '<tr><td colspan="3">Aucun</td></tr>';
+	echo		'</tbody>';
+	echo'</table>';
+	echo'<p class="li"><a href="#step82" id="envoyer_infos_utilisateurs">Valider et afficher le bilan obtenu.</a><label id="ajax_msg">&nbsp;</label></p>';
+	exit();
+}
+
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+//	Étape 82 - Traitement des liens de responsabilités des parents (sconet_parents)
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
+if( $step==82 )
+{
+	// On récupère le fichier avec des infos sur les utilisateurs : $tab_memo_analyse[$eleve_id][$parent_id] = $resp_legal_num;
+	$fnom = $dossier_import.'import_'.$action.'_'.$_SESSION['BASE'].'_memo_analyse.txt';
+	if(!file_exists($fnom))
+	{
+		exit('Erreur : le fichier contenant les données à traiter est introuvable !');
+	}
+	$contenu = file_get_contents($fnom);
+	$tab_memo_analyse = @unserialize($contenu);
+	if($tab_memo_analyse===FALSE)
+	{
+		exit('Erreur : le fichier contenant les données à traiter est syntaxiquement incorrect !');
+	}
+	// Récupérer les éléments postés
+	$tab_eleve_id = array() ;
+	$tab_check = (isset($_POST['f_check'])) ? explode(',',$_POST['f_check']) : array() ;
+	foreach($tab_check as $check_infos)
+	{
+		if(substr($check_infos,0,4)=='mod_')
+		{
+			$eleve_id = clean_entier( substr($check_infos,4) );
+			if( isset($tab_memo_analyse[$eleve_id]) )
+			{
+				$tab_eleve_id[] = $eleve_id;
+			}
+		}
+	}
+	$nb_modifs_eleves = count($tab_eleve_id);
+	if($nb_modifs_eleves)
+	{
+		// supprimer les lien de responsabilité des élèves concernés (il est plus simple de réinitialiser que de traiter les resp un par un puis de vérifier s'il n'en reste pas à supprimer...)
+		DB_STRUCTURE_supprimer_jointures_parents_for_eleves(implode(',',$tab_eleve_id));
+		// modifier les liens de responsabilité et ré-estimer resp_legal_envoi
+		foreach($tab_eleve_id as $eleve_id)
+		{
+			foreach($tab_memo_analyse[$eleve_id] as $parent_id => $resp_legal_num)
+			{
+				$resp_legal_envoi = ( ($resp_legal_num<3) || ( ($resp_legal_num==3) && !(in_array(1,$tab_memo_analyse[$eleve_id])) && !(in_array(2,$tab_memo_analyse[$eleve_id])) ) ) ? 1 : 0 ;
+				DB_STRUCTURE_ajouter_jointure_parent_eleve($parent_id,$eleve_id,$resp_legal_num,$resp_legal_envoi);
+			}
+		}
+	}
+	// Afficher le résultat
+	$s = ($nb_modifs_eleves>1) ? 's' : '' ;
+	echo'<p><label class="valide">Liens de responsabilités modifiés pour '.$nb_modifs_eleves.' élève'.$s.'</label></p>';
+	echo'<p class="li"><a href="#step90" id="passer_etape_suivante">Passer à l\'étape 6.</a><label id="ajax_msg">&nbsp;</label></p>';
+	exit();
+}
+
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+//	Étape 90 - Nettoyage des fichiers temporaires (sconet_professeurs_directeurs | tableur_professeurs_directeurs | sconet_eleves | base-eleves_eleves | tableur_eleves)
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
+if( $step==90 )
 {
 	unlink($dossier_import.$fichier_dest);
 	unlink($dossier_import.'import_'.$action.'_'.$_SESSION['BASE'].'_users.txt');
 	unlink($dossier_import.'import_'.$action.'_'.$_SESSION['BASE'].'_classes.txt');
 	unlink($dossier_import.'import_'.$action.'_'.$_SESSION['BASE'].'_groupes.txt');
-	unlink($dossier_import.'import_'.$action.'_'.$_SESSION['BASE'].'_traitement5.txt');
-	unlink($dossier_import.'import_'.$action.'_'.$_SESSION['BASE'].'_traitement6.txt');
+	unlink($dossier_import.'import_'.$action.'_'.$_SESSION['BASE'].'_memo_analyse.txt');
+	unlink($dossier_import.'import_'.$action.'_'.$_SESSION['BASE'].'_liens_id_base.txt');
 	echo'<p><label class="valide">Fichiers temporaires effacés, procédure d\'import terminée !</label></p>';
-	echo'<p class="li"><a href="#" class="step0">Retour au départ.</a><label id="ajax_msg">&nbsp;</label></p>';
+	echo'<p class="li"><a href="#" id="retourner_depart">Retour au départ.</a><label id="ajax_msg">&nbsp;</label></p>';
 	exit();
 }
 

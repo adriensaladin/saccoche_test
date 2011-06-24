@@ -2,7 +2,7 @@ DROP TABLE IF EXISTS sacoche_socle_entree;
 
 CREATE TABLE sacoche_socle_entree (
 	entree_id    SMALLINT(5)  UNSIGNED                NOT NULL AUTO_INCREMENT,
-	section_id   SMALLINT(5)  UNSIGNED                NOT NULL DEFAULT 0,
+	section_id   TINYINT(3)   UNSIGNED                NOT NULL DEFAULT 0,
 	entree_ordre TINYINT(3)   UNSIGNED                NOT NULL DEFAULT 0 COMMENT "Commence à 0.",
 	entree_nom   VARCHAR(235) COLLATE utf8_unicode_ci NOT NULL DEFAULT "",
 	PRIMARY KEY (entree_id),

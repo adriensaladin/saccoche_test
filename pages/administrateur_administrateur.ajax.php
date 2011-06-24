@@ -30,6 +30,8 @@ if($_SESSION['SESAMATH_ID']==ID_DEMO) {exit('Action désactivée pour la démo..
 
 $action     = (isset($_POST['f_action']))     ? clean_texte($_POST['f_action'])      : '';
 $id         = (isset($_POST['f_id']))         ? clean_entier($_POST['f_id'])         : 0;
+$id_ent     = (isset($_POST['f_id_ent']))     ? clean_texte($_POST['f_id_ent'])      : '';
+$id_gepi    = (isset($_POST['f_id_gepi']))    ? clean_texte($_POST['f_id_gepi'])     : '';
 $nom        = (isset($_POST['f_nom']))        ? clean_nom($_POST['f_nom'])           : '';
 $prenom     = (isset($_POST['f_prenom']))     ? clean_prenom($_POST['f_prenom'])     : '';
 $login      = (isset($_POST['f_login']))      ? clean_login($_POST['f_login'])       : '';
@@ -40,6 +42,22 @@ $password   = (isset($_POST['f_password']))   ? clean_entier($_POST['f_password'
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 if( ($action=='ajouter') && $nom && $prenom && $login )
 {
+	// Vérifier que l'identifiant ENT est disponible (parmi tout le personnel de l'établissement)
+	if($id_ent)
+	{
+		if( DB_STRUCTURE_tester_utilisateur_idENT($id_ent) )
+		{
+			exit('Erreur : identifiant ENT déjà utilisé !');
+		}
+	}
+	// Vérifier que l'identifiant GEPI est disponible (parmi tout le personnel de l'établissement)
+	if($id_gepi)
+	{
+		if( DB_STRUCTURE_tester_utilisateur_idGepi($id_gepi) )
+		{
+			exit('Erreur : identifiant Gepi déjà utilisé !');
+		}
+	}
 	// Vérifier que le login de l'administrateur est disponible (parmi tout le personnel de l'établissement)
 	if( DB_STRUCTURE_tester_login($login) )
 	{
@@ -48,9 +66,11 @@ if( ($action=='ajouter') && $nom && $prenom && $login )
 	// Construire le password
 	$password = fabriquer_mdp();
 	// Insérer l'enregistrement
-	$user_id = DB_STRUCTURE_ajouter_utilisateur($user_sconet_id=0,$user_sconet_elenoet=0,$reference='','administrateur',$nom,$prenom,$login,$password,$classe_id=0,$id_ent='',$id_gepi='');
+	$user_id = DB_STRUCTURE_ajouter_utilisateur($user_sconet_id=0,$user_sconet_elenoet=0,$reference='','administrateur',$nom,$prenom,$login,$password,$classe_id=0,$id_ent,$id_gepi);
 	// Afficher le retour
 	echo'<tr id="id_'.$user_id.'" class="new">';
+	echo	'<td>'.html($id_ent).'</td>';
+	echo	'<td>'.html($id_gepi).'</td>';
 	echo	'<td>'.html($nom).'</td>';
 	echo	'<td>'.html($prenom).'</td>';
 	echo	'<td class="new">'.html($login).' <img alt="" title="Pensez à relever le login généré !"  src="./_img/bulle_aide.png" /></td>';
@@ -67,13 +87,29 @@ if( ($action=='ajouter') && $nom && $prenom && $login )
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 else if( ($action=='modifier') && $id && $nom && $prenom && $login )
 {
+	// Vérifier que l'identifiant ENT est disponible (parmi tout le personnel de l'établissement)
+	if($id_ent)
+	{
+		if( DB_STRUCTURE_tester_utilisateur_idENT($id_ent,$id) )
+		{
+			exit('Erreur : identifiant ENT déjà utilisé !');
+		}
+	}
+	// Vérifier que l'identifiant GEPI est disponible (parmi tout le personnel de l'établissement)
+	if($id_gepi)
+	{
+		if( DB_STRUCTURE_tester_utilisateur_idGepi($id_gepi,$id) )
+		{
+			exit('Erreur : identifiant Gepi déjà utilisé !');
+		}
+	}
 	// Vérifier que le login de l'administrateur est disponible (parmi tout le personnel de l'établissement)
 	if( DB_STRUCTURE_tester_login($login,$id) )
 	{
 		exit('Erreur : login déjà existant !');
 	}
 	// Mettre à jour l'enregistrement avec ou sans génération d'un nouveau mot de passe
-	$tab_donnees = array(':nom'=>$nom,':prenom'=>$prenom,':login'=>$login);
+	$tab_donnees = array(':nom'=>$nom,':prenom'=>$prenom,':login'=>$login,':id_ent'=>$id_ent,':id_gepi'=>$id_gepi);
 	if($password)
 	{
 		$tab_donnees[':password'] = fabriquer_mdp() ;
@@ -86,6 +122,8 @@ else if( ($action=='modifier') && $id && $nom && $prenom && $login )
 		$_SESSION['USER_PRENOM'] = $prenom ;
 	}
 	// Afficher le retour
+	echo'<td>'.html($id_ent).'</td>';
+	echo'<td>'.html($id_gepi).'</td>';
 	echo'<td>'.html($nom).'</td>';
 	echo'<td>'.html($prenom).'</td>';
 	echo'<td>'.html($login).'</td>';

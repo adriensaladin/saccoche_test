@@ -31,23 +31,25 @@ if($_SESSION['SESAMATH_ID']==ID_DEMO) {exit('Action désactivée pour la démo..
 $action = (isset($_POST['f_action'])) ? clean_texte($_POST['f_action'])  : '';
 $id     = (isset($_POST['f_id']))     ? clean_entier($_POST['f_id'])     : 0;
 $niveau = (isset($_POST['f_niveau'])) ? clean_entier($_POST['f_niveau']) : 0;
+$ref    = (isset($_POST['f_ref']))    ? clean_ref($_POST['f_ref'])       : '';
 $nom    = (isset($_POST['f_nom']))    ? clean_texte($_POST['f_nom'])     : '';
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 //	Ajouter un nouveau groupe
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-if( ($action=='ajouter') && $niveau && $nom )
+if( ($action=='ajouter') && $niveau && $ref && $nom )
 {
-	// Vérifier que le nom du groupe est disponible
-	if( DB_STRUCTURE_tester_groupe_nom($nom) )
+	// Vérifier que la référence du groupe est disponible
+	if( DB_STRUCTURE_tester_groupe_reference($ref) )
 	{
-		exit('Erreur : nom de groupe déjà existant !');
+		exit('Erreur : référence de groupe déjà existant !');
 	}
 	// Insérer l'enregistrement
-	$groupe_id = DB_STRUCTURE_ajouter_groupe('groupe',0,'',$nom,$niveau);
+	$groupe_id = DB_STRUCTURE_ajouter_groupe('groupe',0,$ref,$nom,$niveau);
 	// Afficher le retour
 	echo'<tr id="id_'.$groupe_id.'" class="new">';
 	echo	'<td>{{NIVEAU_NOM}}</td>';
+	echo	'<td>'.html($ref).'</td>';
 	echo	'<td>'.html($nom).'</td>';
 	echo	'<td class="nu">';
 	echo		'<q class="modifier" title="Modifier ce groupe."></q>';
@@ -59,17 +61,18 @@ if( ($action=='ajouter') && $niveau && $nom )
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 //	Modifier un groupe existant
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-else if( ($action=='modifier') && $id && $niveau && $nom )
+else if( ($action=='modifier') && $id && $niveau && $ref && $nom )
 {
-	// Vérifier que le nom du groupe est disponible
-	if( DB_STRUCTURE_tester_groupe_nom($nom,$id) )
+	// Vérifier que la référence du groupe est disponible
+	if( DB_STRUCTURE_tester_groupe_reference($ref,$id) )
 	{
-		exit('Erreur : nom de groupe déjà existant !');
+		exit('Erreur : référence de groupe déjà existant !');
 	}
 	// Mettre à jour l'enregistrement
-	DB_STRUCTURE_modifier_groupe($id,'',$nom,$niveau);
+	DB_STRUCTURE_modifier_groupe($id,$ref,$nom,$niveau);
 	// Afficher le retour
 	echo'<td>{{NIVEAU_NOM}}</td>';
+	echo'<td>'.html($ref).'</td>';
 	echo'<td>'.html($nom).'</td>';
 	echo'<td class="nu">';
 	echo	'<q class="modifier" title="Modifier ce groupe."></q>';

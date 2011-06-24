@@ -37,8 +37,8 @@ $(document).ready
 		var mode = false;
 
 		// tri du tableau (avec jquery.tablesorter.js).
-		var sorting = [[0,0],[1,0]];
-		$('table.form').tablesorter({ headers:{4:{sorter:false}} });
+		var sorting = [[2,0],[3,0]];
+		$('table.form').tablesorter({ headers:{6:{sorter:false}} });
 		function trier_tableau()
 		{
 			if($('table.form tbody tr').length)
@@ -63,6 +63,8 @@ $(document).ready
 			// Fabriquer la ligne avec les éléments de formulaires
 			afficher_masquer_images_action('hide');
 			new_tr  = '<tr>';
+			new_tr += '<td><input id="f_id_ent" name="f_id_ent" size="10" type="text" value="" /><img alt="" src="./_img/bulle_aide.png" title="Uniquement en cas d\'identification via un ENT." /></td>';
+			new_tr += '<td><input id="f_id_gepi" name="f_id_gepi" size="10" type="text" value="" /><img alt="" src="./_img/bulle_aide.png" title="Uniquement en cas d\'utilisation du logiciel GEPI." /></td>';
 			new_tr += '<td><input id="f_nom" name="f_nom" size="15" type="text" value="" /></td>';
 			new_tr += '<td><input id="f_prenom" name="f_prenom" size="15" type="text" value="" /></td>';
 			new_tr += '<td><input id="f_login" name="f_login" size="15" type="text" value="" /></td>';
@@ -84,10 +86,12 @@ $(document).ready
 			mode = $(this).attr('class');
 			afficher_masquer_images_action('hide');
 			// Récupérer les informations de la ligne concernée
-			id     = $(this).parent().parent().attr('id').substring(3);
-			nom    = $(this).parent().prev().prev().prev().prev().html();
-			prenom = $(this).parent().prev().prev().prev().html();
-			login  = $(this).parent().prev().prev().html();
+			id      = $(this).parent().parent().attr('id').substring(3);
+			id_ent  = $(this).parent().prev().prev().prev().prev().prev().prev().html();
+			id_gepi = $(this).parent().prev().prev().prev().prev().prev().html();
+			nom     = $(this).parent().prev().prev().prev().prev().html();
+			prenom  = $(this).parent().prev().prev().prev().html();
+			login   = $(this).parent().prev().prev().html();
 			// Retirer une éventuelle balise image présente
 			position_image = login.indexOf('<');
 			if (position_image!=-1)
@@ -96,6 +100,8 @@ $(document).ready
 			}
 			// Fabriquer la ligne avec les éléments de formulaires
 			new_tr  = '<tr>';
+			new_tr += '<td><input id="f_id_ent" name="f_id_ent" size="'+Math.max(id_ent.length,10)+'" type="text" value="'+id_ent+'" /><img alt="" src="./_img/bulle_aide.png" title="Uniquement en cas d\'identification via un ENT." /></td>';
+			new_tr += '<td><input id="f_id_gepi" name="f_id_gepi" size="'+Math.max(id_gepi.length,10)+'" type="text" value="'+id_gepi+'" /><img alt="" src="./_img/bulle_aide.png" title="Uniquement en cas d\'utilisation du logiciel GEPI." /></td>';
 			new_tr += '<td><input id="f_nom" name="f_nom" size="'+Math.max(nom.length,5)+'" type="text" value="'+nom+'" /></td>';
 			new_tr += '<td><input id="f_prenom" name="f_prenom" size="'+Math.max(prenom.length,5)+'" type="text" value="'+prenom+'" /></td>';
 			new_tr += '<td><input id="f_login" name="f_login" size="'+Math.max(login.length,10)+'" type="text" value="'+login+'" /></td>';
@@ -188,16 +194,20 @@ $(document).ready
 			{
 				rules :
 				{
-					f_nom        : { required:true , maxlength:20 },
-					f_prenom     : { required:true , maxlength:20 },
+					f_id_ent     : { required:false , maxlength:32 },
+					f_id_gepi    : { required:false , maxlength:32 },
+					f_nom        : { required:true , maxlength:25 },
+					f_prenom     : { required:true , maxlength:25 },
 					f_login      : { required:true , maxlength:20 },
 					f_password   : { required:false }
 				},
 				messages :
 				{
-					f_nom        : { required:"nom manquant" , maxlength:"20 caractères maximum" },
-					f_prenom     : { required:"prénom manquant" , maxlength:"20 caractères maximum" },
-					f_login      : { required:"login manquant" , maxlength:"20 caractères maximum" },
+					f_id_ent     : { maxlength:"identifiant ENT de 32 caractères maximum" },
+					f_id_gepi    : { maxlength:"identifiant Gepi de 32 caractères maximum" },
+					f_nom        : { required:"nom manquant"    , maxlength:"25 caractères maximum" },
+					f_prenom     : { required:"prénom manquant" , maxlength:"25 caractères maximum" },
+					f_login      : { required:"login manquant"  , maxlength:"20 caractères maximum" },
 					f_password   : { }
 				},
 				errorElement : "label",

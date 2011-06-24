@@ -27,7 +27,7 @@
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = "Créer / paramétrer les référentiels";
-$VERSION_JS_FILE += 11;
+$VERSION_JS_FILE += 12;
 ?>
 
 <script type="text/javascript">
@@ -202,6 +202,8 @@ else
 }
 ?>
 
+<div id="succes_import">
+</div>
 
 <div id="choisir_referentiel" class="hide">
 	<hr />
@@ -223,9 +225,6 @@ else
 </div>
 
 </form>
-
-<div id="voir_referentiel">
-</div>
 
 <form id="form_communautaire" action="" class="hide">
 
@@ -258,10 +257,5 @@ $select_niveau  = afficher_select(DB_STRUCTURE_OPT_niveaux()           , $select
 
 </form>
 
-<div id="voir_referentiel_communautaire" class="hide">
-	<hr />
-	<ul class="ul_m1">
-		<li class="li_m1">
-		</li>
-	</ul>
+<div id="voir_referentiel">
 </div>

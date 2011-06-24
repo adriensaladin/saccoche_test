@@ -1,7 +1,7 @@
 DROP TABLE IF EXISTS sacoche_socle_section;
 
 CREATE TABLE sacoche_socle_section (
-	section_id    SMALLINT(5)  UNSIGNED                NOT NULL AUTO_INCREMENT,
+	section_id    TINYINT(3)   UNSIGNED                NOT NULL AUTO_INCREMENT,
 	pilier_id     TINYINT(3)   UNSIGNED                NOT NULL DEFAULT 0,
 	section_ordre TINYINT(3)   UNSIGNED                NOT NULL DEFAULT 1 COMMENT "Commence à 1.",
 	section_nom   VARCHAR(165) COLLATE utf8_unicode_ci NOT NULL DEFAULT "",

@@ -26,7 +26,7 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-$VERSION_JS_FILE += 8;
+$VERSION_JS_FILE += 9;
 
 // Fabrication des éléments select du formulaire, pour pouvoir prendre un référentiel d'une autre matière ou d'un autre niveau (demandé...).
 $select_matiere = afficher_select(DB_STRUCTURE_OPT_matieres_communes() , $select_nom='f_matiere' , $option_first='val' , $selection=false , $optgroup='non');
@@ -58,12 +58,7 @@ $select_niveau  = afficher_select(DB_STRUCTURE_OPT_niveaux()           , $select
 	</div>
 </div>
 
-<div id="voir_referentiel_communautaire" class="hide">
-	<hr />
-	<ul class="ul_m1">
-		<li class="li_m1">
-		</li>
-	</ul>
+<div id="voir_referentiel_communautaire">
 </div>
 
 

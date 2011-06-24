@@ -216,8 +216,8 @@ if($action=='import_loginmdp')
 			{
 				$tab_users_fichier['login'][]  = mb_substr(clean_login($login),0,20);
 				$tab_users_fichier['mdp'][]    = ($mdp!='inchangé') ? mb_substr(clean_password($mdp),0,20) : '';
-				$tab_users_fichier['nom'][]    = mb_substr(clean_nom($nom),0,20);
-				$tab_users_fichier['prenom'][] = mb_substr(clean_prenom($prenom),0,20);
+				$tab_users_fichier['nom'][]    = mb_substr(clean_nom($nom),0,25);
+				$tab_users_fichier['prenom'][] = mb_substr(clean_prenom($prenom),0,25);
 			}
 		}
 	}
@@ -427,8 +427,8 @@ if( ($action=='import_gepi_eleves') || ($action=='import_gepi_profs') )
 			if( ($id_gepi!='') && ($nom!='') && ($prenom!='') )
 			{
 				$tab_users_fichier['id_gepi'][] = mb_substr(clean_texte($id_gepi),0,32);
-				$tab_users_fichier['nom'][]     = mb_substr(clean_nom($nom),0,20);
-				$tab_users_fichier['prenom'][]  = mb_substr(clean_prenom($prenom),0,20);
+				$tab_users_fichier['nom'][]     = mb_substr(clean_nom($nom),0,25);
+				$tab_users_fichier['prenom'][]  = mb_substr(clean_prenom($prenom),0,25);
 				$tab_users_fichier['sconet_num'][] = clean_entier($sconet_num);
 			}
 		}
@@ -560,10 +560,11 @@ if($action=='import_ent')
 		exit('Erreur : le fichier n\'a pas pu être enregistré sur le serveur.');
 	}
 	// Pour récupérer les données des utilisateurs
-	$tab_users_fichier           = array();
-	$tab_users_fichier['id_ent'] = array();
-	$tab_users_fichier['nom']    = array();
-	$tab_users_fichier['prenom'] = array();
+	$tab_users_fichier              = array();
+	$tab_users_fichier['id_ent']    = array();
+	$tab_users_fichier['nom']       = array();
+	$tab_users_fichier['prenom']    = array();
+	$tab_users_fichier['id_sconet'] = array();
 	$contenu = file_get_contents($dossier_import.$fichier_dest);
 	$contenu = utf8($contenu); // Mettre en UTF-8 si besoin
 	$tab_lignes = extraire_lignes($contenu); // Extraire les lignes du fichier
@@ -578,32 +579,40 @@ if($action=='import_ent')
 		if(count($tab_elements)>2)
 		{
 			$tab_elements = array_map('clean_csv',$tab_elements);
-			$id_ent = $tab_elements[ $tab_connexion_info[$_SESSION['CONNEXION_MODE']][$_SESSION['CONNEXION_NOM']]['csv_id_ent'] ];
-			$nom    = $tab_elements[ $tab_connexion_info[$_SESSION['CONNEXION_MODE']][$_SESSION['CONNEXION_NOM']]['csv_nom']    ];
-			$prenom = $tab_elements[ $tab_connexion_info[$_SESSION['CONNEXION_MODE']][$_SESSION['CONNEXION_NOM']]['csv_prenom'] ];
+			$id_ent    = $tab_elements[ $tab_connexion_info[$_SESSION['CONNEXION_MODE']][$_SESSION['CONNEXION_NOM']]['csv_id_ent'] ];
+			$nom       = $tab_elements[ $tab_connexion_info[$_SESSION['CONNEXION_MODE']][$_SESSION['CONNEXION_NOM']]['csv_nom']    ];
+			$prenom    = $tab_elements[ $tab_connexion_info[$_SESSION['CONNEXION_MODE']][$_SESSION['CONNEXION_NOM']]['csv_prenom'] ];
+			$id_sconet = ($tab_connexion_info[$_SESSION['CONNEXION_MODE']][$_SESSION['CONNEXION_NOM']]['csv_id_sconet']==NULL) ? '' : $tab_elements[ $tab_connexion_info[$_SESSION['CONNEXION_MODE']][$_SESSION['CONNEXION_NOM']]['csv_id_sconet'] ] ;
 			if( ($id_ent!='') && ($nom!='') && ($prenom!='') )
 			{
-				$tab_users_fichier['id_ent'][] = mb_substr(clean_texte($id_ent),0,32);
-				$tab_users_fichier['nom'][]    = mb_substr(clean_nom($nom),0,20);
-				$tab_users_fichier['prenom'][] = mb_substr(clean_prenom($prenom),0,20);
+				if(in_array($_SESSION['CONNEXION_NOM'],array('celia','lilie')))
+				{
+					$id_ent = str_replace('ID : ','UT',$id_ent); // Dans les CSV de Lilie & Celi@, il faut par exemple remplacer "ID : 75185265" par "UT75185265"
+				}
+				$tab_users_fichier['id_ent'][]    = mb_substr(clean_texte($id_ent),0,32);
+				$tab_users_fichier['nom'][]       = mb_substr(clean_nom($nom),0,25);
+				$tab_users_fichier['prenom'][]    = mb_substr(clean_prenom($prenom),0,25);
+				$tab_users_fichier['id_sconet'][] = clean_entier($id_sconet);
 			}
 		}
 	}
 	// On trie
-	array_multisort($tab_users_fichier['nom'],SORT_ASC,SORT_STRING,$tab_users_fichier['prenom'],SORT_ASC,SORT_STRING,$tab_users_fichier['id_ent']);
+	array_multisort($tab_users_fichier['nom'],SORT_ASC,SORT_STRING,$tab_users_fichier['prenom'],SORT_ASC,SORT_STRING,$tab_users_fichier['id_ent'],$tab_users_fichier['id_sconet']);
 	// On récupère le contenu de la base pour comparer
-	$tab_users_base           = array();
-	$tab_users_base['id_ent'] = array();
-	$tab_users_base['nom']    = array();
-	$tab_users_base['prenom'] = array();
-	$tab_users_base['info']   = array();
+	$tab_users_base              = array();
+	$tab_users_base['id_ent']    = array();
+	$tab_users_base['nom']       = array();
+	$tab_users_base['prenom']    = array();
+	$tab_users_base['id_sconet'] = array();
+	$tab_users_base['info']      = array();
 	$DB_TAB = DB_STRUCTURE_lister_users(array('eleve','professeur','directeur'),$only_actifs=false,$with_classe=true);
 	foreach($DB_TAB as $DB_ROW)
 	{
-		$tab_users_base['id_ent'][$DB_ROW['user_id']] = $DB_ROW['user_id_ent'];
-		$tab_users_base['nom'][$DB_ROW['user_id']]    = $DB_ROW['user_nom'];
-		$tab_users_base['prenom'][$DB_ROW['user_id']] = $DB_ROW['user_prenom'];
-		$tab_users_base['info'][$DB_ROW['user_id']]   = ($DB_ROW['user_profil']=='eleve') ? $DB_ROW['groupe_nom'] : mb_strtoupper($DB_ROW['user_profil']) ;
+		$tab_users_base['id_ent'][$DB_ROW['user_id']]    = $DB_ROW['user_id_ent'];
+		$tab_users_base['nom'][$DB_ROW['user_id']]       = $DB_ROW['user_nom'];
+		$tab_users_base['prenom'][$DB_ROW['user_id']]    = $DB_ROW['user_prenom'];
+		$tab_users_base['id_sconet'][$DB_ROW['user_id']] = $DB_ROW['user_sconet_id'];
+		$tab_users_base['info'][$DB_ROW['user_id']]      = ($DB_ROW['user_profil']=='eleve') ? $DB_ROW['groupe_nom'] : mb_strtoupper($DB_ROW['user_profil']) ;
 	}
 	// Observer le contenu du fichier et comparer avec le contenu de la base
 	$lignes_ras = '';
@@ -618,42 +627,78 @@ if($action=='import_ent')
 		}
 		else
 		{
-			// On recherche l'id de l'utilisateur de la base de même nom et prénom
-			$tab_id_nom    = array_keys($tab_users_base['nom'],$tab_users_fichier['nom'][$i_fichier]);
-			$tab_id_prenom = array_keys($tab_users_base['prenom'],$tab_users_fichier['prenom'][$i_fichier]);
-			$tab_id_commun = array_intersect($tab_id_nom,$tab_id_prenom);
-			$nb_homonymes  = count($tab_id_commun);
-			if($nb_homonymes == 0)
+			// Dans les CSV de Lilie & Celi@ les noms/prénoms ne sont pas accentués, mais par contre on a l'id Sconet
+			if($tab_users_fichier['id_sconet'][$i_fichier])
 			{
-				// Contenu du fichier à ignorer : utilisateur non trouvé dans la base
-				$lignes_pb .= '<tr><td>'.html($tab_users_fichier['nom'][$i_fichier].' '.$tab_users_fichier['prenom'][$i_fichier].' ['.$tab_users_fichier['id_ent'][$i_fichier].']').'</td><td>nom et prénom non trouvés dans la base</td></tr>';
-			}
-			elseif($nb_homonymes > 1 )
-			{
-				// Contenu du fichier à ignorer : plusieurs homonymes trouvés dans la base
-				$lignes_pb .= '<tr><td>'.html($tab_users_fichier['nom'][$i_fichier].' '.$tab_users_fichier['prenom'][$i_fichier].' ['.$tab_users_fichier['id_ent'][$i_fichier].']').'</td><td>homonymes trouvés dans la base : traiter ce cas manuellement</td></tr>';
-			}
-			else
-			{
-				list($inutile,$id_base) = each($tab_id_commun);
-				if($tab_users_fichier['id_ent'][$i_fichier]==$tab_users_base['id_ent'][$id_base])
+				$id_base = array_search( $tab_users_fichier['id_sconet'][$i_fichier] , $tab_users_base['id_sconet'] );
+				if($id_base == FALSE)
 				{
-					// Contenu du fichier à ignorer : id_ent identique
-					$lignes_ras .= '<tr><td>'.html($tab_users_fichier['nom'][$i_fichier].' '.$tab_users_fichier['prenom'][$i_fichier].' ['.$tab_users_fichier['id_ent'][$i_fichier].']').'</td><td>identifiant d\'ENT identique</td></tr>';
+					// Contenu du fichier à ignorer : utilisateur non trouvé dans la base
+					$lignes_pb .= '<tr><td>'.html($tab_users_fichier['nom'][$i_fichier].' '.$tab_users_fichier['prenom'][$i_fichier].' ['.$tab_users_fichier['id_ent'][$i_fichier].']').'</td><td>identifiant Sconet '.$tab_users_fichier['id_sconet'][$i_fichier].' non trouvé dans la base</td></tr>';
 				}
 				else
 				{
-					// id_ent différents...
-					if(in_array($tab_users_fichier['id_ent'][$i_fichier],$tab_users_base['id_ent']))
+					if($tab_users_fichier['id_ent'][$i_fichier]==$tab_users_base['id_ent'][$id_base])
 					{
-						// Contenu du fichier à problème : id_ent déjà pris
-						$lignes_pb .= '<tr><td>'.html($tab_users_fichier['nom'][$i_fichier].' '.$tab_users_fichier['prenom'][$i_fichier].' ['.$tab_users_fichier['id_ent'][$i_fichier].']').'</td><td>identifiant d\'ENT déjà affecté à un autre utilisateur</td></tr>';
+						// Contenu du fichier à ignorer : id_ent identique
+						$lignes_ras .= '<tr><td>'.html($tab_users_fichier['nom'][$i_fichier].' '.$tab_users_fichier['prenom'][$i_fichier].' ['.$tab_users_fichier['id_ent'][$i_fichier].']').'</td><td>identifiant d\'ENT identique</td></tr>';
 					}
 					else
 					{
-						// Contenu du fichier à modifier : id_ent nouveau
-						DB_STRUCTURE_modifier_utilisateur( $id_base , array(':id_ent'=>$id_ent) );
-						$lignes_mod .= '<tr class="new"><td>'.html($tab_users_fichier['nom'][$i_fichier].' '.$tab_users_fichier['prenom'][$i_fichier].' ('.$tab_users_base['info'][$id_base].')').'</td><td class="b">Id ENT : '.html($id_ent).'</td></tr>';
+						// id_ent différents...
+						if(in_array($tab_users_fichier['id_ent'][$i_fichier],$tab_users_base['id_ent']))
+						{
+							// Contenu du fichier à problème : id_ent déjà pris
+							$lignes_pb .= '<tr><td>'.html($tab_users_fichier['nom'][$i_fichier].' '.$tab_users_fichier['prenom'][$i_fichier].' ['.$tab_users_fichier['id_ent'][$i_fichier].']').'</td><td>identifiant d\'ENT déjà affecté à un autre utilisateur</td></tr>';
+						}
+						else
+						{
+							// Contenu du fichier à modifier : id_ent nouveau
+							DB_STRUCTURE_modifier_utilisateur( $id_base , array(':id_ent'=>$id_ent) );
+							$lignes_mod .= '<tr class="new"><td>'.html($tab_users_fichier['nom'][$i_fichier].' '.$tab_users_fichier['prenom'][$i_fichier].' ('.$tab_users_base['info'][$id_base].')').'</td><td class="b">Id ENT : '.html($id_ent).'</td></tr>';
+						}
+					}
+				}
+			}
+			else
+			{
+				// On recherche l'id de l'utilisateur de la base de même nom et prénom
+				$tab_id_nom    = array_keys($tab_users_base['nom'],$tab_users_fichier['nom'][$i_fichier]);
+				$tab_id_prenom = array_keys($tab_users_base['prenom'],$tab_users_fichier['prenom'][$i_fichier]);
+				$tab_id_commun = array_intersect($tab_id_nom,$tab_id_prenom);
+				$nb_homonymes  = count($tab_id_commun);
+				if($nb_homonymes == 0)
+				{
+					// Contenu du fichier à ignorer : utilisateur non trouvé dans la base
+					$lignes_pb .= '<tr><td>'.html($tab_users_fichier['nom'][$i_fichier].' '.$tab_users_fichier['prenom'][$i_fichier].' ['.$tab_users_fichier['id_ent'][$i_fichier].']').'</td><td>nom et prénom non trouvés dans la base</td></tr>';
+				}
+				elseif($nb_homonymes > 1 )
+				{
+					// Contenu du fichier à ignorer : plusieurs homonymes trouvés dans la base
+					$lignes_pb .= '<tr><td>'.html($tab_users_fichier['nom'][$i_fichier].' '.$tab_users_fichier['prenom'][$i_fichier].' ['.$tab_users_fichier['id_ent'][$i_fichier].']').'</td><td>homonymes trouvés dans la base : traiter ce cas manuellement</td></tr>';
+				}
+				else
+				{
+					list($inutile,$id_base) = each($tab_id_commun);
+					if($tab_users_fichier['id_ent'][$i_fichier]==$tab_users_base['id_ent'][$id_base])
+					{
+						// Contenu du fichier à ignorer : id_ent identique
+						$lignes_ras .= '<tr><td>'.html($tab_users_fichier['nom'][$i_fichier].' '.$tab_users_fichier['prenom'][$i_fichier].' ['.$tab_users_fichier['id_ent'][$i_fichier].']').'</td><td>identifiant d\'ENT identique</td></tr>';
+					}
+					else
+					{
+						// id_ent différents...
+						if(in_array($tab_users_fichier['id_ent'][$i_fichier],$tab_users_base['id_ent']))
+						{
+							// Contenu du fichier à problème : id_ent déjà pris
+							$lignes_pb .= '<tr><td>'.html($tab_users_fichier['nom'][$i_fichier].' '.$tab_users_fichier['prenom'][$i_fichier].' ['.$tab_users_fichier['id_ent'][$i_fichier].']').'</td><td>identifiant d\'ENT déjà affecté à un autre utilisateur</td></tr>';
+						}
+						else
+						{
+							// Contenu du fichier à modifier : id_ent nouveau
+							DB_STRUCTURE_modifier_utilisateur( $id_base , array(':id_ent'=>$id_ent) );
+							$lignes_mod .= '<tr class="new"><td>'.html($tab_users_fichier['nom'][$i_fichier].' '.$tab_users_fichier['prenom'][$i_fichier].' ('.$tab_users_base['info'][$id_base].')').'</td><td class="b">Id ENT : '.html($id_ent).'</td></tr>';
+						}
 					}
 				}
 			}
@@ -824,8 +869,8 @@ if( ($action=='COPY_id_argos_profs_TO_id_ent') || ($action=='COPY_id_argos_eleve
 		foreach ($xml->reponses->utilisateur as $utilisateur)
 		{
 			$tab_users_ldap['id_ent'][] = mb_substr((string)$utilisateur->uid,0,32);
-			$tab_users_ldap['nom'][]    = mb_substr(clean_nom($utilisateur->nom),0,20);
-			$tab_users_ldap['prenom'][] = mb_substr(clean_prenom($utilisateur->prenom),0,20);
+			$tab_users_ldap['nom'][]    = mb_substr(clean_nom($utilisateur->nom),0,25);
+			$tab_users_ldap['prenom'][] = mb_substr(clean_prenom($utilisateur->prenom),0,25);
 		}
 	}
 	// On trie

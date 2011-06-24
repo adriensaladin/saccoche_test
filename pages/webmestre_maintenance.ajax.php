@@ -147,9 +147,9 @@ if($action=='maj_etape4')
 	{
 		if( (isset($tab['avant'])) && (isset($tab['apres'])) )
 		{
-			if($tab['avant']!=$tab['apres'])
+			if( ($tab['avant']!=$tab['apres']) && ($fichier!='/.htaccess') )
 			{
-				// Fichier changé => maj
+				// Fichier changé => maj (si le .htaccess a été changé, c'est sans doute volontaire, ne pas y toucher)
 				if( !copy( $dossier_dezip.$fichier , $dossier_install.$fichier ) )
 				{
 					ajouter_log_PHP( $log_objet='Mise à jour des fichiers' , $log_contenu='Application accessible.' , $log_fichier=__FILE__ , $log_ligne=__LINE__ , $only_sesamath=false );
@@ -159,9 +159,9 @@ if($action=='maj_etape4')
 				$tab_rapport[] = 'Mise à jour du fichier '.$fichier;
 			}
 		}
-		elseif(!isset($tab['avant']))
+		elseif( (!isset($tab['avant'])) && ($fichier!='/.htaccess') )
 		{
-			// Fichier à ajouter
+			// Fichier à ajouter (si le .htaccess n'y est pas, c'est sans doute volontaire, ne pas l'y remettre)
 			if( !copy( $dossier_dezip.$fichier , $dossier_install.$fichier ) )
 			{
 				ajouter_log_PHP( $log_objet='Mise à jour des fichiers' , $log_contenu='Application accessible.' , $log_fichier=__FILE__ , $log_ligne=__LINE__ , $only_sesamath=false );

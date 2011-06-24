@@ -327,7 +327,7 @@ table#statistiques td {text-align:center}
 table i {display:none}
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-/* Style pour les infobulles                                                                           */
+/* Infobulles                                                                                          */
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 #tooltip {position:absolute;z-index:3000;border:1px dotted #66F;background:#FFF;color:#222;font-size:12px;font-weight:bold;padding:0.25em;opacity:0.95} /* Contenu de l'infobulle */
@@ -336,7 +336,7 @@ table i {display:none}
 #tooltip div.url {} /* URL de l'infobulle, si utilisation de showURL */
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-/* Style pour le calque de recherche (uniquement le calendrier en fait)                                */
+/* Calque de recherche (uniquement le calendrier en fait)                                              */
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 #calque{position:absolute;z-index:9999;left:0;top:0;border:1px dotted #66F;background:#EEE;font-size:12px;padding:0.25em;text-align:center}
@@ -344,8 +344,15 @@ table i {display:none}
 #calque h6 {margin:0.5em auto;color:#33A;font-size:110%;} /* Consigne */
 #calque th,#calque td {text-align:center}
 #calque td.hoy {background-color:#99FF99}
+
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-/* Style pour la zone de choix d'association d'une compétence du socle.                                */
+/* Afficher le détail d'un référentiel dans un calque par dessus le contenu.                           */
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
+.calque_referentiel{position:absolute;top:5px;left:5px;right:5px;bottom:5px;border:1px solid dotted #66F;background:#FFF;padding:5px}
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+/* Zone de choix d'association d'une compétence du socle.                                              */
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 #zone_socle{position:absolute;z-index:9999;left:0;top:10px;right:0;bottom:0;border:0;background:#EEE;font-size:13px;padding:0.25em;overflow:auto;display:none}

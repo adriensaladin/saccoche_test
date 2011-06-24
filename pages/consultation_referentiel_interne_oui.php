@@ -183,8 +183,6 @@ else
 
 </form>
 
-<hr />
-
 <div id="referentiel">
 </div>
 

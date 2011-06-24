@@ -27,7 +27,7 @@
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = "Importer des fichiers d'utilisateurs";
-$VERSION_JS_FILE += 4;
+$VERSION_JS_FILE += 5;
 ?>
 
 <?php
@@ -56,7 +56,6 @@ $nom_fin_fichier = $_SESSION['UAI'].'_'.$annee_scolaire;
 			<option value=""></option>
 			<optgroup label="Fichiers extraits de Sconet / STS-Web (recommandé pour le second degré)">
 				<option value="sconet_eleves_<?php echo $test_UAI ?>">Importer les élèves (avec leurs affectations).</option>
-				<!-- <option value="sconet_parents_<?php echo $test_UAI ?>">Importer les parents (avec adresses et responsabilités).</option> -->
 				<option value="sconet_professeurs_directeurs_<?php echo $test_UAI ?>">Importer professeurs &amp; directeurs (avec leurs affectations).</option>
 			</optgroup>
 			<optgroup label="Fichier extrait de Base Élèves (recommandé pour le premier degré)">
@@ -138,7 +137,7 @@ $nom_fin_fichier = $_SESSION['UAI'].'_'.$annee_scolaire;
 </form>
 
 
-<form id="form2" action="">
+<form id="form2" action=""><fieldset>
 	<hr />
 	<label id="ajax_msg">&nbsp;</label>
-</form>
+</fieldset></form>

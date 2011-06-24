@@ -38,7 +38,7 @@ $(document).ready
 
 		// tri du tableau (avec jquery.tablesorter.js).
 		var sorting = [[0,0],[1,0]]; 
-		$('table.form').tablesorter({ headers:{2:{sorter:false}} });
+		$('table.form').tablesorter({ headers:{3:{sorter:false}} });
 		function trier_tableau()
 		{
 			if($('table.form tbody tr').length)
@@ -64,6 +64,7 @@ $(document).ready
 			afficher_masquer_images_action('hide');
 			new_tr  = '<tr>';
 			new_tr += '<td><select id="f_niveau" name="f_niveau">'+select_niveau+'</select></td>';
+			new_tr += '<td><input id="f_ref" name="f_ref" size="8" type="text" value="" /></td>';
 			new_tr += '<td><input id="f_nom" name="f_nom" size="20" type="text" value="" /></td>';
 			new_tr += '<td class="nu"><input id="f_action" name="f_action" type="hidden" value="'+mode+'" /><q class="valider" title="Valider l\'ajout de ce groupe."></q><q class="annuler" title="Annuler l\'ajout de ce groupe."></q> <label id="ajax_msg">&nbsp;</label></td>';
 			new_tr += '</tr>';
@@ -83,12 +84,14 @@ $(document).ready
 			afficher_masquer_images_action('hide');
 			// Récupérer les informations de la ligne concernée
 			id         = $(this).parent().parent().attr('id').substring(3);
-			niveau_nom = $(this).parent().prev().prev().html();
+			niveau_nom = $(this).parent().prev().prev().prev().html();
+			ref        = $(this).parent().prev().prev().html();
 			nom        = $(this).parent().prev().html();
 			niveau_nom = niveau_nom.substring(9,niveau_nom.length); // enlever l'ordre du niveau caché
 			// Fabriquer la ligne avec les éléments de formulaires
 			new_tr  = '<tr>';
 			new_tr += '<td><select id="f_niveau" name="f_niveau">'+select_niveau.replace('>'+niveau_nom,' selected>'+niveau_nom)+'</select></td>';
+			new_tr += '<td><input id="f_ref" name="f_ref" size="'+Math.max(ref.length,3)+'" type="text" value="'+ref+'" /></td>';
 			new_tr += '<td><input id="f_nom" name="f_nom" size="'+Math.max(nom.length,5)+'" type="text" value="'+nom+'" /></td>';
 			new_tr += '<td class="nu"><input id="f_action" name="f_action" type="hidden" value="'+mode+'" /><input id="f_id" name="f_id" type="hidden" value="'+id+'" /><q class="valider" title="Valider les modifications de ce groupe."></q><q class="annuler" title="Annuler les modifications de ce groupe."></q> <label id="ajax_msg">&nbsp;</label></td>';
 			new_tr += '</tr>';
@@ -179,12 +182,14 @@ $(document).ready
 				rules :
 				{
 					f_niveau : { required:true },
-					f_nom : { required:true , maxlength:20 }
+					f_ref    : { required:true , maxlength:8 },
+					f_nom    : { required:true , maxlength:20 }
 				},
 				messages :
 				{
 					f_niveau : { required:"niveau manquant" },
-					f_nom : { required:"nom manquant" , maxlength:"20 caractères maximum" }
+					f_ref    : { required:"référence manquante" , maxlength:"8 caractères maximum" },
+					f_nom    : { required:"nom manquant" , maxlength:"20 caractères maximum" }
 				},
 				errorElement : "label",
 				errorClass : "erreur",

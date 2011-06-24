@@ -48,8 +48,8 @@ header("Content-type: image/png");
 require_once('../../_inc/fonction_clean.php');
 
 $dossier = isset($_GET['dossier']) ? clean_entier($_GET['dossier'])                : 'x' ;
-$nom     = isset($_GET['nom'])     ? mb_substr(clean_nom($_GET['nom']),0,20)       : ' ' ;
-$prenom  = isset($_GET['prenom'])  ? mb_substr(clean_prenom($_GET['prenom']),0,20) : ' ' ;
+$nom     = isset($_GET['nom'])     ? mb_substr(clean_nom($_GET['nom']),0,25)       : ' ' ;
+$prenom  = isset($_GET['prenom'])  ? mb_substr(clean_prenom($_GET['prenom']),0,25) : ' ' ;
 $br_line = isset($_GET['br'])      ? 2                                             : 1 ; // 2 pour nom / retour à la ligne / prénom ; 1 pour nom / prénom à la suite
 
 $chemin = '../../__tmp/badge/'.$dossier;

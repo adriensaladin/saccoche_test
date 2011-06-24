@@ -322,8 +322,8 @@ function maj_base_si_besoin($BASE)
 function fabriquer_login($prenom,$nom,$profil)
 {
 	$modele = $_SESSION['MODELE_'.strtoupper($profil)];
-	$login_prenom = mb_substr( clean_login($prenom) , 0 , mb_substr_count($modele,'p') );
-	$login_nom    = mb_substr( clean_login($nom)    , 0 , mb_substr_count($modele,'n') );
+	$login_prenom = mb_substr( str_replace(array('.','-','_'),'',clean_login($prenom)) , 0 , mb_substr_count($modele,'p') );
+	$login_nom    = mb_substr( str_replace(array('.','-','_'),'',clean_login($nom))    , 0 , mb_substr_count($modele,'n') );
 	$login_separe = str_replace(array('p','n'),'',$modele);
 	$login = ($modele{0}=='p') ? $login_prenom.$login_separe.$login_nom : $login_nom.$login_separe.$login_prenom ;
 	return $login;
@@ -485,62 +485,25 @@ function debloquer_application($profil_demandeur,$id_base)
 }
 
 /**
- * tester_blocage_application
- * 
- * Blocage des sites sur demande du webmestre ou d'un administrateur (maintenance, sauvegarde/restauration, ...).
+ * annuler_blocage_anormal
+ * Concerne un blocage demandé par l'automate pour un établissement donné.
+ * Au cas où une procédure de sauvegarde / restauration / nettoyage / tranfert échouerait, un fichier de blocage automatique pourrait être créé et ne pas être effacé.
+ * Pour cette raison on teste une durée de vie anormalement longue d'une tel fichier de blocage (puisqu'il ne devrait être que temporaire).
  * 
  * Nécessite que la session soit ouverte.
+ * N'est pas effectué au moment de l'appel à tester_blocage_application() car nécessite des fonctions pas encore chargées (le test du blocage devant être effectué dès que possible).
  * Appelé depuis les pages index.php + ajax.php + lors d'une demande d'identification d'un utilisateur (sauf webmestre)
  * 
- * En cas de blocage demandé par le webmestre, on ne laisse l'accès que :
- * - pour le webmestre déjà identifié
- * - pour la partie publique, si pas une demande d'identification, sauf demande webmestre
- * 
- * En cas de blocage demandé par un administrateur ou par l'automate (sauvegarde/restauration) pour un établissement donné, on ne laisse l'accès que :
- * - pour le webmestre déjà identifié
- * - pour un administrateur déjà identifié
- * - pour la partie publique, si pas une demande d'identification, sauf demande webmestre ou administrateur
- * 
- * @param string $BASE                       car $_SESSION['BASE'] non encore renseigné si demande d'identification
- * @param string $demande_connexion_profil   false si appel depuis index.php ou ajax.php, le profil si demande d'identification
+ * @param void
  * @return void
  */
 
-function tester_blocage_application($BASE,$demande_connexion_profil)
+function annuler_blocage_anormal()
 {
-	global $CHEMIN_CONFIG;
-	// Blocage demandé par le webmestre pour tous les établissements (multi-structures) ou pour l'établissement (mono-structure).
-	$fichier_blocage = $CHEMIN_CONFIG.'blocage_webmestre_0.txt';
-	if( (is_file($fichier_blocage)) && ($_SESSION['USER_PROFIL']!='webmestre') && (($_SESSION['USER_PROFIL']!='public')||($demande_connexion_profil!=false)) )
+	if(isset($_SESSION['blocage_anormal']))
 	{
-		affich_message_exit($titre='Blocage par le webmestre',$contenu='Blocage par le webmestre - '.file_get_contents($fichier_blocage) );
-	}
-	// Blocage demandé par le webmestre pour un établissement donné (multi-structures).
-	$fichier_blocage = $CHEMIN_CONFIG.'blocage_webmestre_'.$BASE.'.txt';
-	if( (is_file($fichier_blocage)) && ($_SESSION['USER_PROFIL']!='webmestre') && (($_SESSION['USER_PROFIL']!='public')||($demande_connexion_profil!=false)) )
-	{
-		affich_message_exit($titre='Blocage par le webmestre',$contenu='Blocage par le webmestre - '.file_get_contents($fichier_blocage) );
-	}
-	// Blocage demandé par un administrateur pour son établissement.
-	$fichier_blocage = $CHEMIN_CONFIG.'blocage_administrateur_'.$BASE.'.txt';
-	if( (is_file($fichier_blocage)) && (!in_array($_SESSION['USER_PROFIL'],array('webmestre','administrateur'))) && (($_SESSION['USER_PROFIL']!='public')||($demande_connexion_profil=='normal')) )
-	{
-		affich_message_exit($titre='Blocage par un administrateur',$contenu='Blocage par un administrateur - '.file_get_contents($fichier_blocage) );
-	}
-	// Blocage demandé par l'automate pour un établissement donné.
-	$fichier_blocage = $CHEMIN_CONFIG.'blocage_automate_'.$BASE.'.txt';
-	if( (is_file($fichier_blocage)) && (!in_array($_SESSION['USER_PROFIL'],array('webmestre','administrateur'))) && (($_SESSION['USER_PROFIL']!='public')||($demande_connexion_profil=='normal')) )
-	{
-		// Au cas où une procédure de sauvegarde / restauration / nettoyage / tranfert échouerait, un fichier de blocage automatique pourrait être créé et ne pas être effacé.
-		// Pour cette raison on teste une durée de vie anormalement longue d'une tel fichier de blocage (puisqu'il ne devrait être que temporaire).
-		if( time() - filemtime($fichier_blocage) < 5*60 )
-		{
-			affich_message_exit($titre='Blocage automatique',$contenu='Blocage automatique - '.file_get_contents($fichier_blocage) );
-		}
-		else
-		{
-			debloquer_application('automate',$BASE);
-		}
+		unset($_SESSION['blocage_anormal']);
+		debloquer_application('automate',$BASE);
 	}
 }
 
@@ -593,17 +556,14 @@ function connecter_webmestre($password)
  * connecter_user
  * 
  * @param int       $BASE
- * @param string    $profil   'normal' ou 'administrateur'
  * @param string    $login
  * @param string    $password
  * @param string    $mode_connection   'normal' ou 'cas' ou ...
  * @return string   retourne 'ok' en cas de succès (et dans ce cas la session est mise à jour) ou un message d'erreur sinon
  */
 
-function connecter_user($BASE,$profil,$login,$password,$mode_connection)
+function connecter_user($BASE,$login,$password,$mode_connection)
 {
-	// Blocage éventuel par le webmestre ou un administrateur
-	tester_blocage_application($BASE,$demande_connexion_profil=$profil);
 	// En cas de multi-structures, il faut charger les paramètres de connexion à la base concernée
 	// Sauf pour une connexion à un ENT, car alors il a déjà fallu les charger pour récupérer les paramètres de connexion à l'ENT
 	if( ($BASE) && ($mode_connection=='normal') )
@@ -615,8 +575,11 @@ function connecter_user($BASE,$profil,$login,$password,$mode_connection)
 	// Si login non trouvé...
 	if(!count($DB_ROW))
 	{
-		return ($mode_connection=='normal') ? 'Nom d\'utilisateur incorrect !' : 'Identification réussie mais identifiant ENT "'.$login.'" inconnu dans SACoche !' ;
+		return ($mode_connection=='normal') ? 'Nom d\'utilisateur incorrect !' : 'Identification réussie mais identifiant ENT "'.$login.'" inconnu dans SACoche !<br />Un administrateur doit renseigner que l\'identifiant ENT associé à votre compte SACoche est "'.$login.'"&hellip;' ;
 	}
+	// Blocage éventuel par le webmestre ou un administrateur
+	tester_blocage_application($BASE,$DB_ROW['user_profil']);
+	annuler_blocage_anormal();
 	// Si tentatives trop rapprochées...
 	$delai_attente_consomme = time() - $DB_ROW['tentative_unix'] ;
 	if($delai_attente_consomme<3)
@@ -639,11 +602,6 @@ function connecter_user($BASE,$profil,$login,$password,$mode_connection)
 	if($DB_ROW['user_statut']!=1)
 	{
 		return'Identification réussie mais ce compte est desactivé !';
-	}
-	// Si erreur de profil...
-	if( ( ($profil!='administrateur')&&($DB_ROW['user_profil']=='administrateur') ) || ( ($profil=='administrateur')&&($DB_ROW['user_profil']!='administrateur') ) )
-	{
-		return'Utilisez le formulaire approprié aux '.str_replace('eleve','élève',$DB_ROW['user_profil']).'s !';
 	}
 	// Si on arrive ici c'est que l'identification s'est bien effectuée !
 	enregistrer_informations_session($BASE,$DB_ROW);

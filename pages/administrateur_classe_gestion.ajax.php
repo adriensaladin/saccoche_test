@@ -42,7 +42,7 @@ if( ($action=='ajouter') && $niveau && $ref && $nom )
 	// Vérifier que la référence de la classe est disponible
 	if( DB_STRUCTURE_tester_classe_reference($ref) )
 	{
-		exit('Erreur : référence déjà existante !');
+		exit('Erreur : référence de classe déjà existante !');
 	}
 	// Insérer l'enregistrement
 	$groupe_id = DB_STRUCTURE_ajouter_groupe('classe',0,$ref,$nom,$niveau);

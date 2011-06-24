@@ -27,6 +27,7 @@
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = "Gérer les groupes";
+$VERSION_JS_FILE += 1;
 ?>
 
 <p><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__gestion_groupes">DOC : Gestion des groupes</a></span></p>
@@ -38,18 +39,21 @@ $TITRE = "Gérer les groupes";
 		<thead>
 			<tr>
 				<th>Niveau</th>
-				<th>Nom</th>
+				<th>Référence</th>
+				<th>Nom complet</th>
 				<th class="nu"><q class="ajouter" title="Ajouter un groupe."></q></th>
 			</tr>
 		</thead>
 		<tbody>
 			<?php
+			// Lister les groupes avec les niveaux
 			$DB_TAB = DB_STRUCTURE_lister_groupes_avec_niveaux();
 			foreach($DB_TAB as $DB_ROW)
 			{
 				// Afficher une ligne du tableau
 				echo'<tr id="id_'.$DB_ROW['groupe_id'].'">';
 				echo	'<td><i>'.sprintf("%02u",$DB_ROW['niveau_ordre']).'</i>'.html($DB_ROW['niveau_nom']).'</td>';
+				echo	'<td>'.html($DB_ROW['groupe_ref']).'</td>';
 				echo	'<td>'.html($DB_ROW['groupe_nom']).'</td>';
 				echo	'<td class="nu">';
 				echo		'<q class="modifier" title="Modifier ce groupe."></q>';

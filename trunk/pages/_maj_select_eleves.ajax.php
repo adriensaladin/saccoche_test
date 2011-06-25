@@ -36,8 +36,6 @@ if( ($_SESSION['USER_PROFIL']=='administrateur') || (isset($_POST['f_groupe_id']
 {
 	$groupe_type = (isset($_POST['f_groupe_type'])) ? clean_texte($_POST['f_groupe_type']) : ''; // d n c g
 	$groupe_id   = (isset($_POST['f_groupe_id']))   ? clean_entier($_POST['f_groupe_id'])  : 0;
-	$statut      = (isset($_POST['f_statut']))      ? clean_entier($_POST['f_statut'])     : 0;
-	$multiple    = (isset($_POST['f_multiple']))    ? clean_entier($_POST['f_multiple'])   : 1;
 	$tab_types = array('d'=>'Divers' , 'n'=>'niveau' , 'c'=>'classe' , 'g'=>'groupe');
 	if( (!$groupe_id) || (!isset($tab_types[$groupe_type])) )
 	{
@@ -56,7 +54,6 @@ else
 {
 	$groupe_type = (isset($_POST['f_type']))   ? clean_texte($_POST['f_type'])    : ''; // Classes Groupes Besoins
 	$groupe_id   = (isset($_POST['f_groupe'])) ? clean_entier($_POST['f_groupe']) : 0;
-	$statut      = (isset($_POST['f_statut'])) ? clean_entier($_POST['f_statut']) : 0;
 	$tab_types = array('Classes'=>'classe' , 'Groupes'=>'groupe' , 'Besoins'=>'groupe');
 	if( (!$groupe_id) || (!isset($tab_types[$groupe_type])) )
 	{
@@ -65,10 +62,14 @@ else
 	$groupe_type = $tab_types[$groupe_type];
 }
 
-// Affichage du retour.
+// Autres valeurs à récupérer.
 
+$statut       = (isset($_POST['f_statut']))   ? clean_entier($_POST['f_statut'])   : 0;
+$multiple     = (isset($_POST['f_multiple'])) ? clean_entier($_POST['f_multiple']) : 1 ;
 $option_first = ($multiple) ? 'non' : 'oui' ;
 $selection    = ($multiple) ? TRUE  : FALSE ;
+
+// Affichage du retour.
 
 echo afficher_select(DB_STRUCTURE_OPT_eleves_regroupement($groupe_type,$groupe_id,$statut) , $select_nom=false , $option_first , $selection , $optgroup='non');
 

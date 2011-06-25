@@ -33,8 +33,7 @@ $TITRE = "Élèves";
 	<a href="./index.php?page=<?php echo $PAGE ?>&amp;section=gestion">Élèves (gestion).</a>	||
 	<a href="./index.php?page=<?php echo $PAGE ?>&amp;section=classe">Élèves &amp; classes.</a>	||
 	<a href="./index.php?page=<?php echo $PAGE ?>&amp;section=groupe">Élèves &amp; groupes.</a>	||
-	<a href="./index.php?page=<?php echo $PAGE ?>&amp;section=langue">Élèves &amp; langues.</a>	||
-	<a href="./index.php?page=<?php echo $PAGE ?>&amp;section=parent">Élèves &amp; parents.</a>
+	<a href="./index.php?page=<?php echo $PAGE ?>&amp;section=langue">Élèves &amp; langues.</a>
 </div>
 
 <hr />

@@ -178,7 +178,7 @@ $(document).ready
 		selectionner_periode_adaptee();
 
 		//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
-		//	Charger les selects f_eleve (pour le professeur et le directeur) et f_matiere (pour le directeur) en ajax
+		//	Charger les selects f_eleve (pour le professeur et le directeur et les parents de plusieurs enfants) et f_matiere (pour le directeur) en ajax
 		//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
 
 		var matiere_id  = 0;
@@ -200,7 +200,7 @@ $(document).ready
 					},
 					success : function(responseHTML)
 					{
-						maj_clock(1);
+						initialiser_compteur();
 						if(responseHTML.substring(0,7)=='<option')	// Attention aux caractères accentués : l'utf-8 pose des pbs pour ce test
 						{
 							$('#f_matiere').html(responseHTML).show();
@@ -230,7 +230,7 @@ $(document).ready
 					},
 					success : function(responseHTML)
 					{
-						maj_clock(1);
+						initialiser_compteur();
 						if(responseHTML.substring(0,7)=='<option')	// Attention aux caractères accentués : l'utf-8 pose des pbs pour ce test
 						{
 							$('#ajax_maj').removeAttr("class").html("&nbsp;");
@@ -250,8 +250,8 @@ $(document).ready
 			function()
 			{
 				// Pour un directeur, on met à jour f_matiere (on mémorise avant matiere_id) puis f_eleve
-				// Pour un professeur, on met à jour f_eleve uniquement
-				// Pour un élève cette fonction n'est pas appelée puisque son groupe (masqué) ne peut être changé
+				// Pour un professeur ou un parent de plusieurs enfants, on met à jour f_eleve uniquement
+				// Pour un élève ou un parent d'un seul enfant cette fonction n'est pas appelée puisque son groupe (masqué) ne peut être changé
 				if(profil=='directeur')
 				{
 					matiere_id = $("#f_matiere").val();
@@ -267,7 +267,7 @@ $(document).ready
 					{
 						maj_matiere(groupe_id,matiere_id);
 					}
-					else if(profil=='professeur')
+					else if( (profil=='professeur') || (profil=='parent') )
 					{
 						maj_eleve(groupe_id,groupe_type);
 					}
@@ -439,7 +439,7 @@ $(document).ready
 		// Fonction suivant l'envoi du formulaire (avec jquery.form.js)
 		function retour_form_valide(responseHTML)
 		{
-			maj_clock(1);
+			initialiser_compteur();
 			$('button').prop('disabled',false);
 			if(responseHTML.substring(0,17)!='<ul class="puce">')
 			{

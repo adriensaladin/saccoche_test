@@ -32,21 +32,15 @@ $VERSION_JS_FILE += 1;
 ?>
 
 <?php
-// Indication des profils ayant accès à cette validation
-$tab_texte = array( 'directeur'=>'les directeurs' , 'professeur'=>'les professeurs' , 'profprincipal'=>'les professeurs principaux' );
+// Indication des profils ayant accès à cette page
+require_once('./_inc/tableau_profils.php'); // Charge $tab_profil_libelle[$profil][court|long][1|2]
+$tab_profils = array('directeur','professeur','profprincipal');
 $str_objet = str_replace( array(',aucunprof','aucunprof,','aucunprof') , '' , $_SESSION['DROIT_ANNULATION_PILIER'] );
-if($str_objet=='')
+foreach($tab_profils as $profil)
 {
-	$texte = 'aucun';
+	$str_objet = str_replace($profil,$tab_profil_libelle[$profil]['long'][2],$str_objet);
 }
-elseif(strpos($str_objet,',')===false)
-{
-	$texte = 'uniquement '.$tab_texte[$str_objet];
-}
-else
-{
-	$texte = str_replace( array('directeur','professeur','profprincipal',',') , array($tab_texte['directeur'],$tab_texte['professeur'],$tab_texte['profprincipal'],' et ') , $str_objet );
-}
+$texte = ($str_objet=='') ? 'aucun' : ( (strpos($str_objet,',')===false) ? 'uniquement les '.$str_objet : str_replace(',',' + ',$str_objet) ) ;
 
 // Fabrication des éléments select du formulaire
 $tab_paliers = DB_STRUCTURE_OPT_paliers_etabl($_SESSION['PALIERS']);

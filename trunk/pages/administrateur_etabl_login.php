@@ -29,11 +29,12 @@ if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');
 $TITRE = "Format des noms d'utilisateurs";
 $VERSION_JS_FILE += 1;
 
+require_once('./_inc/tableau_profils.php'); // Charge $tab_profil_libelle[$profil][court|long][1|2]
 $tab_profils = array('directeur','professeur','eleve','parent');
 $affichage = '';
 foreach($tab_profils as $profil)
 {
-	$affichage .= '<p><label class="tab" for="f_login_'.$profil.'">Format '.str_replace('eleve','élève',$profil).' :</label><input type="text" id="f_login_'.$profil.'" name="f_login_'.$profil.'" value="'.$_SESSION[strtoupper('MODELE_'.$profil)].'" size="20" maxlength="20" /></p>';
+	$affichage .= '<p><label class="tab" for="f_login_'.$profil.'">'.$tab_profil_libelle[$profil]['court'][2].' :</label><input type="text" id="f_login_'.$profil.'" name="f_login_'.$profil.'" value="'.$_SESSION[strtoupper('MODELE_'.$profil)].'" size="20" maxlength="20" /></p>';
 }
 ?>
 

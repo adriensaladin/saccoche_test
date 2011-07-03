@@ -26,6 +26,28 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
+$TITRE = "Responsables légaux";
 ?>
 
-<p class="astuce">L'administrateur de <em>SACoche</em> pour votre établissement n'a pas ouvert cette fonctionnalité aux <?php echo str_replace('eleve','élève',$_SESSION['USER_PROFIL']) ?>s.</p>
+<div class="hc">
+	<a href="./index.php?page=<?php echo $PAGE ?>&amp;section=gestion">Parents (gestion).</a>	||
+	<a href="./index.php?page=<?php echo $PAGE ?>&amp;section=adresse">Parents &amp; adresses.</a>	||
+	<a href="./index.php?page=<?php echo $PAGE ?>&amp;section=eleve">Parents &amp; élèves.</a>
+</div>
+
+<hr />
+
+<?php
+// Afficher la bonne page et appeler le bon js / ajax par la suite
+$fichier_section = './pages/'.$PAGE.'_'.$SECTION.'.php';
+if(is_file($fichier_section))
+{
+	$PAGE = $PAGE.'_'.$SECTION ;
+	require($fichier_section);
+}
+else
+{
+	echo'<p><span class="astuce">Choisissez une rubrique ci-dessus...</span></p>';
+	echo'<p><span class="manuel"><a class="pop_up" href="'.SERVEUR_DOCUMENTAIRE.'?fichier=support_administrateur__gestion_parents">DOC : Gestion des parents</a></span></p>';
+}
+?>

@@ -70,7 +70,7 @@ $(document).ready
 						},
 						success : function(responseHTML)
 						{
-							maj_clock(1);
+							initialiser_compteur();
 							if(responseHTML.substring(0,7)=='<option')	// Attention aux caractères accentués : l'utf-8 pose des pbs pour ce test
 							{
 								$('#ajax_maj_pilier').removeAttr("class").html('&nbsp;');
@@ -120,7 +120,7 @@ $(document).ready
 						},
 						success : function(responseHTML)
 						{
-							maj_clock(1);
+							initialiser_compteur();
 							if(responseHTML.substring(0,7)=='<option')	// Attention aux caractères accentués : l'utf-8 pose des pbs pour ce test
 							{
 								$('#ajax_maj_eleve').removeAttr("class").html("&nbsp;");
@@ -229,7 +229,7 @@ $(document).ready
 		// Fonction suivant l'envoi du formulaire (avec jquery.form.js)
 		function retour_form_valide0(responseHTML)
 		{
-			maj_clock(1);
+			initialiser_compteur();
 			$("button").prop('disabled',false);
 			if(responseHTML.substring(0,7)!='<thead>')
 			{
@@ -378,7 +378,7 @@ $(document).ready
 					},
 					success : function(responseHTML)
 					{
-						// maj_clock(1);
+						// initialiser_compteur();
 						pos = responseHTML.indexOf('@');
 						if(pos==-1)
 						{
@@ -452,7 +452,7 @@ $(document).ready
 						},
 						success : function(responseHTML)
 						{
-							maj_clock(1);
+							initialiser_compteur();
 							$("button").prop('disabled',false);
 							if(responseHTML.substring(0,2)!='OK')
 							{

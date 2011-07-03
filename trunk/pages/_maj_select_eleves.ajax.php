@@ -30,9 +30,21 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 if($_SESSION['SESAMATH_ID']==ID_DEMO) {}
 
-// Le code n'est pas exactement le même pour un administrateur...
+// Le code n'est pas exactement le même pour un parent...
 
-if( ($_SESSION['USER_PROFIL']=='administrateur') || (isset($_POST['f_groupe_id'])) ) // test supplémentaire sinon pb avec la page administrateur_eleve_langue partagée avec les directeurs
+if($_SESSION['USER_PROFIL']=='parent')
+{
+	$groupe_id = (isset($_POST['f_groupe'])) ? clean_entier($_POST['f_groupe']) : 0 ;
+	if(!$groupe_id)
+	{
+		exit('Erreur avec les données transmises !');
+	}
+	$groupe_type = 'classe';
+}
+
+// ... que pour un administrateur...
+
+elseif( ($_SESSION['USER_PROFIL']=='administrateur') || (isset($_POST['f_groupe_id'])) ) // test supplémentaire sinon pb avec la page administrateur_eleve_langue partagée avec les directeurs
 {
 	$groupe_type = (isset($_POST['f_groupe_type'])) ? clean_texte($_POST['f_groupe_type']) : ''; // d n c g
 	$groupe_id   = (isset($_POST['f_groupe_id']))   ? clean_entier($_POST['f_groupe_id'])  : 0;
@@ -48,7 +60,7 @@ if( ($_SESSION['USER_PROFIL']=='administrateur') || (isset($_POST['f_groupe_id']
 	}
 }
 
-// ... que pour un professeur / directeur.
+// ... ou que pour un professeur / directeur.
 
 else
 {

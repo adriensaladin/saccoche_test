@@ -111,7 +111,7 @@ $(document).ready
 		// Fonction suivant l'envoi du formulaire (avec jquery.form.js)
 		function retour_form_valide(responseHTML)
 		{
-			maj_clock(1);
+			initialiser_compteur();
 			if(responseHTML.substring(0,2)!='ok')
 			{
 				$("#bouton_valider").prop('disabled',false);
@@ -228,7 +228,7 @@ $(document).ready
 					},
 					success : function(responseHTML)
 					{
-						maj_clock(1);
+						initialiser_compteur();
 						if(responseHTML!='<ok>')	// Attention aux caractères accentués : l'utf-8 pose des pbs pour ce test
 						{
 							$('#ajax_supprimer').removeAttr("class").addClass("alerte").html(responseHTML);

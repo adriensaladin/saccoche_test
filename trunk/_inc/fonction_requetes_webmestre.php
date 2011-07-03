@@ -24,14 +24,13 @@
  * si ce n’est pas le cas, consultez : <http://www.gnu.org/licenses/>.
  *
  */
-
+ 
 /**
  * DB_WEBMESTRE_recuperer_structure (complémentaire à DB_WEBMESTRE_lister_structures car utilisation de queryRow à la place de queryTab)
  *
  * @param int base_id
  * @return array
  */
-
 function DB_WEBMESTRE_recuperer_structure($base_id)
 {
 	$DB_SQL = 'SELECT * FROM sacoche_structure ';
@@ -47,7 +46,6 @@ function DB_WEBMESTRE_recuperer_structure($base_id)
  * @param string uai
  * @return array
  */
-
 function DB_WEBMESTRE_recuperer_structure_by_UAI($uai)
 {
 	$DB_SQL = 'SELECT * FROM sacoche_structure ';
@@ -63,7 +61,6 @@ function DB_WEBMESTRE_recuperer_structure_by_UAI($uai)
  * @param void
  * @return string   n structures
  */
-
 function DB_WEBMESTRE_compter_structure()
 {
 	$DB_SQL = 'SELECT COUNT(sacoche_base) AS nombre FROM sacoche_structure ';
@@ -78,7 +75,6 @@ function DB_WEBMESTRE_compter_structure()
  * @param void
  * @return array
  */
-
 function DB_WEBMESTRE_lister_zones()
 {
 	$DB_SQL = 'SELECT * FROM sacoche_geo ';
@@ -92,7 +88,6 @@ function DB_WEBMESTRE_lister_zones()
  * @param void|string $listing_base_id   id des bases séparés par des virgules (tout si rien de transmis)
  * @return array
  */
-
 function DB_WEBMESTRE_lister_structures($listing_base_id=false)
 {
 	$nb_ids = substr_count($listing_base_id,',')+1;
@@ -110,7 +105,6 @@ function DB_WEBMESTRE_lister_structures($listing_base_id=false)
  * @param string $listing_base_id   id des bases séparés par des virgules
  * @return array                    le tableau est de la forme [i] => array('contact_id'=>...,'contact_nom'=>...,'contact_prenom'=>...,'contact_courriel'=>...);
  */
-
 function DB_WEBMESTRE_lister_contacts_cibles($listing_base_id)
 {
 	$DB_SQL = 'SELECT sacoche_base AS contact_id , structure_contact_nom AS contact_nom , structure_contact_prenom AS contact_prenom , structure_contact_courriel AS contact_courriel FROM sacoche_structure ';
@@ -125,7 +119,6 @@ function DB_WEBMESTRE_lister_contacts_cibles($listing_base_id)
  * @param int    $geo_id    inutile si recherche pour un ajout, mais id à éviter si recherche pour une modification
  * @return int
  */
-
 function DB_WEBMESTRE_tester_zone_nom($geo_nom,$geo_id=false)
 {
 	$DB_SQL = 'SELECT geo_id FROM sacoche_geo ';
@@ -148,7 +141,6 @@ function DB_WEBMESTRE_tester_zone_nom($geo_nom,$geo_id=false)
  * @param int    $base_id       inutile si recherche pour un ajout, mais id à éviter si recherche pour une modification
  * @return int
  */
-
 function DB_WEBMESTRE_tester_structure_UAI($structure_uai,$base_id=false)
 {
 	$DB_SQL = 'SELECT sacoche_base FROM sacoche_structure ';
@@ -171,7 +163,6 @@ function DB_WEBMESTRE_tester_structure_UAI($structure_uai,$base_id=false)
  * @param string $geo_nom
  * @return int
  */
-
 function DB_WEBMESTRE_ajouter_zone($geo_ordre,$geo_nom)
 {
 	$DB_SQL = 'INSERT INTO sacoche_geo(geo_ordre,geo_nom) ';
@@ -195,7 +186,6 @@ function DB_WEBMESTRE_ajouter_zone($geo_ordre,$geo_nom)
  * @param string $inscription_date   Pour forcer la date d'inscription, par exemple en cas de transfert de bases académiques (facultatif).
  * @return int
  */
-
 function DB_WEBMESTRE_ajouter_structure($base_id,$geo_id,$structure_uai,$localisation,$denomination,$contact_nom,$contact_prenom,$contact_courriel,$inscription_date=0)
 {
 	$chaine_date = ($inscription_date) ? ':inscription_date' : 'NOW()' ;
@@ -250,7 +240,6 @@ function DB_WEBMESTRE_ajouter_structure($base_id,$geo_id,$structure_uai,$localis
  * @param string $contact_courriel
  * @return void
  */
-
 function DB_WEBMESTRE_modifier_structure($base_id,$geo_id,$structure_uai,$localisation,$denomination,$contact_nom,$contact_prenom,$contact_courriel)
 {
 	$DB_SQL = 'UPDATE sacoche_structure ';
@@ -269,7 +258,6 @@ function DB_WEBMESTRE_modifier_structure($base_id,$geo_id,$structure_uai,$locali
  * @param string $geo_nom
  * @return void
  */
-
 function DB_WEBMESTRE_modifier_zone($geo_id,$geo_ordre,$geo_nom)
 {
 	$DB_SQL = 'UPDATE sacoche_geo ';
@@ -286,7 +274,6 @@ function DB_WEBMESTRE_modifier_zone($geo_id,$geo_ordre,$geo_nom)
  * @param int $geo_id
  * @return void
  */
-
 function DB_WEBMESTRE_supprimer_zone($geo_id)
 {
 	$DB_SQL = 'DELETE FROM sacoche_geo ';
@@ -310,7 +297,6 @@ function DB_WEBMESTRE_supprimer_zone($geo_id)
  * @param int    $BASE 
  * @return void
  */
-
 function DB_WEBMESTRE_supprimer_multi_structure($BASE)
 {
 	global $CHEMIN_MYSQL,$CHEMIN_CONFIG;
@@ -348,7 +334,6 @@ function DB_WEBMESTRE_supprimer_multi_structure($BASE)
  * @param string $dossier_requetes   '...../structure/' ou '...../webmestre/'
  * @return void
  */
-
 function DB_WEBMESTRE_creer_remplir_tables_webmestre($dossier_requetes)
 {
 	$tab_files = Lister_Contenu_Dossier($dossier_requetes);
@@ -375,7 +360,6 @@ function DB_WEBMESTRE_creer_remplir_tables_webmestre($dossier_requetes)
  * @param void
  * @return array|string
  */
-
 function DB_WEBMESTRE_OPT_structures_sacoche()
 {
 	$DB_SQL = 'SELECT * FROM sacoche_structure ';

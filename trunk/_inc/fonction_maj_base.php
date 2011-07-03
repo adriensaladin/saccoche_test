@@ -1083,6 +1083,31 @@ function maj_base($version_actuelle)
 	}
 
 	//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	//	MAJ 2011-06-24 => 2011-07-03
+	//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	if($version_actuelle=='2011-06-24')
+	{
+		if($version_actuelle==DB_version_base())
+		{
+			$version_actuelle = '2011-07-03';
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_actuelle.'" WHERE parametre_nom="version_base" LIMIT 1' );
+			// ajout de niveaux BTS et modification du champ correspondant
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_niveau SET niveau_ordre = 199 WHERE niveau_id = 4 ' );
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_niveau CHANGE niveau_ref niveau_ref VARCHAR(6) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT "" ' );
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_niveau VALUES ( 121, 0, 161,  "1BTS1", "310.....11.", "BTS 1 an") ' );
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_niveau VALUES ( 122, 0, 162,  "1BTS2", "311.....21.", "BTS 2 ans, 1e année") ' );
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_niveau VALUES ( 123, 0, 163,  "2BTS2", "311.....22.", "BTS 2 ans, 2e année") ' );
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_niveau VALUES ( 124, 0, 164,  "1BTS3", "312.....31.", "BTS 3 ans, 1e année") ' );
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_niveau VALUES ( 125, 0, 165,  "2BTS3", "312.....32.", "BTS 3 ans, 2e année") ' );
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_niveau VALUES ( 126, 0, 166,  "3BTS3", "312.....33.", "BTS 3 ans, 3e année") ' );
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_niveau VALUES ( 131, 0, 171, "1BTS1A", "370.....11.", "BTS Agricole 1 an") ' );
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_niveau VALUES ( 132, 0, 172, "1BTS2A", "371.....21.", "BTS Agricole 2 ans, 1e année") ' );
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_niveau VALUES ( 133, 0, 173, "2BTS2A", "371.....22.", "BTS Agricole 2 ans, 2e année") ' );
+		}
+	}
+
+	//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Log de l'action
 	//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

@@ -120,7 +120,7 @@ if( $matiere_id && $niveau_id && $matiere_nom && $niveau_nom && $remplissage && 
 	{
 		$tab_eleve[] = array('eleve_id'=>$_SESSION['USER_ID'],'eleve_nom'=>$_SESSION['USER_NOM'],'eleve_prenom'=>$_SESSION['USER_PRENOM']);
 	}
-	elseif($groupe_id && count($tab_eleve_id))
+	elseif(count($tab_eleve_id))
 	{
 		$tab_eleve = DB_STRUCTURE_lister_eleves_cibles($liste_eleve,$with_gepi=FALSE,$with_langue=FALSE);
 	}
@@ -132,7 +132,7 @@ if( $matiere_id && $niveau_id && $matiere_nom && $niveau_nom && $remplissage && 
 	//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 	// Récupération de la liste des résultats (si demandé)
 	//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-	if($groupe_id && count($tab_eleve_id) && $remplissage=='plein')
+	if(count($tab_eleve_id) && $remplissage=='plein')
 	{
 		$DB_TAB = DB_STRUCTURE_lister_result_eleves_matiere($liste_eleve , $liste_item , $date_debut=false , $date_fin=false , $_SESSION['USER_PROFIL']) ;
 		foreach($DB_TAB as $DB_ROW)

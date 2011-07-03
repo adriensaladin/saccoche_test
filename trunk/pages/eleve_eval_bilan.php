@@ -27,16 +27,35 @@
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = "Résultats aux évaluations";
-$VERSION_JS_FILE += 1;
+$VERSION_JS_FILE += 2;
 ?>
 
 <?php
+// Fabrication des éléments select du formulaire
+if( ($_SESSION['USER_PROFIL']=='parent') && ($_SESSION['NB_ENFANTS']!=1) )
+{
+	$class_form_eleve = 'show';
+	$select_eleves = afficher_select($_SESSION['OPT_PARENT_ENFANTS'] , $select_nom=false , $option_first='oui' , $selection=false , $optgroup='non');
+}
+if( ($_SESSION['USER_PROFIL']=='parent') && ($_SESSION['NB_ENFANTS']==1) )
+{
+	$class_form_eleve = 'hide';
+	$select_eleves = '<option value="'.$_SESSION['OPT_PARENT_ENFANTS'][0]['valeur'].'" selected>'.html($_SESSION['OPT_PARENT_ENFANTS'][0]['texte']).'</option>';
+}
+if($_SESSION['USER_PROFIL']=='eleve')
+{
+	$class_form_eleve = 'hide';
+	$select_eleves = '<option value="'.$_SESSION['USER_ID'].'" selected>'.html($_SESSION['USER_NOM'].' '.$_SESSION['USER_PRENOM']).'</option>';
+}
 // Dates par défaut de début et de fin
 $date_debut  = date("d/m/Y",mktime(0,0,0,date("m")-1,date("d"),date("Y"))); // Il y a 1 mois
 $date_fin    = date("d/m/Y");
 ?>
 
 <form action="" id="form"><fieldset>
+	<div class="<?php echo $class_form_eleve ?>">
+		<label class="tab" for="f_eleve">Élève(s) :</label><select id="f_eleve" name="f_eleve"><?php echo $select_eleves ?></select>
+	</div>
 	<label class="tab" for="f_periode">Période :</label>du <input id="f_date_debut" name="f_date_debut" size="9" type="text" value="<?php echo $date_debut ?>" /><q class="date_calendrier" title="Cliquez sur cette image pour importer une date depuis un calendrier !"></q> au <input id="f_date_fin" name="f_date_fin" size="9" type="text" value="<?php echo $date_fin ?>" /><q class="date_calendrier" title="Cliquez sur cette image pour importer une date depuis un calendrier !"></q><br />
 	<span class="tab"></span><input type="hidden" name="f_action" value="Afficher_evaluations" /><button id="actualiser" type="submit"><img alt="" src="./_img/bouton/actualiser.png" /> Actualiser l'affichage.</button><label id="ajax_msg">&nbsp;</label>
 </fieldset></form>
@@ -44,6 +63,7 @@ $date_fin    = date("d/m/Y");
 
 <form id="zone_eval_choix" class="hide" action="">
 	<hr />
+	<h2></h2>
 	<table class="form">
 		<thead>
 			<tr>

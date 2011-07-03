@@ -90,14 +90,14 @@ if($action=='tester_version')
 
 // Charger le formulaire pour le webmestre d'un serveur
 
-elseif( ($action=='initialiser') && ($profil=='webmestre') )
+if( ($action=='initialiser') && ($profil=='webmestre') )
 {
-	afficher_formulaire_identification($profil,'normal');
+	exit( afficher_formulaire_identification($profil,'normal') );
 }
 
 // Charger le formulaire pour un établissement donné (installation mono-structure)
 
-elseif( ($action=='initialiser') && (HEBERGEUR_INSTALLATION=='mono-structure') && $profil )
+if( ($action=='initialiser') && (HEBERGEUR_INSTALLATION=='mono-structure') && $profil )
 {
 	// Mettre à jour la base si nécessaire
 	maj_base_si_besoin($BASE);
@@ -113,20 +113,19 @@ elseif( ($action=='initialiser') && (HEBERGEUR_INSTALLATION=='mono-structure') &
 	{
 		exit('Erreur : base de l\'établissement incomplète !');
 	}
-	afficher_nom_etablissement($BASE=0,$denomination);
-	afficher_formulaire_identification($profil,$connexion_mode);
+	exit( afficher_nom_etablissement($BASE=0,$denomination) . afficher_formulaire_identification($profil,$connexion_mode) );
 }
 
 // Charger le formulaire de choix des établissements (installation multi-structures)
 
-elseif( ( ($action=='initialiser') && ($BASE==0) && (HEBERGEUR_INSTALLATION=='multi-structures') ) || ($action=='choisir') && $profil )
+if( ( ($action=='initialiser') && ($BASE==0) && (HEBERGEUR_INSTALLATION=='multi-structures') ) || ($action=='choisir') && $profil )
 {
-	afficher_formulaire_etablissement($BASE,$profil);
+	exit( afficher_formulaire_etablissement($BASE,$profil) );
 }
 
 // Charger le formulaire pour un établissement donné (installation multi-structures)
 
-elseif( ( ($action=='initialiser') && ($BASE>0) && (HEBERGEUR_INSTALLATION=='multi-structures') ) || ($action=='charger') && $profil )
+if( ( ($action=='initialiser') && ($BASE>0) && (HEBERGEUR_INSTALLATION=='multi-structures') ) || ($action=='charger') && $profil )
 {
 	// Une première requête sur SACOCHE_WEBMESTRE_BD_NAME pour vérifier que la structure est référencée
 	$DB_ROW = DB_WEBMESTRE_recuperer_structure($BASE);
@@ -148,7 +147,7 @@ elseif( ( ($action=='initialiser') && ($BASE>0) && (HEBERGEUR_INSTALLATION=='mul
 	{
 		exit('Erreur : base de l\'établissement incomplète !');
 	}
-	afficher_formulaire_identification($profil,$DB_ROW['parametre_valeur']);
+	exit( afficher_formulaire_identification($profil,$DB_ROW['parametre_valeur']) );
 }
 
 //	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
@@ -157,22 +156,21 @@ elseif( ( ($action=='initialiser') && ($BASE>0) && (HEBERGEUR_INSTALLATION=='mul
 
 // Pour le webmestre d'un serveur
 
-elseif( ($action=='identifier') && ($profil=='webmestre') && ($login=='webmestre') && ($password!='') )
+if( ($action=='identifier') && ($profil=='webmestre') && ($login=='webmestre') && ($password!='') )
 {
-	$connexion = connecter_webmestre($password);
-	echo ($connexion=='ok') ? $_SESSION['USER_PROFIL'] : $connexion ;
+	exit( connecter_webmestre($password) );
 }
 
 // Pour un utilisateur normal, y compris un administrateur
 
-elseif( ($action=='identifier') && ($profil=='normal') && ($login!='') && ($password!='') )
+if( ($action=='identifier') && ($profil=='normal') && ($login!='') && ($password!='') )
 {
-	$connexion = connecter_user($BASE,$login,$password,$mode_connection='normal');
-	echo ($connexion=='ok') ? $_SESSION['USER_PROFIL'] : $connexion ;
+	exit( connecter_user($BASE,$login,$password,$mode_connection='normal') );
 }
 
-else
-{
-	echo'Erreur avec les données transmises !';
-}
+//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
+// On ne devrait pas en arriver là...
+//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
+
+exit('Erreur avec les données transmises !');
 ?>

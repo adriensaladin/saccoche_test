@@ -61,7 +61,7 @@ $(document).ready
 						},
 						success : function(responseHTML)
 						{
-							maj_clock(1);
+							initialiser_compteur();
 							$("button").prop('disabled',false);
 							var tab_infos = responseHTML.split(']¤[');
 							if( (tab_infos.length!=2) || (tab_infos[0]!='') )
@@ -108,7 +108,7 @@ $(document).ready
 					},
 					success : function(responseHTML)
 					{
-						maj_clock(1);
+						initialiser_compteur();
 						var tab_infos = responseHTML.split(']¤[');
 						if(tab_infos[1]=='ok')
 						{
@@ -261,7 +261,7 @@ $(document).ready
 			}
 			else
 			{
-				maj_clock(1);
+				initialiser_compteur();
 				$('#ajax_msg_csv').removeAttr("class").addClass("valide").html("Fichier bien reçu ; "+tab_infos[1]+".");
 				$('#div_import , #div_info_import , #structures').hide('fast');
 				$('#ajax_msg_zip').removeAttr("class").html('&nbsp;');
@@ -280,7 +280,7 @@ $(document).ready
 			}
 			else
 			{
-				maj_clock(1);
+				initialiser_compteur();
 				$('#ajax_msg_zip').removeAttr("class").addClass("valide").html("Fichier bien reçu ; sauvegarde(s) extraite(s).");
 				$('#div_info_import , #structures').hide('fast');
 				$('#div_import').show('fast');
@@ -331,7 +331,7 @@ $(document).ready
 					},
 					success : function(responseHTML)
 					{
-						maj_clock(1);
+						initialiser_compteur();
 						var tab_infos = responseHTML.split(']¤[');
 						if( (tab_infos.length==2) && (tab_infos[0]=='') )
 						{
@@ -436,7 +436,7 @@ $(document).ready
 					},
 					success : function(responseHTML)
 					{
-						maj_clock(1);
+						initialiser_compteur();
 						if(responseHTML!='<ok>')	// Attention aux caractères accentués : l'utf-8 pose des pbs pour ce test
 						{
 							$('#ajax_supprimer_export').removeAttr("class").addClass("alerte").html(responseHTML);
@@ -519,7 +519,7 @@ $(document).ready
 					},
 					success : function(responseHTML)
 					{
-						maj_clock(1);
+						initialiser_compteur();
 						if(responseHTML!='<ok>')	// Attention aux caractères accentués : l'utf-8 pose des pbs pour ce test
 						{
 							$('#ajax_supprimer_import').removeAttr("class").addClass("alerte").html(responseHTML);

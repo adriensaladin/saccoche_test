@@ -175,7 +175,7 @@ $(document).ready
 					},
 					success : function(responseHTML)
 					{
-						maj_clock(1);
+						initialiser_compteur();
 						if(responseHTML.substring(0,7)=='<option')	// Attention aux caractères accentués : l'utf-8 pose des pbs pour ce test
 						{
 							$('#init_form').html('<input id="f_action" name="f_action" type="hidden" value="'+mode+'" /><select id="f_admin_id" name="f_admin_id"><option value="">administrateurs</option>'+responseHTML+'</select><input id="f_base_id" name="f_base_id" type="hidden" value="'+base_id+'" /><q class="valider" title="Confirmer l\'initialisation du mot de passe."></q><q class="annuler" title="Annuler l\'initialisation du mot de passe."></q> <label id="ajax_msg">&nbsp;</label>');
@@ -292,7 +292,7 @@ $(document).ready
 						},
 						success : function(responseHTML)
 						{
-							maj_clock(1);
+							initialiser_compteur();
 							if(responseHTML.substring(0,4)!='<img')	// Attention aux caractères accentués : l'utf-8 pose des pbs pour ce test
 							{
 								objet.addClass(action).attr('src',img_src);
@@ -333,7 +333,7 @@ $(document).ready
 					},
 					success : function(responseHTML)
 					{
-						maj_clock(1);
+						initialiser_compteur();
 						if(responseHTML!='<ok>')	// Attention aux caractères accentués : l'utf-8 pose des pbs pour ce test
 						{
 							$('#ajax_supprimer').removeAttr("class").addClass("alerte").html(responseHTML);
@@ -552,7 +552,7 @@ $(document).ready
 		// Fonction suivant l'envoi du formulaire (avec jquery.form.js)
 		function retour_form_valide(responseHTML)
 		{
-			maj_clock(1);
+			initialiser_compteur();
 			please_wait = false;
 			$('#ajax_msg').parent().children('q').show();
 			if(responseHTML.substring(0,1)!='<')

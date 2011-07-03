@@ -248,7 +248,7 @@ $(document).ready
 		// Fonction suivant l'envoi du formulaire (avec jquery.form.js)
 		function retour_form_valide(responseHTML)
 		{
-			maj_clock(1);
+			initialiser_compteur();
 			please_wait = false;
 			$('#ajax_msg').parent().children('q').show();
 			if(responseHTML.substring(0,2)!='<t')

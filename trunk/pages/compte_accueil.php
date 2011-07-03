@@ -58,4 +58,22 @@ else
 ?>
 
 <?php
+if($_SESSION['USER_PROFIL']=='parent')
+{
+	echo'<hr />';
+	if($_SESSION['NB_ENFANTS'])
+	{
+		echo'<p class="astuce">Élève(s) associé(s) à votre compte :</p>';
+		echo'<ul class="puce">';
+		foreach($_SESSION['OPT_PARENT_ENFANTS'] as $DB_ROW)
+		{
+			echo'<li id="enfant_'.$DB_ROW['valeur'].'">'.html($DB_ROW['texte']).'</li>';
+		}
+		echo'</ul>';
+	}
+	else
+	{
+		echo'<p class="danger">'.$_SESSION['OPT_PARENT_ENFANTS'].'</p>';
+	}
+}
 ?>

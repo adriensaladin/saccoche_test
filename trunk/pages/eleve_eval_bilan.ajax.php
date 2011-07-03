@@ -29,6 +29,7 @@ if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');
 if(($_SESSION['SESAMATH_ID']==ID_DEMO)&&($_POST['f_action']!='Afficher_evaluations')&&($_POST['f_action']!='Voir_notes')){exit('Action désactivée pour la démo...');}
 
 $action     = (isset($_POST['f_action']))     ? clean_texte($_POST['f_action'])     : '';
+$eleve_id   = (isset($_POST['f_eleve']))      ? clean_entier($_POST['f_eleve'])     : 0;
 $date_debut = (isset($_POST['f_date_debut'])) ? clean_texte($_POST['f_date_debut']) : '';
 $date_fin   = (isset($_POST['f_date_fin']))   ? clean_texte($_POST['f_date_fin'])   : '';
 $devoir_id  = (isset($_POST['f_devoir']))     ? clean_entier($_POST['f_devoir'])    : 0;
@@ -37,7 +38,7 @@ $devoir_id  = (isset($_POST['f_devoir']))     ? clean_entier($_POST['f_devoir'])
 //	Afficher une liste d'évaluations
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
-if( ($action=='Afficher_evaluations') && $date_debut && $date_fin )
+if( ($action=='Afficher_evaluations') && $eleve_id && $date_debut && $date_fin )
 {
 	// Formater les dates
 	$date_debut_mysql = convert_date_french_to_mysql($date_debut);
@@ -47,8 +48,25 @@ if( ($action=='Afficher_evaluations') && $date_debut && $date_fin )
 	{
 		exit('Erreur : la date de début est postérieure à la date de fin !');
 	}
+	// Classe de l'élève
+	$classe_id = 0;
+	if( ($_SESSION['USER_PROFIL']=='eleve') || ( ($_SESSION['USER_PROFIL']=='parent') && ($_SESSION['NB_ENFANTS']==1) ) )
+	{
+		$classe_id = $_SESSION['ELEVE_CLASSE_ID'];
+	}
+	elseif( ($_SESSION['USER_PROFIL']=='parent') && ($_SESSION['NB_ENFANTS']!=1) )
+	{
+		foreach($_SESSION['OPT_PARENT_ENFANTS'] as $tab_info)
+		{
+			if($tab_info['valeur']==$eleve_id)
+			{
+				$classe_id = $tab_info['classe_id'];
+				break;
+			}
+		}
+	}
 	// Lister les évaluations
-	$DB_TAB = DB_STRUCTURE_lister_devoirs_eleve($_SESSION['USER_ID'],$_SESSION['ELEVE_CLASSE_ID'],$date_debut_mysql,$date_fin_mysql);
+	$DB_TAB = DB_STRUCTURE_lister_devoirs_eleve($eleve_id,$classe_id,$date_debut_mysql,$date_fin_mysql);
 	if(!count($DB_TAB))
 	{
 		exit('Aucune évaluation trouvée sur cette période vous concernant !');
@@ -74,7 +92,7 @@ if( ($action=='Afficher_evaluations') && $date_debut && $date_fin )
 //	Voir les notes saisies à un devoir
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
-if( ($action=='Voir_notes') && $devoir_id )
+if( ($action=='Voir_notes') && $eleve_id && $devoir_id )
 {
 	// liste des items
 	$DB_TAB_COMP = DB_STRUCTURE_lister_items_devoir($devoir_id,$info_pour_eleve=true);
@@ -87,7 +105,7 @@ if( ($action=='Voir_notes') && $devoir_id )
 	$tab_liste_item = array_keys($DB_TAB_COMP);
 	$liste_item_id = implode(',',$tab_liste_item);
 	$tab_devoirs = array();
-	$DB_TAB = DB_STRUCTURE_lister_result_eleve_items($_SESSION['USER_ID'],$liste_item_id);
+	$DB_TAB = DB_STRUCTURE_lister_result_eleve_items($eleve_id,$liste_item_id);
 	foreach($DB_TAB as $DB_ROW)
 	{
 		$tab_devoirs[$DB_ROW['item_id']][] = array('note'=>$DB_ROW['note']);
@@ -102,11 +120,11 @@ if( ($action=='Voir_notes') && $devoir_id )
 		$texte_lien_avant = ($DB_ROW['item_lien']) ? '<a class="lien_ext" href="'.html($DB_ROW['item_lien']).'">' : '';
 		$texte_lien_apres = ($DB_ROW['item_lien']) ? '</a>' : '';
 		$score = (isset($tab_devoirs[$item_id])) ? calculer_score($tab_devoirs[$item_id],$DB_ROW['referentiel_calcul_methode'],$DB_ROW['referentiel_calcul_limite']) : false ;
-		$texte_demande_eval = ($DB_ROW['item_cart']) ? '<q class="demander_add" lang="ids_'.$DB_ROW['matiere_id'].'_'.$item_id.'_'.$score.'" title="Ajouter aux demandes d\'évaluations."></q>' : '<q class="demander_non" title="Demande interdite."></q>' ;
+		$texte_demande_eval = ($_SESSION['USER_PROFIL']!='eleve') ? '' : ( ($DB_ROW['item_cart']) ? '<q class="demander_add" lang="ids_'.$DB_ROW['matiere_id'].'_'.$item_id.'_'.$score.'" title="Ajouter aux demandes d\'évaluations."></q>' : '<q class="demander_non" title="Demande interdite."></q>' ) ;
 		$tab_affich[$item_id] = '<tr><td>'.html($item_ref).'</td><td>'.$texte_socle.$texte_lien_avant.html($DB_ROW['item_nom']).$texte_lien_apres.$texte_demande_eval.'</td><td class="hc">-</td>'.affich_score_html($score,$methode_tri='score',$pourcent='').'</tr>';
 	}
 	// récupérer les saisies et les ajouter
-	$DB_TAB = DB_STRUCTURE_lister_saisies_devoir_eleve($devoir_id,$_SESSION['USER_ID']);
+	$DB_TAB = DB_STRUCTURE_lister_saisies_devoir_eleve($devoir_id,$eleve_id);
 	foreach($DB_TAB as $DB_ROW)
 	{
 		// Test pour éviter les pbs des élèves changés de groupes ou des items modifiés en cours de route

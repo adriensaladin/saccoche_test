@@ -25,7 +25,12 @@
  * 
  */
 
-if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-?>
+// Mettre à jour l'élément de formulaire "select_professeurs" et le renvoyer en HTML
 
-<p class="astuce">Le mode d'identification n'étant pas celui de <em>SACoche</em>, cette fonctionnalité de est sans objet pour les <?php echo str_replace('eleve','élève',$_SESSION['USER_PROFIL']) ?>s.</p>
+if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
+if($_SESSION['SESAMATH_ID']==ID_DEMO) {}
+
+$statut = (isset($_POST['f_statut'])) ? clean_entier($_POST['f_statut']) : 0;
+
+echo afficher_select(DB_STRUCTURE_OPT_parents_etabl($statut) , $select_nom=false , $option_first='non' , $selection=false , $optgroup='non');
+?>

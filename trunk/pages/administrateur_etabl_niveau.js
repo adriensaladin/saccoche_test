@@ -85,7 +85,7 @@ $(document).ready
 						},
 						success : function(responseHTML)
 						{
-							maj_clock(1);
+							initialiser_compteur();
 							$('#bouton_valider_'+objet).prop('disabled',false);
 							if(responseHTML!='ok')
 							{

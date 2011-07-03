@@ -44,22 +44,31 @@ $(document).ready
 				if(profil=='eleves')
 				{
 					$('#p_eleves').show();
+					$('#p_parents').hide();
 					$('#p_professeurs_directeurs').hide();
+					$('#td_bouton').show();
+				}
+				else if(profil=='parents')
+				{
+					$('#p_professeurs_directeurs').hide();
+					$('#p_parents').show();
+					$('#p_eleves').hide();
 					$('#td_bouton').show();
 				}
 				else if(profil=='professeurs_directeurs')
 				{
 					$('#p_professeurs_directeurs').show();
+					$('#p_parents').hide();
 					$('#p_eleves').hide();
 					$('#td_bouton').show();
 				}
 				else	// Normalement impossible
 				{
 					$('#p_professeurs_directeurs').hide();
+					$('#p_parents').hide();
 					$('#p_eleves').hide();
 					$('#td_bouton').hide();
 				}
-				$('#td_bouton').show();
 				$('#ajax_msg').removeAttr("class").html("&nbsp;");
 			}
 		);
@@ -83,7 +92,7 @@ $(document).ready
 					},
 					success : function(responseHTML)
 					{
-						maj_clock(1);
+						initialiser_compteur();
 						if(responseHTML.substring(0,4)=='<opt')	// option ou optgroup !
 						{
 							if(conserver_message)
@@ -95,6 +104,47 @@ $(document).ready
 								$('#ajax_msg').removeAttr("class").addClass("valide").html("Affichage actualisé !");
 							}
 							$('#select_professeurs_directeurs').html(responseHTML);
+						}
+						else
+						{
+							$('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);
+						}
+					}
+				}
+			);
+		}
+
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+//	Charger le select_parents en ajax
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
+		function maj_parent()
+		{
+			$.ajax
+			(
+				{
+					type : 'POST',
+					url : 'ajax.php?page=_maj_select_parents',
+					data : 'f_statut=1',
+					dataType : "html",
+					error : function(msg,string)
+					{
+						$('#ajax_msg').removeAttr("class").addClass("alerte").html("Echec de la connexion ! Veuillez essayer de nouveau.");
+					},
+					success : function(responseHTML)
+					{
+						initialiser_compteur();
+						if(responseHTML.substring(0,4)=='<opt')	// option ou optgroup !
+						{
+							if(conserver_message)
+							{
+								conserver_message = false;
+							}
+							else
+							{
+								$('#ajax_msg').removeAttr("class").addClass("valide").html("Affichage actualisé !");
+							}
+							$('#select_parents').html(responseHTML);
 						}
 						else
 						{
@@ -124,7 +174,7 @@ $(document).ready
 					},
 					success : function(responseHTML)
 					{
-						maj_clock(1);
+						initialiser_compteur();
 						if(responseHTML.substring(0,7)=='<option')	// Attention aux caractères accentués : l'utf-8 pose des pbs pour ce test
 						{
 							if(conserver_message)
@@ -229,7 +279,7 @@ $(document).ready
 						},
 						success : function(responseHTML)
 						{
-							maj_clock(1);
+							initialiser_compteur();
 							$('button').prop('disabled',false);
 							if(responseHTML.substring(0,2)!='OK')
 							{
@@ -242,6 +292,10 @@ $(document).ready
 								if(profil=='eleves')
 								{
 									changer_groupe();
+								}
+								else if(profil=='parents')
+								{
+									maj_parent();
 								}
 								else if(profil=='professeurs_directeurs')
 								{

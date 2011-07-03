@@ -55,7 +55,7 @@ $(document).ready
 						},
 						success : function(responseHTML)
 						{
-							maj_clock(1);
+							initialiser_compteur();
 							if(responseHTML.substring(0,18)!='<ul class="ul_m1">')
 							{
 								$('label[for='+ids+']').removeAttr("class").addClass("alerte").html(responseHTML).fadeOut(2000,function(){$('label[for='+ids+']').remove();afficher_masquer_images_action('show');});
@@ -63,6 +63,7 @@ $(document).ready
 							else
 							{
 								$('#referentiel').addClass('calque_referentiel').html(responseHTML.replace('<ul class="ul_m2">','<q class="imprimer" title="Imprimer le référentiel." /><q class="retourner" title="Revenir page précédente." />'+'<ul class="ul_m2">')+'<p />');
+								document.location.href = '#referentiel';
 								infobulle();
 								$('label[for='+ids+']').remove();
 								afficher_masquer_images_action('show');

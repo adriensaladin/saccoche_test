@@ -36,6 +36,7 @@ $nb = count($tab_select_users);
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 //	Réintégrer des comptes élèves
+//	Réintégrer des comptes parents
 //	Réintégrer des comptes professeurs et/ou directeurs
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
@@ -47,18 +48,12 @@ if( ($action=='reintegrer') && $nb )
 		DB_STRUCTURE_modifier_utilisateur( $user_id , array(':statut'=>1) );
 	}
 	$s = ($nb>1) ? 's' : '';
-	if($profil=='eleves')
-	{
-		exit('OK'.$nb.' élève'.$s.' réintégré'.$s.'.');
-	}
-	else
-	{
-		exit('OK'.$nb.' professeur'.$s.' et/ou directeur'.$s.' réintégré'.$s.'.');
-	}
+	exit('OK'.$nb.' compte'.$s.' réintégré'.$s.'.');
 }
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 //	Supprimer des comptes élèves
+//	Supprimer des comptes parents
 //	Supprimer des comptes professeurs et/ou directeurs
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
@@ -67,18 +62,11 @@ if( ($action=='supprimer') && $nb )
 	foreach($tab_select_users as $user_id)
 	{
 		// Mettre à jour l'enregistrement
-		$param_profil = ($profil=='eleves') ? 'eleve' : 'professeur' ; // On transmet 'professeur' y compris pour les directeurs.
-		DB_STRUCTURE_supprimer_utilisateur($user_id,$param_profil);
+		$tab_param_profil = array( 'eleves'=>'eleve' , 'parents'=>'parent' , 'professeurs_directeurs'=>'professeur' );
+		DB_STRUCTURE_supprimer_utilisateur( $user_id , $tab_param_profil[$profil] );
 	}
 	$s = ($nb>1) ? 's' : '';
-	if($profil=='eleves')
-	{
-		exit('OK'.$nb.' élève'.$s.' supprimé'.$s.'.');
-	}
-	else
-	{
-		exit('OK'.$nb.' professeur'.$s.' et/ou directeur'.$s.' supprimé'.$s.'.');
-	}
+	exit('OK'.$nb.' compte'.$s.' supprimé'.$s.'.');
 }
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-

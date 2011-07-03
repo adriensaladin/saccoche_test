@@ -31,11 +31,12 @@ var please_wait = false;
 
 /**
  * Fonction pour afficher / masquer les images cliquables (en général dans la dernière colonne du tableau)
+ *
  * Remarque : un toogle ne peut être simplement mis en oeuvre à cause des nouvelle images créées...
+ *
  * @param why valeur parmi [show] [hide]
  * @return void
  */
-
 function afficher_masquer_images_action(why)
 {
 	if(why=='show')
@@ -49,13 +50,15 @@ function afficher_masquer_images_action(why)
 }
 
 /**
- * Fonction pour formater les liens vers l'extérieur (nouvel onglet)
- * Fonction pour formater les liens vers l'aide en ligne (nouvelle fenêtre pop-up)
- * Fonction pour formater les liens de type mailto
+ * Fonction pour formater les liens
+ *
+ * - vers l'extérieur (nouvel onglet)
+ * - vers l'aide en ligne (nouvelle fenêtre pop-up)
+ * - de type mailto
+ *
  * @param element "body" ou un élément sur lequel restreindre la recherche
  * @return void
  */
-
 function format_liens(element)
 {
 	$(element).find("a.lien_ext" ).attr("target","_blank");
@@ -66,11 +69,12 @@ function format_liens(element)
 
 /**
  * Fonction pour appliquer une infobulle au survol de tous les éléments possédants un attribut "title"
+ *
  * Remarque : attention, cela fait disparaitre le contenu de l'attribut alt"...
+ *
  * @param void
  * @return void
  */
-
 function infobulle()
 {
 	$('img[title] , th[title] , td[title] , a[title] , q[title] , input[title]').tooltip({showURL:false});
@@ -78,10 +82,10 @@ function infobulle()
 
 /**
  * Fonction pour un tester la robustesse d'un mot de passe.
+ *
  * @param void
  * @return void
  */
-
 function analyse_mdp(mdp)
 {
 	mdp.replace(/^\s+/g,'').replace(/\s+$/g,'');	// équivalent de trim() en javascript
@@ -113,44 +117,126 @@ function analyse_mdp(mdp)
 
 //	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
 //	Gestion de la durée d'inactivité
+//	On utilise un cookie plutôt qu'une variable js car ceci permet de gérer plusieurs onglets.
 //	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
 
 /**
- * Fonction pour modifier l'état du compteur, et déconnecter si besoin
- * @param nb_minutes_restantes
+ * Fonction pour écrire un cookie
+ *
+ * @param name   nom du cookie
+ * @param value  valeur du cookie
  * @return void
  */
-
-function maj_clock(evolution)
+function SetCookie(name,value)
 {
-	DUREE_RESTANTE = (evolution==-1) ? DUREE_RESTANTE-1 : DUREE_AUTORISEE ;
-	if(DUREE_RESTANTE>5)
+	var argv = SetCookie.arguments;
+	var argc = SetCookie.arguments.length;
+	var expires = (argc > 2) ? argv[2] : null ;
+	var path    = (argc > 3) ? argv[3] : null ;
+	var domain  = (argc > 4) ? argv[4] : null ;
+	var secure  = (argc > 5) ? argv[5] : false ;
+	document.cookie = name + "=" + escape(value) +
+	                  ((expires==null) ? "" : ("; expires="+expires.toGMTString())) +
+	                  ((path==null) ? "" : ("; path="+path)) +
+	                  ((domain==null) ? "" : ("; domain="+domain)) +
+	                  ((secure==true) ? "; secure" : "") ;
+}
+
+/**
+ * Fonction pour lire un cookie
+ *
+ * @param name   nom du cookie
+ * @return string
+ */
+function GetCookie(name)
+{
+	var arg  = name + "=";
+	var alen = arg.length;
+	var clen = document.cookie.length;
+	var i = 0;
+	while(i<clen)
 	{
-		$("#clock").html('<img alt="" src="./_img/clock_fixe.png" /> '+DUREE_RESTANTE+' min');
-		if( (evolution==-1) && (DUREE_RESTANTE%10==0) )
+		var j = i+alen;
+		if(document.cookie.substring(i,j)==arg)
 		{
-			// Fonction conserver_session_active() à appeler une fois toutes les 10min ; code placé ici pour éviter un appel après déconnection, et l'application inutile d'un 2nd compteur
-			conserver_session_active();
+			return getCookieVal(j);
 		}
-		
-	}
-	else
-	{
-		setVolume(100);play("bip");
-		$("#clock").html('<img alt="" src="./_img/clock_anim.gif" /> '+DUREE_RESTANTE+' min');
-		if(DUREE_RESTANTE==0)
+		i = document.cookie.indexOf(" ",i)+1;
+		if(i==0)
 		{
-			$('#deconnecter').click();
+			break;
+		}
+	}
+	return null;
+}
+function getCookieVal(offset)
+{
+	var endstr = document.cookie.indexOf(";", offset);
+	if (endstr==-1)
+	{
+		endstr = document.cookie.length;
+	}
+	return unescape(document.cookie.substring(offset, endstr));
+}
+
+/**
+ * Fonction pour remettre le compteur au maximum (cookie + affichage)
+ *
+ * @param void
+ * @return void
+ */
+function initialiser_compteur()
+{
+	var date = new Date();
+	SetCookie('SACoche-compteur',date.getTime());
+	DUREE_AFFICHEE = DUREE_AUTORISEE;
+	$("#clock").html('<img alt="" src="./_img/clock_fixe.png" /> '+DUREE_AFFICHEE+' min');
+}
+
+/**
+ * Fonction pour modifier l'état du compteur, et déconnecter si besoin
+ *
+ * @param void
+ * @return void
+ */
+function tester_compteur()
+{
+	var date  = new Date();
+	var now   = date.getTime();
+	var avant = GetCookie('SACoche-compteur');
+	var duree_ecoulee  = Math.floor((now-avant)/60/1000);
+	var duree_restante = DUREE_AUTORISEE-duree_ecoulee;
+	if(duree_restante!=DUREE_AFFICHEE)
+	{
+		DUREE_AFFICHEE = Math.max(duree_restante,0);
+		if(DUREE_AFFICHEE>5)
+		{
+			$("#clock").html('<img alt="" src="./_img/clock_fixe.png" /> '+DUREE_AFFICHEE+' min');
+			if(DUREE_AFFICHEE%10==0)
+			{
+				// Fonction conserver_session_active() à appeler une fois toutes les 10min ; code placé ici pour éviter un appel après déconnection, et l'application inutile d'un 2nd compteur
+				conserver_session_active();
+			}
+			
+		}
+		else
+		{
+			setVolume(100);play("bip");
+			$("#clock").html('<img alt="" src="./_img/clock_anim.gif" /> '+DUREE_AFFICHEE+' min');
+			if(DUREE_AFFICHEE==0)
+			{
+				fermer_session();
+			}
 		}
 	}
 }
 
 /**
  * Fonction pour ne pas perdre la session : appel au serveur toutes les 10 minutes (en ajax)
+ *
  * @param void
  * @return void
  */
-
 function conserver_session_active()
 {
 	$.ajax
@@ -176,9 +262,41 @@ function conserver_session_active()
 }
 
 /**
- * Fonction pour lire un fichier audio grace au génial lecteur de neolao http://flash-mp3-player.net/
+ * Fonction pour fermer la session : appel si le compteur arrive à zéro (en ajax)
+ *
  * @param void
  * @return void
+ */
+
+function fermer_session()
+{
+	$.ajax
+	(
+		{
+			type : 'GET',
+			url : 'ajax.php?page=fermer_session',
+			data : '',
+			dataType : "html",
+			error : function(msg,string)
+			{
+				return false;
+			},
+			success : function(responseHTML)
+			{
+				if(responseHTML != 'ok')
+				{
+					return false;
+				}
+				$("body").stopTime('compteur');
+				$('#menu').remove();
+				$('#info').html('<span class="button b"><span class="danger">Votre session a expiré, vous êtes désormais déconnecté !</span></span> <span class="button b"><a href="./index.php"><img alt="" src="./_img/bouton/mdp_perso.png" /> Se reconnecter</a></span>');
+			}
+		}
+	);
+}
+
+/**
+ * Lire un fichier audio grace au génial lecteur de neolao http://flash-mp3-player.net/
  */
 
 // Objet js
@@ -237,6 +355,7 @@ function setVolume(volume)
 
 /**
  * Fonction pour arrondir les coins des boites avec bordures
+ *
  * En CSS3 il y a la propriété border-radius : http://www.w3.org/TR/css3-background/#the-border-radius
  * Actuellement elle est pré-déclinée par qqs navigateurs :
  * => Gecko, 	avec -moz-border-radius 		(valable pour Firefox, Camino et tout navigateur basé sur Gecko),
@@ -249,10 +368,10 @@ function setVolume(volume)
  * => http://plugins.jquery.com/project/roundCorners => fonctionne à peu près mais temps de calcul long + plante IE si masquage cadre_haut + fait disparaitre la ligne centrale et pb de bordures à cause de l'overflow...
  * => http://plugins.jquery.com/project/DivCorners => reste figé en largeur et en hauteur
  * => http://plugins.jquery.com/project/curvy-corners => erreur inexpliquée sous IE, marge sous FF (il faut ajouter un margin 10px), très joli sinon (http://www.curvycorners.net/instructions/)
+ *
  * @param void
  * @return void
  */
-
 function arrondir_coins(element,taille)
 {
 	// On cherche si le navigateur sait gérer cet attribut css3, éventuellement avec une syntaxe propriétaire
@@ -272,7 +391,6 @@ function arrondir_coins(element,taille)
 /**
  * jQuery !
  */
-
 $(document).ready
 (
 	function()
@@ -372,8 +490,7 @@ $(document).ready
 		(
 			function()
 			{
-				var profil = $(this).val();
-				window.document.location.href='./index.php?'+profil;
+				window.document.location.href='./index.php';
 			}
 		);
 
@@ -447,13 +564,15 @@ $(document).ready
 		//	Gestion de la durée d'inactivité
 		//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
 
-		// Fonction maj_clock() à appeler une fois toutes les 1min = 60s
+		initialiser_compteur();
+
+		// Fonction tester_compteur() à appeler régulièrement (un diviseur de 60s)
 		if(PAGE.substring(0,6)!='public')
 		{
 			$("body").everyTime
-			('60s', function()
+			('15s', 'compteur' , function()
 				{
-					maj_clock(-1);
+					tester_compteur();
 				}
 			);
 		}
@@ -567,7 +686,7 @@ $(document).ready
 							{
 								if (typeof(DUREE_AUTORISEE)!=='undefined')
 								{
-									maj_clock(1); // Ne modifier l'état du compteur que si l'appel ne provient pas d'une page HTML de bilan
+									initialiser_compteur(); // Ne modifier l'état du compteur que si l'appel ne provient pas d'une page HTML de bilan
 								}
 								$('#calque').html(responseHTML);
 								leave_erreur = true;

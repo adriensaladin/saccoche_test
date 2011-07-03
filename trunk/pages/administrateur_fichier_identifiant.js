@@ -78,7 +78,7 @@ $(document).ready
 					},
 					success : function(responseHTML)
 					{
-						maj_clock(1);
+						initialiser_compteur();
 						if(responseHTML.substring(0,4)=='<opt')	// option ou optgroup !
 						{
 							$('#ajax_msg').removeAttr("class").addClass("valide").html("Affichage actualisé !");
@@ -112,7 +112,7 @@ $(document).ready
 					},
 					success : function(responseHTML)
 					{
-						maj_clock(1);
+						initialiser_compteur();
 						if(responseHTML.substring(0,7)=='<option')	// Attention aux caractères accentués : l'utf-8 pose des pbs pour ce test
 						{
 							$('#ajax_msg').removeAttr("class").addClass("valide").html("Affichage actualisé !");
@@ -188,7 +188,7 @@ $(document).ready
 						},
 						success : function(responseHTML)
 						{
-							maj_clock(1);
+							initialiser_compteur();
 							if(responseHTML.substring(0,3)!='<ul')
 							{
 								$('button').prop('disabled',false);
@@ -252,7 +252,7 @@ $(document).ready
 						},
 						success : function(responseHTML)
 						{
-							maj_clock(1);
+							initialiser_compteur();
 							$('button').prop('disabled',false);
 							if(responseHTML.substring(0,3)!='<ul')
 							{
@@ -366,7 +366,7 @@ $(document).ready
 			}
 			else
 			{
-				maj_clock(1);
+				initialiser_compteur();
 				$('#ajax_msg').removeAttr("class").addClass("valide").html("Demande réalisée !");
 				$('#ajax_retour').html(responseHTML);
 				format_liens('#ajax_retour');
@@ -401,7 +401,7 @@ $(document).ready
 						},
 						success : function(responseHTML)
 						{
-							maj_clock(1);
+							initialiser_compteur();
 							$('button').prop('disabled',false);
 							if(responseHTML=='ok')
 							{

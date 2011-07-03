@@ -51,7 +51,7 @@ $(document).ready
 					},
 					success : function(responseHTML)
 					{
-						maj_clock(1);
+						initialiser_compteur();
 						if(responseHTML.substring(0,7)!='<option')
 						{
 							$('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML+' <a href="#" id="charger_formulaire_structures">Veuillez essayer de nouveau.</a>');
@@ -167,7 +167,7 @@ $(document).ready
 							}
 							else
 							{
-								maj_clock(1);
+								initialiser_compteur();
 								$('#ajax_msg').removeAttr("class").html("&nbsp;");
 								$('#choisir_referentiel_communautaire ul').html(responseHTML).parent().show();
 								infobulle();
@@ -206,7 +206,7 @@ $(document).ready
 						},
 						success : function(responseHTML)
 						{
-							maj_clock(1);
+							initialiser_compteur();
 							if(responseHTML.substring(0,18)!='<ul class="ul_n1">')
 							{
 								$('label[id=temp]').removeAttr("class").addClass("alerte").html(responseHTML).fadeOut(2000,function(){$('label[id=temp]').remove();});
@@ -214,6 +214,7 @@ $(document).ready
 							else
 							{
 								$('#voir_referentiel_communautaire').addClass('calque_referentiel').html('<ul class="ul_m1"><li class="li_m1"><b>'+description+'</b><q class="imprimer" title="Imprimer le référentiel."></q><q class="retourner" title="Revenir page précédente." />'+responseHTML+'</li></ul>');
+								document.location.href = '#voir_referentiel_communautaire';
 								infobulle();
 								$('label[id=temp]').remove();
 							}

@@ -122,6 +122,9 @@ $login = phpCAS::getUser();
 
 $connexion = connecter_user($BASE,$login,$password=false,$mode_connection='cas');
 
+// Marqueur pour inviter à la déconnexion de l'ENT ultérieurement.
+$_SESSION['ALERTE_SSO'] = TRUE;
+
 if($connexion=='ok')
 {
 	// Redirection vers l'espace en cas de succès

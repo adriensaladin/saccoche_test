@@ -436,7 +436,7 @@ if( $step==6 )
 			$affichage .= '<hr />'."\r\n";
 			$affichage .= '<h2>Installation logicielle terminée</h2>'."\r\n";
 			$affichage .= '<p>Se connecter avec le compte webmestre : <a href="'.SERVEUR_ADRESSE.'?webmestre">'.SERVEUR_ADRESSE.'?webmestre</a></p>'."\r\n";
-			$affichage .= '<p>Se connecter avec le compte administrateur : <a href="'.SERVEUR_ADRESSE.'?admin">'.SERVEUR_ADRESSE.'?admin</a></p>'."\r\n";
+			$affichage .= '<p>Se connecter avec le compte administrateur : <a href="'.SERVEUR_ADRESSE.'">'.SERVEUR_ADRESSE.'</a></p>'."\r\n";
 		}
 		elseif(HEBERGEUR_INSTALLATION=='multi-structures')
 		{

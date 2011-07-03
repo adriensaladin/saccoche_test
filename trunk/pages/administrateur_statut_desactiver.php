@@ -27,18 +27,19 @@
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = "Désactiver des comptes utilisateurs";
-$VERSION_JS_FILE += 1;
+$VERSION_JS_FILE += 2;
 ?>
 
 <?php
 // Fabrication des éléments select du formulaire
 $select_f_groupes              = afficher_select(DB_STRUCTURE_OPT_regroupements_etabl()                   , $select_nom=false , $option_first='oui' , $selection=false , $optgroup='oui');
+$select_parents                = afficher_select(DB_STRUCTURE_OPT_parents_etabl($statut=1)                , $select_nom=false , $option_first='non' , $selection=false , $optgroup='non');
 $select_professeurs_directeurs = afficher_select(DB_STRUCTURE_OPT_professeurs_directeurs_etabl($statut=1) , $select_nom=false , $option_first='non' , $selection=false , $optgroup='oui');
 ?>
 
 <ul class="puce">
 	<li><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__gestion_statuts">DOC : Statuts : désactiver / réintégrer / supprimer</a></span></li>
-	<li><span class="astuce">Pour un traitement individuel on peut utiliser les pages [<a href="./index.php?page=administrateur_eleve&amp;section=gestion">Gérer les élèves</a>] [<a href="./index.php?page=administrateur_professeur&amp;section=gestion">Gérer les professeurs</a>] [<a href="./index.php?page=administrateur_directeur">Gérer les directeurs</a>].</span></li>
+	<li><span class="astuce">Pour un traitement individuel on peut utiliser les pages [<a href="./index.php?page=administrateur_eleve&amp;section=gestion">Gérer les élèves</a>] [<a href="./index.php?page=administrateur_parent&amp;section=gestion">Gérer les parents</a>] [<a href="./index.php?page=administrateur_professeur&amp;section=gestion">Gérer les professeurs</a>] [<a href="./index.php?page=administrateur_directeur">Gérer les directeurs</a>].</span></li>
 </ul>
 
 <hr />
@@ -50,6 +51,8 @@ $select_professeurs_directeurs = afficher_select(DB_STRUCTURE_OPT_professeurs_di
 				<p class="hc">
 					<input id="f_profil_eleves" name="f_profil" type="radio" value="eleves" /><label for="f_profil_eleves"> Élèves</label>
 					&nbsp;&nbsp;&nbsp;
+					<input id="f_profil_parents" name="f_profil" type="radio" value="parents" /><label for="f_profil_parents"> Responsables légaux</label>
+					&nbsp;&nbsp;&nbsp;
 					<input id="f_profil_professeurs_directeurs" name="f_profil" type="radio" value="professeurs_directeurs" /><label for="f_profil_professeurs_directeurs"> Professeurs / Directeurs</label>
 				</p>
 			</td>
@@ -60,6 +63,10 @@ $select_professeurs_directeurs = afficher_select(DB_STRUCTURE_OPT_professeurs_di
 					<b>Élèves au statut activé :</b> <img alt="" src="./_img/bulle_aide.png" title="Utiliser la touche &laquo&nbsp;Shift&nbsp;&raquo; pour une sélection multiple contiguë.<br />Utiliser la touche &laquo&nbsp;Ctrl&nbsp;&raquo; pour une sélection multiple non contiguë." /><br />
 					<select id="f_groupe" name="f_groupe"><?php echo $select_f_groupes ?></select><br />
 					<select id="select_eleves" name="select_eleves[]" multiple size="10" class="hide"><option value=""></option></select>
+				</p>
+				<p id="p_parents" class="hide">
+					<b>Responsables légaux au statut activé :</b> <img alt="" src="./_img/bulle_aide.png" title="Utiliser la touche &laquo&nbsp;Shift&nbsp;&raquo; pour une sélection multiple contiguë.<br />Utiliser la touche &laquo&nbsp;Ctrl&nbsp;&raquo; pour une sélection multiple non contiguë." /><br />
+					<select id="select_parents" name="select_parents[]" multiple size="10"><?php echo $select_parents; ?></select>
 				</p>
 				<p id="p_professeurs_directeurs" class="hide">
 					<b>Professeurs / Directeurs au statut activé :</b> <img alt="" src="./_img/bulle_aide.png" title="Utiliser la touche &laquo&nbsp;Shift&nbsp;&raquo; pour une sélection multiple contiguë.<br />Utiliser la touche &laquo&nbsp;Ctrl&nbsp;&raquo; pour une sélection multiple non contiguë." /><br />

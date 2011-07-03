@@ -27,10 +27,19 @@
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = "Nettoyage / Initialisation";
-$VERSION_JS_FILE += 3;
+$VERSION_JS_FILE += 4;
 ?>
 
 <p><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__gestion_nettoyage">DOC : Nettoyage et initialisation annuelle de la base</a></span></p>
+
+<hr />
+
+<h2>Recherche et correction d'anomalies de numérotation</h2>
+
+<div class="astuce">Cet outil n'est utile que si une anomalie spécifique a été constaté (voir documentation ci-dessus).</div>
+<form id="form_numeroter" action=""><fieldset>
+	<span class="tab"></span><button id="bouton_numeroter" type="button"><img alt="" src="./_img/bouton/nettoyage.png" /> Lancer le nettoyage d'éventuelles anomalies de numérotation.</button><label id="ajax_msg_numeroter">&nbsp;</label>
+</fieldset></form>
 
 <hr />
 
@@ -38,7 +47,7 @@ $VERSION_JS_FILE += 3;
 
 <div class="astuce">Cet outil est facultatif ; il ne met pas à jour la structure ni les données de la base (voir documentation ci-dessus).</div>
 <form id="form_nettoyer" action=""><fieldset>
-	<span class="tab"></span><button id="bouton_nettoyer" type="button"><img alt="" src="./_img/bouton/nettoyage.png" /> Lancer le nettoyage d'éventuelles anomalies.</button><label id="ajax_msg_nettoyer">&nbsp;</label>
+	<span class="tab"></span><button id="bouton_nettoyer" type="button"><img alt="" src="./_img/bouton/nettoyage.png" /> Lancer le nettoyage d'éventuelles correspondances anormales.</button><label id="ajax_msg_nettoyer">&nbsp;</label>
 </fieldset></form>
 
 <hr />
@@ -64,7 +73,7 @@ $VERSION_JS_FILE += 3;
 
 <h2>Effacement des étiquettes nom &amp; prénom</h2>
 
-<div class="astuce">Cet outil est inutile sauf si un problème spécifique est survenu (voir documentation ci-dessus).</div>
+<div class="astuce">Cet outil n'est utile que si une anomalie spécifique a été constaté (voir documentation ci-dessus).</div>
 <form id="form_effacer" action=""><fieldset>
 	<span class="tab"></span><button id="bouton_effacer" type="button"><img alt="" src="./_img/bouton/nettoyage.png" /> Effacer les étiquettes nom &amp; prénom.</button><label id="ajax_msg_effacer">&nbsp;</label>
 </fieldset></form>

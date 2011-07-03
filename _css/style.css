@@ -349,7 +349,7 @@ table i {display:none}
 /* Afficher le détail d'un référentiel dans un calque par dessus le contenu.                           */
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-.calque_referentiel{position:absolute;top:5px;left:5px;right:5px;bottom:5px;border:1px solid dotted #66F;background:#FFF;padding:5px}
+.calque_referentiel{position:absolute;top:10px;left:5px;right:5px;bottom:5px;border:1px solid dotted #66F;background:#FFF;padding:5px}
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 /* Zone de choix d'association d'une compétence du socle.                                              */

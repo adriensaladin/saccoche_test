@@ -82,7 +82,7 @@ $(document).ready
 						},
 						success : function(responseHTML)
 						{
-							maj_clock(1);
+							initialiser_compteur();
 							$('button').prop('disabled',false);
 							if( (responseHTML.substring(0,4)!='<tr>') && (responseHTML!='') )
 							{

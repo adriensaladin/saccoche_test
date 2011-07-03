@@ -71,7 +71,7 @@ $(document).ready
 						},
 						success : function(responseHTML)
 						{
-							maj_clock(1);
+							initialiser_compteur();
 							$('button').prop('disabled',false);
 							if(responseHTML.substring(0,6)!='<hr />')
 							{
@@ -104,7 +104,7 @@ $(document).ready
 				},
 				success : function(responseHTML)
 				{
-					maj_clock(1);
+					initialiser_compteur();
 					if(responseHTML.substring(0,6)!='<hr />')
 					{
 						$('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);

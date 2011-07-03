@@ -64,6 +64,13 @@ if($PAGE=='conserver_session_active')
 	exit('ok');
 }
 
+// Arrêt s'il fallait seulement mettre fermer la session
+if($PAGE=='fermer_session')
+{
+	unset($_SESSION['USER_PROFIL']);
+	exit('ok');
+}
+
 // Blocage éventuel par le webmestre ou un administrateur
 tester_blocage_application($_SESSION['BASE'],$demande_connexion_profil=false);
 

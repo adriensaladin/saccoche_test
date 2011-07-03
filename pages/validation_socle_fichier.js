@@ -67,7 +67,7 @@ $(document).ready
 								$('#ajax_msg_export').removeAttr("class").html('');
 								$('#ajax_info').html(responseHTML);
 								format_liens('#ajax_info');
-								maj_clock(1);
+								initialiser_compteur();
 							}
 						}
 					}
@@ -138,7 +138,7 @@ $(document).ready
 			{
 				$('#ajax_msg_import').html('Demande traitée... Veuillez patienter.');
 				$('#ajax_info').html(responseHTML);
-				maj_clock(1);
+				initialiser_compteur();
 				importer();
 			}
 		}
@@ -170,7 +170,7 @@ $(document).ready
 							$('#ajax_msg_import').removeAttr("class").html('');
 							$('#ajax_info').append(responseHTML);
 							format_liens('#ajax_info');
-							maj_clock(1);
+							initialiser_compteur();
 						}
 					}
 				}

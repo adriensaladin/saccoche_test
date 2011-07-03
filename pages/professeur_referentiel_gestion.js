@@ -130,7 +130,7 @@ $(document).ready
 						},
 						success : function(responseHTML)
 						{
-							maj_clock(1);
+							initialiser_compteur();
 							if(responseHTML!='ok')
 							{
 								bouton.html('<img alt="" src="./_img/ajax/ajax_alerte.png" /> Erreur ! Recommencer.');
@@ -171,7 +171,7 @@ $(document).ready
 						},
 						success : function(responseHTML)
 						{
-							maj_clock(1);
+							initialiser_compteur();
 							if(responseHTML.substring(0,18)!='<ul class="ul_m1">')
 							{
 								$('label[for='+ids+']').removeAttr("class").addClass("alerte").html(responseHTML).fadeOut(2000,function(){$('label[for='+ids+']').remove();afficher_masquer_images_action('show');});
@@ -179,6 +179,8 @@ $(document).ready
 							else
 							{
 								$('#voir_referentiel').addClass('calque_referentiel').html(responseHTML.replace('<ul class="ul_m2">','<q class="imprimer" title="Imprimer le référentiel." /><q class="retourner" title="Revenir page précédente." />'+'<ul class="ul_m2">')+'<p />');
+								$('#form_instance table td').css('border-color','#FFF'); // Problème d'une bordure visible sous le div...
+								document.location.href = '#voir_referentiel';
 								infobulle();
 								$('label[for='+ids+']').remove();
 								afficher_masquer_images_action('show');
@@ -231,7 +233,7 @@ $(document).ready
 						},
 						success : function(responseHTML)
 						{
-							maj_clock(1);
+							initialiser_compteur();
 							if(responseHTML.substring(0,10)!='<img title')
 							{
 								$('label[for='+ids+']').removeAttr("class").addClass("alerte").html(responseHTML).fadeOut(4000,function(){$('label[for='+ids+']').remove();afficher_masquer_images_action('show');});
@@ -308,7 +310,7 @@ $(document).ready
 						},
 						success : function(responseHTML)
 						{
-							maj_clock(1);
+							initialiser_compteur();
 							if(responseHTML.substring(0,10)!='<img title')
 							{
 								$('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);
@@ -360,7 +362,7 @@ $(document).ready
 						},
 						success : function(responseHTML)
 						{
-							maj_clock(1);
+							initialiser_compteur();
 							if(responseHTML.substring(0,2)!='ok')
 							{
 								$('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);
@@ -403,7 +405,7 @@ $(document).ready
 						},
 						success : function(responseHTML)
 						{
-							maj_clock(1);
+							initialiser_compteur();
 							if(responseHTML!='ok')
 							{
 								$('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);
@@ -478,7 +480,7 @@ $(document).ready
 					},
 					success : function(responseHTML)
 					{
-						maj_clock(1);
+						initialiser_compteur();
 						if(responseHTML.substring(0,7)!='<option')
 						{
 							$('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML+' <a href="#" id="charger_formulaire_structures">Veuillez essayer de nouveau.</a>');
@@ -518,7 +520,7 @@ $(document).ready
 				$('#lister_referentiel_communautaire').hide("fast");
 				$('#form_instance').hide();
 				$('#form_communautaire').show();
-				maj_clock(1);
+				initialiser_compteur();
 				return(false);
 			}
 		);
@@ -619,7 +621,7 @@ $(document).ready
 							}
 							else
 							{
-								maj_clock(1);
+								initialiser_compteur();
 								$('#ajax_msg').removeAttr("class").html("&nbsp;");
 								var reg = new RegExp('</q>',"g"); // Si on ne prend pas une expression régulière alors replace() ne remplace que la 1e occurence
 								responseHTML = responseHTML.replace(reg,'</q><q class="valider" title="Sélectionner ce référentiel.<br />(choix à confirmer de retour à la page principale)"></q>'); // Ajouter les paniers
@@ -646,7 +648,7 @@ $(document).ready
 				var longueur_sup   = $(this).prev().prev().text().length;
 				var description    = description.substring(0,description.length-longueur_sup);
 				$('#reporter').html(description).parent('#choisir_importer').val('id_'+referentiel_id).parent().show();
-				maj_clock(1);
+				initialiser_compteur();
 				$('#rechercher_annuler').click();
 			}
 		);
@@ -679,7 +681,7 @@ $(document).ready
 						},
 						success : function(responseHTML)
 						{
-							maj_clock(1);
+							initialiser_compteur();
 							if(responseHTML.substring(0,18)!='<ul class="ul_n1">')
 							{
 								$('label[id=temp]').removeAttr("class").addClass("alerte").html(responseHTML).fadeOut(2000,function(){$('label[id=temp]').remove();});
@@ -687,6 +689,8 @@ $(document).ready
 							else
 							{
 								$('#voir_referentiel').addClass('calque_referentiel').html('<ul class="ul_m1"><li class="li_m1"><b>'+description+'</b><q class="imprimer" title="Imprimer le référentiel."></q><q class="retourner" title="Revenir page précédente." />'+responseHTML+'</li></ul>');
+								$('#form_instance table td').css('border-color','#FFF'); // Problème d'une bordure visible sous le div...
+								document.location.href = '#voir_referentiel';
 								infobulle();
 								$('label[id=temp]').remove();
 							}
@@ -716,6 +720,7 @@ $(document).ready
 		('click',
 			function()
 			{
+				$('#form_instance table td').css('border-color','#66F'); // Problème d'une bordure visible sous le div...
 				$('#voir_referentiel').removeAttr("class").html('');
 			}
 		);
@@ -762,7 +767,7 @@ $(document).ready
 						},
 						success : function(responseHTML)
 						{
-							maj_clock(1);
+							initialiser_compteur();
 							$('button').prop('disabled',false);
 							if(responseHTML!='ok')
 							{

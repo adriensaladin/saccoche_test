@@ -100,7 +100,7 @@ $(document).ready
 		// Fonction suivant l'envoi du formulaire (avec jquery.form.js)
 		function retour_form_valide(responseHTML)
 		{
-			maj_clock(1);
+			initialiser_compteur();
 			if(responseHTML=='ok')
 			{
 				$('#ajax_msg').removeAttr("class").addClass("valide").html("Inscription supprimée !");

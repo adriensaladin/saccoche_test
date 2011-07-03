@@ -79,7 +79,7 @@ if( ($action=='Voir') && $matiere_id )
 		if( (!is_null($DB_ROW['item_id'])) && ($DB_ROW['item_id']!=$item_id) )
 		{
 			$item_id     = $DB_ROW['item_id'];
-			$coef_texte  = '<img src="./_img/x'.$DB_ROW['item_coef'].'.gif" alt="" title="Coefficient '.$DB_ROW['item_coef'].'." />';
+			$coef_texte  = '<img src="./_img/coef/'.$DB_ROW['item_coef'].'.gif" alt="" title="Coefficient '.$DB_ROW['item_coef'].'." />';
 			$cart_title  = ($DB_ROW['item_cart']) ? 'Demande possible.' : 'Demande interdite.' ;
 			$cart_texte  = '<img src="./_img/cart'.$DB_ROW['item_cart'].'.png" title="'.$cart_title.'" />';
 			$socle_image = ($DB_ROW['entree_id']==0) ? 'off' : 'on' ;

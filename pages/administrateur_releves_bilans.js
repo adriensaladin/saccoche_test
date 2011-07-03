@@ -95,7 +95,7 @@ $(document).ready
 							},
 							success : function(responseHTML)
 							{
-								maj_clock(1);
+								initialiser_compteur();
 								$('#form_ordonner button').prop('disabled',false);
 								if(responseHTML!='ok')
 								{
@@ -178,7 +178,7 @@ $(document).ready
 						},
 						success : function(responseHTML)
 						{
-							maj_clock(1);
+							initialiser_compteur();
 							$("#form_synthese button").prop('disabled',false);
 							if(responseHTML!='ok')
 							{

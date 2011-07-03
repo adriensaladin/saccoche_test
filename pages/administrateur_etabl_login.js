@@ -104,7 +104,7 @@ $(document).ready
 						},
 						success : function(responseHTML)
 						{
-							maj_clock(1);
+							initialiser_compteur();
 							$("#bouton_valider").prop('disabled',false);
 							if(responseHTML!='ok')
 							{

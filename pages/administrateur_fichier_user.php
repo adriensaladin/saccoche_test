@@ -27,7 +27,7 @@
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = "Importer des fichiers d'utilisateurs";
-$VERSION_JS_FILE += 5;
+$VERSION_JS_FILE += 6;
 ?>
 
 <?php
@@ -55,8 +55,9 @@ $nom_fin_fichier = $_SESSION['UAI'].'_'.$annee_scolaire;
 		<select id="f_choix_principal" name="f_choix_principal">
 			<option value=""></option>
 			<optgroup label="Fichiers extraits de Sconet / STS-Web (recommandé pour le second degré)">
-				<option value="sconet_eleves_<?php echo $test_UAI ?>">Importer les élèves (avec leurs affectations).</option>
 				<option value="sconet_professeurs_directeurs_<?php echo $test_UAI ?>">Importer professeurs &amp; directeurs (avec leurs affectations).</option>
+				<option value="sconet_eleves_<?php echo $test_UAI ?>">Importer les élèves (avec leurs affectations).</option>
+				<option value="sconet_parents_<?php echo $test_UAI ?>">Importer les parents (avec adresses et responsabilités).</option>
 			</optgroup>
 			<optgroup label="Fichier extrait de Base Élèves (recommandé pour le premier degré)">
 				<option value="base-eleves_eleves">Importer les élèves (avec leurs affectations).</option>
@@ -66,6 +67,20 @@ $nom_fin_fichier = $_SESSION['UAI'].'_'.$annee_scolaire;
 				<option value="tableur_professeurs_directeurs">Importer professeurs &amp; directeurs (sans leurs affectations).</option>
 			</optgroup>
 		</select><br />
+	</fieldset>
+
+	<fieldset id="fieldset_sconet_professeurs_directeurs_non" class="hide">
+		<hr />
+		<label class="alerte">Le numéro UAI de l'établissement n'étant pas renseigné, cette procédure ne peut pas être utilisée.</label>
+		<div class="astuce">Vous devez demander au webmestre d'indiquer votre numéro UAI : voyez la page [<a href="./index.php?page=administrateur_etabl_identite">Identité de l'établissement</a>].</div>
+	</fieldset>
+
+	<fieldset id="fieldset_sconet_professeurs_directeurs_oui" class="hide">
+		<hr />
+		<ul class="puce">
+			<li><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__import_users_sconet">DOC : Import d'utilisateurs depuis Sconet / STS-Web</a></span></li>
+			<li>Indiquez le fichier <em>sts_emp_<?php echo $nom_fin_fichier ?>.xml</em> (ou <em>sts_emp_<?php echo $nom_fin_fichier ?>.zip</em>) : <button id="sconet_professeurs_directeurs" type="button"><img alt="" src="./_img/bouton/fichier_import.png" /> Parcourir...</button></li>
+		</ul>
 	</fieldset>
 
 	<fieldset id="fieldset_sconet_eleves_non" class="hide">
@@ -93,20 +108,6 @@ $nom_fin_fichier = $_SESSION['UAI'].'_'.$annee_scolaire;
 		<ul class="puce">
 			<li><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__import_users_sconet">DOC : Import d'utilisateurs depuis Sconet / STS-Web</a></span></li>
 			<li>Indiquez le fichier <em>ResponsablesAvecAdresses.zip</em> (ou <em>ResponsablesAvecAdresses.xml</em>) : <button id="sconet_parents" type="button"><img alt="" src="./_img/bouton/fichier_import.png" /> Parcourir...</button></li>
-		</ul>
-	</fieldset>
-
-	<fieldset id="fieldset_sconet_professeurs_directeurs_non" class="hide">
-		<hr />
-		<label class="alerte">Le numéro UAI de l'établissement n'étant pas renseigné, cette procédure ne peut pas être utilisée.</label>
-		<div class="astuce">Vous devez demander au webmestre d'indiquer votre numéro UAI : voyez la page [<a href="./index.php?page=administrateur_etabl_identite">Identité de l'établissement</a>].</div>
-	</fieldset>
-
-	<fieldset id="fieldset_sconet_professeurs_directeurs_oui" class="hide">
-		<hr />
-		<ul class="puce">
-			<li><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__import_users_sconet">DOC : Import d'utilisateurs depuis Sconet / STS-Web</a></span></li>
-			<li>Indiquez le fichier <em>sts_emp_<?php echo $nom_fin_fichier ?>.xml</em> (ou <em>sts_emp_<?php echo $nom_fin_fichier ?>.zip</em>) : <button id="sconet_professeurs_directeurs" type="button"><img alt="" src="./_img/bouton/fichier_import.png" /> Parcourir...</button></li>
 		</ul>
 	</fieldset>
 

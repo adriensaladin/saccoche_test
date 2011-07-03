@@ -63,7 +63,7 @@ $(document).ready
 						},
 						success : function(responseHTML)
 						{
-							maj_clock(1);
+							initialiser_compteur();
 							$("#bouton_valider").prop('disabled',false);
 							if(responseHTML!='ok')
 							{
@@ -73,7 +73,7 @@ $(document).ready
 							{
 								$('#ajax_msg').removeAttr("class").addClass("valide").html("Demande enregistrée !");
 								DUREE_AUTORISEE = delai;
-								maj_clock(1);
+								initialiser_compteur();
 							}
 						}
 					}

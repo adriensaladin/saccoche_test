@@ -51,7 +51,7 @@ if($admin_id)
 	echo'<li>Le mot de passe administrateur de <em>'.html($admin_prenom).' '.html($admin_nom).'</em> vient d\'être réinitialisé.</li>';
 	echo'<li>nom d\'utilisateur " '.$admin_login.' "</li>';
 	echo'<li>mot de passe " '.$admin_password.' "</li>';
-	echo'<li>Pour se connecter comme administrateur, utiliser l\'adresse <a href="'.SERVEUR_ADRESSE.'?admin">'.SERVEUR_ADRESSE.'?admin</a></li>';
+	echo'<li>Pour se connecter comme administrateur, utiliser l\'adresse <a href="'.SERVEUR_ADRESSE.'">'.SERVEUR_ADRESSE.'</a></li>';
 	echo'</ul><p />';
 }
 else

@@ -70,7 +70,7 @@ function init_session()
 // Fermer une session existante
 function close_session()
 {
-	$alerte_sso = ( isset($_SESSION['CONNEXION_MODE']) && ($_SESSION['CONNEXION_MODE']!='normal') &&($_SESSION['USER_PROFIL']!='administrateur') ) ? '&amp;f_base='.$_SESSION['BASE'].'&amp;f_mode='.$_SESSION['CONNEXION_MODE'] : false ;
+	$alerte_sso = (isset($_SESSION['ALERTE_SSO'])) ? '&amp;f_base='.$_SESSION['BASE'].'&amp;f_mode='.$_SESSION['CONNEXION_MODE'] : false ;
 	$_SESSION = array();
 	setcookie(session_name(),'',time()-42000,'/');
 	session_destroy();

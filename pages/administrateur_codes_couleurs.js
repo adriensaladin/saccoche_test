@@ -186,7 +186,7 @@ $(document).ready
 		// Fonction suivant l'envoi du formulaire (avec jquery.form.js)
 		function retour_form_valide1(responseHTML)
 		{
-			maj_clock(1);
+			initialiser_compteur();
 			$("#bouton_valider_notes").prop('disabled',false);
 			if(responseHTML=='ok')
 			{
@@ -300,7 +300,7 @@ $(document).ready
 		// Fonction suivant l'envoi du formulaire (avec jquery.form.js)
 		function retour_form_valide2(responseHTML)
 		{
-			maj_clock(1);
+			initialiser_compteur();
 			$("#bouton_valider_acquis").prop('disabled',false);
 			if(responseHTML=='ok')
 			{

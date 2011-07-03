@@ -26,7 +26,7 @@
  */
 
 /**
- * non_nul() non_zero() positif() non_vide() is_renseigne()
+ * non_nul() non_zero() non_vide() positif() non_note() is_renseigne()
  * Fonctions utilisées avec array_filter()
  */
 
@@ -38,11 +38,15 @@ function non_zero($n)
 {
 	return $n!=0 ;
 }
+function non_vide($n)
+{
+	return $n!='' ;
+}
 function positif($n)
 {
 	return $n>0 ;
 }
-function non_vide($note)
+function non_note($note)
 {
 	return ($note!='X')&&($note!='REQ') ;
 }
@@ -637,6 +641,18 @@ function enregistrer_informations_session($BASE,$DB_ROW)
 	$_SESSION['ELEVE_CLASSE_ID']  = (int) $DB_ROW['eleve_classe_id'];
 	$_SESSION['ELEVE_CLASSE_NOM'] = $DB_ROW['groupe_nom'];
 	$_SESSION['ELEVE_LANGUE']     = (int) $DB_ROW['eleve_langue'];
+	// Récupérer et Enregistrer en session les données des élèves associées à un resposnable légal.
+	if($_SESSION['USER_PROFIL']=='parent')
+	{
+		$_SESSION['OPT_PARENT_ENFANTS'] = DB_STRUCTURE_OPT_enfants_parent($_SESSION['USER_ID']);
+		$_SESSION['OPT_PARENT_CLASSES'] = DB_STRUCTURE_OPT_classes_parent($_SESSION['USER_ID']);
+		$_SESSION['NB_ENFANTS'] = (is_array($_SESSION['OPT_PARENT_ENFANTS'])) ? count($_SESSION['OPT_PARENT_ENFANTS']) : 0 ;
+		if( ($_SESSION['NB_ENFANTS']==1) && (is_array($_SESSION['OPT_PARENT_CLASSES'])) )
+		{
+			$_SESSION['ELEVE_CLASSE_ID']  = (int) $_SESSION['OPT_PARENT_CLASSES'][0]['valeur'];
+			$_SESSION['ELEVE_CLASSE_NOM'] = $_SESSION['OPT_PARENT_CLASSES'][0]['texte'];
+		}
+	}
 	// Récupérer et Enregistrer en session les données associées à l'établissement (indices du tableau de session en majuscules).
 	$DB_TAB = DB_STRUCTURE_lister_parametres();
 	$tab_type_entier  = array('SESAMATH_ID','DUREE_INACTIVITE','CALCUL_VALEUR_RR','CALCUL_VALEUR_R','CALCUL_VALEUR_V','CALCUL_VALEUR_VV','CALCUL_SEUIL_R','CALCUL_SEUIL_V','CALCUL_LIMITE','CAS_SERVEUR_PORT');
@@ -813,7 +829,7 @@ function afficher_arborescence_matiere_from_SQL($DB_TAB,$dynamique,$reference,$a
 			$item_id = $DB_ROW['item_id'];
 			if($aff_coef)
 			{
-				$coef_texte = '<img src="./_img/x'.$DB_ROW['item_coef'].'.gif" title="Coefficient '.$DB_ROW['item_coef'].'." /> ';
+				$coef_texte = '<img src="./_img/coef/'.$DB_ROW['item_coef'].'.gif" title="Coefficient '.$DB_ROW['item_coef'].'." /> ';
 			}
 			if($aff_cart)
 			{

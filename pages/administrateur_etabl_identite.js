@@ -52,7 +52,7 @@ $(document).ready
 				$('#f_recherche_geo').hide();
 				$('#f_recherche_resultat').html('<li></li>').hide();
 				$('#form_communautaire').show();
-				maj_clock(1);
+				initialiser_compteur();
 				return(false);
 			}
 		);
@@ -206,7 +206,7 @@ $(document).ready
 		// Fonction suivant l'envoi du formulaire (avec jquery.form.js)
 		function retour_form_valide(responseHTML)
 		{
-			maj_clock(1);
+			initialiser_compteur();
 			$("#bouton_valider").prop('disabled',false);
 			if(responseHTML=='ok')
 			{
@@ -257,7 +257,7 @@ $(document).ready
 						{
 							$('#ajax_msg_communautaire').removeAttr("class").html("&nbsp;");
 							$('#f_geo1').html(responseHTML).fadeIn('fast').focus();
-							maj_clock(1);
+							initialiser_compteur();
 						}
 						else
 						{
@@ -293,7 +293,7 @@ $(document).ready
 						{
 							$('#ajax_msg_communautaire').removeAttr("class").html("&nbsp;");
 							$('#f_geo2').html(responseHTML).fadeIn('fast').focus();
-							maj_clock(1);
+							initialiser_compteur();
 						}
 						else
 						{
@@ -329,7 +329,7 @@ $(document).ready
 						{
 							$('#ajax_msg_communautaire').removeAttr("class").html("&nbsp;");
 							$('#f_geo3').html(responseHTML).fadeIn('fast').focus();
-							maj_clock(1);
+							initialiser_compteur();
 						}
 						else
 						{
@@ -367,7 +367,7 @@ $(document).ready
 							$('#f_recherche_resultat').html(responseHTML).show();
 							format_liens('#f_recherche_resultat');
 							infobulle();
-							maj_clock(1);
+							initialiser_compteur();
 						}
 						else
 						{
@@ -405,7 +405,7 @@ $(document).ready
 							$('#f_recherche_resultat').html(responseHTML).show();
 							format_liens('#f_recherche_resultat');
 							infobulle();
-							maj_clock(1);
+							initialiser_compteur();
 						}
 						else
 						{
@@ -442,7 +442,7 @@ $(document).ready
 					$("#f_recherche_geo").hide();
 					$("#f_recherche_uai").show();
 					$("#f_uai2").focus();
-					maj_clock(1);
+					initialiser_compteur();
 				}
 			}
 		);
@@ -587,7 +587,7 @@ $(document).ready
 				$('#f_sesamath_uai').val(tab_infos[2]); // (peut être vide)
 				$('#f_sesamath_type_nom').val(denomination);
 				$('#ajax_msg_instance').removeAttr("class").addClass("alerte").html('Pensez à valider pour confirmer votre sélection !');
-				maj_clock(1);
+				initialiser_compteur();
 				$('#rechercher_annuler').click();
 			}
 		);

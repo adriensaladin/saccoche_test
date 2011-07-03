@@ -31,7 +31,6 @@
  * @param int   $matiere_id
  * @return array
  */
-
 function DB_STRUCTURE_recuperer_demandes_autorisees_matiere($matiere_id)
 {
 	$DB_SQL = 'SELECT matiere_nb_demandes ';
@@ -49,7 +48,6 @@ function DB_STRUCTURE_recuperer_demandes_autorisees_matiere($matiere_id)
  * @param string $login
  * @return array
  */
-
 function DB_STRUCTURE_recuperer_donnees_utilisateur($mode_connection,$login)
 {
 	$champ = ($mode_connection=='normal') ? 'user_login' : 'user_id_ent' ;
@@ -70,7 +68,6 @@ function DB_STRUCTURE_recuperer_donnees_utilisateur($mode_connection,$login)
  * @param int    $periode_id   id de la période
  * @return array
  */
-
 function DB_STRUCTURE_recuperer_dates_periode($groupe_id,$periode_id)
 {
 	$DB_SQL = 'SELECT jointure_date_debut, jointure_date_fin ';
@@ -87,7 +84,6 @@ function DB_STRUCTURE_recuperer_dates_periode($groupe_id,$periode_id)
  * @param void
  * @return array  de la forme array('tout_debut'=>... , ['toute_fin']=>... , ['nb_jours_total']=>...)
  */
-
 function DB_STRUCTURE_recuperer_amplitude_periodes()
 {
 	$DB_SQL = 'SELECT MIN(jointure_date_debut) AS tout_debut , MAX(jointure_date_fin) AS toute_fin FROM sacoche_jointure_groupe_periode ';
@@ -109,7 +105,6 @@ function DB_STRUCTURE_recuperer_amplitude_periodes()
  * @param string   $listing_groupe_id   id des groupes séparés par des virgules
  * @return array
  */
-
 function DB_STRUCTURE_recuperer_niveau_groupes($listing_groupe_id)
 {
 	$DB_SQL = 'SELECT groupe_id, niveau_id, niveau_nom ';
@@ -133,7 +128,6 @@ function DB_STRUCTURE_recuperer_niveau_groupes($listing_groupe_id)
  * @param bool $socle_nom    avec ou pas le nom des items du socle associés
  * @return array
  */
-
 function DB_STRUCTURE_recuperer_arborescence($prof_id,$matiere_id,$niveau_id,$only_socle,$only_item,$socle_nom)
 {
 	$select_socle_nom  = ($socle_nom)  ? 'entree_id,entree_nom ' : 'entree_id ' ;
@@ -181,7 +175,6 @@ function DB_STRUCTURE_recuperer_arborescence($prof_id,$matiere_id,$niveau_id,$on
  * @param string $date_mysql_fin
  * @return array
  */
-
 function DB_STRUCTURE_recuperer_arborescence_selection($liste_eleve_id,$liste_item_id,$date_mysql_debut,$date_mysql_fin)
 {
 	$DB_SQL = 'SELECT item_id , ';
@@ -224,7 +217,6 @@ function DB_STRUCTURE_recuperer_arborescence_selection($liste_eleve_id,$liste_it
  * @param string $date_mysql_fin
  * @return array
  */
-
 function DB_STRUCTURE_recuperer_arborescence_bilan($liste_eleve_id,$matiere_id,$only_socle,$date_mysql_debut,$date_mysql_fin)
 {
 	$where_eleve      = (strpos($liste_eleve_id,',')) ? 'eleve_id IN('.$liste_eleve_id.') '    : 'eleve_id='.$liste_eleve_id.' ' ; // Pour IN(...) NE PAS passer la liste dans $DB_VAR sinon elle est convertie en nb entier
@@ -285,7 +277,6 @@ function DB_STRUCTURE_recuperer_arborescence_bilan($liste_eleve_id,$matiere_id,$
  * @param string $date_mysql_fin
  * @return array
  */
-
 function DB_STRUCTURE_recuperer_arborescence_synthese($liste_eleve_id,$matiere_id,$only_socle,$only_niveau,$mode_synthese='predefini',$date_mysql_debut,$date_mysql_fin)
 {
 	$select_matiere    = (!$matiere_id)                ? 'matiere_id , matiere_nom , '                          : '' ;
@@ -361,7 +352,6 @@ function DB_STRUCTURE_recuperer_arborescence_synthese($liste_eleve_id,$matiere_i
  * @param string|bool $liste_pilier_id   id des piliers séparés par des virgules (facultatif, pour restreindre à des piliers précis)
  * @return array
  */
-
 function DB_STRUCTURE_recuperer_arborescence_palier($liste_palier_id=false,$liste_pilier_id=false)
 {
 	$tab_where = array();
@@ -383,7 +373,6 @@ function DB_STRUCTURE_recuperer_arborescence_palier($liste_palier_id=false,$list
  * @param int $palier_id   id du palier
  * @return array|string
  */
-
 function DB_STRUCTURE_recuperer_piliers($palier_id)
 {
 	$DB_SQL = 'SELECT * FROM sacoche_socle_pilier ';
@@ -400,7 +389,6 @@ function DB_STRUCTURE_recuperer_piliers($palier_id)
  * @param string|bool $listing_domaine_id   id des domaines séparés par des virgules (facultatif, pour restreindre à des domaines précis)
  * @return array
  */
-
 function DB_STRUCTURE_recuperer_arborescence_pilier($pilier_id,$listing_domaine_id='')
 {
 	$where_domaine = ($listing_domaine_id) ? 'AND section_id IN('.$listing_domaine_id.') ' : '';
@@ -419,7 +407,6 @@ function DB_STRUCTURE_recuperer_arborescence_pilier($pilier_id,$listing_domaine_
  * @param void
  * @return array
  */
-
 function DB_STRUCTURE_recuperer_referentiels_domaines()
 {
 	$DB_SQL = 'SELECT matiere_id,niveau_id,domaine_nom FROM sacoche_referentiel_domaine ';
@@ -433,7 +420,6 @@ function DB_STRUCTURE_recuperer_referentiels_domaines()
  * @param void
  * @return array
  */
-
 function DB_STRUCTURE_recuperer_referentiels_themes()
 {
 	$DB_SQL = 'SELECT matiere_id,niveau_id,theme_nom FROM sacoche_referentiel_theme ';
@@ -448,7 +434,6 @@ function DB_STRUCTURE_recuperer_referentiels_themes()
  * @param void
  * @return array
  */
-
 function DB_STRUCTURE_recuperer_associations_entrees_socle()
 {
 	$DB_SQL = 'SELECT entree_id , item_nom , matiere_ref , niveau_ref , ';
@@ -473,7 +458,6 @@ function DB_STRUCTURE_recuperer_associations_entrees_socle()
  * @param int   $item_id
  * @return int
  */
-
 function DB_STRUCTURE_recuperer_item_infos($item_id)
 {
 	$DB_SQL = 'SELECT item_nom , item_cart , ';
@@ -495,7 +479,6 @@ function DB_STRUCTURE_recuperer_item_infos($item_id)
  * @param void
  * @return string
  */
-
 function DB_version_base()
 {
 	$DB_SQL = 'SELECT parametre_valeur FROM sacoche_parametre WHERE parametre_nom="version_base" LIMIT 1';
@@ -508,7 +491,6 @@ function DB_version_base()
  * @param void
  * @return array($prof_nb,$prof_use,$eleve_nb,$eleve_use,$score_nb)
  */
-
 function DB_STRUCTURE_recuperer_statistiques()
 {
 	// nb professeurs enregistrés ; nb élèves enregistrés
@@ -537,7 +519,6 @@ function DB_STRUCTURE_recuperer_statistiques()
  * @param string $listing_user_id      id des élèves séparés par des virgules
  * @return array   [i]=>array('item_id','popularite')
  */
-
 function DB_STRUCTURE_recuperer_item_popularite($listing_demande_id,$listing_user_id)
 {
 	$DB_SQL = 'SELECT item_id , COUNT(item_id) AS popularite ';
@@ -555,7 +536,6 @@ function DB_STRUCTURE_recuperer_item_popularite($listing_demande_id,$listing_use
  * @param int $matiere_id
  * @return array
  */
-
 function DB_STRUCTURE_recuperer_professeurs_eleve_matiere($eleve_id,$matiere_id)
 {
 	// On connait la classe ($_SESSION['ELEVE_CLASSE_ID']), donc on commence par récupérer les groupes éventuels associés à l'élève
@@ -601,7 +581,6 @@ function DB_STRUCTURE_recuperer_professeurs_eleve_matiere($eleve_id,$matiere_id)
  * @param void|string $listing_param   nom des paramètres entourés de guillemets et séparés par des virgules (tout si rien de transmis)
  * @return array
  */
-
 function DB_STRUCTURE_lister_parametres($listing_param=false)
 {
 	$nb_params = substr_count($listing_param,',')+1;
@@ -620,7 +599,6 @@ function DB_STRUCTURE_lister_parametres($listing_param=false)
  * @param string $liste_item_id   id des items séparés par des virgules
  * @return array
  */
-
 function DB_STRUCTURE_lister_result_eleve_items($eleve_id,$liste_item_id)
 {
 	$DB_SQL = 'SELECT item_id , saisie_note AS note ';
@@ -639,7 +617,6 @@ function DB_STRUCTURE_lister_result_eleve_items($eleve_id,$liste_item_id)
  * @param string $liste_item_id   id des items séparés par des virgules
  * @return array
  */
-
 function DB_STRUCTURE_lister_date_last_eleves_items($liste_eleve_id,$liste_item_id)
 {
 	$DB_SQL = 'SELECT eleve_id , item_id , MAX(saisie_date) AS date_last ';
@@ -660,7 +637,6 @@ function DB_STRUCTURE_lister_date_last_eleves_items($liste_eleve_id,$liste_item_
  * @param string $user_profil
  * @return array
  */
-
 function DB_STRUCTURE_lister_result_eleves_matiere($liste_eleve_id,$liste_item_id,$date_mysql_debut,$date_mysql_fin,$user_profil)
 {
 	$sql_debut = ($date_mysql_debut)     ? 'AND saisie_date>=:date_debut '   : '';
@@ -691,7 +667,6 @@ function DB_STRUCTURE_lister_result_eleves_matiere($liste_eleve_id,$liste_item_i
  * @param string $user_profil
  * @return array
  */
-
 function DB_STRUCTURE_lister_result_eleves_matieres($liste_eleve_id,$liste_item_id,$date_mysql_debut,$date_mysql_fin,$user_profil)
 {
 	$sql_debut = ($date_mysql_debut)     ? 'AND saisie_date>=:date_debut '   : '';
@@ -721,7 +696,6 @@ function DB_STRUCTURE_lister_result_eleves_matieres($liste_eleve_id,$liste_item_
  * @param string $user_profil
  * @return array
  */
-
 function DB_STRUCTURE_lister_result_eleve_palier($eleve_id,$entree_id)
 {
 	$DB_SQL = 'SELECT item_id , saisie_note AS note , item_nom , ';
@@ -751,7 +725,6 @@ function DB_STRUCTURE_lister_result_eleve_palier($eleve_id,$entree_id)
  * @param string $user_profil
  * @return array
  */
-
 function DB_STRUCTURE_lister_result_eleves_palier_sans_infos_items($liste_eleve_id,$liste_entree_id,$user_profil)
 {
 	$sql_view  = ($user_profil=='eleve') ? 'AND saisie_visible_date<=NOW() ' : '';
@@ -776,7 +749,6 @@ function DB_STRUCTURE_lister_result_eleves_palier_sans_infos_items($liste_eleve_
  * @param bool   $detail
  * @return array
  */
-
 function DB_STRUCTURE_lister_infos_items($liste_item_id,$detail)
 {
 	$DB_SQL = 'SELECT item_id , ';
@@ -804,7 +776,6 @@ function DB_STRUCTURE_lister_infos_items($liste_item_id,$detail)
  * @param void
  * @return array
  */
-
 function DB_STRUCTURE_lister_matieres_partagees_SACoche()
 {
 	$DB_SQL = 'SELECT * FROM sacoche_matiere ';
@@ -820,7 +791,6 @@ function DB_STRUCTURE_lister_matieres_partagees_SACoche()
  * @param void
  * @return array
  */
-
 function DB_STRUCTURE_lister_matieres_specifiques()
 {
 	$DB_SQL = 'SELECT * FROM sacoche_matiere ';
@@ -838,7 +808,6 @@ function DB_STRUCTURE_lister_matieres_specifiques()
  * @param bool   $order_by_name      si false, prendre le champ matiere_ordre
  * @return array
  */
-
 function DB_STRUCTURE_lister_matieres_etablissement($listing_matieres,$with_transversal,$order_by_name)
 {
 	$where_trans = ($with_transversal) ? '' : 'AND matiere_transversal=0 ' ;
@@ -857,7 +826,6 @@ function DB_STRUCTURE_lister_matieres_etablissement($listing_matieres,$with_tran
  * @param int $user_id
  * @return array|string
  */
-
 function DB_STRUCTURE_lister_matieres_professeur_infos_referentiel($listing_matieres,$user_id)
 {
 	$DB_SQL = 'SELECT matiere_id,matiere_nom,matiere_partage,matiere_nb_demandes,jointure_coord ';
@@ -875,7 +843,6 @@ function DB_STRUCTURE_lister_matieres_professeur_infos_referentiel($listing_mati
  * @param void
  * @return array
  */
-
 function DB_STRUCTURE_lister_paliers_SACoche()
 {
 	$DB_SQL = 'SELECT * FROM sacoche_socle_palier ';
@@ -890,7 +857,6 @@ function DB_STRUCTURE_lister_paliers_SACoche()
  * @param void
  * @return array
  */
-
 function DB_STRUCTURE_lister_niveaux_SACoche()
 {
 	$DB_SQL = 'SELECT * FROM sacoche_niveau ';
@@ -905,7 +871,6 @@ function DB_STRUCTURE_lister_niveaux_SACoche()
  * @param void
  * @return array
  */
-
 function DB_STRUCTURE_lister_cycles_SACoche()
 {
 	$DB_SQL = 'SELECT * FROM sacoche_niveau ';
@@ -921,7 +886,6 @@ function DB_STRUCTURE_lister_cycles_SACoche()
  * @param string|bool $listing_cycles    id des cycles séparés par des virgules ; false pour ne pas retourner les cycles
  * @return array
  */
-
 function DB_STRUCTURE_lister_niveaux_etablissement($listing_niveaux,$listing_cycles)
 {
 	$listing = ($listing_cycles) ? $listing_niveaux.','.$listing_cycles : $listing_niveaux ;
@@ -937,7 +901,6 @@ function DB_STRUCTURE_lister_niveaux_etablissement($listing_niveaux,$listing_cyc
  * @param void
  * @return array
  */
-
 function DB_STRUCTURE_lister_periodes()
 {
 	$DB_SQL = 'SELECT * FROM sacoche_periode ';
@@ -951,7 +914,6 @@ function DB_STRUCTURE_lister_periodes()
  * @param void
  * @return array
  */
-
 function DB_STRUCTURE_lister_groupes_sauf_classes()
 {
 	$DB_SQL = 'SELECT groupe_id,groupe_type FROM sacoche_groupe ';
@@ -967,7 +929,6 @@ function DB_STRUCTURE_lister_groupes_sauf_classes()
  * @param void
  * @return array
  */
-
 function DB_STRUCTURE_lister_classes()
 {
 	$DB_SQL = 'SELECT * FROM sacoche_groupe ';
@@ -983,7 +944,6 @@ function DB_STRUCTURE_lister_classes()
  * @param void
  * @return array
  */
-
 function DB_STRUCTURE_lister_groupes()
 {
 	$DB_SQL = 'SELECT * FROM sacoche_groupe ';
@@ -999,7 +959,6 @@ function DB_STRUCTURE_lister_groupes()
  * @param string   $niveau_ordre   facultatif, ASC par défaut, DESC possible
  * @return array
  */
-
 function DB_STRUCTURE_lister_classes_avec_niveaux($niveau_ordre='ASC')
 {
 	$DB_SQL = 'SELECT * FROM sacoche_groupe ';
@@ -1016,7 +975,6 @@ function DB_STRUCTURE_lister_classes_avec_niveaux($niveau_ordre='ASC')
  * @param void
  * @return array
  */
-
 function DB_STRUCTURE_lister_groupes_avec_niveaux()
 {
 	$DB_SQL = 'SELECT * FROM sacoche_groupe ';
@@ -1033,7 +991,6 @@ function DB_STRUCTURE_lister_groupes_avec_niveaux()
  * @param int $prof_id
  * @return array
  */
-
 function DB_STRUCTURE_lister_groupes_professeur($prof_id)
 {
 	$DB_SQL = 'SELECT * FROM sacoche_groupe ';
@@ -1052,10 +1009,10 @@ function DB_STRUCTURE_lister_groupes_professeur($prof_id)
  * @param int $prof_id
  * @return array
  */
-
 function DB_STRUCTURE_lister_classes_groupes_professeur($prof_id)
 {
-	$DB_SQL = 'SELECT * FROM sacoche_groupe ';
+	$DB_SQL = 'SELECT groupe_id, groupe_nom, groupe_type ';
+	$DB_SQL.= 'FROM sacoche_groupe ';
 	$DB_SQL.= 'LEFT JOIN sacoche_jointure_user_groupe USING (groupe_id) ';
 	$DB_SQL.= 'LEFT JOIN sacoche_niveau USING (niveau_id) ';
 	$DB_SQL.= 'WHERE user_id=:user_id AND groupe_type IN (:type1,:type2) ';
@@ -1065,12 +1022,32 @@ function DB_STRUCTURE_lister_classes_groupes_professeur($prof_id)
 }
 
 /**
+ * DB_STRUCTURE_lister_classes_parent
+ *
+ * @param int $parent_id
+ * @return array
+ */
+function DB_STRUCTURE_lister_classes_parent($parent_id)
+{
+	$DB_SQL = 'SELECT groupe_id, groupe_nom, groupe_type ';
+	$DB_SQL.= 'FROM sacoche_jointure_parent_eleve ';
+	$DB_SQL.= 'LEFT JOIN sacoche_user ON sacoche_jointure_parent_eleve.eleve_id=sacoche_user.user_id ';
+	$DB_SQL.= 'LEFT JOIN sacoche_jointure_user_groupe ON eleve_classe_id=groupe_id ';
+	$DB_SQL.= 'LEFT JOIN sacoche_groupe USING (groupe_id) ';
+	$DB_SQL.= 'LEFT JOIN sacoche_niveau USING (niveau_id) ';
+	$DB_SQL.= 'WHERE parent_id=:parent_id AND user_profil="eleve" AND user_statut=:statut ';
+	$DB_SQL.= 'GROUP BY groupe_id '; // si plusieurs enfants dans la même classe
+	$DB_SQL.= 'ORDER BY groupe_type ASC, niveau_ordre ASC, groupe_nom ASC';
+	$DB_VAR = array(':parent_id'=>$parent_id,':statut'=>1);
+	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+}
+
+/**
  * DB_STRUCTURE_lister_groupes_besoins
  *
  * @param int    $prof_id
  * @return array
  */
-
 function DB_STRUCTURE_lister_groupes_besoins($prof_id)
 {
 	$DB_SQL = 'SELECT groupe_id, groupe_nom, niveau_id, niveau_ordre, niveau_nom FROM sacoche_groupe ';
@@ -1087,7 +1064,6 @@ function DB_STRUCTURE_lister_groupes_besoins($prof_id)
  * @param void
  * @return array
  */
-
 function DB_STRUCTURE_lister_classes_et_groupes_avec_niveaux()
 {
 	$DB_SQL = 'SELECT * FROM sacoche_groupe ';
@@ -1104,7 +1080,6 @@ function DB_STRUCTURE_lister_classes_et_groupes_avec_niveaux()
  * @param void
  * @return array
  */
-
 function DB_STRUCTURE_lister_classes_avec_professeurs()
 {
 	$DB_SQL = 'SELECT * FROM sacoche_groupe ';
@@ -1124,7 +1099,6 @@ function DB_STRUCTURE_lister_classes_avec_professeurs()
  * @param bool     $info_classe       pour les élèves, récupérer la classe associée
  * @return array
  */
-
 function DB_STRUCTURE_lister_users_cibles($listing_user_id,$info_classe=false)
 {
 	$DB_SQL = 'SELECT * FROM sacoche_user ';
@@ -1147,7 +1121,6 @@ function DB_STRUCTURE_lister_users_cibles($listing_user_id,$info_classe=false)
  * @param bool     $with_langue
  * @return array|string                le tableau est de la forme [i] => array('eleve_id'=>...,'eleve_nom'=>...,'eleve_prenom'=>...,'eleve_id_gepi'=>...,'eleve_langue'=>...);
  */
-
 function DB_STRUCTURE_lister_eleves_cibles($listing_eleve_id,$with_gepi,$with_langue)
 {
 	$DB_SQL = 'SELECT user_id AS eleve_id , user_nom AS eleve_nom , user_prenom AS eleve_prenom ';
@@ -1167,7 +1140,6 @@ function DB_STRUCTURE_lister_eleves_cibles($listing_eleve_id,$with_gepi,$with_la
  * @param string   $listing_eleve_id   id des élèves séparés par des virgules
  * @return array
  */
-
 function DB_STRUCTURE_lister_eleves_cibles_actifs_avec_sconet_id($listing_eleve_id)
 {
 	$DB_SQL = 'SELECT user_id , user_nom , user_prenom , user_sconet_id ';
@@ -1184,7 +1156,6 @@ function DB_STRUCTURE_lister_eleves_cibles_actifs_avec_sconet_id($listing_eleve_
  * @param string   $listing_classe_id   id des classes séparés par des virgules
  * @return array
  */
-
 function DB_STRUCTURE_lister_eleves_classes($listing_classe_id)
 {
 	$DB_SQL = 'SELECT * FROM sacoche_user ';
@@ -1200,7 +1171,6 @@ function DB_STRUCTURE_lister_eleves_classes($listing_classe_id)
  * @param string   $listing_groupe_id   id des groupes séparés par des virgules
  * @return array
  */
-
 function DB_STRUCTURE_lister_eleves_groupes($listing_groupe_id)
 {
 	$DB_SQL = 'SELECT * FROM sacoche_user ';
@@ -1217,7 +1187,6 @@ function DB_STRUCTURE_lister_eleves_groupes($listing_groupe_id)
  * @param void
  * @return array
  */
-
 function DB_STRUCTURE_lister_adresses_parents()
 {
 	$DB_SQL = 'SELECT * ';
@@ -1231,7 +1200,6 @@ function DB_STRUCTURE_lister_adresses_parents()
  * @param string   $listing_matieres_id   id des matières séparés par des virgules
  * @return array   matiere_id et coord_liste avec identités séparées par "]["
  */
-
 function DB_STRUCTURE_lister_identite_coordonnateurs_par_matiere($listing_matieres_id)
 {
 	$DB_SQL = 'SELECT matiere_id, GROUP_CONCAT(CONCAT(user_nom," ",user_prenom) SEPARATOR "][") AS coord_liste ';
@@ -1250,7 +1218,6 @@ function DB_STRUCTURE_lister_identite_coordonnateurs_par_matiere($listing_matier
  * @param void
  * @return array
  */
-
 function DB_STRUCTURE_lister_parents_par_eleve()
 {
 	$DB_SQL = 'SELECT eleve.user_id AS eleve_id,   eleve.user_sconet_id AS eleve_sconet_id,   eleve.user_nom AS eleve_nom,   eleve.user_prenom AS eleve_prenom,   ';
@@ -1271,8 +1238,6 @@ function DB_STRUCTURE_lister_parents_par_eleve()
  * @return array
  */
  
-
-
 function DB_STRUCTURE_lister_parents_actifs_avec_infos_for_eleve($eleve_id)
 {
 	$DB_SQL = 'SELECT parent.user_id, parent.user_nom, parent.user_prenom, sacoche_parent_adresse.*, resp_legal_num ';
@@ -1289,18 +1254,18 @@ function DB_STRUCTURE_lister_parents_actifs_avec_infos_for_eleve($eleve_id)
 	{
 		return array();
 	}
-	$listing_enfant_id = implode(',',array_keys($DB_TAB_parents));
+	$listing_parent_id = implode(',',array_keys($DB_TAB_parents));
 	$DB_SQL = 'SELECT parent_id, GROUP_CONCAT( CONCAT(enfant.user_nom," ",enfant.user_prenom," @",resp_legal_num,"@") SEPARATOR "§BR§") AS enfants_liste ';
 	$DB_SQL.= 'FROM sacoche_jointure_parent_eleve ';
 	$DB_SQL.= 'LEFT JOIN sacoche_user AS enfant ON sacoche_jointure_parent_eleve.eleve_id=enfant.user_id ';
-	$DB_SQL.= 'WHERE sacoche_jointure_parent_eleve.parent_id IN('.$listing_enfant_id.') AND enfant.user_statut=:statut ';
+	$DB_SQL.= 'WHERE sacoche_jointure_parent_eleve.parent_id IN('.$listing_parent_id.') AND enfant.user_statut=:statut ';
 	$DB_SQL.= 'GROUP BY parent_id ';
 	$DB_VAR = array(':eleve_id'=>$eleve_id,':statut'=>1);
-	$DB_TAB_enfants = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR, TRUE);
+	$DB_TAB_enfants = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR , TRUE);
 	$DB_TAB = array();
 	foreach($DB_TAB_parents AS $id => $tab)
 	{
-		$DB_TAB[] = array_merge($DB_TAB_parents[$id][0], $DB_TAB_enfants[$id][0]);
+		$DB_TAB[] = array_merge( $DB_TAB_parents[$id][0] , $DB_TAB_enfants[$id][0] , array('parent_id'=>$id) );
 	}
 	return $DB_TAB;
 }
@@ -1311,7 +1276,6 @@ function DB_STRUCTURE_lister_parents_actifs_avec_infos_for_eleve($eleve_id)
  * @param void
  * @return array
  */
-
 function DB_STRUCTURE_lister_jointure_professeurs_matieres()
 {
 	$DB_SQL = 'SELECT user_id,matiere_id FROM sacoche_jointure_user_matiere ';
@@ -1327,7 +1291,6 @@ function DB_STRUCTURE_lister_jointure_professeurs_matieres()
  * @param void
  * @return array
  */
-
 function DB_STRUCTURE_lister_jointure_professeurs_coordonnateurs()
 {
 	$DB_SQL = 'SELECT user_id,matiere_id FROM sacoche_jointure_user_matiere ';
@@ -1343,7 +1306,6 @@ function DB_STRUCTURE_lister_jointure_professeurs_coordonnateurs()
  * @param void
  * @return array
  */
-
 function DB_STRUCTURE_lister_jointure_professeurs_principaux()
 {
 	$DB_SQL = 'SELECT user_id,groupe_id FROM sacoche_jointure_user_groupe ';
@@ -1359,7 +1321,6 @@ function DB_STRUCTURE_lister_jointure_professeurs_principaux()
  * @param string   $listing_groupe_id   id des groupes séparés par des virgules
  * @return array
  */
-
 function DB_STRUCTURE_lister_jointure_groupe_periode($listing_groupe_id)
 {
 	$DB_SQL = 'SELECT * FROM sacoche_jointure_groupe_periode ';
@@ -1378,7 +1339,6 @@ function DB_STRUCTURE_lister_jointure_groupe_periode($listing_groupe_id)
  * @param int      $palier_id        id d'un palier
  * @return array
  */
-
 function DB_STRUCTURE_lister_jointure_user_entree($listing_eleves,$listing_entrees,$domaine_id,$pilier_id,$palier_id)
 {
 	if($listing_entrees)
@@ -1430,7 +1390,6 @@ function DB_STRUCTURE_lister_jointure_user_entree($listing_eleves,$listing_entre
  * @param int      $palier_id        id d'un palier
  * @return array
  */
-
 function DB_STRUCTURE_lister_jointure_user_pilier($listing_eleves,$listing_piliers,$palier_id)
 {
 	if($palier_id)
@@ -1458,7 +1417,6 @@ function DB_STRUCTURE_lister_jointure_user_pilier($listing_eleves,$listing_pilie
  * @param bool   $only_positives
  * @return array
  */
-
 function DB_STRUCTURE_lister_validations_items($only_positives)
 {
 	$DB_SQL = 'SELECT palier_id , pilier_id , sacoche_jointure_user_entree.* ';
@@ -1478,7 +1436,6 @@ function DB_STRUCTURE_lister_validations_items($only_positives)
  * @param bool   $only_positives
  * @return array
  */
-
 function DB_STRUCTURE_lister_validations_competences($only_positives)
 {
 	$DB_SQL = 'SELECT palier_id , pilier_id , sacoche_jointure_user_pilier.* ';
@@ -1499,7 +1456,6 @@ function DB_STRUCTURE_lister_validations_competences($only_positives)
  * @param bool           $tri_statut    TRUE pour trier par statut décroissant (les actifs en premier), FALSE par défaut
  * @return array
  */
-
 function DB_STRUCTURE_lister_users($profil,$only_actifs,$with_classe,$tri_statut=FALSE)
 {
 	$DB_VAR = array();
@@ -1549,7 +1505,6 @@ function DB_STRUCTURE_lister_users($profil,$only_actifs,$with_classe,$tri_statut
  * @param string   $debut_prenom   premières lettres du prénom
  * @return array
  */
-
 function DB_STRUCTURE_lister_parents_actifs_avec_infos_enfants($with_adresse,$debut_nom='',$debut_prenom='')
 {
 	$DB_SQL = 'SELECT ' ;
@@ -1585,7 +1540,6 @@ function DB_STRUCTURE_lister_parents_actifs_avec_infos_enfants($with_adresse,$de
  * @param bool   $only_actifs   true pour statut actif uniquement / false pour tout le monde qq soit le statut
  * @return array
  */
-
 function DB_STRUCTURE_lister_users_avec_groupe($profil_eleve,$prof_id,$only_actifs)
 {
 	$groupe_type = ($prof_id) ? 'besoin' : 'groupe' ;
@@ -1615,7 +1569,6 @@ function DB_STRUCTURE_lister_users_avec_groupe($profil_eleve,$prof_id,$only_acti
  * @param void
  * @return array
  */
-
 function DB_STRUCTURE_lister_users_desactives_obsoletes()
 {
 	$DB_SQL = 'SELECT user_id, user_profil ';
@@ -1631,7 +1584,6 @@ function DB_STRUCTURE_lister_users_desactives_obsoletes()
  * @param void
  * @return array
  */
-
 function DB_STRUCTURE_lister_professeurs_avec_classes()
 {
 	$DB_SQL = 'SELECT * FROM sacoche_user ';
@@ -1649,7 +1601,6 @@ function DB_STRUCTURE_lister_professeurs_avec_classes()
  * @param int    $groupe_id     id du niveau ou de la classe ou du groupe
  * @return array
  */
-
 function DB_STRUCTURE_lister_eleves_actifs_regroupement($groupe_type,$groupe_id)
 {
 	$DB_SQL = 'SELECT * FROM sacoche_user ';
@@ -1691,7 +1642,6 @@ function DB_STRUCTURE_lister_eleves_actifs_regroupement($groupe_type,$groupe_id)
  * @param int    $listing_user_id   id des élèves du prof séparés par des virgules
  * @return array
  */
-
 function DB_STRUCTURE_lister_demandes_prof($matiere_id,$listing_user_id)
 {
 	$DB_SQL = 'SELECT sacoche_demande.*, ';
@@ -1715,7 +1665,6 @@ function DB_STRUCTURE_lister_demandes_prof($matiere_id,$listing_user_id)
  * @param int    $user_id   id de l'élève
  * @return array
  */
-
 function DB_STRUCTURE_lister_demandes_eleve($user_id)
 {
 	$DB_SQL = 'SELECT sacoche_demande.*, ';
@@ -1742,7 +1691,6 @@ function DB_STRUCTURE_lister_demandes_eleve($user_id)
  * @param string $date_fin_mysql
  * @return array
  */
-
 function DB_STRUCTURE_lister_devoirs_prof($prof_id,$groupe_id,$date_debut_mysql,$date_fin_mysql)
 {
 	// DB::query(SACOCHE_STRUCTURE_BD_NAME , 'SET group_concat_max_len = ...'); // Pour lever si besoin une limitation de GROUP_CONCAT (group_concat_max_len est par défaut limité à une chaine de 1024 caractères).
@@ -1778,7 +1726,6 @@ function DB_STRUCTURE_lister_devoirs_prof($prof_id,$groupe_id,$date_debut_mysql,
  * @param string $date_fin_mysql
  * @return array
  */
-
 function DB_STRUCTURE_lister_devoirs_eleve($eleve_id,$classe_id,$date_debut_mysql,$date_fin_mysql)
 {
 	$where_classe = ($classe_id) ? 'sacoche_devoir.groupe_id='.$classe_id.' OR ' : '';
@@ -1803,7 +1750,6 @@ function DB_STRUCTURE_lister_devoirs_eleve($eleve_id,$classe_id,$date_debut_mysq
  * @param bool $info_pour_eleve   facultatif ; pour un élève, qui liste ses notes d'une éval, il faut en particulier pouvoir ensuite lui calculer son score
  * @return array
  */
-
 function DB_STRUCTURE_lister_items_devoir($devoir_id,$info_pour_eleve=false)
 {
 	$select   = ($info_pour_eleve) ? 'item_cart, item_lien, matiere_id, referentiel_calcul_methode, referentiel_calcul_limite, ' : '' ;
@@ -1832,7 +1778,6 @@ function DB_STRUCTURE_lister_items_devoir($devoir_id,$info_pour_eleve=false)
  * @param bool  $with_REQ   // Avec ou sans les repères de demandes d'évaluations
  * @return array
  */
-
 function DB_STRUCTURE_lister_saisies_devoir($devoir_id,$with_REQ)
 {
 	// On évite les élèves désactivés pour ces opérations effectuées sur les pages de saisies d'évaluations
@@ -1854,7 +1799,6 @@ function DB_STRUCTURE_lister_saisies_devoir($devoir_id,$with_REQ)
  * @param int   $eleve_id
  * @return array
  */
-
 function DB_STRUCTURE_lister_saisies_devoir_eleve($devoir_id,$eleve_id)
 {
 	$DB_SQL = 'SELECT item_id,saisie_note FROM sacoche_saisie ';
@@ -1869,7 +1813,6 @@ function DB_STRUCTURE_lister_saisies_devoir_eleve($devoir_id,$eleve_id)
  * @param void
  * @return array
  */
-
 function DB_STRUCTURE_lister_referentiels()
 {
 	$DB_SQL = 'SELECT matiere_id,niveau_id,matiere_nom,niveau_nom,referentiel_mode_synthese ';
@@ -1890,7 +1833,6 @@ function DB_STRUCTURE_lister_referentiels()
  * @param string   $listing_cycles_id     id des cycles séparés par des virgules ; false pour ne pas retourner les cycles
  * @return array
  */
-
 function DB_STRUCTURE_lister_referentiels_infos_details_matieres_niveaux($listing_matieres_id,$listing_niveaux_id,$listing_cycles_id)
 {
 	$listing_cycles_niveaux = ($listing_cycles_id) ? $listing_niveaux_id.','.$listing_cycles_id : $listing_niveaux_id ;
@@ -1912,7 +1854,6 @@ function DB_STRUCTURE_lister_referentiels_infos_details_matieres_niveaux($listin
  * @param string   $listing_cycles_id     id des cycles séparés par des virgules ; false pour ne pas retourner les cycles
  * @return array
  */
-
 function DB_STRUCTURE_lister_referentiels_infos_groupement_matieres($listing_matieres_id,$listing_niveaux_id,$listing_cycles_id)
 {
 	$listing_cycles_niveaux = ($listing_cycles_id) ? $listing_niveaux_id.','.$listing_cycles_id : $listing_niveaux_id ;
@@ -1933,7 +1874,6 @@ function DB_STRUCTURE_lister_referentiels_infos_groupement_matieres($listing_mat
  * @param void
  * @return int
  */
-
 function DB_STRUCTURE_compter_devoirs()
 {
 	$DB_SQL = 'SELECT COUNT(*) AS nombre FROM sacoche_devoir';
@@ -1947,7 +1887,6 @@ function DB_STRUCTURE_compter_devoirs()
  * @param int   $matiere_id
  * @return int
  */
-
 function DB_STRUCTURE_compter_demandes_formulees_eleve_matiere($eleve_id,$matiere_id)
 {
 	$DB_SQL = 'SELECT COUNT(*) AS nombre ';
@@ -1964,7 +1903,6 @@ function DB_STRUCTURE_compter_demandes_formulees_eleve_matiere($eleve_id,$matier
  * @param void
  * @return array
  */
-
 function DB_STRUCTURE_compter_saisies_prof_classe()
 {
 	$DB_SQL = 'SELECT CONCAT(user_nom," ",user_prenom) AS professeur, groupe_nom, COUNT(saisie_note) AS nombre ';
@@ -1984,7 +1922,6 @@ function DB_STRUCTURE_compter_saisies_prof_classe()
  * @param string|array   $profil        'eleve' / 'professeur' / 'directeur' / 'administrateur' / ou par exemple array('eleve','professeur','directeur')
  * @return array   [0]=>nb actifs , [1]=>nb inactifs
  */
-
 function DB_STRUCTURE_compter_users_suivant_statut($profil)
 {
 	if(is_string($profil))
@@ -2017,7 +1954,6 @@ function DB_STRUCTURE_compter_users_suivant_statut($profil)
  * @param void
  * @return int
  */
-
 function DB_STRUCTURE_compter_eleves_actifs_sans_id_sconet()
 {
 	$DB_SQL = 'SELECT COUNT(*) AS nombre FROM sacoche_user ';
@@ -2032,7 +1968,6 @@ function DB_STRUCTURE_compter_eleves_actifs_sans_id_sconet()
  * @param void
  * @return int
  */
-
 function DB_STRUCTURE_compter_modes_synthese_inconnu()
 {
 	$DB_SQL = 'SELECT COUNT(*) AS nombre FROM sacoche_referentiel ';
@@ -2049,7 +1984,6 @@ function DB_STRUCTURE_compter_modes_synthese_inconnu()
  * @param int    $niveau_id
  * @return int
  */
-
 function DB_STRUCTURE_tester_referentiel($matiere_id,$niveau_id)
 {
 	$DB_SQL = 'SELECT matiere_id FROM sacoche_referentiel ';
@@ -2066,7 +2000,6 @@ function DB_STRUCTURE_tester_referentiel($matiere_id,$niveau_id)
  * @param int $user_id
  * @return int
  */
-
 function DB_STRUCTURE_tester_prof_principal($user_id)
 {
 	$DB_SQL = 'SELECT groupe_id FROM sacoche_jointure_user_groupe ';
@@ -2084,7 +2017,6 @@ function DB_STRUCTURE_tester_prof_principal($user_id)
  * @param int    $item_id
  * @return int
  */
-
 function DB_STRUCTURE_tester_demande_existante($eleve_id,$matiere_id,$item_id)
 {
 	$DB_SQL = 'SELECT demande_id FROM sacoche_demande ';
@@ -2102,7 +2034,6 @@ function DB_STRUCTURE_tester_demande_existante($eleve_id,$matiere_id,$item_id)
  * @param int    $matiere_id    inutile si recherche pour un ajout, mais id à éviter si recherche pour une modification
  * @return int
  */
-
 function DB_STRUCTURE_tester_matiere_reference($matiere_ref,$matiere_id=false)
 {
 	$DB_SQL = 'SELECT matiere_id FROM sacoche_matiere ';
@@ -2125,7 +2056,6 @@ function DB_STRUCTURE_tester_matiere_reference($matiere_ref,$matiere_id=false)
  * @param int    $groupe_id    inutile si recherche pour un ajout, mais id à éviter si recherche pour une modification
  * @return int
  */
-
 function DB_STRUCTURE_tester_classe_reference($groupe_ref,$groupe_id=false)
 {
 	$DB_SQL = 'SELECT groupe_id FROM sacoche_groupe ';
@@ -2148,7 +2078,6 @@ function DB_STRUCTURE_tester_classe_reference($groupe_ref,$groupe_id=false)
  * @param int    $groupe_id    inutile si recherche pour un ajout, mais id à éviter si recherche pour une modification
  * @return int
  */
-
 function DB_STRUCTURE_tester_groupe_reference($groupe_ref,$groupe_id=false)
 {
 	$DB_SQL = 'SELECT groupe_id FROM sacoche_groupe ';
@@ -2171,7 +2100,6 @@ function DB_STRUCTURE_tester_groupe_reference($groupe_ref,$groupe_id=false)
  * @param int    $groupe_id    inutile si recherche pour un ajout, mais id à éviter si recherche pour une modification
  * @return int
  */
-
 function DB_STRUCTURE_tester_groupe_nom($groupe_nom,$groupe_id=false)
 {
 	$DB_SQL = 'SELECT groupe_id FROM sacoche_groupe ';
@@ -2194,7 +2122,6 @@ function DB_STRUCTURE_tester_groupe_nom($groupe_nom,$groupe_id=false)
  * @param int    $periode_id    inutile si recherche pour un ajout, mais id à éviter si recherche pour une modification
  * @return int
  */
-
 function DB_STRUCTURE_tester_periode_nom($periode_nom,$periode_id=false)
 {
 	$DB_SQL = 'SELECT periode_id FROM sacoche_periode ';
@@ -2217,7 +2144,6 @@ function DB_STRUCTURE_tester_periode_nom($periode_nom,$periode_id=false)
  * @param int    $user_id       inutile si recherche pour un ajout, mais id à éviter si recherche pour une modification
  * @return int
  */
-
 function DB_STRUCTURE_tester_utilisateur_idENT($user_id_ent,$user_id=false)
 {
 	$DB_SQL = 'SELECT user_id FROM sacoche_user ';
@@ -2240,7 +2166,6 @@ function DB_STRUCTURE_tester_utilisateur_idENT($user_id_ent,$user_id=false)
  * @param int    $user_id       inutile si recherche pour un ajout, mais id à éviter si recherche pour une modification
  * @return int
  */
-
 function DB_STRUCTURE_tester_utilisateur_idGepi($user_id_gepi,$user_id=false)
 {
 	$DB_SQL = 'SELECT user_id FROM sacoche_user ';
@@ -2264,7 +2189,6 @@ function DB_STRUCTURE_tester_utilisateur_idGepi($user_id_gepi,$user_id=false)
  * @param int    $user_id       inutile si recherche pour un ajout, mais id à éviter si recherche pour une modification
  * @return int
  */
-
 function DB_STRUCTURE_tester_utilisateur_SconetId($user_sconet_id,$user_profil,$user_id=false)
 {
 	$DB_SQL = 'SELECT user_id FROM sacoche_user ';
@@ -2287,7 +2211,6 @@ function DB_STRUCTURE_tester_utilisateur_SconetId($user_sconet_id,$user_profil,$
  * @param int    $user_id       inutile si recherche pour un ajout, mais id à éviter si recherche pour une modification
  * @return int
  */
-
 function DB_STRUCTURE_tester_utilisateur_SconetElenoet($user_sconet_elenoet,$user_id=false)
 {
 	$DB_SQL = 'SELECT user_id FROM sacoche_user ';
@@ -2311,7 +2234,6 @@ function DB_STRUCTURE_tester_utilisateur_SconetElenoet($user_sconet_elenoet,$use
  * @param int    $user_id       inutile si recherche pour un ajout, mais id à éviter si recherche pour une modification
  * @return int
  */
-
 function DB_STRUCTURE_tester_utilisateur_reference($user_reference,$user_profil,$user_id=false)
 {
 	$DB_SQL = 'SELECT user_id FROM sacoche_user ';
@@ -2334,7 +2256,6 @@ function DB_STRUCTURE_tester_utilisateur_reference($user_reference,$user_profil,
  * @param int    $user_id     inutile si recherche pour un ajout, mais id à éviter si recherche pour une modification
  * @return int
  */
-
 function DB_STRUCTURE_tester_login($user_login,$user_id=false)
 {
 	$DB_SQL = 'SELECT user_id FROM sacoche_user ';
@@ -2356,7 +2277,6 @@ function DB_STRUCTURE_tester_login($user_login,$user_id=false)
  * @param string $login
  * @return string
  */
-
 function DB_STRUCTURE_rechercher_login_disponible($login)
 {
 	$nb_chiffres = 20-mb_strlen($login);
@@ -2387,7 +2307,6 @@ function DB_STRUCTURE_rechercher_login_disponible($login)
  * @param string $matiere_nom
  * @return int
  */
-
 function DB_STRUCTURE_ajouter_matiere_specifique($matiere_ref,$matiere_nom)
 {
 	$DB_SQL = 'INSERT INTO sacoche_matiere(matiere_partage,matiere_transversal,matiere_nb_demandes,matiere_ref,matiere_nom) ';
@@ -2407,7 +2326,6 @@ function DB_STRUCTURE_ajouter_matiere_specifique($matiere_ref,$matiere_nom)
  * @param int    $niveau_id
  * @return int
  */
-
 function DB_STRUCTURE_ajouter_groupe($groupe_type,$groupe_prof_id,$groupe_ref,$groupe_nom,$niveau_id)
 {
 	$DB_SQL = 'INSERT INTO sacoche_groupe(groupe_type,groupe_prof_id,groupe_ref,groupe_nom,niveau_id) ';
@@ -2424,7 +2342,6 @@ function DB_STRUCTURE_ajouter_groupe($groupe_type,$groupe_prof_id,$groupe_ref,$g
  * @param string $periode_nom
  * @return int
  */
-
 function DB_STRUCTURE_ajouter_periode($periode_ordre,$periode_nom)
 {
 	$DB_SQL = 'INSERT INTO sacoche_periode(periode_ordre,periode_nom) ';
@@ -2450,7 +2367,6 @@ function DB_STRUCTURE_ajouter_periode($periode_ordre,$periode_nom)
  * @param string $user_id_gepi      facultatif
  * @return int
  */
-
 function DB_STRUCTURE_ajouter_utilisateur($user_sconet_id,$user_sconet_elenoet,$user_reference,$user_profil,$user_nom,$user_prenom,$user_login,$user_password,$eleve_classe_id=0,$user_id_ent='',$user_id_gepi='')
 {
 	$password_crypte = crypter_mdp($user_password);
@@ -2477,7 +2393,6 @@ function DB_STRUCTURE_ajouter_utilisateur($user_sconet_id,$user_sconet_elenoet,$
  * @param array  $tab_adresse
  * @return void
  */
-
 function DB_STRUCTURE_ajouter_adresse_parent($parent_id,$tab_adresse)
 {
 	$DB_SQL = 'INSERT INTO sacoche_parent_adresse(parent_id,adresse_ligne1,adresse_ligne2,adresse_ligne3,adresse_ligne4,adresse_postal_code,adresse_postal_libelle,adresse_pays_nom) ';
@@ -2495,7 +2410,6 @@ function DB_STRUCTURE_ajouter_adresse_parent($parent_id,$tab_adresse)
  * @param bool   $resp_legal_envoi
  * @return void
  */
-
 function DB_STRUCTURE_ajouter_jointure_parent_eleve($parent_id,$eleve_id,$resp_legal_num,$resp_legal_envoi)
 {
 	$DB_SQL = 'INSERT INTO sacoche_jointure_parent_eleve(parent_id,eleve_id,resp_legal_num,resp_legal_envoi) ';
@@ -2514,7 +2428,6 @@ function DB_STRUCTURE_ajouter_jointure_parent_eleve($parent_id,$eleve_id,$resp_l
  * @param string $date_visible_mysql
  * @return int
  */
-
 function DB_STRUCTURE_ajouter_devoir($prof_id,$groupe_id,$date_mysql,$info,$date_visible_mysql)
 {
 	$DB_SQL = 'INSERT INTO sacoche_devoir(prof_id,groupe_id,devoir_date,devoir_info,devoir_visible_date) ';
@@ -2538,7 +2451,6 @@ function DB_STRUCTURE_ajouter_devoir($prof_id,$groupe_id,$date_mysql,$info,$date
  * @param string $item_date_visible_mysql
  * @return void
  */
-
 function DB_STRUCTURE_ajouter_saisie($prof_id,$eleve_id,$devoir_id,$item_id,$item_date_mysql,$item_note,$item_info,$item_date_visible_mysql)
 {
 	$commande = ($item_note!='REQ') ? 'INSERT' : 'REPLACE' ;
@@ -2559,7 +2471,6 @@ function DB_STRUCTURE_ajouter_saisie($prof_id,$eleve_id,$devoir_id,$item_id,$ite
  * @param string $validation_info
  * @return void
  */
-
 function DB_STRUCTURE_ajouter_validation($type,$user_id,$element_id,$validation_etat,$validation_date_mysql,$validation_info)
 {
 	$DB_SQL = 'INSERT INTO sacoche_jointure_user_'.$type.' ';
@@ -2579,7 +2490,6 @@ function DB_STRUCTURE_ajouter_validation($type,$user_id,$element_id,$validation_
  * @param string   $demande_statut
  * @return int
  */
-
 function DB_STRUCTURE_ajouter_demande($eleve_id,$matiere_id,$item_id,$demande_date_mysql,$demande_score,$demande_statut)
 {
 	$DB_SQL = 'INSERT INTO sacoche_demande(user_id,matiere_id,item_id,demande_date,demande_score,demande_statut) ';
@@ -2597,7 +2507,6 @@ function DB_STRUCTURE_ajouter_demande($eleve_id,$matiere_id,$item_id,$demande_da
  * @param string $partage_etat
  * @return void
  */
-
 function DB_STRUCTURE_ajouter_referentiel($matiere_id,$niveau_id,$partage_etat)
 {
 	$DB_SQL = 'INSERT INTO sacoche_referentiel ';
@@ -2616,7 +2525,6 @@ function DB_STRUCTURE_ajouter_referentiel($matiere_id,$niveau_id,$partage_etat)
  * @param int    $niveau_id
  * @return void
  */
-
 function DB_STRUCTURE_importer_arborescence_from_XML($arbreXML,$matiere_id,$niveau_id)
 {
 	// décortiquer l'arbre XML
@@ -2674,7 +2582,6 @@ function DB_STRUCTURE_importer_arborescence_from_XML($arbreXML,$matiere_id,$nive
  * @param array tableau $parametre_nom => $parametre_valeur des paramètres à modfifier
  * @return void
  */
-
 function DB_STRUCTURE_modifier_parametres($tab_parametres)
 {
 	/*
@@ -2705,7 +2612,6 @@ function DB_STRUCTURE_modifier_parametres($tab_parametres)
  * @param string $champ_arrive
  * @return void
  */
-
 function DB_STRUCTURE_recopier_identifiants($champ_depart,$champ_arrive)
 {
 	$DB_SQL = 'UPDATE sacoche_user ';
@@ -2724,7 +2630,6 @@ function DB_STRUCTURE_recopier_identifiants($champ_depart,$champ_arrive)
  * @param array   array(':sconet_id'=>$val, ':sconet_num'=>$val, ':reference'=>$val , ':profil'=>$val , ':nom'=>$val , ':prenom'=>$val , ':login'=>$val , ':password'=>$val , ':statut'=>$val , ':daltonisme'=>$val , ':classe'=>$val , ':id_ent'=>$val , ':id_gepi'=>$val );
  * @return void
  */
-
 function DB_STRUCTURE_modifier_utilisateur($user_id,$DB_VAR)
 {
 	$tab_set = array();
@@ -2762,7 +2667,6 @@ function DB_STRUCTURE_modifier_utilisateur($user_id,$DB_VAR)
  * @param array  $tab_adresse
  * @return int
  */
-
 function DB_STRUCTURE_modifier_adresse_parent($parent_id,$tab_adresse)
 {
 	$DB_SQL = 'UPDATE sacoche_parent_adresse ';
@@ -2779,7 +2683,6 @@ function DB_STRUCTURE_modifier_adresse_parent($parent_id,$tab_adresse)
  * @param int     $user_id
  * @return void
  */
-
 function DB_STRUCTURE_modifier_date($champ,$user_id)
 {
 	$DB_SQL = 'UPDATE sacoche_user ';
@@ -2798,7 +2701,6 @@ function DB_STRUCTURE_modifier_date($champ,$user_id)
  * @param array   array(':partage_etat'=>$val, ':partage_date'=>$val , ':calcul_methode'=>$val , ':calcul_limite'=>$val , ':mode_synthese'=>$val );
  * @return void
  */
-
 function DB_STRUCTURE_modifier_referentiel($matiere_id,$niveau_id,$DB_VAR)
 {
 	$tab_set = array();
@@ -2831,7 +2733,6 @@ function DB_STRUCTURE_modifier_referentiel($matiere_id,$niveau_id,$DB_VAR)
  * @param string $password_nouveau
  * @return string   'ok' ou 'Le mot de passe actuel est incorrect !'
  */
-
 function DB_STRUCTURE_modifier_mdp_utilisateur($user_id,$password_ancien,$password_nouveau)
 {
 	// Tester si l'ancien mot de passe correspond à celui enregistré
@@ -2863,7 +2764,6 @@ function DB_STRUCTURE_modifier_mdp_utilisateur($user_id,$password_ancien,$passwo
  * @param int    $langue
  * @return void
  */
-
 function DB_STRUCTURE_modifier_user_langue($listing_user_id,$langue)
 {
 	$DB_SQL = 'UPDATE sacoche_user ';
@@ -2881,7 +2781,6 @@ function DB_STRUCTURE_modifier_user_langue($listing_user_id,$langue)
  * @param string $matiere_nom
  * @return void
  */
-
 function DB_STRUCTURE_modifier_matiere_specifique($matiere_id,$matiere_ref,$matiere_nom)
 {
 	$DB_SQL = 'UPDATE sacoche_matiere ';
@@ -2899,7 +2798,6 @@ function DB_STRUCTURE_modifier_matiere_specifique($matiere_id,$matiere_ref,$mati
  * @param int   $matiere_ordre
  * @return void
  */
-
 function DB_STRUCTURE_modifier_matiere_ordre($matiere_id,$matiere_ordre)
 {
 	$DB_SQL = 'UPDATE sacoche_matiere ';
@@ -2917,7 +2815,6 @@ function DB_STRUCTURE_modifier_matiere_ordre($matiere_id,$matiere_ordre)
  * @param int   $matiere_nb_demandes
  * @return void
  */
-
 function DB_STRUCTURE_modifier_matiere_nb_demandes($matiere_id,$matiere_nb_demandes)
 {
 	$DB_SQL = 'UPDATE sacoche_matiere ';
@@ -2937,7 +2834,6 @@ function DB_STRUCTURE_modifier_matiere_nb_demandes($matiere_id,$matiere_nb_deman
  * @param int    $niveau_id
  * @return void
  */
-
 function DB_STRUCTURE_modifier_groupe($groupe_id,$groupe_ref,$groupe_nom,$niveau_id)
 {
 	$DB_SQL = 'UPDATE sacoche_groupe ';
@@ -2955,7 +2851,6 @@ function DB_STRUCTURE_modifier_groupe($groupe_id,$groupe_ref,$groupe_nom,$niveau
  * @param array  $tab_items   tableau des id des items
  * @return void
  */
-
 function DB_STRUCTURE_modifier_ordre_item($devoir_id,$tab_items)
 {
 	$DB_SQL = 'UPDATE sacoche_jointure_devoir_item SET jointure_ordre=:ordre ';
@@ -2980,7 +2875,6 @@ function DB_STRUCTURE_modifier_ordre_item($devoir_id,$tab_items)
  * @param string $saisie_info
  * @return void
  */
-
 function DB_STRUCTURE_modifier_saisie($eleve_id,$devoir_id,$item_id,$saisie_note,$saisie_info)
 {
 	$DB_SQL = 'UPDATE sacoche_saisie SET saisie_note=:saisie_note,saisie_info=:saisie_info ';
@@ -3001,7 +2895,6 @@ function DB_STRUCTURE_modifier_saisie($eleve_id,$devoir_id,$item_id,$saisie_note
  * @param string $validation_info
  * @return void
  */
-
 function DB_STRUCTURE_modifier_validation($type,$user_id,$element_id,$validation_etat,$validation_date_mysql,$validation_info)
 {
 	$DB_SQL = 'UPDATE sacoche_jointure_user_'.$type.' SET validation_'.$type.'_etat=:validation_etat, validation_'.$type.'_date=:validation_date_mysql, validation_'.$type.'_info=:validation_info ';
@@ -3022,7 +2915,6 @@ function DB_STRUCTURE_modifier_validation($type,$user_id,$element_id,$validation
  * @param array  $tab_items   tableau des id des items
  * @return void
  */
-
 function DB_STRUCTURE_modifier_devoir($devoir_id,$prof_id,$date_mysql,$info,$date_visible_mysql,$tab_items)
 {
 	// sacoche_devoir (maj)
@@ -3051,7 +2943,6 @@ function DB_STRUCTURE_modifier_devoir($devoir_id,$prof_id,$date_mysql,$info,$dat
  * @param bool   $etat          'true' pour ajouter/modifier une liaison ; 'false' pour retirer une liaison
  * @return void
  */
-
 function DB_STRUCTURE_modifier_liaison_user_groupe($user_id,$user_profil,$groupe_id,$groupe_type,$etat)
 {
 	// Dans le cas d'un élève et d'une classe, ce n'est pas dans la table de jointure mais dans la table user que ça se passe
@@ -3096,7 +2987,6 @@ function DB_STRUCTURE_modifier_liaison_user_groupe($user_id,$user_profil,$groupe
  * @param bool   $etat          'true' pour ajouter/modifier une liaison ; 'false' pour retirer une liaison
  * @return void
  */
-
 function DB_STRUCTURE_modifier_liaison_professeur_coordonnateur($user_id,$matiere_id,$etat)
 {
 	$coord = ($etat) ? 1 : 0 ;
@@ -3115,7 +3005,6 @@ function DB_STRUCTURE_modifier_liaison_professeur_coordonnateur($user_id,$matier
  * @param bool   $etat          'true' pour ajouter/modifier une liaison ; 'false' pour retirer une liaison
  * @return void
  */
-
 function DB_STRUCTURE_modifier_liaison_professeur_principal($user_id,$groupe_id,$etat)
 {
 	$pp = ($etat) ? 1 : 0 ;
@@ -3134,7 +3023,6 @@ function DB_STRUCTURE_modifier_liaison_professeur_principal($user_id,$groupe_id,
  * @param bool   $etat          'true' pour ajouter/modifier une liaison ; 'false' pour retirer une liaison
  * @return void
  */
-
 function DB_STRUCTURE_modifier_liaison_professeur_matiere($user_id,$matiere_id,$etat)
 {
 	if($etat)
@@ -3172,7 +3060,6 @@ function DB_STRUCTURE_modifier_liaison_professeur_matiere($user_id,$matiere_id,$
  * @param int    $devoir_ordonne_id   Dans le cas d'une duplication, id du devoir dont il faut récupérer l'ordre des items.
  * @return void
  */
-
 function DB_STRUCTURE_modifier_liaison_devoir_item($devoir_id,$tab_items,$mode,$devoir_ordonne_id=0)
 {
 	if( ($mode=='creer') || ($mode=='dupliquer') )
@@ -3262,7 +3149,6 @@ function DB_STRUCTURE_modifier_liaison_devoir_item($devoir_id,$tab_items,$mode,$
  * @param string $mode         'creer' pour un insert dans un nouveau devoir || 'substituer' pour une maj delete / insert || 'ajouter' pour maj insert uniquement
  * @return void
  */
-
 function DB_STRUCTURE_modifier_liaison_devoir_user($devoir_id,$groupe_id,$tab_eleves,$mode)
 {
 	// -> on récupère la liste des élèves actuels déjà associés au groupe (pour la comparer à la liste transmise)
@@ -3324,7 +3210,6 @@ function DB_STRUCTURE_modifier_liaison_devoir_user($devoir_id,$groupe_id,$tab_el
  * @param int    $groupe_id
  * @return void
  */
-
 /*
 function DB_STRUCTURE_modifier_liaison_devoir_groupe($devoir_id,$groupe_id)
 {
@@ -3362,7 +3247,6 @@ function DB_STRUCTURE_modifier_liaison_devoir_groupe($devoir_id,$groupe_id)
  * @param string     $date_fin_mysql     date de fin au format mysql (facultatif : obligatoire uniquement si $etat=true)
  * @return void
  */
-
 function DB_STRUCTURE_modifier_liaison_groupe_periode($groupe_id,$periode_id,$etat,$date_debut_mysql='',$date_fin_mysql='')
 {
 	if($etat)
@@ -3400,7 +3284,6 @@ function DB_STRUCTURE_modifier_liaison_groupe_periode($groupe_id,$periode_id,$et
  * @param string $periode_nom
  * @return void
  */
-
 function DB_STRUCTURE_modifier_periode($periode_id,$periode_ordre,$periode_nom)
 {
 	$DB_SQL = 'UPDATE sacoche_periode ';
@@ -3419,7 +3302,6 @@ function DB_STRUCTURE_modifier_periode($periode_id,$periode_ordre,$periode_nom)
  * @param string $statut               parmi 'prof' ou ...
  * @return void
  */
-
 function DB_STRUCTURE_modifier_statut_demandes($listing_demande_id,$nb_demandes,$statut)
 {
 	$DB_SQL = 'UPDATE sacoche_demande SET demande_statut=:demande_statut ';
@@ -3435,7 +3317,6 @@ function DB_STRUCTURE_modifier_statut_demandes($listing_demande_id,$nb_demandes,
  * @param int $matiere_id
  * @return void
  */
-
 function DB_STRUCTURE_supprimer_matiere_specifique($matiere_id)
 {
 	$DB_SQL = 'DELETE FROM sacoche_matiere ';
@@ -3464,7 +3345,6 @@ function DB_STRUCTURE_supprimer_matiere_specifique($matiere_id)
  * @param bool   $with_devoir
  * @return void
  */
-
 function DB_STRUCTURE_supprimer_groupe($groupe_id,$groupe_type,$with_devoir=true)
 {
 	// Il faut aussi supprimer les jointures avec les utilisateurs
@@ -3503,7 +3383,6 @@ function DB_STRUCTURE_supprimer_groupe($groupe_id,$groupe_type,$with_devoir=true
  * @param int   $prof_id   Seul un prof peut se supprimer une évaluation avec ses scores ; son id sert de sécurité.
  * @return void
  */
-
 function DB_STRUCTURE_supprimer_devoir_et_saisies($devoir_id,$prof_id)
 {
 	// Il faut aussi supprimer les jointures du devoir avec les items
@@ -3524,7 +3403,6 @@ function DB_STRUCTURE_supprimer_devoir_et_saisies($devoir_id,$prof_id)
  *
  * @return void
  */
-
 function DB_STRUCTURE_supprimer_devoirs_sans_saisies()
 {
 	// Il faut aussi supprimer les jointures du devoir avec les items
@@ -3542,7 +3420,6 @@ function DB_STRUCTURE_supprimer_devoirs_sans_saisies()
  *
  * @return void
  */
-
 function DB_STRUCTURE_supprimer_saisies_REQ()
 {
 	DB::query(SACOCHE_STRUCTURE_BD_NAME , 'DELETE FROM sacoche_saisie WHERE saisie_note="REQ"' , null);
@@ -3556,7 +3433,6 @@ function DB_STRUCTURE_supprimer_saisies_REQ()
  * @param int   $item_id
  * @return void
  */
-
 function DB_STRUCTURE_supprimer_saisie($eleve_id,$devoir_id,$item_id)
 {
 	$DB_SQL = 'DELETE FROM sacoche_saisie ';
@@ -3574,7 +3450,6 @@ function DB_STRUCTURE_supprimer_saisie($eleve_id,$devoir_id,$item_id)
  * @param int    $element_id
  * @return void
  */
-
 function DB_STRUCTURE_supprimer_validation($type,$user_id,$element_id)
 {
 	$DB_SQL = 'DELETE FROM sacoche_jointure_user_'.$type.' ';
@@ -3590,7 +3465,6 @@ function DB_STRUCTURE_supprimer_validation($type,$user_id,$element_id)
  * @param void
  * @return void
  */
-
 function DB_STRUCTURE_supprimer_saisies()
 {
 	DB::query(SACOCHE_STRUCTURE_BD_NAME , 'TRUNCATE sacoche_saisie' , null);
@@ -3602,7 +3476,6 @@ function DB_STRUCTURE_supprimer_saisies()
  * @param void
  * @return void
  */
-
 function DB_STRUCTURE_supprimer_validations()
 {
 	DB::query(SACOCHE_STRUCTURE_BD_NAME , 'TRUNCATE sacoche_jointure_user_entree' , null);
@@ -3615,7 +3488,6 @@ function DB_STRUCTURE_supprimer_validations()
  * @param int $periode_id
  * @return void
  */
-
 function DB_STRUCTURE_supprimer_periode($periode_id)
 {
 	$DB_SQL = 'DELETE FROM sacoche_periode ';
@@ -3640,7 +3512,6 @@ function DB_STRUCTURE_supprimer_periode($periode_id)
  * @param bool|int $id2
  * @return void
  */
-
 function DB_STRUCTURE_supprimer_demande($id1,$id2=false)
 {
 	$DB_SQL = 'DELETE FROM sacoche_demande ';
@@ -3665,7 +3536,6 @@ function DB_STRUCTURE_supprimer_demande($id1,$id2=false)
  * @param bool|int      $nb_demandes          nb de demandes
  * @return void
  */
-
 function DB_STRUCTURE_supprimer_demandes($listing_demande_id,$nb_demandes=false)
 {
 	$DB_SQL = 'DELETE FROM sacoche_demande ';
@@ -3683,7 +3553,6 @@ function DB_STRUCTURE_supprimer_demandes($listing_demande_id,$nb_demandes=false)
  * @param bool|string   $listing_eleve_id   id des élèves séparés par des virgules
  * @return void
  */
-
 function DB_STRUCTURE_supprimer_jointures_parents_for_eleves($listing_eleve_id)
 {
 	$DB_SQL = 'DELETE FROM sacoche_jointure_parent_eleve ';
@@ -3695,10 +3564,9 @@ function DB_STRUCTURE_supprimer_jointures_parents_for_eleves($listing_eleve_id)
  * DB_STRUCTURE_supprimer_utilisateur
  *
  * @param int    $user_id
- * @param string $user_profil   'eleve' ou 'professeur' ou 'directeur' ou 'administrateur'
+ * @param string $user_profil   eleve | parent | professeur | directeur | administrateur
  * @return void
  */
-
 function DB_STRUCTURE_supprimer_utilisateur($user_id,$user_profil)
 {
 	$DB_VAR = array(':user_id'=>$user_id);
@@ -3765,7 +3633,6 @@ function DB_STRUCTURE_supprimer_utilisateur($user_id,$user_profil)
  * @param int $niveau_id    facultatif : si non fourni, tous les niveaux seront concernés
  * @return void
  */
-
 function DB_STRUCTURE_supprimer_referentiel_matiere_niveau($matiere_id,$niveau_id=false)
 {
 	$DB_SQL = 'DELETE sacoche_referentiel, sacoche_referentiel_domaine, sacoche_referentiel_theme, sacoche_referentiel_item, sacoche_jointure_devoir_item, sacoche_saisie ';
@@ -3794,7 +3661,6 @@ function DB_STRUCTURE_supprimer_referentiel_matiere_niveau($matiere_id,$niveau_i
  * @param void
  * @return void
  */
-
 function DB_STRUCTURE_supprimer_mono_structure()
 {
 	global $CHEMIN_MYSQL;
@@ -3824,7 +3690,6 @@ function DB_STRUCTURE_supprimer_mono_structure()
  * @param string $dossier_requetes   './_sql/structure/' ou './_sql/webmestre/'
  * @return void
  */
-
 function DB_STRUCTURE_creer_remplir_tables_structure($dossier_requetes)
 {
 	$tab_files = Lister_Contenu_Dossier($dossier_requetes);
@@ -3850,7 +3715,6 @@ function DB_STRUCTURE_creer_remplir_tables_structure($dossier_requetes)
  * @param void
  * @return void
  */
-
 function DB_STRUCTURE_optimiser_tables_structure()
 {
 	$DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , 'SHOW TABLE STATUS LIKE "sacoche_%"');
@@ -3864,12 +3728,69 @@ function DB_STRUCTURE_optimiser_tables_structure()
 }
 
 /**
+ * Recherche er correction d'anomalies : numérotation des items d'un thème, ou des thèmes d'un domaine
+ *
+ * @param void
+ * @return array   tableau avec label et commentaire pour chaque recherche
+ */
+function DB_STRUCTURE_corriger_numerotations()
+{
+	$tab_bilan = array();
+	$tab_recherche = array();
+	$tab_recherche[] = array( 'element'=>'theme' , 'contenant'=>'domaine' , 'debut'=>1 , 'decalage'=>0 );
+	$tab_recherche[] = array( 'element'=>'item'  , 'contenant'=>'theme'   , 'debut'=>0 , 'decalage'=>1 );
+	foreach($tab_recherche as $tab_donnees)
+	{
+		extract($tab_donnees,EXTR_OVERWRITE);
+		// numéros en double
+		$DB_SQL = 'SELECT DISTINCT '.$contenant.'_id, COUNT('.$element.'_id) AS nombre ';
+		$DB_SQL.= 'FROM sacoche_referentiel_'.$element.' ';
+		$DB_SQL.= 'GROUP BY '.$contenant.'_id,'.$element.'_ordre ';
+		$DB_SQL.= 'HAVING nombre>1 ';
+		$DB_TAB1 = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , null , TRUE);
+		// numéros manquants ou décalés
+		$DB_SQL = 'SELECT DISTINCT '.$contenant.'_id, MAX('.$element.'_ordre) AS maximum, COUNT('.$element.'_id) AS nombre ';
+		$DB_SQL.= 'FROM sacoche_referentiel_'.$element.' ';
+		$DB_SQL.= 'GROUP BY '.$contenant.'_id ';
+		$DB_SQL.= 'HAVING nombre!=maximum+'.$decalage.' ';
+		$DB_TAB2 = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , null , TRUE);
+		// en réunissant les 2 requêtes on a repéré tous les problèmes possibles
+		$tab_bugs = array_unique( array_merge( array_keys($DB_TAB1) , array_keys($DB_TAB2) ) );
+		$nb_bugs = count($tab_bugs);
+		if($nb_bugs)
+		{
+			foreach($tab_bugs as $contenant_id)
+			{
+				$element_ordre = $debut;
+				$DB_SQL = 'SELECT '.$element.'_id ';
+				$DB_SQL.= 'FROM sacoche_referentiel_'.$element.' ';
+				$DB_SQL.= 'WHERE '.$contenant.'_id='.$contenant_id.' ';
+				$DB_SQL.= 'ORDER BY '.$element.'_ordre ASC ';
+				$DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , null);
+				foreach($DB_TAB as $DB_ROW)
+				{
+					$DB_SQL = 'UPDATE sacoche_referentiel_'.$element.' ';
+					$DB_SQL.= 'SET '.$element.'_ordre='.$element_ordre.' ';
+					$DB_SQL.= 'WHERE '.$element.'_id='.$DB_ROW[$element.'_id'].' ';
+					$DB_SQL.= 'LIMIT 1';
+					DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , null);
+					$element_ordre++;
+				}
+			}
+		}
+		$message = (!$nb_bugs) ? 'rien à signaler' : ( ($nb_bugs>1) ? $nb_bugs.' '.$contenant.'s dont le contenu a été renuméroté' : '1 '.$contenant.' dont le contenu a été renuméroté' ) ;
+		$classe  = (!$nb_bugs) ? 'valide' : 'alerte' ;
+		$tab_bilan[] = '<label class="'.$classe.'">'.ucfirst($element).'s des '.$contenant.'s : '.$message.'.</label>';
+	}
+	return $tab_bilan;
+}
+
+/**
  * DB_STRUCTURE_corriger_anomalies
  *
  * @param void
  * @return array   tableau avec label et commentaire pour chaque recherche
  */
-
 function DB_STRUCTURE_corriger_anomalies()
 {
 	$tab_bilan = array();
@@ -4011,6 +3932,27 @@ function DB_STRUCTURE_corriger_anomalies()
 	$message = (!$nb_modifs) ? 'rien à signaler' : ( ($nb_modifs>1) ? $nb_modifs.' anomalies supprimées' : '1 anomalie supprimée' ) ;
 	$classe  = (!$nb_modifs) ? 'valide' : 'alerte' ;
 	$tab_bilan[] = '<label class="'.$classe.'">Jointures évaluation/item : '.$message.'.</label>';
+	// Recherche d'anomalies : adresse associée à un parent supprimé...
+	$DB_SQL = 'DELETE sacoche_parent_adresse ';
+	$DB_SQL.= 'FROM sacoche_parent_adresse ';
+	$DB_SQL.= 'LEFT JOIN sacoche_user ON sacoche_parent_adresse.parent_id=sacoche_user.user_id ';
+	$DB_SQL.= 'WHERE user_id IS NULL ';
+	DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , null);
+	$nb_modifs = DB::rowCount(SACOCHE_STRUCTURE_BD_NAME);
+	$message = (!$nb_modifs) ? 'rien à signaler' : ( ($nb_modifs>1) ? $nb_modifs.' anomalies supprimées' : '1 anomalie supprimée' ) ;
+	$classe  = (!$nb_modifs) ? 'valide' : 'alerte' ;
+	$tab_bilan[] = '<label class="'.$classe.'">Jointures parent/adresse : '.$message.'.</label>';
+	// Recherche d'anomalies : jointures parent/élève associées à un parent ou un élève...
+	$DB_SQL = 'DELETE sacoche_jointure_parent_eleve ';
+	$DB_SQL.= 'FROM sacoche_jointure_parent_eleve ';
+	$DB_SQL.= 'LEFT JOIN sacoche_user AS parent ON sacoche_jointure_parent_eleve.parent_id=parent.user_id ';
+	$DB_SQL.= 'LEFT JOIN sacoche_user AS eleve ON sacoche_jointure_parent_eleve.eleve_id=eleve.user_id ';
+	$DB_SQL.= 'WHERE ( (parent.user_id IS NULL) OR (eleve.user_id IS NULL) ) ';
+	DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , null);
+	$nb_modifs = DB::rowCount(SACOCHE_STRUCTURE_BD_NAME);
+	$message = (!$nb_modifs) ? 'rien à signaler' : ( ($nb_modifs>1) ? $nb_modifs.' anomalies supprimées' : '1 anomalie supprimée' ) ;
+	$classe  = (!$nb_modifs) ? 'valide' : 'alerte' ;
+	$tab_bilan[] = '<label class="'.$classe.'">Jointures parent/enfant : '.$message.'.</label>';
 	// Recherche d'anomalies : élèves associés à une classe supprimée...
 	// Attention, l'id de classe à 0 est normal pour un élève non affecté ou un autre statut
 	$DB_SQL = 'UPDATE sacoche_user ';
@@ -4032,7 +3974,6 @@ function DB_STRUCTURE_corriger_anomalies()
  * @param bool   $transversal                 inclure ou pas la matière tranversale à la liste
  * @return array|string
  */
-
 function DB_STRUCTURE_OPT_matieres_etabl($listing_matieres_communes,$transversal)
 {
 	$DB_SQL = 'SELECT matiere_id AS valeur, matiere_nom AS texte FROM sacoche_matiere ';
@@ -4052,7 +3993,6 @@ function DB_STRUCTURE_OPT_matieres_etabl($listing_matieres_communes,$transversal
  * @param void
  * @return array
  */
-
 function DB_STRUCTURE_OPT_matieres_communes()
 {
 	$GLOBALS['tab_select_option_first'] = array(0,'Toutes les matières','');
@@ -4071,7 +4011,6 @@ function DB_STRUCTURE_OPT_matieres_communes()
  * @param int $user_id
  * @return array|string
  */
-
 function DB_STRUCTURE_OPT_matieres_professeur($listing_matieres_communes,$user_id)
 {
 	$DB_SQL = 'SELECT matiere_id AS valeur, matiere_nom AS texte, matiere_nb_demandes AS info FROM sacoche_jointure_user_matiere ';
@@ -4084,13 +4023,12 @@ function DB_STRUCTURE_OPT_matieres_professeur($listing_matieres_communes,$user_i
 }
 
 /**
- * Retourner un tableau [valeur texte info] des matières d'un professeur identifié ; info représente le nb de demandes (utilisé par ailleurs)
+ * Retourner un tableau [valeur texte info] des matières d'un élève identifié ; info représente le nb de demandes (utilisé par ailleurs)
  *
  * @param string $listing_matieres_communes   id des matières communes séparées par des virgules
  * @param int $user_id
  * @return array|string
  */
-
 function DB_STRUCTURE_OPT_matieres_eleve($listing_matieres_communes,$user_id)
 {
 	// On connait la classe ($_SESSION['ELEVE_CLASSE_ID']), donc on commence par récupérer les groupes éventuels associés à l'élève
@@ -4138,7 +4076,6 @@ function DB_STRUCTURE_OPT_matieres_eleve($listing_matieres_communes,$user_id)
  * @param int $groupe_id     id de la classe ou du groupe
  * @return array|string
  */
-
 function DB_STRUCTURE_OPT_matieres_groupe($groupe_id)
 {
 	// On récupère les matières des professeurs qui sont associés au groupe
@@ -4161,7 +4098,6 @@ function DB_STRUCTURE_OPT_matieres_groupe($groupe_id)
  * @param string|bool $listing_cycles    id des cycles séparés par des virgules ; false pour ne pas retourner les cycles
  * @return array
  */
-
 function DB_STRUCTURE_OPT_niveaux_etabl($listing_niveaux,$listing_cycles)
 {
 	$listing = ($listing_cycles) ? $listing_niveaux.','.$listing_cycles : $listing_niveaux ;
@@ -4177,7 +4113,6 @@ function DB_STRUCTURE_OPT_niveaux_etabl($listing_niveaux,$listing_cycles)
  * @param void
  * @return array
  */
-
 function DB_STRUCTURE_OPT_niveaux()
 {
 	$GLOBALS['tab_select_option_first'] = array(0,'Tous les niveaux','');
@@ -4192,7 +4127,6 @@ function DB_STRUCTURE_OPT_niveaux()
  * @param string $listing_paliers   id des paliers séparés par des virgules
  * @return array|string
  */
-
 function DB_STRUCTURE_OPT_paliers_etabl($listing_paliers)
 {
 	if($listing_paliers)
@@ -4214,7 +4148,6 @@ function DB_STRUCTURE_OPT_paliers_etabl($listing_paliers)
  * @param int $palier_id   id du palier
  * @return array|string
  */
-
 function DB_STRUCTURE_OPT_piliers($palier_id)
 {
 	$GLOBALS['tab_select_option_first'] = array(0,'Toutes les compétences','');
@@ -4232,7 +4165,6 @@ function DB_STRUCTURE_OPT_piliers($palier_id)
  * @param int $pilier_id   id du pilier
  * @return array|string
  */
-
 function DB_STRUCTURE_OPT_domaines($pilier_id)
 {
 	$GLOBALS['tab_select_option_first'] = array(0,'Tous les domaines','');
@@ -4253,7 +4185,6 @@ function DB_STRUCTURE_OPT_domaines($pilier_id)
  * @param string $eleve_classe_id        id de la classe de l'élève
  * @return array|string
  */
-
 function DB_STRUCTURE_OPT_niveaux_eleve($listing_niveaux,$listing_cycles,$eleve_classe_id)
 {
 	$listing = ($listing_cycles) ? $listing_niveaux.','.$listing_cycles : $listing_niveaux ;
@@ -4283,7 +4214,6 @@ function DB_STRUCTURE_OPT_niveaux_eleve($listing_niveaux,$listing_cycles,$eleve_
  * @param string   $divers   'eleves' par défaut ou 'profs' => sert à définir les premiers choix
  * @return array|string
  */
-
 function DB_STRUCTURE_OPT_regroupements_etabl($divers='eleves')
 {
 	// Options du select : catégorie "Divers"
@@ -4325,7 +4255,6 @@ function DB_STRUCTURE_OPT_regroupements_etabl($divers='eleves')
  * @param void
  * @return array|string
  */
-
 function DB_STRUCTURE_OPT_groupes_etabl()
 {
 	$DB_SQL = 'SELECT groupe_id AS valeur, groupe_nom AS texte FROM sacoche_groupe ';
@@ -4344,7 +4273,6 @@ function DB_STRUCTURE_OPT_groupes_etabl()
  * @param int $user_id
  * @return array|string
  */
-
 function DB_STRUCTURE_OPT_groupes_professeur($user_id)
 {
 	$GLOBALS['tab_select_option_first'] = array(0,'Fiche générique','');
@@ -4366,7 +4294,6 @@ function DB_STRUCTURE_OPT_groupes_professeur($user_id)
  * @param int $user_id
  * @return array|string
  */
-
 function DB_STRUCTURE_OPT_besoins_professeur($user_id)
 {
 	$DB_SQL = 'SELECT groupe_id AS valeur, groupe_nom AS texte FROM sacoche_groupe ';
@@ -4384,7 +4311,6 @@ function DB_STRUCTURE_OPT_besoins_professeur($user_id)
  * @param void
  * @return array|string
  */
-
 function DB_STRUCTURE_OPT_classes_etabl()
 {
 	$DB_SQL = 'SELECT groupe_id AS valeur, CONCAT(groupe_nom," (",groupe_ref,")") AS texte FROM sacoche_groupe ';
@@ -4403,7 +4329,6 @@ function DB_STRUCTURE_OPT_classes_etabl()
  * @param void
  * @return array|string
  */
-
 function DB_STRUCTURE_OPT_classes_groupes_etabl()
 {
 	$GLOBALS['tab_select_option_first'] = array(0,'Fiche générique','');
@@ -4423,7 +4348,6 @@ function DB_STRUCTURE_OPT_classes_groupes_etabl()
  * @param int $user_id
  * @return array|string
  */
-
 function DB_STRUCTURE_OPT_classes_prof_principal($user_id)
 {
 	$DB_SQL = 'SELECT groupe_id AS valeur, groupe_nom AS texte FROM sacoche_groupe ';
@@ -4438,12 +4362,31 @@ function DB_STRUCTURE_OPT_classes_prof_principal($user_id)
 }
 
 /**
+ * Retourner un tableau [valeur texte] des classes des enfants d'un parent
+ *
+ * @param int   $parent_id
+ * @return array|string
+ */
+function DB_STRUCTURE_OPT_classes_parent($parent_id)
+{
+	$DB_SQL = 'SELECT groupe_id AS valeur, groupe_nom AS texte, "classe" AS optgroup ';
+	$DB_SQL.= 'FROM sacoche_jointure_parent_eleve ';
+	$DB_SQL.= 'LEFT JOIN sacoche_user ON sacoche_jointure_parent_eleve.eleve_id=sacoche_user.user_id ';
+	$DB_SQL.= 'LEFT JOIN sacoche_groupe ON sacoche_user.eleve_classe_id=sacoche_groupe.groupe_id ';
+	$DB_SQL.= 'WHERE parent_id=:parent_id AND user_profil="eleve" AND user_statut=:statut ';
+	$DB_SQL.= 'GROUP BY groupe_id ';
+	$DB_SQL.= 'ORDER BY resp_legal_num ASC, user_nom ASC, user_prenom ASC ';
+	$DB_VAR = array(':parent_id'=>$parent_id,':statut'=>1);
+	$DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+	return count($DB_TAB) ? $DB_TAB : 'Aucune classe avec un élève au statut actif associé à ce compte !' ;
+}
+
+/**
  * Retourner un tableau [valeur texte] des périodes de l'établissement, indépendamment des rattachements aux classes
  *
  * @param bool   $alerte   affiche un message d'erreur si aucune periode n'est trouvée
  * @return array|string
  */
-
 function DB_STRUCTURE_OPT_periodes_etabl($alerte=FALSE)
 {
 	$GLOBALS['tab_select_option_first'] = array(0,'Personnalisée','');
@@ -4459,7 +4402,6 @@ function DB_STRUCTURE_OPT_periodes_etabl($alerte=FALSE)
  * @param void
  * @return array|string
  */
-
 function DB_STRUCTURE_OPT_administrateurs_etabl()
 {
 	$DB_SQL = 'SELECT user_id AS valeur, CONCAT(user_nom," ",user_prenom) AS texte FROM sacoche_user ';
@@ -4476,7 +4418,6 @@ function DB_STRUCTURE_OPT_administrateurs_etabl()
  * @param void
  * @return array|string
  */
-
 function DB_STRUCTURE_OPT_professeurs_etabl()
 {
 	$DB_SQL = 'SELECT user_id AS valeur, CONCAT(user_nom," ",user_prenom) AS texte FROM sacoche_user ';
@@ -4494,7 +4435,6 @@ function DB_STRUCTURE_OPT_professeurs_etabl()
  * @param int $user_statut   statut des utilisateurs (1 pour actif, 0 pour inactif)
  * @return array|string
  */
-
 function DB_STRUCTURE_OPT_professeurs_directeurs_etabl($user_statut)
 {
 	$DB_SQL = 'SELECT user_id AS valeur, CONCAT(user_nom," ",user_prenom) AS texte, user_profil AS optgroup FROM sacoche_user ';
@@ -4513,7 +4453,6 @@ function DB_STRUCTURE_OPT_professeurs_directeurs_etabl($user_statut)
  * @param int $user_statut   statut des utilisateurs (1 pour actif, 0 pour inactif)
  * @return array|string
  */
-
 function DB_STRUCTURE_OPT_parents_etabl($user_statut)
 {
 	$DB_SQL = 'SELECT user_id AS valeur, CONCAT(user_nom," ",user_prenom) AS texte FROM sacoche_user ';
@@ -4533,40 +4472,71 @@ function DB_STRUCTURE_OPT_parents_etabl($user_statut)
  * @param int    $user_statut   statut des utilisateurs (1 pour actif, 0 pour inactif)
  * @return array|string
  */
-
 function DB_STRUCTURE_OPT_eleves_regroupement($groupe_type,$groupe_id,$user_statut)
 {
-	$DB_SQL = 'SELECT user_id AS valeur, CONCAT(user_nom," ",user_prenom) AS texte FROM sacoche_user ';
-	switch ($groupe_type)
+	if($_SESSION['USER_PROFIL']=='parent')
 	{
-		case 'sdf' :	// On veut les élèves non affectés dans une classe
-			$DB_SQL.= 'WHERE user_profil=:profil AND user_statut=:user_statut AND eleve_classe_id=:classe ';
-			$DB_VAR = array(':profil'=>'eleve',':user_statut'=>$user_statut,':classe'=>0);
-			break;
-		case 'all' :	// On veut tous les élèves de l'établissement
-			$DB_SQL.= 'WHERE user_profil=:profil AND user_statut=:user_statut ';
-			$DB_VAR = array(':profil'=>'eleve',':user_statut'=>$user_statut);
-			break;
-		case 'niveau' :	// On veut tous les élèves d'un niveau
-			$DB_SQL.= 'LEFT JOIN sacoche_groupe ON sacoche_user.eleve_classe_id=sacoche_groupe.groupe_id ';
-			$DB_SQL.= 'WHERE user_profil=:profil AND user_statut=:user_statut AND niveau_id=:niveau ';
-			$DB_VAR = array(':profil'=>'eleve',':user_statut'=>$user_statut,':niveau'=>$groupe_id);
-			break;
-		case 'classe' :	// On veut tous les élèves d'une classe (on utilise "eleve_classe_id" de "sacoche_user")
-			$DB_SQL.= 'WHERE user_profil=:profil AND user_statut=:user_statut AND eleve_classe_id=:classe ';
-			$DB_VAR = array(':profil'=>'eleve',':user_statut'=>$user_statut,':classe'=>$groupe_id);
-			break;
-		case 'groupe' :	// On veut tous les élèves d'un groupe (on utilise la jointure de "sacoche_jointure_user_groupe")
-		case 'besoin' :	// On veut tous les élèves d'un groupe de besoin (on utilise la jointure de "sacoche_jointure_user_groupe")
-			$DB_SQL.= 'LEFT JOIN sacoche_jointure_user_groupe USING (user_id) ';
-			$DB_SQL.= 'WHERE user_profil=:profil AND user_statut=:user_statut AND groupe_id=:groupe ';
-			$DB_VAR = array(':profil'=>'eleve',':user_statut'=>$user_statut,':groupe'=>$groupe_id);
-			break;
+		$DB_TAB = $_SESSION['OPT_PARENT_ENFANTS'];
+		foreach($DB_TAB as $key=>$tab)
+		{
+			if($tab['classe_id']!=$groupe_id)
+			{
+				unset($DB_TAB[$key]);
+			}
+		}
 	}
-	$DB_SQL.= 'ORDER BY user_nom ASC, user_prenom ASC';
-	$DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+	else
+	{
+		$DB_SQL = 'SELECT user_id AS valeur, CONCAT(user_nom," ",user_prenom) AS texte FROM sacoche_user ';
+		switch ($groupe_type)
+		{
+			case 'sdf' :	// On veut les élèves non affectés dans une classe
+				$DB_SQL.= 'WHERE user_profil=:profil AND user_statut=:user_statut AND eleve_classe_id=:classe ';
+				$DB_VAR = array(':profil'=>'eleve',':user_statut'=>$user_statut,':classe'=>0);
+				break;
+			case 'all' :	// On veut tous les élèves de l'établissement
+				$DB_SQL.= 'WHERE user_profil=:profil AND user_statut=:user_statut ';
+				$DB_VAR = array(':profil'=>'eleve',':user_statut'=>$user_statut);
+				break;
+			case 'niveau' :	// On veut tous les élèves d'un niveau
+				$DB_SQL.= 'LEFT JOIN sacoche_groupe ON sacoche_user.eleve_classe_id=sacoche_groupe.groupe_id ';
+				$DB_SQL.= 'WHERE user_profil=:profil AND user_statut=:user_statut AND niveau_id=:niveau ';
+				$DB_VAR = array(':profil'=>'eleve',':user_statut'=>$user_statut,':niveau'=>$groupe_id);
+				break;
+			case 'classe' :	// On veut tous les élèves d'une classe (on utilise "eleve_classe_id" de "sacoche_user")
+				$DB_SQL.= 'WHERE user_profil=:profil AND user_statut=:user_statut AND eleve_classe_id=:classe ';
+				$DB_VAR = array(':profil'=>'eleve',':user_statut'=>$user_statut,':classe'=>$groupe_id);
+				break;
+			case 'groupe' :	// On veut tous les élèves d'un groupe (on utilise la jointure de "sacoche_jointure_user_groupe")
+			case 'besoin' :	// On veut tous les élèves d'un groupe de besoin (on utilise la jointure de "sacoche_jointure_user_groupe")
+				$DB_SQL.= 'LEFT JOIN sacoche_jointure_user_groupe USING (user_id) ';
+				$DB_SQL.= 'WHERE user_profil=:profil AND user_statut=:user_statut AND groupe_id=:groupe ';
+				$DB_VAR = array(':profil'=>'eleve',':user_statut'=>$user_statut,':groupe'=>$groupe_id);
+				break;
+		}
+		$DB_SQL.= 'ORDER BY user_nom ASC, user_prenom ASC';
+		$DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+	}
 	$mot = ($user_statut) ? 'enregistré' : 'désactivé' ;
 	return count($DB_TAB) ? $DB_TAB : 'Aucun élève de ce regroupement n\'est '.$mot.' !' ;
+}
+
+/**
+ * Retourner un tableau [valeur texte] des enfants d'un parent
+ *
+ * @param int   $parent_id
+ * @return array|string
+ */
+function DB_STRUCTURE_OPT_enfants_parent($parent_id)
+{
+	$DB_SQL = 'SELECT user_id AS valeur, CONCAT(user_nom," ",user_prenom) AS texte, eleve_classe_id AS classe_id ';
+	$DB_SQL.= 'FROM sacoche_jointure_parent_eleve ';
+	$DB_SQL.= 'LEFT JOIN sacoche_user ON sacoche_jointure_parent_eleve.eleve_id=sacoche_user.user_id ';
+	$DB_SQL.= 'WHERE parent_id=:parent_id AND user_profil="eleve" AND user_statut=:statut ';
+	$DB_SQL.= 'ORDER BY resp_legal_num ASC, user_nom ASC, user_prenom ASC ';
+	$DB_VAR = array(':parent_id'=>$parent_id,':statut'=>1);
+	$DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+	return count($DB_TAB) ? $DB_TAB : 'Aucun élève au statut actif n\'est associé à ce compte !' ;
 }
 
 ?>

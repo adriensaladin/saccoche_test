@@ -198,7 +198,7 @@ $(document).ready
 			}
 			else
 			{
-				maj_clock(1);
+				initialiser_compteur();
 				$("button").prop('disabled',false);
 				$('#ajax_upload').removeAttr("class").html('&nbsp;');
 				chargement_select_logo();
@@ -424,7 +424,7 @@ $(document).ready
 		// Fonction suivant l'envoi du formulaire (avec jquery.form.js)
 		function retour_form_valide(responseHTML)
 		{
-			maj_clock(1);
+			initialiser_compteur();
 			$("button").prop('disabled',false);
 			if(responseHTML=='ok')
 			{

@@ -290,7 +290,7 @@ $(document).ready
 					},
 					success : function(responseHTML)
 					{
-						maj_clock(1);
+						initialiser_compteur();
 						if(responseHTML.substring(0,1)!='<')
 						{
 							$('#msg_saisir').removeAttr("class").addClass("alerte").html(responseHTML+' <button id="fermer_zone_saisir" type="button"><img alt="" src="./_img/bouton/retourner.png" /> Retour</button>');
@@ -350,7 +350,7 @@ $(document).ready
 					},
 					success : function(responseHTML)
 					{
-						maj_clock(1);
+						initialiser_compteur();
 						if(responseHTML.substring(0,1)!='<')
 						{
 							$('#msg_voir').removeAttr("class").addClass("alerte").html(responseHTML+' <button id="fermer_zone_voir" type="button"><img alt="" src="./_img/bouton/retourner.png" /> Retour</button>');
@@ -403,7 +403,7 @@ $(document).ready
 					},
 					success : function(responseHTML)
 					{
-						maj_clock(1);
+						initialiser_compteur();
 						tab_response = responseHTML.split('<SEP>');
 						if( tab_response.length!=2 )
 						{
@@ -494,7 +494,7 @@ $(document).ready
 					},
 					success : function(responseHTML)
 					{
-						maj_clock(1);
+						initialiser_compteur();
 						if(responseHTML.substring(0,10)!='<div id="i')
 						{
 							$('#msg_ordonner').removeAttr("class").addClass("alerte").html(responseHTML+' <button id="fermer_zone_ordonner" type="button"><img alt="" src="./_img/bouton/retourner.png" /> Retour</button>');
@@ -725,7 +725,7 @@ $(document).ready
 						},
 						success : function(responseHTML)
 						{
-							maj_clock(1);
+							initialiser_compteur();
 							$('button').prop('disabled',false);
 							if(responseHTML.substring(0,6)!='<hr />')
 							{
@@ -1100,7 +1100,7 @@ $(document).ready
 							},
 							success : function(responseHTML)
 							{
-								maj_clock(1);
+								initialiser_compteur();
 								$('button').prop('disabled',false);
 								if(responseHTML.substring(0,1)!='<')
 								{
@@ -1150,7 +1150,7 @@ $(document).ready
 							},
 							success : function(responseHTML)
 							{
-								maj_clock(1);
+								initialiser_compteur();
 								$('button').prop('disabled',false);
 								if(responseHTML.substring(0,1)!='<')
 								{
@@ -1291,7 +1291,7 @@ $(document).ready
 		// Fonction suivant l'envoi du formulaire (avec jquery.form.js)
 		function retour_form_valide(responseHTML)
 		{
-			maj_clock(1);
+			initialiser_compteur();
 			please_wait = false;
 			$('#ajax_msg').parent().children('q').show();
 			if(responseHTML.substring(0,2)!='<t')
@@ -1509,7 +1509,7 @@ $(document).ready
 		// Fonction suivant l'envoi du formulaire (avec jquery.form.js)
 		function retour_form_valide0(responseHTML)
 		{
-			maj_clock(1);
+			initialiser_compteur();
 			if( (responseHTML.substring(0,4)!='<tr>') && (responseHTML!='') )
 			{
 				$('#ajax_msg0').removeAttr("class").addClass("alerte").html(responseHTML);
@@ -1578,7 +1578,7 @@ $(document).ready
 			}
 			else
 			{
-				maj_clock(1);
+				initialiser_compteur();
 				if(responseHTML.length>2)
 				{
 					responseHTML = responseHTML.substring(1);

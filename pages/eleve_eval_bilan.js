@@ -93,11 +93,13 @@ $(document).ready
 			{
 				rules :
 				{
+					f_eleve      : { required:true },
 					f_date_debut : { required:true , dateITA:true },
 					f_date_fin   : { required:true , dateITA:true }
 				},
 				messages :
 				{
+					f_eleve      : { required:"élève manquant" },
 					f_date_debut : { required:"date manquante" , dateITA:"format JJ/MM/AAAA non respecté" },
 					f_date_fin   : { required:"date manquante" , dateITA:"format JJ/MM/AAAA non respecté" }
 				},
@@ -156,7 +158,7 @@ $(document).ready
 		// Fonction suivant l'envoi du formulaire (avec jquery.form.js)
 		function retour_form_valide(responseHTML)
 		{
-			maj_clock(1);
+			initialiser_compteur();
 			$("#actualiser").prop('disabled',false);
 			if(responseHTML.substring(0,4)=='<tr>')
 			{
@@ -164,6 +166,7 @@ $(document).ready
 				$('table.form tbody').html(responseHTML);
 				trier_tableau();
 				infobulle();
+				$('#zone_eval_choix h2').html($('#f_eleve option:selected').text());
 				$('#zone_eval_choix').show();
 			}
 			else
@@ -173,10 +176,32 @@ $(document).ready
 		} 
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-//	Initialisation
+//	Initialisation et chargement au changement d'élève (cas d'un parent responsable de plusieurs élèves)
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
-		formulaire.submit();
+		function maj_eleve()
+		{
+			if($('#f_eleve option:selected').val())
+			{
+				formulaire.submit();
+			}
+			else
+			{
+				$('#ajax_msg').removeAttr("class").html('');
+				$('#zone_eval_choix').hide();
+				$('#zone_eval_detail').hide();
+			}
+		}
+
+		$('#f_eleve').change
+		(
+			function()
+			{
+				maj_eleve();
+			}
+		);
+
+		maj_eleve();
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 //	Clic sur l'image pour Voir les notes saisies à un devoir
@@ -201,7 +226,7 @@ $(document).ready
 					{
 						type : 'POST',
 						url : 'ajax.php?page='+PAGE,
-						data : 'f_action=Voir_notes&f_devoir='+devoir_id,
+						data : 'f_action=Voir_notes&f_eleve='+$('#f_eleve option:selected').val()+'&f_devoir='+devoir_id,
 						dataType : "html",
 						error : function(msg,string)
 						{
@@ -210,7 +235,7 @@ $(document).ready
 						},
 						success : function(responseHTML)
 						{
-							maj_clock(1);
+							initialiser_compteur();
 							if(responseHTML.substring(0,4)!='<tr>')
 							{
 								$('label[for='+td_id+']').removeAttr("class").addClass("alerte").html(responseHTML).fadeOut(2000,function(){$('label[for='+td_id+']').remove();$('#zone_eval_choix q').show();});

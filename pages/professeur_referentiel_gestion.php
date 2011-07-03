@@ -27,7 +27,7 @@
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = "Créer / paramétrer les référentiels";
-$VERSION_JS_FILE += 12;
+$VERSION_JS_FILE += 13;
 ?>
 
 <script type="text/javascript">
@@ -166,7 +166,7 @@ else
 		$matiere_coord  = $tab['coord'];
 		$matiere_perso  = ($tab['partage']) ? 0 : 1 ;
 		$matiere_nombre = ($matiere_coord) ? str_replace('value="'.$tab['nb_demandes'].'"','value="'.$tab['nb_demandes'].'" selected',$select_demandes) : str_replace('<select','<select disabled',$select_demandes) ;
-		$affichage .= '<tr><td colspan="5" class="nu">&nbsp;</td></tr>'."\r\n";
+		$affichage .= '<tr><td colspan="4" class="nu">&nbsp;</td><td class="nu"></td></tr>'."\r\n"; // Partagé en deux sinon Chrome ajoute une bordure disgracieuse
 		$affichage .= '<tr><td rowspan="'.$rowspan.'" id="mat_'.$matiere_id.'"><b>'.$matiere_nom.'</b><br />'.$matiere_nombre.$infobulle.'</td>';
 		$affichage_suite = false;
 		foreach($tab_niveau as $niveau_id => $niveau_nom)

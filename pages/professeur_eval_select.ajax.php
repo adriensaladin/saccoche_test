@@ -829,8 +829,8 @@ if( ($action=='Enregistrer_saisie') && $devoir_id && $date && $date_visible )
 		}
 		unset($tab_post[$key]);
 	}
-	// Il reste dans $tab_post les données à ajouter (mises dans $tab_nouveau_ajouter) et les données vides qui ne servent pas (non enregistrées et non saisies)
-	$tab_nouveau_ajouter = array_filter($tab_post,'non_vide');
+	// Il reste dans $tab_post les données à ajouter (mises dans $tab_nouveau_ajouter) et les données qui ne servent pas (non enregistrées et non saisies)
+	$tab_nouveau_ajouter = array_filter($tab_post,'non_note');
 	// Il n'y a plus qu'à mettre à jour la base
 	if( !count($tab_nouveau_ajouter) && !count($tab_nouveau_modifier) && !count($tab_nouveau_supprimer) )
 	{

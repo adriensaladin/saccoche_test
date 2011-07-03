@@ -27,21 +27,7 @@
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 
-// Indication des profils ayant accès à cette page
-$tab_texte = array( 'directeur'=>'les directeurs' , 'professeur'=>'les professeurs' , 'eleve'=>'les professeurs' );
-$str_objet = $_SESSION['DROIT_VOIR_REFERENTIELS'];
-if($str_objet=='')
-{
-	$texte = 'aucun';
-}
-elseif(strpos($str_objet,',')===false)
-{
-	$texte = 'uniquement '.$tab_texte[$str_objet];
-}
-else
-{
-	$texte = str_replace( array('directeur','professeur','eleve',',') , array($tab_texte['directeur'],$tab_texte['professeur'],$tab_texte['eleve'],' et ') , $str_objet );
-}
+require_once('./_inc/tableau_profils.php'); // Charge $tab_profil_libelle[$profil][court|long][1|2]
 ?>
 
-<p class="astuce">Les administrateurs de <em>SACoche</em> pour votre établissement n'ont pas ouvert cette fonctionnalité aux <?php echo str_replace('eleve','élève',$_SESSION['USER_PROFIL']) ?>s.</p>
+<p class="astuce">Les administrateurs de <em>SACoche</em> pour votre établissement n'ont pas ouvert cette fonctionnalité aux <?php echo $tab_profil_libelle[$_SESSION['USER_PROFIL']]['long'][2] ?>.</p>

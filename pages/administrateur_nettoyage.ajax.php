@@ -33,6 +33,26 @@ $top_depart = microtime(TRUE);
 $action = (isset($_POST['f_action'])) ? clean_texte($_POST['f_action']) : '';
 
 //	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
+// Recherche et correction de numérotations anormales
+//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
+
+if($action=='numeroter')
+{
+	// Bloquer l'application
+	bloquer_application('automate',$_SESSION['BASE'],'Recherche et correction de numérotations anormales en cours.');
+	// Rechercher et corriger les anomalies
+	$tab_bilan = DB_STRUCTURE_corriger_numerotations();
+	// Débloquer l'application
+	debloquer_application('automate',$_SESSION['BASE']);
+	// Afficher le retour
+	echo'<li>'.implode('</li><li>',$tab_bilan).'</li>';
+	$top_arrivee = microtime(TRUE);
+	$duree = number_format($top_arrivee - $top_depart,2,',','');
+	echo'<li><label class="valide">Recherche et correction de numérotations anormales réalisée en '.$duree.'s.</label></li>';
+	exit();
+}
+
+//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
 // Recherche et suppression de correspondances anormales
 //	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
 

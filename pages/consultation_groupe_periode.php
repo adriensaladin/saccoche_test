@@ -46,17 +46,12 @@ $tab_periode   = array();
 $tab_jointure  = array();
 
 // Récupérer la liste des classes & groupes, dans l'ordre des niveaux
-if($_SESSION['USER_PROFIL']=='directeur')
+switch($_SESSION['USER_PROFIL'])
 {
-	$DB_TAB = DB_STRUCTURE_lister_classes_et_groupes_avec_niveaux();
-}
-if($_SESSION['USER_PROFIL']=='professeur')
-{
-	$DB_TAB = DB_STRUCTURE_lister_classes_groupes_professeur($_SESSION['USER_ID']);
-}
-if($_SESSION['USER_PROFIL']=='eleve')
-{
-	$DB_TAB = array ( 0 => array( 'groupe_id'=>$_SESSION['ELEVE_CLASSE_ID'] , 'groupe_nom'=>$_SESSION['ELEVE_CLASSE_NOM'] ) );
+	case 'directeur'  : $DB_TAB = DB_STRUCTURE_lister_classes_et_groupes_avec_niveaux(); break;
+	case 'professeur' : $DB_TAB = DB_STRUCTURE_lister_classes_groupes_professeur($_SESSION['USER_ID']); break;
+	case 'parent'     : $DB_TAB = DB_STRUCTURE_lister_classes_parent($_SESSION['USER_ID']); break;
+	case 'eleve'      : $DB_TAB = array( 0 => array( 'groupe_id' => $_SESSION['ELEVE_CLASSE_ID'] , 'groupe_nom' => $_SESSION['ELEVE_CLASSE_NOM'] ) );
 }
 if(count($DB_TAB))
 {

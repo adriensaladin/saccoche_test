@@ -36,6 +36,7 @@ $nb = count($tab_select_users);
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 //	Désactiver des comptes élèves
+//	Désactiver des comptes parents
 //	Désactiver des comptes professeurs et/ou directeurs
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
@@ -47,14 +48,7 @@ if( ($action=='desactiver') && $nb )
 		DB_STRUCTURE_modifier_utilisateur( $user_id , array(':statut'=>0) );
 	}
 	$s = ($nb>1) ? 's' : '';
-	if($profil=='eleves')
-	{
-		exit('OK'.$nb.' élève'.$s.' désactivé'.$s.'.');
-	}
-	else
-	{
-		exit('OK'.$nb.' professeur'.$s.' et/ou directeur'.$s.' désactivé'.$s.'.');
-	}
+	exit('OK'.$nb.' compte'.$s.' désactivé'.$s.'.');
 }
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-

@@ -48,13 +48,13 @@ $couleur     = (isset($_POST['f_couleur']))            ? clean_texte($_POST['f_c
 $legende     = (isset($_POST['f_legende']))            ? clean_texte($_POST['f_legende'])     : '';
 $tab_eleve   = (isset($_POST['eleves'])) ? array_map('clean_entier',explode(',',$_POST['eleves'])) : array() ;
 
-save_cookie_select('releve_synthese');
-
 $tab_eleve     = array_filter($tab_eleve,'positif');
 $liste_eleve   = implode(',',$tab_eleve);
 
 if( $groupe_id && $groupe_nom && count($tab_eleve) && ( $periode_id || ($date_debut && $date_fin) ) && $retroactif && $couleur && $legende )
 {
+
+	save_cookie_select('releve_synthese');
 
 	// Permet d'avoir des informations accessibles en cas d'erreur type « PHP Fatal error : Allowed memory size of ... bytes exhausted ».
 	// ajouter_log_PHP( $log_objet='Demande de bilan' , $log_contenu=serialize($_POST) , $log_fichier=__FILE__ , $log_ligne=__LINE__ , $only_sesamath=true );

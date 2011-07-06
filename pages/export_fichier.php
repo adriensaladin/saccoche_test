@@ -29,23 +29,23 @@ if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');
 $TITRE = "Export de données";
 
 // Fabrication des éléments select du formulaire
+$tab_cookie = array_merge( load_cookie_select('matiere') , load_cookie_select('palier') );
 if($_SESSION['USER_PROFIL']=='professeur')
 {
 	$tab_matieres = DB_STRUCTURE_OPT_matieres_professeur($_SESSION['MATIERES'],$_SESSION['USER_ID']);
 	$tab_groupes  = DB_STRUCTURE_OPT_groupes_professeur($_SESSION['USER_ID']);
-	$of_m = 'non';
 }
 if($_SESSION['USER_PROFIL']=='directeur')
 {
 	$tab_matieres = DB_STRUCTURE_OPT_matieres_etabl($_SESSION['MATIERES'],$transversal=true);
 	$tab_groupes  = DB_STRUCTURE_OPT_classes_groupes_etabl();
-	$of_m = 'oui';
 }
 $tab_paliers = DB_STRUCTURE_OPT_paliers_etabl($_SESSION['PALIERS']);
+$of_p = (count($tab_paliers)<2) ? 'non' : 'oui' ;
 
-$select_matiere = afficher_select($tab_matieres , $select_nom='f_matiere' , $option_first=$of_m , $selection=false , $optgroup='non');
-$select_groupe  = afficher_select($tab_groupes  , $select_nom='f_groupe'  , $option_first='oui' , $selection=false , $optgroup='oui');
-$select_palier  = afficher_select($tab_paliers  , $select_nom='f_palier'  , $option_first='non' , $selection=false , $optgroup='non');
+$select_matiere = afficher_select($tab_matieres , $select_nom='f_matiere' , $option_first='oui' , $selection=$tab_cookie['matiere_id'] , $optgroup='non');
+$select_groupe  = afficher_select($tab_groupes  , $select_nom='f_groupe'  , $option_first='oui' , $selection=false                     , $optgroup='oui');
+$select_palier  = afficher_select($tab_paliers  , $select_nom='f_palier'  , $option_first=$of_p , $selection=$tab_cookie['palier_id']  , $optgroup='non');
 ?>
 
 <div><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_professeur__export_listings">DOC : Export de données.</a></span></div>

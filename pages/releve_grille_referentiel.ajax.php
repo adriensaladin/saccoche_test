@@ -47,13 +47,14 @@ $marge_min     = (isset($_POST['f_marge_min']))    ? clean_texte($_POST['f_marge
 $groupe_id     = (isset($_POST['f_groupe']))       ? clean_entier($_POST['f_groupe'])       : 0;	// en cas de manipulation type Firebug, peut être forcé pour l'élève à $_SESSION['ELEVE_CLASSE_ID']
 $tab_eleve_id  = (isset($_POST['eleves']))         ? array_map('clean_entier',explode(',',$_POST['eleves'])) : array() ;	// en cas de manipulation type Firebug, peut être forcé pour l'élève avec $_SESSION['USER_ID']
 
-save_cookie_select('grille_referentiel');
-
 $tab_eleve_id  = array_filter($tab_eleve_id,'positif');
 $liste_eleve   = implode(',',$tab_eleve_id);
 
 if( $matiere_id && $niveau_id && $matiere_nom && $niveau_nom && $remplissage && $orientation && $couleur && $legende && $marge_min && $cases_nb && $cases_largeur )
 {
+
+	save_cookie_select('grille_referentiel');
+	save_cookie_select('matiere');
 
 	$tab_domaine    = array();	// [domaine_id] => array(domaine_ref,domaine_nom,domaine_nb_lignes);
 	$tab_theme      = array();	// [domaine_id][theme_id] => array(theme_ref,theme_nom,theme_nb_lignes);

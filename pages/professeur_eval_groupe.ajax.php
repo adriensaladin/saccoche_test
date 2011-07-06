@@ -47,8 +47,6 @@ $marge_min      = (isset($_POST['f_marge_min']))       ? clean_texte($_POST['f_m
 $couleur        = (isset($_POST['f_couleur']))         ? clean_texte($_POST['f_couleur'])               : '';
 $only_req       = (isset($_POST['f_restriction_req'])) ? true                                           : false;
 
-save_cookie_select('cartouche');
-
 $dossier_export = './__tmp/export/';
 $fnom = 'saisie_'.$_SESSION['BASE'].'_'.$_SESSION['USER_ID'].'_'.$ref;
 
@@ -363,25 +361,6 @@ if( ($action=='saisir') && $devoir_id && $groupe_type && $groupe_id && $date && 
 			$tab_affich[$DB_ROW['item_id']][$DB_ROW['eleve_id']] = str_replace($bad,$bon,$tab_affich[$DB_ROW['item_id']][$DB_ROW['eleve_id']]);
 		}
 	}
-	// affichage
-	foreach($tab_affich as $comp_id => $tab_user)
-	{
-		if(!$comp_id)
-		{
-			echo'<thead>';
-		}
-		echo'<tr>';
-		foreach($tab_user as $user_id => $val)
-		{
-			echo $val;
-		}
-		echo'</tr>';
-		if(!$comp_id)
-		{
-			echo'</thead><tbody class="h">';
-		}
-	}
-	echo'</tbody>';
 	// Enregistrer le csv
 	$export_csv .= str_replace(':::',"\r\n",$descriptif)."\r\n\r\n";
 	$export_csv .= 'CODAGES AUTORISÉS : 1 2 3 4 A N D'."\r\n";
@@ -418,6 +397,27 @@ if( ($action=='saisir') && $devoir_id && $groupe_type && $groupe_id && $date && 
 		$sacoche_pdf->SetXY($sacoche_pdf->marge_gauche , $sacoche_pdf->GetY()+$sacoche_pdf->cases_hauteur);
 	}
 	$sacoche_pdf->Output($dossier_export.$fnom.'_sans_notes.pdf','F');
+	//
+	// c'est fini ; affichage du retour
+	//
+	foreach($tab_affich as $comp_id => $tab_user)
+	{
+		if(!$comp_id)
+		{
+			echo'<thead>';
+		}
+		echo'<tr>';
+		foreach($tab_user as $user_id => $val)
+		{
+			echo $val;
+		}
+		echo'</tr>';
+		if(!$comp_id)
+		{
+			echo'</thead><tbody class="h">';
+		}
+	}
+	echo'</tbody>';
 	exit();
 }
 
@@ -498,25 +498,6 @@ if( ($action=='voir') && $devoir_id && $groupe_type && $groupe_id && $date && $d
 			$csv_lignes_scores[$DB_ROW['item_id']][$DB_ROW['eleve_id']] = $DB_ROW['saisie_note'];
 		}
 	}
-	// affichage
-	foreach($tab_affich as $comp_id => $tab_user)
-	{
-		if(!$comp_id)
-		{
-			echo'<thead>';
-		}
-		echo'<tr>';
-		foreach($tab_user as $user_id => $val)
-		{
-			echo $val;
-		}
-		echo'</tr>';
-		if(!$comp_id)
-		{
-			echo'</thead><tbody>';
-		}
-	}
-	echo'</tbody>';
 	// assemblage du csv
 	$tab_conversion = array( ''=>' ' , 'RR'=>'1' , 'R'=>'2' , 'V'=>'3' , 'VV'=>'4' , 'ABS'=>'A' , 'NN'=>'N' , 'DISP'=>'D' , 'REQ'=>'?' );
 	foreach($tab_comp_id as $comp_id=>$val_comp)
@@ -592,8 +573,26 @@ if( ($action=='voir') && $devoir_id && $groupe_type && $groupe_id && $date && $d
 	}
 	$sacoche_pdf->Output($dossier_export.$fnom.'_avec_notes.pdf','F');
 	//
-	// c'est fini...
+	// c'est fini ; affichage du retour
 	//
+	foreach($tab_affich as $comp_id => $tab_user)
+	{
+		if(!$comp_id)
+		{
+			echo'<thead>';
+		}
+		echo'<tr>';
+		foreach($tab_user as $user_id => $val)
+		{
+			echo $val;
+		}
+		echo'</tr>';
+		if(!$comp_id)
+		{
+			echo'</thead><tbody>';
+		}
+	}
+	echo'</tbody>';
 	exit();
 }
 
@@ -885,6 +884,7 @@ if( ($action=='Enregistrer_saisie') && $devoir_id && $date && $date_visible )
 
 if( ($action=='Imprimer_cartouche') && $devoir_id && $groupe_type && $groupe_id && $date && $cart_contenu && $cart_detail && $orientation && $marge_min && $couleur )
 {
+	save_cookie_select('cartouche');
 	$with_nom    = (substr($cart_contenu,0,8)=='AVEC_nom')  ? true : false ;
 	$with_result = (substr($cart_contenu,9)=='AVEC_result') ? true : false ;
 	// liste des items

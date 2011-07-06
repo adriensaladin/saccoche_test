@@ -139,17 +139,23 @@ function load_cookie_select($page)
 	// Initialisation du tableau retourné au cas où le cookie n'existerait pas ou au cas ou des informations manquerait dans le cookie (ajout ultérieur d'une fonctionnalité)
 	switch($page)
 	{
+		case 'cartouche' :
+			$tab_return = array( 'orientation'=>'portrait' , 'couleur'=>'oui' , 'marge_min'=>5 , 'cart_contenu'=>'AVEC_nom_SANS_result' , 'cart_detail'=>'complet' );
+			break;
+		case 'grille_referentiel' :
+			$tab_return = array( 'orientation'=>'portrait' , 'couleur'=>'oui' , 'legende'=>'oui' , 'marge_min'=>5 , 'cases_nb'=>3 , 'cases_largeur'=>5 , 'colonne_vide'=>0 );
+			break;
+		case 'matiere' :
+			$tab_return = array( 'matiere_id'=>0 );
+			break;
+		case 'palier' :
+			$tab_return = array( 'palier_id'=>0 );
+			break;
 		case 'releve_synthese' :
 			$tab_return = array( 'couleur'=>'oui' , 'legende'=>'oui' );
 			break;
 		case 'releve_items' :
 			$tab_return = array( 'orientation'=>'portrait' , 'couleur'=>'oui' , 'legende'=>'oui' , 'marge_min'=>5 , 'cases_nb'=>5 , 'cases_largeur'=>5 );
-				break;
-		case 'grille_referentiel' :
-			$tab_return = array( 'orientation'=>'portrait' , 'couleur'=>'oui' , 'legende'=>'oui' , 'marge_min'=>5 , 'cases_nb'=>3 , 'cases_largeur'=>5 , 'colonne_vide'=>0 );
-			break;
-		case 'cartouche' :
-			$tab_return = array( 'orientation'=>'portrait' , 'couleur'=>'oui' , 'marge_min'=>5 , 'cart_contenu'=>'AVEC_nom_SANS_result' , 'cart_detail'=>'complet' );
 			break;
 	}
 	// Récupération du contenu du cookie
@@ -173,6 +179,22 @@ function load_cookie_select($page)
 {
 	switch($page)
 	{
+		case 'cartouche' :
+			global $orientation,$couleur,$legende,$marge_min,$cart_contenu,$cart_detail;
+			$tab_cookie = compact('orientation','couleur','legende','marge_min','cart_contenu','cart_detail');
+			break;
+		case 'grille_referentiel' :
+			global $orientation,$couleur,$legende,$marge_min,$cases_nb,$cases_largeur,$colonne_vide;
+			$tab_cookie = compact('orientation','couleur','legende','marge_min','cases_nb','cases_largeur','colonne_vide');
+			break;
+		case 'matiere' :
+			global $matiere_id;
+			$tab_cookie = compact('matiere_id');
+			break;
+		case 'palier' :
+			global $palier_id;
+			$tab_cookie = compact('palier_id');
+			break;
 		case 'releve_synthese' :
 			global $couleur,$legende;
 			$tab_cookie = compact('couleur','legende');
@@ -180,14 +202,6 @@ function load_cookie_select($page)
 		case 'releve_items' :
 			global $orientation,$couleur,$legende,$marge_min,$cases_nb,$cases_largeur;
 			$tab_cookie = compact('orientation','couleur','legende','marge_min','cases_nb','cases_largeur');
-			break;
-		case 'grille_referentiel' :
-			global $orientation,$couleur,$legende,$marge_min,$cases_nb,$cases_largeur,$colonne_vide;
-			$tab_cookie = compact('orientation','couleur','legende','marge_min','cases_nb','cases_largeur','colonne_vide');
-			break;
-		case 'cartouche' :
-			global $orientation,$couleur,$legende,$marge_min,$contenu,$detail;
-			$tab_cookie = compact('orientation','couleur','legende','marge_min','cart_contenu','cart_detail');
 			break;
 	}
 	/*

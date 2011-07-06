@@ -86,6 +86,7 @@ if( ($type_export=='listing_users') && $groupe_id && isset($tab_types[$groupe_ty
 
 if( ($type_export=='listing_matiere') && $matiere_id && $matiere_nom )
 {
+	save_cookie_select('matiere');
 	// Préparation de l'export CSV
 	$separateur = ';';
 	// ajout du préfixe 'ITEM_' pour éviter un bug avec M$ Excel « SYLK : Format de fichier non valide » (http://support.microsoft.com/kb/323626/fr). 
@@ -127,6 +128,7 @@ if( ($type_export=='listing_matiere') && $matiere_id && $matiere_nom )
 
 if( ($type_export=='arbre_matiere') && $matiere_id && $matiere_nom )
 {
+	save_cookie_select('matiere');
 	// Préparation de l'export CSV
 	$separateur = ';';
 	// ajout du préfixe 'ITEM_' pour éviter un bug avec M$ Excel « SYLK : Format de fichier non valide » (http://support.microsoft.com/kb/323626/fr). 
@@ -235,6 +237,7 @@ if( ($type_export=='arbre_matiere') && $matiere_id && $matiere_nom )
 
 if( ($type_export=='arbre_socle') && $palier_id && $palier_nom )
 {
+	save_cookie_select('palier');
 	// Préparation de l'export CSV
 	$separateur = ';';
 	$export_csv  = 'PALIER'.$separateur.'PILIER'.$separateur.'SECTION'.$separateur.'ITEM'."\r\n\r\n";
@@ -324,6 +327,7 @@ if( ($type_export=='arbre_socle') && $palier_id && $palier_nom )
 
 if( ($type_export=='jointure_socle_matiere') && $palier_id && $palier_nom )
 {
+	save_cookie_select('palier');
 	// Préparation de l'export CSV
 	$separateur = ';';
 	$export_csv  = 'PALIER SOCLE'.$separateur.'PILIER SOCLE'.$separateur.'SECTION SOCLE'.$separateur.'ITEM SOCLE'.$separateur.'ITEM MATIERE'."\r\n\r\n";

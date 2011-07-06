@@ -33,13 +33,13 @@ $VERSION_JS_FILE += 5;
 <?php
 // Fabrication des éléments select du formulaire
 // L'élève ne choisit évidemment pas sa classe ni nom nom, mais on construit qd même les formulaires, on les remplit et on les cache (permet un code unique et une transmission des infos en ajax comme pour les autres profils).
-$tab_cookie = load_cookie_select('grille_referentiel');
+$tab_cookie = array_merge( load_cookie_select('grille_referentiel') , load_cookie_select('matiere') );
 if($_SESSION['USER_PROFIL']=='directeur')
 {
 	$tab_matieres = DB_STRUCTURE_OPT_matieres_etabl($_SESSION['MATIERES'],$transversal=true);
 	$tab_niveaux  = DB_STRUCTURE_OPT_niveaux_etabl($_SESSION['NIVEAUX'],$_SESSION['CYCLES']);
 	$tab_groupes  = DB_STRUCTURE_OPT_classes_groupes_etabl();
-	$of_m = 'oui'; $of_g = 'val'; $sel_g = false; $og_g = 'oui'; $class_form_eleve = 'show'; $sel_n = false;
+	$of_g = 'val'; $sel_g = false; $og_g = 'oui'; $class_form_eleve = 'show'; $sel_n = false;
 	$select_eleves = '<option></option>'; // maj en ajax suivant le choix du groupe
 	$check_option_lien = '';
 }
@@ -48,7 +48,7 @@ if($_SESSION['USER_PROFIL']=='professeur')
 	$tab_matieres = DB_STRUCTURE_OPT_matieres_professeur($_SESSION['MATIERES'],$_SESSION['USER_ID']);
 	$tab_niveaux  = DB_STRUCTURE_OPT_niveaux_etabl($_SESSION['NIVEAUX'],$_SESSION['CYCLES']);
 	$tab_groupes  = DB_STRUCTURE_OPT_groupes_professeur($_SESSION['USER_ID']);
-	$of_m = 'non'; $of_g = 'val'; $sel_g = false; $og_g = 'oui'; $class_form_eleve = 'show'; $sel_n = false;
+	$of_g = 'val'; $sel_g = false; $og_g = 'oui'; $class_form_eleve = 'show'; $sel_n = false;
 	$select_eleves = '<option></option>'; // maj en ajax suivant le choix du groupe
 	$check_option_lien = '';
 }
@@ -57,7 +57,7 @@ if( ($_SESSION['USER_PROFIL']=='parent') && ($_SESSION['NB_ENFANTS']!=1) )
 	$tab_matieres = DB_STRUCTURE_OPT_matieres_etabl($_SESSION['MATIERES'],$transversal=true);
 	$tab_niveaux  = DB_STRUCTURE_OPT_niveaux_etabl($_SESSION['NIVEAUX'],$_SESSION['CYCLES']);
 	$tab_groupes  = $_SESSION['OPT_PARENT_CLASSES'];
-	$of_m = 'oui'; $of_g = 'oui'; $sel_g = false; $og_g = 'non'; $class_form_eleve = 'show'; $sel_n = false;
+	$of_g = 'oui'; $sel_g = false; $og_g = 'non'; $class_form_eleve = 'show'; $sel_n = false;
 	$select_eleves = '<option></option>'; // maj en ajax suivant le choix du groupe
 	$check_option_lien = '';
 }
@@ -66,7 +66,7 @@ if( ($_SESSION['USER_PROFIL']=='parent') && ($_SESSION['NB_ENFANTS']==1) )
 	$tab_matieres = DB_STRUCTURE_OPT_matieres_eleve($_SESSION['MATIERES'],$_SESSION['OPT_PARENT_ENFANTS'][0]['valeur']);
 	$tab_niveaux  = DB_STRUCTURE_OPT_niveaux_eleve($_SESSION['NIVEAUX'],$_SESSION['CYCLES'],$_SESSION['ELEVE_CLASSE_ID']);
 	$tab_groupes  = array(0=>array('valeur'=>$_SESSION['ELEVE_CLASSE_ID'],'texte'=>$_SESSION['ELEVE_CLASSE_NOM']));
-	$of_m = 'oui'; $of_g = 'non'; $sel_g = true;  $og_g = 'non'; $class_form_eleve = 'hide'; $sel_n = 'val';
+	$of_g = 'non'; $sel_g = true;  $og_g = 'non'; $class_form_eleve = 'hide'; $sel_n = 'val';
 	$select_eleves = '<option value="'.$_SESSION['OPT_PARENT_ENFANTS'][0]['valeur'].'" selected>'.html($_SESSION['OPT_PARENT_ENFANTS'][0]['texte']).'</option>';
 	$check_option_lien = ' checked';
 }
@@ -75,12 +75,12 @@ if($_SESSION['USER_PROFIL']=='eleve')
 	$tab_matieres = DB_STRUCTURE_OPT_matieres_eleve($_SESSION['MATIERES'],$_SESSION['USER_ID']);
 	$tab_niveaux  = DB_STRUCTURE_OPT_niveaux_eleve($_SESSION['NIVEAUX'],$_SESSION['CYCLES'],$_SESSION['ELEVE_CLASSE_ID']);
 	$tab_groupes  = array(0=>array('valeur'=>$_SESSION['ELEVE_CLASSE_ID'],'texte'=>$_SESSION['ELEVE_CLASSE_NOM']));
-	$of_m = 'oui'; $of_g = 'non'; $sel_g = true;  $og_g = 'non'; $class_form_eleve = 'hide'; $sel_n = 'val';
+	$of_g = 'non'; $sel_g = true;  $og_g = 'non'; $class_form_eleve = 'hide'; $sel_n = 'val';
 	$select_eleves = '<option value="'.$_SESSION['USER_ID'].'" selected>'.html($_SESSION['USER_NOM'].' '.$_SESSION['USER_PRENOM']).'</option>';
 	$check_option_lien = ' checked';
 }
 
-$select_matiere      = afficher_select($tab_matieres            , $select_nom='f_matiere'      , $option_first=$of_m , $selection=false                        , $optgroup='non');
+$select_matiere      = afficher_select($tab_matieres            , $select_nom='f_matiere'      , $option_first='oui' , $selection=$tab_cookie['matiere_id']    , $optgroup='non');
 $select_niveau       = afficher_select($tab_niveaux             , $select_nom='f_niveau'       , $option_first='oui' , $selection=$sel_n                       , $optgroup='non');
 $select_groupe       = afficher_select($tab_groupes             , $select_nom='f_groupe'       , $option_first=$of_g , $selection=$sel_g                       , $optgroup=$og_g);
 $select_orientation  = afficher_select($tab_select_orientation  , $select_nom='f_orientation'  , $option_first='non' , $selection=$tab_cookie['orientation']   , $optgroup='non');

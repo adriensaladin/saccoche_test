@@ -782,6 +782,7 @@ function envoyer_webmestre_courriel($adresse,$objet,$contenu)
 
 function afficher_arborescence_matiere_from_SQL($DB_TAB,$dynamique,$reference,$aff_coef,$aff_cart,$aff_socle,$aff_lien,$aff_input)
 {
+	$input_all = ($aff_input) ? ' <input name="all_check" type="image" src="./_img/all_check.gif" title="Tout cocher." /> <input name="all_uncheck" type="image" src="./_img/all_uncheck.gif" title="Tout décocher." />' : '' ;
 	$input_texte = '';
 	$coef_texte  = '';
 	$cart_texte  = '';
@@ -812,17 +813,20 @@ function afficher_arborescence_matiere_from_SQL($DB_TAB,$dynamique,$reference,$a
 		if( (!is_null($DB_ROW['niveau_id'])) && ($DB_ROW['niveau_id']!=$niveau_id) )
 		{
 			$niveau_id = $DB_ROW['niveau_id'];
-			$tab_niveau[$matiere_id][$niveau_id] = ($reference) ? $DB_ROW['niveau_ref'].' - '.$DB_ROW['niveau_nom'] : $DB_ROW['niveau_nom'];
+			$prefixe   = ($reference) ? $DB_ROW['niveau_ref'].' - ' : '' ;
+			$tab_niveau[$matiere_id][$niveau_id] = $prefixe.$DB_ROW['niveau_nom'];
 		}
 		if( (!is_null($DB_ROW['domaine_id'])) && ($DB_ROW['domaine_id']!=$domaine_id) )
 		{
 			$domaine_id = $DB_ROW['domaine_id'];
-			$tab_domaine[$matiere_id][$niveau_id][$domaine_id] = ($reference) ? $DB_ROW['domaine_ref'].' - '.$DB_ROW['domaine_nom'] : $DB_ROW['domaine_nom'];
+			$prefixe   = ($reference) ? $DB_ROW['domaine_ref'].' - ' : '' ;
+			$tab_domaine[$matiere_id][$niveau_id][$domaine_id] = $prefixe.$DB_ROW['domaine_nom'];
 		}
 		if( (!is_null($DB_ROW['theme_id'])) && ($DB_ROW['theme_id']!=$theme_id) )
 		{
 			$theme_id = $DB_ROW['theme_id'];
-			$tab_theme[$matiere_id][$niveau_id][$domaine_id][$theme_id] = ($reference) ? $DB_ROW['domaine_ref'].$DB_ROW['theme_ordre'].' - '.$DB_ROW['theme_nom'] : $DB_ROW['theme_nom'] ;
+			$prefixe   = ($reference) ? $DB_ROW['domaine_ref'].$DB_ROW['theme_ordre'].' - ' : '' ;
+			$tab_theme[$matiere_id][$niveau_id][$domaine_id][$theme_id] = $prefixe.$DB_ROW['theme_nom'];
 		}
 		if( (!is_null($DB_ROW['item_id'])) && ($DB_ROW['item_id']!=$item_id) )
 		{
@@ -882,13 +886,13 @@ function afficher_arborescence_matiere_from_SQL($DB_TAB,$dynamique,$reference,$a
 					{
 						foreach($tab_domaine[$matiere_id][$niveau_id] as $domaine_id => $domaine_texte)
 						{
-							$retour .= '<li class="li_n1">'.$span_avant.html($domaine_texte).$span_apres."\r\n";
+							$retour .= '<li class="li_n1">'.$span_avant.html($domaine_texte).$span_apres.$input_all."\r\n";
 							$retour .= '<ul class="ul_n2">'."\r\n";
 							if(isset($tab_theme[$matiere_id][$niveau_id][$domaine_id]))
 							{
 								foreach($tab_theme[$matiere_id][$niveau_id][$domaine_id] as $theme_id => $theme_texte)
 								{
-									$retour .= '<li class="li_n2">'.$span_avant.html($theme_texte).$span_apres."\r\n";
+									$retour .= '<li class="li_n2">'.$span_avant.html($theme_texte).$span_apres.$input_all."\r\n";
 									$retour .= '<ul class="ul_n3">'."\r\n";
 									if(isset($tab_item[$matiere_id][$niveau_id][$domaine_id][$theme_id]))
 									{
@@ -1107,6 +1111,7 @@ function url_get_contents($url,$tab_post=false,$timeout=5)
 	$ch = curl_init();
 	curl_setopt($ch, CURLOPT_DNS_CACHE_TIMEOUT, 3600); // Le temps en seconde que cURL doit conserver les entrées DNS en mémoire. Cette option est définie à 120 secondes (2 minutes) par défaut.
 	curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);    // TRUE retourne directement le transfert sous forme de chaîne de la valeur retournée par curl_exec() au lieu de l'afficher directement.
+	curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);   // FALSE pour que cURL ne vérifie pas le certificat (sinon, en l'absence de certificat, on récolte l'erreur "SSL certificate problem, verify that the CA cert is OK. Details: error:14090086:SSL routines:SSL3_GET_SERVER_CERTIFICATE:certificate verify failed").
 	curl_setopt($ch, CURLOPT_FAILONERROR, TRUE);       // TRUE pour que PHP traite silencieusement les codes HTTP supérieurs ou égaux à 400. Le comportement par défaut est de retourner la page normalement, en ignorant ce code.
 	curl_setopt($ch, CURLOPT_HEADER, FALSE);           // FALSE pour ne pas inclure l'en-tête dans la valeur de retour.
 	curl_setopt($ch, CURLOPT_TIMEOUT, $timeout);       // Le temps maximum d'exécution de la fonction cURL (en s) ; éviter de monter cette valeur pour libérer des ressources plus rapidement : 'classiquement', le serveur doit répondre en qq ms, donc si au bout de 5s il a pas répondu c'est qu'il ne répondra plus, alors pas la peine de bloquer une connexion et de la RAM pendant plus longtemps.

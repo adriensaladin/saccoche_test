@@ -43,6 +43,7 @@ foreach($tab_profils as $profil)
 $texte = ($str_objet=='') ? 'aucun' : ( (strpos($str_objet,',')===false) ? 'uniquement les '.$str_objet : str_replace(',',' + ',$str_objet) ) ;
 
 // Fabrication des éléments select du formulaire
+$tab_cookie  = load_cookie_select('palier');
 $tab_paliers = DB_STRUCTURE_OPT_paliers_etabl($_SESSION['PALIERS']);
 if( ($_SESSION['USER_PROFIL']=='directeur') && (strpos($_SESSION['DROIT_VALIDATION_PILIER'],'directeur')!==false) )
 {
@@ -64,9 +65,10 @@ else
 	$tab_groupes = 'Vous n\'avez pas un profil autorisé pour accéder au formulaire !';
 	$of_g = 'non'; $og_g = 'non'; 
 }
+$of_p = (count($tab_paliers)<2) ? 'non' : 'oui' ;
 
-$select_palier = afficher_select($tab_paliers , $select_nom='f_palier' , $option_first='non' , $selection=false , $optgroup='non');
-$select_groupe = afficher_select($tab_groupes , $select_nom='f_groupe' , $option_first=$of_g , $selection=false , $optgroup=$og_g);
+$select_palier = afficher_select($tab_paliers , $select_nom='f_palier' , $option_first=$of_p , $selection=$tab_cookie['palier_id'] , $optgroup='non');
+$select_groupe = afficher_select($tab_groupes , $select_nom='f_groupe' , $option_first=$of_g , $selection=false                    , $optgroup=$og_g);
 ?>
 
 <ul class="puce">

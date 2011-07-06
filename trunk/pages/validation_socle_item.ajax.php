@@ -29,6 +29,7 @@ if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');
 if(($_SESSION['SESAMATH_ID']==ID_DEMO)&&($_POST['f_action']!='Afficher_bilan')&&($_POST['f_action']!='Afficher_information')){exit('Action désactivée pour la démo...');}
 
 $action      = (isset($_POST['f_action']))  ? clean_texte($_POST['f_action'])   : '';
+$palier_id   = (isset($_POST['f_palier']))  ? clean_entier($_POST['f_palier'])  : 0;
 $pilier_id   = (isset($_POST['f_pilier']))  ? clean_entier($_POST['f_pilier'])  : 0;
 $domaine_id  = (isset($_POST['f_domaine'])) ? clean_entier($_POST['f_domaine']) : 0;
 $eleve_id    = (isset($_POST['f_user']))    ? clean_entier($_POST['f_user'])    : 0;
@@ -48,6 +49,7 @@ $listing_domaine_id = implode(',',$tab_domaine);
 
 if( ($action=='Afficher_bilan') && $pilier_id && count($tab_domaine) && count($tab_eleve) && (in_array($mode,array('auto','manuel'))) )
 {
+	save_cookie_select('palier');
 	$affichage = '';
 	// Tableau des langues
 	$tfoot = '';

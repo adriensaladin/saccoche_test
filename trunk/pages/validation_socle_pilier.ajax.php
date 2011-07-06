@@ -43,6 +43,7 @@ $listing_eleve_id = implode(',',$tab_eleve);
 
 if( ($action=='Afficher_bilan') && $palier_id && count($tab_pilier) && count($tab_eleve) )
 {
+	save_cookie_select('palier');
 	$affichage = '';
 	// Tableau des langues
 	$tfoot = '';

@@ -3728,30 +3728,35 @@ function DB_STRUCTURE_optimiser_tables_structure()
 }
 
 /**
- * Recherche er correction d'anomalies : numérotation des items d'un thème, ou des thèmes d'un domaine
+ * Recherche et correction d'anomalies : numérotation des items d'un thème, ou des thèmes d'un domaine
  *
  * @param void
  * @return array   tableau avec label et commentaire pour chaque recherche
  */
 function DB_STRUCTURE_corriger_numerotations()
 {
+	function make_where($champ,$valeur)
+	{
+		return $champ.'='.$valeur;
+	}
 	$tab_bilan = array();
 	$tab_recherche = array();
-	$tab_recherche[] = array( 'element'=>'theme' , 'contenant'=>'domaine' , 'debut'=>1 , 'decalage'=>0 );
-	$tab_recherche[] = array( 'element'=>'item'  , 'contenant'=>'theme'   , 'debut'=>0 , 'decalage'=>1 );
+	$tab_recherche[] = array( 'contenant_nom'=>'référentiel' , 'contenant_tab_champs'=>array('matiere_id','niveau_id') , 'element_nom'=>'domaine' , 'element_champ'=>'domaine' , 'debut'=>1 , 'decalage'=>0 );
+	$tab_recherche[] = array( 'contenant_nom'=>'domaine'     , 'contenant_tab_champs'=>array('domaine_id')             , 'element_nom'=>'thème'   , 'element_champ'=>'theme'   , 'debut'=>1 , 'decalage'=>0 );
+	$tab_recherche[] = array( 'contenant_nom'=>'thème'       , 'contenant_tab_champs'=>array('theme_id')               , 'element_nom'=>'item'    , 'element_champ'=>'item'    , 'debut'=>0 , 'decalage'=>1 );
 	foreach($tab_recherche as $tab_donnees)
 	{
 		extract($tab_donnees,EXTR_OVERWRITE);
 		// numéros en double
-		$DB_SQL = 'SELECT DISTINCT '.$contenant.'_id, COUNT('.$element.'_id) AS nombre ';
-		$DB_SQL.= 'FROM sacoche_referentiel_'.$element.' ';
-		$DB_SQL.= 'GROUP BY '.$contenant.'_id,'.$element.'_ordre ';
+		$DB_SQL = 'SELECT DISTINCT CONCAT('.implode(',",",',$contenant_tab_champs).') AS contenant_id , COUNT('.$element_champ.'_id) AS nombre ';
+		$DB_SQL.= 'FROM sacoche_referentiel_'.$element_champ.' ';
+		$DB_SQL.= 'GROUP BY '.implode(',',$contenant_tab_champs).','.$element_champ.'_ordre ';
 		$DB_SQL.= 'HAVING nombre>1 ';
 		$DB_TAB1 = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , null , TRUE);
 		// numéros manquants ou décalés
-		$DB_SQL = 'SELECT DISTINCT '.$contenant.'_id, MAX('.$element.'_ordre) AS maximum, COUNT('.$element.'_id) AS nombre ';
-		$DB_SQL.= 'FROM sacoche_referentiel_'.$element.' ';
-		$DB_SQL.= 'GROUP BY '.$contenant.'_id ';
+		$DB_SQL = 'SELECT DISTINCT CONCAT('.implode(',",",',$contenant_tab_champs).') AS contenant_id , MAX('.$element_champ.'_ordre) AS maximum , COUNT('.$element_champ.'_id) AS nombre ';
+		$DB_SQL.= 'FROM sacoche_referentiel_'.$element_champ.' ';
+		$DB_SQL.= 'GROUP BY '.implode(',',$contenant_tab_champs).' ';
 		$DB_SQL.= 'HAVING nombre!=maximum+'.$decalage.' ';
 		$DB_TAB2 = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , null , TRUE);
 		// en réunissant les 2 requêtes on a repéré tous les problèmes possibles
@@ -3762,25 +3767,27 @@ function DB_STRUCTURE_corriger_numerotations()
 			foreach($tab_bugs as $contenant_id)
 			{
 				$element_ordre = $debut;
-				$DB_SQL = 'SELECT '.$element.'_id ';
-				$DB_SQL.= 'FROM sacoche_referentiel_'.$element.' ';
-				$DB_SQL.= 'WHERE '.$contenant.'_id='.$contenant_id.' ';
-				$DB_SQL.= 'ORDER BY '.$element.'_ordre ASC ';
+				$contenant_tab_valeur = explode(',',$contenant_id);
+				$tab_where = array_map('make_where', $contenant_tab_champs, $contenant_tab_valeur);
+				$DB_SQL = 'SELECT '.$element_champ.'_id ';
+				$DB_SQL.= 'FROM sacoche_referentiel_'.$element_champ.' ';
+				$DB_SQL.= 'WHERE '.implode(' AND ',$tab_where).' ';
+				$DB_SQL.= 'ORDER BY '.$element_champ.'_ordre ASC ';
 				$DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , null);
 				foreach($DB_TAB as $DB_ROW)
 				{
-					$DB_SQL = 'UPDATE sacoche_referentiel_'.$element.' ';
-					$DB_SQL.= 'SET '.$element.'_ordre='.$element_ordre.' ';
-					$DB_SQL.= 'WHERE '.$element.'_id='.$DB_ROW[$element.'_id'].' ';
+					$DB_SQL = 'UPDATE sacoche_referentiel_'.$element_champ.' ';
+					$DB_SQL.= 'SET '.$element_champ.'_ordre='.$element_ordre.' ';
+					$DB_SQL.= 'WHERE '.$element_champ.'_id='.$DB_ROW[$element_champ.'_id'].' ';
 					$DB_SQL.= 'LIMIT 1';
 					DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , null);
 					$element_ordre++;
 				}
 			}
 		}
-		$message = (!$nb_bugs) ? 'rien à signaler' : ( ($nb_bugs>1) ? $nb_bugs.' '.$contenant.'s dont le contenu a été renuméroté' : '1 '.$contenant.' dont le contenu a été renuméroté' ) ;
+		$message = (!$nb_bugs) ? 'rien à signaler' : ( ($nb_bugs>1) ? $nb_bugs.' '.$contenant_nom.'s dont le contenu a été renuméroté' : '1 '.$contenant_nom.' dont le contenu a été renuméroté' ) ;
 		$classe  = (!$nb_bugs) ? 'valide' : 'alerte' ;
-		$tab_bilan[] = '<label class="'.$classe.'">'.ucfirst($element).'s des '.$contenant.'s : '.$message.'.</label>';
+		$tab_bilan[] = '<label class="'.$classe.'">'.ucfirst($element_nom).'s des '.$contenant_nom.'s : '.$message.'.</label>';
 	}
 	return $tab_bilan;
 }

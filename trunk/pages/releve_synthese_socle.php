@@ -32,6 +32,7 @@ $VERSION_JS_FILE += 6;
 
 <?php
 // Fabrication des éléments select du formulaire
+$tab_cookie   = load_cookie_select('palier');
 $tab_matieres = DB_STRUCTURE_OPT_matieres_etabl($_SESSION['MATIERES'],$transversal=true);
 $tab_paliers  = DB_STRUCTURE_OPT_paliers_etabl($_SESSION['PALIERS']);
 if($_SESSION['USER_PROFIL']=='directeur')
@@ -46,10 +47,11 @@ else
 {
 	$tab_groupes = 'Vous n\'avez pas un profil autorisé pour accéder au formulaire !';
 }
+$of_p = (count($tab_paliers)<2) ? 'non' : 'oui' ;
 
-$select_matiere = afficher_select($tab_matieres , $select_nom=false      , $option_first='non' , $selection=true  , $optgroup='non');
-$select_palier  = afficher_select($tab_paliers  , $select_nom='f_palier' , $option_first='non' , $selection=false , $optgroup='non');
-$select_groupe  = afficher_select($tab_groupes  , $select_nom='f_groupe' , $option_first='oui' , $selection=false , $optgroup='oui');
+$select_matiere = afficher_select($tab_matieres , $select_nom=false      , $option_first='non' , $selection=true                     , $optgroup='non');
+$select_palier  = afficher_select($tab_paliers  , $select_nom='f_palier' , $option_first=$of_p , $selection=$tab_cookie['palier_id'] , $optgroup='non');
+$select_groupe  = afficher_select($tab_groupes  , $select_nom='f_groupe' , $option_first='oui' , $selection=false                    , $optgroup='oui');
 ?>
 
 <ul class="puce">

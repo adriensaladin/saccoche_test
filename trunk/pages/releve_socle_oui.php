@@ -33,6 +33,7 @@ $VERSION_JS_FILE += 6;
 $socle_PA = '<label for="f_socle_PA"><input type="checkbox" id="f_socle_PA" name="f_socle_PA" value="1" checked /> Pourcentage d\'items acquis</label>';
 $socle_EV = '<label for="f_socle_EV"><input type="checkbox" id="f_socle_EV" name="f_socle_EV" value="1" checked /> État de validation</label>';
 // Fabrication des éléments select du formulaire
+$tab_cookie   = load_cookie_select('palier');
 $tab_paliers  = DB_STRUCTURE_OPT_paliers_etabl($_SESSION['PALIERS']);
 $tab_matieres = DB_STRUCTURE_OPT_matieres_etabl($_SESSION['MATIERES'],$transversal=true);
 if($_SESSION['USER_PROFIL']=='directeur')
@@ -78,10 +79,11 @@ elseif($_SESSION['USER_PROFIL']=='eleve')
 	$socle_EV = (mb_substr_count($_SESSION['DROIT_SOCLE_ETAT_VALIDATION'],$_SESSION['USER_PROFIL']))    ? $socle_EV : '<del>État de validation</del>' ;
 	$check_option_lien = ' checked';
 }
+$of_p = (count($tab_paliers)<2) ? 'non' : 'oui' ;
 
-$select_palier  = afficher_select($tab_paliers  , $select_nom='f_palier' , $option_first='non' , $selection=false  , $optgroup='non');
-$select_groupe  = afficher_select($tab_groupes  , $select_nom='f_groupe' , $option_first=$of_g , $selection=$sel_g , $optgroup=$og_g);
-$select_matiere = afficher_select($tab_matieres , $select_nom=false      , $option_first='non' , $selection=true   , $optgroup='non');
+$select_palier  = afficher_select($tab_paliers  , $select_nom='f_palier' , $option_first=$of_p , $selection=$tab_cookie['palier_id'] , $optgroup='non');
+$select_groupe  = afficher_select($tab_groupes  , $select_nom='f_groupe' , $option_first=$of_g , $selection=$sel_g                   , $optgroup=$og_g);
+$select_matiere = afficher_select($tab_matieres , $select_nom=false      , $option_first='non' , $selection=true                     , $optgroup='non');
 ?>
 
 <p><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=releves_bilans__releve_socle">DOC : Détail de maîtrise du socle.</a></span></p>

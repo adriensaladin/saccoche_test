@@ -54,13 +54,13 @@ $tab_eleve      = (isset($_POST['eleves']))        ? array_map('clean_entier',ex
 $tab_type[]     = 'individuel';
 $format         = 'multimatiere';
 
-save_cookie_select('releve_items');
-
 $tab_eleve     = array_filter($tab_eleve,'positif');
 $liste_eleve   = implode(',',$tab_eleve);
 
 if( $orientation && $couleur && $legende && $marge_min && $pages_nb && $cases_nb && $cases_largeur && ( $periode_id || ($date_debut && $date_fin) ) && $retroactif && $matiere_id && $groupe_id && $groupe_nom && count($tab_eleve) && count($tab_type) )
 {
+
+	save_cookie_select('releve_items');
 
 	// Permet d'avoir des informations accessibles en cas d'erreur type « PHP Fatal error : Allowed memory size of ... bytes exhausted ».
 	// ajouter_log_PHP( $log_objet='Demande de bilan' , $log_contenu=serialize($_POST) , $log_fichier=__FILE__ , $log_ligne=__LINE__ , $only_sesamath=true );

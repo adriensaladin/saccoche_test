@@ -400,7 +400,9 @@ $(document).ready
 		format_liens('body');
 		infobulle();
 
-		// MENU - Styler les puces avec les images ; span pourrait servir pour un menu inactif, mais il n'est pas utilisé.
+		/**
+		 * MENU - Styler les puces avec les images ; span pourrait servir pour un menu inactif, mais il n'est pas utilisé.
+		 */
 		$("#menu a , #menu span").each
 		(
 			function()
@@ -414,10 +416,13 @@ $(document).ready
 			}
 		);
 
-		// MENU - Rendre transparente la page au survol
-		// Difficultés pour utiliser fadeTo('slow',0.2) et fadeTo('normal',1) car une durée d'animation provoque des boucles
-		// Difficultés pour utiliser aussi css('opacity',0.2) et css('opacity',1) car un passage de la souris au dessus du menu provoque un clignotement désagréable
-		// Alors il a fallu ruser (compliquer) avec un marqueur et un timing...
+		/**
+		 * MENU - Rendre transparente la page au survol.
+		 *
+		 * Difficultés pour utiliser fadeTo('slow',0.2) et fadeTo('normal',1) car une durée d'animation provoque des boucles
+		 * Difficultés pour utiliser aussi css('opacity',0.2) et css('opacity',1) car un passage de la souris au dessus du menu provoque un clignotement désagréable
+		 * Alors il a fallu ruser (compliquer) avec un marqueur et un timing...
+		 */
 		var test_over_avant = false;
 		var test_over_apres = false;
 		$('#menu li').mouseenter( function(){test_over_apres = true; });
@@ -445,7 +450,9 @@ $(document).ready
 		page_transparente();
 
 
-		// piocher dans un arbre de COMPETENCES - Réagir aux clics sur les dossiers
+		/**
+		 * piocher dans un arbre de MATIERES - Réagir aux clics sur les dossiers
+		 */
 		$('#zone_compet li span').siblings('ul').hide('fast');
 		$('#zone_compet li span').live // live est utilisé pour prendre en compte les nouveaux éléments créés
 		('click',
@@ -455,7 +462,29 @@ $(document).ready
 			}
 		);
 
-		// consulter un arbre du SOCLE - Réagir aux clics sur les dossiers
+		$('#zone_compet input[name=all_check]').click
+		(
+			function()
+			{
+				$(this).parent().find('ul').show();
+				$(this).parent().find('input[type=checkbox]').prop('checked',true);
+				return false;
+			}
+		);
+		$('#zone_compet input[name=all_uncheck]').click
+		(
+			function()
+			{
+				$(this).parent().find('ul').hide();
+				$(this).parent().find('input[type=checkbox]').prop('checked',false);
+				return false;
+			}
+		);
+
+
+		/**
+		 * consulter un arbre du SOCLE - Réagir aux clics sur les dossiers
+		 */
 		$('#zone_paliers li span').siblings('ul').hide('fast');
 		$('#zone_paliers li span').live // live est utilisé pour prendre en compte les nouveaux éléments créés
 		('click',
@@ -465,7 +494,9 @@ $(document).ready
 			}
 		);
 
-		// piocher dans un arbre du SOCLE (masqué au départ) - Réagir aux clics sur les dossiers
+		/**
+		 * piocher dans un arbre du SOCLE (masqué au départ) - Réagir aux clics sur les dossiers
+		 */
 		$('#zone_socle li span').siblings('ul').hide('fast');
 		$('#zone_socle li span').click
 		(
@@ -475,7 +506,9 @@ $(document).ready
 			}
 		);
 
-		// piocher dans un arbre d' ELEVES - Réagir aux clics sur les dossiers
+		/**
+		 * piocher dans un arbre d' ELEVES - Réagir aux clics sur les dossiers
+		 */
 		$('#zone_eleve li span').siblings('ul').hide('fast');
 		$('#zone_eleve li span').click
 		(
@@ -485,7 +518,9 @@ $(document).ready
 			}
 		);
 
-		// Lien pour se déconnecter
+		/**
+		 * Lien pour se déconnecter
+		 */
 		$('#deconnecter').click
 		(
 			function()
@@ -494,10 +529,9 @@ $(document).ready
 			}
 		);
 
-		//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
-		//	Clic sur un lien afin d'afficher ou de masquer un groupe d'options d'un formulaire
-		//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
-
+		/**
+		 * Clic sur un lien afin d'afficher ou de masquer un groupe d'options d'un formulaire
+		 */
 		$('a.toggle').click
 		(
 			function()
@@ -507,10 +541,9 @@ $(document).ready
 			}
 		);
 
-		//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
-		//	Clic sur un lien afin d'afficher ou de masquer le détail d'un bilan d'acquisition du socle
-		//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
-
+		/**
+		 * Clic sur un lien afin d'afficher ou de masquer le détail d'un bilan d'acquisition du socle
+		 */
 		$('img.toggle').live
 		('click',
 			function()
@@ -530,10 +563,9 @@ $(document).ready
 			}
 		);
 
-		//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
-		//	Clic sur un lien pour ouvrir une fenêtre d'aide en ligne (pop-up)
-		//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
-
+		/**
+		 * Clic sur un lien pour ouvrir une fenêtre d'aide en ligne (pop-up)
+		 */
 		$('a.pop_up').live
 		('click',
 			function()
@@ -560,13 +592,12 @@ $(document).ready
 			}
 		);
 
-		//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
-		//	Gestion de la durée d'inactivité
-		//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
-
+		/**
+		 * Gestion de la durée d'inactivité
+		 *
+		 * Fonction tester_compteur() à appeler régulièrement (un diviseur de 60s).
+		 */
 		initialiser_compteur();
-
-		// Fonction tester_compteur() à appeler régulièrement (un diviseur de 60s)
 		if(PAGE.substring(0,6)!='public')
 		{
 			$("body").everyTime
@@ -577,9 +608,9 @@ $(document).ready
 			);
 		}
 
-		//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
-		//	Calque pour afficher un calendrier, ou le résultat d'une demande d'évaluation
-		//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
+		/**
+		 * Calque pour afficher un calendrier, ou le résultat d'une demande d'évaluation
+		 */
 
 		// Ajoute au document le calque d'aide au remplissage
 		$('<div id="calque"></div>').appendTo(document.body).hide();

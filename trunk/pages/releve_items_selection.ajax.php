@@ -53,13 +53,13 @@ $tab_eleve      = (isset($_POST['eleves']))        ? array_map('clean_entier',ex
 $tab_type       = (isset($_POST['types']))         ? array_map('clean_texte',explode(',',$_POST['types']))   : array() ;
 $format         = 'selection';
 
-save_cookie_select('releve_items');
-
 $tab_eleve     = array_filter($tab_eleve,'positif');
 $liste_eleve   = implode(',',$tab_eleve);
 
 if( $orientation && $couleur && $legende && $marge_min && $pages_nb && $cases_nb && $cases_largeur && ( $periode_id || ($date_debut && $date_fin) ) && $retroactif && $matiere_id && $groupe_id && $groupe_nom && count($tab_eleve) && count($tab_type) )
 {
+
+	save_cookie_select('releve_items');
 
 	// Période concernée
 	if($periode_id==0)

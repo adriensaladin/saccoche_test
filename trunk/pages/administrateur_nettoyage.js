@@ -80,7 +80,7 @@ $(document).ready
 								else
 								{
 									$('#ajax_msg_'+action).removeAttr("class").html('');
-									$('#ajax_info').html(responseHTML).show();
+									$('#ajax_info').html(responseHTML).show().appendTo('#form_'+action);
 									initialiser_compteur();
 								}
 							}

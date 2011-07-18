@@ -75,7 +75,7 @@ if(is_file($fichier_constantes))
 	require_once('./_inc/class.DB.php');
 	// Choix des paramètres de connexion à la base de données adaptée...
 	// ...multi-structure ; base sacoche_structure_***
-	if( (in_array($_SESSION['USER_PROFIL'],array('administrateur','directeur','professeur','eleve'))) && (HEBERGEUR_INSTALLATION=='multi-structures') )
+	if( (in_array($_SESSION['USER_PROFIL'],array('administrateur','directeur','professeur','parent','eleve'))) && (HEBERGEUR_INSTALLATION=='multi-structures') )
 	{
 		$fichier_mysql_config = 'serveur_sacoche_structure_'.$_SESSION['BASE'];
 		$fichier_class_config = 'class.DB.config.sacoche_structure';

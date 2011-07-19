@@ -25,8 +25,12 @@
  * 
  */
 
+// sert pour le tri d'un tableau de notes Lomer
+$tab_tri_note = array_flip(array('RR','R','V','VV','ABS','NN','DISP','REQ','-',''));
+// sert pour le tri du tableau de scores bilans dans le cas d'un tri par état d'acquisition
+$tab_tri_etat = array_flip(array('r','o','v'));
+
 /**
- * mailto
  * Afficher un lien mailto en masquant l'adresse de courriel pour les robots.
  *
  * @param string $mail_adresse
@@ -36,7 +40,6 @@
  * @param string $mail_copy
  * @return string
  */
-
 function mailto($mail_adresse,$mail_sujet,$texte_lien,$mail_contenu='',$mail_copy='')
 {
 	$mailto = 'mailto:'.$mail_adresse.'?subject='.$mail_sujet;
@@ -49,6 +52,7 @@ function mailto($mail_adresse,$mail_sujet,$texte_lien,$mail_contenu='',$mail_cop
 
 /**
  * Takes an UTF-8 string and returns an array of ints representing the Unicode characters.
+ * 
  * Astral planes are supported ie. the ints in the output can be > 0xFFFF. Occurrances of the BOM are ignored. Surrogates are not allowed.
  * Returns false if the input string isn't a valid UTF-8 octet sequence.
  * 
@@ -59,7 +63,6 @@ function mailto($mail_adresse,$mail_sujet,$texte_lien,$mail_contenu='',$mail_cop
  * The latest version of this file can be obtained from http://iki.fi/hsivonen/php-utf8/
  * Version 1.0, 2003-05-30
  */
-
 function utf8ToUnicode(&$str)
 {
 	$mState = 0;     // cached expected number of octets after the current octet until the beginning of the next UTF8 character sequence
@@ -190,6 +193,7 @@ function utf8ToUnicode(&$str)
 
 /**
  * Takes an array of ints representing the Unicode characters and returns a UTF-8 string.
+ * 
  * Astral planes are supported ie. the ints in the input can be > 0xFFFF. Occurrances of the BOM are ignored. Surrogates are not allowed.
  * Returns false if the input array contains ints that represent surrogates or are outside the Unicode range.
  * 
@@ -200,7 +204,6 @@ function utf8ToUnicode(&$str)
  * The latest version of this file can be obtained from http://iki.fi/hsivonen/php-utf8/
  * Version 1.0, 2003-05-30
  */
-
 function unicodeToUtf8(&$arr)
 {
 	$dest = '';
@@ -250,13 +253,11 @@ function unicodeToUtf8(&$arr)
 }
 
 /**
- * convert_date_mysql_to_french
  * Passer d'une date MySQL AAAA-MM-JJ à une date française JJ/MM/AAAA.
  *
  * @param string $date   AAAA-MM-JJ
  * @return string        JJ/MM/AAAA
  */
-
 function convert_date_mysql_to_french($date)
 {
 	list($annee,$mois,$jour) = explode('-',$date);
@@ -264,13 +265,11 @@ function convert_date_mysql_to_french($date)
 }
 
 /**
- * convert_date_french_to_mysql
  * Passer d'une date française JJ/MM/AAAA à une date MySQL AAAA-MM-JJ.
  *
  * @param string $date   JJ/MM/AAAA
  * @return string        AAAA-MM-JJ
  */
-
 function convert_date_french_to_mysql($date)
 {
 	list($jour,$mois,$annee) = explode('/',$date);
@@ -278,13 +277,11 @@ function convert_date_french_to_mysql($date)
 }
 
 /**
- * affich_date
  * Convertir une date MySQL ou française en un texte bien formaté pour l'infobulle (sortie HTML).
  *
  * @param string $date   AAAA-MM-JJ ou JJ/MM/AAAA
  * @return string        JJ nom_du mois AAAA
  */
-
 function affich_date($date)
 {
 	if(mb_strpos($date,'-')) { list($annee,$mois,$jour) = explode('-',$date); }
@@ -294,7 +291,6 @@ function affich_date($date)
 }
 
 /**
- * affich_note_html
  * Afficher une note Lomer pour une sortie HTML.
  *
  * @param string $note
@@ -303,9 +299,6 @@ function affich_date($date)
  * @param bool   $tri
  * @return string
  */
-
-$tab_tri_note = array_flip(array('RR','R','V','VV','ABS','NN','DISP','REQ','-',''));	// sert pour le tri du tableau
-
 function affich_note_html($note,$date,$info,$tri=false)
 {
 	global $tab_tri_note;
@@ -316,7 +309,6 @@ function affich_note_html($note,$date,$info,$tri=false)
 }
 
 /**
- * affich_score_html
  * Afficher un score bilan pour une sortie HTML.
  *
  * @param int|FALSE $score
@@ -324,9 +316,6 @@ function affich_note_html($note,$date,$info,$tri=false)
  * @param string    $pourcent      '%' | ''
  * @return string
  */
-
-$tab_tri_etat = array_flip(array('r','o','v'));	// sert pour le tri du tableau dans le cas d'un tri par état d'acquisition
-
 function affich_score_html($score,$methode_tri,$pourcent='')
 {
 	global $tab_tri_etat;
@@ -337,14 +326,53 @@ function affich_score_html($score,$methode_tri,$pourcent='')
 	}
 	elseif($score<$_SESSION['CALCUL_SEUIL']['R']) {$etat = 'r';}
 	elseif($score>$_SESSION['CALCUL_SEUIL']['V']) {$etat = 'v';}
-	else                                                   {$etat = 'o';}
+	else                                          {$etat = 'o';}
 	$score_affiche = (mb_substr_count($_SESSION['DROIT_VOIR_SCORE_BILAN'],$_SESSION['USER_PROFIL'])) ? $score.$pourcent : '' ;
 	$tri = ($methode_tri=='score') ? sprintf("%03u",$score) : $tab_tri_etat[$etat] ;	// le sprintf et le tab_tri_etat servent pour le tri du tableau
 	return '<td class="hc '.$etat.'"><i>'.$tri.'</i>'.$score_affiche.'</td>';
 }
 
 /**
- * affich_barre_synthese_html
+ * Afficher la légende pour une sortie HTML.
+ *
+ * Normalement au moins un des deux paramètres est passé à TRUE.
+ *
+ * @param bool $note_Lomer
+ * @param bool $etat_bilan
+ * @return string
+ */
+function affich_legende_html($note_Lomer=FALSE,$etat_bilan=FALSE)
+{
+	// initialisation variables
+	$retour = '';
+	$espace = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
+	// légende note_Lomer
+	if($note_Lomer)
+	{
+		$tab_notes = array('RR','R','V','VV');
+		$retour .= '<div class="ti">';
+		foreach($tab_notes as $note)
+		{
+			$retour .= '<img alt="'.$note.'" src="./_img/note/'.$_SESSION['NOTE_DOSSIER'].'/h/'.$note.'.gif" /> '.html($_SESSION['NOTE_LEGENDE'][$note]).$espace;
+		}
+		$retour .= '</div>';
+	}
+	// légende etat_bilan
+	if($etat_bilan)
+	{
+		$tab_etats = array('NA'=>'r','VA'=>'o','A'=>'v');
+		$retour .= '<div class="ti">';
+		foreach($tab_etats as $etat => $couleur)
+		{
+			$retour .= '<span class="'.$couleur.'">&nbsp;'.html($_SESSION['ACQUIS_TEXTE'][$etat]).'&nbsp;</span> '.html($_SESSION['ACQUIS_LEGENDE'][$etat]).$espace;
+		}
+		$retour .= '</div>';
+	}
+	// retour
+	return ($retour) ? '<hr /><h4>Légende</h4><div class="legende">'.$retour.'</div>' : '' ;
+}
+
+/**
  * Afficher une barre colorée de synthèse NA VA A pour une sortie HTML.
  *
  * @param int     $td_width
@@ -352,7 +380,6 @@ function affich_score_html($score,$methode_tri,$pourcent='')
  * @param int     $total
  * @return string
  */
-
 function affich_barre_synthese_html($td_width,$tab_infos,$total)
 {
 	$tab_couleur = array('NA'=>'r','VA'=>'o','A'=>'v');
@@ -367,7 +394,6 @@ function affich_barre_synthese_html($td_width,$tab_infos,$total)
 }
 
 /**
- * affich_pourcentage_html
  * Afficher un pourcentage d'items acquis pour une sortie socle HTML.
  *
  * @param string   $type_cellule   'td' | 'th'
@@ -375,7 +401,6 @@ function affich_barre_synthese_html($td_width,$tab_infos,$total)
  * @param bool     $detail
  * @return string
  */
-
 function affich_pourcentage_html($type_cellule,$tab_infos,$detail)
 {
 	if($tab_infos['%']===false)
@@ -391,7 +416,6 @@ function affich_pourcentage_html($type_cellule,$tab_infos,$detail)
 }
 
 /**
- * affich_validation_html
  * Afficher un état de validation pour une sortie socle HTML.
  *
  * @param string   $type_cellule   'td' | 'th'
@@ -401,7 +425,6 @@ function affich_pourcentage_html($type_cellule,$tab_infos,$detail)
  * @param bool     $colspan
  * @return string
  */
-
 function affich_validation_html($type_cellule,$tab_infos,$detail,$etat_pilier=false,$colspan=false)
 {
 	$etat  = ($tab_infos['etat']==1) ? 'Validé' : 'Invalidé' ;

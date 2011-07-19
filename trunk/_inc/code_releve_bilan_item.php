@@ -349,6 +349,7 @@ if(in_array('individuel',$tab_type))
 			if($legende=='oui')
 			{
 				$releve_PDF->bilan_item_individuel_legende($format);
+				$releve_HTML_individuel .= affich_legende_html($note_Lomer=TRUE,$etat_bilan=TRUE);
 			}
 		}
 	}

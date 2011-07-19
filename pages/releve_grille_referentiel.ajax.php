@@ -259,11 +259,12 @@ if( $matiere_id && $niveau_id && $matiere_nom && $niveau_nom && $remplissage && 
 				}
 			}
 		}
+		$releve_HTML .= '</table><p />';
 		if($legende=='oui')
 		{
 			$releve_PDF->grille_referentiel_legende();
+			$releve_HTML .= affich_legende_html($note_Lomer=TRUE,$etat_bilan=FALSE);
 		}
-		$releve_HTML .= '</table><p />';
 	}
 
 	// Chemins d'enregistrement

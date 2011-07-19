@@ -95,5 +95,6 @@ $date_fin    = date("d/m/Y");
 			<tr><td class="nu" colspan="4"></td></tr>
 		</tbody>
 	</table>
+	<?php echo affich_legende_html($note_Lomer=TRUE,$etat_bilan=TRUE); ?>
 	<p />
 </div>

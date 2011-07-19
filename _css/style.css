@@ -42,7 +42,7 @@ body {background:#FFF;font:1em "arial","helvetica","nimbus sans l","liberation s
 table,select,textarea,input,button,div{font:100% "arial","helvetica","nimbus sans l","liberation sans","freesans","garuda",sans-serif}
 p{margin:1em auto}
 img {vertical-align:text-top}
-td img , #aide_en_ligne img {vertical-align:middle}
+td img , #aide_en_ligne img  , .legende img {vertical-align:baseline}
 h1{display:block;font-size:120%;text-align:left;font-weight:bold;font-variant:small-caps;color:#33A;letter-spacing:0.15em;margin:1ex 2em;}
 h2{display:block;font-size:110%;text-align:left;font-weight:bold;font-variant:small-caps;color:#33A;letter-spacing:0.15em;margin:1ex auto 1ex 1em;}
 h1.logo{text-align:center}
@@ -96,7 +96,7 @@ del{text-decoration:line-through;color:#666}
 /* Images sprites utilisées comme images cliquables ; http://fr.spritegen.website-performance.org/     */
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-body q {background:transparent url(../_img/sprite10.png) 0 0 no-repeat;width:16px;height:16px;display:inline-block;vertical-align:middle;margin-left:5px;quotes:none}
+body q {background:transparent url(../_img/sprite10.png) 0 0 no-repeat;width:16px;height:16px;display:inline-block;vertical-align:baseline;margin-left:5px;quotes:none}
 body q:before, body q:after {content: "";} /* patch pour Safari : voir par exemple http://forum.alsacreations.com/topic-4-41216-1-Resolu-Modifier-le-style-des-citations-quotqquot.html */
 body q.activer         {background-position:    0px 0}
 body q.ajouter         {background-position:  -20px 0}

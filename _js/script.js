@@ -597,9 +597,9 @@ $(document).ready
 		 *
 		 * Fonction tester_compteur() à appeler régulièrement (un diviseur de 60s).
 		 */
-		initialiser_compteur();
 		if(PAGE.substring(0,6)!='public')
 		{
+			initialiser_compteur();
 			$("body").everyTime
 			('15s', 'compteur' , function()
 				{

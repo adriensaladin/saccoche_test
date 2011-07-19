@@ -185,6 +185,7 @@ foreach($tab_eleve as $tab)
 		if($legende=='oui')
 		{
 			$releve_PDF->bilan_synthese_legende($format);
+			$releve_HTML .= affich_legende_html($note_Lomer=FALSE,$etat_bilan=TRUE);
 		}
 	}
 }

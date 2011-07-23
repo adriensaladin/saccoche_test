@@ -225,7 +225,6 @@ $(document).ready
 			if( (responseHTML.substring(0,14)!='<ul id="step">') && (responseHTML.substring(0,12)!='<UL id=step>') )
 			{
 				$('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);
-				alert(responseHTML.substring(0,12));
 			}
 			else
 			{

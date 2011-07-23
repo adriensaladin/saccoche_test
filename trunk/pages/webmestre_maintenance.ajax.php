@@ -82,9 +82,11 @@ if($action=='maj_etape2')
 		Supprimer_Dossier($dossier_dezip);
 	}
 	$zip = new ZipArchive();
-	if($zip->open($fichier_import)!==true)
+	$result_open = $zip->open($fichier_import);
+	if($result_open!==true)
 	{
-		exit(']¤['.'pb'.']¤['."Fichiers impossibles à extraire !");
+		require('./_inc/tableau_zip_error.php');
+		exit(']¤['.'pb'.']¤['.'Fichiers impossibles à extraire ('.$result_open.$tab_zip_error[$result_open].') !');
 	}
 	$zip->extractTo($dossier_import);
 	$zip->close();

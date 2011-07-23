@@ -286,9 +286,11 @@ if($action=='importer_zip')
 	}
 	// Dezipper dans le dossier dump (pas dans un sous-dossier "temporaire" sinon ce dossier n'est pas vidé si l'opération n'arrive pas à son terme).
 	$zip = new ZipArchive();
-	if($zip->open($dossier_import.$fichier_zip_nom)!==true)
+	$result_open = $zip->open($dossier_import.$fichier_zip_nom);
+	if($result_open!==true)
 	{
-		exit('<li><label class="alerte">Erreur : votre archive ZIP n\'a pas pu être ouverte !</label></li>');
+		require('./_inc/tableau_zip_error.php');
+		exit('<li><label class="alerte">Erreur : votre archive ZIP n\'a pas pu être ouverte ('.$result_open.$tab_zip_error[$result_open].') !</label></li>');
 	}
 	$zip->extractTo($dossier_dump);
 	$zip->close();
@@ -331,9 +333,11 @@ if( ($action=='importer') && $num && $max && ($num<$max) )
 	Creer_ou_Vider_Dossier($dossier_temp_sql);
 	// Dezipper dans le dossier temporaire
 	$zip = new ZipArchive();
-	if($zip->open($dossier_dump.$fichier_nom)!==true)
+	$result_open = $zip->open($dossier_dump.$fichier_nom);
+	if($result_open!==true)
 	{
-		exit(']¤['.'<tr>'.$retour_cellules_non.'<td><label class="erreur">Erreur : fichiers de '.html($fichier_nom).' impossible à extraire !</label></td>'.'</tr>');
+		require('./_inc/tableau_zip_error.php');
+		exit(']¤['.'<tr>'.$retour_cellules_non.'<td><label class="erreur">Erreur : fichiers de '.html($fichier_nom).' impossible à extraire ('.$result_open.$tab_zip_error[$result_open].') !</label></td>'.'</tr>');
 	}
 	$zip->extractTo($dossier_temp_sql);
 	$zip->close();

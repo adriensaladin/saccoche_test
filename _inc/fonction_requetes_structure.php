@@ -1144,7 +1144,9 @@ function DB_STRUCTURE_lister_eleves_cibles_actifs_avec_sconet_id($listing_eleve_
 {
 	$DB_SQL = 'SELECT user_id , user_nom , user_prenom , user_sconet_id ';
 	$DB_SQL.= 'FROM sacoche_user ';
+	// $DB_SQL.= 'LEFT JOIN sacoche_groupe ON sacoche_user.eleve_classe_id=sacoche_groupe.groupe_id ';
 	$DB_SQL.= 'WHERE user_id IN('.$listing_eleve_id.') AND user_profil=:profil AND user_statut=:statut AND user_sconet_id>0 ';
+	// $DB_SQL.= 'AND niveau_id=35 ';
 	$DB_SQL.= 'ORDER BY user_nom ASC, user_prenom ASC';
 	$DB_VAR = array(':profil'=>'eleve',':statut'=>1);
 	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);

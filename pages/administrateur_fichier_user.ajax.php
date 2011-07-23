@@ -144,10 +144,12 @@ if( $step==10 )
 		{
 			exit('Erreur : le serveur ne gère pas les fichiers ZIP ! Renvoyez votre fichier sans compression.');
 		}
-		$zip = new ZipArchive;
-		if($zip->open($fnom_serveur)!==true)
+		$zip = new ZipArchive();
+		$result_open = $zip->open($fnom_serveur);
+		if($result_open!==true)
 		{
-			exit('Erreur : votre archive ZIP n\'a pas pu être ouverte !');
+			require('./_inc/tableau_zip_error.php');
+			exit('Erreur : votre archive ZIP n\'a pas pu être ouverte ('.$result_open.$tab_zip_error[$result_open].') !');
 		}
 		if($action=='sconet_eleves')
 		{

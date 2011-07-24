@@ -43,7 +43,7 @@ $date_complement = ($retroactif=='oui') ? ' (évaluations antérieures comptabil
 $texte_periode   = 'Du '.$date_debut.' au '.$date_fin.$date_complement ;
 $tab_titre       = array('matiere'=>'d\'une matière' , 'multimatiere'=>'multidisciplinaire');
 
-require('./_fpdf/fpdf.php');
+require('./_lib/FPDF/fpdf.php');
 require('./_inc/class.PDF.php');
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-

@@ -249,7 +249,7 @@ $releve_html .= '<style type="text/css">thead th{text-align:center}tbody th,tbod
 $releve_html .= '<h1>Synthèse de maîtrise du socle : '.$titre_info1.'</h1>';
 $releve_html .= '<h2>'.html($groupe_nom).' - '.html($titre_info2).'</h2>';
 // Appel de la classe et définition de qqs variables supplémentaires pour la mise en page PDF
-require('./_fpdf/fpdf.php');
+require('./_lib/FPDF/fpdf.php');
 require('./_inc/class.PDF.php');
 $releve_pdf = new PDF($orientation='landscape',$marge_min=7.5,$couleur='oui');
 $releve_pdf->releve_synthese_socle_initialiser($titre_info1,$groupe_nom,$titre_info2,$eleves_nb,$items_nb,$piliers_nb);

@@ -72,7 +72,7 @@ if(is_file($fichier_constantes))
 {
 	require_once($fichier_constantes);
 	// Classe de connexion aux BDD
-	require_once('./_inc/class.DB.php');
+	require_once('./_lib/DB/DB.class.php');
 	// Choix des paramètres de connexion à la base de données adaptée...
 	// ...multi-structure ; base sacoche_structure_***
 	if( (in_array($_SESSION['USER_PROFIL'],array('administrateur','directeur','professeur','parent','eleve'))) && (HEBERGEUR_INSTALLATION=='multi-structures') )

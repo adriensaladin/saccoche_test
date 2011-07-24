@@ -58,13 +58,13 @@ function _putpages()
 	}
 	if($this->DefOrientation=='P')
 	{
-		$wPt=$this->DefPageFormat[0]*$this->k;
-		$hPt=$this->DefPageFormat[1]*$this->k;
+		$wPt=$this->DefPageSize[0]*$this->k;
+		$hPt=$this->DefPageSize[1]*$this->k;
 	}
 	else
 	{
-		$wPt=$this->DefPageFormat[1]*$this->k;
-		$hPt=$this->DefPageFormat[0]*$this->k;
+		$wPt=$this->DefPageSize[1]*$this->k;
+		$hPt=$this->DefPageSize[0]*$this->k;
 	}
 	$filter=($this->compress) ? '/Filter /FlateDecode ' : '';
 	for($n=1;$n<=$nb;$n++)

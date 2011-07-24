@@ -85,14 +85,15 @@ class DB {
 	 * @param string $query chaine SQL
 	 * @param mixed $param variables bind de type array(":bind"=>"value")
 	 * @param bool $indexkey si true alors prend la première colonne des resultats comme indice du tableau de resultats
+	 * @param bool $indexkey_is_uniq si true (et $indexkey==true) alors la clé sera considérée comme unique (le tableau renvoyé n'aura donc que 2 niveaux au lieu de 3)
 	 * @return mixed
 	 */
-	public static function queryTab($connection_name, $query, $param="", $indexkey=false){
+	public static function queryTab($connection_name, $query, $param="", $indexkey=false, $indexkey_is_uniq=false){
 		try{
 			$databaseManager = DB_Manager::getInstance();
 			$connection = $databaseManager->getConnexion($connection_name);
 			$time_start = microtime(true);
-			$rs = $connection->queryTab($query, $param, $indexkey);		
+			$rs = $connection->queryTab($query, $param, $indexkey, $indexkey_is_uniq);		
 			DB_Manager::debug($connection, microtime(true) - $time_start);
 			return $rs;
 		}catch(DatabaseException $e){
@@ -111,6 +112,32 @@ class DB {
 	 * @return mixed
 	 */
 	public static function queryCol($connection_name, $query, $param=""){
+		try{
+			$databaseManager = DB_Manager::getInstance();
+			$connection = $databaseManager->getConnexion($connection_name);
+			$time_start = microtime(true);
+			$rs = $connection->queryTab($query, $param);
+			foreach($rs as &$val) {
+            	$val = array_shift($val);
+           	}
+			DB_Manager::debug($connection, microtime(true) - $time_start);
+			return $rs;
+		}catch(DatabaseException $e){
+			DB_Manager::handleError($connection, $e);
+			return false;
+		}
+	}
+	
+	/**
+	 *
+	 * Permet d'exécuter une requête devant renvoyer une seule chaine de résultat.
+	 *
+	 * @param string $connection_name nom de la connection définie dans le fichier de configuration
+	 * @param string $query chaine SQL
+	 * @param mixed $param variables bind de type array(":bind"=>"value")
+	 * @return mixed
+	 */
+	public static function queryOne($connection_name, $query, $param=""){
 		try{
 			$databaseManager = DB_Manager::getInstance();
 			$connection = $databaseManager->getConnexion($connection_name);

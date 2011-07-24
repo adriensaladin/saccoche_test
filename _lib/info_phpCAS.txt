@@ -1,0 +1,8 @@
+================================================================================
+Librairie : phpCAS                      Version : 1.2.2
+================================================================================
+
+phpCAS est une classe PHP utilisée comme client CAS, pour communiquer avec un serveur CAS.
+
+Seule la classe est présente dans SACoche.
+Pour infos et documentations : https://wiki.jasig.org/display/CASC/phpCAS

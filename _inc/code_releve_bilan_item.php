@@ -50,7 +50,7 @@ $date_complement = ($retroactif=='oui') ? ' (évaluations antérieures comptabil
 $texte_periode   = ($format!='selection') ? 'Du '.$date_debut.' au '.$date_fin.$date_complement : false;
 $tab_titre       = array('matiere'=>'d\'items - '.$matiere_nom , 'multimatiere'=>'d\'items pluridisciplinaire' , 'selection'=>'d\'items sélectionnés');
 
-require('./_fpdf/fpdf.php');
+require('./_lib/FPDF/fpdf.php');
 require('./_inc/class.PDF.php');
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-

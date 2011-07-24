@@ -97,7 +97,7 @@ if( (isset($connexion_mode,$cas_serveur_host,$cas_serveur_port,$cas_serveur_root
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
 // Inclure la classe phpCAS
-require_once('./_inc/class.CAS.1.2.0.php');
+require_once('./_lib/phpCAS/CAS.php');
 // Pour tester, cette méthode statique créé un fichier de log sur ce qui se passe avec CAS
 // phpCAS::setDebug('debugcas.txt');
 // Initialiser la connexion avec CAS  ; le premier argument est la version du protocole CAS ; le dernier argument indique qu'on utilise la session existante

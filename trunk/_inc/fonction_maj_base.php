@@ -805,7 +805,7 @@ function maj_base($version_actuelle)
 			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="Satisfaisant."      WHERE parametre_valeur="A plutôt réussi."' );
 			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="Très satisfaisant." WHERE parametre_valeur="A complètement réussi."' );
 			// ajout de la possibilité de personnaliser suivant les matières le nombre maximal de demandes autorisées
-			$valeur = (int)DB::queryCol(SACOCHE_STRUCTURE_BD_NAME , 'SELECT parametre_valeur FROM sacoche_parametre WHERE parametre_nom="droit_eleve_demandes" LIMIT 1' );
+			$valeur = (int)DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , 'SELECT parametre_valeur FROM sacoche_parametre WHERE parametre_nom="droit_eleve_demandes" LIMIT 1' );
 			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'DELETE FROM sacoche_parametre WHERE parametre_nom="droit_eleve_demandes" LIMIT 1' );
 			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_matiere ADD matiere_nb_demandes TINYINT UNSIGNED NOT NULL DEFAULT "0" AFTER matiere_transversal ' );
 			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_matiere SET matiere_nb_demandes='.$valeur );
@@ -995,8 +995,8 @@ function maj_base($version_actuelle)
 			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur=REPLACE(parametre_valeur,"eleve","parent,eleve") WHERE parametre_nom IN("droit_modifier_mdp","droit_voir_referentiels","droit_voir_score_bilan","droit_voir_algorithme") ' );
 			// modification de paramètres
 			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_parametre CHANGE parametre_nom parametre_nom VARCHAR( 30 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT "" ' );
-			$eleve_bilans = DB::queryCol(SACOCHE_STRUCTURE_BD_NAME , 'SELECT parametre_valeur FROM sacoche_parametre WHERE parametre_nom="droit_eleve_bilans" LIMIT 1' );
-			$eleve_socle  = DB::queryCol(SACOCHE_STRUCTURE_BD_NAME , 'SELECT parametre_valeur FROM sacoche_parametre WHERE parametre_nom="droit_eleve_socle"  LIMIT 1' );
+			$eleve_bilans = DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , 'SELECT parametre_valeur FROM sacoche_parametre WHERE parametre_nom="droit_eleve_bilans" LIMIT 1' );
+			$eleve_socle  = DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , 'SELECT parametre_valeur FROM sacoche_parametre WHERE parametre_nom="droit_eleve_socle"  LIMIT 1' );
 			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'DELETE FROM sacoche_parametre WHERE parametre_nom="droit_eleve_bilans" LIMIT 1' );
 			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'DELETE FROM sacoche_parametre WHERE parametre_nom="droit_eleve_socle"  LIMIT 1' );
 			$droit_bilan_moyenne_score      = (strpos($eleve_bilans,'BilanMoyenneScore')     !==false) ? 'parent,eleve' : '' ;
@@ -1027,7 +1027,7 @@ function maj_base($version_actuelle)
 			// modification de la valeur par défaut pour eleve_langue
 			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_user CHANGE eleve_langue eleve_langue TINYINT(3) UNSIGNED NOT NULL DEFAULT "100" COMMENT "Langue choisie pour le socle." ' );
 			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'SET group_concat_max_len = 5000');
-			$listing_id = DB::queryCol(SACOCHE_STRUCTURE_BD_NAME , 'SELECT GROUP_CONCAT(DISTINCT user_id SEPARATOR ",") AS listing_id FROM sacoche_user LEFT JOIN sacoche_groupe ON sacoche_user.eleve_classe_id=sacoche_groupe.groupe_id WHERE niveau_id NOT IN(35,36,44,51)' );
+			$listing_id = DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , 'SELECT GROUP_CONCAT(DISTINCT user_id SEPARATOR ",") AS listing_id FROM sacoche_user LEFT JOIN sacoche_groupe ON sacoche_user.eleve_classe_id=sacoche_groupe.groupe_id WHERE niveau_id NOT IN(35,36,44,51)' );
 			if($listing_id)
 			{
 				DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_user SET eleve_langue=100 WHERE user_id IN('.$listing_id.')' );
@@ -1048,9 +1048,9 @@ function maj_base($version_actuelle)
 			// correctif de la modification des identifiants d'item du 2011-05-31
 			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_referentiel_item SET entree_id=0 WHERE entree_id=1000' );
 			// ajout de 2 paramètres
-			$valeur = DB::queryCol(SACOCHE_STRUCTURE_BD_NAME , 'SELECT parametre_valeur FROM sacoche_parametre WHERE parametre_nom="modele_eleve" LIMIT 1' );
+			$valeur = DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , 'SELECT parametre_valeur FROM sacoche_parametre WHERE parametre_nom="modele_eleve" LIMIT 1' );
 			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ("modele_parent" , "'.$valeur.'")' );
-			$valeur = DB::queryCol(SACOCHE_STRUCTURE_BD_NAME , 'SELECT parametre_valeur FROM sacoche_parametre WHERE parametre_nom="modele_professeur" LIMIT 1' );
+			$valeur = DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , 'SELECT parametre_valeur FROM sacoche_parametre WHERE parametre_nom="modele_professeur" LIMIT 1' );
 			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ("modele_directeur" , "'.$valeur.'")' );
 			// modification de sacoche_jointure_parent_eleve
 			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_jointure_parent_eleve CHANGE resp_legal_num resp_legal_num ENUM( "0", "1", "2" ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT "0" ' );

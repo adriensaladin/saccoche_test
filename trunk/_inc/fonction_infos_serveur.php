@@ -57,7 +57,7 @@ function version_mysql()
 {
 	$HOST = defined('SACOCHE_STRUCTURE_BD_NAME') ? SACOCHE_STRUCTURE_BD_NAME : SACOCHE_WEBMESTRE_BD_NAME ;
 	// Avec une connexion classique style mysql_connect() on peut utiliser mysql_get_server_info() .
-	$version = DB::queryCol($HOST , 'SELECT VERSION()');
+	$version = DB::queryOne($HOST , 'SELECT VERSION()');
 	$fin = strpos($version,'-');
 	return ($fin) ? substr($version,0,$fin) : $version;
 }

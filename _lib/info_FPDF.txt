@@ -16,3 +16,4 @@ http://www.fpdf.org/fr/script/script31.php	Pour écrire un texte tourné.
 http://www.fpdf.org/fr/script/script6.php	Pour tracer un cercle (ou une ellipse).
 
 Attention : à partir de FPDF 1.7 il faut remplacer 4x dans le script18 "DefPageFormat" par "DefPageSize" !
+http://www.fpdf.org/phorum/read.php?f=1&i=56024&t=56024

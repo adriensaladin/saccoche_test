@@ -29,7 +29,7 @@
  * DB_STRUCTURE_recuperer_demandes_autorisees_matiere
  *
  * @param int   $matiere_id
- * @return array
+ * @return int
  */
 function DB_STRUCTURE_recuperer_demandes_autorisees_matiere($matiere_id)
 {
@@ -38,7 +38,7 @@ function DB_STRUCTURE_recuperer_demandes_autorisees_matiere($matiere_id)
 	$DB_SQL.= 'WHERE matiere_id=:matiere_id ';
 	$DB_SQL.= 'LIMIT 1';
 	$DB_VAR = array(':matiere_id'=>$matiere_id);
-	return DB::queryCol(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+	return DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
 /**
@@ -481,8 +481,12 @@ function DB_STRUCTURE_recuperer_item_infos($item_id)
  */
 function DB_version_base()
 {
-	$DB_SQL = 'SELECT parametre_valeur FROM sacoche_parametre WHERE parametre_nom="version_base" LIMIT 1';
-	return DB::queryCol(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , null);
+	$DB_SQL = 'SELECT parametre_valeur ';
+	$DB_SQL.= 'FROM sacoche_parametre ';
+	$DB_SQL.= 'WHERE parametre_nom=:parametre_nom ';
+	$DB_SQL.= 'LIMIT 1';
+	$DB_VAR = array(':parametre_nom'=>'version_base');
+	return DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
 /**
@@ -1879,7 +1883,7 @@ function DB_STRUCTURE_lister_referentiels_infos_groupement_matieres($listing_mat
 function DB_STRUCTURE_compter_devoirs()
 {
 	$DB_SQL = 'SELECT COUNT(*) AS nombre FROM sacoche_devoir';
-	return DB::queryCol(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , null);
+	return DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , null);
 }
 
 /**
@@ -1896,7 +1900,7 @@ function DB_STRUCTURE_compter_demandes_formulees_eleve_matiere($eleve_id,$matier
 	$DB_SQL.= 'WHERE user_id=:eleve_id AND matiere_id=:matiere_id ';
 	$DB_SQL.= 'GROUP BY matiere_id';
 	$DB_VAR = array(':eleve_id'=>$eleve_id,':matiere_id'=>$matiere_id);
-	return DB::queryCol(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+	return DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
 /**
@@ -1961,7 +1965,7 @@ function DB_STRUCTURE_compter_eleves_actifs_sans_id_sconet()
 	$DB_SQL = 'SELECT COUNT(*) AS nombre FROM sacoche_user ';
 	$DB_SQL.= 'WHERE user_profil=:profil AND user_statut=:statut AND user_sconet_id=:sconet_id ';
 	$DB_VAR = array(':profil'=>'eleve',':statut'=>1,':sconet_id'=>0);
-	return DB::queryCol(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+	return DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
 /**
@@ -1976,7 +1980,7 @@ function DB_STRUCTURE_compter_modes_synthese_inconnu()
 	$DB_SQL.= 'LEFT JOIN sacoche_matiere USING (matiere_id) ';
 	$DB_SQL.= 'WHERE referentiel_mode_synthese=:mode_inconnu AND (matiere_id IN('.$_SESSION['MATIERES'].') OR matiere_partage=:partage) '; // Test matiere pour éviter des matières décochées par l'admin.
 	$DB_VAR = array(':mode_inconnu'=>'inconnu',':partage'=>0);
-	return DB::queryCol(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+	return DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
 /**
@@ -3221,7 +3225,7 @@ function DB_STRUCTURE_modifier_liaison_devoir_groupe($devoir_id,$groupe_id)
 	$DB_SQL.= 'WHERE devoir_id=:devoir_id ';
 	$DB_SQL.= 'LIMIT 1';
 	$DB_VAR = array(':devoir_id'=>$devoir_id);
-	if( $groupe_id != DB::queryCol(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR) )
+	if( $groupe_id != DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR) )
 	{
 		// sacoche_devoir (maj)
 		$DB_SQL = 'UPDATE sacoche_devoir ';

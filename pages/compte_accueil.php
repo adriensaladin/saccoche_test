@@ -40,19 +40,20 @@ $TITRE = "Bienvenue dans votre espace identifié !";
 <?php
 if($_SESSION['USER_PROFIL']=='webmestre')
 {
-	echo'<p class="astuce">Pour vous connecter à cet espace, utilisez l\'adresse <b>'.SERVEUR_ADRESSE.'?webmestre</b></p>';
+	echo'<p class="astuce">Pour vous connecter à cet espace, utilisez l\'adresse <b>'.SERVEUR_ADRESSE.'/?webmestre</b></p>';
 }
 else
 {
 	if(HEBERGEUR_INSTALLATION=='multi-structures')
 	{
 		echo'<div class="astuce">Adresse à utiliser pour une sélection automatique de l\'établissement depuis n\'importe quel ordinateur :</div>';
-		echo'<p class="hc"><b>'.SERVEUR_ADRESSE.'?id='.$_SESSION['BASE'].'</b></p>';
+		echo'<p class="hc"><b>'.SERVEUR_ADRESSE.'/?id='.$_SESSION['BASE'].'</b></p>';
 	}
-	if($_SESSION['CONNEXION_MODE']=='cas')
+	if($_SESSION['CONNEXION_MODE']!='normal')
 	{
+		$get_base = ($_SESSION['BASE']) ? '&amp;base='.$_SESSION['BASE'] : '' ;
 		echo'<div class="astuce">Adresse à utiliser pour une connexion automatique avec les identifiants de l\'ENT :</div>';
-		echo'<p class="hc"><b>'.SERVEUR_ADRESSE.'?page=public_login_CAS&amp;f_base='.$_SESSION['BASE'].'</b></p>';
+		echo'<p class="hc"><b>'.SERVEUR_ADRESSE.'/?sso='.$_SESSION['CONNEXION_MODE'].$get_base.'</b></p>';
 	}
 }
 ?>

@@ -27,7 +27,7 @@
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = "Importer / Imposer des identifiants";
-$VERSION_JS_FILE += 6;
+$VERSION_JS_FILE += 7;
 ?>
 
 <?php
@@ -109,7 +109,8 @@ $select_professeurs_directeurs = afficher_select(DB_STRUCTURE_OPT_professeurs_di
 		<?php
 		$fichier = './webservices/import_argos.php';
 		echo (is_file($fichier)) ? '<button name="dupliquer" id="COPY_id_argos_profs_TO_id_ent" type="button"><img alt="" src="./_img/bouton/mdp_groupe.png" /> Récupérer l\'identifiant Argos</button> comme identifiant de l\'ENT pour tous les professeurs &amp; directeurs.<br />
-		                            <button name="dupliquer" id="COPY_id_argos_eleves_TO_id_ent" type="button"><img alt="" src="./_img/bouton/mdp_groupe.png" /> Récupérer l\'identifiant Argos</button> comme identifiant de l\'ENT pour tous les élèves.'
+		                            <button name="dupliquer" id="COPY_id_argos_eleves_TO_id_ent" type="button"><img alt="" src="./_img/bouton/mdp_groupe.png" /> Récupérer l\'identifiant Argos</button> comme identifiant de l\'ENT pour tous les élèves.<br />
+		                            <button name="dupliquer" id="COPY_id_argos_parents_TO_id_ent" type="button"><img alt="" src="./_img/bouton/mdp_groupe.png" /> Récupérer l\'identifiant Argos</button> comme identifiant de l\'ENT pour tous les responsables légaux (pas les contacts).'
 		                         : '<div class="danger">Le fichier &laquo;&nbsp;<b>'.$fichier.'</b>&nbsp;&raquo; devant figurer dans l\'installation académique Argos n\'a pas été détecté !</div>' ;
 		?>
 	</fieldset>

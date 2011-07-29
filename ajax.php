@@ -50,13 +50,21 @@ if(!isset($_GET['page']))
 }
 $PAGE = $_GET['page'];
 
+// Fichier d'informations sur l'hébergement (requis avant la gestion de la session).
+$fichier_constantes = $CHEMIN_CONFIG.'constantes.php';
+if( (!is_file($fichier_constantes)) && ($PAGE!='public_installation') )
+{
+	affich_message_exit($titre='Informations hébergement manquantes',$contenu='Informations concernant l\'hébergeur manquantes.<br /><a href="./index.php?page=public_installation">Procédure d\'installation du site SACoche.</a>');
+}
+require_once($fichier_constantes);
+
 // Ouverture de la session et gestion des droits d'accès
 require_once('./_inc/tableau_droits.php');
 if(!isset($tab_droits[$PAGE]))
 {
 	affich_message_exit($titre='Droits manquants',$contenu='Droits de la page "'.$PAGE.'" manquants.');
 }
-gestion_session($TAB_PROFILS_AUTORISES = $tab_droits[$PAGE]);
+gestion_session($tab_droits[$PAGE]);
 
 // Arrêt s'il fallait seulement mettre la session à jour (la session d'un user connecté n'a pas été perdue si on arrive jusqu'ici)
 if($PAGE=='conserver_session_active')
@@ -64,10 +72,11 @@ if($PAGE=='conserver_session_active')
 	exit('ok');
 }
 
-// Arrêt s'il fallait seulement mettre fermer la session
+// Arrêt s'il fallait seulement fermer la session
 if($PAGE=='fermer_session')
 {
-	unset($_SESSION['USER_PROFIL']);
+	close_session();
+	// $_SESSION['USER_PROFIL'] = 'public'; // En ne faisant que ça on oblige à une reconnexion sans détruire la session (donc les infos des fournisseurs de SSO).
 	exit('ok');
 }
 
@@ -85,11 +94,28 @@ require_once('./_inc/fonction_affichage.php');
 // Annuler un blocage par l'automate anormalement long
 annuler_blocage_anormal();
 
-// Informations sur l'hébergement
-$fichier_constantes = $CHEMIN_CONFIG.'constantes.php';
+// Patch fichier de config
 if(is_file($fichier_constantes))
 {
-	require_once($fichier_constantes);
+	// DEBUT PATCH CONFIG 1
+	// A compter du 05/12/2010, ajout de paramètres dans le fichier de constantes pour paramétrer cURL. [à retirer dans quelques mois]
+	if(!defined('SERVEUR_PROXY_USED') && function_exists('enregistrer_informations_session'))
+	{
+		fabriquer_fichier_hebergeur_info( array('SERVEUR_PROXY_USED'=>'','SERVEUR_PROXY_NAME'=>'','SERVEUR_PROXY_PORT'=>'','SERVEUR_PROXY_TYPE'=>'','SERVEUR_PROXY_AUTH_USED'=>'','SERVEUR_PROXY_AUTH_METHOD'=>'','SERVEUR_PROXY_AUTH_USER'=>'','SERVEUR_PROXY_AUTH_PASS'=>'') );
+	}
+	// FIN PATCH CONFIG 1
+	// DEBUT PATCH CONFIG 2
+	// A compter du 26/05/2011, ajout de paramètres dans le fichier de constantes pour les dates CNIL. [à retirer dans quelques mois]
+	if(!defined('CNIL_NUMERO') && function_exists('enregistrer_informations_session'))
+	{
+		fabriquer_fichier_hebergeur_info( array('CNIL_NUMERO'=>HEBERGEUR_CNIL,'CNIL_DATE_ENGAGEMENT'=>'','CNIL_DATE_RECEPISSE'=>'') );
+	}
+	// FIN PATCH CONFIG 2
+}
+
+// Interface de connexion à la base, chargement et config (test sur $fichier_constantes car à éviter si procédure d'installation non terminée).
+if(is_file($fichier_constantes))
+{
 	// Classe de connexion aux BDD
 	require_once('./_lib/DB/DB.class.php');
 	// Choix des paramètres de connexion à la base de données adaptée...
@@ -125,7 +151,8 @@ if(is_file($fichier_constantes))
 	if(is_file($fichier_mysql_config))
 	{
 		require_once($fichier_mysql_config);
-		// DEBUT A compter du 02/08/2010, déplacement du port dans le fichier créé à l'installation. [à retirer dans quelques mois]
+		// DEBUT PATCH MYSQL 1
+		// A compter du 02/08/2010, déplacement du port dans le fichier créé à l'installation. [à retirer dans quelques mois]
 		if(!defined('SACOCHE_'.$PATCH.'_BD_PORT'))
 		{
 			$tab_fichier = Lister_Contenu_Dossier($CHEMIN_MYSQL);
@@ -139,17 +166,48 @@ if(is_file($fichier_constantes))
 			}
 			define('SACOCHE_'.$PATCH.'_BD_PORT','3306');	// Port de connexion
 		}
-		// FIN A compter du 02/08/2010, déplacement du port dans le fichier créé à l'installation. [à retirer dans quelques mois]
+		// FIN PATCH MYSQL 1
 		require_once($fichier_class_config);
 	}
 	elseif($PAGE!='public_installation')
 	{
 		affich_message_exit($titre='Paramètres BDD manquants',$contenu='Paramètres de connexion à la base de données manquants.<br /><a href="./index.php?page=public_installation">Procédure d\'installation du site SACoche.</a>');
 	}
-}
-elseif($PAGE!='public_installation')
-{
-	affich_message_exit($titre='Informations hébergement manquantes',$contenu='Informations concernant l\'hébergeur manquantes.<br /><a href="./index.php?page=public_installation">Procédure d\'installation du site SACoche.</a>');
+	// DEBUT PATCH MYSQL 2
+	// A compter du 05/12/2010, 2 users MySQL sont créés par établissement (localhost & %) ; il faut créer les manquants antérieurs sinon erreur lors de la suppression. [à retirer dans quelques mois]
+	if(defined('SACOCHE_WEBMESTRE_BD_HOST'))
+	{
+		$nb_structures = (int)DB_WEBMESTRE_compter_structure();
+		if($nb_structures)
+		{
+			$BDlink = mysql_connect(SACOCHE_WEBMESTRE_BD_HOST.':'.SACOCHE_WEBMESTRE_BD_PORT,SACOCHE_WEBMESTRE_BD_USER,SACOCHE_WEBMESTRE_BD_PASS);
+			$BDres  = mysql_query('SELECT host, user FROM mysql.user WHERE user LIKE "sac_user_%"');
+			$nb_users = mysql_num_rows($BDres);
+			if($nb_users < $nb_structures*2)
+			{
+				$tab_user_host = array();
+				while($BDrow = mysql_fetch_array($BDres,MYSQL_ASSOC))
+				{
+					$tab_user_host[$BDrow['user']][] = $BDrow['host'];
+				}
+				foreach($tab_user_host as $user => $tab_host)
+				{
+					if(count($tab_host)==1)
+					{
+						$fichier_mdp = file_get_contents('./__private/mysql/'.str_replace('sac_user','serveur_sacoche_structure',$user).'.php');
+						$nb_match = preg_match( '#'."SACOCHE_STRUCTURE_BD_PASS','".'(.*?)'."'".'#' , $fichier_mdp , $tab_matches );
+						$host = ($tab_host[0]=='%') ? 'localhost' : '%';
+						$base = str_replace('user','base',$user);
+						$pass = $tab_matches[1];
+						mysql_query('CREATE USER '.$user.'@"'.$host.'" IDENTIFIED BY "'.$pass.'"');
+						mysql_query('GRANT ALTER, CREATE, DELETE, DROP, INDEX, INSERT, SELECT, UPDATE ON '.$base.'.* TO '.$user.'@"'.$host.'"');
+					}
+				}
+			}
+			mysql_close($BDlink);
+		}
+	}
+	// FIN PATCH MYSQL 2
 }
 
 // Chargement de la page concernée

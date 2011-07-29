@@ -267,7 +267,6 @@ function conserver_session_active()
  * @param void
  * @return void
  */
-
 function fermer_session()
 {
 	$.ajax
@@ -289,7 +288,14 @@ function fermer_session()
 				}
 				$("body").stopTime('compteur');
 				$('#menu').remove();
-				$('#info').html('<span class="button b"><span class="danger">Votre session a expiré, vous êtes désormais déconnecté !</span></span> <span class="button b"><a href="./index.php"><img alt="" src="./_img/bouton/mdp_perso.png" /> Se reconnecter</a></span>');
+				if(CONNEXION_USED=='normal')
+				{
+					$('#info').html('<span class="button b"><span class="danger">Votre session a expiré. Vous êtes désormais déconnecté de SACoche !</span></span> <span class="button b"><a href="./index.php"><img alt="" src="./_img/bouton/mdp_perso.png" /> Se reconnecter</a></span>');
+				}
+				else
+				{
+					$('#info').html('<span class="button b"><span class="danger">Session expirée. Vous êtes déconnecté de SACoche mais sans doute pas du SSO !</span></span> <span class="button b"><a href="#" onclick="document.location.reload()"><img alt="" src="./_img/bouton/mdp_perso.png" /> Se reconnecter</a></span>');
+				}
 			}
 		}
 	);

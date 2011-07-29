@@ -27,39 +27,59 @@
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 
-$BASE = (isset($_GET['f_base'])) ? intval($_GET['f_base']) : 0;
-$mode = (isset($_GET['f_mode'])) ? $_GET['f_mode']         : '';
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+// Récupération des paramètres transmis
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
-if($mode!='cas')
+$MODE = (isset($_GET['sso']))  ? clean_login($_GET['sso'])   : '';
+$BASE = (isset($_GET['base'])) ? clean_entier($_GET['base']) : 0;
+
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+// Il faut savoir quel mode de SSO utiliser
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
+if(!in_array( $MODE , array('cas','saml') )) // ldap ajouté un jour ?
 {
-	exit('Paramètre manquant.');
+	affich_message_exit($titre='Donnée manquante',$contenu='Paramètre indiquant le mode de connexion SSO non transmis.');
 }
 
-if($mode=='cas')
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+// En cas de multi-structures, il faut savoir dans quelle base récupérer les informations
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
+if(HEBERGEUR_INSTALLATION=='multi-structures')
 {
-	//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-	// Préparation de la connexion au serveur CAS
-	//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-
-	// Se connecter pour charger les paramètres de connexion au serveur CAS
-	if($BASE)
+	if(!$BASE)
 	{
-		charger_parametres_mysql_supplementaires($BASE);
+		affich_message_exit($titre='Donnée manquante',$contenu='Paramètre indiquant la base concernée non transmis.');
 	}
-	$DB_TAB = DB_STRUCTURE_lister_parametres('"connexion_mode","cas_serveur_host","cas_serveur_port","cas_serveur_root"');
-	foreach($DB_TAB as $DB_ROW)
-	{
-		${$DB_ROW['parametre_nom']} = $DB_ROW['parametre_valeur'];
-	}
-	if( (isset($connexion_mode,$cas_serveur_host,$cas_serveur_port,$cas_serveur_root)==false) || ($connexion_mode!='cas') )
-	{
-		affich_message_exit($titre='Données incompatibles',$contenu='Base de l\'établissement non configurée pour une connexion CAS.');
-	}
+	charger_parametres_mysql_supplementaires($BASE);
+}
 
-	//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-	// Connexion au serveur CAS pour se déconnecter
-	//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+// Connexion à la base pour charger les paramètres du SSO demandé
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
+// Mettre à jour la base si nécessaire
+maj_base_si_besoin($BASE);
+
+$DB_TAB = DB_STRUCTURE_lister_parametres('"connexion_mode","cas_serveur_host","cas_serveur_port","cas_serveur_root"'); // A compléter
+foreach($DB_TAB as $DB_ROW)
+{
+	${$DB_ROW['parametre_nom']} = $DB_ROW['parametre_valeur'];
+}
+if( ($MODE=='cas') && ( ($connexion_mode!='cas') || (isset($connexion_mode,$cas_serveur_host,$cas_serveur_port,$cas_serveur_root)==false) ) )
+{
+	affich_message_exit($titre='Données incompatibles',$contenu='Etablissement non configuré par l\'administrateur pour une connexion CAS.');
+}
+// même test à faire pour les autres modes
+
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+// Déconnexion avec le protocole CAS
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
+if($MODE=='cas')
+{
 	// Inclure la classe phpCAS
 	require_once('./_lib/phpCAS/CAS.php');
 	// Pour tester, cette méthode statique créé un fichier de log sur ce qui se passe avec CAS

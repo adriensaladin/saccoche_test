@@ -384,7 +384,7 @@ $(document).ready
 				var action = $(this).attr('id');
 				$('#ajax_retour').html('&nbsp;');
 				$('button').prop('disabled',true);
-				var duree = (action.indexOf('_argos_')!=-1) ? ' <span class="u">30 secondes</span>' : '' ;
+				var duree = (action.indexOf('_argos_')!=-1) ? ' <span class="u">entre 20 et 90 secondes</span>' : '' ;
 				$('#ajax_msg').removeAttr("class").addClass("loader").html("Demande envoyée... Veuillez patienter"+duree+".");
 				$.ajax
 				(

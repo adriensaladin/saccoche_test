@@ -499,14 +499,14 @@ function DB_STRUCTURE_recuperer_statistiques()
 {
 	// nb professeurs enregistrés ; nb élèves enregistrés
 	$DB_SQL = 'SELECT user_profil, COUNT(*) AS nombre FROM sacoche_user WHERE user_statut=1 GROUP BY user_profil';
-	$DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , null , TRUE);
-	$prof_nb  = (isset($DB_TAB['professeur'])) ? $DB_TAB['professeur'][0]['nombre'] : 0 ;
-	$eleve_nb = (isset($DB_TAB['eleve']))      ? $DB_TAB['eleve'][0]['nombre']      : 0 ;
+	$DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , null , TRUE , TRUE);
+	$prof_nb  = (isset($DB_TAB['professeur'])) ? $DB_TAB['professeur']['nombre'] : 0 ;
+	$eleve_nb = (isset($DB_TAB['eleve']))      ? $DB_TAB['eleve']['nombre']      : 0 ;
 	// nb professeurs connectés ; nb élèves connectés
 	$DB_SQL = 'SELECT user_profil, COUNT(*) AS nombre FROM sacoche_user WHERE user_statut=1 AND user_connexion_date>DATE_SUB(NOW(),INTERVAL 6 MONTH) GROUP BY user_profil';
-	$DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , null , TRUE);
-	$prof_use  = (isset($DB_TAB['professeur'])) ? $DB_TAB['professeur'][0]['nombre'] : 0 ;
-	$eleve_use = (isset($DB_TAB['eleve']))      ? $DB_TAB['eleve'][0]['nombre']      : 0 ;
+	$DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , null , TRUE , TRUE);
+	$prof_use  = (isset($DB_TAB['professeur'])) ? $DB_TAB['professeur']['nombre'] : 0 ;
+	$eleve_use = (isset($DB_TAB['eleve']))      ? $DB_TAB['eleve']['nombre']      : 0 ;
 	// nb notes saisies
 	$DB_SQL = 'SELECT COUNT(*) AS nombre FROM sacoche_saisie';
 	$DB_ROW = DB::queryRow(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , null);
@@ -550,33 +550,33 @@ function DB_STRUCTURE_recuperer_professeurs_eleve_matiere($eleve_id,$matiere_id)
 	$DB_SQL.= 'WHERE user_id=:user_id AND groupe_type=:type2 ';
 	$DB_SQL.= 'GROUP BY user_id ';
 	$DB_VAR = array(':user_id'=>$eleve_id,':type2'=>'groupe');
-	$DB_ROW = DB::queryRow(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-	if( (!$_SESSION['ELEVE_CLASSE_ID']) && (!count($DB_ROW)) )
+	$liste_groupe_id = DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+	if( (!$_SESSION['ELEVE_CLASSE_ID']) && (!$liste_groupe_id) )
 	{
 		// élève sans classe et sans groupe
 		return false;
 	}
-	if(!count($DB_ROW))
+	if(!$liste_groupe_id)
 	{
 		$liste_groupes = $_SESSION['ELEVE_CLASSE_ID'];
 	}
 	elseif(!$_SESSION['ELEVE_CLASSE_ID'])
 	{
-		$liste_groupes = $DB_ROW['sacoche_liste_groupe_id'];
+		$liste_groupes = $liste_groupe_id;
 	}
 	else
 	{
-		$liste_groupes = $_SESSION['ELEVE_CLASSE_ID'].','.$DB_ROW['sacoche_liste_groupe_id'];
+		$liste_groupes = $_SESSION['ELEVE_CLASSE_ID'].','.$liste_groupe_id;
 	}
 	// Maintenant qu'on a la matière et la classe / les groupes, on cherche les profs à la fois dans sacoche_jointure_user_matiere et sacoche_jointure_user_groupe .
-	// On part de sacoche_jointure_user_matiere qui en contient que des profs.
+	// On part de sacoche_jointure_user_matiere qui ne contient que des profs.
 	$DB_SQL = 'SELECT DISTINCT(user_id) ';
 	$DB_SQL.= 'FROM sacoche_jointure_user_matiere ';
 	$DB_SQL.= 'LEFT JOIN sacoche_user USING (user_id) ';
 	$DB_SQL.= 'LEFT JOIN sacoche_jointure_user_groupe USING (user_id) ';
 	$DB_SQL.= 'WHERE matiere_id=:matiere_id AND groupe_id IN('.$liste_groupes.') ';
 	$DB_VAR = array(':matiere_id'=>$matiere_id);
-	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+	return DB::queryCol(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
 /**
@@ -1255,7 +1255,7 @@ function DB_STRUCTURE_lister_parents_actifs_avec_infos_for_eleve($eleve_id)
 	$DB_SQL.= 'GROUP BY parent.user_id ';
 	$DB_SQL.= 'ORDER BY resp_legal_num ASC ';
 	$DB_VAR = array(':eleve_id'=>$eleve_id,':statut'=>1);
-	$DB_TAB_parents = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR, TRUE);
+	$DB_TAB_parents = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR, TRUE, TRUE);
 	if(!count($DB_TAB_parents))
 	{
 		return array();
@@ -1267,11 +1267,11 @@ function DB_STRUCTURE_lister_parents_actifs_avec_infos_for_eleve($eleve_id)
 	$DB_SQL.= 'WHERE sacoche_jointure_parent_eleve.parent_id IN('.$listing_parent_id.') AND enfant.user_statut=:statut ';
 	$DB_SQL.= 'GROUP BY parent_id ';
 	$DB_VAR = array(':eleve_id'=>$eleve_id,':statut'=>1);
-	$DB_TAB_enfants = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR , TRUE);
+	$DB_TAB_enfants = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR , TRUE , TRUE);
 	$DB_TAB = array();
 	foreach($DB_TAB_parents AS $id => $tab)
 	{
-		$DB_TAB[] = array_merge( $DB_TAB_parents[$id][0] , $DB_TAB_enfants[$id][0] , array('parent_id'=>$id) );
+		$DB_TAB[] = array_merge( $DB_TAB_parents[$id] , $DB_TAB_enfants[$id] , array('parent_id'=>$id) );
 	}
 	return $DB_TAB;
 }
@@ -1948,9 +1948,9 @@ function DB_STRUCTURE_compter_users_suivant_statut($profil)
 	$DB_SQL = 'SELECT user_statut, COUNT(*) AS nombre FROM sacoche_user ';
 	$DB_SQL.= 'WHERE '.$where;
 	$DB_SQL.= 'GROUP BY user_statut';
-	$DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR , TRUE);
-	$nb_actif   = ( (count($DB_TAB)) && (isset($DB_TAB[1])) ) ? $DB_TAB[1][0]['nombre'] : 0 ;
-	$nb_inactif = ( (count($DB_TAB)) && (isset($DB_TAB[0])) ) ? $DB_TAB[0][0]['nombre'] : 0 ;
+	$DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR , TRUE , TRUE);
+	$nb_actif   = ( (count($DB_TAB)) && (isset($DB_TAB[1])) ) ? $DB_TAB[1]['nombre'] : 0 ;
+	$nb_inactif = ( (count($DB_TAB)) && (isset($DB_TAB[0])) ) ? $DB_TAB[0]['nombre'] : 0 ;
 	return array($nb_actif,$nb_inactif);
 }
 
@@ -1996,8 +1996,7 @@ function DB_STRUCTURE_tester_referentiel($matiere_id,$niveau_id)
 	$DB_SQL.= 'WHERE matiere_id=:matiere_id AND niveau_id=:niveau_id ';
 	$DB_SQL.= 'LIMIT 1';
 	$DB_VAR = array(':matiere_id'=>$matiere_id,':niveau_id'=>$niveau_id);
-	$DB_ROW = DB::queryRow(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-	return count($DB_ROW) ;
+	return DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
 /**
@@ -2010,9 +2009,9 @@ function DB_STRUCTURE_tester_prof_principal($user_id)
 {
 	$DB_SQL = 'SELECT groupe_id FROM sacoche_jointure_user_groupe ';
 	$DB_SQL.= 'WHERE user_id=:user_id AND jointure_pp=:pp ';
+	$DB_SQL.= 'LIMIT 1';
 	$DB_VAR = array(':user_id'=>$user_id,':pp'=>1);
-	$DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-	return count($DB_TAB) ;
+	return DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
 /**
@@ -2029,8 +2028,7 @@ function DB_STRUCTURE_tester_demande_existante($eleve_id,$matiere_id,$item_id)
 	$DB_SQL.= 'WHERE user_id=:eleve_id AND matiere_id=:matiere_id AND item_id=:item_id ';
 	$DB_SQL.= 'LIMIT 1';
 	$DB_VAR = array(':eleve_id'=>$eleve_id,':matiere_id'=>$matiere_id,':item_id'=>$item_id);
-	$DB_ROW = DB::queryRow(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-	return count($DB_ROW) ;
+	return DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
 /**
@@ -2051,8 +2049,7 @@ function DB_STRUCTURE_tester_matiere_reference($matiere_ref,$matiere_id=false)
 		$DB_VAR[':matiere_id'] = $matiere_id;
 	}
 	$DB_SQL.= 'LIMIT 1';
-	$DB_ROW = DB::queryRow(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-	return count($DB_ROW) ;
+	return DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
 /**
@@ -2073,8 +2070,7 @@ function DB_STRUCTURE_tester_classe_reference($groupe_ref,$groupe_id=false)
 		$DB_VAR[':groupe_id'] = $groupe_id;
 	}
 	$DB_SQL.= 'LIMIT 1';
-	$DB_ROW = DB::queryRow(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-	return count($DB_ROW) ;
+	return DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
 /**
@@ -2095,8 +2091,7 @@ function DB_STRUCTURE_tester_groupe_reference($groupe_ref,$groupe_id=false)
 		$DB_VAR[':groupe_id'] = $groupe_id;
 	}
 	$DB_SQL.= 'LIMIT 1';
-	$DB_ROW = DB::queryRow(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-	return count($DB_ROW) ;
+	return DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
 /**
@@ -2117,8 +2112,7 @@ function DB_STRUCTURE_tester_groupe_nom($groupe_nom,$groupe_id=false)
 		$DB_VAR[':groupe_id'] = $groupe_id;
 	}
 	$DB_SQL.= 'LIMIT 1';
-	$DB_ROW = DB::queryRow(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-	return count($DB_ROW) ;
+	return DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
 /**
@@ -2139,8 +2133,7 @@ function DB_STRUCTURE_tester_periode_nom($periode_nom,$periode_id=false)
 		$DB_VAR[':periode_id'] = $periode_id;
 	}
 	$DB_SQL.= 'LIMIT 1';
-	$DB_ROW = DB::queryRow(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-	return count($DB_ROW) ;
+	return DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
 /**
@@ -2161,8 +2154,7 @@ function DB_STRUCTURE_tester_utilisateur_idENT($user_id_ent,$user_id=false)
 		$DB_VAR[':user_id'] = $user_id;
 	}
 	$DB_SQL.= 'LIMIT 1';
-	$DB_ROW = DB::queryRow(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-	return count($DB_ROW) ;
+	return DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
 /**
@@ -2183,8 +2175,7 @@ function DB_STRUCTURE_tester_utilisateur_idGepi($user_id_gepi,$user_id=false)
 		$DB_VAR[':user_id'] = $user_id;
 	}
 	$DB_SQL.= 'LIMIT 1';
-	$DB_ROW = DB::queryRow(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-	return count($DB_ROW) ;
+	return DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
 /**
@@ -2206,8 +2197,7 @@ function DB_STRUCTURE_tester_utilisateur_SconetId($user_sconet_id,$user_profil,$
 		$DB_VAR[':user_id'] = $user_id;
 	}
 	$DB_SQL.= 'LIMIT 1';
-	$DB_ROW = DB::queryRow(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-	return count($DB_ROW) ;
+	return DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
 /**
@@ -2228,8 +2218,7 @@ function DB_STRUCTURE_tester_utilisateur_SconetElenoet($user_sconet_elenoet,$use
 		$DB_VAR[':user_id'] = $user_id;
 	}
 	$DB_SQL.= 'LIMIT 1';
-	$DB_ROW = DB::queryRow(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-	return count($DB_ROW) ;
+	return DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
 /**
@@ -2251,8 +2240,7 @@ function DB_STRUCTURE_tester_utilisateur_reference($user_reference,$user_profil,
 		$DB_VAR[':user_id'] = $user_id;
 	}
 	$DB_SQL.= 'LIMIT 1';
-	$DB_ROW = DB::queryRow(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-	return count($DB_ROW) ;
+	return DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
 /**
@@ -2273,8 +2261,7 @@ function DB_STRUCTURE_tester_login($user_login,$user_id=false)
 		$DB_VAR[':user_id'] = $user_id;
 	}
 	$DB_SQL.= 'LIMIT 1';
-	$DB_ROW = DB::queryRow(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-	return count($DB_ROW) ;
+	return DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
 /**
@@ -2293,16 +2280,16 @@ function DB_STRUCTURE_rechercher_login_disponible($login)
 		$DB_SQL = 'SELECT user_login FROM sacoche_user ';
 		$DB_SQL.= 'WHERE user_login LIKE :user_login';
 		$DB_VAR = array(':user_login'=>$login.'%');
-		$DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR , 'user_login');
+		$DB_COL = DB::queryCol(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 		$max_result += pow(10,$nb_chiffres);
 	}
-	while (count($DB_TAB)>=$max_result);
+	while (count($DB_COL)>=$max_result);
 	$j=0;
 	do
 	{
 		$j++;
 	}
-	while (array_key_exists($login.$j,$DB_TAB));
+	while (in_array($login.$j,$DB_COL));
 	return $login.$j ;
 }
 
@@ -3101,15 +3088,10 @@ function DB_STRUCTURE_modifier_liaison_devoir_item($devoir_id,$tab_items,$mode,$
 		// On ne peut pas faire un REPLACE car si un enregistrement est présent ça fait un DELETE+INSERT et du coup on perd l'info sur l'ordre des items.
 		// Alors on récupère la liste des items déjà présents, et on étudie les différences pour faire des DELETE et INSERT sélectifs
 		// -> on récupère les items actuels
-		$tab_old_items = array();
 		$DB_SQL = 'SELECT item_id FROM sacoche_jointure_devoir_item ';
 		$DB_SQL.= 'WHERE devoir_id=:devoir_id ';
 		$DB_VAR = array(':devoir_id'=>$devoir_id);
-		$DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-		foreach($DB_TAB as $DB_ROW)
-		{
-			$tab_old_items[] = $DB_ROW['item_id'];
-		}
+		$tab_old_items = DB::queryCol(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 		// -> on supprime si besoin les anciens items associés à ce devoir qui ne sont plus dans la liste transmise
 		// -> on supprime si besoin les saisies des anciens items associés à ce devoir qui ne sont plus dans la liste transmise
 		//   (concernant les saisies superflues concernant les items, voir DB_STRUCTURE_modifier_liaison_devoir_item)
@@ -3167,8 +3149,8 @@ function DB_STRUCTURE_modifier_liaison_devoir_user($devoir_id,$groupe_id,$tab_el
 		$DB_SQL.= 'WHERE groupe_id=:groupe_id AND user_profil=:profil ';
 		$DB_SQL.= 'GROUP BY groupe_id';
 		$DB_VAR = array(':groupe_id'=>$groupe_id,':profil'=>'eleve');
-		$DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-		$tab_eleves_avant = (count($DB_TAB)) ? explode(' ',$DB_TAB[0]['users_listing']) : array() ;
+		$users_listing = DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+		$tab_eleves_avant = ($users_listing) ? explode(' ',$users_listing) : array() ;
 	}
 	else
 	{
@@ -3779,12 +3761,12 @@ function DB_STRUCTURE_corriger_numerotations()
 				$DB_SQL.= 'FROM sacoche_referentiel_'.$element_champ.' ';
 				$DB_SQL.= 'WHERE '.implode(' AND ',$tab_where).' ';
 				$DB_SQL.= 'ORDER BY '.$element_champ.'_ordre ASC ';
-				$DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , null);
-				foreach($DB_TAB as $DB_ROW)
+				$DB_COL = DB::queryCol(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , null);
+				foreach($DB_COL as $element_champ_id)
 				{
 					$DB_SQL = 'UPDATE sacoche_referentiel_'.$element_champ.' ';
 					$DB_SQL.= 'SET '.$element_champ.'_ordre='.$element_ordre.' ';
-					$DB_SQL.= 'WHERE '.$element_champ.'_id='.$DB_ROW[$element_champ.'_id'].' ';
+					$DB_SQL.= 'WHERE '.$element_champ.'_id='.$element_champ_id.' ';
 					$DB_SQL.= 'LIMIT 1';
 					DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , null);
 					$element_ordre++;

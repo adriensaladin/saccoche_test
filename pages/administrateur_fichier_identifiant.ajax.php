@@ -112,7 +112,7 @@ if( (($action=='init_login')||($action=='init_mdp')) && (($profil=='eleves')||($
 	//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 	//	Générer une sortie pdf : classe fpdf + script étiquettes (login ou mdp) (élève ou prof)
 	//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-	require_once('./_fpdf/PDF_Label.php');
+	require_once('./_lib/FPDF/PDF_Label.php');
 	$pdf = new PDF_Label(array('paper-size'=>'A4', 'metric'=>'mm', 'marginLeft'=>5, 'marginTop'=>5, 'NX'=>3, 'NY'=>8, 'SpaceX'=>7, 'SpaceY'=>5, 'width'=>60, 'height'=>30, 'font-size'=>11));
 	$pdf -> SetFont('Arial'); // Permet de mieux distinguer les "l 1" etc. que la police Times ou Courrier
 	$pdf -> AddPage();
@@ -342,7 +342,7 @@ if($action=='import_loginmdp')
 	if(count($fcontenu_pdf_tab))
 	{
 		$fnom = 'identifiants_'.$_SESSION['BASE'].'_'.time();
-		require_once('./_fpdf/PDF_Label.php');
+		require_once('./_lib/FPDF/PDF_Label.php');
 		$pdf = new PDF_Label(array('paper-size'=>'A4', 'metric'=>'mm', 'marginLeft'=>5, 'marginTop'=>5, 'NX'=>3, 'NY'=>8, 'SpaceX'=>7, 'SpaceY'=>5, 'width'=>60, 'height'=>30, 'font-size'=>11));
 		$pdf -> SetFont('Arial'); // Permet de mieux distinguer les "l 1" etc. que la police Times ou Courrier
 		$pdf -> AddPage();
@@ -830,10 +830,10 @@ if($action=='COPY_id_lcs_TO_id_ent')
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//	Dupliquer l'identifiant récupéré d'Argos comme identifiant de l'ENT (COPY_id_argos_TO_id_ent)
+//	Dupliquer l'identifiant récupéré d'Argos comme identifiant de l'ENT (COPY_id_argos_*_TO_id_ent)
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-if( ($action=='COPY_id_argos_profs_TO_id_ent') || ($action=='COPY_id_argos_eleves_TO_id_ent') )
+if( ($action=='COPY_id_argos_profs_TO_id_ent') || ($action=='COPY_id_argos_eleves_TO_id_ent') || ($action=='COPY_id_argos_parents_TO_id_ent') )
 {
 	$fichier = './webservices/import_argos.php';
 	if(!is_file($fichier))
@@ -841,10 +841,10 @@ if( ($action=='COPY_id_argos_profs_TO_id_ent') || ($action=='COPY_id_argos_eleve
 		exit('Erreur : le fichier "'.$fichier.'" n\'a pas été trouvé !');
 	}
 	require($fichier); // Charge la fonction "recuperer_infos_LDAP()"
-	$Profil = ($action=='COPY_id_argos_profs_TO_id_ent') ? 'Professeurs' : 'Eleves' ;
+	$qui = substr($action,14,-10); // profs | eleves | parents
 	// Appeler le serveur LDAP et enregistrer le fichier temporairement pour aider au débuggage
-	$retour_Sarapis = recuperer_infos_LDAP($_SESSION['UAI'],$Profil);
-	Ecrire_Fichier( './__tmp/import/import_Sarapis_'.$_SESSION['UAI'].'_'.$Profil.'.xml' , $retour_Sarapis );
+	$retour_Sarapis = recuperer_infos_LDAP($_SESSION['UAI'],$qui);
+	Ecrire_Fichier( './__tmp/import/import_Sarapis_'.$_SESSION['UAI'].'_'.$qui.'.xml' , $retour_Sarapis );
 	// Maintenant on regarde ce qu'il contient
 	if(mb_substr($retour_Sarapis,0,6)=='Erreur')
 	{
@@ -857,7 +857,7 @@ if( ($action=='COPY_id_argos_profs_TO_id_ent') || ($action=='COPY_id_argos_eleve
 	}
 	if($xml->description->resultat != 'succes')
 	{
-		exit('Erreur : le LDAP a rencontré une erreur lors de la tentative d\'extraction des données !');
+		exit('Erreur : le LDAP a rencontré une erreur lors de l\'extraction des données !');
 	}
 	// Pour récupérer les données des utilisateurs
 	$tab_users_ldap           = array();
@@ -868,9 +868,25 @@ if( ($action=='COPY_id_argos_profs_TO_id_ent') || ($action=='COPY_id_argos_eleve
 	{
 		foreach ($xml->reponses->utilisateur as $utilisateur)
 		{
-			$tab_users_ldap['id_ent'][] = mb_substr((string)$utilisateur->uid,0,32);
-			$tab_users_ldap['nom'][]    = mb_substr(clean_nom($utilisateur->nom),0,25);
-			$tab_users_ldap['prenom'][] = mb_substr(clean_prenom($utilisateur->prenom),0,25);
+			if($qui!='parents')
+			{
+				$tab_users_ldap['id_ent'][] = mb_substr((string)$utilisateur->uid,0,32);
+				$tab_users_ldap['nom'][]    = mb_substr(clean_nom($utilisateur->nom),0,25);
+				$tab_users_ldap['prenom'][] = mb_substr(clean_prenom($utilisateur->prenom),0,25);
+			}
+			elseif($qui=='parents') /* forcément */
+			{
+				if( ($utilisateur->responsables) && ($utilisateur->responsables->responsable) )
+				{
+					foreach ($utilisateur->responsables->responsable as $responsable)
+					{
+						$id = (int) $responsable->entpersonlogin->attributes()->jointure; // Car ils reviennent plusieurs fois dans le fichier.
+						$tab_users_ldap['id_ent'][$id] = mb_substr((string)$responsable->uid,0,32);
+						$tab_users_ldap['nom'][$id]    = mb_substr(clean_nom($responsable->nom),0,25);
+						$tab_users_ldap['prenom'][$id] = mb_substr(clean_prenom($responsable->prenom),0,25);
+					}
+				}
+			}
 		}
 	}
 	// On trie
@@ -881,8 +897,8 @@ if( ($action=='COPY_id_argos_profs_TO_id_ent') || ($action=='COPY_id_argos_eleve
 	$tab_users_base['nom']    = array();
 	$tab_users_base['prenom'] = array();
 	$tab_users_base['info']   = array();
-	$profil      = ($action=='COPY_id_argos_profs_TO_id_ent') ? array('professeur','directeur') : 'eleve' ;
-	$with_classe = ($action=='COPY_id_argos_profs_TO_id_ent') ? false : true ;
+	$profil      = ($qui=='profs') ? array('professeur','directeur') : substr($qui,0,-1) ;
+	$with_classe = ($qui=='profs') ? false : true ;
 	$DB_TAB = DB_STRUCTURE_lister_users($profil,$only_actifs=true,$with_classe);
 	foreach($DB_TAB as $DB_ROW)
 	{

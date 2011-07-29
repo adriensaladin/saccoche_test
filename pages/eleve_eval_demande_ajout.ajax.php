@@ -85,10 +85,10 @@ $titre = 'Demande ajoutée par '.$_SESSION['USER_NOM'].' '.$_SESSION['USER_PRENO
 $texte = $_SESSION['USER_PRENOM'].' '.$_SESSION['USER_NOM'].' demande à être évalué sur l\'item '.$DB_ROW['item_ref'].' intitulé "'.$DB_ROW['item_nom'].'"';
 $guid  = 'demande_'.$demande_id.'_add';
 // On récupère les profs...
-$DB_TAB = DB_STRUCTURE_recuperer_professeurs_eleve_matiere($_SESSION['USER_ID'],$matiere_id);
-foreach($DB_TAB as $DB_ROW)
+$DB_COL = DB_STRUCTURE_recuperer_professeurs_eleve_matiere($_SESSION['USER_ID'],$matiere_id);
+foreach($DB_COL as $prof_id)
 {
-	Modifier_RSS(adresse_RSS($DB_ROW['user_id']),$titre,$texte,$guid);
+	Modifier_RSS(adresse_RSS($prof_id),$titre,$texte,$guid);
 }
 // Affichage du retour
 $nb_demandes_formulees++;

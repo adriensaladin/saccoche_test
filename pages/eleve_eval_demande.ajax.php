@@ -47,10 +47,10 @@ if( ($action=='supprimer') && $demande_id && $item_id && $matiere_id )
 	$texte = $_SESSION['USER_PRENOM'].' '.$_SESSION['USER_NOM'].' retire sa demande d\'évaluation sur l\'item '.$DB_ROW['item_ref'].' intitulé "'.$DB_ROW['item_nom'].'"';
 	$guid  = 'demande_'.$demande_id.'_del';
 	// On récupère les profs...
-	$DB_TAB = DB_STRUCTURE_recuperer_professeurs_eleve_matiere($_SESSION['USER_ID'],$matiere_id);
-	foreach($DB_TAB as $DB_ROW)
+	$DB_COL = DB_STRUCTURE_recuperer_professeurs_eleve_matiere($_SESSION['USER_ID'],$matiere_id);
+	foreach($DB_COL as $prof_id)
 	{
-		Modifier_RSS(adresse_RSS($DB_ROW['user_id']),$titre,$texte,$guid);
+		Modifier_RSS(adresse_RSS($prof_id),$titre,$texte,$guid);
 	}
 	// Affichage du retour
 	exit('ok');

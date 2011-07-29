@@ -75,5 +75,5 @@ foreach($tab_connexion_info['cas'] as $connexion_nom => $tab_info)
 
 <div id="lien_direct" class="<?php echo ($_SESSION['CONNEXION_MODE']=='cas') ? 'show' : 'hide' ; ?>">
 	<span class="astuce">Une fois <em>SACoche</em> convenablement configuré, pour une connexion automatique avec les identifiants de l'ENT (eleves / professeurs / directeurs), utiliser cette adresse&nbsp;:</span>
-	<ul class="puce"><li class="b"><?php echo SERVEUR_ADRESSE ?>?page=public_login_CAS&amp;f_base=<?php echo $_SESSION['BASE'] ?></li></ul>
+	<ul class="puce"><li class="b"><?php echo SERVEUR_ADRESSE ?>/?page=public_login_CAS&amp;f_base=<?php echo $_SESSION['BASE'] ?></li></ul>
 </div>

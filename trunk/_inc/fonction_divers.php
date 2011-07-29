@@ -262,8 +262,8 @@ function compacter($chemin,$version,$methode)
  * charger_parametres_mysql_supplementaires
  * 
  * Dans le cas d'une installation de type multi-structures, on peut avoir besoin d'effectuer une requête sur une base d'établissement sans y être connecté :
- * => pour savoir si le mode de connexion est SSO ou pas (./pages/public_accueil.ajax.php)
- * => pour l'identification (fonction connecter_user() dans ./_inc/fonction_requetes_administration)
+ * => pour savoir si le mode de connexion est SSO ou pas (./pages/public_*.php)
+ * => pour l'identification (fonction connecter_user())
  * => pour le webmestre (création d'un admin, info sur les admins, initialisation du mdp...)
  * 
  * @param int   $BASE
@@ -282,7 +282,7 @@ function charger_parametres_mysql_supplementaires($BASE)
 	}
 	else
 	{
-		exit('Erreur : paramètres BDD n°'.$BASE.' manquants !');
+		affich_message_exit($titre='Paramètre incorrect',$contenu='Le fichier avec les paramètres de la base n°'.$BASE.' est manquant !');
 	}
 }
 
@@ -562,7 +562,7 @@ function connecter_webmestre($password)
  * @param int       $BASE
  * @param string    $login
  * @param string    $password
- * @param string    $mode_connection   'normal' ou 'cas' ou ...
+ * @param string    $mode_connection   'normal' | 'cas' | 'saml' | 'ldap' (?)
  * @return string   retourne 'ok' en cas de succès (et dans ce cas la session est mise à jour) ou un message d'erreur sinon
  */
 
@@ -612,7 +612,9 @@ function connecter_user($BASE,$login,$password,$mode_connection)
 	// Mémoriser la date de la (dernière) connexion
 	DB_STRUCTURE_modifier_date('connexion',$_SESSION['USER_ID']);
 	// Enregistrement d'un cookie sur le poste client servant à retenir le dernier établissement sélectionné si identification avec succès
-	setcookie(COOKIE_STRUCTURE,$BASE,time()+60*60*24*365,'/');
+	setcookie(COOKIE_STRUCTURE,$BASE,time()+60*60*24*365,'');
+	// Enregistrement d'un cookie sur le poste client servant à retenir le dernier mode de connexion utilisé si identification avec succès
+	setcookie(COOKIE_AUTHMODE,$mode_connection,0,'');
 	return'ok';
 }
 

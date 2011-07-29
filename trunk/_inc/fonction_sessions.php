@@ -34,7 +34,12 @@ session_name(SESSION_NOM);
 session_cache_limiter('nocache');
 session_cache_expire(180);
 
-// Ouvrir une session existante
+/*
+ * Ouvrir une session existante
+ * 
+ * @param void
+ * @return bool
+ */
 function open_old_session()
 {
 	$ID = $_COOKIE[SESSION_NOM];
@@ -42,7 +47,12 @@ function open_old_session()
 	return session_start();
 }
 
-// Créer une nouvelle session
+/*
+ * Ouvrir une nouvelle session
+ * 
+ * @param void
+ * @return bool
+ */
 function open_new_session()
 {
 	$ID = uniqid().md5('grain_de_sable'.mt_rand());	// Utiliser l'option préfixe ou entropie de uniqid() insère un '.' qui peut provoquer une erreur disant que les seuls caractères autorisés sont a-z, A-Z, 0-9 et -
@@ -50,7 +60,12 @@ function open_new_session()
 	return session_start();
 }
 
-// Initialiser une session existante
+/*
+ * Initialiser une session ouverte
+ * 
+ * @param void
+ * @return void
+ */
 function init_session()
 {
 	$_SESSION = array();
@@ -67,106 +82,100 @@ function init_session()
 	$_SESSION['DUREE_INACTIVITE'] = 30;
 }
 
-// Fermer une session existante
+/*
+ * Fermer une session existante
+ * 
+ * @param void
+ * @return void
+ */
 function close_session()
 {
-	$alerte_sso = (isset($_SESSION['ALERTE_SSO'])) ? '&amp;f_base='.$_SESSION['BASE'].'&amp;f_mode='.$_SESSION['CONNEXION_MODE'] : false ;
 	$_SESSION = array();
-	setcookie(session_name(),'',time()-42000,'/');
+	setcookie(session_name(),'',time()-42000,'');
 	session_destroy();
-	return $alerte_sso;
 }
 
-// Recherche d'une session existante et gestion des cas possibles.
+/*
+ * Rechercher une session existante et gérer les différents cas possibles.
+ * 
+ * @param array $TAB_PROFILS_AUTORISES
+ * @return void | exit ! (sur une string si ajax, une page html, ou modification $PAGE pour process SSO)
+ */
 function gestion_session($TAB_PROFILS_AUTORISES)
 {
-	global $ALERTE_SSO;
-	// Messages d'erreurs possibles
-	$tab_msg_alerte = array();
-	$tab_msg_alerte[ 'I.2.a']['index'] = 'Session non retrouvée.\nConfigurez votre navigateur pour qu\'il accepte les cookies !\nRedirection vers l\'accueil...';
-	$tab_msg_alerte[ 'I.2.a']['ajax']  = 'Session non retrouvée. Vérifiez l\'acceptation des cookies ! Retournez à l\'accueil...';
-	$tab_msg_alerte[ 'I.2.b']['index'] = 'Tentative d\'accès direct à une page réservée !\nRedirection vers l\'accueil...';
-	$tab_msg_alerte[ 'I.2.b']['ajax']  = 'Session perdue. Déconnectez-vous et reconnectez-vous...';
-	$tab_msg_alerte['II.1.a']['index'] = 'Votre session a expiré !\nRedirection vers l\'accueil...';
-	$tab_msg_alerte['II.1.a']['ajax']  = 'Session expirée. Déconnectez-vous et reconnectez-vous...';
-	$tab_msg_alerte['II.3.a']['index'] = 'Tentative d\'accès direct à une page réservée !\nRedirection vers l\'accueil...';
-	$tab_msg_alerte['II.3.a']['ajax']  = 'Page réservée. Retournez à l\'accueil...';
-	$tab_msg_alerte['II.4.c']['index'] = 'Tentative d\'accès direct à une page réservée !\nRedirection vers l\'accueil...';
-	$tab_msg_alerte['II.4.c']['ajax']  = 'Page réservée. Déconnexion effectuée. Retournez à l\'accueil...';
-	// Zyva !
 	if(!isset($_COOKIE[SESSION_NOM]))
 	{
-		// I. Aucune session transmise
+		// 1. Aucune session transmise
 		open_new_session(); init_session();
 		if(!$TAB_PROFILS_AUTORISES['public'])
 		{
-			// I.2. Redirection : demande d'accès à une page réservée donc identification avant accès direct
+			// 1.1. Demande d'accès à une page réservée, donc besoin d'identification
 			if(isset($_GET['verif_cookie']))
 			{
-				// I.2.a. L'utilisateur vient de s'identifier : c'est donc anormal, le cookie de session n'a pas été trouvé car le navigateur client n'enregistre pas les cookies
-				alert_redirection_exit($tab_msg_alerte['I.2.a'][SACoche]);
+				// 1.1.1. En fait l'utilisateur vient déjà de s'identifier : c'est donc anormal, le cookie de session n'a pas été trouvé car le navigateur client n'enregistre pas les cookies
+				affich_message_exit($titre='Problème de cookies',$contenu='Session non retrouvée !<br />Configurez votre navigateur pour qu\'il accepte les cookies.');
 			}
 			else
 			{
-				// I.2.b. Session perdue ou expirée pour une raison diverse (cookies effacés, plusieurs onglets, expiration, ...)
-				alert_redirection_exit($tab_msg_alerte['I.2.b'][SACoche]);
-			}
-		}
-	}
-	else
-	{
-		// II. id de session transmis
-		open_old_session();
-		if(!isset($_SESSION['USER_PROFIL']))
-		{
-			// II.1. Pas de session retrouvée (sinon cette variable serait renseignée)
-			if(!$TAB_PROFILS_AUTORISES['public'])
-			{
-				// II.1.a. Session perdue ou expirée et demande d'accès à une page réservée : redirection pour une nouvelle identification
-				$ALERTE_SSO = close_session(); open_new_session(); init_session();
-				alert_redirection_exit($tab_msg_alerte['II.1.a'][SACoche]);
-			}
-			else
-			{
-				// II.1.b. Session perdue ou expirée et page publique : création d'une nouvelle session (éventuellement un message d'alerte pour indiquer session perdue ?)
-				$ALERTE_SSO = close_session();open_new_session();init_session();
-			}
-		}
-		elseif($_SESSION['USER_PROFIL'] == 'public')
-		{
-			// II.3. Personne non identifiée
-			if(!$TAB_PROFILS_AUTORISES['public'])
-			{
-				// II.3.a. Espace non identifié => Espace identifié : redirection pour identification
-				init_session();
-				alert_redirection_exit($tab_msg_alerte['II.3.a'][SACoche]);
-			}
-			else
-			{
-				// II.3.b. Espace non identifié => Espace non identifié : RAS
+				// 1.1.2. Session perdue ou expirée, ou demande d'accès direct (lien profond) : redirection pour une nouvelle identification
+				redirection_SSO_ou_message_exit(); // Si SSO au prochain coup on ne passera plus par là.
 			}
 		}
 		else
 		{
-			// II.4. Personne identifiée
+			// 1.2 Accès à une page publique : RAS
+		}
+	}
+	else
+	{
+		// 2. id de session transmis
+		open_old_session();
+		if(!isset($_SESSION['USER_PROFIL']))
+		{
+			// 2.1. Pas de session retrouvée (sinon cette variable serait renseignée)
+			if(!$TAB_PROFILS_AUTORISES['public'])
+			{
+				// 2.1.1. Session perdue ou expirée et demande d'accès à une page réservée : redirection pour une nouvelle identification
+				close_session(); open_new_session(); init_session();
+				redirection_SSO_ou_message_exit(); // On peut initialiser la session avant car si SSO au prochain coup on ne passera plus par là.
+			}
+			else
+			{
+				// 2.1.2. Session perdue ou expirée et page publique : création d'une nouvelle session, pas de message d'alerte pour indiquer que la session perdue
+				close_session();open_new_session();init_session();
+			}
+		}
+		elseif($_SESSION['USER_PROFIL'] == 'public')
+		{
+			// 2.2. Session retrouvée, utilisateur non identifié
+			if(!$TAB_PROFILS_AUTORISES['public'])
+			{
+				// 2.2.1. Espace non identifié => Espace identifié : redirection pour identification
+				redirection_SSO_ou_message_exit(); // Pas d'initialisation de session sinon la redirection avec le SSO tourne en boucle.
+			}
+			else
+			{
+				// 2.2.2. Espace non identifié => Espace non identifié : RAS
+			}
+		}
+		else
+		{
+			// 2.3. Session retrouvée, utilisateur identifié
 			if($TAB_PROFILS_AUTORISES[$_SESSION['USER_PROFIL']])
 			{
-				// II.4.a. Espace identifié => Espace identifié identique : RAS
+				// 2.3.1. Espace identifié => Espace identifié identique : RAS
 			}
 			elseif($TAB_PROFILS_AUTORISES['public'])
 			{
-				// II.4.b. Espace identifié => Espace non identifié : création d'une nouvelle session vierge (éventuellement un message d'alerte pour indiquer session perdue ?)
-				if (SACoche!='ajax')
-				{
-					// Ne pas déconnecter si on appelle le calendrier de l'espace public
-					$ALERTE_SSO = close_session();open_new_session();init_session();
-				}
+				// 2.3.2. Espace identifié => Espace non identifié : création d'une nouvelle session vierge, pas de message d'alerte pour indiquer que la session perdue
+				// A un moment il fallait tester que ce n'était pas un appel ajax,pour éviter une déconnexion si appel au calendrier qui était dans l'espace public, mais ce n'est plus le cas...
+				close_session();open_new_session();init_session();
 			}
-			elseif(!$TAB_PROFILS_AUTORISES['public'])
+			elseif(!$TAB_PROFILS_AUTORISES['public']) // (forcément)
 			{
-				// II.4.c. Espace identifié => Autre espace identifié incompatible : redirection pour une nouvelle identification
-				init_session();
-				alert_redirection_exit($tab_msg_alerte['II.4.c'][SACoche]);
+				// 2.3.3. Espace identifié => Autre espace identifié incompatible : redirection pour une nouvelle identification
+				// Pas de redirection SSO sinon on tourne en boucle (il faudrait faire une déconnexion SSO préalable).
+				affich_message_exit($titre='Page interdite avec votre profil',$contenu='Vous avez appelé une page inaccessible avec votre identification actuelle !<br />Déconnectez-vous ou retournez à la page précédente.');
 			}
 		}
 	}

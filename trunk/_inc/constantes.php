@@ -40,15 +40,12 @@ define('VERSION_BASE','2011-07-18');
 define('VERSION_CSS_SCREEN',62); // A changer lors de la mise à jour de ./_css/style.css
 define('VERSION_CSS_PRINT',2);   // A changer lors de la mise à jour de ./_css/style_print.css
 define('VERSION_JS_BIBLIO',9);   // A changer lors de la mise à jour de ./_js/jquery-librairies.js
-define('VERSION_JS_GLOBAL',43);  // A changer lors de la mise à jour de ./_js/script.js
+define('VERSION_JS_GLOBAL',44);  // A changer lors de la mise à jour de ./_js/script.js
 $VERSION_JS_FILE = 6;            // A changer lors de la mise à jour de tout un lot de fichiers js ; incrémenté ensuite si besoin dans le script associé à la page.
 
 // Quelques chemins... en variables et non constantes car pouvant être modifiés ensuite dans un cadre particulier (installation Sésamath)
 $CHEMIN_MYSQL  = './__private/mysql/';
 $CHEMIN_CONFIG = './__private/config/';
-
-// $ALERTE_SSO : pour signaler éventuellement qu'une deconnexion de SACoche n'entraîne pas une déconnexion d'un ENT
-$ALERTE_SSO = false;
 
 // ID_DEMO : valeur de $_SESSION['SESAMATH_ID'] correspondant à l'établissement de démonstration
 // 0 pose des pbs, et il faut prendre un id disponible dans la base d'établissements de Sésamath
@@ -67,7 +64,7 @@ define('CHARSET','utf-8');
 
 // SERVEUR_ADRESSE
 $protocole = ( isset($_SERVER['HTTPS']) && ($_SERVER['HTTPS']=='on') ) ? 'https://' : 'http://';
-$chemin = $protocole.$_SERVER["SERVER_NAME"].$_SERVER["SCRIPT_NAME"];
+$chemin = $protocole.$_SERVER['HTTP_HOST'].$_SERVER['SCRIPT_NAME'];
 $fin = strpos($chemin,SACoche); // pas mb_strpos pour éviter une erreur fatale d'entrée.
 if($fin)
 {
@@ -89,7 +86,9 @@ define('SERVEUR_DOCUMENTAIRE'   , SERVEUR_PROJET.'/appel_doc.php');
 define('SERVEUR_VERSION'        , SERVEUR_PROJET.'/sacoche/VERSION.txt');
 define('SERVEUR_TELECHARGEMENT' , SERVEUR_PROJET.'/telechargement.php');
 
-// COOKIE_STRUCTURE : nom du cookie servant à retenir l'établissement sélectionné.
+// COOKIE_STRUCTURE : nom du cookie servant à retenir l'établissement sélectionné, afin de ne pas à avoir à le sélectionner de nouveau, et à pouvoir le retrouver si perte d'une session et tentative de reconnexion SSO.
 define('COOKIE_STRUCTURE','SACoche-etablissement');
+// COOKIE_PAGE : nom du cookie servant à retenir le dernier mode de connexion utilisé par un user connecté, afin de pouvoir le retrouver si perte d'une session et tentative de reconnexion SSO.
+define('COOKIE_AUTHMODE','SACoche-mode-connexion');
 
 ?>

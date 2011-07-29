@@ -33,10 +33,9 @@ $profil   = (isset($_POST['f_profil']))   ? clean_texte($_POST['f_profil'])     
 $login    = (isset($_POST['f_login']))    ? clean_login($_POST['f_login'])       : '';
 $password = (isset($_POST['f_password'])) ? clean_password($_POST['f_password']) : '';
 
-//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
-// Afficher un formulaire d'identification
-//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
-
+/*
+ * Afficher le formulaire de choix des établissements (installation multi-structures)
+ */
 function afficher_formulaire_etablissement($BASE,$profil)
 {
 	$options_structures = afficher_select(DB_WEBMESTRE_OPT_structures_sacoche() , $select_nom=false , $option_first='non' , $selection=$BASE , $optgroup='oui');
@@ -45,13 +44,22 @@ function afficher_formulaire_etablissement($BASE,$profil)
 	echo'<input id="f_profil" name="f_profil" type="hidden" value="'.$profil.'" />'."\r\n";
 }
 
+/*
+ * Afficher le nom d'un établissement, avec l'icône pour changer de structure si installation multi-structures
+ */
 function afficher_nom_etablissement($BASE,$denomination)
 {
 	$changer = (HEBERGEUR_INSTALLATION=='multi-structures') ? '&nbsp;&nbsp;&nbsp;<a id="f_changer" href="#"><img alt="" src="./_img/bouton/retourner.png" /> Changer</a>' : '' ;
 	echo'<label class="tab">Établissement :</label><input id="f_base" name="f_base" type="hidden" value="'.$BASE.'" /><em>'.html($denomination).'</em>'.$changer.'<br />'."\r\n";
 }
 
-function afficher_formulaire_identification($profil,$mode)
+/*
+ * Afficher la partie du formulaire spécialement dédiée à l'identification :
+ * - pour le webmestre -> seulement la saisie du mot de passe pour le webmestre
+ * - si le mode de connexion est normal -> saisie login & mot de passe SACoche
+ * - si l'établissement est configuré pour un autre mode de connexion -> au choix [ saisie login & mot de passe SACoche ] ou [ utilisation de l'authentification externe ]
+ */
+function afficher_formulaire_identification($profil,$mode='normal',$nom='')
 {
 	if($profil=='webmestre')
 	{
@@ -66,7 +74,9 @@ function afficher_formulaire_identification($profil,$mode)
 	}
 	else
 	{
-		echo'<label class="tab" for="f_mode">Mode de connexion :</label><label for="f_mode_'.$mode.'"><input type="radio" id="f_mode_'.$mode.'" name="f_mode" value="'.$mode.'" checked /> formulaire <em>ENT</em></label>&nbsp;&nbsp;&nbsp;<label for="f_mode_normal"><input type="radio" id="f_mode_normal" name="f_mode" value="normal" /> formulaire <em>SACoche</em></label><br />'."\r\n";
+		echo'<label class="tab" for="f_mode">Mode de connexion :</label>';
+		echo	'<label for="f_mode_normal"><input type="radio" id="f_mode_normal" name="f_mode" value="normal" /> formulaire <em>SACoche</em></label>&nbsp;&nbsp;&nbsp;';
+		echo	'<label for="f_mode_'.$mode.'"><input type="radio" id="f_mode_'.$mode.'" name="f_mode" value="'.$mode.'" checked /> <em>ENT</em> externe (<em>'.html($mode.'-'.$nom).'</em>)</label><br />'."\r\n";
 		echo'<fieldset id="fieldset_normal" class="hide">'."\r\n";
 		echo'<label class="tab" for="f_login">Nom d\'utilisateur :</label><input id="f_login" name="f_login" size="20" type="text" value="" tabindex="2" /><br />'."\r\n";
 		echo'<label class="tab" for="f_password">Mot de passe :</label><input id="f_password" name="f_password" size="20" type="password" value="" tabindex="3" /><br />'."\r\n";
@@ -104,16 +114,16 @@ if( ($action=='initialiser') && (HEBERGEUR_INSTALLATION=='mono-structure') && $p
 	// Nettoyer le dossier des vignettes si nécessaire
 	effacer_fichiers_temporaires('./__tmp/badge/'.'0' , 525600); // Nettoyer ce dossier des fichiers antérieurs à 1 an
 	// Requête pour récupérer la dénomination et le mode de connexion
-	$DB_TAB = DB_STRUCTURE_lister_parametres('"denomination","connexion_mode"');
+	$DB_TAB = DB_STRUCTURE_lister_parametres('"denomination","connexion_mode","connexion_nom"');
 	foreach($DB_TAB as $DB_ROW)
 	{
 		${$DB_ROW['parametre_nom']} = $DB_ROW['parametre_valeur'];
 	}
-	if(isset($denomination,$connexion_mode)==false)
+	if(isset($denomination,$connexion_mode,$connexion_nom)==false)
 	{
 		exit('Erreur : base de l\'établissement incomplète !');
 	}
-	exit( afficher_nom_etablissement($BASE=0,$denomination) . afficher_formulaire_identification($profil,$connexion_mode) );
+	exit( afficher_nom_etablissement($BASE=0,$denomination) . afficher_formulaire_identification($profil,$connexion_mode,$connexion_nom) );
 }
 
 // Charger le formulaire de choix des établissements (installation multi-structures)
@@ -132,7 +142,7 @@ if( ( ($action=='initialiser') && ($BASE>0) && (HEBERGEUR_INSTALLATION=='multi-s
 	if(!count($DB_ROW))
 	{
 		// Sans doute un établissement supprimé, mais le cookie est encore là
-		setcookie(COOKIE_STRUCTURE,'',time()-42000,'/');
+		setcookie(COOKIE_STRUCTURE,'',time()-42000,'');
 		exit('Erreur : établissement non trouvé dans la base d\'administration !');
 	}
 	afficher_nom_etablissement($BASE,$DB_ROW['structure_denomination']);
@@ -142,12 +152,16 @@ if( ( ($action=='initialiser') && ($BASE>0) && (HEBERGEUR_INSTALLATION=='multi-s
 	// Nettoyer le dossier des vignettes si nécessaire
 	effacer_fichiers_temporaires('./__tmp/badge/'.$BASE , 525600); // Nettoyer ce dossier des fichiers antérieurs à 1 an
 	// Une deuxième requête sur SACOCHE_STRUCTURE_BD_NAME pour savoir si le mode de connexion est SSO ou pas
-	$DB_ROW = DB_STRUCTURE_lister_parametres('"connexion_mode"');
-	if(!count($DB_ROW))
+	$DB_TAB = DB_STRUCTURE_lister_parametres('"connexion_mode","connexion_nom"');
+	foreach($DB_TAB as $DB_ROW)
+	{
+		${$DB_ROW['parametre_nom']} = $DB_ROW['parametre_valeur'];
+	}
+	if(isset($connexion_mode,$connexion_nom)==false)
 	{
 		exit('Erreur : base de l\'établissement incomplète !');
 	}
-	exit( afficher_formulaire_identification($profil,$DB_ROW['parametre_valeur']) );
+	exit( afficher_formulaire_identification($profil,$connexion_mode,$connexion_nom) );
 }
 
 //	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*

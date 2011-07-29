@@ -146,7 +146,7 @@ $tab_droits['consultation_referentiel_externe']        = array( 'public'=>0 , 'e
 $tab_droits['date_calendrier']                         = array( 'public'=>0 , 'eleve'=>1 , 'parent'=>1 , 'professeur'=>1 , 'directeur'=>1 , 'administrateur'=>1 , 'webmestre'=>1 );
 $tab_droits['eleve_eval_bilan']                        = array( 'public'=>0 , 'eleve'=>1 , 'parent'=>1 , 'professeur'=>0 , 'directeur'=>0 , 'administrateur'=>0 , 'webmestre'=>0 );
 $tab_droits['export_fichier']                          = array( 'public'=>0 , 'eleve'=>0 , 'parent'=>0 , 'professeur'=>1 , 'directeur'=>1 , 'administrateur'=>0 , 'webmestre'=>0 );
-$tab_droits['public_login_CAS']                        = array( 'public'=>1 , 'eleve'=>1 , 'parent'=>1 , 'professeur'=>1 , 'directeur'=>1 , 'administrateur'=>0 , 'webmestre'=>0 ); // Particulier ! Un échange est encore effecué avec ce fichier après enregistrement des données de session...
+$tab_droits['public_login_SSO']                        = array( 'public'=>1 , 'eleve'=>1 , 'parent'=>1 , 'professeur'=>1 , 'directeur'=>1 , 'administrateur'=>1 , 'webmestre'=>0 ); // Attention ! Il faut inclure "public" car un échange est encore effectué avec ce fichier après enregistrement des données de session...
 $tab_droits['releve']                                  = array( 'public'=>0 , 'eleve'=>1 , 'parent'=>1 , 'professeur'=>1 , 'directeur'=>1 , 'administrateur'=>0 , 'webmestre'=>0 );
 $tab_droits['releve_grille_referentiel']               = array( 'public'=>0 , 'eleve'=>1 , 'parent'=>1 , 'professeur'=>1 , 'directeur'=>1 , 'administrateur'=>0 , 'webmestre'=>0 );
 $tab_droits['releve_items_matiere']                    = array( 'public'=>0 , 'eleve'=>1 , 'parent'=>1 , 'professeur'=>1 , 'directeur'=>1 , 'administrateur'=>0 , 'webmestre'=>0 );

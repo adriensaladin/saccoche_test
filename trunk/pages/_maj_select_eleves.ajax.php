@@ -46,9 +46,9 @@ if($_SESSION['USER_PROFIL']=='parent')
 
 elseif( ($_SESSION['USER_PROFIL']=='administrateur') || (isset($_POST['f_groupe_id'])) ) // test supplémentaire sinon pb avec la page administrateur_eleve_langue partagée avec les directeurs
 {
-	$groupe_type = (isset($_POST['f_groupe_type'])) ? clean_texte($_POST['f_groupe_type']) : ''; // d n c g
+	$groupe_type = (isset($_POST['f_groupe_type'])) ? clean_texte($_POST['f_groupe_type']) : ''; // d n c g b
 	$groupe_id   = (isset($_POST['f_groupe_id']))   ? clean_entier($_POST['f_groupe_id'])  : 0;
-	$tab_types = array('d'=>'Divers' , 'n'=>'niveau' , 'c'=>'classe' , 'g'=>'groupe');
+	$tab_types = array('d'=>'Divers' , 'n'=>'niveau' , 'c'=>'classe' , 'g'=>'groupe' , 'b'=>'besoin');
 	if( (!$groupe_id) || (!isset($tab_types[$groupe_type])) )
 	{
 		exit('Erreur avec les données transmises !');

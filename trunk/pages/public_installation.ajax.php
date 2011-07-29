@@ -396,7 +396,7 @@ if( $step==6 )
 		$affichage .= '<p class="astuce">Si besoin, supprimez les tables manuellement, puis <a href="#" class="step6">relancer l\'étape 6.</a><label id="ajax_msg">&nbsp;</label></p>'."\r\n";
 		$affichage .= '<hr />'."\r\n";
 		$affichage .= '<h2>Installation logicielle terminée</h2>'."\r\n";
-		$affichage .= '<p>Pour se connecter avec le compte webmestre : <a href="'.SERVEUR_ADRESSE.'?webmestre">'.SERVEUR_ADRESSE.'?webmestre</a></p>'."\r\n";
+		$affichage .= '<p>Pour se connecter avec le compte webmestre : <a href="'.SERVEUR_ADRESSE.'/?webmestre">'.SERVEUR_ADRESSE.'/?webmestre</a></p>'."\r\n";
 	}
 	else
 	{
@@ -435,7 +435,7 @@ if( $step==6 )
 			$affichage .= '<label class="alerte">Notez ces identifiants avant de poursuivre !</label>'."\r\n";
 			$affichage .= '<hr />'."\r\n";
 			$affichage .= '<h2>Installation logicielle terminée</h2>'."\r\n";
-			$affichage .= '<p>Se connecter avec le compte webmestre : <a href="'.SERVEUR_ADRESSE.'?webmestre">'.SERVEUR_ADRESSE.'?webmestre</a></p>'."\r\n";
+			$affichage .= '<p>Se connecter avec le compte webmestre : <a href="'.SERVEUR_ADRESSE.'/?webmestre">'.SERVEUR_ADRESSE.'/?webmestre</a></p>'."\r\n";
 			$affichage .= '<p>Se connecter avec le compte administrateur : <a href="'.SERVEUR_ADRESSE.'">'.SERVEUR_ADRESSE.'</a></p>'."\r\n";
 		}
 		elseif(HEBERGEUR_INSTALLATION=='multi-structures')
@@ -444,7 +444,7 @@ if( $step==6 )
 			$affichage .= '<p><label class="valide">Les tables de la base de données du webmestre ont été installées.</label></p>'."\r\n";
 			$affichage .= '<hr />'."\r\n";
 			$affichage .= '<h2>Installation logicielle terminée</h2>'."\r\n";
-			$affichage .= '<p>Se connecter avec le compte webmestre pour gérer les structures hébergées : <a href="'.SERVEUR_ADRESSE.'?webmestre">'.SERVEUR_ADRESSE.'?webmestre</a></p>'."\r\n";
+			$affichage .= '<p>Se connecter avec le compte webmestre pour gérer les structures hébergées : <a href="'.SERVEUR_ADRESSE.'/?webmestre">'.SERVEUR_ADRESSE.'?webmestre</a></p>'."\r\n";
 		}
 	}
 	echo $affichage;

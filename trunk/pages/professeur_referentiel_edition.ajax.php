@@ -428,12 +428,12 @@ elseif( ($action=='fus') && $element_id && $element2_id )
 	$DB_SQL = 'SELECT devoir_id ';
 	$DB_SQL.= 'FROM sacoche_jointure_devoir_item ';
 	$DB_SQL.= 'WHERE item_id=:element_id';
-	$TAB1 = array_keys(DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR , TRUE));
+	$COL1 = DB::queryCol(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 	$DB_SQL = 'SELECT devoir_id ';
 	$DB_SQL.= 'FROM sacoche_jointure_devoir_item ';
 	$DB_SQL.= 'WHERE item_id=:element2_id';
-	$TAB2 = array_keys(DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR , TRUE));
-	$tab_conflit = array_intersect($TAB1,$TAB2);
+	$COL2 = DB::queryCol(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+	$tab_conflit = array_intersect($COL1,$COL2);
 	if(count($tab_conflit))
 	{
 		$DB_SQL = 'DELETE FROM sacoche_jointure_devoir_item ';
@@ -453,12 +453,12 @@ elseif( ($action=='fus') && $element_id && $element2_id )
 	$DB_SQL = 'SELECT CONCAT(eleve_id,"x",devoir_id) AS clefs ';
 	$DB_SQL.= 'FROM sacoche_saisie ';
 	$DB_SQL.= 'WHERE item_id=:element_id';
-	$TAB1 = array_keys(DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR , TRUE));
+	$COL1 = DB::queryCol(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 	$DB_SQL = 'SELECT CONCAT(eleve_id,"x",devoir_id) AS clefs ';
 	$DB_SQL.= 'FROM sacoche_saisie ';
 	$DB_SQL.= 'WHERE item_id=:element2_id';
-	$TAB2 = array_keys(DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR , TRUE));
-	$tab_conflit = array_intersect($TAB1,$TAB2);
+	$COL2 = DB::queryCol(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+	$tab_conflit = array_intersect($COL1,$COL2);
 	if(count($tab_conflit))
 	{
 		$DB_SQL = 'DELETE FROM sacoche_saisie ';

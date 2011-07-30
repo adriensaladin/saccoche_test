@@ -27,9 +27,6 @@
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = "Connexion SSO";
-?>
-
-<?php
 
 /*
  * Cette page n'est pas (plus en fait) appelée directement.

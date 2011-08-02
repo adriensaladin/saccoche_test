@@ -194,7 +194,7 @@ if(is_file($fichier_constantes))
 if(defined('LOGIN_SSO'))
 {
 	require('./pages/public_login_SSO.php');
-}	
+}
 
 ob_start();
 // Chargement de la page concernée
@@ -272,6 +272,7 @@ entete();
 		$SACoche_lien   = '<a href="'.SERVEUR_PROJET.'"><img alt="Suivi d\'Acquisition de Compétences" src="./_img/logo_grand.gif" /></a>' ;
 		echo ($PAGE=='public_accueil') ? '<h1 class="logo">'.$SACoche_lien.$hebergeur_lien.'</h1>' : '<h1>» '.$TITRE.'</h1>' ;
 		echo 	$CONTENU_PAGE;
+		// echo'<pre>';var_dump($_SESSION);echo'</pre>';
 		echo'</div>'."\r\n";
 	}
 	?>

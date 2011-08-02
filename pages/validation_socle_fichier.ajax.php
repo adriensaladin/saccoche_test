@@ -185,9 +185,11 @@ if($action=='uploader')
 	Creer_ou_Vider_Dossier($dossier_temp);
 	// Dezipper dans le dossier temporaire
 	$zip = new ZipArchive();
-	if($zip->open($dossier_import.$fichier_upload_nom)!==true)
+	$result_open = $zip->open($dossier_import.$fichier_upload_nom);
+	if($result_open!==true)
 	{
-		exit('<li><label class="alerte">Erreur : votre archive ZIP n\'a pas pu être ouverte !</label></li>');
+		require('./_inc/tableau_zip_error.php');
+		exit('<li><label class="alerte">Erreur : votre archive ZIP n\'a pas pu être ouverte ('.$result_open.$tab_zip_error[$result_open].') !</label></li>');
 	}
 	$zip->extractTo($dossier_temp);
 	$zip->close();

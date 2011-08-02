@@ -52,8 +52,8 @@ else
 	if($_SESSION['CONNEXION_MODE']!='normal')
 	{
 		$get_base = ($_SESSION['BASE']) ? '&amp;base='.$_SESSION['BASE'] : '' ;
-		echo'<div class="astuce">Adresse à utiliser pour une connexion automatique avec les identifiants de l\'ENT :</div>';
-		echo'<p class="hc"><b>'.SERVEUR_ADRESSE.'/?sso='.$_SESSION['CONNEXION_MODE'].$get_base.'</b></p>';
+		echo'<div class="astuce">Adresse à utiliser pour une connexion automatique avec l\'authentification externe :</div>';
+		echo'<p class="hc"><b>'.SERVEUR_ADRESSE.'/?sso'.$get_base.'</b></p>';
 	}
 }
 ?>

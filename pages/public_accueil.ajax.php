@@ -76,7 +76,7 @@ function afficher_formulaire_identification($profil,$mode='normal',$nom='')
 	{
 		echo'<label class="tab" for="f_mode">Mode de connexion :</label>';
 		echo	'<label for="f_mode_normal"><input type="radio" id="f_mode_normal" name="f_mode" value="normal" /> formulaire <em>SACoche</em></label>&nbsp;&nbsp;&nbsp;';
-		echo	'<label for="f_mode_'.$mode.'"><input type="radio" id="f_mode_'.$mode.'" name="f_mode" value="'.$mode.'" checked /> <em>ENT</em> externe (<em>'.html($mode.'-'.$nom).'</em>)</label><br />'."\r\n";
+		echo	'<label for="f_mode_'.$mode.'"><input type="radio" id="f_mode_'.$mode.'" name="f_mode" value="'.$mode.'" checked /> authentification extérieure <em>'.html($mode.'-'.$nom).'</em></label><br />'."\r\n";
 		echo'<fieldset id="fieldset_normal" class="hide">'."\r\n";
 		echo'<label class="tab" for="f_login">Nom d\'utilisateur :</label><input id="f_login" name="f_login" size="20" type="text" value="" tabindex="2" /><br />'."\r\n";
 		echo'<label class="tab" for="f_password">Mot de passe :</label><input id="f_password" name="f_password" size="20" type="password" value="" tabindex="3" /><br />'."\r\n";
@@ -172,14 +172,24 @@ if( ( ($action=='initialiser') && ($BASE>0) && (HEBERGEUR_INSTALLATION=='multi-s
 
 if( ($action=='identifier') && ($profil=='webmestre') && ($login=='webmestre') && ($password!='') )
 {
-	exit( connecter_webmestre($password) );
+	$auth_resultat = tester_authentification_webmestre($password);
+	if($auth_resultat=='ok')
+	{
+		enregistrer_session_webmestre();
+	}
+	exit($auth_resultat);
 }
 
 // Pour un utilisateur normal, y compris un administrateur
 
 if( ($action=='identifier') && ($profil=='normal') && ($login!='') && ($password!='') )
 {
-	exit( connecter_user($BASE,$login,$password,$mode_connection='normal') );
+	list($auth_resultat,$auth_DB_ROW) = tester_authentification_user($BASE,$login,$password,$mode_connection='normal');
+	if($auth_resultat=='ok')
+	{
+		enregistrer_session_user($BASE,$auth_DB_ROW);
+	}
+	exit($auth_resultat);
 }
 
 //	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*

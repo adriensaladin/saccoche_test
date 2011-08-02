@@ -262,7 +262,7 @@ $(document).ready
 			{
 				if( ($('#fieldset_normal').length) && !($('#f_mode_normal').is(':checked')) )
 				{
-					document.location.href = './index.php?sso='+$("input[name=f_mode]:checked").val()+'&base='+$('#f_base').val();
+					document.location.href = './index.php?sso&base='+$('#f_base').val();
 					return false;
 				}
 				else

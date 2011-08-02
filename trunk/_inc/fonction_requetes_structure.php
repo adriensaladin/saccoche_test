@@ -44,13 +44,18 @@ function DB_STRUCTURE_recuperer_demandes_autorisees_matiere($matiere_id)
 /**
  * DB_STRUCTURE_recuperer_donnees_utilisateur
  *
- * @param string $mode_connection   'normal' ou 'cas' ou ...
+ * @param string $mode_connection   'normal' | 'cas' | 'gepi' | ...
  * @param string $login
  * @return array
  */
 function DB_STRUCTURE_recuperer_donnees_utilisateur($mode_connection,$login)
 {
-	$champ = ($mode_connection=='normal') ? 'user_login' : 'user_id_ent' ;
+	switch($mode_connection)
+	{
+		case 'normal' : $champ = 'user_login';   break;
+		case 'cas'    : $champ = 'user_id_ent';  break;
+		case 'gepi'   : $champ = 'user_id_gepi'; break;
+	}
 	$DB_SQL = 'SELECT sacoche_user.*, sacoche_groupe.groupe_nom, ';
 	$DB_SQL.= 'UNIX_TIMESTAMP(sacoche_user.user_tentative_date) AS tentative_unix ';
 	$DB_SQL.= 'FROM sacoche_user ';

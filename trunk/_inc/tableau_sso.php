@@ -30,11 +30,14 @@
 $tab_connexion_mode = array();
 $tab_connexion_mode['normal'] = 'Normal';
 $tab_connexion_mode['cas']    = 'Serveur CAS';
+$tab_connexion_mode['gepi']   = 'GEPI';
 /*
+$tab_connexion_mode['ldap']   = '???';
 $tab_connexion_mode['itop']   = 'Machine virtuelle itop';
 */
 
 $tab_connexion_info = array();
+
 $tab_connexion_info['normal']['sacoche']       = array( 'txt'=>'Connexion avec les identifiants enregistrés dans SACoche.' );
 
 $tab_connexion_info['cas']['argos']            = array( 'serveur_host'=>'ent-cas.ac-bordeaux.fr'  , 'serveur_port'=>443  , 'serveur_root'=>'cas'       , 'csv_nom'=>1 , 'csv_prenom'=>2 , 'csv_id_ent'=>0 , 'csv_id_sconet'=>NULL , 'txt'=>'ENT Argos (académie de Bordeaux, départements 24 33 40 47).' ); // ex- ent-auth.ac-bordeaux.fr sans root
@@ -51,5 +54,7 @@ $tab_connexion_info['cas']['laclasse']         = array( 'serveur_host'=>'sso.lac
 $tab_connexion_info['cas']['cartabledesavoie'] = array( 'serveur_host'=>'cartabledesavoie.com'    , 'serveur_port'=>443  , 'serveur_root'=>'cas' , 'csv_nom'=>0 , 'csv_prenom'=>0 , 'csv_id_ent'=>0 , 'txt'=>'ENT Cartable de Savoie.' );
 $tab_connexion_info['cas']['cartableenligne']  = array( 'serveur_host'=>'A-CHANGER.ac-creteil.fr' , 'serveur_port'=>8443 , 'serveur_root'=>''    , 'csv_nom'=>0 , 'csv_prenom'=>0 , 'csv_id_ent'=>0 , 'txt'=>'ENT Cartable en ligne de Créteil (EnvOLE Scribe).' );
 */
+
+$tab_connexion_info['gepi']['saml']            = array( 'saml_url'=>'http://' , 'saml_rne'=>$_SESSION['UAI'] , 'saml_certif'=>'AA:FD:FF:98:48:18:A8:56:73:32:73:8F:33:53:04:8C:36:9B:E6:B2' , 'txt'=>'S\'authentifier depuis GEPI (protocole SAML).' );
 
 ?>

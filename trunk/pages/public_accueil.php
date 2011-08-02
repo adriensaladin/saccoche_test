@@ -27,7 +27,7 @@
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = ''; // Pas de titre pour que le logo s'affiche à la place
-$VERSION_JS_FILE += 10;
+$VERSION_JS_FILE += 11;
 
 // Lecture d'un cookie sur le poste client servant à retenir le dernier établissement sélectionné si identification avec succès
 $BASE = (isset($_COOKIE[COOKIE_STRUCTURE])) ? clean_entier($_COOKIE[COOKIE_STRUCTURE]) : 0 ;
@@ -61,7 +61,7 @@ echo afficher_navigateurs_alertes($hr_avant='<hr />',$chemin_image='./_img',$hr_
 if( (isset($_COOKIE[COOKIE_STRUCTURE])) && (isset($_COOKIE[COOKIE_AUTHMODE])) && ($_COOKIE[COOKIE_AUTHMODE]!='normal') )
 {
 	echo'<hr />';
-	echo'<div class="danger">Attention : vous n\'êtes pas déconnecté de l\'ENT, on peut revenir dans <em>SACoche</em> sans s\'identifier ! Fermez votre navigateur ou <a href="index.php?page=public_logout_SSO&amp;sso='.$_COOKIE[COOKIE_AUTHMODE].'&amp;base='.$_COOKIE[COOKIE_STRUCTURE].'">déconnectez-vous de l\'ENT</a>.</div>';
+	echo'<div class="danger">Attention : vous n\'êtes pas déconnecté du service d\'authentification externe, on peut revenir dans <em>SACoche</em> sans s\'identifier ! Fermez votre navigateur ou <a href="index.php?page=public_logout_SSO&amp;base='.$_COOKIE[COOKIE_STRUCTURE].'">déconnectez-vous de ce service</a>.</div>';
 }
 
 // Supprimer le cookie avec le mode d'identification, servant à une reconnexion SSO, devenu inutile puisque déconnecté à présent.

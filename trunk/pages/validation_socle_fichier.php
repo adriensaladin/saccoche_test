@@ -58,8 +58,8 @@ $bouton_export = ($test_uai && $test_cnil && $test_key_sesamath) ? 'id="bouton_e
 	<label class="tab">CNIL :</label><?php echo $msg_cnil ?><br />
 	<label class="tab">Sconet :</label><?php echo $msg_id_sconet ?><br />
 	<label class="tab">Sésamath :</label><?php echo $msg_key_sesamath ?><p />
-	<span class="tab"></span><button type="button" id="disabled_export" disabled><img alt="" src="./_img/bouton/fichier_export.png" /> A venir, procédure ministérielle d'accréditation en cours&hellip;</button><label id="ajax_msg_export">&nbsp;</label>
-	<!-- <span class="tab"></span><button type="button" <?php echo $bouton_export ?>><img alt="" src="./_img/bouton/fichier_export.png" /> Générer le fichier.</button><label id="ajax_msg_export">&nbsp;</label> -->
+	<!-- <span class="tab"></span><button type="button" id="disabled_export" disabled><img alt="" src="./_img/bouton/fichier_export.png" /> A venir, procédure ministérielle d'accréditation en cours&hellip;</button><label id="ajax_msg_export">&nbsp;</label> -->
+	<span class="tab"></span><button type="button" <?php echo $bouton_export ?>><img alt="" src="./_img/bouton/fichier_export.png" /> Générer le fichier.</button><label id="ajax_msg_export">&nbsp;</label>
 </fieldset></form>
 
 <hr />

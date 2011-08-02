@@ -57,21 +57,23 @@ $(document).ready
 		);
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-// Déplacer / afficher / masquer le formulaire CAS ; afficher / masquer l'adresse de connexion directe
+// Déplacer / afficher / masquer le formulaire CAS
+// Déplacer / afficher / masquer le formulaire GEPI
+// Afficher / masquer l'adresse de connexion directe
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
 		$("input[type=radio]").click
 		(
 			function()
 			{
-				$('#cas_options').hide(0);
+				$('#cas_options , #gepi_options').hide(0);
 				var valeur = $(this).val();
 				var tab_infos = valeur.split('|');
 				var connexion_mode = tab_infos[0];
 				var connexion_nom  = tab_infos[1];
 				if(connexion_mode=='cas')
 				{
-					var valeur = tab_cas[connexion_nom];
+					var valeur = tab_param[connexion_mode][connexion_nom];
 					var tab_infos = valeur.split(']¤[');
 					$('#cas_serveur_host').val( tab_infos[0] );
 					$('#cas_serveur_port').val( tab_infos[1] );
@@ -81,6 +83,17 @@ $(document).ready
 						$(this).parent().parent().next().after( $('#cas_options') );
 						$('#cas_options').show();
 					}
+					$('#lien_direct').show();
+				}
+				else if(connexion_mode=='gepi')
+				{
+					var valeur = tab_param[connexion_mode][connexion_nom];
+					var tab_infos = valeur.split(']¤[');
+					$('#gepi_saml_url').val( tab_infos[0] );
+					$('#gepi_saml_rne').val( tab_infos[1] );
+					$('#gepi_saml_certif').val( tab_infos[2] );
+					$(this).parent().parent().next().after( $('#gepi_options') );
+					$('#gepi_options').show();
 					$('#lien_direct').show();
 				}
 				else
@@ -103,6 +116,11 @@ $(document).ready
 				{
 					$(this).parent().parent().next().after( $('#cas_options') );
 					$('#cas_options').show();
+				}
+				else if( (connexion_mode=='gepi') && (connexion_nom=='saml') )
+				{
+					$(this).parent().parent().next().after( $('#gepi_options') );
+					$('#gepi_options').show();
 				}
 			}
 		);

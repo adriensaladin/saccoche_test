@@ -2,4 +2,80 @@
 Librairie : SimpleSAMLphp               Version : 1.8.0
 ================================================================================
 
-A étudier...
+SimpleSAMLphp permet d'interroger un service d'authentification (CAS, LDAP, ...) mais aussi de fournir ce service.
+C'est ainsi que l'authentification de SACoche peut être remplacée par celle de Gepi
+
+Seule la classe est présente dans SACoche.
+Pour infos et documentations : http://simplesamlphp.org
+
+Josselin Jacquard <josselin.jacquard@gmail.com> a travaillé le premier sur l'utilisation de SimpleSAMLphp pour relier SACoche et GEPI.
+
+
+========================================
+Modifications apportées à la source
+========================================
+
+
+Pour alléger autant que possible cette librairie bien lourde :
+- Dossier /docs/ retiré 
+- Dossier /modules/ vidé des dossiers inutilisés (tous sauf /core/ et /saml/)
+- Dossier /lib/Auth/ retiré (inutilisé)
+- Dossier /www/resources/ retiré (inutilisé + contient des sources js inutiles / obsolètes et un fichier _x_ qui est un jpg sans extension et qui fait râler TortoiseSVN, ...)
+On passe ainsi de 4,59Mo à 1,88Mo.
+
+
+Configuration de SimpleSAMLphp
+Modification complète du fichier /config/config.php
+
+
+Configuration des sources d'authentification
+Modification complète du fichier /config/authsources.php
+
+
+Ajout metadata du fournisseur d'identité Gepi
+Modification complète du fichier /metadata/saml20-idp-remote.php
+
+
+========================================
+Modifications non répercutées
+========================================
+
+
+Fichier /lib/SimpleSAML/Utilities.php
+-		$selfURLhost .= $_SERVER['SCRIPT_NAME'];
+-		if (isset($_SERVER['PATH_INFO'])) {
+-			$selfURLhost .= $_SERVER['PATH_INFO'];
+-		}
++		$selfURLhost .= str_replace( '?'.$_SERVER['QUERY_STRING'], '', $_SERVER['REQUEST_URI'] );
+Motif : "Le reverse proxy ne fonctionne pas sur la version 1.8".
+C'est aux auteurs de la librairie d'y remédier si c'est pertinent.
+
+
+Ajout d'un .htaccess à la racine de SimpleSAMLphp
++AuthGroupFile /dev/null
++AuthName "Acces restreint"
++AuthType Basic
++deny from all
+Ajout d'un .htaccess dans /www/
++AuthGroupFile /dev/null
++AuthName "Acces restreint"
++AuthType Basic
++allow from all
+C'est aux auteurs de la librairie d'y remédier si c'est pertinent.
+
+
+Ajout d'un .htaccess à la racine de SACoche
++
++Options FollowSymLinks
++RewriteEngine On
++# acces simplesaml forcé en https.
++RewriteCond %{HTTPS} off
++RewriteRule ^simplesaml(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [NE,R,L]	# redirige en https pour l'authentification
++# fin forcage https
++
++RewriteRule ^simplesaml(.*)$ _simplesaml/www$1
+Ces fichiers .htaccess sont interdits ou non pris en compte suivant les configurations ; c'est à l'administrateur système d'étudier ceci.
+
+
+Ajout d'un module d'authentification SACoche dans /modules/sacocheauth/
+SACoche conserve son identification, il ne fait qu'utiliser SimpleSAMLphp pour interroger des services d'authentification distants.

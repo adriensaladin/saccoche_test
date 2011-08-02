@@ -43,13 +43,13 @@ $TITRE = "Connexion SSO";
  * Normalement on passe en GET le numéro de la base, mais il se peut qu'une connection directe ne puisse être établie qu'avec l'UAI (connu de l'ENT) en non avec le numéro de la base SACoche (inconnu de l'ENT).
  * Dans ce cas, on récupère le numéro de la base et on le remplace dans les variable PHP, pour ne pas avoir à recommencer ce petit jeu à chaque échange avec le serveur SSO pendant l'authentification.
  * 
- * URL directe mono-structure            : http://adresse.com?sso=...
- * URL directe multi-structure normale   : http://adresse.com?sso=...&base=...
- * URL directe multi-structure spéciale  : http://adresse.com?sso=...&uai=...
+ * URL directe mono-structure            : http://adresse.com/?sso
+ * URL directe multi-structure normale   : http://adresse.com/?sso&base=...
+ * URL directe multi-structure spéciale  : http://adresse.com/?sso&uai=...
  * 
- * URL profonde mono-structure           : http://adresse.com?page=...&sso=...
- * URL profonde multi-structure normale  : http://adresse.com?page=...&sso=...&base=...
- * URL profonde multi-structure spéciale : http://adresse.com?page=...&sso=...&uai=...
+ * URL profonde mono-structure           : http://adresse.com/?page=...&sso
+ * URL profonde multi-structure normale  : http://adresse.com/?page=...&sso&base=...
+ * URL profonde multi-structure spéciale : http://adresse.com/?page=...&sso&uai=...
  */
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
@@ -77,24 +77,10 @@ if( (HEBERGEUR_INSTALLATION=='multi-structures') && ($UAI!='') )
 }
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-// Récupération des paramètres transmis ou en cookie (à effectuer après le test de l'UAI)
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-
-$MODE = (isset($_GET['sso'])) ? clean_login($_GET['sso']) : ( (isset($_COOKIE[COOKIE_AUTHMODE])) ? clean_login($_COOKIE[COOKIE_AUTHMODE]) : 'normal' ) ;
-$BASE = (isset($_GET['base'])) ? clean_entier($_GET['base']) : ( (isset($_COOKIE[COOKIE_STRUCTURE])) ? clean_entier($_COOKIE[COOKIE_STRUCTURE]) : 0 ) ;
-
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-// Il faut savoir quel mode de SSO utiliser
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-
-if(!in_array( $MODE , array('cas','saml') )) // ldap ajouté un jour ?
-{
-	affich_message_exit($titre='Donnée manquante',$contenu='Paramètre indiquant le mode de connexion SSO non transmis.');
-}
-
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 // En cas de multi-structures, il faut savoir dans quelle base récupérer les informations
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
+$BASE = (isset($_GET['base'])) ? clean_entier($_GET['base']) : ( (isset($_COOKIE[COOKIE_STRUCTURE])) ? clean_entier($_COOKIE[COOKIE_STRUCTURE]) : 0 ) ;
 
 if(HEBERGEUR_INSTALLATION=='multi-structures')
 {
@@ -112,22 +98,21 @@ if(HEBERGEUR_INSTALLATION=='multi-structures')
 // Mettre à jour la base si nécessaire
 maj_base_si_besoin($BASE);
 
-$DB_TAB = DB_STRUCTURE_lister_parametres('"connexion_mode","cas_serveur_host","cas_serveur_port","cas_serveur_root"'); // A compléter
+$DB_TAB = DB_STRUCTURE_lister_parametres('"connexion_mode","cas_serveur_host","cas_serveur_port","cas_serveur_root","gepi_url","gepi_rne","gepi_certificat_empreinte"'); // A compléter
 foreach($DB_TAB as $DB_ROW)
 {
 	${$DB_ROW['parametre_nom']} = $DB_ROW['parametre_valeur'];
 }
-if( ($MODE=='cas') && ( ($connexion_mode!='cas') || (isset($connexion_mode,$cas_serveur_host,$cas_serveur_port,$cas_serveur_root)==false) ) )
+if($connexion_mode=='normal')
 {
-	affich_message_exit($titre='Données incompatibles',$contenu='Etablissement non configuré par l\'administrateur pour une connexion CAS.');
+	affich_message_exit($titre='Configuration manquante',$contenu='Etablissement non configuré par l\'administrateur pour utiliser un service d\'authentification externe.');
 }
-// même test à faire pour les autres modes
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 // Identification avec le protocole CAS
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
-if($MODE=='cas')
+if($connexion_mode=='cas')
 {
 	// Inclure la classe phpCAS
 	require_once('./_lib/phpCAS/CAS.php');
@@ -147,17 +132,54 @@ if($MODE=='cas')
 	// Rapatrier les informations si elles sont validées par CAS (qui envoie alors un ticket en GET)
 	$auth = phpCAS::checkAuthentication();
 	// Récupérer l'identifiant (login ou numéro interne...) de l'utilisateur authentifié pour le traiter dans l'application
-	$login = phpCAS::getUser();
+	$id_ENT = phpCAS::getUser();
 	// Comparer avec les données de la base
-	$connexion = connecter_user($BASE,$login,$password=false,$mode_connection='cas');
-	if($connexion!='ok')
+	list($auth_resultat,$auth_DB_ROW) = tester_authentification_user($BASE,$id_ENT,$password=false,$connexion_mode);
+	if($auth_resultat!='ok')
 	{
-		affich_message_exit($titre='Compte inaccessible',$contenu=$connexion);
+		affich_message_exit($titre='Incident authentification',$contenu=$auth_resultat);
 	}
+	enregistrer_session_user($BASE,$auth_DB_ROW);
 	// Redirection vers la page demandée en cas de succès.
 	// En théorie il faudrait laisser la suite du code se poursuivre, ce qui n'est pas impossible, mais ça pose le souci de la transmission de &verif_cookie
 	$protocole = ( isset($_SERVER['HTTPS']) && ($_SERVER['HTTPS']=='on') ) ? 'https://' : 'http://' ;
 	redirection_immediate($protocole.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'].'&verif_cookie');
+	exit();
+}
+
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+// Identification à partir de GEPI avec le protocole SAML
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
+if($connexion_mode=='gepi')
+{
+	// Mise en session d'informations dont SimpleSAMLphp a besoin ; utiliser des constantes ne va pas car Gepi fait un appel à SimpleSAMLphp en court-circuitant SACoche pour vérifier la légitimité de l'appel.
+	$_SESSION['SACoche-SimpleSAMLphp'] = array(
+		'GEPI_URL'                  => $gepi_url,
+		'GEPI_RNE'                  => $gepi_rne,
+		'GEPI_CERTIFICAT_EMPREINTE' => $gepi_certificat_empreinte,
+		'SIMPLESAMLPHP_BASEURLPATH' => substr($_SERVER['SCRIPT_NAME'],1,-9).'_lib/SimpleSAMLphp/www/',
+		'WEBMESTRE_NOM'             => WEBMESTRE_NOM,
+		'WEBMESTRE_PRENOM'          => WEBMESTRE_PRENOM,
+		'WEBMESTRE_COURRIEL'        => WEBMESTRE_COURRIEL
+	);
+	// Inclure la classe SimpleSAMLphp
+	require_once('./_lib/SimpleSAMLphp/lib/_autoload.php');
+	// Initialiser la classe
+	$auth = new SimpleSAML_Auth_Simple('distant-gepi-saml');
+	// Tester si le user est authentifié, rediriger sinon
+	$auth->requireAuth();
+	// Récupérer l'identifiant Gepi de l'utilisateur authentifié pour le traiter dans l'application
+	$attr = $auth->getAttributes();
+	$login_GEPI = $attr['USER_ID_GEPI'][0];
+	// Comparer avec les données de la base
+	list($auth_resultat,$auth_DB_ROW) = tester_authentification_user($BASE,$login_GEPI,$password=false,$connexion_mode);
+	if($auth_resultat!='ok')
+	{
+		affich_message_exit($titre='Incident authentification',$contenu=$auth_resultat);
+	}
+	enregistrer_session_user($BASE,$auth_DB_ROW);
+	// Pas de redirection car passage possible d'infos en POST à conserver ; tant pis pour la vérification du cookie...
 }
 
 ?>

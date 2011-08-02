@@ -28,24 +28,10 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-// Récupération des paramètres transmis
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-
-$MODE = (isset($_GET['sso']))  ? clean_login($_GET['sso'])   : '';
-$BASE = (isset($_GET['base'])) ? clean_entier($_GET['base']) : 0;
-
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-// Il faut savoir quel mode de SSO utiliser
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-
-if(!in_array( $MODE , array('cas','saml') )) // ldap ajouté un jour ?
-{
-	affich_message_exit($titre='Donnée manquante',$contenu='Paramètre indiquant le mode de connexion SSO non transmis.');
-}
-
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 // En cas de multi-structures, il faut savoir dans quelle base récupérer les informations
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
+$BASE = (isset($_GET['base'])) ? clean_entier($_GET['base']) : 0;
 
 if(HEBERGEUR_INSTALLATION=='multi-structures')
 {
@@ -63,22 +49,21 @@ if(HEBERGEUR_INSTALLATION=='multi-structures')
 // Mettre à jour la base si nécessaire
 maj_base_si_besoin($BASE);
 
-$DB_TAB = DB_STRUCTURE_lister_parametres('"connexion_mode","cas_serveur_host","cas_serveur_port","cas_serveur_root"'); // A compléter
+$DB_TAB = DB_STRUCTURE_lister_parametres('"connexion_mode","cas_serveur_host","cas_serveur_port","cas_serveur_root","gepi_url","gepi_rne","gepi_certificat_empreinte"'); // A compléter
 foreach($DB_TAB as $DB_ROW)
 {
 	${$DB_ROW['parametre_nom']} = $DB_ROW['parametre_valeur'];
 }
-if( ($MODE=='cas') && ( ($connexion_mode!='cas') || (isset($connexion_mode,$cas_serveur_host,$cas_serveur_port,$cas_serveur_root)==false) ) )
+if($connexion_mode=='normal')
 {
-	affich_message_exit($titre='Données incompatibles',$contenu='Etablissement non configuré par l\'administrateur pour une connexion CAS.');
+	affich_message_exit($titre='Configuration manquante',$contenu='Etablissement non configuré par l\'administrateur pour utiliser un service d\'authentification externe.');
 }
-// même test à faire pour les autres modes
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 // Déconnexion avec le protocole CAS
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
-if($MODE=='cas')
+if($connexion_mode=='cas')
 {
 	// Inclure la classe phpCAS
 	require_once('./_lib/phpCAS/CAS.php');
@@ -91,10 +76,48 @@ if($MODE=='cas')
 	phpCAS::setNoCasServerValidation();
 	// Gestion du single sign-out
 	phpCAS::handleLogoutRequests(false);
-	// Demander à CAS de se déconnecter
+	// Déconnexion de CAS
 	phpCAS::logout();
+	exit();
 }
 
-exit();
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+// Déconnexion de GEPI avec le protocole SAML
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
+if($connexion_mode=='gepi')
+{
+	// Mise en session d'informations dont SimpleSAMLphp a besoin ; utiliser des constantes ne va pas car Gepi fait un appel à SimpleSAMLphp en court-circuitant SACoche pour vérifier la légitimité de l'appel.
+	$_SESSION['SACoche-SimpleSAMLphp'] = array(
+		'GEPI_URL'                  => $gepi_url,
+		'GEPI_RNE'                  => $gepi_rne,
+		'GEPI_CERTIFICAT_EMPREINTE' => $gepi_certificat_empreinte,
+		'SIMPLESAMLPHP_BASEURLPATH' => substr($_SERVER['SCRIPT_NAME'],1,-9).'_lib/SimpleSAMLphp/www/',
+		'WEBMESTRE_NOM'             => WEBMESTRE_NOM,
+		'WEBMESTRE_PRENOM'          => WEBMESTRE_PRENOM,
+		'WEBMESTRE_COURRIEL'        => WEBMESTRE_COURRIEL
+	);
+	// Inclure la classe SimpleSAMLphp
+	require_once('./_lib/SimpleSAMLphp/lib/_autoload.php');
+	// Initialiser la classe
+	$auth = new SimpleSAML_Auth_Simple('distant-gepi-saml');
+	// Déconnexion de GEPI
+	if ($auth->isAuthenticated())
+	{
+		$auth->logout();
+		exit();
+	}
+	elseif(isset($_SESSION['SimpleSAMLphp_SESSION']))
+	{
+		// On revient très probablement de la déconnexion de GEPI (en effet, au contraire de CAS, la page de déconnexion distante renvoie vers l'application au lieu de marquer un arrêt).
+		unset($_SESSION['SimpleSAMLphp_SESSION']);
+		affich_message_exit($titre='Deconnexion de Gepi',$contenu='Déconnexion du service d\'authentification Gepi effectuée.<br />Fermez votre navigateur par sécurité.');
+	}
+	else
+	{
+		// Bizarre... a priori on n'était pas connecté à GEPI... appel direct ?
+		affich_message_exit($titre='Deconnexion de Gepi',$contenu='Votre authentification sur Gepi n\'a pas été retrouvée.<br />Fermez votre navigateur par sécurité pour être certain d\'en être déconnecté.');
+	}
+}
 
 ?>

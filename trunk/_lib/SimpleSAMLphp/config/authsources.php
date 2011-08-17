@@ -18,11 +18,11 @@ $config = array(
 		//on va travailler sur les attributs pour avoir des attributs au format SACoche
 		'authproc' => array(
 			50 => array(
-				'class' => 'core:AttributeMap',
-				'login' => 'USER_ID_GEPI',
-				'statut' => 'USER_PROFIL',
-				'nom' => 'USER_NOM',
-				'prenom' => 'USER_PRENOM'
+				'class'      => 'core:AttributeMap',
+				'login_gepi' => 'USER_ID_GEPI',
+				'statut'     => 'USER_PROFIL',
+				'nom'        => 'USER_NOM',
+				'prenom'     => 'USER_PRENOM'
 			)
 		)
 	)

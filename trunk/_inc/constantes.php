@@ -73,7 +73,7 @@ if($fin)
 define('SERVEUR_ADRESSE',$chemin);
 
 // SERVEUR_TYPE : Serveur local de développement (LOCAL) ou serveur en ligne de production (PROD)
-$serveur = in_array($_SERVER['SERVER_NAME'],array('localhost','127.0.0.1')) ? 'LOCAL' : 'PROD';
+$serveur = in_array($_SERVER['HTTP_HOST'],array('localhost','127.0.0.1')) ? 'LOCAL' : 'PROD';
 define('SERVEUR_TYPE',$serveur);
 
 // SERVEUR_PROJET        : URL du projet SACoche

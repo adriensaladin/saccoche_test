@@ -9,8 +9,8 @@
 
 $metadata['gepi-idp'] = array(
 	'name' => array('fr' => 'Gepi'),
-	'SingleSignOnService'  => $_SESSION['SACoche-SimpleSAMLphp']['GEPI_URL'].'/lib/simplesaml/www/saml2/idp/SSOService.php'.'?rne='.$_SESSION['SACoche-SimpleSAMLphp']['GEPI_RNE'], /* issu de SACoche */
-	'SingleLogoutService'  => $_SESSION['SACoche-SimpleSAMLphp']['GEPI_URL'].'/lib/simplesaml/www/saml2/idp/SingleLogoutService.php'.'?rne='.$_SESSION['SACoche-SimpleSAMLphp']['GEPI_RNE'], /* issu de SACoche */
+	'SingleSignOnService'  => $_SESSION['SACoche-SimpleSAMLphp']['GEPI_URL'].'/lib/simplesaml/www/saml2/idp/SSOService.php'.'?organization='.$_SESSION['SACoche-SimpleSAMLphp']['GEPI_RNE'], /* issu de SACoche */
+	'SingleLogoutService'  => $_SESSION['SACoche-SimpleSAMLphp']['GEPI_URL'].'/lib/simplesaml/www/saml2/idp/SingleLogoutService.php'.'?organization='.$_SESSION['SACoche-SimpleSAMLphp']['GEPI_RNE'], /* issu de SACoche */
 	'certFingerprint'      => $_SESSION['SACoche-SimpleSAMLphp']['GEPI_CERTIFICAT_EMPREINTE'] /* issu de SACoche */
 );
 ?>

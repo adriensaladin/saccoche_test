@@ -74,7 +74,7 @@ if(isset($_COOKIE[COOKIE_AUTHMODE]))
 <hr />
 
 <h2><img src="./_img/login.gif" alt="Identification" /> <?php echo($profil=='normal')?'Identification':'<span style="color:#C00">Accès webmestre</span>'; ?><?php echo $liens_autres_profils ?></h2>
-<form action=""><fieldset>
+<form action="" method="post"><fieldset>
 	<input id="f_base" name="f_base" type="hidden" value="<?php echo $BASE ?>" />
 	<input id="f_profil" name="f_profil" type="hidden" value="<?php echo $profil ?>" />
 	<label id="ajax_msg" class="loader">Chargement en cours...</label>

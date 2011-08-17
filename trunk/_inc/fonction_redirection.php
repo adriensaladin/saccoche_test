@@ -41,9 +41,10 @@ function entete()
  * 
  * @param string $titre     titre de la page
  * @param string $contenu   contenu HTML affiché (ou AJAX retourné)
+ * @param string $lien      facultatif ; texte <a href="...">...</a> si on veut autre chose qu'un lien vers l'accueil.
  * @return exit !
  */
-function affich_message_exit($titre,$contenu)
+function affich_message_exit($titre,$contenu,$lien='')
 {
 	if(SACoche=='index')
 	{
@@ -51,7 +52,7 @@ function affich_message_exit($titre,$contenu)
 		echo'<head><title>SACoche » '.$titre.'</title><meta http-equiv="Content-Type" content="text/html; charset='.CHARSET.'" /></head>';
 		echo'<body style="background:#EAEAFF;font:15px sans-serif;color:#D00">';
 		echo'<p>'.$contenu.'</p>';
-		echo'<p><a href="./index.php">Retour en page d\'accueil de SACoche.</a></p>';
+		echo ($lien) ? '<p>'.$lien.'</p>' : '<p><a href="./index.php">Retour en page d\'accueil de SACoche.</a></p>' ;
 		echo'</body>';
 		echo'</html>';
 	}

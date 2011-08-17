@@ -461,6 +461,11 @@ class SAML2_AuthnRequest extends SAML2_Request {
 			}
 		}
 
+		/* DEBUT AJOUT JOSSELIN */
+		if (!empty($this->extensions)) {
+			SAML2_XML_samlp_Extensions::addList($root, $this->extensions);
+		}
+		/* FIN AJOUT JOSSELIN */
 
 		if ($this->ProxyCount !== null || count($this->IDPList) > 0 || count($this->RequesterID) > 0) {
 			$scoping = $this->document->createElementNS(SAML2_Const::NS_SAMLP, 'Scoping');

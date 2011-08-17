@@ -36,6 +36,13 @@ Ajout metadata du fournisseur d'identité Gepi
 Modification complète du fichier /metadata/saml20-idp-remote.php
 
 
+Modification de SimpleSAMLphp par Josselin (pas normal de modifier la classe...)
+fichiers /lib/SAML2/AuthnRequest.php
+         /modules/saml/docs/sp.txt
+         /modules/saml/lib/Auth/Source/SP.php
+voir https://github.com/kigeia/sacoche/commit/b3a0780273b20405c6b777f7412183a98aa052c0
+
+
 ========================================
 Modifications non répercutées
 ========================================

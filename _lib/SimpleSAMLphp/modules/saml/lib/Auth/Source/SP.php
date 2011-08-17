@@ -244,6 +244,12 @@ class sspmod_saml_Auth_Source_SP extends SimpleSAML_Auth_Source {
 		
 		$ar->setRequesterID($requesterID);
 		
+		/* DEBUT AJOUT JOSSELIN */
+		if (isset($state['saml:Extensions'])) {
+			$ar->setExtensions($state['saml:Extensions']);
+		}
+		/* FIN AJOUT JOSSELIN */
+
 		$id = SimpleSAML_Auth_State::saveState($state, 'saml:sp:sso', TRUE);
 		$ar->setId($id);
 

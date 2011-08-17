@@ -167,6 +167,16 @@ if($connexion_mode=='gepi')
 	require_once('./_lib/SimpleSAMLphp/lib/_autoload.php');
 	// Initialiser la classe
 	$auth = new SimpleSAML_Auth_Simple('distant-gepi-saml');
+	//on forge une extension SAML pour tramsmettre l'établissement précisé dans SACoche
+	$ext = array();
+	if($BASE)
+	{
+		$dom = new DOMDocument();
+		$ce = $dom->createElementNS('gepi_name_space', 'gepi_name_space:organization', $BASE);
+		$ext[] = new SAML2_XML_Chunk($ce);
+	}
+	// Tester si le user est authentifié, rediriger sinon
+	$auth->requireAuth( array('saml:Extensions'=>$ext) );
 	// Tester si le user est authentifié, rediriger sinon
 	$auth->requireAuth();
 	// Récupérer l'identifiant Gepi de l'utilisateur authentifié pour le traiter dans l'application

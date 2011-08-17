@@ -78,6 +78,7 @@ Néanmoins, plusieurs autres pistes peuvent toujours être explorées :
  * Enfin, les tests ont montrés qu'il fallait aussi adapter la valeur en fonction de la variable serveur memory_limit.
  * -> pour 16Mo ça coince à partir de 7000 lignes
  * -> pour  8Mo ça coince à partir de 2800 lignes
+ * -> pour 32Mo sur le serveur Sésamath après migration chez OVH ça coince à partir de 5000 lignes !!!
  *
  * @param void
  * @return int
@@ -86,7 +87,7 @@ Néanmoins, plusieurs autres pistes peuvent toujours être explorées :
 function determiner_nombre_lignes_maxi_par_paquet()
 {
 	$memory_limit = (int)ini_get('memory_limit'); // Par exemple 32M => 32 ; -1 si illimité.
-	return ($memory_limit==-1) ? 10000 : min(10000,$memory_limit*250) ; // Ainsi 8 => 2000 ; 16 => 4000 ; 32 => 8000 ; -1 => 10000
+	return ($memory_limit==-1) ? 5000 : min(5000,$memory_limit*125) ; // Ainsi 8 => 1000 ; 16 => 2000 ; 32 => 4000 ; -1 => 5000
 }
 
 /**
@@ -150,7 +151,7 @@ function sauvegarder_tables_base_etablissement($dossier_temp,$nb_lignes_maxi)
 				$fichier_contenu .= 'ALTER TABLE '.$tab_table_info['Nom'].' ENABLE KEYS;'."\r\n";
 			}
 			// Enregistrer le fichier
-			$fichier_sql_nom = 'dump_'.$tab_table_info['Nom'].'_'.$i.'.sql';
+			$fichier_sql_nom = 'dump_'.$tab_table_info['Nom'].'_'.sprintf("%03u",$i).'.sql';
 			Ecrire_Fichier($dossier_temp.$fichier_sql_nom,$fichier_contenu);
 		}
 	}

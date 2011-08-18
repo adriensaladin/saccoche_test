@@ -318,8 +318,10 @@ function DB_WEBMESTRE_supprimer_multi_structure($BASE)
 	$DB_SQL.= 'WHERE sacoche_base=:base ';
 	$DB_VAR = array(':base'=>$BASE);
 	DB::query(SACOCHE_WEBMESTRE_BD_NAME , $DB_SQL , $DB_VAR);
-	// Supprimer le dossier pour accueillir les vignettes verticales avec l'identité des élèves
+	// Supprimer les dossiers de fichiers temporaires par établissement : vignettes verticales, flux RSS des demandes, cookies des choix de formulaires
 	Supprimer_Dossier('./__tmp/badge/'.$BASE);
+	Supprimer_Dossier('./__tmp/cookie/'.$BASE);
+	Supprimer_Dossier('./__tmp/rss/'.$BASE);
 	// Supprimer les éventuels fichiers de blocage
 	@unlink($CHEMIN_CONFIG.'blocage_webmestre_'.$BASE.'.txt');
 	@unlink($CHEMIN_CONFIG.'blocage_administrateur_'.$BASE.'.txt');

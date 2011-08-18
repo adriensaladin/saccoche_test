@@ -417,14 +417,18 @@ if( $step==6 )
 			// Insérer un compte administrateur dans la base de la structure
 			$password = fabriquer_mdp();
 			$user_id = DB_STRUCTURE_ajouter_utilisateur($user_sconet_id=0,$user_sconet_elenoet=0,$reference='','administrateur',WEBMESTRE_NOM,WEBMESTRE_PRENOM,$login='admin',$password,$classe_id=0,$id_ent='',$id_gepi='');
-			// Créer un dossier accueillir pour les vignettes verticales avec l'identité des élèves
+			// Créer les dossiers de fichiers temporaires par établissement : vignettes verticales, flux RSS des demandes, cookies des choix de formulaires
 			/*
 				Petit problème : on ne passe pas par ici si la base est existante mais les fichiers effacés... donc dans ce cas ce dossier n'est pas recréé...
 				De même, en multi-structures, il faudrait tester la présence de tous les dossiers éventuels...
-				Peut-être qu'une étape supplémentaire serait bienvenue, même si dans ce cas on  n'a plsu ensuite les identifiants admin sous les yeux...
+				Peut-être qu'une étape supplémentaire serait bienvenue, même si dans ce cas on n'a plus ensuite les identifiants admin sous les yeux...
 			*/
 			Creer_Dossier('./__tmp/badge/'.'0');
 			Ecrire_Fichier('./__tmp/badge/'.'0'.'/index.htm','Circulez, il n\'y a rien à voir par ici !');
+			Creer_Dossier('./__tmp/cookie/'.'0');
+			Ecrire_Fichier('./__tmp/cookie/'.'0'.'/index.htm','Circulez, il n\'y a rien à voir par ici !');
+			Creer_Dossier('./__tmp/rss/'.'0');
+			Ecrire_Fichier('./__tmp/rss/'.'0'.'/index.htm','Circulez, il n\'y a rien à voir par ici !');
 			// Affichage du retour
 			$affichage .= '<p><label class="valide">Les tables de la base de données ont été installées.</label></p>'."\r\n";
 			$affichage .= '<span class="astuce">Le premier compte administrateur a été créé avec votre identité :</span>'."\r\n";

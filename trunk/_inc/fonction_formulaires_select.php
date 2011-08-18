@@ -159,7 +159,7 @@ function load_cookie_select($page)
 			break;
 	}
 	// Récupération du contenu du cookie
-	$filename = './__tmp/cookie/etabl'.$_SESSION['BASE'].'_user'.$_SESSION['USER_ID'].'_'.$page.'.txt';
+	$filename = './__tmp/cookie/'.$_SESSION['BASE'].'/user'.$_SESSION['USER_ID'].'_'.$page.'.txt';
 	if(is_file($filename))
 	{
 		$contenu = file_get_contents($filename);
@@ -204,6 +204,13 @@ function load_cookie_select($page)
 			$tab_cookie = compact('orientation','couleur','legende','marge_min','cases_nb','cases_largeur');
 			break;
 	}
+	// Si le dossier n'existe pas, on le créé (possible car au début tous les Cookies des établissements étaient dans un même dossier commun).
+	$dossier_nom = './__tmp/cookie/'.$_SESSION['BASE'];
+	if(!is_dir($dossier_nom))
+	{
+		Creer_Dossier($dossier_nom);
+		Ecrire_Fichier($dossier_nom.'/index.htm','Circulez, il n\'y a rien à voir par ici !');
+	}
 	/*
 		Remarque : il y a un problème de serialize avec les type float : voir http://fr2.php.net/manual/fr/function.serialize.php#85988
 		Dans ce cas il faut remplacer
@@ -211,7 +218,7 @@ function load_cookie_select($page)
 		par
 		preg_replace( '/d:([0-9]+(\.[0-9]+)?([Ee][+-]?[0-9]+)?);/e', "'d:'.(round($1,9)).';'", serialize($tab_cookie) );
 	*/
-	$filename = './__tmp/cookie/etabl'.$_SESSION['BASE'].'_user'.$_SESSION['USER_ID'].'_'.$page.'.txt';
+	$filename = $dossier_nom.'/user'.$_SESSION['USER_ID'].'_'.$page.'.txt';
 	Ecrire_Fichier($filename,serialize($tab_cookie));
 }
 

@@ -111,8 +111,10 @@ if( ($action=='initialiser') && (HEBERGEUR_INSTALLATION=='mono-structure') && $p
 {
 	// Mettre à jour la base si nécessaire
 	maj_base_si_besoin($BASE);
-	// Nettoyer le dossier des vignettes si nécessaire
-	effacer_fichiers_temporaires('./__tmp/badge/'.'0' , 525600); // Nettoyer ce dossier des fichiers antérieurs à 1 an
+	// Nettoyer les fichiers temporaires dans des dossiers par établissements
+	effacer_fichiers_temporaires('./__tmp/badge/'.'0'  , 525600); // Nettoyer ce dossier des fichiers antérieurs à 1 an
+	effacer_fichiers_temporaires('./__tmp/cookie/'.'0' , 525600); // Nettoyer ce dossier des fichiers antérieurs à 1 an
+	effacer_fichiers_temporaires('./__tmp/rss/'.'0'    ,  43800); // Nettoyer ce dossier des fichiers antérieurs à 1 mois
 	// Requête pour récupérer la dénomination et le mode de connexion
 	$DB_TAB = DB_STRUCTURE_lister_parametres('"denomination","connexion_mode","connexion_nom"');
 	foreach($DB_TAB as $DB_ROW)
@@ -149,8 +151,9 @@ if( ( ($action=='initialiser') && ($BASE>0) && (HEBERGEUR_INSTALLATION=='multi-s
 	// Mettre à jour la base si nécessaire
 	charger_parametres_mysql_supplementaires($BASE);
 	maj_base_si_besoin($BASE);
-	// Nettoyer le dossier des vignettes si nécessaire
+	// Nettoyer le dossier des vignettes et des flux RSS si nécessaire
 	effacer_fichiers_temporaires('./__tmp/badge/'.$BASE , 525600); // Nettoyer ce dossier des fichiers antérieurs à 1 an
+	effacer_fichiers_temporaires('./__tmp/rss/'.$BASE   , 525600); // Nettoyer ce dossier des fichiers antérieurs à 1 an
 	// Une deuxième requête sur SACOCHE_STRUCTURE_BD_NAME pour savoir si le mode de connexion est SSO ou pas
 	$DB_TAB = DB_STRUCTURE_lister_parametres('"connexion_mode","connexion_nom"');
 	foreach($DB_TAB as $DB_ROW)

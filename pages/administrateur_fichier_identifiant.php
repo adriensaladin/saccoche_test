@@ -139,8 +139,8 @@ $select_professeurs_directeurs = afficher_select(DB_STRUCTURE_OPT_professeurs_di
 		<h4>En important un fichier</h4>
 		<ul class="puce">
 			<li><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__import_identifiant_Gepi_SACoche">DOC : Import des identifiants de Gepi dans SACoche.</a></span></li>
-			<li>Importer le fichier <b>base_eleves_gepi.csv</b> issu de Gepi (aide ci-dessus) : <button id="import_gepi_eleves" type="button"><img alt="" src="./_img/bouton/fichier_import.png" /> Parcourir...</button></li>
-			<li>Importer le fichier <b>base_professeurs_gepi.csv</b> issu de Gepi (aide ci-dessus) : <button id="import_gepi_profs" type="button"><img alt="" src="./_img/bouton/fichier_import.png" /> Parcourir...</button></li>
+			<li>Importer le fichier <b>base_eleve_gepi.csv</b> issu de Gepi (aide ci-dessus) : <button id="import_gepi_eleves" type="button"><img alt="" src="./_img/bouton/fichier_import.png" /> Parcourir...</button></li>
+			<li>Importer le fichier <b>base_professeur_gepi.csv</b> issu de Gepi (aide ci-dessus) : <button id="import_gepi_profs" type="button"><img alt="" src="./_img/bouton/fichier_import.png" /> Parcourir...</button></li>
 		</ul>
 		<h4>En dupliquant un autre champ</h4>
 		<ul class="puce">

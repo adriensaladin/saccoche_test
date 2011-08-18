@@ -39,7 +39,7 @@ $profil = (isset($_GET['webmestre'])) ? 'webmestre' : 'normal' ;
 $liens_autres_profils = ($profil=='normal') ? '<a class="anti_h2" href="index.php?webmestre">profil webmestre</a>' : '<a class="anti_h2" href="index.php">profils classiques</a>' ;
 
 // Fichiers temporaires à effacer
-// Il y a ausi le dossier './__tmp/cookie/' auquel on ne touche pas, et les sous-dossiers de './__tmp/badge/' traités ailleurs
+// Il y a ausi les sous-dossier de './__tmp/badge/' + './__tmp/cookie/' + './__tmp/rss/' traités ailleurs.
 // On fait en sorte que plusieurs utilisateurs ne lancent pas le nettoyage simultanément (sinon on trouve qqs warning php dans les logs)
 $fichier_lock = './__tmp/lock.txt';
 if(!file_exists($fichier_lock))
@@ -49,7 +49,6 @@ if(!file_exists($fichier_lock))
 	effacer_fichiers_temporaires('./__tmp/export'    ,     60); // Nettoyer ce dossier des fichiers antérieurs à 1 heure
 	effacer_fichiers_temporaires('./__tmp/dump-base' ,     60); // Nettoyer ce dossier des fichiers antérieurs à 1 heure
 	effacer_fichiers_temporaires('./__tmp/import'    ,  10080); // Nettoyer ce dossier des fichiers antérieurs à 1 semaine
-	effacer_fichiers_temporaires('./__tmp/rss'       ,  43800); // Nettoyer ce dossier des fichiers antérieurs à 1 mois
 	unlink($fichier_lock);
 }
 

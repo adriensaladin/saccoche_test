@@ -1215,9 +1215,9 @@ function Creer_Dossier($dossier)
 		$affichage .= '<label for="rien" class="valide">Dossier &laquo;&nbsp;<b>'.$dossier.'</b>&nbsp;&raquo; déjà en place.</label><br />'."\r\n";
 		return TRUE;
 	}
-	// Le dossier a-t-il bien été créé ?
 	@umask(0000); // Met le chmod à 666 - 000 = 666 pour les fichiers prochains fichiers créés (et à 777 - 000 = 777 pour les dossiers).
 	$test = @mkdir($dossier);
+	// Le dossier a-t-il bien été créé ?
 	if(!$test)
 	{
 		$affichage .= '<label for="rien" class="erreur">Echec lors de la création du dossier &laquo;&nbsp;<b>'.$dossier.'</b>&nbsp;&raquo; : veuillez le créer manuellement.</label><br />'."\r\n";
@@ -1244,15 +1244,18 @@ function Creer_Dossier($dossier)
  */
 function Vider_Dossier($dossier)
 {
-	$tab_fichier = Lister_Contenu_Dossier($dossier);
-	foreach($tab_fichier as $fichier_nom)
+	if(is_dir($dossier))
 	{
-		unlink($dossier.'/'.$fichier_nom);
+		$tab_fichier = Lister_Contenu_Dossier($dossier);
+		foreach($tab_fichier as $fichier_nom)
+		{
+			unlink($dossier.'/'.$fichier_nom);
+		}
 	}
 }
 
 /**
- * Créer un dossier s'il n'existe pas, le vider de ses éventueles fichiers sinon.
+ * Créer un dossier s'il n'existe pas, le vider de ses éventuels fichiers sinon.
  * 
  * @param string   $dossier
  * @return void
@@ -1277,20 +1280,23 @@ function Creer_ou_Vider_Dossier($dossier)
  */
 function Supprimer_Dossier($dossier)
 {
-	$tab_contenu = Lister_Contenu_Dossier($dossier);
-	foreach($tab_contenu as $contenu)
+	if(is_dir($dossier))
 	{
-		$chemin_contenu = $dossier.'/'.$contenu;
-		if(is_dir($chemin_contenu))
+		$tab_contenu = Lister_Contenu_Dossier($dossier);
+		foreach($tab_contenu as $contenu)
 		{
-			Supprimer_Dossier($chemin_contenu);
+			$chemin_contenu = $dossier.'/'.$contenu;
+			if(is_dir($chemin_contenu))
+			{
+				Supprimer_Dossier($chemin_contenu);
+			}
+			else
+			{
+				unlink($chemin_contenu);
+			}
 		}
-		else
-		{
-			unlink($chemin_contenu);
-		}
+		rmdir($dossier);
 	}
-	rmdir($dossier);
 }
 
 /**
@@ -1345,10 +1351,17 @@ function Ecrire_Fichier($fichier_chemin,$fichier_contenu,$file_append=0)
  */
 function adresse_RSS($prof_id)
 {
+	// Si le dossier n'existe pas, on le créé (possible car au début tous les RSS des établissements étaient dans un même dossier commun).
+	$dossier_nom = './__tmp/rss/'.$_SESSION['BASE'];
+	if(!is_dir($dossier_nom))
+	{
+		Creer_Dossier($dossier_nom);
+		Ecrire_Fichier($dossier_nom.'/index.htm','Circulez, il n\'y a rien à voir par ici !');
+	}
 	// Le nom du RSS est tordu pour le rendre un minimum privé ; il peut être retrouvé, mais très difficilement, par un bidouilleur qui met le nez dans le code, mais il n'y a rien de confidentiel non plus.
-	$fichier_nom_debut = 'rss_'.$_SESSION['BASE'].'_'.$prof_id;
-	$fichier_nom_fin = md5($fichier_nom_debut.$_SERVER['DOCUMENT_ROOT']);
-	$fichier_chemin = './__tmp/rss/'.$fichier_nom_debut.'_'.$fichier_nom_fin.'.xml';
+	$fichier_nom_debut = 'rss_'.$prof_id;
+	$fichier_nom_fin   = md5($fichier_nom_debut.$_SERVER['DOCUMENT_ROOT']);
+	$fichier_chemin    = $dossier_nom.'/'.$fichier_nom_debut.'_'.$fichier_nom_fin.'.xml';
 	if(!file_exists($fichier_chemin))
 	{
 		$fichier_contenu ='<?xml version="1.0" encoding="utf-8"?>'."\r\n";

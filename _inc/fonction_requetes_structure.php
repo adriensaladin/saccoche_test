@@ -3667,8 +3667,10 @@ function DB_STRUCTURE_supprimer_mono_structure()
 	DB::query(SACOCHE_STRUCTURE_BD_NAME , 'DROP TABLE '.implode(', ',$tab_tables) );
 	// Supprimer le fichier de connexion
 	unlink($CHEMIN_MYSQL.'serveur_sacoche_structure.php');
-	// Supprimer le dossier pour accueillir les vignettes verticales avec l'identité des élèves
+	// Supprimer les dossiers de fichiers temporaires par établissement : vignettes verticales, flux RSS des demandes, cookies des choix de formulaires
 	Supprimer_Dossier('./__tmp/badge/'.'0');
+	Supprimer_Dossier('./__tmp/cookie/'.'0');
+	Supprimer_Dossier('./__tmp/rss/'.'0');
 	// Supprimer les éventuels fichiers de blocage
 	@unlink($CHEMIN_CONFIG.'blocage_webmestre_0.txt');
 	@unlink($CHEMIN_CONFIG.'blocage_administrateur_0.txt');

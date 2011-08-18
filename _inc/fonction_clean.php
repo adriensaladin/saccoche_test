@@ -204,16 +204,19 @@ function deleteBOM($file)
 
 function effacer_fichiers_temporaires($dossier,$nb_minutes)
 {
-	$date_limite = time() - $nb_minutes*60;
-	$tab_fichier = Lister_Contenu_Dossier($dossier);
-	foreach($tab_fichier as $fichier_nom)
+	if(is_dir($dossier))
 	{
-		$chemin_fichier = $dossier.'/'.$fichier_nom;
-		$extension = pathinfo($chemin_fichier,PATHINFO_EXTENSION);
-		$date_unix = filemtime($chemin_fichier);
-		if( (is_file($chemin_fichier)) && ($date_unix<$date_limite) && ($extension!='htm') )
+		$date_limite = time() - $nb_minutes*60;
+		$tab_fichier = Lister_Contenu_Dossier($dossier);
+		foreach($tab_fichier as $fichier_nom)
 		{
-			unlink($chemin_fichier);
+			$chemin_fichier = $dossier.'/'.$fichier_nom;
+			$extension = pathinfo($chemin_fichier,PATHINFO_EXTENSION);
+			$date_unix = filemtime($chemin_fichier);
+			if( (is_file($chemin_fichier)) && ($date_unix<$date_limite) && ($extension!='htm') )
+			{
+				unlink($chemin_fichier);
+			}
 		}
 	}
 }

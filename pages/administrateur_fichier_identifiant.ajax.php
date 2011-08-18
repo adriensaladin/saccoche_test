@@ -391,10 +391,10 @@ if( ($action=='import_gepi_eleves') || ($action=='import_gepi_profs') )
 		require_once('./_inc/fonction_infos_serveur.php');
 		exit('Erreur : problème de transfert ! Fichier trop lourd ? min(memory_limit,post_max_size,upload_max_filesize)='.minimum_limitations_upload());
 	}
-	$fnom_attendu = ($action=='import_gepi_eleves') ? 'base_eleves_gepi.csv' : 'base_professeurs_gepi.csv' ;
-	if($fnom_transmis!=$fnom_attendu)
+	$tab_fnom_attendu = array( 'import_gepi_eleves'=>array('base_eleve_gepi.csv') , 'import_gepi_profs'=>array('base_professeur_gepi.csv','base_cpe_gepi.csv') );
+	if(!in_array($fnom_transmis,$tab_fnom_attendu[$action]))
 	{
-		exit('Erreur : le nom du fichier n\'est pas "'.$fnom_attendu.'" !');
+		exit('Erreur : le nom du fichier n\'est pas "'.$tab_fnom_attendu[$action][0].'" !');
 	}
 	$fichier_dest = $action.'_'.$_SESSION['BASE'].'.txt' ;
 

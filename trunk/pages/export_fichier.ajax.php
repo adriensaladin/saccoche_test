@@ -66,11 +66,14 @@ if( ($type_export=='listing_users') && $groupe_id && isset($tab_types[$groupe_ty
 	// Finalisation de l'export CSV (archivage dans un fichier zippé)
 	$fnom = 'export_'.$_SESSION['BASE'].'_'.$_SESSION['USER_ID'].'_listing-eleves_'.$groupe_id.'_'.time();
 	$zip = new ZipArchive();
-	if ($zip->open($dossier_export.$fnom.'.zip', ZIPARCHIVE::CREATE)===TRUE)
+	$result_open = $zip->open($dossier_export.$fnom.'.zip', ZIPARCHIVE::CREATE);
+	if($result_open!==TRUE)
 	{
-		$zip->addFromString($fnom.'.csv',csv($export_csv));
-		$zip->close();
+		require('./_inc/tableau_zip_error.php');
+		exit('Problème de création de l\'archive ZIP ('.$result_open.$tab_zip_error[$result_open].') !');
 	}
+	$zip->addFromString($fnom.'.csv',csv($export_csv));
+	$zip->close();
 	// Finalisation de l'export HTML
 	$export_html .= '</tbody></table>'."\r\n";
 
@@ -108,11 +111,14 @@ if( ($type_export=='listing_matiere') && $matiere_id && $matiere_nom )
 	// Finalisation de l'export CSV (archivage dans un fichier zippé)
 	$fnom = 'export_'.$_SESSION['BASE'].'_'.$_SESSION['USER_ID'].'_listing-items_'.$matiere_id.'_'.time();
 	$zip = new ZipArchive();
-	if ($zip->open($dossier_export.$fnom.'.zip', ZIPARCHIVE::CREATE)===TRUE)
+	$result_open = $zip->open($dossier_export.$fnom.'.zip', ZIPARCHIVE::CREATE);
+	if($result_open!==TRUE)
 	{
-		$zip->addFromString($fnom.'.csv',csv($export_csv));
-		$zip->close();
+		require('./_inc/tableau_zip_error.php');
+		exit('Problème de création de l\'archive ZIP ('.$result_open.$tab_zip_error[$result_open].') !');
 	}
+	$zip->addFromString($fnom.'.csv',csv($export_csv));
+	$zip->close();
 	// Finalisation de l'export HTML
 	$export_html .= '</tbody></table>'."\r\n";
 
@@ -217,11 +223,14 @@ if( ($type_export=='arbre_matiere') && $matiere_id && $matiere_nom )
 	// Finalisation de l'export CSV (archivage dans un fichier zippé)
 	$fnom = 'export_'.$_SESSION['BASE'].'_'.$_SESSION['USER_ID'].'_arbre-matiere_'.$matiere_id.'_'.time();
 	$zip = new ZipArchive();
-	if ($zip->open($dossier_export.$fnom.'.zip', ZIPARCHIVE::CREATE)===TRUE)
+	$result_open = $zip->open($dossier_export.$fnom.'.zip', ZIPARCHIVE::CREATE);
+	if($result_open!==TRUE)
 	{
-		$zip->addFromString($fnom.'.csv',csv($export_csv));
-		$zip->close();
+		require('./_inc/tableau_zip_error.php');
+		exit('Problème de création de l\'archive ZIP ('.$result_open.$tab_zip_error[$result_open].') !');
 	}
+	$zip->addFromString($fnom.'.csv',csv($export_csv));
+	$zip->close();
 	// Finalisation de l'export HTML
 	$export_html.= '</div>';
 
@@ -307,11 +316,14 @@ if( ($type_export=='arbre_socle') && $palier_id && $palier_nom )
 	// Finalisation de l'export CSV (archivage dans un fichier zippé)
 	$fnom = 'export_'.$_SESSION['BASE'].'_'.$_SESSION['USER_ID'].'_arbre-socle_'.$palier_id.'_'.time();
 	$zip = new ZipArchive();
-	if ($zip->open($dossier_export.$fnom.'.zip', ZIPARCHIVE::CREATE)===TRUE)
+	$result_open = $zip->open($dossier_export.$fnom.'.zip', ZIPARCHIVE::CREATE);
+	if($result_open!==TRUE)
 	{
-		$zip->addFromString($fnom.'.csv',csv($export_csv));
-		$zip->close();
+		require('./_inc/tableau_zip_error.php');
+		exit('Problème de création de l\'archive ZIP ('.$result_open.$tab_zip_error[$result_open].') !');
 	}
+	$zip->addFromString($fnom.'.csv',csv($export_csv));
+	$zip->close();
 	// Finalisation de l'export HTML
 	$export_html.= '</div>';
 
@@ -424,11 +436,14 @@ if( ($type_export=='jointure_socle_matiere') && $palier_id && $palier_nom )
 	// Finalisation de l'export CSV (archivage dans un fichier zippé)
 	$fnom = 'export_'.$_SESSION['BASE'].'_'.$_SESSION['USER_ID'].'_jointure_'.$palier_id.'_'.time();
 	$zip = new ZipArchive();
-	if ($zip->open($dossier_export.$fnom.'.zip', ZIPARCHIVE::CREATE)===TRUE)
+	$result_open = $zip->open($dossier_export.$fnom.'.zip', ZIPARCHIVE::CREATE);
+	if($result_open!==TRUE)
 	{
-		$zip->addFromString($fnom.'.csv',csv($export_csv));
-		$zip->close();
+		require('./_inc/tableau_zip_error.php');
+		exit('Problème de création de l\'archive ZIP ('.$result_open.$tab_zip_error[$result_open].') !');
 	}
+	$zip->addFromString($fnom.'.csv',csv($export_csv));
+	$zip->close();
 	// Finalisation de l'export HTML
 	$export_html.= '</div>';
 

@@ -37,7 +37,7 @@ define('VERSION_BASE','2011-08-18');
 
 // VERSION_CSS_SCREEN / VERSION_CSS_PRINT / VERSION_JS_BIBLIO / VERSION_JS_GLOBAL / VERSION_JS_FILE
 // Pour éviter les problèmes de mise en cache (hors serveur localhost), modifier ces valeurs lors d'une mise à jour
-define('VERSION_CSS_SCREEN',62); // A changer lors de la mise à jour de ./_css/style.css
+define('VERSION_CSS_SCREEN',63); // A changer lors de la mise à jour de ./_css/style.css
 define('VERSION_CSS_PRINT',2);   // A changer lors de la mise à jour de ./_css/style_print.css
 define('VERSION_JS_BIBLIO',9);   // A changer lors de la mise à jour de ./_js/jquery-librairies.js
 define('VERSION_JS_GLOBAL',44);  // A changer lors de la mise à jour de ./_js/script.js

@@ -263,21 +263,10 @@ function afficher_contenu_referentiel($sesamath_id,$sesamath_key,$referentiel_id
 function fabriquer_chaine_integrite()
 {
 	// Liste de fichiers représentatifs mais n'impactant pas sur des modifs à la marge.
-	$tab_fichiers = array(
-		'index.php',
-		'ajax.php',
-		'VERSION.txt',
-		'_img/logo_grand.gif',
-		'_inc/constantes.php',
-		'_inc/fonction_appel_serveur_communautaire.php',
-		'_inc/fonction_sessions.php',
-		'pages/__menu_professeur.html',
-		'pages/validation_socle_item.ajax.php',
-		'pages/validation_socle_pilier.ajax.php'
-	);
+	include_once('./_inc/tableau_fichier_integrite.php');
 	// Fabrication de la chaine
 	$chaine = '';
-	foreach($tab_fichiers as $fichier)
+	foreach($tab_fichier_integrite as $fichier)
 	{
 		$chaine .= md5_file('./'.$fichier);
 	}

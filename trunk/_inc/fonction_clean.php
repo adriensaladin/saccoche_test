@@ -155,6 +155,10 @@ function html($text)
 	// Ne pas modifier ce code à la légère : les résultats sont différents suivant que ce soit un affichage direct ou ajax, suivant la version de PHP (5.1 ou 5.3)...
 	return (perso_mb_detect_encoding_utf8($text)) ? htmlspecialchars($text,ENT_COMPAT,'UTF-8') : utf8_encode(htmlspecialchars($text,ENT_COMPAT)) ;
 }
+function html_decode($text)
+{
+	return htmlspecialchars_decode($text,ENT_COMPAT) ;
+}
 
 /*
 	Convertit l'utf-8 en windows-1252 pour compatibilité avec FPDF

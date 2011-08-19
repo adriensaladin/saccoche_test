@@ -1698,11 +1698,14 @@ if( $step==52 )
 		$profil = ($is_profil_eleve) ? 'eleve' : ( ($is_profil_parent) ? 'parent' : array('professeur','directeur') ) ;
 		$fnom = 'identifiants_'.$_SESSION['BASE'].'_'.$profil.'_'.time();
 		$zip = new ZipArchive();
-		if ($zip->open($dossier_login_mdp.$fnom.'.zip', ZIPARCHIVE::CREATE)===TRUE)
+		$result_open = $zip->open($dossier_login_mdp.$fnom.'.zip', ZIPARCHIVE::CREATE);
+		if($result_open!==TRUE)
 		{
-			$zip->addFromString($fnom.'.csv',csv($fcontenu_csv));
-			$zip->close();
+			require('./_inc/tableau_zip_error.php');
+			exit('Problème de création de l\'archive ZIP ('.$result_open.$tab_zip_error[$result_open].') !');
 		}
+		$zip->addFromString($fnom.'.csv',csv($fcontenu_csv));
+		$zip->close();
 		// On archive les nouveaux identifiants dans un fichier pdf (classe fpdf + script étiquettes)
 		require_once('./_lib/FPDF/PDF_Label.php');
 		$pdf = new PDF_Label(array('paper-size'=>'A4', 'metric'=>'mm', 'marginLeft'=>5, 'marginTop'=>5, 'NX'=>3, 'NY'=>8, 'SpaceX'=>7, 'SpaceY'=>5, 'width'=>60, 'height'=>30, 'font-size'=>11));

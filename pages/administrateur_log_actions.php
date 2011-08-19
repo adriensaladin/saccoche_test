@@ -36,7 +36,7 @@ $TITRE = "Log des actions sensibles";
 $fichier_log_chemin = './__private/log/base_'.$_SESSION['BASE'].'.php';
 if(!file_exists($fichier_log_chemin))
 {
-	echo'<p class="danger">Le fichier n\'existe pas : propablemant qu\'aucune action sensible n\'a encore été effectuée !<p />';
+	echo'<p class="danger">Le fichier n\'existe pas : probablement qu\'aucune action sensible n\'a encore été effectuée !<p />';
 }
 else
 {
@@ -58,13 +58,15 @@ else
 	$fichier_log_contenu = str_replace(array('<?php /*','*/ ?>'),'',$fichier_log_contenu);
 	$dossier_export = './__tmp/export/';
 	$fichier_export_nom = 'log_'.$_SESSION['BASE'].'_'.time();
-
 	$zip = new ZipArchive();
-	if ($zip->open($dossier_export.$fichier_export_nom.'.zip', ZIPARCHIVE::CREATE)===TRUE)
+	$result_open = $zip->open($dossier_export.$fichier_export_nom.'.zip', ZIPARCHIVE::CREATE);
+	if($result_open!==TRUE)
 	{
-		$zip->addFromString($fichier_export_nom.'.csv',csv($fichier_log_contenu));
-		$zip->close();
+		require('./_inc/tableau_zip_error.php');
+		exit('Problème de création de l\'archive ZIP ('.$result_open.$tab_zip_error[$result_open].') !');
 	}
+	$zip->addFromString($fichier_export_nom.'.csv',csv($fichier_log_contenu));
+	$zip->close();
 	// Afficher tout ça
 	echo'<ul class="puce">';
 	echo'<li><a class="lien_ext" href="'.$dossier_export.$fichier_export_nom.'.zip">Récupérer le fichier complet (format <em>csv</em>).</a></li>';

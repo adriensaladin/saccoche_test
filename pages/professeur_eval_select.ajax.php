@@ -348,11 +348,14 @@ if( ($action=='saisir') && $devoir_id && $groupe_id && $date && $date_visible &&
 	$export_csv .= str_replace(':::',"\r\n",$descriptif)."\r\n\r\n";
 	$export_csv .= 'CODAGES AUTORISÉS : 1 2 3 4 A N D'."\r\n";
 	$zip = new ZipArchive();
-	if ($zip->open($dossier_export.$fnom.'.zip', ZIPARCHIVE::CREATE)===TRUE)
+	$result_open = $zip->open($dossier_export.$fnom.'.zip', ZIPARCHIVE::CREATE);
+	if($result_open!==TRUE)
 	{
-		$zip->addFromString($fnom.'.csv',csv($export_csv));
-		$zip->close();
+		require('./_inc/tableau_zip_error.php');
+		exit('Problème de création de l\'archive ZIP ('.$result_open.$tab_zip_error[$result_open].') !');
 	}
+	$zip->addFromString($fnom.'.csv',csv($export_csv));
+	$zip->close();
 	//
 	// pdf contenant un tableau de saisie vide ; on a besoin de tourner du texte à 90°
 	//
@@ -498,11 +501,14 @@ if( ($action=='voir') && $devoir_id && $groupe_id && $date && $descriptif ) // $
 	$export_csv .= 'CODAGES AUTORISÉS : 1 2 3 4 A N D'."\r\n";
 	$fnom = 'saisie_'.$_SESSION['BASE'].'_'.$_SESSION['USER_ID'].'_'.$ref;
 	$zip = new ZipArchive();
-	if ($zip->open($dossier_export.$fnom.'.zip', ZIPARCHIVE::CREATE)===TRUE)
+	$result_open = $zip->open($dossier_export.$fnom.'.zip', ZIPARCHIVE::CREATE);
+	if($result_open!==TRUE)
 	{
-		$zip->addFromString($fnom.'.csv',csv($export_csv));
-		$zip->close();
+		require('./_inc/tableau_zip_error.php');
+		exit('Problème de création de l\'archive ZIP ('.$result_open.$tab_zip_error[$result_open].') !');
 	}
+	$zip->addFromString($fnom.'.csv',csv($export_csv));
+	$zip->close();
 	require('./_lib/FPDF/fpdf.php');
 	require('./_inc/class.PDF.php');
 	// / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / /
@@ -999,11 +1005,14 @@ if( ($action=='Imprimer_cartouche') && $devoir_id && $groupe_id && $date && $car
 	}
 	// On archive le cartouche dans un fichier tableur zippé (csv tabulé)
 	$zip = new ZipArchive();
-	if ($zip->open($dossier_export.$fnom.'.zip', ZIPARCHIVE::CREATE)===TRUE)
+	$result_open = $zip->open($dossier_export.$fnom.'.zip', ZIPARCHIVE::CREATE);
+	if($result_open!==TRUE)
 	{
-		$zip->addFromString($fnom.'.csv',csv($sacoche_csv));
-		$zip->close();
+		require('./_inc/tableau_zip_error.php');
+		exit('Problème de création de l\'archive ZIP ('.$result_open.$tab_zip_error[$result_open].') !');
 	}
+	$zip->addFromString($fnom.'.csv',csv($sacoche_csv));
+	$zip->close();
 	// On archive le cartouche dans un fichier pdf
 	$sacoche_pdf->Output($dossier_export.$fnom.'.pdf','F');
 	// Affichage

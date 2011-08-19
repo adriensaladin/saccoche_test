@@ -1147,15 +1147,15 @@ function DB_STRUCTURE_lister_eleves_cibles($listing_eleve_id,$with_gepi,$with_la
  * DB_STRUCTURE_lister_eleves_cibles_actifs_avec_sconet_id
  *
  * @param string   $listing_eleve_id   id des élèves séparés par des virgules
+ * @param bool     $only_sconet_id     restreindre (ou pas) aux élèves ayant un id sconet
  * @return array
  */
-function DB_STRUCTURE_lister_eleves_cibles_actifs_avec_sconet_id($listing_eleve_id)
+function DB_STRUCTURE_lister_eleves_cibles_actifs_avec_sconet_id($listing_eleve_id,$only_sconet_id)
 {
 	$DB_SQL = 'SELECT user_id , user_nom , user_prenom , user_sconet_id ';
 	$DB_SQL.= 'FROM sacoche_user ';
-	// $DB_SQL.= 'LEFT JOIN sacoche_groupe ON sacoche_user.eleve_classe_id=sacoche_groupe.groupe_id ';
-	$DB_SQL.= 'WHERE user_id IN('.$listing_eleve_id.') AND user_profil=:profil AND user_statut=:statut AND user_sconet_id>0 ';
-	// $DB_SQL.= 'AND niveau_id=35 ';
+	$DB_SQL.= 'WHERE user_id IN('.$listing_eleve_id.') AND user_profil=:profil AND user_statut=:statut ';
+	$DB_SQL.= $only_sconet_id ? 'AND user_sconet_id>0 ' : '' ;
 	$DB_SQL.= 'ORDER BY user_nom ASC, user_prenom ASC';
 	$DB_VAR = array(':profil'=>'eleve',':statut'=>1);
 	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
@@ -1425,10 +1425,11 @@ function DB_STRUCTURE_lister_jointure_user_pilier($listing_eleves,$listing_pilie
 /**
  * DB_STRUCTURE_lister_validations_items
  *
- * @param bool   $only_positives
+ * @param string   $listing_eleves   id des élèves séparés par des virgules
+ * @param bool     $only_positives
  * @return array
  */
-function DB_STRUCTURE_lister_validations_items($only_positives)
+function DB_STRUCTURE_lister_validations_items($listing_eleves,$only_positives)
 {
 	$DB_SQL = 'SELECT palier_id , pilier_id , sacoche_jointure_user_entree.* ';
 	$DB_SQL.= 'FROM sacoche_jointure_user_entree ';
@@ -1436,7 +1437,8 @@ function DB_STRUCTURE_lister_validations_items($only_positives)
 	$DB_SQL.= 'LEFT JOIN sacoche_socle_section USING (section_id) ';
 	$DB_SQL.= 'LEFT JOIN sacoche_socle_pilier USING (pilier_id) ';
 	$DB_SQL.= 'LEFT JOIN sacoche_socle_palier USING (palier_id) ';
-	$DB_SQL.= ($only_positives) ? 'WHERE validation_entree_etat=1 ' : '' ;
+	$DB_SQL.= 'WHERE user_id IN('.$listing_eleves.') ';
+	$DB_SQL.= ($only_positives) ? 'AND validation_entree_etat=1 ' : '' ;
 	$DB_SQL.= 'ORDER BY palier_ordre, pilier_ordre, section_ordre, entree_ordre ';
 	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
 }
@@ -1444,16 +1446,18 @@ function DB_STRUCTURE_lister_validations_items($only_positives)
 /**
  * DB_STRUCTURE_lister_validations_competences
  *
+ * @param string   $listing_eleves   id des élèves séparés par des virgules
  * @param bool   $only_positives
  * @return array
  */
-function DB_STRUCTURE_lister_validations_competences($only_positives)
+function DB_STRUCTURE_lister_validations_competences($listing_eleves,$only_positives)
 {
 	$DB_SQL = 'SELECT palier_id , pilier_id , sacoche_jointure_user_pilier.* ';
 	$DB_SQL.= 'FROM sacoche_jointure_user_pilier ';
 	$DB_SQL.= 'LEFT JOIN sacoche_socle_pilier USING (pilier_id) ';
 	$DB_SQL.= 'LEFT JOIN sacoche_socle_palier USING (palier_id) ';
-	$DB_SQL.= ($only_positives) ? 'WHERE validation_pilier_etat=1 ' : '' ;
+	$DB_SQL.= 'WHERE user_id IN('.$listing_eleves.') ';
+	$DB_SQL.= ($only_positives) ? 'AND validation_pilier_etat=1 ' : '' ;
 	$DB_SQL.= 'ORDER BY palier_ordre, pilier_ordre ';
 	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
 }

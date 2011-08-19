@@ -104,11 +104,14 @@ if( (($action=='init_login')||($action=='init_mdp')) && (($profil=='eleves')||($
 		$fcontenu .= $DB_ROW['user_sconet_id'].$separateur.$DB_ROW['user_sconet_elenoet'].$separateur.$DB_ROW['user_reference'].$separateur.$champ_val.$separateur.$DB_ROW['user_nom'].$separateur.$DB_ROW['user_prenom'].$separateur.$login.$separateur.$mdp."\r\n";
 	}
 	$zip = new ZipArchive();
-	if ($zip->open($dossier_login_mdp.$fnom.'.zip', ZIPARCHIVE::CREATE)===TRUE)
+	$result_open = $zip->open($dossier_login_mdp.$fnom.'.zip', ZIPARCHIVE::CREATE);
+	if($result_open!==TRUE)
 	{
-		$zip->addFromString($fnom.'.csv',csv($fcontenu));
-		$zip->close();
+		require('./_inc/tableau_zip_error.php');
+		exit('Problème de création de l\'archive ZIP ('.$result_open.$tab_zip_error[$result_open].') !');
 	}
+	$zip->addFromString($fnom.'.csv',csv($fcontenu));
+	$zip->close();
 	//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 	//	Générer une sortie pdf : classe fpdf + script étiquettes (login ou mdp) (élève ou prof)
 	//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
@@ -159,11 +162,14 @@ if($action=='user_export')
 	// On archive dans un fichier tableur zippé (csv tabulé)
 	$fnom = 'export_'.$_SESSION['BASE'].'_mdp_'.time();
 	$zip = new ZipArchive();
-	if ($zip->open($dossier_export.$fnom.'.zip', ZIPARCHIVE::CREATE)===TRUE)
+	$result_open = $zip->open($dossier_export.$fnom.'.zip', ZIPARCHIVE::CREATE);
+	if($result_open!==TRUE)
 	{
-		$zip->addFromString($fnom.'.csv',csv($fcontenu_csv));
-		$zip->close();
+		require('./_inc/tableau_zip_error.php');
+		exit('Problème de création de l\'archive ZIP ('.$result_open.$tab_zip_error[$result_open].') !');
 	}
+	$zip->addFromString($fnom.'.csv',csv($fcontenu_csv));
+	$zip->close();
 	exit('<ul class="puce"><li><a class="lien_ext" href="'.$dossier_export.$fnom.'.zip">Récupérez le fichier exporté de la base SACoche.</a></li></ul>');
 }
 

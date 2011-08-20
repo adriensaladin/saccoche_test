@@ -136,7 +136,7 @@ $(document).ready
 				$('#ajax_msg2').html('Demande traitée... Veuillez patienter.');
 				$('#ajax_info').html(responseHTML);
 				initialiser_compteur();
-				restaurer();
+				restaurer(1);
 			}
 		}
 
@@ -144,14 +144,14 @@ $(document).ready
 		// Appel en ajax pour lancer une restauration
 		//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
 
-		function restaurer()
+		function restaurer(etape)
 		{
 			$.ajax
 			(
 				{
 					type : 'POST',
 					url : 'ajax.php?page='+PAGE,
-					data : 'f_action=restaurer',
+					data : 'f_action=restaurer'+'&etape='+etape,
 					dataType : "html",
 					error : function(msg,string)
 					{
@@ -161,17 +161,26 @@ $(document).ready
 					},
 					success : function(responseHTML)
 					{
-						$("button").prop('disabled',false);
 						if(responseHTML.substring(0,4)!='<li>')
 						{
+							$("button").prop('disabled',false);
 							$('#ajax_msg2').removeAttr("class").addClass("alerte").html(responseHTML);
 						}
 						else
 						{
-							$('#ajax_msg2').removeAttr("class").html('');
 							$('#ajax_info').append(responseHTML);
-							format_liens('#ajax_info');
 							initialiser_compteur();
+							if(responseHTML.indexOf('en cours')!=-1)
+							{
+								etape++;
+								restaurer(etape);
+							}
+							else
+							{
+								$("button").prop('disabled',false);
+								$('#ajax_msg2').removeAttr("class").html('');
+								$('#ajax_info').append('<li><label class="alerte">Veuillez maintenant vous déconnecter / reconnecter pour mettre la session en conformité avec la base restaurée.</label></li>');
+							}
 						}
 					}
 				}

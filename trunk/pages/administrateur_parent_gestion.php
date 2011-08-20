@@ -62,8 +62,6 @@ $debut_prenom = (isset($_POST['f_debut_prenom'])) ? clean_prenom($_POST['f_debut
 		</thead>
 		<tbody>
 			<?php
-			$tab_bad = array( '§BR§'   , '@1@'            , '@2@'            , '@3@'         , '@4@'         );
-			$tab_bon = array( '<br />' , '(resp légal 1)' , '(resp légal 2)' , '(contact 1)' , '(contact 2)' );
 			// Lister les parents
 			$DB_TAB = DB_STRUCTURE_lister_parents_actifs_avec_infos_enfants($with_adresse=FALSE,$debut_nom,$debut_prenom);
 			if(count($DB_TAB))
@@ -72,7 +70,7 @@ $debut_prenom = (isset($_POST['f_debut_prenom'])) ? clean_prenom($_POST['f_debut
 				{
 					// Afficher une ligne du tableau
 					echo'<tr id="id_'.$DB_ROW['user_id'].'">';
-					echo	($DB_ROW['enfants_nombre']) ? '<td>'.$DB_ROW['enfants_nombre'].' <img alt="" src="./_img/bulle_aide.png" title="'.str_replace($tab_bad,$tab_bon,$DB_ROW['enfants_liste']).'" /></td>' : '<td>0 <img alt="" src="./_img/bulle_aide.png" title="Aucun lien de responsabilité !" /></td>' ;
+					echo	($DB_ROW['enfants_nombre']) ? '<td>'.$DB_ROW['enfants_nombre'].' <img alt="" src="./_img/bulle_aide.png" title="'.str_replace('§BR§','<br />',html($DB_ROW['enfants_liste'])).'" /></td>' : '<td>0 <img alt="" src="./_img/bulle_aide.png" title="Aucun lien de responsabilité !" /></td>' ;
 					echo	'<td>'.html($DB_ROW['user_id_ent']).'</td>';
 					echo	'<td>'.html($DB_ROW['user_id_gepi']).'</td>';
 					echo	'<td>'.html($DB_ROW['user_sconet_id']).'</td>';

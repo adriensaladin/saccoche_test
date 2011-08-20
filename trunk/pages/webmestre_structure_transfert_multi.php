@@ -26,7 +26,7 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-$VERSION_JS_FILE += 2;
+$VERSION_JS_FILE += 3;
 ?>
 
 <?php

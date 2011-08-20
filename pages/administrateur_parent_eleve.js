@@ -100,7 +100,7 @@ $(document).ready
 		);
 
 		//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-		//	Charger la liste des parents d'un élève
+		//	Charger la liste des responsables d'un élève
 		//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
 		$("#select_eleve").change
@@ -148,7 +148,7 @@ $(document).ready
 		);
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-//	ORDONNER => Clic sur une image pour échanger deux contacts / responsables
+//	ORDONNER => Clic sur une image pour échanger deux responsables
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
 		$('#fieldset_parents input[type=image]').live // live est utilisé pour prendre en compte les nouveaux éléments créés
@@ -170,22 +170,22 @@ $(document).ready
 		);
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-//	SUPPRIMER => Clic sur une image pour retirer un contact / responsable
+//	SUPPRIMER => Clic sur une image pour retirer un responsable
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
 		$('q.supprimer').live // live est utilisé pour prendre en compte les nouveaux éléments créés
 		('click',
 			function()
 			{
-				$(this).parent().html('<q class="ajouter" title="Ajouter un responsable / contact."></q>').prev('td').html('---').parent().parent().parent().removeAttr('id');
+				$(this).parent().html('<q class="ajouter" title="Ajouter un responsable."></q>').prev('td').html('---').parent().parent().parent().removeAttr('id');
 				infobulle();
 				$('#ajax_msg2').removeAttr("class").addClass("alerte").html("Modification(s) non enregistrée(s) !").parent().show();
 			}
 		);
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-//	AJOUTER => Clic sur une image pour ajouter un contact / responsable
-//	MODIFIER => Clic sur une image pour modifier un contact / responsable
+//	AJOUTER => Clic sur une image pour ajouter un responsable
+//	MODIFIER => Clic sur une image pour modifier un responsable
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
 		$('q.ajouter , q.modifier').live // live est utilisé pour prendre en compte les nouveaux éléments créés
@@ -194,14 +194,14 @@ $(document).ready
 			{
 				memo_td_html = $(this).parent().prev('td').html();
 				afficher_masquer_images_action('hide');
-				$(this).parent().prev('td').html('<select id="f_parent" name="f_parent">'+select_parent+'</select><q class="valider" title="Choisir ce responsable / contact."></q><q class="annuler" title="Annuler."></q><br /><label id="ajax_msg_select">&nbsp;</label>');
+				$(this).parent().prev('td').html('<select id="f_parent" name="f_parent">'+select_parent+'</select><q class="valider" title="Choisir ce responsable."></q><q class="annuler" title="Annuler."></q><br /><label id="ajax_msg_select">&nbsp;</label>');
 				infobulle();
 				$('#f_parent').focus();
 			}
 		);
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-//	VALIDER => Clic sur une image pour valider l'ajout / la modification d'un contact / responsable
+//	VALIDER => Clic sur une image pour valider l'ajout / la modification d'un responsable
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
 		$('q.valider').live // live est utilisé pour prendre en compte les nouveaux éléments créés
@@ -212,15 +212,15 @@ $(document).ready
 				var parent_nom = $('#f_parent option:selected').text();
 				if(!parent_id)
 				{
-					$('#ajax_msg_select').removeAttr("class").addClass("alerte").html("Aucun responsable / contact choisi !");
+					$('#ajax_msg_select').removeAttr("class").addClass("alerte").html("Aucun responsable choisi !");
 					return false;
 				}
 				if($('#parent_'+parent_id).length)
 				{
-					$('#ajax_msg_select').removeAttr("class").addClass("alerte").html("Ce responsable / contact est déjà associé à l'élève !");
+					$('#ajax_msg_select').removeAttr("class").addClass("alerte").html("Ce responsable est déjà associé à l'élève !");
 					return false;
 				}
-				$(this).parent().html('<em>'+parent_nom+'</em><hr /><div class="astuce">Pensez à enregistrer pour confirmer ce changement.</div>').next('th').html('<q class="modifier" title="Changer ce responsable / contact."></q><q class="supprimer" title="Retirer ce responsable / contact."></q>').parent().parent().parent().attr('id','parent_'+parent_id);
+				$(this).parent().html('<em>'+parent_nom+'</em><hr /><div class="astuce">Pensez à enregistrer pour confirmer ce changement.</div>').next('th').html('<q class="modifier" title="Changer ce responsable."></q><q class="supprimer" title="Retirer ce responsable."></q>').parent().parent().parent().attr('id','parent_'+parent_id);
 				infobulle();
 				afficher_masquer_images_action('show');
 				$('#ajax_msg2').removeAttr("class").addClass("alerte").html("Modification(s) non enregistrée(s) !").parent().show();
@@ -228,7 +228,7 @@ $(document).ready
 		);
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-//	ANNULER => Clic sur une image pour annuler l'ajout / la modification d'un contact / responsable
+//	ANNULER => Clic sur une image pour annuler l'ajout / la modification d'un responsable
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
 		$('q.annuler').live // live est utilisé pour prendre en compte les nouveaux éléments créés
@@ -258,17 +258,6 @@ $(document).ready
 						tab_parents_id.push(id);
 					}
 				);
-				// Pas de resp 2 si pas de resp1 ; pas de contact2 si pas de contact1
-				if(!tab_parents_id[0] && tab_parents_id[1])
-				{
-					$('#ajax_msg2').removeAttr("class").addClass("alerte").html("Déplacez le resp. légal n°2 en n°1 !");
-					return false;
-				}
-				if(!tab_parents_id[2] && tab_parents_id[3])
-				{
-					$('#ajax_msg2').removeAttr("class").addClass("alerte").html("Déplacez le contact n°2 en n°1 !");
-					return false;
-				}
 				// Zy va : envoi ajax
 				$('button').prop('disabled',true);
 				afficher_masquer_images_action('hide');

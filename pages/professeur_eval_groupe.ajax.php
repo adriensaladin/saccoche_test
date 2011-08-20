@@ -526,7 +526,6 @@ if( ($action=='voir') && $devoir_id && $groupe_type && $groupe_id && $date && $d
 	}
 	$zip->addFromString($fnom.'.csv',csv($export_csv));
 	$zip->close();
-	}
 	require('./_lib/FPDF/fpdf.php');
 	require('./_inc/class.PDF.php');
 	// / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / /

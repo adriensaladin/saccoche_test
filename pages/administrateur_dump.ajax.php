@@ -29,6 +29,7 @@ if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');
 if($_SESSION['SESAMATH_ID']==ID_DEMO) {exit('Action désactivée pour la démo...');}
 
 $action = (isset($_POST['f_action'])) ? clean_texte($_POST['f_action']) : '';
+$etape  = (isset($_POST['etape']))    ? clean_entier($_POST['etape'])   : 0;
 
 $top_depart = microtime(TRUE);
 
@@ -117,13 +118,13 @@ elseif($action=='uploader')
 	// Vérifier le contenu : taille des requêtes
 	if( !verifier_taille_requetes($fichier_taille_maximale) )
 	{
-		Supprimer_Dossier($dossier_temp_sql); // Pas seulement vider, au cas où il y aurait des sous-dossiers créés par l'archive.
+		Supprimer_Dossier($dossier_temp); // Pas seulement vider, au cas où il y aurait des sous-dossiers créés par l'archive.
 		exit('<li><label class="alerte">Erreur : votre archive ZIP contient au moins un fichier dont la taille dépasse la limitation <em>max_allowed_packet</em> de MySQL !</label></li>');
 	}
 	// Vérifier le contenu : version de la base compatible avec la version logicielle
 	if( version_base_fichier_svg($dossier_temp) > VERSION_BASE )
 	{
-		Supprimer_Dossier($dossier_temp_sql); // Pas seulement vider, au cas où il y aurait des sous-dossiers créés par l'archive.
+		Supprimer_Dossier($dossier_temp); // Pas seulement vider, au cas où il y aurait des sous-dossiers créés par l'archive.
 		exit('<li><label class="alerte">Erreur : votre archive ZIP contient une sauvegarde plus récente que celle supportée par cette installation ! Le webmestre doit préalablement mettre à jour le programme...</label></li>');
 	}
 	// Afficher le retour
@@ -135,21 +136,26 @@ elseif($action=='uploader')
 // Restaurer la base
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
-elseif($action=='restaurer')
+elseif( ($action=='restaurer') && $etape )
 {
-	// Bloquer l'application
-	bloquer_application('automate',$_SESSION['BASE'],'Restauration de la base en cours.');
+	if($etape==1)
+	{
+		// Bloquer l'application
+		bloquer_application('automate',$_SESSION['BASE'],'Restauration de la base en cours.');
+	}
 	// Restaurer des fichiers de svg et mettre la base à jour si besoin.
-	$texte_maj = restaurer_tables_base_etablissement($dossier_temp);
-	// Débloquer l'application
-	debloquer_application('automate',$_SESSION['BASE']);
-	// Supprimer le dossier temporaire
-	Supprimer_Dossier($dossier_temp);
+	$texte_etape = restaurer_tables_base_etablissement($dossier_temp,$etape);
+	if(strpos($texte_etape,'terminée'))
+	{
+		// Débloquer l'application
+		debloquer_application('automate',$_SESSION['BASE']);
+		// Supprimer le dossier temporaire
+		Supprimer_Dossier($dossier_temp);
+	}
 	// Afficher le retour
 	$top_arrivee = microtime(TRUE);
 	$duree = number_format($top_arrivee - $top_depart,2,',','');
-	echo'<li><label class="valide">Restauration de la base réalisée'.$texte_maj.' en '.$duree.'s.</label></li>';
-	echo'<li><label class="alerte">Veuillez maintenant vous déconnecter / reconnecter pour mettre la session en conformité avec la base restaurée.</label></li>';
+	echo'<li><label class="valide">'.$texte_etape.' en '.$duree.'s.</label></li>';
 	exit();
 }
 

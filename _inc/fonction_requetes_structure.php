@@ -1266,7 +1266,7 @@ function DB_STRUCTURE_lister_parents_actifs_avec_infos_for_eleve($eleve_id)
 		return array();
 	}
 	$listing_parent_id = implode(',',array_keys($DB_TAB_parents));
-	$DB_SQL = 'SELECT parent_id, GROUP_CONCAT( CONCAT(enfant.user_nom," ",enfant.user_prenom," @",resp_legal_num,"@") SEPARATOR "§BR§") AS enfants_liste ';
+	$DB_SQL = 'SELECT parent_id, GROUP_CONCAT( CONCAT(enfant.user_nom," ",enfant.user_prenom," (resp légal ",resp_legal_num,")") SEPARATOR " ; ") AS enfants_liste ';
 	$DB_SQL.= 'FROM sacoche_jointure_parent_eleve ';
 	$DB_SQL.= 'LEFT JOIN sacoche_user AS enfant ON sacoche_jointure_parent_eleve.eleve_id=enfant.user_id ';
 	$DB_SQL.= 'WHERE sacoche_jointure_parent_eleve.parent_id IN('.$listing_parent_id.') AND enfant.user_statut=:statut ';
@@ -1524,7 +1524,7 @@ function DB_STRUCTURE_lister_parents_actifs_avec_infos_enfants($with_adresse,$de
 {
 	$DB_SQL = 'SELECT ' ;
 	$DB_SQL.= ($with_adresse) ? 'parent.user_id, parent.user_nom, parent.user_prenom, sacoche_parent_adresse.*, ' : 'parent.*, ' ;
-	$DB_SQL.= 'GROUP_CONCAT( CONCAT(eleve.user_nom," ",eleve.user_prenom," @",resp_legal_num,"@") SEPARATOR "§BR§") AS enfants_liste, ';
+	$DB_SQL.= 'GROUP_CONCAT( CONCAT(eleve.user_nom," ",eleve.user_prenom," (resp légal ",resp_legal_num,")") SEPARATOR "§BR§") AS enfants_liste, ';
 	$DB_SQL.= 'COUNT(eleve.user_id) AS enfants_nombre ';
 	$DB_SQL.= 'FROM sacoche_user AS parent ';
 	$DB_SQL.= ($with_adresse) ? 'LEFT JOIN sacoche_parent_adresse ON parent.user_id=sacoche_parent_adresse.parent_id ' : '' ;
@@ -2409,14 +2409,13 @@ function DB_STRUCTURE_ajouter_adresse_parent($parent_id,$tab_adresse)
  * @param int    $parent_id
  * @param int    $eleve_id
  * @param int    $resp_legal_num
- * @param bool   $resp_legal_envoi
  * @return void
  */
-function DB_STRUCTURE_ajouter_jointure_parent_eleve($parent_id,$eleve_id,$resp_legal_num,$resp_legal_envoi)
+function DB_STRUCTURE_ajouter_jointure_parent_eleve($parent_id,$eleve_id,$resp_legal_num)
 {
-	$DB_SQL = 'INSERT INTO sacoche_jointure_parent_eleve(parent_id,eleve_id,resp_legal_num,resp_legal_envoi) ';
-	$DB_SQL.= 'VALUES(:parent_id,:eleve_id,:resp_legal_num,:resp_legal_envoi)';
-	$DB_VAR = array(':parent_id'=>$parent_id,':eleve_id'=>$eleve_id,':resp_legal_num'=>$resp_legal_num,':resp_legal_envoi'=>$resp_legal_envoi);
+	$DB_SQL = 'INSERT INTO sacoche_jointure_parent_eleve(parent_id,eleve_id,resp_legal_num) ';
+	$DB_SQL.= 'VALUES(:parent_id,:eleve_id,:resp_legal_num)';
+	$DB_VAR = array(':parent_id'=>$parent_id,':eleve_id'=>$eleve_id,':resp_legal_num'=>$resp_legal_num);
 	DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
@@ -3948,7 +3947,7 @@ function DB_STRUCTURE_corriger_anomalies()
 	$message = (!$nb_modifs) ? 'rien à signaler' : ( ($nb_modifs>1) ? $nb_modifs.' anomalies supprimées' : '1 anomalie supprimée' ) ;
 	$classe  = (!$nb_modifs) ? 'valide' : 'alerte' ;
 	$tab_bilan[] = '<label class="'.$classe.'">Jointures parent/adresse : '.$message.'.</label>';
-	// Recherche d'anomalies : jointures parent/élève associées à un parent ou un élève...
+	// Recherche d'anomalies : jointures parent/élève associées à un parent ou un élève supprimé...
 	$DB_SQL = 'DELETE sacoche_jointure_parent_eleve ';
 	$DB_SQL.= 'FROM sacoche_jointure_parent_eleve ';
 	$DB_SQL.= 'LEFT JOIN sacoche_user AS parent ON sacoche_jointure_parent_eleve.parent_id=parent.user_id ';

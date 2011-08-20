@@ -59,8 +59,6 @@ $debut_prenom = (isset($_POST['f_debut_prenom'])) ? clean_prenom($_POST['f_debut
 		</thead>
 		<tbody>
 			<?php
-			$tab_bad = array( '§BR§'   , '@1@'            , '@2@'            , '@3@'         , '@4@'         );
-			$tab_bon = array( '<br />' , '(resp légal 1)' , '(resp légal 2)' , '(contact 1)' , '(contact 2)' );
 			// Lister les parents
 			$DB_TAB = DB_STRUCTURE_lister_parents_actifs_avec_infos_enfants($with_adresse=TRUE,$debut_nom,$debut_prenom);
 			if(count($DB_TAB))
@@ -70,7 +68,7 @@ $debut_prenom = (isset($_POST['f_debut_prenom'])) ? clean_prenom($_POST['f_debut
 					$parent_id = ($DB_ROW['parent_id']) ? 'M' : 'A' ; // Indiquer si le parent a une adresse dans la base ou pas.
 					// Afficher une ligne du tableau
 					echo'<tr id="id_'.$parent_id.$DB_ROW['user_id'].'">';
-					echo	($DB_ROW['enfants_nombre']) ? '<td>'.$DB_ROW['enfants_nombre'].' <img alt="" src="./_img/bulle_aide.png" title="'.str_replace($tab_bad,$tab_bon,$DB_ROW['enfants_liste']).'" /></td>' : '<td>0 <img alt="" src="./_img/bulle_aide.png" title="Aucun lien de responsabilité !" /></td>' ;
+					echo	($DB_ROW['enfants_nombre']) ? '<td>'.$DB_ROW['enfants_nombre'].' <img alt="" src="./_img/bulle_aide.png" title="'.str_replace('§BR§','<br />',html($DB_ROW['enfants_liste'])).'" /></td>' : '<td>0 <img alt="" src="./_img/bulle_aide.png" title="Aucun lien de responsabilité !" /></td>' ;
 					echo	'<td>'.html($DB_ROW['user_nom'].' '.$DB_ROW['user_prenom']).'</td>';
 					echo	'<td><span>'.html($DB_ROW['adresse_ligne1']).'</span> ; <span>'.html($DB_ROW['adresse_ligne2']).'</span> ; <span>'.html($DB_ROW['adresse_ligne3']).'</span> ; <span>'.html($DB_ROW['adresse_ligne4']).'</span></td>';
 					echo	'<td>'.html($DB_ROW['adresse_postal_code']).'</td>';

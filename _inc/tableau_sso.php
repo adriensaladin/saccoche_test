@@ -47,6 +47,7 @@ $tab_connexion_info['cas']['cybercolleges42']  = array( 'serveur_host'=>'cas.cyb
 $tab_connexion_info['cas']['e-lyco']           = array( 'serveur_host'=>'cas.e-lyco.fr'           , 'serveur_port'=>443  , 'serveur_root'=>''          , 'csv_nom'=>4 , 'csv_prenom'=>3 , 'csv_id_ent'=>1 , 'csv_id_sconet'=>NULL , 'txt'=>'ENT e-lyco (académie de Nantes).' );
 $tab_connexion_info['cas']['entmip']           = array( 'serveur_host'=>'cas.entmip.fr'           , 'serveur_port'=>443  , 'serveur_root'=>''          , 'csv_nom'=>4 , 'csv_prenom'=>3 , 'csv_id_ent'=>1 , 'csv_id_sconet'=>NULL , 'txt'=>'ENT Midi-Pyrénées K-d\'Ecole (académie de Toulouse).' );
 $tab_connexion_info['cas']['lilie']            = array( 'serveur_host'=>'ent.iledefrance.fr'      , 'serveur_port'=>443  , 'serveur_root'=>'connexion' , 'csv_nom'=>5 , 'csv_prenom'=>6 , 'csv_id_ent'=>3 , 'csv_id_sconet'=>4    , 'txt'=>'ENT Lilie (lycées d\'Ile de France).' );
+// $tab_connexion_info['cas']['toutatice']        = array( 'serveur_host'=>'www.toutatice.fr'        , 'serveur_port'=>443  , 'serveur_root'=>'cas'       , 'csv_nom'=>0 , 'csv_prenom'=>0 , 'csv_id_ent'=>0 , 'csv_id_sconet'=>0    , 'txt'=>'ENT Toutatice (académie de Rennes).' );
 $tab_connexion_info['cas']['perso']            = array( 'serveur_host'=>''                        , 'serveur_port'=>443  , 'serveur_root'=>''          , 'csv_nom'=>1 , 'csv_prenom'=>2 , 'csv_id_ent'=>0 , 'txt'=>'Configuration CAS manuelle.' );
 
 /*

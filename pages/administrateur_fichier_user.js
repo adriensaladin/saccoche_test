@@ -315,8 +315,8 @@ $(document).ready
 				);
 				if(nb_pb)
 				{
-					$s = (nb_pb>1) ? 's' : '';
-					$('#ajax_msg').removeAttr("class").addClass("erreur").html(nb_pb+' lignes'+$s+' de formulaire à compléter.');
+					var s = (nb_pb>1) ? 's' : '';
+					$('#ajax_msg').removeAttr("class").addClass("erreur").html(nb_pb+' ligne'+s+' de formulaire à compléter.');
 					return false;
 				}
 				else

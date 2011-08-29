@@ -27,7 +27,7 @@
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = "Importer des fichiers d'utilisateurs";
-$VERSION_JS_FILE += 7;
+$VERSION_JS_FILE += 8;
 ?>
 
 <?php

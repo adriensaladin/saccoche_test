@@ -309,7 +309,7 @@ if( $step==20 )
 						{
 							$classe_ref = clean_ref($prof_princ->CODE_STRUCTURE);
 							$date_fin   = clean_ref($prof_princ->DATE_FIN);
-							$i_classe   = clean_login($classe_ref);
+							$i_classe   = 'i'.clean_login($classe_ref); // 'i' car la référence peut être numérique (ex : 61) et cela pose problème que l'indice du tableau soit un entier (ajouter (string) n'y change rien) lors du array_multisort().
 							if($date_fin <= $date_aujourdhui)
 							{
 								$tab_users_fichier['classe'][$i_fichier][$i_classe] = 'PP';
@@ -354,7 +354,7 @@ if( $step==20 )
 			{
 				$classe_ref = clean_ref($division->attributes()->CODE);
 				$classe_nom = clean_texte($division->LIBELLE_LONG);
-				$i_classe   = clean_login($classe_ref);
+				$i_classe   = 'i'.clean_login($classe_ref); // 'i' car la référence peut être numérique (ex : 61) et cela pose problème que l'indice du tableau soit un entier (ajouter (string) n'y change rien) lors du array_multisort().
 				// Au passage on ajoute la classe trouvée
 				if(!isset($tab_classes_fichier['ref'][$i_classe]))
 				{
@@ -402,7 +402,7 @@ if( $step==20 )
 			{
 				$groupe_ref = clean_ref($groupe->attributes()->CODE);
 				$groupe_nom = clean_texte($groupe->LIBELLE_LONG);
-				$i_groupe   = clean_login($groupe_ref);
+				$i_groupe   = 'i'.clean_login($groupe_ref); // 'i' car la référence peut être numérique (ex : 61) et cela pose problème que l'indice du tableau soit un entier (ajouter (string) n'y change rien) lors du array_multisort().
 				// Au passage on ajoute le groupe trouvé
 				if(!isset($tab_groupes_fichier['ref'][$i_groupe]))
 				{
@@ -498,7 +498,7 @@ if( $step==20 )
 						if($structure->TYPE_STRUCTURE == 'D')
 						{
 							$classe_ref = clean_ref($structure->CODE_STRUCTURE);
-							$i_classe   = clean_login($classe_ref);
+							$i_classe   = 'i'.clean_login($classe_ref); // 'i' car la référence peut être numérique (ex : 61) et cela pose problème que l'indice du tableau soit un entier (ajouter (string) n'y change rien) lors du array_multisort().
 							$tab_users_fichier['classe'][$i_fichier] = $i_classe;
 							if(!isset($tab_classes_fichier['ref'][$i_classe]))
 							{
@@ -514,7 +514,7 @@ if( $step==20 )
 						elseif($structure->TYPE_STRUCTURE == 'G')
 						{
 							$groupe_ref = clean_ref($structure->CODE_STRUCTURE);
-							$i_groupe   = clean_login($groupe_ref);
+							$i_groupe   = 'i'.clean_login($groupe_ref); // 'i' car la référence peut être numérique (ex : 61) et cela pose problème que l'indice du tableau soit un entier (ajouter (string) n'y change rien) lors du array_multisort().
 							if(!isset($tab_users_fichier['groupe'][$i_fichier][$i_groupe]))
 							{
 								$tab_users_fichier['groupe'][$i_fichier][$i_groupe] = $groupe_ref;
@@ -679,7 +679,7 @@ if( $step==20 )
 				if( ($nom!='') && ($prenom!='') )
 				{
 					$classe_ref = mb_substr(clean_ref($classe),0,8);
-					$i_classe   = clean_login($classe_ref);
+					$i_classe   = 'i'.clean_login($classe_ref); // 'i' car la référence peut être numérique (ex : 61) et cela pose problème que l'indice du tableau soit un entier (ajouter (string) n'y change rien) lors du array_multisort().
 					$tab_users_fichier['sconet_id'][]  = 0;
 					$tab_users_fichier['sconet_num'][] = 0;
 					$tab_users_fichier['reference'][]  = clean_ref($reference);
@@ -773,7 +773,7 @@ if( $step==20 )
 					$niveau_ref = mb_substr(clean_ref($niveau),0,8);
 					$classe_nom = mb_substr('['.$niveau_ref.'] '.$classe,0,20); // On fait autant de classes que de groupes de niveaux par classes.
 					$classe_ref = mb_substr(clean_ref($niveau_ref.'_'.md5($niveau_ref.$classe)),0,8);
-					$i_classe   = clean_login($classe_ref);
+					$i_classe   = 'i'.clean_login($classe_ref); // 'i' car la référence peut être numérique (ex : 61) et cela pose problème que l'indice du tableau soit un entier (ajouter (string) n'y change rien) lors du array_multisort().
 					$tab_users_fichier['sconet_id'][]  = 0;
 					$tab_users_fichier['sconet_num'][] = 0;
 					$tab_users_fichier['reference'][]  = '';

@@ -58,6 +58,15 @@ if( ($action!='supprimer') && ($action!='lister_admin') && ($action!='initialise
 
 if( ($action=='ajouter') && isset($tab_geo[$geo_id]) && $localisation && $denomination && $contact_nom && $contact_prenom && $contact_courriel )
 {
+	// Vérifier que le n° de base est disponible (si imposé)
+	if($base_id)
+	{
+		$DB_ROW = DB_WEBMESTRE_recuperer_structure($base_id);
+		if(count($DB_ROW))
+		{
+			exit('Erreur : identifiant déjà utilisé ('.html($DB_ROW['structure_denomination']).') !');
+		}
+	}
 	// Vérifier que le n°UAI est disponible
 	if($uai)
 	{
@@ -70,7 +79,7 @@ if( ($action=='ajouter') && isset($tab_geo[$geo_id]) && $localisation && $denomi
 	// Créer le fichier de connexion de la base de données de la structure
 	// Créer la base de données de la structure
 	// Créer un utilisateur pour la base de données de la structure et lui attribuer ses droits
-	$base_id = DB_WEBMESTRE_ajouter_structure($base_id=0,$geo_id,$uai,$localisation,$denomination,$contact_nom,$contact_prenom,$contact_courriel);
+	$base_id = DB_WEBMESTRE_ajouter_structure($base_id,$geo_id,$uai,$localisation,$denomination,$contact_nom,$contact_prenom,$contact_courriel);
 	// Créer les dossiers de fichiers temporaires par établissement : vignettes verticales, flux RSS des demandes, cookies des choix de formulaires
 	Creer_Dossier('./__tmp/badge/'.$base_id);
 	Ecrire_Fichier('./__tmp/badge/'.$base_id.'/index.htm','Circulez, il n\'y a rien à voir par ici !');

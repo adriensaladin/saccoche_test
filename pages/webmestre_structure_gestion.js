@@ -78,7 +78,7 @@ $(document).ready
 			new_tr  = '<tr>';
 			new_tr += '<td class="nu"></td>';
 			new_tr += '<td class="nu"></td>';
-			new_tr += '<td></td>';
+			new_tr += '<td><input id="f_base_id" name="f_base_id" size="4" type="text" value="" /></td>';
 			new_tr += '<td><select id="f_geo" name="f_geo">'+options_geo+'</select></td>';
 			new_tr += '<td><input id="f_localisation" name="f_localisation" size="30" type="text" value="" />'+'<br />'+'<input id="f_denomination" name="f_denomination" size="30" type="text" value="" /></td>';
 			new_tr += '<td><input id="f_uai" name="f_uai" size="8" type="text" value="" /></td>';

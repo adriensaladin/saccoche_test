@@ -1399,13 +1399,13 @@ if( $step==51 )
 		// Cas [1] : présent dans le fichier, absent de la base, pas de classe dans le fichier (élèves uniquements) : contenu à ignorer (probablement des anciens élèves, ou des élèves jamais venus, qu'il est inutile d'importer)
 		if( ($is_profil_eleve) && (!$id_base) && (!$tab_users_fichier['classe'][$i_fichier]) )
 		{
-			$indication = ($is_profil_eleve) ? $tab_users_fichier['classe'][$i_fichier] : $tab_users_fichier['profil'][$i_fichier] ;
+			$indication = ($is_profil_eleve) ? substr($tab_users_fichier['classe'][$i_fichier],1) : $tab_users_fichier['profil'][$i_fichier] ;
 			$lignes_ignorer .= '<tr><th>Ignorer</th><td>'.html($tab_users_fichier['sconet_id'][$i_fichier].' / '.$tab_users_fichier['sconet_num'][$i_fichier].' / '.$tab_users_fichier['reference'][$i_fichier].' || '.$tab_users_fichier['nom'][$i_fichier].' '.$tab_users_fichier['prenom'][$i_fichier].' ('.$indication.')').'</td></tr>';
 		}
 		// Cas [2] : présent dans le fichier, absent de la base, prof ou classe indiquée dans le fichier si élève : contenu à ajouter (nouvel élève ou nouveau professeur / directeur)
 		elseif( (!$id_base) && ( (!$is_profil_eleve) || ($tab_users_fichier['classe'][$i_fichier]) ) )
 		{
-			$indication = ($is_profil_eleve) ? $tab_users_fichier['classe'][$i_fichier] : $tab_users_fichier['profil'][$i_fichier] ;
+			$indication = ($is_profil_eleve) ? substr($tab_users_fichier['classe'][$i_fichier],1) : $tab_users_fichier['profil'][$i_fichier] ;
 			$lignes_ajouter .= '<tr><th>Ajouter <input id="add_'.$i_fichier.'" name="add_'.$i_fichier.'" type="checkbox" checked /></th><td>'.html($tab_users_fichier['sconet_id'][$i_fichier].' / '.$tab_users_fichier['sconet_num'][$i_fichier].' / '.$tab_users_fichier['reference'][$i_fichier].' || '.$tab_users_fichier['nom'][$i_fichier].' '.$tab_users_fichier['prenom'][$i_fichier].' ('.$indication.')').'</td></tr>';
 			$id_classe = ( ($is_profil_eleve) && isset($tab_i_classe_TO_id_base[$tab_users_fichier['classe'][$i_fichier]]) ) ? $tab_i_classe_TO_id_base[$tab_users_fichier['classe'][$i_fichier]] : 0 ;
 			$tab_users_ajout[$i_fichier] = array( 'sconet_id'=>$tab_users_fichier['sconet_id'][$i_fichier] , 'sconet_num'=>$tab_users_fichier['sconet_num'][$i_fichier] , 'reference'=>$tab_users_fichier['reference'][$i_fichier] , 'nom'=>$tab_users_fichier['nom'][$i_fichier] , 'prenom'=>$tab_users_fichier['prenom'][$i_fichier] , 'profil'=>$tab_users_fichier['profil'][$i_fichier] , 'classe'=>$id_classe );
@@ -1419,7 +1419,7 @@ if( $step==51 )
 		// Cas [4] : présent dans le fichier, présent dans la base, pas de classe dans le fichier (élèves uniquements), statut inactif dans la base : contenu inchangé (probablement des anciens élèves déjà écartés)
 		elseif( ($is_profil_eleve) && (!$tab_users_fichier['classe'][$i_fichier]) && (!$tab_users_base['statut'][$id_base]) )
 		{
-			$indication = ($is_profil_eleve) ? $tab_users_fichier['classe'][$i_fichier] : $tab_users_fichier['profil'][$i_fichier] ;
+			$indication = ($is_profil_eleve) ? substr($tab_users_fichier['classe'][$i_fichier],1) : $tab_users_fichier['profil'][$i_fichier] ;
 			$lignes_inchanger .= '<tr><th>Ignorer</th><td>'.html($tab_users_fichier['sconet_id'][$i_fichier].' / '.$tab_users_fichier['sconet_num'][$i_fichier].' / '.$tab_users_fichier['reference'][$i_fichier].' || '.$tab_users_fichier['nom'][$i_fichier].' '.$tab_users_fichier['prenom'][$i_fichier].' ('.$indication.')').'</td></tr>';
 		}
 		else

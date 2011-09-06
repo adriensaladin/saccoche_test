@@ -249,7 +249,7 @@ if( $matiere_id && $niveau_id && $matiere_nom && $niveau_nom && $remplissage && 
 									else
 									{
 										$releve_HTML .= '<td>&nbsp;</td>';
-										$releve_PDF->Cell($cases_largeur , $cases_hauteur , '' , 1 , floor(($i+1)/$cases_nb) , 'C' , true , '');
+										$releve_PDF->Cell($cases_largeur , $releve_PDF->cases_hauteur , '' , 1 , floor(($i+1)/$cases_nb) , 'C' , true , '');
 									}
 								}
 								$releve_HTML .= '</tr>'."\r\n";

@@ -1950,9 +1950,9 @@ function DB_STRUCTURE_compter_users_suivant_statut($profil)
 		foreach($profil as $key => $val)
 		{
 			$DB_VAR[':profil'.$key] = $val;
-			$profil[$key] = ':'.$val;
+			$profil[$key] = ':profil'.$key;
 		}
-		$where = 'user_profil IN('.implode(',',array_keys($profil)).') ';
+		$where = 'user_profil IN('.implode(',',$profil).') ';
 	}
 	$DB_SQL = 'SELECT user_statut, COUNT(*) AS nombre FROM sacoche_user ';
 	$DB_SQL.= 'WHERE '.$where;

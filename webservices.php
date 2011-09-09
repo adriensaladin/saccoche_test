@@ -47,13 +47,14 @@ require_once('./_inc/fonction_requetes_webmestre.php');
 require_once('./_inc/fonction_affichage.php');
 
 // On récupère les paramètres
-$WS_qui = (isset($_POST['qui'])) ? clean_texte($_POST['qui']) : '';
+$WS_qui = (isset($_POST['qui'])) ? clean_texte($_POST['qui']) : ( (isset($_GET['qui'])) ? clean_texte($_GET['qui']) : '' ) ;
 $WS_cle = (isset($_POST['cle'])) ? clean_texte($_POST['cle']) : '';
 $WS_uai = (isset($_POST['uai'])) ? clean_uai($_POST['uai'])   : '';
 $WS_uid = (isset($_POST['uid'])) ? clean_texte($_POST['uid']) : '';
 
-// On ne vérifie le 1er paramètre (le service web prendra en charge la suite).
-if($WS_qui!='argos_parent')
+// On ne vérifie que le 1er paramètre (le service web prendra éventuellement en charge la suite).
+$tab_ws = array('argos_parent','argos_ajout');
+if(!in_array($WS_qui,$tab_ws))
 {
 	exit('Erreur : nom du service web manquant ou incorrect !');
 }
@@ -62,7 +63,7 @@ if(!is_file($fichier))
 {
 	exit('Erreur : le service web "'.$WS_qui.'" n\'est pas disponible sur cette installation !');
 }
-require($fichier); // Charge la fonction "generer_synthese_multimatiere_html()"
-generer_synthese_multimatiere_html($WS_cle,$WS_uai,$WS_uid);
+// Place au service web à présent.
+require($fichier);
 
 ?>

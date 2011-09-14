@@ -565,6 +565,8 @@ if($action=='import_ent')
 	{
 		exit('Erreur : le fichier n\'a pas pu être enregistré sur le serveur.');
 	}
+	// Utiliser $_SESSION['CONNEXION_MODE'] et $_SESSION['CONNEXION_NOM'] pour déterminer l'emplacement des données à récupérer
+	require_once('./_inc/tableau_sso.php');
 	// Pour récupérer les données des utilisateurs
 	$tab_users_fichier              = array();
 	$tab_users_fichier['id_ent']    = array();
@@ -575,9 +577,10 @@ if($action=='import_ent')
 	$contenu = utf8($contenu); // Mettre en UTF-8 si besoin
 	$tab_lignes = extraire_lignes($contenu); // Extraire les lignes du fichier
 	$separateur = extraire_separateur_csv($tab_lignes[0]); // Déterminer la nature du séparateur
-	unset($tab_lignes[0]); // Supprimer la 1e ligne
-	// Utiliser $_SESSION['CONNEXION_MODE'] et $_SESSION['CONNEXION_NOM'] pour déterminer l'emplacement des données à récupérer
-	require_once('./_inc/tableau_sso.php');
+	if($tab_connexion_info[$_SESSION['CONNEXION_MODE']][$_SESSION['CONNEXION_NOM']]['csv_entete'])
+	{
+		unset($tab_lignes[0]); // Supprimer la 1e ligne
+	}
 	// Récupérer les données
 	foreach ($tab_lignes as $ligne_contenu)
 	{

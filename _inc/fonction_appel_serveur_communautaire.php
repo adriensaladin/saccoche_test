@@ -266,9 +266,12 @@ function fabriquer_chaine_integrite()
 	include_once('./_inc/tableau_fichier_integrite.php');
 	// Fabrication de la chaine
 	$chaine = '';
+	$tab_crlf = array("\r\n","\r","\n");
 	foreach($tab_fichier_integrite as $fichier)
 	{
-		$chaine .= md5_file('./'.$fichier);
+		// Lors du transfert FTP de fichiers, il arrive que les \r\n en fin de ligne soient convertis en \n, ce qui fait que md5_file() renvoie un résultat différent.
+		// Pour y remédier on utilise son équivalent md5(file_get_contents()) couplé à une suppression des caractères de fin de ligne.
+		$chaine .= md5( str_replace( $tab_crlf , '' , file_get_contents('./'.$fichier) ) );
 	}
 	return md5($chaine);
 }

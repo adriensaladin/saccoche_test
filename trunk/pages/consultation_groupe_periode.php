@@ -32,7 +32,7 @@ $VERSION_JS_FILE += 0;
 
 <p class="astuce">
 	Les périodes servent à faciliter les recherches, la navigation, la génération de bilans.<br />
-	Les évaluations effectuées en dehors des périodes prédéfinies sont aussi comptabilisées dans l'historique des élèves.
+	Les évaluations effectuées en dehors des périodes prédéfinies sont comptabilisées comme les autres.
 </p>
 
 <?php

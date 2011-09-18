@@ -39,76 +39,68 @@ $(document).ready
 			function()
 			{
 				// Masquer tout
-				$('#p_eleves , #p_professeurs_directeurs , #td_bouton').hide(0); // bug mystérieux si on échange avec la ligne suivante...
 				$('fieldset[id^=fieldset]').hide(0);
+				$('#ajax_msg').removeAttr("class").html("&nbsp;");
+				$('#ajax_retour').html("&nbsp;");
 				// Puis afficher ce qu'il faut
 				var objet = $(this).val();
 				switch (objet)
 				{
-					case 'init_loginmdp_eleves':                 $('#fieldset_init_loginmdp , #p_eleves , #td_bouton').show(); break;
-					case 'init_loginmdp_professeurs_directeurs': $('#fieldset_init_loginmdp , #p_professeurs_directeurs , #td_bouton').show(); break;
-					case 'import_loginmdp':                      $('#fieldset_import_loginmdp').show(); break;
-					case 'import_id_lcs':                        $('#fieldset_import_id_lcs').show(); break;
-					case 'import_id_argos':                      $('#fieldset_import_id_argos').show(); break;
-					case 'import_id_ent_normal':                 $('#fieldset_import_id_ent_normal').show(); break;
-					case 'import_id_ent_cas':                    $('#fieldset_import_id_ent_cas').show(); break;
-					case 'import_id_gepi':                       $('#fieldset_import_id_gepi').show(); break;
+					case 'init_loginmdp' : maj_select_users(); $('#fieldset_init_loginmdp').show(); break;
+					case 'import_loginmdp'      : $('#fieldset_import_loginmdp').show();      break;
+					case 'import_id_lcs'        : $('#fieldset_import_id_lcs').show();        break;
+					case 'import_id_argos'      : $('#fieldset_import_id_argos').show();      break;
+					case 'import_id_ent_normal' : $('#fieldset_import_id_ent_normal').show(); break;
+					case 'import_id_ent_cas'    : $('#fieldset_import_id_ent_cas').show();    break;
+					case 'import_id_gepi'       : $('#fieldset_import_id_gepi').show();       break;
 				}
-				$('#ajax_msg').removeAttr("class").html("&nbsp;");
-				$('#ajax_retour').html("&nbsp;");
 			}
 		);
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-//	Charger le select_professeurs_directeurs en ajax
+// Réagir au changement dans le choix d'un profil ou d'un groupe
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
-		function maj_professeur_directeur()
+		$("#f_profil , #f_groupe").change
+		(
+			function()
+			{
+				$('#ajax_msg').removeAttr("class").html("&nbsp;");
+				$('#ajax_retour').html("&nbsp;");
+				maj_select_users();
+			}
+		);
+
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+// Mettre à jour la liste des utilisateurs concernés
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
+		function maj_select_users()
 		{
+			$('#fieldset_init_loginmdp button').prop('disabled',true);
+			$('#div_users').hide();
+			// On récupère le profil
+			var profil = $('#f_profil option:selected').val();
+			// On récupère le regroupement
+			var groupe_val = $("#f_groupe").val();
+			if( !profil || !groupe_val )
+			{
+				return false
+			}
+			groupe_type = groupe_val.substring(0,1);
+			groupe_id   = groupe_val.substring(1);
+			$('#ajax_msg').removeAttr("class").addClass("loader").html("Veuillez patienter...");
+			$('#bilan tbody').html('');
 			$.ajax
 			(
 				{
 					type : 'POST',
-					url : 'ajax.php?page=_maj_select_professeurs_directeurs',
-					data : 'f_statut=1',
+					url : 'ajax.php?page=_maj_select_'+profil,
+					data : 'f_groupe_id='+groupe_id+'&f_groupe_type='+groupe_type+'&f_statut=1&f_selection=1',
 					dataType : "html",
 					error : function(msg,string)
 					{
-						$('#ajax_msg').removeAttr("class").addClass("alerte").html("Echec de la connexion ! Veuillez essayer de nouveau.");
-					},
-					success : function(responseHTML)
-					{
-						initialiser_compteur();
-						if(responseHTML.substring(0,4)=='<opt')	// option ou optgroup !
-						{
-							$('#ajax_msg').removeAttr("class").addClass("valide").html("Affichage actualisé !");
-							$('#select_professeurs_directeurs').html(responseHTML);
-						}
-						else
-						{
-							$('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);
-						}
-					}
-				}
-			);
-		}
-
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-//	Charger le select_eleves en ajax
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-
-		function maj_eleve(groupe_id,groupe_type)
-		{
-			$.ajax
-			(
-				{
-					type : 'POST',
-					url : 'ajax.php?page=_maj_select_eleves',
-					data : 'f_groupe_id='+groupe_id+'&f_groupe_type='+groupe_type+'&f_statut=1',
-					dataType : "html",
-					error : function(msg,string)
-					{
-						$('#ajax_msg').removeAttr("class").addClass("alerte").html("Echec de la connexion ! Veuillez essayer de nouveau.");
+						$('#ajax_msg').removeAttr("class").addClass("alerte").html("Echec de la connexion ! Veuillez valider de nouveau.");
 					},
 					success : function(responseHTML)
 					{
@@ -116,7 +108,9 @@ $(document).ready
 						if(responseHTML.substring(0,7)=='<option')	// Attention aux caractères accentués : l'utf-8 pose des pbs pour ce test
 						{
 							$('#ajax_msg').removeAttr("class").addClass("valide").html("Affichage actualisé !");
-							$('#select_eleves').html(responseHTML).show();
+							$('#select_users').html(responseHTML).show();
+							$('#div_users').show();
+							$('#fieldset_init_loginmdp button').prop('disabled',false);
 						}
 						else
 						{
@@ -126,30 +120,6 @@ $(document).ready
 				}
 			);
 		}
-		function changer_groupe()
-		{
-			$("#select_eleves").html('<option value=""></option>').hide();
-			var groupe_val = $("#f_groupe").val();
-			if(groupe_val)
-			{
-				// type = $("#f_groupe option:selected").parent().attr('label');
-				groupe_type = groupe_val.substring(0,1);
-				groupe_id   = groupe_val.substring(1);
-				$('#ajax_msg').removeAttr("class").addClass("loader").html("Actualisation en cours... Veuillez patienter.");
-				maj_eleve(groupe_id,groupe_type);
-			}
-			else
-			{
-				$('#ajax_msg').removeAttr("class").html("&nbsp;");
-			}
-		}
-		$("#f_groupe").change
-		(
-			function()
-			{
-				changer_groupe();
-			}
-		);
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 // Réagir au clic dans un select multiple
@@ -217,23 +187,22 @@ $(document).ready
 			{
 				var action = $(this).attr('id');
 				// Récupérer le profil
-				var choix = $('#f_choix_principal option:selected').val();
-				if( (typeof(choix)=='undefined') || ((choix!='init_loginmdp_eleves')&&(choix!='init_loginmdp_professeurs_directeurs')) )	// normalement impossible, sauf si par exemple on triche avec la barre d'outils Web Developer...
+				var profil = $('#f_profil option:selected').val();
+				if( !profil )
 				{
-					$('#ajax_msg').removeAttr("class").addClass("erreur").html("Anomalie avec le premier formulaire !");
+					$('#ajax_msg').removeAttr("class").addClass("erreur").html("Sélectionnez déjà un profil utilisateur !");
 					return(false);
 				}
-				var profil = choix.substring(14);
 				// grouper les select multiples => normalement pas besoin si name de la forme nom[], mais ça plante curieusement sur le serveur competences.sesamath.net
 				// alors j'ai remplacé le $("form").serialize() par les tableaux maison et mis un explode dans le fichier ajax
-				if( $("#select_"+profil+" option:selected").length==0 )
+				if( $("#select_users option:selected").length==0 )
 				{
 					$('#ajax_msg').removeAttr("class").addClass("erreur").html("Sélectionnez au moins un utilisateur !");
 					return(false);
 				}
 				else
 				{
-					var select_users = new Array(); $("#select_"+profil+" option:selected").each(function(){select_users.push($(this).val());});
+					var select_users = new Array(); $("#select_users option:selected").each(function(){select_users.push($(this).val());});
 				}
 				$('button').prop('disabled',true);
 				$('#ajax_msg').removeAttr("class").addClass("loader").html("Demande envoyée... Veuillez patienter.");

@@ -30,7 +30,11 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 if($_SESSION['SESAMATH_ID']==ID_DEMO) {}
 
-$statut = (isset($_POST['f_statut'])) ? clean_entier($_POST['f_statut']) : 0;
+$statut      = (isset($_POST['f_statut']))      ? clean_entier($_POST['f_statut'])     : 1;
+$groupe_type = (isset($_POST['f_groupe_type'])) ? clean_texte($_POST['f_groupe_type']) : 'd'; // d n c g
+$groupe_id   = (isset($_POST['f_groupe_id']))   ? clean_entier($_POST['f_groupe_id'])  : 0;
+$selection   = (isset($_POST['f_selection']))   ? TRUE                                 : FALSE ;
+$tab_types   = array('d'=>'all' , 'n'=>'niveau' , 'c'=>'classe' , 'g'=>'groupe');
 
-echo afficher_select(DB_STRUCTURE_OPT_parents_etabl($statut) , $select_nom=false , $option_first='non' , $selection=false , $optgroup='non');
+echo afficher_select(DB_STRUCTURE_OPT_parents_etabl($statut,$tab_types[$groupe_type],$groupe_id) , $select_nom=false , $option_first='non' , $selection , $optgroup='non');
 ?>

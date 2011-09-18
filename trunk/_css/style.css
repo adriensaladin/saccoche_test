@@ -43,6 +43,7 @@ table,select,textarea,input,button,div{font:100% "arial","helvetica","nimbus san
 p{margin:1em auto}
 img {vertical-align:text-top}
 td img , #aide_en_ligne img  , .legende img {vertical-align:baseline}
+table.affectation img {vertical-align:middle}
 h1{display:block;font-size:120%;text-align:left;font-weight:bold;font-variant:small-caps;color:#33A;letter-spacing:0.15em;margin:1ex 2em;}
 h2{display:block;font-size:110%;text-align:left;font-weight:bold;font-variant:small-caps;color:#33A;letter-spacing:0.15em;margin:1ex auto 1ex 1em;}
 h1.logo{text-align:center}

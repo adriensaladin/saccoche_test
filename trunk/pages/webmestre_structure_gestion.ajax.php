@@ -210,7 +210,7 @@ if( ($action=='initialiser_mdp') && $base_id && $admin_id )
 	$contact_prenom   = $DB_ROW['structure_contact_prenom'];
 	$contact_courriel = $DB_ROW['structure_contact_courriel'];
 	// Informations sur l'admin : nom / prénom / login.
-	$DB_TAB = DB_STRUCTURE_lister_users_cibles($admin_id,$info_classe=false);
+	$DB_TAB = DB_STRUCTURE_lister_users_cibles($admin_id,'user_nom,user_prenom,user_login');
 	if(!count($DB_TAB))
 	{
 		exit('Erreur : administrateur introuvable !');

@@ -42,63 +42,78 @@ $(document).ready
 			}
 		}
 
-		$("#f_groupe").change
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+// Réagir au clic sur un bouton radio ou un changement de select
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
+		function maj_affichage()
+		{
+			// On récupère le profil
+			var profil = $("input[type=radio]:checked").val();
+			if(typeof(profil)=='undefined')
+			{
+				$('#ajax_msg').removeAttr("class").html("&nbsp;");
+				$('#bilan').addClass("hide");
+				return false
+			}
+			// On récupère le regroupement
+			var groupe_val = $("#f_groupe").val();
+			if(!groupe_val)
+			{
+				$('#ajax_msg').removeAttr("class").html("&nbsp;");
+				$('#bilan').addClass("hide");
+				return false
+			}
+			// Pour un directeur ou un administrateur, groupe_val est de la forme d3 / n2 / c51 / g44
+			if(isNaN(parseInt(groupe_val)))
+			{
+				groupe_type = groupe_val.substring(0,1);
+				groupe_id   = groupe_val.substring(1);
+			}
+			// Pour un professeur, groupe_val est un entier, et il faut récupérer la 1ère lettre du label parent
+			else
+			{
+				groupe_type = $("#f_groupe option:selected").parent().attr('label').substring(0,1).toLowerCase();
+				groupe_id   = groupe_val;
+			}
+			$('#ajax_msg').removeAttr("class").addClass("loader").html("Veuillez patienter...");
+			$('#bilan tbody').html('');
+			$.ajax
+			(
+				{
+					type : 'POST',
+					url : 'ajax.php?page='+PAGE,
+					data : 'f_profil='+profil+'&f_groupe_id='+groupe_id+'&f_groupe_type='+groupe_type,
+					dataType : "html",
+					error : function(msg,string)
+					{
+						$('#ajax_msg').removeAttr("class").addClass("alerte").html("Echec de la connexion ! Veuillez valider de nouveau.");
+					},
+					success : function(responseHTML)
+					{
+						initialiser_compteur();
+						if( (responseHTML.substring(0,4)!='<tr>') && (responseHTML!='') )
+						{
+							$('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);
+							$('#bilan').addClass("hide");
+						}
+						else
+						{
+							$('#ajax_msg').removeAttr("class").addClass("valide").html("Demande réalisée !");
+							$('#bilan tbody').html(responseHTML);
+							trier_tableau();
+							$('#bilan').removeAttr("class");
+						}
+					}
+				}
+			);
+		}
+
+		$("#f_groupe , input[type=radio]").change
 		(
 			function()
 			{
-				var groupe_val = $("#f_groupe").val();
-				if(!groupe_val)
-				{
-					$('#ajax_msg').removeAttr("class").html("&nbsp;");
-					$('#bilan').addClass("hide");
-					return false
-				}
-				// Pour un directeur ou un administrateur, groupe_val est de la forme d3 / n2 / c51 / g44
-				if(isNaN(parseInt(groupe_val)))
-				{
-					groupe_type = groupe_val.substring(0,1);
-					groupe_id   = groupe_val.substring(1);
-				}
-				// Pour un professeur, groupe_val est un entier, et il faut récupérer la 1ère lettre du label parent
-				else
-				{
-					groupe_type = $("#f_groupe option:selected").parent().attr('label').substring(0,1).toLowerCase();
-					groupe_id   = groupe_val;
-				}
-				$('button').prop('disabled',true);
-				$('#ajax_msg').removeAttr("class").addClass("loader").html("Veuillez patienter...");
-				$('#bilan tbody').html('');
-				$.ajax
-				(
-					{
-						type : 'POST',
-						url : 'ajax.php?page='+PAGE,
-						data : 'f_groupe_id='+groupe_id+'&f_groupe_type='+groupe_type,
-						dataType : "html",
-						error : function(msg,string)
-						{
-							$('button').prop('disabled',false);
-							$('#ajax_msg').removeAttr("class").addClass("alerte").html("Echec de la connexion ! Veuillez valider de nouveau.");
-						},
-						success : function(responseHTML)
-						{
-							initialiser_compteur();
-							$('button').prop('disabled',false);
-							if( (responseHTML.substring(0,4)!='<tr>') && (responseHTML!='') )
-							{
-								$('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);
-								$('#bilan').addClass("hide");
-							}
-							else
-							{
-								$('#ajax_msg').removeAttr("class").addClass("valide").html("Demande réalisée !");
-								$('#bilan tbody').html(responseHTML);
-								trier_tableau();
-								$('#bilan').removeAttr("class");
-							}
-						}
-					}
-				);
+				maj_affichage();
 			}
 		);
 

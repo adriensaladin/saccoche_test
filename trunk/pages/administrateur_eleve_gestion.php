@@ -72,7 +72,7 @@ $select_f_groupes = afficher_select(DB_STRUCTURE_OPT_regroupements_etabl() , $se
 			{
 				$groupe_type = ($groupe_id==1) ? 'sdf' : 'all' ;
 			}
-			$DB_TAB = DB_STRUCTURE_lister_eleves_actifs_regroupement($groupe_type,$groupe_id);
+			$DB_TAB = DB_STRUCTURE_lister_users_actifs_regroupement('eleve',$groupe_type,$groupe_id,'user_id,user_id_ent,user_id_gepi,user_sconet_id,user_sconet_elenoet,user_reference,user_nom,user_prenom,user_login');
 			if(count($DB_TAB))
 			{
 				foreach($DB_TAB as $DB_ROW)

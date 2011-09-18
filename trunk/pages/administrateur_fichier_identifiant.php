@@ -27,19 +27,18 @@
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = "Importer / Imposer des identifiants";
-$VERSION_JS_FILE += 7;
+$VERSION_JS_FILE += 8;
 ?>
 
 <?php
 require_once('./_inc/tableau_sso.php');
 
 // Fabrication des éléments select du formulaire
-$select_f_groupes              = afficher_select(DB_STRUCTURE_OPT_regroupements_etabl()                   , $select_nom=false , $option_first='oui' , $selection=false , $optgroup='oui');
-$select_professeurs_directeurs = afficher_select(DB_STRUCTURE_OPT_professeurs_directeurs_etabl($statut=1) , $select_nom=false , $option_first='non' , $selection=false , $optgroup='oui');
+$select_groupe = afficher_select(DB_STRUCTURE_OPT_regroupements_etabl(FALSE/*sans*/) , $select_nom='f_groupe' , $option_first='oui' , $selection=false , $optgroup='oui');
 ?>
 
 <ul class="puce">
-	<li><span class="astuce">Pour un traitement individuel on peut utiliser les pages [<a href="./index.php?page=administrateur_eleve&amp;section=gestion">Gérer les élèves</a>] [<a href="./index.php?page=administrateur_professeur&amp;section=gestion">Gérer les professeurs</a>] [<a href="./index.php?page=administrateur_directeur">Gérer les directeurs</a>].</span></li>
+	<li><span class="astuce">Pour un traitement individuel on peut utiliser les pages [<a href="./index.php?page=administrateur_eleve&amp;section=gestion">Gérer les élèves</a>] [<a href="./index.php?page=administrateur_parent&amp;section=gestion">Gérer les parents</a>] [<a href="./index.php?page=administrateur_professeur&amp;section=gestion">Gérer les professeurs</a>] [<a href="./index.php?page=administrateur_directeur">Gérer les directeurs</a>].</span></li>
 	<li><span class="astuce">Les administrateurs ne se gèrent qu'individuellement depuis la page [<a href="./index.php?page=administrateur_administrateur">Gérer les administrateurs</a>].</span></li>
 </ul>
 
@@ -51,8 +50,7 @@ $select_professeurs_directeurs = afficher_select(DB_STRUCTURE_OPT_professeurs_di
 		<label class="tab" for="f_choix_principal">Objectif :</label>
 		<select id="f_choix_principal" name="f_choix_principal">
 			<option value=""></option>
-			<option value="init_loginmdp_eleves">Initialiser les identifiants SACoche des élèves.</option>
-			<option value="init_loginmdp_professeurs_directeurs">Initialiser les identifiants SACoche des professeurs &amp; directeurs.</option>
+			<option value="init_loginmdp">Initialiser des identifiants SACoche.</option>
 			<option value="import_loginmdp">Importer / Imposer des identifiants SACoche.</option>
 			<option value="import_id_lcs">Récupérer les identifiants du LCS.</option>
 			<option value="import_id_argos">Récupérer les identifiants d'ARGOS.</option>
@@ -66,18 +64,12 @@ $select_professeurs_directeurs = afficher_select(DB_STRUCTURE_OPT_professeurs_di
 		<p class="astuce">Les noms d'utilisateurs seront générés selon <a href="./index.php?page=administrateur_etabl_login">le format choisi</a>.</p>
 		<table>
 			<tr>
-				<td class="nu" style="width:30em">
-					<p id="p_eleves" class="hide">
-						<b>Liste des élèves :</b> <img alt="" src="./_img/bulle_aide.png" title="Utiliser la touche &laquo&nbsp;Shift&nbsp;&raquo; pour une sélection multiple contiguë.<br />Utiliser la touche &laquo&nbsp;Ctrl&nbsp;&raquo; pour une sélection multiple non contiguë." /><br />
-						<select id="f_groupe" name="f_groupe"><?php echo $select_f_groupes ?></select><br />
-						<select id="select_eleves" name="select_eleves[]" multiple size="10" class="hide"><option value=""></option></select>
-					</p>
-					<p id="p_professeurs_directeurs" class="hide">
-						<b>Liste des professeurs / directeurs :</b> <img alt="" src="./_img/bulle_aide.png" title="Utiliser la touche &laquo&nbsp;Shift&nbsp;&raquo; pour une sélection multiple contiguë.<br />Utiliser la touche &laquo&nbsp;Ctrl&nbsp;&raquo; pour une sélection multiple non contiguë." /><br />
-						<select id="select_professeurs_directeurs" name="select_professeurs_directeurs[]" multiple size="10"><?php echo $select_professeurs_directeurs; ?></select>
-					</p>
+				<td class="nu" style="width:30em;text-align:left">
+					<div><label class="tab" for="f_profil">Profil :</label><select id="f_profil" name="f_profil"><option value=""></option><option value="eleves">élèves</option><option value="parents">responsables légaux</option><option value="professeurs">professeurs</option><option value="directeurs">directeurs</option></select></div>
+					<div><label class="tab" for="f_groupe">Regroupement :</label><?php echo $select_groupe ?></div>
+					<div id="div_users" class="hide"><label class="tab" for="select_users">Utilisateurs :</label><select id="select_users" name="select_users[]" multiple size="8"><option value=""></option></select> <img alt="" src="./_img/bulle_aide.png" title="Utiliser la touche &laquo&nbsp;Shift&nbsp;&raquo; pour une sélection multiple contiguë.<br />Utiliser la touche &laquo&nbsp;Ctrl&nbsp;&raquo; pour une sélection multiple non contiguë." /></div>
 				</td>
-				<td id="td_bouton" class="nu hide" style="width:25em">
+				<td id="td_bouton" class="nu" style="width:25em">
 					<p><button id="init_login" type="button"><img alt="" src="./_img/bouton/mdp_groupe.png" /> Initialiser les noms d'utilisateurs.</button></p>
 					<p><button id="init_mdp" type="button"><img alt="" src="./_img/bouton/mdp_groupe.png" /> Initialiser les mots de passe.</button></p>
 				</td>

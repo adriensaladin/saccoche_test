@@ -241,7 +241,7 @@ if($action=='import_loginmdp')
 	$tab_users_base['nom']    = array();
 	$tab_users_base['prenom'] = array();
 	$tab_users_base['info']   = array();
-	$DB_TAB = DB_STRUCTURE_lister_users(array('eleve','professeur','directeur'),$only_actifs=false,$with_classe=true);
+	$DB_TAB = DB_STRUCTURE_lister_users(array('eleve','parent','professeur','directeur'),$only_actifs=false,$with_classe=true);
 	foreach($DB_TAB as $DB_ROW)
 	{
 		$tab_users_base['login'][$DB_ROW['user_id']]  = $DB_ROW['user_login'];

@@ -289,7 +289,7 @@ if( ($action=='saisir') && $devoir_id && $groupe_type && $groupe_id && $date && 
 	// liste des items
 	$DB_TAB_COMP = DB_STRUCTURE_lister_items_devoir($devoir_id);
 	// liste des élèves
-	$DB_TAB_USER = DB_STRUCTURE_lister_eleves_actifs_regroupement($groupe_type,$groupe_id);
+	$DB_TAB_USER = DB_STRUCTURE_lister_users_actifs_regroupement('eleve',$groupe_type,$groupe_id);
 	// Let's go
 	$item_nb = count($DB_TAB_COMP);
 	if(!$item_nb)
@@ -436,7 +436,7 @@ if( ($action=='voir') && $devoir_id && $groupe_type && $groupe_id && $date && $d
 	// liste des items
 	$DB_TAB_COMP = DB_STRUCTURE_lister_items_devoir($devoir_id);
 	// liste des élèves
-	$DB_TAB_USER = DB_STRUCTURE_lister_eleves_actifs_regroupement($groupe_type,$groupe_id);
+	$DB_TAB_USER = DB_STRUCTURE_lister_users_actifs_regroupement('eleve',$groupe_type,$groupe_id);
 	// Let's go
 	$item_nb = count($DB_TAB_COMP);
 	if(!$item_nb)
@@ -611,7 +611,7 @@ if( ($action=='voir_repart') && $devoir_id && $groupe_type && $groupe_id && $dat
 	// liste des items
 	$DB_TAB_ITEM = DB_STRUCTURE_lister_items_devoir($devoir_id);
 	// liste des élèves
-	$DB_TAB_USER = DB_STRUCTURE_lister_eleves_actifs_regroupement($groupe_type,$groupe_id);
+	$DB_TAB_USER = DB_STRUCTURE_lister_users_actifs_regroupement('eleve',$groupe_type,$groupe_id);
 	// Let's go
 	$item_nb = count($DB_TAB_ITEM);
 	if(!$item_nb)
@@ -896,7 +896,7 @@ if( ($action=='Imprimer_cartouche') && $devoir_id && $groupe_type && $groupe_id 
 	// liste des items
 	$DB_TAB_COMP = DB_STRUCTURE_lister_items_devoir($devoir_id);
 	// liste des élèves
-	$DB_TAB_USER = DB_STRUCTURE_lister_eleves_actifs_regroupement($groupe_type,$groupe_id);
+	$DB_TAB_USER = DB_STRUCTURE_lister_users_actifs_regroupement('eleve',$groupe_type,$groupe_id);
 	// Let's go
 	if(!count($DB_TAB_COMP))
 	{

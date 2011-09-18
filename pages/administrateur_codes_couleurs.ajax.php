@@ -98,15 +98,15 @@ if( ($objet=='acquis') && $test_color_NA && $test_color_VA && $test_color_A && $
 	if($longueur_A ==4) {$acquis_color_A  = '#'.$acquis_color_A{1} .$acquis_color_A{1} .$acquis_color_A{2} .$acquis_color_A{2} .$acquis_color_A{3} .$acquis_color_A{3} ;}
 	// Mettre à jour la session + la base + le css perso
 	$tab_parametres = array();
-	$_SESSION['ACQUIS_TEXTE']['NA']         = $acquis_texte_NA;   $tab_parametres['acquis_texte_NA']                = $acquis_texte_NA;
-	$_SESSION['ACQUIS_TEXTE']['VA']         = $acquis_texte_VA;   $tab_parametres['acquis_texte_VA']                = $acquis_texte_VA;
-	$_SESSION['ACQUIS_TEXTE']['A']          = $acquis_texte_A;    $tab_parametres['acquis_texte_A']                 = $acquis_texte_A;
-	$_SESSION['ACQUIS_LEGENDE']['NA']       = $acquis_legende_NA; $tab_parametres['acquis_legende_NA']              = $acquis_legende_NA;
-	$_SESSION['ACQUIS_LEGENDE']['VA']       = $acquis_legende_VA; $tab_parametres['acquis_legende_VA']              = $acquis_legende_VA;
-	$_SESSION['ACQUIS_LEGENDE']['A']        = $acquis_legende_A;  $tab_parametres['acquis_legende_A']               = $acquis_legende_A;
-	$_SESSION['CSS_BACKGROUND-COLOR']['NA'] = $acquis_color_NA;   $tab_parametres['css_background-acquis_color_A']  = $acquis_color_A;
-	$_SESSION['CSS_BACKGROUND-COLOR']['VA'] = $acquis_color_VA;   $tab_parametres['css_background-acquis_color_VA'] = $acquis_color_VA;
-	$_SESSION['CSS_BACKGROUND-COLOR']['A']  = $acquis_color_A;    $tab_parametres['css_background-acquis_color_NA'] = $acquis_color_NA;
+	$_SESSION['ACQUIS_TEXTE']['NA']         = $acquis_texte_NA;   $tab_parametres['acquis_texte_NA']         = $acquis_texte_NA;
+	$_SESSION['ACQUIS_TEXTE']['VA']         = $acquis_texte_VA;   $tab_parametres['acquis_texte_VA']         = $acquis_texte_VA;
+	$_SESSION['ACQUIS_TEXTE']['A']          = $acquis_texte_A;    $tab_parametres['acquis_texte_A']          = $acquis_texte_A;
+	$_SESSION['ACQUIS_LEGENDE']['NA']       = $acquis_legende_NA; $tab_parametres['acquis_legende_NA']       = $acquis_legende_NA;
+	$_SESSION['ACQUIS_LEGENDE']['VA']       = $acquis_legende_VA; $tab_parametres['acquis_legende_VA']       = $acquis_legende_VA;
+	$_SESSION['ACQUIS_LEGENDE']['A']        = $acquis_legende_A;  $tab_parametres['acquis_legende_A']        = $acquis_legende_A;
+	$_SESSION['CSS_BACKGROUND-COLOR']['NA'] = $acquis_color_NA;   $tab_parametres['css_background-color_A']  = $acquis_color_A;
+	$_SESSION['CSS_BACKGROUND-COLOR']['VA'] = $acquis_color_VA;   $tab_parametres['css_background-color_VA'] = $acquis_color_VA;
+	$_SESSION['CSS_BACKGROUND-COLOR']['A']  = $acquis_color_A;    $tab_parametres['css_background-color_NA'] = $acquis_color_NA;
 	DB_STRUCTURE_modifier_parametres( $tab_parametres );
 	// Enregistrer en session le CSS personnalisé
 	adapter_session_daltonisme();

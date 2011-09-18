@@ -35,7 +35,7 @@ $admin_id = (isset($_POST['f_admin']))  ? clean_entier($_POST['f_admin']) : 0;
 if($admin_id)
 {
 	// Informations sur l'admin : nom / prénom / login.
-	$DB_TAB = DB_STRUCTURE_lister_users_cibles($admin_id,$info_classe=false);
+	$DB_TAB = DB_STRUCTURE_lister_users_cibles($admin_id,'user_nom,user_prenom,user_login');
 	if(!count($DB_TAB))
 	{
 		exit('Erreur : administrateur introuvable !');

@@ -36,7 +36,7 @@ $(document).ready
 
 		// tri du tableau (avec jquery.tablesorter.js).
 		var sorting = [[1,0]];
-		$('table#statistiques').tablesorter({ headers:{0:{sorter:false},3:{sorter:false}} });
+		$('table#statistiques').tablesorter({ headers:{0:{sorter:false}} });
 		function trier_tableau()
 		{
 			if($('table#statistiques tbody tr').length)

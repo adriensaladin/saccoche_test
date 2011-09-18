@@ -38,44 +38,46 @@ $dossier_export    = './__tmp/export/';
 $dossier_import    = './__tmp/import/';
 $dossier_login_mdp = './__tmp/login-mdp/';
 
+$tab_profils = array('eleves','parents','professeurs','directeurs');
+
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//	Initialiser plusieurs noms d'utilisateurs élèves
-//	Initialiser plusieurs noms d'utilisateurs professeurs et/ou directeurs
-//	Initialiser plusieurs mots de passe élèves
-//	Initialiser plusieurs mots de passe professeurs et/ou directeurs
+//	Initialiser plusieurs noms d'utilisateurs élèves | parents | professeurs | directeurs
+//	Initialiser plusieurs mots de passe élèves | parents | professeurs | directeurs
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-if( (($action=='init_login')||($action=='init_mdp')) && (($profil=='eleves')||($profil=='professeurs_directeurs')) && $nb )
+if( (($action=='init_login')||($action=='init_mdp')) && (in_array($profil,$tab_profils)) && $nb )
 {
+	$prefixe = ($profil!='parents') ? 'user_' : 'parent_' ;
 	// Nom sans extension des fichiers de sortie
 	$fnom = 'identifiants_'.$_SESSION['BASE'].'_'.$profil.'_'.time();
 	// La classe n'est affichée que pour l'élève
-	$info_classe = ($profil=='eleves') ? true : false ;
+	$avec_info = ($profil=='eleves') ? 'classe' : ( ($profil=='parents') ? 'enfant' : '' ) ;
 	//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-	//	Initialiser plusieurs noms d'utilisateurs (élève ou prof)
+	//	Initialiser plusieurs noms d'utilisateurs
 	//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 	if($action=='init_login')
 	{
 		$tab_login = array();
 		// Récupérer les données des utilisateurs concernés (besoin de le faire maintenant, on a besoin des infos pour générer le login)
-		$DB_TAB = DB_STRUCTURE_lister_users_cibles(implode(',',$tab_select_users),$info_classe);
+		$listing_champs = ($profil!='parents') ? 'user_id,user_sconet_id,user_sconet_elenoet,user_reference,user_profil,user_nom,user_prenom' :  'parent.user_id AS parent_id,parent.user_sconet_id AS parent_sconet_id,parent.user_sconet_elenoet AS parent_sconet_elenoet,parent.user_reference AS parent_reference,parent.user_profil AS parent_profil,parent.user_nom AS parent_nom,parent.user_prenom AS parent_prenom' ;
+		$DB_TAB = DB_STRUCTURE_lister_users_cibles(implode(',',$tab_select_users),$listing_champs,$avec_info);
 		// Mettre à jour les noms d'utilisateurs des utilisateurs concernés
 		foreach($DB_TAB as $DB_ROW)
 		{
 			// Construire le login
-			$login = fabriquer_login($DB_ROW['user_prenom'] , $DB_ROW['user_nom'] , $DB_ROW['user_profil']);
+			$login = fabriquer_login($DB_ROW[$prefixe.'prenom'] , $DB_ROW[$prefixe.'nom'] , $DB_ROW[$prefixe.'profil']);
 			// Puis tester le login
-			if( DB_STRUCTURE_tester_login($login,$DB_ROW['user_id']) )
+			if( DB_STRUCTURE_tester_login($login,$DB_ROW[$prefixe.'id']) )
 			{
 				// Login pris : en chercher un autre en remplaçant la fin par des chiffres si besoin
 				$login = DB_STRUCTURE_rechercher_login_disponible($login);
 			}
-			DB_STRUCTURE_modifier_utilisateur( $DB_ROW['user_id'] , array(':login'=>$login) );
-			$tab_login[$DB_ROW['user_id']] = $login;
+			DB_STRUCTURE_modifier_utilisateur( $DB_ROW[$prefixe.'id'] , array(':login'=>$login) );
+			$tab_login[$DB_ROW[$prefixe.'id']] = $login;
 		}
 	}
 	//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-	//	Initialiser plusieurs mots de passe (élève ou prof)
+	//	Initialiser plusieurs mots de passe
 	//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 	if($action=='init_mdp')
 	{
@@ -88,20 +90,21 @@ if( (($action=='init_login')||($action=='init_mdp')) && (($profil=='eleves')||($
 			$tab_password[$user_id] = $password;
 		}
 		// Récupérer les données des utilisateurs concernés (besoin ensuite pour les csv / pdf)
-		$DB_TAB = DB_STRUCTURE_lister_users_cibles(implode(',',$tab_select_users),$info_classe);
+		$listing_champs = ($profil!='parents') ? 'user_id,user_sconet_id,user_sconet_elenoet,user_reference,user_profil,user_nom,user_prenom,user_login' :  'parent.user_id AS parent_id,parent.user_sconet_id AS parent_sconet_id,parent.user_sconet_elenoet AS parent_sconet_elenoet,parent.user_reference AS parent_reference,parent.user_profil AS parent_profil,parent.user_nom AS parent_nom,parent.user_prenom AS parent_prenom,parent.user_login AS parent_login' ;
+		$DB_TAB = DB_STRUCTURE_lister_users_cibles(implode(',',$tab_select_users),$listing_champs,$avec_info);
 	}
 	//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 	//	Générer une sortie csv zippé (login ou mdp) (élève ou prof)
 	//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 	$separateur = ';';
 	$champ_nom = ($profil=='eleves') ? 'CLASSE' : 'PROFIL' ;
-	$fcontenu = 'SCONET_ID'.$separateur.'SCONET_N°'.$separateur.'REFERENCE'.$separateur.$champ_nom.$separateur.'NOM'.$separateur.'PRENOM'.$separateur.'LOGIN'.$separateur.'MOT DE PASSE'."\r\n\r\n";
+	$fcontenu = 'SCONET_ID'.$separateur.'SCONET_N°'.$separateur.'REFERENCE'.$separateur.'PROFIL'.$separateur.'NOM'.$separateur.'PRENOM'.$separateur.'LOGIN'.$separateur.'MOT DE PASSE'.$separateur.'INFO'."\r\n\r\n";
 	foreach($DB_TAB as $DB_ROW)
 	{
-		$champ_val = ($profil=='eleves') ? $DB_ROW['groupe_nom'] : $DB_ROW['user_profil'] ;
-		$login = ($action=='init_login') ? $tab_login[$DB_ROW['user_id']] : $DB_ROW['user_login'] ;
-		$mdp   = ($action=='init_mdp')   ? $tab_password[$DB_ROW['user_id']] : 'inchangé' ;
-		$fcontenu .= $DB_ROW['user_sconet_id'].$separateur.$DB_ROW['user_sconet_elenoet'].$separateur.$DB_ROW['user_reference'].$separateur.$champ_val.$separateur.$DB_ROW['user_nom'].$separateur.$DB_ROW['user_prenom'].$separateur.$login.$separateur.$mdp."\r\n";
+		$login = ($action=='init_login')  ? $tab_login[$DB_ROW[$prefixe.'id']]    : $DB_ROW[$prefixe.'login'] ;
+		$mdp   = ($action=='init_mdp')    ? $tab_password[$DB_ROW[$prefixe.'id']] : 'inchangé' ;
+		$info  = (isset($DB_ROW['info'])) ? $DB_ROW['info'] : '' ;
+		$fcontenu .= $DB_ROW[$prefixe.'sconet_id'].$separateur.$DB_ROW[$prefixe.'sconet_elenoet'].$separateur.$DB_ROW[$prefixe.'reference'].$separateur.$DB_ROW[$prefixe.'profil'].$separateur.$DB_ROW[$prefixe.'nom'].$separateur.$DB_ROW[$prefixe.'prenom'].$separateur.$login.$separateur.$mdp.$separateur.$info."\r\n";
 	}
 	$zip = new ZipArchive();
 	$result_open = $zip->open($dossier_login_mdp.$fnom.'.zip', ZIPARCHIVE::CREATE);
@@ -115,18 +118,20 @@ if( (($action=='init_login')||($action=='init_mdp')) && (($profil=='eleves')||($
 	//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 	//	Générer une sortie pdf : classe fpdf + script étiquettes (login ou mdp) (élève ou prof)
 	//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+	$font_size = ($profil!='parents') ? 11 : 10 ;
 	require_once('./_lib/FPDF/PDF_Label.php');
-	$pdf = new PDF_Label(array('paper-size'=>'A4', 'metric'=>'mm', 'marginLeft'=>5, 'marginTop'=>5, 'NX'=>3, 'NY'=>8, 'SpaceX'=>7, 'SpaceY'=>5, 'width'=>60, 'height'=>30, 'font-size'=>11));
+	$pdf = new PDF_Label(array('paper-size'=>'A4', 'metric'=>'mm', 'marginLeft'=>5, 'marginTop'=>5, 'NX'=>3, 'NY'=>8, 'SpaceX'=>7, 'SpaceY'=>5, 'width'=>60, 'height'=>30, 'font-size'=>$font_size));
 	$pdf -> SetFont('Helvetica'); // Permet de mieux distinguer les "l 1" etc. que la police Times ou Courrier
 	$pdf -> AddPage();
 	$pdf -> SetFillColor(245,245,245);
 	$pdf -> SetDrawColor(145,145,145);
 	foreach($DB_TAB as $DB_ROW)
 	{
-		$ligne1 = ($profil=='eleves') ? $DB_ROW['groupe_nom'] : mb_strtoupper($DB_ROW['user_profil']) ;
-		$ligne2 = $DB_ROW['user_nom'].' '.$DB_ROW['user_prenom'];
-		$ligne3 = ($action=='init_login') ? 'Utilisateur : '.$tab_login[$DB_ROW['user_id']] : 'Utilisateur : '.$DB_ROW['user_login'] ;
-		$ligne4 = ($action=='init_mdp')   ? 'Mot de passe : '.$tab_password[$DB_ROW['user_id']] : 'Mot de passe : inchangé' ;
+		$ligne1 = perso_ucwords($DB_ROW[$prefixe.'profil']) ;
+		$ligne1.= (isset($DB_ROW['info'])) ? ' : '.perso_ucwords($DB_ROW['info']) : '' ;
+		$ligne2 = $DB_ROW[$prefixe.'nom'].' '.$DB_ROW[$prefixe.'prenom'];
+		$ligne3 = ($action=='init_login')  ? 'Utilisateur : '.$tab_login[$DB_ROW[$prefixe.'id']] : 'Utilisateur : '.$DB_ROW[$prefixe.'login'] ;
+		$ligne4 = ($action=='init_mdp')    ? 'Mot de passe : '.$tab_password[$DB_ROW[$prefixe.'id']] : 'Mot de passe : inchangé' ;
 		$pdf -> Add_Label(pdf($ligne1."\r\n".$ligne2."\r\n".$ligne3."\r\n".$ligne4));
 	}
 	$pdf->Output($dossier_login_mdp.$fnom.'.pdf','F');
@@ -152,7 +157,7 @@ if($action=='user_export')
 {
 	$separateur = ';';
 	// Récupérer les données des utilisateurs
-	$DB_TAB = DB_STRUCTURE_lister_users(array('eleve','professeur','directeur'),$only_actifs=true,$with_classe=true);
+	$DB_TAB = DB_STRUCTURE_lister_users(array('eleve','parent','professeur','directeur'),$only_actifs=true,$with_classe=true);
 	// Générer le csv
 	$fcontenu_csv = 'LOGIN'.$separateur.'MOT DE PASSE'.$separateur.'NOM'.$separateur.'PRENOM'.$separateur.'PROFIL (INFO)'.$separateur.'CLASSE (INFO)'."\r\n\r\n";
 	foreach($DB_TAB as $DB_ROW)
@@ -758,7 +763,7 @@ if($action=='COPY_id_lcs_TO_id_ent')
 	}
 	require($fichier); // Charge la fonction "recuperer_infos_user_LCS()"
 	// On récupère le contenu de la base, on va passer les users en revue un par un
-	$DB_TAB = DB_STRUCTURE_lister_users(array('eleve','professeur','directeur'),$only_actifs=true,$with_classe=true);
+	$DB_TAB = DB_STRUCTURE_lister_users(array('eleve','parent','professeur','directeur'),$only_actifs=true,$with_classe=true);
 	// Pour chaque user de la base, rechercher son uid dans le LCS
 	$lignes_ras     = '';
 	$lignes_modif   = '';
@@ -770,6 +775,11 @@ if($action=='COPY_id_lcs_TO_id_ent')
 		{
 			// Contenu de SACoche à ignorer : utilisateur non cherché dans le LCS car profil 'directeur'
 			$lignes_inconnu .= '<tr><td>'.html($DB_ROW['user_nom'].' '.$DB_ROW['user_prenom'].' ['.$DB_ROW['user_id_ent'].']').'</td><td>non cherché car profil directeur</td></tr>';
+		}
+		if($DB_ROW['user_profil']=='parent')
+		{
+			// Contenu de SACoche à ignorer : utilisateur non cherché dans le LCS car profil 'parent'
+			$lignes_inconnu .= '<tr><td>'.html($DB_ROW['user_nom'].' '.$DB_ROW['user_prenom'].' ['.$DB_ROW['user_id_ent'].']').'</td><td>non cherché car profil parent</td></tr>';
 		}
 		elseif( ($DB_ROW['user_profil']=='eleve') && (!$DB_ROW['user_sconet_elenoet']) )
 		{
@@ -826,14 +836,14 @@ if($action=='COPY_id_lcs_TO_id_ent')
 	echo'  <tr><th colspan="2">Utilisateurs de SACoche trouvés dans le LCS dont l\'identifiant ENT a été modifié.</th></tr>';
 	echo($lignes_modif) ? $lignes_modif : '<tr><td colspan="2">Aucun</td></tr>';
 	echo' </tbody><tbody>';
+	echo'  <tr><th colspan="2">Utilisateurs de SACoche dont l\'identifiant ENT n\'a pas pu être modifié.</th></tr>';
+	echo($lignes_pb) ? $lignes_pb : '<tr><td colspan="2">Aucun</td></tr>';
+	echo' </tbody><tbody>';
 	echo'  <tr><th colspan="2">Utilisateurs de SACoche trouvés dans le LCS dont l\'identifiant ENT est inchangé.</th></tr>';
 	echo($lignes_ras) ? $lignes_ras : '<tr><td colspan="2">Aucun</td></tr>';
 	echo' </tbody><tbody>';
 	echo'  <tr><th colspan="2">Utilisateurs de SACoche non trouvés dans le LCS.</th></tr>';
 	echo($lignes_inconnu) ? $lignes_inconnu : '<tr><td colspan="2">Aucun</td></tr>';
-	echo' </tbody><tbody>';
-	echo'  <tr><th colspan="2">Utilisateurs de SACoche dont l\'identifiant ENT n\'a pas pu être modifié.</th></tr>';
-	echo($lignes_pb) ? $lignes_pb : '<tr><td colspan="2">Aucun</td></tr>';
 	echo' </tbody>';
 	echo'</table>';
 	exit();

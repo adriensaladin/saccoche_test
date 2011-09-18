@@ -26,7 +26,7 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-$VERSION_JS_FILE += 9;
+$VERSION_JS_FILE += 10;
 ?>
 
 <?php
@@ -34,7 +34,7 @@ $selection = (isset($_POST['listing_ids'])) ? explode(',',$_POST['listing_ids'])
 $select_structure = afficher_select(DB_WEBMESTRE_OPT_structures_sacoche() , $select_nom=false , $option_first='non' , $selection , $optgroup='oui') ;
 ?>
 
-<form id="statistiques" action=""><fieldset>
+<form id="form_stats" action=""><fieldset>
 	<label class="tab" for="f_basic">Structure(s) <img alt="" src="./_img/bulle_aide.png" title="Utiliser la touche &laquo&nbsp;Shift&nbsp;&raquo; pour une sélection multiple contiguë.<br />Utiliser la touche &laquo&nbsp;Ctrl&nbsp;&raquo; pour une sélection multiple non contiguë." /> :</label><select id="f_base" name="f_base" multiple size="10"><?php echo $select_structure ?></select><br />
 	<span class="tab"></span><input type="hidden" id="f_action" name="f_action" value="calculer" /><input type="hidden" id="f_listing_id" name="f_listing_id" value="" /><button id="bouton_valider" type="button"><img alt="" src="./_img/bouton/stats.png" /> Calculer les statistiques.</button><label id="ajax_msg">&nbsp;</label>
 </fieldset></form>

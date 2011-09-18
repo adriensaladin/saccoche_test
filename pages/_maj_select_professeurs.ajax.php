@@ -30,5 +30,14 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 if($_SESSION['SESAMATH_ID']==ID_DEMO) {}
 
-echo afficher_select(DB_STRUCTURE_OPT_professeurs_etabl() , $select_nom=false , $option_first='non' , $selection=true , $optgroup='non');
+$groupe_type = (isset($_POST['f_groupe_type'])) ? clean_texte($_POST['f_groupe_type']) : 'd'; // d n c g
+$groupe_id   = (isset($_POST['f_groupe_id']))   ? clean_entier($_POST['f_groupe_id'])  : 0;
+$tab_types   = array('d'=>'all' , 'n'=>'niveau' , 'c'=>'classe' , 'g'=>'groupe');
+
+if( ($groupe_id) && (!isset($tab_types[$groupe_type])) )
+{
+	exit('Erreur avec les données transmises !');
+}
+
+echo afficher_select(DB_STRUCTURE_OPT_professeurs_etabl($tab_types[$groupe_type],$groupe_id) , $select_nom=false , $option_first='non' , $selection=true , $optgroup='non');
 ?>

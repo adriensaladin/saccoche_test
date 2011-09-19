@@ -100,7 +100,7 @@ else
 		{
 			$x = ($tab_matiere[$matiere_id]['niveau_nb'])>1 ? 'x' : '';
 			$affichage .= '<td class="v">Référentiel présent sur '.$tab_matiere[$matiere_id]['niveau_nb'].' niveau'.$x.'.</td>';
-			$affichage .= ($matiere_coord) ? '<td class="nu" id="'.$id.'"><q class="modifier" title="Paramétrer les référentiels de cette matière."></q></td>' : '<td class="nu"><q class="modifier_non" title="Action réservée aux coordonnateurs."></q></td>' ;
+			$affichage .= ($matiere_coord) ? '<td class="nu" id="'.$id.'"><q class="modifier" title="Modifier les référentiels de cette matière."></q></td>' : '<td class="nu"><q class="modifier_non" title="Action réservée aux coordonnateurs."></q></td>' ;
 
 		}
 		else

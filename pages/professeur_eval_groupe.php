@@ -101,7 +101,7 @@ if(count($tab_id_classe_groupe))
 
 <hr />
 
-<form action="" id="form0"><fieldset>
+<form action="" method="post" id="form0"><fieldset>
 	<label class="tab" for="f_aff_classe">Classe / groupe :</label><select id="f_aff_classe" name="f_aff_classe"><?php echo $select_eleve ?></select>
 	<div id="zone_periodes" class="hide">
 		<label class="tab" for="f_aff_periode">Période :</label><?php echo $select_periode ?>
@@ -113,7 +113,7 @@ if(count($tab_id_classe_groupe))
 	</div>
 </fieldset></form>
 
-<form action="" id="form1">
+<form action="" method="post" id="form1">
 	<hr />
 	<p id="p_alerte" class="danger hide">Une évaluation dont la saisie a commencé ne devrait pas voir ses items modifiés.<br />En particulier, retirer des items d'une évaluation efface les scores correspondants qui sont saisis !</p>
 	<table class="form">
@@ -133,7 +133,7 @@ if(count($tab_id_classe_groupe))
 	</table>
 </form>
 
-<form action="" id="zone_compet" class="hide">
+<form action="" method="post" id="zone_compet" class="hide">
 	<p>
 		<span class="tab"></span><button id="valider_compet" type="button"><img alt="" src="./_img/bouton/valider.png" /> Valider ce choix</button>&nbsp;&nbsp;&nbsp;<button id="annuler_compet" type="button"><img alt="" src="./_img/bouton/annuler.png" /> Annuler / Retour</button>
 	</p>
@@ -144,14 +144,14 @@ if(count($tab_id_classe_groupe))
 	?>
 </form>
 
-<form action="" id="zone_ordonner" class="hide">
+<form action="" method="post" id="zone_ordonner" class="hide">
 	<p class="hc"><b id="titre_ordonner"></b><br /><label id="msg_ordonner"></label></p>
 	<div id="div_ordonner">
 	</div>
 </form>
 
 <!-- Sans "javascript:return false" une soumission incontrôlée s'effectue quand on presse "entrée" dans le cas d'un seul élève évalué sur un seul item. -->
-<form action="javascript:return false" id="zone_saisir" class="hide">
+<form action="javascript:return false" method="post" id="zone_saisir" class="hide">
 	<p class="hc"><b id="titre_saisir"></b><br /><label id="msg_saisir"></label></p>
 	<table id="table_saisir" class="scor_eval">
 		<tbody><tr><td></td></tr></tbody>
@@ -233,7 +233,7 @@ $select_couleur      = afficher_select($tab_select_couleur      , $select_nom='f
 $select_marge_min    = afficher_select($tab_select_marge_min    , $select_nom='f_marge_min'   , $option_first='non' , $selection=$tab_cookie['marge_min']    , $optgroup='non');
 ?>
 
-<form action="" id="zone_imprimer" class="hide"><fieldset>
+<form action="" method="post" id="zone_imprimer" class="hide"><fieldset>
 	<p class="hc"><b id="titre_imprimer"></b><br /><button id="fermer_zone_imprimer" type="button"><img alt="" src="./_img/bouton/retourner.png" /> Retour</button></p>
 	<label class="tab" for="f_contenu">Remplissage :</label><?php echo $select_cart_contenu ?><br />
 	<label class="tab" for="f_detail">Détail :</label><?php echo $select_cart_detail ?><br />

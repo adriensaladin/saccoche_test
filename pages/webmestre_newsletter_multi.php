@@ -44,7 +44,7 @@ $select_structure = afficher_select(DB_WEBMESTRE_OPT_structures_sacoche() , $sel
 	<span id="ajax_max" class="hide"></span>
 </div>
 
-<form id="newsletter" action=""><fieldset>
+<form action="" method="post" id="newsletter"><fieldset>
 	<label class="tab" for="f_basic">Destinataire(s) <img alt="" src="./_img/bulle_aide.png" title="Utiliser la touche &laquo&nbsp;Shift&nbsp;&raquo; pour une sélection multiple contiguë.<br />Utiliser la touche &laquo&nbsp;Ctrl&nbsp;&raquo; pour une sélection multiple non contiguë." /> :</label><select id="f_base" name="f_base" multiple size="10"><?php echo $select_structure ?></select><br />
 	<label class="tab" for="f_titre">Titre :</label><input id="f_titre" name="f_titre" value="" size="50" /><br />
 	<label class="tab" for="f_contenu">Contenu :</label><textarea id="f_contenu" name="f_contenu" rows="15" cols="100">message ici, sans bonjour ni au revoir, car l'en-tête et le pied du message sont automatiquement ajoutés</textarea><br />
@@ -52,7 +52,7 @@ $select_structure = afficher_select(DB_WEBMESTRE_OPT_structures_sacoche() , $sel
 	<hr />
 </fieldset></form>
 
-<form id="structures" action="">
+<form action="" method="post" id="structures">
 	<p id="zone_actions">
 		Pour les structures sélectionnées : <input id="listing_ids" name="listing_ids" type="hidden" value="" />
 		<button id="bouton_stats" type="button"><img alt="" src="./_img/bouton/stats.png" /> Calculer les statistiques.</button>

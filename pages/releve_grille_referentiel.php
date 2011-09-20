@@ -100,7 +100,7 @@ $select_colonne_vide = afficher_select($tab_select_colonne_vide , $select_nom='f
 
 <p><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=releves_bilans__releve_grille_referentiel">DOC : Grille d'items d'un référentiel.</a></span></p>
 
-<form id="form_select" action=""><fieldset>
+<form action="" method="post" id="form_select"><fieldset>
 	<label class="tab" for="f_matiere">Matière :</label><?php echo $select_matiere ?><input type="hidden" id="f_matiere_nom" name="f_matiere_nom" value="" /><br />
 	<label class="tab" for="f_niveau">Niveau :</label><?php echo $select_niveau ?><input type="hidden" id="f_niveau_nom" name="f_niveau_nom" value="" /><p />
 	<div class="<?php echo $class_form_eleve ?>">

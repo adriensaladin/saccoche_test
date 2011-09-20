@@ -138,7 +138,7 @@ echo ($nb_inconnu) ? '<label class="alerte">Il y a '.$nb_inconnu.' référentiel
 
 <hr />
 
-<form id="form_select" action=""><fieldset>
+<form action="" method="post" id="form_select"><fieldset>
 	<p>
 		<label class="tab" for="f_matiere">Matière :</label><?php echo $select_matiere ?><input type="hidden" id="f_matiere_nom" name="f_matiere_nom" value="" />
 	</p>

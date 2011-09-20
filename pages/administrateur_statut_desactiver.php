@@ -44,7 +44,7 @@ $select_professeurs_directeurs = afficher_select(DB_STRUCTURE_OPT_professeurs_di
 
 <hr />
 
-<form action="">
+<form action="" method="post">
 	<table>
 		<tr>
 			<td style="width:55em" colspan="2">

@@ -32,7 +32,7 @@ if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');
 
 <hr />
 
-<form action="">
+<form action="" method="post">
 	<table class="form">
 		<thead>
 			<tr>

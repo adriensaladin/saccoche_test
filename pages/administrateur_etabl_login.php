@@ -42,7 +42,7 @@ foreach($tab_profils as $profil)
 
 <hr />
 
-<form action="">
+<form action="" method="post">
 	<?php echo $affichage; ?>
 	<p><span class="tab"></span><button id="bouton_valider" type="button"><img alt="" src="./_img/bouton/parametre.png" /> Valider ces formats.</button><label id="ajax_msg">&nbsp;</label></p>
 </form>

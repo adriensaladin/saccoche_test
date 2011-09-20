@@ -91,7 +91,7 @@ foreach($tab_acquis as $acquis => $class)
 
 <hr />
 
-<form id="form_notes" action="">
+<form action="" method="post" id="form_notes">
 	<h2>Notes aux évaluations : symboles colorés, équivalents textes, légende</h2>
 	<table class="simulation"><tbody><tr><?php echo implode('</tr><tr>',$simulation_lignes) ?></tr></tbody></table>
 	<label id="ajax_msg_note_symbole"></label>
@@ -105,7 +105,7 @@ foreach($tab_acquis as $acquis => $class)
 
 	<hr />
 
-<form id="form_acquis" action="">
+<form action="" method="post" id="form_acquis">
 	<h2>Degrés d'acquisitions calculés : couleurs de fond, équivalents textes, légende</h2>
 	<!-- Pas mis dans un tableau, sinon colorpicker bugue avec IE -->
 	<?php echo $acquis_box; ?>

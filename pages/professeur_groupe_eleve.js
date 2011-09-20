@@ -154,7 +154,7 @@ $(document).ready
 		$.ajax
 		(
 			{
-				type : 'GET',
+				type : 'POST',
 				url : 'ajax.php?page='+PAGE+'&action=initialiser',
 				data : '',
 				dataType : "html",

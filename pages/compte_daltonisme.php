@@ -67,7 +67,7 @@ foreach($tab_valid as $etat => $tab_style)
 
 <hr />
 
-<form id="form_notes" action="">
+<form action="" method="post" id="form_notes">
 	<table class="simulation">
 		<thead>
 			<tr>

@@ -44,7 +44,7 @@ $select_groupe = afficher_select(DB_STRUCTURE_OPT_regroupements_etabl(FALSE/*san
 
 <hr />
 
-<form action="">
+<form action="" method="post">
 
 	<fieldset>
 		<label class="tab" for="f_choix_principal">Objectif :</label>

@@ -52,7 +52,7 @@ $date_debut  = date("d/m/Y",mktime(0,0,0,date("m")-1,date("d"),date("Y"))); // I
 $date_fin    = date("d/m/Y");
 ?>
 
-<form action="" id="form"><fieldset>
+<form action="" method="post" id="form"><fieldset>
 	<div class="<?php echo $class_form_eleve ?>">
 		<label class="tab" for="f_eleve">Élève(s) :</label><select id="f_eleve" name="f_eleve"><?php echo $select_eleves ?></select>
 	</div>
@@ -61,7 +61,7 @@ $date_fin    = date("d/m/Y");
 </fieldset></form>
 
 
-<form id="zone_eval_choix" class="hide" action="">
+<form action="" method="post" id="zone_eval_choix" class="hide">
 	<hr />
 	<h2></h2>
 	<table class="form">

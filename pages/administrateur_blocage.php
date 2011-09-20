@@ -52,7 +52,7 @@ else
 
 <h2>Demande de modification</h2>
 
-<form id="form" action=""><fieldset>
+<form action="" method="post" id="form"><fieldset>
 	<label for="f_bloquer"><input type="radio" id="f_bloquer" name="f_action" value="bloquer" /> Bloquer l'application</label><br />
 	<span id="span_motif" class="hide">
 		<label class="tab" for="f_motif">Motif :</label>

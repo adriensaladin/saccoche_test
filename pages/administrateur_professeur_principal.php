@@ -31,7 +31,7 @@ $TITRE = "Gérer les professeurs principaux";
 
 <p><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__gestion_professeurs">DOC : Gestion des professeurs</a></span></p>
 
-<form id="pp" action="">
+<form action="" method="post" id="pp">
 
 	<?php
 	$tab_niveau_groupe = array();

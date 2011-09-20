@@ -33,7 +33,7 @@ $TITRE = "Gérer les périodes";
 
 <hr />
 
-<form action="">
+<form action="" method="post">
 	<table class="form">
 		<thead>
 			<tr>

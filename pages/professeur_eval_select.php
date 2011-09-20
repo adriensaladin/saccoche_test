@@ -43,7 +43,7 @@ $annee_fin   = $annee_debut+1 ;
 
 <hr />
 
-<form action="" id="form0"><fieldset>
+<form action="" method="post" id="form0"><fieldset>
 	<label class="tab" for="f_aff_periode">Période :</label>
 		du <input id="f_date_debut" name="f_date_debut" size="9" type="text" value="01/09/<?php echo $annee_debut ?>" /><q class="date_calendrier" title="Cliquez sur cette image pour importer une date depuis un calendrier !"></q>
 		au <input id="f_date_fin" name="f_date_fin" size="9" type="text" value="01/09/<?php echo $annee_fin ?>" /><q class="date_calendrier" title="Cliquez sur cette image pour importer une date depuis un calendrier !"></q>
@@ -51,7 +51,7 @@ $annee_fin   = $annee_debut+1 ;
 	<span class="tab"></span><input type="hidden" name="f_action" value="Afficher_evaluations" /><button id="actualiser" type="submit"><img alt="" src="./_img/bouton/actualiser.png" /> Actualiser l'affichage.</button><label id="ajax_msg0">&nbsp;</label>
 </fieldset></form>
 
-<form action="" id="form1">
+<form action="" method="post" id="form1">
 	<hr />
 	<p id="p_alerte" class="danger hide">Une évaluation dont la saisie a commencé ne devrait pas voir ses élèves ou items modifiés.<br />En particulier, retirer des élèves ou des items d'une évaluation efface les scores correspondants qui sont saisis !</p>
 	<table class="form">
@@ -73,7 +73,7 @@ $annee_fin   = $annee_debut+1 ;
 
 <script type="text/javascript">var input_date="<?php echo date("d/m/Y") ?>";</script>
 
-<form action="" id="zone_compet" class="hide">
+<form action="" method="post" id="zone_compet" class="hide">
 	<p>
 		<span class="tab"></span><button id="valider_compet" type="button"><img alt="" src="./_img/bouton/valider.png" /> Valider ce choix</button>&nbsp;&nbsp;&nbsp;<button id="annuler_compet" type="button"><img alt="" src="./_img/bouton/annuler.png" /> Annuler / Retour</button>
 	</p>
@@ -84,7 +84,7 @@ $annee_fin   = $annee_debut+1 ;
 	?>
 </form>
 
-<form action="" id="zone_eleve" class="hide">
+<form action="" method="post" id="zone_eleve" class="hide">
 	<p>
 		<span class="tab"></span><button id="valider_eleve" type="button"><img alt="" src="./_img/bouton/valider.png" /> Valider ce choix</button>&nbsp;&nbsp;&nbsp;<button id="annuler_eleve" type="button"><img alt="" src="./_img/bouton/annuler.png" /> Annuler / Retour</button>
 	</p>
@@ -136,14 +136,14 @@ $annee_fin   = $annee_debut+1 ;
 	?>
 </form>
 
-<form action="" id="zone_ordonner" class="hide">
+<form action="" method="post" id="zone_ordonner" class="hide">
 	<p class="hc"><b id="titre_ordonner"></b><br /><label id="msg_ordonner"></label></p>
 	<div id="div_ordonner">
 	</div>
 </form>
 
 <!-- Sans "javascript:return false" une soumission incontrôlée s'effectue quand on presse "entrée" dans le cas d'un seul élève évalué sur un seul item. -->
-<form action="javascript:return false" id="zone_saisir" class="hide">
+<form action="javascript:return false" method="post" id="zone_saisir" class="hide">
 	<p class="hc"><b id="titre_saisir"></b><br /><label id="msg_saisir"></label></p>
 	<table id="table_saisir" class="scor_eval">
 		<tbody><tr><td></td></tr></tbody>
@@ -225,7 +225,7 @@ $select_couleur      = afficher_select($tab_select_couleur      , $select_nom='f
 $select_marge_min    = afficher_select($tab_select_marge_min    , $select_nom='f_marge_min'   , $option_first='non' , $selection=$tab_cookie['marge_min']    , $optgroup='non');
 ?>
 
-<form action="" id="zone_imprimer" class="hide"><fieldset>
+<form action="" method="post" id="zone_imprimer" class="hide"><fieldset>
 	<p class="hc"><b id="titre_imprimer"></b><br /><button id="fermer_zone_imprimer" type="button"><img alt="" src="./_img/bouton/retourner.png" /> Retour</button></p>
 	<label class="tab" for="f_contenu">Remplissage :</label><?php echo $select_cart_contenu ?><br />
 	<label class="tab" for="f_detail">Détail :</label><?php echo $select_cart_detail ?><br />

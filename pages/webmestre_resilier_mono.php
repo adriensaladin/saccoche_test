@@ -30,6 +30,6 @@ if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');
 
 <p><span class="danger"> Si vous confirmez votre choix, alors toutes les données des élèves, professeurs, compétences, classes, etc. seront complètement effacées !</span></p>
 
-<form action=""><fieldset>
+<form action="" method="post"><fieldset>
 	<span class="tab"></span><button id="bouton_valider" type="submit"><img alt="" src="./_img/bouton/supprimer.png" /> Résilier l'inscription.</button><label id="ajax_msg">&nbsp;</label>
 </fieldset></form>

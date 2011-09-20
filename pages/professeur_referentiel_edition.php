@@ -39,7 +39,7 @@ $VERSION_JS_FILE += 10;
 
 <hr />
 
-<form action="" onsubmit="return false;">
+<form action="" method="post" onsubmit="return false;">
 
 <?php
 // J'ai séparé en plusieurs requêtes au bout de plusieurs heures sans m'en sortir (entre les matières sans coordonnateurs, sans référentiel, les deux à la fois...).

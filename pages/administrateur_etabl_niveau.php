@@ -36,7 +36,7 @@ $VERSION_JS_FILE += 1;
 
 <h2>Niveaux "Cycles"</h2>
 
-<form id="cycles" action="">
+<form action="" method="post" id="cycles">
 	<table class="form check">
 		<thead>
 			<tr><th class="nu"></th><th>Codage</th><th>Dénomination</th></tr>
@@ -68,7 +68,7 @@ $VERSION_JS_FILE += 1;
 
 <h2>Niveaux annuels</h2>
 
-<form id="niveaux" action="">
+<form action="" method="post" id="niveaux">
 	<table class="form check">
 		<thead>
 			<tr><th class="nu"></th><th>Codage</th><th>Dénomination</th></tr>

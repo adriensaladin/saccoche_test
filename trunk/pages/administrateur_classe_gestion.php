@@ -34,7 +34,7 @@ $VERSION_JS_FILE += 0;
 
 <hr />
 
-<form action="">
+<form action="" method="post">
 	<table class="form">
 		<thead>
 			<tr>

@@ -85,7 +85,7 @@ $select_matiere = afficher_select($tab_matieres , $select_nom=false      , $opti
 
 <hr />
 
-<form action="" id="zone_choix"><fieldset>
+<form action="" method="post" id="zone_choix"><fieldset>
 	<p>
 		<label class="tab" for="f_palier">Palier :</label><?php echo $select_palier ?><label id="ajax_maj_pilier">&nbsp;</label><br />
 		<label class="tab" for="f_pilier">Compétence :</label><select id="f_pilier" name="f_pilier" class="hide"><option></option></select><label id="ajax_maj_domaine">&nbsp;</label><br />
@@ -100,7 +100,7 @@ $select_matiere = afficher_select($tab_matieres , $select_nom=false      , $opti
 	<p><span class="tab"></span><input type="hidden" name="f_action" value="Afficher_bilan" /><button id="Afficher_validation" type="submit" class="hide"><img alt="" src="./_img/bouton/valider.png" /> Afficher le tableau des validations.</button><label id="ajax_msg_choix">&nbsp;</label></p>
 </fieldset></form>
 
-<form action="" id="zone_validation" class="hide">
+<form action="" method="post" id="zone_validation" class="hide">
 	<table id="tableau_validation">
 		<tbody><tr><td></td></tr></tbody>
 	</table>

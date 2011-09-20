@@ -71,7 +71,7 @@ unlink($fichier_test_chemin_tmp);
 
 <p><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_webmestre__maj">DOC : Mise à jour de l'application</a></span></p>
 <p><?php echo $test_droits ?></p>
-<form id="form_maj" action=""><fieldset>
+<form action="" method="post" id="form_maj"><fieldset>
 	<span class="tab"></span><button id="bouton_maj" type="button"><img alt="" src="./_img/bouton/parametre.png" /> Lancer la mise à jour automatique.</button><label id="ajax_maj">&nbsp;</label>
 </fieldset></form>
 <ul id="puces_maj" class="puce hide">
@@ -87,7 +87,7 @@ unlink($fichier_test_chemin_tmp);
 
 <h2>Verrouillage de l'application</h2>
 
-<form id="form" action=""><fieldset>
+<form action="" method="post" id="form"><fieldset>
 	<label for="f_bloquer"><input type="radio" id="f_bloquer" name="f_action" value="bloquer" /> Bloquer l'application</label><br />
 	<span id="span_motif" class="hide">
 		<label class="tab" for="f_motif">Motif :</label>

@@ -38,7 +38,7 @@ $select_matieres    = afficher_select(DB_STRUCTURE_OPT_matieres_etabl($_SESSION[
 
 <p><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__gestion_professeurs">DOC : Gestion des professeurs</a></span></p>
 
-<form action="">
+<form action="" method="post">
 	<table><tr>
 		<td class="nu" style="width:25em">
 			<b>Liste des professeurs :</b> <img alt="" src="./_img/bulle_aide.png" title="Utiliser la touche &laquo&nbsp;Shift&nbsp;&raquo; pour une sélection multiple contiguë.<br />Utiliser la touche &laquo&nbsp;Ctrl&nbsp;&raquo; pour une sélection multiple non contiguë." /><br />

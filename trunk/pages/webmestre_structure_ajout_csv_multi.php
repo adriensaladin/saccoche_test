@@ -46,7 +46,7 @@ Ecrire_Fichier($adresse_csv,$contenu_csv);
 
 <h2>Importer un listing d'établissements</h2>
 
-<form id="form_importer" action=""><fieldset>
+<form action="" method="post" id="form_importer"><fieldset>
 	<label class="tab" for="bouton_form_csv">Uploader fichier CSV :</label><button id="bouton_form_csv" type="button"><img alt="" src="./_img/bouton/fichier_import.png" /> Parcourir...</button><label id="ajax_msg_csv">&nbsp;</label><br />
 	<span class="tab"></span><input id="f_courriel_envoi" name="f_courriel_envoi" type="checkbox" value="1" checked /><label for="f_courriel_envoi"> envoyer le courriel d'inscription</label>
 	<div id="div_import" class="hide">
@@ -62,7 +62,7 @@ Ecrire_Fichier($adresse_csv,$contenu_csv);
 
 <p />
 
-<form id="structures" action="" class="hide">
+<form action="" method="post" id="structures" class="hide">
 	<table class="form" id="transfert">
 		<thead>
 			<tr>

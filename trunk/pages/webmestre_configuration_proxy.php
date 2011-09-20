@@ -60,7 +60,7 @@ foreach($tab_select_proxy_auth_method as $option_value => $option_texte)
 
 <hr />
 
-<form id="form_proxy" action=""><fieldset>
+<form action="" method="post" id="form_proxy"><fieldset>
 	<span class="tab"></span><label for="f_proxy_used"><input type="checkbox" id="f_proxy_used" name="f_proxy_used" value="1"<?php echo $check_proxy_used ?> /> Mon serveur nécessite d'utiliser un proxy.</label>
 	<div id="div_proxy_used" class="<?php echo $class_proxy_used ?>">
 		<label class="tab" for="f_proxy_name">Nom du proxy <img alt="" src="./_img/bulle_aide.png" title="Exemple : proxy2" /> :</label><input id="f_proxy_name" name="f_proxy_name" size="10" type="text" value="<?php echo html(SERVEUR_PROXY_NAME); ?>" /><br />

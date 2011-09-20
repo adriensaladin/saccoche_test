@@ -110,7 +110,7 @@ foreach($tab_titres as $i => $titre)
 
 <hr />
 
-<form id="form_autorisations" action="">
+<form action="" method="post" id="form_autorisations">
 <?php echo $affichage ?>
 </form>
 <p />

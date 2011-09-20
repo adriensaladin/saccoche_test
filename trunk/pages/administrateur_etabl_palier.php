@@ -34,7 +34,7 @@ $VERSION_JS_FILE += 1;
 
 <hr />
 
-<form id="socle" action="">
+<form action="" method="post" id="socle">
 	<table class="form">
 		<thead>
 			<tr><th class="nu"></th><th>Palier</th><th class="nu">&nbsp;</th></tr>

@@ -30,7 +30,7 @@ $TITRE = "Identité de l'établissement";
 $VERSION_JS_FILE += 3;
 ?>
 
-<form id="form_instance" action="">
+<form action="" method="post" id="form_instance">
 
 	<div><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__gestion_informations_structure">DOC : Gestion de l'identité de l'établissement</a></span></div>
 
@@ -62,7 +62,7 @@ $VERSION_JS_FILE += 3;
 	<hr />
 
 </form>
-<form id="form_communautaire" action="" class="hide">
+<form action="" method="post" id="form_communautaire" class="hide">
 	<h2>Rechercher l'établissement dans la base Sésamath</h2>
 	<p><button id="rechercher_annuler" type="button"><img alt="" src="./_img/bouton/annuler.png" /> Annuler la recherche.</button></p>
 	<fieldset id="f_recherche_mode">

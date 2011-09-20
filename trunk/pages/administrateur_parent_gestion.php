@@ -38,13 +38,13 @@ $debut_prenom = (isset($_POST['f_debut_prenom'])) ? clean_prenom($_POST['f_debut
 
 <p><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__gestion_parents">DOC : Gestion des parents</a></span></p>
 
-<form action="./index.php?page=administrateur_parent&amp;section=gestion" method="POST" id="form0">
+<form action="./index.php?page=administrateur_parent&amp;section=gestion" method="post" id="form0">
 	<div><label class="tab" for="f_debut_nom">Affichage restreint :</label>le nom commence par <input type="text" id="f_debut_nom" name="f_debut_nom" value="<?php echo html($debut_nom) ?>" size="5" /> le prénom commence par <input type="text" id="f_debut_prenom" name="f_debut_prenom" value="<?php echo html($debut_prenom) ?>" size="5" /> <button id="actualiser" type="submit"><img alt="" src="./_img/bouton/actualiser.png" /> Actualiser.</button></div>
 </form>
 
 <hr />
 
-<form action="" id="form1">
+<form action="" method="post" id="form1">
 	<table class="form t9">
 		<thead>
 			<tr>

@@ -35,7 +35,7 @@ $TITRE = "Matières";
 
 <h2>Matières partagées</h2>
 
-<form id="partage" action="">
+<form action="" method="post" id="partage">
 	<table class="form">
 		<thead>
 			<tr><th class="nu"></th><th>Référence</th><th>Nom complet</th></tr>
@@ -72,7 +72,7 @@ $TITRE = "Matières";
 
 <h2>Matières spécifiques</h2>
 
-<form id="perso" action="">
+<form action="" method="post" id="perso">
 	<table class="form">
 		<thead>
 			<tr>

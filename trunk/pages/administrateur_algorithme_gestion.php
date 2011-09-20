@@ -62,7 +62,7 @@ foreach($tab_options as $value)
 }
 ?>
 
-<form id="form_input" action="">
+<form action="" method="post" id="form_input">
 	<table summary="">
 	<thead>
 		<tr><th>

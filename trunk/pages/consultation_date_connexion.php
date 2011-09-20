@@ -38,7 +38,7 @@ $select_groupe = afficher_select($tab_groupes , $select_nom='f_groupe' , $option
 
 <hr />
 
-<form id="form_select" action=""><fieldset>
+<form action="" method="post" id="form_select"><fieldset>
 	<label class="tab" for="f_rien">Profil :</label>
 		<?php if($_SESSION['USER_PROFIL']=='administrateur'): ?>
 		<input id="f_profil_directeurs" name="f_profil" type="radio" value="directeur" /><label for="f_profil_directeurs"> Directeurs</label>

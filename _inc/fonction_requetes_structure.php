@@ -4613,7 +4613,7 @@ function DB_STRUCTURE_OPT_parents_etabl($user_statut,$groupe_type='all',$groupe_
 	// On peut maintenant assembler les morceaux de la requête !
 	$DB_SQL = $select.$from.$ljoin.$where.$group.$order;
 	$DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-	return count($DB_TAB) ? $DB_TAB : 'Aucun professeur trouvé !' ;
+	return count($DB_TAB) ? $DB_TAB : 'Aucun parent trouvé !' ;
 }
 
 /**

@@ -1135,12 +1135,26 @@ $(document).ready
 				{
 					$('button').prop('disabled',true);
 					$('#msg_saisir').removeAttr("class").addClass("loader").html("Demande envoyée... Veuillez patienter.");
+					// Grouper les saisies dans une variable unique afin d'éviter tout problème dûe à une limitation du module "suhosin" (voir par exemple http://xuxu.fr/2008/12/04/nombre-de-variables-post-limite-ou-tronque).
+					var f_notes = new Array();
+					$("#table_saisir tbody input").each
+					(
+						function()
+						{
+							var ids  = $(this).attr('name');
+							var note = $(this).val();
+							if(note)
+							{
+								f_notes.push( ids + '_' + note );
+							}
+						}
+					);
 					$.ajax
 					(
 						{
 							type : 'POST',
 							url : 'ajax.php?page='+PAGE,
-							data : 'f_action=Enregistrer_saisie&'+$("#zone_saisir").serialize(),
+							data : 'f_action=Enregistrer_saisie'+'&f_ref='+$("#f_ref").val()+'&f_date='+$("#f_date").val()+'&f_date_visible='+$("#f_date_visible").val()+'&f_notes='+f_notes,
 							dataType : "html",
 							error : function(msg,string)
 							{

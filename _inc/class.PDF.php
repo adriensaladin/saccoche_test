@@ -1448,10 +1448,39 @@ function afficher_pourcentage_acquis($gras,$tab_infos,$detail)
 		$lignes_hauteur_maximum  = 5;
 		$this->lignes_hauteur    = ($this->page_hauteur - $this->marge_haut - $this->marge_bas - $this->etiquette_hauteur) / $lignes_nb;
 		$this->lignes_hauteur    = min($this->lignes_hauteur,$lignes_hauteur_maximum);
+		$this->lignes_hauteur    = max($this->cases_hauteur,3.5); // pas moins de 3,5
 		$this->SetMargins($this->marge_gauche , $this->marge_haut , $this->marge_droit);
 		$this->AddPage($this->orientation , 'A4');
-		$this->SetAutoPageBreak(true);
+		$this->SetAutoPageBreak(false);
 		$this->calculer_dimensions_images($this->cases_largeur,$this->etiquette_hauteur);
+	}
+
+	public function tableau_devoir_repartition_nominative_entete($descriptif,$tab_init_quantitatif,$tab_repartition_quantitatif)
+	{
+		// on calcule la hauteur de la case
+		$this->cases_hauteur = $this->lignes_hauteur * max(4,max($tab_repartition_quantitatif));
+		// On prend une nouvelle page PDF si besoin et y remettre la ligne d'entête si y a pas assez de place
+		if($this->GetY()>$this->marge_haut)
+		{
+			// on regarde s'il y a la place
+			$hauteur_requise = $this->cases_hauteur;
+			$hauteur_restante = $this->page_hauteur - $this->GetY() - $this->marge_bas;
+			if($hauteur_requise > $hauteur_restante)
+			{
+				$this->AddPage($this->orientation , 'A4');
+			}
+		}
+		// 1ère ligne : référence des codes
+		if($this->GetY()==$this->marge_haut)
+		{
+			$this->tableau_saisie_reference_devoir($descriptif);
+			$this->SetXY($this->marge_gauche+$this->reference_largeur , $this->marge_haut);
+			foreach($tab_init_quantitatif as $note=>$vide)
+			{
+				$this->afficher_note_lomer($note,$border=1,$br=0);
+			}
+			$this->SetXY($this->marge_gauche , $this->marge_haut+$this->etiquette_hauteur);
+		}
 	}
 
 	//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-

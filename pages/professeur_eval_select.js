@@ -37,6 +37,8 @@ $(document).ready
 		var modification = false;
 		var memo_pilotage = 'clavier';
 		var memo_input_id = false;
+		var nb_colonnes = 1;
+		var nb_lignes   = 1;
 		// tri du tableau (avec jquery.tablesorter.js).
 		var sorting = [[0,1],[3,0]];
 		$('table.form').tablesorter({ headers:{1:{sorter:false},2:{sorter:false},4:{sorter:false},5:{sorter:false}} });
@@ -313,6 +315,8 @@ $(document).ready
 							{
 								$('#C1L1').focus();
 							}
+							nb_colonnes = $('#table_saisir thead th').length;
+							nb_lignes   = $('#table_saisir tbody tr').length;
 						}
 					}
 				}
@@ -950,22 +954,24 @@ $(document).ready
 						}
 						$('#msg_saisir').removeAttr("class").html("&nbsp;");
 						// Passer à la case suivante
-						ligne++;
-						var new_id = 'C'+colonne+'L'+ligne;
-						if($('#'+new_id).length)
+						if(ligne<nb_lignes)
 						{
-							$('#'+new_id).focus();
+							ligne++;
 						}
 						else
 						{
 							ligne = 1;
-							colonne++;
-							new_id = 'C'+colonne+'L'+ligne;
-							if($('#'+new_id).length)
+							if(colonne<nb_colonnes)
 							{
-								$('#'+new_id).focus();
+								colonne++;
+							}
+							else
+							{
+								colonne = 1;
 							}
 						}
+						var new_id = 'C'+colonne+'L'+ligne;
+						$('#'+new_id).focus();
 					}
 					else if('.37.38.39.40.'.indexOf(findme)!=-1)
 					{
@@ -977,11 +983,28 @@ $(document).ready
 							case 39: colonne++; break; // flèche droit
 							case 40: ligne++;   break; // flèche bas
 						}
-						var new_id = 'C'+colonne+'L'+ligne;
-						if($('#'+new_id).length)
+						if(colonne==0)
 						{
-							$('#'+new_id).focus();
+							colonne = nb_colonnes;
+							ligne = (ligne!=1) ? ligne-1 : nb_lignes ;
 						}
+						else if(colonne>nb_colonnes)
+						{
+							colonne = 1;
+							ligne = (ligne!=nb_lignes) ? ligne+1 : 1 ;
+						}
+						else if(ligne==0)
+						{
+							ligne = nb_lignes;
+							colonne = (colonne!=1) ? colonne-1 : nb_colonnes ;
+						}
+						else if(ligne>nb_lignes)
+						{
+							ligne = 1;
+							colonne = (colonne!=nb_colonnes) ? colonne+1 : 1 ;
+						}
+						var new_id = 'C'+colonne+'L'+ligne;
+						$('#'+new_id).focus();
 					}
 					else if(e.which==13)	// touche entrée
 					{

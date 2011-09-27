@@ -27,7 +27,7 @@
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = "Modifier le contenu des référentiels";
-$VERSION_JS_FILE += 10;
+$VERSION_JS_FILE += 11;
 ?>
 
 <ul class="puce">

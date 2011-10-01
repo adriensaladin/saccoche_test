@@ -1191,6 +1191,32 @@ function maj_base($version_actuelle)
 		}
 	}
 
+	//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	//	MAJ 2011-08-20 => 2011-10-01
+	//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	if($version_actuelle=='2011-08-20')
+	{
+		if($version_actuelle==DB_version_base())
+		{
+			$version_actuelle = '2011-10-01';
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_actuelle.'" WHERE parametre_nom="version_base" LIMIT 1' );
+			// Le nom de l'évaluation n'était plus associé aux notes mémorisées...
+			$DB_SQL = 'SELECT sacoche_saisie.prof_id,eleve_id,devoir_id,item_id,devoir_info,user_nom,user_prenom ';
+			$DB_SQL.= 'FROM sacoche_saisie ';
+			$DB_SQL.= 'INNER JOIN sacoche_devoir USING (devoir_id) ';
+			$DB_SQL.= 'INNER JOIN sacoche_user ON sacoche_saisie.prof_id = sacoche_user.user_id ';
+			$DB_SQL.= 'WHERE saisie_info LIKE " (%"';
+			$DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , null);
+			$DB_SQL = 'UPDATE sacoche_saisie SET saisie_info=:saisie_info WHERE prof_id=:prof_id AND eleve_id=:eleve_id AND devoir_id=:devoir_id AND item_id=:item_id LIMIT 1';
+			foreach($DB_TAB as $DB_ROW)
+			{
+				$saisie_info = $DB_ROW['devoir_info'].' ('.$DB_ROW['user_nom'].' '.$DB_ROW['user_prenom']{0}.'.)';
+				$DB_VAR = array(':prof_id'=>$DB_ROW['prof_id'],':eleve_id'=>$DB_ROW['eleve_id'],':devoir_id'=>$DB_ROW['devoir_id'],':item_id'=>$DB_ROW['item_id'],':saisie_info'=>$saisie_info);
+				DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+			}
+		}
+	}
 
 	//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Log de l'action

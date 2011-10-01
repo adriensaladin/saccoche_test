@@ -1177,7 +1177,7 @@ $(document).ready
 						{
 							type : 'POST',
 							url : 'ajax.php?page='+PAGE,
-							data : 'f_action=Enregistrer_saisie'+'&f_ref='+$("#f_ref").val()+'&f_date='+$("#f_date").val()+'&f_date_visible='+$("#f_date_visible").val()+'&f_notes='+f_notes,
+							data : 'f_action=Enregistrer_saisie'+'&f_ref='+$("#f_ref").val()+'&f_date='+$("#f_date").val()+'&f_date_visible='+$("#f_date_visible").val()+'&f_notes='+f_notes+'&f_info='+$("#f_info").val(),
 							dataType : "html",
 							error : function(msg,string)
 							{

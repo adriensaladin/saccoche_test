@@ -1057,7 +1057,7 @@ if( $step==32 )
 		{
 			if( (count($tab)==3) && $tab['ref'] && $tab['nom'] && $tab['niv'] )
 			{
-				$classe_id = DB_STRUCTURE_ajouter_groupe('classe',0,$tab['ref'],$tab['nom'],$tab['niv']);
+				$classe_id = DB_STRUCTURE_ajouter_groupe('classe',$tab['ref'],$tab['nom'],$tab['niv']);
 				$nb_add++;
 				$tab_i_classe_TO_id_base[$i] = (int) $classe_id;
 			}
@@ -1254,7 +1254,7 @@ if( $step==42 )
 		{
 			if( (count($tab)==3) && $tab['ref'] && $tab['nom'] && $tab['niv'] )
 			{
-				$groupe_id = DB_STRUCTURE_ajouter_groupe('groupe',0,$tab['ref'],$tab['nom'],$tab['niv']);
+				$groupe_id = DB_STRUCTURE_ajouter_groupe('groupe',$tab['ref'],$tab['nom'],$tab['niv']);
 				$nb_add++;
 				$tab_i_groupe_TO_id_base[$i] = (int) $groupe_id;
 			}
@@ -1979,7 +1979,7 @@ if( $step==61 )
 	}
 	$tab_base_affectation = array();
 	$profil_eleve = ($action=='sconet_eleves') ? true : false ;
-	$DB_TAB = DB_STRUCTURE_lister_users_avec_groupe($profil_eleve,$prof_id=0,$only_actifs=true);
+	$DB_TAB = DB_STRUCTURE_lister_users_avec_groupe($profil_eleve,$only_actifs=true);
 	foreach($DB_TAB as $DB_ROW)
 	{
 		$tab_base_affectation[$DB_ROW['user_id'].'_'.$DB_ROW['groupe_id']] = TRUE;

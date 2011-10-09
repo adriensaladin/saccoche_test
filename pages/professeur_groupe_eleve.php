@@ -26,7 +26,7 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-$TITRE = "Affecter les élèves aux groupes de besoin";
+$TITRE = "Affecter les élèves à ses groupes de besoin";
 $VERSION_JS_FILE += 1;
 ?>
 

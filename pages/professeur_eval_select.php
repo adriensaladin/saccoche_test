@@ -27,7 +27,7 @@
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = "Évaluer des élèves sélectionnés";
-$VERSION_JS_FILE += 23;
+$VERSION_JS_FILE += 24;
 ?>
 
 <?php
@@ -38,12 +38,12 @@ $annee_fin   = $annee_debut+1 ;
 
 <ul class="puce">
 	<li><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_professeur__evaluations_gestion">DOC : Gestion des évaluations.</a></span></li>
-	<li><span class="astuce">Choisir des evaluations existantes à afficher, ou cliquer sur le "<span style="background:transparent url(./_img/sprite10.png) 0 0 no-repeat;background-position:-20px 0;width:16px;height:16px;display:inline-block;vertical-align:middle"></span>" pour créer une nouvelle évaluation.</span></li>
+	<li><span class="astuce">Choisir des evaluations existantes à afficher, ou cliquer sur le "<img alt="ajouter" src="./_img/bouton/ajouter.png" />" pour créer une nouvelle évaluation.</span></li>
 </ul>
 
 <hr />
 
-<form action="" method="post" id="form0"><fieldset>
+<form action="" method="post" id="form0" class="hide"><fieldset>
 	<label class="tab" for="f_aff_periode">Période :</label>
 		du <input id="f_date_debut" name="f_date_debut" size="9" type="text" value="01/09/<?php echo $annee_debut ?>" /><q class="date_calendrier" title="Cliquez sur cette image pour importer une date depuis un calendrier !"></q>
 		au <input id="f_date_fin" name="f_date_fin" size="9" type="text" value="01/09/<?php echo $annee_fin ?>" /><q class="date_calendrier" title="Cliquez sur cette image pour importer une date depuis un calendrier !"></q>
@@ -51,7 +51,7 @@ $annee_fin   = $annee_debut+1 ;
 	<span class="tab"></span><input type="hidden" name="f_action" value="Afficher_evaluations" /><button id="actualiser" type="submit"><img alt="" src="./_img/bouton/actualiser.png" /> Actualiser l'affichage.</button><label id="ajax_msg0">&nbsp;</label>
 </fieldset></form>
 
-<form action="" method="post" id="form1">
+<form action="" method="post" id="form1" class="hide">
 	<hr />
 	<p id="p_alerte" class="danger hide">Une évaluation dont la saisie a commencé ne devrait pas voir ses élèves ou items modifiés.<br />En particulier, retirer des élèves ou des items d'une évaluation efface les scores correspondants qui sont saisis !</p>
 	<table class="form">

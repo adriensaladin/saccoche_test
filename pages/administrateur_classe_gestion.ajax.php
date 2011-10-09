@@ -45,7 +45,7 @@ if( ($action=='ajouter') && $niveau && $ref && $nom )
 		exit('Erreur : référence de classe déjà existante !');
 	}
 	// Insérer l'enregistrement
-	$groupe_id = DB_STRUCTURE_ajouter_groupe('classe',0,$ref,$nom,$niveau);
+	$groupe_id = DB_STRUCTURE_ajouter_groupe('classe',$ref,$nom,$niveau);
 	// Afficher le retour
 	echo'<tr id="id_'.$groupe_id.'" class="new">';
 	echo	'<td>{{NIVEAU_NOM}}</td>';

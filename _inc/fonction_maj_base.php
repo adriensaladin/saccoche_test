@@ -1219,6 +1219,34 @@ function maj_base($version_actuelle)
 	}
 
 	//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	//	MAJ 2011-10-01 => 2011-10-09
+	//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	if($version_actuelle=='2011-10-01')
+	{
+		if($version_actuelle==DB_version_base())
+		{
+			$version_actuelle = '2011-10-09';
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_actuelle.'" WHERE parametre_nom="version_base" LIMIT 1' );
+			// suppression du champ groupe_prof_id pour un groupe de besoin ou un groupe d'évaluation (utilisation de la table de jointure existance à la place)
+			$DB_SQL = 'SELECT groupe_id,groupe_prof_id FROM sacoche_groupe WHERE groupe_type IN ("besoin","eval")';
+			$DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , null);
+			$DB_SQL = 'REPLACE INTO sacoche_jointure_user_groupe (user_id,groupe_id,jointure_pp) VALUES(:user_id,:groupe_id,1)';
+			foreach($DB_TAB as $DB_ROW)
+			{
+				$DB_VAR = array(':user_id'=>$DB_ROW['groupe_prof_id'],':groupe_id'=>$DB_ROW['groupe_id']);
+				DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+			}
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_groupe DROP groupe_prof_id' );
+			// ajout d'un champ pour lister avec qui on partage un devoir
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_devoir ADD devoir_partage TEXT CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT "" ' );
+			// corrections d'entrées tronquées à cause d'un fichier SQL pas en UTF8
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="Très insuffisant." WHERE parametre_nom="note_legende_RR" AND parametre_valeur="Tr" ' );
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="Très satisfaisant." WHERE parametre_nom="note_legende_VV" AND parametre_valeur="Tr" ' );
+		}
+	}
+
+	//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Log de l'action
 	//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

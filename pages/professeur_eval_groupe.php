@@ -27,7 +27,7 @@
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = "Évaluer une classe ou un groupe";
-$VERSION_JS_FILE += 23;
+$VERSION_JS_FILE += 24;
 ?>
 
 <?php
@@ -96,12 +96,12 @@ if(count($tab_id_classe_groupe))
 
 <ul class="puce">
 	<li><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_professeur__evaluations_gestion">DOC : Gestion des évaluations.</a></span></li>
-	<li><span class="astuce">Choisir des evaluations existantes à afficher, ou cliquer sur le "<span style="background:transparent url(./_img/sprite10.png) 0 0 no-repeat;background-position:-20px 0;width:16px;height:16px;display:inline-block;vertical-align:middle"></span>" pour créer une nouvelle évaluation.</span></li>
+	<li><span class="astuce">Choisir des evaluations existantes à afficher, ou cliquer sur le "<img alt="ajouter" src="./_img/bouton/ajouter.png" />" pour créer une nouvelle évaluation.</span></li>
 </ul>
 
 <hr />
 
-<form action="" method="post" id="form0"><fieldset>
+<form action="" method="post" id="form0" class="hide"><fieldset>
 	<label class="tab" for="f_aff_classe">Classe / groupe :</label><select id="f_aff_classe" name="f_aff_classe"><?php echo $select_eleve ?></select>
 	<div id="zone_periodes" class="hide">
 		<label class="tab" for="f_aff_periode">Période :</label><?php echo $select_periode ?>
@@ -113,7 +113,7 @@ if(count($tab_id_classe_groupe))
 	</div>
 </fieldset></form>
 
-<form action="" method="post" id="form1">
+<form action="" method="post" id="form1" class="hide">
 	<hr />
 	<p id="p_alerte" class="danger hide">Une évaluation dont la saisie a commencé ne devrait pas voir ses items modifiés.<br />En particulier, retirer des items d'une évaluation efface les scores correspondants qui sont saisis !</p>
 	<table class="form">
@@ -124,11 +124,12 @@ if(count($tab_id_classe_groupe))
 				<th>Classe / Groupe</th>
 				<th>Description</th>
 				<th>Items</th>
+				<th>Profs</th>
 				<th class="nu"><q class="ajouter" title="Ajouter une évaluation."></q></th>
 			</tr>
 		</thead>
 		<tbody>
-			<tr><td class="nu" colspan="6"></td></tr>
+			<tr><td class="nu" colspan="7"></td></tr>
 		</tbody>
 	</table>
 </form>
@@ -142,6 +143,13 @@ if(count($tab_id_classe_groupe))
 	$DB_TAB = DB_STRUCTURE_recuperer_arborescence($_SESSION['USER_ID'],$matiere_id=0,$niveau_id=0,$only_socle=false,$only_item=false,$socle_nom=false);
 	echo afficher_arborescence_matiere_from_SQL($DB_TAB,$dynamique=true,$reference=true,$aff_coef=false,$aff_cart=false,$aff_socle='texte',$aff_lien=false,$aff_input=true);
 	?>
+</form>
+
+<form action="" method="post" id="zone_profs" class="hide">
+	<p class="hc"><b id="titre_profs">Choix des collègues partageant l'évaluation</b><br /><label id="msg_profs"></label></p>
+	<p class="astuce">Vous pouvez permettre à des collègues de co-saisir les notes de ce devoir (et de le dupliquer).</span></p>
+	<div id="div_partage">
+	</div>
 </form>
 
 <form action="" method="post" id="zone_ordonner" class="hide">

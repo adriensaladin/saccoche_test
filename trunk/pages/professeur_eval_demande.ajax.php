@@ -145,7 +145,10 @@ elseif( ($action=='creer') && $groupe_id && (isset($tab_types[$groupe_type])) &&
 	// Commencer par créer un nouveau groupe de type "eval", utilisé uniquement pour cette évaluation (c'est transparent pour le professeur)
 	if($qui=='select')
 	{
-		$groupe_id = DB_STRUCTURE_ajouter_groupe('eval',$_SESSION['USER_ID'],'','',0);
+		$groupe_id = DB_STRUCTURE_ajouter_groupe('eval','','',0);
+		// Y associer le prof, en responsable du groupe
+		DB_STRUCTURE_modifier_liaison_user_groupe($_SESSION['USER_ID'],'professeur',$groupe_id,'eval',true);
+		DB_STRUCTURE_modifier_liaison_professeur_principal($_SESSION['USER_ID'],$groupe_id,true);
 	}
 	// Insérer l'enregistrement de l'évaluation
 	$date_mysql = convert_date_french_to_mysql($date);

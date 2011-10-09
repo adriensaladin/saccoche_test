@@ -28,27 +28,30 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 if($_SESSION['SESAMATH_ID']==ID_DEMO) {exit('Action désactivée pour la démo...');}
 
-$action = (isset($_POST['f_action'])) ? clean_texte($_POST['f_action'])  : '';
-$id     = (isset($_POST['f_id']))     ? clean_entier($_POST['f_id'])     : 0;
-$niveau = (isset($_POST['f_niveau'])) ? clean_entier($_POST['f_niveau']) : 0;
-$nom    = (isset($_POST['f_nom']))    ? clean_texte($_POST['f_nom'])     : '';
+$action     = (isset($_POST['f_action'])) ? clean_texte($_POST['f_action'])  : '';
+$groupe_id  = (isset($_POST['f_id']))     ? clean_entier($_POST['f_id'])     : 0;
+$niveau     = (isset($_POST['f_niveau'])) ? clean_entier($_POST['f_niveau']) : 0;
+$groupe_nom = (isset($_POST['f_nom']))    ? clean_texte($_POST['f_nom'])     : '';
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 //	Ajouter un nouveau groupe de besoin
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-if( ($action=='ajouter') && $niveau && $nom )
+if( ($action=='ajouter') && $niveau && $groupe_nom )
 {
 	// Vérifier que le nom du groupe est disponible
-	if( DB_STRUCTURE_tester_groupe_nom($nom) )
+	if( DB_STRUCTURE_tester_groupe_nom($groupe_nom) )
 	{
 		exit('Erreur : nom de groupe déjà existant !');
 	}
 	// Insérer l'enregistrement
-	$id = DB_STRUCTURE_ajouter_groupe('besoin',$_SESSION['USER_ID'],'',$nom,$niveau);
+	$groupe_id = DB_STRUCTURE_ajouter_groupe('besoin','',$groupe_nom,$niveau);
+	// Y associer le prof, en responsable du groupe
+	DB_STRUCTURE_modifier_liaison_user_groupe($_SESSION['USER_ID'],'professeur',$groupe_id,'besoin',true);
+	DB_STRUCTURE_modifier_liaison_professeur_principal($_SESSION['USER_ID'],$groupe_id,true);
 	// Afficher le retour
-	echo'<tr id="id_'.$id.'" class="new">';
+	echo'<tr id="id_'.$groupe_id.'" class="new">';
 	echo	'<td>{{NIVEAU_NOM}}</td>';
-	echo	'<td>'.html($nom).'</td>';
+	echo	'<td>'.html($groupe_nom).'</td>';
 	echo	'<td class="nu">';
 	echo		'<q class="modifier" title="Modifier ce groupe de besoin."></q>';
 	echo		'<q class="supprimer" title="Supprimer ce groupe de besoin."></q>';
@@ -59,18 +62,18 @@ if( ($action=='ajouter') && $niveau && $nom )
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 //	Modifier un groupe de besoin existant
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-else if( ($action=='modifier') && $id && $niveau && $nom )
+else if( ($action=='modifier') && $groupe_id && $niveau && $groupe_nom )
 {
 	// Vérifier que le nom du groupe est disponible
-	if( DB_STRUCTURE_tester_groupe_nom($nom,$id) )
+	if( DB_STRUCTURE_tester_groupe_nom($groupe_nom,$groupe_id) )
 	{
 		exit('Erreur : nom de groupe de besoin déjà existant !');
 	}
 	// Mettre à jour l'enregistrement
-	DB_STRUCTURE_modifier_groupe($id,'',$nom,$niveau);
+	DB_STRUCTURE_modifier_groupe($groupe_id,'',$groupe_nom,$niveau);
 	// Afficher le retour
 	echo'<td>{{NIVEAU_NOM}}</td>';
-	echo'<td>'.html($nom).'</td>';
+	echo'<td>'.html($groupe_nom).'</td>';
 	echo'<td class="nu">';
 	echo	'<q class="modifier" title="Modifier ce groupe de besoin."></q>';
 	echo	'<q class="supprimer" title="Supprimer ce groupe de besoin."></q>';
@@ -80,10 +83,10 @@ else if( ($action=='modifier') && $id && $niveau && $nom )
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 //	Supprimer un groupe de besoin existant
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-else if( ($action=='supprimer') && $id )
+else if( ($action=='supprimer') && $groupe_id )
 {
 	// Effacer l'enregistrement
-	DB_STRUCTURE_supprimer_groupe($id,'besoin');
+	DB_STRUCTURE_supprimer_groupe($groupe_id,'besoin');
 	// Afficher le retour
 	echo'<td>ok</td>';
 }

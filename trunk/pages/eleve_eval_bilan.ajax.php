@@ -81,7 +81,7 @@ if( ($action=='Afficher_evaluations') && $eleve_id && $date_debut && $date_fin )
 		echo	'<td>'.html($DB_ROW['prof_nom'].' '.$DB_ROW['prof_prenom']{0}.'.').'</td>';
 		echo	'<td>'.html($DB_ROW['devoir_info']).'</td>';
 		echo	'<td class="nu" id="devoir_'.$DB_ROW['devoir_id'].'">';
-		echo		'<q class="voir" title="Voir les notes saisies à ce devoir."></q>';
+		echo		'<q class="voir" title="Voir les items et les notes (si saisies)."></q>';
 		echo	'</td>';
 		echo'</tr>';
 	}

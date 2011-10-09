@@ -144,7 +144,10 @@ if( (($action=='ajouter')||(($action=='dupliquer')&&($devoir_id))) && $date && $
 		exit('Erreur : date trop éloignée !');
 	}
 	// Commencer par créer un nouveau groupe de type "eval", utilisé uniquement pour cette évaluation (c'est transparent pour le professeur)
-	$groupe_id = DB_STRUCTURE_ajouter_groupe($groupe_type,$_SESSION['USER_ID'],'','',0);
+	$groupe_id = DB_STRUCTURE_ajouter_groupe($groupe_type,'','',0);
+	// Y associer le prof, en responsable du groupe
+	DB_STRUCTURE_modifier_liaison_user_groupe($_SESSION['USER_ID'],'professeur',$groupe_id,$groupe_type,true);
+	DB_STRUCTURE_modifier_liaison_professeur_principal($_SESSION['USER_ID'],$groupe_id,true);
 	// Insèrer l'enregistrement de l'évaluation
 	$devoir_id2 = DB_STRUCTURE_ajouter_devoir($_SESSION['USER_ID'],$groupe_id,$date_mysql,$info,$date_visible_mysql);
 	// Affecter tous les élèves choisis

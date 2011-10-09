@@ -26,7 +26,7 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-$TITRE = "Résultats aux évaluations";
+$TITRE = "Items et notes des évaluations";
 $VERSION_JS_FILE += 2;
 ?>
 

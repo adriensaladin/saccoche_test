@@ -362,7 +362,8 @@ function DB_STRUCTURE_recuperer_arborescence_palier($liste_palier_id=false,$list
 	$tab_where = array();
 	if($liste_palier_id) { $tab_where[] = 'palier_id IN('.$liste_palier_id.') '; }
 	if($liste_pilier_id) { $tab_where[] = 'pilier_id IN('.$liste_pilier_id.') '; }
-	$DB_SQL = 'SELECT * FROM sacoche_socle_palier ';
+	$DB_SQL = 'SELECT * ';
+	$DB_SQL.= 'FROM sacoche_socle_palier ';
 	$DB_SQL.= 'LEFT JOIN sacoche_socle_pilier USING (palier_id) ';
 	$DB_SQL.= 'LEFT JOIN sacoche_socle_section USING (pilier_id) ';
 	$DB_SQL.= 'LEFT JOIN sacoche_socle_entree USING (section_id) ';
@@ -380,7 +381,8 @@ function DB_STRUCTURE_recuperer_arborescence_palier($liste_palier_id=false,$list
  */
 function DB_STRUCTURE_recuperer_piliers($palier_id)
 {
-	$DB_SQL = 'SELECT * FROM sacoche_socle_pilier ';
+	$DB_SQL = 'SELECT * ';
+	$DB_SQL.= 'FROM sacoche_socle_pilier ';
 	$DB_SQL.= 'WHERE palier_id=:palier_id ';
 	$DB_SQL.= 'ORDER BY pilier_ordre ASC';
 	$DB_VAR = array(':palier_id'=>$palier_id);
@@ -397,7 +399,8 @@ function DB_STRUCTURE_recuperer_piliers($palier_id)
 function DB_STRUCTURE_recuperer_arborescence_pilier($pilier_id,$listing_domaine_id='')
 {
 	$where_domaine = ($listing_domaine_id) ? 'AND section_id IN('.$listing_domaine_id.') ' : '';
-	$DB_SQL = 'SELECT * FROM sacoche_socle_pilier ';
+	$DB_SQL = 'SELECT * ';
+	$DB_SQL.= 'FROM sacoche_socle_pilier ';
 	$DB_SQL.= 'LEFT JOIN sacoche_socle_section USING (pilier_id) ';
 	$DB_SQL.= 'LEFT JOIN sacoche_socle_entree USING (section_id) ';
 	$DB_SQL.= 'WHERE pilier_id=:pilier_id '.$where_domaine;
@@ -414,7 +417,8 @@ function DB_STRUCTURE_recuperer_arborescence_pilier($pilier_id,$listing_domaine_
  */
 function DB_STRUCTURE_recuperer_referentiels_domaines()
 {
-	$DB_SQL = 'SELECT matiere_id,niveau_id,domaine_nom FROM sacoche_referentiel_domaine ';
+	$DB_SQL = 'SELECT matiere_id, niveau_id, domaine_nom ';
+	$DB_SQL.= 'FROM sacoche_referentiel_domaine ';
 	$DB_SQL.= 'ORDER BY domaine_ordre ASC';
 	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , null);
 }
@@ -427,7 +431,8 @@ function DB_STRUCTURE_recuperer_referentiels_domaines()
  */
 function DB_STRUCTURE_recuperer_referentiels_themes()
 {
-	$DB_SQL = 'SELECT matiere_id,niveau_id,theme_nom FROM sacoche_referentiel_theme ';
+	$DB_SQL = 'SELECT matiere_id, niveau_id, theme_nom ';
+	$DB_SQL.= 'FROM sacoche_referentiel_theme ';
 	$DB_SQL.= 'LEFT JOIN sacoche_referentiel_domaine USING (domaine_id) ';
 	$DB_SQL.= 'ORDER BY domaine_ordre ASC, theme_ordre ASC';
 	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , null);
@@ -513,7 +518,8 @@ function DB_STRUCTURE_recuperer_statistiques()
 	$prof_use  = (isset($DB_TAB['professeur'])) ? $DB_TAB['professeur']['nombre'] : 0 ;
 	$eleve_use = (isset($DB_TAB['eleve']))      ? $DB_TAB['eleve']['nombre']      : 0 ;
 	// nb notes saisies
-	$DB_SQL = 'SELECT COUNT(*) AS nombre FROM sacoche_saisie';
+	$DB_SQL = 'SELECT COUNT(*) AS nombre ';
+	$DB_SQL.= 'FROM sacoche_saisie';
 	$DB_ROW = DB::queryRow(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , null);
 	$score_nb = $DB_ROW['nombre'];
 	// Retour
@@ -593,7 +599,7 @@ function DB_STRUCTURE_recuperer_professeurs_eleve_matiere($eleve_id,$matiere_id)
 function DB_STRUCTURE_lister_parametres($listing_param=false)
 {
 	$nb_params = substr_count($listing_param,',')+1;
-	$DB_SQL = 'SELECT parametre_nom,parametre_valeur ';
+	$DB_SQL = 'SELECT parametre_nom, parametre_valeur ';
 	$DB_SQL.= 'FROM sacoche_parametre ';
 	$DB_SQL.= ($listing_param==false) ? '' : 'WHERE parametre_nom IN('.$listing_param.') ' ;
 	$DB_SQL.= ($listing_param==false) ? '' : 'LIMIT '.$nb_params ;
@@ -787,7 +793,8 @@ function DB_STRUCTURE_lister_infos_items($liste_item_id,$detail)
  */
 function DB_STRUCTURE_lister_matieres_partagees_SACoche()
 {
-	$DB_SQL = 'SELECT * FROM sacoche_matiere ';
+	$DB_SQL = 'SELECT * ';
+	$DB_SQL.= 'FROM sacoche_matiere ';
 	$DB_SQL.= 'WHERE matiere_partage=:partage ';
 	$DB_SQL.= 'ORDER BY matiere_nom ASC';
 	$DB_VAR = array(':partage'=>1);
@@ -802,7 +809,8 @@ function DB_STRUCTURE_lister_matieres_partagees_SACoche()
  */
 function DB_STRUCTURE_lister_matieres_specifiques()
 {
-	$DB_SQL = 'SELECT * FROM sacoche_matiere ';
+	$DB_SQL = 'SELECT * ';
+	$DB_SQL.= 'FROM sacoche_matiere ';
 	$DB_SQL.= 'WHERE matiere_partage=:partage ';
 	$DB_SQL.= 'ORDER BY matiere_nom ASC';
 	$DB_VAR = array(':partage'=>0);
@@ -821,7 +829,8 @@ function DB_STRUCTURE_lister_matieres_etablissement($listing_matieres,$with_tran
 {
 	$where_trans = ($with_transversal) ? '' : 'AND matiere_transversal=0 ' ;
 	$order_champ = ($order_by_name)    ? '' : 'matiere_ordre ASC, ' ;
-	$DB_SQL = 'SELECT * FROM sacoche_matiere ';
+	$DB_SQL = 'SELECT * ';
+	$DB_SQL.= 'FROM sacoche_matiere ';
 	$DB_SQL.= ($listing_matieres) ? 'WHERE (matiere_id IN('.$listing_matieres.') OR matiere_partage=:partage) '.$where_trans : 'WHERE matiere_partage=:partage '.$where_trans;
 	$DB_SQL.= 'ORDER BY '.$order_champ.'matiere_nom ASC';
 	$DB_VAR = array(':partage'=>0);
@@ -837,7 +846,7 @@ function DB_STRUCTURE_lister_matieres_etablissement($listing_matieres,$with_tran
  */
 function DB_STRUCTURE_lister_matieres_professeur_infos_referentiel($listing_matieres,$user_id)
 {
-	$DB_SQL = 'SELECT matiere_id,matiere_nom,matiere_partage,matiere_nb_demandes,jointure_coord ';
+	$DB_SQL = 'SELECT matiere_id, matiere_nom, matiere_partage, matiere_nb_demandes, jointure_coord ';
 	$DB_SQL.= 'FROM sacoche_jointure_user_matiere ';
 	$DB_SQL.= 'LEFT JOIN sacoche_matiere USING (matiere_id) ';
 	$DB_SQL.= 'WHERE (matiere_id IN('.$listing_matieres.') OR matiere_partage=:partage) AND user_id=:user_id '; // Test matiere car un prof peut être encore relié à des matières décochées par l'admin.
@@ -854,7 +863,8 @@ function DB_STRUCTURE_lister_matieres_professeur_infos_referentiel($listing_mati
  */
 function DB_STRUCTURE_lister_paliers_SACoche()
 {
-	$DB_SQL = 'SELECT * FROM sacoche_socle_palier ';
+	$DB_SQL = 'SELECT * ';
+	$DB_SQL.= 'FROM sacoche_socle_palier ';
 	$DB_SQL.= 'ORDER BY palier_ordre ASC';
 	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , null);
 }
@@ -868,7 +878,8 @@ function DB_STRUCTURE_lister_paliers_SACoche()
  */
 function DB_STRUCTURE_lister_niveaux_SACoche()
 {
-	$DB_SQL = 'SELECT * FROM sacoche_niveau ';
+	$DB_SQL = 'SELECT * ';
+	$DB_SQL.= 'FROM sacoche_niveau ';
 	$DB_SQL.= 'WHERE niveau_cycle=0 ';
 	$DB_SQL.= 'ORDER BY niveau_ordre ASC';
 	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , null);
@@ -882,7 +893,8 @@ function DB_STRUCTURE_lister_niveaux_SACoche()
  */
 function DB_STRUCTURE_lister_cycles_SACoche()
 {
-	$DB_SQL = 'SELECT * FROM sacoche_niveau ';
+	$DB_SQL = 'SELECT * ';
+	$DB_SQL.= 'FROM sacoche_niveau ';
 	$DB_SQL.= 'WHERE niveau_cycle=1 ';
 	$DB_SQL.= 'ORDER BY niveau_ordre ASC';
 	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , null);
@@ -898,7 +910,8 @@ function DB_STRUCTURE_lister_cycles_SACoche()
 function DB_STRUCTURE_lister_niveaux_etablissement($listing_niveaux,$listing_cycles)
 {
 	$listing = ($listing_cycles) ? $listing_niveaux.','.$listing_cycles : $listing_niveaux ;
-	$DB_SQL = 'SELECT * FROM sacoche_niveau ';
+	$DB_SQL = 'SELECT * ';
+	$DB_SQL.= 'FROM sacoche_niveau ';
 	$DB_SQL.= 'WHERE niveau_id IN('.$listing.') ';
 	$DB_SQL.= 'ORDER BY niveau_ordre ASC';
 	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , null);
@@ -912,7 +925,8 @@ function DB_STRUCTURE_lister_niveaux_etablissement($listing_niveaux,$listing_cyc
  */
 function DB_STRUCTURE_lister_periodes()
 {
-	$DB_SQL = 'SELECT * FROM sacoche_periode ';
+	$DB_SQL = 'SELECT * ';
+	$DB_SQL.= 'FROM sacoche_periode ';
 	$DB_SQL.= 'ORDER BY periode_ordre ASC';
 	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , null);
 }
@@ -925,7 +939,8 @@ function DB_STRUCTURE_lister_periodes()
  */
 function DB_STRUCTURE_lister_groupes_sauf_classes()
 {
-	$DB_SQL = 'SELECT groupe_id,groupe_type FROM sacoche_groupe ';
+	$DB_SQL = 'SELECT groupe_id, groupe_type ';
+	$DB_SQL.= 'FROM sacoche_groupe ';
 	$DB_SQL.= 'WHERE groupe_type!=:type ';
 	$DB_SQL.= 'ORDER BY groupe_ref ASC';
 	$DB_VAR = array(':type'=>'classe');
@@ -940,7 +955,8 @@ function DB_STRUCTURE_lister_groupes_sauf_classes()
  */
 function DB_STRUCTURE_lister_classes()
 {
-	$DB_SQL = 'SELECT * FROM sacoche_groupe ';
+	$DB_SQL = 'SELECT * ';
+	$DB_SQL.= 'FROM sacoche_groupe ';
 	$DB_SQL.= 'WHERE groupe_type=:type ';
 	$DB_SQL.= 'ORDER BY groupe_ref ASC';
 	$DB_VAR = array(':type'=>'classe');
@@ -955,7 +971,8 @@ function DB_STRUCTURE_lister_classes()
  */
 function DB_STRUCTURE_lister_groupes()
 {
-	$DB_SQL = 'SELECT * FROM sacoche_groupe ';
+	$DB_SQL = 'SELECT * ';
+	$DB_SQL.= 'FROM sacoche_groupe ';
 	$DB_SQL.= 'WHERE groupe_type=:type ';
 	$DB_SQL.= 'ORDER BY groupe_ref ASC';
 	$DB_VAR = array(':type'=>'groupe');
@@ -970,7 +987,8 @@ function DB_STRUCTURE_lister_groupes()
  */
 function DB_STRUCTURE_lister_classes_avec_niveaux($niveau_ordre='ASC')
 {
-	$DB_SQL = 'SELECT * FROM sacoche_groupe ';
+	$DB_SQL = 'SELECT * ';
+	$DB_SQL.= 'FROM sacoche_groupe ';
 	$DB_SQL.= 'LEFT JOIN sacoche_niveau USING (niveau_id) ';
 	$DB_SQL.= 'WHERE groupe_type=:type ';
 	$DB_SQL.= 'ORDER BY niveau_ordre '.$niveau_ordre.', groupe_ref ASC';
@@ -986,7 +1004,8 @@ function DB_STRUCTURE_lister_classes_avec_niveaux($niveau_ordre='ASC')
  */
 function DB_STRUCTURE_lister_groupes_avec_niveaux()
 {
-	$DB_SQL = 'SELECT * FROM sacoche_groupe ';
+	$DB_SQL = 'SELECT * ';
+	$DB_SQL.= 'FROM sacoche_groupe ';
 	$DB_SQL.= 'LEFT JOIN sacoche_niveau USING (niveau_id) ';
 	$DB_SQL.= 'WHERE groupe_type=:type ';
 	$DB_SQL.= 'ORDER BY niveau_ordre ASC, groupe_ref ASC';
@@ -1002,13 +1021,31 @@ function DB_STRUCTURE_lister_groupes_avec_niveaux()
  */
 function DB_STRUCTURE_lister_groupes_professeur($prof_id)
 {
-	$DB_SQL = 'SELECT * FROM sacoche_groupe ';
-	$DB_SQL.= 'LEFT JOIN sacoche_jointure_user_groupe USING (groupe_id) ';
+	$DB_SQL = 'SELECT * ';
+	$DB_SQL.= 'FROM sacoche_jointure_user_groupe ';
+	$DB_SQL.= 'LEFT JOIN sacoche_groupe USING (groupe_id) ';
 	$DB_SQL.= 'LEFT JOIN sacoche_niveau USING (niveau_id) ';
-	$DB_SQL.= 'WHERE ( user_id=:user_id OR groupe_prof_id=:user_id ) AND groupe_type!=:type4 ';
-	$DB_SQL.= 'GROUP BY groupe_id '; // indispensable pour les groupes de besoin, sinon autant de lignes que de membres du groupe
+	$DB_SQL.= 'WHERE user_id=:user_id AND groupe_type!=:type4 ';
 	$DB_SQL.= 'ORDER BY niveau_ordre ASC, groupe_nom ASC';
 	$DB_VAR = array(':user_id'=>$prof_id,':type4'=>'eval');
+	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+}
+
+/**
+ * DB_STRUCTURE_lister_professeurs_groupe
+ *
+ * @param int $groupe_id
+ * @return array
+ */
+function DB_STRUCTURE_lister_professeurs_groupe($groupe_id)
+{
+	$DB_SQL = 'SELECT user_id, user_nom, user_prenom ';
+	$DB_SQL.= 'FROM sacoche_groupe ';
+	$DB_SQL.= 'LEFT JOIN sacoche_jointure_user_groupe USING (groupe_id) ';
+	$DB_SQL.= 'LEFT JOIN sacoche_user USING (user_id) ';
+	$DB_SQL.= 'WHERE groupe_id=:groupe_id AND user_profil=:profil AND user_statut=:statut ';
+	$DB_SQL.= 'ORDER BY user_nom ASC, user_prenom ASC';
+	$DB_VAR = array(':groupe_id'=>$groupe_id,':profil'=>'professeur',':statut'=>1);
 	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
@@ -1021,8 +1058,8 @@ function DB_STRUCTURE_lister_groupes_professeur($prof_id)
 function DB_STRUCTURE_lister_classes_groupes_professeur($prof_id)
 {
 	$DB_SQL = 'SELECT groupe_id, groupe_nom, groupe_type ';
-	$DB_SQL.= 'FROM sacoche_groupe ';
-	$DB_SQL.= 'LEFT JOIN sacoche_jointure_user_groupe USING (groupe_id) ';
+	$DB_SQL.= 'FROM sacoche_jointure_user_groupe ';
+	$DB_SQL.= 'LEFT JOIN sacoche_groupe USING (groupe_id) ';
 	$DB_SQL.= 'LEFT JOIN sacoche_niveau USING (niveau_id) ';
 	$DB_SQL.= 'WHERE user_id=:user_id AND groupe_type IN (:type1,:type2) ';
 	$DB_SQL.= 'ORDER BY groupe_type ASC, niveau_ordre ASC, groupe_nom ASC';
@@ -1053,17 +1090,42 @@ function DB_STRUCTURE_lister_classes_parent($parent_id)
 
 /**
  * DB_STRUCTURE_lister_groupes_besoins
+ * Il s'agit des groupes de besoins dont un prof est propriétaire, pas de ceux auxquels il a accès parce que partagés par un collègue.
+ *
+ * @param int    $prof_id
+ * @param bool   $is_proprio
+ * @return array
+ */
+function DB_STRUCTURE_lister_groupes_besoins($prof_id,$is_proprio)
+{
+	$proprio = ($is_proprio) ? 1 : 0 ;
+	$DB_SQL = 'SELECT groupe_id, groupe_nom, niveau_id, niveau_ordre, niveau_nom ';
+	$DB_SQL.= 'FROM sacoche_jointure_user_groupe ';
+	$DB_SQL.= 'LEFT JOIN sacoche_groupe USING (groupe_id) ';
+	$DB_SQL.= 'LEFT JOIN sacoche_niveau USING (niveau_id) ';
+	$DB_SQL.= 'WHERE user_id=:user_id AND jointure_pp=:proprio AND groupe_type=:type ';
+	$DB_SQL.= 'ORDER BY niveau_ordre ASC, groupe_nom ASC';
+	$DB_VAR = array(':user_id'=>$prof_id,':proprio'=>$proprio,':type'=>'besoin');
+	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+}
+
+/**
+ * DB_STRUCTURE_lister_groupes_besoins_non_proprietaire_avec_infos
+ * Il s'agit des groupes de besoins dont un prof n'est pas propriétaire, mais qui lui est affecté, avec l'info sur son propriétaire.
  *
  * @param int    $prof_id
  * @return array
  */
-function DB_STRUCTURE_lister_groupes_besoins($prof_id)
+function DB_STRUCTURE_lister_groupes_besoins_non_proprietaire_avec_infos($prof_id)
 {
-	$DB_SQL = 'SELECT groupe_id, groupe_nom, niveau_id, niveau_ordre, niveau_nom FROM sacoche_groupe ';
-	$DB_SQL.= 'LEFT JOIN sacoche_niveau USING (niveau_id) ';
-	$DB_SQL.= 'WHERE groupe_prof_id=:prof_id AND groupe_type=:type ';
+	$DB_SQL = 'SELECT groupe_id, groupe_nom, user_nom, user_prenom ';
+	$DB_SQL.= 'FROM sacoche_user AS locataire ';
+	$DB_SQL.= 'LEFT JOIN sacoche_jointure_user_groupe ON locataire.user_id=sacoche_jointure_user_groupe.user_id ';
+	$DB_SQL.= 'LEFT JOIN sacoche_groupe USING (groupe_id) ';
+	$DB_SQL.= 'LEFT JOIN sacoche_user AS locataire ';
+	$DB_SQL.= 'WHERE user_id=:user_id AND jointure_pp=:proprio AND groupe_type=:type ';
 	$DB_SQL.= 'ORDER BY niveau_ordre ASC, groupe_nom ASC';
-	$DB_VAR = array(':prof_id'=>$prof_id,':type'=>'besoin');
+	$DB_VAR = array(':user_id'=>$prof_id,':proprio'=>1,':type'=>'besoin');
 	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
@@ -1075,7 +1137,8 @@ function DB_STRUCTURE_lister_groupes_besoins($prof_id)
  */
 function DB_STRUCTURE_lister_classes_et_groupes_avec_niveaux()
 {
-	$DB_SQL = 'SELECT * FROM sacoche_groupe ';
+	$DB_SQL = 'SELECT * ';
+	$DB_SQL.= 'FROM sacoche_groupe ';
 	$DB_SQL.= 'LEFT JOIN sacoche_niveau USING (niveau_id) ';
 	$DB_SQL.= 'WHERE groupe_type IN (:type1,:type2) ';
 	$DB_SQL.= 'ORDER BY groupe_type ASC, niveau_ordre ASC, groupe_nom ASC';
@@ -1091,7 +1154,8 @@ function DB_STRUCTURE_lister_classes_et_groupes_avec_niveaux()
  */
 function DB_STRUCTURE_lister_classes_avec_professeurs()
 {
-	$DB_SQL = 'SELECT * FROM sacoche_groupe ';
+	$DB_SQL = 'SELECT * ';
+	$DB_SQL.= 'FROM sacoche_groupe ';
 	$DB_SQL.= 'LEFT JOIN sacoche_niveau USING (niveau_id) ';
 	$DB_SQL.= 'LEFT JOIN sacoche_jointure_user_groupe USING (groupe_id) ';
 	$DB_SQL.= 'LEFT JOIN sacoche_user USING (user_id) ';
@@ -1188,7 +1252,8 @@ function DB_STRUCTURE_lister_eleves_cibles_actifs_avec_sconet_id($listing_eleve_
  */
 function DB_STRUCTURE_lister_eleves_classes($listing_classe_id)
 {
-	$DB_SQL = 'SELECT * FROM sacoche_user ';
+	$DB_SQL = 'SELECT * ';
+	$DB_SQL.= 'FROM sacoche_user ';
 	$DB_SQL.= 'WHERE user_profil=:profil AND user_statut=:statut AND eleve_classe_id IN ('.$listing_classe_id.') ';
 	$DB_SQL.= 'ORDER BY user_nom ASC, user_prenom ASC';
 	$DB_VAR = array(':profil'=>'eleve',':statut'=>1);
@@ -1203,7 +1268,8 @@ function DB_STRUCTURE_lister_eleves_classes($listing_classe_id)
  */
 function DB_STRUCTURE_lister_eleves_groupes($listing_groupe_id)
 {
-	$DB_SQL = 'SELECT * FROM sacoche_user ';
+	$DB_SQL = 'SELECT * ';
+	$DB_SQL.= 'FROM sacoche_user ';
 	$DB_SQL.= 'LEFT JOIN sacoche_jointure_user_groupe USING (user_id) ';
 	$DB_SQL.= 'WHERE user_profil=:profil AND user_statut=:statut AND groupe_id IN ('.$listing_groupe_id.') ';
 	$DB_SQL.= 'ORDER BY user_nom ASC, user_prenom ASC';
@@ -1308,7 +1374,8 @@ function DB_STRUCTURE_lister_parents_actifs_avec_infos_for_eleve($eleve_id)
  */
 function DB_STRUCTURE_lister_jointure_professeurs_matieres()
 {
-	$DB_SQL = 'SELECT user_id,matiere_id FROM sacoche_jointure_user_matiere ';
+	$DB_SQL = 'SELECT user_id, matiere_id ';
+	$DB_SQL.= 'FROM sacoche_jointure_user_matiere ';
 	$DB_SQL.= 'LEFT JOIN sacoche_user USING (user_id) ';
 	$DB_SQL.= 'WHERE user_statut=:statut ';
 	$DB_VAR = array(':statut'=>1);
@@ -1323,7 +1390,8 @@ function DB_STRUCTURE_lister_jointure_professeurs_matieres()
  */
 function DB_STRUCTURE_lister_jointure_professeurs_coordonnateurs()
 {
-	$DB_SQL = 'SELECT user_id,matiere_id FROM sacoche_jointure_user_matiere ';
+	$DB_SQL = 'SELECT user_id, matiere_id ';
+	$DB_SQL.= 'FROM sacoche_jointure_user_matiere ';
 	$DB_SQL.= 'LEFT JOIN sacoche_user USING (user_id) ';
 	$DB_SQL.= 'WHERE jointure_coord=:coord AND user_statut=:statut ';
 	$DB_VAR = array(':coord'=>1,':statut'=>1);
@@ -1338,7 +1406,8 @@ function DB_STRUCTURE_lister_jointure_professeurs_coordonnateurs()
  */
 function DB_STRUCTURE_lister_jointure_professeurs_principaux()
 {
-	$DB_SQL = 'SELECT user_id,groupe_id FROM sacoche_jointure_user_groupe ';
+	$DB_SQL = 'SELECT user_id, groupe_id ';
+	$DB_SQL.= 'FROM sacoche_jointure_user_groupe ';
 	$DB_SQL.= 'LEFT JOIN sacoche_user USING (user_id) ';
 	$DB_SQL.= 'WHERE jointure_pp=:pp AND user_statut=:statut ';
 	$DB_VAR = array(':pp'=>1,':statut'=>1);
@@ -1353,7 +1422,8 @@ function DB_STRUCTURE_lister_jointure_professeurs_principaux()
  */
 function DB_STRUCTURE_lister_jointure_groupe_periode($listing_groupe_id)
 {
-	$DB_SQL = 'SELECT * FROM sacoche_jointure_groupe_periode ';
+	$DB_SQL = 'SELECT * ';
+	$DB_SQL.= 'FROM sacoche_jointure_groupe_periode ';
 	$DB_SQL.= 'WHERE groupe_id IN ('.$listing_groupe_id.') ';
 	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , null);
 }
@@ -1524,7 +1594,8 @@ function DB_STRUCTURE_lister_users($profil,$only_actifs,$with_classe,$tri_statut
 		$DB_VAR[':statut'] = 1;
 	}
 	// On peut maintenant assembler les morceaux de la requête !
-	$DB_SQL = 'SELECT * FROM sacoche_user ';
+	$DB_SQL = 'SELECT * ';
+	$DB_SQL.= 'FROM sacoche_user ';
 	$DB_SQL.= $left_join;
 	$DB_SQL.= 'WHERE '.$where;
 	$DB_SQL.= 'ORDER BY '.$order_by.'user_nom ASC, user_prenom ASC ';
@@ -1570,30 +1641,42 @@ function DB_STRUCTURE_lister_parents_actifs_avec_infos_enfants($with_adresse,$de
  * DB_STRUCTURE_lister_users_avec_groupe
  *
  * @param bool   $profil_eleve  true pour eleve / false pour professeur + directeur
- * @param int    $prof_id       0 pour les élèves des groupes type "groupe" , l'id du prof pour les élèves des groupes type "besoin" d'un prof
  * @param bool   $only_actifs   true pour statut actif uniquement / false pour tout le monde qq soit le statut
  * @return array
  */
-function DB_STRUCTURE_lister_users_avec_groupe($profil_eleve,$prof_id,$only_actifs)
+function DB_STRUCTURE_lister_users_avec_groupe($profil_eleve,$only_actifs)
 {
-	$groupe_type = ($prof_id) ? 'besoin' : 'groupe' ;
-	$egal_eleve = $profil_eleve ? '=' : '!=' ;
-	$DB_VAR = array(':profil'=>'eleve',':type'=>$groupe_type);
-	$DB_SQL = 'SELECT * FROM sacoche_user ';
+	$egal_eleve  = ($profil_eleve) ? '=' : '!=' ;
+	$DB_SQL = 'SELECT * ';
+	$DB_SQL.= 'FROM sacoche_user ';
 	$DB_SQL.= 'LEFT JOIN sacoche_jointure_user_groupe USING (user_id) ';
 	$DB_SQL.= 'LEFT JOIN sacoche_groupe USING (groupe_id) ';
 	$DB_SQL.= 'WHERE user_profil'.$egal_eleve.':profil AND groupe_type=:type ';
-	if($prof_id)
-	{
-		$DB_SQL.= 'AND groupe_prof_id=:prof_id ';
-		$DB_VAR[':prof_id'] = $prof_id;
-	}
+	$DB_VAR = array(':profil'=>'eleve',':type'=>'groupe');
 	if($only_actifs)
 	{
 		$DB_SQL.= 'AND user_statut=:statut ';
 		$DB_VAR[':statut'] = 1;
 	}
 	$DB_SQL.= 'ORDER BY user_nom ASC, user_prenom ASC';
+	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+}
+
+/**
+ * DB_STRUCTURE_lister_users_avec_groupes_besoins
+ *
+ * @param string   $profil               "eleve" | "professeur"
+ * @param string   $listing_groupes_id   liste des ids des groupes séparés par des virgules
+ * @return array
+ */
+function DB_STRUCTURE_lister_users_avec_groupes_besoins($profil,$listing_groupes_id)
+{
+	$DB_SQL = 'SELECT groupe_id, user_nom, user_prenom, jointure_pp ';
+	$DB_SQL.= 'FROM sacoche_jointure_user_groupe ';
+	$DB_SQL.= 'LEFT JOIN sacoche_user USING (user_id) ';
+	$DB_SQL.= 'WHERE user_profil=:profil AND groupe_id IN('.$listing_groupes_id.') AND user_statut=:statut ';
+	$DB_SQL.= 'ORDER BY user_nom ASC, user_prenom ASC';
+	$DB_VAR = array(':profil'=>$profil,':statut'=>1);
 	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
@@ -1620,7 +1703,8 @@ function DB_STRUCTURE_lister_users_desactives_obsoletes()
  */
 function DB_STRUCTURE_lister_professeurs_avec_classes()
 {
-	$DB_SQL = 'SELECT * FROM sacoche_user ';
+	$DB_SQL = 'SELECT * ';
+	$DB_SQL.= 'FROM sacoche_user ';
 	$DB_SQL.= 'LEFT JOIN sacoche_jointure_user_groupe USING (user_id) ';
 	$DB_SQL.= 'LEFT JOIN sacoche_groupe USING (groupe_id) ';
 	$DB_SQL.= 'WHERE user_profil=:profil AND groupe_type=:type AND user_statut=:statut ';
@@ -1777,7 +1861,7 @@ function DB_STRUCTURE_lister_devoirs_prof($prof_id,$groupe_id,$date_debut_mysql,
 {
 	// DB::query(SACOCHE_STRUCTURE_BD_NAME , 'SET group_concat_max_len = ...'); // Pour lever si besoin une limitation de GROUP_CONCAT (group_concat_max_len est par défaut limité à une chaine de 1024 caractères).
 	// Il faut ajouter dans la requête des "DISTINCT" sinon la liaison avec "sacoche_jointure_user_groupe" duplique tout x le nb d'élèves associés pour une évaluation sur une sélection d'élèves.
-	$DB_SQL = 'SELECT devoir_id, devoir_date, devoir_visible_date, devoir_info, groupe_id, groupe_type, groupe_nom, ';
+	$DB_SQL = 'SELECT sacoche_devoir.*, groupe_type, groupe_nom, ';
 	$DB_SQL.= 'GROUP_CONCAT(DISTINCT item_id SEPARATOR "_") AS items_listing, COUNT(DISTINCT item_id) AS items_nombre ';
 	if(!$groupe_id)
 	{
@@ -1790,12 +1874,12 @@ function DB_STRUCTURE_lister_devoirs_prof($prof_id,$groupe_id,$date_debut_mysql,
 	{
 		$DB_SQL.= 'LEFT JOIN sacoche_jointure_user_groupe USING (groupe_id) ';
 	}
-	$DB_SQL.= 'WHERE prof_id=:prof_id ';
+	$DB_SQL.= 'WHERE ( prof_id=:prof_id OR devoir_partage LIKE :prof_id_like ) ';
 	$DB_SQL.= ($groupe_id) ? 'AND groupe_type!=:type4 AND groupe_id='.$groupe_id.' ' : 'AND groupe_type=:type4 ' ;
 	$DB_SQL.= 'AND devoir_date>="'.$date_debut_mysql.'" AND devoir_date<="'.$date_fin_mysql.'" ' ;
 	$DB_SQL.= 'GROUP BY devoir_id ';
 	$DB_SQL.= 'ORDER BY devoir_date DESC, groupe_nom ASC';
-	$DB_VAR = array(':prof_id'=>$prof_id,':type4'=>'eval');
+	$DB_VAR = array(':prof_id'=>$prof_id,':prof_id_like'=>'%_'.$prof_id.'_%',':type4'=>'eval');
 	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
@@ -1863,7 +1947,8 @@ function DB_STRUCTURE_lister_items_devoir($devoir_id,$info_pour_eleve=false)
 function DB_STRUCTURE_lister_saisies_devoir($devoir_id,$with_REQ)
 {
 	// On évite les élèves désactivés pour ces opérations effectuées sur les pages de saisies d'évaluations
-	$DB_SQL = 'SELECT eleve_id,item_id,saisie_note FROM sacoche_saisie ';
+	$DB_SQL = 'SELECT eleve_id, item_id, saisie_note ';
+	$DB_SQL.= 'FROM sacoche_saisie ';
 	$DB_SQL.= 'LEFT JOIN sacoche_user ON sacoche_saisie.eleve_id=sacoche_user.user_id ';
 	$DB_SQL.= 'WHERE devoir_id=:devoir_id AND user_statut=:statut ';
 	if(!$with_REQ)
@@ -1883,7 +1968,8 @@ function DB_STRUCTURE_lister_saisies_devoir($devoir_id,$with_REQ)
  */
 function DB_STRUCTURE_lister_saisies_devoir_eleve($devoir_id,$eleve_id)
 {
-	$DB_SQL = 'SELECT item_id,saisie_note FROM sacoche_saisie ';
+	$DB_SQL = 'SELECT item_id, saisie_note ';
+	$DB_SQL.= 'FROM sacoche_saisie ';
 	$DB_SQL.= 'WHERE devoir_id=:devoir_id AND eleve_id=:eleve_id AND saisie_note!="REQ" ';
 	$DB_VAR = array(':devoir_id'=>$devoir_id,':eleve_id'=>$eleve_id);
 	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
@@ -1897,7 +1983,7 @@ function DB_STRUCTURE_lister_saisies_devoir_eleve($devoir_id,$eleve_id)
  */
 function DB_STRUCTURE_lister_referentiels()
 {
-	$DB_SQL = 'SELECT matiere_id,niveau_id,matiere_nom,niveau_nom,referentiel_mode_synthese ';
+	$DB_SQL = 'SELECT matiere_id, niveau_id, matiere_nom, niveau_nom, referentiel_mode_synthese ';
 	$DB_SQL.= 'FROM sacoche_referentiel ';
 	$DB_SQL.= 'LEFT JOIN sacoche_matiere USING (matiere_id) ';
 	$DB_SQL.= 'LEFT JOIN sacoche_niveau USING (niveau_id) ';
@@ -1918,7 +2004,7 @@ function DB_STRUCTURE_lister_referentiels()
 function DB_STRUCTURE_lister_referentiels_infos_details_matieres_niveaux($listing_matieres_id,$listing_niveaux_id,$listing_cycles_id)
 {
 	$listing_cycles_niveaux = ($listing_cycles_id) ? $listing_niveaux_id.','.$listing_cycles_id : $listing_niveaux_id ;
-	$DB_SQL = 'SELECT matiere_id,niveau_id,niveau_nom,referentiel_partage_etat,referentiel_partage_date,referentiel_calcul_methode,referentiel_calcul_limite ';
+	$DB_SQL = 'SELECT matiere_id, niveau_id, niveau_nom, referentiel_partage_etat, referentiel_partage_date, referentiel_calcul_methode, referentiel_calcul_limite ';
 	$DB_SQL.= 'FROM sacoche_referentiel ';
 	$DB_SQL.= 'LEFT JOIN sacoche_niveau USING (niveau_id) ';
 	$DB_SQL.= 'LEFT JOIN sacoche_matiere USING (matiere_id) ';
@@ -1939,7 +2025,7 @@ function DB_STRUCTURE_lister_referentiels_infos_details_matieres_niveaux($listin
 function DB_STRUCTURE_lister_referentiels_infos_groupement_matieres($listing_matieres_id,$listing_niveaux_id,$listing_cycles_id)
 {
 	$listing_cycles_niveaux = ($listing_cycles_id) ? $listing_niveaux_id.','.$listing_cycles_id : $listing_niveaux_id ;
-	$DB_SQL = 'SELECT matiere_id,COUNT(niveau_id) AS niveau_nb ';
+	$DB_SQL = 'SELECT matiere_id, COUNT(niveau_id) AS niveau_nb ';
 	$DB_SQL.= 'FROM sacoche_referentiel ';
 	$DB_SQL.= 'LEFT JOIN sacoche_niveau USING (niveau_id) ';
 	$DB_SQL.= 'LEFT JOIN sacoche_matiere USING (matiere_id) ';
@@ -1958,7 +2044,8 @@ function DB_STRUCTURE_lister_referentiels_infos_groupement_matieres($listing_mat
  */
 function DB_STRUCTURE_compter_devoirs()
 {
-	$DB_SQL = 'SELECT COUNT(*) AS nombre FROM sacoche_devoir';
+	$DB_SQL = 'SELECT COUNT(*) AS nombre ';
+	$DB_SQL.= 'FROM sacoche_devoir';
 	return DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , null);
 }
 
@@ -2021,7 +2108,8 @@ function DB_STRUCTURE_compter_users_suivant_statut($profil)
 		}
 		$where = 'user_profil IN('.implode(',',$profil).') ';
 	}
-	$DB_SQL = 'SELECT user_statut, COUNT(*) AS nombre FROM sacoche_user ';
+	$DB_SQL = 'SELECT user_statut, COUNT(*) AS nombre ';
+	$DB_SQL.= 'FROM sacoche_user ';
 	$DB_SQL.= 'WHERE '.$where;
 	$DB_SQL.= 'GROUP BY user_statut';
 	$DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR , TRUE , TRUE);
@@ -2038,7 +2126,8 @@ function DB_STRUCTURE_compter_users_suivant_statut($profil)
  */
 function DB_STRUCTURE_compter_eleves_actifs_sans_id_sconet()
 {
-	$DB_SQL = 'SELECT COUNT(*) AS nombre FROM sacoche_user ';
+	$DB_SQL = 'SELECT COUNT(*) AS nombre ';
+	$DB_SQL.= 'FROM sacoche_user ';
 	$DB_SQL.= 'WHERE user_profil=:profil AND user_statut=:statut AND user_sconet_id=:sconet_id ';
 	$DB_VAR = array(':profil'=>'eleve',':statut'=>1,':sconet_id'=>0);
 	return DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
@@ -2052,7 +2141,8 @@ function DB_STRUCTURE_compter_eleves_actifs_sans_id_sconet()
  */
 function DB_STRUCTURE_compter_modes_synthese_inconnu()
 {
-	$DB_SQL = 'SELECT COUNT(*) AS nombre FROM sacoche_referentiel ';
+	$DB_SQL = 'SELECT COUNT(*) AS nombre ';
+	$DB_SQL.= 'FROM sacoche_referentiel ';
 	$DB_SQL.= 'LEFT JOIN sacoche_matiere USING (matiere_id) ';
 	$DB_SQL.= 'WHERE referentiel_mode_synthese=:mode_inconnu AND (matiere_id IN('.$_SESSION['MATIERES'].') OR matiere_partage=:partage) '; // Test matiere pour éviter des matières décochées par l'admin.
 	$DB_VAR = array(':mode_inconnu'=>'inconnu',':partage'=>0);
@@ -2068,7 +2158,8 @@ function DB_STRUCTURE_compter_modes_synthese_inconnu()
  */
 function DB_STRUCTURE_tester_referentiel($matiere_id,$niveau_id)
 {
-	$DB_SQL = 'SELECT matiere_id FROM sacoche_referentiel ';
+	$DB_SQL = 'SELECT matiere_id ';
+	$DB_SQL.= 'FROM sacoche_referentiel ';
 	$DB_SQL.= 'WHERE matiere_id=:matiere_id AND niveau_id=:niveau_id ';
 	$DB_SQL.= 'LIMIT 1';
 	$DB_VAR = array(':matiere_id'=>$matiere_id,':niveau_id'=>$niveau_id);
@@ -2083,7 +2174,8 @@ function DB_STRUCTURE_tester_referentiel($matiere_id,$niveau_id)
  */
 function DB_STRUCTURE_tester_prof_principal($user_id)
 {
-	$DB_SQL = 'SELECT groupe_id FROM sacoche_jointure_user_groupe ';
+	$DB_SQL = 'SELECT groupe_id ';
+	$DB_SQL.= 'FROM sacoche_jointure_user_groupe ';
 	$DB_SQL.= 'WHERE user_id=:user_id AND jointure_pp=:pp ';
 	$DB_SQL.= 'LIMIT 1';
 	$DB_VAR = array(':user_id'=>$user_id,':pp'=>1);
@@ -2100,7 +2192,8 @@ function DB_STRUCTURE_tester_prof_principal($user_id)
  */
 function DB_STRUCTURE_tester_demande_existante($eleve_id,$matiere_id,$item_id)
 {
-	$DB_SQL = 'SELECT demande_id FROM sacoche_demande ';
+	$DB_SQL = 'SELECT demande_id ';
+	$DB_SQL.= 'FROM sacoche_demande ';
 	$DB_SQL.= 'WHERE user_id=:eleve_id AND matiere_id=:matiere_id AND item_id=:item_id ';
 	$DB_SQL.= 'LIMIT 1';
 	$DB_VAR = array(':eleve_id'=>$eleve_id,':matiere_id'=>$matiere_id,':item_id'=>$item_id);
@@ -2116,7 +2209,8 @@ function DB_STRUCTURE_tester_demande_existante($eleve_id,$matiere_id,$item_id)
  */
 function DB_STRUCTURE_tester_matiere_reference($matiere_ref,$matiere_id=false)
 {
-	$DB_SQL = 'SELECT matiere_id FROM sacoche_matiere ';
+	$DB_SQL = 'SELECT matiere_id ';
+	$DB_SQL.= 'FROM sacoche_matiere ';
 	$DB_SQL.= 'WHERE matiere_ref=:matiere_ref ';
 	$DB_VAR = array(':matiere_ref'=>$matiere_ref);
 	if($matiere_id)
@@ -2137,7 +2231,8 @@ function DB_STRUCTURE_tester_matiere_reference($matiere_ref,$matiere_id=false)
  */
 function DB_STRUCTURE_tester_classe_reference($groupe_ref,$groupe_id=false)
 {
-	$DB_SQL = 'SELECT groupe_id FROM sacoche_groupe ';
+	$DB_SQL = 'SELECT groupe_id ';
+	$DB_SQL.= 'FROM sacoche_groupe ';
 	$DB_SQL.= 'WHERE groupe_type=:groupe_type AND groupe_ref=:groupe_ref ';
 	$DB_VAR = array(':groupe_type'=>'classe',':groupe_ref'=>$groupe_ref);
 	if($groupe_id)
@@ -2158,7 +2253,8 @@ function DB_STRUCTURE_tester_classe_reference($groupe_ref,$groupe_id=false)
  */
 function DB_STRUCTURE_tester_groupe_reference($groupe_ref,$groupe_id=false)
 {
-	$DB_SQL = 'SELECT groupe_id FROM sacoche_groupe ';
+	$DB_SQL = 'SELECT groupe_id ';
+	$DB_SQL.= 'FROM sacoche_groupe ';
 	$DB_SQL.= 'WHERE groupe_type=:groupe_type AND groupe_ref=:groupe_ref ';
 	$DB_VAR = array(':groupe_type'=>'groupe',':groupe_ref'=>$groupe_ref);
 	if($groupe_id)
@@ -2179,7 +2275,8 @@ function DB_STRUCTURE_tester_groupe_reference($groupe_ref,$groupe_id=false)
  */
 function DB_STRUCTURE_tester_groupe_nom($groupe_nom,$groupe_id=false)
 {
-	$DB_SQL = 'SELECT groupe_id FROM sacoche_groupe ';
+	$DB_SQL = 'SELECT groupe_id ';
+	$DB_SQL.= 'FROM sacoche_groupe ';
 	$DB_SQL.= 'WHERE groupe_type=:groupe_type AND groupe_nom=:groupe_nom ';
 	$DB_VAR = array(':groupe_type'=>'groupe',':groupe_nom'=>$groupe_nom);
 	if($groupe_id)
@@ -2200,7 +2297,8 @@ function DB_STRUCTURE_tester_groupe_nom($groupe_nom,$groupe_id=false)
  */
 function DB_STRUCTURE_tester_periode_nom($periode_nom,$periode_id=false)
 {
-	$DB_SQL = 'SELECT periode_id FROM sacoche_periode ';
+	$DB_SQL = 'SELECT periode_id ';
+	$DB_SQL.= 'FROM sacoche_periode ';
 	$DB_SQL.= 'WHERE periode_nom=:periode_nom ';
 	$DB_VAR = array(':periode_nom'=>$periode_nom);
 	if($periode_id)
@@ -2221,7 +2319,8 @@ function DB_STRUCTURE_tester_periode_nom($periode_nom,$periode_id=false)
  */
 function DB_STRUCTURE_tester_utilisateur_idENT($user_id_ent,$user_id=false)
 {
-	$DB_SQL = 'SELECT user_id FROM sacoche_user ';
+	$DB_SQL = 'SELECT user_id ';
+	$DB_SQL.= 'FROM sacoche_user ';
 	$DB_SQL.= 'WHERE user_id_ent=:user_id_ent ';
 	$DB_VAR = array(':user_id_ent'=>$user_id_ent);
 	if($user_id)
@@ -2242,7 +2341,8 @@ function DB_STRUCTURE_tester_utilisateur_idENT($user_id_ent,$user_id=false)
  */
 function DB_STRUCTURE_tester_utilisateur_idGepi($user_id_gepi,$user_id=false)
 {
-	$DB_SQL = 'SELECT user_id FROM sacoche_user ';
+	$DB_SQL = 'SELECT user_id ';
+	$DB_SQL.= 'FROM sacoche_user ';
 	$DB_SQL.= 'WHERE user_id_gepi=:user_id_gepi ';
 	$DB_VAR = array(':user_id_gepi'=>$user_id_gepi);
 	if($user_id)
@@ -2264,7 +2364,8 @@ function DB_STRUCTURE_tester_utilisateur_idGepi($user_id_gepi,$user_id=false)
  */
 function DB_STRUCTURE_tester_utilisateur_SconetId($user_sconet_id,$user_profil,$user_id=false)
 {
-	$DB_SQL = 'SELECT user_id FROM sacoche_user ';
+	$DB_SQL = 'SELECT user_id ';
+	$DB_SQL.= 'FROM sacoche_user ';
 	$DB_SQL.= 'WHERE user_sconet_id=:user_sconet_id AND user_profil=:user_profil ';
 	$DB_VAR = array(':user_sconet_id'=>$user_sconet_id,':user_profil'=>$user_profil);
 	if($user_id)
@@ -2285,7 +2386,8 @@ function DB_STRUCTURE_tester_utilisateur_SconetId($user_sconet_id,$user_profil,$
  */
 function DB_STRUCTURE_tester_utilisateur_SconetElenoet($user_sconet_elenoet,$user_id=false)
 {
-	$DB_SQL = 'SELECT user_id FROM sacoche_user ';
+	$DB_SQL = 'SELECT user_id ';
+	$DB_SQL.= 'FROM sacoche_user ';
 	$DB_SQL.= 'WHERE user_sconet_elenoet=:user_sconet_elenoet AND user_profil=:user_profil ';
 	$DB_VAR = array(':user_sconet_elenoet'=>$user_sconet_elenoet,':user_profil'=>'eleve');
 	if($user_id)
@@ -2307,7 +2409,8 @@ function DB_STRUCTURE_tester_utilisateur_SconetElenoet($user_sconet_elenoet,$use
  */
 function DB_STRUCTURE_tester_utilisateur_reference($user_reference,$user_profil,$user_id=false)
 {
-	$DB_SQL = 'SELECT user_id FROM sacoche_user ';
+	$DB_SQL = 'SELECT user_id ';
+	$DB_SQL.= 'FROM sacoche_user ';
 	$DB_SQL.= 'WHERE user_reference=:user_reference AND user_profil=:user_profil ';
 	$DB_VAR = array(':user_reference'=>$user_reference,':user_profil'=>$user_profil);
 	if($user_id)
@@ -2328,7 +2431,8 @@ function DB_STRUCTURE_tester_utilisateur_reference($user_reference,$user_profil,
  */
 function DB_STRUCTURE_tester_login($user_login,$user_id=false)
 {
-	$DB_SQL = 'SELECT user_id FROM sacoche_user ';
+	$DB_SQL = 'SELECT user_id ';
+	$DB_SQL.= 'FROM sacoche_user ';
 	$DB_SQL.= 'WHERE user_login=:user_login ';
 	$DB_VAR = array(':user_login'=>$user_login);
 	if($user_id)
@@ -2353,7 +2457,8 @@ function DB_STRUCTURE_rechercher_login_disponible($login)
 	do
 	{
 		$login = mb_substr($login,0,20-$nb_chiffres);
-		$DB_SQL = 'SELECT user_login FROM sacoche_user ';
+		$DB_SQL = 'SELECT user_login ';
+		$DB_SQL.= 'FROM sacoche_user ';
 		$DB_SQL.= 'WHERE user_login LIKE :user_login';
 		$DB_VAR = array(':user_login'=>$login.'%');
 		$DB_COL = DB::queryCol(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
@@ -2389,17 +2494,16 @@ function DB_STRUCTURE_ajouter_matiere_specifique($matiere_ref,$matiere_nom)
  * DB_STRUCTURE_ajouter_groupe
  *
  * @param string $groupe_type      'classe' ou 'groupe' ou 'besoin' ou 'eval'
- * @param int    $groupe_prof_id   id du prof dans le cas d'un groupe de besoin ou pour une évaluation (0 sinon)
  * @param string $groupe_ref
  * @param string $groupe_nom
  * @param int    $niveau_id
  * @return int
  */
-function DB_STRUCTURE_ajouter_groupe($groupe_type,$groupe_prof_id,$groupe_ref,$groupe_nom,$niveau_id)
+function DB_STRUCTURE_ajouter_groupe($groupe_type,$groupe_ref,$groupe_nom,$niveau_id)
 {
-	$DB_SQL = 'INSERT INTO sacoche_groupe(groupe_type,groupe_prof_id,groupe_ref,groupe_nom,niveau_id) ';
-	$DB_SQL.= 'VALUES(:groupe_type,:groupe_prof_id,:groupe_ref,:groupe_nom,:niveau_id)';
-	$DB_VAR = array(':groupe_type'=>$groupe_type,':groupe_prof_id'=>$groupe_prof_id,':groupe_ref'=>$groupe_ref,':groupe_nom'=>$groupe_nom,':niveau_id'=>$niveau_id);
+	$DB_SQL = 'INSERT INTO sacoche_groupe(groupe_type,groupe_ref,groupe_nom,niveau_id) ';
+	$DB_SQL.= 'VALUES(:groupe_type,:groupe_ref,:groupe_nom,:niveau_id)';
+	$DB_VAR = array(':groupe_type'=>$groupe_type,':groupe_ref'=>$groupe_ref,':groupe_nom'=>$groupe_nom,':niveau_id'=>$niveau_id);
 	DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 	return DB::getLastOid(SACOCHE_STRUCTURE_BD_NAME);
 }
@@ -2494,13 +2598,15 @@ function DB_STRUCTURE_ajouter_jointure_parent_eleve($parent_id,$eleve_id,$resp_l
  * @param string $date_mysql
  * @param string $info
  * @param string $date_visible_mysql
+ * @param string $listing_id_profs   id des profs avec qui on partage l'éval (séparés par des _) ; facultatif car non transmis si éval sur des élèves sélectionnés
  * @return int
  */
-function DB_STRUCTURE_ajouter_devoir($prof_id,$groupe_id,$date_mysql,$info,$date_visible_mysql)
+function DB_STRUCTURE_ajouter_devoir($prof_id,$groupe_id,$date_mysql,$info,$date_visible_mysql,$listing_id_profs='')
 {
-	$DB_SQL = 'INSERT INTO sacoche_devoir(prof_id,groupe_id,devoir_date,devoir_info,devoir_visible_date) ';
-	$DB_SQL.= 'VALUES(:prof_id,:groupe_id,:date,:info,:visible_date)';
-	$DB_VAR = array(':prof_id'=>$prof_id,':groupe_id'=>$groupe_id,':date'=>$date_mysql,':info'=>$info,':visible_date'=>$date_visible_mysql);
+	$listing_id_profs = ($listing_id_profs) ? '_'.$listing_id_profs.'_' : $listing_id_profs ;
+	$DB_SQL = 'INSERT INTO sacoche_devoir(prof_id,groupe_id,devoir_date,devoir_info,devoir_visible_date,devoir_partage) ';
+	$DB_SQL.= 'VALUES(:prof_id,:groupe_id,:date,:info,:visible_date,:devoir_partage)';
+	$DB_VAR = array(':prof_id'=>$prof_id,':groupe_id'=>$groupe_id,':date'=>$date_mysql,':info'=>$info,':visible_date'=>$date_visible_mysql,':devoir_partage'=>$listing_id_profs);
 	DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 	return DB::getLastOid(SACOCHE_STRUCTURE_BD_NAME);
 }
@@ -2894,7 +3000,7 @@ function DB_STRUCTURE_modifier_matiere_nb_demandes($matiere_id,$matiere_nb_deman
 }
 
 /**
- * DB_STRUCTURE_modifier_groupe ; on ne touche pas à 'groupe_type' ni à 'groupe_prof_id'
+ * DB_STRUCTURE_modifier_groupe ; on ne touche pas à 'groupe_type'
  *
  * @param int    $groupe_id
  * @param string $groupe_ref
@@ -2980,17 +3086,19 @@ function DB_STRUCTURE_modifier_validation($type,$user_id,$element_id,$validation
  * @param string $date_mysql
  * @param string $info
  * @param string $date_visible_mysql
- * @param array  $tab_items   tableau des id des items
+ * @param array  $tab_items          tableau des id des items
+ * @param string $listing_id_profs   id des profs avec qui on partage l'éval (séparés par des _) ; facultatif car non transmis si éval sur des élèves sélectionnés
  * @return void
  */
-function DB_STRUCTURE_modifier_devoir($devoir_id,$prof_id,$date_mysql,$info,$date_visible_mysql,$tab_items)
+function DB_STRUCTURE_modifier_devoir($devoir_id,$prof_id,$date_mysql,$info,$date_visible_mysql,$tab_items,$listing_id_profs='')
 {
+	$listing_id_profs = ($listing_id_profs) ? '_'.$listing_id_profs.'_' : $listing_id_profs ;
 	// sacoche_devoir (maj)
 	$DB_SQL = 'UPDATE sacoche_devoir ';
-	$DB_SQL.= 'SET devoir_date=:date, devoir_info=:devoir_info, devoir_visible_date=:visible_date ';
+	$DB_SQL.= 'SET devoir_date=:date, devoir_info=:devoir_info, devoir_visible_date=:visible_date, devoir_partage=:devoir_partage ';
 	$DB_SQL.= 'WHERE devoir_id=:devoir_id AND prof_id=:prof_id ';
 	$DB_SQL.= 'LIMIT 1';
-	$DB_VAR = array(':date'=>$date_mysql,':devoir_info'=>$info,':visible_date'=>$date_visible_mysql,':devoir_id'=>$devoir_id,':prof_id'=>$prof_id);
+	$DB_VAR = array(':date'=>$date_mysql,':devoir_info'=>$info,':visible_date'=>$date_visible_mysql,':devoir_partage'=>$listing_id_profs,':devoir_id'=>$devoir_id,':prof_id'=>$prof_id);
 	DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 	// sacoche_saisie (maj)
 	$saisie_info = $info.' ('.$_SESSION['USER_NOM'].' '.$_SESSION['USER_PRENOM']{0}.'.)';
@@ -3669,13 +3777,17 @@ function DB_STRUCTURE_supprimer_utilisateur($user_id,$user_profil)
 		$DB_SQL = 'DELETE FROM sacoche_jointure_user_matiere ';
 		$DB_SQL.= 'WHERE user_id=:user_id';
 		DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-		$DB_SQL = 'DELETE sacoche_jointure_devoir_item FROM sacoche_jointure_devoir_item ';
+		$DB_SQL = 'DELETE sacoche_jointure_devoir_item ';
+		$DB_SQL.= 'FROM sacoche_jointure_devoir_item ';
 		$DB_SQL.= 'LEFT JOIN sacoche_devoir USING (devoir_id) ';
 		$DB_SQL.= 'WHERE prof_id=:user_id';
 		DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-		$DB_SQL = 'DELETE sacoche_groupe FROM sacoche_groupe ';
-		$DB_SQL.= 'LEFT JOIN sacoche_devoir ON sacoche_groupe.groupe_prof_id=sacoche_devoir.prof_id ';
-		$DB_SQL.= 'WHERE groupe_prof_id=:user_id';
+		// Groupes type "eval" et "besoin", avec jointures users associées
+		$DB_SQL = 'DELETE sacoche_groupe, sacoche_jointure_user_groupe ';
+		$DB_SQL.= 'FROM sacoche_devoir ';
+		$DB_SQL.= 'LEFT JOIN sacoche_groupe USING groupe_id ';
+		$DB_SQL.= 'LEFT JOIN sacoche_jointure_user_groupe USING groupe_id ';
+		$DB_SQL.= 'WHERE prof_id=:user_id AND groupe_type IN("besoin","eval") ';
 		DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 		$DB_SQL = 'DELETE FROM sacoche_devoir ';
 		$DB_SQL.= 'WHERE prof_id=:user_id';
@@ -4048,7 +4160,8 @@ function DB_STRUCTURE_corriger_anomalies()
  */
 function DB_STRUCTURE_OPT_matieres_etabl($listing_matieres_communes,$transversal)
 {
-	$DB_SQL = 'SELECT matiere_id AS valeur, matiere_nom AS texte FROM sacoche_matiere ';
+	$DB_SQL = 'SELECT matiere_id AS valeur, matiere_nom AS texte ';
+	$DB_SQL.= 'FROM sacoche_matiere ';
 	$DB_SQL.= 'WHERE matiere_partage=0 '; // les matières spécifiques
 	if($listing_matieres_communes)
 	{
@@ -4069,7 +4182,8 @@ function DB_STRUCTURE_OPT_matieres_communes()
 {
 	$GLOBALS['tab_select_option_first'] = array(0,'Toutes les matières','');
 
-	$DB_SQL = 'SELECT matiere_id AS valeur, matiere_nom AS texte FROM sacoche_matiere ';
+	$DB_SQL = 'SELECT matiere_id AS valeur, matiere_nom AS texte ';
+	$DB_SQL.= 'FROM sacoche_matiere ';
 	$DB_SQL.= 'WHERE matiere_partage=:partage ';
 	$DB_SQL.= 'ORDER BY matiere_nom ASC';
 	$DB_VAR = array(':partage'=>1);
@@ -4085,7 +4199,8 @@ function DB_STRUCTURE_OPT_matieres_communes()
  */
 function DB_STRUCTURE_OPT_matieres_professeur($listing_matieres_communes,$user_id)
 {
-	$DB_SQL = 'SELECT matiere_id AS valeur, matiere_nom AS texte, matiere_nb_demandes AS info FROM sacoche_jointure_user_matiere ';
+	$DB_SQL = 'SELECT matiere_id AS valeur, matiere_nom AS texte, matiere_nb_demandes AS info ';
+	$DB_SQL.= 'FROM sacoche_jointure_user_matiere ';
 	$DB_SQL.= 'LEFT JOIN sacoche_matiere USING (matiere_id) ';
 	$DB_SQL.= 'WHERE (matiere_id IN('.$listing_matieres_communes.') OR matiere_partage=:partage) AND user_id=:user_id '; // Test matiere car un prof peut être encore relié à des matières décochées par l'admin.
 	$DB_SQL.= 'ORDER BY matiere_nom ASC';
@@ -4130,7 +4245,8 @@ function DB_STRUCTURE_OPT_matieres_eleve($listing_matieres_communes,$user_id)
 		$liste_groupes = $_SESSION['ELEVE_CLASSE_ID'].','.$DB_ROW['sacoche_liste_groupe_id'];
 	}
 	// Ensuite on récupère les matières des professeurs (actifs !) qui sont associés à la liste des groupes récupérés
-	$DB_SQL = 'SELECT matiere_id AS valeur, matiere_nom AS texte, matiere_nb_demandes AS info FROM sacoche_user ';
+	$DB_SQL = 'SELECT matiere_id AS valeur, matiere_nom AS texte, matiere_nb_demandes AS info ';
+	$DB_SQL.= 'FROM sacoche_user ';
 	$DB_SQL.= 'LEFT JOIN sacoche_jointure_user_groupe USING (user_id) ';
 	$DB_SQL.= 'LEFT JOIN sacoche_jointure_user_matiere USING (user_id) ';
 	$DB_SQL.= 'LEFT JOIN sacoche_matiere USING (matiere_id) ';
@@ -4151,7 +4267,8 @@ function DB_STRUCTURE_OPT_matieres_eleve($listing_matieres_communes,$user_id)
 function DB_STRUCTURE_OPT_matieres_groupe($groupe_id)
 {
 	// On récupère les matières des professeurs qui sont associés au groupe
-	$DB_SQL = 'SELECT matiere_id AS valeur, matiere_nom AS texte FROM sacoche_jointure_user_groupe ';
+	$DB_SQL = 'SELECT matiere_id AS valeur, matiere_nom AS texte ';
+	$DB_SQL.= 'FROM sacoche_jointure_user_groupe ';
 	$DB_SQL.= 'LEFT JOIN sacoche_user USING (user_id) ';
 	$DB_SQL.= 'LEFT JOIN sacoche_jointure_user_matiere USING (user_id) ';
 	$DB_SQL.= 'LEFT JOIN sacoche_matiere USING (matiere_id) ';
@@ -4173,7 +4290,8 @@ function DB_STRUCTURE_OPT_matieres_groupe($groupe_id)
 function DB_STRUCTURE_OPT_niveaux_etabl($listing_niveaux,$listing_cycles)
 {
 	$listing = ($listing_cycles) ? $listing_niveaux.','.$listing_cycles : $listing_niveaux ;
-	$DB_SQL = 'SELECT niveau_id AS valeur, niveau_nom AS texte FROM sacoche_niveau ';
+	$DB_SQL = 'SELECT niveau_id AS valeur, niveau_nom AS texte ';
+	$DB_SQL.= 'FROM sacoche_niveau ';
 	$DB_SQL.= 'WHERE niveau_id IN('.$listing.') ';
 	$DB_SQL.= 'ORDER BY niveau_ordre ASC';
 	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , null);
@@ -4188,7 +4306,8 @@ function DB_STRUCTURE_OPT_niveaux_etabl($listing_niveaux,$listing_cycles)
 function DB_STRUCTURE_OPT_niveaux()
 {
 	$GLOBALS['tab_select_option_first'] = array(0,'Tous les niveaux','');
-	$DB_SQL = 'SELECT niveau_id AS valeur, niveau_nom AS texte FROM sacoche_niveau ';
+	$DB_SQL = 'SELECT niveau_id AS valeur, niveau_nom AS texte ';
+	$DB_SQL.= 'FROM sacoche_niveau ';
 	$DB_SQL.= 'ORDER BY niveau_ordre ASC';
 	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , null);
 }
@@ -4203,7 +4322,8 @@ function DB_STRUCTURE_OPT_paliers_etabl($listing_paliers)
 {
 	if($listing_paliers)
 	{
-		$DB_SQL = 'SELECT palier_id AS valeur, palier_nom AS texte FROM sacoche_socle_palier ';
+		$DB_SQL = 'SELECT palier_id AS valeur, palier_nom AS texte ';
+		$DB_SQL.= 'FROM sacoche_socle_palier ';
 		$DB_SQL.= 'WHERE palier_id IN('.$listing_paliers.') ';
 		$DB_SQL.= 'ORDER BY palier_ordre ASC';
 		return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , null);
@@ -4223,7 +4343,8 @@ function DB_STRUCTURE_OPT_paliers_etabl($listing_paliers)
 function DB_STRUCTURE_OPT_piliers($palier_id)
 {
 	$GLOBALS['tab_select_option_first'] = array(0,'Toutes les compétences','');
-	$DB_SQL = 'SELECT pilier_id AS valeur, pilier_nom AS texte FROM sacoche_socle_pilier ';
+	$DB_SQL = 'SELECT pilier_id AS valeur, pilier_nom AS texte ';
+	$DB_SQL.= 'FROM sacoche_socle_pilier ';
 	$DB_SQL.= 'WHERE palier_id=:palier_id ';
 	$DB_SQL.= 'ORDER BY pilier_ordre ASC';
 	$DB_VAR = array(':palier_id'=>$palier_id);
@@ -4240,7 +4361,8 @@ function DB_STRUCTURE_OPT_piliers($palier_id)
 function DB_STRUCTURE_OPT_domaines($pilier_id)
 {
 	$GLOBALS['tab_select_option_first'] = array(0,'Tous les domaines','');
-	$DB_SQL = 'SELECT section_id AS valeur, section_nom AS texte FROM sacoche_socle_section ';
+	$DB_SQL = 'SELECT section_id AS valeur, section_nom AS texte ';
+	$DB_SQL.= 'FROM sacoche_socle_section ';
 	$DB_SQL.= 'WHERE pilier_id=:pilier_id ';
 	$DB_SQL.= 'ORDER BY section_ordre ASC';
 	$DB_VAR = array(':pilier_id'=>$pilier_id);
@@ -4260,7 +4382,8 @@ function DB_STRUCTURE_OPT_domaines($pilier_id)
 function DB_STRUCTURE_OPT_niveaux_eleve($listing_niveaux,$listing_cycles,$eleve_classe_id)
 {
 	$listing = ($listing_cycles) ? $listing_niveaux.','.$listing_cycles : $listing_niveaux ;
-	$DB_SQL = 'SELECT niveau_id AS valeur, niveau_nom AS texte, GROUP_CONCAT(groupe_id SEPARATOR ",") AS liste_groupe_id FROM sacoche_niveau ';
+	$DB_SQL = 'SELECT niveau_id AS valeur, niveau_nom AS texte, GROUP_CONCAT(groupe_id SEPARATOR ",") AS liste_groupe_id ';
+	$DB_SQL.= 'FROM sacoche_niveau ';
 	$DB_SQL.= 'LEFT JOIN sacoche_groupe USING (niveau_id) ';
 	$DB_SQL.= 'WHERE niveau_id IN('.$listing.') ';
 	$DB_SQL.= 'GROUP BY niveau_id ';
@@ -4300,7 +4423,8 @@ function DB_STRUCTURE_OPT_regroupements_etabl($sans=TRUE,$tout=TRUE)
 		$DB_TAB_divers[] = array('valeur'=>'d2','texte'=>'Tout l\'établissement','optgroup'=>'divers');
 	}
 	// Options du select : catégorie "Niveaux" (contenant des classes ou des groupes)
-	$DB_SQL = 'SELECT CONCAT("n",niveau_id) AS valeur, niveau_nom AS texte, "niveau" AS optgroup FROM sacoche_groupe ';
+	$DB_SQL = 'SELECT CONCAT("n",niveau_id) AS valeur, niveau_nom AS texte, "niveau" AS optgroup ';
+	$DB_SQL.= 'FROM sacoche_groupe ';
 	$DB_SQL.= 'LEFT JOIN sacoche_niveau USING (niveau_id) ';
 	$DB_SQL.= 'WHERE groupe_type=:type ';
 	$DB_SQL.= 'GROUP BY niveau_id ';
@@ -4308,7 +4432,8 @@ function DB_STRUCTURE_OPT_regroupements_etabl($sans=TRUE,$tout=TRUE)
 	$DB_VAR = array(':type'=>'classe');
 	$DB_TAB_niveau = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 	// Options du select : catégories "Classes" et "Groupes"
-	$DB_SQL = 'SELECT CONCAT(LEFT(groupe_type,1),groupe_id) AS valeur, groupe_nom AS texte, groupe_type AS optgroup FROM sacoche_groupe ';
+	$DB_SQL = 'SELECT CONCAT(LEFT(groupe_type,1),groupe_id) AS valeur, groupe_nom AS texte, groupe_type AS optgroup ';
+	$DB_SQL.= 'FROM sacoche_groupe ';
 	$DB_SQL.= 'LEFT JOIN sacoche_niveau USING (niveau_id) ';
 	$DB_SQL.= 'WHERE groupe_type IN (:type1,:type2) ';
 	$DB_SQL.= 'ORDER BY groupe_type ASC, niveau_ordre ASC, groupe_nom ASC';
@@ -4329,7 +4454,8 @@ function DB_STRUCTURE_OPT_regroupements_etabl($sans=TRUE,$tout=TRUE)
  */
 function DB_STRUCTURE_OPT_groupes_etabl()
 {
-	$DB_SQL = 'SELECT groupe_id AS valeur, groupe_nom AS texte FROM sacoche_groupe ';
+	$DB_SQL = 'SELECT groupe_id AS valeur, groupe_nom AS texte ';
+	$DB_SQL.= 'FROM sacoche_groupe ';
 	$DB_SQL.= 'LEFT JOIN sacoche_niveau USING (niveau_id) ';
 	$DB_SQL.= 'WHERE groupe_type=:type ';
 	$DB_SQL.= 'ORDER BY niveau_ordre ASC, groupe_nom ASC';
@@ -4348,11 +4474,11 @@ function DB_STRUCTURE_OPT_groupes_etabl()
 function DB_STRUCTURE_OPT_groupes_professeur($user_id)
 {
 	$GLOBALS['tab_select_option_first'] = array(0,'Fiche générique','');
-	$DB_SQL = 'SELECT groupe_id AS valeur, groupe_nom AS texte, groupe_type AS optgroup FROM sacoche_groupe ';
-	$DB_SQL.= 'LEFT JOIN sacoche_jointure_user_groupe USING (groupe_id) ';
+	$DB_SQL = 'SELECT groupe_id AS valeur, groupe_nom AS texte, groupe_type AS optgroup ';
+	$DB_SQL.= 'FROM sacoche_jointure_user_groupe ';
+	$DB_SQL.= 'LEFT JOIN sacoche_groupe USING (groupe_id) ';
 	$DB_SQL.= 'LEFT JOIN sacoche_niveau USING (niveau_id) ';
-	$DB_SQL.= 'WHERE ( user_id=:user_id OR groupe_prof_id=:user_id ) AND groupe_type!=:type4 ';
-	$DB_SQL.= 'GROUP BY groupe_id '; // indispensable pour les groupes de besoin, sinon autant de lignes que de membres du groupe
+	$DB_SQL.= 'WHERE user_id=:user_id AND groupe_type!=:type4 ';
 	$DB_SQL.= 'ORDER BY groupe_type ASC, niveau_ordre ASC, groupe_nom ASC';
 	$DB_VAR = array(':user_id'=>$user_id,':type4'=>'eval');
 	$DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
@@ -4362,19 +4488,22 @@ function DB_STRUCTURE_OPT_groupes_professeur($user_id)
 
 /**
  * Retourner un tableau [valeur texte] des groupes de besoin d'un professeur identifié
+ * Il s'agit des groupes de besoins dont un prof est propriétaire, pas de ceux auxquels il a accès parce que partagés par un collègue.
  *
  * @param int $user_id
  * @return array|string
  */
 function DB_STRUCTURE_OPT_besoins_professeur($user_id)
 {
-	$DB_SQL = 'SELECT groupe_id AS valeur, groupe_nom AS texte FROM sacoche_groupe ';
+	$DB_SQL = 'SELECT groupe_id AS valeur, groupe_nom AS texte ';
+	$DB_SQL.= 'FROM sacoche_jointure_user_groupe ';
+	$DB_SQL.= 'LEFT JOIN sacoche_groupe USING (groupe_id) ';
 	$DB_SQL.= 'LEFT JOIN sacoche_niveau USING (niveau_id) ';
-	$DB_SQL.= 'WHERE groupe_prof_id=:user_id AND groupe_type=:type ';
+	$DB_SQL.= 'WHERE user_id=:user_id AND groupe_type=:type AND jointure_pp=:pp ';
 	$DB_SQL.= 'ORDER BY niveau_ordre ASC, groupe_nom ASC';
-	$DB_VAR = array(':user_id'=>$user_id,':type'=>'besoin');
+	$DB_VAR = array(':user_id'=>$user_id,':type'=>'besoin',':pp'=>1);
 	$DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-	return count($DB_TAB) ? $DB_TAB : 'Vous n\'avez aucun groupe de besoin enregistré !' ;
+	return count($DB_TAB) ? $DB_TAB : 'Vous n\'avez créé aucun groupe de besoin !' ;
 }
 
 /**
@@ -4385,7 +4514,8 @@ function DB_STRUCTURE_OPT_besoins_professeur($user_id)
  */
 function DB_STRUCTURE_OPT_classes_etabl()
 {
-	$DB_SQL = 'SELECT groupe_id AS valeur, CONCAT(groupe_nom," (",groupe_ref,")") AS texte FROM sacoche_groupe ';
+	$DB_SQL = 'SELECT groupe_id AS valeur, CONCAT(groupe_nom," (",groupe_ref,")") AS texte ';
+	$DB_SQL.= 'FROM sacoche_groupe ';
 	$DB_SQL.= 'LEFT JOIN sacoche_niveau USING (niveau_id) ';
 	$DB_SQL.= 'WHERE groupe_type=:type ';
 	$DB_SQL.= 'ORDER BY niveau_ordre ASC, groupe_nom ASC';
@@ -4404,7 +4534,8 @@ function DB_STRUCTURE_OPT_classes_etabl()
 function DB_STRUCTURE_OPT_classes_groupes_etabl()
 {
 	$GLOBALS['tab_select_option_first'] = array(0,'Fiche générique','');
-	$DB_SQL = 'SELECT groupe_id AS valeur, groupe_nom AS texte, groupe_type AS optgroup FROM sacoche_groupe ';
+	$DB_SQL = 'SELECT groupe_id AS valeur, groupe_nom AS texte, groupe_type AS optgroup ';
+	$DB_SQL.= 'FROM sacoche_groupe ';
 	$DB_SQL.= 'LEFT JOIN sacoche_niveau USING (niveau_id) ';
 	$DB_SQL.= 'WHERE groupe_type IN (:type1,:type2) ';
 	$DB_SQL.= 'ORDER BY groupe_type ASC, niveau_ordre ASC, groupe_nom ASC';
@@ -4422,10 +4553,11 @@ function DB_STRUCTURE_OPT_classes_groupes_etabl()
  */
 function DB_STRUCTURE_OPT_classes_prof_principal($user_id)
 {
-	$DB_SQL = 'SELECT groupe_id AS valeur, groupe_nom AS texte FROM sacoche_groupe ';
-	$DB_SQL.= 'LEFT JOIN sacoche_jointure_user_groupe USING (groupe_id) ';
+	$DB_SQL = 'SELECT groupe_id AS valeur, groupe_nom AS texte ';
+	$DB_SQL.= 'FROM sacoche_jointure_user_groupe ';
+	$DB_SQL.= 'LEFT JOIN sacoche_groupe USING (groupe_id) ';
 	$DB_SQL.= 'LEFT JOIN sacoche_niveau USING (niveau_id) ';
-	$DB_SQL.= 'WHERE ( user_id=:user_id OR groupe_prof_id=:user_id ) AND groupe_type=:type1 AND jointure_pp=:pp ';
+	$DB_SQL.= 'WHERE user_id=:user_id AND groupe_type=:type1 AND jointure_pp=:pp ';
 	$DB_SQL.= 'GROUP BY groupe_id ';
 	$DB_SQL.= 'ORDER BY niveau_ordre ASC, groupe_nom ASC';
 	$DB_VAR = array(':user_id'=>$user_id,':type1'=>'classe',':pp'=>1);
@@ -4462,7 +4594,8 @@ function DB_STRUCTURE_OPT_classes_parent($parent_id)
 function DB_STRUCTURE_OPT_periodes_etabl($alerte=FALSE)
 {
 	$GLOBALS['tab_select_option_first'] = array(0,'Personnalisée','');
-	$DB_SQL = 'SELECT periode_id AS valeur, periode_nom AS texte FROM sacoche_periode ';
+	$DB_SQL = 'SELECT periode_id AS valeur, periode_nom AS texte ';
+	$DB_SQL.= 'FROM sacoche_periode ';
 	$DB_SQL.= 'ORDER BY periode_ordre ASC';
 	$DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , null);
 	return count($DB_TAB) ? $DB_TAB : ( ($alerte) ? 'Aucune période n\'est enregistrée !' : array() ) ;
@@ -4553,7 +4686,8 @@ function DB_STRUCTURE_OPT_professeurs_etabl($groupe_type='all',$groupe_id=0)
  */
 function DB_STRUCTURE_OPT_professeurs_directeurs_etabl($user_statut)
 {
-	$DB_SQL = 'SELECT user_id AS valeur, CONCAT(user_nom," ",user_prenom) AS texte, user_profil AS optgroup FROM sacoche_user ';
+	$DB_SQL = 'SELECT user_id AS valeur, CONCAT(user_nom," ",user_prenom) AS texte, user_profil AS optgroup ';
+	$DB_SQL.= 'FROM sacoche_user ';
 	$DB_SQL.= 'WHERE user_profil IN(:profil1,:profil2) AND user_statut=:user_statut ';
 	$DB_SQL.= 'ORDER BY user_profil DESC, user_nom ASC, user_prenom ASC';
 	$DB_VAR = array(':profil1'=>'professeur',':profil2'=>'directeur',':user_statut'=>$user_statut);
@@ -4639,7 +4773,8 @@ function DB_STRUCTURE_OPT_eleves_regroupement($groupe_type,$groupe_id,$user_stat
 	}
 	else
 	{
-		$DB_SQL = 'SELECT user_id AS valeur, CONCAT(user_nom," ",user_prenom) AS texte FROM sacoche_user ';
+		$DB_SQL = 'SELECT user_id AS valeur, CONCAT(user_nom," ",user_prenom) AS texte ';
+		$DB_SQL.= 'FROM sacoche_user ';
 		switch ($groupe_type)
 		{
 			case 'sdf' :	// On veut les élèves non affectés dans une classe

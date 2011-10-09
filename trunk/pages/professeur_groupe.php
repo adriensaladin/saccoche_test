@@ -29,6 +29,14 @@ if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');
 $TITRE = "Groupes de besoin";
 ?>
 
+<div class="hc">
+	<a href="./index.php?page=<?php echo $PAGE ?>&amp;section=gestion">Gérer ses groupes.</a>	||
+	<a href="./index.php?page=<?php echo $PAGE ?>&amp;section=eleve">Y affecter ses élèves.</a>	||
+	<a href="./index.php?page=<?php echo $PAGE ?>&amp;section=professeur">Y associer ses collègues.</a>
+</div>
+
+<hr />
+
 <?php
 // Afficher la bonne page et appeler le bon js / ajax par la suite
 $fichier_section = './pages/'.$PAGE.'_'.$SECTION.'.php';
@@ -39,6 +47,6 @@ if(is_file($fichier_section))
 }
 else
 {
-	echo'<p><span class="astuce">Choisissez une rubrique dans le menu déroulant&hellip;</span></p>';
+	echo'<p><span class="astuce">Choisissez une rubrique ci-dessous ou dans le menu déroulant&hellip;</span></p>';
 }
 ?>

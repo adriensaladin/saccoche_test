@@ -27,12 +27,14 @@
 
 // Tableau avec les équivalents textes par défaut des symboles colorés utilisés pour la notation
 
-$tab_notes_txt['Albert']    = array( 'RR'=>'R'  , 'R'=>'O'   , 'V'=>'V'  , 'VV'=>'VV' );
-$tab_notes_txt['Blaye']     = array( 'RR'=>'NA' , 'R'=>'VA'  , 'V'=>'AR' , 'VV'=>'A'  );
-$tab_notes_txt['Indonesie'] = array( 'RR'=>'D'  , 'R'=>'C'   , 'V'=>'B'  , 'VV'=>'A'  );
-$tab_notes_txt['Leon']      = array( 'RR'=>'N'  , 'R'=>'R'   , 'V'=>'O'  , 'VV'=>'V'  );
-$tab_notes_txt['Lomer']     = array( 'RR'=>'RR' , 'R'=>'R'   , 'V'=>'V'  , 'VV'=>'VV' );
-$tab_notes_txt['Mistral']   = array( 'RR'=>'SA' , 'R'=>'NA'  , 'V'=>'EC' , 'VV'=>'A'  );
-$tab_notes_txt['Reval']     = array( 'RR'=>'NA' , 'R'=>'EVA' , 'V'=>'AR' , 'VV'=>'A'  );
+$tab_notes_txt['Albert']     = array( 'RR'=>'R'  , 'R'=>'O'   , 'V'=>'V'  , 'VV'=>'VV' );
+$tab_notes_txt['Blaye']      = array( 'RR'=>'NA' , 'R'=>'VA'  , 'V'=>'AR' , 'VV'=>'A'  );
+$tab_notes_txt['CitesUnies'] = array( 'RR'=>'Rou', 'R'=>'Ora' , 'V'=>'Ver', 'VV'=>'Dor');
+$tab_notes_txt['Indonesie']  = array( 'RR'=>'D'  , 'R'=>'C'   , 'V'=>'B'  , 'VV'=>'A'  );
+$tab_notes_txt['Leon']       = array( 'RR'=>'N'  , 'R'=>'R'   , 'V'=>'O'  , 'VV'=>'V'  );
+$tab_notes_txt['Lomer']      = array( 'RR'=>'RR' , 'R'=>'R'   , 'V'=>'V'  , 'VV'=>'VV' );
+$tab_notes_txt['Mistral']    = array( 'RR'=>'SA' , 'R'=>'NA'  , 'V'=>'EC' , 'VV'=>'A'  );
+$tab_notes_txt['Reval']      = array( 'RR'=>'NA' , 'R'=>'EVA' , 'V'=>'AR' , 'VV'=>'A'  );
+$tab_notes_txt['Voltaire']   = array( 'RR'=>'NA' , 'R'=>'ECA' , 'V'=>'A'  , 'VV'=>'M'  );
 
 ?>

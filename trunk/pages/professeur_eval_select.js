@@ -543,9 +543,6 @@ $(document).ready
 							modification = false;
 							$('#msg_ordonner').removeAttr("class").html('&nbsp;');
 							$('#div_ordonner').html(responseHTML);
-							$('img[title]').tooltip({showURL:false});
-							format_liens('#div_ordonner');
-							infobulle();
 						}
 					}
 				}
@@ -1624,6 +1621,9 @@ $(document).ready
 				$('#msg_import').removeAttr("class").addClass("valide").html("Tableau complété ! N'oubliez pas d'enregistrer...");
 			}
 		}
+
+		// N'afficher les formulaire qu'une fois le js bien chargé...
+		$('#form0 , #form1').show('fast');
 
 	}
 );

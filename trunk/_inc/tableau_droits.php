@@ -61,6 +61,7 @@ $tab_droits['professeur_eval_select']                  = $tab_droits_profil_prof
 $tab_droits['professeur_groupe']                       = $tab_droits_profil_professeur;
 $tab_droits['professeur_groupe_gestion']               = $tab_droits_profil_professeur;
 $tab_droits['professeur_groupe_eleve']                 = $tab_droits_profil_professeur;
+$tab_droits['professeur_groupe_professeur']            = $tab_droits_profil_professeur;
 $tab_droits['professeur_referentiel']                  = $tab_droits_profil_professeur;
 $tab_droits['professeur_referentiel_gestion']          = $tab_droits_profil_professeur;
 $tab_droits['professeur_referentiel_edition']          = $tab_droits_profil_professeur;

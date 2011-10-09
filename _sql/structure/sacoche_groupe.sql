@@ -8,6 +8,5 @@ CREATE TABLE sacoche_groupe (
 	niveau_id      TINYINT(3)                              UNSIGNED                NOT NULL DEFAULT 0,
 	PRIMARY KEY (groupe_id),
 	KEY niveau_id (niveau_id),
-	KEY groupe_type (groupe_type),
-	KEY groupe_prof_id (groupe_prof_id)
+	KEY groupe_type (groupe_type)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;

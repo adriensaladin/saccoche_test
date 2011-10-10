@@ -125,7 +125,8 @@ if( ($action=='Afficher_evaluations') && $aff_classe_txt && $aff_classe_id && ( 
 		$date_fin_mysql   = $DB_ROW['jointure_date_fin'];
 	}
 	// Lister les évaluations
-	$DB_TAB = DB_STRUCTURE_lister_devoirs_prof($_SESSION['USER_ID'],$aff_classe_id,$date_debut_mysql,$date_fin_mysql);
+	$classe_id = ($aff_classe_txt!='d2') ? $aff_classe_id : -1 ; // 'd2' est transmis si on veut toutes les classes / tous les groupes
+	$DB_TAB = DB_STRUCTURE_lister_devoirs_prof($_SESSION['USER_ID'],$classe_id,$date_debut_mysql,$date_fin_mysql);
 	foreach($DB_TAB as $DB_ROW)
 	{
 		// Formater la date et la référence de l'évaluation
@@ -186,13 +187,14 @@ if( (($action=='ajouter')||(($action=='dupliquer')&&($devoir_id))) && $date && $
 	{
 		exit('Erreur : date trop éloignée !');
 	}
-	// Tester les profs, en particulier leur appartenance au groupe (si on duplique une évaluation pour un autre groupe...)
+	// Tester les profs, mais plus leur appartenance au groupe (pour qu'on prof puisse accéder à l'éval même s'il n'a pas le groupe, même si on duplique une évaluation pour un autre groupe...)
 	if(count($tab_profs))
 	{
 		if(!in_array($_SESSION['USER_ID'],$tab_profs))
 		{
 			exit('Erreur : absent de la liste des professeurs !');
 		}
+		/*
 		$tab_profs_groupe = array();
 		$DB_TAB_USER = DB_STRUCTURE_lister_professeurs_groupe($groupe_id);
 		foreach($DB_TAB_USER as $DB_ROW)
@@ -200,7 +202,8 @@ if( (($action=='ajouter')||(($action=='dupliquer')&&($devoir_id))) && $date && $
 			$tab_profs_groupe[] = $DB_ROW['user_id'];
 		}
 		$tab_profs = array_intersect( $tab_profs , $tab_profs_groupe );
-		// Si y a plus qu soi...
+		*/
+		// Si y a que soi...
 		if(count($tab_profs)==1)
 		{
 			$tab_profs = array();
@@ -252,13 +255,14 @@ if( ($action=='modifier') && $devoir_id && $date && $date_visible && $groupe_typ
 	{
 		exit('Erreur : date trop éloignée !');
 	}
-	// Tester les profs, en particulier leur appartenance au groupe (si on duplique une évaluation pour un autre groupe...)
+	// Tester les profs, mais plus leur appartenance au groupe (pour qu'on prof puisse accéder à l'éval même s'il n'a pas le groupe, même si on duplique une évaluation pour un autre groupe...)
 	if(count($tab_profs))
 	{
 		if(!in_array($_SESSION['USER_ID'],$tab_profs))
 		{
 			exit('Erreur : absent de la liste des professeurs !');
 		}
+		/*
 		$tab_profs_groupe = array();
 		$DB_TAB_USER = DB_STRUCTURE_lister_professeurs_groupe($groupe_id);
 		foreach($DB_TAB_USER as $DB_ROW)
@@ -266,7 +270,8 @@ if( ($action=='modifier') && $devoir_id && $date && $date_visible && $groupe_typ
 			$tab_profs_groupe[] = $DB_ROW['user_id'];
 		}
 		$tab_profs = array_intersect( $tab_profs , $tab_profs_groupe );
-		// Si y a plus qu soi...
+		*/
+		// Si y a que soi...
 		if(count($tab_profs)==1)
 		{
 			$tab_profs = array();
@@ -340,31 +345,6 @@ if( ($action=='ordonner') && $devoir_id )
 	echo	'<button id="Enregistrer_ordre" type="button" value="'.$ref.'"><img alt="" src="./_img/bouton/valider.png" /> Enregistrer cet ordre</button>&nbsp;&nbsp;&nbsp;';
 	echo	'<button id="fermer_zone_ordonner" type="button"><img alt="" src="./_img/bouton/retourner.png" /> Retour</button>&nbsp;&nbsp;&nbsp;';
 	echo	'<label id="ajax_msg">&nbsp;</label>';
-	echo'</p>';
-	exit();
-}
-
-//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//	Afficher le formulaire pour cocher les professeurs avec qui on partage l'évaluation
-//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-if( ($action=='choisir_prof') && $groupe_type && $groupe_id )
-{
-	// liste des profs
-	$DB_TAB_USER = DB_STRUCTURE_lister_professeurs_groupe($groupe_id);
-	if(!count($DB_TAB_USER))
-	{
-		exit('Aucun professeur n\'est associé à ce groupe !');
-	}
-	foreach($DB_TAB_USER as $DB_ROW)
-	{
-		$disabled = ($DB_ROW['user_id']==$_SESSION['USER_ID']) ? ' disabled' : '' ; // readonly ne fonctionne pas sur un checkbox
-		$checked  = ( (in_array($DB_ROW['user_id'],$tab_profs)) || ($disabled!='') ) ? ' checked' : '' ;
-		echo'<input type="checkbox" name="f_profs[]" id="p_'.$DB_ROW['user_id'].'" value="'.$DB_ROW['user_id'].'"'.$checked.$disabled.' /><label for="p_'.$DB_ROW['user_id'].'"> '.html($DB_ROW['user_nom'].' '.$DB_ROW['user_prenom']).'</label><br />';
-	}
-	echo'<p>';
-	echo	'<button id="valider_profs" type="button"><img alt="" src="./_img/bouton/valider.png" /> Valider ce choix</button>&nbsp;&nbsp;&nbsp;';
-	echo	'<button id="annuler_profs" type="button"><img alt="" src="./_img/bouton/annuler.png" /> Annuler / Retour</button>';
 	echo'</p>';
 	exit();
 }

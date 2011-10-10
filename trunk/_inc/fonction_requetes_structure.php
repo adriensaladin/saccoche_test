@@ -1037,6 +1037,7 @@ function DB_STRUCTURE_lister_groupes_professeur($prof_id)
  * @param int $groupe_id
  * @return array
  */
+/*
 function DB_STRUCTURE_lister_professeurs_groupe($groupe_id)
 {
 	$DB_SQL = 'SELECT user_id, user_nom, user_prenom ';
@@ -1048,6 +1049,7 @@ function DB_STRUCTURE_lister_professeurs_groupe($groupe_id)
 	$DB_VAR = array(':groupe_id'=>$groupe_id,':profil'=>'professeur',':statut'=>1);
 	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
+*/
 
 /**
  * DB_STRUCTURE_lister_classes_groupes_professeur
@@ -1852,7 +1854,7 @@ function DB_STRUCTURE_lister_demandes_eleve($user_id)
  * DB_STRUCTURE_lister_devoirs_prof
  *
  * @param int    $prof_id
- * @param int    $groupe_id        id du groupe ou de la classe pour un devoir sur une classe ou un groupe ; 0 pour un devoir sur une sélection d'élèves
+ * @param int    $groupe_id        id du groupe ou de la classe pour un devoir sur une classe ou un groupe ; 0 pour un devoir sur une sélection d'élèves ; -1 pour les devoirs de toutes les classes / tous les groupes
  * @param string $date_debut_mysql
  * @param string $date_fin_mysql
  * @return array
@@ -1875,7 +1877,8 @@ function DB_STRUCTURE_lister_devoirs_prof($prof_id,$groupe_id,$date_debut_mysql,
 		$DB_SQL.= 'LEFT JOIN sacoche_jointure_user_groupe USING (groupe_id) ';
 	}
 	$DB_SQL.= 'WHERE ( prof_id=:prof_id OR devoir_partage LIKE :prof_id_like ) ';
-	$DB_SQL.= ($groupe_id) ? 'AND groupe_type!=:type4 AND groupe_id='.$groupe_id.' ' : 'AND groupe_type=:type4 ' ;
+	$DB_SQL.= ($groupe_id) ? 'AND groupe_type!=:type4 ' : 'AND groupe_type=:type4 ' ;
+	$DB_SQL.= ($groupe_id>0) ? 'AND groupe_id='.$groupe_id.' ' : '' ;
 	$DB_SQL.= 'AND devoir_date>="'.$date_debut_mysql.'" AND devoir_date<="'.$date_fin_mysql.'" ' ;
 	$DB_SQL.= 'GROUP BY devoir_id ';
 	$DB_SQL.= 'ORDER BY devoir_date DESC, groupe_nom ASC';

@@ -41,7 +41,7 @@ $(document).ready
 		var nb_lignes   = 1;
 		// tri du tableau (avec jquery.tablesorter.js).
 		var sorting = [[0,1],[3,0]];
-		$('table.form').tablesorter({ headers:{1:{sorter:false},2:{sorter:false},4:{sorter:false},5:{sorter:false}} });
+		$('table.form').tablesorter({ headers:{1:{sorter:false},2:{sorter:false},4:{sorter:false},5:{sorter:false},6:{sorter:false}} });
 		function trier_tableau()
 		{
 			if($('table.form tbody tr td').length>1)
@@ -73,6 +73,7 @@ $(document).ready
 			new_tr += '<td><input id="f_eleve_nombre" name="f_eleve_nombre" size="10" type="text" value="0 élève" readonly /><input id="f_eleve_liste" name="f_eleve_liste" type="hidden" value="" /><q class="choisir_eleve" title="Voir ou choisir les élèves."></q></td>';
 			new_tr += '<td><input id="f_info" name="f_info" size="20" type="text" value="" /></td>';
 			new_tr += '<td><input id="f_compet_nombre" name="f_compet_nombre" size="10" type="text" value="0 item" readonly /><input id="f_compet_liste" name="f_compet_liste" type="hidden" value="" /><q class="choisir_compet" title="Voir ou choisir les items."></q></td>';
+			new_tr += '<td><input id="f_prof_nombre" name="f_prof_nombre" size="10" type="text" value="vous seul" readonly /><input id="f_prof_liste" name="f_prof_liste" type="hidden" value="" /><q class="choisir_prof" title="Voir ou choisir les collègues."></q></td>';
 			new_tr += '<td class="nu"><input id="f_action" name="f_action" type="hidden" value="'+mode+'" /><q class="valider" title="Valider l\'ajout de cette évaluation."></q><q class="annuler" title="Annuler l\'ajout de cette évaluation."></q> <label id="ajax_msg">&nbsp;</label></td>';
 			new_tr += '</tr>';
 			// Ajouter cette nouvelle ligne
@@ -93,13 +94,15 @@ $(document).ready
 			$('#p_alerte').show();
 			// Récupérer les informations de la ligne concernée
 			var ref           = $(this).parent().attr('lang');
-			var date          = $(this).parent().prev().prev().prev().prev().prev().html();
-			var date_visible  = $(this).parent().prev().prev().prev().prev().html();
-			var nombre_eleve  = $(this).parent().prev().prev().prev().html();
-			var liste_eleve   = $(this).parent().prev().prev().prev().attr('lang');
-			var info          = $(this).parent().prev().prev().html();
-			var nombre_compet = $(this).parent().prev().html();
-			var liste_compet  = $(this).parent().prev().attr('lang');
+			var date          = $(this).parent().prev().prev().prev().prev().prev().prev().html();
+			var date_visible  = $(this).parent().prev().prev().prev().prev().prev().html();
+			var eleve_nombre  = $(this).parent().prev().prev().prev().prev().html();
+			var eleve_liste   = $(this).parent().prev().prev().prev().prev().attr('lang');
+			var info          = $(this).parent().prev().prev().prev().html();
+			var compet_nombre = $(this).parent().prev().prev().html();
+			var compet_liste  = $(this).parent().prev().prev().attr('lang');
+			var prof_nombre   = $(this).parent().prev().html();
+			var prof_liste    = $(this).parent().prev().attr('lang');
 			date = date.substring(17,date.length); // enlever la date mysql cachée
 			if(date_visible=='identique')
 			{
@@ -119,9 +122,10 @@ $(document).ready
 			new_tr += '<tr>';
 			new_tr += '<td><input id="f_date" name="f_date" size="9" type="text" value="'+date+'" /><q class="date_calendrier" title="Cliquez sur cette image pour importer une date depuis un calendrier !"></q></td>';
 			new_tr += '<td><input id="box_date" type="checkbox"'+checked+' style="vertical-align:-3px" /> <span'+classe1+' style="vertical-align:-2px">identique</span><span'+classe2+'><input id="f_date_visible" name="f_date_visible" size="9" type="text" value="'+date_visible+'" /><q class="date_calendrier" title="Cliquez sur cette image pour importer une date depuis un calendrier !"></q></span></td>';
-			new_tr += '<td><input id="f_eleve_nombre" name="f_eleve_nombre" size="10" type="text" value="'+nombre_eleve+'" readonly /><input id="f_eleve_liste" name="f_eleve_liste" type="hidden" value="'+liste_eleve+'" /><q class="choisir_eleve" title="Voir ou choisir les élèves."></q></td>';
+			new_tr += '<td><input id="f_eleve_nombre" name="f_eleve_nombre" size="10" type="text" value="'+eleve_nombre+'" readonly /><input id="f_eleve_liste" name="f_eleve_liste" type="hidden" value="'+eleve_liste+'" /><q class="choisir_eleve" title="Voir ou choisir les élèves."></q></td>';
 			new_tr += '<td><input id="f_info" name="f_info" size="'+Math.max(info.length,20)+'" type="text" value="'+info+'" /></td>';
-			new_tr += '<td><input id="f_compet_nombre" name="f_compet_nombre" size="10" type="text" value="'+nombre_compet+'" readonly /><input id="f_compet_liste" name="f_compet_liste" type="hidden" value="'+liste_compet+'" /><q class="choisir_compet" title="Voir ou choisir les items."></q></td>';
+			new_tr += '<td><input id="f_compet_nombre" name="f_compet_nombre" size="10" type="text" value="'+compet_nombre+'" readonly /><input id="f_compet_liste" name="f_compet_liste" type="hidden" value="'+compet_liste+'" /><q class="choisir_compet" title="Voir ou choisir les items."></q></td>';
+			new_tr += '<td><input id="f_prof_nombre" name="f_prof_nombre" size="10" type="text" value="'+prof_nombre+'" readonly /><input id="f_prof_liste" name="f_prof_liste" type="hidden" value="'+prof_liste+'" /><q class="choisir_prof" title="Voir ou choisir les collègues."></q></td>';
 			new_tr += '<td class="nu"><input id="f_action" name="f_action" type="hidden" value="'+mode+'" /><input id="f_ref" name="f_ref" type="hidden" value="'+ref+'" /><q class="valider" title="Valider les modifications de cette évaluation."></q><q class="annuler" title="Annuler les modifications de cette évaluation."></q> <label id="ajax_msg">&nbsp;</label></td>';
 			new_tr += '</tr>';
 			// Cacher la ligne en cours et ajouter la nouvelle
@@ -142,13 +146,15 @@ $(document).ready
 			$('#form0').css('visibility','hidden');
 			// Récupérer les informations de la ligne concernée
 			var ref           = $(this).parent().attr('lang');
-			var date          = $(this).parent().prev().prev().prev().prev().prev().html();
-			var date_visible  = $(this).parent().prev().prev().prev().prev().html();
-			var nombre_eleve  = $(this).parent().prev().prev().prev().html();
-			var liste_eleve   = $(this).parent().prev().prev().prev().attr('lang');
-			var info          = $(this).parent().prev().prev().html();
-			var nombre_compet = $(this).parent().prev().html();
-			var liste_compet  = $(this).parent().prev().attr('lang');
+			var date          = $(this).parent().prev().prev().prev().prev().prev().prev().html();
+			var date_visible  = $(this).parent().prev().prev().prev().prev().prev().html();
+			var eleve_nombre  = $(this).parent().prev().prev().prev().prev().html();
+			var eleve_liste   = $(this).parent().prev().prev().prev().prev().attr('lang');
+			var info          = $(this).parent().prev().prev().prev().html();
+			var compet_nombre = $(this).parent().prev().prev().html();
+			var compet_liste  = $(this).parent().prev().prev().attr('lang');
+			var prof_nombre   = $(this).parent().prev().html();
+			var prof_liste    = $(this).parent().prev().attr('lang');
 			date = date.substring(17,date.length); // enlever la date mysql cachée
 			if(date_visible=='identique')
 			{
@@ -168,9 +174,10 @@ $(document).ready
 			new_tr += '<tr>';
 			new_tr += '<td><input id="f_date" name="f_date" size="9" type="text" value="'+date+'" /><q class="date_calendrier" title="Cliquez sur cette image pour importer une date depuis un calendrier !"></q></td>';
 			new_tr += '<td><input id="box_date" type="checkbox"'+checked+' style="vertical-align:-3px" /> <span'+classe1+' style="vertical-align:-2px">identique</span><span'+classe2+'><input id="f_date_visible" name="f_date_visible" size="9" type="text" value="'+date_visible+'" /><q class="date_calendrier" title="Cliquez sur cette image pour importer une date depuis un calendrier !"></q></span></td>';
-			new_tr += '<td><input id="f_eleve_nombre" name="f_eleve_nombre" size="10" type="text" value="'+nombre_eleve+'" readonly /><input id="f_eleve_liste" name="f_eleve_liste" type="hidden" value="'+liste_eleve+'" /><q class="choisir_eleve" title="Voir ou choisir les élèves."></q></td>';
+			new_tr += '<td><input id="f_eleve_nombre" name="f_eleve_nombre" size="10" type="text" value="'+eleve_nombre+'" readonly /><input id="f_eleve_liste" name="f_eleve_liste" type="hidden" value="'+eleve_liste+'" /><q class="choisir_eleve" title="Voir ou choisir les élèves."></q></td>';
 			new_tr += '<td><input id="f_info" name="f_info" size="'+Math.max(info.length,20)+'" type="text" value="'+info+'" /></td>';
-			new_tr += '<td><input id="f_compet_nombre" name="f_compet_nombre" size="10" type="text" value="'+nombre_compet+'" readonly /><input id="f_compet_liste" name="f_compet_liste" type="hidden" value="'+liste_compet+'" /><q class="choisir_compet" title="Voir ou choisir les items."></q></td>';
+			new_tr += '<td><input id="f_compet_nombre" name="f_compet_nombre" size="10" type="text" value="'+compet_nombre+'" readonly /><input id="f_compet_liste" name="f_compet_liste" type="hidden" value="'+compet_liste+'" /><q class="choisir_compet" title="Voir ou choisir les items."></q></td>';
+			new_tr += '<td><input id="f_prof_nombre" name="f_prof_nombre" size="10" type="text" value="'+prof_nombre+'" readonly /><input id="f_prof_liste" name="f_prof_liste" type="hidden" value="'+prof_liste+'" /><q class="choisir_prof" title="Voir ou choisir les collègues."></q></td>';
 			new_tr += '<td class="nu"><input id="f_action" name="f_action" type="hidden" value="'+mode+'" /><input id="f_ref" name="f_ref" type="hidden" value="'+ref+'" /><q class="valider" title="Valider l\'ajout de cette évaluation."></q><q class="annuler" title="Annuler l\'ajout de cette évaluation."></q> <label id="ajax_msg">&nbsp;</label></td>';
 			new_tr += '</tr>';
 			// Ajouter cette nouvelle ligne
@@ -268,9 +275,9 @@ $(document).ready
 			mode = $(this).attr('class');
 			// Récupérer les informations de la ligne concernée
 			var ref          = $(this).parent().attr('lang');
-			var date         = $(this).parent().prev().prev().prev().prev().prev().html();
-			var date_visible = $(this).parent().prev().prev().prev().prev().html();
-			var info         = $(this).parent().prev().prev().html();
+			var date         = $(this).parent().prev().prev().prev().prev().prev().prev().html();
+			var date_visible = $(this).parent().prev().prev().prev().prev().prev().html();
+			var info         = $(this).parent().prev().prev().prev().html();
 			date1 = date.substring(3,13); // garder la date mysql
 			date2 = date.substring(17,date.length); // garder la date française
 			// Masquer le tableau ; Afficher la zone associée et charger son contenu
@@ -332,8 +339,8 @@ $(document).ready
 			mode = $(this).attr('class');
 			// Récupérer les informations de la ligne concernée
 			var ref  = $(this).parent().attr('lang');
-			var date = $(this).parent().prev().prev().prev().prev().prev().html();
-			var info = $(this).parent().prev().prev().html();
+			var date = $(this).parent().prev().prev().prev().prev().prev().prev().html();
+			var info = $(this).parent().prev().prev().prev().html();
 			    date = date.substring(17,date.length); // garder la date française
 			// Masquer le tableau ; Afficher la zone associée et charger son contenu
 			$('#form0 , #form1').hide('fast');
@@ -384,8 +391,8 @@ $(document).ready
 			mode = $(this).attr('class');
 			// Récupérer les informations de la ligne concernée
 			var ref  = $(this).parent().attr('lang');
-			var date = $(this).parent().prev().prev().prev().prev().prev().html();
-			var info = $(this).parent().prev().prev().html();
+			var date = $(this).parent().prev().prev().prev().prev().prev().prev().html();
+			var info = $(this).parent().prev().prev().prev().html();
 			    date = date.substring(17,date.length); // garder la date française
 			// Masquer le tableau ; Afficher la zone associée et charger son contenu
 			$('#form0 , #form1').hide('fast');
@@ -512,8 +519,8 @@ $(document).ready
 			mode = $(this).attr('class');
 			// Récupérer les informations de la ligne concernée
 			var ref    = $(this).parent().attr('lang');
-			var groupe = $(this).parent().prev().prev().prev().html();
-			var info   = $(this).parent().prev().prev().html();
+			var groupe = $(this).parent().prev().prev().prev().prev().html();
+			var info   = $(this).parent().prev().prev().prev().html();
 			// Masquer le tableau ; Afficher la zone associée et charger son contenu
 			$('#form0 , #form1').hide('fast');
 			$('#zone_ordonner').css("display","block");
@@ -549,6 +556,44 @@ $(document).ready
 			);
 		};
 
+		/**
+		 * Choisir les professeurs associés à une évaluation : mise en place du formulaire
+		 * @return void
+		 */
+		var choisir_prof = function()
+		{
+			// Récupérer les informations de la ligne concernée
+			var prof_liste = $('#f_prof_liste').val();
+			// Masquer le tableau
+			$('#form0 , #form1').hide('fast');
+			// Décocher tout
+			$("#zone_profs input[type=checkbox]").each
+			(
+				function()
+				{
+					if(this.disabled == false)
+					{
+						this.checked = false;
+					}
+				}
+			);
+			// Cocher des cases des profs
+			if(prof_liste.length)
+			{
+				var tab_id = prof_liste.split('_');
+				for(i in tab_id)
+				{
+					var id = 'p_'+tab_id[i];
+					if($('#'+id).length)
+					{
+						$('#'+id).prop('checked',true);
+					}
+				}
+			}
+			// Afficher la zone
+			$('#zone_profs').css("display","block");
+		};
+
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 //	Appel des fonctions en fonction des événements ; live est utilisé pour prendre en compte les nouveaux éléments créés
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
@@ -561,13 +606,14 @@ $(document).ready
 		$('q.valider').live(   'click' , function(){formulaire.submit();} );
 		$('table.form input , table.form select').live( 'keyup' , function(e){intercepter(e);} );
 
-		$('q.ordonner').live(        'click' , ordonner );
-		$('q.imprimer').live(        'click' , imprimer );
-		$('q.saisir').live(          'click' , saisir );
-		$('q.voir').live(            'click' , voir );
-		$('q.voir_repart').live(     'click' , voir_repart );
-		$('q.choisir_compet').live(  'click' , choisir_compet );
-		$('q.choisir_eleve').live(   'click' , choisir_eleve );
+		$('q.ordonner').live(       'click' , ordonner );
+		$('q.imprimer').live(       'click' , imprimer );
+		$('q.saisir').live(         'click' , saisir );
+		$('q.voir').live(           'click' , voir );
+		$('q.voir_repart').live(    'click' , voir_repart );
+		$('q.choisir_compet').live( 'click' , choisir_compet );
+		$('q.choisir_eleve').live(  'click' , choisir_eleve );
+		$('q.choisir_prof').live(   'click' , choisir_prof );
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 //	Clic sur le checkbox pour choisir ou non une date visible différente de la date du devoir
@@ -623,6 +669,19 @@ $(document).ready
 			function()
 			{
 				$('#zone_eleve').css("display","none");
+				$('#form0 , #form1').show('fast');
+				return(false);
+			}
+		);
+
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+//	Clic sur le bouton pour fermer le cadre des professeurs associés à une évaluation (annuler / retour)
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+		$('#annuler_profs').click
+		(
+			function()
+			{
+				$('#zone_profs').css("display","none");
 				$('#form0 , #form1').show('fast');
 				return(false);
 			}
@@ -757,6 +816,31 @@ $(document).ready
 				$('#f_eleve_liste').val(liste);
 				$('#f_eleve_nombre').val(nombre+' élève'+s);
 				$('#annuler_eleve').click();
+			}
+		);
+
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+//	Clic sur le bouton pour valider le choix des profs associés à une évaluation
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+		$('#valider_profs').click
+		(
+			function()
+			{
+				var liste = '';
+				var nombre = 0;
+				$("#zone_profs input[type=checkbox]:checked").each
+				(
+					function()
+					{
+						liste += $(this).val()+'_';
+						nombre++;
+					}
+				);
+				liste  = (nombre==1) ? '' : liste.substring(0,liste.length-1) ;
+				nombre = (nombre==1) ? 'vous seul' : nombre+' profs' ;
+				$('#f_prof_liste').val(liste);
+				$('#f_prof_nombre').val(nombre);
+				$('#annuler_profs').click();
 			}
 		);
 
@@ -1328,6 +1412,7 @@ $(document).ready
 					f_date_visible : { required:function(){return !$('#box_date').is(':checked');} , dateITA:true },
 					f_eleve_liste  : { required:true },
 					f_info         : { required:false , maxlength:60 },
+					f_prof_liste   : { required:false },
 					f_compet_liste : { required:true }
 				},
 				messages :
@@ -1336,6 +1421,7 @@ $(document).ready
 					f_date_visible : { required:"date manquante" , dateITA:"format JJ/MM/AAAA non respecté" },
 					f_eleve_liste  : { required:"élève(s) manquant(s)" },
 					f_info         : { maxlength:"60 caractères maximum" },
+					f_prof_liste   : { },
 					f_compet_liste : { required:"item(s) manquant(s)" }
 				},
 				errorElement : "label",

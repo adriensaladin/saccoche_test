@@ -233,8 +233,6 @@ $(document).ready
 					$(this).parent().parent().remove();
 					break;
 				case 'modifier':
-				case 'modifier':
-				case 'modifier':
 					$(this).parent().parent().remove();
 					$("table.form tr").show(); // $(this).parent().parent().prev().show(); pose pb si tri du tableau entre temps
 					$('#p_alerte').hide();
@@ -532,45 +530,34 @@ $(document).ready
 		{
 			// Récupérer les informations de la ligne concernée
 			var prof_liste = $('#f_prof_liste').val();
-			var groupe_id  = $("#f_groupe option:selected").val();
-			// Masquer le tableau ; Afficher la zone associée et charger son contenu
+			// Masquer le tableau
 			$('#form0 , #form1').hide('fast');
-			$('#zone_profs').css("display","block");
-			if(!groupe_id)
-			{
-				$('#msg_profs').removeAttr("class").addClass("alerte").html('Veuillez d\'abord choisir un groupe ! <button id="annuler_profs" type="button"><img alt="" src="./_img/bouton/annuler.png" /> Retour</button>');
-				return false;
-			}
-			$('#msg_profs').removeAttr("class").addClass("loader").html("Demande envoyée... Veuillez patienter.");
-			// Récupérer la liste des profs potentiellement
-			$.ajax
+			// Décocher tout
+			$("#zone_profs input[type=checkbox]").each
 			(
+				function()
 				{
-					type : 'POST',
-					url : 'ajax.php?page='+PAGE,
-					data : 'f_action=choisir_prof&f_groupe='+groupe_id+'&f_prof_liste='+prof_liste,
-					dataType : "html",
-					error : function(msg,string)
+					if(this.disabled == false)
 					{
-						$('#msg_profs').removeAttr("class").addClass("alerte").html('Echec de la connexion ! Veuillez recommencer. <button id="annuler_profs" type="button"><img alt="" src="./_img/bouton/annuler.png" /> Retour</button> Retour</button>');
-						return false;
-					},
-					success : function(responseHTML)
-					{
-						initialiser_compteur();
-						if(responseHTML.substring(0,6)!='<input')
-						{
-							$('#msg_profs').removeAttr("class").addClass("alerte").html(responseHTML+' <button id="annuler_profs" type="button"><img alt="" src="./_img/bouton/annuler.png" /> Retour</button>');
-						}
-						else
-						{
-							modification = false;
-							$('#msg_profs').removeAttr("class").html('&nbsp;');
-							$('#div_partage').html(responseHTML);
-						}
+						this.checked = false;
 					}
 				}
 			);
+			// Cocher des cases des profs
+			if(prof_liste.length)
+			{
+				var tab_id = prof_liste.split('_');
+				for(i in tab_id)
+				{
+					var id = 'p_'+tab_id[i];
+					if($('#'+id).length)
+					{
+						$('#'+id).prop('checked',true);
+					}
+				}
+			}
+			// Afficher la zone
+			$('#zone_profs').css("display","block");
 		};
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
@@ -642,12 +629,11 @@ $(document).ready
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 //	Clic sur le bouton pour fermer le cadre des professeurs associés à une évaluation (annuler / retour)
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-		$('#annuler_profs').live // live est utilisé pour prendre en compte les nouveaux éléments créés
-		('click',
+		$('#annuler_profs').click
+		(
 			function()
 			{
 				$('#zone_profs').css("display","none");
-				$('#div_partage').html('');
 				$('#form0 , #form1').show('fast');
 				return(false);
 			}
@@ -757,8 +743,8 @@ $(document).ready
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 //	Clic sur le bouton pour valider le choix des profs associés à une évaluation
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-		$('#valider_profs').live // live est utilisé pour prendre en compte les nouveaux éléments créés
-		('click',
+		$('#valider_profs').click
+		(
 			function()
 			{
 				var liste = '';
@@ -1499,71 +1485,70 @@ $(document).ready
 		//	Changement de groupe
 		// -> desactiver les périodes prédéfinies en cas de groupe de besoin
 		// -> choisir automatiquement la meilleure période et chercher les évaluations si un changement manuel de période n'a jamais été effectué
-		// -> afficher le formulaire de périodes s'il est masqué
+
+		function modifier_periodes()
+		{
+			var groupe_type = $("#f_aff_classe option:selected").parent().attr('label');
+			$("#f_aff_periode option").each
+			(
+				function()
+				{
+					var periode_id = $(this).val();
+					// La période personnalisée est tout le temps accessible
+					if(periode_id!=0)
+					{
+						// groupe de besoin -> desactiver les périodes prédéfinies
+						if( (typeof(groupe_type)=='undefined') || (groupe_type=='Besoins') )
+						{
+							$(this).prop('disabled',true);
+						}
+						// classe ou groupe classique -> toutes périodes accessibles
+						else
+						{
+							$(this).prop('disabled',false);
+						}
+					}
+				}
+			);
+			// Sélectionner si besoin la période personnalisée
+			if( (typeof(groupe_type)=='undefined') || (groupe_type=='Besoins') )
+			{
+				$("#f_aff_periode option[value=0]").prop('selected',true);
+				$("#dates_perso").attr("class","show");
+			}
+			// Modification automatique du formulaire
+			if(autoperiode)
+			{
+				if(groupe_type=='Classes')
+				{
+					// Rechercher automatiquement la meilleure période
+					var id_classe = $('#f_aff_classe option:selected').val().substring(1);
+					if(typeof(tab_groupe_periode[id_classe])!='undefined')
+					{
+						for(var id_periode in tab_groupe_periode[id_classe]) // Parcourir un tableau associatif...
+						{
+							var tab_split = tab_groupe_periode[id_classe][id_periode].split('_');
+							if( (date_mysql>=tab_split[0]) && (date_mysql<=tab_split[1]) )
+							{
+								$("#f_aff_periode option[value="+id_periode+"]").prop('selected',true);
+								view_dates_perso();
+							}
+						}
+					}
+				}
+				// Soumettre le formulaire
+				if(autoperiode)
+				{
+					formulaire0.submit();
+				}
+			}
+		}
 
 		$('#f_aff_classe').change
 		(
 			function()
 			{
-				var groupe_type = $("#f_aff_classe option:selected").parent().attr('label');
-				$("#f_aff_periode option").each
-				(
-					function()
-					{
-						var periode_id = $(this).val();
-						// La période personnalisée est tout le temps accessible
-						if(periode_id!=0)
-						{
-							// classe ou groupe classique -> toutes périodes accessibles
-							if(groupe_type!='Besoins')
-							{
-								$(this).prop('disabled',false);
-							}
-							// groupe de besoin -> desactiver les périodes prédéfinies
-							else
-							{
-								$(this).prop('disabled',true);
-							}
-						}
-					}
-				);
-				// Sélectionner si besoin la période personnalisée
-				if(groupe_type=='Besoins')
-				{
-					$("#f_aff_periode option[value=0]").prop('selected',true);
-					$("#dates_perso").attr("class","show");
-				}
-				// Modification automatique du formulaire
-				if(autoperiode)
-				{
-					if(groupe_type=='Classes')
-					{
-						// Rechercher automatiquement la meilleure période
-						var id_classe = $('#f_aff_classe option:selected').val().substring(1);
-						if(typeof(tab_groupe_periode[id_classe])!='undefined')
-						{
-							for(var id_periode in tab_groupe_periode[id_classe]) // Parcourir un tableau associatif...
-							{
-								var tab_split = tab_groupe_periode[id_classe][id_periode].split('_');
-								if( (date_mysql>=tab_split[0]) && (date_mysql<=tab_split[1]) )
-								{
-									$("#f_aff_periode option[value="+id_periode+"]").prop('selected',true);
-									view_dates_perso();
-								}
-							}
-						}
-					}
-					// Afficher la zone de choix des périodes
-					if($('#zone_periodes').hasClass("hide"))
-					{
-						$('#zone_periodes').removeAttr("class");
-					}
-					// Soumettre le formulaire
-					if(autoperiode)
-					{
-						formulaire0.submit();
-					}
-				}
+				modifier_periodes();
 			}
 		);
 
@@ -1749,8 +1734,10 @@ $(document).ready
 			}
 		}
 
-		// N'afficher les formulaire qu'une fois le js bien chargé...
+		// N'afficher les formulaire qu'une fois le js bien chargé.
 		$('#form0 , #form1').show('fast');
+		// Et charger par défaut les dernières évaluations du prof.
+		formulaire0.submit();
 
 	}
 );

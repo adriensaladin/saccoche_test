@@ -27,13 +27,13 @@
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = "Évaluer des élèves sélectionnés";
-$VERSION_JS_FILE += 24;
+$VERSION_JS_FILE += 25;
 ?>
 
 <?php
 // Dates par défaut de début et de fin
-$annee_debut = (date('n')>8) ? date('Y') : date('Y')-1 ;
-$annee_fin   = $annee_debut+1 ;
+$date_debut  = date("d/m/Y",mktime(0,0,0,date("m")-2,date("d"),date("Y"))); // 2 mois avant
+$date_fin    = date("d/m/Y",mktime(0,0,0,date("m")+1,date("d"),date("Y"))); // 1 mois après
 ?>
 
 <ul class="puce">
@@ -45,8 +45,8 @@ $annee_fin   = $annee_debut+1 ;
 
 <form action="" method="post" id="form0" class="hide"><fieldset>
 	<label class="tab" for="f_aff_periode">Période :</label>
-		du <input id="f_date_debut" name="f_date_debut" size="9" type="text" value="01/09/<?php echo $annee_debut ?>" /><q class="date_calendrier" title="Cliquez sur cette image pour importer une date depuis un calendrier !"></q>
-		au <input id="f_date_fin" name="f_date_fin" size="9" type="text" value="01/09/<?php echo $annee_fin ?>" /><q class="date_calendrier" title="Cliquez sur cette image pour importer une date depuis un calendrier !"></q>
+		du <input id="f_date_debut" name="f_date_debut" size="9" type="text" value="<?php echo $date_debut ?>" /><q class="date_calendrier" title="Cliquez sur cette image pour importer une date depuis un calendrier !"></q>
+		au <input id="f_date_fin" name="f_date_fin" size="9" type="text" value="<?php echo $date_fin ?>" /><q class="date_calendrier" title="Cliquez sur cette image pour importer une date depuis un calendrier !"></q>
 	<br />
 	<span class="tab"></span><input type="hidden" name="f_action" value="Afficher_evaluations" /><button id="actualiser" type="submit"><img alt="" src="./_img/bouton/actualiser.png" /> Actualiser l'affichage.</button><label id="ajax_msg0">&nbsp;</label>
 </fieldset></form>
@@ -62,11 +62,12 @@ $annee_fin   = $annee_debut+1 ;
 				<th>Élèves</th>
 				<th>Description</th>
 				<th>Items</th>
+				<th>Profs</th>
 				<th class="nu"><q class="ajouter" title="Ajouter une évaluation."></q></th>
 			</tr>
 		</thead>
 		<tbody>
-			<tr><td class="nu" colspan="6"></td></tr>
+			<tr><td class="nu" colspan="7"></td></tr>
 		</tbody>
 	</table>
 </form>
@@ -82,6 +83,27 @@ $annee_fin   = $annee_debut+1 ;
 	$DB_TAB = DB_STRUCTURE_recuperer_arborescence($_SESSION['USER_ID'],$matiere_id=0,$niveau_id=0,$only_socle=false,$only_item=false,$socle_nom=false);
 	echo afficher_arborescence_matiere_from_SQL($DB_TAB,$dynamique=true,$reference=true,$aff_coef=false,$aff_cart=false,$aff_socle='texte',$aff_lien=false,$aff_input=true);
 	?>
+</form>
+
+<form action="" method="post" id="zone_profs" class="hide">
+	<p class="hc"><b id="titre_profs">Choix des collègues partageant l'évaluation</b><br /></p>
+	<p class="astuce">Vous pouvez permettre à des collègues de co-saisir les notes de ce devoir (et de le dupliquer).</span></p>
+	<p><button id="valider_profs" type="button"><img alt="" src="./_img/bouton/valider.png" /> Valider ce choix</button>&nbsp;&nbsp;&nbsp;<button id="annuler_profs" type="button"><img alt="" src="./_img/bouton/annuler.png" /> Annuler / Retour</button></p>
+	<div id="div_partage">
+	<?php
+	// Affichage de la liste des professeurs
+	$DB_TAB = DB_STRUCTURE_OPT_professeurs_etabl();
+	if(is_string($DB_TAB))
+	{
+		echo $DB_TAB;
+	}
+	foreach($DB_TAB as $DB_ROW)
+	{
+		$checked_and_disabled = ($DB_ROW['valeur']==$_SESSION['USER_ID']) ? ' checked disabled' : '' ; // readonly ne fonctionne pas sur un checkbox
+		echo'<input type="checkbox" name="f_profs[]" id="p_'.$DB_ROW['valeur'].'" value="'.$DB_ROW['valeur'].'"'.$checked_and_disabled.' /><label for="p_'.$DB_ROW['valeur'].'"> '.html($DB_ROW['texte']).'</label><br />';
+	}
+	?>
+	</div>
 </form>
 
 <form action="" method="post" id="zone_eleve" class="hide">

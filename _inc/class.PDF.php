@@ -264,6 +264,9 @@ function _endpage()
 		$this->marge_min   = $marge_min;
 		$this->couleur     = $couleur;
 		$this->legende     = ($legende=='oui') ? 1 : 0 ;
+		// Déclaration de la police pour la rendre disponible même si non présente sur le serveur
+		$this->AddFont('Arial','' ,'arial.php');
+		$this->AddFont('Arial','B','arialbd.php');
 		// initialiser les marges principales
 		if($orientation=='landscape')
 		{
@@ -423,7 +426,7 @@ function _endpage()
 function afficher_etat_validation($gras,$tab_infos)
 {
 	// $tab_infos contient 'etat' / 'date' / 'info'
-	$this->SetFont('Helvetica' , $gras , $this->taille_police);
+	$this->SetFont('Arial' , $gras , $this->taille_police);
 	$texte = ($tab_infos['etat']==2) ? '---' : $tab_infos['date'] ;
 	$this->choisir_couleur_fond('v'.$tab_infos['etat']);
 	$this->Cell($this->validation_largeur , $this->cases_hauteur , pdf($texte) , 1 , 1 , 'C' , true , '');
@@ -437,7 +440,7 @@ function afficher_pourcentage_acquis($gras,$tab_infos,$detail)
 {
 	// $tab_infos contient 'A' / 'VA' / 'NA' / 'nb' / '%'
 	$taille_police = $detail ? $this->taille_police : $this->taille_police/2 ;
-	$this->SetFont('Helvetica' , $gras , $taille_police);
+	$this->SetFont('Arial' , $gras , $taille_police);
 	if($tab_infos['%']===false)
 	{
 		$this->choisir_couleur_fond('blanc');
@@ -477,9 +480,9 @@ function afficher_pourcentage_acquis($gras,$tab_infos,$detail)
 			elseif($score>$_SESSION['CALCUL_SEUIL']['V']) {$this->choisir_couleur_fond($this->tab_choix_couleur['A']);}
 			else                                          {$this->choisir_couleur_fond($this->tab_choix_couleur['VA']);}
 			$score_affiche = (mb_substr_count($_SESSION['DROIT_VOIR_SCORE_BILAN'],$_SESSION['USER_PROFIL'])) ? $score : '' ;
-			$this->SetFont('Helvetica' , '' , $this->taille_police-2);
+			$this->SetFont('Arial' , '' , $this->taille_police-2);
 			$this->Cell($this->cases_largeur , $this->cases_hauteur , $score_affiche , 1 , $br , 'C' , true , '');
-			$this->SetFont('Helvetica' , '' , $this->taille_police);
+			$this->SetFont('Arial' , '' , $this->taille_police);
 		}
 	}
 
@@ -512,7 +515,7 @@ function afficher_pourcentage_acquis($gras,$tab_infos,$detail)
 	public function afficher_legende($type_legende,$ordonnee)
 	{
 		$hauteur = min(4,$this->lignes_hauteur);
-		$this->SetFont('Helvetica' , '' , ceil($hauteur * 1.6));
+		$this->SetFont('Arial' , '' , ceil($hauteur * 1.6));
 		$this->SetXY($this->marge_gauche , $ordonnee);
 		// Afficher la légende des notes
 		if($type_legende=='notes')
@@ -554,7 +557,7 @@ function afficher_pourcentage_acquis($gras,$tab_infos,$detail)
 	public function Footer()
 	{
 		$this->SetXY(0 , -$this->distance_pied);
-		$this->SetFont('Helvetica' , '' , 7);
+		$this->SetFont('Arial' , '' , 7);
 		$this->choisir_couleur_fond('gris_clair');
 		$this->choisir_couleur_trait('gris_moyen');
 		$this->Cell($this->page_largeur , 3 , pdf('Généré le '.date("d/m/Y \à H\hi\m\i\\n").' par '.$_SESSION['USER_PRENOM']{0}.'. '.$_SESSION['USER_NOM'].' ('.$_SESSION['USER_PROFIL'].') avec SACoche [ http://sacoche.sesamath.net ].') , 'TB' , 0 , 'C' , true , 'http://sacoche.sesamath.net');
@@ -578,24 +581,24 @@ function afficher_pourcentage_acquis($gras,$tab_infos,$detail)
 		}
 		elseif($this->test_pas_trop_long($texte,$taille_police*0.9,$longueur_cellule))
 		{
-			$this->SetFont('Helvetica' , '' , $taille_police*0.9);
+			$this->SetFont('Arial' , '' , $taille_police*0.9);
 			$this->Cell($longueur_cellule , $hauteur_cellule , pdf($texte) , $bordure , $br , $alignement , $remplissage , '');
-			$this->SetFont('Helvetica' , '' , $taille_police);
+			$this->SetFont('Arial' , '' , $taille_police);
 		}
 		elseif($this->test_pas_trop_long($texte,$taille_police*0.8,$longueur_cellule))
 		{
-			$this->SetFont('Helvetica' , '' , $taille_police*0.8);
+			$this->SetFont('Arial' , '' , $taille_police*0.8);
 			$this->Cell($longueur_cellule , $hauteur_cellule , pdf($texte) , $bordure , $br , $alignement , $remplissage , '');
-			$this->SetFont('Helvetica' , '' , $taille_police);
+			$this->SetFont('Arial' , '' , $taille_police);
 		}
 		else
 		{
 			$abscisse = $this->GetX();
 			$ordonnee = $this->GetY();
 			$demihauteur = $hauteur_cellule *0.48 ;
-			$this->SetFont('Helvetica' , '' , $taille_police * 0.8);
+			$this->SetFont('Arial' , '' , $taille_police * 0.8);
 			$this->MultiCell($longueur_cellule , $demihauteur , pdf($texte) , 0 , $alignement , $remplissage );
-			$this->SetFont('Helvetica' , '' , $taille_police);
+			$this->SetFont('Arial' , '' , $taille_police);
 			$this->SetXY($abscisse , $ordonnee);
 			$this->Cell($longueur_cellule , $hauteur_cellule , '' , $bordure , $br , '' , false , '');
 		}
@@ -669,13 +672,13 @@ function afficher_pourcentage_acquis($gras,$tab_infos,$detail)
 		}
 		// Intitulé / structure
 		$largeur_demi_page = ( $this->page_largeur - $this->marge_gauche - $this->marge_droit ) / 2;
-		$this->SetFont('Helvetica' , 'B' , $this->taille_police*1.5);
+		$this->SetFont('Arial' , 'B' , $this->taille_police*1.5);
 		$this->Cell($largeur_demi_page , $this->lignes_hauteur , pdf('Synthèse '.$texte_format) , 0 , 0 , 'L' , false , '');
 		$this->Cell($largeur_demi_page , $this->lignes_hauteur , pdf($_SESSION['DENOMINATION']) , 0 , 1 , 'R' , false , '');
 		// Classe / élève
 		$this->Cell($largeur_demi_page , $this->lignes_hauteur , pdf($groupe_nom.' - '.$eleve_nom.' '.$eleve_prenom) , 0 , 2 , 'L' , false , '');
 		// Période
-		$this->SetFont('Helvetica' , '' , $this->taille_police);
+		$this->SetFont('Arial' , '' , $this->taille_police);
 		$this->Cell($largeur_demi_page , 5 , pdf($texte_periode) , 0 , 1 , 'L' , false , '');
 	}
 
@@ -687,12 +690,12 @@ function afficher_pourcentage_acquis($gras,$tab_infos,$detail)
 			$this->SetXY($this->marge_gauche , $this->GetY() + $this->lignes_hauteur*1.5);
 		}
 		// Intitulé matière
-		$this->SetFont('Helvetica' , 'B' , $this->taille_police*1.25);
+		$this->SetFont('Arial' , 'B' , $this->taille_police*1.25);
 		$couleur_fond = ($this->couleur=='oui') ? 'gris_moyen' : 'blanc' ;
 		$this->choisir_couleur_fond($couleur_fond);
 		$this->Cell(116 , $this->lignes_hauteur*1.5 , pdf($matiere_nom) , 1 , 0 , 'L' , true , '');
 		// Diagramme matière
-		$this->SetFont('Helvetica' , 'B' , $this->taille_police);
+		$this->SetFont('Arial' , 'B' , $this->taille_police);
 		$this->afficher_proportion_acquis(80,$this->lignes_hauteur*1.5,$tab_infos_matiere,$total); // 210 - 7 - 7 - 116
 		// Interligne
 		$this->SetXY($this->marge_gauche , $this->GetY() + $this->lignes_hauteur*1.5);
@@ -700,12 +703,12 @@ function afficher_pourcentage_acquis($gras,$tab_infos,$detail)
 
 	public function bilan_synthese_ligne_synthese($synthese_nom,$tab_infos_synthese,$total)
 	{
-		$this->SetFont('Helvetica' , '' , $this->taille_police);
+		$this->SetFont('Arial' , '' , $this->taille_police);
 		// Diagramme synthèse
-		$this->SetFont('Helvetica' , '' , $this->taille_police*0.8);
+		$this->SetFont('Arial' , '' , $this->taille_police*0.8);
 		$this->afficher_proportion_acquis(40,$this->lignes_hauteur,$tab_infos_synthese,$total);
 		// Intitulé synthèse
-		$this->SetFont('Helvetica' , '' , $this->taille_police);
+		$this->SetFont('Arial' , '' , $this->taille_police);
 		$couleur_fond = ($this->couleur=='oui') ? 'gris_clair' : 'blanc' ;
 		$this->choisir_couleur_fond($couleur_fond);
 		$this->Cell(156 , $this->lignes_hauteur , pdf($synthese_nom) , 1 , 1 , 'L' , true , ''); // 210 - 7 - 7 - 40
@@ -816,13 +819,13 @@ function afficher_pourcentage_acquis($gras,$tab_infos,$detail)
 		}
 		// Intitulé (dont éventuellement matière) / structure
 		$largeur_demi_page = ( $this->page_largeur - $this->marge_gauche - $this->marge_droit ) / 2;
-		$this->SetFont('Helvetica' , 'B' , $this->taille_police*1.5);
+		$this->SetFont('Arial' , 'B' , $this->taille_police*1.5);
 		$this->Cell($largeur_demi_page , $this->lignes_hauteur , pdf('Bilan '.$texte_format) , 0 , 0 , 'L' , false , '');
 		$this->Cell($largeur_demi_page , $this->lignes_hauteur , pdf($_SESSION['DENOMINATION']) , 0 , 1 , 'R' , false , '');
 		// Classe / élève
 		$this->Cell($largeur_demi_page , $this->lignes_hauteur , pdf($groupe_nom.' - '.$eleve_nom.' '.$eleve_prenom) , 0 , 2 , 'L' , false , '');
 		// Période
-		$this->SetFont('Helvetica' , '' , $this->taille_police);
+		$this->SetFont('Arial' , '' , $this->taille_police);
 		$this->Cell($largeur_demi_page , 5 , pdf($texte_periode) , 0 , 1 , 'L' , false , '');
 	}
 
@@ -845,11 +848,11 @@ function afficher_pourcentage_acquis($gras,$tab_infos,$detail)
 			$rappel_eleve = false;
 		}
 		// Intitulé matière + éventuellement rappel élève
-		$this->SetFont('Helvetica' , 'B' , $this->taille_police*1.5);
+		$this->SetFont('Arial' , 'B' , $this->taille_police*1.5);
 		if( $test_nouvelle_page )
 		{
 			$this->Cell($largeur_demi_page , $this->lignes_hauteur , pdf($matiere_nom) , 0 , 0 , 'L' , false , '');
-			$this->SetFont('Helvetica' , 'B' , $this->taille_police);
+			$this->SetFont('Arial' , 'B' , $this->taille_police);
 			$this->Cell($largeur_demi_page , $this->lignes_hauteur , pdf($eleve_nom.' '.$eleve_prenom.' (suite)') , 0 , 1 , 'R' , false , '');
 		}
 		else
@@ -862,16 +865,16 @@ function afficher_pourcentage_acquis($gras,$tab_infos,$detail)
 	{
 		list($ref_matiere,$ref_suite) = explode('.',$item_ref,2);
 		$this->choisir_couleur_fond('gris_clair');
-		$this->SetFont('Helvetica' , '' , $this->taille_police*0.8);
+		$this->SetFont('Arial' , '' , $this->taille_police*0.8);
 		$this->Cell($this->reference_largeur , $this->cases_hauteur , pdf($ref_suite) , 1 , 0 , 'C' , true , '');
-		$this->SetFont('Helvetica' , '' , $this->taille_police);
+		$this->SetFont('Arial' , '' , $this->taille_police);
 		$this->afficher_texte_sur_2lignes_maxi( $item_texte , 8 , $this->intitule_largeur , $this->cases_hauteur , $bordure=1 , $br=0 , $alignement='L' , $remplissage=false );
 		$this->choisir_couleur_fond('blanc');
 	}
 
 	public function bilan_item_individuel_ligne_synthese($bilan_texte)
 	{
-		$this->SetFont('Helvetica' , '' , $this->taille_police);
+		$this->SetFont('Arial' , '' , $this->taille_police);
 		$this->choisir_couleur_fond('gris_moyen');
 		$this->Cell($this->reference_largeur , $this->cases_hauteur , '' , 0 , 0 , 'C' , false , '');
 		$this->Cell($this->synthese_largeur , $this->cases_hauteur , pdf($bilan_texte) , 1 , 1 , 'R' , true , '');
@@ -936,7 +939,7 @@ function afficher_pourcentage_acquis($gras,$tab_infos,$detail)
 		$this->SetXY($this->marge_gauche,$this->marge_haut);
 		$largeur_demi_page = ( $this->page_largeur - $this->marge_gauche - $this->marge_droit ) / 2;
 		// intitulé-structure
-		$this->SetFont('Helvetica' , 'B' , $this->taille_police*1.4);
+		$this->SetFont('Arial' , 'B' , $this->taille_police*1.4);
 		$this->Cell($largeur_demi_page , $this->lignes_hauteur , pdf('Grille d\'items d\'un référentiel') , 0 , 0 , 'L' , false , '');
 		$this->Cell($largeur_demi_page , $this->lignes_hauteur , pdf($_SESSION['DENOMINATION']) , 0 , 1 , 'R' , false , '');
 		// matière-niveau-élève
@@ -964,7 +967,7 @@ function afficher_pourcentage_acquis($gras,$tab_infos,$detail)
 			// Prendre une nouvelle page si ça ne rentre pas
 			$this->AddPage($this->orientation , 'A4');
 		}
-		$this->SetFont('Helvetica' , 'B' , $this->taille_police*1.25);
+		$this->SetFont('Arial' , 'B' , $this->taille_police*1.25);
 		$this->SetXY(15 , $this->GetY()+1);
 		$this->Cell($this->intitule_largeur , $this->cases_hauteur , pdf($domaine_nom) , 0 , 1 , 'L' , false , '');
 	}
@@ -978,7 +981,7 @@ function afficher_pourcentage_acquis($gras,$tab_infos,$detail)
 			// Prendre une nouvelle page si ça ne rentre pas
 			$this->AddPage($this->orientation , 'A4');
 		}
-		$this->SetFont('Helvetica' , 'B' , $this->taille_police);
+		$this->SetFont('Arial' , 'B' , $this->taille_police);
 		$this->choisir_couleur_fond('gris_moyen');
 		$this->Cell($this->reference_largeur , $this->cases_hauteur , pdf($theme_ref) , 1 , 0 , 'C' , true , '');
 		$this->Cell($this->intitule_largeur , $this->cases_hauteur , pdf($theme_nom) , 1 , 1 , 'L' , true , '');
@@ -991,7 +994,7 @@ function afficher_pourcentage_acquis($gras,$tab_infos,$detail)
 			$this->Cell($this->colonne_vide_largeur , $this->cases_hauteur * ($theme_nb_lignes-1) , '' , 1 , 0 , '' , false , '');
 			$this->SetXY( $abscisse , $ordonnee );
 		}
-		$this->SetFont('Helvetica' , '' , $this->taille_police);
+		$this->SetFont('Arial' , '' , $this->taille_police);
 	}
 
 	public function grille_referentiel_item($item_ref,$item_texte)
@@ -1034,7 +1037,6 @@ function afficher_pourcentage_acquis($gras,$tab_infos,$detail)
 		$this->pilier_largeur      = $this->section_largeur - $retrait_validation;
 		$this->SetMargins($this->marge_gauche , $this->marge_haut , $this->marge_droit);
 		$this->SetAutoPageBreak(false);
-		// $this->AddFont('ArialNarrow');
 	}
 
 	public function releve_socle_identite()
@@ -1047,7 +1049,7 @@ function afficher_pourcentage_acquis($gras,$tab_infos,$detail)
 			$this->Line($this->page_largeur-$this->marge_droit-75 , $this->marge_haut+2*$this->cases_hauteur , $this->page_largeur-$this->marge_droit , $this->marge_haut+2*$this->cases_hauteur);
 			$this->SetDrawColor(0 , 0 , 0);
 		}
-		$this->SetFont('Helvetica' , 'B' , $this->taille_police*1.5);
+		$this->SetFont('Arial' , 'B' , $this->taille_police*1.5);
 		$this->SetXY($this->page_largeur-$this->marge_droit-50 , max($this->marge_haut,$this->GetY()-2*$this->cases_hauteur) ); // Soit c'est une nouvelle page, soit il ne faut pas se mettre en haut de la page
 		$this->Cell(50 , $this->cases_hauteur , pdf($_SESSION['DENOMINATION']) , 0 , 2 , 'R' , false , '');
 		$this->Cell(50 , $this->cases_hauteur , pdf($this->eleve_nom.' '.$this->eleve_prenom) , 0 , 2 , 'R' , false , '');
@@ -1076,7 +1078,7 @@ function afficher_pourcentage_acquis($gras,$tab_infos,$detail)
 			}
 		}
 		// Intitulé
-		$this->SetFont('Helvetica' , 'B' , $this->taille_police*1.5);
+		$this->SetFont('Arial' , 'B' , $this->taille_police*1.5);
 		$this->Cell($this->page_largeur-$this->marge_droit-75 , $this->cases_hauteur , pdf($titre) , 0 , 2 , 'L' , false , '');
 		$this->Cell($this->page_largeur-$this->marge_droit-75 , $this->cases_hauteur , pdf($palier_nom) , 0 , 2 , 'L' , false , '');
 		// Nom / prénom
@@ -1098,7 +1100,7 @@ function afficher_pourcentage_acquis($gras,$tab_infos,$detail)
 			$this->releve_socle_identite();
 			$this->SetXY($this->marge_gauche+$this->retrait_pourcentage , $this->GetY()+2);
 		}
-		$this->SetFont('Helvetica' , 'B' , $this->taille_police*1.25);
+		$this->SetFont('Arial' , 'B' , $this->taille_police*1.25);
 		$this->choisir_couleur_fond('gris_moyen');
 		$br = $test_affichage_Validation ? 0 : 1 ;
 		$this->Cell($this->pilier_largeur , $this->cases_hauteur , pdf($pilier_nom) , 1 , $br , 'L' , true , '');
@@ -1115,7 +1117,7 @@ function afficher_pourcentage_acquis($gras,$tab_infos,$detail)
 	public function releve_socle_section($section_nom)
 	{
 		$this->SetXY($this->marge_gauche+$this->retrait_pourcentage , $this->GetY());
-		$this->SetFont('Helvetica' , 'B' , $this->taille_police);
+		$this->SetFont('Arial' , 'B' , $this->taille_police);
 		$this->choisir_couleur_fond('gris_moyen');
 		$this->Cell($this->section_largeur , $this->cases_hauteur , pdf($section_nom) , 1 , 1 , 'L' , true , '');
 	}
@@ -1129,7 +1131,7 @@ function afficher_pourcentage_acquis($gras,$tab_infos,$detail)
 		}
 		// Case intitulé
 		$this->choisir_couleur_fond('gris_clair');
-		$this->SetFont('Helvetica' , '' , $this->taille_police);
+		$this->SetFont('Arial' , '' , $this->taille_police);
 		$br = $test_affichage_Validation ? 0 : 1 ;
 		$this->afficher_texte_sur_2lignes_maxi( $item_nom , $this->taille_police , $this->item_largeur , $this->cases_hauteur , $bordure=1 , $br , $alignement='L' , $remplissage=true );
 		// Case validation
@@ -1159,13 +1161,13 @@ function afficher_pourcentage_acquis($gras,$tab_infos,$detail)
 		$this->cases_hauteur = min($this->cases_hauteur,10);
 		$this->taille_police = 8;
 		// Intitulés
-		$this->SetFont('Helvetica' , 'B' , $this->taille_police*1.5);
+		$this->SetFont('Arial' , 'B' , $this->taille_police*1.5);
 		$this->Cell(0 , $this->taille_police , pdf('Synthèse de maîtrise du socle : '.$titre_info.' - '.$groupe_nom.' - '.$palier_nom) , 0 , 2 , 'L' , false , '');
 	}
 
 	public function releve_synthese_socle_entete($tab_pilier)
 	{
-		$this->SetFont('Helvetica' , 'B' , $this->taille_police);
+		$this->SetFont('Arial' , 'B' , $this->taille_police);
 		$this->SetXY($this->marge_gauche+$this->eleve_largeur,$this->marge_haut+$this->taille_police);
 		$this->choisir_couleur_fond('gris_fonce');
 		foreach($tab_pilier as $tab)
@@ -1176,7 +1178,7 @@ function afficher_pourcentage_acquis($gras,$tab_infos,$detail)
 			$this->Cell($pilier_nb_entrees*$this->cases_largeur , $this->cases_hauteur , pdf($texte.$pilier_ref) , 1 , 0 , 'C' , true , '');
 		}
 		// positionnement pour la suite
-		$this->SetFont('Helvetica' , '' , $this->taille_police);
+		$this->SetFont('Arial' , '' , $this->taille_police);
 		$this->SetXY( $this->marge_gauche , $this->GetY()+$this->cases_hauteur+1 );
 	}
 
@@ -1225,7 +1227,7 @@ function afficher_pourcentage_acquis($gras,$tab_infos,$detail)
 	{
 		$this->pourcentage_largeur = $this->cases_largeur;
 		$this->choisir_couleur_fond('gris_moyen');
-		$this->SetFont('Helvetica' , '' , $this->taille_police);
+		$this->SetFont('Arial' , '' , $this->taille_police);
 		$this->Cell($this->eleve_largeur , $this->cases_hauteur , pdf($eleve_nom.' '.$eleve_prenom) , 1 , 0 , 'L' , true , '');
 		if($drapeau_langue)
 		{
@@ -1274,23 +1276,23 @@ function afficher_pourcentage_acquis($gras,$tab_infos,$detail)
 	{
 		$hauteur_entete = 20;
 		// Intitulé
-		$this->SetFont('Helvetica' , 'B' , 12);
+		$this->SetFont('Arial' , 'B' , 12);
 		$this->SetXY($this->marge_gauche , $this->marge_haut);
 		$this->Cell($this->page_largeur-$this->marge_droit-55 , 5 , pdf('Bilan '.$titre_nom) , 0 , 2 , 'L' , false , '');
 		$this->Cell($this->page_largeur-$this->marge_droit-55 , 5 , pdf($matiere_nom.' - '.$groupe_nom) , 0 , 2 , 'L' , false , '');
 		// Période
-		$this->SetFont('Helvetica' , '' , 10);
+		$this->SetFont('Arial' , '' , 10);
 		if($texte_periode)
 		{
 			$this->Cell($this->page_largeur-$this->marge_droit-55 , 5 , pdf($texte_periode) , 0 , 2 , 'L' , false , '');
 		}
 		// Synthèse
-		$this->SetFont('Helvetica' , 'B' , 12);
+		$this->SetFont('Arial' , 'B' , 12);
 		$this->SetXY($this->page_largeur-$this->marge_droit-50 , $this->marge_haut);
 		$this->Cell(20 , 5 , pdf('SYNTHESE') , 0 , 1 , 'C' , false , '');
 		// On se positionne sous l'entête
 		$this->SetXY($this->marge_gauche , $this->marge_haut+$hauteur_entete);
-		$this->SetFont('Helvetica' , '' , $this->taille_police);
+		$this->SetFont('Arial' , '' , $this->taille_police);
 	}
 
 	public function bilan_periode_synthese_pourcentages($moyenne_pourcent,$moyenne_nombre,$last_ligne,$last_colonne)
@@ -1388,12 +1390,12 @@ function afficher_pourcentage_acquis($gras,$tab_infos,$detail)
 		$hauteur_tiers = $this->etiquette_hauteur / 3 ;
 		$tab_lignes = explode(':::',$texte);
 		$this->SetXY($this->marge_gauche , $this->marge_haut);
-		$this->SetFont('Helvetica' , 'B' , $this->taille_police);
+		$this->SetFont('Arial' , 'B' , $this->taille_police);
 		$this->Cell($this->reference_largeur , $hauteur_tiers , pdf($tab_lignes[0]) , 0 , 2 , 'C' , false , '');
 		$this->Cell($this->reference_largeur , $hauteur_tiers , pdf($tab_lignes[1]) , 0 , 2 , 'C' , false , '');
 		$this->Cell($this->reference_largeur , $hauteur_tiers , pdf($tab_lignes[2]) , 0 , 2 , 'C' , false , '');
 		$this->SetXY($this->marge_gauche , $this->marge_haut);
-		$this->SetFont('Helvetica' , '' , $this->taille_police);
+		$this->SetFont('Arial' , '' , $this->taille_police);
 		$this->Cell($this->reference_largeur , $this->etiquette_hauteur , '' , 0 , 0 , 'C' , false , '');
 	}
 
@@ -1414,9 +1416,9 @@ function afficher_pourcentage_acquis($gras,$tab_infos,$detail)
 		$this->choisir_couleur_fond('gris_clair');
 		$this->Cell($this->reference_largeur , $this->cases_hauteur , '' , 1 , 0 , 'L' , true , '');
 		$this->SetXY($memo_x , $memo_y+1);
-		$this->SetFont('Helvetica' , 'B' , $this->taille_police);
+		$this->SetFont('Arial' , 'B' , $this->taille_police);
 		$this->Cell($this->reference_largeur , 3 , pdf($item_intro) , 0 , 1 , 'L' , false , '');
-		$this->SetFont('Helvetica' , '' , $this->taille_police);
+		$this->SetFont('Arial' , '' , $this->taille_police);
 		$this->MultiCell($this->reference_largeur , 3 , pdf($item_nom) , 0 , 'L' , false , '');
 		$this->SetXY($memo_x+$this->reference_largeur , $memo_y);
 	}
@@ -1510,9 +1512,9 @@ function afficher_pourcentage_acquis($gras,$tab_infos,$detail)
 			$this->AddPage($this->orientation , 'A4');
 		}
 		// Intitulé
-		$this->SetFont('Helvetica' , '' , 10);
+		$this->SetFont('Arial' , '' , 10);
 		$this->Cell(0 , $this->cases_hauteur , pdf($texte_entete) , 0 , 1 , 'L' , false , '');
-		$this->SetFont('Helvetica' , '' , 8);
+		$this->SetFont('Arial' , '' , 8);
 	}
 
 	public function cartouche_minimal_competence($item_ref,$note)
@@ -1520,10 +1522,10 @@ function afficher_pourcentage_acquis($gras,$tab_infos,$detail)
 		$memo_x = $this->GetX();
 		$memo_y = $this->GetY();
 		list($ref_matiere,$ref_suite) = explode('.',$item_ref,2);
-		$this->SetFont('Helvetica' , '' , 7);
+		$this->SetFont('Arial' , '' , 7);
 		$this->Cell($this->cases_largeur , $this->cases_hauteur/2 , pdf($ref_matiere) , 0 , 2 , 'C' , false , '');
 		$this->Cell($this->cases_largeur , $this->cases_hauteur/2 , pdf($ref_suite) , 0 , 2 , 'C' , false , '');
-		$this->SetFont('Helvetica' , '' , 8);
+		$this->SetFont('Arial' , '' , 8);
 		$this->SetXY($memo_x , $memo_y);
 		$this->Cell($this->cases_largeur , $this->cases_hauteur , '' , 1 , 2 , 'C' , false , '');
 		$this->afficher_note_lomer($note,$border=1,$br=0);
@@ -1535,10 +1537,10 @@ function afficher_pourcentage_acquis($gras,$tab_infos,$detail)
 		$memo_x = $this->GetX();
 		$memo_y = $this->GetY();
 		list($ref_matiere,$ref_suite) = explode('.',$item_ref,2);
-		$this->SetFont('Helvetica' , '' , 7);
+		$this->SetFont('Arial' , '' , 7);
 		$this->Cell($this->reference_largeur , $this->cases_hauteur/2 , pdf($ref_matiere) , 0 , 2 , 'C' , false , '');
 		$this->Cell($this->reference_largeur , $this->cases_hauteur/2 , pdf($ref_suite) , 0 , 2 , 'C' , false , '');
-		$this->SetFont('Helvetica' , '' , 8);
+		$this->SetFont('Arial' , '' , 8);
 		$this->SetXY($memo_x , $memo_y);
 		$this->Cell($this->reference_largeur , $this->cases_hauteur , '' , 1 , 0 , 'C' , false , '');
 		$this->afficher_texte_sur_2lignes_maxi( $item_intitule , 8 , $this->intitule_largeur , $this->cases_hauteur , $bordure=1 , $br=0 , $alignement='L' , $remplissage=false );

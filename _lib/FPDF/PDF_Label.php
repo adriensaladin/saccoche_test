@@ -80,7 +80,7 @@ class PDF_Label extends FPDF {
 		parent::FPDF('P', $unit, $Tformat['paper-size']);
 		$this->_Metric_Doc = $unit;
 		$this->_Set_Format($Tformat);
-		$this->SetFont('Times');
+		// $this->SetFont('Times');
 		$this->SetMargins(0,0); 
 		$this->SetAutoPageBreak(false); 
 		$this->_COUNTX = $posX-2;

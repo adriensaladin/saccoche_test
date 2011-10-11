@@ -9,6 +9,10 @@ Pour infos documentations et génération de fonts : http://www.fpdf.org/
 
 PDF_Label est une extension de classe de FPDF pour générer un fichier d'étiquettes.
 http://www.fpdf.org/fr/script/script29.php
+Ligne n°83 commentée : $this->SetFont('Times');
+
+Fichiers de polices Arial incorporés dans /font/ en n'ayant conservé que les caractères de l'encodage cp1252
+Pour infos : http://www.fpdf.org/fr/tutorial/tuto7.htm
 
 D'autres extensions de FPDF sont aussi utilisées par SACoche :
 http://www.fpdf.org/fr/script/script18.php	Pour optimiser la gestion de la mémoire.

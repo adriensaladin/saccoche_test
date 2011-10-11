@@ -121,7 +121,8 @@ if( (($action=='init_login')||($action=='init_mdp')) && (in_array($profil,$tab_p
 	$font_size = ($profil!='parents') ? 11 : 10 ;
 	require_once('./_lib/FPDF/PDF_Label.php');
 	$pdf = new PDF_Label(array('paper-size'=>'A4', 'metric'=>'mm', 'marginLeft'=>5, 'marginTop'=>5, 'NX'=>3, 'NY'=>8, 'SpaceX'=>7, 'SpaceY'=>5, 'width'=>60, 'height'=>30, 'font-size'=>$font_size));
-	$pdf -> SetFont('Helvetica'); // Permet de mieux distinguer les "l 1" etc. que la police Times ou Courrier
+	$pdf -> AddFont('Arial','' ,'arial.php');
+	$pdf -> SetFont('Arial'); // Permet de mieux distinguer les "l 1" etc. que la police Times ou Courrier
 	$pdf -> AddPage();
 	$pdf -> SetFillColor(245,245,245);
 	$pdf -> SetDrawColor(145,145,145);
@@ -355,7 +356,8 @@ if($action=='import_loginmdp')
 		$fnom = 'identifiants_'.$_SESSION['BASE'].'_'.time();
 		require_once('./_lib/FPDF/PDF_Label.php');
 		$pdf = new PDF_Label(array('paper-size'=>'A4', 'metric'=>'mm', 'marginLeft'=>5, 'marginTop'=>5, 'NX'=>3, 'NY'=>8, 'SpaceX'=>7, 'SpaceY'=>5, 'width'=>60, 'height'=>30, 'font-size'=>11));
-		$pdf -> SetFont('Helvetica'); // Permet de mieux distinguer les "l 1" etc. que la police Times ou Courrier
+		$pdf -> AddFont('Arial','' ,'arial.php');
+		$pdf -> SetFont('Arial'); // Permet de mieux distinguer les "l 1" etc. que la police Times ou Courrier
 		$pdf -> AddPage();
 		$pdf -> SetFillColor(245,245,245);
 		$pdf -> SetDrawColor(145,145,145);

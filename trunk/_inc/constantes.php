@@ -91,4 +91,7 @@ define('COOKIE_STRUCTURE','SACoche-etablissement');
 // COOKIE_PAGE : nom du cookie servant à retenir le dernier mode de connexion utilisé par un user connecté, afin de pouvoir le retrouver si perte d'une session et tentative de reconnexion SSO.
 define('COOKIE_AUTHMODE','SACoche-mode-connexion');
 
+// Pour FPDF : Répertoire où se situent les polices
+define('FPDF_FONTPATH','/_lib/FPDF/font');
+
 ?>

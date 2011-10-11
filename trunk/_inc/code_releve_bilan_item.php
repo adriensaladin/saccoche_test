@@ -389,10 +389,10 @@ if(in_array('synthese',$tab_type))
 		$memo_x = $releve_PDF->GetX();
 		$memo_y = $releve_PDF->GetY();
 		list($ref_matiere,$ref_suite) = explode('.',$tab_item[$item_id][0]['item_ref'],2);
-		$releve_PDF->SetFont('Helvetica' , '' , $releve_PDF->taille_police-1);
+		$releve_PDF->SetFont('Arial' , '' , $releve_PDF->taille_police-1);
 		$releve_PDF->Cell($releve_PDF->cases_largeur , $releve_PDF->cases_hauteur/2 , pdf($ref_matiere) , 0 , 2 , 'C' , true , '');
 		$releve_PDF->Cell($releve_PDF->cases_largeur , $releve_PDF->cases_hauteur/2 , pdf($ref_suite) , 0 , 2 , 'C' , true , '');
-		$releve_PDF->SetFont('Helvetica' , '' , $releve_PDF->taille_police);
+		$releve_PDF->SetFont('Arial' , '' , $releve_PDF->taille_police);
 		$releve_PDF->SetXY($memo_x , $memo_y);
 		$releve_PDF->Cell($releve_PDF->cases_largeur , $releve_PDF->cases_hauteur , '' , 1 , 0 , 'C' , false , '');
 		$releve_HTML_table_head .= '<th title="'.html($tab_item[$item_id][0]['item_nom']).'">'.html($ref_matiere).'<br />'.html($ref_suite).'</th>';

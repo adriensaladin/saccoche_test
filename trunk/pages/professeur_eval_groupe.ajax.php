@@ -802,7 +802,7 @@ if( ($action=='voir_repart') && $devoir_id && $groupe_type && $groupe_id && $dat
 			$sacoche_pdf->Cell($rect_largeur , $rect_hauteur , '' , 0 , 0 , 'C' , true , '');
 			// Écrire le %
 			$sacoche_pdf->SetXY($memo_X , $memo_Y);
-			$sacoche_pdf->SetFont('Helvetica' , '' , $sacoche_pdf->taille_police*(1+$coefficient));
+			$sacoche_pdf->SetFont('Arial' , '' , $sacoche_pdf->taille_police*(1+$coefficient));
 			$sacoche_pdf->Cell($sacoche_pdf->cases_largeur , $sacoche_pdf->cases_hauteur , pdf(round(100*$coefficient).'%') , 1 , 0 , 'C' , false , '');
 		}
 		$sacoche_pdf->SetXY($sacoche_pdf->marge_gauche , $sacoche_pdf->GetY()+$sacoche_pdf->cases_hauteur);
@@ -838,7 +838,7 @@ if( ($action=='voir_repart') && $devoir_id && $groupe_type && $groupe_id && $dat
 				{
 					$taille_police -= 0.5 ;
 				}
-				$sacoche_pdf->SetFont('Helvetica' , '' , $taille_police);
+				$sacoche_pdf->SetFont('Arial' , '' , $taille_police);
 				$sacoche_pdf->Cell($sacoche_pdf->cases_largeur , $sacoche_pdf->lignes_hauteur , pdf($eleve_texte) , 0 , 2 , 'L' , false , '');
 			}
 			// Ajouter la bordure

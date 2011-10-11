@@ -92,6 +92,6 @@ define('COOKIE_STRUCTURE','SACoche-etablissement');
 define('COOKIE_AUTHMODE','SACoche-mode-connexion');
 
 // Pour FPDF : Répertoire où se situent les polices
-define('FPDF_FONTPATH','/_lib/FPDF/font');
+define('FPDF_FONTPATH','./_lib/FPDF/font/');
 
 ?>

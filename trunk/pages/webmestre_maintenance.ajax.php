@@ -93,7 +93,7 @@ if($action=='maj_etape2')
 	$zip->extractTo($dossier_import);
 	$zip->close();
 	*/
-	exit(']¤['.'pb'.']¤['."Analyse des fichiers et recensement des dossiers&hellip;");
+	exit(']¤['.'ok'.']¤['."Analyse des fichiers et recensement des dossiers&hellip;");
 }
 
 //

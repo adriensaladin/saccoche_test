@@ -60,6 +60,8 @@ foreach($tab_options as $type => $contenu)
 
 // Élément de formulaire "f_aff_periode" pour le choix d'une période
 $select_periode = afficher_select(DB_STRUCTURE_OPT_periodes_etabl() , $select_nom='f_aff_periode' , $option_first='val' , $selection=false , $optgroup='non');
+// On désactive les périodes prédéfinies pour le choix "toute classe / tout groupe" initialement sélectionné
+$select_periode = preg_replace( '#'.'value="([1-9].*?)"'.'#' , 'value="$1" disabled' , $select_periode );
 // Dates par défaut de début et de fin
 $date_debut  = date("d/m/Y",mktime(0,0,0,date("m")-2,date("d"),date("Y"))); // 2 mois avant
 $date_fin    = date("d/m/Y",mktime(0,0,0,date("m")+1,date("d"),date("Y"))); // 1 mois après

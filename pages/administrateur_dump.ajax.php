@@ -98,6 +98,8 @@ elseif($action=='uploader')
 	// Créer ou vider le dossier temporaire
 	Creer_ou_Vider_Dossier($dossier_temp);
 	// Dezipper dans le dossier temporaire
+	unzip( $dossier_import.$fichier_upload_nom , $dossier_temp ); // Certaines versions de librairies de php pour dézipper plantent à partir d'un certain nombre de fichiers, apparemment ; d'où cette fonction en remplacement du code suivant qui renvoie parfois "Fichiers impossibles à extraire (5 | READ | erreur lecture)".
+	/*
 	$zip = new ZipArchive();
 	$result_open = $zip->open($dossier_import.$fichier_upload_nom);
 	if($result_open!==true)
@@ -107,6 +109,7 @@ elseif($action=='uploader')
 	}
 	$zip->extractTo($dossier_temp);
 	$zip->close();
+	*/
 	unlink($dossier_import.$fichier_upload_nom);
 	// Vérifier le contenu : noms des fichiers
 	$fichier_taille_maximale = verifier_dossier_decompression_sauvegarde($dossier_temp);

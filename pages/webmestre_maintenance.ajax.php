@@ -81,6 +81,8 @@ if($action=='maj_etape2')
 	{
 		Supprimer_Dossier($dossier_dezip);
 	}
+	unzip( $fichier_import , $dossier_import ); // Certaines versions de librairies de php pour dézipper plantent à partir d'un certain nombre de fichiers, apparemment ; d'où cette fonction en remplacement du code suivant qui renvoie parfois "Fichiers impossibles à extraire (5 | READ | erreur lecture)".
+	/*
 	$zip = new ZipArchive();
 	$result_open = $zip->open($fichier_import);
 	if($result_open!==true)
@@ -90,7 +92,8 @@ if($action=='maj_etape2')
 	}
 	$zip->extractTo($dossier_import);
 	$zip->close();
-	exit(']¤['.'ok'.']¤['."Analyse des fichiers et recensement des dossiers&hellip;");
+	*/
+	exit(']¤['.'pb'.']¤['."Analyse des fichiers et recensement des dossiers&hellip;");
 }
 
 //

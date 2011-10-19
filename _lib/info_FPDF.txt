@@ -21,3 +21,26 @@ http://www.fpdf.org/fr/script/script6.php	Pour tracer un cercle (ou une ellipse)
 
 Attention : à partir de FPDF 1.7 il faut remplacer 4x dans le script18 "DefPageFormat" par "DefPageSize" !
 http://www.fpdf.org/phorum/read.php?f=1&i=56024&t=56024
+
+Attention : la fonction get_defined_vars() pouvant être désactivée, la fonction _loadfont() a été remplacée par le contenu suivant :
+http://www.fpdf.org/?go=forum&i=56830&t=56830
+
+function _loadfont($font)
+{
+	// Load a font definition file from the font directory
+	if(!file_exists($this->fontpath.$font))
+	{
+		$this->Error('Could not include font definition file');
+	}
+	include($this->fontpath.$font);
+	$a_var = array('type','name','desc','up','ut','cw','enc','file','diff','size1','size2','originalsize');
+	$a = array();
+	foreach($a_var as $var)
+	{
+		if(isset(${$var}))
+		{
+			 $a[$var] = ${$var};
+		}
+	}
+	return $a;
+}

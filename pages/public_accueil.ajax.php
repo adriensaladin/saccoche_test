@@ -111,10 +111,6 @@ if( ($action=='initialiser') && (HEBERGEUR_INSTALLATION=='mono-structure') && $p
 {
 	// Mettre à jour la base si nécessaire
 	maj_base_si_besoin($BASE);
-	// Nettoyer les fichiers temporaires dans des dossiers par établissements
-	effacer_fichiers_temporaires('./__tmp/badge/'.'0'  , 525600); // Nettoyer ce dossier des fichiers antérieurs à 1 an
-	effacer_fichiers_temporaires('./__tmp/cookie/'.'0' , 525600); // Nettoyer ce dossier des fichiers antérieurs à 1 an
-	effacer_fichiers_temporaires('./__tmp/rss/'.'0'    ,  43800); // Nettoyer ce dossier des fichiers antérieurs à 1 mois
 	// Requête pour récupérer la dénomination et le mode de connexion
 	$DB_TAB = DB_STRUCTURE_lister_parametres('"denomination","connexion_mode","connexion_nom"');
 	foreach($DB_TAB as $DB_ROW)
@@ -151,9 +147,6 @@ if( ( ($action=='initialiser') && ($BASE>0) && (HEBERGEUR_INSTALLATION=='multi-s
 	// Mettre à jour la base si nécessaire
 	charger_parametres_mysql_supplementaires($BASE);
 	maj_base_si_besoin($BASE);
-	// Nettoyer le dossier des vignettes et des flux RSS si nécessaire
-	effacer_fichiers_temporaires('./__tmp/badge/'.$BASE , 525600); // Nettoyer ce dossier des fichiers antérieurs à 1 an
-	effacer_fichiers_temporaires('./__tmp/rss/'.$BASE   , 525600); // Nettoyer ce dossier des fichiers antérieurs à 1 an
 	// Une deuxième requête sur SACOCHE_STRUCTURE_BD_NAME pour savoir si le mode de connexion est SSO ou pas
 	$DB_TAB = DB_STRUCTURE_lister_parametres('"connexion_mode","connexion_nom"');
 	foreach($DB_TAB as $DB_ROW)
@@ -170,6 +163,25 @@ if( ( ($action=='initialiser') && ($BASE>0) && (HEBERGEUR_INSTALLATION=='multi-s
 //	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
 // Traiter une demande d'identification
 //	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
+
+// On en profite pour effacer les fichiers temporaires (pas mis en page d'accueil sinon c'est appelé trop souvent)
+if($action=='identifier')
+{
+	// On essaye de faire en sorte que plusieurs nettoyages ne se lancent pas simultanément (sinon on trouve des warning php dans les logs)
+	$fichier_lock = './__tmp/lock.txt';
+	if(!file_exists($fichier_lock))
+	{
+		Ecrire_Fichier($fichier_lock,'');
+		effacer_fichiers_temporaires('./__tmp/login-mdp'     ,     10); // Nettoyer ce dossier des fichiers antérieurs à 10 minutes
+		effacer_fichiers_temporaires('./__tmp/export'        ,     60); // Nettoyer ce dossier des fichiers antérieurs à 1 heure
+		effacer_fichiers_temporaires('./__tmp/dump-base'     ,     60); // Nettoyer ce dossier des fichiers antérieurs à 1 heure
+		effacer_fichiers_temporaires('./__tmp/import'        ,  10080); // Nettoyer ce dossier des fichiers antérieurs à 1 semaine
+		effacer_fichiers_temporaires('./__tmp/rss/'.$BASE    ,  43800); // Nettoyer ce dossier des fichiers antérieurs à 1 mois
+		effacer_fichiers_temporaires('./__tmp/badge/'.$BASE  , 525600); // Nettoyer ce dossier des fichiers antérieurs à 1 an
+		effacer_fichiers_temporaires('./__tmp/cookie/'.$BASE , 525600); // Nettoyer ce dossier des fichiers antérieurs à 1 an
+		unlink($fichier_lock);
+	}
+}
 
 // Pour le webmestre d'un serveur
 

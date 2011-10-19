@@ -285,18 +285,12 @@ if($action=='importer_zip')
 		exit('Erreur : le fichier n\'a pas pu être enregistré sur le serveur.');
 	}
 	// Dezipper dans le dossier dump (pas dans un sous-dossier "temporaire" sinon ce dossier n'est pas vidé si l'opération n'arrive pas à son terme).
-	unzip( $dossier_import.$fichier_zip_nom , $dossier_dump ); // Certaines versions de librairies de php pour dézipper plantent à partir d'un certain nombre de fichiers, apparemment ; d'où cette fonction en remplacement du code suivant qui renvoie parfois "Fichiers impossibles à extraire (5 | READ | erreur lecture)".
-	/*
-	$zip = new ZipArchive();
-	$result_open = $zip->open($dossier_import.$fichier_zip_nom);
-	if($result_open!==true)
+	$code_erreur = unzip( $dossier_import.$fichier_zip_nom , $dossier_dump , TRUE /*use_ZipArchive*/ );
+	if($code_erreur)
 	{
 		require('./_inc/tableau_zip_error.php');
-		exit('<li><label class="alerte">Erreur : votre archive ZIP n\'a pas pu être ouverte ('.$result_open.$tab_zip_error[$result_open].') !</label></li>');
+		exit('<li><label class="alerte">Erreur : votre archive ZIP n\'a pas pu être ouverte ('.$code_erreur.$tab_zip_error[$code_erreur].') !</label></li>');
 	}
-	$zip->extractTo($dossier_dump);
-	$zip->close();
-	*/
 	unlink($dossier_import.$fichier_zip_nom);
 	// Vérifier le contenu : noms des fichiers
 	$tab_fichier = Lister_Contenu_Dossier($dossier_dump);
@@ -335,18 +329,12 @@ if( ($action=='importer') && $num && $max && ($num<$max) )
 	// Créer ou vider le dossier temporaire
 	Creer_ou_Vider_Dossier($dossier_temp_sql);
 	// Dezipper dans le dossier temporaire
-	unzip( $dossier_dump.$fichier_nom , $dossier_temp_sql ); // Certaines versions de librairies de php pour dézipper plantent à partir d'un certain nombre de fichiers, apparemment ; d'où cette fonction en remplacement du code suivant qui renvoie parfois "Fichiers impossibles à extraire (5 | READ | erreur lecture)".
-	/*
-	$zip = new ZipArchive();
-	$result_open = $zip->open($dossier_dump.$fichier_nom);
-	if($result_open!==true)
+	$code_erreur = unzip( $dossier_dump.$fichier_nom , $dossier_temp_sql , TRUE /*use_ZipArchive*/ );
+	if($code_erreur)
 	{
 		require('./_inc/tableau_zip_error.php');
-		exit(']¤['.'<tr>'.$retour_cellules_non.'<td><label class="erreur">Erreur : fichiers de '.html($fichier_nom).' impossible à extraire ('.$result_open.$tab_zip_error[$result_open].') !</label></td>'.'</tr>');
+		exit(']¤['.'<tr>'.$retour_cellules_non.'<td><label class="erreur">Erreur : fichiers de '.html($fichier_nom).' impossible à extraire ('.$code_erreur.$tab_zip_error[$code_erreur].') !</label></td>'.'</tr>');
 	}
-	$zip->extractTo($dossier_temp_sql);
-	$zip->close();
-	*/
 	// Vérifier le contenu : noms des fichiers
 	$fichier_taille_maximale = verifier_dossier_decompression_sauvegarde($dossier_temp_sql);
 	if(!$fichier_taille_maximale)

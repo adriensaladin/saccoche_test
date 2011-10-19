@@ -1142,12 +1142,33 @@ function _endpage()
 function _loadfont($font)
 {
 	// Load a font definition file from the font directory
+	if(!file_exists($this->fontpath.$font))
+	{
+		$this->Error('Could not include font definition file');
+	}
+	include($this->fontpath.$font);
+	$a_var = array('type','name','desc','up','ut','cw','enc','file','diff','size1','size2','originalsize');
+	$a = array();
+	foreach($a_var as $var)
+	{
+		if(isset(${$var}))
+		{
+			 $a[$var] = ${$var};
+		}
+	}
+	return $a;
+}
+/*
+function _loadfont($font)
+{
+	// Load a font definition file from the font directory
 	include($this->fontpath.$font);
 	$a = get_defined_vars();
 	if(!isset($a['name']))
 		$this->Error('Could not include font definition file');
 	return $a;
 }
+*/
 
 function _escape($s)
 {

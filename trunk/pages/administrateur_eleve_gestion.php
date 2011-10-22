@@ -27,7 +27,7 @@
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = "Gérer les élèves";
-$VERSION_JS_FILE += 3;
+$VERSION_JS_FILE += 4;
 ?>
 
 <?php

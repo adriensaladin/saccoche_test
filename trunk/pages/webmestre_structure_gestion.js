@@ -124,9 +124,9 @@ $(document).ready
 			new_tr += '<td class="nu"></td>';
 			new_tr += '<td>'+base_id+'<input id="f_base_id" name="f_base_id" type="hidden" value="'+base_id+'" /></td>';
 			new_tr += '<td><select id="f_geo" name="f_geo">'+options_geo.replace('>'+geo+'<',' selected>'+geo+'<')+'</select></td>';
-			new_tr += '<td><input id="f_localisation" name="f_localisation" size="'+Math.max(localisation.length,30)+'" type="text" value="'+localisation+'" />'+'<br />'+'<input id="f_denomination" name="f_denomination" size="'+Math.max(denomination.length,30)+'" type="text" value="'+denomination+'" /></td>';
+			new_tr += '<td><input id="f_localisation" name="f_localisation" size="'+Math.max(localisation.length,30)+'" type="text" value="'+escapeQuote(localisation)+'" />'+'<br />'+'<input id="f_denomination" name="f_denomination" size="'+Math.max(denomination.length,30)+'" type="text" value="'+escapeQuote(denomination)+'" /></td>';
 			new_tr += '<td><input id="f_uai" name="f_uai" size="8" type="text" value="'+uai+'" /></td>';
-			new_tr += '<td><input id="f_contact_nom" name="f_contact_nom" size="'+Math.max(contact_nom.length,15)+'" type="text" value="'+contact_nom+'" />'+'<br />'+'<input id="f_contact_prenom" name="f_contact_prenom" size="'+Math.max(contact_prenom.length,15)+'" type="text" value="'+contact_prenom+'" /></td>';
+			new_tr += '<td><input id="f_contact_nom" name="f_contact_nom" size="'+Math.max(contact_nom.length,15)+'" type="text" value="'+escapeQuote(contact_nom)+'" />'+'<br />'+'<input id="f_contact_prenom" name="f_contact_prenom" size="'+Math.max(contact_prenom.length,15)+'" type="text" value="'+escapeQuote(contact_prenom)+'" /></td>';
 			new_tr += '<td><input id="f_contact_courriel" name="f_contact_courriel" size="'+Math.max(contact_courriel.length,30)+'" type="text" value="'+contact_courriel+'" /></td>';
 			new_tr += '<td class="nu"><input id="f_action" name="f_action" type="hidden" value="'+mode+'" /><q class="valider" title="Valider les modifications de cet établissement."></q><q class="annuler" title="Annuler les modifications de cet établissement."></q> <label id="ajax_msg">&nbsp;</label></td>';
 			new_tr += '</tr>';

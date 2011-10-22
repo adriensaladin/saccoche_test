@@ -100,10 +100,10 @@ $(document).ready
 			}
 			// Fabriquer la ligne avec les éléments de formulaires
 			new_tr  = '<tr>';
-			new_tr += '<td><input id="f_id_ent" name="f_id_ent" size="'+Math.max(id_ent.length,10)+'" type="text" value="'+id_ent+'" /><img alt="" src="./_img/bulle_aide.png" title="Uniquement en cas d\'identification via un ENT." /></td>';
-			new_tr += '<td><input id="f_id_gepi" name="f_id_gepi" size="'+Math.max(id_gepi.length,10)+'" type="text" value="'+id_gepi+'" /><img alt="" src="./_img/bulle_aide.png" title="Uniquement en cas d\'utilisation du logiciel GEPI." /></td>';
-			new_tr += '<td><input id="f_nom" name="f_nom" size="'+Math.max(nom.length,5)+'" type="text" value="'+nom+'" /></td>';
-			new_tr += '<td><input id="f_prenom" name="f_prenom" size="'+Math.max(prenom.length,5)+'" type="text" value="'+prenom+'" /></td>';
+			new_tr += '<td><input id="f_id_ent" name="f_id_ent" size="'+Math.max(id_ent.length,10)+'" type="text" value="'+escapeQuote(id_ent)+'" /><img alt="" src="./_img/bulle_aide.png" title="Uniquement en cas d\'identification via un ENT." /></td>';
+			new_tr += '<td><input id="f_id_gepi" name="f_id_gepi" size="'+Math.max(id_gepi.length,10)+'" type="text" value="'+escapeQuote(id_gepi)+'" /><img alt="" src="./_img/bulle_aide.png" title="Uniquement en cas d\'utilisation du logiciel GEPI." /></td>';
+			new_tr += '<td><input id="f_nom" name="f_nom" size="'+Math.max(nom.length,5)+'" type="text" value="'+escapeQuote(nom)+'" /></td>';
+			new_tr += '<td><input id="f_prenom" name="f_prenom" size="'+Math.max(prenom.length,5)+'" type="text" value="'+escapeQuote(prenom)+'" /></td>';
 			new_tr += '<td><input id="f_login" name="f_login" size="'+Math.max(login.length,10)+'" type="text" value="'+login+'" /></td>';
 			new_tr += '<td><label for="f_password">générer un nouveau </label><input id="f_password" name="f_password" type="checkbox" value="'+id+'" /></td>';
 			new_tr += '<td class="nu"><input id="f_action" name="f_action" type="hidden" value="'+mode+'" /><input id="f_id" name="f_id" type="hidden" value="'+id+'" /><q class="valider" title="Valider les modifications de ce administrateur."></q><q class="annuler" title="Annuler les modifications de ce administrateur."></q> <label id="ajax_msg">&nbsp;</label></td>';

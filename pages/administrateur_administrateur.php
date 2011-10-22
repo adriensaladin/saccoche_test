@@ -27,7 +27,7 @@
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = "Gérer les administrateurs";
-$VERSION_JS_FILE += 2;
+$VERSION_JS_FILE += 3;
 ?>
 
 <p><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__gestion_administrateurs">DOC : Gestion des administrateurs</a></span></p>

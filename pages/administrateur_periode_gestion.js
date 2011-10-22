@@ -87,7 +87,7 @@ $(document).ready
 			// Fabriquer la ligne avec les éléments de formulaires
 			new_tr  = '<tr>';
 			new_tr += '<td><input id="f_ordre" name="f_ordre" size="3" type="text" value="'+ordre+'" /></td>';
-			new_tr += '<td><input id="f_nom" name="f_nom" size="'+Math.max(nom.length,20)+'" type="text" value="'+nom+'" /></td>';
+			new_tr += '<td><input id="f_nom" name="f_nom" size="'+Math.max(nom.length,20)+'" type="text" value="'+escapeQuote(nom)+'" /></td>';
 			new_tr += '<td class="nu"><input id="f_id" name="f_id" type="hidden" value="'+id+'" /><input id="f_action" name="f_action" type="hidden" value="'+mode+'" /><q class="valider" title="Valider les modifications de cette période."></q><q class="annuler" title="Annuler les modifications de cette période."></q> <label id="ajax_msg">&nbsp;</label></td>';
 			new_tr += '</tr>';
 			// Cacher la ligne en cours et ajouter la nouvelle
@@ -112,7 +112,7 @@ $(document).ready
 			// Fabriquer la ligne avec les éléments de formulaires
 			new_tr  = '<tr>';
 			new_tr += '<td><input id="f_ordre" name="f_ordre" size="3" type="text" value="'+ordre+'" /></td>';
-			new_tr += '<td><input id="f_nom" name="f_nom" size="'+Math.max(nom.length,20)+'" type="text" value="'+nom+'" /></td>';
+			new_tr += '<td><input id="f_nom" name="f_nom" size="'+Math.max(nom.length,20)+'" type="text" value="'+escapeQuote(nom)+'" /></td>';
 			new_tr += '<td class="nu"><input id="f_action" name="f_action" type="hidden" value="'+mode+'" /><q class="valider" title="Valider l\'ajout de cette période."></q><q class="annuler" title="Annuler l\'ajout de cette période."></q> <label id="ajax_msg">&nbsp;</label></td>';
 			new_tr += '</tr>';
 			// Ajouter cette nouvelle ligne

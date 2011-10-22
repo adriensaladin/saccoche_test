@@ -24,10 +24,37 @@
  * 
  */
 
-var please_wait = false;
 // Pour éviter une soumission d'un formulaire en double :
 // + lors de l'appui sur "entrée" (constaté avec Chrome, malgré l'usage de la biblio jquery.form.js, avant l'utilisation complémentaire de "disabled")
 // + lors d'un clic sur une image "q", même si elles sont normalement masquées...
+var please_wait = false;
+
+/**
+ * Fonction htmlspecialchars() en javascript
+ *
+ * @param unsafe
+ * @return string
+ */
+function escapeHtml(unsafe)
+{
+	return unsafe
+		.replace(/&/g, "&amp;")
+		.replace(/</g, "&lt;")
+		.replace(/>/g, "&gt;")
+		.replace(/"/g, "&quot;")
+		.replace(/'/g, "&#039;");
+}
+
+/**
+ * Fonction htmlspecialchars() en javascript mais juste pour les apostrophes doubles.
+ *
+ * @param unsafe
+ * @return string
+ */
+function escapeQuote(unsafe)
+{
+	return unsafe.replace(/"/g, "&quot;");
+}
 
 /**
  * Fonction pour afficher / masquer les images cliquables (en général dans la dernière colonne du tableau)

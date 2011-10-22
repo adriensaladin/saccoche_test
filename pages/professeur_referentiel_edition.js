@@ -39,14 +39,6 @@ function entity_convert(string)
 	}
 	return string;
 }
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-//	Equivalent javascript de htmlspecialchars() en php pour éviter le pb des < > " saisis dans un input et reportés dans la page
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-function htmlspecialchars(string)
-{
-	string = string.replace(/&/g,"&amp;").replace(/'/g,"&#039;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
-	return string;
-}
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 //	Pour mémoriser les liens des ressources avant que le tooltip ne bouffe les title.
@@ -217,13 +209,13 @@ $(document).ready
 						span = $(this).parent().children('span').text();
 						ref = span.charAt(0);
 						nom = span.substring(4);
-						new_div += '<i>Ref.</i> <input id="f_ref" name="f_ref" size="1" maxlength="1" type="text" value="'+ref+'" /> <i>Nom</i> <input id="f_nom" name="f_nom" size="'+Math.min(10+nom.length,118)+'" maxlength="128" type="text" value="'+nom+'" /> <img alt="" src="./_img/bulle_aide.png" title="Indiquer une lettre référence et un nom de domaine." />';
+						new_div += '<i>Ref.</i> <input id="f_ref" name="f_ref" size="1" maxlength="1" type="text" value="'+ref+'" /> <i>Nom</i> <input id="f_nom" name="f_nom" size="'+Math.min(10+nom.length,118)+'" maxlength="128" type="text" value="'+escapeQuote(nom)+'" /> <img alt="" src="./_img/bulle_aide.png" title="Indiquer une lettre référence et un nom de domaine." />';
 						texte = 'ce domaine';
 						break;
 					case 'n2' :	// thème
 						// On récupère le nom
 						nom = $(this).parent().children('span').text();
-						new_div += '<i>Nom</i> <input id="f_nom" name="f_nom" size="'+Math.min(10+nom.length,128)+'" maxlength="128" type="text" value="'+nom+'" /> <img alt="" src="./_img/bulle_aide.png" title="Indiquer un nom de thème." />';
+						new_div += '<i>Nom</i> <input id="f_nom" name="f_nom" size="'+Math.min(10+nom.length,128)+'" maxlength="128" type="text" value="'+escapeQuote(nom)+'" /> <img alt="" src="./_img/bulle_aide.png" title="Indiquer un nom de thème." />';
 						texte = 'ce thème';
 						break;
 					case 'n3' :	// item
@@ -241,7 +233,7 @@ $(document).ready
 						// On récupère le lien
 						item_id = $(this).parent().attr('id').substring(3);
 						lien = tab_ressources[item_id];
-						new_div += '<i>Nom</i> <input id="f_nom" name="f_nom" size="'+Math.min(10+nom.length,128)+'" maxlength="256" type="text" value="'+nom+'" /> <img alt="" src="./_img/bulle_aide.png" title="Indiquer un nom d\'item." /><br />';
+						new_div += '<i>Nom</i> <input id="f_nom" name="f_nom" size="'+Math.min(10+nom.length,128)+'" maxlength="256" type="text" value="'+escapeQuote(nom)+'" /> <img alt="" src="./_img/bulle_aide.png" title="Indiquer un nom d\'item." /><br />';
 						new_div += '<i>Socle</i> <input id="f_intitule" name="f_intitule" size="110" maxlength="256" type="text" value="'+socle_txt+'" readonly /><input id="f_socle" name="f_socle" type="hidden" value="'+socle_id+'" /><q class="choisir_compet" title="Sélectionner un item du socle commun."></q> <img alt="" src="./_img/bulle_aide.png" title="Appartenance éventuelle au socle commun." /><br />';
 						new_div += '<i>Coef.</i> <input id="f_coef" name="f_coef" type="text" value="'+coef+'" size="1" maxlength="2" /> <img alt="" src="./_img/bulle_aide.png" title="Coefficient facultatif (entier entre 0 et 20)." /> - <input id="f_cart1" name="f_cart" type="radio" value="1"'+check1+' /><label for="f_cart1"><img src="./_img/cart1.png" title="Demande possible." /></label> <input id="f_cart0" name="f_cart" type="radio" value="0"'+check0+' /><label for="f_cart0"><img src="./_img/cart0.png" title="Demande interdite." /></label> - <i>Lien</i> <input id="f_lien" name="f_lien" type="text" value="'+lien+'" size="90" /> <img alt="" src="./_img/bulle_aide.png" title="Lien (facultatif) vers une ressource internet (entraînement, remédiation&hellip;)." />';
 						texte = 'cet item';
@@ -392,7 +384,7 @@ $(document).ready
 			function()
 			{
 				// récupérer le nom de l'item et le reporter
-				item_nom = htmlspecialchars( entity_convert( $('#f_nom').val() ) );
+				item_nom = escapeHtml( entity_convert( $('#f_nom').val() ) );
 				$('#zone_socle span.f_nom').html(item_nom);
 				// récupérer la relation au socle commun et la cocher
 				socle_id = $(this).prev().val();
@@ -558,10 +550,10 @@ $(document).ready
 								switch(contexte)
 								{
 									case 'n1' :	// domaine
-										texte = '<span>' + ref + ' - ' + htmlspecialchars(nom) + '</span>' + images[contexte.charAt(1)] + '<ul class="ul_n2"></ul>';
+										texte = '<span>' + ref + ' - ' + escapeHtml(nom) + '</span>' + images[contexte.charAt(1)] + '<ul class="ul_n2"></ul>';
 										break;
 									case 'n2' :	// thème
-										texte = '<span>' + htmlspecialchars(nom) + '</span>' + images[contexte.charAt(1)] + '<ul class="ul_n3"></ul>';
+										texte = '<span>' + escapeHtml(nom) + '</span>' + images[contexte.charAt(1)] + '<ul class="ul_n3"></ul>';
 										break;
 									case 'n3' :	// item
 										coef_texte  = '<img src="./_img/coef/'+coef+'.gif" alt="" title="Coefficient '+coef+'." />';
@@ -571,9 +563,9 @@ $(document).ready
 										socle_nom   = $('#f_intitule').val();
 										socle_texte = '<img src="./_img/socle_'+socle_image+'.png" alt="" title="'+socle_nom+'" lang="id_'+socle+'" />';
 										lien_image  = (lien=='') ? 'off' : 'on' ;
-										lien_nom    = (lien=='') ? 'Absence de ressource.' : htmlspecialchars(lien) ;
+										lien_nom    = (lien=='') ? 'Absence de ressource.' : escapeHtml(lien) ;
 										lien_texte  = '<img src="./_img/link_'+lien_image+'.png" alt="" title="'+lien_nom+'" />';
-										texte = '<b>' + coef_texte + cart_texte + socle_texte + lien_texte + htmlspecialchars(nom) + '</b>' + images[contexte.charAt(1)];
+										texte = '<b>' + coef_texte + cart_texte + socle_texte + lien_texte + escapeHtml(nom) + '</b>' + images[contexte.charAt(1)];
 										element_id = responseHTML.substring(3);
 										tab_ressources[element_id] = (lien=='') ? '' : lien_nom ;
 										break;
@@ -678,7 +670,7 @@ $(document).ready
 							initialiser_compteur();
 							if(responseHTML=='ok')	// Attention aux caractères accentués : l'utf-8 pose des pbs pour ce test
 							{
-								texte = (contexte=='n1') ? ref + ' - ' + htmlspecialchars(nom) : htmlspecialchars(nom) ;
+								texte = (contexte=='n1') ? ref + ' - ' + escapeHtml(nom) : escapeHtml(nom) ;
 								if(contexte=='n3')
 								{
 									coef_texte  = '<img src="./_img/coef/'+coef+'.gif" alt="" title="Coefficient '+coef+'." />';
@@ -688,7 +680,7 @@ $(document).ready
 									socle_nom   = $('#f_intitule').val();
 									socle_texte = '<img src="./_img/socle_'+socle_image+'.png" alt="" title="'+socle_nom+'" lang="id_'+socle_id+'" />';
 									lien_image  = (lien=='') ? 'off' : 'on' ;
-									lien_nom    = (lien=='') ? 'Absence de ressource.' : htmlspecialchars(lien) ;
+									lien_nom    = (lien=='') ? 'Absence de ressource.' : escapeHtml(lien) ;
 									lien_texte  = '<img src="./_img/link_'+lien_image+'.png" alt="" title="'+lien_nom+'" />';
 									$('#ajax_msg').parent().parent().children('b').html(coef_texte+cart_texte+socle_texte+lien_texte+texte).show();
 									tab_ressources[element_id] = (lien=='') ? '' : lien_nom ;

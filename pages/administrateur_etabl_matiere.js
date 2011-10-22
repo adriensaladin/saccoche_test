@@ -151,7 +151,7 @@ $(document).ready
 			// Fabriquer la ligne avec les éléments de formulaires
 			new_tr  = '<tr>';
 			new_tr += '<td><input id="f_ref" name="f_ref" size="5" type="text" value="'+ref+'" /></td>';
-			new_tr += '<td><input id="f_nom" name="f_nom" size="'+Math.max(nom.length,10)+'" type="text" value="'+nom+'" /></td>';
+			new_tr += '<td><input id="f_nom" name="f_nom" size="'+Math.max(nom.length,10)+'" type="text" value="'+escapeQuote(nom)+'" /></td>';
 			new_tr += '<td class="nu"><input id="f_action" name="f_action" type="hidden" value="'+mode+'" /><input id="f_id" name="f_id" type="hidden" value="'+id+'" /><q class="valider" title="Valider les modifications de cette matière."></q><q class="annuler" title="Annuler les modifications de cette matière."></q> <label id="ajax_msg">&nbsp;</label></td>';
 			new_tr += '</tr>';
 			// Cacher la ligne en cours et ajouter la nouvelle

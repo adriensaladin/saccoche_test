@@ -33,9 +33,10 @@
  */
 function DB_WEBMESTRE_recuperer_structure($base_id)
 {
-	$DB_SQL = 'SELECT * FROM sacoche_structure ';
+	$DB_SQL = 'SELECT * ';
+	$DB_SQL.= 'FROM sacoche_structure ';
 	$DB_SQL.= 'WHERE sacoche_base=:base_id ';
-	$DB_SQL.= 'LIMIT 1 ';
+	// $DB_SQL.= 'LIMIT 1 ';
 	$DB_VAR = array(':base_id'=>$base_id);
 	return DB::queryRow(SACOCHE_WEBMESTRE_BD_NAME , $DB_SQL , $DB_VAR);
 }
@@ -48,9 +49,10 @@ function DB_WEBMESTRE_recuperer_structure($base_id)
  */
 function DB_WEBMESTRE_recuperer_structure_by_UAI($uai)
 {
-	$DB_SQL = 'SELECT * FROM sacoche_structure ';
+	$DB_SQL = 'SELECT * ';
+	$DB_SQL.= 'FROM sacoche_structure ';
 	$DB_SQL.= 'WHERE structure_uai=:uai ';
-	$DB_SQL.= 'LIMIT 1 ';
+	$DB_SQL.= 'LIMIT 1 '; // utile
 	$DB_VAR = array(':uai'=>$uai);
 	return DB::queryRow(SACOCHE_WEBMESTRE_BD_NAME , $DB_SQL , $DB_VAR);
 }
@@ -63,7 +65,8 @@ function DB_WEBMESTRE_recuperer_structure_by_UAI($uai)
  */
 function DB_WEBMESTRE_compter_structure()
 {
-	$DB_SQL = 'SELECT COUNT(sacoche_base) AS nombre FROM sacoche_structure ';
+	$DB_SQL = 'SELECT COUNT(sacoche_base) AS nombre ';
+	$DB_SQL.= 'FROM sacoche_structure ';
 	$DB_ROW = DB::queryRow(SACOCHE_WEBMESTRE_BD_NAME , $DB_SQL , null);
 	$s = ($DB_ROW['nombre']>1) ? 's' : '' ;
 	return $DB_ROW['nombre'].' structure'.$s;
@@ -77,7 +80,8 @@ function DB_WEBMESTRE_compter_structure()
  */
 function DB_WEBMESTRE_lister_zones()
 {
-	$DB_SQL = 'SELECT * FROM sacoche_geo ';
+	$DB_SQL = 'SELECT * ';
+	$DB_SQL.= 'FROM sacoche_geo ';
 	$DB_SQL.= 'ORDER BY geo_ordre ASC';
 	return DB::queryTab(SACOCHE_WEBMESTRE_BD_NAME , $DB_SQL , null);
 }
@@ -91,11 +95,12 @@ function DB_WEBMESTRE_lister_zones()
 function DB_WEBMESTRE_lister_structures($listing_base_id=false)
 {
 	$nb_ids = substr_count($listing_base_id,',')+1;
-	$DB_SQL = 'SELECT * FROM sacoche_structure ';
+	$DB_SQL = 'SELECT * ';
+	$DB_SQL.= 'FROM sacoche_structure ';
 	$DB_SQL.= 'LEFT JOIN sacoche_geo USING (geo_id) ';
 	$DB_SQL.= ($listing_base_id==false) ? '' : 'WHERE sacoche_base IN('.$listing_base_id.') ' ;
 	$DB_SQL.= 'ORDER BY geo_ordre ASC, structure_localisation ASC, structure_denomination ASC ';
-	$DB_SQL.= ($listing_base_id==false) ? '' : 'LIMIT '.$nb_ids ;
+	// $DB_SQL.= ($listing_base_id==false) ? '' : 'LIMIT '.$nb_ids ;
 	return DB::queryTab(SACOCHE_WEBMESTRE_BD_NAME , $DB_SQL , null);
 }
 
@@ -107,7 +112,8 @@ function DB_WEBMESTRE_lister_structures($listing_base_id=false)
  */
 function DB_WEBMESTRE_lister_contacts_cibles($listing_base_id)
 {
-	$DB_SQL = 'SELECT sacoche_base AS contact_id , structure_contact_nom AS contact_nom , structure_contact_prenom AS contact_prenom , structure_contact_courriel AS contact_courriel FROM sacoche_structure ';
+	$DB_SQL = 'SELECT sacoche_base AS contact_id , structure_contact_nom AS contact_nom , structure_contact_prenom AS contact_prenom , structure_contact_courriel AS contact_courriel ';
+	$DB_SQL.= 'FROM sacoche_structure ';
 	$DB_SQL.= 'WHERE sacoche_base IN('.$listing_base_id.') ';
 	return DB::queryTab(SACOCHE_WEBMESTRE_BD_NAME , $DB_SQL , null);
 }
@@ -121,7 +127,8 @@ function DB_WEBMESTRE_lister_contacts_cibles($listing_base_id)
  */
 function DB_WEBMESTRE_tester_zone_nom($geo_nom,$geo_id=false)
 {
-	$DB_SQL = 'SELECT geo_id FROM sacoche_geo ';
+	$DB_SQL = 'SELECT geo_id ';
+	$DB_SQL.= 'FROM sacoche_geo ';
 	$DB_SQL.= 'WHERE geo_nom=:geo_nom ';
 	$DB_VAR = array(':geo_nom'=>$geo_nom);
 	if($geo_id)
@@ -129,7 +136,7 @@ function DB_WEBMESTRE_tester_zone_nom($geo_nom,$geo_id=false)
 		$DB_SQL.= 'AND geo_id!=:geo_id ';
 		$DB_VAR[':geo_id'] = $geo_id;
 	}
-	$DB_SQL.= 'LIMIT 1';
+	$DB_SQL.= 'LIMIT 1'; // utile
 	$DB_ROW = DB::queryRow(SACOCHE_WEBMESTRE_BD_NAME , $DB_SQL , $DB_VAR);
 	return count($DB_ROW) ;
 }
@@ -143,7 +150,8 @@ function DB_WEBMESTRE_tester_zone_nom($geo_nom,$geo_id=false)
  */
 function DB_WEBMESTRE_tester_structure_UAI($structure_uai,$base_id=false)
 {
-	$DB_SQL = 'SELECT sacoche_base FROM sacoche_structure ';
+	$DB_SQL = 'SELECT sacoche_base ';
+	$DB_SQL.= 'FROM sacoche_structure ';
 	$DB_SQL.= 'WHERE structure_uai=:structure_uai ';
 	$DB_VAR = array(':structure_uai'=>$structure_uai);
 	if($base_id)
@@ -151,7 +159,7 @@ function DB_WEBMESTRE_tester_structure_UAI($structure_uai,$base_id=false)
 		$DB_SQL.= 'AND sacoche_base!=:base_id ';
 		$DB_VAR[':base_id'] = $base_id;
 	}
-	$DB_SQL.= 'LIMIT 1';
+	$DB_SQL.= 'LIMIT 1'; // utile
 	$DB_ROW = DB::queryRow(SACOCHE_WEBMESTRE_BD_NAME , $DB_SQL , $DB_VAR);
 	return count($DB_ROW) ;
 }
@@ -245,7 +253,7 @@ function DB_WEBMESTRE_modifier_structure($base_id,$geo_id,$structure_uai,$locali
 	$DB_SQL = 'UPDATE sacoche_structure ';
 	$DB_SQL.= 'SET geo_id=:geo_id,structure_uai=:structure_uai,structure_localisation=:localisation,structure_denomination=:denomination,structure_contact_nom=:contact_nom,structure_contact_prenom=:contact_prenom,structure_contact_courriel=:contact_courriel ';
 	$DB_SQL.= 'WHERE sacoche_base=:base_id ';
-	$DB_SQL.= 'LIMIT 1';
+	// $DB_SQL.= 'LIMIT 1';
 	$DB_VAR = array(':base_id'=>$base_id,':geo_id'=>$geo_id,':structure_uai'=>$structure_uai,':localisation'=>$localisation,':denomination'=>$denomination,':contact_nom'=>$contact_nom,':contact_prenom'=>$contact_prenom,':contact_courriel'=>$contact_courriel);
 	DB::query(SACOCHE_WEBMESTRE_BD_NAME , $DB_SQL , $DB_VAR);
 }
@@ -263,7 +271,7 @@ function DB_WEBMESTRE_modifier_zone($geo_id,$geo_ordre,$geo_nom)
 	$DB_SQL = 'UPDATE sacoche_geo ';
 	$DB_SQL.= 'SET geo_ordre=:geo_ordre,geo_nom=:geo_nom ';
 	$DB_SQL.= 'WHERE geo_id=:geo_id ';
-	$DB_SQL.= 'LIMIT 1';
+	// $DB_SQL.= 'LIMIT 1';
 	$DB_VAR = array(':geo_id'=>$geo_id,':geo_ordre'=>$geo_ordre,':geo_nom'=>$geo_nom);
 	DB::query(SACOCHE_WEBMESTRE_BD_NAME , $DB_SQL , $DB_VAR);
 }
@@ -278,7 +286,7 @@ function DB_WEBMESTRE_supprimer_zone($geo_id)
 {
 	$DB_SQL = 'DELETE FROM sacoche_geo ';
 	$DB_SQL.= 'WHERE geo_id=:geo_id ';
-	$DB_SQL.= 'LIMIT 1';
+	// $DB_SQL.= 'LIMIT 1';
 	$DB_VAR = array(':geo_id'=>$geo_id);
 	DB::query(SACOCHE_WEBMESTRE_BD_NAME , $DB_SQL , $DB_VAR);
 	// Il faut aussi mettre à jour les jointures avec les structures
@@ -299,7 +307,6 @@ function DB_WEBMESTRE_supprimer_zone($geo_id)
  */
 function DB_WEBMESTRE_supprimer_multi_structure($BASE)
 {
-	global $CHEMIN_MYSQL,$CHEMIN_CONFIG;
 	// Paramètres de connexion à la base de données
 	$BD_name = 'sac_base_'.$BASE;
 	$BD_user = 'sac_user_'.$BASE; // Limité à 16 caractères
@@ -312,7 +319,7 @@ function DB_WEBMESTRE_supprimer_multi_structure($BASE)
 	DB::query(SACOCHE_WEBMESTRE_BD_NAME , 'DROP USER '.$BD_user.'@"localhost"' );
 	DB::query(SACOCHE_WEBMESTRE_BD_NAME , 'DROP USER '.$BD_user.'@"%"' );
 	// Supprimer le fichier de connexion
-	unlink($CHEMIN_MYSQL.'serveur_sacoche_structure_'.$BASE.'.php');
+	unlink(CHEMIN_MYSQL.'serveur_sacoche_structure_'.$BASE.'.php');
 	// Supprimer la structure dans la base du webmestre
 	$DB_SQL = 'DELETE FROM sacoche_structure ';
 	$DB_SQL.= 'WHERE sacoche_base=:base ';
@@ -323,9 +330,9 @@ function DB_WEBMESTRE_supprimer_multi_structure($BASE)
 	Supprimer_Dossier('./__tmp/cookie/'.$BASE);
 	Supprimer_Dossier('./__tmp/rss/'.$BASE);
 	// Supprimer les éventuels fichiers de blocage
-	@unlink($CHEMIN_CONFIG.'blocage_webmestre_'.$BASE.'.txt');
-	@unlink($CHEMIN_CONFIG.'blocage_administrateur_'.$BASE.'.txt');
-	@unlink($CHEMIN_CONFIG.'blocage_automate_'.$BASE.'.txt');
+	@unlink(CHEMIN_CONFIG.'blocage_webmestre_'.$BASE.'.txt');
+	@unlink(CHEMIN_CONFIG.'blocage_administrateur_'.$BASE.'.txt');
+	@unlink(CHEMIN_CONFIG.'blocage_automate_'.$BASE.'.txt');
 	// Log de l'action
 	ajouter_log_SACoche('Suppression de la structure '.$BASE.'.');
 }
@@ -364,7 +371,8 @@ function DB_WEBMESTRE_creer_remplir_tables_webmestre($dossier_requetes)
  */
 function DB_WEBMESTRE_OPT_structures_sacoche()
 {
-	$DB_SQL = 'SELECT * FROM sacoche_structure ';
+	$DB_SQL = 'SELECT * ';
+	$DB_SQL.= 'FROM sacoche_structure ';
 	$DB_SQL.= 'LEFT JOIN sacoche_geo USING (geo_id) ';
 	$DB_SQL.= 'ORDER BY geo_ordre ASC, structure_localisation ASC, structure_denomination ASC';
 	$DB_TAB = DB::queryTab(SACOCHE_WEBMESTRE_BD_NAME , $DB_SQL , null);

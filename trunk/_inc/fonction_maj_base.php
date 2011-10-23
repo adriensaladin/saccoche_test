@@ -342,7 +342,7 @@ function maj_base($version_actuelle)
 			$version_actuelle = '2010-07-27';
 			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_actuelle.'" WHERE parametre_nom="version_base" LIMIT 1' );
 			// Correction du bug signalé dans le passage de la v.2010-07-13 à la v.2010-07-15.
-			$DB_ROW = DB::queryRow(SACOCHE_STRUCTURE_BD_NAME , 'SELECT parametre_valeur FROM sacoche_parametre WHERE parametre_nom="css_background-color" LIMIT 1' , null);
+			$DB_ROW = DB::queryRow(SACOCHE_STRUCTURE_BD_NAME , 'SELECT parametre_valeur FROM sacoche_parametre WHERE parametre_nom="css_background-color" LIMIT 1' );
 			if(count($DB_ROW))
 			{
 				DB::query(SACOCHE_STRUCTURE_BD_NAME , 'DELETE FROM sacoche_parametre WHERE parametre_nom="css_background-color" LIMIT 1' );
@@ -1207,7 +1207,7 @@ function maj_base($version_actuelle)
 			$DB_SQL.= 'INNER JOIN sacoche_devoir USING (devoir_id) ';
 			$DB_SQL.= 'INNER JOIN sacoche_user ON sacoche_saisie.prof_id = sacoche_user.user_id ';
 			$DB_SQL.= 'WHERE saisie_info LIKE " (%"';
-			$DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , null);
+			$DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL );
 			$DB_SQL = 'UPDATE sacoche_saisie SET saisie_info=:saisie_info WHERE prof_id=:prof_id AND eleve_id=:eleve_id AND devoir_id=:devoir_id AND item_id=:item_id LIMIT 1';
 			foreach($DB_TAB as $DB_ROW)
 			{
@@ -1230,7 +1230,7 @@ function maj_base($version_actuelle)
 			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_actuelle.'" WHERE parametre_nom="version_base" LIMIT 1' );
 			// suppression du champ groupe_prof_id pour un groupe de besoin ou un groupe d'évaluation (utilisation de la table de jointure existance à la place)
 			$DB_SQL = 'SELECT groupe_id,groupe_prof_id FROM sacoche_groupe WHERE groupe_type IN ("besoin","eval")';
-			$DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , null);
+			$DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL );
 			$DB_SQL = 'REPLACE INTO sacoche_jointure_user_groupe (user_id,groupe_id,jointure_pp) VALUES(:user_id,:groupe_id,1)';
 			foreach($DB_TAB as $DB_ROW)
 			{
@@ -1243,6 +1243,24 @@ function maj_base($version_actuelle)
 			// corrections d'entrées tronquées à cause d'un fichier SQL pas en UTF8
 			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="Très insuffisant." WHERE parametre_nom="note_legende_RR" AND parametre_valeur="Tr" ' );
 			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="Très satisfaisant." WHERE parametre_nom="note_legende_VV" AND parametre_valeur="Tr" ' );
+		}
+	}
+
+	//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	//	MAJ 2011-10-09 => 2011-10-23
+	//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	if($version_actuelle=='2011-10-09')
+	{
+		if($version_actuelle==DB_version_base())
+		{
+			$version_actuelle = '2011-10-23';
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_actuelle.'" WHERE parametre_nom="version_base" LIMIT 1' );
+			// ajout de 2 index
+			$DB_SQL = 'ALTER TABLE sacoche_saisie ADD UNIQUE saisie_key ( eleve_id , devoir_id , item_id ) ';
+			$DB_TAB = DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL );
+			$DB_SQL = 'ALTER TABLE sacoche_user ADD INDEX ( user_id_gepi ) ';
+			$DB_TAB = DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL );
 		}
 	}
 

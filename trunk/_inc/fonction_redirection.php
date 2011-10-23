@@ -130,27 +130,26 @@ function redirection_immediate($adresse='index.php')
  */
 function tester_blocage_application($BASE,$demande_connexion_profil)
 {
-	global $CHEMIN_CONFIG;
 	// Blocage demandé par le webmestre pour tous les établissements (multi-structures) ou pour l'établissement (mono-structure).
-	$fichier_blocage = $CHEMIN_CONFIG.'blocage_webmestre_0.txt';
+	$fichier_blocage = CHEMIN_CONFIG.'blocage_webmestre_0.txt';
 	if( (is_file($fichier_blocage)) && ($_SESSION['USER_PROFIL']!='webmestre') && (($_SESSION['USER_PROFIL']!='public')||($demande_connexion_profil!=false)) )
 	{
 		affich_message_exit($titre='Blocage par le webmestre',$contenu='Blocage par le webmestre - '.file_get_contents($fichier_blocage) );
 	}
 	// Blocage demandé par le webmestre pour un établissement donné (multi-structures).
-	$fichier_blocage = $CHEMIN_CONFIG.'blocage_webmestre_'.$BASE.'.txt';
+	$fichier_blocage = CHEMIN_CONFIG.'blocage_webmestre_'.$BASE.'.txt';
 	if( (is_file($fichier_blocage)) && ($_SESSION['USER_PROFIL']!='webmestre') && (($_SESSION['USER_PROFIL']!='public')||($demande_connexion_profil!=false)) )
 	{
 		affich_message_exit($titre='Blocage par le webmestre',$contenu='Blocage par le webmestre - '.file_get_contents($fichier_blocage) );
 	}
 	// Blocage demandé par un administrateur pour son établissement.
-	$fichier_blocage = $CHEMIN_CONFIG.'blocage_administrateur_'.$BASE.'.txt';
+	$fichier_blocage = CHEMIN_CONFIG.'blocage_administrateur_'.$BASE.'.txt';
 	if( (is_file($fichier_blocage)) && (!in_array($_SESSION['USER_PROFIL'],array('webmestre','administrateur'))) && (($_SESSION['USER_PROFIL']!='public')||(!in_array($demande_connexion_profil,array(FALSE,'webmestre','administrateur')))) )
 	{
 		affich_message_exit($titre='Blocage par un administrateur',$contenu='Blocage par un administrateur - '.file_get_contents($fichier_blocage) );
 	}
 	// Blocage demandé par l'automate pour un établissement donné.
-	$fichier_blocage = $CHEMIN_CONFIG.'blocage_automate_'.$BASE.'.txt';
+	$fichier_blocage = CHEMIN_CONFIG.'blocage_automate_'.$BASE.'.txt';
 	if( (is_file($fichier_blocage)) && (!in_array($_SESSION['USER_PROFIL'],array('webmestre','administrateur'))) && (($_SESSION['USER_PROFIL']!='public')||(!in_array($demande_connexion_profil,array(FALSE,'webmestre','administrateur')))) )
 	{
 		// Au cas où une procédure de sauvegarde / restauration / nettoyage / tranfert échouerait, un fichier de blocage automatique pourrait être créé et ne pas être effacé.

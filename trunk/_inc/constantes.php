@@ -33,33 +33,31 @@
 // VERSION_PROG : version des fichiers installés, à comparer avec la dernière version disponible sur le serveur communautaire
 // VERSION_BASE : version de la base associée, à comparer avec la version de la base actuellement installée
 define('VERSION_PROG', @file_get_contents('VERSION.txt') );	// Ne pas mettre de chemin ! Dans un fichier texte pour permettre un appel au serveur communautaire sans lui faire utiliser PHP.
-define('VERSION_BASE','2011-10-09');
+define('VERSION_BASE','2011-10-23');
 
-// VERSION_CSS_SCREEN / VERSION_CSS_PRINT / VERSION_JS_BIBLIO / VERSION_JS_GLOBAL / VERSION_JS_FILE
-// Pour éviter les problèmes de mise en cache (hors serveur localhost), modifier ces valeurs lors d'une mise à jour
+// Pour éviter les problèmes de mise en cache (serveur PROD uniquement)
 define('VERSION_CSS_SCREEN',65); // A changer lors de la mise à jour de ./_css/style.css
-define('VERSION_CSS_PRINT',2);   // A changer lors de la mise à jour de ./_css/style_print.css
-define('VERSION_JS_BIBLIO',10);  // A changer lors de la mise à jour de ./_js/jquery-librairies.js
-define('VERSION_JS_GLOBAL',45);  // A changer lors de la mise à jour de ./_js/script.js
+define('VERSION_CSS_PRINT' , 2); // A changer lors de la mise à jour de ./_css/style_print.css
+define('VERSION_JS_BIBLIO' ,10); // A changer lors de la mise à jour de ./_js/jquery-librairies.js
+define('VERSION_JS_GLOBAL' ,45); // A changer lors de la mise à jour de ./_js/script.js
 $VERSION_JS_FILE = 7;            // A changer lors de la mise à jour de tout un lot de fichiers js ; incrémenté ensuite si besoin dans le script associé à la page.
 
-// Quelques chemins... en variables et non constantes car pouvant être modifiés ensuite dans un cadre particulier (installation Sésamath)
-$CHEMIN_MYSQL  = './__private/mysql/';
-$CHEMIN_CONFIG = './__private/config/';
+// Quelques chemins, avec le séparateur final
+define('CHEMIN_SACOCHE',realpath(dirname(dirname(__FILE__))).DIRECTORY_SEPARATOR);
+define('DOSSIER_MYSQL' ,DIRECTORY_SEPARATOR.'__private'.DIRECTORY_SEPARATOR.'mysql'.DIRECTORY_SEPARATOR);
+define('DOSSIER_CONFIG',DIRECTORY_SEPARATOR.'__private'.DIRECTORY_SEPARATOR.'config'.DIRECTORY_SEPARATOR);
+define('DOSSIER_FONT'  ,DIRECTORY_SEPARATOR.'_lib'.DIRECTORY_SEPARATOR.'FPDF'.DIRECTORY_SEPARATOR.'font'.DIRECTORY_SEPARATOR);
+define('CHEMIN_MYSQL'  ,CHEMIN_SACOCHE.DOSSIER_MYSQL);
+define('CHEMIN_CONFIG' ,CHEMIN_SACOCHE.DOSSIER_CONFIG);
+define('FPDF_FONTPATH' ,CHEMIN_SACOCHE.DOSSIER_FONT); // Pour FPDF (répertoire où se situent les polices)
 
-// ID_DEMO : valeur de $_SESSION['SESAMATH_ID'] correspondant à l'établissement de démonstration
-// 0 pose des pbs, et il faut prendre un id disponible dans la base d'établissements de Sésamath
-define('ID_DEMO',9999);
-
-// ID_MATIERE_TRANSVERSALE : id de la matière transversale dans la table "sacoche_matiere"
-// LISTING_ID_NIVEAUX_CYCLES : listing des id des cycles dans la table "sacoche_niveau"
-// LISTING_ID_PALIERS : listing des id des paliers dans la table "sacoche_socle_palier"
-define('ID_MATIERE_TRANSVERSALE',99);
-define('LISTING_ID_NIVEAUX_CYCLES','.1.2.3.4.');
-define('LISTING_ID_PALIERS','.1.2.3.');
+define('ID_DEMO'                  ,9999);        // id de l'établissement de démonstration (pour $_SESSION['SESAMATH_ID']) ; 0 pose des pbs, et il faut prendre un id disponible dans la base d'établissements de Sésamath
+define('ID_MATIERE_TRANSVERSALE'  ,99);          // id de la matière transversale dans la table "sacoche_matiere"
+define('LISTING_ID_NIVEAUX_CYCLES','.1.2.3.4.'); // listing des id des cycles dans la table "sacoche_niveau"
+define('LISTING_ID_PALIERS'       ,'.1.2.3.');   // listing des id des paliers dans la table "sacoche_socle_palier"
 
 // CHARSET : "iso-8859-1" ou "utf-8" suivant l'encodage utilisé ; présence aussi d'un "AddDefaultCharset ..." dans le fichier .htaccess
-// Cependant, tout le site ayant été prévu et conçu en UTF-8, changer le CHARSET est assez hasardeux pour ne pas dire risqué...
+// Cependant, tout le site ayant été prévu et conçu en UTF-8, changer le CHARSET semble assez hasardeux pour ne pas dire risqué...
 define('CHARSET','utf-8');
 
 // SERVEUR_ADRESSE
@@ -72,26 +70,17 @@ if($fin)
 }
 define('SERVEUR_ADRESSE',$chemin);
 
-// SERVEUR_TYPE : Serveur local de développement (LOCAL) ou serveur en ligne de production (PROD)
-$serveur = in_array($_SERVER['HTTP_HOST'],array('localhost','127.0.0.1')) ? 'LOCAL' : 'PROD';
-define('SERVEUR_TYPE',$serveur);
+// SERVEUR_TYPE
+$serveur = in_array($_SERVER['HTTP_HOST'],array('localhost','127.0.0.1')) ? 'LOCAL' : ( (strpos($_SERVER['HTTP_HOST'],'.devsesamath.net')) ? 'DEV' : 'PROD' ) ;
+define('SERVEUR_TYPE',$serveur); // PROD | DEV | LOCAL
 
-// SERVEUR_PROJET        : URL du projet SACoche
-// SERVEUR_COMMUNAUTAIRE : URL complète du fichier chargé d'effectuer la liaison entre les installations de SACoche et le serveur communautaire concernant les référentiels.
-// SERVEUR_DOCUMENTAIRE  : URL complète du fichier chargé d'afficher les documentations
-// SERVEUR_VERSION       : URL complète du fichier chargé de renvoyer le numéro de la dernière version disponible
-define('SERVEUR_PROJET'         , 'http://sacoche.sesamath.net');
-define('SERVEUR_COMMUNAUTAIRE'  , SERVEUR_PROJET.'/appel_externe.php');
-define('SERVEUR_DOCUMENTAIRE'   , SERVEUR_PROJET.'/appel_doc.php');
-define('SERVEUR_VERSION'        , SERVEUR_PROJET.'/sacoche/VERSION.txt');
-define('SERVEUR_TELECHARGEMENT' , SERVEUR_PROJET.'/telechargement.php');
+define('SERVEUR_PROJET'        ,'http://sacoche.sesamath.net');         // URL du projet SACoche
+define('SERVEUR_COMMUNAUTAIRE' ,SERVEUR_PROJET.'/appel_externe.php');   // URL du fichier chargé d'effectuer la liaison entre les installations de SACoche et le serveur communautaire concernant les référentiels.
+define('SERVEUR_DOCUMENTAIRE'  ,SERVEUR_PROJET.'/appel_doc.php');       // URL du fichier chargé d'afficher les documentations
+define('SERVEUR_VERSION'       ,SERVEUR_PROJET.'/sacoche/VERSION.txt'); // URL du fichier chargé de renvoyer le numéro de la dernière version disponible
+define('SERVEUR_TELECHARGEMENT',SERVEUR_PROJET.'/telechargement.php');  // URL du fichier renvoyant le ZIP de la dernière archive de SACoche disponible
 
-// COOKIE_STRUCTURE : nom du cookie servant à retenir l'établissement sélectionné, afin de ne pas à avoir à le sélectionner de nouveau, et à pouvoir le retrouver si perte d'une session et tentative de reconnexion SSO.
-define('COOKIE_STRUCTURE','SACoche-etablissement');
-// COOKIE_PAGE : nom du cookie servant à retenir le dernier mode de connexion utilisé par un user connecté, afin de pouvoir le retrouver si perte d'une session et tentative de reconnexion SSO.
-define('COOKIE_AUTHMODE','SACoche-mode-connexion');
-
-// Pour FPDF : Répertoire où se situent les polices
-define('FPDF_FONTPATH','./_lib/FPDF/font/');
+define('COOKIE_STRUCTURE','SACoche-etablissement');  // nom du cookie servant à retenir l'établissement sélectionné, afin de ne pas à avoir à le sélectionner de nouveau, et à pouvoir le retrouver si perte d'une session et tentative de reconnexion SSO.
+define('COOKIE_AUTHMODE' ,'SACoche-mode-connexion'); // nom du cookie servant à retenir le dernier mode de connexion utilisé par un user connecté, afin de pouvoir le retrouver si perte d'une session et tentative de reconnexion SSO.
 
 ?>

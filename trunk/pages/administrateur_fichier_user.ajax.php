@@ -1708,7 +1708,6 @@ if( $step==52 )
 		$zip->addFromString($fnom.'.csv',csv($fcontenu_csv));
 		$zip->close();
 		// On archive les nouveaux identifiants dans un fichier pdf (classe fpdf + script étiquettes)
-		require_once('./_lib/FPDF/PDF_Label.php');
 		$pdf = new PDF_Label(array('paper-size'=>'A4', 'metric'=>'mm', 'marginLeft'=>5, 'marginTop'=>5, 'NX'=>3, 'NY'=>8, 'SpaceX'=>7, 'SpaceY'=>5, 'width'=>60, 'height'=>30, 'font-size'=>11));
 		$pdf -> AddFont('Arial','' ,'arial.php');
 		$pdf -> SetFont('Arial'); // Permet de mieux distinguer les "l 1" etc. que la police Times ou Courrier

@@ -165,7 +165,7 @@ if( ($action=='modifier') && $base_id && isset($tab_geo[$geo_id]) && $localisati
 	$tab_parametres['denomination'] = $denomination;
 	DB_STRUCTURE_modifier_parametres($tab_parametres);
 	// On affiche le retour
-	$img = (!is_file($CHEMIN_CONFIG.'blocage_webmestre_'.$base_id.'.txt')) ? '<img class="bloquer" src="./_img/blocage_non.png" title="Bloquer cet établissement." />' : '<img class="debloquer" src="./_img/blocage_oui.png" title="Débloquer cet établissement." />' ;
+	$img = (!is_file(CHEMIN_CONFIG.'blocage_webmestre_'.$base_id.'.txt')) ? '<img class="bloquer" src="./_img/blocage_non.png" title="Bloquer cet établissement." />' : '<img class="debloquer" src="./_img/blocage_oui.png" title="Débloquer cet établissement." />' ;
 	echo'<td class="nu"><a href="#id_0">'.$img.'</a></td>';
 	echo'<td class="nu"><input type="checkbox" name="f_ids" value="'.$base_id.'" /></td>';
 	echo'<td class="label">'.$base_id.'</td>';

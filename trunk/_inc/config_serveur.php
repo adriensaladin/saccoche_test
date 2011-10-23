@@ -91,4 +91,46 @@ ini_set('zend.ze1_compatibility_mode',0);
 // Modifier l'encodage interne pour les fonctions mb_* (manipulation de chaînes de caractères multi-octets)
 mb_internal_encoding(CHARSET);
 
+// Pour FirePHP
+if(SERVEUR_TYPE!='PROD')
+{
+	ini_set('output_buffering','On');
+}
+
+/**
+ * Auto-chargement des classes (aucune inclusion de classe n'est nécessaire, elles sont chargées par cette fonction suivant les besoins).
+ * 
+ * @param string   $class_name   nom de la classe
+ * @return void
+ */
+function __autoload($class_name)
+{
+	if(stripos($class_name,'PEAR')!==false) return; // ???
+	$tab_classes = array(
+		'DB'                     => '_lib'.DIRECTORY_SEPARATOR.'DB'.DIRECTORY_SEPARATOR.'DB.class.php' ,
+		'FirePHP'                => '_lib'.DIRECTORY_SEPARATOR.'FirePHPCore'.DIRECTORY_SEPARATOR.'FirePHP.class.php' ,
+		'FPDF'                   => '_lib'.DIRECTORY_SEPARATOR.'FPDF'.DIRECTORY_SEPARATOR.'fpdf.php' ,
+		'PDF_Label'              => '_lib'.DIRECTORY_SEPARATOR.'FPDF'.DIRECTORY_SEPARATOR.'PDF_Label.php' ,
+		'phpCAS'                 => '_lib'.DIRECTORY_SEPARATOR.'phpCAS'.DIRECTORY_SEPARATOR.'CAS.php' ,
+		'SimpleSAML_Auth_Simple' => '_lib'.DIRECTORY_SEPARATOR.'SimpleSAMLphp'.DIRECTORY_SEPARATOR.'lib'.DIRECTORY_SEPARATOR.'_autoload.php' ,
+		'cssmin'                 => '_inc'.DIRECTORY_SEPARATOR.'class.CssMinified.php' ,
+		'MyDOMDocument'          => '_inc'.DIRECTORY_SEPARATOR.'class.domdocument.php' ,
+		'JSMin'                  => '_inc'.DIRECTORY_SEPARATOR.'class.JavaScriptMinified.php' ,
+		'JavaScriptPacker'       => '_inc'.DIRECTORY_SEPARATOR.'class.JavaScriptPacker.php' ,
+		'PDF'                    => '_inc'.DIRECTORY_SEPARATOR.'class.PDF.php'
+	);
+	if(isset($tab_classes[$class_name]))
+	{
+		$class_file = CHEMIN_SACOCHE.$tab_classes[$class_name];
+		if(is_file($class_file))
+		{
+			require_once($class_file);
+		}
+		else
+		{
+			affich_message_exit($titre='Classe introuvable',$contenu='Le chemin de la classe '.$class_name.' est incorrect : '.$class_file);
+		}
+	}
+}
+
 ?>

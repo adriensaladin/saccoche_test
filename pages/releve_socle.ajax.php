@@ -338,8 +338,6 @@ $releve_html  = '<style type="text/css">'.$_SESSION['CSS'].'</style>';
 $releve_html .= '<h1>'.html($titre1).'</h1>';
 $releve_html .= '<h2>'.html($titre2).'</h2>';
 // Appel de la classe et définition de qqs variables supplémentaires pour la mise en page PDF
-require('./_lib/FPDF/fpdf.php');
-require('./_inc/class.PDF.php');
 $releve_pdf = new PDF($orientation='portrait',$marge_min=7.5,$couleur='oui');
 $releve_pdf->releve_socle_initialiser($test_affichage_Pourcentage,$test_affichage_Validation);
 

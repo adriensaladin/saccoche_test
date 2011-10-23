@@ -49,7 +49,7 @@ elseif(isset($_POST['section'])) { $SECTION = $_POST['section']; }
 else                             { $SECTION = ''; }
 
 // Fichier d'informations sur l'hébergement (requis avant la gestion de la session).
-$fichier_constantes = $CHEMIN_CONFIG.'constantes.php';
+$fichier_constantes = CHEMIN_CONFIG.'constantes.php';
 if(is_file($fichier_constantes))
 {
 	require_once($fichier_constantes);
@@ -104,8 +104,6 @@ if(is_file($fichier_constantes))
 // Interface de connexion à la base, chargement et config (test sur $fichier_constantes car à éviter si procédure d'installation non terminée).
 if(is_file($fichier_constantes))
 {
-	// Classe de connexion aux BDD
-	require_once('./_lib/DB/DB.class.php');
 	// Choix des paramètres de connexion à la base de données adaptée...
 	// ...multi-structure ; base sacoche_structure_***
 	if( (in_array($_SESSION['USER_PROFIL'],array('administrateur','directeur','professeur','parent','eleve'))) && (HEBERGEUR_INSTALLATION=='multi-structures') )
@@ -133,7 +131,7 @@ if(is_file($fichier_constantes))
 		affich_message_exit($titre='Configuration anormale',$contenu='Une anomalie dans les données d\'hébergement et/ou de session empêche l\'application de se poursuivre.');
 	}
 	// Ajout du chemin correspondant
-	$fichier_mysql_config = $CHEMIN_MYSQL.$fichier_mysql_config.'.php';
+	$fichier_mysql_config = CHEMIN_MYSQL.$fichier_mysql_config.'.php';
 	$fichier_class_config = './_inc/'.$fichier_class_config.'.php';
 	// Chargement du fichier de connexion à la BDD
 	if(is_file($fichier_mysql_config))
@@ -143,14 +141,14 @@ if(is_file($fichier_constantes))
 		// A compter du 02/08/2010, déplacement du port dans le fichier créé à l'installation. [à retirer dans quelques mois]
 		if(!defined('SACOCHE_'.$PATCH.'_BD_PORT'))
 		{
-			$tab_fichier = Lister_Contenu_Dossier($CHEMIN_MYSQL);
+			$tab_fichier = Lister_Contenu_Dossier(CHEMIN_MYSQL);
 			$bad = array( "define('SACOCHE_STRUCTURE_BD_NAME" , "define('SACOCHE_WEBMESTRE_BD_NAME" );
 			$bon = array( "define('SACOCHE_STRUCTURE_BD_PORT','3306');	// Port de connexion\r\ndefine('SACOCHE_STRUCTURE_BD_NAME" , "define('SACOCHE_WEBMESTRE_BD_PORT','3306');	// Port de connexion\r\ndefine('SACOCHE_WEBMESTRE_BD_NAME" );
 			foreach($tab_fichier as $fichier)
 			{
-				$fichier_contenu = file_get_contents($CHEMIN_MYSQL.'/'.$fichier);
+				$fichier_contenu = file_get_contents(CHEMIN_MYSQL.$fichier);
 				$fichier_contenu = str_replace($bad,$bon,$fichier_contenu);
-				Ecrire_Fichier($CHEMIN_MYSQL.'/'.$fichier,$fichier_contenu);
+				Ecrire_Fichier(CHEMIN_MYSQL.$fichier,$fichier_contenu);
 			}
 			define('SACOCHE_'.$PATCH.'_BD_PORT','3306');	// Port de connexion
 		}

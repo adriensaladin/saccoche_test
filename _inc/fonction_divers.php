@@ -233,18 +233,15 @@ function compacter($chemin,$version,$methode)
 			$fichier_contenu = utf8_decode($fichier_contenu); // Attention, il faut envoyer à ces classes de l'iso et pas de l'utf8.
 			if( ($extension=='js') && ($methode=='pack') )
 			{
-				require_once('class.JavaScriptPacker.php');	// Ne pas mettre de chemin !
 				$myPacker = new JavaScriptPacker($fichier_contenu, 62, true, false);
 				$fichier_compacte = $myPacker->pack();
 			}
 			elseif( ($extension=='js') && ($methode=='mini') )
 			{
-				require_once('class.JavaScriptMinified.php');	// Ne pas mettre de chemin !
 				$fichier_compacte = JSMin::minify($fichier_contenu);
 			}
 			elseif( ($extension=='css') && ($methode=='mini') )
 			{
-				require_once('class.CssMinified.php');	// Ne pas mettre de chemin !
 				$fichier_compacte = cssmin::minify($fichier_contenu);
 			}
 			else
@@ -280,13 +277,12 @@ function compacter($chemin,$version,$methode)
  */
 function charger_parametres_mysql_supplementaires($BASE)
 {
-	global $CHEMIN_MYSQL;
-	$file_config_base_structure_multi = $CHEMIN_MYSQL.'serveur_sacoche_structure_'.$BASE.'.php';
+	$file_config_base_structure_multi = CHEMIN_MYSQL.'serveur_sacoche_structure_'.$BASE.'.php';
 	if(is_file($file_config_base_structure_multi))
 	{
 		global $_CONST; // Car si on charge les paramètres dans une fonction, ensuite ils ne sont pas trouvés par la classe de connexion.
 		require_once($file_config_base_structure_multi);
-		require_once($CHEMIN_MYSQL.'../../_inc/class.DB.config.sacoche_structure.php'); // Chemin un peu tordu... mais nécessaire à cause d'un appel particulier pour l'install Sésamath
+		require_once(CHEMIN_SACOCHE.'_inc'.DIRECTORY_SEPARATOR.'class.DB.config.sacoche_structure.php');
 	}
 	else
 	{
@@ -306,8 +302,7 @@ function maj_base_si_besoin($BASE)
 	if($version_base != VERSION_BASE)
 	{
 		// On ne met pas à jour la base tant que le webmestre bloque l'accès à l'application, car sinon cela pourrait se produire avant le transfert de tous les fichiers.
-		global $CHEMIN_CONFIG;
-		if(!is_file($CHEMIN_CONFIG.'blocage_webmestre_0.txt'))
+		if(!is_file(CHEMIN_CONFIG.'blocage_webmestre_0.txt'))
 		{
 			// Bloquer l'application
 			bloquer_application('automate',$BASE,'Mise à jour de la base en cours.');
@@ -376,8 +371,7 @@ function crypter_mdp($password)
  */
 function fabriquer_fichier_hebergeur_info($tab_constantes_modifiees)
 {
-	global $CHEMIN_CONFIG;
-	$fichier_nom     = $CHEMIN_CONFIG.'constantes.php';
+	$fichier_nom     = CHEMIN_CONFIG.'constantes.php';
 	$tab_constantes_requises = array('HEBERGEUR_INSTALLATION','HEBERGEUR_DENOMINATION','HEBERGEUR_UAI','HEBERGEUR_ADRESSE_SITE','HEBERGEUR_LOGO','CNIL_NUMERO','CNIL_DATE_ENGAGEMENT','CNIL_DATE_RECEPISSE','WEBMESTRE_NOM','WEBMESTRE_PRENOM','WEBMESTRE_COURRIEL','WEBMESTRE_PASSWORD_MD5','WEBMESTRE_ERREUR_DATE','SERVEUR_PROXY_USED','SERVEUR_PROXY_NAME','SERVEUR_PROXY_PORT','SERVEUR_PROXY_TYPE','SERVEUR_PROXY_AUTH_USED','SERVEUR_PROXY_AUTH_METHOD','SERVEUR_PROXY_AUTH_USER','SERVEUR_PROXY_AUTH_PASS');
 	$fichier_contenu = '<?php'."\r\n";
 	$fichier_contenu.= '// Informations concernant l\'hébergement et son webmestre (n°UAI uniquement pour une installation de type mono-structure)'."\r\n";
@@ -403,22 +397,21 @@ function fabriquer_fichier_hebergeur_info($tab_constantes_modifiees)
  */
 function fabriquer_fichier_connexion_base($base_id,$BD_host,$BD_port,$BD_name,$BD_user,$BD_pass)
 {
-	global $CHEMIN_MYSQL;
 	if( (HEBERGEUR_INSTALLATION=='multi-structures') && ($base_id>0) )
 	{
-		$fichier_nom = $CHEMIN_MYSQL.'serveur_sacoche_structure_'.$base_id.'.php';
+		$fichier_nom = CHEMIN_MYSQL.'serveur_sacoche_structure_'.$base_id.'.php';
 		$fichier_descriptif = 'Paramètres MySQL de la base de données SACoche n°'.$base_id.' (installation multi-structures).';
 		$prefixe = 'STRUCTURE';
 	}
 	elseif(HEBERGEUR_INSTALLATION=='mono-structure')
 	{
-		$fichier_nom = $CHEMIN_MYSQL.'serveur_sacoche_structure.php';
+		$fichier_nom = CHEMIN_MYSQL.'serveur_sacoche_structure.php';
 		$fichier_descriptif = 'Paramètres MySQL de la base de données SACoche (installation mono-structure).';
 		$prefixe = 'STRUCTURE';
 	}
 	else	// (HEBERGEUR_INSTALLATION=='multi-structures') && ($base_id==0)
 	{
-		$fichier_nom = $CHEMIN_MYSQL.'serveur_sacoche_webmestre.php';
+		$fichier_nom = CHEMIN_MYSQL.'serveur_sacoche_webmestre.php';
 		$fichier_descriptif = 'Paramètres MySQL de la base de données SACoche du webmestre (installation multi-structures).';
 		$prefixe = 'WEBMESTRE';
 	}
@@ -464,8 +457,7 @@ function modifier_mdp_webmestre($password_ancien,$password_nouveau)
  */
 function bloquer_application($profil_demandeur,$id_base,$motif)
 {
-	global $CHEMIN_CONFIG;
-	$fichier_nom = $CHEMIN_CONFIG.'blocage_'.$profil_demandeur.'_'.$id_base.'.txt' ;
+	$fichier_nom = CHEMIN_CONFIG.'blocage_'.$profil_demandeur.'_'.$id_base.'.txt' ;
 	Ecrire_Fichier($fichier_nom,$motif);
 	// Log de l'action
 	ajouter_log_SACoche('Blocage de l\'accès à l\'application ['.$motif.'].');
@@ -480,8 +472,7 @@ function bloquer_application($profil_demandeur,$id_base,$motif)
  */
 function debloquer_application($profil_demandeur,$id_base)
 {
-	global $CHEMIN_CONFIG;
-	$fichier_nom = $CHEMIN_CONFIG.'blocage_'.$profil_demandeur.'_'.$id_base.'.txt' ;
+	$fichier_nom = CHEMIN_CONFIG.'blocage_'.$profil_demandeur.'_'.$id_base.'.txt' ;
 	@unlink($fichier_nom);
 	// Log de l'action
 	ajouter_log_SACoche('Déblocage de l\'accès à l\'application.');

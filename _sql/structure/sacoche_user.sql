@@ -23,5 +23,6 @@ CREATE TABLE sacoche_user (
 	UNIQUE KEY user_login (user_login),
 	KEY user_profil (user_profil),
 	KEY user_statut (user_statut),
-	KEY user_id_ent (user_id_ent)
+	KEY user_id_ent (user_id_ent),
+	KEY user_id_gepi (user_id_gepi)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;

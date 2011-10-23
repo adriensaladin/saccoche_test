@@ -180,8 +180,6 @@ if( $matiere_id && $niveau_id && $matiere_nom && $niveau_nom && $remplissage && 
 	$releve_HTML .= '<h1>Grille d\'items d\'un référentiel</h1>';
 	$releve_HTML .= '<h2>'.html($matiere_nom.' - Niveau '.$niveau_nom.$only_socle).'</h2>';
 	// Appel de la classe et définition de qqs variables supplémentaires pour la mise en page PDF
-	require('./_lib/FPDF/fpdf.php');
-	require('./_inc/class.PDF.php');
 	$releve_PDF = new PDF($orientation,$marge_min,$couleur,$legende);
 	$releve_PDF->grille_referentiel_initialiser($cases_nb,$cases_largeur,$lignes_nb,$colonne_vide);
 

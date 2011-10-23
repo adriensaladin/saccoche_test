@@ -114,8 +114,6 @@ if($connexion_mode=='normal')
 
 if($connexion_mode=='cas')
 {
-	// Inclure la classe phpCAS
-	require_once('./_lib/phpCAS/CAS.php');
 	// Pour tester, cette méthode statique créé un fichier de log sur ce qui se passe avec CAS
 	// phpCAS::setDebug('debugcas.txt');
 	// Initialiser la connexion avec CAS  ; le premier argument est la version du protocole CAS ; le dernier argument indique qu'on utilise la session existante
@@ -163,8 +161,6 @@ if($connexion_mode=='gepi')
 		'WEBMESTRE_PRENOM'          => WEBMESTRE_PRENOM,
 		'WEBMESTRE_COURRIEL'        => WEBMESTRE_COURRIEL
 	);
-	// Inclure la classe SimpleSAMLphp
-	require_once('./_lib/SimpleSAMLphp/lib/_autoload.php');
 	// Initialiser la classe
 	$auth = new SimpleSAML_Auth_Simple('distant-gepi-saml');
 	//on forge une extension SAML pour tramsmettre l'établissement précisé dans SACoche

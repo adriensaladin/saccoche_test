@@ -447,8 +447,6 @@ if( ($action=='saisir') && $devoir_id && $groupe_type && $groupe_id && $date && 
 	//
 	// pdf contenant un tableau de saisie vide ; on a besoin de tourner du texte à 90°
 	//
-	require('./_lib/FPDF/fpdf.php');
-	require('./_inc/class.PDF.php');
 	$sacoche_pdf = new PDF($orientation='landscape',$marge_min=10,$couleur='non');
 	$sacoche_pdf->tableau_saisie_initialiser($eleve_nb,$item_nb);
 	// 1ère ligne : référence devoir, noms élèves
@@ -597,8 +595,6 @@ if( ($action=='voir') && $devoir_id && $groupe_type && $groupe_id && $date && $d
 	}
 	$zip->addFromString($fnom.'.csv',csv($export_csv));
 	$zip->close();
-	require('./_lib/FPDF/fpdf.php');
-	require('./_inc/class.PDF.php');
 	// / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / /
 	// pdf contenant un tableau de saisie vide ; on a besoin de tourner du texte à 90°
 	// / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / /
@@ -767,8 +763,6 @@ if( ($action=='voir_repart') && $devoir_id && $groupe_type && $groupe_id && $dat
 		echo'</tr>';
 	}
 	echo'</tbody>';
-	require('./_lib/FPDF/fpdf.php');
-	require('./_inc/class.PDF.php');
 	// / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / /
 	// pdf contenant un tableau avec la répartition quantitative
 	// / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / /
@@ -1020,8 +1014,6 @@ if( ($action=='Imprimer_cartouche') && $devoir_id && $groupe_type && $groupe_id 
 	{
 		$tab_user_nb_req = array_fill_keys( array_keys($tab_user_nb_req) , $item_nb );
 	}
-	require('./_lib/FPDF/fpdf.php');
-	require('./_inc/class.PDF.php');
 	$sacoche_pdf = new PDF($orientation,$marge_min,$couleur);
 	$sacoche_pdf->cartouche_initialiser($cart_detail,$item_nb);
 	if($cart_detail=='minimal')

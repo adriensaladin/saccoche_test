@@ -9,6 +9,7 @@ CREATE TABLE sacoche_saisie (
 	saisie_note         ENUM("VV","V","R","RR","ABS","NN","DISP","REQ") COLLATE utf8_unicode_ci NOT NULL DEFAULT "NN",
 	saisie_info         VARCHAR(100)                                    COLLATE utf8_unicode_ci NOT NULL DEFAULT "" COMMENT "Enregistrement statique du nom du devoir et du professeur, conservé les années suivantes.",
 	saisie_visible_date DATE                                                                    NOT NULL DEFAULT "0000-00-00",
+	UNIQUE KEY saisie_key (eleve_id,devoir_id,item_id),
 	KEY prof_id (prof_id),
 	KEY eleve_id (eleve_id),
 	KEY devoir_id (devoir_id),

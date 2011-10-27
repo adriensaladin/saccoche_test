@@ -40,15 +40,7 @@ if( (!$groupe_id) || (!in_array($eval_type,$tab_types)) )
 	exit('Erreur avec les données transmises !');
 }
 // Lister les dernières évaluations d'une classe ou d'un groupe ou d'un groupe de besoin
-$DB_SQL = 'SELECT sacoche_devoir.* ';
-$DB_SQL.= 'FROM sacoche_devoir ';
-$DB_SQL.= 'LEFT JOIN sacoche_groupe USING (groupe_id) ';
-$DB_SQL.= 'WHERE prof_id=:prof_id ';
-$DB_SQL.= ($eval_type=='groupe') ? 'AND groupe_type!=:type4 AND groupe_id=:groupe_id ' : 'AND groupe_type=:type4 ' ;
-$DB_SQL.= 'ORDER BY devoir_date DESC ';
-$DB_SQL.= 'LIMIT 20 ';
-$DB_VAR = array(':prof_id'=>$_SESSION['USER_ID'],':groupe_id'=>$groupe_id,':type4'=>'eval');
-$DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+$DB_TAB = DB_STRUCTURE_PROFESSEUR::DB_lister_devoirs_prof_groupe_sans_infos_last($_SESSION['USER_ID'],$groupe_id,$eval_type);
 if(!count($DB_TAB))
 {
 	exit('<option value="" disabled>Aucun devoir n\'a été trouvé pour ce groupe d\'élèves !</option>');

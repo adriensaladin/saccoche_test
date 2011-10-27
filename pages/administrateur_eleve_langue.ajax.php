@@ -53,7 +53,7 @@ if($action=='associer')
 		exit('Erreur : langue non transmise ou incorrecte !');
 	}
 	// go
-	DB_STRUCTURE_modifier_user_langue($listing_user_id,$langue);
+	DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_user_langue($listing_user_id,$langue);
 }
 
 //
@@ -66,14 +66,14 @@ $tab_niveau_groupe[0][0] = '<i>sans classe</i>';
 $tab_user[0]             = '';
 
 // Récupérer la liste des classes
-$DB_TAB = DB_STRUCTURE_lister_classes_avec_niveaux($niveau_ordre='DESC');
+$DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_classes_avec_niveaux($niveau_ordre='DESC');
 foreach($DB_TAB as $DB_ROW)
 {
 	$tab_niveau_groupe[$DB_ROW['niveau_id']][$DB_ROW['groupe_id']] = html($DB_ROW['groupe_nom']);
 	$tab_user[$DB_ROW['groupe_id']] = '';
 }
 // Récupérer la liste des élèves / classes
-$DB_TAB = DB_STRUCTURE_lister_users('eleve',$only_actifs=true,$with_classe=false);
+$DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_users('eleve',$only_actifs=true,$with_classe=false);
 foreach($DB_TAB as $DB_ROW)
 {
 	$tab_user[$DB_ROW['eleve_classe_id']] .= '<img src="./_img/drapeau/'.$DB_ROW['eleve_langue'].'.gif" alt="" title="'.$tab_langues[$DB_ROW['eleve_langue']]['texte'].'" /> '.html($DB_ROW['user_nom'].' '.$DB_ROW['user_prenom']).'<br />';

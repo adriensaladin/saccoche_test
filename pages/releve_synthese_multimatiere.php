@@ -36,14 +36,14 @@ $VERSION_JS_FILE += 3;
 $tab_cookie = load_cookie_select('releve_synthese');
 if($_SESSION['USER_PROFIL']=='directeur')
 {
-	$tab_groupes = DB_STRUCTURE_OPT_classes_groupes_etabl();
+	$tab_groupes = DB_STRUCTURE_COMMUN::DB_OPT_classes_groupes_etabl();
 	$of_g = 'oui'; $sel_g = false; $class_form_eleve = 'show'; $class_form_periode = 'hide'; $class_form_option = 'hide';
 	$select_eleves = '<option></option>'; // maj en ajax suivant le choix du groupe
 	$check_option_lien = '';
 }
 if($_SESSION['USER_PROFIL']=='professeur')
 {
-	$tab_groupes = DB_STRUCTURE_OPT_groupes_professeur($_SESSION['USER_ID']);
+	$tab_groupes = DB_STRUCTURE_COMMUN::DB_OPT_groupes_professeur($_SESSION['USER_ID']);
 	$of_g = 'oui'; $sel_g = false; $class_form_eleve = 'show'; $class_form_periode = 'hide'; $class_form_option = 'hide';
 	$select_eleves = '<option></option>'; // maj en ajax suivant le choix du groupe
 	$check_option_lien = '';
@@ -69,7 +69,7 @@ if($_SESSION['USER_PROFIL']=='eleve')
 	$select_eleves = '<option value="'.$_SESSION['USER_ID'].'" selected>'.html($_SESSION['USER_NOM'].' '.$_SESSION['USER_PRENOM']).'</option>';
 	$check_option_lien = ' checked';
 }
-$tab_periodes = DB_STRUCTURE_OPT_periodes_etabl();
+$tab_periodes = DB_STRUCTURE_COMMUN::DB_OPT_periodes_etabl();
 
 $select_groupe  = afficher_select($tab_groupes        , $select_nom='f_groupe'  , $option_first=$of_g , $selection=$sel_g                 , $optgroup='oui'); // optgroup à oui y compris pour les élèves (formulaire invisible) car recherche du type de groupe dans le js
 $select_periode = afficher_select($tab_periodes       , $select_nom='f_periode' , $option_first='val' , $selection=false                  , $optgroup='non');
@@ -91,7 +91,7 @@ if(is_array($tab_groupes))
 		$tab_id_classe_groupe[] = $tab_groupe_infos['valeur'];
 	}
 	$tab_memo_groupes = array();
-	$DB_TAB = DB_STRUCTURE_lister_jointure_groupe_periode($listing_groupe_id = implode(',',$tab_id_classe_groupe));
+	$DB_TAB = DB_STRUCTURE_COMMUN::DB_lister_jointure_groupe_periode($listing_groupe_id = implode(',',$tab_id_classe_groupe));
 	foreach($DB_TAB as $DB_ROW)
 	{
 		if(!isset($tab_memo_groupes[$DB_ROW['groupe_id']]))
@@ -107,7 +107,7 @@ if(is_array($tab_groupes))
 $tab_groupe_niveau_js  = 'var tab_groupe_niveau = new Array();';
 if(is_array($tab_groupes))
 {
-	$DB_TAB = DB_STRUCTURE_recuperer_niveau_groupes($listing_groupe_id); // $listing_groupe_id a été obtenu 15 lignes plus haut
+	$DB_TAB = DB_STRUCTURE_BILAN::DB_recuperer_niveau_groupes($listing_groupe_id); // $listing_groupe_id a été obtenu 15 lignes plus haut
 	foreach($DB_TAB as $DB_ROW)
 	{
 		$tab_groupe_niveau_js  .= 'tab_groupe_niveau['.$DB_ROW['groupe_id'].'] = new Array('.$DB_ROW['niveau_id'].',"'.html($DB_ROW['niveau_nom']).'");';
@@ -124,7 +124,7 @@ if(is_array($tab_groupes))
 <div><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=releves_bilans__synthese_multimatiere">DOC : Synthèse pluridisciplinaire.</a></span></div>
 <div class="astuce">Un administrateur doit effectuer certains réglages préliminaires (<a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__gestion_releves_bilans">DOC</a>).</div>
 <?php
-$nb_inconnu = DB_STRUCTURE_compter_modes_synthese_inconnu();
+$nb_inconnu = DB_STRUCTURE_BILAN::DB_compter_modes_synthese_inconnu();
 $s = ($nb_inconnu>1) ? 's' : '' ;
 echo ($nb_inconnu) ? '<label class="alerte">Il y a '.$nb_inconnu.' référentiel'.$s.' dont le format de synthèse est inconnu (donc non pris en compte).</label>' : '<label class="valide">Tous les référentiels ont un format de synthèse prédéfini.</label>' ;
 ?>

@@ -33,7 +33,7 @@ $VERSION_JS_FILE += 0;
 <?php
 // Fabrication des éléments select du formulaire
 require_once('./_inc/tableau_langues.php');
-$tab_groupes = DB_STRUCTURE_OPT_regroupements_etabl();
+$tab_groupes = DB_STRUCTURE_COMMUN::DB_OPT_regroupements_etabl();
 $select_f_groupes = afficher_select($tab_groupes , $select_nom=false , $option_first='oui' , $selection=false , $optgroup='oui');
 $select_langue    = afficher_select($tab_langues , $select_nom=false , $option_first='non' , $selection=false , $optgroup='non');
 ?>

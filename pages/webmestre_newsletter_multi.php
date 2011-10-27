@@ -31,7 +31,7 @@ $VERSION_JS_FILE += 1;
 
 <?php
 $selection = (isset($_POST['listing_ids'])) ? explode(',',$_POST['listing_ids']) : false ; // demande de newsletter depuis webmestre_structure_multi.php ou webmestre_statistiques.php
-$select_structure = afficher_select(DB_WEBMESTRE_OPT_structures_sacoche() , $select_nom=false , $option_first='non' , $selection , $optgroup='oui');
+$select_structure = afficher_select(DB_WEBMESTRE_SELECT::DB_OPT_structures_sacoche() , $select_nom=false , $option_first='non' , $selection , $optgroup='oui');
 ?>
 
 <p><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_webmestre__publipostage">DOC : Lettre d'information (multi-structures)</a></span></p>

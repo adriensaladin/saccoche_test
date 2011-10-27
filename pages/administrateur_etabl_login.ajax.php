@@ -51,7 +51,7 @@ foreach($tab_profils as $profil)
 }
 
 // Mettre à jour les paramètres dans la base
-DB_STRUCTURE_modifier_parametres($tab_parametres);
+DB_STRUCTURE_COMMUN::DB_modifier_parametres($tab_parametres);
 
 // Mettre aussi à jour la session
 foreach($tab_parametres as $modele => $format)

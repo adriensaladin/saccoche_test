@@ -40,11 +40,11 @@ if( ($action=='enregistrer_parents') && $eleve_id && (count($tab_parents_id)==5)
 {
 	$tab_parents_id = array_filter($tab_parents_id,'non_zero');
 	// supprimer les liens de responsabilité de l'élève concerné (il est plus simple de réinitialiser que de traiter les resp un par un puis de vérifier s'il n'en reste pas à supprimer...)
-	DB_STRUCTURE_supprimer_jointures_parents_for_eleves($eleve_id);
+	DB_STRUCTURE_ADMINISTRATEUR::DB_supprimer_jointures_parents_for_eleves($eleve_id);
 	// modifier les liens de responsabilité
 	foreach($tab_parents_id as $resp_legal_num => $parent_id)
 	{
-		DB_STRUCTURE_ajouter_jointure_parent_eleve($parent_id,$eleve_id,$resp_legal_num);
+		DB_STRUCTURE_ADMINISTRATEUR::DB_ajouter_jointure_parent_eleve($parent_id,$eleve_id,$resp_legal_num);
 	}
 	// On enbraye sur l'affichage actualisé des parents de l'élève
 	$action = 'afficher_parents';
@@ -57,7 +57,7 @@ if( ($action=='enregistrer_parents') && $eleve_id && (count($tab_parents_id)==5)
 if( ($action=='afficher_parents') && $eleve_id )
 {
 	$tab_parents = array_fill(1,4,'<table><tbody><tr><th class="vu" style="width:6em">$TITRE$</th><td>---</td><th class="nu"><q class="ajouter" title="Ajouter un responsable."></q></th></tr></tbody></table>');
-	$DB_TAB = DB_STRUCTURE_lister_parents_actifs_avec_infos_for_eleve($eleve_id);
+	$DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_parents_actifs_avec_infos_for_eleve($eleve_id);
 	foreach($DB_TAB AS $key => $DB_ROW)
 	{
 		$identite        = html($DB_ROW['user_nom'].' '.$DB_ROW['user_prenom']);

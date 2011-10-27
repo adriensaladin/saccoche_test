@@ -28,15 +28,29 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 if($_SESSION['SESAMATH_ID']==ID_DEMO) {exit('Action désactivée pour la démo...');}
 
-$password_ancien  = (isset($_POST['f_password0'])) ? clean_password($_POST['f_password0']) : '';
-$password_nouveau = (isset($_POST['f_password1'])) ? clean_password($_POST['f_password1']) : '';
+$password_ancien  = (isset($_POST['f_password0'])) ? clean_password($_POST['f_password0']) : '' ;
+$password_nouveau = (isset($_POST['f_password1'])) ? clean_password($_POST['f_password1']) : '' ;
+
+//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//	Mettre à jour son mdp
+//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 if( $password_ancien && $password_nouveau )
 {
-	echo ($_SESSION['USER_PROFIL']!='webmestre') ? DB_STRUCTURE_modifier_mdp_utilisateur($_SESSION['USER_ID'],$password_ancien,$password_nouveau) : modifier_mdp_webmestre($password_ancien,$password_nouveau) ;
+	if($_SESSION['USER_PROFIL']!='webmestre')
+	{
+		exit( DB_STRUCTURE_COMMUN::DB_modifier_mdp_utilisateur( $_SESSION['USER_ID'] , crypter_mdp($password_ancien) , crypter_mdp($password_nouveau) ) );
+	}
+	else
+	{
+		exit( modifier_mdp_webmestre( $password_ancien , $password_nouveau ) );
+	}
 }
-else
-{
-	echo'Erreur avec les données transmises !';
-}
+
+//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//	On ne devrait pas en arriver là !
+//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+exit('Erreur avec les données transmises !');
+
 ?>

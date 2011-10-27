@@ -68,6 +68,9 @@ if(!isset($tab_droits[$PAGE]))
 }
 gestion_session($tab_droits[$PAGE]);
 
+// Pour le devel
+if (DEBUG) afficher_infos_debug();
+
 // Blocage éventuel par le webmestre ou un administrateur (on ne peut pas le tester avant car il faut avoir récupéré les données de session)
 tester_blocage_application($_SESSION['BASE'],$demande_connexion_profil=false);
 
@@ -75,8 +78,6 @@ tester_blocage_application($_SESSION['BASE'],$demande_connexion_profil=false);
 require_once('./_inc/fonction_clean.php');
 require_once('./_inc/fonction_divers.php');
 require_once('./_inc/fonction_formulaires_select.php');
-require_once('./_inc/fonction_requetes_structure.php');
-require_once('./_inc/fonction_requetes_webmestre.php');
 require_once('./_inc/fonction_affichage.php');
 
 // Annuler un blocage par l'automate anormalement long
@@ -110,21 +111,18 @@ if(is_file($fichier_constantes))
 	{
 		$fichier_mysql_config = 'serveur_sacoche_structure_'.$_SESSION['BASE'];
 		$fichier_class_config = 'class.DB.config.sacoche_structure';
-		$PATCH = 'STRUCTURE' ; // A compter du 02/08/2010, déplacement du port dans le fichier créé à l'installation. [à retirer dans quelques mois]
 	}
 	// ...multi-structure ; base sacoche_webmestre
 	elseif( (in_array($_SESSION['USER_PROFIL'],array('webmestre','public'))) && (HEBERGEUR_INSTALLATION=='multi-structures') )
 	{
 		$fichier_mysql_config = 'serveur_sacoche_webmestre';
 		$fichier_class_config = 'class.DB.config.sacoche_webmestre';
-		$PATCH = 'WEBMESTRE' ; // A compter du 02/08/2010, déplacement du port dans le fichier créé à l'installation. [à retirer dans quelques mois]
 	}
 	// ...mono-structure ; base sacoche_structure
 	elseif(HEBERGEUR_INSTALLATION=='mono-structure')
 	{
 		$fichier_mysql_config = 'serveur_sacoche_structure';
 		$fichier_class_config = 'class.DB.config.sacoche_structure';
-		$PATCH = 'STRUCTURE' ; // A compter du 02/08/2010, déplacement du port dans le fichier créé à l'installation. [à retirer dans quelques mois]
 	}
 	else
 	{
@@ -137,63 +135,12 @@ if(is_file($fichier_constantes))
 	if(is_file($fichier_mysql_config))
 	{
 		require_once($fichier_mysql_config);
-		// DEBUT PATCH MYSQL 1
-		// A compter du 02/08/2010, déplacement du port dans le fichier créé à l'installation. [à retirer dans quelques mois]
-		if(!defined('SACOCHE_'.$PATCH.'_BD_PORT'))
-		{
-			$tab_fichier = Lister_Contenu_Dossier(CHEMIN_MYSQL);
-			$bad = array( "define('SACOCHE_STRUCTURE_BD_NAME" , "define('SACOCHE_WEBMESTRE_BD_NAME" );
-			$bon = array( "define('SACOCHE_STRUCTURE_BD_PORT','3306');	// Port de connexion\r\ndefine('SACOCHE_STRUCTURE_BD_NAME" , "define('SACOCHE_WEBMESTRE_BD_PORT','3306');	// Port de connexion\r\ndefine('SACOCHE_WEBMESTRE_BD_NAME" );
-			foreach($tab_fichier as $fichier)
-			{
-				$fichier_contenu = file_get_contents(CHEMIN_MYSQL.$fichier);
-				$fichier_contenu = str_replace($bad,$bon,$fichier_contenu);
-				Ecrire_Fichier(CHEMIN_MYSQL.$fichier,$fichier_contenu);
-			}
-			define('SACOCHE_'.$PATCH.'_BD_PORT','3306');	// Port de connexion
-		}
-		// FIN PATCH MYSQL 1
 		require_once($fichier_class_config);
 	}
 	elseif($PAGE!='public_installation')
 	{
 		affich_message_exit($titre='Paramètres BDD manquants',$contenu='Paramètres de connexion à la base de données manquants.',$lien='<a href="./index.php?page=public_installation">Procédure d\'installation de SACoche.</a>');
 	}
-	// DEBUT PATCH MYSQL 2
-	// A compter du 05/12/2010, 2 users MySQL sont créés par établissement (localhost & %) ; il faut créer les manquants antérieurs sinon erreur lors de la suppression. [à retirer dans quelques mois]
-	if(defined('SACOCHE_WEBMESTRE_BD_HOST'))
-	{
-		$nb_structures = (int)DB_WEBMESTRE_compter_structure();
-		if($nb_structures)
-		{
-			$BDlink = mysql_connect(SACOCHE_WEBMESTRE_BD_HOST.':'.SACOCHE_WEBMESTRE_BD_PORT,SACOCHE_WEBMESTRE_BD_USER,SACOCHE_WEBMESTRE_BD_PASS);
-			$BDres  = mysql_query('SELECT host, user FROM mysql.user WHERE user LIKE "sac_user_%"');
-			$nb_users = mysql_num_rows($BDres);
-			if($nb_users < $nb_structures*2)
-			{
-				$tab_user_host = array();
-				while($BDrow = mysql_fetch_array($BDres,MYSQL_ASSOC))
-				{
-					$tab_user_host[$BDrow['user']][] = $BDrow['host'];
-				}
-				foreach($tab_user_host as $user => $tab_host)
-				{
-					if(count($tab_host)==1)
-					{
-						$fichier_mdp = file_get_contents('./__private/mysql/'.str_replace('sac_user','serveur_sacoche_structure',$user).'.php');
-						$nb_match = preg_match( '#'."SACOCHE_STRUCTURE_BD_PASS','".'(.*?)'."'".'#' , $fichier_mdp , $tab_matches );
-						$host = ($tab_host[0]=='%') ? 'localhost' : '%';
-						$base = str_replace('user','base',$user);
-						$pass = $tab_matches[1];
-						mysql_query('CREATE USER '.$user.'@"'.$host.'" IDENTIFIED BY "'.$pass.'"');
-						mysql_query('GRANT ALTER, CREATE, DELETE, DROP, INDEX, INSERT, SELECT, UPDATE ON '.$base.'.* TO '.$user.'@"'.$host.'"');
-					}
-				}
-			}
-			mysql_close($BDlink);
-		}
-	}
-	// FIN PATCH MYSQL 2
 }
 
 // Authentification requise par SSO
@@ -250,6 +197,15 @@ entete();
 		echo'<div id="cadre_haut">'."\r\n";
 		echo'	<div id="info">'."\r\n";
 		echo'		<span class="button"><img alt="site officiel" src="./_img/favicon.gif" /> <a class="lien_ext" href="'.SERVEUR_PROJET.'">Site officiel</a></span>'."\r\n";
+		if(SERVEUR_TYPE!='PROD')
+		{
+			$protocole  = ( isset($_SERVER['HTTPS']) && ($_SERVER['HTTPS']=='on') ) ? 'https://' : 'http://' ;
+			$url_page   = $protocole.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
+			$separateur = (strpos($url_page,'?')) ? '&amp;' : '?' ;
+			$get_debug  = DEBUG ? 'debug=0'  : 'debug=1' ;
+			$txt_debug  = DEBUG ? 'ON' : 'OFF' ;
+			echo'		<span class="button"><a href="'.$url_page.$separateur.$get_debug.'"><img alt="debug" src="./_img/firephp.png" /> '.$txt_debug.'</a></span>'."\r\n";
+		}
 		echo'		<span class="button"><img alt="structure" src="./_img/home.png" /> '.html($_SESSION['DENOMINATION']).'</span>'."\r\n";
 		echo'		<span class="button"><img alt="'.$_SESSION['USER_PROFIL'].'" src="./_img/menu/profil_'.$_SESSION['USER_PROFIL'].'.png" /> '.html($_SESSION['USER_PRENOM'].' '.$_SESSION['USER_NOM']).' ('.$_SESSION['USER_PROFIL'].')</span>'."\r\n";
 		echo'		<span class="button"><span id="clock"><img alt="" src="./_img/clock_fixe.png" /> '.$_SESSION['DUREE_INACTIVITE'].' min</span><img alt="" src="./_img/point.gif" /></span>'."\r\n";
@@ -266,7 +222,6 @@ entete();
 			echo'<hr /><div class="danger o">'.implode('</div><div class="danger o">',$tab_messages_erreur).'</div><hr />';
 		}
 		echo 	$CONTENU_PAGE;
-		// echo'<pre>';var_dump($_SESSION);echo'</pre>';
 		echo'</div>'."\r\n";
 	}
 	else
@@ -278,7 +233,6 @@ entete();
 		$SACoche_lien   = '<a href="'.SERVEUR_PROJET.'"><img alt="Suivi d\'Acquisition de Compétences" src="./_img/logo_grand.gif" /></a>' ;
 		echo ($PAGE=='public_accueil') ? '<h1 class="logo">'.$SACoche_lien.$hebergeur_lien.'</h1>' : '<h1>» '.$TITRE.'</h1>' ;
 		echo 	$CONTENU_PAGE;
-		// echo'<pre>';var_dump($_SESSION);echo'</pre>';
 		echo'</div>'."\r\n";
 	}
 	?>

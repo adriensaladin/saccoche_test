@@ -44,20 +44,20 @@ $texte = ($str_objet=='') ? 'aucun' : ( (strpos($str_objet,',')===false) ? 'uniq
 
 // Fabrication des éléments select du formulaire
 $tab_cookie  = load_cookie_select('palier');
-$tab_paliers = DB_STRUCTURE_OPT_paliers_etabl($_SESSION['PALIERS']);
+$tab_paliers = DB_STRUCTURE_COMMUN::DB_OPT_paliers_etabl($_SESSION['PALIERS']);
 if( ($_SESSION['USER_PROFIL']=='directeur') && (strpos($_SESSION['DROIT_ANNULATION_PILIER'],'directeur')!==false) )
 {
-	$tab_groupes = DB_STRUCTURE_OPT_classes_groupes_etabl();
+	$tab_groupes = DB_STRUCTURE_COMMUN::DB_OPT_classes_groupes_etabl();
 	$of_g = 'oui'; $og_g = 'oui'; 
 }
 elseif( ($_SESSION['USER_PROFIL']=='professeur') && (strpos($_SESSION['DROIT_ANNULATION_PILIER'],'professeur')!==false) )
 {
-	$tab_groupes = DB_STRUCTURE_OPT_groupes_professeur($_SESSION['USER_ID']);
+	$tab_groupes = DB_STRUCTURE_COMMUN::DB_OPT_groupes_professeur($_SESSION['USER_ID']);
 	$of_g = 'oui'; $og_g = 'oui'; 
 }
-elseif( (DB_STRUCTURE_tester_prof_principal($_SESSION['USER_ID'])) && (strpos($_SESSION['DROIT_ANNULATION_PILIER'],'profprincipal')!==false) )
+elseif( ($_SESSION['USER_PROFIL']=='professeur') && (strpos($_SESSION['DROIT_VALIDATION_ENTREE'],'profprincipal')!==false) && (DB_STRUCTURE_PROFESSEUR::DB_tester_prof_principal($_SESSION['USER_ID'])) )
 {
-	$tab_groupes = DB_STRUCTURE_OPT_classes_prof_principal($_SESSION['USER_ID']);
+	$tab_groupes = DB_STRUCTURE_COMMUN::DB_OPT_classes_prof_principal($_SESSION['USER_ID']);
 	$of_g = 'non'; $og_g = 'non'; 
 }
 else

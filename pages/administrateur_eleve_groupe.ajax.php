@@ -41,7 +41,7 @@ if($action=='ajouter')
 	{
 		foreach($tab_select_groupes as $groupe_id)
 		{
-			DB_STRUCTURE_modifier_liaison_user_groupe($user_id,'eleve',$groupe_id,'groupe',true);
+			DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_liaison_user_groupe_par_admin($user_id,'eleve',$groupe_id,'groupe',true);
 		}
 	}
 }
@@ -53,7 +53,7 @@ elseif($action=='retirer')
 	{
 		foreach($tab_select_groupes as $groupe_id)
 		{
-			DB_STRUCTURE_modifier_liaison_user_groupe($user_id,'eleve',$groupe_id,'groupe',false);
+			DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_liaison_user_groupe_par_admin($user_id,'eleve',$groupe_id,'groupe',false);
 		}
 	}
 }
@@ -62,14 +62,14 @@ elseif($action=='retirer')
 $tab_niveau_groupe = array();
 $tab_user          = array();
 // Récupérer la liste des groupes
-$DB_TAB = DB_STRUCTURE_lister_groupes_avec_niveaux();
+$DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_groupes_avec_niveaux();
 foreach($DB_TAB as $DB_ROW)
 {
 	$tab_niveau_groupe[$DB_ROW['niveau_id']][$DB_ROW['groupe_id']] = html($DB_ROW['groupe_nom']);
 	$tab_user[$DB_ROW['groupe_id']] = '';
 }
 // Récupérer la liste des élèves / groupes
-$DB_TAB = DB_STRUCTURE_lister_users_avec_groupe($profil_eleve=true,$only_actifs=true);
+$DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_users_avec_groupe($profil_eleve=true,$only_actifs=true);
 foreach($DB_TAB as $DB_ROW)
 {
 	$tab_user[$DB_ROW['groupe_id']]  .= html($DB_ROW['user_nom'].' '.$DB_ROW['user_prenom']).'<br />';

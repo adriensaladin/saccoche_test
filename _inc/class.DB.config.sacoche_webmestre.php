@@ -9,7 +9,7 @@ $_CONST['POOL'][SACOCHE_WEBMESTRE_BD_NAME]['TYPE']           = 'mysql';
 $_CONST['POOL'][SACOCHE_WEBMESTRE_BD_NAME]['FORCE_ENCODING'] = 'utf8';
 $_CONST['POOL'][SACOCHE_WEBMESTRE_BD_NAME]['CRITICAL']       = true;
 $_CONST['POOL'][SACOCHE_WEBMESTRE_BD_NAME]['ERROR']          = 'warning'; // exception | silent | warning | NULL
-$_CONST['POOL'][SACOCHE_WEBMESTRE_BD_NAME]['DEBUG']          = (SERVEUR_TYPE=='PROD') ? '' : 'firebug' ;  // screen | firebug | empty
+$_CONST['POOL'][SACOCHE_WEBMESTRE_BD_NAME]['DEBUG']          = DEBUG ? 'firebug' : '' ;  // screen | firebug | empty
 
 $_CONST['POOL'][SACOCHE_WEBMESTRE_BD_NAME]['HOST'] = SACOCHE_WEBMESTRE_BD_HOST;
 $_CONST['POOL'][SACOCHE_WEBMESTRE_BD_NAME]['PORT'] = SACOCHE_WEBMESTRE_BD_PORT;

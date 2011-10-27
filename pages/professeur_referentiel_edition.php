@@ -47,7 +47,7 @@ $VERSION_JS_FILE += 12;
 $tab_matiere = array();
 $tab_niveau  = array();
 // On récupère la liste des matières où le professeur est rattaché, et s'il en est coordonnateur
-$DB_TAB = DB_STRUCTURE_lister_matieres_professeur_infos_referentiel($_SESSION['MATIERES'],$_SESSION['USER_ID']);
+$DB_TAB = DB_STRUCTURE_PROFESSEUR::DB_lister_matieres_professeur_infos_referentiel($_SESSION['MATIERES'],$_SESSION['USER_ID']);
 if(count($DB_TAB))
 {
 	foreach($DB_TAB as $DB_ROW)
@@ -72,7 +72,7 @@ elseif(!$_SESSION['CYCLES']) // normalement impossible
 else
 {
 	// On récupère la liste des niveaux utilisés par l'établissement
-	$DB_TAB = DB_STRUCTURE_lister_niveaux_etablissement($_SESSION['NIVEAUX'],$_SESSION['CYCLES']);
+	$DB_TAB = DB_STRUCTURE_COMMUN::DB_lister_niveaux_etablissement($_SESSION['NIVEAUX'],$_SESSION['CYCLES']);
 	$nb_niveaux = count($DB_TAB);
 	foreach($DB_TAB as $DB_ROW)
 	{
@@ -80,7 +80,7 @@ else
 	}
 	// On récupère la liste des référentiels par matière avec indication du nombre de niveau
 	$tab_partage = array('oui'=>'<img title="Référentiel partagé sur le serveur communautaire (MAJ le ◄DATE►)." alt="" src="./_img/partage1.gif" />','non'=>'<img title="Référentiel non partagé avec la communauté (choix du ◄DATE►)." alt="" src="./_img/partage0.gif" />','bof'=>'<img title="Référentiel dont le partage est sans intérêt (pas novateur)." alt="" src="./_img/partage0.gif" />','hs'=>'<img title="Référentiel dont le partage est sans objet (matière spécifique)." alt="" src="./_img/partage0.gif" />');
-	$DB_TAB = DB_STRUCTURE_lister_referentiels_infos_groupement_matieres($listing_matieres_id,$_SESSION['NIVEAUX'],$_SESSION['CYCLES']);
+	$DB_TAB = DB_STRUCTURE_REFERENTIEL::DB_lister_referentiels_infos_groupement_matieres($listing_matieres_id,$_SESSION['NIVEAUX'],$_SESSION['CYCLES']);
 	if(count($DB_TAB))
 	{
 		foreach($DB_TAB as $DB_ROW)
@@ -130,7 +130,7 @@ else
 	// Affichage de la liste des items du socle pour chaque palier
 	if($_SESSION['PALIERS'])
 	{
-		$DB_TAB = DB_STRUCTURE_recuperer_arborescence_palier($_SESSION['PALIERS']);
+		$DB_TAB = DB_STRUCTURE_COMMUN::DB_recuperer_arborescence_palier($_SESSION['PALIERS']);
 		echo afficher_arborescence_socle_from_SQL($DB_TAB,$dynamique=true,$reference=false,$aff_input=true,$ids=false);
 	}
 	else

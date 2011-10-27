@@ -50,7 +50,7 @@ if(!isset($tab_connexion_info[$f_connexion_mode][$f_connexion_nom]))
 
 if($f_connexion_mode=='normal')
 {
-	DB_STRUCTURE_modifier_parametres( array('connexion_mode'=>$f_connexion_mode,'connexion_nom'=>$f_connexion_nom) );
+	DB_STRUCTURE_COMMUN::DB_modifier_parametres( array('connexion_mode'=>$f_connexion_mode,'connexion_nom'=>$f_connexion_nom) );
 	// ne pas oublier de mettre aussi à jour la session (normalement faudrait pas car connecté avec l'ancien mode, mais sinon pb d'initalisation du formulaire)
 	$_SESSION['CONNEXION_MODE'] = $f_connexion_mode;
 	$_SESSION['CONNEXION_NOM']  = $f_connexion_nom;
@@ -73,7 +73,7 @@ if($f_connexion_mode=='cas')
 		exit('Syntaxe du chemin incorrect !');
 	}
 	// C'est ok
-	DB_STRUCTURE_modifier_parametres( array('connexion_mode'=>$f_connexion_mode,'connexion_nom'=>$f_connexion_nom,'cas_serveur_host'=>$cas_serveur_host,'cas_serveur_port'=>$cas_serveur_port,'cas_serveur_root'=>$cas_serveur_root) );
+	DB_STRUCTURE_COMMUN::DB_modifier_parametres( array('connexion_mode'=>$f_connexion_mode,'connexion_nom'=>$f_connexion_nom,'cas_serveur_host'=>$cas_serveur_host,'cas_serveur_port'=>$cas_serveur_port,'cas_serveur_root'=>$cas_serveur_root) );
 	// ne pas oublier de mettre aussi à jour la session (normalement faudrait pas car connecté avec l'ancien mode, mais sinon pb d'initalisation du formulaire)
 	$_SESSION['CONNEXION_MODE']   = $f_connexion_mode;
 	$_SESSION['CONNEXION_NOM']    = $f_connexion_nom;
@@ -104,7 +104,7 @@ if($f_connexion_mode=='gepi')
 		exit('Adresse de Gepi incorrecte [ '.$fichier_distant.' ]');
 	}
 	// C'est ok
-	DB_STRUCTURE_modifier_parametres( array('connexion_mode'=>$f_connexion_mode,'connexion_nom'=>$f_connexion_nom,'gepi_url'=>$gepi_saml_url,'gepi_rne'=>$gepi_saml_rne,'gepi_certificat_empreinte'=>$gepi_saml_certif) );
+	DB_STRUCTURE_COMMUN::DB_modifier_parametres( array('connexion_mode'=>$f_connexion_mode,'connexion_nom'=>$f_connexion_nom,'gepi_url'=>$gepi_saml_url,'gepi_rne'=>$gepi_saml_rne,'gepi_certificat_empreinte'=>$gepi_saml_certif) );
 	// ne pas oublier de mettre aussi à jour la session (normalement faudrait pas car connecté avec l'ancien mode, mais sinon pb d'initalisation du formulaire)
 	$_SESSION['CONNEXION_MODE']   = $f_connexion_mode;
 	$_SESSION['CONNEXION_NOM']    = $f_connexion_nom;

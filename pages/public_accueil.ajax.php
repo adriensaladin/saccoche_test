@@ -38,7 +38,7 @@ $password = (isset($_POST['f_password'])) ? clean_password($_POST['f_password'])
  */
 function afficher_formulaire_etablissement($BASE,$profil)
 {
-	$options_structures = afficher_select(DB_WEBMESTRE_OPT_structures_sacoche() , $select_nom=false , $option_first='non' , $selection=$BASE , $optgroup='oui');
+	$options_structures = afficher_select(DB_WEBMESTRE_SELECT::DB_OPT_structures_sacoche() , $select_nom=false , $option_first='non' , $selection=$BASE , $optgroup='oui');
 	echo'<label class="tab" for="f_base">Établissement :</label><select id="f_base" name="f_base" tabindex="1" >'.$options_structures.'</select><br />'."\r\n";
 	echo'<span class="tab"></span><button id="f_choisir" type="button" tabindex="2"><img alt="" src="./_img/bouton/valider.png" /> Choisir cet établissement.</button><label id="ajax_msg">&nbsp;</label><br />'."\r\n";
 	echo'<input id="f_profil" name="f_profil" type="hidden" value="'.$profil.'" />'."\r\n";
@@ -112,7 +112,7 @@ if( ($action=='initialiser') && (HEBERGEUR_INSTALLATION=='mono-structure') && $p
 	// Mettre à jour la base si nécessaire
 	maj_base_si_besoin($BASE);
 	// Requête pour récupérer la dénomination et le mode de connexion
-	$DB_TAB = DB_STRUCTURE_lister_parametres('"denomination","connexion_mode","connexion_nom"');
+	$DB_TAB = DB_STRUCTURE_PUBLIC::DB_lister_parametres('"denomination","connexion_mode","connexion_nom"');
 	foreach($DB_TAB as $DB_ROW)
 	{
 		${$DB_ROW['parametre_nom']} = $DB_ROW['parametre_valeur'];
@@ -136,19 +136,19 @@ if( ( ($action=='initialiser') && ($BASE==0) && (HEBERGEUR_INSTALLATION=='multi-
 if( ( ($action=='initialiser') && ($BASE>0) && (HEBERGEUR_INSTALLATION=='multi-structures') ) || ($action=='charger') && $profil )
 {
 	// Une première requête sur SACOCHE_WEBMESTRE_BD_NAME pour vérifier que la structure est référencée
-	$DB_ROW = DB_WEBMESTRE_recuperer_structure($BASE);
-	if(!count($DB_ROW))
+	$structure_denomination = DB_WEBMESTRE_PUBLIC::DB_recuperer_structure_nom_for_Id($BASE);
+	if($structure_denomination===NULL)
 	{
 		// Sans doute un établissement supprimé, mais le cookie est encore là
 		setcookie(COOKIE_STRUCTURE,'',time()-42000,'');
 		exit('Erreur : établissement non trouvé dans la base d\'administration !');
 	}
-	afficher_nom_etablissement($BASE,$DB_ROW['structure_denomination']);
+	afficher_nom_etablissement($BASE,$structure_denomination);
 	// Mettre à jour la base si nécessaire
 	charger_parametres_mysql_supplementaires($BASE);
 	maj_base_si_besoin($BASE);
 	// Une deuxième requête sur SACOCHE_STRUCTURE_BD_NAME pour savoir si le mode de connexion est SSO ou pas
-	$DB_TAB = DB_STRUCTURE_lister_parametres('"connexion_mode","connexion_nom"');
+	$DB_TAB = DB_STRUCTURE_PUBLIC::DB_lister_parametres('"connexion_mode","connexion_nom"');
 	foreach($DB_TAB as $DB_ROW)
 	{
 		${$DB_ROW['parametre_nom']} = $DB_ROW['parametre_valeur'];

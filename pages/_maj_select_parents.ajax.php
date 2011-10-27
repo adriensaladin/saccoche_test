@@ -36,5 +36,5 @@ $groupe_id   = (isset($_POST['f_groupe_id']))   ? clean_entier($_POST['f_groupe_
 $selection   = (isset($_POST['f_selection']))   ? TRUE                                 : FALSE ;
 $tab_types   = array('d'=>'all' , 'n'=>'niveau' , 'c'=>'classe' , 'g'=>'groupe');
 
-echo afficher_select(DB_STRUCTURE_OPT_parents_etabl($statut,$tab_types[$groupe_type],$groupe_id) , $select_nom=false , $option_first='non' , $selection , $optgroup='non');
+echo afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_parents_etabl($statut,$tab_types[$groupe_type],$groupe_id) , $select_nom=false , $option_first='non' , $selection , $optgroup='non');
 ?>

@@ -67,7 +67,7 @@ if( $groupe_id && $groupe_nom && count($tab_eleve) && ( $periode_id || ($date_de
 	}
 	else
 	{
-		$DB_ROW = DB_STRUCTURE_recuperer_dates_periode($groupe_id,$periode_id);
+		$DB_ROW = DB_STRUCTURE_COMMUN::DB_recuperer_dates_periode($groupe_id,$periode_id);
 		if(!count($DB_ROW))
 		{
 			exit('La classe et la période ne sont pas reliées !');
@@ -95,7 +95,7 @@ if( $groupe_id && $groupe_nom && count($tab_eleve) && ( $periode_id || ($date_de
 	// Récupération de la liste des matières concernées
 	//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
-	list($tab_item,$tab_synthese,$tab_matiere) = DB_STRUCTURE_recuperer_arborescence_synthese($liste_eleve,$matiere_id=false,$only_socle,$only_niveau,$mode_synthese='predefini',$date_mysql_debut,$date_mysql_fin);
+	list($tab_item,$tab_synthese,$tab_matiere) = DB_STRUCTURE_BILAN::DB_recuperer_arborescence_synthese($liste_eleve,$matiere_id=false,$only_socle,$only_niveau,$mode_synthese='predefini',$date_mysql_debut,$date_mysql_fin);
 	// $tab_matiere déjà renseigné à la requête précédente.
 
 	$item_nb = count($tab_item);
@@ -109,7 +109,7 @@ if( $groupe_id && $groupe_nom && count($tab_eleve) && ( $periode_id || ($date_de
 	//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 	// Récupération de la liste des élèves
 	//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-	$tab_eleve = DB_STRUCTURE_lister_eleves_cibles($liste_eleve,$with_gepi=FALSE,$with_langue=FALSE);
+	$tab_eleve = DB_STRUCTURE_BILAN::DB_lister_eleves_cibles($liste_eleve,$with_gepi=FALSE,$with_langue=FALSE);
 	if(!is_array($tab_eleve))
 	{
 		exit('Aucun élève trouvé correspondant aux identifiants transmis !');
@@ -121,14 +121,14 @@ if( $groupe_id && $groupe_nom && count($tab_eleve) && ( $periode_id || ($date_de
 	// Attention, il faut éliminer certains items qui peuvent potentiellement apparaitre dans des relevés d'élèves alors qu'ils n'ont pas été interrogés sur la période considérée (mais un camarade oui).
 	//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 	$tab_score_a_garder = array();
-	$DB_TAB = DB_STRUCTURE_lister_date_last_eleves_items($liste_eleve,$liste_item);
+	$DB_TAB = DB_STRUCTURE_BILAN::DB_lister_date_last_eleves_items($liste_eleve,$liste_item);
 	foreach($DB_TAB as $DB_ROW)
 	{
 		$tab_score_a_garder[$DB_ROW['eleve_id']][$DB_ROW['item_id']] = ($DB_ROW['date_last']<$date_mysql_debut) ? false : true ;
 	}
 
 	$date_mysql_debut = ($retroactif=='non') ? $date_mysql_debut : false;
-	$DB_TAB = DB_STRUCTURE_lister_result_eleves_matieres($liste_eleve , $liste_item , $date_mysql_debut , $date_mysql_fin , $_SESSION['USER_PROFIL']);
+	$DB_TAB = DB_STRUCTURE_BILAN::DB_lister_result_eleves_matieres($liste_eleve , $liste_item , $date_mysql_debut , $date_mysql_fin , $_SESSION['USER_PROFIL']);
 	foreach($DB_TAB as $DB_ROW)
 	{
 		if($tab_score_a_garder[$DB_ROW['eleve_id']][$DB_ROW['item_id']])

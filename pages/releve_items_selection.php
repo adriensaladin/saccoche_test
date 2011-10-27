@@ -33,8 +33,8 @@ $VERSION_JS_FILE += 6;
 <?php
 // Fabrication des éléments select du formulaire
 $tab_cookie = load_cookie_select('releve_items');
-$tab_groupes  = DB_STRUCTURE_OPT_groupes_professeur($_SESSION['USER_ID']);
-$tab_periodes = DB_STRUCTURE_OPT_periodes_etabl();
+$tab_groupes  = DB_STRUCTURE_COMMUN::DB_OPT_groupes_professeur($_SESSION['USER_ID']);
+$tab_periodes = DB_STRUCTURE_COMMUN::DB_OPT_periodes_etabl();
 
 $select_groupe      = afficher_select($tab_groupes            , $select_nom='f_groupe'      , $option_first='oui' , $selection=false                        , $optgroup='oui');
 $select_periode     = afficher_select($tab_periodes           , $select_nom='f_periode'     , $option_first='val' , $selection=false                        , $optgroup='non');
@@ -63,7 +63,7 @@ if(is_array($tab_groupes))
 		}
 	}
 	$tab_memo_groupes = array();
-	$DB_TAB = DB_STRUCTURE_lister_jointure_groupe_periode($listing_groupe_id = implode(',',$tab_id_classe_groupe));
+	$DB_TAB = DB_STRUCTURE_COMMUN::DB_lister_jointure_groupe_periode($listing_groupe_id = implode(',',$tab_id_classe_groupe));
 	foreach($DB_TAB as $DB_ROW)
 	{
 		if(!isset($tab_memo_groupes[$DB_ROW['groupe_id']]))
@@ -126,7 +126,7 @@ if(is_array($tab_groupes))
 	</p>
 	<?php
 	// Affichage de la liste des items pour toutes les matières d'un professeur, sur tous les niveaux
-	$DB_TAB = DB_STRUCTURE_recuperer_arborescence($_SESSION['USER_ID'],$matiere_id=0,$niveau_id=0,$only_socle=false,$only_item=false,$socle_nom=false);
+	$DB_TAB = DB_STRUCTURE_COMMUN::DB_recuperer_arborescence($_SESSION['USER_ID'],$matiere_id=0,$niveau_id=0,$only_socle=false,$only_item=false,$socle_nom=false);
 	echo afficher_arborescence_matiere_from_SQL($DB_TAB,$dynamique=true,$reference=true,$aff_coef=false,$aff_cart=false,$aff_socle='texte',$aff_lien=false,$aff_input=true);
 	?>
 </form>

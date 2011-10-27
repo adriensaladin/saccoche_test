@@ -291,6 +291,93 @@ function charger_parametres_mysql_supplementaires($BASE)
 }
 
 /**
+ * Ajouter une structure (mode multi-structures)
+ *
+ * @param int    $base_id   Pour forcer l'id de la base de la structure ; normalement transmis à 0 (=> auto-increment), sauf dans un cadre de gestion interne à Sésamath
+ * @param int    $geo_id
+ * @param string $structure_uai
+ * @param string $localisation
+ * @param string $denomination
+ * @param string $contact_nom
+ * @param string $contact_prenom
+ * @param string $contact_courriel
+ * @param string $inscription_date   Pour forcer la date d'inscription, par exemple en cas de transfert de bases académiques (facultatif).
+ * @return int
+ */
+function ajouter_structure($base_id,$geo_id,$structure_uai,$localisation,$denomination,$contact_nom,$contact_prenom,$contact_courriel,$inscription_date=0)
+{
+	// Insérer l'enregistrement d'une nouvelle structure dans la base du webmestre
+	$base_id = DB_WEBMESTRE_WEBMESTRE::DB_ajouter_structure($base_id,$geo_id,$structure_uai,$localisation,$denomination,$contact_nom,$contact_prenom,$contact_courriel,$inscription_date);
+	// Génération des paramètres de connexion à la base de données
+	$BD_name = 'sac_base_'.$base_id; // Limité à 64 caractères (tranquille...)
+	$BD_user = 'sac_user_'.$base_id; // Limité à 16 caractères (attention !)
+	$BD_pass = fabriquer_mdp();
+	// Créer le fichier de connexion de la base de données de la structure
+	fabriquer_fichier_connexion_base($base_id,SACOCHE_WEBMESTRE_BD_HOST,SACOCHE_WEBMESTRE_BD_PORT,$BD_name,$BD_user,$BD_pass);
+	// Créer la base de données d'une structure, un utilisateur MySQL, et lui attribuer ses droits.
+	DB_WEBMESTRE_WEBMESTRE::DB_ajouter_base_structure_et_user_mysql($base_id,$BD_name,$BD_user,$BD_pass);
+	/* Il reste à :
+		+ Lancer les requêtes pour installer et remplir les tables, éventuellement personnaliser certains paramètres de la structure
+		+ Insérer le compte administrateur dans la base de cette structure, éventuellement lui envoyer un courriel
+		+ Créer un dossier pour les les vignettes images
+	*/
+	return $base_id;
+}
+
+/**
+ * Supprimer une structure (mode mono-structures)
+ *
+ * @param void
+ * @return void
+ */
+function supprimer_mono_structure()
+{
+	// Supprimer les tables de la base
+	DB_STRUCTURE_WEBMESTRE::DB_supprimer_tables_structure();
+	// Supprimer le fichier de connexion
+	unlink(CHEMIN_MYSQL.'serveur_sacoche_structure.php');
+	// Supprimer les dossiers de fichiers temporaires par établissement : vignettes verticales, flux RSS des demandes, cookies des choix de formulaires
+	Supprimer_Dossier('./__tmp/badge/'.'0');
+	Supprimer_Dossier('./__tmp/cookie/'.'0');
+	Supprimer_Dossier('./__tmp/rss/'.'0');
+	// Supprimer les éventuels fichiers de blocage
+	@unlink(CHEMIN_CONFIG.'blocage_webmestre_0.txt');
+	@unlink(CHEMIN_CONFIG.'blocage_administrateur_0.txt');
+	@unlink(CHEMIN_CONFIG.'blocage_automate_0.txt');
+	// Log de l'action
+	ajouter_log_SACoche('Résiliation de l\'inscription.');
+}
+
+/**
+ * Supprimer une structure (mode multi-structures)
+ *
+ * @param int    $BASE 
+ * @return void
+ */
+function supprimer_multi_structure($BASE)
+{
+	// Paramètres de connexion à la base de données
+	$BD_name = 'sac_base_'.$BASE;
+	$BD_user = 'sac_user_'.$BASE; // Limité à 16 caractères
+	// Supprimer la base de données d'une structure, et son utilisateur MySQL une fois défait de ses droits.
+	DB_WEBMESTRE_WEBMESTRE::DB_supprimer_base_structure_et_user_mysql($BD_name,$BD_user);
+	// Supprimer le fichier de connexion
+	unlink(CHEMIN_MYSQL.'serveur_sacoche_structure_'.$BASE.'.php');
+	// Retirer l'enregistrement d'une structure dans la base du webmestre
+	DB_WEBMESTRE_WEBMESTRE::DB_supprimer_structure($BASE);
+	// Supprimer les dossiers de fichiers temporaires par établissement : vignettes verticales, flux RSS des demandes, cookies des choix de formulaires
+	Supprimer_Dossier('./__tmp/badge/'.$BASE);
+	Supprimer_Dossier('./__tmp/cookie/'.$BASE);
+	Supprimer_Dossier('./__tmp/rss/'.$BASE);
+	// Supprimer les éventuels fichiers de blocage
+	@unlink(CHEMIN_CONFIG.'blocage_webmestre_'.$BASE.'.txt');
+	@unlink(CHEMIN_CONFIG.'blocage_administrateur_'.$BASE.'.txt');
+	@unlink(CHEMIN_CONFIG.'blocage_automate_'.$BASE.'.txt');
+	// Log de l'action
+	ajouter_log_SACoche('Suppression de la structure n°'.$BASE.'.');
+}
+
+/**
  * Mettre à jour automatiquement la base si besoin ; à effectuer avant toute récupération des données sinon ça peut poser pb...
  * 
  * @param int   $BASE
@@ -298,7 +385,7 @@ function charger_parametres_mysql_supplementaires($BASE)
  */
 function maj_base_si_besoin($BASE)
 {
-	$version_base = DB_version_base();
+	$version_base = DB_STRUCTURE_PUBLIC::DB_version_base();
 	if($version_base != VERSION_BASE)
 	{
 		// On ne met pas à jour la base tant que le webmestre bloque l'accès à l'application, car sinon cela pourrait se produire avant le transfert de tous les fichiers.
@@ -307,8 +394,9 @@ function maj_base_si_besoin($BASE)
 			// Bloquer l'application
 			bloquer_application('automate',$BASE,'Mise à jour de la base en cours.');
 			// Lancer une mise à jour de la base
-			require_once('./_inc/fonction_maj_base.php');
-			maj_base($version_base);
+			DB_STRUCTURE_MAJ_BASE::DB_maj_base($version_base);
+			// Log de l'action
+			ajouter_log_SACoche('Mise à jour automatique de la base '.SACOCHE_STRUCTURE_BD_NAME.'.');
 			// Débloquer l'application
 			debloquer_application('automate',$BASE);
 		}
@@ -577,7 +665,7 @@ function tester_authentification_user($BASE,$login,$password,$mode_connection)
 		charger_parametres_mysql_supplementaires($BASE);
 	}
 	// Récupérer les données associées à l'utilisateur.
-	$DB_ROW = DB_STRUCTURE_recuperer_donnees_utilisateur($mode_connection,$login);
+	$DB_ROW = DB_STRUCTURE_PUBLIC::DB_recuperer_donnees_utilisateur($mode_connection,$login);
 	// Si login non trouvé...
 	if(!count($DB_ROW))
 	{
@@ -596,7 +684,7 @@ function tester_authentification_user($BASE,$login,$password,$mode_connection)
 	$delai_attente_consomme = time() - $DB_ROW['tentative_unix'] ;
 	if($delai_attente_consomme<3)
 	{
-		DB_STRUCTURE_modifier_date('tentative',$DB_ROW['user_id']);
+		DB_STRUCTURE_PUBLIC::DB_modifier_date('tentative',$DB_ROW['user_id']);
 		return array('Calmez-vous et patientez 10s avant toute nouvelle tentative !',array());
 	}
 	elseif($delai_attente_consomme<10)
@@ -607,7 +695,7 @@ function tester_authentification_user($BASE,$login,$password,$mode_connection)
 	// Si mdp incorrect...
 	if( ($mode_connection=='normal') && ($DB_ROW['user_password']!=crypter_mdp($password)) )
 	{
-		DB_STRUCTURE_modifier_date('tentative',$DB_ROW['user_id']);
+		DB_STRUCTURE_PUBLIC::DB_modifier_date('tentative',$DB_ROW['user_id']);
 		return array('Mot de passe incorrect ! Patientez 10s avant une nouvelle tentative.',array());
 	}
 	// Si compte desactivé...
@@ -616,7 +704,7 @@ function tester_authentification_user($BASE,$login,$password,$mode_connection)
 		return array('Identification réussie mais ce compte est desactivé !',array());
 	}
 	// Mémoriser la date de la (dernière) connexion
-	DB_STRUCTURE_modifier_date('connexion',$DB_ROW['user_id']);
+	DB_STRUCTURE_PUBLIC::DB_modifier_date('connexion',$DB_ROW['user_id']);
 	// Enregistrement d'un cookie sur le poste client servant à retenir le dernier établissement sélectionné si identification avec succès
 	setcookie(COOKIE_STRUCTURE,$BASE,time()+60*60*24*365,'');
 	// Enregistrement d'un cookie sur le poste client servant à retenir le dernier mode de connexion utilisé si identification avec succès
@@ -652,8 +740,8 @@ function enregistrer_session_user($BASE,$DB_ROW)
 	// Récupérer et Enregistrer en session les données des élèves associées à un resposnable légal.
 	if($_SESSION['USER_PROFIL']=='parent')
 	{
-		$_SESSION['OPT_PARENT_ENFANTS'] = DB_STRUCTURE_OPT_enfants_parent($_SESSION['USER_ID']);
-		$_SESSION['OPT_PARENT_CLASSES'] = DB_STRUCTURE_OPT_classes_parent($_SESSION['USER_ID']);
+		$_SESSION['OPT_PARENT_ENFANTS'] = DB_STRUCTURE_COMMUN::DB_OPT_enfants_parent($_SESSION['USER_ID']);
+		$_SESSION['OPT_PARENT_CLASSES'] = DB_STRUCTURE_COMMUN::DB_OPT_classes_parent($_SESSION['USER_ID']);
 		$_SESSION['NB_ENFANTS'] = (is_array($_SESSION['OPT_PARENT_ENFANTS'])) ? count($_SESSION['OPT_PARENT_ENFANTS']) : 0 ;
 		if( ($_SESSION['NB_ENFANTS']==1) && (is_array($_SESSION['OPT_PARENT_CLASSES'])) )
 		{
@@ -662,7 +750,7 @@ function enregistrer_session_user($BASE,$DB_ROW)
 		}
 	}
 	// Récupérer et Enregistrer en session les données associées à l'établissement (indices du tableau de session en majuscules).
-	$DB_TAB = DB_STRUCTURE_lister_parametres();
+	$DB_TAB = DB_STRUCTURE_PUBLIC::DB_lister_parametres();
 	$tab_type_entier  = array('SESAMATH_ID','DUREE_INACTIVITE','CALCUL_VALEUR_RR','CALCUL_VALEUR_R','CALCUL_VALEUR_V','CALCUL_VALEUR_VV','CALCUL_SEUIL_R','CALCUL_SEUIL_V','CALCUL_LIMITE','CAS_SERVEUR_PORT');
 	$tab_type_tableau = array('CSS_BACKGROUND-COLOR','CALCUL_VALEUR','CALCUL_SEUIL','NOTE_TEXTE','NOTE_LEGENDE','ACQUIS_TEXTE','ACQUIS_LEGENDE');
 	foreach($DB_TAB as $DB_ROW)

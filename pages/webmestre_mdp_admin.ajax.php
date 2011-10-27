@@ -35,20 +35,20 @@ $admin_id = (isset($_POST['f_admin']))  ? clean_entier($_POST['f_admin']) : 0;
 if($admin_id)
 {
 	// Informations sur l'admin : nom / prénom / login.
-	$DB_TAB = DB_STRUCTURE_lister_users_cibles($admin_id,'user_nom,user_prenom,user_login');
-	if(!count($DB_TAB))
+	$DB_ROW = DB_STRUCTURE_WEBMESTRE::DB_recuperer_admin_identite($admin_id);
+	if(!count($DB_ROW))
 	{
 		exit('Erreur : administrateur introuvable !');
 	}
-	$admin_nom    = $DB_TAB[0]['user_nom'];
-	$admin_prenom = $DB_TAB[0]['user_prenom'];
-	$admin_login  = $DB_TAB[0]['user_login'];
+	$admin_nom    = $DB_ROW['user_nom'];
+	$admin_prenom = $DB_ROW['user_prenom'];
+	$admin_login  = $DB_ROW['user_login'];
 	// Générer un nouveau mdp de l'admin
 	$admin_password = fabriquer_mdp();
-	DB_STRUCTURE_modifier_utilisateur($admin_id, array(':password'=>$admin_password) );
+	DB_STRUCTURE_WEBMESTRE::DB_modifier_admin_mdp($admin_id,crypter_mdp($admin_password));
 	// On affiche le retour
 	echo'<ul class="puce">';
-	echo'<li>Le mot de passe administrateur de <em>'.html($admin_prenom).' '.html($admin_nom).'</em> vient d\'être réinitialisé.</li>';
+	echo'<li>Le mot de passe administrateur de <em>'.html($admin_prenom.' '.$admin_nom).'</em> vient d\'être réinitialisé.</li>';
 	echo'<li>nom d\'utilisateur " '.$admin_login.' "</li>';
 	echo'<li>mot de passe " '.$admin_password.' "</li>';
 	echo'<li>Pour se connecter comme administrateur, utiliser l\'adresse <a href="'.SERVEUR_ADRESSE.'">'.SERVEUR_ADRESSE.'</a></li>';

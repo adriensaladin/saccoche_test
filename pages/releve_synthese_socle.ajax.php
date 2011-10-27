@@ -68,9 +68,9 @@ $tab_eleve_langue = array(); // id de l'élève => id de la langue
 $tab_item_pilier  = array(); // id de l'item => id du pilier
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-// Récupération de la liste des items du socle pour le palier ou le pilier sélectionné
+// Récupération de la liste des items du socle pour le ou les piliers sélectionné(s)
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-$DB_TAB = ($memo_demande=='pilier') ? DB_STRUCTURE_recuperer_arborescence_pilier($pilier_id) : DB_STRUCTURE_recuperer_arborescence_palier($palier_id,implode(',',$tab_pilier_id)) ;
+$DB_TAB = ($memo_demande=='pilier') ? DB_STRUCTURE_SOCLE::DB_recuperer_arborescence_pilier($pilier_id) : DB_STRUCTURE_SOCLE::DB_recuperer_arborescence_piliers(implode(',',$tab_pilier_id)) ;
 if(!count($DB_TAB))
 {
 	exit('Aucun item référencé pour cette partie du socle commun !');
@@ -106,7 +106,7 @@ $listing_entree_id = implode(',',$tab_entree_id);
 // Récupération de la liste des élèves
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
-$tab_eleve = DB_STRUCTURE_lister_eleves_cibles($liste_eleve,$with_gepi=FALSE,$with_langue=TRUE);
+$tab_eleve = DB_STRUCTURE_BILAN::DB_lister_eleves_cibles($liste_eleve,$with_gepi=FALSE,$with_langue=TRUE);
 if( ($type=='pourcentage') && ($mode=='auto') )
 {
 	foreach($tab_eleve as $key => $tab)
@@ -121,7 +121,7 @@ if( ($type=='pourcentage') && ($mode=='auto') )
 
 if($type=='pourcentage')
 {
-	$DB_TAB = DB_STRUCTURE_lister_result_eleves_palier_sans_infos_items($liste_eleve , $listing_entree_id , $_SESSION['USER_PROFIL']);
+	$DB_TAB = DB_STRUCTURE_BILAN::DB_lister_result_eleves_palier_sans_infos_items($liste_eleve , $listing_entree_id , $_SESSION['USER_PROFIL']);
 	foreach($DB_TAB as $DB_ROW)
 	{
 		$test_comptabilise = ($mode=='auto') ? ( !in_array($tab_item_pilier[$DB_ROW['socle_id']],$tab_langue_piliers) || in_array($DB_ROW['matiere_id'],$tab_langues[$tab_eleve_langue[$DB_ROW['eleve_id']]]['tab_matiere_id']) ) : in_array($DB_ROW['matiere_id'],$tab_matiere) ;
@@ -134,7 +134,7 @@ if($type=='pourcentage')
 	if(count($tab_item))
 	{
 		$listing_item_id = implode(',',array_keys($tab_item));
-		$DB_TAB = DB_STRUCTURE_lister_infos_items($listing_item_id,$detail=FALSE);
+		$DB_TAB = DB_STRUCTURE_SOCLE::DB_lister_infos_items($listing_item_id,$detail=FALSE);
 		foreach($DB_TAB as $DB_ROW)
 		{
 			$tab_item[$DB_ROW['item_id']] = array('calcul_methode'=>$DB_ROW['calcul_methode'],'calcul_limite'=>$DB_ROW['calcul_limite']);
@@ -160,7 +160,7 @@ if($type=='validation')
 		}
 	}
 	//Maintenant on complète avec les valeurs de la base
-	$DB_TAB = DB_STRUCTURE_lister_jointure_user_entree($liste_eleve,$listing_entree_id,$domaine_id=0,$pilier_id=0,$palier_id=0); // en fait on connait aussi le palier mais la requête est plus simple (pas de jointure) avec les entrées
+	$DB_TAB = DB_STRUCTURE_SOCLE::DB_lister_jointure_user_entree($liste_eleve,$listing_entree_id,$domaine_id=0,$pilier_id=0,$palier_id=0); // en fait on connait aussi le palier mais la requête est plus simple (pas de jointure) avec les entrées
 	foreach($DB_TAB as $DB_ROW)
 	{
 		$tab_user_entree[$DB_ROW['user_id']][$DB_ROW['entree_id']] = array('etat'=>$DB_ROW['validation_entree_etat'],'date'=>convert_date_mysql_to_french($DB_ROW['validation_entree_date']),'info'=>$DB_ROW['validation_entree_info']);
@@ -175,7 +175,7 @@ if($type=='validation')
 	}
 	//Maintenant on complète avec les valeurs de la base
 	$listing_pilier_id = implode(',',array_keys($tab_pilier));
-	$DB_TAB = DB_STRUCTURE_lister_jointure_user_pilier($liste_eleve,$listing_pilier_id,$palier_id=0); // en fait on connait aussi le palier mais la requête est plus simple (pas de jointure) avec les piliers
+	$DB_TAB = DB_STRUCTURE_SOCLE::DB_lister_jointure_user_pilier($liste_eleve,$listing_pilier_id,$palier_id=0); // en fait on connait aussi le palier mais la requête est plus simple (pas de jointure) avec les piliers
 	foreach($DB_TAB as $DB_ROW)
 	{
 		$tab_user_pilier[$DB_ROW['user_id']][$DB_ROW['pilier_id']] = array('etat'=>$DB_ROW['validation_pilier_etat'],'date'=>convert_date_mysql_to_french($DB_ROW['validation_pilier_date']),'info'=>$DB_ROW['validation_pilier_info']);

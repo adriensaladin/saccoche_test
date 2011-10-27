@@ -32,8 +32,8 @@ $VERSION_JS_FILE += 1;
 
 <?php
 // Fabrication des éléments select du formulaire
-$select_groupe        = afficher_select(DB_STRUCTURE_OPT_groupes_professeur($_SESSION['USER_ID']) , $select_nom=false , $option_first='oui' , $selection=false , $optgroup='oui');
-$select_groupe_besoin = afficher_select(DB_STRUCTURE_OPT_besoins_professeur($_SESSION['USER_ID']) , $select_nom=false , $option_first='non' , $selection=false , $optgroup='non');
+$select_groupe        = afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_groupes_professeur($_SESSION['USER_ID']) , $select_nom=false , $option_first='oui' , $selection=false , $optgroup='oui');
+$select_groupe_besoin = afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_besoins_professeur($_SESSION['USER_ID']) , $select_nom=false , $option_first='non' , $selection=false , $optgroup='non');
 ?>
 
 <ul class="puce">

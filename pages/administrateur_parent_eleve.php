@@ -32,8 +32,8 @@ $VERSION_JS_FILE += 1;
 
 <?php
 // Fabrication des éléments select du formulaire
-$select_f_groupes = afficher_select(DB_STRUCTURE_OPT_regroupements_etabl()         , $select_nom=false , $option_first='oui' , $selection=false , $optgroup='oui');
-$select_f_parents = afficher_select(DB_STRUCTURE_OPT_parents_etabl($user_statut=1) , $select_nom=false , $option_first='oui' , $selection=false , $optgroup='non');
+$select_f_groupes = afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_regroupements_etabl()         , $select_nom=false , $option_first='oui' , $selection=false , $optgroup='oui');
+$select_f_parents = afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_parents_etabl($user_statut=1) , $select_nom=false , $option_first='oui' , $selection=false , $optgroup='non');
 
 ?>
 

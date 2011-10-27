@@ -33,15 +33,15 @@ $VERSION_JS_FILE += 6;
 <?php
 // Fabrication des éléments select du formulaire
 $tab_cookie   = load_cookie_select('palier');
-$tab_matieres = DB_STRUCTURE_OPT_matieres_etabl($_SESSION['MATIERES'],$transversal=true);
-$tab_paliers  = DB_STRUCTURE_OPT_paliers_etabl($_SESSION['PALIERS']);
+$tab_matieres = DB_STRUCTURE_COMMUN::DB_OPT_matieres_etabl($_SESSION['MATIERES'],$transversal=true);
+$tab_paliers  = DB_STRUCTURE_COMMUN::DB_OPT_paliers_etabl($_SESSION['PALIERS']);
 if($_SESSION['USER_PROFIL']=='directeur')
 {
-	$tab_groupes = DB_STRUCTURE_OPT_classes_groupes_etabl();
+	$tab_groupes = DB_STRUCTURE_COMMUN::DB_OPT_classes_groupes_etabl();
 }
 elseif($_SESSION['USER_PROFIL']=='professeur')
 {
-	$tab_groupes = DB_STRUCTURE_OPT_groupes_professeur($_SESSION['USER_ID']);
+	$tab_groupes = DB_STRUCTURE_COMMUN::DB_OPT_groupes_professeur($_SESSION['USER_ID']);
 }
 else
 {

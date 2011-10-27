@@ -45,7 +45,7 @@ $admin_id         = (isset($_POST['f_admin_id']))         ? clean_entier($_POST[
 // => pouvoir retourner la cellule correspondante du tableau
 if( ($action!='supprimer') && ($action!='lister_admin') && ($action!='initialiser_mdp') )
 {
-	$DB_TAB = DB_WEBMESTRE_lister_zones();
+	$DB_TAB = DB_WEBMESTRE_WEBMESTRE::DB_lister_zones();
 	foreach($DB_TAB as $DB_ROW)
 	{
 		$tab_geo[$DB_ROW['geo_id']] = array( 'ordre'=>$DB_ROW['geo_ordre'] , 'nom'=>$DB_ROW['geo_nom'] );
@@ -61,16 +61,16 @@ if( ($action=='ajouter') && isset($tab_geo[$geo_id]) && $localisation && $denomi
 	// Vérifier que le n° de base est disponible (si imposé)
 	if($base_id)
 	{
-		$DB_ROW = DB_WEBMESTRE_recuperer_structure($base_id);
-		if(count($DB_ROW))
+		$structure_denomination = DB_WEBMESTRE_WEBMESTRE::DB_tester_structure_Id($base_id);
+		if($structure_denomination!==NULL)
 		{
-			exit('Erreur : identifiant déjà utilisé ('.html($DB_ROW['structure_denomination']).') !');
+			exit('Erreur : identifiant déjà utilisé ('.html($structure_denomination).') !');
 		}
 	}
 	// Vérifier que le n°UAI est disponible
 	if($uai)
 	{
-		if( DB_WEBMESTRE_tester_structure_UAI($uai) )
+		if( DB_WEBMESTRE_WEBMESTRE::DB_tester_structure_UAI($uai) )
 		{
 			exit('Erreur : numéro UAI déjà utilisé !');
 		}
@@ -79,7 +79,7 @@ if( ($action=='ajouter') && isset($tab_geo[$geo_id]) && $localisation && $denomi
 	// Créer le fichier de connexion de la base de données de la structure
 	// Créer la base de données de la structure
 	// Créer un utilisateur pour la base de données de la structure et lui attribuer ses droits
-	$base_id = DB_WEBMESTRE_ajouter_structure($base_id,$geo_id,$uai,$localisation,$denomination,$contact_nom,$contact_prenom,$contact_courriel);
+	$base_id = ajouter_structure($base_id,$geo_id,$uai,$localisation,$denomination,$contact_nom,$contact_prenom,$contact_courriel);
 	// Créer les dossiers de fichiers temporaires par établissement : vignettes verticales, flux RSS des demandes, cookies des choix de formulaires
 	Creer_Dossier('./__tmp/badge/'.$base_id);
 	Ecrire_Fichier('./__tmp/badge/'.$base_id.'/index.htm','Circulez, il n\'y a rien à voir par ici !');
@@ -90,9 +90,9 @@ if( ($action=='ajouter') && isset($tab_geo[$geo_id]) && $localisation && $denomi
 	// Charger les paramètres de connexion à cette base afin de pouvoir y effectuer des requêtes
 	charger_parametres_mysql_supplementaires($base_id);
 	// Lancer les requêtes pour créer et remplir les tables
-	DB_STRUCTURE_creer_remplir_tables_structure('./_sql/structure/');
-	// Il est arrivé que la fonction DB_STRUCTURE_modifier_parametres() retourne une erreur disant que la table n'existe pas.
-	// Comme si les requêtes de DB_STRUCTURE_creer_remplir_tables_structure() étaient en cache, et pas encore toutes passées (parcequ'au final, quand on va voir la base, toutes les tables sont bien là).
+	DB_STRUCTURE_COMMUN::DB_creer_remplir_tables_structure();
+	// Il est arrivé que la fonction DB_modifier_parametres() retourne une erreur disant que la table n'existe pas.
+	// Comme si les requêtes de DB_creer_remplir_tables_structure() étaient en cache, et pas encore toutes passées (parcequ'au final, quand on va voir la base, toutes les tables sont bien là).
 	// Est-ce que c'est possible au vu du fonctionnement de la classe de connexion ? Et, bien sûr, y a-t-il quelque chose à faire pour éviter ce problème ?
 	// En attendant une réponse de SebR, j'ai mis ce sleep(1)... sans trop savoir si cela pouvait aider...
 	@sleep(1);
@@ -101,10 +101,10 @@ if( ($action=='ajouter') && isset($tab_geo[$geo_id]) && $localisation && $denomi
 	$tab_parametres['version_base'] = VERSION_BASE;
 	$tab_parametres['uai']          = $uai;
 	$tab_parametres['denomination'] = $denomination;
-	DB_STRUCTURE_modifier_parametres($tab_parametres);
+	DB_STRUCTURE_COMMUN::DB_modifier_parametres($tab_parametres);
 	// Insérer le compte administrateur dans la base de cette structure
 	$password = fabriquer_mdp();
-	$user_id = DB_STRUCTURE_ajouter_utilisateur($user_sconet_id=0,$user_sconet_elenoet=0,$reference='','administrateur',$contact_nom,$contact_prenom,$login='admin',$password,$classe_id=0,$id_ent='',$id_gepi='');
+	$user_id = DB_STRUCTURE_COMMUN::DB_ajouter_utilisateur($user_sconet_id=0,$user_sconet_elenoet=0,$reference='','administrateur',$contact_nom,$contact_prenom,$login='admin',crypter_mdp($password),$classe_id=0,$id_ent='',$id_gepi='');
 	// Et lui envoyer un courriel
 	if($courriel_envoi)
 	{
@@ -151,19 +151,19 @@ if( ($action=='modifier') && $base_id && isset($tab_geo[$geo_id]) && $localisati
 		// Vérifier que le n°UAI est disponible
 	if($uai)
 	{
-		if( DB_WEBMESTRE_tester_structure_UAI($uai,$base_id) )
+		if( DB_WEBMESTRE_WEBMESTRE::DB_tester_structure_UAI($uai,$base_id) )
 		{
 			exit('Erreur : numéro UAI déjà utilisé !');
 		}
 	}
 	// On met à jour l'enregistrement dans la base du webmestre
-	DB_WEBMESTRE_modifier_structure($base_id,$geo_id,$uai,$localisation,$denomination,$contact_nom,$contact_prenom,$contact_courriel);
+	DB_WEBMESTRE_WEBMESTRE::DB_modifier_structure($base_id,$geo_id,$uai,$localisation,$denomination,$contact_nom,$contact_prenom,$contact_courriel);
 	// On met à jour l'enregistrement dans la base de la structure
 	charger_parametres_mysql_supplementaires($base_id);
 	$tab_parametres = array();
 	$tab_parametres['uai']          = $uai;
 	$tab_parametres['denomination'] = $denomination;
-	DB_STRUCTURE_modifier_parametres($tab_parametres);
+	DB_STRUCTURE_COMMUN::DB_modifier_parametres($tab_parametres);
 	// On affiche le retour
 	$img = (!is_file(CHEMIN_CONFIG.'blocage_webmestre_'.$base_id.'.txt')) ? '<img class="bloquer" src="./_img/blocage_non.png" title="Bloquer cet établissement." />' : '<img class="debloquer" src="./_img/blocage_oui.png" title="Débloquer cet établissement." />' ;
 	echo'<td class="nu"><a href="#id_0">'.$img.'</a></td>';
@@ -189,7 +189,7 @@ if( ($action=='modifier') && $base_id && isset($tab_geo[$geo_id]) && $localisati
 if( ($action=='lister_admin') && $base_id )
 {
 	charger_parametres_mysql_supplementaires($base_id);
-	exit( afficher_select(DB_STRUCTURE_OPT_administrateurs_etabl() , $select_nom=false , $option_first='non' , $selection=false , $optgroup='non') );
+	exit( afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_administrateurs_etabl() , $select_nom=false , $option_first='non' , $selection=false , $optgroup='non') );
 }
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
@@ -200,7 +200,7 @@ if( ($action=='initialiser_mdp') && $base_id && $admin_id )
 {
 	charger_parametres_mysql_supplementaires($base_id);
 	// Informations sur la structure, notamment coordonnées du contact.
-	$DB_ROW = DB_WEBMESTRE_recuperer_structure($base_id);
+	$DB_ROW = DB_WEBMESTRE_WEBMESTRE::DB_recuperer_structure_by_Id($base_id);
 	if(!count($DB_ROW))
 	{
 		exit('Erreur : structure introuvable !');
@@ -210,8 +210,8 @@ if( ($action=='initialiser_mdp') && $base_id && $admin_id )
 	$contact_prenom   = $DB_ROW['structure_contact_prenom'];
 	$contact_courriel = $DB_ROW['structure_contact_courriel'];
 	// Informations sur l'admin : nom / prénom / login.
-	$DB_TAB = DB_STRUCTURE_lister_users_cibles($admin_id,'user_nom,user_prenom,user_login');
-	if(!count($DB_TAB))
+	$DB_ROW = DB_STRUCTURE_WEBMESTRE::DB_recuperer_admin_identite($admin_id);
+	if(!count($DB_ROW))
 	{
 		exit('Erreur : administrateur introuvable !');
 	}
@@ -220,7 +220,7 @@ if( ($action=='initialiser_mdp') && $base_id && $admin_id )
 	$admin_login  = $DB_TAB[0]['user_login'];
 	// Générer un nouveau mdp de l'admin
 	$admin_password = fabriquer_mdp();
-	DB_STRUCTURE_modifier_utilisateur($admin_id, array(':password'=>$admin_password) );
+	DB_STRUCTURE_WEBMESTRE::DB_modifier_admin_mdp($admin_id,crypter_mdp($admin_password));
 	// Envoyer un courriel au contact
 	$texte = 'Bonjour '.$contact_prenom.' '.$contact_nom.'.'."\r\n\r\n";
 	$texte.= 'Je viens de réinitialiser le mot de passe de '.$admin_prenom.' '.$admin_nom.', administrateur de SACoche pour l\'établissement "'.$denomination.'" sur le site hébergé par "'.HEBERGEUR_DENOMINATION.'".'."\r\n\r\n";
@@ -237,7 +237,7 @@ if( ($action=='initialiser_mdp') && $base_id && $admin_id )
 	}
 	// On affiche le retour
 	echo'<ok>';
-	echo'Le mot de passe de '.html($admin_prenom).' '.html($admin_nom).',<BR />administrateur de l\'établissement '.html($denomination).',<BR />vient d\'être réinitialisé.<BR /><BR />';
+	echo'Le mot de passe de '.html($admin_prenom.' '.$admin_nom).',<BR />administrateur de l\'établissement '.html($denomination).',<BR />vient d\'être réinitialisé.<BR /><BR />';
 	echo'Les nouveaux identifiants ont été envoyés au contact '.html($contact_prenom).' '.html($contact_nom).',<BR />à son adresse de courriel '.html($contact_courriel).'.';
 	exit();
 }
@@ -248,7 +248,7 @@ if( ($action=='initialiser_mdp') && $base_id && $admin_id )
 
 if( ($action=='supprimer') && $base_id )
 {
-	DB_WEBMESTRE_supprimer_multi_structure($base_id);
+	supprimer_multi_structure($base_id);
 	exit('<ok>');
 }
 
@@ -261,7 +261,7 @@ if( ($action=='supprimer') && $listing_base_id )
 	$tab_base_id = array_filter( array_map( 'clean_entier' , explode(',',$listing_base_id) ) , 'positif' );
 	foreach($tab_base_id as $base_id)
 	{
-		DB_WEBMESTRE_supprimer_multi_structure($base_id);
+		supprimer_multi_structure($base_id);
 	}
 	exit('<ok>');
 }

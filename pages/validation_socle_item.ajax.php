@@ -56,7 +56,7 @@ if( ($action=='Afficher_bilan') && $pilier_id && count($tab_domaine) && count($t
 	require_once('./_inc/tableau_langues.php');
 	$test_pilier_langue = (in_array($pilier_id,$tab_langue_piliers)) ? TRUE : FALSE ;
 	// Récupérer les données des élèves
-	$tab_eleve = DB_STRUCTURE_lister_eleves_cibles($listing_eleve_id,$with_gepi=FALSE,$with_langue=TRUE);
+	$tab_eleve = DB_STRUCTURE_BILAN::DB_lister_eleves_cibles($listing_eleve_id,$with_gepi=FALSE,$with_langue=TRUE);
 	if(!is_array($tab_eleve))
 	{
 		exit('Aucun élève trouvé correspondant aux identifiants transmis !');
@@ -88,7 +88,7 @@ if( ($action=='Afficher_bilan') && $pilier_id && count($tab_domaine) && count($t
 	// Mémoriser au passage la liste des entrées du socle par pilier
 	$tab_entree_id = array();
 	$tab_pilier_entree = array();
-	$DB_TAB = DB_STRUCTURE_recuperer_arborescence_pilier($pilier_id,$listing_domaine_id);
+	$DB_TAB = DB_STRUCTURE_SOCLE::DB_recuperer_arborescence_pilier($pilier_id,$listing_domaine_id);
 	$pilier_id = 0;
 	foreach($DB_TAB as $DB_ROW)
 	{
@@ -142,7 +142,7 @@ if( ($action=='Afficher_bilan') && $pilier_id && count($tab_domaine) && count($t
 	// - - - - - - - - - - - - - - - - - - - - - - - - -
 	$tab_eval = array();	// [eleve_id][socle_id][item_id][]['note'] => note
 	$tab_item = array();	// [item_id] => array(calcul_methode,calcul_limite);
-	$DB_TAB = DB_STRUCTURE_lister_result_eleves_palier_sans_infos_items($listing_eleve_id , $listing_entree_id , $_SESSION['USER_PROFIL']);
+	$DB_TAB = DB_STRUCTURE_BILAN::DB_lister_result_eleves_palier_sans_infos_items($listing_eleve_id , $listing_entree_id , $_SESSION['USER_PROFIL']);
 	foreach($DB_TAB as $DB_ROW)
 	{
 		$test_comptabilise = ($mode=='auto') ? ( !$test_pilier_langue || in_array($DB_ROW['matiere_id'],$tab_langues[$tab_eleve_langue[$DB_ROW['eleve_id']]]['tab_matiere_id']) ) : in_array($DB_ROW['matiere_id'],$tab_matiere) ;
@@ -155,7 +155,7 @@ if( ($action=='Afficher_bilan') && $pilier_id && count($tab_domaine) && count($t
 	if(count($tab_item))
 	{
 		$listing_item_id = implode(',',array_keys($tab_item));
-		$DB_TAB = DB_STRUCTURE_lister_infos_items($listing_item_id,$detail=FALSE);
+		$DB_TAB = DB_STRUCTURE_SOCLE::DB_lister_infos_items($listing_item_id,$detail=FALSE);
 		foreach($DB_TAB as $DB_ROW)
 		{
 			$tab_item[$DB_ROW['item_id']] = array('calcul_methode'=>$DB_ROW['calcul_methode'],'calcul_limite'=>$DB_ROW['calcul_limite']);
@@ -209,7 +209,7 @@ if( ($action=='Afficher_bilan') && $pilier_id && count($tab_domaine) && count($t
 	// - - - - - - - - - - - - - - - - - - - - - - - - -
 	// Récupérer la liste des jointures : validations d'entrées
 	// - - - - - - - - - - - - - - - - - - - - - - - - -
-	$DB_TAB = DB_STRUCTURE_lister_jointure_user_entree($listing_eleve_id,$listing_entree_id,$domaine_id,$pilier_id,$palier_id=0);
+	$DB_TAB = DB_STRUCTURE_SOCLE::DB_lister_jointure_user_entree($listing_eleve_id,$listing_entree_id,$domaine_id,$pilier_id,$palier_id=0);
 	$tab_bad = array();
 	$tab_bon = array();
 	foreach($DB_TAB as $DB_ROW)
@@ -221,7 +221,7 @@ if( ($action=='Afficher_bilan') && $pilier_id && count($tab_domaine) && count($t
 	// - - - - - - - - - - - - - - - - - - - - - - - - -
 	// Récupérer la liste des jointures : validations de piliers
 	// - - - - - - - - - - - - - - - - - - - - - - - - -
-	$DB_TAB = DB_STRUCTURE_lister_jointure_user_pilier($listing_eleve_id,$pilier_id,$palier_id=0);
+	$DB_TAB = DB_STRUCTURE_SOCLE::DB_lister_jointure_user_pilier($listing_eleve_id,$pilier_id,$palier_id=0);
 	$tab_bad = array();
 	$tab_bon = array();
 	foreach($DB_TAB as $DB_ROW)
@@ -263,7 +263,7 @@ elseif( ($action=='Afficher_information') && $eleve_id && $pilier_id && $entree_
 	// Récupération de la liste des résultats
 	$tab_eval = array();	// [item_id][]['note'] => note
 	$tab_item = array();	// [item_id] => array(item_ref,item_nom,calcul_methode,calcul_limite);
-	$DB_TAB = DB_STRUCTURE_lister_result_eleve_palier($eleve_id,$entree_id);
+	$DB_TAB = DB_STRUCTURE_SOCLE::DB_lister_result_eleve_palier($eleve_id,$entree_id);
 	foreach($DB_TAB as $DB_ROW)
 	{
 		$test_comptabilise = ($mode=='auto') ? ( !$test_pilier_langue || in_array($DB_ROW['matiere_id'],$tab_langues[$langue]['tab_matiere_id']) ) : in_array($DB_ROW['matiere_id'],$tab_matiere) ;
@@ -340,7 +340,7 @@ elseif($action=='Enregistrer_validation')
 	// On recupère le contenu de la base déjà enregistré pour le comparer
 	$listing_eleve_id  = implode(',',$tab_eleve_id);
 	$listing_entree_id = implode(',',$tab_entree_id);
-	$DB_TAB = DB_STRUCTURE_lister_jointure_user_entree($listing_eleve_id,$listing_entree_id,$domaine_id=0,$pilier_id=0,$palier_id=0);
+	$DB_TAB = DB_STRUCTURE_SOCLE::DB_lister_jointure_user_entree($listing_eleve_id,$listing_entree_id,$domaine_id=0,$pilier_id=0,$palier_id=0);
 	// On remplit au fur et à mesure $tab_nouveau_modifier et $tab_nouveau_supprimer
 	$tab_nouveau_modifier = array();
 	$tab_nouveau_supprimer = array();
@@ -377,17 +377,17 @@ elseif($action=='Enregistrer_validation')
 	foreach($tab_nouveau_ajouter as $key => $etat)
 	{
 		list($entree_id,$eleve_id) = explode('x',$key);
-		DB_STRUCTURE_ajouter_validation('entree',$eleve_id,$entree_id,$etat,$date_mysql,$info);
+		DB_STRUCTURE_SOCLE::DB_ajouter_validation('entree',$eleve_id,$entree_id,$etat,$date_mysql,$info);
 	}
 	foreach($tab_nouveau_modifier as $key => $etat)
 	{
 		list($entree_id,$eleve_id) = explode('x',$key);
-		DB_STRUCTURE_modifier_validation('entree',$eleve_id,$entree_id,$etat,$date_mysql,$info);
+		DB_STRUCTURE_SOCLE::DB_modifier_validation('entree',$eleve_id,$entree_id,$etat,$date_mysql,$info);
 	}
 	foreach($tab_nouveau_supprimer as $key)
 	{
 		list($entree_id,$eleve_id) = explode('x',$key);
-		DB_STRUCTURE_supprimer_validation('entree',$eleve_id,$entree_id);
+		DB_STRUCTURE_SOCLE::DB_supprimer_validation('entree',$eleve_id,$entree_id);
 	}
 	exit('OK');
 }

@@ -66,7 +66,7 @@ if( ($action=='Afficher_evaluations') && $eleve_id && $date_debut && $date_fin )
 		}
 	}
 	// Lister les évaluations
-	$DB_TAB = DB_STRUCTURE_lister_devoirs_eleve($eleve_id,$classe_id,$date_debut_mysql,$date_fin_mysql);
+	$DB_TAB = DB_STRUCTURE_ELEVE::DB_lister_devoirs_eleve($eleve_id,$classe_id,$date_debut_mysql,$date_fin_mysql);
 	if(!count($DB_TAB))
 	{
 		exit('Aucune évaluation trouvée sur cette période vous concernant !');
@@ -95,7 +95,7 @@ if( ($action=='Afficher_evaluations') && $eleve_id && $date_debut && $date_fin )
 if( ($action=='Voir_notes') && $eleve_id && $devoir_id )
 {
 	// liste des items
-	$DB_TAB_COMP = DB_STRUCTURE_lister_items_devoir($devoir_id,$info_pour_eleve=true);
+	$DB_TAB_COMP = DB_STRUCTURE_ELEVE::DB_lister_items_devoir_avec_infos_pour_eleves($devoir_id);
 	// Normalement, un devoir est toujours lié à au moins un item... sauf si l'item a été supprimé dans le référentiel !
 	if(!count($DB_TAB_COMP))
 	{
@@ -105,7 +105,7 @@ if( ($action=='Voir_notes') && $eleve_id && $devoir_id )
 	$tab_liste_item = array_keys($DB_TAB_COMP);
 	$liste_item_id = implode(',',$tab_liste_item);
 	$tab_devoirs = array();
-	$DB_TAB = DB_STRUCTURE_lister_result_eleve_items($eleve_id,$liste_item_id);
+	$DB_TAB = DB_STRUCTURE_ELEVE::DB_lister_result_eleve_items($eleve_id,$liste_item_id);
 	foreach($DB_TAB as $DB_ROW)
 	{
 		$tab_devoirs[$DB_ROW['item_id']][] = array('note'=>$DB_ROW['note']);
@@ -124,7 +124,7 @@ if( ($action=='Voir_notes') && $eleve_id && $devoir_id )
 		$tab_affich[$item_id] = '<tr><td>'.html($item_ref).'</td><td>'.$texte_socle.$texte_lien_avant.html($DB_ROW['item_nom']).$texte_lien_apres.$texte_demande_eval.'</td><td class="hc">-</td>'.affich_score_html($score,$methode_tri='score',$pourcent='').'</tr>';
 	}
 	// récupérer les saisies et les ajouter
-	$DB_TAB = DB_STRUCTURE_lister_saisies_devoir_eleve($devoir_id,$eleve_id);
+	$DB_TAB = DB_STRUCTURE_ELEVE::DB_lister_saisies_devoir_eleve($devoir_id,$eleve_id);
 	foreach($DB_TAB as $DB_ROW)
 	{
 		// Test pour éviter les pbs des élèves changés de groupes ou des items modifiés en cours de route

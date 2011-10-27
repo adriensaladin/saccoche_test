@@ -31,7 +31,7 @@ $VERSION_JS_FILE += 12;
 
 // Lister le nb de demandes d'évaluations autorisées suivant les matières
 $infobulle = '';
-$DB_TAB = DB_STRUCTURE_OPT_matieres_professeur($_SESSION['MATIERES'],$_SESSION['USER_ID']);
+$DB_TAB = DB_STRUCTURE_COMMUN::DB_OPT_matieres_professeur($_SESSION['MATIERES'],$_SESSION['USER_ID']);
 if(!is_array($DB_TAB))
 {
 	$infobulle .= $DB_TAB;
@@ -55,8 +55,8 @@ else
 
 <?php
 // Fabrication des éléments select du formulaire
-$select_matiere = afficher_select(DB_STRUCTURE_OPT_matieres_professeur($_SESSION['MATIERES'],$_SESSION['USER_ID']) , $select_nom='f_matiere' , $option_first='non' , $selection=false , $optgroup='non');
-$select_groupe  = afficher_select(DB_STRUCTURE_OPT_groupes_professeur($_SESSION['USER_ID'])                        , $select_nom='f_groupe'  , $option_first='oui' , $selection=false , $optgroup='oui');
+$select_matiere = afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_matieres_professeur($_SESSION['MATIERES'],$_SESSION['USER_ID']) , $select_nom='f_matiere' , $option_first='non' , $selection=false , $optgroup='non');
+$select_groupe  = afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_groupes_professeur($_SESSION['USER_ID'])                        , $select_nom='f_groupe'  , $option_first='oui' , $selection=false , $optgroup='oui');
 ?>
 
 <form action="" method="post" id="form0"><fieldset>

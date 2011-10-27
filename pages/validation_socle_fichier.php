@@ -32,7 +32,7 @@ $VERSION_JS_FILE += 1;
 
 <?php
 // Test pour l'export
-$nb_eleves_sans_sconet = DB_STRUCTURE_compter_eleves_actifs_sans_id_sconet();
+$nb_eleves_sans_sconet = DB_STRUCTURE_SOCLE::DB_compter_eleves_actifs_sans_id_sconet();
 $s = ($nb_eleves_sans_sconet>1) ? 's' : '' ;
 
 $test_uai          = ($_SESSION['UAI'])                                               ? TRUE : FALSE ;
@@ -50,7 +50,7 @@ $bouton_export_lpc = ($test_uai && $test_cnil && $test_key_sesamath) ? 'id="bout
 
 <?php
 // Fabrication des éléments select du formulaire
-$select_f_groupes = afficher_select(DB_STRUCTURE_OPT_regroupements_etabl() , $select_nom=false , $option_first='oui' , $selection=false , $optgroup='oui');
+$select_f_groupes = afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_regroupements_etabl() , $select_nom=false , $option_first='oui' , $selection=false , $optgroup='oui');
 ?>
 
 <p><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=referentiels_socle__socle_export_import">DOC : Import / Export de validations du socle</a></span></p>

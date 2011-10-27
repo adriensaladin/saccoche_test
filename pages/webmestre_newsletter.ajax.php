@@ -49,7 +49,7 @@ if( ($action=='envoyer') && $titre && $contenu && $nb_bases )
 	$_SESSION['tmp']['contenu'] = $contenu ;
 	// Mémoriser en session les données des contacts concernés par la lettre
 	$_SESSION['tmp']['infos'] = array();
-	$DB_TAB = DB_WEBMESTRE_lister_contacts_cibles( implode(',',$tab_base_id) );
+	$DB_TAB = DB_WEBMESTRE_WEBMESTRE::DB_lister_contacts_cibles( implode(',',$tab_base_id) );
 	foreach($DB_TAB as $DB_ROW)
 	{
 		$_SESSION['tmp']['infos'][] = array(
@@ -105,7 +105,7 @@ if( ($action=='supprimer') && $nb_bases )
 {
 	foreach($tab_base_id as $base_id)
 	{
-		DB_WEBMESTRE_supprimer_multi_structure($base_id);
+		supprimer_multi_structure($base_id);
 	}
 	exit('<ok>');
 }

@@ -67,7 +67,7 @@ if( $matiere_id && $niveau_id && $matiere_nom && $niveau_nom && $remplissage && 
 	// Récupération de la liste des items pour la matière et le niveau sélectionné
 	//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 	$lignes_nb = 0;
-	$DB_TAB = DB_STRUCTURE_recuperer_arborescence($prof_id=0,$matiere_id,$niveau_id,$only_socle,$only_item=false,$socle_nom=false);
+	$DB_TAB = DB_STRUCTURE_COMMUN::DB_recuperer_arborescence($prof_id=0,$matiere_id,$niveau_id,$only_socle,$only_item=false,$socle_nom=false);
 	if(count($DB_TAB))
 	{
 		$domaine_id = 0;
@@ -123,7 +123,7 @@ if( $matiere_id && $niveau_id && $matiere_nom && $niveau_nom && $remplissage && 
 	}
 	elseif(count($tab_eleve_id))
 	{
-		$tab_eleve = DB_STRUCTURE_lister_eleves_cibles($liste_eleve,$with_gepi=FALSE,$with_langue=FALSE);
+		$tab_eleve = DB_STRUCTURE_BILAN::DB_lister_eleves_cibles($liste_eleve,$with_gepi=FALSE,$with_langue=FALSE);
 	}
 	else
 	{
@@ -135,7 +135,7 @@ if( $matiere_id && $niveau_id && $matiere_nom && $niveau_nom && $remplissage && 
 	//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 	if(count($tab_eleve_id) && $remplissage=='plein')
 	{
-		$DB_TAB = DB_STRUCTURE_lister_result_eleves_matiere($liste_eleve , $liste_item , $date_debut=false , $date_fin=false , $_SESSION['USER_PROFIL']) ;
+		$DB_TAB = DB_STRUCTURE_BILAN::DB_lister_result_eleves_matiere($liste_eleve , $liste_item , $date_debut=false , $date_fin=false , $_SESSION['USER_PROFIL']) ;
 		foreach($DB_TAB as $DB_ROW)
 		{
 			$user_id = ($_SESSION['USER_PROFIL']=='eleve') ? $_SESSION['USER_ID'] : $DB_ROW['eleve_id'] ;

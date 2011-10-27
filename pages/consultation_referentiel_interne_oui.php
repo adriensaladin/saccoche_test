@@ -55,7 +55,7 @@ $tab_niveau  = array();
 $tab_colonne = array();
 
 // On récupère la liste des matières utilisées par l'établissement
-$DB_TAB = DB_STRUCTURE_lister_matieres_etablissement($_SESSION['MATIERES'],$with_transversal=true,$order_by_name=true);
+$DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_matieres_etablissement( $_SESSION['MATIERES'] , TRUE /*with_transversal*/ , TRUE /*order_by_name*/ );
 if(count($DB_TAB))
 {
 	foreach($DB_TAB as $DB_ROW)
@@ -66,7 +66,7 @@ if(count($DB_TAB))
 }
 $listing_matieres_id = implode(',',array_keys($tab_matiere));
 
-if(!$listing_matieres_id)
+if(!$listing_matieres_id) // normalement impossible
 {
 	echo'<p><span class="danger">Aucune matière enregistrée ou associée à l\'établissement !</span></p>';
 }
@@ -82,14 +82,14 @@ else
 {
 	echo'<p><span class="astuce">Cliquer sur l\'&oelig;il pour voir le détail d\'un référentiel.</span></p>';
 	// On récupère la liste des niveaux utilisés par l'établissement
-	$DB_TAB = DB_STRUCTURE_lister_niveaux_etablissement($_SESSION['NIVEAUX'],$_SESSION['CYCLES']);
+	$DB_TAB = DB_STRUCTURE_COMMUN::DB_lister_niveaux_etablissement($_SESSION['NIVEAUX'],$_SESSION['CYCLES']);
 	$nb_niveaux = count($DB_TAB);
 	foreach($DB_TAB as $DB_ROW)
 	{
 		$tab_niveau[$DB_ROW['niveau_id']] = html($DB_ROW['niveau_nom']);
 	}
 	// On récupère la liste des coordonnateurs responsables par matières
-	$DB_TAB = DB_STRUCTURE_lister_identite_coordonnateurs_par_matiere($listing_matieres_id);
+	$DB_TAB = DB_STRUCTURE_COMMUN::DB_lister_identite_coordonnateurs_par_matiere($listing_matieres_id);
 	if(count($DB_TAB))
 	{
 		foreach($DB_TAB as $DB_ROW)
@@ -99,7 +99,7 @@ else
 	}
 	// On récupère la liste des référentiels par matière et niveau
 	$tab_partage = array('oui'=>'<img title="Référentiel partagé sur le serveur communautaire (MAJ le ◄DATE►)." alt="" src="./_img/partage1.gif" />','non'=>'<img title="Référentiel non partagé avec la communauté (choix du ◄DATE►)." alt="" src="./_img/partage0.gif" />','bof'=>'<img title="Référentiel dont le partage est sans intérêt (pas novateur)." alt="" src="./_img/partage0.gif" />','hs'=>'<img title="Référentiel dont le partage est sans objet (matière spécifique)." alt="" src="./_img/partage0.gif" />');
-	$DB_TAB = DB_STRUCTURE_lister_referentiels_infos_details_matieres_niveaux($listing_matieres_id,$_SESSION['NIVEAUX'],$_SESSION['CYCLES']);
+	$DB_TAB = DB_STRUCTURE_COMMUN::DB_lister_referentiels_infos_details_matieres_niveaux($listing_matieres_id,$_SESSION['NIVEAUX'],$_SESSION['CYCLES']);
 	if(count($DB_TAB))
 	{
 		foreach($DB_TAB as $DB_ROW)

@@ -35,7 +35,7 @@ $delai = (isset($_POST['f_delai'])) ? clean_entier($_POST['f_delai']) : 0;
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 if($delai)
 {
-	DB_STRUCTURE_modifier_parametres( array('duree_inactivite'=>$delai) );
+	DB_STRUCTURE_COMMUN::DB_modifier_parametres( array('duree_inactivite'=>$delai) );
 	// ne pas oublier de mettre aussi à jour la session
 	$_SESSION['DUREE_INACTIVITE'] = $delai;
 	echo'ok';

@@ -39,15 +39,15 @@ $groupe_nom = (isset($_POST['f_nom']))    ? clean_texte($_POST['f_nom'])     : '
 if( ($action=='ajouter') && $niveau && $groupe_nom )
 {
 	// Vérifier que le nom du groupe est disponible
-	if( DB_STRUCTURE_tester_groupe_nom($groupe_nom) )
+	if( DB_STRUCTURE_PROFESSEUR::DB_tester_groupe_nom($groupe_nom) )
 	{
 		exit('Erreur : nom de groupe déjà existant !');
 	}
 	// Insérer l'enregistrement
-	$groupe_id = DB_STRUCTURE_ajouter_groupe('besoin','',$groupe_nom,$niveau);
+	$groupe_id = DB_STRUCTURE_PROFESSEUR::DB_ajouter_groupe_par_prof('besoin',$groupe_nom,$niveau);
 	// Y associer le prof, en responsable du groupe
-	DB_STRUCTURE_modifier_liaison_user_groupe($_SESSION['USER_ID'],'professeur',$groupe_id,'besoin',true);
-	DB_STRUCTURE_modifier_liaison_professeur_principal($_SESSION['USER_ID'],$groupe_id,true);
+	DB_STRUCTURE_PROFESSEUR::DB_modifier_liaison_user_groupe_par_prof($_SESSION['USER_ID'],'professeur',$groupe_id,'besoin',TRUE);
+	DB_STRUCTURE_PROFESSEUR::DB_ajouter_liaison_professeur_responsable($_SESSION['USER_ID'],$groupe_id);
 	// Afficher le retour
 	echo'<tr id="id_'.$groupe_id.'" class="new">';
 	echo	'<td>{{NIVEAU_NOM}}</td>';
@@ -65,12 +65,12 @@ if( ($action=='ajouter') && $niveau && $groupe_nom )
 else if( ($action=='modifier') && $groupe_id && $niveau && $groupe_nom )
 {
 	// Vérifier que le nom du groupe est disponible
-	if( DB_STRUCTURE_tester_groupe_nom($groupe_nom,$groupe_id) )
+	if( DB_STRUCTURE_PROFESSEUR::DB_tester_groupe_nom($groupe_nom,$groupe_id) )
 	{
 		exit('Erreur : nom de groupe de besoin déjà existant !');
 	}
 	// Mettre à jour l'enregistrement
-	DB_STRUCTURE_modifier_groupe($groupe_id,'',$groupe_nom,$niveau);
+	DB_STRUCTURE_PROFESSEUR::DB_modifier_groupe_par_prof($groupe_id,$groupe_nom,$niveau);
 	// Afficher le retour
 	echo'<td>{{NIVEAU_NOM}}</td>';
 	echo'<td>'.html($groupe_nom).'</td>';
@@ -86,7 +86,9 @@ else if( ($action=='modifier') && $groupe_id && $niveau && $groupe_nom )
 else if( ($action=='supprimer') && $groupe_id )
 {
 	// Effacer l'enregistrement
-	DB_STRUCTURE_supprimer_groupe($groupe_id,'besoin');
+	DB_STRUCTURE_PROFESSEUR::DB_supprimer_groupe_par_prof( $groupe_id , 'besoin' , TRUE /*with_devoir*/ );
+	// Log de l'action
+	ajouter_log_SACoche('Suppression d\'un regroupement (besoin '.$groupe_id.'), avec les devoirs associés.');
 	// Afficher le retour
 	echo'<td>ok</td>';
 }

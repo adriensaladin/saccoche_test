@@ -39,7 +39,7 @@ $TITRE = "Gérer les professeurs principaux";
 	$groupe_id = 0;
 	$nb_professeurs = 0;
 	// Récupération de la liste des professeurs / classes
-	$DB_TAB = DB_STRUCTURE_lister_classes_avec_professeurs();
+	$DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_classes_avec_professeurs();
 	if(count($DB_TAB))
 	{
 		foreach($DB_TAB as $DB_ROW)

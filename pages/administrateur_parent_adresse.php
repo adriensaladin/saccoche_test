@@ -60,7 +60,7 @@ $debut_prenom = (isset($_POST['f_debut_prenom'])) ? clean_prenom($_POST['f_debut
 		<tbody>
 			<?php
 			// Lister les parents
-			$DB_TAB = DB_STRUCTURE_lister_parents_actifs_avec_infos_enfants($with_adresse=TRUE,$debut_nom,$debut_prenom);
+			$DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_parents_actifs_avec_infos_enfants($with_adresse=TRUE,$debut_nom,$debut_prenom);
 			if(count($DB_TAB))
 			{
 				foreach($DB_TAB as $DB_ROW)

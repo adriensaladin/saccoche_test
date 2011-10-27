@@ -48,7 +48,7 @@ if($action=='Choix_cycles')
 		exit('Erreur avec les données transmises !'); // Besoin d'au moins un cycle pour la matière transversale.
 	}
 	$listing_cycles = implode(',',$tab_id);
-	DB_STRUCTURE_modifier_parametres( array('cycles'=>$listing_cycles) );
+	DB_STRUCTURE_COMMUN::DB_modifier_parametres( array('cycles'=>$listing_cycles) );
 	// ne pas oublier de mettre aussi à jour la session
 	$_SESSION['CYCLES'] = $listing_cycles;
 	exit('ok');
@@ -66,7 +66,7 @@ if($action=='Choix_niveaux')
 		exit('Erreur avec les données transmises !'); // Besoin d'au moins un niveau pour y associer les classes et les groupes
 	}
 	$listing_niveaux = implode(',',$tab_id);
-	DB_STRUCTURE_modifier_parametres( array('niveaux'=>$listing_niveaux) );
+	DB_STRUCTURE_COMMUN::DB_modifier_parametres( array('niveaux'=>$listing_niveaux) );
 	// ne pas oublier de mettre aussi à jour la session
 	$_SESSION['NIVEAUX'] = $listing_niveaux;
 	exit('ok');

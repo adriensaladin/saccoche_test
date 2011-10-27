@@ -83,7 +83,7 @@ $tab_niveau  = array();
 $tab_colonne = array();
 
 // On récupère la liste des matières où le professeur est rattaché, et s'il en est coordonnateur
-$DB_TAB = DB_STRUCTURE_lister_matieres_professeur_infos_referentiel($_SESSION['MATIERES'],$_SESSION['USER_ID']);
+$DB_TAB = DB_STRUCTURE_PROFESSEUR::DB_lister_matieres_professeur_infos_referentiel($_SESSION['MATIERES'],$_SESSION['USER_ID']);
 if(count($DB_TAB))
 {
 	foreach($DB_TAB as $DB_ROW)
@@ -108,7 +108,7 @@ elseif(!$_SESSION['CYCLES']) // normalement impossible
 else
 {
 	// On récupère la liste des niveaux utilisés par l'établissement
-	$DB_TAB = DB_STRUCTURE_lister_niveaux_etablissement($_SESSION['NIVEAUX'],$_SESSION['CYCLES']);
+	$DB_TAB = DB_STRUCTURE_COMMUN::DB_lister_niveaux_etablissement($_SESSION['NIVEAUX'],$_SESSION['CYCLES']);
 	$nb_niveaux = count($DB_TAB);
 	foreach($DB_TAB as $DB_ROW)
 	{
@@ -116,7 +116,7 @@ else
 	}
 	// On récupère la liste des référentiels par matière et niveau
 	$tab_partage = array('oui'=>'<img title="Référentiel partagé sur le serveur communautaire (MAJ le ◄DATE►)." alt="" src="./_img/partage1.gif" />','non'=>'<img title="Référentiel non partagé avec la communauté (choix du ◄DATE►)." alt="" src="./_img/partage0.gif" />','bof'=>'<img title="Référentiel dont le partage est sans intérêt (pas novateur)." alt="" src="./_img/partage0.gif" />','hs'=>'<img title="Référentiel dont le partage est sans objet (matière spécifique)." alt="" src="./_img/partage0.gif" />');
-	$DB_TAB = DB_STRUCTURE_lister_referentiels_infos_details_matieres_niveaux($listing_matieres_id,$_SESSION['NIVEAUX'],$_SESSION['CYCLES']);
+	$DB_TAB = DB_STRUCTURE_COMMUN::DB_lister_referentiels_infos_details_matieres_niveaux($listing_matieres_id,$_SESSION['NIVEAUX'],$_SESSION['CYCLES']);
 	if(count($DB_TAB))
 	{
 		foreach($DB_TAB as $DB_ROW)
@@ -230,8 +230,8 @@ else
 
 <?php
 // Fabrication des éléments select du formulaire, pour pouvoir prendre un référentiel d'une autre matière ou d'un autre niveau (demandé...).
-$select_matiere = afficher_select(DB_STRUCTURE_OPT_matieres_communes() , $select_nom='f_matiere' , $option_first='val' , $selection=false , $optgroup='non');
-$select_niveau  = afficher_select(DB_STRUCTURE_OPT_niveaux()           , $select_nom='f_niveau'  , $option_first='val' , $selection=false , $optgroup='non');
+$select_matiere = afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_matieres_communes() , $select_nom='f_matiere' , $option_first='val' , $selection=false , $optgroup='non');
+$select_niveau  = afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_niveaux()           , $select_nom='f_niveau'  , $option_first='val' , $selection=false , $optgroup='non');
 ?>
 
 <div class="noprint">

@@ -55,9 +55,7 @@ function version_php()
 
 function version_mysql()
 {
-	$HOST = defined('SACOCHE_STRUCTURE_BD_NAME') ? SACOCHE_STRUCTURE_BD_NAME : SACOCHE_WEBMESTRE_BD_NAME ;
-	// Avec une connexion classique style mysql_connect() on peut utiliser mysql_get_server_info() .
-	$version = DB::queryOne($HOST , 'SELECT VERSION()');
+	$version = defined('SACOCHE_STRUCTURE_BD_NAME') ? DB_STRUCTURE_COMMUN::DB_recuperer_version_MySQL() : DB_WEBMESTRE_PUBLIC::DB_recuperer_version_MySQL() ;
 	$fin = strpos($version,'-');
 	return ($fin) ? substr($version,0,$fin) : $version;
 }
@@ -204,8 +202,7 @@ function minimum_limitations_upload()
 
 function max_allowed_packet()
 {
-	$HOST = defined('SACOCHE_STRUCTURE_BD_NAME') ? SACOCHE_STRUCTURE_BD_NAME : SACOCHE_WEBMESTRE_BD_NAME ;
-	$DB_ROW = DB::queryRow($HOST , 'SHOW VARIABLES LIKE "max_allowed_packet"');
+	$DB_ROW = defined('SACOCHE_STRUCTURE_BD_NAME') ? DB_STRUCTURE_COMMUN::DB_recuperer_variable_MySQL('max_allowed_packet') : DB_WEBMESTRE_PUBLIC::DB_recuperer_variable_MySQL('max_allowed_packet') ;
 	$val = $DB_ROW['Value'];
 	return number_format($val,0,'',' ');
 }
@@ -221,8 +218,7 @@ function max_allowed_packet()
 
 function max_user_connections()
 {
-	$HOST = defined('SACOCHE_STRUCTURE_BD_NAME') ? SACOCHE_STRUCTURE_BD_NAME : SACOCHE_WEBMESTRE_BD_NAME ;
-	$DB_ROW = DB::queryRow($HOST , 'SHOW VARIABLES LIKE "max_user_connections"');
+	$DB_ROW = defined('SACOCHE_STRUCTURE_BD_NAME') ? DB_STRUCTURE_COMMUN::DB_recuperer_variable_MySQL('max_user_connections') : DB_WEBMESTRE_PUBLIC::DB_recuperer_variable_MySQL('max_user_connections') ;
 	$val = $DB_ROW['Value'];
 	return ($val) ? $val : '<b>&infin;</b>' ;
 }
@@ -239,8 +235,7 @@ function max_user_connections()
 
 function group_concat_max_len()
 {
-	$HOST = defined('SACOCHE_STRUCTURE_BD_NAME') ? SACOCHE_STRUCTURE_BD_NAME : SACOCHE_WEBMESTRE_BD_NAME ;
-	$DB_ROW = DB::queryRow($HOST , 'SHOW VARIABLES LIKE "group_concat_max_len"');
+	$DB_ROW = defined('SACOCHE_STRUCTURE_BD_NAME') ? DB_STRUCTURE_COMMUN::DB_recuperer_variable_MySQL('group_concat_max_len') : DB_WEBMESTRE_PUBLIC::DB_recuperer_variable_MySQL('group_concat_max_len') ;
 	$val = $DB_ROW['Value'];
 	return number_format($val,0,'',' ');
 }

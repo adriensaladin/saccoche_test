@@ -116,7 +116,7 @@ function sauvegarder_tables_base_etablissement($dossier_temp,$nb_lignes_maxi)
 {
 	// Lister les tables présentes et le nombre de boucles à effectuer afin de récupérer les données des grosses tables (nombre d'enregistrements / nb_lignes_maxi)
 	$tab_tables_info = array();
-	$DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME,'SHOW TABLE STATUS LIKE "sacoche_%"');
+	$DB_TAB = DB_STRUCTURE_COMMUN::DB_recuperer_tables_informations();
 	foreach($DB_TAB as $DB_ROW)
 	{
 		$tab_tables_info[] = array( 'Nom'=>$DB_ROW['Name'] , 'Nombre'=>ceil($DB_ROW['Rows']/$nb_lignes_maxi) );
@@ -132,13 +132,13 @@ function sauvegarder_tables_base_etablissement($dossier_temp,$nb_lignes_maxi)
 			{
 				// ... la structure
 				$fichier_contenu .= 'DROP TABLE IF EXISTS '.$tab_table_info['Nom'].';'."\r\n";
-				$DB_ROW = DB::queryRow(SACOCHE_STRUCTURE_BD_NAME , 'SHOW CREATE TABLE '.$tab_table_info['Nom'] );
+				$DB_ROW = DB_STRUCTURE_COMMUN::DB_recuperer_table_structure($tab_table_info['Nom']);
 				$fichier_contenu .= str_replace('`','',$DB_ROW['Create Table']).';'."\r\n";
 			}
 			// ... les données
 			$tab_ligne_insert = array();
 			$from = $i*$nb_lignes_maxi;
-			$DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , 'SELECT * FROM '.$tab_table_info['Nom'].' LIMIT '.$from.','.$nb_lignes_maxi );
+			$DB_TAB = DB_STRUCTURE_COMMUN::DB_recuperer_table_donnees( $tab_table_info['Nom'] , $from ,$nb_lignes_maxi );
 			if(count($DB_TAB))
 			{
 				$fichier_contenu .= 'ALTER TABLE '.$tab_table_info['Nom'].' DISABLE KEYS;'."\r\n";
@@ -213,8 +213,7 @@ function verifier_dossier_decompression_sauvegarde($dossier)
 
 function verifier_taille_requetes($fichier_taille_maximale)
 {
-	$HOST = defined('SACOCHE_STRUCTURE_BD_NAME') ? SACOCHE_STRUCTURE_BD_NAME : SACOCHE_WEBMESTRE_BD_NAME ;
-	$DB_ROW = DB::queryRow($HOST , 'SHOW VARIABLES LIKE "max_allowed_packet"');
+	$DB_ROW = defined('SACOCHE_STRUCTURE_BD_NAME') ? DB_STRUCTURE_COMMUN::DB_recuperer_variable_MySQL('max_allowed_packet') : DB_WEBMESTRE_PUBLIC::DB_recuperer_variable_MySQL('max_allowed_packet') ;
 	return ($fichier_taille_maximale < $DB_ROW['Value']) ? TRUE : FALSE ;
 }
 
@@ -269,7 +268,7 @@ function restaurer_tables_base_etablissement($dossier_temp,$etape)
 		$fichier_nom = $tab_fichier[$i];
 		// ... lancer les requêtes
 		$requetes = file_get_contents($dossier_temp.$fichier_nom);
-		DB::query(SACOCHE_STRUCTURE_BD_NAME , $requetes );
+		DB_STRUCTURE_COMMUN::DB_executer_requetes_MySQL($requetes);
 		/*
 		La classe PDO a un bug. Si on envoie plusieurs requêtes d'un coup ça passe, mais si on recommence juste après alors on récolte : "Cannot execute queries while other unbuffered queries are active.  Consider using PDOStatement::fetchAll().  Alternatively, if your code is only ever going to run against mysql, you may enable query buffering by setting the PDO::MYSQL_ATTR_USE_BUFFERED_QUERY attribute."
 		La seule issue est de fermer la connexion après chaque requête multiple en utilisant exceptionnellement la méthode ajouté par SebR suite à mon signalement : DB::close(nom_de_la_connexion);
@@ -287,8 +286,9 @@ function restaurer_tables_base_etablissement($dossier_temp,$etape)
 		$version_base_restauree = version_base_fichier_svg($dossier_temp);
 		if( $version_base_restauree < VERSION_BASE )
 		{
-			require_once('./_inc/fonction_maj_base.php');
-			maj_base($version_base_restauree);
+			DB_STRUCTURE_MAJ_BASE::DB_maj_base($version_base_restauree);
+			// Log de l'action
+			ajouter_log_SACoche('Mise à jour automatique de la base '.SACOCHE_STRUCTURE_BD_NAME.'.');
 			return'Restauration de la base terminée et base mise à jour';
 		}
 		return'Restauration de la base terminée';

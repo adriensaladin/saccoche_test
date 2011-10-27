@@ -45,7 +45,7 @@ if( ($action=='desactiver') && $nb )
 	foreach($tab_select_users as $user_id)
 	{
 		// Mettre à jour l'enregistrement
-		DB_STRUCTURE_modifier_utilisateur( $user_id , array(':statut'=>0) );
+		DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_user_statut( $user_id , 0 );
 	}
 	$s = ($nb>1) ? 's' : '';
 	exit('OK'.$nb.' compte'.$s.' désactivé'.$s.'.');

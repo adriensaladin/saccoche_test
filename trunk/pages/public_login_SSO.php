@@ -60,16 +60,16 @@ $UAI = (isset($_GET['uai'])) ? clean_uai($_GET['uai']) : '' ;
 
 if( (HEBERGEUR_INSTALLATION=='multi-structures') && ($UAI!='') )
 {
-	$DB_ROW = DB_WEBMESTRE_recuperer_structure_by_UAI($UAI);
-	if(!count($DB_ROW))
+	$BASE = DB_WEBMESTRE_PUBLIC::DB_recuperer_structure_id_base_for_UAI($UAI);
+	if(!$BASE)
 	{
 		affich_message_exit($titre='Paramètre incorrect',$contenu='Le numéro UAI transmis n\'est pas référencé sur cette installation de SACoche.');
 	}
 	// Remplacer l'info par le numéro de base correspondant dans toutes les variables accessibles à PHP avant que la classe SSO ne s'en mèle.
 	$bad = 'uai='.$_GET['uai'];
-	$bon = 'base='.$DB_ROW['sacoche_base'];
-	$_GET['base']     = $DB_ROW['sacoche_base'];
-	$_REQUEST['base'] = $DB_ROW['sacoche_base'];
+	$bon = 'base='.$BASE;
+	$_GET['base']     = $BASE;
+	$_REQUEST['base'] = $BASE;
 	if(isset($_SERVER['HTTP_REFERER'])) { $_SERVER['HTTP_REFERER'] = str_replace($bad,$bon,$_SERVER['HTTP_REFERER']); }
 	if(isset($_SERVER['QUERY_STRING'])) { $_SERVER['QUERY_STRING'] = str_replace($bad,$bon,$_SERVER['QUERY_STRING']); }
 	if(isset($_SERVER['REQUEST_URI'] )) { $_SERVER['REQUEST_URI']  = str_replace($bad,$bon,$_SERVER['REQUEST_URI'] ); }
@@ -98,7 +98,7 @@ if(HEBERGEUR_INSTALLATION=='multi-structures')
 // Mettre à jour la base si nécessaire
 maj_base_si_besoin($BASE);
 
-$DB_TAB = DB_STRUCTURE_lister_parametres('"connexion_mode","cas_serveur_host","cas_serveur_port","cas_serveur_root","gepi_url","gepi_rne","gepi_certificat_empreinte"'); // A compléter
+$DB_TAB = DB_STRUCTURE_PUBLIC::DB_lister_parametres('"connexion_mode","cas_serveur_host","cas_serveur_port","cas_serveur_root","gepi_url","gepi_rne","gepi_certificat_empreinte"'); // A compléter
 foreach($DB_TAB as $DB_ROW)
 {
 	${$DB_ROW['parametre_nom']} = $DB_ROW['parametre_valeur'];

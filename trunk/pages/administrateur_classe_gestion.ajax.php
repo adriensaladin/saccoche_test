@@ -40,12 +40,12 @@ $nom    = (isset($_POST['f_nom']))    ? clean_texte($_POST['f_nom'])     : '';
 if( ($action=='ajouter') && $niveau && $ref && $nom )
 {
 	// Vérifier que la référence de la classe est disponible
-	if( DB_STRUCTURE_tester_classe_reference($ref) )
+	if( DB_STRUCTURE_ADMINISTRATEUR::DB_tester_classe_reference($ref) )
 	{
 		exit('Erreur : référence de classe déjà existante !');
 	}
 	// Insérer l'enregistrement
-	$groupe_id = DB_STRUCTURE_ajouter_groupe('classe',$ref,$nom,$niveau);
+	$groupe_id = DB_STRUCTURE_ADMINISTRATEUR::DB_ajouter_groupe_par_admin('classe',$ref,$nom,$niveau);
 	// Afficher le retour
 	echo'<tr id="id_'.$groupe_id.'" class="new">';
 	echo	'<td>{{NIVEAU_NOM}}</td>';
@@ -64,12 +64,12 @@ if( ($action=='ajouter') && $niveau && $ref && $nom )
 else if( ($action=='modifier') && $id && $niveau && $ref && $nom )
 {
 	// Vérifier que la référence de la classe est disponible
-	if( DB_STRUCTURE_tester_classe_reference($ref,$id) )
+	if( DB_STRUCTURE_ADMINISTRATEUR::DB_tester_classe_reference($ref,$id) )
 	{
 		exit('Erreur : référence déjà existante !');
 	}
 	// Mettre à jour l'enregistrement
-	DB_STRUCTURE_modifier_groupe($id,$ref,$nom,$niveau);
+	DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_groupe_par_admin($id,$ref,$nom,$niveau);
 	// Afficher le retour
 	echo'<td>{{NIVEAU_NOM}}</td>';
 	echo'<td>'.html($ref).'</td>';
@@ -86,7 +86,9 @@ else if( ($action=='modifier') && $id && $niveau && $ref && $nom )
 else if( ($action=='supprimer') && $id )
 {
 	// Effacer l'enregistrement
-	DB_STRUCTURE_supprimer_groupe($id,'classe');
+	DB_STRUCTURE_ADMINISTRATEUR::DB_supprimer_groupe_par_admin( $id , 'classe' , TRUE /*with_devoir*/ );
+	// Log de l'action
+	ajouter_log_SACoche('Suppression d\'un groupe (classe '.$id.'), avec les devoirs associés.');
 	// Afficher le retour
 	echo'<td>ok</td>';
 }

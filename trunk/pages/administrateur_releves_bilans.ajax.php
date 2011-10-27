@@ -45,7 +45,7 @@ if( ($action=='enregistrer_ordre') && count($tab_id) )
 {
 	$nb_modifs = 0;
 	// récupérer les ordres des matières pour les comparer (et ne mettre à jour que ce qui a changé).
-	$DB_TAB = DB_STRUCTURE_lister_matieres_etablissement($_SESSION['MATIERES'],$with_transversal=true,$order_by_name=false);
+	$DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_matieres_etablissement( $_SESSION['MATIERES'] , TRUE /*with_transversal*/ , FALSE /*order_by_name*/ );
 	$tab_ordre_avant = array();
 	foreach($DB_TAB as $DB_ROW)
 	{
@@ -56,7 +56,7 @@ if( ($action=='enregistrer_ordre') && count($tab_id) )
 		$ordre_apres = $key+1;
 		if($ordre_apres!=$tab_ordre_avant[$matiere_id])
 		{
-			DB_STRUCTURE_modifier_matiere_ordre($matiere_id,$ordre_apres);
+			DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_matiere_ordre($matiere_id,$ordre_apres);
 			$nb_modifs++;
 		}
 	}
@@ -73,7 +73,7 @@ if( ($action=='enregistrer_ordre') && count($tab_id) )
 
 if( ($action=='modifier_mode_synthese') && in_array($methode,array('inconnu','sans','domaine','theme')) && $matiere_id && $niveau_id )
 {
-	DB_STRUCTURE_modifier_referentiel( $matiere_id , $niveau_id , array(':mode_synthese'=>$methode) );
+	DB_STRUCTURE_REFERENTIEL::DB_modifier_referentiel( $matiere_id , $niveau_id , array(':mode_synthese'=>$methode) );
 	exit('ok');
 }
 

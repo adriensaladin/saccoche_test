@@ -41,7 +41,7 @@ if($action=='ajouter')
 	{
 		foreach($tab_select_classes as $classe_id)
 		{
-			DB_STRUCTURE_modifier_liaison_user_groupe($user_id,'professeur',$classe_id,'classe',true);
+			DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_liaison_user_groupe_par_admin($user_id,'professeur',$classe_id,'classe',true);
 		}
 	}
 }
@@ -53,7 +53,7 @@ elseif($action=='retirer')
 	{
 		foreach($tab_select_classes as $classe_id)
 		{
-			DB_STRUCTURE_modifier_liaison_user_groupe($user_id,'professeur',$classe_id,'classe',false);
+			DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_liaison_user_groupe_par_admin($user_id,'professeur',$classe_id,'classe',false);
 		}
 	}
 }
@@ -69,7 +69,7 @@ $tab_classes          = array();
 $tab_profs_par_classe = array();
 $tab_classes_par_prof = array();
 // Récupérer la liste des classes
-$DB_TAB = DB_STRUCTURE_lister_classes_avec_niveaux();
+$DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_classes_avec_niveaux();
 foreach($DB_TAB as $DB_ROW)
 {
 	$tab_classes[$DB_ROW['groupe_id']] = html($DB_ROW['groupe_nom']);
@@ -77,7 +77,7 @@ foreach($DB_TAB as $DB_ROW)
 	$tab_lignes_tableau1[$DB_ROW['niveau_id']][] = $DB_ROW['groupe_id'];
 }
 // Récupérer la liste des professeurs
-$DB_TAB = DB_STRUCTURE_lister_users('professeur',$only_actifs=true,$with_classe=false);
+$DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_users('professeur',$only_actifs=true,$with_classe=false);
 $compteur = 0 ;
 foreach($DB_TAB as $DB_ROW)
 {
@@ -91,13 +91,7 @@ if( (count($tab_profs)) && (count($tab_classes)) )
 {
 	$liste_profs_id   = implode(',',array_keys($tab_profs));
 	$liste_classes_id = implode(',',array_keys($tab_classes));
-	$DB_SQL = 'SELECT groupe_id,user_id FROM sacoche_jointure_user_groupe ';
-	$DB_SQL.= 'LEFT JOIN sacoche_user USING (user_id) ';
-	$DB_SQL.= 'LEFT JOIN sacoche_groupe USING (groupe_id) ';
-	$DB_SQL.= 'LEFT JOIN sacoche_niveau USING (niveau_id) ';
-	$DB_SQL.= 'WHERE user_id IN('.$liste_profs_id.') AND groupe_id IN('.$liste_classes_id.') ';
-	$DB_SQL.= 'ORDER BY niveau_ordre ASC, groupe_ref ASC, user_nom ASC, user_prenom ASC';
-	$DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , null);
+	$DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_jointure_professeurs_groupes($liste_profs_id,$liste_classes_id);
 	foreach($DB_TAB as $DB_ROW)
 	{
 		$tab_profs_par_classe[$DB_ROW['groupe_id']] .= $tab_profs[$DB_ROW['user_id']].'<br />';

@@ -30,7 +30,7 @@ $TITRE = "Demandes d'évaluations formulées";
 
 // Lister le nb de demandes d'évaluations autorisées suivant les matières
 $infobulle = '';
-$DB_TAB = DB_STRUCTURE_OPT_matieres_eleve($_SESSION['MATIERES'],$_SESSION['USER_ID']);
+$DB_TAB = DB_STRUCTURE_COMMUN::DB_OPT_matieres_eleve($_SESSION['MATIERES'],$_SESSION['USER_ID']);
 if(!is_array($DB_TAB))
 {
 	$infobulle .= $DB_TAB;
@@ -66,7 +66,7 @@ else
 		<tbody>
 			<?php
 			// Lister les demandes d'évaluation
-			$DB_TAB = DB_STRUCTURE_lister_demandes_eleve($_SESSION['USER_ID']);
+			$DB_TAB = DB_STRUCTURE_ELEVE::DB_lister_demandes_eleve($_SESSION['USER_ID']);
 			foreach($DB_TAB as $DB_ROW)
 			{
 				$score  = ($DB_ROW['demande_score']!==null) ? $DB_ROW['demande_score'] : false ;

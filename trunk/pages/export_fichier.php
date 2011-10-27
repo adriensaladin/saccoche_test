@@ -32,15 +32,15 @@ $TITRE = "Export de données";
 $tab_cookie = array_merge( load_cookie_select('matiere') , load_cookie_select('palier') );
 if($_SESSION['USER_PROFIL']=='professeur')
 {
-	$tab_matieres = DB_STRUCTURE_OPT_matieres_professeur($_SESSION['MATIERES'],$_SESSION['USER_ID']);
-	$tab_groupes  = DB_STRUCTURE_OPT_groupes_professeur($_SESSION['USER_ID']);
+	$tab_matieres = DB_STRUCTURE_COMMUN::DB_OPT_matieres_professeur($_SESSION['MATIERES'],$_SESSION['USER_ID']);
+	$tab_groupes  = DB_STRUCTURE_COMMUN::DB_OPT_groupes_professeur($_SESSION['USER_ID']);
 }
 if($_SESSION['USER_PROFIL']=='directeur')
 {
-	$tab_matieres = DB_STRUCTURE_OPT_matieres_etabl($_SESSION['MATIERES'],$transversal=true);
-	$tab_groupes  = DB_STRUCTURE_OPT_classes_groupes_etabl();
+	$tab_matieres = DB_STRUCTURE_COMMUN::DB_OPT_matieres_etabl($_SESSION['MATIERES'],$transversal=true);
+	$tab_groupes  = DB_STRUCTURE_COMMUN::DB_OPT_classes_groupes_etabl();
 }
-$tab_paliers = DB_STRUCTURE_OPT_paliers_etabl($_SESSION['PALIERS']);
+$tab_paliers = DB_STRUCTURE_COMMUN::DB_OPT_paliers_etabl($_SESSION['PALIERS']);
 $of_p = (count($tab_paliers)<2) ? 'non' : 'oui' ;
 
 $select_matiere = afficher_select($tab_matieres , $select_nom='f_matiere' , $option_first='oui' , $selection=$tab_cookie['matiere_id'] , $optgroup='non');

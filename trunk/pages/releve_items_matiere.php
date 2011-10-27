@@ -37,7 +37,7 @@ $VERSION_JS_FILE += 10;
 $tab_cookie = array_merge( load_cookie_select('releve_items') , load_cookie_select('matiere') );
 if($_SESSION['USER_PROFIL']=='directeur')
 {
-	$tab_groupes  = DB_STRUCTURE_OPT_classes_groupes_etabl();
+	$tab_groupes  = DB_STRUCTURE_COMMUN::DB_OPT_classes_groupes_etabl();
 	$tab_matieres = 'Choisir d\'abord un groupe ci dessous...'; // maj en ajax suivant le choix du groupe
 	$of_g = 'oui'; $sel_g = false; $class_form_type = 'show'; $class_form_eleve = 'show'; $class_form_periode = 'hide';
 	$select_eleves = '<option></option>'; // maj en ajax suivant le choix du groupe
@@ -49,8 +49,8 @@ if($_SESSION['USER_PROFIL']=='directeur')
 }
 if($_SESSION['USER_PROFIL']=='professeur')
 {
-	$tab_groupes  = DB_STRUCTURE_OPT_groupes_professeur($_SESSION['USER_ID']);
-	$tab_matieres = DB_STRUCTURE_OPT_matieres_professeur($_SESSION['MATIERES'],$_SESSION['USER_ID']);
+	$tab_groupes  = DB_STRUCTURE_COMMUN::DB_OPT_groupes_professeur($_SESSION['USER_ID']);
+	$tab_matieres = DB_STRUCTURE_COMMUN::DB_OPT_matieres_professeur($_SESSION['MATIERES'],$_SESSION['USER_ID']);
 	$of_g = 'oui'; $sel_g = false; $class_form_type = 'show'; $class_form_eleve = 'show'; $class_form_periode = 'hide';
 	$select_eleves = '<option></option>'; // maj en ajax suivant le choix du groupe
 	$check_type_individuel = '';
@@ -62,7 +62,7 @@ if($_SESSION['USER_PROFIL']=='professeur')
 if( ($_SESSION['USER_PROFIL']=='parent') && ($_SESSION['NB_ENFANTS']!=1) )
 {
 	$tab_groupes  = $_SESSION['OPT_PARENT_CLASSES']; $GLOBALS['tab_select_optgroup'] = array('classe'=>'Classes');
-	$tab_matieres = DB_STRUCTURE_OPT_matieres_etabl($_SESSION['MATIERES'],$transversal=true);
+	$tab_matieres = DB_STRUCTURE_COMMUN::DB_OPT_matieres_etabl($_SESSION['MATIERES'],$transversal=true);
 	$of_g = 'oui'; $sel_g = false; $class_form_type = 'hide'; $class_form_eleve = 'show'; $class_form_periode = 'hide';
 	$select_eleves = '<option></option>'; // maj en ajax suivant le choix du groupe
 	$check_type_individuel = ' checked';
@@ -74,7 +74,7 @@ if( ($_SESSION['USER_PROFIL']=='parent') && ($_SESSION['NB_ENFANTS']!=1) )
 if( ($_SESSION['USER_PROFIL']=='parent') && ($_SESSION['NB_ENFANTS']==1) )
 {
 	$tab_groupes  = array(0=>array('valeur'=>$_SESSION['ELEVE_CLASSE_ID'],'texte'=>$_SESSION['ELEVE_CLASSE_NOM'],'optgroup'=>'classe')); $GLOBALS['tab_select_optgroup'] = array('classe'=>'Classes');
-	$tab_matieres = DB_STRUCTURE_OPT_matieres_eleve($_SESSION['MATIERES'],$_SESSION['OPT_PARENT_ENFANTS'][0]['valeur']);
+	$tab_matieres = DB_STRUCTURE_COMMUN::DB_OPT_matieres_eleve($_SESSION['MATIERES'],$_SESSION['OPT_PARENT_ENFANTS'][0]['valeur']);
 	$of_g = 'non'; $sel_g = true; $class_form_type = 'hide'; $class_form_eleve = 'hide'; $class_form_periode = 'show';
 	$select_eleves = '<option value="'.$_SESSION['OPT_PARENT_ENFANTS'][0]['valeur'].'" selected>'.html($_SESSION['OPT_PARENT_ENFANTS'][0]['texte']).'</option>';
 	$check_type_individuel = ' checked';
@@ -86,7 +86,7 @@ if( ($_SESSION['USER_PROFIL']=='parent') && ($_SESSION['NB_ENFANTS']==1) )
 if($_SESSION['USER_PROFIL']=='eleve')
 {
 	$tab_groupes  = array(0=>array('valeur'=>$_SESSION['ELEVE_CLASSE_ID'],'texte'=>$_SESSION['ELEVE_CLASSE_NOM'],'optgroup'=>'classe')); $GLOBALS['tab_select_optgroup'] = array('classe'=>'Classes');
-	$tab_matieres = DB_STRUCTURE_OPT_matieres_eleve($_SESSION['MATIERES'],$_SESSION['USER_ID']);
+	$tab_matieres = DB_STRUCTURE_COMMUN::DB_OPT_matieres_eleve($_SESSION['MATIERES'],$_SESSION['USER_ID']);
 	$of_g = 'non'; $sel_g = true; $class_form_type = 'hide'; $class_form_eleve = 'hide'; $class_form_periode = 'show';
 	$select_eleves = '<option value="'.$_SESSION['USER_ID'].'" selected>'.html($_SESSION['USER_NOM'].' '.$_SESSION['USER_PRENOM']).'</option>';
 	$check_type_individuel = ' checked';
@@ -95,7 +95,7 @@ if($_SESSION['USER_PROFIL']=='eleve')
 	$check_bilan_PA        = (mb_substr_count($_SESSION['DROIT_BILAN_POURCENTAGE_ACQUIS'],$_SESSION['USER_PROFIL'])) ? ' checked' : '';
 	$check_conv_sur20      = (mb_substr_count($_SESSION['DROIT_BILAN_NOTE_SUR_VINGT'],$_SESSION['USER_PROFIL']))     ? ' checked' : '';
 }
-$tab_periodes = DB_STRUCTURE_OPT_periodes_etabl();
+$tab_periodes = DB_STRUCTURE_COMMUN::DB_OPT_periodes_etabl();
 
 $select_groupe      = afficher_select($tab_groupes            , $select_nom='f_groupe'      , $option_first=$of_g , $selection=$sel_g                       , $optgroup='oui'); // optgroup à oui y compris pour les élèves (formulaire invisible) car recherche du type de groupe dans le js
 $select_matiere     = afficher_select($tab_matieres           , $select_nom='f_matiere'     , $option_first='oui' , $selection=$tab_cookie['matiere_id']    , $optgroup='non');
@@ -125,7 +125,7 @@ if(is_array($tab_groupes))
 		}
 	}
 	$tab_memo_groupes = array();
-	$DB_TAB = DB_STRUCTURE_lister_jointure_groupe_periode($listing_groupe_id = implode(',',$tab_id_classe_groupe));
+	$DB_TAB = DB_STRUCTURE_COMMUN::DB_lister_jointure_groupe_periode($listing_groupe_id = implode(',',$tab_id_classe_groupe));
 	foreach($DB_TAB as $DB_ROW)
 	{
 		if(!isset($tab_memo_groupes[$DB_ROW['groupe_id']]))

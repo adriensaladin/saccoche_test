@@ -40,7 +40,7 @@ $VERSION_JS_FILE += 1;
 
 <?php
 // liste des matières
-$DB_TAB = DB_STRUCTURE_lister_matieres_etablissement($_SESSION['MATIERES'],$with_transversal=true,$order_by_name=false);
+$DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_matieres_etablissement( $_SESSION['MATIERES'] , TRUE /*with_transversal*/ , FALSE /*order_by_name*/ );
 if(!count($DB_TAB))
 {
 	echo'<p class="danger">Aucune matière enregistrée ou associée à l\'établissement !</p>'; // impossible vu qu'il y a au moins la matière transversale...
@@ -67,7 +67,7 @@ else
 
 <?php
 
-$DB_TAB = DB_STRUCTURE_lister_referentiels();
+$DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_referentiels();
 
 if(!count($DB_TAB))
 {
@@ -78,7 +78,7 @@ else
 	$tab_choix = array( 'domaine'=>'synthèse par domaine' , 'theme'=>'synthèse par thème' , 'sans'=>'pas de synthèse' );
 	// Récupérer la liste des domaines de chaque référentiel
 	$tab_domaines = array();
-	$DB_TAB_DOMAINES = DB_STRUCTURE_recuperer_referentiels_domaines();
+	$DB_TAB_DOMAINES = DB_STRUCTURE_ADMINISTRATEUR::DB_recuperer_referentiels_domaines();
 	foreach($DB_TAB_DOMAINES as $DB_ROW)
 	{
 		$ids = $DB_ROW['matiere_id'].'_'.$DB_ROW['niveau_id'];
@@ -86,7 +86,7 @@ else
 	}
 	// Récupérer la liste des thèmes de chaque référentiel
 	$tab_themes = array();
-	$DB_TAB_THEMES = DB_STRUCTURE_recuperer_referentiels_themes();
+	$DB_TAB_THEMES = DB_STRUCTURE_ADMINISTRATEUR::DB_recuperer_referentiels_themes();
 	foreach($DB_TAB_THEMES as $DB_ROW)
 	{
 		$ids = $DB_ROW['matiere_id'].'_'.$DB_ROW['niveau_id'];

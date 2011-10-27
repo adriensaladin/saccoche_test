@@ -43,13 +43,17 @@ define('VERSION_JS_GLOBAL' ,45); // A changer lors de la mise à jour de ./_js/s
 $VERSION_JS_FILE = 7;            // A changer lors de la mise à jour de tout un lot de fichiers js ; incrémenté ensuite si besoin dans le script associé à la page.
 
 // Quelques chemins, avec le séparateur final
-define('CHEMIN_SACOCHE',realpath(dirname(dirname(__FILE__))).DIRECTORY_SEPARATOR);
-define('DOSSIER_MYSQL' ,DIRECTORY_SEPARATOR.'__private'.DIRECTORY_SEPARATOR.'mysql'.DIRECTORY_SEPARATOR);
-define('DOSSIER_CONFIG',DIRECTORY_SEPARATOR.'__private'.DIRECTORY_SEPARATOR.'config'.DIRECTORY_SEPARATOR);
-define('DOSSIER_FONT'  ,DIRECTORY_SEPARATOR.'_lib'.DIRECTORY_SEPARATOR.'FPDF'.DIRECTORY_SEPARATOR.'font'.DIRECTORY_SEPARATOR);
-define('CHEMIN_MYSQL'  ,CHEMIN_SACOCHE.DOSSIER_MYSQL);
-define('CHEMIN_CONFIG' ,CHEMIN_SACOCHE.DOSSIER_CONFIG);
-define('FPDF_FONTPATH' ,CHEMIN_SACOCHE.DOSSIER_FONT); // Pour FPDF (répertoire où se situent les polices)
+define('CHEMIN_SACOCHE'       , realpath(dirname(dirname(__FILE__))).DIRECTORY_SEPARATOR);
+define('DOSSIER_MYSQL'        , '__private'.DIRECTORY_SEPARATOR.'mysql'.DIRECTORY_SEPARATOR);
+define('DOSSIER_CONFIG'       , '__private'.DIRECTORY_SEPARATOR.'config'.DIRECTORY_SEPARATOR);
+define('DOSSIER_FONT'         , '_lib'.DIRECTORY_SEPARATOR.'FPDF'.DIRECTORY_SEPARATOR.'font'.DIRECTORY_SEPARATOR);
+define('DOSSIER_SQL_STRUCTURE', '_sql'.DIRECTORY_SEPARATOR.'structure'.DIRECTORY_SEPARATOR);
+define('DOSSIER_SQL_WEBMESTRE', '_sql'.DIRECTORY_SEPARATOR.'webmestre'.DIRECTORY_SEPARATOR);
+define('CHEMIN_MYSQL'         , CHEMIN_SACOCHE.DOSSIER_MYSQL);
+define('CHEMIN_CONFIG'        , CHEMIN_SACOCHE.DOSSIER_CONFIG);
+define('CHEMIN_SQL_STRUCTURE' , CHEMIN_SACOCHE.DOSSIER_SQL_STRUCTURE);
+define('CHEMIN_SQL_WEBMESTRE' , CHEMIN_SACOCHE.DOSSIER_SQL_WEBMESTRE);
+define('FPDF_FONTPATH'        , CHEMIN_SACOCHE.DOSSIER_FONT); // Pour FPDF (répertoire où se situent les polices)
 
 define('ID_DEMO'                  ,9999);        // id de l'établissement de démonstration (pour $_SESSION['SESAMATH_ID']) ; 0 pose des pbs, et il faut prendre un id disponible dans la base d'établissements de Sésamath
 define('ID_MATIERE_TRANSVERSALE'  ,99);          // id de la matière transversale dans la table "sacoche_matiere"
@@ -82,5 +86,38 @@ define('SERVEUR_TELECHARGEMENT',SERVEUR_PROJET.'/telechargement.php');  // URL d
 
 define('COOKIE_STRUCTURE','SACoche-etablissement');  // nom du cookie servant à retenir l'établissement sélectionné, afin de ne pas à avoir à le sélectionner de nouveau, et à pouvoir le retrouver si perte d'une session et tentative de reconnexion SSO.
 define('COOKIE_AUTHMODE' ,'SACoche-mode-connexion'); // nom du cookie servant à retenir le dernier mode de connexion utilisé par un user connecté, afin de pouvoir le retrouver si perte d'une session et tentative de reconnexion SSO.
+define('COOKIE_DEBUG'    ,'SACoche-debug');          // nom du cookie servant à retenir si le mode debug est activé (pas en PROD).
+
+// DEBUG
+if(SERVEUR_TYPE=='PROD')
+{
+	// pas de DEBUG en PROD
+	define('DEBUG',FALSE);
+}
+elseif(isset($_GET['debug']))
+{
+	if($_GET['debug'])
+	{
+		// demande explicite d'activer le mode DEBUG
+		define('DEBUG',TRUE);
+		setcookie(COOKIE_DEBUG,1,0,'');
+	}
+	else
+	{
+		// demande explicite de désactiver le mode DEBUG
+		define('DEBUG',FALSE);
+		setcookie(COOKIE_DEBUG,'',time()-42000,'');
+	}
+}
+elseif(isset($_COOKIE[COOKIE_DEBUG]))
+{
+	// mode DEBUG à conserver
+	define('DEBUG',TRUE);
+}
+else
+{
+	// pas de mode DEBUG à conserver
+	define('DEBUG',FALSE);
+}
 
 ?>

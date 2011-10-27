@@ -45,7 +45,7 @@ if( ($action=='reintegrer') && $nb )
 	foreach($tab_select_users as $user_id)
 	{
 		// Mettre à jour l'enregistrement
-		DB_STRUCTURE_modifier_utilisateur( $user_id , array(':statut'=>1) );
+		DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_user_statut( $user_id , 1 );
 	}
 	$s = ($nb>1) ? 's' : '';
 	exit('OK'.$nb.' compte'.$s.' réintégré'.$s.'.');
@@ -63,7 +63,9 @@ if( ($action=='supprimer') && $nb )
 	{
 		// Mettre à jour l'enregistrement
 		$tab_param_profil = array( 'eleves'=>'eleve' , 'parents'=>'parent' , 'professeurs_directeurs'=>'professeur' );
-		DB_STRUCTURE_supprimer_utilisateur( $user_id , $tab_param_profil[$profil] );
+		DB_STRUCTURE_ADMINISTRATEUR::DB_supprimer_utilisateur( $user_id , $tab_param_profil[$profil] );
+		// Log de l'action
+		ajouter_log_SACoche('Suppression d\'un utilisateur ('.$tab_param_profil[$profil].' '.$user_id.').');
 	}
 	$s = ($nb>1) ? 's' : '';
 	exit('OK'.$nb.' compte'.$s.' supprimé'.$s.'.');

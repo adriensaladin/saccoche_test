@@ -35,7 +35,7 @@ $VERSION_JS_FILE += 8;
 $tab_cookie = load_cookie_select('releve_items');
 if($_SESSION['USER_PROFIL']=='directeur')
 {
-	$tab_groupes  = DB_STRUCTURE_OPT_classes_groupes_etabl();
+	$tab_groupes  = DB_STRUCTURE_COMMUN::DB_OPT_classes_groupes_etabl();
 	$of_g = 'oui'; $sel_g = false; $class_form_option = 'show'; $class_form_eleve = 'show'; $class_form_periode = 'hide';
 	$select_eleves = '<option></option>'; // maj en ajax suivant le choix du groupe
 	$check_option_lien = '';
@@ -45,7 +45,7 @@ if($_SESSION['USER_PROFIL']=='directeur')
 }
 if($_SESSION['USER_PROFIL']=='professeur')
 {
-	$tab_groupes  = DB_STRUCTURE_OPT_groupes_professeur($_SESSION['USER_ID']);
+	$tab_groupes  = DB_STRUCTURE_COMMUN::DB_OPT_groupes_professeur($_SESSION['USER_ID']);
 	$of_g = 'oui'; $sel_g = false; $class_form_option = 'show'; $class_form_eleve = 'show'; $class_form_periode = 'hide';
 	$select_eleves = '<option></option>'; // maj en ajax suivant le choix du groupe
 	$check_option_lien = '';
@@ -83,7 +83,7 @@ if($_SESSION['USER_PROFIL']=='eleve')
 	$check_bilan_PA        = (mb_substr_count($_SESSION['DROIT_BILAN_POURCENTAGE_ACQUIS'],$_SESSION['USER_PROFIL'])) ? ' checked' : '';
 	$check_conv_sur20      = (mb_substr_count($_SESSION['DROIT_BILAN_NOTE_SUR_VINGT'],$_SESSION['USER_PROFIL']))     ? ' checked' : '';
 }
-$tab_periodes          = DB_STRUCTURE_OPT_periodes_etabl();
+$tab_periodes          = DB_STRUCTURE_COMMUN::DB_OPT_periodes_etabl();
 
 $select_groupe      = afficher_select($tab_groupes            , $select_nom='f_groupe'      , $option_first=$of_g , $selection=$sel_g                       , $optgroup='oui'); // optgroup à oui y compris pour les élèves (formulaire invisible) car recherche du type de groupe dans le js
 $select_periode     = afficher_select($tab_periodes           , $select_nom='f_periode'     , $option_first='val' , $selection=false                        , $optgroup='non');
@@ -109,7 +109,7 @@ if(is_array($tab_groupes))
 		$tab_id_classe_groupe[] = $tab_groupe_infos['valeur'];
 	}
 	$tab_memo_groupes = array();
-	$DB_TAB = DB_STRUCTURE_lister_jointure_groupe_periode($listing_groupe_id = implode(',',$tab_id_classe_groupe));
+	$DB_TAB = DB_STRUCTURE_COMMUN::DB_lister_jointure_groupe_periode($listing_groupe_id = implode(',',$tab_id_classe_groupe));
 	foreach($DB_TAB as $DB_ROW)
 	{
 		if(!isset($tab_memo_groupes[$DB_ROW['groupe_id']]))

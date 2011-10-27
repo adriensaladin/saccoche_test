@@ -91,12 +91,6 @@ ini_set('zend.ze1_compatibility_mode',0);
 // Modifier l'encodage interne pour les fonctions mb_* (manipulation de chaînes de caractères multi-octets)
 mb_internal_encoding(CHARSET);
 
-// Pour FirePHP
-if(SERVEUR_TYPE!='PROD')
-{
-	ini_set('output_buffering','On');
-}
-
 /**
  * Auto-chargement des classes (aucune inclusion de classe n'est nécessaire, elles sont chargées par cette fonction suivant les besoins).
  * 
@@ -107,17 +101,35 @@ function __autoload($class_name)
 {
 	if(stripos($class_name,'PEAR')!==false) return; // ???
 	$tab_classes = array(
-		'DB'                     => '_lib'.DIRECTORY_SEPARATOR.'DB'.DIRECTORY_SEPARATOR.'DB.class.php' ,
-		'FirePHP'                => '_lib'.DIRECTORY_SEPARATOR.'FirePHPCore'.DIRECTORY_SEPARATOR.'FirePHP.class.php' ,
-		'FPDF'                   => '_lib'.DIRECTORY_SEPARATOR.'FPDF'.DIRECTORY_SEPARATOR.'fpdf.php' ,
-		'PDF_Label'              => '_lib'.DIRECTORY_SEPARATOR.'FPDF'.DIRECTORY_SEPARATOR.'PDF_Label.php' ,
-		'phpCAS'                 => '_lib'.DIRECTORY_SEPARATOR.'phpCAS'.DIRECTORY_SEPARATOR.'CAS.php' ,
-		'SimpleSAML_Auth_Simple' => '_lib'.DIRECTORY_SEPARATOR.'SimpleSAMLphp'.DIRECTORY_SEPARATOR.'lib'.DIRECTORY_SEPARATOR.'_autoload.php' ,
-		'cssmin'                 => '_inc'.DIRECTORY_SEPARATOR.'class.CssMinified.php' ,
-		'MyDOMDocument'          => '_inc'.DIRECTORY_SEPARATOR.'class.domdocument.php' ,
-		'JSMin'                  => '_inc'.DIRECTORY_SEPARATOR.'class.JavaScriptMinified.php' ,
-		'JavaScriptPacker'       => '_inc'.DIRECTORY_SEPARATOR.'class.JavaScriptPacker.php' ,
-		'PDF'                    => '_inc'.DIRECTORY_SEPARATOR.'class.PDF.php'
+		'DB'                          => '_lib'.DIRECTORY_SEPARATOR.'DB'.DIRECTORY_SEPARATOR.'DB.class.php' ,
+		'FirePHP'                     => '_lib'.DIRECTORY_SEPARATOR.'FirePHPCore'.DIRECTORY_SEPARATOR.'FirePHP.class.php' ,
+		'FPDF'                        => '_lib'.DIRECTORY_SEPARATOR.'FPDF'.DIRECTORY_SEPARATOR.'fpdf.php' ,
+		'PDF_Label'                   => '_lib'.DIRECTORY_SEPARATOR.'FPDF'.DIRECTORY_SEPARATOR.'PDF_Label.php' ,
+		'phpCAS'                      => '_lib'.DIRECTORY_SEPARATOR.'phpCAS'.DIRECTORY_SEPARATOR.'CAS.php' ,
+		'SimpleSAML_Auth_Simple'      => '_lib'.DIRECTORY_SEPARATOR.'SimpleSAMLphp'.DIRECTORY_SEPARATOR.'lib'.DIRECTORY_SEPARATOR.'_autoload.php' ,
+
+		'cssmin'                      => '_inc'.DIRECTORY_SEPARATOR.'class.CssMinified.php' ,
+		'MyDOMDocument'               => '_inc'.DIRECTORY_SEPARATOR.'class.domdocument.php' ,
+		'JSMin'                       => '_inc'.DIRECTORY_SEPARATOR.'class.JavaScriptMinified.php' ,
+		'JavaScriptPacker'            => '_inc'.DIRECTORY_SEPARATOR.'class.JavaScriptPacker.php' ,
+		'PDF'                         => '_inc'.DIRECTORY_SEPARATOR.'class.PDF.php' ,
+
+		'DB_STRUCTURE_ADMINISTRATEUR' => '_sql'.DIRECTORY_SEPARATOR.'requetes_structure_administrateur.php' ,
+		'DB_STRUCTURE_DIRECTEUR'      => '_sql'.DIRECTORY_SEPARATOR.'requetes_structure_directeur.php' ,
+		'DB_STRUCTURE_ELEVE'          => '_sql'.DIRECTORY_SEPARATOR.'requetes_structure_eleve.php' ,
+		'DB_STRUCTURE_PROFESSEUR'     => '_sql'.DIRECTORY_SEPARATOR.'requetes_structure_professeur.php' ,
+		'DB_STRUCTURE_PUBLIC'         => '_sql'.DIRECTORY_SEPARATOR.'requetes_structure_public.php' ,
+		'DB_STRUCTURE_WEBMESTRE'      => '_sql'.DIRECTORY_SEPARATOR.'requetes_structure_webmestre.php' ,
+
+		'DB_STRUCTURE_BILAN'          => '_sql'.DIRECTORY_SEPARATOR.'requetes_structure_bilan.php' ,
+		'DB_STRUCTURE_COMMUN'         => '_sql'.DIRECTORY_SEPARATOR.'requetes_structure_commun.php' ,
+		'DB_STRUCTURE_MAJ_BASE'       => '_sql'.DIRECTORY_SEPARATOR.'requetes_structure_maj_base.php' ,
+		'DB_STRUCTURE_REFERENTIEL'    => '_sql'.DIRECTORY_SEPARATOR.'requetes_structure_referentiel.php' ,
+		'DB_STRUCTURE_SOCLE'          => '_sql'.DIRECTORY_SEPARATOR.'requetes_structure_socle.php' ,
+
+		'DB_WEBMESTRE_PUBLIC'         => '_sql'.DIRECTORY_SEPARATOR.'requetes_webmestre_public.php' ,
+		'DB_WEBMESTRE_SELECT'         => '_sql'.DIRECTORY_SEPARATOR.'requetes_webmestre_select.php' ,
+		'DB_WEBMESTRE_WEBMESTRE'      => '_sql'.DIRECTORY_SEPARATOR.'requetes_webmestre_webmestre.php'
 	);
 	if(isset($tab_classes[$class_name]))
 	{
@@ -131,6 +143,25 @@ function __autoload($class_name)
 			affich_message_exit($titre='Classe introuvable',$contenu='Le chemin de la classe '.$class_name.' est incorrect : '.$class_file);
 		}
 	}
+}
+
+// Pour FirePHP
+if(DEBUG)
+{
+	ini_set('output_buffering','On');
+	$firephp = FirePHP::getInstance(TRUE);
+}
+
+function afficher_infos_debug()
+{
+	global $firephp;
+	$firephp->dump('COOKIE', $_COOKIE);
+	$firephp->dump('FILES', $_FILES);
+	$firephp->dump('GET', $_GET);
+	$firephp->dump('POST', $_POST);
+	$firephp->dump('SESSION', $_SESSION);
+	$tab_constantes = get_defined_constants(TRUE);
+	$firephp->dump('CONSTANTES', $tab_constantes['user']);
 }
 
 ?>

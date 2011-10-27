@@ -48,7 +48,7 @@ if( ($action=='ajouter') && $nom && $prenom )
 	// Vérifier que l'identifiant ENT est disponible (parmi tout le personnel de l'établissement)
 	if($id_ent)
 	{
-		if( DB_STRUCTURE_tester_utilisateur_idENT($id_ent) )
+		if( DB_STRUCTURE_ADMINISTRATEUR::DB_tester_utilisateur_identifiant('id_ent',$id_ent) )
 		{
 			exit('Erreur : identifiant ENT déjà utilisé !');
 		}
@@ -56,7 +56,7 @@ if( ($action=='ajouter') && $nom && $prenom )
 	// Vérifier que l'identifiant GEPI est disponible (parmi tout le personnel de l'établissement)
 	if($id_gepi)
 	{
-		if( DB_STRUCTURE_tester_utilisateur_idGepi($id_gepi) )
+		if( DB_STRUCTURE_ADMINISTRATEUR::DB_tester_utilisateur_identifiant('id_gepi',$id_gepi) )
 		{
 			exit('Erreur : identifiant Gepi déjà utilisé !');
 		}
@@ -64,15 +64,15 @@ if( ($action=='ajouter') && $nom && $prenom )
 	// Vérifier que l'identifiant sconet est disponible (parmi les élèves de cet établissement)
 	if($sconet_id)
 	{
-		if( DB_STRUCTURE_tester_utilisateur_SconetId($sconet_id,'eleve') )
+		if( DB_STRUCTURE_ADMINISTRATEUR::DB_tester_utilisateur_identifiant('sconet_id',$sconet_id,NULL,'eleve') )
 		{
 			exit('Erreur : identifiant Sconet déjà utilisé !');
 		}
 	}
-	// Vérifier que le n° sconet est disponible (élèves uniquements)
+	// Vérifier que le n° sconet est disponible (parmi les élèves de cet établissement)
 	if($sconet_num)
 	{
-		if( DB_STRUCTURE_tester_utilisateur_SconetElenoet($sconet_num) )
+		if( DB_STRUCTURE_ADMINISTRATEUR::DB_tester_utilisateur_identifiant('sconet_elenoet',$sconet_num,NULL,'eleve') )
 		{
 			exit('Erreur : n° Sconet déjà utilisé !');
 		}
@@ -80,7 +80,7 @@ if( ($action=='ajouter') && $nom && $prenom )
 	// Vérifier que la référence est disponible (parmi les élèves de cet établissement)
 	if($reference)
 	{
-		if( DB_STRUCTURE_tester_utilisateur_reference($reference,'eleve') )
+		if( DB_STRUCTURE_ADMINISTRATEUR::DB_tester_utilisateur_identifiant('reference',$reference,NULL,'eleve') )
 		{
 			exit('Erreur : référence déjà utilisée !');
 		}
@@ -88,15 +88,15 @@ if( ($action=='ajouter') && $nom && $prenom )
 	// Construire le login
 	$login = fabriquer_login($prenom,$nom,'eleve');
 	// Puis tester le login (parmi tout le personnel de l'établissement)
-	if( DB_STRUCTURE_tester_login($login) )
+	if( DB_STRUCTURE_ADMINISTRATEUR::DB_tester_utilisateur_identifiant('login',$login) )
 	{
 		// Login pris : en chercher un autre en remplaçant la fin par des chiffres si besoin
-		$login = DB_STRUCTURE_rechercher_login_disponible($login);
+		$login = DB_STRUCTURE_ADMINISTRATEUR::DB_rechercher_login_disponible($login);
 	}
 	// Construire le password
 	$password = fabriquer_mdp();
 	// Insérer l'enregistrement
-	$user_id = DB_STRUCTURE_ajouter_utilisateur($sconet_id,$sconet_num,$reference,'eleve',$nom,$prenom,$login,$password,0,$id_ent,$id_gepi);
+	$user_id = DB_STRUCTURE_COMMUN::DB_ajouter_utilisateur($sconet_id,$sconet_num,$reference,'eleve',$nom,$prenom,$login,crypter_mdp($password),0,$id_ent,$id_gepi);
 	// Afficher le retour
 	echo'<tr id="id_'.$user_id.'" class="new">';
 	echo	'<td>'.html($id_ent).'</td>';
@@ -123,7 +123,7 @@ else if( ($action=='modifier') && $id && $nom && $prenom && $login )
 	// Vérifier que l'identifiant ENT est disponible (parmi tout le personnel de l'établissement)
 	if($id_ent)
 	{
-		if( DB_STRUCTURE_tester_utilisateur_idENT($id_ent,$id) )
+		if( DB_STRUCTURE_ADMINISTRATEUR::DB_tester_utilisateur_identifiant('id_ent',$id_ent,$id) )
 		{
 			exit('Erreur : identifiant ENT déjà utilisé !');
 		}
@@ -131,7 +131,7 @@ else if( ($action=='modifier') && $id && $nom && $prenom && $login )
 	// Vérifier que l'identifiant GEPI est disponible (parmi tout le personnel de l'établissement)
 	if($id_gepi)
 	{
-		if( DB_STRUCTURE_tester_utilisateur_idGepi($id_gepi,$id) )
+		if( DB_STRUCTURE_ADMINISTRATEUR::DB_tester_utilisateur_identifiant('id_gepi',$id_gepi,$id) )
 		{
 			exit('Erreur : identifiant Gepi déjà utilisé !');
 		}
@@ -139,23 +139,15 @@ else if( ($action=='modifier') && $id && $nom && $prenom && $login )
 	// Vérifier que l'identifiant sconet est disponible (parmi les élèves de cet établissement)
 	if($sconet_id)
 	{
-		if( DB_STRUCTURE_tester_utilisateur_SconetId($sconet_id,'eleve',$id) )
+		if( DB_STRUCTURE_ADMINISTRATEUR::DB_tester_utilisateur_identifiant('sconet_id',$sconet_id,$id,'eleve') )
 		{
 			exit('Erreur : identifiant Sconet déjà utilisé !');
 		}
 	}
-	// Vérifier que l'identifiant sconet est disponible (parmi les élèves de cet établissement)
-	if($sconet_id)
-	{
-		if( DB_STRUCTURE_tester_utilisateur_SconetId($sconet_id,'eleve',$id) )
-		{
-			exit('Erreur : identifiant Sconet déjà utilisé !');
-		}
-	}
-	// Vérifier que le n° sconet est disponible (élèves uniquements)
+	// Vérifier que le n° sconet est disponible (parmi les élèves de cet établissement)
 	if($sconet_num)
 	{
-		if( DB_STRUCTURE_tester_utilisateur_SconetElenoet($sconet_num,$id) )
+		if( DB_STRUCTURE_ADMINISTRATEUR::DB_tester_utilisateur_identifiant('sconet_elenoet',$sconet_num,$id,'eleve') )
 		{
 			exit('Erreur : n° Sconet déjà utilisé !');
 		}
@@ -163,13 +155,13 @@ else if( ($action=='modifier') && $id && $nom && $prenom && $login )
 	// Vérifier que la référence est disponible (parmi les élèves de cet établissement)
 	if($reference)
 	{
-		if( DB_STRUCTURE_tester_utilisateur_reference($reference,'eleve',$id) )
+		if( DB_STRUCTURE_ADMINISTRATEUR::DB_tester_utilisateur_identifiant('reference',$reference,$id,'eleve') )
 		{
 			exit('Erreur : référence déjà utilisée !');
 		}
 	}
 	// Vérifier que le login de l'élève est disponible (parmi tout le personnel de l'établissement)
-	if( DB_STRUCTURE_tester_login($login,$id) )
+	if( DB_STRUCTURE_ADMINISTRATEUR::DB_tester_utilisateur_identifiant('login',$login,$id) )
 	{
 		exit('Erreur : login déjà existant !');
 	}
@@ -177,9 +169,10 @@ else if( ($action=='modifier') && $id && $nom && $prenom && $login )
 	$tab_donnees = array(':sconet_id'=>$sconet_id,':sconet_num'=>$sconet_num,':reference'=>$reference,':nom'=>$nom,':prenom'=>$prenom,':login'=>$login,':id_ent'=>$id_ent,':id_gepi'=>$id_gepi);
 	if($password)
 	{
-		$tab_donnees[':password'] = fabriquer_mdp() ;
+		$password = fabriquer_mdp();
+		$tab_donnees[':password'] = crypter_mdp($password);
 	}
-	DB_STRUCTURE_modifier_utilisateur( $id , $tab_donnees );
+	DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_user( $id , $tab_donnees );
 	// Afficher le retour
 	echo'<td>'.html($id_ent).'</td>';
 	echo'<td>'.html($id_gepi).'</td>';
@@ -189,7 +182,7 @@ else if( ($action=='modifier') && $id && $nom && $prenom && $login )
 	echo'<td>'.html($nom).'</td>';
 	echo'<td>'.html($prenom).'</td>';
 	echo'<td>'.html($login).'</td>';
-	echo (!$password) ? '<td class="i">champ crypté</td>' : '<td class="new">'.html($tab_donnees[':password']).' <img alt="" src="./_img/bulle_aide.png" title="Pensez à relever le mot de passe !" /></td>' ;
+	echo (!$password) ? '<td class="i">champ crypté</td>' : '<td class="new">'.$password.' <img alt="" src="./_img/bulle_aide.png" title="Pensez à relever le mot de passe !" /></td>' ;
 	echo'<td class="nu">';
 	echo	'<q class="modifier" title="Modifier cet élève."></q>';
 	echo	'<q class="supprimer" title="Enlever cet élève."></q>';
@@ -202,7 +195,7 @@ else if( ($action=='modifier') && $id && $nom && $prenom && $login )
 else if( ($action=='supprimer') && $id )
 {
 	// Mettre à jour l'enregistrement
-	DB_STRUCTURE_modifier_utilisateur( $id , array(':statut'=>0) );
+	DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_user_statut( $id , 0 );
 	// Afficher le retour
 	echo'<td>ok</td>';
 }

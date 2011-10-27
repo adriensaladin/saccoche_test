@@ -48,14 +48,14 @@ if( ($matiere_id==0) || ($item_id==0) || ($score==-2) )
 }
 
 // Vérifier que les demandes sont autorisées pour cette matière
-$nb_demandes_autorisees = DB_STRUCTURE_recuperer_demandes_autorisees_matiere($matiere_id);
+$nb_demandes_autorisees = DB_STRUCTURE_ELEVE::DB_recuperer_demandes_autorisees_matiere($matiere_id);
 if(!$nb_demandes_autorisees)
 {
 	renvoyer_reponse('Vous ne pouvez pas formuler de demandes pour les items cette matière.');
 }
 
 // Vérifier qu'il reste des demandes disponibles pour l'élève et la matière concernés
-$nb_demandes_formulees = DB_STRUCTURE_compter_demandes_formulees_eleve_matiere($_SESSION['USER_ID'],$matiere_id);
+$nb_demandes_formulees = DB_STRUCTURE_ELEVE::DB_compter_demandes_formulees_eleve_matiere($_SESSION['USER_ID'],$matiere_id);
 $nb_demandes_possibles = max( 0 , $nb_demandes_autorisees - $nb_demandes_formulees ) ;
 if(!$nb_demandes_possibles)
 {
@@ -64,13 +64,13 @@ if(!$nb_demandes_possibles)
 }
 
 // Vérifier que cet item n'est pas déjà en attente d'évaluation pour cet élève
-if( DB_STRUCTURE_tester_demande_existante($_SESSION['USER_ID'],$matiere_id,$item_id) )
+if( DB_STRUCTURE_ELEVE::DB_tester_demande_existante($_SESSION['USER_ID'],$matiere_id,$item_id) )
 {
 	renvoyer_reponse('Cette demande est déjà enregistrée !');
 }
 
 // Vérifier que cet item n'est pas interdit à la sollitation ; récupérer au passage sa référence et son nom
-$DB_ROW = DB_STRUCTURE_recuperer_item_infos($item_id);
+$DB_ROW = DB_STRUCTURE_ELEVE::DB_recuperer_item_infos($item_id);
 if($DB_ROW['item_cart']==0)
 {
 	renvoyer_reponse('La demande de cet item est interdite !');
@@ -79,13 +79,13 @@ if($DB_ROW['item_cart']==0)
 // C'est bon si on arrive jusque là... => Enregistrement
 $score = ($score!=-1) ? $score : NULL ;
 $date_mysql = date("Y-m-d");	// date_mysql de la forme aaaa-mm-jj
-$demande_id = DB_STRUCTURE_ajouter_demande($_SESSION['USER_ID'],$matiere_id,$item_id,$date_mysql,$score,$statut='eleve');
+$demande_id = DB_STRUCTURE_ELEVE::DB_ajouter_demande($_SESSION['USER_ID'],$matiere_id,$item_id,$date_mysql,$score,$statut='eleve');
 // Ajout aux flux RSS des profs concernés
 $titre = 'Demande ajoutée par '.$_SESSION['USER_NOM'].' '.$_SESSION['USER_PRENOM']{0}.'.';
 $texte = $_SESSION['USER_PRENOM'].' '.$_SESSION['USER_NOM'].' demande à être évalué sur l\'item '.$DB_ROW['item_ref'].' intitulé "'.$DB_ROW['item_nom'].'"';
 $guid  = 'demande_'.$demande_id.'_add';
 // On récupère les profs...
-$DB_COL = DB_STRUCTURE_recuperer_professeurs_eleve_matiere($_SESSION['USER_ID'],$matiere_id);
+$DB_COL = DB_STRUCTURE_ELEVE::DB_recuperer_professeurs_eleve_matiere($_SESSION['USER_ID'],$matiere_id);
 foreach($DB_COL as $prof_id)
 {
 	Modifier_RSS(adresse_RSS($prof_id),$titre,$texte,$guid);

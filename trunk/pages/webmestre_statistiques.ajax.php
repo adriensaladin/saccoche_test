@@ -44,7 +44,7 @@ if( ($action=='calculer') && $nb_bases )
 	$_SESSION['tmp']['totaux'] = array( 'prof_nb'=>0 , 'prof_use'=>0 , 'eleve_nb'=>0 , 'eleve_use'=>0 , 'score_nb'=>0 );
 	// Mémoriser les données des structures concernées par les stats
 	$_SESSION['tmp']['infos'] = array();
-	$DB_TAB = DB_WEBMESTRE_lister_structures( implode(',',$tab_base_id) );
+	$DB_TAB = DB_WEBMESTRE_WEBMESTRE::DB_lister_structures( implode(',',$tab_base_id) );
 	foreach($DB_TAB as $DB_ROW)
 	{
 		$_SESSION['tmp']['infos'][] = array(
@@ -69,7 +69,7 @@ if( ($action=='calculer') && $num && $max && ($num<$max) )
 	extract($_SESSION['tmp']['infos'][$num-1]);
 	// Récupérer une série de stats
 	charger_parametres_mysql_supplementaires($base_id);
-	list($prof_nb,$prof_use,$eleve_nb,$eleve_use,$score_nb) = DB_STRUCTURE_recuperer_statistiques();
+	list($prof_nb,$prof_use,$eleve_nb,$eleve_use,$score_nb) = DB_STRUCTURE_WEBMESTRE::DB_recuperer_statistiques();
 	// maj les totaux
 	$_SESSION['tmp']['totaux']['prof_nb']   += $prof_nb;
 	$_SESSION['tmp']['totaux']['prof_use']  += $prof_use;
@@ -94,7 +94,7 @@ if( ($action=='supprimer') && $nb_bases )
 {
 	foreach($tab_base_id as $base_id)
 	{
-		DB_WEBMESTRE_supprimer_multi_structure($base_id);
+		supprimer_multi_structure($base_id);
 	}
 	exit('<ok>');
 }

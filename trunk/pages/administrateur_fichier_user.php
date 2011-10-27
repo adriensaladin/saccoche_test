@@ -31,7 +31,7 @@ $VERSION_JS_FILE += 8;
 ?>
 
 <?php
-$alerte = DB_STRUCTURE_compter_devoirs() ? '<p class="danger">La base actuelle contient des devoirs ; <span class="u">en début d\'année scolaire</span> vous devez <a href="./index.php?page=administrateur_nettoyage">purger la base avant d\'importer les nouveaux utilisateurs</a>.</p>' : '';
+$alerte = DB_STRUCTURE_ADMINISTRATEUR::DB_compter_devoirs() ? '<p class="danger">La base actuelle contient des devoirs ; <span class="u">en début d\'année scolaire</span> vous devez <a href="./index.php?page=administrateur_nettoyage">purger la base avant d\'importer les nouveaux utilisateurs</a>.</p>' : '';
 
 $test_UAI = ($_SESSION['UAI']) ? 'oui' : 'non' ;
 

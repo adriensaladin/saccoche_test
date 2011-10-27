@@ -46,7 +46,7 @@ $VERSION_JS_FILE += 1;
 			// Cases à cocher
 			$tab_check = explode(',',$_SESSION['CYCLES']);
 			// Lister les niveaux
-			$DB_TAB = DB_STRUCTURE_lister_cycles_SACoche();
+			$DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_cycles_SACoche();
 			foreach($DB_TAB as $DB_ROW)
 			{
 				$checked  = (in_array($DB_ROW['niveau_id'],$tab_check)) ? ' checked' : '' ;
@@ -78,7 +78,7 @@ $VERSION_JS_FILE += 1;
 			// Cases à cocher
 			$tab_check = explode(',',$_SESSION['NIVEAUX']);
 			// Lister les niveaux
-			$DB_TAB = DB_STRUCTURE_lister_niveaux_SACoche();
+			$DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_niveaux_SACoche();
 			foreach($DB_TAB as $DB_ROW)
 			{
 				$checked  = (in_array($DB_ROW['niveau_id'],$tab_check)) ? ' checked' : '' ;

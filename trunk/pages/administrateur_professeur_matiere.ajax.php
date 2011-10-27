@@ -40,7 +40,7 @@ if($action=='ajouter')
 	{
 		foreach($tab_select_matieres as $matiere_id)
 		{
-			DB_STRUCTURE_modifier_liaison_professeur_matiere($user_id,$matiere_id,true);
+			DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_liaison_professeur_matiere($user_id,$matiere_id,true);
 		}
 	}
 }
@@ -52,45 +52,33 @@ elseif($action=='retirer')
 	{
 		foreach($tab_select_matieres as $matiere_id)
 		{
-			DB_STRUCTURE_modifier_liaison_professeur_matiere($user_id,$matiere_id,false);
+			DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_liaison_professeur_matiere($user_id,$matiere_id,false);
 		}
 	}
 }
 
-// Affichage du bilan des affectations des professeurs dans les matières ; en deux requêtes pour récupérer les professeurs sans matières et les matières sans professeurs
+// Affichage du bilan des affectations des professeurs dans les matières ; en deux requêtes pour récupérer les matières sans professeurs
 $tab_matiere = array();
 $tab_user   = array();
-$tab_matiere[0] = '<i>sans affectation</i>';
-$tab_user[0]   = '';
 // Récupérer la liste des matières utilisées
-$DB_TAB = DB_STRUCTURE_lister_matieres_etablissement($_SESSION['MATIERES'],$with_transversal=false,$order_by_name=true);
+$DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_matieres_etablissement( $_SESSION['MATIERES'] , FALSE /*with_transversal*/ , TRUE /*order_by_name*/ );
 foreach($DB_TAB as $DB_ROW)
 {
 	$tab_matiere[$DB_ROW['matiere_id']] = html($DB_ROW['matiere_nom']);
-	$tab_user[$DB_ROW['matiere_id']]   = '';
+	$tab_user[$DB_ROW['matiere_id']] = '';
 }
-// Récupérer la liste des professeurs / matières
-$DB_SQL = 'SELECT * FROM sacoche_jointure_user_matiere ';
-$DB_SQL.= 'LEFT JOIN sacoche_user USING (user_id) ';
-$DB_SQL.= 'WHERE user_profil=:profil AND user_statut=:statut AND matiere_id!='.ID_MATIERE_TRANSVERSALE.' ';
-$DB_SQL.= 'ORDER BY user_nom ASC, user_prenom ASC';
-$DB_VAR = array(':profil'=>'professeur',':statut'=>1);
-$DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+// Récupérer la liste des matières / professeurs
+$DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_jointure_professeurs_matieres( TRUE /*with_identite*/ , FALSE /*with_transversal*/ );
 foreach($DB_TAB as $DB_ROW)
 {
-	// Mettre de côté les professeurs non affectés ou affectés à une matière qui n'est plus associée à l'établissement...
-	if( (is_null($DB_ROW['matiere_id'])) || (!isset($tab_user[$DB_ROW['matiere_id']])) )
-	{
-		$DB_ROW['matiere_id'] = 0;
-	}
-	$tab_user[$DB_ROW['matiere_id']]  .= html($DB_ROW['user_nom'].' '.$DB_ROW['user_prenom']).'<br />';
+	$tab_user[$DB_ROW['matiere_id']] .= html($DB_ROW['user_nom'].' '.$DB_ROW['user_prenom']).'<br />';
 }
 // Assemblage du tableau résultant
 $TH = array();
 $TB = array();
 $TF = array();
 $tab_mod = 5;
-$i = $tab_mod-1;
+$i = 0;
 $memo_tab_num = -1;
 foreach($tab_matiere as $matiere_id => $matiere_nom)
 {

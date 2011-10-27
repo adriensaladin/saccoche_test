@@ -41,7 +41,7 @@ if($action=='numeroter')
 	// Bloquer l'application
 	bloquer_application('automate',$_SESSION['BASE'],'Recherche et correction de numérotations anormales en cours.');
 	// Rechercher et corriger les anomalies
-	$tab_bilan = DB_STRUCTURE_corriger_numerotations();
+	$tab_bilan = DB_STRUCTURE_ADMINISTRATEUR::DB_corriger_numerotations();
 	// Débloquer l'application
 	debloquer_application('automate',$_SESSION['BASE']);
 	// Afficher le retour
@@ -61,7 +61,7 @@ if($action=='nettoyer')
 	// Bloquer l'application
 	bloquer_application('automate',$_SESSION['BASE'],'Recherche et suppression de données orphelines en cours.');
 	// Rechercher et corriger les anomalies
-	$tab_bilan = DB_STRUCTURE_corriger_anomalies();
+	$tab_bilan = DB_STRUCTURE_ADMINISTRATEUR::DB_corriger_anomalies();
 	// Débloquer l'application
 	debloquer_application('automate',$_SESSION['BASE']);
 	// Afficher le retour
@@ -82,33 +82,37 @@ if($action=='purger')
 	// Bloquer l'application
 	bloquer_application('automate',$_SESSION['BASE'],'Purge annuelle de la base en cours.');
 	// Supprimer tous les devoirs associés aux classes, mais pas les saisies associées
-	DB_STRUCTURE_supprimer_devoirs_sans_saisies();
+	DB_STRUCTURE_ADMINISTRATEUR::DB_supprimer_devoirs_sans_saisies();
+	ajouter_log_SACoche('Suppression de tous les devoirs sans les saisies associées.');
 	// Supprimer tous les types de groupes, sauf les classes (donc 'groupe' ; 'besoin' ; 'eval'), ainsi que les jointures avec les périodes.
-	$DB_TAB = DB_STRUCTURE_lister_groupes_sauf_classes();
+	$DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_groupes_sauf_classes();
 	if(count($DB_TAB))
 	{
 		foreach($DB_TAB as $DB_ROW)
 		{
-			DB_STRUCTURE_supprimer_groupe($DB_ROW['groupe_id'],$DB_ROW['groupe_type'],$with_devoir=false);
+			DB_STRUCTURE_ADMINISTRATEUR::DB_supprimer_groupe_par_admin( $DB_ROW['groupe_id'] , $DB_ROW['groupe_type'] , FALSE /*with_devoir*/ );
 		}
 	}
+	ajouter_log_SACoche('Suppression de tous les groupes, hors classes, sans les devoirs associés.');
 	// Supprimer les jointures classes/périodes
-	DB_STRUCTURE_modifier_liaison_groupe_periode($groupe_id=true,$periode_id=true,$etat=false,$date_debut_mysql='',$date_fin_mysql='');
+	DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_liaison_groupe_periode($groupe_id=true,$periode_id=true,$etat=false,$date_debut_mysql='',$date_fin_mysql='');
 	// Supprimer les comptes utilisateurs désactivés depuis plus de 3 ans
-	$DB_TAB = DB_STRUCTURE_lister_users_desactives_obsoletes();
+	$DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_users_desactives_obsoletes();
 	if(count($DB_TAB))
 	{
 		foreach($DB_TAB as $DB_ROW)
 		{
 			$param_profil = ($DB_ROW['user_profil']=='eleve') ? 'eleve' : 'professeur' ; // On transmet 'professeur' y compris pour les directeurs.
-			DB_STRUCTURE_supprimer_utilisateur($DB_ROW['user_id'],$param_profil);
+			DB_STRUCTURE_ADMINISTRATEUR::DB_supprimer_utilisateur($DB_ROW['user_id'],$param_profil);
+			// Log de l'action
+			ajouter_log_SACoche('Suppression d\'un utilisateur ('.$param_profil.' '.$DB_ROW['user_id'].').');
 		}
 	}
 	// Supprimer les demandes d'évaluations, ainsi que les reliquats de notes 'REQ'
-	DB_STRUCTURE_supprimer_demandes(true);
-	DB_STRUCTURE_supprimer_saisies_REQ();
+	DB_STRUCTURE_ADMINISTRATEUR::DB_supprimer_demandes_evaluation();
+	DB_STRUCTURE_ADMINISTRATEUR::DB_supprimer_saisies_REQ();
 	// En profiter pour optimiser les tables (1 fois par an, ça ne peut pas faire de mal)
-	DB_STRUCTURE_optimiser_tables_structure();
+	DB_STRUCTURE_ADMINISTRATEUR::DB_optimiser_tables_structure();
 	// Débloquer l'application
 	debloquer_application('automate',$_SESSION['BASE']);
 	// Afficher le retour
@@ -133,9 +137,9 @@ if($action=='supprimer')
 	// Bloquer l'application
 	bloquer_application('automate',$_SESSION['BASE'],'Suppression des notes et des validations en cours.');
 	// Supprimer toutes les saisies aux évaluations
-	DB_STRUCTURE_supprimer_saisies();
+	DB_STRUCTURE_ADMINISTRATEUR::DB_supprimer_saisies();
 	// Supprimer toutes les validations du socle
-	DB_STRUCTURE_supprimer_validations();
+	DB_STRUCTURE_ADMINISTRATEUR::DB_supprimer_validations();
 	// Débloquer l'application
 	debloquer_application('automate',$_SESSION['BASE']);
 	// Afficher le retour

@@ -43,7 +43,7 @@ if($action=='ajouter')
 		{
 			foreach($tab_select_groupes as $groupe_id)
 			{
-				DB_STRUCTURE_modifier_liaison_user_groupe($user_id,'professeur',$groupe_id,'besoin',true);
+				DB_STRUCTURE_PROFESSEUR::DB_modifier_liaison_user_groupe_par_prof($user_id,'professeur',$groupe_id,'besoin',true);
 			}
 		}
 	}
@@ -58,7 +58,7 @@ elseif($action=='retirer')
 		{
 			foreach($tab_select_groupes as $groupe_id)
 			{
-				DB_STRUCTURE_modifier_liaison_user_groupe($user_id,'professeur',$groupe_id,'besoin',false);
+				DB_STRUCTURE_PROFESSEUR::DB_modifier_liaison_user_groupe_par_prof($user_id,'professeur',$groupe_id,'besoin',false);
 			}
 		}
 	}
@@ -68,7 +68,7 @@ elseif($action=='retirer')
 $tab_niveau_groupe = array();
 $tab_user          = array();
 // Récupérer la liste des groupes de besoin
-$DB_TAB = DB_STRUCTURE_lister_groupes_besoins($_SESSION['USER_ID'],TRUE /* is_proprio */);
+$DB_TAB = DB_STRUCTURE_PROFESSEUR::DB_lister_groupes_besoins($_SESSION['USER_ID'],TRUE /* is_proprio */);
 foreach($DB_TAB as $DB_ROW)
 {
 	$tab_niveau_groupe[$DB_ROW['niveau_id']][$DB_ROW['groupe_id']] = html($DB_ROW['groupe_nom']);
@@ -77,7 +77,7 @@ foreach($DB_TAB as $DB_ROW)
 // Récupérer la liste des professeurs / groupes de besoin
 if( count($tab_user) )
 {
-	$DB_TAB = DB_STRUCTURE_lister_users_avec_groupes_besoins( 'professeur' , implode(',',array_keys($tab_user)) );
+	$DB_TAB = DB_STRUCTURE_PROFESSEUR::DB_lister_users_avec_groupes_besoins( 'professeur' , implode(',',array_keys($tab_user)) );
 	foreach($DB_TAB as $DB_ROW)
 	{
 		$tab_user[$DB_ROW['groupe_id']] .= ($DB_ROW['jointure_pp']) ? '<span class="proprio">'.html($DB_ROW['user_nom'].' '.$DB_ROW['user_prenom']).'</span><br />' : html($DB_ROW['user_nom'].' '.$DB_ROW['user_prenom']).'<br />' ;

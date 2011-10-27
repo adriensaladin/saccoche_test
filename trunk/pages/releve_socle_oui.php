@@ -34,18 +34,18 @@ $socle_PA = '<label for="f_socle_PA"><input type="checkbox" id="f_socle_PA" name
 $socle_EV = '<label for="f_socle_EV"><input type="checkbox" id="f_socle_EV" name="f_socle_EV" value="1" checked /> État de validation</label>';
 // Fabrication des éléments select du formulaire
 $tab_cookie   = load_cookie_select('palier');
-$tab_paliers  = DB_STRUCTURE_OPT_paliers_etabl($_SESSION['PALIERS']);
-$tab_matieres = DB_STRUCTURE_OPT_matieres_etabl($_SESSION['MATIERES'],$transversal=true);
+$tab_paliers  = DB_STRUCTURE_COMMUN::DB_OPT_paliers_etabl($_SESSION['PALIERS']);
+$tab_matieres = DB_STRUCTURE_COMMUN::DB_OPT_matieres_etabl($_SESSION['MATIERES'],$transversal=true);
 if($_SESSION['USER_PROFIL']=='directeur')
 {
-	$tab_groupes  = DB_STRUCTURE_OPT_classes_groupes_etabl();
+	$tab_groupes  = DB_STRUCTURE_COMMUN::DB_OPT_classes_groupes_etabl();
 	$select_eleves = '<option></option>'; // maj en ajax suivant le choix du groupe
 	$of_g = 'val'; $sel_g = false; $og_g = 'oui'; $class_form_eleve = 'show'; $class_option_groupe = 'hide'; $class_option_mode = 'show';
 	$check_option_lien = '';
 }
 elseif($_SESSION['USER_PROFIL']=='professeur')
 {
-	$tab_groupes  = DB_STRUCTURE_OPT_groupes_professeur($_SESSION['USER_ID']);
+	$tab_groupes  = DB_STRUCTURE_COMMUN::DB_OPT_groupes_professeur($_SESSION['USER_ID']);
 	$select_eleves = '<option></option>'; // maj en ajax suivant le choix du groupe
 	$of_g = 'val'; $sel_g = false; $og_g = 'oui'; $class_form_eleve = 'show'; $class_option_groupe = 'hide'; $class_option_mode = 'show';
 	$check_option_lien = '';

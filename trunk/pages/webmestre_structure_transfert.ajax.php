@@ -61,7 +61,7 @@ if( ($action=='exporter') && $nb_bases )
 {
 	// Mémoriser dans un fichier les données des structures concernées par les stats
 	$fichier_texte = 'Id_Export'.$separateur.'Id_Import'.$separateur.'Id_Zone'.$separateur.'Localisation'.$separateur.'Dénomination'.$separateur.'UAI'.$separateur.'Contact_Nom'.$separateur.'Contact_Prénom'.$separateur.'Contact_Courriel'.$separateur.'Date_Inscription'.$separateur.'Nom_fichier'."\r\n";
-	$DB_TAB = DB_WEBMESTRE_lister_structures( implode(',',$tab_base_id) );
+	$DB_TAB = DB_WEBMESTRE_WEBMESTRE::DB_lister_structures( implode(',',$tab_base_id) );
 	foreach($DB_TAB as $DB_ROW)
 	{
 		$fichier_nom = 'dump_SACoche_'.$DB_ROW['sacoche_base'].'_'.$_SESSION['datetime'].'_'.mt_rand().'.zip';
@@ -143,7 +143,7 @@ if($action=='importer_csv')
 	}
 	// On récupère les zones géographiques pour vérifier que l'identifiant transmis est cohérent
 	$tab_geo = array();
-	$DB_TAB = DB_WEBMESTRE_lister_zones();
+	$DB_TAB = DB_WEBMESTRE_WEBMESTRE::DB_lister_zones();
 	foreach($DB_TAB as $DB_ROW)
 	{
 		$tab_geo[$DB_ROW['geo_id']] = TRUE;
@@ -197,7 +197,7 @@ if($action=='importer_csv')
 			// Vérifier que le n°UAI est disponible
 			if($uai)
 			{
-				if( (!tester_UAI($uai)) || (isset($tab_nouvel_uai[$uai])) || DB_WEBMESTRE_tester_structure_UAI($uai) )
+				if( (!tester_UAI($uai)) || (isset($tab_nouvel_uai[$uai])) || DB_WEBMESTRE_WEBMESTRE::DB_tester_structure_UAI($uai) )
 				{
 					$tab_erreur['uai']['nb']++;
 				}
@@ -221,7 +221,7 @@ if($action=='importer_csv')
 			// Vérifier que l'identifiant est disponible
 			if($import_id)
 			{
-				if((isset($tab_nouvel_id[$import_id])) || count(DB_WEBMESTRE_recuperer_structure($import_id)) )
+				if((isset($tab_nouvel_id[$import_id])) || (DB_WEBMESTRE_WEBMESTRE::DB_tester_structure_Id($import_id)!==NULL) )
 				{
 					$tab_erreur['id']['nb']++;
 				}
@@ -358,7 +358,7 @@ if( ($action=='importer') && $num && $max && ($num<$max) )
 	// Créer le fichier de connexion de la base de données de la structure
 	// Créer la base de données de la structure
 	// Créer un utilisateur pour la base de données de la structure et lui attribuer ses droits
-	$base_id = DB_WEBMESTRE_ajouter_structure($import_id,$geo_id,$uai,$localisation,$denomination,$contact_nom,$contact_prenom,$contact_courriel,$date);
+	$base_id = ajouter_structure($import_id,$geo_id,$uai,$localisation,$denomination,$contact_nom,$contact_prenom,$contact_courriel,$date);
 	// Créer les dossiers de fichiers temporaires par établissement : vignettes verticales, flux RSS des demandes, cookies des choix de formulaires
 	Creer_Dossier('./__tmp/badge/'.$base_id);
 	Ecrire_Fichier('./__tmp/badge/'.$base_id.'/index.htm','Circulez, il n\'y a rien à voir par ici !');
@@ -396,7 +396,7 @@ if( ($action=='supprimer') && $nb_bases )
 {
 	foreach($tab_base_id as $base_id)
 	{
-		DB_WEBMESTRE_supprimer_multi_structure($base_id);
+		supprimer_multi_structure($base_id);
 	}
 	exit('<ok>');
 }

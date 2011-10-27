@@ -48,13 +48,13 @@ if( in_array( $action , array('export_lpc','export_sacoche') ) && $nb )
 	$listing_eleve_id = implode(',',$tab_select_eleves);
 	$only_positives   = ($action=='export_lpc') ? TRUE : FALSE ;
 	// Validations des items
-	$DB_TAB = DB_STRUCTURE_lister_validations_items($listing_eleve_id,$only_positives);
+	$DB_TAB = DB_STRUCTURE_SOCLE::DB_lister_validations_items($listing_eleve_id,$only_positives);
 	foreach($DB_TAB as $DB_ROW)
 	{
 		$tab_validations[$DB_ROW['user_id']][$DB_ROW['palier_id']][$DB_ROW['pilier_id']][$DB_ROW['entree_id']] = array('date'=>$DB_ROW['validation_entree_date'],'etat'=>$DB_ROW['validation_entree_etat'],'info'=>$DB_ROW['validation_entree_info']) ;
 	}
 	// Validations des compétences
-	$DB_TAB = DB_STRUCTURE_lister_validations_competences($listing_eleve_id,$only_positives);
+	$DB_TAB = DB_STRUCTURE_SOCLE::DB_lister_validations_competences($listing_eleve_id,$only_positives);
 	foreach($DB_TAB as $DB_ROW)
 	{
 		$tab_validations[$DB_ROW['user_id']][$DB_ROW['palier_id']][$DB_ROW['pilier_id']][0] = array('date'=>$DB_ROW['validation_pilier_date'],'etat'=>$DB_ROW['validation_pilier_etat'],'info'=>$DB_ROW['validation_pilier_info']) ;
@@ -68,7 +68,7 @@ if( in_array( $action , array('export_lpc','export_sacoche') ) && $nb )
 	// Données élèves
 	$tab_eleves     = array(); // [user_id] => array(nom,prenom,sconet_id) Ordonné par classe et alphabet.
 	$only_sconet_id = ($action=='export_lpc') ? TRUE : FALSE ;
-	$DB_TAB = DB_STRUCTURE_lister_eleves_cibles_actifs_avec_sconet_id($listing_eleve_id,$only_sconet_id);
+	$DB_TAB = DB_STRUCTURE_SOCLE::DB_lister_eleves_cibles_actifs_avec_sconet_id($listing_eleve_id,$only_sconet_id);
 	foreach($DB_TAB as $DB_ROW)
 	{
 		$tab_eleves[$DB_ROW['user_id']] = array('nom'=>$DB_ROW['user_nom'],'prenom'=>$DB_ROW['user_prenom'],'sconet_id'=>$DB_ROW['user_sconet_id']);
@@ -317,7 +317,7 @@ if( in_array( $action , array('import_sacoche') ) )
 	$tab_eleve_base['nom']         = array();
 	$tab_eleve_base['prenom']      = array();
 	$tab_eleve_base['validations'] = array();
-	$DB_TAB = DB_STRUCTURE_lister_users($profil='eleve',$only_actifs=TRUE,$with_classe=FALSE);
+	$DB_TAB = DB_STRUCTURE_SOCLE::DB_lister_eleves_identite_et_sconet();
 	foreach($DB_TAB as $DB_ROW)
 	{
 		$tab_eleve_base['sconet_id'][$DB_ROW['user_id']]  = (int)$DB_ROW['user_sconet_id'];
@@ -372,13 +372,13 @@ if( in_array( $action , array('import_sacoche') ) )
 		$listing_eleve_id = implode(',',$tab_i_fichier_TO_id_base);
 		$only_positives   = FALSE ;
 		// Validations des items
-		$DB_TAB = DB_STRUCTURE_lister_validations_items($listing_eleve_id,$only_positives);
+		$DB_TAB = DB_STRUCTURE_SOCLE::DB_lister_validations_items($listing_eleve_id,$only_positives);
 		foreach($DB_TAB as $DB_ROW)
 		{
 			$tab_validations[$DB_ROW['user_id']]['entree'][$DB_ROW['entree_id']] = $DB_ROW['validation_entree_date'] ; // Pas besoin d'autre chose que la date
 		}
 		// Validations des compétences
-		$DB_TAB = DB_STRUCTURE_lister_validations_competences($listing_eleve_id,$only_positives);
+		$DB_TAB = DB_STRUCTURE_SOCLE::DB_lister_validations_competences($listing_eleve_id,$only_positives);
 		foreach($DB_TAB as $DB_ROW)
 		{
 			$tab_validations[$DB_ROW['user_id']]['pilier'][$DB_ROW['pilier_id']] = $DB_ROW['validation_pilier_date'] ; // Pas besoin d'autre chose que la date
@@ -394,12 +394,12 @@ if( in_array( $action , array('import_sacoche') ) )
 				{
 					if(!isset($tab_validations[$id_base]['pilier'][$pilier_id]))
 					{
-						DB_STRUCTURE_ajouter_validation('pilier',$id_base,$pilier_id,$tab_infos_fichier['etat'],$tab_infos_fichier['date'],$tab_infos_fichier['info']);
+						DB_STRUCTURE_SOCLE::DB_ajouter_validation('pilier',$id_base,$pilier_id,$tab_infos_fichier['etat'],$tab_infos_fichier['date'],$tab_infos_fichier['info']);
 						$nb_modifs++;
 					}
 					elseif($tab_validations[$id_base]['pilier'][$pilier_id]<$tab_infos_fichier['date'])
 					{
-						DB_STRUCTURE_modifier_validation('pilier',$id_base,$pilier_id,$tab_infos_fichier['etat'],$tab_infos_fichier['date'],$tab_infos_fichier['info']);
+						DB_STRUCTURE_SOCLE::DB_modifier_validation('pilier',$id_base,$pilier_id,$tab_infos_fichier['etat'],$tab_infos_fichier['date'],$tab_infos_fichier['info']);
 						$nb_modifs++;
 					}
 				}
@@ -411,12 +411,12 @@ if( in_array( $action , array('import_sacoche') ) )
 				{
 					if(!isset($tab_validations[$id_base]['entree'][$entree_id]))
 					{
-						DB_STRUCTURE_ajouter_validation('entree',$id_base,$entree_id,$tab_infos_fichier['etat'],$tab_infos_fichier['date'],$tab_infos_fichier['info']);
+						DB_STRUCTURE_SOCLE::DB_ajouter_validation('entree',$id_base,$entree_id,$tab_infos_fichier['etat'],$tab_infos_fichier['date'],$tab_infos_fichier['info']);
 						$nb_modifs++;
 					}
 					elseif($tab_validations[$id_base]['entree'][$entree_id]<$tab_infos_fichier['date'])
 					{
-						DB_STRUCTURE_modifier_validation('entree',$id_base,$entree_id,$tab_infos_fichier['etat'],$tab_infos_fichier['date'],$tab_infos_fichier['info']);
+						DB_STRUCTURE_SOCLE::DB_modifier_validation('entree',$id_base,$entree_id,$tab_infos_fichier['etat'],$tab_infos_fichier['date'],$tab_infos_fichier['info']);
 						$nb_modifs++;
 					}
 				}

@@ -98,7 +98,7 @@ if( ($action=='Afficher_evaluations') && $date_debut && $date_fin )
 	{
 		exit('Erreur : la date de début est postérieure à la date de fin !');
 	}
-	$DB_TAB = DB_STRUCTURE_lister_devoirs_prof($_SESSION['USER_ID'],0,$date_debut_mysql,$date_fin_mysql);
+	$DB_TAB = DB_STRUCTURE_PROFESSEUR::DB_lister_devoirs_prof($_SESSION['USER_ID'],0,$date_debut_mysql,$date_fin_mysql);
 	foreach($DB_TAB as $DB_ROW)
 	{
 		// Formater la date et la référence de l'évaluation
@@ -169,7 +169,7 @@ if( (($action=='ajouter')||(($action=='dupliquer')&&($devoir_id))) && $date && $
 		}
 		/*
 		$tab_profs_groupe = array();
-		$DB_TAB_USER = DB_STRUCTURE_lister_professeurs_groupe($groupe_id);
+		$DB_TAB_USER = DB_STRUCTURE_PROFESSEUR::DB_lister_professeurs_groupe($groupe_id);
 		foreach($DB_TAB_USER as $DB_ROW)
 		{
 			$tab_profs_groupe[] = $DB_ROW['user_id'];
@@ -184,16 +184,16 @@ if( (($action=='ajouter')||(($action=='dupliquer')&&($devoir_id))) && $date && $
 	}
 	$listing_id_profs = count($tab_profs) ? implode('_',$tab_profs) : '' ;
 	// Commencer par créer un nouveau groupe de type "eval", utilisé uniquement pour cette évaluation (c'est transparent pour le professeur)
-	$groupe_id = DB_STRUCTURE_ajouter_groupe($groupe_type,'','',0);
+	$groupe_id = DB_STRUCTURE_PROFESSEUR::DB_ajouter_groupe_par_prof($groupe_type,'',0);
 	// Y associer le prof, en responsable du groupe
-	DB_STRUCTURE_modifier_liaison_user_groupe($_SESSION['USER_ID'],'professeur',$groupe_id,$groupe_type,true);
-	DB_STRUCTURE_modifier_liaison_professeur_principal($_SESSION['USER_ID'],$groupe_id,true);
+	DB_STRUCTURE_PROFESSEUR::DB_modifier_liaison_user_groupe_par_prof($_SESSION['USER_ID'],'professeur',$groupe_id,$groupe_type,TRUE);
+	DB_STRUCTURE_PROFESSEUR::DB_ajouter_liaison_professeur_responsable($_SESSION['USER_ID'],$groupe_id);
 	// Insèrer l'enregistrement de l'évaluation
-	$devoir_id2 = DB_STRUCTURE_ajouter_devoir($_SESSION['USER_ID'],$groupe_id,$date_mysql,$info,$date_visible_mysql,$listing_id_profs);
+	$devoir_id2 = DB_STRUCTURE_PROFESSEUR::DB_ajouter_devoir($_SESSION['USER_ID'],$groupe_id,$date_mysql,$info,$date_visible_mysql,$listing_id_profs);
 	// Affecter tous les élèves choisis
-	DB_STRUCTURE_modifier_liaison_devoir_user($devoir_id2,$groupe_id,$tab_eleves,'creer');
+	DB_STRUCTURE_PROFESSEUR::DB_modifier_liaison_devoir_user($devoir_id2,$groupe_id,$tab_eleves,'creer');
 	// Insérer les enregistrements des items de l'évaluation
-	DB_STRUCTURE_modifier_liaison_devoir_item($devoir_id2,$tab_items,'dupliquer',$devoir_id);
+	DB_STRUCTURE_PROFESSEUR::DB_modifier_liaison_devoir_item($devoir_id2,$tab_items,'dupliquer',$devoir_id);
 	// Afficher le retour
 	$date_visible = ($date==$date_visible) ? 'identique' : $date_visible;
 	$ref = $devoir_id2.'_'.strtoupper($groupe_type{0}).$groupe_id;
@@ -245,7 +245,7 @@ if( ($action=='modifier') && $devoir_id && $groupe_id && $date && $date_visible 
 		}
 		/*
 		$tab_profs_groupe = array();
-		$DB_TAB_USER = DB_STRUCTURE_lister_professeurs_groupe($groupe_id);
+		$DB_TAB_USER = DB_STRUCTURE_PROFESSEUR::DB_lister_professeurs_groupe($groupe_id);
 		foreach($DB_TAB_USER as $DB_ROW)
 		{
 			$tab_profs_groupe[] = $DB_ROW['user_id'];
@@ -260,11 +260,11 @@ if( ($action=='modifier') && $devoir_id && $groupe_id && $date && $date_visible 
 	}
 	$listing_id_profs = count($tab_profs) ? implode('_',$tab_profs) : '' ;
 	// sacoche_devoir (maj des paramètres date & info)
-	DB_STRUCTURE_modifier_devoir($devoir_id,$_SESSION['USER_ID'],$date_mysql,$info,$date_visible_mysql,$tab_items,$listing_id_profs);
+	DB_STRUCTURE_PROFESSEUR::DB_modifier_devoir($devoir_id,$_SESSION['USER_ID'],$date_mysql,$info,$date_visible_mysql,$tab_items,$listing_id_profs);
 	// sacoche_jointure_user_groupe + sacoche_saisie pour les users supprimés
-	DB_STRUCTURE_modifier_liaison_devoir_user($devoir_id,$groupe_id,$tab_eleves,'substituer');
+	DB_STRUCTURE_PROFESSEUR::DB_modifier_liaison_devoir_user($devoir_id,$groupe_id,$tab_eleves,'substituer');
 	// sacoche_jointure_devoir_item + sacoche_saisie pour les items supprimés
-	DB_STRUCTURE_modifier_liaison_devoir_item($devoir_id,$tab_items,'substituer');
+	DB_STRUCTURE_PROFESSEUR::DB_modifier_liaison_devoir_item($devoir_id,$tab_items,'substituer');
 	// ************************ dans sacoche_saisie faut-il aussi virer certains scores élèves en cas de changement de groupe ... ???
 	// Afficher le retour
 	$date_visible = ($date==$date_visible) ? 'identique' : $date_visible;
@@ -298,9 +298,11 @@ if( ($action=='modifier') && $devoir_id && $groupe_id && $date && $date_visible 
 if( ($action=='supprimer') && $devoir_id && $groupe_id )
 {
 	// supprimer le groupe spécialement associé (invisible à l'utilisateur) et les entrées dans sacoche_jointure_user_groupe pour une évaluation avec des élèves piochés en dehors de tout groupe prédéfini
-	DB_STRUCTURE_supprimer_groupe($groupe_id,$groupe_type,$with_devoir=false);
+	DB_STRUCTURE_PROFESSEUR::DB_supprimer_groupe_par_prof( $groupe_id , $groupe_type , FALSE /*with_devoir*/ );
+	ajouter_log_SACoche('Suppression d\'un regroupement ('.$groupe_type.' '.$groupe_id.'), sans les devoirs associés.');
 	// la suite est commune aux évals sur une classe ou un groupe
-	DB_STRUCTURE_supprimer_devoir_et_saisies($devoir_id,$_SESSION['USER_ID']);
+	DB_STRUCTURE_PROFESSEUR::DB_supprimer_devoir_et_saisies($devoir_id,$_SESSION['USER_ID']);
+	ajouter_log_SACoche('Suppression d\'un devoir ('.$devoir_id.') avec les saisies associées.');
 	// Afficher le retour
 	exit('<td>ok</td>');
 }
@@ -312,7 +314,7 @@ if( ($action=='supprimer') && $devoir_id && $groupe_id )
 if( ($action=='ordonner') && $devoir_id )
 {
 	// liste des items
-	$DB_TAB_COMP = DB_STRUCTURE_lister_items_devoir($devoir_id);
+	$DB_TAB_COMP = DB_STRUCTURE_PROFESSEUR::DB_lister_items_devoir($devoir_id);
 	if(!count($DB_TAB_COMP))
 	{
 		exit('Aucun item n\'est associé à cette évaluation !');
@@ -342,9 +344,9 @@ if( ($action=='ordonner') && $devoir_id )
 if( ($action=='saisir') && $devoir_id && $groupe_id && $date && $date_visible && $descriptif ) // $date au format MySQL ; $descriptif séparé par ::: ; $info (facultative) reportées dans input hidden
 {
 	// liste des items
-	$DB_TAB_COMP = DB_STRUCTURE_lister_items_devoir($devoir_id);
+	$DB_TAB_COMP = DB_STRUCTURE_PROFESSEUR::DB_lister_items_devoir($devoir_id);
 	// liste des élèves
-	$DB_TAB_USER = DB_STRUCTURE_lister_users_actifs_regroupement('eleve',$groupe_type,$groupe_id);
+	$DB_TAB_USER = DB_STRUCTURE_COMMUN::DB_lister_users_actifs_regroupement('eleve',$groupe_type,$groupe_id);
 	// Let's go
 	$item_nb = count($DB_TAB_COMP);
 	if(!$item_nb)
@@ -405,7 +407,7 @@ if( ($action=='saisir') && $devoir_id && $groupe_id && $date && $date_visible &&
 		}
 	}
 	// configurer le champ input
-	$DB_TAB = DB_STRUCTURE_lister_saisies_devoir($devoir_id,$with_REQ=true);
+	$DB_TAB = DB_STRUCTURE_PROFESSEUR::DB_lister_saisies_devoir($devoir_id,$with_REQ=true);
 	$bad = 'class="X" value="X"';
 	foreach($DB_TAB as $DB_ROW)
 	{
@@ -487,9 +489,9 @@ if( ($action=='saisir') && $devoir_id && $groupe_id && $date && $date_visible &&
 if( ($action=='voir') && $devoir_id && $groupe_id && $date && $descriptif ) // $date française pour le csv ; $descriptif séparé par :::
 {
 	// liste des items
-	$DB_TAB_COMP = DB_STRUCTURE_lister_items_devoir($devoir_id);
+	$DB_TAB_COMP = DB_STRUCTURE_PROFESSEUR::DB_lister_items_devoir($devoir_id);
 	// liste des élèves
-	$DB_TAB_USER = DB_STRUCTURE_lister_users_actifs_regroupement('eleve',$groupe_type,$groupe_id);
+	$DB_TAB_USER = DB_STRUCTURE_COMMUN::DB_lister_users_actifs_regroupement('eleve',$groupe_type,$groupe_id);
 	// Let's go
 	$item_nb = count($DB_TAB_COMP);
 	if(!$item_nb)
@@ -544,7 +546,7 @@ if( ($action=='voir') && $devoir_id && $groupe_id && $date && $descriptif ) // $
 	}
 	// ajouter le contenu
 	$tab_dossier = array( ''=>'' , 'RR'=>$_SESSION['NOTE_DOSSIER'].'/h/' , 'R'=>$_SESSION['NOTE_DOSSIER'].'/h/' , 'V'=>$_SESSION['NOTE_DOSSIER'].'/h/' , 'VV'=>$_SESSION['NOTE_DOSSIER'].'/h/' , 'ABS'=>'commun/h/' , 'NN'=>'commun/h/' , 'DISP'=>'commun/h/' , 'REQ'=>'' );
-	$DB_TAB = DB_STRUCTURE_lister_saisies_devoir($devoir_id,$with_REQ=true);
+	$DB_TAB = DB_STRUCTURE_PROFESSEUR::DB_lister_saisies_devoir($devoir_id,$with_REQ=true);
 	foreach($DB_TAB as $DB_ROW)
 	{
 		// Test pour éviter les pbs des élèves changés de groupes ou des items modifiés en cours de route
@@ -660,9 +662,9 @@ if( ($action=='voir') && $devoir_id && $groupe_id && $date && $descriptif ) // $
 if( ($action=='voir_repart') && $devoir_id && $groupe_id && $date && $descriptif ) // $date française pour le csv ; $descriptif séparé par :::
 {
 	// liste des items
-	$DB_TAB_ITEM = DB_STRUCTURE_lister_items_devoir($devoir_id);
+	$DB_TAB_ITEM = DB_STRUCTURE_PROFESSEUR::DB_lister_items_devoir($devoir_id);
 	// liste des élèves
-	$DB_TAB_USER = DB_STRUCTURE_lister_users_actifs_regroupement('eleve',$groupe_type,$groupe_id);
+	$DB_TAB_USER = DB_STRUCTURE_COMMUN::DB_lister_users_actifs_regroupement('eleve',$groupe_type,$groupe_id);
 	// Let's go
 	$item_nb = count($DB_TAB_ITEM);
 	if(!$item_nb)
@@ -706,7 +708,7 @@ if( ($action=='voir_repart') && $devoir_id && $groupe_id && $date && $descriptif
 		$affichage_repartition_head .= '<th><img alt="'.$note.'" src="./_img/note/'.$tab_dossier[$note].$note.'.gif" /></th>';
 	}
 	// ligne suivantes
-	$DB_TAB = DB_STRUCTURE_lister_saisies_devoir($devoir_id,$with_REQ=false);
+	$DB_TAB = DB_STRUCTURE_PROFESSEUR::DB_lister_saisies_devoir($devoir_id,$with_REQ=false);
 	foreach($DB_TAB as $DB_ROW)
 	{
 		// Test pour éviter les pbs des élèves changés de groupes ou des items modifiés en cours de route
@@ -838,7 +840,7 @@ if( ($action=='voir_repart') && $devoir_id && $groupe_id && $date && $descriptif
 
 if( ($action=='Enregistrer_ordre') && $devoir_id && count($tab_id) )
 {
-	DB_STRUCTURE_modifier_ordre_item($devoir_id,$tab_id);
+	DB_STRUCTURE_PROFESSEUR::DB_modifier_ordre_item($devoir_id,$tab_id);
 	exit('<ok>');
 }
 
@@ -865,7 +867,7 @@ if( ($action=='Enregistrer_saisie') && $devoir_id && $date && $date_visible && c
 	$tab_nouveau_modifier = array();
 	$tab_nouveau_supprimer = array();
 	$tab_demande_supprimer = array();
-	$DB_TAB = DB_STRUCTURE_lister_saisies_devoir($devoir_id,$with_REQ=true);
+	$DB_TAB = DB_STRUCTURE_PROFESSEUR::DB_lister_saisies_devoir($devoir_id,$with_REQ=true);
 	foreach($DB_TAB as $DB_ROW)
 	{
 		$key = $DB_ROW['item_id'].'x'.$DB_ROW['eleve_id'];
@@ -902,22 +904,22 @@ if( ($action=='Enregistrer_saisie') && $devoir_id && $date && $date_visible && c
 	foreach($tab_nouveau_ajouter as $key => $note)
 	{
 		list($item_id,$eleve_id) = explode('x',$key);
-		DB_STRUCTURE_ajouter_saisie($_SESSION['USER_ID'],$eleve_id,$devoir_id,$item_id,$date,$note,$info,$date_visible_mysql);
+		DB_STRUCTURE_PROFESSEUR::DB_ajouter_saisie($_SESSION['USER_ID'],$eleve_id,$devoir_id,$item_id,$date,$note,$info,$date_visible_mysql);
 	}
 	foreach($tab_nouveau_modifier as $key => $note)
 	{
 		list($item_id,$eleve_id) = explode('x',$key);
-		DB_STRUCTURE_modifier_saisie($eleve_id,$devoir_id,$item_id,$note,$info);
+		DB_STRUCTURE_PROFESSEUR::DB_modifier_saisie($eleve_id,$devoir_id,$item_id,$note,$info);
 	}
 	foreach($tab_nouveau_supprimer as $key => $key)
 	{
 		list($item_id,$eleve_id) = explode('x',$key);
-		DB_STRUCTURE_supprimer_saisie($eleve_id,$devoir_id,$item_id);
+		DB_STRUCTURE_PROFESSEUR::DB_supprimer_saisie($eleve_id,$devoir_id,$item_id);
 	}
 	foreach($tab_demande_supprimer as $key => $key)
 	{
 		list($item_id,$eleve_id) = explode('x',$key);
-		DB_STRUCTURE_supprimer_demande($eleve_id,$item_id);
+		DB_STRUCTURE_PROFESSEUR::DB_supprimer_demande_precise($eleve_id,$item_id);
 	}
 	exit('<ok>');
 }
@@ -932,9 +934,9 @@ if( ($action=='Imprimer_cartouche') && $devoir_id && $groupe_id && $date && $car
 	$with_nom    = (substr($cart_contenu,0,8)=='AVEC_nom')  ? true : false ;
 	$with_result = (substr($cart_contenu,9)=='AVEC_result') ? true : false ;
 	// liste des items
-	$DB_TAB_COMP = DB_STRUCTURE_lister_items_devoir($devoir_id);
+	$DB_TAB_COMP = DB_STRUCTURE_PROFESSEUR::DB_lister_items_devoir($devoir_id);
 	// liste des élèves
-	$DB_TAB_USER = DB_STRUCTURE_lister_users_actifs_regroupement('eleve',$groupe_type,$groupe_id);
+	$DB_TAB_USER = DB_STRUCTURE_COMMUN::DB_lister_users_actifs_regroupement('eleve',$groupe_type,$groupe_id);
 	// Let's go
 	if(!count($DB_TAB_COMP))
 	{
@@ -972,7 +974,7 @@ if( ($action=='Imprimer_cartouche') && $devoir_id && $groupe_id && $date && $car
 	// compléter si demandé avec les résultats et/ou les demandes d'évaluations
 	if($with_result || $only_req)
 	{
-		$DB_TAB = DB_STRUCTURE_lister_saisies_devoir($devoir_id,$with_REQ=$only_req);
+		$DB_TAB = DB_STRUCTURE_PROFESSEUR::DB_lister_saisies_devoir($devoir_id,$with_REQ=$only_req);
 		foreach($DB_TAB as $DB_ROW)
 		{
 			// Test pour éviter les pbs des élèves changés de groupes ou des items modifiés en cours de route

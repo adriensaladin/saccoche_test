@@ -44,7 +44,7 @@ $pays        = (isset($_POST['f_pays']))        ? clean_nom($_POST['f_pays'])   
 if( ($action=='ajouter') && $user_id )
 {
 	// Insérer l'enregistrement
-	DB_STRUCTURE_ajouter_adresse_parent( $user_id , array($ligne1,$ligne2,$ligne3,$ligne4,$code_postal,$commune,$pays) );
+	DB_STRUCTURE_ADMINISTRATEUR::DB_ajouter_adresse_parent( $user_id , array($ligne1,$ligne2,$ligne3,$ligne4,$code_postal,$commune,$pays) );
 	// Afficher le retour
 	echo'<td><span>'.html($ligne1).'</span> ; <span>'.html($ligne2).'</span> ; <span>'.html($ligne3).'</span> ; <span>'.html($ligne4).'</span></td>';
 	echo'<td>'.html($code_postal).'</td>';
@@ -61,7 +61,7 @@ if( ($action=='ajouter') && $user_id )
 if( ($action=='modifier') && $user_id )
 {
 	// Insérer l'enregistrement
-	$user_id = DB_STRUCTURE_modifier_adresse_parent( $user_id , array($ligne1,$ligne2,$ligne3,$ligne4,$code_postal,$commune,$pays) );
+	$user_id = DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_adresse_parent( $user_id , array($ligne1,$ligne2,$ligne3,$ligne4,$code_postal,$commune,$pays) );
 	// Afficher le retour
 	echo'<td><span>'.html($ligne1).'</span> ; <span>'.html($ligne2).'</span> ; <span>'.html($ligne3).'</span> ; <span>'.html($ligne4).'</span></td>';
 	echo'<td>'.html($code_postal).'</td>';

@@ -386,8 +386,7 @@ if( $step==6 )
 		exit('Erreur : problème avec le fichier : '.$fichier_mysql_config.' !');
 	}
 	// On cherche d'éventuelles tables existantes de SACoche.
-	$BASE_NOM = (HEBERGEUR_INSTALLATION=='mono-structure') ? SACOCHE_STRUCTURE_BD_NAME : SACOCHE_WEBMESTRE_BD_NAME ;
-	$DB_TAB = DB::queryTab($BASE_NOM,'SHOW TABLE STATUS LIKE "sacoche_%"');
+	$DB_TAB = (HEBERGEUR_INSTALLATION=='mono-structure') ? DB_STRUCTURE_COMMUN::DB_recuperer_tables_informations() : DB_WEBMESTRE_PUBLIC::DB_recuperer_tables_informations() ;
 	$nb_tables_presentes = count($DB_TAB);
 	if($nb_tables_presentes)
 	{
@@ -402,9 +401,9 @@ if( $step==6 )
 	{
 		if(HEBERGEUR_INSTALLATION=='mono-structure')
 		{
-			DB_STRUCTURE_creer_remplir_tables_structure('./_sql/structure/');
-			// Il est arrivé que la fonction DB_STRUCTURE_modifier_parametres() retourne une erreur disant que la table n'existe pas.
-			// Comme si les requêtes de DB_STRUCTURE_creer_remplir_tables_structure() étaient en cache, et pas encore toutes passées (parcequ'au final, quand on va voir la base, toutes les tables sont bien là).
+			DB_STRUCTURE_COMMUN::DB_creer_remplir_tables_structure();
+			// Il est arrivé que la fonction DB_modifier_parametres() retourne une erreur disant que la table n'existe pas.
+			// Comme si les requêtes de DB_creer_remplir_tables_structure() étaient en cache, et pas encore toutes passées (parcequ'au final, quand on va voir la base, toutes les tables sont bien là).
 			// Est-ce que c'est possible au vu du fonctionnement de la classe de connexion ? Et, bien sûr, y a-t-il quelque chose à faire pour éviter ce problème ?
 			// En attendant une réponse de SebR, j'ai mis ce sleep(1)... sans trop savoir si cela pouvait aider...
 			@sleep(1);
@@ -413,10 +412,10 @@ if( $step==6 )
 			$tab_parametres['version_base'] = VERSION_BASE;
 			$tab_parametres['uai']          = HEBERGEUR_UAI;
 			$tab_parametres['denomination'] = HEBERGEUR_DENOMINATION;
-			DB_STRUCTURE_modifier_parametres($tab_parametres);
+			DB_STRUCTURE_COMMUN::DB_modifier_parametres($tab_parametres);
 			// Insérer un compte administrateur dans la base de la structure
 			$password = fabriquer_mdp();
-			$user_id = DB_STRUCTURE_ajouter_utilisateur($user_sconet_id=0,$user_sconet_elenoet=0,$reference='','administrateur',WEBMESTRE_NOM,WEBMESTRE_PRENOM,$login='admin',$password,$classe_id=0,$id_ent='',$id_gepi='');
+			$user_id = DB_STRUCTURE_COMMUN::DB_ajouter_utilisateur($user_sconet_id=0,$user_sconet_elenoet=0,$reference='','administrateur',WEBMESTRE_NOM,WEBMESTRE_PRENOM,$login='admin',crypter_mdp($password),$classe_id=0,$id_ent='',$id_gepi='');
 			// Créer les dossiers de fichiers temporaires par établissement : vignettes verticales, flux RSS des demandes, cookies des choix de formulaires
 			/*
 				Petit problème : on ne passe pas par ici si la base est existante mais les fichiers effacés... donc dans ce cas ce dossier n'est pas recréé...
@@ -444,7 +443,7 @@ if( $step==6 )
 		}
 		elseif(HEBERGEUR_INSTALLATION=='multi-structures')
 		{
-			DB_WEBMESTRE_creer_remplir_tables_webmestre('./_sql/webmestre/');
+			DB_WEBMESTRE_PUBLIC::DB_creer_remplir_tables_webmestre();
 			$affichage .= '<p><label class="valide">Les tables de la base de données du webmestre ont été installées.</label></p>'."\r\n";
 			$affichage .= '<hr />'."\r\n";
 			$affichage .= '<h2>Installation logicielle terminée</h2>'."\r\n";

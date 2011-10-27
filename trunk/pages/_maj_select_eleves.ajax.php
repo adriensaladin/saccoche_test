@@ -83,6 +83,6 @@ $selection    = ($multiple) ? TRUE  : FALSE ;
 
 // Affichage du retour.
 
-echo afficher_select(DB_STRUCTURE_OPT_eleves_regroupement($groupe_type,$groupe_id,$statut) , $select_nom=false , $option_first , $selection , $optgroup='non');
+echo afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_eleves_regroupement($groupe_type,$groupe_id,$statut) , $select_nom=false , $option_first , $selection , $optgroup='non');
 
 ?>

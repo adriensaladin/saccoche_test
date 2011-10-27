@@ -46,7 +46,7 @@ $VERSION_JS_FILE += 1;
 			// Cases à cocher
 			$tab_check = explode(',',$_SESSION['MATIERES']);
 			// Lister les matières partagées
-			$DB_TAB = DB_STRUCTURE_lister_matieres_partagees_SACoche();
+			$DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_matieres_partagees_SACoche();
 			foreach($DB_TAB as $DB_ROW)
 			{
 				// Afficher une ligne du tableau
@@ -85,7 +85,7 @@ $VERSION_JS_FILE += 1;
 		<tbody>
 			<?php
 			// Lister les matières spécifiques
-			$DB_TAB = DB_STRUCTURE_lister_matieres_specifiques();
+			$DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_matieres_specifiques();
 			foreach($DB_TAB as $DB_ROW)
 			{
 				// Afficher une ligne du tableau

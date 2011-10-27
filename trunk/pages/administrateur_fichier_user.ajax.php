@@ -584,7 +584,7 @@ if( $step==20 )
 		// L'import Sconet peut apporter beaucoup de parents rattachés à des élèves sortis de l'établissement et encore présents dans le fichier.
 		// Alors on récupère la liste des id_sconet des élèves actifs et on contrôle par la suite qu'il y en a au moins un dans la liste des enfants du parent.
 		$tab_eleves_actifs = array();
-		$DB_TAB = DB_STRUCTURE_lister_users($profil='eleve',$only_actifs=TRUE,$with_classe=FALSE,$tri_statut=FALSE);
+		$DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_users($profil='eleve',$only_actifs=TRUE,$with_classe=FALSE,$tri_statut=FALSE);
 		foreach($DB_TAB as $DB_ROW)
 		{
 			$tab_eleves_actifs[$DB_ROW['user_sconet_id']] = TRUE;
@@ -923,7 +923,7 @@ if( $step==31 )
 	$tab_classes_base        = array();
 	$tab_classes_base['ref'] = array();
 	$tab_classes_base['nom'] = array();
-	$DB_TAB = DB_STRUCTURE_lister_classes();
+	$DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_classes();
 	foreach($DB_TAB as $DB_ROW)
 	{
 		$tab_classes_base['ref'][$DB_ROW['groupe_id']] = $DB_ROW['groupe_ref'];
@@ -956,7 +956,7 @@ if( $step==31 )
 	{
 		$select_niveau = '<option value=""></option>';
 		$tab_niveau_ref = array();
-		$DB_TAB = DB_STRUCTURE_lister_niveaux_etablissement($_SESSION['NIVEAUX'],$listing_paliers=false);
+		$DB_TAB = DB_STRUCTURE_COMMUN::DB_lister_niveaux_etablissement($_SESSION['NIVEAUX'],$listing_paliers=false);
 		foreach($DB_TAB as $DB_ROW)
 		{
 			$select_niveau .= '<option value="'.$DB_ROW['niveau_id'].'">'.html($DB_ROW['niveau_nom']).'</option>';
@@ -1057,7 +1057,7 @@ if( $step==32 )
 		{
 			if( (count($tab)==3) && $tab['ref'] && $tab['nom'] && $tab['niv'] )
 			{
-				$classe_id = DB_STRUCTURE_ajouter_groupe('classe',$tab['ref'],$tab['nom'],$tab['niv']);
+				$classe_id = DB_STRUCTURE_ADMINISTRATEUR::DB_ajouter_groupe_par_admin('classe',$tab['ref'],$tab['nom'],$tab['niv']);
 				$nb_add++;
 				$tab_i_classe_TO_id_base[$i] = (int) $classe_id;
 			}
@@ -1071,8 +1071,10 @@ if( $step==32 )
 		{
 			if( $groupe_id )
 			{
-				DB_STRUCTURE_supprimer_groupe($groupe_id,'classe');
+				DB_STRUCTURE_ADMINISTRATEUR::DB_supprimer_groupe_par_admin( $groupe_id , 'classe' , TRUE /*with_devoir*/ );
 				$nb_del++;
+				// Log de l'action
+				ajouter_log_SACoche('Suppression d\'un regroupement (classe '.$groupe_id.'), avec les devoirs associés.');
 			}
 		}
 	}
@@ -1082,7 +1084,7 @@ if( $step==32 )
 	// Afficher le bilan
 	$lignes = '';
 	$nb_fin = 0;
-	$DB_TAB = DB_STRUCTURE_lister_classes_avec_niveaux();
+	$DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_classes_avec_niveaux();
 	foreach($DB_TAB as $DB_ROW)
 	{
 		$lignes .= '<tr><td>'.html($DB_ROW['niveau_nom']).'</td><td>'.html($DB_ROW['groupe_ref']).'</td><td>'.html($DB_ROW['groupe_nom']).'</td></tr>'."\r\n";
@@ -1124,7 +1126,7 @@ if( $step==41 )
 	$tab_groupes_base        = array();
 	$tab_groupes_base['ref'] = array();
 	$tab_groupes_base['nom'] = array();
-	$DB_TAB = DB_STRUCTURE_lister_groupes();
+	$DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_groupes();
 	foreach($DB_TAB as $DB_ROW)
 	{
 		$tab_groupes_base['ref'][$DB_ROW['groupe_id']] = $DB_ROW['groupe_ref'];
@@ -1157,7 +1159,7 @@ if( $step==41 )
 	{
 		$select_niveau = '<option value=""></option>';
 		$tab_niveau_ref = array();
-		$DB_TAB = DB_STRUCTURE_lister_niveaux_etablissement($_SESSION['NIVEAUX'],$listing_paliers=false);
+		$DB_TAB = DB_STRUCTURE_COMMUN::DB_lister_niveaux_etablissement($_SESSION['NIVEAUX'],$listing_paliers=false);
 		foreach($DB_TAB as $DB_ROW)
 		{
 			$select_niveau .= '<option value="'.$DB_ROW['niveau_id'].'">'.html($DB_ROW['niveau_nom']).'</option>';
@@ -1254,7 +1256,7 @@ if( $step==42 )
 		{
 			if( (count($tab)==3) && $tab['ref'] && $tab['nom'] && $tab['niv'] )
 			{
-				$groupe_id = DB_STRUCTURE_ajouter_groupe('groupe',$tab['ref'],$tab['nom'],$tab['niv']);
+				$groupe_id = DB_STRUCTURE_ADMINISTRATEUR::DB_ajouter_groupe_par_admin('groupe',$tab['ref'],$tab['nom'],$tab['niv']);
 				$nb_add++;
 				$tab_i_groupe_TO_id_base[$i] = (int) $groupe_id;
 			}
@@ -1268,8 +1270,10 @@ if( $step==42 )
 		{
 			if( $groupe_id )
 			{
-				DB_STRUCTURE_supprimer_groupe($groupe_id,'groupe');
+				DB_STRUCTURE_ADMINISTRATEUR::DB_supprimer_groupe_par_admin( $groupe_id , 'groupe' , TRUE /*with_devoir*/ );
 				$nb_del++;
+				// Log de l'action
+				ajouter_log_SACoche('Suppression d\'un regroupement (groupe '.$groupe_id.'), avec les devoirs associés.');
 			}
 		}
 	}
@@ -1279,7 +1283,7 @@ if( $step==42 )
 	// Afficher le bilan
 	$lignes = '';
 	$nb_fin = 0;
-	$DB_TAB = DB_STRUCTURE_lister_groupes_avec_niveaux();
+	$DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_groupes_avec_niveaux();
 	foreach($DB_TAB as $DB_ROW)
 	{
 		$lignes .= '<tr><td>'.html($DB_ROW['niveau_nom']).'</td><td>'.html($DB_ROW['groupe_ref']).'</td><td>'.html($DB_ROW['groupe_nom']).'</td></tr>'."\r\n";
@@ -1333,7 +1337,7 @@ if( $step==51 )
 	$tab_users_base['adresse']    = array();
 	$profil = ($is_profil_eleve) ? 'eleve' : ( ($is_profil_parent) ? 'parent' : array('professeur','directeur') ) ;
 	$with_classe = ($is_profil_eleve) ? TRUE : FALSE ;
-	$DB_TAB = DB_STRUCTURE_lister_users($profil,$only_actifs=FALSE,$with_classe);
+	$DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_users($profil,$only_actifs=FALSE,$with_classe);
 	foreach($DB_TAB as $DB_ROW)
 	{
 		$tab_users_base['sconet_id'][$DB_ROW['user_id']]  = $DB_ROW['user_sconet_id'];
@@ -1579,7 +1583,7 @@ if( $step==52 )
 	}
 	// Dénombrer combien d'actifs et d'inactifs au départ
 	$profil = ($is_profil_eleve) ? 'eleve' : ( ($is_profil_parent) ? 'parent' : array('professeur','directeur') ) ;
-	list($nb_debut_actif,$nb_debut_inactif) = DB_STRUCTURE_compter_users_suivant_statut($profil);
+	list($nb_debut_actif,$nb_debut_inactif) = DB_STRUCTURE_ADMINISTRATEUR::DB_compter_users_suivant_statut($profil);
 	// Retirer des users éventuels
 	$nb_del = 0;
 	if(count($tab_del))
@@ -1589,7 +1593,7 @@ if( $step==52 )
 			if( $id_base )
 			{
 				// Mettre à jour l'enregistrement
-				DB_STRUCTURE_modifier_utilisateur( $id_base , array(':statut'=>0) );
+				DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_user_statut( $id_base , 0 );
 				$nb_del++;
 			}
 		}
@@ -1607,7 +1611,7 @@ if( $step==52 )
 		$tab_nom_classe = array();
 		if($is_profil_eleve)
 		{
-			$DB_TAB = DB_STRUCTURE_lister_classes();
+			$DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_classes();
 			foreach($DB_TAB as $DB_ROW)
 			{
 				$tab_nom_classe[$DB_ROW['groupe_id']] = $DB_ROW['groupe_nom'];
@@ -1621,15 +1625,15 @@ if( $step==52 )
 				// Construire le login
 				$login = fabriquer_login($tab_memo_analyse['ajout'][$i_fichier]['prenom'] , $tab_memo_analyse['ajout'][$i_fichier]['nom'] , $tab_memo_analyse['ajout'][$i_fichier]['profil']);
 				// Puis tester le login (parmi tout le personnel de l'établissement)
-				if( DB_STRUCTURE_tester_login($login) )
+				if( DB_STRUCTURE_ADMINISTRATEUR::DB_tester_utilisateur_identifiant('login',$login) )
 				{
 					// Login pris : en chercher un autre en remplaçant la fin par des chiffres si besoin
-					$login = DB_STRUCTURE_rechercher_login_disponible($login);
+					$login = DB_STRUCTURE_ADMINISTRATEUR::DB_rechercher_login_disponible($login);
 				}
 				// Construire le password
 				$password = fabriquer_mdp();
 				// Ajouter l'utilisateur
-				$user_id = DB_STRUCTURE_ajouter_utilisateur($tab_memo_analyse['ajout'][$i_fichier]['sconet_id'],$tab_memo_analyse['ajout'][$i_fichier]['sconet_num'],$tab_memo_analyse['ajout'][$i_fichier]['reference'],$tab_memo_analyse['ajout'][$i_fichier]['profil'],$tab_memo_analyse['ajout'][$i_fichier]['nom'],$tab_memo_analyse['ajout'][$i_fichier]['prenom'],$login,$password,$tab_memo_analyse['ajout'][$i_fichier]['classe']);
+				$user_id = DB_STRUCTURE_COMMUN::DB_ajouter_utilisateur($tab_memo_analyse['ajout'][$i_fichier]['sconet_id'],$tab_memo_analyse['ajout'][$i_fichier]['sconet_num'],$tab_memo_analyse['ajout'][$i_fichier]['reference'],$tab_memo_analyse['ajout'][$i_fichier]['profil'],$tab_memo_analyse['ajout'][$i_fichier]['nom'],$tab_memo_analyse['ajout'][$i_fichier]['prenom'],$login,crypter_mdp($password),$tab_memo_analyse['ajout'][$i_fichier]['classe']);
 				$tab_i_fichier_TO_id_base[$i_fichier] = (int) $user_id;
 				$nb_add++;
 				$tab_password[$user_id] = $password;
@@ -1662,7 +1666,7 @@ if( $step==52 )
 			// bilan
 			if( count($DB_VAR) )
 			{
-				DB_STRUCTURE_modifier_utilisateur( $id_base , $DB_VAR );
+				DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_user( $id_base , $DB_VAR );
 			}
 			$nb_mod++;
 		}
@@ -1677,7 +1681,7 @@ if( $step==52 )
 	$nb_fin_inactif = 0;
 	$profil = ($is_profil_eleve) ? 'eleve' : ( ($is_profil_parent) ? 'parent' : array('professeur','directeur') ) ;
 	$with_classe = ($is_profil_eleve) ? TRUE : FALSE ;
-	$DB_TAB = DB_STRUCTURE_lister_users($profil,$only_actifs=FALSE,$with_classe,$tri_statut=TRUE);
+	$DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_users($profil,$only_actifs=FALSE,$with_classe,$tri_statut=TRUE);
 	foreach($DB_TAB as $DB_ROW)
 	{
 		$class       = (isset($tab_password[$DB_ROW['user_id']])) ? ' class="new"' : '' ;
@@ -1823,13 +1827,13 @@ if( $step==61 )
 		// On récupère le contenu de la base pour comparer : $tab_base_affectation[user_id_groupe_id]=true $tab_base_classe[groupe_id]=groupe_nom
 		// En deux requêtes sinon on ne récupère pas les groupes sans utilisateurs affectés.
 		$tab_base_classe = array();
-		$DB_TAB = DB_STRUCTURE_lister_classes();
+		$DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_classes();
 		foreach($DB_TAB as $DB_ROW)
 		{
 			$tab_base_classe[$DB_ROW['groupe_id']] = $DB_ROW['groupe_nom'];
 		}
 		$tab_base_affectation = array();
-		$DB_TAB = DB_STRUCTURE_lister_professeurs_avec_classes();
+		$DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_professeurs_avec_classes();
 		foreach($DB_TAB as $DB_ROW)
 		{
 			$tab_base_affectation[$DB_ROW['user_id'].'_'.$DB_ROW['groupe_id']] = TRUE;
@@ -1876,7 +1880,7 @@ if( $step==61 )
 		//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 		// On récupère le contenu de la base pour comparer : $tab_base_affectation[user_id_groupe_id]=true ($tab_base_classe déjà renseigné)
 		$tab_base_affectation = array();
-		$DB_TAB = DB_STRUCTURE_lister_jointure_professeurs_principaux();
+		$DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_jointure_professeurs_principaux();
 		foreach($DB_TAB as $DB_ROW)
 		{
 			$tab_base_affectation[$DB_ROW['user_id'].'_'.$DB_ROW['groupe_id']] = TRUE;
@@ -1921,21 +1925,21 @@ if( $step==61 )
 		//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 		// associations profs/matières
 		//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-		// On récupère le contenu de la base pour comparer : $tab_base_affectation[user_id_matiere_id]=true + $tab_base_matiere[matiere_id]=matiere_nom + $tab_matiere_ref_TO_id_base[matiere_ref]=id_base
+		// On récupère le contenu de la base pour comparer : $tab_base_affectation[user_id_matiere_id]=TRUE + $tab_base_matiere[matiere_id]=matiere_nom + $tab_matiere_ref_TO_id_base[matiere_ref]=id_base
 		// En deux requêtes sinon on ne récupère pas les matieres sans utilisateurs affectés.
 		$tab_base_matiere = array();
 		$tab_matiere_ref_TO_id_base = array();
-		$DB_TAB = DB_STRUCTURE_lister_matieres_etablissement($_SESSION['MATIERES'],$with_transversal=false,$order_by_name=true);
+		$DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_matieres_etablissement( $_SESSION['MATIERES'] , FALSE /*with_transversal*/ , TRUE /*order_by_name*/ );
 		foreach($DB_TAB as $DB_ROW)
 		{
 			$tab_base_matiere[$DB_ROW['matiere_id']] = $DB_ROW['matiere_nom'];
 			$tab_matiere_ref_TO_id_base[$DB_ROW['matiere_ref']] = $DB_ROW['matiere_id'];
 		}
 		$tab_base_affectation = array();
-		$DB_TAB = DB_STRUCTURE_lister_jointure_professeurs_matieres();
+		$DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_jointure_professeurs_matieres( FALSE /*with_identite*/ , TRUE /*with_transversal*/ );
 		foreach($DB_TAB as $DB_ROW)
 		{
-			$tab_base_affectation[$DB_ROW['user_id'].'_'.$DB_ROW['matiere_id']] = true;
+			$tab_base_affectation[$DB_ROW['user_id'].'_'.$DB_ROW['matiere_id']] = TRUE;
 		}
 		// Parcourir chaque entrée du fichier à la recherche d'affectations profs/matières
 		foreach( $tab_users_fichier['matiere'] as $i_fichier => $tab_matieres )
@@ -1972,14 +1976,14 @@ if( $step==61 )
 	// On récupère le contenu de la base pour comparer : $tab_base_affectation[user_id_groupe_id]=true et $tab_base_groupe[groupe_id]=groupe_nom
 	// En deux requêtes sinon on ne récupère pas les groupes sans utilisateurs affectés.
 	$tab_base_groupe = array();
-	$DB_TAB = DB_STRUCTURE_lister_groupes();
+	$DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_groupes();
 	foreach($DB_TAB as $DB_ROW)
 	{
 		$tab_base_groupe[$DB_ROW['groupe_id']] = $DB_ROW['groupe_nom'];
 	}
 	$tab_base_affectation = array();
 	$profil_eleve = ($action=='sconet_eleves') ? true : false ;
-	$DB_TAB = DB_STRUCTURE_lister_users_avec_groupe($profil_eleve,$only_actifs=true);
+	$DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_users_avec_groupe($profil_eleve,$only_actifs=true);
 	foreach($DB_TAB as $DB_ROW)
 	{
 		$tab_base_affectation[$DB_ROW['user_id'].'_'.$DB_ROW['groupe_id']] = TRUE;
@@ -2098,7 +2102,7 @@ if( $step==62 )
 		{
 			foreach($tab_id2 as $classe_id => $etat)
 			{
-				DB_STRUCTURE_modifier_liaison_user_groupe($user_id,$user_profil,$classe_id,'classe',$etat);
+				DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_liaison_user_groupe_par_admin($user_id,$user_profil,$classe_id,'classe',$etat);
 			}
 		}
 	}
@@ -2111,7 +2115,7 @@ if( $step==62 )
 			foreach($tab_id2 as $classe_id => $etat)
 			{
 				// En espérant qu'on ne fasse pas une association de PP avec une classe à laquelle le prof n'est pas associée
-				DB_STRUCTURE_modifier_liaison_professeur_principal($user_id,$classe_id,$etat);
+				DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_liaison_professeur_principal($user_id,$classe_id,$etat);
 			}
 		}
 	}
@@ -2123,7 +2127,7 @@ if( $step==62 )
 		{
 			foreach($tab_id2 as $matiere_id => $etat)
 			{
-				DB_STRUCTURE_modifier_liaison_professeur_matiere($user_id,$matiere_id,$etat);
+				DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_liaison_professeur_matiere($user_id,$matiere_id,$etat);
 			}
 		}
 	}
@@ -2135,7 +2139,7 @@ if( $step==62 )
 		{
 			foreach($tab_id2 as $groupe_id => $etat)
 			{
-				DB_STRUCTURE_modifier_liaison_user_groupe($user_id,$user_profil,$groupe_id,'groupe',$etat);
+				DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_liaison_user_groupe_par_admin($user_id,$user_profil,$groupe_id,'groupe',$etat);
 			}
 		}
 	}
@@ -2174,7 +2178,7 @@ if( $step==71 )
 	}
 	// On récupère le contenu de la base pour comparer : $tab_base_adresse[user_id]=array()
 	$tab_base_adresse = array();
-	$DB_TAB = DB_STRUCTURE_lister_adresses_parents();
+	$DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_adresses_parents();
 	foreach($DB_TAB as $DB_ROW)
 	{
 		$tab_base_adresse[$DB_ROW['parent_id']] = array( $DB_ROW['adresse_ligne1'] , $DB_ROW['adresse_ligne2'] , $DB_ROW['adresse_ligne3'] , $DB_ROW['adresse_ligne4'] , (int)$DB_ROW['adresse_postal_code'] , $DB_ROW['adresse_postal_libelle'] , $DB_ROW['adresse_pays_nom'] );
@@ -2271,7 +2275,7 @@ if( $step==72 )
 			$i_fichier = clean_entier( substr($check_infos,4) );
 			if( isset($tab_i_fichier_TO_id_base[$i_fichier]) && isset($tab_users_fichier['adresse'][$i_fichier]) )
 			{
-				DB_STRUCTURE_modifier_adresse_parent( $tab_i_fichier_TO_id_base[$i_fichier] , $tab_users_fichier['adresse'][$i_fichier] );
+				DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_adresse_parent( $tab_i_fichier_TO_id_base[$i_fichier] , $tab_users_fichier['adresse'][$i_fichier] );
 				$nb_mod++;
 			}
 		}
@@ -2280,7 +2284,7 @@ if( $step==72 )
 			$i_fichier = clean_entier( substr($check_infos,4) );
 			if( isset($tab_i_fichier_TO_id_base[$i_fichier]) && isset($tab_users_fichier['adresse'][$i_fichier]) )
 			{
-				DB_STRUCTURE_ajouter_adresse_parent( $tab_i_fichier_TO_id_base[$i_fichier] , $tab_users_fichier['adresse'][$i_fichier] );
+				DB_STRUCTURE_ADMINISTRATEUR::DB_ajouter_adresse_parent( $tab_i_fichier_TO_id_base[$i_fichier] , $tab_users_fichier['adresse'][$i_fichier] );
 				$nb_add++;
 			}
 		}
@@ -2317,7 +2321,7 @@ if( $step==81 )
 	}
 	// On récupère le contenu de la base pour comparer : $tab_base_parents_par_eleve[eleve_sconet_id]=array( 'eleve'=>(eleve_id,eleve_nom,eleve_prenom) , 'parent'=>array(parent_sconet_id=>(parent_id,parent_nom,parent_prenom,num)) )
 	$tab_base_parents_par_eleve = array();
-	$DB_TAB = DB_STRUCTURE_lister_parents_par_eleve();
+	$DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_parents_par_eleve();
 	foreach($DB_TAB as $DB_ROW)
 	{
 		$tab_infos_eleve  = array( 'id'=>(int)$DB_ROW['eleve_id']  , 'nom'=>$DB_ROW['eleve_nom']  , 'prenom'=>$DB_ROW['eleve_prenom'] );
@@ -2464,13 +2468,13 @@ if( $step==82 )
 	if($nb_modifs_eleves)
 	{
 		// supprimer les liens de responsabilité des élèves concernés (il est plus simple de réinitialiser que de traiter les resp un par un puis de vérifier s'il n'en reste pas à supprimer...)
-		DB_STRUCTURE_supprimer_jointures_parents_for_eleves(implode(',',$tab_eleve_id));
+		DB_STRUCTURE_ADMINISTRATEUR::DB_supprimer_jointures_parents_for_eleves(implode(',',$tab_eleve_id));
 		// modifier les liens de responsabilité
 		foreach($tab_eleve_id as $eleve_id)
 		{
 			foreach($tab_memo_analyse[$eleve_id] as $parent_id => $resp_legal_num)
 			{
-				DB_STRUCTURE_ajouter_jointure_parent_eleve($parent_id,$eleve_id,$resp_legal_num);
+				DB_STRUCTURE_ADMINISTRATEUR::DB_ajouter_jointure_parent_eleve($parent_id,$eleve_id,$resp_legal_num);
 			}
 		}
 	}

@@ -60,19 +60,19 @@ if( (($action=='init_login')||($action=='init_mdp')) && (in_array($profil,$tab_p
 		$tab_login = array();
 		// Récupérer les données des utilisateurs concernés (besoin de le faire maintenant, on a besoin des infos pour générer le login)
 		$listing_champs = ($profil!='parents') ? 'user_id,user_sconet_id,user_sconet_elenoet,user_reference,user_profil,user_nom,user_prenom' :  'parent.user_id AS parent_id,parent.user_sconet_id AS parent_sconet_id,parent.user_sconet_elenoet AS parent_sconet_elenoet,parent.user_reference AS parent_reference,parent.user_profil AS parent_profil,parent.user_nom AS parent_nom,parent.user_prenom AS parent_prenom' ;
-		$DB_TAB = DB_STRUCTURE_lister_users_cibles(implode(',',$tab_select_users),$listing_champs,$avec_info);
+		$DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_users_cibles(implode(',',$tab_select_users),$listing_champs,$avec_info);
 		// Mettre à jour les noms d'utilisateurs des utilisateurs concernés
 		foreach($DB_TAB as $DB_ROW)
 		{
 			// Construire le login
 			$login = fabriquer_login($DB_ROW[$prefixe.'prenom'] , $DB_ROW[$prefixe.'nom'] , $DB_ROW[$prefixe.'profil']);
 			// Puis tester le login
-			if( DB_STRUCTURE_tester_login($login,$DB_ROW[$prefixe.'id']) )
+			if( DB_STRUCTURE_ADMINISTRATEUR::DB_tester_utilisateur_identifiant('login',$login,$DB_ROW[$prefixe.'id']) )
 			{
 				// Login pris : en chercher un autre en remplaçant la fin par des chiffres si besoin
-				$login = DB_STRUCTURE_rechercher_login_disponible($login);
+				$login = DB_STRUCTURE_ADMINISTRATEUR::DB_rechercher_login_disponible($login);
 			}
-			DB_STRUCTURE_modifier_utilisateur( $DB_ROW[$prefixe.'id'] , array(':login'=>$login) );
+			DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_user( $DB_ROW[$prefixe.'id'] , array(':login'=>$login) );
 			$tab_login[$DB_ROW[$prefixe.'id']] = $login;
 		}
 	}
@@ -86,12 +86,12 @@ if( (($action=='init_login')||($action=='init_mdp')) && (in_array($profil,$tab_p
 		foreach($tab_select_users as $user_id)
 		{
 			$password = fabriquer_mdp();
-			DB_STRUCTURE_modifier_utilisateur( $user_id , array(':password'=>$password) );
+			DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_user( $user_id , array(':password'=>crypter_mdp($password)) );
 			$tab_password[$user_id] = $password;
 		}
 		// Récupérer les données des utilisateurs concernés (besoin ensuite pour les csv / pdf)
 		$listing_champs = ($profil!='parents') ? 'user_id,user_sconet_id,user_sconet_elenoet,user_reference,user_profil,user_nom,user_prenom,user_login' :  'parent.user_id AS parent_id,parent.user_sconet_id AS parent_sconet_id,parent.user_sconet_elenoet AS parent_sconet_elenoet,parent.user_reference AS parent_reference,parent.user_profil AS parent_profil,parent.user_nom AS parent_nom,parent.user_prenom AS parent_prenom,parent.user_login AS parent_login' ;
-		$DB_TAB = DB_STRUCTURE_lister_users_cibles(implode(',',$tab_select_users),$listing_champs,$avec_info);
+		$DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_users_cibles(implode(',',$tab_select_users),$listing_champs,$avec_info);
 	}
 	//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 	//	Générer une sortie csv zippé (login ou mdp) (élève ou prof)
@@ -157,7 +157,7 @@ if($action=='user_export')
 {
 	$separateur = ';';
 	// Récupérer les données des utilisateurs
-	$DB_TAB = DB_STRUCTURE_lister_users(array('eleve','parent','professeur','directeur'),$only_actifs=true,$with_classe=true);
+	$DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_users(array('eleve','parent','professeur','directeur'),$only_actifs=true,$with_classe=true);
 	// Générer le csv
 	$fcontenu_csv = 'LOGIN'.$separateur.'MOT DE PASSE'.$separateur.'NOM'.$separateur.'PRENOM'.$separateur.'PROFIL (INFO)'.$separateur.'CLASSE (INFO)'."\r\n\r\n";
 	foreach($DB_TAB as $DB_ROW)
@@ -241,7 +241,7 @@ if($action=='import_loginmdp')
 	$tab_users_base['nom']    = array();
 	$tab_users_base['prenom'] = array();
 	$tab_users_base['info']   = array();
-	$DB_TAB = DB_STRUCTURE_lister_users(array('eleve','parent','professeur','directeur'),$only_actifs=false,$with_classe=true);
+	$DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_users(array('eleve','parent','professeur','directeur'),$only_actifs=false,$with_classe=true);
 	foreach($DB_TAB as $DB_ROW)
 	{
 		$tab_users_base['login'][$DB_ROW['user_id']]  = $DB_ROW['user_login'];
@@ -293,7 +293,7 @@ if($action=='import_loginmdp')
 				{
 					// Contenu du fichier à modifier : login non indiqué et mdp différents
 					$password = $tab_users_fichier['mdp'][$i_fichier];
-					DB_STRUCTURE_modifier_utilisateur( $id_base , array(':password'=>$password) );
+					DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_user( $id_base , array(':password'=>crypter_mdp($password)) );
 					$lignes_mod .= '<tr class="new"><td>'.html($tab_users_fichier['nom'][$i_fichier].' '.$tab_users_fichier['prenom'][$i_fichier].' ('.$tab_users_base['info'][$id_base].')').'</td><td class="i">Utilisateur : inchangé</td><td class="b">Password : '.html($password).'</td></tr>';
 					$fcontenu_pdf_tab[] = $tab_users_base['info'][$id_base]."\r\n".$tab_users_base['nom'][$id_base].' '.$tab_users_base['prenom'][$id_base]."\r\n".'Utilisateur : '.$tab_users_base['login'][$id_base]."\r\n".'Mot de passe : '.$password;
 				}
@@ -315,7 +315,7 @@ if($action=='import_loginmdp')
 				{
 					// Contenu du fichier à modifier : logins identiques et mdp différents
 					$password = $tab_users_fichier['mdp'][$i_fichier];
-					DB_STRUCTURE_modifier_utilisateur( $id_base , array(':password'=>$password) );
+					DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_user( $id_base , array(':password'=>crypter_mdp($password)) );
 					$lignes_mod .= '<tr class="new"><td>'.html($tab_users_fichier['nom'][$i_fichier].' '.$tab_users_fichier['prenom'][$i_fichier].' ('.$tab_users_base['info'][$id_base].')').'</td><td class="i">Utilisateur : inchangé</td><td class="b">Password : '.html($password).'</td></tr>';
 					$fcontenu_pdf_tab[] = $tab_users_base['info'][$id_base]."\r\n".$tab_users_base['nom'][$id_base].' '.$tab_users_base['prenom'][$id_base]."\r\n".'Utilisateur : '.$tab_users_base['login'][$id_base]."\r\n".'Mot de passe : '.$password;
 				}
@@ -332,7 +332,7 @@ if($action=='import_loginmdp')
 				{
 					// Contenu du fichier à modifier : logins différents et mdp identiques on non imposé
 					$login = $tab_users_fichier['login'][$i_fichier];
-					DB_STRUCTURE_modifier_utilisateur( $id_base , array(':login'=>$login) );
+					DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_user( $id_base , array(':login'=>$login) );
 					$lignes_mod .= '<tr class="new"><td>'.html($tab_users_fichier['nom'][$i_fichier].' '.$tab_users_fichier['prenom'][$i_fichier].' ('.$tab_users_base['info'][$id_base].')').'</td><td class="b">Utilisateur : '.html($login).'</td><td class="i">Password : inchangé</td></tr>';
 					$fcontenu_pdf_tab[] = $tab_users_base['info'][$id_base]."\r\n".$tab_users_base['nom'][$id_base].' '.$tab_users_base['prenom'][$id_base]."\r\n".'Utilisateur : '.$login."\r\n".'Mot de passe : <span class="i">inchangé</span>';
 				}
@@ -341,7 +341,7 @@ if($action=='import_loginmdp')
 					// Contenu du fichier à modifier : logins différents et mdp différents
 					$login = $tab_users_fichier['login'][$i_fichier];
 					$password = $tab_users_fichier['mdp'][$i_fichier];
-					DB_STRUCTURE_modifier_utilisateur( $id_base , array(':login'=>$login,':password'=>$password) );
+					DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_user( $id_base , array(':login'=>$login,':password'=>crypter_mdp($password)) );
 					$lignes_mod .= '<tr class="new"><td>'.html($tab_users_fichier['nom'][$i_fichier].' '.$tab_users_fichier['prenom'][$i_fichier].' ('.$tab_users_base['info'][$id_base].')').'</td><td class="b">Utilisateur : '.html($login).'</td><td class="b">Password : '.html($password).'</td></tr>';
 					$fcontenu_pdf_tab[] = $tab_users_base['info'][$id_base]."\r\n".$tab_users_base['nom'][$id_base].' '.$tab_users_base['prenom'][$id_base]."\r\n".'Utilisateur : '.$login."\r\n".'Mot de passe : '.$password;
 				}
@@ -453,7 +453,7 @@ if( ($action=='import_gepi_eleves') || ($action=='import_gepi_profs') )
 	$tab_users_base['prenom']     = array();
 	$tab_users_base['sconet_num'] = array(); // Ne servira que pour les élèves
 	$profil = ($action=='import_gepi_eleves') ? 'eleve' : 'professeur' ;
-	$DB_TAB = DB_STRUCTURE_lister_users($profil,$only_actifs=false,$with_classe=false);
+	$DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_users($profil,$only_actifs=false,$with_classe=false);
 	foreach($DB_TAB as $DB_ROW)
 	{
 		$tab_users_base['id_gepi'][$DB_ROW['user_id']]    = $DB_ROW['user_id_gepi'];
@@ -520,7 +520,7 @@ if( ($action=='import_gepi_eleves') || ($action=='import_gepi_profs') )
 					else
 					{
 						// Contenu du fichier à modifier : id_gepi nouveau
-						DB_STRUCTURE_modifier_utilisateur( $id_base , array(':id_gepi'=>$id_gepi) );
+						DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_user( $id_base , array(':id_gepi'=>$id_gepi) );
 						$lignes_mod .= '<tr class="new"><td>'.html($tab_users_fichier['nom'][$i_fichier].' '.$tab_users_fichier['prenom'][$i_fichier]).'</td><td class="b">Id Gepi : '.html($id_gepi).'</td></tr>';
 					}
 				}
@@ -620,7 +620,7 @@ if($action=='import_ent')
 	$tab_users_base['id_sconet'] = array();
 	$tab_users_base['info']      = array();
 	$tab_profils = array('eleve','parent','professeur','directeur'); // cybercolleges42 (au moins) contient les parents dans son csv
-	$DB_TAB = DB_STRUCTURE_lister_users($tab_profils,$only_actifs=false,$with_classe=true);
+	$DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_users($tab_profils,$only_actifs=false,$with_classe=true);
 	foreach($DB_TAB as $DB_ROW)
 	{
 		$tab_users_base['id_ent'][$DB_ROW['user_id']]    = $DB_ROW['user_id_ent'];
@@ -669,7 +669,7 @@ if($action=='import_ent')
 						else
 						{
 							// Contenu du fichier à modifier : id_ent nouveau
-							DB_STRUCTURE_modifier_utilisateur( $id_base , array(':id_ent'=>$id_ent) );
+							DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_user( $id_base , array(':id_ent'=>$id_ent) );
 							$lignes_mod .= '<tr class="new"><td>'.html($tab_users_fichier['nom'][$i_fichier].' '.$tab_users_fichier['prenom'][$i_fichier].' ('.$tab_users_base['info'][$id_base].')').'</td><td class="b">Id ENT : '.html($id_ent).'</td></tr>';
 						}
 					}
@@ -711,7 +711,7 @@ if($action=='import_ent')
 						else
 						{
 							// Contenu du fichier à modifier : id_ent nouveau
-							DB_STRUCTURE_modifier_utilisateur( $id_base , array(':id_ent'=>$id_ent) );
+							DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_user( $id_base , array(':id_ent'=>$id_ent) );
 							$lignes_mod .= '<tr class="new"><td>'.html($tab_users_fichier['nom'][$i_fichier].' '.$tab_users_fichier['prenom'][$i_fichier].' ('.$tab_users_base['info'][$id_base].')').'</td><td class="b">Id ENT : '.html($id_ent).'</td></tr>';
 						}
 					}
@@ -746,7 +746,7 @@ if($action=='import_ent')
 if( ($action=='COPY_id_gepi_TO_id_ent') || ($action=='COPY_login_TO_id_ent') || ($action=='COPY_id_ent_TO_id_gepi') || ($action=='COPY_login_TO_id_gepi') )
 {
 	list($champ_depart,$champ_arrive) = explode('_TO_',substr($action,5));
-	DB_STRUCTURE_recopier_identifiants($champ_depart,$champ_arrive);
+	DB_STRUCTURE_ADMINISTRATEUR::DB_recopier_identifiants($champ_depart,$champ_arrive);
 	exit('ok');
 }
 
@@ -763,7 +763,7 @@ if($action=='COPY_id_lcs_TO_id_ent')
 	}
 	require($fichier); // Charge la fonction "recuperer_infos_user_LCS()"
 	// On récupère le contenu de la base, on va passer les users en revue un par un
-	$DB_TAB = DB_STRUCTURE_lister_users(array('eleve','parent','professeur','directeur'),$only_actifs=true,$with_classe=true);
+	$DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_users(array('eleve','parent','professeur','directeur'),$only_actifs=true,$with_classe=true);
 	// Pour chaque user de la base, rechercher son uid dans le LCS
 	$lignes_ras     = '';
 	$lignes_modif   = '';
@@ -822,7 +822,7 @@ if($action=='COPY_id_lcs_TO_id_ent')
 				else
 				{
 					// Contenu de SACoche à modifier : id_ent nouveau
-					DB_STRUCTURE_modifier_utilisateur( $DB_ROW['user_id'] , array(':id_ent'=>$id_ent_LCS) );
+					DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_user( $DB_ROW['user_id'] , array(':id_ent'=>$id_ent_LCS) );
 					$user_info = ($DB_ROW['user_profil']=='eleve') ? $DB_ROW['groupe_nom'] : mb_strtoupper($DB_ROW['user_profil']) ;
 					$lignes_modif .= '<tr class="new"><td>'.html($DB_ROW['user_nom'].' '.$DB_ROW['user_prenom'].' ['.$DB_ROW['user_id_ent'].']').'</td><td class="b">Id ENT : '.html($id_ent_LCS).'</td></tr>';
 				}
@@ -919,7 +919,7 @@ if( ($action=='COPY_id_argos_profs_TO_id_ent') || ($action=='COPY_id_argos_eleve
 	$tab_users_base['info']   = array();
 	$profil      = ($qui=='profs') ? array('professeur','directeur') : substr($qui,0,-1) ;
 	$with_classe = ($qui=='profs') ? false : true ;
-	$DB_TAB = DB_STRUCTURE_lister_users($profil,$only_actifs=true,$with_classe);
+	$DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_users($profil,$only_actifs=true,$with_classe);
 	foreach($DB_TAB as $DB_ROW)
 	{
 		$tab_users_base['id_ent'][$DB_ROW['user_id']] = $DB_ROW['user_id_ent'];
@@ -970,7 +970,7 @@ if( ($action=='COPY_id_argos_profs_TO_id_ent') || ($action=='COPY_id_argos_eleve
 				else
 				{
 					// Contenu de SACoche à modifier : id_ent nouveau
-					DB_STRUCTURE_modifier_utilisateur( $user_id , array(':id_ent'=>$id_ent_LDAP) );
+					DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_user( $user_id , array(':id_ent'=>$id_ent_LDAP) );
 					$lignes_modif .= '<tr class="new"><td>'.html($tab_users_base['nom'][$user_id].' '.$tab_users_base['prenom'][$user_id].' ('.$tab_users_base['info'][$user_id].')').'</td><td class="b">Id ENT : '.html($id_ent_LDAP).'</td></tr>';
 				}
 			}

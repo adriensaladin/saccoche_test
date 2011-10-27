@@ -50,7 +50,7 @@ if( ($action=='Afficher_bilan') && $palier_id && count($tab_pilier) && count($ta
 	$tfoot = '';
 	require_once('./_inc/tableau_langues.php');
 	// Récupérer les données des élèves
-	$tab_eleve = DB_STRUCTURE_lister_eleves_cibles($listing_eleve_id,$with_gepi=FALSE,$with_langue=TRUE);
+	$tab_eleve = DB_STRUCTURE_BILAN::DB_lister_eleves_cibles($listing_eleve_id,$with_gepi=FALSE,$with_langue=TRUE);
 	if(!is_array($tab_eleve))
 	{
 		exit('Aucun élève trouvé correspondant aux identifiants transmis !');
@@ -79,7 +79,7 @@ if( ($action=='Afficher_bilan') && $palier_id && count($tab_pilier) && count($ta
 	$affichage .= '<tbody>';
 	// Récupérer l'arborescence des piliers du palier du socle (enfin... uniquement les piliers, ça suffit ici)
 	$tab_pilier_id = array(); // listing des ids des piliers mis à jour au cas où la récupération dans la base soit différente des ids transmis...
-	$DB_TAB = DB_STRUCTURE_recuperer_piliers($palier_id);
+	$DB_TAB = DB_STRUCTURE_SOCLE::DB_recuperer_piliers($palier_id);
 	foreach($DB_TAB as $DB_ROW)
 	{
 		$pilier_id = $DB_ROW['pilier_id'];
@@ -102,7 +102,7 @@ if( ($action=='Afficher_bilan') && $palier_id && count($tab_pilier) && count($ta
 	// Récupérer la liste des jointures (validations)
 	$listing_eleve_id  = implode(',',$tab_eleve_id);
 	$listing_pilier_id = implode(',',$tab_pilier_id);
-	$DB_TAB = DB_STRUCTURE_lister_jointure_user_pilier($listing_eleve_id,$listing_pilier_id,$palier_id=0); // en fait on connait aussi le palier mais la requête est plus simple (pas de jointure) avec les piliers
+	$DB_TAB = DB_STRUCTURE_SOCLE::DB_lister_jointure_user_pilier($listing_eleve_id,$listing_pilier_id,$palier_id=0); // en fait on connait aussi le palier mais la requête est plus simple (pas de jointure) avec les piliers
 	$tab_bad = array();
 	$tab_bon = array();
 	foreach($DB_TAB as $DB_ROW)
@@ -127,7 +127,7 @@ elseif( ($action=='Enregistrer_validation') && ($delete_id) )
 	$string_infos = str_replace( array('U','C') , '_' , $delete_id);
 	list($rien,$eleve_id,$pilier_id) = explode('_',$string_infos);
 	// Mettre à jour la base
-	DB_STRUCTURE_supprimer_validation('pilier',$eleve_id,$pilier_id);
+	DB_STRUCTURE_SOCLE::DB_supprimer_validation('pilier',$eleve_id,$pilier_id);
 	exit('OK');
 }
 

@@ -32,8 +32,8 @@ $VERSION_JS_FILE += 1;
 
 <?php
 // Fabrication des éléments select du formulaire
-$select_f_groupes = afficher_select(DB_STRUCTURE_OPT_regroupements_etabl() , $select_nom=false , $option_first='oui' , $selection=false , $optgroup='oui');
-$select_groupes   = afficher_select(DB_STRUCTURE_OPT_groupes_etabl()       , $select_nom=false , $option_first='non' , $selection=false , $optgroup='non');
+$select_f_groupes = afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_regroupements_etabl() , $select_nom=false , $option_first='oui' , $selection=false , $optgroup='oui');
+$select_groupes   = afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_groupes_etabl()       , $select_nom=false , $option_first='non' , $selection=false , $optgroup='non');
 ?>
 
 <p><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__gestion_groupes">DOC : Gestion des groupes</a></span></p>

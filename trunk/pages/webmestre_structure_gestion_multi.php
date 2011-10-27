@@ -30,7 +30,7 @@ $VERSION_JS_FILE += 15;
 
 // Élément de formulaire "f_geo" pour le choix d'une zone géographique
 $options_geo = '';
-$DB_TAB = DB_WEBMESTRE_lister_zones();
+$DB_TAB = DB_WEBMESTRE_WEBMESTRE::DB_lister_zones();
 foreach($DB_TAB as $DB_ROW)
 {
 	$options_geo .= '<option value="'.$DB_ROW['geo_id'].'">'.html($DB_ROW['geo_nom']).'</option>';
@@ -63,7 +63,7 @@ foreach($DB_TAB as $DB_ROW)
 		<tbody>
 			<?php
 			// Lister les structures
-			$DB_TAB = DB_WEBMESTRE_lister_structures();
+			$DB_TAB = DB_WEBMESTRE_WEBMESTRE::DB_lister_structures();
 			foreach($DB_TAB as $DB_ROW)
 			{
 				// Afficher une ligne du tableau

@@ -11,12 +11,15 @@ Pour infos et documentations :
 FR http://code18.blogspot.com/2009/05/deboguer-avec-firephp.html
 US http://sixrevisions.com/web-development/how-to-debug-php-using-firefox-with-firephp/
 
-Automatiquement utilisé par la classe DB (hors environnement PROD).
-Autre utilisation :
+Utilisé par la classe DB (hors environnement PROD) si mode debug activé.
 
-if(SERVEUR_TYPE!='PROD')
+Attention : le débug des requêtes lourdes occupe la mémoire PHP et peut provoquer des dépassements de memory_limit() trompeurs (car inexistants en PROD).
+Un bouton dans le bandeau permet d'activer ou non le mode debug.
+
+Utilisation dans le code :
+
+if(DEBUG)
 {
-	$firephp = FirePHP::getInstance(true);
 	$firephp->log('Début du programme');  
 	$firephp->info('La condition est fausse...');  
 	$firephp->warn('Possiblement une erreur');  

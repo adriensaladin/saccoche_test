@@ -37,7 +37,7 @@ $daltonisme  = (isset($_POST['daltonisme']))  ? clean_entier($_POST['daltonisme'
 if( in_array($daltonisme,array(0,1)) )
 {
 	$_SESSION['USER_DALTONISME'] = $daltonisme;
-	DB_STRUCTURE_modifier_utilisateur( $_SESSION['USER_ID'] , array(':daltonisme'=>$daltonisme) );
+	DB_STRUCTURE_COMMUN::DB_modifier_user_daltonisme( $_SESSION['USER_ID'] , $daltonisme );
 	// Enregistrer en session le CSS personnalisé
 	adapter_session_daltonisme();
 	actualiser_style_session();

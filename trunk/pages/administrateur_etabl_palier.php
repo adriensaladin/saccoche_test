@@ -44,7 +44,7 @@ $VERSION_JS_FILE += 1;
 			// Cases à cocher
 			$tab_check = explode(',',$_SESSION['PALIERS']);
 			// Lister les matières partagées
-			$DB_TAB = DB_STRUCTURE_lister_paliers_SACoche();
+			$DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_paliers_SACoche();
 			foreach($DB_TAB as $DB_ROW)
 			{
 				// Afficher une ligne du tableau
@@ -68,7 +68,7 @@ $VERSION_JS_FILE += 1;
 <div id="zone_paliers">
 	<?php
 	// Affichage de la liste des items du socle pour chaque palier
-	$DB_TAB = DB_STRUCTURE_recuperer_arborescence_palier($palier_id=false);
+	$DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_recuperer_arborescence_paliers();
 	echo str_replace( '<li class="li_m1"' , '<li class="li_m1 hide"' , afficher_arborescence_socle_from_SQL($DB_TAB,$dynamique=true,$reference=false,$aff_input=false,$ids=false) );
 	?>
 </div>

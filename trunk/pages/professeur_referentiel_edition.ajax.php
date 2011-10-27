@@ -47,10 +47,14 @@ $tab_id = array_filter($tab_id,'positif');
 $tab_id2 = (isset($_POST['tab_id2'])) ? array_map('clean_entier',explode(',',$_POST['tab_id2'])) : array() ;
 $tab_id2 = array_filter($tab_id2,'positif');
 
+$tab_contexte = array( 'n1'=>'domaine' , 'n2'=>'theme' , 'n3'=>'item' );
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+// Afficher les référentiels d'une matière
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
 if( ($action=='Voir') && $matiere_id )
 {
-	// Affichage du référentiel pour la matière sélectionnée
-	$DB_TAB = DB_STRUCTURE_recuperer_arborescence($prof_id=0,$matiere_id,$niveau_id=0,$only_socle=false,$only_item=false,$socle_nom=true);
+	$DB_TAB = DB_STRUCTURE_COMMUN::DB_recuperer_arborescence($prof_id=0,$matiere_id,$niveau_id=0,$only_socle=false,$only_item=false,$socle_nom=true);
 	$tab_niveau  = array();
 	$tab_domaine = array();
 	$tab_theme   = array();
@@ -151,336 +155,123 @@ if( ($action=='Voir') && $matiere_id )
 		}
 	}
 	echo'</ul>'."\r\n";
+	exit();
 }
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 // Ajouter un domaine / un thème / un item
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-elseif( ($action=='add') && (in_array($contexte,array('n1','n2','n3'))) && $matiere_id && $parent_id && ($ref || ($contexte!='n1')) && $nom && ($ordre!=-1) && ($socle_id!=-1) && ($coef!=-1) && ($cart!=-1) )
+
+if( ($action=='add') && (in_array($contexte,array('n1','n2','n3'))) && $matiere_id && $parent_id && ($ref || ($contexte!='n1')) && $nom && ($ordre!=-1) && ($socle_id!=-1) && ($coef!=-1) && ($cart!=-1) )
 {
-	// exécution !
-	if($contexte=='n1')	// domaine
+	switch($contexte)
 	{
-		$DB_SQL = 'INSERT INTO sacoche_referentiel_domaine(matiere_id,niveau_id,domaine_ordre,domaine_ref,domaine_nom) ';
-		$DB_SQL.= 'VALUES(:matiere,:niveau,:ordre,:ref,:nom)';
-		$DB_VAR = array(':matiere'=>$matiere_id,':niveau'=>$parent_id,':ordre'=>$ordre,':ref'=>$ref,':nom'=>$nom);
+		case 'n1' : $element_id = DB_STRUCTURE_REFERENTIEL::DB_ajouter_referentiel_domaine($matiere_id,$parent_id /*niveau*/,$ordre,$ref,$nom); break;
+		case 'n2' : $element_id = DB_STRUCTURE_REFERENTIEL::DB_ajouter_referentiel_theme($parent_id /*domaine*/,$ordre,$nom); break;
+		case 'n3' : $element_id = DB_STRUCTURE_REFERENTIEL::DB_ajouter_referentiel_item($parent_id /*theme*/,$socle_id,$ordre,$nom,$coef,$cart,$lien); break;
 	}
-	elseif($contexte=='n2')	// thème
+	// id des éléments suivants à renuméroter
+	if(count($tab_id)) // id des éléments suivants à renuméroter
 	{
-		$DB_SQL = 'INSERT INTO sacoche_referentiel_theme(domaine_id,theme_ordre,theme_nom) ';
-		$DB_SQL.= 'VALUES(:domaine,:ordre,:nom)';
-		$DB_VAR = array(':domaine'=>$parent_id,':ordre'=>$ordre,':nom'=>$nom);
+		DB_STRUCTURE_REFERENTIEL::DB_renumeroter_referentiel_elements($tab_contexte[$contexte],$tab_id,'+1');
 	}
-	elseif($contexte=='n3')	// item
-	{
-		$DB_SQL = 'INSERT INTO sacoche_referentiel_item(theme_id,entree_id,item_ordre,item_nom,item_coef,item_cart,item_lien) ';
-		$DB_SQL.= 'VALUES(:theme,:socle,:ordre,:nom,:coef,:cart,:lien)';
-		$DB_VAR = array(':theme'=>$parent_id,':socle'=>$socle_id,':ordre'=>$ordre,':nom'=>$nom,':coef'=>$coef,':cart'=>$cart,':lien'=>$lien);
-	}
-	DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-	$element_id = DB::getLastOid(SACOCHE_STRUCTURE_BD_NAME);
-	// Décaler les autres éléments de l'élément parent concerné
-	if(count($tab_id))
-	{
-		if($contexte=='n1')	// domaine
-		{
-			$DB_SQL = 'UPDATE sacoche_referentiel_domaine ';
-			$DB_SQL.= 'SET domaine_ordre=domaine_ordre+1 ';
-			$DB_SQL.= 'WHERE domaine_id IN('.implode(',',$tab_id).') ';
-		}
-		elseif($contexte=='n2')	// thème
-		{
-			$DB_SQL = 'UPDATE sacoche_referentiel_theme ';
-			$DB_SQL.= 'SET theme_ordre=theme_ordre+1 ';
-			$DB_SQL.= 'WHERE theme_id IN('.implode(',',$tab_id).') ';
-		}
-		elseif($contexte=='n3')	// item
-		{
-			$DB_SQL = 'UPDATE sacoche_referentiel_item ';
-			$DB_SQL.= 'SET item_ordre=item_ordre+1 ';
-			$DB_SQL.= 'WHERE item_id IN('.implode(',',$tab_id).') ';
-		}
-		DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , null);
-	}
-	// retour
-	echo $contexte.'_'.$element_id;
+	exit($contexte.'_'.$element_id);
 }
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 // Renommer un domaine / un thème / un item
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-elseif( ($action=='edit') && (in_array($contexte,array('n1','n2','n3'))) && $element_id && ($ref || ($contexte!='n1')) && $nom && ($socle_id!=-1) && ($coef!=-1) && ($cart!=-1) )
+
+if( ($action=='edit') && (in_array($contexte,array('n1','n2','n3'))) && $element_id && ($ref || ($contexte!='n1')) && $nom && ($socle_id!=-1) && ($coef!=-1) && ($cart!=-1) )
 {
-	// exécution !
-	if($contexte=='n1')	// domaine
+	switch($contexte)
 	{
-		$DB_SQL = 'UPDATE sacoche_referentiel_domaine ';
-		$DB_SQL.= 'SET domaine_ref=:ref, domaine_nom=:nom ';
-		$DB_SQL.= 'WHERE domaine_id=:element_id ';
-		$DB_SQL.= 'LIMIT 1';
-		$DB_VAR = array(':element_id'=>$element_id,':ref'=>$ref,':nom'=>$nom);
+		case 'n1' : $test_modif = DB_STRUCTURE_REFERENTIEL::DB_modifier_referentiel_domaine($element_id /*domaine*/,$ref,$nom); break;
+		case 'n2' : $test_modif = DB_STRUCTURE_REFERENTIEL::DB_modifier_referentiel_theme($element_id /*theme*/,$nom); break;
+		case 'n3' : $test_modif = DB_STRUCTURE_REFERENTIEL::DB_modifier_referentiel_item($element_id /*item*/,$socle_id,$nom,$coef,$cart,$lien); break;
 	}
-	elseif($contexte=='n2')	// thème
-	{
-		$DB_SQL = 'UPDATE sacoche_referentiel_theme ';
-		$DB_SQL.= 'SET theme_nom=:nom ';
-		$DB_SQL.= 'WHERE theme_id=:element_id ';
-		$DB_SQL.= 'LIMIT 1';
-		$DB_VAR = array(':element_id'=>$element_id,':nom'=>$nom);
-	}
-	elseif($contexte=='n3')	// item
-	{
-		$DB_SQL = 'UPDATE sacoche_referentiel_item ';
-		$DB_SQL.= 'SET entree_id=:socle, item_nom=:nom, item_coef=:coef, item_cart=:cart, item_lien=:lien ';
-		$DB_SQL.= 'WHERE item_id=:element_id ';
-		$DB_SQL.= 'LIMIT 1';
-		$DB_VAR = array(':element_id'=>$element_id,':socle'=>$socle_id,':nom'=>$nom,':coef'=>$coef,':cart'=>$cart,':lien'=>$lien);
-	}
-	DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-	$test_modif = DB::rowCount(SACOCHE_STRUCTURE_BD_NAME);
-	// retour
-	echo ($test_modif) ? 'ok' : 'Contenu inchangé ou élément non trouvé !';
+	$message = ($test_modif) ? 'ok' : 'Contenu inchangé ou élément non trouvé !';
+	exit($message);
 }
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 // Déplacer un domaine / un thème / un item
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-elseif( ($action=='move') && (in_array($contexte,array('n1','n2','n3'))) && $element_id && ($ordre!=-1) && $parent_id )
+
+if( ($action=='move') && (in_array($contexte,array('n1','n2','n3'))) && $element_id && ($ordre!=-1) && $parent_id )
 {
-	// exécution !
-	if($contexte=='n1')	// domaine
+	switch($contexte)
 	{
-		$DB_SQL = 'UPDATE sacoche_referentiel_domaine ';
-		$DB_SQL.= 'SET niveau_id=:parent_id, domaine_ordre=:ordre ';
-		$DB_SQL.= 'WHERE domaine_id=:element_id ';
-		$DB_SQL.= 'LIMIT 1';
+		case 'n1' : $test_move = DB_STRUCTURE_REFERENTIEL::DB_deplacer_referentiel_domaine($element_id /*domaine*/,$parent_id /*niveau*/,$ordre); break;
+		case 'n2' : $test_move = DB_STRUCTURE_REFERENTIEL::DB_deplacer_referentiel_theme($element_id /*theme*/,$parent_id /*domaine*/,$ordre); break;
+		case 'n3' : $test_move = DB_STRUCTURE_REFERENTIEL::DB_deplacer_referentiel_item($element_id /*item*/,$parent_id /*theme*/,$ordre); break;
 	}
-	elseif($contexte=='n2')	// thème
-	{
-		$DB_SQL = 'UPDATE sacoche_referentiel_theme ';
-		$DB_SQL.= 'SET domaine_id=:parent_id, theme_ordre=:ordre ';
-		$DB_SQL.= 'WHERE theme_id=:element_id ';
-		$DB_SQL.= 'LIMIT 1';
-	}
-	elseif($contexte=='n3')	// item
-	{
-		$DB_SQL = 'UPDATE sacoche_referentiel_item ';
-		$DB_SQL.= 'SET theme_id=:parent_id, item_ordre=:ordre ';
-		$DB_SQL.= 'WHERE item_id=:element_id ';
-		$DB_SQL.= 'LIMIT 1';
-	}
-	$DB_VAR = array(':element_id'=>$element_id,':parent_id'=>$parent_id,':ordre'=>$ordre);
-	DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-	$test_move = DB::rowCount(SACOCHE_STRUCTURE_BD_NAME);
 	if(!$test_move)
 	{
-		echo'Contenu inchangé ou élément non trouvé !';
+		exit('Contenu inchangé ou élément non trouvé !');
 	}
-	else
+	if(count($tab_id)) // id des éléments suivants l'emplacement de départ à renuméroter
 	{
-		// Décaler les autres éléments de l'élément de départ parent concerné
-		if(count($tab_id))
-		{
-			if($contexte=='n1')	// domaine
-			{
-				$DB_SQL = 'UPDATE sacoche_referentiel_domaine ';
-				$DB_SQL.= 'SET domaine_ordre=domaine_ordre-1 ';
-				$DB_SQL.= 'WHERE domaine_id IN('.implode(',',$tab_id).') ';
-			}
-			elseif($contexte=='n2')	// thème
-			{
-				$DB_SQL = 'UPDATE sacoche_referentiel_theme ';
-				$DB_SQL.= 'SET theme_ordre=theme_ordre-1 ';
-				$DB_SQL.= 'WHERE theme_id IN('.implode(',',$tab_id).') ';
-			}
-			elseif($contexte=='n3')	// item
-			{
-				$DB_SQL = 'UPDATE sacoche_referentiel_item ';
-				$DB_SQL.= 'SET item_ordre=item_ordre-1 ';
-				$DB_SQL.= 'WHERE item_id IN('.implode(',',$tab_id).') ';
-			}
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , null);
-		}
-		// Décaler les autres éléments de l'élément d'arrivée parent concerné
-		if(count($tab_id2))
-		{
-			if($contexte=='n1')	// domaine
-			{
-				$DB_SQL = 'UPDATE sacoche_referentiel_domaine ';
-				$DB_SQL.= 'SET domaine_ordre=domaine_ordre+1 ';
-				$DB_SQL.= 'WHERE domaine_id IN('.implode(',',$tab_id2).') ';
-			}
-			elseif($contexte=='n2')	// thème
-			{
-				$DB_SQL = 'UPDATE sacoche_referentiel_theme ';
-				$DB_SQL.= 'SET theme_ordre=theme_ordre+1 ';
-				$DB_SQL.= 'WHERE theme_id IN('.implode(',',$tab_id2).') ';
-			}
-			elseif($contexte=='n3')	// item
-			{
-				$DB_SQL = 'UPDATE sacoche_referentiel_item ';
-				$DB_SQL.= 'SET item_ordre=item_ordre+1 ';
-				$DB_SQL.= 'WHERE item_id IN('.implode(',',$tab_id2).') ';
-			}
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , null);
-		}
-		// retour
-		echo'ok';
+		DB_STRUCTURE_REFERENTIEL::DB_renumeroter_referentiel_elements($tab_contexte[$contexte],$tab_id,'-1');
 	}
+	if(count($tab_id2)) // id des éléments suivants l'emplacement d'arrivée à renuméroter
+	{
+		DB_STRUCTURE_REFERENTIEL::DB_renumeroter_referentiel_elements($tab_contexte[$contexte],$tab_id2,'+1');
+	}
+	exit('ok');
 }
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 // Supprimer un domaine (avec son contenu) / un thème (avec son contenu) / un item
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-elseif( ($action=='del') && (in_array($contexte,array('n1','n2','n3'))) && $element_id )
+
+if( ($action=='del') && (in_array($contexte,array('n1','n2','n3'))) && $element_id )
 {
-	// exécution !
-	if($contexte=='n1')	// domaine
+	switch($contexte)
 	{
-		$DB_SQL = 'DELETE sacoche_referentiel_domaine, sacoche_referentiel_theme, sacoche_referentiel_item, sacoche_jointure_devoir_item, sacoche_saisie ';
-		$DB_SQL.= 'FROM sacoche_referentiel_domaine ';
-		$DB_SQL.= 'LEFT JOIN sacoche_referentiel_theme USING (domaine_id) ';
-		$DB_SQL.= 'LEFT JOIN sacoche_referentiel_item USING (theme_id) ';
-		$DB_SQL.= 'LEFT JOIN sacoche_jointure_devoir_item USING (item_id) ';
-		$DB_SQL.= 'LEFT JOIN sacoche_saisie USING (item_id) ';
-		$DB_SQL.= 'LEFT JOIN sacoche_demande USING (item_id) ';
-		$DB_SQL.= 'WHERE domaine_id=:domaine_id';
-		$DB_VAR = array(':domaine_id'=>$element_id);
+		case 'n1' : $test_delete = DB_STRUCTURE_REFERENTIEL::DB_supprimer_referentiel_domaine($element_id /*domaine*/); break;
+		case 'n2' : $test_delete = DB_STRUCTURE_REFERENTIEL::DB_supprimer_referentiel_theme($element_id /*theme*/); break;
+		case 'n3' : $test_delete = DB_STRUCTURE_REFERENTIEL::DB_supprimer_referentiel_item($element_id /*item*/); break;
 	}
-	elseif($contexte=='n2')	// thème
+	if(!$test_delete)
 	{
-		$DB_SQL = 'DELETE sacoche_referentiel_theme, sacoche_referentiel_item, sacoche_jointure_devoir_item, sacoche_saisie ';
-		$DB_SQL.= 'FROM sacoche_referentiel_theme ';
-		$DB_SQL.= 'LEFT JOIN sacoche_referentiel_item USING (theme_id) ';
-		$DB_SQL.= 'LEFT JOIN sacoche_jointure_devoir_item USING (item_id) ';
-		$DB_SQL.= 'LEFT JOIN sacoche_saisie USING (item_id) ';
-		$DB_SQL.= 'LEFT JOIN sacoche_demande USING (item_id) ';
-		$DB_SQL.= 'WHERE theme_id=:theme_id';
-		$DB_VAR = array(':theme_id'=>$element_id);
+		exit('Élément non trouvé !');
 	}
-	elseif($contexte=='n3')	// item
+	if(count($tab_id)) // id des éléments suivants à renuméroter
 	{
-		$DB_SQL = 'DELETE sacoche_referentiel_item, sacoche_jointure_devoir_item, sacoche_saisie ';
-		$DB_SQL.= 'FROM sacoche_referentiel_item ';
-		$DB_SQL.= 'LEFT JOIN sacoche_jointure_devoir_item USING (item_id) ';
-		$DB_SQL.= 'LEFT JOIN sacoche_saisie USING (item_id) ';
-		$DB_SQL.= 'LEFT JOIN sacoche_demande USING (item_id) ';
-		$DB_SQL.= 'WHERE item_id=:item_id';
-		$DB_VAR = array(':item_id'=>$element_id);
-	}
-	DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-	$test_delete = DB::rowCount(SACOCHE_STRUCTURE_BD_NAME);	// Est censé renvoyé le nb de lignes supprimées ; à cause du multi-tables curieusement ça renvoie 2, même pour un item non lié
-	// Décaler les autres éléments de l'élément parent concerné
-	if( ($test_delete) && (count($tab_id)) )
-	{
-		if($contexte=='n1')	// domaine
-		{
-			$DB_SQL = 'UPDATE sacoche_referentiel_domaine ';
-			$DB_SQL.= 'SET domaine_ordre=domaine_ordre-1 ';
-			$DB_SQL.= 'WHERE domaine_id IN('.implode(',',$tab_id).') ';
-		}
-		elseif($contexte=='n2')	// thème
-		{
-			$DB_SQL = 'UPDATE sacoche_referentiel_theme ';
-			$DB_SQL.= 'SET theme_ordre=theme_ordre-1 ';
-			$DB_SQL.= 'WHERE theme_id IN('.implode(',',$tab_id).') ';
-		}
-		elseif($contexte=='n3')	// item
-		{
-			$DB_SQL = 'UPDATE sacoche_referentiel_item ';
-			$DB_SQL.= 'SET item_ordre=item_ordre-1 ';
-			$DB_SQL.= 'WHERE item_id IN('.implode(',',$tab_id).') ';
-		}
-		DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , null);
+		DB_STRUCTURE_REFERENTIEL::DB_renumeroter_referentiel_elements($tab_contexte[$contexte],$tab_id,'-1');
 	}
 	// Log de l'action
-	ajouter_log_SACoche('Suppression d\'un élément de référentiel ('.$contexte.' / '.$element_id.').');
-	// retour
-	echo ($test_delete) ? 'ok' : 'Élément non trouvé !';
+	ajouter_log_SACoche('Suppression d\'un élément de référentiel ('.$tab_contexte[$contexte].' / '.$element_id.').');
+	exit('ok');
 }
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 // Fusionner un item en l'absorbant par un 2nd item
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-elseif( ($action=='fus') && $element_id && $element2_id )
+
+if( ($action=='fus') && $element_id && $element2_id )
 {
-	// Supprimer l'item à fusionner et les demandes d'évaluations associées (ne nous embêtons pas avec ça...)
-	$DB_SQL = 'DELETE sacoche_referentiel_item, sacoche_demande ';
-	$DB_SQL.= 'FROM sacoche_referentiel_item ';
-	$DB_SQL.= 'LEFT JOIN sacoche_demande USING (item_id) ';
-	$DB_SQL.= 'WHERE item_id=:item_id';
-	$DB_VAR = array(':item_id'=>$element_id);
-	DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-	$test_delete = DB::rowCount(SACOCHE_STRUCTURE_BD_NAME);
-	// Décaler les autres éléments de l'élément parent concerné
-	if( ($test_delete) && (count($tab_id)) )
+	$test_delete = DB_STRUCTURE_REFERENTIEL::DB_supprimer_referentiel_item($element_id,FALSE /*with_notes*/);
+	if(!$test_delete)
 	{
-		$DB_SQL = 'UPDATE sacoche_referentiel_item ';
-		$DB_SQL.= 'SET item_ordre=item_ordre-1 ';
-		$DB_SQL.= 'WHERE item_id IN('.implode(',',$tab_id).') ';
-		DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , null);
+		exit('Élément non trouvé !');
+	}
+	if(count($tab_id)) // id des éléments suivants à renuméroter
+	{
+		DB_STRUCTURE_REFERENTIEL::DB_renumeroter_referentiel_elements('item',$tab_id,'-1');
 	}
 	// Mettre à jour les références vers l'item absorbant
-	// Dans le cas où les deux items ont été évalués dans une même évaluation, on est obligé de supprimer l'un des scores
-	// On doit donc commencer par chercher les conflits possibles de clefs multiples pour éviter un erreur lors de l'UPDATE
-	$DB_VAR = array(':element_id'=>$element_id,':element2_id'=>$element2_id);
-	// Pour sacoche_jointure_devoir_item
-	$DB_SQL = 'SELECT devoir_id ';
-	$DB_SQL.= 'FROM sacoche_jointure_devoir_item ';
-	$DB_SQL.= 'WHERE item_id=:element_id';
-	$COL1 = DB::queryCol(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-	$DB_SQL = 'SELECT devoir_id ';
-	$DB_SQL.= 'FROM sacoche_jointure_devoir_item ';
-	$DB_SQL.= 'WHERE item_id=:element2_id';
-	$COL2 = DB::queryCol(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-	$tab_conflit = array_intersect($COL1,$COL2);
-	if(count($tab_conflit))
-	{
-		$DB_SQL = 'DELETE FROM sacoche_jointure_devoir_item ';
-		$DB_SQL.= 'WHERE devoir_id=:devoir_id AND item_id=:element_id ';
-		$DB_SQL.= 'LIMIT 1 ';
-		foreach($tab_conflit as $devoir_id)
-		{
-			$DB_VAR[':devoir_id'] = $devoir_id;
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-		}
-	}
-	$DB_SQL = 'UPDATE sacoche_jointure_devoir_item ';
-	$DB_SQL.= 'SET item_id=:element2_id ';
-	$DB_SQL.= 'WHERE item_id=:element_id';
-	DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-	// Pour sacoche_saisie
-	$DB_SQL = 'SELECT CONCAT(eleve_id,"x",devoir_id) AS clefs ';
-	$DB_SQL.= 'FROM sacoche_saisie ';
-	$DB_SQL.= 'WHERE item_id=:element_id';
-	$COL1 = DB::queryCol(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-	$DB_SQL = 'SELECT CONCAT(eleve_id,"x",devoir_id) AS clefs ';
-	$DB_SQL.= 'FROM sacoche_saisie ';
-	$DB_SQL.= 'WHERE item_id=:element2_id';
-	$COL2 = DB::queryCol(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-	$tab_conflit = array_intersect($COL1,$COL2);
-	if(count($tab_conflit))
-	{
-		$DB_SQL = 'DELETE FROM sacoche_saisie ';
-		$DB_SQL.= 'WHERE eleve_id=:eleve_id AND devoir_id=:devoir_id AND item_id=:element_id ';
-		foreach($tab_conflit as $ids)
-		{
-			list($eleve_id,$devoir_id) = explode('x',$ids);
-			$DB_VAR[':eleve_id']  = $eleve_id;
-			$DB_VAR[':devoir_id'] = $devoir_id;
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-		}
-	}
-	$DB_SQL = 'UPDATE sacoche_saisie ';
-	$DB_SQL.= 'SET item_id=:element2_id ';
-	$DB_SQL.= 'WHERE item_id=:element_id';
-	DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-	// retour
-	echo ($test_delete) ? 'ok' : 'Élément non trouvé !';
+	DB_STRUCTURE_REFERENTIEL::DB_fusionner_referentiel_items($element_id,$element2_id);
+	// Log de l'action
+	ajouter_log_SACoche('Fusion d\'éléments de référentiel (item / '.$element_id.' / '.$element2_id.').');
+	exit('ok');
 }
 
-else
-{
-	echo'Erreur avec les données transmises !';
-}
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+// On ne devrait pas en arriver là...
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
+exit('Erreur avec les données transmises !');
+
 ?>

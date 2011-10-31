@@ -41,25 +41,24 @@ html {height:100%;width:100%;background:#FFF;font-size:13px;}
 body {background:#FFF;font:1em "arial","helvetica","nimbus sans l","liberation sans","freesans","garuda",sans-serif;cursor:default;} /* Arial pour windows, Helvetica pour Mac, Nimbus pour Linux, d'autres libres ensuite, et sans-serif en dernier recours (à écrire sans "" car mot clef générique) ; ne pas mettre Verdana ou Deja Vu, trop larges */
 table,select,textarea,input,button,div{font:100% "arial","helvetica","nimbus sans l","liberation sans","freesans","garuda",sans-serif}
 p{margin:1em auto}
-img {vertical-align:text-top}
+img {vertical-align:middle}
 td img , #aide_en_ligne img  , .legende img {vertical-align:baseline}
-table.affectation img {vertical-align:middle}
+label img , button img , span.button img {vertical-align:text-top}
 h1{display:block;font-size:120%;text-align:left;font-weight:bold;font-variant:small-caps;color:#33A;letter-spacing:0.15em;margin:1ex 2em;}
 h2{display:block;font-size:110%;text-align:left;font-weight:bold;font-variant:small-caps;color:#33A;letter-spacing:0.15em;margin:1ex auto 1ex 1em;}
 h1.logo{text-align:center}
 h1.logo a{margin:auto 1em}
-h1.logo img{vertical-align:middle}
 /* h3 réservé pour l'infobulle */
 h4{display:block;font-size:100%;text-align:left;font-weight:bold;font-variant:small-caps;color:#227;letter-spacing:0.05em;margin:1ex auto 1ex 1em;}
 a.anti_h2{background:transparent url(../_img/actualiser_small.png) no-repeat left;padding-left:15px;margin-left:1em;font-size:80%;font-weight:normal;font-variant:normal;letter-spacing:0;}
 a {color:#139;text-decoration:none}a:hover{color:#D41;text-decoration:underline}
 hr {display:block;height:1px;margin:1em 0;border-top:1px dotted #66F;}
-*.astuce {background:transparent url(../_img/puce_astuce.png) no-repeat top left;padding-left:19px}
-*.danger {background:transparent url(../_img/puce_danger.gif) no-repeat top left;padding-left:19px;color:#C00}
-*.manuel {background:#EE7 url(../_img/puce_manuel.png) no-repeat top left;padding-left:19px}
-*.rss    {background:transparent url(../_img/rss.gif)  no-repeat top left;padding-left:19px}
-*.manuel:hover {background:transparent url(../_img/puce_manuel_ouvert.png) no-repeat top left;}
-#titre_aide{background:transparent url(../_img/puce_manuel_ouvert.png) no-repeat left;padding-left:24px;margin:1ex 2em;text-align:left}
+*.astuce {background:transparent url(../_img/puce/puce_astuce.png) no-repeat top left;padding-left:19px}
+*.danger {background:transparent url(../_img/puce/puce_danger.gif) no-repeat top left;padding-left:19px;color:#C00}
+*.manuel {background:#EE7        url(../_img/puce/puce_manuel.png) no-repeat top left;padding-left:19px}
+*.rss    {background:transparent url(../_img/puce/puce_rss.gif)    no-repeat top left;padding-left:19px}
+*.manuel:hover {background:transparent url(../_img/puce/puce_manuel_ouvert.png) no-repeat top left;}
+#titre_aide{background:transparent url(../_img/puce/puce_manuel_ouvert.png) no-repeat left;padding-left:24px;margin:1ex 2em;text-align:left}
 #aide_en_ligne {margin:1ex 1em}
 em {display:inline;font-style:normal;font-weight:bold;font-variant:small-caps} /* "SACoche" et divers noms propres ou sigles */
 del{text-decoration:line-through;color:#666}
@@ -67,7 +66,8 @@ del{text-decoration:line-through;color:#666}
 .i{font-style:italic} .u{text-decoration:underline} .b{font-weight:bold}
 .hide{display:none}
 .t9{font-size:90%}
- 
+ .breakafter{page-break-after:always}
+
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 /* Cadres principaux (dont le menu déroulant)                                                          */
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
@@ -97,7 +97,7 @@ del{text-decoration:line-through;color:#666}
 /* Images sprites utilisées comme images cliquables ; http://fr.spritegen.website-performance.org/     */
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-body q {background:transparent url(../_img/sprite11.png) 0 0 no-repeat;width:16px;height:16px;display:inline-block;vertical-align:baseline;margin-left:5px;quotes:none}
+body q {background:transparent url(../_img/sprite11.png) 0 0 no-repeat;width:16px;height:16px;display:inline-block;vertical-align:middle;margin-left:5px;quotes:none}
 body q:before, body q:after {content: "";} /* patch pour Safari : voir par exemple http://forum.alsacreations.com/topic-4-41216-1-Resolu-Modifier-le-style-des-citations-quotqquot.html */
 body q.activer         {background-position:    0px 0}
 body q.ajouter         {background-position:  -20px 0}
@@ -350,18 +350,6 @@ table i {display:none}
 #calque td.hoy {background-color:#99FF99}
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-/* Afficher le détail d'un référentiel dans un calque par dessus le contenu.                           */
-/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-
-.calque_referentiel{position:absolute;top:10px;left:5px;right:5px;bottom:5px;border:1px solid #66F;background:#FFF;padding:5px}
-
-/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-/* Zone de choix d'association d'une compétence du socle.                                              */
-/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-
-#zone_socle{position:absolute;z-index:9999;left:0;top:10px;right:0;bottom:0;border:0;background:#EEE;font-size:13px;padding:0.25em;overflow:auto;display:none}
-
-/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 /* Liste à puce pour l'affichage de l'arborescence des compétences ou du socle                         */
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
@@ -374,7 +362,7 @@ li.li_m2 {background:transparent url(../_img/folder/folder_m2.png) no-repeat top
 li.li_n1 {background:transparent url(../_img/folder/folder_n1.png) no-repeat top left;color:#F00}	/* referentiel_domaine ; socle_pilier */
 li.li_n2 {background:transparent url(../_img/folder/folder_n2.png) no-repeat top left;color:#D0C}	/* referentiel_theme ; socle_section */
 li.li_n3 {background:transparent url(../_img/folder/folder_n3.png) no-repeat top left;color:#70F}	/* referentiel_item ; socle_entree */
-#zone_compet li {line-height:1.6em;}	/* le height évite que la hauteur des lignes varie lors de la modification de leur contenu en ajax */
+#zone_compet li {line-height:1.5em;}	/* le height évite que la hauteur des lignes varie lors de la modification de leur contenu en ajax */
 li.li_n3 b{font-weight:normal}
 li.li_n3 b img{margin-right:2px}
 
@@ -399,21 +387,21 @@ li.li_n3 b img{margin-right:2px}
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 #step li {color:#777;margin-left:2em;}
-#step li.on {color:#000;font-weight:bold;list-style:url(../_img/puce_li.png);}
+#step li.on {color:#000;font-weight:bold;list-style:url(../_img/puce/puce_li.png);}
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 /* Liste à puce avec flèches bleues                                                                    */
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-ul.puce li {margin-left:2em;list-style:url(../_img/puce_li.png);}
-*.li       {padding-left:2em;background:transparent url(../_img/puce_li.png) no-repeat left;}
+ul.puce li {margin-left:2em;list-style:url(../_img/puce/puce_li.png);}
+*.li       {padding-left:2em;background:transparent url(../_img/puce/puce_li.png) no-repeat left;}
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 /* Puces des liens pour masquer ou montrer des options                                                 */
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-a.puce_plus  {background:transparent url(../_img/puce_plus.gif) no-repeat left;font-weight:normal;padding-left:12px;}
-a.puce_moins {background:transparent url(../_img/puce_moins.gif) no-repeat left;font-weight:normal;padding-left:12px;}
+a.puce_plus  {background:transparent url(../_img/puce/puce_plus.gif) no-repeat left;font-weight:normal;padding-left:12px;}
+a.puce_moins {background:transparent url(../_img/puce/puce_moins.gif) no-repeat left;font-weight:normal;padding-left:12px;}
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 /* Zone affichée pour le choix d'une note à la souris                                                  */
@@ -439,6 +427,12 @@ div.td_souris img.on {background-color:#FF0}
 #robustesse {border:1px solid #66F;margin:auto 10% auto 1em;background-color:#F99;text-align:center;font-style:italic;white-space:nowrap}
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+/* Listes d'utilisateurs                                                                               */
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
+.prof_liste {float:left;margin-right:10px}
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 /* Pour la gestion privée (livre d'or, RSS)                                                            */
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
@@ -457,13 +451,388 @@ div.colorpicker input.stretch {text-align:center;letter-spacing:2px}
 /**
  * Farbtastic Color Picker 1.2
  * © 2008 Steven Wittens
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-.farbtastic {position:relative}
-.farbtastic * {position:absolute;cursor:crosshair}
-.farbtastic, .farbtastic .wheel {width:195px;height:195px}
-.farbtastic .color, .farbtastic .overlay {top:47px;left:47px;width:101px;height:101px}
-.farbtastic .wheel   {background:url(../_img/colorpicker/wheel.png) no-repeat;width:195px;height:195px}
-.farbtastic .overlay {background:url(../_img/colorpicker/mask.png) no-repeat}
-.farbtastic .marker  {background:url(../_img/colorpicker/marker.png) no-repeat;width:17px;height:17px;margin:-8px 0 0 -8px;overflow:hidden}
+.farbtastic {
+  position: relative;
+}
+.farbtastic * {
+  position: absolute;
+  cursor: crosshair;
+}
+.farbtastic, .farbtastic .wheel {
+  width: 195px;
+  height: 195px;
+}
+.farbtastic .color, .farbtastic .overlay {
+  top: 47px;
+  left: 47px;
+  width: 101px;
+  height: 101px;
+}
+.farbtastic .wheel {
+  background: url(../_img/colorpicker/wheel.png) no-repeat;
+  width: 195px;
+  height: 195px;
+}
+.farbtastic .overlay {
+  background: url(../_img/colorpicker/mask.png) no-repeat;
+}
+.farbtastic .marker {
+  width: 17px;
+  height: 17px;
+  margin: -8px 0 0 -8px;
+  overflow: hidden; 
+  background: url(../_img/colorpicker/marker.png) no-repeat;
+}
 
+/*
+ * FancyBox - jQuery Plugin
+ * Simple and fancy lightbox alternative
+ *
+ * Examples and documentation at: http://fancybox.net
+ * 
+ * Copyright (c) 2008 - 2010 Janis Skarnelis
+ * That said, it is hardly a one-person project. Many people have submitted bugs, code, and offered their advice freely. Their support is greatly appreciated.
+ * 
+ * Version: 1.3.4 (11/11/2010)
+ * Requires: jQuery v1.3+
+ *
+ * Dual licensed under the MIT and GPL licenses:
+ *   http://www.opensource.org/licenses/mit-license.php
+ *   http://www.gnu.org/licenses/gpl.html
+ */
+
+#fancybox-loading {
+	position: fixed;
+	top: 50%;
+	left: 50%;
+	width: 40px;
+	height: 40px;
+	margin-top: -20px;
+	margin-left: -20px;
+	cursor: pointer;
+	overflow: hidden;
+	z-index: 1104;
+	display: none;
+}
+
+#fancybox-loading div {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 40px;
+	height: 480px;
+	background-image: url('../_img/fancybox/fancybox.png');
+}
+
+#fancybox-overlay {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	z-index: 1100;
+	display: none;
+}
+
+#fancybox-tmp {
+	padding: 0;
+	margin: 0;
+	border: 0;
+	overflow: auto;
+	display: none;
+}
+
+#fancybox-wrap {
+	position: absolute;
+	top: 0;
+	left: 0;
+	padding: 20px;
+	z-index: 1101;
+	outline: none;
+	display: none;
+}
+
+#fancybox-outer {
+	position: relative;
+	width: 100%;
+	height: 100%;
+	background: #fff;
+}
+
+#fancybox-content {
+	width: 0;
+	height: 0;
+	padding: 0;
+	outline: none;
+	position: relative;
+	overflow: hidden;
+	z-index: 1102;
+	border: 0px solid #fff;
+}
+
+#fancybox-hide-sel-frame {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background: transparent;
+	z-index: 1101;
+}
+
+#fancybox-close {
+	position: absolute;
+	top: -15px;
+	right: -15px;
+	width: 30px;
+	height: 30px;
+	background: transparent url('../_img/fancybox/fancybox.png') -40px 0px;
+	cursor: pointer;
+	z-index: 1103;
+	display: none;
+}
+
+#fancybox-error {
+	color: #444;
+	font: normal 12px/20px Arial;
+	padding: 14px;
+	margin: 0;
+}
+
+#fancybox-img {
+	width: 100%;
+	height: 100%;
+	padding: 0;
+	margin: 0;
+	border: none;
+	outline: none;
+	line-height: 0;
+	vertical-align: top;
+}
+
+#fancybox-frame {
+	width: 100%;
+	height: 100%;
+	border: none;
+	display: block;
+}
+
+#fancybox-left, #fancybox-right {
+	position: absolute;
+	bottom: 0px;
+	height: 100%;
+	width: 35%;
+	cursor: pointer;
+	outline: none;
+	background: transparent url('../_img/fancybox/blank.gif');
+	z-index: 1102;
+	display: none;
+}
+
+#fancybox-left {
+	left: 0px;
+}
+
+#fancybox-right {
+	right: 0px;
+}
+
+#fancybox-left-ico, #fancybox-right-ico {
+	position: absolute;
+	top: 50%;
+	left: -9999px;
+	width: 30px;
+	height: 30px;
+	margin-top: -15px;
+	cursor: pointer;
+	z-index: 1102;
+	display: block;
+}
+
+#fancybox-left-ico {
+	background-image: url('../_img/fancybox/fancybox.png');
+	background-position: -40px -30px;
+}
+
+#fancybox-right-ico {
+	background-image: url('../_img/fancybox/fancybox.png');
+	background-position: -40px -60px;
+}
+
+#fancybox-left:hover, #fancybox-right:hover {
+	visibility: visible; /* IE6 */
+}
+
+#fancybox-left:hover span {
+	left: 20px;
+}
+
+#fancybox-right:hover span {
+	left: auto;
+	right: 20px;
+}
+
+.fancybox-bg {
+	position: absolute;
+	padding: 0;
+	margin: 0;
+	border: 0;
+	width: 20px;
+	height: 20px;
+	z-index: 1001;
+}
+
+#fancybox-bg-n {
+	top: -20px;
+	left: 0;
+	width: 100%;
+	background-image: url('../_img/fancybox/fancybox-x.png');
+}
+
+#fancybox-bg-ne {
+	top: -20px;
+	right: -20px;
+	background-image: url('../_img/fancybox/fancybox.png');
+	background-position: -40px -162px;
+}
+
+#fancybox-bg-e {
+	top: 0;
+	right: -20px;
+	height: 100%;
+	background-image: url('../_img/fancybox/fancybox-y.png');
+	background-position: -20px 0px;
+}
+
+#fancybox-bg-se {
+	bottom: -20px;
+	right: -20px;
+	background-image: url('../_img/fancybox/fancybox.png');
+	background-position: -40px -182px; 
+}
+
+#fancybox-bg-s {
+	bottom: -20px;
+	left: 0;
+	width: 100%;
+	background-image: url('../_img/fancybox/fancybox-x.png');
+	background-position: 0px -20px;
+}
+
+#fancybox-bg-sw {
+	bottom: -20px;
+	left: -20px;
+	background-image: url('../_img/fancybox/fancybox.png');
+	background-position: -40px -142px;
+}
+
+#fancybox-bg-w {
+	top: 0;
+	left: -20px;
+	height: 100%;
+	background-image: url('../_img/fancybox/fancybox-y.png');
+}
+
+#fancybox-bg-nw {
+	top: -20px;
+	left: -20px;
+	background-image: url('../_img/fancybox/fancybox.png');
+	background-position: -40px -122px;
+}
+
+#fancybox-title {
+	font-family: Helvetica;
+	font-size: 12px;
+	z-index: 1102;
+}
+
+.fancybox-title-inside {
+	padding-bottom: 10px;
+	text-align: center;
+	color: #333;
+	background: #fff;
+	position: relative;
+}
+
+.fancybox-title-outside {
+	padding-top: 10px;
+	color: #fff;
+}
+
+.fancybox-title-over {
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	color: #FFF;
+	text-align: left;
+}
+
+#fancybox-title-over {
+	padding: 10px;
+	background-image: url('../_img/fancybox/fancy_title_over.png');
+	display: block;
+}
+
+.fancybox-title-float {
+	position: absolute;
+	left: 0;
+	bottom: -20px;
+	height: 32px;
+}
+
+#fancybox-title-float-wrap {
+	border: none;
+	border-collapse: collapse;
+	width: auto;
+}
+
+#fancybox-title-float-wrap td {
+	border: none;
+	white-space: nowrap;
+}
+
+#fancybox-title-float-left {
+	padding: 0 0 0 15px;
+	background: url('../_img/fancybox/fancybox.png') -40px -90px no-repeat;
+}
+
+#fancybox-title-float-main {
+	color: #FFF;
+	line-height: 29px;
+	font-weight: bold;
+	padding: 0 0 3px 0;
+	background: url('../_img/fancybox/fancybox-x.png') 0px -40px;
+}
+
+#fancybox-title-float-right {
+	padding: 0 0 0 15px;
+	background: url('../_img/fancybox/fancybox.png') -55px -90px no-repeat;
+}
+
+/* IE6, IE7, IE8 */
+
+.fancybox-ie .fancybox-bg { background: transparent !important; }
+
+.fancybox-ie #fancybox-bg-n {  filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='../_img/fancybox/fancy_shadow_n.png',  sizingMethod='scale'); }
+.fancybox-ie #fancybox-bg-ne { filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='../_img/fancybox/fancy_shadow_ne.png', sizingMethod='scale'); }
+.fancybox-ie #fancybox-bg-e {  filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='../_img/fancybox/fancy_shadow_e.png',  sizingMethod='scale'); }
+.fancybox-ie #fancybox-bg-se { filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='../_img/fancybox/fancy_shadow_se.png', sizingMethod='scale'); }
+.fancybox-ie #fancybox-bg-s {  filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='../_img/fancybox/fancy_shadow_s.png',  sizingMethod='scale'); }
+.fancybox-ie #fancybox-bg-sw { filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='../_img/fancybox/fancy_shadow_sw.png', sizingMethod='scale'); }
+.fancybox-ie #fancybox-bg-w {  filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='../_img/fancybox/fancy_shadow_w.png',  sizingMethod='scale'); }
+.fancybox-ie #fancybox-bg-nw { filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='../_img/fancybox/fancy_shadow_nw.png', sizingMethod='scale'); }

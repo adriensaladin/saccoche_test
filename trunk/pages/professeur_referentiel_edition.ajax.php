@@ -83,15 +83,16 @@ if( ($action=='Voir') && $matiere_id )
 		if( (!is_null($DB_ROW['item_id'])) && ($DB_ROW['item_id']!=$item_id) )
 		{
 			$item_id     = $DB_ROW['item_id'];
-			$coef_texte  = '<img src="./_img/coef/'.$DB_ROW['item_coef'].'.gif" alt="" title="Coefficient '.$DB_ROW['item_coef'].'." />';
+			$coef_texte  = '<img src="./_img/coef/'.sprintf("%02u",$DB_ROW['item_coef']).'.gif" alt="" title="Coefficient '.$DB_ROW['item_coef'].'." />';
 			$cart_title  = ($DB_ROW['item_cart']) ? 'Demande possible.' : 'Demande interdite.' ;
-			$cart_texte  = '<img src="./_img/cart'.$DB_ROW['item_cart'].'.png" title="'.$cart_title.'" />';
-			$socle_image = ($DB_ROW['entree_id']==0) ? 'off' : 'on' ;
-			$socle_nom   = ($DB_ROW['entree_id']==0) ? 'Hors-socle.' : html($DB_ROW['entree_nom']) ;
-			$socle_texte = '<img src="./_img/socle_'.$socle_image.'.png" alt="" title="'.$socle_nom.'" lang="id_'.$DB_ROW['entree_id'].'" />';
-			$lien_image  = ($DB_ROW['item_lien']=='') ? 'off' : 'on' ;
-			$lien_nom    = ($DB_ROW['item_lien']=='') ? 'Absence de ressource.' : html($DB_ROW['item_lien']) ;
-			$lien_texte  = '<img src="./_img/link_'.$lien_image.'.png" alt="" title="'.$lien_nom.'" />';
+			$cart_image  = ($DB_ROW['item_cart']) ? 'oui' : 'non' ;
+			$cart_texte  = '<img src="./_img/etat/cart_'.$cart_image.'.png" title="'.$cart_title.'" />';
+			$socle_image = ($DB_ROW['entree_id']) ? 'oui' : 'non' ;
+			$socle_nom   = ($DB_ROW['entree_id']) ? html($DB_ROW['entree_nom']) : 'Hors-socle.' ;
+			$socle_texte = '<img src="./_img/etat/socle_'.$socle_image.'.png" alt="" title="'.$socle_nom.'" lang="id_'.$DB_ROW['entree_id'].'" />';
+			$lien_image  = ($DB_ROW['item_lien']) ? 'oui' : 'non' ;
+			$lien_nom    = ($DB_ROW['item_lien']) ? html($DB_ROW['item_lien']) : 'Absence de ressource.' ;
+			$lien_texte  = '<img src="./_img/etat/link_'.$lien_image.'.png" alt="" title="'.$lien_nom.'" />';
 			$tab_item[$niveau_id][$domaine_id][$theme_id][$item_id] = $coef_texte.$cart_texte.$socle_texte.$lien_texte.html($DB_ROW['item_nom']);
 		}
 	}

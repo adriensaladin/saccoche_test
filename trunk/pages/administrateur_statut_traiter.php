@@ -32,9 +32,9 @@ $VERSION_JS_FILE += 3;
 
 <?php
 // Fabrication des éléments select du formulaire
-$select_f_groupes              = afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_regroupements_etabl()                   , $select_nom=false , $option_first='oui' , $selection=false , $optgroup='oui');
-$select_parents                = afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_parents_etabl($statut=0)                , $select_nom=false , $option_first='non' , $selection=false , $optgroup='non');
-$select_professeurs_directeurs = afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_professeurs_directeurs_etabl($statut=0) , $select_nom=false , $option_first='non' , $selection=false , $optgroup='oui');
+$select_f_groupes              = Formulaire::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_regroupements_etabl()                   , $select_nom=false , $option_first='oui' , $selection=false , $optgroup='oui');
+$select_parents                = Formulaire::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_parents_etabl($statut=0)                , $select_nom=false , $option_first='non' , $selection=false , $optgroup='non');
+$select_professeurs_directeurs = Formulaire::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_professeurs_directeurs_etabl($statut=0) , $select_nom=false , $option_first='non' , $selection=false , $optgroup='oui');
 ?>
 
 <ul class="puce">

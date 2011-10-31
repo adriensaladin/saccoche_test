@@ -53,6 +53,9 @@ $groupe_nom     = (isset($_POST['f_groupe_nom']))  ? clean_texte($_POST['f_group
 $tab_eleve      = (isset($_POST['eleves']))        ? array_map('clean_entier',explode(',',$_POST['eleves'])) : array() ;	// en cas de manipulation type Firebug, peut être forcé pour l'élève avec $_SESSION['USER_ID']
 $tab_type       = (isset($_POST['types']))         ? array_map('clean_texte',explode(',',$_POST['types']))   : array() ;	// en cas de manipulation type Firebug, peut être forcé pour l'élève à 'individuel'
 $format         = 'matiere';
+$type_individuel = (in_array('individuel',$tab_type)) ? 1 : 0 ;
+$type_synthese   = (in_array('synthese',$tab_type))   ? 1 : 0 ;
+$type_bulletin   = (in_array('bulletin',$tab_type))   ? 1 : 0 ;
 
 $tab_eleve     = array_filter($tab_eleve,'positif');
 $liste_eleve   = implode(',',$tab_eleve);
@@ -60,8 +63,7 @@ $liste_eleve   = implode(',',$tab_eleve);
 if( $orientation && $couleur && $legende && $marge_min && $pages_nb && $cases_nb && $cases_largeur && ( $periode_id || ($date_debut && $date_fin) ) && $retroactif && $matiere_id && $matiere_nom && $groupe_id && $groupe_nom && count($tab_eleve) && count($tab_type) )
 {
 
-	save_cookie_select('releve_items');
-	save_cookie_select('matiere');
+	Formulaire::save_choix('items_matiere');
 
 	// Période concernée
 	if($periode_id==0)
@@ -160,21 +162,21 @@ if( $orientation && $couleur && $legende && $marge_min && $pages_nb && $cases_nb
 	}
 	else
 	{
-		if(in_array('bulletin',$tab_type))
+		if($type_bulletin)
 		{
 			echo'<ul class="puce">';
 			echo'<li><a class="lien_ext" href="'.$dossier.$fichier_lien.'_bulletin.csv">Bulletin &rarr; Récupérer pour importer dans GEPI (format <em>csv</em> <img alt="" src="./_img/bulle_aide.png" title="Si le navigateur ouvre le fichier au lieu de l\'enregistrer, cliquer avec le bouton droit et choisir «&nbsp;Enregistrer&nbsp;sous...&nbsp;»." />).</a></li>';
 			echo'<li><a class="lien_ext" href="./releve-html.php?fichier='.$fichier_lien.'_bulletin">Bulletin &rarr; Explorer / Manipuler (format <em>html</em>).</a></li>';
 			echo'</ul><p />';
 		}
-		if(in_array('synthese',$tab_type))
+		if($type_synthese)
 		{
 			echo'<ul class="puce">';
 			echo'<li><a class="lien_ext" href="'.$dossier.$fichier_lien.'_synthese.pdf">Synthèse collective &rarr; Archiver / Imprimer (format <em>pdf</em>).</a></li>';
 			echo'<li><a class="lien_ext" href="./releve-html.php?fichier='.$fichier_lien.'_synthese">Synthèse collective &rarr; Explorer / Manipuler (format <em>html</em>).</a></li>';
 			echo'</ul><p />';
 		}
-		if(in_array('individuel',$tab_type))
+		if($type_individuel)
 		{
 			echo'<ul class="puce">';
 			echo'<li><a class="lien_ext" href="'.$dossier.$fichier_lien.'_individuel.pdf">Relevé individuel &rarr; Archiver / Imprimer (format <em>pdf</em>).</a></li>';

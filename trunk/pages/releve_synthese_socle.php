@@ -31,10 +31,13 @@ $VERSION_JS_FILE += 6;
 ?>
 
 <?php
-// Fabrication des éléments select du formulaire
-$tab_cookie   = load_cookie_select('palier');
-$tab_matieres = DB_STRUCTURE_COMMUN::DB_OPT_matieres_etabl($_SESSION['MATIERES'],$transversal=true);
-$tab_paliers  = DB_STRUCTURE_COMMUN::DB_OPT_paliers_etabl($_SESSION['PALIERS']);
+Formulaire::load_choix_memo();
+$check_type_pourcentage = (Formulaire::$tab_choix['type']=='pourcentage') ? ' checked' : '' ;
+$check_type_validation  = (Formulaire::$tab_choix['type']=='validation')  ? ' checked' : '' ;
+$class_div_option       = (Formulaire::$tab_choix['type']=='pourcentage') ? 'show'     : 'hide' ;
+$check_mode_auto        = (Formulaire::$tab_choix['mode']=='auto')        ? ' checked' : '' ;
+$check_mode_manuel      = (Formulaire::$tab_choix['mode']=='manuel')      ? ' checked' : '' ;
+$class_div_matiere      = (Formulaire::$tab_choix['mode']=='manuel')      ? 'show'     : 'hide' ;
 if($_SESSION['USER_PROFIL']=='directeur')
 {
 	$tab_groupes = DB_STRUCTURE_COMMUN::DB_OPT_classes_groupes_etabl();
@@ -47,11 +50,13 @@ else
 {
 	$tab_groupes = 'Vous n\'avez pas un profil autorisé pour accéder au formulaire !';
 }
+$tab_matieres = DB_STRUCTURE_COMMUN::DB_OPT_matieres_etabl($_SESSION['MATIERES'],$transversal=true);
+$tab_paliers  = DB_STRUCTURE_COMMUN::DB_OPT_paliers_etabl($_SESSION['PALIERS']);
 $of_p = (count($tab_paliers)<2) ? 'non' : 'oui' ;
 
-$select_matiere = afficher_select($tab_matieres , $select_nom=false      , $option_first='non' , $selection=true                     , $optgroup='non');
-$select_palier  = afficher_select($tab_paliers  , $select_nom='f_palier' , $option_first=$of_p , $selection=$tab_cookie['palier_id'] , $optgroup='non');
-$select_groupe  = afficher_select($tab_groupes  , $select_nom='f_groupe' , $option_first='oui' , $selection=false                    , $optgroup='oui');
+$select_matiere = Formulaire::afficher_select($tab_matieres , $select_nom=false      , $option_first='non' , $selection=true                                 , $optgroup='non');
+$select_palier  = Formulaire::afficher_select($tab_paliers  , $select_nom='f_palier' , $option_first=$of_p , $selection=Formulaire::$tab_choix['palier_id'] , $optgroup='non');
+$select_groupe  = Formulaire::afficher_select($tab_groupes  , $select_nom='f_groupe' , $option_first='oui' , $selection=false                                , $optgroup='oui');
 ?>
 
 <ul class="puce">
@@ -61,10 +66,10 @@ $select_groupe  = afficher_select($tab_groupes  , $select_nom='f_groupe' , $opti
 <hr />
 
 <form action="" method="post" id="form_select"><fieldset>
-	<label class="tab" for="f_type">Type de synthèse :</label><label for="f_type_pourcentage"><input type="radio" id="f_type_pourcentage" name="f_type" value="pourcentage" /> Pourcentage d'items disciplinaires acquis</label>&nbsp;&nbsp;&nbsp;<label for="f_type_validation"><input type="radio" id="f_type_validation" name="f_type" value="validation" /> Validation des items et des compétences du socle</label><br />
-	<div id="option_mode" class="hide">
-		<label class="tab" for="f_mode">Items récoltés :</label><label for="f_mode_auto"><input type="radio" id="f_mode_auto" name="f_mode" value="auto" checked /> Automatique (recommandé) <img alt="" src="./_img/bulle_aide.png" title="Items de tous les référentiels, sauf pour la compétence 2 où on ne prend que les items des référentiels de la langue associée à l'élève." /></label>&nbsp;&nbsp;&nbsp;<label for="f_mode_manuel"><input type="radio" id="f_mode_manuel" name="f_mode" value="manuel" /> Sélection manuelle <img alt="" src="./_img/bulle_aide.png" title="Utiliser la touche &laquo&nbsp;Shift&nbsp;&raquo; pour une sélection multiple contiguë.<br />Utiliser la touche &laquo&nbsp;Ctrl&nbsp;&raquo; pour une sélection multiple non contiguë." /></label>
-		<div id="div_matiere" class="hide"><span class="tab"></span><select id="f_matiere" name="f_matiere[]" multiple size="5"><?php echo $select_matiere ?></select><input type="hidden" id="matieres" name="matieres" value="" /></div>
+	<label class="tab" for="f_type">Type de synthèse :</label><label for="f_type_pourcentage"><input type="radio" id="f_type_pourcentage" name="f_type" value="pourcentage"<?php echo $check_type_pourcentage ?> /> Pourcentage d'items disciplinaires acquis</label>&nbsp;&nbsp;&nbsp;<label for="f_type_validation"><input type="radio" id="f_type_validation" name="f_type" value="validation"<?php echo $check_type_validation ?> /> Validation des items et des compétences du socle</label><br />
+	<div id="option_mode" class="<?php echo $class_div_option ?>">
+		<label class="tab" for="f_mode">Items récoltés :</label><label for="f_mode_auto"><input type="radio" id="f_mode_auto" name="f_mode" value="auto"<?php echo $check_mode_auto ?> /> Automatique (recommandé) <img alt="" src="./_img/bulle_aide.png" title="Items de tous les référentiels, sauf pour la compétence 2 où on ne prend que les items des référentiels de la langue associée à l'élève." /></label>&nbsp;&nbsp;&nbsp;<label for="f_mode_manuel"><input type="radio" id="f_mode_manuel" name="f_mode" value="manuel"<?php echo $check_mode_manuel ?> /> Sélection manuelle <img alt="" src="./_img/bulle_aide.png" title="Pour choisir les matières des référentiels dont les items collectés sont issus." /></label>
+		<div id="div_matiere" class="<?php echo $class_div_matiere ?>"><span class="tab"></span><select id="f_matiere" name="f_matiere[]" multiple size="5"><?php echo $select_matiere ?></select><input type="hidden" id="matieres" name="matieres" value="" /></div>
 	</div><p />
 	<label class="tab" for="f_palier">Palier :</label><?php echo $select_palier ?><input type="hidden" id="f_palier_nom" name="f_palier_nom" value="" /><label id="ajax_maj_pilier">&nbsp;</label><br />
 	<label class="tab" for="f_pilier"><img alt="" src="./_img/bulle_aide.png" title="Utiliser la touche &laquo&nbsp;Shift&nbsp;&raquo; pour une sélection multiple contiguë.<br />Utiliser la touche &laquo&nbsp;Ctrl&nbsp;&raquo; pour une sélection multiple non contiguë." /> Compétence(s) :</label><select id="f_pilier" name="f_pilier" multiple size="7" class="hide"><option></option></select><input type="hidden" id="piliers" name="piliers" value="" /><p />

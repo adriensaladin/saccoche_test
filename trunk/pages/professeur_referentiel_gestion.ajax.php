@@ -139,7 +139,7 @@ if( ($action=='Partager') && ($perso==0) && $matiere_id && $niveau_id && in_arra
 	$date_mysql = date("Y-m-d");
 	DB_STRUCTURE_REFERENTIEL::DB_modifier_referentiel( $matiere_id , $niveau_id , array(':partage_etat'=>$partage,':partage_date'=>$date_mysql) );
 	// Retour envoyé
-	$tab_partage = array('oui'=>'<img title="Référentiel partagé sur le serveur communautaire (MAJ le ◄DATE►)." alt="" src="./_img/partage1.gif" />','non'=>'<img title="Référentiel non partagé avec la communauté (choix du ◄DATE►)." alt="" src="./_img/partage0.gif" />','bof'=>'<img title="Référentiel dont le partage est sans intérêt (pas novateur)." alt="" src="./_img/partage0.gif" />','hs'=>'<img title="Référentiel dont le partage est sans objet (matière spécifique)." alt="" src="./_img/partage0.gif" />');
+	$tab_partage = array('oui'=>'<img title="Référentiel partagé sur le serveur communautaire (MAJ le ◄DATE►)." alt="" src="./_img/etat/partage_oui.gif" />','non'=>'<img title="Référentiel non partagé avec la communauté (choix du ◄DATE►)." alt="" src="./_img/etat/partage_non.gif" />','bof'=>'<img title="Référentiel dont le partage est sans intérêt (pas novateur)." alt="" src="./_img/etat/partage_non.gif" />','hs'=>'<img title="Référentiel dont le partage est sans objet (matière spécifique)." alt="" src="./_img/etat/partage_non.gif" />');
 	exit( str_replace('◄DATE►',affich_date($date_mysql),$tab_partage[$partage]) );
 }
 
@@ -166,7 +166,7 @@ if( ($action=='Envoyer') && ($perso==0) && $matiere_id && $niveau_id )
 	$date_mysql = date("Y-m-d");
 	DB_STRUCTURE_REFERENTIEL::DB_modifier_referentiel( $matiere_id , $niveau_id , array(':partage_date'=>$date_mysql) );
 	// Retour envoyé
-	exit('<img title="Référentiel partagé sur le serveur communautaire (MAJ le '.affich_date($date_mysql).')." alt="" src="./_img/partage1.gif" />');
+	exit('<img title="Référentiel partagé sur le serveur communautaire (MAJ le '.affich_date($date_mysql).')." alt="" src="./_img/etat/partage_oui.gif" />');
 }
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-

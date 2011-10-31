@@ -41,7 +41,6 @@ require_once('./_inc/config_serveur.php');
 require_once('./_inc/fonction_clean.php');
 require_once('./_inc/fonction_sessions.php');
 require_once('./_inc/fonction_divers.php');
-require_once('./_inc/fonction_formulaires_select.php');
 require_once('./_inc/fonction_affichage.php');
 
 // On récupère les paramètres

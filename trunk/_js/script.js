@@ -89,9 +89,9 @@ function afficher_masquer_images_action(why)
 function format_liens(element)
 {
 	$(element).find("a.lien_ext" ).attr("target","_blank");
-	$(element).find("a.lien_ext" ).css({"padding-right":"14px" , "background":"url(./_img/popup2.gif) no-repeat right"});
-	$(element).find("a.pop_up" ).css({"padding-right":"18px" , "background":"url(./_img/popup1.gif) no-repeat right"});
-	$(element).find("a.lien_mail").css({"padding-left":"15px" , "background":"url(./_img/mail.gif) no-repeat left"});
+	$(element).find("a.lien_ext" ).css({"padding-right":"14px" , "background":"url(./_img/puce/puce_popup_onglet.gif) no-repeat right"});
+	$(element).find("a.pop_up" ).css({"padding-right":"18px" , "background":"url(./_img/puce/puce_popup_window.gif) no-repeat right"});
+	$(element).find("a.lien_mail").css({"padding-left":"15px" , "background":"url(./_img/puce/puce_mail.gif) no-repeat left"});
 }
 
 /**
@@ -140,6 +140,22 @@ function analyse_mdp(mdp)
 	var vert  = 159 + 16*Math.min(6,coef) ;   // 159 -> 255 -> 255
 	var bleu  = 159 ;
 	$('#robustesse').css('background-color','rgb('+rouge+','+vert+','+bleu+')').children('span').html(coef);
+}
+
+/**
+ * Fonction pour imprimer un contenu
+ *
+ * En javascript, print() s'applique à l'objet window, et l'usage d'une feuille se style adaptée n'a pas permis d'obtenir un résultat satisfaisant.
+ * D'où l'ouverture d'un pop-up (inspiration : http://www.asp-php.net/ressources/bouts_de_code.aspx?id=342).
+ *
+ * @param object contenu
+ * @return void
+ */
+function imprimer(contenu)
+{
+	var wp = window.open("","SACochePrint","toolbar=no,location=no,menubar=no,directories=no,status=no,scrollbars=no,resizable=no,copyhistory=no,width=1,height=1,top=0,left=0");
+	wp.document.write('<!DOCTYPE html><html><head><link rel="stylesheet" type="text/css" href="./_css/style.css" /><title>SACoche - Impression</title></head><body onload="window.print();window.close()">'+document.getElementById('info').innerHTML+contenu+'</body></html>');
+	wp.document.close();
 }
 
 //	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
@@ -563,6 +579,17 @@ $(document).ready
 		);
 
 		/**
+		 * Clic sur une image-lien pour imprimer un referentiel en consultation
+		 */
+		$('#fancybox-content q.imprimer').live
+		('click',
+			function()
+			{
+				imprimer(document.getElementById('fancybox-content').innerHTML);
+			}
+		);
+
+		/**
 		 * Clic sur un lien afin d'afficher ou de masquer un groupe d'options d'un formulaire
 		 */
 		$('a.toggle').click
@@ -575,7 +602,7 @@ $(document).ready
 		);
 
 		/**
-		 * Clic sur un lien afin d'afficher ou de masquer le détail d'un bilan d'acquisition du socle
+		 * Clic sur une image-lien afin d'afficher ou de masquer le détail d'un bilan d'acquisition du socle
 		 */
 		$('img.toggle').live
 		('click',

@@ -26,11 +26,11 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-$VERSION_JS_FILE += 10;
+$VERSION_JS_FILE += 11;
 
 // Fabrication des éléments select du formulaire, pour pouvoir prendre un référentiel d'une autre matière ou d'un autre niveau (demandé...).
-$select_matiere = afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_matieres_communes() , $select_nom='f_matiere' , $option_first='val' , $selection=false , $optgroup='non');
-$select_niveau  = afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_niveaux()           , $select_nom='f_niveau'  , $option_first='val' , $selection=false , $optgroup='non');
+$select_matiere = Formulaire::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_matieres_communes() , $select_nom='f_matiere' , $option_first='val' , $selection=false , $optgroup='non');
+$select_niveau  = Formulaire::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_niveaux()           , $select_nom='f_niveau'  , $option_first='val' , $selection=false , $optgroup='non');
 ?>
 
 <script type="text/javascript">
@@ -38,7 +38,7 @@ $select_niveau  = afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_niveaux()         
 	var id_matiere_transversale   = "<?php echo ID_MATIERE_TRANSVERSALE ?>";
 </script>
 
-<form action="" method="post" class="noprint">
+<form action="" method="post">
 	<fieldset>
 		<label class="tab" for="f_matiere">Matière :</label><?php echo $select_matiere ?><br />
 		<label class="tab" for="f_niveau">Niveau :</label><?php echo $select_niveau ?><br />
@@ -47,18 +47,13 @@ $select_niveau  = afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_niveaux()         
 	</fieldset>
 </form>
 
-<div class="noprint">
-	<hr />
-	<div id="choisir_referentiel_communautaire" class="hide">
-		<h2>Liste des référentiels trouvés</h2>
-		<div class="danger">Les référentiels partagés ne sont pas des modèles exemplaires à suivre ! Ils peuvent être améliorables, voir inadaptés...</div>
-		<ul>
-			<li></li>
-		</ul>
-	</div>
-</div>
+<hr />
 
-<div id="voir_referentiel_communautaire">
+<div id="choisir_referentiel_communautaire" class="hide">
+	<h2>Liste des référentiels trouvés</h2>
+	<div class="danger">Les référentiels partagés ne sont pas des modèles exemplaires à suivre ! Ils peuvent être améliorables, voir inadaptés...</div>
+	<ul>
+		<li></li>
+	</ul>
 </div>
-
 

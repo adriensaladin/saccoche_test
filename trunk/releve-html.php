@@ -75,7 +75,6 @@ entete();
 	<link rel="shortcut icon" type="images/x-icon" href="./favicon.ico" />
 	<link rel="icon" type="image/png" href="./favicon.png" />
 	<link rel="stylesheet" type="text/css" href="<?php echo compacter('./_css/style.css',VERSION_CSS_SCREEN,'mini') ?>" />
-	<link rel="stylesheet" type="text/css" href="<?php echo compacter('./_css/style_print.css',VERSION_CSS_SCREEN,'mini') ?>" media="print" />
 	<?php if($position_css){echo $CSS_PERSO;} ?>
 	<script type="text/javascript" charset="utf-8" src="<?php echo compacter('./_js/jquery-librairies.js',VERSION_JS_BIBLIO,'mini') ?>"></script>
 	<script type="text/javascript" charset="utf-8" src="<?php echo compacter('./_js/script.js',VERSION_JS_GLOBAL,'mini') ?>"></script>

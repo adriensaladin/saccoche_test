@@ -114,6 +114,8 @@ function __autoload($class_name)
 		'JavaScriptPacker'            => '_inc'.DIRECTORY_SEPARATOR.'class.JavaScriptPacker.php' ,
 		'PDF'                         => '_inc'.DIRECTORY_SEPARATOR.'class.PDF.php' ,
 
+		'Formulaire'                  => '_inc'.DIRECTORY_SEPARATOR.'class.formulaire.php' ,
+
 		'DB_STRUCTURE_ADMINISTRATEUR' => '_sql'.DIRECTORY_SEPARATOR.'requetes_structure_administrateur.php' ,
 		'DB_STRUCTURE_DIRECTEUR'      => '_sql'.DIRECTORY_SEPARATOR.'requetes_structure_directeur.php' ,
 		'DB_STRUCTURE_ELEVE'          => '_sql'.DIRECTORY_SEPARATOR.'requetes_structure_eleve.php' ,

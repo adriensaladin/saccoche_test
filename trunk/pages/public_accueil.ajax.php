@@ -38,7 +38,7 @@ $password = (isset($_POST['f_password'])) ? clean_password($_POST['f_password'])
  */
 function afficher_formulaire_etablissement($BASE,$profil)
 {
-	$options_structures = afficher_select(DB_WEBMESTRE_SELECT::DB_OPT_structures_sacoche() , $select_nom=false , $option_first='non' , $selection=$BASE , $optgroup='oui');
+	$options_structures = Formulaire::afficher_select(DB_WEBMESTRE_SELECT::DB_OPT_structures_sacoche() , $select_nom=false , $option_first='non' , $selection=$BASE , $optgroup='oui');
 	echo'<label class="tab" for="f_base">Établissement :</label><select id="f_base" name="f_base" tabindex="1" >'.$options_structures.'</select><br />'."\r\n";
 	echo'<span class="tab"></span><button id="f_choisir" type="button" tabindex="2"><img alt="" src="./_img/bouton/valider.png" /> Choisir cet établissement.</button><label id="ajax_msg">&nbsp;</label><br />'."\r\n";
 	echo'<input id="f_profil" name="f_profil" type="hidden" value="'.$profil.'" />'."\r\n";

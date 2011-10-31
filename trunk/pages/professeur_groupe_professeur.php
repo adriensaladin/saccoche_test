@@ -32,8 +32,8 @@ $VERSION_JS_FILE += 0;
 
 <?php
 // Fabrication des éléments select du formulaire
-$select_professeurs   = afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_professeurs_etabl()                      , $select_nom=false , $option_first='non' , $selection=false , $optgroup='non');
-$select_groupe_besoin = afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_besoins_professeur($_SESSION['USER_ID']) , $select_nom=false , $option_first='non' , $selection=false , $optgroup='non');
+$select_professeurs   = Formulaire::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_professeurs_etabl()                      , $select_nom=false , $option_first='non' , $selection=false , $optgroup='non');
+$select_groupe_besoin = Formulaire::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_besoins_professeur($_SESSION['USER_ID']) , $select_nom=false , $option_first='non' , $selection=false , $optgroup='non');
 ?>
 
 <ul class="puce">

@@ -40,6 +40,6 @@ if( (!$pilier) || (!in_array($option_first,array('oui','val','non'))) )
 
 $selection = ($option_first=='non') ? true : false ;
 
-echo afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_domaines($pilier) , $select_nom=false , $option_first , $selection , $optgroup='non');
+echo Formulaire::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_domaines($pilier) , $select_nom=false , $option_first , $selection , $optgroup='non');
 
 ?>

@@ -237,11 +237,11 @@ $(document).ready
 			}
 			else
 			{
-				$('#ajax_msg_choix').removeAttr("class").addClass("valide").html("Affichage réalisé !").fadeOut(3000,function(){$(this).removeAttr("class").html("").show();});
 				responseHTML = responseHTML.replace( '@PALIER@' , $("#f_palier option:selected").text() );
 				$('#tableau_validation').html(responseHTML);
 				infobulle();
 				$('#zone_validation').show('fast');
+				$('#ajax_msg_choix').removeAttr("class").html('');
 				$('#zone_choix').hide('fast');
 				$("body").oneTime("1s", function() {window.scrollTo(0,1000);} );
 			}

@@ -137,7 +137,7 @@ if( ($action=='Afficher_evaluations') && $aff_classe_txt && $aff_classe_id && ( 
 		if(!$DB_ROW['devoir_partage'])
 		{
 			$profs_liste = '';
-			$profs_nombre = 'vous seul';
+			$profs_nombre = 'moi seul';
 		}
 		else
 		{
@@ -218,7 +218,7 @@ if( (($action=='ajouter')||(($action=='dupliquer')&&($devoir_id))) && $date && $
 	$date_visible = ($date==$date_visible) ? 'identique' : $date_visible;
 	$ref = $devoir_id2.'_'.strtoupper($groupe_type{0}).$groupe_id;
 	$s = ($nb_items>1) ? 's' : '';
-	$profs_nombre = count($tab_profs) ? count($tab_profs).' profs' : 'vous seul' ;
+	$profs_nombre = count($tab_profs) ? count($tab_profs).' profs' : 'moi seul' ;
 	echo'<td><i>'.html($date_mysql).'</i>'.html($date).'</td>';
 	echo'<td>'.html($date_visible).'</td>';
 	echo'<td>{{GROUPE_NOM}}</td>';
@@ -289,7 +289,7 @@ if( ($action=='modifier') && $devoir_id && $date && $date_visible && $groupe_typ
 	$date_visible = ($date==$date_visible) ? 'identique' : $date_visible;
 	$ref = $devoir_id.'_'.strtoupper($groupe_type{0}).$groupe_id;
 	$s = (count($tab_items)>1) ? 's' : '';
-	$profs_nombre = count($tab_profs) ? count($tab_profs).' profs' : 'vous seul' ;
+	$profs_nombre = count($tab_profs) ? count($tab_profs).' profs' : 'moi seul' ;
 	echo'<td><i>'.html($date_mysql).'</i>'.html($date).'</td>';
 	echo'<td>'.html($date_visible).'</td>';
 	echo'<td>{{GROUPE_NOM}}</td>';
@@ -945,7 +945,7 @@ if( ($action=='Enregistrer_saisie') && $devoir_id && $date && $date_visible && c
 
 if( ($action=='Imprimer_cartouche') && $devoir_id && $groupe_type && $groupe_id && $date && $cart_contenu && $cart_detail && $orientation && $marge_min && $couleur )
 {
-	save_cookie_select('cartouche');
+	Formulaire::save_choix('cartouche');
 	$with_nom    = (substr($cart_contenu,0,8)=='AVEC_nom')  ? true : false ;
 	$with_result = (substr($cart_contenu,9)=='AVEC_result') ? true : false ;
 	// liste des items

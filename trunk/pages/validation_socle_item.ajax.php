@@ -49,7 +49,7 @@ $listing_domaine_id = implode(',',$tab_domaine);
 
 if( ($action=='Afficher_bilan') && $pilier_id && count($tab_domaine) && count($tab_eleve) && (in_array($mode,array('auto','manuel'))) )
 {
-	save_cookie_select('palier');
+	Formulaire::save_choix('validation_socle_item');
 	$affichage = '';
 	// Tableau des langues
 	$tfoot = '';

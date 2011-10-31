@@ -38,6 +38,6 @@ if(!$groupe)
 	exit('Erreur avec les données transmises !');
 }
 
-echo afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_matieres_groupe($groupe) , $select_nom=false , $option_first='oui' , $selection=$matiere , $optgroup='non');
+echo Formulaire::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_matieres_groupe($groupe) , $select_nom=false , $option_first='oui' , $selection=$matiere , $optgroup='non');
 
 ?>

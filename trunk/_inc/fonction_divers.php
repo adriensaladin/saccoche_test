@@ -935,28 +935,29 @@ function afficher_arborescence_matiere_from_SQL($DB_TAB,$dynamique,$reference,$a
 			$item_id = $DB_ROW['item_id'];
 			if($aff_coef)
 			{
-				$coef_texte = '<img src="./_img/coef/'.$DB_ROW['item_coef'].'.gif" title="Coefficient '.$DB_ROW['item_coef'].'." /> ';
+				$coef_texte = '<img src="./_img/coef/'.sprintf("%02u",$DB_ROW['item_coef']).'.gif" title="Coefficient '.$DB_ROW['item_coef'].'." /> ';
 			}
 			if($aff_cart)
 			{
-				$title = ($DB_ROW['item_cart']) ? 'Demande possible.' : 'Demande interdite.' ;
-				$cart_texte = '<img src="./_img/cart'.$DB_ROW['item_cart'].'.png" title="'.$title.'" /> ';
+				$cart_image = ($DB_ROW['item_cart']) ? 'oui' : 'non' ;
+				$cart_title = ($DB_ROW['item_cart']) ? 'Demande possible.' : 'Demande interdite.' ;
+				$cart_texte = '<img src="./_img/etat/cart_'.$cart_image.'.png" title="'.$cart_title.'" /> ';
 			}
 			switch($aff_socle)
 			{
 				case 'texte' :	$socle_texte = ($DB_ROW['entree_id']) ? '[S] ' : '[–] ';
 												break;
-				case 'image' :	$socle_image = ($DB_ROW['entree_id']) ? 'on' : 'off' ;
-												$socle_nom   = ($DB_ROW['entree_id']) ? html($DB_ROW['entree_nom']) : 'Hors-socle.' ;
-												$socle_texte = '<img src="./_img/socle_'.$socle_image.'.png" title="'.$socle_nom.'" /> ';
+				case 'image' :	$socle_image = ($DB_ROW['entree_id']) ? 'oui' : 'non' ;
+												$socle_title = ($DB_ROW['entree_id']) ? html($DB_ROW['entree_nom']) : 'Hors-socle.' ;
+												$socle_texte = '<img src="./_img/etat/socle_'.$socle_image.'.png" title="'.$socle_title.'" /> ';
 			}
 			switch($aff_lien)
 			{
 				case 'click' :	$lien_texte_avant = ($DB_ROW['item_lien']) ? '<a class="lien_ext" href="'.html($DB_ROW['item_lien']).'">' : '';
 												$lien_texte_apres = ($DB_ROW['item_lien']) ? '</a>' : '';
-				case 'image' :	$lien_image = ($DB_ROW['item_lien']) ? 'on' : 'off' ;
-												$lien_nom   = ($DB_ROW['item_lien']) ? html($DB_ROW['item_lien']) : 'Absence de ressource.' ;
-												$lien_texte = '<img src="./_img/link_'.$lien_image.'.png" title="'.$lien_nom.'" /> ';
+				case 'image' :	$lien_image = ($DB_ROW['item_lien']) ? 'oui' : 'non' ;
+												$lien_title = ($DB_ROW['item_lien']) ? html($DB_ROW['item_lien']) : 'Absence de ressource.' ;
+												$lien_texte = '<img src="./_img/etat/link_'.$lien_image.'.png" title="'.$lien_title.'" /> ';
 			}
 			if($aff_input)
 			{

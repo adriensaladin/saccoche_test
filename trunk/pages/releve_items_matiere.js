@@ -64,11 +64,11 @@ $(document).ready
 			{
 				if( ($('#f_bilan_MS').is(':checked')) || ($('#f_bilan_PA').is(':checked')) )
 				{
-					$('label[for=f_conv_sur20]').css('visibility','visible');
+					$('label[for=f_conv_sur20]').show();
 				}
 				else
 				{
-					$('label[for=f_conv_sur20]').css('visibility','hidden');
+					$('label[for=f_conv_sur20]').hide();
 				}
 			}
 		);

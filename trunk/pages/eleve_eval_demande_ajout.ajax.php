@@ -82,7 +82,7 @@ $date_mysql = date("Y-m-d");	// date_mysql de la forme aaaa-mm-jj
 $demande_id = DB_STRUCTURE_ELEVE::DB_ajouter_demande($_SESSION['USER_ID'],$matiere_id,$item_id,$date_mysql,$score,$statut='eleve');
 // Ajout aux flux RSS des profs concernés
 $titre = 'Demande ajoutée par '.$_SESSION['USER_NOM'].' '.$_SESSION['USER_PRENOM']{0}.'.';
-$texte = $_SESSION['USER_PRENOM'].' '.$_SESSION['USER_NOM'].' demande à être évalué sur l\'item '.$DB_ROW['item_ref'].' intitulé "'.$DB_ROW['item_nom'].'"';
+$texte = $_SESSION['USER_PRENOM'].' '.$_SESSION['USER_NOM'].' ajoute la demande '.$DB_ROW['item_ref'].' "'.$DB_ROW['item_nom'].'"';
 $guid  = 'demande_'.$demande_id.'_add';
 // On récupère les profs...
 $DB_COL = DB_STRUCTURE_ELEVE::DB_recuperer_professeurs_eleve_matiere($_SESSION['USER_ID'],$matiere_id);

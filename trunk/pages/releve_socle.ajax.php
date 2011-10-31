@@ -54,7 +54,7 @@ if( (!$palier_id) || (!$palier_nom) || (!count($tab_pilier_id)) || (!in_array($m
 	exit('Erreur avec les données transmises !');
 }
 
-save_cookie_select('palier');
+Formulaire::save_choix('releve_socle');
 
 // Permet d'avoir des informations accessibles en cas d'erreur type « PHP Fatal error : Allowed memory size of ... bytes exhausted ».
 // ajouter_log_PHP( $log_objet='Demande de bilan' , $log_contenu=serialize($_POST) , $log_fichier=__FILE__ , $log_ligne=__LINE__ , $only_sesamath=true );
@@ -380,7 +380,7 @@ foreach($tab_eleve as $tab)
 							$tab_item_validation  = $test_affichage_Validation ? $tab_user_entree[$eleve_id][$socle_id] : array() ;
 							$releve_pdf->releve_socle_item($socle_nom,$test_affichage_Pourcentage,$tab_item_pourcentage,$test_affichage_Validation,$tab_item_validation);
 							$socle_nom  = html($socle_nom);
-							$socle_nom  = (mb_strlen($socle_nom)<160) ? $socle_nom : mb_substr($socle_nom,0,150).' [...] <img src="./_img/puce_astuce.png" alt="" title="'.$socle_nom.'" />';
+							$socle_nom  = (mb_strlen($socle_nom)<160) ? $socle_nom : mb_substr($socle_nom,0,150).' [...] <img src="./_img/bulle_aide.png" alt="" title="'.$socle_nom.'" />';
 							if( $tab_infos_socle_eleve[$socle_id][$eleve_id] )
 							{
 								$lien_toggle = '<a href="#" lang="'.$socle_id.'_'.$eleve_id.'"><img src="./_img/toggle_plus.gif" alt="" title="Voir / masquer le détail des items associés." class="toggle" /></a> ';

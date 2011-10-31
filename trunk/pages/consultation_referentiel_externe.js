@@ -201,50 +201,25 @@ $(document).ready
 						dataType : "html",
 						error : function(msg,string)
 						{
-							$('label[id=temp]').removeAttr("class").addClass("alerte").html('Echec de la connexion ! Veuillez recommencer.').fadeOut(2000,function(){$('label[id=temp]').remove();});
-							return false;
+							$.fancybox( '<label class="alerte">'+'Echec de la connexion ! Veuillez recommencer.'+'</label>' , {'centerOnScroll':true} );
+							$('label[id=temp]').remove();
 						},
 						success : function(responseHTML)
 						{
 							initialiser_compteur();
 							if(responseHTML.substring(0,18)!='<ul class="ul_n1">')
 							{
-								$('label[id=temp]').removeAttr("class").addClass("alerte").html(responseHTML).fadeOut(2000,function(){$('label[id=temp]').remove();});
+								$.fancybox( '<label class="alerte">'+responseHTML+'</label>' , {'centerOnScroll':true} );
 							}
 							else
 							{
-								$('#voir_referentiel_communautaire').addClass('calque_referentiel').html('<ul class="ul_m1"><li class="li_m1"><b>'+description+'</b><q class="imprimer" title="Imprimer le référentiel."></q><q class="retourner" title="Revenir page précédente." />'+responseHTML+'</li></ul>');
-								document.location.href = '#voir_referentiel_communautaire';
+								$.fancybox( '<ul class="ul_m1"><li class="li_m1"><b>'+description+'</b><q class="imprimer" title="Imprimer le référentiel."></q>'+responseHTML+'</li></ul>' , {'centerOnScroll':true} );
 								infobulle();
-								$('label[id=temp]').remove();
 							}
+							$('label[id=temp]').remove();
 						}
 					}
 				);
-			}
-		);
-
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-//	Clic sur une image pour Imprimer un referentiel
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-
-		$('#voir_referentiel_communautaire q.imprimer').live // live est utilisé pour prendre en compte les nouveaux éléments créés
-		('click',
-			function()
-			{
-				window.print();
-			}
-		);
-
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-//	Clic sur une image pour Fermer le calque avec le détail d'un referentiel
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-
-		$('#voir_referentiel_communautaire q.retourner').live // live est utilisé pour prendre en compte les nouveaux éléments créés
-		('click',
-			function()
-			{
-				$('#voir_referentiel_communautaire').removeAttr("class").html('');
 			}
 		);
 

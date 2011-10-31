@@ -27,6 +27,7 @@
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = "Blocage des connexions";
+$VERSION_JS_FILE += 1;
 
 // Initialisation de l'état de l'accès
 $fichier_blocage_administrateur = CHEMIN_CONFIG.'blocage_administrateur_'.$_SESSION['BASE'].'.txt';

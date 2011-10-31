@@ -67,7 +67,7 @@ foreach($DB_TAB as $DB_ROW)
 			foreach($DB_TAB as $DB_ROW)
 			{
 				// Afficher une ligne du tableau
-				$img = (!is_file(CHEMIN_CONFIG.'blocage_webmestre_'.$DB_ROW['sacoche_base'].'.txt')) ? '<img class="bloquer" src="./_img/blocage_non.png" title="Bloquer cet établissement." />' : '<img class="debloquer" src="./_img/blocage_oui.png" title="Débloquer cet établissement." />' ;
+				$img = (!is_file(CHEMIN_CONFIG.'blocage_webmestre_'.$DB_ROW['sacoche_base'].'.txt')) ? '<img class="bloquer" src="./_img/etat/acces_oui.png" title="Bloquer cet établissement." />' : '<img class="debloquer" src="./_img/etat/acces_non.png" title="Débloquer cet établissement." />' ;
 				echo'<tr id="id_'.$DB_ROW['sacoche_base'].'">';
 				echo	'<td class="nu"><a href="#id_0">'.$img.'</a></td>';
 				echo	'<td class="nu"><input type="checkbox" name="f_ids" value="'.$DB_ROW['sacoche_base'].'" /></td>';

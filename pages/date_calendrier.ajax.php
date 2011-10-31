@@ -83,16 +83,16 @@ $calendrier_navigation .= '<div class="v1 t12 g cr">';
 $an   = ($m==1) ? $a-1 : $a;
 $mois = ($m==1) ? 12   : $m-1;
 if( ( ($m==1) && ($a<=$annee_mini) )==false)
-	$calendrier_navigation .= '<input type="image" class="actu" src="./_img/fleche_g1.gif" lang="'.$mois.'_'.$an.'" />&nbsp;';
+	$calendrier_navigation .= '<input type="image" class="actu" src="./_img/fleche/fleche_g1.gif" lang="'.$mois.'_'.$an.'" />&nbsp;';
 else
-	$calendrier_navigation .= '<img alt="1 mois avant" src="./_img/fleche_g0.gif" />&nbsp;';
+	$calendrier_navigation .= '<img alt="1 mois avant" src="./_img/fleche/fleche_g0.gif" />&nbsp;';
 $calendrier_navigation .= $tab_mois[$m].' '.$a;
 $an   = ($m==12) ? $a+1 : $a;
 $mois = ($m==12) ? 1   : $m+1;
 if( ($m<$mois_actuel) || ($a<$annee_maxi) )
-	$calendrier_navigation .= '&nbsp;<input type="image" class="actu" src="./_img/fleche_d1.gif" lang="'.$mois.'_'.$an.'" />';
+	$calendrier_navigation .= '&nbsp;<input type="image" class="actu" src="./_img/fleche/fleche_d1.gif" lang="'.$mois.'_'.$an.'" />';
 else
-	$calendrier_navigation .= '<img alt="1 mois apres" src="./_img/fleche_d0.gif" />&nbsp;';
+	$calendrier_navigation .= '<img alt="1 mois apres" src="./_img/fleche/fleche_d0.gif" />&nbsp;';
 $calendrier_navigation .= '</div>';
 // Choix final de la période : tableau du calendrier du mois sélectionné
 $calendrier_affichage = '<table summary="calendrier" cellspacing="1" border="1" style="margin:auto">';

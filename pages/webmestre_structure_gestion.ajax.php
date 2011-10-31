@@ -125,7 +125,7 @@ if( ($action=='ajouter') && isset($tab_geo[$geo_id]) && $localisation && $denomi
 	}
 	// On affiche le retour
 	echo'<tr id="id_'.$base_id.'" class="new">';
-	echo	'<td class="nu"><a href="#id_0"><img class="bloquer" src="./_img/blocage_non.png" title="Bloquer cet établissement." /></a></td>';
+	echo	'<td class="nu"><a href="#id_0"><img class="bloquer" src="./_img/etat/acces_non.png" title="Bloquer cet établissement." /></a></td>';
 	echo	'<td class="nu"><input type="checkbox" name="f_ids" value="'.$base_id.'" /></td>';
 	echo	'<td class="label">'.$base_id.'</td>';
 	echo	'<td class="label"><i>'.sprintf("%02u",$tab_geo[$geo_id]['ordre']).'</i>'.html($tab_geo[$geo_id]['nom']).'</td>';
@@ -165,7 +165,7 @@ if( ($action=='modifier') && $base_id && isset($tab_geo[$geo_id]) && $localisati
 	$tab_parametres['denomination'] = $denomination;
 	DB_STRUCTURE_COMMUN::DB_modifier_parametres($tab_parametres);
 	// On affiche le retour
-	$img = (!is_file(CHEMIN_CONFIG.'blocage_webmestre_'.$base_id.'.txt')) ? '<img class="bloquer" src="./_img/blocage_non.png" title="Bloquer cet établissement." />' : '<img class="debloquer" src="./_img/blocage_oui.png" title="Débloquer cet établissement." />' ;
+	$img = (!is_file(CHEMIN_CONFIG.'blocage_webmestre_'.$base_id.'.txt')) ? '<img class="bloquer" src="./_img/etat/acces_oui.png" title="Bloquer cet établissement." />' : '<img class="debloquer" src="./_img/etat/acces_non.png" title="Débloquer cet établissement." />' ;
 	echo'<td class="nu"><a href="#id_0">'.$img.'</a></td>';
 	echo'<td class="nu"><input type="checkbox" name="f_ids" value="'.$base_id.'" /></td>';
 	echo'<td class="label">'.$base_id.'</td>';
@@ -189,7 +189,7 @@ if( ($action=='modifier') && $base_id && isset($tab_geo[$geo_id]) && $localisati
 if( ($action=='lister_admin') && $base_id )
 {
 	charger_parametres_mysql_supplementaires($base_id);
-	exit( afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_administrateurs_etabl() , $select_nom=false , $option_first='non' , $selection=false , $optgroup='non') );
+	exit( Formulaire::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_administrateurs_etabl() , $select_nom=false , $option_first='non' , $selection=false , $optgroup='non') );
 }
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
@@ -273,7 +273,7 @@ if( ($action=='supprimer') && $listing_base_id )
 if( ($action=='bloquer') && $base_id )
 {
 	bloquer_application($_SESSION['USER_PROFIL'],$base_id,'Action ciblée ; contacter le webmestre pour obtenir des précisions.');
-	exit('<img class="debloquer" src="./_img/blocage_oui.png" title="Débloquer cet établissement." />');
+	exit('<img class="debloquer" src="./_img/etat/acces_non.png" title="Débloquer cet établissement." />');
 }
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
@@ -283,7 +283,7 @@ if( ($action=='bloquer') && $base_id )
 if( ($action=='debloquer') && $base_id )
 {
 	debloquer_application($_SESSION['USER_PROFIL'],$base_id);
-	exit('<img class="bloquer" src="./_img/blocage_non.png" title="Bloquer cet établissement." />');
+	exit('<img class="bloquer" src="./_img/etat/acces_oui.png" title="Bloquer cet établissement." />');
 }
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-

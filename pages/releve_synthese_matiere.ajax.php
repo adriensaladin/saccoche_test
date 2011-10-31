@@ -57,8 +57,7 @@ $liste_eleve   = implode(',',$tab_eleve);
 if( $matiere_id && $matiere_nom && $groupe_id && $groupe_nom && count($tab_eleve) && ( $periode_id || ($date_debut && $date_fin) ) && $retroactif && $mode_synthese && $couleur && $legende )
 {
 
-	save_cookie_select('releve_synthese');
-	save_cookie_select('matiere');
+	Formulaire::save_choix('synthese_matiere');
 
 	// Période concernée
 	if($periode_id==0)

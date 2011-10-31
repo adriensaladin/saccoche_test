@@ -230,15 +230,16 @@ $(document).ready
 						dataType : "html",
 						error : function(msg,string)
 						{
-							$('label[for='+td_id+']').removeAttr("class").addClass("alerte").html('Echec de la connexion ! Veuillez recommencer.').fadeOut(2000,function(){$('label[for='+td_id+']').remove();$('#zone_eval_choix q').show();});
-							return false;
+							$.fancybox( '<label class="alerte">'+'Echec de la connexion ! Veuillez recommencer.'+'</label>' , {'centerOnScroll':true} );
+							$('label[for='+td_id+']').remove();
+							$('#zone_eval_choix q').show();
 						},
 						success : function(responseHTML)
 						{
 							initialiser_compteur();
 							if(responseHTML.substring(0,4)!='<tr>')
 							{
-								$('label[for='+td_id+']').removeAttr("class").addClass("alerte").html(responseHTML).fadeOut(2000,function(){$('label[for='+td_id+']').remove();$('#zone_eval_choix q').show();});
+								$.fancybox( '<label class="alerte">'+responseHTML+'</label>' , {'centerOnScroll':true} );
 							}
 							else
 							{
@@ -247,9 +248,10 @@ $(document).ready
 								format_liens('#table_voir');
 								trier_tableau2();
 								infobulle();
-								$('#zone_eval_detail').show();
-								$('label[for='+td_id+']').removeAttr("class").addClass("valide").html("Contenu affiché ci-dessous !").fadeOut(2000,function(){$('label[for='+td_id+']').remove();$('#zone_eval_choix q').show();});
+								$.fancybox( { 'href':'#zone_eval_detail' , onStart:function(){$('#zone_eval_detail').css("display","block");} , onClosed:function(){$('#zone_eval_detail').css("display","none");} , 'centerOnScroll':true } );
 							}
+							$('label[for='+td_id+']').remove();
+							$('#zone_eval_choix q').show();
 						}
 					}
 				);

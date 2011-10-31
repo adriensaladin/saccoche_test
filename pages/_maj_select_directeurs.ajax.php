@@ -30,5 +30,5 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 if($_SESSION['SESAMATH_ID']==ID_DEMO) {}
 
-echo afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_directeurs_etabl() , $select_nom=false , $option_first='non' , $selection=true , $optgroup='non');
+echo Formulaire::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_directeurs_etabl() , $select_nom=false , $option_first='non' , $selection=true , $optgroup='non');
 ?>

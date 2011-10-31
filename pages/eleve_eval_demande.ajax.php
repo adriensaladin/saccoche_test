@@ -43,8 +43,8 @@ if( ($action=='supprimer') && $demande_id && $item_id && $matiere_id )
 	// Récupérer la référence et le nom de l'item
 	$DB_ROW = DB_STRUCTURE_ELEVE::DB_recuperer_item_infos($item_id);
 	// Ajout aux flux RSS des profs concernés
-	$titre = 'Demande supprimée par '.$_SESSION['USER_NOM'].' '.$_SESSION['USER_PRENOM']{0}.'.';
-	$texte = $_SESSION['USER_PRENOM'].' '.$_SESSION['USER_NOM'].' retire sa demande d\'évaluation sur l\'item '.$DB_ROW['item_ref'].' intitulé "'.$DB_ROW['item_nom'].'"';
+	$titre = 'Demande retirée par '.$_SESSION['USER_NOM'].' '.$_SESSION['USER_PRENOM']{0}.'.';
+	$texte = $_SESSION['USER_PRENOM'].' '.$_SESSION['USER_NOM'].' retire sa demande '.$DB_ROW['item_ref'].' "'.$DB_ROW['item_nom'].'"';
 	$guid  = 'demande_'.$demande_id.'_del';
 	// On récupère les profs...
 	$DB_COL = DB_STRUCTURE_ELEVE::DB_recuperer_professeurs_eleve_matiere($_SESSION['USER_ID'],$matiere_id);

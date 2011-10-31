@@ -76,7 +76,7 @@ if(isset($_COOKIE[COOKIE_AUTHMODE]))
 
 <hr />
 
-<h2><img src="./_img/puce_astuce.png" alt="Informations" /> Informations</h2>
+<h2><img src="./_img/puce/puce_astuce.png" alt="Informations" /> Informations</h2>
 <ul class="puce">
 	<li><em>SACoche</em> est un logiciel gratuit, libre, développé avec le soutien de <a class="lien_ext" href="http://www.sesamath.net"><em>Sésamath</em></a>.</li>
 	<li class="b">Consulter <a href="<?php echo SERVEUR_PROJET ?>" class="lien_ext">le site officiel de <em>SACoche</em></a> pour tout renseignement.</li>

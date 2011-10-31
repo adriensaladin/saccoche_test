@@ -157,7 +157,7 @@ $(document).ready
 			if(responseHTML.substring(0,13)=='<label class=')
 			{
 				
-				$('#ajax_msg').removeAttr("class").addClass("valide").html("Demande prise en compte.").fadeOut(2000,function(){$(this).removeAttr("class").html("").show();});
+				$('#ajax_msg').removeAttr("class").html("");
 				$('#ajax_acces_actuel').html(responseHTML);
 			}
 			else

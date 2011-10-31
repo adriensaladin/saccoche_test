@@ -77,7 +77,6 @@ tester_blocage_application($_SESSION['BASE'],$demande_connexion_profil=false);
 // Autres fonctions à charger
 require_once('./_inc/fonction_clean.php');
 require_once('./_inc/fonction_divers.php');
-require_once('./_inc/fonction_formulaires_select.php');
 require_once('./_inc/fonction_affichage.php');
 
 // Annuler un blocage par l'automate anormalement long
@@ -183,7 +182,6 @@ entete();
 	<link rel="shortcut icon" type="images/x-icon" href="./favicon.ico" />
 	<link rel="icon" type="image/png" href="./favicon.png" />
 	<link rel="stylesheet" type="text/css" href="<?php echo compacter('./_css/style.css',VERSION_CSS_SCREEN,'mini') ?>" />
-	<link rel="stylesheet" type="text/css" href="<?php echo compacter('./_css/style_print.css',VERSION_CSS_SCREEN,'mini') ?>" media="print" />
 	<?php if(isset($_SESSION['CSS'])){echo'<style type="text/css">'.$_SESSION['CSS'].'</style>';} ?>
 	<script type="text/javascript" charset="utf-8" src="<?php echo compacter('./_js/jquery-librairies.js',VERSION_JS_BIBLIO,'mini') ?>"></script>
 	<script type="text/javascript" charset="utf-8" src="<?php echo compacter('./_js/script.js',VERSION_JS_GLOBAL,'mini') ?>"></script>

@@ -74,7 +74,7 @@ $(document).ready
 			new_tr += '<td><select id="f_groupe" name="f_groupe">'+select_groupe.replace('value="'+groupe+'"','value="'+groupe+'" selected')+'</select></td>';
 			new_tr += '<td><input id="f_info" name="f_info" size="20" type="text" value="" /></td>';
 			new_tr += '<td><input id="f_compet_nombre" name="f_compet_nombre" size="10" type="text" value="0 item" readonly /><input id="f_compet_liste" name="f_compet_liste" type="hidden" value="" /><q class="choisir_compet" title="Voir ou choisir les items."></q></td>';
-			new_tr += '<td><input id="f_prof_nombre" name="f_prof_nombre" size="10" type="text" value="vous seul" readonly /><input id="f_prof_liste" name="f_prof_liste" type="hidden" value="" /><q class="choisir_prof" title="Voir ou choisir les collègues."></q></td>';
+			new_tr += '<td><input id="f_prof_nombre" name="f_prof_nombre" size="10" type="text" value="moi seul" readonly /><input id="f_prof_liste" name="f_prof_liste" type="hidden" value="" /><q class="choisir_prof" title="Voir ou choisir les collègues."></q></td>';
 			new_tr += '<td class="nu"><input id="f_action" name="f_action" type="hidden" value="'+mode+'" /><q class="valider" title="Valider l\'ajout de cette évaluation."></q><q class="annuler" title="Annuler l\'ajout de cette évaluation."></q> <label id="ajax_msg">&nbsp;</label></td>';
 			new_tr += '</tr>';
 			// Ajouter cette nouvelle ligne
@@ -92,7 +92,6 @@ $(document).ready
 			mode = $(this).attr('class');
 			afficher_masquer_images_action('hide');
 			$('#form0').css('visibility','hidden');
-			$('#p_alerte').show();
 			// Récupérer les informations de la ligne concernée
 			var ref           = $(this).parent().attr('lang');
 			var date          = $(this).parent().prev().prev().prev().prev().prev().prev().html();
@@ -235,7 +234,6 @@ $(document).ready
 				case 'modifier':
 					$(this).parent().parent().remove();
 					$("table.form tr").show(); // $(this).parent().parent().prev().show(); pose pb si tri du tableau entre temps
-					$('#p_alerte').hide();
 					break;
 				case 'supprimer':
 					$(this).parent().remove();
@@ -444,9 +442,7 @@ $(document).ready
 		var choisir_compet = function()
 		{
 			// Ne pas changer ici la valeur de "mode" (qui est à "ajouter" ou "modifier" ou "dupliquer").
-			$('#form0 , #form1').hide('fast');
 			$('#zone_compet ul').css("display","none");
-			$('#zone_compet').css("display","block");
 			$('#zone_compet ul.ul_m1').css("display","block");
 			var compet_liste = $('#f_compet_liste').val();
 			// Décocher tout
@@ -474,6 +470,8 @@ $(document).ready
 					}
 				}
 			}
+			// Afficher la zone
+			$.fancybox( { 'href':'#zone_compet' , onStart:function(){$('#zone_compet').css("display","block");} , onClosed:function(){$('#zone_compet').css("display","none");} , 'modal':true , 'centerOnScroll':true } );
 		};
 
 		/**
@@ -530,8 +528,6 @@ $(document).ready
 		{
 			// Récupérer les informations de la ligne concernée
 			var prof_liste = $('#f_prof_liste').val();
-			// Masquer le tableau
-			$('#form0 , #form1').hide('fast');
 			// Décocher tout
 			$("#zone_profs input[type=checkbox]").each
 			(
@@ -557,7 +553,7 @@ $(document).ready
 				}
 			}
 			// Afficher la zone
-			$('#zone_profs').css("display","block");
+			$.fancybox( { 'href':'#zone_profs' , onStart:function(){$('#zone_profs').css("display","block");} , onClosed:function(){$('#zone_profs').css("display","none");} , 'modal':true , 'centerOnScroll':true } );
 		};
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
@@ -579,6 +575,27 @@ $(document).ready
 		$('q.voir_repart').live(    'click' , voir_repart );
 		$('q.choisir_compet').live( 'click' , choisir_compet );
 		$('q.choisir_prof').live(   'click' , choisir_prof );
+
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+//	Cocher / décocher par lot des individus
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
+		$('#prof_check_all').click
+		(
+			function()
+			{
+				$('.prof_liste').find('input:enabled').prop('checked',true);
+				return false;
+			}
+		);
+		$('#prof_uncheck_all').click
+		(
+			function()
+			{
+				$('.prof_liste').find('input:enabled').prop('checked',false);
+				return false;
+			}
+		);
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 //	Clic sur le checkbox pour choisir ou non une date visible différente de la date du devoir
@@ -620,8 +637,7 @@ $(document).ready
 		(
 			function()
 			{
-				$('#zone_compet').css("display","none");
-				$('#form0 , #form1').show('fast');
+				$.fancybox.close();
 				return(false);
 			}
 		);
@@ -633,8 +649,7 @@ $(document).ready
 		(
 			function()
 			{
-				$('#zone_profs').css("display","none");
-				$('#form0 , #form1').show('fast');
+				$.fancybox.close();
 				return(false);
 			}
 		);
@@ -736,7 +751,7 @@ $(document).ready
 				var s = (nombre>1) ? 's' : '';
 				$('#f_compet_liste').val(liste);
 				$('#f_compet_nombre').val(nombre+' item'+s);
-				$('#annuler_compet').click();
+				$.fancybox.close();
 			}
 		);
 
@@ -758,10 +773,10 @@ $(document).ready
 					}
 				);
 				liste  = (nombre==1) ? '' : liste.substring(0,liste.length-1) ;
-				nombre = (nombre==1) ? 'vous seul' : nombre+' profs' ;
+				nombre = (nombre==1) ? 'moi seul' : nombre+' profs' ;
 				$('#f_prof_liste').val(liste);
 				$('#f_prof_nombre').val(nombre);
-				$('#annuler_profs').click();
+				$.fancybox.close();
 			}
 		);
 
@@ -1439,7 +1454,6 @@ $(document).ready
 						new_td  = responseHTML.replace('<td>{{GROUPE_NOM}}</td>','<td>'+tab_groupe[groupe_id]+'</td>');
 						$('q.valider').parent().parent().prev().addClass("new").html(new_td).show();
 						$('q.valider').parent().parent().remove();
-						$('#p_alerte').hide();
 					break;
 					case 'supprimer':
 						$('q.valider').parent().parent().parent().remove();

@@ -39,5 +39,5 @@ if( ($groupe_id) && (!isset($tab_types[$groupe_type])) )
 	exit('Erreur avec les données transmises !');
 }
 
-echo afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_professeurs_etabl($tab_types[$groupe_type],$groupe_id) , $select_nom=false , $option_first='non' , $selection=true , $optgroup='non');
+echo Formulaire::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_professeurs_etabl($tab_types[$groupe_type],$groupe_id) , $select_nom=false , $option_first='non' , $selection=true , $optgroup='non');
 ?>

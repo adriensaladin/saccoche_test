@@ -93,7 +93,6 @@ tester_blocage_application($_SESSION['BASE'],$demande_connexion_profil=false);
 require_once('./_inc/fonction_clean.php');
 require_once('./_inc/fonction_divers.php');
 require_once('./_inc/fonction_appel_serveur_communautaire.php');
-require_once('./_inc/fonction_formulaires_select.php');
 require_once('./_inc/fonction_affichage.php');
 
 // Annuler un blocage par l'automate anormalement long

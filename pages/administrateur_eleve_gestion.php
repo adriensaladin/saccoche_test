@@ -36,7 +36,7 @@ $groupe      = (isset($_POST['f_groupes'])) ? clean_texte($_POST['f_groupes']) :
 $groupe_type = clean_texte( substr($groupe,0,1) );
 $groupe_id   = clean_entier( substr($groupe,1) );
 // Construire et personnaliser le select pour restreindre à une classe ou un groupe
-$select_f_groupes = afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_regroupements_etabl() , $select_nom='f_groupes' , $option_first='non' , $selection=$groupe , $optgroup='oui');
+$select_f_groupes = Formulaire::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_regroupements_etabl() , $select_nom='f_groupes' , $option_first='non' , $selection=$groupe , $optgroup='oui');
 ?>
 
 <p><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__gestion_eleves">DOC : Gestion des élèves</a></span></p>

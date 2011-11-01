@@ -46,9 +46,10 @@ $orientation    = (isset($_POST['f_orientation']))     ? clean_texte($_POST['f_o
 $marge_min      = (isset($_POST['f_marge_min']))       ? clean_texte($_POST['f_marge_min'])             : '';
 $couleur        = (isset($_POST['f_couleur']))         ? clean_texte($_POST['f_couleur'])               : '';
 $only_req       = (isset($_POST['f_restriction_req'])) ? true                                           : false;
+$timestamp      = (isset($_POST['timestamp']))         ? (float)$_POST['timestamp']                     : time(); // Pas de (int) car sur les systèmes 32-bit, le max est 2147483647 alors que js envoie davantage (http://fr.php.net/manual/fr/language.types.integer.php#103506)
 
 $dossier_export = './__tmp/export/';
-$fnom = 'saisie_'.$_SESSION['BASE'].'_'.$_SESSION['USER_ID'].'_'.$ref;
+$fnom = 'saisie_'.$_SESSION['BASE'].'_'.$_SESSION['USER_ID'].'_'.$ref.'_'.$timestamp;
 
 // Si "ref" est renseigné (pour Éditer ou Retirer ou Saisir ou ...), il contient l'id de l'évaluation + '_' + l'initiale du type de groupe + l'id du groupe
 // Dans le cas d'une duplication, "ref" sert à retrouver l'évaluation d'origine pour évenuellement récupérer l'ordre des items
@@ -586,7 +587,6 @@ if( ($action=='voir') && $devoir_id && $groupe_type && $groupe_id && $date && $d
 	// Enregistrer le csv
 	$export_csv .= str_replace(':::',"\r\n",$descriptif)."\r\n\r\n";
 	$export_csv .= 'CODAGES AUTORISÉS : 1 2 3 4 A N D'."\r\n";
-	$fnom = 'saisie_'.$_SESSION['BASE'].'_'.$_SESSION['USER_ID'].'_'.$ref;
 	$zip = new ZipArchive();
 	$result_open = $zip->open($dossier_export.$fnom.'.zip', ZIPARCHIVE::CREATE);
 	if($result_open!==TRUE)
@@ -1005,9 +1005,8 @@ if( ($action=='Imprimer_cartouche') && $devoir_id && $groupe_type && $groupe_id 
 		}
 	}
 	// On attaque l'élaboration des sorties HTML, CSV et PDF
-	$fnom = 'cartouche_'.$_SESSION['BASE'].'_'.$devoir_id.'_'.time();
-	$sacoche_htm = '<hr /><a class="lien_ext" href="'.$dossier_export.$fnom.'.pdf">Cartouches &rarr; Archiver / Imprimer (format <em>pdf</em>).</a><br />';
-	$sacoche_htm.= '<a class="lien_ext" href="'.$dossier_export.$fnom.'.zip">Cartouches &rarr; Récupérer / Manipuler (fichier <em>csv</em> pour tableur).</a><p />';
+	$sacoche_htm = '<hr /><a class="lien_ext" href="'.$dossier_export.$fnom.'_cartouche.pdf">Cartouches &rarr; Archiver / Imprimer (format <em>pdf</em>).</a><br />';
+	$sacoche_htm.= '<a class="lien_ext" href="'.$dossier_export.$fnom.'_cartouche.zip">Cartouches &rarr; Récupérer / Manipuler (fichier <em>csv</em> pour tableur).</a><p />';
 	$sacoche_csv = '';
 	// Appel de la classe et définition de qqs variables supplémentaires pour la mise en page PDF
 	$item_nb = count($tab_comp_id);
@@ -1075,16 +1074,16 @@ if( ($action=='Imprimer_cartouche') && $devoir_id && $groupe_type && $groupe_id 
 	}
 	// On archive le cartouche dans un fichier tableur zippé (csv tabulé)
 	$zip = new ZipArchive();
-	$result_open = $zip->open($dossier_export.$fnom.'.zip', ZIPARCHIVE::CREATE);
+	$result_open = $zip->open($dossier_export.$fnom.'_cartouche.zip', ZIPARCHIVE::CREATE);
 	if($result_open!==TRUE)
 	{
 		require('./_inc/tableau_zip_error.php');
 		exit('Problème de création de l\'archive ZIP ('.$result_open.$tab_zip_error[$result_open].') !');
 	}
-	$zip->addFromString($fnom.'.csv',csv($sacoche_csv));
+	$zip->addFromString($fnom.'_cartouche.csv',csv($sacoche_csv));
 	$zip->close();
 	// On archive le cartouche dans un fichier pdf
-	$sacoche_pdf->Output($dossier_export.$fnom.'.pdf','F');
+	$sacoche_pdf->Output($dossier_export.$fnom.'_cartouche.pdf','F');
 	// Affichage
 	exit($sacoche_htm);
 }

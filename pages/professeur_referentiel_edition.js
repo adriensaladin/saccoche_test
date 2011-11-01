@@ -1040,6 +1040,7 @@ $(document).ready
 				{
 					if(objet=='choisir_compet') {$('#choisir_socle_annuler').click();} else {$('#zone_compet q.annuler').click();}
 				}
+				return false;
 			}
 		);
 

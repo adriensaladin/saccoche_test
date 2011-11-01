@@ -276,6 +276,8 @@ $(document).ready
 			var date_visible = $(this).parent().prev().prev().prev().prev().prev().html();
 			var groupe       = $(this).parent().prev().prev().prev().prev().html();
 			var info         = $(this).parent().prev().prev().prev().html();
+			var objet_date   = new Date();
+			var timestamp    = parseInt(objet_date.getTime()/1000) // timestamp pour éviter les pbs de mise en cache de PDF de mêmes noms
 			date1 = date.substring(3,13); // garder la date mysql
 			date2 = date.substring(17,date.length); // garder la date française
 			// Masquer le tableau ; Afficher la zone associée et charger son contenu
@@ -289,7 +291,7 @@ $(document).ready
 				{
 					type : 'POST',
 					url : 'ajax.php?page='+PAGE,
-					data : 'f_action='+mode+'&f_ref='+ref+'&f_date='+date1+'&f_info='+info+'&f_date_visible='+date_visible+'&f_descriptif='+groupe+':::'+info+':::'+date2,
+					data : 'f_action='+mode+'&f_ref='+ref+'&timestamp='+timestamp+'&f_date='+date1+'&f_info='+info+'&f_date_visible='+date_visible+'&f_descriptif='+groupe+':::'+info+':::'+date2,
 					dataType : "html",
 					error : function(msg,string)
 					{
@@ -310,8 +312,8 @@ $(document).ready
 							$('#table_saisir').html(responseHTML);
 							$('#table_saisir tbody tr th img').hide(0);
 							$('img[title]').tooltip({showURL:false});
-							$('#export_file1').attr("href", $("#filename").val()+ref+'.zip' );
-							$('#export_file4').attr("href", $("#filename").val()+ref+'_sans_notes.pdf' );
+							$('#export_file1').attr("href", $("#filename").val()+ref+'_'+timestamp+'.zip' );
+							$('#export_file4').attr("href", $("#filename").val()+ref+'_'+timestamp+'_sans_notes.pdf' );
 							colorer_cellules();
 							format_liens('#table_saisir');
 							infobulle();
@@ -341,6 +343,8 @@ $(document).ready
 			var groupe = $(this).parent().prev().prev().prev().prev().html();
 			var info   = $(this).parent().prev().prev().prev().html();
 			    date   = date.substring(17,date.length); // garder la date française
+			var objet_date = new Date();
+			var timestamp  = parseInt(objet_date.getTime()/1000) // timestamp pour éviter les pbs de mise en cache de PDF de mêmes noms
 			// Masquer le tableau ; Afficher la zone associée et charger son contenu
 			$('#form0 , #form1').hide('fast');
 			$('#zone_voir').css("display","block");
@@ -351,7 +355,7 @@ $(document).ready
 				{
 					type : 'POST',
 					url : 'ajax.php?page='+PAGE,
-					data : 'f_action='+mode+'&f_ref='+ref+'&f_date='+date+'&f_descriptif='+groupe+':::'+info+':::'+date,
+					data : 'f_action='+mode+'&f_ref='+ref+'&timestamp='+timestamp+'&f_date='+date+'&f_descriptif='+groupe+':::'+info+':::'+date,
 					dataType : "html",
 					error : function(msg,string)
 					{
@@ -370,9 +374,9 @@ $(document).ready
 							$('#msg_voir').removeAttr("class").html('&nbsp;');
 							$('#table_voir').html(responseHTML);
 							$('#table_voir tbody tr th img').hide(0);
-							$('#export_file2').attr("href", $("#filename").val()+ref+'.zip' );
-							$('#export_file3').attr("href", $("#filename").val()+ref+'_sans_notes.pdf' );
-							$('#export_file5').attr("href", $("#filename").val()+ref+'_avec_notes.pdf' );
+							$('#export_file2').attr("href", $("#filename").val()+ref+'_'+timestamp+'.zip' );
+							$('#export_file3').attr("href", $("#filename").val()+ref+'_'+timestamp+'_sans_notes.pdf' );
+							$('#export_file5').attr("href", $("#filename").val()+ref+'_'+timestamp+'_avec_notes.pdf' );
 							$('#table_voir tbody td').css({"background-color":"#DDF","text-align":"center","vertical-align":"middle","font-size":"110%"});
 							infobulle();
 						}
@@ -394,6 +398,8 @@ $(document).ready
 			var groupe = $(this).parent().prev().prev().prev().prev().html();
 			var info   = $(this).parent().prev().prev().prev().html();
 			    date   = date.substring(17,date.length); // garder la date française
+			var objet_date = new Date();
+			var timestamp  = parseInt(objet_date.getTime()/1000) // timestamp pour éviter les pbs de mise en cache de PDF de mêmes noms
 			// Masquer le tableau ; Afficher la zone associée et charger son contenu
 			$('#form0 , #form1').hide('fast');
 			$('#zone_voir_repart').css("display","block");
@@ -404,7 +410,7 @@ $(document).ready
 				{
 					type : 'POST',
 					url : 'ajax.php?page='+PAGE,
-					data : 'f_action='+mode+'&f_ref='+ref+'&f_date='+date+'&f_descriptif='+groupe+':::'+info+':::'+date,
+					data : 'f_action='+mode+'&f_ref='+ref+'&timestamp='+timestamp+'&f_date='+date+'&f_descriptif='+groupe+':::'+info+':::'+date,
 					dataType : "html",
 					error : function(msg,string)
 					{
@@ -424,8 +430,8 @@ $(document).ready
 							$('#msg_voir_repart').removeAttr("class").html('<button id="fermer_zone_voir_repart" type="button"><img alt="" src="./_img/bouton/retourner.png" /> Retour</button>');
 							$('#table_voir_repart1').html(tab_response[0]);
 							$('#table_voir_repart2').html(tab_response[1]);
-							$('#export_file6').attr("href", $("#filename").val()+ref+'_repartition_quantitative.pdf' );
-							$('#export_file7').attr("href", $("#filename").val()+ref+'_repartition_nominative.pdf' );
+							$('#export_file6').attr("href", $("#filename").val()+ref+'_'+timestamp+'_repartition_quantitative.pdf' );
+							$('#export_file7').attr("href", $("#filename").val()+ref+'_'+timestamp+'_repartition_nominative.pdf' );
 							$('#table_voir_repart1 tbody td').css({"background-color":"#DDF","font-weight":"normal","text-align":"center"});
 							$('#table_voir_repart2 tbody td').css({"background-color":"#DDF","font-weight":"normal","font-size":"85%"});
 							infobulle();

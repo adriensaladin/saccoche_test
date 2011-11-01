@@ -277,7 +277,7 @@ $(document).ready
 			var groupe       = $(this).parent().prev().prev().prev().prev().html();
 			var info         = $(this).parent().prev().prev().prev().html();
 			var objet_date   = new Date();
-			var timestamp    = parseInt(objet_date.getTime()/1000) // timestamp pour éviter les pbs de mise en cache de PDF de mêmes noms
+			var timestamp    = parseInt(objet_date.getTime()/1000); // timestamp pour éviter les pbs de mise en cache de PDF de mêmes noms
 			date1 = date.substring(3,13); // garder la date mysql
 			date2 = date.substring(17,date.length); // garder la date française
 			// Masquer le tableau ; Afficher la zone associée et charger son contenu
@@ -344,7 +344,7 @@ $(document).ready
 			var info   = $(this).parent().prev().prev().prev().html();
 			    date   = date.substring(17,date.length); // garder la date française
 			var objet_date = new Date();
-			var timestamp  = parseInt(objet_date.getTime()/1000) // timestamp pour éviter les pbs de mise en cache de PDF de mêmes noms
+			var timestamp  = parseInt(objet_date.getTime()/1000); // timestamp pour éviter les pbs de mise en cache de PDF de mêmes noms
 			// Masquer le tableau ; Afficher la zone associée et charger son contenu
 			$('#form0 , #form1').hide('fast');
 			$('#zone_voir').css("display","block");
@@ -399,7 +399,7 @@ $(document).ready
 			var info   = $(this).parent().prev().prev().prev().html();
 			    date   = date.substring(17,date.length); // garder la date française
 			var objet_date = new Date();
-			var timestamp  = parseInt(objet_date.getTime()/1000) // timestamp pour éviter les pbs de mise en cache de PDF de mêmes noms
+			var timestamp  = parseInt(objet_date.getTime()/1000); // timestamp pour éviter les pbs de mise en cache de PDF de mêmes noms
 			// Masquer le tableau ; Afficher la zone associée et charger son contenu
 			$('#form0 , #form1').hide('fast');
 			$('#zone_voir_repart').css("display","block");

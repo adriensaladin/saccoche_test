@@ -1385,9 +1385,10 @@ function Supprimer_Dossier($dossier)
  * @param string   $dossier
  * @param int      $longueur_prefixe   longueur de $dossier lors du premier appel
  * @param string   $indice   "avant" ou "apres"
+ * @param bool     $calc_md5   TRUE par défaut, FALSE si le fichier est son MD5
  * @return void
  */
-function Analyser_Dossier($dossier,$longueur_prefixe,$indice)
+function Analyser_Dossier($dossier,$longueur_prefixe,$indice,$calc_md5=TRUE)
 {
 	$tab_contenu = Lister_Contenu_Dossier_Programme($dossier);
 	foreach($tab_contenu as $contenu)
@@ -1395,11 +1396,11 @@ function Analyser_Dossier($dossier,$longueur_prefixe,$indice)
 		$chemin_contenu = $dossier.'/'.$contenu;
 		if(is_dir($chemin_contenu))
 		{
-			Analyser_Dossier($chemin_contenu,$longueur_prefixe,$indice);
+			Analyser_Dossier($chemin_contenu,$longueur_prefixe,$indice,$calc_md5);
 		}
 		else
 		{
-			$_SESSION['tmp']['fichier'][substr($chemin_contenu,$longueur_prefixe)][$indice] = md5_file($chemin_contenu);
+			$_SESSION['tmp']['fichier'][substr($chemin_contenu,$longueur_prefixe)][$indice] = ($calc_md5) ? fabriquer_md5_file($chemin_contenu) : file_get_contents($chemin_contenu) ;
 		}
 	}
 	$_SESSION['tmp']['dossier'][substr($dossier,$longueur_prefixe)][$indice] = TRUE;

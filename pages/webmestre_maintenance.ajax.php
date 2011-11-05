@@ -107,8 +107,8 @@ if($action=='maj_etape3')
 //
 if($action=='maj_etape4')
 {
-	$tab_rapport = array();
-	$tab_rapport[] = 'Mise à jour automatique du '.date('d/m/Y H:i:s');
+	$thead = '<tr><td colspan="2">Mise à jour automatique du '.date('d/m/Y H:i:s').'</td></tr>';
+	$tbody = '';
 	// Bloquer l'application
 	ajouter_log_PHP( $log_objet='Mise à jour des fichiers' , $log_contenu='Application fermée.' , $log_fichier=__FILE__ , $log_ligne=__LINE__ , $only_sesamath=false );
 	bloquer_application($_SESSION['USER_PROFIL'],'0','Mise à jour des fichiers en cours.');
@@ -123,7 +123,7 @@ if($action=='maj_etape4')
 		elseif(!isset($tab['avant']))
 		{
 			// Dossier à ajouter
-			$tab_rapport[] = 'Ajout du dossier '.$dossier;
+			$tbody .= '<tr><td class="v">Dossier ajouté</td><td>'.$dossier.'</td></tr>';
 			if( !Creer_Dossier($dossier_install.$dossier) )
 			{
 				ajouter_log_PHP( $log_objet='Mise à jour des fichiers' , $log_contenu='Application accessible.' , $log_fichier=__FILE__ , $log_ligne=__LINE__ , $only_sesamath=false );
@@ -134,7 +134,7 @@ if($action=='maj_etape4')
 		elseif(!isset($tab['apres'])) // (forcément)
 		{
 			// Dossier à supprimer
-			$tab_rapport[] = 'Suppression du dossier '.$dossier;
+			$tbody .= '<tr><td class="r">Dossier supprimé</td><td>'.$dossier.'</td></tr>';
 			if(is_dir($dossier_install.$dossier))
 			{
 				Supprimer_Dossier($dossier_install.$dossier);
@@ -156,7 +156,7 @@ if($action=='maj_etape4')
 					debloquer_application($_SESSION['USER_PROFIL'],'0');
 					exit(']¤['.'pb'.']¤['."Erreur lors de l'écriture du fichier ".$fichier." !");
 				}
-				$tab_rapport[] = 'Mise à jour du fichier '.$fichier;
+				$tbody .= '<tr><td class="b">Fichier modifié</td><td>'.$fichier.'</td></tr>';
 			}
 		}
 		elseif( (!isset($tab['avant'])) && ($fichier!='/.htaccess') )
@@ -168,7 +168,7 @@ if($action=='maj_etape4')
 				debloquer_application($_SESSION['USER_PROFIL'],'0');
 				exit(']¤['.'pb'.']¤['."Erreur lors de l'écriture du fichier ".$fichier." !");
 			}
-			$tab_rapport[] = 'Ajout du fichier '.$fichier;
+			$tbody .= '<tr><td class="v">Fichier ajouté</td><td>'.$fichier.'</td></tr>';
 		}
 		elseif(!isset($tab['apres'])) // (forcément)
 		{
@@ -177,23 +177,151 @@ if($action=='maj_etape4')
 			{
 				unlink($dossier_install.$fichier);
 			}
-			$tab_rapport[] = 'Suppression du fichier '.$fichier;
+			$tbody .= '<tr><td class="r">Fichier supprimé</td><td>'.$fichier.'</td></tr>';
 		}
 	}
 	// Débloquer l'application
 	ajouter_log_PHP( $log_objet='Mise à jour des fichiers' , $log_contenu='Application accessible.' , $log_fichier=__FILE__ , $log_ligne=__LINE__ , $only_sesamath=false );
 	debloquer_application($_SESSION['USER_PROFIL'],'0');
 	// Enregistrement du rapport
-	$fichier_chemin  = './__tmp/export/rapport_maj.txt';
-	$fichier_contenu = implode("\r\n",$tab_rapport);
+	$fichier_chemin  = './__tmp/export/rapport_maj.html';
+	$fichier_contenu = '<!DOCTYPE html><html><head><style type="text/css">body{font-family:monospace;font-size:8pt}table{border-collapse:collapse}thead{background:#CCC;font-weight:bold;text-align:center}td{border:solid 1px;padding:2px;white-space:nowrap}.v{color:green}.r{color:red}.b{color:blue}</style></head><body><table><thead>'.$thead.'</thead><tbody>'.$tbody.'</tbody></table></body></html>';
 	Ecrire_Fichier($fichier_chemin,$fichier_contenu);
-	exit(']¤['.'ok'.']¤['.'<a class="lien_ext" href="'.$fichier_chemin.'">Rapport des modifications apportées.</a>'." Nettoyage&hellip;");
+	exit(']¤['.'ok'.']¤['.'Rapport des modifications apportées et nettoyage&hellip;');
 }
 
 //
 // 5. Nettoyage...
 //
 if($action=='maj_etape5')
+{
+	unset($_SESSION['tmp']);
+	Supprimer_Dossier($dossier_dezip);
+	exit(']¤['.'ok'.']¤['.VERSION_PROG);
+}
+
+//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
+// Vérification des fichiers
+//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
+
+$dossier_import  = './__tmp/import';
+$fichier_import  = $dossier_import.'/verification.zip';
+$dossier_dezip   = $dossier_import.'/SACoche';
+$dossier_install = '.';
+
+//
+// 1. Récupération de l'archive <em>ZIP</em>...
+//
+if($action=='verif_etape1')
+{
+	$tab_post = array();
+	$tab_post['verification'] = 1;
+	$tab_post['version'] = VERSION_PROG;
+	$contenu_zip = url_get_contents(SERVEUR_TELECHARGEMENT,$tab_post,$timeout=29);
+	if(substr($contenu_zip,0,6)=='Erreur')
+	{
+		exit(']¤['.'pb'.']¤['.$contenu_zip);
+	}
+	Ecrire_Fichier($fichier_import,$contenu_zip);
+	exit(']¤['.'ok'.']¤['."Decompression de l'archive&hellip;");
+}
+
+//
+// 2. Decompression de l'archive...
+//
+if($action=='verif_etape2')
+{
+	if(is_dir($dossier_dezip))
+	{
+		Supprimer_Dossier($dossier_dezip);
+	}
+	// Dezipper dans le dossier temporaire
+	$code_erreur = unzip( $fichier_import , $dossier_import , TRUE /*use_ZipArchive*/ );
+	if($code_erreur)
+	{
+		require('./_inc/tableau_zip_error.php');
+		exit(']¤['.'pb'.']¤['.'Fichiers impossibles à extraire ('.$code_erreur.$tab_zip_error[$code_erreur].') !');
+	}
+	exit(']¤['.'ok'.']¤['."Analyse des fichiers et recensement des dossiers&hellip;");
+}
+
+//
+// 3. Analyse des fichiers et recensement des dossiers... (après initialisation de la session temporaire)
+//
+if($action=='verif_etape3')
+{
+	$_SESSION['tmp'] = array();
+	Analyser_Dossier( $dossier_install , strlen($dossier_install) , 'avant' );
+	Analyser_Dossier( $dossier_dezip   , strlen($dossier_dezip)   , 'apres' , FALSE );
+	exit(']¤['.'ok'.']¤['."Comparaison des données&hellip;");
+}
+
+//
+// 4. Comparaison des données...
+//
+if($action=='verif_etape4')
+{
+	$thead = '<tr><td colspan="2">Vérification du '.date('d/m/Y H:i:s').'</td></tr>';
+	$tbody_ok = '';
+	$tbody_pb = '';
+	// Dossiers : ordre croissant pour commencer par ceux les moins imbriqués : obligatoire pour l'ajout, et pour la suppression on teste si pas déjà supprimé.
+	ksort($_SESSION['tmp']['dossier']);
+	foreach($_SESSION['tmp']['dossier'] as $dossier => $tab)
+	{
+		if( (isset($tab['avant'])) && (isset($tab['apres'])) )
+		{
+			// Dossier inchangé (cas le plus fréquent donc testé en premier).
+			$tbody_ok .= '<tr><td class="v">Dossier présent</td><td>'.$dossier.'</td></tr>';
+		}
+		elseif(!isset($tab['avant']))
+		{
+			// Dossier manquant
+			$tbody_pb .= '<tr><td class="r">Dossier manquant</td><td>'.$dossier.'</td></tr>';
+		}
+		elseif(!isset($tab['apres'])) // (forcément)
+		{
+			// Dossier en trop
+			$tbody_pb .= '<tr><td class="r">Dossier en trop</td><td>'.$dossier.'</td></tr>';
+		}
+	}
+	// Fichiers : ordre décroissant pour avoir VERSION.txt en dernier (majuscules avant dans la table ASCII).
+	krsort($_SESSION['tmp']['fichier']);
+	foreach($_SESSION['tmp']['fichier'] as $fichier => $tab)
+	{
+		if( (isset($tab['avant'])) && (isset($tab['apres'])) )
+		{
+			if( ($tab['avant']==$tab['apres']) || ($fichier=='/.htaccess') )
+			{
+				// Fichier identique (si le .htaccess a été changé, c'est sans doute volontaire, ne pas y toucher)
+				$tbody_ok .= '<tr><td class="v">Fichier identique</td><td>'.$fichier.'</td></tr>';
+			}
+			else
+			{
+				// Fichier différent
+				$tbody_pb .= '<tr><td class="r">Fichier différent</td><td>'.$fichier.'</td></tr>';
+			}
+		}
+		elseif( (!isset($tab['avant'])) && ($fichier!='/.htaccess') )
+		{
+			// Fichier manquant
+			$tbody_pb .= '<tr><td class="r">Fichier manquant</td><td>'.$fichier.'</td></tr>';
+		}
+		elseif(!isset($tab['apres'])) // (forcément)
+		{
+			$tbody_pb .= '<tr><td class="r">Fichier en trop</td><td>'.$fichier.'</td></tr>';
+		}
+	}
+	// Enregistrement du rapport
+	$fichier_chemin  = './__tmp/export/rapport_verif.html';
+	$fichier_contenu = '<!DOCTYPE html><html><head><style type="text/css">body{font-family:monospace;font-size:8pt}table{border-collapse:collapse}thead{background:#CCC;font-weight:bold;text-align:center}td{border:solid 1px;padding:2px;white-space:nowrap}.v{color:green}.r{color:red}.b{color:blue}</style></head><body><table><thead>'.$thead.'</thead><tbody>'.$tbody_pb.$tbody_ok.'</tbody></table></body></html>';
+	Ecrire_Fichier($fichier_chemin,$fichier_contenu);
+	exit(']¤['.'ok'.']¤['.'Rapport des modifications apportées et nettoyage&hellip;');
+}
+
+//
+// 5. Nettoyage...
+//
+if($action=='verif_etape5')
 {
 	unset($_SESSION['tmp']);
 	Supprimer_Dossier($dossier_dezip);

@@ -181,10 +181,11 @@ $(document).ready
 				$('#ajax_version_installee').html(etape_info);
 				maj_label_versions();
 				$('button').prop('disabled',false);
+				$.fancybox( { 'href':'./__tmp/export/rapport_maj.html' , 'type':'iframe' , 'width':'80%' , 'height':'80%' , 'centerOnScroll':true } );
+				initialiser_compteur();
 				return false;
 			}
-			$('#puces_maj').append('<li>Etape '+etape_numero+' : '+etape_info+'</li>');
-			format_liens('#puces_maj');
+			$('#ajax_maj').removeAttr("class").addClass("loader").html('Etape '+etape_numero+' - '+etape_info);
 			$.ajax
 			(
 				{
@@ -224,15 +225,73 @@ $(document).ready
 			function()
 			{
 				etape_numero = 0 ;
-				$('#puces_maj').html('').show();
 				if( $('#ajax_version_installee').text() > $('#ajax_version_disponible').text() )
 				{
 					$('#ajax_maj').removeAttr("class").addClass("erreur").html("Version installée postérieure à la version disponible !");
 					return false;
 				}
 				$('button').prop('disabled',true);
-				$('#ajax_maj').removeAttr("class").addClass("loader").html("Mise à jour en cours&hellip; Veuillez patienter.");
 				maj_etape("Récupération de l'archive <em>zip</em>&hellip;");
+			}
+		);
+
+		//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
+		//	Vérification des fichiers en place
+		//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
+
+		function verif_etape(etape_info)
+		{
+			etape_numero++;
+			if(etape_numero==6)
+			{
+				$('#ajax_verif').removeAttr("class").addClass("valide").html('Vérification terminée !');
+				$('button').prop('disabled',false);
+				$.fancybox( { 'href':'./__tmp/export/rapport_verif.html' , 'type':'iframe' , 'width':'80%' , 'height':'80%' , 'centerOnScroll':true } );
+				initialiser_compteur();
+				return false;
+			}
+			$('#ajax_verif').removeAttr("class").addClass("loader").html('Etape '+etape_numero+' - '+etape_info);
+			$.ajax
+			(
+				{
+					type : 'POST',
+					url : 'ajax.php?page='+PAGE,
+					data : 'f_action=verif_etape'+etape_numero,
+					dataType : "html",
+					error : function(msg,string)
+					{
+						$('button').prop('disabled',false);
+						$('#ajax_verif').removeAttr("class").addClass("alerte").html('Echec de la connexion !');
+						return false;
+					},
+					success : function(responseHTML)
+					{
+						var tab_infos = responseHTML.split(']¤[');
+						if( (tab_infos.length!=3) || (tab_infos[0]!='') )
+						{
+							$('button').prop('disabled',false);
+							$('#ajax_verif').removeAttr("class").addClass("alerte").html(tab_infos[0]);
+							return false;
+						}
+						if(tab_infos[1]!='ok')
+						{
+							$('button').prop('disabled',false);
+							$('#ajax_verif').removeAttr("class").addClass("alerte").html(tab_infos[2]);
+							return false;
+						}
+						verif_etape(tab_infos[2]);
+					}
+				}
+			);
+		}
+
+		$('#bouton_verif').click
+		(
+			function()
+			{
+				etape_numero = 0 ;
+				$('button').prop('disabled',true);
+				verif_etape("Récupération de l'archive <em>zip</em>&hellip;");
 			}
 		);
 

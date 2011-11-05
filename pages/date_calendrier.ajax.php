@@ -37,15 +37,19 @@ $annee_maxi     = $annee_actuelle+10;
 $j = (isset($_GET['j'])) ? (int)$_GET['j'] : $jour_actuel ;
 $m = (isset($_GET['m'])) ? (int)$_GET['m'] : $mois_actuel ;
 $a = (isset($_GET['a'])) ? (int)$_GET['a'] : $annee_actuelle ;
-$tab_mois = array('','Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre');
+$tab_mois = array(1=>'Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre');
 // On vérifie la cohérence des données pour éviter des soucis ensuite
+if( ($a<$annee_mini) || ($a>$annee_maxi) )
+{
+	$a = $annee_actuelle;
+}
 if(!isset($tab_mois[$m]))
 {
 	$m = $mois_actuel;
 }
-if( ($a<$annee_mini) || ($a>$annee_maxi) )
+if( ($j<1) || ($j>31) )
 {
-	$a = $annee_actuelle;
+	$j = $jour_actuel;
 }
 // Jour de la semaine
 $dayone = date('w',mktime(1,1,1,$m,1,$a));

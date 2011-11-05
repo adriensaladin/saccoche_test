@@ -218,7 +218,11 @@ public function load_choix_memo()
 	if(is_file(Formulaire::$fichier_cookie))
 	{
 		$contenu = file_get_contents(Formulaire::$fichier_cookie);
-		Formulaire::$tab_choix = array_merge( Formulaire::$tab_choix , @unserialize($contenu) );
+		$tab_choix_cookie = @unserialize($contenu);
+		if(is_array($tab_choix_cookie))
+		{
+			Formulaire::$tab_choix = array_merge( Formulaire::$tab_choix , $tab_choix_cookie );
+		}
 	}
 }
 
@@ -280,6 +284,8 @@ public function load_choix_memo()
 			global $palier_id,$mode;
 			$tab_choix_new = compact('palier_id','mode');
 			break;
+		default :
+			$tab_choix_new = array();
 	}
 	// Récupération du contenu du "cookie", surchargé avec les choix effectués
 	Formulaire::load_choix_memo();

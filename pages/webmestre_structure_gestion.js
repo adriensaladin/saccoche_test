@@ -229,6 +229,7 @@ $(document).ready
 			{
 				$('q.annuler').click();
 			}
+			return false;
 		}
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
@@ -498,6 +499,7 @@ $(document).ready
 			clearForm : false,
 			resetForm : false,
 			target : "#ajax_msg",
+			beforeSerialize : action_form_avant_serialize,
 			beforeSubmit : test_form_avant_envoi,
 			error : retour_form_erreur,
 			success : retour_form_valide
@@ -519,6 +521,20 @@ $(document).ready
 				}
 			}
 		); 
+
+
+		// Fonction précédent le trantement du formulaire (avec jquery.form.js)
+		function action_form_avant_serialize(jqForm, options)
+		{
+			// Décocher les checkbox sans rapport avec ce formulaire
+			$('input[name=f_ids]:checked').each
+			(
+				function()
+				{
+					$(this).prop('checked',false);
+				}
+			);
+		}
 
 		// Fonction précédent l'envoi du formulaire (avec jquery.form.js)
 		function test_form_avant_envoi(formData, jqForm, options)

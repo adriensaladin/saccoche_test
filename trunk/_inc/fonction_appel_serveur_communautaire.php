@@ -302,8 +302,23 @@ function afficher_contenu_referentiel($sesamath_id,$sesamath_key,$referentiel_id
 	return url_get_contents(SERVEUR_COMMUNAUTAIRE,$tab_post);
 }
 
+
 /**
- * Fabriquer un md5 attestant l'intégrité des fichiers.
+ * Fabriquer le md5 d'un fichier pour le comparer à ceux d'une archive.
+ * Volontairement non utilisé par fabriquer_chaine_integrite() car un peu différent.
+ * 
+ * @param string
+ * @return string
+ */
+function fabriquer_md5_file($fichier)
+{
+	// Lors du transfert FTP de fichiers, il arrive que les \r\n en fin de ligne soient convertis en \n, ce qui fait que md5_file() renvoie un résultat différent.
+	// Pour y remédier on utilise son équivalent md5(file_get_contents()) couplé à un remplacement des caractères de fin de ligne.
+	return md5( str_replace( array("\r\n","\r","\n") , ' ' , file_get_contents($fichier) ) );
+}
+
+/**
+ * Fabriquer un md5 attestant l'intégrité des fichiers d'une installation.
  * 
  * @param void
  * @return string

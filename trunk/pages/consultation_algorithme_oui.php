@@ -77,7 +77,7 @@ $texte = ($str_objet=='') ? 'aucun' : ( (strpos($str_objet,',')===false) ? 'uniq
 </ul>
 <hr />
 
-<form action="" method="post" id="form_input">
+<form action="#" method="post" id="form_input">
 	<table summary="">
 	<thead>
 		<tr><th>

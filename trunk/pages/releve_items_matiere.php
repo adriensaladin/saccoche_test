@@ -139,7 +139,7 @@ if(is_array($tab_groupes))
 
 <hr />
 
-<form action="" method="post" id="form_select"><fieldset>
+<form action="#" method="post" id="form_select"><fieldset>
 	<p class="<?php echo $class_form_type ?>">
 		<label class="tab" for="f_type">Type de bilan :</label><label for="f_type_individuel"><input type="checkbox" id="f_type_individuel" name="f_type" value="individuel"<?php echo $check_type_individuel ?> /> Relevé individuel</label>&nbsp;&nbsp;&nbsp;<label for="f_type_synthese"><input type="checkbox" id="f_type_synthese" name="f_type" value="synthese"<?php echo $check_type_synthese ?> /> Synthèse collective</label>&nbsp;&nbsp;&nbsp;<label for="f_type_bulletin"><input type="checkbox" id="f_type_bulletin" name="f_type" value="bulletin"<?php echo $check_type_bulletin ?> /> Bulletin (moyenne &amp; appréciation)</label><input type="hidden" id="types" name="types" value="" /><br />
 		<span id="options_individuel" class="<?php echo $class_form_individuel ?>">

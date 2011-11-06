@@ -36,7 +36,7 @@ $VERSION_JS_FILE += 1;
 
 <h2>Ordre d'affichage des matières</h2>
 
-<form action="" method="post" id="form_ordonner"><fieldset>
+<form action="#" method="post" id="form_ordonner"><fieldset>
 
 <?php
 // liste des matières
@@ -63,7 +63,7 @@ else
 
 <h2>Type de synthèse adapté suivant chaque référentiel</h2>
 
-<form action="" method="post" id="form_synthese"><fieldset>
+<form action="#" method="post" id="form_synthese"><fieldset>
 
 <?php
 

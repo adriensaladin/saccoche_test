@@ -174,14 +174,15 @@ $TITRE_NAVIGATEUR.= ($TITRE) ? $TITRE : 'Evaluer par comptétences et valider le
 entete();
 ?>
 <head>
-	<meta name="Description" content="SACoche - Suivi d'Acquisition de Compétences - Evaluer par compétences - Valider le socle commun" />
-	<meta name="Keywords" content="SACoche Sésamath évaluer évaluation compétences compétence validation valider socle commun collège points Lomer" />
-	<meta name="Author-Personal" content="Thomas Crespin pour Sésamath" />
-	<meta name="Robots" content="index,follow" />
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="description" content="SACoche - Suivi d'Acquisition de Compétences - Evaluer par compétences - Valider le socle commun" />
+	<meta name="keywords" content="SACoche Sésamath évaluer évaluation compétences compétence validation valider socle commun collège points Lomer" />
+	<meta name="author" content="Thomas Crespin pour Sésamath" />
+	<meta name="robots" content="index,follow" />
 	<link rel="shortcut icon" type="images/x-icon" href="./favicon.ico" />
 	<link rel="icon" type="image/png" href="./favicon.png" />
 	<link rel="stylesheet" type="text/css" href="<?php echo compacter('./_css/style.css',VERSION_CSS_SCREEN,'mini') ?>" />
+	<!--[if lte IE 8]><link rel="stylesheet" type="text/css" href="<?php echo compacter('./_css/style_IE.css',VERSION_CSS_SCREEN,'mini') ?>" /><![endif]-->
 	<?php if(isset($_SESSION['CSS'])){echo'<style type="text/css">'.$_SESSION['CSS'].'</style>';} ?>
 	<script type="text/javascript" charset="utf-8" src="<?php echo compacter('./_js/jquery-librairies.js',VERSION_JS_BIBLIO,'mini') ?>"></script>
 	<script type="text/javascript" charset="utf-8" src="<?php echo compacter('./_js/script.js',VERSION_JS_GLOBAL,'mini') ?>"></script>
@@ -199,10 +200,10 @@ entete();
 		{
 			$protocole  = ( isset($_SERVER['HTTPS']) && ($_SERVER['HTTPS']=='on') ) ? 'https://' : 'http://' ;
 			$url_page   = $protocole.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
-			$separateur = (strpos($url_page,'?')) ? '&amp;' : '?' ;
+			$separateur = (strpos($url_page,'?')) ? '&' : '?' ;
 			$get_debug  = DEBUG ? 'debug=0'  : 'debug=1' ;
 			$txt_debug  = DEBUG ? 'ON' : 'OFF' ;
-			echo'		<span class="button"><a href="'.$url_page.$separateur.$get_debug.'"><img alt="debug" src="./_img/firephp.png" /> '.$txt_debug.'</a></span>'."\r\n";
+			echo'		<span class="button"><a href="'.html($url_page.$separateur.$get_debug).'"><img alt="debug" src="./_img/firephp.png" /> '.$txt_debug.'</a></span>'."\r\n";
 		}
 		echo'		<span class="button"><img alt="structure" src="./_img/home.png" /> '.html($_SESSION['DENOMINATION']).'</span>'."\r\n";
 		echo'		<span class="button"><img alt="'.$_SESSION['USER_PROFIL'].'" src="./_img/menu/profil_'.$_SESSION['USER_PROFIL'].'.png" /> '.html($_SESSION['USER_PRENOM'].' '.$_SESSION['USER_NOM']).' ('.$_SESSION['USER_PROFIL'].')</span>'."\r\n";

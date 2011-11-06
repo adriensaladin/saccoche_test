@@ -142,6 +142,7 @@ $(document).ready
 			function()
 			{
 				$('#zone_compet').html("&nbsp;");
+				afficher_masquer_images_action('show'); // au cas où on serait en train d'éditer qq chose
 				$('#zone_choix_referentiel').show('fast');
 				return(false);
 			}

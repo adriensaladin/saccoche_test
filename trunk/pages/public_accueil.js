@@ -33,13 +33,6 @@ $(document).ready
 
 		arrondir_coins('#cadre_milieu','10px');
 
-		// Mis dans le js car incorrect en XHTML1 malgré l'intérêt de l'attribut (revenu en HTML5 et XHTML2)
-		function autocomplete()
-		{
-			$('#f_password').attr('autocomplete','off');
-			$('#f_login').attr('autocomplete','off');
-		}
-
 		function curseur()
 		{
 			if($("#f_profil").val()=='webmestre')
@@ -111,7 +104,6 @@ $(document).ready
 						else
 						{
 							$("fieldset").html(responseHTML);
-							autocomplete();
 							curseur();
 						}
 					}
@@ -150,7 +142,6 @@ $(document).ready
 							else
 							{
 								$("fieldset").html(responseHTML);
-								autocomplete();
 								curseur();
 							}
 						}
@@ -189,7 +180,6 @@ $(document).ready
 							else
 							{
 								$("fieldset").html(responseHTML);
-								autocomplete();
 								curseur();
 							}
 						}

@@ -64,7 +64,7 @@ $VERSION_JS_FILE += 14;
 	var listing_id_niveaux_cycles = "<?php echo LISTING_ID_NIVEAUX_CYCLES ?>";
 </script>
 
-<form action="" method="post" id="form_instance">
+<form action="#" method="post" id="form_instance">
 
 <ul class="puce">
 	<li><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=referentiels_socle__referentiel_creer_parametrer">DOC : Créer / paramétrer les référentiels.</a></span></li>
@@ -226,7 +226,7 @@ else
 
 </form>
 
-<form action="" method="post" id="form_communautaire" class="hide">
+<form action="#" method="post" id="form_communautaire" class="hide">
 
 <?php
 // Fabrication des éléments select du formulaire, pour pouvoir prendre un référentiel d'une autre matière ou d'un autre niveau (demandé...).

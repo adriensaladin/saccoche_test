@@ -32,7 +32,7 @@ $VERSION_JS_FILE += 4;
 
 <p><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__gestion_directeurs">DOC : Gestion des directeurs</a></span></p>
 
-<form action="" method="post">
+<form action="#" method="post">
 	<table class="form t9">
 		<thead>
 			<tr>

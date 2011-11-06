@@ -40,7 +40,7 @@ $select_structure = Formulaire::afficher_select(DB_WEBMESTRE_SELECT::DB_OPT_stru
 
 <h2>Exporter des établissements (données &amp; bases)</h2>
 
-<form action="" method="post" id="form_exporter"><fieldset>
+<form action="#" method="post" id="form_exporter"><fieldset>
 	<label class="tab" for="f_basic">Structure(s) <img alt="" src="./_img/bulle_aide.png" title="Utiliser la touche &laquo&nbsp;Shift&nbsp;&raquo; pour une sélection multiple contiguë.<br />Utiliser la touche &laquo&nbsp;Ctrl&nbsp;&raquo; pour une sélection multiple non contiguë." /> :</label><select id="f_base" name="f_base" multiple size="10"><?php echo $select_structure ?></select><br />
 	<span class="tab"></span><button id="bouton_exporter" type="button"><img alt="" src="./_img/bouton/dump_export.png" /> Créer les fichiers d'export.</button><label id="ajax_msg_export">&nbsp;</label>
 	<div id="div_info_export" class="hide">
@@ -64,7 +64,7 @@ $select_structure = Formulaire::afficher_select(DB_WEBMESTRE_SELECT::DB_OPT_stru
 
 <h2>Importer des établissements (données &amp; bases)</h2>
 
-<form action="" method="post" id="form_importer"><fieldset>
+<form action="#" method="post" id="form_importer"><fieldset>
 		<label class="tab" for="bouton_form_csv">Uploader fichier CSV :</label><button id="bouton_form_csv" type="button"><img alt="" src="./_img/bouton/fichier_import.png" /> Parcourir...</button><label id="ajax_msg_csv">&nbsp;</label>
 	<div id="div_zip" class="hide">
 		<label class="tab" for="bouton_form_zip">Uploader fichier ZIP :</label><button id="bouton_form_zip" type="button"><img alt="" src="./_img/bouton/fichier_import.png" /> Parcourir...</button><label id="ajax_msg_zip">&nbsp;</label>
@@ -81,7 +81,7 @@ $select_structure = Formulaire::afficher_select(DB_WEBMESTRE_SELECT::DB_OPT_stru
 
 <p />
 
-<form action="" method="post" id="structures" class="hide">
+<form action="#" method="post" id="structures" class="hide">
 	<table class="form" id="transfert">
 		<thead>
 			<tr>

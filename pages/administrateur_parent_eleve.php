@@ -41,7 +41,7 @@ $select_f_parents = Formulaire::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_pare
 
 <hr />
 
-<form action="" method="post">
+<form action="#" method="post">
 	<fieldset id="fieldset_eleves">
 		<label class="tab" for="f_groupe">Élève :</label><select id="f_groupe" name="f_groupe"><?php echo $select_f_groupes ?></select> <select id="select_eleve" name="select_eleve"><option value=""></option></select> <label id="ajax_msg">&nbsp;</label>
 	</fieldset>

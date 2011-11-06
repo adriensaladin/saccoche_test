@@ -47,7 +47,7 @@ $select_f_groupes = Formulaire::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_regr
 
 <hr />
 
-<form action="" method="post" id="form1">
+<form action="#" method="post" id="form1">
 	<table class="form t9">
 		<thead>
 			<tr>

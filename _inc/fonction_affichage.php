@@ -45,7 +45,7 @@ function mailto($mail_adresse,$mail_sujet,$texte_lien,$mail_contenu='',$mail_cop
 	$mailto = 'mailto:'.$mail_adresse.'?subject='.$mail_sujet;
 	$mailto.= ($mail_copy) ? '&cc='.$mail_copy : '' ;
 	$mailto.= ($mail_contenu) ? '&body='.$mail_contenu : '' ;
-	$tab_unicode_valeurs = utf8ToUnicode($mailto);
+	$tab_unicode_valeurs = utf8ToUnicode(str_replace(' ','%20',$mailto));
 	$href = '&#'.implode(';'.'&#',$tab_unicode_valeurs).';';
 	return '<a href="'.$href.'" class="lien_mail">'.$texte_lien.'</a>';
 }

@@ -44,7 +44,7 @@ $debut_prenom = (isset($_POST['f_debut_prenom'])) ? clean_prenom($_POST['f_debut
 
 <hr />
 
-<form action="" method="post" id="form1">
+<form action="#" method="post" id="form1">
 	<table class="form t9">
 		<thead>
 			<tr>

@@ -31,9 +31,7 @@
 function entete()
 {
 	header('Content-Type: text/html; charset='.CHARSET);
-	echo'<?xml version="1.0" encoding="'.CHARSET.'"?>';
-	echo'<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">';
-	echo'<html xml:lang="fr" xmlns="http://www.w3.org/1999/xhtml">';
+	echo'<!DOCTYPE html>'.'<html>';
 }
 
 /*
@@ -49,7 +47,7 @@ function affich_message_exit($titre,$contenu,$lien='')
 	if(SACoche=='index')
 	{
 		entete();
-		echo'<head><title>SACoche » '.$titre.'</title><meta http-equiv="Content-Type" content="text/html; charset='.CHARSET.'" /></head>';
+		echo'<head><meta http-equiv="Content-Type" content="text/html; charset='.CHARSET.'" /><title>SACoche » '.$titre.'</title></head>';
 		echo'<body style="background:#EAEAFF;font:15px sans-serif;color:#D00">';
 		echo'<p>'.$contenu.'</p>';
 		echo ($lien) ? '<p>'.$lien.'</p>' : '<p><a href="./index.php">Retour en page d\'accueil de SACoche.</a></p>' ;

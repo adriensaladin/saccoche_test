@@ -36,7 +36,7 @@ $VERSION_JS_FILE += 1;
 
 <h2>Matières partagées</h2>
 
-<form action="" method="post" id="partage">
+<form action="#" method="post" id="partage">
 	<table class="form">
 		<thead>
 			<tr><th class="nu"></th><th>Référence</th><th>Nom complet</th></tr>
@@ -73,7 +73,7 @@ $VERSION_JS_FILE += 1;
 
 <h2>Matières spécifiques</h2>
 
-<form action="" method="post" id="perso">
+<form action="#" method="post" id="perso">
 	<table class="form">
 		<thead>
 			<tr>

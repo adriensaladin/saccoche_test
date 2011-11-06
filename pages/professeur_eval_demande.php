@@ -59,13 +59,13 @@ $select_matiere = Formulaire::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_matier
 $select_groupe  = Formulaire::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_groupes_professeur($_SESSION['USER_ID'])                        , $select_nom='f_groupe'  , $option_first='oui' , $selection=false , $optgroup='oui');
 ?>
 
-<form action="" method="post" id="form0"><fieldset>
+<form action="#" method="post" id="form0"><fieldset>
 	<label class="tab" for="f_matiere">Matière :</label><?php echo $select_matiere ?><input type="hidden" id="f_matiere_nom" name="f_matiere_nom" value="" /><br />
 	<label class="tab" for="f_groupe">Classe / groupe :</label><?php echo $select_groupe ?><input type="hidden" id="f_groupe_id" name="f_groupe_id" value="" /><input type="hidden" id="f_groupe_type" name="f_groupe_type" value="" /><input type="hidden" id="f_groupe_nom" name="f_groupe_nom" value="" /><br />
 	<span class="tab"></span><input type="hidden" name="f_action" value="Afficher_demandes" /><button id="actualiser" type="submit"><img alt="" src="./_img/bouton/actualiser.png" /> Actualiser l'affichage.</button><label id="ajax_msg0">&nbsp;</label>
 </fieldset></form>
 
-<form action="" method="post" id="form1" class="hide">
+<form action="#" method="post" id="form1" class="hide">
 	<hr />
 	<table class="bilan_synthese" style="float:right;margin-left:1em;margin-right:1ex">
 		<thead><tr><th>élève(s) sans demande</th></tr></thead>

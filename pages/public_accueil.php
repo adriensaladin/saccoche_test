@@ -27,7 +27,7 @@
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = ''; // Pas de titre pour que le logo s'affiche à la place
-$VERSION_JS_FILE += 11;
+$VERSION_JS_FILE += 12;
 
 // Lecture d'un cookie sur le poste client servant à retenir le dernier établissement sélectionné si identification avec succès
 $BASE = (isset($_COOKIE[COOKIE_STRUCTURE])) ? clean_entier($_COOKIE[COOKIE_STRUCTURE]) : 0 ;
@@ -59,7 +59,7 @@ if(isset($_COOKIE[COOKIE_AUTHMODE]))
 <hr />
 
 <h2><img src="./_img/login.gif" alt="Identification" /> <?php echo($profil=='normal')?'Identification':'<span style="color:#C00">Accès webmestre</span>'; ?><?php echo $liens_autres_profils ?></h2>
-<form action="" method="post"><fieldset>
+<form action="#" method="post"><fieldset>
 	<input id="f_base" name="f_base" type="hidden" value="<?php echo $BASE ?>" />
 	<input id="f_profil" name="f_profil" type="hidden" value="<?php echo $profil ?>" />
 	<label id="ajax_msg" class="loader">Chargement en cours...</label>
@@ -80,7 +80,7 @@ if(isset($_COOKIE[COOKIE_AUTHMODE]))
 <ul class="puce">
 	<li><em>SACoche</em> est un logiciel gratuit, libre, développé avec le soutien de <a class="lien_ext" href="http://www.sesamath.net"><em>Sésamath</em></a>.</li>
 	<li class="b">Consulter <a href="<?php echo SERVEUR_PROJET ?>" class="lien_ext">le site officiel de <em>SACoche</em></a> pour tout renseignement.</li>
-	<li>Version installée <em><?php echo VERSION_PROG ?></em>.<label id="ajax_version" for="version"></label></li>
+	<li>Version installée <em><?php echo VERSION_PROG ?></em>.<label id="ajax_version"></label></li>
 </ul>
 
 <script type="text/javascript">

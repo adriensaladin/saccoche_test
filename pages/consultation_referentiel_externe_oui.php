@@ -38,7 +38,7 @@ $select_niveau  = Formulaire::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_niveau
 	var id_matiere_transversale   = "<?php echo ID_MATIERE_TRANSVERSALE ?>";
 </script>
 
-<form action="" method="post">
+<form action="#" method="post">
 	<fieldset>
 		<label class="tab" for="f_matiere">Matière :</label><?php echo $select_matiere ?><br />
 		<label class="tab" for="f_niveau">Niveau :</label><?php echo $select_niveau ?><br />

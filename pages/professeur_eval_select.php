@@ -27,7 +27,7 @@
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = "Évaluer des élèves sélectionnés";
-$VERSION_JS_FILE += 29;
+$VERSION_JS_FILE += 30;
 ?>
 
 <?php
@@ -43,7 +43,7 @@ $date_fin    = date("d/m/Y",mktime(0,0,0,date("m")+1,date("d"),date("Y"))); // 1
 
 <hr />
 
-<form action="" method="post" id="form0" class="hide"><fieldset>
+<form action="#" method="post" id="form0" class="hide"><fieldset>
 	<label class="tab" for="f_aff_periode">Période :</label>
 		du <input id="f_date_debut" name="f_date_debut" size="9" type="text" value="<?php echo $date_debut ?>" /><q class="date_calendrier" title="Cliquez sur cette image pour importer une date depuis un calendrier !"></q>
 		au <input id="f_date_fin" name="f_date_fin" size="9" type="text" value="<?php echo $date_fin ?>" /><q class="date_calendrier" title="Cliquez sur cette image pour importer une date depuis un calendrier !"></q>
@@ -51,7 +51,7 @@ $date_fin    = date("d/m/Y",mktime(0,0,0,date("m")+1,date("d"),date("Y"))); // 1
 	<span class="tab"></span><input type="hidden" name="f_action" value="Afficher_evaluations" /><button id="actualiser" type="submit"><img alt="" src="./_img/bouton/actualiser.png" /> Actualiser l'affichage.</button><label id="ajax_msg0">&nbsp;</label>
 </fieldset></form>
 
-<form action="" method="post" id="form1" class="hide">
+<form action="#" method="post" id="form1" class="hide">
 	<hr />
 	<table class="form">
 		<thead>
@@ -73,7 +73,7 @@ $date_fin    = date("d/m/Y",mktime(0,0,0,date("m")+1,date("d"),date("Y"))); // 1
 
 <script type="text/javascript">var input_date="<?php echo date("d/m/Y") ?>";</script>
 
-<form action="" method="post" id="zone_compet" class="hide">
+<form action="#" method="post" id="zone_compet" class="hide">
 	<div class="danger">Une évaluation dont la saisie a commencé ne devrait pas voir ses items modifiés.<br />En particulier, retirer des items d'une évaluation efface les scores correspondants déjà saisis !</div>
 	<p><span class="tab"></span><button id="valider_compet" type="button"><img alt="" src="./_img/bouton/valider.png" /> Valider la sélection</button>&nbsp;&nbsp;&nbsp;<button id="annuler_compet" type="button"><img alt="" src="./_img/bouton/annuler.png" /> Annuler / Retour</button></p>
 	<?php
@@ -83,7 +83,7 @@ $date_fin    = date("d/m/Y",mktime(0,0,0,date("m")+1,date("d"),date("Y"))); // 1
 	?>
 </form>
 
-<form action="" method="post" id="zone_profs" class="hide">
+<form action="#" method="post" id="zone_profs" class="hide">
 	<div class="astuce">Vous pouvez permettre à des collègues de co-saisir les notes de ce devoir (et de le dupliquer).</div>
 	<p><button id="valider_profs" type="button"><img alt="" src="./_img/bouton/valider.png" /> Valider la sélection</button>&nbsp;&nbsp;&nbsp;<button id="annuler_profs" type="button"><img alt="" src="./_img/bouton/annuler.png" /> Annuler / Retour</button></p>
 	<?php
@@ -111,7 +111,7 @@ $date_fin    = date("d/m/Y",mktime(0,0,0,date("m")+1,date("d"),date("Y"))); // 1
 	?>
 </form>
 
-<form action="" method="post" id="zone_eleve" class="hide">
+<form action="#" method="post" id="zone_eleve" class="hide">
 	<div class="danger">Une évaluation dont la saisie a commencé ne devrait pas voir ses élèves modifiés.<br />En particulier, retirer des élèves d'une évaluation efface les scores correspondants déjà saisis !</div>
 	<p><span class="tab"></span><button id="valider_eleve" type="button"><img alt="" src="./_img/bouton/valider.png" /> Valider la sélection</button>&nbsp;&nbsp;&nbsp;<button id="annuler_eleve" type="button"><img alt="" src="./_img/bouton/annuler.png" /> Annuler / Retour</button></p>
 	<?php
@@ -162,7 +162,7 @@ $date_fin    = date("d/m/Y",mktime(0,0,0,date("m")+1,date("d"),date("Y"))); // 1
 	?>
 </form>
 
-<form action="" method="post" id="zone_ordonner" class="hide">
+<form action="#" method="post" id="zone_ordonner" class="hide">
 	<p class="hc"><b id="titre_ordonner"></b><br /><label id="msg_ordonner"></label></p>
 	<div id="div_ordonner">
 	</div>
@@ -251,7 +251,7 @@ $select_couleur      = Formulaire::afficher_select(Formulaire::$tab_select_coule
 $select_marge_min    = Formulaire::afficher_select(Formulaire::$tab_select_marge_min    , $select_nom='f_marge_min'   , $option_first='non' , $selection=Formulaire::$tab_choix['marge_min']    , $optgroup='non');
 ?>
 
-<form action="" method="post" id="zone_imprimer" class="hide"><fieldset>
+<form action="#" method="post" id="zone_imprimer" class="hide"><fieldset>
 	<p class="hc"><b id="titre_imprimer"></b><br /><button id="fermer_zone_imprimer" type="button"><img alt="" src="./_img/bouton/retourner.png" /> Retour</button></p>
 	<label class="tab" for="f_contenu">Remplissage :</label><?php echo $select_cart_contenu ?><br />
 	<label class="tab" for="f_detail">Détail :</label><?php echo $select_cart_detail ?><br />

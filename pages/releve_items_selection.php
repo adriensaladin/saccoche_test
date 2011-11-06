@@ -96,7 +96,7 @@ if(is_array($tab_groupes))
 
 <hr />
 
-<form action="" method="post" id="form_select"><fieldset>
+<form action="#" method="post" id="form_select"><fieldset>
 	<label class="tab" for="f_type">Type de bilan :</label><label for="f_type_individuel"><input type="checkbox" id="f_type_individuel" name="f_type" value="individuel"<?php echo $check_type_individuel ?> /> Relevé individuel</label>&nbsp;&nbsp;&nbsp;<label for="f_type_synthese"><input type="checkbox" id="f_type_synthese" name="f_type" value="synthese"<?php echo $check_type_synthese ?> /> Synthèse collective</label><input type="hidden" id="types" name="types" value="" /><br />
 	<span id="options_releve" class="hide">
 		<label class="tab" for="f_opt_grille"><img alt="" src="./_img/bulle_aide.png" title="Pour le relévé individuel, les paramètres des items peuvent être affichés." /> Opt. relevé :</label><label for="f_coef"><input type="checkbox" id="f_coef" name="f_coef" value="1"<?php echo $check_aff_coef ?> /> Coefficients</label>&nbsp;&nbsp;&nbsp;<label for="f_socle"><input type="checkbox" id="f_socle" name="f_socle" value="1"<?php echo $check_aff_socle ?> /> Socle</label>&nbsp;&nbsp;&nbsp;<label for="f_lien"><input type="checkbox" id="f_lien" name="f_lien" value="1"<?php echo $check_aff_lien ?> /> Liens de remédiation</label><br />
@@ -130,7 +130,7 @@ if(is_array($tab_groupes))
 <div id="bilan">
 </div>
 
-<form action="" method="post" id="zone_compet" class="hide">
+<form action="#" method="post" id="zone_compet" class="hide">
 	<p>
 		<span class="tab"></span><button id="valider_compet" type="button"><img alt="" src="./_img/bouton/valider.png" /> Valider ce choix</button>&nbsp;&nbsp;&nbsp;<button id="annuler_compet" type="button"><img alt="" src="./_img/bouton/annuler.png" /> Annuler / Retour</button>
 	</p>

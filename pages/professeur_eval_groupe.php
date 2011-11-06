@@ -27,7 +27,7 @@
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = "Évaluer une classe ou un groupe";
-$VERSION_JS_FILE += 29;
+$VERSION_JS_FILE += 30;
 ?>
 
 <?php
@@ -102,7 +102,7 @@ if(count($tab_id_classe_groupe))
 
 <hr />
 
-<form action="" method="post" id="form0" class="hide"><fieldset>
+<form action="#" method="post" id="form0" class="hide"><fieldset>
 	<label class="tab" for="f_aff_classe">Classe / groupe :</label><select id="f_aff_classe" name="f_aff_classe"><option value="d2">Toute classe / tout groupe</option><?php echo $select_eleve ?></select>
 	<div id="zone_periodes">
 		<label class="tab" for="f_aff_periode">Période :</label><?php echo $select_periode ?>
@@ -114,7 +114,7 @@ if(count($tab_id_classe_groupe))
 	</div>
 </fieldset></form>
 
-<form action="" method="post" id="form1" class="hide">
+<form action="#" method="post" id="form1" class="hide">
 	<hr />
 	<table class="form">
 		<thead>
@@ -134,7 +134,7 @@ if(count($tab_id_classe_groupe))
 	</table>
 </form>
 
-<form action="" method="post" id="zone_compet" class="hide">
+<form action="#" method="post" id="zone_compet" class="hide">
 	<div class="danger">Une évaluation dont la saisie a commencé ne devrait pas voir ses items modifiés.<br />En particulier, retirer des items d'une évaluation efface les scores correspondants déjà saisis !</div>
 	<p><span class="tab"></span><button id="valider_compet" type="button"><img alt="" src="./_img/bouton/valider.png" /> Valider la sélection</button>&nbsp;&nbsp;&nbsp;<button id="annuler_compet" type="button"><img alt="" src="./_img/bouton/annuler.png" /> Annuler / Retour</button></p>
 	<?php
@@ -144,7 +144,7 @@ if(count($tab_id_classe_groupe))
 	?>
 </form>
 
-<form action="" method="post" id="zone_profs" class="hide">
+<form action="#" method="post" id="zone_profs" class="hide">
 	<div class="astuce">Vous pouvez permettre à des collègues de co-saisir les notes de ce devoir (et de le dupliquer).</div>
 	<p><button id="valider_profs" type="button"><img alt="" src="./_img/bouton/valider.png" /> Valider la sélection</button>&nbsp;&nbsp;&nbsp;<button id="annuler_profs" type="button"><img alt="" src="./_img/bouton/annuler.png" /> Annuler / Retour</button></p>
 	<?php
@@ -172,7 +172,7 @@ if(count($tab_id_classe_groupe))
 	?>
 </form>
 
-<form action="" method="post" id="zone_ordonner" class="hide">
+<form action="#" method="post" id="zone_ordonner" class="hide">
 	<p class="hc"><b id="titre_ordonner"></b><br /><label id="msg_ordonner"></label></p>
 	<div id="div_ordonner">
 	</div>
@@ -261,7 +261,7 @@ $select_couleur      = Formulaire::afficher_select(Formulaire::$tab_select_coule
 $select_marge_min    = Formulaire::afficher_select(Formulaire::$tab_select_marge_min    , $select_nom='f_marge_min'   , $option_first='non' , $selection=Formulaire::$tab_choix['marge_min']    , $optgroup='non');
 ?>
 
-<form action="" method="post" id="zone_imprimer" class="hide"><fieldset>
+<form action="#" method="post" id="zone_imprimer" class="hide"><fieldset>
 	<p class="hc"><b id="titre_imprimer"></b><br /><button id="fermer_zone_imprimer" type="button"><img alt="" src="./_img/bouton/retourner.png" /> Retour</button></p>
 	<label class="tab" for="f_contenu">Remplissage :</label><?php echo $select_cart_contenu ?><br />
 	<label class="tab" for="f_detail">Détail :</label><?php echo $select_cart_detail ?><br />

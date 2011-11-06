@@ -868,7 +868,7 @@ function afficher_pourcentage_acquis($gras,$tab_infos,$detail)
 		$this->SetFont('Arial' , '' , $this->taille_police*0.8);
 		$this->Cell($this->reference_largeur , $this->cases_hauteur , pdf($ref_suite) , 1 , 0 , 'C' , true , '');
 		$this->SetFont('Arial' , '' , $this->taille_police);
-		$this->afficher_texte_sur_2lignes_maxi( $item_texte , 8 , $this->intitule_largeur , $this->cases_hauteur , $bordure=1 , $br=0 , $alignement='L' , $remplissage=false );
+		$this->afficher_texte_sur_2lignes_maxi( $item_texte , $this->taille_police , $this->intitule_largeur , $this->cases_hauteur , $bordure=1 , $br=0 , $alignement='L' , $remplissage=false );
 		$this->choisir_couleur_fond('blanc');
 	}
 

@@ -39,7 +39,7 @@ $annee_scolaire  = (date('n')>7) ? date('Y') : date('Y')-1 ;
 $nom_fin_fichier = $_SESSION['UAI'].'_'.$annee_scolaire;
 ?>
 
-<form action="" method="post" id="form1">
+<form action="#" method="post" id="form1">
 
 	<ul class="puce">
 		<li><span class="astuce">Si la procédure est utilisée en début d'année (initialisation), elle peut ensuite être renouvelée en cours d'année (mise à jour).</span></li>
@@ -138,7 +138,7 @@ $nom_fin_fichier = $_SESSION['UAI'].'_'.$annee_scolaire;
 </form>
 
 
-<form action="" method="post" id="form2"><fieldset>
+<form action="#" method="post" id="form2"><fieldset>
 	<hr />
 	<label id="ajax_msg">&nbsp;</label>
 </fieldset></form>

@@ -74,7 +74,7 @@ unlink($fichier_test_chemin_tmp);
 
 <h2>Mise à jour automatique des fichiers</h2>
 
-<form action="" method="post" id="form_maj"><fieldset>
+<form action="#" method="post" id="form_maj"><fieldset>
 	<label class="tab" for="">Test d'écriture :</label><?php echo $test_droits ?><br />
 	<span class="tab"></span><button id="bouton_maj" type="button"><img alt="" src="./_img/bouton/parametre.png" /> Lancer la mise à jour automatique.</button><label id="ajax_maj">&nbsp;</label>
 </fieldset></form>
@@ -83,7 +83,7 @@ unlink($fichier_test_chemin_tmp);
 
 <h2>Verrouillage de l'application</h2>
 
-<form action="" method="post" id="form"><fieldset>
+<form action="#" method="post" id="form"><fieldset>
 	<label class="tab" for="">État actuel :</label><span id="ajax_acces_actuel"><?php echo $label ?></span><br />
 	<label class="tab" for="">Action :</label><label for="f_bloquer"><input type="radio" id="f_bloquer" name="f_action" value="bloquer" /> Bloquer l'application</label>&nbsp;&nbsp;&nbsp;<label for="f_debloquer"><input type="radio" id="f_debloquer" name="f_action" value="debloquer" /> Débloquer l'application</label><br />
 	<div id="span_motif" class="hide"><label class="tab" for="f_motif">Motif :</label><select id="f_proposition" name="f_proposition"><option value="rien">autre motif</option><option value="mise-a-jour" selected>mise à jour</option><option value="maintenance">maintenance</option><option value="demenagement">déménagement</option></select> <input id="f_motif" name="f_motif" size="50" maxlength="100" type="text" value="Mise à jour des fichiers en cours." /></div>
@@ -94,7 +94,7 @@ unlink($fichier_test_chemin_tmp);
 
 <h2>Vérification des fichiers en place</h2>
 
-<form action="" method="post" id="form_verif"><fieldset>
+<form action="#" method="post" id="form_verif"><fieldset>
 	<span class="tab"></span><button id="bouton_verif" type="button"><img alt="" src="./_img/bouton/parametre.png" /> Lancer la vérification.</button><label id="ajax_verif">&nbsp;</label>
 </fieldset></form>
 

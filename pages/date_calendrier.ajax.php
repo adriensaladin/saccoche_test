@@ -118,7 +118,7 @@ for($i=1;$i<=42;$i++)
 }
 $calendrier_affichage .= '</table>';
 echo'<h5>Calendrier</h5>';
-echo'<form id="form_calque" method="post" action="">';
+echo'<form action="#" method="post" id="form_calque">';
 echo'	<h6>Choisir une période :</h6>';
 echo'	<div>'.$calendrier_navigation.'</div>';
 echo'	<h6>Puis cliquer sur une date :</h6>';

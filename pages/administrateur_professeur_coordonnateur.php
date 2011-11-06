@@ -31,7 +31,7 @@ $TITRE = "Gérer les professeurs coordonnateurs";
 
 <p><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__gestion_professeurs">DOC : Gestion des professeurs</a></span></p>
 
-<form action="" method="post" id="coord">
+<form action="#" method="post" id="coord">
 
 	<?php
 	$tab_matiere = array();

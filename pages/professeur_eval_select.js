@@ -1458,6 +1458,7 @@ $(document).ready
 			clearForm : false,
 			resetForm : false,
 			target : "#ajax_msg",
+			beforeSerialize : action_form_avant_serialize,
 			beforeSubmit : test_form_avant_envoi,
 			error : retour_form_erreur,
 			success : retour_form_valide
@@ -1468,11 +1469,6 @@ $(document).ready
 		(
 			function()
 			{
-				if($('#box_date').is(':checked'))
-				{
-					// Obligé rajouter le test à ce niveau car si la date a été changé depuis le calendrier, l'événement change() n'a pas été déclenché (et dans test_form_avant_envoi() c'est trop tard).
-					$('#f_date_visible').val($('#f_date').val());
-				}
 				if (!please_wait)
 				{
 					$(this).ajaxSubmit(ajaxOptions);
@@ -1484,6 +1480,16 @@ $(document).ready
 				}
 			}
 		); 
+
+		// Fonction précédent le trantement du formulaire (avec jquery.form.js)
+		function action_form_avant_serialize(jqForm, options)
+		{
+			if($('#box_date').is(':checked'))
+			{
+				// Obligé rajouter le test à ce niveau car si la date a été changé depuis le calendrier, l'événement change() n'a pas été déclenché (et dans test_form_avant_envoi() c'est trop tard).
+				$('#f_date_visible').val($('#f_date').val());
+			}
+		}
 
 		// Fonction précédent l'envoi du formulaire (avec jquery.form.js)
 		function test_form_avant_envoi(formData, jqForm, options)

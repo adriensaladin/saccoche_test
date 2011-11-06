@@ -44,7 +44,7 @@ $texte = ($str_objet=='') ? 'aucun' : ( (strpos($str_objet,',')===false) ? 'uniq
 	<li><span class="astuce">Profils autorisés par les administrateurs : <span class="u"><?php echo $texte ?></span>.</span></li>
 </ul>
 
-<form action="" method="post">
+<form action="#" method="post">
 <hr />
 
 <?php

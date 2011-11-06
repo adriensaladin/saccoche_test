@@ -57,7 +57,7 @@ $select_f_groupes = Formulaire::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_regr
 
 <hr />
 
-<form action="" method="post">
+<form action="#" method="post">
 
 	<fieldset>
 		<label class="tab" for="f_choix_principal">Procédure :</label>

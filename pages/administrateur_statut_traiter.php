@@ -44,7 +44,7 @@ $select_professeurs_directeurs = Formulaire::afficher_select(DB_STRUCTURE_COMMUN
 
 <hr />
 
-<form action="" method="post">
+<form action="#" method="post">
 	<table>
 		<tr>
 			<td style="width:55em" colspan="2">

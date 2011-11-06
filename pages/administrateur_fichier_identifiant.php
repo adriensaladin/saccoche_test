@@ -44,7 +44,7 @@ $select_groupe = Formulaire::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_regroup
 
 <hr />
 
-<form action="" method="post">
+<form action="#" method="post">
 
 	<fieldset>
 		<label class="tab" for="f_choix_principal">Objectif :</label>

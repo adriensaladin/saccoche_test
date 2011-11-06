@@ -185,7 +185,7 @@ if($action=='maj_etape4')
 	debloquer_application($_SESSION['USER_PROFIL'],'0');
 	// Enregistrement du rapport
 	$fichier_chemin  = './__tmp/export/rapport_maj.html';
-	$fichier_contenu = '<!DOCTYPE html><html><head><style type="text/css">body{font-family:monospace;font-size:8pt}table{border-collapse:collapse}thead{background:#CCC;font-weight:bold;text-align:center}td{border:solid 1px;padding:2px;white-space:nowrap}.v{color:green}.r{color:red}.b{color:blue}</style></head><body><table><thead>'.$thead.'</thead><tbody>'.$tbody.'</tbody></table></body></html>';
+	$fichier_contenu = '<!DOCTYPE html><html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><style type="text/css">body{font-family:monospace;font-size:8pt}table{border-collapse:collapse}thead{background:#CCC;font-weight:bold;text-align:center}td{border:solid 1px;padding:2px;white-space:nowrap}.v{color:green}.r{color:red}.b{color:blue}</style></head><body><table><thead>'.$thead.'</thead><tbody>'.$tbody.'</tbody></table></body></html>';
 	Ecrire_Fichier($fichier_chemin,$fichier_contenu);
 	exit(']¤['.'ok'.']¤['.'Rapport des modifications apportées et nettoyage&hellip;');
 }
@@ -313,7 +313,7 @@ if($action=='verif_etape4')
 	}
 	// Enregistrement du rapport
 	$fichier_chemin  = './__tmp/export/rapport_verif.html';
-	$fichier_contenu = '<!DOCTYPE html><html><head><style type="text/css">body{font-family:monospace;font-size:8pt}table{border-collapse:collapse}thead{background:#CCC;font-weight:bold;text-align:center}td{border:solid 1px;padding:2px;white-space:nowrap}.v{color:green}.r{color:red}.b{color:blue}</style></head><body><table><thead>'.$thead.'</thead><tbody>'.$tbody_pb.$tbody_ok.'</tbody></table></body></html>';
+	$fichier_contenu = '<!DOCTYPE html><html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><style type="text/css">body{font-family:monospace;font-size:8pt}table{border-collapse:collapse}thead{background:#CCC;font-weight:bold;text-align:center}td{border:solid 1px;padding:2px;white-space:nowrap}.v{color:green}.r{color:red}.b{color:blue}</style></head><body><table><thead>'.$thead.'</thead><tbody>'.$tbody_pb.$tbody_ok.'</tbody></table></body></html>';
 	Ecrire_Fichier($fichier_chemin,$fichier_contenu);
 	exit(']¤['.'ok'.']¤['.'Rapport des modifications apportées et nettoyage&hellip;');
 }

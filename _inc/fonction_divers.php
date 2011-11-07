@@ -210,6 +210,32 @@ function ajouter_log_PHP($log_objet,$log_contenu,$log_fichier,$log_ligne,$only_s
 }
 
 /**
+ * Création du code pour appeler les fichiers javascript externes
+ * 
+ * Les fichier js ont été retirés du <head> et sont appelés une fois la page chargée afin de différer l'analyse du code (http://code.google.com/intl/fr/speed/page-speed/docs/mobile.html#DeferParsingJS)
+ * 
+ * @param array $tab_fichiers   tableau des chemins vers les fichiers js
+ * @return string               code js à inclure dans la page
+ */
+function fabriquer_code_chargement_javascript($tab_fichiers)
+{
+	$code_js  = 'function downloadJSAtOnload()';
+	$code_js .= '{';
+	foreach($tab_fichiers as $fichier)
+	{
+		$code_js .= 'var obj_script=document.createElement("script");';
+		$code_js .= 'obj_script.charset="utf-8";';
+		$code_js .= 'obj_script.src="'.$fichier.'";';
+		$code_js .= 'document.body.appendChild(obj_script);';
+	}
+	$code_js .= '}';
+	$code_js .= 'if(window.addEventListener) window.addEventListener("load",downloadJSAtOnload,false);';
+	$code_js .= 'else if(window.attachEvent) window.attachEvent("onload",downloadJSAtOnload);';
+	$code_js .= 'else window.onload=downloadJSAtOnload;';
+	return $code_js;
+}
+
+/**
  * Compression ou minification d'un fichier css ou js sur le serveur en production
  * 
  * @param string $chemin    chemin complet vers le fichier
@@ -221,8 +247,8 @@ function compacter($chemin,$version,$methode)
 {
 	$chemin_fichier_original  = $chemin;
 	$extension                = pathinfo($chemin,PATHINFO_EXTENSION);
-	$dossier_fichier_compacte = './__tmp/'; // On peut se permettre d'enregistrer les js et css en dehors de leur dossier d'origine car les répertoires sont tous de mêmes niveaux
-	$nom_fichier_compacte     = substr( str_replace( array('./','/') , array('','__') , $chemin_fichier_original ) ,0,-(strlen($extension)+1));
+	$dossier_fichier_compacte = (substr($chemin,0,10)=='./sacoche/') ? './sacoche/__tmp/' : './__tmp/' ; // On peut se permettre d'enregistrer les js et css en dehors de leur dossier d'origine car les répertoires sont tous de mêmes niveaux
+	$nom_fichier_compacte     = substr( str_replace( array('./sacoche/','./','/') , array('','','__') , $chemin ) ,0,-(strlen($extension)+1));
 	$chemin_fichier_compacte  = $dossier_fichier_compacte.$nom_fichier_compacte.'.'.$methode.$version.'.'.$extension; // Pour un css l'extension doit être conservée (pour un js peu importe)
 	if(SERVEUR_TYPE == 'PROD')
 	{

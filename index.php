@@ -162,9 +162,12 @@ require($filename_php);
 $CONTENU_PAGE = ob_get_contents();
 ob_end_clean();
 
-// Chargement du js associé de la page
+// Fichiers javascript
 $filename_js_normal = './pages/'.$PAGE.'.js';
-$SCRIPT = (is_file($filename_js_normal)) ? '<script type="text/javascript" charset="utf-8" src="'.compacter($filename_js_normal,$VERSION_JS_FILE,'pack').'"></script>' : '' ;
+$TAB_JS_FILE = array();
+$TAB_JS_FILE[] = compacter('./_js/jquery-librairies.js',VERSION_JS_BIBLIO,'mini');
+$TAB_JS_FILE[] = compacter('./_js/script.js',VERSION_JS_GLOBAL,'mini');
+if(is_file($filename_js_normal)) $TAB_JS_FILE[] = compacter($filename_js_normal,$VERSION_JS_FILE,'pack');
 
 // Titre du navigateur
 $TITRE_NAVIGATEUR = 'SACoche » Espace '.$_SESSION['USER_PROFIL'].' » ';
@@ -184,8 +187,6 @@ entete();
 	<link rel="stylesheet" type="text/css" href="<?php echo compacter('./_css/style.css',VERSION_CSS_SCREEN,'mini') ?>" />
 	<!--[if lte IE 8]><link rel="stylesheet" type="text/css" href="<?php echo compacter('./_css/style_IE.css',VERSION_CSS_SCREEN,'mini') ?>" /><![endif]-->
 	<?php if(isset($_SESSION['CSS'])){echo'<style type="text/css">'.$_SESSION['CSS'].'</style>';} ?>
-	<script type="text/javascript" charset="utf-8" src="<?php echo compacter('./_js/jquery-librairies.js',VERSION_JS_BIBLIO,'mini') ?>"></script>
-	<script type="text/javascript" charset="utf-8" src="<?php echo compacter('./_js/script.js',VERSION_JS_GLOBAL,'mini') ?>"></script>
 	<title><?php echo $TITRE_NAVIGATEUR ?></title>
 </head>
 <body>
@@ -236,12 +237,12 @@ entete();
 	}
 	?>
 	<script type="text/javascript">
+		<?php echo fabriquer_code_chargement_javascript($TAB_JS_FILE) ?>
 		var PAGE='<?php echo $PAGE ?>';
 		var DUREE_AUTORISEE='<?php echo $_SESSION['DUREE_INACTIVITE'] ?>';
 		var DUREE_AFFICHEE='<?php echo $_SESSION['DUREE_INACTIVITE'] ?>';
 		var CONNEXION_USED='<?php echo (isset($_COOKIE[COOKIE_AUTHMODE])) ? $_COOKIE[COOKIE_AUTHMODE] : 'normal' ; ?>';
 	</script>
-	<?php echo $SCRIPT; ?>
 	<!-- Objet flash pour lire un fichier audio grace au génial lecteur de neolao http://flash-mp3-player.net/ -->
 	<h6><object class="playerpreview" id="myFlash" type="application/x-shockwave-flash" data="./_mp3/player_mp3_js.swf" height="1" width="1">
 		<param name="movie" value="./_mp3/player_mp3_js.swf" />

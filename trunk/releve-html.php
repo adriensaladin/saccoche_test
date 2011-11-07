@@ -67,6 +67,11 @@ if($position_css)
 	$CONTENU_PAGE = mb_substr($CONTENU_PAGE,$position_css+8);
 }
 
+// Fichiers javascript
+$TAB_JS_FILE = array();
+$TAB_JS_FILE[] = compacter('./_js/jquery-librairies.js',VERSION_JS_BIBLIO,'mini');
+$TAB_JS_FILE[] = compacter('./_js/script.js',VERSION_JS_GLOBAL,'mini');
+
 // Affichage de l'en-tête
 entete();
 ?>
@@ -76,13 +81,12 @@ entete();
 	<link rel="icon" type="image/png" href="./favicon.png" />
 	<link rel="stylesheet" type="text/css" href="<?php echo compacter('./_css/style.css',VERSION_CSS_SCREEN,'mini') ?>" />
 	<?php if($position_css){echo $CSS_PERSO;} ?>
-	<script type="text/javascript" charset="utf-8" src="<?php echo compacter('./_js/jquery-librairies.js',VERSION_JS_BIBLIO,'mini') ?>"></script>
-	<script type="text/javascript" charset="utf-8" src="<?php echo compacter('./_js/script.js',VERSION_JS_GLOBAL,'mini') ?>"></script>
 	<title>SACoche - Relevé HTML</title>
 </head>
 <body>
 	<?php echo $CONTENU_PAGE; ?>
 	<script type="text/javascript">
+		<?php echo fabriquer_code_chargement_javascript($TAB_JS_FILE) ?>
 		var PAGE='public_anti_maj_clock';
 	</script>
 </body>

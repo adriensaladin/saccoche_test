@@ -855,7 +855,7 @@ if($action=='COPY_id_lcs_TO_id_ent')
 
 if( ($action=='COPY_id_argos_profs_TO_id_ent') || ($action=='COPY_id_argos_eleves_TO_id_ent') || ($action=='COPY_id_argos_parents_TO_id_ent') )
 {
-	$fichier = './webservices/import_argos.php';
+	$fichier = './webservices/argos_import.php';
 	if(!is_file($fichier))
 	{
 		exit('Erreur : le fichier "'.$fichier.'" n\'a pas été trouvé !');

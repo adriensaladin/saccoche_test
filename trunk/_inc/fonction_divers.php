@@ -210,29 +210,55 @@ function ajouter_log_PHP($log_objet,$log_contenu,$log_fichier,$log_ligne,$only_s
 }
 
 /**
- * Création du code pour appeler les fichiers javascript externes
+ * Affichage déclaration + section head du document
  * 
- * Les fichier js ont été retirés du <head> et sont appelés une fois la page chargée afin de différer l'analyse du code (http://code.google.com/intl/fr/speed/page-speed/docs/mobile.html#DeferParsingJS)
- * 
- * @param array $tab_fichiers   tableau des chemins vers les fichiers js
- * @return string               code js à inclure dans la page
+ * @param bool   $is_meta_robots  affichage ou non des balises meta pour les robots
+ * @param bool   $is_favicon      affichage ou non du favicon
+ * @param bool   $is_rss          affichage ou non du flux RSS associé
+ * @param array  $tab_fichiers    tableau [i] => array( css | css_ie | js , chemin_fichier )
+ * @param string $titre_page      titre de la page
+ * @param string $css_additionnel css complémentaire (facultatif)
+ * @return void
  */
-function fabriquer_code_chargement_javascript($tab_fichiers)
+function declaration_entete( $is_meta_robots ,$is_favicon , $is_rss , $tab_fichiers , $titre_page , $css_additionnel=FALSE )
 {
-	$code_js  = 'function downloadJSAtOnload()';
-	$code_js .= '{';
-	foreach($tab_fichiers as $fichier)
+	header('Content-Type: text/html; charset='.CHARSET);
+	echo'<!DOCTYPE html>';
+	echo'<html>';
+	echo'<head>';
+	echo'<meta http-equiv="Content-Type" content="text/html; charset='.CHARSET.'" />';
+	if($is_meta_robots)
 	{
-		$code_js .= 'var obj_script=document.createElement("script");';
-		$code_js .= 'obj_script.charset="utf-8";';
-		$code_js .= 'obj_script.src="'.$fichier.'";';
-		$code_js .= 'document.body.appendChild(obj_script);';
+		echo'<meta name="description" content="SACoche - Suivi d\'Acquisition de Compétences - Evaluation par compétences - Valider le socle commun" />';
+		echo'<meta name="keywords" content="SACoche Sésamath évaluer évaluation compétences compétence validation valider socle commun collège points note notes Lomer" />';
+		echo'<meta name="author" content="Thomas Crespin pour Sésamath" />';
+		echo'<meta name="robots" content="index,follow" />';
 	}
-	$code_js .= '}';
-	$code_js .= 'if(window.addEventListener) window.addEventListener("load",downloadJSAtOnload,false);';
-	$code_js .= 'else if(window.attachEvent) window.attachEvent("onload",downloadJSAtOnload);';
-	$code_js .= 'else window.onload=downloadJSAtOnload;';
-	return $code_js;
+	if($is_favicon)
+	{
+		echo'<link rel="shortcut icon" type="images/x-icon" href="./favicon.ico" />';
+		echo'<link rel="icon" type="image/png" href="./favicon.png" />';
+	}
+	if($is_rss)
+	{
+		echo'<link rel="alternate" type="application/rss+xml" href="'.SERVEUR_RSS.'" title="SACoche" />';
+	}
+	foreach($tab_fichiers as $tab_infos)
+	{
+		list( $type , $url ) = $tab_infos;
+		switch($type)
+		{
+			case 'css'    : echo'<link rel="stylesheet" type="text/css" href="'.$url.'" />'; break;
+			case 'css_ie' : echo'<!--[if lte IE 8]><link rel="stylesheet" type="text/css" href="'.$url.'" /><![endif]-->'; break;
+			case 'js'     : echo'<script type="text/javascript" charset="'.CHARSET.'" src="'.$url.'"></script>'; break;
+		}
+	}
+	if($css_additionnel)
+	{
+		echo $css_additionnel; // style complémentaire déjà dans <style type="text/css">...</style>
+	}
+	echo'<title>'.$titre_page.'</title>';
+	echo'</head>';
 }
 
 /**

@@ -36,7 +36,7 @@ define('VERSION_PROG', @file_get_contents('VERSION.txt') );	// Ne pas mettre de 
 define('VERSION_BASE','2011-10-23');
 
 // Pour éviter les problèmes de mise en cache (serveur PROD uniquement)
-define('VERSION_CSS_SCREEN',67); // A changer lors de la mise à jour de ./_css/style.css
+define('VERSION_CSS_SCREEN',68); // A changer lors de la mise à jour de ./_css/style.css
 define('VERSION_JS_BIBLIO' ,11); // A changer lors de la mise à jour de ./_js/jquery-librairies.js
 define('VERSION_JS_GLOBAL' ,47); // A changer lors de la mise à jour de ./_js/script.js
 $VERSION_JS_FILE = 7;            // A changer lors de la mise à jour de tout un lot de fichiers js ; incrémenté ensuite si besoin dans le script associé à la page.
@@ -82,6 +82,7 @@ define('SERVEUR_COMMUNAUTAIRE' ,SERVEUR_PROJET.'/appel_externe.php');   // URL d
 define('SERVEUR_DOCUMENTAIRE'  ,SERVEUR_PROJET.'/appel_doc.php');       // URL du fichier chargé d'afficher les documentations
 define('SERVEUR_VERSION'       ,SERVEUR_PROJET.'/sacoche/VERSION.txt'); // URL du fichier chargé de renvoyer le numéro de la dernière version disponible
 define('SERVEUR_TELECHARGEMENT',SERVEUR_PROJET.'/telechargement.php');  // URL du fichier renvoyant le ZIP de la dernière archive de SACoche disponible
+define('SERVEUR_RSS'           ,SERVEUR_PROJET.'/_rss/rss.xml');        // URL du fichier comportant le flux RSS
 
 define('COOKIE_STRUCTURE','SACoche-etablissement');  // nom du cookie servant à retenir l'établissement sélectionné, afin de ne pas à avoir à le sélectionner de nouveau, et à pouvoir le retrouver si perte d'une session et tentative de reconnexion SSO.
 define('COOKIE_AUTHMODE' ,'SACoche-mode-connexion'); // nom du cookie servant à retenir le dernier mode de connexion utilisé par un user connecté, afin de pouvoir le retrouver si perte d'une session et tentative de reconnexion SSO.

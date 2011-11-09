@@ -26,15 +26,6 @@
  */
 
 /*
- * Déclarations d'en-tête d'une page HTML (avant la section <head></head>).
- */
-function entete()
-{
-	header('Content-Type: text/html; charset='.CHARSET);
-	echo'<!DOCTYPE html>'.'<html>';
-}
-
-/*
  * Afficher une page HTML avec un message explicatif et un lien pour retourner en page d'accueil (si AJAX, renvoyer juste un message).
  * 
  * @param string $titre     titre de la page
@@ -46,7 +37,9 @@ function affich_message_exit($titre,$contenu,$lien='')
 {
 	if(SACoche=='index')
 	{
-		entete();
+		header('Content-Type: text/html; charset='.CHARSET);
+		echo'<!DOCTYPE html>';
+		echo'<html>';
 		echo'<head><meta http-equiv="Content-Type" content="text/html; charset='.CHARSET.'" /><title>SACoche » '.$titre.'</title></head>';
 		echo'<body style="background:#EAEAFF;font:15px sans-serif;color:#D00">';
 		echo'<p>'.$contenu.'</p>';

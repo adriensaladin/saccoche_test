@@ -66,23 +66,23 @@ if($position_css)
 	$CSS_PERSO    = mb_substr($CONTENU_PAGE,0,$position_css+8);
 	$CONTENU_PAGE = mb_substr($CONTENU_PAGE,$position_css+8);
 }
+else
+{
+	$CSS_PERSO    = NULL;
+}
 
-// Fichiers javascript
-$TAB_JS_FILE = array();
-$TAB_JS_FILE[] = compacter('./_js/jquery-librairies.js',VERSION_JS_BIBLIO,'mini');
-$TAB_JS_FILE[] = compacter('./_js/script.js',VERSION_JS_GLOBAL,'mini');
+// Titre du navigateur
+$TITRE_NAVIGATEUR = 'SACoche - Relevé HTML';
+
+// Fichiers à inclure
+$tab_fichiers_head = array();
+$tab_fichiers_head[] = array( 'css' , compacter('./_css/style.css',VERSION_CSS_SCREEN,'mini') );
+$tab_fichiers_head[] = array( 'js'  , compacter('./_js/jquery-librairies.js',VERSION_JS_BIBLIO,'mini') );
+$tab_fichiers_head[] = array( 'js'  , compacter('./_js/script.js',VERSION_JS_GLOBAL,'mini') );
 
 // Affichage de l'en-tête
-entete();
+declaration_entete( FALSE /*is_meta_robots*/ , TRUE /*is_favicon*/ , FALSE /*is_rss*/ , $tab_fichiers_head , $TITRE_NAVIGATEUR , $CSS_PERSO );
 ?>
-<head>
-	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-	<link rel="shortcut icon" type="images/x-icon" href="./favicon.ico" />
-	<link rel="icon" type="image/png" href="./favicon.png" />
-	<link rel="stylesheet" type="text/css" href="<?php echo compacter('./_css/style.css',VERSION_CSS_SCREEN,'mini') ?>" />
-	<?php if($position_css){echo $CSS_PERSO;} ?>
-	<title>SACoche - Relevé HTML</title>
-</head>
 <body>
 	<?php echo $CONTENU_PAGE; ?>
 	<script type="text/javascript">

@@ -430,7 +430,7 @@ div.td_souris img.on {background-color:#FF0}
 /* Listes d'utilisateurs                                                                               */
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-.prof_liste {float:left;margin-right:10px}
+.prof_liste {float:left;margin-right:10px;margin-bottom:1em}
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 /* Pour la gestion privée (livre d'or, RSS)                                                            */

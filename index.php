@@ -162,33 +162,25 @@ require($filename_php);
 $CONTENU_PAGE = ob_get_contents();
 ob_end_clean();
 
-// Fichiers javascript
-$filename_js_normal = './pages/'.$PAGE.'.js';
-$TAB_JS_FILE = array();
-$TAB_JS_FILE[] = compacter('./_js/jquery-librairies.js',VERSION_JS_BIBLIO,'mini');
-$TAB_JS_FILE[] = compacter('./_js/script.js',VERSION_JS_GLOBAL,'mini');
-if(is_file($filename_js_normal)) $TAB_JS_FILE[] = compacter($filename_js_normal,$VERSION_JS_FILE,'pack');
-
 // Titre du navigateur
 $TITRE_NAVIGATEUR = 'SACoche » Espace '.$_SESSION['USER_PROFIL'].' » ';
 $TITRE_NAVIGATEUR.= ($TITRE) ? $TITRE : 'Evaluer par comptétences et valider le socle commun' ;
 
+// Css personnalisé
+$CSS_PERSO = (isset($_SESSION['CSS'])) ? '<style type="text/css">'.$_SESSION['CSS'].'</style>' : NULL ;
+
+// Fichiers à inclure
+$tab_fichiers_head = array();
+$tab_fichiers_head[] = array( 'css'    , compacter('./_css/style.css',VERSION_CSS_SCREEN,'mini') );
+$tab_fichiers_head[] = array( 'css_ie' , compacter('./_css/style_IE.css',VERSION_CSS_SCREEN,'mini') );
+$tab_fichiers_head[] = array( 'js'     , compacter('./_js/jquery-librairies.js',VERSION_JS_BIBLIO,'mini') );
+$tab_fichiers_head[] = array( 'js'     , compacter('./_js/script.js',VERSION_JS_GLOBAL,'mini') );
+$filename_js_normal = './pages/'.$PAGE.'.js';
+if(is_file($filename_js_normal)) $tab_fichiers_head[] = array( 'js' , compacter($filename_js_normal,$VERSION_JS_FILE,'pack') );
+
 // Affichage de l'en-tête
-entete();
+declaration_entete( TRUE /*is_meta_robots*/ , TRUE /*is_favicon*/ , TRUE /*is_rss*/ , $tab_fichiers_head , $TITRE_NAVIGATEUR , $CSS_PERSO );
 ?>
-<head>
-	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-	<meta name="description" content="SACoche - Suivi d'Acquisition de Compétences - Evaluer par compétences - Valider le socle commun" />
-	<meta name="keywords" content="SACoche Sésamath évaluer évaluation compétences compétence validation valider socle commun collège points Lomer" />
-	<meta name="author" content="Thomas Crespin pour Sésamath" />
-	<meta name="robots" content="index,follow" />
-	<link rel="shortcut icon" type="images/x-icon" href="./favicon.ico" />
-	<link rel="icon" type="image/png" href="./favicon.png" />
-	<link rel="stylesheet" type="text/css" href="<?php echo compacter('./_css/style.css',VERSION_CSS_SCREEN,'mini') ?>" />
-	<!--[if lte IE 8]><link rel="stylesheet" type="text/css" href="<?php echo compacter('./_css/style_IE.css',VERSION_CSS_SCREEN,'mini') ?>" /><![endif]-->
-	<?php if(isset($_SESSION['CSS'])){echo'<style type="text/css">'.$_SESSION['CSS'].'</style>';} ?>
-	<title><?php echo $TITRE_NAVIGATEUR ?></title>
-</head>
 <body>
 	<?php 
 	if($_SESSION['USER_PROFIL']!='public')
@@ -237,7 +229,6 @@ entete();
 	}
 	?>
 	<script type="text/javascript">
-		<?php echo fabriquer_code_chargement_javascript($TAB_JS_FILE) ?>
 		var PAGE='<?php echo $PAGE ?>';
 		var DUREE_AUTORISEE='<?php echo $_SESSION['DUREE_INACTIVITE'] ?>';
 		var DUREE_AFFICHEE='<?php echo $_SESSION['DUREE_INACTIVITE'] ?>';

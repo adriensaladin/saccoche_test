@@ -44,10 +44,11 @@ require_once('./_inc/fonction_divers.php');
 require_once('./_inc/fonction_affichage.php');
 
 // On récupère les paramètres
-$WS_qui = (isset($_POST['qui'])) ? clean_texte($_POST['qui']) : ( (isset($_GET['qui'])) ? clean_texte($_GET['qui']) : '' ) ;
-$WS_cle = (isset($_POST['cle'])) ? clean_texte($_POST['cle']) : '';
-$WS_uai = (isset($_POST['uai'])) ? clean_uai($_POST['uai'])   : '';
-$WS_uid = (isset($_POST['uid'])) ? clean_texte($_POST['uid']) : '';
+$WS_qui  = (isset($_POST['qui']))  ? clean_texte($_POST['qui']) : ( (isset($_GET['qui'])) ? clean_texte($_GET['qui']) : '' ) ;
+$WS_cle  = (isset($_POST['cle']))  ? clean_texte($_POST['cle']) : '';
+$WS_uai  = (isset($_POST['uai']))  ? clean_uai($_POST['uai'])   : '';
+$WS_uid  = (isset($_POST['uid']))  ? clean_texte($_POST['uid']) : '';
+$WS_data = (isset($_POST['data'])) ? $_POST['data']             : ''; // tableau sérializé
 
 // On ne vérifie que le 1er paramètre (le service web prendra éventuellement en charge la suite).
 $tab_ws = array('argos_parent','argos_ajout');

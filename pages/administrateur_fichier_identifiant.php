@@ -99,7 +99,7 @@ $select_groupe = Formulaire::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_regroup
 		<hr />
 		<p><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__gestion_mode_identification__argos">DOC : Intégration de SACoche dans Argos</a></span></p>
 		<?php
-		$fichier = './webservices/import_argos.php';
+		$fichier = './webservices/argos_import.php';
 		echo (is_file($fichier)) ? '<button name="dupliquer" id="COPY_id_argos_profs_TO_id_ent" type="button"><img alt="" src="./_img/bouton/mdp_groupe.png" /> Récupérer l\'identifiant Argos</button> comme identifiant de l\'ENT pour tous les professeurs &amp; directeurs.<br />
 		                            <button name="dupliquer" id="COPY_id_argos_eleves_TO_id_ent" type="button"><img alt="" src="./_img/bouton/mdp_groupe.png" /> Récupérer l\'identifiant Argos</button> comme identifiant de l\'ENT pour tous les élèves.<br />
 		                            <button name="dupliquer" id="COPY_id_argos_parents_TO_id_ent" type="button"><img alt="" src="./_img/bouton/mdp_groupe.png" /> Récupérer l\'identifiant Argos</button> comme identifiant de l\'ENT pour tous les responsables légaux.'

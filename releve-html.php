@@ -86,7 +86,6 @@ declaration_entete( FALSE /*is_meta_robots*/ , TRUE /*is_favicon*/ , FALSE /*is_
 <body>
 	<?php echo $CONTENU_PAGE; ?>
 	<script type="text/javascript">
-		<?php echo fabriquer_code_chargement_javascript($TAB_JS_FILE) ?>
 		var PAGE='public_anti_maj_clock';
 	</script>
 </body>

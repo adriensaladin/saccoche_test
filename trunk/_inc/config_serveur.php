@@ -99,7 +99,6 @@ mb_internal_encoding(CHARSET);
  */
 function __autoload($class_name)
 {
-	if(stripos($class_name,'PEAR')!==false) return; // ???
 	$tab_classes = array(
 		'DB'                          => '_lib'.DIRECTORY_SEPARATOR.'DB'.DIRECTORY_SEPARATOR.'DB.class.php' ,
 		'FirePHP'                     => '_lib'.DIRECTORY_SEPARATOR.'FirePHPCore'.DIRECTORY_SEPARATOR.'FirePHP.class.php' ,

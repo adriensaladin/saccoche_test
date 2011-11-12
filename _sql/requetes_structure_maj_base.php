@@ -1288,10 +1288,27 @@ public function DB_maj_base($version_actuelle)
 			$version_actuelle = '2011-10-23';
 			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_actuelle.'" WHERE parametre_nom="version_base"' );
 			// ajout de 2 index
-			$DB_SQL = 'ALTER TABLE sacoche_saisie ADD UNIQUE saisie_key ( eleve_id , devoir_id , item_id ) ';
-			$DB_TAB = DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL );
-			$DB_SQL = 'ALTER TABLE sacoche_user ADD INDEX ( user_id_gepi ) ';
-			$DB_TAB = DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL );
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_saisie ADD UNIQUE saisie_key ( eleve_id , devoir_id , item_id )' );
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_user ADD INDEX ( user_id_gepi )' );
+		}
+	}
+
+	//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	//	MAJ 2011-10-23 => 2011-11-12
+	//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	if($version_actuelle=='2011-10-23')
+	{
+		if($version_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
+		{
+			$version_actuelle = '2011-11-12';
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_actuelle.'" WHERE parametre_nom="version_base"' );
+			// depuis le 05/06/2010 les nouvelles bases voyaient le champ "sacoche_parametre" défini à VARCHAR(25) au lieu de VARCHAR(30)
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_parametre CHANGE parametre_nom parametre_nom VARCHAR( 30 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT ""' );
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_nom="droit_bilan_pourcentage_acquis" WHERE parametre_nom="droit_bilan_pourcentage_a"' );
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_nom="droit_bilan_note_sur_vingt"     WHERE parametre_nom="droit_bilan_note_sur_ving"' );
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_nom="droit_socle_pourcentage_acquis" WHERE parametre_nom="droit_socle_pourcentage_a"' );
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_nom="droit_socle_etat_validation"    WHERE parametre_nom="droit_socle_etat_validati"' );
 		}
 	}
 

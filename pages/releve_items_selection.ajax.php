@@ -91,6 +91,7 @@ if( $orientation && $couleur && $legende && $marge_min && $pages_nb && $cases_nb
 	$tab_eleve      = array();	// [i] => array(eleve_id,eleve_nom,eleve_prenom)
 	$tab_matiere    = array();	// [matiere_id] => matiere_nom
 	$tab_eval       = array();	// [eleve_id][matiere_id][item_id][devoir] => array(note,date,info) On utilise un tableau multidimensionnel vu qu'on ne sait pas à l'avance combien il y a d'évaluations pour un élève et un item donnés.
+	$tab_matiere_for_item = array();	// [item_id] => matiere_id
 
 	//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 	// Récupération de la liste des items travaillés durant la période choisie, pour la matière et les élèves selectionnés
@@ -138,8 +139,10 @@ if( $orientation && $couleur && $legende && $marge_min && $pages_nb && $cases_nb
 		if($tab_score_a_garder[$DB_ROW['eleve_id']][$DB_ROW['item_id']])
 		{
 			$tab_eval[$DB_ROW['eleve_id']][$DB_ROW['matiere_id']][$DB_ROW['item_id']][] = array('note'=>$DB_ROW['note'],'date'=>$DB_ROW['date'],'info'=>$DB_ROW['info']);
+			$tab_matiere_for_item[$DB_ROW['item_id']] = $DB_ROW['matiere_id'];	// sert pour la synthèse sur une sélection d'items issus de différentes matières
 		}
 	}
+	$matiere_nb = count(array_unique($tab_matiere_for_item));
 
 	//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 	// INCLUSION DU CODE COMMUN À PLUSIEURS PAGES

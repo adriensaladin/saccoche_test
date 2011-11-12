@@ -141,6 +141,41 @@ $(document).ready
 		);
 
 		//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
+		//	Charger toutes les matières ou seulement les matières affectées (pour un prof)
+		//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
+
+		var modifier_action = 'ajouter';
+		$("#modifier_matiere").click
+		(
+			function()
+			{
+				var matiere_id = $("#f_matiere option:selected").val();
+				$.ajax
+				(
+					{
+						type : 'POST',
+						url : 'ajax.php?page=_maj_select_matieres_prof',
+						data : 'f_matiere='+matiere_id+'&f_action='+modifier_action,
+						dataType : "html",
+						error : function(msg,string)
+						{
+						},
+						success : function(responseHTML)
+						{
+							initialiser_compteur();
+							if(responseHTML.substring(0,7)=='<option')	// Attention aux caractères accentués : l'utf-8 pose des pbs pour ce test
+							{
+								modifier_action = (modifier_action=='ajouter') ? 'retirer' : 'ajouter' ;
+								$('#modifier_matiere').html('<img alt="" src="./_img/bouton/form_'+modifier_action+'.png" />');
+								$('#f_matiere').html(responseHTML);
+							}
+						}
+					}
+				);
+			}
+		);
+
+		//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
 		//	Soumettre le formulaire principal
 		//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
 
@@ -191,7 +226,11 @@ $(document).ready
 				},
 				errorElement : "label",
 				errorClass : "erreur",
-				errorPlacement : function(error,element) { element.after(error); }
+				errorPlacement : function(error,element)
+				{
+					if(element.attr("id")=='f_matiere') { element.next().after(error); }
+					else {element.after(error);}
+				}
 				// success: function(label) {label.text("ok").removeAttr("class").addClass("valide");} Pas pour des champs soumis à vérification PHP
 			}
 		);

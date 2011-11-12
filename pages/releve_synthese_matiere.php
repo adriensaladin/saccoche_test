@@ -100,16 +100,19 @@ if(is_array($tab_groupes))
 	{
 		$tab_id_classe_groupe[] = $tab_groupe_infos['valeur'];
 	}
-	$tab_memo_groupes = array();
-	$DB_TAB = DB_STRUCTURE_COMMUN::DB_lister_jointure_groupe_periode($listing_groupe_id = implode(',',$tab_id_classe_groupe));
-	foreach($DB_TAB as $DB_ROW)
+	if(count($tab_id_classe_groupe))
 	{
-		if(!isset($tab_memo_groupes[$DB_ROW['groupe_id']]))
+		$tab_memo_groupes = array();
+		$DB_TAB = DB_STRUCTURE_COMMUN::DB_lister_jointure_groupe_periode($listing_groupe_id = implode(',',$tab_id_classe_groupe));
+		foreach($DB_TAB as $DB_ROW)
 		{
-			$tab_memo_groupes[$DB_ROW['groupe_id']] = true;
-			$tab_groupe_periode_js .= 'tab_groupe_periode['.$DB_ROW['groupe_id'].'] = new Array();';
+			if(!isset($tab_memo_groupes[$DB_ROW['groupe_id']]))
+			{
+				$tab_memo_groupes[$DB_ROW['groupe_id']] = true;
+				$tab_groupe_periode_js .= 'tab_groupe_periode['.$DB_ROW['groupe_id'].'] = new Array();';
+			}
+			$tab_groupe_periode_js .= 'tab_groupe_periode['.$DB_ROW['groupe_id'].']['.$DB_ROW['periode_id'].']="'.$DB_ROW['jointure_date_debut'].'_'.$DB_ROW['jointure_date_fin'].'";';
 		}
-		$tab_groupe_periode_js .= 'tab_groupe_periode['.$DB_ROW['groupe_id'].']['.$DB_ROW['periode_id'].']="'.$DB_ROW['jointure_date_debut'].'_'.$DB_ROW['jointure_date_fin'].'";';
 	}
 }
 

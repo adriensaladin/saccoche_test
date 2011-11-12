@@ -27,7 +27,7 @@
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = "Grille d'items d'un référentiel";
-$VERSION_JS_FILE += 5;
+$VERSION_JS_FILE += 6;
 ?>
 
 <?php
@@ -37,6 +37,7 @@ $check_only_socle = (Formulaire::$tab_choix['only_socle']) ? ' checked' : '' ;
 $check_aff_coef   = (Formulaire::$tab_choix['aff_coef'])   ? ' checked' : '' ;
 $check_aff_socle  = (Formulaire::$tab_choix['aff_socle'])  ? ' checked' : '' ;
 $check_aff_lien   = (Formulaire::$tab_choix['aff_lien'])   ? ' checked' : '' ;
+$bouton_modifier_matieres = '';
 if($_SESSION['USER_PROFIL']=='directeur')
 {
 	$tab_matieres = DB_STRUCTURE_COMMUN::DB_OPT_matieres_etabl($_SESSION['MATIERES'],$transversal=true);
@@ -52,6 +53,7 @@ if($_SESSION['USER_PROFIL']=='professeur')
 	$tab_groupes  = DB_STRUCTURE_COMMUN::DB_OPT_groupes_professeur($_SESSION['USER_ID']);
 	$of_g = 'val'; $sel_g = false; $og_g = 'oui'; $class_form_eleve = 'show'; $sel_n = false;
 	$select_eleves = '<option></option>'; // maj en ajax suivant le choix du groupe
+	$bouton_modifier_matieres = '<button id="modifier_matiere" type="button"><img alt="" src="./_img/bouton/form_ajouter.png" /></button>';
 }
 if( ($_SESSION['USER_PROFIL']=='parent') && ($_SESSION['NB_ENFANTS']!=1) )
 {
@@ -79,8 +81,8 @@ if($_SESSION['USER_PROFIL']=='eleve')
 }
 
 $select_matiere      = Formulaire::afficher_select($tab_matieres                        , $select_nom='f_matiere'      , $option_first='oui' , $selection=Formulaire::$tab_choix['matiere_id']    , $optgroup='non');
-$select_niveau       = Formulaire::afficher_select($tab_niveaux                         , $select_nom='f_niveau'       , $option_first='oui' , $selection=$sel_n                                   , $optgroup='non');
-$select_groupe       = Formulaire::afficher_select($tab_groupes                         , $select_nom='f_groupe'       , $option_first=$of_g , $selection=$sel_g                                   , $optgroup=$og_g);
+$select_niveau       = Formulaire::afficher_select($tab_niveaux                         , $select_nom='f_niveau'       , $option_first='oui' , $selection=$sel_n                                  , $optgroup='non');
+$select_groupe       = Formulaire::afficher_select($tab_groupes                         , $select_nom='f_groupe'       , $option_first=$of_g , $selection=$sel_g                                  , $optgroup=$og_g);
 $select_orientation  = Formulaire::afficher_select(Formulaire::$tab_select_orientation  , $select_nom='f_orientation'  , $option_first='non' , $selection=Formulaire::$tab_choix['orientation']   , $optgroup='non');
 $select_marge_min    = Formulaire::afficher_select(Formulaire::$tab_select_marge_min    , $select_nom='f_marge_min'    , $option_first='non' , $selection=Formulaire::$tab_choix['marge_min']     , $optgroup='non');
 $select_couleur      = Formulaire::afficher_select(Formulaire::$tab_select_couleur      , $select_nom='f_couleur'      , $option_first='non' , $selection=Formulaire::$tab_choix['couleur']       , $optgroup='non');
@@ -99,7 +101,7 @@ $select_colonne_vide = Formulaire::afficher_select(Formulaire::$tab_select_colon
 <p><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=releves_bilans__releve_grille_referentiel">DOC : Grille d'items d'un référentiel.</a></span></p>
 
 <form action="#" method="post" id="form_select"><fieldset>
-	<label class="tab" for="f_matiere">Matière :</label><?php echo $select_matiere ?><input type="hidden" id="f_matiere_nom" name="f_matiere_nom" value="" /><br />
+	<label class="tab" for="f_matiere">Matière :</label><?php echo $select_matiere ?><?php echo $bouton_modifier_matieres ?><input type="hidden" id="f_matiere_nom" name="f_matiere_nom" value="" /><br />
 	<label class="tab" for="f_niveau">Niveau :</label><?php echo $select_niveau ?><input type="hidden" id="f_niveau_nom" name="f_niveau_nom" value="" /><p />
 	<div class="<?php echo $class_form_eleve ?>">
 		<label class="tab" for="f_groupe">Classe / groupe :</label><?php echo $select_groupe ?><label id="ajax_maj">&nbsp;</label><br />

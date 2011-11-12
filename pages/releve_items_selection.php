@@ -27,12 +27,13 @@
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = "Bilan d'items sélectionnés";
-$VERSION_JS_FILE += 6;
+$VERSION_JS_FILE += 7;
 ?>
 
 <?php
 Formulaire::load_choix_memo();
 $check_type_individuel = (Formulaire::$tab_choix['type_individuel'])   ? ' checked' : '' ;
+$class_form_individuel = (Formulaire::$tab_choix['type_individuel'])   ? 'show'     : 'hide' ;
 $check_type_synthese   = (Formulaire::$tab_choix['type_synthese'])     ? ' checked' : '' ;
 $check_bilan_MS        = (Formulaire::$tab_choix['aff_bilan_MS'])      ? ' checked' : '' ;
 $check_bilan_PA        = (Formulaire::$tab_choix['aff_bilan_PA'])      ? ' checked' : '' ;
@@ -72,16 +73,19 @@ if(is_array($tab_groupes))
 			$tab_id_classe_groupe[] = $tab_groupe_infos['valeur'];
 		}
 	}
-	$tab_memo_groupes = array();
-	$DB_TAB = DB_STRUCTURE_COMMUN::DB_lister_jointure_groupe_periode($listing_groupe_id = implode(',',$tab_id_classe_groupe));
-	foreach($DB_TAB as $DB_ROW)
+	if(count($tab_id_classe_groupe))
 	{
-		if(!isset($tab_memo_groupes[$DB_ROW['groupe_id']]))
+		$tab_memo_groupes = array();
+		$DB_TAB = DB_STRUCTURE_COMMUN::DB_lister_jointure_groupe_periode($listing_groupe_id = implode(',',$tab_id_classe_groupe));
+		foreach($DB_TAB as $DB_ROW)
 		{
-			$tab_memo_groupes[$DB_ROW['groupe_id']] = true;
-			$tab_groupe_periode_js .= 'tab_groupe_periode['.$DB_ROW['groupe_id'].'] = new Array();';
+			if(!isset($tab_memo_groupes[$DB_ROW['groupe_id']]))
+			{
+				$tab_memo_groupes[$DB_ROW['groupe_id']] = true;
+				$tab_groupe_periode_js .= 'tab_groupe_periode['.$DB_ROW['groupe_id'].'] = new Array();';
+			}
+			$tab_groupe_periode_js .= 'tab_groupe_periode['.$DB_ROW['groupe_id'].']['.$DB_ROW['periode_id'].']="'.$DB_ROW['jointure_date_debut'].'_'.$DB_ROW['jointure_date_fin'].'";';
 		}
-		$tab_groupe_periode_js .= 'tab_groupe_periode['.$DB_ROW['groupe_id'].']['.$DB_ROW['periode_id'].']="'.$DB_ROW['jointure_date_debut'].'_'.$DB_ROW['jointure_date_fin'].'";';
 	}
 }
 ?>
@@ -92,13 +96,12 @@ if(is_array($tab_groupes))
 </script>
 
 <div><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=releves_bilans__releve_items_selection">DOC : Bilan d'items sélectionnés.</a></span></div>
-<div class="astuce">Le codage de ce bilan est à revoir (il y a un bug dans le tableau de synthèse avec des items de différentes matières).</div>
 
 <hr />
 
 <form action="#" method="post" id="form_select"><fieldset>
 	<label class="tab" for="f_type">Type de bilan :</label><label for="f_type_individuel"><input type="checkbox" id="f_type_individuel" name="f_type" value="individuel"<?php echo $check_type_individuel ?> /> Relevé individuel</label>&nbsp;&nbsp;&nbsp;<label for="f_type_synthese"><input type="checkbox" id="f_type_synthese" name="f_type" value="synthese"<?php echo $check_type_synthese ?> /> Synthèse collective</label><input type="hidden" id="types" name="types" value="" /><br />
-	<span id="options_releve" class="hide">
+	<span id="options_individuel" class="<?php echo $class_form_individuel ?>">
 		<label class="tab" for="f_opt_grille"><img alt="" src="./_img/bulle_aide.png" title="Pour le relévé individuel, les paramètres des items peuvent être affichés." /> Opt. relevé :</label><label for="f_coef"><input type="checkbox" id="f_coef" name="f_coef" value="1"<?php echo $check_aff_coef ?> /> Coefficients</label>&nbsp;&nbsp;&nbsp;<label for="f_socle"><input type="checkbox" id="f_socle" name="f_socle" value="1"<?php echo $check_aff_socle ?> /> Socle</label>&nbsp;&nbsp;&nbsp;<label for="f_lien"><input type="checkbox" id="f_lien" name="f_lien" value="1"<?php echo $check_aff_lien ?> /> Liens de remédiation</label><br />
 		<label class="tab" for="f_opt_bilan"><img alt="" src="./_img/bulle_aide.png" title="Pour le relévé individuel, deux lignes de synthèse peuvent être ajoutées.<br />Dans ce cas, une note sur 20 peut aussi être affichée." /> Opt. relevé :</label><label for="f_bilan_MS"><input type="checkbox" id="f_bilan_MS" name="f_bilan_MS" value="1"<?php echo $check_bilan_MS ?> /> Moyenne des scores</label>&nbsp;&nbsp;&nbsp;<label for="f_bilan_PA"><input type="checkbox" id="f_bilan_PA" name="f_bilan_PA" value="1"<?php echo $check_bilan_PA ?> /> Pourcentage d'items acquis</label>&nbsp;&nbsp;&nbsp;<label for="f_conv_sur20"><input type="checkbox" id="f_conv_sur20" name="f_conv_sur20" value="1"<?php echo $check_conv_sur20 ?> /> Proposition de note sur 20</label><br />
 	</span>

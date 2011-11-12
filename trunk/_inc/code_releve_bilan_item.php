@@ -83,10 +83,28 @@ $moyenne_pourcentage_acquis   = 0;	// moyenne des moyennes des pourcentages d'it
 	$tab_infos_acquis_eleve[$matiere_id][$eleve_id]
 */
 
+// Pour la synthèse d'items de plusieurs matières (/ élève)
+if( ($matiere_nb>1) && (in_array('synthese',$tab_type)) )
+{
+	$tab_total_somme_scores_non_ponderes = array();
+	$tab_total_nb_scores                 = array();
+	$tab_total_nb_acquis                 = array();
+	$tab_total_nb_non_acquis             = array();
+	$tab_total_nb_voie_acquis            = array();
+}
+
 // Pour chaque élève...
 foreach($tab_eleve as $key => $tab)
 {
 	extract($tab);	// $eleve_id $eleve_nom $eleve_prenom $eleve_id_gepi
+	if( ($matiere_nb>1) && (in_array('synthese',$tab_type)) )
+	{
+		$tab_total_somme_scores_non_ponderes[$eleve_id] = 0;
+		$tab_total_nb_scores[$eleve_id]                 = 0;
+		$tab_total_nb_acquis[$eleve_id]                 = 0;
+		$tab_total_nb_non_acquis[$eleve_id]             = 0;
+		$tab_total_nb_voie_acquis[$eleve_id]            = 0;
+	}
 	// Si cet élève a été évalué...
 	if(isset($tab_eval[$eleve_id]))
 	{
@@ -113,9 +131,14 @@ foreach($tab_eleve as $key => $tab)
 				$somme_coefs = 0;
 				if($nb_scores)
 				{
-					// En l'absence de coefficients, ces 2 lignes suffiraient :
-					// $somme_scores_ponderes = array_sum($tableau_score_filtre);
-					// $somme_coefs = $nb_scores;
+					if( ($matiere_nb>1) && (in_array('synthese',$tab_type)) )
+					{
+						// Total multimatières sans coef
+						$tab_total_somme_scores_non_ponderes[$eleve_id] += array_sum($tableau_score_filtre);
+						$tab_total_nb_scores[$eleve_id]                 += $nb_scores;
+					}
+					// $somme_scores_ponderes = 
+					// $somme_coefs = 
 					foreach($tableau_score_filtre as $item_id => $item_score)
 					{
 						$somme_scores_ponderes += $item_score*$tab_item[$item_id][0]['item_coef'];
@@ -139,6 +162,13 @@ foreach($tab_eleve as $key => $tab)
 					$nb_voie_acquis = $nb_scores - $nb_acquis - $nb_non_acquis;
 					$tab_pourcentage_acquis_eleve[$matiere_id][$eleve_id] = round( 50 * ( ($nb_acquis*2 + $nb_voie_acquis) / $nb_scores ) ,0);
 					$tab_infos_acquis_eleve[$matiere_id][$eleve_id]       = $nb_acquis.$_SESSION['ACQUIS_TEXTE']['A'].' '. $nb_voie_acquis.$_SESSION['ACQUIS_TEXTE']['VA'].' '. $nb_non_acquis.$_SESSION['ACQUIS_TEXTE']['NA'];
+					if( ($matiere_nb>1) && (in_array('synthese',$tab_type)) )
+					{
+						// Total multimatières
+						$tab_total_nb_acquis[$eleve_id]      += $nb_acquis;
+						$tab_total_nb_non_acquis[$eleve_id]  += $nb_non_acquis;
+						$tab_total_nb_voie_acquis[$eleve_id] += $nb_voie_acquis;
+					}
 				}
 				else
 				{
@@ -149,6 +179,20 @@ foreach($tab_eleve as $key => $tab)
 			}
 		}
 		$tab_eleve[$key]['nb_matieres'] = count($tab_score_eleve_item[$eleve_id]);
+		if( ($matiere_nb>1) && (in_array('synthese',$tab_type)) )
+		{
+			// On prend la matière 0 pour mettre les résultats toutes matières confondues
+			if($tab_total_nb_scores[$eleve_id])
+			{
+				$tab_moyenne_scores_eleve[0][$eleve_id]     = round($tab_total_somme_scores_non_ponderes[$eleve_id]/$tab_total_nb_scores[$eleve_id],0);
+				$tab_pourcentage_acquis_eleve[0][$eleve_id] = round( 50 * ( ($tab_total_nb_acquis[$eleve_id]*2 + $tab_total_nb_voie_acquis[$eleve_id]) / $tab_total_nb_scores[$eleve_id] ) ,0);
+			}
+			else
+			{
+				$tab_moyenne_scores_eleve[0][$eleve_id]     = false;
+				$tab_pourcentage_acquis_eleve[0][$eleve_id] = false;
+			}
+		}
 	}
 }
 
@@ -196,6 +240,10 @@ if(in_array('synthese',$tab_type))
 
 if( (in_array('synthese',$tab_type)) || (in_array('bulletin',$tab_type)) )
 {
+	if( ($matiere_nb>1) && (in_array('synthese',$tab_type)) )
+	{
+		$matiere_id = 0; // C'est l'indice choisi pour stocker les infos dans le cas d'une synthèse d'items issus de plusieurs matières
+	}
 	// $moyenne_moyenne_scores
 	$somme  = array_sum($tab_moyenne_scores_eleve[$matiere_id]);
 	$nombre = count( array_filter($tab_moyenne_scores_eleve[$matiere_id],'non_nul') );
@@ -416,10 +464,15 @@ if(in_array('synthese',$tab_type))
 			// Pour chaque item...
 			foreach($tab_liste_item as $item_id)
 			{
+				$matiere_id = $tab_matiere_for_item[$item_id];
 				$score = (isset($tab_score_eleve_item[$eleve_id][$matiere_id][$item_id])) ? $tab_score_eleve_item[$eleve_id][$matiere_id][$item_id] : false ;
 				$releve_PDF->afficher_score_bilan($score,$br=0);
 				$releve_HTML_table_body1 .= affich_score_html($score,'score');
 				$releve_HTML_table_body2 .= affich_score_html($score,'etat');
+			}
+			if( ($matiere_nb>1) && (in_array('synthese',$tab_type)) )
+			{
+				$matiere_id = 0; // C'est l'indice choisi pour stocker les infos dans le cas d'une synthèse d'items issus de plusieurs matières
 			}
 			$releve_PDF->bilan_periode_synthese_pourcentages($tab_moyenne_scores_eleve[$matiere_id][$eleve_id],$tab_pourcentage_acquis_eleve[$matiere_id][$eleve_id],false,true);
 			$releve_HTML_table_body1 .= '<td class="nu">&nbsp;</td>'.affich_score_html($tab_moyenne_scores_eleve[$matiere_id][$eleve_id],'score','%').affich_score_html($tab_pourcentage_acquis_eleve[$matiere_id][$eleve_id],'score','%').'</tr>'."\r\n";
@@ -467,7 +520,6 @@ if(in_array('synthese',$tab_type))
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // Elaboration du bulletin (moyenne & appréciation) en HTML et CSV pour GEPI
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
 if(in_array('bulletin',$tab_type))
 {
 	/*

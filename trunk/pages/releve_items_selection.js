@@ -54,7 +54,7 @@ $(document).ready
 		(
 			function()
 			{
-				$("#options_releve").toggle("slow");
+				$("#options_individuel").toggle("slow");
 			}
 		);
 

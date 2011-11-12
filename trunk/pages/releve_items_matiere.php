@@ -27,7 +27,7 @@
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = "Bilan d'items d'une matière";
-$VERSION_JS_FILE += 11;
+$VERSION_JS_FILE += 12;
 ?>
 
 <?php
@@ -48,6 +48,7 @@ $check_only_socle      = (Formulaire::$tab_choix['only_socle'])        ? ' check
 $check_aff_coef        = (Formulaire::$tab_choix['aff_coef'])          ? ' checked' : '' ;
 $check_aff_socle       = (Formulaire::$tab_choix['aff_socle'])         ? ' checked' : '' ;
 $check_aff_lien        = (Formulaire::$tab_choix['aff_lien'])          ? ' checked' : '' ;
+$bouton_modifier_matieres = '';
 if($_SESSION['USER_PROFIL']=='directeur')
 {
 	$tab_groupes  = DB_STRUCTURE_COMMUN::DB_OPT_classes_groupes_etabl();
@@ -61,6 +62,7 @@ if($_SESSION['USER_PROFIL']=='professeur')
 	$tab_matieres = DB_STRUCTURE_COMMUN::DB_OPT_matieres_professeur($_SESSION['MATIERES'],$_SESSION['USER_ID']);
 	$of_g = 'oui'; $sel_g = false; $class_form_type = 'show'; $class_form_eleve = 'show'; $class_form_periode = 'hide';
 	$select_eleves = '<option></option>'; // maj en ajax suivant le choix du groupe
+	$bouton_modifier_matieres = '<button id="modifier_matiere" type="button"><img alt="" src="./_img/bouton/form_ajouter.png" /></button>';
 }
 if( ($_SESSION['USER_PROFIL']=='parent') && ($_SESSION['NB_ENFANTS']!=1) )
 {
@@ -113,16 +115,19 @@ if(is_array($tab_groupes))
 			$tab_id_classe_groupe[] = $tab_groupe_infos['valeur'];
 		}
 	}
-	$tab_memo_groupes = array();
-	$DB_TAB = DB_STRUCTURE_COMMUN::DB_lister_jointure_groupe_periode($listing_groupe_id = implode(',',$tab_id_classe_groupe));
-	foreach($DB_TAB as $DB_ROW)
+	if(count($tab_id_classe_groupe))
 	{
-		if(!isset($tab_memo_groupes[$DB_ROW['groupe_id']]))
+		$tab_memo_groupes = array();
+		$DB_TAB = DB_STRUCTURE_COMMUN::DB_lister_jointure_groupe_periode($listing_groupe_id = implode(',',$tab_id_classe_groupe));
+		foreach($DB_TAB as $DB_ROW)
 		{
-			$tab_memo_groupes[$DB_ROW['groupe_id']] = true;
-			$tab_groupe_periode_js .= 'tab_groupe_periode['.$DB_ROW['groupe_id'].'] = new Array();';
+			if(!isset($tab_memo_groupes[$DB_ROW['groupe_id']]))
+			{
+				$tab_memo_groupes[$DB_ROW['groupe_id']] = true;
+				$tab_groupe_periode_js .= 'tab_groupe_periode['.$DB_ROW['groupe_id'].'] = new Array();';
+			}
+			$tab_groupe_periode_js .= 'tab_groupe_periode['.$DB_ROW['groupe_id'].']['.$DB_ROW['periode_id'].']="'.$DB_ROW['jointure_date_debut'].'_'.$DB_ROW['jointure_date_fin'].'";';
 		}
-		$tab_groupe_periode_js .= 'tab_groupe_periode['.$DB_ROW['groupe_id'].']['.$DB_ROW['periode_id'].']="'.$DB_ROW['jointure_date_debut'].'_'.$DB_ROW['jointure_date_fin'].'";';
 	}
 }
 ?>
@@ -147,7 +152,7 @@ if(is_array($tab_groupes))
 		</span>
 	</p>
 	<p>
-		<label class="tab" for="f_matiere">Matière :</label><?php echo $select_matiere ?><input type="hidden" id="f_matiere_nom" name="f_matiere_nom" value="" />
+		<label class="tab" for="f_matiere">Matière :</label><?php echo $select_matiere ?><?php echo $bouton_modifier_matieres ?><input type="hidden" id="f_matiere_nom" name="f_matiere_nom" value="" />
 	</p>
 	<p class="<?php echo $class_form_eleve ?>">
 		<label class="tab" for="f_groupe">Classe / groupe :</label><?php echo $select_groupe ?><input type="hidden" id="f_groupe_nom" name="f_groupe_nom" value="" /><label id="ajax_maj">&nbsp;</label><br />

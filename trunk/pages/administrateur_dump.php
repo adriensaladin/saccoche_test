@@ -27,7 +27,6 @@
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = "Sauvegarde / Restauration";
-$VERSION_JS_FILE += 2;
 ?>
 
 <p><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__gestion_dump">DOC : Sauvegarde et restauration de la base</a></span></p>
@@ -36,7 +35,7 @@ $VERSION_JS_FILE += 2;
 
 <h2>Sauvegarder la base</h2>
 <form action="#" method="post" id="form1"><fieldset>
-	<span class="tab"></span><button id="bouton_form1" type="button"><img alt="" src="./_img/bouton/dump_export.png" /> Lancer la sauvegarde.</button><label id="ajax_msg1">&nbsp;</label>
+	<span class="tab"></span><button id="bouton_form1" type="button" class="dump_export">Lancer la sauvegarde.</button><label id="ajax_msg1">&nbsp;</label>
 </fieldset></form>
 
 <hr />
@@ -44,7 +43,7 @@ $VERSION_JS_FILE += 2;
 <h2>Restaurer la base</h2>
 <div class="danger">Restaurer une sauvegarde antérieure écrasera irrémédiablement les données actuelles !</div>
 <form action="#" method="post" id="form2"><fieldset>
-	<label class="tab" for="bouton_form2">Uploader le fichier :</label><button id="bouton_form2" type="button"><img alt="" src="./_img/bouton/fichier_import.png" /> Parcourir...</button><label id="ajax_msg2">&nbsp;</label>
+	<label class="tab" for="bouton_form2">Uploader le fichier :</label><button id="bouton_form2" type="button" class="fichier_import">Parcourir...</button><label id="ajax_msg2">&nbsp;</label>
 </fieldset></form>
 
 <hr />

@@ -26,7 +26,6 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-$VERSION_JS_FILE += 6;
 ?>
 
 <?php
@@ -105,7 +104,7 @@ $select_matiere = Formulaire::afficher_select($tab_matieres , $select_nom=false 
 			<div id="div_matiere" class="<?php echo $class_div_matiere ?>"><span class="tab"></span><select id="f_matiere" name="f_matiere[]" multiple size="5"><?php echo $select_matiere ?></select><input type="hidden" id="matieres" name="matieres" value="" /></div>
 		</div>
 	</div><p />
-	<span class="tab"></span><button id="bouton_valider" type="submit"><img alt="" src="./_img/bouton/generer.png" /> Générer.</button><label id="ajax_msg">&nbsp;</label>
+	<span class="tab"></span><button id="bouton_valider" type="submit" class="generer">Générer.</button><label id="ajax_msg">&nbsp;</label>
 </fieldset></form>
 
 <hr />

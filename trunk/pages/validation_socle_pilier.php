@@ -27,7 +27,6 @@
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = "Valider les compétences (piliers) du socle";
-$VERSION_JS_FILE += 39;
 // Remarque : on ne peut être pp que d'une classe, pas d'un groupe, donc si seuls les PP ont un accès parmi les profs, ils ne peuvent trier les élèves que par classes
 ?>
 
@@ -82,7 +81,7 @@ $select_groupe = Formulaire::afficher_select($tab_groupes , $select_nom='f_group
 	<label class="tab" for="f_pilier"><img alt="" src="./_img/bulle_aide.png" title="Utiliser la touche &laquo&nbsp;Shift&nbsp;&raquo; pour une sélection multiple contiguë.<br />Utiliser la touche &laquo&nbsp;Ctrl&nbsp;&raquo; pour une sélection multiple non contiguë." /> Compétence(s) :</label><select id="f_pilier" name="f_pilier" multiple size="7" class="hide"><option></option></select><input type="hidden" id="piliers" name="piliers" value="" /><p />
 	<label class="tab" for="f_groupe">Classe / groupe :</label><?php echo $select_groupe ?><input type="hidden" id="f_groupe_type" name="f_groupe_type" value="" /><label id="ajax_maj_eleve">&nbsp;</label><br />
 	<label class="tab" for="f_eleve"><img alt="" src="./_img/bulle_aide.png" title="Utiliser la touche &laquo&nbsp;Shift&nbsp;&raquo; pour une sélection multiple contiguë.<br />Utiliser la touche &laquo&nbsp;Ctrl&nbsp;&raquo; pour une sélection multiple non contiguë." /> Élève(s) :</label><select id="f_eleve" name="f_eleve[]" multiple size="9" class="hide"><option></option></select><input type="hidden" id="eleves" name="eleves" value="" /><p />
-	<span class="tab"></span><input type="hidden" name="f_action" value="Afficher_bilan" /><button id="Afficher_validation" type="submit" class="hide"><img alt="" src="./_img/bouton/valider.png" /> Afficher le tableau des validations.</button><label id="ajax_msg_choix">&nbsp;</label>
+	<span class="tab"></span><input type="hidden" name="f_action" value="Afficher_bilan" /><button id="Afficher_validation" type="submit" class="valider" disabled>Afficher le tableau des validations.</button><label id="ajax_msg_choix">&nbsp;</label>
 </fieldset></form>
 
 <form action="#" method="post" id="zone_validation" class="hide">
@@ -94,9 +93,9 @@ $select_groupe = Formulaire::afficher_select($tab_groupes , $select_nom='f_group
 <div id="zone_information" class="hide" style="height:60ex">
 	<h4>Aide à la décision : états de validation des items d'une compétence du socle</h4>
 	<ul class="puce">
-		<li><img alt="" src="./_img/menu/profil_eleve.png" /> <span id="identite"></span></li>
+		<li><img alt="" src="./_img/socle_info_eleve.png" /> <span id="identite"></span></li>
 		<li><img alt="" src="./_img/folder/folder_n1.png" /> <span id="pilier"></span></li>
-		<li><img alt="" src="./_img/bouton/stats.png" /> <span id="stats"></span><label id="ajax_msg_information"></label></li>
+		<li><img alt="" src="./_img/socle_info_stats.png" /> <span id="stats"></span><label id="ajax_msg_information"></label></li>
 	</ul>
 	<div id="items">
 	</div>

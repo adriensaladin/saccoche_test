@@ -30,16 +30,10 @@
 // Seul un développeur averti peut jouer sur certains paramètres...
 //	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
 
-// VERSION_PROG : version des fichiers installés, à comparer avec la dernière version disponible sur le serveur communautaire
+// VERSION_PROG : version des fichiers installés, à comparer avec la dernière version disponible sur le serveur communautaire ; pour une conversion en entier : list($annee,$mois,$jour) = explode('-',substr(VERSION_PROG,0,10); $indice_version = (date('Y')-2011)*365 + date('z',mktime(0,0,0,$mois,$jour,$annee));
 // VERSION_BASE : version de la base associée, à comparer avec la version de la base actuellement installée
 define('VERSION_PROG', @file_get_contents('VERSION.txt') );	// Ne pas mettre de chemin ! Dans un fichier texte pour permettre un appel au serveur communautaire sans lui faire utiliser PHP.
 define('VERSION_BASE','2011-11-12');
-
-// Pour éviter les problèmes de mise en cache (serveur PROD uniquement)
-define('VERSION_CSS_SCREEN',69); // A changer lors de la mise à jour de ./_css/style.css
-define('VERSION_JS_BIBLIO' ,11); // A changer lors de la mise à jour de ./_js/jquery-librairies.js
-define('VERSION_JS_GLOBAL' ,47); // A changer lors de la mise à jour de ./_js/script.js
-$VERSION_JS_FILE = 7;            // A changer lors de la mise à jour de tout un lot de fichiers js ; incrémenté ensuite si besoin dans le script associé à la page.
 
 // Quelques chemins, avec le séparateur final
 define('CHEMIN_SACOCHE'       , realpath(dirname(dirname(__FILE__))).DIRECTORY_SEPARATOR);

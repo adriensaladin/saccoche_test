@@ -27,7 +27,6 @@
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = "Notation : codes, couleurs, légendes";
-$VERSION_JS_FILE += 2;
 
 // Évaluation : symboles colorés
 
@@ -75,8 +74,8 @@ foreach($tab_acquis as $acquis => $class)
 {
 	$acquis_box .= '<div class="colorpicker '.$class.'">';
 	$acquis_box .= '<p><input type="text" class="hc" size="2" maxlength="3" id="acquis_texte_'.$note.'" name="acquis_texte_'.$acquis.'" value="'.html($_SESSION['ACQUIS_TEXTE'][$acquis]).'" /><br /><input type="text" class="hc" size="25" maxlength="40" id="acquis_legende_'.$acquis.'" name="acquis_legende_'.$acquis.'" value="'.html($_SESSION['ACQUIS_LEGENDE'][$acquis]).'" /></p>';
-	$acquis_box .= '<div><button type="button" name="color_'.$acquis.'" value="'.$_SESSION['BACKGROUND_'.$acquis].'"><img alt="" src="./_img/bouton/colorer.png" /> Couleur de l\'établissement.</button></div>';
-	$acquis_box .= '<div><button type="button" name="color_'.$acquis.'" value="'.$tab_defaut[$acquis].'"><img alt="" src="./_img/bouton/colorer.png" /> Couleur par défaut.</button></div>';
+	$acquis_box .= '<div><button type="button" name="color_'.$acquis.'" value="'.$_SESSION['BACKGROUND_'.$acquis].'" class="colorer">Couleur de l\'établissement.</button></div>';
+	$acquis_box .= '<div><button type="button" name="color_'.$acquis.'" value="'.$tab_defaut[$acquis].'" class="colorer">Couleur par défaut.</button></div>';
 	$acquis_box .= '<p><input type="text" class="stretch" size="8" id="acquis_color_'.$acquis.'" name="acquis_color_'.$acquis.'" value="'.$_SESSION['BACKGROUND_'.$acquis].'" style="background-color:'.$_SESSION['BACKGROUND_'.$acquis].'" /><br /></p>';
 	$acquis_box .= '</div>';
 }
@@ -100,7 +99,7 @@ foreach($tab_acquis as $acquis => $class)
 		<?php echo $note_equiv_div ?>
 	</div>
 	<p />
-	<fieldset><span class="tab"></span><input type="hidden" id="objet" name="objet" value="notes" /><button id="bouton_valider_notes" type="submit"><img alt="" src="./_img/bouton/parametre.png" /> Enregistrer ces choix.</button><label id="ajax_msg_notes">&nbsp;</label></fieldset>
+	<fieldset><span class="tab"></span><input type="hidden" id="objet" name="objet" value="notes" /><button id="bouton_valider_notes" type="submit" class="parametre">Enregistrer ces choix.</button><label id="ajax_msg_notes">&nbsp;</label></fieldset>
 </form>
 
 	<hr />
@@ -112,7 +111,7 @@ foreach($tab_acquis as $acquis => $class)
 	<div id="colorpicker" class="hide"></div>
 	<div style="clear:both"></div>
 	<p />
-	<fieldset><span class="tab"></span><input type="hidden" id="objet" name="objet" value="acquis" /><button id="bouton_valider_acquis" type="submit"><img alt="" src="./_img/bouton/parametre.png" /> Enregistrer ces choix.</button><label id="ajax_msg_acquis">&nbsp;</label></fieldset>
+	<fieldset><span class="tab"></span><input type="hidden" id="objet" name="objet" value="acquis" /><button id="bouton_valider_acquis" type="submit" class="parametre">Enregistrer ces choix.</button><label id="ajax_msg_acquis">&nbsp;</label></fieldset>
 </form>
 
 	<hr />

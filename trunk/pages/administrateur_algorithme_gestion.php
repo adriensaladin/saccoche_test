@@ -27,7 +27,6 @@
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = "Algorithme de calcul";
-$VERSION_JS_FILE += 1;
 ?>
 
 <?php
@@ -63,7 +62,7 @@ foreach($tab_options as $value)
 ?>
 
 <form action="#" method="post" id="form_input">
-	<table summary="">
+	<table>
 	<thead>
 		<tr><th>
 			Valeur d'un code (sur 100)
@@ -92,10 +91,10 @@ foreach($tab_options as $value)
 	</table>
 	<p>
 		<input type="hidden" id="action" name="action" value="calculer" />
-		<button id="initialiser_defaut" type="button">Mettre les valeurs par défaut.</button>
-		<button id="initialiser_etablissement" type="button">Mettre les valeurs de l'établissement.</button>
-		<button id="calculer" type="button"><img alt="" src="./_img/bouton/actualiser.png" /> Simuler avec ces valeurs.</button>
-		<button id="enregistrer" type="button"><img alt="" src="./_img/bouton/valider.png" /> Enregistrer ces valeurs.</button>
+		<button id="initialiser_defaut" type="button" class="retourner">Mettre les valeurs par défaut.</button>
+		<button id="initialiser_etablissement" type="button" class="retourner">Mettre les valeurs de l'établissement.</button>
+		<button id="calculer" type="button" class="actualiser">Simuler avec ces valeurs.</button>
+		<button id="enregistrer" type="button" class="valider">Enregistrer ces valeurs.</button>
 		<label id="ajax_msg">&nbsp;</label>
 	</p>
 	<p><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=referentiels_socle__calcul_scores_etats_acquisitions">DOC : Calcul des scores et des états d'acquisitions.</a></span></p>

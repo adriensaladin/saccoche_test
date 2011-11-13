@@ -171,12 +171,12 @@ $CSS_PERSO = (isset($_SESSION['CSS'])) ? '<style type="text/css">'.$_SESSION['CS
 
 // Fichiers à inclure
 $tab_fichiers_head = array();
-$tab_fichiers_head[] = array( 'css'    , compacter('./_css/style.css',VERSION_CSS_SCREEN,'mini') );
-$tab_fichiers_head[] = array( 'css_ie' , compacter('./_css/style_IE.css',VERSION_CSS_SCREEN,'mini') );
-$tab_fichiers_head[] = array( 'js'     , compacter('./_js/jquery-librairies.js',VERSION_JS_BIBLIO,'mini') );
-$tab_fichiers_head[] = array( 'js'     , compacter('./_js/script.js',VERSION_JS_GLOBAL,'mini') );
+$tab_fichiers_head[] = array( 'css'    , compacter('./_css/style.css','mini') );
+$tab_fichiers_head[] = array( 'css_ie' , compacter('./_css/style_IE.css','mini') );
+$tab_fichiers_head[] = array( 'js'     , compacter('./_js/jquery-librairies.js','mini') );
+$tab_fichiers_head[] = array( 'js'     , compacter('./_js/script.js','mini') );
 $filename_js_normal = './pages/'.$PAGE.'.js';
-if(is_file($filename_js_normal)) $tab_fichiers_head[] = array( 'js' , compacter($filename_js_normal,$VERSION_JS_FILE,'pack') );
+if(is_file($filename_js_normal)) $tab_fichiers_head[] = array( 'js' , compacter($filename_js_normal,'pack') );
 
 // Affichage de l'en-tête
 declaration_entete( TRUE /*is_meta_robots*/ , TRUE /*is_favicon*/ , TRUE /*is_rss*/ , $tab_fichiers_head , $TITRE_NAVIGATEUR , $CSS_PERSO );
@@ -187,21 +187,22 @@ declaration_entete( TRUE /*is_meta_robots*/ , TRUE /*is_favicon*/ , TRUE /*is_rs
 	{
 		// Espace identifié : cadre_haut (avec le menu) et cadre_bas (avec le contenu).
 		echo'<div id="cadre_haut">'."\r\n";
-		echo'	<div id="info">'."\r\n";
-		echo'		<span class="button"><img alt="site officiel" src="./_img/favicon.gif" /> <a class="lien_ext" href="'.SERVEUR_PROJET.'">Site officiel</a></span>'."\r\n";
+		echo'	<div id="top_info">'."\r\n";
+		echo'		<span class="button favicon"><a class="lien_ext" href="'.SERVEUR_PROJET.'">Site officiel</a></span>'."\r\n";
 		if(SERVEUR_TYPE!='PROD')
 		{
 			$protocole  = ( isset($_SERVER['HTTPS']) && ($_SERVER['HTTPS']=='on') ) ? 'https://' : 'http://' ;
 			$url_page   = $protocole.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
 			$separateur = (strpos($url_page,'?')) ? '&' : '?' ;
-			$get_debug  = DEBUG ? 'debug=0'  : 'debug=1' ;
-			$txt_debug  = DEBUG ? 'ON' : 'OFF' ;
-			echo'		<span class="button"><a href="'.html($url_page.$separateur.$get_debug).'"><img alt="debug" src="./_img/firephp.png" /> '.$txt_debug.'</a></span>'."\r\n";
+			$span_class = DEBUG ? 'firephp' : 'firebug' ;
+			$get_debug  = DEBUG ? 'debug=0' : 'debug=1' ;
+			$txt_debug  = DEBUG ? 'on&rarr;off' : 'off&rarr;on' ;
+			echo'		<span class="button '.$span_class.'"><a href="'.html($url_page.$separateur.$get_debug).'">'.$txt_debug.'</a></span>'."\r\n";
 		}
-		echo'		<span class="button"><img alt="structure" src="./_img/home.png" /> '.html($_SESSION['DENOMINATION']).'</span>'."\r\n";
-		echo'		<span class="button"><img alt="'.$_SESSION['USER_PROFIL'].'" src="./_img/menu/profil_'.$_SESSION['USER_PROFIL'].'.png" /> '.html($_SESSION['USER_PRENOM'].' '.$_SESSION['USER_NOM']).' ('.$_SESSION['USER_PROFIL'].')</span>'."\r\n";
-		echo'		<span class="button"><span id="clock"><img alt="" src="./_img/clock_fixe.png" /> '.$_SESSION['DUREE_INACTIVITE'].' min</span><img alt="" src="./_img/point.gif" /></span>'."\r\n";
-		echo'		<button id="deconnecter"><img alt="" src="./_img/bouton/deconnecter.png" /> Déconnexion</button>'."\r\n";
+		echo'		<span class="button home">'.html($_SESSION['DENOMINATION']).'</span>'."\r\n";
+		echo'		<span class="button profil_'.$_SESSION['USER_PROFIL'].'">'.html($_SESSION['USER_PRENOM'].' '.$_SESSION['USER_NOM']).' ('.$_SESSION['USER_PROFIL'].')</span>'."\r\n";
+		echo'		<span class="button clock_fixe"><span id="clock">'.$_SESSION['DUREE_INACTIVITE'].' min</span></span>'."\r\n";
+		echo'		<button id="deconnecter" class="deconnecter">Déconnexion</button>'."\r\n";
 		echo'	</div>'."\r\n";
 		echo'	<img id="logo" alt="SACoche" src="./_img/logo_petit2.png" />'."\r\n";
 		$fichier_menu = ($_SESSION['USER_PROFIL']!='webmestre') ? '__menu_'.$_SESSION['USER_PROFIL'] : '__menu_'.$_SESSION['USER_PROFIL'].'_'.HEBERGEUR_INSTALLATION ;

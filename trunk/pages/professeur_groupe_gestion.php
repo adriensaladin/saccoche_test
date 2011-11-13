@@ -27,7 +27,6 @@
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = "Gérer ses groupes de besoin";
-$VERSION_JS_FILE += 1;
 ?>
 
 <ul class="puce">

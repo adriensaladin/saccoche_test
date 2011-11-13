@@ -27,7 +27,6 @@
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = "Blocage des connexions";
-$VERSION_JS_FILE += 1;
 
 // Initialisation de l'état de l'accès
 $fichier_blocage_administrateur = CHEMIN_CONFIG.'blocage_administrateur_'.$_SESSION['BASE'].'.txt';
@@ -64,7 +63,7 @@ else
 			<input id="f_motif" name="f_motif" size="50" maxlength="100" type="text" value="" />
 	</span><p />
 	<label for="f_debloquer"><input type="radio" id="f_debloquer" name="f_action" value="debloquer" /> Débloquer l'application</label><p />
-	<span class="tab"></span><button id="bouton_valider" type="submit"><img alt="" src="./_img/bouton/parametre.png" /> Valider cet état.</button><label id="ajax_msg">&nbsp;</label>
+	<span class="tab"></span><button id="bouton_valider" type="submit" class="parametre">Valider cet état.</button><label id="ajax_msg">&nbsp;</label>
 </fieldset></form>
 
 <p />

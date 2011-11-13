@@ -76,9 +76,9 @@ $TITRE_NAVIGATEUR = 'SACoche - Relevé HTML';
 
 // Fichiers à inclure
 $tab_fichiers_head = array();
-$tab_fichiers_head[] = array( 'css' , compacter('./_css/style.css',VERSION_CSS_SCREEN,'mini') );
-$tab_fichiers_head[] = array( 'js'  , compacter('./_js/jquery-librairies.js',VERSION_JS_BIBLIO,'mini') );
-$tab_fichiers_head[] = array( 'js'  , compacter('./_js/script.js',VERSION_JS_GLOBAL,'mini') );
+$tab_fichiers_head[] = array( 'css' , compacter('./_css/style.css','mini') );
+$tab_fichiers_head[] = array( 'js'  , compacter('./_js/jquery-librairies.js','mini') );
+$tab_fichiers_head[] = array( 'js'  , compacter('./_js/script.js','mini') );
 
 // Affichage de l'en-tête
 declaration_entete( FALSE /*is_meta_robots*/ , TRUE /*is_favicon*/ , FALSE /*is_rss*/ , $tab_fichiers_head , $TITRE_NAVIGATEUR , $CSS_PERSO );

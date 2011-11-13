@@ -26,7 +26,6 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-$VERSION_JS_FILE += 1;
 
 // Créer un csv d'exemple
 $separateur  = ';';
@@ -39,7 +38,7 @@ Ecrire_Fichier($adresse_csv,$contenu_csv);
 <p><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_webmestre__structure_ajout_csv">DOC : Ajout CSV d'établissements (multi-structures)</a></span></p>
 
 <ul class="puce">
-	<li><a class="lien_ext" href="<?php echo $adresse_csv ?>"><img alt="" src="./_img/bouton/fichier_export.png" /> Récupérer le modèle de fichier <em>CSV</em> à utiliser.</a></li>
+	<li><a class="lien_ext" href="<?php echo $adresse_csv ?>"><span class="file file_txt">Récupérer le modèle de fichier <em>CSV</em> à utiliser.</span></a></li>
 </ul>
 
 <hr />
@@ -47,10 +46,10 @@ Ecrire_Fichier($adresse_csv,$contenu_csv);
 <h2>Importer un listing d'établissements</h2>
 
 <form action="#" method="post" id="form_importer"><fieldset>
-	<label class="tab" for="bouton_form_csv">Uploader fichier CSV :</label><button id="bouton_form_csv" type="button"><img alt="" src="./_img/bouton/fichier_import.png" /> Parcourir...</button><label id="ajax_msg_csv">&nbsp;</label><br />
+	<label class="tab" for="bouton_form_csv">Uploader fichier CSV :</label><button id="bouton_form_csv" type="button" class="fichier_import">Parcourir...</button><label id="ajax_msg_csv">&nbsp;</label><br />
 	<span class="tab"></span><input id="f_courriel_envoi" name="f_courriel_envoi" type="checkbox" value="1" checked /><label for="f_courriel_envoi"> envoyer le courriel d'inscription</label>
 	<div id="div_import" class="hide">
-		<span class="tab"></span><button id="bouton_importer" type="button"><img alt="" src="./_img/bouton/valider.png" /> Ajouter les établissements du fichier.</button><label id="ajax_msg_import">&nbsp;</label>
+		<span class="tab"></span><button id="bouton_importer" type="button" class="valider">Ajouter les établissements du fichier.</button><label id="ajax_msg_import">&nbsp;</label>
 	</div>
 </fieldset></form>
 
@@ -79,8 +78,8 @@ Ecrire_Fichier($adresse_csv,$contenu_csv);
 	</table>
 	<p id="zone_actions">
 		Pour les structures cochées : <input id="listing_ids" name="listing_ids" type="hidden" value="" />
-		<button id="bouton_newsletter" type="button"><img alt="" src="./_img/bouton/mail_ecrire.png" /> Écrire un courriel.</button>
-		<button id="bouton_supprimer" type="button"><img alt="" src="./_img/bouton/supprimer.png" /> Supprimer.</button>
+		<button id="bouton_newsletter" type="button" class="mail_ecrire">Écrire un courriel.</button>
+		<button id="bouton_supprimer" type="button" class="supprimer">Supprimer.</button>
 		<label id="ajax_supprimer">&nbsp;</label>
 	</p>
 </form>

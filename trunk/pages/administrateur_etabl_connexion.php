@@ -27,7 +27,6 @@
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = "Mode d'identification";
-$VERSION_JS_FILE += 4;
 
 require_once('./_inc/tableau_sso.php');
 
@@ -82,7 +81,7 @@ $url_sso = SERVEUR_ADRESSE.'/?sso'.$get_base;
 		<label class="tab" for="gepi_saml_certif">Signature <img alt="" src="./_img/bulle_aide.png" title="[ Expliquer où trouver l'empreinte du certificat... ]" /> :</label><input id="gepi_saml_certif" name="gepi_saml_certif" size="60" type="text" value="<?php echo html($_SESSION['GEPI_CERTIFICAT_EMPREINTE']) ?>" /><br />
 	</div>
 	<?php echo $choix ?>
-	<span class="tab"></span><button id="bouton_valider" type="button"><img alt="" src="./_img/bouton/parametre.png" /> Valider ce mode d'identification.</button><label id="ajax_msg">&nbsp;</label>
+	<span class="tab"></span><button id="bouton_valider" type="button" class="parametre">Valider ce mode d'identification.</button><label id="ajax_msg">&nbsp;</label>
 </fieldset></form>
 
 <p><span class="astuce">Pour importer les identifiants de l'ENT, utiliser ensuite la page "<a href="./index.php?page=administrateur_fichier_identifiant">importer / imposer des identifiants</a>".</span></p>

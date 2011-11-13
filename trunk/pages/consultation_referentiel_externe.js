@@ -61,7 +61,7 @@ $(document).ready
 							modification = false;
 							$('#ajax_msg').removeAttr("class").html('&nbsp;');
 							$('#f_structure').html(responseHTML);
-							$('#rechercher').removeAttr("class").show("fast"); // Pour IE7 le show() ne suffit pas
+							$('#rechercher').prop('disabled',false);
 						}
 					}
 				}

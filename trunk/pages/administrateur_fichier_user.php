@@ -27,7 +27,6 @@
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = "Importer des fichiers d'utilisateurs";
-$VERSION_JS_FILE += 8;
 ?>
 
 <?php
@@ -79,7 +78,7 @@ $nom_fin_fichier = $_SESSION['UAI'].'_'.$annee_scolaire;
 		<hr />
 		<ul class="puce">
 			<li><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__import_users_sconet">DOC : Import d'utilisateurs depuis Sconet / STS-Web</a></span></li>
-			<li>Indiquez le fichier <em>sts_emp_<?php echo $nom_fin_fichier ?>.xml</em> (ou <em>sts_emp_<?php echo $nom_fin_fichier ?>.zip</em>) : <button id="sconet_professeurs_directeurs" type="button"><img alt="" src="./_img/bouton/fichier_import.png" /> Parcourir...</button></li>
+			<li>Indiquez le fichier <em>sts_emp_<?php echo $nom_fin_fichier ?>.xml</em> (ou <em>sts_emp_<?php echo $nom_fin_fichier ?>.zip</em>) : <button id="sconet_professeurs_directeurs" type="button" class="fichier_import">Parcourir...</button></li>
 		</ul>
 	</fieldset>
 
@@ -93,7 +92,7 @@ $nom_fin_fichier = $_SESSION['UAI'].'_'.$annee_scolaire;
 		<hr />
 		<ul class="puce">
 			<li><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__import_users_sconet">DOC : Import d'utilisateurs depuis Sconet / STS-Web</a></span></li>
-			<li>Indiquez le fichier <em>ExportXML_ElevesSansAdresses.zip</em> (ou <em>ElevesSansAdresses.xml</em>) : <button id="sconet_eleves" type="button"><img alt="" src="./_img/bouton/fichier_import.png" /> Parcourir...</button></li>
+			<li>Indiquez le fichier <em>ExportXML_ElevesSansAdresses.zip</em> (ou <em>ElevesSansAdresses.xml</em>) : <button id="sconet_eleves" type="button" class="fichier_import">Parcourir...</button></li>
 		</ul>
 	</fieldset>
 
@@ -107,7 +106,7 @@ $nom_fin_fichier = $_SESSION['UAI'].'_'.$annee_scolaire;
 		<hr />
 		<ul class="puce">
 			<li><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__import_users_sconet">DOC : Import d'utilisateurs depuis Sconet / STS-Web</a></span></li>
-			<li>Indiquez le fichier <em>ResponsablesAvecAdresses.zip</em> (ou <em>ResponsablesAvecAdresses.xml</em>) : <button id="sconet_parents" type="button"><img alt="" src="./_img/bouton/fichier_import.png" /> Parcourir...</button></li>
+			<li>Indiquez le fichier <em>ResponsablesAvecAdresses.zip</em> (ou <em>ResponsablesAvecAdresses.xml</em>) : <button id="sconet_parents" type="button" class="fichier_import">Parcourir...</button></li>
 		</ul>
 	</fieldset>
 
@@ -115,7 +114,7 @@ $nom_fin_fichier = $_SESSION['UAI'].'_'.$annee_scolaire;
 		<hr />
 		<ul class="puce">
 			<li><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__import_users_base-eleves">DOC : Import d'utilisateurs depuis Base Élèves 1<sup>er</sup> degré</a></span></li>
-			<li>Indiquez le fichier <em>CSVExtraction.csv</em> : <button id="base-eleves_eleves" type="button"><img alt="" src="./_img/bouton/fichier_import.png" /> Parcourir...</button></li>
+			<li>Indiquez le fichier <em>CSVExtraction.csv</em> : <button id="base-eleves_eleves" type="button" class="fichier_import">Parcourir...</button></li>
 		</ul>
 	</fieldset>
 
@@ -123,7 +122,7 @@ $nom_fin_fichier = $_SESSION['UAI'].'_'.$annee_scolaire;
 		<hr />
 		<ul class="puce">
 			<li><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__import_users_tableur">DOC : Import d'utilisateurs avec un tableur</a></span></li>
-			<li>Indiquez le fichier <em>nom-du-fichier-eleves.csv</em> (ou <em>nom-du-fichier-eleves.txt</em>) : <button id="tableur_eleves" type="button"><img alt="" src="./_img/bouton/fichier_import.png" /> Parcourir...</button></li>
+			<li>Indiquez le fichier <em>nom-du-fichier-eleves.csv</em> (ou <em>nom-du-fichier-eleves.txt</em>) : <button id="tableur_eleves" type="button" class="fichier_import">Parcourir...</button></li>
 		</ul>
 	</fieldset>
 
@@ -131,7 +130,7 @@ $nom_fin_fichier = $_SESSION['UAI'].'_'.$annee_scolaire;
 		<hr />
 		<ul class="puce">
 			<li><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__import_users_tableur">DOC : Import d'utilisateurs avec un tableur</a></span></li>
-			<li>Indiquez le fichier <em>nom-du-fichier-profs.csv</em> (ou <em>nom-du-fichier-profs.txt</em>) : <button id="tableur_professeurs_directeurs" type="button"><img alt="" src="./_img/bouton/fichier_import.png" /> Parcourir...</button></li>
+			<li>Indiquez le fichier <em>nom-du-fichier-profs.csv</em> (ou <em>nom-du-fichier-profs.txt</em>) : <button id="tableur_professeurs_directeurs" type="button" class="fichier_import">Parcourir...</button></li>
 		</ul>
 	</fieldset>
 

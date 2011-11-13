@@ -99,7 +99,7 @@ else
 	$calendrier_navigation .= '<img alt="1 mois apres" src="./_img/fleche/fleche_d0.gif" />&nbsp;';
 $calendrier_navigation .= '</div>';
 // Choix final de la période : tableau du calendrier du mois sélectionné
-$calendrier_affichage = '<table summary="calendrier" cellspacing="1" border="1" style="margin:auto">';
+$calendrier_affichage = '<table cellspacing="1" border="1" style="margin:auto">';
 $calendrier_affichage.= '<tr class="c1"><th>L</th><th>M</th><th>M</th><th>J</th><th>V</th><th>S</th><th>D</th>';
 for($i=1;$i<=42;$i++)
 {
@@ -123,7 +123,7 @@ echo'	<h6>Choisir une période :</h6>';
 echo'	<div>'.$calendrier_navigation.'</div>';
 echo'	<h6>Puis cliquer sur une date :</h6>';
 echo'	<div>'.$calendrier_affichage.'</div>';
-echo'	<div><button id="fermer_calque" type="button"><img alt="" src="./_img/bouton/annuler.png" /> Annuler / Fermer</button></div>';
+echo'	<div><button id="fermer_calque" type="button" class="annuler">Annuler / Fermer</button></div>';
 echo'</form>';
 
 ?>

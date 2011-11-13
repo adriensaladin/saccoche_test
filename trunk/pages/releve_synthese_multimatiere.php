@@ -27,7 +27,6 @@
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = "Synthèse pluridisciplinaire";
-$VERSION_JS_FILE += 3;
 ?>
 
 <?php
@@ -161,7 +160,7 @@ echo ($nb_inconnu) ? '<label class="alerte">Il y a '.$nb_inconnu.' référentiel
 		</div>
 	</div>
 	<p>
-		<span class="tab"></span><button id="bouton_valider" type="submit"><img alt="" src="./_img/bouton/generer.png" /> Générer.</button><label id="ajax_msg">&nbsp;</label>
+		<span class="tab"></span><button id="bouton_valider" type="submit" class="generer">Générer.</button><label id="ajax_msg">&nbsp;</label>
 	</p>
 </fieldset></form>
 

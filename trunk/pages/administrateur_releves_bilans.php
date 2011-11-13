@@ -27,7 +27,6 @@
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = "Réglages relevés &amp; bilans";
-$VERSION_JS_FILE += 1;
 ?>
 
 <div><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__gestion_releves_bilans">DOC : Réglages relevés &amp; bilans</a></span></div>
@@ -53,7 +52,7 @@ else
 		$tab_div[] = '<em id="m_'.$DB_ROW['matiere_id'].'">'.html($DB_ROW['matiere_nom']).'</em>';
 	}
 	echo implode('<div class="ti"><input type="image" src="./_img/action_ordonner.png" /></div>',$tab_div);
-	echo'<p><span class="tab"></span><button id="Enregistrer_ordre" type="button"><img alt="" src="./_img/bouton/valider.png" /> Enregistrer cet ordre</button><label id="ajax_msg_ordre">&nbsp;</label></p>';
+	echo'<p><span class="tab"></span><button id="Enregistrer_ordre" type="button" class="valider">Enregistrer cet ordre</button><label id="ajax_msg_ordre">&nbsp;</label></p>';
 }
 ?>
 
@@ -104,7 +103,7 @@ else
 			$checked = ($DB_ROW['referentiel_mode_synthese']==$option_valeur) ? ' checked' : '' ;
 			echo'<label for="f_'.$ids.'_'.$option_valeur.'"><input type="radio" id="f_'.$ids.'_'.$option_valeur.'" name="f_'.$ids.'" value="'.$option_valeur.'"'.$checked.' /> '.$option_texte.'</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
 		}
-		echo ($DB_ROW['referentiel_mode_synthese']=='inconnu') ? '<button id="bouton_'.$ids.'" type="button" class="hide"><img alt="" src="./_img/bouton/valider.png" /> Valider.</button><label id="label_'.$ids.'" class="erreur">Choix manquant !</label>' : '<button id="bouton_'.$ids.'" type="button"><img alt="" src="./_img/bouton/valider.png" /> Valider.</button><label id="label_'.$ids.'" class="valide">ok</label>' ;
+		echo ($DB_ROW['referentiel_mode_synthese']=='inconnu') ? '<button id="bouton_'.$ids.'" type="button" class="valider" disabled>Valider.</button><label id="label_'.$ids.'" class="erreur">Choix manquant !</label>' : '<button id="bouton_'.$ids.'" type="button" class="valider">Valider.</button><label id="label_'.$ids.'" class="valide">ok</label>' ;
 		echo'</li></ul>';
 		// Div avec ses domaines
 		$class = ($DB_ROW['referentiel_mode_synthese']=='domaine') ? '' : ' class="hide"' ;

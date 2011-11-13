@@ -149,6 +149,7 @@ $(document).ready
 		(
 			function()
 			{
+				$('button').prop('disabled',true);
 				var matiere_id = $("#f_matiere option:selected").val();
 				$.ajax
 				(
@@ -159,6 +160,7 @@ $(document).ready
 						dataType : "html",
 						error : function(msg,string)
 						{
+							$('button').prop('disabled',false);
 						},
 						success : function(responseHTML)
 						{
@@ -166,9 +168,10 @@ $(document).ready
 							if(responseHTML.substring(0,7)=='<option')	// Attention aux caractères accentués : l'utf-8 pose des pbs pour ce test
 							{
 								modifier_action = (modifier_action=='ajouter') ? 'retirer' : 'ajouter' ;
-								$('#modifier_matiere').html('<img alt="" src="./_img/bouton/form_'+modifier_action+'.png" />');
+								$('#modifier_matiere').removeAttr("class").addClass("form_"+modifier_action);
 								$('#f_matiere').html(responseHTML);
 							}
+							$('button').prop('disabled',false);
 						}
 					}
 				);

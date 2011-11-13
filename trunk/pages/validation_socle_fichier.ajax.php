@@ -196,7 +196,7 @@ if( in_array( $action , array('export_lpc','export_sacoche') ) && $nb )
 	$si = ($nb_items>1)   ? 's' : '' ;
 	$in = $only_positives ? '' : '(in)-' ;
 	echo'<li><label class="valide">Fichier d\'export généré : '.$nb_piliers.' '.$in.'validation'.$sp.' de compétence'.$sp.' et '.$nb_items.' '.$in.'validation'.$si.' d\'item'.$si.' concernant '.$nb_eleves.' élève'.$se.'.</label></li>';
-	echo'<li><a class="lien_ext" href="'.$dossier_export.$fichier_nom.'">Récupérez le fichier au format <em>'.$fichier_extension.'</em>.</a></li>';
+	echo'<li><a class="lien_ext" href="'.$dossier_export.$fichier_nom.'"><span class="file file_'.$fichier_extension.'">Récupérez le fichier au format <em>'.$fichier_extension.'</em>.</span></a></li>';
 	echo'<li><label class="alerte">Pour des raisons de sécurité et de confidentialité, ce fichier sera effacé du serveur dans 1h.</label></li>';
 	exit();
 }

@@ -78,7 +78,7 @@ if( ($type_export=='listing_users') && $groupe_id && isset($tab_types[$groupe_ty
 	$export_html .= '</tbody></table>'."\r\n";
 
 	// Affichage
-	echo'<hr /><ul class="puce"><li><a class="lien_ext" href="'.$dossier_export.$fnom.'.zip">Récupérez le listing dans un fichier au format CSV.</a></li></ul><p />';
+	echo'<hr /><ul class="puce"><li><a class="lien_ext" href="'.$dossier_export.$fnom.'.zip"><span class="file file_zip">Récupérez le listing dans un fichier au format <em>csv</em> zippé.</span></a></li></ul><p />';
 	echo $export_html;
 	exit();
 }
@@ -123,7 +123,7 @@ if( ($type_export=='listing_matiere') && $matiere_id && $matiere_nom )
 	$export_html .= '</tbody></table>'."\r\n";
 
 	// Affichage
-	echo'<hr /><ul class="puce"><li><a class="lien_ext" href="'.$dossier_export.$fnom.'.zip">Récupérez le listing dans un fichier au format CSV.</a></li></ul><p />';
+	echo'<hr /><ul class="puce"><li><a class="lien_ext" href="'.$dossier_export.$fnom.'.zip"><span class="file file_zip">Récupérez le listing dans un fichier au format <em>csv</em> zippé.</span></a></li></ul><p />';
 	echo $export_html;
 	exit();
 }
@@ -235,7 +235,7 @@ if( ($type_export=='arbre_matiere') && $matiere_id && $matiere_nom )
 	$export_html.= '</div>';
 
 	// Affichage
-	echo'<hr /><ul class="puce"><li><a class="lien_ext" href="'.$dossier_export.$fnom.'.zip">Récupérez l\'arborescence dans un fichier au format CSV.</a></li></ul><p />';
+	echo'<hr /><ul class="puce"><li><a class="lien_ext" href="'.$dossier_export.$fnom.'.zip"><span class="file file_zip">Récupérez l\'arborescence dans un fichier au format <em>csv</em> zippé.</span></a></li></ul><p />';
 	echo $export_html;
 	exit();
 }
@@ -328,7 +328,7 @@ if( ($type_export=='arbre_socle') && $palier_id && $palier_nom )
 	$export_html.= '</div>';
 
 	// Affichage
-	echo'<hr /><ul class="puce"><li><a class="lien_ext" href="'.$dossier_export.$fnom.'.zip">Récupérez l\'arborescence dans un fichier au format CSV.</a></li></ul><p />';
+	echo'<hr /><ul class="puce"><li><a class="lien_ext" href="'.$dossier_export.$fnom.'.zip"><span class="file file_zip">Récupérez l\'arborescence dans un fichier au format <em>csv</em> zippé.</span></a></li></ul><p />';
 	echo $export_html;
 	exit();
 }
@@ -448,7 +448,7 @@ if( ($type_export=='jointure_socle_matiere') && $palier_id && $palier_nom )
 	$export_html.= '</div>';
 
 	// Affichage
-	echo'<hr /><ul class="puce"><li><a class="lien_ext" href="'.$dossier_export.$fnom.'.zip">Récupérez les associations dans un fichier au format CSV.</a></li></ul><p />';
+	echo'<hr /><ul class="puce"><li><a class="lien_ext" href="'.$dossier_export.$fnom.'.zip"><span class="file file_zip">Récupérez les associations dans un fichier au format <em>csv</em> zippé.</span></a></li></ul><p />';
 	echo $export_html;
 	exit();
 }

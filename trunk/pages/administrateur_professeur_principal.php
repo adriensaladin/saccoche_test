@@ -97,7 +97,7 @@ $TITRE = "Gérer les professeurs principaux";
 	?>
 
 	<p>
-		<button id="valider" type="button"><img alt="" src="./_img/bouton/valider.png" /> Valider ce choix de professeurs principaux.</button><label id="ajax_msg">&nbsp;</label>
+		<button id="valider" type="button" class="valider">Valider ce choix de professeurs principaux.</button><label id="ajax_msg">&nbsp;</label>
 	</p>
 </form>
 

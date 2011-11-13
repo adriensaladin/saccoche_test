@@ -27,7 +27,6 @@
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = "Choisir la langue étrangère pour le socle commun";
-$VERSION_JS_FILE += 0;
 ?>
 
 <?php
@@ -54,7 +53,7 @@ $select_langue    = Formulaire::afficher_select($tab_langues , $select_nom=false
 			<select id="select_langue"><?php echo $select_langue; ?></select>
 		</td>
 		<td class="nu" style="width:25em">
-			<button id="associer" type="button"><img alt="" src="./_img/bouton/parametre.png" /> Effectuer ces associations.</button>
+			<button id="associer" type="button" class="parametre">Effectuer ces associations.</button>
 			<p><label id="ajax_msg">&nbsp;</label></p>
 		</td>
 	</tr></table>

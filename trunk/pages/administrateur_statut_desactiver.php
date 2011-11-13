@@ -27,7 +27,6 @@
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = "Désactiver des comptes utilisateurs";
-$VERSION_JS_FILE += 2;
 ?>
 
 <?php
@@ -74,7 +73,7 @@ $select_professeurs_directeurs = Formulaire::afficher_select(DB_STRUCTURE_COMMUN
 				</p>
 			</td>
 			<td id="td_bouton" class="nu hide" style="width:25em">
-				<p><button id="desactiver" type="button"><img alt="" src="./_img/bouton/user_desactiver.png" /> Désactiver ces comptes.</button></p>
+				<p><button id="desactiver" type="button" class="user_desactiver">Désactiver ces comptes.</button></p>
 				<p><label id="ajax_msg">&nbsp;</label></p>
 			</td>
 		</tr>

@@ -151,15 +151,15 @@ if( $matiere_id && $matiere_nom && $groupe_id && $groupe_nom && count($tab_eleve
 	if($_SESSION['USER_PROFIL']=='eleve')
 	{
 		echo'<ul class="puce">';
-		echo'<li><label class="alerte"><a class="lien_ext" href="'.$dossier.$fichier_lien.'.pdf">Archiver / Imprimer (format <em>pdf</em>).</a></label></li>';
+		echo'<li><a class="lien_ext" href="'.$dossier.$fichier_lien.'.pdf"><span class="file file_pdf">Archiver / Imprimer (format <em>pdf</em>).</span></a></li>';
 		echo'</ul><p />';
 		echo $releve_HTML;
 	}
 	else
 	{
 		echo'<ul class="puce">';
-		echo'<li><a class="lien_ext" href="'.$dossier.$fichier_lien.'.pdf">Archiver / Imprimer (format <em>pdf</em>).</a></li>';
-		echo'<li><a class="lien_ext" href="./releve-html.php?fichier='.$fichier_lien.'">Explorer / Détailler (format <em>html</em>).</a></li>';
+		echo'<li><a class="lien_ext" href="'.$dossier.$fichier_lien.'.pdf"><span class="file file_pdf">Archiver / Imprimer (format <em>pdf</em>).</span></a></li>';
+		echo'<li><a class="lien_ext" href="./releve-html.php?fichier='.$fichier_lien.'"><span class="file file_htm">Explorer / Détailler (format <em>html</em>).</span></a></li>';
 		echo'</ul><p />';
 	}
 }

@@ -43,7 +43,7 @@ table,select,textarea,input,button,div{font:100% "arial","helvetica","nimbus san
 p{margin:1em auto}
 img {vertical-align:middle}
 td img , #aide_en_ligne img  , .legende img {vertical-align:baseline}
-label img , button img , span.button img {vertical-align:text-top}
+label img {vertical-align:text-top}
 h1{display:block;font-size:120%;text-align:left;font-weight:bold;font-variant:small-caps;color:#33A;letter-spacing:0.15em;margin:1ex 2em;}
 h2{display:block;font-size:110%;text-align:left;font-weight:bold;font-variant:small-caps;color:#33A;letter-spacing:0.15em;margin:1ex auto 1ex 1em;}
 h1.logo{text-align:center}
@@ -79,76 +79,196 @@ del{text-decoration:line-through;color:#666}
 #cadre_haut {z-index:2;position:absolute;left:0;right:0;top:0;height:48px;background:#FFF url(../_img/background.gif) repeat 0 0;border-bottom:1px solid #77F;white-space:nowrap;min-width:980px;}
 #cadre_bas  {z-index:1;position:absolute;left:0;right:0;top:49px;background:#FFF url(../_img/fond09.png) repeat-x 0 0;padding:4px}
 
-#cadre_haut #info {position:absolute;top:3px;left:4px}
-#cadre_haut #logo {position:absolute;top:1px;left:843px}
-#cadre_haut #menu {position:absolute;bottom:-2px;left:3px;right:0}
-
-#cadre_haut #info span.button{display:inline-block;padding:1px 3px;margin:1px 0;background:#EEF;border:1px solid #99F;color:#333}
-#cadre_haut #menu a    {display:block;border:1px solid #77F;color:#FFF;background:#77F;padding:1px 1px 1px 19px;margin:1px;height:16px}
-#cadre_haut #menu span {display:block;border:1px solid #77F;color:#EEF;background:#AAF;padding:1px 1px 1px 19px;margin:1px;height:16px} /* test inutilisé pour un menu inactif */
-#cadre_haut #menu a.menu {background:#77F url(../_img/menu/menu.png) no-repeat 1px 1px} /* les images sont ajoutés en javascript, sauf pour le 1er niveau, pour un affichage immédiat */
-#cadre_haut #menu a:hover {background-color:#99F;color:#FFF;text-decoration:none}
-#cadre_haut #menu li {float:left;}
-#cadre_haut #menu li li {float:none}
-#cadre_haut #menu li ul {position:absolute;left:-9999em;background:#FFF;}
-#cadre_haut #menu li:hover ul {left:auto;}
+/* dans #cadre_haut */
+#top_info {position:absolute;top:3px;left:4px}
+#logo     {position:absolute;top:1px;left:843px}
+#menu     {position:absolute;bottom:-2px;left:3px;right:0}
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-/* Images sprites utilisées comme images cliquables ; http://fr.spritegen.website-performance.org/     */
+/* Boutons d'informations (dans #cadre_haut)                                                           */
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-body q {background:transparent url(../_img/sprite11.png) 0 0 no-repeat;width:16px;height:16px;display:inline-block;vertical-align:middle;margin-left:5px;quotes:none}
+#top_info span.button{display:inline-block;padding:1px 3px;margin:1px 0;background:#EEF url(../_img/sprite_top_1.png) 0 0 no-repeat;padding-left:20px;border:1px solid #99F;color:#333}
+#top_info span.alerte                {background-position: 2px    1px;font-weight:bold;color:#C00}
+#top_info span.connexion             {background-position: 2px  -19px;font-weight:bold}
+#top_info span.favicon               {background-position: 2px  -39px}
+#top_info span.firebug               {background-position: 2px  -59px}
+#top_info span.firephp               {background-position: 2px  -79px}
+#top_info span.home                  {background-position: 2px  -99px}
+#top_info span.profil_administrateur {background-position: 2px -119px}
+#top_info span.profil_directeur      {background-position: 2px -139px}
+#top_info span.profil_eleve          {background-position: 2px -159px}
+#top_info span.profil_parent         {background-position: 2px -179px}
+#top_info span.profil_professeur     {background-position: 2px -199px}
+#top_info span.profil_webmestre      {background-position: 2px -219px}
+#top_info span.clock_fixe {background:#EEF url(../_img/clock_fixe.png) 2px center no-repeat;}
+#top_info span.clock_anim {background:#EEF url(../_img/clock_anim.gif) 2px center no-repeat;}
+#top_info #clock {padding-right:3px;background:#EEF url(../_img/point.gif) right top no-repeat;}
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+/* Menu déroulant (dans #cadre_haut)                                                                   */
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
+#menu a {display:block;border:1px solid #77F;color:#FFF;background:#77F url(../_img/sprite_menu_1.png) 0 0 no-repeat;padding:1px 1px 1px 19px;margin:1px;height:16px}
+#menu a:hover {background-color:#99F;color:#FFF;text-decoration:none}
+#menu li {float:left;}
+#menu li li {float:none}
+#menu li ul {position:absolute;left:-9999em;background:#FFF;}
+#menu li:hover ul {left:auto;}
+
+#menu a.menu                  {background-position: 1px     1px}
+#menu a.administrateur        {background-position: 1px   -19px}
+#menu a.algorithme_edition    {background-position: 1px   -39px}
+#menu a.algorithme_voir       {background-position: 1px   -59px}
+#menu a.blocage               {background-position: 1px   -79px}
+#menu a.compte_accueil        {background-position: 1px   -99px}
+#menu a.compte_daltonisme     {background-position: 1px  -119px}
+#menu a.compte_password       {background-position: 1px  -139px}
+#menu a.date_connexion        {background-position: 1px  -159px}
+#menu a.directeur             {background-position: 1px  -179px}
+#menu a.dump                  {background-position: 1px  -199px}
+#menu a.eleve                 {background-position: 1px  -219px}
+#menu a.etabl_autorisations   {background-position: 1px  -239px}
+#menu a.etabl_choix           {background-position: 1px  -259px}
+#menu a.etabl_connexion       {background-position: 1px  -279px}
+#menu a.etabl_couleurs        {background-position: 1px  -299px}
+#menu a.etabl_duree           {background-position: 1px  -319px}
+#menu a.etabl_identite        {background-position: 1px  -339px}
+#menu a.etabl_login           {background-position: 1px  -359px}
+#menu a.eval_bilan            {background-position: 1px  -379px}
+#menu a.eval_demande          {background-position: 1px  -399px}
+#menu a.eval_saisie           {background-position: 1px  -419px}
+#menu a.fichier_export        {background-position: 1px  -439px}
+#menu a.fichier_import        {background-position: 1px  -459px}
+#menu a.groupe                {background-position: 1px  -479px}
+#menu a.groupe_eleve          {background-position: 1px  -499px}
+#menu a.groupe_professeur     {background-position: 1px  -519px}
+#menu a.log_actions           {background-position: 1px  -539px}
+#menu a.mdp_admin             {background-position: 1px  -559px}
+#menu a.nettoyage             {background-position: 1px  -579px}
+#menu a.newsletter            {background-position: 1px  -599px}
+#menu a.parent                {background-position: 1px  -619px}
+#menu a.periode               {background-position: 1px  -639px}
+#menu a.periode_groupe        {background-position: 1px  -659px}
+#menu a.professeur            {background-position: 1px  -679px}
+#menu a.referentiel_edition   {background-position: 1px  -699px}
+#menu a.referentiel_gestion   {background-position: 1px  -719px}
+#menu a.referentiel_voir      {background-position: 1px  -739px}
+#menu a.releve_grille         {background-position: 1px  -759px}
+#menu a.releve_items          {background-position: 1px  -779px}
+#menu a.releve_reglages       {background-position: 1px  -799px}
+#menu a.releve_socle          {background-position: 1px  -819px}
+#menu a.releve_synthese       {background-position: 1px  -839px}
+#menu a.releve_synthese_socle {background-position: 1px  -859px}
+#menu a.resilier              {background-position: 1px  -879px}
+#menu a.rss                   {background-position: 1px  -899px}
+#menu a.serveur_database      {background-position: 1px  -919px}
+#menu a.serveur_geographie    {background-position: 1px  -939px}
+#menu a.serveur_identite      {background-position: 1px  -959px}
+#menu a.serveur_info          {background-position: 1px  -979px}
+#menu a.serveur_maintenance   {background-position: 1px  -999px}
+#menu a.serveur_proxy         {background-position: 1px -1019px}
+#menu a.socle_annuler         {background-position: 1px -1039px}
+#menu a.socle_fichier         {background-position: 1px -1059px}
+#menu a.socle_item            {background-position: 1px -1079px}
+#menu a.socle_langue          {background-position: 1px -1099px}
+#menu a.socle_pilier          {background-position: 1px -1119px}
+#menu a.statistiques          {background-position: 1px -1139px}
+#menu a.statut_desactiver     {background-position: 1px -1159px}
+#menu a.statut_traiter        {background-position: 1px -1179px}
+#menu a.structure_ajout_csv   {background-position: 1px -1199px}
+#menu a.structure_gestion     {background-position: 1px -1219px}
+#menu a.structure_transfert   {background-position: 1px -1239px}
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+/* Liens vers un fichier à récupérer ou un document généré                                             */
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
+.file      {background:transparent url(../_img/sprite_fichier_1.png) 0 0 no-repeat;padding-left:20px;}
+.file_doc  {background-position: 0    0px}
+.file_docx {background-position: 0  -20px}
+.file_fla  {background-position: 0  -40px}
+.file_htm  {background-position: 0  -60px}
+.file_iso  {background-position: 0  -80px}
+.file_jpg  {background-position: 0 -100px}
+.file_mp4  {background-position: 0 -120px}
+.file_odg  {background-position: 0 -140px}
+.file_odp  {background-position: 0 -160px}
+.file_ods  {background-position: 0 -180px}
+.file_odt  {background-position: 0 -200px}
+.file_pdf  {background-position: 0 -220px}
+.file_ppt  {background-position: 0 -240px}
+.file_pptx {background-position: 0 -260px}
+.file_rtf  {background-position: 0 -280px}
+.file_swf  {background-position: 0 -300px}
+.file_sxc  {background-position: 0 -320px}
+.file_sxd  {background-position: 0 -340px}
+.file_sxi  {background-position: 0 -360px}
+.file_sxw  {background-position: 0 -380px}
+.file_tep  {background-position: 0 -400px}
+.file_tex  {background-position: 0 -420px}
+.file_txt  {background-position: 0 -440px}
+.file_xls  {background-position: 0 -460px}
+.file_xlsx {background-position: 0 -480px}
+.file_xml  {background-position: 0 -500px}
+.file_zip  {background-position: 0 -520px}
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+/* Images cliquables                                                                                   */
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
+body q {background:transparent url(../_img/sprite_action_1.png) 0 0 no-repeat;width:16px;height:16px;display:inline-block;vertical-align:middle;margin-left:5px;quotes:none}
 body q:before, body q:after {content: "";} /* patch pour Safari : voir par exemple http://forum.alsacreations.com/topic-4-41216-1-Resolu-Modifier-le-style-des-citations-quotqquot.html */
-body q.activer         {background-position:    0px 0}
-body q.ajouter         {background-position:  -20px 0}
-body q.ajouter_non     {background-position:  -40px 0}
-body q.annuler         {background-position:  -60px 0}
-body q.choisir_compet  {background-position:  -80px 0}
-body q.choisir_eleve   {background-position: -100px 0}
-body q.choisir_prof    {background-position: -120px 0}
-body q.date_calendrier {background-position: -140px 0}
-body q.date_periode    {background-position: -160px 0}
-body q.deconnecter     {background-position: -180px 0}
-body q.demander_add    {background-position: -200px 0} 
-body q.demander_non    {background-position: -220px 0}
-body q.detailler       {background-position: -240px 0}
-body q.dupliquer       {background-position: -260px 0}
-body q.imprimer        {background-position: -280px 0}
-body q.initialiser_mdp {background-position: -300px 0}
-body q.modifier        {background-position: -320px 0}
-body q.modifier_non    {background-position: -340px 0}
-body q.ordonner        {background-position: -360px 0}
-body q.ordonner_non    {background-position: -380px 0}
-body q.calculer        {background-position: -400px 0} 
-body q.calculer_non    {background-position: -420px 0} 
-body q.envoyer         {background-position: -440px 0} 
-body q.envoyer_non     {background-position: -460px 0} 
-body q.partager        {background-position: -480px 0} 
-body q.partager_non    {background-position: -500px 0} 
-body q.retourner       {background-position: -520px 0} 
-body q.saisir          {background-position: -540px 0} 
-body q.supprimer       {background-position: -560px 0} 
-body q.supprimer_non   {background-position: -580px 0} 
-body q.valider         {background-position: -600px 0} 
-body q.voir            {background-position: -620px 0} 
-body q.voir_repart     {background-position: -640px 0} 
-body q.n1_add          {background-position: -660px 0} 
-body q.n1_del          {background-position: -680px 0} 
-body q.n1_edit         {background-position: -700px 0} 
-body q.n1_move         {background-position: -720px 0} 
-body q.n1_move2        {background-position: -740px 0} 
-body q.n2_add          {background-position: -760px 0} 
-body q.n2_del          {background-position: -780px 0} 
-body q.n2_edit         {background-position: -800px 0} 
-body q.n2_move         {background-position: -820px 0} 
-body q.n2_move2        {background-position: -840px 0} 
-body q.n3_add          {background-position: -860px 0} 
-body q.n3_del          {background-position: -880px 0} 
-body q.n3_edit         {background-position: -900px 0} 
-body q.n3_fus          {background-position: -920px 0} 
-body q.n3_fus2         {background-position: -940px 0} 
-body q.n3_move         {background-position: -960px 0} 
-body q.n3_move2        {background-position: -980px 0} 
+body q.activer         {background-position: 0    0px}
+body q.ajouter         {background-position: 0  -20px}
+body q.ajouter_non     {background-position: 0  -40px}
+body q.annuler         {background-position: 0  -60px}
+body q.choisir_compet  {background-position: 0  -80px}
+body q.choisir_eleve   {background-position: 0 -100px}
+body q.choisir_prof    {background-position: 0 -120px}
+body q.date_calendrier {background-position: 0 -140px}
+body q.date_periode    {background-position: 0 -160px}
+body q.deconnecter     {background-position: 0 -180px}
+body q.demander_add    {background-position: 0 -200px} 
+body q.demander_non    {background-position: 0 -220px}
+body q.detailler       {background-position: 0 -240px}
+body q.dupliquer       {background-position: 0 -260px}
+body q.imprimer        {background-position: 0 -280px}
+body q.initialiser_mdp {background-position: 0 -300px}
+body q.modifier        {background-position: 0 -320px}
+body q.modifier_non    {background-position: 0 -340px}
+body q.ordonner        {background-position: 0 -360px}
+body q.ordonner_non    {background-position: 0 -380px}
+body q.calculer        {background-position: 0 -400px} 
+body q.calculer_non    {background-position: 0 -420px} 
+body q.envoyer         {background-position: 0 -440px} 
+body q.envoyer_non     {background-position: 0 -460px} 
+body q.partager        {background-position: 0 -480px} 
+body q.partager_non    {background-position: 0 -500px} 
+body q.retourner       {background-position: 0 -520px} 
+body q.saisir          {background-position: 0 -540px} 
+body q.supprimer       {background-position: 0 -560px} 
+body q.supprimer_non   {background-position: 0 -580px} 
+body q.valider         {background-position: 0 -600px} 
+body q.voir            {background-position: 0 -620px} 
+body q.voir_repart     {background-position: 0 -640px} 
+body q.n1_add          {background-position: 0 -660px} 
+body q.n1_del          {background-position: 0 -680px} 
+body q.n1_edit         {background-position: 0 -700px} 
+body q.n1_move         {background-position: 0 -720px} 
+body q.n1_move2        {background-position: 0 -740px} 
+body q.n2_add          {background-position: 0 -760px} 
+body q.n2_del          {background-position: 0 -780px} 
+body q.n2_edit         {background-position: 0 -800px} 
+body q.n2_move         {background-position: 0 -820px} 
+body q.n2_move2        {background-position: 0 -840px} 
+body q.n3_add          {background-position: 0 -860px} 
+body q.n3_del          {background-position: 0 -880px} 
+body q.n3_edit         {background-position: 0 -900px} 
+body q.n3_fus          {background-position: 0 -920px} 
+body q.n3_fus2         {background-position: 0 -940px} 
+body q.n3_move         {background-position: 0 -960px} 
+body q.n3_move2        {background-position: 0 -980px} 
 body q:hover {cursor:pointer}	/* Curseur pointeur pour ces images qui sont des liens */
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
@@ -162,16 +282,45 @@ label.loader {background:transparent url(../_img/ajax/ajax_loader.gif) no-repeat
 label.alerte {background:transparent url(../_img/ajax/ajax_alerte.png) no-repeat left;color:#A00;padding-left:19px;margin-left:5px}
 
 /* Mise en page tabulée des éléments */
-form label.tab{line-height:1.4em;display:inline-block;text-align:right;width:11em;margin-right:1em;font-weight:bold}
+form label.tab{line-height:1.4em;display:inline-block;text-align:right;width:11em;margin-right:0.5em;font-weight:bold}
 form span.radio{line-height:1.4em;display:inline-block;text-align:right;width:25em;margin-right:1em;font-weight:bold}
-form span.tab{line-height:2em;margin-left:12em}
+form span.tab{line-height:2em;margin-left:11.5em}
 form label.mini{width:8em;}
 
 /* Boutons de validation */
-button{padding:0 1px;margin:1px 0;background:#DDF;color:#139;border:1px solid #66F;}
+button{background:#DDF url(../_img/sprite_bouton_1.png) 0 0 no-repeat;padding:0 1px 0 20px;margin:1px 0;color:#139;border:1px solid #66F;}
+button.actualiser      {background-position: 3px    1px}
+button.annuler         {background-position: 3px  -19px}
+button.colorer         {background-position: 3px  -39px}
+button.deconnecter     {background-position: 3px  -59px}
+button.dump_export     {background-position: 3px  -79px}
+button.eclair          {background-position: 3px  -99px}
+button.fichier_export  {background-position: 3px -119px}
+button.fichier_import  {background-position: 3px -139px}
+button.form_ajouter    {background-position: 3px -159px}
+button.form_retirer    {background-position: 3px -179px}
+button.generer         {background-position: 3px -199px}
+button.groupe_ajouter  {background-position: 3px -219px}
+button.groupe_retirer  {background-position: 3px -239px}
+button.mail_ecrire     {background-position: 3px -259px}
+button.mail_envoyer    {background-position: 3px -279px}
+button.mdp_groupe      {background-position: 3px -299px}
+button.mdp_perso       {background-position: 3px -319px}
+button.nettoyage       {background-position: 3px -339px}
+button.parametre       {background-position: 3px -359px}
+button.periode_ajouter {background-position: 3px -379px}
+button.periode_retirer {background-position: 3px -399px}
+button.rechercher      {background-position: 3px -419px}
+button.retourner       {background-position: 3px -439px}
+button.stats           {background-position: 3px -459px}
+button.supprimer       {background-position: 3px -479px}
+button.user_ajouter    {background-position: 3px -499px}
+button.user_desactiver {background-position: 3px -519px}
+button.valider         {background-position: 3px -539px}
+
 button{width:auto;overflow:visible;} /* patch pour IE : voir http://jehiah.cz/archive/button-width-in-ie */
-button:hover,button.hover{background:#EEF;color:#D41;cursor:pointer;} /* button.hover pour une compatibilité avec AjaxUpload (pour background, car pas mieux pour cursor) */
-button[disabled]{background:#FFF;color:#888;border:1px solid #BBF}
+button:hover,button.hover{background-color:#EEF;color:#D41;cursor:pointer;} /* button.hover pour une compatibilité avec AjaxUpload (pour background, car pas mieux pour cursor) */
+button[disabled]{opacity:0.5} /* background-color:#FFF;color:#888;border:1px solid #BBF */
 button[disabled]:hover,button[disabled]:hover{cursor:default}
 button img{width:16px;height:16px}
 

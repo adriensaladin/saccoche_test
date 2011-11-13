@@ -27,7 +27,6 @@
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = "Parents &amp; élèves";
-$VERSION_JS_FILE += 1;
 ?>
 
 <?php
@@ -50,7 +49,7 @@ $select_f_parents = Formulaire::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_pare
 
 	<fieldset id="fieldset_parents">
 	</fieldset>
-	<p id="p_valider" class="hide"><span class="tab"></span><button id="Enregistrer" type="button"><img alt="" src="./_img/bouton/valider.png" /> Enregistrer les modifications</button><label id="ajax_msg2">&nbsp;</label></p>
+	<p id="p_valider" class="hide"><span class="tab"></span><button id="Enregistrer" type="button" class="valider">Enregistrer les modifications</button><label id="ajax_msg2">&nbsp;</label></p>
 
 </form>
 

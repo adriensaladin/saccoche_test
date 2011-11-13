@@ -68,7 +68,7 @@ if( ($action=='Afficher_bilan') && $palier_id && count($tab_pilier) && count($ta
 	$affichage .= '<th class="nu">&nbsp;&nbsp;&nbsp;</th>';
 	$affichage .= '<th class="nu">';
 	$affichage .=   '<p class="danger">Rappel : la validation d\'une compétence est définitive (une invalidation peut être changée).</p>';
-	$affichage .=   '<p><button id="Enregistrer_validation" type="button"><img alt="" src="./_img/bouton/valider.png" /> Enregistrer les validations</button> <button id="fermer_zone_validation" type="button"><img alt="" src="./_img/bouton/retourner.png" /> Retour</button><label id="ajax_msg_validation"></label></p>';
+	$affichage .=   '<p><button id="Enregistrer_validation" type="button" class="valider">Enregistrer les validations</button> <button id="fermer_zone_validation" type="button" class="retourner">Retour</button><label id="ajax_msg_validation"></label></p>';
 	$affichage .= '</th>';
 	$affichage .= '</tr></thead>';
 	$affichage .= '<tbody>';

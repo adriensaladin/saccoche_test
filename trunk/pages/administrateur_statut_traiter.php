@@ -27,7 +27,6 @@
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = "Traiter les comptes desactivés";
-$VERSION_JS_FILE += 3;
 ?>
 
 <?php
@@ -74,8 +73,8 @@ $select_professeurs_directeurs = Formulaire::afficher_select(DB_STRUCTURE_COMMUN
 				</p>
 			</td>
 			<td id="td_bouton" class="nu hide" style="width:25em">
-				<p><button id="reintegrer" type="button"><img alt="" src="./_img/bouton/user_ajouter.png" /> Réintégrer ces comptes.</button></p>
-				<p><button id="supprimer" type="button"><img alt="" src="./_img/bouton/supprimer.png" /> Supprimer définitivement ces comptes.</button></p>
+				<p><button id="reintegrer" type="button" class="user_ajouter">Réintégrer ces comptes.</button></p>
+				<p><button id="supprimer" type="button" class="supprimer">Supprimer définitivement ces comptes.</button></p>
 				<p><label id="ajax_msg">&nbsp;</label></p>
 			</td>
 		</tr>

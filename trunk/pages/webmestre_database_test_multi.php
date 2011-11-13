@@ -31,7 +31,7 @@ if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');
 <p><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_webmestre__droits_mysql">DOC : Droits MySQL requis (multi-structures)</a></span></p>
 
 <form action="./index.php?page=webmestre_database_test" method="post">
-	<p class="ti"><input id="lancer_test" name="lancer_test" type="hidden" value="go" /><button id="bouton_newsletter" type="submit"><img alt="" src="./_img/bouton/parametre.png" /> Lancer le test.</button></p>
+	<p class="ti"><input id="lancer_test" name="lancer_test" type="hidden" value="go" /><button id="bouton_newsletter" type="submit" class="parametre">Lancer le test.</button></p>
 </form>
 
 <hr />

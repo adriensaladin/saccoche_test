@@ -40,7 +40,7 @@ function afficher_formulaire_etablissement($BASE,$profil)
 {
 	$options_structures = Formulaire::afficher_select(DB_WEBMESTRE_SELECT::DB_OPT_structures_sacoche() , $select_nom=false , $option_first='non' , $selection=$BASE , $optgroup='oui');
 	echo'<label class="tab" for="f_base">Établissement :</label><select id="f_base" name="f_base" tabindex="1" >'.$options_structures.'</select><br />'."\r\n";
-	echo'<span class="tab"></span><button id="f_choisir" type="button" tabindex="2"><img alt="" src="./_img/bouton/valider.png" /> Choisir cet établissement.</button><label id="ajax_msg">&nbsp;</label><br />'."\r\n";
+	echo'<span class="tab"></span><button id="f_choisir" type="button" tabindex="2" class="valider">Choisir cet établissement.</button><label id="ajax_msg">&nbsp;</label><br />'."\r\n";
 	echo'<input id="f_profil" name="f_profil" type="hidden" value="'.$profil.'" />'."\r\n";
 }
 
@@ -49,7 +49,7 @@ function afficher_formulaire_etablissement($BASE,$profil)
  */
 function afficher_nom_etablissement($BASE,$denomination)
 {
-	$changer = (HEBERGEUR_INSTALLATION=='multi-structures') ? '&nbsp;&nbsp;&nbsp;<a id="f_changer" href="#"><img alt="" src="./_img/bouton/retourner.png" /> Changer</a>' : '' ;
+	$changer = (HEBERGEUR_INSTALLATION=='multi-structures') ? ' - <a id="f_changer" href="#">changer</a>' : '' ;
 	echo'<label class="tab">Établissement :</label><input id="f_base" name="f_base" type="hidden" value="'.$BASE.'" /><em>'.html($denomination).'</em>'.$changer.'<br />'."\r\n";
 }
 
@@ -64,13 +64,13 @@ function afficher_formulaire_identification($profil,$mode='normal',$nom='')
 	if($profil=='webmestre')
 	{
 		echo'<label class="tab" for="f_password">Mot de passe :</label><input id="f_password" name="f_password" size="20" type="password" value="" tabindex="3" autocomplete="off" /><br />'."\r\n";
-		echo'<span class="tab"></span><input id="f_login" name="f_login" type="hidden" value="webmestre" /><input id="f_mode" name="f_mode" type="hidden" value="normal" /><input id="f_profil" name="f_profil" type="hidden" value="webmestre" /><input id="f_action" name="f_action" type="hidden" value="identifier" /><button id="f_submit" type="submit" tabindex="4"><img alt="" src="./_img/bouton/mdp_perso.png" /> Accéder à son espace.</button><label id="ajax_msg">&nbsp;</label><br />'."\r\n";
+		echo'<span class="tab"></span><input id="f_login" name="f_login" type="hidden" value="webmestre" /><input id="f_mode" name="f_mode" type="hidden" value="normal" /><input id="f_profil" name="f_profil" type="hidden" value="webmestre" /><input id="f_action" name="f_action" type="hidden" value="identifier" /><button id="f_submit" type="submit" tabindex="4" class="mdp_perso">Accéder à son espace.</button><label id="ajax_msg">&nbsp;</label><br />'."\r\n";
 	}
 	elseif($mode=='normal')
 	{
 		echo'<label class="tab" for="f_login">Nom d\'utilisateur :</label><input id="f_login" name="f_login" size="20" type="text" value="" tabindex="2" autocomplete="off" /><br />'."\r\n";
 		echo'<label class="tab" for="f_password">Mot de passe :</label><input id="f_password" name="f_password" size="20" type="password" value="" tabindex="3" autocomplete="off" /><br />'."\r\n";
-		echo'<span class="tab"></span><input id="f_mode" name="f_mode" type="hidden" value="normal" /><input id="f_profil" name="f_profil" type="hidden" value="normal" /><input id="f_action" name="f_action" type="hidden" value="identifier" /><button id="f_submit" type="submit" tabindex="4"><img alt="" src="./_img/bouton/mdp_perso.png" /> Accéder à son espace.</button><label id="ajax_msg">&nbsp;</label><br />'."\r\n";
+		echo'<span class="tab"></span><input id="f_mode" name="f_mode" type="hidden" value="normal" /><input id="f_profil" name="f_profil" type="hidden" value="normal" /><input id="f_action" name="f_action" type="hidden" value="identifier" /><button id="f_submit" type="submit" tabindex="4" class="mdp_perso">Accéder à son espace.</button><label id="ajax_msg">&nbsp;</label><br />'."\r\n";
 	}
 	else
 	{
@@ -81,7 +81,7 @@ function afficher_formulaire_identification($profil,$mode='normal',$nom='')
 		echo'<label class="tab" for="f_login">Nom d\'utilisateur :</label><input id="f_login" name="f_login" size="20" type="text" value="" tabindex="2" autocomplete="off" /><br />'."\r\n";
 		echo'<label class="tab" for="f_password">Mot de passe :</label><input id="f_password" name="f_password" size="20" type="password" value="" tabindex="3" autocomplete="off" /><br />'."\r\n";
 		echo'</fieldset>'."\r\n";
-		echo'<span class="tab"></span><input id="f_profil" name="f_profil" type="hidden" value="normal" /><input id="f_action" name="f_action" type="hidden" value="identifier" /><button id="f_submit" type="submit" tabindex="4"><img alt="" src="./_img/bouton/mdp_perso.png" /> Accéder à son espace.</button><label id="ajax_msg">&nbsp;</label><br />'."\r\n";
+		echo'<span class="tab"></span><input id="f_profil" name="f_profil" type="hidden" value="normal" /><input id="f_action" name="f_action" type="hidden" value="identifier" /><button id="f_submit" type="submit" tabindex="4" class="mdp_perso">Accéder à son espace.</button><label id="ajax_msg">&nbsp;</label><br />'."\r\n";
 	}
 }
 

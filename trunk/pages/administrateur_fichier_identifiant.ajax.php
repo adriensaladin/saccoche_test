@@ -139,8 +139,8 @@ if( (($action=='init_login')||($action=='init_mdp')) && (in_array($profil,$tab_p
 	//	Affichage du résultat
 	//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 	echo'<ul class="puce">';
-	echo'<li><a class="lien_ext" href="'.$dossier_login_mdp.$fnom.'.pdf">Nouveaux identifiants &rarr; Archiver / Imprimer (étiquettes <em>pdf</em>)</a></li>';
-	echo'<li><a class="lien_ext" href="'.$dossier_login_mdp.$fnom.'.zip">Nouveaux identifiants &rarr; Récupérer / Manipuler (fichier <em>csv</em> pour tableur).</a></li>';
+	echo'<li><a class="lien_ext" href="'.$dossier_login_mdp.$fnom.'.pdf"><span class="file file_pdf">Nouveaux identifiants &rarr; Archiver / Imprimer (étiquettes <em>pdf</em>)</span></a></li>';
+	echo'<li><a class="lien_ext" href="'.$dossier_login_mdp.$fnom.'.zip"><span class="file file_txt">Nouveaux identifiants &rarr; Récupérer / Manipuler (fichier <em>csv</em> pour tableur).</span></a></li>';
 	if($action=='init_mdp')
 	{
 		echo'<li><label class="alerte">Les mots de passe, cryptés, ne sont plus accessibles ultérieurement !</label></li>';
@@ -175,7 +175,7 @@ if($action=='user_export')
 	}
 	$zip->addFromString($fnom.'.csv',csv($fcontenu_csv));
 	$zip->close();
-	exit('<ul class="puce"><li><a class="lien_ext" href="'.$dossier_export.$fnom.'.zip">Récupérez le fichier exporté de la base SACoche.</a></li></ul>');
+	exit('<ul class="puce"><li><a class="lien_ext" href="'.$dossier_export.$fnom.'.zip"><span class="file file_zip">Récupérez le fichier exporté de la base SACoche.</span></a></li></ul>');
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -365,7 +365,7 @@ if($action=='import_loginmdp')
 			$pdf -> Add_Label(pdf($text));
 		}
 		$pdf->Output($dossier_login_mdp.$fnom.'.pdf','F');
-		echo'<li><a class="lien_ext" href="'.$dossier_login_mdp.$fnom.'.pdf">Archiver / Imprimer les identifiants modifiés (étiquettes <em>pdf</em>).</a></li>';
+		echo'<li><a class="lien_ext" href="'.$dossier_login_mdp.$fnom.'.pdf"><span class="file file_pdf">Archiver / Imprimer les identifiants modifiés (étiquettes <em>pdf</em>).</span></a></li>';
 		echo'<li><label class="alerte">Les mots de passe, cryptés, ne sont plus accessibles ultérieurement !</label></li>';
 	}
 	// On affiche le bilan

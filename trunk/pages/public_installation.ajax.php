@@ -155,7 +155,7 @@ if( $step==4 )
 		$affichage .= '<div class="astuce">Ce mot de passe doit être complexe pour offrir un niveau de sécurité suffisant !</div>'."\r\n";
 		$affichage .= '<label class="tab" for="f_password1"><img alt="" src="./_img/bulle_aide.png" title="La robustesse du mot de passe indiqué dans ce champ est estimée ci-dessous." /> Saisie 1/2 :</label><input id="f_password1" name="f_password1" size="20" type="password" value="" /><br />'."\r\n";
 		$affichage .= '<label class="tab" for="f_password2">Saisie 2/2 :</label><input id="f_password2" name="f_password2" size="20" type="password" value="" /><p />'."\r\n";
-		$affichage .= '<span class="tab"></span><input id="f_step" name="f_step" type="hidden" value="41" /><button id="f_submit" type="submit"><img alt="" src="./_img/bouton/valider.png" /> Valider.</button><label id="ajax_msg">&nbsp;</label>'."\r\n";
+		$affichage .= '<span class="tab"></span><input id="f_step" name="f_step" type="hidden" value="41" /><button id="f_submit" type="submit" class="valider">Valider.</button><label id="ajax_msg">&nbsp;</label>'."\r\n";
 		$affichage .= '<hr />'."\r\n";
 		$affichage .= '<p><span class="astuce">Un mot de passe est considéré comme robuste s\'il comporte de nombreux caractères, mélangeant des lettres minuscules et majuscules, des chiffres et d\'autres symboles.</span></p>'."\r\n";
 		$affichage .= '<div id="robustesse" style="border:1px solid blue;margin:auto 10%;text-align:center;font-style:italic;background-color:#F99">indicateur de robustesse : <span>0</span> / 12</div>'."\r\n";
@@ -225,7 +225,7 @@ if( $step==5 )
 		$affichage .= '<label class="tab" for="f_port"><img alt="" src="./_img/bulle_aide.png" title="Valeur 3306 par défaut (dans 99,99% des situations)." /> Port :</label><input id="f_port" name="f_port" size="20" type="text" value="3306" /><label for="rien" class="alerte">Ne changez pas cette valeur, sauf rares exceptions !</label><br />'."\r\n";
 		$affichage .= '<label class="tab" for="f_user">Nom d\'utilisateur :</label><input id="f_user" name="f_user" size="20" type="text" value="" /><br />'."\r\n";
 		$affichage .= '<label class="tab" for="f_pass">Mot de passe :</label><input id="f_pass" name="f_pass" size="20" type="password" value="" /><br />'."\r\n";
-		$affichage .= '<span class="tab"></span><input id="f_name" name="f_name" size="20" type="hidden" value="remplissage bidon" /><input id="f_step" name="f_step" type="hidden" value="51" /><button id="f_submit" type="submit"><img alt="" src="./_img/bouton/valider.png" /> Valider.</button><label id="ajax_msg">&nbsp;</label>'."\r\n";
+		$affichage .= '<span class="tab"></span><input id="f_name" name="f_name" size="20" type="hidden" value="remplissage bidon" /><input id="f_step" name="f_step" type="hidden" value="51" /><button id="f_submit" type="submit" class="valider">Valider.</button><label id="ajax_msg">&nbsp;</label>'."\r\n";
 		$affichage .= '</fieldset>'."\r\n";
 	}
 	echo $affichage;
@@ -325,7 +325,7 @@ elseif( $step==51 )
 			// Sinon, c'est un input
 			$affichage .= '<label class="tab" for="f_name">Nom de la base :</label><input id="f_name" name="f_name" size="20" type="text" value="" /><br />'."\r\n";
 		}
-		$affichage .= '<span class="tab"></span><input id="f_host" name="f_host" size="20" type="hidden" value="'.html($BD_host).'" /><input id="f_port" name="f_port" size="20" type="hidden" value="'.$BD_port.'" /><input id="f_user" name="f_user" size="20" type="hidden" value="'.html($BD_user).'" /><input id="f_pass" name="f_pass" size="20" type="hidden" value="'.html($BD_pass).'" /><input id="f_step" name="f_step" type="hidden" value="52" /><button id="f_submit" type="submit"><img alt="" src="./_img/bouton/valider.png" /> Valider.</button><label id="ajax_msg">&nbsp;</label>'."\r\n";
+		$affichage .= '<span class="tab"></span><input id="f_host" name="f_host" size="20" type="hidden" value="'.html($BD_host).'" /><input id="f_port" name="f_port" size="20" type="hidden" value="'.$BD_port.'" /><input id="f_user" name="f_user" size="20" type="hidden" value="'.html($BD_user).'" /><input id="f_pass" name="f_pass" size="20" type="hidden" value="'.html($BD_pass).'" /><input id="f_step" name="f_step" type="hidden" value="52" /><button id="f_submit" type="submit" class="valider">Valider.</button><label id="ajax_msg">&nbsp;</label>'."\r\n";
 		$affichage .= '</fieldset>'."\r\n";
 	}
 	echo $affichage;

@@ -69,7 +69,7 @@ else
 	$zip->close();
 	// Afficher tout ça
 	echo'<ul class="puce">';
-	echo'<li><a class="lien_ext" href="'.$dossier_export.$fichier_export_nom.'.zip">Récupérer le fichier complet (format <em>csv</em>).</a></li>';
+	echo'<li><a class="lien_ext" href="'.$dossier_export.$fichier_export_nom.'.zip"><span class="file file_txt">Récupérer le fichier complet (format <em>csv</em>).</span></a></li>';
 	echo'<li>Consulter les derniers logs ('.$nb_lignes.' ligne'.$s.') :</li>';
 	echo'</ul>';
 	echo'<p />';

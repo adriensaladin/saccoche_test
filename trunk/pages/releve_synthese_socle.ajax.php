@@ -341,8 +341,8 @@ Ecrire_Fichier($dossier.$fichier_lien.'.html',$releve_html);
 $releve_pdf->Output($dossier.$fichier_lien.'.pdf','F');
 // Affichage du résultat
 echo'<ul class="puce">';
-echo'<li><a class="lien_ext" href="'.$dossier.$fichier_lien.'.pdf">Archiver / Imprimer (format <em>pdf</em>).</a></li>';
-echo'<li><a class="lien_ext" href="./releve-html.php?fichier='.$fichier_lien.'">Explorer / Détailler (format <em>html</em>).</a></li>';
+echo'<li><a class="lien_ext" href="'.$dossier.$fichier_lien.'.pdf"><span class="file file_pdf">Archiver / Imprimer (format <em>pdf</em>).</span></a></li>';
+echo'<li><a class="lien_ext" href="./releve-html.php?fichier='.$fichier_lien.'"><span class="file file_htm">Explorer / Détailler (format <em>html</em>).</span></a></li>';
 echo'</ul><p />';
 
 ?>

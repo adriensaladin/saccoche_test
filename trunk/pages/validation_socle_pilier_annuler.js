@@ -38,11 +38,11 @@ $(document).ready
 		{
 			if($("#f_eleve").val())
 			{
-				$('#Afficher_validation').show();
+				$('#Afficher_validation').prop('disabled',false);
 			}
 			else
 			{
-				$('#Afficher_validation').hide();
+				$('#Afficher_validation').prop('disabled',true);
 			}
 		};
 
@@ -262,7 +262,7 @@ $(document).ready
 				$('#report_nom').html( $('#I'+user_id).attr('alt') );
 				$('#report_compet').html( $(this).parent().children('th').text().substring(0,12) );
 				$('#confirmation').css('opacity',1);
-				$('#fermer_zone_validation').html('<img alt="" src="./_img/bouton/annuler.png" /> Annuler / Retour');
+				$('#fermer_zone_validation').removeAttr("class").addClass("annuler").html('Annuler / Retour');
 				return false;
 			}
 		);
@@ -316,7 +316,7 @@ $(document).ready
 							else
 							{
 								$('#'+td_id).removeAttr("class").removeAttr("lang").addClass("v3");
-								$('#fermer_zone_validation').html('<img alt="" src="./_img/bouton/retourner.png" /> Retour');
+								$('#fermer_zone_validation').removeAttr("class").addClass("retourner").html('Retour');
 								$('#confirmation').css('opacity',0);
 								$('#ajax_msg_validation').removeAttr("class").html("&nbsp;");
 							}

@@ -27,7 +27,6 @@
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = "Niveaux &amp; Cycles";
-$VERSION_JS_FILE += 1;
 ?>
 
 <div><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__gestion_niveaux">DOC : Niveaux &amp; Cycles</a></span></div>
@@ -60,7 +59,7 @@ $VERSION_JS_FILE += 1;
 		</tbody>
 	</table>
 	<p>
-		<span class="tab"></span><button id="bouton_valider_cycles" type="button"><img alt="" src="./_img/bouton/parametre.png" /> Valider ce choix de cycles.</button><label id="ajax_msg_cycles">&nbsp;</label>
+		<span class="tab"></span><button id="bouton_valider_cycles" type="button" class="parametre">Valider ce choix de cycles.</button><label id="ajax_msg_cycles">&nbsp;</label>
 	</p>
 </form>
 
@@ -92,6 +91,6 @@ $VERSION_JS_FILE += 1;
 		</tbody>
 	</table>
 	<p>
-		<span class="tab"></span><button id="bouton_valider_niveaux" type="button"><img alt="" src="./_img/bouton/parametre.png" /> Valider ce choix de niveaux.</button><label id="ajax_msg_niveaux">&nbsp;</label>
+		<span class="tab"></span><button id="bouton_valider_niveaux" type="button" class="parametre">Valider ce choix de niveaux.</button><label id="ajax_msg_niveaux">&nbsp;</label>
 	</p>
 </form>

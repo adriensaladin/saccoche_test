@@ -27,7 +27,6 @@
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = "Paliers du socle";
-$VERSION_JS_FILE += 1;
 ?>
 
 <div><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__gestion_paliers_socle">DOC : Paliers du socle</a></span></div>
@@ -59,7 +58,7 @@ $VERSION_JS_FILE += 1;
 		</tbody>
 	</table>
 	<p>
-		<span class="tab"></span><button id="bouton_valider" type="button"><img alt="" src="./_img/bouton/parametre.png" /> Valider ce choix de paliers.</button><label id="ajax_msg">&nbsp;</label>
+		<span class="tab"></span><button id="bouton_valider" type="button" class="parametre">Valider ce choix de paliers.</button><label id="ajax_msg">&nbsp;</label>
 	</p>
 </form>
 

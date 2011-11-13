@@ -27,7 +27,6 @@
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = "Référentiels en place (dans l'établissement)";
-$VERSION_JS_FILE += 4;
 
 $fin = ( (mb_substr_count($_SESSION['DROIT_VOIR_REFERENTIELS'],$_SESSION['USER_PROFIL'])) || ($_SESSION['USER_PROFIL']=='administrateur') ) ? 'oui' : 'non' ;
 

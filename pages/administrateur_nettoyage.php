@@ -27,7 +27,6 @@
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = "Nettoyage / Initialisation";
-$VERSION_JS_FILE += 5;
 ?>
 
 <p><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__gestion_nettoyage">DOC : Nettoyage et initialisation annuelle de la base</a></span></p>
@@ -38,7 +37,7 @@ $VERSION_JS_FILE += 5;
 
 <div class="astuce">Cet outil n'est utile que si une anomalie spécifique a été constaté (voir documentation ci-dessus).</div>
 <form action="#" method="post" id="form_numeroter"><fieldset>
-	<span class="tab"></span><button id="bouton_numeroter" type="button"><img alt="" src="./_img/bouton/nettoyage.png" /> Lancer le nettoyage d'éventuelles anomalies de numérotation.</button><label id="ajax_msg_numeroter">&nbsp;</label>
+	<span class="tab"></span><button id="bouton_numeroter" type="button" class="nettoyage">Lancer le nettoyage d'éventuelles anomalies de numérotation.</button><label id="ajax_msg_numeroter">&nbsp;</label>
 </fieldset></form>
 
 <hr />
@@ -47,7 +46,7 @@ $VERSION_JS_FILE += 5;
 
 <div class="astuce">Cet outil est facultatif ; il ne met pas à jour la structure ni les données de la base (voir documentation ci-dessus).</div>
 <form action="#" method="post" id="form_nettoyer"><fieldset>
-	<span class="tab"></span><button id="bouton_nettoyer" type="button"><img alt="" src="./_img/bouton/nettoyage.png" /> Lancer le nettoyage d'éventuelles correspondances anormales.</button><label id="ajax_msg_nettoyer">&nbsp;</label>
+	<span class="tab"></span><button id="bouton_nettoyer" type="button" class="nettoyage">Lancer le nettoyage d'éventuelles correspondances anormales.</button><label id="ajax_msg_nettoyer">&nbsp;</label>
 </fieldset></form>
 
 <hr />
@@ -57,7 +56,7 @@ $VERSION_JS_FILE += 5;
 <div class="astuce">Entre deux années scolaires, il faut purger la base avant d'importer les nouveaux utilisateurs (voir documentation ci-dessus).</div>
 <div class="danger">N'effectuez jamais une initialisation en cours d'année scolaire !</div>
 <form action="#" method="post" id="form_purger"><fieldset>
-	<span class="tab"></span><button id="bouton_purger" type="button"><img alt="" src="./_img/bouton/nettoyage.png" /> Lancer l'initialisation annuelle des données.</button><label id="ajax_msg_purger">&nbsp;</label>
+	<span class="tab"></span><button id="bouton_purger" type="button" class="nettoyage">Lancer l'initialisation annuelle des données.</button><label id="ajax_msg_purger">&nbsp;</label>
 </fieldset></form>
 
 <hr />
@@ -66,7 +65,7 @@ $VERSION_JS_FILE += 5;
 
 <div class="danger">Cet fonctionnalité ne doit être utilisée qu'exceptionnellement, pour repartir à zéro après une année de test (voir documentation ci-dessus) !</div>
 <form action="#" method="post" id="form_supprimer"><fieldset>
-	<span class="tab"></span><button id="bouton_supprimer" type="button"><img alt="" src="./_img/bouton/nettoyage.png" /> Supprimer les scores d'évaluations et les validations.</button><label id="ajax_msg_supprimer">&nbsp;</label>
+	<span class="tab"></span><button id="bouton_supprimer" type="button" class="nettoyage">Supprimer les scores d'évaluations et les validations.</button><label id="ajax_msg_supprimer">&nbsp;</label>
 </fieldset></form>
 
 <hr />
@@ -75,7 +74,7 @@ $VERSION_JS_FILE += 5;
 
 <div class="astuce">Cet outil n'est utile que si une anomalie spécifique a été constaté (voir documentation ci-dessus).</div>
 <form action="#" method="post" id="form_effacer"><fieldset>
-	<span class="tab"></span><button id="bouton_effacer" type="button"><img alt="" src="./_img/bouton/nettoyage.png" /> Effacer les étiquettes nom &amp; prénom.</button><label id="ajax_msg_effacer">&nbsp;</label>
+	<span class="tab"></span><button id="bouton_effacer" type="button" class="nettoyage">Effacer les étiquettes nom &amp; prénom.</button><label id="ajax_msg_effacer">&nbsp;</label>
 </fieldset></form>
 
 <hr />

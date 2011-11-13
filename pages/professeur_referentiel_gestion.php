@@ -27,7 +27,6 @@
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = "Créer / paramétrer les référentiels";
-$VERSION_JS_FILE += 14;
 ?>
 
 <script type="text/javascript">
@@ -208,7 +207,7 @@ else
 <div id="choisir_referentiel" class="hide">
 	<hr />
 	<h2>Choisir un référentiel</h2>
-	<p><button id="choisir_initialiser" type="button" value="id_0"><img alt="" src="./_img/bouton/valider.png" /> Démarrer avec un référentiel vierge.</button></p>
+	<p><button id="choisir_initialiser" type="button" value="id_0" class="valider">Démarrer avec un référentiel vierge.</button></p>
 	<?php
 	if( (!$_SESSION['SESAMATH_ID']) || (!$_SESSION['SESAMATH_KEY']) )
 	{
@@ -216,11 +215,11 @@ else
 	}
 	else
 	{
-		echo'<p><button id="choisir_rechercher" type="button"><img alt="" src="./_img/bouton/rechercher.png" /> Rechercher parmi les référentiels partagés sur le serveur communautaire.</button></p>';
-		echo'<p><button id="choisir_importer" type="button" value="id_x"><img alt="" src="./_img/bouton/valider.png" /> Démarrer avec ce référentiel : <b id="reporter"></b></button></p>';
+		echo'<p><button id="choisir_rechercher" type="button" class="rechercher">Rechercher parmi les référentiels partagés sur le serveur communautaire.</button></p>';
+		echo'<p><button id="choisir_importer" type="button" value="id_x" class="valider">Démarrer avec ce référentiel : <b id="reporter"></b></button></p>';
 	}
 	?>
-	<p><button id="choisir_annuler" type="button"><img alt="" src="./_img/bouton/annuler.png" /> Annuler la création d'un référentiel.</button></p>
+	<p><button id="choisir_annuler" type="button" class="annuler">Annuler la création d'un référentiel.</button></p>
 	<label id="ajax_msg_choisir">&nbsp;</label>
 </div>
 
@@ -240,8 +239,8 @@ $select_niveau  = Formulaire::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_niveau
 		<label class="tab" for="f_matiere">Matière :</label><?php echo $select_matiere ?><br />
 		<label class="tab" for="f_niveau">Niveau :</label><?php echo $select_niveau ?><br />
 		<label class="tab" for="f_structure"><img alt="" src="./_img/bulle_aide.png" title="Seules les structures partageant au moins un référentiel apparaissent." /> Structure :</label><select id="f_structure" name="f_structure"><option></option></select><br />
-		<span class="tab"></span><button id="rechercher" type="button" class="hide"><img alt="" src="./_img/bouton/rechercher.png" /> Lancer / Actualiser la recherche.</button><label id="ajax_msg">&nbsp;</label><br />
-		<span class="tab"></span><button id="rechercher_annuler" type="button"><img alt="" src="./_img/bouton/annuler.png" /> Annuler la recherche d'un référentiel.</button>
+		<span class="tab"></span><button id="rechercher" type="button" class="hide" class="rechercher">Lancer / Actualiser la recherche.</button><label id="ajax_msg">&nbsp;</label><br />
+		<span class="tab"></span><button id="rechercher_annuler" type="button" class="annuler">Annuler la recherche d'un référentiel.</button>
 	</fieldset>
 	<hr />
 	<div id="lister_referentiel_communautaire" class="hide">

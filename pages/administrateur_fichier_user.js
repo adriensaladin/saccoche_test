@@ -232,7 +232,7 @@ $(document).ready
 				var texte1 = $('#f_choix_principal option:selected').parent('optgroup').attr('label');
 				var texte2 = $('#f_choix_principal option:selected').text();
 				$('#form1').hide();
-				$('#form2').html('<p><input name="report_objet" readonly size="80" value="'+texte1.substring(0,texte1.indexOf('(')-1)+' &rarr; '+texte2.substring(0,texte2.indexOf('(')-1)+'" class="b" /> <button id="bouton_annuler"><img alt="" src="./_img/bouton/retourner.png" /> Annuler / Retour</button></p>'+responseHTML);
+				$('#form2').html('<p><input name="report_objet" readonly size="80" value="'+texte1.substring(0,texte1.indexOf('(')-1)+' &rarr; '+texte2.substring(0,texte2.indexOf('(')-1)+'" class="b" /> <button id="bouton_annuler" class="retourner">Annuler / Retour</button></p>'+responseHTML);
 				$("#step1").addClass("on");
 			}
 		}

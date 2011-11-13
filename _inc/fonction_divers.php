@@ -262,57 +262,58 @@ function declaration_entete( $is_meta_robots ,$is_favicon , $is_rss , $tab_fichi
 }
 
 /**
- * Compression ou minification d'un fichier css ou js sur le serveur en production
+ * Compression ou minification d'un fichier css ou js sur le serveur en production, avec date auto-insérée si besoin pour éviter tout souci de mise en cache
  * 
  * @param string $chemin    chemin complet vers le fichier
- * @param string $version   $version éventuelle du fichier pour éviter un pb de mise en cache
  * @param string $methode   soit "pack" soit "mini"
  * @return string           chemin complet vers le fichier à prendre en compte
  */
-function compacter($chemin,$version,$methode)
+function compacter($chemin,$methode)
 {
-	$chemin_fichier_original  = $chemin;
-	$extension                = pathinfo($chemin,PATHINFO_EXTENSION);
-	$dossier_fichier_compacte = (substr($chemin,0,10)=='./sacoche/') ? './sacoche/__tmp/' : './__tmp/' ; // On peut se permettre d'enregistrer les js et css en dehors de leur dossier d'origine car les répertoires sont tous de mêmes niveaux
-	$nom_fichier_compacte     = substr( str_replace( array('./sacoche/','./','/') , array('','','__') , $chemin ) ,0,-(strlen($extension)+1));
-	$chemin_fichier_compacte  = $dossier_fichier_compacte.$nom_fichier_compacte.'.'.$methode.$version.'.'.$extension; // Pour un css l'extension doit être conservée (pour un js peu importe)
 	if(SERVEUR_TYPE == 'PROD')
 	{
+		$fichier_original_chemin = $chemin;
+		$fichier_original_date   = filemtime($fichier_original_chemin);
+		$fichier_extension       = pathinfo($chemin,PATHINFO_EXTENSION);
+		$fichier_compact_dossier = (substr($chemin,0,10)=='./sacoche/') ? './sacoche/__tmp/' : './__tmp/' ; // On peut se permettre d'enregistrer les js et css en dehors de leur dossier d'origine car les répertoires sont tous de mêmes niveaux
+		$fichier_compact_nom     = substr( str_replace( array('./sacoche/','./','/') , array('','','__') , $chemin ) ,0,-(strlen($fichier_extension)+1));
+		$fichier_compact_chemin  = $fichier_compact_dossier.$fichier_compact_nom.'_'.$fichier_original_date.'.'.$methode.'.'.$fichier_extension; // Pour un css l'extension doit être conservée (pour un js peu importe)
+		$fichier_compact_date    = (is_file($fichier_compact_chemin)) ? filemtime($fichier_compact_chemin) : 0 ;
 		// Sur le serveur en production, on compresse le fichier s'il ne l'est pas
-		if( (!is_file($chemin_fichier_compacte)) || (filemtime($chemin_fichier_compacte)<filemtime($chemin_fichier_original)) )
+		if($fichier_compact_date<$fichier_original_date)
 		{
-			$fichier_contenu = file_get_contents($chemin_fichier_original);
-			$fichier_contenu = utf8_decode($fichier_contenu); // Attention, il faut envoyer à ces classes de l'iso et pas de l'utf8.
-			if( ($extension=='js') && ($methode=='pack') )
+			$fichier_original_contenu = file_get_contents($fichier_original_chemin);
+			$fichier_original_contenu = utf8_decode($fichier_original_contenu); // Attention, il faut envoyer à ces classes de l'iso et pas de l'utf8.
+			if( ($fichier_extension=='js') && ($methode=='pack') )
 			{
-				$myPacker = new JavaScriptPacker($fichier_contenu, 62, true, false);
-				$fichier_compacte = $myPacker->pack();
+				$myPacker = new JavaScriptPacker($fichier_original_contenu, 62, true, false);
+				$fichier_compact_contenu = $myPacker->pack();
 			}
-			elseif( ($extension=='js') && ($methode=='mini') )
+			elseif( ($fichier_extension=='js') && ($methode=='mini') )
 			{
-				$fichier_compacte = JSMin::minify($fichier_contenu);
+				$fichier_compact_contenu = JSMin::minify($fichier_original_contenu);
 			}
-			elseif( ($extension=='css') && ($methode=='mini') )
+			elseif( ($fichier_extension=='css') && ($methode=='mini') )
 			{
-				$fichier_compacte = cssmin::minify($fichier_contenu);
+				$fichier_compact_contenu = cssmin::minify($fichier_original_contenu);
 			}
 			else
 			{
 				// Normalement on ne doit pas en arriver là... sauf à passer de mauvais paramètres à la fonction.
-				$fichier_compacte = $fichier_contenu;
+				$fichier_compact_contenu = $fichier_original_contenu;
 			}
-			$fichier_compacte = utf8_encode($fichier_compacte);	// On réencode donc en UTF-8...
+			$fichier_compact_contenu = utf8_encode($fichier_compact_contenu);	// On réencode donc en UTF-8...
 			@umask(0000); // Met le chmod à 666 - 000 = 666 pour les fichiers prochains fichiers créés (et à 777 - 000 = 777 pour les dossiers).
-			$test_ecriture = @file_put_contents($chemin_fichier_compacte,$fichier_compacte);
+			$test_ecriture = @file_put_contents($fichier_compact_chemin,$fichier_compact_contenu);
 			// Il se peut que le droit en écriture ne soit pas autorisé et que la procédure d'install ne l'ai pas encore vérifié ou que le dossier __tmp n'ait pas encore été créé.
-			return $test_ecriture ? $chemin_fichier_compacte : $chemin_fichier_original ;
+			return $test_ecriture ? $fichier_compact_chemin : $fichier_original_chemin ;
 		}
-		return $chemin_fichier_compacte;
+		return $fichier_compact_chemin;
 	}
 	else
 	{
 		// Sur le serveur local, on travaille avec le fichier normal pour le debugguer si besoin et ne pas encombrer le SVN
-		return $chemin_fichier_original;
+		return $chemin;
 	}
 }
 

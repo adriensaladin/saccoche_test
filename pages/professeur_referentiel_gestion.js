@@ -99,7 +99,7 @@ $(document).ready
 			function()
 			{
 				$(this).parent().find('div').remove();
-				$(this).parent().append('<div><button name="enregistrer" type="button" value="'+$(this).val()+'"><img alt="" src="./_img/bouton/valider.png" /> Enregistrer.</button></div>');
+				$(this).parent().append('<div><button name="enregistrer" type="button" value="'+$(this).val()+'" class="valider">Enregistrer.</button></div>');
 			}
 		);
 

@@ -27,7 +27,6 @@
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = "Format des noms d'utilisateurs";
-$VERSION_JS_FILE += 1;
 
 require_once('./_inc/tableau_profils.php'); // Charge $tab_profil_libelle[$profil][court|long][1|2]
 $tab_profils = array('directeur','professeur','eleve','parent');
@@ -44,5 +43,5 @@ foreach($tab_profils as $profil)
 
 <form action="#" method="post">
 	<?php echo $affichage; ?>
-	<p><span class="tab"></span><button id="bouton_valider" type="button"><img alt="" src="./_img/bouton/parametre.png" /> Valider ces formats.</button><label id="ajax_msg">&nbsp;</label></p>
+	<p><span class="tab"></span><button id="bouton_valider" type="button" class="parametre">Valider ces formats.</button><label id="ajax_msg">&nbsp;</label></p>
 </form>

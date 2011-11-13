@@ -295,7 +295,7 @@ $(document).ready
 					dataType : "html",
 					error : function(msg,string)
 					{
-						$('#msg_saisir').removeAttr("class").addClass("alerte").html('Echec de la connexion ! Veuillez recommencer. <button id="fermer_zone_saisir" type="button"><img alt="" src="./_img/bouton/retourner.png" /> Retour</button>');
+						$('#msg_saisir').removeAttr("class").addClass("alerte").html('Echec de la connexion ! Veuillez recommencer. <button id="fermer_zone_saisir" type="button" class="retourner">Retour</button>');
 						return false;
 					},
 					success : function(responseHTML)
@@ -303,7 +303,7 @@ $(document).ready
 						initialiser_compteur();
 						if(responseHTML.substring(0,1)!='<')
 						{
-							$('#msg_saisir').removeAttr("class").addClass("alerte").html(responseHTML+' <button id="fermer_zone_saisir" type="button"><img alt="" src="./_img/bouton/retourner.png" /> Retour</button>');
+							$('#msg_saisir').removeAttr("class").addClass("alerte").html(responseHTML+' <button id="fermer_zone_saisir" type="button" class="retourner">Retour</button>');
 						}
 						else
 						{
@@ -359,7 +359,7 @@ $(document).ready
 					dataType : "html",
 					error : function(msg,string)
 					{
-						$('#msg_voir').removeAttr("class").addClass("alerte").html('Echec de la connexion ! Veuillez recommencer. <button id="fermer_zone_voir" type="button"><img alt="" src="./_img/bouton/retourner.png" /> Retour</button>');
+						$('#msg_voir').removeAttr("class").addClass("alerte").html('Echec de la connexion ! Veuillez recommencer. <button id="fermer_zone_voir" type="button" class="retourner">Retour</button>');
 						return false;
 					},
 					success : function(responseHTML)
@@ -367,7 +367,7 @@ $(document).ready
 						initialiser_compteur();
 						if(responseHTML.substring(0,1)!='<')
 						{
-							$('#msg_voir').removeAttr("class").addClass("alerte").html(responseHTML+' <button id="fermer_zone_voir" type="button"><img alt="" src="./_img/bouton/retourner.png" /> Retour</button>');
+							$('#msg_voir').removeAttr("class").addClass("alerte").html(responseHTML+' <button id="fermer_zone_voir" type="button" class="retourner">Retour</button>');
 						}
 						else
 						{
@@ -414,7 +414,7 @@ $(document).ready
 					dataType : "html",
 					error : function(msg,string)
 					{
-						$('#msg_voir_repart').removeAttr("class").addClass("alerte").html('Echec de la connexion ! Veuillez recommencer. <button id="fermer_zone_voir_repart" type="button"><img alt="" src="./_img/bouton/retourner.png" /> Retour</button>');
+						$('#msg_voir_repart').removeAttr("class").addClass("alerte").html('Echec de la connexion ! Veuillez recommencer. <button id="fermer_zone_voir_repart" type="button" class="retourner">Retour</button>');
 						return false;
 					},
 					success : function(responseHTML)
@@ -423,11 +423,11 @@ $(document).ready
 						tab_response = responseHTML.split('<SEP>');
 						if( tab_response.length!=2 )
 						{
-							$('#msg_voir_repart').removeAttr("class").addClass("alerte").html(responseHTML+' <button id="fermer_zone_voir_repart" type="button"><img alt="" src="./_img/bouton/retourner.png" /> Retour</button>');
+							$('#msg_voir_repart').removeAttr("class").addClass("alerte").html(responseHTML+' <button id="fermer_zone_voir_repart" type="button" class="retourner">Retour</button>');
 						}
 						else
 						{
-							$('#msg_voir_repart').removeAttr("class").html('<button id="fermer_zone_voir_repart" type="button"><img alt="" src="./_img/bouton/retourner.png" /> Retour</button>');
+							$('#msg_voir_repart').removeAttr("class").html('<button id="fermer_zone_voir_repart" type="button" class="retourner">Retour</button>');
 							$('#table_voir_repart1').html(tab_response[0]);
 							$('#table_voir_repart2').html(tab_response[1]);
 							$('#export_file6').attr("href", $("#filename").val()+ref+'_'+timestamp+'_repartition_quantitative.pdf' );
@@ -505,7 +505,7 @@ $(document).ready
 					dataType : "html",
 					error : function(msg,string)
 					{
-						$('#msg_ordonner').removeAttr("class").addClass("alerte").html('Echec de la connexion ! Veuillez recommencer. <button id="fermer_zone_ordonner" type="button"><img alt="" src="./_img/bouton/retourner.png" /> Retour</button>');
+						$('#msg_ordonner').removeAttr("class").addClass("alerte").html('Echec de la connexion ! Veuillez recommencer. <button id="fermer_zone_ordonner" type="button" class="retourner">Retour</button>');
 						return false;
 					},
 					success : function(responseHTML)
@@ -513,7 +513,7 @@ $(document).ready
 						initialiser_compteur();
 						if(responseHTML.substring(0,10)!='<div id="i')
 						{
-							$('#msg_ordonner').removeAttr("class").addClass("alerte").html(responseHTML+' <button id="fermer_zone_ordonner" type="button"><img alt="" src="./_img/bouton/retourner.png" /> Retour</button>');
+							$('#msg_ordonner').removeAttr("class").addClass("alerte").html(responseHTML+' <button id="fermer_zone_ordonner" type="button" class="retourner">Retour</button>');
 						}
 						else
 						{
@@ -972,7 +972,7 @@ $(document).ready
 						$(this).parent().css("background-color","#F6D").focus();
 						if(modification==false)
 						{
-							$('#fermer_zone_saisir').html('<img alt="" src="./_img/bouton/annuler.png" /> Annuler / Retour');
+							$('#fermer_zone_saisir').removeAttr("class").addClass("annuler").html('Annuler / Retour');
 							modification = true;
 						}
 						$('#msg_saisir').removeAttr("class").html("&nbsp;");
@@ -1103,7 +1103,7 @@ $(document).ready
 				$(this).addClass("on").parent().parent().css("background-color","#F6D");
 				if(modification==false)
 				{
-					$('#fermer_zone_saisir').html('<img alt="" src="./_img/bouton/annuler.png" /> Annuler / Retour');
+					$('#fermer_zone_saisir').removeAttr("class").addClass("annuler").html('Annuler / Retour');
 					modification = true;
 				}
 				$('#msg_saisir').removeAttr("class").html("&nbsp;");
@@ -1150,7 +1150,7 @@ $(document).ready
 						$('#msg_report').removeAttr("class").addClass("valide").html(compteur+' report'+s+' effectué'+s+'.');
 						if(modification==false)
 						{
-							$('#fermer_zone_saisir').html('<img alt="" src="./_img/bouton/annuler.png" /> Annuler / Retour');
+							$('#fermer_zone_saisir').removeAttr("class").addClass("annuler").html('Annuler / Retour');
 							modification = true;
 						}
 						$('#msg_saisir').removeAttr("class").html("&nbsp;");
@@ -1174,7 +1174,7 @@ $(document).ready
 				para_clic.after(para_prev);
 				if(modification==false)
 				{
-					$('#fermer_zone_ordonner').html('<img alt="" src="./_img/bouton/annuler.png" /> Annuler / Retour');
+					$('#fermer_zone_ordonner').removeAttr("class").addClass("annuler").html('Annuler / Retour');
 					modification = true;
 					$('#ajax_msg').removeAttr("class").html("&nbsp;");
 				}
@@ -1236,7 +1236,7 @@ $(document).ready
 								{
 									modification = false;
 									$('#ajax_msg').removeAttr("class").addClass("valide").html("Ordre enregistré !");
-									$('#fermer_zone_ordonner').html('<img alt="" src="./_img/bouton/retourner.png" /> Retour');
+									$('#fermer_zone_ordonner').removeAttr("class").addClass("retourner").html('Retour');
 								}
 							}
 						}
@@ -1300,7 +1300,7 @@ $(document).ready
 								{
 									modification = false;
 									$('#msg_saisir').removeAttr("class").addClass("valide").html("Saisies enregistrées !");
-									$('#fermer_zone_saisir').html('<img alt="" src="./_img/bouton/retourner.png" /> Retour');
+									$('#fermer_zone_saisir').removeAttr("class").addClass("retourner").html('Retour');
 									colorer_cellules();
 								}
 							}

@@ -27,7 +27,6 @@
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = "Modifier le contenu des référentiels";
-$VERSION_JS_FILE += 15;
 ?>
 
 <ul class="puce">
@@ -124,7 +123,7 @@ else
 	<form>
 		<label class="tab" for="rien">Item disciplinaire :</label><span class="f_nom i"></span><br />
 		<label class="tab" for="f_lien">Socle commun :</label>Cocher ci-dessous (<span class="astuce">cliquer sur un intitulé pour déployer son contenu</span>).<br />
-		<span class="tab"></span><button id="choisir_socle_valider" type="button"><img alt="" src="./_img/bouton/valider.png" /> Valider le choix effectué.</button> <button id="choisir_socle_annuler" type="button"><img alt="" src="./_img/bouton/annuler.png" /> Annuler.</button>
+		<span class="tab"></span><button id="choisir_socle_valider" type="button" class="valider">Valider le choix effectué.</button> <button id="choisir_socle_annuler" type="button" class="annuler">Annuler.</button>
 		<p />
 		<ul class="ul_n1"><li class="li_n3"><input id="socle_0" name="f_socle" type="radio" value="0" /><label for="socle_0">Hors-socle.</label></li></ul>
 		<p />

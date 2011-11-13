@@ -64,7 +64,7 @@ if($action=='sauvegarder')
 	$top_arrivee = microtime(TRUE);
 	$duree = number_format($top_arrivee - $top_depart,2,',','');
 	echo'<li><label class="valide">Sauvegarde de la base réalisée en '.$duree.'s.</label></li>';
-	echo'<li><a class="lien_ext" href="'.$dossier_dump.$fichier_zip_nom.'">Récupérez le fichier de sauvegarde au format ZIP.</a></li>';
+	echo'<li><a class="lien_ext" href="'.$dossier_dump.$fichier_zip_nom.'"><span class="file file_zip">Récupérez le fichier de sauvegarde au format ZIP.</span></a></li>';
 	echo'<li><label class="alerte">Pour des raisons de sécurité et de confidentialité, ce fichier sera effacé du serveur dans 1h.</label></li>';
 	exit();
 }

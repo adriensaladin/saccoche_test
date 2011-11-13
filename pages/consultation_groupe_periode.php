@@ -27,7 +27,6 @@
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = "Dates des périodes";
-$VERSION_JS_FILE += 0;
 ?>
 
 <p class="astuce">

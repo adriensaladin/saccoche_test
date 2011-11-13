@@ -1769,8 +1769,8 @@ if( $step==53 )
 	}
 	echo'<p><label class="alerte">Voici les identifiants des nouveaux inscrits :</label></p>';
 	echo'<ul class="puce">';
-	echo' <li><a class="lien_ext" href="'.$dossier_login_mdp.$archive.'.pdf">Archiver / Imprimer (étiquettes <em>pdf</em>).</a></li>';
-	echo' <li><a class="lien_ext" href="'.$dossier_login_mdp.$archive.'.zip">Récupérer / Manipuler (fichier <em>csv</em> pour tableur).</a></li>';
+	echo' <li><a class="lien_ext" href="'.$dossier_login_mdp.$archive.'.pdf"><span class="file file_pdf">Archiver / Imprimer (étiquettes <em>pdf</em>).</span></a></li>';
+	echo' <li><a class="lien_ext" href="'.$dossier_login_mdp.$archive.'.zip"><span class="file file_zip">Récupérer / Manipuler (fichier <em>csv</em> pour tableur).</span></a></li>';
 	echo'</ul>';
 	echo'<p class="danger">Les mots de passe, cryptés, ne sont plus accessibles ultérieurement !</p>';
 	switch($action)

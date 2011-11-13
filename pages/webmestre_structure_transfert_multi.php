@@ -26,7 +26,6 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-$VERSION_JS_FILE += 3;
 ?>
 
 <?php
@@ -42,7 +41,7 @@ $select_structure = Formulaire::afficher_select(DB_WEBMESTRE_SELECT::DB_OPT_stru
 
 <form action="#" method="post" id="form_exporter"><fieldset>
 	<label class="tab" for="f_basic">Structure(s) <img alt="" src="./_img/bulle_aide.png" title="Utiliser la touche &laquo&nbsp;Shift&nbsp;&raquo; pour une sélection multiple contiguë.<br />Utiliser la touche &laquo&nbsp;Ctrl&nbsp;&raquo; pour une sélection multiple non contiguë." /> :</label><select id="f_base" name="f_base" multiple size="10"><?php echo $select_structure ?></select><br />
-	<span class="tab"></span><button id="bouton_exporter" type="button"><img alt="" src="./_img/bouton/dump_export.png" /> Créer les fichiers d'export.</button><label id="ajax_msg_export">&nbsp;</label>
+	<span class="tab"></span><button id="bouton_exporter" type="button" class="dump_export">Créer les fichiers d'export.</button><label id="ajax_msg_export">&nbsp;</label>
 	<div id="div_info_export" class="hide">
 		<ul id="puce_info_export" class="puce"><li></li></ul>
 		<span id="ajax_export_num" class="hide"></span>
@@ -52,9 +51,9 @@ $select_structure = Formulaire::afficher_select(DB_WEBMESTRE_SELECT::DB_OPT_stru
 		<label class="alerte">Ces deux fichiers sont nécessaires pour toute importation ; vérifiez leur validité une fois récupérés.</label><br />
 		<label class="alerte">Pour des raisons de sécurité et de confidentialité, ces fichiers seront effacés du serveur dans 1h.</label><br />
 		Pour les structures sélectionnées : <!-- input listing_ids plus bas -->
-		<button id="bouton_newsletter_export" type="button"><img alt="" src="./_img/bouton/mail_ecrire.png" /> Écrire un courriel.</button>
-		<button id="bouton_stats_export" type="button"><img alt="" src="./_img/bouton/stats.png" /> Calculer les statistiques.</button>
-		<button id="bouton_supprimer_export" type="button"><img alt="" src="./_img/bouton/supprimer.png" /> Supprimer.</button>
+		<button id="bouton_newsletter_export" type="button" class="mail_ecrire">Écrire un courriel.</button>
+		<button id="bouton_stats_export" type="button" class="stats">Calculer les statistiques.</button>
+		<button id="bouton_supprimer_export" type="button" class="supprimer">Supprimer.</button>
 		<label id="ajax_supprimer_export">&nbsp;</label>
 	</div>
 </fieldset></form>
@@ -65,12 +64,12 @@ $select_structure = Formulaire::afficher_select(DB_WEBMESTRE_SELECT::DB_OPT_stru
 <h2>Importer des établissements (données &amp; bases)</h2>
 
 <form action="#" method="post" id="form_importer"><fieldset>
-		<label class="tab" for="bouton_form_csv">Uploader fichier CSV :</label><button id="bouton_form_csv" type="button"><img alt="" src="./_img/bouton/fichier_import.png" /> Parcourir...</button><label id="ajax_msg_csv">&nbsp;</label>
+		<label class="tab" for="bouton_form_csv">Uploader fichier CSV :</label><button id="bouton_form_csv" type="button" class="fichier_import">Parcourir...</button><label id="ajax_msg_csv">&nbsp;</label>
 	<div id="div_zip" class="hide">
-		<label class="tab" for="bouton_form_zip">Uploader fichier ZIP :</label><button id="bouton_form_zip" type="button"><img alt="" src="./_img/bouton/fichier_import.png" /> Parcourir...</button><label id="ajax_msg_zip">&nbsp;</label>
+		<label class="tab" for="bouton_form_zip">Uploader fichier ZIP :</label><button id="bouton_form_zip" type="button" class="fichier_import">Parcourir...</button><label id="ajax_msg_zip">&nbsp;</label>
 	</div>
 	<div id="div_import" class="hide">
-		<span class="tab"></span><button id="bouton_importer" type="button"><img alt="" src="./_img/bouton/valider.png" /> Restaurer les établissements.</button><label id="ajax_msg_import">&nbsp;</label>
+		<span class="tab"></span><button id="bouton_importer" type="button" class="valider">Restaurer les établissements.</button><label id="ajax_msg_import">&nbsp;</label>
 	</div>
 </fieldset></form>
 <div id="div_info_import" class="hide">
@@ -99,9 +98,9 @@ $select_structure = Formulaire::afficher_select(DB_WEBMESTRE_SELECT::DB_OPT_stru
 	</table>
 	<p id="zone_actions_import">
 		Pour les structures cochées : <input id="listing_ids" name="listing_ids" type="hidden" value="" />
-		<button id="bouton_newsletter_import" type="button"><img alt="" src="./_img/bouton/mail_ecrire.png" /> Écrire un courriel.</button>
-		<button id="bouton_stats_import" type="button"><img alt="" src="./_img/bouton/stats.png" /> Calculer les statistiques.</button>
-		<button id="bouton_supprimer_import" type="button"><img alt="" src="./_img/bouton/supprimer.png" /> Supprimer.</button>
+		<button id="bouton_newsletter_import" type="button" class="mail_ecrire">Écrire un courriel.</button>
+		<button id="bouton_stats_import" type="button" class="stats">Calculer les statistiques.</button>
+		<button id="bouton_supprimer_import" type="button" class="supprimer">Supprimer.</button>
 		<label id="ajax_supprimer_import">&nbsp;</label>
 	</p>
 </form>

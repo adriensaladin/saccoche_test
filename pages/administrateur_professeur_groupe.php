@@ -27,7 +27,6 @@
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = "Affecter les professeurs aux groupes";
-$VERSION_JS_FILE += 1;
 ?>
 
 <?php
@@ -51,8 +50,8 @@ $select_groupes     = Formulaire::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_gr
 			<select id="select_groupes" name="select_groupes[]" multiple size="10" class="t8"><?php echo $select_groupes; ?></select>
 		</td>
 		<td class="nu" style="width:25em">
-			<button id="ajouter" type="button"><img alt="" src="./_img/bouton/groupe_ajouter.png" /> Ajouter ces associations.</button><br />
-			<button id="retirer" type="button"><img alt="" src="./_img/bouton/groupe_retirer.png" /> Retirer ces associations.</button>
+			<button id="ajouter" type="button" class="groupe_ajouter">Ajouter ces associations.</button><br />
+			<button id="retirer" type="button" class="groupe_retirer">Retirer ces associations.</button>
 			<p><label id="ajax_msg">&nbsp;</label></p>
 		</td>
 	</tr></table>

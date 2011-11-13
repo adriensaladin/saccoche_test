@@ -233,7 +233,7 @@ function initialiser_compteur()
 	var date = new Date();
 	SetCookie('SACoche-compteur',date.getTime());
 	DUREE_AFFICHEE = DUREE_AUTORISEE;
-	$("#clock").html('<img alt="" src="./_img/clock_fixe.png" /> '+DUREE_AFFICHEE+' min');
+	$("#clock").html(DUREE_AFFICHEE+' min').parent().removeAttr("class").addClass("button clock_fixe");
 }
 
 /**
@@ -254,7 +254,7 @@ function tester_compteur()
 		DUREE_AFFICHEE = Math.max(duree_restante,0);
 		if(DUREE_AFFICHEE>5)
 		{
-			$("#clock").html('<img alt="" src="./_img/clock_fixe.png" /> '+DUREE_AFFICHEE+' min');
+			$("#clock").html(DUREE_AFFICHEE+' min').parent().removeAttr("class").addClass("button clock_fixe");
 			if(DUREE_AFFICHEE%10==0)
 			{
 				// Fonction conserver_session_active() à appeler une fois toutes les 10min ; code placé ici pour éviter un appel après déconnection, et l'application inutile d'un 2nd compteur
@@ -265,7 +265,7 @@ function tester_compteur()
 		else
 		{
 			setVolume(100);play("bip");
-			$("#clock").html('<img alt="" src="./_img/clock_anim.gif" /> '+DUREE_AFFICHEE+' min');
+			$("#clock").html(DUREE_AFFICHEE+' min').parent().removeAttr("class").addClass("button clock_anim");
 			if(DUREE_AFFICHEE==0)
 			{
 				fermer_session();
@@ -333,11 +333,11 @@ function fermer_session()
 				$('#menu').remove();
 				if(CONNEXION_USED=='normal')
 				{
-					$('#info').html('<span class="button b"><span class="danger">Votre session a expiré. Vous êtes désormais déconnecté de SACoche !</span></span> <span class="button b"><a href="./index.php"><img alt="" src="./_img/bouton/mdp_perso.png" /> Se reconnecter</a></span>');
+					$('#top_info').html('<span class="button alerte">Votre session a expiré. Vous êtes désormais déconnecté de SACoche !</span> <span class="button connexion"><a href="./index.php">Se reconnecter&hellip;</a></span>');
 				}
 				else
 				{
-					$('#info').html('<span class="button b"><span class="danger">Session expirée. Vous êtes déconnecté de SACoche mais sans doute pas du SSO !</span></span> <span class="button b"><a href="#" onclick="document.location.reload()"><img alt="" src="./_img/bouton/mdp_perso.png" /> Se reconnecter</a></span>');
+					$('#top_info').html('<span class="button alerte">Session expirée. Vous êtes déconnecté de SACoche mais sans doute pas du SSO !</span> <span class="button connexion"><a href="#" onclick="document.location.reload()">Recharger la page&hellip;</a></span>');
 				}
 			}
 		}
@@ -448,22 +448,6 @@ $(document).ready
 		//	Initialisation
 		format_liens('body');
 		infobulle();
-
-		/**
-		 * MENU - Styler les puces avec les images ; span pourrait servir pour un menu inactif, mais il n'est pas utilisé.
-		 */
-		$("#menu a , #menu span").each
-		(
-			function()
-			{
-				classe = $(this).attr("class");
-				if(classe)
-				{
-					// On n'utilise pas "#CCF url(./_img/menu/menu.png) no-repeat 1px 1px" sinon le hover{background:#DDF} ne fonctionne plus
-					$(this).css({ 'background-image':'url(./_img/menu/'+classe+'.png)' , 'background-repeat':'no-repeat' , 'background-position':'1px 1px' });
-				}
-			}
-		);
 
 		/**
 		 * MENU - Rendre transparente la page au survol.

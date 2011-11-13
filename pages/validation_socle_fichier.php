@@ -27,7 +27,6 @@
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = "Import / Export de validations du socle";
-$VERSION_JS_FILE += 1;
 ?>
 
 <?php
@@ -85,13 +84,13 @@ $select_f_groupes = Formulaire::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_regr
 		<label class="tab">CNIL :</label><?php echo $msg_cnil ?><br />
 		<label class="tab">Sconet :</label><?php echo $msg_id_sconet ?><br />
 		<label class="tab">Sésamath :</label><?php echo $msg_key_sesamath ?><p />
-		<span class="tab"></span><button type="button" id="disabled_export" disabled><img alt="" src="./_img/bouton/fichier_export.png" /> A venir, procédure ministérielle d'accréditation en cours&hellip;</button><label id="ajax_msg_export">&nbsp;</label>
-		<!-- <span class="tab"></span><button type="button" id="export_lpc" <?php echo $bouton_export_lpc ?>><img alt="" src="./_img/bouton/fichier_export.png" /> Générer le fichier.</button> -->
+		<span class="tab"></span><button type="button" id="disabled_export" disabled class="fichier_export">A venir, procédure ministérielle d'accréditation en cours&hellip;</button><label id="ajax_msg_export">&nbsp;</label>
+		<!-- <span class="tab"></span><button type="button" id="export_lpc" <?php echo $bouton_export_lpc ?> class="fichier_export">Générer le fichier.</button> -->
 	</fieldset>
 
 	<fieldset id="fieldset_export_sacoche" class="hide">
 		<label class="tab">Sconet :</label><?php echo $msg_id_sconet ?><br />
-		<span class="tab"></span><button type="button" id="export_sacoche" class="enabled"><img alt="" src="./_img/bouton/fichier_export.png" /> Générer le fichier.</button>
+		<span class="tab"></span><button type="button" id="export_sacoche" class="enabled" class="fichier_export">Générer le fichier.</button>
 	</fieldset>
 
 	<fieldset id="fieldset_import" class="hide">
@@ -100,12 +99,12 @@ $select_f_groupes = Formulaire::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_regr
 
 	<fieldset id="fieldset_import_lpc" class="hide">
 		<label class="tab">Sconet :</label><?php echo $msg_id_sconet ?><p />
-		<span class="tab"></span><button type="button" id="import_lpc_disabled" disabled><img alt="" src="./_img/bouton/fichier_import.png" /> A notre connaissance, <em>LPC</em> ne permet pas d'exporter un fichier de validations&hellip;</button>
+		<span class="tab"></span><button type="button" id="import_lpc_disabled" disabled class="fichier_import">A notre connaissance, <em>LPC</em> ne permet pas d'exporter un fichier de validations&hellip;</button>
 	</fieldset>
 
 	<fieldset id="fieldset_import_sacoche" class="hide">
 		<label class="tab">Sconet :</label><?php echo $msg_id_sconet ?><p />
-		<span class="tab"></span><button type="button" id="import_sacoche" class="enabled"><img alt="" src="./_img/bouton/fichier_import.png" /> Transmettre le fichier.</button>
+		<span class="tab"></span><button type="button" id="import_sacoche" class="enabled" class="fichier_import">Transmettre le fichier.</button>
 	</fieldset>
 
 </form>

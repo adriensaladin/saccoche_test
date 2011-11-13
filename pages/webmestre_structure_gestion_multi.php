@@ -26,7 +26,6 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-$VERSION_JS_FILE += 20;
 
 // Élément de formulaire "f_geo" pour le choix d'une zone géographique
 $options_geo = '';
@@ -89,10 +88,10 @@ foreach($DB_TAB as $DB_ROW)
 	</table>
 	<div id="zone_actions">
 		Pour les structures cochées : <input id="listing_ids" name="listing_ids" type="hidden" value="" />
-		<button id="bouton_newsletter" type="button"><img alt="" src="./_img/bouton/mail_ecrire.png" /> Écrire un courriel.</button>
-		<button id="bouton_stats" type="button"><img alt="" src="./_img/bouton/stats.png" /> Calculer les statistiques.</button>
-		<button id="bouton_transfert" type="button"><img alt="" src="./_img/bouton/fichier_export.png" /> Exporter données &amp; bases.</button>
-		<button id="bouton_supprimer" type="button"><img alt="" src="./_img/bouton/supprimer.png" /> Supprimer.</button>
+		<button id="bouton_newsletter" type="button" class="mail_ecrire">Écrire un courriel.</button>
+		<button id="bouton_stats" type="button" class="stats">Calculer les statistiques.</button>
+		<button id="bouton_transfert" type="button" class="fichier_export">Exporter données &amp; bases.</button>
+		<button id="bouton_supprimer" type="button" class="supprimer">Supprimer.</button>
 		<label id="ajax_supprimer">&nbsp;</label>
 	</div>
 </form>

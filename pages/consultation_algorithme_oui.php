@@ -26,7 +26,6 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-$VERSION_JS_FILE += 1;
 ?>
 
 <?php
@@ -78,7 +77,7 @@ $texte = ($str_objet=='') ? 'aucun' : ( (strpos($str_objet,',')===false) ? 'uniq
 <hr />
 
 <form action="#" method="post" id="form_input">
-	<table summary="">
+	<table>
 	<thead>
 		<tr><th>
 			Valeur d'un code (sur 100)
@@ -107,9 +106,9 @@ $texte = ($str_objet=='') ? 'aucun' : ( (strpos($str_objet,',')===false) ? 'uniq
 	</table>
 	<p>
 		<input type="hidden" id="action" name="action" value="calculer" />
-		<button id="initialiser_defaut" type="button">Mettre les valeurs par défaut.</button>
-		<button id="initialiser_etablissement" type="button">Mettre les valeurs de l'établissement.</button>
-		<button id="calculer" type="button"><img alt="" src="./_img/bouton/actualiser.png" /> Simuler avec ces valeurs.</button>
+		<button id="initialiser_defaut" type="button" class="retourner">Mettre les valeurs par défaut.</button>
+		<button id="initialiser_etablissement" type="button" class="retourner">Mettre les valeurs de l'établissement.</button>
+		<button id="calculer" type="button" class="actualiser">Simuler avec ces valeurs.</button>
 		<label id="ajax_msg">&nbsp;</label>
 	</p>
 </form>

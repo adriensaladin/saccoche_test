@@ -114,7 +114,7 @@ $(document).ready
 							else
 							{
 								$('#zone_choix_referentiel').hide();
-								$('#zone_compet').html('<span class="tab"></span><button id="fermer_zone_compet" type="button"><img alt="" src="./_img/bouton/retourner.png" /> Retour à la liste des matières</button>'+'<h2>'+matiere+'</h2>'+responseHTML);
+								$('#zone_compet').html('<span class="tab"></span><button id="fermer_zone_compet" type="button" class="retourner">Retour à la liste des matières</button>'+'<h2>'+matiere+'</h2>'+responseHTML);
 								// Récupérer le contenu des title des ressources avant que le tooltip ne les enlève
 								$('#zone_compet li.li_n3').each
 								(

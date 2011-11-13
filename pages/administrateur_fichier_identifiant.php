@@ -27,7 +27,6 @@
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = "Importer / Imposer des identifiants";
-$VERSION_JS_FILE += 8;
 ?>
 
 <?php
@@ -70,8 +69,8 @@ $select_groupe = Formulaire::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_regroup
 					<div id="div_users" class="hide"><label class="tab" for="select_users">Utilisateurs :</label><select id="select_users" name="select_users[]" multiple size="8"><option value=""></option></select> <img alt="" src="./_img/bulle_aide.png" title="Utiliser la touche &laquo&nbsp;Shift&nbsp;&raquo; pour une sélection multiple contiguë.<br />Utiliser la touche &laquo&nbsp;Ctrl&nbsp;&raquo; pour une sélection multiple non contiguë." /></div>
 				</td>
 				<td id="td_bouton" class="nu" style="width:25em">
-					<p><button id="init_login" type="button"><img alt="" src="./_img/bouton/mdp_groupe.png" /> Initialiser les noms d'utilisateurs.</button></p>
-					<p><button id="init_mdp" type="button"><img alt="" src="./_img/bouton/mdp_groupe.png" /> Initialiser les mots de passe.</button></p>
+					<p><button id="init_login" type="button" class="mdp_groupe">Initialiser les noms d'utilisateurs.</button></p>
+					<p><button id="init_mdp" type="button" class="mdp_groupe">Initialiser les mots de passe.</button></p>
 				</td>
 			</tr>
 		</table>
@@ -80,9 +79,9 @@ $select_groupe = Formulaire::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_regroup
 	<fieldset id="fieldset_import_loginmdp" class="hide">
 		<hr />
 		<p><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__force_login_mdp_tableur">DOC : Imposer identifiants SACoche avec un tableur</a></span></p>
-		Vous pouvez <button id="user_export" type="button"><img alt="" src="./_img/bouton/fichier_export.png" /> récupérer un fichier csv avec les noms / prénoms / logins actuels</button> (le mot de passe, crypté, ne peut être restitué).<p />
+		Vous pouvez <button id="user_export" type="button" class="fichier_export">récupérer un fichier csv avec les noms / prénoms / logins actuels</button> (le mot de passe, crypté, ne peut être restitué).<p />
 		Modifiez les identifiants souhaités, puis indiquez ci-dessous le fichier <b>nom-du-fichier.csv</b> (ou <b>nom-du-fichier.txt</b>) obtenu que vous souhaitez importer.
-		<p><label class="tab" for="import_loginmdp">Envoyer le fichier :</label><button id="import_loginmdp" type="button"><img alt="" src="./_img/bouton/fichier_import.png" /> Parcourir...</button></p>
+		<p><label class="tab" for="import_loginmdp">Envoyer le fichier :</label><button id="import_loginmdp" type="button" class="fichier_import">Parcourir...</button></p>
 	</fieldset>
 
 	<fieldset id="fieldset_import_id_lcs" class="hide">
@@ -90,7 +89,7 @@ $select_groupe = Formulaire::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_regroup
 		<p><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__gestion_mode_identification__LCS">DOC : Intégration de SACoche dans un LCS</a></span></p>
 		<?php
 		$fichier = './webservices/import_lcs.php';
-		echo (is_file($fichier)) ? '<button name="dupliquer" id="COPY_id_lcs_TO_id_ent" type="button"><img alt="" src="./_img/bouton/mdp_groupe.png" /> Récupérer l\'identifiant LCS</button> comme identifiant de l\'ENT pour tous les utilisateurs.'
+		echo (is_file($fichier)) ? '<button name="dupliquer" id="COPY_id_lcs_TO_id_ent" type="button" class="mdp_groupe">Récupérer l\'identifiant LCS</button> comme identifiant de l\'ENT pour tous les utilisateurs.'
 		                         : '<div class="danger">Le fichier &laquo;&nbsp;<b>'.$fichier.'</b>&nbsp;&raquo; devant figurer dans le paquet lcs-sacoche n\'a pas été détecté !</div>' ;
 		?>
 	</fieldset>
@@ -100,9 +99,9 @@ $select_groupe = Formulaire::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_regroup
 		<p><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__gestion_mode_identification__argos">DOC : Intégration de SACoche dans Argos</a></span></p>
 		<?php
 		$fichier = './webservices/argos_import.php';
-		echo (is_file($fichier)) ? '<button name="dupliquer" id="COPY_id_argos_profs_TO_id_ent" type="button"><img alt="" src="./_img/bouton/mdp_groupe.png" /> Récupérer l\'identifiant Argos</button> comme identifiant de l\'ENT pour tous les professeurs &amp; directeurs.<br />
-		                            <button name="dupliquer" id="COPY_id_argos_eleves_TO_id_ent" type="button"><img alt="" src="./_img/bouton/mdp_groupe.png" /> Récupérer l\'identifiant Argos</button> comme identifiant de l\'ENT pour tous les élèves.<br />
-		                            <button name="dupliquer" id="COPY_id_argos_parents_TO_id_ent" type="button"><img alt="" src="./_img/bouton/mdp_groupe.png" /> Récupérer l\'identifiant Argos</button> comme identifiant de l\'ENT pour tous les responsables légaux.'
+		echo (is_file($fichier)) ? '<button name="dupliquer" id="COPY_id_argos_profs_TO_id_ent" type="button" class="mdp_groupe">Récupérer l\'identifiant Argos</button> comme identifiant de l\'ENT pour tous les professeurs &amp; directeurs.<br />
+		                            <button name="dupliquer" id="COPY_id_argos_eleves_TO_id_ent" type="button" class="mdp_groupe">Récupérer l\'identifiant Argos</button> comme identifiant de l\'ENT pour tous les élèves.<br />
+		                            <button name="dupliquer" id="COPY_id_argos_parents_TO_id_ent" type="button" class="mdp_groupe">Récupérer l\'identifiant Argos</button> comme identifiant de l\'ENT pour tous les responsables légaux.'
 		                         : '<div class="danger">Le fichier &laquo;&nbsp;<b>'.$fichier.'</b>&nbsp;&raquo; devant figurer dans l\'installation académique Argos n\'a pas été détecté !</div>' ;
 		?>
 	</fieldset>
@@ -117,12 +116,12 @@ $select_groupe = Formulaire::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_regroup
 		<h4>En important un fichier</h4>
 		<ul class="puce">
 			<li><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__gestion_mode_identification__<?php echo $_SESSION['CONNEXION_NOM'] ?>">DOC : <?php echo $tab_connexion_info[$_SESSION['CONNEXION_MODE']][$_SESSION['CONNEXION_NOM']]['txt'] ?></a></span></li>
-			<li>Importer le fichier <b>csv</b> provenant de l'ENT : <button id="import_ent" type="button"><img alt="" src="./_img/bouton/fichier_import.png" /> Parcourir...</button></li>
+			<li>Importer le fichier <b>csv</b> provenant de l'ENT : <button id="import_ent" type="button" class="fichier_import">Parcourir...</button></li>
 		</ul>
 		<h4>En dupliquant un autre champ</h4>
 		<ul class="puce">
-			<li><button name="dupliquer" id="COPY_id_gepi_TO_id_ent" type="button"><img alt="" src="./_img/bouton/mdp_groupe.png" /> Dupliquer l'identifiant de Gepi enregistré</button> comme identifiant de l'ENT pour tous les utilisateurs.</li>
-			<li><button name="dupliquer" id="COPY_login_TO_id_ent" type="button"><img alt="" src="./_img/bouton/mdp_groupe.png" /> Dupliquer le login de SACoche enregistré</button> comme identifiant de l'ENT pour tous les utilisateurs.</li>
+			<li><button name="dupliquer" id="COPY_id_gepi_TO_id_ent" type="button" class="mdp_groupe">Dupliquer l'identifiant de Gepi enregistré</button> comme identifiant de l'ENT pour tous les utilisateurs.</li>
+			<li><button name="dupliquer" id="COPY_login_TO_id_ent" type="button" class="mdp_groupe">Dupliquer le login de SACoche enregistré</button> comme identifiant de l'ENT pour tous les utilisateurs.</li>
 		</ul>
 	</fieldset>
 
@@ -131,13 +130,13 @@ $select_groupe = Formulaire::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_regroup
 		<h4>En important un fichier</h4>
 		<ul class="puce">
 			<li><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__import_identifiant_Gepi_SACoche">DOC : Import des identifiants de Gepi dans SACoche.</a></span></li>
-			<li>Importer le fichier <b>base_eleve_gepi.csv</b> issu de Gepi (aide ci-dessus) : <button id="import_gepi_eleves" type="button"><img alt="" src="./_img/bouton/fichier_import.png" /> Parcourir...</button></li>
-			<li>Importer le fichier <b>base_professeur_gepi.csv</b> issu de Gepi (aide ci-dessus) : <button id="import_gepi_profs" type="button"><img alt="" src="./_img/bouton/fichier_import.png" /> Parcourir...</button></li>
+			<li>Importer le fichier <b>base_eleve_gepi.csv</b> issu de Gepi (aide ci-dessus) : <button id="import_gepi_eleves" type="button" class="fichier_import">Parcourir...</button></li>
+			<li>Importer le fichier <b>base_professeur_gepi.csv</b> issu de Gepi (aide ci-dessus) : <button id="import_gepi_profs" type="button" class="fichier_import">Parcourir...</button></li>
 		</ul>
 		<h4>En dupliquant un autre champ</h4>
 		<ul class="puce">
-			<li><button name="dupliquer" id="COPY_id_ent_TO_id_gepi" type="button"><img alt="" src="./_img/bouton/mdp_groupe.png" /> Dupliquer l'identifiant de l'ENT enregistré</button> comme identifiant de Gepi pour tous les utilisateurs.</li>
-			<li><button name="dupliquer" id="COPY_login_TO_id_gepi" type="button"><img alt="" src="./_img/bouton/mdp_groupe.png" /> Dupliquer le login de SACoche enregistré</button> comme identifiant de Gepi pour tous les utilisateurs.</li>
+			<li><button name="dupliquer" id="COPY_id_ent_TO_id_gepi" type="button" class="mdp_groupe">Dupliquer l'identifiant de l'ENT enregistré</button> comme identifiant de Gepi pour tous les utilisateurs.</li>
+			<li><button name="dupliquer" id="COPY_login_TO_id_gepi" type="button" class="mdp_groupe">Dupliquer le login de SACoche enregistré</button> comme identifiant de Gepi pour tous les utilisateurs.</li>
 		</ul>
 	</fieldset>
 

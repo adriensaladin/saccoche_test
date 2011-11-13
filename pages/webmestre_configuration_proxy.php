@@ -27,7 +27,6 @@
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = "Configuration d'un proxy";
-$VERSION_JS_FILE += 0;
 ?>
 
 <?php
@@ -75,8 +74,8 @@ foreach($tab_select_proxy_auth_method as $option_value => $option_texte)
 		</div>
 	</div>
 	<p>
-		<span class="tab"></span><button id="f_enregistrer" type="submit"><img alt="" src="./_img/bouton/parametre.png" /> Enregistrer ces réglages.</button><label id="ajax_msg_enregistrer">&nbsp;</label><br />
-		<span class="tab"></span><button id="f_tester" type="button"><img alt="" src="./_img/bouton/parametre.png" /> Tester les réglages <span class="u">actuellement enregistrés</span>.</button><label id="ajax_msg_tester">&nbsp;</label>
+		<span class="tab"></span><button id="f_enregistrer" type="submit" class="parametre">Enregistrer ces réglages.</button><label id="ajax_msg_enregistrer">&nbsp;</label><br />
+		<span class="tab"></span><button id="f_tester" type="button" class="parametre">Tester les réglages <span class="u">actuellement enregistrés</span>.</button><label id="ajax_msg_tester">&nbsp;</label>
 	</p>
 </fieldset></form>
 

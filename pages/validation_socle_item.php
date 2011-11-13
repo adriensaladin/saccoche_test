@@ -27,7 +27,6 @@
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = "Valider les items du socle";
-$VERSION_JS_FILE += 14;
 // Remarque : on ne peut être pp que d'une classe, pas d'un groupe, donc si seuls les PP ont un accès par mis les profs, ils ne peuvent trier les élèves que par classes
 ?>
 
@@ -99,7 +98,7 @@ $select_matiere = Formulaire::afficher_select($tab_matieres , $select_nom=false 
 	</p>
 	<label class="tab" for="f_mode">Items récoltés :</label><label for="f_mode_auto"><input type="radio" id="f_mode_auto" name="f_mode" value="auto"<?php echo $check_mode_auto ?> /> Automatique (recommandé) <img alt="" src="./_img/bulle_aide.png" title="Items de tous les référentiels, sauf pour la compétence 2 où on ne prend que les items des référentiels de la langue associée à l'élève." /></label>&nbsp;&nbsp;&nbsp;<label for="f_mode_manuel"><input type="radio" id="f_mode_manuel" name="f_mode" value="manuel"<?php echo $check_mode_manuel ?> /> Sélection manuelle <img alt="" src="./_img/bulle_aide.png" title="Pour choisir les matières des référentiels dont les items collectés sont issus." /></label>
 	<div id="div_matiere" class="<?php echo $class_div_matiere ?>"><span class="tab"></span><select id="f_matiere" name="f_matiere[]" multiple size="5"><?php echo $select_matiere ?></select><input type="hidden" id="matieres" name="matieres" value="" /></div>
-	<p><span class="tab"></span><input type="hidden" name="f_action" value="Afficher_bilan" /><button id="Afficher_validation" type="submit" class="hide"><img alt="" src="./_img/bouton/valider.png" /> Afficher le tableau des validations.</button><label id="ajax_msg_choix">&nbsp;</label></p>
+	<p><span class="tab"></span><input type="hidden" name="f_action" value="Afficher_bilan" /><button id="Afficher_validation" type="submit" class="valider" disabled>Afficher le tableau des validations.</button><label id="ajax_msg_choix">&nbsp;</label></p>
 </fieldset></form>
 
 <form action="#" method="post" id="zone_validation" class="hide">
@@ -111,9 +110,9 @@ $select_matiere = Formulaire::afficher_select($tab_matieres , $select_nom=false 
 <div id="zone_information" class="hide" style="height:25ex">
 	<h4>Aide à la décision : bilan des évaluations associées à un item du socle <span id="span_restriction"></span></h4>
 	<ul class="puce">
-		<li><img alt="" src="./_img/menu/profil_eleve.png" /> <span id="identite"></span></li>
+		<li><img alt="" src="./_img/socle_info_eleve.png" /> <span id="identite"></span></li>
 		<li><img alt="" src="./_img/folder/folder_n3.png" /> <span id="entree"></span></li>
-		<li><img alt="" src="./_img/bouton/stats.png" /> <span id="stats"></span><label id="ajax_msg_information"></label></li>
+		<li><img alt="" src="./_img/socle_info_stats.png" /> <span id="stats"></span><label id="ajax_msg_information"></label></li>
 	</ul>
 	<div id="items">
 	</div>

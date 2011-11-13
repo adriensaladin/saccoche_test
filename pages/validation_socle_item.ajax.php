@@ -76,8 +76,8 @@ if( ($action=='Afficher_bilan') && $pilier_id && count($tab_domaine) && count($t
 	$affichage .= '<th><img alt="Tous les élèves" src="./_img/php/etiquette.php?dossier='.$_SESSION['BASE'].'&amp;nom='.urlencode('TOUS LES ÉLÈVES').'" /></th>';
 	$affichage .= '<th class="nu">&nbsp;&nbsp;&nbsp;</th>';
 	$affichage .= '<th class="nu">';
-	$affichage .=   '<p><input type="checkbox" id="Afficher_pourcentage" /><label for="Afficher_pourcentage"> <img alt="" src="./_img/bouton/voir.png" /> Afficher / Masquer les pourcentages d\'items d\'enseignements acquis.</label></p>';
-	$affichage .=   '<p><button id="Enregistrer_validation" type="button"><img alt="" src="./_img/bouton/valider.png" /> Enregistrer les validations</button> <button id="fermer_zone_validation" type="button"><img alt="" src="./_img/bouton/retourner.png" /> Retour</button><label id="ajax_msg_validation"></label></p>';
+	$affichage .=   '<p><input type="checkbox" id="Afficher_pourcentage" /><label for="Afficher_pourcentage"> <img alt="" src="./_img/socle_info_voir.png" /> Afficher / Masquer les pourcentages d\'items d\'enseignements acquis.</label></p>';
+	$affichage .=   '<p><button id="Enregistrer_validation" type="button" class="valider">Enregistrer les validations</button> <button id="fermer_zone_validation" type="button" class="retourner">Retour</button><label id="ajax_msg_validation"></label></p>';
 	$affichage .=   '<div class="m1 b">@PALIER@</div>';
 	$affichage .=   '<div class="n1 b">@PILIER@</div>';
 	$affichage .= '</th>';

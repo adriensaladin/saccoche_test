@@ -96,6 +96,5 @@ foreach($tab_valid as $etat => $tab_style)
 			</tr>
 		</tbody>
 	</table>
-	<p />
-	<fieldset><span class="tab"></span><button id="bouton_valider" type="submit" class="parametre">Enregistrer ce choix.</button><label id="ajax_msg">&nbsp;</label></fieldset>
+	<fieldset><p><span class="tab"></span><button id="bouton_valider" type="submit" class="parametre">Enregistrer ce choix.</button><label id="ajax_msg">&nbsp;</label></p></fieldset>
 </form>

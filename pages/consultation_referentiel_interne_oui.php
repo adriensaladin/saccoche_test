@@ -141,7 +141,7 @@ else
 		$matiere_nom   = $tab['nom'];
 		$matiere_nb    = $tab['nb_demandes'].' '.$infobulle;
 		$matiere_coord = (isset($tab['coord'])) ? '>'.$tab['coord'] : ' class="r">Absence de coordonnateur.' ;
-		$affichage .= '<tr><td colspan="6" class="nu">&nbsp;</td></tr>'."\r\n";
+		$affichage .= '<tr><td colspan="7" class="nu">&nbsp;</td></tr>'."\r\n";
 		$affichage .= '<tr><td rowspan="'.$rowspan.'">'.$matiere_nom.'</td><td rowspan="'.$rowspan.'">'.$matiere_nb.'</td><td rowspan="'.$rowspan.'"'.$matiere_coord.'</td>';
 		$affichage_suite = false;
 		if(isset($tab_colonne[$matiere_id]))
@@ -167,7 +167,7 @@ else
 		}
 		else
 		{
-			$affichage .= '<td>-</td>'.'<td class="r">Absence de référentiel.</td><td class="r">Sans objet.</td><td class="nu"></td></td>'.'<td class="nu"></td>'.'</tr>'."\r\n";
+			$affichage .= '<td>-</td>'.'<td class="r">Absence de référentiel.</td><td class="r">Sans objet.</td>'.'<td class="nu"></td>'.'</tr>'."\r\n";
 		}
 	}
 	$affichage .= '</tbody></table>'."\r\n";

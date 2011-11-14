@@ -92,7 +92,7 @@ if(count($DB_TAB))
 		echo'<table>';
 		echo'<thead><tr><td class="nu"></td>'.implode('',$tab_periode).'</tr></thead>';
 		echo'<tbody><tr>'.implode('</tr>'."\r\n".'<tr>',$tab_groupe).'</tr></tbody>';
-		echo'</table><p />';
+		echo'</table>';
 
 	}
 	else

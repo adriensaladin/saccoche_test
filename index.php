@@ -204,7 +204,7 @@ declaration_entete( TRUE /*is_meta_robots*/ , TRUE /*is_favicon*/ , TRUE /*is_rs
 		echo'		<span class="button clock_fixe"><span id="clock">'.$_SESSION['DUREE_INACTIVITE'].' min</span></span>'."\r\n";
 		echo'		<button id="deconnecter" class="deconnecter">Déconnexion</button>'."\r\n";
 		echo'	</div>'."\r\n";
-		echo'	<img id="logo" alt="SACoche" src="./_img/logo_petit2.png" />'."\r\n";
+		echo'	<img id="logo" alt="SACoche" src="./_img/logo_petit2.png" width="147" height="46" />'."\r\n";
 		$fichier_menu = ($_SESSION['USER_PROFIL']!='webmestre') ? '__menu_'.$_SESSION['USER_PROFIL'] : '__menu_'.$_SESSION['USER_PROFIL'].'_'.HEBERGEUR_INSTALLATION ;
 		require_once('./pages/'.$fichier_menu.'.html'); // Le menu '<ul id="menu">...</ul>
 		echo'</div>'."\r\n";

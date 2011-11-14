@@ -139,7 +139,7 @@ $texte = ($str_objet=='') ? 'aucun' : ( (strpos($str_objet,',')===false) ? 'uniq
 	</thead>
 	<tbody>
 		<tr>
-			<td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+			<td colspan="17"></td>
 		</tr>
 	</tbody>
 </table>

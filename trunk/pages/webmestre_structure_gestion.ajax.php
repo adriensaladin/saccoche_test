@@ -215,9 +215,9 @@ if( ($action=='initialiser_mdp') && $base_id && $admin_id )
 	{
 		exit('Erreur : administrateur introuvable !');
 	}
-	$admin_nom    = $DB_TAB[0]['user_nom'];
-	$admin_prenom = $DB_TAB[0]['user_prenom'];
-	$admin_login  = $DB_TAB[0]['user_login'];
+	$admin_nom    = $DB_ROW['user_nom'];
+	$admin_prenom = $DB_ROW['user_prenom'];
+	$admin_login  = $DB_ROW['user_login'];
 	// Générer un nouveau mdp de l'admin
 	$admin_password = fabriquer_mdp();
 	DB_STRUCTURE_WEBMESTRE::DB_modifier_admin_mdp($admin_id,crypter_mdp($admin_password));

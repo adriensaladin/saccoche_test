@@ -518,24 +518,13 @@ if(in_array('synthese',$tab_type))
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-// Elaboration du bulletin (moyenne & appréciation) en HTML et CSV pour GEPI
+// Elaboration du bulletin (moyenne et/ou appréciation) en HTML et CSV pour GEPI
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 if(in_array('bulletin',$tab_type))
 {
-	/*
-	$tab_bad[] = '0NA'; $tab_bon[] = '0 non acquise';
-	$tab_bad[] = '1NA'; $tab_bon[] = '1 non acquise';
-	$tab_bad[] =  'NA'; $tab_bon[] = ' non acquises';
-	$tab_bad[] = '0VA'; $tab_bon[] = '0 partiellement acquise ;';
-	$tab_bad[] = '1VA'; $tab_bon[] = '1 partiellement acquise ;';
-	$tab_bad[] =  'VA'; $tab_bon[] = ' partiellement acquises ;';
-	$tab_bad[] =  '0A'; $tab_bon[] = '0 acquise ;';
-	$tab_bad[] =  '1A'; $tab_bon[] = '1 acquise ;';
-	$tab_bad[] =   'A'; $tab_bon[] = ' acquises ;';
-	// pour str_replace($tab_bad,$tab_bon,$tab_infos_acquis_eleve[$matiere_id][$eleve_id])
-	*/
 	$bulletin_body = '';
-	$bulletin_csv_gepi = 'GEPI_IDENTIFIANT;NOTE;APPRECIATION'."\r\n";	// Ajout du préfixe 'GEPI_' pour éviter un bug avec M$ Excel « SYLK : Format de fichier non valide » (http://support.microsoft.com/kb/323626/fr)
+	$bulletin_csv_entete = 'GEPI_IDENTIFIANT;NOTE;APPRECIATION'."\r\n";	// Ajout du préfixe 'GEPI_' pour éviter un bug avec M$ Excel « SYLK : Format de fichier non valide » (http://support.microsoft.com/kb/323626/fr)
+	$tab_bulletin_csv_gepi = array_fill_keys( array('note_appreciation','note','appreciation') , $bulletin_csv_entete );
 	// Pour chaque élève...
 	foreach($tab_eleve as $tab)
 	{
@@ -543,11 +532,13 @@ if(in_array('bulletin',$tab_type))
 		// Si cet élève a été évalué...
 		if(isset($tab_eval[$eleve_id]))
 		{
-			$note         = ($tab_moyenne_scores_eleve[$matiere_id][$eleve_id] !== false)          ? sprintf("%04.1f",$tab_moyenne_scores_eleve[$matiere_id][$eleve_id]/5)                                                                             : '-' ;
+			$note         = ($tab_moyenne_scores_eleve[$matiere_id][$eleve_id] !== false)     ? sprintf("%04.1f",$tab_moyenne_scores_eleve[$matiere_id][$eleve_id]/5)                                                           : '-' ;
 			$appreciation = ($tab_pourcentage_acquis_eleve[$matiere_id][$eleve_id] !== false) ? $tab_pourcentage_acquis_eleve[$matiere_id][$eleve_id].'% d\'items acquis ('.$tab_infos_acquis_eleve[$matiere_id][$eleve_id].')' : '-' ;
 			$bulletin_body     .= '<tr><th>'.html($eleve_nom.' '.$eleve_prenom).'</th><td>'.$note.'</td><td>'.$appreciation.'</td></tr>'."\r\n";
-			// Pour GEPI je remplace le point décimal par une virgule sinon le tableur convertit en date...
-			$bulletin_csv_gepi .= $eleve_id_gepi.';'.str_replace('.',',',$note).';'.$appreciation."\r\n";
+			$note         = str_replace('.',',',$note); // Pour GEPI je remplace le point décimal par une virgule sinon le tableur convertit en date...
+			$tab_bulletin_csv_gepi['note_appreciation'] .= $eleve_id_gepi.';'.$note.';'.$appreciation."\r\n";
+			$tab_bulletin_csv_gepi['note']              .= $eleve_id_gepi.';'.$note."\r\n";
+			$tab_bulletin_csv_gepi['appreciation']      .= $eleve_id_gepi.';'.''   .';'.$appreciation."\r\n";
 		}
 	}
 	$bulletin_head  = '<thead><tr><th>Elève</th><th>Moyenne pondérée sur 20<br />(des scores d\'acquisitions)</th><th>Élément d\'appréciation<br />(pourcentage d\'items acquis)</th></tr></thead>'."\r\n";
@@ -561,7 +552,10 @@ if(in_array('bulletin',$tab_type))
 	$bulletin_html .= '<script type="text/javascript">$("#export20").tablesorter({ headers:{2:{sorter:false}} });</script>';
 	// On enregistre la sortie HTML et CSV
 	Ecrire_Fichier($dossier.$fichier_lien.'_bulletin.html',$bulletin_html);
-	Ecrire_Fichier($dossier.$fichier_lien.'_bulletin.csv',utf8_decode($bulletin_csv_gepi));
+	foreach($tab_bulletin_csv_gepi as $format => $bulletin_csv_gepi_contenu)
+	{
+		Ecrire_Fichier($dossier.$fichier_lien.'_bulletin_'.$format.'.csv',utf8_decode($bulletin_csv_gepi_contenu));
+	}
 }
 
 ?>

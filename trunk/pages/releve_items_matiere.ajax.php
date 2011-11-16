@@ -168,7 +168,9 @@ if( $orientation && $couleur && $legende && $marge_min && $pages_nb && $cases_nb
 		if($type_bulletin)
 		{
 			echo'<ul class="puce">';
-			echo'<li><a class="lien_ext" href="'.$dossier.$fichier_lien.'_bulletin.csv"><span class="file file_txt">Bulletin &rarr; Récupérer pour importer dans GEPI (format <em>csv</em> <img alt="" src="./_img/bulle_aide.png" title="Si le navigateur ouvre le fichier au lieu de l\'enregistrer, cliquer avec le bouton droit et choisir «&nbsp;Enregistrer&nbsp;sous...&nbsp;»." />).</span></a></li>';
+			echo'<li><a class="lien_ext" href="'.$dossier.$fichier_lien.'_bulletin_note_appreciation.csv"><span class="file file_txt">Bulletin &rarr; Récupérer notes et appréciations à importer dans GEPI (format <em>csv</em> <img alt="" src="./_img/bulle_aide.png" title="Si le navigateur ouvre le fichier au lieu de l\'enregistrer, cliquer avec le bouton droit et choisir «&nbsp;Enregistrer&nbsp;sous...&nbsp;»." />).</span></a></li>';
+			echo'<li><a class="lien_ext" href="'.$dossier.$fichier_lien.'_bulletin_note.csv"><span class="file file_txt">Bulletin &rarr; Récupérer les notes à importer dans GEPI (format <em>csv</em> <img alt="" src="./_img/bulle_aide.png" title="Si le navigateur ouvre le fichier au lieu de l\'enregistrer, cliquer avec le bouton droit et choisir «&nbsp;Enregistrer&nbsp;sous...&nbsp;»." />).</span></a></li>';
+			echo'<li><a class="lien_ext" href="'.$dossier.$fichier_lien.'_bulletin_appreciation.csv"><span class="file file_txt">Bulletin &rarr; Récupérer les appréciations à importer dans GEPI (format <em>csv</em> <img alt="" src="./_img/bulle_aide.png" title="Si le navigateur ouvre le fichier au lieu de l\'enregistrer, cliquer avec le bouton droit et choisir «&nbsp;Enregistrer&nbsp;sous...&nbsp;»." />).</span></a></li>';
 			echo'<li><a class="lien_ext" href="./releve-html.php?fichier='.$fichier_lien.'_bulletin"><span class="file file_htm">Bulletin &rarr; Explorer / Manipuler (format <em>html</em>).</span></a></li>';
 			echo'</ul><p />';
 		}

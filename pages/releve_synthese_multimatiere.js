@@ -389,15 +389,24 @@ $(document).ready
 		{
 			initialiser_compteur();
 			$('button').prop('disabled',false);
-			if(responseHTML.substring(0,17)!='<ul class="puce">')
+			if(responseHTML.substring(0,6)=='<hr />')
 			{
-				$('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);
+				$('#ajax_msg').removeAttr("class").addClass("valide").html("Terminé : voir ci-dessous.");
+				$('#bilan').html(responseHTML);
+				format_liens('#bilan');
+				infobulle();
+			}
+			else if(responseHTML.substring(0,17)=='<ul class="puce">')
+			{
+				$('#ajax_msg').removeAttr("class").html('');
+				// Mis dans le div bilan et pas balancé directement dans le fancybox sinon le format_lien() nécessite un peu plus de largeur que le fancybox ne recalcule pas...
+				$('#bilan').html(responseHTML);
+				format_liens('#bilan');
+				$.fancybox( { 'href':'#bilan' , onClosed:function(){$('#bilan').html("");} , 'centerOnScroll':true } );
 			}
 			else
 			{
-				$('#ajax_msg').removeAttr("class").addClass("valide").html("Demande réalisée !");
-				$('#bilan').html(responseHTML);
-				format_liens('#bilan');
+				$('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);
 			}
 		} 
 

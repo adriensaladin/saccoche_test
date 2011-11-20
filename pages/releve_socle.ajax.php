@@ -31,16 +31,28 @@ if($_SESSION['SESAMATH_ID']==ID_DEMO) {}
 $palier_id     = (isset($_POST['f_palier']))     ? clean_entier($_POST['f_palier'])    : 0;
 $palier_nom    = (isset($_POST['f_palier_nom'])) ? clean_texte($_POST['f_palier_nom']) : '';
 $pilier_id     = (isset($_POST['f_pilier']))     ? clean_entier($_POST['f_pilier'])    : -1;
-$aff_socle_PA  = (isset($_POST['f_socle_PA']))   ? 1                                   : 0;	// en cas de manipulation type Firebug, peut être forcé pour élève/parent avec (mb_substr_count($_SESSION['DROIT_SOCLE_POURCENTAGE_ACQUIS'],$_SESSION['USER_PROFIL']))
-$aff_socle_EV  = (isset($_POST['f_socle_EV']))   ? 1                                   : 0;	// en cas de manipulation type Firebug, peut être forcé pour élève/parent avec (mb_substr_count($_SESSION['DROIT_SOCLE_ETAT_VALIDATION'],$_SESSION['USER_PROFIL']))
-$groupe_id     = (isset($_POST['f_groupe']))     ? clean_entier($_POST['f_groupe'])    : 0;	// en cas de manipulation type Firebug, peut être forcé pour l'élève à $_SESSION['ELEVE_CLASSE_ID']
+$aff_socle_PA  = (isset($_POST['f_socle_PA']))   ? 1                                   : 0;
+$aff_socle_EV  = (isset($_POST['f_socle_EV']))   ? 1                                   : 0;
+$groupe_id     = (isset($_POST['f_groupe']))     ? clean_entier($_POST['f_groupe'])    : 0;
 $mode          = (isset($_POST['f_mode']))       ? clean_texte($_POST['f_mode'])       : '';
 $aff_coef      = (isset($_POST['f_coef']))       ? 1                                   : 0;
 $aff_socle     = (isset($_POST['f_socle']))      ? 1                                   : 0;
 $aff_lien      = (isset($_POST['f_lien']))       ? 1                                   : 0;
 $tab_pilier_id = (isset($_POST['piliers']))      ? array_map('clean_entier',explode(',',$_POST['piliers']))  : array() ;
-$tab_eleve_id  = (isset($_POST['eleves']))       ? array_map('clean_entier',explode(',',$_POST['eleves']))   : array() ;	// en cas de manipulation type Firebug, peut être forcé pour l'élève avec $_SESSION['USER_ID']
+$tab_eleve_id  = (isset($_POST['eleves']))       ? array_map('clean_entier',explode(',',$_POST['eleves']))   : array() ;
 $tab_matiere   = (isset($_POST['matieres']))     ? array_map('clean_entier',explode(',',$_POST['matieres'])) : array() ;
+
+// En cas de manipulation du formulaire (avec Firebug par exemple) ; on pourrait aussi vérifier pour un parent que c'est bien un de ses enfants...
+if(in_array($_SESSION['USER_PROFIL'],array('parent','eleve')))
+{
+	$aff_socle_PA = (mb_substr_count($_SESSION['DROIT_SOCLE_POURCENTAGE_ACQUIS'],$_SESSION['USER_PROFIL'])) ? $aff_socle_PA : 0 ;
+	$aff_socle_EV = (mb_substr_count($_SESSION['DROIT_SOCLE_ETAT_VALIDATION']   ,$_SESSION['USER_PROFIL'])) ? $aff_socle_EV : 0 ;
+}
+if($_SESSION['USER_PROFIL']=='eleve')
+{
+	$groupe_id    = $_SESSION['ELEVE_CLASSE_ID'];
+	$tab_eleve_id = array($_SESSION['USER_ID']);
+}
 
 $memo_demande  = (count($tab_pilier_id)>1) ? 'palier' : 'pilier' ;
 $tab_eleve_id  = array_filter($tab_eleve_id,'positif');
@@ -331,15 +343,19 @@ if($test_affichage_Pourcentage)
 // Elaboration du bilan relatif au socle, en HTML et PDF => Production et mise en page
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
+$affichage_direct = ( in_array($_SESSION['USER_PROFIL'],array('eleve','parent')) ) ? TRUE : FALSE ;
+
 $titre1 = ($mode=='manuel') ? 'Détail de maîtrise du socle commun [matières resteintes]' : 'Détail de maîtrise du socle commun' ;
 $titre2 = ($memo_demande=='palier') ? $palier_nom : $palier_nom.' – '.mb_substr($pilier_nom,0,mb_strpos($pilier_nom,'–')) ;
 $break = ($memo_demande=='palier') ? 0 : $tab_pilier[$pilier_id]['pilier_nb_lignes'] ;
-$releve_html  = '<style type="text/css">'.$_SESSION['CSS'].'</style>';
-$releve_html .= '<h1>'.html($titre1).'</h1>';
-$releve_html .= '<h2>'.html($titre2).'</h2>';
+$releve_html  = $affichage_direct ? '' : '<style type="text/css">'.$_SESSION['CSS'].'</style>';
+$releve_html .= $affichage_direct ? '' : '<h1>'.html($titre1).'</h1>';
+$releve_html .= $affichage_direct ? '' : '<h2>'.html($titre2).'</h2>';
+$releve_html .= '<div class="astuce">Cliquer sur les icones &laquo;<img src="./_img/toggle_plus.gif" alt="+" />&raquo; pour accéder au détail.';
 // Appel de la classe et définition de qqs variables supplémentaires pour la mise en page PDF
 $releve_pdf = new PDF($orientation='portrait',$marge_min=7.5,$couleur='oui');
 $releve_pdf->releve_socle_initialiser($test_affichage_Pourcentage,$test_affichage_Validation);
+$separation = (count($tab_eleve)>1) ? '<hr />' : '' ;
 
 // Pour chaque élève...
 foreach($tab_eleve as $tab)
@@ -347,7 +363,7 @@ foreach($tab_eleve as $tab)
 	extract($tab);	// $eleve_id $eleve_nom $eleve_prenom $eleve_langue
 	// On met le document au nom de l'élève, ou on établit un document générique
 	$releve_pdf->releve_socle_entete($titre1,$titre2,$break,$eleve_id,$eleve_nom,$eleve_prenom);
-	$releve_html .= ($eleve_id) ? '<hr /><h2>'.html($eleve_nom).' '.html($eleve_prenom).'</h2>' : '<hr /><h2>Attestation générique</h2>' ;
+	$releve_html .= ($eleve_id) ? $separation.'<h2>'.html($eleve_nom).' '.html($eleve_prenom).'</h2>' : '<hr /><h2>Attestation générique</h2>' ;
 	$releve_html .= '<table class="bilan">';
 	// Pour chaque pilier...
 	if(count($tab_pilier))
@@ -401,7 +417,7 @@ foreach($tab_eleve as $tab)
 			$releve_html .= '<tr><td colspan="4" class="nu"></td></tr>'."\r\n";
 		}
 	}
-	$releve_html .= '</table><p />';
+	$releve_html .= '</table>';
 }
 
 // Chemins d'enregistrement
@@ -411,11 +427,12 @@ $fichier_lien = 'releve_socle_etabl'.$_SESSION['BASE'].'_user'.$_SESSION['USER_I
 Ecrire_Fichier($dossier.$fichier_lien.'.html',$releve_html);
 $releve_pdf->Output($dossier.$fichier_lien.'.pdf','F');
 // Affichage du résultat
-if($_SESSION['USER_PROFIL']=='eleve')
+if($affichage_direct)
 {
+	echo'<hr />';
 	echo'<ul class="puce">';
 	echo'<li><a class="lien_ext" href="'.$dossier.$fichier_lien.'.pdf"><span class="file file_pdf">Archiver / Imprimer (format <em>pdf</em>).</span></a></li>';
-	echo'</ul><p />';
+	echo'</ul>';
 	echo $releve_html;
 }
 else
@@ -423,7 +440,7 @@ else
 	echo'<ul class="puce">';
 	echo'<li><a class="lien_ext" href="'.$dossier.$fichier_lien.'.pdf"><span class="file file_pdf">Archiver / Imprimer (format <em>pdf</em>).</span></a></li>';
 	echo'<li><a class="lien_ext" href="./releve-html.php?fichier='.$fichier_lien.'"><span class="file file_htm">Explorer / Détailler (format <em>html</em>).</span></a></li>';
-	echo'</ul><p />';
+	echo'</ul>';
 }
 
 ?>

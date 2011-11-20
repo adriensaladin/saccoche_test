@@ -38,7 +38,7 @@ $tab_objets[]  = array( 'droit_validation_entree'=>'valider des items du socle' 
 
 $tab_titres[]  = 'Référentiels en place dans l\'établissement';
 $tab_profils[] = array( 'directeur'=>'directeurs' , 'professeur'=>'professeurs' , 'parent'=>'parents' , 'eleve'=>'élèves' );
-$tab_objets[]  = array( 'droit_voir_referentiels'=>'consulter tous les référentiels' );
+$tab_objets[]  = array( 'droit_voir_referentiels'=>'consulter les référentiels' , 'droit_voir_grilles_items'=>'accéder aux grilles d\'items' );
 
 $tab_titres[]  = 'Score d\'un item &amp; état d\'acquisition';
 $tab_profils[] = array( 'directeur'=>'directeurs' , 'professeur'=>'professeurs' , 'parent'=>'parents' , 'eleve'=>'élèves' );
@@ -112,4 +112,4 @@ foreach($tab_titres as $i => $titre)
 <form action="#" method="post" id="form_autorisations">
 <?php echo $affichage ?>
 </form>
-<p />
+<p>&nbsp;</p>

@@ -15,6 +15,7 @@ ALTER TABLE sacoche_niveau DISABLE KEYS;
 -- Niveaux "longitudinaux" nommés "cycles"
 
 INSERT INTO sacoche_niveau VALUES 
+(   5, 1,   5,     "P0",            "", "Cycle 1 (PS-GS)"),
 (   1, 1,   9,     "P1",            "", "Cycle 2 (GS-CE1)"),
 (   2, 1,  29,     "P2",            "", "Cycle 3 (CE2-CM2)"),
 (   3, 1,  69,     "P3",            "", "Cycle Collège"),
@@ -26,8 +27,8 @@ INSERT INTO sacoche_niveau VALUES
 (  11, 0,   1,     "PS", "0001000131.", "Maternelle, petite section"),
 (  12, 0,   2,     "MS", "0001000132.", "Maternelle, moyenne section"),
 (  13, 0,   3,     "GS", "0001000133.", "Maternelle, grande section"),
-(  14, 0,   4,     "CP", "0011000211.", "Cours préparatoire"),
-(  15, 0,   5,    "CE1", "0021000221.", "Cours élémentaire 1e année"),
+(  14, 0,   7,     "CP", "0011000211.", "Cours préparatoire"),
+(  15, 0,   8,    "CE1", "0021000221.", "Cours élémentaire 1e année"),
 (  16, 0,  11,    "CE2", "0021000222.", "Cours élémentaire 2e année"),
 (  17, 0,  12,    "CM1", "0031000221.", "Cours moyen 1e année"),
 (  18, 0,  13,    "CM2", "0031000222.", "Cours moyen 2e année"),

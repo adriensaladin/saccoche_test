@@ -75,22 +75,24 @@ $select_f_groupes = Formulaire::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_regr
 
 	<fieldset id="fieldset_export" class="hide">
 		<hr />
-		<label class="tab">Regroupement :</label><select id="f_groupe" name="f_groupe"><?php echo $select_f_groupes ?></select><label id="ajax_msg_groupe">&nbsp;</label><br />
-		<label class="tab"><img alt="" src="./_img/bulle_aide.png" title="Utiliser la touche &laquo&nbsp;Shift&nbsp;&raquo; pour une sélection multiple contiguë.<br />Utiliser la touche &laquo&nbsp;Ctrl&nbsp;&raquo; pour une sélection multiple non contiguë." /> Élèves :</label><select id="select_eleves" name="select_eleves[]" multiple size="8"><option value=""></option></select><p />
+		<p>
+			<label class="tab">Regroupement :</label><select id="f_groupe" name="f_groupe"><?php echo $select_f_groupes ?></select><label id="ajax_msg_groupe">&nbsp;</label><br />
+			<label class="tab"><img alt="" src="./_img/bulle_aide.png" title="Utiliser la touche &laquo;&nbsp;Shift&nbsp;&raquo; pour une sélection multiple contiguë.<br />Utiliser la touche &laquo;&nbsp;Ctrl&nbsp;&raquo; pour une sélection multiple non contiguë." /> Élèves :</label><select id="select_eleves" name="select_eleves[]" multiple size="8"><option value=""></option></select>
+		</p>
 	</fieldset>
 
 	<fieldset id="fieldset_export_lpc" class="hide">
 		<label class="tab">UAI :</label><?php echo $msg_uai ?><br />
 		<label class="tab">CNIL :</label><?php echo $msg_cnil ?><br />
 		<label class="tab">Sconet :</label><?php echo $msg_id_sconet ?><br />
-		<label class="tab">Sésamath :</label><?php echo $msg_key_sesamath ?><p />
-		<span class="tab"></span><button type="button" id="disabled_export" disabled class="fichier_export">A venir, procédure ministérielle d'accréditation en cours&hellip;</button><label id="ajax_msg_export">&nbsp;</label>
-		<!-- <span class="tab"></span><button type="button" id="export_lpc" <?php echo $bouton_export_lpc ?> class="fichier_export">Générer le fichier.</button> -->
+		<label class="tab">Sésamath :</label><?php echo $msg_key_sesamath ?>
+		<p><span class="tab"></span><button type="button" id="disabled_export" disabled class="fichier_export">A venir, procédure ministérielle d'accréditation en cours&hellip;</button><label id="ajax_msg_export">&nbsp;</label></p>
+		<!-- <button type="button" id="export_lpc" <?php echo $bouton_export_lpc ?> class="fichier_export">Générer le fichier.</button> -->
 	</fieldset>
 
 	<fieldset id="fieldset_export_sacoche" class="hide">
 		<label class="tab">Sconet :</label><?php echo $msg_id_sconet ?><br />
-		<span class="tab"></span><button type="button" id="export_sacoche" class="enabled" class="fichier_export">Générer le fichier.</button>
+		<span class="tab"></span><button type="button" id="export_sacoche" class="fichier_export enabled">Générer le fichier.</button>
 	</fieldset>
 
 	<fieldset id="fieldset_import" class="hide">
@@ -98,20 +100,18 @@ $select_f_groupes = Formulaire::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_regr
 	</fieldset>
 
 	<fieldset id="fieldset_import_lpc" class="hide">
-		<label class="tab">Sconet :</label><?php echo $msg_id_sconet ?><p />
-		<span class="tab"></span><button type="button" id="import_lpc_disabled" disabled class="fichier_import">A notre connaissance, <em>LPC</em> ne permet pas d'exporter un fichier de validations&hellip;</button>
+		<label class="tab">Sconet :</label><?php echo $msg_id_sconet ?>
+		<p><span class="tab"></span><button type="button" id="import_lpc_disabled" disabled class="fichier_import">A notre connaissance, <em>LPC</em> ne permet pas d'exporter un fichier de validations&hellip;</button></p>
 	</fieldset>
 
 	<fieldset id="fieldset_import_sacoche" class="hide">
-		<label class="tab">Sconet :</label><?php echo $msg_id_sconet ?><p />
-		<span class="tab"></span><button type="button" id="import_sacoche" class="enabled" class="fichier_import">Transmettre le fichier.</button>
+		<label class="tab">Sconet :</label><?php echo $msg_id_sconet ?>
+		<p><span class="tab"></span><button type="button" id="import_sacoche" class="fichier_import enabled">Transmettre le fichier.</button></p>
 	</fieldset>
 
 </form>
 
 <hr />
 <label id="ajax_msg">&nbsp;</label>
-<p />
-<ul class="puce" id="ajax_info">
+<ul class="puce p" id="ajax_info">
 </ul>
-<p />

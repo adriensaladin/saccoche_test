@@ -35,7 +35,7 @@ $score      = (isset($_GET['score']))      ? clean_entier($_GET['score'])      :
 function renvoyer_reponse($reponse)
 {
 	echo'<form action="#" method="post" id="form_calque">';
-	echo'	<div style="float:right"><input id="fermer_calque" type="image" src="./_img/fermer.gif" name="fermer" value="Fermer" /></div>';
+	echo'	<div style="float:right"><input id="fermer_calque" type="image" alt="Fermer" src="./_img/fermer.gif" name="fermer" value="Fermer" /></div>';
 	echo'	<div>'.$reponse.'</div>';
 	echo'</form>';
 	exit();

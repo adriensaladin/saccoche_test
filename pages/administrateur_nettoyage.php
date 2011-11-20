@@ -82,4 +82,4 @@ $TITRE = "Nettoyage / Initialisation";
 <ul class="puce hide" id="ajax_info">
 	<li></li>
 </ul>
-<p />
+<p>&nbsp;</p>

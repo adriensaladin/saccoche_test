@@ -66,7 +66,7 @@ $select_groupe = Formulaire::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_regroup
 				<td class="nu" style="width:30em;text-align:left">
 					<div><label class="tab" for="f_profil">Profil :</label><select id="f_profil" name="f_profil"><option value=""></option><option value="eleves">élèves</option><option value="parents">responsables légaux</option><option value="professeurs">professeurs</option><option value="directeurs">directeurs</option></select></div>
 					<div><label class="tab" for="f_groupe">Regroupement :</label><?php echo $select_groupe ?></div>
-					<div id="div_users" class="hide"><label class="tab" for="select_users">Utilisateurs :</label><select id="select_users" name="select_users[]" multiple size="8"><option value=""></option></select> <img alt="" src="./_img/bulle_aide.png" title="Utiliser la touche &laquo&nbsp;Shift&nbsp;&raquo; pour une sélection multiple contiguë.<br />Utiliser la touche &laquo&nbsp;Ctrl&nbsp;&raquo; pour une sélection multiple non contiguë." /></div>
+					<div id="div_users" class="hide"><label class="tab" for="select_users">Utilisateurs :</label><select id="select_users" name="select_users[]" multiple size="8"><option value=""></option></select> <img alt="" src="./_img/bulle_aide.png" title="Utiliser la touche &laquo;&nbsp;Shift&nbsp;&raquo; pour une sélection multiple contiguë.<br />Utiliser la touche &laquo;&nbsp;Ctrl&nbsp;&raquo; pour une sélection multiple non contiguë." /></div>
 				</td>
 				<td id="td_bouton" class="nu" style="width:25em">
 					<p><button id="init_login" type="button" class="mdp_groupe">Initialiser les noms d'utilisateurs.</button></p>
@@ -79,8 +79,8 @@ $select_groupe = Formulaire::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_regroup
 	<fieldset id="fieldset_import_loginmdp" class="hide">
 		<hr />
 		<p><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__force_login_mdp_tableur">DOC : Imposer identifiants SACoche avec un tableur</a></span></p>
-		Vous pouvez <button id="user_export" type="button" class="fichier_export">récupérer un fichier csv avec les noms / prénoms / logins actuels</button> (le mot de passe, crypté, ne peut être restitué).<p />
-		Modifiez les identifiants souhaités, puis indiquez ci-dessous le fichier <b>nom-du-fichier.csv</b> (ou <b>nom-du-fichier.txt</b>) obtenu que vous souhaitez importer.
+		<p>Vous pouvez <button id="user_export" type="button" class="fichier_export">récupérer un fichier csv avec les noms / prénoms / logins actuels</button> (le mot de passe, crypté, ne peut être restitué).</p>
+		<p>Modifiez les identifiants souhaités, puis indiquez ci-dessous le fichier <b>nom-du-fichier.csv</b> (ou <b>nom-du-fichier.txt</b>) obtenu que vous souhaitez importer.</p>
 		<p><label class="tab" for="import_loginmdp">Envoyer le fichier :</label><button id="import_loginmdp" type="button" class="fichier_import">Parcourir...</button></p>
 	</fieldset>
 
@@ -144,5 +144,4 @@ $select_groupe = Formulaire::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_regroup
 
 <hr />
 <label id="ajax_msg">&nbsp;</label>
-<p />
-<div id="ajax_retour"></div>
+<div id="ajax_retour" class="p"></div>

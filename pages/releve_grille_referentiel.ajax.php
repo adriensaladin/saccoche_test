@@ -44,11 +44,18 @@ $orientation   = (isset($_POST['f_orientation']))  ? clean_texte($_POST['f_orien
 $couleur       = (isset($_POST['f_couleur']))      ? clean_texte($_POST['f_couleur'])       : '';
 $legende       = (isset($_POST['f_legende']))      ? clean_texte($_POST['f_legende'])       : '';
 $marge_min     = (isset($_POST['f_marge_min']))    ? clean_texte($_POST['f_marge_min'])     : '';
-$groupe_id     = (isset($_POST['f_groupe']))       ? clean_entier($_POST['f_groupe'])       : 0;	// en cas de manipulation type Firebug, peut être forcé pour l'élève à $_SESSION['ELEVE_CLASSE_ID']
-$tab_eleve_id  = (isset($_POST['eleves']))         ? array_map('clean_entier',explode(',',$_POST['eleves'])) : array() ;	// en cas de manipulation type Firebug, peut être forcé pour l'élève avec $_SESSION['USER_ID']
+$groupe_id     = (isset($_POST['f_groupe']))       ? clean_entier($_POST['f_groupe'])       : 0;
+$tab_eleve_id  = (isset($_POST['eleves']))         ? array_map('clean_entier',explode(',',$_POST['eleves'])) : array() ;
 
-$tab_eleve_id  = array_filter($tab_eleve_id,'positif');
-$liste_eleve   = implode(',',$tab_eleve_id);
+// En cas de manipulation du formulaire (avec Firebug par exemple) ; on pourrait aussi vérifier pour un parent que c'est bien un de ses enfants...
+if($_SESSION['USER_PROFIL']=='eleve')
+{
+	$groupe_id    = $_SESSION['ELEVE_CLASSE_ID'];
+	$tab_eleve_id = array($_SESSION['USER_ID']);
+}
+
+$tab_eleve_id = array_filter($tab_eleve_id,'positif');
+$liste_eleve  = implode(',',$tab_eleve_id);
 
 if( $matiere_id && $niveau_id && $matiere_nom && $niveau_nom && $remplissage && $orientation && $couleur && $legende && $marge_min && $cases_nb && $cases_largeur )
 {
@@ -169,6 +176,7 @@ if( $matiere_id && $niveau_id && $matiere_nom && $niveau_nom && $remplissage && 
 	// Elaboration de la grille d'items d'un référentiel, en HTML et PDF
 	//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
+	$affichage_direct = ( in_array($_SESSION['USER_PROFIL'],array('eleve','parent')) ) ? TRUE : FALSE ;
 	// Initialiser au cas où $aff_coef / $aff_socle / $aff_lien sont à 0
 	$texte_coef       = '';
 	$texte_socle      = '';
@@ -176,12 +184,13 @@ if( $matiere_id && $niveau_id && $matiere_nom && $niveau_nom && $remplissage && 
 	$texte_lien_apres = '';
 	// Les variables $releve_HTML et $releve_PDF vont contenir les sorties
 	$only_socle = ($only_socle) ? ' - Socle uniquement' : '' ;
-	$releve_HTML  = '<style type="text/css">'.$_SESSION['CSS'].'</style>';
-	$releve_HTML .= '<h1>Grille d\'items d\'un référentiel</h1>';
-	$releve_HTML .= '<h2>'.html($matiere_nom.' - Niveau '.$niveau_nom.$only_socle).'</h2>';
+	$releve_HTML  = $affichage_direct ? '' : '<style type="text/css">'.$_SESSION['CSS'].'</style>';
+	$releve_HTML .= $affichage_direct ? '' : '<h1>Grille d\'items d\'un référentiel</h1>';
+	$releve_HTML .= $affichage_direct ? '' : '<h2>'.html($matiere_nom.' - Niveau '.$niveau_nom.$only_socle).'</h2>';
 	// Appel de la classe et définition de qqs variables supplémentaires pour la mise en page PDF
 	$releve_PDF = new PDF($orientation,$marge_min,$couleur,$legende);
 	$releve_PDF->grille_referentiel_initialiser($cases_nb,$cases_largeur,$lignes_nb,$colonne_vide);
+	$separation = (count($tab_eleve)>1) ? '<hr />' : '' ;
 
 	// Pour chaque élève...
 	foreach($tab_eleve as $tab)
@@ -189,7 +198,7 @@ if( $matiere_id && $niveau_id && $matiere_nom && $niveau_nom && $remplissage && 
 		extract($tab);	// $eleve_id $eleve_nom $eleve_prenom
 		// On met le document au nom de l'élève, ou on établit un document générique
 		$releve_PDF->grille_referentiel_entete($matiere_nom,$niveau_nom,$eleve_id,$eleve_nom,$eleve_prenom);
-		$releve_HTML .= ($eleve_id) ? '<hr /><h2>'.html($eleve_nom).' '.html($eleve_prenom).'</h2>' : '<hr /><h2>Grille générique</h2>' ;
+		$releve_HTML .= ($eleve_id) ? $separation.'<h2>'.html($eleve_nom).' '.html($eleve_prenom).'</h2>' : $separation.'<h2>Grille générique</h2>' ;
 		$releve_HTML .= '<table class="bilan">';
 		// Pour chaque domaine...
 		if(count($tab_domaine))
@@ -257,7 +266,7 @@ if( $matiere_id && $niveau_id && $matiere_nom && $niveau_nom && $remplissage && 
 				}
 			}
 		}
-		$releve_HTML .= '</table><p />';
+		$releve_HTML .= '</table>';
 		if($legende=='oui')
 		{
 			$releve_PDF->grille_referentiel_legende();
@@ -272,11 +281,12 @@ if( $matiere_id && $niveau_id && $matiere_nom && $niveau_nom && $remplissage && 
 	Ecrire_Fichier($dossier.$fichier_lien.'.html',$releve_HTML);
 	$releve_PDF->Output($dossier.$fichier_lien.'.pdf','F');
 	// Affichage du résultat
-	if($_SESSION['USER_PROFIL']=='eleve')
+	if($affichage_direct)
 	{
+		echo'<hr />';
 		echo'<ul class="puce">';
 		echo'<li><a class="lien_ext" href="'.$dossier.$fichier_lien.'.pdf"><span class="file file_pdf">Archiver / Imprimer (format <em>pdf</em>).</span></a></li>';
-		echo'</ul><p />';
+		echo'</ul>';
 		echo $releve_HTML;
 	}
 	else
@@ -284,7 +294,7 @@ if( $matiere_id && $niveau_id && $matiere_nom && $niveau_nom && $remplissage && 
 		echo'<ul class="puce">';
 		echo'<li><a class="lien_ext" href="'.$dossier.$fichier_lien.'.pdf"><span class="file file_pdf">Archiver / Imprimer (format <em>pdf</em>).</span></a></li>';
 		echo'<li><a class="lien_ext" href="./releve-html.php?fichier='.$fichier_lien.'"><span class="file file_htm">Explorer / Détailler (format <em>html</em>).</span></a></li>';
-		echo'</ul><p />';
+		echo'</ul>';
 	}
 
 }

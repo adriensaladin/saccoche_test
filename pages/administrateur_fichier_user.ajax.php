@@ -1009,10 +1009,10 @@ if( $step==31 )
 	echo'  <tr><th colspan="2">Classes actuelles à conserver</th></tr>';
 	echo($lignes_ras) ? $lignes_ras : '<tr><td colspan="2">Aucune</td></tr>';
 	echo' </tbody><tbody>';
-	echo'  <tr><th colspan="2">Classes nouvelles à ajouter <input name="all_check" type="image" src="./_img/all_check.gif" title="Tout cocher." /> <input name="all_uncheck" type="image" src="./_img/all_uncheck.gif" title="Tout décocher." /></th></tr>';
+	echo'  <tr><th colspan="2">Classes nouvelles à ajouter <input name="all_check" type="image" alt="Tout cocher." src="./_img/all_check.gif" title="Tout cocher." /> <input name="all_uncheck" type="image" alt="Tout décocher." src="./_img/all_uncheck.gif" title="Tout décocher." /></th></tr>';
 	echo($lignes_add) ? $lignes_add : '<tr><td colspan="2">Aucune</td></tr>';
 	echo' </tbody><tbody>';
-	echo'  <tr><th colspan="2">Classes anciennes à supprimer <input name="all_check" type="image" src="./_img/all_check.gif" title="Tout cocher." /> <input name="all_uncheck" type="image" src="./_img/all_uncheck.gif" title="Tout décocher." /></th></tr>';
+	echo'  <tr><th colspan="2">Classes anciennes à supprimer <input name="all_check" type="image" alt="Tout cocher." src="./_img/all_check.gif" title="Tout cocher." /> <input name="all_uncheck" type="image" alt="Tout décocher." src="./_img/all_uncheck.gif" title="Tout décocher." /></th></tr>';
 	echo($lignes_del) ? $lignes_del : '<tr><td colspan="2">Aucune</td></tr>';
 	echo' </tbody>';
 	echo'</table>';
@@ -1208,10 +1208,10 @@ if( $step==41 )
 	echo'  <tr><th colspan="2">Groupes actuels à conserver</th></tr>';
 	echo($lignes_ras) ? $lignes_ras : '<tr><td colspan="2">Aucun</td></tr>';
 	echo' </tbody><tbody>';
-	echo'  <tr><th colspan="2">Groupes nouveaux à ajouter <input name="all_check" type="image" src="./_img/all_check.gif" title="Tout cocher." /> <input name="all_uncheck" type="image" src="./_img/all_uncheck.gif" title="Tout décocher." /></th></tr>';
+	echo'  <tr><th colspan="2">Groupes nouveaux à ajouter <input name="all_check" type="image" alt="Tout cocher." src="./_img/all_check.gif" title="Tout cocher." /> <input name="all_uncheck" type="image" alt="Tout décocher." src="./_img/all_uncheck.gif" title="Tout décocher." /></th></tr>';
 	echo($lignes_add) ? $lignes_add : '<tr><td colspan="2">Aucun</td></tr>';
 	echo' </tbody><tbody>';
-	echo'  <tr><th colspan="2">Groupes anciens à supprimer <input name="all_check" type="image" src="./_img/all_check.gif" title="Tout cocher." /> <input name="all_uncheck" type="image" src="./_img/all_uncheck.gif" title="Tout décocher." /></th></tr>';
+	echo'  <tr><th colspan="2">Groupes anciens à supprimer <input name="all_check" type="image" alt="Tout cocher." src="./_img/all_check.gif" title="Tout cocher." /> <input name="all_uncheck" type="image" alt="Tout décocher." src="./_img/all_uncheck.gif" title="Tout décocher." /></th></tr>';
 	echo($lignes_del) ? $lignes_del : '<tr><td colspan="2">Aucun</td></tr>';
 	echo' </tbody>';
 	echo'</table>';
@@ -1509,18 +1509,18 @@ if( $step==51 )
 	echo'<table>';
 	// Cas [2]
 	echo		'<tbody>';
-	echo			'<tr><th colspan="2">Utilisateurs à ajouter (absents de la base, nouveaux dans le fichier). <input name="all_check" type="image" src="./_img/all_check.gif" title="Tout cocher." /> <input name="all_uncheck" type="image" src="./_img/all_uncheck.gif" title="Tout décocher." /></th></tr>';
+	echo			'<tr><th colspan="2">Utilisateurs à ajouter (absents de la base, nouveaux dans le fichier). <input name="all_check" type="image" alt="Tout cocher." src="./_img/all_check.gif" title="Tout cocher." /> <input name="all_uncheck" type="image" alt="Tout décocher." src="./_img/all_uncheck.gif" title="Tout décocher." /></th></tr>';
 	echo($lignes_ajouter) ? $lignes_ajouter : '<tr><td colspan="2">Aucun</td></tr>';
 	echo		'</tbody>';
 	// Cas [3] et [7]
 	$texte = ($is_profil_eleve) ? ' ou sans classe affectée' : ( ($is_profil_parent) ? ' ou sans enfant au compte actif' : '' ) ;
 	echo		'<tbody>';
-	echo			'<tr><th colspan="2">Utilisateurs à retirer (absents du fichier'.$texte.') <input name="all_check" type="image" src="./_img/all_check.gif" title="Tout cocher." /> <input name="all_uncheck" type="image" src="./_img/all_uncheck.gif" title="Tout décocher." /></th></tr>';
+	echo			'<tr><th colspan="2">Utilisateurs à retirer (absents du fichier'.$texte.') <input name="all_check" type="image" alt="Tout cocher." src="./_img/all_check.gif" title="Tout cocher." /> <input name="all_uncheck" type="image" alt="Tout décocher." src="./_img/all_uncheck.gif" title="Tout décocher." /></th></tr>';
 	echo($lignes_retirer) ? $lignes_retirer : '<tr><td colspan="2">Aucun</td></tr>';
 	echo		'</tbody>';
 	// Cas [5]
 	echo		'<tbody>';
-	echo			'<tr><th colspan="2">Utilisateurs à modifier (ou à réintégrer) <input name="all_check" type="image" src="./_img/all_check.gif" title="Tout cocher." /> <input name="all_uncheck" type="image" src="./_img/all_uncheck.gif" title="Tout décocher." /></th></tr>';
+	echo			'<tr><th colspan="2">Utilisateurs à modifier (ou à réintégrer) <input name="all_check" type="image" alt="Tout cocher." src="./_img/all_check.gif" title="Tout cocher." /> <input name="all_uncheck" type="image" alt="Tout décocher." src="./_img/all_uncheck.gif" title="Tout décocher." /></th></tr>';
 	echo($lignes_modifier) ? $lignes_modifier : '<tr><td colspan="2">Aucun</td></tr>';
 	echo		'</tbody>';
 	// Cas [6]
@@ -2033,42 +2033,42 @@ if( $step==61 )
 	if($action=='sconet_professeurs_directeurs')
 	{
 		echo		'<tbody>';
-		echo			'<tr><th colspan="3">Associations utilisateurs / classes à conserver. <input name="all_check" type="image" src="./_img/all_check.gif" title="Tout cocher." /> <input name="all_uncheck" type="image" src="./_img/all_uncheck.gif" title="Tout décocher." /></th></tr>';
+		echo			'<tr><th colspan="3">Associations utilisateurs / classes à conserver. <input name="all_check" type="image" alt="Tout cocher." src="./_img/all_check.gif" title="Tout cocher." /> <input name="all_uncheck" type="image" alt="Tout décocher." src="./_img/all_uncheck.gif" title="Tout décocher." /></th></tr>';
 		echo($lignes_classes_ras) ? $lignes_classes_ras : '<tr><td colspan="3">Aucune</td></tr>';
 		echo		'</tbody><tbody>';
-		echo			'<tr><th colspan="3">Associations utilisateurs / classes à ajouter. <input name="all_check" type="image" src="./_img/all_check.gif" title="Tout cocher." /> <input name="all_uncheck" type="image" src="./_img/all_uncheck.gif" title="Tout décocher." /></th></tr>';
+		echo			'<tr><th colspan="3">Associations utilisateurs / classes à ajouter. <input name="all_check" type="image" alt="Tout cocher." src="./_img/all_check.gif" title="Tout cocher." /> <input name="all_uncheck" type="image" alt="Tout décocher." src="./_img/all_uncheck.gif" title="Tout décocher." /></th></tr>';
 		echo($lignes_classes_add) ? $lignes_classes_add : '<tr><td colspan="3">Aucune</td></tr>';
 		echo		'</tbody><tbody>';
-		echo			'<tr><th colspan="3">Associations utilisateurs / classes à supprimer. <input name="all_check" type="image" src="./_img/all_check.gif" title="Tout cocher." /> <input name="all_uncheck" type="image" src="./_img/all_uncheck.gif" title="Tout décocher." /></th></tr>';
+		echo			'<tr><th colspan="3">Associations utilisateurs / classes à supprimer. <input name="all_check" type="image" alt="Tout cocher." src="./_img/all_check.gif" title="Tout cocher." /> <input name="all_uncheck" type="image" alt="Tout décocher." src="./_img/all_uncheck.gif" title="Tout décocher." /></th></tr>';
 		echo($lignes_classes_del) ? $lignes_classes_del : '<tr><td colspan="3">Aucune</td></tr>';
 		echo		'</tbody><tbody>';
-		echo			'<tr><th colspan="3">Associations utilisateurs / p.principal à conserver. <input name="all_check" type="image" src="./_img/all_check.gif" title="Tout cocher." /> <input name="all_uncheck" type="image" src="./_img/all_uncheck.gif" title="Tout décocher." /></th></tr>';
+		echo			'<tr><th colspan="3">Associations utilisateurs / p.principal à conserver. <input name="all_check" type="image" alt="Tout cocher." src="./_img/all_check.gif" title="Tout cocher." /> <input name="all_uncheck" type="image" alt="Tout décocher." src="./_img/all_uncheck.gif" title="Tout décocher." /></th></tr>';
 		echo($lignes_principal_ras) ? $lignes_principal_ras : '<tr><td colspan="3">Aucune</td></tr>';
 		echo		'</tbody><tbody>';
-		echo			'<tr><th colspan="3">Associations utilisateurs / p.principal à ajouter. <input name="all_check" type="image" src="./_img/all_check.gif" title="Tout cocher." /> <input name="all_uncheck" type="image" src="./_img/all_uncheck.gif" title="Tout décocher." /></th></tr>';
+		echo			'<tr><th colspan="3">Associations utilisateurs / p.principal à ajouter. <input name="all_check" type="image" alt="Tout cocher." src="./_img/all_check.gif" title="Tout cocher." /> <input name="all_uncheck" type="image" alt="Tout décocher." src="./_img/all_uncheck.gif" title="Tout décocher." /></th></tr>';
 		echo($lignes_principal_add) ? $lignes_principal_add : '<tr><td colspan="3">Aucune</td></tr>';
 		echo		'</tbody><tbody>';
-		echo			'<tr><th colspan="3">Associations utilisateurs / p.principal à supprimer. <input name="all_check" type="image" src="./_img/all_check.gif" title="Tout cocher." /> <input name="all_uncheck" type="image" src="./_img/all_uncheck.gif" title="Tout décocher." /></th></tr>';
+		echo			'<tr><th colspan="3">Associations utilisateurs / p.principal à supprimer. <input name="all_check" type="image" alt="Tout cocher." src="./_img/all_check.gif" title="Tout cocher." /> <input name="all_uncheck" type="image" alt="Tout décocher." src="./_img/all_uncheck.gif" title="Tout décocher." /></th></tr>';
 		echo($lignes_principal_del) ? $lignes_principal_del : '<tr><td colspan="3">Aucune</td></tr>';
 		echo		'</tbody><tbody>';
-		echo			'<tr><th colspan="3">Associations utilisateurs / matières à conserver. <input name="all_check" type="image" src="./_img/all_check.gif" title="Tout cocher." /> <input name="all_uncheck" type="image" src="./_img/all_uncheck.gif" title="Tout décocher." /></th></tr>';
+		echo			'<tr><th colspan="3">Associations utilisateurs / matières à conserver. <input name="all_check" type="image" alt="Tout cocher." src="./_img/all_check.gif" title="Tout cocher." /> <input name="all_uncheck" type="image" alt="Tout décocher." src="./_img/all_uncheck.gif" title="Tout décocher." /></th></tr>';
 		echo($lignes_matieres_ras) ? $lignes_matieres_ras : '<tr><td colspan="3">Aucune</td></tr>';
 		echo		'</tbody><tbody>';
-		echo			'<tr><th colspan="3">Associations utilisateurs / matières à ajouter. <input name="all_check" type="image" src="./_img/all_check.gif" title="Tout cocher." /> <input name="all_uncheck" type="image" src="./_img/all_uncheck.gif" title="Tout décocher." /></th></tr>';
+		echo			'<tr><th colspan="3">Associations utilisateurs / matières à ajouter. <input name="all_check" type="image" alt="Tout cocher." src="./_img/all_check.gif" title="Tout cocher." /> <input name="all_uncheck" type="image" alt="Tout décocher." src="./_img/all_uncheck.gif" title="Tout décocher." /></th></tr>';
 		echo($lignes_matieres_add) ? $lignes_matieres_add : '<tr><td colspan="3">Aucune</td></tr>';
 		// echo		'</tbody><tbody>';
-		// echo			'<tr><th colspan="3">Associations utilisateurs / matières à supprimer. <input name="all_check" type="image" src="./_img/all_check.gif" title="Tout cocher." /> <input name="all_uncheck" type="image" src="./_img/all_uncheck.gif" title="Tout décocher." /></th></tr>';
+		// echo			'<tr><th colspan="3">Associations utilisateurs / matières à supprimer. <input name="all_check" type="image" alt="Tout cocher." src="./_img/all_check.gif" title="Tout cocher." /> <input name="all_uncheck" type="image" alt="Tout décocher." src="./_img/all_uncheck.gif" title="Tout décocher." /></th></tr>';
 		// echo($lignes_matieres_del) ? $lignes_matieres_del : '<tr><td colspan="3">Aucune</td></tr>';
 		echo		'</tbody>';
 	}
 	echo		'<tbody>';
-	echo			'<tr><th colspan="3">Associations utilisateurs / groupes à conserver. <input name="all_check" type="image" src="./_img/all_check.gif" title="Tout cocher." /> <input name="all_uncheck" type="image" src="./_img/all_uncheck.gif" title="Tout décocher." /></th></tr>';
+	echo			'<tr><th colspan="3">Associations utilisateurs / groupes à conserver. <input name="all_check" type="image" alt="Tout cocher." src="./_img/all_check.gif" title="Tout cocher." /> <input name="all_uncheck" type="image" alt="Tout décocher." src="./_img/all_uncheck.gif" title="Tout décocher." /></th></tr>';
 	echo($lignes_groupes_ras) ? $lignes_groupes_ras : '<tr><td colspan="3">Aucune</td></tr>';
 	echo		'</tbody><tbody>';
-	echo			'<tr><th colspan="3">Associations utilisateurs / groupes à ajouter. <input name="all_check" type="image" src="./_img/all_check.gif" title="Tout cocher." /> <input name="all_uncheck" type="image" src="./_img/all_uncheck.gif" title="Tout décocher." /></th></tr>';
+	echo			'<tr><th colspan="3">Associations utilisateurs / groupes à ajouter. <input name="all_check" type="image" alt="Tout cocher." src="./_img/all_check.gif" title="Tout cocher." /> <input name="all_uncheck" type="image" alt="Tout décocher." src="./_img/all_uncheck.gif" title="Tout décocher." /></th></tr>';
 	echo($lignes_groupes_add) ? $lignes_groupes_add : '<tr><td colspan="3">Aucune</td></tr>';
 	echo		'</tbody><tbody>';
-	echo			'<tr><th colspan="3">Associations utilisateurs / groupes à supprimer. <input name="all_check" type="image" src="./_img/all_check.gif" title="Tout cocher." /> <input name="all_uncheck" type="image" src="./_img/all_uncheck.gif" title="Tout décocher." /></th></tr>';
+	echo			'<tr><th colspan="3">Associations utilisateurs / groupes à supprimer. <input name="all_check" type="image" alt="Tout cocher." src="./_img/all_check.gif" title="Tout cocher." /> <input name="all_uncheck" type="image" alt="Tout décocher." src="./_img/all_uncheck.gif" title="Tout décocher." /></th></tr>';
 	echo($lignes_groupes_del) ? $lignes_groupes_del : '<tr><td colspan="3">Aucune</td></tr>';
 	echo		'</tbody>';
 	echo'</table>';
@@ -2235,12 +2235,12 @@ if( $step==71 )
 	echo'<table>';
 	// Cas [1]
 	echo		'<tbody>';
-	echo			'<tr><th colspan="3">Adresses à ajouter <input name="all_check" type="image" src="./_img/all_check.gif" title="Tout cocher." /> <input name="all_uncheck" type="image" src="./_img/all_uncheck.gif" title="Tout décocher." /></th></tr>';
+	echo			'<tr><th colspan="3">Adresses à ajouter <input name="all_check" type="image" alt="Tout cocher." src="./_img/all_check.gif" title="Tout cocher." /> <input name="all_uncheck" type="image" alt="Tout décocher." src="./_img/all_uncheck.gif" title="Tout décocher." /></th></tr>';
 	echo($lignes_ajouter) ? $lignes_ajouter : '<tr><td colspan="3">Aucune</td></tr>';
 	echo		'</tbody>';
 	// Cas [2b]
 	echo		'<tbody>';
-	echo			'<tr><th colspan="3">Adresses à modifier <input name="all_check" type="image" src="./_img/all_check.gif" title="Tout cocher." /> <input name="all_uncheck" type="image" src="./_img/all_uncheck.gif" title="Tout décocher." /></th></tr>';
+	echo			'<tr><th colspan="3">Adresses à modifier <input name="all_check" type="image" alt="Tout cocher." src="./_img/all_check.gif" title="Tout cocher." /> <input name="all_uncheck" type="image" alt="Tout décocher." src="./_img/all_uncheck.gif" title="Tout décocher." /></th></tr>';
 	echo($lignes_modifier) ? $lignes_modifier : '<tr><td colspan="3">Aucune</td></tr>';
 	echo		'</tbody>';
 	// Cas [2a]
@@ -2429,7 +2429,7 @@ if( $step==81 )
 	echo'<table>';
 	// Cas [2]
 	echo		'<tbody>';
-	echo			'<tr><th colspan="3">Liens de responsabilité à modifier <input name="all_check" type="image" src="./_img/all_check.gif" title="Tout cocher." /> <input name="all_uncheck" type="image" src="./_img/all_uncheck.gif" title="Tout décocher." /></th></tr>';
+	echo			'<tr><th colspan="3">Liens de responsabilité à modifier <input name="all_check" type="image" alt="Tout cocher." src="./_img/all_check.gif" title="Tout cocher." /> <input name="all_uncheck" type="image" alt="Tout décocher." src="./_img/all_uncheck.gif" title="Tout décocher." /></th></tr>';
 	echo($lignes_modifier) ? $lignes_modifier : '<tr><td colspan="3">Aucun</td></tr>';
 	echo		'</tbody>';
 	// Cas [1]

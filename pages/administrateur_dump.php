@@ -50,4 +50,4 @@ $TITRE = "Sauvegarde / Restauration";
 
 <ul class="puce" id="ajax_info">
 </ul>
-<p />
+<p>&nbsp;</p>

@@ -59,7 +59,3 @@ $select_palier  = Formulaire::afficher_select($tab_paliers  , $select_nom='f_pal
 	<p id="p_submit" class="hide"><span class="tab"></span><button id="bouton_exporter" type="submit" class="fichier_export">Générer le listing de données</button><label id="ajax_msg">&nbsp;</label></p>
 </fieldset></form>
 
-<div id="bilan">
-</div>
-
-

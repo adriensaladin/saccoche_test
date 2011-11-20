@@ -29,7 +29,7 @@ if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');
 $TITRE = "Procédure d'installation";
 ?>
 
-<p />
+<p>&nbsp;</p>
 
 <ul id="step">
 	<li id="step1">Étape 1 - Création de dossiers supplémentaires et de leurs droits</li>

@@ -40,7 +40,7 @@ $select_structure = Formulaire::afficher_select(DB_WEBMESTRE_SELECT::DB_OPT_stru
 <h2>Exporter des établissements (données &amp; bases)</h2>
 
 <form action="#" method="post" id="form_exporter"><fieldset>
-	<label class="tab" for="f_basic">Structure(s) <img alt="" src="./_img/bulle_aide.png" title="Utiliser la touche &laquo&nbsp;Shift&nbsp;&raquo; pour une sélection multiple contiguë.<br />Utiliser la touche &laquo&nbsp;Ctrl&nbsp;&raquo; pour une sélection multiple non contiguë." /> :</label><select id="f_base" name="f_base" multiple size="10"><?php echo $select_structure ?></select><br />
+	<label class="tab" for="f_basic">Structure(s) <img alt="" src="./_img/bulle_aide.png" title="Utiliser la touche &laquo;&nbsp;Shift&nbsp;&raquo; pour une sélection multiple contiguë.<br />Utiliser la touche &laquo;&nbsp;Ctrl&nbsp;&raquo; pour une sélection multiple non contiguë." /> :</label><select id="f_base" name="f_base" multiple size="10"><?php echo $select_structure ?></select><br />
 	<span class="tab"></span><button id="bouton_exporter" type="button" class="dump_export">Créer les fichiers d'export.</button><label id="ajax_msg_export">&nbsp;</label>
 	<div id="div_info_export" class="hide">
 		<ul id="puce_info_export" class="puce"><li></li></ul>
@@ -78,13 +78,13 @@ $select_structure = Formulaire::afficher_select(DB_WEBMESTRE_SELECT::DB_OPT_stru
 	<span id="ajax_import_max" class="hide"></span>
 </div>
 
-<p />
+<p>&nbsp;</p>
 
 <form action="#" method="post" id="structures" class="hide">
 	<table class="form" id="transfert">
 		<thead>
 			<tr>
-				<th class="nu"><input id="all_check" type="image" src="./_img/all_check.gif" title="Tout cocher." /> <input id="all_uncheck" type="image" src="./_img/all_uncheck.gif" title="Tout décocher." /></th>
+				<th class="nu"><input id="all_check" type="image" alt="Tout cocher." src="./_img/all_check.gif" title="Tout cocher." /> <input id="all_uncheck" type="image" alt="Tout décocher." src="./_img/all_uncheck.gif" title="Tout décocher." /></th>
 				<th>Id</th>
 				<th>Structure</th>
 				<th>Contact</th>

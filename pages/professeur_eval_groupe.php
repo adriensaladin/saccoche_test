@@ -133,8 +133,7 @@ if(count($tab_id_classe_groupe))
 </form>
 
 <form action="#" method="post" id="zone_compet" class="hide">
-	<div>Cocher ci-dessous (<span class="astuce">cliquer sur un intitulé pour déployer son contenu</span>) :</div>
-	<p />
+	<p>Cocher ci-dessous (<span class="astuce">cliquer sur un intitulé pour déployer son contenu</span>) :</p>
 	<?php
 	// Affichage de la liste des items pour toutes les matières d'un professeur, sur tous les niveaux
 	$DB_TAB = DB_STRUCTURE_COMMUN::DB_recuperer_arborescence($_SESSION['USER_ID'],$matiere_id=0,$niveau_id=0,$only_socle=false,$only_item=false,$socle_nom=false);
@@ -236,19 +235,21 @@ if(count($tab_id_classe_groupe))
 	<table id="table_voir_repart1" class="scor_eval">
 		<tbody><tr><td></td></tr></tbody>
 	</table>
-	<p />
+	<p>
 	<ul class="puce">
 		<li><a id="export_file6" class="lien_ext" href=""><span class="file file_pdf">Archiver / Imprimer le tableau avec la répartition quantitative des scores (format <em>pdf</em>).</span></a></li>
 	</ul>
-	<p />
+	</p>
+	<p>
 	<table id="table_voir_repart2" class="scor_eval">
 		<tbody><tr><td></td></tr></tbody>
 	</table>
-	<p />
+	</p>
+	<p>
 	<ul class="puce">
 		<li><a id="export_file7" class="lien_ext" href=""><span class="file file_pdf">Archiver / Imprimer le tableau avec la répartition nominative des scores (format <em>pdf</em>).</span></a></li>
 	</ul>
-	<p />
+	</p>
 </div>
 
 <?php

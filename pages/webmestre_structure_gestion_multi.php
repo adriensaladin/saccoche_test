@@ -49,7 +49,7 @@ foreach($DB_TAB as $DB_ROW)
 		<thead>
 			<tr>
 				<th class="nu"></th>
-				<th class="nu"><input id="all_check" type="image" src="./_img/all_check.gif" title="Tout cocher." /><br /><input id="all_uncheck" type="image" src="./_img/all_uncheck.gif" title="Tout décocher." /></th>
+				<th class="nu"><input id="all_check" type="image" alt="Tout cocher." src="./_img/all_check.gif" title="Tout cocher." /><br /><input id="all_uncheck" type="image" alt="Tout décocher." src="./_img/all_uncheck.gif" title="Tout décocher." /></th>
 				<th>Id</th>
 				<th>Zone géo</th>
 				<th>Localisation<br />Dénomination</th>
@@ -86,7 +86,7 @@ foreach($DB_TAB as $DB_ROW)
 			?>
 		</tbody>
 	</table>
-	<div id="zone_actions">
+	<div id="zone_actions" class="p">
 		Pour les structures cochées : <input id="listing_ids" name="listing_ids" type="hidden" value="" />
 		<button id="bouton_newsletter" type="button" class="mail_ecrire">Écrire un courriel.</button>
 		<button id="bouton_stats" type="button" class="stats">Calculer les statistiques.</button>
@@ -95,4 +95,3 @@ foreach($DB_TAB as $DB_ROW)
 		<label id="ajax_supprimer">&nbsp;</label>
 	</div>
 </form>
-<p />

@@ -93,7 +93,7 @@ else
 	{
 		$matiere_nom   = $tab['nom'];
 		$matiere_coord = $tab['coord'];
-		$affichage .= '<tr lang="'.$matiere_nom.'"><td>'.$matiere_nom.'</td>';
+		$affichage .= '<tr><td>'.$matiere_nom.'</td>';
 		$id = 'm1_'.$matiere_id;
 		if($tab_matiere[$matiere_id]['niveau_nb']>0)
 		{
@@ -121,27 +121,23 @@ else
 <div id="zone_socle" class="hide">
 	<h2>Relation au socle commun</h2>
 	<form>
-		<label class="tab" for="rien">Item disciplinaire :</label><span class="f_nom i"></span><br />
-		<label class="tab" for="f_lien">Socle commun :</label>Cocher ci-dessous (<span class="astuce">cliquer sur un intitulé pour déployer son contenu</span>).<br />
-		<span class="tab"></span><button id="choisir_socle_valider" type="button" class="valider">Valider le choix effectué.</button> <button id="choisir_socle_annuler" type="button" class="annuler">Annuler.</button>
-		<p />
-		<ul class="ul_n1"><li class="li_n3"><input id="socle_0" name="f_socle" type="radio" value="0" /><label for="socle_0">Hors-socle.</label></li></ul>
-		<p />
+		<p>
+			<label class="tab">Item disciplinaire :</label><span class="f_nom i"></span><br />
+			<label class="tab">Socle commun :</label>Cocher ci-dessous (<span class="astuce">cliquer sur un intitulé pour déployer son contenu</span>).<br />
+			<span class="tab"></span><button id="choisir_socle_valider" type="button" class="valider">Valider le choix effectué.</button> <button id="choisir_socle_annuler" type="button" class="annuler">Annuler.</button>
+		</p>
+		<ul class="ul_n1 p"><li class="li_n3"><input id="socle_0" name="f_socle" type="radio" value="0" /><label for="socle_0">Hors-socle.</label></li></ul>
 		<?php
 		// Affichage de la liste des items du socle pour chaque palier
 		if($_SESSION['PALIERS'])
 		{
 			$DB_TAB = DB_STRUCTURE_COMMUN::DB_recuperer_arborescence_palier($_SESSION['PALIERS']);
 			echo afficher_arborescence_socle_from_SQL($DB_TAB,$dynamique=true,$reference=false,$aff_input=true,$ids=false);
-			echo'<p />';
 		}
 		else
 		{
-			echo'<p><span class="danger"> Aucun palier du socle n\'est associé à l\'établissement ! L\'administrateur doit préalablement choisir les paliers évalués...</span></p>'."\r\n";
+			echo'<span class="danger"> Aucun palier du socle n\'est associé à l\'établissement ! L\'administrateur doit préalablement choisir les paliers évalués...</span>';
 		}
 		?>
 	</form>
 </div>
-
-<p />
-

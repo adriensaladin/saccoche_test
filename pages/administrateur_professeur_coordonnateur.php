@@ -89,7 +89,7 @@ $TITRE = "Gérer les professeurs coordonnateurs";
 				echo'<table'.$class.'>';
 				echo'<thead><tr>'.$TH[$tab_i].'</tr></thead>';
 				echo'<tbody><tr>'.$TB[$tab_i].'</tr></tbody>';
-				echo'</table><p />';
+				echo'</table><p>&nbsp;</p>';
 			}
 		}
 		else

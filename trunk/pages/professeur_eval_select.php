@@ -42,7 +42,7 @@ $date_fin    = date("d/m/Y",mktime(0,0,0,date("m")+1,date("d"),date("Y"))); // 1
 <hr />
 
 <form action="#" method="post" id="form0" class="hide"><fieldset>
-	<label class="tab" for="f_aff_periode">Période :</label>
+	<label class="tab">Période :</label>
 		du <input id="f_date_debut" name="f_date_debut" size="9" type="text" value="<?php echo $date_debut ?>" /><q class="date_calendrier" title="Cliquez sur cette image pour importer une date depuis un calendrier !"></q>
 		au <input id="f_date_fin" name="f_date_fin" size="9" type="text" value="<?php echo $date_fin ?>" /><q class="date_calendrier" title="Cliquez sur cette image pour importer une date depuis un calendrier !"></q>
 	<br />
@@ -72,8 +72,7 @@ $date_fin    = date("d/m/Y",mktime(0,0,0,date("m")+1,date("d"),date("Y"))); // 1
 <script type="text/javascript">var input_date="<?php echo date("d/m/Y") ?>";</script>
 
 <form action="#" method="post" id="zone_compet" class="hide">
-	<div>Cocher ci-dessous (<span class="astuce">cliquer sur un intitulé pour déployer son contenu</span>) :</div>
-	<p />
+	<p>Cocher ci-dessous (<span class="astuce">cliquer sur un intitulé pour déployer son contenu</span>) :</p>
 	<?php
 	// Affichage de la liste des items pour toutes les matières d'un professeur, sur tous les niveaux
 	$DB_TAB = DB_STRUCTURE_COMMUN::DB_recuperer_arborescence($_SESSION['USER_ID'],$matiere_id=0,$niveau_id=0,$only_socle=false,$only_item=false,$socle_nom=false);
@@ -112,8 +111,7 @@ $date_fin    = date("d/m/Y",mktime(0,0,0,date("m")+1,date("d"),date("Y"))); // 1
 </form>
 
 <form action="#" method="post" id="zone_eleve" class="hide">
-	<div>Cocher ci-dessous (<span class="astuce">cliquer sur un intitulé pour déployer son contenu</span>) :</div>
-	<p />
+	<p>Cocher ci-dessous (<span class="astuce">cliquer sur un intitulé pour déployer son contenu</span>) :</p>
 	<?php
 	$tab_regroupements = array();
 	$tab_id = array('classe'=>'','groupe'=>'');
@@ -228,19 +226,21 @@ $date_fin    = date("d/m/Y",mktime(0,0,0,date("m")+1,date("d"),date("Y"))); // 1
 	<table id="table_voir_repart1" class="scor_eval">
 		<tbody><tr><td></td></tr></tbody>
 	</table>
-	<p />
+	<p>
 	<ul class="puce">
 		<li><a id="export_file6" class="lien_ext" href=""><span class="file file_pdf">Archiver / Imprimer le tableau avec la répartition quantitative des scores (format <em>pdf</em>).</span></a></li>
 	</ul>
-	<p />
+	</p>
+	<p>
 	<table id="table_voir_repart2" class="scor_eval">
 		<tbody><tr><td></td></tr></tbody>
 	</table>
-	<p />
+	</p>
+	<p>
 	<ul class="puce">
 		<li><a id="export_file7" class="lien_ext" href=""><span class="file file_pdf">Archiver / Imprimer le tableau avec la répartition nominative des scores (format <em>pdf</em>).</span></a></li>
 	</ul>
-	<p />
+	</p>
 </div>
 
 <?php

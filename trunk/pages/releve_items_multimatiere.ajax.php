@@ -55,6 +55,20 @@ $tab_type[]     = 'individuel';
 $format         = 'multimatiere';
 $type_individuel = 1;
 
+// En cas de manipulation du formulaire (avec Firebug par exemple) ; on pourrait aussi vérifier pour un parent que c'est bien un de ses enfants...
+if(in_array($_SESSION['USER_PROFIL'],array('parent','eleve')))
+{
+	$aff_bilan_MS   = (mb_substr_count($_SESSION['DROIT_BILAN_MOYENNE_SCORE']     ,$_SESSION['USER_PROFIL'])) ? $aff_bilan_MS   : 0 ;
+	$aff_bilan_PA   = (mb_substr_count($_SESSION['DROIT_BILAN_POURCENTAGE_ACQUIS'],$_SESSION['USER_PROFIL'])) ? $aff_bilan_PA   : 0 ;
+	$aff_conv_sur20 = (mb_substr_count($_SESSION['DROIT_BILAN_NOTE_SUR_VINGT']    ,$_SESSION['USER_PROFIL'])) ? $aff_conv_sur20 : 0 ;
+}
+if($_SESSION['USER_PROFIL']=='eleve')
+{
+	$groupe_id  = $_SESSION['ELEVE_CLASSE_ID'];
+	$groupe_nom = $_SESSION['ELEVE_CLASSE_NOM'];
+	$tab_eleve  = array($_SESSION['USER_ID']);
+}
+
 $tab_eleve     = array_filter($tab_eleve,'positif');
 $liste_eleve   = implode(',',$tab_eleve);
 
@@ -152,11 +166,12 @@ if( $orientation && $couleur && $legende && $marge_min && $pages_nb && $cases_nb
 	//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 	// On retourne les résultats
 	//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-	if($_SESSION['USER_PROFIL']=='eleve')
+	if($affichage_direct)
 	{
+		echo'<hr />';
 		echo'<ul class="puce">';
 		echo'<li><a class="lien_ext" href="'.$dossier.$fichier_lien.'_individuel.pdf"><span class="file file_pdf">Archiver / Imprimer (format <em>pdf</em>).</span></a></li>';
-		echo'</ul><p />';
+		echo'</ul>';
 		echo $releve_HTML_individuel;
 	}
 	else
@@ -164,7 +179,7 @@ if( $orientation && $couleur && $legende && $marge_min && $pages_nb && $cases_nb
 		echo'<ul class="puce">';
 		echo'<li><a class="lien_ext" href="'.$dossier.$fichier_lien.'_individuel.pdf"><span class="file file_pdf">Archiver / Imprimer (format <em>pdf</em>).</span></a></li>';
 		echo'<li><a class="lien_ext" href="./releve-html.php?fichier='.$fichier_lien.'_individuel"><span class="file file_htm">Explorer / Manipuler (format <em>html</em>).</span></a></li>';
-		echo'</ul><p />';
+		echo'</ul>';
 	}
 }
 

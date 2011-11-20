@@ -72,8 +72,8 @@ if( ($action=='Afficher_bilan') && $palier_id && count($tab_pilier) && count($ta
 	$affichage .=     '<ul class="puce"><li id="report_nom"></li><li id="report_compet"></li></ul>';
 	$affichage .=     '<input type="hidden" id="f_valid" name="f_valid" val="" /><button id="Enregistrer_validation" type="button" class="valider">Confirmer la suppression de cette validation</button><label id="ajax_msg_validation"></label>';
 	$affichage .=   '</div>';
-	$affichage .=   '<div><button id="fermer_zone_validation" type="button" class="retourner">Retour</button></div><p />';
-	$affichage .=   '<div class="m1 b">@PALIER@</div>';
+	$affichage .=   '<div><button id="fermer_zone_validation" type="button" class="retourner">Retour</button></div>';
+	$affichage .=   '<div class="m1 b p">@PALIER@</div>';
 	$affichage .= '</th>';
 	$affichage .= '</tr></thead>';
 	$affichage .= '<tbody>';

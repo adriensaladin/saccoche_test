@@ -136,13 +136,16 @@ foreach($tab_eleve as $key => $tab)
 //	Elaboration de la synthèse matière ou multi-matières, en HTML et PDF
 //	////////////////////////////////////////////////////////////////////////////////////////////////////
 
+$affichage_direct = ( in_array($_SESSION['USER_PROFIL'],array('eleve','parent')) ) ? TRUE : FALSE ;
+
 // Préparatifs
-$releve_HTML  = '<style type="text/css">'.$_SESSION['CSS'].'</style>';
-$releve_HTML .= '<h1>Synthèse '.$tab_titre[$format].'</h1>';
-$releve_HTML .= '<h2>'.html($texte_periode).'</h2>';
+$releve_HTML  = $affichage_direct ? '' : '<style type="text/css">'.$_SESSION['CSS'].'</style>';
+$releve_HTML .= $affichage_direct ? '' : '<h1>Synthèse '.$tab_titre[$format].'</h1>';
+$releve_HTML .= $affichage_direct ? '' : '<h2>'.html($texte_periode).'</h2>';
 $releve_HTML .= '<div class="astuce">Cliquer sur les icones &laquo;<img src="./_img/toggle_plus.gif" alt="+" />&raquo; pour accéder au détail.';
 $releve_PDF = new PDF($orientation='portrait',$marge_min=7,$couleur,$legende);
 $releve_PDF->bilan_synthese_initialiser($format,$nb_syntheses_total,$eleve_nb);
+$separation = (count($tab_eleve)>1) ? '<hr class="breakafter" />' : '' ;
 // Pour chaque élève...
 foreach($tab_eleve as $tab)
 {
@@ -152,17 +155,17 @@ foreach($tab_eleve as $tab)
 	{
 		// Intitulé
 		$releve_PDF->bilan_synthese_entete($format,$nb_matieres,$nb_syntheses,$tab_titre[$format],$texte_periode,$groupe_nom,$eleve_nom,$eleve_prenom);
-		$releve_HTML .= '<hr class="breakafter" /><h2>'.html($groupe_nom).' - '.html($eleve_nom).' '.html($eleve_prenom).'</h2>';
+		$releve_HTML .= $separation.'<h2>'.html($groupe_nom).' - '.html($eleve_nom).' '.html($eleve_prenom).'</h2>';
 		// On passe en revue les matières...
 		foreach($tab_infos_acquis_eleve[$eleve_id] as $matiere_id => $tab_infos_matiere)
 		{
 			$tab_infos_matiere['total'] = array_filter($tab_infos_matiere['total'],'non_zero'); // Retirer les valeurs nulles
 			$total = array_sum($tab_infos_matiere['total']) ; // La somme ne peut être nulle, sinon la matière ne se serait pas affichée
 			$releve_PDF->bilan_synthese_ligne_matiere($format,$tab_matiere[$matiere_id],$tab_infos_matiere['total'],$total);
-			$releve_HTML .= '<table class="bilan" style="width:900px"><tbody>';
+			$releve_HTML .= '<table class="bilan" style="width:900px;margin-bottom:0"><tbody>';
 			$releve_HTML .= '<tr><th style="width:540px">'.html($tab_matiere[$matiere_id]).'</th>'.affich_barre_synthese_html($width=360,$tab_infos_matiere['total'],$total).'</tr>';
 			$releve_HTML .= '</tbody></table>'; // Utilisation de 2 tableaux sinon bugs constatés lors de l'affichage des détails...
-			$releve_HTML .= '<table class="bilan" style="width:900px"><tbody>';
+			$releve_HTML .= '<table class="bilan" style="width:900px;margin-top:0"><tbody>';
 			//  On passe en revue les synthèses...
 			unset($tab_infos_matiere['total']);
 			foreach($tab_infos_matiere as $synthese_ref => $tab_infos_synthese)
@@ -177,7 +180,6 @@ foreach($tab_eleve as $tab)
 				$releve_HTML .= '</td></tr>';
 			}
 			$releve_HTML .= '</tbody></table>';
-			$releve_HTML .= '<p />';
 		}
 		if($legende=='oui')
 		{

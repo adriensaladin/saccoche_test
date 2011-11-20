@@ -257,7 +257,7 @@ function afficher_formulaire_structures_communautaires($sesamath_id,$sesamath_ke
 	$tab_post['sesamath_id']  = $sesamath_id;
 	$tab_post['sesamath_key'] = $sesamath_key;
 	$tab_post['version_prog'] = VERSION_PROG; // Le service web doit être compatible
-	return url_get_contents(SERVEUR_COMMUNAUTAIRE,$tab_post);
+	return str_replace( '=""></option>' , '="">Toutes les structures partageant au moins un référentiel</option>' , url_get_contents(SERVEUR_COMMUNAUTAIRE,$tab_post) );
 }
 
 /**

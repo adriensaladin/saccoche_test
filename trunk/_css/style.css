@@ -40,7 +40,7 @@ fieldset,img,hr {border:0}
 html {height:100%;width:100%;background:#FFF;font-size:13px;}
 body {background:#FFF;font:1em "arial","helvetica","nimbus sans l","liberation sans","freesans","garuda",sans-serif;cursor:default;} /* Arial pour windows, Helvetica pour Mac, Nimbus pour Linux, d'autres libres ensuite, et sans-serif en dernier recours (à écrire sans "" car mot clef générique) ; ne pas mettre Verdana ou Deja Vu, trop larges */
 table,select,textarea,input,button,div{font:100% "arial","helvetica","nimbus sans l","liberation sans","freesans","garuda",sans-serif}
-p{margin:1em auto}
+p, *.p{margin-top:1em;margin-bottom:1em}
 img {vertical-align:middle}
 td img , #aide_en_ligne img  , .legende img {vertical-align:baseline}
 label img {vertical-align:text-top}
@@ -420,7 +420,7 @@ th.headerSortDown {background:#99F url(../_img/ts_desc.gif) no-repeat center rig
 /* Format des tableaux de bilans de compétences : .bilan et .bilan_synthese                            */
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-table.bilan, table.bilan_synthese {font-size:85%}
+table.bilan, table.bilan_synthese {font-size:85%;margin-top:1em;margin-bottom:1em}
 table.bilan tfoot th, table.bilan tfoot td {background:#DDF;text-align:right}
 table.bilan tfoot td.nu {background:#FFF;}
 table.bilan_synthese {margin-top:1em;margin-bottom:1em}
@@ -511,7 +511,8 @@ li.li_m2 {background:transparent url(../_img/folder/folder_m2.png) no-repeat top
 li.li_n1 {background:transparent url(../_img/folder/folder_n1.png) no-repeat top left;color:#F00}	/* referentiel_domaine ; socle_pilier */
 li.li_n2 {background:transparent url(../_img/folder/folder_n2.png) no-repeat top left;color:#D0C}	/* referentiel_theme ; socle_section */
 li.li_n3 {background:transparent url(../_img/folder/folder_n3.png) no-repeat top left;color:#70F}	/* referentiel_item ; socle_entree */
-#zone_compet li {line-height:1.5em;}	/* le height évite que la hauteur des lignes varie lors de la modification de leur contenu en ajax */
+#zone_compet {min-width:800px}	/* pour le fancybox qui ne se redimensionne pas en largeur, prévoir un minimum au départ */
+#zone_compet li {line-height:1.5em}	/* le height évite que la hauteur des lignes varie lors de la modification de leur contenu en ajax */
 li.li_n3 b{font-weight:normal}
 li.li_n3 b img{margin-right:2px}
 

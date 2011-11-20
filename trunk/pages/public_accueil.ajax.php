@@ -74,7 +74,7 @@ function afficher_formulaire_identification($profil,$mode='normal',$nom='')
 	}
 	else
 	{
-		echo'<label class="tab" for="f_mode">Mode de connexion :</label>';
+		echo'<label class="tab">Mode de connexion :</label>';
 		echo	'<label for="f_mode_normal"><input type="radio" id="f_mode_normal" name="f_mode" value="normal" /> formulaire <em>SACoche</em></label>&nbsp;&nbsp;&nbsp;';
 		echo	'<label for="f_mode_'.$mode.'"><input type="radio" id="f_mode_'.$mode.'" name="f_mode" value="'.$mode.'" checked /> authentification extérieure <em>'.html($mode.'-'.$nom).'</em></label><br />'."\r\n";
 		echo'<fieldset id="fieldset_normal" class="hide">'."\r\n";

@@ -73,7 +73,7 @@ $select_groupe  = Formulaire::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_groupe
 	<table id="table_demandes" class="form">
 		<thead>
 			<tr>
-				<th class="nu"><input id="all_check" type="image" src="./_img/all_check.gif" title="Tout cocher." /> <input id="all_uncheck" type="image" src="./_img/all_uncheck.gif" title="Tout décocher." /></th>
+				<th class="nu"><input id="all_check" type="image" alt="Tout cocher." src="./_img/all_check.gif" title="Tout cocher." /> <input id="all_uncheck" type="image" alt="Tout décocher." src="./_img/all_uncheck.gif" title="Tout décocher." /></th>
 				<th>Matière</th>
 				<th>Item</th>
 				<th>Popularité</th>
@@ -105,7 +105,7 @@ $select_groupe  = Formulaire::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_groupe
 			<label class="tab" for="f_devoir">Évaluation :</label><select id="f_devoir" name="f_devoir"><option></option></select><label id="ajax_maj1">&nbsp;</label>
 		</fieldset>
 		<fieldset id="step_suite" class="hide">
-			<label class="tab" for="f_creer">Suite :</label><select id="f_suite" name="f_suite"><option value="changer">Changer ensuite le statut pour "évaluation en préparation".</option><option value="retirer">Retirer ensuite de la liste des demandes.</option></select>
+			<label class="tab" for="f_suite">Suite :</label><select id="f_suite" name="f_suite"><option value="changer">Changer ensuite le statut pour "évaluation en préparation".</option><option value="retirer">Retirer ensuite de la liste des demandes.</option></select>
 		</fieldset>
 		<p id="step_valider" class="hide">
 			<input type="hidden" id="f_groupe_id2" name="f_groupe_id" value="" /><input type="hidden" id="f_groupe_type2" name="f_groupe_type" value="" />

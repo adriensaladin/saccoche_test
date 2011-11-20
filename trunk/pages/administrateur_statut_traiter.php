@@ -59,16 +59,16 @@ $select_professeurs_directeurs = Formulaire::afficher_select(DB_STRUCTURE_COMMUN
 		<tr>
 			<td class="nu">
 				<p id="p_eleves" class="hide">
-					<b>Élèves au statut désactivé :</b> <img alt="" src="./_img/bulle_aide.png" title="Utiliser la touche &laquo&nbsp;Shift&nbsp;&raquo; pour une sélection multiple contiguë.<br />Utiliser la touche &laquo&nbsp;Ctrl&nbsp;&raquo; pour une sélection multiple non contiguë." /><br />
+					<b>Élèves au statut désactivé :</b> <img alt="" src="./_img/bulle_aide.png" title="Utiliser la touche &laquo;&nbsp;Shift&nbsp;&raquo; pour une sélection multiple contiguë.<br />Utiliser la touche &laquo;&nbsp;Ctrl&nbsp;&raquo; pour une sélection multiple non contiguë." /><br />
 					<select id="f_groupe" name="f_groupe"><?php echo $select_f_groupes ?></select><br />
 					<select id="select_eleves" name="select_eleves[]" multiple size="10" class="hide"><option value=""></option></select>
 				</p>
 				<p id="p_parents" class="hide">
-					<b>Responsables légaux au statut désactivé :</b> <img alt="" src="./_img/bulle_aide.png" title="Utiliser la touche &laquo&nbsp;Shift&nbsp;&raquo; pour une sélection multiple contiguë.<br />Utiliser la touche &laquo&nbsp;Ctrl&nbsp;&raquo; pour une sélection multiple non contiguë." /><br />
+					<b>Responsables légaux au statut désactivé :</b> <img alt="" src="./_img/bulle_aide.png" title="Utiliser la touche &laquo;&nbsp;Shift&nbsp;&raquo; pour une sélection multiple contiguë.<br />Utiliser la touche &laquo;&nbsp;Ctrl&nbsp;&raquo; pour une sélection multiple non contiguë." /><br />
 					<select id="select_parents" name="select_parents[]" multiple size="10"><?php echo $select_parents; ?></select>
 				</p>
 				<p id="p_professeurs_directeurs" class="hide">
-					<b>Professeurs / Directeurs au statut désactivé :</b> <img alt="" src="./_img/bulle_aide.png" title="Utiliser la touche &laquo&nbsp;Shift&nbsp;&raquo; pour une sélection multiple contiguë.<br />Utiliser la touche &laquo&nbsp;Ctrl&nbsp;&raquo; pour une sélection multiple non contiguë." /><br />
+					<b>Professeurs / Directeurs au statut désactivé :</b> <img alt="" src="./_img/bulle_aide.png" title="Utiliser la touche &laquo;&nbsp;Shift&nbsp;&raquo; pour une sélection multiple contiguë.<br />Utiliser la touche &laquo;&nbsp;Ctrl&nbsp;&raquo; pour une sélection multiple non contiguë." /><br />
 					<select id="select_professeurs_directeurs" name="select_professeurs_directeurs[]" multiple size="10"><?php echo $select_professeurs_directeurs; ?></select>
 				</p>
 			</td>

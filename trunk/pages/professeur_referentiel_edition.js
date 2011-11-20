@@ -86,7 +86,7 @@ $(document).ready
 			function()
 			{
 				id = $(this).parent().attr('id');
-				matiere = $(this).parent().parent().attr('lang');
+				matiere_nom = $(this).parent().prev().prev().text();
 				matiere_id = id.substring(3);
 				afficher_masquer_images_action('hide');
 				new_label = '<label for="'+id+'" class="loader">Demande envoyée... Veuillez patienter.</label>';
@@ -114,7 +114,7 @@ $(document).ready
 							else
 							{
 								$('#zone_choix_referentiel').hide();
-								$('#zone_compet').html('<span class="tab"></span><button id="fermer_zone_compet" type="button" class="retourner">Retour à la liste des matières</button>'+'<h2>'+matiere+'</h2>'+responseHTML);
+								$('#zone_compet').html('<span class="tab"></span><button id="fermer_zone_compet" type="button" class="retourner">Retour à la liste des matières</button>'+'<h2>'+matiere_nom+'</h2>'+responseHTML);
 								// Récupérer le contenu des title des ressources avant que le tooltip ne les enlève
 								$('#zone_compet li.li_n3').each
 								(

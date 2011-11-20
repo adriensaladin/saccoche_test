@@ -28,4 +28,4 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 ?>
 
-<p><label for="rien" class="erreur">Pour pouvoir effectuer la recherche d'un référentiel partagé sur le serveur communautaire, un administrateur doit préalablement identifier l'établissement dans la base Sésamath (<span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__gestion_informations_structure">DOC : Gestion de l'identité de l'établissement</a></span>).</label></p>
+<p><label class="erreur">Pour pouvoir effectuer la recherche d'un référentiel partagé sur le serveur communautaire, un administrateur doit préalablement identifier l'établissement dans la base Sésamath (<span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__gestion_informations_structure">DOC : Gestion de l'identité de l'établissement</a></span>).</label></p>

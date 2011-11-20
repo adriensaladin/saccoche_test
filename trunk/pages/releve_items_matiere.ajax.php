@@ -45,14 +45,30 @@ $only_socle     = (isset($_POST['f_restriction'])) ? 1                          
 $aff_coef       = (isset($_POST['f_coef']))        ? 1                                     : 0;
 $aff_socle      = (isset($_POST['f_socle']))       ? 1                                     : 0;
 $aff_lien       = (isset($_POST['f_lien']))        ? 1                                     : 0;
-$aff_bilan_MS   = (isset($_POST['f_bilan_MS']))    ? 1                                     : 0;	// en cas de manipulation type Firebug, peut être forcé pour élève/parent avec (mb_substr_count($_SESSION['DROIT_BILAN_MOYENNE_SCORE'],$_SESSION['USER_PROFIL']))
-$aff_bilan_PA   = (isset($_POST['f_bilan_PA']))    ? 1                                     : 0;	// en cas de manipulation type Firebug, peut être forcé pour élève/parent avec (mb_substr_count($_SESSION['DROIT_BILAN_POURCENTAGE_ACQUIS'],$_SESSION['USER_PROFIL']))
-$aff_conv_sur20 = (isset($_POST['f_conv_sur20']))  ? 1                                     : 0;	// en cas de manipulation type Firebug, peut être forcé pour élève/parent avec (mb_substr_count($_SESSION['DROIT_BILAN_NOTE_SUR_VINGT'],$_SESSION['USER_PROFIL']))
-$groupe_id      = (isset($_POST['f_groupe']))      ? clean_entier($_POST['f_groupe'])      : 0;	// en cas de manipulation type Firebug, peut être forcé pour l'élève à $_SESSION['ELEVE_CLASSE_ID']
-$groupe_nom     = (isset($_POST['f_groupe_nom']))  ? clean_texte($_POST['f_groupe_nom'])   : '';	// en cas de manipulation type Firebug, peut être forcé pour l'élève à $_SESSION['ELEVE_CLASSE_NOM']
-$tab_eleve      = (isset($_POST['eleves']))        ? array_map('clean_entier',explode(',',$_POST['eleves'])) : array() ;	// en cas de manipulation type Firebug, peut être forcé pour l'élève avec $_SESSION['USER_ID']
-$tab_type       = (isset($_POST['types']))         ? array_map('clean_texte',explode(',',$_POST['types']))   : array() ;	// en cas de manipulation type Firebug, peut être forcé pour l'élève à 'individuel'
+$aff_bilan_MS   = (isset($_POST['f_bilan_MS']))    ? 1                                     : 0;
+$aff_bilan_PA   = (isset($_POST['f_bilan_PA']))    ? 1                                     : 0;
+$aff_conv_sur20 = (isset($_POST['f_conv_sur20']))  ? 1                                     : 0;
+$groupe_id      = (isset($_POST['f_groupe']))      ? clean_entier($_POST['f_groupe'])      : 0;
+$groupe_nom     = (isset($_POST['f_groupe_nom']))  ? clean_texte($_POST['f_groupe_nom'])   : '';
+$tab_eleve      = (isset($_POST['eleves']))        ? array_map('clean_entier',explode(',',$_POST['eleves'])) : array() ;
+$tab_type       = (isset($_POST['types']))         ? array_map('clean_texte',explode(',',$_POST['types']))   : array() ;
 $format         = 'matiere';
+
+// En cas de manipulation du formulaire (avec Firebug par exemple) ; on pourrait aussi vérifier pour un parent que c'est bien un de ses enfants...
+if(in_array($_SESSION['USER_PROFIL'],array('parent','eleve')))
+{
+	$aff_bilan_MS   = (mb_substr_count($_SESSION['DROIT_BILAN_MOYENNE_SCORE']     ,$_SESSION['USER_PROFIL'])) ? $aff_bilan_MS   : 0 ;
+	$aff_bilan_PA   = (mb_substr_count($_SESSION['DROIT_BILAN_POURCENTAGE_ACQUIS'],$_SESSION['USER_PROFIL'])) ? $aff_bilan_PA   : 0 ;
+	$aff_conv_sur20 = (mb_substr_count($_SESSION['DROIT_BILAN_NOTE_SUR_VINGT']    ,$_SESSION['USER_PROFIL'])) ? $aff_conv_sur20 : 0 ;
+	$tab_type       = array('individuel');
+}
+if($_SESSION['USER_PROFIL']=='eleve')
+{
+	$groupe_id  = $_SESSION['ELEVE_CLASSE_ID'];
+	$groupe_nom = $_SESSION['ELEVE_CLASSE_NOM'];
+	$tab_eleve  = array($_SESSION['USER_ID']);
+}
+
 $type_individuel = (in_array('individuel',$tab_type)) ? 1 : 0 ;
 $type_synthese   = (in_array('synthese',$tab_type))   ? 1 : 0 ;
 $type_bulletin   = (in_array('bulletin',$tab_type))   ? 1 : 0 ;
@@ -156,37 +172,41 @@ if( $orientation && $couleur && $legende && $marge_min && $pages_nb && $cases_nb
 	require('./_inc/code_releve_bilan_item.php');
 
 	// Affichage du résultat
-	if($_SESSION['USER_PROFIL']=='eleve')
+	if($affichage_direct)
 	{
+		echo'<hr />';
 		echo'<ul class="puce">';
 		echo'<li><a class="lien_ext" href="'.$dossier.$fichier_lien.'_individuel.pdf"><span class="file file_pdf">Archiver / Imprimer (format <em>pdf</em>).</span></a></li>';
-		echo'</ul><p />';
+		echo'</ul>';
 		echo $releve_HTML_individuel;
 	}
 	else
 	{
 		if($type_bulletin)
 		{
+			echo'<h2>Bulletin</h2>';
 			echo'<ul class="puce">';
-			echo'<li><a class="lien_ext" href="'.$dossier.$fichier_lien.'_bulletin_note_appreciation.csv"><span class="file file_txt">Bulletin &rarr; Récupérer notes et appréciations à importer dans GEPI (format <em>csv</em> <img alt="" src="./_img/bulle_aide.png" title="Si le navigateur ouvre le fichier au lieu de l\'enregistrer, cliquer avec le bouton droit et choisir «&nbsp;Enregistrer&nbsp;sous...&nbsp;»." />).</span></a></li>';
-			echo'<li><a class="lien_ext" href="'.$dossier.$fichier_lien.'_bulletin_note.csv"><span class="file file_txt">Bulletin &rarr; Récupérer les notes à importer dans GEPI (format <em>csv</em> <img alt="" src="./_img/bulle_aide.png" title="Si le navigateur ouvre le fichier au lieu de l\'enregistrer, cliquer avec le bouton droit et choisir «&nbsp;Enregistrer&nbsp;sous...&nbsp;»." />).</span></a></li>';
-			echo'<li><a class="lien_ext" href="'.$dossier.$fichier_lien.'_bulletin_appreciation.csv"><span class="file file_txt">Bulletin &rarr; Récupérer les appréciations à importer dans GEPI (format <em>csv</em> <img alt="" src="./_img/bulle_aide.png" title="Si le navigateur ouvre le fichier au lieu de l\'enregistrer, cliquer avec le bouton droit et choisir «&nbsp;Enregistrer&nbsp;sous...&nbsp;»." />).</span></a></li>';
-			echo'<li><a class="lien_ext" href="./releve-html.php?fichier='.$fichier_lien.'_bulletin"><span class="file file_htm">Bulletin &rarr; Explorer / Manipuler (format <em>html</em>).</span></a></li>';
-			echo'</ul><p />';
+			echo'<li><a class="lien_ext" href="'.$dossier.$fichier_lien.'_bulletin_note_appreciation.csv"><span class="file file_txt">Récupérer notes et appréciations à importer dans GEPI (format <em>csv</em> <img alt="" src="./_img/bulle_aide.png" title="Si le navigateur ouvre le fichier au lieu de l\'enregistrer, cliquer avec le bouton droit et choisir «&nbsp;Enregistrer&nbsp;sous...&nbsp;»." />).</span></a></li>';
+			echo'<li><a class="lien_ext" href="'.$dossier.$fichier_lien.'_bulletin_note.csv"><span class="file file_txt">Récupérer les notes à importer dans GEPI (format <em>csv</em> <img alt="" src="./_img/bulle_aide.png" title="Si le navigateur ouvre le fichier au lieu de l\'enregistrer, cliquer avec le bouton droit et choisir «&nbsp;Enregistrer&nbsp;sous...&nbsp;»." />).</span></a></li>';
+			echo'<li><a class="lien_ext" href="'.$dossier.$fichier_lien.'_bulletin_appreciation.csv"><span class="file file_txt">Récupérer les appréciations à importer dans GEPI (format <em>csv</em> <img alt="" src="./_img/bulle_aide.png" title="Si le navigateur ouvre le fichier au lieu de l\'enregistrer, cliquer avec le bouton droit et choisir «&nbsp;Enregistrer&nbsp;sous...&nbsp;»." />).</span></a></li>';
+			echo'<li><a class="lien_ext" href="./releve-html.php?fichier='.$fichier_lien.'_bulletin"><span class="file file_htm">Explorer / Manipuler (format <em>html</em>).</span></a></li>';
+			echo'</ul>';
 		}
 		if($type_synthese)
 		{
+			echo'<h2>Synthèse collective</h2>';
 			echo'<ul class="puce">';
-			echo'<li><a class="lien_ext" href="'.$dossier.$fichier_lien.'_synthese.pdf"><span class="file file_pdf">Synthèse collective &rarr; Archiver / Imprimer (format <em>pdf</em>).</span></a></li>';
-			echo'<li><a class="lien_ext" href="./releve-html.php?fichier='.$fichier_lien.'_synthese"><span class="file file_htm">Synthèse collective &rarr; Explorer / Manipuler (format <em>html</em>).</span></a></li>';
-			echo'</ul><p />';
+			echo'<li><a class="lien_ext" href="'.$dossier.$fichier_lien.'_synthese.pdf"><span class="file file_pdf">Archiver / Imprimer (format <em>pdf</em>).</span></a></li>';
+			echo'<li><a class="lien_ext" href="./releve-html.php?fichier='.$fichier_lien.'_synthese"><span class="file file_htm">Explorer / Manipuler (format <em>html</em>).</span></a></li>';
+			echo'</ul>';
 		}
 		if($type_individuel)
 		{
+			echo'<h2>Relevé individuel</h2>';
 			echo'<ul class="puce">';
-			echo'<li><a class="lien_ext" href="'.$dossier.$fichier_lien.'_individuel.pdf"><span class="file file_pdf">Relevé individuel &rarr; Archiver / Imprimer (format <em>pdf</em>).</span></a></li>';
-			echo'<li><a class="lien_ext" href="./releve-html.php?fichier='.$fichier_lien.'_individuel"><span class="file file_htm">Relevé individuel &rarr; Explorer / Manipuler (format <em>html</em>).</span></a></li>';
-			echo'</ul><p />';
+			echo'<li><a class="lien_ext" href="'.$dossier.$fichier_lien.'_individuel.pdf"><span class="file file_pdf">Archiver / Imprimer (format <em>pdf</em>).</span></a></li>';
+			echo'<li><a class="lien_ext" href="./releve-html.php?fichier='.$fichier_lien.'_individuel"><span class="file file_htm">Explorer / Manipuler (format <em>html</em>).</span></a></li>';
+			echo'</ul>';
 		}
 	}
 

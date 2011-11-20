@@ -47,6 +47,7 @@ if($_SESSION['USER_PROFIL']=='directeur')
 	$tab_groupes  = DB_STRUCTURE_COMMUN::DB_OPT_classes_groupes_etabl();
 	$tab_matieres = 'Choisir d\'abord un groupe ci dessous...'; // maj en ajax suivant le choix du groupe
 	$of_g = 'oui'; $sel_g = false; $class_form_eleve = 'show'; $class_form_periode = 'hide'; $class_form_option = 'hide';
+	$multiple_eleve = ' multiple size="9"';
 	$select_eleves = '<option></option>'; // maj en ajax suivant le choix du groupe
 }
 if($_SESSION['USER_PROFIL']=='professeur')
@@ -54,6 +55,7 @@ if($_SESSION['USER_PROFIL']=='professeur')
 	$tab_groupes  = DB_STRUCTURE_COMMUN::DB_OPT_groupes_professeur($_SESSION['USER_ID']);
 	$tab_matieres = DB_STRUCTURE_COMMUN::DB_OPT_matieres_professeur($_SESSION['MATIERES'],$_SESSION['USER_ID']);
 	$of_g = 'oui'; $sel_g = false; $class_form_eleve = 'show'; $class_form_periode = 'hide'; $class_form_option = 'hide';
+	$multiple_eleve = ' multiple size="9"';
 	$select_eleves = '<option></option>'; // maj en ajax suivant le choix du groupe
 }
 if( ($_SESSION['USER_PROFIL']=='parent') && ($_SESSION['NB_ENFANTS']!=1) )
@@ -61,6 +63,7 @@ if( ($_SESSION['USER_PROFIL']=='parent') && ($_SESSION['NB_ENFANTS']!=1) )
 	$tab_groupes  = $_SESSION['OPT_PARENT_CLASSES']; Formulaire::$tab_select_optgroup = array('classe'=>'Classes');
 	$tab_matieres = DB_STRUCTURE_COMMUN::DB_OPT_matieres_etabl($_SESSION['MATIERES'],$transversal=true);
 	$of_g = 'oui'; $sel_g = false; $class_form_eleve = 'show'; $class_form_periode = 'hide'; $class_form_option = 'hide';
+	$multiple_eleve = ''; // volontaire
 	$select_eleves = '<option></option>'; // maj en ajax suivant le choix du groupe
 }
 if( ($_SESSION['USER_PROFIL']=='parent') && ($_SESSION['NB_ENFANTS']==1) )
@@ -68,6 +71,7 @@ if( ($_SESSION['USER_PROFIL']=='parent') && ($_SESSION['NB_ENFANTS']==1) )
 	$tab_groupes  = array(0=>array('valeur'=>$_SESSION['ELEVE_CLASSE_ID'],'texte'=>$_SESSION['ELEVE_CLASSE_NOM'],'optgroup'=>'classe')); Formulaire::$tab_select_optgroup = array('classe'=>'Classes');
 	$tab_matieres = DB_STRUCTURE_COMMUN::DB_OPT_matieres_eleve($_SESSION['MATIERES'],$_SESSION['OPT_PARENT_ENFANTS'][0]['valeur']);
 	$of_g = 'non'; $sel_g = true; $class_form_eleve = 'hide'; $class_form_periode = 'show'; $class_form_option = 'hide';
+	$multiple_eleve = '';
 	$select_eleves = '<option value="'.$_SESSION['OPT_PARENT_ENFANTS'][0]['valeur'].'" selected>'.html($_SESSION['OPT_PARENT_ENFANTS'][0]['texte']).'</option>';
 }
 if($_SESSION['USER_PROFIL']=='eleve')
@@ -75,6 +79,7 @@ if($_SESSION['USER_PROFIL']=='eleve')
 	$tab_groupes  = array(0=>array('valeur'=>$_SESSION['ELEVE_CLASSE_ID'],'texte'=>$_SESSION['ELEVE_CLASSE_NOM'],'optgroup'=>'classe')); Formulaire::$tab_select_optgroup = array('classe'=>'Classes');
 	$tab_matieres = DB_STRUCTURE_COMMUN::DB_OPT_matieres_eleve($_SESSION['MATIERES'],$_SESSION['USER_ID']);
 	$of_g = 'non'; $sel_g = true;  $class_form_eleve = 'hide'; $class_form_periode = 'show'; $class_form_option = 'show';
+	$multiple_eleve = '';
 	$select_eleves = '<option value="'.$_SESSION['USER_ID'].'" selected>'.html($_SESSION['USER_NOM'].' '.$_SESSION['USER_PRENOM']).'</option>';
 }
 $tab_periodes = DB_STRUCTURE_COMMUN::DB_OPT_periodes_etabl();
@@ -150,7 +155,7 @@ echo ($nb_inconnu) ? '<label class="alerte">Il y a '.$nb_inconnu.' référentiel
 	</p>
 	<p class="<?php echo $class_form_eleve ?>">
 		<label class="tab" for="f_groupe">Classe / groupe :</label><?php echo $select_groupe ?><input type="hidden" id="f_groupe_nom" name="f_groupe_nom" value="" /><label id="ajax_maj">&nbsp;</label><br />
-		<label class="tab" for="f_eleve"><img alt="" src="./_img/bulle_aide.png" title="Utiliser la touche &laquo&nbsp;Shift&nbsp;&raquo; pour une sélection multiple contiguë.<br />Utiliser la touche &laquo&nbsp;Ctrl&nbsp;&raquo; pour une sélection multiple non contiguë." /> Élève(s) :</label><select id="f_eleve" name="f_eleve[]" multiple size="9"><?php echo $select_eleves ?></select><input type="hidden" id="eleves" name="eleves" value="" />
+		<label class="tab" for="f_eleve"><img alt="" src="./_img/bulle_aide.png" title="Utiliser la touche &laquo;&nbsp;Shift&nbsp;&raquo; pour une sélection multiple contiguë.<br />Utiliser la touche &laquo;&nbsp;Ctrl&nbsp;&raquo; pour une sélection multiple non contiguë." /> Élève(s) :</label><select id="f_eleve" name="f_eleve[]"<?php echo $multiple_eleve ?>><?php echo $select_eleves ?></select><input type="hidden" id="eleves" name="eleves" value="" />
 	</p>
 	<p id="zone_periodes" class="<?php echo $class_form_periode ?>">
 		<label class="tab" for="f_periode"><img alt="" src="./_img/bulle_aide.png" title="Les items pris en compte sont ceux qui sont évalués<br />au moins une fois sur cette période." /> Période :</label><?php echo $select_periode ?>
@@ -166,11 +171,11 @@ echo ($nb_inconnu) ? '<label class="alerte">Il y a '.$nb_inconnu.' référentiel
 		</div>
 		<div class="toggle hide">
 			<span class="tab"></span><a href="#" class="puce_moins toggle">Afficher moins d'options</a><br />
-			<label class="tab" for="f_mode_synthese"> Mode de synthèse :</label><label for="f_mode_synthese_predefini"><input type="radio" id="f_mode_synthese_predefini" name="f_mode_synthese" value="predefini"<?php echo $check_synthese_predefini ?> /> tel que prédéfini</label>&nbsp;&nbsp;&nbsp;&nbsp;<label for="f_mode_synthese_domaine"><input type="radio" id="f_mode_synthese_domaine" name="f_mode_synthese" value="domaine"<?php echo $check_synthese_domaine ?> /> forcé par domaines</label>&nbsp;&nbsp;&nbsp;&nbsp;<label for="f_mode_synthese_theme"><input type="radio" id="f_mode_synthese_theme" name="f_mode_synthese" value="theme"<?php echo $check_synthese_theme ?> /> forcé par thèmes</label><br />
-			<label class="tab" for="f_opt_html"><img alt="" src="./_img/bulle_aide.png" title="Pour le format html, le détail des items peut être affiché." /> Indications :</label><label for="f_coef"><input type="checkbox" id="f_coef" name="f_coef" value="1"<?php echo $check_aff_coef ?> /> Coefficients</label>&nbsp;&nbsp;&nbsp;<label for="f_socle"><input type="checkbox" id="f_socle" name="f_socle" value="1"<?php echo $check_aff_socle ?> /> Socle</label>&nbsp;&nbsp;&nbsp;<label for="f_lien"><input type="checkbox" id="f_lien" name="f_lien" value="1"<?php echo $check_aff_lien ?> /> Liens de remédiation</label><br />
-			<label class="tab" for="f_restriction">Restrictions :</label><input type="checkbox" id="f_restriction_socle" name="f_restriction_socle" value="1"<?php echo $check_only_socle ?> /> <label for="f_restriction_socle">Uniquement les items liés du socle</label><br />
-			<label class="tab"></label><input type="checkbox" id="f_restriction_niveau" name="f_restriction_niveau" value="1"<?php echo $check_only_niveau ?> /> <label for="f_restriction_niveau">Utiliser uniquement les items du niveau <em id="niveau_nom"></em><input type="hidden" id="f_niveau" name="f_niveau" value="" /></label><br />
-			<label class="tab" for="f_impression"><img alt="" src="./_img/bulle_aide.png" title="Pour le format pdf." /> Impression :</label><?php echo $select_couleur ?> <?php echo $select_legende ?>
+			<label class="tab"> Mode de synthèse :</label><label for="f_mode_synthese_predefini"><input type="radio" id="f_mode_synthese_predefini" name="f_mode_synthese" value="predefini"<?php echo $check_synthese_predefini ?> /> tel que prédéfini</label>&nbsp;&nbsp;&nbsp;&nbsp;<label for="f_mode_synthese_domaine"><input type="radio" id="f_mode_synthese_domaine" name="f_mode_synthese" value="domaine"<?php echo $check_synthese_domaine ?> /> forcé par domaines</label>&nbsp;&nbsp;&nbsp;&nbsp;<label for="f_mode_synthese_theme"><input type="radio" id="f_mode_synthese_theme" name="f_mode_synthese" value="theme"<?php echo $check_synthese_theme ?> /> forcé par thèmes</label><br />
+			<label class="tab"><img alt="" src="./_img/bulle_aide.png" title="Pour le format html, le détail des items peut être affiché." /> Indications :</label><label for="f_coef"><input type="checkbox" id="f_coef" name="f_coef" value="1"<?php echo $check_aff_coef ?> /> Coefficients</label>&nbsp;&nbsp;&nbsp;<label for="f_socle"><input type="checkbox" id="f_socle" name="f_socle" value="1"<?php echo $check_aff_socle ?> /> Socle</label>&nbsp;&nbsp;&nbsp;<label for="f_lien"><input type="checkbox" id="f_lien" name="f_lien" value="1"<?php echo $check_aff_lien ?> /> Liens de remédiation</label><br />
+			<label class="tab">Restrictions :</label><input type="checkbox" id="f_restriction_socle" name="f_restriction_socle" value="1"<?php echo $check_only_socle ?> /> <label for="f_restriction_socle">Uniquement les items liés du socle</label><br />
+			<label class="tab"></label><input type="checkbox" id="f_restriction_niveau" name="f_restriction_niveau" value="1"<?php echo $check_only_niveau ?> /> <label for="f_restriction_niveau">Utiliser uniquement les items du niveau <em id="niveau_nom"></em></label><input type="hidden" id="f_niveau" name="f_niveau" value="" /><br />
+			<label class="tab"><img alt="" src="./_img/bulle_aide.png" title="Pour le format pdf." /> Impression :</label><?php echo $select_couleur ?> <?php echo $select_legende ?>
 		</div>
 	</div>
 	<p>
@@ -178,8 +183,5 @@ echo ($nb_inconnu) ? '<label class="alerte">Il y a '.$nb_inconnu.' référentiel
 	</p>
 </fieldset></form>
 
-<hr />
-
-<div id="bilan">
-</div>
+<div id="bilan"></div>
 

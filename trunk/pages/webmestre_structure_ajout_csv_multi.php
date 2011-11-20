@@ -59,13 +59,13 @@ Ecrire_Fichier($adresse_csv,$contenu_csv);
 	<span id="ajax_import_max" class="hide"></span>
 </div>
 
-<p />
+<p>&nbsp;</p>
 
 <form action="#" method="post" id="structures" class="hide">
 	<table class="form" id="transfert">
 		<thead>
 			<tr>
-				<th class="nu"><input id="all_check" type="image" src="./_img/all_check.gif" title="Tout cocher." /> <input id="all_uncheck" type="image" src="./_img/all_uncheck.gif" title="Tout décocher." /></th>
+				<th class="nu"><input id="all_check" type="image" alt="Tout cocher." src="./_img/all_check.gif" title="Tout cocher." /> <input id="all_uncheck" type="image" alt="Tout décocher." src="./_img/all_uncheck.gif" title="Tout décocher." /></th>
 				<th>Id</th>
 				<th>Structure</th>
 				<th>Contact</th>

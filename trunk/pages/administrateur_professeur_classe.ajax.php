@@ -129,7 +129,7 @@ foreach($tab_lignes_tableau1 as $niveau_id => $tab_groupe)
 	echo'<thead><tr>'.$TH[$niveau_id].'</tr></thead>';
 	echo'<tbody><tr>'.$TB[$niveau_id].'</tr></tbody>';
 	echo'<tfoot><tr>'.$TF[$niveau_id].'</tr></tfoot>';
-	echo'</table><p />';
+	echo'</table><p>&nbsp;</p>';
 }
 // Assemblage du tableau des classes par prof
 $TH = array();
@@ -156,6 +156,6 @@ foreach($tab_lignes_tableau2 as $ligne_id => $tab_user)
 	echo'<thead><tr>'.$TH[$ligne_id].'</tr></thead>';
 	echo'<tbody><tr>'.$TB[$ligne_id].'</tr></tbody>';
 	echo'<tfoot><tr>'.$TF[$ligne_id].'</tr></tfoot>';
-	echo'</table><p />';
+	echo'</table><p>&nbsp;</p>';
 }
 ?>

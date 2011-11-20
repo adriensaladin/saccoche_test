@@ -369,7 +369,7 @@ function affich_legende_html($note_Lomer=FALSE,$etat_bilan=FALSE)
 		$retour .= '</div>';
 	}
 	// retour
-	return ($retour) ? '<hr /><h4>Légende</h4><div class="legende">'.$retour.'</div>' : '' ;
+	return ($retour) ? '<h4>Légende</h4><div class="legende">'.$retour.'</div>' : '' ;
 }
 
 /**

@@ -286,7 +286,7 @@ function tableau_versions_logicielles()
 {
 	global $tab_commentaires;
 	return'
-		<table>
+		<table class="p">
 			<thead>
 				<tr><th colspan="2">Versions logicielles</th></tr>
 			</thead>
@@ -304,7 +304,7 @@ function tableau_limitations_PHP()
 {
 	global $tab_commentaires;
 	return'
-		<table>
+		<table class="p">
 			<thead>
 				<tr><th colspan="2">Réglage des limitations PHP</th></tr>
 			</thead>
@@ -322,7 +322,7 @@ function tableau_limitations_MySQL()
 {
 	global $tab_commentaires;
 	return'
-		<table>
+		<table class="p">
 			<thead>
 				<tr><th colspan="2">Réglage des limitations MySQL</th></tr>
 			</thead>
@@ -355,7 +355,7 @@ function tableau_modules_PHP($nb_lignes)
 		$lignes .= '</tr>';
 	}
 	return'
-		<table>
+		<table class="p">
 			<thead>
 				<tr><th colspan="'.$nb_colonnes.'">Modules PHP compilés et chargés <img alt="" title="'.$tab_commentaires['modules_PHP'].'" src="./_img/bulle_aide.png" /></th></tr>
 			</thead>
@@ -369,7 +369,7 @@ function tableau_modules_PHP($nb_lignes)
 function tableau_serveur_et_client()
 {
 	return'
-		<table>
+		<table class="p">
 			<tbody>
 				<tr><th>Identification du serveur</th><td class="hc">'.$_SERVER['SERVER_SOFTWARE'].' &lt;'.SERVEUR_ADRESSE.'&gt;</td></tr>
 				<tr><th>Identification du client</th><td class="hc">'.$_SERVER['HTTP_USER_AGENT'].'</td></tr>

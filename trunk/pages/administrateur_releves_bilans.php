@@ -51,7 +51,7 @@ else
 	{
 		$tab_div[] = '<em id="m_'.$DB_ROW['matiere_id'].'">'.html($DB_ROW['matiere_nom']).'</em>';
 	}
-	echo implode('<div class="ti"><input type="image" src="./_img/action_ordonner.png" /></div>',$tab_div);
+	echo implode('<div class="ti"><input type="image" alt="Ordonner" src="./_img/action_ordonner.png" /></div>',$tab_div);
 	echo'<p><span class="tab"></span><button id="Enregistrer_ordre" type="button" class="valider">Enregistrer cet ordre</button><label id="ajax_msg_ordre">&nbsp;</label></p>';
 }
 ?>

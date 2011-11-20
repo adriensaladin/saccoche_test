@@ -207,7 +207,7 @@ if(in_array('synthese',$tab_type))
 	// Pour chaque item...
 	foreach($tab_liste_item as $item_id)
 	{
-		$tableau_score_filtre = array_filter($tab_score_item_eleve[$item_id],'non_nul');
+		$tableau_score_filtre = isset($tab_score_item_eleve[$item_id]) ? array_filter($tab_score_item_eleve[$item_id],'non_nul') : array() ; // Test pour éviter de rares "array_filter() expects parameter 1 to be array, null given"
 		$nb_scores = count( $tableau_score_filtre );
 		if($nb_scores)
 		{
@@ -258,15 +258,18 @@ if( (in_array('synthese',$tab_type)) || (in_array('bulletin',$tab_type)) )
 // Elaboration du bilan individuel, disciplinaire ou transdisciplinaire, en HTML et PDF
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
+$affichage_direct = ( in_array($_SESSION['USER_PROFIL'],array('eleve','parent')) ) ? TRUE : FALSE ;
+
 if(in_array('individuel',$tab_type))
 {
-	$releve_HTML_individuel  = '<style type="text/css">'.$_SESSION['CSS'].'</style>';
-	$releve_HTML_individuel .= '<h1>Bilan '.$tab_titre[$format].'</h1>';
-	$releve_HTML_individuel .= '<h2>'.html($texte_periode).'</h2>';
+	$releve_HTML_individuel  = $affichage_direct ? '' : '<style type="text/css">'.$_SESSION['CSS'].'</style>';
+	$releve_HTML_individuel .= $affichage_direct ? '' : '<h1>Bilan '.$tab_titre[$format].'</h1>';
+	$releve_HTML_individuel .= $affichage_direct ? '' : '<h2>'.html($texte_periode).'</h2>';
 	// Appel de la classe et définition de qqs variables supplémentaires pour la mise en page PDF
 	$releve_PDF = new PDF($orientation,$marge_min,$couleur,$legende);
 	$releve_PDF->bilan_item_individuel_initialiser($format,$cases_nb,$cases_largeur,$lignes_nb=$item_nb+$aff_bilan_MS+$aff_bilan_PA,$eleve_nb,$pages_nb);
 	$bilan_colspan = $cases_nb + 2 ;
+	$separation = (count($tab_eleve)>1) ? '<hr class="breakafter" />' : '' ;
 	// Pour chaque élève...
 	foreach($tab_eleve as $tab)
 	{
@@ -276,7 +279,7 @@ if(in_array('individuel',$tab_type))
 		{
 			// Intitulé
 			$releve_PDF->bilan_item_individuel_entete($format,$nb_matieres,$nb_items+($aff_bilan_MS+$aff_bilan_PA)*$nb_matieres,$pages_nb,$tab_titre[$format],$texte_periode,$groupe_nom,$eleve_nom,$eleve_prenom);
-			$releve_HTML_individuel .= '<hr class="breakafter" /><h2>'.html($groupe_nom).' - '.html($eleve_nom).' '.html($eleve_prenom).'</h2>';
+			$releve_HTML_individuel .= $separation.'<h2>'.html($groupe_nom).' - '.html($eleve_nom).' '.html($eleve_prenom).'</h2>';
 			// Pour chaque matiere...
 			foreach($tab_matiere as $matiere_id => $matiere_nom)
 			{
@@ -387,7 +390,7 @@ if(in_array('individuel',$tab_type))
 						$releve_PDF->bilan_item_individuel_ligne_synthese('Pourcentage d\'items acquis '.$texte_bilan);
 					}
 					$releve_HTML_table_foot = ($releve_HTML_table_foot) ? '<tfoot>'.$releve_HTML_table_foot.'</tfoot>'."\r\n" : '';
-					$releve_HTML_individuel .= '<table id="table'.$eleve_id.'x'.$matiere_id.'" class="bilan">'.$releve_HTML_table_head.$releve_HTML_table_foot.$releve_HTML_table_body.'</table><p />';
+					$releve_HTML_individuel .= '<table id="table'.$eleve_id.'x'.$matiere_id.'" class="bilan">'.$releve_HTML_table_head.$releve_HTML_table_foot.$releve_HTML_table_body.'</table>';
 					$releve_HTML_individuel .= '<script type="text/javascript">$("#table'.$eleve_id.'x'.$matiere_id.'").tablesorter();</script>';
 				}
 			}
@@ -409,8 +412,8 @@ if(in_array('individuel',$tab_type))
 
 if(in_array('synthese',$tab_type))
 {
-	$releve_HTML_synthese  = '<style type="text/css">'.$_SESSION['CSS'].'</style>';
-	$releve_HTML_synthese .= '<h1>Bilan '.$tab_titre[$format].'</h1>';
+	$releve_HTML_synthese  = $affichage_direct ? '' : '<style type="text/css">'.$_SESSION['CSS'].'</style>';
+	$releve_HTML_synthese .= $affichage_direct ? '' : '<h1>Bilan '.$tab_titre[$format].'</h1>';
 	$releve_HTML_synthese .= '<h2>'.html($matiere_nom.' - '.$groupe_nom).'</h2>';
 	if($texte_periode)
 	{

@@ -105,6 +105,6 @@ for($tab_i=0;$tab_i<=$tab_num;$tab_i++)
 	echo'<thead><tr>'.$TH[$tab_i].'</tr></thead>';
 	echo'<tbody><tr>'.$TB[$tab_i].'</tr></tbody>';
 	echo'<tfoot><tr>'.$TF[$tab_i].'</tr></tfoot>';
-	echo'</table><p />';
+	echo'</table><p>&nbsp;</p>';
 }
 ?>

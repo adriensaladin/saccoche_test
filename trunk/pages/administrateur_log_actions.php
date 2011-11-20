@@ -36,13 +36,13 @@ $TITRE = "Log des actions sensibles";
 $fichier_log_chemin = './__private/log/base_'.$_SESSION['BASE'].'.php';
 if(!file_exists($fichier_log_chemin))
 {
-	echo'<p class="danger">Le fichier n\'existe pas : probablement qu\'aucune action sensible n\'a encore été effectuée !<p />';
+	echo'<p class="danger">Le fichier n\'existe pas : probablement qu\'aucune action sensible n\'a encore été effectuée !</p>';
 }
 else
 {
 	$fichier_log_contenu = file_get_contents($fichier_log_chemin);
 	// 1 En extraire le plus récent (les 100 derniers enregistrements)
-	$table_log_extrait = '<table><thead><tr><th>Date &amp; Heure</th><th>Utilisateur</th><th>Action</th></tr></thead><tbody>';
+	$table_log_extrait = '<table class="p"><thead><tr><th>Date &amp; Heure</th><th>Utilisateur</th><th>Action</th></tr></thead><tbody>';
 	$tab_lignes = extraire_lignes($fichier_log_contenu);
 	$indice_ligne_debut = count($tab_lignes)-1 ;
 	$indice_ligne_fin   = max(-1 , $indice_ligne_debut-100) ;
@@ -72,8 +72,6 @@ else
 	echo'<li><a class="lien_ext" href="'.$dossier_export.$fichier_export_nom.'.zip"><span class="file file_txt">Récupérer le fichier complet (format <em>csv</em>).</span></a></li>';
 	echo'<li>Consulter les derniers logs ('.$nb_lignes.' ligne'.$s.') :</li>';
 	echo'</ul>';
-	echo'<p />';
 	echo $table_log_extrait;
-	echo'<p />';
 }
 ?>

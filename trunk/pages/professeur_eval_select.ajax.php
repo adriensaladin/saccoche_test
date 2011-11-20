@@ -327,7 +327,7 @@ if( ($action=='ordonner') && $devoir_id )
 		$texte_socle = ($DB_ROW['entree_id']) ? ' [S]' : ' [–]';
 		$tab_affich[] = '<div id="i'.$DB_ROW['item_id'].'"><b>'.html($item_ref.$texte_socle).'</b> - '.html($DB_ROW['item_nom']).'</div>';
 	}
-	echo implode('<div class="ti"><input type="image" src="./_img/action_ordonner.png" /></div>',$tab_affich);
+	echo implode('<div class="ti"><input type="image" alt="Ordonner" src="./_img/action_ordonner.png" /></div>',$tab_affich);
 	echo'<p>';
 	echo	'<button id="Enregistrer_ordre" type="button" value="'.$ref.'" class="valider">Enregistrer cet ordre</button>&nbsp;&nbsp;&nbsp;';
 	echo	'<button id="fermer_zone_ordonner" type="button" class="retourner">Retour</button>&nbsp;&nbsp;&nbsp;';
@@ -364,11 +364,14 @@ if( ($action=='saisir') && $devoir_id && $groupe_id && $date && $date_visible &&
 	$tab_user_id = array(); // pas indispensable, mais plus lisible
 	$tab_comp_id = array(); // pas indispensable, mais plus lisible
 	$tab_affich[0][0] = '<td>';
-	$tab_affich[0][0].= '<span class="manuel"><a class="pop_up" href="'.SERVEUR_DOCUMENTAIRE.'?fichier=support_professeur__evaluations_saisie_resultats">DOC : Saisie des résultats.</a></span><p />';
+	$tab_affich[0][0].= '<span class="manuel"><a class="pop_up" href="'.SERVEUR_DOCUMENTAIRE.'?fichier=support_professeur__evaluations_saisie_resultats">DOC : Saisie des résultats.</a></span>';
+	$tab_affich[0][0].= '<p>';
 	$tab_affich[0][0].= '<label for="radio_clavier"><input type="radio" id="radio_clavier" name="mode_saisie" value="clavier" /> <img alt="" src="./_img/pilot_keyboard.png" /> Piloter au clavier</label> <img alt="" src="./_img/bulle_aide.png" title="Sélectionner un rectangle blanc<br />au clavier (flèches) ou à la souris<br />puis utiliser les touches suivantes :<br />&nbsp;1 ; 2 ; 3 ; 4 ; A ; N ; D ; suppr" /><br />';
-	$tab_affich[0][0].= '<label for="radio_souris"><input type="radio" id="radio_souris" name="mode_saisie" value="souris" /> <img alt="" src="./_img/pilot_mouse.png" /> Piloter à la souris</label> <img alt="" src="./_img/bulle_aide.png" title="Survoler une case du tableau avec la souris<br />puis cliquer sur une des images proposées." /><p />';
+	$tab_affich[0][0].= '<label for="radio_souris"><input type="radio" id="radio_souris" name="mode_saisie" value="souris" /> <img alt="" src="./_img/pilot_mouse.png" /> Piloter à la souris</label> <img alt="" src="./_img/bulle_aide.png" title="Survoler une case du tableau avec la souris<br />puis cliquer sur une des images proposées." />';
+	$tab_affich[0][0].= '</p><p>';
 	$tab_affich[0][0].= '<label for="check_largeur"><input type="checkbox" id="check_largeur" name="check_largeur" value="retrecir_largeur" /> <img alt="" src="./_img/retrecir_largeur.gif" /> Largeur optimale</label> <img alt="" src="./_img/bulle_aide.png" title="Diminuer la largeur des colonnes<br />si les élèves sont nombreux." /><br />';
-	$tab_affich[0][0].= '<label for="check_hauteur"><input type="checkbox" id="check_hauteur" name="check_hauteur" value="retrecir_hauteur" /> <img alt="" src="./_img/retrecir_hauteur.gif" /> Hauteur optimale</label> <img alt="" src="./_img/bulle_aide.png" title="Diminuer la hauteur des lignes<br />si les items sont nombreux." /><p />';
+	$tab_affich[0][0].= '<label for="check_hauteur"><input type="checkbox" id="check_hauteur" name="check_hauteur" value="retrecir_hauteur" /> <img alt="" src="./_img/retrecir_hauteur.gif" /> Hauteur optimale</label> <img alt="" src="./_img/bulle_aide.png" title="Diminuer la hauteur des lignes<br />si les items sont nombreux." />';
+	$tab_affich[0][0].= '</p>';
 	$tab_affich[0][0].= '<button id="Enregistrer_saisie" type="button" class="valider">Enregistrer les saisies</button><input type="hidden" name="f_ref" id="f_ref" value="'.$ref.'" /><input id="f_date" name="f_date" type="hidden" value="'.$date.'" /><input id="f_date_visible" name="f_date_visible" type="hidden" value="'.$date_visible.'" /><input id="f_info" name="f_info" type="hidden" value="'.html($info).'" /><br />';
 	$tab_affich[0][0].= '<button id="fermer_zone_saisir" type="button" class="retourner">Retour</button>';
 	$tab_affich[0][0].= '</td>';
@@ -510,8 +513,8 @@ if( ($action=='voir') && $devoir_id && $groupe_id && $date && $descriptif ) // $
 	$tab_comp_id = array(); // pas indispensable, mais plus lisible
 	$tab_affich[0][0] = '<td>';
 	$tab_affich[0][0].= '<label for="check_largeur"><input type="checkbox" id="check_largeur" name="check_largeur" value="retrecir_largeur" /> <img alt="" src="./_img/retrecir_largeur.gif" /> Largeur optimale</label> <img alt="" src="./_img/bulle_aide.png" title="Diminuer la largeur des colonnes<br />si les élèves sont nombreux." /><br />';
-	$tab_affich[0][0].= '<label for="check_hauteur"><input type="checkbox" id="check_hauteur" name="check_hauteur" value="retrecir_hauteur" /> <img alt="" src="./_img/retrecir_hauteur.gif" /> Hauteur optimale</label> <img alt="" src="./_img/bulle_aide.png" title="Diminuer la hauteur des lignes<br />si les items sont nombreux." /><p />';
-	$tab_affich[0][0].= '<button id="fermer_zone_voir" type="button" class="retourner">Retour</button>';
+	$tab_affich[0][0].= '<label for="check_hauteur"><input type="checkbox" id="check_hauteur" name="check_hauteur" value="retrecir_hauteur" /> <img alt="" src="./_img/retrecir_hauteur.gif" /> Hauteur optimale</label> <img alt="" src="./_img/bulle_aide.png" title="Diminuer la hauteur des lignes<br />si les items sont nombreux." />';
+	$tab_affich[0][0].= '<p><button id="fermer_zone_voir" type="button" class="retourner">Retour</button></p>';
 	$tab_affich[0][0].= '</td>';
 	// première ligne (noms prénoms des élèves)
 	$csv_ligne_eleve_nom = $separateur;
@@ -991,7 +994,7 @@ if( ($action=='Imprimer_cartouche') && $devoir_id && $groupe_id && $date && $car
 	}
 	// On attaque l'élaboration des sorties HTML, CSV et PDF
 	$sacoche_htm = '<hr /><a class="lien_ext" href="'.$dossier_export.$fnom.'_cartouche.pdf"><span class="file file_pdf">Cartouches &rarr; Archiver / Imprimer (format <em>pdf</em>).</span></a><br />';
-	$sacoche_htm.= '<a class="lien_ext" href="'.$dossier_export.$fnom.'_cartouche.zip"><span class="file file_zip">Cartouches &rarr; Récupérer / Manipuler (fichier <em>csv</em> pour tableur).</span></a><p />';
+	$sacoche_htm.= '<a class="lien_ext" href="'.$dossier_export.$fnom.'_cartouche.zip"><span class="file file_zip">Cartouches &rarr; Récupérer / Manipuler (fichier <em>csv</em> pour tableur).</span></a>';
 	$sacoche_csv = '';
 	// Appel de la classe et définition de qqs variables supplémentaires pour la mise en page PDF
 	$item_nb = count($tab_comp_id);
@@ -1025,7 +1028,7 @@ if( ($action=='Imprimer_cartouche') && $devoir_id && $groupe_id && $date && $car
 						$sacoche_pdf->cartouche_minimal_competence($tab_val_comp[0] , $tab_result[$comp_id][$user_id]);
 					}
 				}
-				$sacoche_htm .= '<tr>'.$ligne1_html.'</tr><tr>'.$ligne2_html.'</tr></tbody></table><p />';
+				$sacoche_htm .= '<tr>'.$ligne1_html.'</tr><tr>'.$ligne2_html.'</tr></tbody></table>';
 				$sacoche_csv .= $ligne1_csv."\r\n".$ligne2_csv."\r\n\r\n";
 				$sacoche_pdf->cartouche_interligne(4);
 			}
@@ -1051,7 +1054,7 @@ if( ($action=='Imprimer_cartouche') && $devoir_id && $groupe_id && $date && $car
 						$sacoche_pdf->cartouche_complet_competence($tab_val_comp[0] , $tab_val_comp[1] , $tab_result[$comp_id][$user_id]);
 					}
 				}
-				$sacoche_htm .= '</tbody></table><p />';
+				$sacoche_htm .= '</tbody></table>';
 				$sacoche_csv .= "\r\n";
 				$sacoche_pdf->cartouche_interligne(2);
 			}

@@ -1312,6 +1312,24 @@ public function DB_maj_base($version_actuelle)
 		}
 	}
 
+	//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	//	MAJ 2011-11-12 => 2011-11-20
+	//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	if($version_actuelle=='2011-11-12')
+	{
+		if($version_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
+		{
+			$version_actuelle = '2011-11-20';
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_actuelle.'" WHERE parametre_nom="version_base"' );
+			// ajout d'un paramètre
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ("droit_voir_grilles_items" , "directeur,professeur,parent,eleve")' );
+			// ajout d'un niveau cycle
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_niveau SET niveau_ordre=niveau_ordre+3 WHERE niveau_id IN(14,15)' );
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_niveau VALUES (5,1,5,"P0","","Cycle 1 (PS-GS)")' );
+		}
+	}
+
 }
 
 }

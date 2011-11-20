@@ -466,7 +466,7 @@ $(document).ready
 
 		var charger_formulaire_structures = function()
 		{
-			$('#rechercher').hide("fast");
+			$('#rechercher').prop('disabled',true);
 			$('#ajax_msg').removeAttr("class").addClass("loader").html('Chargement du formulaire... Veuillez patienter.');
 			$.ajax
 			(
@@ -491,7 +491,7 @@ $(document).ready
 						{
 							$('#ajax_msg').removeAttr("class").html('&nbsp;');
 							$('#f_structure').html(responseHTML);
-							$('#rechercher').removeAttr("class").show("fast"); // Pour IE7 le show() ne suffit pas
+							$('#rechercher').prop('disabled',false);
 						}
 					}
 				}

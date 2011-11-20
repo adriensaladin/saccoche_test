@@ -120,7 +120,7 @@ if( count($tab_eleve) )
 		echo'<thead><tr>'.$TH[$niveau_id].'</tr></thead>';
 		echo'<tbody><tr>'.$TB[$niveau_id].'</tr></tbody>';
 		echo'<tfoot><tr>'.$TF[$niveau_id].'</tr></tfoot>';
-		echo'</table><p />';
+		echo'</table><p>&nbsp;</p>';
 	}
 }
 else

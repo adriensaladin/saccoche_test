@@ -61,8 +61,8 @@ $cnil_dates_class     = intval(CNIL_NUMERO) ? 'show' : 'hide' ;
 	<h2>Coordonnées du webmestre</h2>
 	<label class="tab" for="f_nom">Nom :</label><input id="f_nom" name="f_nom" size="20" type="text" value="<?php echo html(WEBMESTRE_NOM); ?>" /><br />
 	<label class="tab" for="f_prenom">Prénom :</label><input id="f_prenom" name="f_prenom" size="20" type="text" value="<?php echo html(WEBMESTRE_PRENOM); ?>" /><br />
-	<label class="tab" for="f_courriel">Courriel :</label><input id="f_courriel" name="f_courriel" size="60" type="text" value="<?php echo html(WEBMESTRE_COURRIEL); ?>" /><p />
-	<span class="tab"></span><input id="f_action" name="f_action" type="hidden" value="enregistrer" /><button id="f_submit" type="submit" class="parametre">Valider ces réglages.</button><label id="ajax_msg">&nbsp;</label><br />
+	<label class="tab" for="f_courriel">Courriel :</label><input id="f_courriel" name="f_courriel" size="60" type="text" value="<?php echo html(WEBMESTRE_COURRIEL); ?>" />
+	<p><span class="tab"></span><input id="f_action" name="f_action" type="hidden" value="enregistrer" /><button id="f_submit" type="submit" class="parametre">Valider ces réglages.</button><label id="ajax_msg">&nbsp;</label></p>
 </fieldset></form>
 
 <hr />

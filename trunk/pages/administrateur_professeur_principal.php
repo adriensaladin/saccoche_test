@@ -82,7 +82,7 @@ $TITRE = "Gérer les professeurs principaux";
 				echo'<table>';
 				echo'<thead><tr>'.$TH[$niveau_id].'</tr></thead>';
 				echo'<tbody><tr>'.$TB[$niveau_id].'</tr></tbody>';
-				echo'</table><p />';
+				echo'</table><p>&nbsp;</p>';
 			}
 		}
 		else

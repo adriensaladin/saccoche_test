@@ -118,7 +118,7 @@ foreach($DB_TAB as $DB_ROW)
 	$groupe_id = $DB_ROW['groupe_id'];
 	$date_affich_debut = convert_date_mysql_to_french($DB_ROW['jointure_date_debut']);
 	$date_affich_fin   = convert_date_mysql_to_french($DB_ROW['jointure_date_fin']);
-	$tab_jointure[$groupe_id][$DB_ROW['periode_id']] = html($date_affich_debut).' ~ '.html($date_affich_fin).' <input type="image" src="./_img/date_add.png" title="Cliquer pour importer ces dates dans les champs." />';
+	$tab_jointure[$groupe_id][$DB_ROW['periode_id']] = html($date_affich_debut).' ~ '.html($date_affich_fin).' <input type="image" alt="Importer ces dates" src="./_img/date_add.png" title="Cliquer pour importer ces dates dans les champs." />';
 	// graphique (début)
 	if($memo_groupe_id!=$groupe_id)
 	{
@@ -158,6 +158,6 @@ foreach($tab_groupe as $groupe_id => $groupe_text)
 echo'<table>';
 echo'<thead><tr><td class="nu"></td>'.implode('',$tab_periode).'<td class="graph_total">Étendue du '.convert_date_mysql_to_french($tout_debut).' au '.convert_date_mysql_to_french($toute_fin).'.</td></tr></thead>';
 echo'<tbody><tr>'.implode('</tr>'."\r\n".'<tr>',$tab_groupe).'</tr></tbody>';
-echo'</table><p />';
+echo'</table><p>&nbsp;</p>';
 
 ?>

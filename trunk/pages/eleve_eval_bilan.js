@@ -248,7 +248,7 @@ $(document).ready
 								format_liens('#table_voir');
 								trier_tableau2();
 								infobulle();
-								$.fancybox( { 'href':'#zone_eval_detail' , onStart:function(){$('#zone_eval_detail').css("display","block");} , onClosed:function(){$('#zone_eval_detail').css("display","none");} , 'centerOnScroll':true } );
+								$.fancybox( { 'href':'#zone_eval_detail' , onStart:function(){$('#zone_eval_detail').css("display","block");} , onClosed:function(){$('#zone_eval_detail').css("display","none");} , 'margin':0 , 'centerOnScroll':true } );
 							}
 							$('label[for='+td_id+']').remove();
 							$('#zone_eval_choix q').show();

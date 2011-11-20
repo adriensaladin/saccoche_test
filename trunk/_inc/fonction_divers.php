@@ -937,7 +937,7 @@ function envoyer_webmestre_courriel($adresse,$objet,$contenu)
  */
 function afficher_arborescence_matiere_from_SQL($DB_TAB,$dynamique,$reference,$aff_coef,$aff_cart,$aff_socle,$aff_lien,$aff_input)
 {
-	$input_all = ($aff_input) ? ' <input name="all_check" type="image" src="./_img/all_check.gif" title="Tout cocher." /> <input name="all_uncheck" type="image" src="./_img/all_uncheck.gif" title="Tout décocher." />' : '' ;
+	$input_all = ($aff_input) ? ' <input name="all_check" type="image" alt="Tout cocher." src="./_img/all_check.gif" title="Tout cocher." /> <input name="all_uncheck" type="image" alt="Tout décocher." src="./_img/all_uncheck.gif" title="Tout décocher." />' : '' ;
 	$input_texte = '';
 	$coef_texte  = '';
 	$cart_texte  = '';

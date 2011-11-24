@@ -1564,11 +1564,11 @@ function adresse_RSS($prof_id)
 		$fichier_contenu.='	<lastBuildDate>'.date("r",time()).'</lastBuildDate>'."\r\n";
 		$fichier_contenu.='	<docs>http://www.scriptol.fr/rss/RSS-2.0.html</docs>'."\r\n";
 		$fichier_contenu.='	<image>'."\r\n";
-		$fichier_contenu.='		<url>http://sacoche.sesamath.net/_img/logo_grand.gif</url>'."\r\n";
+		$fichier_contenu.='		<url>http://sacoche.sesamath.net/_img/logo_rss.png</url>'."\r\n";
 		$fichier_contenu.='		<title>SACoche</title>'."\r\n";
 		$fichier_contenu.='		<link>http://sacoche.sesamath.net</link>'."\r\n";
-		$fichier_contenu.='		<width>208</width>'."\r\n";
-		$fichier_contenu.='		<height>71</height>'."\r\n";
+		$fichier_contenu.='		<width>144</width>'."\r\n";
+		$fichier_contenu.='		<height>45</height>'."\r\n";
 		$fichier_contenu.='		<description></description>'."\r\n";
 		$fichier_contenu.='	</image>'."\r\n\r\n";
 		$fichier_contenu.='</channel>'."\r\n";

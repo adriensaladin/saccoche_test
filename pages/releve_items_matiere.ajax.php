@@ -57,9 +57,9 @@ $format         = 'matiere';
 // En cas de manipulation du formulaire (avec Firebug par exemple) ; on pourrait aussi vérifier pour un parent que c'est bien un de ses enfants...
 if(in_array($_SESSION['USER_PROFIL'],array('parent','eleve')))
 {
-	$aff_bilan_MS   = (mb_substr_count($_SESSION['DROIT_BILAN_MOYENNE_SCORE']     ,$_SESSION['USER_PROFIL'])) ? $aff_bilan_MS   : 0 ;
-	$aff_bilan_PA   = (mb_substr_count($_SESSION['DROIT_BILAN_POURCENTAGE_ACQUIS'],$_SESSION['USER_PROFIL'])) ? $aff_bilan_PA   : 0 ;
-	$aff_conv_sur20 = (mb_substr_count($_SESSION['DROIT_BILAN_NOTE_SUR_VINGT']    ,$_SESSION['USER_PROFIL'])) ? $aff_conv_sur20 : 0 ;
+	$aff_bilan_MS   = (mb_substr_count($_SESSION['DROIT_BILAN_MOYENNE_SCORE']     ,$_SESSION['USER_PROFIL'])) ? 1 : 0 ;
+	$aff_bilan_PA   = (mb_substr_count($_SESSION['DROIT_BILAN_POURCENTAGE_ACQUIS'],$_SESSION['USER_PROFIL'])) ? 1 : 0 ;
+	$aff_conv_sur20 = (mb_substr_count($_SESSION['DROIT_BILAN_NOTE_SUR_VINGT']    ,$_SESSION['USER_PROFIL'])) ? 1 : 0 ;
 	$tab_type       = array('individuel');
 }
 if($_SESSION['USER_PROFIL']=='eleve')

@@ -39,9 +39,9 @@ $check_conv_sur20      = (Formulaire::$tab_choix['aff_conv_sur20'])    ? ' check
 if(in_array($_SESSION['USER_PROFIL'],array('parent','eleve')))
 {
 	// Une éventuelle restriction d'accès doit surcharger toute mémorisation antérieure de formulaire
-	$check_bilan_MS   = (mb_substr_count($_SESSION['DROIT_BILAN_MOYENNE_SCORE']     ,$_SESSION['USER_PROFIL'])) ? $check_bilan_MS   : '' ;
-	$check_bilan_PA   = (mb_substr_count($_SESSION['DROIT_BILAN_POURCENTAGE_ACQUIS'],$_SESSION['USER_PROFIL'])) ? $check_bilan_PA   : '' ;
-	$check_conv_sur20 = (mb_substr_count($_SESSION['DROIT_BILAN_NOTE_SUR_VINGT']    ,$_SESSION['USER_PROFIL'])) ? $check_conv_sur20 : '' ;
+	$check_bilan_MS   = (mb_substr_count($_SESSION['DROIT_BILAN_MOYENNE_SCORE']     ,$_SESSION['USER_PROFIL'])) ? ' checked' : '' ;
+	$check_bilan_PA   = (mb_substr_count($_SESSION['DROIT_BILAN_POURCENTAGE_ACQUIS'],$_SESSION['USER_PROFIL'])) ? ' checked' : '' ;
+	$check_conv_sur20 = (mb_substr_count($_SESSION['DROIT_BILAN_NOTE_SUR_VINGT']    ,$_SESSION['USER_PROFIL'])) ? ' checked' : '' ;
 }
 $class_conv_sur20      = ($check_bilan_MS || $check_bilan_PA)          ? 'show'     : 'hide' ;
 $check_retro_oui       = (Formulaire::$tab_choix['retroactif']=='oui') ? ' checked' : '' ;

@@ -50,7 +50,7 @@ $select_langue    = Formulaire::afficher_select($tab_langues , $select_nom=false
 		</td>
 		<td class="nu" style="width:20em">
 			<b>Choix de la langue :</b><br />
-			<select id="select_langue"><?php echo $select_langue; ?></select>
+			<select id="select_langue" name="select_langue"><?php echo $select_langue; ?></select>
 		</td>
 		<td class="nu" style="width:25em">
 			<button id="associer" type="button" class="parametre">Effectuer ces associations.</button>

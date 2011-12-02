@@ -127,7 +127,7 @@ $(document).ready
 						error : function(msg,string)
 						{
 							$("button").prop('disabled',false);
-							$('#ajax_msg_'+objet).removeAttr("class").addClass("alerte").html("Echec ! Veuillez recommencer.");
+							$('#ajax_msg_'+objet).removeAttr("class").addClass("alerte").html("Echec de la connexion !");
 							return false;
 						},
 						success : function(responseHTML)

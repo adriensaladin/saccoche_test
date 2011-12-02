@@ -39,7 +39,7 @@ $(document).ready
 			{
 				ids = $(this).parent().attr('id');
 				afficher_masquer_images_action('hide');
-				new_label = '<label for="'+ids+'" class="loader">Demande envoyée... Veuillez patienter.</label>';
+				new_label = '<label for="'+ids+'" class="loader">Demande envoyée...</label>';
 				$(this).after(new_label);
 				$.ajax
 				(
@@ -50,7 +50,7 @@ $(document).ready
 						dataType : "html",
 						error : function(msg,string)
 						{
-							$.fancybox( '<label class="alerte">'+'Echec de la connexion ! Veuillez recommencer.'+'</label>' , {'centerOnScroll':true} );
+							$.fancybox( '<label class="alerte">'+'Echec de la connexion !'+'</label>' , {'centerOnScroll':true} );
 							$('label[for='+ids+']').remove();
 							afficher_masquer_images_action('show');
 						},

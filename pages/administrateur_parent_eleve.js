@@ -56,7 +56,7 @@ $(document).ready
 					dataType : "html",
 					error : function(msg,string)
 					{
-						$('#ajax_msg').removeAttr("class").addClass("alerte").html("Echec de la connexion ! Veuillez essayer de nouveau.");
+						$('#ajax_msg').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
 					},
 					success : function(responseHTML)
 					{
@@ -83,7 +83,7 @@ $(document).ready
 				// type = $("#f_groupe option:selected").parent().attr('label');
 				groupe_type = groupe_val.substring(0,1);
 				groupe_id   = groupe_val.substring(1);
-				$('#ajax_msg').removeAttr("class").addClass("loader").html("Actualisation en cours... Veuillez patienter.");
+				$('#ajax_msg').removeAttr("class").addClass("loader").html("Actualisation en cours...");
 				maj_eleve(groupe_id,groupe_type);
 			}
 			else
@@ -116,7 +116,7 @@ $(document).ready
 					$('#ajax_msg').removeAttr("class").html("&nbsp;");
 					return false;
 				}
-				$('#ajax_msg').removeAttr("class").addClass("loader").html("Actualisation en cours... Veuillez patienter.");
+				$('#ajax_msg').removeAttr("class").addClass("loader").html("Actualisation en cours...");
 				$.ajax
 				(
 					{
@@ -126,7 +126,7 @@ $(document).ready
 						dataType : "html",
 						error : function(msg,string)
 						{
-							$('#ajax_msg').removeAttr("class").addClass("alerte").html("Echec de la connexion ! Veuillez essayer de nouveau.");
+							$('#ajax_msg').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
 						},
 						success : function(responseHTML)
 						{
@@ -261,7 +261,7 @@ $(document).ready
 				// Zy va : envoi ajax
 				$('button').prop('disabled',true);
 				afficher_masquer_images_action('hide');
-				$('#ajax_msg2').removeAttr("class").addClass("loader").html("Enregistrement en cours... Veuillez patienter.");
+				$('#ajax_msg2').removeAttr("class").addClass("loader").html("Enregistrement en cours...");
 				$.ajax
 				(
 					{
@@ -273,7 +273,7 @@ $(document).ready
 						{
 							$('button').prop('disabled',false);
 							afficher_masquer_images_action('show');
-							$('#ajax_msg2').removeAttr("class").addClass("alerte").html("Echec de la connexion ! Veuillez essayer de nouveau.");
+							$('#ajax_msg2').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
 						},
 						success : function(responseHTML)
 						{

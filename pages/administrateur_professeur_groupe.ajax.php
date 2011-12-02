@@ -29,10 +29,11 @@ if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');
 if(($_SESSION['SESAMATH_ID']==ID_DEMO)&&($_GET['action']!='initialiser')){exit('Action désactivée pour la démo...');}
 
 $action = (isset($_GET['action'])) ? $_GET['action'] : '';
-$tab_select_professeurs = (isset($_POST['select_professeurs'])) ? array_map('clean_entier',explode(',',$_POST['select_professeurs'])) : array() ;
-$tab_select_groupes     = (isset($_POST['select_groupes']))     ? array_map('clean_entier',explode(',',$_POST['select_groupes']))     : array() ;
-$tab_select_professeurs = array_filter($tab_select_professeurs,'positif');
-$tab_select_groupes     = array_filter($tab_select_groupes,'positif');
+// Normalement ce sont des tableaux qui sont transmis, mais au cas où...
+$tab_select_professeurs = (isset($_POST['select_professeurs'])) ? ( (is_array($_POST['select_professeurs'])) ? $_POST['select_professeurs'] : explode(',',$_POST['select_professeurs']) ) : array() ;
+$tab_select_groupes     = (isset($_POST['select_groupes']))     ? ( (is_array($_POST['select_groupes']))     ? $_POST['select_groupes']     : explode(',',$_POST['select_groupes'])     ) : array() ;
+$tab_select_professeurs = array_filter( array_map( 'clean_entier' , $tab_select_professeurs ) , 'positif' );
+$tab_select_groupes     = array_filter( array_map( 'clean_entier' , $tab_select_groupes     ) , 'positif' );
 
 // Ajouter des professeurs à des groupes
 if($action=='ajouter')

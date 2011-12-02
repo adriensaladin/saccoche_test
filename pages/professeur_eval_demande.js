@@ -215,7 +215,7 @@ $(document).ready
 			var readytogo = validation0.form();
 			if(readytogo)
 			{
-				$('#ajax_msg0').removeAttr("class").addClass("loader").html("Demande envoyée... Veuillez patienter.");
+				$('#ajax_msg0').removeAttr("class").addClass("loader").html("Demande envoyée...");
 				$('#form1').hide();
 			}
 			return readytogo;
@@ -224,7 +224,7 @@ $(document).ready
 		// Fonction suivant l'envoi du formulaire (avec jquery.form.js)
 		function retour_form_erreur0(msg,string)
 		{
-			$('#ajax_msg0').removeAttr("class").addClass("alerte").html("Echec de la connexion ! Veuillez recommencer.");
+			$('#ajax_msg0').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
 		}
 
 		// Fonction suivant l'envoi du formulaire (avec jquery.form.js)
@@ -269,7 +269,7 @@ $(document).ready
 		function maj_evaluation()
 		{
 			$("#f_devoir").html('<option value=""></option>');
-			$('#ajax_maj1').removeAttr("class").addClass("loader").html("Actualisation en cours... Veuillez patienter.");
+			$('#ajax_maj1').removeAttr("class").addClass("loader").html("Actualisation en cours...");
 			eval_type = $('#f_qui option:selected').val();
 			groupe_id = $("#f_groupe_id").val();
 			$.ajax
@@ -281,7 +281,7 @@ $(document).ready
 					dataType : "html",
 					error : function(msg,string)
 					{
-						$('#ajax_maj1').removeAttr("class").addClass("alerte").html("Echec de la connexion ! Veuillez essayer de nouveau.");
+						$('#ajax_maj1').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
 					},
 					success : function(responseHTML)
 					{
@@ -467,7 +467,7 @@ $(document).ready
 			if(readytogo)
 			{
 				$('button').prop('disabled',true);
-				$('#ajax_msg1').removeAttr("class").addClass("loader").html("Demande envoyée... Veuillez patienter.");
+				$('#ajax_msg1').removeAttr("class").addClass("loader").html("Demande envoyée...");
 			}
 			return readytogo;
 		}
@@ -476,7 +476,7 @@ $(document).ready
 		function retour_form_erreur(msg,string)
 		{
 			$('button').prop('disabled',false);
-			$('#ajax_msg1').removeAttr("class").addClass("alerte").html("Echec de la connexion ! Veuillez recommencer.");
+			$('#ajax_msg1').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
 		}
 
 		// Fonction suivant l'envoi du formulaire (avec jquery.form.js)

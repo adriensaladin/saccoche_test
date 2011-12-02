@@ -102,22 +102,18 @@ $(document).ready
 					}
 				}
 				$('button').prop('disabled',true);
-				$('#ajax_msg').removeAttr("class").addClass("loader").html("Demande envoyée... Veuillez patienter.");
-				// grouper les select multiples => normalement pas besoin si name de la forme nom[], mais ça plante curieusement sur le serveur competences.sesamath.net
-				// alors j'ai remplacé le $("form").serialize() par les tableaux maison et mis un explode dans le fichier ajax
-				var select_periodes = new Array(); $("#select_periodes option:selected").each(function(){select_periodes.push($(this).val());});
-				var select_classes_groupes  = new Array(); $("#select_classes_groupes option:selected").each(function(){select_classes_groupes.push($(this).val());});
+				$('#ajax_msg').removeAttr("class").addClass("loader").html("Demande envoyée...");
 				$.ajax
 				(
 					{
 						type : 'POST',
 						url : 'ajax.php?page='+PAGE+'&action='+id,
-						data : 'select_periodes=' + select_periodes + '&select_classes_groupes=' + select_classes_groupes + '&f_date_debut=' + $("#f_date_debut").val() + '&f_date_fin=' + $("#f_date_fin").val(),
+						data : $("form").serialize(),
 						dataType : "html",
 						error : function(msg,string)
 						{
 							$('button').prop('disabled',false);
-							$('#ajax_msg').removeAttr("class").addClass("alerte").html("Echec de la connexion ! Veuillez recommencer.");
+							$('#ajax_msg').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
 							return false;
 						},
 						success : function(responseHTML)
@@ -142,7 +138,7 @@ $(document).ready
 
 		// Initialisation : charger au chargement l'affichage du bilan
 
-		$('#ajax_msg').addClass("loader").html("Chargement en cours... Veuillez patienter.");
+		$('#ajax_msg').addClass("loader").html("Chargement en cours...");
 		$.ajax
 		(
 			{

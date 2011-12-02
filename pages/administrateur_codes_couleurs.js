@@ -171,7 +171,7 @@ $(document).ready
 			if(readytogo)
 			{
 				$("#bouton_valider_notes").prop('disabled',true);
-				$('#ajax_msg_notes').removeAttr("class").addClass("loader").html("Traitement de la demande en cours... Veuillez patienter.");
+				$('#ajax_msg_notes').removeAttr("class").addClass("loader").html("Traitement de la demande en cours...");
 			}
 			return readytogo;
 		}
@@ -180,7 +180,7 @@ $(document).ready
 		function retour_form_erreur1(msg,string)
 		{
 			$("#bouton_valider_notes").prop('disabled',false);
-			$('#ajax_msg_notes').removeAttr("class").addClass("alerte").html("Echec de la connexion ! Veuillez valider de nouveau.");
+			$('#ajax_msg_notes').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
 		}
 
 		// Fonction suivant l'envoi du formulaire (avec jquery.form.js)
@@ -285,7 +285,7 @@ $(document).ready
 			if(readytogo)
 			{
 				$("#bouton_valider_acquis").prop('disabled',true);
-				$('#ajax_msg_acquis').removeAttr("class").addClass("loader").html("Traitement de la demande en cours... Veuillez patienter.");
+				$('#ajax_msg_acquis').removeAttr("class").addClass("loader").html("Traitement de la demande en cours...");
 			}
 			return readytogo;
 		}
@@ -294,7 +294,7 @@ $(document).ready
 		function retour_form_erreur2(msg,string)
 		{
 			$("#bouton_valider_acquis").prop('disabled',false);
-			$('#ajax_msg_acquis').removeAttr("class").addClass("alerte").html("Echec de la connexion ! Veuillez valider de nouveau.");
+			$('#ajax_msg_acquis').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
 		}
 
 		// Fonction suivant l'envoi du formulaire (avec jquery.form.js)

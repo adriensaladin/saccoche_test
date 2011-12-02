@@ -110,7 +110,7 @@ $(document).ready
 			if(readytogo)
 			{
 				$("#bouton_valider").prop('disabled',true);
-				$('#ajax_msg').removeAttr("class").addClass("loader").html("Soumission du formulaire en cours... Veuillez patienter.");
+				$('#ajax_msg').removeAttr("class").addClass("loader").html("Soumission du formulaire en cours...");
 			}
 			return readytogo;
 		}
@@ -119,7 +119,7 @@ $(document).ready
 		function retour_form_erreur(msg,string)
 		{
 			$("#bouton_valider").prop('disabled',false);
-			$('#ajax_msg').removeAttr("class").addClass("alerte").html("Echec de la connexion ! Veuillez valider de nouveau.");
+			$('#ajax_msg').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
 		}
 
 		// Fonction suivant l'envoi du formulaire (avec jquery.form.js)

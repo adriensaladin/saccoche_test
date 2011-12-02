@@ -155,7 +155,7 @@ $(document).ready
 			{
 				var ids = $(this).parent().attr('id');
 				afficher_masquer_images_action('hide');
-				var new_label = '<label for="'+ids+'" class="loader">Demande envoyée... Veuillez patienter.</label>';
+				var new_label = '<label for="'+ids+'" class="loader">Demande envoyée...</label>';
 				$(this).after(new_label);
 				$.ajax
 				(
@@ -166,7 +166,7 @@ $(document).ready
 						dataType : "html",
 						error : function(msg,string)
 						{
-							$.fancybox( '<label class="alerte">'+'Echec de la connexion ! Veuillez recommencer.'+'</label>' , {'centerOnScroll':true} );
+							$.fancybox( '<label class="alerte">'+'Echec de la connexion !'+'</label>' , {'centerOnScroll':true} );
 							$('label[for='+ids+']').remove();
 							afficher_masquer_images_action('show');
 						},
@@ -216,7 +216,7 @@ $(document).ready
 			{
 				var ids = $(this).parent().attr('id');
 				afficher_masquer_images_action('hide');
-				var new_label = '<label for="'+ids+'" class="loader">Demande envoyée... Veuillez patienter.</label>';
+				var new_label = '<label for="'+ids+'" class="loader">Demande envoyée...</label>';
 				$(this).after(new_label);
 				$.ajax
 				(
@@ -227,7 +227,7 @@ $(document).ready
 						dataType : "html",
 						error : function(msg,string)
 						{
-							$.fancybox( '<label class="alerte">'+'Echec de la connexion ! Veuillez recommencer.'+'</label>' , {'centerOnScroll':true} );
+							$.fancybox( '<label class="alerte">'+'Echec de la connexion !'+'</label>' , {'centerOnScroll':true} );
 							$('label[for='+ids+']').remove();
 							afficher_masquer_images_action('show');
 						},
@@ -297,7 +297,7 @@ $(document).ready
 			{
 				var ids = $(this).parent().parent().attr('id');
 				var partage = $('#f_partage').val();
-				$('#ajax_msg').removeAttr("class").addClass("loader").html('Demande envoyée... Veuillez patienter.');
+				$('#ajax_msg').removeAttr("class").addClass("loader").html('Demande envoyée...');
 				$.ajax
 				(
 					{
@@ -307,7 +307,7 @@ $(document).ready
 						dataType : "html",
 						error : function(msg,string)
 						{
-							$('#ajax_msg').removeAttr("class").addClass("alerte").html('Echec de la connexion ! Veuillez recommencer.');
+							$('#ajax_msg').removeAttr("class").addClass("alerte").html('Echec de la connexion !');
 							return false;
 						},
 						success : function(responseHTML)
@@ -349,7 +349,7 @@ $(document).ready
 				var ids = $(this).parent().parent().attr('id');
 				var methode = $('#f_methode').val();
 				var limite  = $('#f_limite').val();
-				$('#ajax_msg').removeAttr("class").addClass("loader").html('Demande envoyée... Veuillez patienter.');
+				$('#ajax_msg').removeAttr("class").addClass("loader").html('Demande envoyée...');
 				$.ajax
 				(
 					{
@@ -359,7 +359,7 @@ $(document).ready
 						dataType : "html",
 						error : function(msg,string)
 						{
-							$('#ajax_msg').removeAttr("class").addClass("alerte").html('Echec de la connexion ! Veuillez recommencer.');
+							$('#ajax_msg').removeAttr("class").addClass("alerte").html('Echec de la connexion !');
 							return false;
 						},
 						success : function(responseHTML)
@@ -392,7 +392,7 @@ $(document).ready
 			{
 				var ids = $(this).parent().parent().attr('id');
 				var partage = $(this).parent().parent().prev().prev().attr('lang');
-				$('#ajax_msg').removeAttr("class").addClass("loader").html('Demande envoyée... Veuillez patienter.');
+				$('#ajax_msg').removeAttr("class").addClass("loader").html('Demande envoyée...');
 				$.ajax
 				(
 					{
@@ -402,7 +402,7 @@ $(document).ready
 						dataType : "html",
 						error : function(msg,string)
 						{
-							$('#ajax_msg').removeAttr("class").addClass("alerte").html('Echec de la connexion ! Veuillez recommencer.');
+							$('#ajax_msg').removeAttr("class").addClass("alerte").html('Echec de la connexion !');
 							return false;
 						},
 						success : function(responseHTML)
@@ -467,7 +467,7 @@ $(document).ready
 		var charger_formulaire_structures = function()
 		{
 			$('#rechercher').prop('disabled',true);
-			$('#ajax_msg').removeAttr("class").addClass("loader").html('Chargement du formulaire... Veuillez patienter.');
+			$('#ajax_msg').removeAttr("class").addClass("loader").html('Chargement du formulaire...');
 			$.ajax
 			(
 				{
@@ -600,7 +600,7 @@ $(document).ready
 					return false;
 				}
 				$('#rechercher').prop('disabled',true);
-				$('#ajax_msg').removeAttr("class").addClass("loader").html('Demande envoyée... Veuillez patienter.');
+				$('#ajax_msg').removeAttr("class").addClass("loader").html('Demande envoyée...');
 				$.ajax
 				(
 					{
@@ -611,7 +611,7 @@ $(document).ready
 						error : function(msg,string)
 						{
 							$('#rechercher').prop('disabled',false);
-							$('#ajax_msg').removeAttr("class").addClass("alerte").html('Echec de la connexion ! Veuillez recommencer.');
+							$('#ajax_msg').removeAttr("class").addClass("alerte").html('Echec de la connexion !');
 							return false;
 						},
 						success : function(responseHTML)
@@ -667,7 +667,7 @@ $(document).ready
 				var description    = $(this).parent().text(); // Pb : il prend le contenu du <sup> avec
 				var longueur_sup   = $(this).prev().text().length;
 				var description    = description.substring(0,description.length-longueur_sup);
-				var new_label = '<label id="temp" class="loader">Demande envoyée... Veuillez patienter.</label>';
+				var new_label = '<label id="temp" class="loader">Demande envoyée...</label>';
 				$(this).next().after(new_label);
 				$.ajax
 				(
@@ -678,7 +678,7 @@ $(document).ready
 						dataType : "html",
 						error : function(msg,string)
 						{
-							$.fancybox( '<label class="alerte">'+'Echec de la connexion ! Veuillez recommencer.'+'</label>' , {'centerOnScroll':true} );
+							$.fancybox( '<label class="alerte">'+'Echec de la connexion !'+'</label>' , {'centerOnScroll':true} );
 							$('label[id=temp]').remove();
 						},
 						success : function(responseHTML)
@@ -726,7 +726,7 @@ $(document).ready
 				var ids = $('#succes').parent().parent().attr('id');
 				var referentiel_id = $(this).val().substring(3);
 				$('button').prop('disabled',true);
-				$('#ajax_msg_choisir').removeAttr("class").addClass("loader").html("Demande envoyée... Veuillez patienter.");
+				$('#ajax_msg_choisir').removeAttr("class").addClass("loader").html("Demande envoyée...");
 				$.ajax
 				(
 					{
@@ -737,7 +737,7 @@ $(document).ready
 						error : function(msg,string)
 						{
 							$('button').prop('disabled',false);
-							$('#ajax_msg_choisir').removeAttr("class").addClass("alerte").html('Echec de la connexion ! Veuillez recommencer.');
+							$('#ajax_msg_choisir').removeAttr("class").addClass("alerte").html('Echec de la connexion !');
 							return false;
 						},
 						success : function(responseHTML)

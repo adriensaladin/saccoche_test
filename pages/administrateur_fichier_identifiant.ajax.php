@@ -28,10 +28,11 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 if($_SESSION['SESAMATH_ID']==ID_DEMO){exit('Action désactivée pour la démo...');}
 
-$action = (isset($_POST['action'])) ? $_POST['action'] : '';
-$profil = (isset($_POST['profil'])) ? $_POST['profil'] : '';
-$tab_select_users = (isset($_POST['select_users'])) ? array_map('clean_entier',explode(',',$_POST['select_users'])) : array() ;
-$tab_select_users = array_filter($tab_select_users,'positif');
+$action = (isset($_POST['action']))   ? $_POST['action']   : '';
+$profil = (isset($_POST['f_profil'])) ? $_POST['f_profil'] : '';
+// Normalement c'est un tableau qui est transmis, mais au cas où...
+$tab_select_users = (isset($_POST['select_users'])) ? ( (is_array($_POST['select_users'])) ? $_POST['select_users'] : explode(',',$_POST['select_users']) ) : array() ;
+$tab_select_users = array_filter( array_map( 'clean_entier' , $tab_select_users ) , 'positif' );
 $nb = count($tab_select_users);
 
 $dossier_export    = './__tmp/export/';

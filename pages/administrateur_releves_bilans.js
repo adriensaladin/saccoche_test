@@ -79,7 +79,7 @@ $(document).ready
 						}
 					);
 					$('#form_ordonner button').prop('disabled',true);
-					$('#ajax_msg_ordre').removeAttr("class").addClass("loader").html("Demande envoyée... Veuillez patienter.");
+					$('#ajax_msg_ordre').removeAttr("class").addClass("loader").html("Demande envoyée...");
 					$.ajax
 					(
 						{
@@ -90,7 +90,7 @@ $(document).ready
 							error : function(msg,string)
 							{
 								$('#form_ordonner button').prop('disabled',false);
-								$('#ajax_msg_ordre').removeAttr("class").addClass("alerte").html('Echec de la connexion ! Veuillez recommencer.');
+								$('#ajax_msg_ordre').removeAttr("class").addClass("alerte").html('Echec de la connexion !');
 								return false;
 							},
 							success : function(responseHTML)
@@ -163,7 +163,7 @@ $(document).ready
 				var f_niveau  = tab_infos[1];
 				$('#bouton_'+ids).prop('disabled',true);
 				// $("#form_synthese button").prop('disabled',true);
-				$('#label_'+ids).removeAttr("class").addClass("loader").html("Demande envoyée... Veuillez patienter.");
+				$('#label_'+ids).removeAttr("class").addClass("loader").html("Demande envoyée...");
 				$.ajax
 				(
 					{
@@ -175,7 +175,7 @@ $(document).ready
 						{
 							$('#bouton_'+ids).prop('disabled',false);
 							// $("#form_synthese button").prop('disabled',false);
-							$('#ajax_msg').removeAttr("class").addClass("alerte").html("Echec de la connexion ! Veuillez recommencer.");
+							$('#ajax_msg').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
 							return false;
 						},
 						success : function(responseHTML)

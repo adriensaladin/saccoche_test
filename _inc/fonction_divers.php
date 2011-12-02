@@ -923,6 +923,63 @@ function envoyer_webmestre_courriel($adresse,$objet,$contenu)
 }
 
 /**
+ * Fabriquer le contenu du courriel d'insription envoyé au contact de l'établissement et 1er admin
+ * 
+ * @param int      $base_id
+ * @param string   $denomination
+ * @param string   $contact_nom
+ * @param string   $contact_prenom
+ * @param string   $admin_login
+ * @param string   $admin_password
+ * @param string   $serveur_adresse
+ * @return string
+ */
+function contenu_courriel_inscription($base_id,$denomination,$contact_nom,$contact_prenom,$admin_login,$admin_password,$serveur_adresse)
+{
+	$texte = 'Bonjour '.$contact_prenom.' '.$contact_nom.'.'."\r\n\r\n";
+	$texte.= 'Je viens de créer une base SACoche pour l\'établissement "'.$denomination.'" sur le site hébergé par "'.HEBERGEUR_DENOMINATION.'". Pour accéder au site sans avoir besoin de sélectionner votre établissement, utilisez le lien suivant :'."\r\n".$serveur_adresse.'/?id='.$base_id."\r\n\r\n";
+	$texte.= 'Vous êtes maintenant le contact de votre établissement pour cette installation de SACoche.'."\r\n".'Pour modifier l\'identité de la personne référente, il suffit de me communiquer ses coordonnées.'."\r\n\r\n";
+	$texte.= 'Un premier compte administrateur a été créé. Pour se connecter comme administrateur, utiliser le lien'."\r\n".$serveur_adresse.'/?id='.$base_id."\r\n".'et entrer les identifiants'."\r\n".'nom d\'utilisateur :   '.$admin_login."\r\n".'mot de passe :   '.$admin_password."\r\n\r\n";
+	$texte.= 'Ces identifiants sont modifiables depuis l\'espace d\'administration.'."\r\n".'Un administrateur peut déléguer son rôle en créant d\'autres administrateurs.'."\r\n\r\n";
+	$texte.= 'Ce logiciel est mis à votre disposition gratuitement, mais sans garantie, conformément à la licence libre GNU GPL3.'."\r\n".'Les administrateurs et les professeurs sont responsables de toute conséquence d\'une mauvaise manipulation de leur part.'."\r\n\r\n";
+	$texte.= 'Merci de consulter la documentation disponible depuis le site du projet :'."\r\n".SERVEUR_PROJET."\r\n\r\n";
+	$texte.= 'Vous y trouverez en particulier le guide d\'un administrateur de SACoche :'."\r\n".SERVEUR_GUIDE_ADMIN."\r\n\r\n";
+	$texte.= 'Enfin, pour échanger autour de SACoche ou demander des informations complémentaires, vous disposez d\'une liste de discussions :'."\r\n".SERVEUR_SUPPORT."\r\n\r\n";
+	$texte.= 'Cordialement'."\r\n";
+	$texte.= WEBMESTRE_PRENOM.' '.WEBMESTRE_NOM."\r\n\r\n";
+	return $texte;
+}
+
+/**
+ * Fabriquer le contenu du courriel avec un nouveau mdp admin envoyé au contact de l'établissement
+ * 
+ * @param int      $base_id
+ * @param string   $denomination
+ * @param string   $contact_nom
+ * @param string   $contact_prenom
+ * @param string   $admin_nom
+ * @param string   $admin_prenom
+ * @param string   $admin_login
+ * @param string   $admin_password
+ * @param string   $serveur_adresse
+ * @return string
+ */
+function contenu_courriel_nouveau_mdp($base_id,$denomination,$contact_nom,$contact_prenom,$admin_nom,$admin_prenom,$admin_login,$admin_password,$serveur_adresse)
+{
+	$texte = 'Bonjour '.$contact_prenom.' '.$contact_nom.'.'."\r\n\r\n";
+	$texte.= 'Je viens de réinitialiser le mot de passe de '.$admin_prenom.' '.$admin_nom.', administrateur de SACoche pour l\'établissement "'.$denomination.'" sur le site hébergé par "'.HEBERGEUR_DENOMINATION.'".'."\r\n\r\n";
+	$texte.= 'Pour se connecter, cet administrateur doit utiliser le lien'."\r\n".$serveur_adresse.'/?id='.$base_id."\r\n".'et entrer les identifiants'."\r\n".'nom d\'utilisateur :   '.$admin_login."\r\n".'mot de passe :   '.$admin_password."\r\n\r\n";
+	$texte.= 'Ces identifiants sont modifiables depuis l\'espace d\'administration.'."\r\n".'Un administrateur peut déléguer son rôle en créant d\'autres administrateurs.'."\r\n\r\n";
+	$texte.= 'Rappel : ce logiciel est mis à votre disposition gratuitement, mais sans garantie, conformément à la licence libre GNU GPL3.'."\r\n".'Les administrateurs et les professeurs sont responsables de toute conséquence d\'une mauvaise manipulation de leur part.'."\r\n\r\n";
+	$texte.= 'Merci de consulter la documentation disponible depuis le site du projet :'."\r\n".SERVEUR_PROJET."\r\n\r\n";
+	$texte.= 'Vous y trouverez en particulier le guide d\'un administrateur de SACoche :'."\r\n".SERVEUR_GUIDE_ADMIN."\r\n\r\n";
+	$texte.= 'Enfin, pour échanger autour de SACoche ou demander des informations complémentaires, vous disposez d\'une liste de discussions :'."\r\n".SERVEUR_SUPPORT."\r\n\r\n";
+	$texte.= 'Cordialement'."\r\n";
+	$texte.= WEBMESTRE_PRENOM.' '.WEBMESTRE_NOM."\r\n\r\n";
+	return $texte;
+}
+
+/**
  * Retourner une liste HTML ordonnée de l'arborescence d'un référentiel matière à partir d'une requête SQL transmise.
  * 
  * @param tab         $DB_TAB

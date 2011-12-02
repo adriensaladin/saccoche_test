@@ -80,7 +80,7 @@ $(document).ready
 			if(confirm("Confirmez-vous vouloir supprimer toutes vos données ?"))
 			{
 				$("#bouton_valider").prop('disabled',true);
-				$('#ajax_msg').removeAttr("class").addClass("loader").html("Demande envoyée... Veuillez patienter.");
+				$('#ajax_msg').removeAttr("class").addClass("loader").html("Demande envoyée...");
 				readytogo = true;
 			}
 			else
@@ -94,7 +94,7 @@ $(document).ready
 		function retour_form_erreur(msg,string)
 		{
 			$("#bouton_valider").prop('disabled',false);
-			$('#ajax_msg').removeAttr("class").addClass("alerte").html("Echec de la connexion ! Veuillez recommencer.");
+			$('#ajax_msg').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
 		}
 
 		// Fonction suivant l'envoi du formulaire (avec jquery.form.js)

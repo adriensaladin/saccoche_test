@@ -78,7 +78,7 @@ $(document).ready
 				}
 				// on envoie
 				$("#bouton_valider").prop('disabled',true);
-				$('#ajax_msg').removeAttr("class").addClass("loader").html("Préparation des statistiques... Veuillez patienter.");
+				$('#ajax_msg').removeAttr("class").addClass("loader").html("Préparation des statistiques...");
 				$.ajax
 				(
 					{
@@ -89,7 +89,7 @@ $(document).ready
 						error : function(msg,string)
 						{
 							$("#bouton_valider").prop('disabled',false);
-							$('#ajax_msg').removeAttr("class").addClass("alerte").html('Echec de la connexion ! Veuillez recommencer.');
+							$('#ajax_msg').removeAttr("class").addClass("alerte").html('Echec de la connexion !');
 							return false;
 						},
 						success : function(responseHTML)
@@ -230,7 +230,7 @@ $(document).ready
 		{
 			$("button").prop('disabled',true);
 			// afficher_masquer_images_action('hide');
-			$('#ajax_supprimer').removeAttr("class").addClass("loader").html("Demande envoyée... Veuillez patienter.");
+			$('#ajax_supprimer').removeAttr("class").addClass("loader").html("Demande envoyée...");
 			$.ajax
 			(
 				{
@@ -240,7 +240,7 @@ $(document).ready
 					dataType : "html",
 					error : function(msg,string)
 					{
-						$('#ajax_supprimer').removeAttr("class").addClass("alerte").html("Echec de la connexion ! Veuillez recommencer.");
+						$('#ajax_supprimer').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
 						$("button").prop('disabled',false);
 						// afficher_masquer_images_action('show');
 					},

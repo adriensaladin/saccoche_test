@@ -47,7 +47,7 @@ $(document).ready
 					dataType : "html",
 					error : function(msg,string)
 					{
-						$('#ajax_msg').removeAttr("class").addClass("alerte").html("Echec de la connexion ! Veuillez essayer de nouveau.");
+						$('#ajax_msg').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
 					},
 					success : function(responseHTML)
 					{
@@ -72,7 +72,7 @@ $(document).ready
 			if(groupe_val)
 			{
 				type = $("#f_groupe option:selected").parent().attr('label');
-				$('#ajax_msg').removeAttr("class").addClass("loader").html("Actualisation en cours... Veuillez patienter.");
+				$('#ajax_msg').removeAttr("class").addClass("loader").html("Actualisation en cours...");
 				maj_eleve(groupe_val,type);
 			}
 			else
@@ -110,22 +110,18 @@ $(document).ready
 					return(false);
 				}
 				$('button').prop('disabled',true);
-				$('#ajax_msg').removeAttr("class").addClass("loader").html("Demande envoyée... Veuillez patienter.");
-				// grouper les select multiples => normalement pas besoin si name de la forme nom[], mais ça plante curieusement sur le serveur competences.sesamath.net
-				// alors j'ai remplacé le $("form").serialize() par les tableaux maison et mis un explode dans le fichier ajax
-				var select_users = new Array(); $("#select_users option:selected").each(function(){select_users.push($(this).val());});
-				var select_groupes = new Array(); $("#select_groupes option:selected").each(function(){select_groupes.push($(this).val());});
+				$('#ajax_msg').removeAttr("class").addClass("loader").html("Demande envoyée...");
 				$.ajax
 				(
 					{
 						type : 'POST',
 						url : 'ajax.php?page='+PAGE+'&action='+id,
-						data : 'select_users=' + select_users + '&select_groupes=' + select_groupes,
+						data : $("form").serialize(),
 						dataType : "html",
 						error : function(msg,string)
 						{
 							$('button').prop('disabled',false);
-							$('#ajax_msg').removeAttr("class").addClass("alerte").html("Echec de la connexion ! Veuillez recommencer.");
+							$('#ajax_msg').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
 							return false;
 						},
 						success : function(responseHTML)
@@ -150,7 +146,7 @@ $(document).ready
 
 		// Initialisation : charger au chargement l'affichage du bilan
 
-		$('#ajax_msg').addClass("loader").html("Chargement en cours... Veuillez patienter.");
+		$('#ajax_msg').addClass("loader").html("Chargement en cours...");
 		$.ajax
 		(
 			{

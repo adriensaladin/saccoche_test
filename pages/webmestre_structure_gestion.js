@@ -160,7 +160,7 @@ $(document).ready
 			mode = $(this).attr('class');
 			afficher_masquer_images_action('hide');
 			base_id = $(this).parent().parent().attr('id').substring(3);
-			new_span  = '<span id="init_form"><label id="ajax_msg" class="loader">Chargement en cours... Veuillez patienter.</label></span>';
+			new_span  = '<span id="init_form"><label id="ajax_msg" class="loader">Chargement en cours...</label></span>';
 			$(this).after(new_span);
 			$.ajax
 			(
@@ -318,7 +318,7 @@ $(document).ready
 		{
 			$("button").prop('disabled',true);
 			afficher_masquer_images_action('hide');
-			$('#ajax_supprimer').removeAttr("class").addClass("loader").html("Demande envoyée... Veuillez patienter.");
+			$('#ajax_supprimer').removeAttr("class").addClass("loader").html("Demande envoyée...");
 			$.ajax
 			(
 				{
@@ -328,7 +328,7 @@ $(document).ready
 					dataType : "html",
 					error : function(msg,string)
 					{
-						$('#ajax_supprimer').removeAttr("class").addClass("alerte").html("Echec de la connexion ! Veuillez recommencer.");
+						$('#ajax_supprimer').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
 						$("button").prop('disabled',false);
 						afficher_masquer_images_action('show');
 					},
@@ -551,7 +551,7 @@ $(document).ready
 			{
 				please_wait = true;
 				$('#ajax_msg').parent().children('q').hide();
-				$('#ajax_msg').removeAttr("class").addClass("loader").html("Demande envoyée... Veuillez patienter.");
+				$('#ajax_msg').removeAttr("class").addClass("loader").html("Demande envoyée...");
 			}
 			return readytogo;
 		}
@@ -561,7 +561,7 @@ $(document).ready
 		{
 			please_wait = false;
 			$('#ajax_msg').parent().children('q').show();
-			$('#ajax_msg').removeAttr("class").addClass("alerte").html("Echec de la connexion ! Veuillez recommencer.");
+			$('#ajax_msg').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
 		}
 
 		// Fonction suivant l'envoi du formulaire (avec jquery.form.js)

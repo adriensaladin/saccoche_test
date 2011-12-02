@@ -45,7 +45,9 @@ $couleur       = (isset($_POST['f_couleur']))      ? clean_texte($_POST['f_coule
 $legende       = (isset($_POST['f_legende']))      ? clean_texte($_POST['f_legende'])       : '';
 $marge_min     = (isset($_POST['f_marge_min']))    ? clean_texte($_POST['f_marge_min'])     : '';
 $groupe_id     = (isset($_POST['f_groupe']))       ? clean_entier($_POST['f_groupe'])       : 0;
-$tab_eleve_id  = (isset($_POST['eleves']))         ? array_map('clean_entier',explode(',',$_POST['eleves'])) : array() ;
+// Normalement c'est un tableau qui est transmis, mais au cas où...
+$tab_eleve_id = (isset($_POST['f_eleve'])) ? ( (is_array($_POST['f_eleve'])) ? $_POST['f_eleve'] : explode(',',$_POST['f_eleve']) ) : array() ;
+$tab_eleve_id = array_filter( array_map( 'clean_entier' , $tab_eleve_id ) , 'positif' );
 
 // En cas de manipulation du formulaire (avec Firebug par exemple) ; on pourrait aussi vérifier pour un parent que c'est bien un de ses enfants...
 if($_SESSION['USER_PROFIL']=='eleve')
@@ -54,7 +56,6 @@ if($_SESSION['USER_PROFIL']=='eleve')
 	$tab_eleve_id = array($_SESSION['USER_ID']);
 }
 
-$tab_eleve_id = array_filter($tab_eleve_id,'positif');
 $liste_eleve  = implode(',',$tab_eleve_id);
 
 if( $matiere_id && $niveau_id && $matiere_nom && $niveau_nom && $remplissage && $orientation && $couleur && $legende && $marge_min && $cases_nb && $cases_largeur )

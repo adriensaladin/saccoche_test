@@ -50,10 +50,12 @@ $aff_bilan_PA   = (isset($_POST['f_bilan_PA']))    ? 1                          
 $aff_conv_sur20 = (isset($_POST['f_conv_sur20']))  ? 1                                    : 0;
 $groupe_id      = (isset($_POST['f_groupe']))      ? clean_entier($_POST['f_groupe'])     : 0;
 $groupe_nom     = (isset($_POST['f_groupe_nom']))  ? clean_texte($_POST['f_groupe_nom'])  : '';
-$tab_eleve      = (isset($_POST['eleves']))        ? array_map('clean_entier',explode(',',$_POST['eleves'])) : array() ;
-$tab_type[]     = 'individuel';
 $format         = 'multimatiere';
 $type_individuel = 1;
+// Normalement c'est un tableau qui est transmis, mais au cas où...
+$tab_eleve = (isset($_POST['f_eleve'])) ? ( (is_array($_POST['f_eleve'])) ? $_POST['f_eleve'] : explode(',',$_POST['f_eleve']) ) : array() ;
+$tab_eleve = array_filter( array_map( 'clean_entier' , $tab_eleve ) , 'positif' );
+$tab_type[] = 'individuel';
 
 // En cas de manipulation du formulaire (avec Firebug par exemple) ; on pourrait aussi vérifier pour un parent que c'est bien un de ses enfants...
 if(in_array($_SESSION['USER_PROFIL'],array('parent','eleve')))
@@ -69,7 +71,6 @@ if($_SESSION['USER_PROFIL']=='eleve')
 	$tab_eleve  = array($_SESSION['USER_ID']);
 }
 
-$tab_eleve     = array_filter($tab_eleve,'positif');
 $liste_eleve   = implode(',',$tab_eleve);
 
 if( $orientation && $couleur && $legende && $marge_min && $pages_nb && $cases_nb && $cases_largeur && ( $periode_id || ($date_debut && $date_fin) ) && $retroactif && $matiere_id && $groupe_id && $groupe_nom && count($tab_eleve) && count($tab_type) )

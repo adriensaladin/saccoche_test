@@ -49,7 +49,7 @@ $(document).ready
 					dataType : "html",
 					error : function(msg,string)
 					{
-						$('#ajax_msg_groupe').removeAttr("class").addClass("alerte").html("Echec de la connexion ! Veuillez essayer de nouveau.");
+						$('#ajax_msg_groupe').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
 					},
 					success : function(responseHTML)
 					{
@@ -76,7 +76,7 @@ $(document).ready
 				// type = $("#f_groupe option:selected").parent().attr('label');
 				groupe_type = groupe_val.substring(0,1);
 				groupe_id   = groupe_val.substring(1);
-				$('#ajax_msg_groupe').removeAttr("class").addClass("loader").html("Actualisation en cours... Veuillez patienter.");
+				$('#ajax_msg_groupe').removeAttr("class").addClass("loader").html("Actualisation en cours...");
 				maj_eleve(groupe_id,groupe_type);
 			}
 			else
@@ -137,7 +137,7 @@ $(document).ready
 				}
 				// on envoie
 				$('button.enabled').prop('disabled',true);
-				$('#ajax_msg').removeAttr("class").addClass("loader").html("Demande envoyée... Veuillez patienter.");
+				$('#ajax_msg').removeAttr("class").addClass("loader").html("Demande envoyée...");
 				$('#ajax_info').html("");
 				$.ajax
 				(
@@ -150,7 +150,7 @@ $(document).ready
 						{
 							$('button.enabled').prop('disabled',false);
 							$('#import_lpc_disabled').prop('disabled',true);
-							$('#ajax_msg').removeAttr("class").addClass("alerte").html('Echec de la connexion ! Veuillez recommencer.');
+							$('#ajax_msg').removeAttr("class").addClass("alerte").html('Echec de la connexion !');
 							return false;
 						},
 						success : function(responseHTML)
@@ -221,7 +221,7 @@ $(document).ready
 			}
 			else
 			{
-				$('#ajax_msg').removeAttr("class").addClass("loader").html('Fichier envoyé... Veuillez patienter.');
+				$('#ajax_msg').removeAttr("class").addClass("loader").html('Fichier envoyé...');
 				return true;
 			}
 		}

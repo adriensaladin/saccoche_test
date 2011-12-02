@@ -45,7 +45,7 @@ $(document).ready
 				}
 				var bases = new Array(); $("#f_base option:selected").each(function(){bases.push($(this).val());});
 				$("button").prop('disabled',true);
-				$('#ajax_msg_export').removeAttr("class").addClass("loader").html("Préparation de l'export... Veuillez patienter.");
+				$('#ajax_msg_export').removeAttr("class").addClass("loader").html("Préparation de l'export...");
 				$.ajax
 				(
 					{
@@ -56,7 +56,7 @@ $(document).ready
 						error : function(msg,string)
 						{
 							$("button").prop('disabled',false);
-							$('#ajax_msg_export').removeAttr("class").addClass("alerte").html("Echec de la connexion ! Veuillez recommencer.");
+							$('#ajax_msg_export').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
 							return false;
 						},
 						success : function(responseHTML)
@@ -225,7 +225,7 @@ $(document).ready
 			else
 			{
 				$('button').prop('disabled',true);
-				$('#ajax_msg_csv').removeAttr("class").addClass("loader").html('Fichier envoyé... Veuillez patienter.');
+				$('#ajax_msg_csv').removeAttr("class").addClass("loader").html('Fichier envoyé...');
 				return true;
 			}
 		}
@@ -245,7 +245,7 @@ $(document).ready
 			else
 			{
 				$('button').prop('disabled',true);
-				$('#ajax_msg_zip').removeAttr("class").addClass("loader").html('Fichier envoyé... Veuillez patienter.');
+				$('#ajax_msg_zip').removeAttr("class").addClass("loader").html('Fichier envoyé...');
 				return true;
 			}
 		}
@@ -420,7 +420,7 @@ $(document).ready
 		{
 			$("button").prop('disabled',true);
 			// afficher_masquer_images_action('hide');
-			$('#ajax_supprimer_export').removeAttr("class").addClass("loader").html("Demande envoyée... Veuillez patienter.");
+			$('#ajax_supprimer_export').removeAttr("class").addClass("loader").html("Demande envoyée...");
 			$.ajax
 			(
 				{
@@ -430,7 +430,7 @@ $(document).ready
 					dataType : "html",
 					error : function(msg,string)
 					{
-						$('#ajax_supprimer_export').removeAttr("class").addClass("alerte").html("Echec de la connexion ! Veuillez recommencer.");
+						$('#ajax_supprimer_export').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
 						$("button").prop('disabled',false);
 						// afficher_masquer_images_action('show');
 					},
@@ -503,7 +503,7 @@ $(document).ready
 		{
 			$("button").prop('disabled',true);
 			// afficher_masquer_images_action('hide');
-			$('#ajax_supprimer_import').removeAttr("class").addClass("loader").html("Demande envoyée... Veuillez patienter.");
+			$('#ajax_supprimer_import').removeAttr("class").addClass("loader").html("Demande envoyée...");
 			$.ajax
 			(
 				{
@@ -513,7 +513,7 @@ $(document).ready
 					dataType : "html",
 					error : function(msg,string)
 					{
-						$('#ajax_supprimer_import').removeAttr("class").addClass("alerte").html("Echec de la connexion ! Veuillez recommencer.");
+						$('#ajax_supprimer_import').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
 						$("button").prop('disabled',false);
 						// afficher_masquer_images_action('show');
 					},

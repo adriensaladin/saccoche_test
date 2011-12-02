@@ -56,7 +56,7 @@ $(document).ready
 					$("button").prop('disabled',true);
 					$("label").removeAttr("class").html('');
 					$("#ajax_info").html('<li></li>').hide();
-					$('#ajax_msg_'+action).addClass("loader").html("Demande envoyée... Veuillez patienter.");
+					$('#ajax_msg_'+action).addClass("loader").html("Demande envoyée...");
 					$.ajax
 					(
 						{
@@ -67,7 +67,7 @@ $(document).ready
 							error : function(msg,string)
 							{
 								$("button").prop('disabled',false);
-								$('#ajax_msg_'+action).removeAttr("class").addClass("alerte").html('Echec de la connexion ! Veuillez recommencer.');
+								$('#ajax_msg_'+action).removeAttr("class").addClass("alerte").html('Echec de la connexion !');
 								return false;
 							},
 							success : function(responseHTML)

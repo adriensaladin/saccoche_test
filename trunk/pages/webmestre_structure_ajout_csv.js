@@ -73,7 +73,7 @@ $(document).ready
 			else
 			{
 				$('button').prop('disabled',true);
-				$('#ajax_msg_csv').removeAttr("class").addClass("loader").html('Fichier envoyé... Veuillez patienter.');
+				$('#ajax_msg_csv').removeAttr("class").addClass("loader").html('Fichier envoyé...');
 				return true;
 			}
 		}
@@ -234,7 +234,7 @@ $(document).ready
 		{
 			$("button").prop('disabled',true);
 			// afficher_masquer_images_action('hide');
-			$('#ajax_supprimer').removeAttr("class").addClass("loader").html("Demande envoyée... Veuillez patienter.");
+			$('#ajax_supprimer').removeAttr("class").addClass("loader").html("Demande envoyée...");
 			$.ajax
 			(
 				{
@@ -244,7 +244,7 @@ $(document).ready
 					dataType : "html",
 					error : function(msg,string)
 					{
-						$('#ajax_supprimer').removeAttr("class").addClass("alerte").html("Echec de la connexion ! Veuillez recommencer.");
+						$('#ajax_supprimer').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
 						$("button").prop('disabled',false);
 						// afficher_masquer_images_action('show');
 					},

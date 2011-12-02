@@ -231,7 +231,7 @@ $(document).ready
 					$('#bilan table tbody').hide();
 				}
 				$('button').prop('disabled',true);
-				$('#ajax_msg').removeAttr("class").addClass("loader").html("Demande envoyée... Veuillez patienter.").show();
+				$('#ajax_msg').removeAttr("class").addClass("loader").html("Demande envoyée...").show();
 			}
 			return readytogo;
 		}
@@ -240,7 +240,7 @@ $(document).ready
 		function retour_form_erreur(msg,string)
 		{
 			$('button').prop('disabled',false);
-			$('#ajax_msg').removeAttr("class").addClass("alerte").html("Echec de la connexion ! Veuillez valider de nouveau.");
+			$('#ajax_msg').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
 		}
 
 		// Fonction suivant l'envoi du formulaire (avec jquery.form.js)

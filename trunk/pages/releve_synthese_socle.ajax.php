@@ -35,12 +35,15 @@ $palier_nom    = (isset($_POST['f_palier_nom'])) ? clean_texte($_POST['f_palier_
 $pilier_id     = (isset($_POST['f_pilier']))     ? clean_entier($_POST['f_pilier'])     : -1;
 $groupe_id     = (isset($_POST['f_groupe']))     ? clean_entier($_POST['f_groupe'])     : 0;
 $groupe_nom    = (isset($_POST['f_groupe_nom'])) ? clean_texte($_POST['f_groupe_nom'])  : '';
-$tab_pilier_id = (isset($_POST['piliers']))      ? array_map('clean_entier',explode(',',$_POST['piliers']))  : array() ;
-$tab_eleve_id  = (isset($_POST['eleves']))       ? array_map('clean_entier',explode(',',$_POST['eleves']))   : array() ;
-$tab_matiere   = (isset($_POST['matieres']))     ? array_map('clean_entier',explode(',',$_POST['matieres'])) : array() ;
+// Normalement ce sont des tableaux qui sont transmis, mais au cas où...
+$tab_pilier_id  = (isset($_POST['f_pilier']))  ? ( (is_array($_POST['f_pilier']))  ? $_POST['f_pilier']  : explode(',',$_POST['f_pilier'])  ) : array() ;
+$tab_eleve_id   = (isset($_POST['f_eleve']))   ? ( (is_array($_POST['f_eleve']))   ? $_POST['f_eleve']   : explode(',',$_POST['f_eleve'])   ) : array() ;
+$tab_matiere_id = (isset($_POST['f_matiere'])) ? ( (is_array($_POST['f_matiere'])) ? $_POST['f_matiere'] : explode(',',$_POST['f_matiere']) ) : array() ;
+$tab_pilier_id  = array_filter( array_map( 'clean_entier' , $tab_pilier_id  ) , 'positif' );
+$tab_eleve_id   = array_filter( array_map( 'clean_entier' , $tab_eleve_id   ) , 'positif' );
+$tab_matiere_id = array_filter( array_map( 'clean_entier' , $tab_matiere_id ) , 'positif' );
 
 $memo_demande  = (count($tab_pilier_id)>1) ? 'palier' : 'pilier' ;
-$tab_eleve_id  = array_filter($tab_eleve_id,'positif');
 $liste_eleve   = implode(',',$tab_eleve_id);
 
 if( (!$palier_id) || (!$palier_nom) || (!$groupe_id) || (!$groupe_nom) || (!count($tab_eleve_id)) || (!count($tab_pilier_id)) || (!in_array($type,array('pourcentage','validation'))) || (!in_array($mode,array('auto','manuel'))) )
@@ -124,7 +127,7 @@ if($type=='pourcentage')
 	$DB_TAB = DB_STRUCTURE_BILAN::DB_lister_result_eleves_palier_sans_infos_items($liste_eleve , $listing_entree_id , $_SESSION['USER_PROFIL']);
 	foreach($DB_TAB as $DB_ROW)
 	{
-		$test_comptabilise = ($mode=='auto') ? ( !in_array($tab_item_pilier[$DB_ROW['socle_id']],$tab_langue_piliers) || in_array($DB_ROW['matiere_id'],$tab_langues[$tab_eleve_langue[$DB_ROW['eleve_id']]]['tab_matiere_id']) ) : in_array($DB_ROW['matiere_id'],$tab_matiere) ;
+		$test_comptabilise = ($mode=='auto') ? ( !in_array($tab_item_pilier[$DB_ROW['socle_id']],$tab_langue_piliers) || in_array($DB_ROW['matiere_id'],$tab_langues[$tab_eleve_langue[$DB_ROW['eleve_id']]]['tab_matiere_id']) ) : in_array($DB_ROW['matiere_id'],$tab_matiere_id) ;
 		if($test_comptabilise)
 		{
 			$tab_eval[$DB_ROW['eleve_id']][$DB_ROW['socle_id']][$DB_ROW['item_id']][]['note'] = $DB_ROW['note'];

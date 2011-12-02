@@ -44,10 +44,10 @@ $select_structure = Formulaire::afficher_select(DB_WEBMESTRE_SELECT::DB_OPT_stru
 </div>
 
 <form action="#" method="post" id="newsletter"><fieldset>
-	<label class="tab" for="f_basic">Destinataire(s) <img alt="" src="./_img/bulle_aide.png" title="Utiliser la touche &laquo;&nbsp;Shift&nbsp;&raquo; pour une sélection multiple contiguë.<br />Utiliser la touche &laquo;&nbsp;Ctrl&nbsp;&raquo; pour une sélection multiple non contiguë." /> :</label><select id="f_base" name="f_base" multiple size="10"><?php echo $select_structure ?></select><br />
+	<label class="tab" for="f_basic">Destinataire(s) <img alt="" src="./_img/bulle_aide.png" title="Utiliser la touche &laquo;&nbsp;Shift&nbsp;&raquo; pour une sélection multiple contiguë.<br />Utiliser la touche &laquo;&nbsp;Ctrl&nbsp;&raquo; pour une sélection multiple non contiguë." /> :</label><select id="f_base" name="f_base[]" multiple size="10"><?php echo $select_structure ?></select><br />
 	<label class="tab" for="f_titre">Titre :</label><input id="f_titre" name="f_titre" value="" size="50" /><br />
 	<label class="tab" for="f_contenu">Contenu :</label><textarea id="f_contenu" name="f_contenu" rows="15" cols="100">message ici, sans bonjour ni au revoir, car l'en-tête et le pied du message sont automatiquement ajoutés</textarea><br />
-	<span class="tab"></span><input type="hidden" id="f_action" name="f_action" value="envoyer" /><input type="hidden" id="f_listing_id" name="f_listing_id" value="" /><button id="bouton_valider" type="submit" class="mail_envoyer">Envoyer la lettre.</button><label id="ajax_msg">&nbsp;</label>
+	<span class="tab"></span><button id="bouton_valider" type="button" class="mail_envoyer">Envoyer la lettre.</button><label id="ajax_msg">&nbsp;</label>
 	<hr />
 </fieldset></form>
 

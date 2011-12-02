@@ -40,7 +40,7 @@ $(document).ready
 			{
 				$("button").prop('disabled',true);
 				$("#ajax_info").html('');
-				$('#ajax_msg1').removeAttr("class").addClass("loader").html("Demande envoyée... Veuillez patienter.");
+				$('#ajax_msg1').removeAttr("class").addClass("loader").html("Demande envoyée...");
 				$('#ajax_msg2').removeAttr("class").html('');
 				$.ajax
 				(
@@ -52,7 +52,7 @@ $(document).ready
 						error : function(msg,string)
 						{
 							$("button").prop('disabled',false);
-							$('#ajax_msg1').removeAttr("class").addClass("alerte").html('Echec de la connexion ! Veuillez recommencer.');
+							$('#ajax_msg1').removeAttr("class").addClass("alerte").html('Echec de la connexion !');
 							return false;
 						},
 						success : function(responseHTML)
@@ -118,7 +118,7 @@ $(document).ready
 			}
 			else
 			{
-				$('#ajax_msg2').removeAttr("class").addClass("loader").html('Fichier envoyé... Veuillez patienter.');
+				$('#ajax_msg2').removeAttr("class").addClass("loader").html('Fichier envoyé...');
 				return true;
 			}
 		}
@@ -133,7 +133,7 @@ $(document).ready
 			}
 			else
 			{
-				$('#ajax_msg2').html('Demande traitée... Veuillez patienter.');
+				$('#ajax_msg2').html('Demande traitée...');
 				$('#ajax_info').html(responseHTML);
 				initialiser_compteur();
 				restaurer(1);
@@ -156,7 +156,7 @@ $(document).ready
 					error : function(msg,string)
 					{
 						$("button").prop('disabled',false);
-						$('#ajax_msg2').removeAttr("class").addClass("alerte").html('Echec de la connexion ! Veuillez recommencer.');
+						$('#ajax_msg2').removeAttr("class").addClass("alerte").html('Echec de la connexion !');
 						return false;
 					},
 					success : function(responseHTML)

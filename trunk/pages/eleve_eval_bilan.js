@@ -141,7 +141,7 @@ $(document).ready
 			if(readytogo)
 			{
 				$("#actualiser").prop('disabled',true);
-				$('#ajax_msg').removeAttr("class").addClass("loader").html("Soumission du formulaire en cours... Veuillez patienter.");
+				$('#ajax_msg').removeAttr("class").addClass("loader").html("Soumission du formulaire en cours...");
 				$('#zone_eval_choix').hide();
 				$('#zone_eval_detail').hide();
 			}
@@ -152,7 +152,7 @@ $(document).ready
 		function retour_form_erreur(msg,string)
 		{
 			$("#actualiser").prop('disabled',false);
-			$('#ajax_msg').removeAttr("class").addClass("alerte").html("Echec de la connexion ! Veuillez valider de nouveau.");
+			$('#ajax_msg').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
 		}
 
 		// Fonction suivant l'envoi du formulaire (avec jquery.form.js)
@@ -219,7 +219,7 @@ $(document).ready
 				texte_date = texte_date.substring(17,texte_date.length); // enlever la date mysql cachée
 				$('#zone_eval_choix q').hide();	// Pas afficher_masquer_images_action() à cause des <q> pour le choix d'une date
 				$('#zone_eval_detail').hide();
-				new_label = '<label for="'+td_id+'" class="loader">Demande envoyée... Veuillez patienter.</label>';
+				new_label = '<label for="'+td_id+'" class="loader">Demande envoyée...</label>';
 				$(this).after(new_label);
 				$.ajax
 				(
@@ -230,7 +230,7 @@ $(document).ready
 						dataType : "html",
 						error : function(msg,string)
 						{
-							$.fancybox( '<label class="alerte">'+'Echec de la connexion ! Veuillez recommencer.'+'</label>' , {'centerOnScroll':true} );
+							$.fancybox( '<label class="alerte">'+'Echec de la connexion !'+'</label>' , {'centerOnScroll':true} );
 							$('label[for='+td_id+']').remove();
 							$('#zone_eval_choix q').show();
 						},

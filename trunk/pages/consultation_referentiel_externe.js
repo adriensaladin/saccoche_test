@@ -36,7 +36,7 @@ $(document).ready
 
 		var charger_formulaire_structures = function()
 		{
-			$('#ajax_msg').removeAttr("class").addClass("loader").html('Chargement du formulaire... Veuillez patienter.');
+			$('#ajax_msg').removeAttr("class").addClass("loader").html('Chargement du formulaire...');
 			$.ajax
 			(
 				{
@@ -144,7 +144,7 @@ $(document).ready
 					return false;
 				}
 				$('#rechercher').prop('disabled',true);
-				$('#ajax_msg').removeAttr("class").addClass("loader").html('Demande envoyée... Veuillez patienter.');
+				$('#ajax_msg').removeAttr("class").addClass("loader").html('Demande envoyée...');
 				$.ajax
 				(
 					{
@@ -155,7 +155,7 @@ $(document).ready
 						error : function(msg,string)
 						{
 							$('#rechercher').prop('disabled',false);
-							$('#ajax_msg').removeAttr("class").addClass("alerte").html('Echec de la connexion ! Veuillez recommencer.');
+							$('#ajax_msg').removeAttr("class").addClass("alerte").html('Echec de la connexion !');
 							return false;
 						},
 						success : function(responseHTML)
@@ -190,7 +190,7 @@ $(document).ready
 				description    = $(this).parent().text(); // Pb : il prend le contenu du <sup> avec
 				longueur_sup   = $(this).prev().text().length;
 				description    = description.substring(0,description.length-longueur_sup);
-				new_label = '<label id="temp" class="loader">Demande envoyée... Veuillez patienter.</label>';
+				new_label = '<label id="temp" class="loader">Demande envoyée...</label>';
 				$(this).after(new_label);
 				$.ajax
 				(
@@ -201,7 +201,7 @@ $(document).ready
 						dataType : "html",
 						error : function(msg,string)
 						{
-							$.fancybox( '<label class="alerte">'+'Echec de la connexion ! Veuillez recommencer.'+'</label>' , {'centerOnScroll':true} );
+							$.fancybox( '<label class="alerte">'+'Echec de la connexion !'+'</label>' , {'centerOnScroll':true} );
 							$('label[id=temp]').remove();
 						},
 						success : function(responseHTML)

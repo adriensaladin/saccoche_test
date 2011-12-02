@@ -100,7 +100,7 @@ $(document).ready
 					dataType : "html",
 					error : function(msg,string)
 					{
-						$('#ajax_msg').removeAttr("class").addClass("alerte").html("Echec de la connexion ! Veuillez valider de nouveau.");
+						$('#ajax_msg').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
 					},
 					success : function(responseHTML)
 					{
@@ -142,7 +142,7 @@ $(document).ready
 			function()
 			{
 				$('button').prop('disabled',true);
-				$('#ajax_msg').removeAttr("class").addClass("loader").html("Demande envoyée... Veuillez patienter.");
+				$('#ajax_msg').removeAttr("class").addClass("loader").html("Demande envoyée...");
 				$.ajax
 				(
 					{
@@ -153,7 +153,7 @@ $(document).ready
 						error : function(msg,string)
 						{
 							$('button').prop('disabled',false);
-							$('#ajax_msg').removeAttr("class").addClass("alerte").html('Echec de la connexion ! Veuillez recommencer.');
+							$('#ajax_msg').removeAttr("class").addClass("alerte").html('Echec de la connexion !');
 							return false;
 						},
 						success : function(responseHTML)
@@ -186,37 +186,29 @@ $(document).ready
 			function()
 			{
 				var action = $(this).attr('id');
-				// Récupérer le profil
-				var profil = $('#f_profil option:selected').val();
-				if( !profil )
+				if( !$('#f_profil option:selected').val() )
 				{
 					$('#ajax_msg').removeAttr("class").addClass("erreur").html("Sélectionnez déjà un profil utilisateur !");
 					return(false);
 				}
-				// grouper les select multiples => normalement pas besoin si name de la forme nom[], mais ça plante curieusement sur le serveur competences.sesamath.net
-				// alors j'ai remplacé le $("form").serialize() par les tableaux maison et mis un explode dans le fichier ajax
 				if( $("#select_users option:selected").length==0 )
 				{
 					$('#ajax_msg').removeAttr("class").addClass("erreur").html("Sélectionnez au moins un utilisateur !");
 					return(false);
 				}
-				else
-				{
-					var select_users = new Array(); $("#select_users option:selected").each(function(){select_users.push($(this).val());});
-				}
 				$('button').prop('disabled',true);
-				$('#ajax_msg').removeAttr("class").addClass("loader").html("Demande envoyée... Veuillez patienter.");
+				$('#ajax_msg').removeAttr("class").addClass("loader").html("Demande envoyée...");
 				$.ajax
 				(
 					{
 						type : 'POST',
 						url : 'ajax.php?page='+PAGE,
-						data : 'action=' + action + '&' + 'profil=' + profil + '&' + 'select_users=' + select_users,
+						data : 'action=' + action + '&' + $("#fieldset_init_loginmdp").serialize(),
 						dataType : "html",
 						error : function(msg,string)
 						{
 							$('button').prop('disabled',false);
-							$('#ajax_msg').removeAttr("class").addClass("alerte").html("Echec de la connexion ! Veuillez recommencer.");
+							$('#ajax_msg').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
 							return false;
 						},
 						success : function(responseHTML)
@@ -321,7 +313,7 @@ $(document).ready
 			else
 			{
 				$('button').prop('disabled',true);
-				$('#ajax_msg').removeAttr("class").addClass("loader").html('Fichier envoyé... Veuillez patienter.');
+				$('#ajax_msg').removeAttr("class").addClass("loader").html('Fichier envoyé...');
 				return true;
 			}
 		}
@@ -365,7 +357,7 @@ $(document).ready
 						error : function(msg,string)
 						{
 							$('button').prop('disabled',false);
-							$('#ajax_msg').removeAttr("class").addClass("alerte").html('Echec de la connexion ! Veuillez recommencer.');
+							$('#ajax_msg').removeAttr("class").addClass("alerte").html('Echec de la connexion !');
 							return false;
 						},
 						success : function(responseHTML)

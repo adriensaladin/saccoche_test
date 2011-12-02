@@ -36,9 +36,14 @@ $eleve_id    = (isset($_POST['f_user']))    ? clean_entier($_POST['f_user'])    
 $entree_id   = (isset($_POST['f_item']))    ? clean_entier($_POST['f_item'])    : 0;
 $mode        = (isset($_POST['f_mode']))    ? clean_texte($_POST['f_mode'])     : '';
 $langue      = (isset($_POST['langue']))    ? clean_entier($_POST['langue'])    : 0;
-$tab_eleve   = (isset($_POST['eleves']))    ? array_map('clean_entier',explode(',',$_POST['eleves']))   : array() ;
-$tab_domaine = (isset($_POST['domaines']))  ? array_map('clean_entier',explode(',',$_POST['domaines'])) : array() ;
-$tab_matiere = (isset($_POST['matieres']))  ? array_map('clean_entier',explode(',',$_POST['matieres'])) : array() ;
+// Normalement ce sont des tableaux qui sont transmis, mais au cas où...
+// De plus pour l'affichage du détail des acquisitions d'un item, f_matiere est transmis comme une chaine concaténée.
+$tab_eleve   = (isset($_POST['f_eleve']))   ? ( (is_array($_POST['f_eleve']))   ? $_POST['f_eleve']   : explode(',',$_POST['f_eleve'])   ) : array() ;
+$tab_domaine = (isset($_POST['f_domaine'])) ? ( (is_array($_POST['f_domaine'])) ? $_POST['f_domaine'] : explode(',',$_POST['f_domaine']) ) : array() ;
+$tab_matiere = (isset($_POST['f_matiere'])) ? ( (is_array($_POST['f_matiere'])) ? $_POST['f_matiere'] : explode(',',$_POST['f_matiere']) ) : array() ;
+$tab_eleve   = array_filter( array_map( 'clean_entier' , $tab_eleve   ) , 'positif' );
+$tab_domaine = array_filter( array_map( 'clean_entier' , $tab_domaine ) , 'positif' );
+$tab_matiere = array_filter( array_map( 'clean_entier' , $tab_matiere ) , 'positif' );
 
 $listing_eleve_id   = implode(',',$tab_eleve);
 $listing_domaine_id = implode(',',$tab_domaine);

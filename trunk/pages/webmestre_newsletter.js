@@ -34,101 +34,75 @@ $(document).ready
 //	Formulaire et traitement
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
-		// Le formulaire qui va être analysé et traité en AJAX
-		var formulaire = $("#newsletter");
-
-		// Vérifier la validité du formulaire (avec jquery.validate.js)
-		var validation = formulaire.validate
-		(
-			{
-				rules :
-				{
-					f_base    : { required:true },
-					f_titre   : { required:true },
-					f_contenu : { required:true }
-				},
-				messages :
-				{
-					f_base    : { required:"destinataire(s) manquant(s)" },
-					f_titre   : { required:"titre manquant" },
-					f_contenu : { required:"contenu manquant" }
-				},
-				errorElement : "label",
-				errorClass : "erreur",
-				errorPlacement : function(error,element) { element.after(error); }
-				// success: function(label) {label.text("ok").removeAttr("class").addClass("valide");} Pas pour des champs soumis à vérification PHP
-			}
-		);
-
-		// Options d'envoi du formulaire (avec jquery.form.js)
-		var ajaxOptions =
-		{
-			url : 'ajax.php?page='+PAGE,
-			type : 'POST',
-			dataType : "html",
-			clearForm : false,
-			resetForm : false,
-			target : "#ajax_msg",
-			beforeSubmit : test_form_avant_envoi,
-			error : retour_form_erreur,
-			success : retour_form_valide
-		};
-
-		// Envoi du formulaire (avec jquery.form.js)
-    formulaire.submit
+		$('#bouton_valider').click
 		(
 			function()
 			{
-				// grouper les select multiples => normalement pas besoin si name de la forme nom[], mais ça plante curieusement sur le serveur competences.sesamath.net
-				// alors j'ai copié le tableau dans un champ hidden...
-				var bases = new Array(); $("#f_base option:selected").each(function(){bases.push($(this).val());});
-				$('#f_listing_id').val(bases);
-				$(this).ajaxSubmit(ajaxOptions);
-				return false;
-			}
-		); 
-
-		// Fonction précédent l'envoi du formulaire (avec jquery.form.js)
-		function test_form_avant_envoi(formData, jqForm, options)
-		{
-			$('#ajax_msg').removeAttr("class").html("&nbsp;");
-			var readytogo = validation.form();
-			if(readytogo)
-			{
+				// vérifier titre et contenu
+				var titre = $("#f_titre").val();
+				if( !titre )
+				{
+					$('#ajax_msg').removeAttr("class").addClass("erreur").html("Titre manquant !");
+					$("#f_titre").focus();
+					return(false);
+				}
+				var contenu = $("#f_contenu").val();
+				if( !contenu )
+				{
+					$('#ajax_msg').removeAttr("class").addClass("erreur").html("Contenu manquant !");
+					$("#f_contenu").focus();
+					return(false);
+				}
+				// grouper le select multiple
+				if( $("#f_base option:selected").length==0 )
+				{
+					$('#ajax_msg').removeAttr("class").addClass("erreur").html("Sélectionnez au moins un établissement !");
+					return(false);
+				}
+				else
+				{
+					var f_listing_id = new Array(); $("#f_base option:selected").each(function(){f_listing_id.push($(this).val());});
+				}
+				// on envoie
 				$("#bouton_valider").prop('disabled',true);
-				$('#ajax_msg').removeAttr("class").addClass("loader").html("Préparation de l'envoi... Veuillez patienter.");
+				$('#ajax_msg').removeAttr("class").addClass("loader").html("Préparation de l'envoi...");
+				$.ajax
+				(
+					{
+						type : 'POST',
+						url : 'ajax.php?page='+PAGE,
+						data : 'f_action=' + 'envoyer' + '&f_titre=' + titre + '&f_contenu=' + contenu + '&f_base=' + f_listing_id,
+						dataType : "html",
+						error : function(msg,string)
+						{
+							$("#bouton_valider").prop('disabled',false);
+							$('#ajax_msg').removeAttr("class").addClass("alerte").html('Echec de la connexion !');
+							return false;
+						},
+						success : function(responseHTML)
+						{
+							initialiser_compteur();
+							if(responseHTML.substring(0,2)!='ok')
+							{
+								$("#bouton_valider").prop('disabled',false);
+								$('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);
+							}
+							else
+							{
+								var max = responseHTML.substring(3,responseHTML.length);
+								$('#ajax_msg1').removeAttr("class").addClass("loader").html('Lettre d\'information en cours d\'envoi : étape 1 sur ' + max + '...');
+								$('#ajax_msg2').html('Ne pas interrompre la procédure avant la fin du traitement !');
+								$('#ajax_num').html(1);
+								$('#ajax_max').html(max);
+								$('#ajax_info').show('fast');
+								$('#newsletter').hide('fast');
+								envoyer();
+							}
+						}
+					}
+				);
 			}
-			return readytogo;
-		}
-
-		// Fonction suivant l'envoi du formulaire (avec jquery.form.js)
-		function retour_form_erreur(msg,string)
-		{
-			$("#bouton_valider").prop('disabled',false);
-			$('#ajax_msg').removeAttr("class").addClass("alerte").html("Echec de la connexion ! Veuillez valider de nouveau.");
-		}
-
-		// Fonction suivant l'envoi du formulaire (avec jquery.form.js)
-		function retour_form_valide(responseHTML)
-		{
-			initialiser_compteur();
-			if(responseHTML.substring(0,2)!='ok')
-			{
-				$("#bouton_valider").prop('disabled',false);
-				$('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);
-			}
-			else
-			{
-				var max = responseHTML.substring(3,responseHTML.length);
-				$('#ajax_msg1').removeAttr("class").addClass("loader").html('Lettre d\'information en cours d\'envoi : étape 1 sur ' + max + '...');
-				$('#ajax_msg2').html('Ne pas interrompre la procédure avant la fin du traitement !');
-				$('#ajax_num').html(1);
-				$('#ajax_max').html(max);
-				$('#ajax_info').show('fast');
-				$('#newsletter').hide('fast');
-				envoyer();
-			}
-		} 
+		);
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 // Etapes d'envoi de la newsletter
@@ -212,23 +186,24 @@ $(document).ready
 		{
 			$("button").prop('disabled',true);
 			// afficher_masquer_images_action('hide');
-			$('#ajax_supprimer').removeAttr("class").addClass("loader").html("Demande envoyée... Veuillez patienter.");
+			$('#ajax_supprimer').removeAttr("class").addClass("loader").html("Demande envoyée...");
 			$.ajax
 			(
 				{
 					type : 'POST',
 					url : 'ajax.php?page='+PAGE,
-					data : 'f_action=supprimer&f_listing_id='+listing_id,
+					data : 'f_action=supprimer&f_base='+listing_id,
 					dataType : "html",
 					error : function(msg,string)
 					{
-						$('#ajax_supprimer').removeAttr("class").addClass("alerte").html("Echec de la connexion ! Veuillez recommencer.");
+						$('#ajax_supprimer').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
 						$("button").prop('disabled',false);
 						// afficher_masquer_images_action('show');
 					},
 					success : function(responseHTML)
 					{
 						initialiser_compteur();
+						$("button").prop('disabled',false);
 						if(responseHTML!='<ok>')	// Attention aux caractères accentués : l'utf-8 pose des pbs pour ce test
 						{
 							$('#ajax_supprimer').removeAttr("class").addClass("alerte").html(responseHTML);
@@ -243,7 +218,6 @@ $(document).ready
 								}
 							);
 							$('#ajax_supprimer').removeAttr("class").html('&nbsp;');
-							$("button").prop('disabled',false);
 							// afficher_masquer_images_action('show');
 						}
 					}

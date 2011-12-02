@@ -184,7 +184,7 @@ $(document).ready
 					dataType : "html",
 					error : function(msg,string)
 					{
-						$('#ajax_maj').removeAttr("class").addClass("alerte").html("Echec de la connexion ! Veuillez essayer de nouveau.");
+						$('#ajax_maj').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
 					},
 					success : function(responseHTML)
 					{
@@ -214,7 +214,7 @@ $(document).ready
 				if(groupe_id)
 				{
 					groupe_type = $("#f_groupe option:selected").parent().attr('label');
-					$('#ajax_maj').removeAttr("class").addClass("loader").html("Actualisation en cours... Veuillez patienter.");
+					$('#ajax_maj').removeAttr("class").addClass("loader").html("Actualisation en cours...");
 					maj_eleve(groupe_id,groupe_type);
 				}
 				else
@@ -340,14 +340,6 @@ $(document).ready
 		(
 			function()
 			{
-				// grouper les select multiples => normalement pas besoin si name de la forme nom[], mais ça plante curieusement sur le serveur competences.sesamath.net
-				// alors j'ai copié le tableau dans un champ hidden...
-				var f_eleve = new Array(); $("#f_eleve option:selected").each(function(){f_eleve.push($(this).val());});
-				$('#eleves').val(f_eleve);
-				// grouper les checkbox multiples => normalement pas besoin si name de la forme nom[], mais ça pose pb à jquery.validate.js d'avoir un id avec []
-				// alors j'ai copié le tableau dans un champ hidden...
-				var f_type = new Array(); $("input[name=f_type]:checked").each(function(){f_type.push($(this).val());});
-				$('#types').val(f_type);
 				// récupération du nom du groupe
 				$('#f_groupe_nom').val( $("#f_groupe option:selected").text() );
 				$(this).ajaxSubmit(ajaxOptions);
@@ -363,7 +355,7 @@ $(document).ready
 			if(readytogo)
 			{
 				$('button').prop('disabled',true);
-				$('#ajax_msg').removeAttr("class").addClass("loader").html("Génération du relevé en cours... Veuillez patienter.");
+				$('#ajax_msg').removeAttr("class").addClass("loader").html("Génération du relevé en cours...");
 				$('#bilan').html('');
 			}
 			return readytogo;
@@ -373,7 +365,7 @@ $(document).ready
 		function retour_form_erreur(msg,string)
 		{
 			$('button').prop('disabled',false);
-			$('#ajax_msg').removeAttr("class").addClass("alerte").html("Echec de la connexion ! Veuillez valider de nouveau.");
+			$('#ajax_msg').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
 		}
 
 		// Fonction suivant l'envoi du formulaire (avec jquery.form.js)

@@ -44,7 +44,7 @@ $msg_cnil         = ($test_cnil)         ? '<label class="valide">Déclaration n
 $msg_id_sconet    = ($test_id_sconet)    ? '<label class="valide">Identifiants élèves présents.</label>'                                                                                                   : '<label class="alerte">'.$nb_eleves_sans_sconet.' élève'.$s.' trouvé'.$s.' sans identifiant Sconet.</label> <span class="manuel"><a class="pop_up" href="'.SERVEUR_DOCUMENTAIRE.'?fichier=support_administrateur__import_users_sconet">DOC</a></span>' ;
 $msg_key_sesamath = ($test_key_sesamath) ? '<label class="valide">Etablissement identifié sur le serveur communautaire.</label>'                                                                           : '<label class="erreur">Identification non effectuée par un administrateur.</label> <span class="manuel"><a class="pop_up" href="'.SERVEUR_DOCUMENTAIRE.'?fichier=support_administrateur__gestion_informations_structure">DOC</a></span>' ;
 
-$bouton_export_lpc = ($test_uai && $test_cnil && $test_key_sesamath) ? 'id="bouton_export" class="enabled"' : 'id="disabled_export" disabled' ;
+$bouton_export_lpc = ($test_uai && $test_cnil && $test_key_sesamath) ? 'id="bouton_export" class="fichier_export enabled"' : 'id="disabled_export" class="fichier_export" disabled' ;
 ?>
 
 <?php
@@ -86,8 +86,8 @@ $select_f_groupes = Formulaire::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_regr
 		<label class="tab">CNIL :</label><?php echo $msg_cnil ?><br />
 		<label class="tab">Sconet :</label><?php echo $msg_id_sconet ?><br />
 		<label class="tab">Sésamath :</label><?php echo $msg_key_sesamath ?>
-		<p><span class="tab"></span><button type="button" id="disabled_export" disabled class="fichier_export">A venir, procédure ministérielle d'accréditation en cours&hellip;</button><label id="ajax_msg_export">&nbsp;</label></p>
-		<!-- <button type="button" id="export_lpc" <?php echo $bouton_export_lpc ?> class="fichier_export">Générer le fichier.</button> -->
+		<p><span class="tab"></span><button type="button" id="export_lpc" <?php echo $bouton_export_lpc ?>>Générer le fichier.</button><label id="ajax_msg_export">&nbsp;</label></p>
+		<!-- <button type="button" id="disabled_export" disabled class="fichier_export">A venir, procédure ministérielle d'accréditation en cours&hellip;</button> -->
 	</fieldset>
 
 	<fieldset id="fieldset_export_sacoche" class="hide">

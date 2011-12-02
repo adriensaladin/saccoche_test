@@ -56,7 +56,7 @@ $(document).ready
 			palier_id = $("#f_palier").val();
 			if(palier_id)
 			{
-				$('#ajax_maj_pilier').removeAttr("class").addClass("loader").html("Actualisation en cours... Veuillez patienter.");
+				$('#ajax_maj_pilier').removeAttr("class").addClass("loader").html("Actualisation en cours...");
 				$.ajax
 				(
 					{
@@ -66,7 +66,7 @@ $(document).ready
 						dataType : "html",
 						error : function(msg,string)
 						{
-							$('#ajax_maj_pilier').removeAttr("class").addClass("alerte").html("Echec de la connexion ! Veuillez essayer de nouveau.");
+							$('#ajax_maj_pilier').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
 						},
 						success : function(responseHTML)
 						{
@@ -106,7 +106,7 @@ $(document).ready
 			{
 				groupe_type = $("#f_groupe option:selected").parent().attr('label');
 				if(typeof(groupe_type)=='undefined') {groupe_type = 'Classes';} // Cas d'un P.P.
-				$('#ajax_maj_eleve').removeAttr("class").addClass("loader").html("Actualisation en cours... Veuillez patienter.");
+				$('#ajax_maj_eleve').removeAttr("class").addClass("loader").html("Actualisation en cours...");
 				$.ajax
 				(
 					{
@@ -116,7 +116,7 @@ $(document).ready
 						dataType : "html",
 						error : function(msg,string)
 						{
-							$('#ajax_maj_eleve').removeAttr("class").addClass("alerte").html("Echec de la connexion ! Veuillez essayer de nouveau.");
+							$('#ajax_maj_eleve').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
 						},
 						success : function(responseHTML)
 						{
@@ -160,15 +160,15 @@ $(document).ready
 			{
 				rules :
 				{
-					f_pilier : { required:true },
-					f_groupe : { required:true },
-					f_eleve  : { required:true }
+					'f_pilier[]' : { required:true },
+					f_groupe     : { required:true },
+					'f_eleve[]'  : { required:true }
 				},
 				messages :
 				{
-					f_pilier : { required:"compétence(s) manquante(s)" },
-					f_groupe : { required:"classe / groupe manquant" },
-					f_eleve  : { required:"élève(s) manquant(s)" }
+					'f_pilier[]' : { required:"compétence(s) manquante(s)" },
+					f_groupe     : { required:"classe / groupe manquant" },
+					'f_eleve[]'  : { required:"élève(s) manquant(s)" }
 				},
 				errorElement : "label",
 				errorClass : "erreur",
@@ -195,12 +195,6 @@ $(document).ready
 		(
 			function()
 			{
-				// grouper les select multiples => normalement pas besoin si name de la forme nom[], mais ça plante curieusement sur le serveur competences.sesamath.net
-				// alors j'ai copié le tableau dans un champ hidden...
-				var tab_eleve = new Array(); $("#f_eleve option:selected").each(function(){tab_eleve.push($(this).val());});
-				$('#eleves').val(tab_eleve);
-				var tab_pilier = new Array(); $("#f_pilier option:selected").each(function(){tab_pilier.push($(this).val());});
-				$('#piliers').val(tab_pilier);
 				$(this).ajaxSubmit(ajaxOptions0);
 				return false;
 			}
@@ -214,7 +208,7 @@ $(document).ready
 			if(readytogo)
 			{
 				$("button").prop('disabled',true);
-				$('#ajax_msg_choix').removeAttr("class").addClass("loader").html("Demande envoyée... Veuillez patienter.");
+				$('#ajax_msg_choix').removeAttr("class").addClass("loader").html("Demande envoyée...");
 			}
 			return readytogo;
 		}
@@ -223,7 +217,7 @@ $(document).ready
 		function retour_form_erreur0(msg,string)
 		{
 			$("button").prop('disabled',false);
-			$('#ajax_msg_choix').removeAttr("class").addClass("alerte").html("Echec de la connexion ! Veuillez recommencer.");
+			$('#ajax_msg_choix').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
 		}
 
 		// Fonction suivant l'envoi du formulaire (avec jquery.form.js)
@@ -291,7 +285,7 @@ $(document).ready
 			function()
 			{
 				$("button").prop('disabled',true);
-				$('#ajax_msg_validation').removeAttr("class").addClass("loader").html("Demande envoyée... Veuillez patienter.");
+				$('#ajax_msg_validation').removeAttr("class").addClass("loader").html("Demande envoyée...");
 				$.ajax
 				(
 					{
@@ -302,7 +296,7 @@ $(document).ready
 						error : function(msg,string)
 						{
 							$("button").prop('disabled',false);
-							$('#ajax_msg_validation').removeAttr("class").addClass("alerte").html('Echec de la connexion ! Veuillez recommencer.');
+							$('#ajax_msg_validation').removeAttr("class").addClass("alerte").html('Echec de la connexion !');
 							return false;
 						},
 						success : function(responseHTML)

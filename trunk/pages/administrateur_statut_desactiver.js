@@ -88,7 +88,7 @@ $(document).ready
 					dataType : "html",
 					error : function(msg,string)
 					{
-						$('#ajax_msg').removeAttr("class").addClass("alerte").html("Echec de la connexion ! Veuillez essayer de nouveau.");
+						$('#ajax_msg').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
 					},
 					success : function(responseHTML)
 					{
@@ -129,7 +129,7 @@ $(document).ready
 					dataType : "html",
 					error : function(msg,string)
 					{
-						$('#ajax_msg').removeAttr("class").addClass("alerte").html("Echec de la connexion ! Veuillez essayer de nouveau.");
+						$('#ajax_msg').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
 					},
 					success : function(responseHTML)
 					{
@@ -170,7 +170,7 @@ $(document).ready
 					dataType : "html",
 					error : function(msg,string)
 					{
-						$('#ajax_msg').removeAttr("class").addClass("alerte").html("Echec de la connexion ! Veuillez essayer de nouveau.");
+						$('#ajax_msg').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
 					},
 					success : function(responseHTML)
 					{
@@ -206,7 +206,7 @@ $(document).ready
 				groupe_id   = groupe_val.substring(1);
 				if(!conserver_message)
 				{
-					$('#ajax_msg').removeAttr("class").addClass("loader").html("Actualisation en cours... Veuillez patienter.");
+					$('#ajax_msg').removeAttr("class").addClass("loader").html("Actualisation en cours...");
 				}
 				maj_eleve(groupe_id,groupe_type);
 			}
@@ -251,8 +251,7 @@ $(document).ready
 					$('#ajax_msg').removeAttr("class").addClass("erreur").html("Sélectionnez un profil d'utilisateur !");
 					return(false);
 				}
-				// grouper les select multiples => normalement pas besoin si name de la forme nom[], mais ça plante curieusement sur le serveur competences.sesamath.net
-				// alors j'ai remplacé le $("form").serialize() par les tableaux maison et mis un explode dans le fichier ajax
+				// select multiple serializé à la main pour ne n'envoyer que les users du profil concerné
 				if( $("#select_"+profil+" option:selected").length==0 )
 				{
 					$('#ajax_msg').removeAttr("class").addClass("erreur").html("Sélectionnez au moins un utilisateur !");
@@ -263,7 +262,7 @@ $(document).ready
 					var select_users = new Array(); $("#select_"+profil+" option:selected").each(function(){select_users.push($(this).val());});
 				}
 				$('button').prop('disabled',true);
-				$('#ajax_msg').removeAttr("class").addClass("loader").html("Demande envoyée... Veuillez patienter.");
+				$('#ajax_msg').removeAttr("class").addClass("loader").html("Demande envoyée...");
 				$.ajax
 				(
 					{
@@ -274,7 +273,7 @@ $(document).ready
 						error : function(msg,string)
 						{
 							$('button').prop('disabled',false);
-							$('#ajax_msg').removeAttr("class").addClass("alerte").html("Echec de la connexion ! Veuillez recommencer.");
+							$('#ajax_msg').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
 							return false;
 						},
 						success : function(responseHTML)

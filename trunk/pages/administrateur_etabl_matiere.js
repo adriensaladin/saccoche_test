@@ -79,7 +79,7 @@ $(document).ready
 			function()
 			{
 				$("#bouton_valider").prop('disabled',true);
-				$('#ajax_msg_partage').removeAttr("class").addClass("loader").html("Demande envoyée... Veuillez patienter.");
+				$('#ajax_msg_partage').removeAttr("class").addClass("loader").html("Demande envoyée...");
 				var check_ids = new Array(); $("#partage input[type=checkbox]:checked").each(function(){check_ids.push($(this).val());});
 				$.ajax
 				(
@@ -91,7 +91,7 @@ $(document).ready
 						error : function(msg,string)
 						{
 							$("#bouton_valider").prop('disabled',false);
-							$('#ajax_msg_partage').removeAttr("class").addClass("alerte").html("Echec de la connexion ! Veuillez recommencer.");
+							$('#ajax_msg_partage').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
 							return false;
 						},
 						success : function(responseHTML)
@@ -294,7 +294,7 @@ $(document).ready
 			{
 				please_wait = true;
 				$('#ajax_msg').parent().children('q').hide();
-				$('#ajax_msg').removeAttr("class").addClass("loader").html("Demande envoyée... Veuillez patienter.");
+				$('#ajax_msg').removeAttr("class").addClass("loader").html("Demande envoyée...");
 			}
 			return readytogo;
 		}
@@ -304,7 +304,7 @@ $(document).ready
 		{
 			please_wait = false;
 			$('#ajax_msg').parent().children('q').show();
-			$('#ajax_msg').removeAttr("class").addClass("alerte").html("Echec de la connexion ! Veuillez recommencer.");
+			$('#ajax_msg').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
 		}
 
 		// Fonction suivant l'envoi du formulaire (avec jquery.form.js)

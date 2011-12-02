@@ -339,6 +339,7 @@ function fermer_session()
 				{
 					$('#top_info').html('<span class="button alerte">Session expirée. Vous êtes déconnecté de SACoche mais sans doute pas du SSO !</span> <span class="button connexion"><a href="#" onclick="document.location.reload()">Recharger la page&hellip;</a></span>');
 				}
+				$.fancybox( '<div class="danger">Délai de '+DUREE_AUTORISEE+'min sans activité atteint &rarr; session fermée.<br />Toute validation ultérieure ne sera pas enregistrée.</div>' , {'centerOnScroll':true} );
 			}
 		}
 	);

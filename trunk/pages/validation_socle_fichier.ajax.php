@@ -156,21 +156,13 @@ if( in_array( $action , array('export_lpc','export_sacoche') ) && $nb )
 	{
 		$xml.= '	</donnees>'."\r\n";
 		$xml.= '</lpc>'."\r\n";
-		// Pour LPC, signer le fichier via un appel au serveur communautaire
-		$xml = utf8_decode($xml);
-		// ...
-		// ...
-		// ...
-		/*
-		$signature = signer_exportLPC($_SESSION['SESAMATH_ID'],$_SESSION['SESAMATH_KEY'],$xml); // fonction sur le modèle de envoyer_arborescence_XML()
-		if(substr($signature,0,13)!='<ds:Signature') // Voir si ça renvoie le XML signé ou que la signature...
+		// Pour LPC, ajouter la signature via un appel au serveur sécurisé
+		// $xml = utf8_decode($xml);
+		$xml = signer_exportLPC($_SESSION['SESAMATH_ID'],$_SESSION['SESAMATH_KEY'],$xml); // fonction sur le modèle de envoyer_arborescence_XML()
+		if(substr($xml,0,5)!='<?xml')
 		{
-			exit(html($signature));
+			exit(html($xml));
 		}
-		*/
-		// ...
-		// ...
-		// ...
 		$fichier_nom = str_replace('export_','import-',$action).'-'.time().'_'.$_SESSION['BASE'].'_'.mt_rand().'.'.$fichier_extension; // LPC recommande le modèle "import-lpc-{timestamp}.xml"
 		Ecrire_Fichier( $dossier_export.$fichier_nom , $xml );
 	}

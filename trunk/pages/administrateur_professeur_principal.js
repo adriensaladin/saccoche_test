@@ -49,7 +49,7 @@ $(document).ready
 			function()
 			{
 				$('#valider').prop('disabled',true);
-				$('#ajax_msg').removeAttr("class").addClass("loader").html("Demande envoyée... Veuillez patienter.");
+				$('#ajax_msg').removeAttr("class").addClass("loader").html("Demande envoyée...");
 				var check_ids = new Array(); $("#pp input[type=checkbox]:checked").each(function(){check_ids.push($(this).val());});
 				$.ajax
 				(
@@ -61,7 +61,7 @@ $(document).ready
 						error : function(msg,string)
 						{
 							$('#valider').prop('disabled',false);
-							$('#ajax_msg').removeAttr("class").addClass("alerte").html("Echec de la connexion ! Veuillez recommencer.");
+							$('#ajax_msg').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
 							return false;
 						},
 						success : function(responseHTML)

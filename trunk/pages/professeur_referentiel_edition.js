@@ -89,7 +89,7 @@ $(document).ready
 				matiere_nom = $(this).parent().prev().prev().text();
 				matiere_id = id.substring(3);
 				afficher_masquer_images_action('hide');
-				new_label = '<label for="'+id+'" class="loader">Demande envoyée... Veuillez patienter.</label>';
+				new_label = '<label for="'+id+'" class="loader">Demande envoyée...</label>';
 				$(this).after(new_label);
 				$.ajax
 				(
@@ -100,7 +100,7 @@ $(document).ready
 						dataType : "html",
 						error : function(msg,string)
 						{
-							$.fancybox( '<label class="alerte">'+'Echec de la connexion ! Veuillez recommencer.'+'</label>' , {'centerOnScroll':true} );
+							$.fancybox( '<label class="alerte">'+'Echec de la connexion !'+'</label>' , {'centerOnScroll':true} );
 							$('label[for='+id+']').remove();
 							afficher_masquer_images_action('show');
 						},
@@ -558,7 +558,7 @@ $(document).ready
 					tab_id.push(li.attr('id').substring(3));
 				}
 				// Envoi des infos en ajax pour le traitement de la demande
-				$('#ajax_msg').removeAttr("class").addClass("loader").html('Demande envoyée... Veuillez patienter.');
+				$('#ajax_msg').removeAttr("class").addClass("loader").html('Demande envoyée...');
 				$.ajax
 				(
 					{
@@ -568,7 +568,7 @@ $(document).ready
 						dataType : "html",
 						error : function(msg,string)
 						{
-							$('#ajax_msg').removeAttr("class").addClass("alerte").html('Echec de la connexion ! Veuillez recommencer.');
+							$('#ajax_msg').removeAttr("class").addClass("alerte").html('Echec de la connexion !');
 						},
 						success : function(responseHTML)
 						{
@@ -683,7 +683,7 @@ $(document).ready
 				// On récupère l'id de l'élément concerné (domaine ou theme ou item)
 				element_id = $(this).parent().parent().attr('id').substring(3);
 				// Envoi des infos en ajax pour le traitement de la demande
-				$('#ajax_msg').removeAttr("class").addClass("loader").html('Demande envoyée... Veuillez patienter.');
+				$('#ajax_msg').removeAttr("class").addClass("loader").html('Demande envoyée...');
 				$.ajax
 				(
 					{
@@ -693,7 +693,7 @@ $(document).ready
 						dataType : "html",
 						error : function(msg,string)
 						{
-							$('#ajax_msg').removeAttr("class").addClass("alerte").html('Echec de la connexion ! Veuillez recommencer.');
+							$('#ajax_msg').removeAttr("class").addClass("alerte").html('Echec de la connexion !');
 						},
 						success : function(responseHTML)
 						{
@@ -755,7 +755,7 @@ $(document).ready
 					tab_id.push(li.attr('id').substring(3));
 				}
 				// Envoi des infos en ajax pour le traitement de la demande
-				$('#ajax_msg').removeAttr("class").addClass("loader").html('Demande envoyée... Veuillez patienter.');
+				$('#ajax_msg').removeAttr("class").addClass("loader").html('Demande envoyée...');
 				$.ajax
 				(
 					{
@@ -765,7 +765,7 @@ $(document).ready
 						dataType : "html",
 						error : function(msg,string)
 						{
-							$('#ajax_msg').removeAttr("class").addClass("alerte").html('Echec de la connexion ! Veuillez recommencer.');
+							$('#ajax_msg').removeAttr("class").addClass("alerte").html('Echec de la connexion !');
 						},
 						success : function(responseHTML)
 						{
@@ -811,7 +811,7 @@ $(document).ready
 				li_id_arrivee = $(this).parent().attr('id');
 				element2_id = li_id_arrivee.substring(3);
 				// Envoi des infos en ajax pour le traitement de la demande
-				$('#ajax_msg').removeAttr("class").addClass("loader").html('Demande envoyée... Veuillez patienter.');
+				$('#ajax_msg').removeAttr("class").addClass("loader").html('Demande envoyée...');
 				$.ajax
 				(
 					{
@@ -821,7 +821,7 @@ $(document).ready
 						dataType : "html",
 						error : function(msg,string)
 						{
-							$('#ajax_msg').removeAttr("class").addClass("alerte").html('Echec de la connexion ! Veuillez recommencer.');
+							$('#ajax_msg').removeAttr("class").addClass("alerte").html('Echec de la connexion !');
 						},
 						success : function(responseHTML)
 						{
@@ -920,7 +920,7 @@ $(document).ready
 					);
 				}
 				// Envoi des infos en ajax pour le traitement de la demande
-				$('#ajax_msg').removeAttr("class").addClass("loader").html('Demande envoyée... Veuillez patienter.');
+				$('#ajax_msg').removeAttr("class").addClass("loader").html('Demande envoyée...');
 				$.ajax
 				(
 					{
@@ -930,7 +930,7 @@ $(document).ready
 						dataType : "html",
 						error : function(msg,string)
 						{
-							$('#ajax_msg').removeAttr("class").addClass("alerte").html('Echec de la connexion ! Veuillez recommencer.');
+							$('#ajax_msg').removeAttr("class").addClass("alerte").html('Echec de la connexion !');
 						},
 						success : function(responseHTML)
 						{

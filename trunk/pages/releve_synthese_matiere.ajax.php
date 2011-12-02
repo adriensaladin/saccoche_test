@@ -49,9 +49,10 @@ $only_niveau   = (isset($_POST['f_restriction_niveau'])) ? $niveau_id           
 $mode_synthese = (isset($_POST['f_mode_synthese']))      ? clean_texte($_POST['f_mode_synthese']) : '';
 $couleur       = (isset($_POST['f_couleur']))            ? clean_texte($_POST['f_couleur'])       : '';
 $legende       = (isset($_POST['f_legende']))            ? clean_texte($_POST['f_legende'])       : '';
-$tab_eleve     = (isset($_POST['eleves'])) ? array_map('clean_entier',explode(',',$_POST['eleves'])) : array() ;
+// Normalement c'est un tableau qui est transmis, mais au cas où...
+$tab_eleve = (isset($_POST['f_eleve'])) ? ( (is_array($_POST['f_eleve'])) ? $_POST['f_eleve'] : explode(',',$_POST['f_eleve']) ) : array() ;
+$tab_eleve = array_filter( array_map( 'clean_entier' , $tab_eleve ) , 'positif' );
 
-$tab_eleve     = array_filter($tab_eleve,'positif');
 $liste_eleve   = implode(',',$tab_eleve);
 
 if( $matiere_id && $matiere_nom && $groupe_id && $groupe_nom && count($tab_eleve) && ( $periode_id || ($date_debut && $date_fin) ) && $retroactif && $mode_synthese && $couleur && $legende )

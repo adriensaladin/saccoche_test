@@ -302,6 +302,29 @@ function afficher_contenu_referentiel($sesamath_id,$sesamath_key,$referentiel_id
 	return url_get_contents(SERVEUR_COMMUNAUTAIRE,$tab_post);
 }
 
+/**
+ * Ajouter le signature au XML d'export des validations vers LPC.
+ * 
+ * @param int       $sesamath_id
+ * @param string    $sesamath_key
+ * @param int       $matiere_id
+ * @param int       $niveau_id
+ * @param string    $exportXML
+ * @return string   le XML signé ou un message d'erreur
+ */
+function signer_exportLPC($sesamath_id,$sesamath_key,$exportXML)
+{
+	$tab_post = array();
+	$tab_post['fichier']        = 'lpc_signature';
+	$tab_post['sesamath_id']    = $sesamath_id;
+	$tab_post['sesamath_key']   = $sesamath_key;
+	$tab_post['exportXML']      = $exportXML;
+	$tab_post['version_prog']   = VERSION_PROG; // Le service web doit être compatible
+	$tab_post['version_base']   = VERSION_BASE; // La base doit être compatible (problème de socle modifié...)
+	$tab_post['adresse_retour'] = SERVEUR_ADRESSE;
+	$tab_post['integrite_key']  = fabriquer_chaine_integrite();
+	return url_get_contents(SERVEUR_LPC_SIGNATURE,$tab_post,$timeout=10);
+}
 
 /**
  * Fabriquer le md5 d'un fichier pour le comparer à ceux d'une archive.

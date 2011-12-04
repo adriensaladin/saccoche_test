@@ -78,7 +78,7 @@ define('SERVEUR_DOCUMENTAIRE'  ,SERVEUR_PROJET.'/appel_doc.php');          // UR
 define('SERVEUR_VERSION'       ,SERVEUR_PROJET.'/sacoche/VERSION.txt');    // URL du fichier chargé de renvoyer le numéro de la dernière version disponible
 define('SERVEUR_TELECHARGEMENT',SERVEUR_PROJET.'/telechargement.php');     // URL du fichier renvoyant le ZIP de la dernière archive de SACoche disponible
 define('SERVEUR_RSS'           ,SERVEUR_PROJET.'/_rss/rss.xml');           // URL du fichier comportant le flux RSS
-define('SERVEUR_SUPPORT'       ,SERVEUR_PROJET.'/?fichier=support');       // URL de la documentation "Où échanger autour de SACoche ?"
+define('SERVEUR_CONTACT'       ,SERVEUR_PROJET.'/?fichier=contact');       // URL de la page "Où échanger autour de SACoche ?"
 define('SERVEUR_GUIDE_ADMIN'   ,SERVEUR_PROJET.'/?fichier=guide_admin');   // URL de la documentation "Guide d'un administrateur de SACoche"
 define('SERVEUR_LPC_SIGNATURE' ,SERVEUR_SSL.'/sacoche/lpc_signature.php'); // URL du fichier chargé de signer un XML à importer dans LPC
 

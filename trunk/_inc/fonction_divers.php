@@ -944,7 +944,7 @@ function contenu_courriel_inscription($base_id,$denomination,$contact_nom,$conta
 	$texte.= 'Ce logiciel est mis à votre disposition gratuitement, mais sans garantie, conformément à la licence libre GNU GPL3.'."\r\n".'Les administrateurs et les professeurs sont responsables de toute conséquence d\'une mauvaise manipulation de leur part.'."\r\n\r\n";
 	$texte.= 'Merci de consulter la documentation disponible depuis le site du projet :'."\r\n".SERVEUR_PROJET."\r\n\r\n";
 	$texte.= 'Vous y trouverez en particulier le guide d\'un administrateur de SACoche :'."\r\n".SERVEUR_GUIDE_ADMIN."\r\n\r\n";
-	$texte.= 'Enfin, pour échanger autour de SACoche ou demander des informations complémentaires, vous disposez d\'une liste de discussions :'."\r\n".SERVEUR_SUPPORT."\r\n\r\n";
+	$texte.= 'Enfin, pour échanger autour de SACoche ou demander des informations complémentaires, vous disposez d\'une liste de discussions :'."\r\n".SERVEUR_CONTACT."\r\n\r\n";
 	$texte.= 'Cordialement'."\r\n";
 	$texte.= WEBMESTRE_PRENOM.' '.WEBMESTRE_NOM."\r\n\r\n";
 	return $texte;
@@ -973,7 +973,7 @@ function contenu_courriel_nouveau_mdp($base_id,$denomination,$contact_nom,$conta
 	$texte.= 'Rappel : ce logiciel est mis à votre disposition gratuitement, mais sans garantie, conformément à la licence libre GNU GPL3.'."\r\n".'Les administrateurs et les professeurs sont responsables de toute conséquence d\'une mauvaise manipulation de leur part.'."\r\n\r\n";
 	$texte.= 'Merci de consulter la documentation disponible depuis le site du projet :'."\r\n".SERVEUR_PROJET."\r\n\r\n";
 	$texte.= 'Vous y trouverez en particulier le guide d\'un administrateur de SACoche :'."\r\n".SERVEUR_GUIDE_ADMIN."\r\n\r\n";
-	$texte.= 'Enfin, pour échanger autour de SACoche ou demander des informations complémentaires, vous disposez d\'une liste de discussions :'."\r\n".SERVEUR_SUPPORT."\r\n\r\n";
+	$texte.= 'Enfin, pour échanger autour de SACoche ou demander des informations complémentaires, vous disposez d\'une liste de discussions :'."\r\n".SERVEUR_CONTACT."\r\n\r\n";
 	$texte.= 'Cordialement'."\r\n";
 	$texte.= WEBMESTRE_PRENOM.' '.WEBMESTRE_NOM."\r\n\r\n";
 	return $texte;

@@ -1529,8 +1529,8 @@ public function DB_supprimer_utilisateur($user_id,$user_profil)
 		// Groupes type "eval" et "besoin", avec jointures users associées
 		$DB_SQL = 'DELETE sacoche_groupe, sacoche_jointure_user_groupe ';
 		$DB_SQL.= 'FROM sacoche_devoir ';
-		$DB_SQL.= 'LEFT JOIN sacoche_groupe USING groupe_id ';
-		$DB_SQL.= 'LEFT JOIN sacoche_jointure_user_groupe USING groupe_id ';
+		$DB_SQL.= 'LEFT JOIN sacoche_groupe USING (groupe_id) ';
+		$DB_SQL.= 'LEFT JOIN sacoche_jointure_user_groupe USING (groupe_id) ';
 		$DB_SQL.= 'WHERE prof_id=:user_id AND groupe_type IN("besoin","eval") ';
 		DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 		$DB_SQL = 'DELETE FROM sacoche_devoir ';

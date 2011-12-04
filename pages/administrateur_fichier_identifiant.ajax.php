@@ -295,7 +295,7 @@ if($action=='import_loginmdp')
 					// Contenu du fichier à modifier : login non indiqué et mdp différents
 					$password = $tab_users_fichier['mdp'][$i_fichier];
 					DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_user( $id_base , array(':password'=>crypter_mdp($password)) );
-					$lignes_mod .= '<tr class="new"><td>'.html($tab_users_fichier['nom'][$i_fichier].' '.$tab_users_fichier['prenom'][$i_fichier].' ('.$tab_users_base['info'][$id_base].')').'</td><td class="i">Utilisateur : inchangé</td><td class="b">Password : '.html($password).'</td></tr>';
+					$lignes_mod .= '<tr class="new"><td>'.html($tab_users_fichier['nom'][$i_fichier].' '.$tab_users_fichier['prenom'][$i_fichier].' ('.$tab_users_base['info'][$id_base].')').'</td><td class="i">Utilisateur : inchangé</td><td class="b">Mot de passe : '.html($password).'</td></tr>';
 					$fcontenu_pdf_tab[] = $tab_users_base['info'][$id_base]."\r\n".$tab_users_base['nom'][$id_base].' '.$tab_users_base['prenom'][$id_base]."\r\n".'Utilisateur : '.$tab_users_base['login'][$id_base]."\r\n".'Mot de passe : '.$password;
 				}
 			}
@@ -317,7 +317,7 @@ if($action=='import_loginmdp')
 					// Contenu du fichier à modifier : logins identiques et mdp différents
 					$password = $tab_users_fichier['mdp'][$i_fichier];
 					DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_user( $id_base , array(':password'=>crypter_mdp($password)) );
-					$lignes_mod .= '<tr class="new"><td>'.html($tab_users_fichier['nom'][$i_fichier].' '.$tab_users_fichier['prenom'][$i_fichier].' ('.$tab_users_base['info'][$id_base].')').'</td><td class="i">Utilisateur : inchangé</td><td class="b">Password : '.html($password).'</td></tr>';
+					$lignes_mod .= '<tr class="new"><td>'.html($tab_users_fichier['nom'][$i_fichier].' '.$tab_users_fichier['prenom'][$i_fichier].' ('.$tab_users_base['info'][$id_base].')').'</td><td class="i">Utilisateur : inchangé</td><td class="b">Mot de passe : '.html($password).'</td></tr>';
 					$fcontenu_pdf_tab[] = $tab_users_base['info'][$id_base]."\r\n".$tab_users_base['nom'][$id_base].' '.$tab_users_base['prenom'][$id_base]."\r\n".'Utilisateur : '.$tab_users_base['login'][$id_base]."\r\n".'Mot de passe : '.$password;
 				}
 			}
@@ -334,7 +334,7 @@ if($action=='import_loginmdp')
 					// Contenu du fichier à modifier : logins différents et mdp identiques on non imposé
 					$login = $tab_users_fichier['login'][$i_fichier];
 					DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_user( $id_base , array(':login'=>$login) );
-					$lignes_mod .= '<tr class="new"><td>'.html($tab_users_fichier['nom'][$i_fichier].' '.$tab_users_fichier['prenom'][$i_fichier].' ('.$tab_users_base['info'][$id_base].')').'</td><td class="b">Utilisateur : '.html($login).'</td><td class="i">Password : inchangé</td></tr>';
+					$lignes_mod .= '<tr class="new"><td>'.html($tab_users_fichier['nom'][$i_fichier].' '.$tab_users_fichier['prenom'][$i_fichier].' ('.$tab_users_base['info'][$id_base].')').'</td><td class="b">Utilisateur : '.html($login).'</td><td class="i">Mot de passe : inchangé</td></tr>';
 					$fcontenu_pdf_tab[] = $tab_users_base['info'][$id_base]."\r\n".$tab_users_base['nom'][$id_base].' '.$tab_users_base['prenom'][$id_base]."\r\n".'Utilisateur : '.$login."\r\n".'Mot de passe : <span class="i">inchangé</span>';
 				}
 				else
@@ -343,7 +343,7 @@ if($action=='import_loginmdp')
 					$login = $tab_users_fichier['login'][$i_fichier];
 					$password = $tab_users_fichier['mdp'][$i_fichier];
 					DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_user( $id_base , array(':login'=>$login,':password'=>crypter_mdp($password)) );
-					$lignes_mod .= '<tr class="new"><td>'.html($tab_users_fichier['nom'][$i_fichier].' '.$tab_users_fichier['prenom'][$i_fichier].' ('.$tab_users_base['info'][$id_base].')').'</td><td class="b">Utilisateur : '.html($login).'</td><td class="b">Password : '.html($password).'</td></tr>';
+					$lignes_mod .= '<tr class="new"><td>'.html($tab_users_fichier['nom'][$i_fichier].' '.$tab_users_fichier['prenom'][$i_fichier].' ('.$tab_users_base['info'][$id_base].')').'</td><td class="b">Utilisateur : '.html($login).'</td><td class="b">Mot de passe : '.html($password).'</td></tr>';
 					$fcontenu_pdf_tab[] = $tab_users_base['info'][$id_base]."\r\n".$tab_users_base['nom'][$id_base].' '.$tab_users_base['prenom'][$id_base]."\r\n".'Utilisateur : '.$login."\r\n".'Mot de passe : '.$password;
 				}
 			}

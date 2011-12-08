@@ -181,6 +181,14 @@ if($action=='identifier')
 		effacer_fichiers_temporaires('./__tmp/cookie/'.$BASE , 525600); // Nettoyer ce dossier des fichiers antérieurs à 1 an
 		unlink($fichier_lock);
 	}
+	// Si le fichier témoin du nettoyage existe, on vérifie que sa présence n'est pas anormale (cela s'est déjà produit...)
+	else
+	{
+		if( time() - filemtime($fichier_lock) > 30 )
+		{
+			unlink($fichier_lock);
+		}
+	}
 }
 
 // Pour le webmestre d'un serveur

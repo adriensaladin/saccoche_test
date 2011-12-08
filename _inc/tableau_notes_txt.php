@@ -36,6 +36,7 @@ $tab_notes_txt['Lomer']      = array( 'RR'=>'RR' , 'R'=>'R'   , 'V'=>'V'  , 'VV'
 $tab_notes_txt['Luys']       = array( 'RR'=>'R'  , 'R'=>'O'   , 'V'=>'V'  , 'VV'=>'B'  );
 $tab_notes_txt['Mistral']    = array( 'RR'=>'SA' , 'R'=>'NA'  , 'V'=>'EC' , 'VV'=>'A'  );
 $tab_notes_txt['Reval']      = array( 'RR'=>'NA' , 'R'=>'EVA' , 'V'=>'AR' , 'VV'=>'A'  );
+$tab_notes_txt['Verne']      = array( 'RR'=>'NA' , 'R'=>'ECA' , 'V'=>'AR' , 'VV'=>'A'  );
 $tab_notes_txt['Voltaire']   = array( 'RR'=>'NA' , 'R'=>'ECA' , 'V'=>'A'  , 'VV'=>'M'  );
 
 ?>

@@ -31,7 +31,6 @@ if(($_SESSION['SESAMATH_ID']==ID_DEMO)&&($_POST['f_action']!='Afficher_bilan')&&
 $action      = (isset($_POST['f_action']))  ? clean_texte($_POST['f_action'])   : '';
 $palier_id   = (isset($_POST['f_palier']))  ? clean_entier($_POST['f_palier'])  : 0;
 $pilier_id   = (isset($_POST['f_pilier']))  ? clean_entier($_POST['f_pilier'])  : 0;
-$domaine_id  = (isset($_POST['f_domaine'])) ? clean_entier($_POST['f_domaine']) : 0;
 $eleve_id    = (isset($_POST['f_user']))    ? clean_entier($_POST['f_user'])    : 0;
 $entree_id   = (isset($_POST['f_item']))    ? clean_entier($_POST['f_item'])    : 0;
 $mode        = (isset($_POST['f_mode']))    ? clean_texte($_POST['f_mode'])     : '';
@@ -214,7 +213,7 @@ if( ($action=='Afficher_bilan') && $pilier_id && count($tab_domaine) && count($t
 	// - - - - - - - - - - - - - - - - - - - - - - - - -
 	// Récupérer la liste des jointures : validations d'entrées
 	// - - - - - - - - - - - - - - - - - - - - - - - - -
-	$DB_TAB = DB_STRUCTURE_SOCLE::DB_lister_jointure_user_entree($listing_eleve_id,$listing_entree_id,$domaine_id,$pilier_id,$palier_id=0);
+	$DB_TAB = DB_STRUCTURE_SOCLE::DB_lister_jointure_user_entree($listing_eleve_id,$listing_entree_id,$domaine_id=0,$pilier_id,$palier_id=0);
 	$tab_bad = array();
 	$tab_bon = array();
 	foreach($DB_TAB as $DB_ROW)

@@ -41,6 +41,9 @@ $liens_autres_profils = ($profil=='normal') ? '<a class="anti_h2" href="index.ph
 require_once('./_inc/fonction_css_browser_selector.php');
 echo afficher_navigateurs_alertes($hr_avant='<hr />',$chemin_image='./_img',$hr_apres='');
 
+// Alerte si pas de javascript activé
+echo'<noscript><hr /><div class="danger">Vous devez activer le javascript dans votre navigateur pour utiliser <em>SACoche</em>.</div></noscript>';
+
 // Alerte non déconnexion de l'ENT si deconnexion de SACoche depuis un compte connecté via un ENT
 if( (isset($_COOKIE[COOKIE_STRUCTURE])) && (isset($_COOKIE[COOKIE_AUTHMODE])) && ($_COOKIE[COOKIE_AUTHMODE]!='normal') )
 {

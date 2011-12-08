@@ -314,7 +314,7 @@ public function DB_lister_validations_competences($listing_eleves,$only_positive
  */
 public function DB_lister_eleves_identite_et_sconet()
 {
-	$DB_SQL = 'SELECT user_sconet_id, user_nom, user_prenom ';
+	$DB_SQL = 'SELECT user_id, user_sconet_id, user_nom, user_prenom ';
 	$DB_SQL.= 'FROM sacoche_user ';
 	$DB_SQL.= 'WHERE user_profil=:profil AND user_statut=:statut ';
 	$DB_SQL.= 'ORDER BY user_nom ASC, user_prenom ASC ';

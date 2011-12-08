@@ -31,7 +31,7 @@ if(($_SESSION['SESAMATH_ID']==ID_DEMO)&&($_POST['f_action']!='Afficher_bilan')&&
 $action     = (isset($_POST['f_action'])) ? clean_texte($_POST['f_action'])  : '';
 $eleve_id   = (isset($_POST['f_user']))   ? clean_entier($_POST['f_user'])   : 0;
 $palier_id  = (isset($_POST['f_palier'])) ? clean_entier($_POST['f_palier']) : 0;
-$pilier_id  = (isset($_POST['f_pilier'])) ? clean_entier($_POST['f_pilier']) : 0;
+$pilier_id  = (isset($_POST['f_pilier'])) ? clean_entier($_POST['f_pilier']) : 0; // Sert à afficher les informations pour aider à valider un pilier précis pour un élève donné.
 // Normalement ce sont des tableaux qui sont transmis, mais au cas où...
 $tab_pilier = (isset($_POST['f_pilier'])) ? ( (is_array($_POST['f_pilier'])) ? $_POST['f_pilier'] : explode(',',$_POST['f_pilier']) ) : array() ;
 $tab_eleve  = (isset($_POST['f_eleve']))  ? ( (is_array($_POST['f_eleve']))  ? $_POST['f_eleve']  : explode(',',$_POST['f_eleve'])  ) : array() ;

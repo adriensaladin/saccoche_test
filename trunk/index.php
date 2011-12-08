@@ -171,10 +171,9 @@ $CSS_PERSO = (isset($_SESSION['CSS'])) ? '<style type="text/css">'.$_SESSION['CS
 
 // Fichiers à inclure
 $tab_fichiers_head = array();
-$tab_fichiers_head[] = array( 'css'    , compacter('./_css/style.css','mini') );
-$tab_fichiers_head[] = array( 'css_ie' , compacter('./_css/style_IE.css','mini') );
-$tab_fichiers_head[] = array( 'js'     , compacter('./_js/jquery-librairies.js','mini') );
-$tab_fichiers_head[] = array( 'js'     , compacter('./_js/script.js','mini') );
+$tab_fichiers_head[] = array( 'css' , compacter('./_css/style.css','mini') );
+$tab_fichiers_head[] = array( 'js'  , compacter('./_js/jquery-librairies.js','mini') );
+$tab_fichiers_head[] = array( 'js'  , compacter('./_js/script.js','mini') );
 $filename_js_normal = './pages/'.$PAGE.'.js';
 if(is_file($filename_js_normal)) $tab_fichiers_head[] = array( 'js' , compacter($filename_js_normal,'pack') );
 

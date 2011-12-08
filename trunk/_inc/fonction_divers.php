@@ -249,7 +249,7 @@ function declaration_entete( $is_meta_robots ,$is_favicon , $is_rss , $tab_fichi
 		switch($type)
 		{
 			case 'css'    : echo'<link rel="stylesheet" type="text/css" href="'.$url.'" />'; break;
-			case 'css_ie' : echo'<!--[if lte IE 8]><link rel="stylesheet" type="text/css" href="'.$url.'" /><![endif]-->'; break;
+	//  case 'css_ie' : echo'<!--[if lte IE 8]><link rel="stylesheet" type="text/css" href="'.$url.'" /><![endif]-->'; break;
 			case 'js'     : echo'<script type="text/javascript" charset="'.CHARSET.'" src="'.$url.'"></script>'; break;
 		}
 	}

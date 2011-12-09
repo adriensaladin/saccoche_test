@@ -239,7 +239,7 @@ if($type=='pourcentage')
 // Elaboration de la synthèse de maîtrise du socle, en HTML et PDF => Production et mise en page
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
-$affichage_direct = ( in_array($_SESSION['USER_PROFIL'],array('eleve','parent')) ) ? TRUE : FALSE ;
+$affichage_direct = ( ( in_array($_SESSION['USER_PROFIL'],array('eleve','parent')) ) && (SACoche!='webservices') ) ? TRUE : FALSE ;
 
 $eleves_nb   = count($tab_eleve_id);
 $items_nb    = count($tab_entree_id);

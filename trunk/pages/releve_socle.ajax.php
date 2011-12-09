@@ -345,7 +345,7 @@ if($test_affichage_Pourcentage)
 // Elaboration du bilan relatif au socle, en HTML et PDF => Production et mise en page
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
-$affichage_direct = ( in_array($_SESSION['USER_PROFIL'],array('eleve','parent')) ) ? TRUE : FALSE ;
+$affichage_direct = ( ( in_array($_SESSION['USER_PROFIL'],array('eleve','parent')) ) && (SACoche!='webservices') ) ? TRUE : FALSE ;
 
 $titre1 = ($mode=='manuel') ? 'Détail de maîtrise du socle commun [matières resteintes]' : 'Détail de maîtrise du socle commun' ;
 $titre2 = ($memo_demande=='palier') ? $palier_nom : $palier_nom.' – '.mb_substr($pilier_nom,0,mb_strpos($pilier_nom,'–')) ;
@@ -353,7 +353,7 @@ $break = ($memo_demande=='palier') ? 0 : $tab_pilier[$pilier_id]['pilier_nb_lign
 $releve_html  = $affichage_direct ? '' : '<style type="text/css">'.$_SESSION['CSS'].'</style>';
 $releve_html .= $affichage_direct ? '' : '<h1>'.html($titre1).'</h1>';
 $releve_html .= $affichage_direct ? '' : '<h2>'.html($titre2).'</h2>';
-$releve_html .= '<div class="astuce">Cliquer sur les icones &laquo;<img src="./_img/toggle_plus.gif" alt="+" />&raquo; pour accéder au détail.';
+$releve_html .= '<div class="astuce">Cliquer sur les icones &laquo;<img src="./_img/toggle_plus.gif" alt="+" />&raquo; pour accéder au détail.</div>';
 // Appel de la classe et définition de qqs variables supplémentaires pour la mise en page PDF
 $releve_pdf = new PDF($orientation='portrait',$marge_min=7.5,$couleur='oui');
 $releve_pdf->releve_socle_initialiser($test_affichage_Pourcentage,$test_affichage_Validation);

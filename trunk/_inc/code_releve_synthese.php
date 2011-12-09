@@ -136,13 +136,13 @@ foreach($tab_eleve as $key => $tab)
 //	Elaboration de la synthèse matière ou multi-matières, en HTML et PDF
 //	////////////////////////////////////////////////////////////////////////////////////////////////////
 
-$affichage_direct = ( in_array($_SESSION['USER_PROFIL'],array('eleve','parent')) ) ? TRUE : FALSE ;
+$affichage_direct = ( ( in_array($_SESSION['USER_PROFIL'],array('eleve','parent')) ) && (SACoche!='webservices') ) ? TRUE : FALSE ;
 
 // Préparatifs
 $releve_HTML  = $affichage_direct ? '' : '<style type="text/css">'.$_SESSION['CSS'].'</style>';
 $releve_HTML .= $affichage_direct ? '' : '<h1>Synthèse '.$tab_titre[$format].'</h1>';
 $releve_HTML .= $affichage_direct ? '' : '<h2>'.html($texte_periode).'</h2>';
-$releve_HTML .= '<div class="astuce">Cliquer sur les icones &laquo;<img src="./_img/toggle_plus.gif" alt="+" />&raquo; pour accéder au détail.';
+$releve_HTML .= '<div class="astuce">Cliquer sur les icones &laquo;<img src="./_img/toggle_plus.gif" alt="+" />&raquo; pour accéder au détail.</div>';
 $releve_PDF = new PDF($orientation='portrait',$marge_min=7,$couleur,$legende);
 $releve_PDF->bilan_synthese_initialiser($format,$nb_syntheses_total,$eleve_nb);
 $separation = (count($tab_eleve)>1) ? '<hr class="breakafter" />' : '' ;

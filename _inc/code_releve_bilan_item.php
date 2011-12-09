@@ -258,7 +258,7 @@ if( (in_array('synthese',$tab_type)) || (in_array('bulletin',$tab_type)) )
 // Elaboration du bilan individuel, disciplinaire ou transdisciplinaire, en HTML et PDF
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-$affichage_direct = ( in_array($_SESSION['USER_PROFIL'],array('eleve','parent')) ) ? TRUE : FALSE ;
+$affichage_direct = ( ( in_array($_SESSION['USER_PROFIL'],array('eleve','parent')) ) && (SACoche!='webservices') ) ? TRUE : FALSE ;
 
 if(in_array('individuel',$tab_type))
 {

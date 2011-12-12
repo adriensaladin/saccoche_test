@@ -166,7 +166,7 @@ $(document).ready
 			{
 				$('#ajax_msg').removeAttr("class").html('');
 				$.fancybox( responseHTML , {'centerOnScroll':true} );
-				format_liens('#fancybox-content');
+				format_liens('#fancybox_contenu');
 			}
 		} 
 

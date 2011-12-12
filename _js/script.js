@@ -154,7 +154,7 @@ function analyse_mdp(mdp)
 function imprimer(contenu)
 {
 	var wp = window.open("","SACochePrint","toolbar=no,location=no,menubar=no,directories=no,status=no,scrollbars=no,resizable=no,copyhistory=no,width=1,height=1,top=0,left=0");
-	wp.document.write('<!DOCTYPE html><html><head><link rel="stylesheet" type="text/css" href="./_css/style.css" /><title>SACoche - Impression</title></head><body onload="window.print();window.close()">'+document.getElementById('info').innerHTML+contenu+'</body></html>');
+	wp.document.write('<!DOCTYPE html><html><head><link rel="stylesheet" type="text/css" href="./_css/style.css" /><title>SACoche - Impression</title></head><body onload="window.print();window.close()">'+document.getElementById('top_info').innerHTML+contenu+'</body></html>');
 	wp.document.close();
 }
 
@@ -566,11 +566,11 @@ $(document).ready
 		/**
 		 * Clic sur une image-lien pour imprimer un referentiel en consultation
 		 */
-		$('#fancybox-content q.imprimer').live
+		$('#fancybox_contenu q.imprimer').live
 		('click',
 			function()
 			{
-				imprimer(document.getElementById('fancybox-content').innerHTML);
+				imprimer(document.getElementById('fancybox_contenu').innerHTML);
 			}
 		);
 

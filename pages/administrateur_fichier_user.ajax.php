@@ -1654,11 +1654,11 @@ if( $step==52 )
 		foreach($tab_mod as $id_base)
 		{
 			// Il peut théoriquement subsister un conflit de sconet_id pour des users ayant même reference, et réciproquement...
-			$tab_champs = ($is_profil_eleve) ? array( 'sconet_id' , 'sconet_num' , 'reference' , 'classe' , 'nom' , 'prenom' , 'statut' ) : array( 'sconet_id' , 'reference' , 'profil' , 'nom' , 'prenom' , 'statut' ) ;
+			$tab_champs = ($is_profil_eleve) ? array( 'sconet_id' , 'sconet_num' , 'reference' , 'classe' , 'nom' , 'prenom' ) : array( 'sconet_id' , 'reference' , 'profil' , 'nom' , 'prenom' ) ;
 			$DB_VAR  = array();
 			foreach($tab_champs as $champ_ref)
 			{
-				if($tab_memo_analyse['modif'][$id_base][$champ_ref] !== false)
+				if($tab_memo_analyse['modif'][$id_base][$champ_ref] !== FALSE)
 				{
 					$DB_VAR[':'.$champ_ref] = $tab_memo_analyse['modif'][$id_base][$champ_ref];
 				}
@@ -1667,6 +1667,10 @@ if( $step==52 )
 			if( count($DB_VAR) )
 			{
 				DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_user( $id_base , $DB_VAR );
+			}
+			if($tab_memo_analyse['modif'][$id_base]['statut'] !== FALSE)
+			{
+				DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_user_statut( $id_base , $tab_memo_analyse['modif'][$id_base]['statut'] );
 			}
 			$nb_mod++;
 		}

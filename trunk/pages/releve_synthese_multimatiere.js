@@ -100,6 +100,7 @@ $(document).ready
 					{
 						$("#f_periode option[value="+periode_id+"]").prop('selected',true);
 						view_dates_perso();
+						break;
 					}
 				}
 			}

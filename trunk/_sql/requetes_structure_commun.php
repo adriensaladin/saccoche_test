@@ -348,16 +348,18 @@ public function DB_lister_referentiels_infos_details_matieres_niveaux($listing_m
 }
 
 /**
- * lister_jointure_groupe_periode
+ * lister_jointure_groupe_periode ; le rangement par ordre de période permet, si les périodes se chevauchent, que javascript choisisse la 1ère par défaut
  *
  * @param string   $listing_groupes_id   id des groupes séparés par des virgules
  * @return array
  */
 public function DB_lister_jointure_groupe_periode($listing_groupes_id)
 {
-	$DB_SQL = 'SELECT * ';
+	$DB_SQL = 'SELECT sacoche_jointure_groupe_periode.* ';
 	$DB_SQL.= 'FROM sacoche_jointure_groupe_periode ';
+	$DB_SQL.= 'LEFT JOIN sacoche_periode USING (periode_id) ';
 	$DB_SQL.= 'WHERE groupe_id IN ('.$listing_groupes_id.') ';
+	$DB_SQL.= 'ORDER BY periode_ordre ASC';
 	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
 }
 

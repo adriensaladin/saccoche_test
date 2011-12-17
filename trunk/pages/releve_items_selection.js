@@ -116,6 +116,7 @@ $(document).ready
 					{
 						$("#f_periode option[value="+id_periode+"]").prop('selected',true);
 						view_dates_perso();
+						break;
 					}
 				}
 			}

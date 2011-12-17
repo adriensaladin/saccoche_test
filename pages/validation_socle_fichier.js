@@ -166,6 +166,7 @@ $(document).ready
 								$('#ajax_msg').removeAttr("class").html('');
 								$('#ajax_info').html(responseHTML);
 								format_liens('#ajax_info');
+								infobulle();
 								initialiser_compteur();
 							}
 						}

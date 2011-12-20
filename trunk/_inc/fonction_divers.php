@@ -988,7 +988,7 @@ function contenu_courriel_nouveau_mdp($base_id,$denomination,$contact_nom,$conta
  * @param bool        $aff_coef    affichage des coefficients des items (sous forme d'image)
  * @param bool        $aff_cart    affichage des possibilités de demandes d'évaluation des items (sous forme d'image)
  * @param bool|string $aff_socle   false | 'texte' | 'image' : affichage de la liaison au socle
- * @param bool|string $aff_lien    false | 'image' | 'click' : affichage des ressources de remédiation
+ * @param bool|string $aff_lien    false | 'image' | 'click' : affichage des liens (ressources pour travailler)
  * @param bool        $aff_input   affichage ou pas des input checkbox avec label
  * @return string
  */

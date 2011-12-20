@@ -31,6 +31,7 @@ $TITRE = "Modifier le contenu des référentiels";
 
 <ul class="puce">
 	<li><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=referentiels_socle__referentiel_modifier_contenu">DOC : Modifier le contenu des référentiels.</a></span></li>
+	<li><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=referentiels_socle__referentiel_lier_ressources">DOC : Associer aux items des ressources pour travailler.</a></span></li>
 	<li><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=referentiels_socle__liaison_matiere_socle">DOC : Liaison matières &amp; socle commun.</a></span></li>
 	<li><span class="astuce">Pour mettre à jour un référentiel modifié sur le serveur communautaire, utiliser la page "<a href="./index.php?page=professeur_referentiel&amp;section=gestion">créer / paramétrer les référentiels</a>".</span></li>
 	<li><span class="danger">Retirer des items supprime les résultats associés de tous les élèves !</span></li>
@@ -115,7 +116,7 @@ else
 
 </form>
 
-<form action="#" method="post" id="zone_compet" onsubmit="return false;">
+<form action="#" method="post" id="zone_elaboration_referentiel" onsubmit="return false;">
 </form>
 
 <div id="zone_socle" class="hide">
@@ -141,3 +142,27 @@ else
 		?>
 	</form>
 </div>
+
+<div id="zone_ressources" class="hide">
+	<h2>Liens (ressources pour travailler)</h2>
+	<form>
+		<p><label class="tab">Item :</label><span class="f_nom i"></span><input type="hidden" id="page_mode" value="" /></p>
+		<ul id="sortable">
+			<li></li>
+		</ul>
+		<div><span class="tab"></span><button class="annuler" type="button" id="choisir_ressources_annuler">Annuler / Retour.</button> <button class="valider" type="button" id="choisir_ressources_valider">Valider et enregistrer ces liens.</button> <label id="ajax_ressources_msg">&nbsp;</label></div>
+		<hr />
+		<h2>Ajouter un paragraphe</h2>
+		<div class="sortable"><label class="tab">Sous-titre :</label><input id="paragraphe_nom" value="" size="100" maxlength="256" /><q id="paragraphe_ajouter" class="ajouter" title="Ajouter ce paragraphe"></q></div>
+		<h2>Ajouter un lien</h2>
+		<div class="sortable"><label class="tab">Intitulé :</label><input id="lien_nom" value="" size="100" maxlength="256" /><br /><label class="tab">Adresse :</label><input id="lien_url" value="" size="100" maxlength="256" /><q id="lien_ajouter" class="ajouter" title="Ajouter ce lien"></q></div>
+		<hr />
+		<h2>Recherche de liens existants</h2>
+		<div class="sortable"><label class="tab">Mots clefs :</label><input id="chaine_recherche" value="" size="90" maxlength="256" /> <button id="ressources_rechercher" type="button" class="rechercher">Chercher.</button></div>
+		<div id="zone_resultat_recherche"></div>
+	</form>
+</div>
+
+<script type="text/javascript">
+	var etablissement_identifie = <?php echo ( $_SESSION['SESAMATH_ID'] && $_SESSION['SESAMATH_KEY'] ) ? 'true' : 'false' ;?>;
+</script>

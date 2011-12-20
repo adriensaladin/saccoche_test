@@ -66,7 +66,7 @@ del{text-decoration:line-through;color:#666}
 .i{font-style:italic} .u{text-decoration:underline} .b{font-weight:bold}
 .hide{display:none}
 .t9{font-size:90%}
- .breakafter{page-break-after:always}
+.breakafter{page-break-after:always}
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 /* Cadres principaux (dont le menu déroulant)                                                          */
@@ -286,37 +286,40 @@ form label.tab{line-height:1.4em;display:inline-block;text-align:right;width:11e
 form span.radio{line-height:1.4em;display:inline-block;text-align:right;width:25em;margin-right:1em;font-weight:bold}
 form span.tab{line-height:2em;margin-left:11.5em}
 form label.mini{width:8em;}
+#zone_ressources label.tab{width:6em}
+#zone_ressources span.tab{margin-left:6.5em}
 
 /* Boutons de validation */
-button{background:#DDF url(../_img/sprite_bouton_1.png) 0 0 no-repeat;padding:0 1px 0 20px;margin:1px 0;color:#139;border:1px solid #66F;}
+button{background:#DDF url(../_img/sprite_bouton_2.png) 0 0 no-repeat;padding:0 1px 0 20px;margin:1px 0;color:#139;border:1px solid #66F;}
 button.actualiser      {background-position: 3px    1px}
-button.annuler         {background-position: 3px  -19px}
-button.colorer         {background-position: 3px  -39px}
-button.deconnecter     {background-position: 3px  -59px}
-button.dump_export     {background-position: 3px  -79px}
-button.eclair          {background-position: 3px  -99px}
-button.fichier_export  {background-position: 3px -119px}
-button.fichier_import  {background-position: 3px -139px}
-button.form_ajouter    {background-position: 3px -159px}
-button.form_retirer    {background-position: 3px -179px}
-button.generer         {background-position: 3px -199px}
-button.groupe_ajouter  {background-position: 3px -219px}
-button.groupe_retirer  {background-position: 3px -239px}
-button.mail_ecrire     {background-position: 3px -259px}
-button.mail_envoyer    {background-position: 3px -279px}
-button.mdp_groupe      {background-position: 3px -299px}
-button.mdp_perso       {background-position: 3px -319px}
-button.nettoyage       {background-position: 3px -339px}
-button.parametre       {background-position: 3px -359px}
-button.periode_ajouter {background-position: 3px -379px}
-button.periode_retirer {background-position: 3px -399px}
-button.rechercher      {background-position: 3px -419px}
-button.retourner       {background-position: 3px -439px}
-button.stats           {background-position: 3px -459px}
-button.supprimer       {background-position: 3px -479px}
-button.user_ajouter    {background-position: 3px -499px}
-button.user_desactiver {background-position: 3px -519px}
-button.valider         {background-position: 3px -539px}
+button.ajouter         {background-position: 3px  -19px}
+button.annuler         {background-position: 3px  -39px}
+button.colorer         {background-position: 3px  -59px}
+button.deconnecter     {background-position: 3px  -79px}
+button.dump_export     {background-position: 3px  -99px}
+button.eclair          {background-position: 3px -119px}
+button.fichier_export  {background-position: 3px -139px}
+button.fichier_import  {background-position: 3px -159px}
+button.form_ajouter    {background-position: 3px -179px}
+button.form_retirer    {background-position: 3px -199px}
+button.generer         {background-position: 3px -219px}
+button.groupe_ajouter  {background-position: 3px -239px}
+button.groupe_retirer  {background-position: 3px -259px}
+button.mail_ecrire     {background-position: 3px -279px}
+button.mail_envoyer    {background-position: 3px -299px}
+button.mdp_groupe      {background-position: 3px -319px}
+button.mdp_perso       {background-position: 3px -339px}
+button.nettoyage       {background-position: 3px -359px}
+button.parametre       {background-position: 3px -379px}
+button.periode_ajouter {background-position: 3px -399px}
+button.periode_retirer {background-position: 3px -419px}
+button.rechercher      {background-position: 3px -439px}
+button.retourner       {background-position: 3px -459px}
+button.stats           {background-position: 3px -479px}
+button.supprimer       {background-position: 3px -499px}
+button.user_ajouter    {background-position: 3px -519px}
+button.user_desactiver {background-position: 3px -539px}
+button.valider         {background-position: 3px -559px}
 
 button{width:auto;overflow:visible;} /* patch pour IE : voir http://jehiah.cz/archive/button-width-in-ie */
 button:hover,button.hover{background-color:#EEF;color:#D41;cursor:pointer;} /* button.hover pour une compatibilité avec AjaxUpload (pour background, car pas mieux pour cursor) */
@@ -511,10 +514,16 @@ li.li_m2 {background:transparent url(../_img/folder/folder_m2.png) no-repeat top
 li.li_n1 {background:transparent url(../_img/folder/folder_n1.png) no-repeat top left;color:#F00}	/* referentiel_domaine ; socle_pilier */
 li.li_n2 {background:transparent url(../_img/folder/folder_n2.png) no-repeat top left;color:#D0C}	/* referentiel_theme ; socle_section */
 li.li_n3 {background:transparent url(../_img/folder/folder_n3.png) no-repeat top left;color:#70F}	/* referentiel_item ; socle_entree */
-#zone_compet , #zone_socle , #zone_eleve {min-width:800px;min-height:1000px}	/* pour le fancybox qui ne se redimensionne pas en largeur, et qui n'ajoute pas le scrolling automatiquement en hauteur malgré l'appel 'scrolling' à 'yes' , prévoir un minimum au départ */
-#zone_compet li {line-height:1.5em}	/* le height évite que la hauteur des lignes varie lors de la modification de leur contenu en ajax */
+#zone_compet , #zone_socle , #zone_eleve , #zone_ressources {min-width:800px;min-height:1000px;padding-right:20px}	/* pour le fancybox qui ne se redimensionne pas en largeur, et qui n'ajoute pas le scrolling automatiquement en hauteur malgré l'appel 'scrolling' à 'yes' , prévoir un minimum au départ */
 li.li_n3 b{font-weight:normal}
 li.li_n3 b img{margin-right:2px}
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+/* Zone de modification d'un référentiel                                                               */
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
+#zone_elaboration_referentiel li {line-height:1.5em}	/* évite que la hauteur des lignes varie lors de la modification de leur contenu en ajax */
+#zone_elaboration_referentiel i.tab {display:inline-block;width:4.5em;}
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 /* Affichage de l'item du socle dans la zone de validation d'un item ou d'un pilier                    */
@@ -545,6 +554,13 @@ li.li_n3 b img{margin-right:2px}
 
 ul.puce li {margin-left:2em;list-style:url(../_img/puce/puce_li.png);}
 *.li       {padding-left:2em;background:transparent url(../_img/puce/puce_li.png) no-repeat left;}
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+/* Liste ordonnable par drag & drop                                                                    */
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
+#sortable li {list-style-type:none;margin:0.5ex;background:#DDF url(../_img/action_deplacer.png) no-repeat left;padding:2px 0 2px 16px;border:1px solid #BBF;}
+.sortable {margin:0.5ex;background:#EEF;padding:2px;border:1px solid #CCF;}
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 /* Puces des liens pour masquer ou montrer des options                                                 */

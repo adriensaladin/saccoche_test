@@ -320,14 +320,14 @@ if( ($action=='ordonner') && $devoir_id )
 	{
 		exit('Aucun item n\'est associé à cette évaluation !');
 	}
-	$tab_affich  = array();
+	echo'<ul id="sortable">';
 	foreach($DB_TAB_COMP as $DB_ROW)
 	{
 		$item_ref = $DB_ROW['item_ref'];
 		$texte_socle = ($DB_ROW['entree_id']) ? ' [S]' : ' [–]';
-		$tab_affich[] = '<div id="i'.$DB_ROW['item_id'].'"><b>'.html($item_ref.$texte_socle).'</b> - '.html($DB_ROW['item_nom']).'</div>';
+		echo'<li id="i'.$DB_ROW['item_id'].'"><b>'.html($item_ref.$texte_socle).'</b> - '.html($DB_ROW['item_nom']).'</li>';
 	}
-	echo implode('<div class="ti"><input type="image" alt="Ordonner" src="./_img/action_ordonner.png" /></div>',$tab_affich);
+	echo'</ul>';
 	echo'<p>';
 	echo	'<button id="Enregistrer_ordre" type="button" value="'.$ref.'" class="valider">Enregistrer cet ordre</button>&nbsp;&nbsp;&nbsp;';
 	echo	'<button id="fermer_zone_ordonner" type="button" class="retourner">Retour</button>&nbsp;&nbsp;&nbsp;';

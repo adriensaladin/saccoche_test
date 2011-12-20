@@ -327,6 +327,77 @@ function signer_exportLPC($sesamath_id,$sesamath_key,$exportXML)
 }
 
 /**
+ * Appel au serveur communautaire pour élaborer / éditer une page de liens (ressources pour travailler).
+ * 
+ * @param int       $sesamath_id
+ * @param string    $sesamath_key
+ * @param int       $item_id
+ * @return string   contenu html ou un message d'erreur
+ */
+function afficher_liens_ressources($sesamath_id,$sesamath_key,$item_id)
+{
+	$tab_post = array();
+	$tab_post['fichier']        = 'liens_ressources_elaborer_editer';
+	$tab_post['sesamath_id']    = $sesamath_id;
+	$tab_post['sesamath_key']   = $sesamath_key;
+	$tab_post['item_id']        = $item_id;
+	$tab_post['version_prog']   = VERSION_PROG; // Le service web doit être compatible
+	$tab_post['adresse_retour'] = SERVEUR_ADRESSE;
+	$tab_post['integrite_key']  = fabriquer_chaine_integrite();
+	return url_get_contents(SERVEUR_COMMUNAUTAIRE,$tab_post);
+}
+
+/**
+ * Appel au serveur communautaire pour générer / actualiser une page de liens (ressources pour travailler).
+ * 
+ * @param int       $sesamath_id
+ * @param string    $sesamath_key
+ * @param int       $item_id
+ * @param string    $item_nom
+ * @param string    $objet   { page_create | page_update }
+ * @param string    $page_serialize   tableau sérializé
+ * @return string   adresse html ou un message d'erreur
+ */
+function fabriquer_liens_ressources($sesamath_id,$sesamath_key,$item_id,$item_nom,$objet,$page_serialize)
+{
+	$tab_post = array();
+	$tab_post['fichier']        = 'liens_ressources_generer_actualiser';
+	$tab_post['sesamath_id']    = $sesamath_id;
+	$tab_post['sesamath_key']   = $sesamath_key;
+	$tab_post['item_id']        = $item_id;
+	$tab_post['item_nom']       = $item_nom;
+	$tab_post['objet']          = $objet;
+	$tab_post['page_serialize'] = $page_serialize;
+	$tab_post['version_prog']   = VERSION_PROG; // Le service web doit être compatible
+	$tab_post['adresse_retour'] = SERVEUR_ADRESSE;
+	$tab_post['integrite_key']  = fabriquer_chaine_integrite();
+	return url_get_contents(SERVEUR_COMMUNAUTAIRE,$tab_post);
+}
+
+/**
+ * Appel au serveur communautaire pour rechercher à partir de mots clefs des liens existants de ressources pour travailler.
+ * 
+ * @param int       $sesamath_id
+ * @param string    $sesamath_key
+ * @param int       $item_id
+ * @param string    $findme
+ * @return string   contenu html ou un message d'erreur
+ */
+function rechercher_ressources($sesamath_id,$sesamath_key,$item_id,$findme)
+{
+	$tab_post = array();
+	$tab_post['fichier']        = 'liens_ressources_rechercher';
+	$tab_post['sesamath_id']    = $sesamath_id;
+	$tab_post['sesamath_key']   = $sesamath_key;
+	$tab_post['item_id']        = $item_id;
+	$tab_post['findme']         = $findme;
+	$tab_post['version_prog']   = VERSION_PROG; // Le service web doit être compatible
+	$tab_post['adresse_retour'] = SERVEUR_ADRESSE;
+	$tab_post['integrite_key']  = fabriquer_chaine_integrite();
+	return url_get_contents(SERVEUR_COMMUNAUTAIRE,$tab_post);
+}
+
+/**
  * Fabriquer le md5 d'un fichier pour le comparer à ceux d'une archive.
  * Volontairement non utilisé par fabriquer_chaine_integrite() car un peu différent.
  * 

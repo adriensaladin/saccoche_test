@@ -31,25 +31,22 @@ $(document).ready
 	{
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-//	ORDONNER => Clic sur une image pour modifier l'ordre des matières
+//	ORDONNER => Gestion de l'ordre des matières avec jQuery UI Sortable
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
 		var modification = false;
 
-		$('#form_ordonner input[type=image]').click
-		(
-			function()
+		function modif_ordre()
+		{
+			if(modification==false)
 			{
-				para_clic = $(this).parent();
-				para_prev = para_clic.prev('em');
-				para_next = para_clic.next('em');
-				para_clic.before(para_next);
-				para_clic.after(para_prev);
 				$('#ajax_msg_ordre').removeAttr("class").addClass("alerte").html("Ordre non enregistré !");
 				modification = true;
 				return false;
 			}
-		);
+		}
+
+		$('#sortable').sortable( { cursor:'n-resize' , update:function(event,ui){modif_ordre();} } );
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 //	ORDONNER => Clic sur le lien pour mettre à jour l'ordre des matières
@@ -67,7 +64,7 @@ $(document).ready
 				{
 					// On récupère la liste des matières dans l'ordre de la page
 					var tab_id = new Array();
-					$('#form_ordonner fieldset').children('em').each
+					$('#sortable').children('li').each
 					(
 						function()
 						{

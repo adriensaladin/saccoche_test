@@ -483,12 +483,11 @@ $(document).ready
 		}
 		page_transparente();
 
-
 		/**
-		 * piocher dans un arbre de MATIERES - Réagir aux clics sur les dossiers
+		 * Réagir aux clics pour déployer / replier des arbres (matières, items, socle, users)
 		 */
-		$('#zone_compet li span').siblings('ul').hide('fast');
-		$('#zone_compet li span').live // live est utilisé pour prendre en compte les nouveaux éléments créés
+		$('.arbre_dynamique li span').siblings('ul').hide('fast');
+		$('.arbre_dynamique li span').live // live est utilisé pour prendre en compte les nouveaux éléments créés
 		('click',
 			function()
 			{
@@ -496,7 +495,10 @@ $(document).ready
 			}
 		);
 
-		$('#zone_compet input[name=all_check]').click
+		/**
+		 * Réagir aux clics pour cocher / décocher un ensemble de cases d'un arbre (items)
+		 */
+		$('.arbre_check input[name=all_check]').click
 		(
 			function()
 			{
@@ -505,50 +507,13 @@ $(document).ready
 				return false;
 			}
 		);
-		$('#zone_compet input[name=all_uncheck]').click
+		$('.arbre_check input[name=all_uncheck]').click
 		(
 			function()
 			{
 				$(this).parent().find('ul').hide();
 				$(this).parent().find('input[type=checkbox]').prop('checked',false);
 				return false;
-			}
-		);
-
-
-		/**
-		 * consulter un arbre du SOCLE - Réagir aux clics sur les dossiers
-		 */
-		$('#zone_paliers li span').siblings('ul').hide('fast');
-		$('#zone_paliers li span').live // live est utilisé pour prendre en compte les nouveaux éléments créés
-		('click',
-			function()
-			{
-				$(this).siblings('ul').toggle();
-			}
-		);
-
-		/**
-		 * piocher dans un arbre du SOCLE (masqué au départ) - Réagir aux clics sur les dossiers
-		 */
-		$('#zone_socle li span').siblings('ul').hide('fast');
-		$('#zone_socle li span').click
-		(
-			function()
-			{
-				$(this).siblings('ul').toggle();
-			}
-		);
-
-		/**
-		 * piocher dans un arbre d' ELEVES - Réagir aux clics sur les dossiers
-		 */
-		$('#zone_eleve li span').siblings('ul').hide('fast');
-		$('#zone_eleve li span').click
-		(
-			function()
-			{
-				$(this).siblings('ul').toggle();
 			}
 		);
 

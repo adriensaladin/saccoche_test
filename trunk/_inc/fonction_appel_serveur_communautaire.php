@@ -343,7 +343,6 @@ function afficher_liens_ressources($sesamath_id,$sesamath_key,$item_id)
 	$tab_post['item_id']        = $item_id;
 	$tab_post['version_prog']   = VERSION_PROG; // Le service web doit être compatible
 	$tab_post['adresse_retour'] = SERVEUR_ADRESSE;
-	$tab_post['integrite_key']  = fabriquer_chaine_integrite();
 	return url_get_contents(SERVEUR_COMMUNAUTAIRE,$tab_post);
 }
 
@@ -392,9 +391,32 @@ function rechercher_ressources($sesamath_id,$sesamath_key,$item_id,$findme)
 	$tab_post['item_id']        = $item_id;
 	$tab_post['findme']         = $findme;
 	$tab_post['version_prog']   = VERSION_PROG; // Le service web doit être compatible
-	$tab_post['adresse_retour'] = SERVEUR_ADRESSE;
-	$tab_post['integrite_key']  = fabriquer_chaine_integrite();
 	return url_get_contents(SERVEUR_COMMUNAUTAIRE,$tab_post);
+}
+
+/**
+ * Appel au serveur communautaire pour envoyer un fichier uploadé par un utilisateur.
+ * 
+ * @param int       $sesamath_id
+ * @param string    $sesamath_key
+ * @param string    $matiere_ref
+ * @param string    $fichier_nom
+ * @param string    $fichier_contenu
+ * @return string   url du fichier ou un message d'erreur
+ */
+function uploader_ressource($sesamath_id,$sesamath_key,$matiere_ref,$fichier_nom,$fichier_contenu)
+{
+	$tab_post = array();
+	$tab_post['fichier']         = 'ressource_uploader';
+	$tab_post['sesamath_id']     = $sesamath_id;
+	$tab_post['sesamath_key']    = $sesamath_key;
+	$tab_post['matiere_ref']     = $matiere_ref;
+	$tab_post['fichier_nom']     = $fichier_nom;
+	$tab_post['fichier_contenu'] = base64_encode($fichier_contenu);
+	$tab_post['version_prog']    = VERSION_PROG; // Le service web doit être compatible
+	$tab_post['adresse_retour']  = SERVEUR_ADRESSE;
+	$tab_post['integrite_key']   = fabriquer_chaine_integrite();
+	return url_get_contents(SERVEUR_COMMUNAUTAIRE,$tab_post,$timeout=20);
 }
 
 /**

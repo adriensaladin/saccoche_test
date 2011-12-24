@@ -31,6 +31,8 @@ INSERT INTO sacoche_parametre VALUES
 ( "droit_validation_entree"        , "directeur,professeur" ),
 ( "droit_validation_pilier"        , "directeur,profprincipal" ),
 ( "droit_annulation_pilier"        , "directeur,aucunprof" ),
+( "droit_gerer_referentiel"        , "profcoordonnateur" ),
+( "droit_gerer_ressource"          , "professeur" ),
 ( "droit_voir_referentiels"        , "directeur,professeur,parent,eleve" ),
 ( "droit_voir_grilles_items"       , "directeur,professeur,parent,eleve" ),
 ( "droit_voir_score_bilan"         , "directeur,professeur,parent,eleve" ),

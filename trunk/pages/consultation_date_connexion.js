@@ -65,7 +65,7 @@ $(document).ready
 				return false
 			}
 			// Pour un directeur ou un administrateur, groupe_val est de la forme d3 / n2 / c51 / g44
-			if(isNaN(parseInt(groupe_val)))
+			if(isNaN(parseInt(groupe_val,10)))
 			{
 				groupe_type = groupe_val.substring(0,1);
 				groupe_id   = groupe_val.substring(1);

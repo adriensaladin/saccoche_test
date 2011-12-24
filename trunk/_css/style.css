@@ -109,76 +109,77 @@ del{text-decoration:line-through;color:#666}
 /* Menu déroulant (dans #cadre_haut)                                                                   */
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-#menu a {display:block;border:1px solid #77F;color:#FFF;background:#77F url(../_img/sprite_menu_1.png) 0 0 no-repeat;padding:1px 1px 1px 19px;margin:1px;height:16px}
+#menu a {display:block;border:1px solid #77F;color:#FFF;background:#77F url(../_img/sprite_menu_2.png) 0 0 no-repeat;padding:1px 1px 1px 19px;margin:1px;height:16px}
 #menu a:hover {background-color:#99F;color:#FFF;text-decoration:none}
 #menu li {float:left;}
 #menu li li {float:none}
 #menu li ul {position:absolute;left:-9999em;background:#FFF;}
 #menu li:hover ul {left:auto;}
 
-#menu a.menu                  {background-position: 1px     1px}
-#menu a.administrateur        {background-position: 1px   -19px}
-#menu a.algorithme_edition    {background-position: 1px   -39px}
-#menu a.algorithme_voir       {background-position: 1px   -59px}
-#menu a.blocage               {background-position: 1px   -79px}
-#menu a.compte_accueil        {background-position: 1px   -99px}
-#menu a.compte_daltonisme     {background-position: 1px  -119px}
-#menu a.compte_password       {background-position: 1px  -139px}
-#menu a.date_connexion        {background-position: 1px  -159px}
-#menu a.directeur             {background-position: 1px  -179px}
-#menu a.dump                  {background-position: 1px  -199px}
-#menu a.eleve                 {background-position: 1px  -219px}
-#menu a.etabl_autorisations   {background-position: 1px  -239px}
-#menu a.etabl_choix           {background-position: 1px  -259px}
-#menu a.etabl_connexion       {background-position: 1px  -279px}
-#menu a.etabl_couleurs        {background-position: 1px  -299px}
-#menu a.etabl_duree           {background-position: 1px  -319px}
-#menu a.etabl_identite        {background-position: 1px  -339px}
-#menu a.etabl_login           {background-position: 1px  -359px}
-#menu a.eval_bilan            {background-position: 1px  -379px}
-#menu a.eval_demande          {background-position: 1px  -399px}
-#menu a.eval_saisie           {background-position: 1px  -419px}
-#menu a.fichier_export        {background-position: 1px  -439px}
-#menu a.fichier_import        {background-position: 1px  -459px}
-#menu a.groupe                {background-position: 1px  -479px}
-#menu a.groupe_eleve          {background-position: 1px  -499px}
-#menu a.groupe_professeur     {background-position: 1px  -519px}
-#menu a.log_actions           {background-position: 1px  -539px}
-#menu a.mdp_admin             {background-position: 1px  -559px}
-#menu a.nettoyage             {background-position: 1px  -579px}
-#menu a.newsletter            {background-position: 1px  -599px}
-#menu a.parent                {background-position: 1px  -619px}
-#menu a.periode               {background-position: 1px  -639px}
-#menu a.periode_groupe        {background-position: 1px  -659px}
-#menu a.professeur            {background-position: 1px  -679px}
-#menu a.referentiel_edition   {background-position: 1px  -699px}
-#menu a.referentiel_gestion   {background-position: 1px  -719px}
-#menu a.referentiel_voir      {background-position: 1px  -739px}
-#menu a.releve_grille         {background-position: 1px  -759px}
-#menu a.releve_items          {background-position: 1px  -779px}
-#menu a.releve_reglages       {background-position: 1px  -799px}
-#menu a.releve_socle          {background-position: 1px  -819px}
-#menu a.releve_synthese       {background-position: 1px  -839px}
-#menu a.releve_synthese_socle {background-position: 1px  -859px}
-#menu a.resilier              {background-position: 1px  -879px}
-#menu a.rss                   {background-position: 1px  -899px}
-#menu a.serveur_database      {background-position: 1px  -919px}
-#menu a.serveur_geographie    {background-position: 1px  -939px}
-#menu a.serveur_identite      {background-position: 1px  -959px}
-#menu a.serveur_info          {background-position: 1px  -979px}
-#menu a.serveur_maintenance   {background-position: 1px  -999px}
-#menu a.serveur_proxy         {background-position: 1px -1019px}
-#menu a.socle_annuler         {background-position: 1px -1039px}
-#menu a.socle_fichier         {background-position: 1px -1059px}
-#menu a.socle_item            {background-position: 1px -1079px}
-#menu a.socle_langue          {background-position: 1px -1099px}
-#menu a.socle_pilier          {background-position: 1px -1119px}
-#menu a.statistiques          {background-position: 1px -1139px}
-#menu a.statut_desactiver     {background-position: 1px -1159px}
-#menu a.statut_traiter        {background-position: 1px -1179px}
-#menu a.structure_ajout_csv   {background-position: 1px -1199px}
-#menu a.structure_gestion     {background-position: 1px -1219px}
-#menu a.structure_transfert   {background-position: 1px -1239px}
+#menu a.menu                   {background-position: 1px     1px}
+#menu a.administrateur         {background-position: 1px   -19px}
+#menu a.algorithme_edition     {background-position: 1px   -39px}
+#menu a.algorithme_voir        {background-position: 1px   -59px}
+#menu a.blocage                {background-position: 1px   -79px}
+#menu a.compte_accueil         {background-position: 1px   -99px}
+#menu a.compte_daltonisme      {background-position: 1px  -119px}
+#menu a.compte_password        {background-position: 1px  -139px}
+#menu a.date_connexion         {background-position: 1px  -159px}
+#menu a.directeur              {background-position: 1px  -179px}
+#menu a.dump                   {background-position: 1px  -199px}
+#menu a.eleve                  {background-position: 1px  -219px}
+#menu a.etabl_autorisations    {background-position: 1px  -239px}
+#menu a.etabl_choix            {background-position: 1px  -259px}
+#menu a.etabl_connexion        {background-position: 1px  -279px}
+#menu a.etabl_couleurs         {background-position: 1px  -299px}
+#menu a.etabl_duree            {background-position: 1px  -319px}
+#menu a.etabl_identite         {background-position: 1px  -339px}
+#menu a.etabl_login            {background-position: 1px  -359px}
+#menu a.eval_bilan             {background-position: 1px  -379px}
+#menu a.eval_demande           {background-position: 1px  -399px}
+#menu a.eval_saisie            {background-position: 1px  -419px}
+#menu a.fichier_export         {background-position: 1px  -439px}
+#menu a.fichier_import         {background-position: 1px  -459px}
+#menu a.groupe                 {background-position: 1px  -479px}
+#menu a.groupe_eleve           {background-position: 1px  -499px}
+#menu a.groupe_professeur      {background-position: 1px  -519px}
+#menu a.log_actions            {background-position: 1px  -539px}
+#menu a.mdp_admin              {background-position: 1px  -559px}
+#menu a.nettoyage              {background-position: 1px  -579px}
+#menu a.newsletter             {background-position: 1px  -599px}
+#menu a.parent                 {background-position: 1px  -619px}
+#menu a.periode                {background-position: 1px  -639px}
+#menu a.periode_groupe         {background-position: 1px  -659px}
+#menu a.professeur             {background-position: 1px  -679px}
+#menu a.referentiel_edition    {background-position: 1px  -699px}
+#menu a.referentiel_gestion    {background-position: 1px  -719px}
+#menu a.referentiel_ressources {background-position: 1px  -739px}
+#menu a.referentiel_voir       {background-position: 1px  -759px}
+#menu a.releve_grille          {background-position: 1px  -779px}
+#menu a.releve_items           {background-position: 1px  -799px}
+#menu a.releve_reglages        {background-position: 1px  -819px}
+#menu a.releve_socle           {background-position: 1px  -839px}
+#menu a.releve_synthese        {background-position: 1px  -859px}
+#menu a.releve_synthese_socle  {background-position: 1px  -879px}
+#menu a.resilier               {background-position: 1px  -899px}
+#menu a.rss                    {background-position: 1px  -919px}
+#menu a.serveur_database       {background-position: 1px  -939px}
+#menu a.serveur_geographie     {background-position: 1px  -959px}
+#menu a.serveur_identite       {background-position: 1px  -979px}
+#menu a.serveur_info           {background-position: 1px  -999px}
+#menu a.serveur_maintenance    {background-position: 1px -1019px}
+#menu a.serveur_proxy          {background-position: 1px -1039px}
+#menu a.socle_annuler          {background-position: 1px -1059px}
+#menu a.socle_fichier          {background-position: 1px -1079px}
+#menu a.socle_item             {background-position: 1px -1099px}
+#menu a.socle_langue           {background-position: 1px -1119px}
+#menu a.socle_pilier           {background-position: 1px -1139px}
+#menu a.statistiques           {background-position: 1px -1159px}
+#menu a.statut_desactiver      {background-position: 1px -1179px}
+#menu a.statut_traiter         {background-position: 1px -1199px}
+#menu a.structure_ajout_csv    {background-position: 1px -1219px}
+#menu a.structure_gestion      {background-position: 1px -1239px}
+#menu a.structure_transfert    {background-position: 1px -1259px}
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 /* Liens vers un fichier à récupérer ou un document généré                                             */
@@ -524,6 +525,7 @@ li.li_n3 b img{margin-right:2px}
 
 #zone_elaboration_referentiel li {line-height:1.5em}	/* évite que la hauteur des lignes varie lors de la modification de leur contenu en ajax */
 #zone_elaboration_referentiel i.tab {display:inline-block;width:4.5em;}
+#zone_elaboration_referentiel .sep {margin-right:3em}
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 /* Affichage de l'item du socle dans la zone de validation d'un item ou d'un pilier                    */
@@ -597,7 +599,7 @@ div.td_souris img.on {background-color:#FF0}
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 .prof_liste {float:left;margin-right:10px;margin-bottom:1em}
-
+ 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 /* Pour la gestion privée (livre d'or, RSS)                                                            */
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */

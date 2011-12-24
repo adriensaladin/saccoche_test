@@ -39,13 +39,7 @@ $ref         = (isset($_POST['ref']))        ? clean_texte($_POST['ref'])       
 $nom         = (isset($_POST['nom']))        ? clean_texte($_POST['nom'])        : '';
 $coef        = (isset($_POST['coef']))       ? clean_entier($_POST['coef'])      : -1;
 $cart        = (isset($_POST['cart']))       ? clean_entier($_POST['cart'])      : -1;
-$lien        = (isset($_POST['lien']))       ? clean_texte($_POST['lien'])       : '';
 $socle_id    = (isset($_POST['socle']))      ? clean_entier($_POST['socle'])     : -1;
-$item_id     = (isset($_POST['item_id']))    ? clean_entier($_POST['item_id'])   : 0;
-$item_nom    = (isset($_POST['item_nom']))   ? clean_texte($_POST['item_nom'])   : '';
-$objet       = (isset($_POST['page_mode']))  ? clean_texte($_POST['page_mode'])  : '';
-$ressources  = (isset($_POST['ressources'])) ? clean_texte($_POST['ressources']) : '';
-$findme      = (isset($_POST['findme']))     ? clean_texte($_POST['findme'])     : '';
 
 $tab_id = (isset($_POST['tab_id'])) ? array_map('clean_entier',explode(',',$_POST['tab_id'])) : array() ;
 $tab_id = array_filter($tab_id,'positif');
@@ -174,7 +168,7 @@ if( ($action=='add') && (in_array($contexte,array('n1','n2','n3'))) && $matiere_
 	{
 		case 'n1' : $element_id = DB_STRUCTURE_REFERENTIEL::DB_ajouter_referentiel_domaine($matiere_id,$parent_id /*niveau*/,$ordre,$ref,$nom); break;
 		case 'n2' : $element_id = DB_STRUCTURE_REFERENTIEL::DB_ajouter_referentiel_theme($parent_id /*domaine*/,$ordre,$nom); break;
-		case 'n3' : $element_id = DB_STRUCTURE_REFERENTIEL::DB_ajouter_referentiel_item($parent_id /*theme*/,$socle_id,$ordre,$nom,$coef,$cart,$lien); break;
+		case 'n3' : $element_id = DB_STRUCTURE_REFERENTIEL::DB_ajouter_referentiel_item($parent_id /*theme*/,$socle_id,$ordre,$nom,$coef,$cart); break;
 	}
 	// id des éléments suivants à renuméroter
 	if(count($tab_id)) // id des éléments suivants à renuméroter
@@ -194,7 +188,7 @@ if( ($action=='edit') && (in_array($contexte,array('n1','n2','n3'))) && $element
 	{
 		case 'n1' : $test_modif = DB_STRUCTURE_REFERENTIEL::DB_modifier_referentiel_domaine($element_id /*domaine*/,$ref,$nom); break;
 		case 'n2' : $test_modif = DB_STRUCTURE_REFERENTIEL::DB_modifier_referentiel_theme($element_id /*theme*/,$nom); break;
-		case 'n3' : $test_modif = DB_STRUCTURE_REFERENTIEL::DB_modifier_referentiel_item($element_id /*item*/,$socle_id,$nom,$coef,$cart,$lien); break;
+		case 'n3' : $test_modif = DB_STRUCTURE_REFERENTIEL::DB_modifier_referentiel_item($element_id /*item*/,$socle_id,$nom,$coef,$cart); break;
 	}
 	$message = ($test_modif) ? 'ok' : 'Contenu inchangé ou élément non trouvé !';
 	exit($message);
@@ -272,47 +266,6 @@ if( ($action=='fus') && $element_id && $element2_id )
 	// Log de l'action
 	ajouter_log_SACoche('Fusion d\'éléments de référentiel (item / '.$element_id.' / '.$element2_id.').');
 	exit('ok');
-}
-
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-// Élaborer ou d'éditer sur le serveur communautaire une page de liens pour travailler
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-
-if( ($action=='Charger_ressources') && $item_id )
-{
-	exit( afficher_liens_ressources($_SESSION['SESAMATH_ID'],$_SESSION['SESAMATH_KEY'],$item_id) );
-}
-
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-// Enregistrer sur le serveur communautaire le contenu d'une page de liens pour travailler
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-
-if( ($action=='Enregistrer_ressources') && $item_id && $item_nom && in_array($objet,array('page_create','page_update')) && $ressources )
-{
-	$tab_elements = array();
-	$tab_ressources = explode('}¤{',$ressources);
-	foreach($tab_ressources as $ressource)
-	{
-		if(strpos($ressource,']¤['))
-		{
-			list($lien_nom,$lien_url) = explode(']¤[',$ressource);
-			$tab_elements[] = array( $lien_nom => $lien_url );
-		}
-		else
-		{
-			$tab_elements[] = $ressource;
-		}
-	}
-	exit( fabriquer_liens_ressources($_SESSION['SESAMATH_ID'],$_SESSION['SESAMATH_KEY'],$item_id,$item_nom,$objet,serialize($tab_elements)) );
-}
-
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-// Rechercher sur le serveur communautaire à partir de mots clefs des liens existants de ressources pour travailler
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-
-if( ($action=='Rechercher_ressources') && $item_id && $findme )
-{
-	exit( rechercher_ressources($_SESSION['SESAMATH_ID'],$_SESSION['SESAMATH_KEY'],$item_id,$findme) );
 }
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-

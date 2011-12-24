@@ -29,34 +29,44 @@ if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');
 $TITRE = "Créer / paramétrer les référentiels";
 ?>
 
+<?php
+// Indication des profils ayant accès à cette page
+require_once('./_inc/tableau_profils.php'); // Charge $tab_profil_libelle[$profil][court|long][1|2]
+$tab_profils = array('professeur','profcoordonnateur','aucunprof');
+$texte_profil = $_SESSION['DROIT_GERER_REFERENTIEL'];
+foreach($tab_profils as $profil)
+{
+	$texte_profil = str_replace($profil,$tab_profil_libelle[$profil]['long'][2],$texte_profil);
+}
+
+// Pour remplir la cellule avec la méthode de calcul par défaut en cas de création d'un nouveau référentiel
+$methode_calcul_langue = $_SESSION['CALCUL_METHODE'].'_'.$_SESSION['CALCUL_LIMITE'] ;
+if($_SESSION['CALCUL_LIMITE']==1)	// si une seule saisie prise en compte
+{
+	$methode_calcul_texte = 'Seule la dernière saisie compte.';
+}
+elseif($_SESSION['CALCUL_METHODE']=='classique')	// si moyenne classique
+{
+	$methode_calcul_texte = ($_SESSION['CALCUL_LIMITE']==0) ? 'Moyenne de toutes les saisies.' : 'Moyenne des '.$_SESSION['CALCUL_LIMITE'].' dernières saisies.';
+}
+elseif(in_array($_SESSION['CALCUL_METHODE'],array('geometrique','arithmetique')))	// si moyenne geometrique | arithmetique
+{
+	$seize = (($_SESSION['CALCUL_METHODE']=='geometrique')&&($_SESSION['CALCUL_LIMITE']==5)) ? 1 : 0 ;
+	$coefs = ($_SESSION['CALCUL_METHODE']=='arithmetique') ? substr('1/2/3/4/5/6/7/8/9/',0,2*$_SESSION['CALCUL_LIMITE']-19) : substr('1/2/4/8/16/',0,2*$_SESSION['CALCUL_LIMITE']-12+$seize) ;
+	$methode_calcul_texte = 'Les '.$_SESSION['CALCUL_LIMITE'].' dernières saisies &times;'.$coefs.'.';
+}
+elseif($_SESSION['CALCUL_METHODE']=='bestof1')	// si meilleure note
+{
+	$methode_calcul_texte = ($_SESSION['CALCUL_LIMITE']==0) ? 'Seule la meilleure saisie compte.' : 'Meilleure des '.$_SESSION['CALCUL_LIMITE'].' dernières saisies.';
+}
+elseif(in_array($_SESSION['CALCUL_METHODE'],array('bestof2','bestof3')))	// si 2 | 3 meilleures notes
+{
+	$nb_best = (int)substr($_SESSION['CALCUL_METHODE'],-1);
+	$methode_calcul_texte = ($_SESSION['CALCUL_LIMITE']==0) ? 'Moyenne des '.$nb_best.' meilleures saisies.' : 'Moyenne des '.$nb_best.' meilleures saisies parmi les '.$_SESSION['CALCUL_LIMITE'].' dernières.';
+}
+?>
+
 <script type="text/javascript">
-	<?php
-	// Pour remplir la cellule avec la méthode de calcul par défaut en cas de création d'un nouveau référentiel
-	$methode_calcul_langue = $_SESSION['CALCUL_METHODE'].'_'.$_SESSION['CALCUL_LIMITE'] ;
-	if($_SESSION['CALCUL_LIMITE']==1)	// si une seule saisie prise en compte
-	{
-		$methode_calcul_texte = 'Seule la dernière saisie compte.';
-	}
-	elseif($_SESSION['CALCUL_METHODE']=='classique')	// si moyenne classique
-	{
-		$methode_calcul_texte = ($_SESSION['CALCUL_LIMITE']==0) ? 'Moyenne de toutes les saisies.' : 'Moyenne des '.$_SESSION['CALCUL_LIMITE'].' dernières saisies.';
-	}
-	elseif(in_array($_SESSION['CALCUL_METHODE'],array('geometrique','arithmetique')))	// si moyenne geometrique | arithmetique
-	{
-		$seize = (($_SESSION['CALCUL_METHODE']=='geometrique')&&($_SESSION['CALCUL_LIMITE']==5)) ? 1 : 0 ;
-		$coefs = ($_SESSION['CALCUL_METHODE']=='arithmetique') ? substr('1/2/3/4/5/6/7/8/9/',0,2*$_SESSION['CALCUL_LIMITE']-19) : substr('1/2/4/8/16/',0,2*$_SESSION['CALCUL_LIMITE']-12+$seize) ;
-		$methode_calcul_texte = 'Les '.$_SESSION['CALCUL_LIMITE'].' dernières saisies &times;'.$coefs.'.';
-	}
-	elseif($_SESSION['CALCUL_METHODE']=='bestof1')	// si meilleure note
-	{
-		$methode_calcul_texte = ($_SESSION['CALCUL_LIMITE']==0) ? 'Seule la meilleure saisie compte.' : 'Meilleure des '.$_SESSION['CALCUL_LIMITE'].' dernières saisies.';
-	}
-	elseif(in_array($_SESSION['CALCUL_METHODE'],array('bestof2','bestof3')))	// si 2 | 3 meilleures notes
-	{
-		$nb_best = (int)substr($_SESSION['CALCUL_METHODE'],-1);
-		$methode_calcul_texte = ($_SESSION['CALCUL_LIMITE']==0) ? 'Moyenne des '.$nb_best.' meilleures saisies.' : 'Moyenne des '.$nb_best.' meilleures saisies parmi les '.$_SESSION['CALCUL_LIMITE'].' dernières.';
-	}
-	?>
 	var methode_calcul_langue     = "<?php echo $methode_calcul_langue ?>";
 	var methode_calcul_texte      = "<?php echo $methode_calcul_texte ?>";
 	var id_matiere_transversale   = "<?php echo ID_MATIERE_TRANSVERSALE ?>";
@@ -66,6 +76,7 @@ $TITRE = "Créer / paramétrer les référentiels";
 <form action="#" method="post" id="form_instance">
 
 <ul class="puce">
+	<li><span class="astuce">Profils autorisés par les administrateurs : <span class="u"><?php echo $texte_profil ?></span>.</span></li>
 	<li><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=referentiels_socle__referentiel_creer_parametrer">DOC : Créer / paramétrer les référentiels.</a></span></li>
 	<li><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=referentiels_socle__referentiel_organisation">DOC : Organisation des items dans les référentiels.</a></span></li>
 	<li><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=referentiels_socle__calcul_scores_etats_acquisitions">DOC : Calcul des scores et des états d'acquisitions.</a></span></li>
@@ -75,7 +86,7 @@ $TITRE = "Créer / paramétrer les référentiels";
 <hr />
 
 <?php
-// J'ai séparé en plusieurs requêtes au bout de plusieurs heures sans m'en sortir (entre les matières sans coordonnateurs, sans référentiel, les deux à la fois...).
+// Séparé en plusieurs requêtes sinon on ne s'en sort pas (entre les matières sans coordonnateurs, sans référentiel, les deux à la fois...).
 // La recherche ne s'effectue que sur les matières et niveaux utilisés, sans débusquer des référentiels résiduels.
 $tab_matiere = array();
 $tab_niveau  = array();
@@ -164,7 +175,8 @@ else
 		$matiere_nom    = $tab['nom'];
 		$matiere_coord  = $tab['coord'];
 		$matiere_perso  = ($tab['partage']) ? 0 : 1 ;
-		$matiere_nombre = ($matiere_coord) ? str_replace('value="'.$tab['nb_demandes'].'"','value="'.$tab['nb_demandes'].'" selected',$select_demandes) : str_replace('<select','<select disabled',$select_demandes) ;
+		$matiere_droit  = ( (($_SESSION['DROIT_GERER_REFERENTIEL']=='profcoordonnateur')&&$matiere_coord) || ($_SESSION['DROIT_GERER_REFERENTIEL']=='professeur') ) ? TRUE : FALSE ;
+		$matiere_nombre = ($matiere_droit) ? str_replace('value="'.$tab['nb_demandes'].'"','value="'.$tab['nb_demandes'].'" selected',$select_demandes) : str_replace('<select','<select disabled',$select_demandes) ;
 		$affichage .= '<tr><td colspan="4" class="nu">&nbsp;</td><td class="nu"></td></tr>'."\r\n"; // Partagé en deux sinon Chrome ajoute une bordure disgracieuse
 		$affichage .= '<tr><td rowspan="'.$rowspan.'" id="mat_'.$matiere_id.'"><b>'.$matiere_nom.'</b><br />'.$matiere_nombre.$infobulle.'</td>';
 		$affichage_suite = false;
@@ -173,7 +185,7 @@ else
 			if( ($matiere_id!=ID_MATIERE_TRANSVERSALE) || (strpos(LISTING_ID_NIVEAUX_CYCLES,'.'.$niveau_id.'.')!==FALSE) )
 			{
 				$ids = 'ids_'.$matiere_perso.'_'.$matiere_id.'_'.$niveau_id;
-				if($matiere_coord)
+				if($matiere_droit)
 				{
 					$partager = ($matiere_perso) ? '<q class="partager_non" title="Le référentiel d\'une matière spécifique à l\'établissement ne peut être partagé."></q>' : '<q class="partager" title="Modifier le partage de ce référentiel."></q>' ;
 					$envoyer = ( (isset($tab_colonne[$matiere_id][$niveau_id])) && (substr($tab_colonne[$matiere_id][$niveau_id],0,14)=='<td lang="oui"') ) ? '<q class="envoyer" title="Mettre à jour sur le serveur de partage la dernière version de ce référentiel."></q>' : '<q class="envoyer_non" title="Un référentiel non partagé ne peut pas être transmis à la collectivité."></q>' ;
@@ -181,7 +193,7 @@ else
 				}
 				else
 				{
-					$colonnes = (isset($tab_colonne[$matiere_id][$niveau_id])) ? $tab_colonne[$matiere_id][$niveau_id].'<td class="nu" id="'.$ids.'"><q class="voir" title="Voir le détail de ce référentiel."></q><q class="partager_non" title="Action réservée aux coordonnateurs."></q><q class="envoyer_non" title="Action réservée aux coordonnateurs."></q><q class="calculer_non" title="Action réservée aux coordonnateurs."></q><q class="supprimer_non" title="Action réservée aux coordonnateurs."></q></td>' : '<td class="r">Absence de référentiel.</td><td class="r">Sans objet.</td><td class="nu" id="'.$ids.'"><q class="ajouter_non" title="Action réservée aux coordonnateurs."></q></td>' ;
+					$colonnes = (isset($tab_colonne[$matiere_id][$niveau_id])) ? $tab_colonne[$matiere_id][$niveau_id].'<td class="nu" id="'.$ids.'"><q class="voir" title="Voir le détail de ce référentiel."></q><q class="partager_non" title="Accès restreint : '.$texte_profil.'."></q><q class="envoyer_non" title="Accès restreint : '.$texte_profil.'."></q><q class="calculer_non" title="Accès restreint : '.$texte_profil.'."></q><q class="supprimer_non" title="Accès restreint : '.$texte_profil.'."></q></td>' : '<td class="r">Absence de référentiel.</td><td class="r">Sans objet.</td><td class="nu" id="'.$ids.'"><q class="ajouter_non" title="Accès restreint : '.$texte_profil.'."></q></td>' ;
 				}
 				if($affichage_suite===false)
 				{

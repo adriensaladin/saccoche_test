@@ -990,9 +990,10 @@ function contenu_courriel_nouveau_mdp($base_id,$denomination,$contact_nom,$conta
  * @param bool|string $aff_socle   false | 'texte' | 'image' : affichage de la liaison au socle
  * @param bool|string $aff_lien    false | 'image' | 'click' : affichage des liens (ressources pour travailler)
  * @param bool        $aff_input   affichage ou pas des input checkbox avec label
+ * @param string      $aff_id_li   vide par défaut, "n3" pour ajouter des id aux li_n3
  * @return string
  */
-function afficher_arborescence_matiere_from_SQL($DB_TAB,$dynamique,$reference,$aff_coef,$aff_cart,$aff_socle,$aff_lien,$aff_input)
+function afficher_arborescence_matiere_from_SQL($DB_TAB,$dynamique,$reference,$aff_coef,$aff_cart,$aff_socle,$aff_lien,$aff_input,$aff_id_li='')
 {
 	$input_all = ($aff_input) ? ' <input name="all_check" type="image" alt="Tout cocher." src="./_img/all_check.gif" title="Tout cocher." /> <input name="all_uncheck" type="image" alt="Tout décocher." src="./_img/all_uncheck.gif" title="Tout décocher." />' : '' ;
 	$input_texte = '';
@@ -1111,7 +1112,8 @@ function afficher_arborescence_matiere_from_SQL($DB_TAB,$dynamique,$reference,$a
 									{
 										foreach($tab_item[$matiere_id][$niveau_id][$domaine_id][$theme_id] as $item_id => $item_texte)
 										{
-											$retour .= '<li class="li_n3">'.$item_texte.'</li>'."\r\n";
+											$id = ($aff_id_li=='n3') ? ' id="n3_'.$item_id.'"' : '' ;
+											$retour .= '<li class="li_n3"'.$id.'>'.$item_texte.'</li>'."\r\n";
 										}
 									}
 									$retour .= '</ul>'."\r\n";

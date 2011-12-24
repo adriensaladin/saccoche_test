@@ -95,7 +95,7 @@ $(document).ready
 				$('#ajax_msg_import').removeAttr("class").html('&nbsp;');
 				$('#div_import').show('fast');
 				$('#ajax_import_num').html(1);
-				$('#ajax_import_max').html(parseInt(tab_infos[1]));
+				$('#ajax_import_max').html(parseInt(tab_infos[1]),10);
 			}
 		}
 
@@ -128,8 +128,8 @@ $(document).ready
 
 		function importer()
 		{
-			var num = parseInt( $('#ajax_import_num').html() );
-			var max = parseInt( $('#ajax_import_max').html() );
+			var num = parseInt( $('#ajax_import_num').html() , 10 );
+			var max = parseInt( $('#ajax_import_max').html() , 10 );
 			// Appel en ajax
 			$.ajax
 			(

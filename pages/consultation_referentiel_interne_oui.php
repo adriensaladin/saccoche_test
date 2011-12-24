@@ -48,7 +48,7 @@ $texte = ($str_objet=='') ? 'aucun' : ( (strpos($str_objet,',')===false) ? 'uniq
 <hr />
 
 <?php
-// J'ai séparé en plusieurs requêtes au bout de plusieurs heures sans m'en sortir (entre les matières sans coordonnateurs, sans référentiel, les deux à la fois...).
+// Séparé en plusieurs requêtes sinon on ne s'en sort pas (entre les matières sans coordonnateurs, sans référentiel, les deux à la fois...).
 // La recherche ne s'effectue que sur les matières et niveaux utilisés, sans débusquer des référentiels résiduels.
 $tab_matiere = array();
 $tab_niveau  = array();

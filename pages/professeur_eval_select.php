@@ -71,7 +71,7 @@ $date_fin    = date("d/m/Y",mktime(0,0,0,date("m")+1,date("d"),date("Y"))); // 1
 
 <script type="text/javascript">var input_date="<?php echo date("d/m/Y") ?>";</script>
 
-<form action="#" method="post" id="zone_compet" class="hide">
+<form action="#" method="post" id="zone_compet" class="arbre_dynamique arbre_check hide">
 	<p>Cocher ci-dessous (<span class="astuce">cliquer sur un intitulé pour déployer son contenu</span>) :</p>
 	<?php
 	// Affichage de la liste des items pour toutes les matières d'un professeur, sur tous les niveaux
@@ -110,7 +110,7 @@ $date_fin    = date("d/m/Y",mktime(0,0,0,date("m")+1,date("d"),date("Y"))); // 1
 	<div style="clear:both"><button id="valider_profs" type="button" class="valider">Valider la sélection</button>&nbsp;&nbsp;&nbsp;<button id="annuler_profs" type="button" class="annuler">Annuler / Retour</button></div>
 </form>
 
-<form action="#" method="post" id="zone_eleve" class="hide">
+<form action="#" method="post" id="zone_eleve" class="arbre_dynamique hide">
 	<p>Cocher ci-dessous (<span class="astuce">cliquer sur un intitulé pour déployer son contenu</span>) :</p>
 	<?php
 	$tab_regroupements = array();

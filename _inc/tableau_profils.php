@@ -30,12 +30,13 @@
  */
 $tab_profil_libelle = array();
 
-$tab_profil_libelle['webmestre']      = array( 'court'=>array(1=>'webmestre','webmestres')              , 'long'=>array(1=>'webmestre','webmestres') );
-$tab_profil_libelle['administrateur'] = array( 'court'=>array(1=>'administrateur','administrateurs')    , 'long'=>array(1=>'administrateur','administrateurs') );
-$tab_profil_libelle['directeur']      = array( 'court'=>array(1=>'directeur','directeurs')              , 'long'=>array(1=>'personnel de direction','personnels de direction') );
-$tab_profil_libelle['profprincipal']  = array( 'court'=>array(1=>'prof.principal','prof.principaux')    , 'long'=>array(1=>'professeur principal','professeurs principaux') );
-$tab_profil_libelle['professeur']     = array( 'court'=>array(1=>'professeur','professeurs')            , 'long'=>array(1=>'personnel enseignant','personnels enseignants') ) ;
-$tab_profil_libelle['aucunprof']      = array( 'court'=>array(1=>'aucun professeur','aucun professeur') , 'long'=>array(1=>'aucun professeur','aucun professeur') );
-$tab_profil_libelle['parent']         = array( 'court'=>array(1=>'parent','parents')                    , 'long'=>array(1=>'responsable légal','responsables légaux') );
-$tab_profil_libelle['eleve']          = array( 'court'=>array(1=>'élève','élèves')                      , 'long'=>array(1=>'élève','élèves') );
+$tab_profil_libelle['webmestre']         = array( 'court'=>array(1=>'webmestre','webmestres')              , 'long'=>array(1=>'webmestre','webmestres') );
+$tab_profil_libelle['administrateur']    = array( 'court'=>array(1=>'administrateur','administrateurs')    , 'long'=>array(1=>'administrateur','administrateurs') );
+$tab_profil_libelle['directeur']         = array( 'court'=>array(1=>'directeur','directeurs')              , 'long'=>array(1=>'personnel de direction','personnels de direction') );
+$tab_profil_libelle['profcoordonnateur'] = array( 'court'=>array(1=>'prof.coord.','profs coords.')         , 'long'=>array(1=>'professeur coordonnateur','professeurs coordonnateurs') );
+$tab_profil_libelle['profprincipal']     = array( 'court'=>array(1=>'prof.principal','profs principaux')   , 'long'=>array(1=>'professeur principal','professeurs principaux') );
+$tab_profil_libelle['professeur']        = array( 'court'=>array(1=>'professeur','professeurs')            , 'long'=>array(1=>'personnel enseignant','personnels enseignants') ) ;
+$tab_profil_libelle['aucunprof']         = array( 'court'=>array(1=>'aucun professeur','aucun professeur') , 'long'=>array(1=>'aucun professeur','aucun professeur') );
+$tab_profil_libelle['parent']            = array( 'court'=>array(1=>'parent','parents')                    , 'long'=>array(1=>'responsable légal','responsables légaux') );
+$tab_profil_libelle['eleve']             = array( 'court'=>array(1=>'élève','élèves')                      , 'long'=>array(1=>'élève','élèves') );
 ?>

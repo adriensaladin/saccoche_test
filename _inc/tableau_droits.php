@@ -65,6 +65,7 @@ $tab_droits['professeur_groupe_professeur']            = $tab_droits_profil_prof
 $tab_droits['professeur_referentiel']                  = $tab_droits_profil_professeur;
 $tab_droits['professeur_referentiel_gestion']          = $tab_droits_profil_professeur;
 $tab_droits['professeur_referentiel_edition']          = $tab_droits_profil_professeur;
+$tab_droits['professeur_referentiel_ressources']       = $tab_droits_profil_professeur;
 // Profil directeur
 $tab_droits['consultation_statistiques']               = $tab_droits_profil_directeur;
 $tab_droits['validation_socle_fichier']                = $tab_droits_profil_directeur;

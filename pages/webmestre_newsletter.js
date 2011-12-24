@@ -110,8 +110,8 @@ $(document).ready
 
 		function envoyer()
 		{
-			var num = parseInt( $('#ajax_num').html() );
-			var max = parseInt( $('#ajax_max').html() );
+			var num = parseInt( $('#ajax_num').html() , 10 );
+			var max = parseInt( $('#ajax_max').html() , 10 );
 			// Appel en ajax
 			$.ajax
 			(

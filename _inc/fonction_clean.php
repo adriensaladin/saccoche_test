@@ -59,6 +59,7 @@ anti_magic_quotes_gpc();
 	Attention ! strtr() renvoie n'importe quoi en UTF-8 car il fonctionne octet par octet et non caractère par caractère, or l'UTF-8 est multi-octets...
 */
 
+define( 'FILENAME_CHARS' , utf8_decode('-.0123456789_abcdefghijklmnopqrstuvwxyz') );
 define( 'LATIN1_LC_CHARS' , utf8_decode('abcdefghijklmnopqrstuvwxyzàáâãäåæçèéêëìíîïñòóôõöœøŕšùúûüýÿžðþ') );
 define( 'LATIN1_UC_CHARS' , utf8_decode('ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÑÒÓÔÕÖŒØŔŠÙÚÛÜÝŸŽÐÞ') );
 define( 'LATIN1_YES_ACCENT' , utf8_decode('ÀÁÂÃÄÅàáâãäåÞþÇçÐðÈÉÊËèéêëÌÍÎÏìíîïÑñÒÓÔÕÖØòóôõöøŔŕŠšßÙÚÛÜùúûüÝŸýÿŽž') );
@@ -118,12 +119,25 @@ function clean_csv($text)
 	return $text;
 }
 
-
+// Enlever les symboles embétants
 function clean_symboles($text)
 {
 	$bad = array('&','<','>','\\','"','\'','/','`','’');
 	$bon = '';
 	return str_replace($bad,$bon,$text);
+}
+
+// Ne conserver que les lettres minuscules et mettre des tirets pour le reste
+function only_letters($text)
+{
+	$lettres = (perso_mb_detect_encoding_utf8($text)) ? utf8_decode($text) : $text ;
+	$tab_lettres = str_split($lettres);
+	foreach($tab_lettres as $key => $lettre)
+	{
+		$tab_lettres[$key] = (strpos(FILENAME_CHARS,$lettre)!==FALSE) ? $lettre : '-' ;
+	}
+	$lettres = implode('',$tab_lettres);
+	return (perso_mb_detect_encoding_utf8($text)) ? utf8_encode($lettres) : $lettres ;
 }
 
 /*
@@ -132,6 +146,7 @@ function clean_symboles($text)
 	Le login est davantage nettoyé car il y a un risque d'engendrer des comportements incertains (à l'affichage ou à l'enregistrement) avec les applications externes (pmwiki, phpbb...).
 */
 function clean_login($text)     { return str_replace(' ','', perso_strtolower( clean_accents( clean_diacris( clean_symboles( trim($text) ) ) ) ) ); }
+function clean_fichier($text)   { return only_letters( perso_strtolower( clean_accents( clean_diacris( trim($text) ) ) ) ); }
 function clean_password($text)  { return trim($text); }
 function clean_ref($text)       { return perso_strtoupper( trim($text) ); }
 function clean_nom($text)       { return perso_strtoupper( trim($text) ); }

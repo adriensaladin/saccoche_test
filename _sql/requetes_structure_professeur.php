@@ -51,6 +51,25 @@ public function DB_recuperer_item_popularite($listing_demande_id,$listing_user_i
 }
 
 /**
+ * Retourner les niveaux et matières des référentiels auxquels un professeur a accès.
+ *
+ * @param int  $user_id
+ * @return array
+ */
+public function DB_lister_matieres_niveaux_referentiels_professeur($user_id)
+{
+	$DB_SQL = 'SELECT matiere_id, matiere_ref, matiere_nom, niveau_id, niveau_nom, jointure_coord ';
+	$DB_SQL.= 'FROM sacoche_referentiel ';
+	$DB_SQL.= 'LEFT JOIN sacoche_jointure_user_matiere USING (matiere_id) ';
+	$DB_SQL.= 'LEFT JOIN sacoche_matiere USING (matiere_id) ';
+	$DB_SQL.= 'LEFT JOIN sacoche_niveau USING (niveau_id) ';
+	$DB_SQL.= 'WHERE user_id=:user_id AND (matiere_id IN('.$_SESSION['MATIERES'].') OR matiere_partage=:partage) AND niveau_id IN('.$_SESSION['CYCLES'].','.$_SESSION['NIVEAUX'].') ';
+	$DB_SQL.= 'ORDER BY matiere_nom ASC, niveau_ordre ASC';
+	$DB_VAR = array(':user_id'=>$user_id,':partage'=>0);
+	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+}
+
+/**
  * lister_matieres_professeur_infos_referentiel
  *
  * @param string $listing_matieres   id des matières de l'établissement séparées par des virgules

@@ -64,7 +64,7 @@ $TITRE = "Paliers du socle";
 
 <hr />
 
-<div id="zone_paliers">
+<div id="zone_paliers" class="arbre_dynamique">
 	<?php
 	// Affichage de la liste des items du socle pour chaque palier
 	$DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_recuperer_arborescence_paliers();

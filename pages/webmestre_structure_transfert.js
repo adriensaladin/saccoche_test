@@ -91,8 +91,8 @@ $(document).ready
 
 		function exporter()
 		{
-			var num = parseInt( $('#ajax_export_num').html() );
-			var max = parseInt( $('#ajax_export_max').html() );
+			var num = parseInt( $('#ajax_export_num').html() , 10 );
+			var max = parseInt( $('#ajax_export_max').html() , 10 );
 			// Appel en ajax
 			$.ajax
 			(
@@ -314,8 +314,8 @@ $(document).ready
 
 		function importer()
 		{
-			var num = parseInt( $('#ajax_import_num').html() );
-			var max = parseInt( $('#ajax_import_max').html() );
+			var num = parseInt( $('#ajax_import_num').html() , 10 );
+			var max = parseInt( $('#ajax_import_max').html() , 10 );
 			// Appel en ajax
 			$.ajax
 			(

@@ -34,28 +34,6 @@ class DB_STRUCTURE_REFERENTIEL extends DB
 {
 
 /**
- * Lister les référentiels, regroupés par matières
- *
- * @param string   $listing_matieres_id   id des matières séparés par des virgules
- * @param string   $listing_niveaux_id    id des niveaux séparés par des virgules ; ne peut pas être vide
- * @param string   $listing_cycles_id     id des cycles séparés par des virgules ; FALSE pour ne pas retourner les cycles
- * @return array
- */
-public function DB_lister_referentiels_infos_groupement_matieres($listing_matieres_id,$listing_niveaux_id,$listing_cycles_id)
-{
-	$listing_cycles_niveaux = ($listing_cycles_id) ? $listing_niveaux_id.','.$listing_cycles_id : $listing_niveaux_id ;
-	$DB_SQL = 'SELECT matiere_id, COUNT(niveau_id) AS niveau_nb ';
-	$DB_SQL.= 'FROM sacoche_referentiel ';
-	$DB_SQL.= 'LEFT JOIN sacoche_niveau USING (niveau_id) ';
-	$DB_SQL.= 'LEFT JOIN sacoche_matiere USING (matiere_id) ';
-	$DB_SQL.= 'WHERE matiere_id IN('.$listing_matieres_id.') AND niveau_id IN('.$listing_cycles_niveaux.') '; // Rechercher exclusivement parmi les matières transmises sans chercher à en ajouter d'autres (matières spécifiques)
-	$DB_SQL.= 'GROUP BY matiere_id ';
-	$DB_SQL.= 'ORDER BY matiere_id ASC';
-	$DB_VAR = array(':partage'=>0);
-	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-}
-
-/**
  * Tester la présence d'un référentiel
  *
  * @param int    $matiere_id
@@ -125,7 +103,7 @@ public function DB_ajouter_referentiel_theme($domaine_id,$theme_ordre,$theme_nom
 }
 
 /**
- * Ajouter un item dans un référentiel (le numéro d'ordre des autres items impactés est modifié ailleurs)
+ * Ajouter un item dans un référentiel (le lien de ressources est géré ultérieurement ; le numéro d'ordre des autres items impactés est modifié ailleurs)
  *
  * @param int    $theme_id
  * @param int    $socle_id
@@ -133,14 +111,13 @@ public function DB_ajouter_referentiel_theme($domaine_id,$theme_ordre,$theme_nom
  * @param string $item_nom
  * @param int    $item_coef
  * @param int    $item_cart
- * @param string $item_lien
  * @return int
  */
-public function DB_ajouter_referentiel_item($theme_id,$socle_id,$item_ordre,$item_nom,$item_coef,$item_cart,$item_lien)
+public function DB_ajouter_referentiel_item($theme_id,$socle_id,$item_ordre,$item_nom,$item_coef,$item_cart)
 {
-	$DB_SQL = 'INSERT INTO sacoche_referentiel_item(theme_id,entree_id,item_ordre,item_nom,item_coef,item_cart,item_lien) ';
-	$DB_SQL.= 'VALUES(:theme_id,:socle_id,:item_ordre,:item_nom,:item_coef,:item_cart,:item_lien)';
-	$DB_VAR = array(':theme_id'=>$theme_id,':socle_id'=>$socle_id,':item_ordre'=>$item_ordre,':item_nom'=>$item_nom,':item_coef'=>$item_coef,':item_cart'=>$item_cart,':item_lien'=>$item_lien);
+	$DB_SQL = 'INSERT INTO sacoche_referentiel_item(theme_id,entree_id,item_ordre,item_nom,item_coef,item_cart) ';
+	$DB_SQL.= 'VALUES(:theme_id,:socle_id,:item_ordre,:item_nom,:item_coef,:item_cart)';
+	$DB_VAR = array(':theme_id'=>$theme_id,':socle_id'=>$socle_id,':item_ordre'=>$item_ordre,':item_nom'=>$item_nom,':item_coef'=>$item_coef,':item_cart'=>$item_cart);
 	DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 	return DB::getLastOid(SACOCHE_STRUCTURE_BD_NAME);
 }
@@ -326,24 +303,39 @@ public function DB_modifier_referentiel_theme($theme_id,$theme_nom)
 }
 
 /**
- * Modifier les caractéristiques d'un item d'un référentiel (hors déplacement)
+ * Modifier les caractéristiques d'un item d'un référentiel (hors déplacement ;le lien de ressources est modifié ailleurs)
  *
  * @param int     $item_id
  * @param int     $socle_id
  * @param string  $item_nom
  * @param int     $item_coef
  * @param int     $item_cart
- * @param string  $item_lien
  * @return int   nb de lignes modifiées (0|1)
  */
-public function DB_modifier_referentiel_item($item_id,$socle_id,$item_nom,$item_coef,$item_cart,$item_lien)
+public function DB_modifier_referentiel_item($item_id,$socle_id,$item_nom,$item_coef,$item_cart)
 {
 	$DB_SQL = 'UPDATE sacoche_referentiel_item ';
-	$DB_SQL.= 'SET entree_id=:socle_id, item_nom=:item_nom, item_coef=:item_coef, item_cart=:item_cart, item_lien=:item_lien ';
+	$DB_SQL.= 'SET entree_id=:socle_id, item_nom=:item_nom, item_coef=:item_coef, item_cart=:item_cart ';
 	$DB_SQL.= 'WHERE item_id=:item_id ';
-	$DB_VAR = array(':item_id'=>$item_id,':socle_id'=>$socle_id,':item_nom'=>$item_nom,':item_coef'=>$item_coef,':item_cart'=>$item_cart,':item_lien'=>$item_lien);
+	$DB_VAR = array(':item_id'=>$item_id,':socle_id'=>$socle_id,':item_nom'=>$item_nom,':item_coef'=>$item_coef,':item_cart'=>$item_cart);
 	DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 	return DB::rowCount(SACOCHE_STRUCTURE_BD_NAME);
+}
+
+/**
+ * Modifier le lien de vers des ressources d'un item d'un référentiel
+ *
+ * @param int     $item_id
+ * @param string  $item_lien
+ * @return void
+ */
+public function DB_modifier_referentiel_lien_ressources($item_id,$item_lien)
+{
+	$DB_SQL = 'UPDATE sacoche_referentiel_item ';
+	$DB_SQL.= 'SET item_lien=:item_lien ';
+	$DB_SQL.= 'WHERE item_id=:item_id ';
+	$DB_VAR = array(':item_id'=>$item_id,':item_lien'=>$item_lien);
+	DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
 /**

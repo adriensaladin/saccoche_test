@@ -135,7 +135,7 @@ if(is_array($tab_groupes))
 	<p><span class="tab"></span><button id="bouton_valider" type="submit" class="generer">Générer.</button><label id="ajax_msg">&nbsp;</label></p>
 </fieldset></form>
 
-<form action="#" method="post" id="zone_compet" class="hide">
+<form action="#" method="post" id="zone_compet" class="arbre_dynamique arbre_check hide">
 	<p>Cocher ci-dessous (<span class="astuce">cliquer sur un intitulé pour déployer son contenu</span>) :</p>
 	<?php
 	// Affichage de la liste des items pour toutes les matières d'un professeur, sur tous les niveaux

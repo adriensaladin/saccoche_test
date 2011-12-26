@@ -62,20 +62,21 @@ $(document).ready
 		var upload_lien = '';
 		var matiere_id  = 0;
 		var matiere_ref = '';
-		var objet = false;
-		var bouton_interface_travail = etablissement_identifie ? '<q class="partager" title="Créer une page de ressources pour travailler (partagées sur le serveur communautaire)."></q>' : '<q class="partager_non" title="Pour pouvoir créer une page de ressources sur le serveur communautaire, un administrateur doit préalablement identifier l\'établissement dans la base Sésamath."></q>' ;
+		var bouton_interface_travail = etablissement_identifie ? '<q class="ress_page_elaborer" title="Créer une page de ressources pour travailler (partagées sur le serveur communautaire)."></q>' : '<q class="partager_non" title="Pour pouvoir créer une page de ressources sur le serveur communautaire, un administrateur doit préalablement identifier l\'établissement dans la base Sésamath."></q>' ;
 		var tab_ressources = new Array();
 		var images = new Array();
+		images[1]  = '';
+		images[1] += '<q class="modifier" title="Modifier ce sous-titre"></q>';
+		images[1] += '<q class="dupliquer" title="Dupliquer ce sous-titre"></q>';
+		images[1] += '<q class="supprimer" title="Supprimer ce sous-titre"></q>';
+		images[2]  = '';
+		images[2] += '<q class="modifier" title="Modifier ce lien"></q>';
+		images[2] += '<q class="dupliquer" title="Dupliquer ce lien"></q>';
+		images[2] += '<q class="supprimer" title="Supprimer ce lien"></q>';
+		images[3]  = '';
+		images[3] += '<q class="ajouter" title="Ajouter ce lien"></q>';
 		images[4]  = '';
-		images[4] += '<q class="modifier" title="Modifier ce sous-titre"></q>';
-		images[4] += '<q class="dupliquer" title="Dupliquer ce sous-titre"></q>';
-		images[4] += '<q class="supprimer" title="Supprimer ce sous-titre"></q>';
-		images[5]  = '';
-		images[5] += '<q class="modifier" title="Modifier ce lien"></q>';
-		images[5] += '<q class="dupliquer" title="Dupliquer ce lien"></q>';
-		images[5] += '<q class="supprimer" title="Supprimer ce lien"></q>';
-		images[6]  = '';
-		images[6] += '<q class="ajouter" title="Ajouter ce lien"></q>';
+		images[4] += '<q class="valider" title="Sélectionner cette ressource"></q>';
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 //	Charger le form zone_elaboration_referentiel en ajax
@@ -126,7 +127,7 @@ $(document).ready
 										id2 = $(this).attr('id').substring(3);
 										titre = $(this).children('img').attr('title');
 										tab_ressources[id2] = (titre=='Absence de ressource.') ? '' : titre ;
-										$(this).append('<q class="modifier" title="Modifier le lien ou les ressources associées à cet item."></q>');
+										$(this).append('<br /><input name="f_lien" size="100" maxlength="256" type="text" value="'+tab_ressources[id2]+'" />'+bouton_interface_travail+'<q class="valider" title="Valider la modification de ce lien."></q><label>&nbsp;</label>');
 									}
 								);
 							}
@@ -150,34 +151,20 @@ $(document).ready
 				$('#zone_elaboration_referentiel').html("&nbsp;");
 				afficher_masquer_images_action('show'); // au cas où on serait en train d'éditer qq chose
 				$('#zone_choix_referentiel').show('fast');
-				objet = '';
 				return(false);
 			}
 		);
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-//	Clic sur l'image pour Modifier le lien ou les ressources associées à un item
+//	Réagir au changement dans un formulaire de lien associé à un item
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
-		$('#zone_elaboration_referentiel q.modifier').live // live est utilisé pour prendre en compte les nouveaux éléments créés
-		('click',
+		$('#zone_elaboration_referentiel input').live // live est utilisé pour prendre en compte les nouveaux éléments créés
+		('change',
 			function()
 			{
-				afficher_masquer_images_action('hide');
-				// On récupère le lien et le nomde l'item
-				item_id  = $(this).parent().attr('id').substring(3);
-				item_nom = $(this).parent().text();
-				item_nom = item_nom.substring(item_nom.indexOf('-')+2);
-				lien = tab_ressources[item_id];
-				// On créé le formulaire à valider
-				new_div  = '<div id="form_edit">';
-				new_div += '<img alt="" src="./_img/bulle_aide.png" title="Lien (facultatif) vers des ressources sur internet (entraînement, remédiation&hellip;)." /> <input id="f_lien" name="f_lien" size="90" maxlength="256" type="text" value="'+lien+'" />'+bouton_interface_travail+'<q class="valider" title="Valider la modification de ce lien."></q><q class="annuler" lang="editer" title="Annuler la modification de ce lien."></q> <label id="ajax_msg">&nbsp;</label>';
-				new_div += '</div>';
-				// On insère le formulaire dans la page
-				$(this).before(new_div);
-				$('#f_lien').focus();
-				infobulle();
-				objet = 'editer';
+				$(this).parent().children('label').removeAttr("class").addClass("alerte").html("Penser à valider !");
+				return(false);
 			}
 		);
 
@@ -189,14 +176,15 @@ $(document).ready
 		('click',
 			function()
 			{
-				item_lien = $('#f_lien').val();
+				item_id   = $(this).parent().attr('id').substring(3);
+				item_lien = $('#n3_'+item_id).children('input').val();
 				if(item_lien && !testURL(item_lien))
 				{
-					$('#ajax_msg').removeAttr("class").addClass("erreur").html("Adresse incorrecte !");
+					$('#n3_'+item_id).children('label').removeAttr("class").addClass("erreur").html("Adresse incorrecte !");
 					return false;
 				}
 				// Envoi des infos en ajax pour le traitement de la demande
-				$('#ajax_msg').removeAttr("class").addClass("loader").html('Demande envoyée...');
+				$('#n3_'+item_id).children('label').removeAttr("class").addClass("loader").html('Demande envoyée...');
 				$.ajax
 				(
 					{
@@ -206,7 +194,7 @@ $(document).ready
 						dataType : "html",
 						error : function(msg,string)
 						{
-							$('#ajax_msg').removeAttr("class").addClass("alerte").html('Echec de la connexion !');
+							$('#n3_'+item_id).children('label').removeAttr("class").addClass("alerte").html('Echec de la connexion !');
 						},
 						success : function(responseHTML)
 						{
@@ -215,16 +203,14 @@ $(document).ready
 							{
 								lien_image  = (item_lien=='') ? 'non' : 'oui' ;
 								lien_title  = (item_lien=='') ? 'Absence de ressource.' : escapeHtml(item_lien) ;
-								$('#form_edit').remove();
 								$('#n3_'+item_id).children('img').attr('src','./_img/etat/link_'+lien_image+'.png').attr('title',lien_title);
 								tab_ressources[item_id] = (item_lien=='') ? '' : lien_title ;
 								infobulle();
-								afficher_masquer_images_action('show');
-								objet = '';
+								$('#n3_'+item_id).children('label').removeAttr("class").addClass("valide").html('Lien enregistré.');
 							}
 							else
 							{
-								$('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);
+								$('#n3_'+item_id).children('label').removeAttr("class").addClass("alerte").html(responseHTML);
 							}
 						}
 					}
@@ -233,36 +219,29 @@ $(document).ready
 		);
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-//	Clic sur l'image pour Annuler la modification du lien associé à un item
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-
-		$('#zone_elaboration_referentiel q.annuler').live // live est utilisé pour prendre en compte les nouveaux éléments créés
-		('click',
-			function()
-			{
-				$('#form_edit').remove();
-				afficher_masquer_images_action('show');
-				objet = '';
-			}
-		);
-
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 //	Clic sur l'image afin d'élaborer ou d'éditer sur le serveur communautaire une page de liens pour travailler
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
-		$('#zone_elaboration_referentiel q.partager').live // live est utilisé pour prendre en compte les nouveaux éléments créés
+		$('#zone_elaboration_referentiel q.ress_page_elaborer').live // live est utilisé pour prendre en compte les nouveaux éléments créés
 		('click',
 			function()
 			{
+				item_id   = $(this).parent().attr('id').substring(3);
+				item_lien = $('#n3_'+item_id).children('input').val();
+				item_nom  = $(this).parent().html(); // text ne convient pas car on récupère le contenu du label avec...
+				pos_debut = item_nom.indexOf('-')+2;
+				pos_fin   = item_nom.indexOf('<br');
+				item_nom  = item_nom.substring(pos_debut,pos_fin);
 				// reporter le nom de l'item
-				$('#zone_ressources span.f_nom').html(escapeHtml(item_nom));
+				$('#zone_ressources span.f_nom').html(item_nom);
 				// appel ajax
+				$.fancybox( '<label class="loader">'+'Demande envoyée...'+'</label>' , {'centerOnScroll':true} );
 				$.ajax
 				(
 					{
 						type : 'POST',
 						url : 'ajax.php?page='+PAGE,
-						data : 'action=Charger_ressources'+'&item_id='+item_id,
+						data : 'action=Charger_ressources'+'&item_id='+item_id+'&item_lien='+encodeURIComponent(item_lien),
 						dataType : "html",
 						error : function(msg,string)
 						{
@@ -284,19 +263,18 @@ $(document).ready
 								$('#page_mode').val(mode);
 								// ajouter les boutons
 								var reg = new RegExp('</span>',"g"); // Si on ne prend pas une expression régulière alors replace() ne remplace que la 1e occurence
-								responseHTML = responseHTML.replace(reg,'</span>'+images[4]);
+								responseHTML = responseHTML.replace(reg,'</span>'+images[1]);
 								var reg = new RegExp('</a>',"g"); // Si on ne prend pas une expression régulière alors replace() ne remplace que la 1e occurence
-								responseHTML = responseHTML.replace(reg,'</a>'+images[5]);
+								responseHTML = responseHTML.replace(reg,'</a>'+images[2]);
 								// montrer le cadre
 								$('#sortable').html(responseHTML);
-								$('#zone_resultat_recherche').html('');
+								$('#zone_resultat_recherche_liens').html('');
 								format_liens('#sortable');
 								infobulle();
 								$('#zone_ressources q').show();
 								$('#ajax_ressources_msg').removeAttr("class").html("&nbsp;");
 								$.fancybox( { 'href':'#zone_ressources' , onStart:function(){$('#zone_ressources').css("display","block");} , onClosed:function(){$('#zone_ressources').css("display","none");} , 'modal':true , 'centerOnScroll':true } );
 								$('#sortable').sortable( { cursor:'n-resize' } );
-								objet = 'choisir_ressources';
 							}
 						}
 					}
@@ -312,8 +290,10 @@ $(document).ready
 		(
 			function()
 			{
+				$('label[for=paragraphe_nom]').removeAttr("class").html('');
+				$('label[for=lien_url]').removeAttr("class").html('');
+				$('label[for=lien_nom]').removeAttr("class").html('');
 				$.fancybox.close();
-				objet = 'editer';
 			}
 		);
 
@@ -349,14 +329,14 @@ $(document).ready
 				if(element.is('span'))
 				{
 					var paragraphe_nom = element.html();
-					$(this).parent().html('<label class="tab">Sous-titre :</label><input name="paragraphe_nom" value="'+paragraphe_nom+'" size="100" maxlength="256" /><input name="paragraphe_nom_old" value="'+paragraphe_nom+'" type="hidden" /><q class="valider" title="Valider les modifications"></q><q class="annuler" title="Annuler les modifications"></q>');
+					$(this).parent().html('<label class="tab">Sous-titre :</label><input name="paragraphe_nom" value="'+paragraphe_nom+'" size="75" maxlength="256" /><input name="paragraphe_nom_old" value="'+paragraphe_nom+'" type="hidden" /><q class="valider" title="Valider les modifications"></q><q class="annuler" title="Annuler les modifications"></q><label></label>');
 				}
 				// soit c'est un lien
 				else if(element.is('a'))
 				{
-					var lien_nom = element.html();
 					var lien_url = element.attr('href');
-					$(this).parent().html('<label class="tab">Intitulé :</label><input name="lien_nom" value="'+lien_nom+'" size="100" maxlength="256" /><input name="lien_nom_old" value="'+lien_nom+'" type="hidden" /><br /><label class="tab">Adresse :</label><input name="lien_url" value="'+lien_url+'" size="100" maxlength="256" /><input name="lien_url_old" value="'+lien_url+'" type="hidden" /><q class="valider" title="Valider les modifications"></q><q class="annuler" title="Annuler les modifications"></q>');
+					var lien_nom = element.html();
+					$(this).parent().html('<label class="tab">Adresse :</label><input name="lien_url" value="'+lien_url+'" size="75" maxlength="256" /><input name="lien_url_old" value="'+lien_url+'" type="hidden" /><br /><label class="tab">Intitulé :</label><input name="lien_nom" value="'+lien_nom+'" size="75" maxlength="256" /><input name="lien_nom_old" value="'+lien_nom+'" type="hidden" /><q class="valider" title="Valider les modifications"></q><q class="annuler" title="Annuler les modifications"></q><label></label>');
 				}
 				infobulle();
 				return false;
@@ -381,8 +361,8 @@ $(document).ready
 				// soit c'est un lien
 				else if(element.is('a'))
 				{
-					var lien_nom = element.html();
 					var lien_url = element.attr('href');
+					var lien_nom = element.html();
 					$('#lien_url').val(lien_url);
 					$('#lien_nom').val(lien_nom).focus();
 				}
@@ -403,14 +383,14 @@ $(document).ready
 				if(nb_input==2)
 				{
 					var paragraphe_nom = escapeHtml( $(this).parent().children('input[name=paragraphe_nom_old]').val() );
-					$(this).parent().html('<span class="b">'+paragraphe_nom+'</span>'+images[4]);
+					$(this).parent().html('<span class="b">'+paragraphe_nom+'</span>'+images[1]);
 				}
 				// soit c'est un lien
 				else if(nb_input==4)
 				{
-					var lien_nom = escapeHtml( $(this).parent().children('input[name=lien_nom_old]').val() );
 					var lien_url = escapeHtml( $(this).parent().children('input[name=lien_url_old]').val() );
-					$(this).parent().html('<a href="'+lien_url+'" title="'+lien_url+'" class="lien_ext">'+lien_nom+'</a>'+images[5]);
+					var lien_nom = escapeHtml( $(this).parent().children('input[name=lien_nom_old]').val() );
+					$(this).parent().html('<a href="'+lien_url+'" title="'+lien_url+'" class="lien_ext">'+lien_nom+'</a>'+images[2]);
 					format_liens('#sortable');
 				}
 				infobulle();
@@ -433,35 +413,46 @@ $(document).ready
 					var paragraphe_nom = escapeHtml( entity_convert( $(this).parent().children('input[name=paragraphe_nom]').val() ) );
 					if(paragraphe_nom == '')
 					{
+						$(this).next().next('label').addClass("erreur").html("Nom manquant !");
 						$(this).parent().children('input[name=paragraphe_nom]').focus();
 						return false;
 					}
 					else
 					{
-						$(this).parent().html('<span class="b">'+paragraphe_nom+'</span>'+images[4]+'</q>');
+						$(this).parent().html('<span class="b">'+paragraphe_nom+'</span>'+images[1]+'</q>');
 					}
 				}
 				// soit c'est un lien
 				else if(nb_input==4)
 				{
-					var lien_nom = escapeHtml( entity_convert( $(this).parent().children('input[name=lien_nom]').val() ) );
 					var lien_url = escapeHtml( entity_convert( $(this).parent().children('input[name=lien_url]').val() ) );
-					if(lien_nom == '')
+					var lien_nom = escapeHtml( entity_convert( $(this).parent().children('input[name=lien_nom]').val() ) );
+					if(lien_url == '')
 					{
-						$(this).parent().children('input[name=lien_nom]').focus();
+						$(this).next().next('label').addClass("erreur").html("Adresse manquante !");
+						$(this).parent().children('input[name=lien_url]').focus();
 						return false;
 					}
 					else if(!testURL(lien_url))
 					{
+						$(this).next().next('label').addClass("erreur").html("Adresse incorrecte !");
 						$(this).parent().children('input[name=lien_url]').focus();
+						return false;
+					}
+					$(this).next().next('label').removeAttr("class").html("");
+					if(lien_nom == '')
+					{
+						$(this).next().next('label').addClass("erreur").html("Nom manquant !");
+						$(this).parent().children('input[name=lien_nom]').focus();
 						return false;
 					}
 					else
 					{
-						$(this).parent().html('<a href="'+lien_url+'" title="'+lien_url+'" class="lien_ext">'+lien_nom+'</a>'+images[5]+'</q>');
+						$(this).parent().html('<a href="'+lien_url+'" title="'+lien_url+'" class="lien_ext">'+lien_nom+'</a>'+images[2]+'</q>');
 						format_liens('#sortable');
 					}
 				}
+				initialiser_compteur();
 				infobulle();
 				return false;
 			}
@@ -478,13 +469,15 @@ $(document).ready
 				var paragraphe_nom = escapeHtml( entity_convert( $('#paragraphe_nom').val() ) );
 				if(paragraphe_nom == '')
 				{
+					$('label[for=paragraphe_nom]').addClass("erreur").html("Nom manquant !");
 					$('#paragraphe_nom').focus();
 					return false;
 				}
 				else
 				{
 					initialiser_compteur();
-					$('#sortable').append('<li><span class="b">'+paragraphe_nom+'</span>'+images[4]+'</li>');
+					$('label[for=paragraphe_nom]').removeAttr("class").html('');
+					$('#sortable').append('<li><span class="b">'+paragraphe_nom+'</span>'+images[1]+'</li>');
 					infobulle();
 					$('#sortable li.i').remove();
 					$('#paragraphe_nom').val('');
@@ -500,28 +493,38 @@ $(document).ready
 		(
 			function()
 			{
-				var lien_nom = escapeHtml( entity_convert( $('#lien_nom').val() ) );
+				// vérif lien_url
 				var lien_url = escapeHtml( $('#lien_url').val() );
-				if(lien_nom == '')
+				if(lien_url == '')
 				{
-					$('#lien_nom').focus();
+					$('label[for=lien_url]').addClass("erreur").html("Adresse manquante !");
+					$('#lien_url').focus();
 					return false;
 				}
 				else if(!testURL(lien_url))
 				{
+					$('label[for=lien_url]').addClass("erreur").html("Adresse incorrecte !");
 					$('#lien_url').focus();
 					return false;
 				}
-				else
+				$('label[for=lien_url]').removeAttr("class").html("");
+				// vérif lien_nom
+				var lien_nom = escapeHtml( entity_convert( $('#lien_nom').val() ) );
+				if(lien_nom == '')
 				{
-					initialiser_compteur();
-					$('#sortable').append('<li><a href="'+lien_url+'" title="'+lien_url+'" class="lien_ext">'+lien_nom+'</a>'+images[5]+'</li>');
-					infobulle();
-					$('#sortable li.i').remove();
-					format_liens('#sortable');
-					$('#lien_nom').val('');
-					$('#lien_url').val('');
+					$('label[for=lien_nom]').addClass("erreur").html("Nom manquant !");
+					$('#lien_nom').focus();
+					return false;
 				}
+				$('label[for=lien_nom]').removeAttr("class").html('');
+				// ok
+				initialiser_compteur();
+				$('#sortable').append('<li><a href="'+lien_url+'" title="'+lien_url+'" class="lien_ext">'+lien_nom+'</a>'+images[2]+'</li>');
+				infobulle();
+				$('#sortable li.i').remove();
+				format_liens('#sortable');
+				$('#lien_url').val('');
+				$('#lien_nom').val('');
 			}
 		);
 
@@ -555,8 +558,8 @@ $(document).ready
 						// soit c'est un lien
 						else if($(this).children('a').length)
 						{
-							var lien_nom = $(this).children('a').html();
 							var lien_url = $(this).children('a').attr('href');
+							var lien_nom = $(this).children('a').html();
 							tab_ressources.push(lien_nom+']¤['+lien_url);
 							nb_ressources++;
 						}
@@ -601,11 +604,14 @@ $(document).ready
 							}
 							else
 							{
+								$('label[for=paragraphe_nom]').removeAttr("class").html('');
+								$('label[for=lien_url]').removeAttr("class").html('');
+								$('label[for=lien_nom]').removeAttr("class").html('');
 								$('#ajax_ressources_msg').removeAttr("class").html("&nbsp;");
-								initialiser_compteur();
-								$('#f_lien').val(responseHTML);
 								$.fancybox.close();
-								objet = 'editer';
+								initialiser_compteur();
+								$('#n3_'+item_id).children('input').val(responseHTML);
+								$('#n3_'+item_id).children('q.valider').click();
 							}
 						}
 					}
@@ -618,44 +624,44 @@ $(document).ready
 //	Clic sur le bouton pour rechercher des liens existants à partir de mots clefs
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
-		$('#ressources_rechercher').click
+		$('#liens_rechercher').click
 		(
 			function()
 			{
 				var findme = $('#chaine_recherche').val();
 				if(findme=='')
 				{
-					$('#zone_resultat_recherche').html('<label class="erreur">Saisir des mots clefs !</label>');
+					$('#zone_resultat_recherche_liens').html('<label class="erreur">Saisir des mots clefs !</label>');
 					$('#chaine_recherche').focus();
 					return false;
 				}
 				// appel ajax
-				$('#zone_resultat_recherche').html('<label class="loader">Demande envoyée...</label>');
+				$('#zone_resultat_recherche_liens').html('<label class="loader">Demande envoyée...</label>');
 				$.ajax
 				(
 					{
 						type : 'POST',
 						url : 'ajax.php?page='+PAGE,
-						data : 'action=Rechercher_ressources'+'&item_id='+item_id+'&findme='+encodeURIComponent(findme),
+						data : 'action=Rechercher_liens_ressources'+'&item_id='+item_id+'&findme='+encodeURIComponent(findme),
 						dataType : "html",
 						error : function(msg,string)
 						{
-							$('#zone_resultat_recherche').html('<label class="erreur">Echec de la connexion !</label>');
+							$('#zone_resultat_recherche_liens').html('<label class="erreur">Echec de la connexion !</label>');
 							return false;
 						},
 						success : function(responseHTML)
 						{
 							if(responseHTML.substring(0,3)!='<li')
 							{
-								$('#zone_resultat_recherche').html('<label class="alerte">'+responseHTML+'</label>');
+								$('#zone_resultat_recherche_liens').html('<label class="alerte">'+responseHTML+'</label>');
 								return false;
 							}
 							else
 							{
 								var reg = new RegExp('</a>',"g"); // Si on ne prend pas une expression régulière alors replace() ne remplace que la 1e occurence
-								responseHTML = responseHTML.replace(reg,'</a>'+images[6]);
-								$('#zone_resultat_recherche').html('<ul>'+responseHTML+'</ul>');
-								format_liens('#zone_resultat_recherche');
+								responseHTML = responseHTML.replace(reg,'</a>'+images[3]);
+								$('#zone_resultat_recherche_liens').html('<ul>'+responseHTML+'</ul>');
+								format_liens('#zone_resultat_recherche_liens');
 								initialiser_compteur();
 								infobulle();
 							}
@@ -670,15 +676,15 @@ $(document).ready
 //	Clic sur le bouton pour ajouter un lien trouvé suite à une recherche
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
-		$('#zone_resultat_recherche q.ajouter').live // live est utilisé pour prendre en compte les nouveaux éléments créés
+		$('#zone_resultat_recherche_liens q.ajouter').live // live est utilisé pour prendre en compte les nouveaux éléments créés
 		('click',
 			function()
 			{
-				var lien_nom = $(this).prev().html();
 				var lien_url = $(this).prev().attr('href');
+				var lien_nom = $(this).prev().html();
 				$(this).parent().remove();
 				initialiser_compteur();
-				$('#sortable').append('<li><a href="'+lien_url+'" title="'+lien_url+'" class="lien_ext">'+lien_nom+'</a>'+images[5]+'</li>');
+				$('#sortable').append('<li><a href="'+lien_url+'" title="'+lien_url+'" class="lien_ext">'+lien_nom+'</a>'+images[2]+'</li>');
 				infobulle();
 				$('#sortable li.i').remove();
 				format_liens('#sortable');
@@ -724,7 +730,7 @@ $(document).ready
 				$('#zone_ressources_upload button').prop('disabled',false);
 				return false;
 			}
-			else if ('.bat.exe.php.zip.'.indexOf('.'+fichier_extension.toLowerCase()+'.')!=-1)
+			else if ('.bat.com.exe.php.zip.'.indexOf('.'+fichier_extension.toLowerCase()+'.')!=-1)
 			{
 				$('#ajax_ressources_upload').removeAttr("class").addClass("erreur").html('Extension non autorisée.');
 				$('#zone_ressources_upload button').prop('disabled',false);
@@ -749,12 +755,77 @@ $(document).ready
 			{
 				initialiser_compteur();
 				upload_lien = responseHTML;
-				$('#afficher_zone_ressources_form').hide();
-				$('#bouton_import').hide();
-				$('#bouton_report').html('Reporter le lien '+upload_lien).show();
-				$('#ajax_ressources_upload').removeAttr("class").addClass("valide").html('Upload réussi !');
+				$('#ajax_ressources_upload').removeAttr("class").html('');
+				$('#afficher_zone_ressources_form').click();
+				$('label[for=lien_url]').removeAttr("class").addClass("valide").html("Upload réussi !");
+				$('label[for=lien_nom]').removeAttr("class").addClass("alerte").html("Validez l'ajout&hellip;");
+				$('#lien_url').val(upload_lien);
+				$('#lien_nom').focus();
 			}
 		}
+
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+//	Clic sur le bouton pour rechercher des ressources existantes uploadées par l'établissement
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
+		$('#ressources_rechercher').click
+		(
+			function()
+			{
+				// appel ajax
+				$('#zone_resultat_recherche_ressources').html('<label class="loader">Demande envoyée...</label>');
+				$.ajax
+				(
+					{
+						type : 'POST',
+						url : 'ajax.php?page='+PAGE,
+						data : 'action=Rechercher_documents',
+						dataType : "html",
+						error : function(msg,string)
+						{
+							$('#zone_resultat_recherche_ressources').html('<label class="erreur">Echec de la connexion !</label>');
+							return false;
+						},
+						success : function(responseHTML)
+						{
+							if(responseHTML.substring(0,3)!='<li')
+							{
+								$('#zone_resultat_recherche_ressources').html('<label class="alerte">'+responseHTML+'</label>');
+								return false;
+							}
+							else
+							{
+								var reg = new RegExp('</a>',"g"); // Si on ne prend pas une expression régulière alors replace() ne remplace que la 1e occurence
+								responseHTML = responseHTML.replace(reg,'</a>'+images[4]);
+								$('#zone_resultat_recherche_ressources').html('<ul>'+responseHTML+'</ul>');
+								format_liens('#zone_resultat_recherche_ressources');
+								initialiser_compteur();
+								infobulle();
+							}
+						}
+					}
+				);
+				return false;
+			}
+		);
+
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+//	Clic sur le bouton pour ajouter une ressource trouvée suite à une recherche
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
+		$('#zone_resultat_recherche_ressources q.valider').live // live est utilisé pour prendre en compte les nouveaux éléments créés
+		('click',
+			function()
+			{
+				var lien_url = $(this).prev().attr('href');
+				$('#ajax_ressources_upload').removeAttr("class").html('');
+				$('#afficher_zone_ressources_form').click();
+				$('label[for=lien_url]').removeAttr("class").html("");
+				$('label[for=lien_nom]').removeAttr("class").addClass("alerte").html("Validez l'ajout&hellip;");
+				$('#lien_url').val(lien_url);
+				$('#lien_nom').focus();
+			}
+		);
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 //	Passer de zone_ressources_form à zone_ressources_upload et vice-versa ; report d'un lien vers une ressource.
@@ -764,11 +835,8 @@ $(document).ready
 		(
 			function()
 			{
+				$('#ajax_ressources_upload').removeAttr("class").html('');
 				$('#zone_ressources_form').hide();
-				$('#afficher_zone_ressources_form').show();
-				$('#bouton_import').show();
-				$('#bouton_report').hide();
-				$('#ajax_ressources_upload').removeAttr("class").html('&nbsp;');
 				$('#zone_ressources_upload').show();
 			}
 		);
@@ -782,17 +850,6 @@ $(document).ready
 			}
 		);
 
-		$('#bouton_report').click
-		(
-			function()
-			{
-				$('#zone_ressources_upload').hide();
-				$('#zone_ressources_form').show();
-				$('#lien_url').val(upload_lien);
-				$('#lien_nom').focus();
-			}
-		);
-
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 //	Intercepter la touche entrée ou escape pour valider ou annuler les modifications
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
@@ -803,13 +860,11 @@ $(document).ready
 			{
 				if(e.which==13)	// touche entrée
 				{
-					if(objet=='editer') {$('#zone_elaboration_referentiel q.valider').click();}
-					else if(objet=='choisir_ressources') {$(this).next().click();}
+					$(this).nextAll('q.valider , q.ajouter').click();
 				}
 				else if(e.which==27)	// touche escape
 				{
-					if(objet=='editer') {$('#zone_elaboration_referentiel q.annuler').click();}
-					else if(objet=='choisir_ressources') {$(this).next().next().click();}
+					$(this).nextAll('q.annuler').click();
 				}
 				return false;
 			}

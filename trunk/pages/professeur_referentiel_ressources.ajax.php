@@ -67,7 +67,7 @@ if( ($action=='Enregistrer_lien') && $item_id )
 
 if( ($action=='Charger_ressources') && $item_id )
 {
-	exit( afficher_liens_ressources($_SESSION['SESAMATH_ID'],$_SESSION['SESAMATH_KEY'],$item_id) );
+	exit( afficher_liens_ressources($_SESSION['SESAMATH_ID'],$_SESSION['SESAMATH_KEY'],$item_id,$item_lien) );
 }
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
@@ -97,9 +97,18 @@ if( ($action=='Enregistrer_ressources') && $item_id && $item_nom && in_array($ob
 // Rechercher sur le serveur communautaire à partir de mots clefs des liens existants de ressources pour travailler
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
-if( ($action=='Rechercher_ressources') && $item_id && $findme )
+if( ($action=='Rechercher_liens_ressources') && $item_id && $findme )
 {
-	exit( rechercher_ressources($_SESSION['SESAMATH_ID'],$_SESSION['SESAMATH_KEY'],$item_id,$findme) );
+	exit( rechercher_liens_ressources($_SESSION['SESAMATH_ID'],$_SESSION['SESAMATH_KEY'],$item_id,$findme) );
+}
+
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+// Rechercher sur le serveur communautaire des documents ressources existants uploadés par l'établissement
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
+if($action=='Rechercher_documents')
+{
+	exit( rechercher_documents($_SESSION['SESAMATH_ID'],$_SESSION['SESAMATH_KEY']) );
 }
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
@@ -127,9 +136,13 @@ if( ($action=='Uploader_document') && isset($_FILES['userfile']) )
 		exit('Problème de transfert ! Fichier trop lourd ? min(memory_limit,post_max_size,upload_max_filesize)='.minimum_limitations_upload());
 	}
 	$extension = strtolower(pathinfo($fnom_transmis,PATHINFO_EXTENSION));
-	if(in_array( $extension , array('bat','exe','php','zip') ))
+	if(in_array( $extension , array('bat','com','exe','php','zip') ))
 	{
-		exit('L\'extension du fichier transmis est incorrecte !');
+		exit('L\'extension du fichier transmis est interdite !');
+	}
+	if($fnom_transmis{0}=='.')
+	{
+		exit('Le nom du fichier ne doit pas commencer par un point !');
 	}
 	if($ftaille>500000)
 	{

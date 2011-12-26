@@ -38,6 +38,8 @@ foreach($tab_profils as $profil)
 {
 	$texte_profil = str_replace($profil,$tab_profil_libelle[$profil]['long'][2],$texte_profil);
 }
+// Acces serveur communautaire
+$acces_serveur_communautaire = ( $_SESSION['SESAMATH_ID'] && $_SESSION['SESAMATH_KEY'] ) ? TRUE : FALSE ;
 ?>
 
 <ul class="puce">
@@ -114,14 +116,12 @@ else
 		<div><span class="tab"></span><button class="annuler" type="button" id="choisir_ressources_annuler">Annuler / Retour.</button> <button class="valider" type="button" id="choisir_ressources_valider">Valider et enregistrer ces liens.</button> <label id="ajax_ressources_msg">&nbsp;</label></div>
 		<hr />
 		<h2>Ajouter un paragraphe</h2>
-		<div class="sortable"><label class="tab">Sous-titre :</label><input id="paragraphe_nom" value="" size="100" maxlength="256" /><q id="paragraphe_ajouter" class="ajouter" title="Ajouter ce paragraphe"></q></div>
+		<div class="sortable"><label class="tab">Sous-titre :</label><input id="paragraphe_nom" value="" size="80" maxlength="256" /><q id="paragraphe_ajouter" class="ajouter" title="Ajouter ce paragraphe"></q><label for="paragraphe_nom"></label></div>
 		<h2>Ajouter un lien</h2>
-		<div class="sortable"><label class="tab">Intitulé :</label><input id="lien_nom" value="" size="100" maxlength="256" /><br /><label class="tab">Adresse :</label><input id="lien_url" value="" size="100" maxlength="256" /><q id="lien_ajouter" class="ajouter" title="Ajouter ce lien"></q></div>
-		<h2>Mettre en ligne une ressource</h2>
-		<div>Vous pouvez si besoin <button id="afficher_zone_ressources_upload" type="button" class="fichier_import">déposer une ressource sur le serveur communautaire</button> afin de pouvoir faire pointer un lien vers celle-ci.</div>
+		<div class="sortable"><label class="tab">Adresse :</label><input id="lien_url" value="" size="80" maxlength="256" /><?php echo $acces_serveur_communautaire ? '<q id="afficher_zone_ressources_upload" class="ress_ajouter" title="Déposer une ressource sur le serveur communautaire (afin de pouvoir faire pointer un lien vers celle-ci)."></q>' : '<q class="partager_non" title="Pour pouvoir mettre en ligne une ressource sur le serveur communautaire, un administrateur doit préalablement identifier l\'établissement dans la base Sésamath."></q>' ;?><label for="lien_url"></label><br /><label class="tab">Intitulé :</label><input id="lien_nom" value="" size="80" maxlength="256" /><q id="lien_ajouter" class="ajouter" title="Ajouter ce lien"></q><label for="lien_nom"></label></div>
 		<h2>Recherche de liens existants</h2>
-		<div class="sortable"><label class="tab">Mots clefs :</label><input id="chaine_recherche" value="" size="90" maxlength="256" /> <button id="ressources_rechercher" type="button" class="rechercher">Chercher.</button></div>
-		<div id="zone_resultat_recherche"></div>
+		<div class="sortable"><label class="tab">Mots clefs :</label><input id="chaine_recherche" value="" size="80" maxlength="256" /> <button id="liens_rechercher" type="button" class="rechercher">Chercher.</button></div>
+		<div id="zone_resultat_recherche_liens"></div>
 	</form>
 	<div id="zone_ressources_upload" class="hide">
 		<h2>Mettre en ligne une ressource</h2>
@@ -129,15 +129,12 @@ else
 			<li><span class="danger">Lisez la documentation afin de prendre connaissance des conditions d'utilisation !</span></li>
 			<li><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=referentiels_socle__referentiel_uploader_ressources">DOC : Mettre en ligne des ressources pour travailler.</a></span></li>
 		</ul>
-		<p>
-			<button id="afficher_zone_ressources_form" type="button" class="retourner">Annuler.</button>
-			<button id="bouton_import" type="button" class="fichier_import">Parcourir...</button>
-			<label id="ajax_ressources_upload">&nbsp;</label>
-			<button id="bouton_report" type="button" class="retourner hide"></button>
-		</p>
+		<p><button id="bouton_import" type="button" class="fichier_import">Parcourir...</button> <button id="afficher_zone_ressources_form" type="button" class="retourner">Annuler.</button><label id="ajax_ressources_upload">&nbsp;</label></p>
+		<p><button id="ressources_rechercher" type="button" class="rechercher">Voir les fichiers mis en ligne dans mon établissement.</button></p>
+		<div id="zone_resultat_recherche_ressources"></div>
 	</div>
 </div>
 
 <script type="text/javascript">
-	var etablissement_identifie = <?php echo ( $_SESSION['SESAMATH_ID'] && $_SESSION['SESAMATH_KEY'] ) ? 'true' : 'false' ;?>;
+	var etablissement_identifie = <?php echo $acces_serveur_communautaire ? 'true' : 'false' ;?>;
 </script>

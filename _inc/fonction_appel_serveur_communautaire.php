@@ -332,15 +332,17 @@ function signer_exportLPC($sesamath_id,$sesamath_key,$exportXML)
  * @param int       $sesamath_id
  * @param string    $sesamath_key
  * @param int       $item_id
+ * @param string    $item_lien
  * @return string   contenu html ou un message d'erreur
  */
-function afficher_liens_ressources($sesamath_id,$sesamath_key,$item_id)
+function afficher_liens_ressources($sesamath_id,$sesamath_key,$item_id,$item_lien)
 {
 	$tab_post = array();
 	$tab_post['fichier']        = 'liens_ressources_elaborer_editer';
 	$tab_post['sesamath_id']    = $sesamath_id;
 	$tab_post['sesamath_key']   = $sesamath_key;
 	$tab_post['item_id']        = $item_id;
+	$tab_post['item_lien']      = $item_lien;
 	$tab_post['version_prog']   = VERSION_PROG; // Le service web doit être compatible
 	$tab_post['adresse_retour'] = SERVEUR_ADRESSE;
 	return url_get_contents(SERVEUR_COMMUNAUTAIRE,$tab_post);
@@ -382,7 +384,7 @@ function fabriquer_liens_ressources($sesamath_id,$sesamath_key,$item_id,$item_no
  * @param string    $findme
  * @return string   contenu html ou un message d'erreur
  */
-function rechercher_ressources($sesamath_id,$sesamath_key,$item_id,$findme)
+function rechercher_liens_ressources($sesamath_id,$sesamath_key,$item_id,$findme)
 {
 	$tab_post = array();
 	$tab_post['fichier']        = 'liens_ressources_rechercher';
@@ -390,6 +392,23 @@ function rechercher_ressources($sesamath_id,$sesamath_key,$item_id,$findme)
 	$tab_post['sesamath_key']   = $sesamath_key;
 	$tab_post['item_id']        = $item_id;
 	$tab_post['findme']         = $findme;
+	$tab_post['version_prog']   = VERSION_PROG; // Le service web doit être compatible
+	return url_get_contents(SERVEUR_COMMUNAUTAIRE,$tab_post);
+}
+
+/**
+ * Appel au serveur communautaire pour rechercher des documents ressources existants uploadés par l'établissement.
+ * 
+ * @param int       $sesamath_id
+ * @param string    $sesamath_key
+ * @return string   contenu html ou un message d'erreur
+ */
+function rechercher_documents($sesamath_id,$sesamath_key)
+{
+	$tab_post = array();
+	$tab_post['fichier']        = 'ressources_afficher_liste';
+	$tab_post['sesamath_id']    = $sesamath_id;
+	$tab_post['sesamath_key']   = $sesamath_key;
 	$tab_post['version_prog']   = VERSION_PROG; // Le service web doit être compatible
 	return url_get_contents(SERVEUR_COMMUNAUTAIRE,$tab_post);
 }

@@ -185,91 +185,95 @@ del{text-decoration:line-through;color:#666}
 /* Liens vers un fichier à récupérer ou un document généré                                             */
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-.file      {background:transparent url(../_img/sprite_fichier_1.png) 0 0 no-repeat;padding-left:20px;}
+.file      {background:transparent url(../_img/sprite_fichier_2.png) 0 0 no-repeat;padding-left:20px;}
 .file_doc  {background-position: 0    0px}
 .file_docx {background-position: 0  -20px}
-.file_fla  {background-position: 0  -40px}
-.file_htm  {background-position: 0  -60px}
-.file_iso  {background-position: 0  -80px}
-.file_jpg  {background-position: 0 -100px}
-.file_mp4  {background-position: 0 -120px}
-.file_odg  {background-position: 0 -140px}
-.file_odp  {background-position: 0 -160px}
-.file_ods  {background-position: 0 -180px}
-.file_odt  {background-position: 0 -200px}
-.file_pdf  {background-position: 0 -220px}
-.file_ppt  {background-position: 0 -240px}
-.file_pptx {background-position: 0 -260px}
-.file_rtf  {background-position: 0 -280px}
-.file_swf  {background-position: 0 -300px}
-.file_sxc  {background-position: 0 -320px}
-.file_sxd  {background-position: 0 -340px}
-.file_sxi  {background-position: 0 -360px}
-.file_sxw  {background-position: 0 -380px}
-.file_tep  {background-position: 0 -400px}
-.file_tex  {background-position: 0 -420px}
-.file_txt  {background-position: 0 -440px}
-.file_xls  {background-position: 0 -460px}
-.file_xlsx {background-position: 0 -480px}
-.file_xml  {background-position: 0 -500px}
-.file_zip  {background-position: 0 -520px}
+.file_exe  {background-position: 0  -40px}
+.file_fla  {background-position: 0  -60px}
+.file_htm  {background-position: 0  -80px}
+.file_iso  {background-position: 0 -100px}
+.file_jpg  {background-position: 0 -120px}
+.file_mp4  {background-position: 0 -140px}
+.file_odg  {background-position: 0 -160px}
+.file_odp  {background-position: 0 -180px}
+.file_ods  {background-position: 0 -200px}
+.file_odt  {background-position: 0 -220px}
+.file_pdf  {background-position: 0 -240px}
+.file_php  {background-position: 0 -260px}
+.file_ppt  {background-position: 0 -280px}
+.file_pptx {background-position: 0 -300px}
+.file_rtf  {background-position: 0 -320px}
+.file_swf  {background-position: 0 -340px}
+.file_sxc  {background-position: 0 -360px}
+.file_sxd  {background-position: 0 -380px}
+.file_sxi  {background-position: 0 -400px}
+.file_sxw  {background-position: 0 -420px}
+.file_tep  {background-position: 0 -440px}
+.file_tex  {background-position: 0 -460px}
+.file_txt  {background-position: 0 -480px}
+.file_xls  {background-position: 0 -500px}
+.file_xlsx {background-position: 0 -520px}
+.file_xml  {background-position: 0 -540px}
+.file_zip  {background-position: 0 -560px}
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 /* Images cliquables                                                                                   */
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-body q {background:transparent url(../_img/sprite_action_1.png) 0 0 no-repeat;width:16px;height:16px;display:inline-block;vertical-align:middle;margin-left:5px;quotes:none}
+body q {background:transparent url(../_img/sprite_action_2.png) 0 0 no-repeat;width:16px;height:16px;display:inline-block;vertical-align:middle;margin-left:5px;quotes:none}
 body q:before, body q:after {content: "";} /* patch pour Safari : voir par exemple http://forum.alsacreations.com/topic-4-41216-1-Resolu-Modifier-le-style-des-citations-quotqquot.html */
-body q.activer         {background-position: 0    0px}
-body q.ajouter         {background-position: 0  -20px}
-body q.ajouter_non     {background-position: 0  -40px}
-body q.annuler         {background-position: 0  -60px}
-body q.choisir_compet  {background-position: 0  -80px}
-body q.choisir_eleve   {background-position: 0 -100px}
-body q.choisir_prof    {background-position: 0 -120px}
-body q.date_calendrier {background-position: 0 -140px}
-body q.date_periode    {background-position: 0 -160px}
-body q.deconnecter     {background-position: 0 -180px}
-body q.demander_add    {background-position: 0 -200px} 
-body q.demander_non    {background-position: 0 -220px}
-body q.detailler       {background-position: 0 -240px}
-body q.dupliquer       {background-position: 0 -260px}
-body q.imprimer        {background-position: 0 -280px}
-body q.initialiser_mdp {background-position: 0 -300px}
-body q.modifier        {background-position: 0 -320px}
-body q.modifier_non    {background-position: 0 -340px}
-body q.ordonner        {background-position: 0 -360px}
-body q.ordonner_non    {background-position: 0 -380px}
-body q.calculer        {background-position: 0 -400px} 
-body q.calculer_non    {background-position: 0 -420px} 
-body q.envoyer         {background-position: 0 -440px} 
-body q.envoyer_non     {background-position: 0 -460px} 
-body q.partager        {background-position: 0 -480px} 
-body q.partager_non    {background-position: 0 -500px} 
-body q.retourner       {background-position: 0 -520px} 
-body q.saisir          {background-position: 0 -540px} 
-body q.supprimer       {background-position: 0 -560px} 
-body q.supprimer_non   {background-position: 0 -580px} 
-body q.valider         {background-position: 0 -600px} 
-body q.voir            {background-position: 0 -620px} 
-body q.voir_repart     {background-position: 0 -640px} 
-body q.n1_add          {background-position: 0 -660px} 
-body q.n1_del          {background-position: 0 -680px} 
-body q.n1_edit         {background-position: 0 -700px} 
-body q.n1_move         {background-position: 0 -720px} 
-body q.n1_move2        {background-position: 0 -740px} 
-body q.n2_add          {background-position: 0 -760px} 
-body q.n2_del          {background-position: 0 -780px} 
-body q.n2_edit         {background-position: 0 -800px} 
-body q.n2_move         {background-position: 0 -820px} 
-body q.n2_move2        {background-position: 0 -840px} 
-body q.n3_add          {background-position: 0 -860px} 
-body q.n3_del          {background-position: 0 -880px} 
-body q.n3_edit         {background-position: 0 -900px} 
-body q.n3_fus          {background-position: 0 -920px} 
-body q.n3_fus2         {background-position: 0 -940px} 
-body q.n3_move         {background-position: 0 -960px} 
-body q.n3_move2        {background-position: 0 -980px} 
+body q.activer            {background-position: 0     0px}
+body q.ajouter            {background-position: 0   -20px}
+body q.ajouter_non        {background-position: 0   -40px}
+body q.annuler            {background-position: 0   -60px}
+body q.choisir_compet     {background-position: 0   -80px}
+body q.choisir_eleve      {background-position: 0  -100px}
+body q.choisir_prof       {background-position: 0  -120px}
+body q.date_calendrier    {background-position: 0  -140px}
+body q.date_periode       {background-position: 0  -160px}
+body q.deconnecter        {background-position: 0  -180px}
+body q.demander_add       {background-position: 0  -200px} 
+body q.demander_non       {background-position: 0  -220px}
+body q.detailler          {background-position: 0  -240px}
+body q.dupliquer          {background-position: 0  -260px}
+body q.imprimer           {background-position: 0  -280px}
+body q.initialiser_mdp    {background-position: 0  -300px}
+body q.modifier           {background-position: 0  -320px}
+body q.modifier_non       {background-position: 0  -340px}
+body q.ordonner           {background-position: 0  -360px}
+body q.ordonner_non       {background-position: 0  -380px}
+body q.calculer           {background-position: 0  -400px} 
+body q.calculer_non       {background-position: 0  -420px} 
+body q.envoyer            {background-position: 0  -440px} 
+body q.envoyer_non        {background-position: 0  -460px} 
+body q.partager           {background-position: 0  -480px} 
+body q.partager_non       {background-position: 0  -500px} 
+body q.ress_ajouter       {background-position: 0  -520px} 
+body q.ress_page_elaborer {background-position: 0  -540px} 
+body q.retourner          {background-position: 0  -560px} 
+body q.saisir             {background-position: 0  -580px} 
+body q.supprimer          {background-position: 0  -600px} 
+body q.supprimer_non      {background-position: 0  -620px} 
+body q.valider            {background-position: 0  -640px} 
+body q.voir               {background-position: 0  -660px} 
+body q.voir_repart        {background-position: 0  -680px} 
+body q.n1_add             {background-position: 0  -700px} 
+body q.n1_del             {background-position: 0  -720px} 
+body q.n1_edit            {background-position: 0  -740px} 
+body q.n1_move            {background-position: 0  -760px} 
+body q.n1_move2           {background-position: 0  -780px} 
+body q.n2_add             {background-position: 0  -800px} 
+body q.n2_del             {background-position: 0  -820px} 
+body q.n2_edit            {background-position: 0  -840px} 
+body q.n2_move            {background-position: 0  -860px} 
+body q.n2_move2           {background-position: 0  -880px} 
+body q.n3_add             {background-position: 0  -900px} 
+body q.n3_del             {background-position: 0  -920px} 
+body q.n3_edit            {background-position: 0  -940px} 
+body q.n3_fus             {background-position: 0  -960px} 
+body q.n3_fus2            {background-position: 0  -980px} 
+body q.n3_move            {background-position: 0 -1000px} 
+body q.n3_move2           {background-position: 0 -1020px} 
 body q:hover {cursor:pointer}	/* Curseur pointeur pour ces images qui sont des liens */
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */

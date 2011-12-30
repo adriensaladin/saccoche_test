@@ -271,17 +271,17 @@ if($action=='verif_etape4')
 		if( (isset($tab['avant'])) && (isset($tab['apres'])) )
 		{
 			// Dossier inchangé (cas le plus fréquent donc testé en premier).
-			$tbody_ok .= '<tr><td class="v">Dossier présent</td><td>'.$dossier.'</td></tr>';
+			$tbody_ok .= '<tr class="v"><td>Dossier présent</td><td>'.$dossier.'</td></tr>';
 		}
 		elseif(!isset($tab['avant']))
 		{
 			// Dossier manquant
-			$tbody_pb .= '<tr><td class="r">Dossier manquant</td><td>'.$dossier.'</td></tr>';
+			$tbody_pb .= '<tr class="r"><td>Dossier manquant</td><td>'.$dossier.'</td></tr>';
 		}
 		elseif(!isset($tab['apres'])) // (forcément)
 		{
 			// Dossier en trop
-			$tbody_pb .= '<tr><td class="r">Dossier en trop</td><td>'.$dossier.'</td></tr>';
+			$tbody_pb .= '<tr class="r"><td>Dossier en trop</td><td>'.$dossier.'</td></tr>';
 		}
 	}
 	// Fichiers : ordre décroissant pour avoir VERSION.txt en dernier (majuscules avant dans la table ASCII).
@@ -293,27 +293,27 @@ if($action=='verif_etape4')
 			if( ($tab['avant']==$tab['apres']) || ($fichier=='/.htaccess') )
 			{
 				// Fichier identique (si le .htaccess a été changé, c'est sans doute volontaire, ne pas y toucher)
-				$tbody_ok .= '<tr><td class="v">Fichier identique</td><td>'.$fichier.'</td></tr>';
+				$tbody_ok .= '<tr class="v"><td>Fichier identique</td><td>'.$fichier.'</td></tr>';
 			}
 			else
 			{
 				// Fichier différent
-				$tbody_pb .= '<tr><td class="r">Fichier différent</td><td>'.$fichier.'</td></tr>';
+				$tbody_pb .= '<tr class="r"><td>Fichier différent</td><td>'.$fichier.'</td></tr>';
 			}
 		}
 		elseif( (!isset($tab['avant'])) && ($fichier!='/.htaccess') )
 		{
 			// Fichier manquant
-			$tbody_pb .= '<tr><td class="r">Fichier manquant</td><td>'.$fichier.'</td></tr>';
+			$tbody_pb .= '<tr class="r"><td>Fichier manquant</td><td>'.$fichier.'</td></tr>';
 		}
 		elseif(!isset($tab['apres'])) // (forcément)
 		{
-			$tbody_pb .= '<tr><td class="r">Fichier en trop</td><td>'.$fichier.'</td></tr>';
+			$tbody_pb .= '<tr class="r"><td>Fichier en trop</td><td>'.$fichier.'</td></tr>';
 		}
 	}
 	// Enregistrement du rapport
 	$fichier_chemin  = './__tmp/export/rapport_verif.html';
-	$fichier_contenu = '<!DOCTYPE html><html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><style type="text/css">body{font-family:monospace;font-size:8pt}table{border-collapse:collapse}thead{background:#CCC;font-weight:bold;text-align:center}td{border:solid 1px;padding:2px;white-space:nowrap}.v{color:green}.r{color:red}.b{color:blue}</style></head><body><table><thead>'.$thead.'</thead><tbody>'.$tbody_pb.$tbody_ok.'</tbody></table></body></html>';
+	$fichier_contenu = '<!DOCTYPE html><html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><style type="text/css">body{font-family:monospace;font-size:8pt}table{border-collapse:collapse}thead{background:#CCC;font-weight:bold;text-align:center}td{border:solid 1px black;padding:2px;white-space:nowrap}.v{color:green}.r{color:red}.b{color:blue}</style></head><body><table><thead>'.$thead.'</thead><tbody>'.$tbody_pb.$tbody_ok.'</tbody></table></body></html>';
 	Ecrire_Fichier($fichier_chemin,$fichier_contenu);
 	exit(']¤['.'ok'.']¤['.'Rapport des modifications apportées et nettoyage&hellip;');
 }

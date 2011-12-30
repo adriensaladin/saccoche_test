@@ -153,6 +153,34 @@ function upload_max_filesize()
 }
 
 /**
+ * safe_mode
+ * Le "Safe Mode" est le mode de sécurité de PHP. Fonctionnalité obsolète depuis PHP 5.3.0, à ne plus utiliser.
+ * Voir http://www.php.net/manual/fr/features.safe-mode.php
+ *
+ * @param void
+ * @return string
+ */
+
+function safe_mode()
+{
+	return (ini_get('safe_mode')) ? '<td class="hc" style="background:#F99">On</td>' : '<td class="hc" style="background:#9F9">Off</td>' ;
+}
+
+/**
+ * open_basedir
+ * Limite les fichiers pouvant être ouverts par PHP à une architecture de dossiers spécifique, incluant le fichier lui-même.
+ * Voir http://php.net/manual/fr/ini.core.php#ini.open-basedir
+ *
+ * @param void
+ * @return string
+ */
+
+function open_basedir()
+{
+	return (ini_get('open_basedir')) ? '<td class="hc" style="background:#F99">On</td>' : '<td class="hc" style="background:#9F9">Off</td>' ;
+}
+
+/**
  * minimum_limitations_upload
  * La taille maximale d'upload d'un fichier est limitée par memory_limit + post_max_size + upload_max_filesize
  * Normalement on a memory_limit > post_max_size > upload_max_filesize
@@ -273,6 +301,8 @@ $tab_commentaires['max_execution_time']   = 'Par défaut 30 secondes.<br />Une v
 $tab_commentaires['memory_limit']         = 'Par défaut 128Mo (largement assez) mais souvent placée à 32Mo.<br />Doit être plus grand que post_max_size (ci-dessous).<br />Une valeur inférieure à 32Mo peut poser problème (pour générer des bilans ou sauvegarder/restaurer).';
 $tab_commentaires['post_max_size']        = 'Par défaut 8Mo.<br />Doit être plus grand que upload_max_filesize (ci-dessous).';
 $tab_commentaires['upload_max_filesize']  = 'Par défaut 2Mo.<br />A augmenter si on doit envoyer un fichier d\'une taille supérieure.';
+$tab_commentaires['safe_mode']            = 'Fonctionnalité obsolète depuis PHP 5.3.0, à ne plus utiliser.<br />Son activation peut poser problème (pour échanger avec le serveur communautaire).';
+$tab_commentaires['open_basedir']         = 'Limite les fichiers pouvant être ouverts par PHP à une architecture de dossiers spécifique.<br />Son activation peut poser problème (pour échanger avec le serveur communautaire).';
 $tab_commentaires['max_allowed_packet']   = 'Par défaut 1Mo (1 048 576 octets).<br />Pour restaurer une sauvegarde, les fichiers contenus dans le zip ne doivent pas dépasser cette taille.';
 $tab_commentaires['max_user_connections'] = 'Une valeur inférieure à 5 est susceptible, suivant la charge, de poser problème.';
 $tab_commentaires['group_concat_max_len'] = 'Par défaut 1024 octets.<br />Une telle valeur devrait suffire.';
@@ -313,6 +343,8 @@ function tableau_limitations_PHP()
 				<tr><td><img alt="" title="'.$tab_commentaires['memory_limit'].'" src="./_img/bulle_aide.png" /> memory limit</td><td class="hc">'.memory_limit().'</td></tr>
 				<tr><td><img alt="" title="'.$tab_commentaires['post_max_size'].'" src="./_img/bulle_aide.png" /> post max size</td><td class="hc">'.post_max_size().'</td></tr>
 				<tr><td><img alt="" title="'.$tab_commentaires['upload_max_filesize'].'" src="./_img/bulle_aide.png" /> upload max filesize</td><td class="hc">'.upload_max_filesize().'</td></tr>
+				<tr><td><img alt="" title="'.$tab_commentaires['safe_mode'].'" src="./_img/bulle_aide.png" /> safe_mode</td>'.safe_mode().'</tr>
+				<tr><td><img alt="" title="'.$tab_commentaires['open_basedir'].'" src="./_img/bulle_aide.png" /> open_basedir</td>'.open_basedir().'</tr>
 			</tbody>
 		</table>
 	';

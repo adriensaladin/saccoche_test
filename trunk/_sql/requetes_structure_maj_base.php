@@ -1346,6 +1346,89 @@ public function DB_maj_base($version_actuelle)
 		}
 	}
 
+	//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	//	MAJ 2011-12-24 => 2011-12-30
+	//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	if($version_actuelle=='2011-12-24')
+	{
+		if($version_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
+		{
+			$version_actuelle = '2011-12-30';
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_actuelle.'" WHERE parametre_nom="version_base"' );
+			// maj liens
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_referentiel_item SET item_lien=REPLACE(item_lien,"http://college-guitres.com/cahier-de-textes/mathenpoche.php?compet=6D10","http://sacoche.sesamath.net/__ress_html/2354/117.html")' );
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_referentiel_item SET item_lien=REPLACE(item_lien,"http://college-guitres.com/cahier-de-textes/mathenpoche.php?compet=6D11","http://sacoche.sesamath.net/__ress_html/2354/118.html")' );
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_referentiel_item SET item_lien=REPLACE(item_lien,"http://college-guitres.com/cahier-de-textes/mathenpoche.php?compet=6D12","http://sacoche.sesamath.net/__ress_html/2354/119.html")' );
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_referentiel_item SET item_lien=REPLACE(item_lien,"http://college-guitres.com/cahier-de-textes/mathenpoche.php?compet=6D20","http://sacoche.sesamath.net/__ress_html/2354/120.html")' );
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_referentiel_item SET item_lien=REPLACE(item_lien,"http://college-guitres.com/cahier-de-textes/mathenpoche.php?compet=6D21","http://sacoche.sesamath.net/__ress_html/2354/121.html")' );
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_referentiel_item SET item_lien=REPLACE(item_lien,"http://college-guitres.com/cahier-de-textes/mathenpoche.php?compet=6D22","http://sacoche.sesamath.net/__ress_html/2354/122.html")' );
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_referentiel_item SET item_lien=REPLACE(item_lien,"http://college-guitres.com/cahier-de-textes/mathenpoche.php?compet=6N10","http://sacoche.sesamath.net/__ress_html/2354/123.html")' );
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_referentiel_item SET item_lien=REPLACE(item_lien,"http://college-guitres.com/cahier-de-textes/mathenpoche.php?compet=6N11","http://sacoche.sesamath.net/__ress_html/2354/124.html")' );
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_referentiel_item SET item_lien=REPLACE(item_lien,"http://college-guitres.com/cahier-de-textes/mathenpoche.php?compet=6N12","http://sacoche.sesamath.net/__ress_html/2354/125.html")' );
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_referentiel_item SET item_lien=REPLACE(item_lien,"http://college-guitres.com/cahier-de-textes/mathenpoche.php?compet=6N13","http://sacoche.sesamath.net/__ress_html/2354/126.html")' );
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_referentiel_item SET item_lien=REPLACE(item_lien,"http://college-guitres.com/cahier-de-textes/mathenpoche.php?compet=6N14","http://sacoche.sesamath.net/__ress_html/2354/127.html")' );
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_referentiel_item SET item_lien=REPLACE(item_lien,"http://college-guitres.com/cahier-de-textes/mathenpoche.php?compet=6N20","http://sacoche.sesamath.net/__ress_html/2354/128.html")' );
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_referentiel_item SET item_lien=REPLACE(item_lien,"http://college-guitres.com/cahier-de-textes/mathenpoche.php?compet=6N21","http://sacoche.sesamath.net/__ress_html/2354/129.html")' );
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_referentiel_item SET item_lien=REPLACE(item_lien,"http://college-guitres.com/cahier-de-textes/mathenpoche.php?compet=6N22","http://sacoche.sesamath.net/__ress_html/2354/130.html")' );
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_referentiel_item SET item_lien=REPLACE(item_lien,"http://college-guitres.com/cahier-de-textes/mathenpoche.php?compet=6N23","http://sacoche.sesamath.net/__ress_html/2354/131.html")' );
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_referentiel_item SET item_lien=REPLACE(item_lien,"http://college-guitres.com/cahier-de-textes/mathenpoche.php?compet=6N24","http://sacoche.sesamath.net/__ress_html/2354/132.html")' );
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_referentiel_item SET item_lien=REPLACE(item_lien,"http://college-guitres.com/cahier-de-textes/mathenpoche.php?compet=6N25","http://sacoche.sesamath.net/__ress_html/2354/133.html")' );
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_referentiel_item SET item_lien=REPLACE(item_lien,"http://college-guitres.com/cahier-de-textes/mathenpoche.php?compet=6N26","http://sacoche.sesamath.net/__ress_html/2354/134.html")' );
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_referentiel_item SET item_lien=REPLACE(item_lien,"http://college-guitres.com/cahier-de-textes/mathenpoche.php?compet=6N27","http://sacoche.sesamath.net/__ress_html/2354/135.html")' );
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_referentiel_item SET item_lien=REPLACE(item_lien,"http://college-guitres.com/cahier-de-textes/mathenpoche.php?compet=6N28","http://sacoche.sesamath.net/__ress_html/2354/136.html")' );
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_referentiel_item SET item_lien=REPLACE(item_lien,"http://college-guitres.com/cahier-de-textes/mathenpoche.php?compet=6N29","http://sacoche.sesamath.net/__ress_html/2354/137.html")' );
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_referentiel_item SET item_lien=REPLACE(item_lien,"http://college-guitres.com/cahier-de-textes/mathenpoche.php?compet=6N30","http://sacoche.sesamath.net/__ress_html/2354/138.html")' );
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_referentiel_item SET item_lien=REPLACE(item_lien,"http://college-guitres.com/cahier-de-textes/mathenpoche.php?compet=6N31","http://sacoche.sesamath.net/__ress_html/2354/139.html")' );
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_referentiel_item SET item_lien=REPLACE(item_lien,"http://college-guitres.com/cahier-de-textes/mathenpoche.php?compet=6N32","http://sacoche.sesamath.net/__ress_html/2354/140.html")' );
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_referentiel_item SET item_lien=REPLACE(item_lien,"http://college-guitres.com/cahier-de-textes/mathenpoche.php?compet=6N33","http://sacoche.sesamath.net/__ress_html/2354/141.html")' );
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_referentiel_item SET item_lien=REPLACE(item_lien,"http://college-guitres.com/cahier-de-textes/mathenpoche.php?compet=6N34","http://sacoche.sesamath.net/__ress_html/2354/142.html")' );
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_referentiel_item SET item_lien=REPLACE(item_lien,"http://college-guitres.com/cahier-de-textes/mathenpoche.php?compet=6G10","http://sacoche.sesamath.net/__ress_html/2354/143.html")' );
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_referentiel_item SET item_lien=REPLACE(item_lien,"http://college-guitres.com/cahier-de-textes/mathenpoche.php?compet=6G11","")' );
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_referentiel_item SET item_lien=REPLACE(item_lien,"http://college-guitres.com/cahier-de-textes/mathenpoche.php?compet=6G12","")' );
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_referentiel_item SET item_lien=REPLACE(item_lien,"http://college-guitres.com/cahier-de-textes/mathenpoche.php?compet=6G13","")' );
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_referentiel_item SET item_lien=REPLACE(item_lien,"http://college-guitres.com/cahier-de-textes/mathenpoche.php?compet=6G20","http://sacoche.sesamath.net/__ress_html/2354/147.html")' );
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_referentiel_item SET item_lien=REPLACE(item_lien,"http://college-guitres.com/cahier-de-textes/mathenpoche.php?compet=6G21","")' );
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_referentiel_item SET item_lien=REPLACE(item_lien,"http://college-guitres.com/cahier-de-textes/mathenpoche.php?compet=6G22","")' );
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_referentiel_item SET item_lien=REPLACE(item_lien,"http://college-guitres.com/cahier-de-textes/mathenpoche.php?compet=6G23","http://sacoche.sesamath.net/__ress_html/2354/150.html")' );
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_referentiel_item SET item_lien=REPLACE(item_lien,"http://college-guitres.com/cahier-de-textes/mathenpoche.php?compet=6G30","http://sacoche.sesamath.net/__ress_html/2354/151.html")' );
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_referentiel_item SET item_lien=REPLACE(item_lien,"http://college-guitres.com/cahier-de-textes/mathenpoche.php?compet=6G31","http://sacoche.sesamath.net/__ress_html/2354/152.html")' );
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_referentiel_item SET item_lien=REPLACE(item_lien,"http://college-guitres.com/cahier-de-textes/mathenpoche.php?compet=6G32","http://sacoche.sesamath.net/__ress_html/2354/153.html")' );
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_referentiel_item SET item_lien=REPLACE(item_lien,"http://college-guitres.com/cahier-de-textes/mathenpoche.php?compet=6G33","http://sacoche.sesamath.net/__ress_html/2354/154.html")' );
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_referentiel_item SET item_lien=REPLACE(item_lien,"http://college-guitres.com/cahier-de-textes/mathenpoche.php?compet=6G34","")' );
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_referentiel_item SET item_lien=REPLACE(item_lien,"http://college-guitres.com/cahier-de-textes/mathenpoche.php?compet=6G40","http://sacoche.sesamath.net/__ress_html/2354/155.html")' );
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_referentiel_item SET item_lien=REPLACE(item_lien,"http://college-guitres.com/cahier-de-textes/mathenpoche.php?compet=6G41","")' );
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_referentiel_item SET item_lien=REPLACE(item_lien,"http://college-guitres.com/cahier-de-textes/mathenpoche.php?compet=6G42","http://sacoche.sesamath.net/__ress_html/2354/157.html")' );
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_referentiel_item SET item_lien=REPLACE(item_lien,"http://college-guitres.com/cahier-de-textes/mathenpoche.php?compet=6G43","http://sacoche.sesamath.net/__ress_html/2354/158.html")' );
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_referentiel_item SET item_lien=REPLACE(item_lien,"http://college-guitres.com/cahier-de-textes/mathenpoche.php?compet=6G50","http://sacoche.sesamath.net/__ress_html/2354/159.html")' );
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_referentiel_item SET item_lien=REPLACE(item_lien,"http://college-guitres.com/cahier-de-textes/mathenpoche.php?compet=6G51","http://sacoche.sesamath.net/__ress_html/2354/160.html")' );
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_referentiel_item SET item_lien=REPLACE(item_lien,"http://college-guitres.com/cahier-de-textes/mathenpoche.php?compet=6G52","http://sacoche.sesamath.net/__ress_html/2354/161.html")' );
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_referentiel_item SET item_lien=REPLACE(item_lien,"http://college-guitres.com/cahier-de-textes/mathenpoche.php?compet=6G53","http://sacoche.sesamath.net/__ress_html/2354/162.html")' );
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_referentiel_item SET item_lien=REPLACE(item_lien,"http://college-guitres.com/cahier-de-textes/mathenpoche.php?compet=6G54","http://sacoche.sesamath.net/__ress_html/2354/163.html")' );
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_referentiel_item SET item_lien=REPLACE(item_lien,"http://college-guitres.com/cahier-de-textes/mathenpoche.php?compet=6G55","http://sacoche.sesamath.net/__ress_html/2354/164.html")' );
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_referentiel_item SET item_lien=REPLACE(item_lien,"http://college-guitres.com/cahier-de-textes/mathenpoche.php?compet=6G60","http://sacoche.sesamath.net/__ress_html/2354/165.html")' );
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_referentiel_item SET item_lien=REPLACE(item_lien,"http://college-guitres.com/cahier-de-textes/mathenpoche.php?compet=6G61","http://sacoche.sesamath.net/__ress_html/2354/166.html")' );
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_referentiel_item SET item_lien=REPLACE(item_lien,"http://college-guitres.com/cahier-de-textes/mathenpoche.php?compet=6G62","http://sacoche.sesamath.net/__ress_html/2354/167.html")' );
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_referentiel_item SET item_lien=REPLACE(item_lien,"http://college-guitres.com/cahier-de-textes/mathenpoche.php?compet=6M10","http://sacoche.sesamath.net/__ress_html/2354/168.html")' );
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_referentiel_item SET item_lien=REPLACE(item_lien,"http://college-guitres.com/cahier-de-textes/mathenpoche.php?compet=6M11","http://sacoche.sesamath.net/__ress_html/2354/169.html")' );
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_referentiel_item SET item_lien=REPLACE(item_lien,"http://college-guitres.com/cahier-de-textes/mathenpoche.php?compet=6M12","http://sacoche.sesamath.net/__ress_html/2354/170.html")' );
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_referentiel_item SET item_lien=REPLACE(item_lien,"http://college-guitres.com/cahier-de-textes/mathenpoche.php?compet=6M13","")' );
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_referentiel_item SET item_lien=REPLACE(item_lien,"http://college-guitres.com/cahier-de-textes/mathenpoche.php?compet=6M20","http://sacoche.sesamath.net/__ress_html/2354/172.html")' );
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_referentiel_item SET item_lien=REPLACE(item_lien,"http://college-guitres.com/cahier-de-textes/mathenpoche.php?compet=6M21","http://sacoche.sesamath.net/__ress_html/2354/173.html")' );
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_referentiel_item SET item_lien=REPLACE(item_lien,"http://college-guitres.com/cahier-de-textes/mathenpoche.php?compet=6M22","http://sacoche.sesamath.net/__ress_html/2354/174.html")' );
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_referentiel_item SET item_lien=REPLACE(item_lien,"http://college-guitres.com/cahier-de-textes/mathenpoche.php?compet=6M23","http://sacoche.sesamath.net/__ress_html/2354/175.html")' );
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_referentiel_item SET item_lien=REPLACE(item_lien,"http://college-guitres.com/cahier-de-textes/mathenpoche.php?compet=6M30","http://sacoche.sesamath.net/__ress_html/2354/176.html")' );
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_referentiel_item SET item_lien=REPLACE(item_lien,"http://college-guitres.com/cahier-de-textes/mathenpoche.php?compet=6M31","http://sacoche.sesamath.net/__ress_html/2354/177.html")' );
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_referentiel_item SET item_lien=REPLACE(item_lien,"http://college-guitres.com/cahier-de-textes/mathenpoche.php?compet=6M32","http://sacoche.sesamath.net/__ress_html/2354/178.html")' );
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_referentiel_item SET item_lien=REPLACE(item_lien,"http://college-guitres.com/cahier-de-textes/mathenpoche.php?compet=6M33","http://sacoche.sesamath.net/__ress_html/2354/179.html")' );
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_referentiel_item SET item_lien=REPLACE(item_lien,"http://college-guitres.com/cahier-de-textes/mathenpoche.php?compet=6M34","http://sacoche.sesamath.net/__ress_html/2354/180.html")' );
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_referentiel_item SET item_lien=REPLACE(item_lien,"http://college-guitres.com/cahier-de-textes/mathenpoche.php?compet=6M35","")' );
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_referentiel_item SET item_lien=REPLACE(item_lien,"http://college-guitres.com/cahier-de-textes/mathenpoche.php?compet=6M36","http://sacoche.sesamath.net/__ress_html/2354/182.html")' );
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_referentiel_item SET item_lien=REPLACE(item_lien,"http://college-guitres.com/cahier-de-textes/mathenpoche.php?compet=6M40","http://sacoche.sesamath.net/__ress_html/2354/183.html")' );
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_referentiel_item SET item_lien=REPLACE(item_lien,"http://college-guitres.com/cahier-de-textes/mathenpoche.php?compet=6M41","http://sacoche.sesamath.net/__ress_html/2354/184.html")' );
+		}
+	}
+
 }
 
 }

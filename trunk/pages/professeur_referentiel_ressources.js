@@ -62,7 +62,7 @@ $(document).ready
 		var upload_lien = '';
 		var matiere_id  = 0;
 		var matiere_ref = '';
-		var bouton_interface_travail = etablissement_identifie ? '<q class="ress_page_elaborer" title="Créer une page de ressources pour travailler (partagées sur le serveur communautaire)."></q>' : '<q class="partager_non" title="Pour pouvoir créer une page de ressources sur le serveur communautaire, un administrateur doit préalablement identifier l\'établissement dans la base Sésamath."></q>' ;
+		var bouton_interface_travail = etablissement_identifie ? '<q class="ress_page_elaborer" title="Créer / Modifier une page de ressources pour travailler (partagées sur le serveur communautaire)."></q>' : '<q class="partager_non" title="Pour pouvoir créer une page de ressources sur le serveur communautaire, un administrateur doit préalablement identifier l\'établissement dans la base Sésamath."></q>' ;
 		var tab_ressources = new Array();
 		var images = new Array();
 		images[1]  = '';
@@ -127,7 +127,7 @@ $(document).ready
 										id2 = $(this).attr('id').substring(3);
 										titre = $(this).children('img').attr('title');
 										tab_ressources[id2] = (titre=='Absence de ressource.') ? '' : titre ;
-										$(this).append('<br /><input name="f_lien" size="100" maxlength="256" type="text" value="'+tab_ressources[id2]+'" />'+bouton_interface_travail+'<q class="valider" title="Valider la modification de ce lien."></q><label>&nbsp;</label>');
+										$(this).append('<br /><input name="f_lien" size="100" maxlength="256" type="text" value="'+tab_ressources[id2]+'" /><q class="voir" title="Tester ce lien."></q>'+bouton_interface_travail+'<q class="valider" title="Valider la modification de ce lien."></q><label>&nbsp;</label>');
 									}
 								);
 							}
@@ -152,6 +152,30 @@ $(document).ready
 				afficher_masquer_images_action('show'); // au cas où on serait en train d'éditer qq chose
 				$('#zone_choix_referentiel').show('fast');
 				return(false);
+			}
+		);
+
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+//	Clic sur l'image pour voir la page correspondant au lien
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
+		$('#zone_elaboration_referentiel q.voir').live // live est utilisé pour prendre en compte les nouveaux éléments créés
+		('click',
+			function()
+			{
+				item_id   = $(this).parent().attr('id').substring(3);
+				item_lien = $('#n3_'+item_id).children('input').val();
+				if(!item_lien)
+				{
+					$('#n3_'+item_id).children('label').removeAttr("class").addClass("erreur").html("Adresse absente !");
+					return false;
+				}
+				if(!testURL(item_lien))
+				{
+					$('#n3_'+item_id).children('label').removeAttr("class").addClass("erreur").html("Adresse incorrecte !");
+					return false;
+				}
+				window.open(item_lien);
 			}
 		);
 

@@ -1332,6 +1332,51 @@ function url_get_contents($url,$tab_post=false,$timeout=5)
 		curl_setopt($ch, CURLOPT_FOLLOWLOCATION, TRUE); // TRUE pour suivre toutes les en-têtes "Location: " que le serveur envoie dans les en-têtes HTTP (notez que cette fonction est récursive et que PHP suivra toutes les en-têtes "Location: " qu'il trouvera à moins que CURLOPT_MAXREDIRS ne soit définie).
 		curl_setopt($ch, CURLOPT_MAXREDIRS, 3);         // Le nombre maximal de redirections HTTP à suivre. Utilisez cette option avec l'option CURLOPT_FOLLOWLOCATION.
 	}
+	else
+	{                                                 // Solution de remplacement inspirée de http://fr.php.net/manual/fr/function.curl-setopt.php#102121
+		curl_setopt($ch, CURLOPT_FOLLOWLOCATION, FALSE);
+		$maxredirs = 3 ;
+		$url = curl_getinfo($ch, CURLINFO_EFFECTIVE_URL);
+		$rch = curl_copy_handle($ch);
+		curl_setopt($rch, CURLOPT_HEADER, TRUE);
+		curl_setopt($rch, CURLOPT_NOBODY, TRUE);
+		curl_setopt($rch, CURLOPT_FORBID_REUSE, FALSE);
+		curl_setopt($rch, CURLOPT_RETURNTRANSFER, TRUE);
+		do
+		{
+			curl_setopt($rch, CURLOPT_URL, $url);
+			$header = curl_exec($rch);
+			if (curl_errno($rch))
+			{
+				$code = 0;
+			}
+			else
+			{
+				$code = curl_getinfo($rch, CURLINFO_HTTP_CODE);
+				if ($code == 301 || $code == 302)
+				{
+					preg_match('/Location:(.*?)\n/', $header, $matches);
+					$newurl = trim(array_pop($matches));
+					// Pb : l'URL peut être relative, et si on perd le domaine alors après ça plante
+					if( (substr($newurl,0,4)!='http') && (substr($newurl,0,3)!='ftp') )
+					{
+						$pos_last_slash = strrpos($url,'/');
+						$newurl_debut = ($pos_last_slash>7) ? substr($url,0,$pos_last_slash+1) : $url.'/' ;
+						$newurl_fin   = ($newurl{0}=='/')   ? substr($newurl,1)                : $newurl ;
+						$newurl = $newurl_debut.$newurl_fin;
+					}
+					$url = $newurl;
+				}
+				else
+				{
+					$code = 0;
+				}
+			}
+		}
+		while ($code && --$maxredirs);
+		curl_close($rch);
+		curl_setopt($ch, CURLOPT_URL, $url);
+	}
 	if( (defined('SERVEUR_PROXY_USED')) && (SERVEUR_PROXY_USED) )
 	{                                                                    // Serveur qui nécessite d'utiliser un tunnel à travers un proxy HTTP.
 		curl_setopt($ch, CURLOPT_PROXY, SERVEUR_PROXY_NAME);               // Le nom du proxy HTTP au tunnel qui le demande.

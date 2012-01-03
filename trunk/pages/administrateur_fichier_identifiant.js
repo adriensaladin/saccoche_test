@@ -203,7 +203,7 @@ $(document).ready
 					{
 						type : 'POST',
 						url : 'ajax.php?page='+PAGE,
-						data : 'action=' + action + '&' + $("#fieldset_init_loginmdp").serialize(),
+						data : 'action=' + action + '&' + $("form").serialize(),
 						dataType : "html",
 						error : function(msg,string)
 						{

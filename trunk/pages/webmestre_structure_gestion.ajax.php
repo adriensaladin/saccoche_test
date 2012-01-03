@@ -117,7 +117,7 @@ if( ($action=='ajouter') && isset($tab_geo[$geo_id]) && $localisation && $denomi
 	}
 	// On affiche le retour
 	echo'<tr id="id_'.$base_id.'" class="new">';
-	echo	'<td class="nu"><a href="#id_0"><img class="bloquer" src="./_img/etat/acces_non.png" title="Bloquer cet établissement." /></a></td>';
+	echo	'<td class="nu"><a href="#id_0"><img class="bloquer" src="./_img/etat/acces_oui.png" title="Bloquer cet établissement." /></a></td>';
 	echo	'<td class="nu"><input type="checkbox" name="f_ids" value="'.$base_id.'" /></td>';
 	echo	'<td class="label">'.$base_id.'</td>';
 	echo	'<td class="label"><i>'.sprintf("%02u",$tab_geo[$geo_id]['ordre']).'</i>'.html($tab_geo[$geo_id]['nom']).'</td>';

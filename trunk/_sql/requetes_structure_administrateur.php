@@ -507,8 +507,9 @@ public function DB_lister_jointure_professeurs_principaux()
 	$DB_SQL = 'SELECT user_id, groupe_id ';
 	$DB_SQL.= 'FROM sacoche_jointure_user_groupe ';
 	$DB_SQL.= 'LEFT JOIN sacoche_user USING (user_id) ';
-	$DB_SQL.= 'WHERE jointure_pp=:pp AND user_statut=:statut ';
-	$DB_VAR = array(':pp'=>1,':statut'=>1);
+	$DB_SQL.= 'LEFT JOIN sacoche_groupe USING (groupe_id) ';
+	$DB_SQL.= 'WHERE jointure_pp=:pp AND user_statut=:statut AND groupe_type=:type '; // groupe_type pour éviter les groupes de besoin
+	$DB_VAR = array(':pp'=>1,':statut'=>1,':type'=>'classe');
 	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 

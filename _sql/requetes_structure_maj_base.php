@@ -1429,6 +1429,35 @@ public function DB_maj_base($version_actuelle)
 		}
 	}
 
+	//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	//	MAJ 2011-12-30 => 2012-01-04
+	//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	if($version_actuelle=='2011-12-30')
+	{
+		if($version_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
+		{
+			$version_actuelle = '2012-01-04';
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_actuelle.'" WHERE parametre_nom="version_base"' );
+			// la validation d'une association de PP aux classes supprimait les associations des propriétaires de groupes de besoin et sans doute aussi des évaluations sur une sélection d'élèves ; problème potentiel probablement depuis 2010-10-29
+			$DB_SQL = 'SELECT groupe_id, user_id, SUM(jointure_pp) as nb_pp ';
+			$DB_SQL.= 'FROM sacoche_jointure_user_groupe ';
+			$DB_SQL.= 'LEFT JOIN sacoche_user USING (user_id) ';
+			$DB_SQL.= 'LEFT JOIN sacoche_groupe USING (groupe_id) ';
+			$DB_SQL.= 'WHERE groupe_type IN ("besoin","eval") AND user_profil="professeur" ';
+			$DB_SQL.= 'GROUP BY groupe_id ';
+			$DB_SQL.= 'HAVING nb_pp=0 ';
+			$DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL );
+			// Lors de la rectification, si plusieurs profs sont associés aux groupes, il n'est pas dit que l'on tombe sur le bon...
+			$DB_SQL = 'REPLACE INTO sacoche_jointure_user_groupe (user_id,groupe_id,jointure_pp) VALUES(:user_id,:groupe_id,1)';
+			foreach($DB_TAB as $DB_ROW)
+			{
+				$DB_VAR = array(':user_id'=>$DB_ROW['user_id'],':groupe_id'=>$DB_ROW['groupe_id']);
+				DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+			}
+		}
+	}
+
 }
 
 }

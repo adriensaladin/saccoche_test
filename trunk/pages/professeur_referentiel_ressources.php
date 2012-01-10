@@ -129,7 +129,7 @@ else
 			<li><span class="danger">Lisez la documentation afin de prendre connaissance des conditions d'utilisation !</span></li>
 			<li><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=referentiels_socle__referentiel_uploader_ressources">DOC : Mettre en ligne des ressources pour travailler.</a></span></li>
 		</ul>
-		<p><button id="bouton_import" type="button" class="fichier_import">Parcourir...</button> <button id="afficher_zone_ressources_form" type="button" class="retourner">Annuler.</button><label id="ajax_ressources_upload">&nbsp;</label></p>
+		<p><input type="checkbox" id="acceptation_conditions" name="acceptation_conditions" /><label for="acceptation_conditions"> J'ai lu, j'accepte et je respecte les conditions d'utilisation de ce service.</label><br /><button id="bouton_import" type="button" class="fichier_import" disabled>Parcourir...</button> <button id="afficher_zone_ressources_form" type="button" class="retourner">Annuler.</button><label id="ajax_ressources_upload">&nbsp;</label></p>
 		<p><button id="ressources_rechercher" type="button" class="rechercher">Voir les fichiers mis en ligne dans mon établissement.</button></p>
 		<div id="zone_resultat_recherche_ressources"></div>
 	</div>

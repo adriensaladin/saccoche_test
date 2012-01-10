@@ -169,8 +169,8 @@ function css_browser_selector($UserAgent=null)
 function afficher_navigateurs_modernes($chemin_image)
 {
 	$tab_navigo = array(
-		'chrome'   => array( 15 , 'http://www.google.fr/chrome') ,
-		'firefox'  => array(  8 , 'http://www.mozilla-europe.org/fr/') ,
+		'chrome'   => array( 16 , 'http://www.google.fr/chrome') ,
+		'firefox'  => array(  9 , 'http://www.mozilla-europe.org/fr/') ,
 		'opera'    => array( 11 , 'http://www.opera-fr.com/telechargements/') ,
 		'safari'   => array(  5 , 'http://www.apple.com/fr/safari/download/') ,
 		'explorer' => array(  9 , 'http://windows.microsoft.com/fr-FR/internet-explorer/products/ie/home')

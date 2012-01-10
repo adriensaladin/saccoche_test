@@ -374,6 +374,7 @@ $(document).ready
 							$('#msg_voir').removeAttr("class").html('&nbsp;');
 							$('#table_voir').html(responseHTML);
 							$('#table_voir tbody tr th img').hide(0);
+							format_liens('#table_voir');
 							$('#export_file2').attr("href", $("#filename").val()+ref+'_'+timestamp+'.zip' );
 							$('#export_file3').attr("href", $("#filename").val()+ref+'_'+timestamp+'_sans_notes.pdf' );
 							$('#export_file5').attr("href", $("#filename").val()+ref+'_'+timestamp+'_avec_notes.pdf' );
@@ -430,6 +431,7 @@ $(document).ready
 							$('#msg_voir_repart').removeAttr("class").html('<button id="fermer_zone_voir_repart" type="button" class="retourner">Retour</button>');
 							$('#table_voir_repart1').html(tab_response[0]);
 							$('#table_voir_repart2').html(tab_response[1]);
+							format_liens('#zone_voir_repart');
 							$('#export_file6').attr("href", $("#filename").val()+ref+'_'+timestamp+'_repartition_quantitative.pdf' );
 							$('#export_file7').attr("href", $("#filename").val()+ref+'_'+timestamp+'_repartition_nominative.pdf' );
 							$('#table_voir_repart1 tbody td').css({"background-color":"#DDF","font-weight":"normal","text-align":"center"});

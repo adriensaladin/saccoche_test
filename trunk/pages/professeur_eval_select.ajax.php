@@ -493,7 +493,7 @@ if( ($action=='saisir') && $devoir_id && $groupe_id && $date && $date_visible &&
 if( ($action=='voir') && $devoir_id && $groupe_id && $date && $descriptif ) // $date française pour le csv ; $descriptif séparé par :::
 {
 	// liste des items
-	$DB_TAB_COMP = DB_STRUCTURE_PROFESSEUR::DB_lister_items_devoir($devoir_id);
+	$DB_TAB_COMP = DB_STRUCTURE_PROFESSEUR::DB_lister_items_devoir($devoir_id,TRUE /*with_lien*/);
 	// liste des élèves
 	$DB_TAB_USER = DB_STRUCTURE_COMMUN::DB_lister_users_actifs_regroupement('eleve',$groupe_type,$groupe_id);
 	// Let's go
@@ -534,7 +534,9 @@ if( ($action=='voir') && $devoir_id && $groupe_id && $date && $descriptif ) // $
 	{
 		$item_ref = $DB_ROW['item_ref'];
 		$texte_socle = ($DB_ROW['entree_id']) ? ' [S]' : ' [–]';
-		$tab_affich[$DB_ROW['item_id']][0] = '<th><b>'.html($item_ref.$texte_socle).'</b> <img alt="" src="./_img/bulle_aide.png" title="'.html($DB_ROW['item_nom']).'" /><div>'.html($DB_ROW['item_nom']).'</div></th>';
+		$texte_lien_avant = ($DB_ROW['item_lien']) ? '<a class="lien_ext" href="'.html($DB_ROW['item_lien']).'">' : '';
+		$texte_lien_apres = ($DB_ROW['item_lien']) ? '</a>' : '';
+		$tab_affich[$DB_ROW['item_id']][0] = '<th><b>'.$texte_lien_avant.html($item_ref.$texte_socle).$texte_lien_apres.'</b> <img alt="" src="./_img/bulle_aide.png" title="'.html($DB_ROW['item_nom']).'" /><div>'.html($DB_ROW['item_nom']).'</div></th>';
 		$tab_comp_id[$DB_ROW['item_id']] = $item_ref;
 		$csv_lignes_scores[$DB_ROW['item_id']][0] = $DB_ROW['item_id'];
 		$csv_colonne_texte[$DB_ROW['item_id']]    = $item_ref.$texte_socle.' '.$DB_ROW['item_nom'];
@@ -665,7 +667,7 @@ if( ($action=='voir') && $devoir_id && $groupe_id && $date && $descriptif ) // $
 if( ($action=='voir_repart') && $devoir_id && $groupe_id && $date && $descriptif ) // $date française pour le csv ; $descriptif séparé par :::
 {
 	// liste des items
-	$DB_TAB_ITEM = DB_STRUCTURE_PROFESSEUR::DB_lister_items_devoir($devoir_id);
+	$DB_TAB_ITEM = DB_STRUCTURE_PROFESSEUR::DB_lister_items_devoir($devoir_id,TRUE /*with_lien*/);
 	// liste des élèves
 	$DB_TAB_USER = DB_STRUCTURE_COMMUN::DB_lister_users_actifs_regroupement('eleve',$groupe_type,$groupe_id);
 	// Let's go
@@ -690,7 +692,7 @@ if( ($action=='voir_repart') && $devoir_id && $groupe_id && $date && $descriptif
 	foreach($DB_TAB_ITEM as $DB_ROW)
 	{
 		$texte_socle = ($DB_ROW['entree_id']) ? ' [S]' : ' [–]';
-		$tab_item_id[$DB_ROW['item_id']] = array( $DB_ROW['item_ref'].$texte_socle , $DB_ROW['item_nom'] );
+		$tab_item_id[$DB_ROW['item_id']] = array( $DB_ROW['item_ref'].$texte_socle , $DB_ROW['item_nom'] , $DB_ROW['item_lien'] );
 	}
 	// tableaux utiles ou pour conserver les infos
 	$tab_dossier = array( 'RR'=>$_SESSION['NOTE_DOSSIER'].'/h/' , 'R'=>$_SESSION['NOTE_DOSSIER'].'/h/' , 'V'=>$_SESSION['NOTE_DOSSIER'].'/h/' , 'VV'=>$_SESSION['NOTE_DOSSIER'].'/h/' );
@@ -728,8 +730,10 @@ if( ($action=='voir_repart') && $devoir_id && $groupe_id && $date && $descriptif
 	echo'<thead><tr>'.$affichage_repartition_head.'</tr></thead><tbody>';
 	foreach($tab_item_id as $item_id=>$tab_infos_item)
 	{
+		$texte_lien_avant = ($tab_infos_item[2]) ? '<a class="lien_ext" href="'.html($tab_infos_item[2]).'">' : '';
+		$texte_lien_apres = ($tab_infos_item[2]) ? '</a>' : '';
 		echo'<tr>';
-		echo'<th><b>'.html($tab_infos_item[0]).'</b><br />'.html($tab_infos_item[1]).'</th>';
+		echo'<th><b>'.$texte_lien_avant.html($tab_infos_item[0]).$texte_lien_apres.'</b><br />'.html($tab_infos_item[1]).'</th>';
 		foreach($tab_repartition_quantitatif[$item_id] as $code=>$note_nb)
 		{
 			echo'<td style="font-size:'.round(75+100*$note_nb/$eleve_nb).'%">'.round(100*$note_nb/$eleve_nb).'%</td>';
@@ -743,8 +747,10 @@ if( ($action=='voir_repart') && $devoir_id && $groupe_id && $date && $descriptif
 	echo'<thead><tr>'.$affichage_repartition_head.'</tr></thead><tbody>';
 	foreach($tab_item_id as $item_id=>$tab_infos_item)
 	{
+		$texte_lien_avant = ($tab_infos_item[2]) ? '<a class="lien_ext" href="'.html($tab_infos_item[2]).'">' : '';
+		$texte_lien_apres = ($tab_infos_item[2]) ? '</a>' : '';
 		echo'<tr>';
-		echo'<th><b>'.html($tab_infos_item[0]).'</b><br />'.html($tab_infos_item[1]).'</th>';
+		echo'<th><b>'.$texte_lien_avant.html($tab_infos_item[0]).$texte_lien_apres.'</b><br />'.html($tab_infos_item[1]).'</th>';
 		foreach($tab_repartition_nominatif[$item_id] as $code=>$tab_eleves)
 		{
 			echo'<td>'.implode('<br />',$tab_eleves).'</td>';

@@ -323,12 +323,14 @@ public function DB_lister_devoirs_prof_groupe_sans_infos_last($prof_id,$groupe_i
  * lister_items_devoir
  * Retourner les items d'un devoir
  *
- * @param int  $devoir_id
+ * @param int   $devoir_id
+ * @param bool  $with_lien (FALSE par défaut)
  * @return array
  */
-public function DB_lister_items_devoir($devoir_id)
+public function DB_lister_items_devoir($devoir_id,$with_lien=FALSE)
 {
 	$DB_SQL = 'SELECT item_id, item_nom, entree_id, ';
+	$DB_SQL.= ($with_lien) ? 'item_lien, ' : '' ;
 	$DB_SQL.= 'CONCAT(matiere_ref,".",niveau_ref,".",domaine_ref,theme_ordre,item_ordre) AS item_ref ';
 	$DB_SQL.= 'FROM sacoche_jointure_devoir_item ';
 	$DB_SQL.= 'LEFT JOIN sacoche_referentiel_item USING (item_id) ';

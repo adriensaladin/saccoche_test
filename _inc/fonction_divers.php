@@ -262,7 +262,8 @@ function declaration_entete( $is_meta_robots ,$is_favicon , $is_rss , $tab_fichi
 }
 
 /**
- * Compression ou minification d'un fichier css ou js sur le serveur en production, avec date auto-insérée si besoin pour éviter tout souci de mise en cache
+ * Compression ou minification d'un fichier css ou js sur le serveur en production, avec date auto-insérée si besoin pour éviter tout souci de mise en cache.
+ * Si pas de compression (hors PROD), ajouter un GET dans l'URL force le navigateur à mettre à jour son cache.
  * 
  * @param string $chemin    chemin complet vers le fichier
  * @param string $methode   soit "pack" soit "mini"
@@ -270,10 +271,10 @@ function declaration_entete( $is_meta_robots ,$is_favicon , $is_rss , $tab_fichi
  */
 function compacter($chemin,$methode)
 {
+	$fichier_original_chemin = $chemin;
+	$fichier_original_date   = filemtime($fichier_original_chemin);
 	if(SERVEUR_TYPE == 'PROD')
 	{
-		$fichier_original_chemin = $chemin;
-		$fichier_original_date   = filemtime($fichier_original_chemin);
 		$fichier_extension       = pathinfo($chemin,PATHINFO_EXTENSION);
 		$fichier_compact_dossier = (substr($chemin,0,10)=='./sacoche/') ? './sacoche/__tmp/' : './__tmp/' ; // On peut se permettre d'enregistrer les js et css en dehors de leur dossier d'origine car les répertoires sont tous de mêmes niveaux
 		$fichier_compact_nom     = substr( str_replace( array('./sacoche/','./','/') , array('','','__') , $chemin ) ,0,-(strlen($fichier_extension)+1));
@@ -306,14 +307,14 @@ function compacter($chemin,$methode)
 			@umask(0000); // Met le chmod à 666 - 000 = 666 pour les fichiers prochains fichiers créés (et à 777 - 000 = 777 pour les dossiers).
 			$test_ecriture = @file_put_contents($fichier_compact_chemin,$fichier_compact_contenu);
 			// Il se peut que le droit en écriture ne soit pas autorisé et que la procédure d'install ne l'ai pas encore vérifié ou que le dossier __tmp n'ait pas encore été créé.
-			return $test_ecriture ? $fichier_compact_chemin : $fichier_original_chemin ;
+			return $test_ecriture ? $fichier_compact_chemin : $fichier_original_chemin.'?t='.$fichier_original_date ;
 		}
 		return $fichier_compact_chemin;
 	}
 	else
 	{
 		// Sur le serveur local, on travaille avec le fichier normal pour le debugguer si besoin et ne pas encombrer le SVN
-		return $chemin;
+		return $fichier_original_chemin.'?t='.$fichier_original_date;
 	}
 }
 

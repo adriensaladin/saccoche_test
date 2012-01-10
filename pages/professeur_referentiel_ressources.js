@@ -737,6 +737,7 @@ $(document).ready
 		function changer_fichier(fichier_nom,fichier_extension)
 		{
 			$('#ajax_ressources_upload').removeAttr("class").html('&nbsp;');
+			$('#zone_ressources_upload button').prop('disabled',true);
 			return true;
 		}
 
@@ -787,6 +788,24 @@ $(document).ready
 				$('#lien_nom').focus();
 			}
 		}
+
+		$('#acceptation_conditions').click
+		(
+			function()
+			{
+				if($(this).is(':checked'))
+				{
+					$('#bouton_import').prop('disabled',false);
+				}
+				else
+				{
+					$('#bouton_import').prop('disabled',true);
+				}
+			}
+		);
+
+		// A remettre en disabled sinon la propriété disparait au chargement du js...
+		$('#bouton_import').prop('disabled',true);
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 //	Clic sur le bouton pour rechercher des ressources existantes uploadées par l'établissement

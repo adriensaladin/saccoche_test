@@ -40,7 +40,7 @@ $select_f_groupes = Formulaire::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_regr
 
 <p><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__gestion_eleves">DOC : Gestion des élèves</a></span></p>
 
-<form action="./index.php?page=<?php echo $PAGE ?>" method="post" id="form0">
+<form action="./index.php?page=administrateur_eleve&amp;section=gestion" method="post" id="form0">
 	<div>Restreindre l'affichage : <?php echo $select_f_groupes ?> <button id="actualiser" type="submit" class="actualiser">Actualiser.</button></div>
 </form>
 

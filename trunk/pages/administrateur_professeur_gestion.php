@@ -73,4 +73,7 @@ $TITRE = "Gérer les professeurs";
 	</table>
 </form>
 
-<script type="text/javascript">var select_login="<?php echo $_SESSION['MODELE_PROFESSEUR']; ?>";</script>
+<script type="text/javascript">
+	var select_login="<?php echo $_SESSION['MODELE_PROFESSEUR']; ?>";
+	var mdp_longueur_mini=<?php echo $_SESSION['MDP_LONGUEUR_MINI'] ?>;
+</script>

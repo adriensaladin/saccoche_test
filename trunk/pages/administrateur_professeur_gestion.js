@@ -50,6 +50,24 @@ $(document).ready
 		trier_tableau();
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+//	Clic sur le checkbox pour affecter ou non un nouveau mot de passe
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+		$('#box_password').live // live est utilisé pour prendre en compte les nouveaux éléments créés
+		('click',
+			function()
+			{
+				if($(this).is(':checked'))
+				{
+					$(this).next().show(0).next().hide(0);
+				}
+				else
+				{
+					$(this).next().hide(0).next().show(0);
+				}
+			}
+		);
+
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 //	Fonctions utilisées
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
@@ -70,7 +88,7 @@ $(document).ready
 			new_tr += '<td><input id="f_nom" name="f_nom" size="15" type="text" value="" /></td>';
 			new_tr += '<td><input id="f_prenom" name="f_prenom" size="15" type="text" value="" /></td>';
 			new_tr += '<td class="i">forme "'+select_login+'"</td>';
-			new_tr += '<td class="i">généré aléatoirement</td>';
+			new_tr += '<td><input id="f_password" name="f_password" size="8" type="text" value="" /></td>';
 			new_tr += '<td class="nu"><input id="f_action" name="f_action" type="hidden" value="'+mode+'" /><q class="valider" title="Valider l\'ajout de ce professeur."></q><q class="annuler" title="Annuler l\'ajout de ce professeur."></q> <label id="ajax_msg">&nbsp;</label></td>';
 			new_tr += '</tr>';
 			// Ajouter cette nouvelle ligne
@@ -111,7 +129,7 @@ $(document).ready
 			new_tr += '<td><input id="f_nom" name="f_nom" size="'+Math.max(nom.length,5)+'" type="text" value="'+escapeQuote(nom)+'" /></td>';
 			new_tr += '<td><input id="f_prenom" name="f_prenom" size="'+Math.max(prenom.length,5)+'" type="text" value="'+escapeQuote(prenom)+'" /></td>';
 			new_tr += '<td><input id="f_login" name="f_login" size="'+Math.max(login.length,10)+'" type="text" value="'+login+'" /></td>';
-			new_tr += '<td><label for="f_password">générer un nouveau </label><input id="f_password" name="f_password" type="checkbox" value="'+id+'" /></td>';
+			new_tr += '<td><input id="box_password" name="box_password" value="1" type="checkbox" checked style="vertical-align:-3px" /> <span style="vertical-align:-2px">inchangé</span><span class="hide"><input id="f_password" name="f_password" size="6" type="text" value="" /></span></td>';
 			new_tr += '<td class="nu"><input id="f_action" name="f_action" type="hidden" value="'+mode+'" /><input id="f_id" name="f_id" type="hidden" value="'+id+'" /><q class="valider" title="Valider les modifications de ce professeur."></q><q class="annuler" title="Annuler les modifications de ce professeur."></q> <label id="ajax_msg">&nbsp;</label></td>';
 			new_tr += '</tr>';
 			// Cacher la ligne en cours et ajouter la nouvelle
@@ -200,25 +218,25 @@ $(document).ready
 			{
 				rules :
 				{
-					f_id_ent     : { required:false , maxlength:32 },
-					f_id_gepi    : { required:false , maxlength:32 },
-					f_sconet_id  : { required:false , digits:true , max:16777215 },
-					f_reference  : { required:false , maxlength:11 },
-					f_nom        : { required:true , maxlength:25 },
-					f_prenom     : { required:true , maxlength:25 },
-					f_login      : { required:true , maxlength:20 },
-					f_password   : { required:false }
+					f_id_ent    : { required:false , maxlength:32 },
+					f_id_gepi   : { required:false , maxlength:32 },
+					f_sconet_id : { required:false , digits:true , max:16777215 },
+					f_reference : { required:false , maxlength:11 },
+					f_nom       : { required:true , maxlength:25 },
+					f_prenom    : { required:true , maxlength:25 },
+					f_login     : { required:true , maxlength:20 },
+					f_password  : { required:function(){return !$('#box_password').is(':checked');} , minlength:mdp_longueur_mini , maxlength:20 }
 				},
 				messages :
 				{
-					f_id_ent     : { maxlength:"identifiant ENT de 32 caractères maximum" },
-					f_id_gepi    : { maxlength:"identifiant Gepi de 32 caractères maximum" },
-					f_sconet_id  : { digits:"Id Sconet : nombre entier inférieur à 2^24" },
-					f_reference  : { maxlength:"référence de 11 caractères maximum" },
-					f_nom        : { required:"nom manquant"    , maxlength:"25 caractères maximum" },
-					f_prenom     : { required:"prénom manquant" , maxlength:"25 caractères maximum" },
-					f_login      : { required:"login manquant"  , maxlength:"20 caractères maximum" },
-					f_password   : { }
+					f_id_ent    : { maxlength:"identifiant ENT de 32 caractères maximum" },
+					f_id_gepi   : { maxlength:"identifiant Gepi de 32 caractères maximum" },
+					f_sconet_id : { digits:"Id Sconet : nombre entier inférieur à 2^24" },
+					f_reference : { maxlength:"référence de 11 caractères maximum" },
+					f_nom       : { required:"nom manquant"    , maxlength:"25 caractères maximum" },
+					f_prenom    : { required:"prénom manquant" , maxlength:"25 caractères maximum" },
+					f_login     : { required:"login manquant"  , maxlength:"20 caractères maximum" },
+					f_password  : { required:"mot de passe manquant" , minlength:mdp_longueur_mini+" caractères minimum" , maxlength:"20 caractères maximum" }
 				},
 				errorElement : "label",
 				errorClass : "erreur",

@@ -28,37 +28,70 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 if($_SESSION['SESAMATH_ID']==ID_DEMO) {exit('Action désactivée pour la démo...');}
 
-$tab_profils    = array('directeur','professeur','eleve','parent');
-$tab_parametres = array();
+$action = (isset($_POST['action'])) ? clean_texte($_POST['action']) : '';
 
-foreach($tab_profils as $profil)
+//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//	Format des noms d'utilisateurs
+//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+if($action=='login')
 {
-	// Récupération du champ
-	$champ = 'f_login_'.$profil;
-	${$champ} = (isset($_POST[$champ])) ? clean_texte($_POST[$champ]) : '' ;
-	if(!${$champ})
+	$tab_profils    = array('directeur','professeur','eleve','parent');
+	$tab_parametres = array();
+	foreach($tab_profils as $profil)
 	{
-		exit('Profil '.$profil.' non transmis !');
+		// Récupération du champ
+		$champ = 'f_login_'.$profil;
+		${$champ} = (isset($_POST[$champ])) ? clean_texte($_POST[$champ]) : '' ;
+		if(!${$champ})
+		{
+			exit('Profil '.$profil.' non transmis !');
+		}
+		// Test du format du champ
+		$test_profil = (preg_match("#^p+[._-]?n+$#", ${$champ})) ? 'prenom-puis-nom' : false ;
+		$test_profil = (preg_match("#^n+[._-]?p+$#", ${$champ})) ? 'nom-puis-prenom' : $test_profil ;
+		if(!$test_profil)
+		{
+			exit('Profil '.$profil.' mal formaté !');
+		}
+		$tab_parametres['modele_'.$profil] = ${$champ};
 	}
-	// Test du format du champ
-	$test_profil = (preg_match("#^p+[._-]?n+$#", ${$champ})) ? 'prenom-puis-nom' : false ;
-	$test_profil = (preg_match("#^n+[._-]?p+$#", ${$champ})) ? 'nom-puis-prenom' : $test_profil ;
-	if(!$test_profil)
+	// Mettre à jour les paramètres dans la base
+	DB_STRUCTURE_COMMUN::DB_modifier_parametres($tab_parametres);
+	// Mettre aussi à jour la session
+	foreach($tab_parametres as $modele => $format)
 	{
-		exit('Profil '.$profil.' mal formaté !');
+		$_SESSION[strtoupper($modele)] = $format;
 	}
-	$tab_parametres['modele_'.$profil] = ${$champ};
+	exit('ok');
 }
 
-// Mettre à jour les paramètres dans la base
-DB_STRUCTURE_COMMUN::DB_modifier_parametres($tab_parametres);
+//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//	Longueur minimale d'un mot de passe
+//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// Mettre aussi à jour la session
-foreach($tab_parametres as $modele => $format)
+if($action=='mdp_mini')
 {
-	$_SESSION[strtoupper($modele)] = $format;
+	$mdp_longueur_mini = (isset($_POST['f_mdp_mini'])) ? clean_entier($_POST['f_mdp_mini']) : 0 ;
+	if(!$mdp_longueur_mini)
+	{
+		exit('Valeur non transmise !');
+	}
+	if( ($mdp_longueur_mini<4) || ($mdp_longueur_mini>8) )
+	{
+		exit('Valeur transmise incorrecte !');
+	}
+	// Mettre à jour le paramètre dans la base
+	DB_STRUCTURE_COMMUN::DB_modifier_parametres( array('mdp_longueur_mini'=>$mdp_longueur_mini) );
+	// Mettre aussi à jour la session
+	$_SESSION['MDP_LONGUEUR_MINI'] = $mdp_longueur_mini;
+	exit('ok');
 }
 
-exit('ok');
+//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//	On ne devrait pas en arriver là !
+//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+exit('Erreur avec les données transmises !');
 
 ?>

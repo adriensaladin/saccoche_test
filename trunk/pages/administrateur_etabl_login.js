@@ -31,20 +31,6 @@ $(document).ready
 	{
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-//	Intercepter la touche entrée
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-		$('input , select').keyup
-		(
-			function(e)
-			{
-				if(e.which==13)	// touche entrée
-				{
-					$('#bouton_valider').click();
-				}
-			}
-		);
-
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 // Alerter sur la nécessité de valider
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
@@ -52,7 +38,15 @@ $(document).ready
 		(
 			function()
 			{
-				$('#ajax_msg').removeAttr("class").addClass("erreur").html("Penser à valider les modifications.");
+				$('#ajax_msg_login').removeAttr("class").addClass("erreur").html("Penser à valider les modifications.");
+			}
+		);
+
+		$("select").change
+		(
+			function()
+			{
+				$('#ajax_msg_mdp_mini').removeAttr("class").addClass("erreur").html("Penser à valider la modification.");
 			}
 		);
 
@@ -68,27 +62,26 @@ $(document).ready
 			return test;
 		}
 
-		$('#bouton_valider').click
+		$('#bouton_valider_login').click
 		(
 			function()
 			{
 				var tab_profil = new Array('directeur','professeur','eleve','parent');
 				var tab_value  = new Array();
-				var datas = '';
+				var datas = 'action=login';
 				var imax = tab_profil.length;
 				for ( var i=0 ; i<imax ; i++ )
 				{
 					tab_value[i] = $('#f_login_'+tab_profil[i]).val();
 					if( test_format_login(tab_value[i])==false )
 					{
-						$('#ajax_msg').removeAttr("class").addClass("erreur").html("Le format du nom d'utilisateur "+tab_profil[i]+" est incorrect !");
+						$('#ajax_msg_login').removeAttr("class").addClass("erreur").html("Le format du nom d'utilisateur "+tab_profil[i]+" est incorrect !");
 						return(false);
 					}
-					datas += (i) ? '&' : '' ;
-					datas += 'f_login_'+tab_profil[i]+'='+tab_value[i];
+					datas += '&f_login_'+tab_profil[i]+'='+tab_value[i];
 				}
-				$("#bouton_valider").prop('disabled',true);
-				$('#ajax_msg').removeAttr("class").addClass("loader").html("Demande envoyée...");
+				$("#bouton_valider_login").prop('disabled',true);
+				$('#ajax_msg_login').removeAttr("class").addClass("loader").html("Demande envoyée...");
 				$.ajax
 				(
 					{
@@ -98,21 +91,62 @@ $(document).ready
 						dataType : "html",
 						error : function(msg,string)
 						{
-							$("#bouton_valider").prop('disabled',false);
-							$('#ajax_msg').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
+							$("#bouton_valider_login").prop('disabled',false);
+							$('#ajax_msg_login').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
 							return false;
 						},
 						success : function(responseHTML)
 						{
 							initialiser_compteur();
-							$("#bouton_valider").prop('disabled',false);
+							$("#bouton_valider_login").prop('disabled',false);
 							if(responseHTML!='ok')
 							{
-								$('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);
+								$('#ajax_msg_login').removeAttr("class").addClass("alerte").html(responseHTML);
 							}
 							else
 							{
-								$('#ajax_msg').removeAttr("class").addClass("valide").html("Formats enregistrés !");
+								$('#ajax_msg_login').removeAttr("class").addClass("valide").html("Formats enregistrés !");
+							}
+						}
+					}
+				);
+			}
+		);
+
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+//	Longueur minimale d'un mot de passe
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
+		$('#bouton_valider_mdp_mini').click
+		(
+			function()
+			{
+				$("#bouton_valider_mdp_mini").prop('disabled',true);
+				$('#ajax_msg_mdp_mini').removeAttr("class").addClass("loader").html("Demande envoyée...");
+				$.ajax
+				(
+					{
+						type : 'POST',
+						url : 'ajax.php?page='+PAGE,
+						data : 'action=mdp_mini&f_mdp_mini='+$('#f_mdp_mini option:selected').val(),
+						dataType : "html",
+						error : function(msg,string)
+						{
+							$("#bouton_valider_mdp_mini").prop('disabled',false);
+							$('#ajax_msg_mdp_mini').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
+							return false;
+						},
+						success : function(responseHTML)
+						{
+							initialiser_compteur();
+							$("#bouton_valider_mdp_mini").prop('disabled',false);
+							if(responseHTML!='ok')
+							{
+								$('#ajax_msg_mdp_mini').removeAttr("class").addClass("alerte").html(responseHTML);
+							}
+							else
+							{
+								$('#ajax_msg_mdp_mini').removeAttr("class").addClass("valide").html("Valeur enregistrée !");
 							}
 						}
 					}

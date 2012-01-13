@@ -314,7 +314,7 @@ $(document).ready
 						texte = 'ce thème';
 						break;
 					case 'n3' :	// item
-						alerte = 'Tout les résultats associés seront perdus et les items suivants seront renumérotés !';
+						alerte = 'Tous les résultats associés seront perdus et les items suivants seront renumérotés !';
 						texte = 'cet item';
 						break;
 					default :

@@ -62,14 +62,14 @@ $(document).ready
 				rules :
 				{
 					f_password0 : { required:true , maxlength:20 },
-					f_password1 : { required:true , minlength:6 , maxlength:20 },
-					f_password2 : { required:true , minlength:6 , maxlength:20 , equalTo: "#f_password1" }
+					f_password1 : { required:true , minlength:mdp_longueur_mini , maxlength:20 },
+					f_password2 : { required:true , minlength:mdp_longueur_mini , maxlength:20 , equalTo: "#f_password1" }
 				},
 				messages :
 				{
 					f_password0 : { required:"mot de passe manquant" , maxlength:"20 caractères maximum" },
-					f_password1 : { required:"mot de passe manquant" , minlength:"6 caractères minimum" , maxlength:"20 caractères maximum" },
-					f_password2 : { required:"mot de passe à saisir une 2e fois" , minlength:"6 caractères minimum" , maxlength:"20 caractères maximum" , equalTo:"mots de passe différents" }
+					f_password1 : { required:"mot de passe manquant" , minlength:mdp_longueur_mini+" caractères minimum" , maxlength:"20 caractères maximum" },
+					f_password2 : { required:"mot de passe à saisir une 2e fois" , minlength:mdp_longueur_mini+" caractères minimum" , maxlength:"20 caractères maximum" , equalTo:"mots de passe différents" }
 				},
 				errorElement : "label",
 				errorClass : "erreur",

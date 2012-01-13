@@ -35,7 +35,7 @@ $password_nouveau = (isset($_POST['f_password1'])) ? clean_password($_POST['f_pa
 //	Mettre à jour son mdp
 //	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-if( $password_ancien && $password_nouveau )
+if( ($password_ancien!='') && ($password_nouveau!='') )
 {
 	if($_SESSION['USER_PROFIL']!='webmestre')
 	{

@@ -37,12 +37,13 @@ $reference  = (isset($_POST['f_reference']))  ? clean_ref($_POST['f_reference'])
 $nom        = (isset($_POST['f_nom']))        ? clean_nom($_POST['f_nom'])           : '';
 $prenom     = (isset($_POST['f_prenom']))     ? clean_prenom($_POST['f_prenom'])     : '';
 $login      = (isset($_POST['f_login']))      ? clean_login($_POST['f_login'])       : '';
-$password   = (isset($_POST['f_password']))   ? clean_entier($_POST['f_password'])   : 0;
+$inchange   = (isset($_POST['box_password'])) ? clean_entier($_POST['box_password']) : 0;
+$password   = (isset($_POST['f_password']))   ? clean_password($_POST['f_password']) : '' ;
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 //	Ajouter un nouveau professeur
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-if( ($action=='ajouter') && $nom && $prenom )
+if( ($action=='ajouter') && $nom && $prenom && $password )
 {
 	// Vérifier que l'identifiant ENT est disponible (parmi tout le personnel de l'établissement)
 	if($id_ent)
@@ -84,8 +85,6 @@ if( ($action=='ajouter') && $nom && $prenom )
 		// Login pris : en chercher un autre en remplaçant la fin par des chiffres si besoin
 		$login = DB_STRUCTURE_ADMINISTRATEUR::DB_rechercher_login_disponible($login);
 	}
-	// Construire le password
-	$password = fabriquer_mdp();
 	// Insérer l'enregistrement
 	$user_id = DB_STRUCTURE_COMMUN::DB_ajouter_utilisateur($sconet_id,$sconet_num=0,$reference,'professeur',$nom,$prenom,$login,crypter_mdp($password),0,$id_ent,$id_gepi);
 	// Afficher le retour
@@ -97,7 +96,7 @@ if( ($action=='ajouter') && $nom && $prenom )
 	echo	'<td>'.html($nom).'</td>';
 	echo	'<td>'.html($prenom).'</td>';
 	echo	'<td class="new">'.html($login).' <img alt="" title="Pensez à relever le login généré !"  src="./_img/bulle_aide.png" /></td>';
-	echo	'<td class="new">'.html($password).' <img alt="" title="Pensez à relever le mot de passe !" src="./_img/bulle_aide.png" /></td>';
+	echo	'<td class="new">'.html($password).' <img alt="" title="Pensez à noter le mot de passe !" src="./_img/bulle_aide.png" /></td>';
 	echo	'<td class="nu">';
 	echo		'<q class="modifier" title="Modifier ce professeur."></q>';
 	echo		'<q class="supprimer" title="Enlever ce professeur."></q>';
@@ -108,7 +107,7 @@ if( ($action=='ajouter') && $nom && $prenom )
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 //	Modifier un professeur existant
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-else if( ($action=='modifier') && $id && $nom && $prenom && $login )
+else if( ($action=='modifier') && $id && $nom && $prenom && $login && ( $inchange || $password ) )
 {
 	// Vérifier que l'identifiant ENT est disponible (parmi tout le personnel de l'établissement)
 	if($id_ent)
@@ -149,9 +148,8 @@ else if( ($action=='modifier') && $id && $nom && $prenom && $login )
 	}
 	// Mettre à jour l'enregistrement avec ou sans génération d'un nouveau mot de passe
 	$tab_donnees = array(':sconet_id'=>$sconet_id,':reference'=>$reference,':nom'=>$nom,':prenom'=>$prenom,':login'=>$login,':id_ent'=>$id_ent,':id_gepi'=>$id_gepi);
-	if($password)
+	if(!$inchange)
 	{
-		$password = fabriquer_mdp();
 		$tab_donnees[':password'] = crypter_mdp($password);
 	}
 	DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_user( $id , $tab_donnees );
@@ -163,7 +161,7 @@ else if( ($action=='modifier') && $id && $nom && $prenom && $login )
 	echo'<td>'.html($nom).'</td>';
 	echo'<td>'.html($prenom).'</td>';
 	echo'<td>'.html($login).'</td>';
-	echo (!$password) ? '<td class="i">champ crypté</td>' : '<td class="new">'.$password.' <img alt="" src="./_img/bulle_aide.png" title="Pensez à relever le mot de passe !" /></td>' ;
+	echo ($inchange) ? '<td class="i">champ crypté</td>' : '<td class="new">'.$password.' <img alt="" src="./_img/bulle_aide.png" title="Pensez à noter le mot de passe !" /></td>' ;
 	echo'<td class="nu">';
 	echo	'<q class="modifier" title="Modifier ce professeur."></q>';
 	echo	'<q class="supprimer" title="Enlever ce professeur."></q>';

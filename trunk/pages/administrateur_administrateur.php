@@ -68,3 +68,7 @@ $TITRE = "Gérer les administrateurs";
 		</tbody>
 	</table>
 </form>
+
+<script type="text/javascript">
+	var mdp_longueur_mini=<?php echo $_SESSION['MDP_LONGUEUR_MINI'] ?>;
+</script>

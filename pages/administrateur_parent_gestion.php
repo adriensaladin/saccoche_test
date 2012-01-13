@@ -90,4 +90,8 @@ $debut_prenom = (isset($_POST['f_debut_prenom'])) ? clean_prenom($_POST['f_debut
 	</table>
 </form>
 <div id="temp_td" class="hide"></div>
-<script type="text/javascript">var select_login="<?php echo $_SESSION['MODELE_PARENT']; ?>";</script>
+
+<script type="text/javascript">
+	var select_login="<?php echo $_SESSION['MODELE_PARENT']; ?>";
+	var mdp_longueur_mini=<?php echo $_SESSION['MDP_LONGUEUR_MINI'] ?>;
+</script>

@@ -39,3 +39,7 @@ if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');
 <hr />
 <p><span class="astuce">Un mot de passe est considéré comme robuste s'il comporte de nombreux caractères, mélangeant des lettres minuscules et majuscules, des chiffres et d'autres symboles.</span></p>
 <div id="robustesse">indicateur de robustesse : <span>0</span> / 12</div>
+
+<script type="text/javascript">
+	var mdp_longueur_mini=<?php echo $_SESSION['MDP_LONGUEUR_MINI'] ?>;
+</script>

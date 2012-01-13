@@ -73,4 +73,7 @@ $TITRE = "Personnels de direction";
 	</table>
 </form>
 
-<script type="text/javascript">var select_login="<?php echo $_SESSION['MODELE_DIRECTEUR']; ?>";</script>
+<script type="text/javascript">
+	var select_login="<?php echo $_SESSION['MODELE_DIRECTEUR']; ?>";
+	var mdp_longueur_mini=<?php echo $_SESSION['MDP_LONGUEUR_MINI'] ?>;
+</script>

@@ -26,22 +26,31 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-$TITRE = "Format des noms d'utilisateurs";
+$TITRE = "Format des identifiants";
 
 require_once('./_inc/tableau_profils.php'); // Charge $tab_profil_libelle[$profil][court|long][1|2]
 $tab_profils = array('directeur','professeur','eleve','parent');
-$affichage = '';
+$affichage_login = '';
 foreach($tab_profils as $profil)
 {
-	$affichage .= '<p><label class="tab" for="f_login_'.$profil.'">'.$tab_profil_libelle[$profil]['court'][2].' :</label><input type="text" id="f_login_'.$profil.'" name="f_login_'.$profil.'" value="'.$_SESSION[strtoupper('MODELE_'.$profil)].'" size="20" maxlength="20" /></p>';
+	$affichage_login .= '<p><label class="tab" for="f_login_'.$profil.'">'.$tab_profil_libelle[$profil]['court'][2].' :</label><input type="text" id="f_login_'.$profil.'" name="f_login_'.$profil.'" value="'.$_SESSION[strtoupper('MODELE_'.$profil)].'" size="20" maxlength="20" /></p>';
 }
-?>
 
-<div><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__gestion_format_logins">DOC : Format des noms d'utilisateurs</a></span></div>
+$affichage_mdp_mini = '<option value="4">4 caractères</option><option value="5">5 caractères</option><option value="6">6 caractères</option><option value="7">7 caractères</option><option value="8">8 caractères</option>';
+$affichage_mdp_mini = str_replace( '"'.$_SESSION['MDP_LONGUEUR_MINI'].'"' , '"'.$_SESSION['MDP_LONGUEUR_MINI'].'" selected' , $affichage_mdp_mini);
+
+?>
+<div><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__gestion_format_logins">DOC : Format des identifiants</a></span></div>
+
+<h4>Format des noms d'utilisateurs</h4>
+<form action="#" method="post">
+	<?php echo $affichage_login; ?>
+	<p><span class="tab"></span><button id="bouton_valider_login" type="button" class="parametre">Valider ces formats.</button><label id="ajax_msg_login">&nbsp;</label></p>
+</form>
 
 <hr />
-
+<h4>Mots de passe</h4>
 <form action="#" method="post">
-	<?php echo $affichage; ?>
-	<p><span class="tab"></span><button id="bouton_valider" type="button" class="parametre">Valider ces formats.</button><label id="ajax_msg">&nbsp;</label></p>
+	<p><label class="tab" for="f_mdp_mini">Longueur minimale</label><select id="f_mdp_mini" name="f_mdp_mini"><?php echo $affichage_mdp_mini; ?></select></p>
+	<p><span class="tab"></span><button id="bouton_valider_mdp_mini" type="button" class="parametre">Valider ce paramètre.</button><label id="ajax_msg_mdp_mini">&nbsp;</label></p>
 </form>

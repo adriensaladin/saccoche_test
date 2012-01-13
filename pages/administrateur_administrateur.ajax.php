@@ -35,12 +35,13 @@ $id_gepi    = (isset($_POST['f_id_gepi']))    ? clean_texte($_POST['f_id_gepi'])
 $nom        = (isset($_POST['f_nom']))        ? clean_nom($_POST['f_nom'])           : '';
 $prenom     = (isset($_POST['f_prenom']))     ? clean_prenom($_POST['f_prenom'])     : '';
 $login      = (isset($_POST['f_login']))      ? clean_login($_POST['f_login'])       : '';
-$password   = (isset($_POST['f_password']))   ? clean_entier($_POST['f_password'])   : 0;
+$inchange   = (isset($_POST['box_password'])) ? clean_entier($_POST['box_password']) : 0;
+$password   = (isset($_POST['f_password']))   ? clean_password($_POST['f_password']) : '' ;
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 //	Ajouter un nouvel administrateur
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-if( ($action=='ajouter') && $nom && $prenom && $login )
+if( ($action=='ajouter') && $nom && $prenom && $login && $password )
 {
 	// Vérifier que l'identifiant ENT est disponible (parmi tout le personnel de l'établissement)
 	if($id_ent)
@@ -63,8 +64,6 @@ if( ($action=='ajouter') && $nom && $prenom && $login )
 	{
 		exit('Erreur : login déjà existant !');
 	}
-	// Construire le password
-	$password = fabriquer_mdp();
 	// Insérer l'enregistrement
 	$user_id = DB_STRUCTURE_COMMUN::DB_ajouter_utilisateur($user_sconet_id=0,$user_sconet_elenoet=0,$reference='','administrateur',$nom,$prenom,$login,crypter_mdp($password),$classe_id=0,$id_ent,$id_gepi);
 	// Afficher le retour
@@ -73,8 +72,8 @@ if( ($action=='ajouter') && $nom && $prenom && $login )
 	echo	'<td>'.html($id_gepi).'</td>';
 	echo	'<td>'.html($nom).'</td>';
 	echo	'<td>'.html($prenom).'</td>';
-	echo	'<td class="new">'.html($login).' <img alt="" title="Pensez à relever le login généré !"  src="./_img/bulle_aide.png" /></td>';
-	echo	'<td class="new">'.html($password).' <img alt="" title="Pensez à relever le mot de passe !" src="./_img/bulle_aide.png" /></td>';
+	echo	'<td class="new">'.html($login).' <img alt="" title="Pensez à noter le login !"  src="./_img/bulle_aide.png" /></td>';
+	echo	'<td class="new">'.html($password).' <img alt="" title="Pensez à noter le mot de passe !" src="./_img/bulle_aide.png" /></td>';
 	echo	'<td class="nu">';
 	echo		'<q class="modifier" title="Modifier cet administrateur."></q>';
 	echo		'<q class="supprimer" title="Retirer cet administrateur."></q>';
@@ -85,7 +84,7 @@ if( ($action=='ajouter') && $nom && $prenom && $login )
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 //	Modifier un administrateur existant
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-else if( ($action=='modifier') && $id && $nom && $prenom && $login )
+else if( ($action=='modifier') && $id && $nom && $prenom && $login && ( $inchange || $password ) )
 {
 	// Vérifier que l'identifiant ENT est disponible (parmi tout le personnel de l'établissement)
 	if($id_ent)
@@ -110,9 +109,8 @@ else if( ($action=='modifier') && $id && $nom && $prenom && $login )
 	}
 	// Mettre à jour l'enregistrement avec ou sans génération d'un nouveau mot de passe
 	$tab_donnees = array(':nom'=>$nom,':prenom'=>$prenom,':login'=>$login,':id_ent'=>$id_ent,':id_gepi'=>$id_gepi);
-	if($password)
+	if(!$inchange)
 	{
-		$password = fabriquer_mdp();
 		$tab_donnees[':password'] = crypter_mdp($password);
 	}
 	DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_user( $id , $tab_donnees );
@@ -128,7 +126,7 @@ else if( ($action=='modifier') && $id && $nom && $prenom && $login )
 	echo'<td>'.html($nom).'</td>';
 	echo'<td>'.html($prenom).'</td>';
 	echo'<td>'.html($login).'</td>';
-	echo (!$password) ? '<td class="i">champ crypté</td>' : '<td class="new">'.$password.' <img alt="" src="./_img/bulle_aide.png" title="Pensez à relever le mot de passe !" /></td>' ;
+	echo ($inchange) ? '<td class="i">champ crypté</td>' : '<td class="new">'.$password.' <img alt="" src="./_img/bulle_aide.png" title="Pensez à noter le mot de passe !" /></td>' ;
 	echo'<td class="nu">';
 	echo	'<q class="modifier" title="Modifier ce administrateur."></q>';
 	echo	($id!=$_SESSION['USER_ID']) ? '<q class="supprimer" title="Retirer cet administrateur."></q>' : '<q class="supprimer_non" title="Un administrateur ne peut pas supprimer son propre compte."></q>' ;

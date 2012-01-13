@@ -1534,7 +1534,7 @@ $(document).ready
 			// Modification automatique du formulaire
 			if(autoperiode)
 			{
-				if(groupe_type=='Classes')
+				if( (groupe_type=='Classes') || (groupe_type=='Groupes') )
 				{
 					// Rechercher automatiquement la meilleure période
 					var id_classe = $('#f_aff_classe option:selected').val().substring(1);

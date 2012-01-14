@@ -935,7 +935,7 @@ $(document).ready
 		('click',
 			function()
 			{
-				var table_id = $(this).parent().parent().parent().parent().parent().attr('id');
+				var table_id = $(this).closest('table').attr('id');
 				if($(this).is(':checked'))
 				{
 					$("#"+table_id+" tbody tr th div").hide(0);

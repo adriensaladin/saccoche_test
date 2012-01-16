@@ -70,7 +70,7 @@ else
 	{
 		if(!isset($tab_matiere[$DB_ROW['matiere_id']]))
 		{
-			$matiere_droit = ( (($_SESSION['DROIT_GERER_RESSOURCE']=='profcoordonnateur')&&($DB_ROW['jointure_coord'])) || ($_SESSION['DROIT_GERER_RESSOURCE']=='professeur') ) ? TRUE : FALSE ;
+			$matiere_droit = ( (($_SESSION['DROIT_GERER_REFERENTIEL']=='profcoordonnateur')&&($DB_ROW['jointure_coord'])) || ($_SESSION['DROIT_GERER_REFERENTIEL']=='professeur') ) ? TRUE : FALSE ;
 			$icone_action  = ($matiere_droit) ? '<q class="modifier" title="Modifier les référentiels de cette matière."></q>' : '<q class="modifier_non" title="Accès restreint : '.$texte_profil.'."></q>' ;
 			$tab_matiere[$DB_ROW['matiere_id']] = array( 
 				'matiere_nom' => html($DB_ROW['matiere_nom']) ,

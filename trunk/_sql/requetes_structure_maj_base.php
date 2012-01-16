@@ -1473,6 +1473,21 @@ public function DB_maj_base($version_actuelle)
 		}
 	}
 
+	//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	//	MAJ 2012-01-13 => 2012-01-16
+	//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	if($version_actuelle=='2012-01-13')
+	{
+		if($version_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
+		{
+			$version_actuelle = '2012-01-16';
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_actuelle.'" WHERE parametre_nom="version_base"' );
+			// modification de la syntaxe de mémorisation des profs associés à un devoir (le caractère "," est préférable à "_" car dans une recherche LIKE ce dernier signifie "un caractère" (même si on peut l'échapper).
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_devoir SET devoir_partage=REPLACE(devoir_partage,"_",",")' );
+		}
+	}
+
 }
 
 }

@@ -294,7 +294,7 @@ public function DB_lister_devoirs_prof($prof_id,$groupe_id,$date_debut_mysql,$da
 	$DB_SQL.= 'AND devoir_date>="'.$date_debut_mysql.'" AND devoir_date<="'.$date_fin_mysql.'" ' ;
 	$DB_SQL.= 'GROUP BY devoir_id ';
 	$DB_SQL.= 'ORDER BY devoir_date DESC, groupe_nom ASC';
-	$DB_VAR = array(':prof_id'=>$prof_id,':prof_id_like'=>'%_'.$prof_id.'_%',':type4'=>'eval');
+	$DB_VAR = array(':prof_id'=>$prof_id,':prof_id_like'=>'%,'.$prof_id.',%',':type4'=>'eval');
 	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
@@ -445,12 +445,12 @@ public function DB_ajouter_liaison_professeur_responsable($user_id,$groupe_id)
  * @param string $date_mysql
  * @param string $info
  * @param string $date_visible_mysql
- * @param string $listing_id_profs   id des profs avec qui on partage l'éval (séparés par des _) ; facultatif car non transmis si éval sur des élèves sélectionnés
+ * @param string $tab_id_profs   tableau des id des profs avec qui l'évaluation est partagée ; facultatif car non transmis si éval sur des élèves sélectionnés
  * @return int
  */
-public function DB_ajouter_devoir($prof_id,$groupe_id,$date_mysql,$info,$date_visible_mysql,$listing_id_profs='')
+public function DB_ajouter_devoir($prof_id,$groupe_id,$date_mysql,$info,$date_visible_mysql,$tab_id_profs=array())
 {
-	$listing_id_profs = ($listing_id_profs) ? '_'.$listing_id_profs.'_' : $listing_id_profs ;
+	$listing_id_profs = count($tab_id_profs) ? ','.implode(',',$tab_id_profs).',' : '' ;
 	$DB_SQL = 'INSERT INTO sacoche_devoir(prof_id,groupe_id,devoir_date,devoir_info,devoir_visible_date,devoir_partage) ';
 	$DB_SQL.= 'VALUES(:prof_id,:groupe_id,:date,:info,:visible_date,:devoir_partage)';
 	$DB_VAR = array(':prof_id'=>$prof_id,':groupe_id'=>$groupe_id,':date'=>$date_mysql,':info'=>$info,':visible_date'=>$date_visible_mysql,':devoir_partage'=>$listing_id_profs);
@@ -546,13 +546,13 @@ public function DB_modifier_saisie($eleve_id,$devoir_id,$item_id,$saisie_note,$s
  * @param string $date_mysql
  * @param string $info
  * @param string $date_visible_mysql
- * @param array  $tab_items          tableau des id des items
- * @param string $listing_id_profs   id des profs avec qui on partage l'éval (séparés par des _) ; facultatif car non transmis si éval sur des élèves sélectionnés
+ * @param array  $tab_items      tableau des id des items
+ * @param string $tab_id_profs   tableau des id des profs avec qui l'évaluation est partagée ; facultatif car non transmis si éval sur des élèves sélectionnés
  * @return void
  */
-public function DB_modifier_devoir($devoir_id,$prof_id,$date_mysql,$info,$date_visible_mysql,$tab_items,$listing_id_profs='')
+public function DB_modifier_devoir($devoir_id,$prof_id,$date_mysql,$info,$date_visible_mysql,$tab_items,$tab_id_profs=array())
 {
-	$listing_id_profs = ($listing_id_profs) ? '_'.$listing_id_profs.'_' : $listing_id_profs ;
+	$listing_id_profs = count($tab_id_profs) ? ','.implode(',',$tab_id_profs).',' : '' ;
 	// sacoche_devoir (maj)
 	$DB_SQL = 'UPDATE sacoche_devoir ';
 	$DB_SQL.= 'SET devoir_date=:date, devoir_info=:devoir_info, devoir_visible_date=:visible_date, devoir_partage=:devoir_partage ';

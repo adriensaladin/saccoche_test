@@ -115,9 +115,8 @@ if( ($action=='Afficher_evaluations') && $date_debut && $date_fin )
 		}
 		else
 		{
-			$profs_liste = mb_substr($DB_ROW['devoir_partage'],1,-1);
-			$profs_nombre = mb_substr_count($DB_ROW['devoir_partage'],'_')-1;
-			$profs_nombre.= ' profs';
+			$profs_liste  = str_replace(',','_',mb_substr($DB_ROW['devoir_partage'],1,-1));
+			$profs_nombre = (mb_substr_count($DB_ROW['devoir_partage'],',')-1).' profs';
 		}
 		$proprio = ($DB_ROW['prof_id']==$_SESSION['USER_ID']) ? TRUE : FALSE ;
 		// Afficher une ligne du tableau
@@ -183,14 +182,13 @@ if( (($action=='ajouter')||(($action=='dupliquer')&&($devoir_id))) && $date && $
 			$tab_profs = array();
 		}
 	}
-	$listing_id_profs = count($tab_profs) ? implode('_',$tab_profs) : '' ;
 	// Commencer par créer un nouveau groupe de type "eval", utilisé uniquement pour cette évaluation (c'est transparent pour le professeur)
 	$groupe_id = DB_STRUCTURE_PROFESSEUR::DB_ajouter_groupe_par_prof($groupe_type,'',0);
 	// Y associer le prof, en responsable du groupe
 	DB_STRUCTURE_PROFESSEUR::DB_modifier_liaison_user_groupe_par_prof($_SESSION['USER_ID'],'professeur',$groupe_id,$groupe_type,TRUE);
 	DB_STRUCTURE_PROFESSEUR::DB_ajouter_liaison_professeur_responsable($_SESSION['USER_ID'],$groupe_id);
 	// Insèrer l'enregistrement de l'évaluation
-	$devoir_id2 = DB_STRUCTURE_PROFESSEUR::DB_ajouter_devoir($_SESSION['USER_ID'],$groupe_id,$date_mysql,$info,$date_visible_mysql,$listing_id_profs);
+	$devoir_id2 = DB_STRUCTURE_PROFESSEUR::DB_ajouter_devoir($_SESSION['USER_ID'],$groupe_id,$date_mysql,$info,$date_visible_mysql,$tab_profs);
 	// Affecter tous les élèves choisis
 	DB_STRUCTURE_PROFESSEUR::DB_modifier_liaison_devoir_user($devoir_id2,$groupe_id,$tab_eleves,'creer');
 	// Insérer les enregistrements des items de l'évaluation
@@ -259,9 +257,8 @@ if( ($action=='modifier') && $devoir_id && $groupe_id && $date && $date_visible 
 			$tab_profs = array();
 		}
 	}
-	$listing_id_profs = count($tab_profs) ? implode('_',$tab_profs) : '' ;
 	// sacoche_devoir (maj des paramètres date & info)
-	DB_STRUCTURE_PROFESSEUR::DB_modifier_devoir($devoir_id,$_SESSION['USER_ID'],$date_mysql,$info,$date_visible_mysql,$tab_items,$listing_id_profs);
+	DB_STRUCTURE_PROFESSEUR::DB_modifier_devoir($devoir_id,$_SESSION['USER_ID'],$date_mysql,$info,$date_visible_mysql,$tab_items,$tab_profs);
 	// sacoche_jointure_user_groupe + sacoche_saisie pour les users supprimés
 	DB_STRUCTURE_PROFESSEUR::DB_modifier_liaison_devoir_user($devoir_id,$groupe_id,$tab_eleves,'substituer');
 	// sacoche_jointure_devoir_item + sacoche_saisie pour les items supprimés

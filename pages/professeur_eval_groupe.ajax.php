@@ -137,14 +137,13 @@ if( ($action=='Afficher_evaluations') && $aff_classe_txt && $aff_classe_id && ( 
 		$s = ($DB_ROW['items_nombre']>1) ? 's' : '';
 		if(!$DB_ROW['devoir_partage'])
 		{
-			$profs_liste = '';
+			$profs_liste  = '';
 			$profs_nombre = 'moi seul';
 		}
 		else
 		{
-			$profs_liste = mb_substr($DB_ROW['devoir_partage'],1,-1);
-			$profs_nombre = mb_substr_count($DB_ROW['devoir_partage'],'_')-1;
-			$profs_nombre.= ' profs';
+			$profs_liste  = str_replace(',','_',mb_substr($DB_ROW['devoir_partage'],1,-1));
+			$profs_nombre = (mb_substr_count($DB_ROW['devoir_partage'],',')-1).' profs';
 		}
 		$proprio = ($DB_ROW['prof_id']==$_SESSION['USER_ID']) ? TRUE : FALSE ;
 		// Afficher une ligne du tableau
@@ -210,9 +209,8 @@ if( (($action=='ajouter')||(($action=='dupliquer')&&($devoir_id))) && $date && $
 			$tab_profs = array();
 		}
 	}
-	$listing_id_profs = count($tab_profs) ? implode('_',$tab_profs) : '' ;
 	// Insérer l'enregistrement de l'évaluation
-	$devoir_id2 = DB_STRUCTURE_PROFESSEUR::DB_ajouter_devoir($_SESSION['USER_ID'],$groupe_id,$date_mysql,$info,$date_visible_mysql,$listing_id_profs);
+	$devoir_id2 = DB_STRUCTURE_PROFESSEUR::DB_ajouter_devoir($_SESSION['USER_ID'],$groupe_id,$date_mysql,$info,$date_visible_mysql,$tab_profs);
 	// Insérer les enregistrements des items de l'évaluation
 	DB_STRUCTURE_PROFESSEUR::DB_modifier_liaison_devoir_item($devoir_id2,$tab_items,'dupliquer',$devoir_id);
 	// Afficher le retour
@@ -278,9 +276,8 @@ if( ($action=='modifier') && $devoir_id && $date && $date_visible && $groupe_typ
 			$tab_profs = array();
 		}
 	}
-	$listing_id_profs = count($tab_profs) ? implode('_',$tab_profs) : '' ;
 	// sacoche_devoir (maj des paramètres date & info)
-	DB_STRUCTURE_PROFESSEUR::DB_modifier_devoir($devoir_id,$_SESSION['USER_ID'],$date_mysql,$info,$date_visible_mysql,$tab_items,$listing_id_profs);
+	DB_STRUCTURE_PROFESSEUR::DB_modifier_devoir($devoir_id,$_SESSION['USER_ID'],$date_mysql,$info,$date_visible_mysql,$tab_items,$tab_profs);
 	// sacoche_devoir (maj groupe_id) + sacoche_saisie pour les users supprimés
 	// DB_STRUCTURE_PROFESSEUR::DB_modifier_liaison_devoir_groupe($devoir_id,$groupe_id); // RETIRÉ APRÈS REFLEXION : IL N'Y A PAS DE RAISON DE CARRÉMENT CHANGER LE GROUPE D'UNE ÉVALUATION => AU PIRE ON LA DUPLIQUE POUR UN AUTRE GROUPE PUIS ON LA SUPPRIME.
 	// sacoche_jointure_devoir_item + sacoche_saisie pour les items supprimés

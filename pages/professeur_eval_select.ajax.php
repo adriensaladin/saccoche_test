@@ -877,25 +877,28 @@ if( ($action=='Enregistrer_saisie') && $devoir_id && $date && $date_visible && c
 	foreach($DB_TAB as $DB_ROW)
 	{
 		$key = $DB_ROW['item_id'].'x'.$DB_ROW['eleve_id'];
-		if($tab_post[$key]!=$DB_ROW['saisie_note'])
+		if(isset($tab_post[$key])) // Test nécessaire si élève ou item évalués dans ce devoir, mais retiré depuis (donc non transmis dans la nouvelle saisie, mais à conserver).
 		{
-			if($tab_post[$key]=='X')
+			if($tab_post[$key]!=$DB_ROW['saisie_note'])
 			{
-				// valeur de la base à supprimer
-				$tab_nouveau_supprimer[$key] = $key;
-			}
-			else
-			{
-				// valeur de la base à modifier
-				$tab_nouveau_modifier[$key] = $tab_post[$key];
-				if($DB_ROW['saisie_note']=='REQ')
+				if($tab_post[$key]=='X')
 				{
-					// demande d'évaluation à supprimer
-					$tab_demande_supprimer[$key] = $key;
+					// valeur de la base à supprimer
+					$tab_nouveau_supprimer[$key] = $key;
+				}
+				else
+				{
+					// valeur de la base à modifier
+					$tab_nouveau_modifier[$key] = $tab_post[$key];
+					if($DB_ROW['saisie_note']=='REQ')
+					{
+						// demande d'évaluation à supprimer
+						$tab_demande_supprimer[$key] = $key;
+					}
 				}
 			}
+			unset($tab_post[$key]);
 		}
-		unset($tab_post[$key]);
 	}
 	// Il reste dans $tab_post les données à ajouter (mises dans $tab_nouveau_ajouter) et les données qui ne servent pas (non enregistrées et non saisies)
 	$tab_nouveau_ajouter = array_filter($tab_post,'non_note');

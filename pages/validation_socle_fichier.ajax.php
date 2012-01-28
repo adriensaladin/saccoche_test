@@ -90,7 +90,7 @@ if( in_array( $action , array('export_lpc','export_sacoche') ) && $nb )
 		$xml.= '	<entete>'."\r\n";
 		$xml.= '		<editeur>SESAMATH</editeur>'."\r\n";
 		$xml.= '		<application>SACOCHE</application>'."\r\n";
-		$xml.= '		<etablissement>'.html($_SESSION['UAI']).'</etablissement>'."\r\n";
+		$xml.= '		<etablissement>'.html($_SESSION['WEBMESTRE_UAI']).'</etablissement>'."\r\n";
 		$xml.= '	</entete>'."\r\n";
 		$xml.= '	<donnees>'."\r\n";
 	}
@@ -198,7 +198,7 @@ if( in_array( $action , array('export_lpc','export_sacoche') ) && $nb )
 //	Importer un fichier de validations
 //	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
 
-if( in_array( $action , array('import_sacoche') ) )
+if( in_array( $action , array('import_sacoche','import_compatible') ) )
 {
 	$tab_file = $_FILES['userfile'];
 	$fnom_transmis = $tab_file['name'];

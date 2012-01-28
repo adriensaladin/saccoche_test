@@ -264,6 +264,7 @@ function declaration_entete( $is_meta_robots ,$is_favicon , $is_rss , $tab_fichi
 /**
  * Compression ou minification d'un fichier css ou js sur le serveur en production, avec date auto-insérée si besoin pour éviter tout souci de mise en cache.
  * Si pas de compression (hors PROD), ajouter un GET dans l'URL force le navigateur à mettre à jour son cache.
+ * Attention cependant concernant cette dernière technique : avec les réglages standards d'Apache, ajouter un GET dans l'URL fait que beaucoup de navigateurs ne mettent pas le fichier en cache (donc il est rechargé tout le temps, même si le GET est le même) ; pas de souci si le serveur envoie un header avec une date d'expiration explicite...
  * 
  * @param string $chemin    chemin complet vers le fichier
  * @param string $methode   soit "pack" soit "mini"
@@ -683,18 +684,18 @@ function tester_authentification_webmestre($password)
 function enregistrer_session_webmestre()
 {
 	// Numéro de la base
-	$_SESSION['BASE']             = 0;
+	$_SESSION['BASE']                          = 0;
 	// Données associées à l'utilisateur.
-	$_SESSION['USER_PROFIL']      = 'webmestre';
-	$_SESSION['USER_ID']          = 0;
-	$_SESSION['USER_NOM']         = WEBMESTRE_NOM;
-	$_SESSION['USER_PRENOM']      = WEBMESTRE_PRENOM;
-	$_SESSION['USER_DESCR']       = '[webmestre] '.WEBMESTRE_PRENOM.' '.WEBMESTRE_NOM;
+	$_SESSION['USER_PROFIL']                   = 'webmestre';
+	$_SESSION['USER_ID']                       = 0;
+	$_SESSION['USER_NOM']                      = WEBMESTRE_NOM;
+	$_SESSION['USER_PRENOM']                   = WEBMESTRE_PRENOM;
+	$_SESSION['USER_DESCR']                    = '[webmestre] '.WEBMESTRE_PRENOM.' '.WEBMESTRE_NOM;
 	// Données associées à l'établissement.
-	$_SESSION['SESAMATH_ID']      = 0;
-	$_SESSION['DENOMINATION']     = 'Gestion '.HEBERGEUR_INSTALLATION;
-	$_SESSION['MODE_CONNEXION']   = 'normal';
-	$_SESSION['DUREE_INACTIVITE'] = 30;
+	$_SESSION['SESAMATH_ID']                   = 0;
+	$_SESSION['ETABLISSEMENT']['DENOMINATION'] = 'Gestion '.HEBERGEUR_INSTALLATION;
+	$_SESSION['MODE_CONNEXION']                = 'normal';
+	$_SESSION['DUREE_INACTIVITE']              = 15;
 }
 
 /**
@@ -805,8 +806,18 @@ function enregistrer_session_user($BASE,$DB_ROW)
 	}
 	// Récupérer et Enregistrer en session les données associées à l'établissement (indices du tableau de session en majuscules).
 	$DB_TAB = DB_STRUCTURE_PUBLIC::DB_lister_parametres();
-	$tab_type_entier  = array('SESAMATH_ID','MDP_LONGUEUR_MINI','DROIT_ELEVE_DEMANDES','DUREE_INACTIVITE','CALCUL_VALEUR_RR','CALCUL_VALEUR_R','CALCUL_VALEUR_V','CALCUL_VALEUR_VV','CALCUL_SEUIL_R','CALCUL_SEUIL_V','CALCUL_LIMITE','CAS_SERVEUR_PORT');
-	$tab_type_tableau = array('CSS_BACKGROUND-COLOR','CALCUL_VALEUR','CALCUL_SEUIL','NOTE_TEXTE','NOTE_LEGENDE','ACQUIS_TEXTE','ACQUIS_LEGENDE');
+	$tab_type_entier  = array(
+		'SESAMATH_ID','MOIS_BASCULE_ANNEE_SCOLAIRE','MDP_LONGUEUR_MINI','DROIT_ELEVE_DEMANDES','DUREE_INACTIVITE',
+		'CALCUL_VALEUR_RR','CALCUL_VALEUR_R','CALCUL_VALEUR_V','CALCUL_VALEUR_VV','CALCUL_SEUIL_R','CALCUL_SEUIL_V','CALCUL_LIMITE',
+		'CAS_SERVEUR_PORT',
+		'ENVELOPPE_HORIZONTAL_GAUCHE','ENVELOPPE_HORIZONTAL_MILIEU','ENVELOPPE_HORIZONTAL_DROITE',
+		'ENVELOPPE_VERTICAL_HAUT','ENVELOPPE_VERTICAL_MILIEU','ENVELOPPE_VERTICAL_BAS',
+		'BULLETIN_MARGE_GAUCHE','BULLETIN_MARGE_DROIT','BULLETIN_MARGE_HAUT','BULLETIN_MARGE_BAS'
+	);
+	$tab_type_tableau = array(
+		'CSS_BACKGROUND-COLOR','CALCUL_VALEUR','CALCUL_SEUIL','NOTE_TEXTE','NOTE_LEGENDE','ACQUIS_TEXTE','ACQUIS_LEGENDE',
+		'ETABLISSEMENT','ENVELOPPE','BULLETIN'
+	);
 	foreach($DB_TAB as $DB_ROW)
 	{
 		$parametre_nom = strtoupper($DB_ROW['parametre_nom']);

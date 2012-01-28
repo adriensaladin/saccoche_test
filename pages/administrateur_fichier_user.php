@@ -32,10 +32,10 @@ $TITRE = "Importer des fichiers d'utilisateurs";
 <?php
 $alerte = DB_STRUCTURE_ADMINISTRATEUR::DB_compter_devoirs() ? '<p class="danger">La base actuelle contient des devoirs ; <span class="u">en début d\'année scolaire</span> vous devez <a href="./index.php?page=administrateur_nettoyage">purger la base avant d\'importer les nouveaux utilisateurs</a>.</p>' : '';
 
-$test_UAI = ($_SESSION['UAI']) ? 'oui' : 'non' ;
+$test_UAI = ($_SESSION['WEBMESTRE_UAI']) ? 'oui' : 'non' ;
 
 $annee_scolaire  = (date('n')>7) ? date('Y') : date('Y')-1 ;
-$nom_fin_fichier = $_SESSION['UAI'].'_'.$annee_scolaire;
+$nom_fin_fichier = $_SESSION['WEBMESTRE_UAI'].'_'.$annee_scolaire;
 ?>
 
 <form action="#" method="post" id="form1">

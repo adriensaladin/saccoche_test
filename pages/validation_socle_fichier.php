@@ -34,12 +34,12 @@ $TITRE = "Import / Export de validations du socle";
 $nb_eleves_sans_sconet = DB_STRUCTURE_SOCLE::DB_compter_eleves_actifs_sans_id_sconet();
 $s = ($nb_eleves_sans_sconet>1) ? 's' : '' ;
 
-$test_uai          = ($_SESSION['UAI'])                                               ? TRUE : FALSE ;
+$test_uai          = ($_SESSION['WEBMESTRE_UAI'])                                     ? TRUE : FALSE ;
 $test_cnil         = (intval(CNIL_NUMERO)&&CNIL_DATE_ENGAGEMENT&&CNIL_DATE_RECEPISSE) ? TRUE : FALSE ;
 $test_id_sconet    = (!$nb_eleves_sans_sconet)                                        ? TRUE : FALSE ;
 $test_key_sesamath = ( $_SESSION['SESAMATH_KEY'] && $_SESSION['SESAMATH_ID'] )        ? TRUE : FALSE ;
 
-$msg_uai          = ($test_uai)          ? '<label class="valide">Référence '.html($_SESSION['UAI']).'</label>'                                                                                            : '<label class="erreur">Référence non renseignée par le webmestre.</label> <span class="manuel"><a class="pop_up" href="'.SERVEUR_DOCUMENTAIRE.'?fichier=support_webmestre__identite_installation">DOC</a></span>&nbsp;&nbsp;&nbsp;'.mailto(WEBMESTRE_COURRIEL,'SACoche','contact','Bonjour. La référence UAI de notre établissement (base n°'.$_SESSION['BASE'].') n\'est pas renseigné. Pouvez-vous faire le nécessaire ?') ;
+$msg_uai          = ($test_uai)          ? '<label class="valide">Référence '.html($_SESSION['WEBMESTRE_UAI']).'</label>'                                                                                            : '<label class="erreur">Référence non renseignée par le webmestre.</label> <span class="manuel"><a class="pop_up" href="'.SERVEUR_DOCUMENTAIRE.'?fichier=support_webmestre__identite_installation">DOC</a></span>&nbsp;&nbsp;&nbsp;'.mailto(WEBMESTRE_COURRIEL,'SACoche','contact','Bonjour. La référence UAI de notre établissement (base n°'.$_SESSION['BASE'].') n\'est pas renseigné. Pouvez-vous faire le nécessaire ?') ;
 $msg_cnil         = ($test_cnil)         ? '<label class="valide">Déclaration n°'.html(CNIL_NUMERO).' - demande effectuée le '.html(CNIL_DATE_ENGAGEMENT).' - récépissé reçu le '.html(CNIL_DATE_RECEPISSE).'</label>' : '<label class="erreur">Déclaration non renseignée par le webmestre.</label> <span class="manuel"><a class="pop_up" href="'.SERVEUR_DOCUMENTAIRE.'?fichier=support_webmestre__identite_installation">DOC</a></span>&nbsp;&nbsp;&nbsp;'.mailto(WEBMESTRE_COURRIEL,'SACoche','contact','Bonjour. Les informations CNIL de l\'installation '.SERVEUR_ADRESSE.' ne sont pas renseignées. Pouvez-vous faire le nécessaire depuis votre menu [Administration du site] [Identité de l\'installation] ?') ;
 $msg_id_sconet    = ($test_id_sconet)    ? '<label class="valide">Identifiants élèves présents.</label>'                                                                                                   : '<label class="alerte">'.$nb_eleves_sans_sconet.' élève'.$s.' trouvé'.$s.' sans identifiant Sconet.</label> <span class="manuel"><a class="pop_up" href="'.SERVEUR_DOCUMENTAIRE.'?fichier=support_administrateur__import_users_sconet">DOC</a></span>' ;
 $msg_key_sesamath = ($test_key_sesamath) ? '<label class="valide">Etablissement identifié sur le serveur communautaire.</label>'                                                                           : '<label class="erreur">Identification non effectuée par un administrateur.</label> <span class="manuel"><a class="pop_up" href="'.SERVEUR_DOCUMENTAIRE.'?fichier=support_administrateur__gestion_informations_structure">DOC</a></span>' ;
@@ -69,6 +69,7 @@ $select_f_groupes = Formulaire::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_regr
 			<optgroup label="Importer un fichier">
 				<option value="import_lpc">en provenance de Sconet-LPC</option>
 				<option value="import_sacoche">en provenance de SACoche</option>
+				<option value="import_compatible">en provenance de Gibii, Pronote, etc.</option>
 			</optgroup>
 		</select><br />
 	</fieldset>
@@ -107,6 +108,12 @@ $select_f_groupes = Formulaire::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_regr
 	<fieldset id="fieldset_import_sacoche" class="hide">
 		<label class="tab">Sconet :</label><?php echo $msg_id_sconet ?>
 		<p><span class="tab"></span><button type="button" id="import_sacoche" class="fichier_import enabled">Transmettre le fichier.</button></p>
+	</fieldset>
+
+	<fieldset id="fieldset_import_compatible" class="hide">
+		<p class="astuce">On peut importer dans <em>SACoche</em> un fichier obtenu depuis un logiciel compatible avec <em>LPC</em> : <em>Gibii</em>, <em>Pronote</em>, <em>Educ-Horus</em>, <em>Campus</em>, etc.</p>
+		<label class="tab">Sconet :</label><?php echo $msg_id_sconet ?>
+		<p><span class="tab"></span><button type="button" id="import_compatible" class="fichier_import enabled">Transmettre le fichier.</button></p>
 	</fieldset>
 
 </form>

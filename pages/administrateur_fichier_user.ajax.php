@@ -162,7 +162,7 @@ if( $step==10 )
 		else
 		{
 			$annee_scolaire  = (date('n')>7) ? date('Y') : date('Y')-1 ;
-			$nom_fichier_extrait = 'sts_emp_'.$_SESSION['UAI'].'_'.$annee_scolaire.'.xml';
+			$nom_fichier_extrait = 'sts_emp_'.$_SESSION['WEBMESTRE_UAI'].'_'.$annee_scolaire.'.xml';
 		}
 		if($zip->extractTo($dossier_import,$nom_fichier_extrait)!==true)
 		{

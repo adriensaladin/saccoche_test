@@ -674,7 +674,7 @@ function afficher_pourcentage_acquis($gras,$tab_infos,$detail)
 		$largeur_demi_page = ( $this->page_largeur - $this->marge_gauche - $this->marge_droit ) / 2;
 		$this->SetFont('Arial' , 'B' , $this->taille_police*1.5);
 		$this->Cell($largeur_demi_page , $this->lignes_hauteur , pdf('Synthèse '.$texte_format) , 0 , 0 , 'L' , false , '');
-		$this->Cell($largeur_demi_page , $this->lignes_hauteur , pdf($_SESSION['DENOMINATION']) , 0 , 1 , 'R' , false , '');
+		$this->Cell($largeur_demi_page , $this->lignes_hauteur , pdf($_SESSION['ETABLISSEMENT']['DENOMINATION']) , 0 , 1 , 'R' , false , '');
 		// Classe / élève
 		$this->Cell($largeur_demi_page , $this->lignes_hauteur , pdf($groupe_nom.' - '.$eleve_nom.' '.$eleve_prenom) , 0 , 2 , 'L' , false , '');
 		// Période
@@ -821,7 +821,7 @@ function afficher_pourcentage_acquis($gras,$tab_infos,$detail)
 		$largeur_demi_page = ( $this->page_largeur - $this->marge_gauche - $this->marge_droit ) / 2;
 		$this->SetFont('Arial' , 'B' , $this->taille_police*1.5);
 		$this->Cell($largeur_demi_page , $this->lignes_hauteur , pdf('Bilan '.$texte_format) , 0 , 0 , 'L' , false , '');
-		$this->Cell($largeur_demi_page , $this->lignes_hauteur , pdf($_SESSION['DENOMINATION']) , 0 , 1 , 'R' , false , '');
+		$this->Cell($largeur_demi_page , $this->lignes_hauteur , pdf($_SESSION['ETABLISSEMENT']['DENOMINATION']) , 0 , 1 , 'R' , false , '');
 		// Classe / élève
 		$this->Cell($largeur_demi_page , $this->lignes_hauteur , pdf($groupe_nom.' - '.$eleve_nom.' '.$eleve_prenom) , 0 , 2 , 'L' , false , '');
 		// Période
@@ -902,7 +902,7 @@ function afficher_pourcentage_acquis($gras,$tab_infos,$detail)
 	{
 		// On calcule la hauteur de la ligne et la taille de la police pour tout faire rentrer sur une page si possible, un minimum de pages sinon
 		$hauteur_dispo_par_page = $this->page_hauteur - $this->marge_haut - $this->marge_bas ;
-		$lignes_nb = 1 + 1 + 1 + $lignes_nb + $this->legende ; // intitulé-structure + matière-niveau-élève + marge (1 & un peu plus car aussi avant domaines) + lignes (domaines+thèmes+items) + légende
+		$lignes_nb = 1 + 1 + 1 + $lignes_nb + ($this->legende+0.25) ; // intitulé-structure + matière-niveau-élève + marge (1 & un peu plus car aussi avant domaines) + lignes (domaines+thèmes+items) + légende
 		$hauteur_ligne_minimale = 3.5;
 		$hauteur_ligne_maximale = 5;
 		$nb_pages = 0;
@@ -941,7 +941,7 @@ function afficher_pourcentage_acquis($gras,$tab_infos,$detail)
 		// intitulé-structure
 		$this->SetFont('Arial' , 'B' , $this->taille_police*1.4);
 		$this->Cell($largeur_demi_page , $this->lignes_hauteur , pdf('Grille d\'items d\'un référentiel') , 0 , 0 , 'L' , false , '');
-		$this->Cell($largeur_demi_page , $this->lignes_hauteur , pdf($_SESSION['DENOMINATION']) , 0 , 1 , 'R' , false , '');
+		$this->Cell($largeur_demi_page , $this->lignes_hauteur , pdf($_SESSION['ETABLISSEMENT']['DENOMINATION']) , 0 , 1 , 'R' , false , '');
 		// matière-niveau-élève
 		$this->Cell($largeur_demi_page , $this->lignes_hauteur , pdf($matiere_nom.' - Niveau '.$niveau_nom) , 0 , 0 , 'L' , false , '');
 		if($eleve_id)
@@ -1051,7 +1051,7 @@ function afficher_pourcentage_acquis($gras,$tab_infos,$detail)
 		}
 		$this->SetFont('Arial' , 'B' , $this->taille_police*1.5);
 		$this->SetXY($this->page_largeur-$this->marge_droit-50 , max($this->marge_haut,$this->GetY()-2*$this->cases_hauteur) ); // Soit c'est une nouvelle page, soit il ne faut pas se mettre en haut de la page
-		$this->Cell(50 , $this->cases_hauteur , pdf($_SESSION['DENOMINATION']) , 0 , 2 , 'R' , false , '');
+		$this->Cell(50 , $this->cases_hauteur , pdf($_SESSION['ETABLISSEMENT']['DENOMINATION']) , 0 , 2 , 'R' , false , '');
 		$this->Cell(50 , $this->cases_hauteur , pdf($this->eleve_nom.' '.$this->eleve_prenom) , 0 , 2 , 'R' , false , '');
 	}
 

@@ -75,6 +75,7 @@ $tab_droits['administrateur_administrateur']           = $tab_droits_profil_admi
 $tab_droits['administrateur_algorithme_gestion']       = $tab_droits_profil_administrateur;
 $tab_droits['administrateur_autorisations']            = $tab_droits_profil_administrateur;
 $tab_droits['administrateur_blocage']                  = $tab_droits_profil_administrateur;
+$tab_droits['administrateur_bulletins']                = $tab_droits_profil_administrateur;
 $tab_droits['administrateur_classe']                   = $tab_droits_profil_administrateur;
 $tab_droits['administrateur_classe_gestion']           = $tab_droits_profil_administrateur;
 $tab_droits['administrateur_codes_couleurs']           = $tab_droits_profil_administrateur;

@@ -98,9 +98,10 @@ if( ($action=='ajouter') && isset($tab_geo[$geo_id]) && $localisation && $denomi
 	@sleep(1);
 	// Personnaliser certains paramètres de la structure
 	$tab_parametres = array();
-	$tab_parametres['version_base'] = VERSION_BASE;
-	$tab_parametres['uai']          = $uai;
-	$tab_parametres['denomination'] = $denomination;
+	$tab_parametres['version_base']               = VERSION_BASE;
+	$tab_parametres['webmestre_uai']              = $uai;
+	$tab_parametres['webmestre_denomination']     = $denomination;
+	$tab_parametres['etablissement_denomination'] = $denomination;
 	DB_STRUCTURE_COMMUN::DB_modifier_parametres($tab_parametres);
 	// Insérer le compte administrateur dans la base de cette structure
 	$password = fabriquer_mdp();
@@ -153,8 +154,8 @@ if( ($action=='modifier') && $base_id && isset($tab_geo[$geo_id]) && $localisati
 	// On met à jour l'enregistrement dans la base de la structure
 	charger_parametres_mysql_supplementaires($base_id);
 	$tab_parametres = array();
-	$tab_parametres['uai']          = $uai;
-	$tab_parametres['denomination'] = $denomination;
+	$tab_parametres['webmestre_uai']          = $uai;
+	$tab_parametres['webmestre_denomination'] = $denomination;
 	DB_STRUCTURE_COMMUN::DB_modifier_parametres($tab_parametres);
 	// On affiche le retour
 	$img = (!is_file(CHEMIN_CONFIG.'blocage_webmestre_'.$base_id.'.txt')) ? '<img class="bloquer" src="./_img/etat/acces_oui.png" title="Bloquer cet établissement." />' : '<img class="debloquer" src="./_img/etat/acces_non.png" title="Débloquer cet établissement." />' ;

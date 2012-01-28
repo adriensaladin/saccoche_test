@@ -409,9 +409,10 @@ if( $step==6 )
 			@sleep(1);
 			// Personnaliser certains paramètres de la structure
 			$tab_parametres = array();
-			$tab_parametres['version_base'] = VERSION_BASE;
-			$tab_parametres['uai']          = HEBERGEUR_UAI;
-			$tab_parametres['denomination'] = HEBERGEUR_DENOMINATION;
+			$tab_parametres['version_base']               = VERSION_BASE;
+			$tab_parametres['webmestre_uai']              = HEBERGEUR_UAI;
+			$tab_parametres['webmestre_denomination']     = HEBERGEUR_DENOMINATION;
+			$tab_parametres['etablissement_denomination'] = HEBERGEUR_DENOMINATION;
 			DB_STRUCTURE_COMMUN::DB_modifier_parametres($tab_parametres);
 			// Insérer un compte administrateur dans la base de la structure
 			$password = fabriquer_mdp();

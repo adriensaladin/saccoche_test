@@ -113,9 +113,10 @@ $(document).ready
 		(
 			function()
 			{
-				var objet = $(this).parent().parent().attr('id').substring(3);
+				var obj_bouton = $(this);
+				var objet = obj_bouton.parent().parent().attr('id').substring(3);
 				var tab_check = new Array(); $('#form_autorisations input[name='+objet+']:checked').each(function(){tab_check.push($(this).val());});
-				$("button").prop('disabled',true);
+				obj_bouton.prop('disabled',true);
 				$('#ajax_msg_'+objet).removeAttr("class").addClass("loader").html("Transmission en cours...");
 				$.ajax
 				(
@@ -126,14 +127,14 @@ $(document).ready
 						dataType : "html",
 						error : function(msg,string)
 						{
-							$("button").prop('disabled',false);
+							obj_bouton.prop('disabled',false);
 							$('#ajax_msg_'+objet).removeAttr("class").addClass("alerte").html("Echec de la connexion !");
 							return false;
 						},
 						success : function(responseHTML)
 						{
 							initialiser_compteur();
-							$("button").prop('disabled',false);
+							obj_bouton.prop('disabled',false);
 							if(responseHTML!='ok')
 							{
 								$('#ajax_msg_'+objet).removeAttr("class").addClass("alerte").html(responseHTML);

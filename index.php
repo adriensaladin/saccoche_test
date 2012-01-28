@@ -186,6 +186,7 @@ declaration_entete( TRUE /*is_meta_robots*/ , TRUE /*is_favicon*/ , TRUE /*is_rs
 	{
 		// Espace identifié : cadre_haut (avec le menu) et cadre_bas (avec le contenu).
 		echo'<div id="cadre_haut">'."\r\n";
+		echo'	<img id="logo" alt="SACoche" src="./_img/logo_petit2.png" width="147" height="46" />'."\r\n";
 		echo'	<div id="top_info">'."\r\n";
 		echo'		<span class="button favicon"><a class="lien_ext" href="'.SERVEUR_PROJET.'">Site officiel</a></span>'."\r\n";
 		if(SERVEUR_TYPE!='PROD')
@@ -198,12 +199,11 @@ declaration_entete( TRUE /*is_meta_robots*/ , TRUE /*is_favicon*/ , TRUE /*is_rs
 			$txt_debug  = DEBUG ? 'on&rarr;off' : 'off&rarr;on' ;
 			echo'		<span class="button '.$span_class.'"><a href="'.html($url_page.$separateur.$get_debug).'">'.$txt_debug.'</a></span>'."\r\n";
 		}
-		echo'		<span class="button home">'.html($_SESSION['DENOMINATION']).'</span>'."\r\n";
+		echo'		<span class="button home">'.html($_SESSION['ETABLISSEMENT']['DENOMINATION']).'</span>'."\r\n";
 		echo'		<span class="button profil_'.$_SESSION['USER_PROFIL'].'">'.html($_SESSION['USER_PRENOM'].' '.$_SESSION['USER_NOM']).' ('.$_SESSION['USER_PROFIL'].')</span>'."\r\n";
 		echo'		<span class="button clock_fixe"><span id="clock">'.$_SESSION['DUREE_INACTIVITE'].' min</span></span>'."\r\n";
 		echo'		<button id="deconnecter" class="deconnecter">Déconnexion</button>'."\r\n";
 		echo'	</div>'."\r\n";
-		echo'	<img id="logo" alt="SACoche" src="./_img/logo_petit2.png" width="147" height="46" />'."\r\n";
 		$fichier_menu = ($_SESSION['USER_PROFIL']!='webmestre') ? '__menu_'.$_SESSION['USER_PROFIL'] : '__menu_'.$_SESSION['USER_PROFIL'].'_'.HEBERGEUR_INSTALLATION ;
 		require_once('./pages/'.$fichier_menu.'.html'); // Le menu '<ul id="menu">...</ul>
 		echo'</div>'."\r\n";

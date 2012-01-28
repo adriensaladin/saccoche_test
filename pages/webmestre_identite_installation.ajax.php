@@ -138,8 +138,8 @@ elseif( ($action=='enregistrer') && $denomination && $nom && $prenom && $courrie
 	{
 		// Personnaliser certains paramètres de la structure (pour une installation de type multi-structures, ça se fait à la page de gestion des établissements)
 		$tab_parametres = array();
-		$tab_parametres['uai']          = $uai;
-		$tab_parametres['denomination'] = $denomination;
+		$tab_parametres['webmestre_uai']          = $uai;
+		$tab_parametres['webmestre_denomination'] = $denomination;
 		DB_STRUCTURE_COMMUN::DB_modifier_parametres($tab_parametres);
 	}
 	// On modifie aussi la session

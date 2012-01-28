@@ -1263,22 +1263,36 @@ public function DB_modifier_liaison_groupe_periode($groupe_id,$periode_id,$etat,
 {
 	if($etat)
 	{
-		// Ajouter / modifier une liaison
-		$DB_SQL = 'REPLACE INTO sacoche_jointure_groupe_periode (groupe_id,periode_id,jointure_date_debut,jointure_date_fin) ';
-		$DB_SQL.= 'VALUES(:groupe_id,:periode_id,:date_debut,:date_fin)';
-		$DB_VAR = array(':groupe_id'=>$groupe_id,':periode_id'=>$periode_id,':date_debut'=>$date_debut_mysql,':date_fin'=>$date_fin_mysql);
+		// Ajouter / modifier une liaison : tester si la liaison existe, sinon comme REPLACE = DELETE + INSERT ça fait perdre les infos des bulletins
+		$DB_SQL = 'SELECT 1 ';
+		$DB_SQL.= 'FROM sacoche_jointure_groupe_periode ';
+		$DB_SQL.= 'WHERE groupe_id=:groupe_id AND periode_id=:periode_id ';
+		$DB_VAR = array(':groupe_id'=>$groupe_id,':periode_id'=>$periode_id);
+		if( DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR) )
+		{
+			$DB_SQL = 'UPDATE sacoche_jointure_groupe_periode ';
+			$DB_SQL.= 'SET jointure_date_debut=:date_debut , jointure_date_fin=:date_fin ';
+			$DB_SQL.= 'WHERE groupe_id=:groupe_id AND periode_id=:periode_id ';
+			$DB_VAR = array(':groupe_id'=>$groupe_id,':periode_id'=>$periode_id,':date_debut'=>$date_debut_mysql,':date_fin'=>$date_fin_mysql);
+		}
+		else
+		{
+			$DB_SQL = 'INSERT INTO sacoche_jointure_groupe_periode (groupe_id,periode_id,jointure_date_debut,jointure_date_fin,bulletin_modele,bulletin_etat) ';
+			$DB_SQL.= 'VALUES(:groupe_id,:periode_id,:date_debut,:date_fin,:bulletin_modele,:bulletin_etat)';
+			$DB_VAR = array(':groupe_id'=>$groupe_id,':periode_id'=>$periode_id,':date_debut'=>$date_debut_mysql,':date_fin'=>$date_fin_mysql,':bulletin_modele'=>$_SESSION['BULLETIN']['MODELE_DEFAUT'],':bulletin_etat'=>'ferme_vierge');
+		}
 	}
 	else
 	{
 		if( ($groupe_id===TRUE) && ($periode_id===TRUE) )
 		{
-			// Retirer toutes les liaisons
+			// Retirer toutes les liaisons ; on ne supprime pas les données des bulletins éventuels associés, par précaution en cas de fausse manoeuvre, et surtout car ils peuvent être accessibles depuis un autre groupe...
 			$DB_SQL = 'DELETE FROM sacoche_jointure_groupe_periode ';
 			$DB_VAR = NULL;
 		}
 		else
 		{
-			// Retirer une liaison
+			// Retirer une liaison ; on ne supprime pas les données des bulletins éventuels associés, par précaution en cas de fausse manoeuvre, et surtout car ils peuvent être accessibles depuis un autre groupe...
 			$DB_SQL = 'DELETE FROM sacoche_jointure_groupe_periode ';
 			$DB_SQL.= 'WHERE groupe_id=:groupe_id AND periode_id=:periode_id ';
 			$DB_VAR = array(':groupe_id'=>$groupe_id,':periode_id'=>$periode_id);
@@ -1360,7 +1374,7 @@ public function DB_supprimer_referentiels_matiere($matiere_id)
 public function DB_supprimer_groupe_par_admin($groupe_id,$groupe_type,$with_devoir=TRUE)
 {
 	// Il faut aussi supprimer les jointures avec les utilisateurs
-	// Il faut aussi supprimer les jointures avec les périodes
+	// Il faut aussi supprimer les jointures avec les périodes, mais pas les bulletins (peuvent être accessibles depuis un autre groupe...)
 	$jointure_periode_delete = ( ($groupe_type=='classe') || ($groupe_type=='groupe') ) ? ', sacoche_jointure_groupe_periode ' : '' ;
 	$jointure_periode_join   = ( ($groupe_type=='classe') || ($groupe_type=='groupe') ) ? 'LEFT JOIN sacoche_jointure_groupe_periode USING (groupe_id) ' : '' ;
 	// Il faut aussi supprimer les évaluations portant sur le groupe
@@ -1412,6 +1426,17 @@ public function DB_supprimer_saisies_REQ()
 }
 
 /**
+ * DB_supprimer_bulletins
+ *
+ * @param void
+ * @return void
+ */
+public function DB_supprimer_bulletins()
+{
+	DB::query(SACOCHE_STRUCTURE_BD_NAME , 'TRUNCATE sacoche_bulletin' , NULL);
+}
+
+/**
  * supprimer_saisies
  *
  * @param void
@@ -1459,6 +1484,11 @@ public function DB_supprimer_periode($periode_id)
 	DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 	// Il faut aussi supprimer les jointures avec les classes
 	$DB_SQL = 'DELETE FROM sacoche_jointure_groupe_periode ';
+	$DB_SQL.= 'WHERE periode_id=:periode_id ';
+	$DB_VAR = array(':periode_id'=>$periode_id);
+	DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+	// Il faut aussi supprimer les jointures avec les bulletins
+	$DB_SQL = 'DELETE FROM sacoche_bulletin ';
 	$DB_SQL.= 'WHERE periode_id=:periode_id ';
 	$DB_VAR = array(':periode_id'=>$periode_id);
 	DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
@@ -1740,6 +1770,16 @@ public function DB_corriger_anomalies()
 	$message = (!$nb_modifs) ? 'rien à signaler' : ( ($nb_modifs>1) ? $nb_modifs.' anomalies supprimées' : '1 anomalie supprimée' ) ;
 	$classe  = (!$nb_modifs) ? 'valide' : 'alerte' ;
 	$tab_bilan[] = '<label class="'.$classe.'">Jointures période/groupe : '.$message.'.</label>';
+	// Recherche d'anomalies : jointures période/bulletin associées à une période supprimée... (on ne s'occupe volontairmeent pas de vérifier la jointure période/groupe)
+	$DB_SQL = 'DELETE sacoche_bulletin ';
+	$DB_SQL.= 'FROM sacoche_bulletin ';
+	$DB_SQL.= 'LEFT JOIN sacoche_periode USING (periode_id) ';
+	$DB_SQL.= 'WHERE (sacoche_periode.periode_id IS NULL) ';
+	DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
+	$nb_modifs = DB::rowCount(SACOCHE_STRUCTURE_BD_NAME);
+	$message = (!$nb_modifs) ? 'rien à signaler' : ( ($nb_modifs>1) ? $nb_modifs.' anomalies supprimées' : '1 anomalie supprimée' ) ;
+	$classe  = (!$nb_modifs) ? 'valide' : 'alerte' ;
+	$tab_bilan[] = '<label class="'.$classe.'">Jointures période/bulletin : '.$message.'.</label>';
 	// Recherche d'anomalies : jointures user/groupe associées à un user ou un groupe supprimé...
 	$DB_SQL = 'DELETE sacoche_jointure_user_groupe ';
 	$DB_SQL.= 'FROM sacoche_jointure_user_groupe ';

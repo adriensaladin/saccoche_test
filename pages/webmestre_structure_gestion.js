@@ -400,62 +400,6 @@ $(document).ready
 		// Le formulaire qui va être analysé et traité en AJAX
 		var formulaire = $("#structures");
 
-		// Ajout d'une méthode pour vérifier le format du numéro UAI
-		jQuery.validator.addMethod
-		(
-			"uai_format", function(value, element)
-			{
-				var uai = value.toUpperCase();
-				var uai_valide = true;
-				if(uai.length!=8)
-				{
-					uai_valide = false;
-				}
-				else
-				{
-					var uai_fin = uai.substring(7,8);
-					if((uai_fin<"A")||(uai_fin>"Z"))
-					{
-						uai_valide = false;
-					}
-					else
-					{
-						for(i=0;i<7;i++)
-						{
-							var t = uai.substring(i,i+1);
-							if((t<"0")||(t>"9"))
-							{
-								uai_valide = false;
-							}
-						}
-					}
-				}
-				return this.optional(element) || uai_valide ;
-			}
-			, "il faut 7 chiffres suivis d'une lettre"
-		); 
-
-		// Ajout d'une méthode pour vérifier la clef de contrôle du numéro UAI
-		jQuery.validator.addMethod
-		(
-			"uai_clef", function(value, element)
-			{
-				var uai = value.toUpperCase();
-				var uai_valide = true;
-				var uai_nombre = uai.substring(0,7);
-				var uai_fin = uai.substring(7,8);
-				alphabet = "ABCDEFGHJKLMNPRSTUVWXYZ";
-				reste = uai_nombre-(23*Math.floor(uai_nombre/23));
-				clef = alphabet.substring(reste,reste+1);;
-				if(clef!=uai_fin )
-				{
-					uai_valide = false;
-				}
-				return this.optional(element) || uai_valide ;
-			}
-			, "clef de contrôle incompatible"
-		); 
-
 		// Vérifier la validité du formulaire (avec jquery.validate.js)
 		var validation = formulaire.validate
 		(

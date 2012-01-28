@@ -96,6 +96,8 @@ if($action=='purger')
 	ajouter_log_SACoche('Suppression de tous les groupes, hors classes, sans les devoirs associés.');
 	// Supprimer les jointures classes/périodes
 	DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_liaison_groupe_periode($groupe_id=true,$periode_id=true,$etat=false,$date_debut_mysql='',$date_fin_mysql='');
+	// Supprimer les bulletins
+	DB_STRUCTURE_ADMINISTRATEUR::DB_supprimer_bulletins();
 	// Supprimer les comptes utilisateurs désactivés depuis plus de 3 ans
 	$DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_users_desactives_obsoletes();
 	if(count($DB_TAB))

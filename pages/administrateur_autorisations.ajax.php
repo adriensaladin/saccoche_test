@@ -54,8 +54,10 @@ $tab_objet_profils['droit_bilan_note_sur_vingt']     = array('parent','eleve');
 $tab_objet_profils['droit_socle_acces']              = array('parent','eleve');
 $tab_objet_profils['droit_socle_pourcentage_acquis'] = array('parent','eleve');
 $tab_objet_profils['droit_socle_etat_validation']    = array('parent','eleve');
+$tab_objet_profils['droit_bulletin_appreciation_generale'] = array('directeur','professeur','profprincipal','aucunprof');
+$tab_objet_profils['droit_bulletin_impression_pdf']        = array('directeur','professeur','profprincipal','aucunprof');
 
-$test_objet_socle = in_array($f_objet,array('droit_validation_entree','droit_validation_pilier','droit_annulation_pilier')) ? true : false ;
+$test_objet_prof = in_array($f_objet,array('droit_validation_entree','droit_validation_pilier','droit_annulation_pilier','droit_bulletin_appreciation_generale','droit_bulletin_impression_pdf')) ? TRUE : FALSE ;
 
 if(!isset($tab_objet_profils[$f_objet]))
 {
@@ -64,16 +66,16 @@ if(!isset($tab_objet_profils[$f_objet]))
 
 if($f_profils=='')
 {
-	// Les profils peuvent être vides sauf pour les 3 paramètres du socle
-	$test_options = ($test_objet_socle) ? false : true ;
+	// Les profils peuvent être vides sauf certains paramètres devant contenir la chaine 'prof'
+	$test_options = ($test_objet_prof) ? false : true ;
 }
 else
 {
 	$nettoyage = str_replace( $tab_objet_profils[$f_objet] , '*' , $f_profils );
 	$nettoyage = str_replace( '*,' , '' , $nettoyage.',' );
-	// Test supplémentaire : les 3 paramètres du socle doivent contenir la chaine 'prof'
-	$test_socle   = ( (!$test_objet_socle) || (strpos($f_profils,'prof')!==false) ) ? true : false ;
-	$test_options = ( ($nettoyage=='') && $test_socle ) ? true : false;
+	// Test supplémentaire : certains paramètres doivent contenir la chaine 'prof'
+	$test_socle   = ( (!$test_objet_prof) || (strpos($f_profils,'prof')!==FALSE) ) ? TRUE : FALSE ;
+	$test_options = ( ($nettoyage=='') && $test_socle ) ? TRUE : FALSE;
 }
 if(!$test_options)
 {

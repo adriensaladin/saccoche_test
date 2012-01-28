@@ -77,7 +77,7 @@ $url_sso = SERVEUR_ADRESSE.'/?sso'.$get_base;
 	</div>
 	<div id="gepi_options" class="hide">
 		<label class="tab" for="gepi_saml_url">Adresse (URL) <img alt="" src="./_img/bulle_aide.png" title="Adresse web de GEPI.<br />http://adresse_web_de_mon_gepi" /> :</label><input id="gepi_saml_url" name="gepi_saml_url" size="30" type="text" value="<?php echo html($_SESSION['GEPI_URL']) ?>" /><br />
-		<label class="tab" for="gepi_saml_rne">UAI (ex-RNE) <img alt="" src="./_img/bulle_aide.png" title="Indispensable uniquement si installation multisite de GEPI." /> :</label><input id="gepi_saml_rne" name="gepi_saml_rne" size="10" type="text" value="<?php echo ($_SESSION['GEPI_RNE']) ? html($_SESSION['GEPI_RNE']) : html($_SESSION['UAI']) ; ?>" /><br />
+		<label class="tab" for="gepi_saml_rne">UAI (ex-RNE) <img alt="" src="./_img/bulle_aide.png" title="Indispensable uniquement si installation multisite de GEPI." /> :</label><input id="gepi_saml_rne" name="gepi_saml_rne" size="10" type="text" value="<?php echo ($_SESSION['GEPI_RNE']) ? html($_SESSION['GEPI_RNE']) : html($_SESSION['WEBMESTRE_UAI']) ; ?>" /><br />
 		<label class="tab" for="gepi_saml_certif">Signature <img alt="" src="./_img/bulle_aide.png" title="[ Expliquer où trouver l'empreinte du certificat... ]" /> :</label><input id="gepi_saml_certif" name="gepi_saml_certif" size="60" type="text" value="<?php echo html($_SESSION['GEPI_CERTIFICAT_EMPREINTE']) ?>" /><br />
 	</div>
 	<?php echo $choix ?>

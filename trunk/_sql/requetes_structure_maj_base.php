@@ -1488,6 +1488,70 @@ public function DB_maj_base($version_actuelle)
 		}
 	}
 
+	//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	//	MAJ 2012-01-16 => 2012-01-28
+	//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	if($version_actuelle=='2012-01-16')
+	{
+		if($version_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
+		{
+			$version_actuelle = '2012-01-28';
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_actuelle.'" WHERE parametre_nom="version_base"' );
+			// modification d'un champ de "sacoche_parametre"
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_parametre CHANGE parametre_nom parametre_nom VARCHAR( 50 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT ""' );
+			// récupération de paramètre
+			$denomination = DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , 'SELECT parametre_valeur FROM sacoche_parametre WHERE parametre_nom="denomination"' );
+			// modification de paramètres
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_nom="webmestre_uai" WHERE parametre_nom="uai"' );
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_nom="webmestre_denomination" WHERE parametre_nom="denomination"' );
+			// ajout de paramètres
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ( "etablissement_denomination"     , :denomination )' , array(':denomination'=>$denomination) );
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ( "etablissement_adresse1"         , "" )' );
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ( "etablissement_adresse2"         , "" )' );
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ( "etablissement_adresse3"         , "" )' );
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ( "etablissement_telephone"        , "" )' );
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ( "etablissement_fax"              , "" )' );
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ( "etablissement_courriel"         , "" )' );
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ( "mois_bascule_annee_scolaire"    , "8" )' );
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ( "enveloppe_horizontal_gauche"    , "110" )' );
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ( "enveloppe_horizontal_milieu"    , "100" )' );
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ( "enveloppe_horizontal_droite"    , "20" )' );
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ( "enveloppe_vertical_haut"        , "50" )' );
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ( "enveloppe_vertical_milieu"      , "45" )' );
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ( "enveloppe_vertical_bas"         , "20" )' );
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ( "bulletin_infos_etablissement"   , "adresse,telephone,fax,courriel" )' );
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ( "bulletin_infos_responsables"    , "non" )' );
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ( "bulletin_nombre_exemplaires"    , "un" )' );
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ( "bulletin_marge_gauche"          , "5" )' );
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ( "bulletin_marge_droite"          , "5" )' );
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ( "bulletin_marge_haut"            , "5" )' );
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ( "bulletin_marge_bas"             , "10" )' );
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ( "droit_bulletin_appreciation_generale" , "directeur,profprincipal" )' );
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ( "droit_bulletin_impression_pdf"        , "directeur,aucunprof" )' );
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ( "bulletin_modele_defaut"                        , "item_synthese" )' );
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ( "bulletin_item_appreciation_matiere_presence"   , "1" )' );
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ( "bulletin_item_appreciation_matiere_longueur"   , "150" )' );
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ( "bulletin_item_appreciation_generale_presence"  , "1" )' );
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ( "bulletin_item_pourcentage_acquis_presence"     , "0" )' );
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ( "bulletin_item_pourcentage_acquis_modifiable"   , "1" )' );
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ( "bulletin_item_pourcentage_acquis_classe"       , "0" )' );
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ( "bulletin_item_note_moyenne_score_presence"     , "1" )' );
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ( "bulletin_item_note_moyenne_score_modifiable"   , "1" )' );
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ( "bulletin_item_note_moyenne_score_classe"       , "1" )' );
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ( "bulletin_socle_pourcentage_acquis_presence"    , "1" )' );
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ( "bulletin_socle_etat_validation_presence"       , "0" )' );
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ( "bulletin_socle_appreciation_generale_presence" , "1" )' );
+			// ajouter de deux entrées dans sacoche_jointure_groupe_periode pour paramétrer les bulletins
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_jointure_groupe_periode ADD bulletin_modele     ENUM("item_detail","item_synthese","socle_detail","socle_synthese")   COLLATE utf8_unicode_ci NOT NULL DEFAULT "item_synthese" ' );
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_jointure_groupe_periode ADD bulletin_etat       ENUM("ferme_vierge","ouvert_profs","ouvert_synthese","ferme_complet") COLLATE utf8_unicode_ci NOT NULL DEFAULT "ferme_vierge" ' );
+			// ajout d'une table pour les bulletins
+			// La supprimer si elle existe : sinon dans le cas d'une restauration de base à une version antérieure (suivie de cette mise à jour), cette ancienne table éventuellement existante ne serait pas réinitialisée.
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'DROP TABLE IF EXISTS sacoche_bulletin' );
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'CREATE TABLE sacoche_bulletin ( periode_id MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT 0, matiere_id SMALLINT(5) UNSIGNED NOT NULL DEFAULT 0, prof_id MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT 0, eleve_id MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT 0, bulletin_note TINYINT(3) UNSIGNED NOT NULL DEFAULT 0, bulletin_pourcentage TINYINT(3) UNSIGNED NOT NULL DEFAULT 0, bulletin_appreciation VARCHAR(250) COLLATE utf8_unicode_ci NOT NULL DEFAULT "", UNIQUE KEY bulletin_key (periode_id,matiere_id,prof_id,eleve_id), KEY periode_id (periode_id), KEY matiere_id (matiere_id), KEY prof_id (prof_id), KEY eleve_id (eleve_id) ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci ' );
+		}
+	}
+
 }
 
 }

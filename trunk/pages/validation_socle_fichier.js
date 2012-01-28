@@ -196,6 +196,23 @@ $(document).ready
 			);
 		}
 
+		if($('#import_compatible').length)
+		{
+			new AjaxUpload
+			('#import_compatible',
+				{
+					action: 'ajax.php?page='+PAGE,
+					name: 'userfile',
+					data: {'f_action':'import_compatible'},
+					autoSubmit: true,
+					responseType: "html",
+					onChange: changer_fichier,
+					onSubmit: verifier_fichier,
+					onComplete: retourner_fichier
+				}
+			);
+		}
+
 		function changer_fichier(fichier_nom,fichier_extension)
 		{
 			$('button.enabled').prop('disabled',true);

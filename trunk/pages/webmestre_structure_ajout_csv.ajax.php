@@ -195,9 +195,10 @@ if( ($action=='ajouter') && $num && $max )
 	@sleep(1);
 	// Personnaliser certains paramètres de la structure
 	$tab_parametres = array();
-	$tab_parametres['version_base'] = VERSION_BASE;
-	$tab_parametres['uai']          = $uai;
-	$tab_parametres['denomination'] = $denomination;
+	$tab_parametres['version_base']               = VERSION_BASE;
+	$tab_parametres['webmestre_uai']              = $uai;
+	$tab_parametres['webmestre_denomination']     = $denomination;
+	$tab_parametres['etablissement_denomination'] = $denomination;
 	DB_STRUCTURE_COMMUN::DB_modifier_parametres($tab_parametres);
 	// Insérer le compte administrateur dans la base de cette structure
 	$password = fabriquer_mdp();

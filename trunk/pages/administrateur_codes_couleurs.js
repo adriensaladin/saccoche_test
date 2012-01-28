@@ -206,16 +206,6 @@ $(document).ready
 		// Le formulaire qui va être analysé et traité en AJAX
 		var formulaire2 = $('#form_acquis');
 
-		// Ajout d'une méthode pour vérifier le format hexadécimal
-		jQuery.validator.addMethod
-		(
-			"hexa_format", function(value, element)
-			{
-				return this.optional(element) || ( (/^\#[0-9a-f]{3,6}$/i.test(value)) && (value.length!=5) && (value.length!=6) ) ;
-			}
-			, "format incorrect"
-		); 
-
 		// Vérifier la validité du formulaire (avec jquery.validate.js)
 		var validation2 = formulaire2.validate
 		(

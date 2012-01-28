@@ -41,7 +41,7 @@ $(document).ready
 				var action = $(this).attr('id').substring(7); // "nettoyer" ou "purger" ou "supprimer" ou "effacer"
 				if(action=='purger')
 				{
-					var continuer = (confirm("Attention : les scores déjà saisis ne seront plus modifiables !\nConfirmez-vous l'initialisation annuelle des données ?")) ? true : false ;
+					var continuer = (confirm("Attention : les scores déjà saisis ne seront plus modifiables !\nAttention : les données des bulletins seront effacées !\nConfirmez-vous l'initialisation annuelle des données ?")) ? true : false ;
 				}
 				else if(action=='supprimer')
 				{

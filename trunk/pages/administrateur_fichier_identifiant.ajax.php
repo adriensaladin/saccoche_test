@@ -864,8 +864,8 @@ if( ($action=='COPY_id_argos_profs_TO_id_ent') || ($action=='COPY_id_argos_eleve
 	require($fichier); // Charge la fonction "recuperer_infos_LDAP()"
 	$qui = substr($action,14,-10); // profs | eleves | parents
 	// Appeler le serveur LDAP et enregistrer le fichier temporairement pour aider au débuggage
-	$retour_Sarapis = recuperer_infos_LDAP($_SESSION['UAI'],$qui);
-	Ecrire_Fichier( './__tmp/import/import_Sarapis_'.$_SESSION['UAI'].'_'.$qui.'.xml' , $retour_Sarapis );
+	$retour_Sarapis = recuperer_infos_LDAP($_SESSION['WEBMESTRE_UAI'],$qui);
+	Ecrire_Fichier( './__tmp/import/import_Sarapis_'.$_SESSION['WEBMESTRE_UAI'].'_'.$qui.'.xml' , $retour_Sarapis );
 	// Maintenant on regarde ce qu'il contient
 	if(mb_substr($retour_Sarapis,0,6)=='Erreur')
 	{

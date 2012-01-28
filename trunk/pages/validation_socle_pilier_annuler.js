@@ -179,8 +179,8 @@ $(document).ready
 		// Options d'envoi du formulaire (avec jquery.form.js)
 		var ajaxOptions0 =
 		{
-			type : 'POST',
 			url : 'ajax.php?page='+PAGE,
+			type : 'POST',
 			dataType : "html",
 			clearForm : false,
 			resetForm : false,

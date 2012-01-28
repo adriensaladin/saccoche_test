@@ -38,8 +38,8 @@ $(document).ready
 		(
 			function()
 			{
-				$('#form_instance').hide();
-				$('#ajax_msg_instance').removeAttr("class").html("&nbsp;");
+				$('#div_instance').hide();
+				$('#ajax_msg_sesamath').removeAttr("class").html("&nbsp;");
 				// Décocher tous les boutons radio
 				$('#f_recherche_mode input[type=radio]').each
 				(
@@ -65,77 +65,21 @@ $(document).ready
 		(
 			function()
 			{
-				$('#form_instance').show();
+				$('#div_instance').show();
 				$('#form_communautaire').hide();
 				return(false);
 			}
 		);
 
 		//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
-		// Traitement du formulaire principal
+		// Traitement du formulaire form_sesamath
 		//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
 
 		// Le formulaire qui va être analysé et traité en AJAX
-		var formulaire = $('#form_instance');
-
-		// Ajout d'une méthode pour vérifier le format du numéro UAI
-		jQuery.validator.addMethod
-		(
-			"uai_format", function(value, element)
-			{
-				var uai = value.toUpperCase();
-				var uai_valide = true;
-				if(uai.length!=8)
-				{
-					uai_valide = false;
-				}
-				else
-				{
-					var uai_fin = uai.substring(7,8);
-					if((uai_fin<"A")||(uai_fin>"Z"))
-					{
-						uai_valide = false;
-					}
-					else
-					{
-						for(i=0;i<7;i++)
-						{
-							var t = uai.substring(i,i+1);
-							if((t<"0")||(t>"9"))
-							{
-								uai_valide = false;
-							}
-						}
-					}
-				}
-				return this.optional(element) || uai_valide ;
-			}
-			, "il faut 7 chiffres suivis d'une lettre"
-		); 
-
-		// Ajout d'une méthode pour vérifier la clef de contrôle du numéro UAI
-		jQuery.validator.addMethod
-		(
-			"uai_clef", function(value, element)
-			{
-				var uai = value.toUpperCase();
-				var uai_valide = true;
-				var uai_nombre = uai.substring(0,7);
-				var uai_fin = uai.substring(7,8);
-				alphabet = "ABCDEFGHJKLMNPRSTUVWXYZ";
-				reste = uai_nombre-(23*Math.floor(uai_nombre/23));
-				clef = alphabet.substring(reste,reste+1);;
-				if(clef!=uai_fin )
-				{
-					uai_valide = false;
-				}
-				return this.optional(element) || uai_valide ;
-			}
-			, "clef de contrôle incompatible"
-		); 
+		var formulaire_sesamath = $('#form_sesamath');
 
 		// Vérifier la validité du formulaire (avec jquery.validate.js)
-		var validation = formulaire.validate
+		var validation_sesamath = formulaire_sesamath.validate
 		(
 			{
 				rules :
@@ -160,63 +104,244 @@ $(document).ready
 		);
 
 		// Options d'envoi du formulaire (avec jquery.form.js)
-		var ajaxOptions =
+		var ajaxOptions_sesamath =
 		{
 			url : 'ajax.php?page='+PAGE,
 			type : 'POST',
 			dataType : "html",
 			clearForm : false,
 			resetForm : false,
-			target : "#ajax_msg_instance",
-			beforeSubmit : test_form_avant_envoi,
-			error : retour_form_erreur,
-			success : retour_form_valide
+			target : "#ajax_msg_sesamath",
+			beforeSubmit : test_form_avant_envoi_sesamath,
+			error : retour_form_erreur_sesamath,
+			success : retour_form_valide_sesamath
 		};
 
 		// Envoi du formulaire (avec jquery.form.js)
-    formulaire.submit
+    formulaire_sesamath.submit
 		(
 			function()
 			{
-				$(this).ajaxSubmit(ajaxOptions);
+				$(this).ajaxSubmit(ajaxOptions_sesamath);
 				return false;
 			}
 		); 
 
 		// Fonction précédent l'envoi du formulaire (avec jquery.form.js)
-		function test_form_avant_envoi(formData, jqForm, options)
+		function test_form_avant_envoi_sesamath(formData, jqForm, options)
 		{
-			$('#ajax_msg_instance').removeAttr("class").html("&nbsp;");
-			var readytogo = validation.form();
+			$('#ajax_msg_sesamath').removeAttr("class").html("&nbsp;");
+			var readytogo = validation_sesamath.form();
 			if(readytogo)
 			{
-				$("#bouton_valider").prop('disabled',true);
-				$('#ajax_msg_instance').removeAttr("class").addClass("loader").html("Soumission du formulaire en cours...");
+				$("#bouton_valider_sesamath").prop('disabled',true);
+				$('#ajax_msg_sesamath').removeAttr("class").addClass("loader").html("Soumission du formulaire en cours...");
 			}
 			return readytogo;
 		}
 
 		// Fonction suivant l'envoi du formulaire (avec jquery.form.js)
-		function retour_form_erreur(msg,string)
+		function retour_form_erreur_sesamath(msg,string)
 		{
-			$("#bouton_valider").prop('disabled',false);
-			$('#ajax_msg_instance').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
+			$("#bouton_valider_sesamath").prop('disabled',false);
+			$('#ajax_msg_sesamath').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
 		}
 
 		// Fonction suivant l'envoi du formulaire (avec jquery.form.js)
-		function retour_form_valide(responseHTML)
+		function retour_form_valide_sesamath(responseHTML)
 		{
 			initialiser_compteur();
-			$("#bouton_valider").prop('disabled',false);
+			$("#bouton_valider_sesamath").prop('disabled',false);
 			if(responseHTML=='ok')
 			{
-				$('#ajax_msg_instance').removeAttr("class").addClass("valide").html("Données enregistrées !");
+				$('#ajax_msg_sesamath').removeAttr("class").addClass("valide").html("Données enregistrées !");
 			}
 			else
 			{
-				$('#ajax_msg_instance').removeAttr("class").addClass("alerte").html(responseHTML);
+				$('#ajax_msg_sesamath').removeAttr("class").addClass("alerte").html(responseHTML);
 			}
 		} 
+
+
+		//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
+		// Traitement du formulaire form_etablissement
+		//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
+
+		// Alerter sur la nécessité de valider
+		$("#form_etablissement input").change
+		(
+			function()
+			{
+				$('#ajax_msg_etablissement').removeAttr("class").addClass("alerte").html("Enregistrer pour confirmer.");
+			}
+		);
+
+		// Le formulaire qui va être analysé et traité en AJAX
+		var formulaire_etablissement = $('#form_etablissement');
+
+		// Vérifier la validité du formulaire (avec jquery.validate.js)
+		var validation_etablissement = formulaire_etablissement.validate
+		(
+			{
+				rules :
+				{
+					f_etablissement_denomination : { required:true  , maxlength:50 },
+					f_etablissement_adresse1     : { required:false , maxlength:50 },
+					f_etablissement_adresse2     : { required:false , maxlength:50 },
+					f_etablissement_adresse3     : { required:false , maxlength:50 },
+					f_etablissement_telephone    : { required:false , maxlength:25 },
+					f_etablissement_fax          : { required:false , maxlength:25 },
+					f_etablissement_courriel     : { required:false , maxlength:50 , email:true }
+				},
+				messages :
+				{
+					f_etablissement_denomination : { maxlength:"50 caractères maximum" , required:"dénomination manquante" },
+					f_etablissement_adresse1     : { maxlength:"50 caractères maximum" },
+					f_etablissement_adresse2     : { maxlength:"50 caractères maximum" },
+					f_etablissement_adresse3     : { maxlength:"50 caractères maximum" },
+					f_etablissement_telephone    : { maxlength:"25 caractères maximum" },
+					f_etablissement_fax          : { maxlength:"25 caractères maximum" },
+					f_etablissement_courriel     : { maxlength:"50 caractères maximum" , email:"courriel invalide" }
+				},
+				errorElement : "label",
+				errorClass : "erreur",
+				errorPlacement : function(error,element) { element.after(error); }
+				// success: function(label) {label.text("ok").removeAttr("class").addClass("valide");} Pas pour des champs soumis à vérification PHP
+			}
+		);
+
+		// Options d'envoi du formulaire (avec jquery.form.js)
+		var ajaxOptions_etablissement =
+		{
+			url : 'ajax.php?page='+PAGE,
+			type : 'POST',
+			dataType : "html",
+			clearForm : false,
+			resetForm : false,
+			target : "#ajax_msg_etablissement",
+			beforeSubmit : test_form_avant_envoi_etablissement,
+			error : retour_form_erreur_etablissement,
+			success : retour_form_valide_etablissement
+		};
+
+		// Envoi du formulaire (avec jquery.form.js)
+    formulaire_etablissement.submit
+		(
+			function()
+			{
+				$(this).ajaxSubmit(ajaxOptions_etablissement);
+				return false;
+			}
+		); 
+
+		// Fonction précédent l'envoi du formulaire (avec jquery.form.js)
+		function test_form_avant_envoi_etablissement(formData, jqForm, options)
+		{
+			$('#ajax_msg_etablissement').removeAttr("class").html("&nbsp;");
+			var readytogo = validation_etablissement.form();
+			if(readytogo)
+			{
+				$("#bouton_valider_etablissement").prop('disabled',true);
+				$('#ajax_msg_etablissement').removeAttr("class").addClass("loader").html("Soumission du formulaire en cours...");
+			}
+			return readytogo;
+		}
+
+		// Fonction suivant l'envoi du formulaire (avec jquery.form.js)
+		function retour_form_erreur_etablissement(msg,string)
+		{
+			$("#bouton_valider_etablissement").prop('disabled',false);
+			$('#ajax_msg_etablissement').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
+		}
+
+		// Fonction suivant l'envoi du formulaire (avec jquery.form.js)
+		function retour_form_valide_etablissement(responseHTML)
+		{
+			initialiser_compteur();
+			$("#bouton_valider_etablissement").prop('disabled',false);
+			if(responseHTML=='ok')
+			{
+				$('#ajax_msg_etablissement').removeAttr("class").addClass("valide").html("Données enregistrées !");
+			}
+			else
+			{
+				$('#ajax_msg_etablissement').removeAttr("class").addClass("alerte").html(responseHTML);
+			}
+		} 
+
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+// Traitement du formulaire form_annee_scolaire
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
+		// Alerter sur la nécessité de valider et simulation de l'affichage de l'année scolaire
+		function simuler_affichage_annee_scolaire()
+		{
+			var obj_date     = new Date();
+			var mois_actuel  = obj_date.getMonth()+1;
+			var mois_bascule = $('#f_mois_bascule_annee_scolaire option:selected').val();
+			if(mois_bascule==1)
+			{
+				var affichage = obj_date.getFullYear();
+			}
+			else if(mois_actuel < mois_bascule)
+			{
+				var affichage = (obj_date.getFullYear()-1)+'/'+obj_date.getFullYear();
+			}
+			else
+			{
+				var affichage = obj_date.getFullYear()+'/'+(obj_date.getFullYear()+1);
+			}
+			$('#span_simulation').html(affichage);
+		}
+
+		$("#f_mois_bascule_annee_scolaire").change
+		(
+			function()
+			{
+				simuler_affichage_annee_scolaire();
+				$('#ajax_msg_annee_scolaire').removeAttr("class").addClass("alerte").html("Enregistrer pour confirmer.");
+			}
+		);
+
+		simuler_affichage_annee_scolaire();
+
+		$('#bouton_valider_annee_scolaire').click
+		(
+			function()
+			{
+				$("#bouton_valider_annee_scolaire").prop('disabled',true);
+				$('#ajax_msg_annee_scolaire').removeAttr("class").addClass("loader").html("Soumission du formulaire en cours...");
+				$.ajax
+				(
+					{
+						type : 'POST',
+						url : 'ajax.php?page='+PAGE,
+						data : 'f_mois_bascule_annee_scolaire='+$('#f_mois_bascule_annee_scolaire option:selected').val(),
+						dataType : "html",
+						error : function(msg,string)
+						{
+							$("#bouton_valider_annee_scolaire").prop('disabled',false);
+							$('#ajax_msg_annee_scolaire').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
+							return false;
+						},
+						success : function(responseHTML)
+						{
+							initialiser_compteur();
+							$("#bouton_valider_annee_scolaire").prop('disabled',false);
+							if(responseHTML!='ok')
+							{
+								$('#ajax_msg_annee_scolaire').removeAttr("class").addClass("alerte").html(responseHTML);
+							}
+							else
+							{
+								$('#ajax_msg_annee_scolaire').removeAttr("class").addClass("valide").html("Donnée enregistrée !");
+							}
+							return false;
+						}
+					}
+				);
+			}
+		);
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 //	Intercepter la touche entrée pour éviter une soumission d'un formulaire sans contrôle
@@ -586,7 +711,7 @@ $(document).ready
 				$('#f_sesamath_key').val(tab_infos[1]);
 				$('#f_sesamath_uai').val(tab_infos[2]); // (peut être vide)
 				$('#f_sesamath_type_nom').val(denomination);
-				$('#ajax_msg_instance').removeAttr("class").addClass("alerte").html('Pensez à valider pour confirmer votre sélection !');
+				$('#ajax_msg_sesamath').removeAttr("class").addClass("alerte").html('Pensez à valider pour confirmer votre sélection !');
 				initialiser_compteur();
 				$('#rechercher_annuler').click();
 			}

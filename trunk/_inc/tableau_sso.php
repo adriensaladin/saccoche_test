@@ -63,7 +63,7 @@ $tab_connexion_info['cas']['place']            = array( 'serveur_host'=>'www.pla
 $tab_connexion_info['cas']['place-test']       = array( 'serveur_host'=>'www.preprod.place.e-lorraine.net' , 'serveur_port'=>443  , 'serveur_root'=>'cas'              , 'csv_entete'=>0 , 'csv_nom'=>0 , 'csv_prenom'=>0 , 'csv_id_ent'=>0 , 'csv_id_sconet'=>NULL , 'txt'=>'ENT Test Place (iTOP).' );
 $tab_connexion_info['cas']['scolastance-test'] = array( 'serveur_host'=>'preprod-cas.scolastance.com'      , 'serveur_port'=>443  , 'serveur_root'=>'cas-recette1_616' , 'csv_entete'=>1 , 'csv_nom'=>1 , 'csv_prenom'=>2 , 'csv_id_ent'=>3 , 'csv_id_sconet'=>NULL , 'txt'=>'ENT Test Scolastance.' );
 */
-$saml_rne = isset($_SESSION['UAI']) ? $_SESSION['UAI'] : '' ; // au moins à cause d'un appel de ce fichier depuis la doc
+$saml_rne = isset($_SESSION['WEBMESTRE_UAI']) ? $_SESSION['WEBMESTRE_UAI'] : '' ; // au moins à cause d'un appel de ce fichier depuis la doc
 $tab_connexion_info['gepi']['saml']            = array( 'saml_url'=>'http://' , 'saml_rne'=>$saml_rne , 'saml_certif'=>'AA:FD:FF:98:48:18:A8:56:73:32:73:8F:33:53:04:8C:36:9B:E6:B2' , 'txt'=>'S\'authentifier depuis GEPI (protocole SAML).' );
 
 ?>

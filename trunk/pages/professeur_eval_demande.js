@@ -122,33 +122,6 @@ $(document).ready
 		// Le formulaire qui va être analysé et traité en AJAX
 		var formulaire0 = $('#form0');
 
-		// Ajout d'une méthode pour valider les dates de la forme jj/mm/aaaa (trouvé dans le zip du plugin, corrige en plus un bug avec Safari)
-		jQuery.validator.addMethod
-		(
-			"dateITA",
-			function(value, element)
-			{
-				var check = false;
-				var re = /^\d{1,2}\/\d{1,2}\/\d{4}$/ ;
-				if( re.test(value))
-				{
-					var adata = value.split('/');
-					var gg = parseInt(adata[0],10);
-					var mm = parseInt(adata[1],10);
-					var aaaa = parseInt(adata[2],10);
-					var xdata = new Date(aaaa,mm-1,gg);
-					if ( ( xdata.getFullYear() == aaaa ) && ( xdata.getMonth () == mm - 1 ) && ( xdata.getDate() == gg ) )
-						check = true;
-					else
-						check = false;
-				}
-				else
-					check = false;
-				return this.optional(element) || check;
-			}, 
-			"Veuillez entrer une date correcte."
-		);
-
 		// Vérifier la validité du formulaire (avec jquery.validate.js)
 		var validation0 = formulaire0.validate
 		(
@@ -176,8 +149,8 @@ $(document).ready
 		// Options d'envoi du formulaire (avec jquery.form.js)
 		var ajaxOptions0 =
 		{
-			type : 'POST',
 			url : 'ajax.php?page='+PAGE,
+			type : 'POST',
 			dataType : "html",
 			clearForm : false,
 			resetForm : false,

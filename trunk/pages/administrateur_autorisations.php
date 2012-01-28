@@ -60,6 +60,11 @@ $tab_titres[]  = 'Détail de maîtrise de socle';
 $tab_profils[] = array( 'parent'=>'parents' , 'eleve'=>'élèves' );
 $tab_objets[]  = array( 'droit_socle_acces'=>'accéder au relevé avec les items évalués par item du socle' , 'droit_socle_pourcentage_acquis'=>'afficher les pourcentages d\'items acquis' , 'droit_socle_etat_validation'=>'afficher les états de validation saisis' );
 
+$tab_titres[]  = 'Bulletins';
+$tab_profils[] = array( 'directeur'=>'directeurs' , 'professeur'=>'tous les<br />professeurs' , 'profprincipal'=>'professeurs<br />principaux' , 'aucunprof'=>'aucun<br />professeur' );
+$tab_objets[]  = array( 'droit_bulletin_appreciation_generale'=>'éditer l\'appréciation générale' , 'droit_bulletin_impression_pdf'=>'générer la version PDF imprimable' );
+
+// Indiquer les boutons devant être décochés lors d'une initialisation aux valeurs par défaut
 $tab_false = array(
 	'droit_validation_entree__profprincipal','droit_validation_entree__aucunprof',
 	'droit_validation_pilier__professeur','droit_validation_pilier__aucunprof',
@@ -67,7 +72,9 @@ $tab_false = array(
 	'droit_gerer_referentiel__professeur','droit_gerer_referentiel__aucunprof',
 	'droit_gerer_ressource__profcoordonnateur','droit_gerer_ressource__aucunprof',
 	'droit_bilan_note_sur_vingt__parent','droit_bilan_note_sur_vingt__eleve',
-	'droit_socle_etat_validation__parent','droit_socle_etat_validation__eleve'
+	'droit_socle_etat_validation__parent','droit_socle_etat_validation__eleve',
+	'droit_bulletin_appreciation_generale__professeur','droit_bulletin_appreciation_generale__aucunprof',
+	'droit_bulletin_impression_pdf__professeur','droit_bulletin_impression_pdf__profprincipal'
 );
 
 $tab_init_js = 'var tab_init = new Array();';
@@ -96,7 +103,7 @@ foreach($tab_titres as $i => $titre)
 			$init = in_array($objet_key.'__'.$profil_key,$tab_false) ? 'false' : 'true' ;
 			$tab_init_js .= 'tab_init["'.$objet_key.'"]["'.$profil_key.'"] = '.$init.';';
 			$checked = (in_array($profil_key,$tab_check)) ? ' checked' : '' ;
-			$type = (($i>1)||($profil_key=='directeur')) ? 'checkbox' : 'radio' ;
+			$type = ( (($i>1)&&($i<7)) || ($profil_key=='directeur') ) ? 'checkbox' : 'radio' ;
 			$affichage .= '<td class="hc"><input type="'.$type.'" name="'.$objet_key.'" value="'.$profil_key.'"'.$checked.' /></td>';
 		}
 		$affichage .= '<td class="nu">&nbsp;<button name="initialiser" type="button" class="retourner">Par défaut</button> <button name="valider" type="button" class="parametre">Enregistrer</button> <label id="ajax_msg_'.$objet_key.'">&nbsp;</label></td></tr>';

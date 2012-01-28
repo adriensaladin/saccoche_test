@@ -112,16 +112,16 @@ if( ($action=='initialiser') && (HEBERGEUR_INSTALLATION=='mono-structure') && $p
 	// Mettre à jour la base si nécessaire
 	maj_base_si_besoin($BASE);
 	// Requête pour récupérer la dénomination et le mode de connexion
-	$DB_TAB = DB_STRUCTURE_PUBLIC::DB_lister_parametres('"denomination","connexion_mode","connexion_nom"');
+	$DB_TAB = DB_STRUCTURE_PUBLIC::DB_lister_parametres('"webmestre_denomination","connexion_mode","connexion_nom"');
 	foreach($DB_TAB as $DB_ROW)
 	{
 		${$DB_ROW['parametre_nom']} = $DB_ROW['parametre_valeur'];
 	}
-	if(isset($denomination,$connexion_mode,$connexion_nom)==false)
+	if(isset($webmestre_denomination,$connexion_mode,$connexion_nom)==false)
 	{
 		exit('Erreur : base de l\'établissement incomplète !');
 	}
-	exit( afficher_nom_etablissement($BASE=0,$denomination) . afficher_formulaire_identification($profil,$connexion_mode,$connexion_nom) );
+	exit( afficher_nom_etablissement($BASE=0,$webmestre_denomination) . afficher_formulaire_identification($profil,$connexion_mode,$connexion_nom) );
 }
 
 // Charger le formulaire de choix des établissements (installation multi-structures)

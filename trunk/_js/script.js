@@ -655,7 +655,7 @@ $(document).ready
 		('click',
 			function()
 			{
-				id = $(this).parent().attr('lang');
+				id = $(this).parent().attr('id').substring(3); // 'to_' + id
 				$('#'+id).toggle('fast');
 				src = $(this).attr('src');
 				if( src.indexOf("plus") > 0 )
@@ -786,7 +786,7 @@ $(document).ready
 			function(e)
 			{
 				// Récupérer les infos associées
-				infos = $(this).attr("lang");    // 'ids_' + matiere_id + '_' + item_id + '_' + score
+				infos = $(this).attr('id');    // 'demande_' + matiere_id + '_' + item_id + '_' + score
 				tab_infos = infos.split('_');
 				if(tab_infos.length==4)
 				{
@@ -909,9 +909,9 @@ $(document).ready
 		('click',
 			function()
 			{
-				tab = $(this).attr("lang").split('_');
-				m = tab[0];
-				a = tab[1];
+				tab = $(this).attr('id').split('_'); // 'calendrier_' + mois + '_' + année
+				m = tab[1];
+				a = tab[2];
 				reload_calendrier(m,a);
 				return false;
 			}

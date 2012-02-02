@@ -41,8 +41,7 @@ foreach($tab_notes_txt as $note_nom => $tab_note_texte)
 	if(is_dir($dossier.$note_nom))
 	{
 		$checked = ($note_nom==$_SESSION['NOTE_IMAGE_STYLE']) ? ' checked' : '' ;
-		$listing_notes_texte = implode('/',$tab_note_texte);
-		$simulation_lignes[0] .= 	'<td style="width:5em"><label for="dossier_'.$note_nom.'">'.$note_nom.'</label><br /><input type="radio" id="dossier_'.$note_nom.'" name="note_image_style" value="'.$note_nom.'"'.$checked.' lang="'.$listing_notes_texte.'" /></td>';
+		$simulation_lignes[0] .= 	'<td style="width:5em"><label for="dossier_'.$note_nom.'">'.$note_nom.'</label><br /><input type="radio" id="dossier_'.$note_nom.'" name="note_image_style" value="'.$note_nom.'"'.$checked.' /></td>';
 		$simulation_lignes[1] .= 	'<td><img alt="'.$tab_note_texte['RR'].'" src="'.$dossier.$note_nom.'/h/RR.gif" /><br />'.$tab_note_texte['RR'].'</td>';
 		$simulation_lignes[2] .= 	'<td><img alt="'.$tab_note_texte['R'].'" src="'.$dossier.$note_nom.'/h/R.gif" /><br />'.$tab_note_texte['R'].'</td>';
 		$simulation_lignes[3] .= 	'<td><img alt="'.$tab_note_texte['V'].'" src="'.$dossier.$note_nom.'/h/V.gif" /><br />'.$tab_note_texte['V'].'</td>';

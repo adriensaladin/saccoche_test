@@ -107,10 +107,9 @@ if( ($action=='Afficher_demandes') && $matiere_id && $matiere_nom && $groupe_id 
 		$score  = ($DB_ROW['demande_score']!==null) ? $DB_ROW['demande_score'] : false ;
 		$statut = ($DB_ROW['demande_statut']=='eleve') ? 'demande non traitée' : 'évaluation en préparation' ;
 		$class  = ($DB_ROW['demande_statut']=='eleve') ? ' class="new"' : '' ;
-		$langue = mb_substr( $DB_ROW['item_ref'] , mb_strpos($DB_ROW['item_ref'],'.')+1 );
 		// Afficher une ligne du tableau 
 		$retour .= '<tr'.$class.'>';
-		$retour .= '<td class="nu"><input type="checkbox" name="f_ids" value="'.$DB_ROW['demande_id'].'x'.$DB_ROW['user_id'].'x'.$DB_ROW['item_id'].'" lang="'.html($langue).'" /></td>';
+		$retour .= '<td class="nu"><input type="checkbox" name="f_ids" value="'.$DB_ROW['demande_id'].'x'.$DB_ROW['user_id'].'x'.$DB_ROW['item_id'].'" /></td>';
 		$retour .= '<td class="label">'.html($matiere_nom).'</td>';
 		$retour .= '<td class="label">'.html($DB_ROW['item_ref']).' <img alt="" src="./_img/bulle_aide.png" title="'.html($DB_ROW['item_nom']).'" /></td>';
 		$retour .= '<td class="label">$'.$DB_ROW['item_id'].'$</td>';

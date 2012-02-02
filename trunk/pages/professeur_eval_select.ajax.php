@@ -99,6 +99,7 @@ if( ($action=='Afficher_evaluations') && $date_debut && $date_fin )
 	{
 		exit('Erreur : la date de début est postérieure à la date de fin !');
 	}
+	$script = '';
 	$DB_TAB = DB_STRUCTURE_PROFESSEUR::DB_lister_devoirs_prof($_SESSION['USER_ID'],0,$date_debut_mysql,$date_fin_mysql);
 	foreach($DB_TAB as $DB_ROW)
 	{
@@ -123,11 +124,11 @@ if( ($action=='Afficher_evaluations') && $date_debut && $date_fin )
 		echo'<tr>';
 		echo	'<td><i>'.html($DB_ROW['devoir_date']).'</i>'.html($date_affich).'</td>';
 		echo	'<td>'.html($date_visible).'</td>';
-		echo	'<td lang="'.html($DB_ROW['users_listing']).'">'.html($DB_ROW['users_nombre']).' élève'.$us.'</td>';
+		echo	'<td>'.html($DB_ROW['users_nombre']).' élève'.$us.'</td>';
 		echo	'<td>'.html($DB_ROW['devoir_info']).'</td>';
-		echo	'<td lang="'.html($DB_ROW['items_listing']).'">'.html($DB_ROW['items_nombre']).' item'.$cs.'</td>';
-		echo	'<td lang="'.$profs_liste.'">'.$profs_nombre.'</td>';
-		echo	'<td class="nu" lang="'.$ref.'">';
+		echo	'<td>'.html($DB_ROW['items_nombre']).' item'.$cs.'</td>';
+		echo	'<td>'.$profs_nombre.'</td>';
+		echo	'<td class="nu" id="devoir_'.$ref.'">';
 		echo		($proprio) ? '<q class="modifier" title="Modifier cette évaluation (date, description, ...)."></q>' : '<q class="modifier_non" title="Non modifiable (évaluation d\'un collègue)."></q>' ;
 		echo		($proprio) ? '<q class="ordonner" title="Réordonner les items de cette évaluation."></q>' : '<q class="ordonner_non" title="Non réordonnable (évaluation d\'un collègue)."></q>' ;
 		echo		'<q class="dupliquer" title="Dupliquer cette évaluation."></q>';
@@ -138,7 +139,9 @@ if( ($action=='Afficher_evaluations') && $date_debut && $date_fin )
 		echo		'<q class="voir_repart" title="Voir les répartitions des élèves à cette évaluation."></q>';
 		echo	'</td>';
 		echo'</tr>';
+		$script .= 'tab_items["'.$ref.'"]="'.html($DB_ROW['items_listing']).'";tab_profs["'.$ref.'"]="'.$profs_liste.'";tab_eleves["'.$ref.'"]="'.html($DB_ROW['users_listing']).'";';
 	}
+	echo'<SCRIPT>'.$script;
 	exit();
 }
 
@@ -160,7 +163,7 @@ if( (($action=='ajouter')||(($action=='dupliquer')&&($devoir_id))) && $date && $
 	{
 		exit('Erreur : date trop éloignée !');
 	}
-	// Tester les profs, mais plus leur appartenance au groupe (pour qu'on prof puisse accéder à l'éval même s'il n'a pas le groupe, même si on duplique une évaluation pour un autre groupe...) [absurde ici de toutes façons]
+	// Tester les profs, mais plus leur appartenance au groupe (pour qu'un prof puisse accéder à l'éval même s'il n'a pas le groupe, même si on duplique une évaluation pour un autre groupe...) [absurde ici de toutes façons]
 	if(count($tab_profs))
 	{
 		if(!in_array($_SESSION['USER_ID'],$tab_profs))
@@ -201,11 +204,11 @@ if( (($action=='ajouter')||(($action=='dupliquer')&&($devoir_id))) && $date && $
 	$profs_nombre = count($tab_profs) ? count($tab_profs).' profs' : 'moi seul' ;
 	echo'<td><i>'.html($date_mysql).'</i>'.html($date).'</td>';
 	echo'<td>'.html($date_visible).'</td>';
-	echo'<td lang="'.implode('_',$tab_eleves).'">'.$nb_eleves.' élève'.$us.'</td>';
+	echo'<td>'.$nb_eleves.' élève'.$us.'</td>';
 	echo'<td>'.html($info).'</td>';
-	echo'<td lang="'.implode('_',$tab_items).'">'.$nb_items.' item'.$cs.'</td>';
-	echo'<td lang="'.implode('_',$tab_profs).'">'.$profs_nombre.'</td>';
-	echo'<td class="nu" lang="'.$ref.'">';
+	echo'<td>'.$nb_items.' item'.$cs.'</td>';
+	echo'<td>'.$profs_nombre.'</td>';
+	echo'<td class="nu" id="devoir_'.$ref.'">';
 	echo	'<q class="modifier" title="Modifier cette évaluation (date, description, ...)."></q>';
 	echo	'<q class="ordonner" title="Réordonner les items de cette évaluation."></q>';
 	echo	'<q class="dupliquer" title="Dupliquer cette évaluation."></q>';
@@ -215,6 +218,7 @@ if( (($action=='ajouter')||(($action=='dupliquer')&&($devoir_id))) && $date && $
 	echo	'<q class="voir" title="Voir les acquisitions des élèves à cette évaluation."></q>';
 	echo	'<q class="voir_repart" title="Voir les répartitions des élèves à cette évaluation."></q>';
 	echo'</td>';
+	echo'<SCRIPT>tab_items["'.$ref.'"]="'.implode('_',$tab_items).'";tab_profs["'.$ref.'"]="'.implode('_',$tab_profs).'";tab_eleves["'.$ref.'"]="'.implode('_',$tab_eleves).'";';
 	exit();
 }
 
@@ -235,7 +239,7 @@ if( ($action=='modifier') && $devoir_id && $groupe_id && $date && $date_visible 
 	{
 		exit('Erreur : date trop éloignée !');
 	}
-	// Tester les profs, mais plus leur appartenance au groupe (pour qu'on prof puisse accéder à l'éval même s'il n'a pas le groupe, même si on duplique une évaluation pour un autre groupe...) [absurde ici de toutes façons]
+	// Tester les profs, mais plus leur appartenance au groupe (pour qu'un prof puisse accéder à l'éval même s'il n'a pas le groupe, même si on duplique une évaluation pour un autre groupe...) [absurde ici de toutes façons]
 	if(count($tab_profs))
 	{
 		if(!in_array($_SESSION['USER_ID'],$tab_profs))
@@ -272,11 +276,11 @@ if( ($action=='modifier') && $devoir_id && $groupe_id && $date && $date_visible 
 	$profs_nombre = count($tab_profs) ? count($tab_profs).' profs' : 'moi seul' ;
 	echo'<td><i>'.html($date_mysql).'</i>'.html($date).'</td>';
 	echo'<td>'.html($date_visible).'</td>';
-	echo'<td lang="'.implode('_',$tab_eleves).'">'.$nb_eleves.' élève'.$us.'</td>';
+	echo'<td>'.$nb_eleves.' élève'.$us.'</td>';
 	echo'<td>'.html($info).'</td>';
-	echo'<td lang="'.implode('_',$tab_items).'">'.$nb_items.' item'.$cs.'</td>';
-	echo'<td lang="'.implode('_',$tab_profs).'">'.$profs_nombre.'</td>';
-	echo'<td class="nu" lang="'.$ref.'">';
+	echo'<td>'.$nb_items.' item'.$cs.'</td>';
+	echo'<td>'.$profs_nombre.'</td>';
+	echo'<td class="nu" id="devoir_'.$ref.'">';
 	echo	'<q class="modifier" title="Modifier cette évaluation (date, description, ...)."></q>';
 	echo	'<q class="ordonner" title="Réordonner les items de cette évaluation."></q>';
 	echo	'<q class="dupliquer" title="Dupliquer cette évaluation."></q>';
@@ -286,6 +290,7 @@ if( ($action=='modifier') && $devoir_id && $groupe_id && $date && $date_visible 
 	echo	'<q class="voir" title="Voir les acquisitions des élèves à cette évaluation."></q>';
 	echo	'<q class="voir_repart" title="Voir les répartitions des élèves à cette évaluation."></q>';
 	echo'</td>';
+	echo'<SCRIPT>tab_items["'.$ref.'"]="'.implode('_',$tab_items).'";tab_profs["'.$ref.'"]="'.implode('_',$tab_profs).'";tab_eleves["'.$ref.'"]="'.implode('_',$tab_eleves).'";';
 	exit();
 }
 
@@ -404,7 +409,7 @@ if( ($action=='saisir') && $devoir_id && $groupe_id && $date && $date_visible &&
 		foreach($tab_comp_id as $comp_id=>$val_comp)
 		{
 			$num_ligne++;
-			$tab_affich[$comp_id][$user_id] = '<td class="td_clavier" lang="C'.$num_colonne.'L'.$num_ligne.'"><input type="text" class="X" value="X" id="C'.$num_colonne.'L'.$num_ligne.'" name="'.$comp_id.'x'.$user_id.'" readonly /></td>';
+			$tab_affich[$comp_id][$user_id] = '<td class="td_clavier" id="td_C'.$num_colonne.'L'.$num_ligne.'"><input type="text" class="X" value="X" id="C'.$num_colonne.'L'.$num_ligne.'" name="'.$comp_id.'x'.$user_id.'" readonly /></td>';
 		}
 	}
 	// configurer le champ input

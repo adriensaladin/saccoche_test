@@ -85,10 +85,10 @@ if(mb_substr_count($ids,'_')!=3)
 	exit('Erreur avec les données transmises !');
 }
 
-list($prefixe,$perso,$matiere_id,$niveau_id) = explode('_',$ids);
-$perso      = clean_entier($perso);
+list($prefixe,$matiere_id,$niveau_id,$perso) = explode('_',$ids);
 $matiere_id = clean_entier($matiere_id);
 $niveau_id  = clean_entier($niveau_id);
+$perso      = clean_entier($perso);
 
 $tab_partages = array('oui','non','bof','hs');
 $tab_methodes = array('geometrique','arithmetique','classique','bestof1','bestof2','bestof3');
@@ -113,7 +113,7 @@ if( ($action=='Voir') && $matiere_id && $niveau_id )
 // Modifier le partage d'un référentiel
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
-if( ($action=='Partager') && ($perso==0) && $matiere_id && $niveau_id && in_array($partage,$tab_partages) && ($partage!='hs') )
+if( ($action=='Partager') && $matiere_id && $niveau_id && ($perso==0) && in_array($partage,$tab_partages) && ($partage!='hs') )
 {
 	if( ($partage=='oui') && ( (!$_SESSION['SESAMATH_ID']) || (!$_SESSION['SESAMATH_KEY']) ) )
 	{
@@ -147,7 +147,7 @@ if( ($action=='Partager') && ($perso==0) && $matiere_id && $niveau_id && in_arra
 // Mettre à jour sur le serveur de partage la dernière version d'un référentiel
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
-if( ($action=='Envoyer') && ($perso==0) && $matiere_id && $niveau_id )
+if( ($action=='Envoyer') && $matiere_id && $niveau_id && ($perso==0) )
 {
 	if( (!$_SESSION['SESAMATH_ID']) || (!$_SESSION['SESAMATH_KEY']) )
 	{

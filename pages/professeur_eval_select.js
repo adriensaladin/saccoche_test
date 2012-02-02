@@ -70,9 +70,9 @@ $(document).ready
 			new_tr += '<tr>';
 			new_tr += '<td><input id="f_date" name="f_date" size="9" type="text" value="'+input_date+'" /><q class="date_calendrier" title="Cliquez sur cette image pour importer une date depuis un calendrier !"></q></td>';
 			new_tr += '<td><input id="box_date" type="checkbox" checked style="vertical-align:-3px" /> <span style="vertical-align:-2px">identique</span><span class="hide"><input id="f_date_visible" name="f_date_visible" size="9" type="text" value="'+input_date+'" /><q class="date_calendrier" title="Cliquez sur cette image pour importer une date depuis un calendrier !"></q></span></td>';
-			new_tr += '<td><input id="f_eleve_nombre" name="f_eleve_nombre" size="10" type="text" value="0 élève" readonly /><input id="f_eleve_liste" name="f_eleve_liste" type="hidden" value="" /><q class="choisir_eleve" title="Voir ou choisir les élèves."></q></td>';
+			new_tr += '<td><input id="f_eleve_nombre" name="f_eleve_nombre" size="10" type="text" value="aucun" readonly /><input id="f_eleve_liste" name="f_eleve_liste" type="hidden" value="" /><q class="choisir_eleve" title="Voir ou choisir les élèves."></q></td>';
 			new_tr += '<td><input id="f_info" name="f_info" size="20" type="text" value="" /></td>';
-			new_tr += '<td><input id="f_compet_nombre" name="f_compet_nombre" size="10" type="text" value="0 item" readonly /><input id="f_compet_liste" name="f_compet_liste" type="hidden" value="" /><q class="choisir_compet" title="Voir ou choisir les items."></q></td>';
+			new_tr += '<td><input id="f_compet_nombre" name="f_compet_nombre" size="10" type="text" value="aucun" readonly /><input id="f_compet_liste" name="f_compet_liste" type="hidden" value="" /><q class="choisir_compet" title="Voir ou choisir les items."></q></td>';
 			new_tr += '<td><input id="f_prof_nombre" name="f_prof_nombre" size="10" type="text" value="moi seul" readonly /><input id="f_prof_liste" name="f_prof_liste" type="hidden" value="" /><q class="choisir_prof" title="Voir ou choisir les collègues."></q></td>';
 			new_tr += '<td class="nu"><input id="f_action" name="f_action" type="hidden" value="'+mode+'" /><q class="valider" title="Valider l\'ajout de cette évaluation."></q><q class="annuler" title="Annuler l\'ajout de cette évaluation."></q> <label id="ajax_msg">&nbsp;</label></td>';
 			new_tr += '</tr>';
@@ -92,16 +92,16 @@ $(document).ready
 			afficher_masquer_images_action('hide');
 			$('#form0').css('visibility','hidden');
 			// Récupérer les informations de la ligne concernée
-			var ref           = $(this).parent().attr('lang');
+			var ref           = $(this).parent().attr('id').substring(7); // "devoir_" + ref
 			var date          = $(this).parent().prev().prev().prev().prev().prev().prev().html();
 			var date_visible  = $(this).parent().prev().prev().prev().prev().prev().html();
 			var eleve_nombre  = $(this).parent().prev().prev().prev().prev().html();
-			var eleve_liste   = $(this).parent().prev().prev().prev().prev().attr('lang');
+			var eleve_liste   = tab_eleves[ref];
 			var info          = $(this).parent().prev().prev().prev().html();
 			var compet_nombre = $(this).parent().prev().prev().html();
-			var compet_liste  = $(this).parent().prev().prev().attr('lang');
+			var compet_liste  = tab_items[ref];
 			var prof_nombre   = $(this).parent().prev().html();
-			var prof_liste    = $(this).parent().prev().attr('lang');
+			var prof_liste    = tab_profs[ref];
 			date = date.substring(17,date.length); // enlever la date mysql cachée
 			if(date_visible=='identique')
 			{
@@ -144,16 +144,16 @@ $(document).ready
 			afficher_masquer_images_action('hide');
 			$('#form0').css('visibility','hidden');
 			// Récupérer les informations de la ligne concernée
-			var ref           = $(this).parent().attr('lang');
+			var ref           = $(this).parent().attr('id').substring(7); // "devoir_" + ref
 			var date          = $(this).parent().prev().prev().prev().prev().prev().prev().html();
 			var date_visible  = $(this).parent().prev().prev().prev().prev().prev().html();
 			var eleve_nombre  = $(this).parent().prev().prev().prev().prev().html();
-			var eleve_liste   = $(this).parent().prev().prev().prev().prev().attr('lang');
+			var eleve_liste   = tab_eleves[ref];
 			var info          = $(this).parent().prev().prev().prev().html();
 			var compet_nombre = $(this).parent().prev().prev().html();
-			var compet_liste  = $(this).parent().prev().prev().attr('lang');
+			var compet_liste  = tab_items[ref];
 			var prof_nombre   = $(this).parent().prev().html();
-			var prof_liste    = $(this).parent().prev().attr('lang');
+			var prof_liste    = tab_profs[ref];
 			date = date.substring(17,date.length); // enlever la date mysql cachée
 			if(date_visible=='identique')
 			{
@@ -194,7 +194,7 @@ $(document).ready
 			mode = $(this).attr('class');
 			afficher_masquer_images_action('hide');
 			$('#form0').css('visibility','hidden');
-			var ref = $(this).parent().attr('lang');
+			var ref = $(this).parent().attr('id').substring(7); // "devoir_" + ref
 			var new_span = '<span class="danger"><input id="f_action" name="f_action" type="hidden" value="'+mode+'" /><input id="f_ref" name="f_ref" type="hidden" value="'+ref+'" />Toutes les saisies associées seront perdues !<q class="valider" title="Confirmer la suppression de cette évaluation."></q><q class="annuler" title="Annuler la suppression de cette évaluation."></q> <label id="ajax_msg">&nbsp;</label></span>';
 			$(this).after(new_span);
 			infobulle();
@@ -208,7 +208,7 @@ $(document).ready
 		{
 			mode = $(this).attr('class');
 			// Récupérer les informations de la ligne concernée
-			var ref    = $(this).parent().attr('lang');
+			var ref    = $(this).parent().attr('id').substring(7); // "devoir_" + ref
 			var date   = $(this).parent().prev().prev().prev().prev().prev().prev().html();
 			var groupe = $(this).parent().prev().prev().prev().prev().html();
 			var info   = $(this).parent().prev().prev().prev().html();
@@ -272,7 +272,7 @@ $(document).ready
 		{
 			mode = $(this).attr('class');
 			// Récupérer les informations de la ligne concernée
-			var ref          = $(this).parent().attr('lang');
+			var ref          = $(this).parent().attr('id').substring(7); // "devoir_" + ref
 			var date         = $(this).parent().prev().prev().prev().prev().prev().prev().html();
 			var date_visible = $(this).parent().prev().prev().prev().prev().prev().html();
 			var info         = $(this).parent().prev().prev().prev().html();
@@ -338,7 +338,7 @@ $(document).ready
 		{
 			mode = $(this).attr('class');
 			// Récupérer les informations de la ligne concernée
-			var ref  = $(this).parent().attr('lang');
+			var ref  = $(this).parent().attr('id').substring(7); // "devoir_" + ref
 			var date = $(this).parent().prev().prev().prev().prev().prev().prev().html();
 			var info = $(this).parent().prev().prev().prev().html();
 			    date = date.substring(17,date.length); // garder la date française
@@ -393,7 +393,7 @@ $(document).ready
 		{
 			mode = $(this).attr('class');
 			// Récupérer les informations de la ligne concernée
-			var ref  = $(this).parent().attr('lang');
+			var ref  = $(this).parent().attr('id').substring(7); // "devoir_" + ref
 			var date = $(this).parent().prev().prev().prev().prev().prev().prev().html();
 			var info = $(this).parent().prev().prev().prev().html();
 			    date = date.substring(17,date.length); // garder la date française
@@ -523,7 +523,7 @@ $(document).ready
 		{
 			mode = $(this).attr('class');
 			// Récupérer les informations de la ligne concernée
-			var ref    = $(this).parent().attr('lang');
+			var ref    = $(this).parent().attr('id').substring(7); // "devoir_" + ref
 			var groupe = $(this).parent().prev().prev().prev().prev().html();
 			var info   = $(this).parent().prev().prev().prev().html();
 			// Masquer le tableau ; Afficher la zone associée et charger son contenu
@@ -811,10 +811,10 @@ $(document).ready
 						nombre++;
 					}
 				);
-				liste = liste.substring(0,liste.length-1);
-				s = (nombre>1) ? 's' : '';
-				$('#f_compet_liste').val(liste);
-				$('#f_compet_nombre').val(nombre+' item'+s);
+				var compet_liste  = liste.substring(0,liste.length-1);
+				var compet_nombre = (nombre==0) ? 'aucun' : ( (nombre>1) ? nombre+' items' : nombre+' item' ) ;
+				$('#f_compet_liste').val(compet_liste);
+				$('#f_compet_nombre').val(compet_nombre);
 				$.fancybox.close();
 			}
 		);
@@ -833,7 +833,7 @@ $(document).ready
 				(
 					function()
 					{
-						var eleve_id = $(this).attr("lang");
+						var eleve_id = $(this).val();
 						if(typeof(test_doublon[eleve_id])=='undefined')
 						{
 							test_doublon[eleve_id] = true;
@@ -842,10 +842,10 @@ $(document).ready
 						}
 					}
 				);
-				liste = liste.substring(0,liste.length-1);
-				var s = (nombre>1) ? 's' : '';
-				$('#f_eleve_liste').val(liste);
-				$('#f_eleve_nombre').val(nombre+' élève'+s);
+				var eleve_liste  = liste.substring(0,liste.length-1);
+				var eleve_nombre = (nombre==0) ? 'aucun' : ( (nombre>1) ? nombre+' élèves' : nombre+' élève' ) ;
+				$('#f_eleve_liste').val(eleve_liste);
+				$('#f_eleve_nombre').val(eleve_nombre);
 				$.fancybox.close();
 			}
 		);
@@ -1147,14 +1147,13 @@ $(document).ready
 					// Test si un précédent td n'a pas été remis en place (js a du mal à suivre le mouseleave sinon)
 					if(memo_input_id)
 					{
-						$("#table_saisir tbody td[lang="+memo_input_id+"]").removeAttr("class").addClass("td_clavier").children("div").remove();
+						$("td#td_"+memo_input_id).removeAttr("class").addClass("td_clavier").children("div").remove();
 						$("input#"+memo_input_id).show();
 						memo_input_id = false;
 					}
 					else
 					{
 						// Récupérer les infos associées
-						// adresse = $(this).attr("lang");
 						memo_input_id = $(this).children("input").attr("id");
 						var valeur = $(this).children("input").val();
 						$(this).children("input").hide();
@@ -1173,7 +1172,7 @@ $(document).ready
 				{
 					if(memo_input_id)
 					{
-						$("#table_saisir tbody td[lang="+memo_input_id+"]").removeAttr("class").addClass("td_clavier").children("div").remove();
+						$("td#td_"+memo_input_id).removeAttr("class").addClass("td_clavier").children("div").remove();
 						$("input#"+memo_input_id).show();
 						memo_input_id = false;
 					}
@@ -1389,21 +1388,22 @@ $(document).ready
 			{
 				rules :
 				{
-					f_date         : { required:true , dateITA:true },
-					f_date_visible : { required:function(){return !$('#box_date').is(':checked');} , dateITA:true },
-					f_eleve_liste  : { required:true },
-					f_info         : { required:false , maxlength:60 },
-					f_prof_liste   : { required:false },
-					f_compet_liste : { required:true }
+					// "required:true" ne fonctionne pas sur "f_eleve_liste" & "f_prof_liste" & "f_compet_liste" car type hidden
+					f_date          : { required:true , dateITA:true },
+					f_date_visible  : { required:function(){return !$('#box_date').is(':checked');} , dateITA:true },
+					f_eleve_nombre  : { accept:'élève|élèves' },
+					f_info          : { required:false , maxlength:60 },
+					f_prof_nombre   : { required:false },
+					f_compet_nombre : { accept:'item|items' }
 				},
 				messages :
 				{
-					f_date         : { required:"date manquante" , dateITA:"format JJ/MM/AAAA non respecté" },
-					f_date_visible : { required:"date manquante" , dateITA:"format JJ/MM/AAAA non respecté" },
-					f_eleve_liste  : { required:"élève(s) manquant(s)" },
-					f_info         : { maxlength:"60 caractères maximum" },
-					f_prof_liste   : { },
-					f_compet_liste : { required:"item(s) manquant(s)" }
+					f_date          : { required:"date manquante" , dateITA:"format JJ/MM/AAAA non respecté" },
+					f_date_visible  : { required:"date manquante" , dateITA:"format JJ/MM/AAAA non respecté" },
+					f_eleve_nombre  : { accept:"élève(s) manquant(s)" },
+					f_info          : { maxlength:"60 caractères maximum" },
+					f_prof_nombre   : { },
+					f_compet_nombre : { accept:"item(s) manquant(s)" }
 				},
 				errorElement : "label",
 				errorClass : "erreur",
@@ -1494,13 +1494,17 @@ $(document).ready
 					case 'ajouter':
 						$('table.form tbody tr td[colspan]').parent().remove(); // En cas de tableau avec une ligne vide pour la conformité XHTML
 					case 'dupliquer':
-						var new_tr = '<tr class="new">'+responseHTML+'</tr>';
+						var position_script = responseHTML.lastIndexOf('<SCRIPT>');
+						var new_tr = '<tr class="new">'+responseHTML.substring(0,position_script)+'</tr>';
 						$('table.form tbody').append(new_tr);
 						$('q.valider').parent().parent().remove();
+						eval( responseHTML.substring(position_script+8) );
 						break;
 					case 'modifier':
-						$('q.valider').parent().parent().prev().addClass("new").html(responseHTML).show();
+						var position_script = responseHTML.lastIndexOf('<SCRIPT>');
+						$('q.valider').parent().parent().prev().addClass("new").html(responseHTML.substring(0,position_script)).show();
 						$('q.valider').parent().parent().remove();
+						eval( responseHTML.substring(position_script+8) );
 						break;
 					case 'supprimer':
 						$('q.valider').parent().parent().parent().remove();
@@ -1589,14 +1593,16 @@ $(document).ready
 		function retour_form_valide0(responseHTML)
 		{
 			initialiser_compteur();
-			if( (responseHTML.substring(0,4)!='<tr>') && (responseHTML!='') )
+			if( (responseHTML.substring(0,4)!='<tr>') && (responseHTML!='<SCRIPT>') )
 			{
 				$('#ajax_msg0').removeAttr("class").addClass("alerte").html(responseHTML);
 			}
 			else
 			{
 				$('#ajax_msg0').removeAttr("class").addClass("valide").html("Demande réalisée !").fadeOut(3000,function(){$(this).removeAttr("class").html("").show();});
-				$('table.form tbody').html(responseHTML);
+				var position_script = responseHTML.lastIndexOf('<SCRIPT>');
+				$('table.form tbody').html( responseHTML.substring(0,position_script) );
+				eval( responseHTML.substring(position_script+8) );
 				trier_tableau();
 				afficher_masquer_images_action('show');
 				infobulle();

@@ -199,7 +199,9 @@ $(document).ready
 			function()
 			{
 				afficher_masquer_images_action('hide');
-				var partage = $(this).parent().prev().prev().attr('lang');
+				var ids   = $(this).parent().attr('id');
+				var tab_ids = ids.split('_');
+				var partage = tab_partage_etat[tab_ids[1]+'_'+tab_ids[2]];
 				var new_span = '<span>'+select_partage.replace('"'+partage+'"','"'+partage+'" selected')+'<q class="valider" lang="partager" title="Valider les modifications du partage de ce référentiel."></q><q class="annuler" title="Annuler la modification du partage de ce référentiel."></q> <label id="ajax_msg">&nbsp;</label></span>';
 				$(this).after(new_span);
 				infobulle();
@@ -261,10 +263,10 @@ $(document).ready
 			function()
 			{
 				afficher_masquer_images_action('hide');
-				var param   = $(this).parent().prev().attr('lang');
-				var tableau = param.split('_');
-				var methode = tableau[0];
-				var limite  = tableau[1];
+				var ids   = $(this).parent().attr('id');
+				var tab_ids = ids.split('_');
+				var methode = tab_calcul_methode[tab_ids[1]+'_'+tab_ids[2]];
+				var limite  = tab_calcul_limite[tab_ids[1]+'_'+tab_ids[2]];
 				var new_span = '<span>'+select_methode.replace('"'+methode+'"','"'+methode+'" selected')+select_limite.replace('"'+limite+'"','"'+limite+'" selected')+'<q class="valider" lang="calculer" title="Valider les modifications du mode de calcul de ce référentiel."></q><q class="annuler" title="Annuler la modification du mode de calcul de ce référentiel."></q> <label id="ajax_msg">&nbsp;</label></span>';
 				$(this).after(new_span);
 				actualiser_select_limite();
@@ -319,7 +321,9 @@ $(document).ready
 							}
 							else
 							{
-								$('#'+ids).prev().prev().attr('lang',partage).html('Référentiel présent. '+responseHTML);
+								var tab_ids = ids.split('_');
+								tab_partage_etat[tab_ids[1]+'_'+tab_ids[2]] = partage;
+								$('#'+ids).prev().prev().html('Référentiel présent. '+responseHTML);
 								if(partage=='oui')
 								{
 									$('#'+ids).children('q.envoyer_non').attr('class','envoyer').attr('title','Mettre à jour sur le serveur de partage la dernière version de ce référentiel.');
@@ -371,7 +375,10 @@ $(document).ready
 							}
 							else
 							{
-								$('#'+ids).prev().attr( 'lang',methode+'_'+limite ).html( responseHTML.substring(2,responseHTML.length) );
+								var tab_ids = ids.split('_');
+								tab_calcul_methode[tab_ids[1]+'_'+tab_ids[2]] = methode;
+								tab_calcul_limite[tab_ids[1]+'_'+tab_ids[2]]  = limite;
+								$('#'+ids).prev().html( responseHTML.substring(2,responseHTML.length) );
 								$('#ajax_msg').parent().remove();
 								afficher_masquer_images_action('show');
 								infobulle();
@@ -391,7 +398,8 @@ $(document).ready
 			function()
 			{
 				var ids = $(this).parent().parent().attr('id');
-				var partage = $(this).parent().parent().prev().prev().attr('lang');
+				var tab_ids = ids.split('_');
+				var partage = tab_partage_etat[tab_ids[1]+'_'+tab_ids[2]];
 				$('#ajax_msg').removeAttr("class").addClass("loader").html('Demande envoyée...');
 				$.ajax
 				(
@@ -512,8 +520,8 @@ $(document).ready
 				// Récup des infos
 				var ids = $('#succes').parent().parent().attr('id');
 				var tab_ids = ids.split('_');
-				var matiere_id = tab_ids[2];
-				var niveau_id  = tab_ids[3];
+				var matiere_id = tab_ids[1];
+				var niveau_id  = tab_ids[2];
 				//MAJ et affichage du formulaire
 				charger_formulaire_structures();
 				$('#f_matiere option[value='+matiere_id+']').prop('selected',true);
@@ -750,21 +758,29 @@ $(document).ready
 							}
 							else
 							{
-								var test_matiere_perso = (ids.substring(0,5)=='ids_1') ? true : false ;
-								var q_partager = (test_matiere_perso) ? '<q class="partager_non" title="Le référentiel d\'une matière spécifique à l\'établissement ne peut être partagé."></q>' : '<q class="partager" title="Modifier le partage de ce référentiel."></q>' ;
+								var tab_ids = ids.split('_');
+								var matiere_id = tab_ids[1];
+								var niveau_id  = tab_ids[2];
+								var mat_perso  = tab_ids[3];
+								var q_partager = (mat_perso=='1') ? '<q class="partager_non" title="Le référentiel d\'une matière spécifique à l\'établissement ne peut être partagé."></q>' : '<q class="partager" title="Modifier le partage de ce référentiel."></q>' ;
 								$('#'+ids).html('<q class="voir" title="Voir le détail de ce référentiel."></q>'+q_partager+'<q class="envoyer_non" title="Un référentiel non partagé ne peut pas être transmis à la collectivité."></q><q class="calculer" title="Modifier le mode de calcul associé à ce référentiel."></q><q class="supprimer" title="Supprimer ce référentiel."></q>');
-								$('#'+ids).prev().removeAttr("class").addClass("v").attr('lang',methode_calcul_langue).html(methode_calcul_texte);
-								if(test_matiere_perso)
+								$('#'+ids).prev().removeAttr("class").addClass("v").html(calcul_texte);
+								tab_calcul_methode[matiere_id+'_'+niveau_id] = calcul_methode;
+								tab_calcul_limite[matiere_id+'_'+niveau_id]  = calcul_limite;
+								if(mat_perso=='1')
 								{
-									$('#'+ids).prev().prev().removeAttr("class").addClass("v").attr('lang','hs').html('Référentiel présent. <img title="Référentiel dont le partage est sans objet (matière spécifique)." src="./_img/etat/partage_non.gif" />');
+									$('#'+ids).prev().prev().removeAttr("class").addClass("v").html('Référentiel présent. <img title="Référentiel dont le partage est sans objet (matière spécifique)." src="./_img/etat/partage_non.gif" />');
+									tab_partage_etat[matiere_id+'_'+niveau_id] = 'hs';
 								}
 								else if(referentiel_id!='0')
 								{
-									$('#'+ids).prev().prev().removeAttr("class").addClass("v").attr('lang','bof').html('Référentiel présent. <img title="Référentiel dont le partage est sans intérêt (pas novateur)." src="./_img/etat/partage_non.gif" />');
+									$('#'+ids).prev().prev().removeAttr("class").addClass("v").html('Référentiel présent. <img title="Référentiel dont le partage est sans intérêt (pas novateur)." src="./_img/etat/partage_non.gif" />');
+									tab_partage_etat[matiere_id+'_'+niveau_id] = 'bof';
 								}
 								else
 								{
-									$('#'+ids).prev().prev().removeAttr("class").addClass("v").attr('lang','non').html('Référentiel présent. <img title="Référentiel non partagé avec la communauté." src="./_img/etat/partage_non.gif" />');
+									$('#'+ids).prev().prev().removeAttr("class").addClass("v").html('Référentiel présent. <img title="Référentiel non partagé avec la communauté." src="./_img/etat/partage_non.gif" />');
+									tab_partage_etat[matiere_id+'_'+niveau_id] = 'non';
 								}
 								infobulle();
 								$('#choisir_annuler').click();

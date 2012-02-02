@@ -126,6 +126,7 @@ if( ($action=='Afficher_evaluations') && $aff_classe_txt && $aff_classe_id && ( 
 		$date_fin_mysql   = $DB_ROW['jointure_date_fin'];
 	}
 	// Lister les évaluations
+	$script = '';
 	$classe_id = ($aff_classe_txt!='d2') ? $aff_classe_id : -1 ; // 'd2' est transmis si on veut toutes les classes / tous les groupes
 	$DB_TAB = DB_STRUCTURE_PROFESSEUR::DB_lister_devoirs_prof($_SESSION['USER_ID'],$classe_id,$date_debut_mysql,$date_fin_mysql);
 	foreach($DB_TAB as $DB_ROW)
@@ -152,9 +153,9 @@ if( ($action=='Afficher_evaluations') && $aff_classe_txt && $aff_classe_id && ( 
 		echo	'<td>'.html($date_visible).'</td>';
 		echo	'<td>'.html($DB_ROW['groupe_nom']).'</td>';
 		echo	'<td>'.html($DB_ROW['devoir_info']).'</td>';
-		echo	'<td lang="'.$DB_ROW['items_listing'].'">'.$DB_ROW['items_nombre'].' item'.$s.'</td>';
-		echo	'<td lang="'.$profs_liste.'">'.$profs_nombre.'</td>';
-		echo	'<td class="nu" lang="'.$ref.'">';
+		echo	'<td>'.$DB_ROW['items_nombre'].' item'.$s.'</td>';
+		echo	'<td>'.$profs_nombre.'</td>';
+		echo	'<td class="nu" id="devoir_'.$ref.'">';
 		echo		($proprio) ? '<q class="modifier" title="Modifier cette évaluation (date, description, ...)."></q>' : '<q class="modifier_non" title="Non modifiable (évaluation d\'un collègue)."></q>' ;
 		echo		($proprio) ? '<q class="ordonner" title="Réordonner les items de cette évaluation."></q>' : '<q class="ordonner_non" title="Non réordonnable (évaluation d\'un collègue)."></q>' ;
 		echo		'<q class="dupliquer" title="Dupliquer cette évaluation."></q>';
@@ -165,7 +166,9 @@ if( ($action=='Afficher_evaluations') && $aff_classe_txt && $aff_classe_id && ( 
 		echo		'<q class="voir_repart" title="Voir les répartitions des élèves à cette évaluation."></q>';
 		echo	'</td>';
 		echo'</tr>';
+		$script .= 'tab_items["'.$ref.'"]="'.html($DB_ROW['items_listing']).'";tab_profs["'.$ref.'"]="'.$profs_liste.'";';
 	}
+	echo'<SCRIPT>'.$script;
 	exit();
 }
 
@@ -187,7 +190,7 @@ if( (($action=='ajouter')||(($action=='dupliquer')&&($devoir_id))) && $date && $
 	{
 		exit('Erreur : date trop éloignée !');
 	}
-	// Tester les profs, mais plus leur appartenance au groupe (pour qu'on prof puisse accéder à l'éval même s'il n'a pas le groupe, même si on duplique une évaluation pour un autre groupe...)
+	// Tester les profs, mais plus leur appartenance au groupe (pour qu'un prof puisse accéder à l'éval même s'il n'a pas le groupe, même si on duplique une évaluation pour un autre groupe...)
 	if(count($tab_profs))
 	{
 		if(!in_array($_SESSION['USER_ID'],$tab_profs))
@@ -222,9 +225,9 @@ if( (($action=='ajouter')||(($action=='dupliquer')&&($devoir_id))) && $date && $
 	echo'<td>'.html($date_visible).'</td>';
 	echo'<td>{{GROUPE_NOM}}</td>';
 	echo'<td>'.html($info).'</td>';
-	echo'<td lang="'.implode('_',$tab_items).'">'.$nb_items.' item'.$s.'</td>';
-	echo'<td lang="'.implode('_',$tab_profs).'">'.$profs_nombre.'</td>';
-	echo'<td class="nu" lang="'.$ref.'">';
+	echo'<td>'.$nb_items.' item'.$s.'</td>';
+	echo'<td>'.$profs_nombre.'</td>';
+	echo'<td class="nu" id="devoir_'.$ref.'">';
 	echo	'<q class="modifier" title="Modifier cette évaluation (date, description, ...)."></q>';
 	echo	'<q class="ordonner" title="Réordonner les items de cette évaluation."></q>';
 	echo	'<q class="dupliquer" title="Dupliquer cette évaluation."></q>';
@@ -234,6 +237,7 @@ if( (($action=='ajouter')||(($action=='dupliquer')&&($devoir_id))) && $date && $
 	echo	'<q class="voir" title="Voir les acquisitions des élèves à cette évaluation."></q>';
 	echo	'<q class="voir_repart" title="Voir les répartitions des élèves à cette évaluation."></q>';
 	echo'</td>';
+	echo'<SCRIPT>tab_items["'.$ref.'"]="'.implode('_',$tab_items).'";tab_profs["'.$ref.'"]="'.implode('_',$tab_profs).'";';
 	exit();
 }
 
@@ -254,7 +258,7 @@ if( ($action=='modifier') && $devoir_id && $date && $date_visible && $groupe_typ
 	{
 		exit('Erreur : date trop éloignée !');
 	}
-	// Tester les profs, mais plus leur appartenance au groupe (pour qu'on prof puisse accéder à l'éval même s'il n'a pas le groupe, même si on duplique une évaluation pour un autre groupe...)
+	// Tester les profs, mais plus leur appartenance au groupe (pour qu'un prof puisse accéder à l'éval même s'il n'a pas le groupe, même si on duplique une évaluation pour un autre groupe...)
 	if(count($tab_profs))
 	{
 		if(!in_array($_SESSION['USER_ID'],$tab_profs))
@@ -292,9 +296,9 @@ if( ($action=='modifier') && $devoir_id && $date && $date_visible && $groupe_typ
 	echo'<td>'.html($date_visible).'</td>';
 	echo'<td>{{GROUPE_NOM}}</td>';
 	echo'<td>'.html($info).'</td>';
-	echo'<td lang="'.implode('_',$tab_items).'">'.$nb_items.' item'.$s.'</td>';
-	echo'<td lang="'.implode('_',$tab_profs).'">'.$profs_nombre.'</td>';
-	echo'<td class="nu" lang="'.$ref.'">';
+	echo'<td>'.$nb_items.' item'.$s.'</td>';
+	echo'<td>'.$profs_nombre.'</td>';
+	echo'<td class="nu" id="devoir_'.$ref.'">';
 	echo	'<q class="modifier" title="Modifier cette évaluation (date, description, ...)."></q>';
 	echo	'<q class="ordonner" title="Réordonner les items de cette évaluation."></q>';
 	echo	'<q class="dupliquer" title="Dupliquer cette évaluation."></q>';
@@ -304,6 +308,7 @@ if( ($action=='modifier') && $devoir_id && $date && $date_visible && $groupe_typ
 	echo	'<q class="voir" title="Voir les acquisitions des élèves à cette évaluation."></q>';
 	echo	'<q class="voir_repart" title="Voir les répartitions des élèves à cette évaluation."></q>';
 	echo'</td>';
+	echo'<SCRIPT>tab_items["'.$ref.'"]="'.implode('_',$tab_items).'";tab_profs["'.$ref.'"]="'.implode('_',$tab_profs).'";';
 	exit();
 }
 
@@ -419,7 +424,7 @@ if( ($action=='saisir') && $devoir_id && $groupe_type && $groupe_id && $date && 
 		foreach($tab_comp_id as $comp_id=>$val_comp)
 		{
 			$num_ligne++;
-			$tab_affich[$comp_id][$user_id] = '<td class="td_clavier" lang="C'.$num_colonne.'L'.$num_ligne.'"><input type="text" class="X" value="X" id="C'.$num_colonne.'L'.$num_ligne.'" name="'.$comp_id.'x'.$user_id.'" readonly /></td>';
+			$tab_affich[$comp_id][$user_id] = '<td class="td_clavier" id="td_C'.$num_colonne.'L'.$num_ligne.'"><input type="text" class="X" value="X" id="C'.$num_colonne.'L'.$num_ligne.'" name="'.$comp_id.'x'.$user_id.'" readonly /></td>';
 		}
 	}
 	// configurer le champ input

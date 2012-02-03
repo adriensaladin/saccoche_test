@@ -308,7 +308,7 @@ $(document).ready
 					function()
 					{
 						item = $(this).parent().next().next().text();
-						ref  = ' ' + item.substring( item.indexOf('.')+1 , item.length-1 )
+						ref  = ' ' + item.substring( item.indexOf('.')+1 , item.length-1 );
 						if(listing_refs.indexOf(ref)==-1)
 						{
 							listing_refs += ref;

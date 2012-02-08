@@ -339,6 +339,23 @@ if( ($action=='ordonner') && $devoir_id )
 }
 
 //	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//	Indiquer la liste des élèves associés à une évaluation de même nom
+//	Reprise d'un développement initié par Alain Pottier <alain.pottier613@orange.fr>
+//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+if( ($action=='Indiquer_eleves_deja') && $info && $groupe_id && $date_debut )
+{
+	$date_debut_mysql = convert_date_french_to_mysql($date_debut);
+	$DB_TAB = DB_STRUCTURE_PROFESSEUR::DB_lister_eleves_devoirs($_SESSION['USER_ID'],$info,$date_debut_mysql);
+	$tab_retour = array();
+	foreach($DB_TAB as $DB_ROW)
+	{
+		$tab_retour[] = $DB_ROW['user_id'].'_'.convert_date_mysql_to_french($DB_ROW['devoir_date']);
+	}
+	exit( 'ok,'.implode(',',$tab_retour) );
+}
+
+//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //	Afficher le formulaire pour saisir les items acquis par les élèves à une évaluation
 //	Générer en même temps un csv à récupérer pour une saisie déportée
 //	Générer en même temps un pdf contenant un tableau de saisie vide

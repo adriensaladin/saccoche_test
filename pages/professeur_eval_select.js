@@ -486,8 +486,11 @@ $(document).ready
 		var choisir_eleve = function()
 		{
 			// Ne pas changer ici la valeur de "mode" (qui est à "ajouter" ou "modifier" ou "dupliquer").
+			$('#zone_eleve q.date_calendrier').show();
 			$('#zone_eleve ul').css("display","none");
 			$('#zone_eleve ul.ul_m1').css("display","block");
+			$('#zone_eleve li.li_m1 span.gradient_pourcent').html('');
+			$('#msg_indiquer_eleves_deja').removeAttr("class").html('');
 			var liste = $('#f_eleve_liste').val();
 			// Décocher tout
 			$("#zone_eleve input[type=checkbox]").each
@@ -495,6 +498,7 @@ $(document).ready
 				function()
 				{
 					this.checked = false;
+					$(this).next('label').removeAttr('class').next('span').html(''); // retrait des indications éventuels d'élèves associés à une évaluation de même nom
 				}
 			);
 			// Cocher ce qui doit l'être (initialisation)
@@ -933,6 +937,112 @@ $(document).ready
 								$('#zone_imprimer_retour').html(responseHTML);
 								format_liens('#zone_imprimer_retour');
 								infobulle();
+							}
+						}
+					}
+				);
+			}
+		);
+
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+//	Demande d'indiquer la liste des élèves associés à une évaluation de même nom
+//	Reprise d'un développement initié par Alain Pottier <alain.pottier613@orange.fr>
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+		$('#indiquer_eleves_deja').click
+		(
+			function()
+			{
+				if(!$('#f_info').val())
+				{
+					$('#msg_indiquer_eleves_deja').removeAttr("class").addClass("erreur").html('évaluation sans nom');
+					return false;
+				}
+				var f_date_debut = $('#f_date_deja').val();
+				if(!f_date_debut)
+				{
+					$('#msg_indiquer_eleves_deja').removeAttr("class").addClass("erreur").html('date manquante');
+					return false;
+				}
+				if(!test_dateITA(f_date_debut))
+				{
+					$('#msg_indiquer_eleves_deja').removeAttr("class").addClass("erreur").html('date JJ/MM/AAAA incorrecte');
+					return false;
+				}
+				$('button').prop('disabled',true);
+				$('#msg_indiquer_eleves_deja').removeAttr("class").addClass("loader").html("Recherche en cours...");
+				$.ajax
+				(
+					{
+						type : 'POST',
+						url : 'ajax.php?page='+PAGE,
+						data : 'f_action=Indiquer_eleves_deja'+'&f_ref='+$('#f_ref').val()+'&f_info='+$('#f_info').val()+'&f_date_debut='+f_date_debut,
+						dataType : "html",
+						error : function(msg,string)
+						{
+							$('button').prop('disabled',false);
+							$('#msg_indiquer_eleves_deja').removeAttr("class").addClass("alerte").html('Echec de la connexion !');
+							return false;
+						},
+						success : function(responseHTML)
+						{
+							initialiser_compteur();
+							$('button').prop('disabled',false);
+							if(responseHTML.substring(0,3)!='ok,')
+							{
+								$('#msg_indiquer_eleves_deja').removeAttr("class").addClass("alerte").html(responseHTML);
+							}
+							else
+							{
+								// On récupère les associations élèves -> dates
+								var tab_dates   = new Array();
+								var tab_groupes = new Array();
+								var tab_infos = responseHTML.substring(3).split(',');
+								var memo_groupe_id = 0;
+								for(i in tab_infos)
+								{
+									var tab = tab_infos[i].split('_');
+									tab_dates[tab[0]] = tab[1];
+								}
+								// Passer en revue les lignes élève
+								$("#zone_eleve input[type=checkbox]").each
+								(
+									function()
+									{
+										var tab_ids = $(this).attr('id').split('_');
+										var eleve_id  = tab_ids[1];
+										var groupe_id = tab_ids[2];
+										var eleve_date = tab_dates[eleve_id]
+										if(groupe_id!=memo_groupe_id)
+										{
+											memo_groupe_id = groupe_id;
+											tab_groupes[groupe_id] = new Array(0,0);
+										}
+										$(this).next('label').removeAttr('class').next('span').html('');
+										if(typeof(eleve_date)=='undefined')
+										{
+											tab_groupes[groupe_id][0]++;
+										}
+										else
+										{
+											$(this).next('label').addClass('deja grey').next('span').html('<span>'+eleve_date+'</span>');
+											tab_groupes[groupe_id][1]++;
+										}
+									}
+								);
+								// Passer en revue les bilans par groupe
+								for(groupe_id in tab_groupes)
+								{
+									var nb_eleves = tab_groupes[groupe_id][0]+tab_groupes[groupe_id][1];
+									var pourcentage = (nb_eleves) ? (100*tab_groupes[groupe_id][1]/nb_eleves).toFixed(0) : 0 ;
+									switch (pourcentage)
+									{
+										case '0'   : var couleur = '#C00';break;
+										case '100' : var couleur = '#080';break;
+										default    : var couleur = '#333';break;
+									}
+									$('#groupe_'+groupe_id).css('color',couleur).html('<span class="gradient_outer"><span class="gradient_inner" style="width:'+pourcentage+'px"></span></span>'+pourcentage+'%');
+								}
+								$('#msg_indiquer_eleves_deja').removeAttr("class").addClass("valide").html("Affichage actualisé.");
 							}
 						}
 					}

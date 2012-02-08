@@ -117,7 +117,7 @@ $(document).ready
 							else
 							{
 								$('#zone_choix_referentiel').hide();
-								$('#zone_elaboration_referentiel').html('<span class="tab"></span><button id="fermer_zone_elaboration_referentiel" type="button" class="retourner">Retour à la liste des referentiels</button>'+responseHTML);
+								$('#zone_elaboration_referentiel').html('<p><span class="tab"></span>Tout déployer / contracter : <a href="m1" class="all_extend"><img alt="m1" src="./_img/deploy_m1.gif" /></a> <a href="m2" class="all_extend"><img alt="m2" src="./_img/deploy_m2.gif" /></a> <a href="n1" class="all_extend"><img alt="n1" src="./_img/deploy_n1.gif" /></a> <a href="n2" class="all_extend"><img alt="n2" src="./_img/deploy_n2.gif" /></a> <a href="n3" class="all_extend"><img alt="n3" src="./_img/deploy_n3.gif" /></a><br /><span class="tab"></span><button id="fermer_zone_elaboration_referentiel" type="button" class="retourner">Retour à la liste des referentiels</button></p>'+responseHTML);
 								// Récupérer le contenu des title des ressources avant que le tooltip ne les enlève
 								// Ajouter les icônes pour modifier les items
 								$('#zone_elaboration_referentiel li.li_n3').each

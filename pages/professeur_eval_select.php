@@ -33,6 +33,9 @@ $TITRE = "Évaluer des élèves sélectionnés";
 // Dates par défaut de début et de fin
 $date_debut  = date("d/m/Y",mktime(0,0,0,date("m")-2,date("d"),date("Y"))); // 2 mois avant
 $date_fin    = date("d/m/Y",mktime(0,0,0,date("m")+1,date("d"),date("Y"))); // 1 mois après
+// Date de début d'année scolaire
+$annee = ($_SESSION['MOIS_BASCULE_ANNEE_SCOLAIRE']<date("n")) ? date("Y") : date("Y")-1 ;
+$date_start = '01/'.sprintf("%02u",$_SESSION['MOIS_BASCULE_ANNEE_SCOLAIRE']).'/'.$annee;
 ?>
 
 <ul class="puce">
@@ -77,6 +80,7 @@ $date_fin    = date("d/m/Y",mktime(0,0,0,date("m")+1,date("d"),date("Y"))); // 1
 </script>
 
 <form action="#" method="post" id="zone_compet" class="arbre_dynamique arbre_check hide">
+	<div>Tout déployer / contracter : <a href="m1" class="all_extend"><img alt="m1" src="./_img/deploy_m1.gif" /></a> <a href="m2" class="all_extend"><img alt="m2" src="./_img/deploy_m2.gif" /></a> <a href="n1" class="all_extend"><img alt="n1" src="./_img/deploy_n1.gif" /></a> <a href="n2" class="all_extend"><img alt="n2" src="./_img/deploy_n2.gif" /></a> <a href="n3" class="all_extend"><img alt="n3" src="./_img/deploy_n3.gif" /></a></div>
 	<p>Cocher ci-dessous (<span class="astuce">cliquer sur un intitulé pour déployer son contenu</span>) :</p>
 	<?php
 	// Affichage de la liste des items pour toutes les matières d'un professeur, sur tous les niveaux
@@ -116,6 +120,7 @@ $date_fin    = date("d/m/Y",mktime(0,0,0,date("m")+1,date("d"),date("Y"))); // 1
 </form>
 
 <form action="#" method="post" id="zone_eleve" class="arbre_dynamique hide">
+	<div><button id="indiquer_eleves_deja" type="button" class="eclair">Indiquer les élèves associés à une évaluation de même nom</button> depuis le <input id="f_date_deja" name="f_date_deja" size="9" type="text" value="<?php echo $date_start ?>" /><q class="date_calendrier" title="Cliquez sur cette image pour importer une date depuis un calendrier !"></q><label id="msg_indiquer_eleves_deja"></label></div>
 	<p>Cocher ci-dessous (<span class="astuce">cliquer sur un intitulé pour déployer son contenu</span>) :</p>
 	<?php
 	$tab_regroupements = array();
@@ -151,12 +156,12 @@ $date_fin    = date("d/m/Y",mktime(0,0,0,date("m")+1,date("d"),date("Y"))); // 1
 	foreach($tab_regroupements as $groupe_id => $tab_groupe)
 	{
 		echo'<ul class="ul_m1">'."\r\n";
-		echo'	<li class="li_m1"><span>'.html($tab_groupe['nom']).'</span>'."\r\n";
+		echo'	<li class="li_m1"><span class="deja">'.html($tab_groupe['nom']).'</span><span id="groupe_'.$groupe_id.'" class="gradient_pourcent"></span>'."\r\n";
 		echo'		<ul class="ul_n3">'."\r\n";
 		foreach($tab_groupe['eleve'] as $eleve_id => $eleve_nom)
 		{
 			// C'est plus compliqué que pour les items car un élève peut appartenir à une classe et plusieurs groupes => id du groupe mélé à l'id
-			echo'			<li class="li_n3"><input id="id_'.$eleve_id.'_'.$groupe_id.'" name="f_eleves[]" type="checkbox" value="'.$eleve_id.'" /><label for="id_'.$eleve_id.'_'.$groupe_id.'"> '.html($eleve_nom).'</label></li>'."\r\n";
+			echo'			<li class="li_n3"><input id="id_'.$eleve_id.'_'.$groupe_id.'" name="f_eleves[]" type="checkbox" value="'.$eleve_id.'" /><label for="id_'.$eleve_id.'_'.$groupe_id.'"> '.html($eleve_nom).'</label><span></span></li>'."\r\n";
 		}
 		echo'		</ul>'."\r\n";
 		echo'	</li>'."\r\n";

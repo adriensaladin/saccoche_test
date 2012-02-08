@@ -525,6 +525,16 @@ li.li_n3 b{font-weight:normal}
 li.li_n3 b img{margin-right:2px}
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+/* Pour indiquer la liste des élèves associés à une évaluation de même nom (à mettre après les puces)  */
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
+span.deja {display:inline-block;width:415px}
+label.deja{display:inline-block;width:400px;margin-left:3px;color:#666}
+span.gradient_pourcent{font-weight:bold}
+span.gradient_outer{display:inline-block;height:0.9em;vertical-align:sub;width:100px;border:1px solid #333;margin-right:1em}
+span.gradient_inner{display:inline-block;height:0.9em;vertical-align:top;background:transparent url(../_img/gradiant.png) repeat-y top left;} /* width fixé plus tard */
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 /* Zone de modification d'un référentiel                                                               */
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 

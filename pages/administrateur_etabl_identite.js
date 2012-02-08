@@ -656,35 +656,15 @@ $(document).ready
 				$("#f_recherche_resultat").html('<li></li>').hide();
 				var uai_val = $("#f_uai2").val();
 				// Vérifier le format du numéro UAI
-				uai_val = uai_val.toUpperCase();
-				if(uai_val.length!=8)
+				if(!test_uai_format(uai_val))
 				{
 					$('#ajax_msg_communautaire').removeAttr("class").addClass("alerte").html("Erreur : il faut 7 chiffres suivis d'une lettre !");
 					return false;
-				}
-				var uai_fin = uai_val.substring(7,8);
-				if((uai_fin<"A")||(uai_fin>"Z"))
-				{
-					$('#ajax_msg_communautaire').removeAttr("class").addClass("alerte").html("Erreur : il faut 7 chiffres suivis d'une lettre !");
-					return false;
-				}
-				for(i=0;i<7;i++)
-				{
-					var t = uai_val.substring(i,i+1);
-					if((t<"0")||(t>"9"))
-					{
-						$('#ajax_msg_communautaire').removeAttr("class").addClass("alerte").html("Erreur : il faut 7 chiffres suivis d'une lettre !");
-						return false;
-					}
 				}
 				// Vérifier la géographie du numéro UAI
 				// => sans objet
 				// Vérifier la clef de contrôle du numéro UAI
-				var uai_nombre = uai_val.substring(0,7);
-				alphabet = "ABCDEFGHJKLMNPRSTUVWXYZ";
-				reste = uai_nombre-(23*Math.floor(uai_nombre/23));
-				clef = alphabet.substring(reste,reste+1);;
-				if(clef!=uai_fin )
+				if(!test_uai_clef(uai_val))
 				{
 					$('#ajax_msg_communautaire').removeAttr("class").addClass("alerte").html("Erreur : clef de contrôle incompatible !");
 					return false;

@@ -263,7 +263,10 @@ $select_niveau  = Formulaire::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_niveau
 	<hr />
 	<div id="lister_referentiel_communautaire" class="hide">
 		<h2>Liste des référentiels trouvés</h2>
-		<div class="danger">Les référentiels partagés ne sont pas des modèles exemplaires à suivre ! Ils peuvent être améliorables, voir inadaptés...</div>
+		<p>
+			<span class="danger">Les référentiels partagés ne sont pas des modèles exemplaires à suivre ! Ils peuvent être améliorables, voir inadaptés&hellip;</span><br />
+			<span class="astuce">Le nombre jouxtant l'étoile indique combien de fois un référentiel a été repris, mais ceci ne présage pas de son intérêt / sa pertinence.</span>
+		</p>
 		<ul>
 			<li></li>
 		</ul>

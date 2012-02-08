@@ -262,6 +262,30 @@ public function DB_lister_demandes_prof($matiere_id,$listing_user_id)
 }
 
 /**
+ * Lister les élèves ayant déjà fait une évaluation de nom donné avec un prof donné à partir d'une date donnée.
+ * Seules les évaluations sur des sélections d'élèves sont prises en compte.
+ *
+ * @param int    $prof_id
+ * @param string $devoir_info
+ * @param string $date_debut_mysql
+ * @return array
+ */
+public function DB_lister_eleves_devoirs($prof_id,$devoir_info,$date_debut_mysql)
+{
+	$DB_SQL = 'SELECT user_id, devoir_date ';
+	$DB_SQL.= 'FROM sacoche_devoir ';
+	$DB_SQL.= 'LEFT JOIN sacoche_groupe USING (groupe_id) ';
+	$DB_SQL.= 'LEFT JOIN sacoche_jointure_user_groupe USING (groupe_id) ';
+	$DB_SQL.= 'WHERE ( prof_id=:prof_id OR devoir_partage LIKE :prof_id_like ) ';
+	$DB_SQL.= 'AND devoir_info=:devoir_info ';
+	$DB_SQL.= 'AND devoir_date>="'.$date_debut_mysql.'" ';
+	$DB_SQL.= 'AND groupe_type=:type4 ';
+	$DB_SQL.= 'GROUP BY user_id ';
+	$DB_VAR = array(':prof_id'=>$prof_id,':prof_id_like'=>'%,'.$prof_id.',%',':devoir_info'=>$devoir_info,':type4'=>'eval');
+	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+}
+
+/**
  * lister_devoirs_prof
  *
  * @param int    $prof_id

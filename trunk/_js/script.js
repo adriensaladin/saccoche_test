@@ -443,84 +443,89 @@ function arrondir_coins(element,taille)
  */
 
 // Méthode pour vérifier le format du numéro UAI
+function test_uai_format(value)
+{
+	var uai = value.toUpperCase();
+	if(uai.length!=8)
+	{
+		return false;
+	}
+	else
+	{
+		var uai_fin = uai.substring(7,8);
+		if((uai_fin<"A")||(uai_fin>"Z"))
+		{
+			return false;
+		}
+		else
+		{
+			for(i=0;i<7;i++)
+			{
+				var t = uai.substring(i,i+1);
+				if((t<"0")||(t>"9"))
+				{
+					return false;
+				}
+			}
+		}
+	}
+	return true;
+}
 jQuery.validator.addMethod
 (
 	"uai_format", function(value, element)
 	{
-		var uai = value.toUpperCase();
-		var uai_valide = true;
-		if(uai.length!=8)
-		{
-			uai_valide = false;
-		}
-		else
-		{
-			var uai_fin = uai.substring(7,8);
-			if((uai_fin<"A")||(uai_fin>"Z"))
-			{
-				uai_valide = false;
-			}
-			else
-			{
-				for(i=0;i<7;i++)
-				{
-					var t = uai.substring(i,i+1);
-					if((t<"0")||(t>"9"))
-					{
-						uai_valide = false;
-					}
-				}
-			}
-		}
-		return this.optional(element) || uai_valide ;
+		return this.optional(element) || test_uai_format(value) ;
 	}
 	, "il faut 7 chiffres suivis d'une lettre"
 ); 
 
 // Méthode pour vérifier la clef de contrôle du numéro UAI
+function test_uai_clef(value)
+{
+	var uai = value.toUpperCase();
+	var uai_valide = true;
+	var uai_nombre = uai.substring(0,7);
+	var uai_fin = uai.substring(7,8);
+	alphabet = "ABCDEFGHJKLMNPRSTUVWXYZ";
+	reste = uai_nombre-(23*Math.floor(uai_nombre/23));
+	clef = alphabet.substring(reste,reste+1);;
+	return (clef==uai_fin) ? true : false ;
+}
 jQuery.validator.addMethod
 (
 	"uai_clef", function(value, element)
 	{
-		var uai = value.toUpperCase();
-		var uai_valide = true;
-		var uai_nombre = uai.substring(0,7);
-		var uai_fin = uai.substring(7,8);
-		alphabet = "ABCDEFGHJKLMNPRSTUVWXYZ";
-		reste = uai_nombre-(23*Math.floor(uai_nombre/23));
-		clef = alphabet.substring(reste,reste+1);;
-		if(clef!=uai_fin )
-		{
-			uai_valide = false;
-		}
-		return this.optional(element) || uai_valide ;
+		return this.optional(element) || test_uai_clef(value) ;
 	}
 	, "clef de contrôle incompatible"
 ); 
 
 // Méthode pour valider les dates de la forme jj/mm/aaaa (trouvé dans le zip du plugin, corrige en plus un bug avec Safari)
+function test_dateITA(value)
+{
+	var re = /^\d{1,2}\/\d{1,2}\/\d{4}$/ ;
+	if( re.test(value))
+	{
+		var adata = value.split('/');
+		var gg = parseInt(adata[0],10);
+		var mm = parseInt(adata[1],10);
+		var aaaa = parseInt(adata[2],10);
+		var xdata = new Date(aaaa,mm-1,gg);
+		if ( ( xdata.getFullYear() == aaaa ) && ( xdata.getMonth () == mm - 1 ) && ( xdata.getDate() == gg ) )
+			return true;
+		else
+			return false;
+	}
+	else
+		return false;
+}
 jQuery.validator.addMethod
 (
 	"dateITA",
 	function(value, element)
 	{
-		var check = false;
-		var re = /^\d{1,2}\/\d{1,2}\/\d{4}$/ ;
-		if( re.test(value))
-		{
-			var adata = value.split('/');
-			var gg = parseInt(adata[0],10);
-			var mm = parseInt(adata[1],10);
-			var aaaa = parseInt(adata[2],10);
-			var xdata = new Date(aaaa,mm-1,gg);
-			if ( ( xdata.getFullYear() == aaaa ) && ( xdata.getMonth () == mm - 1 ) && ( xdata.getDate() == gg ) )
-				check = true;
-			else
-				check = false;
-		}
-		else
-			check = false;
-		return this.optional(element) || check;
+		return this.optional(element) || test_dateITA(value);
 	}, 
 	"Veuillez entrer une date correcte."
 );
@@ -610,6 +615,33 @@ $(document).ready
 			{
 				$(this).parent().find('ul').hide();
 				$(this).parent().find('input[type=checkbox]').prop('checked',false);
+				return false;
+			}
+		);
+
+		/**
+		 * Réagir aux clics pour déployer / contracter l'ensemble d'un arbre à une étape donnée
+		 */
+		$('a.all_extend').live // live est utilisé pour prendre en compte les nouveaux éléments créés
+		('click',
+			function()
+			{
+				var stade = $(this).attr('href');
+				var id_arbre = $(this).parent().parent().attr('id');
+				$('#'+id_arbre+' ul').css("display","none");
+				switch(stade)
+				{
+					case 'n3' :	// item
+						$('#'+id_arbre+' ul.ul_n3').css("display","block");
+					case 'n2' :	// thème
+						$('#'+id_arbre+' ul.ul_n2').css("display","block");
+					case 'n1' :	// domaine
+						$('#'+id_arbre+' ul.ul_n1').css("display","block");
+					case 'm2' :	// niveau
+						$('#'+id_arbre+' ul.ul_m2').css("display","block");
+					case 'm1' :	// matière
+						$('#'+id_arbre+' ul.ul_m1').css("display","block");
+				}
 				return false;
 			}
 		);

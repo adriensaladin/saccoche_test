@@ -45,7 +45,7 @@ $proxy_auth_pass   = (isset($_POST['f_proxy_auth_pass']))   ? clean_texte($_POST
 if($action=='tester')
 {
 	$requete_reponse = url_get_contents(SERVEUR_VERSION);
-	$affichage = (preg_match('#^[0-9]{4}\-[0-9]{2}\-[0-9]{2}[a-z]?$#',$requete_reponse)) ? '<label class="valide">Échange réussi avec le serveur http://sacoche.sesamath.net</label>' : '<label class="erreur">Échec de l\'échange avec le serveur http://sacoche.sesamath.net &rarr; '.$requete_reponse.'</label>' ;
+	$affichage = (preg_match('#^[0-9]{4}\-[0-9]{2}\-[0-9]{2}[a-z]?$#',$requete_reponse)) ? '<label class="valide">Échange réussi avec le serveur '.SERVEUR_PROJET.'</label>' : '<label class="erreur">Échec de l\'échange avec le serveur '.SERVEUR_PROJET.' &rarr; '.$requete_reponse.'</label>' ;
 	exit('<h2>Résultat du test</h2>'.$affichage);
 }
 

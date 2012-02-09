@@ -1011,7 +1011,7 @@ $(document).ready
 										var tab_ids = $(this).attr('id').split('_');
 										var eleve_id  = tab_ids[1];
 										var groupe_id = tab_ids[2];
-										var eleve_date = tab_dates[eleve_id]
+										var eleve_date = tab_dates[eleve_id];
 										if(groupe_id!=memo_groupe_id)
 										{
 											memo_groupe_id = groupe_id;

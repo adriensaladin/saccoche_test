@@ -431,13 +431,13 @@ $(document).ready
 				if(!matiere_id_avant)
 				{
 					$('#ajax_msg_move').removeAttr("class").addClass("erreur").html("Sélectionner une ancienne matière !");
-					$("#f_matiere_avant").focus()
+					$("#f_matiere_avant").focus();
 					return false;
 				}
 				if(!matiere_id_apres)
 				{
 					$('#ajax_msg_move').removeAttr("class").addClass("erreur").html("Sélectionner une nouvelle matière !");
-					$("#f_matiere_apres").focus()
+					$("#f_matiere_apres").focus();
 					return false;
 				}
 				if(matiere_id_avant==matiere_id_apres)

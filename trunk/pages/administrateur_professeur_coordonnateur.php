@@ -34,12 +34,12 @@ $TITRE = "Gérer les professeurs coordonnateurs";
 <form action="#" method="post" id="coord">
 
 	<?php
-	$tab_matiere = array();
+	$tab_matiere = array(ID_MATIERE_TRANSVERSALE=>''); // Pour que ce soit la 1ère affichée
 	$tab_user    = array();
 	$matiere_id = 0;
 	$nb_professeurs = 0;
 	// Récupération de la liste des professeurs / matières
-	$DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_professeurs_par_matiere($_SESSION['MATIERES']);
+	$DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_professeurs_par_matiere();
 	if(count($DB_TAB))
 	{
 		foreach($DB_TAB as $DB_ROW)
@@ -99,7 +99,7 @@ $TITRE = "Gérer les professeurs coordonnateurs";
 	}
 	else
 	{
-		echo'<p>Aucune matière enregistrée ou associée à l\'établissement !</p>';
+		echo'<p>Aucun professeur affecté aux matières !</p>';
 	}
 	?>
 

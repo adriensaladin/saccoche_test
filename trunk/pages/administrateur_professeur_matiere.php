@@ -31,8 +31,8 @@ $TITRE = "Affecter les professeurs aux matières";
 
 <?php
 // Fabrication des éléments select du formulaire
-$select_professeurs = Formulaire::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_professeurs_etabl()                                      , $select_nom=false , $option_first='non' , $selection=false , $optgroup='non');
-$select_matieres    = Formulaire::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_matieres_etabl($_SESSION['MATIERES'],$transversal=false) , $select_nom=false , $option_first='non' , $selection=false , $optgroup='non');
+$select_professeurs = Formulaire::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_professeurs_etabl()                   , $select_nom=false , $option_first='non' , $selection=false , $optgroup='non');
+$select_matieres    = Formulaire::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_matieres_etabl(FALSE /*transversal*/) , $select_nom=false , $option_first='non' , $selection=false , $optgroup='non');
 ?>
 
 <p><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__gestion_professeurs">DOC : Gestion des professeurs</a></span></p>

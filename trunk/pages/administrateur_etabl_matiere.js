@@ -38,91 +38,47 @@ $(document).ready
 
 		// tri du tableau (avec jquery.tablesorter.js).
 		var sorting = [[1,0],[0,0]];
-		$('#perso table.form').tablesorter({ headers:{2:{sorter:false}} });
+		$('#form_partage table.form').tablesorter({ headers:{2:{sorter:false}} });
+		$('#form_perso   table.form').tablesorter({ headers:{2:{sorter:false}} });
 		function trier_tableau()
 		{
-			if($('#perso table.form tbody tr').length)
+			if($('#form_partage table.form tbody tr').length)
 			{
-				$('#perso table.form').trigger('update');
-				$('#perso table.form').trigger('sorton',[sorting]);
+				$('#form_partage table.form').trigger('update');
+				$('#form_partage table.form').trigger('sorton',[sorting]);
+			}
+			if($('#form_perso table.form tbody tr').length)
+			{
+				$('#form_perso table.form').trigger('update');
+				$('#form_perso table.form').trigger('sorton',[sorting]);
 			}
 		}
 		trier_tableau();
-
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-//	Clic sur une cellule (remplace un champ label, impossible à définir sur plusieurs colonnes)
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-		$('td.label').click
-		(
-			function()
-			{
-				$(this).parent().find("input[type=checkbox]").click();
-			}
-		);
-
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-//	Clic sur un checkbox
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-		$('input[type=checkbox]').click
-		(
-			function()
-			{
-				$('#ajax_msg_partage').removeAttr("class").addClass("alerte").html("Pensez à valider vos modifications !");
-			}
-		);
-
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-//	Validation du 1er formulaire (matières partagées)
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-		$('#bouton_valider').click
-		(
-			function()
-			{
-				$("#bouton_valider").prop('disabled',true);
-				$('#ajax_msg_partage').removeAttr("class").addClass("loader").html("Demande envoyée...");
-				var check_ids = new Array(); $("#partage input[type=checkbox]:checked").each(function(){check_ids.push($(this).val());});
-				$.ajax
-				(
-					{
-						type : 'POST',
-						url : 'ajax.php?page='+PAGE,
-						data : 'f_action=partager&tab_id='+check_ids,
-						dataType : "html",
-						error : function(msg,string)
-						{
-							$("#bouton_valider").prop('disabled',false);
-							$('#ajax_msg_partage').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
-							return false;
-						},
-						success : function(responseHTML)
-						{
-							initialiser_compteur();
-							$("#bouton_valider").prop('disabled',false);
-							if(responseHTML!='ok')
-							{
-								$('#ajax_msg_partage').removeAttr("class").addClass("alerte").html(responseHTML);
-							}
-							else
-							{
-								$('#ajax_msg_partage').removeAttr("class").addClass("valide").html("Demande enregistrée !");
-							}
-						}
-					}
-				);
-			}
-		);
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 //	Fonctions utilisées
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
 		/**
-		 * Ajouter une matière : mise en place du formulaire
+		 * Ajouter une matière partagée : affichage du formulaire
 		 * @return void
 		 */
-		var ajouter = function()
+		var ajouter_partage = function()
 		{
-			mode = $(this).attr('class');
+			mode = 'ajouter_partage';
+			$('#ajax_msg_recherche').removeAttr("class").html("&nbsp;");
+			$('#form_partage, #form_perso, #form_move').hide();
+			$('#zone_ajout_form').show();
+			return false;
+		};
+
+		/**
+		 * Ajouter une matière spécifique : mise en place du formulaire
+		 * @return void
+		 */
+		var ajouter_perso = function()
+		{
+			mode = 'ajouter_perso';
 			// Fabriquer la ligne avec les éléments de formulaires
 			afficher_masquer_images_action('hide');
 			new_tr  = '<tr>';
@@ -170,7 +126,8 @@ $(document).ready
 			mode = $(this).attr('class');
 			afficher_masquer_images_action('hide');
 			id = $(this).parent().parent().attr('id').substring(3);
-			new_span  = '<span class="danger"><input id="f_action" name="f_action" type="hidden" value="'+mode+'" /><input id="f_id" name="f_id" type="hidden" value="'+id+'" />Les référentiels et les résultats associés seront perdus !<q class="valider" title="Confirmer la suppression de cette matière."></q><q class="annuler" title="Annuler la suppression de cette matière."></q> <label id="ajax_msg">&nbsp;</label></span>';
+			texte = (id<id_matiere_transversale) ? "Les référentiels et les résultats associés ne seront plus accessibles !" : "Les référentiels et les résultats associés seront perdus !" ;
+			new_span  = '<span class="danger"><input id="f_action" name="f_action" type="hidden" value="'+mode+'" /><input id="f_id" name="f_id" type="hidden" value="'+id+'" />'+texte+'<q class="valider" title="Confirmer la suppression de cette matière."></q><q class="annuler" title="Annuler la suppression de cette matière."></q> <label id="ajax_msg">&nbsp;</label></span>';
 			$(this).after(new_span);
 			infobulle();
 		};
@@ -184,7 +141,7 @@ $(document).ready
 			$('#ajax_msg').removeAttr("class").html("&nbsp;");
 			switch (mode)
 			{
-				case 'ajouter':
+				case 'ajouter_perso':
 					$(this).parent().parent().remove();
 					break;
 				case 'modifier':
@@ -199,6 +156,53 @@ $(document).ready
 			mode = false;
 		};
 
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+//	Clic sur un bouton pour confirmer le retrait d'une matière partagée
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
+		var retirer_partage = function()
+		{
+			$('#ajax_msg').removeAttr("class").addClass("loader").html("Demande envoyée...");
+			$('#ajax_msg').parent().children('q').hide();
+			$.ajax
+			(
+				{
+					type : 'POST',
+					url : 'ajax.php?page='+PAGE,
+					data : 'f_action=supprimer&f_id='+$('#f_id').val(),
+					dataType : "html",
+					error : function(msg,string)
+					{
+						$('#ajax_msg').parent().children('q').show();
+						$('#ajax_msg').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
+						return false;
+					},
+					success : function(responseHTML)
+					{
+						initialiser_compteur();
+						$('#ajax_msg').parent().children('q').show();
+						var tab_infos = responseHTML.split(']¤[');
+						if(tab_infos[0]!='')
+						{
+							$('#ajax_msg').removeAttr("class").addClass("alerte").html(tab_infos[0]);
+						}
+						else
+						{
+							var matiere_id = tab_infos[1];
+							$('#ajax_msg').removeAttr("class").addClass("valide").html("Demande réalisée !");
+							$('q.valider').parent().parent().parent().remove();
+							afficher_masquer_images_action('show');
+							if(matiere_id!=id_matiere_transversale)
+							{
+								$('#f_matiere_avant option[value='+matiere_id+']').remove();
+								$('#f_matiere_apres option[value='+matiere_id+']').remove();
+							}
+						}
+					}
+				}
+			);
+		};
+
 		/**
 		 * Intercepter la touche entrée ou escape pour valider ou annuler les modifications
 		 * @return void
@@ -208,7 +212,6 @@ $(document).ready
 			if(e.which==13)	// touche entrée
 			{
 				$('q.valider').click();
-
 			}
 			else if(e.which==27)	// touche escape
 			{
@@ -216,23 +219,277 @@ $(document).ready
 			}
 		}
 
+		/**
+		 * Intercepter la touche entrée ou escape pour valider ou annuler les modifications
+		 * @return void
+		 */
+		function intercepter_motclef(e)
+		{
+			if(e.which==13)	// touche entrée
+			{
+				$('#rechercher_motclef').click();
+				return false;
+			}
+		}
+
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 //	Appel des fonctions en fonction des événements ; live est utilisé pour prendre en compte les nouveaux éléments créés
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
-		$('q.ajouter').click( ajouter );
+		$('#form_partage q.ajouter').click( ajouter_partage );
+		$('#form_perso   q.ajouter').click( ajouter_perso );
 		$('q.modifier').live(  'click' , modifier );
 		$('q.supprimer').live( 'click' , supprimer );
 		$('q.annuler').live(   'click' , annuler );
-		$('q.valider').live(   'click' , function(){formulaire.submit();} );
-		$('#perso input').live( 'keyup' , function(e){intercepter(e);} );
+		$('#form_partage q.valider').live( 'click' , retirer_partage );
+		$('#form_perso   q.valider').live( 'click' , function(){formulaire.submit();} );
+		$('#form_perso input').live( 'keyup' , function(e){intercepter(e);} );
+		$('#f_motclef').live(        'keyup' , function(e){intercepter_motclef(e);} );
+
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+//	Clic sur le bouton pour fermer le cadre de recherche d'une matière partagée à ajouter
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
+		$('#ajout_annuler').click
+		(
+			function()
+			{
+				$('#zone_ajout_form').hide();
+				$('#form_partage, #form_perso, #form_move').show();
+				return(false);
+			}
+		);
+
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+//	Choix du mode de recherche d'une matière partagée
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
+		$('#f_recherche_mode input').click
+		(
+			function()
+			{
+				mode = $(this).val();
+				$("#f_recherche_resultat").html('<li></li>').hide();
+				$('#ajax_msg_recherche').removeAttr("class").html("&nbsp;");
+				if(mode=='famille')
+				{
+					$('#f_famille option[value=0]').prop('selected',true);
+					$("#f_recherche_motclef").hide();
+					$("#f_recherche_famille").show();
+				}
+				else if(mode=='motclef')
+				{
+					$("#f_recherche_famille").hide();
+					$("#f_recherche_motclef").show();
+					$("#f_motclef").focus();
+				}
+			}
+		);
+
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+//	Actualisation du résultat de la recherche des matières par famille ou mot clef
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
+		function maj_resultat_recherche(data_action,data_parametre)
+		{
+			$('#ajax_msg_recherche').removeAttr("class").addClass("loader").html("Recherche en cours...");
+			$.ajax
+			(
+				{
+					type : 'POST',
+					url : 'ajax.php?page='+PAGE,
+					data : data_action+'&'+data_parametre,
+					dataType : "html",
+					error : function(msg,string)
+					{
+						$('#ajax_msg_recherche').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
+					},
+					success : function(responseHTML)
+					{
+						initialiser_compteur();
+						if(responseHTML.substring(0,3)=='<li')	// Attention aux caractères accentués : l'utf-8 pose des pbs pour ce test
+						{
+							$('#ajax_msg_recherche').removeAttr("class").html("&nbsp;");
+							$('#f_recherche_resultat').html(responseHTML).show();
+							infobulle();
+						}
+						else
+						{
+							$('#ajax_msg_recherche').removeAttr("class").addClass("alerte").html(responseHTML);
+						}
+					}
+				}
+			);
+		}
+
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+//	Changement du select f_famille => actualisation du résultat de la recherche
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
+		$("#f_famille").change
+		(
+			function()
+			{
+				$("#f_recherche_resultat").html('<li></li>').hide();
+				var famille_id = parseInt( $("#f_famille option:selected").val() ,10);
+				if(famille_id)
+				{
+					maj_resultat_recherche( 'f_action=recherche_matiere_famille' , 'f_famille='+famille_id )
+				}
+				else
+				{
+					$('#ajax_msg_recherche').removeAttr("class").html("&nbsp;");
+				}
+			}
+		);
+
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+//	Clic sur bouton rechercher_motclef => actualisation du résultat de la recherche
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
+		$('#rechercher_motclef').click
+		(
+			function()
+			{
+				$("#f_recherche_resultat").html('<li></li>').hide();
+				var motclef = $("#f_motclef").val();
+				if(motclef!='')
+				{
+					maj_resultat_recherche( 'f_action=recherche_matiere_motclef' , 'f_motclef='+encodeURIComponent(motclef) )
+				}
+				else
+				{
+					$('#ajax_msg_recherche').removeAttr("class").addClass("danger").html("Indiquer des mots clefs !");
+				}
+			}
+		);
+
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+//	Clic sur un bouton pour ajouter une matière partagée trouvée suite à une recherche
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
+		$('#f_recherche_resultat q.ajouter').live // live est utilisé pour prendre en compte les nouveaux éléments créés
+		('click',
+			function()
+			{
+				// afficher_masquer_images_action('hide');
+				var matiere_id = $(this).attr('id').substr(4); // add_
+				$('#ajax_msg_recherche').removeAttr("class").addClass("loader").html("Demande envoyée...");
+				$.ajax
+				(
+					{
+						type : 'POST',
+						url : 'ajax.php?page='+PAGE,
+						data : 'f_action=ajouter_partage&f_matiere='+matiere_id,
+						dataType : "html",
+						error : function(msg,string)
+						{
+							afficher_masquer_images_action('show');
+							$('#ajax_msg_recherche').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
+							return false;
+						},
+						success : function(responseHTML)
+						{
+							initialiser_compteur();
+							afficher_masquer_images_action('show');
+							if(responseHTML=='ok')	// Attention aux caractères accentués : l'utf-8 pose des pbs pour ce test
+							{
+								$('#ajax_msg_recherche').removeAttr("class").addClass("valide").html("Matière ajoutée.");
+								var texte = $('#add_'+matiere_id).parent().text();
+								var pos_separe  = (texte.indexOf('|')==-1) ? 0 : texte.lastIndexOf('|')+2 ;
+								var pos_par_ouv = texte.lastIndexOf('(');
+								var pos_par_fer = texte.lastIndexOf(')');
+								var matiere_nom = texte.substring(pos_separe,pos_par_ouv-1);
+								var matiere_ref = texte.substring(pos_par_ouv+1,pos_par_fer);
+								$('#form_partage table.form tbody').append('<tr id="id_'+matiere_id+'"><td>'+matiere_ref+'</td><td>'+matiere_nom+'</td><td class="nu"><q class="supprimer" title="Supprimer cette matière."></q></td></tr>');
+								$('#add_'+matiere_id).removeAttr("class").addClass("ajouter_non").attr('title',"Matière déjà choisie.");
+								infobulle();
+								trier_tableau();
+								$('#f_matiere_avant').append('<option value="'+matiere_id+'">'+matiere_nom+' ('+matiere_ref+')</option>');
+								$('#f_matiere_apres').append('<option value="'+matiere_id+'">'+matiere_nom+' ('+matiere_ref+')</option>');
+							}
+							else
+							{
+								$('#ajax_msg_recherche').removeAttr("class").addClass("alerte").html(responseHTML);
+							}
+						}
+					}
+				);
+			}
+		);
+
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+//	Clic sur le bouton pour déplacer les référentiels d'une matière vers une autre
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
+		$('#deplacer_referentiels').click
+		(
+			function()
+			{
+				var matiere_id_avant = parseInt( $("#f_matiere_avant option:selected").val() ,10);
+				var matiere_id_apres = parseInt( $("#f_matiere_apres option:selected").val() ,10);
+				if(!matiere_id_avant)
+				{
+					$('#ajax_msg_move').removeAttr("class").addClass("erreur").html("Sélectionner une ancienne matière !");
+					$("#f_matiere_avant").focus()
+					return false;
+				}
+				if(!matiere_id_apres)
+				{
+					$('#ajax_msg_move').removeAttr("class").addClass("erreur").html("Sélectionner une nouvelle matière !");
+					$("#f_matiere_apres").focus()
+					return false;
+				}
+				if(matiere_id_avant==matiere_id_apres)
+				{
+					$('#ajax_msg_move').removeAttr("class").addClass("erreur").html("Sélectionner des matières différentes !");
+					return false;
+				}
+				$('button').prop('disabled',true);
+				$('#ajax_msg_move').removeAttr("class").addClass("loader").html("Demande envoyée...");
+				$.ajax
+				(
+					{
+						type : 'POST',
+						url : 'ajax.php?page='+PAGE,
+						data : 'f_action=deplacer_referentiels&f_id_avant='+matiere_id_avant+'&f_id_apres='+matiere_id_apres,
+						dataType : "html",
+						error : function(msg,string)
+						{
+							$('button').prop('disabled',false);
+							$('#ajax_msg_move').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
+							return false;
+						},
+						success : function(responseHTML)
+						{
+							initialiser_compteur();
+							$('button').prop('disabled',false);
+							if(responseHTML=='ok')	// Attention aux caractères accentués : l'utf-8 pose des pbs pour ce test
+							{
+								if(matiere_id_avant!=id_matiere_transversale)
+								{
+									$('#f_matiere_avant option[value='+matiere_id_avant+']').remove();
+									$('#f_matiere_apres option[value='+matiere_id_avant+']').remove();
+								}
+								$('#id_'+matiere_id_avant).remove();
+								$('#ajax_msg_move').removeAttr("class").addClass("valide").html("Transfert effectué.");
+							}
+							else
+							{
+								$('#ajax_msg_move').removeAttr("class").addClass("alerte").html(responseHTML);
+							}
+						}
+					}
+				);
+			}
+		);
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 //	Traitement du formulaire
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
 		// Le formulaire qui va être analysé et traité en AJAX
-		var formulaire = $('#perso');
+		var formulaire = $('#form_perso');
 
 		// Vérifier la validité du formulaire (avec jquery.validate.js)
 		var validation = formulaire.validate
@@ -313,9 +570,10 @@ $(document).ready
 			initialiser_compteur();
 			please_wait = false;
 			$('#ajax_msg').parent().children('q').show();
-			if(responseHTML.substring(0,2)!='<t')
+			var tab_infos = responseHTML.split(']¤[');
+			if(tab_infos[0]!='')
 			{
-				$('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);
+				$('#ajax_msg').removeAttr("class").addClass("alerte").html(tab_infos[0]);
 			}
 			else
 			{
@@ -323,17 +581,31 @@ $(document).ready
 				action = $('#f_action').val();
 				switch (action)
 				{
-					case 'ajouter':
-						$('#perso table.form tbody').append(responseHTML);
+					case 'ajouter_perso':
+						var matiere_id  = tab_infos[1];
+						var matiere_ref = tab_infos[2];
+						var matiere_nom = tab_infos[3];
+						new_tr = '<tr id="id_'+matiere_id+'" class="new"><td>'+matiere_ref+'</td><td>'+matiere_nom+'</td><td class="nu"><q class="modifier" title="Modifier cette matière."></q><q class="supprimer" title="Supprimer cette matière."></q></td></tr>';
+						$('#form_perso table.form tbody').append(new_tr);
 						$('q.valider').parent().parent().remove();
+						$('#f_matiere_avant').append('<option value="'+matiere_id+'">'+matiere_nom+' ('+matiere_ref+')</option>');
+						$('#f_matiere_apres').append('<option value="'+matiere_id+'">'+matiere_nom+' ('+matiere_ref+')</option>');
 						break;
 					case 'modifier':
-						new_td  = responseHTML;
+						var matiere_id  = tab_infos[1];
+						var matiere_ref = tab_infos[2];
+						var matiere_nom = tab_infos[3];
+						new_td = '<td>'+matiere_ref+'</td><td>'+matiere_nom+'</td><td class="nu"><q class="modifier" title="Modifier cette matière."></q><q class="supprimer" title="Supprimer cette matière."></q></td>';
 						$('q.valider').parent().parent().prev().addClass("new").html(new_td).show();
 						$('q.valider').parent().parent().remove();
+						$('#f_matiere_avant option[value='+matiere_id+']').replaceWith('<option value="'+matiere_id+'">'+matiere_nom+' ('+matiere_ref+')</option>');
+						$('#f_matiere_apres option[value='+matiere_id+']').replaceWith('<option value="'+matiere_id+'">'+matiere_nom+' ('+matiere_ref+')</option>');
 						break;
 					case 'supprimer':
+						var matiere_id = tab_infos[1];
 						$('q.valider').parent().parent().parent().remove();
+						$('#f_matiere_avant option[value='+matiere_id+']').remove();
+						$('#f_matiere_apres option[value='+matiere_id+']').remove();
 						break;
 				}
 				trier_tableau();

@@ -178,8 +178,8 @@ $date_start = '01/'.sprintf("%02u",$_SESSION['MOIS_BASCULE_ANNEE_SCOLAIRE']).'/'
 	</div>
 </form>
 
-<!-- Sans "javascript:return false" une soumission incontrôlée s'effectue quand on presse "entrée" dans le cas d'un seul élève évalué sur un seul item. -->
-<form action="javascript:return false" method="post" id="zone_saisir" class="hide">
+<!-- Sans onsubmit="return false" une soumission incontrôlée s'effectue quand on presse "entrée" dans le cas d'un seul élève évalué sur un seul item. -->
+<form action="#" method="post" id="zone_saisir" class="hide" onsubmit="return false">
 	<p class="hc"><b id="titre_saisir"></b><br /><label id="msg_saisir"></label></p>
 	<table id="table_saisir" class="scor_eval">
 		<tbody><tr><td></td></tr></tbody>

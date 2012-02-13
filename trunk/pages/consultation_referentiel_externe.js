@@ -73,6 +73,56 @@ $(document).ready
 		$('#charger_formulaire_structures').live(  'click' , charger_formulaire_structures );
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+//	Charger le select f_matiere en ajax
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
+		function maj_matiere(famille_id)
+		{
+			$.ajax
+			(
+				{
+					type : 'POST',
+					url : 'ajax.php?page=_maj_select_matieres_famille',
+					data : 'f_famille='+famille_id,
+					dataType : "html",
+					error : function(msg,string)
+					{
+						$('#ajax_maj').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
+					},
+					success : function(responseHTML)
+					{
+						initialiser_compteur();
+						if(responseHTML.substring(0,7)=='<option')	// Attention aux caractères accentués : l'utf-8 pose des pbs pour ce test
+						{
+							$('#f_matiere').html(responseHTML);
+						}
+					else
+						{
+							$('#ajax_maj').removeAttr("class").addClass("alerte").html(responseHTML);
+						}
+					}
+				}
+			);
+		}
+
+		$("#f_famille").change
+		(
+			function()
+			{
+				famille_id = $("#f_famille").val();
+				if(famille_id)
+				{
+					maj_matiere(famille_id);
+				}
+				else
+				{
+					$('#f_matiere').html('<option value="0">Toutes les matières</option>');
+					$('#ajax_maj').removeAttr("class").html("&nbsp;");
+				}
+			}
+		);
+
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 //	Réagir au changement dans un select
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
@@ -140,7 +190,7 @@ $(document).ready
 				structure_id = $('#f_structure').val();
 				if( (matiere_id==0) && (niveau_id==0) && (structure_id==0) )
 				{
-					$('#ajax_msg').removeAttr("class").addClass("erreur").html("Il faut préciser au moins un critère !");
+					$('#ajax_msg').removeAttr("class").addClass("erreur").html("Il faut préciser au moins un critère parmi matière / niveau / structure !");
 					return false;
 				}
 				$('#rechercher').prop('disabled',true);

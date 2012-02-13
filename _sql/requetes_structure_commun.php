@@ -153,7 +153,7 @@ public function DB_recuperer_arborescence($prof_id,$matiere_id,$niveau_id,$only_
 	$select_socle_nom  = ($socle_nom)  ? 'entree_id,entree_nom ' : 'entree_id ' ;
 	$join_user_matiere = ($prof_id)    ? 'LEFT JOIN sacoche_jointure_user_matiere USING (matiere_id) ' : '' ;
 	$join_socle_item   = ($socle_nom)  ? 'LEFT JOIN sacoche_socle_entree USING (entree_id) ' : '' ;
-	$where_user        = ($prof_id)    ? 'user_id=:user_id AND (matiere_id IN('.$_SESSION['MATIERES'].') OR matiere_partage=:partage) ' : '' ; // Test matiere car un prof peut être encore relié à des matières décochées par l'admin.
+	$where_user        = ($prof_id)    ? 'user_id=:user_id AND matiere_active=1 ' : '' ;
 	$where_matiere     = ($matiere_id) ? 'matiere_id=:matiere_id ' : '' ;
 	$where_niveau      = ($niveau_id)  ? 'AND niveau_id=:niveau_id ' : 'AND niveau_id IN('.$_SESSION['CYCLES'].','.$_SESSION['NIVEAUX'].') ' ;
 	$where_item        = ($only_item)  ? 'AND item_id IS NOT NULL ' : '' ;
@@ -177,7 +177,7 @@ public function DB_recuperer_arborescence($prof_id,$matiere_id,$niveau_id,$only_
 	$DB_SQL.= $join_socle_item;
 	$DB_SQL.= 'WHERE '.$where_user.$where_matiere.$where_niveau.$where_item.$where_socle;
 	$DB_SQL.= 'ORDER BY '.$order_matiere.$order_niveau.'domaine_ordre ASC, theme_ordre ASC, item_ordre ASC';
-	$DB_VAR = array(':partage'=>0);
+	$DB_VAR = array();
 	if($prof_id)    {$DB_VAR[':user_id']    = $prof_id;}
 	if($matiere_id) {$DB_VAR[':matiere_id'] = $matiere_id;}
 	if($niveau_id)  {$DB_VAR[':niveau_id']  = $niveau_id;}
@@ -231,9 +231,9 @@ public function DB_lister_identite_coordonnateurs_par_matiere($listing_matieres_
 	$DB_SQL.= 'FROM sacoche_jointure_user_matiere ';
 	$DB_SQL.= 'LEFT JOIN sacoche_user USING (user_id) ';
 	$DB_SQL.= 'LEFT JOIN sacoche_matiere USING (matiere_id) ';
-	$DB_SQL.= 'WHERE (matiere_id IN('.$listing_matieres_id.') OR matiere_partage=:partage) AND jointure_coord=:coord AND user_statut=:statut '; // Test matiere car un prof peut être encore relié à des matières décochées par l'admin.
+	$DB_SQL.= 'WHERE (matiere_id IN('.$listing_matieres_id.') OR matiere_id>'.ID_MATIERE_TRANSVERSALE.') AND jointure_coord=:coord AND user_statut=:statut '; // Test matiere car un prof peut être encore relié à des matières décochées par l'admin.
 	$DB_SQL.= 'GROUP BY matiere_id';
-	$DB_VAR = array(':coord'=>1,':statut'=>1,':partage'=>0);
+	$DB_VAR = array(':coord'=>1,':statut'=>1);
 	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
@@ -341,10 +341,9 @@ public function DB_lister_referentiels_infos_details_matieres_niveaux($listing_m
 	$DB_SQL.= 'FROM sacoche_referentiel ';
 	$DB_SQL.= 'LEFT JOIN sacoche_niveau USING (niveau_id) ';
 	$DB_SQL.= 'LEFT JOIN sacoche_matiere USING (matiere_id) ';
-	$DB_SQL.= 'WHERE (matiere_id IN('.$listing_matieres_id.') OR matiere_partage=:partage) AND niveau_id IN('.$listing_cycles_niveaux.') '; // Test matiere car un prof peut être encore relié à des matières décochées par l'admin.
+	$DB_SQL.= 'WHERE (matiere_id IN('.$listing_matieres_id.') OR matiere_id>'.ID_MATIERE_TRANSVERSALE.') AND niveau_id IN('.$listing_cycles_niveaux.') '; // Test matiere car un prof peut être encore relié à des matières décochées par l'admin.
 	$DB_SQL.= 'ORDER BY matiere_id ASC, niveau_ordre ASC';
-	$DB_VAR = array(':partage'=>0);
-	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
 }
 
 /**
@@ -470,7 +469,7 @@ public function DB_modifier_mdp_utilisateur($user_id,$password_ancien_crypte,$pa
 }
 
 /**
- * Créer les tables de la base d'une structure et les remplir (mode multi-structures)
+ * Créer les tables de la base d'une structure et les remplir
  *
  * @param void
  * @return void
@@ -497,56 +496,66 @@ public function DB_creer_remplir_tables_structure()
 /**
  * Retourner un tableau [valeur texte] des matières de l'établissement (communes choisies ou spécifiques ajoutées)
  *
- * @param string $listing_matieres_communes   id des matières communes séparées par des virgules
- * @param bool   $transversal                 inclure ou pas la matière tranversale à la liste
+ * @param bool   $with_transversal   inclure ou pas la matière tranversale à la liste
  * @return array|string
  */
-public function DB_OPT_matieres_etabl($listing_matieres_communes,$transversal)
+public function DB_OPT_matieres_etabl($with_transversal)
 {
 	$DB_SQL = 'SELECT matiere_id AS valeur, matiere_nom AS texte ';
 	$DB_SQL.= 'FROM sacoche_matiere ';
-	$DB_SQL.= 'WHERE matiere_partage=0 '; // les matières spécifiques
-	if($listing_matieres_communes)
-	{
-		$DB_SQL.= ($transversal) ? 'OR matiere_id IN('.$listing_matieres_communes.') ' : 'OR ( matiere_id IN('.$listing_matieres_communes.')  AND matiere_transversal=0 ) ' ;
-	}
+	$DB_SQL.= 'WHERE matiere_active=1 ';
+	$DB_SQL.= ($with_transversal) ? '' : 'AND matiere_id!='.ID_MATIERE_TRANSVERSALE.' ' ;
 	$DB_SQL.= 'ORDER BY matiere_nom ASC';
 	$DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
 	return count($DB_TAB) ? $DB_TAB : 'Aucune matière n\'est rattachée à l\'établissement !' ;
 }
 
 /**
- * Retourner un tableau [valeur texte] des matières communes (choisies ou pas par l'établissement)
+ * Retourner un tableau [valeur texte optgroup] des familles de matières
  *
  * @param void
  * @return array
  */
-public function DB_OPT_matieres_communes()
+public function DB_OPT_familles_matieres()
 {
-	Formulaire::$tab_select_option_first = array(0,'Toutes les matières','');
+	Formulaire::$tab_select_optgroup = array( 1=>'Enseignements usuels' , 2=>'Enseignements généraux' , 3=>'Enseignements spécifiques' );
+	$DB_SQL = 'SELECT matiere_famille_id AS valeur, matiere_famille_nom AS texte, matiere_famille_categorie AS optgroup ';
+	$DB_SQL.= 'FROM sacoche_matiere_famille ';
+	$DB_SQL.= 'ORDER BY matiere_famille_categorie ASC, matiere_famille_nom ASC';
+	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
+}
+
+/**
+ * Retourner un tableau [valeur texte] des matières communes d'une famille donnée
+ * optgroup sert à pouvoir regrouper les options
+ *
+ * @param int   famille_id
+ * @return array
+ */
+public function DB_OPT_matieres_famille($famille_id)
+{
+	Formulaire::$tab_select_option_first = array(ID_MATIERE_TRANSVERSALE+$famille_id,'Toutes les matières de cette famille','');
 	$DB_SQL = 'SELECT matiere_id AS valeur, matiere_nom AS texte ';
 	$DB_SQL.= 'FROM sacoche_matiere ';
-	$DB_SQL.= 'WHERE matiere_partage=:partage ';
+	$DB_SQL.= ($famille_id==99) ? 'WHERE matiere_usuelle=1 ' : 'WHERE matiere_famille_id='.$famille_id.' ' ;
 	$DB_SQL.= 'ORDER BY matiere_nom ASC';
-	$DB_VAR = array(':partage'=>1);
-	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
 }
 
 /**
  * Retourner un tableau [valeur texte info] des matières du professeur identifié ; info représente le nb de demandes (utilisé par ailleurs)
  *
- * @param string $listing_matieres_communes   id des matières communes séparées par des virgules
  * @param int $user_id
  * @return array|string
  */
-public function DB_OPT_matieres_professeur($listing_matieres_communes,$user_id)
+public function DB_OPT_matieres_professeur($user_id)
 {
 	$DB_SQL = 'SELECT matiere_id AS valeur, matiere_nom AS texte, matiere_nb_demandes AS info ';
 	$DB_SQL.= 'FROM sacoche_jointure_user_matiere ';
 	$DB_SQL.= 'LEFT JOIN sacoche_matiere USING (matiere_id) ';
-	$DB_SQL.= 'WHERE (matiere_id IN('.$listing_matieres_communes.') OR matiere_partage=:partage) AND user_id=:user_id '; // Test matiere car un prof peut être encore relié à des matières décochées par l'admin.
+	$DB_SQL.= 'WHERE user_id=:user_id AND matiere_active=1 ';
 	$DB_SQL.= 'ORDER BY matiere_nom ASC';
-	$DB_VAR = array(':user_id'=>$user_id,':partage'=>0);
+	$DB_VAR = array(':user_id'=>$user_id);
 	$DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 	return count($DB_TAB) ? $DB_TAB : 'Vous n\'êtes pas rattaché à une matière !' ;
 }
@@ -554,11 +563,10 @@ public function DB_OPT_matieres_professeur($listing_matieres_communes,$user_id)
 /**
  * Retourner un tableau [valeur texte info] des matières d'un élève identifié ; info représente le nb de demandes (utilisé par ailleurs)
  *
- * @param string $listing_matieres_communes   id des matières communes séparées par des virgules
  * @param int $user_id
  * @return array|string
  */
-public function DB_OPT_matieres_eleve($listing_matieres_communes,$user_id)
+public function DB_OPT_matieres_eleve($user_id)
 {
 	// On connait la classe ($_SESSION['ELEVE_CLASSE_ID']), donc on commence par récupérer les groupes éventuels associés à l'élève
 	// DB::query(SACOCHE_STRUCTURE_BD_NAME , 'SET group_concat_max_len = ...'); // Pour lever si besoin une limitation de GROUP_CONCAT (group_concat_max_len est par défaut limité à une chaine de 1024 caractères).
@@ -592,7 +600,7 @@ public function DB_OPT_matieres_eleve($listing_matieres_communes,$user_id)
 	$DB_SQL.= 'LEFT JOIN sacoche_jointure_user_groupe USING (user_id) ';
 	$DB_SQL.= 'LEFT JOIN sacoche_jointure_user_matiere USING (user_id) ';
 	$DB_SQL.= 'LEFT JOIN sacoche_matiere USING (matiere_id) ';
-	$DB_SQL.= 'WHERE (matiere_id IN('.$listing_matieres_communes.') OR matiere_partage=:partage) AND groupe_id IN('.$liste_groupes.') AND user_statut=:statut '; // Test matiere car un prof peut être encore relié à des matières décochées par l'admin.
+	$DB_SQL.= 'WHERE groupe_id IN('.$liste_groupes.') AND user_statut=:statut AND matiere_active=1 ';
 	$DB_SQL.= 'GROUP BY matiere_id ';
 	$DB_SQL.= 'ORDER BY matiere_nom ASC';
 	$DB_VAR = array(':statut'=>1,':partage'=>0);

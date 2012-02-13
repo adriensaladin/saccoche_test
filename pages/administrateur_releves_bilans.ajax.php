@@ -45,7 +45,7 @@ if( ($action=='enregistrer_ordre') && count($tab_id) )
 {
 	$nb_modifs = 0;
 	// récupérer les ordres des matières pour les comparer (et ne mettre à jour que ce qui a changé).
-	$DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_matieres_etablissement( $_SESSION['MATIERES'] , TRUE /*with_transversal*/ , FALSE /*order_by_name*/ );
+	$DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_matieres_etablissement( TRUE /*with_transversal*/ , FALSE /*order_by_name*/ );
 	$tab_ordre_avant = array();
 	foreach($DB_TAB as $DB_ROW)
 	{

@@ -63,7 +63,7 @@ elseif($action=='retirer')
 $tab_matiere = array();
 $tab_user   = array();
 // Récupérer la liste des matières utilisées
-$DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_matieres_etablissement( $_SESSION['MATIERES'] , FALSE /*with_transversal*/ , TRUE /*order_by_name*/ );
+$DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_matieres_etablissement( FALSE /*with_transversal*/ , TRUE /*order_by_name*/ );
 foreach($DB_TAB as $DB_ROW)
 {
 	$tab_matiere[$DB_ROW['matiere_id']] = html($DB_ROW['matiere_nom']);

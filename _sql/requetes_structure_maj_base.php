@@ -1567,6 +1567,89 @@ public function DB_maj_base($version_actuelle)
 		}
 	}
 
+	//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	//	MAJ 2012-02-08 => 2012-02-13
+	//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	if($version_actuelle=='2012-02-08')
+	{
+		if($version_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
+		{
+			$version_actuelle = '2012-02-13';
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_actuelle.'" WHERE parametre_nom="version_base"' );
+			// récupération des informations sur les matières
+			$listing_matieres_id = DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , 'SELECT parametre_valeur FROM sacoche_parametre WHERE parametre_nom="matieres"' );
+			$DB_TAB_communes     = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , 'SELECT matiere_id, matiere_nb_demandes, matiere_ordre FROM sacoche_matiere WHERE matiere_id IN('.$listing_matieres_id.')');
+			$DB_TAB_specifiques  = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , 'SELECT matiere_id, matiere_nb_demandes, matiere_ordre, matiere_ref, matiere_nom FROM sacoche_matiere WHERE matiere_partage=0');
+			// nouvelles tables sacoche_matiere (intégration native de 1900 matières) et sacoche_matiere_famille
+			$requetes = file_get_contents(CHEMIN_SQL_STRUCTURE.'sacoche_matiere.sql');
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , $requetes );
+			DB::close(SACOCHE_STRUCTURE_BD_NAME);
+			$requetes = file_get_contents(CHEMIN_SQL_STRUCTURE.'sacoche_matiere_famille.sql');
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , $requetes );
+			DB::close(SACOCHE_STRUCTURE_BD_NAME);
+			// incrément des ids pour éviter tout souci
+			$increment = 11000;
+			$tab_tables = array('sacoche_bulletin','sacoche_jointure_user_matiere','sacoche_demande','sacoche_referentiel','sacoche_referentiel_domaine');
+			foreach($tab_tables as $table_nom)
+			{
+				DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE '.$table_nom.' SET matiere_id=matiere_id+'.$increment );
+			}
+			// Nettoyage champ devenu obsolète
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'DELETE FROM sacoche_parametre WHERE parametre_nom="matieres"' );
+			// mise à jour des ids & infos des matières de l'établissement
+			$tab_id_old_to_id_new = array(1=>901,2=>316,3=>328,4=>315,5=>327,6=>50,7=>813,8=>1001,9=>320,10=>332,11=>207,12=>406,13=>201,14=>613,15=>623,16=>629,17=>708,18=>54,19=>51,20=>202,21=>321,22=>333,23=>414,24=>40,25=>41,26=>42,27=>43,28=>46,29=>103,30=>507,31=>2757,32=>326,33=>338,34=>9991,35=>323,36=>335,37=>318,38=>330,39=>399,40=>3128,41=>711,42=>9992,43=>606,90=>9901,91=>9902,92=>9903,93=>9904,94=>9905,95=>9906,96=>9907,97=>9908,99=>9999);
+			foreach($DB_TAB_communes as $DB_ROW)
+			{
+				$id_old_incremente = $DB_ROW['matiere_id']+$increment;
+				$id_new = $tab_id_old_to_id_new[$DB_ROW['matiere_id']];
+				DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_matiere SET matiere_active=1, matiere_nb_demandes='.$DB_ROW['matiere_nb_demandes'].', matiere_ordre='.$DB_ROW['matiere_ordre'].' WHERE matiere_id='.$id_new );
+				foreach($tab_tables as $table_nom)
+				{
+					DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE '.$table_nom.' SET matiere_id='.$id_new.' WHERE matiere_id='.$id_old_incremente );
+				}
+			}
+			foreach($DB_TAB_specifiques as $DB_ROW)
+			{
+				$id_old_incremente = $DB_ROW['matiere_id']+$increment;
+				$matiere_existante_id = DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , 'SELECT matiere_id FROM sacoche_matiere WHERE matiere_ref="'.$DB_ROW['matiere_ref'].'"' );
+				if(!$matiere_existante_id)
+				{
+					$id_new = 10000 + $DB_ROW['matiere_id'] - 100;
+					DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES('.$id_new.', 1, 0, 0, '.$DB_ROW['matiere_nb_demandes'].', '.$DB_ROW['matiere_ordre'].', "'.$DB_ROW['matiere_ref'].'", "'.$DB_ROW['matiere_nom'].'")' );
+				}
+				else
+				{
+					$id_new = $matiere_existante_id;
+					DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_matiere SET matiere_active=1, matiere_nb_demandes='.$DB_ROW['matiere_nb_demandes'].', matiere_ordre='.$DB_ROW['matiere_ordre'].' WHERE matiere_id='.$id_new );
+					DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_referentiel SET referentiel_partage_etat="non" WHERE matiere_id='.$id_old_incremente );
+				}
+				foreach($tab_tables as $table_nom)
+				{
+					DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE '.$table_nom.' SET matiere_id='.$id_new.' WHERE matiere_id='.$id_old_incremente );
+				}
+			}
+			// Nettoyage des entrées qui resteraient (anciennes matières plus utilisées)
+			foreach($tab_tables as $table_nom)
+			{
+				$DB_TAB_obsoletes = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , 'SELECT matiere_id FROM '.$table_nom.' WHERE matiere_id>'.$increment.' GROUP BY matiere_id');
+				foreach($DB_TAB_obsoletes as $DB_ROW)
+				{
+					$id_old_decremente = $DB_ROW['matiere_id'] - $increment;
+					$id_new = isset($tab_id_old_to_id_new[$id_old_decremente]) ? $tab_id_old_to_id_new[$id_old_decremente] : 0 ;
+					if($id_new)
+					{
+						DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE '.$table_nom.' SET matiere_id='.$id_new.' WHERE matiere_id='.$DB_ROW['matiere_id'] );
+					}
+					else
+					{
+						DB::query(SACOCHE_STRUCTURE_BD_NAME , 'DELETE FROM '.$table_nom.' WHERE matiere_id='.$DB_ROW['matiere_id'] );
+					}
+				}
+			}
+		}
+	}
+
 }
 
 }

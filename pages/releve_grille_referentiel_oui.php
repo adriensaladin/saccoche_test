@@ -38,7 +38,7 @@ $check_aff_lien   = (Formulaire::$tab_choix['aff_lien'])   ? ' checked' : '' ;
 $bouton_modifier_matieres = '';
 if($_SESSION['USER_PROFIL']=='directeur')
 {
-	$tab_matieres = DB_STRUCTURE_COMMUN::DB_OPT_matieres_etabl($_SESSION['MATIERES'],$transversal=true);
+	$tab_matieres = DB_STRUCTURE_COMMUN::DB_OPT_matieres_etabl(TRUE /*transversal*/);
 	$tab_niveaux  = DB_STRUCTURE_COMMUN::DB_OPT_niveaux_etabl($_SESSION['NIVEAUX'],$_SESSION['CYCLES']);
 	$tab_groupes  = DB_STRUCTURE_COMMUN::DB_OPT_classes_groupes_etabl();
 	$of_g = 'val'; $sel_g = false; $og_g = 'oui'; $class_form_eleve = 'show'; $sel_n = false;
@@ -47,7 +47,7 @@ if($_SESSION['USER_PROFIL']=='directeur')
 }
 if($_SESSION['USER_PROFIL']=='professeur')
 {
-	$tab_matieres = DB_STRUCTURE_COMMUN::DB_OPT_matieres_professeur($_SESSION['MATIERES'],$_SESSION['USER_ID']);
+	$tab_matieres = DB_STRUCTURE_COMMUN::DB_OPT_matieres_professeur($_SESSION['USER_ID']);
 	$tab_niveaux  = DB_STRUCTURE_COMMUN::DB_OPT_niveaux_etabl($_SESSION['NIVEAUX'],$_SESSION['CYCLES']);
 	$tab_groupes  = DB_STRUCTURE_COMMUN::DB_OPT_groupes_professeur($_SESSION['USER_ID']);
 	$of_g = 'val'; $sel_g = false; $og_g = 'oui'; $class_form_eleve = 'show'; $sel_n = false;
@@ -57,7 +57,7 @@ if($_SESSION['USER_PROFIL']=='professeur')
 }
 if( ($_SESSION['USER_PROFIL']=='parent') && ($_SESSION['NB_ENFANTS']!=1) )
 {
-	$tab_matieres = DB_STRUCTURE_COMMUN::DB_OPT_matieres_etabl($_SESSION['MATIERES'],$transversal=true);
+	$tab_matieres = DB_STRUCTURE_COMMUN::DB_OPT_matieres_etabl(TRUE /*transversal*/);
 	$tab_niveaux  = DB_STRUCTURE_COMMUN::DB_OPT_niveaux_etabl($_SESSION['NIVEAUX'],$_SESSION['CYCLES']);
 	$tab_groupes  = $_SESSION['OPT_PARENT_CLASSES'];
 	$of_g = 'oui'; $sel_g = false; $og_g = 'non'; $class_form_eleve = 'show'; $sel_n = false;
@@ -66,7 +66,7 @@ if( ($_SESSION['USER_PROFIL']=='parent') && ($_SESSION['NB_ENFANTS']!=1) )
 }
 if( ($_SESSION['USER_PROFIL']=='parent') && ($_SESSION['NB_ENFANTS']==1) )
 {
-	$tab_matieres = DB_STRUCTURE_COMMUN::DB_OPT_matieres_eleve($_SESSION['MATIERES'],$_SESSION['OPT_PARENT_ENFANTS'][0]['valeur']);
+	$tab_matieres = DB_STRUCTURE_COMMUN::DB_OPT_matieres_eleve($_SESSION['OPT_PARENT_ENFANTS'][0]['valeur']);
 	$tab_niveaux  = DB_STRUCTURE_COMMUN::DB_OPT_niveaux_eleve($_SESSION['NIVEAUX'],$_SESSION['CYCLES'],$_SESSION['ELEVE_CLASSE_ID']);
 	$tab_groupes  = array(0=>array('valeur'=>$_SESSION['ELEVE_CLASSE_ID'],'texte'=>$_SESSION['ELEVE_CLASSE_NOM']));
 	$of_g = 'non'; $sel_g = true;  $og_g = 'non'; $class_form_eleve = 'hide'; $sel_n = 'val';
@@ -75,7 +75,7 @@ if( ($_SESSION['USER_PROFIL']=='parent') && ($_SESSION['NB_ENFANTS']==1) )
 }
 if($_SESSION['USER_PROFIL']=='eleve')
 {
-	$tab_matieres = DB_STRUCTURE_COMMUN::DB_OPT_matieres_eleve($_SESSION['MATIERES'],$_SESSION['USER_ID']);
+	$tab_matieres = DB_STRUCTURE_COMMUN::DB_OPT_matieres_eleve($_SESSION['USER_ID']);
 	$tab_niveaux  = DB_STRUCTURE_COMMUN::DB_OPT_niveaux_eleve($_SESSION['NIVEAUX'],$_SESSION['CYCLES'],$_SESSION['ELEVE_CLASSE_ID']);
 	$tab_groupes  = array(0=>array('valeur'=>$_SESSION['ELEVE_CLASSE_ID'],'texte'=>$_SESSION['ELEVE_CLASSE_NOM']));
 	$of_g = 'non'; $sel_g = true;  $og_g = 'non'; $class_form_eleve = 'hide'; $sel_n = 'val';

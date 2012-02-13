@@ -85,12 +85,12 @@ $tab_niveau  = array();
 $tab_colonne = array();
 
 // On récupère la liste des matières où le professeur est rattaché, et s'il en est coordonnateur
-$DB_TAB = DB_STRUCTURE_PROFESSEUR::DB_lister_matieres_professeur_infos_referentiel($_SESSION['MATIERES'],$_SESSION['USER_ID']);
+$DB_TAB = DB_STRUCTURE_PROFESSEUR::DB_lister_matieres_professeur_infos_referentiel($_SESSION['USER_ID']);
 if(count($DB_TAB))
 {
 	foreach($DB_TAB as $DB_ROW)
 	{
-		$tab_matiere[$DB_ROW['matiere_id']] = array( 'nom'=>html($DB_ROW['matiere_nom']) , 'partage'=>$DB_ROW['matiere_partage'] , 'nb_demandes'=>$DB_ROW['matiere_nb_demandes'] , 'coord'=>$DB_ROW['jointure_coord'] );
+		$tab_matiere[$DB_ROW['matiere_id']] = array( 'nom'=>html($DB_ROW['matiere_nom']) , 'nb_demandes'=>$DB_ROW['matiere_nb_demandes'] , 'coord'=>$DB_ROW['jointure_coord'] );
 	}
 }
 $listing_matieres_id = implode(',',array_keys($tab_matiere));
@@ -170,7 +170,7 @@ else
 		$rowspan = ($matiere_id!=ID_MATIERE_TRANSVERSALE) ? $nb_niveaux : mb_substr_count($_SESSION['CYCLES'],',','UTF-8')+1 ;
 		$matiere_nom    = $tab['nom'];
 		$matiere_coord  = $tab['coord'];
-		$matiere_perso  = ($tab['partage']) ? 0 : 1 ;
+		$matiere_perso  = ($matiere_id>ID_MATIERE_TRANSVERSALE) ? 1 : 0 ;
 		$matiere_droit  = ( (($_SESSION['DROIT_GERER_REFERENTIEL']=='profcoordonnateur')&&$matiere_coord) || ($_SESSION['DROIT_GERER_REFERENTIEL']=='professeur') ) ? TRUE : FALSE ;
 		$matiere_nombre = ($matiere_droit) ? str_replace('value="'.$tab['nb_demandes'].'"','value="'.$tab['nb_demandes'].'" selected',$select_demandes) : str_replace('<select','<select disabled',$select_demandes) ;
 		$affichage .= '<tr><td colspan="4" class="nu">&nbsp;</td><td class="nu"></td></tr>'."\r\n"; // Partagé en deux sinon Chrome ajoute une bordure disgracieuse
@@ -247,14 +247,15 @@ else
 
 <?php
 // Fabrication des éléments select du formulaire, pour pouvoir prendre un référentiel d'une autre matière ou d'un autre niveau (demandé...).
-$select_matiere = Formulaire::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_matieres_communes() , $select_nom='f_matiere' , $option_first='val' , $selection=false , $optgroup='non');
+$select_famille = Formulaire::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_familles_matieres() , $select_nom='f_famille' , $option_first='oui' , $selection=false , $optgroup='oui');
 $select_niveau  = Formulaire::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_niveaux()           , $select_nom='f_niveau'  , $option_first='val' , $selection=false , $optgroup='non');
 ?>
 
 <div id="choisir_referentiel_communautaire">
 	<h2>Rechercher un référentiel partagé sur le serveur communautaire</h2>
 	<fieldset>
-		<label class="tab" for="f_matiere">Matière :</label><?php echo $select_matiere ?><br />
+		<label class="tab" for="f_famille">Famille de matières :</label><?php echo $select_famille ?><label id="ajax_maj">&nbsp;</label><br />
+		<label class="tab" for="f_matiere">Matières :</label><select id="f_matiere" name="f_matiere"><option value="0">Toutes les matières</option></select><br />
 		<label class="tab" for="f_niveau">Niveau :</label><?php echo $select_niveau ?><br />
 		<label class="tab" for="f_structure"><img alt="" src="./_img/bulle_aide.png" title="Seules les structures partageant au moins un référentiel apparaissent." /> Structure :</label><select id="f_structure" name="f_structure"><option></option></select><br />
 		<span class="tab"></span><button id="rechercher" type="button" class="rechercher">Lancer / Actualiser la recherche.</button><label id="ajax_msg">&nbsp;</label><br />

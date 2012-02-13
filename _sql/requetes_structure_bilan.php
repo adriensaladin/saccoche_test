@@ -104,7 +104,7 @@ public function DB_recuperer_arborescence_selection($liste_eleve_id,$liste_item_
 public function DB_recuperer_arborescence_bilan($liste_eleve_id,$matiere_id,$only_socle,$date_mysql_debut,$date_mysql_fin)
 {
 	$where_eleve      = (strpos($liste_eleve_id,',')) ? 'eleve_id IN('.$liste_eleve_id.') '    : 'eleve_id='.$liste_eleve_id.' ' ; // Pour IN(...) NE PAS passer la liste dans $DB_VAR sinon elle est convertie en nb entier
-	$where_matiere    = ($matiere_id)                 ? 'AND matiere_id=:matiere '             : 'AND (matiere_id IN('.$_SESSION['MATIERES'].') OR matiere_partage=:partage) ' ; // Test matiere pour éviter des matières décochées par l'admin.
+	$where_matiere    = ($matiere_id)                 ? 'AND matiere_id=:matiere '             : 'AND matiere_active=1 ' ;
 	$where_niveau     = 'AND niveau_id IN('.$_SESSION['CYCLES'].','.$_SESSION['NIVEAUX'].') ' ;
 	$where_socle      = ($only_socle)                 ? 'AND entree_id !=0 '                   : '' ;
 	$where_date_debut = ($date_mysql_debut)           ? 'AND saisie_date>=:date_debut '        : '';
@@ -125,7 +125,7 @@ public function DB_recuperer_arborescence_bilan($liste_eleve_id,$matiere_id,$onl
 	$DB_SQL.= 'WHERE '.$where_eleve.$where_matiere.$where_niveau.$where_socle.$where_date_debut.$where_date_fin;
 	$DB_SQL.= 'GROUP BY item_id ';
 	$DB_SQL.= 'ORDER BY '.$order_matiere.'niveau_ordre ASC, domaine_ordre ASC, theme_ordre ASC, item_ordre ASC';
-	$DB_VAR = array(':matiere'=>$matiere_id,':partage'=>0,':date_debut'=>$date_mysql_debut,':date_fin'=>$date_mysql_fin);
+	$DB_VAR = array(':matiere'=>$matiere_id,':date_debut'=>$date_mysql_debut,':date_fin'=>$date_mysql_fin);
 	$DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR , TRUE);
 	if($matiere_id)
 	{
@@ -166,7 +166,7 @@ public function DB_recuperer_arborescence_synthese($liste_eleve_id,$matiere_id,$
 	$select_matiere    = (!$matiere_id)                ? 'matiere_id , matiere_nom , '                          : '' ;
 	$select_synthese   = ($mode_synthese=='predefini') ? ', referentiel_mode_synthese AS mode_synthese '        : '' ;
 	$where_eleve       = (strpos($liste_eleve_id,',')) ? 'eleve_id IN('.$liste_eleve_id.') '                    : 'eleve_id='.$liste_eleve_id.' ' ; // Pour IN(...) NE PAS passer la liste dans $DB_VAR sinon elle est convertie en nb entier
-	$where_matiere     = ($matiere_id)                 ? 'AND matiere_id=:matiere '                             : 'AND (matiere_id IN('.$_SESSION['MATIERES'].') OR matiere_partage=:partage) ' ; // Test matiere pour éviter des matières décochées par l'admin.
+	$where_matiere     = ($matiere_id)                 ? 'AND matiere_id=:matiere '                             : 'AND matiere_active=1 ' ;
 	$where_socle       = ($only_socle)                 ? 'AND entree_id!=0 '                                    : '' ;
 	$where_niveau      = ($only_niveau)                ? 'AND niveau_id='.$only_niveau.' '                      : 'AND niveau_id IN('.$_SESSION['CYCLES'].','.$_SESSION['NIVEAUX'].') ' ;
 	$where_date_debut  = ($date_mysql_debut)           ? 'AND saisie_date>=:date_debut '                        : '';
@@ -191,7 +191,7 @@ public function DB_recuperer_arborescence_synthese($liste_eleve_id,$matiere_id,$
 	$DB_SQL.= 'WHERE '.$where_eleve.$where_matiere.$where_socle.$where_niveau.$where_date_debut.$where_date_fin.$where_synthese;
 	$DB_SQL.= 'GROUP BY item_id ';
 	$DB_SQL.= 'ORDER BY '.$order_matiere.'niveau_ordre ASC, domaine_ordre ASC, theme_ordre ASC, item_ordre ASC';
-	$DB_VAR = array(':matiere'=>$matiere_id,':partage'=>0,':date_debut'=>$date_mysql_debut,':date_fin'=>$date_mysql_fin);
+	$DB_VAR = array(':matiere'=>$matiere_id,':date_debut'=>$date_mysql_debut,':date_fin'=>$date_mysql_fin);
 	$DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR , TRUE);
 	// Traiter le résultat de la requête pour en extraire des sous-tableaux $tab_synthese et éventuellement $tab_matiere
 	$tab_synthese = array();
@@ -365,8 +365,8 @@ public function DB_compter_modes_synthese_inconnu()
 	$DB_SQL = 'SELECT COUNT(*) AS nombre ';
 	$DB_SQL.= 'FROM sacoche_referentiel ';
 	$DB_SQL.= 'LEFT JOIN sacoche_matiere USING (matiere_id) ';
-	$DB_SQL.= 'WHERE referentiel_mode_synthese=:mode_inconnu AND (matiere_id IN('.$_SESSION['MATIERES'].') OR matiere_partage=:partage) '; // Test matiere pour éviter des matières décochées par l'admin.
-	$DB_VAR = array(':mode_inconnu'=>'inconnu',':partage'=>0);
+	$DB_SQL.= 'WHERE referentiel_mode_synthese=:mode_inconnu AND matiere_active=1 ';
+	$DB_VAR = array(':mode_inconnu'=>'inconnu');
 	return DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 

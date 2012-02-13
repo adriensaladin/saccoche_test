@@ -50,11 +50,10 @@ public function DB_recuperer_associations_entrees_socle()
 	$DB_SQL.= 'LEFT JOIN sacoche_referentiel_domaine USING (matiere_id,niveau_id) ';
 	$DB_SQL.= 'LEFT JOIN sacoche_referentiel_theme USING (domaine_id) ';
 	$DB_SQL.= 'LEFT JOIN sacoche_referentiel_item USING (theme_id) ';
-	$DB_SQL.= 'WHERE entree_id>0 AND (matiere_id IN('.$_SESSION['MATIERES'].') OR matiere_partage=:partage) AND niveau_id IN('.$_SESSION['CYCLES'].','.$_SESSION['NIVEAUX'].') ' ; // Test matiere pour éviter des matières décochées par l'admin.
+	$DB_SQL.= 'WHERE entree_id>0 AND matiere_active=1 AND niveau_id IN('.$_SESSION['CYCLES'].','.$_SESSION['NIVEAUX'].') ' ;
 	$DB_SQL.= 'GROUP BY item_id ';
 	$DB_SQL.= 'ORDER BY matiere_nom ASC, niveau_ordre ASC, domaine_ordre ASC, theme_ordre ASC, item_ordre ASC';
-	$DB_VAR = array(':partage'=>0);
-	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
 }
 
 /**

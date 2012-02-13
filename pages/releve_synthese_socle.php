@@ -49,7 +49,7 @@ else
 {
 	$tab_groupes = 'Vous n\'avez pas un profil autorisé pour accéder au formulaire !';
 }
-$tab_matieres = DB_STRUCTURE_COMMUN::DB_OPT_matieres_etabl($_SESSION['MATIERES'],$transversal=true);
+$tab_matieres = DB_STRUCTURE_COMMUN::DB_OPT_matieres_etabl(TRUE /*transversal*/);
 $tab_paliers  = DB_STRUCTURE_COMMUN::DB_OPT_paliers_etabl($_SESSION['PALIERS']);
 $of_p = (count($tab_paliers)<2) ? 'non' : 'oui' ;
 

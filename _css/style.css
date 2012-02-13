@@ -42,7 +42,7 @@ body {background:#FFF;font:1em "arial","helvetica","nimbus sans l","liberation s
 table,select,textarea,input,button,div{font:100% "arial","helvetica","nimbus sans l","liberation sans","freesans","garuda",sans-serif}
 p, *.p{margin-top:1em;margin-bottom:1em}
 img {vertical-align:middle}
-td img , #aide_en_ligne img  , .legende img {vertical-align:baseline}
+td img , #aide_en_ligne img , .legende img {vertical-align:baseline}
 label img {vertical-align:text-top}
 h1{display:block;font-size:120%;text-align:left;font-weight:bold;font-variant:small-caps;color:#33A;letter-spacing:0.15em;margin:1ex 2em;}
 h2{display:block;font-size:110%;text-align:left;font-weight:bold;font-variant:small-caps;color:#33A;letter-spacing:0.15em;margin:1ex auto 1ex 1em;}
@@ -452,13 +452,18 @@ table.bilan th.info {width:9px;height:9px;background:#DDF url(../_img/info_mini.
 #tableau_validation tbody td.v3:hover {cursor:default}
 #tableau_validation tfoot td{border:0}
 #tableau_validation tfoot td.L100{background:#FFF url(../_img/drapeau/100.gif) no-repeat center center;}
+#tableau_validation tfoot td.L101{background:#FFF url(../_img/drapeau/101.gif) no-repeat center center;}
+#tableau_validation tfoot td.L109{background:#FFF url(../_img/drapeau/109.gif) no-repeat center center;}
+#tableau_validation tfoot td.L122{background:#FFF url(../_img/drapeau/122.gif) no-repeat center center;}
+#tableau_validation tfoot td.L123{background:#FFF url(../_img/drapeau/123.gif) no-repeat center center;}
+#tableau_validation tfoot td.L127{background:#FFF url(../_img/drapeau/127.gif) no-repeat center center;}
 #tableau_validation tfoot td.L132{background:#FFF url(../_img/drapeau/132.gif) no-repeat center center;}
 #tableau_validation tfoot td.L134{background:#FFF url(../_img/drapeau/134.gif) no-repeat center center;}
-#tableau_validation tfoot td.L109{background:#FFF url(../_img/drapeau/109.gif) no-repeat center center;}
-#tableau_validation tfoot td.L127{background:#FFF url(../_img/drapeau/127.gif) no-repeat center center;}
+#tableau_validation tfoot td.L135{background:#FFF url(../_img/drapeau/135.gif) no-repeat center center;}
 #tableau_validation tfoot td.L139{background:#FFF url(../_img/drapeau/139.gif) no-repeat center center;}
-#tableau_validation tfoot td.L123{background:#FFF url(../_img/drapeau/123.gif) no-repeat center center;}
+#tableau_validation tfoot td.L201{background:#FFF url(../_img/drapeau/201.gif) no-repeat center center;}
 #tableau_validation tfoot td.L216{background:#FFF url(../_img/drapeau/216.gif) no-repeat center center;}
+#tableau_validation tfoot td.L217{background:#FFF url(../_img/drapeau/217.gif) no-repeat center center;}
 
 /* Défini suivant les préférences de l'établissement : cf actualiser_style_session() dans fonction_divers.php */
 /*

@@ -117,7 +117,7 @@ foreach($DB_TAB as $DB_ROW)
 <form action="#" method="post" id="form_move">
 	<hr />
 	<h2>Déplacer les référentiels d'une matière vers une autre</h2>
-	<p class="astuce">Il s'agit typiquement de convertir une matière spécifique en matière officielle afin de pouvoir partager les référentiels.</p>
+	<p class="astuce">Ce menu peut par exemple servir à convertir une matière spécifique en matière officielle afin de pouvoir en partager les référentiels.</p>
 	<ul class="puce">
 		<li>Les deux matières doivent être visibles ci-dessus.</li>
 		<li>La nouvelle matière doit être vierge de tout référentiel.</li>

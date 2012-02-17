@@ -515,7 +515,7 @@ public function DB_ajouter_saisie($prof_id,$eleve_id,$devoir_id,$item_id,$item_d
 public function DB_modifier_groupe_par_prof($groupe_id,$groupe_nom,$niveau_id)
 {
 	$DB_SQL = 'UPDATE sacoche_groupe ';
-	$DB_SQL.= 'SET groupe_ref=:groupe_ref,groupe_nom=:groupe_nom,niveau_id=:niveau_id ';
+	$DB_SQL.= 'SET groupe_nom=:groupe_nom,niveau_id=:niveau_id ';
 	$DB_SQL.= 'WHERE groupe_id=:groupe_id ';
 	$DB_VAR = array(':groupe_id'=>$groupe_id,':groupe_nom'=>$groupe_nom,':niveau_id'=>$niveau_id);
 	DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);

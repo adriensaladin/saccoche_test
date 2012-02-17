@@ -238,6 +238,8 @@ function declaration_entete( $is_meta_robots ,$is_favicon , $is_rss , $tab_fichi
 	{
 		echo'<link rel="shortcut icon" type="images/x-icon" href="./favicon.ico" />';
 		echo'<link rel="icon" type="image/png" href="./favicon.png" />';
+		echo'<link rel="apple-touch-icon" href="./_img/apple-touch-icon-114x114.png" />';
+		echo'<link rel="apple-touch-icon-precomposed" href="./_img/apple-touch-icon-114x114.png" />';
 	}
 	if($is_rss)
 	{

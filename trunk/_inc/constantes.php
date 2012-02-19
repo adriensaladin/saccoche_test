@@ -33,7 +33,7 @@
 // VERSION_PROG : version des fichiers installés, à comparer avec la dernière version disponible sur le serveur communautaire ; pour une conversion en entier : list($annee,$mois,$jour) = explode('-',substr(VERSION_PROG,0,10); $indice_version = (date('Y')-2011)*365 + date('z',mktime(0,0,0,$mois,$jour,$annee));
 // VERSION_BASE : version de la base associée, à comparer avec la version de la base actuellement installée
 define('VERSION_PROG', @file_get_contents('VERSION.txt') );	// Ne pas mettre de chemin ! Dans un fichier texte pour permettre un appel au serveur communautaire sans lui faire utiliser PHP.
-define('VERSION_BASE','2012-02-15');
+define('VERSION_BASE','2012-02-19');
 
 // Quelques chemins, avec le séparateur final
 define('CHEMIN_SACOCHE'       , realpath(dirname(dirname(__FILE__))).DIRECTORY_SEPARATOR);
@@ -48,10 +48,10 @@ define('CHEMIN_SQL_STRUCTURE' , CHEMIN_SACOCHE.DOSSIER_SQL_STRUCTURE);
 define('CHEMIN_SQL_WEBMESTRE' , CHEMIN_SACOCHE.DOSSIER_SQL_WEBMESTRE);
 define('FPDF_FONTPATH'        , CHEMIN_SACOCHE.DOSSIER_FONT); // Pour FPDF (répertoire où se situent les polices)
 
-define('ID_DEMO'                  ,9999);          // id de l'établissement de démonstration (pour $_SESSION['SESAMATH_ID']) ; 0 pose des pbs, et il fallait prendre un id disponible dans la base d'établissements de Sésamath
-define('ID_MATIERE_TRANSVERSALE'  ,9999);          // id de la matière transversale dans la table "sacoche_matiere" ; les id des matières spécifiques sont supérieurs
-define('LISTING_ID_NIVEAUX_CYCLES','.1.2.3.4.5.'); // listing des id des cycles dans la table "sacoche_niveau"
-define('LISTING_ID_PALIERS'       ,'.1.2.3.');     // listing des id des paliers dans la table "sacoche_socle_palier"
+define('ID_DEMO'                   ,9999); // id de l'établissement de démonstration (pour $_SESSION['SESAMATH_ID']) ; 0 pose des pbs, et il fallait prendre un id disponible dans la base d'établissements de Sésamath
+define('ID_MATIERE_PARTAGEE_MAX'   ,9999); // id de la matière transversale dans la table "sacoche_matiere" ; c'est l'id maximal des matières partagées (les id des matières spécifiques sont supérieurs)
+define('ID_NIVEAU_MAX'             ,1000); // Un id de niveau supérieur correspond à un id de famille qui a été incrémenté de cette constante
+define('ID_FAMILLE_MATIERE_USUELLE',  99);
 
 // CHARSET : "iso-8859-1" ou "utf-8" suivant l'encodage utilisé ; présence aussi d'un "AddDefaultCharset ..." dans le fichier .htaccess
 // Cependant, tout le site ayant été prévu et conçu en UTF-8, changer le CHARSET semble assez hasardeux pour ne pas dire risqué...

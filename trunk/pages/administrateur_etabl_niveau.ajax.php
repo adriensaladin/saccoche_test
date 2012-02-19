@@ -28,47 +28,43 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 if($_SESSION['SESAMATH_ID']==ID_DEMO) {exit('Action désactivée pour la démo...');}
 
-$action = (isset($_POST['f_action'])) ? clean_texte($_POST['f_action']) : '';
-
-$tab_id = (isset($_POST['tab_id']))   ? array_map('clean_entier',explode(',',$_POST['tab_id'])) : array() ;
-$tab_id = array_filter($tab_id,'positif');
-sort($tab_id);
-
-$tab_cycles = explode( '.' , substr(LISTING_ID_NIVEAUX_CYCLES,1,-1) );
+$action     = (isset($_POST['f_action']))   ? clean_texte($_POST['f_action'])    : '';
+$famille_id = (isset($_POST['f_famille']))  ? clean_entier($_POST['f_famille'])  : 0 ;
+$niveau_id  = (isset($_POST['f_niveau']))   ? clean_entier($_POST['f_niveau'])   : 0 ;
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-//	Choix de cycles (pas les autres niveaux)
+//	Afficher les niveaux d'une famille donnée
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
-if($action=='Choix_cycles')
+if( ($action=='recherche_niveau_famille') && $famille_id )
 {
-	$tab_id = array_intersect($tab_cycles,$tab_id);
-	if(count($tab_id)==0)
+	$DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_niveaux_famille($famille_id);
+	foreach($DB_TAB as $DB_ROW)
 	{
-		exit('Erreur avec les données transmises !'); // Besoin d'au moins un cycle pour la matière transversale.
+		$class = ($DB_ROW['niveau_actif']) ? 'ajouter_non' : 'ajouter' ;
+		$title = ($DB_ROW['niveau_actif']) ? 'Niveau déjà choisi.' : 'Ajouter ce niveau.' ;
+		echo'<li>'.html($DB_ROW['niveau_nom'].' ('.$DB_ROW['niveau_ref'].')').'<q id="add_'.$DB_ROW['niveau_id'].'" class="'.$class.'" title="'.$title.'"></q></li>';
 	}
-	$listing_cycles = implode(',',$tab_id);
-	DB_STRUCTURE_COMMUN::DB_modifier_parametres( array('cycles'=>$listing_cycles) );
-	// ne pas oublier de mettre aussi à jour la session
-	$_SESSION['CYCLES'] = $listing_cycles;
+	exit();
+}
+
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+//	Ajouter un niveau
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
+if( ($action=='ajouter') && $niveau_id )
+{
+	DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_niveau($niveau_id,1);
 	exit('ok');
 }
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-//	Choix de niveaux (excepté les cycles)
+//	Retirer un niveau
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
-if($action=='Choix_niveaux')
+if( ($action=='supprimer') && $niveau_id )
 {
-	$tab_id = array_diff($tab_id,$tab_cycles);
-	if(count($tab_id)==0)
-	{
-		exit('Erreur avec les données transmises !'); // Besoin d'au moins un niveau pour y associer les classes et les groupes
-	}
-	$listing_niveaux = implode(',',$tab_id);
-	DB_STRUCTURE_COMMUN::DB_modifier_parametres( array('niveaux'=>$listing_niveaux) );
-	// ne pas oublier de mettre aussi à jour la session
-	$_SESSION['NIVEAUX'] = $listing_niveaux;
+	DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_niveau($niveau_id,0);
 	exit('ok');
 }
 
@@ -77,5 +73,4 @@ if($action=='Choix_niveaux')
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
 exit('Erreur avec les données transmises !');
-
 ?>

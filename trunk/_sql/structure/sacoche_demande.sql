@@ -10,7 +10,6 @@ CREATE TABLE sacoche_demande (
 	demande_statut ENUM("eleve","prof") COLLATE utf8_unicode_ci NOT NULL DEFAULT "eleve" COMMENT "[eleve] pour une demande d'élève ; [prof] pour une prévision d'évaluation par le prof ; une annulation de l'élève ou du prof efface l'enregistrement",
 	PRIMARY KEY (demande_id),
 	UNIQUE KEY demande_key (user_id,matiere_id,item_id),
-	KEY user_id (user_id),
 	KEY matiere_id (matiere_id),
 	KEY item_id (item_id)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;

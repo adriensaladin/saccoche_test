@@ -49,8 +49,8 @@ else
 {
 	$tab_groupes = 'Vous n\'avez pas un profil autorisé pour accéder au formulaire !';
 }
-$tab_matieres = DB_STRUCTURE_COMMUN::DB_OPT_matieres_etabl(TRUE /*transversal*/);
-$tab_paliers  = DB_STRUCTURE_COMMUN::DB_OPT_paliers_etabl($_SESSION['PALIERS']);
+$tab_matieres = DB_STRUCTURE_COMMUN::DB_OPT_matieres_etabl();
+$tab_paliers  = DB_STRUCTURE_COMMUN::DB_OPT_paliers_etabl();
 $of_p = (count($tab_paliers)<2) ? 'non' : 'oui' ;
 
 $select_matiere = Formulaire::afficher_select($tab_matieres , $select_nom=false      , $option_first='non' , $selection=true                                 , $optgroup='non');

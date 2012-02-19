@@ -327,7 +327,7 @@ $(document).ready
 						$('q.valider').parent().parent().remove();
 						break;
 					case 'supprimer':
-						$('q.valider').parent().parent().parent().remove();
+						$('q.valider').closest('tr').remove();
 						break;
 				}
 				trier_tableau();

@@ -126,7 +126,7 @@ $(document).ready
 			mode = $(this).attr('class');
 			afficher_masquer_images_action('hide');
 			id = $(this).parent().parent().attr('id').substring(3);
-			texte = (id<id_matiere_transversale) ? "Les référentiels et les résultats associés ne seront plus accessibles !" : "Les référentiels et les résultats associés seront perdus !" ;
+			texte = (id>id_matiere_partagee_max) ? "Les référentiels et les résultats associés seront perdus !" : "Les référentiels et les résultats associés ne seront plus accessibles !" ;
 			new_span  = '<span class="danger"><input id="f_action" name="f_action" type="hidden" value="'+mode+'" /><input id="f_id" name="f_id" type="hidden" value="'+id+'" />'+texte+'<q class="valider" title="Confirmer la suppression de cette matière."></q><q class="annuler" title="Annuler la suppression de cette matière."></q> <label id="ajax_msg">&nbsp;</label></span>';
 			$(this).after(new_span);
 			infobulle();
@@ -190,13 +190,10 @@ $(document).ready
 						{
 							var matiere_id = tab_infos[1];
 							$('#ajax_msg').removeAttr("class").addClass("valide").html("Demande réalisée !");
-							$('q.valider').parent().parent().parent().remove();
+							$('q.valider').closest('tr').remove();
 							afficher_masquer_images_action('show');
-							if(matiere_id!=id_matiere_transversale)
-							{
-								$('#f_matiere_avant option[value='+matiere_id+']').remove();
-								$('#f_matiere_apres option[value='+matiere_id+']').remove();
-							}
+							$('#f_matiere_avant option[value='+matiere_id+']').remove();
+							$('#f_matiere_apres option[value='+matiere_id+']').remove();
 						}
 					}
 				}
@@ -466,11 +463,8 @@ $(document).ready
 							$('button').prop('disabled',false);
 							if(responseHTML=='ok')	// Attention aux caractères accentués : l'utf-8 pose des pbs pour ce test
 							{
-								if(matiere_id_avant!=id_matiere_transversale)
-								{
-									$('#f_matiere_avant option[value='+matiere_id_avant+']').remove();
-									$('#f_matiere_apres option[value='+matiere_id_avant+']').remove();
-								}
+								$('#f_matiere_avant option[value='+matiere_id_avant+']').remove();
+								$('#f_matiere_apres option[value='+matiere_id_avant+']').remove();
 								$('#id_'+matiere_id_avant).remove();
 								$('#ajax_msg_move').removeAttr("class").addClass("valide").html("Transfert effectué.");
 							}
@@ -603,7 +597,7 @@ $(document).ready
 						break;
 					case 'supprimer':
 						var matiere_id = tab_infos[1];
-						$('q.valider').parent().parent().parent().remove();
+						$('q.valider').closest('tr').remove();
 						$('#f_matiere_avant option[value='+matiere_id+']').remove();
 						$('#f_matiere_apres option[value='+matiere_id+']').remove();
 						break;

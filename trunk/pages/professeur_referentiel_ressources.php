@@ -77,10 +77,10 @@ else
 				'matiere_act' => $icone_action
 			);
 		}
-		$tab_colonne[$DB_ROW['matiere_id']][$DB_ROW['niveau_id']] = '<td>'.html($DB_ROW['niveau_nom']).'</td><td class="v">Référentiel présent.</td><td class="nu" id="td_'.$DB_ROW['matiere_id'].'_'.$DB_ROW['niveau_id'].'">'.$tab_matiere[$DB_ROW['matiere_id']]['matiere_act'].'</td>';
+		$tab_colonne[$DB_ROW['matiere_id']][$DB_ROW['niveau_id']] = '<td>'.html($DB_ROW['niveau_nom']).'</td><td class="nu" id="td_'.$DB_ROW['matiere_id'].'_'.$DB_ROW['niveau_id'].'">'.$tab_matiere[$DB_ROW['matiere_id']]['matiere_act'].'</td>';
 	}
 	// On construit et affiche le tableau résultant
-	$affichage = '<table class="vm_nug"><thead><tr><th>Matière</th><th>Niveau</th><th>Référentiel</th><th class="nu"></th></tr></thead><tbody>'."\r\n";
+	$affichage = '<table class="vm_nug"><thead><tr><th>Matière</th><th>Niveau</th><th class="nu"></th></tr></thead><tbody>'."\r\n";
 	foreach($tab_matiere as $matiere_id => $tab)
 	{
 		$rowspan = count($tab_colonne[$matiere_id]);

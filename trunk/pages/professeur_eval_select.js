@@ -468,10 +468,10 @@ $(document).ready
 					if($('#'+id).length)
 					{
 						$('#'+id).prop('checked',true);
-						$('#'+id).parent().parent().css("display","block");	// les items
-						$('#'+id).parent().parent().parent().parent().css("display","block");	// le thème
-						$('#'+id).parent().parent().parent().parent().parent().parent().css("display","block");	// le domaine
-						$('#'+id).parent().parent().parent().parent().parent().parent().parent().parent().css("display","block");	// le niveau
+						$('#'+id).closest('ul.ul_n3').css("display","block");	// les items
+						$('#'+id).closest('ul.ul_n2').css("display","block");	// le thème
+						$('#'+id).closest('ul.ul_n1').css("display","block");	// le domaine
+						$('#'+id).closest('ul.ul_m2').css("display","block");	// le niveau
 					}
 				}
 			}
@@ -1617,7 +1617,7 @@ $(document).ready
 						eval( responseHTML.substring(position_script+8) );
 						break;
 					case 'supprimer':
-						$('q.valider').parent().parent().parent().remove();
+						$('q.valider').closest('tr').remove();
 						break;
 				}
 				trier_tableau();

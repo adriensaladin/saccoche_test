@@ -34,7 +34,7 @@ $TITRE = "Gérer les professeurs coordonnateurs";
 <form action="#" method="post" id="coord">
 
 	<?php
-	$tab_matiere = array(ID_MATIERE_TRANSVERSALE=>''); // Pour que ce soit la 1ère affichée
+	$tab_matiere = array();
 	$tab_user    = array();
 	$matiere_id = 0;
 	$nb_professeurs = 0;
@@ -65,8 +65,8 @@ $TITRE = "Gérer les professeurs coordonnateurs";
 			// Assemblage du tableau résultant
 			$TH = array();
 			$TB = array();
-			$tab_mod = 4;
-			$i = $tab_mod-1;
+			$tab_mod = 5;
+			$i = 0;
 			$memo_tab_num = -1;
 			foreach($tab_matiere as $matiere_id => $matiere_nom)
 			{
@@ -85,8 +85,7 @@ $TITRE = "Gérer les professeurs coordonnateurs";
 			// Affichage du tableau résultant
 			for($tab_i=0;$tab_i<=$tab_num;$tab_i++)
 			{
-				$class = ($tab_i) ? '' : ' style="float:right;margin-left:1em;margin-right:1ex"' ;
-				echo'<table'.$class.'>';
+				echo'<table>';
 				echo'<thead><tr>'.$TH[$tab_i].'</tr></thead>';
 				echo'<tbody><tr>'.$TB[$tab_i].'</tr></tbody>';
 				echo'</table><p>&nbsp;</p>';

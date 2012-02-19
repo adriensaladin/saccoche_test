@@ -181,7 +181,7 @@ $(document).ready
 			else
 			{
 				$('#ajax_msg').removeAttr("class").addClass("valide").html("Demande réalisée !");
-				$('q.valider').parent().parent().parent().remove();
+				$('q.valider').closest('tr').remove();
 				afficher_masquer_images_action('show');
 			}
 		} 

@@ -1666,6 +1666,59 @@ public function DB_maj_base($version_actuelle)
 		}
 	}
 
+	//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	//	MAJ 2012-02-15 => 2012-02-19
+	//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	if($version_actuelle=='2012-02-15')
+	{
+		if($version_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
+		{
+			$version_actuelle = '2012-02-19';
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_actuelle.'" WHERE parametre_nom="version_base"' );
+			// récupération des informations sur les niveaux, cycles, paliers
+			$listing_niveaux_id = DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , 'SELECT parametre_valeur FROM sacoche_parametre WHERE parametre_nom="niveaux"' );
+			$listing_cycles_id  = DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , 'SELECT parametre_valeur FROM sacoche_parametre WHERE parametre_nom="cycles"' );
+			$listing_paliers_id = DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , 'SELECT parametre_valeur FROM sacoche_parametre WHERE parametre_nom="paliers"' );
+			// nouvelles tables sacoche_niveau et sacoche_niveau_famille
+			$requetes = file_get_contents(CHEMIN_SQL_STRUCTURE.'sacoche_niveau.sql');
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , $requetes );
+			DB::close(SACOCHE_STRUCTURE_BD_NAME);
+			$requetes = file_get_contents(CHEMIN_SQL_STRUCTURE.'sacoche_niveau_famille.sql');
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , $requetes );
+			DB::close(SACOCHE_STRUCTURE_BD_NAME);
+			// ajout champ table sacoche_socle_palier
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_socle_palier ADD palier_actif BOOLEAN NOT NULL DEFAULT 0 AFTER palier_id , ADD INDEX ( palier_actif )' );
+			// Nettoyage champs devenu obsolète
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'DELETE FROM sacoche_parametre WHERE parametre_nom IN ( "niveaux","cycles","paliers" )' );
+			// Mise à jour des champs utilisés
+			if($listing_niveaux_id)
+			{
+				DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_niveau SET niveau_actif=1 WHERE niveau_id IN('.$listing_niveaux_id.')');
+			}
+			if($listing_cycles_id)
+			{
+				DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_niveau SET niveau_actif=1 WHERE niveau_id IN('.$listing_cycles_id.')');
+			}
+			if($listing_paliers_id)
+			{
+				DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_socle_palier SET palier_actif=1 WHERE palier_id IN('.$listing_paliers_id.')');
+			}
+			// modification / suppression de clefs
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_bulletin DROP INDEX bulletin_key , DROP INDEX eleve_id , ADD PRIMARY KEY ( eleve_id , periode_id , matiere_id , prof_id ) ');
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_demande DROP INDEX user_id');
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_jointure_devoir_item DROP INDEX devoir_item_key , DROP INDEX devoir_id , ADD PRIMARY KEY ( devoir_id , item_id ) ');
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_jointure_groupe_periode DROP INDEX groupe_periode_key , DROP INDEX groupe_id , ADD PRIMARY KEY ( groupe_id , periode_id ) ');
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_jointure_parent_eleve DROP INDEX parent_eleve_key , DROP INDEX parent_id , ADD PRIMARY KEY ( parent_id , eleve_id ) ');
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_jointure_user_entree DROP INDEX validation_entree_key , DROP INDEX user_id , ADD PRIMARY KEY ( user_id , entree_id ) ');
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_jointure_user_groupe DROP INDEX user_groupe_key , DROP INDEX user_id , ADD PRIMARY KEY ( user_id , groupe_id ) ');
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_jointure_user_matiere DROP INDEX user_matiere_key , DROP INDEX user_id , ADD PRIMARY KEY ( user_id , matiere_id ) ');
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_jointure_user_pilier DROP INDEX validation_pilier_key , DROP INDEX user_id , ADD PRIMARY KEY ( user_id , pilier_id ) ');
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_referentiel DROP INDEX referentiel_id , DROP INDEX matiere_id , ADD PRIMARY KEY ( matiere_id , niveau_id ) ');
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_saisie DROP INDEX saisie_key , DROP INDEX devoir_id , ADD PRIMARY KEY ( devoir_id , eleve_id , item_id ) ');
+		}
+	}
+
 }
 
 }

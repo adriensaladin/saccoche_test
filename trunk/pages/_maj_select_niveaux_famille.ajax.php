@@ -25,18 +25,18 @@
  * 
  */
 
-// Mettre à jour l'élément de formulaire "f_matiere" et le renvoyer en HTML
+// Mettre à jour l'élément de formulaire "f_niveau" et le renvoyer en HTML
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 if($_SESSION['SESAMATH_ID']==ID_DEMO) {}
 
-$matiere_famille_id = (isset($_POST['f_famille_matiere'])) ? clean_entier($_POST['f_famille_matiere']) : 0;
+$niveau_famille_id = (isset($_POST['f_famille_niveau'])) ? clean_entier($_POST['f_famille_niveau']) : 0;
 
-if(!$matiere_famille_id)
+if(!$niveau_famille_id)
 {
 	exit('Erreur avec les données transmises !');
 }
 
-echo Formulaire::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_matieres_famille($matiere_famille_id) , $select_nom=FALSE , $option_first='val' , $selection=FALSE , $optgroup='non');
+echo Formulaire::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_niveaux_famille($niveau_famille_id) , $select_nom=FALSE , $option_first='val' , $selection=FALSE , $optgroup='non');
 
 ?>

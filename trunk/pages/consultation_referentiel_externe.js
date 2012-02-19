@@ -76,18 +76,18 @@ $(document).ready
 //	Charger le select f_matiere en ajax
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
-		function maj_matiere(famille_id)
+		function maj_matiere(matiere_famille_id)
 		{
 			$.ajax
 			(
 				{
 					type : 'POST',
 					url : 'ajax.php?page=_maj_select_matieres_famille',
-					data : 'f_famille='+famille_id,
+					data : 'f_famille_matiere='+matiere_famille_id,
 					dataType : "html",
 					error : function(msg,string)
 					{
-						$('#ajax_maj').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
+						$('#ajax_maj_matiere').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
 					},
 					success : function(responseHTML)
 					{
@@ -98,26 +98,76 @@ $(document).ready
 						}
 					else
 						{
-							$('#ajax_maj').removeAttr("class").addClass("alerte").html(responseHTML);
+							$('#ajax_maj_matiere').removeAttr("class").addClass("alerte").html(responseHTML);
 						}
 					}
 				}
 			);
 		}
 
-		$("#f_famille").change
+		$("#f_famille_matiere").change
 		(
 			function()
 			{
-				famille_id = $("#f_famille").val();
-				if(famille_id)
+				matiere_famille_id = $("#f_famille_matiere").val();
+				if(matiere_famille_id)
 				{
-					maj_matiere(famille_id);
+					maj_matiere(matiere_famille_id);
 				}
 				else
 				{
 					$('#f_matiere').html('<option value="0">Toutes les matières</option>');
-					$('#ajax_maj').removeAttr("class").html("&nbsp;");
+					$('#ajax_maj_matiere').removeAttr("class").html("&nbsp;");
+				}
+			}
+		);
+
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+//	Charger le select f_niveau en ajax
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
+		function maj_niveau(niveau_famille_id)
+		{
+			$.ajax
+			(
+				{
+					type : 'POST',
+					url : 'ajax.php?page=_maj_select_niveaux_famille',
+					data : 'f_famille_niveau='+niveau_famille_id,
+					dataType : "html",
+					error : function(msg,string)
+					{
+						$('#ajax_maj_niveau').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
+					},
+					success : function(responseHTML)
+					{
+						initialiser_compteur();
+						if(responseHTML.substring(0,7)=='<option')	// Attention aux caractères accentués : l'utf-8 pose des pbs pour ce test
+						{
+							$('#f_niveau').html(responseHTML);
+						}
+					else
+						{
+							$('#ajax_maj_niveau').removeAttr("class").addClass("alerte").html(responseHTML);
+						}
+					}
+				}
+			);
+		}
+
+		$("#f_famille_niveau").change
+		(
+			function()
+			{
+				niveau_famille_id = $("#f_famille_niveau").val();
+				if(niveau_famille_id)
+				{
+					maj_niveau(niveau_famille_id);
+				}
+				else
+				{
+					$('#f_niveau').html('<option value="0">Tous les niveaux</option>');
+					$('#ajax_maj_niveau').removeAttr("class").html("&nbsp;");
 				}
 			}
 		);
@@ -132,48 +182,6 @@ $(document).ready
 			{
 				$('#ajax_msg').removeAttr("class").html("&nbsp;");
 				$('#choisir_referentiel_communautaire').hide("fast");
-			}
-		);
-
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-//	Changement de matière -> desactiver les niveaux classiques en cas de matière transversale
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-
-		$('#f_matiere').change
-		(
-			function()
-			{
-				modif_niveau_selected = 0; // 0 = pas besoin modifier / 1 = à modifier / 2 = déjà modifié
-				matiere_id = $('#f_matiere').val();
-				$("#f_niveau option").each
-				(
-					function()
-					{
-						niveau_id = $(this).val();
-						findme = '.'+niveau_id+'.';
-						// Les niveaux "cycles" sont tout le temps accessibles
-						if(listing_id_niveaux_cycles.indexOf(findme) == -1)
-						{
-							// matière classique -> tous niveaux actifs
-							if(matiere_id != id_matiere_transversale)
-							{
-								$(this).prop('disabled',false);
-							}
-							// matière transversale -> desactiver les autres niveaux
-							else
-							{
-								$(this).prop('disabled',true);
-								modif_niveau_selected = Math.max(modif_niveau_selected,1);
-							}
-						}
-						// C'est un niveau cycle ; le sélectionner si besoin
-						else if(modif_niveau_selected==1)
-						{
-							$(this).prop('selected',true);
-							modif_niveau_selected = 2;
-						}
-					}
-				);
 			}
 		);
 

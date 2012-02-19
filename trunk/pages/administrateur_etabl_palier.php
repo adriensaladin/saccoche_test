@@ -40,14 +40,12 @@ $TITRE = "Paliers du socle";
 		</thead>
 		<tbody>
 			<?php
-			// Cases à cocher
-			$tab_check = explode(',',$_SESSION['PALIERS']);
-			// Lister les matières partagées
+			// Lister les paliers
 			$DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_paliers_SACoche();
 			foreach($DB_TAB as $DB_ROW)
 			{
 				// Afficher une ligne du tableau
-				$checked = (in_array($DB_ROW['palier_id'],$tab_check)) ? ' checked' : '' ;
+				$checked = ($DB_ROW['palier_actif']) ? ' checked' : '' ;
 				echo'<tr>';
 				echo	'<td class="nu"><input type="checkbox" name="f_tab_id" value="'.$DB_ROW['palier_id'].'"'.$checked.' /></td>';
 				echo	'<td class="label">'.html($DB_ROW['palier_nom']).'</td>';

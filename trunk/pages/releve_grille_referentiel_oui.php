@@ -38,8 +38,7 @@ $check_aff_lien   = (Formulaire::$tab_choix['aff_lien'])   ? ' checked' : '' ;
 $bouton_modifier_matieres = '';
 if($_SESSION['USER_PROFIL']=='directeur')
 {
-	$tab_matieres = DB_STRUCTURE_COMMUN::DB_OPT_matieres_etabl(TRUE /*transversal*/);
-	$tab_niveaux  = DB_STRUCTURE_COMMUN::DB_OPT_niveaux_etabl($_SESSION['NIVEAUX'],$_SESSION['CYCLES']);
+	$tab_matieres = DB_STRUCTURE_COMMUN::DB_OPT_matieres_etabl();
 	$tab_groupes  = DB_STRUCTURE_COMMUN::DB_OPT_classes_groupes_etabl();
 	$of_g = 'val'; $sel_g = false; $og_g = 'oui'; $class_form_eleve = 'show'; $sel_n = false;
 	$multiple_eleve = ' multiple size="9"';
@@ -48,7 +47,6 @@ if($_SESSION['USER_PROFIL']=='directeur')
 if($_SESSION['USER_PROFIL']=='professeur')
 {
 	$tab_matieres = DB_STRUCTURE_COMMUN::DB_OPT_matieres_professeur($_SESSION['USER_ID']);
-	$tab_niveaux  = DB_STRUCTURE_COMMUN::DB_OPT_niveaux_etabl($_SESSION['NIVEAUX'],$_SESSION['CYCLES']);
 	$tab_groupes  = DB_STRUCTURE_COMMUN::DB_OPT_groupes_professeur($_SESSION['USER_ID']);
 	$of_g = 'val'; $sel_g = false; $og_g = 'oui'; $class_form_eleve = 'show'; $sel_n = false;
 	$multiple_eleve = ' multiple size="9"';
@@ -57,8 +55,7 @@ if($_SESSION['USER_PROFIL']=='professeur')
 }
 if( ($_SESSION['USER_PROFIL']=='parent') && ($_SESSION['NB_ENFANTS']!=1) )
 {
-	$tab_matieres = DB_STRUCTURE_COMMUN::DB_OPT_matieres_etabl(TRUE /*transversal*/);
-	$tab_niveaux  = DB_STRUCTURE_COMMUN::DB_OPT_niveaux_etabl($_SESSION['NIVEAUX'],$_SESSION['CYCLES']);
+	$tab_matieres = DB_STRUCTURE_COMMUN::DB_OPT_matieres_etabl();
 	$tab_groupes  = $_SESSION['OPT_PARENT_CLASSES'];
 	$of_g = 'oui'; $sel_g = false; $og_g = 'non'; $class_form_eleve = 'show'; $sel_n = false;
 	$multiple_eleve = ''; // volontaire
@@ -67,7 +64,6 @@ if( ($_SESSION['USER_PROFIL']=='parent') && ($_SESSION['NB_ENFANTS']!=1) )
 if( ($_SESSION['USER_PROFIL']=='parent') && ($_SESSION['NB_ENFANTS']==1) )
 {
 	$tab_matieres = DB_STRUCTURE_COMMUN::DB_OPT_matieres_eleve($_SESSION['OPT_PARENT_ENFANTS'][0]['valeur']);
-	$tab_niveaux  = DB_STRUCTURE_COMMUN::DB_OPT_niveaux_eleve($_SESSION['NIVEAUX'],$_SESSION['CYCLES'],$_SESSION['ELEVE_CLASSE_ID']);
 	$tab_groupes  = array(0=>array('valeur'=>$_SESSION['ELEVE_CLASSE_ID'],'texte'=>$_SESSION['ELEVE_CLASSE_NOM']));
 	$of_g = 'non'; $sel_g = true;  $og_g = 'non'; $class_form_eleve = 'hide'; $sel_n = 'val';
 	$multiple_eleve = '';
@@ -76,7 +72,6 @@ if( ($_SESSION['USER_PROFIL']=='parent') && ($_SESSION['NB_ENFANTS']==1) )
 if($_SESSION['USER_PROFIL']=='eleve')
 {
 	$tab_matieres = DB_STRUCTURE_COMMUN::DB_OPT_matieres_eleve($_SESSION['USER_ID']);
-	$tab_niveaux  = DB_STRUCTURE_COMMUN::DB_OPT_niveaux_eleve($_SESSION['NIVEAUX'],$_SESSION['CYCLES'],$_SESSION['ELEVE_CLASSE_ID']);
 	$tab_groupes  = array(0=>array('valeur'=>$_SESSION['ELEVE_CLASSE_ID'],'texte'=>$_SESSION['ELEVE_CLASSE_NOM']));
 	$of_g = 'non'; $sel_g = true;  $og_g = 'non'; $class_form_eleve = 'hide'; $sel_n = 'val';
 	$multiple_eleve = '';
@@ -84,7 +79,6 @@ if($_SESSION['USER_PROFIL']=='eleve')
 }
 
 $select_matiere      = Formulaire::afficher_select($tab_matieres                        , $select_nom='f_matiere'      , $option_first='oui' , $selection=Formulaire::$tab_choix['matiere_id']    , $optgroup='non');
-$select_niveau       = Formulaire::afficher_select($tab_niveaux                         , $select_nom='f_niveau'       , $option_first='oui' , $selection=$sel_n                                  , $optgroup='non');
 $select_groupe       = Formulaire::afficher_select($tab_groupes                         , $select_nom='f_groupe'       , $option_first=$of_g , $selection=$sel_g                                  , $optgroup=$og_g);
 $select_orientation  = Formulaire::afficher_select(Formulaire::$tab_select_orientation  , $select_nom='f_orientation'  , $option_first='non' , $selection=Formulaire::$tab_choix['orientation']   , $optgroup='non');
 $select_marge_min    = Formulaire::afficher_select(Formulaire::$tab_select_marge_min    , $select_nom='f_marge_min'    , $option_first='non' , $selection=Formulaire::$tab_choix['marge_min']     , $optgroup='non');
@@ -96,18 +90,13 @@ $select_remplissage  = Formulaire::afficher_select(Formulaire::$tab_select_rempl
 $select_colonne_vide = Formulaire::afficher_select(Formulaire::$tab_select_colonne_vide , $select_nom='f_colonne_vide' , $option_first='non' , $selection=Formulaire::$tab_choix['colonne_vide']  , $optgroup='non');
 ?>
 
-<script type="text/javascript">
-	var id_matiere_transversale   = "<?php echo ID_MATIERE_TRANSVERSALE ?>";
-	var listing_id_niveaux_cycles = "<?php echo LISTING_ID_NIVEAUX_CYCLES ?>";
-</script>
-
 <p><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=releves_bilans__releve_grille_referentiel">DOC : Grille d'items d'un référentiel.</a></span></p>
 
 <form action="#" method="post" id="form_select"><fieldset>
-	<label class="tab" for="f_matiere">Matière :</label><?php echo $select_matiere ?><?php echo $bouton_modifier_matieres ?><input type="hidden" id="f_matiere_nom" name="f_matiere_nom" value="" /><br />
-	<label class="tab" for="f_niveau">Niveau :</label><?php echo $select_niveau ?><input type="hidden" id="f_niveau_nom" name="f_niveau_nom" value="" />
+	<label class="tab" for="f_matiere">Matière :</label><?php echo $select_matiere ?><?php echo $bouton_modifier_matieres ?><input type="hidden" id="f_matiere_nom" name="f_matiere_nom" value="" /><label id="ajax_maj_matiere">&nbsp;</label><br />
+	<label class="tab" for="f_niveau">Niveau :</label><select id="f_niveau" name="f_niveau"><option></option></select><input type="hidden" id="f_niveau_nom" name="f_niveau_nom" value="" />
 	<p class="<?php echo $class_form_eleve ?>">
-		<label class="tab" for="f_groupe">Classe / groupe :</label><?php echo $select_groupe ?><label id="ajax_maj">&nbsp;</label><br />
+		<label class="tab" for="f_groupe">Classe / groupe :</label><?php echo $select_groupe ?><label id="ajax_maj_groupe">&nbsp;</label><br />
 		<label class="tab" for="f_eleve"><img alt="" src="./_img/bulle_aide.png" title="Utiliser la touche &laquo;&nbsp;Shift&nbsp;&raquo; pour une sélection multiple contiguë.<br />Utiliser la touche &laquo;&nbsp;Ctrl&nbsp;&raquo; pour une sélection multiple non contiguë." /> Élève(s) :</label><select id="f_eleve" name="f_eleve[]"<?php echo $multiple_eleve ?>><?php echo $select_eleves ?></select>
 	</p>
 	<div class="toggle">

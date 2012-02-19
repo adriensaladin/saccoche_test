@@ -46,50 +46,58 @@ $(document).ready
 			}
 		);
 
-		//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-		//	Changement de matière -> desactiver les niveaux classiques en cas de matière transversale
-		//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+		//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
+		//	Charger le select f_niveau en ajax (au changement de f_matiere et au départ)
+		//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
 
-		$('#f_matiere').change
+		function maj_niveau()
+		{
+			$("#f_niveau").html('<option value=""></option>').hide();
+			var matiere_val = $("#f_matiere").val();
+			if(!matiere_val)
+			{
+				$('#ajax_maj_matiere').removeAttr("class").html("&nbsp;");
+				return false;
+			}
+			$('#ajax_maj_matiere').removeAttr("class").addClass("loader").html("Actualisation en cours...");
+			$.ajax
+			(
+				{
+					type : 'POST',
+					url : 'ajax.php?page=_maj_select_niveaux',
+					data : 'f_matiere='+matiere_val,
+					dataType : "html",
+					error : function(msg,string)
+					{
+						$('#ajax_maj_matiere').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
+					},
+					success : function(responseHTML)
+					{
+						initialiser_compteur();
+						if(responseHTML.substring(0,7)=='<option')	// Attention aux caractères accentués : l'utf-8 pose des pbs pour ce test
+						{
+							$('#ajax_maj_matiere').removeAttr("class").html("&nbsp;");
+							$('#f_niveau').html(responseHTML).show();
+						}
+					else
+						{
+							$('#ajax_maj_matiere').removeAttr("class").addClass("alerte").html(responseHTML);
+						}
+					}
+				}
+			);
+		}
+		$("#f_matiere").change
 		(
 			function()
 			{
-				modif_niveau_selected = 0; // 0 = pas besoin modifier / 1 = à modifier / 2 = déjà modifié
-				matiere_id = $('#f_matiere').val();
-				$("#f_niveau option").each
-				(
-					function()
-					{
-						niveau_id = $(this).val();
-						findme = '.'+niveau_id+'.';
-						// Les niveaux "cycles" sont tout le temps accessibles
-						if(listing_id_niveaux_cycles.indexOf(findme) == -1)
-						{
-							// matière classique -> tous niveaux actifs
-							if(matiere_id != id_matiere_transversale)
-							{
-								$(this).prop('disabled',false);
-							}
-							// matière transversale -> desactiver les autres niveaux
-							else
-							{
-								$(this).prop('disabled',true);
-								modif_niveau_selected = Math.max(modif_niveau_selected,1);
-							}
-						}
-						// C'est un niveau cycle ; le sélectionner si besoin
-						else if(modif_niveau_selected==1)
-						{
-							$(this).prop('selected',true);
-							modif_niveau_selected = 2;
-						}
-					}
-				);
+				maj_niveau();
 			}
 		);
+		maj_niveau();
 
 		//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
-		//	Charger le select f_eleve en ajax
+		//	Charger le select f_eleve en ajax (au changement de f_groupe)
 		//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
 
 		function maj_eleve(groupe_val,type)
@@ -103,19 +111,19 @@ $(document).ready
 					dataType : "html",
 					error : function(msg,string)
 					{
-						$('#ajax_maj').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
+						$('#ajax_maj_groupe').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
 					},
 					success : function(responseHTML)
 					{
 						initialiser_compteur();
 						if(responseHTML.substring(0,7)=='<option')	// Attention aux caractères accentués : l'utf-8 pose des pbs pour ce test
 						{
-							$('#ajax_maj').removeAttr("class").html("&nbsp;");
+							$('#ajax_maj_groupe').removeAttr("class").html("&nbsp;");
 							$('#f_eleve').html(responseHTML).show();
 						}
 					else
 						{
-							$('#ajax_maj').removeAttr("class").addClass("alerte").html(responseHTML);
+							$('#ajax_maj_groupe').removeAttr("class").addClass("alerte").html(responseHTML);
 						}
 					}
 				}
@@ -130,12 +138,12 @@ $(document).ready
 				if(groupe_val)
 				{
 					type = $("#f_groupe option:selected").parent().attr('label');
-					$('#ajax_maj').removeAttr("class").addClass("loader").html("Actualisation en cours...");
+					$('#ajax_maj_groupe').removeAttr("class").addClass("loader").html("Actualisation en cours...");
 					maj_eleve(groupe_val,type);
 				}
 				else
 				{
-					$('#ajax_maj').removeAttr("class").html("&nbsp;");
+					$('#ajax_maj_groupe').removeAttr("class").html("&nbsp;");
 				}
 			}
 		);

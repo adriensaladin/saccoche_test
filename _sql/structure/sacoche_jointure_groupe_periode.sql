@@ -7,7 +7,6 @@ CREATE TABLE sacoche_jointure_groupe_periode (
 	jointure_date_fin   DATE                                                                                          NOT NULL DEFAULT "0000-00-00",
 	bulletin_modele     ENUM("item_detail","item_synthese","socle_detail","socle_synthese")   COLLATE utf8_unicode_ci NOT NULL DEFAULT "item_synthese",
 	bulletin_etat       ENUM("ferme_vierge","ouvert_profs","ouvert_synthese","ferme_complet") COLLATE utf8_unicode_ci NOT NULL DEFAULT "ferme_vierge",
-	UNIQUE KEY groupe_periode_key (groupe_id,periode_id),
-	KEY groupe_id (groupe_id),
+	PRIMARY KEY ( groupe_id , periode_id ),
 	KEY periode_id (periode_id)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;

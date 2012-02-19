@@ -539,7 +539,7 @@ $(document).ready
 						alert( message );
 						break;
 					case 'supprimer':
-						$('q.valider').parent().parent().parent().remove();
+						$('q.valider').closest('tr').remove();
 						break;
 				}
 				afficher_masquer_images_action('show');

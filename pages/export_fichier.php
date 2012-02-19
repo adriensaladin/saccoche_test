@@ -36,10 +36,10 @@ if($_SESSION['USER_PROFIL']=='professeur')
 }
 if($_SESSION['USER_PROFIL']=='directeur')
 {
-	$tab_matieres = DB_STRUCTURE_COMMUN::DB_OPT_matieres_etabl(TRUE /*transversal*/);
+	$tab_matieres = DB_STRUCTURE_COMMUN::DB_OPT_matieres_etabl();
 	$tab_groupes  = DB_STRUCTURE_COMMUN::DB_OPT_classes_groupes_etabl();
 }
-$tab_paliers = DB_STRUCTURE_COMMUN::DB_OPT_paliers_etabl($_SESSION['PALIERS']);
+$tab_paliers = DB_STRUCTURE_COMMUN::DB_OPT_paliers_etabl();
 $of_p = (count($tab_paliers)<2) ? 'non' : 'oui' ;
 
 $select_matiere = Formulaire::afficher_select($tab_matieres , $select_nom='f_matiere' , $option_first='oui' , $selection=Formulaire::$tab_choix['matiere_id'] , $optgroup='non');

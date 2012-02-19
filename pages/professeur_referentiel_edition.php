@@ -85,11 +85,11 @@ else
 		}
 	}
 	// On construit et affiche le tableau résultant
-	$affichage = '<table class="vm_nug"><thead><tr><th>Matière</th><th>Référentiel</th><th class="nu"></th></tr></thead><tbody>'."\r\n";
+	$affichage = '<table class="vm_nug"><thead><tr><th>Matière</th><th>Niveau(x)</th><th class="nu"></th></tr></thead><tbody>'."\r\n";
 	foreach($tab_matiere as $matiere_id => $tab)
 	{
 		$x = ($tab_matiere[$matiere_id]['niveau_nb'])>1 ? 'x' : '';
-		$affichage .= '<tr><td>'.$tab['matiere_nom'].'</td><td class="v">Référentiel présent sur '.$tab_matiere[$matiere_id]['niveau_nb'].' niveau'.$x.'.</td>'.$tab['matiere_col'].'</tr>'."\r\n";
+		$affichage .= '<tr><td>'.$tab['matiere_nom'].'</td><td>'.$tab_matiere[$matiere_id]['niveau_nb'].' niveau'.$x.'</td>'.$tab['matiere_col'].'</tr>'."\r\n";
 	}
 	$affichage .= '</tbody></table>'."\r\n";
 	echo $affichage;
@@ -111,9 +111,9 @@ else
 		<ul class="ul_n1 p"><li class="li_n3"><input id="socle_0" name="f_socle" type="radio" value="0" /><label for="socle_0">Hors-socle.</label></li></ul>
 		<?php
 		// Affichage de la liste des items du socle pour chaque palier
-		if($_SESSION['PALIERS'])
+		$DB_TAB = DB_STRUCTURE_COMMUN::DB_recuperer_arborescence_palier();
+		if(count($DB_TAB))
 		{
-			$DB_TAB = DB_STRUCTURE_COMMUN::DB_recuperer_arborescence_palier($_SESSION['PALIERS']);
 			echo afficher_arborescence_socle_from_SQL($DB_TAB,$dynamique=true,$reference=false,$aff_input=true,$ids=false);
 		}
 		else

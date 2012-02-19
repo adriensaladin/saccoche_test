@@ -62,15 +62,24 @@ elseif($action=='retirer')
 // Affichage du bilan des affectations des professeurs dans les matières ; en deux requêtes pour récupérer les matières sans professeurs
 $tab_matiere = array();
 $tab_user   = array();
+echo'<hr />';
 // Récupérer la liste des matières utilisées
-$DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_matieres_etablissement( FALSE /*with_transversal*/ , TRUE /*order_by_name*/ );
+$DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_matieres_etablissement( TRUE /*order_by_name*/ );
+if(!count($DB_TAB))
+{
+	exit();
+}
 foreach($DB_TAB as $DB_ROW)
 {
 	$tab_matiere[$DB_ROW['matiere_id']] = html($DB_ROW['matiere_nom']);
 	$tab_user[$DB_ROW['matiere_id']] = '';
 }
 // Récupérer la liste des matières / professeurs
-$DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_jointure_professeurs_matieres( TRUE /*with_identite*/ , FALSE /*with_transversal*/ );
+$DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_jointure_professeurs_matieres( TRUE /*with_identite*/ );
+if(!count($DB_TAB))
+{
+	exit();
+}
 foreach($DB_TAB as $DB_ROW)
 {
 	$tab_user[$DB_ROW['matiere_id']] .= html($DB_ROW['user_nom'].' '.$DB_ROW['user_prenom']).'<br />';
@@ -99,8 +108,6 @@ foreach($tab_matiere as $matiere_id => $matiere_nom)
 	$TB[$tab_num] .= '<td>'.mb_substr($tab_user[$matiere_id],0,-6,'UTF-8').'</td>';
 	$TF[$tab_num] .= '<td>'.$nb.' professeur'.$s.'</td>';
 }
-echo'<hr />';
-echo'<p><span class="astuce">Tous les professeurs sont aussi automatiquement affectés à la matière "Transversal".</span></p>';
 for($tab_i=0;$tab_i<=$tab_num;$tab_i++)
 {
 	echo'<table class="affectation">';

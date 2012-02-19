@@ -63,7 +63,7 @@ public function DB_lister_matieres_niveaux_referentiels_professeur($user_id)
 	$DB_SQL.= 'LEFT JOIN sacoche_jointure_user_matiere USING (matiere_id) ';
 	$DB_SQL.= 'LEFT JOIN sacoche_matiere USING (matiere_id) ';
 	$DB_SQL.= 'LEFT JOIN sacoche_niveau USING (niveau_id) ';
-	$DB_SQL.= 'WHERE user_id=:user_id AND matiere_active=1 AND niveau_id IN('.$_SESSION['CYCLES'].','.$_SESSION['NIVEAUX'].') ';
+	$DB_SQL.= 'WHERE user_id=:user_id AND matiere_active=1 AND niveau_actif=1 ';
 	$DB_SQL.= 'ORDER BY matiere_nom ASC, niveau_ordre ASC';
 	$DB_VAR = array(':user_id'=>$user_id);
 	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);

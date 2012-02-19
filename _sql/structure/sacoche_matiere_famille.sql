@@ -2,9 +2,9 @@ DROP TABLE IF EXISTS sacoche_matiere_famille;
 
 CREATE TABLE sacoche_matiere_famille (
 	matiere_famille_id        TINYINT(3)  UNSIGNED                NOT NULL DEFAULT 0,
-  matiere_famille_categorie TINYINT(3)  UNSIGNED                NOT NULL DEFAULT 0,
-  matiere_famille_nom       VARCHAR(50) COLLATE utf8_unicode_ci NOT NULL DEFAULT "",
-  PRIMARY KEY (matiere_famille_id)
+	matiere_famille_categorie TINYINT(3)  UNSIGNED                NOT NULL DEFAULT 0 COMMENT "1 = Enseignements usuels ; 2 = Enseignements généraux ; 3 = Enseignements spécifiques",
+	matiere_famille_nom       VARCHAR(50) COLLATE utf8_unicode_ci NOT NULL DEFAULT "",
+	PRIMARY KEY (matiere_famille_id)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 ALTER TABLE sacoche_matiere_famille DISABLE KEYS;
@@ -37,7 +37,7 @@ INSERT INTO sacoche_matiere_famille VALUES
 ( 24, 3, "Génie électrique informat.- télématique"),
 ( 25, 3, "Indust. graphiques (imprimerie - livre)"),
 ( 26, 3, "Conduite - navigation"),
-( 27, 3, "Métiers des arts appliques"),
+( 27, 3, "Métiers des arts appliqués"),
 ( 28, 3, "Métiers d'art"),
 ( 29, 3, "Métiers de l'artisanat et spécifiques"),
 ( 30, 3, "Biotechnologie génie biol.- biochimique"),
@@ -56,7 +56,7 @@ INSERT INTO sacoche_matiere_famille VALUES
 ( 43, 3, "Gestion des entreprises"),
 ( 44, 3, "Publicité"),
 ( 50, 3, "Langue technique"),
-( 60, 3, "Activités hippiques "),
+( 60, 3, "Activités hippiques"),
 ( 61, 3, "Commercialisation"),
 ( 62, 3, "Élevage et soins aux animaux"),
 ( 63, 3, "Environnement - aménagement de l'espace"),

@@ -75,9 +75,10 @@ elseif(in_array($_SESSION['CALCUL_METHODE'],array('bestof2','bestof3')))	// si 2
 	<li><span class="danger">Supprimer un référentiel efface les résultats associés de tous les élèves !</span></li>
 </ul>
 
-<hr />
+<div id="div_tableaux">
 
 <?php
+$script_contenu_tableaux = '';
 // Séparé en plusieurs requêtes sinon on ne s'en sort pas (entre les matières sans coordonnateurs, sans référentiel, les deux à la fois...).
 // La recherche ne s'effectue que sur les matières et niveaux utilisés, sans débusquer des référentiels résiduels.
 $tab_matiere = array();
@@ -85,146 +86,145 @@ $tab_niveau  = array();
 $tab_colonne = array();
 
 // On récupère la liste des matières où le professeur est rattaché, et s'il en est coordonnateur
-$DB_TAB = DB_STRUCTURE_PROFESSEUR::DB_lister_matieres_professeur_infos_referentiel($_SESSION['USER_ID']);
-if(count($DB_TAB))
+$DB_TAB_MATIERES = DB_STRUCTURE_PROFESSEUR::DB_lister_matieres_professeur_infos_referentiel($_SESSION['USER_ID']);
+$nb_matieres = count($DB_TAB_MATIERES);
+if(!$nb_matieres)
 {
-	foreach($DB_TAB as $DB_ROW)
-	{
-		$tab_matiere[$DB_ROW['matiere_id']] = array( 'nom'=>html($DB_ROW['matiere_nom']) , 'nb_demandes'=>$DB_ROW['matiere_nb_demandes'] , 'coord'=>$DB_ROW['jointure_coord'] );
-	}
-}
-$listing_matieres_id = implode(',',array_keys($tab_matiere));
-
-if(!$listing_matieres_id)
-{
-	echo'<p><span class="danger">Vous n\'êtes rattaché à aucune matière de l\'établissement !</span></p>';
-}
-elseif(!$_SESSION['NIVEAUX']) // normalement impossible
-{
-	echo'<p><span class="danger">Aucun niveau n\'est rattaché à l\'établissement !</span></p>';
-}
-elseif(!$_SESSION['CYCLES']) // normalement impossible
-{
-	echo'<p><span class="danger">Aucun cycle n\'est rattaché à l\'établissement !</span></p>';
+	echo'<hr /><p><span class="danger">Vous n\'êtes rattaché à aucune matière de l\'établissement !</span></p>';
 }
 else
 {
-	// On récupère la liste des niveaux utilisés par l'établissement
-	$DB_TAB = DB_STRUCTURE_COMMUN::DB_lister_niveaux_etablissement($_SESSION['NIVEAUX'],$_SESSION['CYCLES']);
-	$nb_niveaux = count($DB_TAB);
-	foreach($DB_TAB as $DB_ROW)
+	foreach($DB_TAB_MATIERES as $DB_ROW)
 	{
-		$tab_niveau[$DB_ROW['niveau_id']] = html($DB_ROW['niveau_nom']);
+		$tab_matiere[$DB_ROW['matiere_id']] = array(
+			'nom'         => html($DB_ROW['matiere_nom']) ,
+			'nb_demandes' => $DB_ROW['matiere_nb_demandes'] ,
+			'coord'       => $DB_ROW['jointure_coord']
+		);
 	}
-	// On récupère la liste des référentiels par matière et niveau
-	$script_contenu_tableaux = '';
-	$tab_partage = array('oui'=>'<img title="Référentiel partagé sur le serveur communautaire (MAJ le ◄DATE►)." alt="" src="./_img/etat/partage_oui.gif" />','non'=>'<img title="Référentiel non partagé avec la communauté (choix du ◄DATE►)." alt="" src="./_img/etat/partage_non.gif" />','bof'=>'<img title="Référentiel dont le partage est sans intérêt (pas novateur)." alt="" src="./_img/etat/partage_non.gif" />','hs'=>'<img title="Référentiel dont le partage est sans objet (matière spécifique)." alt="" src="./_img/etat/partage_non.gif" />');
-	$DB_TAB = DB_STRUCTURE_COMMUN::DB_lister_referentiels_infos_details_matieres_niveaux($listing_matieres_id,$_SESSION['NIVEAUX'],$_SESSION['CYCLES']);
-	if(count($DB_TAB))
+	// On récupère la liste des niveaux utilisés par l'établissement, que l'on conserve pour un formulaire
+	$DB_TAB_NIVEAUX = DB_STRUCTURE_COMMUN::DB_OPT_niveaux_etabl();
+	$nb_niveaux = count($DB_TAB_NIVEAUX);
+	if(!$nb_niveaux)
 	{
-		foreach($DB_TAB as $DB_ROW)
+		echo'<hr /><p><span class="danger">Aucun niveau n\'est rattaché à l\'établissement !</span></p>';
+	}
+	else
+	{
+		foreach($DB_TAB_NIVEAUX as $DB_ROW)
 		{
-			// Définition de $methode_calcul_texte
-			if($DB_ROW['referentiel_calcul_limite']==1)	// si une seule saisie prise en compte
-			{
-				$methode_calcul_texte = 'Seule la dernière saisie compte.';
-			}
-			elseif($DB_ROW['referentiel_calcul_methode']=='classique')	// si moyenne classique
-			{
-				$methode_calcul_texte = ($DB_ROW['referentiel_calcul_limite']==0) ? 'Moyenne de toutes les saisies.' : 'Moyenne des '.$DB_ROW['referentiel_calcul_limite'].' dernières saisies.';
-			}
-			elseif(in_array($DB_ROW['referentiel_calcul_methode'],array('geometrique','arithmetique')))	// si moyenne geometrique | arithmetique
-			{
-				$seize = (($DB_ROW['referentiel_calcul_methode']=='geometrique')&&($DB_ROW['referentiel_calcul_limite']==5)) ? 1 : 0 ;
-				$coefs = ($DB_ROW['referentiel_calcul_methode']=='arithmetique') ? substr('1/2/3/4/5/6/7/8/9/',0,2*$DB_ROW['referentiel_calcul_limite']-19) : substr('1/2/4/8/16/',0,2*$DB_ROW['referentiel_calcul_limite']-12+$seize) ;
-				$methode_calcul_texte = 'Les '.$DB_ROW['referentiel_calcul_limite'].' dernières saisies &times;'.$coefs.'.';
-			}
-			elseif($DB_ROW['referentiel_calcul_methode']=='bestof1')	// si meilleure note
-			{
-				$methode_calcul_texte = ($DB_ROW['referentiel_calcul_limite']==0) ? 'Seule la meilleure saisie compte.' : 'Meilleure des '.$DB_ROW['referentiel_calcul_limite'].' dernières saisies.';
-			}
-			elseif(in_array($DB_ROW['referentiel_calcul_methode'],array('bestof2','bestof3')))	// si 2 | 3 meilleures notes
-			{
-				$nb_best = (int)substr($DB_ROW['referentiel_calcul_methode'],-1);
-				$methode_calcul_texte = ($DB_ROW['referentiel_calcul_limite']==0) ? 'Moyenne des '.$nb_best.' meilleures saisies.' : 'Moyenne des '.$nb_best.' meilleures saisies parmi les '.$DB_ROW['referentiel_calcul_limite'].' dernières.';
-			}
-			$tab_colonne[$DB_ROW['matiere_id']][$DB_ROW['niveau_id']] = '<td class="v">Référentiel présent. '.str_replace('◄DATE►',affich_date($DB_ROW['referentiel_partage_date']),$tab_partage[$DB_ROW['referentiel_partage_etat']]).'</td>'.'<td class="v">'.$methode_calcul_texte.'</td>';
-			$script_contenu_tableaux .=   'tab_partage_etat["'.$DB_ROW['matiere_id'].'_'.$DB_ROW['niveau_id'].'"]="'.$DB_ROW['referentiel_partage_etat'].'";';
-			$script_contenu_tableaux .= 'tab_calcul_methode["'.$DB_ROW['matiere_id'].'_'.$DB_ROW['niveau_id'].'"]="'.$DB_ROW['referentiel_calcul_methode'].'";';
-			$script_contenu_tableaux .=  'tab_calcul_limite["'.$DB_ROW['matiere_id'].'_'.$DB_ROW['niveau_id'].'"]="'.$DB_ROW['referentiel_calcul_limite'].'";';
+			$tab_niveau[$DB_ROW['valeur']] = html($DB_ROW['texte']);
 		}
-	}
-	// Construction du formulaire select du nombre de demandes
-	$select_demandes = '<select name="f_eleve_demandes" class="t8">';
-	for($nb_demandes=0 ; $nb_demandes<10 ; $nb_demandes++)
-	{
-		$texte = ($nb_demandes>0) ? ( ($nb_demandes>1) ? $nb_demandes.' demandes' : '1 seule demande' ) : 'aucune demande' ;
-		$select_demandes .= '<option value="'.$nb_demandes.'">'.$texte.'</option>';
-	}
-	$select_demandes .= '</select>';
-	$infobulle = '<img src="./_img/bulle_aide.png" alt="" title="Nombre maximal de demandes d\'évaluations simultanées autorisées pour un élève." />';
-	// On construit et affiche le tableau résultant
-	$affichage = '<table class="vm_nug"><thead><tr><th>Matière</th><th>Niveau</th><th>Référentiel</th><th>Méthode de calcul</th><th class="nu"></th></tr></thead><tbody>'."\r\n";
-	foreach($tab_matiere as $matiere_id => $tab)
-	{
-		$rowspan = ($matiere_id!=ID_MATIERE_TRANSVERSALE) ? $nb_niveaux : mb_substr_count($_SESSION['CYCLES'],',','UTF-8')+1 ;
-		$matiere_nom    = $tab['nom'];
-		$matiere_coord  = $tab['coord'];
-		$matiere_perso  = ($matiere_id>ID_MATIERE_TRANSVERSALE) ? 1 : 0 ;
-		$matiere_droit  = ( (($_SESSION['DROIT_GERER_REFERENTIEL']=='profcoordonnateur')&&$matiere_coord) || ($_SESSION['DROIT_GERER_REFERENTIEL']=='professeur') ) ? TRUE : FALSE ;
-		$matiere_nombre = ($matiere_droit) ? str_replace('value="'.$tab['nb_demandes'].'"','value="'.$tab['nb_demandes'].'" selected',$select_demandes) : str_replace('<select','<select disabled',$select_demandes) ;
-		$affichage .= '<tr><td colspan="4" class="nu">&nbsp;</td><td class="nu"></td></tr>'."\r\n"; // Partagé en deux sinon Chrome ajoute une bordure disgracieuse
-		$affichage .= '<tr><td rowspan="'.$rowspan.'" id="mat_'.$matiere_id.'"><b>'.$matiere_nom.'</b><br />'.$matiere_nombre.$infobulle.'</td>';
-		$affichage_suite = false;
-		foreach($tab_niveau as $niveau_id => $niveau_nom)
+		// On récupère la liste des référentiels par matière et niveau
+		$tab_partage = array('oui'=>'<img title="Référentiel partagé sur le serveur communautaire (MAJ le ◄DATE►)." alt="" src="./_img/etat/partage_oui.gif" />','non'=>'<img title="Référentiel non partagé avec la communauté (choix du ◄DATE►)." alt="" src="./_img/etat/partage_non.gif" />','bof'=>'<img title="Référentiel dont le partage est sans intérêt (pas novateur)." alt="" src="./_img/etat/partage_non.gif" />','hs'=>'<img title="Référentiel dont le partage est sans objet (matière spécifique)." alt="" src="./_img/etat/partage_non.gif" />');
+		$DB_TAB = DB_STRUCTURE_COMMUN::DB_lister_referentiels_infos_details_matieres_niveaux();
+		if(count($DB_TAB))
 		{
-			if( ($matiere_id!=ID_MATIERE_TRANSVERSALE) || (strpos(LISTING_ID_NIVEAUX_CYCLES,'.'.$niveau_id.'.')!==FALSE) )
+			foreach($DB_TAB as $DB_ROW)
 			{
-				$ids = 'ids'.'_'.$matiere_id.'_'.$niveau_id.'_'.$matiere_perso;
-				if($matiere_droit)
+				// Définition de $methode_calcul_texte
+				if($DB_ROW['referentiel_calcul_limite']==1)	// si une seule saisie prise en compte
 				{
-					$partager = ($matiere_perso) ? '<q class="partager_non" title="Le référentiel d\'une matière spécifique à l\'établissement ne peut être partagé."></q>' : '<q class="partager" title="Modifier le partage de ce référentiel."></q>' ;
-					$envoyer = ( (isset($tab_colonne[$matiere_id][$niveau_id])) && (strpos($tab_colonne[$matiere_id][$niveau_id],'partage_oui.gif')) ) ? '<q class="envoyer" title="Mettre à jour sur le serveur de partage la dernière version de ce référentiel."></q>' : '<q class="envoyer_non" title="Un référentiel non partagé ne peut pas être transmis à la collectivité."></q>' ;
-					$colonnes = (isset($tab_colonne[$matiere_id][$niveau_id])) ? $tab_colonne[$matiere_id][$niveau_id].'<td class="nu" id="'.$ids.'"><q class="voir" title="Voir le détail de ce référentiel."></q>'.$partager.$envoyer.'<q class="calculer" title="Modifier le mode de calcul associé à ce référentiel."></q><q class="supprimer" title="Supprimer ce référentiel."></q></td>' : '<td class="r">Absence de référentiel.</td><td class="r">Sans objet.</td><td class="nu" id="'.$ids.'"><q class="ajouter" title="Créer un référentiel vierge ou importer un référentiel existant"></q></td>' ;
+					$methode_calcul_texte = 'Seule la dernière saisie compte.';
 				}
-				else
+				elseif($DB_ROW['referentiel_calcul_methode']=='classique')	// si moyenne classique
 				{
-					$colonnes = (isset($tab_colonne[$matiere_id][$niveau_id])) ? $tab_colonne[$matiere_id][$niveau_id].'<td class="nu" id="'.$ids.'"><q class="voir" title="Voir le détail de ce référentiel."></q><q class="partager_non" title="Accès restreint : '.$texte_profil.'."></q><q class="envoyer_non" title="Accès restreint : '.$texte_profil.'."></q><q class="calculer_non" title="Accès restreint : '.$texte_profil.'."></q><q class="supprimer_non" title="Accès restreint : '.$texte_profil.'."></q></td>' : '<td class="r">Absence de référentiel.</td><td class="r">Sans objet.</td><td class="nu" id="'.$ids.'"><q class="ajouter_non" title="Accès restreint : '.$texte_profil.'."></q></td>' ;
+					$methode_calcul_texte = ($DB_ROW['referentiel_calcul_limite']==0) ? 'Moyenne de toutes les saisies.' : 'Moyenne des '.$DB_ROW['referentiel_calcul_limite'].' dernières saisies.';
 				}
-				if($affichage_suite===false)
+				elseif(in_array($DB_ROW['referentiel_calcul_methode'],array('geometrique','arithmetique')))	// si moyenne geometrique | arithmetique
 				{
-					$affichage .= '<td>'.$niveau_nom.'</td>'.$colonnes;
-					$affichage_suite = '';
+					$seize = (($DB_ROW['referentiel_calcul_methode']=='geometrique')&&($DB_ROW['referentiel_calcul_limite']==5)) ? 1 : 0 ;
+					$coefs = ($DB_ROW['referentiel_calcul_methode']=='arithmetique') ? substr('1/2/3/4/5/6/7/8/9/',0,2*$DB_ROW['referentiel_calcul_limite']-19) : substr('1/2/4/8/16/',0,2*$DB_ROW['referentiel_calcul_limite']-12+$seize) ;
+					$methode_calcul_texte = 'Les '.$DB_ROW['referentiel_calcul_limite'].' dernières saisies &times;'.$coefs.'.';
 				}
-				else
+				elseif($DB_ROW['referentiel_calcul_methode']=='bestof1')	// si meilleure note
 				{
-					$affichage_suite .= '<tr><td>'.$niveau_nom.'</td>'.$colonnes.'</tr>'."\r\n";
+					$methode_calcul_texte = ($DB_ROW['referentiel_calcul_limite']==0) ? 'Seule la meilleure saisie compte.' : 'Meilleure des '.$DB_ROW['referentiel_calcul_limite'].' dernières saisies.';
 				}
+				elseif(in_array($DB_ROW['referentiel_calcul_methode'],array('bestof2','bestof3')))	// si 2 | 3 meilleures notes
+				{
+					$nb_best = (int)substr($DB_ROW['referentiel_calcul_methode'],-1);
+					$methode_calcul_texte = ($DB_ROW['referentiel_calcul_limite']==0) ? 'Moyenne des '.$nb_best.' meilleures saisies.' : 'Moyenne des '.$nb_best.' meilleures saisies parmi les '.$DB_ROW['referentiel_calcul_limite'].' dernières.';
+				}
+				$tab_colonne[$DB_ROW['matiere_id']][$DB_ROW['niveau_id']] = '<td class="hc">'.str_replace('◄DATE►',affich_date($DB_ROW['referentiel_partage_date']),$tab_partage[$DB_ROW['referentiel_partage_etat']]).'</td>'.'<td>'.$methode_calcul_texte.'</td>';
+				$script_contenu_tableaux .=   'tab_partage_etat["'.$DB_ROW['matiere_id'].'_'.$DB_ROW['niveau_id'].'"]="'.$DB_ROW['referentiel_partage_etat'].'";';
+				$script_contenu_tableaux .= 'tab_calcul_methode["'.$DB_ROW['matiere_id'].'_'.$DB_ROW['niveau_id'].'"]="'.$DB_ROW['referentiel_calcul_methode'].'";';
+				$script_contenu_tableaux .=  'tab_calcul_limite["'.$DB_ROW['matiere_id'].'_'.$DB_ROW['niveau_id'].'"]="'.$DB_ROW['referentiel_calcul_limite'].'";';
 			}
 		}
-		$affichage .= '</tr>'."\r\n".$affichage_suite;
+		// Construction du formulaire select du nombre de demandes
+		$select_demandes = '<select name="f_eleve_demandes" class="t8">';
+		for($nb_demandes=0 ; $nb_demandes<10 ; $nb_demandes++)
+		{
+			$texte = ($nb_demandes>0) ? ( ($nb_demandes>1) ? $nb_demandes.' demandes' : '1 seule demande' ) : 'aucune demande' ;
+			$select_demandes .= '<option value="'.$nb_demandes.'">'.$texte.'</option>';
+		}
+		$select_demandes .= '</select>';
+		$infobulle = ' <img src="./_img/bulle_aide.png" alt="" title="Nombre maximal de demandes d\'évaluations simultanées autorisées pour un élève." />';
+		$label = '<label>&nbsp;</label>';
+		// On construit et affiche les tableaux résultants
+		foreach($tab_matiere as $matiere_id => $tab)
+		{
+			$matiere_nom    = $tab['nom'];
+			$matiere_coord  = $tab['coord'];
+			$matiere_perso  = ($matiere_id>ID_MATIERE_PARTAGEE_MAX) ? 1 : 0 ;
+			$matiere_droit  = ( (($_SESSION['DROIT_GERER_REFERENTIEL']=='profcoordonnateur')&&$matiere_coord) || ($_SESSION['DROIT_GERER_REFERENTIEL']=='professeur') ) ? TRUE : FALSE ;
+			$matiere_ajout  = ($matiere_droit) ? '<q class="ajouter" title="Créer un référentiel vierge ou importer un référentiel existant."></q>' : '<q class="ajouter_non" title="Accès restreint : '.$texte_profil.'."></q>' ;
+			echo'<hr /><h2 id="h2_'.$matiere_id.'">'.$matiere_nom.'</h2>';
+			echo'<table id="mat_'.$matiere_id.'" class="vm_nug"><thead><tr><th>Niveau</th><th>Partage</th><th>Méthode de calcul</th><th class="nu" id="th_'.$matiere_id.'_'.$matiere_perso.'">'.$matiere_ajout.'</th></tr></thead><tbody>'."\r\n";
+			if(isset($tab_colonne[$matiere_id]))
+			{
+				foreach($tab_colonne[$matiere_id] as $niveau_id => $referentiel_info)
+				{
+					$ids = 'ids'.'_'.$matiere_id.'_'.$niveau_id.'_'.$matiere_perso;
+					if($matiere_droit)
+					{
+						$partager = ($matiere_perso) ? '<q class="partager_non" title="Le référentiel d\'une matière spécifique à l\'établissement ne peut être partagé."></q>' : '<q class="partager" title="Modifier le partage de ce référentiel."></q>' ;
+						$envoyer = (strpos($tab_colonne[$matiere_id][$niveau_id],'partage_oui.gif')) ? '<q class="envoyer" title="Mettre à jour sur le serveur de partage la dernière version de ce référentiel."></q>' : '<q class="envoyer_non" title="Un référentiel non partagé ne peut pas être transmis à la collectivité."></q>' ;
+						$colonnes = $tab_colonne[$matiere_id][$niveau_id].'<td class="nu" id="'.$ids.'"><q class="voir" title="Voir le détail de ce référentiel."></q>'.$partager.$envoyer.'<q class="calculer" title="Modifier le mode de calcul associé à ce référentiel."></q><q class="supprimer" title="Supprimer ce référentiel."></q></td>';
+					}
+					else
+					{
+						$colonnes = $tab_colonne[$matiere_id][$niveau_id].'<td class="nu" id="'.$ids.'"><q class="voir" title="Voir le détail de ce référentiel."></q><q class="partager_non" title="Accès restreint : '.$texte_profil.'."></q><q class="envoyer_non" title="Accès restreint : '.$texte_profil.'."></q><q class="calculer_non" title="Accès restreint : '.$texte_profil.'."></q><q class="supprimer_non" title="Accès restreint : '.$texte_profil.'."></q></td>' ;
+					}
+					echo'<tr><td>'.$tab_niveau[$niveau_id].'</td>'.$colonnes.'</tr>'."\r\n";
+				}
+			}
+			else
+			{
+				echo'<tr class="absent"><td class="r hc">---</td><td class="r hc">---</td><td class="r hc">---</td><td class="nu"></td></tr>'."\r\n";
+			}
+			$matiere_nombre = str_replace('value="'.$tab['nb_demandes'].'"','value="'.$tab['nb_demandes'].'" selected',$select_demandes) ;
+			$matiere_nombre = ( ($matiere_droit) && (isset($tab_colonne[$matiere_id])) ) ? $matiere_nombre : str_replace('<select','<select disabled',$matiere_nombre) ;
+			echo'<tr><td colspan="4" class="nu">'.$matiere_nombre.$infobulle.$label.'</td>'.'</tr>'."\r\n";
+			echo'</tbody></table>'."\r\n";
+		}
 	}
-	$affichage .= '</tbody></table>'."\r\n";
-	echo $affichage;
 }
 ?>
+
+</div>
 
 <script type="text/javascript">
 	var calcul_methode = "<?php echo $_SESSION['CALCUL_METHODE'] ?>";
 	var calcul_limite  = "<?php echo $_SESSION['CALCUL_LIMITE'] ?>";
 	var calcul_texte   = "<?php echo $calcul_texte ?>";
-	var id_matiere_transversale   = "<?php echo ID_MATIERE_TRANSVERSALE ?>";
-	var listing_id_niveaux_cycles = "<?php echo LISTING_ID_NIVEAUX_CYCLES ?>";
 	var tab_partage_etat = new Array(); var tab_calcul_methode = new Array(); var tab_calcul_limite = new Array();
 	<?php echo $script_contenu_tableaux ?>
 </script>
 
-<div id="succes_import">
-</div>
-
 <div id="choisir_referentiel" class="hide">
 	<hr />
-	<h2>Choisir un référentiel</h2>
+	<h2>Créer un référentiel &rarr; <span></span><input id="matiere_id" name="matiere_id" type="hidden" value="" /><input id="matiere_perso" name="matiere_perso" type="hidden" value="" /></h2>
+	<p>
+	<?php
+	if($nb_matieres && $nb_niveaux);
+	{
+		$select_niveau = Formulaire::afficher_select($DB_TAB_NIVEAUX , $select_nom='f_niveau_create' , $option_first='oui' , $selection=FALSE , $optgroup='non');
+		echo'<label class="tab" for="f_niveau_create">Niveau :</label>'.$select_niveau.'<label id="ajax_msg_choisir">&nbsp;</label>';
+	}
+	?>
+	</p>
 	<p><button id="choisir_initialiser" type="button" value="id_0" class="valider">Démarrer avec un référentiel vierge.</button></p>
 	<?php
 	if( (!$_SESSION['SESAMATH_ID']) || (!$_SESSION['SESAMATH_KEY']) )
@@ -238,7 +238,6 @@ else
 	}
 	?>
 	<p><button id="choisir_annuler" type="button" class="annuler">Annuler la création d'un référentiel.</button></p>
-	<label id="ajax_msg_choisir">&nbsp;</label>
 </div>
 
 </form>
@@ -247,16 +246,21 @@ else
 
 <?php
 // Fabrication des éléments select du formulaire, pour pouvoir prendre un référentiel d'une autre matière ou d'un autre niveau (demandé...).
-$select_famille = Formulaire::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_familles_matieres() , $select_nom='f_famille' , $option_first='oui' , $selection=false , $optgroup='oui');
-$select_niveau  = Formulaire::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_niveaux()           , $select_nom='f_niveau'  , $option_first='val' , $selection=false , $optgroup='non');
+$select_famille_matiere = Formulaire::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_familles_matieres() , $select_nom='f_famille_matiere' , $option_first='oui' , $selection=FALSE , $optgroup='oui');
+$select_famille_niveau  = Formulaire::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_familles_niveaux()  , $select_nom='f_famille_niveau'  , $option_first='oui' , $selection=FALSE , $optgroup='oui');
 ?>
 
 <div id="choisir_referentiel_communautaire">
 	<h2>Rechercher un référentiel partagé sur le serveur communautaire</h2>
+	<p>
+		<label class="tab" for="f_famille_matiere">Famille de matières :</label><?php echo $select_famille_matiere ?><label id="ajax_maj_matiere"">&nbsp;</label><br />
+		<label class="tab" for="f_matiere">Matières :</label><select id="f_matiere" name="f_matiere"><option value="0">Toutes les matières</option></select>
+	</p>
+	<p>
+		<label class="tab" for="f_famille_niveau">Famille de niveaux :</label><?php echo $select_famille_niveau ?><label id="ajax_maj_niveau">&nbsp;</label><br />
+		<label class="tab" for="f_niveau">Niveau :</label><select id="f_niveau" name="f_niveau"><option value="0">Tous les niveaux</option></select>
+	</p>
 	<fieldset>
-		<label class="tab" for="f_famille">Famille de matières :</label><?php echo $select_famille ?><label id="ajax_maj">&nbsp;</label><br />
-		<label class="tab" for="f_matiere">Matières :</label><select id="f_matiere" name="f_matiere"><option value="0">Toutes les matières</option></select><br />
-		<label class="tab" for="f_niveau">Niveau :</label><?php echo $select_niveau ?><br />
 		<label class="tab" for="f_structure"><img alt="" src="./_img/bulle_aide.png" title="Seules les structures partageant au moins un référentiel apparaissent." /> Structure :</label><select id="f_structure" name="f_structure"><option></option></select><br />
 		<span class="tab"></span><button id="rechercher" type="button" class="rechercher">Lancer / Actualiser la recherche.</button><label id="ajax_msg">&nbsp;</label><br />
 		<span class="tab"></span><button id="rechercher_annuler" type="button" class="annuler">Annuler la recherche d'un référentiel.</button>
@@ -275,3 +279,5 @@ $select_niveau  = Formulaire::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_niveau
 </div>
 
 </form>
+
+<p>&nbsp;</p>

@@ -32,7 +32,7 @@ $TITRE = "Matières";
 $select_matiere_famille = Formulaire::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_familles_matieres() , $select_nom='f_famille' , $option_first='oui' , $selection=false , $optgroup='oui');
 
 // Lister les matières de l'établissement
-$DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_matieres_etablissement(TRUE /*with_transversal*/,TRUE /*order_by_name*/);
+$DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_matieres_etablissement( TRUE /*order_by_name*/ );
 $matieres_options = '<option value="0"></option>';
 foreach($DB_TAB as $DB_ROW)
 {
@@ -44,7 +44,7 @@ foreach($DB_TAB as $DB_ROW)
 <div><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__gestion_matieres">DOC : Matières</a></span></div>
 
 <script type="text/javascript">
-	var id_matiere_transversale = "<?php echo ID_MATIERE_TRANSVERSALE ?>";
+	var id_matiere_partagee_max = "<?php echo ID_MATIERE_PARTAGEE_MAX ?>";
 </script>
 
 <form action="#" method="post" id="form_partage">
@@ -65,15 +65,11 @@ foreach($DB_TAB as $DB_ROW)
 			foreach($DB_TAB as $DB_ROW)
 			{
 				// Afficher une ligne du tableau
-				$tr_class = ($DB_ROW['matiere_id']==ID_MATIERE_TRANSVERSALE) ? ' class="new"'             : '' ;
-				$indic    = ($DB_ROW['matiere_id']==ID_MATIERE_TRANSVERSALE) ? ' <b>[obligatoire]</b>'    : '' ;
-				$q_class  = ($DB_ROW['matiere_id']==ID_MATIERE_TRANSVERSALE) ? 'supprimer_non'            : 'supprimer' ;
-				$q_title  = ($DB_ROW['matiere_id']==ID_MATIERE_TRANSVERSALE) ? 'Matière non supprimable.' : 'Supprimer cette matière.' ;
-				echo'<tr id="id_'.$DB_ROW['matiere_id'].'"'.$tr_class.'>';
+				echo'<tr id="id_'.$DB_ROW['matiere_id'].'">';
 				echo	'<td>'.html($DB_ROW['matiere_ref']).'</td>';
-				echo	'<td>'.html($DB_ROW['matiere_nom']).$indic.'</td>';
+				echo	'<td>'.html($DB_ROW['matiere_nom']).'</td>';
 				echo	'<td class="nu">';
-				echo		'<q class="'.$q_class.'" title="'.$q_title.'"></q>';
+				echo		'<q class="supprimer" title="Supprimer cette matière."></q>';
 				echo	'</td>';
 				echo'</tr>';
 			}

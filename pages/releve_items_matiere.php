@@ -75,7 +75,7 @@ if($_SESSION['USER_PROFIL']=='professeur')
 if( ($_SESSION['USER_PROFIL']=='parent') && ($_SESSION['NB_ENFANTS']!=1) )
 {
 	$tab_groupes  = $_SESSION['OPT_PARENT_CLASSES']; Formulaire::$tab_select_optgroup = array('classe'=>'Classes');
-	$tab_matieres = DB_STRUCTURE_COMMUN::DB_OPT_matieres_etabl(TRUE /*transversal*/);
+	$tab_matieres = DB_STRUCTURE_COMMUN::DB_OPT_matieres_etabl();
 	$of_g = 'oui'; $sel_g = false; $class_form_type = 'hide'; $class_form_eleve = 'show'; $class_form_periode = 'hide';
 	$multiple_eleve = ''; // volontaire
 	$select_eleves = '<option></option>'; // maj en ajax suivant le choix du groupe

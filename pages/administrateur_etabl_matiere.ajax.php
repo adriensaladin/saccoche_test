@@ -131,18 +131,18 @@ if( ($action=='modifier') && $id && $ref && $nom )
 
 function retirer_ou_supprimer_matiere($id)
 {
-	if($id<ID_MATIERE_TRANSVERSALE)
-	{
-		DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_matiere_partagee($id,0);
-		// Log de l'action
-		ajouter_log_SACoche('Retrait d\'une matière partagée (n°'.$id.').');
-	}
-	else
+	if($id>ID_MATIERE_PARTAGEE_MAX)
 	{
 		DB_STRUCTURE_ADMINISTRATEUR::DB_supprimer_matiere_specifique($id);
 		// Log de l'action
 		ajouter_log_SACoche('Suppression d\'une matière spécifique (n°'.$id.').');
 		ajouter_log_SACoche('Suppression de référentiels (matière '.$id.').');
+	}
+	else
+	{
+		DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_matiere_partagee($id,0);
+		// Log de l'action
+		ajouter_log_SACoche('Retrait d\'une matière partagée (n°'.$id.').');
 	}
 }
 

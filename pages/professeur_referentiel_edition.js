@@ -433,9 +433,9 @@ $(document).ready
 					if($('#socle_'+socle_id).length)
 					{
 						$('#socle_'+socle_id).prop('checked',true);
-						$('#socle_'+socle_id).parent().parent().css("display","block");	// les items
-						$('#socle_'+socle_id).parent().parent().parent().parent().css("display","block");	// le section
-						$('#socle_'+socle_id).parent().parent().parent().parent().parent().parent().css("display","block");	// le pilier
+						$('#socle_'+socle_id).closest('ul.ul_n3').css("display","block");	// les items
+						$('#socle_'+socle_id).closest('ul.ul_n2').css("display","block");	// la section
+						$('#socle_'+socle_id).closest('ul.ul_n1').css("display","block");	// le pilier
 					}
 				}
 				else

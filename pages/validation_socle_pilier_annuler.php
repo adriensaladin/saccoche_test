@@ -62,7 +62,7 @@ else
 	$tab_groupes = 'Vous n\'avez pas un profil autorisé pour accéder au formulaire !';
 	$of_g = 'non'; $og_g = 'non'; 
 }
-$tab_paliers = DB_STRUCTURE_COMMUN::DB_OPT_paliers_etabl($_SESSION['PALIERS']);
+$tab_paliers = DB_STRUCTURE_COMMUN::DB_OPT_paliers_etabl();
 $of_p = (count($tab_paliers)<2) ? 'non' : 'oui' ;
 
 $select_palier = Formulaire::afficher_select($tab_paliers , $select_nom='f_palier' , $option_first=$of_p , $selection=Formulaire::$tab_choix['palier_id'] , $optgroup='non');

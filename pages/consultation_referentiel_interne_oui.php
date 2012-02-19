@@ -55,100 +55,93 @@ $tab_niveau  = array();
 $tab_colonne = array();
 
 // On récupère la liste des matières utilisées par l'établissement
-$DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_matieres_etablissement( TRUE /*with_transversal*/ , TRUE /*order_by_name*/ );
-if(count($DB_TAB))
+$DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_matieres_etablissement( TRUE /*order_by_name*/ );
+$nb_matieres = count($DB_TAB);
+if(!$nb_matieres)
 {
-	foreach($DB_TAB as $DB_ROW)
-	{
-		$tab_matiere[$DB_ROW['matiere_id']]['nom'] = html($DB_ROW['matiere_nom']);
-		$tab_matiere[$DB_ROW['matiere_id']]['nb_demandes'] = $DB_ROW['matiere_nb_demandes'];
-	}
-}
-$listing_matieres_id = implode(',',array_keys($tab_matiere));
-
-if(!$listing_matieres_id) // normalement impossible
-{
-	echo'<p><span class="danger">Aucune matière enregistrée ou associée à l\'établissement !</span></p>';
-}
-elseif(!$_SESSION['NIVEAUX']) // normalement impossible
-{
-	echo'<p><span class="danger">Aucun niveau n\'est rattaché à l\'établissement !</span></p>';
-}
-elseif(!$_SESSION['CYCLES']) // normalement impossible
-{
-	echo'<p><span class="danger">Aucun cycle n\'est rattaché à l\'établissement !</span></p>';
+	echo'<p><span class="danger">Aucune matière associée à l\'établissement !</span></p>';
 }
 else
 {
-	echo'<p><span class="astuce">Cliquer sur l\'&oelig;il pour voir le détail d\'un référentiel.</span></p>';
-	// On récupère la liste des niveaux utilisés par l'établissement
-	$DB_TAB = DB_STRUCTURE_COMMUN::DB_lister_niveaux_etablissement($_SESSION['NIVEAUX'],$_SESSION['CYCLES']);
-	$nb_niveaux = count($DB_TAB);
 	foreach($DB_TAB as $DB_ROW)
 	{
-		$tab_niveau[$DB_ROW['niveau_id']] = html($DB_ROW['niveau_nom']);
+		$tab_matiere[$DB_ROW['matiere_id']] = array(
+			'nom'         => html($DB_ROW['matiere_nom']) ,
+			'nb_demandes' => $DB_ROW['matiere_nb_demandes']
+		);
 	}
-	// On récupère la liste des coordonnateurs responsables par matières
-	$DB_TAB = DB_STRUCTURE_COMMUN::DB_lister_identite_coordonnateurs_par_matiere($listing_matieres_id);
-	if(count($DB_TAB))
+	// On récupère la liste des niveaux utilisés par l'établissement
+	$DB_TAB = DB_STRUCTURE_COMMUN::DB_lister_niveaux_etablissement(TRUE /*with_specifiques*/);
+	$nb_niveaux = count($DB_TAB);
+	if(!$nb_niveaux)
 	{
+		echo'<p><span class="danger">Aucun niveau n\'est rattaché à l\'établissement !</span></p>';
+	}
+	else
+	{
+		echo'<p><span class="astuce">Cliquer sur l\'&oelig;il pour voir le détail d\'un référentiel.</span></p>';
 		foreach($DB_TAB as $DB_ROW)
 		{
-			$tab_matiere[$DB_ROW['matiere_id']]['coord'] = str_replace('][','<br />',html($DB_ROW['coord_liste']));
+			$tab_niveau[$DB_ROW['niveau_id']] = html($DB_ROW['niveau_nom']);
 		}
-	}
-	// On récupère la liste des référentiels par matière et niveau
-	$tab_partage = array('oui'=>'<img title="Référentiel partagé sur le serveur communautaire (MAJ le ◄DATE►)." alt="" src="./_img/etat/partage_oui.gif" />','non'=>'<img title="Référentiel non partagé avec la communauté (choix du ◄DATE►)." alt="" src="./_img/etat/partage_non.gif" />','bof'=>'<img title="Référentiel dont le partage est sans intérêt (pas novateur)." alt="" src="./_img/etat/partage_non.gif" />','hs'=>'<img title="Référentiel dont le partage est sans objet (matière spécifique)." alt="" src="./_img/etat/partage_non.gif" />');
-	$DB_TAB = DB_STRUCTURE_COMMUN::DB_lister_referentiels_infos_details_matieres_niveaux($listing_matieres_id,$_SESSION['NIVEAUX'],$_SESSION['CYCLES']);
-	if(count($DB_TAB))
-	{
-		foreach($DB_TAB as $DB_ROW)
+		// On récupère la liste des coordonnateurs responsables par matières
+		$DB_TAB = DB_STRUCTURE_COMMUN::DB_lister_identite_coordonnateurs_par_matiere();
+		if(count($DB_TAB))
 		{
-			// Définition de $methode_calcul_texte
-			if($DB_ROW['referentiel_calcul_limite']==1)	// si une seule saisie prise en compte
+			foreach($DB_TAB as $DB_ROW)
 			{
-				$methode_calcul_texte = 'Seule la dernière saisie compte.';
+				$tab_matiere[$DB_ROW['matiere_id']]['coord'] = str_replace('][','<br />',html($DB_ROW['coord_liste']));
 			}
-			elseif($DB_ROW['referentiel_calcul_methode']=='classique')	// si moyenne classique
-			{
-				$methode_calcul_texte = ($DB_ROW['referentiel_calcul_limite']==0) ? 'Moyenne de toutes les saisies.' : 'Moyenne des '.$DB_ROW['referentiel_calcul_limite'].' dernières saisies.';
-			}
-			elseif(in_array($DB_ROW['referentiel_calcul_methode'],array('geometrique','arithmetique')))	// si moyenne geometrique | arithmetique
-			{
-				$seize = (($DB_ROW['referentiel_calcul_methode']=='geometrique')&&($DB_ROW['referentiel_calcul_limite']==5)) ? 1 : 0 ;
-				$coefs = ($DB_ROW['referentiel_calcul_methode']=='arithmetique') ? substr('1/2/3/4/5/6/7/8/9/',0,2*$DB_ROW['referentiel_calcul_limite']-19) : substr('1/2/4/8/16/',0,2*$DB_ROW['referentiel_calcul_limite']-12+$seize) ;
-				$methode_calcul_texte = 'Les '.$DB_ROW['referentiel_calcul_limite'].' dernières saisies &times;'.$coefs.'.';
-			}
-			elseif($DB_ROW['referentiel_calcul_methode']=='bestof1')	// si meilleure note
-			{
-				$methode_calcul_texte = ($DB_ROW['referentiel_calcul_limite']==0) ? 'Seule la meilleure saisie compte.' : 'Meilleure des '.$DB_ROW['referentiel_calcul_limite'].' dernières saisies.';
-			}
-			elseif(in_array($DB_ROW['referentiel_calcul_methode'],array('bestof2','bestof3')))	// si 2 | 3 meilleures notes
-			{
-				$nb_best = (int)substr($DB_ROW['referentiel_calcul_methode'],-1);
-				$methode_calcul_texte = ($DB_ROW['referentiel_calcul_limite']==0) ? 'Moyenne des '.$nb_best.' meilleures saisies.' : 'Moyenne des '.$nb_best.' meilleures saisies parmi les '.$DB_ROW['referentiel_calcul_limite'].' dernières.';
-			}
-			$tab_colonne[$DB_ROW['matiere_id']][$DB_ROW['niveau_id']] = '<td class="v">Référentiel présent. '.str_replace('◄DATE►',affich_date($DB_ROW['referentiel_partage_date']),$tab_partage[$DB_ROW['referentiel_partage_etat']]).'</td>'.'<td class="v">'.$methode_calcul_texte.'</td>';
 		}
-	}
-	// On construit et affiche le tableau résultant
-	$tab_paliers = explode( '.' , substr(LISTING_ID_NIVEAUX_CYCLES,1,-1) );
-	$affichage = '<table class="vm_nug"><thead><tr><th>Matière</th><th>Nb</th><th>Coordonnateur(s)</th><th>Niveau</th><th>Référentiel</th><th>Méthode de calcul</th><th class="nu"></th></tr></thead><tbody>'."\r\n";
-	$infobulle = '<img src="./_img/bulle_aide.png" alt="" title="Nombre maximal de demandes d\'évaluations simultanées autorisées pour un élève." />';
-	foreach($tab_matiere as $matiere_id => $tab)
-	{
-		$rowspan = (isset($tab_colonne[$matiere_id])) ? count($tab_colonne[$matiere_id]) : 1 ;
-		$matiere_nom   = $tab['nom'];
-		$matiere_nb    = $tab['nb_demandes'].' '.$infobulle;
-		$matiere_coord = (isset($tab['coord'])) ? '>'.$tab['coord'] : ' class="r">Absence de coordonnateur.' ;
-		$affichage .= '<tr><td colspan="7" class="nu">&nbsp;</td></tr>'."\r\n";
-		$affichage .= '<tr><td rowspan="'.$rowspan.'">'.$matiere_nom.'</td><td rowspan="'.$rowspan.'">'.$matiere_nb.'</td><td rowspan="'.$rowspan.'"'.$matiere_coord.'</td>';
-		$affichage_suite = false;
-		if(isset($tab_colonne[$matiere_id]))
+		// On récupère la liste des référentiels par matière et niveau
+		$tab_partage = array('oui'=>'<img title="Référentiel partagé sur le serveur communautaire (MAJ le ◄DATE►)." alt="" src="./_img/etat/partage_oui.gif" />','non'=>'<img title="Référentiel non partagé avec la communauté (choix du ◄DATE►)." alt="" src="./_img/etat/partage_non.gif" />','bof'=>'<img title="Référentiel dont le partage est sans intérêt (pas novateur)." alt="" src="./_img/etat/partage_non.gif" />','hs'=>'<img title="Référentiel dont le partage est sans objet (matière spécifique)." alt="" src="./_img/etat/partage_non.gif" />');
+		$DB_TAB = DB_STRUCTURE_COMMUN::DB_lister_referentiels_infos_details_matieres_niveaux();
+		if(count($DB_TAB))
 		{
-			foreach($tab_colonne[$matiere_id] as $niveau_id => $referentiel_info)
+			foreach($DB_TAB as $DB_ROW)
 			{
-				if( ($matiere_id!=ID_MATIERE_TRANSVERSALE) || (in_array($niveau_id,$tab_paliers)) )
+				// Définition de $methode_calcul_texte
+				if($DB_ROW['referentiel_calcul_limite']==1)	// si une seule saisie prise en compte
+				{
+					$methode_calcul_texte = 'Seule la dernière saisie compte.';
+				}
+				elseif($DB_ROW['referentiel_calcul_methode']=='classique')	// si moyenne classique
+				{
+					$methode_calcul_texte = ($DB_ROW['referentiel_calcul_limite']==0) ? 'Moyenne de toutes les saisies.' : 'Moyenne des '.$DB_ROW['referentiel_calcul_limite'].' dernières saisies.';
+				}
+				elseif(in_array($DB_ROW['referentiel_calcul_methode'],array('geometrique','arithmetique')))	// si moyenne geometrique | arithmetique
+				{
+					$seize = (($DB_ROW['referentiel_calcul_methode']=='geometrique')&&($DB_ROW['referentiel_calcul_limite']==5)) ? 1 : 0 ;
+					$coefs = ($DB_ROW['referentiel_calcul_methode']=='arithmetique') ? substr('1/2/3/4/5/6/7/8/9/',0,2*$DB_ROW['referentiel_calcul_limite']-19) : substr('1/2/4/8/16/',0,2*$DB_ROW['referentiel_calcul_limite']-12+$seize) ;
+					$methode_calcul_texte = 'Les '.$DB_ROW['referentiel_calcul_limite'].' dernières saisies &times;'.$coefs.'.';
+				}
+				elseif($DB_ROW['referentiel_calcul_methode']=='bestof1')	// si meilleure note
+				{
+					$methode_calcul_texte = ($DB_ROW['referentiel_calcul_limite']==0) ? 'Seule la meilleure saisie compte.' : 'Meilleure des '.$DB_ROW['referentiel_calcul_limite'].' dernières saisies.';
+				}
+				elseif(in_array($DB_ROW['referentiel_calcul_methode'],array('bestof2','bestof3')))	// si 2 | 3 meilleures notes
+				{
+					$nb_best = (int)substr($DB_ROW['referentiel_calcul_methode'],-1);
+					$methode_calcul_texte = ($DB_ROW['referentiel_calcul_limite']==0) ? 'Moyenne des '.$nb_best.' meilleures saisies.' : 'Moyenne des '.$nb_best.' meilleures saisies parmi les '.$DB_ROW['referentiel_calcul_limite'].' dernières.';
+				}
+				$tab_colonne[$DB_ROW['matiere_id']][$DB_ROW['niveau_id']] = '<td class="hc">'.str_replace('◄DATE►',affich_date($DB_ROW['referentiel_partage_date']),$tab_partage[$DB_ROW['referentiel_partage_etat']]).'</td>'.'<td>'.$methode_calcul_texte.'</td>';
+			}
+		}
+		// On construit et affiche le tableau résultant
+		$affichage = '<table class="vm_nug"><thead><tr><th>Matière</th><th>Nb</th><th>Coordonnateur(s)</th><th>Niveau</th><th>Partage</th><th>Méthode de calcul</th><th class="nu"></th></tr></thead><tbody>'."\r\n";
+		$infobulle = '<img src="./_img/bulle_aide.png" alt="" title="Nombre maximal de demandes d\'évaluations simultanées autorisées pour un élève." />';
+		foreach($tab_matiere as $matiere_id => $tab)
+		{
+			$rowspan = (isset($tab_colonne[$matiere_id])) ? count($tab_colonne[$matiere_id]) : 1 ;
+			$matiere_nom   = $tab['nom'];
+			$matiere_nb    = $tab['nb_demandes'].' '.$infobulle;
+			$matiere_coord = (isset($tab['coord'])) ? '>'.$tab['coord'] : ' class="r hc">Aucun.' ;
+			$affichage .= '<tr><td colspan="7" class="nu">&nbsp;</td></tr>'."\r\n";
+			$affichage .= '<tr><td rowspan="'.$rowspan.'">'.$matiere_nom.'</td><td rowspan="'.$rowspan.'">'.$matiere_nb.'</td><td rowspan="'.$rowspan.'"'.$matiere_coord.'</td>';
+			$affichage_suite = false;
+			if(isset($tab_colonne[$matiere_id]))
+			{
+				foreach($tab_colonne[$matiere_id] as $niveau_id => $referentiel_info)
 				{
 					$ids = 'ids_'.$matiere_id.'_'.$niveau_id;
 					$colonnes = $referentiel_info.'<td class="nu" id="'.$ids.'"><q class="voir" title="Voir le détail de ce référentiel."></q></td>' ;
@@ -162,16 +155,16 @@ else
 						$affichage_suite .= '<tr><td>'.$tab_niveau[$niveau_id].'</td>'.$colonnes.'</tr>'."\r\n";
 					}
 				}
+				$affichage .= '</tr>'."\r\n".$affichage_suite;
 			}
-			$affichage .= '</tr>'."\r\n".$affichage_suite;
+			else
+			{
+				$affichage .= '<td class="r hc">---</td>'.'<td class="r hc">---</td><td class="r hc">---</td>'.'<td class="nu"></td>'.'</tr>'."\r\n";
+			}
 		}
-		else
-		{
-			$affichage .= '<td>-</td>'.'<td class="r">Absence de référentiel.</td><td class="r">Sans objet.</td>'.'<td class="nu"></td>'.'</tr>'."\r\n";
-		}
+		$affichage .= '</tbody></table>'."\r\n";
+		echo $affichage;
 	}
-	$affichage .= '</tbody></table>'."\r\n";
-	echo $affichage;
 }
 ?>
 

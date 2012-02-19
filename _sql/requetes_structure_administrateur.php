@@ -110,7 +110,7 @@ public function DB_lister_matieres_famille($famille_id)
 {
 	$DB_SQL = 'SELECT matiere_id, matiere_ref, matiere_nom, matiere_active ';
 	$DB_SQL.= 'FROM sacoche_matiere ';
-	$DB_SQL.= ($famille_id==99) ? 'WHERE matiere_usuelle=1 ' : 'WHERE matiere_famille_id='.$famille_id.' ' ;
+	$DB_SQL.= ($famille_id==ID_FAMILLE_MATIERE_USUELLE) ? 'WHERE matiere_usuelle=1 ' : 'WHERE matiere_famille_id='.$famille_id.' ' ;
 	$DB_SQL.= 'ORDER BY matiere_nom ASC';
 	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
 }
@@ -127,7 +127,7 @@ public function DB_lister_matiere_motclef($findme)
 	$DB_SQL.= 'MATCH(matiere_nom) AGAINST(:matiere_nom) AS score ';
 	$DB_SQL.= 'FROM sacoche_matiere ';
 	$DB_SQL.= 'LEFT JOIN sacoche_matiere_famille USING (matiere_famille_id) ';
-	$DB_SQL.= 'WHERE matiere_id<='.ID_MATIERE_TRANSVERSALE.' AND MATCH(matiere_nom) AGAINST(:matiere_nom)';
+	$DB_SQL.= 'WHERE matiere_id<='.ID_MATIERE_PARTAGEE_MAX.' AND MATCH(matiere_nom) AGAINST(:matiere_nom)';
 	$DB_VAR = array(':matiere_nom'=>$findme);
 	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
@@ -142,7 +142,7 @@ public function DB_lister_matieres($is_specifique)
 {
 	$DB_SQL = 'SELECT matiere_id, matiere_ref, matiere_nom ';
 	$DB_SQL.= 'FROM sacoche_matiere ';
-	$DB_SQL.= ($is_specifique) ? 'WHERE matiere_id>'.ID_MATIERE_TRANSVERSALE.' ' : 'WHERE matiere_active=1 AND matiere_id<='.ID_MATIERE_TRANSVERSALE.' ' ;
+	$DB_SQL.= ($is_specifique) ? 'WHERE matiere_id>'.ID_MATIERE_PARTAGEE_MAX.' ' : 'WHERE matiere_active=1 AND matiere_id<='.ID_MATIERE_PARTAGEE_MAX.' ' ;
 	$DB_SQL.= 'ORDER BY matiere_nom ASC';
 	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
 }
@@ -150,19 +150,32 @@ public function DB_lister_matieres($is_specifique)
 /**
  * lister_matieres_etablissement
  *
- * @param bool   $with_transversal   avec ou non la matière tranversale
  * @param bool   $order_by_name      si FALSE, prendre le champ matiere_ordre
  * @return array
  */
-public function DB_lister_matieres_etablissement($with_transversal,$order_by_name)
+public function DB_lister_matieres_etablissement($order_by_name)
 {
-	$where_trans = ($with_transversal) ? '' : 'AND matiere_id!='.ID_MATIERE_TRANSVERSALE.' ' ;
-	$order_champ = ($order_by_name)    ? '' : 'matiere_ordre ASC, ' ;
 	$DB_SQL = 'SELECT matiere_id, matiere_nb_demandes, matiere_ordre, matiere_ref, matiere_nom ';
 	$DB_SQL.= 'FROM sacoche_matiere ';
-	$DB_SQL.= 'WHERE matiere_active=1 '.$where_trans;
-	$DB_SQL.= 'ORDER BY '.$order_champ.'matiere_nom ASC';
+	$DB_SQL.= 'WHERE matiere_active=1 ';
+	$DB_SQL.= ($order_by_name) ? 'ORDER BY matiere_nom ASC' : 'ORDER BY matiere_ordre ASC, matiere_nom ASC' ;
 	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
+}
+
+/**
+ * DB_lister_niveaux_famille
+ *
+ * @param int   famille_id
+ * @return array
+ */
+public function DB_lister_niveaux_famille($famille_id)
+{
+	$DB_SQL = 'SELECT niveau_id, niveau_ref, niveau_nom, niveau_actif ';
+	$DB_SQL.= 'FROM sacoche_niveau ';
+	$DB_SQL.= 'WHERE niveau_famille_id=:famille_id ' ;
+	$DB_SQL.= 'ORDER BY niveau_ordre ASC';
+	$DB_VAR = array(':famille_id'=>$famille_id);
+	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
 /**
@@ -176,37 +189,6 @@ public function DB_lister_paliers_SACoche()
 	$DB_SQL = 'SELECT * ';
 	$DB_SQL.= 'FROM sacoche_socle_palier ';
 	$DB_SQL.= 'ORDER BY palier_ordre ASC';
-	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
-}
-
-/**
- * lister_niveaux_SACoche
- * Sans les niveaux de type 'cycles'.
- *
- * @param void
- * @return array
- */
-public function DB_lister_niveaux_SACoche()
-{
-	$DB_SQL = 'SELECT * ';
-	$DB_SQL.= 'FROM sacoche_niveau ';
-	$DB_SQL.= 'WHERE niveau_cycle=0 ';
-	$DB_SQL.= 'ORDER BY niveau_ordre ASC';
-	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
-}
-
-/**
- * lister_cycles_SACoche
- *
- * @param void
- * @return array
- */
-public function DB_lister_cycles_SACoche()
-{
-	$DB_SQL = 'SELECT * ';
-	$DB_SQL.= 'FROM sacoche_niveau ';
-	$DB_SQL.= 'WHERE niveau_cycle=1 ';
-	$DB_SQL.= 'ORDER BY niveau_ordre ASC';
 	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
 }
 
@@ -476,17 +458,15 @@ public function DB_lister_parents_actifs_avec_infos_for_eleve($eleve_id)
  * lister_jointure_professeurs_matieres
  *
  * @param bool $with_identite
- * @param bool $with_transversal
  * @return array
  */
-public function DB_lister_jointure_professeurs_matieres($with_identite,$with_transversal)
+public function DB_lister_jointure_professeurs_matieres($with_identite)
 {
 	$DB_SQL = 'SELECT user_id, matiere_id';
 	$DB_SQL.= ($with_identite) ? ',user_nom , user_prenom ' : ' ' ;
 	$DB_SQL.= 'FROM sacoche_jointure_user_matiere ';
 	$DB_SQL.= 'LEFT JOIN sacoche_user USING (user_id) ';
 	$DB_SQL.= 'WHERE user_statut=:statut ';
-	$DB_SQL.= ($with_transversal) ? '' : 'AND matiere_id!='.ID_MATIERE_TRANSVERSALE.' ' ;
 	$DB_SQL.= ($with_identite) ? 'ORDER BY user_nom ASC, user_prenom ASC ' : '' ;
 	$DB_VAR = array(':statut'=>1);
 	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
@@ -714,7 +694,7 @@ public function DB_lister_referentiels()
 	$DB_SQL.= 'FROM sacoche_referentiel ';
 	$DB_SQL.= 'LEFT JOIN sacoche_matiere USING (matiere_id) ';
 	$DB_SQL.= 'LEFT JOIN sacoche_niveau USING (niveau_id) ';
-	$DB_SQL.= 'WHERE matiere_active=1 AND niveau_id IN('.$_SESSION['CYCLES'].','.$_SESSION['NIVEAUX'].') ';
+	$DB_SQL.= 'WHERE matiere_active=1 AND niveau_actif=1 ';
 	$DB_SQL.= 'ORDER BY matiere_nom ASC, niveau_ordre ASC ';
 	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
 }
@@ -1092,6 +1072,39 @@ public function DB_modifier_user_langue($listing_user_id,$langue)
 	$DB_SQL.= 'WHERE user_id IN('.$listing_user_id.') ';
 	$DB_VAR = array(':langue'=>$langue);
 	DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+}
+
+/**
+ * modifier_palier
+ *
+ * @param int    $palier_id
+ * @param int    $palier_actif   (0/1)
+ * @return void
+ */
+public function DB_modifier_palier($palier_id,$palier_actif)
+{
+	$DB_SQL = 'UPDATE sacoche_socle_palier ';
+	$DB_SQL.= 'SET palier_actif=:palier_actif ';
+	$DB_SQL.= 'WHERE palier_id=:palier_id ';
+	$DB_VAR = array(':palier_id'=>$palier_id,':palier_actif'=>$palier_actif);
+	DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+}
+
+/**
+ * modifier_niveau
+ *
+ * @param int    $niveau_id
+ * @param int    $niveau_actif   (0/1)
+ * @return void
+ */
+public function DB_modifier_niveau($niveau_id,$niveau_actif)
+{
+	$DB_SQL = 'UPDATE sacoche_niveau ';
+	$DB_SQL.= 'SET niveau_actif=:niveau_actif ';
+	$DB_SQL.= 'WHERE niveau_id=:niveau_id ';
+	$DB_VAR = array(':niveau_id'=>$niveau_id,':niveau_actif'=>$niveau_actif);
+	DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+	// On laisse les référentiels en sommeil, au cas où...
 }
 
 /**
@@ -1651,7 +1664,7 @@ public function DB_deplacer_referentiel_matiere($matiere_id_avant,$matiere_id_ap
 	{
 		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE '.$table_nom.' SET matiere_id='.$matiere_id_apres.' WHERE matiere_id='.$matiere_id_avant );
 	}
-	if( ($matiere_id_avant>ID_MATIERE_TRANSVERSALE) && ($matiere_id_apres<=ID_MATIERE_TRANSVERSALE) )
+	if( ($matiere_id_avant>ID_MATIERE_PARTAGEE_MAX) && ($matiere_id_apres<=ID_MATIERE_PARTAGEE_MAX) )
 	{
 		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_referentiel SET referentiel_partage_etat="non" WHERE matiere_id='.$matiere_id_apres.' AND referentiel_partage_etat="hs"' );
 	}

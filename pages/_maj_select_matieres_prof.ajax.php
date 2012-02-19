@@ -33,7 +33,7 @@ if($_SESSION['SESAMATH_ID']==ID_DEMO) {}
 $action  = (isset($_POST['f_action']))  ? clean_texte($_POST['f_action'])   : ''; // ajouter | retirer
 $matiere = (isset($_POST['f_matiere'])) ? clean_entier($_POST['f_matiere']) : 0;
 
-$tab_matieres = ($action=='ajouter') ? DB_STRUCTURE_COMMUN::DB_OPT_matieres_etabl(TRUE /*transversal*/) : DB_STRUCTURE_COMMUN::DB_OPT_matieres_professeur($_SESSION['USER_ID']) ;
+$tab_matieres = ($action=='ajouter') ? DB_STRUCTURE_COMMUN::DB_OPT_matieres_etabl() : DB_STRUCTURE_COMMUN::DB_OPT_matieres_professeur($_SESSION['USER_ID']) ;
 echo Formulaire::afficher_select( $tab_matieres , $select_nom=false , $option_first='oui' , $selection=$matiere , $optgroup='non' );
 
 ?>

@@ -956,7 +956,7 @@ if( $step==31 )
 	{
 		$select_niveau = '<option value=""></option>';
 		$tab_niveau_ref = array();
-		$DB_TAB = DB_STRUCTURE_COMMUN::DB_lister_niveaux_etablissement($_SESSION['NIVEAUX'],$listing_paliers=false);
+		$DB_TAB = DB_STRUCTURE_COMMUN::DB_lister_niveaux_etablissement(FALSE /*with_specifiques*/);
 		foreach($DB_TAB as $DB_ROW)
 		{
 			$select_niveau .= '<option value="'.$DB_ROW['niveau_id'].'">'.html($DB_ROW['niveau_nom']).'</option>';
@@ -1159,7 +1159,7 @@ if( $step==41 )
 	{
 		$select_niveau = '<option value=""></option>';
 		$tab_niveau_ref = array();
-		$DB_TAB = DB_STRUCTURE_COMMUN::DB_lister_niveaux_etablissement($_SESSION['NIVEAUX'],$listing_paliers=false);
+		$DB_TAB = DB_STRUCTURE_COMMUN::DB_lister_niveaux_etablissement(FALSE /*with_specifiques*/);
 		foreach($DB_TAB as $DB_ROW)
 		{
 			$select_niveau .= '<option value="'.$DB_ROW['niveau_id'].'">'.html($DB_ROW['niveau_nom']).'</option>';
@@ -1933,14 +1933,14 @@ if( $step==61 )
 		// En deux requêtes sinon on ne récupère pas les matieres sans utilisateurs affectés.
 		$tab_base_matiere = array();
 		$tab_matiere_ref_TO_id_base = array();
-		$DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_matieres_etablissement( FALSE /*with_transversal*/ , TRUE /*order_by_name*/ );
+		$DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_matieres_etablissement( TRUE /*order_by_name*/ );
 		foreach($DB_TAB as $DB_ROW)
 		{
 			$tab_base_matiere[$DB_ROW['matiere_id']] = $DB_ROW['matiere_nom'];
 			$tab_matiere_ref_TO_id_base[$DB_ROW['matiere_ref']] = $DB_ROW['matiere_id'];
 		}
 		$tab_base_affectation = array();
-		$DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_jointure_professeurs_matieres( FALSE /*with_identite*/ , TRUE /*with_transversal*/ );
+		$DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_jointure_professeurs_matieres( FALSE /*with_identite*/ );
 		foreach($DB_TAB as $DB_ROW)
 		{
 			$tab_base_affectation[$DB_ROW['user_id'].'_'.$DB_ROW['matiere_id']] = TRUE;

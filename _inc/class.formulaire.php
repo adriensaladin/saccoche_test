@@ -169,6 +169,7 @@ private function init_tab_choix()
 	$check_aff_lien        = (in_array($_SESSION['USER_PROFIL'],array('parent','eleve'))) ? 1 : 0 ;
 	Formulaire::$tab_choix = array(
 		'matiere_id'=>0 ,
+		'niveau_id'=>0 ,
 		'palier_id'=>0 ,
 		'orientation'=>'portrait' ,
 		'couleur'=>'oui' ,
@@ -242,8 +243,8 @@ public function load_choix_memo()
 			$tab_choix_new = compact('orientation','couleur','legende','marge_min','cart_contenu','cart_detail');
 			break;
 		case 'grille_referentiel' :
-			global $matiere_id,$only_socle,$aff_coef,$aff_socle,$aff_lien,$cases_nb,$cases_largeur,$remplissage,$colonne_vide,$orientation,$couleur,$legende,$marge_min;
-			$tab_choix_new = compact('matiere_id','only_socle','aff_coef','aff_socle','aff_lien','cases_nb','cases_largeur','remplissage','colonne_vide','orientation','couleur','legende','marge_min');
+			global $matiere_id,$niveau_id,$only_socle,$aff_coef,$aff_socle,$aff_lien,$cases_nb,$cases_largeur,$remplissage,$colonne_vide,$orientation,$couleur,$legende,$marge_min;
+			$tab_choix_new = compact('matiere_id','niveau_id','only_socle','aff_coef','aff_socle','aff_lien','cases_nb','cases_largeur','remplissage','colonne_vide','orientation','couleur','legende','marge_min');
 			break;
 		case 'items_matiere' :
 			global $matiere_id,$type_individuel,$type_synthese,$type_bulletin,$aff_bilan_MS,$aff_bilan_PA,$aff_conv_sur20,$retroactif,$only_socle,$aff_coef,$aff_socle,$aff_lien,$cases_nb,$cases_largeur,$orientation,$couleur,$legende,$marge_min,$pages_nb;

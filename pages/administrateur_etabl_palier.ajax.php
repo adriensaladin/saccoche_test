@@ -34,18 +34,17 @@ $tab_id = (isset($_POST['tab_id']))   ? array_map('clean_entier',explode(',',$_P
 $tab_id = array_filter($tab_id,'positif');
 sort($tab_id);
 
-$tab_paliers = explode( '.' , substr(LISTING_ID_PALIERS,1,-1) );
-
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 //	Choix de paliers du socle
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 if($action=='Choix_paliers')
 {
-	$tab_id = array_intersect($tab_paliers,$tab_id); // On autorise qu'aucun palier ne soit coché (lycée, pas besoin de socle, etc.).
-	$listing_paliers = implode(',',$tab_id);
-	DB_STRUCTURE_COMMUN::DB_modifier_parametres( array('paliers'=>$listing_paliers) );
-	// ne pas oublier de mettre aussi à jour la session
-	$_SESSION['PALIERS'] = $listing_paliers;
+	// Il n'y a que 3 paliers : on ne s'embête pas à comparer pour voir ce qui a changé, on effectue 3 update.
+	for( $palier_id=1 ; $palier_id<4 ; $palier_id++ )
+	{
+		$palier_actif = (in_array($palier_id,$tab_id)) ? 1 : 0 ;
+		DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_palier($palier_id,$palier_actif);
+	}
 	exit('ok');
 }
 

@@ -50,7 +50,7 @@ public function DB_recuperer_associations_entrees_socle()
 	$DB_SQL.= 'LEFT JOIN sacoche_referentiel_domaine USING (matiere_id,niveau_id) ';
 	$DB_SQL.= 'LEFT JOIN sacoche_referentiel_theme USING (domaine_id) ';
 	$DB_SQL.= 'LEFT JOIN sacoche_referentiel_item USING (theme_id) ';
-	$DB_SQL.= 'WHERE entree_id>0 AND matiere_active=1 AND niveau_id IN('.$_SESSION['CYCLES'].','.$_SESSION['NIVEAUX'].') ' ;
+	$DB_SQL.= 'WHERE entree_id>0 AND matiere_active=1 AND niveau_actif=1 ' ;
 	$DB_SQL.= 'GROUP BY item_id ';
 	$DB_SQL.= 'ORDER BY matiere_nom ASC, niveau_ordre ASC, domaine_ordre ASC, theme_ordre ASC, item_ordre ASC';
 	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
@@ -130,7 +130,7 @@ public function DB_lister_result_eleve_palier($eleve_id,$entree_id)
 	$DB_SQL.= 'LEFT JOIN sacoche_matiere USING (matiere_id) ';
 	$DB_SQL.= 'LEFT JOIN sacoche_niveau USING (niveau_id) ';
 	$DB_SQL.= 'LEFT JOIN sacoche_referentiel USING (matiere_id,niveau_id) ';
-	$DB_SQL.= 'WHERE eleve_id=:eleve_id AND entree_id=:entree_id AND niveau_id IN('.$_SESSION['CYCLES'].','.$_SESSION['NIVEAUX'].') AND saisie_note!="REQ" ';
+	$DB_SQL.= 'WHERE eleve_id=:eleve_id AND entree_id=:entree_id AND niveau_actif=1 AND saisie_note!="REQ" ';
 	$DB_SQL.= 'ORDER BY matiere_nom ASC, niveau_ordre ASC, domaine_ordre ASC, theme_ordre ASC, item_ordre ASC, saisie_date ASC';
 	$DB_VAR = array(':eleve_id'=>$eleve_id,':entree_id'=>$entree_id);
 	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);

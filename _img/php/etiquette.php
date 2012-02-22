@@ -47,13 +47,14 @@ header("Content-type: image/png");
 
 require_once('../../_inc/fonction_clean.php');
 
-$dossier = isset($_GET['dossier']) ? clean_entier($_GET['dossier'])                : 'x' ;
-$nom     = isset($_GET['nom'])     ? mb_substr(clean_nom($_GET['nom']),0,25)       : ' ' ;
-$prenom  = isset($_GET['prenom'])  ? mb_substr(clean_prenom($_GET['prenom']),0,25) : ' ' ;
-$br_line = isset($_GET['br'])      ? 2                                             : 1 ; // 2 pour nom / retour à la ligne / prénom ; 1 pour nom / prénom à la suite
+$dossier   = isset($_GET['dossier']) ? clean_entier($_GET['dossier'])                : 'x' ;
+$nom       = isset($_GET['nom'])     ? mb_substr(clean_nom($_GET['nom']),0,25)       : ' ' ;
+$prenom    = isset($_GET['prenom'])  ? mb_substr(clean_prenom($_GET['prenom']),0,25) : ' ' ;
+$br_line   = isset($_GET['br'])      ? 2                                             : 1 ; // 2 pour nom / retour à la ligne / prénom ; 1 pour nom / prénom à la suite
+$font_size = isset($_GET['size'])    ? clean_entier($_GET['size'])                   : 10 ;
 
 $chemin = '../../__tmp/badge/'.$dossier;
-$fichier = $chemin.'/'.clean_login($nom.'_'.$prenom).'_'.$br_line.'.png';
+$fichier = $chemin.'/'.clean_login($nom.'_'.$prenom).'_'.$br_line.'_'.$font_size.'.png';
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Créer l'image si elle n'existe pas
@@ -68,10 +69,9 @@ if(!file_exists($fichier))
 		exit();
 	}
 	// On commence par créer une image temporaire plus large et plus haute que nécessaire
-	$taille_police  = 10;
-	$interligne     = $taille_police*1.2;
-	$hauteur_tmp    = $taille_police*2*$br_line;
-	$largeur_tmp    = $taille_police*40;
+	$interligne     = $font_size*1.2;
+	$hauteur_tmp    = $font_size*2*$br_line;
+	$largeur_tmp    = $font_size*40;
 	$image_tmp      = imagecreate($largeur_tmp,$hauteur_tmp);
 	$couleur_fond   = imagecolorallocate($image_tmp,221,221,255); // Le premier appel à imagecolorallocate() remplit la couleur de fond.
 	$couleur_texte  = imagecolorallocate($image_tmp,0,0,0);
@@ -80,15 +80,15 @@ if(!file_exists($fichier))
 	if($br_line==1)
 	{
 		$b_g_y_demande = $hauteur_tmp - 5 ;
-		list($b_g_x , $b_g_y , $b_d_x , $b_d_y , $h_d_x , $h_d_y , $h_g_x , $h_g_y) = imagettftext($image_tmp,$taille_police,0,5,$b_g_y_demande,$couleur_texte,$police,$nom.' '.$prenom);
+		list($b_g_x , $b_g_y , $b_d_x , $b_d_y , $h_d_x , $h_d_y , $h_g_x , $h_g_y) = imagettftext($image_tmp,$font_size,0,5,$b_g_y_demande,$couleur_texte,$police,$nom.' '.$prenom);
 	}
 	else
 	{
 		// en deux fois au lieu d'utiliser $nom."\r\n".$prenom car l'interligne est sinon trop important
 		$b_g_y_demande = 5 + $interligne ;
-		list($b_g_x1 , $delete , $b_d_x1 , $delete , $h_d_x1 , $h_d_y1 , $h_g_x1 , $h_g_y ) = imagettftext($image_tmp,$taille_police,0,5,$b_g_y_demande,$couleur_texte,$police,$nom);
+		list($b_g_x1 , $delete , $b_d_x1 , $delete , $h_d_x1 , $h_d_y1 , $h_g_x1 , $h_g_y ) = imagettftext($image_tmp,$font_size,0,5,$b_g_y_demande,$couleur_texte,$police,$nom);
 		$b_g_y_demande += $interligne ;
-		list($b_g_x2 , $b_g_y2 , $b_d_x2 , $b_d_y  , $h_d_x2 , $delete , $h_g_x2 , $delete) = imagettftext($image_tmp,$taille_police,0,5,$b_g_y_demande,$couleur_texte,$police,$prenom);
+		list($b_g_x2 , $b_g_y2 , $b_d_x2 , $b_d_y  , $h_d_x2 , $delete , $h_g_x2 , $delete) = imagettftext($image_tmp,$font_size,0,5,$b_g_y_demande,$couleur_texte,$police,$prenom);
 		$b_d_x = max($b_d_x1,$b_d_x2);
 		$h_g_x = min($h_g_x1,$h_g_x2);
 	}

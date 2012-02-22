@@ -33,7 +33,7 @@ if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');
 <hr />
 
 <form action="#" method="post">
-	<table class="form">
+	<table class="form hsort">
 		<thead>
 			<tr>
 				<th>Identifiant</th>

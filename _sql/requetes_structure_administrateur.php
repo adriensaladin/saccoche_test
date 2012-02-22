@@ -306,25 +306,6 @@ public function DB_lister_classes_et_groupes_avec_niveaux()
 }
 
 /**
- * lister_classes_avec_professeurs
- *
- * @param void
- * @return array
- */
-public function DB_lister_classes_avec_professeurs()
-{
-	$DB_SQL = 'SELECT * ';
-	$DB_SQL.= 'FROM sacoche_groupe ';
-	$DB_SQL.= 'LEFT JOIN sacoche_niveau USING (niveau_id) ';
-	$DB_SQL.= 'LEFT JOIN sacoche_jointure_user_groupe USING (groupe_id) ';
-	$DB_SQL.= 'LEFT JOIN sacoche_user USING (user_id) ';
-	$DB_SQL.= 'WHERE groupe_type=:type AND user_statut=:statut ';
-	$DB_SQL.= 'ORDER BY niveau_ordre ASC, groupe_ref ASC, user_nom ASC, user_prenom ASC';
-	$DB_VAR = array(':type'=>'classe',':statut'=>1);
-	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-}
-
-/**
  * lister_users_cibles
  *
  * @param string   $listing_user_id   id des utilisateurs séparés par des virgules
@@ -457,34 +438,18 @@ public function DB_lister_parents_actifs_avec_infos_for_eleve($eleve_id)
 /**
  * lister_jointure_professeurs_matieres
  *
- * @param bool $with_identite
- * @return array
- */
-public function DB_lister_jointure_professeurs_matieres($with_identite)
-{
-	$DB_SQL = 'SELECT user_id, matiere_id';
-	$DB_SQL.= ($with_identite) ? ',user_nom , user_prenom ' : ' ' ;
-	$DB_SQL.= 'FROM sacoche_jointure_user_matiere ';
-	$DB_SQL.= 'LEFT JOIN sacoche_user USING (user_id) ';
-	$DB_SQL.= 'WHERE user_statut=:statut ';
-	$DB_SQL.= ($with_identite) ? 'ORDER BY user_nom ASC, user_prenom ASC ' : '' ;
-	$DB_VAR = array(':statut'=>1);
-	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-}
-
-/**
- * lister_jointure_professeurs_coordonnateurs
- *
  * @param void
  * @return array
  */
-public function DB_lister_jointure_professeurs_coordonnateurs()
+public function DB_lister_jointure_professeurs_matieres()
 {
-	$DB_SQL = 'SELECT user_id, matiere_id ';
+	$DB_SQL = 'SELECT user_id, matiere_id, jointure_coord ';
 	$DB_SQL.= 'FROM sacoche_jointure_user_matiere ';
 	$DB_SQL.= 'LEFT JOIN sacoche_user USING (user_id) ';
-	$DB_SQL.= 'WHERE jointure_coord=:coord AND user_statut=:statut ';
-	$DB_VAR = array(':coord'=>1,':statut'=>1);
+	$DB_SQL.= 'LEFT JOIN sacoche_matiere USING (matiere_id) ';
+	$DB_SQL.= 'WHERE user_statut=:statut ';
+	$DB_SQL.= 'ORDER BY matiere_nom ASC, user_nom ASC, user_prenom ASC ';
+	$DB_VAR = array(':statut'=>1);
 	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
@@ -514,7 +479,7 @@ public function DB_lister_jointure_professeurs_principaux()
  */
 public function DB_lister_jointure_professeurs_groupes($listing_profs_id,$listing_groupes_id)
 {
-	$DB_SQL = 'SELECT groupe_id,user_id FROM sacoche_jointure_user_groupe ';
+	$DB_SQL = 'SELECT groupe_id,user_id,jointure_pp FROM sacoche_jointure_user_groupe ';
 	$DB_SQL.= 'LEFT JOIN sacoche_user USING (user_id) ';
 	$DB_SQL.= 'LEFT JOIN sacoche_groupe USING (groupe_id) ';
 	$DB_SQL.= 'LEFT JOIN sacoche_niveau USING (niveau_id) ';

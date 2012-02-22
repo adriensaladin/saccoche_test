@@ -44,6 +44,8 @@ $matiere_nom    = '';
 $aff_coef       = (isset($_POST['f_coef']))        ? 1                                     : 0;
 $aff_socle      = (isset($_POST['f_socle']))       ? 1                                     : 0;
 $aff_lien       = (isset($_POST['f_lien']))        ? 1                                     : 0;
+$aff_domaine    = (isset($_POST['f_domaine']))     ? 1                                     : 0;
+$aff_theme      = (isset($_POST['f_theme']))       ? 1                                     : 0;
 $aff_bilan_MS   = (isset($_POST['f_bilan_MS']))    ? 1                                     : 0;
 $aff_bilan_PA   = (isset($_POST['f_bilan_PA']))    ? 1                                     : 0;
 $aff_conv_sur20 = (isset($_POST['f_conv_sur20']))  ? 1                                     : 0;
@@ -76,131 +78,128 @@ $type_synthese   = (in_array('synthese',$tab_type))   ? 1 : 0 ;
 
 $liste_eleve   = implode(',',$tab_eleve);
 
-if( $orientation && $couleur && $legende && $marge_min && $pages_nb && $cases_nb && $cases_largeur && ( $periode_id || ($date_debut && $date_fin) ) && $retroactif && $matiere_id && $groupe_id && $groupe_nom && count($tab_eleve) && count($tab_type) )
+if( !$orientation || !$couleur || !$legende || !$marge_min || !$pages_nb || !$cases_nb || !$cases_largeur || ( !$periode_id && (!$date_debut || !$date_fin) ) || !$retroactif || !$matiere_id || !$groupe_id || !$groupe_nom || !count($tab_eleve) || !count($tab_type) )
 {
-
-	Formulaire::save_choix('items_selection');
-
-	// Période concernée
-	if($periode_id==0)
-	{
-		$date_mysql_debut = convert_date_french_to_mysql($date_debut);
-		$date_mysql_fin   = convert_date_french_to_mysql($date_fin);
-	}
-	else
-	{
-		$DB_ROW = DB_STRUCTURE_COMMUN::DB_recuperer_dates_periode($groupe_id,$periode_id);
-		if(!count($DB_ROW))
-		{
-			exit('La classe et la période ne sont pas reliées !');
-		}
-		$date_mysql_debut = $DB_ROW['jointure_date_debut'];
-		$date_mysql_fin   = $DB_ROW['jointure_date_fin'];
-		$date_debut = convert_date_mysql_to_french($date_mysql_debut);
-		$date_fin   = convert_date_mysql_to_french($date_mysql_fin);
-	}
-	if($date_mysql_debut>$date_mysql_fin)
-	{
-		exit('La date de début est postérieure à la date de fin !');
-	}
-
-	$tab_item = array();	// [item_id] => array(item_ref,item_nom,item_coef,item_cart,item_socle,item_lien,calcul_methode,calcul_limite);
-	$tab_liste_item = array();	// [i] => item_id
-	$tab_eleve      = array();	// [i] => array(eleve_id,eleve_nom,eleve_prenom)
-	$tab_matiere    = array();	// [matiere_id] => matiere_nom
-	$tab_eval       = array();	// [eleve_id][matiere_id][item_id][devoir] => array(note,date,info) On utilise un tableau multidimensionnel vu qu'on ne sait pas à l'avance combien il y a d'évaluations pour un élève et un item donnés.
-	$tab_matiere_for_item = array();	// [item_id] => matiere_id
-
-	//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-	// Récupération de la liste des items travaillés durant la période choisie, pour la matière et les élèves selectionnés
-	// Récupération de la liste des matières travaillées
-	//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-	$tab_compet_liste = (isset($_POST['f_compet_liste'])) ? explode('_',$_POST['f_compet_liste']) : array() ;
-	$tab_compet_liste = array_map('clean_entier',$tab_compet_liste);
-	$liste_compet = implode(',',$tab_compet_liste);
-	list($tab_item,$tab_matiere) = DB_STRUCTURE_BILAN::DB_recuperer_arborescence_selection($liste_eleve,$liste_compet,$date_mysql_debut,$date_mysql_fin);
-	// $tab_matiere déjà renseigné à la requête précédente.
-
-	$item_nb = count($tab_item);
-	if(!$item_nb)
-	{
-		exit('Aucun item sélectionné n\'a été évalué pour ces élèves durant cette période !');
-	}
-	$tab_liste_item = array_keys($tab_item);
-	$liste_item = implode(',',$tab_liste_item);
-
-	//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-	// Récupération de la liste des élèves
-	//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-	$tab_eleve = DB_STRUCTURE_BILAN::DB_lister_eleves_cibles($liste_eleve,$with_gepi=FALSE,$with_langue=FALSE);
-	if(!is_array($tab_eleve))
-	{
-		exit('Aucun élève trouvé correspondant aux identifiants transmis !');
-	}
-	$eleve_nb = count($tab_eleve);
-
-	//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-	// Récupération de la liste des résultats des évaluations associées à ces items donnés d'une matiere donnée, pour les élèves selectionnés, sur la période sélectionnée
-	// Attention, il faut éliminer certains items qui peuvent potentiellement apparaitre dans des relevés d'élèves alors qu'ils n'ont pas été interrogés sur la période considérée (mais un camarade oui).
-	//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-	$tab_score_a_garder = array();
-	$DB_TAB = DB_STRUCTURE_BILAN::DB_lister_date_last_eleves_items($liste_eleve,$liste_item);
-	foreach($DB_TAB as $DB_ROW)
-	{
-		$tab_score_a_garder[$DB_ROW['eleve_id']][$DB_ROW['item_id']] = ($DB_ROW['date_last']<$date_mysql_debut) ? false : true ;
-	}
-
-	$date_mysql_debut = ($retroactif=='non') ? $date_mysql_debut : false;
-	$DB_TAB = DB_STRUCTURE_BILAN::DB_lister_result_eleves_matieres($liste_eleve , $liste_item , $date_mysql_debut , $date_mysql_fin , $_SESSION['USER_PROFIL']);
-	foreach($DB_TAB as $DB_ROW)
-	{
-		if($tab_score_a_garder[$DB_ROW['eleve_id']][$DB_ROW['item_id']])
-		{
-			$tab_eval[$DB_ROW['eleve_id']][$DB_ROW['matiere_id']][$DB_ROW['item_id']][] = array('note'=>$DB_ROW['note'],'date'=>$DB_ROW['date'],'info'=>$DB_ROW['info']);
-			$tab_matiere_for_item[$DB_ROW['item_id']] = $DB_ROW['matiere_id'];	// sert pour la synthèse sur une sélection d'items issus de différentes matières
-		}
-	}
-	$matiere_nb = count(array_unique($tab_matiere_for_item));
-
-	//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-	// INCLUSION DU CODE COMMUN À PLUSIEURS PAGES
-	//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-	require('./_inc/code_releve_bilan_item.php');
-
-	//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-	// On retourne les résultats
-	//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-	if($affichage_direct)
-	{
-		echo'<hr />';
-		echo'<ul class="puce">';
-		echo'<li><a class="lien_ext" href="'.$dossier.$fichier_lien.'_individuel.pdf"><span class="file file_pdf">Archiver / Imprimer (format <em>pdf</em>).</span></a></li>';
-		echo'</ul>';
-		echo $releve_HTML_individuel;
-	}
-	else
-	{
-		if($type_synthese)
-		{
-			echo'<h2>Synthèse collective</h2>';
-			echo'<ul class="puce">';
-			echo'<li><a class="lien_ext" href="'.$dossier.$fichier_lien.'_synthese.pdf"><span class="file file_pdf">Archiver / Imprimer (format <em>pdf</em>).</span></a></li>';
-			echo'<li><a class="lien_ext" href="./releve-html.php?fichier='.$fichier_lien.'_synthese"><span class="file file_htm">Explorer / Manipuler (format <em>html</em>).</span></a></li>';
-			echo'</ul>';
-		}
-		if($type_individuel)
-		{
-			echo'<h2>Relevé individuel</h2>';
-			echo'<ul class="puce">';
-			echo'<li><a class="lien_ext" href="'.$dossier.$fichier_lien.'_individuel.pdf"><span class="file file_pdf">Archiver / Imprimer (format <em>pdf</em>).</span></a></li>';
-			echo'<li><a class="lien_ext" href="./releve-html.php?fichier='.$fichier_lien.'_individuel"><span class="file file_htm">Explorer / Manipuler (format <em>html</em>).</span></a></li>';
-			echo'</ul>';
-		}
-	}
+	exit('Erreur avec les données transmises !');
 }
 
+Formulaire::save_choix('items_selection');
+
+// Période concernée
+if($periode_id==0)
+{
+	$date_mysql_debut = convert_date_french_to_mysql($date_debut);
+	$date_mysql_fin   = convert_date_french_to_mysql($date_fin);
+}
 else
 {
-	echo'Erreur avec les données transmises !';
+	$DB_ROW = DB_STRUCTURE_COMMUN::DB_recuperer_dates_periode($groupe_id,$periode_id);
+	if(!count($DB_ROW))
+	{
+		exit('La classe et la période ne sont pas reliées !');
+	}
+	$date_mysql_debut = $DB_ROW['jointure_date_debut'];
+	$date_mysql_fin   = $DB_ROW['jointure_date_fin'];
+	$date_debut = convert_date_mysql_to_french($date_mysql_debut);
+	$date_fin   = convert_date_mysql_to_french($date_mysql_fin);
 }
+if($date_mysql_debut>$date_mysql_fin)
+{
+	exit('La date de début est postérieure à la date de fin !');
+}
+
+$tab_item = array();	// [item_id] => array(item_ref,item_nom,item_coef,item_cart,item_socle,item_lien,calcul_methode,calcul_limite);
+$tab_liste_item = array();	// [i] => item_id
+$tab_eleve      = array();	// [i] => array(eleve_id,eleve_nom,eleve_prenom)
+$tab_matiere    = array();	// [matiere_id] => matiere_nom
+$tab_eval       = array();	// [eleve_id][matiere_id][item_id][devoir] => array(note,date,info) On utilise un tableau multidimensionnel vu qu'on ne sait pas à l'avance combien il y a d'évaluations pour un élève et un item donnés.
+$tab_matiere_for_item = array();	// [item_id] => matiere_id
+
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+// Récupération de la liste des items travaillés durant la période choisie, pour la matière et les élèves selectionnés
+// Récupération de la liste des matières travaillées
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+$tab_compet_liste = (isset($_POST['f_compet_liste'])) ? explode('_',$_POST['f_compet_liste']) : array() ;
+$tab_compet_liste = array_map('clean_entier',$tab_compet_liste);
+$liste_compet = implode(',',$tab_compet_liste);
+list($tab_item,$tab_matiere) = DB_STRUCTURE_BILAN::DB_recuperer_arborescence_selection($liste_eleve,$liste_compet,$date_mysql_debut,$date_mysql_fin,$aff_domaine,$aff_theme);
+// $tab_matiere déjà renseigné à la requête précédente.
+
+$item_nb = count($tab_item);
+if(!$item_nb)
+{
+	exit('Aucun item sélectionné n\'a été évalué pour ces élèves durant cette période !');
+}
+$tab_liste_item = array_keys($tab_item);
+$liste_item = implode(',',$tab_liste_item);
+
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+// Récupération de la liste des élèves
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+$tab_eleve = DB_STRUCTURE_BILAN::DB_lister_eleves_cibles($liste_eleve,$with_gepi=FALSE,$with_langue=FALSE);
+if(!is_array($tab_eleve))
+{
+	exit('Aucun élève trouvé correspondant aux identifiants transmis !');
+}
+$eleve_nb = count($tab_eleve);
+
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+// Récupération de la liste des résultats des évaluations associées à ces items donnés d'une matiere donnée, pour les élèves selectionnés, sur la période sélectionnée
+// Attention, il faut éliminer certains items qui peuvent potentiellement apparaitre dans des relevés d'élèves alors qu'ils n'ont pas été interrogés sur la période considérée (mais un camarade oui).
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+$tab_score_a_garder = array();
+$DB_TAB = DB_STRUCTURE_BILAN::DB_lister_date_last_eleves_items($liste_eleve,$liste_item);
+foreach($DB_TAB as $DB_ROW)
+{
+	$tab_score_a_garder[$DB_ROW['eleve_id']][$DB_ROW['item_id']] = ($DB_ROW['date_last']<$date_mysql_debut) ? false : true ;
+}
+
+$date_mysql_debut = ($retroactif=='non') ? $date_mysql_debut : false;
+$DB_TAB = DB_STRUCTURE_BILAN::DB_lister_result_eleves_matieres($liste_eleve , $liste_item , $date_mysql_debut , $date_mysql_fin , $_SESSION['USER_PROFIL']);
+foreach($DB_TAB as $DB_ROW)
+{
+	if($tab_score_a_garder[$DB_ROW['eleve_id']][$DB_ROW['item_id']])
+	{
+		$tab_eval[$DB_ROW['eleve_id']][$DB_ROW['matiere_id']][$DB_ROW['item_id']][] = array('note'=>$DB_ROW['note'],'date'=>$DB_ROW['date'],'info'=>$DB_ROW['info']);
+		$tab_matiere_for_item[$DB_ROW['item_id']] = $DB_ROW['matiere_id'];	// sert pour la synthèse sur une sélection d'items issus de différentes matières
+	}
+}
+$matiere_nb = count(array_unique($tab_matiere_for_item));
+
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+// INCLUSION DU CODE COMMUN À PLUSIEURS PAGES
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+require('./_inc/code_releve_bilan_item.php');
+
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+// On retourne les résultats
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+if($affichage_direct)
+{
+	echo'<hr />';
+	echo'<ul class="puce">';
+	echo'<li><a class="lien_ext" href="'.$dossier.$fichier_lien.'_individuel.pdf"><span class="file file_pdf">Archiver / Imprimer (format <em>pdf</em>).</span></a></li>';
+	echo'</ul>';
+	echo $releve_HTML_individuel;
+}
+else
+{
+	if($type_synthese)
+	{
+		echo'<h2>Synthèse collective</h2>';
+		echo'<ul class="puce">';
+		echo'<li><a class="lien_ext" href="'.$dossier.$fichier_lien.'_synthese.pdf"><span class="file file_pdf">Archiver / Imprimer (format <em>pdf</em>).</span></a></li>';
+		echo'<li><a class="lien_ext" href="./releve-html.php?fichier='.$fichier_lien.'_synthese"><span class="file file_htm">Explorer / Manipuler (format <em>html</em>).</span></a></li>';
+		echo'</ul>';
+	}
+	if($type_individuel)
+	{
+		echo'<h2>Relevé individuel</h2>';
+		echo'<ul class="puce">';
+		echo'<li><a class="lien_ext" href="'.$dossier.$fichier_lien.'_individuel.pdf"><span class="file file_pdf">Archiver / Imprimer (format <em>pdf</em>).</span></a></li>';
+		echo'<li><a class="lien_ext" href="./releve-html.php?fichier='.$fichier_lien.'_individuel"><span class="file file_htm">Explorer / Manipuler (format <em>html</em>).</span></a></li>';
+		echo'</ul>';
+	}
+}
+
 ?>

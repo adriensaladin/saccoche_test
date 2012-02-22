@@ -319,7 +319,7 @@ function affich_note_html($note,$date,$info,$tri=false)
 function affich_score_html($score,$methode_tri,$pourcent='')
 {
 	global $tab_tri_etat;
-	if($score===false)
+	if($score===FALSE)
 	{
 		$score_affiche = (mb_substr_count($_SESSION['DROIT_VOIR_SCORE_BILAN'],$_SESSION['USER_PROFIL'])) ? '-' : '' ;
 		return '<td class="hc">'.$score_affiche.'</td>';

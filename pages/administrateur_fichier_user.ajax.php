@@ -1940,7 +1940,7 @@ if( $step==61 )
 			$tab_matiere_ref_TO_id_base[$DB_ROW['matiere_ref']] = $DB_ROW['matiere_id'];
 		}
 		$tab_base_affectation = array();
-		$DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_jointure_professeurs_matieres( FALSE /*with_identite*/ );
+		$DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_jointure_professeurs_matieres();
 		foreach($DB_TAB as $DB_ROW)
 		{
 			$tab_base_affectation[$DB_ROW['user_id'].'_'.$DB_ROW['matiere_id']] = TRUE;

@@ -390,7 +390,7 @@ if(in_array('individuel',$tab_type))
 						$releve_PDF->bilan_item_individuel_ligne_synthese('Pourcentage d\'items acquis '.$texte_bilan);
 					}
 					$releve_HTML_table_foot = ($releve_HTML_table_foot) ? '<tfoot>'.$releve_HTML_table_foot.'</tfoot>'."\r\n" : '';
-					$releve_HTML_individuel .= '<table id="table'.$eleve_id.'x'.$matiere_id.'" class="bilan">'.$releve_HTML_table_head.$releve_HTML_table_foot.$releve_HTML_table_body.'</table>';
+					$releve_HTML_individuel .= '<table id="table'.$eleve_id.'x'.$matiere_id.'" class="bilan hsort">'.$releve_HTML_table_head.$releve_HTML_table_foot.$releve_HTML_table_body.'</table>';
 					$releve_HTML_individuel .= '<script type="text/javascript">$("#table'.$eleve_id.'x'.$matiere_id.'").tablesorter();</script>';
 				}
 			}
@@ -443,7 +443,7 @@ if(in_array('synthese',$tab_type))
 		$releve_PDF->SetFont('Arial' , '' , $releve_PDF->taille_police);
 		$releve_PDF->SetXY($memo_x , $memo_y);
 		$releve_PDF->Cell($releve_PDF->cases_largeur , $releve_PDF->cases_hauteur , '' , 1 , 0 , 'C' , false , '');
-		$releve_HTML_table_head .= '<th title="'.html($tab_item[$item_id][0]['item_nom']).'">'.html($ref_matiere).'<br />'.html($ref_suite).'</th>';
+		$releve_HTML_table_head .= '<th title="'.html($tab_item[$item_id][0]['item_nom']).'"><img alt="'.html($ref_matiere.' '.$ref_suite).'" src="./_img/php/etiquette.php?dossier='.$_SESSION['BASE'].'&amp;nom='.urlencode($ref_matiere).'&amp;prenom='.urlencode($ref_suite).'&amp;size=8" /></th>';
 	}
 	$releve_PDF->SetX( $releve_PDF->GetX()+2 );
 	$releve_PDF->choisir_couleur_fond('gris_moyen');
@@ -510,10 +510,10 @@ if(in_array('synthese',$tab_type))
 	$num_hide = $item_nb+1;
 	// pour la sortie HTML, on peut placer les tableaux de synthèse au début
 	$releve_HTML_synthese .= '<hr /><h2>SYNTHESE - Colonnes triables par score (intérêt pour un tri simple)</h2>';
-	$releve_HTML_synthese .= '<table id="table_s1" class="bilan_synthese">'.$releve_HTML_table_head.$releve_HTML_table_foot.$releve_HTML_table_body1.'</table>';
+	$releve_HTML_synthese .= '<table id="table_s1" class="bilan_synthese vsort">'.$releve_HTML_table_head.$releve_HTML_table_foot.$releve_HTML_table_body1.'</table>';
 	$releve_HTML_synthese .= '<script type="text/javascript">$("#table_s1").tablesorter({ headers:{'.$num_hide.':{sorter:false}} });</script>'; // Non placé dans le fichier js car mettre une valeur à la place d'une variable pour $num_hide ne fonctionne pas
-	$releve_HTML_synthese .= '<hr /><h2>SYNTHESE - Colonnes triables par état de validation (intérêt pour un tri multiple)</h2></h2>';
-	$releve_HTML_synthese .= '<table id="table_s2" class="bilan_synthese">'.$releve_HTML_table_head.$releve_HTML_table_foot.$releve_HTML_table_body2.'</table>';
+	$releve_HTML_synthese .= '<hr /><h2>SYNTHESE - Colonnes triables par état d\'acquisition (intérêt pour un tri multiple)</h2></h2>';
+	$releve_HTML_synthese .= '<table id="table_s2" class="bilan_synthese vsort">'.$releve_HTML_table_head.$releve_HTML_table_foot.$releve_HTML_table_body2.'</table>';
 	$releve_HTML_synthese .= '<script type="text/javascript">$("#table_s2").tablesorter({ headers:{'.$num_hide.':{sorter:false}} });</script>'; // Non placé dans le fichier js car mettre une valeur à la place d'une variable pour $num_hide ne fonctionne pas
 	// On enregistre les sorties HTML et PDF
 	Ecrire_Fichier($dossier.$fichier_lien.'_synthese.html',$releve_HTML_synthese);
@@ -551,7 +551,7 @@ if(in_array('bulletin',$tab_type))
 	$bulletin_html .= '<h2>'.html($matiere_nom.' - '.$groupe_nom).'</h2>';
 	$bulletin_html .= '<h2>Du '.$date_debut.' au '.$date_fin.$date_complement.'</h2>';
 	$bulletin_html .= '<h2>Tableau de notes sur 20</h2>';
-	$bulletin_html .= '<table id="export20">'."\r\n".$bulletin_head.$bulletin_foot.$bulletin_body.'</table>'."\r\n";
+	$bulletin_html .= '<table id="export20" class="hsort">'."\r\n".$bulletin_head.$bulletin_foot.$bulletin_body.'</table>'."\r\n";
 	$bulletin_html .= '<script type="text/javascript">$("#export20").tablesorter({ headers:{2:{sorter:false}} });</script>';
 	// On enregistre la sortie HTML et CSV
 	Ecrire_Fichier($dossier.$fichier_lien.'_bulletin.html',$bulletin_html);

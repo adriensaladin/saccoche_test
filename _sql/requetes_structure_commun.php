@@ -150,16 +150,16 @@ public function DB_recuperer_dates_periode($groupe_id,$periode_id)
  */
 public function DB_recuperer_arborescence($prof_id,$matiere_id,$niveau_id,$only_socle,$only_item,$socle_nom)
 {
-	$select_socle_nom  = ($socle_nom)  ? 'entree_id,entree_nom ' : 'entree_id ' ;
-	$join_user_matiere = ($prof_id)    ? 'LEFT JOIN sacoche_jointure_user_matiere USING (matiere_id) ' : '' ;
-	$join_socle_item   = ($socle_nom)  ? 'LEFT JOIN sacoche_socle_entree USING (entree_id) ' : '' ;
-	$where_user        = ($prof_id)    ? 'user_id=:user_id AND matiere_active=1 ' : '' ;
-	$where_matiere     = ($matiere_id) ? 'matiere_id=:matiere_id ' : '' ;
-	$where_niveau      = ($niveau_id)  ? 'AND niveau_id=:niveau_id ' : 'AND niveau_actif=1 ' ;
-	$where_item        = ($only_item)  ? 'AND item_id IS NOT NULL ' : '' ;
-	$where_socle       = ($only_socle) ? 'AND entree_id !=0 ' : '' ;
-	$order_matiere     = ($prof_id)    ? 'matiere_nom ASC, ' : '' ;
-	$order_niveau      = (!$niveau_id) ? 'niveau_ordre ASC, ' : '' ;
+	$select_socle_nom  = ($socle_nom)   ? 'entree_id,entree_nom ' : 'entree_id ' ;
+	$join_user_matiere = ($prof_id)     ? 'LEFT JOIN sacoche_jointure_user_matiere USING (matiere_id) ' : '' ;
+	$join_socle_item   = ($socle_nom)   ? 'LEFT JOIN sacoche_socle_entree USING (entree_id) ' : '' ;
+	$where_user        = ($prof_id)     ? 'user_id=:user_id AND matiere_active=1 ' : '' ;
+	$where_matiere     = ($matiere_id)  ? 'matiere_id=:matiere_id ' : '' ;
+	$where_niveau      = ($niveau_id)   ? 'AND niveau_id=:niveau_id ' : 'AND niveau_actif=1 ' ;
+	$where_item        = ($only_item)   ? 'AND item_id IS NOT NULL ' : '' ;
+	$where_socle       = ($only_socle)  ? 'AND entree_id !=0 ' : '' ;
+	$order_matiere     = ($prof_id)     ? 'matiere_nom ASC, ' : '' ;
+	$order_niveau      = (!$niveau_id)  ? 'niveau_ordre ASC, ' : '' ;
 	$DB_SQL = 'SELECT ';
 	$DB_SQL.= 'matiere_id, matiere_ref, matiere_nom, ';
 	$DB_SQL.= 'niveau_id, niveau_ref, niveau_nom, ';
@@ -329,16 +329,18 @@ public function DB_lister_users_actifs_regroupement($profil,$groupe_type,$groupe
 /**
  * lister_referentiels_infos_details_matieres_niveaux
  *
- * @param void
+ * @param int    $matiere_id   0 par défaut pour toutes les matières
+ * @param int    $niveau_id    0 par défaut pour tous les niveaux
  * @return array
  */
-public function DB_lister_referentiels_infos_details_matieres_niveaux()
+public function DB_lister_referentiels_infos_details_matieres_niveaux( $matiere_id=0 , $niveau_id=0 )
 {
 	$DB_SQL = 'SELECT matiere_id, niveau_id, niveau_nom, referentiel_partage_etat, referentiel_partage_date, referentiel_calcul_methode, referentiel_calcul_limite ';
 	$DB_SQL.= 'FROM sacoche_referentiel ';
 	$DB_SQL.= 'LEFT JOIN sacoche_niveau USING (niveau_id) ';
 	$DB_SQL.= 'LEFT JOIN sacoche_matiere USING (matiere_id) ';
-	$DB_SQL.= 'WHERE matiere_active=1 AND niveau_actif=1 '; // Test matiere car un prof peut être encore relié à des matières décochées par l'admin.
+	$DB_SQL.= ($matiere_id) ? 'WHERE matiere_id='.$matiere_id.' ' : 'WHERE matiere_active=1 ' ; // Test matiere car un prof peut être encore relié à des matières décochées par l'admin.
+	$DB_SQL.= ($niveau_id)  ? 'AND niveau_id='.$niveau_id.' '     : 'AND niveau_actif=1 ' ;
 	$DB_SQL.= 'ORDER BY matiere_id ASC, niveau_ordre ASC';
 	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
 }

@@ -30,87 +30,69 @@ $(document).ready
 	function()
 	{
 
-		// Réagir au clic dans un select
-		$('select').click
-		(
-			function()
-			{
-				$('#ajax_msg').removeAttr("class").addClass("alerte").html("Pensez à valider vos modifications !");
-			}
-		);
+		//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+		//	Ajouter / Retirer une affectation à un groupe
+		//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
-		// Réagir au clic sur un bouton (soumission du formulaire)
-		$('#ajouter , #retirer').click
+		$('#autocheckbox input[type=checkbox]').click
 		(
 			function()
 			{
-				id = $(this).attr('id');
-				if( $("#select_professeurs option:selected").length==0 || $("#select_groupes option:selected").length==0 )
-				{
-					$('#ajax_msg').removeAttr("class").addClass("erreur").html("Sélectionnez dans les deux listes !");
-					return(false);
-				}
-				$('button').prop('disabled',true);
-				$('#ajax_msg').removeAttr("class").addClass("loader").html("Demande envoyée...");
+				var obj_bouton = $(this);
+				var action     = (obj_bouton.is(':checked')) ? 'ajouter' : 'retirer' ;
+				var user_id    = obj_bouton.val();
+				var groupe_id  = obj_bouton.parent().parent().attr('id').substring(3);
+				var check_old  = (action=='ajouter') ? false : true ;
+				var class_old  = (action=='ajouter') ? 'off' : 'on' ;
+				var class_new  = (action=='ajouter') ? 'on' : 'off' ;
+				obj_bouton.hide(0).parent().removeAttr('class').addClass('load');
 				$.ajax
 				(
 					{
 						type : 'POST',
-						url : 'ajax.php?page='+PAGE+'&action='+id,
-						data : $("form").serialize(),
+						url  : 'ajax.php?page='+PAGE,
+						data : 'action='+action+'&user_id='+user_id+'&groupe_id='+groupe_id,
 						dataType : "html",
 						error : function(msg,string)
 						{
-							$('button').prop('disabled',false);
-							$('#ajax_msg').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
+							obj_bouton.prop('checked',check_old).show(0).parent().removeAttr('class').addClass(class_old);
+							$.fancybox( '<label class="alerte">'+'Echec de la connexion !\nVeuillez recommencer.'+'</label>' , {'centerOnScroll':true} );
 							return false;
 						},
 						success : function(responseHTML)
 						{
-							initialiser_compteur();
-							$('button').prop('disabled',false);
-							if(responseHTML.substring(0,6)!='<hr />')
+							if(responseHTML!='ok')
 							{
-								$('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);
+								$.fancybox( '<label class="alerte">'+responseHTML+'</label>' , {'centerOnScroll':true} );
+								obj_bouton.prop('checked',check_old).show(0).parent().removeAttr('class').addClass(class_old);
 							}
 							else
 							{
-								$('#ajax_msg').removeAttr("class").addClass("valide").html("Demande réalisée !");
-								$('#bilan').html(responseHTML);
+								obj_bouton.show(0).parent().removeAttr('class').addClass(class_new);
+								// MAJ tableaux bilans : lignes
+								if(action=='ajouter')
+								{
+									var prof_nom   = $('#th_'+user_id).children('img').attr('alt');
+									var groupe_nom = $('#tr_'+groupe_id+' th').html();
+									$('#gpb_'+groupe_id).append('<div id="gp_'+groupe_id+'_'+user_id+'">'+prof_nom+'</div>');
+									$('#pgb_'+user_id).append('<div id="pg_'+user_id+'_'+groupe_id+'">'+groupe_nom+'</div>');
+								}
+								else if(action=='retirer')
+								{
+									$('#gp_'+groupe_id+'_'+user_id).remove();
+									$('#pg_'+user_id+'_'+groupe_id).remove();
+								}
+								// MAJ tableaux bilans : totaux
+								var nb_profs = $('#gpb_'+groupe_id+' div').length;
+								var nb_groupes = $('#pgb_'+user_id+' div').length;
+								var s_profs = (nb_profs>1) ? 's' : '' ;
+								var s_groupes = (nb_groupes>1) ? 's' : '' ;
+								$('#gpf_'+groupe_id).html(nb_profs+' professeur'+s_profs);
+								$('#pgf_'+user_id).html(nb_groupes+' groupe'+s_groupes);
 							}
 						}
 					}
 				);
-			}
-		);
-
-		// Initialisation : charger au chargement l'affichage du bilan
-		$('#ajax_msg').addClass("loader").html("Chargement en cours...");
-		$.ajax
-		(
-			{
-				type : 'POST',
-				url : 'ajax.php?page='+PAGE+'&action=initialiser',
-				data : '',
-				dataType : "html",
-				error : function(msg,string)
-				{
-					$('#ajax_msg').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
-					return false;
-				},
-				success : function(responseHTML)
-				{
-					initialiser_compteur();
-					if(responseHTML.substring(0,6)!='<hr />')
-					{
-						$('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);
-					}
-					else
-					{
-						$('#ajax_msg').removeAttr("class").html("&nbsp;");
-						$('#bilan').html(responseHTML);
-					}
-				}
 			}
 		);
 

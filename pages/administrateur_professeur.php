@@ -31,11 +31,9 @@ $TITRE = "Professeurs";
 
 <div class="hc">
 	<a href="./index.php?page=<?php echo $PAGE ?>&amp;section=gestion">Professeurs (gestion).</a>	||
-	<a href="./index.php?page=<?php echo $PAGE ?>&amp;section=classe">Professeurs &amp; classes.</a>	||
 	<a href="./index.php?page=<?php echo $PAGE ?>&amp;section=groupe">Professeurs &amp; groupes.</a>	<br />
-	<a href="./index.php?page=<?php echo $PAGE ?>&amp;section=matiere">Professeurs &amp; matières.</a>	||
-	<a href="./index.php?page=<?php echo $PAGE ?>&amp;section=principal">Professeurs principaux.</a>	||
-	<a href="./index.php?page=<?php echo $PAGE ?>&amp;section=coordonnateur">Professeurs coordonnateurs.</a>
+	<a href="./index.php?page=<?php echo $PAGE ?>&amp;section=classe">Professeurs &amp; classes / Professeurs principaux.</a>	<br />
+	<a href="./index.php?page=<?php echo $PAGE ?>&amp;section=matiere">Professeurs &amp; matières / Professeurs coordonnateurs.</a>
 </div>
 
 <hr />

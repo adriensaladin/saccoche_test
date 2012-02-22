@@ -28,92 +28,54 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 if(($_SESSION['SESAMATH_ID']==ID_DEMO)&&($_GET['action']!='initialiser')){exit('Action désactivée pour la démo...');}
 
-$action = (isset($_GET['action'])) ? $_GET['action'] : '';
-// Normalement ce sont des tableaux qui sont transmis, mais au cas où...
-$tab_select_professeurs = (isset($_POST['select_professeurs'])) ? ( (is_array($_POST['select_professeurs'])) ? $_POST['select_professeurs'] : explode(',',$_POST['select_professeurs']) ) : array() ;
-$tab_select_matieres    = (isset($_POST['select_matieres']))    ? ( (is_array($_POST['select_matieres']))    ? $_POST['select_matieres']    : explode(',',$_POST['select_matieres'])    ) : array() ;
-$tab_select_professeurs = array_filter( array_map( 'clean_entier' , $tab_select_professeurs ) , 'positif' );
-$tab_select_matieres    = array_filter( array_map( 'clean_entier' , $tab_select_matieres    ) , 'positif' );
+$action     = (isset($_POST['action']))     ? $_POST['action']                   : '' ;
+$matiere_id = (isset($_POST['matiere_id'])) ? clean_entier($_POST['matiere_id']) : 0 ;
+$user_id    = (isset($_POST['user_id']))    ? clean_entier($_POST['user_id'])    : 0 ;
 
-// Ajouter des professeurs à des matières
-if($action=='ajouter')
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+//	Ajouter un professeur à une matière
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
+if( ($action=='ajouter') && ($matiere_id) && ($user_id) )
 {
-	foreach($tab_select_professeurs as $user_id)
-	{
-		foreach($tab_select_matieres as $matiere_id)
-		{
-			DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_liaison_professeur_matiere($user_id,$matiere_id,true);
-		}
-	}
+	DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_liaison_professeur_matiere($user_id,$matiere_id,TRUE);
+	exit('ok');
 }
 
-// Retirer des professeurs à des matières
-elseif($action=='retirer')
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+//	Retirer un professeur à une matière
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
+if( ($action=='retirer') && ($matiere_id) && ($user_id) )
 {
-	foreach($tab_select_professeurs as $user_id)
-	{
-		foreach($tab_select_matieres as $matiere_id)
-		{
-			DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_liaison_professeur_matiere($user_id,$matiere_id,false);
-		}
-	}
+	DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_liaison_professeur_matiere($user_id,$matiere_id,FALSE);
+	exit('ok');
 }
 
-// Affichage du bilan des affectations des professeurs dans les matières ; en deux requêtes pour récupérer les matières sans professeurs
-$tab_matiere = array();
-$tab_user   = array();
-echo'<hr />';
-// Récupérer la liste des matières utilisées
-$DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_matieres_etablissement( TRUE /*order_by_name*/ );
-if(!count($DB_TAB))
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+//	Ajouter une affectation en tant que professeur coordonnateur
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
+if( ($action=='ajouter_coord') && ($matiere_id) && ($user_id) )
 {
-	exit();
+	DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_liaison_professeur_coordonnateur($user_id,$matiere_id,TRUE);
+	exit('ok');
 }
-foreach($DB_TAB as $DB_ROW)
+
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+//	Retirer une affectation en tant que professeur coordonnateur
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
+if( ($action=='retirer_coord') && ($matiere_id) && ($user_id) )
 {
-	$tab_matiere[$DB_ROW['matiere_id']] = html($DB_ROW['matiere_nom']);
-	$tab_user[$DB_ROW['matiere_id']] = '';
+	DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_liaison_professeur_coordonnateur($user_id,$matiere_id,FALSE);
+	exit('ok');
 }
-// Récupérer la liste des matières / professeurs
-$DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_jointure_professeurs_matieres( TRUE /*with_identite*/ );
-if(!count($DB_TAB))
-{
-	exit();
-}
-foreach($DB_TAB as $DB_ROW)
-{
-	$tab_user[$DB_ROW['matiere_id']] .= html($DB_ROW['user_nom'].' '.$DB_ROW['user_prenom']).'<br />';
-}
-// Assemblage du tableau résultant
-$TH = array();
-$TB = array();
-$TF = array();
-$tab_mod = 5;
-$i = 0;
-$memo_tab_num = -1;
-foreach($tab_matiere as $matiere_id => $matiere_nom)
-{
-	$tab_num = floor($i/$tab_mod);
-	if($memo_tab_num!=$tab_num)
-	{
-		$memo_tab_num = $tab_num;
-		$TH[$tab_num] = '';
-		$TB[$tab_num] = '';
-		$TF[$tab_num] = '';
-	}
-	$i++;
-	$nb = mb_substr_count($tab_user[$matiere_id],'<br />','UTF-8');
-	$s = ($nb>1) ? 's' : '' ;
-	$TH[$tab_num] .= '<th>'.$matiere_nom.'</th>';
-	$TB[$tab_num] .= '<td>'.mb_substr($tab_user[$matiere_id],0,-6,'UTF-8').'</td>';
-	$TF[$tab_num] .= '<td>'.$nb.' professeur'.$s.'</td>';
-}
-for($tab_i=0;$tab_i<=$tab_num;$tab_i++)
-{
-	echo'<table class="affectation">';
-	echo'<thead><tr>'.$TH[$tab_i].'</tr></thead>';
-	echo'<tbody><tr>'.$TB[$tab_i].'</tr></tbody>';
-	echo'<tfoot><tr>'.$TF[$tab_i].'</tr></tfoot>';
-	echo'</table><p>&nbsp;</p>';
-}
+
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+//	On ne devrait pas en arriver là...
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
+exit('Erreur avec les données transmises !');
+
 ?>

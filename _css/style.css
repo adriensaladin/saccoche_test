@@ -284,7 +284,7 @@ body q:hover {cursor:pointer}	/* Curseur pointeur pour ces images qui sont des l
 /* Affichage des message ajax */
 label.erreur {background:transparent url(../_img/ajax/ajax_erreur.png) no-repeat left;color:#A00;padding-left:19px;margin-left:5px}
 label.valide {background:transparent url(../_img/ajax/ajax_valide.png) no-repeat left;color:#080;padding-left:19px;margin-left:5px}
-label.loader {background:transparent url(../_img/ajax/ajax_loader.gif) no-repeat left;color:#080;padding-left:19px;margin-left:5px}
+label.loader {background:transparent url(../_img/ajax/ajax_loader.gif) no-repeat left;color:#139;padding-left:19px;margin-left:5px}
 label.alerte {background:transparent url(../_img/ajax/ajax_alerte.png) no-repeat left;color:#A00;padding-left:19px;margin-left:5px}
 
 /* Mise en page tabulée des éléments */
@@ -364,7 +364,7 @@ table.form tbody tr:hover td.nu {background:#FFF}
 /* Tableau résultat d'une affectation (professeurs / élèves / matières)                                */
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-table.affectation {font-size:85%}
+table.affectation {font-size:85%;margin:1em}
 table.affectation tfoot td {background:#DDF;color:#333}
 table.affectation span.proprio {color:#22B;font-weight:bold;}
 
@@ -421,9 +421,12 @@ table th.- , table td.- , div.- , span.- , label.- {background-color:#---}
 /* Format des en-têtes de tableaux dont on peut trier les colonnes                                     */
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-th.header         {background:#DDF url(../_img/ts_bg.gif)   no-repeat center right;padding-right:20px;cursor:pointer;} 
-th.headerSortUp   {background:#99F url(../_img/ts_asc.gif)  no-repeat center right;}
-th.headerSortDown {background:#99F url(../_img/ts_desc.gif) no-repeat center right;}
+table.hsort th.header         {background:#DDF url(../_img/tablesorter/bg.gif)   no-repeat center right;padding-right:13px;cursor:pointer;vertical-align:middle;text-align:left} 
+table.hsort th.headerSortUp   {background:#99F url(../_img/tablesorter/asc.gif)  no-repeat center right}
+table.hsort th.headerSortDown {background:#99F url(../_img/tablesorter/desc.gif) no-repeat center right}
+table.vsort th.header         {background:#DDF url(../_img/tablesorter/bg.gif)   no-repeat bottom center;padding-bottom:13px;cursor:pointer;vertical-align:bottom;text-align:center} 
+table.vsort th.headerSortUp   {background:#99F url(../_img/tablesorter/asc.gif)  no-repeat bottom center}
+table.vsort th.headerSortDown {background:#99F url(../_img/tablesorter/desc.gif) no-repeat bottom center}
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 /* Format des tableaux de bilans de compétences : .bilan et .bilan_synthese                            */
@@ -464,6 +467,18 @@ table.bilan th.info {width:9px;height:9px;background:#DDF url(../_img/info_mini.
 #tableau_validation tfoot td.L201{background:#FFF url(../_img/drapeau/201.gif) no-repeat center center;}
 #tableau_validation tfoot td.L216{background:#FFF url(../_img/drapeau/216.gif) no-repeat center center;}
 #tableau_validation tfoot td.L217{background:#FFF url(../_img/drapeau/217.gif) no-repeat center center;}
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+/* Format des tableaux à double entrée avec checkbox                                                   */
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
+
+#autocheckbox thead th {padding:2px 0;text-align:center;vertical-align:bottom;width:18px}
+#autocheckbox tbody th {padding:0 2px;text-align:left;vertical-align:middle;height:18px;font-weight:normal}
+#autocheckbox tbody td {padding:0;text-align:center;vertical-align:middle;height:18px;width:18px}
+#autocheckbox tbody td.off  , table.affectation div.off  {background:#BBF}
+#autocheckbox tbody td.on   , table.affectation div.on   {background:#FF0}
+#autocheckbox tbody td.load , table.affectation div.load {background:#FFF url(../_img/ajax/ajax_loader.gif) no-repeat center center;}
 
 /* Défini suivant les préférences de l'établissement : cf actualiser_style_session() dans fonction_divers.php */
 /*

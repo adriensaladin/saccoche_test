@@ -135,7 +135,7 @@ $(document).ready
 			{
 				$("#f_eleve").html('<option value=""></option>').hide();
 				var groupe_val = $("#f_groupe").val();
-				if(groupe_val)
+				if(groupe_val!='0')
 				{
 					type = $("#f_groupe option:selected").parent().attr('label');
 					$('#ajax_maj_groupe').removeAttr("class").addClass("loader").html("Actualisation en cours...");
@@ -199,41 +199,43 @@ $(document).ready
 			{
 				rules :
 				{
-					f_matiere      : { required:true },
-					f_niveau       : { required:true },
-					f_groupe       : { required:true },
-					'f_eleve[]'    : { required:false },
-					f_restriction  : { required:false },
-					f_coef         : { required:false },
-					f_socle        : { required:false },
-					f_lien         : { required:false },
-					f_cases_nb     : { required:true },
-					f_cases_larg   : { required:true },
-					f_remplissage  : { required:true },
-					f_colonne_vide : { required:false },
-					f_orientation  : { required:true },
-					f_couleur      : { required:true },
-					f_legende      : { required:true },
-					f_marge_min    : { required:true }
+					f_matiere       : { required:true },
+					f_niveau        : { required:true },
+					f_groupe        : { required:true },
+					'f_eleve[]'     : { required:false },
+					f_restriction   : { required:false },
+					f_coef          : { required:false },
+					f_socle         : { required:false },
+					f_lien          : { required:false },
+					f_cases_nb      : { required:true },
+					f_cases_larg    : { required:true },
+					f_remplissage   : { required:true },
+					f_colonne_bilan : { required:true },
+					f_colonne_vide  : { required:true },
+					f_orientation   : { required:true },
+					f_couleur       : { required:true },
+					f_legende       : { required:true },
+					f_marge_min     : { required:true }
 				},
 				messages :
 				{
-					f_matiere      : { required:"matière manquante" },
-					f_niveau       : { required:"niveau manquant" },
-					f_groupe       : { required:"classe/groupe manquant" },
-					'f_eleve[]'    : { },
-					f_restriction  : { },
-					f_coef         : { },
-					f_socle        : { },
-					f_lien         : { },
-					f_cases_nb     : { required:"nombre manquant" },
-					f_cases_larg   : { required:"largeur manquante" },
-					f_remplissage  : { required:"contenu manquant" },
-					f_colonne_vide : { },
-					f_orientation  : { required:"orientation manquante" },
-					f_couleur      : { required:"couleur manquante" },
-					f_legende      : { required:"légende manquante" },
-					f_marge_min    : { required:"marge mini manquante" }
+					f_matiere       : { required:"matière manquante" },
+					f_niveau        : { required:"niveau manquant" },
+					f_groupe        : { required:"classe/groupe manquant" },
+					'f_eleve[]'     : { },
+					f_restriction   : { },
+					f_coef          : { },
+					f_socle         : { },
+					f_lien          : { },
+					f_cases_nb      : { required:"nombre manquant" },
+					f_cases_larg    : { required:"largeur manquante" },
+					f_remplissage   : { required:"contenu manquant" },
+					f_colonne_bilan : { required:"contenu manquant" },
+					f_colonne_vide  : { required:"contenu manquant" },
+					f_orientation   : { required:"orientation manquante" },
+					f_couleur       : { required:"couleur manquante" },
+					f_legende       : { required:"légende manquante" },
+					f_marge_min     : { required:"marge mini manquante" }
 				},
 				errorElement : "label",
 				errorClass : "erreur",

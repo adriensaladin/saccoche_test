@@ -57,13 +57,23 @@ public function DB_recuperer_niveau_groupes($listing_groupe_id)
  * @param string $liste_item_id   id des items séparés par des virgules
  * @param string $date_mysql_debut
  * @param string $date_mysql_fin
+ * @param bool   $aff_domaine      1 pour préfixer avec les noms des domaines, 0 sinon
+ * @param bool   $aff_theme        1 pour préfixer avec les noms des thèmes, 0 sinon
  * @return array
  */
-public function DB_recuperer_arborescence_selection($liste_eleve_id,$liste_item_id,$date_mysql_debut,$date_mysql_fin)
+public function DB_recuperer_arborescence_selection($liste_eleve_id,$liste_item_id,$date_mysql_debut,$date_mysql_fin,$aff_domaine,$aff_theme)
 {
+	switch((string)$aff_domaine.(string)$aff_theme)
+	{
+		case '00' : $item_nom='item_nom'; break;
+		case '10' : $item_nom='CONCAT(domaine_nom," | ",item_nom) AS item_nom'; break;
+		case '01' : $item_nom='CONCAT(theme_nom," | ",item_nom) AS item_nom'; break;
+		case '11' : $item_nom='CONCAT(domaine_nom," | ",theme_nom," | ",item_nom) AS item_nom'; break;
+	}
 	$DB_SQL = 'SELECT item_id , ';
 	$DB_SQL.= 'CONCAT(matiere_ref,".",niveau_ref,".",domaine_ref,theme_ordre,item_ordre) AS item_ref , ';
-	$DB_SQL.= 'item_nom , item_coef , item_cart , entree_id AS item_socle , item_lien , ';
+	$DB_SQL.= $item_nom.' , ';
+	$DB_SQL.= 'item_coef , item_cart , entree_id AS item_socle , item_lien , ';
 	$DB_SQL.= 'matiere_id , matiere_nom , ';
 	$DB_SQL.= 'referentiel_calcul_methode AS calcul_methode , referentiel_calcul_limite AS calcul_limite ';
 	$DB_SQL.= 'FROM sacoche_saisie ';
@@ -99,9 +109,11 @@ public function DB_recuperer_arborescence_selection($liste_eleve_id,$liste_item_
  * @param bool   $only_socle       1 pour ne retourner que les items reliés au socle, 0 sinon
  * @param string $date_mysql_debut
  * @param string $date_mysql_fin
+ * @param bool   $aff_domaine      1 pour préfixer avec les noms des domaines, 0 sinon
+ * @param bool   $aff_theme        1 pour préfixer avec les noms des thèmes, 0 sinon
  * @return array
  */
-public function DB_recuperer_arborescence_bilan($liste_eleve_id,$matiere_id,$only_socle,$date_mysql_debut,$date_mysql_fin)
+public function DB_recuperer_arborescence_bilan($liste_eleve_id,$matiere_id,$only_socle,$date_mysql_debut,$date_mysql_fin,$aff_domaine,$aff_theme)
 {
 	$where_eleve      = (strpos($liste_eleve_id,',')) ? 'eleve_id IN('.$liste_eleve_id.') '    : 'eleve_id='.$liste_eleve_id.' ' ; // Pour IN(...) NE PAS passer la liste dans $DB_VAR sinon elle est convertie en nb entier
 	$where_matiere    = ($matiere_id)                 ? 'AND matiere_id=:matiere '             : 'AND matiere_active=1 ' ;
@@ -110,9 +122,17 @@ public function DB_recuperer_arborescence_bilan($liste_eleve_id,$matiere_id,$onl
 	$where_date_debut = ($date_mysql_debut)           ? 'AND saisie_date>=:date_debut '        : '';
 	$where_date_fin   = ($date_mysql_fin)             ? 'AND saisie_date<=:date_fin '          : '';
 	$order_matiere    = (!$matiere_id)                ? 'matiere_ordre ASC, matiere_nom ASC, ' : '' ;
+	switch((string)$aff_domaine.(string)$aff_theme)
+	{
+		case '00' : $item_nom='item_nom'; break;
+		case '10' : $item_nom='CONCAT(domaine_nom," | ",item_nom) AS item_nom'; break;
+		case '01' : $item_nom='CONCAT(theme_nom," | ",item_nom) AS item_nom'; break;
+		case '11' : $item_nom='CONCAT(domaine_nom," | ",theme_nom," | ",item_nom) AS item_nom'; break;
+	}
 	$DB_SQL = 'SELECT item_id , ';
 	$DB_SQL.= 'CONCAT(matiere_ref,".",niveau_ref,".",domaine_ref,theme_ordre,item_ordre) AS item_ref , ';
-	$DB_SQL.= 'item_nom , item_coef , item_cart , entree_id AS item_socle , item_lien , ';
+	$DB_SQL.= $item_nom.' , ';
+	$DB_SQL.= 'item_coef , item_cart , entree_id AS item_socle , item_lien , ';
 	$DB_SQL.= (!$matiere_id) ? 'matiere_id , matiere_nom , ' : '' ;
 	$DB_SQL.= 'referentiel_calcul_methode AS calcul_methode , referentiel_calcul_limite AS calcul_limite ';
 	$DB_SQL.= 'FROM sacoche_saisie ';

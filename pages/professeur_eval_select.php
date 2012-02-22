@@ -54,7 +54,7 @@ $date_start = '01/'.sprintf("%02u",$_SESSION['MOIS_BASCULE_ANNEE_SCOLAIRE']).'/'
 
 <form action="#" method="post" id="form1" class="hide">
 	<hr />
-	<table class="form">
+	<table class="form hsort">
 		<thead>
 			<tr>
 				<th>Date devoir</th>

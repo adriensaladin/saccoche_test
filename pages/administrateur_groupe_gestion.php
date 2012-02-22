@@ -34,7 +34,7 @@ $TITRE = "Gérer les groupes";
 <hr />
 
 <form action="#" method="post">
-	<table class="form">
+	<table class="form hsort">
 		<thead>
 			<tr>
 				<th>Niveau</th>

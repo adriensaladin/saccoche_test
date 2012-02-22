@@ -1719,6 +1719,27 @@ public function DB_maj_base($version_actuelle)
 		}
 	}
 
+	//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	//	MAJ 2012-02-19 => 2012-02-22
+	//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	if($version_actuelle=='2012-02-19')
+	{
+		if($version_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
+		{
+			$version_actuelle = '2012-02-22';
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_actuelle.'" WHERE parametre_nom="version_base"' );
+			// La dernière version n'installait pas la table sacoche_socle_palier (virgule mal placée)
+			$DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , 'SHOW TABLE STATUS LIKE "sacoche_socle_palier"');
+			if(!count($DB_TAB))
+			{
+				$requetes = file_get_contents(CHEMIN_SQL_STRUCTURE.'sacoche_socle_palier.sql');
+				DB::query(SACOCHE_STRUCTURE_BD_NAME , $requetes );
+				DB::close(SACOCHE_STRUCTURE_BD_NAME);
+			}
+		}
+	}
+
 }
 
 }

@@ -116,7 +116,7 @@ if(count($tab_id_classe_groupe))
 
 <form action="#" method="post" id="form1" class="hide">
 	<hr />
-	<table class="form">
+	<table class="form hsort">
 		<thead>
 			<tr>
 				<th>Date devoir</th>

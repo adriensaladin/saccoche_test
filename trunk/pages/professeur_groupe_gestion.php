@@ -37,7 +37,7 @@ $TITRE = "Gérer ses groupes de besoin";
 <hr />
 
 <form action="#" method="post">
-	<table class="form">
+	<table class="form hsort">
 		<thead>
 			<tr>
 				<th>Niveau</th>
@@ -120,7 +120,7 @@ if( count($tab_eleve) )
 		echo'<thead><tr>'.$TH[$niveau_id].'</tr></thead>';
 		echo'<tbody><tr>'.$TB[$niveau_id].'</tr></tbody>';
 		echo'<tfoot><tr>'.$TF[$niveau_id].'</tr></tfoot>';
-		echo'</table><p>&nbsp;</p>';
+		echo'</table>';
 	}
 }
 else

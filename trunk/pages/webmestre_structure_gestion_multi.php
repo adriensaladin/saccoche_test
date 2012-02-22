@@ -45,7 +45,7 @@ foreach($DB_TAB as $DB_ROW)
 </script>
 
 <form action="#" method="post" id="structures">
-	<table class="form bilan_synthese vm_nug">
+	<table class="form bilan_synthese vm_nug hsort">
 		<thead>
 			<tr>
 				<th class="nu"></th>

@@ -32,7 +32,7 @@ $TITRE = "Gérer les administrateurs";
 <p><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__gestion_administrateurs">DOC : Gestion des administrateurs</a></span></p>
 
 <form action="#" method="post">
-	<table class="form">
+	<table class="form hsort">
 		<thead>
 			<tr>
 				<th>Id. ENT</th>

@@ -55,15 +55,16 @@ $select_groupe = Formulaire::afficher_select($tab_groupes , $select_nom='f_group
 
 <hr />
 
-<table id="bilan" class="hide">
-	<thead>
-		<tr>
-			<th>Utilisateur</th>
-			<th>Date</th>
-		</tr>
-	</thead>
-	<tbody>
-		<tr><td class="nu" colspan="2"></td></tr>
-	</tbody>
-</table>
-
+<div id="div_bilan" class="hide">
+	<table id="bilan" class="hsort">
+		<thead>
+			<tr>
+				<th>Utilisateur</th>
+				<th>Date</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr><td class="nu" colspan="2"></td></tr>
+		</tbody>
+	</table>
+</div>

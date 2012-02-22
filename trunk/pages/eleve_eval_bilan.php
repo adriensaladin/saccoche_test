@@ -63,7 +63,7 @@ $date_fin   = date("d/m/Y",mktime(0,0,0,date("m")+1,date("d"),date("Y"))); // 1 
 <form action="#" method="post" id="zone_eval_choix" class="hide">
 	<hr />
 	<h2></h2>
-	<table class="form">
+	<table class="form hsort">
 		<thead>
 			<tr>
 				<th>Date</th>
@@ -80,7 +80,7 @@ $date_fin   = date("d/m/Y",mktime(0,0,0,date("m")+1,date("d"),date("Y"))); // 1 
 
 <div id="zone_eval_detail" class="vm_nug hide">
 	<p id="titre_voir" class="ti b"></p>
-	<table id="table_voir">
+	<table id="table_voir" class="hsort">
 		<thead>
 			<tr>
 				<th>Ref.</th>

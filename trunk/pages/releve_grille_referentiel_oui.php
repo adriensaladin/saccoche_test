@@ -78,16 +78,17 @@ if($_SESSION['USER_PROFIL']=='eleve')
 	$select_eleves = '<option value="'.$_SESSION['USER_ID'].'" selected>'.html($_SESSION['USER_NOM'].' '.$_SESSION['USER_PRENOM']).'</option>';
 }
 
-$select_matiere      = Formulaire::afficher_select($tab_matieres                        , $select_nom='f_matiere'      , $option_first='oui' , $selection=Formulaire::$tab_choix['matiere_id']    , $optgroup='non');
-$select_groupe       = Formulaire::afficher_select($tab_groupes                         , $select_nom='f_groupe'       , $option_first=$of_g , $selection=$sel_g                                  , $optgroup=$og_g);
-$select_orientation  = Formulaire::afficher_select(Formulaire::$tab_select_orientation  , $select_nom='f_orientation'  , $option_first='non' , $selection=Formulaire::$tab_choix['orientation']   , $optgroup='non');
-$select_marge_min    = Formulaire::afficher_select(Formulaire::$tab_select_marge_min    , $select_nom='f_marge_min'    , $option_first='non' , $selection=Formulaire::$tab_choix['marge_min']     , $optgroup='non');
-$select_couleur      = Formulaire::afficher_select(Formulaire::$tab_select_couleur      , $select_nom='f_couleur'      , $option_first='non' , $selection=Formulaire::$tab_choix['couleur']       , $optgroup='non');
-$select_legende      = Formulaire::afficher_select(Formulaire::$tab_select_legende      , $select_nom='f_legende'      , $option_first='non' , $selection=Formulaire::$tab_choix['legende']       , $optgroup='non');
-$select_cases_nb     = Formulaire::afficher_select(Formulaire::$tab_select_cases_nb     , $select_nom='f_cases_nb'     , $option_first='non' , $selection=Formulaire::$tab_choix['cases_nb']      , $optgroup='non');
-$select_cases_larg   = Formulaire::afficher_select(Formulaire::$tab_select_cases_size   , $select_nom='f_cases_larg'   , $option_first='non' , $selection=Formulaire::$tab_choix['cases_largeur'] , $optgroup='non');
-$select_remplissage  = Formulaire::afficher_select(Formulaire::$tab_select_remplissage  , $select_nom='f_remplissage'  , $option_first='non' , $selection=Formulaire::$tab_choix['remplissage']   , $optgroup='non');
-$select_colonne_vide = Formulaire::afficher_select(Formulaire::$tab_select_colonne_vide , $select_nom='f_colonne_vide' , $option_first='non' , $selection=Formulaire::$tab_choix['colonne_vide']  , $optgroup='non');
+$select_matiere       = Formulaire::afficher_select($tab_matieres                         , $select_nom='f_matiere'       , $option_first='oui' , $selection=Formulaire::$tab_choix['matiere_id']    , $optgroup='non');
+$select_groupe        = Formulaire::afficher_select($tab_groupes                          , $select_nom='f_groupe'        , $option_first=$of_g , $selection=$sel_g                                  , $optgroup=$og_g);
+$select_orientation   = Formulaire::afficher_select(Formulaire::$tab_select_orientation   , $select_nom='f_orientation'   , $option_first='non' , $selection=Formulaire::$tab_choix['orientation']   , $optgroup='non');
+$select_marge_min     = Formulaire::afficher_select(Formulaire::$tab_select_marge_min     , $select_nom='f_marge_min'     , $option_first='non' , $selection=Formulaire::$tab_choix['marge_min']     , $optgroup='non');
+$select_couleur       = Formulaire::afficher_select(Formulaire::$tab_select_couleur       , $select_nom='f_couleur'       , $option_first='non' , $selection=Formulaire::$tab_choix['couleur']       , $optgroup='non');
+$select_legende       = Formulaire::afficher_select(Formulaire::$tab_select_legende       , $select_nom='f_legende'       , $option_first='non' , $selection=Formulaire::$tab_choix['legende']       , $optgroup='non');
+$select_cases_nb      = Formulaire::afficher_select(Formulaire::$tab_select_cases_nb      , $select_nom='f_cases_nb'      , $option_first='non' , $selection=Formulaire::$tab_choix['cases_nb']      , $optgroup='non');
+$select_cases_larg    = Formulaire::afficher_select(Formulaire::$tab_select_cases_size    , $select_nom='f_cases_larg'    , $option_first='non' , $selection=Formulaire::$tab_choix['cases_largeur'] , $optgroup='non');
+$select_remplissage   = Formulaire::afficher_select(Formulaire::$tab_select_remplissage   , $select_nom='f_remplissage'   , $option_first='non' , $selection=Formulaire::$tab_choix['remplissage']   , $optgroup='non');
+$select_colonne_bilan = Formulaire::afficher_select(Formulaire::$tab_select_colonne_bilan , $select_nom='f_colonne_bilan' , $option_first='non' , $selection=Formulaire::$tab_choix['colonne_bilan'] , $optgroup='non');
+$select_colonne_vide  = Formulaire::afficher_select(Formulaire::$tab_select_colonne_vide  , $select_nom='f_colonne_vide'  , $option_first='non' , $selection=Formulaire::$tab_choix['colonne_vide']  , $optgroup='non');
 ?>
 
 <p><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=releves_bilans__releve_grille_referentiel">DOC : Grille d'items d'un référentiel.</a></span></p>
@@ -106,7 +107,7 @@ $select_colonne_vide = Formulaire::afficher_select(Formulaire::$tab_select_colon
 		<span class="tab"></span><a href="#" class="puce_moins toggle">Afficher moins d'options</a><br />
 		<label class="tab">Restriction :</label><input type="checkbox" id="f_restriction" name="f_restriction" value="1"<?php echo $check_only_socle ?> /> <label>Uniquement les items liés du socle</label><br />
 		<label class="tab">Indications :</label><input type="checkbox" id="f_coef" name="f_coef" value="1"<?php echo $check_aff_coef ?> /> <label for="f_coef">Coefficients</label>&nbsp;&nbsp;&nbsp;<input type="checkbox" id="f_socle" name="f_socle" value="1"<?php echo $check_aff_socle ?> /> <label for="f_socle">Socle</label>&nbsp;&nbsp;&nbsp;<input type="checkbox" id="f_lien" name="f_lien" value="1"<?php echo $check_aff_lien ?> /> <label for="f_lien">Liens (ressources pour travailler)</label><br />
-		<label class="tab">Évaluations :</label><?php echo $select_cases_nb ?> de largeur <?php echo $select_cases_larg ?> <?php echo $select_remplissage ?> <?php echo $select_colonne_vide ?><br />
+		<label class="tab">Évaluations :</label><?php echo $select_cases_nb ?> de largeur <?php echo $select_cases_larg ?> <?php echo $select_remplissage ?> <?php echo $select_colonne_bilan ?> <?php echo $select_colonne_vide ?><br />
 		<label class="tab"><img alt="" src="./_img/bulle_aide.png" title="Pour le format pdf." /> Impression :</label><?php echo $select_orientation ?> <?php echo $select_couleur ?> <?php echo $select_legende ?> <?php echo $select_marge_min ?>
 	</div>
 	<p><span class="tab"></span><button id="bouton_valider" type="submit" class="generer">Générer.</button><label id="ajax_msg">&nbsp;</label></p>

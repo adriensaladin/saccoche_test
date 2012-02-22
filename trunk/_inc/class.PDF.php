@@ -468,11 +468,11 @@ function afficher_pourcentage_acquis($gras,$tab_infos,$detail)
 
 	public function afficher_score_bilan($score,$br)
 	{
-		if($score===false)
+		if($score===FALSE)
 		{
 			$score_affiche = (mb_substr_count($_SESSION['DROIT_VOIR_SCORE_BILAN'],$_SESSION['USER_PROFIL'])) ? '-' : '' ;
 			$this->choisir_couleur_fond('blanc');
-			$this->Cell($this->cases_largeur , $this->cases_hauteur , $score_affiche , 1 , $br , 'C' , true , '');
+			$this->Cell($this->cases_largeur , $this->cases_hauteur , $score_affiche , 1 , $br , 'C' , TRUE , '');
 		}
 		else
 		{
@@ -481,7 +481,7 @@ function afficher_pourcentage_acquis($gras,$tab_infos,$detail)
 			else                                          {$this->choisir_couleur_fond($this->tab_choix_couleur['VA']);}
 			$score_affiche = (mb_substr_count($_SESSION['DROIT_VOIR_SCORE_BILAN'],$_SESSION['USER_PROFIL'])) ? $score : '' ;
 			$this->SetFont('Arial' , '' , $this->taille_police-2);
-			$this->Cell($this->cases_largeur , $this->cases_hauteur , $score_affiche , 1 , $br , 'C' , true , '');
+			$this->Cell($this->cases_largeur , $this->cases_hauteur , $score_affiche , 1 , $br , 'C' , TRUE , '');
 			$this->SetFont('Arial' , '' , $this->taille_police);
 		}
 	}
@@ -898,7 +898,7 @@ function afficher_pourcentage_acquis($gras,$tab_infos,$detail)
 	//	grille_referentiel_item()
 	//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	public function grille_referentiel_initialiser($cases_nb,$cases_largeur,$lignes_nb,$colonne_vide)
+	public function grille_referentiel_initialiser($cases_nb,$cases_largeur,$lignes_nb,$colonne_bilan,$colonne_vide)
 	{
 		// On calcule la hauteur de la ligne et la taille de la police pour tout faire rentrer sur une page si possible, un minimum de pages sinon
 		$hauteur_dispo_par_page = $this->page_hauteur - $this->marge_haut - $this->marge_bas ;
@@ -924,9 +924,10 @@ function afficher_pourcentage_acquis($gras,$tab_infos,$detail)
 		$this->cases_nb          = $cases_nb;
 		$this->cases_largeur     = $cases_largeur;
 		$this->cases_hauteur     = $this->lignes_hauteur;
-		$this->colonne_vide_largeur = $colonne_vide;
+		$this->colonne_bilan_largeur = ($colonne_bilan=='non') ? 0 : $cases_largeur ;
+		$this->colonne_vide_largeur  = $colonne_vide;
 		$this->reference_largeur = 10;
-		$this->intitule_largeur  = $this->page_largeur - $this->marge_gauche - $this->marge_droit - $this->reference_largeur - ($this->cases_nb * $this->cases_largeur) - $this->colonne_vide_largeur ;
+		$this->intitule_largeur  = $this->page_largeur - $this->marge_gauche - $this->marge_droit - $this->reference_largeur - ($this->cases_nb * $this->cases_largeur) - $this->colonne_bilan_largeur - $this->colonne_vide_largeur ;
 		$this->SetMargins($this->marge_gauche , $this->marge_haut , $this->marge_droit);
 		$this->SetAutoPageBreak(false);
 		$this->calculer_dimensions_images($this->cases_largeur,$this->cases_hauteur);

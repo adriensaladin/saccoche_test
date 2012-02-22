@@ -50,7 +50,7 @@ foreach($DB_TAB as $DB_ROW)
 <form action="#" method="post" id="form_partage">
 	<hr />
 	<h2>Matières partagées (officielles)</h2>
-	<table class="form">
+	<table class="form hsort">
 		<thead>
 			<tr>
 				<th>Référence</th>
@@ -81,7 +81,7 @@ foreach($DB_TAB as $DB_ROW)
 <form action="#" method="post" id="form_perso">
 	<hr />
 	<h2>Matières spécifiques</h2>
-	<table class="form">
+	<table class="form hsort">
 		<thead>
 			<tr>
 				<th>Référence</th>

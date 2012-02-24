@@ -28,6 +28,24 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 if($_SESSION['SESAMATH_ID']==ID_DEMO) {}
 
+$format         = 'multimatiere';
+$aff_bilan_MS   = (isset($_POST['f_bilan_MS']))    ? 1                                    : 0;
+$aff_bilan_PA   = (isset($_POST['f_bilan_PA']))    ? 1                                    : 0;
+$aff_conv_sur20 = (isset($_POST['f_conv_sur20']))  ? 1                                    : 0;
+$matiere_id     = true;
+$matiere_nom    = '';
+$groupe_id      = (isset($_POST['f_groupe']))      ? clean_entier($_POST['f_groupe'])     : 0;
+$groupe_nom     = (isset($_POST['f_groupe_nom']))  ? clean_texte($_POST['f_groupe_nom'])  : '';
+$periode_id     = (isset($_POST['f_periode']))     ? clean_entier($_POST['f_periode'])     : 0;
+$date_debut     = (isset($_POST['f_date_debut']))  ? clean_texte($_POST['f_date_debut'])   : '';
+$date_fin       = (isset($_POST['f_date_fin']))    ? clean_texte($_POST['f_date_fin'])     : '';
+$retroactif     = (isset($_POST['f_retroactif']))  ? clean_texte($_POST['f_retroactif'])   : '';
+$only_socle     = (isset($_POST['f_restriction'])) ? 1                                    : 0;
+$aff_coef       = (isset($_POST['f_coef']))        ? 1                                    : 0;
+$aff_socle      = (isset($_POST['f_socle']))       ? 1                                    : 0;
+$aff_lien       = (isset($_POST['f_lien']))        ? 1                                    : 0;
+$aff_domaine    = (isset($_POST['f_domaine']))     ? 1                                     : 0;
+$aff_theme      = (isset($_POST['f_theme']))       ? 1                                     : 0;
 $orientation    = (isset($_POST['f_orientation'])) ? clean_texte($_POST['f_orientation'])  : '';
 $couleur        = (isset($_POST['f_couleur']))     ? clean_texte($_POST['f_couleur'])      : '';
 $legende        = (isset($_POST['f_legende']))     ? clean_texte($_POST['f_legende'])      : '';
@@ -35,29 +53,12 @@ $marge_min      = (isset($_POST['f_marge_min']))   ? clean_entier($_POST['f_marg
 $pages_nb       = (isset($_POST['f_pages_nb']))    ? clean_texte($_POST['f_pages_nb'])     : '';
 $cases_nb       = (isset($_POST['f_cases_nb']))    ? clean_entier($_POST['f_cases_nb'])    : 0;
 $cases_largeur  = (isset($_POST['f_cases_larg']))  ? clean_entier($_POST['f_cases_larg'])  : 0;
-$periode_id     = (isset($_POST['f_periode']))     ? clean_entier($_POST['f_periode'])     : 0;
-$date_debut     = (isset($_POST['f_date_debut']))  ? clean_texte($_POST['f_date_debut'])   : '';
-$date_fin       = (isset($_POST['f_date_fin']))    ? clean_texte($_POST['f_date_fin'])     : '';
-$retroactif     = (isset($_POST['f_retroactif']))  ? clean_texte($_POST['f_retroactif'])   : '';
-$matiere_id     = true;
-$matiere_nom    = '';
-$only_socle     = (isset($_POST['f_restriction'])) ? 1                                    : 0;
-$aff_coef       = (isset($_POST['f_coef']))        ? 1                                    : 0;
-$aff_socle      = (isset($_POST['f_socle']))       ? 1                                    : 0;
-$aff_lien       = (isset($_POST['f_lien']))        ? 1                                    : 0;
-$aff_domaine    = (isset($_POST['f_domaine']))     ? 1                                     : 0;
-$aff_theme      = (isset($_POST['f_theme']))       ? 1                                     : 0;
-$aff_bilan_MS   = (isset($_POST['f_bilan_MS']))    ? 1                                    : 0;
-$aff_bilan_PA   = (isset($_POST['f_bilan_PA']))    ? 1                                    : 0;
-$aff_conv_sur20 = (isset($_POST['f_conv_sur20']))  ? 1                                    : 0;
-$groupe_id      = (isset($_POST['f_groupe']))      ? clean_entier($_POST['f_groupe'])     : 0;
-$groupe_nom     = (isset($_POST['f_groupe_nom']))  ? clean_texte($_POST['f_groupe_nom'])  : '';
-$format         = 'multimatiere';
-$type_individuel = 1;
+
 // Normalement c'est un tableau qui est transmis, mais au cas où...
 $tab_eleve = (isset($_POST['f_eleve'])) ? ( (is_array($_POST['f_eleve'])) ? $_POST['f_eleve'] : explode(',',$_POST['f_eleve']) ) : array() ;
 $tab_eleve = array_filter( array_map( 'clean_entier' , $tab_eleve ) , 'positif' );
 $tab_type[] = 'individuel';
+$type_individuel = 1;
 
 // En cas de manipulation du formulaire (avec Firebug par exemple) ; on pourrait aussi vérifier pour un parent que c'est bien un de ses enfants...
 if(in_array($_SESSION['USER_PROFIL'],array('parent','eleve')))
@@ -73,7 +74,11 @@ if($_SESSION['USER_PROFIL']=='eleve')
 	$tab_eleve  = array($_SESSION['USER_ID']);
 }
 
-$liste_eleve   = implode(',',$tab_eleve);
+$type_individuel = 1;
+$type_synthese   = 0;
+$type_bulletin   = 0;
+
+$liste_eleve = implode(',',$tab_eleve);
 
 if( !$orientation || !$couleur || !$legende || !$marge_min || !$pages_nb || !$cases_nb || !$cases_largeur || ( !$periode_id && (!$date_debut || !$date_fin) ) || !$retroactif || !$matiere_id || !$groupe_id || !$groupe_nom || !count($tab_eleve) || !count($tab_type) )
 {

@@ -203,10 +203,18 @@ $(document).ready
 			if(readytogo)
 			{
 				readytogo = false;
-				if( (Math.min($('#valeurRR').val(),$('#valeurR').val(),$('#valeurV').val(),$('#valeurVV').val())<0) || (Math.max($('#valeurRR').val(),$('#valeurR').val(),$('#valeurV').val(),$('#valeurVV').val())>100) )
+				if( (Math.min($('#valeurRR').val(),$('#valeurR').val(),$('#valeurV').val(),$('#valeurVV').val())<0) || (Math.max($('#valeurRR').val(),$('#valeurR').val(),$('#valeurV').val())>100) )
 				{
 					$('#ajax_msg').removeAttr("class").addClass("erreur").html("Valeur d'un code : valeurs entre 0 et 100 requises.").show();
 				}
+				else if( parseInt($('#valeurVV').val(),10)>200 )
+				{
+					$('#ajax_msg').removeAttr("class").addClass("erreur").html("Valeur d'un code : 200 maximum pour le meilleur code.").show();
+				}
+				// else if( (parseInt($('#valeurVV').val(),10)>100) && ($('#action').val()=='enregistrer') && !confirm("Confirmez-vous souhaiter une valeur supérieure à 100 pour le meilleur code de réussite ?") )
+				// {
+				// 	$('#ajax_msg').removeAttr("class").addClass("erreur").html("Valeur d'un code : 100 maximum conseillé.").show();
+				// }
 				else if( (parseInt($('#valeurRR').val(),10)>parseInt($('#valeurR').val(),10)) || (parseInt($('#valeurR').val(),10)>parseInt($('#valeurV').val(),10)) || (parseInt($('#valeurV').val(),10)>parseInt($('#valeurVV').val(),10)) )
 				{
 					$('#ajax_msg').removeAttr("class").addClass("erreur").html("Valeur d'un code : valeurs croissantes requises.").show();

@@ -839,13 +839,7 @@ if( ($action=='voir_repart') && $devoir_id && $groupe_type && $groupe_id && $dat
 			$memo_Y = $sacoche_pdf->GetY();
 			foreach($tab_eleves as $key => $eleve_texte)
 			{
-				$taille_police = $sacoche_pdf->taille_police;
-				while($sacoche_pdf->test_pas_trop_long($eleve_texte,$taille_police,$sacoche_pdf->cases_largeur-10)==false) // -10 car à cause des majuscules ça a tendance à déborder...
-				{
-					$taille_police -= 0.5 ;
-				}
-				$sacoche_pdf->SetFont('Arial' , '' , $taille_police);
-				$sacoche_pdf->Cell($sacoche_pdf->cases_largeur , $sacoche_pdf->lignes_hauteur , pdf($eleve_texte) , 0 , 2 , 'L' , false , '');
+				$sacoche_pdf->CellFit($sacoche_pdf->cases_largeur , $sacoche_pdf->lignes_hauteur , pdf($eleve_texte) , 0 , 2 , 'L' , false , '');
 			}
 			// Ajouter la bordure
 			$sacoche_pdf->SetXY($memo_X , $memo_Y);

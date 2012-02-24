@@ -47,6 +47,34 @@ $(document).ready
 		);
 
 		//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
+		//	Afficher masquer des éléments du formulaire
+		//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
+
+		$('#f_type_generique').click
+		(
+			function()
+			{
+				$("#generique_non_1 , #generique_non_2 , #generique_non_3").toggle();
+			}
+		);
+
+		$('#f_type_individuel').click
+		(
+			function()
+			{
+				$("#options_individuel").toggle();
+			}
+		);
+
+		$('#f_type_synthese').click
+		(
+			function()
+			{
+				$("#options_synthese").toggle();
+			}
+		);
+
+		//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
 		//	Charger le select f_niveau en ajax (au changement de f_matiere et au départ)
 		//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
 
@@ -135,7 +163,7 @@ $(document).ready
 			{
 				$("#f_eleve").html('<option value=""></option>').hide();
 				var groupe_val = $("#f_groupe").val();
-				if(groupe_val!='0')
+				if(groupe_val)
 				{
 					type = $("#f_groupe option:selected").parent().attr('label');
 					$('#ajax_maj_groupe').removeAttr("class").addClass("loader").html("Actualisation en cours...");
@@ -199,43 +227,49 @@ $(document).ready
 			{
 				rules :
 				{
+					'f_type[]'      : { required:true },
+					f_remplissage   : { required:true },
+					f_colonne_bilan : { required:true },
+					f_colonne_vide  : { required:true },
+					f_tri_objet     : { required:true },
+					f_tri_mode      : { required:true },
 					f_matiere       : { required:true },
 					f_niveau        : { required:true },
-					f_groupe        : { required:true },
-					'f_eleve[]'     : { required:false },
+					f_groupe        : { required:function(){return !$('#f_type_generique').is(':checked');} },
+					'f_eleve[]'     : { required:function(){return $("#f_groupe").val()!=0;} },
 					f_restriction   : { required:false },
 					f_coef          : { required:false },
 					f_socle         : { required:false },
 					f_lien          : { required:false },
-					f_cases_nb      : { required:true },
-					f_cases_larg    : { required:true },
-					f_remplissage   : { required:true },
-					f_colonne_bilan : { required:true },
-					f_colonne_vide  : { required:true },
 					f_orientation   : { required:true },
 					f_couleur       : { required:true },
 					f_legende       : { required:true },
-					f_marge_min     : { required:true }
+					f_marge_min     : { required:true },
+					f_cases_nb      : { required:true },
+					f_cases_larg    : { required:true }
 				},
 				messages :
 				{
+					'f_type[]'      : { required:"type(s) manquant(s)" },
+					f_remplissage   : { required:"contenu manquant" },
+					f_colonne_bilan : { required:"contenu manquant" },
+					f_colonne_vide  : { required:"contenu manquant" },
+					f_tri_objet     : { required:"choix manquant" },
+					f_tri_mode      : { required:"choix manquant" },
 					f_matiere       : { required:"matière manquante" },
 					f_niveau        : { required:"niveau manquant" },
 					f_groupe        : { required:"classe/groupe manquant" },
-					'f_eleve[]'     : { },
+					'f_eleve[]'     : { required:"élève(s) manquant(s)" },
 					f_restriction   : { },
 					f_coef          : { },
 					f_socle         : { },
 					f_lien          : { },
-					f_cases_nb      : { required:"nombre manquant" },
-					f_cases_larg    : { required:"largeur manquante" },
-					f_remplissage   : { required:"contenu manquant" },
-					f_colonne_bilan : { required:"contenu manquant" },
-					f_colonne_vide  : { required:"contenu manquant" },
 					f_orientation   : { required:"orientation manquante" },
 					f_couleur       : { required:"couleur manquante" },
 					f_legende       : { required:"légende manquante" },
-					f_marge_min     : { required:"marge mini manquante" }
+					f_marge_min     : { required:"marge mini manquante" },
+					f_cases_nb      : { required:"nombre manquant" },
+					f_cases_larg    : { required:"largeur manquante" }
 				},
 				errorElement : "label",
 				errorClass : "erreur",
@@ -270,6 +304,7 @@ $(document).ready
 				// récupération du nom de la matière et du nom du niveau
 				$('#f_matiere_nom').val( $("#f_matiere option:selected").text() );
 				$('#f_niveau_nom').val( $("#f_niveau option:selected").text() );
+				$('#f_groupe_nom').val( $("#f_groupe option:selected").text() );
 				$(this).ajaxSubmit(ajaxOptions);
 				return false;
 			}
@@ -308,14 +343,15 @@ $(document).ready
 				format_liens('#bilan');
 				infobulle();
 			}
-			else if(responseHTML.substring(0,17)=='<ul class="puce">')
+			else if(responseHTML.substring(0,4)=='<h2>')
 			{
 				$('#ajax_msg').removeAttr("class").html('');
 				// Mis dans le div bilan et pas balancé directement dans le fancybox sinon le format_lien() nécessite un peu plus de largeur que le fancybox ne recalcule pas (et $.fancybox.update(); ne change rien).
 				// Malgré tout, pour Chrome par exemple, la largeur est mal clculée et provoque des retours à la ligne, d'où le minWidth ajouté.
 				$('#bilan').html(responseHTML);
 				format_liens('#bilan');
-				$.fancybox( { 'href':'#bilan' , onClosed:function(){$('#bilan').html("");} , 'centerOnScroll':true , 'minWidth':400 } );
+				infobulle(); // exceptionnellement il y a aussi des infobulles ici
+				$.fancybox( { 'href':'#bilan' , onClosed:function(){$('#bilan').html("");} , 'centerOnScroll':true , 'minWidth':550 } );
 			}
 			else
 			{

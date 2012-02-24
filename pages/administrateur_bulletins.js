@@ -50,11 +50,11 @@ $(document).ready
 			{
 				if( $('#f_infos_responsables option:selected').val() == 'oui_force' )
 				{
-					$("#p_enveloppe").show('slow');
+					$("#p_enveloppe").show();
 				}
 				else
 				{
-					$("#p_enveloppe").hide('slow');
+					$("#p_enveloppe").hide();
 				}
 			}
 		);

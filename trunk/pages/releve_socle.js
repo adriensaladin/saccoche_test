@@ -57,11 +57,11 @@ $(document).ready
 				var groupe_val = $("#f_groupe").val();
 				if(groupe_val!='0')
 				{
-					$("#option_groupe").show("slow");
+					$("#option_groupe").show();
 				}
 				else
 				{
-					$("#option_groupe").hide("slow");
+					$("#option_groupe").hide();
 				}
 			}
 		);

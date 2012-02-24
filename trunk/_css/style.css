@@ -438,6 +438,8 @@ table.bilan tfoot td.nu {background:#FFF;}
 table.bilan_synthese {margin-top:1em;margin-bottom:1em}
 table.bilan th.domaine {background:#99F;}
 table.bilan th.info {width:9px;height:9px;background:#DDF url(../_img/info_mini.gif) no-repeat center center;}
+table.bilan_synthese th,td {padding:0 1px}
+
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 /* Format des tableaux du socle                                                                        */

@@ -54,7 +54,15 @@ $(document).ready
 		(
 			function()
 			{
-				$("#options_individuel").toggle("slow");
+				$("#options_individuel").toggle();
+			}
+		);
+
+		$('#f_type_synthese').click
+		(
+			function()
+			{
+				$("#options_synthese").toggle();
 			}
 		);
 
@@ -331,57 +339,61 @@ $(document).ready
 			{
 				rules :
 				{
-					f_orientation : { required:true },
-					f_marge_min   : { required:true },
-					f_pages_nb    : { required:true },
-					f_couleur     : { required:true },
-					f_legende     : { required:true },
-					f_cases_nb    : { required:true },
-					f_cases_larg  : { required:true },
 					'f_type[]'    : { required:true },
+					f_bilan_MS    : { required:false },
+					f_bilan_PA    : { required:false },
+					f_conv_sur20  : { required:false },
+					f_tri_objet   : { required:true },
+					f_tri_mode    : { required:true },
+					f_groupe      : { required:true },
+					'f_eleve[]'   : { required:true },
+					f_periode     : { required:true },
+					f_date_debut  : { required:function(){return $("#f_periode").val()==0;} , dateITA:true },
+					f_date_fin    : { required:function(){return $("#f_periode").val()==0;} , dateITA:true },
+					f_retroactif  : { required:true },
+					f_matiere     : { required:true },
 					f_restriction : { required:false },
 					f_coef        : { required:false },
 					f_socle       : { required:false },
 					f_lien        : { required:false },
 					f_domaine     : { required:false },
 					f_theme       : { required:false },
-					f_bilan_MS    : { required:false },
-					f_bilan_PA    : { required:false },
-					f_conv_sur20  : { required:false },
-					f_periode     : { required:true },
-					f_date_debut  : { required:function(){return $("#f_periode").val()==0;} , dateITA:true },
-					f_date_fin    : { required:function(){return $("#f_periode").val()==0;} , dateITA:true },
-					f_retroactif  : { required:true },
-					f_matiere     : { required:true },
-					f_groupe      : { required:true },
-					'f_eleve[]'   : { required:true }
+					f_orientation : { required:true },
+					f_couleur     : { required:true },
+					f_legende     : { required:true },
+					f_marge_min   : { required:true },
+					f_pages_nb    : { required:true },
+					f_cases_nb    : { required:true },
+					f_cases_larg  : { required:true }
 				},
 				messages :
 				{
-					f_orientation : { required:"orientation manquante" },
-					f_marge_min   : { required:"marge mini manquante" },
-					f_pages_nb    : { required:"choix manquant" },
-					f_couleur     : { required:"couleur manquante" },
-					f_legende     : { required:"légende manquante" },
-					f_cases_nb    : { required:"nombre manquant" },
-					f_cases_larg  : { required:"largeur manquante" },
 					'f_type[]'    : { required:"type(s) manquant(s)" },
+					f_bilan_MS    : { },
+					f_bilan_PA    : { },
+					f_conv_sur20  : { },
+					f_tri_objet   : { required:"choix manquant" },
+					f_tri_mode    : { required:"choix manquant" },
+					f_groupe      : { required:"groupe manquant" },
+					'f_eleve[]'   : { required:"élève(s) manquant(s)" },
+					f_periode     : { required:"période manquante" },
+					f_date_debut  : { required:"date manquante" , dateITA:"format JJ/MM/AAAA non respecté" },
+					f_date_fin    : { required:"date manquante" , dateITA:"format JJ/MM/AAAA non respecté" },
+					f_retroactif  : { required:"choix manquant" },
+					f_matiere     : { required:"matière manquante" },
 					f_restriction : { },
 					f_coef        : { },
 					f_socle       : { },
 					f_lien        : { },
 					f_domaine     : { },
 					f_theme       : { },
-					f_bilan_MS    : { },
-					f_bilan_PA    : { },
-					f_conv_sur20  : { },
-					f_periode     : { required:"période manquante" },
-					f_date_debut  : { required:"date manquante" , dateITA:"format JJ/MM/AAAA non respecté" },
-					f_date_fin    : { required:"date manquante" , dateITA:"format JJ/MM/AAAA non respecté" },
-					f_retroactif  : { required:"choix manquant" },
-					f_matiere     : { required:"matière manquante" },
-					f_groupe      : { required:"groupe manquant" },
-					'f_eleve[]'   : { required:"élève(s) manquant(s)" }
+					f_orientation : { required:"orientation manquante" },
+					f_couleur     : { required:"couleur manquante" },
+					f_legende     : { required:"légende manquante" },
+					f_marge_min   : { required:"marge mini manquante" },
+					f_pages_nb    : { required:"choix manquant" },
+					f_cases_nb    : { required:"nombre manquant" },
+					f_cases_larg  : { required:"largeur manquante" }
 				},
 				errorElement : "label",
 				errorClass : "erreur",

@@ -38,7 +38,7 @@ $(document).ready
 		(
 			function()
 			{
-				$("#div_proxy_used").toggle("slow");
+				$("#div_proxy_used").toggle();
 			}
 		);
 
@@ -46,7 +46,7 @@ $(document).ready
 		(
 			function()
 			{
-				$("#div_proxy_auth_used").toggle("slow");
+				$("#div_proxy_auth_used").toggle();
 			}
 		);
 

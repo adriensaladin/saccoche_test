@@ -27,15 +27,35 @@
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = "Évaluer des élèves sélectionnés";
-?>
 
-<?php
+require('./_inc/fonction_affichage_sections_communes.php');
+
 // Dates par défaut de début et de fin
 $date_debut  = date("d/m/Y",mktime(0,0,0,date("m")-2,date("d"),date("Y"))); // 2 mois avant
 $date_fin    = date("d/m/Y",mktime(0,0,0,date("m")+1,date("d"),date("Y"))); // 1 mois après
 // Date de début d'année scolaire
 $annee = ($_SESSION['MOIS_BASCULE_ANNEE_SCOLAIRE']<date("n")) ? date("Y") : date("Y")-1 ;
 $date_start = '01/'.sprintf("%02u",$_SESSION['MOIS_BASCULE_ANNEE_SCOLAIRE']).'/'.$annee;
+
+$select_selection_items = Formulaire::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_selection_items($_SESSION['USER_ID']) , $select_nom='f_selection_items' , $option_first='oui' , $selection=false , $optgroup='non');
+
+// Réception d'un formulaire depuis un tableau de synthèse bilan
+$tab_items = ( isset($_POST['id_item']) && is_array($_POST['id_item']) ) ? $_POST['id_item'] : array() ;
+$tab_items = array_map('clean_entier',$tab_items);
+$tab_items = array_filter($tab_items,'positif');
+$nb_items  = count($tab_items);
+$txt_items = ($nb_items) ? ( ($nb_items>1) ? $nb_items.' items' : $nb_items.' item' ) : 'aucun' ;
+$tab_users = ( isset($_POST['id_user']) && is_array($_POST['id_user']) ) ? $_POST['id_user'] : array() ;
+$tab_users = array_map('clean_entier',$tab_users);
+$tab_users = array_filter($tab_users,'positif');
+$nb_users  = count($tab_users);
+$txt_users = ($nb_users) ? ( ($nb_users>1) ? $nb_users.' élèves' : $nb_users.' élève' ) : 'aucun' ;
+$reception_todo = ($nb_items || $nb_users) ? 'true' : 'false' ;
+$script_reception = 'var reception_todo = '.$reception_todo.';';
+$script_reception.= 'var reception_items_texte = "'.$txt_items.'";';
+$script_reception.= 'var reception_users_texte = "'.$txt_users.'";';
+$script_reception.= 'var reception_items_liste = "'.implode('_',$tab_items).'";';
+$script_reception.= 'var reception_users_liste = "'.implode('_',$tab_users).'";';
 ?>
 
 <ul class="puce">
@@ -74,12 +94,13 @@ $date_start = '01/'.sprintf("%02u",$_SESSION['MOIS_BASCULE_ANNEE_SCOLAIRE']).'/'
 
 <script type="text/javascript">
 	var input_date="<?php echo date("d/m/Y") ?>";
-	var tab_items = new Array();
-	var tab_profs = new Array();
+	<?php echo $script_reception ?>
+	var tab_items  = new Array();
+	var tab_profs  = new Array();
 	var tab_eleves = new Array();
 </script>
 
-<form action="#" method="post" id="zone_compet" class="arbre_dynamique arbre_check hide">
+<form action="#" method="post" id="zone_matieres_items" class="arbre_dynamique arbre_check hide">
 	<div>Tout déployer / contracter : <a href="m1" class="all_extend"><img alt="m1" src="./_img/deploy_m1.gif" /></a> <a href="m2" class="all_extend"><img alt="m2" src="./_img/deploy_m2.gif" /></a> <a href="n1" class="all_extend"><img alt="n1" src="./_img/deploy_n1.gif" /></a> <a href="n2" class="all_extend"><img alt="n2" src="./_img/deploy_n2.gif" /></a> <a href="n3" class="all_extend"><img alt="n3" src="./_img/deploy_n3.gif" /></a></div>
 	<p>Cocher ci-dessous (<span class="astuce">cliquer sur un intitulé pour déployer son contenu</span>) :</p>
 	<?php
@@ -89,85 +110,23 @@ $date_start = '01/'.sprintf("%02u",$_SESSION['MOIS_BASCULE_ANNEE_SCOLAIRE']).'/'
 	?>
 	<p class="danger">Une évaluation dont la saisie a commencé ne devrait pas voir ses items modifiés.<br />En particulier, retirer des items d'une évaluation efface les scores correspondants déjà saisis !</p>
 	<div><span class="tab"></span><button id="valider_compet" type="button" class="valider">Valider la sélection</button>&nbsp;&nbsp;&nbsp;<button id="annuler_compet" type="button" class="annuler">Annuler / Retour</button></div>
+	<hr />
+	<p>
+		<label class="tab" for="f_selection_items"><img alt="" src="./_img/bulle_aide.png" title="Pour choisir un regroupement d'items mémorisé." /> Initialisation</label><?php echo $select_selection_items ?><br />
+		<label class="tab" for="f_liste_items_nom"><img alt="" src="./_img/bulle_aide.png" title="Pour enregistrer le groupe d'items cochés." /> Mémorisation</label><input id="f_liste_items_nom" name="f_liste_items_nom" size="30" type="text" value="" maxlength="60" /> <button id="f_enregistrer_items" type="button" class="fichier_export">Enregistrer</button><label id="ajax_msg_memo">&nbsp;</label>
+	</p>
 </form>
 
 <form action="#" method="post" id="zone_profs" class="hide">
 	<div class="astuce">Vous pouvez permettre à des collègues de co-saisir les notes de ce devoir (et de le dupliquer).</div>
-	<?php
-	// Affichage de la liste des professeurs
-	$DB_TAB = DB_STRUCTURE_COMMUN::DB_OPT_professeurs_etabl();
-	if(is_string($DB_TAB))
-	{
-		echo $DB_TAB;
-	}
-	else
-	{
-		$nb_profs              = count($DB_TAB);
-		$nb_profs_maxi_par_col = 20;
-		$nb_cols               = floor(($nb_profs-1)/$nb_profs_maxi_par_col)+1;
-		$nb_profs_par_col      = ceil($nb_profs/$nb_cols);
-		$tab_div = array_fill(0,$nb_cols,'');
-		foreach($DB_TAB as $i => $DB_ROW)
-		{
-			$checked_and_disabled = ($DB_ROW['valeur']==$_SESSION['USER_ID']) ? ' checked disabled' : '' ; // readonly ne fonctionne pas sur un checkbox
-			$tab_div[floor($i/$nb_profs_par_col)] .= '<input type="checkbox" name="f_profs[]" id="p_'.$DB_ROW['valeur'].'" value="'.$DB_ROW['valeur'].'"'.$checked_and_disabled.' /><label for="p_'.$DB_ROW['valeur'].'"> '.html($DB_ROW['texte']).'</label><br />';
-		}
-		echo'<p><a href="#prof_liste" id="prof_check_all"><img src="./_img/all_check.gif" alt="Tout cocher." /> Tout le monde</a>&nbsp;&nbsp;&nbsp;<a href="#prof_liste" id="prof_uncheck_all"><img src="./_img/all_uncheck.gif" alt="Tout décocher." /> Seulement moi</a></p>';
-		echo '<div class="prof_liste">'.implode('</div><div class="prof_liste">',$tab_div).'</div>';
-	}
-	?>
+	<?php echo afficher_form_element_checkbox_collegues() ?>
 	<div style="clear:both"><button id="valider_profs" type="button" class="valider">Valider la sélection</button>&nbsp;&nbsp;&nbsp;<button id="annuler_profs" type="button" class="annuler">Annuler / Retour</button></div>
 </form>
 
 <form action="#" method="post" id="zone_eleve" class="arbre_dynamique hide">
 	<div><button id="indiquer_eleves_deja" type="button" class="eclair">Indiquer les élèves associés à une évaluation de même nom</button> depuis le <input id="f_date_deja" name="f_date_deja" size="9" type="text" value="<?php echo $date_start ?>" /><q class="date_calendrier" title="Cliquez sur cette image pour importer une date depuis un calendrier !"></q><label id="msg_indiquer_eleves_deja"></label></div>
 	<p>Cocher ci-dessous (<span class="astuce">cliquer sur un intitulé pour déployer son contenu</span>) :</p>
-	<?php
-	$tab_regroupements = array();
-	$tab_id = array('classe'=>'','groupe'=>'');
-	// Recherche de la liste des classes et des groupes du professeur
-	$DB_TAB = DB_STRUCTURE_PROFESSEUR::DB_lister_classes_groupes_professeur($_SESSION['USER_ID']);
-	foreach($DB_TAB as $DB_ROW)
-	{
-		$tab_regroupements[$DB_ROW['groupe_id']] = array('nom'=>$DB_ROW['groupe_nom'],'eleve'=>array());
-		$tab_id[$DB_ROW['groupe_type']][] = $DB_ROW['groupe_id'];
-	}
-	// Recherche de la liste des élèves pour chaque classe du professeur
-	if(is_array($tab_id['classe']))
-	{
-		$listing = implode(',',$tab_id['classe']);
-		$DB_TAB = DB_STRUCTURE_PROFESSEUR::DB_lister_eleves_classes($listing);
-		foreach($DB_TAB as $DB_ROW)
-		{
-			$tab_regroupements[$DB_ROW['eleve_classe_id']]['eleve'][$DB_ROW['user_id']] = $DB_ROW['user_nom'].' '.$DB_ROW['user_prenom'].' ('.$DB_ROW['user_login'].')';
-		}
-	}
-	// Recherche de la liste des élèves pour chaque groupe du professeur
-	if(is_array($tab_id['groupe']))
-	{
-		$listing = implode(',',$tab_id['groupe']);
-		$DB_TAB = DB_STRUCTURE_PROFESSEUR::DB_lister_eleves_groupes($listing);
-		foreach($DB_TAB as $DB_ROW)
-		{
-			$tab_regroupements[$DB_ROW['groupe_id']]['eleve'][$DB_ROW['user_id']] = $DB_ROW['user_nom'].' '.$DB_ROW['user_prenom'].' ('.$DB_ROW['user_login'].')';
-		}
-	}
-	// Affichage de la liste des élèves (du professeur) pour chaque classe et groupe
-	foreach($tab_regroupements as $groupe_id => $tab_groupe)
-	{
-		echo'<ul class="ul_m1">'."\r\n";
-		echo'	<li class="li_m1"><span class="deja">'.html($tab_groupe['nom']).'</span><span id="groupe_'.$groupe_id.'" class="gradient_pourcent"></span>'."\r\n";
-		echo'		<ul class="ul_n3">'."\r\n";
-		foreach($tab_groupe['eleve'] as $eleve_id => $eleve_nom)
-		{
-			// C'est plus compliqué que pour les items car un élève peut appartenir à une classe et plusieurs groupes => id du groupe mélé à l'id
-			echo'			<li class="li_n3"><input id="id_'.$eleve_id.'_'.$groupe_id.'" name="f_eleves[]" type="checkbox" value="'.$eleve_id.'" /><label for="id_'.$eleve_id.'_'.$groupe_id.'"> '.html($eleve_nom).'</label><span></span></li>'."\r\n";
-		}
-		echo'		</ul>'."\r\n";
-		echo'	</li>'."\r\n";
-		echo'</ul>'."\r\n";
-	}
-	?>
+	<?php echo afficher_form_element_checkbox_eleves_professeur(TRUE /*with_pourcent*/); ?>
 	<p class="danger">Une évaluation dont la saisie a commencé ne devrait pas voir ses élèves modifiés.<br />En particulier, retirer des élèves d'une évaluation efface les scores correspondants déjà saisis !</p>
 	<div><span class="tab"></span><button id="valider_eleve" type="button" class="valider">Valider la sélection</button>&nbsp;&nbsp;&nbsp;<button id="annuler_eleve" type="button" class="annuler">Annuler / Retour</button></div>
 </form>

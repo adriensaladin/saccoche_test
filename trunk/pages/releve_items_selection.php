@@ -38,6 +38,8 @@ $class_form_synthese   = (Formulaire::$tab_choix['type_synthese'])     ? 'show' 
 $check_bilan_MS        = (Formulaire::$tab_choix['aff_bilan_MS'])      ? ' checked' : '' ;
 $check_bilan_PA        = (Formulaire::$tab_choix['aff_bilan_PA'])      ? ' checked' : '' ;
 $check_conv_sur20      = (Formulaire::$tab_choix['aff_conv_sur20'])    ? ' checked' : '' ;
+// Ci-après sans objet car cette page n'est proposée qu'aux professeurs.
+/*
 if(in_array($_SESSION['USER_PROFIL'],array('parent','eleve')))
 {
 	// Une éventuelle restriction d'accès doit surcharger toute mémorisation antérieure de formulaire
@@ -45,6 +47,7 @@ if(in_array($_SESSION['USER_PROFIL'],array('parent','eleve')))
 	$check_bilan_PA   = (mb_substr_count($_SESSION['DROIT_BILAN_POURCENTAGE_ACQUIS'],$_SESSION['USER_PROFIL'])) ? ' checked' : '' ;
 	$check_conv_sur20 = (mb_substr_count($_SESSION['DROIT_BILAN_NOTE_SUR_VINGT']    ,$_SESSION['USER_PROFIL'])) ? ' checked' : '' ;
 }
+*/
 $check_retro_oui       = (Formulaire::$tab_choix['retroactif']=='oui') ? ' checked' : '' ;
 $check_retro_non       = (Formulaire::$tab_choix['retroactif']=='non') ? ' checked' : '' ;
 $check_aff_coef        = (Formulaire::$tab_choix['aff_coef'])          ? ' checked' : '' ;
@@ -52,8 +55,8 @@ $check_aff_socle       = (Formulaire::$tab_choix['aff_socle'])         ? ' check
 $check_aff_lien        = (Formulaire::$tab_choix['aff_lien'])          ? ' checked' : '' ;
 $check_aff_domaine     = (Formulaire::$tab_choix['aff_domaine'])       ? ' checked' : '' ;
 $check_aff_theme       = (Formulaire::$tab_choix['aff_theme'])         ? ' checked' : '' ;
-$tab_groupes  = DB_STRUCTURE_COMMUN::DB_OPT_groupes_professeur($_SESSION['USER_ID']);
-$tab_periodes = DB_STRUCTURE_COMMUN::DB_OPT_periodes_etabl();
+$tab_groupes   = DB_STRUCTURE_COMMUN::DB_OPT_groupes_professeur($_SESSION['USER_ID']);
+$tab_periodes  = DB_STRUCTURE_COMMUN::DB_OPT_periodes_etabl();
 
 $select_tri_objet   = Formulaire::afficher_select(Formulaire::$tab_select_tri_objet   , $select_nom='f_tri_objet'   , $option_first='non' , $selection=Formulaire::$tab_choix['tableau_tri_objet'] , $optgroup='non');
 $select_tri_mode    = Formulaire::afficher_select(Formulaire::$tab_select_tri_mode    , $select_nom='f_tri_mode'    , $option_first='non' , $selection=Formulaire::$tab_choix['tableau_tri_mode']  , $optgroup='non');
@@ -66,6 +69,8 @@ $select_couleur     = Formulaire::afficher_select(Formulaire::$tab_select_couleu
 $select_legende     = Formulaire::afficher_select(Formulaire::$tab_select_legende     , $select_nom='f_legende'     , $option_first='non' , $selection=Formulaire::$tab_choix['legende']           , $optgroup='non');
 $select_cases_nb    = Formulaire::afficher_select(Formulaire::$tab_select_cases_nb    , $select_nom='f_cases_nb'    , $option_first='non' , $selection=Formulaire::$tab_choix['cases_nb']          , $optgroup='non');
 $select_cases_larg  = Formulaire::afficher_select(Formulaire::$tab_select_cases_size  , $select_nom='f_cases_larg'  , $option_first='non' , $selection=Formulaire::$tab_choix['cases_largeur']     , $optgroup='non');
+
+$select_selection_items = Formulaire::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_selection_items($_SESSION['USER_ID']) , $select_nom='f_selection_items' , $option_first='oui' , $selection=false , $optgroup='non');
 
 // Dates par défaut de début et de fin
 $annee_debut = (date('n')>8) ? date('Y') : date('Y')-1 ;
@@ -143,8 +148,8 @@ if(is_array($tab_groupes))
 	<p><span class="tab"></span><button id="bouton_valider" type="submit" class="generer">Générer.</button><label id="ajax_msg">&nbsp;</label></p>
 </fieldset></form>
 
-<form action="#" method="post" id="zone_compet" class="arbre_dynamique arbre_check hide">
-	<div>Tout déployer / contracter : <a href="m1" class="all_extend"><img alt="m1" src="./_img/deploy_m1.gif" /></a> <a href="m2" class="all_extend"><img alt="m2" src="./_img/deploy_m2.gif" /></a> <a href="n1" class="all_extend"><img alt="n1" src="./_img/deploy_n1.gif" /></a> <a href="n2" class="all_extend"><img alt="n2" src="./_img/deploy_n2.gif" /></a> <a href="n3" class="all_extend"><img alt="n3" src="./_img/deploy_n3.gif" /></a></div>
+<form action="#" method="post" id="zone_matieres_items" class="arbre_dynamique arbre_check hide">
+	<div><label class="tab">Déployer / contracter</label><a href="m1" class="all_extend"><img alt="m1" src="./_img/deploy_m1.gif" /></a> <a href="m2" class="all_extend"><img alt="m2" src="./_img/deploy_m2.gif" /></a> <a href="n1" class="all_extend"><img alt="n1" src="./_img/deploy_n1.gif" /></a> <a href="n2" class="all_extend"><img alt="n2" src="./_img/deploy_n2.gif" /></a> <a href="n3" class="all_extend"><img alt="n3" src="./_img/deploy_n3.gif" /></a></div>
 	<p>Cocher ci-dessous (<span class="astuce">cliquer sur un intitulé pour déployer son contenu</span>) :</p>
 	<?php
 	// Affichage de la liste des items pour toutes les matières d'un professeur, sur tous les niveaux
@@ -152,6 +157,11 @@ if(is_array($tab_groupes))
 	echo afficher_arborescence_matiere_from_SQL($DB_TAB,$dynamique=true,$reference=true,$aff_coef=false,$aff_cart=false,$aff_socle='texte',$aff_lien=false,$aff_input=true);
 	?>
 	<p><span class="tab"></span><button id="valider_compet" type="button" class="valider">Valider la sélection</button>&nbsp;&nbsp;&nbsp;<button id="annuler_compet" type="button" class="annuler">Annuler / Retour</button></p>
+	<hr />
+	<p>
+		<label class="tab" for="f_selection_items"><img alt="" src="./_img/bulle_aide.png" title="Pour choisir un regroupement d'items mémorisé." /> Initialisation</label><?php echo $select_selection_items ?><br />
+		<label class="tab" for="f_liste_items_nom"><img alt="" src="./_img/bulle_aide.png" title="Pour enregistrer le groupe d'items cochés." /> Mémorisation</label><input id="f_liste_items_nom" name="f_liste_items_nom" size="30" type="text" value="" maxlength="60" /> <button id="f_enregistrer_items" type="button" class="fichier_export">Enregistrer</button><label id="ajax_msg_memo">&nbsp;</label>
+	</p>
 </form>
 
 <div id="bilan"></div>

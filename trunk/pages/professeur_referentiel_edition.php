@@ -41,11 +41,9 @@ foreach($tab_profils as $profil)
 ?>
 
 <ul class="puce">
-	<li><span class="astuce">Profils autorisés par les administrateurs : <span class="u"><?php echo $texte_profil ?></span>.</span></li>
 	<li><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=referentiels_socle__referentiel_modifier_contenu">DOC : Modifier le contenu des référentiels.</a></span></li>
-	<li><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=referentiels_socle__liaison_matiere_socle">DOC : Liaison matières &amp; socle commun.</a></span></li>
-	<li><span class="astuce">Pour mettre à jour un référentiel modifié sur le serveur communautaire, utiliser la page "<a href="./index.php?page=professeur_referentiel&amp;section=gestion">créer / paramétrer les référentiels</a>".</span></li>
-	<li><span class="astuce">Pour ajouter / modifier les ressources de travail associées aux items, utiliser la page "<a href="./index.php?page=professeur_referentiel&amp;section=ressources">associer des ressources aux items</a>".</span></li>
+	<li><span class="astuce">Profils autorisés par les administrateurs : <span class="u"><?php echo $texte_profil ?></span>.</span></li>
+	<li><span class="astuce">Pour mettre à jour sur le serveur communautaire un référentiel modifié, utiliser la page "<a href="./index.php?page=professeur_referentiel&amp;section=gestion">créer / paramétrer les référentiels</a>".</span></li>
 	<li><span class="danger">Retirer des items supprime les résultats associés de tous les élèves !</span></li>
 </ul>
 
@@ -100,7 +98,7 @@ else
 <form action="#" method="post" id="zone_elaboration_referentiel" onsubmit="return false;" class="arbre_dynamique">
 </form>
 
-<div id="zone_socle" class="arbre_dynamique hide">
+<div id="zone_socle_item" class="arbre_dynamique hide">
 	<h2>Relation au socle commun</h2>
 	<form action="#" method="post">
 		<p>

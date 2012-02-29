@@ -140,7 +140,7 @@ if( ($type_export=='arbre_matiere') && $matiere_id && $matiere_nom )
 	// ajout du préfixe 'ITEM_' pour éviter un bug avec M$ Excel « SYLK : Format de fichier non valide » (http://support.microsoft.com/kb/323626/fr). 
 	$export_csv  = 'MATIERE'.$separateur.'NIVEAU'.$separateur.'DOMAINE'.$separateur.'THEME'.$separateur.'ITEM'."\r\n\r\n";
 	// Préparation de l'export HTML
-	$export_html = '<div id="zone_compet" class="arbre_dynamique p">';
+	$export_html = '<div id="zone_matieres_items" class="arbre_dynamique p">';
 
 	$tab_niveau  = array();
 	$tab_domaine = array();

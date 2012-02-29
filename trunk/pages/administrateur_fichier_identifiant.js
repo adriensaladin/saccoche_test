@@ -89,7 +89,7 @@ $(document).ready
 			}
 			groupe_type = groupe_val.substring(0,1);
 			groupe_id   = groupe_val.substring(1);
-			$('#ajax_msg').removeAttr("class").addClass("loader").html("Veuillez patienter...");
+			$('#ajax_msg').removeAttr("class").addClass("loader").html("Connexion au serveur&hellip;");
 			$('#bilan tbody').html('');
 			$.ajax
 			(
@@ -142,7 +142,7 @@ $(document).ready
 			function()
 			{
 				$('button').prop('disabled',true);
-				$('#ajax_msg').removeAttr("class").addClass("loader").html("Demande envoyée...");
+				$('#ajax_msg').removeAttr("class").addClass("loader").html("Connexion au serveur&hellip;");
 				$.ajax
 				(
 					{
@@ -197,7 +197,7 @@ $(document).ready
 					return(false);
 				}
 				$('button').prop('disabled',true);
-				$('#ajax_msg').removeAttr("class").addClass("loader").html("Demande envoyée...");
+				$('#ajax_msg').removeAttr("class").addClass("loader").html("Connexion au serveur&hellip;");
 				$.ajax
 				(
 					{
@@ -313,7 +313,7 @@ $(document).ready
 			else
 			{
 				$('button').prop('disabled',true);
-				$('#ajax_msg').removeAttr("class").addClass("loader").html('Fichier envoyé...');
+				$('#ajax_msg').removeAttr("class").addClass("loader").html("Connexion au serveur&hellip;");
 				return true;
 			}
 		}
@@ -346,7 +346,7 @@ $(document).ready
 				$('#ajax_retour').html('&nbsp;');
 				$('button').prop('disabled',true);
 				var duree = (action.indexOf('_argos_')!=-1) ? ' <span class="u">entre 20 et 90 secondes</span>' : '' ;
-				$('#ajax_msg').removeAttr("class").addClass("loader").html("Demande envoyée... Veuillez patienter"+duree+".");
+				$('#ajax_msg').removeAttr("class").addClass("loader").html("Connexion au serveur&hellip; Veuillez patienter"+duree+".");
 				$.ajax
 				(
 					{

@@ -56,7 +56,7 @@ $(document).ready
 			palier_id = $("#f_palier").val();
 			if(palier_id)
 			{
-				$('#ajax_maj_pilier').removeAttr("class").addClass("loader").html("Actualisation en cours...");
+				$('#ajax_maj_pilier').removeAttr("class").addClass("loader").html("Connexion au serveur&hellip;");
 				$.ajax
 				(
 					{
@@ -106,7 +106,7 @@ $(document).ready
 			{
 				groupe_type = $("#f_groupe option:selected").parent().attr('label');
 				if(typeof(groupe_type)=='undefined') {groupe_type = 'Classes';} // Cas d'un P.P.
-				$('#ajax_maj_eleve').removeAttr("class").addClass("loader").html("Actualisation en cours...");
+				$('#ajax_maj_eleve').removeAttr("class").addClass("loader").html("Connexion au serveur&hellip;");
 				$.ajax
 				(
 					{
@@ -208,7 +208,7 @@ $(document).ready
 			if(readytogo)
 			{
 				$("button").prop('disabled',true);
-				$('#ajax_msg_choix').removeAttr("class").addClass("loader").html("Demande envoyée...");
+				$('#ajax_msg_choix').removeAttr("class").addClass("loader").html("Connexion au serveur&hellip;");
 			}
 			return readytogo;
 		}
@@ -285,7 +285,7 @@ $(document).ready
 			function()
 			{
 				$("button").prop('disabled',true);
-				$('#ajax_msg_validation').removeAttr("class").addClass("loader").html("Demande envoyée...");
+				$('#ajax_msg_validation').removeAttr("class").addClass("loader").html("Connexion au serveur&hellip;");
 				$.ajax
 				(
 					{

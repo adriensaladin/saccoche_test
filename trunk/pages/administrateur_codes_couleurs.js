@@ -171,7 +171,7 @@ $(document).ready
 			if(readytogo)
 			{
 				$("#bouton_valider_notes").prop('disabled',true);
-				$('#ajax_msg_notes').removeAttr("class").addClass("loader").html("Traitement de la demande en cours...");
+				$('#ajax_msg_notes').removeAttr("class").addClass("loader").html("Connexion au serveur&hellip;");
 			}
 			return readytogo;
 		}
@@ -275,7 +275,7 @@ $(document).ready
 			if(readytogo)
 			{
 				$("#bouton_valider_acquis").prop('disabled',true);
-				$('#ajax_msg_acquis').removeAttr("class").addClass("loader").html("Traitement de la demande en cours...");
+				$('#ajax_msg_acquis').removeAttr("class").addClass("loader").html("Connexion au serveur&hellip;");
 			}
 			return readytogo;
 		}

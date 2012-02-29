@@ -114,7 +114,7 @@ $(document).ready
 			if(readytogo)
 			{
 				$("#actualiser").prop('disabled',true);
-				$('#ajax_msg').removeAttr("class").addClass("loader").html("Soumission du formulaire en cours...");
+				$('#ajax_msg').removeAttr("class").addClass("loader").html("Connexion au serveur&hellip;");
 				$('#zone_eval_choix').hide();
 				$('#zone_eval_detail').hide();
 			}
@@ -192,7 +192,7 @@ $(document).ready
 				texte_date = texte_date.substring(17,texte_date.length); // enlever la date mysql cachée
 				$('#zone_eval_choix q').hide();	// Pas afficher_masquer_images_action() à cause des <q> pour le choix d'une date
 				$('#zone_eval_detail').hide();
-				new_label = '<label for="'+td_id+'" class="loader">Demande envoyée...</label>';
+				new_label = '<label for="'+td_id+'" class="loader">Connexion au serveur&hellip;</label>';
 				$(this).after(new_label);
 				$.ajax
 				(

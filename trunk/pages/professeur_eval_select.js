@@ -63,6 +63,18 @@ $(document).ready
 		var ajouter = function()
 		{
 			mode = $(this).attr('class');
+			// Report des valeurs transmises via un formulaire depuis un tableau de synthèse bilan
+			if(reception_todo)
+			{
+				reception_todo = false;
+			}
+			else
+			{
+				reception_users_texte  = 'aucun';
+				reception_items_texte = 'aucun';
+				reception_users_liste  = '';
+				reception_items_liste = '';
+			}
 			// Fabriquer la ligne avec les éléments de formulaires
 			afficher_masquer_images_action('hide');
 			$('#form0').css('visibility','hidden');
@@ -70,16 +82,16 @@ $(document).ready
 			new_tr += '<tr>';
 			new_tr += '<td><input id="f_date" name="f_date" size="9" type="text" value="'+input_date+'" /><q class="date_calendrier" title="Cliquez sur cette image pour importer une date depuis un calendrier !"></q></td>';
 			new_tr += '<td><input id="box_date" type="checkbox" checked style="vertical-align:-3px" /> <span style="vertical-align:-2px">identique</span><span class="hide"><input id="f_date_visible" name="f_date_visible" size="9" type="text" value="'+input_date+'" /><q class="date_calendrier" title="Cliquez sur cette image pour importer une date depuis un calendrier !"></q></span></td>';
-			new_tr += '<td><input id="f_eleve_nombre" name="f_eleve_nombre" size="10" type="text" value="aucun" readonly /><input id="f_eleve_liste" name="f_eleve_liste" type="hidden" value="" /><q class="choisir_eleve" title="Voir ou choisir les élèves."></q></td>';
+			new_tr += '<td><input id="f_eleve_nombre" name="f_eleve_nombre" size="10" type="text" value="'+reception_users_texte+'" readonly /><input id="f_eleve_liste" name="f_eleve_liste" type="hidden" value="'+reception_users_liste+'" /><q class="choisir_eleve" title="Voir ou choisir les élèves."></q></td>';
 			new_tr += '<td><input id="f_info" name="f_info" size="20" type="text" value="" /></td>';
-			new_tr += '<td><input id="f_compet_nombre" name="f_compet_nombre" size="10" type="text" value="aucun" readonly /><input id="f_compet_liste" name="f_compet_liste" type="hidden" value="" /><q class="choisir_compet" title="Voir ou choisir les items."></q></td>';
+			new_tr += '<td><input id="f_compet_nombre" name="f_compet_nombre" size="10" type="text" value="'+reception_items_texte+'" readonly /><input id="f_compet_liste" name="f_compet_liste" type="hidden" value="'+reception_items_liste+'" /><q class="choisir_compet" title="Voir ou choisir les items."></q></td>';
 			new_tr += '<td><input id="f_prof_nombre" name="f_prof_nombre" size="10" type="text" value="moi seul" readonly /><input id="f_prof_liste" name="f_prof_liste" type="hidden" value="" /><q class="choisir_prof" title="Voir ou choisir les collègues."></q></td>';
 			new_tr += '<td class="nu"><input id="f_action" name="f_action" type="hidden" value="'+mode+'" /><q class="valider" title="Valider l\'ajout de cette évaluation."></q><q class="annuler" title="Annuler l\'ajout de cette évaluation."></q> <label id="ajax_msg">&nbsp;</label></td>';
 			new_tr += '</tr>';
 			// Ajouter cette nouvelle ligne
 			$(this).parent().parent().after(new_tr);
 			infobulle();
-			$('#f_date').focus();
+			$('#f_info').focus();
 		};
 
 		/**
@@ -182,7 +194,7 @@ $(document).ready
 			// Ajouter cette nouvelle ligne
 			$(this).parent().parent().after(new_tr);
 			infobulle();
-			$('#f_groupe').focus();
+			$('#f_info').focus();
 		};
 
 		/**
@@ -285,7 +297,7 @@ $(document).ready
 			$('#msg_import').removeAttr("class").html('&nbsp;');
 			$('#zone_saisir').css("display","block");
 			$('#titre_saisir').html('Saisir les acquisitions d\'une évaluation | '+date2+' | '+info);
-			$('#msg_saisir').removeAttr("class").addClass("loader").html("Demande envoyée...");
+			$('#msg_saisir').removeAttr("class").addClass("loader").html("Connexion au serveur&hellip;");
 			$.ajax
 			(
 				{
@@ -348,7 +360,7 @@ $(document).ready
 			$('#form0 , #form1').hide('fast');
 			$('#zone_voir').css("display","block");
 			$('#titre_voir').html('Voir les acquisitions d\'une évaluation | '+date+' | '+info);
-			$('#msg_voir').removeAttr("class").addClass("loader").html("Demande envoyée...");
+			$('#msg_voir').removeAttr("class").addClass("loader").html("Connexion au serveur&hellip;");
 			$.ajax
 			(
 				{
@@ -402,7 +414,7 @@ $(document).ready
 			$('#form0 , #form1').hide('fast');
 			$('#zone_voir_repart').css("display","block");
 			$('#titre_voir_repart').html('Voir les répartitions des élèves à une évaluation | '+date+' | '+info);
-			$('#msg_voir_repart').removeAttr("class").addClass("loader").html("Demande envoyée...");
+			$('#msg_voir_repart').removeAttr("class").addClass("loader").html("Connexion au serveur&hellip;");
 			$.ajax
 			(
 				{
@@ -447,36 +459,9 @@ $(document).ready
 		var choisir_compet = function()
 		{
 			// Ne pas changer ici la valeur de "mode" (qui est à "ajouter" ou "modifier" ou "dupliquer").
-			$('#zone_compet ul').css("display","none");
-			$('#zone_compet ul.ul_m1').css("display","block");
-			var liste = $('#f_compet_liste').val();
-			// Décocher tout
-			$("#zone_compet input[type=checkbox]").each
-			(
-				function()
-				{
-					this.checked = false;
-				}
-			);
-			// Cocher ce qui doit l'être (initialisation)
-			if(liste.length)
-			{
-				var tab_id = liste.split('_');
-				for(i in tab_id)
-				{
-					var id = 'id_'+tab_id[i];
-					if($('#'+id).length)
-					{
-						$('#'+id).prop('checked',true);
-						$('#'+id).closest('ul.ul_n3').css("display","block");	// les items
-						$('#'+id).closest('ul.ul_n2').css("display","block");	// le thème
-						$('#'+id).closest('ul.ul_n1').css("display","block");	// le domaine
-						$('#'+id).closest('ul.ul_m2').css("display","block");	// le niveau
-					}
-				}
-			}
+			cocher_matieres_items( $('#f_compet_liste').val() );
 			// Afficher la zone
-			$.fancybox( { 'href':'#zone_compet' , onStart:function(){$('#zone_compet').css("display","block");} , onClosed:function(){$('#zone_compet').css("display","none");} , 'modal':true , 'centerOnScroll':true } );
+			$.fancybox( { 'href':'#zone_matieres_items' , onStart:function(){$('#zone_matieres_items').css("display","block");} , onClosed:function(){$('#zone_matieres_items').css("display","none");} , 'modal':true , 'centerOnScroll':true } );
 		};
 
 		/**
@@ -487,34 +472,9 @@ $(document).ready
 		{
 			// Ne pas changer ici la valeur de "mode" (qui est à "ajouter" ou "modifier" ou "dupliquer").
 			$('#zone_eleve q.date_calendrier').show();
-			$('#zone_eleve ul').css("display","none");
-			$('#zone_eleve ul.ul_m1').css("display","block");
 			$('#zone_eleve li.li_m1 span.gradient_pourcent').html('');
 			$('#msg_indiquer_eleves_deja').removeAttr("class").html('');
-			var liste = $('#f_eleve_liste').val();
-			// Décocher tout
-			$("#zone_eleve input[type=checkbox]").each
-			(
-				function()
-				{
-					this.checked = false;
-					$(this).next('label').removeAttr('class').next('span').html(''); // retrait des indications éventuels d'élèves associés à une évaluation de même nom
-				}
-			);
-			// Cocher ce qui doit l'être (initialisation)
-			if(liste.length)
-			{
-				var tab_id = liste.split('_');
-				for(i in tab_id)
-				{
-					var id_debut = 'id_'+tab_id[i]+'_';
-					if($('input[id^='+id_debut+']').length)
-					{
-						$('input[id^='+id_debut+']').prop('checked',true);
-						$('input[id^='+id_debut+']').parent().parent().css("display","block");	// le regroupement
-					}
-				}
-			}
+			cocher_eleves( $('#f_eleve_liste').val() );
 			// Afficher la zone
 			$.fancybox( { 'href':'#zone_eleve' , onStart:function(){$('#zone_eleve').css("display","block");} , onClosed:function(){$('#zone_eleve').css("display","none");} , 'modal':true , 'centerOnScroll':true } );
 		};
@@ -534,7 +494,7 @@ $(document).ready
 			$('#form0 , #form1').hide('fast');
 			$('#zone_ordonner').css("display","block");
 			$('#titre_ordonner').html('Réordonner les items d\'une évaluation | '+groupe+' | '+info);
-			$('#msg_ordonner').removeAttr("class").addClass("loader").html("Demande envoyée...");
+			$('#msg_ordonner').removeAttr("class").addClass("loader").html("Connexion au serveur&hellip;");
 			$.ajax
 			(
 				{
@@ -581,32 +541,7 @@ $(document).ready
 		 */
 		var choisir_prof = function()
 		{
-			// Récupérer les informations de la ligne concernée
-			var prof_liste = $('#f_prof_liste').val();
-			// Décocher tout
-			$("#zone_profs input[type=checkbox]").each
-			(
-				function()
-				{
-					if(this.disabled == false)
-					{
-						this.checked = false;
-					}
-				}
-			);
-			// Cocher des cases des profs
-			if(prof_liste.length)
-			{
-				var tab_id = prof_liste.split('_');
-				for(i in tab_id)
-				{
-					var id = 'p_'+tab_id[i];
-					if($('#'+id).length)
-					{
-						$('#'+id).prop('checked',true);
-					}
-				}
-			}
+			cocher_profs( $('#f_prof_liste').val() );
 			// Afficher la zone
 			$.fancybox( { 'href':'#zone_profs' , onStart:function(){$('#zone_profs').css("display","block");} , onClosed:function(){$('#zone_profs').css("display","none");} , 'modal':true , 'centerOnScroll':true } );
 		};
@@ -807,7 +742,7 @@ $(document).ready
 			{
 				var liste = '';
 				var nombre = 0;
-				$("#zone_compet input[type=checkbox]:checked").each
+				$("#zone_matieres_items input[type=checkbox]:checked").each
 				(
 					function()
 					{
@@ -879,6 +814,77 @@ $(document).ready
 			}
 		);
 
+		//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+		//	Demande pour sélectionner d'une liste d'items mémorisés
+		//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
+		$('#f_selection_items').change
+		(
+			function()
+			{
+				cocher_matieres_items( $("#f_selection_items").val() );
+			}
+		);
+
+		//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+		//	Clic sur le bouton pour mémoriser un choix d'items
+		//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
+		$('#f_enregistrer_items').click
+		(
+			function()
+			{
+				var liste_nom = $("#f_liste_items_nom").val();
+				if(!liste_nom)
+				{
+					$('#ajax_msg_memo').removeAttr("class").addClass("erreur").html("nom manquant");
+					$("#f_liste_items_nom").focus();
+					return false;
+				}
+				var compet_liste = '';
+				$("#zone_matieres_items input[type=checkbox]:checked").each
+				(
+					function()
+					{
+						compet_liste += $(this).val()+'_';
+					}
+				);
+				if(!compet_liste)
+				{
+					$('#ajax_msg_memo').removeAttr("class").addClass("erreur").html("Aucun item coché !");
+					return false;
+				}
+				var compet_liste  = compet_liste.substring(0,compet_liste.length-1);
+				$('#ajax_msg_memo').removeAttr("class").addClass("loader").html("Connexion au serveur&hellip;");
+				$.ajax
+				(
+					{
+						type : 'POST',
+						url : 'ajax.php?page=compte_selection_items',
+						data : 'f_action='+'ajouter'+'&f_compet_liste='+compet_liste+'&f_nom='+encodeURIComponent(liste_nom),
+						dataType : "html",
+						error : function(msg,string)
+						{
+							$('#ajax_msg_memo').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
+						},
+						success : function(responseHTML)
+						{
+							initialiser_compteur();
+							if(responseHTML.substring(0,3)=='<tr')	// Attention aux caractères accentués : l'utf-8 pose des pbs pour ce test
+							{
+								$('#ajax_msg_memo').removeAttr("class").addClass("valide").html("Sélection mémorisée.");
+							}
+						else
+							{
+								$('#ajax_msg_memo').removeAttr("class").addClass("alerte").html(responseHTML);
+								$("#f_liste_items_nom").focus();
+							}
+						}
+					}
+				);
+			}
+		);
+
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 //	Fonction pour colorer les cases du tableau de saisie des items déjà enregistrés
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
@@ -908,7 +914,7 @@ $(document).ready
 			function()
 			{
 				$('button').prop('disabled',true);
-				$('#msg_imprimer').removeAttr("class").addClass("loader").html("Génération en cours...");
+				$('#msg_imprimer').removeAttr("class").addClass("loader").html("Connexion au serveur&hellip;");
 				$('#zone_imprimer_retour').html("&nbsp;");
 				$.ajax
 				(
@@ -969,7 +975,7 @@ $(document).ready
 					return false;
 				}
 				$('button').prop('disabled',true);
-				$('#msg_indiquer_eleves_deja').removeAttr("class").addClass("loader").html("Recherche en cours...");
+				$('#msg_indiquer_eleves_deja').removeAttr("class").addClass("loader").html("Connexion au serveur&hellip;");
 				$.ajax
 				(
 					{
@@ -1385,7 +1391,7 @@ $(document).ready
 						}
 					);
 					$('button').prop('disabled',true);
-					$('#ajax_msg').removeAttr("class").addClass("loader").html("Demande envoyée...");
+					$('#ajax_msg').removeAttr("class").addClass("loader").html("Connexion au serveur&hellip;");
 					$.ajax
 					(
 						{
@@ -1435,7 +1441,7 @@ $(document).ready
 				else
 				{
 					$('button').prop('disabled',true);
-					$('#msg_saisir').removeAttr("class").addClass("loader").html("Demande envoyée...");
+					$('#msg_saisir').removeAttr("class").addClass("loader").html("Connexion au serveur&hellip;");
 					// Grouper les saisies dans une variable unique afin d'éviter tout problème dûe à une limitation du module "suhosin" (voir par exemple http://xuxu.fr/2008/12/04/nombre-de-variables-post-limite-ou-tronque).
 					var f_notes = new Array();
 					$("#table_saisir tbody input").each
@@ -1572,7 +1578,7 @@ $(document).ready
 			{
 				please_wait = true;
 				$('#ajax_msg').parent().children('q').hide();
-				$('#ajax_msg').removeAttr("class").addClass("loader").html("Demande envoyée...");
+				$('#ajax_msg').removeAttr("class").addClass("loader").html("Connexion au serveur&hellip;");
 			}
 			return readytogo;
 		}
@@ -1688,7 +1694,7 @@ $(document).ready
 			var readytogo = validation0.form();
 			if(readytogo)
 			{
-				$('#ajax_msg0').removeAttr("class").addClass("loader").html("Demande envoyée...");
+				$('#ajax_msg0').removeAttr("class").addClass("loader").html("Connexion au serveur&hellip;");
 			}
 			return readytogo;
 		}
@@ -1716,8 +1722,14 @@ $(document).ready
 				trier_tableau();
 				afficher_masquer_images_action('show');
 				infobulle();
+				if( reception_todo )
+				{
+					$('q.ajouter').click();
+				}
 			}
 		}
+
+		// Initialiser l'affichage au démarrage
 		$('#form0').submit();
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
@@ -1760,7 +1772,7 @@ $(document).ready
 			else
 			{
 				$('button').prop('disabled',true);
-				$('#msg_import').removeAttr("class").addClass("loader").html('Fichier envoyé...');
+				$('#msg_import').removeAttr("class").addClass("loader").html("Connexion au serveur&hellip;");
 				return true;
 			}
 		}

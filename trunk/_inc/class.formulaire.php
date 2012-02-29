@@ -140,6 +140,14 @@ public static $tab_select_cart_detail = array(
 	array('valeur'=>'minimal' , 'texte'=>'cartouche minimal avec uniquement les références des items')
 );
 
+public static $tab_select_recherche_objet = array(
+	array('valeur'=>'matiere_items_bilanMS'   , 'optgroup'=>1 , 'texte'=>'moyenne des scores d\'acquisition') ,
+	array('valeur'=>'matiere_items_bilanPA'   , 'optgroup'=>1 , 'texte'=>'pourcentage d\'items acquis') ,
+	array('valeur'=>'socle_item_pourcentage'  , 'optgroup'=>2 , 'texte'=>'pourcentage d\'items disciplinaires acquis') ,
+	array('valeur'=>'socle_item_validation'   , 'optgroup'=>2 , 'texte'=>'état de validation') ,
+	array('valeur'=>'socle_pilier_validation' , 'optgroup'=>3 , 'texte'=>'état de validation')
+);
+
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 //	Variables utilisées pouvant être initialisés lors d'une requête puis utilisées lors de la construction du formulaire
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-

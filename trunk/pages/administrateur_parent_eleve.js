@@ -83,7 +83,7 @@ $(document).ready
 				// type = $("#f_groupe option:selected").parent().attr('label');
 				groupe_type = groupe_val.substring(0,1);
 				groupe_id   = groupe_val.substring(1);
-				$('#ajax_msg').removeAttr("class").addClass("loader").html("Actualisation en cours...");
+				$('#ajax_msg').removeAttr("class").addClass("loader").html("Connexion au serveur&hellip;");
 				maj_eleve(groupe_id,groupe_type);
 			}
 			else
@@ -116,7 +116,7 @@ $(document).ready
 					$('#ajax_msg').removeAttr("class").html("&nbsp;");
 					return false;
 				}
-				$('#ajax_msg').removeAttr("class").addClass("loader").html("Actualisation en cours...");
+				$('#ajax_msg').removeAttr("class").addClass("loader").html("Connexion au serveur&hellip;");
 				$.ajax
 				(
 					{
@@ -261,7 +261,7 @@ $(document).ready
 				// Zy va : envoi ajax
 				$('button').prop('disabled',true);
 				afficher_masquer_images_action('hide');
-				$('#ajax_msg2').removeAttr("class").addClass("loader").html("Enregistrement en cours...");
+				$('#ajax_msg2').removeAttr("class").addClass("loader").html("Connexion au serveur&hellip;");
 				$.ajax
 				(
 					{

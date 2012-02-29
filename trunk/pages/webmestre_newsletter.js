@@ -65,7 +65,7 @@ $(document).ready
 				}
 				// on envoie
 				$("#bouton_valider").prop('disabled',true);
-				$('#ajax_msg').removeAttr("class").addClass("loader").html("Préparation de l'envoi...");
+				$('#ajax_msg').removeAttr("class").addClass("loader").html("Connexion au serveur&hellip;");
 				$.ajax
 				(
 					{
@@ -186,7 +186,7 @@ $(document).ready
 		{
 			$("button").prop('disabled',true);
 			// afficher_masquer_images_action('hide');
-			$('#ajax_supprimer').removeAttr("class").addClass("loader").html("Demande envoyée...");
+			$('#ajax_supprimer').removeAttr("class").addClass("loader").html("Connexion au serveur&hellip;");
 			$.ajax
 			(
 				{

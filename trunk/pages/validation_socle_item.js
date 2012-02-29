@@ -88,7 +88,7 @@ $(document).ready
 			palier_id = $("#f_palier").val();
 			if(palier_id)
 			{
-				$('#ajax_maj_pilier').removeAttr("class").addClass("loader").html("Actualisation en cours...");
+				$('#ajax_maj_pilier').removeAttr("class").addClass("loader").html("Connexion au serveur&hellip;");
 				$.ajax
 				(
 					{
@@ -139,7 +139,7 @@ $(document).ready
 			pilier_id = $("#f_pilier").val();
 			if(pilier_id)
 			{
-				$('#ajax_maj_domaine').removeAttr("class").addClass("loader").html("Actualisation en cours...");
+				$('#ajax_maj_domaine').removeAttr("class").addClass("loader").html("Connexion au serveur&hellip;");
 				$.ajax
 				(
 					{
@@ -187,7 +187,7 @@ $(document).ready
 			{
 				groupe_type = $("#f_groupe option:selected").parent().attr('label');
 				if(typeof(groupe_type)=='undefined') {groupe_type = 'Classes';} // Cas d'un P.P.
-				$('#ajax_maj_eleve').removeAttr("class").addClass("loader").html("Actualisation en cours...");
+				$('#ajax_maj_eleve').removeAttr("class").addClass("loader").html("Connexion au serveur&hellip;");
 				$.ajax
 				(
 					{
@@ -301,7 +301,7 @@ $(document).ready
 			if(readytogo)
 			{
 				$("button").prop('disabled',true);
-				$('#ajax_msg_choix').removeAttr("class").addClass("loader").html("Demande envoyée...");
+				$('#ajax_msg_choix').removeAttr("class").addClass("loader").html("Connexion au serveur&hellip;");
 			}
 			return readytogo;
 		}
@@ -470,7 +470,7 @@ $(document).ready
 			$('#entree').html( $('#E'+item_id).next('th').children('div').text() );
 			$('#stats').html('');
 			$('#items').html('');
-			$('#ajax_msg_information').removeAttr("class").addClass("loader").html("Demande d'informations envoyée...");
+			$('#ajax_msg_information').removeAttr("class").addClass("loader").html("Connexion au serveur&hellip;");
 			$.ajax
 			(
 				{
@@ -533,7 +533,7 @@ $(document).ready
 			function()
 			{
 				$("button").prop('disabled',true);
-				$('#ajax_msg_validation').removeAttr("class").addClass("loader").html("Demande envoyée...");
+				$('#ajax_msg_validation').removeAttr("class").addClass("loader").html("Connexion au serveur&hellip;");
 				// Récupérer les infos
 				var tab_valid = new Array();
 				$("#tableau_validation tbody td").each

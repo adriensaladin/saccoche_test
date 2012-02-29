@@ -45,7 +45,7 @@ $(document).ready
 				}
 				var bases = new Array(); $("#f_base option:selected").each(function(){bases.push($(this).val());});
 				$("button").prop('disabled',true);
-				$('#ajax_msg_export').removeAttr("class").addClass("loader").html("Préparation de l'export...");
+				$('#ajax_msg_export').removeAttr("class").addClass("loader").html("Connexion au serveur&hellip;");
 				$.ajax
 				(
 					{
@@ -225,7 +225,7 @@ $(document).ready
 			else
 			{
 				$('button').prop('disabled',true);
-				$('#ajax_msg_csv').removeAttr("class").addClass("loader").html('Fichier envoyé...');
+				$('#ajax_msg_csv').removeAttr("class").addClass("loader").html("Connexion au serveur&hellip;");
 				return true;
 			}
 		}
@@ -245,7 +245,7 @@ $(document).ready
 			else
 			{
 				$('button').prop('disabled',true);
-				$('#ajax_msg_zip').removeAttr("class").addClass("loader").html('Fichier envoyé...');
+				$('#ajax_msg_zip').removeAttr("class").addClass("loader").html("Connexion au serveur&hellip;");
 				return true;
 			}
 		}
@@ -420,7 +420,7 @@ $(document).ready
 		{
 			$("button").prop('disabled',true);
 			// afficher_masquer_images_action('hide');
-			$('#ajax_supprimer_export').removeAttr("class").addClass("loader").html("Demande envoyée...");
+			$('#ajax_supprimer_export').removeAttr("class").addClass("loader").html("Connexion au serveur&hellip;");
 			$.ajax
 			(
 				{
@@ -503,7 +503,7 @@ $(document).ready
 		{
 			$("button").prop('disabled',true);
 			// afficher_masquer_images_action('hide');
-			$('#ajax_supprimer_import').removeAttr("class").addClass("loader").html("Demande envoyée...");
+			$('#ajax_supprimer_import').removeAttr("class").addClass("loader").html("Connexion au serveur&hellip;");
 			$.ajax
 			(
 				{

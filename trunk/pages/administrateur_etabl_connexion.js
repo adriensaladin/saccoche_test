@@ -144,7 +144,7 @@ $(document).ready
 				var connexion_mode = tab_infos[0];
 				var connexion_nom  = tab_infos[1];
 				$("#bouton_valider").prop('disabled',true);
-				$('#ajax_msg').removeAttr("class").addClass("loader").html("Demande envoyée...");
+				$('#ajax_msg').removeAttr("class").addClass("loader").html("Connexion au serveur&hellip;");
 				$.ajax
 				(
 					{

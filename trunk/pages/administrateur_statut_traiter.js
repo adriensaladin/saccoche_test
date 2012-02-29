@@ -207,7 +207,7 @@ $(document).ready
 				groupe_id   = groupe_val.substring(1);
 				if(!conserver_message)
 				{
-					$('#ajax_msg').removeAttr("class").addClass("loader").html("Actualisation en cours...");
+					$('#ajax_msg').removeAttr("class").addClass("loader").html("Connexion au serveur&hellip;");
 				}
 				maj_eleve(groupe_id,groupe_type);
 			}
@@ -274,7 +274,7 @@ $(document).ready
 				if(continuer)
 				{
 					$('button').prop('disabled',true);
-					$('#ajax_msg').removeAttr("class").addClass("loader").html("Demande envoyée...");
+					$('#ajax_msg').removeAttr("class").addClass("loader").html("Connexion au serveur&hellip;");
 					$.ajax
 					(
 						{

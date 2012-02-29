@@ -141,13 +141,10 @@ if( ($action=='Afficher_demandes') && $matiere_id && $matiere_nom && $groupe_id 
 elseif( ($action=='creer') && $groupe_id && (isset($tab_types[$groupe_type])) && in_array($qui,$tab_qui) && $date && $date_visible && $info && in_array($suite,$tab_suite) && $nb_demandes && $nb_users && $nb_items )
 {
 	// Dans le cas d'une évaluation sur une liste d'élèves sélectionnés,
-	// Commencer par créer un nouveau groupe de type "eval", utilisé uniquement pour cette évaluation (c'est transparent pour le professeur)
 	if($qui=='select')
 	{
+		// Commencer par créer un nouveau groupe de type "eval", utilisé uniquement pour cette évaluation (c'est transparent pour le professeur) ; y associe automatiquement le prof, en responsable du groupe
 		$groupe_id = DB_STRUCTURE_PROFESSEUR::DB_ajouter_groupe_par_prof('eval','',0);
-		// Y associer le prof, en responsable du groupe
-		DB_STRUCTURE_PROFESSEUR::DB_modifier_liaison_user_groupe_par_prof($_SESSION['USER_ID'],'professeur',$groupe_id,'eval',TRUE);
-		DB_STRUCTURE_PROFESSEUR::DB_ajouter_liaison_professeur_responsable($_SESSION['USER_ID'],$groupe_id);
 	}
 	// Insérer l'enregistrement de l'évaluation
 	$date_mysql = convert_date_french_to_mysql($date);

@@ -117,7 +117,7 @@ $(document).ready
 				var objet = obj_bouton.parent().parent().attr('id').substring(3);
 				var tab_check = new Array(); $('#form_autorisations input[name='+objet+']:checked').each(function(){tab_check.push($(this).val());});
 				obj_bouton.prop('disabled',true);
-				$('#ajax_msg_'+objet).removeAttr("class").addClass("loader").html("Transmission en cours...");
+				$('#ajax_msg_'+objet).removeAttr("class").addClass("loader").html("Connexion au serveur&hellip;");
 				$.ajax
 				(
 					{

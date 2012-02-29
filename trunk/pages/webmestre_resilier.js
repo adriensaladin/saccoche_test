@@ -80,7 +80,7 @@ $(document).ready
 			if(confirm("Confirmez-vous vouloir supprimer toutes vos données ?"))
 			{
 				$("#bouton_valider").prop('disabled',true);
-				$('#ajax_msg').removeAttr("class").addClass("loader").html("Demande envoyée...");
+				$('#ajax_msg').removeAttr("class").addClass("loader").html("Connexion au serveur&hellip;");
 				readytogo = true;
 			}
 			else

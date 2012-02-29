@@ -79,7 +79,7 @@ $(document).ready
 					}
 				}
 				$('button').prop('disabled',true);
-				$('#ajax_msg').removeAttr("class").addClass("loader").html("Demande envoyée...");
+				$('#ajax_msg').removeAttr("class").addClass("loader").html("Connexion au serveur&hellip;");
 				$.ajax
 				(
 					{
@@ -115,7 +115,7 @@ $(document).ready
 
 		// Initialisation : charger au chargement l'affichage du bilan
 
-		$('#ajax_msg').addClass("loader").html("Chargement en cours...");
+		$('#ajax_msg').addClass("loader").html("Connexion au serveur&hellip;");
 		$.ajax
 		(
 			{

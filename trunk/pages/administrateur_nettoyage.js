@@ -56,7 +56,7 @@ $(document).ready
 					$("button").prop('disabled',true);
 					$("label").removeAttr("class").html('');
 					$("#ajax_info").html('<li></li>').hide();
-					$('#ajax_msg_'+action).addClass("loader").html("Demande envoyée...");
+					$('#ajax_msg_'+action).addClass("loader").html("Connexion au serveur&hellip;");
 					$.ajax
 					(
 						{

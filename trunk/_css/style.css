@@ -110,7 +110,7 @@ del{text-decoration:line-through;color:#666}
 /* Menu déroulant (dans #cadre_haut)                                                                   */
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-#menu a {display:block;border:1px solid #77F;color:#FFF;background:#77F url(../_img/sprite_menu_2.png) 0 0 no-repeat;padding:1px 1px 1px 19px;margin:1px;height:16px}
+#menu a {display:block;border:1px solid #77F;color:#FFF;background:#77F url(../_img/sprite_menu_3.png) 0 0 no-repeat;padding:1px 1px 1px 19px;margin:1px;height:16px}
 #menu a:hover {background-color:#99F;color:#FFF;text-decoration:none}
 #menu li {float:left;}
 #menu li li {float:none}
@@ -142,45 +142,43 @@ del{text-decoration:line-through;color:#666}
 #menu a.fichier_export         {background-position: 1px  -439px}
 #menu a.fichier_import         {background-position: 1px  -459px}
 #menu a.groupe                 {background-position: 1px  -479px}
-#menu a.groupe_eleve           {background-position: 1px  -499px}
-#menu a.groupe_professeur      {background-position: 1px  -519px}
-#menu a.log_actions            {background-position: 1px  -539px}
-#menu a.mdp_admin              {background-position: 1px  -559px}
-#menu a.nettoyage              {background-position: 1px  -579px}
-#menu a.newsletter             {background-position: 1px  -599px}
-#menu a.parent                 {background-position: 1px  -619px}
-#menu a.periode                {background-position: 1px  -639px}
-#menu a.periode_groupe         {background-position: 1px  -659px}
-#menu a.professeur             {background-position: 1px  -679px}
-#menu a.referentiel_edition    {background-position: 1px  -699px}
-#menu a.referentiel_gestion    {background-position: 1px  -719px}
-#menu a.referentiel_ressources {background-position: 1px  -739px}
-#menu a.referentiel_voir       {background-position: 1px  -759px}
-#menu a.releve_grille          {background-position: 1px  -779px}
-#menu a.releve_items           {background-position: 1px  -799px}
-#menu a.releve_reglages        {background-position: 1px  -819px}
-#menu a.releve_socle           {background-position: 1px  -839px}
-#menu a.releve_synthese        {background-position: 1px  -859px}
-#menu a.releve_synthese_socle  {background-position: 1px  -879px}
-#menu a.resilier               {background-position: 1px  -899px}
-#menu a.rss                    {background-position: 1px  -919px}
-#menu a.serveur_database       {background-position: 1px  -939px}
-#menu a.serveur_geographie     {background-position: 1px  -959px}
-#menu a.serveur_identite       {background-position: 1px  -979px}
-#menu a.serveur_info           {background-position: 1px  -999px}
-#menu a.serveur_maintenance    {background-position: 1px -1019px}
-#menu a.serveur_proxy          {background-position: 1px -1039px}
-#menu a.socle_annuler          {background-position: 1px -1059px}
-#menu a.socle_fichier          {background-position: 1px -1079px}
-#menu a.socle_item             {background-position: 1px -1099px}
-#menu a.socle_langue           {background-position: 1px -1119px}
-#menu a.socle_pilier           {background-position: 1px -1139px}
-#menu a.statistiques           {background-position: 1px -1159px}
-#menu a.statut_desactiver      {background-position: 1px -1179px}
-#menu a.statut_traiter         {background-position: 1px -1199px}
-#menu a.structure_ajout_csv    {background-position: 1px -1219px}
-#menu a.structure_gestion      {background-position: 1px -1239px}
-#menu a.structure_transfert    {background-position: 1px -1259px}
+#menu a.item_selection         {background-position: 1px  -499px}
+#menu a.log_actions            {background-position: 1px  -519px}
+#menu a.mdp_admin              {background-position: 1px  -539px}
+#menu a.nettoyage              {background-position: 1px  -559px}
+#menu a.newsletter             {background-position: 1px  -579px}
+#menu a.parent                 {background-position: 1px  -599px}
+#menu a.periode                {background-position: 1px  -619px}
+#menu a.periode_groupe         {background-position: 1px  -639px}
+#menu a.professeur             {background-position: 1px  -659px}
+#menu a.referentiel_gestion    {background-position: 1px  -679px}
+#menu a.referentiel_voir       {background-position: 1px  -699px}
+#menu a.releve_grille          {background-position: 1px  -719px}
+#menu a.releve_items           {background-position: 1px  -739px}
+#menu a.releve_recherche       {background-position: 1px  -759px}
+#menu a.releve_reglages        {background-position: 1px  -779px}
+#menu a.releve_socle           {background-position: 1px  -799px}
+#menu a.releve_synthese        {background-position: 1px  -819px}
+#menu a.releve_synthese_socle  {background-position: 1px  -839px}
+#menu a.resilier               {background-position: 1px  -859px}
+#menu a.rss                    {background-position: 1px  -879px}
+#menu a.serveur_database       {background-position: 1px  -899px}
+#menu a.serveur_geographie     {background-position: 1px  -919px}
+#menu a.serveur_identite       {background-position: 1px  -939px}
+#menu a.serveur_info           {background-position: 1px  -959px}
+#menu a.serveur_maintenance    {background-position: 1px  -979px}
+#menu a.serveur_proxy          {background-position: 1px  -999px}
+#menu a.socle_annuler          {background-position: 1px -1019px}
+#menu a.socle_fichier          {background-position: 1px -1039px}
+#menu a.socle_item             {background-position: 1px -1059px}
+#menu a.socle_langue           {background-position: 1px -1079px}
+#menu a.socle_pilier           {background-position: 1px -1099px}
+#menu a.statistiques           {background-position: 1px -1119px}
+#menu a.statut_desactiver      {background-position: 1px -1139px}
+#menu a.statut_traiter         {background-position: 1px -1159px}
+#menu a.structure_ajout_csv    {background-position: 1px -1179px}
+#menu a.structure_gestion      {background-position: 1px -1199px}
+#menu a.structure_transfert    {background-position: 1px -1119px}
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 /* Liens vers un fichier à récupérer ou un document généré                                             */
@@ -337,6 +335,7 @@ button img{width:16px;height:16px}
 input[type=radio],input[type=checkbox],input[type=image] {vertical-align:-1px}
 input[type=text],input[type=password],select {margin:1px 0;background:#FFF;color:#000;border:1px solid #66F;}
 input[readonly],input[disabled] {color:#666;border:1px solid #666;}
+select[multiple] {vertical-align:middle}
 
 /* formulaire en page d'accueil pour choisir son établissement */
 #f_base {font-size:90%}
@@ -438,7 +437,7 @@ table.bilan tfoot td.nu {background:#FFF;}
 table.bilan_synthese {margin-top:1em;margin-bottom:1em}
 table.bilan th.domaine {background:#99F;}
 table.bilan th.info {width:9px;height:9px;background:#DDF url(../_img/info_mini.gif) no-repeat center center;}
-table.bilan_synthese th,td {padding:0 1px}
+table.bilan_synthese th, table.bilan_synthese td {padding:0 1px}
 
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
@@ -473,7 +472,6 @@ table.bilan_synthese th,td {padding:0 1px}
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 /* Format des tableaux à double entrée avec checkbox                                                   */
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-
 
 #autocheckbox thead th {padding:2px 0;text-align:center;vertical-align:bottom;width:18px}
 #autocheckbox tbody th {padding:0 2px;text-align:left;vertical-align:middle;height:18px;font-weight:normal}
@@ -542,7 +540,7 @@ li.li_m2 {background:transparent url(../_img/folder/folder_m2.png) no-repeat top
 li.li_n1 {background:transparent url(../_img/folder/folder_n1.png) no-repeat top left;color:#F00}	/* referentiel_domaine ; socle_pilier */
 li.li_n2 {background:transparent url(../_img/folder/folder_n2.png) no-repeat top left;color:#D0C}	/* referentiel_theme ; socle_section */
 li.li_n3 {background:transparent url(../_img/folder/folder_n3.png) no-repeat top left;color:#70F}	/* referentiel_item ; socle_entree */
-#zone_compet , #zone_socle , #zone_eleve , #zone_ressources {min-width:800px;min-height:1000px;padding-right:20px}	/* pour le fancybox qui ne se redimensionne pas en largeur, et qui n'ajoute pas le scrolling automatiquement en hauteur malgré l'appel 'scrolling' à 'yes' , prévoir un minimum au départ */
+#zone_matieres_items , #zone_socle_item , #zone_eleve , #zone_ressources {min-width:800px;min-height:1000px;padding-right:20px}	/* pour le fancybox qui ne se redimensionne pas en largeur, et qui n'ajoute pas le scrolling automatiquement en hauteur malgré l'appel 'scrolling' à 'yes' , prévoir un minimum au départ */
 li.li_n3 b{font-weight:normal}
 li.li_n3 b img{margin-right:2px}
 

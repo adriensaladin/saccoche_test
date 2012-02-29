@@ -158,6 +158,158 @@ function imprimer(contenu)
 	wp.document.close();
 }
 
+/**
+ * Fonction pour afficher et cocher une liste d'items donnés
+ *
+ * @param matieres_items_liste : ids séparés par des underscores
+ * @return string
+ */
+function cocher_matieres_items(matieres_items_liste)
+{
+	// Replier tout sauf le plus haut niveau
+	$('#zone_matieres_items ul').css("display","none");
+	$('#zone_matieres_items ul.ul_m1').css("display","block");
+	// Décocher tout
+	$("#zone_matieres_items input[type=checkbox]").each
+	(
+		function()
+		{
+			this.checked = false;
+		}
+	);
+	// Cocher ce qui doit l'être (initialisation)
+	if(matieres_items_liste.length)
+	{
+		var tab_id = matieres_items_liste.split('_');
+		for(i in tab_id)
+		{
+			id = 'id_'+tab_id[i];
+			if($('#'+id).length)
+			{
+				$('#'+id).prop('checked',true);
+				$('#'+id).closest('ul.ul_n3').css("display","block");	// les items
+				$('#'+id).closest('ul.ul_n2').css("display","block");	// le thème
+				$('#'+id).closest('ul.ul_n1').css("display","block");	// le domaine
+				$('#'+id).closest('ul.ul_m2').css("display","block");	// le niveau
+			}
+		}
+	}
+}
+
+/**
+ * Fonction pour afficher et cocher un item du socle
+ *
+ * @param socle_item_id
+ * @return string
+ */
+function cocher_socle_item(socle_item_id)
+{
+	// Replier tout sauf le plus haut niveau la 1e fois ; ensuite on laisse aussi volontairement ouvert ce qui a pu l'être précédemment
+	if(cocher_socle_item_first_appel)
+	{
+		$('#zone_socle_item ul').css("display","none");
+		$('#zone_socle_item ul.ul_m1').css("display","block");
+		cocher_socle_item_first_appel = false;
+	}
+	$('#zone_socle_item ul.ul_n1').css("display","block"); // zone "Hors socle" éventuelle
+	// Décocher tout
+	$("#zone_socle_item input[type=radio]").each
+	(
+		function()
+		{
+			this.checked = false;
+		}
+	);
+	// Cocher ce qui doit l'être (initialisation)
+	if(socle_item_id!='0')
+	{
+		if($('#socle_'+socle_item_id).length)
+		{
+			$('#socle_'+socle_item_id).prop('checked',true);
+			$('#socle_'+socle_item_id).closest('ul.ul_n3').css("display","block");	// les items
+			$('#socle_'+socle_item_id).closest('ul.ul_n2').css("display","block");	// la section
+			$('#socle_'+socle_item_id).closest('ul.ul_n1').css("display","block");	// le pilier
+		}
+	}
+	else
+	{
+		$('#socle_0').prop('checked',true);
+	}
+	$('#socle_'+socle_item_id).focus();
+}
+
+var cocher_socle_item_first_appel = true;
+
+/**
+ * Fonction pour afficher et cocher une liste de profs donnés
+ *
+ * @param prof_liste : ids séparés par des underscores
+ * @return string
+ */
+function cocher_profs(prof_liste)
+{
+	// Décocher tout
+	$("#zone_profs input[type=checkbox]").each
+	(
+		function()
+		{
+			if(this.disabled == false)
+			{
+				this.checked = false;
+			}
+		}
+	);
+	// Cocher des cases des profs
+	if(prof_liste.length)
+	{
+		var tab_id = prof_liste.split('_');
+		for(i in tab_id)
+		{
+			var id = 'p_'+tab_id[i];
+			if($('#'+id).length)
+			{
+				$('#'+id).prop('checked',true);
+			}
+		}
+	}
+}
+
+/**
+ * Fonction pour afficher et cocher une liste d'élèves donnés
+ *
+ * @param prof_liste : ids séparés par des underscores
+ * @return string
+ */
+function cocher_eleves(eleve_liste)
+{
+	// Replier les classes
+		$('#zone_eleve ul').css("display","none");
+		$('#zone_eleve ul.ul_m1').css("display","block");
+	// Décocher tout
+	$("#zone_eleve input[type=checkbox]").each
+	(
+		function()
+		{
+			this.checked = false;
+			$(this).next('label').removeAttr('class').next('span').html(''); // retrait des indications éventuelles d'élèves associés à une évaluation de même nom
+		}
+	);
+	// Cocher ce qui doit l'être (initialisation)
+	if(eleve_liste.length)
+	{
+		var tab_id = eleve_liste.split('_');
+		for(i in tab_id)
+		{
+			var id_debut = 'id_'+tab_id[i]+'_';
+			if($('input[id^='+id_debut+']').length)
+			{
+				$('input[id^='+id_debut+']').prop('checked',true);
+				$('input[id^='+id_debut+']').parent().parent().css("display","block");	// le regroupement
+			}
+		}
+	}
+}
+
 //	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
 //	Gestion de la durée d'inactivité
 //	On utilise un cookie plutôt qu'une variable js car ceci permet de gérer plusieurs onglets.
@@ -780,7 +932,7 @@ $(document).ready
 				posY = e.pageY-5;
 				$("#calque").css('left',posX + 'px');
 				$("#calque").css('top',posY + 'px');
-				$("#calque").html('<label id="ajax_alerte_calque" for="nada" class="loader">Chargement en cours...</label>').show();
+				$("#calque").html('<label id="ajax_alerte_calque" for="nada" class="loader">Connexion au serveur&hellip;</label>').show();
 				// Charger en Ajax le contenu du calque
 				$.ajax
 				(
@@ -836,7 +988,7 @@ $(document).ready
 				posY = e.pageY-5;
 				$("#calque").css('left',posX + 'px');
 				$("#calque").css('top',posY + 'px');
-				$("#calque").html('<label id="ajax_alerte_calque" for="nada" class="loader">Chargement en cours...</label>').show();
+				$("#calque").html('<label id="ajax_alerte_calque" for="nada" class="loader">Connexion au serveur&hellip;</label>').show();
 				// Charger en Ajax le contenu du calque
 				$.ajax
 				(

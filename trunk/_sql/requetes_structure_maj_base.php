@@ -1761,6 +1761,23 @@ public function DB_maj_base($version_actuelle)
 		}
 	}
 
+	//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	//	MAJ 2012-02-23 => 2012-02-29
+	//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	if($version_actuelle=='2012-02-23')
+	{
+		if($version_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
+		{
+			$version_actuelle = '2012-02-29';
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_actuelle.'" WHERE parametre_nom="version_base"' );
+			// ajout d'une table sacoche_selection_item
+			// La supprimer si elle existe : sinon dans le cas d'une restauration de base à une version antérieure (suivie de cette mise à jour), cette ancienne table éventuellement existante ne serait pas réinitialisée.
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'DROP TABLE IF EXISTS sacoche_selection_item' );
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'CREATE TABLE sacoche_selection_item ( selection_item_id    MEDIUMINT(8) UNSIGNED                NOT NULL AUTO_INCREMENT, user_id              MEDIUMINT(8) UNSIGNED                NOT NULL DEFAULT 0, selection_item_nom   VARCHAR(60)  COLLATE utf8_unicode_ci NOT NULL DEFAULT "", selection_item_liste TEXT         COLLATE utf8_unicode_ci NOT NULL DEFAULT "", PRIMARY KEY (selection_item_id), KEY user_id (user_id) ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci ' );
+		}
+	}
+
 }
 
 }

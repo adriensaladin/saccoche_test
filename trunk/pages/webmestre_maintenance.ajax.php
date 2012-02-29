@@ -63,6 +63,11 @@ $dossier_install = '.';
 //
 if($action=='maj_etape1')
 {
+	$fichier = './webservices/import_lcs.php';
+	if(is_file($fichier))
+	{
+		exit(']¤['.'pb'.']¤['.'La mise à jour du module LCS-SACoche doit s\'effectuer via le LCS.');
+	}
 	$contenu_zip = url_get_contents(SERVEUR_TELECHARGEMENT,$tab_post=false,$timeout=29);
 	if(substr($contenu_zip,0,6)=='Erreur')
 	{

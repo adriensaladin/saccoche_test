@@ -226,7 +226,7 @@ $(document).ready
 				if(groupe_val)
 				{
 					groupe_type = $("#f_groupe option:selected").parent().attr('label');
-					$('#ajax_maj').removeAttr("class").addClass("loader").html("Actualisation en cours...");
+					$('#ajax_maj').removeAttr("class").addClass("loader").html("Connexion au serveur&hellip;");
 					maj_eleve(groupe_val,groupe_type);
 				}
 				else
@@ -243,42 +243,16 @@ $(document).ready
 		var choisir_compet = function()
 		{
 			// Ne pas changer ici la valeur de "mode" (qui est à "ajouter" ou "modifier" ou "dupliquer").
-			$('#zone_compet ul').css("display","none");
-			$('#zone_compet ul.ul_m1').css("display","block");
-			liste = $('#f_compet_liste').val();
-			// Décocher tout
-			$("#zone_compet input[type=checkbox]").each
-			(
-				function()
-				{
-					this.checked = false;
-				}
-			);
-			// Cocher ce qui doit l'être (initialisation)
-			if(liste.length)
-			{
-				var tab_id = liste.split('_');
-				for(i in tab_id)
-				{
-					id = 'id_'+tab_id[i];
-					if($('#'+id).length)
-					{
-						$('#'+id).prop('checked',true);
-						$('#'+id).closest('ul.ul_n3').css("display","block");	// les items
-						$('#'+id).closest('ul.ul_n2').css("display","block");	// le thème
-						$('#'+id).closest('ul.ul_n1').css("display","block");	// le domaine
-						$('#'+id).closest('ul.ul_m2').css("display","block");	// le niveau
-					}
-				}
-			}
-			$.fancybox( { 'href':'#zone_compet' , onStart:function(){$('#zone_compet').css("display","block");} , onClosed:function(){$('#zone_compet').css("display","none");} , 'modal':true , 'centerOnScroll':true } );
+			cocher_matieres_items( $('#f_compet_liste').val() );
+			$.fancybox( { 'href':'#zone_matieres_items' , onStart:function(){$('#zone_matieres_items').css("display","block");} , onClosed:function(){$('#zone_matieres_items').css("display","none");} , 'modal':true , 'centerOnScroll':true } );
 		};
 
 		$('q.choisir_compet').click( choisir_compet );
 
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-//	Clic sur le bouton pour fermer le cadre des items associés à une évaluation (annuler / retour)
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+		//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+		//	Clic sur le bouton pour fermer le cadre des items associés à une évaluation (annuler / retour)
+		//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
 		$('#annuler_compet').click
 		(
 			function()
@@ -288,16 +262,17 @@ $(document).ready
 			}
 		);
 
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-//	Clic sur le bouton pour valider le choix des items associés à une évaluation
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+		//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+		//	Clic sur le bouton pour valider le choix des items associés à une évaluation
+		//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
 		$('#valider_compet').click
 		(
 			function()
 			{
 				var liste = '';
 				var nombre = 0;
-				$("#zone_compet input[type=checkbox]:checked").each
+				$("#zone_matieres_items input[type=checkbox]:checked").each
 				(
 					function()
 					{
@@ -310,6 +285,77 @@ $(document).ready
 				$('#f_compet_liste').val(compet_liste);
 				$('#f_compet_nombre').val(compet_nombre);
 				$('#annuler_compet').click();
+			}
+		);
+
+		//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+		//	Demande pour sélectionner d'une liste d'items mémorisés
+		//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
+		$('#f_selection_items').change
+		(
+			function()
+			{
+				cocher_matieres_items( $("#f_selection_items").val() );
+			}
+		);
+
+		//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+		//	Clic sur le bouton pour mémoriser un choix d'items
+		//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
+		$('#f_enregistrer_items').click
+		(
+			function()
+			{
+				var liste_nom = $("#f_liste_items_nom").val();
+				if(!liste_nom)
+				{
+					$('#ajax_msg_memo').removeAttr("class").addClass("erreur").html("nom manquant");
+					$("#f_liste_items_nom").focus();
+					return false;
+				}
+				var compet_liste = '';
+				$("#zone_matieres_items input[type=checkbox]:checked").each
+				(
+					function()
+					{
+						compet_liste += $(this).val()+'_';
+					}
+				);
+				if(!compet_liste)
+				{
+					$('#ajax_msg_memo').removeAttr("class").addClass("erreur").html("Aucun item coché !");
+					return false;
+				}
+				var compet_liste  = compet_liste.substring(0,compet_liste.length-1);
+				$('#ajax_msg_memo').removeAttr("class").addClass("loader").html("Connexion au serveur&hellip;");
+				$.ajax
+				(
+					{
+						type : 'POST',
+						url : 'ajax.php?page=compte_selection_items',
+						data : 'f_action='+'ajouter'+'&f_compet_liste='+compet_liste+'&f_nom='+encodeURIComponent(liste_nom),
+						dataType : "html",
+						error : function(msg,string)
+						{
+							$('#ajax_msg_memo').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
+						},
+						success : function(responseHTML)
+						{
+							initialiser_compteur();
+							if(responseHTML.substring(0,3)=='<tr')	// Attention aux caractères accentués : l'utf-8 pose des pbs pour ce test
+							{
+								$('#ajax_msg_memo').removeAttr("class").addClass("valide").html("Sélection mémorisée.");
+							}
+						else
+							{
+								$('#ajax_msg_memo').removeAttr("class").addClass("alerte").html(responseHTML);
+								$("#f_liste_items_nom").focus();
+							}
+						}
+					}
+				);
 			}
 		);
 
@@ -429,7 +475,7 @@ $(document).ready
 			if(readytogo)
 			{
 				$('button').prop('disabled',true);
-				$('#ajax_msg').removeAttr("class").addClass("loader").html("Génération du relevé en cours...");
+				$('#ajax_msg').removeAttr("class").addClass("loader").html("Connexion au serveur&hellip;");
 				$('#bilan').html('');
 			}
 			return readytogo;

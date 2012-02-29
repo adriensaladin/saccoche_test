@@ -81,7 +81,7 @@ $(document).ready
 					datas += '&f_login_'+tab_profil[i]+'='+tab_value[i];
 				}
 				$("#bouton_valider_login").prop('disabled',true);
-				$('#ajax_msg_login').removeAttr("class").addClass("loader").html("Demande envoyée...");
+				$('#ajax_msg_login').removeAttr("class").addClass("loader").html("Connexion au serveur&hellip;");
 				$.ajax
 				(
 					{
@@ -122,7 +122,7 @@ $(document).ready
 			function()
 			{
 				$("#bouton_valider_mdp_mini").prop('disabled',true);
-				$('#ajax_msg_mdp_mini').removeAttr("class").addClass("loader").html("Demande envoyée...");
+				$('#ajax_msg_mdp_mini').removeAttr("class").addClass("loader").html("Connexion au serveur&hellip;");
 				$.ajax
 				(
 					{

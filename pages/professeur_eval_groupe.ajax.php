@@ -197,20 +197,6 @@ if( (($action=='ajouter')||(($action=='dupliquer')&&($devoir_id))) && $date && $
 		{
 			exit('Erreur : absent de la liste des professeurs !');
 		}
-		/*
-		$tab_profs_groupe = array();
-		$DB_TAB_USER = DB_STRUCTURE_PROFESSEUR::DB_lister_professeurs_groupe($groupe_id);
-		foreach($DB_TAB_USER as $DB_ROW)
-		{
-			$tab_profs_groupe[] = $DB_ROW['user_id'];
-		}
-		$tab_profs = array_intersect( $tab_profs , $tab_profs_groupe );
-		*/
-		// Si y a que soi...
-		if(count($tab_profs)==1)
-		{
-			$tab_profs = array();
-		}
 	}
 	// Insérer l'enregistrement de l'évaluation
 	$devoir_id2 = DB_STRUCTURE_PROFESSEUR::DB_ajouter_devoir($_SESSION['USER_ID'],$groupe_id,$date_mysql,$info,$date_visible_mysql,$tab_profs);
@@ -264,20 +250,6 @@ if( ($action=='modifier') && $devoir_id && $date && $date_visible && $groupe_typ
 		if(!in_array($_SESSION['USER_ID'],$tab_profs))
 		{
 			exit('Erreur : absent de la liste des professeurs !');
-		}
-		/*
-		$tab_profs_groupe = array();
-		$DB_TAB_USER = DB_STRUCTURE_PROFESSEUR::DB_lister_professeurs_groupe($groupe_id);
-		foreach($DB_TAB_USER as $DB_ROW)
-		{
-			$tab_profs_groupe[] = $DB_ROW['user_id'];
-		}
-		$tab_profs = array_intersect( $tab_profs , $tab_profs_groupe );
-		*/
-		// Si y a que soi...
-		if(count($tab_profs)==1)
-		{
-			$tab_profs = array();
 		}
 	}
 	// sacoche_devoir (maj des paramètres date & info)

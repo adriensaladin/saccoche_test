@@ -87,7 +87,7 @@ $(document).ready
 				$('#ajax_maj_matiere').removeAttr("class").html("&nbsp;");
 				return false;
 			}
-			$('#ajax_maj_matiere').removeAttr("class").addClass("loader").html("Actualisation en cours...");
+			$('#ajax_maj_matiere').removeAttr("class").addClass("loader").html("Connexion au serveur&hellip;");
 			$.ajax
 			(
 				{
@@ -166,7 +166,7 @@ $(document).ready
 				if(groupe_val)
 				{
 					type = $("#f_groupe option:selected").parent().attr('label');
-					$('#ajax_maj_groupe').removeAttr("class").addClass("loader").html("Actualisation en cours...");
+					$('#ajax_maj_groupe').removeAttr("class").addClass("loader").html("Connexion au serveur&hellip;");
 					maj_eleve(groupe_val,type);
 				}
 				else
@@ -319,7 +319,7 @@ $(document).ready
 			{
 				$('button').prop('disabled',true);
 				$('#bilan').html("&nbsp;");
-				$('#ajax_msg').removeAttr("class").addClass("loader").html("Génération du relevé en cours...");
+				$('#ajax_msg').removeAttr("class").addClass("loader").html("Connexion au serveur&hellip;");
 			}
 			return readytogo;
 		}

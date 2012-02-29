@@ -101,7 +101,7 @@ $(document).ready
 				var element = $(this);
 				var nb_demandes = $(this).attr('value');
 				var matiere_id = $(this).closest('table').attr('id').substring(4);
-				element.parent().find('label').removeAttr("class").addClass("loader").html("Demande envoyée...");
+				element.parent().find('label').removeAttr("class").addClass("loader").html("Connexion au serveur&hellip;");
 				$.ajax
 				(
 					{
@@ -141,7 +141,7 @@ $(document).ready
 			{
 				var ids = $(this).parent().attr('id');
 				afficher_masquer_images_action('hide');
-				var new_label = '<label for="'+ids+'" class="loader">Demande envoyée...</label>';
+				var new_label = '<label for="'+ids+'" class="loader">Connexion au serveur&hellip;</label>';
 				$(this).after(new_label);
 				$.ajax
 				(
@@ -204,7 +204,7 @@ $(document).ready
 			{
 				var ids = $(this).parent().attr('id');
 				afficher_masquer_images_action('hide');
-				var new_label = '<label for="'+ids+'" class="loader">Demande envoyée...</label>';
+				var new_label = '<label for="'+ids+'" class="loader">Connexion au serveur&hellip;</label>';
 				$(this).after(new_label);
 				$.ajax
 				(
@@ -285,7 +285,7 @@ $(document).ready
 			{
 				var ids = $(this).parent().parent().attr('id');
 				var partage = $('#f_partage').val();
-				$('#ajax_msg').removeAttr("class").addClass("loader").html('Demande envoyée...');
+				$('#ajax_msg').removeAttr("class").addClass("loader").html("Connexion au serveur&hellip;");
 				$.ajax
 				(
 					{
@@ -339,7 +339,7 @@ $(document).ready
 				var ids = $(this).parent().parent().attr('id');
 				var methode = $('#f_methode').val();
 				var limite  = $('#f_limite').val();
-				$('#ajax_msg').removeAttr("class").addClass("loader").html('Demande envoyée...');
+				$('#ajax_msg').removeAttr("class").addClass("loader").html("Connexion au serveur&hellip;");
 				$.ajax
 				(
 					{
@@ -386,7 +386,7 @@ $(document).ready
 				var ids = $(this).parent().parent().attr('id');
 				var tab_ids = ids.split('_');
 				var partage = tab_partage_etat[tab_ids[1]+'_'+tab_ids[2]];
-				$('#ajax_msg').removeAttr("class").addClass("loader").html('Demande envoyée...');
+				$('#ajax_msg').removeAttr("class").addClass("loader").html("Connexion au serveur&hellip;");
 				$.ajax
 				(
 					{
@@ -486,7 +486,7 @@ $(document).ready
 		var charger_formulaire_structures = function()
 		{
 			$('#rechercher').prop('disabled',true);
-			$('#ajax_msg').removeAttr("class").addClass("loader").html('Chargement du formulaire...');
+			$('#ajax_msg').removeAttr("class").addClass("loader").html("Connexion au serveur&hellip;");
 			$.ajax
 			(
 				{
@@ -679,7 +679,7 @@ $(document).ready
 					return false;
 				}
 				$('#rechercher').prop('disabled',true);
-				$('#ajax_msg').removeAttr("class").addClass("loader").html('Demande envoyée...');
+				$('#ajax_msg').removeAttr("class").addClass("loader").html("Connexion au serveur&hellip;");
 				$.ajax
 				(
 					{
@@ -746,7 +746,7 @@ $(document).ready
 				var description    = $(this).parent().text(); // Pb : il prend le contenu du <sup> avec
 				var longueur_sup   = $(this).prev().text().length;
 				var description    = description.substring(0,description.length-longueur_sup);
-				var new_label = '<label id="temp" class="loader">Demande envoyée...</label>';
+				var new_label = '<label id="temp" class="loader">Connexion au serveur&hellip;</label>';
 				$(this).next().after(new_label);
 				$.ajax
 				(
@@ -813,7 +813,7 @@ $(document).ready
 				$('#ajax_msg_choisir').removeAttr("class").html('');
 				var referentiel_id = $(this).val().substring(3);
 				$('button').prop('disabled',true);
-				$('#ajax_msg_choisir').removeAttr("class").addClass("loader").html("Demande envoyée...");
+				$('#ajax_msg_choisir').removeAttr("class").addClass("loader").html("Connexion au serveur&hellip;");
 				$.ajax
 				(
 					{

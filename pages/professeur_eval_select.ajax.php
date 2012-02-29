@@ -170,26 +170,9 @@ if( (($action=='ajouter')||(($action=='dupliquer')&&($devoir_id))) && $date && $
 		{
 			exit('Erreur : absent de la liste des professeurs !');
 		}
-		/*
-		$tab_profs_groupe = array();
-		$DB_TAB_USER = DB_STRUCTURE_PROFESSEUR::DB_lister_professeurs_groupe($groupe_id);
-		foreach($DB_TAB_USER as $DB_ROW)
-		{
-			$tab_profs_groupe[] = $DB_ROW['user_id'];
-		}
-		$tab_profs = array_intersect( $tab_profs , $tab_profs_groupe );
-		*/
-		// Si y a que soi...
-		if(count($tab_profs)==1)
-		{
-			$tab_profs = array();
-		}
 	}
-	// Commencer par créer un nouveau groupe de type "eval", utilisé uniquement pour cette évaluation (c'est transparent pour le professeur)
+	// Commencer par créer un nouveau groupe de type "eval", utilisé uniquement pour cette évaluation (c'est transparent pour le professeur) ; y associe automatiquement le prof, en responsable du groupe
 	$groupe_id = DB_STRUCTURE_PROFESSEUR::DB_ajouter_groupe_par_prof($groupe_type,'',0);
-	// Y associer le prof, en responsable du groupe
-	DB_STRUCTURE_PROFESSEUR::DB_modifier_liaison_user_groupe_par_prof($_SESSION['USER_ID'],'professeur',$groupe_id,$groupe_type,TRUE);
-	DB_STRUCTURE_PROFESSEUR::DB_ajouter_liaison_professeur_responsable($_SESSION['USER_ID'],$groupe_id);
 	// Insèrer l'enregistrement de l'évaluation
 	$devoir_id2 = DB_STRUCTURE_PROFESSEUR::DB_ajouter_devoir($_SESSION['USER_ID'],$groupe_id,$date_mysql,$info,$date_visible_mysql,$tab_profs);
 	// Affecter tous les élèves choisis
@@ -245,20 +228,6 @@ if( ($action=='modifier') && $devoir_id && $groupe_id && $date && $date_visible 
 		if(!in_array($_SESSION['USER_ID'],$tab_profs))
 		{
 			exit('Erreur : absent de la liste des professeurs !');
-		}
-		/*
-		$tab_profs_groupe = array();
-		$DB_TAB_USER = DB_STRUCTURE_PROFESSEUR::DB_lister_professeurs_groupe($groupe_id);
-		foreach($DB_TAB_USER as $DB_ROW)
-		{
-			$tab_profs_groupe[] = $DB_ROW['user_id'];
-		}
-		$tab_profs = array_intersect( $tab_profs , $tab_profs_groupe );
-		*/
-		// Si y a que soi...
-		if(count($tab_profs)==1)
-		{
-			$tab_profs = array();
 		}
 	}
 	// sacoche_devoir (maj des paramètres date & info)

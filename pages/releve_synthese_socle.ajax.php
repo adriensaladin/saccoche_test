@@ -239,12 +239,14 @@ if($type=='pourcentage')
 // Elaboration de la synthèse de maîtrise du socle, en HTML et PDF => Production et mise en page
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
-$affichage_direct = ( ( in_array($_SESSION['USER_PROFIL'],array('eleve','parent')) ) && (SACoche!='webservices') ) ? TRUE : FALSE ;
+$affichage_direct   = ( ( in_array($_SESSION['USER_PROFIL'],array('eleve','parent')) ) && (SACoche!='webservices') ) ? TRUE : FALSE ;
+$affichage_checkbox = ( ($_SESSION['USER_PROFIL']=='professeur') && (SACoche!='webservices') ) ? TRUE : FALSE ;
 
 $eleves_nb   = count($tab_eleve_id);
 $items_nb    = count($tab_entree_id);
 $piliers_nb  = count($tab_pilier);
 $cellules_nb = $items_nb+1;
+$cellules_nb+= ($affichage_checkbox) ? 1 : 0 ;
 $titre_info1 = ($type=='pourcentage') ? 'pourcentage d\'items disciplinaires acquis' : 'validation des items et des compétences' ;
 $titre_info1.= ( ($type=='pourcentage') && ($mode=='manuel') ) ? ' [matières resteintes]' : '' ;
 $titre_info2 = ($memo_demande=='palier') ? $palier_nom : $palier_nom.' – '.mb_substr($tab_pilier[$pilier_id]['pilier_nom'],0,mb_strpos($tab_pilier[$pilier_id]['pilier_nom'],'–')) ;
@@ -259,6 +261,7 @@ $releve_pdf->releve_synthese_socle_initialiser($titre_info1,$groupe_nom,$titre_i
 // Lignes d'en-tête
 // - - - - - - - - - -
 $releve_html_head = '<tr><td class="nu2" rowspan="2"></td>';
+$releve_html_head.= ($affichage_checkbox) ? '<td class="nu2" rowspan="2"></td>' : '' ;
 foreach($tab_pilier as $tab)
 {
 	extract($tab);	// $pilier_ref $pilier_nom $pilier_nb_entrees
@@ -274,7 +277,7 @@ foreach($tab_socle as $tab)
 		$releve_html_head .= '<th class="info" title="'.html($socle_nom).'"></th>';
 	}
 }
-$releve_html_head .= '</tr></thead>';
+$releve_html_head .= '</tr>';
 $releve_pdf->releve_synthese_socle_entete($tab_pilier);
 // - - - - - - - - - -
 // Lignes suivantes
@@ -292,7 +295,8 @@ foreach($tab_eleve as $tab)
 		// - - - - -
 		// Indication des pourcentages
 		// - - - - -
-		$releve_html_body .= '<tr><th>'.$image_langue.html($eleve_nom.' '.$eleve_prenom).'</th>';
+		$checkbox = ($affichage_checkbox) ? '<th class="nu2"><input type="checkbox" name="id_user[]" value="'.$eleve_id.'" /></th>' : '' ;
+		$releve_html_body .= '<tr>'.$checkbox.'<th>'.$image_langue.html($eleve_nom.' '.$eleve_prenom).'</th>';
 		// Pour chaque entrée du socle...
 		foreach($tab_socle as $pilier_id => $tab)
 		{
@@ -310,7 +314,8 @@ foreach($tab_eleve as $tab)
 		// - - - - -
 		// Indication des compétences validées
 		// - - - - -
-		$releve_html_body .= '<tr><th rowspan="2">'.$image_langue.html($eleve_nom.' '.$eleve_prenom).'</th>';
+		$checkbox = ($affichage_checkbox) ? '<th class="nu" rowspan="2"><input type="checkbox" name="id_user[]" value="'.$eleve_id.'" /></th>' : '' ;
+		$releve_html_body .= '<tr>'.$checkbox.'<th rowspan="2">'.$image_langue.html($eleve_nom.' '.$eleve_prenom).'</th>';
 		// Pour chaque pilier...
 		foreach($tab_pilier as $pilier_id => $tab)
 		{
@@ -335,7 +340,9 @@ foreach($tab_eleve as $tab)
 		$releve_pdf->releve_synthese_socle_validation_eleve($eleve_id,$eleve_nom,$eleve_prenom,$tab_user_pilier,$tab_user_entree,$tab_pilier,$tab_socle,$drapeau_langue);
 	}
 }
+$releve_html .= ($affichage_checkbox) ? '<form id="form_synthese" action="#" method="post">' : '' ;
 $releve_html .= '<table class="bilan"><thead>'.$releve_html_head.'</thead><tbody>'.$releve_html_body.'</tbody></table>';
+$releve_html .= ($affichage_checkbox) ? '<p><label class="tab">Action <img alt="" src="./_img/bulle_aide.png" title="Cocher auparavant les cases adéquates." /> :</label><button type="button" class="ajouter" onclick="var form=document.getElementById(\'form_synthese\');form.action=\'./index.php?page=professeur_eval_select\';form.submit();">Préparer une évaluation.</button> <button type="button" class="ajouter" onclick="var form=document.getElementById(\'form_synthese\');form.action=\'./index.php?page=professeur_groupe_besoin\';form.submit();">Constituer un groupe de besoin.</button></p></form>' : '';
 
 // Chemins d'enregistrement
 $dossier      = './__tmp/export/';

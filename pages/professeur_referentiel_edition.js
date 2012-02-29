@@ -56,10 +56,6 @@ $(document).ready
 		// initialisation
 		var matiere_id = 0;
 		var objet = false;
-
-		$('#zone_socle ul').css("display","none");
-		$('#zone_socle ul.ul_m1').css("display","block");
-
 		var images = new Array();
 		images[1]  = '';
 		images[1] += '<q class="n1_edit" lang="edit" title="Renommer ce domaine (avec sa référence)."></q>';
@@ -416,37 +412,11 @@ $(document).ready
 			{
 				// récupérer le nom de l'item et le reporter
 				item_nom = escapeHtml( entity_convert( $('#f_nom').val() ) );
-				$('#zone_socle span.f_nom').html(item_nom);
+				$('#zone_socle_item span.f_nom').html(item_nom);
 				// récupérer la relation au socle commun et la cocher
-				socle_id = $('#f_socle').val();
-				// 1. Décocher tout
-				$("#zone_socle input[type=radio]").each
-				(
-					function()
-					{
-						this.checked = false;
-					}
-				);
-				// 2. Cocher et afficher ce qui doit l'être (on laisse aussi ouvert ce qui a pu l'être précédemment)
-				if(socle_id!='0')
-				{
-					if($('#socle_'+socle_id).length)
-					{
-						$('#socle_'+socle_id).prop('checked',true);
-						$('#socle_'+socle_id).closest('ul.ul_n3').css("display","block");	// les items
-						$('#socle_'+socle_id).closest('ul.ul_n2').css("display","block");	// la section
-						$('#socle_'+socle_id).closest('ul.ul_n1').css("display","block");	// le pilier
-					}
-				}
-				else
-				{
-					$('#socle_0').prop('checked',true);
-				}
+				cocher_socle_item( $('#f_socle').val() );
 				// montrer le cadre
-				$('#zone_socle q').show();
-				$('#socle_0').parent().parent().css("display","block");
-				$.fancybox( { 'href':'#zone_socle' , onStart:function(){$('#zone_socle').css("display","block");} , onClosed:function(){$('#zone_socle').css("display","none");} , 'modal':true , 'centerOnScroll':true } );
-				$('#socle_'+socle_id).focus();
+				$.fancybox( { 'href':'#zone_socle_item' , onStart:function(){$('#zone_socle_item').css("display","block");} , onClosed:function(){$('#zone_socle_item').css("display","none");} , 'modal':true , 'centerOnScroll':true } );
 				objet = 'choisir_compet';
 			}
 		);
@@ -460,7 +430,7 @@ $(document).ready
 			function()
 			{
 				// récupérer la relation au socle (id + nom)
-				socle_id = $("#zone_socle input[type=radio]:checked").val();
+				socle_id = $("#zone_socle_item input[type=radio]:checked").val();
 				if(isNaN(socle_id))	// normalement impossible, sauf si par exemple on triche avec la barre d'outils Web Developer...
 				{
 					socle_id = 0;
@@ -468,7 +438,7 @@ $(document).ready
 				}
 				else
 				{
-					socle_nom = $("#zone_socle input[type=radio]:checked").next('label').text();
+					socle_nom = $("#zone_socle_item input[type=radio]:checked").next('label').text();
 				}
 				// L'envoyer dans le formulaire
 				$('#f_socle').val(socle_id);
@@ -574,7 +544,7 @@ $(document).ready
 					tab_id.push(li.attr('id').substring(3));
 				}
 				// Envoi des infos en ajax pour le traitement de la demande
-				$('#ajax_msg').removeAttr("class").addClass("loader").html('Demande envoyée...');
+				$('#ajax_msg').removeAttr("class").addClass("loader").html("Connexion au serveur&hellip;");
 				$.ajax
 				(
 					{
@@ -698,7 +668,7 @@ $(document).ready
 				// On récupère l'id de l'élément concerné (domaine ou theme ou item)
 				element_id = $(this).parent().parent().attr('id').substring(3);
 				// Envoi des infos en ajax pour le traitement de la demande
-				$('#ajax_msg').removeAttr("class").addClass("loader").html('Demande envoyée...');
+				$('#ajax_msg').removeAttr("class").addClass("loader").html("Connexion au serveur&hellip;");
 				$.ajax
 				(
 					{
@@ -770,7 +740,7 @@ $(document).ready
 					tab_id.push(li.attr('id').substring(3));
 				}
 				// Envoi des infos en ajax pour le traitement de la demande
-				$('#ajax_msg').removeAttr("class").addClass("loader").html('Demande envoyée...');
+				$('#ajax_msg').removeAttr("class").addClass("loader").html("Connexion au serveur&hellip;");
 				$.ajax
 				(
 					{
@@ -827,7 +797,7 @@ $(document).ready
 				li_id_arrivee = $(this).parent().attr('id');
 				element2_id = li_id_arrivee.substring(3);
 				// Envoi des infos en ajax pour le traitement de la demande
-				$('#ajax_msg').removeAttr("class").addClass("loader").html('Demande envoyée...');
+				$('#ajax_msg').removeAttr("class").addClass("loader").html("Connexion au serveur&hellip;");
 				$.ajax
 				(
 					{
@@ -937,7 +907,7 @@ $(document).ready
 					);
 				}
 				// Envoi des infos en ajax pour le traitement de la demande
-				$('#ajax_msg').removeAttr("class").addClass("loader").html('Demande envoyée...');
+				$('#ajax_msg').removeAttr("class").addClass("loader").html("Connexion au serveur&hellip;");
 				$.ajax
 				(
 					{

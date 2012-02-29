@@ -26,8 +26,15 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-$TITRE = "Gestion des référentiels";
 ?>
+
+<div class="hc">
+	<a href="./index.php?page=<?php echo $PAGE ?>&amp;section=gestion">Créer / paramétrer les référentiels.</a>	||
+	<a href="./index.php?page=<?php echo $PAGE ?>&amp;section=edition">Modifier le contenu des référentiels.</a>	||
+	<a href="./index.php?page=<?php echo $PAGE ?>&amp;section=ressources">Associer des ressources aux items.</a>
+</div>
+
+<hr />
 
 <?php
 // Afficher la bonne page et appeler le bon js / ajax par la suite
@@ -39,6 +46,6 @@ if(is_file($fichier_section))
 }
 else
 {
-	echo'<p><span class="astuce">Choisissez une rubrique dans le menu déroulant&hellip;</span></p>';
+	require('./pages/'.$PAGE.'_'.'accueil'.'.php');
 }
 ?>

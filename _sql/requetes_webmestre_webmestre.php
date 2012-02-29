@@ -119,13 +119,9 @@ public function DB_tester_zone_nom($geo_nom,$geo_id=FALSE)
 	$DB_SQL = 'SELECT geo_id ';
 	$DB_SQL.= 'FROM sacoche_geo ';
 	$DB_SQL.= 'WHERE geo_nom=:geo_nom ';
-	$DB_VAR = array(':geo_nom'=>$geo_nom);
-	if($geo_id)
-	{
-		$DB_SQL.= 'AND geo_id!=:geo_id ';
-		$DB_VAR[':geo_id'] = $geo_id;
-	}
+	$DB_SQL.= ($geo_id) ? 'AND geo_id!=:geo_id ' : '' ;
 	// LIMIT 1 a priori pas utile, et de surcroît queryRow ne renverra qu'une ligne
+	$DB_VAR = array(':geo_nom'=>$geo_nom,':geo_id'=>$geo_id);
 	$DB_ROW = DB::queryRow(SACOCHE_WEBMESTRE_BD_NAME , $DB_SQL , $DB_VAR);
 	return count($DB_ROW) ;
 }
@@ -142,13 +138,10 @@ public function DB_tester_structure_UAI($structure_uai,$base_id=FALSE)
 	$DB_SQL = 'SELECT sacoche_base ';
 	$DB_SQL.= 'FROM sacoche_structure ';
 	$DB_SQL.= 'WHERE structure_uai=:structure_uai ';
-	$DB_VAR = array(':structure_uai'=>$structure_uai);
-	if($base_id)
-	{
-		$DB_SQL.= 'AND sacoche_base!=:base_id ';
-		$DB_VAR[':base_id'] = $base_id;
+	$DB_SQL.= ($base_id) ? 'AND sacoche_base!=:base_id ' : '' ;
 	}
 	// LIMIT 1 a priori pas utile, et de surcroît queryRow ne renverra qu'une ligne
+	$DB_VAR = array(':structure_uai'=>$structure_uai,':base_id'=>$base_id);
 	$DB_ROW = DB::queryRow(SACOCHE_WEBMESTRE_BD_NAME , $DB_SQL , $DB_VAR);
 	return count($DB_ROW) ;
 }

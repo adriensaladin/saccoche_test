@@ -140,7 +140,7 @@ $(document).ready
 			if(readytogo)
 			{
 				$("#bouton_exporter").prop('disabled',true);
-				$('#ajax_msg').removeAttr("class").addClass("loader").html("Demande envoyée...");
+				$('#ajax_msg').removeAttr("class").addClass("loader").html("Connexion au serveur&hellip;");
 				$('#bilan').html('');
 			}
 			return readytogo;

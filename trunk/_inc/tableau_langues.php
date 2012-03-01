@@ -41,8 +41,10 @@ $tab_langues[139] = array( 'valeur'=>139 , 'texte'=>'Portuguais'     , 'tab_mati
 $tab_langues[123] = array( 'valeur'=>123 , 'texte'=>'Russe'          , 'tab_matiere_id'=>array(9902, 314, 326, 338, 350, 362, 374, 386) );
 $tab_langues[100] = array( 'valeur'=>100 , 'texte'=>'LV non choisie' , 'tab_matiere_id'=>array_unique(array_merge($tab_langues[109]['tab_matiere_id'],$tab_langues[132]['tab_matiere_id'],$tab_langues[201]['tab_matiere_id'],$tab_langues[216]['tab_matiere_id'],$tab_langues[101]['tab_matiere_id'],$tab_langues[134]['tab_matiere_id'],$tab_langues[127]['tab_matiere_id'],$tab_langues[217]['tab_matiere_id'],$tab_langues[135]['tab_matiere_id'],$tab_langues[122]['tab_matiere_id'],$tab_langues[139]['tab_matiere_id'],$tab_langues[123]['tab_matiere_id'])) );
 
-// Tableau avec la liste des piliers (compétences) en rapport avec la pratique d'une langue vivante étrangère.
+// Tableau avec la liste des piliers (compétences) / sections (domaines) /  items en rapport avec la pratique d'une langue vivante étrangère.
 
-$tab_langue_piliers = array(2,9);
+$tab_langue_piliers  = array(2,9);
+$tab_langue_sections = array(19,20,21,22,23,48,49,50,51,52);
+$tab_langue_items    = array(211,212,213,214,221,222,231,232,233,241,242,251,252,253,254,255,2211,2212,2213,2214,2221,2222,2223,2231,2232,2233,2241,2242,2251,2252,2253,2254,2255);
 
 ?>

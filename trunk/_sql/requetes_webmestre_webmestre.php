@@ -139,7 +139,6 @@ public function DB_tester_structure_UAI($structure_uai,$base_id=FALSE)
 	$DB_SQL.= 'FROM sacoche_structure ';
 	$DB_SQL.= 'WHERE structure_uai=:structure_uai ';
 	$DB_SQL.= ($base_id) ? 'AND sacoche_base!=:base_id ' : '' ;
-	}
 	// LIMIT 1 a priori pas utile, et de surcroît queryRow ne renverra qu'une ligne
 	$DB_VAR = array(':structure_uai'=>$structure_uai,':base_id'=>$base_id);
 	$DB_ROW = DB::queryRow(SACOCHE_WEBMESTRE_BD_NAME , $DB_SQL , $DB_VAR);

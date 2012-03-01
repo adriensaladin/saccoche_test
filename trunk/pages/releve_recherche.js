@@ -35,6 +35,8 @@ $(document).ready
 		var socle_pilier_requis  = false;
 		var acquisition_requis   = false;
 		var validation_requis    = false;
+		var mode_requis          = false;
+		var mode_manuel          = false;
 
 		//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
 		//	Afficher masquer des éléments du formulaire
@@ -53,9 +55,29 @@ $(document).ready
 				var is_validation = (objet.indexOf('validation')!=-1) ? true : false ;
 				if(is_validation)                      {$('#span_validation').show();validation_requis = true;}       else {$('#span_validation').hide();validation_requis = false;}
 				if( (!is_validation) && (objet!='') )  {$('#span_acquisition').show();acquisition_requis = true;}     else {$('#span_acquisition').hide();acquisition_requis = false;}
+				// mélange des deux
+				if(objet=='socle_item_pourcentage')    {$('#div_socle_item_pourcentage').show();mode_requis = true;}  else {$('#div_socle_item_pourcentage').hide();mode_requis = false;}
 				// initialisation
 				$('#ajax_msg').removeAttr("class").html("&nbsp;");
 				$('#bilan').html("&nbsp;");
+			}
+		);
+
+		$('#f_mode_auto').click
+		(
+			function()
+			{
+				$("#div_matiere").hide();
+				mode_manuel = false;
+			}
+		);
+
+		$('#f_mode_manuel').click
+		(
+			function()
+			{
+				$("#div_matiere").show();
+				mode_manuel = true;
 			}
 		);
 
@@ -189,6 +211,8 @@ $(document).ready
 					f_matiere_items_nombre     : { required:function(){return matiere_items_requis;} },
 					f_socle_item_nom           : { required:function(){return socle_item_requis;} },
 					f_select_pilier            : { required:function(){return socle_pilier_requis;} },
+					f_mode                     : { required:function(){return mode_requis;} },
+					'f_matiere[]'              : { required:function(){return mode_manuel;} },
 					'f_critere_seuil_acquis[]' : { required:function(){return acquisition_requis;} , maxlength:3 },
 					'f_critere_seuil_valide[]' : { required:function(){return validation_requis;} , maxlength:2 }
 				},
@@ -199,6 +223,8 @@ $(document).ready
 					f_matiere_items_nombre     : { required:"item(s) manquant(s)" },
 					f_socle_item_nom           : { required:"item manquant" },
 					f_select_pilier            : { required:"compétence manquante" },
+					f_mode                     : { required:"choix manquant" },
+					'f_matiere[]'              : { required:"matiere(s) manquant(e)" },
 					'f_critere_seuil_acquis[]' : { required:"états(s) manquant(s)" , maxlength:"trop d'états sélectionnés" },
 					'f_critere_seuil_valide[]' : { required:"états(s) manquant(s)" , maxlength:"trop d'états sélectionnés" }
 				},
@@ -206,8 +232,9 @@ $(document).ready
 				errorClass : "erreur",
 				errorPlacement : function(error,element)
 				{
-					if(element.is("select")) {element.after(error);}
-					else if(element.attr("type")=="text") {element.next().next().after(error);}
+					if(element.is("select"))               {element.after(error);}
+					else if(element.attr("type")=="text")  {element.next().next().after(error);}
+					else if(element.attr("type")=="radio") {element.parent().next().after(error);}
 				}
 				// success: function(label) {label.text("ok").removeAttr("class").addClass("valide");} Pas pour des champs soumis à vérification PHP
 			}
@@ -283,7 +310,7 @@ $(document).ready
 			$('button').prop('disabled',false);
 			if(responseHTML.substring(0,6)=='<hr />')
 			{
-				$('#ajax_msg').removeAttr("class").addClass("valide").html("Terminé : voir ci-dessous.");
+				$('#ajax_msg').removeAttr("class").addClass("valide").html("Résultat ci-dessous.");
 				$('#bilan').html(responseHTML);
 				format_liens('#bilan');
 				infobulle();

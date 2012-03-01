@@ -353,7 +353,7 @@ $(document).ready
 			$('button').prop('disabled',false);
 			if(responseHTML.substring(0,6)=='<hr />')
 			{
-				$('#ajax_msg').removeAttr("class").addClass("valide").html("Terminé : voir ci-dessous.");
+				$('#ajax_msg').removeAttr("class").addClass("valide").html("Résultat ci-dessous.");
 				$('#bilan').html(responseHTML);
 				format_liens('#bilan');
 				infobulle();

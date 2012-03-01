@@ -880,7 +880,7 @@ public function DB_OPT_classes_etabl()
  */
 public function DB_OPT_classes_groupes_etabl()
 {
-	// Formulaire::$tab_select_option_first = array(0,'Fiche générique','');
+	Formulaire::$tab_select_option_first = array(0,'Fiche générique','');
 	$DB_SQL = 'SELECT groupe_id AS valeur, groupe_nom AS texte, groupe_type AS optgroup ';
 	$DB_SQL.= 'FROM sacoche_groupe ';
 	$DB_SQL.= 'LEFT JOIN sacoche_niveau USING (niveau_id) ';

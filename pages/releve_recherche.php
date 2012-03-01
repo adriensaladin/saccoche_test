@@ -40,6 +40,7 @@ $select_critere_seuil_valide = '<option value="0" selected>Invalidé</option><op
 
 $select_selection_items = Formulaire::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_selection_items($_SESSION['USER_ID']) , $select_nom='f_selection_items' , $option_first='oui' , $selection=false , $optgroup='non');
 
+$select_matiere = Formulaire::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_matieres_etabl()  , $select_nom=false             , $option_first='non' , $selection=true  , $optgroup='non');
 $select_piliers = Formulaire::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_paliers_piliers() , $select_nom='f_select_pilier' , $option_first='oui' , $selection=false , $optgroup='oui');
 
 ?>
@@ -60,6 +61,10 @@ $select_piliers = Formulaire::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_palier
 	<span id="span_socle_pilier" class="hide">
 		<label class="tab" for="f_select_pilier">Compétence (socle) :</label><?php echo $select_piliers ?><br />
 	</span>
+	<div id="div_socle_item_pourcentage" class="hide">
+		<label class="tab">Items récoltés :</label><label for="f_mode_auto"><input type="radio" id="f_mode_auto" name="f_mode" value="auto" checked /> Automatique (recommandé) <img alt="" src="./_img/bulle_aide.png" title="Items de tous les référentiels, sauf pour la compétence 2 où on ne prend que les items des référentiels de la langue associée à l'élève." /></label>&nbsp;&nbsp;&nbsp;<label for="f_mode_manuel"><input type="radio" id="f_mode_manuel" name="f_mode" value="manuel" /> Sélection manuelle <img alt="" src="./_img/bulle_aide.png" title="Pour choisir les matières des référentiels dont les items collectés sont issus." /></label>
+		<div id="div_matiere" class="hide"><span class="tab"></span><select id="f_matiere" name="f_matiere[]" multiple size="5"><?php echo $select_matiere ?></select></div>
+	</div>
 	<span id="span_acquisition" class="hide">
 		<label class="tab"><img alt="" src="./_img/bulle_aide.png" title="Utiliser la touche &laquo;&nbsp;Ctrl&nbsp;&raquo; pour une sélection multiple." /> État(s) :</label><select id="f_critere_seuil_acquis" name="f_critere_seuil_acquis[]" multiple size="4"><?php echo $select_critere_seuil_acquis ?></select><br />
 	</span>

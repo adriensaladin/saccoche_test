@@ -427,27 +427,12 @@ function affich_pourcentage_html($type_cellule,$tab_infos,$detail)
  */
 function affich_validation_html($type_cellule,$tab_infos,$detail,$etat_pilier=false,$colspan=false)
 {
-	$etat  = ($tab_infos['etat']==1) ? 'Validé' : 'Invalidé' ;
-	$bulle = ($tab_infos['etat']==2) ? '' : ' title="'.$etat.' le '.$tab_infos['date'].' par '.html($tab_infos['info']).'"' ;
-	if($detail)
-	{
-		$texte = ($tab_infos['etat']==2) ? '---' : $tab_infos['date'] ;
-		return '<'.$type_cellule.' class="hc v'.$tab_infos['etat'].'"'.$bulle.'>'.$texte.'</'.$type_cellule.'>';
-	}
-	else
-	{
-		if($colspan)
-		{
-			// État de validation d'un pilier dans un colspan
-			$colspan_et_classe = ' colspan="'.$colspan.'" class="v'.$tab_infos['etat'].'"' ;
-		}
-		else
-		{
-			// État de validation d'un item à indiquer comme inutile si le pilier est validé
-			$colspan_et_classe = ( ($etat_pilier==1) && ($tab_infos['etat']==2) && (!$_SESSION['USER_DALTONISME']) ) ? '' : ' class="v'.$tab_infos['etat'].'"' ;
-		}
-		return '<'.$type_cellule.$colspan_et_classe.$bulle.'></'.$type_cellule.'>';
-	}
+	$etat    = ($tab_infos['etat']==1) ? 'Validé' : 'Invalidé' ;
+	$bulle   = ($tab_infos['etat']==2) ? '' : ' title="'.$etat.' le '.$tab_infos['date'].' par '.html($tab_infos['info']).'"' ;
+	$colspan = ($colspan) ? ' colspan="'.$colspan.'"' : '' ; // État de validation d'un pilier dans un colspan
+	$class   = ($detail) ? ' class="hc v'.$tab_infos['etat'].'"' : ( ( ($etat_pilier==1) && ($tab_infos['etat']==2) && (!$_SESSION['USER_DALTONISME']) ) ? '' : ' class="v'.$tab_infos['etat'].'"' ) ; // État de validation d'un item à indiquer comme inutile si le pilier est validé
+	$texte   = ($detail) ? ( ($tab_infos['etat']==2) ? '---' : $tab_infos['date'] ) : '' ;
+	return '<'.$type_cellule.$colspan.$class.$bulle.'>'.$texte.'</'.$type_cellule.'>';
 }
 
 ?>

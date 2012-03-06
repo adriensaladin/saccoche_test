@@ -305,15 +305,16 @@ public function DB_lister_result_eleves_matiere($liste_eleve_id,$liste_item_id,$
  * @param string $date_mysql_debut
  * @param string $date_mysql_fin
  * @param string $user_profil
+ * @param bool   $onlynote
  * @return array
  */
-public function DB_lister_result_eleves_matieres($liste_eleve_id,$liste_item_id,$date_mysql_debut,$date_mysql_fin,$user_profil)
+public function DB_lister_result_eleves_matieres($liste_eleve_id,$liste_item_id,$date_mysql_debut,$date_mysql_fin,$user_profil,$onlynote=FALSE)
 {
 	$sql_debut = ($date_mysql_debut)     ? 'AND saisie_date>=:date_debut '   : '';
 	$sql_fin   = ($date_mysql_fin)       ? 'AND saisie_date<=:date_fin '     : '';
 	$sql_view  = ($user_profil=='eleve') ? 'AND saisie_visible_date<=NOW() ' : '';
 	$DB_SQL = 'SELECT eleve_id , matiere_id , item_id , ';
-	$DB_SQL.= 'saisie_note AS note , saisie_date AS date , saisie_info AS info ';
+	$DB_SQL.= ($onlynote) ? 'saisie_note AS note ' : 'saisie_note AS note , saisie_date AS date , saisie_info AS info ';
 	$DB_SQL.= 'FROM sacoche_saisie ';
 	$DB_SQL.= 'LEFT JOIN sacoche_devoir USING (devoir_id) ';
 	$DB_SQL.= 'LEFT JOIN sacoche_referentiel_item USING (item_id) ';

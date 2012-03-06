@@ -36,8 +36,8 @@ require_once('./_inc/constantes.php');
 require_once('./_inc/fonction_redirection.php');
 require_once('./_inc/config_serveur.php');
 
-// Paramètres transmis
-$FICHIER = (isset($_GET['fichier'])) ? $_GET['fichier'] : '';
+// Paramètre transmis ; attention à l'exploitation d'une vulnérabilité "include PHP" (http://www.certa.ssi.gouv.fr/site/CERTA-2003-ALE-003/)
+$FICHIER = (isset($_GET['fichier'])) ? str_replace(array('.','/','\\'),'',$_GET['fichier']) : '';
 
 // Fonctions
 require_once('./_inc/fonction_divers.php');

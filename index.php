@@ -59,13 +59,15 @@ elseif($PAGE!='public_installation')
 	affich_message_exit($titre='Informations hébergement manquantes',$contenu='Informations concernant l\'hébergeur manquantes.',$lien='<a href="./index.php?page=public_installation">Procédure d\'installation de SACoche.</a>');
 }
 
-// Ouverture de la session et gestion des droits d'accès
+// Le fait de lister les droits d'accès de chaque page empêche de surcroit l'exploitation d'une vulnérabilité "include PHP" (http://www.certa.ssi.gouv.fr/site/CERTA-2003-ALE-003/).
 require_once('./_inc/tableau_droits.php');
 if(!isset($tab_droits[$PAGE]))
 {
 	$tab_messages_erreur[] = 'Erreur : droits de la page "'.$PAGE.'" manquants.';
 	$PAGE = (substr($PAGE,0,6)=='public') ? 'public_accueil' : 'compte_accueil' ;
 }
+
+// Ouverture de la session et gestion des droits d'accès
 gestion_session($tab_droits[$PAGE]);
 
 // Pour le devel

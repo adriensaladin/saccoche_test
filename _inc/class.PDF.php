@@ -460,13 +460,13 @@ class PDF extends FPDF
 
 	public function afficher_note_lomer($note,$border,$br)
 	{
+		$this->choisir_couleur_fond('blanc');
 		switch ($note)
 		{
 			case 'RR' :
 			case 'R' :
 			case 'V' :
 			case 'VV' :
-				$this->choisir_couleur_fond('blanc');
 				if($this->couleur == 'oui')
 				{
 					$memo_x = $this->GetX();

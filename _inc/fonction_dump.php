@@ -268,7 +268,7 @@ function restaurer_tables_base_etablissement($dossier_temp,$etape)
 		$fichier_nom = $tab_fichier[$i];
 		// ... lancer les requêtes
 		$requetes = file_get_contents($dossier_temp.$fichier_nom);
-		DB_STRUCTURE_COMMUN::DB_executer_requetes_MySQL($requetes);
+		DB_STRUCTURE_COMMUN::DB_executer_requetes_MySQL($requetes); // Attention, sur certains LCS ça bloque au dela de 40 instructions MySQL (mais un INSERT multiple avec des milliers de lignes ne pose pas de pb).
 		/*
 		La classe PDO a un bug. Si on envoie plusieurs requêtes d'un coup ça passe, mais si on recommence juste après alors on récolte : "Cannot execute queries while other unbuffered queries are active.  Consider using PDOStatement::fetchAll().  Alternatively, if your code is only ever going to run against mysql, you may enable query buffering by setting the PDO::MYSQL_ATTR_USE_BUFFERED_QUERY attribute."
 		La seule issue est de fermer la connexion après chaque requête multiple en utilisant exceptionnellement la méthode ajouté par SebR suite à mon signalement : DB::close(nom_de_la_connexion);

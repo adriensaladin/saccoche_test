@@ -367,6 +367,35 @@ function tableau_limitations_MySQL()
 	';
 }
 
+function tableau_reglages_Suhosin()
+{
+	$tab_lignes   = array(1=>'get','post','request');
+	$tab_colonnes = array(1=>'max_name_length','max_totalname_length','max_value_length','max_vars');
+	$tab_tr = array();
+	$tab_suhosin_options  = @ini_get_all( 'suhosin' , FALSE /*details*/ );
+	$tab_tr[0] = '<tr><th>Suhosin</th>';
+	foreach($tab_lignes as $i_ligne => $categorie)
+	{
+		$tab_tr[$i_ligne] = '<tr><td class="hc">'.$categorie.'</td>';
+		foreach($tab_colonnes as $i_colonne => $option)
+		{
+			$tab_tr[0] .= ($i_ligne==1) ? '<td class="hc">'.str_replace('_',' ',$option).'</td>' : '' ;
+			$option_nom = ( ($categorie!='request') || ($option!='max_name_length') ) ? 'suhosin'.'.'.$categorie.'.'.$option : 'suhosin.request.max_varname_length' ;
+			$option_val = (isset($tab_suhosin_options[$option_nom])) ? $tab_suhosin_options[$option_nom] : '---' ;
+			$tab_tr[$i_ligne] .= '<td class="hc">'.$option_val.'</td>' ;
+		}
+		$tab_tr[$i_ligne] .= '</tr>';
+	}
+	$tab_tr[0] .= '</tr>';
+	return'
+		<table class="p">
+			<tbody>
+				'.implode('',$tab_tr).'
+			</tbody>
+		</table>
+	';
+}
+
 function tableau_modules_PHP($nb_lignes)
 {
 	global $tab_commentaires;

@@ -143,7 +143,7 @@ $(document).ready
 						},
 						success : function(responseHTML)
 						{
-							if(responseHTML.substring(0,20)!='<p><label for="rien"')
+							if(responseHTML.substring(0,9)!='<p><label')
 							{
 								$('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);
 							}

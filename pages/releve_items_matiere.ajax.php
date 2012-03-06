@@ -34,6 +34,7 @@ $aff_bilan_PA      = (isset($_POST['f_bilan_PA']))    ? 1                       
 $aff_conv_sur20    = (isset($_POST['f_conv_sur20']))  ? 1                                     : 0;
 $tableau_tri_objet = (isset($_POST['f_tri_objet']))   ? clean_texte($_POST['f_tri_objet'])    : '';
 $tableau_tri_mode  = (isset($_POST['f_tri_mode']))    ? clean_texte($_POST['f_tri_mode'])     : '';
+$with_coef         = 1; // Il n'y a qu'une matière, on prend en compte les coefficients.
 $groupe_id         = (isset($_POST['f_groupe']))      ? clean_entier($_POST['f_groupe'])      : 0;
 $groupe_nom        = (isset($_POST['f_groupe_nom']))  ? clean_texte($_POST['f_groupe_nom'])   : '';
 $matiere_id        = (isset($_POST['f_matiere']))     ? clean_entier($_POST['f_matiere'])     : 0;
@@ -55,6 +56,7 @@ $marge_min         = (isset($_POST['f_marge_min']))   ? clean_entier($_POST['f_m
 $pages_nb          = (isset($_POST['f_pages_nb']))    ? clean_texte($_POST['f_pages_nb'])     : '';
 $cases_nb          = (isset($_POST['f_cases_nb']))    ? clean_entier($_POST['f_cases_nb'])    : 0;
 $cases_largeur     = (isset($_POST['f_cases_larg']))  ? clean_entier($_POST['f_cases_larg'])  : 0;
+
 
 // Normalement ce sont des tableaux qui sont transmis, mais au cas où...
 $tab_eleve = (isset($_POST['f_eleve'])) ? ( (is_array($_POST['f_eleve'])) ? $_POST['f_eleve'] : explode(',',$_POST['f_eleve']) ) : array() ;
@@ -130,7 +132,7 @@ $tab_matiere[$matiere_id] = $matiere_nom;
 $item_nb = count($tab_item);
 if(!$item_nb)
 {
-	exit('Aucun item n\'a été évalué durant cette période pour cette matière et ces élèves !');
+	exit('Aucun item évalué sur cette période selon les critères indiqués !');
 }
 $tab_liste_item = array_keys($tab_item);
 $liste_item = implode(',',$tab_liste_item);

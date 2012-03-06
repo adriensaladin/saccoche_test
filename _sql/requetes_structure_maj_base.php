@@ -1583,10 +1583,10 @@ public function DB_maj_base($version_actuelle)
 			$DB_TAB_specifiques  = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , 'SELECT matiere_id, matiere_nb_demandes, matiere_ordre, matiere_ref, matiere_nom FROM sacoche_matiere WHERE matiere_partage=0');
 			// nouvelles tables sacoche_matiere (intégration native de 1900 matières) et sacoche_matiere_famille
 			$requetes = file_get_contents(CHEMIN_SQL_STRUCTURE.'sacoche_matiere.sql');
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , $requetes );
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , $requetes ); // Attention, sur certains LCS ça bloque au dela de 40 instructions MySQL (mais un INSERT multiple avec des milliers de lignes ne pose pas de pb).
 			DB::close(SACOCHE_STRUCTURE_BD_NAME);
 			$requetes = file_get_contents(CHEMIN_SQL_STRUCTURE.'sacoche_matiere_famille.sql');
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , $requetes );
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , $requetes ); // Attention, sur certains LCS ça bloque au dela de 40 instructions MySQL (mais un INSERT multiple avec des milliers de lignes ne pose pas de pb).
 			DB::close(SACOCHE_STRUCTURE_BD_NAME);
 			// incrément des ids pour éviter tout souci
 			$increment = 11000;
@@ -1682,10 +1682,10 @@ public function DB_maj_base($version_actuelle)
 			$listing_paliers_id = DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , 'SELECT parametre_valeur FROM sacoche_parametre WHERE parametre_nom="paliers"' );
 			// nouvelles tables sacoche_niveau et sacoche_niveau_famille
 			$requetes = file_get_contents(CHEMIN_SQL_STRUCTURE.'sacoche_niveau.sql');
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , $requetes );
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , $requetes ); // Attention, sur certains LCS ça bloque au dela de 40 instructions MySQL (mais un INSERT multiple avec des milliers de lignes ne pose pas de pb).
 			DB::close(SACOCHE_STRUCTURE_BD_NAME);
 			$requetes = file_get_contents(CHEMIN_SQL_STRUCTURE.'sacoche_niveau_famille.sql');
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , $requetes );
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , $requetes ); // Attention, sur certains LCS ça bloque au dela de 40 instructions MySQL (mais un INSERT multiple avec des milliers de lignes ne pose pas de pb).
 			DB::close(SACOCHE_STRUCTURE_BD_NAME);
 			// ajout champ table sacoche_socle_palier
 			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_socle_palier ADD palier_actif BOOLEAN NOT NULL DEFAULT 0 AFTER palier_id , ADD INDEX ( palier_actif )' );
@@ -1734,7 +1734,7 @@ public function DB_maj_base($version_actuelle)
 			if(!count($DB_TAB))
 			{
 				$requetes = file_get_contents(CHEMIN_SQL_STRUCTURE.'sacoche_socle_palier.sql');
-				DB::query(SACOCHE_STRUCTURE_BD_NAME , $requetes );
+				DB::query(SACOCHE_STRUCTURE_BD_NAME , $requetes ); // Attention, sur certains LCS ça bloque au dela de 40 instructions MySQL (mais un INSERT multiple avec des milliers de lignes ne pose pas de pb).
 				DB::close(SACOCHE_STRUCTURE_BD_NAME);
 			}
 		}
@@ -1755,7 +1755,7 @@ public function DB_maj_base($version_actuelle)
 			if(!count($DB_TAB))
 			{
 				$requetes = file_get_contents(CHEMIN_SQL_STRUCTURE.'sacoche_jointure_user_pilier.sql');
-				DB::query(SACOCHE_STRUCTURE_BD_NAME , $requetes );
+				DB::query(SACOCHE_STRUCTURE_BD_NAME , $requetes ); // Attention, sur certains LCS ça bloque au dela de 40 instructions MySQL (mais un INSERT multiple avec des milliers de lignes ne pose pas de pb).
 				DB::close(SACOCHE_STRUCTURE_BD_NAME);
 			}
 		}
@@ -1775,6 +1775,22 @@ public function DB_maj_base($version_actuelle)
 			// La supprimer si elle existe : sinon dans le cas d'une restauration de base à une version antérieure (suivie de cette mise à jour), cette ancienne table éventuellement existante ne serait pas réinitialisée.
 			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'DROP TABLE IF EXISTS sacoche_selection_item' );
 			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'CREATE TABLE sacoche_selection_item ( selection_item_id    MEDIUMINT(8) UNSIGNED                NOT NULL AUTO_INCREMENT, user_id              MEDIUMINT(8) UNSIGNED                NOT NULL DEFAULT 0, selection_item_nom   VARCHAR(60)  COLLATE utf8_unicode_ci NOT NULL DEFAULT "", selection_item_liste TEXT         COLLATE utf8_unicode_ci NOT NULL DEFAULT "", PRIMARY KEY (selection_item_id), KEY user_id (user_id) ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci ' );
+		}
+	}
+
+	//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	//	MAJ 2012-02-29 => 2012-03-05
+	//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	if($version_actuelle=='2012-02-29')
+	{
+		if($version_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
+		{
+			$version_actuelle = '2012-03-05';
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_actuelle.'" WHERE parametre_nom="version_base"' );
+			// modification de 2 références d'ENT
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur=REPLACE(parametre_valeur,"scolastance02","ent_02") WHERE parametre_nom="connexion_nom"' );
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur=REPLACE(parametre_valeur,"entea","ent_alsace") WHERE parametre_nom="connexion_nom"' );
 		}
 	}
 

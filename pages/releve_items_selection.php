@@ -35,9 +35,12 @@ $check_type_individuel = (Formulaire::$tab_choix['type_individuel'])   ? ' check
 $class_form_individuel = (Formulaire::$tab_choix['type_individuel'])   ? 'show'     : 'hide' ;
 $check_type_synthese   = (Formulaire::$tab_choix['type_synthese'])     ? ' checked' : '' ;
 $class_form_synthese   = (Formulaire::$tab_choix['type_synthese'])     ? 'show'     : 'hide' ;
+$check_type_bulletin   = (Formulaire::$tab_choix['type_bulletin'])     ? ' checked' : '' ;
 $check_bilan_MS        = (Formulaire::$tab_choix['aff_bilan_MS'])      ? ' checked' : '' ;
 $check_bilan_PA        = (Formulaire::$tab_choix['aff_bilan_PA'])      ? ' checked' : '' ;
 $check_conv_sur20      = (Formulaire::$tab_choix['aff_conv_sur20'])    ? ' checked' : '' ;
+$check_with_coef       = (Formulaire::$tab_choix['with_coef'])         ? ' checked' : '' ;
+$class_form_with_coef  = ($check_type_synthese || $check_type_bulletin || ($check_type_individuel && $check_bilan_MS) ) ? 'show' : 'hide' ;
 // Ci-après sans objet car cette page n'est proposée qu'aux professeurs.
 /*
 if(in_array($_SESSION['USER_PROFIL'],array('parent','eleve')))
@@ -116,12 +119,15 @@ if(is_array($tab_groupes))
 <hr />
 
 <form action="#" method="post" id="form_select"><fieldset>
-	<label class="tab">Type de bilan :</label><label for="f_type_individuel"><input type="checkbox" id="f_type_individuel" name="f_type[]" value="individuel"<?php echo $check_type_individuel ?> /> Relevé individuel</label>&nbsp;&nbsp;&nbsp;<label for="f_type_synthese"><input type="checkbox" id="f_type_synthese" name="f_type[]" value="synthese"<?php echo $check_type_synthese ?> /> Synthèse collective</label><br />
+	<label class="tab">Type de bilan :</label><label for="f_type_individuel"><input type="checkbox" id="f_type_individuel" name="f_type[]" value="individuel"<?php echo $check_type_individuel ?> /> Relevé individuel</label>&nbsp;&nbsp;&nbsp;<label for="f_type_synthese"><input type="checkbox" id="f_type_synthese" name="f_type[]" value="synthese"<?php echo $check_type_synthese ?> /> Synthèse collective</label>&nbsp;&nbsp;&nbsp;<label for="f_type_bulletin"><input type="checkbox" id="f_type_bulletin" name="f_type[]" value="bulletin"<?php echo $check_type_bulletin ?> /> Bulletin (moyenne &amp; appréciation)</label><br />
 	<span id="options_individuel" class="<?php echo $class_form_individuel ?>">
 		<label class="tab"><img alt="" src="./_img/bulle_aide.png" title="Pour le relévé individuel, deux lignes de synthèse peuvent être ajoutées.<br />Dans ce cas, une note sur 20 peut aussi être affichée." /> Opt. relevé :</label><label for="f_bilan_MS"><input type="checkbox" id="f_bilan_MS" name="f_bilan_MS" value="1"<?php echo $check_bilan_MS ?> /> Moyenne des scores</label>&nbsp;&nbsp;&nbsp;<label for="f_bilan_PA"><input type="checkbox" id="f_bilan_PA" name="f_bilan_PA" value="1"<?php echo $check_bilan_PA ?> /> Pourcentage d'items acquis</label>&nbsp;&nbsp;&nbsp;<label for="f_conv_sur20"><input type="checkbox" id="f_conv_sur20" name="f_conv_sur20" value="1"<?php echo $check_conv_sur20 ?> /> Proposition de note sur 20</label><br />
 	</span>
 	<span id="options_synthese" class="<?php echo $class_form_synthese ?>">
 		<label class="tab"><img alt="" src="./_img/bulle_aide.png" title="Paramétrage du tableau de synthèse." /> Opt. synthèse :</label><?php echo $select_tri_objet ?> <?php echo $select_tri_mode ?><br />
+	</span>
+	<span id="option_with_coef" class="<?php echo $class_form_with_coef ?>">
+		<label class="tab"><img alt="" src="./_img/bulle_aide.png" title="Concerne le relevé individuel avec moyenne des scores, la synthèse collective, la moyenne d'un bulletin.<br />La question se pose notamment dans le cas d'items issus de référentiels de plusieurs matières." /> Coefficients :</label><label for="f_with_coef"><input type="checkbox" id="f_with_coef" name="f_with_coef" value="1"<?php echo $check_with_coef ?> /> Prise en compte des coefficients</label><br />
 	</span>
 	<p>
 		<label class="tab">Items :</label><input id="f_compet_nombre" name="f_compet_nombre" size="10" type="text" value="aucun" readonly /><input id="f_compet_liste" name="f_compet_liste" type="hidden" value="" /><q class="choisir_compet" title="Voir ou choisir les items."></q>

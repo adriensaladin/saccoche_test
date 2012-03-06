@@ -35,6 +35,7 @@ $(document).ready
 		var socle_pilier_requis  = false;
 		var acquisition_requis   = false;
 		var validation_requis    = false;
+		var coef_requis          = false;
 		var mode_requis          = false;
 		var mode_manuel          = false;
 
@@ -56,7 +57,8 @@ $(document).ready
 				if(is_validation)                      {$('#span_validation').show();validation_requis = true;}       else {$('#span_validation').hide();validation_requis = false;}
 				if( (!is_validation) && (objet!='') )  {$('#span_acquisition').show();acquisition_requis = true;}     else {$('#span_acquisition').hide();acquisition_requis = false;}
 				// mélange des deux
-				if(objet=='socle_item_pourcentage')    {$('#div_socle_item_pourcentage').show();mode_requis = true;}  else {$('#div_socle_item_pourcentage').hide();mode_requis = false;}
+				if(objet=='matiere_items_bilanMS')     {$('#div_matiere_items_bilanMS').show();mode_requis = true;}   else {$('#div_matiere_items_bilanMS').hide();mode_requis = false;}
+				if(objet=='socle_item_pourcentage')    {$('#div_socle_item_pourcentage').show();coef_requis = true;}  else {$('#div_socle_item_pourcentage').hide();coef_requis = false;}
 				// initialisation
 				$('#ajax_msg').removeAttr("class").html("&nbsp;");
 				$('#bilan').html("&nbsp;");
@@ -190,6 +192,28 @@ $(document).ready
 				$('#f_socle_item_nom').val(socle_nom);
 				$('#f_socle_item_id').val(socle_id);
 				$('#annuler_socle_item').click();
+			}
+		);
+
+		//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
+		//	Éléments dynamiques du formulaire
+		//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
+
+		// Tout cocher ou tout décocher
+		$('#all_check').live // live est utilisé pour prendre en compte les nouveaux éléments créés
+		('click',
+			function()
+			{
+				$('#form_synthese input[type=checkbox]').prop('checked',true);
+				return false;
+			}
+		);
+		$('#all_uncheck').live // live est utilisé pour prendre en compte les nouveaux éléments créés
+		('click',
+			function()
+			{
+				$('#form_synthese input[type=checkbox]').prop('checked',false);
+				return false;
 			}
 		);
 

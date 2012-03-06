@@ -26,7 +26,7 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-$TITRE = "Recherche critériée";
+$TITRE = "Recherche ciblée";
 
 // Fabrication des éléments select du formulaire
 $tab_groupes = ($_SESSION['USER_PROFIL']=='professeur') ? DB_STRUCTURE_COMMUN::DB_OPT_groupes_professeur($_SESSION['USER_ID']) : DB_STRUCTURE_COMMUN::DB_OPT_regroupements_etabl(FALSE/*sans*/) ;
@@ -45,13 +45,13 @@ $select_piliers = Formulaire::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_palier
 
 ?>
 
-<div><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=releves_bilans__releve_recherche">DOC : Recherche critériée.</a></span></div>
+<div><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=releves_bilans__releve_recherche">DOC : Recherche ciblée.</a></span></div>
 
 <hr />
 
 <form action="#" method="post" id="form_select"><fieldset>
 	<p><label class="tab" for="f_groupe">Élèves :</label><?php echo $select_groupe ?><input type="hidden" id="f_groupe_id" name="f_groupe_id" value="" /><input type="hidden" id="f_groupe_type" name="f_groupe_type" value="" /><input type="hidden" id="f_groupe_nom" name="f_groupe_nom" value="" /></p>
-	<label class="tab" for="f_critere_objet">Objet étudié :</label><?php echo $select_critere_objet ?><br />
+	<label class="tab" for="f_critere_objet">Critère observé :</label><?php echo $select_critere_objet ?><br />
 	<span id="span_matiere_items" class="hide">
 		<label class="tab">Item(s) matière(s) :</label><input id="f_matiere_items_nombre" name="f_matiere_items_nombre" size="10" type="text" value="" readonly /><input id="f_matiere_items_liste" name="f_matiere_items_liste" type="hidden" value="" /><q class="choisir_compet" title="Voir ou choisir les items."></q><br />
 	</span>
@@ -61,6 +61,9 @@ $select_piliers = Formulaire::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_palier
 	<span id="span_socle_pilier" class="hide">
 		<label class="tab" for="f_select_pilier">Compétence (socle) :</label><?php echo $select_piliers ?><br />
 	</span>
+	<div id="div_matiere_items_bilanMS" class="hide">
+		<label class="tab"><img alt="" src="./_img/bulle_aide.png" title="La question se pose notamment dans le cas d'items issus de référentiels de plusieurs matières." /> Coefficients :</label><label for="f_with_coef"><input type="checkbox" id="f_with_coef" name="f_with_coef" value="1" checked /> Prise en compte des coefficients</label><br />
+	</div>
 	<div id="div_socle_item_pourcentage" class="hide">
 		<label class="tab">Items récoltés :</label><label for="f_mode_auto"><input type="radio" id="f_mode_auto" name="f_mode" value="auto" checked /> Automatique (recommandé) <img alt="" src="./_img/bulle_aide.png" title="Items de tous les référentiels, sauf pour la compétence 2 où on ne prend que les items des référentiels de la langue associée à l'élève." /></label>&nbsp;&nbsp;&nbsp;<label for="f_mode_manuel"><input type="radio" id="f_mode_manuel" name="f_mode" value="manuel" /> Sélection manuelle <img alt="" src="./_img/bulle_aide.png" title="Pour choisir les matières des référentiels dont les items collectés sont issus." /></label>
 		<div id="div_matiere" class="hide"><span class="tab"></span><select id="f_matiere" name="f_matiere[]" multiple size="5"><?php echo $select_matiere ?></select></div>

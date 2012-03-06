@@ -32,6 +32,7 @@ $format         = 'multimatiere';
 $aff_bilan_MS   = (isset($_POST['f_bilan_MS']))    ? 1                                    : 0;
 $aff_bilan_PA   = (isset($_POST['f_bilan_PA']))    ? 1                                    : 0;
 $aff_conv_sur20 = (isset($_POST['f_conv_sur20']))  ? 1                                    : 0;
+$with_coef      = 1; // Il n'y a que des relevés par matière et pas de synthèse commune : on prend en compte les coefficients pour chaque relevé matière.
 $matiere_id     = true;
 $matiere_nom    = '';
 $groupe_id      = (isset($_POST['f_groupe']))      ? clean_entier($_POST['f_groupe'])     : 0;
@@ -130,7 +131,7 @@ list($tab_item,$tab_matiere) = DB_STRUCTURE_BILAN::DB_recuperer_arborescence_bil
 $item_nb = count($tab_item);
 if(!$item_nb)
 {
-	exit('Aucun item n\'a été évalué durant cette période pour cette matière et ces élèves !');
+	exit('Aucun item évalué sur cette période selon les critères indiqués !');
 }
 $tab_liste_item = array_keys($tab_item);
 $liste_item = implode(',',$tab_liste_item);

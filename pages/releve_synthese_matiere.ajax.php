@@ -104,7 +104,7 @@ $tab_matiere[$matiere_id] = $matiere_nom;
 $item_nb = count($tab_item);
 if(!$item_nb)
 {
-	exit('Aucun item n\'a été évalué durant cette période pour ces élèves dans cette configuration !');
+	exit('Aucun item évalué sur cette période selon les critères indiqués !');
 }
 $tab_liste_item = array_keys($tab_item);
 $liste_item = implode(',',$tab_liste_item);

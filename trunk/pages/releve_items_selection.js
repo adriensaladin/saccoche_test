@@ -50,11 +50,24 @@ $(document).ready
 		//	Afficher masquer des options de la grille
 		//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
 
+		function visibility_option_with_coef()
+		{
+			if( ($('#f_type_synthese').is(':checked')) || ($('#f_type_bulletin').is(':checked')) || ( ($('#f_type_individuel').is(':checked')) && ($('#f_bilan_MS').is(':checked')) ) )
+			{
+				$("#option_with_coef").attr("class","show");
+			}
+			else
+			{
+				$("#option_with_coef").attr("class","hide");
+			}
+		}
+
 		$('#f_type_individuel').click
 		(
 			function()
 			{
 				$("#options_individuel").toggle();
+				visibility_option_with_coef();
 			}
 		);
 
@@ -63,6 +76,15 @@ $(document).ready
 			function()
 			{
 				$("#options_synthese").toggle();
+				visibility_option_with_coef();
+			}
+		);
+
+		$('#f_type_bulletin').click
+		(
+			function()
+			{
+				visibility_option_with_coef();
 			}
 		);
 
@@ -78,6 +100,7 @@ $(document).ready
 				{
 					$('label[for=f_conv_sur20]').css('visibility','hidden');
 				}
+				visibility_option_with_coef();
 			}
 		);
 

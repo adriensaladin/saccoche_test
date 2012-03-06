@@ -466,7 +466,7 @@ public function DB_creer_remplir_tables_structure()
 		if($extension=='sql')
 		{
 			$requetes = file_get_contents(CHEMIN_SQL_STRUCTURE.$file);
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , $requetes );
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , $requetes ); // Attention, sur certains LCS ça bloque au dela de 40 instructions MySQL (mais un INSERT multiple avec des milliers de lignes ne pose pas de pb).
 			/*
 			La classe PDO a un bug. Si on envoie plusieurs requêtes d'un coup ça passe, mais si on recommence juste après alors on récolte : "Cannot execute queries while other unbuffered queries are active.  Consider using PDOStatement::fetchAll().  Alternatively, if your code is only ever going to run against mysql, you may enable query buffering by setting the PDO::MYSQL_ATTR_USE_BUFFERED_QUERY attribute."
 			La seule issue est de fermer la connexion après chaque requête multiple en utilisant exceptionnellement la méthode ajouté par SebR suite à mon signalement : DB::close(nom_de_la_connexion);
@@ -558,23 +558,23 @@ public function DB_OPT_matieres_eleve($user_id)
 	$DB_SQL.= 'WHERE user_id=:user_id AND groupe_type=:type2 ';
 	$DB_SQL.= 'GROUP BY user_id ';
 	$DB_VAR = array(':user_id'=>$user_id,':type2'=>'groupe');
-	$DB_ROW = DB::queryRow(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-	if( (!$_SESSION['ELEVE_CLASSE_ID']) && (!count($DB_ROW)) )
+	$liste_groupes_id = DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+	if( (!$_SESSION['ELEVE_CLASSE_ID']) && (!$liste_groupes_id) )
 	{
 		// élève sans classe et sans groupe
 		return 'Aucune classe ni aucun groupe ne vous est affecté !';
 	}
-	if(!count($DB_ROW))
+	if(!$liste_groupes_id)
 	{
 		$liste_groupes = $_SESSION['ELEVE_CLASSE_ID'];
 	}
 	elseif(!$_SESSION['ELEVE_CLASSE_ID'])
 	{
-		$liste_groupes = $DB_ROW['sacoche_liste_groupe_id'];
+		$liste_groupes = $liste_groupes_id;
 	}
 	else
 	{
-		$liste_groupes = $_SESSION['ELEVE_CLASSE_ID'].','.$DB_ROW['sacoche_liste_groupe_id'];
+		$liste_groupes = $_SESSION['ELEVE_CLASSE_ID'].','.$liste_groupes_id;
 	}
 	// Ensuite on récupère les matières des professeurs (actifs !) qui sont associés à la liste des groupes récupérés
 	$DB_SQL = 'SELECT matiere_id AS valeur, matiere_nom AS texte, matiere_nb_demandes AS info ';

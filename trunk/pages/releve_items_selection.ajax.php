@@ -34,6 +34,7 @@ $aff_bilan_PA      = (isset($_POST['f_bilan_PA']))    ? 1                       
 $aff_conv_sur20    = (isset($_POST['f_conv_sur20']))  ? 1                                     : 0;
 $tableau_tri_objet = (isset($_POST['f_tri_objet']))   ? clean_texte($_POST['f_tri_objet'])    : '';
 $tableau_tri_mode  = (isset($_POST['f_tri_mode']))    ? clean_texte($_POST['f_tri_mode'])     : '';
+$with_coef         = (isset($_POST['f_with_coef']))   ? 1                                     : 0;
 $groupe_id         = (isset($_POST['f_groupe']))      ? clean_entier($_POST['f_groupe'])      : 0;
 $groupe_nom        = (isset($_POST['f_groupe_nom']))  ? clean_texte($_POST['f_groupe_nom'])   : '';
 $matiere_id        = true;
@@ -78,7 +79,7 @@ if($_SESSION['USER_PROFIL']=='eleve')
 
 $type_individuel = (in_array('individuel',$tab_type)) ? 1 : 0 ;
 $type_synthese   = (in_array('synthese',$tab_type))   ? 1 : 0 ;
-$type_bulletin   = 0 ;
+$type_bulletin   = (in_array('bulletin',$tab_type))   ? 1 : 0 ;
 
 $liste_eleve = implode(',',$tab_eleve);
 
@@ -114,20 +115,25 @@ if($date_mysql_debut>$date_mysql_fin)
 
 $tab_item = array();	// [item_id] => array(item_ref,item_nom,item_coef,item_cart,item_socle,item_lien,calcul_methode,calcul_limite);
 $tab_liste_item = array();	// [i] => item_id
-$tab_eleve      = array();	// [i] => array(eleve_id,eleve_nom,eleve_prenom)
+$tab_eleve      = array();	// [i] => array(eleve_id,eleve_nom,eleve_prenomeleve_id_gepi)
 $tab_matiere    = array();	// [matiere_id] => matiere_nom
 $tab_eval       = array();	// [eleve_id][matiere_id][item_id][devoir] => array(note,date,info) On utilise un tableau multidimensionnel vu qu'on ne sait pas à l'avance combien il y a d'évaluations pour un élève et un item donnés.
 $tab_matiere_for_item = array();	// [item_id] => matiere_id
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-// Récupération de la liste des items travaillés durant la période choisie, pour la matière et les élèves selectionnés
+// Récupération de la liste des items travaillés durant la période choisie, pour les élèves selectionnés
 // Récupération de la liste des matières travaillées
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 $tab_compet_liste = (isset($_POST['f_compet_liste'])) ? explode('_',$_POST['f_compet_liste']) : array() ;
 $tab_compet_liste = array_map('clean_entier',$tab_compet_liste);
 $liste_compet = implode(',',$tab_compet_liste);
 list($tab_item,$tab_matiere) = DB_STRUCTURE_BILAN::DB_recuperer_arborescence_selection($liste_eleve,$liste_compet,$date_mysql_debut,$date_mysql_fin,$aff_domaine,$aff_theme);
-// $tab_matiere déjà renseigné à la requête précédente.
+// Si les items sont issus de plusieurs matières, alors on les regroupe en une seule.
+$is_multimatiere = (count($tab_matiere)>1) ? TRUE : FALSE ;
+if($is_multimatiere)
+{
+	$tab_matiere = array( 0 => implode(' - ',$tab_matiere) );
+}
 
 $item_nb = count($tab_item);
 if(!$item_nb)
@@ -140,7 +146,7 @@ $liste_item = implode(',',$tab_liste_item);
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 // Récupération de la liste des élèves
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-$tab_eleve = DB_STRUCTURE_BILAN::DB_lister_eleves_cibles($liste_eleve,$with_gepi=FALSE,$with_langue=FALSE);
+$tab_eleve = DB_STRUCTURE_BILAN::DB_lister_eleves_cibles($liste_eleve,$with_gepi=TRUE,$with_langue=FALSE);
 if(!is_array($tab_eleve))
 {
 	exit('Aucun élève trouvé correspondant aux identifiants transmis !');
@@ -164,8 +170,9 @@ foreach($DB_TAB as $DB_ROW)
 {
 	if($tab_score_a_garder[$DB_ROW['eleve_id']][$DB_ROW['item_id']])
 	{
-		$tab_eval[$DB_ROW['eleve_id']][$DB_ROW['matiere_id']][$DB_ROW['item_id']][] = array('note'=>$DB_ROW['note'],'date'=>$DB_ROW['date'],'info'=>$DB_ROW['info']);
-		$tab_matiere_for_item[$DB_ROW['item_id']] = $DB_ROW['matiere_id'];	// sert pour la synthèse sur une sélection d'items issus de différentes matières
+		$matiere_id = ($is_multimatiere) ? 0 : $DB_ROW['matiere_id'] ;
+		$tab_eval[$DB_ROW['eleve_id']][$matiere_id][$DB_ROW['item_id']][] = array('note'=>$DB_ROW['note'],'date'=>$DB_ROW['date'],'info'=>$DB_ROW['info']);
+		$tab_matiere_for_item[$DB_ROW['item_id']] = $matiere_id;	// sert pour la synthèse sur une sélection d'items issus de différentes matières
 	}
 }
 $matiere_nb = count(array_unique($tab_matiere_for_item));
@@ -188,6 +195,16 @@ if($affichage_direct)
 }
 else
 {
+	if($type_bulletin)
+	{
+		echo'<h2>Bulletin</h2>';
+		echo'<ul class="puce">';
+		echo'<li><a class="lien_ext" href="'.$dossier.$fichier_lien.'_bulletin_note_appreciation.csv"><span class="file file_txt">Récupérer notes et appréciations à importer dans GEPI (format <em>csv</em> <img alt="" src="./_img/bulle_aide.png" title="Si le navigateur ouvre le fichier au lieu de l\'enregistrer, cliquer avec le bouton droit et choisir «&nbsp;Enregistrer&nbsp;sous...&nbsp;»." />).</span></a></li>';
+		echo'<li><a class="lien_ext" href="'.$dossier.$fichier_lien.'_bulletin_note.csv"><span class="file file_txt">Récupérer les notes à importer dans GEPI (format <em>csv</em> <img alt="" src="./_img/bulle_aide.png" title="Si le navigateur ouvre le fichier au lieu de l\'enregistrer, cliquer avec le bouton droit et choisir «&nbsp;Enregistrer&nbsp;sous...&nbsp;»." />).</span></a></li>';
+		echo'<li><a class="lien_ext" href="'.$dossier.$fichier_lien.'_bulletin_appreciation.csv"><span class="file file_txt">Récupérer les appréciations à importer dans GEPI (format <em>csv</em> <img alt="" src="./_img/bulle_aide.png" title="Si le navigateur ouvre le fichier au lieu de l\'enregistrer, cliquer avec le bouton droit et choisir «&nbsp;Enregistrer&nbsp;sous...&nbsp;»." />).</span></a></li>';
+		echo'<li><a class="lien_ext" href="./releve-html.php?fichier='.$fichier_lien.'_bulletin"><span class="file file_htm">Explorer / Manipuler (format <em>html</em>).</span></a></li>';
+		echo'</ul>';
+	}
 	if($type_synthese)
 	{
 		echo'<h2>Synthèse collective</h2>';

@@ -38,9 +38,10 @@ $groupe_id   = (isset($_POST['f_groupe_id']))   ? clean_entier($_POST['f_groupe_
 $groupe_nom  = (isset($_POST['f_groupe_nom']))  ? clean_texte($_POST['f_groupe_nom'])  : '';
 
 $critere_objet = (isset($_POST['f_critere_objet'])) ? clean_texte($_POST['f_critere_objet']) : '';
+$with_coef     = (isset($_POST['f_with_coef']))     ? 1                                      : 0;
 
 // item(s) matière(s)
-$tab_compet_liste = (isset($_POST['f_compet_liste'])) ? explode('_',$_POST['f_compet_liste']) : array() ;
+$tab_compet_liste = (isset($_POST['f_matiere_items_liste'])) ? explode('_',$_POST['f_matiere_items_liste']) : array() ;
 $tab_compet_liste = array_map('clean_entier',$tab_compet_liste);
 $compet_liste = implode(',',$tab_compet_liste);
 $compet_nombre = count($tab_compet_liste);
@@ -112,12 +113,30 @@ $liste_eleve = implode(',',$tab_eleve_id);
 
 $affichage_checkbox = ( ($_SESSION['USER_PROFIL']=='professeur') && (SACoche!='webservices') ) ? TRUE : FALSE ;
 
-$tab_eval         = array();	// [eleve_id][socle_id][item_id][]['note'] => note   [type "pourcentage" uniquement]
+$tab_eval         = array();	// [eleve_id][item_id][]['note'] => note   [type "pourcentage" uniquement]
 $tab_item         = array();	// [item_id] => array(calcul_methode,calcul_limite); [type "pourcentage" uniquement]
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 // Récupération des données
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
+// =====> Cas n°1 : moyenne des scores d'acquisition d'items matières sélectionnés
+// =====> Cas n°2 : pourcentage d'items acquis d'items matières sélectionnés
+
+if( $is_matiere_items_bilanMS || $is_matiere_items_bilanPA )
+{
+	$DB_TAB = DB_STRUCTURE_SOCLE::DB_lister_infos_items($compet_liste,$detail=TRUE);
+	foreach($DB_TAB as $DB_ROW)
+	{
+		$tab_item[$DB_ROW['item_id']] = array('item_coef'=>$DB_ROW['item_coef'],'calcul_methode'=>$DB_ROW['calcul_methode'],'calcul_limite'=>$DB_ROW['calcul_limite']);
+	}
+	// Un directeur effectuant une recherche sur un grand nombre d'items pour tous les élèves de l'établissement peut provoquer un dépassement de mémoire.
+	$DB_TAB = DB_STRUCTURE_BILAN::DB_lister_result_eleves_matieres( $liste_eleve , $compet_liste , NULL /*date_mysql_debut*/ , NULL /*date_mysql_fin*/ , $_SESSION['USER_PROFIL'] , TRUE /*onlynote*/ );
+	foreach($DB_TAB as $DB_ROW)
+	{
+		$tab_eval[$DB_ROW['eleve_id']][$DB_ROW['item_id']][]['note'] = $DB_ROW['note'];
+	}
+}
 
 // =====> Cas n°3 : pourcentage d'items disciplinaires acquis d'un item du socle
 
@@ -187,15 +206,99 @@ DB::close(SACOCHE_STRUCTURE_BD_NAME);
 unset($DB_TAB);
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-// Traitement des données
+// Traitement des données => remplissage du tableau $tab_tr[]
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
+// =====> Cas n°1 : moyenne des scores d'acquisition d'items matières sélectionnés
+// =====> Cas n°2 : pourcentage d'items acquis d'items matières sélectionnés
+
+if( $is_matiere_items_bilanMS || $is_matiere_items_bilanPA )
+{
+	$tab_eleve_moy_scores  = array();
+	$tab_eleve_pourcentage = array();
+	$tab_init = array('A'=>0,'VA'=>0,'NA'=>0,'nb'=>0,'%'=>false);
+	// Pour chaque élève...
+	foreach($tab_eleve_id as $eleve_id)
+	{
+		$tab_eleve_moy_scores[$eleve_id]  = false;
+		$tab_eleve_pourcentage[$eleve_id] = $tab_init;
+		// Si cet élève a été évalué...
+		if(isset($tab_eval[$eleve_id]))
+		{
+			// Pour chaque item...
+			$tab_score_item = array();
+			foreach($tab_eval[$eleve_id] as $item_id => $tab_devoirs)
+			{
+				extract($tab_item[$item_id]);	// $item_coef $calcul_methode $calcul_limite
+				// calcul du bilan de l'item
+				$tab_score_item[$item_id] = calculer_score($tab_devoirs,$calcul_methode,$calcul_limite);
+			}
+			// calcul des bilans des scores
+			$tableau_score_filtre = array_filter($tab_score_item,'non_nul');
+			$nb_scores = count( $tableau_score_filtre );
+			// la moyenne peut être pondérée par des coefficients
+			$somme_scores_ponderes = 0;
+			$somme_coefs = 0;
+			if($nb_scores)
+			{
+				foreach($tableau_score_filtre as $item_id => $item_score)
+				{
+					$somme_scores_ponderes += $item_score*$tab_item[$item_id]['item_coef'];
+					$somme_coefs += $tab_item[$item_id]['item_coef'];
+				}
+				$somme_scores_simples = array_sum($tableau_score_filtre);
+			}
+			// ... un pour la moyenne des pourcentages d'acquisition
+			if($with_coef) { $tab_eleve_moy_scores[$eleve_id] = ($somme_coefs) ? round($somme_scores_ponderes/$somme_coefs,0) : false ; }
+			else           { $tab_eleve_moy_scores[$eleve_id] = ($nb_scores)   ? round($somme_scores_simples/$nb_scores,0)    : false ; }
+			// ... un pour le nombre d\'items considérés acquis ou pas
+			if($nb_scores)
+			{
+				$tab_eleve_pourcentage[$eleve_id]['nb'] = $nb_scores;
+				$tab_eleve_pourcentage[$eleve_id]['A']  = count( array_filter($tableau_score_filtre,'test_A') );
+				$tab_eleve_pourcentage[$eleve_id]['NA'] = count( array_filter($tableau_score_filtre,'test_NA') );
+				$tab_eleve_pourcentage[$eleve_id]['VA'] = $nb_scores - $tab_eleve_pourcentage[$eleve_id]['A'] - $tab_eleve_pourcentage[$eleve_id]['NA'];
+				$tab_eleve_pourcentage[$eleve_id]['%']  = round( 50 * ( ($tab_eleve_pourcentage[$eleve_id]['A']*2 + $tab_eleve_pourcentage[$eleve_id]['VA']) / $nb_scores ) ,0);
+			}
+		}
+	}
+	// On ne garde que les lignes qui satisfont au critère demandé
+	$tab_tr = array();
+	foreach($tab_eleve as $tab)
+	{
+		extract($tab);	// $user_id $user_nom $user_prenom $eleve_langue
+		if($is_matiere_items_bilanMS)
+		{
+					if ($tab_eleve_moy_scores[$user_id]===false)                        {$user_acquisition_etat = 'X';}
+			elseif ($tab_eleve_moy_scores[$user_id]<$_SESSION['CALCUL_SEUIL']['R']) {$user_acquisition_etat = 'NA';}
+			elseif ($tab_eleve_moy_scores[$user_id]>$_SESSION['CALCUL_SEUIL']['V']) {$user_acquisition_etat = 'A';}
+			else                                                                    {$user_acquisition_etat = 'VA';}
+			if( in_array( $user_acquisition_etat , $critere_tab_seuil_acquis ) )
+			{
+				$checkbox = ($affichage_checkbox) ? '<td class="nu"><input type="checkbox" name="id_user[]" value="'.$user_id.'" /></td>' : '' ;
+				$tab_tr[] = '<tr>'.$checkbox.'<td>'.html($user_nom.' '.$user_prenom).'</td>'.affich_score_html( $tab_eleve_moy_scores[$user_id] , 'score' /*methode_tri*/ , $pourcent='').'</tr>';
+			}
+		}
+		elseif($is_matiere_items_bilanPA)
+		{
+					if ($tab_eleve_pourcentage[$user_id]['%']===false)                        {$user_acquisition_etat = 'X';}
+			elseif ($tab_eleve_pourcentage[$user_id]['%']<$_SESSION['CALCUL_SEUIL']['R']) {$user_acquisition_etat = 'NA';}
+			elseif ($tab_eleve_pourcentage[$user_id]['%']>$_SESSION['CALCUL_SEUIL']['V']) {$user_acquisition_etat = 'A';}
+			else                                                                          {$user_acquisition_etat = 'VA';}
+			if( in_array( $user_acquisition_etat , $critere_tab_seuil_acquis ) )
+			{
+				$checkbox = ($affichage_checkbox) ? '<td class="nu"><input type="checkbox" name="id_user[]" value="'.$user_id.'" /></td>' : '' ;
+				$tab_tr[] = '<tr>'.$checkbox.'<td>'.html($user_nom.' '.$user_prenom).'</td>'.affich_pourcentage_html( 'td' , $tab_eleve_pourcentage[$user_id] , $detail=true ).'</tr>';
+			}
+		}
+	}
+}
 
 // =====> Cas n°3 : pourcentage d'items disciplinaires acquis d'un item du socle
 
 if( $is_socle_item_pourcentage )
 {
 	// Tableaux et variables pour mémoriser les infos
-	$tab_etat = array('A'=>'v','VA'=>'o','NA'=>'r');
 	$tab_init_compet = array('A'=>0,'VA'=>0,'NA'=>0,'nb'=>0); // et ensuite '%'=>
 	$tab_score_socle_eleve = array();
 	// Pour chaque élève...
@@ -266,13 +369,14 @@ if( $is_socle_item_validation || $is_socle_pilier_validation )
 // Affichage des données
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
-$checkbox = ($affichage_checkbox) ? '<td class="nu"></td>' : '' ;
+$nb_resultats = count($tab_tr);
+$checkbox = ($affichage_checkbox && $nb_resultats) ? '<td class="nu"><input id="all_check" type="image" alt="Tout cocher." src="./_img/all_check.gif" title="Tout cocher." /> <input id="all_uncheck" type="image" alt="Tout décocher." src="./_img/all_uncheck.gif" title="Tout décocher." /></td>' : '' ;
 $releve_html  = '<hr />';
 $releve_html .= ($affichage_checkbox) ? '<form id="form_synthese" action="#" method="post">' : '' ;
 $releve_html .= '<table class="bilan"><thead><tr>'.$checkbox.'<th>Élève</th><th>État</th></tr></thead><tbody>';
-$releve_html .= (count($tab_tr)) ? implode('',$tab_tr) : '<tr>'.$checkbox.'<td colspan="2">aucun résultat</td></tr>' ;
+$releve_html .= ($nb_resultats) ? implode('',$tab_tr) : '<tr><td colspan="2">aucun résultat</td></tr>' ;
 $releve_html .= '</tbody></table>';
-$releve_html .= ($affichage_checkbox && count($tab_tr)) ? '<p><label class="tab">Action <img alt="" src="./_img/bulle_aide.png" title="Cocher auparavant les cases adéquates." /> :</label><button type="button" class="ajouter" onclick="var form=document.getElementById(\'form_synthese\');form.action=\'./index.php?page=professeur_eval_select\';form.submit();">Préparer une évaluation.</button> <button type="button" class="ajouter" onclick="var form=document.getElementById(\'form_synthese\');form.action=\'./index.php?page=professeur_groupe_besoin\';form.submit();">Constituer un groupe de besoin.</button></p>' : '' ;
+$releve_html .= ($affichage_checkbox && $nb_resultats) ? '<p><label class="tab">Action <img alt="" src="./_img/bulle_aide.png" title="Cocher auparavant les cases adéquates." /> :</label><button type="button" class="ajouter" onclick="var form=document.getElementById(\'form_synthese\');form.action=\'./index.php?page=professeur_eval_select\';form.submit();">Préparer une évaluation.</button> <button type="button" class="ajouter" onclick="var form=document.getElementById(\'form_synthese\');form.action=\'./index.php?page=professeur_groupe_besoin\';form.submit();">Constituer un groupe de besoin.</button></p>' : '' ;
 $releve_html .= ($affichage_checkbox) ? '</form>' : '' ;
 exit($releve_html);
 

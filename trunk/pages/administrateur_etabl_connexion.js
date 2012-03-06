@@ -33,7 +33,7 @@ $(document).ready
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 //	Intercepter la touche entrée
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-		$('input , select').keyup
+		$('input').keyup
 		(
 			function(e)
 			{
@@ -57,74 +57,70 @@ $(document).ready
 		);
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-// Déplacer / afficher / masquer le formulaire CAS
-// Déplacer / afficher / masquer le formulaire GEPI
+// Afficher / masquer le formulaire CAS
+// Afficher / masquer le formulaire GEPI
 // Afficher / masquer l'adresse de connexion directe
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
-		$("input[type=radio]").click
-		(
-			function()
+		function actualiser_formulaire()
+		{
+			// on masque
+			$('#cas_options , #gepi_options , #lien_direct , #info_inacheve').hide();
+			// on récupère les infos
+			var valeur = $('#connexion_mode_nom option:selected').val();
+			var tab_infos = valeur.split('|');
+			var connexion_mode = tab_infos[0];
+			var connexion_nom  = tab_infos[1];
+			if(connexion_mode=='cas')
 			{
-				$('#cas_options , #gepi_options').hide(0);
-				var valeur = $(this).val();
-				var tab_infos = valeur.split('|');
-				var connexion_mode = tab_infos[0];
-				var connexion_nom  = tab_infos[1];
-				if(connexion_mode=='cas')
+				var valeur = tab_param[connexion_mode][connexion_nom];
+				var tab_infos = valeur.split(']¤[');
+				var is_operationnel = tab_infos[0];
+				$('#cas_serveur_host').val( tab_infos[1] );
+				$('#cas_serveur_port').val( tab_infos[2] );
+				$('#cas_serveur_root').val( tab_infos[3] );
+				if(connexion_nom=='perso')
 				{
-					var valeur = tab_param[connexion_mode][connexion_nom];
-					var tab_infos = valeur.split(']¤[');
-					$('#cas_serveur_host').val( tab_infos[0] );
-					$('#cas_serveur_port').val( tab_infos[1] );
-					$('#cas_serveur_root').val( tab_infos[2] );
-					if(connexion_nom=='perso')
-					{
-						$(this).parent().parent().next().after( $('#cas_options') );
-						$('#cas_options').show();
-					}
-					$('#lien_direct').show();
+					$('#cas_options').show();
 				}
-				else if(connexion_mode=='gepi')
+				if(is_operationnel=='1')
 				{
-					var valeur = tab_param[connexion_mode][connexion_nom];
-					var tab_infos = valeur.split(']¤[');
-					$('#gepi_saml_url').val( tab_infos[0] );
-					$('#gepi_saml_rne').val( tab_infos[1] );
-					$('#gepi_saml_certif').val( tab_infos[2] );
-					$(this).parent().parent().next().after( $('#gepi_options') );
-					$('#gepi_options').show();
+					$("#bouton_valider").prop('disabled',false);
 					$('#lien_direct').show();
 				}
 				else
 				{
-					$('#lien_direct').hide();
+					$("#bouton_valider").prop('disabled',true);
+					$('#info_inacheve').show();
 				}
 			}
-		);
+			else if(connexion_mode=='gepi')
+			{
+				var valeur = tab_param[connexion_mode][connexion_nom];
+				var tab_infos = valeur.split(']¤[');
+				$('#gepi_saml_url').val( tab_infos[0] );
+				$('#gepi_saml_rne').val( tab_infos[1] );
+				$('#gepi_saml_certif').val( tab_infos[2] );
+				$("#bouton_valider").prop('disabled',false);
+				$('#gepi_options').show();
+				$('#lien_direct').show();
+			}
+			else
+			{
+				$("#bouton_valider").prop('disabled',false);
+			}
+		}
 
-		// Initialiser son placement
-		$('input[type=radio]:checked').each
+		$("#connexion_mode_nom").change
 		(
 			function()
 			{
-				var valeur = $(this).val();
-				var tab_infos = valeur.split('|');
-				var connexion_mode = tab_infos[0];
-				var connexion_nom  = tab_infos[1];
-				if( (connexion_mode=='cas') && (connexion_nom=='perso') )
-				{
-					$(this).parent().parent().next().after( $('#cas_options') );
-					$('#cas_options').show();
-				}
-				else if( (connexion_mode=='gepi') && (connexion_nom=='saml') )
-				{
-					$(this).parent().parent().next().after( $('#gepi_options') );
-					$('#gepi_options').show();
-				}
+				actualiser_formulaire();
 			}
 		);
 
+		// Initialisation au chargement de la page
+		actualiser_formulaire();
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 //	Mode d'identification (normal, CAS...) & paramètres associés
@@ -134,12 +130,7 @@ $(document).ready
 		(
 			function()
 			{
-				if( $('input[name=connexion_mode_nom]').is(':checked')!=true )	// normalement impossible, sauf si par exemple on triche avec la barre d'outils Web Developer...
-				{
-					$('#ajax_msg').removeAttr("class").addClass("erreur").html("Cocher un mode de connexion !");
-					return(false);
-				}
-				var connexion_mode_nom = $('input[name=connexion_mode_nom]:checked').val();
+				var connexion_mode_nom = $('#connexion_mode_nom option:selected').val();
 				var tab_infos = connexion_mode_nom.split('|');
 				var connexion_mode = tab_infos[0];
 				var connexion_nom  = tab_infos[1];

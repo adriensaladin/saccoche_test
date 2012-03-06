@@ -15,18 +15,21 @@ CREATE TABLE sacoche_niveau (
 
 ALTER TABLE sacoche_niveau DISABLE KEYS;
 
--- Cycles (niveaux 'longitudinaux')
+-- Attention : pas d`apostrophes dans les lignes commentées sinon on peut obtenir un bug d`analyse dans la classe pdo de SebR : "SQLSTATE[HY093]: Invalid parameter number: no parameters were bound ..."
+-- Attention, sur certains LCS le module pdo_mysql bloque au dela de 40 instructions envoyées d`un coup (mais un INSERT multiple avec des milliers de lignes ne pose pas de pb).
 
 INSERT INTO sacoche_niveau VALUES 
+
+-- Cycles (niveaux `longitudinaux`)
+
 (   5, 0, 1,   5,     "P0",            "", "Cycle 1 (PS-GS)"),
 (   1, 0, 1,   9,     "P1",            "", "Cycle 2 (GS-CE1)"),
 (   2, 0, 1,  29,     "P2",            "", "Cycle 3 (CE2-CM2)"),
 (   3, 0, 1,  69,     "P3",            "", "Cycle Collège"),
-(   4, 0, 1, 199,     "P4",            "", "Cycle Lycée");
+(   4, 0, 1, 199,     "P4",            "", "Cycle Lycée"),
 
 -- Primaire
 
-INSERT INTO sacoche_niveau VALUES 
 (  11, 0, 2,   1,     "PS", "0001000131.", "Maternelle, petite section"),
 (  12, 0, 2,   2,     "MS", "0001000132.", "Maternelle, moyenne section"),
 (  13, 0, 2,   3,     "GS", "0001000133.", "Maternelle, grande section"),
@@ -37,11 +40,10 @@ INSERT INTO sacoche_niveau VALUES
 (  18, 0, 2,  13,    "CM2", "0031000222.", "Cours moyen 2e année"),
 (  19, 0, 2,  21,   "INIT", "0601000311.", "Initiation"),
 (  20, 0, 2,  22,   "ADAP", "0611000411.", "Adaptation"),
-(  21, 0, 2,  23,   "CLIS", "0621000511.", "Classe d'intégration scolaire");
+(  21, 0, 2,  23,   "CLIS", "0621000511.", "Classe d'intégration scolaire"),
 
 -- Collège (4e et 4AES ont le même code_mef ...)
 
-INSERT INTO sacoche_niveau VALUES 
 (  31, 0, 3,  31,      "6", "100100..11.", "Sixième"),
 (  32, 0, 3,  32,      "5", "101100..11.", "Cinquième"),
 (  33, 0, 3,  33,      "4", "102100..11.", "Quatrième"),
@@ -49,11 +51,10 @@ INSERT INTO sacoche_niveau VALUES
 (  35, 0, 3,  35,      "3", "103100..11.", "Troisième"),
 (  36, 0, 3,  41,     "3I", "104100..11.", "Troisième d'insertion"),
 (  37, 0, 3,  42,    "REL", "105100..11.", "Classe / Atelier relais"),
-(  38, 0, 3,  43,    "UPI", "106100..11.", "Unité pédagogique d'intégration");
+(  38, 0, 3,  43,    "UPI", "106100..11.", "Unité pédagogique d'intégration"),
 
 -- SEGPA - Pré apprentissage
 
-INSERT INTO sacoche_niveau VALUES 
 (  41, 0, 4,  51,     "6S", "1641000211.", "Sixième SEGPA"),
 (  42, 0, 4,  52,     "5S", "1651000211.", "Cinquième SEGPA"),
 (  43, 0, 4,  53,     "4S", "1661000211.", "Quatrième SEGPA"),
@@ -61,11 +62,10 @@ INSERT INTO sacoche_niveau VALUES
 (  51, 0, 4,  61,   "3PVP", "110.....22.", "Troisième préparatoire à la voie professionnelle"),
 (  52, 0, 4,  62,    "CPA", "112..99911.", "Classe préparatoire à l'apprentissage"),
 (  53, 0, 4,  63,  "CLIPA", "113..99911.", "Classe d'initiation pré-professionnelle en alternance"),
-(  54, 0, 4,  64,    "FAJ", "114..99911.", "Formation d'apprenti junior");
+(  54, 0, 4,  64,    "FAJ", "114..99911.", "Formation d'apprenti junior"),
 
 -- Lycée général
 
-INSERT INTO sacoche_niveau VALUES 
 (  61, 0, 5,  71,      "2", "20010...11.", "Seconde de détermination"),
 (  62, 0, 5,  81,     "1S", "20111...11.", "Première S"),
 (  63, 0, 5,  82,    "1ES", "20112...11.", "Première ES"),
@@ -74,11 +74,10 @@ INSERT INTO sacoche_niveau VALUES
 (  66, 0, 5,  92,    "TES", "20212...11.", "Terminale ES"),
 (  67, 0, 5,  93,     "TL", "20213...11.", "Terminale L"),
 (  68, 0, 5,  84,      "1", "2011....11.", "Première générale"),
-(  69, 0, 5,  94,      "T", "2021....11.", "Terminale générale");
+(  69, 0, 5,  94,      "T", "2021....11.", "Terminale générale"),
 
 -- Lycée technologique
 
-INSERT INTO sacoche_niveau VALUES 
 (  71, 0, 6, 101,     "2T", "210.....11.", "Seconde technologique / musique"),
 (  72, 0, 6, 102,    "2BT", "220.....11.", "Seconde BT"),
 (  73, 0, 6, 111,    "1ST", "211.....11.", "Première STI / STL / STG"),
@@ -90,11 +89,10 @@ INSERT INTO sacoche_niveau VALUES
 (  79, 0, 6, 121,    "TST", "212.....11.", "Terminale STI / STL / STG"),
 (  80, 0, 6, 122,     "TT", "214.....11.", "Terminale technologique"),
 (  81, 0, 6, 123,    "TBT", "222.....11.", "Terminale BT"),
-(  82, 0, 6, 124,   "TBTA", "224.....11.", "Terminale BTA");
+(  82, 0, 6, 124,   "TBTA", "224.....11.", "Terminale BTA"),
 
 -- Lycée professionnel
 
-INSERT INTO sacoche_niveau VALUES 
 (  91, 0, 7, 131,  "1CAP1", "240.....11.", "CAP 1 an"),
 (  92, 0, 7, 132,  "1CAP2", "241.....21.", "CAP 2 ans, 1e année"),
 (  93, 0, 7, 133,  "2CAP2", "241.....22.", "CAP 2 ans, 2e année"),
@@ -109,11 +107,10 @@ INSERT INTO sacoche_niveau VALUES
 ( 113, 0, 7, 153,  "2PRO2", "246.....22.", "Bac Pro 2 ans, 2e année (terminale)"),
 ( 114, 0, 7, 154,  "1PRO3", "247.....31.", "Bac Pro 3 ans, 1e année (seconde pro)"),
 ( 115, 0, 7, 155,  "2PRO3", "247.....32.", "Bac Pro 3 ans, 2e année (première pro)"),
-( 116, 0, 7, 156,  "3PRO3", "247.....33.", "Bac Pro 3 ans, 3e année (terminale pro)");
+( 116, 0, 7, 156,  "3PRO3", "247.....33.", "Bac Pro 3 ans, 3e année (terminale pro)"),
 
 -- BTS
 
-INSERT INTO sacoche_niveau VALUES 
 ( 121, 0, 8, 161,  "1BTS1", "310.....11.", "BTS 1 an"),
 ( 122, 0, 8, 162,  "1BTS2", "311.....21.", "BTS 2 ans, 1e année"),
 ( 123, 0, 8, 163,  "2BTS2", "311.....22.", "BTS 2 ans, 2e année"),
@@ -122,11 +119,10 @@ INSERT INTO sacoche_niveau VALUES
 ( 126, 0, 8, 166,  "3BTS3", "312.....33.", "BTS 3 ans, 3e année"),
 ( 131, 0, 8, 171, "1BTS1A", "370.....11.", "BTS Agricole 1 an"),
 ( 132, 0, 8, 172, "1BTS2A", "371.....21.", "BTS Agricole 2 ans, 1e année"),
-( 133, 0, 8, 173, "2BTS2A", "371.....22.", "BTS Agricole 2 ans, 2e année");
+( 133, 0, 8, 173, "2BTS2A", "371.....22.", "BTS Agricole 2 ans, 2e année"),
 
 -- CECRL (cadre européen commun de référence pour les langues)
 
-INSERT INTO sacoche_niveau VALUES 
 ( 201, 0, 9,  30,     "A1",            "", "A1 : Introductif - Découverte"),
 ( 202, 0, 9,  32,     "A2",            "", "A2 : Intermédiaire - Usuel"),
 ( 203, 0, 9,  50,     "B1",            "", "B1 : Seuil"),

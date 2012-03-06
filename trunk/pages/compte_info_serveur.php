@@ -34,6 +34,7 @@ require_once('./_inc/fonction_infos_serveur.php');
 echo tableau_versions_logicielles();
 echo tableau_limitations_PHP();
 echo tableau_limitations_MySQL();
+echo tableau_reglages_Suhosin();
 echo tableau_modules_PHP($nb_lignes=5);
 echo tableau_serveur_et_client();
 ?>

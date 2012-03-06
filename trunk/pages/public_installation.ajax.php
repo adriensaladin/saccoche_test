@@ -113,7 +113,7 @@ if( $step==3 )
 	}
 	else
 	{
-		$affichage .= '<p><label class="alerte">Le fichier &laquo;&nbsp;<b>'.$fichier_constantes.'</b>&nbsp;&raquo; n\'existant pas (cas d\'une première installation), ou étant corrompu, vous devez renseigner les étapes 4 et 5.</label></p>'."\r\n";
+		$affichage .= '<p><label class="astuce">Le fichier &laquo;&nbsp;<b>'.$fichier_constantes.'</b>&nbsp;&raquo; n\'existant pas (cas d\'une première installation), ou étant corrompu, vous devez renseigner les étapes 4 et 5.</label></p>'."\r\n";
 		$affichage .= '<h2>Type d\'installation</h2>'."\r\n";
 		$affichage .= '<p class="astuce">Le type d\'installation, déterminant, n\'est pas modifiable ultérieurement : sélectionnez ce qui vous correspond vraiment !</p>'."\r\n";
 		$affichage .= '<ul class="puce"><li><a href="#" class="step4" id="mono-structure">Installation d\'un unique établissement sur ce serveur, nécessitant une seule base de données.</a></li></ul>'."\r\n";
@@ -217,7 +217,7 @@ if( $step==5 )
 	{
 		// afficher le formulaire pour entrer les paramètres
 		$texte_alerte = (HEBERGEUR_INSTALLATION=='multi-structures') ? 'ce compte mysql doit avoir des droits d\'administration de bases et d\'utilisateurs (typiquement un utilisateur "root")' : 'la base à utiliser doit déjà exister (elle ne sera pas créée par SACoche) ; veuillez la créer manuellement maintenant si besoin' ;
-		$affichage .= '<p><label class="alerte">Le fichier &laquo;&nbsp;<b>'.$fichier_mysql_config.'</b>&nbsp;&raquo; n\'existant pas, indiquez ci-dessous vos paramètres de connexion à la base de données.</label></p>'."\r\n";
+		$affichage .= '<p><label class="astuce">Le fichier &laquo;&nbsp;<b>'.$fichier_mysql_config.'</b>&nbsp;&raquo; n\'existant pas, indiquez ci-dessous vos paramètres de connexion à la base de données.</label></p>'."\r\n";
 		$affichage .= '<p class="danger">Comme indiqué précédemment, '.$texte_alerte.'.</p>'."\r\n";
 		$affichage .= '<fieldset>'."\r\n";
 		$affichage .= '<h2>Paramètres MySQL</h2>'."\r\n";

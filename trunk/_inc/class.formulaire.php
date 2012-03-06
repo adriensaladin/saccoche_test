@@ -222,6 +222,7 @@ private function init_tab_choix()
 		'aff_conv_sur20'=>$check_conv_sur20 ,
 		'tableau_tri_objet'=>'eleve',
 		'tableau_tri_mode'=>'score',
+		'with_coef'=>1 ,
 		'retroactif'=>'oui' ,
 		'mode_synthese'=>'predefini' ,
 		'aff_socle_PA'=>1 ,
@@ -280,8 +281,8 @@ public function load_choix_memo()
 			$tab_choix_new = compact('matiere_id','type_individuel','type_synthese','type_bulletin','aff_bilan_MS','aff_bilan_PA','aff_conv_sur20','tableau_tri_objet','tableau_tri_mode','retroactif','only_socle','aff_coef','aff_socle','aff_lien','aff_domaine','aff_theme','cases_nb','cases_largeur','orientation','couleur','legende','marge_min','pages_nb');
 			break;
 		case 'items_selection' :
-			global $type_individuel,$type_synthese,$aff_bilan_MS,$aff_bilan_PA,$aff_conv_sur20,$tableau_tri_objet,$tableau_tri_mode,$retroactif,$aff_coef,$aff_socle,$aff_lien,$aff_domaine,$aff_theme,$cases_nb,$cases_largeur,$orientation,$couleur,$legende,$marge_min,$pages_nb;
-			$tab_choix_new = compact('type_individuel','type_synthese','aff_bilan_MS','aff_bilan_PA','aff_conv_sur20','tableau_tri_objet','tableau_tri_mode','retroactif','aff_coef','aff_socle','aff_lien','aff_domaine','aff_theme','cases_nb','cases_largeur','orientation','couleur','legende','marge_min','pages_nb');
+			global $type_individuel,$type_synthese,$type_bulletin,$aff_bilan_MS,$aff_bilan_PA,$aff_conv_sur20,$tableau_tri_objet,$tableau_tri_mode,$with_coef,$retroactif,$aff_coef,$aff_socle,$aff_lien,$aff_domaine,$aff_theme,$cases_nb,$cases_largeur,$orientation,$couleur,$legende,$marge_min,$pages_nb;
+			$tab_choix_new = compact('type_individuel','type_synthese','type_bulletin','aff_bilan_MS','aff_bilan_PA','aff_conv_sur20','tableau_tri_objet','tableau_tri_mode','with_coef','retroactif','aff_coef','aff_socle','aff_lien','aff_domaine','aff_theme','cases_nb','cases_largeur','orientation','couleur','legende','marge_min','pages_nb');
 			break;
 		case 'items_multimatiere' :
 			global $aff_bilan_MS,$aff_bilan_PA,$aff_conv_sur20,$retroactif,$only_socle,$aff_coef,$aff_socle,$aff_lien,$aff_domaine,$aff_theme,$cases_nb,$cases_largeur,$orientation,$couleur,$legende,$marge_min,$pages_nb;

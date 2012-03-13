@@ -42,7 +42,14 @@ else
 		$infobulle .= $DB_ROW['texte'].' : '.$DB_ROW['info'].'<br />';
 	}
 }
+
+// Dates par défaut
+$date_autoeval = date("d/m/Y",mktime(0,0,0,date("m"),date("d")+7,date("Y"))); // 1 semaine après
 ?>
+
+<script type="text/javascript">
+	var input_autoeval="<?php echo $date_autoeval ?>";
+</script>
 
 <ul class="puce">
 	<li><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=environnement_generalites__demandes_evaluations">DOC : Demandes d'évaluations.</a></span></li>
@@ -97,8 +104,9 @@ $select_groupe  = Formulaire::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_groupe
 			<label class="tab" for="f_qui">Élève(s) :</label><select id="f_qui" name="f_qui"><option value="select">Élèves sélectionnés</option><option value="groupe"></option></select>
 		</fieldset>
 		<fieldset id="step_creer" class="hide">
-			<label class="tab" for="f_date">Date devoir :</label><input id="f_date" name="f_date" size="9" type="text" value="<?php echo date("d/m/Y") ?>" /><q class="date_calendrier" title="Cliquez sur cette image pour importer une date depuis un calendrier !"></q><br />
-			<label class="tab" for="f_date_visible">Date visible :</label><input id="box_date" type="checkbox" checked /> <span>identique</span><span class="hide"><input id="f_date_visible" name="f_date_visible" size="9" type="text" value="<?php echo date("d/m/Y") ?>" /><q class="date_calendrier" title="Cliquez sur cette image pour importer une date depuis un calendrier !"></q></span><br />
+			<label class="tab" for="f_date">Date devoir :</label><input id="f_date" name="f_date" size="8" type="text" value="<?php echo date("d/m/Y") ?>" /><q class="date_calendrier" title="Cliquez sur cette image pour importer une date depuis un calendrier !"></q><br />
+			<label class="tab" for="f_date_visible">Date visible :</label><input id="box_date" type="checkbox" checked /> <span>identique</span><span class="hide"><input id="f_date_visible" name="f_date_visible" size="8" type="text" value="<?php echo date("d/m/Y") ?>" /><q class="date_calendrier" title="Cliquez sur cette image pour importer une date depuis un calendrier !"></q></span><br />
+			<label class="tab" for="f_date_autoeval">Fin auto-éval. :</label><input id="box_autoeval" type="checkbox" checked /> <span>sans objet</span><span class="hide"><input id="f_date_autoeval" name="f_date_autoeval" size="8" type="text" value="00/00/0000" /><q class="date_calendrier" title="Cliquez sur cette image pour importer une date depuis un calendrier !"></q></span><br />
 			<label class="tab" for="f_info">Description :</label><input id="f_info" name="f_info" size="30" type="text" value="" />
 		</fieldset>
 		<fieldset id="step_completer" class="hide">

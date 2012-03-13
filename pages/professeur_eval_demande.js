@@ -62,6 +62,21 @@ $(document).ready
 			}
 		}
 
+		function maj_autoeval()
+		{
+			// Emploi de css() au lieu de show() hide() car sinon conflits constatés avec $("#step_creer").show() et $("#step_creer").hide() vers ligne 360.
+			if($('#box_autoeval').is(':checked'))
+			{
+				$('#f_date_autoeval').val('00/00/0000');
+				$('#box_autoeval').next().css('display','inline-block').next().css('display','none');
+			}
+			else
+			{
+				$('#box_autoeval').next().css('display','none').next().css('display','inline-block');
+				$('#f_date_autoeval').val(input_autoeval);
+			}
+		}
+
 		function maj_dates()
 		{
 			tab_infos = $('#f_devoir option:selected').text().split(' || ');
@@ -94,6 +109,14 @@ $(document).ready
 			function()
 			{
 				maj_visible();
+			}
+		);
+
+		$('#box_autoeval').click
+		(
+			function()
+			{
+				maj_autoeval();
 			}
 		);
 
@@ -374,25 +397,27 @@ $(document).ready
 			{
 				rules :
 				{
-					f_ids          : { required:true },
-					f_quoi         : { required:true },
-					f_qui          : { required:function(){quoi=$("#f_quoi").val(); return ((quoi=='creer')||(quoi=='completer'));} },
-					f_date         : { required:function(){return $("#f_quoi").val()=='creer';} , dateITA:true },
-					f_date_visible : { required:function(){return (($("#f_quoi").val()=='creer')&&(!$('#box_date').is(':checked')));} , dateITA:true },
-					f_info         : { required:false , maxlength:60 },
-					f_devoir       : { required:function(){return $("#f_quoi").val()=='completer';} },
-					f_suite        : { required:function(){quoi=$("#f_quoi").val(); return ((quoi=='creer')||(quoi=='completer'));} }
+					f_ids           : { required:true },
+					f_quoi          : { required:true },
+					f_qui           : { required:function(){quoi=$("#f_quoi").val(); return ((quoi=='creer')||(quoi=='completer'));} },
+					f_date          : { required:function(){return $("#f_quoi").val()=='creer';} , dateITA:true },
+					f_date_visible  : { required:function(){return (($("#f_quoi").val()=='creer')&&(!$('#box_date').is(':checked')));} , dateITA:true },
+					f_date_autoeval : { required:function(){return (($("#f_quoi").val()=='creer')&&(!$('#box_autoeval').is(':checked')));} , dateITA:true },
+					f_info          : { required:false , maxlength:60 },
+					f_devoir        : { required:function(){return $("#f_quoi").val()=='completer';} },
+					f_suite         : { required:function(){quoi=$("#f_quoi").val(); return ((quoi=='creer')||(quoi=='completer'));} }
 				},
 				messages :
 				{
-					f_ids          : { required:"demandes manquantes" },
-					f_quoi         : { required:"action manquante" },
-					f_qui          : { required:"groupe manquant" },
-					f_date         : { required:"date manquante" , dateITA:"format JJ/MM/AAAA non respecté" },
-					f_date_visible : { required:"date manquante" , dateITA:"format JJ/MM/AAAA non respecté" },
-					f_info         : { maxlength:"60 caractères maximum" },
-					f_devoir       : { required:"évaluation manquante" },
-					f_suite        : { required:"suite manquante" }
+					f_ids           : { required:"demandes manquantes" },
+					f_quoi          : { required:"action manquante" },
+					f_qui           : { required:"groupe manquant" },
+					f_date          : { required:"date manquante" , dateITA:"format JJ/MM/AAAA non respecté" },
+					f_date_visible  : { required:"date manquante" , dateITA:"format JJ/MM/AAAA non respecté" },
+					f_date_autoeval : { required:"date manquante" , dateITA:"format JJ/MM/AAAA non respecté" },
+					f_info          : { maxlength:"60 caractères maximum" },
+					f_devoir        : { required:"évaluation manquante" },
+					f_suite         : { required:"suite manquante" }
 				},
 				errorElement : "label",
 				errorClass : "erreur",

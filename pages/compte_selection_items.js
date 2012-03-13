@@ -65,7 +65,7 @@ $(document).ready
 			new_tr  = '<tr>';
 			new_tr += '<td><input id="f_nom" name="f_nom" size="30" type="text" value="" /></td>';
 			new_tr += '<td><input id="f_compet_nombre" name="f_compet_nombre" size="10" type="text" value="aucun" readonly /><input id="f_compet_liste" name="f_compet_liste" type="hidden" value="" /><q class="choisir_compet" title="Voir ou choisir les items."></q></td>';
-			new_tr += '<td class="nu"><input id="f_action" name="f_action" type="hidden" value="'+mode+'" /><q class="valider" title="Valider l\'ajout de cette sélection d\'items."></q><q class="annuler" title="Annuler l\'ajout de cette sélection d\'items."></q> <label id="ajax_msg">&nbsp;</label></td>';
+			new_tr += '<td class="nu"><input id="f_action" name="f_action" type="hidden" value="'+mode+'" /><input id="f_origine" name="f_origine" type="hidden" value="'+PAGE+'" /><q class="valider" title="Valider l\'ajout de cette sélection d\'items."></q><q class="annuler" title="Annuler l\'ajout de cette sélection d\'items."></q> <label id="ajax_msg">&nbsp;</label></td>';
 			new_tr += '</tr>';
 			// Ajouter cette nouvelle ligne
 			$(this).parent().parent().after(new_tr);

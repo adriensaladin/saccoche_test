@@ -359,13 +359,13 @@ if( ($action=='importer') && $num && $max && ($num<$max) )
 	// Créer la base de données de la structure
 	// Créer un utilisateur pour la base de données de la structure et lui attribuer ses droits
 	$base_id = ajouter_structure($import_id,$geo_id,$uai,$localisation,$denomination,$contact_nom,$contact_prenom,$contact_courriel,$date);
-	// Créer les dossiers de fichiers temporaires par établissement : vignettes verticales, flux RSS des demandes, cookies des choix de formulaires
-	Creer_Dossier('./__tmp/badge/'.$base_id);
-	Ecrire_Fichier('./__tmp/badge/'.$base_id.'/index.htm','Circulez, il n\'y a rien à voir par ici !');
-	Creer_Dossier('./__tmp/cookie/'.$base_id);
-	Ecrire_Fichier('./__tmp/cookie/'.$base_id.'/index.htm','Circulez, il n\'y a rien à voir par ici !');
-	Creer_Dossier('./__tmp/rss/'.$base_id);
-	Ecrire_Fichier('./__tmp/rss/'.$base_id.'/index.htm','Circulez, il n\'y a rien à voir par ici !');
+	// Créer les dossiers de fichiers temporaires par établissement : vignettes verticales, flux RSS des demandes, cookies des choix de formulaires, sujets et corrigés de devoirs
+	$tab_sous_dossier = array('badge','cookie','devoir','rss');
+	foreach($tab_sous_dossier as $sous_dossier)
+	{
+		Creer_Dossier('./__tmp/'.$sous_dossier.'/'.$base_id);
+		Ecrire_Fichier('./__tmp/'.$sous_dossier.'/'.$base_id.'/index.htm','Circulez, il n\'y a rien à voir par ici !');
+	}
 	// Charger les paramètres de connexion à cette base afin de pouvoir y effectuer des requêtes
 	charger_parametres_mysql_supplementaires($base_id);
 	// Restaurer des fichiers de svg et mettre la base à jour si besoin.

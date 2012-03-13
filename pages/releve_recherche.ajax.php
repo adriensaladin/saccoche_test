@@ -376,7 +376,7 @@ $releve_html .= ($affichage_checkbox) ? '<form id="form_synthese" action="#" met
 $releve_html .= '<table class="bilan"><thead><tr>'.$checkbox.'<th>Élève</th><th>État</th></tr></thead><tbody>';
 $releve_html .= ($nb_resultats) ? implode('',$tab_tr) : '<tr><td colspan="2">aucun résultat</td></tr>' ;
 $releve_html .= '</tbody></table>';
-$releve_html .= ($affichage_checkbox && $nb_resultats) ? '<p><label class="tab">Action <img alt="" src="./_img/bulle_aide.png" title="Cocher auparavant les cases adéquates." /> :</label><button type="button" class="ajouter" onclick="var form=document.getElementById(\'form_synthese\');form.action=\'./index.php?page=professeur_eval_select\';form.submit();">Préparer une évaluation.</button> <button type="button" class="ajouter" onclick="var form=document.getElementById(\'form_synthese\');form.action=\'./index.php?page=professeur_groupe_besoin\';form.submit();">Constituer un groupe de besoin.</button></p>' : '' ;
+$releve_html .= ($affichage_checkbox && $nb_resultats) ? '<p><label class="tab">Action <img alt="" src="./_img/bulle_aide.png" title="Cocher auparavant les cases adéquates." /> :</label><button type="button" class="ajouter" onclick="var form=document.getElementById(\'form_synthese\');form.action=\'./index.php?page=professeur_eval_saisie\';form.submit();">Préparer une évaluation.</button> <button type="button" class="ajouter" onclick="var form=document.getElementById(\'form_synthese\');form.action=\'./index.php?page=professeur_groupe_besoin\';form.submit();">Constituer un groupe de besoin.</button></p>' : '' ;
 $releve_html .= ($affichage_checkbox) ? '</form>' : '' ;
 exit($releve_html);
 

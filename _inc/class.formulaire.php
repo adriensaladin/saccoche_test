@@ -321,12 +321,6 @@ public function load_choix_memo()
 	// Récupération du contenu du "cookie", surchargé avec les choix effectués
 	Formulaire::load_choix_memo();
 	Formulaire::$tab_choix = array_merge( Formulaire::$tab_choix , $tab_choix_new );
-	// Si le dossier n'existe pas, on le créé (possible car au début tous les Cookies des établissements étaient dans un même dossier commun).
-	if(!is_dir(Formulaire::$dossier_cookie))
-	{
-		Creer_Dossier(Formulaire::$dossier_cookie);
-		Ecrire_Fichier(Formulaire::$dossier_cookie.'/index.htm','Circulez, il n\'y a rien à voir par ici !');
-	}
 	/*
 		Remarque : il y a un problème de serialize avec les type float : voir http://fr2.php.net/manual/fr/function.serialize.php#85988
 		Dans ce cas il faut remplacer

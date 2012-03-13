@@ -161,8 +161,8 @@ function imprimer(contenu)
 /**
  * Fonction pour afficher et cocher une liste d'items donnés
  *
- * @param matieres_items_liste : ids séparés par des underscores
- * @return string
+ * @param string matieres_items_liste : ids séparés par des underscores
+ * @return void
  */
 function cocher_matieres_items(matieres_items_liste)
 {
@@ -194,6 +194,65 @@ function cocher_matieres_items(matieres_items_liste)
 			}
 		}
 	}
+}
+
+/**
+ * Fonction pour mémoriser une liste d'items donnés
+ *
+ * @param string selection_items_nom
+ * @return void
+ */
+function memoriser_selection_matieres_items(selection_items_nom)
+{
+	if(!selection_items_nom)
+	{
+		$('#ajax_msg_memo').removeAttr("class").addClass("erreur").html("nom manquant");
+		$("#f_liste_items_nom").focus();
+		return false;
+	}
+	var compet_liste = '';
+	$("#zone_matieres_items input[type=checkbox]:checked").each
+	(
+		function()
+		{
+			compet_liste += $(this).val()+'_';
+		}
+	);
+	if(!compet_liste)
+	{
+		$('#ajax_msg_memo').removeAttr("class").addClass("erreur").html("Aucun item coché !");
+		return false;
+	}
+	var compet_liste  = compet_liste.substring(0,compet_liste.length-1);
+	$('#ajax_msg_memo').removeAttr("class").addClass("loader").html("Connexion au serveur&hellip;");
+	$.ajax
+	(
+		{
+			type : 'POST',
+			url : 'ajax.php?page=compte_selection_items',
+			data : 'f_action='+'ajouter'+'&f_origine='+PAGE+'&f_compet_liste='+compet_liste+'&f_nom='+encodeURIComponent(selection_items_nom),
+			dataType : "html",
+			error : function(msg,string)
+			{
+				$('#ajax_msg_memo').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
+			},
+			success : function(responseHTML)
+			{
+				initialiser_compteur();
+				if(responseHTML.substring(0,7)=='<option')	// Attention aux caractères accentués : l'utf-8 pose des pbs pour ce test
+				{
+					$('#ajax_msg_memo').removeAttr("class").addClass("valide").html("Sélection mémorisée.");
+					$("#f_selection_items option:disabled").remove();
+					$("#f_selection_items").append(responseHTML);
+				}
+				else
+				{
+					$('#ajax_msg_memo').removeAttr("class").addClass("alerte").html(responseHTML);
+					$("#f_liste_items_nom").focus();
+				}
+			}
+		}
+	);
 }
 
 /**

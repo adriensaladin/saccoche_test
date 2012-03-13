@@ -30,9 +30,10 @@ $(document).ready
 	function()
 	{
 
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-//	Initialisation
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+		//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+		//	Initialisation
+		//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
 		var mode = false;
 		var modification = false;
 		var memo_pilotage = 'clavier';
@@ -40,8 +41,16 @@ $(document).ready
 		var nb_colonnes = 1;
 		var nb_lignes   = 1;
 		// tri du tableau (avec jquery.tablesorter.js).
-		var sorting = [[0,1],[3,0]];
-		$('table.form').tablesorter({ headers:{1:{sorter:false},2:{sorter:false},4:{sorter:false},5:{sorter:false},6:{sorter:false}} });
+		if(TYPE=='groupe')
+		{
+			var sorting = [[0,1],[3,0]];
+			$('table.form').tablesorter({ headers:{1:{sorter:false},2:{sorter:false},5:{sorter:false},6:{sorter:false},7:{sorter:false},8:{sorter:false}} });
+		}
+		else
+		{
+			var sorting = [[0,1],[4,0]];
+			$('table.form').tablesorter({ headers:{1:{sorter:false},2:{sorter:false},3:{sorter:false},5:{sorter:false},6:{sorter:false},7:{sorter:false},8:{sorter:false}} });
+		}
 		function trier_tableau()
 		{
 			if($('table.form tbody tr td').length>1)
@@ -52,9 +61,16 @@ $(document).ready
 		}
 		trier_tableau();
 
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-//	Fonctions utilisées
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+		//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+		//	Fonctions utilisées
+		//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
+		function activer_boutons_upload(ref)
+		{
+			$('#zone_upload button').prop('disabled',false);
+			if(!tab_sujets[ref])     {$('#bouton_supprimer_sujet').prop('disabled',true);}
+			if(!tab_corriges[ref]) {$('#bouton_supprimer_corrige').prop('disabled',true);}
+		}
 
 		/**
 		 * Ajouter une évaluation : mise en place du formulaire
@@ -80,18 +96,28 @@ $(document).ready
 			$('#form0').css('visibility','hidden');
 			var new_tr = '';
 			new_tr += '<tr>';
-			new_tr += '<td><input id="f_date" name="f_date" size="9" type="text" value="'+input_date+'" /><q class="date_calendrier" title="Cliquez sur cette image pour importer une date depuis un calendrier !"></q></td>';
-			new_tr += '<td><input id="box_date" type="checkbox" checked style="vertical-align:-3px" /> <span style="vertical-align:-2px">identique</span><span class="hide"><input id="f_date_visible" name="f_date_visible" size="9" type="text" value="'+input_date+'" /><q class="date_calendrier" title="Cliquez sur cette image pour importer une date depuis un calendrier !"></q></span></td>';
-			new_tr += '<td><input id="f_eleve_nombre" name="f_eleve_nombre" size="10" type="text" value="'+reception_users_texte+'" readonly /><input id="f_eleve_liste" name="f_eleve_liste" type="hidden" value="'+reception_users_liste+'" /><q class="choisir_eleve" title="Voir ou choisir les élèves."></q></td>';
-			new_tr += '<td><input id="f_info" name="f_info" size="20" type="text" value="" /></td>';
-			new_tr += '<td><input id="f_compet_nombre" name="f_compet_nombre" size="10" type="text" value="'+reception_items_texte+'" readonly /><input id="f_compet_liste" name="f_compet_liste" type="hidden" value="'+reception_items_liste+'" /><q class="choisir_compet" title="Voir ou choisir les items."></q></td>';
-			new_tr += '<td><input id="f_prof_nombre" name="f_prof_nombre" size="10" type="text" value="moi seul" readonly /><input id="f_prof_liste" name="f_prof_liste" type="hidden" value="" /><q class="choisir_prof" title="Voir ou choisir les collègues."></q></td>';
-			new_tr += '<td class="nu"><input id="f_action" name="f_action" type="hidden" value="'+mode+'" /><q class="valider" title="Valider l\'ajout de cette évaluation."></q><q class="annuler" title="Annuler l\'ajout de cette évaluation."></q> <label id="ajax_msg">&nbsp;</label></td>';
+			new_tr += '<td><input id="f_date" name="f_date" size="8" type="text" value="'+input_date+'" /><q class="date_calendrier" title="Cliquez sur cette image pour importer une date depuis un calendrier !"></q></td>';
+			new_tr += '<td><input id="box_date" type="checkbox" checked style="vertical-align:-3px" /> <span style="vertical-align:-2px">identique</span><span class="hide"><input id="f_date_visible" name="f_date_visible" size="8" type="text" value="'+input_date+'" /><q class="date_calendrier" title="Cliquez sur cette image pour importer une date depuis un calendrier !"></q></span></td>';
+			new_tr += '<td><input id="box_autoeval" type="checkbox" checked style="vertical-align:-3px" /> <span style="vertical-align:-2px">sans objet</span><span class="hide"><input id="f_date_autoeval" name="f_date_autoeval" size="8" type="text" value="00/00/0000" /><q class="date_calendrier" title="Cliquez sur cette image pour importer une date depuis un calendrier !"></q></span></td>';
+			if(TYPE=='groupe')
+			{
+				var groupe = $('#f_aff_classe option:selected').val();
+				new_tr += '<td><select id="f_groupe" name="f_groupe">'+select_groupe.replace('value="'+groupe+'"','value="'+groupe+'" selected')+'</select></td>';
+			}
+			else
+			{
+				new_tr += '<td><input id="f_eleve_nombre" name="f_eleve_nombre" size="6" type="text" value="'+reception_users_texte+'" readonly /><input id="f_eleve_liste" name="f_eleve_liste" type="hidden" value="'+reception_users_liste+'" /><q class="choisir_eleve" title="Voir ou choisir les élèves."></q></td>';
+			}
+			new_tr += '<td><input id="f_description" name="f_description" size="20" type="text" value="" /></td>';
+			new_tr += '<td><input id="f_compet_nombre" name="f_compet_nombre" size="6" type="text" value="'+reception_items_texte+'" readonly /><input id="f_compet_liste" name="f_compet_liste" type="hidden" value="'+reception_items_liste+'" /><q class="choisir_compet" title="Voir ou choisir les items."></q></td>';
+			new_tr += '<td><input id="f_prof_nombre" name="f_prof_nombre" size="6" type="text" value="moi seul" readonly /><input id="f_prof_liste" name="f_prof_liste" type="hidden" value="" /><q class="choisir_prof" title="Voir ou choisir les collègues."></q></td>';
+			new_tr += '<td><img alt="" src="./_img/document/sujet_non.png" /><input id="f_doc_sujet" name="f_doc_sujet" type="hidden" value="" /><img alt="" src="./_img/document/corrige_non.png" /><input id="f_doc_corrige" name="f_doc_corrige" type="hidden" value="" /></td>';
+			new_tr += '<td class="nu"><input id="f_action" name="f_action" type="hidden" value="'+mode+'" /><input id="f_type" name="f_type" type="hidden" value="'+TYPE+'" /><q class="valider" title="Valider l\'ajout de cette évaluation."></q><q class="annuler" title="Annuler l\'ajout de cette évaluation."></q> <label id="ajax_msg">&nbsp;</label></td>';
 			new_tr += '</tr>';
 			// Ajouter cette nouvelle ligne
 			$(this).parent().parent().after(new_tr);
 			infobulle();
-			$('#f_info').focus();
+			$('#f_description').focus();
 		};
 
 		/**
@@ -105,45 +131,55 @@ $(document).ready
 			$('#form0').css('visibility','hidden');
 			// Récupérer les informations de la ligne concernée
 			var ref           = $(this).parent().attr('id').substring(7); // "devoir_" + ref
-			var date          = $(this).parent().prev().prev().prev().prev().prev().prev().html();
-			var date_visible  = $(this).parent().prev().prev().prev().prev().prev().html();
-			var eleve_nombre  = $(this).parent().prev().prev().prev().prev().html();
-			var eleve_liste   = tab_eleves[ref];
-			var info          = $(this).parent().prev().prev().prev().html();
-			var compet_nombre = $(this).parent().prev().prev().html();
-			var compet_liste  = tab_items[ref];
-			var prof_nombre   = $(this).parent().prev().html();
-			var prof_liste    = tab_profs[ref];
-			date = date.substring(17,date.length); // enlever la date mysql cachée
-			if(date_visible=='identique')
+			var date          = $(this).parent().prev().prev().prev().prev().prev().prev().prev().prev().html();
+			var date_visible  = $(this).parent().prev().prev().prev().prev().prev().prev().prev().html();
+			var date_autoeval = $(this).parent().prev().prev().prev().prev().prev().prev().html();
+			if(TYPE=='groupe')
 			{
-				var checked = ' checked';
-				var classe1 = '';
-				var classe2 = ' class="hide"';
-				date_visible = date;
+				var groupe        = $(this).parent().prev().prev().prev().prev().prev().html();
 			}
 			else
 			{
-				var checked = '';
-				var classe1 = ' class="hide"';
-				var classe2 = '';
+				var eleve_nombre  = $(this).parent().prev().prev().prev().prev().prev().html();
+				var eleve_liste   = tab_eleves[ref];
 			}
+			var description   = $(this).parent().prev().prev().prev().prev().html();
+			var compet_nombre = $(this).parent().prev().prev().prev().html();
+			var compet_liste  = tab_items[ref];
+			var prof_nombre   = $(this).parent().prev().prev().html();
+			var prof_liste    = tab_profs[ref];
+			var date_fr       = date.substring(17,date.length); // enlever la date mysql cachée
+			if(date_visible=='identique') { var date_checked = ' checked'; var date_classe1 = ''; var date_classe2 = ' class="hide"'; date_visible = date_fr; }
+			else                          { var date_checked = '';         var date_classe2 = ''; var date_classe1 = ' class="hide"'; }
+			if(date_autoeval=='sans objet') { var autoeval_checked = ' checked'; var autoeval_classe1 = ''; var autoeval_classe2 = ' class="hide"'; date_autoeval = '00/00/0000'; }
+			else                            { var autoeval_checked = '';         var autoeval_classe2 = ''; var autoeval_classe1 = ' class="hide"'; }
+			var img_sujet   = (tab_sujets[ref])   ? '<img alt="" src="./_img/document/sujet_oui.png" />'   : '<img alt="" src="./_img/document/sujet_non.png" />' ;
+			var img_corrige = (tab_corriges[ref]) ? '<img alt="" src="./_img/document/corrige_oui.png" />' : '<img alt="" src="./_img/document/corrige_non.png" />' ;
 			// Fabriquer la ligne avec les éléments de formulaires
 			var new_tr = '';
 			new_tr += '<tr>';
-			new_tr += '<td><input id="f_date" name="f_date" size="9" type="text" value="'+date+'" /><q class="date_calendrier" title="Cliquez sur cette image pour importer une date depuis un calendrier !"></q></td>';
-			new_tr += '<td><input id="box_date" type="checkbox"'+checked+' style="vertical-align:-3px" /> <span'+classe1+' style="vertical-align:-2px">identique</span><span'+classe2+'><input id="f_date_visible" name="f_date_visible" size="9" type="text" value="'+date_visible+'" /><q class="date_calendrier" title="Cliquez sur cette image pour importer une date depuis un calendrier !"></q></span></td>';
-			new_tr += '<td><input id="f_eleve_nombre" name="f_eleve_nombre" size="10" type="text" value="'+eleve_nombre+'" readonly /><input id="f_eleve_liste" name="f_eleve_liste" type="hidden" value="'+eleve_liste+'" /><q class="choisir_eleve" title="Voir ou choisir les élèves."></q></td>';
-			new_tr += '<td><input id="f_info" name="f_info" size="'+Math.max(info.length,20)+'" type="text" value="'+escapeQuote(info)+'" /></td>';
-			new_tr += '<td><input id="f_compet_nombre" name="f_compet_nombre" size="10" type="text" value="'+compet_nombre+'" readonly /><input id="f_compet_liste" name="f_compet_liste" type="hidden" value="'+compet_liste+'" /><q class="choisir_compet" title="Voir ou choisir les items."></q></td>';
-			new_tr += '<td><input id="f_prof_nombre" name="f_prof_nombre" size="10" type="text" value="'+prof_nombre+'" readonly /><input id="f_prof_liste" name="f_prof_liste" type="hidden" value="'+prof_liste+'" /><q class="choisir_prof" title="Voir ou choisir les collègues."></q></td>';
-			new_tr += '<td class="nu"><input id="f_action" name="f_action" type="hidden" value="'+mode+'" /><input id="f_ref" name="f_ref" type="hidden" value="'+ref+'" /><q class="valider" title="Valider les modifications de cette évaluation."></q><q class="annuler" title="Annuler les modifications de cette évaluation."></q> <label id="ajax_msg">&nbsp;</label></td>';
+			new_tr += '<td><input id="f_date" name="f_date" size="8" type="text" value="'+date_fr+'" /><q class="date_calendrier" title="Cliquez sur cette image pour importer une date depuis un calendrier !"></q></td>';
+			new_tr += '<td><input id="box_date" type="checkbox"'+date_checked+' style="vertical-align:-3px" /> <span'+date_classe1+' style="vertical-align:-2px">identique</span><span'+date_classe2+'><input id="f_date_visible" name="f_date_visible" size="8" type="text" value="'+date_visible+'" /><q class="date_calendrier" title="Cliquez sur cette image pour importer une date depuis un calendrier !"></q></span></td>';
+			new_tr += '<td><input id="box_autoeval" type="checkbox"'+autoeval_checked+' style="vertical-align:-3px" /> <span'+autoeval_classe1+' style="vertical-align:-2px">sans objet</span><span'+autoeval_classe2+'><input id="f_date_autoeval" name="f_date_autoeval" size="8" type="text" value="'+date_autoeval+'" /><q class="date_calendrier" title="Cliquez sur cette image pour importer une date depuis un calendrier !"></q></span></td>';
+			if(TYPE=='groupe')
+			{
+				new_tr += '<td>'+groupe+'<select id="f_groupe" name="f_groupe" class="hide">'+select_groupe.replace('>'+groupe+'<',' selected>'+groupe+'<')+'</select></td>';
+			}
+			else
+			{
+				new_tr += '<td><input id="f_eleve_nombre" name="f_eleve_nombre" size="6" type="text" value="'+eleve_nombre+'" readonly /><input id="f_eleve_liste" name="f_eleve_liste" type="hidden" value="'+eleve_liste+'" /><q class="choisir_eleve" title="Voir ou choisir les élèves."></q></td>';
+			}
+			new_tr += '<td><input id="f_description" name="f_description" size="'+Math.max(description.length,20)+'" type="text" value="'+escapeQuote(description)+'" /></td>';
+			new_tr += '<td><input id="f_compet_nombre" name="f_compet_nombre" size="6" type="text" value="'+compet_nombre+'" readonly /><input id="f_compet_liste" name="f_compet_liste" type="hidden" value="'+compet_liste+'" /><q class="choisir_compet" title="Voir ou choisir les items."></q></td>';
+			new_tr += '<td><input id="f_prof_nombre" name="f_prof_nombre" size="6" type="text" value="'+prof_nombre+'" readonly /><input id="f_prof_liste" name="f_prof_liste" type="hidden" value="'+prof_liste+'" /><q class="choisir_prof" title="Voir ou choisir les collègues."></q></td>';
+			new_tr += '<td>'+img_sujet+'<input id="f_doc_sujet" name="f_doc_sujet" type="hidden" value="'+tab_sujets[ref]+'" />'+img_corrige+'<input id="f_doc_corrige" name="f_doc_corrige" type="hidden" value="'+tab_corriges[ref]+'" /></td>';
+			new_tr += '<td class="nu"><input id="f_action" name="f_action" type="hidden" value="'+mode+'" /><input id="f_type" name="f_type" type="hidden" value="'+TYPE+'" /><input id="f_ref" name="f_ref" type="hidden" value="'+ref+'" /><q class="valider" title="Valider les modifications de cette évaluation."></q><q class="annuler" title="Annuler les modifications de cette évaluation."></q> <label id="ajax_msg">&nbsp;</label></td>';
 			new_tr += '</tr>';
 			// Cacher la ligne en cours et ajouter la nouvelle
 			$(this).parent().parent().hide();
 			$(this).parent().parent().after(new_tr);
 			infobulle();
-			$('#f_info').focus();
+			$('#f_description').focus();
 		};
 
 		/**
@@ -157,44 +193,54 @@ $(document).ready
 			$('#form0').css('visibility','hidden');
 			// Récupérer les informations de la ligne concernée
 			var ref           = $(this).parent().attr('id').substring(7); // "devoir_" + ref
-			var date          = $(this).parent().prev().prev().prev().prev().prev().prev().html();
-			var date_visible  = $(this).parent().prev().prev().prev().prev().prev().html();
-			var eleve_nombre  = $(this).parent().prev().prev().prev().prev().html();
-			var eleve_liste   = tab_eleves[ref];
-			var info          = $(this).parent().prev().prev().prev().html();
-			var compet_nombre = $(this).parent().prev().prev().html();
-			var compet_liste  = tab_items[ref];
-			var prof_nombre   = $(this).parent().prev().html();
-			var prof_liste    = tab_profs[ref];
-			date = date.substring(17,date.length); // enlever la date mysql cachée
-			if(date_visible=='identique')
+			var date          = $(this).parent().prev().prev().prev().prev().prev().prev().prev().prev().html();
+			var date_visible  = $(this).parent().prev().prev().prev().prev().prev().prev().prev().html();
+			var date_autoeval = $(this).parent().prev().prev().prev().prev().prev().prev().html();
+			if(TYPE=='groupe')
 			{
-				var checked = ' checked';
-				var classe1 = '';
-				var classe2 = ' class="hide"';
-				date_visible = date;
+				var groupe        = $(this).parent().prev().prev().prev().prev().prev().html();
 			}
 			else
 			{
-				var checked = '';
-				var classe1 = ' class="hide"';
-				var classe2 = '';
+				var eleve_nombre  = $(this).parent().prev().prev().prev().prev().prev().html();
+				var eleve_liste   = tab_eleves[ref];
 			}
+			var description   = $(this).parent().prev().prev().prev().prev().html();
+			var compet_nombre = $(this).parent().prev().prev().prev().html();
+			var compet_liste  = tab_items[ref];
+			var prof_nombre   = $(this).parent().prev().prev().html();
+			var prof_liste    = tab_profs[ref];
+			var date_fr       = date.substring(17,date.length); // enlever la date mysql cachée
+			if(date_visible=='identique') { var date_checked = ' checked'; var date_classe1 = ''; var date_classe2 = ' class="hide"'; date_visible = date_fr; }
+			else                          { var date_checked = '';         var date_classe2 = ''; var date_classe1 = ' class="hide"'; }
+			if(date_autoeval=='sans objet') { var autoeval_checked = ' checked'; var autoeval_classe1 = ''; var autoeval_classe2 = ' class="hide"'; date_autoeval = '00/00/0000'; }
+			else                            { var autoeval_checked = '';         var autoeval_classe2 = ''; var autoeval_classe1 = ' class="hide"'; }
+			var img_sujet   = (tab_sujets[ref])   ? '<img alt="" src="./_img/document/sujet_oui.png" />'   : '<img alt="" src="./_img/document/sujet_non.png" />' ;
+			var img_corrige = (tab_corriges[ref]) ? '<img alt="" src="./_img/document/corrige_oui.png" />' : '<img alt="" src="./_img/document/corrige_non.png" />' ;
 			// Fabriquer la ligne avec les éléments de formulaires
 			var new_tr = '';
 			new_tr += '<tr>';
-			new_tr += '<td><input id="f_date" name="f_date" size="9" type="text" value="'+date+'" /><q class="date_calendrier" title="Cliquez sur cette image pour importer une date depuis un calendrier !"></q></td>';
-			new_tr += '<td><input id="box_date" type="checkbox"'+checked+' style="vertical-align:-3px" /> <span'+classe1+' style="vertical-align:-2px">identique</span><span'+classe2+'><input id="f_date_visible" name="f_date_visible" size="9" type="text" value="'+date_visible+'" /><q class="date_calendrier" title="Cliquez sur cette image pour importer une date depuis un calendrier !"></q></span></td>';
-			new_tr += '<td><input id="f_eleve_nombre" name="f_eleve_nombre" size="10" type="text" value="'+eleve_nombre+'" readonly /><input id="f_eleve_liste" name="f_eleve_liste" type="hidden" value="'+eleve_liste+'" /><q class="choisir_eleve" title="Voir ou choisir les élèves."></q></td>';
-			new_tr += '<td><input id="f_info" name="f_info" size="'+Math.max(info.length,20)+'" type="text" value="'+escapeQuote(info)+'" /></td>';
-			new_tr += '<td><input id="f_compet_nombre" name="f_compet_nombre" size="10" type="text" value="'+compet_nombre+'" readonly /><input id="f_compet_liste" name="f_compet_liste" type="hidden" value="'+compet_liste+'" /><q class="choisir_compet" title="Voir ou choisir les items."></q></td>';
-			new_tr += '<td><input id="f_prof_nombre" name="f_prof_nombre" size="10" type="text" value="'+prof_nombre+'" readonly /><input id="f_prof_liste" name="f_prof_liste" type="hidden" value="'+prof_liste+'" /><q class="choisir_prof" title="Voir ou choisir les collègues."></q></td>';
-			new_tr += '<td class="nu"><input id="f_action" name="f_action" type="hidden" value="'+mode+'" /><input id="f_ref" name="f_ref" type="hidden" value="'+ref+'" /><q class="valider" title="Valider l\'ajout de cette évaluation."></q><q class="annuler" title="Annuler l\'ajout de cette évaluation."></q> <label id="ajax_msg">&nbsp;</label></td>';
+			new_tr += '<td><input id="f_date" name="f_date" size="8" type="text" value="'+date_fr+'" /><q class="date_calendrier" title="Cliquez sur cette image pour importer une date depuis un calendrier !"></q></td>';
+			new_tr += '<td><input id="box_date" type="checkbox"'+date_checked+' style="vertical-align:-3px" /> <span'+date_classe1+' style="vertical-align:-2px">identique</span><span'+date_classe2+'><input id="f_date_visible" name="f_date_visible" size="8" type="text" value="'+date_visible+'" /><q class="date_calendrier" title="Cliquez sur cette image pour importer une date depuis un calendrier !"></q></span></td>';
+			new_tr += '<td><input id="box_autoeval" type="checkbox"'+autoeval_checked+' style="vertical-align:-3px" /> <span'+autoeval_classe1+' style="vertical-align:-2px">sans objet</span><span'+autoeval_classe2+'><input id="f_date_autoeval" name="f_date_autoeval" size="8" type="text" value="'+date_autoeval+'" /><q class="date_calendrier" title="Cliquez sur cette image pour importer une date depuis un calendrier !"></q></span></td>';
+			if(TYPE=='groupe')
+			{
+				new_tr += '<td><select id="f_groupe" name="f_groupe">'+select_groupe.replace('>'+groupe+'<',' selected>'+groupe+'<')+'</select></td>';
+			}
+			else
+			{
+				new_tr += '<td><input id="f_eleve_nombre" name="f_eleve_nombre" size="6" type="text" value="'+eleve_nombre+'" readonly /><input id="f_eleve_liste" name="f_eleve_liste" type="hidden" value="'+eleve_liste+'" /><q class="choisir_eleve" title="Voir ou choisir les élèves."></q></td>';
+			}
+			new_tr += '<td><input id="f_description" name="f_description" size="'+Math.max(description.length,20)+'" type="text" value="'+escapeQuote(description)+'" /></td>';
+			new_tr += '<td><input id="f_compet_nombre" name="f_compet_nombre" size="6" type="text" value="'+compet_nombre+'" readonly /><input id="f_compet_liste" name="f_compet_liste" type="hidden" value="'+compet_liste+'" /><q class="choisir_compet" title="Voir ou choisir les items."></q></td>';
+			new_tr += '<td><input id="f_prof_nombre" name="f_prof_nombre" size="6" type="text" value="'+prof_nombre+'" readonly /><input id="f_prof_liste" name="f_prof_liste" type="hidden" value="'+prof_liste+'" /><q class="choisir_prof" title="Voir ou choisir les collègues."></q></td>';
+			new_tr += '<td>'+img_sujet+'<input id="f_doc_sujet" name="f_doc_sujet" type="hidden" value="'+tab_sujets[ref]+'" />'+img_corrige+'<input id="f_doc_corrige" name="f_doc_corrige" type="hidden" value="'+tab_corriges[ref]+'" /></td>';
+			new_tr += '<td class="nu"><input id="f_action" name="f_action" type="hidden" value="'+mode+'" /><input id="f_type" name="f_type" type="hidden" value="'+TYPE+'" /><input id="f_ref" name="f_ref" type="hidden" value="'+ref+'" /><q class="valider" title="Valider l\'ajout de cette évaluation."></q><q class="annuler" title="Annuler l\'ajout de cette évaluation."></q> <label id="ajax_msg">&nbsp;</label></td>';
 			new_tr += '</tr>';
 			// Ajouter cette nouvelle ligne
 			$(this).parent().parent().after(new_tr);
 			infobulle();
-			$('#f_info').focus();
+			$('#f_description').focus();
 		};
 
 		/**
@@ -207,7 +253,7 @@ $(document).ready
 			afficher_masquer_images_action('hide');
 			$('#form0').css('visibility','hidden');
 			var ref = $(this).parent().attr('id').substring(7); // "devoir_" + ref
-			var new_span = '<span class="danger"><input id="f_action" name="f_action" type="hidden" value="'+mode+'" /><input id="f_ref" name="f_ref" type="hidden" value="'+ref+'" />Toutes les saisies associées seront perdues !<q class="valider" title="Confirmer la suppression de cette évaluation."></q><q class="annuler" title="Annuler la suppression de cette évaluation."></q> <label id="ajax_msg">&nbsp;</label></span>';
+			var new_span = '<span class="danger"><input id="f_action" name="f_action" type="hidden" value="'+mode+'" /><input id="f_type" name="f_type" type="hidden" value="'+TYPE+'" /><input id="f_ref" name="f_ref" type="hidden" value="'+ref+'" />Les notes seront effacées !<q class="valider" title="Confirmer la suppression de cette évaluation."></q><q class="annuler" title="Annuler la suppression de cette évaluation."></q> <label id="ajax_msg">&nbsp;</label></span>';
 			$(this).after(new_span);
 			infobulle();
 		};
@@ -220,15 +266,15 @@ $(document).ready
 		{
 			mode = $(this).attr('class');
 			// Récupérer les informations de la ligne concernée
-			var ref    = $(this).parent().attr('id').substring(7); // "devoir_" + ref
-			var date   = $(this).parent().prev().prev().prev().prev().prev().prev().html();
-			var groupe = $(this).parent().prev().prev().prev().prev().html();
-			var info   = $(this).parent().prev().prev().prev().html();
-			    date   = date.substring(17,date.length); // garder la date française
+			var ref         = $(this).parent().attr('id').substring(7); // "devoir_" + ref
+			var date        = $(this).parent().prev().prev().prev().prev().prev().prev().prev().prev().html();
+			var groupe      = $(this).parent().prev().prev().prev().prev().prev().html();
+			var description = $(this).parent().prev().prev().prev().prev().html();
+			var date_fr = date.substring(17,date.length); // garder la date française
 			// Masquer le tableau et Afficher la zone associée
 			$('#form0 , #form1').hide('fast');
 			$('#zone_imprimer').css("display","block");
-			$('#titre_imprimer').html('Imprimer le cartouche d\'une évaluation | '+groupe+' | '+info+'<input id="f_ref" name="f_ref" type="hidden" value="'+ref+'" /><input id="f_date" name="f_date" type="hidden" value="'+date+'" /><input id="f_info" name="f_info" type="hidden" value="'+escapeQuote(info)+'" />');
+			$('#titre_imprimer').html('Imprimer le cartouche d\'une évaluation'+' | '+groupe+' | '+date_fr+' | '+description+'<input id="f_ref" name="f_ref" type="hidden" value="'+ref+'" /><input id="f_date_fr" name="f_date_fr" type="hidden" value="'+date_fr+'" /><input id="f_description" name="f_description" type="hidden" value="'+escapeQuote(description)+'" />');
 		};
 
 		/**
@@ -285,25 +331,26 @@ $(document).ready
 			mode = $(this).attr('class');
 			// Récupérer les informations de la ligne concernée
 			var ref          = $(this).parent().attr('id').substring(7); // "devoir_" + ref
-			var date         = $(this).parent().prev().prev().prev().prev().prev().prev().html();
-			var date_visible = $(this).parent().prev().prev().prev().prev().prev().html();
-			var info         = $(this).parent().prev().prev().prev().html();
+			var date         = $(this).parent().prev().prev().prev().prev().prev().prev().prev().prev().html();
+			var date_visible = $(this).parent().prev().prev().prev().prev().prev().prev().prev().html();
+			var groupe       = $(this).parent().prev().prev().prev().prev().prev().html();
+			var description  = $(this).parent().prev().prev().prev().prev().html();
 			var objet_date   = new Date();
 			var timestamp    = parseInt(objet_date.getTime()/1000,10); // timestamp pour éviter les pbs de mise en cache de PDF de mêmes noms
-			date1 = date.substring(3,13); // garder la date mysql
-			date2 = date.substring(17,date.length); // garder la date française
+			var date_mysql   = date.substring(3,13); // garder la date mysql
+			var date_fr      = date.substring(17,date.length); // garder la date française
 			// Masquer le tableau ; Afficher la zone associée et charger son contenu
 			$('#form0 , #form1').hide('fast');
 			$('#msg_import').removeAttr("class").html('&nbsp;');
 			$('#zone_saisir').css("display","block");
-			$('#titre_saisir').html('Saisir les acquisitions d\'une évaluation | '+date2+' | '+info);
+			$('#titre_saisir').html('Saisir les acquisitions d\'une évaluation'+' | '+groupe+' | '+date_fr+' | '+description);
 			$('#msg_saisir').removeAttr("class").addClass("loader").html("Connexion au serveur&hellip;");
 			$.ajax
 			(
 				{
 					type : 'POST',
 					url : 'ajax.php?page='+PAGE,
-					data : 'f_action='+mode+'&f_ref='+ref+'&timestamp='+timestamp+'&f_date='+date1+'&f_info='+info+'&f_date_visible='+date_visible+'&f_descriptif='+'Élèves sélectionnés'+':::'+info+':::'+date2,
+					data : 'f_action='+mode+'&f_ref='+ref+'&timestamp='+timestamp+'&f_date_mysql='+date_mysql+'&f_description='+encodeURIComponent(description)+'&f_date_visible='+date_visible+'&f_groupe_nom='+encodeURIComponent(groupe)+'&f_date_fr='+encodeURIComponent(date_fr),
 					dataType : "html",
 					error : function(msg,string)
 					{
@@ -322,7 +369,7 @@ $(document).ready
 							modification = false;
 							$('#msg_saisir').removeAttr("class").html('&nbsp;');
 							$('#table_saisir').html(responseHTML);
-							$('#table_saisir tbody tr th img').hide(0);
+							$('#table_saisir tbody tr th img').css('display','none'); // .hide(0) s'avère bcp plus lent dans FF et pose pb si bcp élèves / items ...
 							$('img[title]').tooltip({showURL:false});
 							$('#export_file1').attr("href", $("#filename").val()+ref+'_'+timestamp+'.zip' );
 							$('#export_file4').attr("href", $("#filename").val()+ref+'_'+timestamp+'_sans_notes.pdf' );
@@ -350,23 +397,24 @@ $(document).ready
 		{
 			mode = $(this).attr('class');
 			// Récupérer les informations de la ligne concernée
-			var ref  = $(this).parent().attr('id').substring(7); // "devoir_" + ref
-			var date = $(this).parent().prev().prev().prev().prev().prev().prev().html();
-			var info = $(this).parent().prev().prev().prev().html();
-			    date = date.substring(17,date.length); // garder la date française
-			var objet_date = new Date();
-			var timestamp  = parseInt(objet_date.getTime()/1000,10); // timestamp pour éviter les pbs de mise en cache de PDF de mêmes noms
+			var ref         = $(this).parent().attr('id').substring(7); // "devoir_" + ref
+			var date        = $(this).parent().prev().prev().prev().prev().prev().prev().prev().prev().html();
+			var groupe      = $(this).parent().prev().prev().prev().prev().prev().html();
+			var description = $(this).parent().prev().prev().prev().prev().html();
+			var date_fr     = date.substring(17,date.length); // garder la date française
+			var objet_date  = new Date();
+			var timestamp   = parseInt(objet_date.getTime()/1000,10); // timestamp pour éviter les pbs de mise en cache de PDF de mêmes noms
 			// Masquer le tableau ; Afficher la zone associée et charger son contenu
 			$('#form0 , #form1').hide('fast');
 			$('#zone_voir').css("display","block");
-			$('#titre_voir').html('Voir les acquisitions d\'une évaluation | '+date+' | '+info);
+			$('#titre_voir').html('Voir les acquisitions d\'une évaluation'+' | '+groupe+' | '+date_fr+' | '+description);
 			$('#msg_voir').removeAttr("class").addClass("loader").html("Connexion au serveur&hellip;");
 			$.ajax
 			(
 				{
 					type : 'POST',
 					url : 'ajax.php?page='+PAGE,
-					data : 'f_action='+mode+'&f_ref='+ref+'&timestamp='+timestamp+'&f_date='+date+'&f_descriptif='+'Élèves sélectionnés'+':::'+info+':::'+date,
+					data : 'f_action='+mode+'&f_ref='+ref+'&timestamp='+timestamp+'&f_date_fr='+encodeURIComponent(date_fr)+'&f_description='+encodeURIComponent(description)+'&f_groupe_nom='+encodeURIComponent(groupe),
 					dataType : "html",
 					error : function(msg,string)
 					{
@@ -384,7 +432,7 @@ $(document).ready
 						{
 							$('#msg_voir').removeAttr("class").html('&nbsp;');
 							$('#table_voir').html(responseHTML);
-							$('#table_voir tbody tr th img').hide(0);
+							$('#table_voir tbody tr th img').css('display','none'); // .hide(0) s'avère bcp plus lent dans FF et pose pb si bcp élèves / items ...
 							format_liens('#table_voir');
 							$('#export_file2').attr("href", $("#filename").val()+ref+'_'+timestamp+'.zip' );
 							$('#export_file3').attr("href", $("#filename").val()+ref+'_'+timestamp+'_sans_notes.pdf' );
@@ -405,22 +453,23 @@ $(document).ready
 		{
 			mode = $(this).attr('class');
 			// Récupérer les informations de la ligne concernée
-			var ref  = $(this).parent().attr('id').substring(7); // "devoir_" + ref
-			var date = $(this).parent().prev().prev().prev().prev().prev().prev().html();
-			var info = $(this).parent().prev().prev().prev().html();
-			    date = date.substring(17,date.length); // garder la date française
-			var objet_date = new Date();
-			var timestamp  = parseInt(objet_date.getTime()/1000,10); // timestamp pour éviter les pbs de mise en cache de PDF de mêmes noms
+			var ref         = $(this).parent().attr('id').substring(7); // "devoir_" + ref
+			var date        = $(this).parent().prev().prev().prev().prev().prev().prev().prev().prev().html();
+			var groupe      = $(this).parent().prev().prev().prev().prev().prev().html();
+			var description = $(this).parent().prev().prev().prev().prev().html();
+			var date_fr     = date.substring(17,date.length); // garder la date française
+			var objet_date  = new Date();
+			var timestamp   = parseInt(objet_date.getTime()/1000,10); // timestamp pour éviter les pbs de mise en cache de PDF de mêmes noms
 			$('#form0 , #form1').hide('fast');
 			$('#zone_voir_repart').css("display","block");
-			$('#titre_voir_repart').html('Voir les répartitions des élèves à une évaluation | '+date+' | '+info);
+			$('#titre_voir_repart').html('Voir les répartitions des élèves à une évaluation | '+date_fr+' | '+description);
 			$('#msg_voir_repart').removeAttr("class").addClass("loader").html("Connexion au serveur&hellip;");
 			$.ajax
 			(
 				{
 					type : 'POST',
 					url : 'ajax.php?page='+PAGE,
-					data : 'f_action='+mode+'&f_ref='+ref+'&timestamp='+timestamp+'&f_date='+date+'&f_descriptif='+'Élèves sélectionnés'+':::'+info+':::'+date,
+					data : 'f_action='+mode+'&f_ref='+ref+'&timestamp='+timestamp+'&f_date_fr='+encodeURIComponent(date_fr)+'&f_description='+encodeURIComponent(description)+'&f_groupe_nom='+encodeURIComponent(groupe),
 					dataType : "html",
 					error : function(msg,string)
 					{
@@ -465,7 +514,7 @@ $(document).ready
 		};
 
 		/**
-		 * Choisir les élèves associés à une évaluation : mise en place du formulaire
+		 * Choisir les élèves associés à une évaluation : mise en place du formulaire (uniquement pour des élèves sélectionnés)
 		 * @return void
 		 */
 		var choisir_eleve = function()
@@ -487,13 +536,15 @@ $(document).ready
 		{
 			mode = $(this).attr('class');
 			// Récupérer les informations de la ligne concernée
-			var ref    = $(this).parent().attr('id').substring(7); // "devoir_" + ref
-			var groupe = $(this).parent().prev().prev().prev().prev().html();
-			var info   = $(this).parent().prev().prev().prev().html();
+			var ref         = $(this).parent().attr('id').substring(7); // "devoir_" + ref
+			var date        = $(this).parent().prev().prev().prev().prev().prev().prev().prev().prev().html();
+			var groupe      = $(this).parent().prev().prev().prev().prev().prev().html();
+			var description = $(this).parent().prev().prev().prev().prev().html();
+			var date_fr     = date.substring(17,date.length); // garder la date française
 			// Masquer le tableau ; Afficher la zone associée et charger son contenu
 			$('#form0 , #form1').hide('fast');
 			$('#zone_ordonner').css("display","block");
-			$('#titre_ordonner').html('Réordonner les items d\'une évaluation | '+groupe+' | '+info);
+			$('#titre_ordonner').html('Réordonner les items d\'une évaluation'+' | '+groupe+' | '+date_fr+' | '+description);
 			$('#msg_ordonner').removeAttr("class").addClass("loader").html("Connexion au serveur&hellip;");
 			$.ajax
 			(
@@ -546,9 +597,37 @@ $(document).ready
 			$.fancybox( { 'href':'#zone_profs' , onStart:function(){$('#zone_profs').css("display","block");} , onClosed:function(){$('#zone_profs').css("display","none");} , 'modal':true , 'centerOnScroll':true } );
 		};
 
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-//	Appel des fonctions en fonction des événements ; live est utilisé pour prendre en compte les nouveaux éléments créés
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+		/**
+		 * Uploader les documents associés à une évaluation : mise en place du formulaire
+		 * @return void
+		 */
+		var uploader_doc = function()
+		{
+			// Récupérer les informations de la ligne concernée
+			var ref         = $(this).parent().next().attr('id').substring(7); // "devoir_" + ref // next() en plus
+			var date        = $(this).parent().prev().prev().prev().prev().prev().prev().prev().html(); // un prev() de moins
+			var groupe      = $(this).parent().prev().prev().prev().prev().html(); // un prev() de moins
+			var description = $(this).parent().prev().prev().prev().html(); // un prev() de moins
+			var date_fr     = date.substring(17,date.length); // garder la date française
+			var img_sujet   = (tab_sujets[ref])   ? '<a href="'+dossier_devoir+tab_sujets[ref]+'" target="_blank"><img alt="sujet" src="./_img/document/sujet_oui.png" title="Sujet disponible." /></a>' : '<img alt="sujet" src="./_img/document/sujet_non.png" />' ;
+			var img_corrige = (tab_corriges[ref]) ? '<a href="'+dossier_devoir+tab_corriges[ref]+'" target="_blank"><img alt="corrigé" src="./_img/document/corrige_oui.png" title="Corrigé disponible." /></a>' : '<img alt="corrigé" src="./_img/document/corrige_non.png" />' ;
+			// Renseigner les champs dynamique affichés
+			$('#titre_upload').html(groupe+' | '+date_fr+' | '+description);
+			$('#ajax_document_upload').removeAttr("class").html("");
+			$('#span_sujet').html(img_sujet);
+			$('#span_corrige').html(img_corrige);
+			activer_boutons_upload(ref);
+			infobulle();
+			// maj du paramètre AjaxUpload (les paramètres n'étant pas directement modifiables...)
+			uploader_sujet['_settings']['data']['f_ref']   = ref; 
+			uploader_corrige['_settings']['data']['f_ref'] = ref;
+			// Afficher la zone
+			$.fancybox( { 'href':'#zone_upload' , onStart:function(){$('#zone_upload').css("display","block");} , onClosed:function(){$('#zone_upload').css("display","none");} , 'modal':true , 'centerOnScroll':true } );
+		};
+
+		//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+		//	Appel des fonctions en fonction des événements ; live est utilisé pour prendre en compte les nouveaux éléments créés
+		//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
 		$('q.ajouter').click( ajouter );
 		$('q.modifier').live(  'click' , modifier );
@@ -566,10 +645,11 @@ $(document).ready
 		$('q.choisir_compet').live( 'click' , choisir_compet );
 		$('q.choisir_eleve').live(  'click' , choisir_eleve );
 		$('q.choisir_prof').live(   'click' , choisir_prof );
+		$('q.uploader_doc').live(   'click' , uploader_doc );
 
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-//	Cocher / décocher par lot des individus
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+		//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+		//	Cocher / décocher par lot des individus
+		//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
 		$('#prof_check_all').click
 		(
@@ -588,9 +668,10 @@ $(document).ready
 			}
 		);
 
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-//	Clic sur le checkbox pour choisir ou non une date visible différente de la date du devoir
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+		//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+		//	Clic sur le checkbox pour choisir ou non une date visible différente de la date du devoir
+		//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
 		$('#box_date').live // live est utilisé pour prendre en compte les nouveaux éléments créés
 		('click',
 			function()
@@ -607,9 +688,31 @@ $(document).ready
 			}
 		);
 
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-//	Reporter la date visible si modif date du devoir et demande dates identiques
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+		//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+		//	Clic sur le checkbox pour choisir ou non une date d'auto-évaluation
+		//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
+		$('#box_autoeval').live // live est utilisé pour prendre en compte les nouveaux éléments créés
+		('click',
+			function()
+			{
+				if($(this).is(':checked'))
+				{
+					$('#f_date_autoeval').val('00/00/0000');
+					$(this).next().show(0).next().hide(0);
+				}
+				else
+				{
+					$(this).next().hide(0).next().show(0);
+					$('#f_date_autoeval').val(input_autoeval);
+				}
+			}
+		);
+
+		//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+		//	Reporter la date visible si modif date du devoir et demande dates identiques
+		//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
 		$('#f_date').live // live est utilisé pour prendre en compte les nouveaux éléments créés
 		('change',
 			function()
@@ -621,10 +724,13 @@ $(document).ready
 			}
 		);
 
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-//	Clic sur le bouton pour fermer le cadre des items associés à une évaluation (annuler / retour)
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-		$('#annuler_compet').click
+		//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+		//	Clic sur le bouton pour fermer le cadre des items associés à une évaluation (annuler / retour)
+		//	Clic sur le bouton pour fermer le cadre des élèves associés à une évaluation (annuler / retour) (uniquement pour des élèves sélectionnés)
+		//	Clic sur le bouton pour fermer le cadre des professeurs associés à une évaluation (annuler / retour)
+		//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
+		$('#annuler_compet , #annuler_eleve , #annuler_profs , #fermer_zone_upload').click
 		(
 			function()
 			{
@@ -633,33 +739,10 @@ $(document).ready
 			}
 		);
 
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-//	Clic sur le bouton pour fermer le cadre des élèves associés à une évaluation (annuler / retour)
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-		$('#annuler_eleve').click
-		(
-			function()
-			{
-				$.fancybox.close();
-				return(false);
-			}
-		);
+		//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+		//	Clic sur le bouton pour fermer le formulaire servant à saisir les acquisitions des élèves à une évaluation
+		//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-//	Clic sur le bouton pour fermer le cadre des professeurs associés à une évaluation (annuler / retour)
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-		$('#annuler_profs').click
-		(
-			function()
-			{
-				$.fancybox.close();
-				return(false);
-			}
-		);
-
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-//	Clic sur le bouton pour fermer le formulaire servant à saisir les acquisitions des élèves à une évaluation
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 		$('#fermer_zone_saisir').live // live est utilisé pour prendre en compte les nouveaux éléments créés
 		('click',
 			function()
@@ -672,9 +755,10 @@ $(document).ready
 			}
 		);
 
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-//	Clic sur le bouton pour fermer le formulaire servant à réordonner les items d'une évaluation
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+		//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+		//	Clic sur le bouton pour fermer le formulaire servant à réordonner les items d'une évaluation
+		//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
 		$('#fermer_zone_ordonner').live // live est utilisé pour prendre en compte les nouveaux éléments créés
 		('click',
 			function()
@@ -687,9 +771,10 @@ $(document).ready
 			}
 		);
 
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-//	Clic sur le bouton pour fermer le bloc pour voir les acquisitions des élèves à une évaluation
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+		//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+		//	Clic sur le bouton pour fermer le bloc pour voir les acquisitions des élèves à une évaluation
+		//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
 		$('#fermer_zone_voir').live // live est utilisé pour prendre en compte les nouveaux éléments créés
 		('click',
 			function()
@@ -702,9 +787,10 @@ $(document).ready
 			}
 		);
 
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-//	Clic sur le bouton pour fermer le bloc pour voir les répartitions des élèves à une évaluation
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+		//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+		//	Clic sur le bouton pour fermer le bloc pour voir les répartitions des élèves à une évaluation
+		//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
 		$('#fermer_zone_voir_repart').live // live est utilisé pour prendre en compte les nouveaux éléments créés
 		('click',
 			function()
@@ -733,9 +819,10 @@ $(document).ready
 			}
 		);
 
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-//	Clic sur le bouton pour valider le choix des items associés à une évaluation
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+		//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+		//	Clic sur le bouton pour valider le choix des items associés à une évaluation
+		//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
 		$('#valider_compet').click
 		(
 			function()
@@ -758,9 +845,10 @@ $(document).ready
 			}
 		);
 
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-//	Clic sur le bouton pour valider le choix des élèves associés à une évaluation
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+		//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+		//	Clic sur le bouton pour valider le choix des élèves associés à une évaluation (uniquement pour des élèves sélectionnés)
+		//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
 		$('#valider_eleve').click
 		(
 			function()
@@ -789,9 +877,10 @@ $(document).ready
 			}
 		);
 
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-//	Clic sur le bouton pour valider le choix des profs associés à une évaluation
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+		//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+		//	Clic sur le bouton pour valider le choix des profs associés à une évaluation
+		//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
 		$('#valider_profs').click
 		(
 			function()
@@ -834,60 +923,14 @@ $(document).ready
 		(
 			function()
 			{
-				var liste_nom = $("#f_liste_items_nom").val();
-				if(!liste_nom)
-				{
-					$('#ajax_msg_memo').removeAttr("class").addClass("erreur").html("nom manquant");
-					$("#f_liste_items_nom").focus();
-					return false;
-				}
-				var compet_liste = '';
-				$("#zone_matieres_items input[type=checkbox]:checked").each
-				(
-					function()
-					{
-						compet_liste += $(this).val()+'_';
-					}
-				);
-				if(!compet_liste)
-				{
-					$('#ajax_msg_memo').removeAttr("class").addClass("erreur").html("Aucun item coché !");
-					return false;
-				}
-				var compet_liste  = compet_liste.substring(0,compet_liste.length-1);
-				$('#ajax_msg_memo').removeAttr("class").addClass("loader").html("Connexion au serveur&hellip;");
-				$.ajax
-				(
-					{
-						type : 'POST',
-						url : 'ajax.php?page=compte_selection_items',
-						data : 'f_action='+'ajouter'+'&f_compet_liste='+compet_liste+'&f_nom='+encodeURIComponent(liste_nom),
-						dataType : "html",
-						error : function(msg,string)
-						{
-							$('#ajax_msg_memo').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
-						},
-						success : function(responseHTML)
-						{
-							initialiser_compteur();
-							if(responseHTML.substring(0,3)=='<tr')	// Attention aux caractères accentués : l'utf-8 pose des pbs pour ce test
-							{
-								$('#ajax_msg_memo').removeAttr("class").addClass("valide").html("Sélection mémorisée.");
-							}
-						else
-							{
-								$('#ajax_msg_memo').removeAttr("class").addClass("alerte").html(responseHTML);
-								$("#f_liste_items_nom").focus();
-							}
-						}
-					}
-				);
+				memoriser_selection_matieres_items( $("#f_liste_items_nom").val() );
 			}
 		);
 
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-//	Fonction pour colorer les cases du tableau de saisie des items déjà enregistrés
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+		//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+		//	Fonction pour colorer les cases du tableau de saisie des items déjà enregistrés
+		//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
 		function colorer_cellules()
 		{
 			$("#table_saisir tbody td input").each
@@ -906,9 +949,10 @@ $(document).ready
 			);
 		}
 
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-//	Validation de la demande de génération d'un cartouche pour une évaluation
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+		//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+		//	Validation de la demande de génération d'un cartouche pour une évaluation
+		//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
 		$('#f_submit_imprimer').click
 		(
 			function()
@@ -921,7 +965,7 @@ $(document).ready
 					{
 						type : 'POST',
 						url : 'ajax.php?page='+PAGE,
-						data : 'f_action=Imprimer_cartouche&'+$("#zone_imprimer").serialize(),
+						data : 'f_action=imprimer_cartouche&'+$("#zone_imprimer").serialize(),
 						dataType : "html",
 						error : function(msg,string)
 						{
@@ -950,15 +994,16 @@ $(document).ready
 			}
 		);
 
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-//	Demande d'indiquer la liste des élèves associés à une évaluation de même nom
-//	Reprise d'un développement initié par Alain Pottier <alain.pottier613@orange.fr>
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+		//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+		//	Demande d'indiquer la liste des élèves associés à une évaluation de même nom (uniquement pour des élèves sélectionnés)
+		//	Reprise d'un développement initié par Alain Pottier <alain.pottier613@orange.fr>
+		//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
 		$('#indiquer_eleves_deja').click
 		(
 			function()
 			{
-				if(!$('#f_info').val())
+				if(!$('#f_description').val())
 				{
 					$('#msg_indiquer_eleves_deja').removeAttr("class").addClass("erreur").html('évaluation sans nom');
 					return false;
@@ -981,7 +1026,7 @@ $(document).ready
 					{
 						type : 'POST',
 						url : 'ajax.php?page='+PAGE,
-						data : 'f_action=Indiquer_eleves_deja'+'&f_ref='+$('#f_ref').val()+'&f_info='+$('#f_info').val()+'&f_date_debut='+f_date_debut,
+						data : 'f_action=indiquer_eleves_deja'+'&f_description='+$('#f_description').val()+'&f_date_debut='+f_date_debut,
 						dataType : "html",
 						error : function(msg,string)
 						{
@@ -1056,9 +1101,10 @@ $(document).ready
 			}
 		);
 
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-//	Choix du mode de pilotage pour la saisie des résultats
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+		//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+		//	Choix du mode de pilotage pour la saisie des résultats
+		//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
 		$('#table_saisir thead tr td input[type="radio"]').live // live est utilisé pour prendre en compte les nouveaux éléments créés
 		('click',
 			function()
@@ -1071,9 +1117,10 @@ $(document).ready
 			}
 		);
 
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-//	Choix de rétrécir ou pas les colonnes sur #table_saisir
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+		//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+		//	Choix de rétrécir ou pas les colonnes sur #table_saisir
+		//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
 		$('#table_saisir #check_largeur').live // live est utilisé pour prendre en compte les nouveaux éléments créés
 		('click',
 			function()
@@ -1092,9 +1139,10 @@ $(document).ready
 			}
 		);
 
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-//	Choix de rétrécir ou pas les colonnes sur #table_voir
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+		//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+		//	Choix de rétrécir ou pas les colonnes sur #table_voir
+		//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
 		$('#table_voir #check_largeur').live // live est utilisé pour prendre en compte les nouveaux éléments créés
 		('click',
 			function()
@@ -1121,9 +1169,10 @@ $(document).ready
 			}
 		);
 
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-//	Choix de rétrécir ou pas les lignes sur #table_saisir ou #table_voir
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+		//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+		//	Choix de rétrécir ou pas les lignes sur #table_saisir ou #table_voir
+		//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
 		$('#check_hauteur').live // live est utilisé pour prendre en compte les nouveaux éléments créés
 		('click',
 			function()
@@ -1131,20 +1180,21 @@ $(document).ready
 				var table_id = $(this).closest('table').attr('id');
 				if($(this).is(':checked'))
 				{
-					$("#"+table_id+" tbody tr th div").hide(0);
-					$("#"+table_id+" tbody tr th img").show(0);
+					$("#"+table_id+" tbody tr th div").css('display','none');         // .hide(0) s'avère bcp plus lent dans FF et pose pb si bcp élèves / items ...
+					$("#"+table_id+" tbody tr th img").css('display','inline-block'); // .show(0) s'avère bcp plus lent dans FF et pose pb si bcp élèves / items ...
 				}
 				else
 				{
-					$("#"+table_id+" tbody tr th img").hide(0);
-					$("#"+table_id+" tbody tr th div").show(0);
+					$("#"+table_id+" tbody tr th img").css('display','none');  // .hide(0) s'avère bcp plus lent dans FF et pose pb si bcp élèves / items ...
+					$("#"+table_id+" tbody tr th div").css('display','block'); // .show(0) s'avère bcp plus lent dans FF et pose pb si bcp élèves / items ...
 				}
 			}
 		);
 
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-//	Gérer la saisie des acquisitions au clavier
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+		//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+		//	Gérer la saisie des acquisitions au clavier
+		//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
 		$('#table_saisir tbody td input').live // live est utilisé pour prendre en compte les nouveaux éléments créés
 		('keydown',	// keydown au lieu de keyup permet de laisser appuyer sur la touche pour répéter une action
 			function(e)
@@ -1249,9 +1299,9 @@ $(document).ready
 			}
 		);
 
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-//	Gérer la saisie des acquisitions à la souris
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+		//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+		//	Gérer la saisie des acquisitions à la souris
+		//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
 		// Remplacer la cellule par les images de choix
 		$("#table_saisir tbody td.td_clavier").live
@@ -1314,9 +1364,9 @@ $(document).ready
 			}
 		);
 
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-//	Reporter une note dans toutes les cellules sans saisie
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+		//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+		//	Reporter une note dans toutes les cellules sans saisie
+		//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
 		$('#report_note').click
 		(
@@ -1363,9 +1413,9 @@ $(document).ready
 			}
 		);
 
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-//	Clic sur le lien pour mettre à jour l'ordre des items d'une évaluation
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+		//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+		//	Clic sur le lien pour mettre à jour l'ordre des items d'une évaluation
+		//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
 		$('#Enregistrer_ordre').live // live est utilisé pour prendre en compte les nouveaux éléments créés
 		('click',
@@ -1397,7 +1447,7 @@ $(document).ready
 						{
 							type : 'POST',
 							url : 'ajax.php?page='+PAGE,
-							data : 'f_action=Enregistrer_ordre&f_ref='+$('#Enregistrer_ordre').val()+'&tab_id='+tab_id,
+							data : 'f_action=enregistrer_ordre&f_ref='+$('#Enregistrer_ordre').val()+'&tab_id='+tab_id,
 							dataType : "html",
 							error : function(msg,string)
 							{
@@ -1426,9 +1476,9 @@ $(document).ready
 			}
 		);
 
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-//	Clic sur le lien pour mettre à jour les acquisitions des élèves à une évaluation
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+		//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+		//	Clic sur le lien pour mettre à jour les acquisitions des élèves à une évaluation
+		//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
 		$('#Enregistrer_saisie').live // live est utilisé pour prendre en compte les nouveaux éléments créés
 		('click',
@@ -1442,7 +1492,7 @@ $(document).ready
 				{
 					$('button').prop('disabled',true);
 					$('#msg_saisir').removeAttr("class").addClass("loader").html("Connexion au serveur&hellip;");
-					// Grouper les saisies dans une variable unique afin d'éviter tout problème dûe à une limitation du module "suhosin" (voir par exemple http://xuxu.fr/2008/12/04/nombre-de-variables-post-limite-ou-tronque).
+					// Grouper les saisies dans une variable unique afin d'éviter tout problème dû à une limitation du module "suhosin" (voir par exemple http://xuxu.fr/2008/12/04/nombre-de-variables-post-limite-ou-tronque).
 					var f_notes = new Array();
 					$("#table_saisir tbody input").each
 					(
@@ -1461,7 +1511,7 @@ $(document).ready
 						{
 							type : 'POST',
 							url : 'ajax.php?page='+PAGE,
-							data : 'f_action=Enregistrer_saisie'+'&f_ref='+$("#f_ref").val()+'&f_date='+$("#f_date").val()+'&f_date_visible='+$("#f_date_visible").val()+'&f_notes='+f_notes+'&f_info='+$("#f_info").val(),
+							data : 'f_action=enregistrer_saisie'+'&f_ref='+$("#f_ref").val()+'&f_date_mysql='+$("#f_date_mysql").val()+'&f_date_visible='+$("#f_date_visible").val()+'&f_notes='+f_notes+'&f_description='+$("#f_description").val(),
 							dataType : "html",
 							error : function(msg,string)
 							{
@@ -1491,9 +1541,9 @@ $(document).ready
 			}
 		);
 
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-//	Traitement du formulaire principal
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+		//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+		//	Traitement du formulaire principal
+		//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
 		// Le formulaire qui va être analysé et traité en AJAX
 		var formulaire = $('#form1');
@@ -1507,19 +1557,27 @@ $(document).ready
 					// "required:true" ne fonctionne pas sur "f_eleve_liste" & "f_prof_liste" & "f_compet_liste" car type hidden
 					f_date          : { required:true , dateITA:true },
 					f_date_visible  : { required:function(){return !$('#box_date').is(':checked');} , dateITA:true },
+					f_date_autoeval : { required:function(){return !$('#box_autoeval').is(':checked');} , dateITA:true },
+					f_groupe        : { required:true },
 					f_eleve_nombre  : { accept:'élève|élèves' },
-					f_info          : { required:false , maxlength:60 },
+					f_description   : { required:false , maxlength:60 },
 					f_prof_nombre   : { required:false },
-					f_compet_nombre : { accept:'item|items' }
+					f_compet_nombre : { accept:'item|items' },
+					f_doc_sujet     : { required:false },
+					f_doc_corrige   : { required:false }
 				},
 				messages :
 				{
 					f_date          : { required:"date manquante" , dateITA:"format JJ/MM/AAAA non respecté" },
 					f_date_visible  : { required:"date manquante" , dateITA:"format JJ/MM/AAAA non respecté" },
+					f_date_autoeval : { required:"date manquante" , dateITA:"format JJ/MM/AAAA non respecté" },
+					f_groupe        : { required:"groupe manquant" },
 					f_eleve_nombre  : { accept:"élève(s) manquant(s)" },
-					f_info          : { maxlength:"60 caractères maximum" },
+					f_description   : { maxlength:"60 caractères maximum" },
 					f_prof_nombre   : { },
-					f_compet_nombre : { accept:"item(s) manquant(s)" }
+					f_compet_nombre : { accept:"item(s) manquant(s)" },
+					f_doc_sujet     : { },
+					f_doc_corrige   : { }
 				},
 				errorElement : "label",
 				errorClass : "erreur",
@@ -1567,6 +1625,10 @@ $(document).ready
 				// Obligé rajouter le test à ce niveau car si la date a été changé depuis le calendrier, l'événement change() n'a pas été déclenché (et dans test_form_avant_envoi() c'est trop tard).
 				$('#f_date_visible').val($('#f_date').val());
 			}
+			if($('#box_autoeval').is(':checked'))
+			{
+				$('#f_date_autoeval').val('00/00/0000');
+			}
 		}
 
 		// Fonction précédent l'envoi du formulaire (avec jquery.form.js)
@@ -1611,14 +1673,26 @@ $(document).ready
 						$('table.form tbody tr td[colspan]').parent().remove(); // En cas de tableau avec une ligne vide pour la conformité XHTML
 					case 'dupliquer':
 						var position_script = responseHTML.lastIndexOf('<SCRIPT>');
-						var new_tr = '<tr class="new">'+responseHTML.substring(0,position_script)+'</tr>';
+						var new_td = responseHTML.substring(0,position_script);
+						if(TYPE=='groupe')
+						{
+							var groupe_id = $("#f_groupe option:selected").val();
+							var new_td = new_td.replace('<td>{{GROUPE_NOM}}</td>','<td>'+tab_groupe[groupe_id]+'</td>');
+						}
+						var new_tr = '<tr class="new">'+new_td+'</tr>';
 						$('table.form tbody').append(new_tr);
 						$('q.valider').parent().parent().remove();
 						eval( responseHTML.substring(position_script+8) );
 						break;
 					case 'modifier':
 						var position_script = responseHTML.lastIndexOf('<SCRIPT>');
-						$('q.valider').parent().parent().prev().addClass("new").html(responseHTML.substring(0,position_script)).show();
+						var new_td = responseHTML.substring(0,position_script);
+						if(TYPE=='groupe')
+						{
+							var groupe_id = $("#f_groupe option:selected").val();
+							var new_td = new_td.replace('<td>{{GROUPE_NOM}}</td>','<td>'+tab_groupe[groupe_id]+'</td>');
+						}
+						$('q.valider').parent().parent().prev().addClass("new").html(new_td).show();
 						$('q.valider').parent().parent().remove();
 						eval( responseHTML.substring(position_script+8) );
 						break;
@@ -1633,108 +1707,9 @@ $(document).ready
 			}
 		} 
 
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-//	Traitement du premier formulaire pour afficher le tableau avec la liste des évaluations
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-
-		// Le formulaire qui va être analysé et traité en AJAX
-		var formulaire0 = $('#form0');
-
-		// Ajout d'une méthode pour valider les dates de la forme jj/mm/aaaa (trouvé dans le zip du plugin, corrige en plus un bug avec Safari)
-		// méthode dateITA déjà ajoutée
-
-		// Vérifier la validité du formulaire (avec jquery.validate.js)
-		var validation0 = formulaire0.validate
-		(
-			{
-				rules :
-				{
-					f_date_debut : { required:true , dateITA:true },
-					f_date_fin   : { required:true , dateITA:true }
-				},
-				messages :
-				{
-					f_date_debut : { required:"date manquante" , dateITA:"date JJ/MM/AAAA incorrecte" },
-					f_date_fin   : { required:"date manquante" , dateITA:"date JJ/MM/AAAA incorrecte" }
-				},
-				errorElement : "label",
-				errorClass : "erreur",
-				errorPlacement : function(error,element) { element.next().after(error); }
-			}
-		);
-
-		// Options d'envoi du formulaire (avec jquery.form.js)
-		var ajaxOptions0 =
-		{
-			url : 'ajax.php?page='+PAGE,
-			type : 'POST',
-			dataType : "html",
-			clearForm : false,
-			resetForm : false,
-			target : "#ajax_msg0",
-			beforeSubmit : test_form_avant_envoi0,
-			error : retour_form_erreur0,
-			success : retour_form_valide0
-		};
-
-		// Envoi du formulaire (avec jquery.form.js)
-		formulaire0.submit
-		(
-			function()
-			{
-				$(this).ajaxSubmit(ajaxOptions0);
-				return false;
-			}
-		); 
-
-		// Fonction précédent l'envoi du formulaire (avec jquery.form.js)
-		function test_form_avant_envoi0(formData, jqForm, options)
-		{
-			$('#ajax_msg0').removeAttr("class").html("&nbsp;");
-			var readytogo = validation0.form();
-			if(readytogo)
-			{
-				$('#ajax_msg0').removeAttr("class").addClass("loader").html("Connexion au serveur&hellip;");
-			}
-			return readytogo;
-		}
-
-		// Fonction suivant l'envoi du formulaire (avec jquery.form.js)
-		function retour_form_erreur0(msg,string)
-		{
-			$('#ajax_msg0').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
-		}
-
-		// Fonction suivant l'envoi du formulaire (avec jquery.form.js)
-		function retour_form_valide0(responseHTML)
-		{
-			initialiser_compteur();
-			if( (responseHTML.substring(0,4)!='<tr>') && (responseHTML!='<SCRIPT>') )
-			{
-				$('#ajax_msg0').removeAttr("class").addClass("alerte").html(responseHTML);
-			}
-			else
-			{
-				$('#ajax_msg0').removeAttr("class").addClass("valide").html("Demande réalisée !").fadeOut(3000,function(){$(this).removeAttr("class").html("").show();});
-				var position_script = responseHTML.lastIndexOf('<SCRIPT>');
-				$('table.form tbody').html( responseHTML.substring(0,position_script) );
-				eval( responseHTML.substring(position_script+8) );
-				trier_tableau();
-				afficher_masquer_images_action('show');
-				infobulle();
-				if( reception_todo )
-				{
-					$('q.ajouter').click();
-				}
-			}
-		}
-
-		// Initialiser l'affichage au démarrage
-		$('#form0').submit();
-
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-// Traitement du clic sur le bouton pour envoyer un import csv (saisie déportée)
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+		//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+		// Traitement du clic sur le bouton pour envoyer un import csv (saisie déportée)
+		//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
 		// Envoi du fichier avec jquery.ajaxupload.js
 		new AjaxUpload
@@ -1742,7 +1717,7 @@ $(document).ready
 			{
 				action: 'ajax.php?page='+PAGE+'&f_action=importer_saisie_csv',
 				name: 'userfile',
-				data : '',
+				data : {'toto':10},
 				autoSubmit: true,
 				responseType: "html",
 				onChange: changer_fichier,
@@ -1822,8 +1797,352 @@ $(document).ready
 			}
 		}
 
+		//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+		// Traitement du clic sur un bouton pour envoyer un sujet ou un corrigé de devoir
+		//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
+		// Envoi du fichier avec jquery.ajaxupload.js ; on lui donne un nom afin de pouvoir changer dynamiquement le paramètre.
+		var uploader_sujet = new AjaxUpload
+		('#bouton_uploader_sujet',
+			{
+				action: 'ajax.php?page='+PAGE,
+				name: 'userfile',
+				data: {'f_action':'uploader_document','f_doc_objet':'sujet','f_ref':'maj_plus_tard'},
+				autoSubmit: true,
+				responseType: "html",
+				onChange: changer_fichier_document,
+				onSubmit: verifier_fichier_document,
+				onComplete: retourner_fichier_document
+			}
+		);
+
+		// Envoi du fichier avec jquery.ajaxupload.js ; on lui donne un nom afin de pouvoir changer dynamiquement le paramètre.
+		var uploader_corrige = new AjaxUpload
+		('#bouton_uploader_corrige',
+			{
+				action: 'ajax.php?page='+PAGE,
+				name: 'userfile',
+				data: {'f_action':'uploader_document','f_doc_objet':'corrige','f_ref':'maj_plus_tard'},
+				autoSubmit: true,
+				responseType: "html",
+				onChange: changer_fichier_document,
+				onSubmit: verifier_fichier_document,
+				onComplete: retourner_fichier_document
+			}
+		);
+
+		function changer_fichier_document(fichier_nom,fichier_extension)
+		{
+			$('#ajax_document_upload').removeAttr("class").html('&nbsp;');
+			$('#zone_upload button').prop('disabled',true);
+			return true;
+		}
+
+		function verifier_fichier_document(fichier_nom,fichier_extension)
+		{
+			if (fichier_nom==null || fichier_nom.length<5)
+			{
+				$('#ajax_document_upload').removeAttr("class").addClass("erreur").html('Cliquer sur "Parcourir..." pour indiquer un chemin de fichier correct.');
+				$('#zone_upload button').prop('disabled',false);
+				return false;
+			}
+			else if ( ('.doc.docx.odg.odp.ods.odt.ppt.pptx.rtf.sxc.sxd.sxi.sxw.xls.xlsx.'.indexOf('.'+fichier_extension.toLowerCase()+'.')!=-1) && !confirm('Vous devriez convertir votre fichier au format PDF.\nEtes-vous certain de vouloir l\'envoyer sous ce format ?') )
+			{
+				$('#ajax_document_upload').removeAttr("class").addClass("erreur").html('Convertissez votre fichier en "pdf".');
+				$('#zone_upload button').prop('disabled',false);
+				return false;
+			}
+			else if ('.bat.com.exe.php.zip.'.indexOf('.'+fichier_extension.toLowerCase()+'.')!=-1)
+			{
+				$('#ajax_document_upload').removeAttr("class").addClass("erreur").html('Extension non autorisée.');
+				$('#zone_upload button').prop('disabled',false);
+				return false;
+			}
+			else
+			{
+				$('#zone_upload button').prop('disabled',true);
+				$('#ajax_document_upload').removeAttr("class").addClass("loader").html("Connexion au serveur&hellip;");
+				return true;
+			}
+		}
+
+		function retourner_fichier_document(fichier_nom,responseHTML)	// Attention : avec jquery.ajaxupload.js, IE supprime mystérieusement les guillemets et met les éléments en majuscules dans responseHTML.
+		{
+			var tab_infos = responseHTML.split(']¤[');
+			if(tab_infos[0]!='ok')
+			{
+				$('#ajax_document_upload').removeAttr("class").addClass("alerte").html(responseHTML);
+			}
+			else
+			{
+				initialiser_compteur();
+				$('#ajax_document_upload').removeAttr("class").addClass("valide").html("Document enregistré.");
+				var ref         = tab_infos[1];
+				var objet       = tab_infos[2];
+				var fichier_nom = tab_infos[3];
+				if(objet=='sujet') { var alt='sujet';   var title='Sujet';   var numero=0; tab_sujets[ref] = fichier_nom; }
+				else               { var alt='corrigé'; var title='Corrigé'; var numero=1; tab_corriges[ref] = fichier_nom; }
+				var lien        = '<a href="'+dossier_devoir+fichier_nom+'" target="_blank"><img alt="'+alt+'" src="./_img/document/'+objet+'_oui.png" title="'+title+' disponible." /></a>';
+				$('#span_'+objet).html(lien);
+				$('#devoir_'+ref).prev().children().eq(numero).replaceWith(lien);
+				infobulle();
+			}
+			activer_boutons_upload(ref);
+		}
+
+		//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+		// Traitement du clic sur un bouton pour retirer un sujet ou un corrigé de devoir
+		//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
+		$('#bouton_supprimer_sujet , #bouton_supprimer_corrige').click
+		(
+			function()
+			{
+				$('#zone_upload button').prop('disabled',true);
+				$('#ajax_document_upload').removeAttr("class").addClass("loader").html("Connexion au serveur&hellip;");
+				var objet = $(this).attr('id').substring(17);
+				var ref   = uploader_sujet['_settings']['data']['f_ref'];
+				var nom   = (objet=='sujet') ? tab_sujets[ref] : tab_corriges[ref] ;
+				$.ajax
+				(
+					{
+						type : 'POST',
+						url : 'ajax.php?page='+PAGE,
+						data : 'f_action=retirer_document'+'&f_doc_objet='+objet+'&f_ref='+ref+'&f_doc_nom='+nom,
+						dataType : "html",
+						error : function(msg,string)
+						{
+							$('#ajax_document_upload').removeAttr("class").addClass("alerte").html(responseHTML);
+							activer_boutons_upload(ref);
+							return false;
+						},
+						success : function(responseHTML)
+						{
+							initialiser_compteur();
+							if(responseHTML!='ok')
+							{
+								$('#ajax_document_upload').removeAttr("class").addClass("alerte").html(responseHTML);
+							}
+							else
+							{
+								$('#ajax_document_upload').removeAttr("class").addClass("valide").html("Document retiré.");
+								if(objet=='sujet') { var alt='sujet';   var numero=0; tab_sujets[ref] = ''; }
+								else               { var alt='corrigé'; var numero=1; tab_corriges[ref] = ''; }
+								var lien        = '<img alt="'+alt+'" src="./_img/document/'+objet+'_non.png" />';
+								$('#span_'+objet).html(lien);
+								$('#devoir_'+ref).prev().children().eq(numero).replaceWith(lien);
+							}
+							activer_boutons_upload(ref);
+						}
+					}
+				);
+			}
+		);
+
+		//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+		//	Traitement du premier formulaire pour afficher le tableau avec la liste des évaluations
+		//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
+		//	Afficher masquer des options de la grille (uniquement pour un groupe)
+
+		var autoperiode = true; // Tant qu'on ne modifie pas manuellement le choix des périodes, modification automatique du formulaire
+
+		function view_dates_perso()
+		{
+			var periode_val = $("#f_aff_periode").val();
+			if(periode_val!=0)
+			{
+				$("#dates_perso").attr("class","hide");
+			}
+			else
+			{
+				$("#dates_perso").attr("class","show");
+			}
+		}
+
+		$('#f_aff_periode').change
+		(
+			function()
+			{
+				view_dates_perso();
+				autoperiode = false;
+			}
+		);
+
+		//	Changement de groupe (uniquement pour un groupe)
+		// -> desactiver les périodes prédéfinies en cas de groupe de besoin
+		// -> choisir automatiquement la meilleure période et chercher les évaluations si un changement manuel de période n'a jamais été effectué
+
+		function modifier_periodes()
+		{
+			var groupe_type = $("#f_aff_classe option:selected").parent().attr('label');
+			$("#f_aff_periode option").each
+			(
+				function()
+				{
+					var periode_id = $(this).val();
+					// La période personnalisée est tout le temps accessible
+					if(periode_id!=0)
+					{
+						// groupe de besoin -> desactiver les périodes prédéfinies
+						if( (typeof(groupe_type)=='undefined') || (groupe_type=='Besoins') )
+						{
+							$(this).prop('disabled',true);
+						}
+						// classe ou groupe classique -> toutes périodes accessibles
+						else
+						{
+							$(this).prop('disabled',false);
+						}
+					}
+				}
+			);
+			// Sélectionner si besoin la période personnalisée
+			if( (typeof(groupe_type)=='undefined') || (groupe_type=='Besoins') )
+			{
+				$("#f_aff_periode option[value=0]").prop('selected',true);
+				$("#dates_perso").attr("class","show");
+			}
+			// Modification automatique du formulaire
+			if(autoperiode)
+			{
+				if( (groupe_type=='Classes') || (groupe_type=='Groupes') )
+				{
+					// Rechercher automatiquement la meilleure période
+					var id_classe = $('#f_aff_classe option:selected').val().substring(1);
+					if(typeof(tab_groupe_periode[id_classe])!='undefined')
+					{
+						for(var id_periode in tab_groupe_periode[id_classe]) // Parcourir un tableau associatif...
+						{
+							var tab_split = tab_groupe_periode[id_classe][id_periode].split('_');
+							if( (date_mysql>=tab_split[0]) && (date_mysql<=tab_split[1]) )
+							{
+								$("#f_aff_periode option[value="+id_periode+"]").prop('selected',true);
+								view_dates_perso();
+								break;
+							}
+						}
+					}
+				}
+				// Soumettre le formulaire
+				if(autoperiode)
+				{
+					formulaire0.submit();
+				}
+			}
+		}
+
+		$('#f_aff_classe').change
+		(
+			function()
+			{
+				modifier_periodes();
+			}
+		);
+
+		// Le formulaire qui va être analysé et traité en AJAX
+		var formulaire0 = $('#form0');
+
+		// Ajout d'une méthode pour valider les dates de la forme jj/mm/aaaa (trouvé dans le zip du plugin, corrige en plus un bug avec Safari)
+		// méthode dateITA déjà ajoutée
+
+		// Vérifier la validité du formulaire (avec jquery.validate.js)
+		var validation0 = formulaire0.validate
+		(
+			{
+				rules :
+				{
+					f_aff_classe : { required:true },
+					f_date_debut : { required:function(){return (TYPE=='selection') || $("#f_aff_periode").val()==0;} , dateITA:true },
+					f_date_fin   : { required:function(){return (TYPE=='selection') || $("#f_aff_periode").val()==0;} , dateITA:true }
+				},
+				messages :
+				{
+					f_aff_classe : { required:"classe / groupe manquant" },
+					f_date_debut : { required:"date manquante" , dateITA:"date JJ/MM/AAAA incorrecte" },
+					f_date_fin   : { required:"date manquante" , dateITA:"date JJ/MM/AAAA incorrecte" }
+				},
+				errorElement : "label",
+				errorClass : "erreur",
+				errorPlacement : function(error,element)
+				{
+					if(element.is("select")) {element.after(error);}
+					else if(element.attr("type")=="text") {element.next().after(error);}
+				}
+			}
+		);
+
+		// Options d'envoi du formulaire (avec jquery.form.js)
+		var ajaxOptions0 =
+		{
+			url : 'ajax.php?page='+PAGE,
+			type : 'POST',
+			dataType : "html",
+			clearForm : false,
+			resetForm : false,
+			target : "#ajax_msg0",
+			beforeSubmit : test_form_avant_envoi0,
+			error : retour_form_erreur0,
+			success : retour_form_valide0
+		};
+
+		// Envoi du formulaire (avec jquery.form.js)
+		formulaire0.submit
+		(
+			function()
+			{
+				$(this).ajaxSubmit(ajaxOptions0);
+				return false;
+			}
+		); 
+
+		// Fonction précédent l'envoi du formulaire (avec jquery.form.js)
+		function test_form_avant_envoi0(formData, jqForm, options)
+		{
+			$('#ajax_msg0').removeAttr("class").html("&nbsp;");
+			var readytogo = validation0.form();
+			if(readytogo)
+			{
+				$('#ajax_msg0').removeAttr("class").addClass("loader").html("Connexion au serveur&hellip;");
+			}
+			return readytogo;
+		}
+
+		// Fonction suivant l'envoi du formulaire (avec jquery.form.js)
+		function retour_form_erreur0(msg,string)
+		{
+			$('#ajax_msg0').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
+		}
+
+		// Fonction suivant l'envoi du formulaire (avec jquery.form.js)
+		function retour_form_valide0(responseHTML)
+		{
+			initialiser_compteur();
+			if( (responseHTML.substring(0,4)!='<tr>') && (responseHTML!='<SCRIPT>') )
+			{
+				$('#ajax_msg0').removeAttr("class").addClass("alerte").html(responseHTML);
+			}
+			else
+			{
+				$('#ajax_msg0').removeAttr("class").addClass("valide").html("Demande réalisée !").fadeOut(3000,function(){$(this).removeAttr("class").html("").show();});
+				var position_script = responseHTML.lastIndexOf('<SCRIPT>');
+				$('table.form tbody').html( responseHTML.substring(0,position_script) );
+				eval( responseHTML.substring(position_script+8) );
+				trier_tableau();
+				afficher_masquer_images_action('show');
+				infobulle();
+				if( reception_todo )
+				{
+					$('q.ajouter').click();
+				}
+			}
+		}
+
 		// N'afficher les formulaire qu'une fois le js bien chargé...
 		$('#form0 , #form1').show('fast');
+
+		// Et charger par défaut les dernières évaluations du prof.
+		$('#form0').submit();
 
 	}
 );

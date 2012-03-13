@@ -294,12 +294,13 @@ public function DB_lister_devoirs_prof($prof_id,$groupe_id,$date_debut_mysql,$da
 {
 	// DB::query(SACOCHE_STRUCTURE_BD_NAME , 'SET group_concat_max_len = ...'); // Pour lever si besoin une limitation de GROUP_CONCAT (group_concat_max_len est par défaut limité à une chaine de 1024 caractères).
 	// Il faut ajouter dans la requête des "DISTINCT" sinon la liaison avec "sacoche_jointure_user_groupe" duplique tout x le nb d'élèves associés pour une évaluation sur une sélection d'élèves.
-	$DB_SQL = 'SELECT sacoche_devoir.*, groupe_type, groupe_nom, ';
-	$DB_SQL.= 'GROUP_CONCAT(DISTINCT item_id SEPARATOR "_") AS items_listing, COUNT(DISTINCT item_id) AS items_nombre ';
+	$DB_SQL = 'SELECT sacoche_devoir.*, ';
+	$DB_SQL.= 'GROUP_CONCAT(DISTINCT item_id SEPARATOR "_") AS items_listing, COUNT(DISTINCT item_id) AS items_nombre, ';
 	if(!$groupe_id)
 	{
-		$DB_SQL .= ', '.'GROUP_CONCAT(DISTINCT user_id SEPARATOR "_") AS users_listing, COUNT(DISTINCT user_id) AS users_nombre ';
+		$DB_SQL .= 'GROUP_CONCAT(DISTINCT user_id SEPARATOR "_") AS users_listing, COUNT(DISTINCT user_id) AS users_nombre, ';
 	}
+	$DB_SQL.= 'groupe_type, groupe_nom ';
 	$DB_SQL.= 'FROM sacoche_devoir ';
 	$DB_SQL.= 'LEFT JOIN sacoche_jointure_devoir_item USING (devoir_id) ';
 	$DB_SQL.= 'LEFT JOIN sacoche_groupe USING (groupe_id) ';
@@ -344,13 +345,15 @@ public function DB_lister_devoirs_prof_groupe_sans_infos_last($prof_id,$groupe_i
  * Retourner les items d'un devoir
  *
  * @param int   $devoir_id
- * @param bool  $with_lien (FALSE par défaut)
+ * @param bool  $with_lien
+ * @param bool  $with_coef
  * @return array
  */
-public function DB_lister_items_devoir($devoir_id,$with_lien=FALSE)
+public function DB_lister_items_devoir($devoir_id,$with_lien,$with_coef)
 {
 	$DB_SQL = 'SELECT item_id, item_nom, entree_id, ';
 	$DB_SQL.= ($with_lien) ? 'item_lien, ' : '' ;
+	$DB_SQL.= ($with_coef) ? 'item_coef, ' : '' ;
 	$DB_SQL.= 'CONCAT(matiere_ref,".",niveau_ref,".",domaine_ref,theme_ordre,item_ordre) AS item_ref ';
 	$DB_SQL.= 'FROM sacoche_jointure_devoir_item ';
 	$DB_SQL.= 'LEFT JOIN sacoche_referentiel_item USING (item_id) ';
@@ -378,10 +381,7 @@ public function DB_lister_saisies_devoir($devoir_id,$with_REQ)
 	$DB_SQL.= 'FROM sacoche_saisie ';
 	$DB_SQL.= 'LEFT JOIN sacoche_user ON sacoche_saisie.eleve_id=sacoche_user.user_id ';
 	$DB_SQL.= 'WHERE devoir_id=:devoir_id AND user_statut=:statut ';
-	if(!$with_REQ)
-	{
-		$DB_SQL.= 'AND saisie_note!="REQ" ';
-	}
+	$DB_SQL.= ($with_REQ) ? '' : 'AND saisie_note!="REQ" ' ;
 	$DB_VAR = array(':devoir_id'=>$devoir_id,':statut'=>1);
 	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
@@ -487,15 +487,18 @@ public function DB_ajouter_groupe_par_prof($groupe_type,$groupe_nom,$niveau_id)
  * @param string $date_mysql
  * @param string $info
  * @param string $date_visible_mysql
+ * @param string $date_autoeval_mysql
+ * @param string $doc_sujet
+ * @param string $doc_corrige
  * @param string $tab_id_profs   tableau des id des profs avec qui l'évaluation est partagée ; facultatif car non transmis si éval sur des élèves sélectionnés
  * @return int
  */
-public function DB_ajouter_devoir($prof_id,$groupe_id,$date_mysql,$info,$date_visible_mysql,$tab_id_profs=array())
+public function DB_ajouter_devoir($prof_id,$groupe_id,$date_mysql,$info,$date_visible_mysql,$date_autoeval_mysql,$doc_sujet,$doc_corrige,$tab_id_profs=array())
 {
 	$listing_id_profs = count($tab_id_profs) ? ','.implode(',',$tab_id_profs).',' : '' ;
-	$DB_SQL = 'INSERT INTO sacoche_devoir(prof_id,groupe_id,devoir_date,devoir_info,devoir_visible_date,devoir_partage) ';
-	$DB_SQL.= 'VALUES(:prof_id,:groupe_id,:date,:info,:visible_date,:devoir_partage)';
-	$DB_VAR = array(':prof_id'=>$prof_id,':groupe_id'=>$groupe_id,':date'=>$date_mysql,':info'=>$info,':visible_date'=>$date_visible_mysql,':devoir_partage'=>$listing_id_profs);
+	$DB_SQL = 'INSERT INTO sacoche_devoir(prof_id,groupe_id,devoir_date,devoir_info,devoir_visible_date,devoir_autoeval_date,devoir_partage,devoir_doc_sujet,devoir_doc_corrige) ';
+	$DB_SQL.= 'VALUES(:prof_id,:groupe_id,:devoir_date,:devoir_info,:devoir_visible_date,:devoir_autoeval_date,:devoir_partage,:devoir_doc_sujet,:devoir_doc_corrige)';
+	$DB_VAR = array(':prof_id'=>$prof_id,':groupe_id'=>$groupe_id,':devoir_date'=>$date_mysql,':devoir_info'=>$info,':devoir_visible_date'=>$date_visible_mysql,':devoir_autoeval_date'=>$date_autoeval_mysql,':devoir_partage'=>$listing_id_profs,':devoir_doc_sujet'=>$doc_sujet,':devoir_doc_corrige'=>$doc_corrige);
 	DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 	return DB::getLastOid(SACOCHE_STRUCTURE_BD_NAME);
 }
@@ -624,18 +627,20 @@ public function DB_modifier_selection_items($selection_item_id,$selection_item_n
  * @param string $date_mysql
  * @param string $info
  * @param string $date_visible_mysql
- * @param array  $tab_items      tableau des id des items
+ * @param string $date_autoeval_mysql
+ * @param string $doc_sujet
+ * @param string $doc_corrige
  * @param string $tab_id_profs   tableau des id des profs avec qui l'évaluation est partagée ; facultatif car non transmis si éval sur des élèves sélectionnés
  * @return void
  */
-public function DB_modifier_devoir($devoir_id,$prof_id,$date_mysql,$info,$date_visible_mysql,$tab_items,$tab_id_profs=array())
+public function DB_modifier_devoir($devoir_id,$prof_id,$date_mysql,$info,$date_visible_mysql,$date_autoeval_mysql,$doc_sujet,$doc_corrige,$tab_id_profs=array())
 {
 	$listing_id_profs = count($tab_id_profs) ? ','.implode(',',$tab_id_profs).',' : '' ;
 	// sacoche_devoir (maj)
 	$DB_SQL = 'UPDATE sacoche_devoir ';
-	$DB_SQL.= 'SET devoir_date=:date, devoir_info=:devoir_info, devoir_visible_date=:visible_date, devoir_partage=:devoir_partage ';
+	$DB_SQL.= 'SET devoir_date=:date, devoir_info=:devoir_info, devoir_visible_date=:visible_date, devoir_autoeval_date=:autoeval_date, devoir_partage=:devoir_partage , devoir_doc_sujet=:devoir_doc_sujet , devoir_doc_corrige=:devoir_doc_corrige ';
 	$DB_SQL.= 'WHERE devoir_id=:devoir_id AND prof_id=:prof_id ';
-	$DB_VAR = array(':date'=>$date_mysql,':devoir_info'=>$info,':visible_date'=>$date_visible_mysql,':devoir_partage'=>$listing_id_profs,':devoir_id'=>$devoir_id,':prof_id'=>$prof_id);
+	$DB_VAR = array(':date'=>$date_mysql,':devoir_info'=>$info,':visible_date'=>$date_visible_mysql,':autoeval_date'=>$date_autoeval_mysql,':devoir_partage'=>$listing_id_profs,':devoir_doc_sujet'=>$doc_sujet,':devoir_doc_corrige'=>$doc_corrige,':devoir_id'=>$devoir_id,':prof_id'=>$prof_id);
 	DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 	// sacoche_saisie (maj)
 	$saisie_info = $info.' ('.$_SESSION['USER_NOM'].' '.$_SESSION['USER_PRENOM']{0}.'.)';
@@ -643,6 +648,24 @@ public function DB_modifier_devoir($devoir_id,$prof_id,$date_mysql,$info,$date_v
 	$DB_SQL.= 'SET saisie_date=:date, saisie_info=:saisie_info, saisie_visible_date=:visible_date ';
 	$DB_SQL.= 'WHERE prof_id=:prof_id AND devoir_id=:devoir_id ';
 	$DB_VAR = array(':prof_id'=>$prof_id,':devoir_id'=>$devoir_id,':date'=>$date_mysql,':saisie_info'=>$saisie_info,':visible_date'=>$date_visible_mysql);
+	DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+}
+
+/**
+ * modifier_devoir_document
+ *
+ * @param int    $devoir_id
+ * @param int    $prof_id
+ * @param string $objet   'sujet' | 'corrige'
+ * @param string $fichier_nom
+ * @return void
+ */
+public function DB_modifier_devoir_document($devoir_id,$prof_id,$objet,$fichier_nom)
+{
+	$DB_SQL = 'UPDATE sacoche_devoir ';
+	$DB_SQL.= 'SET devoir_doc_'.$objet.'=:fichier_nom ';
+	$DB_SQL.= 'WHERE devoir_id=:devoir_id AND prof_id=:prof_id ';
+	$DB_VAR = array(':fichier_nom'=>$fichier_nom,':devoir_id'=>$devoir_id,':prof_id'=>$prof_id);
 	DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 

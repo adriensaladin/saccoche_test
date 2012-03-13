@@ -54,10 +54,8 @@ $tab_droits['public_logout_SSO']                       = $tab_droits_profil_publ
 $tab_droits['eleve_eval_demande']                      = $tab_droits_profil_eleve;
 $tab_droits['eleve_eval_demande_ajout']                = $tab_droits_profil_eleve;
 // Profil professeur
-$tab_droits['professeur_eval']                         = $tab_droits_profil_professeur;
 $tab_droits['professeur_eval_demande']                 = $tab_droits_profil_professeur;
-$tab_droits['professeur_eval_groupe']                  = $tab_droits_profil_professeur;
-$tab_droits['professeur_eval_select']                  = $tab_droits_profil_professeur;
+$tab_droits['professeur_eval_saisie']                  = $tab_droits_profil_professeur;
 $tab_droits['professeur_groupe_besoin']                = $tab_droits_profil_professeur;
 $tab_droits['professeur_referentiel']                  = $tab_droits_profil_professeur;
 $tab_droits['professeur_referentiel_gestion']          = $tab_droits_profil_professeur;

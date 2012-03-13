@@ -28,9 +28,10 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 if($_SESSION['SESAMATH_ID']==ID_DEMO) {exit('Action désactivée pour la démo...');}
 
-$action        = (isset($_POST['f_action'])) ? clean_texte($_POST['f_action'])  : '';
-$selection_id  = (isset($_POST['f_id']))     ? clean_entier($_POST['f_id'])     : 0;
-$selection_nom = (isset($_POST['f_nom']))    ? clean_texte($_POST['f_nom'])     : '';
+$action        = (isset($_POST['f_action']))  ? clean_texte($_POST['f_action'])  : '';
+$selection_id  = (isset($_POST['f_id']))      ? clean_entier($_POST['f_id'])     : 0;
+$selection_nom = (isset($_POST['f_nom']))     ? clean_texte($_POST['f_nom'])     : '';
+$origine       = (isset($_POST['f_origine'])) ? clean_texte($_POST['f_origine']) : '';
 
 // Contrôler la liste des items transmis
 $tab_items = (isset($_POST['f_compet_liste'])) ? explode('_',$_POST['f_compet_liste']) : array() ;
@@ -42,7 +43,7 @@ $nb_items = count($tab_items);
 //	Ajouter une nouvelle sélection d'items
 //	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-if( ($action=='ajouter') && $selection_nom && $nb_items )
+if( ($action=='ajouter') && $selection_nom && $nb_items && $origine )
 {
 	// Vérifier que le nom de la sélection d'items est disponible
 	if( DB_STRUCTURE_PROFESSEUR::DB_tester_selection_items_nom($_SESSION['USER_ID'],$selection_nom) )
@@ -52,17 +53,24 @@ if( ($action=='ajouter') && $selection_nom && $nb_items )
 	// Insérer l'enregistrement ; y associe automatiquement le prof, en responsable du groupe
 	$selection_id = DB_STRUCTURE_PROFESSEUR::DB_ajouter_selection_items($_SESSION['USER_ID'],$selection_nom,$tab_items);
 	// Afficher le retour
-	$items_texte  = ($nb_items>1) ? $nb_items.' élèves' : '1 élève' ;
-	echo'<tr id="id_'.$selection_id.'" class="new">';
-	echo	'<td>'.html($selection_nom).'</td>';
-	echo	'<td>'.$items_texte.'</td>';
-	echo	'<td class="nu">';
-	echo		'<q class="modifier" title="Modifier cette sélection d\'items."></q>';
-	echo		'<q class="supprimer" title="Supprimer cette sélection d\'items."></q>';
-	echo	'</td>';
-	echo'</tr>';
-	echo'<SCRIPT>';
-	echo'tab_items["'.$selection_id.'"]="'.implode('_',$tab_items).'";';
+	if($origine==$PAGE)
+	{
+		$items_texte  = ($nb_items>1) ? $nb_items.' items' : '1 item' ;
+		echo'<tr id="id_'.$selection_id.'" class="new">';
+		echo	'<td>'.html($selection_nom).'</td>';
+		echo	'<td>'.$items_texte.'</td>';
+		echo	'<td class="nu">';
+		echo		'<q class="modifier" title="Modifier cette sélection d\'items."></q>';
+		echo		'<q class="supprimer" title="Supprimer cette sélection d\'items."></q>';
+		echo	'</td>';
+		echo'</tr>';
+		echo'<SCRIPT>';
+		echo'tab_items["'.$selection_id.'"]="'.implode('_',$tab_items).'";';
+	}
+	else
+	{
+		echo'<option value="'.implode('_',$tab_items).'">'.html($selection_nom).'</option>';
+	}
 	exit();
 }
 

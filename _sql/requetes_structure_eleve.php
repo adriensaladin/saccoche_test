@@ -69,6 +69,21 @@ public function DB_recuperer_item_infos($item_id)
 }
 
 /**
+ * Lister les évaluations concernant un élève sur une période donnée
+ *
+ * @param int    $devoir_id
+ * @return array
+ */
+public function DB_recuperer_devoir_infos($devoir_id)
+{
+	$DB_SQL = 'SELECT prof_id , devoir_date , devoir_info , devoir_visible_date , devoir_autoeval_date , devoir_partage ';
+	$DB_SQL.= 'FROM sacoche_devoir ';
+	$DB_SQL.= 'WHERE devoir_id=:devoir_id ';
+	$DB_VAR = array(':devoir_id'=>$devoir_id);
+	return DB::queryRow(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+}
+
+/**
  * Retourner une liste de professeurs attachés à un élève identifié et une matière donnée.
  *
  * @param int $eleve_id
@@ -228,13 +243,15 @@ public function DB_lister_items_devoir_avec_infos_pour_eleves($devoir_id)
  *
  * @param int   $devoir_id
  * @param int   $eleve_id
+ * @param bool  $with_REQ   // Avec ou sans les repères de demandes d'évaluations
  * @return array
  */
-public function DB_lister_saisies_devoir_eleve($devoir_id,$eleve_id)
+public function DB_lister_saisies_devoir_eleve($devoir_id,$eleve_id,$with_REQ)
 {
 	$DB_SQL = 'SELECT item_id, saisie_note ';
 	$DB_SQL.= 'FROM sacoche_saisie ';
-	$DB_SQL.= 'WHERE devoir_id=:devoir_id AND eleve_id=:eleve_id AND saisie_note!="REQ" ';
+	$DB_SQL.= 'WHERE devoir_id=:devoir_id AND eleve_id=:eleve_id ';
+	$DB_SQL.= ($with_REQ) ? '' : 'AND saisie_note!="REQ" ' ;
 	$DB_VAR = array(':devoir_id'=>$devoir_id,':eleve_id'=>$eleve_id);
 	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }

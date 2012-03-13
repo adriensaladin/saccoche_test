@@ -47,7 +47,7 @@ if( $step==1 )
 	// Création des sous-dossiers, et vérification de leur accès en éciture
 	if($poursuivre)
 	{
-		$tab_dossier = array('./__private/config','./__private/log','./__private/mysql','./__tmp/badge','./__tmp/cookie','./__tmp/dump-base','./__tmp/export','./__tmp/import','./__tmp/login-mdp','./__tmp/logo','./__tmp/rss');
+		$tab_dossier = array('./__private/config','./__private/log','./__private/mysql','./__tmp/badge','./__tmp/cookie','./__tmp/devoir','./__tmp/dump-base','./__tmp/export','./__tmp/import','./__tmp/login-mdp','./__tmp/logo','./__tmp/rss');
 		foreach($tab_dossier as $dossier)
 		{
 			$poursuivre = $poursuivre && Creer_Dossier($dossier);
@@ -67,7 +67,7 @@ if( $step==2 )
 {
 	// Création des fichiers index.htm
 	$poursuivre1 = true;
-	$tab_dossier = array('badge','cookie','dump-base','export','import','login-mdp','logo','rss');
+	$tab_dossier = array('badge','cookie','devoir','dump-base','export','import','login-mdp','logo','rss');
 	foreach($tab_dossier as $dossier)
 	{
 		@umask(0000); // Met le chmod à 666 - 000 = 666 pour les fichiers prochains fichiers créés (et à 777 - 000 = 777 pour les dossiers).
@@ -417,18 +417,18 @@ if( $step==6 )
 			// Insérer un compte administrateur dans la base de la structure
 			$password = fabriquer_mdp();
 			$user_id = DB_STRUCTURE_COMMUN::DB_ajouter_utilisateur($user_sconet_id=0,$user_sconet_elenoet=0,$reference='','administrateur',WEBMESTRE_NOM,WEBMESTRE_PRENOM,$login='admin',crypter_mdp($password),$classe_id=0,$id_ent='',$id_gepi='');
-			// Créer les dossiers de fichiers temporaires par établissement : vignettes verticales, flux RSS des demandes, cookies des choix de formulaires
+			// Créer les dossiers de fichiers temporaires par établissement : vignettes verticales, flux RSS des demandes, cookies des choix de formulaires, sujets et corrigés de devoirs
 			/*
 				Petit problème : on ne passe pas par ici si la base est existante mais les fichiers effacés... donc dans ce cas ce dossier n'est pas recréé...
 				De même, en multi-structures, il faudrait tester la présence de tous les dossiers éventuels...
 				Peut-être qu'une étape supplémentaire serait bienvenue, même si dans ce cas on n'a plus ensuite les identifiants admin sous les yeux...
 			*/
-			Creer_Dossier('./__tmp/badge/'.'0');
-			Ecrire_Fichier('./__tmp/badge/'.'0'.'/index.htm','Circulez, il n\'y a rien à voir par ici !');
-			Creer_Dossier('./__tmp/cookie/'.'0');
-			Ecrire_Fichier('./__tmp/cookie/'.'0'.'/index.htm','Circulez, il n\'y a rien à voir par ici !');
-			Creer_Dossier('./__tmp/rss/'.'0');
-			Ecrire_Fichier('./__tmp/rss/'.'0'.'/index.htm','Circulez, il n\'y a rien à voir par ici !');
+			$tab_sous_dossier = array('badge','cookie','devoir','rss');
+			foreach($tab_sous_dossier as $sous_dossier)
+			{
+				Creer_Dossier('./__tmp/'.$sous_dossier.'/'.'0');
+				Ecrire_Fichier('./__tmp/'.$sous_dossier.'/'.'0'.'/index.htm','Circulez, il n\'y a rien à voir par ici !');
+			}
 			// Affichage du retour
 			$affichage .= '<p><label class="valide">Les tables de la base de données ont été installées.</label></p>'."\r\n";
 			$affichage .= '<span class="astuce">Le premier compte administrateur a été créé avec votre identité :</span>'."\r\n";

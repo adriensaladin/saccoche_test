@@ -32,7 +32,7 @@ $(document).ready
 
 		// tri du 1er tableau (avec jquery.tablesorter.js).
 		var sorting = [[0,1]];
-		$('table.form').tablesorter({ headers:{3:{sorter:false}} });
+		$('table.form').tablesorter({ headers:{3:{sorter:false},4:{sorter:false}} });
 		function trier_tableau()
 		{
 			if($('table.form tbody tr td').length>1)
@@ -116,7 +116,6 @@ $(document).ready
 				$("#actualiser").prop('disabled',true);
 				$('#ajax_msg').removeAttr("class").addClass("loader").html("Connexion au serveur&hellip;");
 				$('#zone_eval_choix').hide();
-				$('#zone_eval_detail').hide();
 			}
 			return readytogo;
 		}
@@ -135,12 +134,14 @@ $(document).ready
 			$("#actualiser").prop('disabled',false);
 			if(responseHTML.substring(0,4)=='<tr>')
 			{
+				var position_script = responseHTML.lastIndexOf('<SCRIPT>');
 				$('#ajax_msg').removeAttr("class").addClass("valide").html("Demande réalisée !");
-				$('table.form tbody').html(responseHTML);
+				$('table.form tbody').html( responseHTML.substring(0,position_script) );
 				trier_tableau();
 				infobulle();
 				$('#zone_eval_choix h2').html($('#f_eleve option:selected').text());
 				$('#zone_eval_choix').show();
+				eval( responseHTML.substring(position_script+8) );
 			}
 			else
 			{
@@ -162,7 +163,6 @@ $(document).ready
 			{
 				$('#ajax_msg').removeAttr("class").html('');
 				$('#zone_eval_choix').hide();
-				$('#zone_eval_detail').hide();
 			}
 		}
 
@@ -180,18 +180,17 @@ $(document).ready
 //	Clic sur l'image pour Voir les notes saisies à un devoir
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
-		$('table.form q.voir').live // live est utilisé pour prendre en compte les nouveaux éléments créés
+		$('#zone_eval_choix q.voir').live // live est utilisé pour prendre en compte les nouveaux éléments créés
 		('click',
 			function()
 			{
-				td_id = $(this).parent().attr('id');
-				devoir_id = td_id.substr(7);
-				texte_info = $(this).parent().prev().html();
-				texte_prof = $(this).parent().prev().prev().html();
-				texte_date = $(this).parent().prev().prev().prev().html();
-				texte_date = texte_date.substring(17,texte_date.length); // enlever la date mysql cachée
+				var td_id = $(this).parent().attr('id');
+				var devoir_id = td_id.substr(7);
+				var texte_info = $(this).parent().prev().prev().html();
+				var texte_prof = $(this).parent().prev().prev().prev().html();
+				var texte_date = $(this).parent().prev().prev().prev().prev().html();
+				var date_fr    = texte_date.substring(17,texte_date.length); // enlever la date mysql cachée
 				$('#zone_eval_choix q').hide();	// Pas afficher_masquer_images_action() à cause des <q> pour le choix d'une date
-				$('#zone_eval_detail').hide();
 				new_label = '<label for="'+td_id+'" class="loader">Connexion au serveur&hellip;</label>';
 				$(this).after(new_label);
 				$.ajax
@@ -216,18 +215,157 @@ $(document).ready
 							}
 							else
 							{
-								$('#titre_voir').html('Devoir du ' + texte_date + ' par ' + texte_prof + ' [ ' + texte_info + ' ]');
+								$('#titre_voir').html('Devoir du ' + date_fr + ' par ' + texte_prof + ' [ ' + texte_info + ' ]');
 								$('#table_voir tbody').html(responseHTML);
 								format_liens('#table_voir');
 								trier_tableau2();
 								infobulle();
-								$.fancybox( { 'href':'#zone_eval_detail' , onStart:function(){$('#zone_eval_detail').css("display","block");} , onClosed:function(){$('#zone_eval_detail').css("display","none");} , 'margin':0 , 'centerOnScroll':true } );
+								$.fancybox( { 'href':'#zone_eval_voir' , onStart:function(){$('#zone_eval_voir').css("display","block");} , onClosed:function(){$('#zone_eval_voir').css("display","none");} , 'margin':0 , 'centerOnScroll':true } );
 							}
 							$('label[for='+td_id+']').remove();
 							$('#zone_eval_choix q').show();
 						}
 					}
 				);
+			}
+		);
+
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+//	Clic sur l'image pour Saisir les notes d'un devoir (auto-évaluation)
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
+		$('#zone_eval_choix q.saisir').live // live est utilisé pour prendre en compte les nouveaux éléments créés
+		('click',
+			function()
+			{
+				var td_id = $(this).parent().attr('id');
+				var devoir_id = td_id.substr(7);
+				var texte_info = $(this).parent().prev().prev().html();
+				var texte_prof = $(this).parent().prev().prev().prev().html();
+				var texte_date = $(this).parent().prev().prev().prev().prev().html();
+				var date_fr    = texte_date.substring(17,texte_date.length); // enlever la date mysql cachée
+				$('#zone_eval_choix q').hide();	// Pas afficher_masquer_images_action() à cause des <q> pour le choix d'une date
+				$('#zone_eval_saisir').hide();
+				new_label = '<label for="'+td_id+'" class="loader">Connexion au serveur&hellip;</label>';
+				$(this).after(new_label);
+				$.ajax
+				(
+					{
+						type : 'POST',
+						url : 'ajax.php?page='+PAGE,
+						data : 'f_action=Saisir_notes&f_eleve='+$('#f_eleve option:selected').val()+'&f_devoir='+devoir_id,
+						dataType : "html",
+						error : function(msg,string)
+						{
+							$.fancybox( '<label class="alerte">'+'Echec de la connexion !'+'</label>' , {'centerOnScroll':true} );
+							$('label[for='+td_id+']').remove();
+							$('#zone_eval_choix q').show();
+						},
+						success : function(responseHTML)
+						{
+							initialiser_compteur();
+							if(responseHTML.substring(0,4)!='<tr>')
+							{
+								$.fancybox( '<label class="alerte">'+responseHTML+'</label>' , {'centerOnScroll':true} );
+							}
+							else
+							{
+								$('#titre_saisir').html('Devoir du ' + date_fr + ' par ' + texte_prof + ' [ ' + texte_info + ' ]');
+								$('#report_date').html(tab_dates[devoir_id]);
+								$('#fermer_zone_saisir').removeAttr("class").addClass("retourner").html('Retour');
+								$('#msg_saisir').removeAttr("class").html("");
+								$('#f_devoir').val(devoir_id);
+								$('#table_saisir tbody').html(responseHTML);
+								format_liens('#table_saisir');
+								trier_tableau2();
+								infobulle();
+								$.fancybox( { 'href':'#zone_eval_saisir' , onStart:function(){$('#zone_eval_saisir').css("display","block");} , onClosed:function(){$('#zone_eval_saisir').css("display","none");} , 'margin':0 , 'modal':true , 'centerOnScroll':true } );
+							}
+							$('label[for='+td_id+']').remove();
+							$('#zone_eval_choix q').show();
+						}
+					}
+				);
+			}
+		);
+
+		//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+		//	Réagir à la modification d'une note
+		//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
+		var modification = false;
+
+		$("#table_saisir input[type=radio]").live
+		('change',
+			function()
+			{
+				modification = true;
+				$('#fermer_zone_saisir').removeAttr("class").addClass("annuler").html('Annuler / Retour');
+				$('#msg_saisir').removeAttr("class").html("");
+			}
+		);
+
+		//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+		//	Clic sur le bouton pour fermer le formulaire servant à saisir les acquisitions à une évaluation
+		//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
+		$('#fermer_zone_saisir').click
+		(
+			function()
+			{
+				modification = false;
+				$.fancybox.close();
+			}
+		);
+
+		//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+		//	Clic sur le lien pour mettre à jour les acquisitions à une évaluation
+		//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
+		$('#Enregistrer_saisie').click // live est utilisé pour prendre en compte les nouveaux éléments créés
+		(
+			function()
+			{
+				if(modification==false)
+				{
+					$('#msg_saisir').removeAttr("class").addClass("alerte").html("Aucune modification effectuée !");
+				}
+				else
+				{
+					$('button').prop('disabled',true);
+					$('#msg_saisir').removeAttr("class").addClass("loader").html("Connexion au serveur&hellip;");
+					// On ne risque pas de problème dû à une limitation du module "suhosin" pour un seul élève (nb champs envoyés = nb items + 1).
+					$.ajax
+					(
+						{
+							type : 'POST',
+							url : 'ajax.php?page='+PAGE,
+							data : 'f_action=Enregistrer_saisies'+'&'+$('#zone_eval_saisir').serialize(),
+							dataType : "html",
+							error : function(msg,string)
+							{
+								$('button').prop('disabled',false);
+								$('#msg_saisir').removeAttr("class").addClass("alerte").html('Echec de la connexion !');
+								return false;
+							},
+							success : function(responseHTML)
+							{
+								initialiser_compteur();
+								$('button').prop('disabled',false);
+								if(responseHTML!='ok')
+								{
+									$('#msg_saisir').removeAttr("class").addClass("alerte").html(responseHTML);
+								}
+								else
+								{
+									modification = false;
+									$('#msg_saisir').removeAttr("class").addClass("valide").html("Saisies enregistrées !");
+									$('#fermer_zone_saisir').removeAttr("class").addClass("retourner").html('Retour');
+								}
+							}
+						}
+					);
+				}
 			}
 		);
 

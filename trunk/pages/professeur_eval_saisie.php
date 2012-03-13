@@ -26,20 +26,9 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-$TITRE = "Évaluer des élèves sélectionnés";
-
-require('./_inc/fonction_affichage_sections_communes.php');
-
-// Dates par défaut de début et de fin
-$date_debut  = date("d/m/Y",mktime(0,0,0,date("m")-2,date("d"),date("Y"))); // 2 mois avant
-$date_fin    = date("d/m/Y",mktime(0,0,0,date("m")+1,date("d"),date("Y"))); // 1 mois après
-// Date de début d'année scolaire
-$annee = ($_SESSION['MOIS_BASCULE_ANNEE_SCOLAIRE']<date("n")) ? date("Y") : date("Y")-1 ;
-$date_start = '01/'.sprintf("%02u",$_SESSION['MOIS_BASCULE_ANNEE_SCOLAIRE']).'/'.$annee;
-
-$select_selection_items = Formulaire::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_selection_items($_SESSION['USER_ID']) , $select_nom='f_selection_items' , $option_first='oui' , $selection=false , $optgroup='non');
 
 // Réception d'un formulaire depuis un tableau de synthèse bilan
+// Dans ce cas il s'agit d'une évaluation sur une sélection d'élèves.
 $tab_items = ( isset($_POST['id_item']) && is_array($_POST['id_item']) ) ? $_POST['id_item'] : array() ;
 $tab_items = array_map('clean_entier',$tab_items);
 $tab_items = array_filter($tab_items,'positif');
@@ -56,7 +45,102 @@ $script_reception.= 'var reception_items_texte = "'.$txt_items.'";';
 $script_reception.= 'var reception_users_texte = "'.$txt_users.'";';
 $script_reception.= 'var reception_items_liste = "'.implode('_',$tab_items).'";';
 $script_reception.= 'var reception_users_liste = "'.implode('_',$tab_users).'";';
+
+// $TYPE vaut "groupe" ou "selection"
+$TYPE = ($nb_items || $nb_users)                    ? 'selection' : $SECTION ;
+$TYPE = in_array($TYPE,array('groupe','selection')) ? $TYPE       : 'groupe' ;
+
+$TITRE = ($TYPE=='groupe') ? "Évaluer une classe ou un groupe" : "Évaluer des élèves sélectionnés" ;
+
+require('./_inc/fonction_affichage_sections_communes.php');
+
+// Formulaires de choix des élèves et de choix d'une période dans le cas d'une évaluation sur un groupe
+$select_eleve   = '';
+$select_periode = '';
+$tab_niveau_js  = 'var tab_niveau = new Array();';
+$tab_groupe_js  = 'var tab_groupe = new Array();';
+$tab_groupe_periode_js = 'var tab_groupe_periode = new Array();';
+if($TYPE=='groupe')
+{
+	// Élément de formulaire "f_aff_classe" pour le choix des élèves (liste des classes / groupes / besoins) du professeur, enregistré dans une variable javascript pour utilisation suivant le besoin, et utilisé pour un tri initial
+	// Fabrication de tableaux javascript "tab_niveau" et "tab_groupe" indiquant le niveau et le nom d'un groupe
+	$tab_id_classe_groupe = array();
+	$DB_TAB = DB_STRUCTURE_PROFESSEUR::DB_lister_groupes_professeur($_SESSION['USER_ID']);
+	$tab_options = array('classe'=>'','groupe'=>'','besoin'=>'');
+	foreach($DB_TAB as $DB_ROW)
+	{
+		$groupe = strtoupper($DB_ROW['groupe_type']{0}).$DB_ROW['groupe_id'];
+		$tab_options[$DB_ROW['groupe_type']] .= '<option value="'.$groupe.'">'.html($DB_ROW['groupe_nom']).'</option>';
+		$tab_niveau_js .= 'tab_niveau["'.$groupe.'"]="'.sprintf("%02u",$DB_ROW['niveau_ordre']).'";';
+		$tab_groupe_js .= 'tab_groupe["'.$groupe.'"]="'.html($DB_ROW['groupe_nom']).'";';
+		if($DB_ROW['groupe_type']!='besoin')
+		{
+			$tab_id_classe_groupe[] = $DB_ROW['groupe_id'];
+		}
+	}
+	foreach($tab_options as $type => $contenu)
+	{
+		if($contenu)
+		{
+			$select_eleve .= '<optgroup label="'.ucwords($type).'s">'.$contenu.'</optgroup>';
+		}
+	}
+	// Élément de formulaire "f_aff_periode" pour le choix d'une période
+	$select_periode = Formulaire::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_periodes_etabl() , $select_nom='f_aff_periode' , $option_first='val' , $selection=false , $optgroup='non');
+	// On désactive les périodes prédéfinies pour le choix "toute classe / tout groupe" initialement sélectionné
+	$select_periode = preg_replace( '#'.'value="([1-9].*?)"'.'#' , 'value="$1" disabled' , $select_periode );
+	// Fabrication du tableau javascript "tab_groupe_periode" pour les jointures groupes/périodes
+	if(count($tab_id_classe_groupe))
+	{
+		$tab_memo_groupes = array();
+		$DB_TAB = DB_STRUCTURE_COMMUN::DB_lister_jointure_groupe_periode($listing_groupe_id = implode(',',$tab_id_classe_groupe));
+		foreach($DB_TAB as $DB_ROW)
+		{
+			if(!isset($tab_memo_groupes[$DB_ROW['groupe_id']]))
+			{
+				$tab_memo_groupes[$DB_ROW['groupe_id']] = true;
+				$tab_groupe_periode_js .= 'tab_groupe_periode['.$DB_ROW['groupe_id'].'] = new Array();';
+			}
+			$tab_groupe_periode_js .= 'tab_groupe_periode['.$DB_ROW['groupe_id'].']['.$DB_ROW['periode_id'].']="'.$DB_ROW['jointure_date_debut'].'_'.$DB_ROW['jointure_date_fin'].'";';
+		}
+	}
+}
+
+// Date de début d'année scolaire dans le cas d'une évaluation sur une sélection d'élèves
+// Sert à rechercher des élèves ayant passés une évaluation de même nom
+if($TYPE=='selection')
+{
+	$annee = ($_SESSION['MOIS_BASCULE_ANNEE_SCOLAIRE']<date("n")) ? date("Y") : date("Y")-1 ;
+	$date_start = '01/'.sprintf("%02u",$_SESSION['MOIS_BASCULE_ANNEE_SCOLAIRE']).'/'.$annee;
+}
+
+// Dates par défaut
+$date_debut    = date("d/m/Y",mktime(0,0,0,date("m")-2,date("d"),date("Y"))); // 2 mois avant
+$date_fin      = date("d/m/Y",mktime(0,0,0,date("m")+1,date("d"),date("Y"))); // 1 mois après
+$date_autoeval = date("d/m/Y",mktime(0,0,0,date("m"),date("d")+7,date("Y"))); // 1 semaine après
+
+$select_selection_items = Formulaire::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_selection_items($_SESSION['USER_ID']) , $select_nom='f_selection_items' , $option_first='oui' , $selection=false , $optgroup='non');
 ?>
+
+<script type="text/javascript">
+	var TYPE="<?php echo $TYPE ?>";
+	// <![CDATA[
+	var select_groupe = "<?php echo str_replace('"','\"','<option value=""></option>'.$select_eleve); ?>";
+	// ]]>
+	var input_date = "<?php echo date("d/m/Y") ?>";
+	var date_mysql = "<?php echo date("Y-m-d") ?>";
+	var input_autoeval = "<?php echo $date_autoeval ?>";
+	var dossier_devoir = "./__tmp/devoir/<?php echo $_SESSION['BASE'] ?>/";
+	var tab_items    = new Array();
+	var tab_profs    = new Array();
+	var tab_eleves   = new Array();
+	var tab_sujets   = new Array();
+	var tab_corriges = new Array();
+	<?php echo $script_reception ?>
+	<?php echo $tab_niveau_js ?> 
+	<?php echo $tab_groupe_js ?> 
+	<?php echo $tab_groupe_periode_js ?> 
+</script>
 
 <ul class="puce">
 	<li><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_professeur__evaluations_gestion">DOC : Gestion des évaluations.</a></span></li>
@@ -65,11 +149,17 @@ $script_reception.= 'var reception_users_liste = "'.implode('_',$tab_users).'";'
 <hr />
 
 <form action="#" method="post" id="form0" class="hide"><fieldset>
-	<label class="tab">Période :</label>
-		du <input id="f_date_debut" name="f_date_debut" size="9" type="text" value="<?php echo $date_debut ?>" /><q class="date_calendrier" title="Cliquez sur cette image pour importer une date depuis un calendrier !"></q>
-		au <input id="f_date_fin" name="f_date_fin" size="9" type="text" value="<?php echo $date_fin ?>" /><q class="date_calendrier" title="Cliquez sur cette image pour importer une date depuis un calendrier !"></q>
-	<br />
-	<span class="tab"></span><input type="hidden" name="f_action" value="Afficher_evaluations" /><button id="actualiser" type="submit" class="actualiser">Actualiser l'affichage.</button><label id="ajax_msg0">&nbsp;</label>
+<?php if($TYPE=='groupe'): ?>
+	<label class="tab" for="f_aff_classe">Classe / groupe :</label><select id="f_aff_classe" name="f_aff_classe"><option value="d2">Toute classe / tout groupe</option><?php echo $select_eleve ?></select>
+<?php endif; ?>
+	<div id="zone_periodes">
+		<label class="tab" for="f_aff_periode">Période :</label><?php echo $select_periode ?>
+		<span id="dates_perso" class="show">
+			du <input id="f_date_debut" name="f_date_debut" size="9" type="text" value="<?php echo $date_debut ?>" /><q class="date_calendrier" title="Cliquez sur cette image pour importer une date depuis un calendrier !"></q>
+			au <input id="f_date_fin" name="f_date_fin" size="9" type="text" value="<?php echo $date_fin ?>" /><q class="date_calendrier" title="Cliquez sur cette image pour importer une date depuis un calendrier !"></q>
+		</span><br />
+		<span class="tab"></span><input type="hidden" name="f_action" value="lister_evaluations" /><input type="hidden" name="f_type" value="<?php echo $TYPE ?>" /><button id="actualiser" type="submit" class="actualiser">Actualiser l'affichage.</button><label id="ajax_msg0">&nbsp;</label>
+	</div>
 </fieldset></form>
 
 <form action="#" method="post" id="form1" class="hide">
@@ -79,10 +169,12 @@ $script_reception.= 'var reception_users_liste = "'.implode('_',$tab_users).'";'
 			<tr>
 				<th>Date devoir</th>
 				<th>Date visible</th>
-				<th>Élèves</th>
+				<th>Fin auto-éval.</th>
+				<th><?php echo($TYPE=='groupe')?'Classe / Groupe':'Élèves'; ?></th>
 				<th>Description</th>
 				<th>Items</th>
 				<th>Profs</th>
+				<th>Fichiers</th>
 				<th class="nu"><q class="ajouter" title="Ajouter une évaluation."></q></th>
 			</tr>
 		</thead>
@@ -92,13 +184,6 @@ $script_reception.= 'var reception_users_liste = "'.implode('_',$tab_users).'";'
 	</table>
 </form>
 
-<script type="text/javascript">
-	var input_date="<?php echo date("d/m/Y") ?>";
-	<?php echo $script_reception ?>
-	var tab_items  = new Array();
-	var tab_profs  = new Array();
-	var tab_eleves = new Array();
-</script>
 
 <form action="#" method="post" id="zone_matieres_items" class="arbre_dynamique arbre_check hide">
 	<div>Tout déployer / contracter : <a href="m1" class="all_extend"><img alt="m1" src="./_img/deploy_m1.gif" /></a> <a href="m2" class="all_extend"><img alt="m2" src="./_img/deploy_m2.gif" /></a> <a href="n1" class="all_extend"><img alt="n1" src="./_img/deploy_n1.gif" /></a> <a href="n2" class="all_extend"><img alt="n2" src="./_img/deploy_n2.gif" /></a> <a href="n3" class="all_extend"><img alt="n3" src="./_img/deploy_n3.gif" /></a></div>
@@ -123,6 +208,7 @@ $script_reception.= 'var reception_users_liste = "'.implode('_',$tab_users).'";'
 	<div style="clear:both"><button id="valider_profs" type="button" class="valider">Valider la sélection</button>&nbsp;&nbsp;&nbsp;<button id="annuler_profs" type="button" class="annuler">Annuler / Retour</button></div>
 </form>
 
+<?php if($TYPE=='selection'): ?>
 <form action="#" method="post" id="zone_eleve" class="arbre_dynamique hide">
 	<div><button id="indiquer_eleves_deja" type="button" class="eclair">Indiquer les élèves associés à une évaluation de même nom</button> depuis le <input id="f_date_deja" name="f_date_deja" size="9" type="text" value="<?php echo $date_start ?>" /><q class="date_calendrier" title="Cliquez sur cette image pour importer une date depuis un calendrier !"></q><label id="msg_indiquer_eleves_deja"></label></div>
 	<p>Cocher ci-dessous (<span class="astuce">cliquer sur un intitulé pour déployer son contenu</span>) :</p>
@@ -130,6 +216,7 @@ $script_reception.= 'var reception_users_liste = "'.implode('_',$tab_users).'";'
 	<p class="danger">Une évaluation dont la saisie a commencé ne devrait pas voir ses élèves modifiés.<br />En particulier, retirer des élèves d'une évaluation efface les scores correspondants déjà saisis !</p>
 	<div><span class="tab"></span><button id="valider_eleve" type="button" class="valider">Valider la sélection</button>&nbsp;&nbsp;&nbsp;<button id="annuler_eleve" type="button" class="annuler">Annuler / Retour</button></div>
 </form>
+<?php endif; ?>
 
 <form action="#" method="post" id="zone_ordonner" class="hide">
 	<p class="hc"><b id="titre_ordonner"></b><br /><label id="msg_ordonner"></label></p>
@@ -234,6 +321,14 @@ $select_marge_min    = Formulaire::afficher_select(Formulaire::$tab_select_marge
 		<label class="tab">Orientation :</label><?php echo $select_orientation ?> <?php echo $select_couleur ?> <?php echo $select_marge_min ?><br />
 		<label class="tab">Restriction :</label><input type="checkbox" id="f_restriction_req" name="f_restriction_req" value="1" /> <label for="f_restriction_req">Uniquement les items ayant fait l'objet d'une demande d'évaluation (ou dont une note est saisie).</label>
 	</div>
-	<span class="tab"></span><button id="f_submit_imprimer" type="button" value="'.$ref.'" class="valider">Générer le cartouche</button><label id="msg_imprimer">&nbsp;</label>
+	<span class="tab"></span><button id="f_submit_imprimer" type="button" class="valider">Générer le cartouche</button><label id="msg_imprimer">&nbsp;</label>
 	<p id="zone_imprimer_retour"></p>
+</fieldset></form>
+
+<form action="#" method="post" id="zone_upload" class="hide"><fieldset>
+	<h2>Ajouter / retirer un sujet ou une correction d'une évaluation</h2>
+	<p class="hc b" id="titre_upload"></p>
+	<div><label class="tab">Sujet :</label><button id="bouton_uploader_sujet" type="button" class="fichier_import">Ajouter / Modifier</button> <button id="bouton_supprimer_sujet" type="button" class="supprimer">Retirer</button> <span id="span_sujet"></span></div>
+	<div><label class="tab">Corrigé :</label><button id="bouton_uploader_corrige" type="button" class="fichier_import">Ajouter / Modifier</button> <button id="bouton_supprimer_corrige" type="button" class="supprimer">Retirer</button> <span id="span_corrige"></span></div>
+	<p><span class="tab"></span><button id="fermer_zone_upload" type="button" class="retourner">Retour</button><label id="ajax_document_upload">&nbsp;</label></p>
 </fieldset></form>

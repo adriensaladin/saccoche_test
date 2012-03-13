@@ -172,6 +172,17 @@ if($action=='identifier')
 	if(!file_exists($fichier_lock))
 	{
 		Ecrire_Fichier($fichier_lock,'');
+		// On verifie que certains sous-dossiers existent : 'devoir' n'a été ajouté qu'en mars 2012, 'cookie' et 'rss' étaient oublié depuis le formulaire Sésamath ('badge' a priori c'est bon)
+		$tab_sous_dossier = array( 'devoir' , 'cookie/'.$BASE , 'devoir/'.$BASE , 'rss/'.$BASE );
+		foreach($tab_sous_dossier as $sous_dossier)
+		{
+			$dossier = './__tmp/'.$sous_dossier;
+			if(!is_dir($dossier))
+			{
+				Creer_Dossier($dossier);
+				Ecrire_Fichier($dossier.'/index.htm','Circulez, il n\'y a rien à voir par ici !');
+			}
+		}
 		effacer_fichiers_temporaires('./__tmp/login-mdp'     ,     10); // Nettoyer ce dossier des fichiers antérieurs à 10 minutes
 		effacer_fichiers_temporaires('./__tmp/export'        ,     60); // Nettoyer ce dossier des fichiers antérieurs à 1 heure
 		effacer_fichiers_temporaires('./__tmp/dump-base'     ,     60); // Nettoyer ce dossier des fichiers antérieurs à 1 heure
@@ -179,6 +190,7 @@ if($action=='identifier')
 		effacer_fichiers_temporaires('./__tmp/rss/'.$BASE    ,  43800); // Nettoyer ce dossier des fichiers antérieurs à 1 mois
 		effacer_fichiers_temporaires('./__tmp/badge/'.$BASE  , 525600); // Nettoyer ce dossier des fichiers antérieurs à 1 an
 		effacer_fichiers_temporaires('./__tmp/cookie/'.$BASE , 525600); // Nettoyer ce dossier des fichiers antérieurs à 1 an
+		effacer_fichiers_temporaires('./__tmp/devoir/'.$BASE , 525600); // Nettoyer ce dossier des fichiers antérieurs à 1 an
 		unlink($fichier_lock);
 	}
 	// Si le fichier témoin du nettoyage existe, on vérifie que sa présence n'est pas anormale (cela s'est déjà produit...)

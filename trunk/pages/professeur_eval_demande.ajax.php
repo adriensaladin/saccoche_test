@@ -28,20 +28,21 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 if(($_SESSION['SESAMATH_ID']==ID_DEMO)&&($_POST['f_action']!='Afficher_demandes')){exit('Action désactivée pour la démo...');}
 
-$action       = (isset($_POST['f_action']))       ? clean_texte($_POST['f_action'])       : '';			// pour le form0
-$action       = (isset($_POST['f_quoi']))         ? clean_texte($_POST['f_quoi'])         : $action;	// pour le form1
-$matiere_id   = (isset($_POST['f_matiere']))      ? clean_entier($_POST['f_matiere'])     : 0;
-$matiere_nom  = (isset($_POST['f_matiere_nom']))  ? clean_texte($_POST['f_matiere_nom'])  : '';
-$groupe_id    = (isset($_POST['f_groupe_id']))    ? clean_entier($_POST['f_groupe_id'])   : 0;			// C'est l'id du groupe d'appartenance de l'élève, pas l'id du groupe associé à un devoir
-$groupe_type  = (isset($_POST['f_groupe_type']))  ? clean_texte($_POST['f_groupe_type'])  : '';
-$groupe_nom   = (isset($_POST['f_groupe_nom']))   ? clean_texte($_POST['f_groupe_nom'])   : '';
+$action        = (isset($_POST['f_action']))        ? clean_texte($_POST['f_action'])        : '';			// pour le form0
+$action        = (isset($_POST['f_quoi']))          ? clean_texte($_POST['f_quoi'])          : $action;	// pour le form1
+$matiere_id    = (isset($_POST['f_matiere']))       ? clean_entier($_POST['f_matiere'])      : 0;
+$matiere_nom   = (isset($_POST['f_matiere_nom']))   ? clean_texte($_POST['f_matiere_nom'])   : '';
+$groupe_id     = (isset($_POST['f_groupe_id']))     ? clean_entier($_POST['f_groupe_id'])    : 0;			// C'est l'id du groupe d'appartenance de l'élève, pas l'id du groupe associé à un devoir
+$groupe_type   = (isset($_POST['f_groupe_type']))   ? clean_texte($_POST['f_groupe_type'])   : '';
+$groupe_nom    = (isset($_POST['f_groupe_nom']))    ? clean_texte($_POST['f_groupe_nom'])    : '';
 
-$qui          = (isset($_POST['f_qui']))          ? clean_texte($_POST['f_qui'])          : '';
-$date         = (isset($_POST['f_date']))         ? clean_texte($_POST['f_date'])         : '';
-$date_visible = (isset($_POST['f_date_visible'])) ? clean_texte($_POST['f_date_visible']) : '';
-$info         = (isset($_POST['f_info']))         ? clean_texte($_POST['f_info'])         : '';
-$devoir_ids   = (isset($_POST['f_devoir']))       ? clean_texte($_POST['f_devoir'])       : '';
-$suite        = (isset($_POST['f_suite']))        ? clean_texte($_POST['f_suite'])        : '';
+$qui           = (isset($_POST['f_qui']))           ? clean_texte($_POST['f_qui'])           : '';
+$date          = (isset($_POST['f_date']))          ? clean_texte($_POST['f_date'])          : '';
+$date_visible  = (isset($_POST['f_date_visible']))  ? clean_texte($_POST['f_date_visible'])  : '';
+$date_autoeval = (isset($_POST['f_date_autoeval'])) ? clean_texte($_POST['f_date_autoeval']) : '';
+$info          = (isset($_POST['f_info']))          ? clean_texte($_POST['f_info'])          : '';
+$devoir_ids    = (isset($_POST['f_devoir']))        ? clean_texte($_POST['f_devoir'])        : '';
+$suite         = (isset($_POST['f_suite']))         ? clean_texte($_POST['f_suite'])         : '';
 
 $tab_demande_id = array();
 $tab_user_id    = array();
@@ -138,7 +139,7 @@ if( ($action=='Afficher_demandes') && $matiere_id && $matiere_nom && $groupe_id 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 //	Créer une nouvelle évaluation
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-elseif( ($action=='creer') && $groupe_id && (isset($tab_types[$groupe_type])) && in_array($qui,$tab_qui) && $date && $date_visible && $info && in_array($suite,$tab_suite) && $nb_demandes && $nb_users && $nb_items )
+elseif( ($action=='creer') && $groupe_id && (isset($tab_types[$groupe_type])) && in_array($qui,$tab_qui) && $date && $date_visible && $date_autoeval && $info && in_array($suite,$tab_suite) && $nb_demandes && $nb_users && $nb_items )
 {
 	// Dans le cas d'une évaluation sur une liste d'élèves sélectionnés,
 	if($qui=='select')
@@ -147,9 +148,12 @@ elseif( ($action=='creer') && $groupe_id && (isset($tab_types[$groupe_type])) &&
 		$groupe_id = DB_STRUCTURE_PROFESSEUR::DB_ajouter_groupe_par_prof('eval','',0);
 	}
 	// Insérer l'enregistrement de l'évaluation
-	$date_mysql = convert_date_french_to_mysql($date);
-	$date_visible_mysql = convert_date_french_to_mysql($date_visible);
-	$devoir_id = DB_STRUCTURE_PROFESSEUR::DB_ajouter_devoir($_SESSION['USER_ID'],$groupe_id,$date_mysql,$info,$date_visible_mysql);
+	$date_mysql          = convert_date_french_to_mysql($date);
+	$date_visible_mysql  = convert_date_french_to_mysql($date_visible);
+	$date_autoeval_mysql = convert_date_french_to_mysql($date_autoeval);
+	$doc_sujet   = '';
+	$doc_corrige = '';
+	$devoir_id = DB_STRUCTURE_PROFESSEUR::DB_ajouter_devoir($_SESSION['USER_ID'],$groupe_id,$date_mysql,$info,$date_visible_mysql,$date_autoeval_mysql,$doc_sujet,$doc_corrige);
 	// Dans le cas d'une évaluation sur une liste d'élèves sélectionnés,
 	// Affecter tous les élèves choisis
 	if($qui=='select')
@@ -192,7 +196,7 @@ elseif( ($action=='completer') && (isset($tab_types[$groupe_type])) && in_array(
 	// Maintenant on peut modifier les items de l'évaluation
 	DB_STRUCTURE_PROFESSEUR::DB_modifier_liaison_devoir_item($devoir_id,$tab_item_id,'ajouter');
 	// Insérer les scores 'REQ' pour indiquer au prof les demandes dans le tableau de saisie
-	$date_mysql = convert_date_french_to_mysql($date);
+	$date_mysql         = convert_date_french_to_mysql($date);
 	$date_visible_mysql = convert_date_french_to_mysql($date_visible);
 	$info = 'Demande en attente ('.$_SESSION['USER_NOM'].' '.$_SESSION['USER_PRENOM']{0}.'.)';
 	foreach($tab_user_item as $key)

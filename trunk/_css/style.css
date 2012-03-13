@@ -42,8 +42,9 @@ body {background:#FFF;font:1em "arial","helvetica","nimbus sans l","liberation s
 table,select,textarea,input,button,div{font:100% "arial","helvetica","nimbus sans l","liberation sans","freesans","garuda",sans-serif}
 p, *.p{margin-top:1em;margin-bottom:1em}
 img {vertical-align:middle}
-td img , #aide_en_ligne img , .legende img {vertical-align:baseline}
-label img {vertical-align:text-top}
+#aide_en_ligne img , .legende img {vertical-align:baseline}
+/* td img {vertical-align:baseline} */
+/* label img {vertical-align:text-top} */
 h1{display:block;font-size:120%;text-align:left;font-weight:bold;font-variant:small-caps;color:#33A;letter-spacing:0.15em;margin:1ex 2em;}
 h2{display:block;font-size:110%;text-align:left;font-weight:bold;font-variant:small-caps;color:#33A;letter-spacing:0.15em;margin:1ex auto 1ex 1em;}
 h1.logo{text-align:center}
@@ -219,7 +220,7 @@ del{text-decoration:line-through;color:#666}
 /* Images cliquables                                                                                   */
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-body q {background:transparent url(../_img/sprite_action_2.png) 0 0 no-repeat;width:16px;height:16px;display:inline-block;vertical-align:middle;margin-left:5px;quotes:none}
+body q {background:transparent url(../_img/sprite_action_3.png) 0 0 no-repeat;width:16px;height:16px;display:inline-block;vertical-align:middle;margin-left:5px;quotes:none}
 body q:before, body q:after {content: "";} /* patch pour Safari : voir par exemple http://forum.alsacreations.com/topic-4-41216-1-Resolu-Modifier-le-style-des-citations-quotqquot.html */
 body q.activer            {background-position: 0     0px}
 body q.ajouter            {background-position: 0   -20px}
@@ -241,38 +242,41 @@ body q.modifier           {background-position: 0  -320px}
 body q.modifier_non       {background-position: 0  -340px}
 body q.ordonner           {background-position: 0  -360px}
 body q.ordonner_non       {background-position: 0  -380px}
-body q.calculer           {background-position: 0  -400px} 
-body q.calculer_non       {background-position: 0  -420px} 
-body q.envoyer            {background-position: 0  -440px} 
-body q.envoyer_non        {background-position: 0  -460px} 
-body q.partager           {background-position: 0  -480px} 
-body q.partager_non       {background-position: 0  -500px} 
-body q.ress_ajouter       {background-position: 0  -520px} 
-body q.ress_page_elaborer {background-position: 0  -540px} 
-body q.retourner          {background-position: 0  -560px} 
-body q.saisir             {background-position: 0  -580px} 
-body q.supprimer          {background-position: 0  -600px} 
-body q.supprimer_non      {background-position: 0  -620px} 
-body q.valider            {background-position: 0  -640px} 
-body q.voir               {background-position: 0  -660px} 
-body q.voir_repart        {background-position: 0  -680px} 
-body q.n1_add             {background-position: 0  -700px} 
-body q.n1_del             {background-position: 0  -720px} 
-body q.n1_edit            {background-position: 0  -740px} 
-body q.n1_move            {background-position: 0  -760px} 
-body q.n1_move2           {background-position: 0  -780px} 
-body q.n2_add             {background-position: 0  -800px} 
-body q.n2_del             {background-position: 0  -820px} 
-body q.n2_edit            {background-position: 0  -840px} 
-body q.n2_move            {background-position: 0  -860px} 
-body q.n2_move2           {background-position: 0  -880px} 
-body q.n3_add             {background-position: 0  -900px} 
-body q.n3_del             {background-position: 0  -920px} 
-body q.n3_edit            {background-position: 0  -940px} 
-body q.n3_fus             {background-position: 0  -960px} 
-body q.n3_fus2            {background-position: 0  -980px} 
-body q.n3_move            {background-position: 0 -1000px} 
-body q.n3_move2           {background-position: 0 -1020px} 
+body q.calculer           {background-position: 0  -400px}
+body q.calculer_non       {background-position: 0  -420px}
+body q.envoyer            {background-position: 0  -440px}
+body q.envoyer_non        {background-position: 0  -460px}
+body q.partager           {background-position: 0  -480px}
+body q.partager_non       {background-position: 0  -500px}
+body q.ress_ajouter       {background-position: 0  -520px}
+body q.ress_page_elaborer {background-position: 0  -540px}
+body q.retourner          {background-position: 0  -560px}
+body q.saisir             {background-position: 0  -580px}
+body q.saisir_non         {background-position: 0  -600px}
+body q.supprimer          {background-position: 0  -620px}
+body q.supprimer_non      {background-position: 0  -640px}
+body q.uploader_doc       {background-position: 0  -660px}
+body q.uploader_doc_non   {background-position: 0  -680px}
+body q.valider            {background-position: 0  -700px}
+body q.voir               {background-position: 0  -720px}
+body q.voir_repart        {background-position: 0  -740px}
+body q.n1_add             {background-position: 0  -760px}
+body q.n1_del             {background-position: 0  -780px}
+body q.n1_edit            {background-position: 0  -800px}
+body q.n1_move            {background-position: 0  -820px}
+body q.n1_move2           {background-position: 0  -840px}
+body q.n2_add             {background-position: 0  -860px}
+body q.n2_del             {background-position: 0  -880px}
+body q.n2_edit            {background-position: 0  -900px}
+body q.n2_move            {background-position: 0  -920px}
+body q.n2_move2           {background-position: 0  -940px}
+body q.n3_add             {background-position: 0  -960px}
+body q.n3_del             {background-position: 0  -980px}
+body q.n3_edit            {background-position: 0 -1000px}
+body q.n3_fus             {background-position: 0 -1020px}
+body q.n3_fus2            {background-position: 0 -1040px}
+body q.n3_move            {background-position: 0 -1060px}
+body q.n3_move2           {background-position: 0 -1080px}
 body q:hover {cursor:pointer}	/* Curseur pointeur pour ces images qui sont des liens */
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
@@ -541,6 +545,8 @@ li.li_n1 {background:transparent url(../_img/folder/folder_n1.png) no-repeat top
 li.li_n2 {background:transparent url(../_img/folder/folder_n2.png) no-repeat top left;color:#D0C}	/* referentiel_theme ; socle_section */
 li.li_n3 {background:transparent url(../_img/folder/folder_n3.png) no-repeat top left;color:#70F}	/* referentiel_item ; socle_entree */
 #zone_matieres_items , #zone_socle_item , #zone_eleve , #zone_ressources {min-width:800px;min-height:1000px;padding-right:20px}	/* pour le fancybox qui ne se redimensionne pas en largeur, et qui n'ajoute pas le scrolling automatiquement en hauteur malgré l'appel 'scrolling' à 'yes' , prévoir un minimum au départ */
+#zone_upload {min-width:600px;min-height:300px}	/* pour le fancybox qui se montre radin en place allouée */
+
 li.li_n3 b{font-weight:normal}
 li.li_n3 b img{margin-right:2px}
 

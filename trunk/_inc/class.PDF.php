@@ -1422,15 +1422,14 @@ function afficher_pourcentage_acquis($gras,$tab_infos,$detail)
 		$this->calculer_dimensions_images($this->cases_largeur,$this->cases_hauteur);
 	}
 
-	public function tableau_saisie_reference_devoir($texte)
+	public function tableau_saisie_reference_devoir($groupe_nom,$date_fr,$description)
 	{
 		$hauteur_tiers = $this->etiquette_hauteur / 3 ;
-		$tab_lignes = explode(':::',$texte);
 		$this->SetXY($this->marge_gauche , $this->marge_haut);
 		$this->SetFont('Arial' , 'B' , $this->taille_police);
-		$this->CellFit( $this->reference_largeur , $hauteur_tiers , pdf($tab_lignes[0]) , 0 /*bordure*/ , 2 /*br*/ , 'C' /*alignement*/ , FALSE /*remplissage*/ );
-		$this->CellFit( $this->reference_largeur , $hauteur_tiers , pdf($tab_lignes[1]) , 0 /*bordure*/ , 2 /*br*/ , 'C' /*alignement*/ , FALSE /*remplissage*/ );
-		$this->CellFit( $this->reference_largeur , $hauteur_tiers , pdf($tab_lignes[2]) , 0 /*bordure*/ , 2 /*br*/ , 'C' /*alignement*/ , FALSE /*remplissage*/ );
+		$this->CellFit( $this->reference_largeur , $hauteur_tiers , pdf($groupe_nom)  , 0 /*bordure*/ , 2 /*br*/ , 'C' /*alignement*/ , FALSE /*remplissage*/ );
+		$this->CellFit( $this->reference_largeur , $hauteur_tiers , pdf($date_fr)     , 0 /*bordure*/ , 2 /*br*/ , 'C' /*alignement*/ , FALSE /*remplissage*/ );
+		$this->CellFit( $this->reference_largeur , $hauteur_tiers , pdf($description) , 0 /*bordure*/ , 2 /*br*/ , 'C' /*alignement*/ , FALSE /*remplissage*/ );
 		$this->SetXY($this->marge_gauche , $this->marge_haut);
 		$this->SetFont('Arial' , '' , $this->taille_police);
 		$this->Cell( $this->reference_largeur , $this->etiquette_hauteur , '' , 0 /*bordure*/ , 0 /*br*/ , 'C' /*alignement*/ , FALSE /*remplissage*/ );
@@ -1490,7 +1489,7 @@ function afficher_pourcentage_acquis($gras,$tab_infos,$detail)
 		$this->calculer_dimensions_images($this->cases_largeur,$this->etiquette_hauteur);
 	}
 
-	public function tableau_devoir_repartition_nominative_entete($descriptif,$tab_init_quantitatif,$tab_repartition_quantitatif)
+	public function tableau_devoir_repartition_nominative_entete($groupe_nom,$date_fr,$description,$tab_init_quantitatif,$tab_repartition_quantitatif)
 	{
 		// on calcule la hauteur de la case
 		$this->cases_hauteur = $this->lignes_hauteur * max(4,max($tab_repartition_quantitatif));
@@ -1508,7 +1507,7 @@ function afficher_pourcentage_acquis($gras,$tab_infos,$detail)
 		// 1ère ligne : référence des codes
 		if($this->GetY()==$this->marge_haut)
 		{
-			$this->tableau_saisie_reference_devoir($descriptif);
+			$this->tableau_saisie_reference_devoir($groupe_nom,$date_fr,$description);
 			$this->SetXY($this->marge_gauche+$this->reference_largeur , $this->marge_haut);
 			foreach($tab_init_quantitatif as $note=>$vide)
 			{

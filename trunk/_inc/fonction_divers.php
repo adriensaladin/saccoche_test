@@ -393,10 +393,12 @@ function supprimer_mono_structure()
 	DB_STRUCTURE_WEBMESTRE::DB_supprimer_tables_structure();
 	// Supprimer le fichier de connexion
 	unlink(CHEMIN_MYSQL.'serveur_sacoche_structure.php');
-	// Supprimer les dossiers de fichiers temporaires par établissement : vignettes verticales, flux RSS des demandes, cookies des choix de formulaires
-	Supprimer_Dossier('./__tmp/badge/'.'0');
-	Supprimer_Dossier('./__tmp/cookie/'.'0');
-	Supprimer_Dossier('./__tmp/rss/'.'0');
+	// Supprimer les dossiers de fichiers temporaires par établissement : vignettes verticales, flux RSS des demandes, cookies des choix de formulaires, sujets et corrigés de devoirs
+	$tab_sous_dossier = array('badge','cookie','devoir','rss');
+	foreach($tab_sous_dossier as $sous_dossier)
+	{
+		Supprimer_Dossier('./__tmp/'.$sous_dossier.'/'.'0');
+	}
 	// Supprimer les éventuels fichiers de blocage
 	@unlink(CHEMIN_CONFIG.'blocage_webmestre_0.txt');
 	@unlink(CHEMIN_CONFIG.'blocage_administrateur_0.txt');
@@ -422,10 +424,12 @@ function supprimer_multi_structure($BASE)
 	unlink(CHEMIN_MYSQL.'serveur_sacoche_structure_'.$BASE.'.php');
 	// Retirer l'enregistrement d'une structure dans la base du webmestre
 	DB_WEBMESTRE_WEBMESTRE::DB_supprimer_structure($BASE);
-	// Supprimer les dossiers de fichiers temporaires par établissement : vignettes verticales, flux RSS des demandes, cookies des choix de formulaires
-	Supprimer_Dossier('./__tmp/badge/'.$BASE);
-	Supprimer_Dossier('./__tmp/cookie/'.$BASE);
-	Supprimer_Dossier('./__tmp/rss/'.$BASE);
+	// Supprimer les dossiers de fichiers temporaires par établissement : vignettes verticales, flux RSS des demandes, cookies des choix de formulaires, sujets et corrigés de devoirs
+	$tab_sous_dossier = array('badge','cookie','devoir','rss');
+	foreach($tab_sous_dossier as $sous_dossier)
+	{
+		Supprimer_Dossier('./__tmp/'.$sous_dossier.'/'.$BASE);
+	}
 	// Supprimer les éventuels fichiers de blocage
 	@unlink(CHEMIN_CONFIG.'blocage_webmestre_'.$BASE.'.txt');
 	@unlink(CHEMIN_CONFIG.'blocage_administrateur_'.$BASE.'.txt');

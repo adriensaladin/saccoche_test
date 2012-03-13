@@ -33,7 +33,7 @@
 // VERSION_PROG : version des fichiers installés, à comparer avec la dernière version disponible sur le serveur communautaire ; pour une conversion en entier : list($annee,$mois,$jour) = explode('-',substr(VERSION_PROG,0,10); $indice_version = (date('Y')-2011)*365 + date('z',mktime(0,0,0,$mois,$jour,$annee));
 // VERSION_BASE : version de la base associée, à comparer avec la version de la base actuellement installée
 define('VERSION_PROG', @file_get_contents('VERSION.txt') );	// Ne pas mettre de chemin ! Dans un fichier texte pour permettre un appel au serveur communautaire sans lui faire utiliser PHP.
-define('VERSION_BASE','2012-03-05');
+define('VERSION_BASE','2012-03-12');
 
 // Quelques chemins, avec le séparateur final
 define('CHEMIN_SACOCHE'       , realpath(dirname(dirname(__FILE__))).DIRECTORY_SEPARATOR);
@@ -58,6 +58,7 @@ define('ID_FAMILLE_MATIERE_USUELLE',  99);
 define('CHARSET','utf-8');
 
 // SERVEUR_ADRESSE
+$_SERVER['HTTP_HOST'] = isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : $_SERVER['SERVER_NAME'] ; // Rarissime, mais il est arrivé que ce ne soit pas défini (http 1.1 impose au client web de préciser un nom de site, ce qui n'était pas le cas en http 1.0 ; http 1.1 date de 1999, avec un brouillon en 1996).
 $protocole = ( isset($_SERVER['HTTPS']) && ($_SERVER['HTTPS']=='on') ) ? 'https://' : 'http://';
 $chemin = $protocole.$_SERVER['HTTP_HOST'].$_SERVER['SCRIPT_NAME'];
 $fin = strpos($chemin,SACoche); // pas mb_strpos pour éviter une erreur fatale d'entrée.

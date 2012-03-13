@@ -331,54 +331,7 @@ $(document).ready
 		(
 			function()
 			{
-				var liste_nom = $("#f_liste_items_nom").val();
-				if(!liste_nom)
-				{
-					$('#ajax_msg_memo').removeAttr("class").addClass("erreur").html("nom manquant");
-					$("#f_liste_items_nom").focus();
-					return false;
-				}
-				var compet_liste = '';
-				$("#zone_matieres_items input[type=checkbox]:checked").each
-				(
-					function()
-					{
-						compet_liste += $(this).val()+'_';
-					}
-				);
-				if(!compet_liste)
-				{
-					$('#ajax_msg_memo').removeAttr("class").addClass("erreur").html("Aucun item coché !");
-					return false;
-				}
-				var compet_liste  = compet_liste.substring(0,compet_liste.length-1);
-				$('#ajax_msg_memo').removeAttr("class").addClass("loader").html("Connexion au serveur&hellip;");
-				$.ajax
-				(
-					{
-						type : 'POST',
-						url : 'ajax.php?page=compte_selection_items',
-						data : 'f_action='+'ajouter'+'&f_compet_liste='+compet_liste+'&f_nom='+encodeURIComponent(liste_nom),
-						dataType : "html",
-						error : function(msg,string)
-						{
-							$('#ajax_msg_memo').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
-						},
-						success : function(responseHTML)
-						{
-							initialiser_compteur();
-							if(responseHTML.substring(0,3)=='<tr')	// Attention aux caractères accentués : l'utf-8 pose des pbs pour ce test
-							{
-								$('#ajax_msg_memo').removeAttr("class").addClass("valide").html("Sélection mémorisée.");
-							}
-						else
-							{
-								$('#ajax_msg_memo').removeAttr("class").addClass("alerte").html(responseHTML);
-								$("#f_liste_items_nom").focus();
-							}
-						}
-					}
-				);
+				memoriser_selection_matieres_items( $("#f_liste_items_nom").val() );
 			}
 		);
 

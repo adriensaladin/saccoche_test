@@ -131,12 +131,15 @@ function clean_symboles($text)
 function only_letters($text)
 {
 	$lettres = (perso_mb_detect_encoding_utf8($text)) ? utf8_decode($text) : $text ;
-	$tab_lettres = str_split($lettres);
-	foreach($tab_lettres as $key => $lettre)
+	if(strlen($lettres))
 	{
-		$tab_lettres[$key] = (strpos(FILENAME_CHARS,$lettre)!==FALSE) ? $lettre : '-' ;
+		$tab_lettres = str_split($lettres);
+		foreach($tab_lettres as $key => $lettre)
+		{
+			$tab_lettres[$key] = (strpos(FILENAME_CHARS,$lettre)!==FALSE) ? $lettre : '-' ;
+		}
+		$lettres = implode('',$tab_lettres);
 	}
-	$lettres = implode('',$tab_lettres);
 	return (perso_mb_detect_encoding_utf8($text)) ? utf8_encode($lettres) : $lettres ;
 }
 

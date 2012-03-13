@@ -26,7 +26,7 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-$TITRE = "Items et notes des évaluations";
+$TITRE = "Liste des évaluations";
 ?>
 
 <?php
@@ -49,7 +49,13 @@ if($_SESSION['USER_PROFIL']=='eleve')
 // Dates par défaut de début et de fin
 $date_debut = date("d/m/Y",mktime(0,0,0,date("m")-2,date("d"),date("Y"))); // 2 mois avant
 $date_fin   = date("d/m/Y",mktime(0,0,0,date("m")+1,date("d"),date("Y"))); // 1 mois après
+
+$bouton_valider_autoeval = ($_SESSION['USER_PROFIL']=='eleve') ? '<button id="Enregistrer_saisie" type="button" class="valider">Enregistrer les saisies</button>' : '<button type="button" class="valider" disabled>Réservé à l\'élève.</button>' ;
 ?>
+
+<script type="text/javascript">
+	var tab_dates = new Array();
+</script>
 
 <form action="#" method="post" id="form"><fieldset>
 	<div class="<?php echo $class_form_eleve ?>">
@@ -69,6 +75,7 @@ $date_fin   = date("d/m/Y",mktime(0,0,0,date("m")+1,date("d"),date("Y"))); // 1 
 				<th>Date</th>
 				<th>Professeur</th>
 				<th>Description</th>
+				<th>Docs</th>
 				<th class="nu"></th>
 			</tr>
 		</thead>
@@ -78,7 +85,7 @@ $date_fin   = date("d/m/Y",mktime(0,0,0,date("m")+1,date("d"),date("Y"))); // 1 
 	</table>
 </form>
 
-<div id="zone_eval_detail" class="vm_nug hide">
+<div id="zone_eval_voir" class="hide">
 	<p id="titre_voir" class="ti b"></p>
 	<table id="table_voir" class="hsort">
 		<thead>
@@ -95,3 +102,21 @@ $date_fin   = date("d/m/Y",mktime(0,0,0,date("m")+1,date("d"),date("Y"))); // 1 
 	</table>
 	<?php echo affich_legende_html($note_Lomer=TRUE,$etat_bilan=TRUE); ?>
 </div>
+
+<form action="#" method="post" id="zone_eval_saisir" class="hide" onsubmit="return false">
+	<div id="titre_saisir" class="ti b"></div>
+	<p>Auto-évaluation possible jusqu'au <span id="report_date" class="b"></span> (les notes peuvent ensuite être modifiées par le professeur).</p>
+	<table id="table_saisir" class="vm_nug">
+		<thead>
+			<tr>
+				<th colspan="5">Note</th>
+				<th>Item</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr><td class="nu" colspan="6"></td></tr>
+		</tbody>
+	</table>
+	<p class="ti"><?php echo $bouton_valider_autoeval ?><input type="hidden" name="f_devoir" id="f_devoir" value="" /> <button id="fermer_zone_saisir" type="button" class="retourner">Retour</button><label id="msg_saisir"></label></p>
+	<?php echo affich_legende_html($note_Lomer=TRUE,$etat_bilan=FALSE); ?>
+</form>

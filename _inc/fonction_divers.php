@@ -521,13 +521,37 @@ function crypter_mdp($password)
 function fabriquer_fichier_hebergeur_info($tab_constantes_modifiees)
 {
 	$fichier_nom     = CHEMIN_CONFIG.'constantes.php';
-	$tab_constantes_requises = array('HEBERGEUR_INSTALLATION','HEBERGEUR_DENOMINATION','HEBERGEUR_UAI','HEBERGEUR_ADRESSE_SITE','HEBERGEUR_LOGO','CNIL_NUMERO','CNIL_DATE_ENGAGEMENT','CNIL_DATE_RECEPISSE','WEBMESTRE_NOM','WEBMESTRE_PRENOM','WEBMESTRE_COURRIEL','WEBMESTRE_PASSWORD_MD5','WEBMESTRE_ERREUR_DATE','SERVEUR_PROXY_USED','SERVEUR_PROXY_NAME','SERVEUR_PROXY_PORT','SERVEUR_PROXY_TYPE','SERVEUR_PROXY_AUTH_USED','SERVEUR_PROXY_AUTH_METHOD','SERVEUR_PROXY_AUTH_USER','SERVEUR_PROXY_AUTH_PASS');
+	$tab_constantes_requises = array(
+		'HEBERGEUR_INSTALLATION',
+		'HEBERGEUR_DENOMINATION',
+		'HEBERGEUR_UAI',
+		'HEBERGEUR_ADRESSE_SITE',
+		'HEBERGEUR_LOGO',
+		'CNIL_NUMERO',
+		'CNIL_DATE_ENGAGEMENT',
+		'CNIL_DATE_RECEPISSE',
+		'WEBMESTRE_NOM',
+		'WEBMESTRE_PRENOM',
+		'WEBMESTRE_COURRIEL',
+		'WEBMESTRE_PASSWORD_MD5',
+		'WEBMESTRE_ERREUR_DATE',
+		'SERVEUR_PROXY_USED',
+		'SERVEUR_PROXY_NAME',
+		'SERVEUR_PROXY_PORT',
+		'SERVEUR_PROXY_TYPE',
+		'SERVEUR_PROXY_AUTH_USED',
+		'SERVEUR_PROXY_AUTH_METHOD',
+		'SERVEUR_PROXY_AUTH_USER',
+		'SERVEUR_PROXY_AUTH_PASS',
+		'FICHIER_TAILLE_MAX',
+		'FICHIER_DUREE_CONSERVATION'
+	);
 	$fichier_contenu = '<?php'."\r\n";
 	$fichier_contenu.= '// Informations concernant l\'hébergement et son webmestre (n°UAI uniquement pour une installation de type mono-structure)'."\r\n";
 	foreach($tab_constantes_requises as $constante_nom)
 	{
 		$constante_valeur = (isset($tab_constantes_modifiees[$constante_nom])) ? $tab_constantes_modifiees[$constante_nom] : constant($constante_nom);
-		$espaces = str_repeat(' ',25-strlen($constante_nom));
+		$espaces = str_repeat(' ',26-strlen($constante_nom));
 		$fichier_contenu.= 'define(\''.$constante_nom.'\''.$espaces.',\''.str_replace('\'','\\\'',$constante_valeur).'\');'."\r\n";
 	}
 	$fichier_contenu.= '?>'."\r\n";
@@ -682,7 +706,7 @@ function nettoyer_fichiers_temporaires($BASE)
 		effacer_fichiers_temporaires('./__tmp/rss/'.$BASE    ,  43800); // Nettoyer ce dossier des fichiers antérieurs à 1 mois
 		effacer_fichiers_temporaires('./__tmp/badge/'.$BASE  , 525600); // Nettoyer ce dossier des fichiers antérieurs à 1 an
 		effacer_fichiers_temporaires('./__tmp/cookie/'.$BASE , 525600); // Nettoyer ce dossier des fichiers antérieurs à 1 an
-		effacer_fichiers_temporaires('./__tmp/devoir/'.$BASE , 525600); // Nettoyer ce dossier des fichiers antérieurs à 1 an
+		effacer_fichiers_temporaires('./__tmp/devoir/'.$BASE , 43800*FICHIER_DUREE_CONSERVATION); // Nettoyer ce dossier des fichiers antérieurs à la date fixée par le webmestre (1 an par défaut)
 		unlink($fichier_lock);
 	}
 	// Si le fichier témoin du nettoyage existe, on vérifie que sa présence n'est pas anormale (cela s'est déjà produit...)
@@ -747,6 +771,7 @@ function enregistrer_session_webmestre()
 	$_SESSION['ETABLISSEMENT']['DENOMINATION'] = 'Gestion '.HEBERGEUR_INSTALLATION;
 	$_SESSION['MODE_CONNEXION']                = 'normal';
 	$_SESSION['DUREE_INACTIVITE']              = 15;
+	$_SESSION['MDP_LONGUEUR_MINI']             = 6;
 }
 
 /**

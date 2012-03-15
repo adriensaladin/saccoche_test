@@ -1,5 +1,5 @@
 ================================================================================
-Librairie : phpCAS                      Version : 1.2.2
+Librairie : phpCAS                      Version : 1.3.0
 ================================================================================
 
 phpCAS est une classe PHP utilisée comme client CAS, pour communiquer avec un serveur CAS.

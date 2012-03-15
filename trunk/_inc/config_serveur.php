@@ -144,6 +144,23 @@ function __autoload($class_name)
 			affich_message_exit($titre='Classe introuvable',$contenu='Le chemin de la classe '.$class_name.' est incorrect : '.$class_file);
 		}
 	}
+	// Remplacement de l'autoload de phpCAS qui n'est pas chargé à cause de celui de SACoche
+	elseif(substr($class_name,0,4)=='CAS_')
+	{
+		$class_file = CHEMIN_SACOCHE.'_lib'.DIRECTORY_SEPARATOR.'phpCAS'.DIRECTORY_SEPARATOR.str_replace('_',DIRECTORY_SEPARATOR,$class_name).'.php';
+		if(is_file($class_file))
+		{
+			require_once($class_file);
+		}
+		else
+		{
+			affich_message_exit($titre='Classe introuvable',$contenu='Le chemin de la classe '.$class_name.' est incorrect : '.$class_file);
+		}
+	}
+	else
+	{
+		affich_message_exit($titre='Classe introuvable',$contenu='La classe '.$class_name.' est inconnue.');
+	}
 }
 
 // Pour FirePHP

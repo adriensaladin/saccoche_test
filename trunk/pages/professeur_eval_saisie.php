@@ -328,6 +328,10 @@ $select_marge_min    = Formulaire::afficher_select(Formulaire::$tab_select_marge
 <form action="#" method="post" id="zone_upload" class="hide"><fieldset>
 	<h2>Ajouter / retirer un sujet ou une correction d'une évaluation</h2>
 	<p class="hc b" id="titre_upload"></p>
+	<p>
+		<span class="astuce">Taille maximale fixée par le webmestre : <?php echo FICHIER_TAILLE_MAX ?> Ko.</span><br />
+		<span class="astuce">Durée de conservation fixée par le webmestre : <?php echo FICHIER_DUREE_CONSERVATION ?> mois.</span>
+	</p>
 	<div><label class="tab">Sujet :</label><button id="bouton_uploader_sujet" type="button" class="fichier_import">Ajouter / Modifier</button> <button id="bouton_supprimer_sujet" type="button" class="supprimer">Retirer</button> <span id="span_sujet"></span></div>
 	<div><label class="tab">Corrigé :</label><button id="bouton_uploader_corrige" type="button" class="fichier_import">Ajouter / Modifier</button> <button id="bouton_supprimer_corrige" type="button" class="supprimer">Retirer</button> <span id="span_corrige"></span></div>
 	<p><span class="tab"></span><button id="fermer_zone_upload" type="button" class="retourner">Retour</button><label id="ajax_document_upload">&nbsp;</label></p>

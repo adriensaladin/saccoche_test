@@ -113,10 +113,11 @@ $tab_droits['administrateur_statut_traiter']           = $tab_droits_profil_admi
 // Profil webmestre
 $tab_droits['webmestre_configuration_proxy']           = $tab_droits_profil_webmestre;
 $tab_droits['webmestre_database_test']                 = $tab_droits_profil_webmestre;
-$tab_droits['webmestre_mdp_admin']                     = $tab_droits_profil_webmestre;
+$tab_droits['webmestre_fichiers_deposes']              = $tab_droits_profil_webmestre;
 $tab_droits['webmestre_geographie']                    = $tab_droits_profil_webmestre;
 $tab_droits['webmestre_identite_installation']         = $tab_droits_profil_webmestre;
 $tab_droits['webmestre_maintenance']                   = $tab_droits_profil_webmestre;
+$tab_droits['webmestre_mdp_admin']                     = $tab_droits_profil_webmestre;
 $tab_droits['webmestre_newsletter']                    = $tab_droits_profil_webmestre;
 $tab_droits['webmestre_resilier']                      = $tab_droits_profil_webmestre;
 $tab_droits['webmestre_statistiques']                  = $tab_droits_profil_webmestre;

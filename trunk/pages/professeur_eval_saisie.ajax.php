@@ -1280,9 +1280,9 @@ if( ($action=='uploader_document') && $devoir_id && in_array($doc_objet,array('s
 	{
 		exit('Le nom du fichier ne doit pas commencer par un point !');
 	}
-	if($ftaille>500000)
+	if($ftaille>FICHIER_TAILLE_MAX*1000)
 	{
-		exit('Le fichier dépasse les 500Ko autorisés pour ce service !');
+		exit('Le fichier dépasse les '.FICHIER_TAILLE_MAX.' Ko autorisés !');
 	}
 	// Enregistrement du fichier
 	$fichier_nom = 'devoir_'.$devoir_id.'_'.$doc_objet.'_'.time().'.'.$extension;

@@ -28,47 +28,60 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 if($_SESSION['SESAMATH_ID']==ID_DEMO){exit('Action désactivée pour la démo...');}
 
-$action = (isset($_GET['action']))  ? $_GET['action']  : '';
-$profil = (isset($_POST['profil'])) ? $_POST['profil'] : '';
-$tab_select_users = (isset($_POST['select_users'])) ? array_map('clean_entier',explode(',',$_POST['select_users'])) : array() ;
-$tab_select_users = array_filter($tab_select_users,'positif');
-$nb = count($tab_select_users);
+// Peut être appelé depuis toutes les pages de gestion des utilisateurs ( élèves, parents, profs, directeurs ) sauf les admins
 
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-//	Réintégrer des comptes élèves
-//	Réintégrer des comptes parents
-//	Réintégrer des comptes professeurs et/ou directeurs
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+$action     = (isset($_POST['f_action']))     ? $_POST['f_action']     : '';
+$listing_id = (isset($_POST['f_listing_id'])) ? $_POST['f_listing_id'] : '';
 
-if( ($action=='reintegrer') && $nb )
+$tab_user_id = array_filter( array_map( 'clean_entier' , explode(',',$listing_id) ) , 'positif' );
+$nb_user = count($tab_user_id);
+
+if( !$nb_user )
 {
-	foreach($tab_select_users as $user_id)
-	{
-		// Mettre à jour l'enregistrement
-		DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_user_statut( $user_id , 1 );
-	}
-	$s = ($nb>1) ? 's' : '';
-	exit('OK'.$nb.' compte'.$s.' réintégré'.$s.'.');
+	exit('Aucun compte récupéré !');
 }
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-//	Supprimer des comptes élèves
-//	Supprimer des comptes parents
-//	Supprimer des comptes professeurs et/ou directeurs
+//	Retirer des comptes
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
-if( ($action=='supprimer') && $nb )
+if($action=='retirer')
 {
-	foreach($tab_select_users as $user_id)
+	DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_users_statut($tab_user_id,FALSE);
+	exit('ok,'.implode(',',$tab_user_id));
+}
+
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+//	Réintégrer des comptes
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
+if($action=='reintegrer')
+{
+	DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_users_statut($tab_user_id,TRUE);
+	exit('ok,'.implode(',',$tab_user_id));
+}
+
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+//	Supprimer des comptes
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
+if($action=='supprimer')
+{
+	// Récupérer le profil des utilisateurs indiqués, vérifier qu'ils sont déjà sortis et qu'on y a pas glissé l'id d'un administrateur
+	$DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_users_cibles( implode(',',$tab_user_id) , 'user_id,user_profil,user_sortie_date' , '' /*avec_info*/ );
+	$tab_user_id = array();
+	foreach($DB_TAB as $DB_ROW)
 	{
-		// Mettre à jour l'enregistrement
-		$tab_param_profil = array( 'eleves'=>'eleve' , 'parents'=>'parent' , 'professeurs_directeurs'=>'professeur' );
-		DB_STRUCTURE_ADMINISTRATEUR::DB_supprimer_utilisateur( $user_id , $tab_param_profil[$profil] );
-		// Log de l'action
-		ajouter_log_SACoche('Suppression d\'un utilisateur ('.$tab_param_profil[$profil].' '.$user_id.').');
+		if( ($DB_ROW['user_sortie_date']<=TODAY_MYSQL) && ($DB_ROW['user_profil']!='administrateur') )
+		{
+			DB_STRUCTURE_ADMINISTRATEUR::DB_supprimer_utilisateur( $DB_ROW['user_id'] , $DB_ROW['user_profil'] );
+			$tab_user_id[] = $DB_ROW['user_id'];
+			// Log de l'action
+			ajouter_log_SACoche('Suppression d\'un utilisateur ('.$DB_ROW['user_profil'].' '.$DB_ROW['user_id'].').');
+		}
 	}
-	$s = ($nb>1) ? 's' : '';
-	exit('OK'.$nb.' compte'.$s.' supprimé'.$s.'.');
+	$retour = (count($tab_user_id)) ? 'ok,'.implode(',',$tab_user_id) : 'Aucun compte indiqué n\'est supprimable !' ;
+	exit($retour);
 }
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-

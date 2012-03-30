@@ -45,41 +45,6 @@ $(document).ready
 			}
 		}
 
-		// Appel en ajax pour tester le numéro de la dernière version (et le comparer avec l'actuelle).
-		function tester_version()
-		{
-			$.ajax
-			(
-				{
-					type : 'POST',
-					url : 'ajax.php?page='+PAGE,
-					data : 'f_action=tester_version',
-					dataType : "html",
-					error : function(msg,string)
-					{
-						$('#ajax_version').addClass("alerte").html('Echec de la connexion avec le serveur communautaire !');
-						return false;
-					},
-					success : function(responseHTML)
-					{
-						if( (responseHTML.length!=10) && (responseHTML.length!=11) )
-						{
-							$('#ajax_version').addClass("alerte").html(responseHTML);
-						}
-						else if(responseHTML!=VERSION_PROG)
-						{
-							$('#ajax_version').addClass("alerte").html('Dernière version disponible <em>'+responseHTML+'</em>.');
-						}
-						else
-						{
-							$('#ajax_version').addClass("valide").html('Cette version est la dernière disponible.');
-						}
-					}
-				}
-			);
-		}
-		tester_version();
-
 		// Appel en ajax pour initialiser le formulaire au chargement
 		function chargement()
 		{
@@ -204,6 +169,41 @@ $(document).ready
 				}
 			}
 		);
+
+		// Appel en ajax pour tester le numéro de la dernière version (et le comparer avec l'actuelle).
+		function tester_version()
+		{
+			$.ajax
+			(
+				{
+					type : 'POST',
+					url : 'ajax.php?page='+PAGE,
+					data : 'f_action=tester_version',
+					dataType : "html",
+					error : function(msg,string)
+					{
+						$('#ajax_version').addClass("alerte").html('Echec de la connexion avec le serveur communautaire !');
+						return false;
+					},
+					success : function(responseHTML)
+					{
+						if( (responseHTML.length!=10) && (responseHTML.length!=11) )
+						{
+							$('#ajax_version').addClass("alerte").html(responseHTML);
+						}
+						else if(responseHTML!=VERSION_PROG)
+						{
+							$('#ajax_version').addClass("alerte").html('Dernière version disponible <em>'+responseHTML+'</em>.');
+						}
+						else
+						{
+							$('#ajax_version').addClass("valide").html('Cette version est la dernière disponible.');
+						}
+					}
+				}
+			);
+		}
+		tester_version();
 
 		// Le formulaire qui va être analysé et traité en AJAX
 		var formulaire = $('form');

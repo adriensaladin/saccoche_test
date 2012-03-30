@@ -77,10 +77,10 @@ $select_groupe  = Formulaire::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_groupe
 		<thead><tr><th>élève(s) sans demande</th></tr></thead>
 		<tbody><tr id="tr_sans"><td class="nu"></td></tr></tbody>
 	</table>
-	<table id="table_demandes" class="form hsort">
+	<table id="table_demandes" class="form hsort t9">
 		<thead>
 			<tr>
-				<th class="nu"><input id="all_check" type="image" alt="Tout cocher." src="./_img/all_check.gif" title="Tout cocher." /> <input id="all_uncheck" type="image" alt="Tout décocher." src="./_img/all_uncheck.gif" title="Tout décocher." /></th>
+				<th class="nu"><input name="leurre" type="image" alt="" src="./_img/auto.gif" /><input id="all_check" type="image" alt="Tout cocher." src="./_img/all_check.gif" title="Tout cocher." /> <input id="all_uncheck" type="image" alt="Tout décocher." src="./_img/all_uncheck.gif" title="Tout décocher." /></th>
 				<th>Matière</th>
 				<th>Item</th>
 				<th>Popularité</th>
@@ -89,6 +89,7 @@ $select_groupe  = Formulaire::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_groupe
 				<th>Score</th>
 				<th>Date</th>
 				<th>Statut</th>
+				<th>Messages</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -104,8 +105,8 @@ $select_groupe  = Formulaire::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_groupe
 			<label class="tab" for="f_qui">Élève(s) :</label><select id="f_qui" name="f_qui"><option value="select">Élèves sélectionnés</option><option value="groupe"></option></select>
 		</fieldset>
 		<fieldset id="step_creer" class="hide">
-			<label class="tab" for="f_date">Date devoir :</label><input id="f_date" name="f_date" size="8" type="text" value="<?php echo date("d/m/Y") ?>" /><q class="date_calendrier" title="Cliquez sur cette image pour importer une date depuis un calendrier !"></q><br />
-			<label class="tab" for="f_date_visible">Date visible :</label><input id="box_date" type="checkbox" checked /> <span>identique</span><span class="hide"><input id="f_date_visible" name="f_date_visible" size="8" type="text" value="<?php echo date("d/m/Y") ?>" /><q class="date_calendrier" title="Cliquez sur cette image pour importer une date depuis un calendrier !"></q></span><br />
+			<label class="tab" for="f_date">Date devoir :</label><input id="f_date" name="f_date" size="8" type="text" value="<?php echo TODAY_FR ?>" /><q class="date_calendrier" title="Cliquez sur cette image pour importer une date depuis un calendrier !"></q><br />
+			<label class="tab" for="f_date_visible">Date visible :</label><input id="box_date" type="checkbox" checked /> <span>identique</span><span class="hide"><input id="f_date_visible" name="f_date_visible" size="8" type="text" value="<?php echo TODAY_FR ?>" /><q class="date_calendrier" title="Cliquez sur cette image pour importer une date depuis un calendrier !"></q></span><br />
 			<label class="tab" for="f_date_autoeval">Fin auto-éval. :</label><input id="box_autoeval" type="checkbox" checked /> <span>sans objet</span><span class="hide"><input id="f_date_autoeval" name="f_date_autoeval" size="8" type="text" value="00/00/0000" /><q class="date_calendrier" title="Cliquez sur cette image pour importer une date depuis un calendrier !"></q></span><br />
 			<label class="tab" for="f_info">Description :</label><input id="f_info" name="f_info" size="30" type="text" value="" />
 		</fieldset>
@@ -114,6 +115,9 @@ $select_groupe  = Formulaire::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_groupe
 		</fieldset>
 		<fieldset id="step_suite" class="hide">
 			<label class="tab" for="f_suite">Suite :</label><select id="f_suite" name="f_suite"><option value="changer">Changer ensuite le statut pour "évaluation en préparation".</option><option value="retirer">Retirer ensuite de la liste des demandes.</option></select>
+		</fieldset>
+		<fieldset id="step_message" class="hide">
+			<label class="tab" for="f_message">Message <img alt="" src="./_img/bulle_aide.png" title="facultatif" /> :</label><textarea id="f_message" name="f_message" rows="3" cols="75"></textarea>
 		</fieldset>
 		<p id="step_valider" class="hide">
 			<input type="hidden" id="f_groupe_id2" name="f_groupe_id" value="" /><input type="hidden" id="f_groupe_type2" name="f_groupe_type" value="" />

@@ -92,7 +92,7 @@ require_once('./_inc/tableau_langues.php');
 // Récupération de la liste des élèves
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
-$tab_eleve = DB_STRUCTURE_COMMUN::DB_lister_users_actifs_regroupement( 'eleve' /*profil*/ , $tab_types[$groupe_type] , $groupe_id , 'user_id,user_nom,user_prenom,eleve_langue' ) ;
+$tab_eleve = DB_STRUCTURE_COMMUN::DB_lister_users_regroupement( 'eleve' /*profil*/ , TRUE /*statut*/ , $tab_types[$groupe_type] , $groupe_id , 'user_id,user_nom,user_prenom,eleve_langue' ) ;
 $eleve_nb = count($tab_eleve);
 if(!$eleve_nb)
 {
@@ -108,7 +108,7 @@ foreach($tab_eleve as $DB_ROW)
 $liste_eleve = implode(',',$tab_eleve_id);
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-// !!!!!!!!!! SUITE DU CODE EN CHANTIER / EN VRAC !!!!!!!!!!
+// Suite du code un peu en vrac avec des reprises et des adaptations de morceaux existants...
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
 $affichage_checkbox = ( ($_SESSION['USER_PROFIL']=='professeur') && (SACoche!='webservices') ) ? TRUE : FALSE ;
@@ -370,7 +370,7 @@ if( $is_socle_item_validation || $is_socle_pilier_validation )
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
 $nb_resultats = count($tab_tr);
-$checkbox = ($affichage_checkbox && $nb_resultats) ? '<td class="nu"><input id="all_check" type="image" alt="Tout cocher." src="./_img/all_check.gif" title="Tout cocher." /> <input id="all_uncheck" type="image" alt="Tout décocher." src="./_img/all_uncheck.gif" title="Tout décocher." /></td>' : '' ;
+$checkbox = ($affichage_checkbox && $nb_resultats) ? '<td class="nu"><input name="leurre" type="image" alt="" src="./_img/auto.gif" /><input id="all_check" type="image" alt="Tout cocher." src="./_img/all_check.gif" title="Tout cocher." /> <input id="all_uncheck" type="image" alt="Tout décocher." src="./_img/all_uncheck.gif" title="Tout décocher." /></td>' : '' ;
 $releve_html  = '<hr />';
 $releve_html .= ($affichage_checkbox) ? '<form id="form_synthese" action="#" method="post">' : '' ;
 $releve_html .= '<table class="bilan"><thead><tr>'.$checkbox.'<th>Élève</th><th>État</th></tr></thead><tbody>';

@@ -53,7 +53,7 @@ if( ($type_export=='listing_users') && $groupe_id && isset($tab_types[$groupe_ty
 	// Préparation de l'export HTML
 	$export_html = '<table class="p"><thead><tr><th>Id</th><th>Login</th><th>Nom</th><th>Prénom</th><th>Groupe</th></tr></thead><tbody>'."\r\n";
 	// Récupérer les élèves de la classe ou du groupe
-	$DB_TAB = DB_STRUCTURE_COMMUN::DB_lister_users_actifs_regroupement('eleve',$tab_types[$groupe_type],$groupe_id,'user_id,user_login,user_nom,user_prenom');
+	$DB_TAB = DB_STRUCTURE_COMMUN::DB_lister_users_regroupement( 'eleve' /*profil*/ , TRUE /*statut*/ , $tab_types[$groupe_type] , $groupe_id , 'user_id,user_login,user_nom,user_prenom' );
 	if(count($DB_TAB))
 	{
 		foreach($DB_TAB as $DB_ROW)

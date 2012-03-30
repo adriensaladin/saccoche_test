@@ -78,7 +78,7 @@ $TITRE_NAVIGATEUR = 'SACoche - Relevé HTML';
 $tab_fichiers_head = array();
 $tab_fichiers_head[] = array( 'css' , compacter('./_css/style.css','mini') );
 $tab_fichiers_head[] = array( 'js'  , compacter('./_js/jquery-librairies.js','mini') );
-$tab_fichiers_head[] = array( 'js'  , compacter('./_js/script.js','mini') );
+$tab_fichiers_head[] = array( 'js'  , compacter('./_js/script.js','pack') ); // bug avec la minification dans le version du 29/03
 
 // Affichage de l'en-tête
 declaration_entete( FALSE /*is_meta_robots*/ , TRUE /*is_favicon*/ , FALSE /*is_rss*/ , $tab_fichiers_head , $TITRE_NAVIGATEUR , $CSS_PERSO );

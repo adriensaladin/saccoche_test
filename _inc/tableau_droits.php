@@ -73,6 +73,7 @@ $tab_droits['administrateur_bulletins']                = $tab_droits_profil_admi
 $tab_droits['administrateur_classe']                   = $tab_droits_profil_administrateur;
 $tab_droits['administrateur_classe_gestion']           = $tab_droits_profil_administrateur;
 $tab_droits['administrateur_codes_couleurs']           = $tab_droits_profil_administrateur;
+$tab_droits['administrateur_comptes']                  = $tab_droits_profil_administrateur;
 $tab_droits['administrateur_directeur']                = $tab_droits_profil_administrateur;
 $tab_droits['administrateur_dump']                     = $tab_droits_profil_administrateur;
 $tab_droits['administrateur_eleve']                    = $tab_droits_profil_administrateur;
@@ -108,8 +109,6 @@ $tab_droits['administrateur_professeur_matiere']       = $tab_droits_profil_admi
 $tab_droits['administrateur_professeur_principal']     = $tab_droits_profil_administrateur;
 $tab_droits['administrateur_releves_bilans']           = $tab_droits_profil_administrateur;
 $tab_droits['administrateur_resilier']                 = $tab_droits_profil_administrateur;
-$tab_droits['administrateur_statut_desactiver']        = $tab_droits_profil_administrateur;
-$tab_droits['administrateur_statut_traiter']           = $tab_droits_profil_administrateur;
 // Profil webmestre
 $tab_droits['webmestre_configuration_proxy']           = $tab_droits_profil_webmestre;
 $tab_droits['webmestre_database_test']                 = $tab_droits_profil_webmestre;
@@ -141,6 +140,7 @@ $tab_droits['_maj_select_professeurs_directeurs']      = array( 'public'=>0 , 'e
 $tab_droits['administrateur_eleve_langue']             = array( 'public'=>0 , 'eleve'=>0 , 'parent'=>0 , 'professeur'=>0 , 'directeur'=>1 , 'administrateur'=>1 , 'webmestre'=>0 );
 $tab_droits['compte_daltonisme']                       = array( 'public'=>0 , 'eleve'=>1 , 'parent'=>1 , 'professeur'=>1 , 'directeur'=>1 , 'administrateur'=>0 , 'webmestre'=>0 );
 $tab_droits['compte_info_serveur']                     = array( 'public'=>0 , 'eleve'=>0 , 'parent'=>0 , 'professeur'=>0 , 'directeur'=>0 , 'administrateur'=>1 , 'webmestre'=>1 );
+$tab_droits['compte_message']                          = array( 'public'=>0 , 'eleve'=>0 , 'parent'=>0 , 'professeur'=>1 , 'directeur'=>1 , 'administrateur'=>1 , 'webmestre'=>0 );
 $tab_droits['compte_selection_items']                  = array( 'public'=>0 , 'eleve'=>0 , 'parent'=>0 , 'professeur'=>1 , 'directeur'=>1 , 'administrateur'=>0 , 'webmestre'=>0 );
 $tab_droits['consultation_algorithme']                 = array( 'public'=>0 , 'eleve'=>1 , 'parent'=>1 , 'professeur'=>1 , 'directeur'=>1 , 'administrateur'=>0 , 'webmestre'=>0 );
 $tab_droits['consultation_date_connexion']             = array( 'public'=>0 , 'eleve'=>0 , 'parent'=>0 , 'professeur'=>1 , 'directeur'=>1 , 'administrateur'=>1 , 'webmestre'=>0 );

@@ -47,11 +47,11 @@ header("Content-type: image/png");
 
 require_once('../../_inc/fonction_clean.php');
 
-$dossier   = isset($_GET['dossier']) ? clean_entier($_GET['dossier'])                : 'x' ;
-$nom       = isset($_GET['nom'])     ? mb_substr(clean_nom($_GET['nom']),0,25)       : ' ' ;
-$prenom    = isset($_GET['prenom'])  ? mb_substr(clean_prenom($_GET['prenom']),0,25) : ' ' ;
-$br_line   = isset($_GET['br'])      ? 2                                             : 1 ; // 2 pour nom / retour à la ligne / prénom ; 1 pour nom / prénom à la suite
-$font_size = isset($_GET['size'])    ? clean_entier($_GET['size'])                   : 10 ;
+$dossier   = isset($_GET['dossier']) ? clean_entier($_GET['dossier']) : 'x' ;
+$nom       = isset($_GET['nom'])     ? clean_nom($_GET['nom'])        : ' ' ;
+$prenom    = isset($_GET['prenom'])  ? clean_prenom($_GET['prenom'])  : ' ' ;
+$br_line   = isset($_GET['br'])      ? 2                              : 1 ; // 2 pour nom / retour à la ligne / prénom ; 1 pour nom / prénom à la suite
+$font_size = isset($_GET['size'])    ? clean_entier($_GET['size'])    : 10 ;
 
 $chemin = '../../__tmp/badge/'.$dossier;
 $fichier = $chemin.'/'.clean_login($nom.'_'.$prenom).'_'.$br_line.'_'.$font_size.'.png';

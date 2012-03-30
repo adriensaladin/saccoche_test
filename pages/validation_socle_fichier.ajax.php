@@ -68,7 +68,7 @@ if( in_array( $action , array('export_lpc','export_sacoche') ) && $nb )
 	// Données élèves
 	$tab_eleves     = array(); // [user_id] => array(nom,prenom,sconet_id) Ordonné par classe et alphabet.
 	$only_sconet_id = ($action=='export_lpc') ? TRUE : FALSE ;
-	$DB_TAB = DB_STRUCTURE_SOCLE::DB_lister_eleves_cibles_actifs_avec_sconet_id($listing_eleve_id,$only_sconet_id);
+	$DB_TAB = DB_STRUCTURE_SOCLE::DB_lister_eleves_cibles_actuels_avec_sconet_id($listing_eleve_id,$only_sconet_id);
 	foreach($DB_TAB as $DB_ROW)
 	{
 		$tab_eleves[$DB_ROW['user_id']] = array('nom'=>$DB_ROW['user_nom'],'prenom'=>$DB_ROW['user_prenom'],'sconet_id'=>$DB_ROW['user_sconet_id']);
@@ -77,7 +77,7 @@ if( in_array( $action , array('export_lpc','export_sacoche') ) && $nb )
 	if(!count($DB_TAB))
 	{
 		$identifiant = $only_sconet_id ? 'n\'ont pas d\'identifiant Sconet ou ' : '' ;
-		exit('Erreur : les élèves trouvés '.$identifiant.'sont inactifs !');
+		exit('Erreur : les élèves trouvés '.$identifiant.'sont anciens !');
 	}
 	// Fabrication du XML
 	$nb_eleves  = 0;

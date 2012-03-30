@@ -27,54 +27,105 @@
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = "Bienvenue dans votre espace identifié !";
-?>
 
-<ul class="puce">
-	<li><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=environnement_generalites__ergonomie_generale">DOC : Ergonomie générale.</a></span></li>
-</ul>
+$tab_accueil = array( 'alert'=>'' , 'info'=>'' , 'help'=>'' , 'user'=>'' );
 
-<hr />
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+//	Alertes pour l'administrateur
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
-<p class="astuce">Utilisez le menu ci-dessus pour naviguer dans votre espace !</p>
+if($_SESSION['USER_PROFIL']=='administrateur')
+{
+	$DB_TAB = DB_STRUCTURE_COMMUN::DB_OPT_matieres_etabl();
+	if(!is_array($DB_TAB))
+	{
+		$tab_accueil['alert'] .= '<p class="danger">Aucune matière n\'est rattachée à l\'établissement ! <a href="./index.php?page=administrateur_etabl_matiere">Gestion des matières.</a></p>';
+	}
+	$DB_TAB = DB_STRUCTURE_COMMUN::DB_OPT_niveaux_etabl();
+	if(!count($DB_TAB))
+	{
+		$tab_accueil['alert'] .= '<p class="danger">Aucun niveau n\'est rattaché à l\'établissement ! <a href="./index.php?page=administrateur_etabl_niveau">Gestion des niveaux.</a></p>';
+	}
+	if($tab_accueil['alert'])
+	{
+		$tab_accueil['alert'] .= '<p><span class="manuel"><a class="pop_up" href="'.SERVEUR_DOCUMENTAIRE.'?fichier=support_administrateur__guide">DOC : Guide d\'un administrateur de SACoche.</a></span></p>';
+	}
+}
 
-<?php
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+//	Panneau d'informations
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
+// A venir...
+
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+//	Astuces
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
+// A venir...
+
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+//	Informations utilisateur : infos profil, infos selon profil, infos adresse de connexion
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
+// infos profil
+require_once('./_inc/tableau_profils.php'); // Charge $tab_profil_libelle[$profil][court|long][1|2]
+$tab_accueil['user'] = '<p>Vous êtes connecté avec le statut <b>'.$tab_profil_libelle[$_SESSION['USER_PROFIL']]['long'][1].'</b>.</p>';
+// infos selon profil
+if($_SESSION['USER_PROFIL']=='parent')
+{
+	if($_SESSION['NB_ENFANTS'])
+	{
+		$tab_nom_enfants = array();
+		foreach($_SESSION['OPT_PARENT_ENFANTS'] as $DB_ROW)
+		{
+			$tab_nom_enfants[] =html($DB_ROW['texte']);
+		}
+		$tab_accueil['user'] .= '<p>Élève(s) associé(s) à votre compte : '.implode(' ; ',$tab_nom_enfants).'</p>';
+	}
+	else
+	{
+		$tab_accueil['user'] .= '<p class="danger">'.$_SESSION['OPT_PARENT_ENFANTS'].'</p>';
+	}
+}
+elseif($_SESSION['USER_PROFIL']=='administrateur')
+{
+	if(!$tab_accueil['alert'])
+	{
+		$tab_accueil['user'] .= '<p><span class="manuel"><a class="pop_up" href="'.SERVEUR_DOCUMENTAIRE.'?fichier=support_administrateur__guide">DOC : Guide d\'un administrateur de SACoche.</a></span></p>';
+	}
+}
+else
+{
+	$tab_accueil['user'] .= '<p><span class="manuel"><a class="pop_up" href="'.SERVEUR_DOCUMENTAIRE.'?fichier=environnement_generalites__ergonomie_generale">DOC : Ergonomie générale.</a></span></p>';
+}
+// infos adresse de connexion
 if($_SESSION['USER_PROFIL']=='webmestre')
 {
-	echo'<p class="astuce">Pour vous connecter à cet espace, utilisez l\'adresse <b>'.SERVEUR_ADRESSE.'/?webmestre</b></p>';
+	$tab_accueil['user'] .= '<p>Pour vous connecter à cet espace, utilisez l\'adresse <b>'.SERVEUR_ADRESSE.'/?webmestre</b></p>';
 }
 else
 {
 	if(HEBERGEUR_INSTALLATION=='multi-structures')
 	{
-		echo'<div class="astuce">Adresse à utiliser pour une sélection automatique de l\'établissement depuis n\'importe quel ordinateur :</div>';
-		echo'<p class="hc"><b>'.SERVEUR_ADRESSE.'/?id='.$_SESSION['BASE'].'</b></p>';
+		$tab_accueil['user'] .= '<p>Adresse à utiliser pour une sélection automatique de l\'établissement : <b>'.SERVEUR_ADRESSE.'/?id='.$_SESSION['BASE'].'</b></p>';
 	}
 	if($_SESSION['CONNEXION_MODE']!='normal')
 	{
 		$get_base = ($_SESSION['BASE']) ? '&amp;base='.$_SESSION['BASE'] : '' ;
-		echo'<div class="astuce">Adresse à utiliser pour une connexion automatique avec l\'authentification externe :</div>';
-		echo'<p class="hc"><b>'.SERVEUR_ADRESSE.'/?sso'.$get_base.'</b></p>';
+		$tab_accueil['user'] .= '<p>Adresse à utiliser pour une connexion automatique avec l\'authentification externe : <b>'.SERVEUR_ADRESSE.'/?sso'.$get_base.'</b></p>';
 	}
 }
-?>
 
-<?php
-if($_SESSION['USER_PROFIL']=='parent')
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+//	Affichage
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
+foreach($tab_accueil as $type => $contenu)
 {
-	echo'<hr />';
-	if($_SESSION['NB_ENFANTS'])
+	if($contenu)
 	{
-		echo'<p class="astuce">Élève(s) associé(s) à votre compte :</p>';
-		echo'<ul class="puce">';
-		foreach($_SESSION['OPT_PARENT_ENFANTS'] as $DB_ROW)
-		{
-			echo'<li id="enfant_'.$DB_ROW['valeur'].'">'.html($DB_ROW['texte']).'</li>';
-		}
-		echo'</ul>';
-	}
-	else
-	{
-		echo'<p class="danger">'.$_SESSION['OPT_PARENT_ENFANTS'].'</p>';
+		echo'<hr /><div class="p '.$type.'64">'.$contenu.'</div>';
 	}
 }
 ?>

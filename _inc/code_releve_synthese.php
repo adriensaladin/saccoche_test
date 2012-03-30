@@ -84,23 +84,26 @@ foreach($tab_eleve as $key => $tab)
 			extract($tab_item[$item_id][0]);	// $item_ref $item_nom $item_coef $item_cart $item_socle $item_lien $matiere_id $calcul_methode $calcul_limite $synthese_ref
 			$score = calculer_score($tab_devoirs,$calcul_methode,$calcul_limite) ;
 			$tab_score_eleve_item[$eleve_id][$matiere_id][$synthese_ref][$item_id] = $score;
-			// le détail HTML
-			if($aff_coef)
+			if($score!==FALSE)
 			{
-				$texte_coef = '['.$item_coef.'] ';
+				// le détail HTML
+				if($aff_coef)
+				{
+					$texte_coef = '['.$item_coef.'] ';
+				}
+				if($aff_socle)
+				{
+					$texte_socle = ($item_socle) ? '[S] ' : '[–] ';
+				}
+				if($aff_lien)
+				{
+					$texte_lien_avant = ($item_lien) ? '<a class="lien_ext" href="'.html($item_lien).'">' : '';
+					$texte_lien_apres = ($item_lien) ? '</a>' : '';
+				}
+				$indice = test_A($score) ? 'A' : ( test_NA($score) ? 'NA' : 'VA' ) ;
+				$texte_demande_eval = ($_SESSION['USER_PROFIL']!='eleve') ? '' : ( ($item_cart) ? '<q class="demander_add" id="demande_'.$matiere_id.'_'.$item_id.'_'.$score.'" title="Ajouter aux demandes d\'évaluations."></q>' : '<q class="demander_non" title="Demande interdite."></q>' ) ;
+				$tab_infos_detail_synthese[$eleve_id][$synthese_ref][] = '<span class="'.$tab_etat[$indice].'">'.$texte_coef.$texte_socle.$texte_lien_avant.html($item_ref.' || '.$item_nom.' ['.$score.'%]').'</span>'.$texte_lien_apres.$texte_demande_eval;
 			}
-			if($aff_socle)
-			{
-				$texte_socle = ($item_socle) ? '[S] ' : '[–] ';
-			}
-			if($aff_lien)
-			{
-				$texte_lien_avant = ($item_lien) ? '<a class="lien_ext" href="'.html($item_lien).'">' : '';
-				$texte_lien_apres = ($item_lien) ? '</a>' : '';
-			}
-			$indice = test_A($score) ? 'A' : ( test_NA($score) ? 'NA' : 'VA' ) ;
-			$texte_demande_eval = ($_SESSION['USER_PROFIL']!='eleve') ? '' : ( ($item_cart) ? '<q class="demander_add" id="demande_'.$matiere_id.'_'.$item_id.'_'.$score.'" title="Ajouter aux demandes d\'évaluations."></q>' : '<q class="demander_non" title="Demande interdite."></q>' ) ;
-			$tab_infos_detail_synthese[$eleve_id][$synthese_ref][] = '<span class="'.$tab_etat[$indice].'">'.$texte_coef.$texte_socle.$texte_lien_avant.html($item_ref.' || '.$item_nom.' ['.$score.'%]').'</span>'.$texte_lien_apres.$texte_demande_eval;
 		}
 		// Pour chaque élément de synthèse, et pour chaque matière on recense le nombre d'items considérés acquis ou pas
 		$tab_eleve[$key]['nb_matieres'] = count($tab_score_eleve_item[$eleve_id]);

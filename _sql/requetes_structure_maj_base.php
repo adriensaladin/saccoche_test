@@ -1804,10 +1804,44 @@ public function DB_maj_base($version_actuelle)
 		{
 			$version_actuelle = '2012-03-12';
 			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_actuelle.'" WHERE parametre_nom="version_base"' );
-			// ajout d'un champ pour paramétrer une date limite d'autoévaluation, et deux deux champs pour l'adresse d'un sujet ou d'un corrigé
+			// ajout d'un champ pour paramétrer une date limite d'autoévaluation, et de deux champs pour l'adresse d'un sujet ou d'un corrigé
 			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_devoir ADD devoir_autoeval_date DATE NOT NULL DEFAULT "0000-00-00" AFTER devoir_visible_date ' );
 			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_devoir ADD devoir_doc_sujet   VARCHAR( 60 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT "" ' );
 			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_devoir ADD devoir_doc_corrige VARCHAR( 60 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT "" ' );
+		}
+	}
+
+	//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	//	MAJ 2012-03-12 => 2012-03-29
+	//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	if($version_actuelle=='2012-03-12')
+	{
+		if($version_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
+		{
+			$version_actuelle = '2012-03-29';
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_actuelle.'" WHERE parametre_nom="version_base"' );
+			// modification des deux champs pour l'adresse d'un sujet ou d'un corrigé
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_devoir CHANGE devoir_doc_sujet devoir_doc_sujet     VARCHAR( 255 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT "" ' );
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_devoir CHANGE devoir_doc_corrige devoir_doc_corrige VARCHAR( 255 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT "" ' );
+			$base_id = (strpos(SACOCHE_STRUCTURE_BD_NAME,'sac_base_')===0) ? substr(SACOCHE_STRUCTURE_BD_NAME,9) : '0' ;
+			$chemin = SERVEUR_ADRESSE.'/__tmp/devoir/'.$base_id.'/';
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_devoir SET devoir_doc_sujet   = CONCAT("'.$chemin.'",devoir_doc_sujet)   WHERE devoir_doc_sujet!="" ' );
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_devoir SET devoir_doc_corrige = CONCAT("'.$chemin.'",devoir_doc_corrige) WHERE devoir_doc_corrige!="" ' );
+			// ajout d'un champ pour ajouter un message à une demande d'évaluation
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_demande ADD demande_messages TEXT CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT "" ' );
+			// fusionner user_statut + user_statut_date = user_sortie_date
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_user CHANGE user_statut_date user_sortie_date DATE NOT NULL DEFAULT "9999-12-31" ' );
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_user SET user_sortie_date="9999-12-31" WHERE user_statut=1 ' );
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_user DROP user_statut ' );
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_user ADD INDEX user_sortie_date ( user_sortie_date ) ' );
+			// modification des deux champs pour les identifiants externes
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_user CHANGE user_id_ent  user_id_ent  VARCHAR( 63 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT "" COMMENT "Paramètre renvoyé après une identification CAS depuis un ENT (ça peut être le login, mais ça peut aussi être un numéro interne à l\'ENT...)." ' );
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_user CHANGE user_id_gepi user_id_gepi VARCHAR( 63 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT "" COMMENT "Login de l\'utilisateur dans Gepi utilisé pour un transfert note/moyenne vers un bulletin." ' );
+			// ajout d'une table sacoche_message
+			// La supprimer si elle existe : sinon dans le cas d'une restauration de base à une version antérieure (suivie de cette mise à jour), cette ancienne table éventuellement existante ne serait pas réinitialisée.
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'DROP TABLE IF EXISTS sacoche_message' );
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'CREATE TABLE IF NOT EXISTS sacoche_message ( message_id            MEDIUMINT(8) UNSIGNED            NOT NULL AUTO_INCREMENT, user_id               MEDIUMINT(8) UNSIGNED            NOT NULL DEFAULT 0, message_debut_date    DATE                             NOT NULL DEFAULT "0000-00-00", message_fin_date      DATE                             NOT NULL DEFAULT "0000-00-00", message_destinataires TEXT COLLATE utf8_unicode_ci     NOT NULL DEFAULT "", message_contenu       TINYTEXT COLLATE utf8_unicode_ci NOT NULL DEFAULT "", PRIMARY KEY (message_id), KEY user_id (user_id) ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci ' );
 		}
 	}
 

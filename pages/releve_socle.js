@@ -168,7 +168,7 @@ $(document).ready
 			function()
 			{
 				$("#f_eleve").html('<option value=""></option>').hide();
-				var groupe_val = $("#f_groupe").val();
+				var groupe_val = parseInt( $("#f_groupe").val() , 10 );
 				if(groupe_val)
 				{
 					type = $("#f_groupe option:selected").parent().attr('label');
@@ -191,27 +191,29 @@ $(document).ready
 			{
 				rules :
 				{
-					f_palier      : { required:true },
-					'f_pilier[]'  : { required:true },
-					f_groupe      : { required:true },
-					'f_eleve[]'   : { required:true },
-					f_mode        : { required:true },
-					'f_matiere[]' : { required:function(){return $('#f_mode_manuel').is(':checked');} },
-					f_coef        : { required:false },
-					f_socle       : { required:false },
-					f_lien        : { required:false }
+					f_palier        : { required:true },
+					'f_pilier[]'    : { required:true },
+					f_groupe        : { required:true },
+					'f_eleve[]'     : { required:true },
+					f_mode          : { required:true },
+					'f_matiere[]'   : { required:function(){return $('#f_mode_manuel').is(':checked');} },
+					f_only_presence : { required:false },
+					f_coef          : { required:false },
+					f_socle         : { required:false },
+					f_lien          : { required:false }
 				},
 				messages :
 				{
-					f_palier      : { required:"palier manquant" },
-					'f_pilier[]'  : { required:"compétence(s) manquante(s)" },
-					f_groupe      : { required:"groupe manquant" },
-					'f_eleve[]'   : { required:"élève(s) manquant(s)" },
-					f_mode        : { required:"choix manquant" },
-					'f_matiere[]' : { required:"matiere(s) manquant(e)" },
-					f_coef        : { },
-					f_socle       : { },
-					f_lien        : { }
+					f_palier        : { required:"palier manquant" },
+					'f_pilier[]'    : { required:"compétence(s) manquante(s)" },
+					f_groupe        : { required:"groupe manquant" },
+					'f_eleve[]'     : { required:"élève(s) manquant(s)" },
+					f_mode          : { required:"choix manquant" },
+					'f_matiere[]'   : { required:"matiere(s) manquant(e)" },
+					f_only_presence : { },
+					f_coef          : { },
+					f_socle         : { },
+					f_lien          : { }
 				},
 				errorElement : "label",
 				errorClass : "erreur",

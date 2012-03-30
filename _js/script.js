@@ -752,6 +752,17 @@ jQuery.validator.addMethod
 ); 
 
 /**
+ * Fonction pour tester une URL : extrait du plugin jQuery Validation
+ *
+ * @param string
+ * @return bool
+ */
+function testURL(lien)
+{
+	return /^(https?|ftp):\/\/(((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:)*@)?(((\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5]))|((([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.)*(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.?)(:\d*)?)(\/((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)+(\/(([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)*)*)?)?(\?((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)|[\uE000-\uF8FF]|\/|\?)*)?(\#((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)|\/|\?)*)?$/i.test(lien);
+}
+
+/**
  * jQuery !
  */
 $(document).ready
@@ -795,6 +806,21 @@ $(document).ready
 			);
 		}
 		page_transparente();
+
+		/**
+		 * Si on appuie sur la touche entrée, le premier élèment de formulaire est actionné.
+		 * S'il s'agit d'un input type image, cela peut dé-cocher tout un ensemble de cases à l'insu de l'utilisateur.
+		 * Feinte de balayeur trouvée : insérer en premier un input type image inoffensif.
+		 * Mais il faut aussi saisir son interception, sinon le formulaire est envoyée et la page rechargée.
+		 */
+		//	
+		$('input[name=leurre]').live
+		(
+			'click' , function()
+			{
+				return false;
+			}
+		);
 
 		/**
 		 * Réagir aux clics pour déployer / replier des arbres (matières, items, socle, users)
@@ -959,7 +985,7 @@ $(document).ready
 		}
 
 		/**
-		 * Calque pour afficher un calendrier, ou le résultat d'une demande d'évaluation
+		 * Calque pour afficher un calendrier
 		 */
 
 		// Ajoute au document le calque d'aide au remplissage
@@ -1011,66 +1037,6 @@ $(document).ready
 							{
 								$('#calque').html(responseHTML);
 								leave_erreur = false;
-							}
-							else
-							{
-								$('#ajax_alerte_calque').removeAttr("class").addClass("alerte").html(responseHTML);
-								leave_erreur = true;
-							}
-						}
-					}
-				);
-			}
-		);
-
-		// Afficher le calque et le compléter : ajouter une demande d'évaluation
-		$('q.demander_add').live
-		('click',
-			function(e)
-			{
-				// Récupérer les infos associées
-				infos = $(this).attr('id');    // 'demande_' + matiere_id + '_' + item_id + '_' + score
-				tab_infos = infos.split('_');
-				if(tab_infos.length==4)
-				{
-					matiere_id = tab_infos[1];
-					item_id    = tab_infos[2];
-					score      = (tab_infos[3]!='') ? tab_infos[3] : -1 ; // si absence de score...
-					get_data   = 'matiere_id='+matiere_id+'&item_id='+item_id+'&score='+score;
-				}
-				else
-				{
-					return false;
-				}
-				// Afficher le calque
-				posX = e.pageX-5;
-				posY = e.pageY-5;
-				$("#calque").css('left',posX + 'px');
-				$("#calque").css('top',posY + 'px');
-				$("#calque").html('<label id="ajax_alerte_calque" for="nada" class="loader">Connexion au serveur&hellip;</label>').show();
-				// Charger en Ajax le contenu du calque
-				$.ajax
-				(
-					{
-						type : 'GET',
-						url : 'ajax.php?page=eleve_eval_demande_ajout',
-						data : get_data,
-						dataType : "html",
-						error : function(msg,string)
-						{
-							$('#ajax_alerte_calque').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
-							leave_erreur = true;
-						},
-						success : function(responseHTML)
-						{
-							if(responseHTML.substring(0,5)=='<form')	// Attention aux caractères accentués : l'utf-8 pose des pbs pour ce test
-							{
-								if (typeof(DUREE_AUTORISEE)!=='undefined')
-								{
-									initialiser_compteur(); // Ne modifier l'état du compteur que si l'appel ne provient pas d'une page HTML de bilan
-								}
-								$('#calque').html(responseHTML);
-								leave_erreur = true;
 							}
 							else
 							{
@@ -1157,6 +1123,85 @@ $(document).ready
 				a = tab[2];
 				reload_calendrier(m,a);
 				return false;
+			}
+		);
+
+		/**
+		 * Calque pour une demande d'évaluation élève
+		 */
+
+		$('q.demander_add').live
+		('click',
+			function()
+			{
+				// Récupérer les infos associées
+				infos = $(this).attr('id');    // 'demande_' + matiere_id + '_' + item_id + '_' + score
+				tab_infos = infos.split('_');
+				if(tab_infos.length!=4)
+				{
+					return false;
+				}
+				matiere_id = tab_infos[1];
+				item_id    = tab_infos[2];
+				score      = (tab_infos[3]!='') ? tab_infos[3] : -1 ; // si absence de score...
+				item_nom   = $(this).parent().text();
+				var contenu = '<h2>Formuler une demande d\'évaluation</h2>'
+				            + '<form action="#" method="post" id="form_demande_evaluation">'
+				            + '<p class="b">'+item_nom+'</p>'
+				            + '<p>Message (facultatif) : <textarea name="message" rows="5" cols="75"></textarea></p>'
+				            + '<p><span class="tab"></span><input name="matiere_id" type="hidden" value="'+matiere_id+'" /><input name="item_id" type="hidden" value="'+item_id+'" /><input name="score" type="hidden" value="'+score+'" />'
+				            + '<button id="confirmer_demande_evaluation" type="button" class="valider">Confirmer.</button> <button id="fermer_demande_evaluation" type="button" class="annuler">Annuler.</button><label id="ajax_msg_confirmer_demande"></label></p>'
+				            + '</form>';
+				$.fancybox( contenu , { 'modal':true , 'centerOnScroll':true } );
+				$('#form_demande_evaluation textarea').focus();
+			}
+		);
+
+		$('#fermer_demande_evaluation').live
+		('click',
+			function()
+			{
+				$.fancybox.close();
+				return(false);
+			}
+		);
+
+		$('#confirmer_demande_evaluation').live
+		('click',
+			function()
+			{
+				$('#form_demande_evaluation button').prop('disabled',true);
+				$('#ajax_msg_confirmer_demande').removeAttr("class").addClass("loader").html("Connexion au serveur&hellip;");
+				$.ajax
+				(
+					{
+						type : 'POST',
+						url : 'ajax.php?page=eleve_eval_demande_ajout',
+						data : $("#form_demande_evaluation").serialize(),
+						dataType : "html",
+						error : function(msg,string)
+						{
+							$('#ajax_msg_confirmer_demande').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
+							$('#form_demande_evaluation button').prop('disabled',false);
+						},
+						success : function(responseHTML)
+						{
+							if(responseHTML.substring(0,6)!='<label')	// Attention aux caractères accentués : l'utf-8 pose des pbs pour ce test
+							{
+								$('#ajax_msg_confirmer_demande').removeAttr("class").addClass("alerte").html(responseHTML);
+							}
+							else
+							{
+								$("#form_demande_evaluation").html( responseHTML + '<p><span class="tab"></span><button id="fermer_demande_evaluation" type="button" class="retourner">Fermer.</button></p>' );
+								if (typeof(DUREE_AUTORISEE)!=='undefined')
+								{
+									initialiser_compteur(); // Ne modifier l'état du compteur que si l'appel ne provient pas d'une page HTML de bilan
+								}
+							}
+							$('#form_demande_evaluation button').prop('disabled',false);
+						}
+					}
+				);
 			}
 		);
 

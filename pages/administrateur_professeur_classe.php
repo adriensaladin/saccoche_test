@@ -62,7 +62,7 @@ else
 	}
 
 	// Récupérer la liste des professeurs
-	$DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_users('professeur',$only_actifs=true,$with_classe=false);
+	$DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_users( 'professeur' , 1 /*only_actuels*/ , FALSE /*with_classe*/ );
 	if(!count($DB_TAB))
 	{
 		echo'<p class="danger">Aucun compte professeur trouvé !</p>';

@@ -31,7 +31,7 @@ $TITRE = "Import / Export de validations du socle";
 
 <?php
 // Test pour l'export
-$nb_eleves_sans_sconet = DB_STRUCTURE_SOCLE::DB_compter_eleves_actifs_sans_id_sconet();
+$nb_eleves_sans_sconet = DB_STRUCTURE_SOCLE::DB_compter_eleves_actuels_sans_id_sconet();
 $s = ($nb_eleves_sans_sconet>1) ? 's' : '' ;
 
 $test_uai          = ($_SESSION['WEBMESTRE_UAI'])                                     ? TRUE : FALSE ;

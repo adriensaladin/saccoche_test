@@ -43,6 +43,7 @@ $date_autoeval = (isset($_POST['f_date_autoeval'])) ? clean_texte($_POST['f_date
 $info          = (isset($_POST['f_info']))          ? clean_texte($_POST['f_info'])          : '';
 $devoir_ids    = (isset($_POST['f_devoir']))        ? clean_texte($_POST['f_devoir'])        : '';
 $suite         = (isset($_POST['f_suite']))         ? clean_texte($_POST['f_suite'])         : '';
+$message       = (isset($_POST['f_message']))       ? clean_texte($_POST['f_message'])       : '' ;
 
 $tab_demande_id = array();
 $tab_user_id    = array();
@@ -77,6 +78,7 @@ list($devoir_id,$devoir_groupe_id) = (substr_count($devoir_ids,'_')==1) ? explod
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 //	Afficher une liste de demandes
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
 if( ($action=='Afficher_demandes') && $matiere_id && $matiere_nom && $groupe_id && (isset($tab_types[$groupe_type])) && $groupe_nom )
 {
 	$retour = '';
@@ -108,6 +110,7 @@ if( ($action=='Afficher_demandes') && $matiere_id && $matiere_nom && $groupe_id 
 		$score  = ($DB_ROW['demande_score']!==null) ? $DB_ROW['demande_score'] : false ;
 		$statut = ($DB_ROW['demande_statut']=='eleve') ? 'demande non traitée' : 'évaluation en préparation' ;
 		$class  = ($DB_ROW['demande_statut']=='eleve') ? ' class="new"' : '' ;
+		$commentaire = ($DB_ROW['demande_messages']) ? 'oui <img alt="" src="./_img/bulle_aide.png" title="'.str_replace(array("\r\n","\r","\n"),'<br />',html($DB_ROW['demande_messages'])).'" />' : 'non' ;
 		// Afficher une ligne du tableau 
 		$retour .= '<tr'.$class.'>';
 		$retour .= '<td class="nu"><input type="checkbox" name="f_ids" value="'.$DB_ROW['demande_id'].'x'.$DB_ROW['user_id'].'x'.$DB_ROW['item_id'].'" /></td>';
@@ -119,6 +122,7 @@ if( ($action=='Afficher_demandes') && $matiere_id && $matiere_nom && $groupe_id 
 		$retour .= str_replace( '<td class="' , '<td class="label ' , affich_score_html($score,'score',$pourcent='') );
 		$retour .= '<td class="label"><i>'.html($DB_ROW['demande_date']).'</i>'.convert_date_mysql_to_french($DB_ROW['demande_date']).'</td>';
 		$retour .= '<td class="label">'.$statut.'</td>';
+		$retour .= '<td class="label">'.$commentaire.'</td>';
 		$retour .= '</tr>';
 	}
 	// Calculer pour chaque item sa popularité (le nb de demandes pour les élèves affichés)
@@ -133,13 +137,14 @@ if( ($action=='Afficher_demandes') && $matiere_id && $matiere_nom && $groupe_id 
 		$tab_bon[] = '<i>'.sprintf("%02u",$DB_ROW['popularite']).'</i>'.$DB_ROW['popularite'].' demande'.$s;
 	}
 	// Inclure dans le retour la liste des élèves sans demandes
-	echo '<td>'.implode('<br />',$tab_autres).'</td>'.'<¤>'.str_replace($tab_bad,$tab_bon,$retour);
+	exit('<td>'.implode('<br />',$tab_autres).'</td>'.'<¤>'.str_replace($tab_bad,$tab_bon,$retour));
 }
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 //	Créer une nouvelle évaluation
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-elseif( ($action=='creer') && $groupe_id && (isset($tab_types[$groupe_type])) && in_array($qui,$tab_qui) && $date && $date_visible && $date_autoeval && $info && in_array($suite,$tab_suite) && $nb_demandes && $nb_users && $nb_items )
+
+if( ($action=='creer') && $groupe_id && (isset($tab_types[$groupe_type])) && in_array($qui,$tab_qui) && $date && $date_visible && $date_autoeval && $info && in_array($suite,$tab_suite) && $nb_demandes && $nb_users && $nb_items )
 {
 	// Dans le cas d'une évaluation sur une liste d'élèves sélectionnés,
 	if($qui=='select')
@@ -173,7 +178,7 @@ elseif( ($action=='creer') && $groupe_id && (isset($tab_types[$groupe_type])) &&
 	$listing_demande_id = implode(',',$tab_demande_id);
 	if($suite=='changer')
 	{
-		DB_STRUCTURE_PROFESSEUR::DB_modifier_statut_demandes($listing_demande_id,'prof');
+		DB_STRUCTURE_PROFESSEUR::DB_modifier_statut_demandes($listing_demande_id,'prof',$message);
 	}
 	else
 	{
@@ -185,7 +190,8 @@ elseif( ($action=='creer') && $groupe_id && (isset($tab_types[$groupe_type])) &&
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 //	Compléter une évaluation existante
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-elseif( ($action=='completer') && (isset($tab_types[$groupe_type])) && in_array($qui,$tab_qui) && $devoir_id && $devoir_groupe_id && in_array($suite,$tab_suite) && $nb_demandes && $nb_users && $nb_items && $date && $date_visible )
+
+if( ($action=='completer') && (isset($tab_types[$groupe_type])) && in_array($qui,$tab_qui) && $devoir_id && $devoir_groupe_id && in_array($suite,$tab_suite) && $nb_demandes && $nb_users && $nb_items && $date && $date_visible )
 {
 	// Dans le cas d'une évaluation sur une liste d'élèves sélectionnés
 	if($qui=='select')
@@ -208,7 +214,7 @@ elseif( ($action=='completer') && (isset($tab_types[$groupe_type])) && in_array(
 	$listing_demande_id = implode(',',$tab_demande_id);
 	if($suite=='changer')
 	{
-		DB_STRUCTURE_PROFESSEUR::DB_modifier_statut_demandes($listing_demande_id,'prof');
+		DB_STRUCTURE_PROFESSEUR::DB_modifier_statut_demandes($listing_demande_id,'prof',$message);
 	}
 	else
 	{
@@ -220,25 +226,29 @@ elseif( ($action=='completer') && (isset($tab_types[$groupe_type])) && in_array(
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 //	Changer le statut pour "évaluation en préparation"
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-elseif( ($action=='changer') && $nb_demandes )
+
+if( ($action=='changer') && $nb_demandes )
 {
 	$listing_demande_id = implode(',',$tab_demande_id);
-	DB_STRUCTURE_PROFESSEUR::DB_modifier_statut_demandes($listing_demande_id,'prof');
+	DB_STRUCTURE_PROFESSEUR::DB_modifier_statut_demandes($listing_demande_id,'prof',$message);
 	exit('ok');
 }
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 //	Retirer de la liste des demandes
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-elseif( ($action=='retirer') && $nb_demandes )
+
+if( ($action=='retirer') && $nb_demandes )
 {
 	$listing_demande_id = implode(',',$tab_demande_id);
 	DB_STRUCTURE_PROFESSEUR::DB_supprimer_demandes_devoir($listing_demande_id);
 	exit('ok');
 }
 
-else
-{
-	echo'Erreur avec les données transmises !';
-}
+//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//	On ne devrait pas en arriver là !
+//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+exit('Erreur avec les données transmises !');
+
 ?>

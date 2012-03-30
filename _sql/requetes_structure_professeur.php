@@ -117,9 +117,9 @@ public function DB_lister_professeurs_groupe($groupe_id)
 	$DB_SQL.= 'FROM sacoche_groupe ';
 	$DB_SQL.= 'LEFT JOIN sacoche_jointure_user_groupe USING (groupe_id) ';
 	$DB_SQL.= 'LEFT JOIN sacoche_user USING (user_id) ';
-	$DB_SQL.= 'WHERE groupe_id=:groupe_id AND user_profil=:profil AND user_statut=:statut ';
+	$DB_SQL.= 'WHERE groupe_id=:groupe_id AND user_profil=:profil AND user_sortie_date>NOW() ';
 	$DB_SQL.= 'ORDER BY user_nom ASC, user_prenom ASC';
-	$DB_VAR = array(':groupe_id'=>$groupe_id,':profil'=>'professeur',':statut'=>1);
+	$DB_VAR = array(':groupe_id'=>$groupe_id,':profil'=>'professeur');
 	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 */
@@ -193,9 +193,9 @@ public function DB_lister_eleves_classes($listing_classe_id)
 {
 	$DB_SQL = 'SELECT * ';
 	$DB_SQL.= 'FROM sacoche_user ';
-	$DB_SQL.= 'WHERE user_profil=:profil AND user_statut=:statut AND eleve_classe_id IN ('.$listing_classe_id.') ';
+	$DB_SQL.= 'WHERE user_profil=:profil AND user_sortie_date>NOW() AND eleve_classe_id IN ('.$listing_classe_id.') ';
 	$DB_SQL.= 'ORDER BY user_nom ASC, user_prenom ASC';
-	$DB_VAR = array(':profil'=>'eleve',':statut'=>1);
+	$DB_VAR = array(':profil'=>'eleve');
 	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
@@ -210,9 +210,9 @@ public function DB_lister_eleves_groupes($listing_groupe_id)
 	$DB_SQL = 'SELECT * ';
 	$DB_SQL.= 'FROM sacoche_user ';
 	$DB_SQL.= 'LEFT JOIN sacoche_jointure_user_groupe USING (user_id) ';
-	$DB_SQL.= 'WHERE user_profil=:profil AND user_statut=:statut AND groupe_id IN ('.$listing_groupe_id.') ';
+	$DB_SQL.= 'WHERE user_profil=:profil AND user_sortie_date>NOW() AND groupe_id IN ('.$listing_groupe_id.') ';
 	$DB_SQL.= 'ORDER BY user_nom ASC, user_prenom ASC';
-	$DB_VAR = array(':profil'=>'eleve',':statut'=>1);
+	$DB_VAR = array(':profil'=>'eleve');
 	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
@@ -227,10 +227,9 @@ public function DB_lister_users_avec_groupes_besoins($listing_groupes_id)
 	$DB_SQL = 'SELECT groupe_id, user_id, user_nom, user_prenom, user_profil, jointure_pp ';
 	$DB_SQL.= 'FROM sacoche_jointure_user_groupe ';
 	$DB_SQL.= 'LEFT JOIN sacoche_user USING (user_id) ';
-	$DB_SQL.= 'WHERE groupe_id IN('.$listing_groupes_id.') AND user_statut=:statut ';
+	$DB_SQL.= 'WHERE groupe_id IN('.$listing_groupes_id.') AND user_sortie_date>NOW() ';
 	$DB_SQL.= 'ORDER BY user_nom ASC, user_prenom ASC';
-	$DB_VAR = array(':statut'=>1);
-	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
 }
 
 /**
@@ -294,7 +293,7 @@ public function DB_lister_devoirs_prof($prof_id,$groupe_id,$date_debut_mysql,$da
 {
 	// DB::query(SACOCHE_STRUCTURE_BD_NAME , 'SET group_concat_max_len = ...'); // Pour lever si besoin une limitation de GROUP_CONCAT (group_concat_max_len est par défaut limité à une chaine de 1024 caractères).
 	// Il faut ajouter dans la requête des "DISTINCT" sinon la liaison avec "sacoche_jointure_user_groupe" duplique tout x le nb d'élèves associés pour une évaluation sur une sélection d'élèves.
-	$DB_SQL = 'SELECT sacoche_devoir.*, ';
+	$DB_SQL = 'SELECT sacoche_devoir.*, CONCAT(user_nom," ",user_prenom) AS proprietaire, ';
 	$DB_SQL.= 'GROUP_CONCAT(DISTINCT item_id SEPARATOR "_") AS items_listing, COUNT(DISTINCT item_id) AS items_nombre, ';
 	if(!$groupe_id)
 	{
@@ -308,6 +307,7 @@ public function DB_lister_devoirs_prof($prof_id,$groupe_id,$date_debut_mysql,$da
 	{
 		$DB_SQL.= 'LEFT JOIN sacoche_jointure_user_groupe USING (groupe_id) ';
 	}
+	$DB_SQL.= 'LEFT JOIN sacoche_user ON sacoche_devoir.prof_id=sacoche_user.user_id ';
 	$DB_SQL.= 'WHERE ( prof_id=:prof_id OR devoir_partage LIKE :prof_id_like ) ';
 	$DB_SQL.= ($groupe_id) ? 'AND groupe_type!=:type4 ' : 'AND groupe_type=:type4 ' ;
 	$DB_SQL.= ($groupe_id>0) ? 'AND groupe_id='.$groupe_id.' ' : '' ;
@@ -380,9 +380,9 @@ public function DB_lister_saisies_devoir($devoir_id,$with_REQ)
 	$DB_SQL = 'SELECT eleve_id, item_id, saisie_note ';
 	$DB_SQL.= 'FROM sacoche_saisie ';
 	$DB_SQL.= 'LEFT JOIN sacoche_user ON sacoche_saisie.eleve_id=sacoche_user.user_id ';
-	$DB_SQL.= 'WHERE devoir_id=:devoir_id AND user_statut=:statut ';
+	$DB_SQL.= 'WHERE devoir_id=:devoir_id AND user_sortie_date>NOW() ';
 	$DB_SQL.= ($with_REQ) ? '' : 'AND saisie_note!="REQ" ' ;
-	$DB_VAR = array(':devoir_id'=>$devoir_id,':statut'=>1);
+	$DB_VAR = array(':devoir_id'=>$devoir_id);
 	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
@@ -876,14 +876,16 @@ public function DB_modifier_liaison_devoir_groupe($devoir_id,$groupe_id)
  *
  * @param string $listing_demande_id   id des demandes séparées par des virgules
  * @param string $statut               'prof' ou ...
+ * @param string $message              facultatif
  * @return void
  */
-public function DB_modifier_statut_demandes($listing_demande_id,$statut)
+public function DB_modifier_statut_demandes($listing_demande_id,$statut,$message)
 {
+	$message_complementaire = ($message) ? "\r\n\r\n".$_SESSION['USER_NOM'].' '.$_SESSION['USER_PRENOM']{0}.'.'."\r\n".$message : '' ;
 	$DB_SQL = 'UPDATE sacoche_demande ';
-	$DB_SQL.= 'SET demande_statut=:demande_statut ';
+	$DB_SQL.= 'SET demande_statut=:demande_statut, demande_messages=CONCAT(demande_messages,:message_complementaire) ';
 	$DB_SQL.= 'WHERE demande_id IN('.$listing_demande_id.') ';
-	$DB_VAR = array(':demande_statut'=>$statut);
+	$DB_VAR = array(':demande_statut'=>$statut,':message_complementaire'=>$message_complementaire);
 	DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 

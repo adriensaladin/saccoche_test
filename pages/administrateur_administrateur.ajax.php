@@ -35,12 +35,13 @@ $id_gepi    = (isset($_POST['f_id_gepi']))    ? clean_texte($_POST['f_id_gepi'])
 $nom        = (isset($_POST['f_nom']))        ? clean_nom($_POST['f_nom'])           : '';
 $prenom     = (isset($_POST['f_prenom']))     ? clean_prenom($_POST['f_prenom'])     : '';
 $login      = (isset($_POST['f_login']))      ? clean_login($_POST['f_login'])       : '';
-$inchange   = (isset($_POST['box_password'])) ? clean_entier($_POST['box_password']) : 0;
 $password   = (isset($_POST['f_password']))   ? clean_password($_POST['f_password']) : '' ;
+$not_new_mdp   = (isset($_POST['box_password'])) ? clean_entier($_POST['box_password']) : 0;
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 //	Ajouter un nouvel administrateur
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
 if( ($action=='ajouter') && $nom && $prenom && $login && $password )
 {
 	// Vérifier que l'identifiant ENT est disponible (parmi tout le personnel de l'établissement)
@@ -79,12 +80,14 @@ if( ($action=='ajouter') && $nom && $prenom && $login && $password )
 	echo		'<q class="supprimer" title="Retirer cet administrateur."></q>';
 	echo	'</td>';
 	echo'</tr>';
+	exit();
 }
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 //	Modifier un administrateur existant
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-else if( ($action=='modifier') && $id && $nom && $prenom && $login && ( $inchange || $password ) )
+
+if( ($action=='modifier') && $id && $nom && $prenom && $login && ( $not_new_mdp || $password ) )
 {
 	// Vérifier que l'identifiant ENT est disponible (parmi tout le personnel de l'établissement)
 	if($id_ent)
@@ -109,7 +112,7 @@ else if( ($action=='modifier') && $id && $nom && $prenom && $login && ( $inchang
 	}
 	// Mettre à jour l'enregistrement avec ou sans génération d'un nouveau mot de passe
 	$tab_donnees = array(':nom'=>$nom,':prenom'=>$prenom,':login'=>$login,':id_ent'=>$id_ent,':id_gepi'=>$id_gepi);
-	if(!$inchange)
+	if(!$not_new_mdp)
 	{
 		$tab_donnees[':password'] = crypter_mdp($password);
 	}
@@ -126,17 +129,19 @@ else if( ($action=='modifier') && $id && $nom && $prenom && $login && ( $inchang
 	echo'<td>'.html($nom).'</td>';
 	echo'<td>'.html($prenom).'</td>';
 	echo'<td>'.html($login).'</td>';
-	echo ($inchange) ? '<td class="i">champ crypté</td>' : '<td class="new">'.$password.' <img alt="" src="./_img/bulle_aide.png" title="Pensez à noter le mot de passe !" /></td>' ;
+	echo ($not_new_mdp) ? '<td class="i">champ crypté</td>' : '<td class="new">'.$password.' <img alt="" src="./_img/bulle_aide.png" title="Pensez à noter le mot de passe !" /></td>' ;
 	echo'<td class="nu">';
 	echo	'<q class="modifier" title="Modifier ce administrateur."></q>';
 	echo	($id!=$_SESSION['USER_ID']) ? '<q class="supprimer" title="Retirer cet administrateur."></q>' : '<q class="supprimer_non" title="Un administrateur ne peut pas supprimer son propre compte."></q>' ;
 	echo'</td>';
+	exit();
 }
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 //	Retirer un administrateur existant
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-else if( ($action=='supprimer') && $id )
+
+if( ($action=='supprimer') && $id )
 {
 	if($id==$_SESSION['USER_ID'])
 	{
@@ -147,11 +152,13 @@ else if( ($action=='supprimer') && $id )
 	// Log de l'action
 	ajouter_log_SACoche('Suppression d\'un utilisateur (administrateur '.$id.').');
 	// Afficher le retour
-	echo'<td>ok</td>';
+	exit('<td>ok</td>');
 }
 
-else
-{
-	echo'Erreur avec les données transmises !';
-}
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+//	On ne devrait pas en arriver là !
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
+exit('Erreur avec les données transmises !');
+
 ?>

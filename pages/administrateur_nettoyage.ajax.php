@@ -104,10 +104,9 @@ if($action=='purger')
 	{
 		foreach($DB_TAB as $DB_ROW)
 		{
-			$param_profil = ($DB_ROW['user_profil']=='eleve') ? 'eleve' : 'professeur' ; // On transmet 'professeur' y compris pour les directeurs.
-			DB_STRUCTURE_ADMINISTRATEUR::DB_supprimer_utilisateur($DB_ROW['user_id'],$param_profil);
+			DB_STRUCTURE_ADMINISTRATEUR::DB_supprimer_utilisateur($DB_ROW['user_id'],$DB_ROW['user_profil']);
 			// Log de l'action
-			ajouter_log_SACoche('Suppression d\'un utilisateur ('.$param_profil.' '.$DB_ROW['user_id'].').');
+			ajouter_log_SACoche('Suppression d\'un utilisateur ('.$DB_ROW['user_profil'].' '.$DB_ROW['user_id'].').');
 		}
 	}
 	// Supprimer les demandes d'évaluations, ainsi que les reliquats de notes 'REQ'

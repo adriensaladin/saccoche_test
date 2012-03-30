@@ -57,7 +57,7 @@ if( ($action=='enregistrer_parents') && $eleve_id && (count($tab_parents_id)==5)
 if( ($action=='afficher_parents') && $eleve_id )
 {
 	$tab_parents = array_fill(1,4,'<table><tbody><tr><th class="vu" style="width:6em">$TITRE$</th><td>---</td><th class="nu"><q class="ajouter" title="Ajouter un responsable."></q></th></tr></tbody></table>');
-	$DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_parents_actifs_avec_infos_for_eleve($eleve_id);
+	$DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_parents_actuels_avec_infos_for_eleve($eleve_id);
 	foreach($DB_TAB AS $key => $DB_ROW)
 	{
 		$identite        = html($DB_ROW['user_nom'].' '.$DB_ROW['user_prenom']);

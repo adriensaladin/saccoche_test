@@ -38,8 +38,8 @@ $(document).ready
 		var td_resp = false;
 
 		// tri du tableau (avec jquery.tablesorter.js).
-		var sorting = [[5,0],[6,0]];
-		$('table.form').tablesorter({ headers:{8:{sorter:false},9:{sorter:false}} });
+		var sorting = [[6,0],[7,0]];
+		$('table.form').tablesorter({ headers:{0:{sorter:false},9:{sorter:false},11:{sorter:false}} });
 		function trier_tableau()
 		{
 			if($('table.form tbody tr').length)
@@ -51,9 +51,62 @@ $(document).ready
 		trier_tableau();
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-//	Clic sur le checkbox pour affecter ou non un nouveau mot de passe
+// Recharger la page en restreignant l'affichage en fonction des choix préalables
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-		$('#box_password').live // live est utilisé pour prendre en compte les nouveaux éléments créés
+
+		function reload()
+		{
+			$('#ajax_msg0').addClass("loader").html("Connexion au serveur&hellip;");
+			$('#form1').remove();
+			$('#form0').submit();
+		}
+
+		$('#form0 select').change
+		(
+			function()
+			{
+				reload();
+			}
+		);
+
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+//	Clic sur une cellule (remplace un champ label, impossible à définir sur plusieurs colonnes)
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
+		$('td.label').live
+		('click',
+			function()
+			{
+				$(this).parent().find("input[type=checkbox]").click();
+			}
+		);
+
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+//	Clic pour tout cocher ou tout décocher
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
+		$('#all_check').click
+		(
+			function()
+			{
+				$('#form1 td.nu input[type=checkbox]').prop('checked',true);
+				return false;
+			}
+		);
+		$('#all_uncheck').click
+		(
+			function()
+			{
+				$('#form1 td.nu input[type=checkbox]').prop('checked',false);
+				return false;
+			}
+		);
+
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+//	Clic sur le checkbox pour affecter ou non un nouveau mot de passe
+//	Clic sur le checkbox pour choisir ou non une date de sortie
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+		$('#box_password , #box_date').live // live est utilisé pour prendre en compte les nouveaux éléments créés
 		('click',
 			function()
 			{
@@ -82,6 +135,7 @@ $(document).ready
 			// Fabriquer la ligne avec les éléments de formulaires
 			afficher_masquer_images_action('hide');
 			new_tr  = '<tr>';
+			new_tr += '<td class="nu"></td>';
 			new_tr += '<td>---</td>';
 			new_tr += '<td><input id="f_id_ent" name="f_id_ent" size="10" type="text" value="" /><img alt="" src="./_img/bulle_aide.png" title="Uniquement en cas d\'identification via un ENT." /></td>';
 			new_tr += '<td><input id="f_id_gepi" name="f_id_gepi" size="10" type="text" value="" /><img alt="" src="./_img/bulle_aide.png" title="Uniquement en cas d\'utilisation du logiciel GEPI." /></td>';
@@ -91,6 +145,7 @@ $(document).ready
 			new_tr += '<td><input id="f_prenom" name="f_prenom" size="15" type="text" value="" /></td>';
 			new_tr += '<td class="i">forme "'+select_login+'"</td>';
 			new_tr += '<td><input id="f_password" name="f_password" size="8" type="text" value="" /></td>';
+			new_tr += '<td><input id="box_date" name="box_date" value="1" type="checkbox" checked style="vertical-align:-3px" /> <span style="vertical-align:-2px">sans objet</span><span class="hide"><input id="f_sortie_date" name="f_sortie_date" size="8" type="text" value="'+input_date+'" /><q class="date_calendrier" title="Cliquez sur cette image pour importer une date depuis un calendrier !"></q></span></td>';
 			new_tr += '<td class="nu"><input id="f_action" name="f_action" type="hidden" value="'+mode+'" /><q class="valider" title="Valider l\'ajout de ce parent."></q><q class="annuler" title="Annuler l\'ajout de ce parent."></q> <label id="ajax_msg">&nbsp;</label></td>';
 			new_tr += '</tr>';
 			// Ajouter cette nouvelle ligne
@@ -108,15 +163,20 @@ $(document).ready
 			mode = $(this).attr('class');
 			afficher_masquer_images_action('hide');
 			// Récupérer les informations de la ligne concernée
-			id         = $(this).parent().parent().attr('id').substring(3);
-			td_resp    = $(this).parent().prev().prev().prev().prev().prev().prev().prev().prev().prev();
-			id_ent     = $(this).parent().prev().prev().prev().prev().prev().prev().prev().prev().html();
-			id_gepi    = $(this).parent().prev().prev().prev().prev().prev().prev().prev().html();
-			sconet_id  = $(this).parent().prev().prev().prev().prev().prev().prev().html();
-			reference  = $(this).parent().prev().prev().prev().prev().prev().html();
-			nom        = $(this).parent().prev().prev().prev().prev().html();
-			prenom     = $(this).parent().prev().prev().prev().html();
-			login      = $(this).parent().prev().prev().html();
+			var id         = $(this).parent().parent().attr('id').substring(3);
+			var td_resp    = $(this).parent().prev().prev().prev().prev().prev().prev().prev().prev().prev().prev();
+			var id_ent     = $(this).parent().prev().prev().prev().prev().prev().prev().prev().prev().prev().html();
+			var id_gepi    = $(this).parent().prev().prev().prev().prev().prev().prev().prev().prev().html();
+			var sconet_id  = $(this).parent().prev().prev().prev().prev().prev().prev().prev().html();
+			var reference  = $(this).parent().prev().prev().prev().prev().prev().prev().html();
+			var nom        = $(this).parent().prev().prev().prev().prev().prev().html();
+			var prenom     = $(this).parent().prev().prev().prev().prev().html();
+			var login      = $(this).parent().prev().prev().prev().html();
+			var date       = $(this).parent().prev().html();
+			var date_mysql = date.substring(3,13); // garder la date mysql
+			var date_fr    = date.substring(17,date.length); // garder la date française
+			if(date_fr=='-') { var date_checked = ' checked'; var date_classe1 = ''; var date_classe2 = ' class="hide"'; date_sortie = input_date; }
+			else             { var date_checked = '';         var date_classe2 = ''; var date_classe1 = ' class="hide"'; date_sortie = date_fr; }
 			// Retirer une éventuelle balise image présente
 			position_image = login.indexOf('<');
 			if (position_image!=-1)
@@ -125,6 +185,7 @@ $(document).ready
 			}
 			// Fabriquer la ligne avec les éléments de formulaires
 			new_tr  = '<tr>';
+			new_tr += '<td class="nu"></td>';
 			new_tr += '<td></td>';
 			new_tr += '<td><input id="f_id_ent" name="f_id_ent" size="'+Math.max(id_ent.length,10)+'" type="text" value="'+escapeQuote(id_ent)+'" /><img alt="" src="./_img/bulle_aide.png" title="Uniquement en cas d\'identification via un ENT." /></td>';
 			new_tr += '<td><input id="f_id_gepi" name="f_id_gepi" size="'+Math.max(id_gepi.length,10)+'" type="text" value="'+escapeQuote(id_gepi)+'" /><img alt="" src="./_img/bulle_aide.png" title="Uniquement en cas d\'utilisation du logiciel GEPI." /></td>';
@@ -134,6 +195,7 @@ $(document).ready
 			new_tr += '<td><input id="f_prenom" name="f_prenom" size="'+Math.max(prenom.length,5)+'" type="text" value="'+escapeQuote(prenom)+'" /></td>';
 			new_tr += '<td><input id="f_login" name="f_login" size="'+Math.max(login.length,10)+'" type="text" value="'+login+'" /></td>';
 			new_tr += '<td><input id="box_password" name="box_password" value="1" type="checkbox" checked style="vertical-align:-3px" /> <span style="vertical-align:-2px">inchangé</span><span class="hide"><input id="f_password" name="f_password" size="6" type="text" value="" /></span></td>';
+			new_tr += '<td><input id="box_date" name="box_date" value="1" type="checkbox"'+date_checked+' style="vertical-align:-3px" /> <span'+date_classe1+' style="vertical-align:-2px">sans objet</span><span'+date_classe2+'><input id="f_sortie_date" name="f_sortie_date" size="8" type="text" value="'+date_sortie+'" /><q class="date_calendrier" title="Cliquez sur cette image pour importer une date depuis un calendrier !"></q></span></td>';
 			new_tr += '<td class="nu"><input id="f_action" name="f_action" type="hidden" value="'+mode+'" /><input id="f_id" name="f_id" type="hidden" value="'+id+'" /><q class="valider" title="Valider les modifications de ce parent."></q><q class="annuler" title="Annuler les modifications de ce parent."></q> <label id="ajax_msg">&nbsp;</label></td>';
 			new_tr += '</tr>';
 			// Cacher la ligne en cours et ajouter la nouvelle
@@ -141,20 +203,6 @@ $(document).ready
 			$(this).parent().parent().after(new_tr);
 			infobulle();
 			$('#f_nom').focus();
-		};
-
-		/**
-		 * Désactiver un parent : mise en place du formulaire
-		 * @return void
-		 */
-		var supprimer = function()
-		{
-			mode = $(this).attr('class');
-			afficher_masquer_images_action('hide');
-			id = $(this).parent().parent().attr('id').substring(3);
-			new_span  = '<span class="astuce"><input id="f_action" name="f_action" type="hidden" value="'+mode+'" /><input id="f_id" name="f_id" type="hidden" value="'+id+'" />Le compte du parent sera désactivé.<q class="valider" title="Confirmer le retrait de ce parent."></q><q class="annuler" title="Annuler le retrait de ce parent."></q> <label id="ajax_msg">&nbsp;</label></span>';
-			$(this).after(new_span);
-			infobulle();
 		};
 
 		/**
@@ -172,9 +220,6 @@ $(document).ready
 				case 'modifier':
 					$(this).parent().parent().remove();
 					$("table.form tr").show(); // $(this).parent().parent().prev().show(); pose pb si tri du tableau entre temps
-					break;
-				case 'supprimer':
-					$(this).parent().remove();
 					break;
 			}
 			afficher_masquer_images_action('show');
@@ -204,7 +249,6 @@ $(document).ready
 
 		$('q.ajouter').click( ajouter );
 		$('q.modifier').live(   'click' , modifier );
-		$('q.supprimer').live( 'click' , supprimer );
 		$('q.annuler').live(    'click' , annuler );
 		$('q.valider').live(    'click' , function(){formulaire.submit();} );
 		$('table.form input , table.form select').live( 'keyup' , function(e){intercepter(e);} );
@@ -222,25 +266,27 @@ $(document).ready
 			{
 				rules :
 				{
-					f_id_ent    : { required:false , maxlength:32 },
-					f_id_gepi   : { required:false , maxlength:32 },
-					f_sconet_id : { required:false , digits:true , max:16777215 },
-					f_reference : { required:false , maxlength:11 },
-					f_nom       : { required:true , maxlength:25 },
-					f_prenom    : { required:true , maxlength:25 },
-					f_login     : { required:true , maxlength:20 },
-					f_password  : { required:function(){return !$('#box_password').is(':checked');} , minlength:mdp_longueur_mini , maxlength:20 }
+					f_id_ent      : { required:false , maxlength:63 },
+					f_id_gepi     : { required:false , maxlength:63 },
+					f_sconet_id   : { required:false , digits:true , max:16777215 },
+					f_reference   : { required:false , maxlength:11 },
+					f_nom         : { required:true , maxlength:25 },
+					f_prenom      : { required:true , maxlength:25 },
+					f_login       : { required:true , maxlength:20 },
+					f_password    : { required:function(){return !$('#box_password').is(':checked');} , minlength:mdp_longueur_mini , maxlength:20 },
+					f_sortie_date : { required:function(){return !$('#box_date').is(':checked');} , dateITA:true }
 				},
 				messages :
 				{
-					f_id_ent    : { maxlength:"identifiant ENT de 32 caractères maximum" },
-					f_id_gepi   : { maxlength:"identifiant Gepi de 32 caractères maximum" },
-					f_sconet_id : { digits:"Id Sconet : nombre entier inférieur à 2^24" },
-					f_reference : { maxlength:"référence de 11 caractères maximum" },
-					f_nom       : { required:"nom manquant"    , maxlength:"25 caractères maximum" },
-					f_prenom    : { required:"prénom manquant" , maxlength:"25 caractères maximum" },
-					f_login     : { required:"login manquant"  , maxlength:"20 caractères maximum" },
-					f_password  : { required:"mot de passe manquant" , minlength:mdp_longueur_mini+" caractères minimum" , maxlength:"20 caractères maximum" }
+					f_id_ent      : { maxlength:"identifiant ENT de 63 caractères maximum" },
+					f_id_gepi     : { maxlength:"identifiant Gepi de 63 caractères maximum" },
+					f_sconet_id   : { digits:"Id Sconet : nombre entier inférieur à 2^24" },
+					f_reference   : { maxlength:"référence de 11 caractères maximum" },
+					f_nom         : { required:"nom manquant"    , maxlength:"25 caractères maximum" },
+					f_prenom      : { required:"prénom manquant" , maxlength:"25 caractères maximum" },
+					f_login       : { required:"login manquant"  , maxlength:"20 caractères maximum" },
+					f_password    : { required:"mot de passe manquant" , minlength:mdp_longueur_mini+" caractères minimum" , maxlength:"20 caractères maximum" },
+					f_sortie_date : { required:"date manquante" , dateITA:"format JJ/MM/AAAA non respecté" }
 				},
 				errorElement : "label",
 				errorClass : "erreur",
@@ -257,6 +303,7 @@ $(document).ready
 			clearForm : false,
 			resetForm : false,
 			target : "#ajax_msg",
+			beforeSerialize : action_form_avant_serialize,
 			beforeSubmit : test_form_avant_envoi,
 			error : retour_form_erreur,
 			success : retour_form_valide
@@ -278,6 +325,19 @@ $(document).ready
 				}
 			}
 		); 
+
+		// Fonction précédent le trantement du formulaire (avec jquery.form.js)
+		function action_form_avant_serialize(jqForm, options)
+		{
+			// Décocher les checkbox sans rapport avec ce formulaire
+			$('input[name=f_ids]:checked').each
+			(
+				function()
+				{
+					$(this).prop('checked',false);
+				}
+			);
+		}
 
 		// Fonction précédent l'envoi du formulaire (avec jquery.form.js)
 		function test_form_avant_envoi(formData, jqForm, options)
@@ -326,15 +386,87 @@ $(document).ready
 						$('q.valider').parent().parent().prev().addClass("new").html(responseHTML).prepend( td_resp ).show();
 						$('q.valider').parent().parent().remove();
 						break;
-					case 'supprimer':
-						$('q.valider').closest('tr').remove();
-						break;
 				}
 				trier_tableau();
 				afficher_masquer_images_action('show');
 				infobulle();
 			}
 		} 
+
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+//	Clic sur un bouton pour effectuer une action sur les utilisateurs cochés
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
+		$('#zone_actions button').click
+		(
+			function()
+			{
+				var listing_id = new Array(); $("input[name=f_ids]:checked").each(function(){listing_id.push($(this).val());});
+				if(!listing_id.length)
+				{
+					$('#ajax_msg1').removeAttr("class").addClass("erreur").html("Aucun utilisateur coché !");
+					return false;
+				}
+				var f_action = $(this).attr('id');
+				// On demande confirmation pour la suppression
+				if(f_action=='supprimer')
+				{
+					continuer = (confirm("Attention : les informations associées seront perdues !\nConfirmez-vous la suppression des comptes sélectionnés ?")) ? true : false ;
+				}
+				else
+				{
+					continuer = true ;
+				}
+				if(continuer)
+				{
+					$('#ajax_msg1').removeAttr("class").addClass("loader").html("Connexion au serveur&hellip;");
+					$('#zone_actions button').prop('disabled',true);
+					$.ajax
+					(
+						{
+							type : 'POST',
+							url : 'ajax.php?page='+'administrateur_comptes',
+							data : 'f_action='+f_action+'&f_listing_id='+listing_id,
+							dataType : "html",
+							error : function(msg,string)
+							{
+								$('#ajax_msg1').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
+								$('#zone_actions button').prop('disabled',false);
+							},
+							success : function(responseHTML)
+							{
+								initialiser_compteur();
+								tab_response = responseHTML.split(',');
+								if(tab_response[0]!='ok')	// Attention aux caractères accentués : l'utf-8 pose des pbs pour ce test
+								{
+									$('#ajax_msg1').removeAttr("class").addClass("alerte").html(responseHTML);
+								}
+								else
+								{
+									$('#ajax_msg1').removeAttr("class").addClass("valide").html("Demande réalisée.");
+									for ( i=1 ; i<tab_response.length ; i++ )
+									{
+										switch (f_action)
+										{
+											case 'retirer':
+												$('#id_'+tab_response[i]).children("td:last").prev().html('<i>'+date_mysql+'</i>'+input_date);
+												break;
+											case 'reintegrer':
+												$('#id_'+tab_response[i]).children("td:last").prev().html('<i>9999-12-31</i>-');
+												break;
+											case 'supprimer':
+												$('#id_'+tab_response[i]).remove();
+												break;
+										}
+									}
+								}
+								$('#zone_actions button').prop('disabled',false);
+							}
+						}
+					);
+				}
+			}
+		);
 
 	}
 );

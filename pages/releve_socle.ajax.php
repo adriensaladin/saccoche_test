@@ -28,15 +28,16 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 if($_SESSION['SESAMATH_ID']==ID_DEMO) {}
 
-$palier_id     = (isset($_POST['f_palier']))     ? clean_entier($_POST['f_palier'])    : 0;
-$palier_nom    = (isset($_POST['f_palier_nom'])) ? clean_texte($_POST['f_palier_nom']) : '';
-$aff_socle_PA  = (isset($_POST['f_socle_PA']))   ? 1                                   : 0;
-$aff_socle_EV  = (isset($_POST['f_socle_EV']))   ? 1                                   : 0;
-$groupe_id     = (isset($_POST['f_groupe']))     ? clean_entier($_POST['f_groupe'])    : 0;
-$mode          = (isset($_POST['f_mode']))       ? clean_texte($_POST['f_mode'])       : '';
-$aff_coef      = (isset($_POST['f_coef']))       ? 1                                   : 0;
-$aff_socle     = (isset($_POST['f_socle']))      ? 1                                   : 0;
-$aff_lien      = (isset($_POST['f_lien']))       ? 1                                   : 0;
+$palier_id     = (isset($_POST['f_palier']))        ? clean_entier($_POST['f_palier'])    : 0;
+$palier_nom    = (isset($_POST['f_palier_nom']))    ? clean_texte($_POST['f_palier_nom']) : '';
+$only_presence = (isset($_POST['f_only_presence'])) ? 1                                   : 0;
+$aff_socle_PA  = (isset($_POST['f_socle_PA']))      ? 1                                   : 0;
+$aff_socle_EV  = (isset($_POST['f_socle_EV']))      ? 1                                   : 0;
+$groupe_id     = (isset($_POST['f_groupe']))        ? clean_entier($_POST['f_groupe'])    : 0;
+$mode          = (isset($_POST['f_mode']))          ? clean_texte($_POST['f_mode'])       : '';
+$aff_coef      = (isset($_POST['f_coef']))          ? 1                                   : 0;
+$aff_socle     = (isset($_POST['f_socle']))         ? 1                                   : 0;
+$aff_lien      = (isset($_POST['f_lien']))          ? 1                                   : 0;
 // Normalement ce sont des tableaux qui sont transmis, mais au cas où...
 $tab_pilier_id  = (isset($_POST['f_pilier']))  ? ( (is_array($_POST['f_pilier']))  ? $_POST['f_pilier']  : explode(',',$_POST['f_pilier'])  ) : array() ;
 $tab_eleve_id   = (isset($_POST['f_eleve']))   ? ( (is_array($_POST['f_eleve']))   ? $_POST['f_eleve']   : explode(',',$_POST['f_eleve'])   ) : array() ;
@@ -50,6 +51,7 @@ if(in_array($_SESSION['USER_PROFIL'],array('parent','eleve')))
 {
 	$aff_socle_PA = (mb_substr_count($_SESSION['DROIT_SOCLE_POURCENTAGE_ACQUIS'],$_SESSION['USER_PROFIL'])) ? 1 : 0 ;
 	$aff_socle_EV = (mb_substr_count($_SESSION['DROIT_SOCLE_ETAT_VALIDATION']   ,$_SESSION['USER_PROFIL'])) ? 1 : 0 ;
+	$only_presence = 0;
 }
 if($_SESSION['USER_PROFIL']=='eleve')
 {
@@ -174,6 +176,11 @@ if($groupe_id && count($tab_eleve_id))
 			$tab_item[$DB_ROW['item_id']] = array('item_ref'=>$DB_ROW['item_ref'],'item_nom'=>$DB_ROW['item_nom'],'item_coef'=>$DB_ROW['item_coef'],'item_cart'=>$DB_ROW['item_cart'],'item_socle'=>$DB_ROW['socle_id'],'item_lien'=>$DB_ROW['item_lien'],'matiere_id'=>$DB_ROW['matiere_id'],'calcul_methode'=>$DB_ROW['calcul_methode'],'calcul_limite'=>$DB_ROW['calcul_limite']);
 		}
 	}
+}
+else
+{
+	// Dans le cas contraire (fiche générique), afficher toute la grille
+	$only_presence = FALSE;
 }
 
 // Ces tableaux ne servent plus
@@ -342,6 +349,48 @@ if($test_affichage_Pourcentage)
 }
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+// Restriction de l'affichage aux seuls éléments évalués ou validés (si demandé)
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
+$tab_contenu_presence = array( 'pilier'=>array() , 'section'=>array() , 'item'=>array() );
+if($only_presence)
+{
+	foreach($tab_eleve as $tab)
+	{
+		extract($tab);
+		if(count($tab_pilier))
+		{
+			foreach($tab_pilier as $pilier_id => $tab)
+			{
+				
+				if( ($test_affichage_Validation) && ($tab_user_pilier[$eleve_id][$pilier_id]['etat']!=2) )
+				{
+					$tab_contenu_presence['pilier'][$pilier_id][$eleve_id]   = TRUE;
+				}
+				if(isset($tab_section[$pilier_id]))
+				{
+					foreach($tab_section[$pilier_id] as $section_id => $section_nom)
+					{
+						if(isset($tab_socle[$section_id]))
+						{
+							foreach($tab_socle[$section_id] as $socle_id => $socle_nom)
+							{
+								if( ($tab_score_socle_eleve[$socle_id][$eleve_id]['nb']) || ( ($test_affichage_Validation) && ($tab_user_entree[$eleve_id][$socle_id]['etat']!=2) ) )
+								{
+									$tab_contenu_presence['pilier'][$pilier_id][$eleve_id]   = TRUE;
+									$tab_contenu_presence['section'][$section_id][$eleve_id] = TRUE;
+									$tab_contenu_presence['item'][$socle_id][$eleve_id]      = TRUE;
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 // Elaboration du bilan relatif au socle, en HTML et PDF => Production et mise en page
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
@@ -349,7 +398,7 @@ $affichage_direct = ( ( in_array($_SESSION['USER_PROFIL'],array('eleve','parent'
 
 $titre1 = ($mode=='manuel') ? 'Détail de maîtrise du socle commun [matières resteintes]' : 'Détail de maîtrise du socle commun' ;
 $titre2 = ($memo_demande=='palier') ? $palier_nom : $palier_nom.' – '.mb_substr($pilier_nom,0,mb_strpos($pilier_nom,'–')) ;
-$break = ($memo_demande=='palier') ? 0 : $tab_pilier[$pilier_id]['pilier_nb_lignes'] ;
+$break  = ($memo_demande=='palier') ? 0 : $tab_pilier[$pilier_id]['pilier_nb_lignes'] ;
 $releve_html  = $affichage_direct ? '' : '<style type="text/css">'.$_SESSION['CSS'].'</style>';
 $releve_html .= $affichage_direct ? '' : '<h1>'.html($titre1).'</h1>';
 $releve_html .= $affichage_direct ? '' : '<h2>'.html($titre2).'</h2>';
@@ -372,51 +421,60 @@ foreach($tab_eleve as $tab)
 	{
 		foreach($tab_pilier as $pilier_id => $tab)
 		{
-			extract($tab);	// $pilier_nom $pilier_nb_lignes
-			$drapeau_langue = (in_array($pilier_id,$tab_langue_piliers)) ? $eleve_langue : 0 ;
-			$case_score = $test_affichage_Pourcentage ? '<th class="nu"></th>' : '' ;
-			$case_valid = $test_affichage_Validation ? affich_validation_html( 'th' , $tab_user_pilier[$eleve_id][$pilier_id] , $detail=true ) : '' ;
-			$image_langue = ($drapeau_langue) ? ' <img src="./_img/drapeau/'.$drapeau_langue.'.gif" alt="" title="'.$tab_langues[$drapeau_langue]['texte'].'" />' : '' ;
-			$releve_html .= '<tr>'.$case_score.'<th>'.html($pilier_nom).$image_langue.'</th>'.$case_valid.'<th class="nu"></th></tr>'."\r\n";
-			$tab_pilier_validation = $test_affichage_Validation ? $tab_user_pilier[$eleve_id][$pilier_id] : array() ;
-			$releve_pdf->releve_socle_pilier($pilier_nom,$pilier_nb_lignes,$test_affichage_Validation,$tab_pilier_validation,$drapeau_langue);
-			// Pour chaque section...
-			if(isset($tab_section[$pilier_id]))
+			if( !$only_presence || isset($tab_contenu_presence['pilier'][$pilier_id][$eleve_id]) )
 			{
-				foreach($tab_section[$pilier_id] as $section_id => $section_nom)
+				extract($tab);	// $pilier_nom $pilier_nb_lignes
+				$drapeau_langue = (in_array($pilier_id,$tab_langue_piliers)) ? $eleve_langue : 0 ;
+				$case_score = $test_affichage_Pourcentage ? '<th class="nu"></th>' : '' ;
+				$case_valid = $test_affichage_Validation ? affich_validation_html( 'th' , $tab_user_pilier[$eleve_id][$pilier_id] , $detail=true ) : '' ;
+				$image_langue = ($drapeau_langue) ? ' <img src="./_img/drapeau/'.$drapeau_langue.'.gif" alt="" title="'.$tab_langues[$drapeau_langue]['texte'].'" />' : '' ;
+				$releve_html .= '<tr>'.$case_score.'<th>'.html($pilier_nom).$image_langue.'</th>'.$case_valid.'<th class="nu"></th></tr>'."\r\n";
+				$tab_pilier_validation = $test_affichage_Validation ? $tab_user_pilier[$eleve_id][$pilier_id] : array() ;
+				$releve_pdf->releve_socle_pilier($pilier_nom,$pilier_nb_lignes,$test_affichage_Validation,$tab_pilier_validation,$drapeau_langue);
+				// Pour chaque section...
+				if(isset($tab_section[$pilier_id]))
 				{
-					$case_score = $test_affichage_Pourcentage ? '<th class="nu"></th>' : '' ;
-					$case_valid = '<th class="nu"></th>' ;
-					$releve_html .= '<tr>'.$case_score.'<th colspan="2">'.html($section_nom).'</th>'.$case_valid.'</tr>'."\r\n";
-					$releve_pdf->releve_socle_section($section_nom);
-					// Pour chaque item du socle...
-					if(isset($tab_socle[$section_id]))
+					foreach($tab_section[$pilier_id] as $section_id => $section_nom)
 					{
-						foreach($tab_socle[$section_id] as $socle_id => $socle_nom)
+						if( !$only_presence || isset($tab_contenu_presence['section'][$section_id][$eleve_id]) )
 						{
-							$tab_item_pourcentage = $test_affichage_Pourcentage ? $tab_score_socle_eleve[$socle_id][$eleve_id] : array() ;
-							$tab_item_validation  = $test_affichage_Validation ? $tab_user_entree[$eleve_id][$socle_id] : array() ;
-							$releve_pdf->releve_socle_item($socle_nom,$test_affichage_Pourcentage,$tab_item_pourcentage,$test_affichage_Validation,$tab_item_validation);
-							$socle_nom  = html($socle_nom);
-							$socle_nom  = (mb_strlen($socle_nom)<160) ? $socle_nom : mb_substr($socle_nom,0,150).' [...] <img src="./_img/bulle_aide.png" alt="" title="'.$socle_nom.'" />';
-							if( $tab_infos_socle_eleve[$socle_id][$eleve_id] )
+							$case_score = $test_affichage_Pourcentage ? '<th class="nu"></th>' : '' ;
+							$case_valid = '<th class="nu"></th>' ;
+							$releve_html .= '<tr>'.$case_score.'<th colspan="2">'.html($section_nom).'</th>'.$case_valid.'</tr>'."\r\n";
+							$releve_pdf->releve_socle_section($section_nom);
+							// Pour chaque item du socle...
+							if(isset($tab_socle[$section_id]))
 							{
-								$lien_toggle = '<a href="#" id="to_'.$socle_id.'_'.$eleve_id.'"><img src="./_img/toggle_plus.gif" alt="" title="Voir / masquer le détail des items associés." class="toggle" /></a> ';
-								$div_competences = '<div id="'.$socle_id.'_'.$eleve_id.'" class="hide">'.implode('<br />',$tab_infos_socle_eleve[$socle_id][$eleve_id]).'</div>';
+								foreach($tab_socle[$section_id] as $socle_id => $socle_nom)
+								{
+									if( !$only_presence || isset($tab_contenu_presence['item'][$socle_id][$eleve_id]) )
+									{
+										$tab_item_pourcentage = $test_affichage_Pourcentage ? $tab_score_socle_eleve[$socle_id][$eleve_id] : array() ;
+										$tab_item_validation  = $test_affichage_Validation ? $tab_user_entree[$eleve_id][$socle_id] : array() ;
+										$releve_pdf->releve_socle_item($socle_nom,$test_affichage_Pourcentage,$tab_item_pourcentage,$test_affichage_Validation,$tab_item_validation);
+										$socle_nom  = html($socle_nom);
+										$socle_nom  = (mb_strlen($socle_nom)<160) ? $socle_nom : mb_substr($socle_nom,0,150).' [...] <img src="./_img/bulle_aide.png" alt="" title="'.$socle_nom.'" />';
+										if( $tab_infos_socle_eleve[$socle_id][$eleve_id] )
+										{
+											$lien_toggle = '<a href="#" id="to_'.$socle_id.'_'.$eleve_id.'"><img src="./_img/toggle_plus.gif" alt="" title="Voir / masquer le détail des items associés." class="toggle" /></a> ';
+											$div_competences = '<div id="'.$socle_id.'_'.$eleve_id.'" class="hide">'.'<div>'.implode('</div><div>',$tab_infos_socle_eleve[$socle_id][$eleve_id]).'</div>'.'</div>';
+										}
+										else
+										{
+											$lien_toggle = '<img src="./_img/toggle_none.gif" alt="" /> ';
+											$div_competences = '';
+										}
+										$case_score = $test_affichage_Pourcentage ? affich_pourcentage_html( 'td' , $tab_score_socle_eleve[$socle_id][$eleve_id] , $detail=true) : '' ;
+										$case_valid = $test_affichage_Validation ? affich_validation_html( 'td' , $tab_user_entree[$eleve_id][$socle_id] , $detail=true ) : '' ;
+										$releve_html .= '<tr>'.$case_score.'<td colspan="2">'.$lien_toggle.$socle_nom.$div_competences.'</td>'.$case_valid.'</tr>'."\r\n";
+									}
+								}
 							}
-							else
-							{
-								$lien_toggle = '<img src="./_img/toggle_none.gif" alt="" /> ';
-								$div_competences = '';
-							}
-							$case_score = $test_affichage_Pourcentage ? affich_pourcentage_html( 'td' , $tab_score_socle_eleve[$socle_id][$eleve_id] , $detail=true) : '' ;
-							$case_valid = $test_affichage_Validation ? affich_validation_html( 'td' , $tab_user_entree[$eleve_id][$socle_id] , $detail=true ) : '' ;
-							$releve_html .= '<tr>'.$case_score.'<td colspan="2">'.$lien_toggle.$socle_nom.$div_competences.'</td>'.$case_valid.'</tr>'."\r\n";
 						}
 					}
 				}
+				$releve_html .= '<tr><td colspan="4" class="nu"></td></tr>'."\r\n";
 			}
-			$releve_html .= '<tr><td colspan="4" class="nu"></td></tr>'."\r\n";
 		}
 	}
 	$releve_html .= '</table>';

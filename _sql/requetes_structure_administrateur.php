@@ -371,10 +371,9 @@ public function DB_lister_professeurs_par_matiere()
 	$DB_SQL.= 'FROM sacoche_matiere ';
 	$DB_SQL.= 'LEFT JOIN sacoche_jointure_user_matiere USING (matiere_id) ';
 	$DB_SQL.= 'LEFT JOIN sacoche_user USING (user_id) ';
-	$DB_SQL.= 'WHERE matiere_active=1 AND user_statut=:statut ';
+	$DB_SQL.= 'WHERE matiere_active=1 AND user_sortie_date>NOW() ';
 	$DB_SQL.= 'ORDER BY matiere_nom ASC, user_nom ASC, user_prenom ASC';
-	$DB_VAR = array(':statut'=>1);
-	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
 }
 
 /**
@@ -397,23 +396,23 @@ public function DB_lister_parents_par_eleve()
 }
 
 /**
- * lister_parents_actifs_avec_infos_for_eleve
+ * lister_parents_actuels_avec_infos_for_eleve
  *
  * @param int   $eleve_id
  * @return array
  */
  
-public function DB_lister_parents_actifs_avec_infos_for_eleve($eleve_id)
+public function DB_lister_parents_actuels_avec_infos_for_eleve($eleve_id)
 {
 	$DB_SQL = 'SELECT parent.user_id, parent.user_nom, parent.user_prenom, sacoche_parent_adresse.*, resp_legal_num ';
 	$DB_SQL.= 'FROM sacoche_user AS eleve ';
 	$DB_SQL.= 'LEFT JOIN sacoche_jointure_parent_eleve ON eleve.user_id=sacoche_jointure_parent_eleve.eleve_id ';
 	$DB_SQL.= 'LEFT JOIN sacoche_user AS parent ON sacoche_jointure_parent_eleve.parent_id=parent.user_id ';
 	$DB_SQL.= 'LEFT JOIN sacoche_parent_adresse ON sacoche_jointure_parent_eleve.parent_id=sacoche_parent_adresse.parent_id ';
-	$DB_SQL.= 'WHERE eleve.user_id=:eleve_id AND parent.user_statut=:statut ';
+	$DB_SQL.= 'WHERE eleve.user_id=:eleve_id AND parent.user_sortie_date>NOW() ';
 	$DB_SQL.= 'GROUP BY parent.user_id ';
 	$DB_SQL.= 'ORDER BY resp_legal_num ASC ';
-	$DB_VAR = array(':eleve_id'=>$eleve_id,':statut'=>1);
+	$DB_VAR = array(':eleve_id'=>$eleve_id);
 	$DB_TAB_parents = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR, TRUE, TRUE);
 	if(!count($DB_TAB_parents))
 	{
@@ -423,9 +422,9 @@ public function DB_lister_parents_actifs_avec_infos_for_eleve($eleve_id)
 	$DB_SQL = 'SELECT parent_id, GROUP_CONCAT( CONCAT(enfant.user_nom," ",enfant.user_prenom," (resp légal ",resp_legal_num,")") SEPARATOR " ; ") AS enfants_liste ';
 	$DB_SQL.= 'FROM sacoche_jointure_parent_eleve ';
 	$DB_SQL.= 'LEFT JOIN sacoche_user AS enfant ON sacoche_jointure_parent_eleve.eleve_id=enfant.user_id ';
-	$DB_SQL.= 'WHERE sacoche_jointure_parent_eleve.parent_id IN('.$listing_parent_id.') AND enfant.user_statut=:statut ';
+	$DB_SQL.= 'WHERE sacoche_jointure_parent_eleve.parent_id IN('.$listing_parent_id.') AND enfant.user_sortie_date>NOW() ';
 	$DB_SQL.= 'GROUP BY parent_id ';
-	$DB_VAR = array(':eleve_id'=>$eleve_id,':statut'=>1);
+	$DB_VAR = array(':eleve_id'=>$eleve_id);
 	$DB_TAB_enfants = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR , TRUE , TRUE);
 	$DB_TAB = array();
 	foreach($DB_TAB_parents AS $id => $tab)
@@ -447,10 +446,9 @@ public function DB_lister_jointure_professeurs_matieres()
 	$DB_SQL.= 'FROM sacoche_jointure_user_matiere ';
 	$DB_SQL.= 'LEFT JOIN sacoche_user USING (user_id) ';
 	$DB_SQL.= 'LEFT JOIN sacoche_matiere USING (matiere_id) ';
-	$DB_SQL.= 'WHERE user_statut=:statut ';
+	$DB_SQL.= 'WHERE user_sortie_date>NOW() ';
 	$DB_SQL.= 'ORDER BY matiere_nom ASC, user_nom ASC, user_prenom ASC ';
-	$DB_VAR = array(':statut'=>1);
-	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
 }
 
 /**
@@ -465,8 +463,8 @@ public function DB_lister_jointure_professeurs_principaux()
 	$DB_SQL.= 'FROM sacoche_jointure_user_groupe ';
 	$DB_SQL.= 'LEFT JOIN sacoche_user USING (user_id) ';
 	$DB_SQL.= 'LEFT JOIN sacoche_groupe USING (groupe_id) ';
-	$DB_SQL.= 'WHERE jointure_pp=:pp AND user_statut=:statut AND groupe_type=:type '; // groupe_type pour éviter les groupes de besoin
-	$DB_VAR = array(':pp'=>1,':statut'=>1,':type'=>'classe');
+	$DB_SQL.= 'WHERE jointure_pp=:pp AND user_sortie_date>NOW() AND groupe_type=:type '; // groupe_type pour éviter les groupes de besoin
+	$DB_VAR = array(':pp'=>1,':type'=>'classe');
 	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
@@ -508,17 +506,18 @@ public function DB_lister_jointure_groupe_periode_avec_infos_graphiques($tout_de
  * lister_users
  *
  * @param string|array   $profil        'eleve' / 'parent' / 'professeur' / 'directeur' / 'administrateur' / ou par exemple array('eleve','professeur','directeur')
- * @param bool           $only_actifs   TRUE pour statut actif uniquement / FALSE pour tout le monde qq soit le statut
+ * @param int            $statut        1 pour actuels, 0 pour anciens, 2 pour tout le monde
  * @param bool           $with_classe   TRUE pour récupérer le nom de la classe de l'élève / FALSE sinon
  * @param bool           $tri_statut    TRUE pour trier par statut décroissant (les actifs en premier), FALSE par défaut
  * @return array
  */
-public function DB_lister_users($profil,$only_actifs,$with_classe,$tri_statut=FALSE)
+public function DB_lister_users($profil,$statut,$with_classe,$tri_statut=FALSE)
 {
 	$DB_VAR = array();
 	$left_join = '';
 	$where     = '';
-	$order_by  = ($tri_statut) ? 'user_statut DESC, ' : '' ;
+	$select_add = ($tri_statut) ? ', (user_sortie_date>NOW()) AS statut ' : '' ;
+	$order_by   = ($tri_statut) ? 'statut DESC, ' : '' ;
 	if(is_string($profil))
 	{
 		$where .= 'user_profil=:profil ';
@@ -541,13 +540,9 @@ public function DB_lister_users($profil,$only_actifs,$with_classe,$tri_statut=FA
 		$left_join .= 'LEFT JOIN sacoche_niveau USING (niveau_id) ';
 		$order_by  .= 'niveau_ordre ASC, groupe_ref ASC, ';
 	}
-	if($only_actifs)
-	{
-		$where .= 'AND user_statut=:statut ';
-		$DB_VAR[':statut'] = 1;
-	}
+	$where .= ($statut==1) ? 'AND user_sortie_date>NOW() ' : ( ($statut==0) ? 'AND user_sortie_date<NOW() ' : '' ) ; // Pas besoin de tester l'égalité, NOW() renvoyant un datetime
 	// On peut maintenant assembler les morceaux de la requête !
-	$DB_SQL = 'SELECT * ';
+	$DB_SQL = 'SELECT * '.$select_add;
 	$DB_SQL.= 'FROM sacoche_user ';
 	$DB_SQL.= $left_join;
 	$DB_SQL.= 'WHERE '.$where;
@@ -556,15 +551,17 @@ public function DB_lister_users($profil,$only_actifs,$with_classe,$tri_statut=FA
 }
 
 /**
- * lister_parents_actifs_avec_infos_enfants
+ * lister_parents_avec_infos_enfants
  *
  * @param bool     $with_adresse
+ * @param int      $statut         1 pour actuel, 0 pour ancien
  * @param string   $debut_nom      premières lettres du nom
  * @param string   $debut_prenom   premières lettres du prénom
  * @return array
  */
-public function DB_lister_parents_actifs_avec_infos_enfants($with_adresse,$debut_nom='',$debut_prenom='')
+public function DB_lister_parents_avec_infos_enfants($with_adresse,$statut,$debut_nom='',$debut_prenom='')
 {
+	$test_date_sortie = ($statut) ? 'user_sortie_date>NOW()' : 'user_sortie_date<NOW()' ; // Pas besoin de tester l'égalité, NOW() renvoyant un datetime
 	$DB_SQL = 'SELECT ' ;
 	$DB_SQL.= ($with_adresse) ? 'parent.user_id, parent.user_nom, parent.user_prenom, sacoche_parent_adresse.*, ' : 'parent.*, ' ;
 	$DB_SQL.= 'GROUP_CONCAT( CONCAT(eleve.user_nom," ",eleve.user_prenom," (resp légal ",resp_legal_num,")") SEPARATOR "§BR§") AS enfants_liste, ';
@@ -573,12 +570,12 @@ public function DB_lister_parents_actifs_avec_infos_enfants($with_adresse,$debut
 	$DB_SQL.= ($with_adresse) ? 'LEFT JOIN sacoche_parent_adresse ON parent.user_id=sacoche_parent_adresse.parent_id ' : '' ;
 	$DB_SQL.= 'LEFT JOIN sacoche_jointure_parent_eleve ON parent.user_id=sacoche_jointure_parent_eleve.parent_id ';
 	$DB_SQL.= 'LEFT JOIN sacoche_user AS eleve ON sacoche_jointure_parent_eleve.eleve_id=eleve.user_id ';
-	$DB_SQL.= 'WHERE parent.user_profil=:profil AND parent.user_statut=:statut ';
+	$DB_SQL.= 'WHERE parent.user_profil=:profil AND parent.'.$test_date_sortie.' ';
 	$DB_SQL.= ($debut_nom)    ? 'AND parent.user_nom LIKE :nom ' : '' ;
 	$DB_SQL.= ($debut_prenom) ? 'AND parent.user_prenom LIKE :prenom ' : '' ;
 	$DB_SQL.= 'GROUP BY parent.user_id ';
 	$DB_SQL.= 'ORDER BY parent.user_nom ASC, parent.user_prenom ASC ';
-	$DB_VAR = array(':profil'=>'parent',':statut'=>1,':nom'=>$debut_nom.'%',':prenom'=>$debut_prenom.'%');
+	$DB_VAR = array(':profil'=>'parent',':nom'=>$debut_nom.'%',':prenom'=>$debut_prenom.'%');
 	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
@@ -586,10 +583,10 @@ public function DB_lister_parents_actifs_avec_infos_enfants($with_adresse,$debut
  * lister_users_avec_groupe
  *
  * @param bool   $profil_eleve  TRUE pour eleve / FALSE pour professeur + directeur
- * @param bool   $only_actifs   TRUE pour statut actif uniquement / FALSE pour tout le monde qq soit le statut
+ * @param bool   $only_actuels  TRUE pour les actuels uniquement / FALSE pour tout le monde (actuel ou ancien)
  * @return array
  */
-public function DB_lister_users_avec_groupe($profil_eleve,$only_actifs)
+public function DB_lister_users_avec_groupe($profil_eleve,$only_actuels)
 {
 	$egal_eleve  = ($profil_eleve) ? '=' : '!=' ;
 	$DB_SQL = 'SELECT * ';
@@ -597,9 +594,9 @@ public function DB_lister_users_avec_groupe($profil_eleve,$only_actifs)
 	$DB_SQL.= 'LEFT JOIN sacoche_jointure_user_groupe USING (user_id) ';
 	$DB_SQL.= 'LEFT JOIN sacoche_groupe USING (groupe_id) ';
 	$DB_SQL.= 'WHERE user_profil'.$egal_eleve.':profil AND groupe_type=:type ';
-	$DB_SQL.= ($only_actifs) ? 'AND user_statut=:statut ' : '' ;
+	$DB_SQL.= ($only_actuels) ? 'AND user_sortie_date>NOW() ' : '' ;
 	$DB_SQL.= 'ORDER BY user_nom ASC, user_prenom ASC';
-	$DB_VAR = array(':profil'=>'eleve',':type'=>'groupe',':statut'=>1);
+	$DB_VAR = array(':profil'=>'eleve',':type'=>'groupe');
 	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
@@ -613,9 +610,8 @@ public function DB_lister_users_desactives_obsoletes()
 {
 	$DB_SQL = 'SELECT user_id, user_profil ';
 	$DB_SQL.= 'FROM sacoche_user ';
-	$DB_SQL.= 'WHERE user_statut=:user_statut AND DATE_ADD(user_statut_date,INTERVAL 3 YEAR)<NOW() ';
-	$DB_VAR = array(':user_statut'=>0);
-	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+	$DB_SQL.= 'WHERE user_sortie_date<NOW() AND DATE_ADD(user_sortie_date,INTERVAL 3 YEAR)<NOW() ';
+	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
 }
 
 /**
@@ -630,8 +626,8 @@ public function DB_lister_professeurs_avec_classes()
 	$DB_SQL.= 'FROM sacoche_user ';
 	$DB_SQL.= 'LEFT JOIN sacoche_jointure_user_groupe USING (user_id) ';
 	$DB_SQL.= 'LEFT JOIN sacoche_groupe USING (groupe_id) ';
-	$DB_SQL.= 'WHERE user_profil=:profil AND groupe_type=:type AND user_statut=:statut ';
-	$DB_VAR = array(':profil'=>'professeur',':type'=>'classe',':statut'=>1);
+	$DB_SQL.= 'WHERE user_profil=:profil AND groupe_type=:type AND user_sortie_date>NOW() ';
+	$DB_VAR = array(':profil'=>'professeur',':type'=>'classe');
 	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
@@ -669,7 +665,7 @@ public function DB_compter_devoirs()
  * compter_users_suivant_statut
  *
  * @param string|array   $profil        'eleve' / 'professeur' / 'directeur' / 'administrateur' / ou par exemple array('eleve','professeur','directeur')
- * @return array   [0]=>nb actifs , [1]=>nb inactifs
+ * @return array   [0]=>nb actuels , [1]=>nb anciens
  */
 public function DB_compter_users_suivant_statut($profil)
 {
@@ -688,14 +684,14 @@ public function DB_compter_users_suivant_statut($profil)
 		}
 		$where = 'user_profil IN('.implode(',',$profil).') ';
 	}
-	$DB_SQL = 'SELECT user_statut, COUNT(*) AS nombre ';
+	$DB_SQL = 'SELECT (user_sortie_date>NOW()) AS statut, COUNT(*) AS nombre ';
 	$DB_SQL.= 'FROM sacoche_user ';
 	$DB_SQL.= 'WHERE '.$where;
-	$DB_SQL.= 'GROUP BY user_statut';
+	$DB_SQL.= 'GROUP BY statut';
 	$DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR , TRUE , TRUE);
-	$nb_actif   = ( (count($DB_TAB)) && (isset($DB_TAB[1])) ) ? $DB_TAB[1]['nombre'] : 0 ;
-	$nb_inactif = ( (count($DB_TAB)) && (isset($DB_TAB[0])) ) ? $DB_TAB[0]['nombre'] : 0 ;
-	return array($nb_actif,$nb_inactif);
+	$nb_actuels = ( (count($DB_TAB)) && (isset($DB_TAB[1])) ) ? $DB_TAB[1]['nombre'] : 0 ;
+	$nb_anciens = ( (count($DB_TAB)) && (isset($DB_TAB[0])) ) ? $DB_TAB[0]['nombre'] : 0 ;
+	return array($nb_actuels,$nb_anciens);
 }
 
 /**
@@ -936,11 +932,11 @@ public function DB_modifier_adresse_parent($parent_id,$tab_adresse)
 /**
  * Modifier un ou plusieurs paramètres d'un utilisateur
  *
- * On ne touche ni à "connexion_date" / "statut" / "user_statut_date" (traités ailleurs).
+ * Les champs "tentative_date" et "connexion_date" sont traités avec DB_enregistrer_date().
  * On peut envisager une modification de "user_profil" (passage professeur -> directeur par exemple)
  *
  * @param int     $user_id
- * @param array   array(':sconet_id'=>$val, ':sconet_num'=>$val, ':reference'=>$val , ':profil'=>$val , ':nom'=>$val , ':prenom'=>$val , ':login'=>$val , ':password'=>$val , ':daltonisme'=>$val , ':classe'=>$val , ':id_ent'=>$val , ':id_gepi'=>$val );
+ * @param array   array(':sconet_id'=>$val, ':sconet_num'=>$val, ':reference'=>$val , ':profil'=>$val , ':nom'=>$val , ':prenom'=>$val , ':login'=>$val , ':password'=>$val , ':daltonisme'=>$val , ':sortie_date'=>$val , ':classe'=>$val , ':id_ent'=>$val , ':id_gepi'=>$val );
  * @return void
  */
 public function DB_modifier_user($user_id,$DB_VAR)
@@ -950,18 +946,19 @@ public function DB_modifier_user($user_id,$DB_VAR)
 	{
 		switch($key)
 		{
-			case ':sconet_id' :  $tab_set[] = 'user_sconet_id='.$key;      break;
-			case ':sconet_num' : $tab_set[] = 'user_sconet_elenoet='.$key; break;
-			case ':reference' :  $tab_set[] = 'user_reference='.$key;      break;
-			case ':profil' :     $tab_set[] = 'user_profil='.$key;         break;
-			case ':nom' :        $tab_set[] = 'user_nom='.$key;            break;
-			case ':prenom' :     $tab_set[] = 'user_prenom='.$key;         break;
-			case ':login' :      $tab_set[] = 'user_login='.$key;          break;
-			case ':password' :   $tab_set[] = 'user_password='.$key;       break;
-			case ':daltonisme' : $tab_set[] = 'user_daltonisme='.$key;     break;
-			case ':classe' :     $tab_set[] = 'eleve_classe_id='.$key;     break;
-			case ':id_ent' :     $tab_set[] = 'user_id_ent='.$key;         break;
-			case ':id_gepi' :    $tab_set[] = 'user_id_gepi='.$key;        break;
+			case ':sconet_id' :   $tab_set[] = 'user_sconet_id='.$key;      break;
+			case ':sconet_num' :  $tab_set[] = 'user_sconet_elenoet='.$key; break;
+			case ':reference' :   $tab_set[] = 'user_reference='.$key;      break;
+			case ':profil' :      $tab_set[] = 'user_profil='.$key;         break;
+			case ':nom' :         $tab_set[] = 'user_nom='.$key;            break;
+			case ':prenom' :      $tab_set[] = 'user_prenom='.$key;         break;
+			case ':login' :       $tab_set[] = 'user_login='.$key;          break;
+			case ':password' :    $tab_set[] = 'user_password='.$key;       break;
+			case ':daltonisme' :  $tab_set[] = 'user_daltonisme='.$key;     break;
+			case ':sortie_date' : $tab_set[] = 'user_sortie_date='.$key;    break;
+			case ':classe' :      $tab_set[] = 'eleve_classe_id='.$key;     break;
+			case ':id_ent' :      $tab_set[] = 'user_id_ent='.$key;         break;
+			case ':id_gepi' :     $tab_set[] = 'user_id_gepi='.$key;        break;
 		}
 	}
 	$DB_SQL = 'UPDATE sacoche_user ';
@@ -972,19 +969,19 @@ public function DB_modifier_user($user_id,$DB_VAR)
 }
 
 /**
- * Modifier le statut d'un utilisateur
+ * Rendre une liste de comptes actifs ou inactifs en changeant la date de sortie
  *
- * @param int     $user_id
- * @param 0|1     nouveau statut
+ * @param array   $tab_user_id
+ * @param bool    $statut
  * @return void
  */
-public function DB_modifier_user_statut($user_id,$user_statut)
+public function DB_modifier_users_statut($tab_user_id,$statut)
 {
+	$date = ($statut) ? 'DEFAULT' : 'NOW()' ;
 	$DB_SQL = 'UPDATE sacoche_user ';
-	$DB_SQL.= 'SET user_statut=:user_statut, user_statut_date=NOW() ';
-	$DB_SQL.= 'WHERE user_id=:user_id ';
-	$DB_VAR = array(':user_id'=>$user_id,':user_statut'=>$user_statut);
-	DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+	$DB_SQL.= 'SET user_sortie_date='.$date.' ';
+	$DB_SQL.= 'WHERE user_id IN('.implode(',',$tab_user_id).') ';
+	DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
 }
 
 /**

@@ -48,9 +48,11 @@ if($action=='login')
 			exit('Profil '.$profil.' non transmis !');
 		}
 		// Test du format du champ
-		$test_profil = (preg_match("#^p+[._-]?n+$#", ${$champ})) ? 'prenom-puis-nom' : false ;
-		$test_profil = (preg_match("#^n+[._-]?p+$#", ${$champ})) ? 'nom-puis-prenom' : $test_profil ;
-		if(!$test_profil)
+		$test_profil_1 = (preg_match("#^p+[._-]?n+$#", ${$champ})) ? TRUE : FALSE ; // prénom puis nom
+		$test_profil_2 = (preg_match("#^n+[._-]?p+$#", ${$champ})) ? TRUE : FALSE ; // nom puis prénom
+		$test_profil_3 = (preg_match("#^p+$#", ${$champ})) ? TRUE : FALSE ; // prénom seul
+		$test_profil_4 = (preg_match("#^n+$#", ${$champ})) ? TRUE : FALSE ; // nom seul
+		if( !$test_profil_1 && !$test_profil_2 && !$test_profil_3 && !$test_profil_4 )
 		{
 			exit('Profil '.$profil.' mal formaté !');
 		}

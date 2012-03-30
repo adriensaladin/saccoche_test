@@ -84,7 +84,7 @@ $select_legende = Formulaire::afficher_select(Formulaire::$tab_select_legende , 
 // Dates par défaut de début et de fin
 $annee_debut = (date('n')>8) ? date('Y') : date('Y')-1 ;
 $date_debut = '01/09/'.$annee_debut;
-$date_fin   = date("d/m/Y");
+$date_fin   = TODAY_FR;
 
 // Fabrication du tableau javascript "tab_groupe_periode" pour les jointures groupes/périodes
 $tab_groupe_periode_js = 'var tab_groupe_periode = new Array();';
@@ -124,7 +124,7 @@ if(is_array($tab_groupes))
 ?>
 
 <script type="text/javascript">
-	var date_mysql="<?php echo date("Y-m-d") ?>";
+	var date_mysql="<?php echo TODAY_MYSQL ?>";
 	<?php echo $tab_groupe_periode_js ?> 
 	<?php echo $tab_groupe_niveau_js ?> 
 </script>

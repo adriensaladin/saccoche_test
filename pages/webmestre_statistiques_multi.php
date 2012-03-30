@@ -53,7 +53,7 @@ $select_structure = Formulaire::afficher_select(DB_WEBMESTRE_SELECT::DB_OPT_stru
 	<table class="form hsort" id="statistiques">
 		<thead>
 			<tr>
-				<th class="nu"><input id="all_check" type="image" alt="Tout cocher." src="./_img/all_check.gif" title="Tout cocher." /><br /><input id="all_uncheck" type="image" alt="Tout décocher." src="./_img/all_uncheck.gif" title="Tout décocher." /></th>
+				<th class="nu"><input name="leurre" type="image" alt="" src="./_img/auto.gif" /><input id="all_check" type="image" alt="Tout cocher." src="./_img/all_check.gif" title="Tout cocher." /><br /><input id="all_uncheck" type="image" alt="Tout décocher." src="./_img/all_uncheck.gif" title="Tout décocher." /></th>
 				<th>Id</th>
 				<th>Structure</th>
 				<th>Contact</th>
@@ -81,7 +81,7 @@ $select_structure = Formulaire::afficher_select(DB_WEBMESTRE_SELECT::DB_OPT_stru
 		<button id="bouton_supprimer" type="button" class="supprimer">Supprimer.</button>
 		<label id="ajax_supprimer">&nbsp;</label>
 	</p>
-	<div class="astuce">Concernant les <b>utilisateurs enregistrés</b>, seuls sont comptés ceux au statut "actif".</div>
+	<div class="astuce">Les anciens utilisateurs encore dans la base ne sont pas comptés parmi les <b>utilisateurs enregistrés</b>.</div>
 	<div class="astuce">Les <b>utilisateurs connectés</b> sont ceux s'étant identifiés au cours du dernier semestre.</div>
 	</p>
 </form>

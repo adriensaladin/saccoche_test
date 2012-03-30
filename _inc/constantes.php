@@ -33,7 +33,7 @@
 // VERSION_PROG : version des fichiers installés, à comparer avec la dernière version disponible sur le serveur communautaire ; pour une conversion en entier : list($annee,$mois,$jour) = explode('-',substr(VERSION_PROG,0,10); $indice_version = (date('Y')-2011)*365 + date('z',mktime(0,0,0,$mois,$jour,$annee));
 // VERSION_BASE : version de la base associée, à comparer avec la version de la base actuellement installée
 define('VERSION_PROG', @file_get_contents('VERSION.txt') );	// Ne pas mettre de chemin ! Dans un fichier texte pour permettre un appel au serveur communautaire sans lui faire utiliser PHP.
-define('VERSION_BASE','2012-03-12');
+define('VERSION_BASE','2012-03-29');
 
 // Quelques chemins, avec le séparateur final
 define('CHEMIN_SACOCHE'       , realpath(dirname(dirname(__FILE__))).DIRECTORY_SEPARATOR);
@@ -72,6 +72,7 @@ define('SERVEUR_ADRESSE',$chemin);
 $serveur = (gethostbyname($_SERVER['HTTP_HOST'])=='127.0.0.1') ? 'LOCAL' : ( (strpos($_SERVER['HTTP_HOST'],'.devsesamath.net')) ? 'DEV' : 'PROD' ) ;
 define('SERVEUR_TYPE',$serveur); // PROD | DEV | LOCAL
 
+// urls
 define('SERVEUR_PROJET'        ,'https://sacoche.sesamath.net');         // URL du projet SACoche (en https depuis le 08/02/2012)
 define('SERVEUR_SSL'           ,'https://sacoche.sesamath.net');         // URL du serveur Sésamath sécurisé (idem serveur projet SACoche depuis le 08/02/2012)
 define('SERVEUR_COMMUNAUTAIRE' ,SERVEUR_PROJET.'/appel_externe.php');    // URL du fichier chargé d'effectuer la liaison entre les installations de SACoche et le serveur communautaire concernant les référentiels.
@@ -84,9 +85,16 @@ define('SERVEUR_CONTACT'       ,SERVEUR_PROJET.'/?fichier=contact');     // URL 
 define('SERVEUR_GUIDE_ADMIN'   ,SERVEUR_PROJET.'/?fichier=guide_admin'); // URL de la documentation "Guide d'un administrateur de SACoche"
 define('SERVEUR_LPC_SIGNATURE' ,SERVEUR_SSL.'/appel_externe.php');       // URL du fichier chargé de signer un XML à importer dans LPC
 
+// cookies
 define('COOKIE_STRUCTURE','SACoche-etablissement');  // nom du cookie servant à retenir l'établissement sélectionné, afin de ne pas à avoir à le sélectionner de nouveau, et à pouvoir le retrouver si perte d'une session et tentative de reconnexion SSO.
 define('COOKIE_AUTHMODE' ,'SACoche-mode-connexion'); // nom du cookie servant à retenir le dernier mode de connexion utilisé par un user connecté, afin de pouvoir le retrouver si perte d'une session et tentative de reconnexion SSO.
 define('COOKIE_DEBUG'    ,'SACoche-debug');          // nom du cookie servant à retenir si le mode debug est activé (pas en PROD).
+
+// dates
+define('TODAY_FR'    ,date("d/m/Y"));
+define('TODAY_MYSQL' ,date("Y-m-d"));
+define('SORTIE_DEFAUT_FR'    ,'31/12/9999'); // inutilisé
+define('SORTIE_DEFAUT_MYSQL' ,'9999-12-31');
 
 // DEBUG
 if(SERVEUR_TYPE=='PROD')

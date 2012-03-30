@@ -89,13 +89,13 @@ public function DB_lister_parametres($listing_param='')
 }
 
 /**
- * Modifier la date de connexion ou de tentative de connexion d'un utilisateur donné
+ * Modifier la date de connexion ou de tentative de connexion
  *
- * @param string  $champ   'connexion' ou 'tentative'
+ * @param string  $champ   'connexion' | 'tentative'
  * @param int     $user_id
  * @return void
  */
-public function DB_modifier_date($champ,$user_id)
+public function DB_enregistrer_date($champ,$user_id)
 {
 	$DB_SQL = 'UPDATE sacoche_user ';
 	$DB_SQL.= 'SET user_'.$champ.'_date=NOW() ';

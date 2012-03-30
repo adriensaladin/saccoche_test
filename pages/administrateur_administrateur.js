@@ -212,8 +212,8 @@ $(document).ready
 			{
 				rules :
 				{
-					f_id_ent   : { required:false , maxlength:32 },
-					f_id_gepi  : { required:false , maxlength:32 },
+					f_id_ent   : { required:false , maxlength:63 },
+					f_id_gepi  : { required:false , maxlength:63 },
 					f_nom      : { required:true , maxlength:25 },
 					f_prenom   : { required:true , maxlength:25 },
 					f_login    : { required:true , maxlength:20 },
@@ -221,8 +221,8 @@ $(document).ready
 				},
 				messages :
 				{
-					f_id_ent   : { maxlength:"identifiant ENT de 32 caractères maximum" },
-					f_id_gepi  : { maxlength:"identifiant Gepi de 32 caractères maximum" },
+					f_id_ent   : { maxlength:"identifiant ENT de 63 caractères maximum" },
+					f_id_gepi  : { maxlength:"identifiant Gepi de 63 caractères maximum" },
 					f_nom      : { required:"nom manquant"    , maxlength:"25 caractères maximum" },
 					f_prenom   : { required:"prénom manquant" , maxlength:"25 caractères maximum" },
 					f_login    : { required:"login manquant"  , maxlength:"20 caractères maximum" },

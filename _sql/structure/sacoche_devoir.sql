@@ -9,8 +9,8 @@ CREATE TABLE sacoche_devoir (
 	devoir_visible_date  DATE                                 NOT NULL DEFAULT "0000-00-00",
 	devoir_autoeval_date DATE                                 NOT NULL DEFAULT "0000-00-00",
 	devoir_partage       TEXT         COLLATE utf8_unicode_ci NOT NULL DEFAULT "",
-	devoir_doc_sujet     VARCHAR(60)  COLLATE utf8_unicode_ci NOT NULL DEFAULT "",
-	devoir_doc_corrige   VARCHAR(60)  COLLATE utf8_unicode_ci NOT NULL DEFAULT "",
+	devoir_doc_sujet     VARCHAR(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT "",
+	devoir_doc_corrige   VARCHAR(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT "",
 	PRIMARY KEY (devoir_id),
 	KEY prof_id (prof_id),
 	KEY groupe_id (groupe_id)

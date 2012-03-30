@@ -108,7 +108,7 @@ $(document).ready
 			mode = $(this).attr('class');
 			afficher_masquer_images_action('hide');
 			id = $(this).parent().parent().attr('id').substring(3);
-			new_span  = '<span class="danger">Confirmation de la suppression ?<input id="f_action" name="f_action" type="hidden" value="'+mode+'" /><input id="f_id" name="f_id" type="hidden" value="'+id+'" /><q class="valider" title="Confirmer la suppression de cette sélection d\'items."></q><q class="annuler" title="Annuler la suppression de cette sélection d\'items."></q> <label id="ajax_msg">&nbsp;</label></span>';
+			new_span  = '<span class="danger"><input id="f_action" name="f_action" type="hidden" value="'+mode+'" /><input id="f_id" name="f_id" type="hidden" value="'+id+'" />Confirmation de la suppression ?<q class="valider" title="Confirmer la suppression de cette sélection d\'items."></q><q class="annuler" title="Annuler la suppression de cette sélection d\'items."></q> <label id="ajax_msg">&nbsp;</label></span>';
 			$(this).after(new_span);
 			infobulle();
 		};

@@ -111,7 +111,7 @@ del{text-decoration:line-through;color:#666}
 /* Menu déroulant (dans #cadre_haut)                                                                   */
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-#menu a {display:block;border:1px solid #77F;color:#FFF;background:#77F url(../_img/sprite_menu_4.png) 0 0 no-repeat;padding:1px 1px 1px 19px;margin:1px;height:16px}
+#menu a {display:block;border:1px solid #77F;color:#FFF;background:#77F url(../_img/sprite_menu_5.png) 0 0 no-repeat;padding:1px 1px 1px 19px;margin:1px;height:16px}
 #menu a:hover {background-color:#99F;color:#FFF;text-decoration:none}
 #menu li {float:left;}
 #menu li li {float:none}
@@ -146,41 +146,49 @@ del{text-decoration:line-through;color:#666}
 #menu a.item_selection         {background-position: 1px  -499px}
 #menu a.log_actions            {background-position: 1px  -519px}
 #menu a.mdp_admin              {background-position: 1px  -539px}
-#menu a.nettoyage              {background-position: 1px  -559px}
-#menu a.newsletter             {background-position: 1px  -579px}
-#menu a.parent                 {background-position: 1px  -599px}
-#menu a.periode                {background-position: 1px  -619px}
-#menu a.periode_groupe         {background-position: 1px  -639px}
-#menu a.professeur             {background-position: 1px  -659px}
-#menu a.referentiel_gestion    {background-position: 1px  -679px}
-#menu a.referentiel_voir       {background-position: 1px  -699px}
-#menu a.releve_grille          {background-position: 1px  -719px}
-#menu a.releve_items           {background-position: 1px  -739px}
-#menu a.releve_recherche       {background-position: 1px  -759px}
-#menu a.releve_reglages        {background-position: 1px  -779px}
-#menu a.releve_socle           {background-position: 1px  -799px}
-#menu a.releve_synthese        {background-position: 1px  -819px}
-#menu a.releve_synthese_socle  {background-position: 1px  -839px}
-#menu a.resilier               {background-position: 1px  -859px}
-#menu a.rss                    {background-position: 1px  -879px}
-#menu a.serveur_database       {background-position: 1px  -899px}
-#menu a.serveur_fichiers       {background-position: 1px  -919px}
-#menu a.serveur_geographie     {background-position: 1px  -939px}
-#menu a.serveur_identite       {background-position: 1px  -959px}
-#menu a.serveur_info           {background-position: 1px  -979px}
-#menu a.serveur_maintenance    {background-position: 1px  -999px}
-#menu a.serveur_proxy          {background-position: 1px -1019px}
-#menu a.socle_annuler          {background-position: 1px -1039px}
-#menu a.socle_fichier          {background-position: 1px -1059px}
-#menu a.socle_item             {background-position: 1px -1079px}
-#menu a.socle_langue           {background-position: 1px -1099px}
-#menu a.socle_pilier           {background-position: 1px -1119px}
-#menu a.statistiques           {background-position: 1px -1139px}
-#menu a.statut_desactiver      {background-position: 1px -1159px}
-#menu a.statut_traiter         {background-position: 1px -1179px}
-#menu a.structure_ajout_csv    {background-position: 1px -1199px}
-#menu a.structure_gestion      {background-position: 1px -1219px}
-#menu a.structure_transfert    {background-position: 1px -1239px}
+#menu a.message_accueil        {background-position: 1px  -559px}
+#menu a.nettoyage              {background-position: 1px  -579px}
+#menu a.newsletter             {background-position: 1px  -599px}
+#menu a.parent                 {background-position: 1px  -619px}
+#menu a.periode                {background-position: 1px  -639px}
+#menu a.periode_groupe         {background-position: 1px  -659px}
+#menu a.professeur             {background-position: 1px  -679px}
+#menu a.referentiel_gestion    {background-position: 1px  -699px}
+#menu a.referentiel_voir       {background-position: 1px  -719px}
+#menu a.releve_grille          {background-position: 1px  -739px}
+#menu a.releve_items           {background-position: 1px  -759px}
+#menu a.releve_recherche       {background-position: 1px  -779px}
+#menu a.releve_reglages        {background-position: 1px  -799px}
+#menu a.releve_socle           {background-position: 1px  -819px}
+#menu a.releve_synthese        {background-position: 1px  -839px}
+#menu a.releve_synthese_socle  {background-position: 1px  -859px}
+#menu a.resilier               {background-position: 1px  -879px}
+#menu a.rss                    {background-position: 1px  -899px}
+#menu a.serveur_database       {background-position: 1px  -919px}
+#menu a.serveur_fichiers       {background-position: 1px  -939px}
+#menu a.serveur_geographie     {background-position: 1px  -959px}
+#menu a.serveur_identite       {background-position: 1px  -979px}
+#menu a.serveur_info           {background-position: 1px  -999px}
+#menu a.serveur_maintenance    {background-position: 1px -1019px}
+#menu a.serveur_proxy          {background-position: 1px -1039px}
+#menu a.socle_annuler          {background-position: 1px -1059px}
+#menu a.socle_fichier          {background-position: 1px -1079px}
+#menu a.socle_item             {background-position: 1px -1099px}
+#menu a.socle_langue           {background-position: 1px -1119px}
+#menu a.socle_pilier           {background-position: 1px -1139px}
+#menu a.statistiques           {background-position: 1px -1159px}
+#menu a.structure_ajout_csv    {background-position: 1px -1179px}
+#menu a.structure_gestion      {background-position: 1px -1199px}
+#menu a.structure_transfert    {background-position: 1px -1219px}
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+/* Logos page d'accueil une fois identifié (dans #cadre_bas)                                           */
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
+.alert64 {background:transparent url(../_img/icone64/alert.png) no-repeat left;padding-left:70px;min-height:64px}
+.info64  {background:transparent url(../_img/icone64/info.png)  no-repeat left;padding-left:70px;min-height:64px}
+.help64  {background:transparent url(../_img/icone64/help.png)  no-repeat left;padding-left:70px;min-height:64px}
+.user64  {background:transparent url(../_img/icone64/user.png)  no-repeat left;padding-left:70px;min-height:64px}
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 /* Liens vers un fichier à récupérer ou un document généré                                             */
@@ -299,7 +307,7 @@ form label.mini{width:8em;}
 #zone_ressources span.tab{margin-left:6.5em}
 
 /* Boutons de validation */
-button{background:#DDF url(../_img/sprite_bouton_2.png) 0 0 no-repeat;padding:0 1px 0 20px;margin:1px 0;color:#139;border:1px solid #66F;}
+button{background:#DDF url(../_img/sprite_bouton_3.png) 0 0 no-repeat;padding:0 1px 0 20px;margin:1px 0;color:#139;border:1px solid #66F;}
 button.actualiser      {background-position: 3px    1px}
 button.ajouter         {background-position: 3px  -19px}
 button.annuler         {background-position: 3px  -39px}
@@ -323,12 +331,13 @@ button.parametre       {background-position: 3px -379px}
 button.periode_ajouter {background-position: 3px -399px}
 button.periode_retirer {background-position: 3px -419px}
 button.rechercher      {background-position: 3px -439px}
-button.retourner       {background-position: 3px -459px}
-button.stats           {background-position: 3px -479px}
-button.supprimer       {background-position: 3px -499px}
-button.user_ajouter    {background-position: 3px -519px}
-button.user_desactiver {background-position: 3px -539px}
-button.valider         {background-position: 3px -559px}
+button.referencer_lien {background-position: 3px -459px}
+button.retourner       {background-position: 3px -479px}
+button.stats           {background-position: 3px -499px}
+button.supprimer       {background-position: 3px -519px}
+button.user_ajouter    {background-position: 3px -539px}
+button.user_desactiver {background-position: 3px -559px}
+button.valider         {background-position: 3px -579px}
 
 button{width:auto;overflow:visible;} /* patch pour IE : voir http://jehiah.cz/archive/button-width-in-ie */
 button:hover,button.hover{background-color:#EEF;color:#D41;cursor:pointer;} /* button.hover pour une compatibilité avec AjaxUpload (pour background, car pas mieux pour cursor) */
@@ -336,11 +345,11 @@ button[disabled]{opacity:0.5} /* background-color:#FFF;color:#888;border:1px sol
 button[disabled]:hover,button[disabled]:hover{cursor:default}
 button img{width:16px;height:16px}
 
-/* Input / Select */
+/* input / select / textarea */
 input[type=radio],input[type=checkbox],input[type=image] {vertical-align:-1px}
-input[type=text],input[type=password],select {margin:1px 0;background:#FFF;color:#000;border:1px solid #66F;}
+input[type=text],input[type=password],select,textarea {margin:1px 0;background:#FFF;color:#000;border:1px solid #66F;}
 input[readonly],input[disabled] {color:#666;border:1px solid #666;}
-select[multiple] {vertical-align:middle}
+select[multiple],textarea {vertical-align:middle}
 
 /* formulaire en page d'accueil pour choisir son établissement */
 #f_base {font-size:90%}

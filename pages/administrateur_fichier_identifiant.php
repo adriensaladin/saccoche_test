@@ -49,7 +49,7 @@ $select_groupe = Formulaire::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_regroup
 		<label class="tab" for="f_choix_principal">Objectif :</label>
 		<select id="f_choix_principal" name="f_choix_principal">
 			<option value=""></option>
-			<option value="init_loginmdp">Initialiser des identifiants SACoche.</option>
+			<option value="new_loginmdp">Générer de nouveaux identifiants SACoche.</option>
 			<option value="import_loginmdp">Importer / Imposer des identifiants SACoche.</option>
 			<option value="import_id_lcs">Récupérer les identifiants du LCS.</option>
 			<option value="import_id_argos">Récupérer les identifiants d'ARGOS.</option>
@@ -58,7 +58,7 @@ $select_groupe = Formulaire::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_regroup
 		</select><br />
 	</fieldset>
 
-	<fieldset id="fieldset_init_loginmdp" class="hide">
+	<fieldset id="fieldset_new_loginmdp" class="hide">
 		<hr />
 		<p class="astuce">Les noms d'utilisateurs seront générés selon <a href="./index.php?page=administrateur_etabl_login">le format choisi</a>.</p>
 		<table>
@@ -69,8 +69,8 @@ $select_groupe = Formulaire::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_regroup
 					<div id="div_users" class="hide"><label class="tab" for="select_users">Utilisateurs :</label><select id="select_users" name="select_users[]" multiple size="8"><option value=""></option></select> <img alt="" src="./_img/bulle_aide.png" title="Utiliser la touche &laquo;&nbsp;Shift&nbsp;&raquo; pour une sélection multiple contiguë.<br />Utiliser la touche &laquo;&nbsp;Ctrl&nbsp;&raquo; pour une sélection multiple non contiguë." /></div>
 				</td>
 				<td id="td_bouton" class="nu" style="width:25em">
-					<p><button id="init_login" type="button" class="mdp_groupe">Initialiser les noms d'utilisateurs.</button></p>
-					<p><button id="init_mdp" type="button" class="mdp_groupe">Initialiser les mots de passe.</button></p>
+					<p><button id="generer_login" type="button" class="mdp_groupe">Générer de nouveaux noms d'utilisateurs.</button></p>
+					<p><button id="generer_mdp" type="button" class="mdp_groupe">Générer de nouveaux mots de passe.</button></p>
 				</td>
 			</tr>
 		</table>

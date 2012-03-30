@@ -297,7 +297,7 @@ public function DB_lister_devoirs_prof($prof_id,$groupe_id,$date_debut_mysql,$da
 	$DB_SQL.= 'GROUP_CONCAT(DISTINCT item_id SEPARATOR "_") AS items_listing, COUNT(DISTINCT item_id) AS items_nombre, ';
 	if(!$groupe_id)
 	{
-		$DB_SQL .= 'GROUP_CONCAT(DISTINCT user_id SEPARATOR "_") AS users_listing, COUNT(DISTINCT user_id) AS users_nombre, ';
+		$DB_SQL .= 'GROUP_CONCAT(DISTINCT sacoche_jointure_user_groupe.user_id SEPARATOR "_") AS users_listing, COUNT(DISTINCT sacoche_jointure_user_groupe.user_id) AS users_nombre, ';
 	}
 	$DB_SQL.= 'groupe_type, groupe_nom ';
 	$DB_SQL.= 'FROM sacoche_devoir ';
@@ -311,7 +311,7 @@ public function DB_lister_devoirs_prof($prof_id,$groupe_id,$date_debut_mysql,$da
 	$DB_SQL.= 'WHERE ( prof_id=:prof_id OR devoir_partage LIKE :prof_id_like ) ';
 	$DB_SQL.= ($groupe_id) ? 'AND groupe_type!=:type4 ' : 'AND groupe_type=:type4 ' ;
 	$DB_SQL.= ($groupe_id>0) ? 'AND groupe_id='.$groupe_id.' ' : '' ;
-	$DB_SQL.= (!$groupe_id) ? 'AND user_id!=:prof_id ' : '' ; // Sinon le prof (aussi rattaché au groupe du devoir) est compté parmi la liste des élèves.
+	$DB_SQL.= (!$groupe_id) ? 'AND sacoche_jointure_user_groupe.user_id!=:prof_id ' : '' ; // Sinon le prof (aussi rattaché au groupe du devoir) est compté parmi la liste des élèves.
 	$DB_SQL.= 'AND devoir_date>="'.$date_debut_mysql.'" AND devoir_date<="'.$date_fin_mysql.'" ' ;
 	$DB_SQL.= 'GROUP BY devoir_id ';
 	$DB_SQL.= 'ORDER BY devoir_date DESC, groupe_nom ASC';

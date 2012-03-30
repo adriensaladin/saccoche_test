@@ -182,7 +182,7 @@ $CSS_PERSO = (isset($_SESSION['CSS'])) ? '<style type="text/css">'.$_SESSION['CS
 $tab_fichiers_head = array();
 $tab_fichiers_head[] = array( 'css' , compacter('./_css/style.css','mini') );
 $tab_fichiers_head[] = array( 'js'  , compacter('./_js/jquery-librairies.js','mini') );
-$tab_fichiers_head[] = array( 'js'  , compacter('./_js/script.js','pack') ); // bug avec la minification dans le version du 29/03
+$tab_fichiers_head[] = array( 'js'  , compacter('./_js/script.js','pack') ); // la minification plante à sur le contenu de testURL() avec le message Fatal error: Uncaught exception 'JSMinException' with message 'Unterminated string literal.'
 $filename_js_normal = './pages/'.$PAGE.'.js';
 if(is_file($filename_js_normal)) $tab_fichiers_head[] = array( 'js' , compacter($filename_js_normal,'pack') );
 

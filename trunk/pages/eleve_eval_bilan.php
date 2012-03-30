@@ -48,7 +48,7 @@ if($_SESSION['USER_PROFIL']=='eleve')
 }
 // Dates par défaut de début et de fin
 $date_debut = date("d/m/Y",mktime(0,0,0,date("m")-2,date("d"),date("Y"))); // 2 mois avant
-$date_fin   = date("d/m/Y",mktime(0,0,0,date("m")+1,date("d"),date("Y"))); // 1 mois après
+$date_fin   = date("d/m/Y",mktime(0,0,0,date("m")+4,date("d"),date("Y"))); // 4 mois après
 
 $bouton_valider_autoeval = ($_SESSION['USER_PROFIL']=='eleve') ? '<button id="Enregistrer_saisie" type="button" class="valider">Enregistrer les saisies</button>' : '<button type="button" class="valider" disabled>Réservé à l\'élève.</button>' ;
 ?>
@@ -86,7 +86,8 @@ $bouton_valider_autoeval = ($_SESSION['USER_PROFIL']=='eleve') ? '<button id="En
 </form>
 
 <div id="zone_eval_voir" class="hide">
-	<p id="titre_voir" class="ti b"></p>
+	<div id="titre_voir" class="ti b"></span></div>
+	<p class="ti"><button id="fermer_zone_voir" type="button" class="retourner">Retour</button> <label id="msg_voir"></label></p>
 	<table id="table_voir" class="hsort">
 		<thead>
 			<tr>

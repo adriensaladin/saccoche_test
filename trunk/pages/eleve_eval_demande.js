@@ -38,7 +38,7 @@ $(document).ready
 
 		// tri du tableau (avec jquery.tablesorter.js).
 		var sorting = [[1,0],[2,0]];
-		$('table.form').tablesorter({ headers:{5:{sorter:false}} });
+		$('table.form').tablesorter({ headers:{5:{sorter:false},6:{sorter:false}} });
 		function trier_tableau()
 		{
 			if($('table.form tbody tr').length)

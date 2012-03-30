@@ -177,7 +177,7 @@ $(document).ready
 		maj_eleve();
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-//	Clic sur l'image pour Voir les notes saisies à un devoir
+//	Clic sur l'image pour Voir les notes saisies à un devoir ; retiré d'un fancybox afin de permettre d'utiliser ce fancybox pour une demande d'évaluation
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
 		$('#zone_eval_choix q.voir').live // live est utilisé pour prendre en compte les nouveaux éléments créés
@@ -190,9 +190,10 @@ $(document).ready
 				var texte_prof = $(this).parent().prev().prev().prev().html();
 				var texte_date = $(this).parent().prev().prev().prev().prev().html();
 				var date_fr    = texte_date.substring(17,texte_date.length); // enlever la date mysql cachée
-				$('#zone_eval_choix q').hide();	// Pas afficher_masquer_images_action() à cause des <q> pour le choix d'une date
-				new_label = '<label for="'+td_id+'" class="loader">Connexion au serveur&hellip;</label>';
-				$(this).after(new_label);
+				$('#titre_voir').html('Devoir du ' + date_fr + ' par ' + texte_prof + ' [ ' + texte_info + ' ]');
+				$('#msg_voir').removeAttr("class").addClass("loader").html('Connexion au serveur&hellip;');
+				$('#form , #zone_eval_choix').hide(0);
+				$('#zone_eval_voir').show(0);
 				$.ajax
 				(
 					{
@@ -202,28 +203,23 @@ $(document).ready
 						dataType : "html",
 						error : function(msg,string)
 						{
-							$.fancybox( '<label class="alerte">'+'Echec de la connexion !'+'</label>' , {'centerOnScroll':true} );
-							$('label[for='+td_id+']').remove();
-							$('#zone_eval_choix q').show();
+							$('#msg_voir').removeAttr("class").addClass("alerte").html('Echec de la connexion !');
 						},
 						success : function(responseHTML)
 						{
 							initialiser_compteur();
 							if(responseHTML.substring(0,4)!='<tr>')
 							{
-								$.fancybox( '<label class="alerte">'+responseHTML+'</label>' , {'centerOnScroll':true} );
+								$('#msg_voir').removeAttr("class").addClass("alerte").html(responseHTML);
 							}
 							else
 							{
-								$('#titre_voir').html('Devoir du ' + date_fr + ' par ' + texte_prof + ' [ ' + texte_info + ' ]');
+								$('#msg_voir').removeAttr("class").html('&nbsp;');
 								$('#table_voir tbody').html(responseHTML);
 								format_liens('#table_voir');
 								trier_tableau2();
 								infobulle();
-								$.fancybox( { 'href':'#zone_eval_voir' , onStart:function(){$('#zone_eval_voir').css("display","block");} , onClosed:function(){$('#zone_eval_voir').css("display","none");} , 'margin':0 , 'centerOnScroll':true } );
 							}
-							$('label[for='+td_id+']').remove();
-							$('#zone_eval_choix q').show();
 						}
 					}
 				);
@@ -302,6 +298,20 @@ $(document).ready
 				modification = true;
 				$('#fermer_zone_saisir').removeAttr("class").addClass("annuler").html('Annuler / Retour');
 				$('#msg_saisir').removeAttr("class").html("");
+			}
+		);
+
+		//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+		//	Clic sur le bouton pour fermer la zone servant à voir les acquisitions à une évaluation
+		//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
+		$('#fermer_zone_voir').click
+		(
+			function()
+			{
+				$('#zone_eval_voir').hide(0);
+				$('#form , #zone_eval_choix').show(0);
+				$('#table_voir tbody').html('<tr><td class="nu" colspan="4"></td></tr>');
 			}
 		);
 

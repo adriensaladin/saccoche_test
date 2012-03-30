@@ -30,13 +30,13 @@ if($_SESSION['SESAMATH_ID']==ID_DEMO) {exit('Action désactivée pour la démo..
 
 $action      = (isset($_POST['f_action']))      ? clean_texte($_POST['f_action'])       : '';
 $user_id     = (isset($_POST['f_id']))          ? clean_entier($_POST['f_id'])          : 0;
-$ligne1      = (isset($_POST['f_ligne1']))      ? clean_commune($_POST['f_ligne1'])     : '';
-$ligne2      = (isset($_POST['f_ligne2']))      ? clean_commune($_POST['f_ligne2'])     : '';
-$ligne3      = (isset($_POST['f_ligne3']))      ? clean_commune($_POST['f_ligne3'])     : '';
-$ligne4      = (isset($_POST['f_ligne4']))      ? clean_commune($_POST['f_ligne4'])     : '';
+$ligne1      = (isset($_POST['f_ligne1']))      ? clean_adresse($_POST['f_ligne1'])     : '';
+$ligne2      = (isset($_POST['f_ligne2']))      ? clean_adresse($_POST['f_ligne2'])     : '';
+$ligne3      = (isset($_POST['f_ligne3']))      ? clean_adresse($_POST['f_ligne3'])     : '';
+$ligne4      = (isset($_POST['f_ligne4']))      ? clean_adresse($_POST['f_ligne4'])     : '';
 $code_postal = (isset($_POST['f_code_postal'])) ? clean_entier($_POST['f_code_postal']) : 0;
-$commune     = (isset($_POST['f_commune']))     ? clean_nom($_POST['f_commune'])        : '';
-$pays        = (isset($_POST['f_pays']))        ? clean_nom($_POST['f_pays'])           : '';
+$commune     = (isset($_POST['f_commune']))     ? clean_commune($_POST['f_commune'])    : '';
+$pays        = (isset($_POST['f_pays']))        ? clean_pays($_POST['f_pays'])          : '';
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 //	Ajouter une nouvelle adresse

@@ -46,7 +46,7 @@ $tab_profils = array('eleves','parents','professeurs','directeurs');
 //	Initialiser plusieurs mots de passe élèves | parents | professeurs | directeurs
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-if( (($action=='init_login')||($action=='init_mdp')) && (in_array($profil,$tab_profils)) && $nb )
+if( (($action=='generer_login')||($action=='generer_mdp')) && (in_array($profil,$tab_profils)) && $nb )
 {
 	$prefixe = ($profil!='parents') ? 'user_' : 'parent_' ;
 	// Nom sans extension des fichiers de sortie
@@ -56,7 +56,7 @@ if( (($action=='init_login')||($action=='init_mdp')) && (in_array($profil,$tab_p
 	//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 	//	Initialiser plusieurs noms d'utilisateurs
 	//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-	if($action=='init_login')
+	if($action=='generer_login')
 	{
 		$tab_login = array();
 		// Récupérer les données des utilisateurs concernés (besoin de le faire maintenant, on a besoin des infos pour générer le login)
@@ -80,7 +80,7 @@ if( (($action=='init_login')||($action=='init_mdp')) && (in_array($profil,$tab_p
 	//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 	//	Initialiser plusieurs mots de passe
 	//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-	if($action=='init_mdp')
+	if($action=='generer_mdp')
 	{
 		$tab_password = array();
 		// Mettre à jour les mots de passe des utilisateurs concernés
@@ -102,9 +102,9 @@ if( (($action=='init_login')||($action=='init_mdp')) && (in_array($profil,$tab_p
 	$fcontenu = 'SCONET_ID'.$separateur.'SCONET_N°'.$separateur.'REFERENCE'.$separateur.'PROFIL'.$separateur.'NOM'.$separateur.'PRENOM'.$separateur.'LOGIN'.$separateur.'MOT DE PASSE'.$separateur.'INFO'."\r\n\r\n";
 	foreach($DB_TAB as $DB_ROW)
 	{
-		$login = ($action=='init_login')  ? $tab_login[$DB_ROW[$prefixe.'id']]    : $DB_ROW[$prefixe.'login'] ;
-		$mdp   = ($action=='init_mdp')    ? $tab_password[$DB_ROW[$prefixe.'id']] : 'inchangé' ;
-		$info  = (isset($DB_ROW['info'])) ? $DB_ROW['info'] : '' ;
+		$login = ($action=='generer_login') ? $tab_login[$DB_ROW[$prefixe.'id']]    : $DB_ROW[$prefixe.'login'] ;
+		$mdp   = ($action=='generer_mdp')   ? $tab_password[$DB_ROW[$prefixe.'id']] : 'inchangé' ;
+		$info  = (isset($DB_ROW['info']))   ? $DB_ROW['info'] : '' ;
 		$fcontenu .= $DB_ROW[$prefixe.'sconet_id'].$separateur.$DB_ROW[$prefixe.'sconet_elenoet'].$separateur.$DB_ROW[$prefixe.'reference'].$separateur.$DB_ROW[$prefixe.'profil'].$separateur.$DB_ROW[$prefixe.'nom'].$separateur.$DB_ROW[$prefixe.'prenom'].$separateur.$login.$separateur.$mdp.$separateur.$info."\r\n";
 	}
 	$zip = new ZipArchive();
@@ -129,10 +129,10 @@ if( (($action=='init_login')||($action=='init_mdp')) && (in_array($profil,$tab_p
 	foreach($DB_TAB as $DB_ROW)
 	{
 		$ligne1 = perso_ucwords($DB_ROW[$prefixe.'profil']) ;
-		$ligne1.= (isset($DB_ROW['info'])) ? ' : '.perso_ucwords($DB_ROW['info']) : '' ;
+		$ligne1.= (isset($DB_ROW['info']))   ? ' : '.perso_ucwords($DB_ROW['info']) : '' ;
 		$ligne2 = $DB_ROW[$prefixe.'nom'].' '.$DB_ROW[$prefixe.'prenom'];
-		$ligne3 = ($action=='init_login')  ? 'Utilisateur : '.$tab_login[$DB_ROW[$prefixe.'id']] : 'Utilisateur : '.$DB_ROW[$prefixe.'login'] ;
-		$ligne4 = ($action=='init_mdp')    ? 'Mot de passe : '.$tab_password[$DB_ROW[$prefixe.'id']] : 'Mot de passe : inchangé' ;
+		$ligne3 = ($action=='generer_login') ? 'Utilisateur : '.$tab_login[$DB_ROW[$prefixe.'id']] : 'Utilisateur : '.$DB_ROW[$prefixe.'login'] ;
+		$ligne4 = ($action=='generer_mdp')   ? 'Mot de passe : '.$tab_password[$DB_ROW[$prefixe.'id']] : 'Mot de passe : inchangé' ;
 		$pdf -> Add_Label(pdf($ligne1."\r\n".$ligne2."\r\n".$ligne3."\r\n".$ligne4));
 	}
 	$pdf->Output($dossier_login_mdp.$fnom.'.pdf','F');
@@ -142,7 +142,7 @@ if( (($action=='init_login')||($action=='init_mdp')) && (in_array($profil,$tab_p
 	echo'<ul class="puce">';
 	echo'<li><a class="lien_ext" href="'.$dossier_login_mdp.$fnom.'.pdf"><span class="file file_pdf">Nouveaux identifiants &rarr; Archiver / Imprimer (étiquettes <em>pdf</em>)</span></a></li>';
 	echo'<li><a class="lien_ext" href="'.$dossier_login_mdp.$fnom.'.zip"><span class="file file_txt">Nouveaux identifiants &rarr; Récupérer / Manipuler (fichier <em>csv</em> pour tableur).</span></a></li>';
-	if($action=='init_mdp')
+	if($action=='generer_mdp')
 	{
 		echo'<li><label class="alerte">Les mots de passe, cryptés, ne sont plus accessibles ultérieurement !</label></li>';
 	}
@@ -158,7 +158,7 @@ if($action=='user_export')
 {
 	$separateur = ';';
 	// Récupérer les données des utilisateurs
-	$DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_users(array('eleve','parent','professeur','directeur'),$only_actifs=true,$with_classe=true);
+	$DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_users( array('eleve','parent','professeur','directeur') , 1 /*only_actuels*/ , TRUE /*with_classe*/ );
 	// Générer le csv
 	$fcontenu_csv = 'LOGIN'.$separateur.'MOT DE PASSE'.$separateur.'NOM'.$separateur.'PRENOM'.$separateur.'PROFIL (INFO)'.$separateur.'CLASSE (INFO)'."\r\n\r\n";
 	foreach($DB_TAB as $DB_ROW)
@@ -228,8 +228,8 @@ if($action=='import_loginmdp')
 			{
 				$tab_users_fichier['login'][]  = mb_substr(clean_login($login),0,20);
 				$tab_users_fichier['mdp'][]    = ($mdp!='inchangé') ? mb_substr(clean_password($mdp),0,20) : '';
-				$tab_users_fichier['nom'][]    = mb_substr(clean_nom($nom),0,25);
-				$tab_users_fichier['prenom'][] = mb_substr(clean_prenom($prenom),0,25);
+				$tab_users_fichier['nom'][]    = clean_nom($nom);
+				$tab_users_fichier['prenom'][] = clean_prenom($prenom);
 			}
 		}
 	}
@@ -242,7 +242,7 @@ if($action=='import_loginmdp')
 	$tab_users_base['nom']    = array();
 	$tab_users_base['prenom'] = array();
 	$tab_users_base['info']   = array();
-	$DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_users(array('eleve','parent','professeur','directeur'),$only_actifs=false,$with_classe=true);
+	$DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_users( array('eleve','parent','professeur','directeur') , 2 /*actuels_et_anciens*/ , TRUE /*with_classe*/ );
 	foreach($DB_TAB as $DB_ROW)
 	{
 		$tab_users_base['login'][$DB_ROW['user_id']]  = $DB_ROW['user_login'];
@@ -438,9 +438,9 @@ if( ($action=='import_gepi_eleves') || ($action=='import_gepi_profs') )
 			$sconet_num = (isset($tab_elements[4])) ? $tab_elements[4] : 0;
 			if( ($id_gepi!='') && ($nom!='') && ($prenom!='') )
 			{
-				$tab_users_fichier['id_gepi'][] = mb_substr(clean_texte($id_gepi),0,32);
-				$tab_users_fichier['nom'][]     = mb_substr(clean_nom($nom),0,25);
-				$tab_users_fichier['prenom'][]  = mb_substr(clean_prenom($prenom),0,25);
+				$tab_users_fichier['id_gepi'][] = clean_id_ent($id_gepi);
+				$tab_users_fichier['nom'][]     = clean_nom($nom);
+				$tab_users_fichier['prenom'][]  = clean_prenom($prenom);
 				$tab_users_fichier['sconet_num'][] = clean_entier($sconet_num);
 			}
 		}
@@ -454,7 +454,7 @@ if( ($action=='import_gepi_eleves') || ($action=='import_gepi_profs') )
 	$tab_users_base['prenom']     = array();
 	$tab_users_base['sconet_num'] = array(); // Ne servira que pour les élèves
 	$profil = ($action=='import_gepi_eleves') ? 'eleve' : 'professeur' ;
-	$DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_users($profil,$only_actifs=false,$with_classe=false);
+	$DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_users( $profil , 2 /*actuels_et_anciens*/ , FALSE /*with_classe*/ );
 	foreach($DB_TAB as $DB_ROW)
 	{
 		$tab_users_base['id_gepi'][$DB_ROW['user_id']]    = $DB_ROW['user_id_gepi'];
@@ -604,9 +604,9 @@ if($action=='import_ent')
 				{
 					$id_ent = str_replace('ID : ','UT',$id_ent); // Dans les CSV de Lilie & Celi@, il faut par exemple remplacer "ID : 75185265" par "UT75185265"
 				}
-				$tab_users_fichier['id_ent'][]    = mb_substr(clean_texte($id_ent),0,32);
-				$tab_users_fichier['nom'][]       = mb_substr(clean_nom($nom),0,25);
-				$tab_users_fichier['prenom'][]    = mb_substr(clean_prenom($prenom),0,25);
+				$tab_users_fichier['id_ent'][]    = clean_id_ent($id_ent);
+				$tab_users_fichier['nom'][]       = clean_nom($nom);
+				$tab_users_fichier['prenom'][]    = clean_prenom($prenom);
 				$tab_users_fichier['id_sconet'][] = clean_entier($id_sconet);
 			}
 		}
@@ -621,7 +621,7 @@ if($action=='import_ent')
 	$tab_users_base['id_sconet'] = array();
 	$tab_users_base['info']      = array();
 	$tab_profils = array('eleve','parent','professeur','directeur'); // cybercolleges42 (au moins) contient les parents dans son csv
-	$DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_users($tab_profils,$only_actifs=false,$with_classe=true);
+	$DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_users( $tab_profils , 2 /*actuels_et_anciens*/ , TRUE /*with_classe*/ );
 	foreach($DB_TAB as $DB_ROW)
 	{
 		$tab_users_base['id_ent'][$DB_ROW['user_id']]    = $DB_ROW['user_id_ent'];
@@ -764,7 +764,7 @@ if($action=='COPY_id_lcs_TO_id_ent')
 	}
 	require($fichier); // Charge la fonction "recuperer_infos_user_LCS()"
 	// On récupère le contenu de la base, on va passer les users en revue un par un
-	$DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_users(array('eleve','parent','professeur','directeur'),$only_actifs=true,$with_classe=true);
+	$DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_users( array('eleve','parent','professeur','directeur') , 1 /*only_actuels*/ , TRUE /*with_classe*/ );
 	// Pour chaque user de la base, rechercher son uid dans le LCS
 	$lignes_ras     = '';
 	$lignes_modif   = '';
@@ -814,7 +814,7 @@ if($action=='COPY_id_lcs_TO_id_ent')
 			}
 			else
 			{
-				$id_ent_LCS = mb_substr($tab_valeurs_retournees[0],0,32);
+				$id_ent_LCS = clean_id_ent($tab_valeurs_retournees[0]);
 				if($DB_ROW['user_id_ent']==$id_ent_LCS)
 				{
 					// Contenu de SACoche à ignorer : id_ent identique
@@ -891,9 +891,9 @@ if( ($action=='COPY_id_argos_profs_TO_id_ent') || ($action=='COPY_id_argos_eleve
 		{
 			if($qui!='parents')
 			{
-				$tab_users_ldap['id_ent'][] = mb_substr((string)$utilisateur->uid,0,32);
-				$tab_users_ldap['nom'][]    = mb_substr(clean_nom($utilisateur->nom),0,25);
-				$tab_users_ldap['prenom'][] = mb_substr(clean_prenom($utilisateur->prenom),0,25);
+				$tab_users_ldap['id_ent'][] = clean_id_ent($utilisateur->uid);
+				$tab_users_ldap['nom'][]    = clean_nom($utilisateur->nom);
+				$tab_users_ldap['prenom'][] = clean_prenom($utilisateur->prenom);
 			}
 			elseif($qui=='parents') /* forcément */
 			{
@@ -902,9 +902,9 @@ if( ($action=='COPY_id_argos_profs_TO_id_ent') || ($action=='COPY_id_argos_eleve
 					foreach ($utilisateur->responsables->responsable as $responsable)
 					{
 						$id = (int) $responsable->entpersonlogin->attributes()->jointure; // Car ils reviennent plusieurs fois dans le fichier.
-						$tab_users_ldap['id_ent'][$id] = mb_substr((string)$responsable->uid,0,32);
-						$tab_users_ldap['nom'][$id]    = mb_substr(clean_nom($responsable->nom),0,25);
-						$tab_users_ldap['prenom'][$id] = mb_substr(clean_prenom($responsable->prenom),0,25);
+						$tab_users_ldap['id_ent'][$id] = clean_id_ent($responsable->uid);
+						$tab_users_ldap['nom'][$id]    = clean_nom($responsable->nom);
+						$tab_users_ldap['prenom'][$id] = clean_prenom($responsable->prenom);
 					}
 				}
 			}
@@ -920,7 +920,7 @@ if( ($action=='COPY_id_argos_profs_TO_id_ent') || ($action=='COPY_id_argos_eleve
 	$tab_users_base['info']   = array();
 	$profil      = ($qui=='profs') ? array('professeur','directeur') : substr($qui,0,-1) ;
 	$with_classe = ($qui=='profs') ? false : true ;
-	$DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_users($profil,$only_actifs=true,$with_classe);
+	$DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_users( $profil , 1 /*only_actuels*/ , $with_classe );
 	foreach($DB_TAB as $DB_ROW)
 	{
 		$tab_users_base['id_ent'][$DB_ROW['user_id']] = $DB_ROW['user_id_ent'];

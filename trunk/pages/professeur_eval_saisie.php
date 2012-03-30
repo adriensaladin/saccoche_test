@@ -127,10 +127,9 @@ $select_selection_items = Formulaire::afficher_select(DB_STRUCTURE_COMMUN::DB_OP
 	// <![CDATA[
 	var select_groupe = "<?php echo str_replace('"','\"','<option value=""></option>'.$select_eleve); ?>";
 	// ]]>
-	var input_date = "<?php echo date("d/m/Y") ?>";
-	var date_mysql = "<?php echo date("Y-m-d") ?>";
+	var input_date = "<?php echo TODAY_FR ?>";
+	var date_mysql = "<?php echo TODAY_MYSQL ?>";
 	var input_autoeval = "<?php echo $date_autoeval ?>";
-	var dossier_devoir = "./__tmp/devoir/<?php echo $_SESSION['BASE'] ?>/";
 	var tab_items    = new Array();
 	var tab_profs    = new Array();
 	var tab_eleves   = new Array();
@@ -329,10 +328,14 @@ $select_marge_min    = Formulaire::afficher_select(Formulaire::$tab_select_marge
 	<h2>Ajouter / retirer un sujet ou une correction d'une évaluation</h2>
 	<p class="hc b" id="titre_upload"></p>
 	<p>
-		<span class="astuce">Taille maximale fixée par le webmestre : <?php echo FICHIER_TAILLE_MAX ?> Ko.</span><br />
-		<span class="astuce">Durée de conservation fixée par le webmestre : <?php echo FICHIER_DUREE_CONSERVATION ?> mois.</span>
+		<label class="tab">Sujet :</label><span id="span_sujet"></span> <button id="bouton_supprimer_sujet" type="button" class="supprimer">Retirer</button><br />
+		<span class="tab"></span><button id="bouton_referencer_sujet" type="button" class="referencer_lien">Diriger vers ce lien externe.</button> <input id="f_adresse_sujet" name="f_adresse_sujet" maxlength="256" size="50" type="text" value="" /><br />
+		<span class="tab"></span><button id="bouton_uploader_sujet" type="button" class="fichier_import">Envoyer un fichier à utiliser.</button> <?php echo FICHIER_TAILLE_MAX ?> Ko maxi, conservé <?php echo FICHIER_DUREE_CONSERVATION ?> mois. <img alt="" src="./_img/bulle_aide.png" title="La taille maximale autorisée et la durée de conservation des fichiers sont fixées par le webmestre." />
 	</p>
-	<div><label class="tab">Sujet :</label><button id="bouton_uploader_sujet" type="button" class="fichier_import">Ajouter / Modifier</button> <button id="bouton_supprimer_sujet" type="button" class="supprimer">Retirer</button> <span id="span_sujet"></span></div>
-	<div><label class="tab">Corrigé :</label><button id="bouton_uploader_corrige" type="button" class="fichier_import">Ajouter / Modifier</button> <button id="bouton_supprimer_corrige" type="button" class="supprimer">Retirer</button> <span id="span_corrige"></span></div>
+	<p>
+		<label class="tab">Corrigé :</label><span id="span_corrige"></span> <button id="bouton_supprimer_corrige" type="button" class="supprimer">Retirer</button><br />
+		<span class="tab"></span><button id="bouton_referencer_corrige" type="button" class="referencer_lien">Diriger vers ce lien externe.</button> <input id="f_adresse_corrige" name="f_adresse_corrige" maxlength="256" size="50" type="text" value="" /><br />
+		<span class="tab"></span><button id="bouton_uploader_corrige" type="button" class="fichier_import">Envoyer un fichier à utiliser.</button> <?php echo FICHIER_TAILLE_MAX ?> Ko maxi, conservé <?php echo FICHIER_DUREE_CONSERVATION ?> mois. <img alt="" src="./_img/bulle_aide.png" title="La taille maximale autorisée et la durée de conservation des fichiers sont fixées par le webmestre." />
+	</p>
 	<p><span class="tab"></span><button id="fermer_zone_upload" type="button" class="retourner">Retour</button><label id="ajax_document_upload">&nbsp;</label></p>
 </fieldset></form>

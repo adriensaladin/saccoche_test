@@ -30,6 +30,11 @@ $TITRE = "Mode d'identification";
 
 require_once('./_inc/tableau_sso.php');
 
+// Surcharger les paramètres CAS perso (vides par défaut) avec ceux en session (éventuellement personnalisés).
+$tab_connexion_info['cas']['perso']['serveur_host'] = $_SESSION['CAS_SERVEUR_HOST'];
+$tab_connexion_info['cas']['perso']['serveur_port'] = $_SESSION['CAS_SERVEUR_PORT'];
+$tab_connexion_info['cas']['perso']['serveur_root'] = $_SESSION['CAS_SERVEUR_ROOT'];
+
 // Liste des possibilités
 // Retenir en variable javascript les paramètres des serveurs CAS et de Gepi, ainsi que l'état des connecteurs CAS (opérationnels ou pas)
 $select_connexions = '';

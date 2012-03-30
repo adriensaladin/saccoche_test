@@ -136,11 +136,10 @@ if( ($action=='Partager') && $matiere_id && $niveau_id && ($perso==0) && in_arra
 		exit($reponse);
 	}
 	// Tout s'est bien passé si on arrive jusque là...
-	$date_mysql = date("Y-m-d");
-	DB_STRUCTURE_REFERENTIEL::DB_modifier_referentiel( $matiere_id , $niveau_id , array(':partage_etat'=>$partage,':partage_date'=>$date_mysql) );
+	DB_STRUCTURE_REFERENTIEL::DB_modifier_referentiel( $matiere_id , $niveau_id , array(':partage_etat'=>$partage,':partage_date'=>TODAY_MYSQL) );
 	// Retour envoyé
 	$tab_partage = array('oui'=>'<img title="Référentiel partagé sur le serveur communautaire (MAJ le ◄DATE►)." alt="" src="./_img/etat/partage_oui.gif" />','non'=>'<img title="Référentiel non partagé avec la communauté (choix du ◄DATE►)." alt="" src="./_img/etat/partage_non.gif" />','bof'=>'<img title="Référentiel dont le partage est sans intérêt (pas novateur)." alt="" src="./_img/etat/partage_non.gif" />','hs'=>'<img title="Référentiel dont le partage est sans objet (matière spécifique)." alt="" src="./_img/etat/partage_non.gif" />');
-	exit( str_replace('◄DATE►',affich_date($date_mysql),$tab_partage[$partage]) );
+	exit( str_replace('◄DATE►',affich_date(TODAY_MYSQL),$tab_partage[$partage]) );
 }
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
@@ -163,10 +162,9 @@ if( ($action=='Envoyer') && $matiere_id && $niveau_id && ($perso==0) )
 		exit($reponse);
 	}
 	// Tout s'est bien passé si on arrive jusque là...
-	$date_mysql = date("Y-m-d");
-	DB_STRUCTURE_REFERENTIEL::DB_modifier_referentiel( $matiere_id , $niveau_id , array(':partage_date'=>$date_mysql) );
+	DB_STRUCTURE_REFERENTIEL::DB_modifier_referentiel( $matiere_id , $niveau_id , array(':partage_date'=>TODAY_MYSQL) );
 	// Retour envoyé
-	exit('<img title="Référentiel partagé sur le serveur communautaire (MAJ le '.affich_date($date_mysql).')." alt="" src="./_img/etat/partage_oui.gif" />');
+	exit('<img title="Référentiel partagé sur le serveur communautaire (MAJ le '.affich_date(TODAY_MYSQL).')." alt="" src="./_img/etat/partage_oui.gif" />');
 }
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-

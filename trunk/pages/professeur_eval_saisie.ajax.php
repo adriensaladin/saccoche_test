@@ -51,13 +51,14 @@ $cart_detail    = (isset($_POST['f_detail']))          ? clean_texte($_POST['f_d
 $orientation    = (isset($_POST['f_orientation']))     ? clean_texte($_POST['f_orientation'])           : '';
 $marge_min      = (isset($_POST['f_marge_min']))       ? clean_texte($_POST['f_marge_min'])             : '';
 $couleur        = (isset($_POST['f_couleur']))         ? clean_texte($_POST['f_couleur'])               : '';
-$only_req       = (isset($_POST['f_restriction_req'])) ? true                                           : false;
+$only_req       = (isset($_POST['f_restriction_req'])) ? TRUE                                           : FALSE;
 $doc_objet      = (isset($_POST['f_doc_objet']))       ? clean_texte($_POST['f_doc_objet'])             : '';
-$doc_nom        = (isset($_POST['f_doc_nom']))         ? clean_texte($_POST['f_doc_nom'])               : '';
+$doc_url        = (isset($_POST['f_doc_url']))         ? clean_texte($_POST['f_doc_url'])               : '';
 $timestamp      = (isset($_POST['timestamp']))         ? (float)$_POST['timestamp']                     : time(); // Pas de (int) car sur les systèmes 32-bit, le max est 2147483647 alors que js envoie davantage (http://fr.php.net/manual/fr/language.types.integer.php#103506)
 
 $dossier_export = './__tmp/export/';
-$dossier_devoir = './__tmp/devoir/'.$_SESSION['BASE'].'/';
+$dossier_devoir_relatif = './__tmp/devoir/'.$_SESSION['BASE'].'/';
+$dossier_devoir_absolu  = SERVEUR_ADRESSE.'/__tmp/devoir/'.$_SESSION['BASE'].'/';
 $fnom_export = 'saisie_'.$_SESSION['BASE'].'_'.$_SESSION['USER_ID'].'_'.$ref.'_'.$timestamp;
 
 // Si "ref" est renseigné (pour Éditer ou Retirer ou Saisir ou ...), il contient l'id de l'évaluation + '_' + l'initiale du type de groupe + l'id du groupe
@@ -162,8 +163,8 @@ if( ($action=='lister_evaluations') && $type && ( ($type=='selection') || ($aff_
 			$profs_nombre = (mb_substr_count($DB_ROW['devoir_partage'],',')-1).' profs';
 		}
 		$proprio = ($DB_ROW['prof_id']==$_SESSION['USER_ID']) ? TRUE : FALSE ;
-		$image_sujet   = ($DB_ROW['devoir_doc_sujet'])   ? '<a href="'.$dossier_devoir.$DB_ROW['devoir_doc_sujet'].'" target="_blank"><img alt="sujet" src="./_img/document/sujet_oui.png" title="Sujet disponible." /></a>' : '<img alt="sujet" src="./_img/document/sujet_non.png" />' ;
-		$image_corrige = ($DB_ROW['devoir_doc_corrige']) ? '<a href="'.$dossier_devoir.$DB_ROW['devoir_doc_corrige'].'" target="_blank"><img alt="corrigé" src="./_img/document/corrige_oui.png" title="Corrigé disponible." /></a>' : '<img alt="corrigé" src="./_img/document/corrige_non.png" />' ;
+		$image_sujet   = ($DB_ROW['devoir_doc_sujet'])   ? '<a href="'.$DB_ROW['devoir_doc_sujet'].'" target="_blank"><img alt="sujet" src="./_img/document/sujet_oui.png" title="Sujet disponible." /></a>' : '<img alt="sujet" src="./_img/document/sujet_non.png" />' ;
+		$image_corrige = ($DB_ROW['devoir_doc_corrige']) ? '<a href="'.$DB_ROW['devoir_doc_corrige'].'" target="_blank"><img alt="corrigé" src="./_img/document/corrige_oui.png" title="Corrigé disponible." /></a>' : '<img alt="corrigé" src="./_img/document/corrige_non.png" />' ;
 		// Afficher une ligne du tableau
 		echo'<tr>';
 		echo	'<td><i>'.$DB_ROW['devoir_date'].'</i>'.$date_affich.'</td>';
@@ -174,13 +175,13 @@ if( ($action=='lister_evaluations') && $type && ( ($type=='selection') || ($aff_
 		echo	'<td>'.$DB_ROW['items_nombre'].' item'.$cs.'</td>';
 		echo	'<td>'.$profs_nombre.'</td>';
 		echo	'<td>'.$image_sujet.$image_corrige;
-		echo	($proprio) ? '<q class="uploader_doc" title="Ajouter / retirer un sujet ou une correction."></q>' : '<q class="uploader_doc_non" title="Non modifiable (évaluation d\'un collègue)."></q>' ;
+		echo	($proprio) ? '<q class="uploader_doc" title="Ajouter / retirer un sujet ou une correction."></q>' : '<q class="uploader_doc_non" title="Non modifiable (évaluation du collègue '.html($DB_ROW['proprietaire']).')."></q>' ;
 		echo	'</td>';
 		echo	'<td class="nu" id="devoir_'.$ref.'">';
-		echo		($proprio) ? '<q class="modifier" title="Modifier cette évaluation (date, description, ...)."></q>' : '<q class="modifier_non" title="Non modifiable (évaluation d\'un collègue)."></q>' ;
-		echo		($proprio) ? '<q class="ordonner" title="Réordonner les items de cette évaluation."></q>' : '<q class="ordonner_non" title="Non réordonnable (évaluation d\'un collègue)."></q>' ;
+		echo		($proprio) ? '<q class="modifier" title="Modifier cette évaluation (date, description, ...)."></q>' : '<q class="modifier_non" title="Non modifiable (évaluation du collègue '.html($DB_ROW['proprietaire']).')."></q>' ;
+		echo		($proprio) ? '<q class="ordonner" title="Réordonner les items de cette évaluation."></q>' : '<q class="ordonner_non" title="Non réordonnable (évaluation du collègue '.html($DB_ROW['proprietaire']).')."></q>' ;
 		echo		'<q class="dupliquer" title="Dupliquer cette évaluation."></q>';
-		echo		($proprio) ? '<q class="supprimer" title="Supprimer cette évaluation."></q>' : '<q class="supprimer_non" title="Non supprimable (évaluation d\'un collègue)."></q>' ;
+		echo		($proprio) ? '<q class="supprimer" title="Supprimer cette évaluation."></q>' : '<q class="supprimer_non" title="Non supprimable (évaluation du collègue '.html($DB_ROW['proprietaire']).')."></q>' ;
 		echo		'<q class="imprimer" title="Imprimer un cartouche pour cette évaluation."></q>';
 		echo		'<q class="saisir" title="Saisir les acquisitions des élèves à cette évaluation."></q>';
 		echo		'<q class="voir" title="Voir les acquisitions des élèves à cette évaluation."></q>';
@@ -258,8 +259,8 @@ if( (($action=='ajouter')||(($action=='dupliquer')&&($devoir_id))) && $type && $
 	$cs = ($nb_items>1) ? 's' : '';
 	$us = ($nb_eleves>1)      ? 's' : '';
 	$profs_nombre = count($tab_profs) ? count($tab_profs).' profs' : 'moi seul' ;
-	$image_sujet   = ($doc_sujet)   ? '<a href="'.$dossier_devoir.$doc_sujet.'" target="_blank"><img alt="sujet" src="./_img/document/sujet_oui.png" title="Sujet disponible." /></a>' : '<img alt="sujet" src="./_img/document/sujet_non.png" />' ;
-	$image_corrige = ($doc_corrige) ? '<a href="'.$dossier_devoir.$doc_corrige.'" target="_blank"><img alt="corrigé" src="./_img/document/corrige_oui.png" title="Corrigé disponible." /></a>' : '<img alt="corrigé" src="./_img/document/corrige_non.png" />' ;
+	$image_sujet   = ($doc_sujet)   ? '<a href="'.$doc_sujet.'" target="_blank"><img alt="sujet" src="./_img/document/sujet_oui.png" title="Sujet disponible." /></a>' : '<img alt="sujet" src="./_img/document/sujet_non.png" />' ;
+	$image_corrige = ($doc_corrige) ? '<a href="'.$doc_corrige.'" target="_blank"><img alt="corrigé" src="./_img/document/corrige_oui.png" title="Corrigé disponible." /></a>' : '<img alt="corrigé" src="./_img/document/corrige_non.png" />' ;
 	echo'<td><i>'.$date_mysql.'</i>'.$date.'</td>';
 	echo'<td>'.$date_visible.'</td>';
 	echo'<td>'.$date_autoeval.'</td>';
@@ -348,8 +349,8 @@ if( ($action=='modifier') && $devoir_id && $groupe_id && $date && $date_visible 
 	$cs = ($nb_items>1)  ? 's' : '';
 	$us = ($nb_eleves>1) ? 's' : '';
 	$profs_nombre = count($tab_profs) ? count($tab_profs).' profs' : 'moi seul' ;
-	$image_sujet   = ($doc_sujet)   ? '<a href="'.$dossier_devoir.$doc_sujet.'" target="_blank"><img alt="sujet" src="./_img/document/sujet_oui.png" title="Sujet disponible." /></a>' : '<img alt="sujet" src="./_img/document/sujet_non.png" />' ;
-	$image_corrige = ($doc_corrige) ? '<a href="'.$dossier_devoir.$doc_corrige.'" target="_blank"><img alt="corrigé" src="./_img/document/corrige_oui.png" title="Corrigé disponible." /></a>' : '<img alt="corrigé" src="./_img/document/corrige_non.png" />' ;
+	$image_sujet   = ($doc_sujet)   ? '<a href="'.$doc_sujet.'" target="_blank"><img alt="sujet" src="./_img/document/sujet_oui.png" title="Sujet disponible." /></a>' : '<img alt="sujet" src="./_img/document/sujet_non.png" />' ;
+	$image_corrige = ($doc_corrige) ? '<a href="'.$doc_corrige.'" target="_blank"><img alt="corrigé" src="./_img/document/corrige_oui.png" title="Corrigé disponible." /></a>' : '<img alt="corrigé" src="./_img/document/corrige_non.png" />' ;
 	echo'<td><i>'.$date_mysql.'</i>'.$date.'</td>';
 	echo'<td>'.$date_visible.'</td>';
 	echo'<td>'.$date_autoeval.'</td>';
@@ -453,7 +454,7 @@ if( ($action=='saisir') && $devoir_id && $groupe_id && $date_mysql && $date_visi
 	// liste des items
 	$DB_TAB_COMP = DB_STRUCTURE_PROFESSEUR::DB_lister_items_devoir( $devoir_id , FALSE /*with_lien*/ , TRUE /*with_coef*/ );
 	// liste des élèves
-	$DB_TAB_USER = DB_STRUCTURE_COMMUN::DB_lister_users_actifs_regroupement('eleve',$groupe_type,$groupe_id);
+	$DB_TAB_USER = DB_STRUCTURE_COMMUN::DB_lister_users_regroupement( 'eleve' /*profil*/ , TRUE /*statut*/ , $groupe_type , $groupe_id );
 	// Let's go
 	$item_nb = count($DB_TAB_COMP);
 	if(!$item_nb)
@@ -602,7 +603,7 @@ if( ($action=='voir') && $devoir_id && $groupe_id && $date_fr ) // $description 
 	// liste des items
 	$DB_TAB_COMP = DB_STRUCTURE_PROFESSEUR::DB_lister_items_devoir( $devoir_id , TRUE /*with_lien*/ , TRUE /*with_coef*/ );
 	// liste des élèves
-	$DB_TAB_USER = DB_STRUCTURE_COMMUN::DB_lister_users_actifs_regroupement('eleve',$groupe_type,$groupe_id);
+	$DB_TAB_USER = DB_STRUCTURE_COMMUN::DB_lister_users_regroupement( 'eleve' /*profil*/ , TRUE /*statut*/ , $groupe_type , $groupe_id );
 	// Let's go
 	$item_nb = count($DB_TAB_COMP);
 	if(!$item_nb)
@@ -777,7 +778,7 @@ if( ($action=='voir_repart') && $devoir_id && $groupe_id && $date_fr ) // $descr
 	// liste des items
 	$DB_TAB_ITEM = DB_STRUCTURE_PROFESSEUR::DB_lister_items_devoir( $devoir_id , TRUE /*with_lien*/ , TRUE /*with_coef*/ );
 	// liste des élèves
-	$DB_TAB_USER = DB_STRUCTURE_COMMUN::DB_lister_users_actifs_regroupement('eleve',$groupe_type,$groupe_id);
+	$DB_TAB_USER = DB_STRUCTURE_COMMUN::DB_lister_users_regroupement( 'eleve' /*profil*/ , TRUE /*statut*/ , $groupe_type , $groupe_id );
 	// Let's go
 	$item_nb = count($DB_TAB_ITEM);
 	if(!$item_nb)
@@ -1051,7 +1052,7 @@ if( ($action=='imprimer_cartouche') && $devoir_id && $groupe_id && $date_fr && $
 	// liste des items
 	$DB_TAB_COMP = DB_STRUCTURE_PROFESSEUR::DB_lister_items_devoir( $devoir_id , FALSE /*with_lien*/ , TRUE /*with_coef*/ );
 	// liste des élèves
-	$DB_TAB_USER = DB_STRUCTURE_COMMUN::DB_lister_users_actifs_regroupement('eleve',$groupe_type,$groupe_id);
+	$DB_TAB_USER = DB_STRUCTURE_COMMUN::DB_lister_users_regroupement( 'eleve' /*profil*/ , TRUE /*statut*/ , $groupe_type , $groupe_id );
 	// Let's go
 	if(!count($DB_TAB_COMP))
 	{
@@ -1255,6 +1256,18 @@ if( (isset($_GET['f_action'])) && ($_GET['f_action']=='importer_saisie_csv') )
 }
 
 //	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//	Référencer un sujet ou un corrigé d'évaluation
+//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+if( ($action=='referencer_document') && $devoir_id && in_array($doc_objet,array('sujet','corrige')) && $doc_url )
+{
+	// Mise à jour dans la base
+	DB_STRUCTURE_PROFESSEUR::DB_modifier_devoir_document($devoir_id,$_SESSION['USER_ID'],$doc_objet,$doc_url);
+	// Retour
+	exit('ok');
+}
+
+//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //	Uploader un sujet ou un corrigé d'évaluation
 //	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -1286,24 +1299,27 @@ if( ($action=='uploader_document') && $devoir_id && in_array($doc_objet,array('s
 	}
 	// Enregistrement du fichier
 	$fichier_nom = 'devoir_'.$devoir_id.'_'.$doc_objet.'_'.time().'.'.$extension;
-	if(!move_uploaded_file($fnom_serveur , $dossier_devoir.$fichier_nom))
+	if(!move_uploaded_file($fnom_serveur , $dossier_devoir_relatif.$fichier_nom))
 	{
 		exit('Le fichier n\'a pas pu être enregistré sur le serveur !');
 	}
 	// Mise à jour dans la base
-	DB_STRUCTURE_PROFESSEUR::DB_modifier_devoir_document($devoir_id,$_SESSION['USER_ID'],$doc_objet,$fichier_nom);
+	DB_STRUCTURE_PROFESSEUR::DB_modifier_devoir_document($devoir_id,$_SESSION['USER_ID'],$doc_objet,$dossier_devoir_absolu.$fichier_nom);
 	// Retour
-	exit('ok'.']¤['.$ref.']¤['.$doc_objet.']¤['.$fichier_nom);
+	exit('ok'.']¤['.$ref.']¤['.$doc_objet.']¤['.$dossier_devoir_absolu.$fichier_nom);
 }
 
 //	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //	Retirer un sujet ou un corrigé d'évaluation
 //	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-if( ($action=='retirer_document') && $devoir_id && in_array($doc_objet,array('sujet','corrige')) && $doc_nom )
+if( ($action=='retirer_document') && $devoir_id && in_array($doc_objet,array('sujet','corrige')) && $doc_url )
 {
-	// Suppression du fichier
-	unlink($dossier_devoir.$doc_nom);
+	// Suppression du fichier, uniquement si ce n'est pas un lien externe ou vers un devoir d'un autre établissement
+	if(mb_strpos($doc_url,$dossier_devoir_absolu)===0)
+	{
+		unlink(str_replace($dossier_devoir_absolu,$dossier_devoir_relatif,$doc_url));
+	}
 	// Mise à jour dans la base
 	DB_STRUCTURE_PROFESSEUR::DB_modifier_devoir_document($devoir_id,$_SESSION['USER_ID'],$doc_objet,'');
 	// Retour

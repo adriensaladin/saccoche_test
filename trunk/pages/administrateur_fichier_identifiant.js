@@ -46,7 +46,7 @@ $(document).ready
 				var objet = $(this).val();
 				switch (objet)
 				{
-					case 'init_loginmdp' : maj_select_users(); $('#fieldset_init_loginmdp').show(); break;
+					case 'new_loginmdp' : maj_select_users(); $('#fieldset_new_loginmdp').show(); break;
 					case 'import_loginmdp'      : $('#fieldset_import_loginmdp').show();      break;
 					case 'import_id_lcs'        : $('#fieldset_import_id_lcs').show();        break;
 					case 'import_id_argos'      : $('#fieldset_import_id_argos').show();      break;
@@ -77,7 +77,7 @@ $(document).ready
 
 		function maj_select_users()
 		{
-			$('#fieldset_init_loginmdp button').prop('disabled',true);
+			$('#fieldset_new_loginmdp button').prop('disabled',true);
 			$('#div_users').hide();
 			// On récupère le profil
 			var profil = $('#f_profil option:selected').val();
@@ -110,7 +110,7 @@ $(document).ready
 							$('#ajax_msg').removeAttr("class").addClass("valide").html("Affichage actualisé !");
 							$('#select_users').html(responseHTML).show();
 							$('#div_users').show();
-							$('#fieldset_init_loginmdp button').prop('disabled',false);
+							$('#fieldset_new_loginmdp button').prop('disabled',false);
 						}
 						else
 						{
@@ -181,7 +181,7 @@ $(document).ready
 // Soumission du formulaire - choix 1 et 2
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
-		$('#init_login , #init_mdp').click
+		$('#generer_login , #generer_mdp').click
 		(
 			function()
 			{

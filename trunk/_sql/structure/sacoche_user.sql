@@ -10,11 +10,10 @@ CREATE TABLE sacoche_user (
 	user_prenom         VARCHAR(25)                                                      COLLATE utf8_unicode_ci NOT NULL DEFAULT "",
 	user_login          VARCHAR(20)                                                      COLLATE utf8_unicode_ci NOT NULL DEFAULT "",
 	user_password       CHAR(32)                                                         COLLATE utf8_unicode_ci NOT NULL DEFAULT "",
-	user_statut         TINYINT(1)                                                       UNSIGNED                NOT NULL DEFAULT 1,
 	user_daltonisme     TINYINT(1)                                                       UNSIGNED                NOT NULL DEFAULT 0,
 	user_tentative_date DATETIME                                                                                 NOT NULL DEFAULT "0000-00-00 00:00:00",
 	user_connexion_date DATETIME                                                                                 NOT NULL DEFAULT "0000-00-00 00:00:00",
-	user_statut_date    DATE                                                                                     NOT NULL DEFAULT "0000-00-00",
+	user_sortie_date    DATE                                                                                     NOT NULL DEFAULT "9999-12-31",
 	eleve_classe_id     MEDIUMINT(8)                                                     UNSIGNED                NOT NULL DEFAULT 0,
 	eleve_langue        TINYINT(3)                                                       UNSIGNED                NOT NULL DEFAULT 100 COMMENT "Langue choisie pour le socle.",
 	user_id_ent         VARCHAR(32)                                                      COLLATE utf8_unicode_ci NOT NULL DEFAULT "" COMMENT "Paramètre renvoyé après une identification CAS depuis un ENT (ça peut être le login, mais ça peut aussi être un numéro interne à l'ENT...).",
@@ -22,7 +21,7 @@ CREATE TABLE sacoche_user (
 	PRIMARY KEY (user_id),
 	UNIQUE KEY user_login (user_login),
 	KEY user_profil (user_profil),
-	KEY user_statut (user_statut),
+	KEY user_sortie_date (user_sortie_date),
 	KEY user_id_ent (user_id_ent),
 	KEY user_id_gepi (user_id_gepi)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;

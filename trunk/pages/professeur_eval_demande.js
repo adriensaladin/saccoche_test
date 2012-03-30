@@ -32,7 +32,7 @@ $(document).ready
 
 		// tri du tableau (avec jquery.tablesorter.js).
 		var sorting = [[8,0],[3,1],[2,0]];
-		$('table.form').tablesorter({ headers:{0:{sorter:false},4:{sorter:false}} });
+		$('table.form').tablesorter({ headers:{0:{sorter:false},4:{sorter:false},9:{sorter:false}} });
 		function trier_tableau()
 		{
 			if($('table.form tbody tr td').length>1)
@@ -357,6 +357,7 @@ $(document).ready
 				if(quoi=='creer')                            {$("#step_creer").show(0);}     else {$("#step_creer").hide(0);}
 				if(quoi=='completer')                        {$("#step_completer").show(0);} else {$("#step_completer").hide(0);}
 				if( (quoi=='creer') || (quoi=='completer') ) {$("#step_suite").show(0);}     else {$("#step_suite").hide(0);}
+				if( (quoi!='') && (quoi!='retirer') )        {$("#step_message").show(0);}   else {$("#step_message").hide(0);}
 				if(quoi!='')                                 {$("#step_valider").show(0);}
 			}
 		);
@@ -405,7 +406,8 @@ $(document).ready
 					f_date_autoeval : { required:function(){return (($("#f_quoi").val()=='creer')&&(!$('#box_autoeval').is(':checked')));} , dateITA:true },
 					f_info          : { required:false , maxlength:60 },
 					f_devoir        : { required:function(){return $("#f_quoi").val()=='completer';} },
-					f_suite         : { required:function(){quoi=$("#f_quoi").val(); return ((quoi=='creer')||(quoi=='completer'));} }
+					f_suite         : { required:function(){quoi=$("#f_quoi").val(); return ((quoi=='creer')||(quoi=='completer'));} },
+					f_message       : { required:false }
 				},
 				messages :
 				{
@@ -417,7 +419,8 @@ $(document).ready
 					f_date_autoeval : { required:"date manquante" , dateITA:"format JJ/MM/AAAA non respecté" },
 					f_info          : { maxlength:"60 caractères maximum" },
 					f_devoir        : { required:"évaluation manquante" },
-					f_suite         : { required:"suite manquante" }
+					f_suite         : { required:"suite manquante" },
+					f_message       : {  }
 				},
 				errorElement : "label",
 				errorClass : "erreur",
@@ -499,7 +502,7 @@ $(document).ready
 						function()
 						{
 							this.checked = false;
-							$(this).parent().parent().removeAttr("class").children("td:last").html('évaluation en préparation');
+							$(this).parent().parent().children("td:last").prev().html('évaluation en préparation');
 						}
 					);
 				}

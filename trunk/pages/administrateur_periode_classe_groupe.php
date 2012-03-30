@@ -52,8 +52,8 @@ $select_classes_groupes = Formulaire::afficher_select(DB_STRUCTURE_COMMUN::DB_OP
 		<td class="nu" style="width:25em">
 			<p>
 				<button id="ajouter" type="button" class="periode_ajouter">Ajouter ces associations.</button><br />
-				du <input id="f_date_debut" name="f_date_debut" size="9" type="text" value="<?php echo date("d/m/Y") ?>" /><q class="date_calendrier" title="Cliquez sur cette image pour importer une date depuis un calendrier !"></q><br />
-				au <input id="f_date_fin" name="f_date_fin" size="9" type="text" value="<?php echo date("d/m/Y") ?>" /><q class="date_calendrier" title="Cliquez sur cette image pour importer une date depuis un calendrier !"></q>
+				du <input id="f_date_debut" name="f_date_debut" size="9" type="text" value="<?php echo TODAY_FR ?>" /><q class="date_calendrier" title="Cliquez sur cette image pour importer une date depuis un calendrier !"></q><br />
+				au <input id="f_date_fin" name="f_date_fin" size="9" type="text" value="<?php echo TODAY_FR ?>" /><q class="date_calendrier" title="Cliquez sur cette image pour importer une date depuis un calendrier !"></q>
 			</p>
 			<p>
 				<button id="retirer" type="button" class="periode_retirer">Retirer ces associations.</button>

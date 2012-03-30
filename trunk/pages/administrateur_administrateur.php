@@ -47,22 +47,25 @@ $TITRE = "Gérer les administrateurs";
 		<tbody>
 			<?php
 			// Lister les administrateurs
-			$DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_users('administrateur',$only_actifs=true,$with_classe=false);
-			foreach($DB_TAB as $DB_ROW)
+			$DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_users( 'administrateur' , 1 /*only_actuels*/ , FALSE /*with_classe*/ );
+			if(count($DB_TAB))
 			{
-				// Afficher une ligne du tableau
-				echo'<tr id="id_'.$DB_ROW['user_id'].'">';
-				echo	'<td>'.html($DB_ROW['user_id_ent']).'</td>';
-				echo	'<td>'.html($DB_ROW['user_id_gepi']).'</td>';
-				echo	'<td>'.html($DB_ROW['user_nom']).'</td>';
-				echo	'<td>'.html($DB_ROW['user_prenom']).'</td>';
-				echo	'<td>'.html($DB_ROW['user_login']).'</td>';
-				echo	'<td class="i">champ crypté</td>';
-				echo	'<td class="nu">';
-				echo		'<q class="modifier" title="Modifier cet administrateur."></q>';
-				echo		($DB_ROW['user_id']!=$_SESSION['USER_ID']) ? '<q class="supprimer" title="Retirer cet administrateur."></q>' : '<q class="supprimer_non" title="Un administrateur ne peut pas supprimer son propre compte."></q>' ;
-				echo	'</td>';
-				echo'</tr>';
+				foreach($DB_TAB as $DB_ROW)
+				{
+					// Afficher une ligne du tableau
+					echo'<tr id="id_'.$DB_ROW['user_id'].'">';
+					echo	'<td>'.html($DB_ROW['user_id_ent']).'</td>';
+					echo	'<td>'.html($DB_ROW['user_id_gepi']).'</td>';
+					echo	'<td>'.html($DB_ROW['user_nom']).'</td>';
+					echo	'<td>'.html($DB_ROW['user_prenom']).'</td>';
+					echo	'<td>'.html($DB_ROW['user_login']).'</td>';
+					echo	'<td class="i">champ crypté</td>';
+					echo	'<td class="nu">';
+					echo		'<q class="modifier" title="Modifier cet administrateur."></q>';
+					echo		($DB_ROW['user_id']!=$_SESSION['USER_ID']) ? '<q class="supprimer" title="Retirer cet administrateur."></q>' : '<q class="supprimer_non" title="Un administrateur ne peut pas supprimer son propre compte."></q>' ;
+					echo	'</td>';
+					echo'</tr>';
+				}
 			}
 			?>
 		</tbody>

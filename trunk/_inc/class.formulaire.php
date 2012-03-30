@@ -148,6 +148,11 @@ public static $tab_select_recherche_objet = array(
 	array('valeur'=>'socle_pilier_validation' , 'optgroup'=>3 , 'texte'=>'état de validation')
 );
 
+public static $tab_select_statut = array(
+	array('valeur'=>1 , 'texte'=>'comptes actuels (date de sortie sans objet ou ultérieure)') ,
+	array('valeur'=>0 , 'texte'=>'comptes anciens (date de sortie présente et antérieure)')
+);
+
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 //	Variables utilisées pouvant être initialisés lors d'une requête puis utilisées lors de la construction du formulaire
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
@@ -201,8 +206,9 @@ private function init_tab_choix()
 		'pages_nb'=>'optimise' ,
 		'cart_contenu'=>'AVEC_nom_SANS_result' ,
 		'cart_detail'=>'complet' ,
-		'only_socle'=>0 ,
 		'only_niveau'=>0 ,
+		'only_presence'=>0 ,
+		'only_socle'=>0 ,
 		'aff_coef'=>0 ,
 		'aff_socle'=>1 ,
 		'aff_lien'=>$check_aff_lien ,
@@ -297,8 +303,8 @@ public function load_choix_memo()
 			$tab_choix_new = compact('retroactif','only_socle','only_niveau','aff_coef','aff_socle','aff_lien','couleur','legende');
 			break;
 		case 'releve_socle' :
-			global $palier_id,$aff_coef,$aff_socle,$aff_lien,$aff_socle_PA,$aff_socle_EV,$mode;
-			$tab_choix_new = compact('palier_id','aff_coef','aff_socle','aff_lien','aff_socle_PA','aff_socle_EV','mode');
+			global $palier_id,$only_presence,$aff_coef,$aff_socle,$aff_lien,$aff_socle_PA,$aff_socle_EV,$mode;
+			$tab_choix_new = compact('palier_id','only_presence','aff_coef','aff_socle','aff_lien','aff_socle_PA','aff_socle_EV','mode');
 		case 'synthese_socle' :
 			global $palier_id,$type,$mode;
 			$tab_choix_new = compact('palier_id','type','mode');
@@ -387,11 +393,11 @@ public function afficher_select($DB_TAB,$select_nom,$option_first,$selection,$op
 			}
 		}
 		// On sélectionne les options qu'il faut... (fait après le foreach précédent sinon c'est compliqué à gérer simultanément avec les groupes d'options éventuels
-		if($selection===false)
+		if($selection===FALSE)
 		{
 			// ... ne rien sélectionner
 		}
-		elseif($selection===true)
+		elseif($selection===TRUE)
 		{
 			// ... tout sélectionner
 			$options = str_replace('<option' , '<option selected' , $options);
@@ -399,7 +405,7 @@ public function afficher_select($DB_TAB,$select_nom,$option_first,$selection,$op
 		else
 		{
 			// ... sélectionner une ou plusieurs option ; soit $selection contient la valeur / le tableau à sélectionner soit elle a été définie avant
-			$selection = ($selection=='val') ? Formulaire::$select_option_selected : $selection ;
+			$selection = ($selection==='val') ? Formulaire::$select_option_selected : $selection ;
 			if(!is_array($selection))
 			{
 				$options = str_replace('value="'.$selection.'"' , 'value="'.$selection.'" selected' , $options);

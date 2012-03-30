@@ -34,8 +34,6 @@ $date_debut = (isset($_POST['f_date_debut'])) ? clean_texte($_POST['f_date_debut
 $date_fin   = (isset($_POST['f_date_fin']))   ? clean_texte($_POST['f_date_fin'])   : '';
 $devoir_id  = (isset($_POST['f_devoir']))     ? clean_entier($_POST['f_devoir'])    : 0;
 
-$dossier_devoir = './__tmp/devoir/'.$_SESSION['BASE'].'/';
-
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 //	Afficher une liste d'évaluations
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
@@ -77,8 +75,8 @@ if( ($action=='Afficher_evaluations') && $eleve_id && $date_debut && $date_fin )
 	foreach($DB_TAB as $DB_ROW)
 	{
 		$date_affich = convert_date_mysql_to_french($DB_ROW['devoir_date']);
-		$image_sujet   = ($DB_ROW['devoir_doc_sujet'])   ? '<a href="'.$dossier_devoir.$DB_ROW['devoir_doc_sujet'].'" target="_blank"><img alt="sujet" src="./_img/document/sujet_oui.png" title="Sujet disponible." /></a>' : '<img alt="sujet" src="./_img/document/sujet_non.png" />' ;
-		$image_corrige = ($DB_ROW['devoir_doc_corrige']) ? '<a href="'.$dossier_devoir.$DB_ROW['devoir_doc_corrige'].'" target="_blank"><img alt="corrigé" src="./_img/document/corrige_oui.png" title="Corrigé disponible." /></a>' : '<img alt="corrigé" src="./_img/document/corrige_non.png" />' ;
+		$image_sujet   = ($DB_ROW['devoir_doc_sujet'])   ? '<a href="'.$DB_ROW['devoir_doc_sujet'].'" target="_blank"><img alt="sujet" src="./_img/document/sujet_oui.png" title="Sujet disponible." /></a>' : '<img alt="sujet" src="./_img/document/sujet_non.png" />' ;
+		$image_corrige = ($DB_ROW['devoir_doc_corrige']) ? '<a href="'.$DB_ROW['devoir_doc_corrige'].'" target="_blank"><img alt="corrigé" src="./_img/document/corrige_oui.png" title="Corrigé disponible." /></a>' : '<img alt="corrigé" src="./_img/document/corrige_non.png" />' ;
 		// Afficher une ligne du tableau
 		echo'<tr>';
 		echo	'<td><i>'.html($DB_ROW['devoir_date']).'</i>'.html($date_affich).'</td>';
@@ -91,7 +89,7 @@ if( ($action=='Afficher_evaluations') && $eleve_id && $date_debut && $date_fin )
 		{
 			echo'<q class="saisir_non" title="Devoir sans auto-évaluation."></q>';
 		}
-		elseif($DB_ROW['devoir_autoeval_date']<date("Y-m-d"))
+		elseif($DB_ROW['devoir_autoeval_date']<TODAY_MYSQL)
 		{
 			echo'<q class="saisir_non" title="Auto-évaluation terminée le '.convert_date_mysql_to_french($DB_ROW['devoir_autoeval_date']).'."></q>';
 		}
@@ -216,7 +214,7 @@ if( ($action=='Enregistrer_saisies') && $devoir_id )
 	{
 		exit('Devoir sans auto-évaluation !');
 	}
-	if($DB_ROW['devoir_autoeval_date']<date("Y-m-d"))
+	if($DB_ROW['devoir_autoeval_date']<TODAY_MYSQL)
 	{
 		exit('Auto-évaluation terminée le '.convert_date_mysql_to_french($DB_ROW['devoir_autoeval_date']).' !');
 	}

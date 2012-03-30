@@ -56,9 +56,11 @@ $(document).ready
 
 		function test_format_login(format)
 		{
-			var reg1 = new RegExp("^p+[._-]?n+$","g");
-			var reg2 = new RegExp("^n+[._-]?p+$","g");
-			test = ( reg1.test(format) || reg2.test(format) ) ? true : false ;
+			var reg1 = new RegExp("^p+[._-]?n+$","g"); // prénom puis nom
+			var reg2 = new RegExp("^n+[._-]?p+$","g"); // nom puis prénom
+			var reg3 = new RegExp("^p+$","g"); // prénom seul
+			var reg4 = new RegExp("^n+$","g"); // nom seul
+			test = ( reg1.test(format) || reg2.test(format) || reg3.test(format) || reg4.test(format) ) ? true : false ;
 			return test;
 		}
 

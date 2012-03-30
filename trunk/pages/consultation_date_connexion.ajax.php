@@ -39,7 +39,7 @@ if( (!$profil) || (!$groupe_id) || (!isset($tab_types[$groupe_type])) )
 }
 
 $champs = ($profil!='parent') ? 'CONCAT(user_nom," ",user_prenom) AS user_identite , user_connexion_date AS connexion_date' : 'CONCAT(parent.user_nom," ",parent.user_prenom," (",enfant.user_nom," ",enfant.user_prenom,")") AS user_identite , parent.user_connexion_date AS connexion_date' ;
-$DB_TAB = DB_STRUCTURE_COMMUN::DB_lister_users_actifs_regroupement($profil,$tab_types[$groupe_type],$groupe_id,$champs) ;
+$DB_TAB = DB_STRUCTURE_COMMUN::DB_lister_users_regroupement( $profil /*profil*/ , TRUE /*statut*/ , $tab_types[$groupe_type] , $groupe_id , $champs ) ;
 
 foreach($DB_TAB as $DB_ROW)
 {
@@ -49,7 +49,7 @@ foreach($DB_TAB as $DB_ROW)
 	// Afficher une ligne du tableau
 	echo'<tr>';
 	echo	'<td>'.html($DB_ROW['user_identite']).'</td>';
-	echo	'<td><i>'.html($date_mysql).'</i>'.html($date_affich).'</td>';
+	echo	'<td><i>'.$date_mysql.'</i>'.$date_affich.'</td>';
 	echo'</tr>';
 }
 exit();

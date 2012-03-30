@@ -609,8 +609,8 @@ $(document).ready
 			var groupe      = $(this).parent().prev().prev().prev().prev().html(); // un prev() de moins
 			var description = $(this).parent().prev().prev().prev().html(); // un prev() de moins
 			var date_fr     = date.substring(17,date.length); // garder la date française
-			var img_sujet   = (tab_sujets[ref])   ? '<a href="'+dossier_devoir+tab_sujets[ref]+'" target="_blank"><img alt="sujet" src="./_img/document/sujet_oui.png" title="Sujet disponible." /></a>' : '<img alt="sujet" src="./_img/document/sujet_non.png" />' ;
-			var img_corrige = (tab_corriges[ref]) ? '<a href="'+dossier_devoir+tab_corriges[ref]+'" target="_blank"><img alt="corrigé" src="./_img/document/corrige_oui.png" title="Corrigé disponible." /></a>' : '<img alt="corrigé" src="./_img/document/corrige_non.png" />' ;
+			var img_sujet   = (tab_sujets[ref])   ? '<a href="'+tab_sujets[ref]+'" target="_blank"><img alt="sujet" src="./_img/document/sujet_oui.png" title="Sujet disponible." /></a>' : '<img alt="sujet" src="./_img/document/sujet_non.png" />' ;
+			var img_corrige = (tab_corriges[ref]) ? '<a href="'+tab_corriges[ref]+'" target="_blank"><img alt="corrigé" src="./_img/document/corrige_oui.png" title="Corrigé disponible." /></a>' : '<img alt="corrigé" src="./_img/document/corrige_non.png" />' ;
 			// Renseigner les champs dynamique affichés
 			$('#titre_upload').html(groupe+' | '+date_fr+' | '+description);
 			$('#ajax_document_upload').removeAttr("class").html("");
@@ -1843,19 +1843,19 @@ $(document).ready
 			if (fichier_nom==null || fichier_nom.length<5)
 			{
 				$('#ajax_document_upload').removeAttr("class").addClass("erreur").html('Cliquer sur "Parcourir..." pour indiquer un chemin de fichier correct.');
-				$('#zone_upload button').prop('disabled',false);
+				activer_boutons_upload(uploader_sujet['_settings']['data']['f_ref']);
 				return false;
 			}
 			else if ( ('.doc.docx.odg.odp.ods.odt.ppt.pptx.rtf.sxc.sxd.sxi.sxw.xls.xlsx.'.indexOf('.'+fichier_extension.toLowerCase()+'.')!=-1) && !confirm('Vous devriez convertir votre fichier au format PDF.\nEtes-vous certain de vouloir l\'envoyer sous ce format ?') )
 			{
 				$('#ajax_document_upload').removeAttr("class").addClass("erreur").html('Convertissez votre fichier en "pdf".');
-				$('#zone_upload button').prop('disabled',false);
+				activer_boutons_upload(uploader_sujet['_settings']['data']['f_ref']);
 				return false;
 			}
 			else if ('.bat.com.exe.php.zip.'.indexOf('.'+fichier_extension.toLowerCase()+'.')!=-1)
 			{
 				$('#ajax_document_upload').removeAttr("class").addClass("erreur").html('Extension non autorisée.');
-				$('#zone_upload button').prop('disabled',false);
+				activer_boutons_upload(uploader_sujet['_settings']['data']['f_ref']);
 				return false;
 			}
 			else
@@ -1877,12 +1877,12 @@ $(document).ready
 			{
 				initialiser_compteur();
 				$('#ajax_document_upload').removeAttr("class").addClass("valide").html("Document enregistré.");
-				var ref         = tab_infos[1];
-				var objet       = tab_infos[2];
-				var fichier_nom = tab_infos[3];
-				if(objet=='sujet') { var alt='sujet';   var title='Sujet';   var numero=0; tab_sujets[ref] = fichier_nom; }
-				else               { var alt='corrigé'; var title='Corrigé'; var numero=1; tab_corriges[ref] = fichier_nom; }
-				var lien        = '<a href="'+dossier_devoir+fichier_nom+'" target="_blank"><img alt="'+alt+'" src="./_img/document/'+objet+'_oui.png" title="'+title+' disponible." /></a>';
+				var ref   = tab_infos[1];
+				var objet = tab_infos[2];
+				var url   = tab_infos[3];
+				if(objet=='sujet') { var alt='sujet';   var title='Sujet';   var numero=0; tab_sujets[ref] = url; }
+				else               { var alt='corrigé'; var title='Corrigé'; var numero=1; tab_corriges[ref] = url; }
+				var lien        = '<a href="'+url+'" target="_blank"><img alt="'+alt+'" src="./_img/document/'+objet+'_oui.png" title="'+title+' disponible." /></a>';
 				$('#span_'+objet).html(lien);
 				$('#devoir_'+ref).prev().children().eq(numero).replaceWith(lien);
 				infobulle();
@@ -1902,13 +1902,13 @@ $(document).ready
 				$('#ajax_document_upload').removeAttr("class").addClass("loader").html("Connexion au serveur&hellip;");
 				var objet = $(this).attr('id').substring(17);
 				var ref   = uploader_sujet['_settings']['data']['f_ref'];
-				var nom   = (objet=='sujet') ? tab_sujets[ref] : tab_corriges[ref] ;
+				var url   = (objet=='sujet') ? tab_sujets[ref] : tab_corriges[ref] ;
 				$.ajax
 				(
 					{
 						type : 'POST',
 						url : 'ajax.php?page='+PAGE,
-						data : 'f_action=retirer_document'+'&f_doc_objet='+objet+'&f_ref='+ref+'&f_doc_nom='+nom,
+						data : 'f_action=retirer_document'+'&f_doc_objet='+objet+'&f_ref='+ref+'&f_doc_url='+url,
 						dataType : "html",
 						error : function(msg,string)
 						{
@@ -1936,6 +1936,72 @@ $(document).ready
 						}
 					}
 				);
+			}
+		);
+
+		//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+		// Traitement du clic sur un bouton pour référencer un lien de sujet ou corrigé de devoir
+		//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
+		$('#bouton_referencer_sujet , #bouton_referencer_corrige').click
+		(
+			function()
+			{
+				var objet = $(this).attr('id').substring(18);
+				var ref   = uploader_sujet['_settings']['data']['f_ref'];
+				var url   = $('#f_adresse_'+objet).val();
+				if(url == '')
+				{
+					$('#ajax_document_upload').removeAttr("class").addClass("erreur").html("Adresse manquante !");
+					$('#f_adresse_'+objet).focus();
+					return false;
+				}
+				else if(!testURL(url))
+				{
+					$('#ajax_document_upload').removeAttr("class").addClass("erreur").html("Adresse incorrecte !");
+					$('#f_adresse_'+objet).focus();
+					return false;
+				}
+				else
+				{
+					$('#zone_upload button').prop('disabled',true);
+					$('#ajax_document_upload').removeAttr("class").addClass("loader").html("Connexion au serveur&hellip;");
+					$.ajax
+					(
+						{
+							type : 'POST',
+							url : 'ajax.php?page='+PAGE,
+							data : 'f_action=referencer_document'+'&f_doc_objet='+objet+'&f_ref='+ref+'&f_doc_url='+url,
+							dataType : "html",
+							error : function(msg,string)
+							{
+								$('#ajax_document_upload').removeAttr("class").addClass("alerte").html(responseHTML);
+								activer_boutons_upload(ref);
+								return false;
+							},
+							success : function(responseHTML)
+							{
+								initialiser_compteur();
+								if(responseHTML!='ok')
+								{
+									$('#ajax_document_upload').removeAttr("class").addClass("alerte").html(responseHTML);
+								}
+								else
+								{
+
+									$('#ajax_document_upload').removeAttr("class").addClass("valide").html("Document référencé.");
+									if(objet=='sujet') { var alt='sujet';   var title='Sujet';   var numero=0; tab_sujets[ref] = url; }
+									else               { var alt='corrigé'; var title='Corrigé'; var numero=1; tab_corriges[ref] = url; }
+									var lien        = '<a href="'+url+'" target="_blank"><img alt="'+alt+'" src="./_img/document/'+objet+'_oui.png" title="'+title+' disponible." /></a>';
+									$('#span_'+objet).html(lien);
+									$('#devoir_'+ref).prev().children().eq(numero).replaceWith(lien);
+									infobulle();
+								}
+								activer_boutons_upload(ref);
+							}
+						}
+					);
+				}
 			}
 		);
 

@@ -28,21 +28,24 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 if($_SESSION['SESAMATH_ID']==ID_DEMO) {exit('Action désactivée pour la démo...');}
 
-$action     = (isset($_POST['f_action']))     ? clean_texte($_POST['f_action'])      : '';
-$id         = (isset($_POST['f_id']))         ? clean_entier($_POST['f_id'])         : 0;
-$id_ent     = (isset($_POST['f_id_ent']))     ? clean_texte($_POST['f_id_ent'])      : '';
-$id_gepi    = (isset($_POST['f_id_gepi']))    ? clean_texte($_POST['f_id_gepi'])     : '';
-$sconet_id  = (isset($_POST['f_sconet_id']))  ? clean_entier($_POST['f_sconet_id'])  : 0;
-$reference  = (isset($_POST['f_reference']))  ? clean_ref($_POST['f_reference'])     : '';
-$nom        = (isset($_POST['f_nom']))        ? clean_nom($_POST['f_nom'])           : '';
-$prenom     = (isset($_POST['f_prenom']))     ? clean_prenom($_POST['f_prenom'])     : '';
-$login      = (isset($_POST['f_login']))      ? clean_login($_POST['f_login'])       : '';
-$inchange   = (isset($_POST['box_password'])) ? clean_entier($_POST['box_password']) : 0;
-$password   = (isset($_POST['f_password']))   ? clean_password($_POST['f_password']) : '' ;
+$action      = (isset($_POST['f_action']))      ? clean_texte($_POST['f_action'])      : '';
+$id          = (isset($_POST['f_id']))          ? clean_entier($_POST['f_id'])         : 0;
+$id_ent      = (isset($_POST['f_id_ent']))      ? clean_texte($_POST['f_id_ent'])      : '';
+$id_gepi     = (isset($_POST['f_id_gepi']))     ? clean_texte($_POST['f_id_gepi'])     : '';
+$sconet_id   = (isset($_POST['f_sconet_id']))   ? clean_entier($_POST['f_sconet_id'])  : 0;
+$reference   = (isset($_POST['f_reference']))   ? clean_ref($_POST['f_reference'])     : '';
+$nom         = (isset($_POST['f_nom']))         ? clean_nom($_POST['f_nom'])           : '';
+$prenom      = (isset($_POST['f_prenom']))      ? clean_prenom($_POST['f_prenom'])     : '';
+$login       = (isset($_POST['f_login']))       ? clean_login($_POST['f_login'])       : '';
+$password    = (isset($_POST['f_password']))    ? clean_password($_POST['f_password']) : '' ;
+$not_new_mdp = (isset($_POST['box_password']))  ? clean_entier($_POST['box_password']) : 0;
+$sortie_date = (isset($_POST['f_sortie_date'])) ? clean_texte($_POST['f_sortie_date']) : '' ;
+$not_exit    = (isset($_POST['box_date']))      ? clean_entier($_POST['box_date'])     : 0;
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 //	Ajouter un nouveau directeur
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
 if( ($action=='ajouter') && $nom && $prenom && $password )
 {
 	// Vérifier que l'identifiant ENT est disponible (parmi tout le personnel de l'établissement)
@@ -87,27 +90,41 @@ if( ($action=='ajouter') && $nom && $prenom && $password )
 	}
 	// Insérer l'enregistrement
 	$user_id = DB_STRUCTURE_COMMUN::DB_ajouter_utilisateur($sconet_id,$sconet_num=0,$reference,'directeur',$nom,$prenom,$login,crypter_mdp($password),0,$id_ent,$id_gepi);
+	// Il peut (déjà !) falloir lui affecter une date de sortie...
+	if($not_exit)
+	{
+		$sortie_date = '-' ;
+		$sortie_date_mysql = SORTIE_DEFAUT_MYSQL;
+	}
+	else
+	{
+		$sortie_date_mysql = convert_date_french_to_mysql($sortie_date);
+		DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_user( $user_id , array(':sortie_date'=>$sortie_date_mysql) );
+	}
 	// Afficher le retour
 	echo'<tr id="id_'.$user_id.'" class="new">';
-	echo	'<td>'.html($id_ent).'</td>';
-	echo	'<td>'.html($id_gepi).'</td>';
-	echo	'<td>'.html($sconet_id).'</td>';
-	echo	'<td>'.html($reference).'</td>';
-	echo	'<td>'.html($nom).'</td>';
-	echo	'<td>'.html($prenom).'</td>';
-	echo	'<td class="new">'.html($login).' <img alt="" title="Pensez à relever le login généré !"  src="./_img/bulle_aide.png" /></td>';
-	echo	'<td class="new">'.html($password).' <img alt="" title="Pensez à noter le mot de passe !" src="./_img/bulle_aide.png" /></td>';
+	echo	'<td class="nu"><input type="checkbox" name="f_ids" value="'.$user_id.'" /></td>';
+	echo	'<td class="label">'.html($id_ent).'</td>';
+	echo	'<td class="label">'.html($id_gepi).'</td>';
+	echo	'<td class="label">'.html($sconet_id).'</td>';
+	echo	'<td class="label">'.html($reference).'</td>';
+	echo	'<td class="label">'.html($nom).'</td>';
+	echo	'<td class="label">'.html($prenom).'</td>';
+	echo	'<td class="label new">'.html($login).' <img alt="" title="Pensez à relever le login généré !"  src="./_img/bulle_aide.png" /></td>';
+	echo	'<td class="label new">'.html($password).' <img alt="" title="Pensez à noter le mot de passe !" src="./_img/bulle_aide.png" /></td>';
+	echo	'<td class="label"><i>'.$sortie_date_mysql.'</i>'.$sortie_date.'</td>';
 	echo	'<td class="nu">';
 	echo		'<q class="modifier" title="Modifier ce directeur."></q>';
-	echo		'<q class="supprimer" title="Enlever ce directeur."></q>';
 	echo	'</td>';
 	echo'</tr>';
+	exit();
 }
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 //	Modifier un directeur existant
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-else if( ($action=='modifier') && $id && $nom && $prenom && $login && ( $inchange || $password ) )
+
+if( ($action=='modifier') && $id && $nom && $prenom && $login && ( $not_new_mdp || $password ) )
 {
 	// Vérifier que l'identifiant ENT est disponible (parmi tout le personnel de l'établissement)
 	if($id_ent)
@@ -146,41 +163,44 @@ else if( ($action=='modifier') && $id && $nom && $prenom && $login && ( $inchang
 	{
 		exit('Erreur : login déjà existant !');
 	}
+	// Cas de la date de sortie
+	if($not_exit)
+	{
+		$sortie_date = '-' ;
+		$sortie_date_mysql = SORTIE_DEFAUT_MYSQL;
+	}
+	else
+	{
+		$sortie_date_mysql = convert_date_french_to_mysql($sortie_date);
+	}
 	// Mettre à jour l'enregistrement avec ou sans génération d'un nouveau mot de passe
-	$tab_donnees = array(':sconet_id'=>$sconet_id,':reference'=>$reference,':nom'=>$nom,':prenom'=>$prenom,':login'=>$login,':id_ent'=>$id_ent,':id_gepi'=>$id_gepi);
-	if(!$inchange)
+	$tab_donnees = array(':sconet_id'=>$sconet_id,':reference'=>$reference,':nom'=>$nom,':prenom'=>$prenom,':login'=>$login,':id_ent'=>$id_ent,':id_gepi'=>$id_gepi,':sortie_date'=>$sortie_date_mysql);
+	if(!$not_new_mdp)
 	{
 		$tab_donnees[':password'] = crypter_mdp($password);
 	}
 	DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_user( $id , $tab_donnees );
 	// Afficher le retour
-	echo'<td>'.html($id_ent).'</td>';
-	echo'<td>'.html($id_gepi).'</td>';
-	echo'<td>'.html($sconet_id).'</td>';
-	echo'<td>'.html($reference).'</td>';
-	echo'<td>'.html($nom).'</td>';
-	echo'<td>'.html($prenom).'</td>';
-	echo'<td>'.html($login).'</td>';
-	echo ($inchange) ? '<td class="i">champ crypté</td>' : '<td class="new">'.$password.' <img alt="" src="./_img/bulle_aide.png" title="Pensez à noter le mot de passe !" /></td>' ;
+	echo'<td class="nu"><input type="checkbox" name="f_ids" value="'.$id.'" /></td>';
+	echo'<td class="label">'.html($id_ent).'</td>';
+	echo'<td class="label">'.html($id_gepi).'</td>';
+	echo'<td class="label">'.html($sconet_id).'</td>';
+	echo'<td class="label">'.html($reference).'</td>';
+	echo'<td class="label">'.html($nom).'</td>';
+	echo'<td class="label">'.html($prenom).'</td>';
+	echo'<td class="label">'.html($login).'</td>';
+	echo ($not_new_mdp) ? '<td class="label i">champ crypté</td>' : '<td class="label new">'.$password.' <img alt="" src="./_img/bulle_aide.png" title="Pensez à noter le mot de passe !" /></td>' ;
+	echo'<td class="label"><i>'.$sortie_date_mysql.'</i>'.$sortie_date.'</td>';
 	echo'<td class="nu">';
 	echo	'<q class="modifier" title="Modifier ce directeur."></q>';
-	echo	'<q class="supprimer" title="Enlever ce directeur."></q>';
 	echo'</td>';
+	exit();
 }
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-//	Désactiver un directeur existant
+//	On ne devrait pas en arriver là !
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-else if( ($action=='supprimer') && $id )
-{
-	// Mettre à jour l'enregistrement
-	DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_user_statut( $id , 0 );
-	// Afficher le retour
-	echo'<td>ok</td>';
-}
 
-else
-{
-	echo'Erreur avec les données transmises !';
-}
+exit('Erreur avec les données transmises !');
+
 ?>

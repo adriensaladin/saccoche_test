@@ -143,6 +143,55 @@ function only_letters($text)
 	return (perso_mb_detect_encoding_utf8($text)) ? utf8_encode($lettres) : $lettres ;
 }
 
+// Abréger une expression dépassement le nb de caractères autorisés
+function tronquer_chaine($texte,$longueur_totale_maxi)
+{
+	$nb_car = mb_strlen($texte);
+	// Expression trop longue
+	if($nb_car>$longueur_totale_maxi)
+	{
+		// On la coupe en morceaux placés dans $tab_sections
+		$tab_sections = array();
+		$i_section = -1;
+		$liste_autres = ' -.\'"`&~,';
+		$car_is_autre = NULL;
+		for( $i_car=0 ; $i_car<$nb_car ; $i_car++ )
+		{
+			$car = $texte{$i_car};
+			$test_this_car_autre = (strpos($liste_autres,$car)!==FALSE) ? TRUE : FALSE ;
+			if($test_this_car_autre!==$car_is_autre)
+			{
+				$i_section++;
+				$car_is_autre = $test_this_car_autre;
+				$tab_sections[$i_section] = $car;
+			}
+			else
+			{
+				$tab_sections[$i_section] .= $car;
+			}
+		}
+		// On abrège les morceaux nécessaires jusqu'à avoir une taille raisonnable
+		$longueur_mot_maxi = 3;
+		$nb_sections = count($tab_sections);
+		for( $i_section=$nb_sections-1 ; $i_section>=0 ; $i_section-- )
+		{
+			$longueur_section = mb_strlen($tab_sections[$i_section]);
+			if($longueur_section>$longueur_mot_maxi)
+			{
+				$tab_sections[$i_section] = $tab_sections[$i_section]{0}.'.';
+				$nb_car = $nb_car - $longueur_section + 2 ;
+				if($nb_car<=$longueur_totale_maxi)
+				{
+					break;
+				}
+			}
+		}
+		// On regroupe les morceaux
+		$texte = implode('',$tab_sections);
+	}
+	return $texte;
+}
+
 /*
 	Les fonctions centrales à modifier sans avoir à modifier tous les scripts.
 	En général il s'agit d'harmoniser les données de la base ou d'aider l'utilisateur (en évitant les problèmes de casse par exemple).
@@ -152,15 +201,18 @@ function clean_login($text)     { return str_replace(' ','', perso_strtolower( c
 function clean_fichier($text)   { return only_letters( perso_strtolower( clean_accents( clean_diacris( trim($text) ) ) ) ); }
 function clean_password($text)  { return trim($text); }
 function clean_ref($text)       { return perso_strtoupper( trim($text) ); }
-function clean_nom($text)       { return perso_strtoupper( trim($text) ); }
+function clean_nom($text)       { return tronquer_chaine( perso_strtoupper( trim($text) ) , 25); }
 function clean_uai($text)       { return perso_strtoupper( trim($text) ); }
-function clean_prenom($text)    { return perso_ucwords( trim($text) ); }
-function clean_structure($text) { return perso_ucwords( trim($text) ); }    // Non utilisé pour SACoche
-function clean_commune($text)   { return perso_ucwords( trim($text) ); }    // Non utilisé pour SACoche
-function clean_code($text)      { return perso_strtolower( trim($text) ); } // Non utilisé pour SACoche
+function clean_prenom($text)    { return tronquer_chaine( perso_ucwords( trim($text) ) , 25); }
+function clean_structure($text) { return perso_ucwords( trim($text) ); }
+function clean_adresse($text)   { return tronquer_chaine( perso_ucwords( trim($text) ) , 50); }
+function clean_commune($text)   { return tronquer_chaine( perso_strtoupper( trim($text) ) , 45); }
+function clean_pays($text)      { return tronquer_chaine( perso_strtoupper( trim($text) ) , 35); }
+function clean_code($text)      { return perso_strtolower( trim($text) ); }
 function clean_texte($text)     { return trim($text); }
 function clean_courriel($text)  { return perso_strtolower( clean_accents( trim($text) ) ); }
 function clean_url($text)       { return perso_strtolower( trim($text) ); }
+function clean_id_ent($text)    { return mb_substr( clean_texte( (string)$text ) ,0,32 ); }
 function clean_entier($text)    { return intval($text); }
 function clean_decimal($text)   { return floatval($text); }
 

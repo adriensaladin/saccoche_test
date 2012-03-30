@@ -239,16 +239,15 @@ elseif($action=='Enregistrer_validation')
 	}
 	// L'information associée à la validation comporte le nom du validateur (c'est une information statique, conservée sur plusieurs années)
 	$info = $_SESSION['USER_NOM'].' '.$_SESSION['USER_PRENOM']{0}.'.';
-	$date_mysql = date("Y-m-d");	// date_mysql de la forme aaaa-mm-jj
 	foreach($tab_nouveau_ajouter as $key => $etat)
 	{
 		list($pilier_id,$eleve_id) = explode('x',$key);
-		DB_STRUCTURE_SOCLE::DB_ajouter_validation('pilier',$eleve_id,$pilier_id,$etat,$date_mysql,$info);
+		DB_STRUCTURE_SOCLE::DB_ajouter_validation('pilier',$eleve_id,$pilier_id,$etat,TODAY_MYSQL,$info);
 	}
 	foreach($tab_nouveau_modifier as $key => $etat)
 	{
 		list($pilier_id,$eleve_id) = explode('x',$key);
-		DB_STRUCTURE_SOCLE::DB_modifier_validation('pilier',$eleve_id,$pilier_id,$etat,$date_mysql,$info);
+		DB_STRUCTURE_SOCLE::DB_modifier_validation('pilier',$eleve_id,$pilier_id,$etat,TODAY_MYSQL,$info);
 	}
 	foreach($tab_nouveau_supprimer as $key)
 	{

@@ -229,7 +229,7 @@ del{text-decoration:line-through;color:#666}
 /* Images cliquables                                                                                   */
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-body q {background:transparent url(../_img/sprite_action_3.png) 0 0 no-repeat;width:16px;height:16px;display:inline-block;vertical-align:middle;margin-left:5px;quotes:none}
+body q {background:transparent url(../_img/sprite_action_4.png) 0 0 no-repeat;width:16px;height:16px;display:inline-block;vertical-align:middle;margin-left:5px;quotes:none}
 body q:before, body q:after {content: "";} /* patch pour Safari : voir par exemple http://forum.alsacreations.com/topic-4-41216-1-Resolu-Modifier-le-style-des-citations-quotqquot.html */
 body q.activer            {background-position: 0     0px}
 body q.ajouter            {background-position: 0   -20px}
@@ -264,28 +264,29 @@ body q.saisir             {background-position: 0  -580px}
 body q.saisir_non         {background-position: 0  -600px}
 body q.supprimer          {background-position: 0  -620px}
 body q.supprimer_non      {background-position: 0  -640px}
-body q.uploader_doc       {background-position: 0  -660px}
-body q.uploader_doc_non   {background-position: 0  -680px}
-body q.valider            {background-position: 0  -700px}
-body q.voir               {background-position: 0  -720px}
-body q.voir_repart        {background-position: 0  -740px}
-body q.n1_add             {background-position: 0  -760px}
-body q.n1_del             {background-position: 0  -780px}
-body q.n1_edit            {background-position: 0  -800px}
-body q.n1_move            {background-position: 0  -820px}
-body q.n1_move2           {background-position: 0  -840px}
-body q.n2_add             {background-position: 0  -860px}
-body q.n2_del             {background-position: 0  -880px}
-body q.n2_edit            {background-position: 0  -900px}
-body q.n2_move            {background-position: 0  -920px}
-body q.n2_move2           {background-position: 0  -940px}
-body q.n3_add             {background-position: 0  -960px}
-body q.n3_del             {background-position: 0  -980px}
-body q.n3_edit            {background-position: 0 -1000px}
-body q.n3_fus             {background-position: 0 -1020px}
-body q.n3_fus2            {background-position: 0 -1040px}
-body q.n3_move            {background-position: 0 -1060px}
-body q.n3_move2           {background-position: 0 -1080px}
+body q.texte_editer       {background-position: 0  -660px}
+body q.uploader_doc       {background-position: 0  -680px}
+body q.uploader_doc_non   {background-position: 0  -600px}
+body q.valider            {background-position: 0  -720px}
+body q.voir               {background-position: 0  -740px}
+body q.voir_repart        {background-position: 0  -760px}
+body q.n1_add             {background-position: 0  -780px}
+body q.n1_del             {background-position: 0  -700px}
+body q.n1_edit            {background-position: 0  -820px}
+body q.n1_move            {background-position: 0  -840px}
+body q.n1_move2           {background-position: 0  -860px}
+body q.n2_add             {background-position: 0  -880px}
+body q.n2_del             {background-position: 0  -800px}
+body q.n2_edit            {background-position: 0  -920px}
+body q.n2_move            {background-position: 0  -940px}
+body q.n2_move2           {background-position: 0  -960px}
+body q.n3_add             {background-position: 0  -980px}
+body q.n3_del             {background-position: 0 -1000px}
+body q.n3_edit            {background-position: 0 -1020px}
+body q.n3_fus             {background-position: 0 -1040px}
+body q.n3_fus2            {background-position: 0 -1060px}
+body q.n3_move            {background-position: 0 -1080px}
+body q.n3_move2           {background-position: 0 -1100px}
 body q:hover {cursor:pointer}	/* Curseur pointeur pour ces images qui sont des liens */
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */

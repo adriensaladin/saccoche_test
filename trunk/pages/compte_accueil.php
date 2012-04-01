@@ -26,12 +26,12 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-$TITRE = "Bienvenue dans votre espace identifié !";
+$TITRE = "Bienvenue dans votre espace identifié";
 
-$tab_accueil = array( 'alert'=>'' , 'info'=>'' , 'help'=>'' , 'user'=>'' );
+$tab_accueil = array( 'user'=>'' , 'alert'=>'' , 'info'=>array() , 'help'=>'' );
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-//	Alertes pour l'administrateur
+//	Alertes (pour l'administrateur) ; affiché après mais à définir avant
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
 if($_SESSION['USER_PROFIL']=='administrateur')
@@ -48,29 +48,34 @@ if($_SESSION['USER_PROFIL']=='administrateur')
 	}
 	if($tab_accueil['alert'])
 	{
-		$tab_accueil['alert'] .= '<p><span class="manuel"><a class="pop_up" href="'.SERVEUR_DOCUMENTAIRE.'?fichier=support_administrateur__guide">DOC : Guide d\'un administrateur de SACoche.</a></span></p>';
+		$tab_accueil['alert'] .= '<p><span class="manuel"><a class="pop_up" href="'.SERVEUR_DOCUMENTAIRE.'?fichier=support_administrateur__guide">DOC : Guide d\'un administrateur de <em>SACoche</em>.</a></span></p>';
 	}
 }
-
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-//	Panneau d'informations
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-
-// A venir...
-
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-//	Astuces
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-
-// A venir...
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 //	Informations utilisateur : infos profil, infos selon profil, infos adresse de connexion
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
+$tab_accueil['user'] = '';
+// infos connexion ; pas si webmestre ou déjà passé par la page d'accueil
+if(isset($_SESSION['DELAI_CONNEXION']))
+{
+	$tab_accueil['user'] .= '<p class="i">Bonjour <b>'.html($_SESSION['USER_PRENOM']).'</b>. ';
+	if($_SESSION['FIRST_CONNEXION'])                           { $tab_accueil['user'] .= 'Heureux de faire votre connaissance ; bonne découverte de <em>SACoche</em>&nbsp;!</p>'; }
+	elseif($_SESSION['DELAI_CONNEXION']<  43200 /*12*3600*/)   { $tab_accueil['user'] .= 'Déjà de retour&nbsp;? Décidément on ne se quitte plus&nbsp;!</p>'; }
+	elseif($_SESSION['DELAI_CONNEXION']< 108000 /*48*3600*/)   { $tab_accueil['user'] .= 'Bonne navigation, et merci de votre fidélité&nbsp;!</p>'; }
+	elseif($_SESSION['DELAI_CONNEXION']< 604800 /*7*24*3600*/) { $tab_accueil['user'] .= 'Content de vous revoir après cette pause de quelques jours.</p>'; }
+	elseif($_SESSION['DELAI_CONNEXION']<3000000 /* <3024000*/) { $tab_accueil['user'] .= 'Heureux de vous retrouver, nous commencions à trouver le temps long sans vous&nbsp;!</p>'; }
+	else                                                       { $tab_accueil['user'] .= 'On ne s\'était pas vu depuis trop longtemps&nbsp;: vous nous avez manqué&nbsp;!</p>'; }
+	unset( $_SESSION['FIRST_CONNEXION'] , $_SESSION['DELAI_CONNEXION'] );
+}
+else
+{
+	$tab_accueil['user'] .= '<p class="i">Encore là <b>'.html($_SESSION['USER_PRENOM']).'</b>&nbsp;? Restez avec nous le temps que vous voulez&nbsp;!';
+}
 // infos profil
 require_once('./_inc/tableau_profils.php'); // Charge $tab_profil_libelle[$profil][court|long][1|2]
-$tab_accueil['user'] = '<p>Vous êtes connecté avec le statut <b>'.$tab_profil_libelle[$_SESSION['USER_PROFIL']]['long'][1].'</b>.</p>';
+$tab_accueil['user'] .= '<p>Vous êtes dans l\'environnement <b>'.$tab_profil_libelle[$_SESSION['USER_PROFIL']]['long'][1].'</b>.</p>';
 // infos selon profil
 if($_SESSION['USER_PROFIL']=='parent')
 {
@@ -81,7 +86,7 @@ if($_SESSION['USER_PROFIL']=='parent')
 		{
 			$tab_nom_enfants[] =html($DB_ROW['texte']);
 		}
-		$tab_accueil['user'] .= '<p>Élève(s) associé(s) à votre compte : '.implode(' ; ',$tab_nom_enfants).'</p>';
+		$tab_accueil['user'] .= '<p>Élève(s) associé(s) à votre compte&nbsp;: <b>'.implode('</b> ; <b>',$tab_nom_enfants).'</b></p>';
 	}
 	else
 	{
@@ -95,26 +100,68 @@ elseif($_SESSION['USER_PROFIL']=='administrateur')
 		$tab_accueil['user'] .= '<p><span class="manuel"><a class="pop_up" href="'.SERVEUR_DOCUMENTAIRE.'?fichier=support_administrateur__guide">DOC : Guide d\'un administrateur de SACoche.</a></span></p>';
 	}
 }
-else
-{
-	$tab_accueil['user'] .= '<p><span class="manuel"><a class="pop_up" href="'.SERVEUR_DOCUMENTAIRE.'?fichier=environnement_generalites__ergonomie_generale">DOC : Ergonomie générale.</a></span></p>';
-}
 // infos adresse de connexion
 if($_SESSION['USER_PROFIL']=='webmestre')
 {
-	$tab_accueil['user'] .= '<p>Pour vous connecter à cet espace, utilisez l\'adresse <b>'.SERVEUR_ADRESSE.'/?webmestre</b></p>';
+	$tab_accueil['user'] .= '<div>Pour vous connecter à cet espace, utilisez l\'adresse <b>'.SERVEUR_ADRESSE.'/?webmestre</b></div>';
 }
 else
 {
 	if(HEBERGEUR_INSTALLATION=='multi-structures')
 	{
-		$tab_accueil['user'] .= '<p>Adresse à utiliser pour une sélection automatique de l\'établissement : <b>'.SERVEUR_ADRESSE.'/?id='.$_SESSION['BASE'].'</b></p>';
+		$tab_accueil['user'] .= '<div>Adresse à utiliser pour une sélection automatique de l\'établissement&nbsp;: <b>'.SERVEUR_ADRESSE.'/?id='.$_SESSION['BASE'].'</b></div>';
 	}
 	if($_SESSION['CONNEXION_MODE']!='normal')
 	{
 		$get_base = ($_SESSION['BASE']) ? '&amp;base='.$_SESSION['BASE'] : '' ;
-		$tab_accueil['user'] .= '<p>Adresse à utiliser pour une connexion automatique avec l\'authentification externe : <b>'.SERVEUR_ADRESSE.'/?sso'.$get_base.'</b></p>';
+		$tab_accueil['user'] .= '<div>Adresse à utiliser pour une connexion automatique avec l\'authentification externe&nbsp;: <b>'.SERVEUR_ADRESSE.'/?sso'.$get_base.'</b></div>';
 	}
+}
+
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+//	Panneau d'informations
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
+if($_SESSION['USER_PROFIL']!='webmestre')
+{
+	$DB_TAB = DB_STRUCTURE_COMMUN::DB_lister_messages_user_destinataire($_SESSION['USER_ID']);
+	if(count($DB_TAB))
+	{
+		foreach($DB_TAB as $key => $DB_ROW)
+		{
+			$tab_accueil['info'][$key] = '<p class="b i">Communication ('.html($DB_ROW['user_prenom']{0}.'. '.$DB_ROW['user_nom']).')&nbsp;:</p>'.'<p>'.nl2br(html($DB_ROW['message_contenu'])).'</p>';
+		}
+	}
+}
+
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+//	Astuces
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
+/*
+$nombre_indices = 10;
+$coef_distorsion = 2;
+$tab_indices = array();
+for( $i=0 ; $i<100 ; $i++ )
+{
+	$i_alea = mt_rand(0,99) / 100; // nombre aléatoire entre 0,00 et 0,99
+	$i_dist = pow($i_alea,$coef_distorsion) ; // distorsion pour accentuer le nombre de résultats proches de 0
+	$indice = (int)floor($nombre_indices*$i_dist);
+	$tab_indices[] = (int)$indice;
+}
+$tab_trie = array_count_values($tab_indices);
+ksort($tab_trie);
+var_dump( $tab_trie );
+*/
+require_once('./_inc/tableau_astuces.php'); // Charge $tab_astuces[$profil][]
+$astuce_nombre = (isset($tab_astuces[$_SESSION['USER_PROFIL']])) ? count($tab_astuces[$_SESSION['USER_PROFIL']]) : 0 ;
+if($astuce_nombre)
+{
+	$coef_distorsion = 2;
+	$i_alea = mt_rand(0,99) / 100; // nombre aléatoire entre 0,00 et 0,99
+	$i_dist = pow($i_alea,$coef_distorsion) ; // distorsion pour accentuer le nombre de résultats proches de 0
+	$indice = (int)floor($astuce_nombre*$i_dist);
+	$tab_accueil['help'] .= '<p class="b i">Le saviez-vous ?</p>'.$tab_astuces[$_SESSION['USER_PROFIL']][$indice];
 }
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
@@ -123,9 +170,14 @@ else
 
 foreach($tab_accueil as $type => $contenu)
 {
-	if($contenu)
+	if( is_string($contenu) && ($contenu!='') )
 	{
 		echo'<hr /><div class="p '.$type.'64">'.$contenu.'</div>';
 	}
+	elseif( is_array($contenu) && count($contenu) )
+	{
+		echo'<hr /><div class="p '.$type.'64">'.implode('</div><hr /><div class="p '.$type.'64">',$contenu).'</div>';
+	}
 }
 ?>
+<hr />

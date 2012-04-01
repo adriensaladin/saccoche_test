@@ -367,7 +367,7 @@ public function DB_lister_messages_user_destinataire($user_id)
 	$DB_SQL = 'SELECT user_nom, user_prenom, message_contenu ';
 	$DB_SQL.= 'FROM sacoche_message ';
 	$DB_SQL.= 'LEFT JOIN sacoche_user USING (user_id) ';
-	$DB_SQL.= 'WHERE message_destinataires LIKE :user_id_like ) ';
+	$DB_SQL.= 'WHERE message_destinataires LIKE :user_id_like AND message_debut_date<NOW() AND DATE_ADD(message_fin_date,INTERVAL 1 DAY)>NOW() '; // NOW() renvoie un datetime
 	$DB_SQL.= 'ORDER BY message_debut_date DESC, message_fin_date ASC';
 	$DB_VAR = array(':user_id_like'=>'%,'.$user_id.',%');
 	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
@@ -410,6 +410,26 @@ public function DB_ajouter_utilisateur($user_sconet_id,$user_sconet_elenoet,$use
 	$DB_SQL = 'INSERT INTO sacoche_user(user_sconet_id,user_sconet_elenoet,user_reference,user_profil,user_nom,user_prenom,user_login,user_password,eleve_classe_id,user_id_ent,user_id_gepi) ';
 	$DB_SQL.= 'VALUES(:user_sconet_id,:user_sconet_elenoet,:user_reference,:user_profil,:user_nom,:user_prenom,:user_login,:password_crypte,:eleve_classe_id,:user_id_ent,:user_id_gepi)';
 	$DB_VAR = array(':user_sconet_id'=>$user_sconet_id,':user_sconet_elenoet'=>$user_sconet_elenoet,':user_reference'=>$user_reference,':user_profil'=>$user_profil,':user_nom'=>$user_nom,':user_prenom'=>$user_prenom,':user_login'=>$user_login,':password_crypte'=>$password_crypte,':eleve_classe_id'=>$eleve_classe_id,':user_id_ent'=>$user_id_ent,':user_id_gepi'=>$user_id_gepi);
+	DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+	return DB::getLastOid(SACOCHE_STRUCTURE_BD_NAME);
+}
+
+/**
+ * ajouter_message
+ *
+ * @param int    $user_id
+ * @param string $date_debut_mysql
+ * @param string $date_fin_mysql
+ * @param string $message_contenu
+ * @param string $tab_destinataires
+ * @return int
+ */
+public function DB_ajouter_message($user_id,$date_debut_mysql,$date_fin_mysql,$message_contenu,$tab_destinataires)
+{
+	$listing_destinataires = count($tab_destinataires) ? ','.implode(',',$tab_destinataires).',' : '' ;
+	$DB_SQL = 'INSERT INTO sacoche_message(user_id,message_debut_date,message_fin_date,message_destinataires,message_contenu) ';
+	$DB_SQL.= 'VALUES(:user_id,:message_debut_date,:message_fin_date,:message_destinataires,:message_contenu)';
+	$DB_VAR = array(':user_id'=>$user_id,':message_debut_date'=>$date_debut_mysql,':message_fin_date'=>$date_fin_mysql,':message_destinataires'=>$listing_destinataires,':message_contenu'=>$message_contenu);
 	DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 	return DB::getLastOid(SACOCHE_STRUCTURE_BD_NAME);
 }
@@ -484,6 +504,42 @@ public function DB_modifier_mdp_utilisateur($user_id,$password_ancien_crypte,$pa
 	$DB_VAR = array(':user_id'=>$user_id,':password_crypte'=>$password_nouveau_crypte);
 	DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 	return 'ok';
+}
+
+/**
+ * modifier_DB_modifier_message
+ *
+ * @param int    $message_id
+ * @param int    $user_id
+ * @param string $date_debut_mysql
+ * @param string $date_fin_mysql
+ * @param string $message_contenu
+ * @param string $tab_destinataires
+ * @return void
+ */
+public function DB_modifier_message($message_id,$user_id,$date_debut_mysql,$date_fin_mysql,$message_contenu,$tab_destinataires)
+	{
+	$listing_destinataires = count($tab_destinataires) ? ','.implode(',',$tab_destinataires).',' : '' ;
+	$DB_SQL = 'UPDATE sacoche_message ';
+	$DB_SQL.= 'SET message_debut_date=:message_debut_date, message_fin_date=:message_fin_date, message_destinataires=:message_destinataires, message_contenu=:message_contenu ';
+	$DB_SQL.= 'WHERE message_id=:message_id AND user_id=:user_id ';
+	$DB_VAR = array(':message_debut_date'=>$date_debut_mysql,':message_fin_date'=>$date_fin_mysql,':message_destinataires'=>$listing_destinataires,':message_contenu'=>$message_contenu,':message_id'=>$message_id,':user_id'=>$user_id);
+	DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+}
+
+/**
+ * supprimer_message
+ *
+ * @param int   $message_id
+ * @param int   $user_id
+ * @return void
+ */
+public function DB_supprimer_message($message_id,$user_id)
+{
+	$DB_SQL = 'DELETE FROM sacoche_message ';
+	$DB_SQL.= 'WHERE message_id=:message_id AND user_id=:user_id ';
+	$DB_VAR = array(':message_id'=>$message_id,':user_id'=>$user_id);
+	DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
 /**

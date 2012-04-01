@@ -728,15 +728,15 @@ function nettoyer_fichiers_temporaires($BASE)
 function tester_authentification_webmestre($password)
 {
 	// Si tentatives trop rapprochées...
-	$delai_attente_consomme = time() - WEBMESTRE_ERREUR_DATE ;
-	if($delai_attente_consomme<3)
+	$delai_tentative_secondes = time() - WEBMESTRE_ERREUR_DATE ;
+	if($delai_tentative_secondes<3)
 	{
 		fabriquer_fichier_hebergeur_info( array('WEBMESTRE_ERREUR_DATE'=>time()) );
 		return'Calmez-vous et patientez 10s avant toute nouvelle tentative !';
 	}
-	elseif($delai_attente_consomme<10)
+	elseif($delai_tentative_secondes<10)
 	{
-		$delai_attente_restant = 10-$delai_attente_consomme ;
+		$delai_attente_restant = 10-$delai_tentative_secondes ;
 		return'Merci d\'attendre encore '.$delai_attente_restant.'s avant une nouvelle tentative.';
 	}
 	// Si mdp incorrect...
@@ -812,16 +812,18 @@ function tester_authentification_user($BASE,$login,$password,$mode_connection)
 	tester_blocage_application($BASE,$DB_ROW['user_profil']);
 	annuler_blocage_anormal();
 	// Si tentatives trop rapprochées...
-	$delai_attente_consomme = time() - $DB_ROW['tentative_unix'] ;
-	if($delai_attente_consomme<3)
+	if($DB_ROW['user_tentative_date']!='0000-00-00 00:00:00') // Sinon $DB_ROW['delai_tentative_secondes'] vaut NULL
 	{
-		DB_STRUCTURE_PUBLIC::DB_enregistrer_date( 'tentative' , $DB_ROW['user_id'] );
-		return array('Calmez-vous et patientez 10s avant toute nouvelle tentative !',array());
-	}
-	elseif($delai_attente_consomme<10)
-	{
-		$delai_attente_restant = 10-$delai_attente_consomme ;
-		return array('Merci d\'attendre encore '.$delai_attente_restant.'s avant une nouvelle tentative.',array());
+		if($DB_ROW['delai_tentative_secondes']<3)
+		{
+			DB_STRUCTURE_PUBLIC::DB_enregistrer_date( 'tentative' , $DB_ROW['user_id'] );
+			return array('Calmez-vous et patientez 10s avant toute nouvelle tentative !',array());
+		}
+		elseif($DB_ROW['delai_tentative_secondes']<10)
+		{
+			$delai_attente_restant = 10 - $DB_ROW['delai_tentative_secondes'] ;
+			return array('Merci d\'attendre encore '.$delai_attente_restant.'s avant une nouvelle tentative.',array());
+		}
 	}
 	// Si mdp incorrect...
 	if( ($mode_connection=='normal') && ($DB_ROW['user_password']!=crypter_mdp($password)) )
@@ -870,6 +872,8 @@ function enregistrer_session_user($BASE,$DB_ROW)
 	$_SESSION['ELEVE_CLASSE_ID']  = (int) $DB_ROW['eleve_classe_id'];
 	$_SESSION['ELEVE_CLASSE_NOM'] = $DB_ROW['groupe_nom'];
 	$_SESSION['ELEVE_LANGUE']     = (int) $DB_ROW['eleve_langue'];
+	$_SESSION['DELAI_CONNEXION']  = (int) $DB_ROW['delai_connexion_secondes'];
+	$_SESSION['FIRST_CONNEXION']  = ($DB_ROW['user_connexion_date']=='0000-00-00 00:00:00') ? TRUE : FALSE ;
 	// Récupérer et Enregistrer en session les données des élèves associées à un responsable légal.
 	if($_SESSION['USER_PROFIL']=='parent')
 	{

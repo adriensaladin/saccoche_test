@@ -85,7 +85,7 @@ $select_profil.= '<option value="professeur">Professeurs</option><option value="
 					echo'</tr>';
 					// Pour js
 					$script .= 'tab_destinataires['.$DB_ROW['message_id'].']="'.$destinataires_liste.'";';
-					$script .= 'tab_msg_contenus['.$DB_ROW['message_id'].']="'.html($DB_ROW['message_contenu']).'";';
+					$script .= 'tab_msg_contenus['.$DB_ROW['message_id'].']="'.str_replace(array("\r\n","\r","\n"),array('\r\n','\r','\n'),html($DB_ROW['message_contenu'])).'";';
 				}
 			}
 			else
@@ -102,7 +102,9 @@ $select_profil.= '<option value="professeur">Professeurs</option><option value="
 	var date_mysql = "<?php echo TODAY_MYSQL ?>";
 	var tab_destinataires = new Array();
 	var tab_msg_contenus  = new Array();
+	// <![CDATA[
 	<?php echo $script ?>
+	// ]]>
 </script>
 
 <form action="#" method="post" id="form_destinataires" class="hide">
@@ -127,6 +129,6 @@ $select_profil.= '<option value="professeur">Professeurs</option><option value="
 </form>
 
 <form action="#" method="post" id="form_message" class="hide">
-	<p><label for="" class="tab">Contenu du message :</label><textarea id="f_message" rows="5" cols="75"></textarea></p>
+	<p><label for="f_message" class="tab">Contenu du message :</label><textarea id="f_message" rows="5" cols="75"></textarea></p>
 	<div><span class="tab"></span><button id="valider_message" type="button" class="valider">Valider le contenu</button>&nbsp;&nbsp;&nbsp;<button id="annuler_message" type="button" class="annuler">Annuler / Retour</button></div>
 </form>

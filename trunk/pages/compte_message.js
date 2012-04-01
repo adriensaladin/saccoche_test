@@ -59,7 +59,7 @@ $(document).ready
 			new_tr += '<td><input id="f_debut_date" name="f_debut_date" size="8" type="text" value="'+input_date+'" /><q class="date_calendrier" title="Cliquez sur cette image pour importer une date depuis un calendrier !"></q></td>';
 			new_tr += '<td><input id="f_fin_date" name="f_fin_date" size="8" type="text" value="'+input_date+'" /><q class="date_calendrier" title="Cliquez sur cette image pour importer une date depuis un calendrier !"></q></td>';
 			new_tr += '<td><input id="f_destinataires_nombre" name="f_destinataires_nombre" size="13" type="text" value="aucun" readonly /><input id="f_destinataires_liste" name="f_destinataires_liste" type="hidden" value="" /><q class="choisir_eleve" title="Voir ou choisir les destinataires."></q></td>';
-			new_tr += '<td><input id="f_message_info" name="f_message_info" size="20" type="text" value="aucun" readonly /><textarea id="f_message_contenu" name="f_message_contenu" class="hide"></textarea><q class="choisir_compet" title="Voir ou modifier le contenu du message."></q></td>';
+			new_tr += '<td><input id="f_message_info" name="f_message_info" size="20" type="text" value="aucun" readonly /><textarea id="f_message_contenu" name="f_message_contenu" class="hide" ></textarea><q class="texte_editer" title="Voir ou modifier le contenu du message."></q></td>';
 			new_tr += '<td class="nu"><input id="f_action" name="f_action" type="hidden" value="'+mode+'" /><q class="valider" title="Valider l\'ajout de ce message."></q><q class="annuler" title="Annuler l\'ajout de ce message."></q> <label id="ajax_msg">&nbsp;</label></td>';
 			new_tr += '</tr>';
 			// Ajouter cette nouvelle ligne
@@ -81,8 +81,8 @@ $(document).ready
 			var fin_date             = $(this).parent().prev().prev().prev().html();
 			var destinataires_nombre = $(this).parent().prev().prev().html();
 			var message_info         = $(this).parent().prev().text();
-			var debut_date_fr        = debut_date.substring(17,date.length); // enlever la date mysql cachée
-			var fin_date_fr          = fin_date.substring(17,date.length); // enlever la date mysql cachée
+			var debut_date_fr        = debut_date.substring(17,debut_date.length); // enlever la date mysql cachée
+			var fin_date_fr          = fin_date.substring(17,fin_date.length); // enlever la date mysql cachée
 			var destinataires_liste  = tab_destinataires[id];
 			var message_contenu      = tab_msg_contenus[id];
 			// Fabriquer la ligne avec les éléments de formulaires
@@ -90,7 +90,7 @@ $(document).ready
 			new_tr += '<td><input id="f_debut_date" name="f_debut_date" size="8" type="text" value="'+debut_date_fr+'" /><q class="date_calendrier" title="Cliquez sur cette image pour importer une date depuis un calendrier !"></q></td>';
 			new_tr += '<td><input id="f_fin_date" name="f_fin_date" size="8" type="text" value="'+fin_date_fr+'" /><q class="date_calendrier" title="Cliquez sur cette image pour importer une date depuis un calendrier !"></q></td>';
 			new_tr += '<td><input id="f_destinataires_nombre" name="f_destinataires_nombre" size="13" type="text" value="'+destinataires_nombre+'" readonly /><input id="f_destinataires_liste" name="f_destinataires_liste" type="hidden" value="'+destinataires_liste+'" /><q class="choisir_eleve" title="Voir ou choisir les destinataires."></q></td>';
-			new_tr += '<td><input id="f_message_info" name="f_message_info" size="20" type="text" value="'+escapeQuote(message_info)+'" readonly /><textarea id="f_message_contenu" name="f_message_contenu" class="hide">'+escapeHtml(message_contenu)+'</textarea><q class="choisir_compet" title="Voir ou modifier le contenu du message."></q></td>';
+			new_tr += '<td><input id="f_message_info" name="f_message_info" size="20" type="text" value="'+escapeQuote(message_info)+'" readonly /><textarea id="f_message_contenu" name="f_message_contenu" class="hide">'+message_contenu+'</textarea><q class="texte_editer" title="Voir ou modifier le contenu du message."></q></td>';
 			new_tr += '<td class="nu"><input id="f_action" name="f_action" type="hidden" value="'+mode+'" /><input id="f_id" name="f_id" type="hidden" value="'+id+'" /><q class="valider" title="Valider les modifications de ce message."></q><q class="annuler" title="Annuler les modifications de ce message."></q> <label id="ajax_msg">&nbsp;</label></td>';
 			new_tr += '</tr>';
 			// Cacher la ligne en cours et ajouter la nouvelle
@@ -147,7 +147,9 @@ $(document).ready
 			var destinataires_liste = $("#f_destinataires_liste").val();
 			if(destinataires_liste=='')
 			{
-				var responseHTML = '';
+				$('#select_destinataires').html();
+				$('#retirer_destinataires').prop('disabled',true);
+				$('#valider_destinataires').prop('disabled',true);
 			}
 			else
 			{
@@ -175,15 +177,18 @@ $(document).ready
 								$.fancybox( '<label class="alerte">'+responseHTML+'</label>' , {'centerOnScroll':true} );
 								return false;
 							}
+							else
+							{
+								$('#select_destinataires').html(responseHTML);
+								var etat_disabled = (responseHTML!='') ? false : true ;
+								$('#retirer_destinataires').prop('disabled',etat_disabled);
+								$('#valider_destinataires').prop('disabled',etat_disabled);
+							}
 						}
 					}
 				);
 			}
 			// Afficher la zone
-			$('#select_destinataires').html(responseHTML);
-			var etat_disabled = (responseHTML!='') ? false : true ;
-			$('#retirer_destinataires').prop('disabled',etat_disabled);
-			$('#valider_destinataires').prop('disabled',etat_disabled);
 			$.fancybox( { 'href':'#form_destinataires' , onStart:function(){$('#form_destinataires').css("display","block");} , onClosed:function(){$('#form_destinataires').css("display","none");} , 'modal':true , 'centerOnScroll':true } );
 		};
 
@@ -195,7 +200,7 @@ $(document).ready
 		{
 			// Ne pas changer ici la valeur de "mode" (qui est à "ajouter" ou "modifier").
 			var message_contenu = $("#f_message_contenu").val();
-			$('#f_message').html(escapeHtml(message_contenu));
+			$('#f_message').html(message_contenu);
 			// Afficher la zone
 			$.fancybox( { 'href':'#form_message' , onStart:function(){$('#form_message').css("display","block");} , onClosed:function(){$('#form_message').css("display","none");} , 'modal':true , 'centerOnScroll':true } );
 			$('#f_message').focus();
@@ -211,8 +216,8 @@ $(document).ready
 		$('q.annuler').live(   'click' , annuler );
 		$('q.valider').live(   'click' , function(){formulaire.submit();} );
 
-		$('q.choisir_eleve').live(  'click' , choisir_destinataires );
-		$('q.choisir_compet').live( 'click' , editer_contenu_message );
+		$('q.choisir_eleve').live( 'click' , choisir_destinataires );
+		$('q.texte_editer').live(  'click' , editer_contenu_message );
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 //	Mettre à jour le formulaire avec la liste des utilisateurs pour un regroupement et un profil donnés
@@ -307,7 +312,7 @@ $(document).ready
 						var destinataire_nom = $(this).text();
 						if( ! $('#select_destinataires option[value='+destinataire_id+']').length )
 						{
-							$('#select_destinataires').append('<option value="'+destinataire_id+'" selected>'+escapeHtml(destinataire_nom)+'</option>');
+							$('#select_destinataires').append('<option value="'+destinataire_id+'" selected>'+destinataire_nom+'</option>');
 						}
 					}
 				);
@@ -378,7 +383,7 @@ $(document).ready
 			{
 				var message_contenu = $("#f_message").val();
 				$('#f_message_info').val(message_contenu.substring(0,30));
-				$('#f_message_contenu').val(escapeHtml(message_contenu));
+				$('#f_message_contenu').val(message_contenu);
 				$.fancybox.close();
 			}
 		);
@@ -413,14 +418,14 @@ $(document).ready
 					f_debut_date           : { required:true , dateITA:true },
 					f_fin_date             : { required:true , dateITA:true },
 					f_destinataires_nombre : { accept:'destinataire|destinataires' },
-					f_message_contenu      : { required:true , maxlength:255 }
+					f_message_info         : { minlength:10 } // On ne peut pas contrôler la longueur de f_message_contenu car il n'y a pas de vérifications sur un champ caché.
 				},
 				messages :
 				{
 					f_debut_date           : { required:"date manquante" , dateITA:"date JJ/MM/AAAA incorrecte" },
 					f_fin_date             : { required:"date manquante" , dateITA:"date JJ/MM/AAAA incorrecte" },
 					f_destinataires_nombre : { accept:"destinataire(s) manquant(s)" },
-					f_message_contenu      : { required:"contenu manquant" , maxlength:"255 caractères maximum" }
+					f_message_info         : { minlength:"contenu manquant / insuffisant" }
 				},
 				errorElement : "label",
 				errorClass : "erreur",

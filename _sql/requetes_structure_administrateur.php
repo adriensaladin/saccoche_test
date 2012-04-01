@@ -1493,11 +1493,17 @@ public function DB_supprimer_utilisateur($user_id,$user_profil)
 {
 	$DB_VAR = array(':user_id'=>$user_id);
 	$DB_SQL = 'DELETE FROM sacoche_user ';
-	$DB_SQL.= 'WHERE user_id=:user_id ';
+	$DB_SQL.= 'WHERE user_id=:user_id';
 	DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 	if( ($user_profil=='eleve') || ($user_profil=='professeur') )
 	{
 		$DB_SQL = 'DELETE FROM sacoche_jointure_user_groupe ';
+		$DB_SQL.= 'WHERE user_id=:user_id';
+		DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+	}
+	if( ($user_profil!='eleve') || ($user_profil!='parent') )
+	{
+		$DB_SQL = 'DELETE FROM sacoche_message ';
 		$DB_SQL.= 'WHERE user_id=:user_id';
 		DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 	}
@@ -1777,6 +1783,16 @@ public function DB_corriger_anomalies()
 	$message = (!$nb_modifs) ? 'rien à signaler' : ( ($nb_modifs>1) ? $nb_modifs.' anomalies supprimées' : '1 anomalie supprimée' ) ;
 	$classe  = (!$nb_modifs) ? 'valide' : 'alerte' ;
 	$tab_bilan[] = '<label class="'.$classe.'">Sélections d\'items : '.$message.'.</label>';
+	// Recherche d'anomalies : messages associés à un utilisateur supprimé...
+	$DB_SQL = 'DELETE sacoche_message ';
+	$DB_SQL.= 'FROM sacoche_message ';
+	$DB_SQL.= 'LEFT JOIN sacoche_user USING (user_id) ';
+	$DB_SQL.= 'WHERE (sacoche_user.user_id IS NULL) ';
+	DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
+	$nb_modifs = DB::rowCount(SACOCHE_STRUCTURE_BD_NAME);
+	$message = (!$nb_modifs) ? 'rien à signaler' : ( ($nb_modifs>1) ? $nb_modifs.' anomalies supprimées' : '1 anomalie supprimée' ) ;
+	$classe  = (!$nb_modifs) ? 'valide' : 'alerte' ;
+	$tab_bilan[] = '<label class="'.$classe.'">Messages d\'accueil : '.$message.'.</label>';
 	// Recherche d'anomalies : jointures période/groupe associées à une période ou un groupe supprimé...
 	$DB_SQL = 'DELETE sacoche_jointure_groupe_periode ';
 	$DB_SQL.= 'FROM sacoche_jointure_groupe_periode ';

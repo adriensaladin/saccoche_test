@@ -496,8 +496,8 @@ if($type_synthese)
 	$memo_y = $releve_PDF->GetY()+2;
 	$releve_PDF->SetY( $memo_y );
 	$releve_PDF->choisir_couleur_fond('gris_moyen');
-	$releve_PDF->Cell($releve_PDF->intitule_largeur , $releve_PDF->cases_hauteur , 'moy. scores '.$info_ponderation_courte.' [*]' , 1 , 2 , 'C' , true , '');
-	$releve_PDF->Cell($releve_PDF->intitule_largeur , $releve_PDF->cases_hauteur , '% validations [**]' , 1 , 0 , 'C' , true , '');
+	$releve_PDF->Cell($releve_PDF->intitule_largeur , $releve_PDF->cases_hauteur , pdf('moy. scores '.$info_ponderation_courte.' [*]') , 1 , 2 , 'C' , true , '');
+	$releve_PDF->Cell($releve_PDF->intitule_largeur , $releve_PDF->cases_hauteur , pdf('% validations [**]') , 1 , 0 , 'C' , true , '');
 	$releve_HTML_table_foot1 = '<tr><th>moy. scores '.$info_ponderation_courte.' [*]</th>';
 	$releve_HTML_table_foot2 = '<tr><th>% validations [**]</th>';
 	$checkbox = ($affichage_checkbox) ? '<tr><th class="nu">&nbsp;</th>' : '' ;

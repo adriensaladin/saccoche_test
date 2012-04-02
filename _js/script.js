@@ -259,7 +259,7 @@ function memoriser_selection_matieres_items(selection_items_nom)
  * Fonction pour afficher et cocher un item du socle
  *
  * @param socle_item_id
- * @return string
+ * @return void
  */
 function cocher_socle_item(socle_item_id)
 {
@@ -303,7 +303,7 @@ var cocher_socle_item_first_appel = true;
  * Fonction pour afficher et cocher une liste de profs donnés
  *
  * @param prof_liste : ids séparés par des underscores
- * @return string
+ * @return void
  */
 function cocher_profs(prof_liste)
 {
@@ -337,7 +337,7 @@ function cocher_profs(prof_liste)
  * Fonction pour afficher et cocher une liste d'élèves donnés
  *
  * @param prof_liste : ids séparés par des underscores
- * @return string
+ * @return void
  */
 function cocher_eleves(eleve_liste)
 {
@@ -367,6 +367,32 @@ function cocher_eleves(eleve_liste)
 			}
 		}
 	}
+}
+
+/**
+ * Fonction pour afficher le nombre de caractères restant autorisés dans un textarea.
+ * A appeler avec l'événement onkeyup.
+ *
+ * Inspiration : http://www.paperblog.fr/349086/limiter-le-nombre-de-caractere-d-un-textarea/
+ * Plugin jQuery possible : http://www.devzone.fr/plugin-jquery-maxlength-nombre-de-caracteres-restants
+ *
+ * @param textarea_obj
+ * @param textarea_maxi_length
+ * @return void
+ */
+function afficher_textarea_reste(textarea_obj,textarea_maxi_length)
+{
+	var textarea_contenu = textarea_obj.val();
+	var textarea_longueur = textarea_contenu.length;
+	if(textarea_contenu.length > textarea_maxi_length)
+	{
+		textarea_obj.val( textarea_contenu.substring(0,textarea_maxi_length) );
+		textarea_longueur = textarea_maxi_length;
+	}
+	var reste_nb    = textarea_maxi_length - textarea_longueur;
+	var reste_str   = (reste_nb>1) ? ' caractères restants' : ' caractère restant' ;
+	var reste_class = (reste_nb>9) ? 'valide' : 'alerte' ;
+	$('#'+textarea_obj.attr('id')+'_reste').html(reste_nb+reste_str).removeAttr("class").addClass(reste_class);
 }
 
 //	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
@@ -1148,12 +1174,20 @@ $(document).ready
 				var contenu = '<h2>Formuler une demande d\'évaluation</h2>'
 				            + '<form action="#" method="post" id="form_demande_evaluation">'
 				            + '<p class="b">'+item_nom+'</p>'
-				            + '<p>Message (facultatif) : <textarea name="message" rows="5" cols="75"></textarea></p>'
+				            + '<p>Message (facultatif) : <textarea id="zone_message" name="message" rows="5" cols="75"></textarea><br /><span class="tab"></span><label id="zone_message_reste"></label></p>'
 				            + '<p><span class="tab"></span><input name="matiere_id" type="hidden" value="'+matiere_id+'" /><input name="item_id" type="hidden" value="'+item_id+'" /><input name="score" type="hidden" value="'+score+'" />'
 				            + '<button id="confirmer_demande_evaluation" type="button" class="valider">Confirmer.</button> <button id="fermer_demande_evaluation" type="button" class="annuler">Annuler.</button><label id="ajax_msg_confirmer_demande"></label></p>'
 				            + '</form>';
 				$.fancybox( contenu , { 'modal':true , 'centerOnScroll':true } );
 				$('#form_demande_evaluation textarea').focus();
+				//	Indiquer le nombre de caractères restant autorisés dans le textarea
+				$('#zone_message').keyup
+				(
+					function()
+					{
+						afficher_textarea_reste($(this),250);
+					}
+				);
 			}
 		);
 

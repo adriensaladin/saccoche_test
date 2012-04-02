@@ -117,7 +117,8 @@ $select_groupe  = Formulaire::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_groupe
 			<label class="tab" for="f_suite">Suite :</label><select id="f_suite" name="f_suite"><option value="changer">Changer ensuite le statut pour "évaluation en préparation".</option><option value="retirer">Retirer ensuite de la liste des demandes.</option></select>
 		</fieldset>
 		<fieldset id="step_message" class="hide">
-			<label class="tab" for="f_message">Message <img alt="" src="./_img/bulle_aide.png" title="facultatif" /> :</label><textarea id="f_message" name="f_message" rows="3" cols="75"></textarea>
+			<label class="tab" for="f_message">Message <img alt="" src="./_img/bulle_aide.png" title="facultatif" /> :</label><textarea id="f_message" name="f_message" rows="3" cols="75"></textarea><br />
+			<span class="tab"></span><label id="f_message_reste"></label>
 		</fieldset>
 		<p id="step_valider" class="hide">
 			<input type="hidden" id="f_groupe_id2" name="f_groupe_id" value="" /><input type="hidden" id="f_groupe_type2" name="f_groupe_type" value="" />

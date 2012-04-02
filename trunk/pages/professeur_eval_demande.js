@@ -382,6 +382,15 @@ $(document).ready
 			}
 		);
 
+		//	Indiquer le nombre de caractères restant autorisés dans le textarea
+		$('#f_message').keyup
+		(
+			function()
+			{
+				afficher_textarea_reste($(this),250);
+			}
+		);
+
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 //	Traitement du formulaire principal
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-

@@ -129,6 +129,9 @@ $select_profil.= '<option value="professeur">Professeurs</option><option value="
 </form>
 
 <form action="#" method="post" id="form_message" class="hide">
-	<p><label for="f_message" class="tab">Contenu du message :</label><textarea id="f_message" rows="5" cols="75"></textarea></p>
-	<div><span class="tab"></span><button id="valider_message" type="button" class="valider">Valider le contenu</button>&nbsp;&nbsp;&nbsp;<button id="annuler_message" type="button" class="annuler">Annuler / Retour</button></div>
+	<div>
+		<label for="f_message" class="tab">Contenu du message :</label><textarea id="f_message" rows="5" cols="75"></textarea><br />
+		<span class="tab"></span><label id="f_message_reste"></label><br />
+		<span class="tab"></span><button id="valider_message" type="button" class="valider">Valider le contenu</button>&nbsp;&nbsp;&nbsp;<button id="annuler_message" type="button" class="annuler">Annuler / Retour</button>
+	</div>
 </form>

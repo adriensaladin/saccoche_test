@@ -46,12 +46,12 @@ $action = $tab_actions[$action];
 $test_sconet = (substr($action,0,6)=='sconet') ? true : false ;
 $tab_extensions_autorisees = $test_sconet ? array('zip','xml') : array('txt','csv') ;
 $extension_fichier_dest    = $test_sconet ? 'xml'              : 'txt' ;
-$fichier_dest = 'import_'.$action.'_'.$_SESSION['BASE'].'.'.$extension_fichier_dest ;
+$fichier_dest = 'import_'.$action.'_'.$_SESSION['BASE'].'_'.session_id().'.'.$extension_fichier_dest ;
 
 function load_fichier($nom)
 {
 	global $dossier_import,$action;
-	$fnom = $dossier_import.'import_'.$action.'_'.$_SESSION['BASE'].'_'.$nom.'.txt';
+	$fnom = $dossier_import.'import_'.$action.'_'.$_SESSION['BASE'].'_'.session_id().'_'.$nom.'.txt';
 	if(!file_exists($fnom))
 	{
 		exit('Erreur : le fichier contenant les données à traiter est introuvable !');
@@ -830,10 +830,10 @@ if( $step==20 )
 		ajouter_log_PHP( $log_objet='Import fichier '.$action , $log_contenu=serialize($tab_users_fichier) , $log_fichier=__FILE__ , $log_ligne=__LINE__ , $only_sesamath=true );
 	}
 	// On enregistre
-	Ecrire_Fichier($dossier_import.'import_'.$action.'_'.$_SESSION['BASE'].'_users.txt',serialize($tab_users_fichier));
-	Ecrire_Fichier($dossier_import.'import_'.$action.'_'.$_SESSION['BASE'].'_classes.txt',serialize($tab_classes_fichier));
-	Ecrire_Fichier($dossier_import.'import_'.$action.'_'.$_SESSION['BASE'].'_groupes.txt',serialize($tab_groupes_fichier));
-	Ecrire_Fichier($dossier_import.'import_'.$action.'_'.$_SESSION['BASE'].'_liens_id_base.txt',serialize($tab_liens_id_base));
+	Ecrire_Fichier($dossier_import.'import_'.$action.'_'.$_SESSION['BASE'].'_'.session_id().'_users.txt',serialize($tab_users_fichier));
+	Ecrire_Fichier($dossier_import.'import_'.$action.'_'.$_SESSION['BASE'].'_'.session_id().'_classes.txt',serialize($tab_classes_fichier));
+	Ecrire_Fichier($dossier_import.'import_'.$action.'_'.$_SESSION['BASE'].'_'.session_id().'_groupes.txt',serialize($tab_groupes_fichier));
+	Ecrire_Fichier($dossier_import.'import_'.$action.'_'.$_SESSION['BASE'].'_'.session_id().'_liens_id_base.txt',serialize($tab_liens_id_base));
 	// On affiche le bilan des utilisateurs trouvés
 	if(count($tab_users_fichier['profil']))
 	{
@@ -996,7 +996,7 @@ if( $step==31 )
 	}
 	// On enregistre (tableau mis à jour)
 	$tab_liens_id_base = array('classes'=>$tab_i_classe_TO_id_base,'groupes'=>$tab_i_groupe_TO_id_base,'users'=>$tab_i_fichier_TO_id_base);
-	Ecrire_Fichier($dossier_import.'import_'.$action.'_'.$_SESSION['BASE'].'_liens_id_base.txt',serialize($tab_liens_id_base));
+	Ecrire_Fichier($dossier_import.'import_'.$action.'_'.$_SESSION['BASE'].'_'.session_id().'_liens_id_base.txt',serialize($tab_liens_id_base));
 	// On affiche
 	echo'<p><label class="valide">Veuillez vérifier le résultat de l\'analyse des classes.</label><input name="leurre" type="image" alt="" src="./_img/auto.gif" /></p>';
 	// Pour sconet_professeurs_directeurs, les groupes ne figurent pas forcément dans le fichier si les services ne sont pas présents -> on ne procède qu'à des ajouts éventuels.
@@ -1080,7 +1080,7 @@ if( $step==32 )
 	}
 	// On enregistre (tableau mis à jour)
 	$tab_liens_id_base = array('classes'=>$tab_i_classe_TO_id_base,'groupes'=>$tab_i_groupe_TO_id_base,'users'=>$tab_i_fichier_TO_id_base);
-	Ecrire_Fichier($dossier_import.'import_'.$action.'_'.$_SESSION['BASE'].'_liens_id_base.txt',serialize($tab_liens_id_base));
+	Ecrire_Fichier($dossier_import.'import_'.$action.'_'.$_SESSION['BASE'].'_'.session_id().'_liens_id_base.txt',serialize($tab_liens_id_base));
 	// Afficher le bilan
 	$lignes = '';
 	$nb_fin = 0;
@@ -1195,7 +1195,7 @@ if( $step==41 )
 	}
 	// On enregistre (tableau mis à jour)
 	$tab_liens_id_base = array('classes'=>$tab_i_classe_TO_id_base,'groupes'=>$tab_i_groupe_TO_id_base,'users'=>$tab_i_fichier_TO_id_base);
-	Ecrire_Fichier($dossier_import.'import_'.$action.'_'.$_SESSION['BASE'].'_liens_id_base.txt',serialize($tab_liens_id_base));
+	Ecrire_Fichier($dossier_import.'import_'.$action.'_'.$_SESSION['BASE'].'_'.session_id().'_liens_id_base.txt',serialize($tab_liens_id_base));
 	// On affiche
 	echo'<p><label class="valide">Veuillez vérifier le résultat de l\'analyse des groupes.</label><input name="leurre" type="image" alt="" src="./_img/auto.gif" /></p>';
 	// Pour sconet_professeurs_directeurs, les groupes ne figurent pas forcément dans le fichier si les services ne sont pas présents -> on ne procède qu'à des ajouts éventuels.
@@ -1279,7 +1279,7 @@ if( $step==42 )
 	}
 	// On enregistre (tableau mis à jour)
 	$tab_liens_id_base = array('classes'=>$tab_i_classe_TO_id_base,'groupes'=>$tab_i_groupe_TO_id_base,'users'=>$tab_i_fichier_TO_id_base);
-	Ecrire_Fichier($dossier_import.'import_'.$action.'_'.$_SESSION['BASE'].'_liens_id_base.txt',serialize($tab_liens_id_base));
+	Ecrire_Fichier($dossier_import.'import_'.$action.'_'.$_SESSION['BASE'].'_'.session_id().'_liens_id_base.txt',serialize($tab_liens_id_base));
 	// Afficher le bilan
 	$lignes = '';
 	$nb_fin = 0;
@@ -1502,10 +1502,10 @@ if( $step==51 )
 	unset($_SESSION['tmp']['date_sortie']);
 	// On enregistre
 	$tab_memo_analyse = array('modifier'=>$tab_users_modifier,'ajouter'=>$tab_users_ajouter,'retirer'=>$tab_users_retirer);
-	Ecrire_Fichier($dossier_import.'import_'.$action.'_'.$_SESSION['BASE'].'_memo_analyse.txt',serialize($tab_memo_analyse));
+	Ecrire_Fichier($dossier_import.'import_'.$action.'_'.$_SESSION['BASE'].'_'.session_id().'_memo_analyse.txt',serialize($tab_memo_analyse));
 	// On enregistre (tableau mis à jour)
 	$tab_liens_id_base = array('classes'=>$tab_i_classe_TO_id_base,'groupes'=>$tab_i_groupe_TO_id_base,'users'=>$tab_i_fichier_TO_id_base);
-	Ecrire_Fichier($dossier_import.'import_'.$action.'_'.$_SESSION['BASE'].'_liens_id_base.txt',serialize($tab_liens_id_base));
+	Ecrire_Fichier($dossier_import.'import_'.$action.'_'.$_SESSION['BASE'].'_'.session_id().'_liens_id_base.txt',serialize($tab_liens_id_base));
 	// On affiche
 	echo'<p><label class="valide">Veuillez vérifier le résultat de l\'analyse des utilisateurs.</label><input name="leurre" type="image" alt="" src="./_img/auto.gif" /></p>';
 	if( $lignes_ajouter && $lignes_retirer )
@@ -1683,7 +1683,7 @@ if( $step==52 )
 	}
 	// On enregistre (tableau mis à jour)
 	$tab_liens_id_base = array('classes'=>$tab_i_classe_TO_id_base,'groupes'=>$tab_i_groupe_TO_id_base,'users'=>$tab_i_fichier_TO_id_base);
-	Ecrire_Fichier($dossier_import.'import_'.$action.'_'.$_SESSION['BASE'].'_liens_id_base.txt',serialize($tab_liens_id_base));
+	Ecrire_Fichier($dossier_import.'import_'.$action.'_'.$_SESSION['BASE'].'_'.session_id().'_liens_id_base.txt',serialize($tab_liens_id_base));
 	// Afficher le bilan
 	$lignes        = '';
 	$nb_fin_actuel = 0;
@@ -1711,7 +1711,7 @@ if( $step==52 )
 	{
 		// On archive les nouveaux identifiants dans un fichier tableur zippé (csv tabulé)
 		$profil = ($is_profil_eleve) ? 'eleve' : ( ($is_profil_parent) ? 'parent' : array('professeur','directeur') ) ;
-		$fnom = 'identifiants_'.$_SESSION['BASE'].'_'.$profil.'_'.time();
+		$fnom = 'identifiants_'.$_SESSION['BASE'].'_'.$profil.'_'.fabriquer_fin_nom_fichier();
 		$zip = new ZipArchive();
 		$result_open = $zip->open($dossier_login_mdp.$fnom.'.zip', ZIPARCHIVE::CREATE);
 		if($result_open!==TRUE)
@@ -2175,7 +2175,7 @@ if( $step==71 )
 	$tab_liens_id_base = load_fichier('liens_id_base');
 	$tab_i_fichier_TO_id_base  = $tab_liens_id_base['users'];
 	// On récupère le fichier avec les utilisateurs : $tab_users_fichier['champ'] : i -> valeur, avec comme champs : sconet_id / sconet_num / reference / profil / nom / prenom / classe / groupes / matieres / adresse / enfant
-	$fnom = $dossier_import.'import_'.$action.'_'.$_SESSION['BASE'].'_users.txt';
+	$fnom = $dossier_import.'import_'.$action.'_'.$_SESSION['BASE'].'_'.session_id().'_users.txt';
 	if(!file_exists($fnom))
 	{
 		exit('Erreur : le fichier contenant les utilisateurs est introuvable !');
@@ -2372,7 +2372,7 @@ if( $step==81 )
 			}
 		}
 	}
-	Ecrire_Fichier($dossier_import.'import_'.$action.'_'.$_SESSION['BASE'].'_memo_analyse.txt',serialize($tab_memo_analyse));
+	Ecrire_Fichier($dossier_import.'import_'.$action.'_'.$_SESSION['BASE'].'_'.session_id().'_memo_analyse.txt',serialize($tab_memo_analyse));
 	// Pour préparer l'affichage
 	$lignes_modifier  = '';
 	$lignes_conserver = '';
@@ -2502,11 +2502,11 @@ if( $step==82 )
 if( $step==90 )
 {
 	unlink($dossier_import.$fichier_dest);
-	unlink($dossier_import.'import_'.$action.'_'.$_SESSION['BASE'].'_users.txt');
-	unlink($dossier_import.'import_'.$action.'_'.$_SESSION['BASE'].'_classes.txt');
-	unlink($dossier_import.'import_'.$action.'_'.$_SESSION['BASE'].'_groupes.txt');
-	unlink($dossier_import.'import_'.$action.'_'.$_SESSION['BASE'].'_memo_analyse.txt');
-	unlink($dossier_import.'import_'.$action.'_'.$_SESSION['BASE'].'_liens_id_base.txt');
+	unlink($dossier_import.'import_'.$action.'_'.$_SESSION['BASE'].'_'.session_id().'_users.txt');
+	unlink($dossier_import.'import_'.$action.'_'.$_SESSION['BASE'].'_'.session_id().'_classes.txt');
+	unlink($dossier_import.'import_'.$action.'_'.$_SESSION['BASE'].'_'.session_id().'_groupes.txt');
+	unlink($dossier_import.'import_'.$action.'_'.$_SESSION['BASE'].'_'.session_id().'_memo_analyse.txt');
+	unlink($dossier_import.'import_'.$action.'_'.$_SESSION['BASE'].'_'.session_id().'_liens_id_base.txt');
 	echo'<p><label class="valide">Fichiers temporaires effacés, procédure d\'import terminée !</label></p>';
 	echo'<p class="li"><a href="#" id="retourner_depart">Retour au départ.</a><label id="ajax_msg">&nbsp;</label></p>';
 	exit();

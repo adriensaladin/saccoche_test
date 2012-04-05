@@ -345,25 +345,25 @@ $releve_html .= '<table class="bilan"><thead>'.$releve_html_head.'</thead><tbody
 $releve_html .= ($affichage_checkbox) ? '<p><label class="tab">Action <img alt="" src="./_img/bulle_aide.png" title="Cocher auparavant les cases adéquates." /> :</label><button type="button" class="ajouter" onclick="var form=document.getElementById(\'form_synthese\');form.action=\'./index.php?page=professeur_eval_saisie\';form.submit();">Préparer une évaluation.</button> <button type="button" class="ajouter" onclick="var form=document.getElementById(\'form_synthese\');form.action=\'./index.php?page=professeur_groupe_besoin\';form.submit();">Constituer un groupe de besoin.</button></p></form>' : '';
 
 // Chemins d'enregistrement
-$dossier      = './__tmp/export/';
-$fichier_lien = 'releve_synthese_socle_'.$type.'_etabl'.$_SESSION['BASE'].'_user'.$_SESSION['USER_ID'].'_'.time();
+$dossier = './__tmp/export/';
+$fichier = 'releve_socle_synthese_'.clean_fichier(substr($palier_nom,0,strpos($palier_nom,' ('))).'_'.clean_fichier($groupe_nom).'_'.$type.'_'.fabriquer_fin_nom_fichier();
 // On enregistre les sorties HTML et PDF
-Ecrire_Fichier($dossier.$fichier_lien.'.html',$releve_html);
-$releve_pdf->Output($dossier.$fichier_lien.'.pdf','F');
+Ecrire_Fichier($dossier.$fichier.'.html',$releve_html);
+$releve_pdf->Output($dossier.$fichier.'.pdf','F');
 // Affichage du résultat
 if($affichage_direct)
 {
 	echo'<hr />';
 	echo'<ul class="puce">';
-	echo'<li><a class="lien_ext" href="'.$dossier.$fichier_lien.'.pdf"><span class="file file_pdf">Archiver / Imprimer (format <em>pdf</em>).</span></a></li>';
+	echo'<li><a class="lien_ext" href="'.$dossier.$fichier.'.pdf"><span class="file file_pdf">Archiver / Imprimer (format <em>pdf</em>).</span></a></li>';
 	echo'</ul>';
 	echo $releve_html;
 }
 else
 {
 	echo'<ul class="puce">';
-	echo'<li><a class="lien_ext" href="'.$dossier.$fichier_lien.'.pdf"><span class="file file_pdf">Archiver / Imprimer (format <em>pdf</em>).</span></a></li>';
-	echo'<li><a class="lien_ext" href="./releve-html.php?fichier='.$fichier_lien.'"><span class="file file_htm">Explorer / Détailler (format <em>html</em>).</span></a></li>';
+	echo'<li><a class="lien_ext" href="'.$dossier.$fichier.'.pdf"><span class="file file_pdf">Archiver / Imprimer (format <em>pdf</em>).</span></a></li>';
+	echo'<li><a class="lien_ext" href="./releve-html.php?fichier='.$fichier.'"><span class="file file_htm">Explorer / Détailler (format <em>html</em>).</span></a></li>';
 	echo'</ul>';
 }
 

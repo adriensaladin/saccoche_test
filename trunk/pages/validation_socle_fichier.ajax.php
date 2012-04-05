@@ -152,6 +152,7 @@ if( in_array( $action , array('export_lpc','export_sacoche') ) && $nb )
 		}
 	}
 	$fichier_extension = ($action=='export_lpc') ? 'xml' : 'zip' ;
+	$fichier_nom = str_replace('export_','import-',$action).'-'.clean_fichier($_SESSION['WEBMESTRE_UAI']).'_'.fabriquer_fin_nom_fichier().'.'.$fichier_extension; // LPC recommande le modèle "import-lpc-{timestamp}.xml"
 	if($action=='export_lpc')
 	{
 		$xml.= '	</donnees>'."\r\n";
@@ -163,14 +164,12 @@ if( in_array( $action , array('export_lpc','export_sacoche') ) && $nb )
 		{
 			exit(html($xml));
 		}
-		$fichier_nom = str_replace('export_','import-',$action).'-'.time().'_'.$_SESSION['BASE'].'_'.mt_rand().'.'.$fichier_extension; // LPC recommande le modèle "import-lpc-{timestamp}.xml"
 		Ecrire_Fichier( $dossier_export.$fichier_nom , $xml );
 	}
 	else
 	{
 		$xml.= '	</donnees>'."\r\n";
 		$xml.= '</sacoche>'."\r\n";
-		$fichier_nom = str_replace('export_','import-',$action).'_'.$_SESSION['BASE'].'_'.date('Y-m-d_H-i-s').'_'.mt_rand().'.'.$fichier_extension;
 		// L'export pour SACoche on peut le zipper (le gain est très significatif : facteur 40 à 50 !)
 		$zip = new ZipArchive();
 		$result_open = $zip->open($dossier_export.$fichier_nom, ZIPARCHIVE::CREATE);
@@ -188,7 +187,7 @@ if( in_array( $action , array('export_lpc','export_sacoche') ) && $nb )
 	$si = ($nb_items>1)   ? 's' : '' ;
 	$in = $only_positives ? '' : '(in)-' ;
 	echo'<li><label class="valide">Fichier d\'export généré : '.$nb_piliers.' '.$in.'validation'.$sp.' de compétence'.$sp.' et '.$nb_items.' '.$in.'validation'.$si.' d\'item'.$si.' concernant '.$nb_eleves.' élève'.$se.'.</label></li>';
-	echo'<li><a class="lien_ext" href="'.$dossier_export.$fichier_nom.'"><span class="file file_'.$fichier_extension.'">Récupérez le fichier au format <em>'.$fichier_extension.'</em> <img alt="" src="./_img/bulle_aide.png" title="Si le navigateur ouvre le fichier au lieu de l\'enregistrer, cliquer avec le bouton droit et choisir «&nbsp;Enregistrer&nbsp;sous...&nbsp;»." />.</span></a></li>';
+	echo'<li><a class="lien_ext" href="'.$dossier_export.$fichier_nom.'"><span class="file file_'.$fichier_extension.'">Récupérez le fichier au format <em>'.$fichier_extension.'</em>. <img alt="" src="./_img/bulle_aide.png" title="Si le navigateur ouvre le fichier au lieu de l\'enregistrer, cliquer avec le bouton droit et choisir «&nbsp;Enregistrer&nbsp;sous...&nbsp;»." /></span></a></li>';
 	echo'<li>Vous devrez indiquer dans <em>lpc</em> les dates suivantes : <span class="b">'.html(CNIL_DATE_ENGAGEMENT).'</span> (déclaration <em>cnil</em>) et <span class="b">'.html(CNIL_DATE_RECEPISSE).'</span> (retour du récépissé).</li>';
 	echo'<li><label class="alerte">Pour des raisons de sécurité et de confidentialité, ce fichier sera effacé du serveur dans 1h.</label></li>';
 	exit();
@@ -215,7 +214,7 @@ if( in_array( $action , array('import_sacoche','import_compatible') ) )
 	{
 		exit('Erreur : l\'extension du fichier transmis est incorrecte !');
 	}
-	$fichier_upload_nom = 'import_validations_'.$_SESSION['BASE'].'.xml';
+	$fichier_upload_nom = 'import_validations_'.$_SESSION['BASE'].'_'.fabriquer_fin_nom_fichier().'.xml';
 	if($extension!='zip')
 	{
 		if(!move_uploaded_file($fnom_serveur , $dossier_import.$fichier_upload_nom))

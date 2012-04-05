@@ -56,7 +56,7 @@ if($action=='sauvegarder')
 	// Débloquer l'application
 	debloquer_application('automate',$_SESSION['BASE']);
 	// Zipper les fichiers de svg
-	$fichier_zip_nom = 'dump_SACoche_'.$_SESSION['BASE'].'_'.date('Y-m-d_H-i-s').'_'.mt_rand().'.zip';
+	$fichier_zip_nom = 'dump_SACoche_'.$_SESSION['BASE'].'_'.fabriquer_fin_nom_fichier().'.zip';
 	zipper_fichiers_sauvegarde($dossier_temp,$dossier_dump,$fichier_zip_nom);
 	// Supprimer le dossier temporaire
 	Supprimer_Dossier($dossier_temp);
@@ -90,7 +90,7 @@ elseif($action=='uploader')
 	{
 		exit('<li><label class="alerte">Erreur : l\'extension du fichier transmis est incorrecte !</label></li>');
 	}
-	$fichier_upload_nom = 'dump_'.$_SESSION['BASE'].'_'.date('Y-m-d_H-i-s').'_'.mt_rand().'.zip';
+	$fichier_upload_nom = 'dump_'.$_SESSION['BASE'].'_'.fabriquer_fin_nom_fichier().'.zip';
 	if(!move_uploaded_file($fnom_serveur , $dossier_import.$fichier_upload_nom))
 	{
 		exit('<li><label class="alerte">Erreur : le fichier n\'a pas pu être enregistré sur le serveur.</label></li>');

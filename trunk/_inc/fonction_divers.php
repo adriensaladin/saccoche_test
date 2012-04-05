@@ -513,6 +513,29 @@ function crypter_mdp($password)
 }
 
 /**
+ * Ajouter la date et une valeur aléatoire pour terminer un nom de fichier.
+ * 
+ * @param void
+ * @return string
+ */
+function fabriquer_fin_nom_fichier()
+{
+	// date
+	$chaine_date = date('Y-m-d_H\hi\m\i\ns\s'); // lisible par un humain et compatible avec le système de fichiers
+	// valeur aléatoire
+	$longueur_chaine = 15; // permet > 2x10^23 possibilités : même en en testant 1 milliard /s il faudrait plus de 7 millions d'années pour toutes les essayer
+	$caracteres = '0123456789abcdefghijklmnopqrstuvwxyz';
+	$alea_max = strlen($caracteres)-1;
+	$chaine_alea = '';
+	for( $i=0 ; $i<$longueur_chaine ; $i++ )
+	{
+		$chaine_alea .= $caracteres{mt_rand(0,$alea_max)};
+	}
+	// retour
+	return $chaine_date.'_'.$chaine_alea;
+}
+
+/**
  * Fabriquer ou mettre à jour le fichier de configuration de l'hébergement (gestion par le webmestre)
  * 
  * @param array tableau $constante_nom => $constante_valeur des paramètres à modifier (sinon, on prend les constantes déjà définies)
@@ -1748,7 +1771,7 @@ function adresse_RSS($prof_id)
 		Creer_Dossier($dossier_nom);
 		Ecrire_Fichier($dossier_nom.'/index.htm','Circulez, il n\'y a rien à voir par ici !');
 	}
-	// Le nom du RSS est tordu pour le rendre un minimum privé ; il peut être retrouvé, mais très difficilement, par un bidouilleur qui met le nez dans le code, mais il n'y a rien de confidentiel non plus.
+	// Le nom du RSS est tordu pour le rendre un minimum privé, sans être totalement aléatoire car il doit être fixe (mais il n'y a rien de confidentiel non plus).
 	$fichier_nom_debut = 'rss_'.$prof_id;
 	$fichier_nom_fin   = md5($fichier_nom_debut.$_SERVER['DOCUMENT_ROOT']);
 	$fichier_chemin    = $dossier_nom.'/'.$fichier_nom_debut.'_'.$fichier_nom_fin.'.xml';

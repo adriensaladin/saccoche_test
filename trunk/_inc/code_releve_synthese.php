@@ -31,8 +31,8 @@
  * [./releves_bilans__releve_synthese_multimatiere.ajax.php]
  */
 
-$dossier         = './__tmp/export/';
-$fichier_lien    = 'releve_synthese_'.$format.'_etabl'.$_SESSION['BASE'].'_user'.$_SESSION['USER_ID'].'_'.time();
+$dossier     = './__tmp/export/';
+$fichier_nom = 'releve_synthese_'.$format.'_'.clean_fichier($groupe_nom).'_'.fabriquer_fin_nom_fichier();
 
 if(!$aff_coef)  { $texte_coef       = ''; }
 if(!$aff_socle) { $texte_socle      = ''; }
@@ -192,7 +192,7 @@ foreach($tab_eleve as $tab)
 	}
 }
 // On enregistre les sorties HTML et PDF
-Ecrire_Fichier($dossier.$fichier_lien.'.html',$releve_HTML);
-$releve_PDF->Output($dossier.$fichier_lien.'.pdf','F');
+Ecrire_Fichier($dossier.$fichier_nom.'.html',$releve_HTML);
+$releve_PDF->Output($dossier.$fichier_nom.'.pdf','F');
 
 ?>

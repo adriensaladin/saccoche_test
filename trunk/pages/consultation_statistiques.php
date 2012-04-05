@@ -29,7 +29,7 @@ if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');
 $TITRE = "Nombre de saisies";
 ?>
 
-<table id="bilan hsort">
+<table id="bilan" class="hsort">
 	<thead>
 		<tr>
 			<th>Professeur</th>

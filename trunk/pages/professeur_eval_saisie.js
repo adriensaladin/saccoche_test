@@ -274,7 +274,7 @@ $(document).ready
 			// Masquer le tableau et Afficher la zone associée
 			$('#form0 , #form1').hide('fast');
 			$('#zone_imprimer').css("display","block");
-			$('#titre_imprimer').html('Imprimer le cartouche d\'une évaluation'+' | '+groupe+' | '+date_fr+' | '+description+'<input id="f_ref" name="f_ref" type="hidden" value="'+ref+'" /><input id="f_date_fr" name="f_date_fr" type="hidden" value="'+date_fr+'" /><input id="f_description" name="f_description" type="hidden" value="'+escapeQuote(description)+'" />');
+			$('#titre_imprimer').html('Imprimer le cartouche d\'une évaluation'+' | '+groupe+' | '+date_fr+' | '+description+'<input id="f_ref" name="f_ref" type="hidden" value="'+ref+'" /><input id="f_date_fr" name="f_date_fr" type="hidden" value="'+date_fr+'" /><input id="f_groupe_nom" name="f_groupe_nom" type="hidden" value="'+escapeQuote(groupe)+'" /><input id="f_description" name="f_description" type="hidden" value="'+escapeQuote(description)+'" />');
 		};
 
 		/**
@@ -336,7 +336,6 @@ $(document).ready
 			var groupe       = $(this).parent().prev().prev().prev().prev().prev().html();
 			var description  = $(this).parent().prev().prev().prev().prev().html();
 			var objet_date   = new Date();
-			var timestamp    = parseInt(objet_date.getTime()/1000,10); // timestamp pour éviter les pbs de mise en cache de PDF de mêmes noms
 			var date_mysql   = date.substring(3,13); // garder la date mysql
 			var date_fr      = date.substring(17,date.length); // garder la date française
 			// Masquer le tableau ; Afficher la zone associée et charger son contenu
@@ -350,7 +349,7 @@ $(document).ready
 				{
 					type : 'POST',
 					url : 'ajax.php?page='+PAGE,
-					data : 'f_action='+mode+'&f_ref='+ref+'&timestamp='+timestamp+'&f_date_mysql='+date_mysql+'&f_description='+encodeURIComponent(description)+'&f_date_visible='+date_visible+'&f_groupe_nom='+encodeURIComponent(groupe)+'&f_date_fr='+encodeURIComponent(date_fr),
+					data : 'f_action='+mode+'&f_ref='+ref+'&f_date_mysql='+date_mysql+'&f_description='+encodeURIComponent(description)+'&f_date_visible='+date_visible+'&f_groupe_nom='+encodeURIComponent(groupe)+'&f_date_fr='+encodeURIComponent(date_fr),
 					dataType : "html",
 					error : function(msg,string)
 					{
@@ -360,7 +359,8 @@ $(document).ready
 					success : function(responseHTML)
 					{
 						initialiser_compteur();
-						if(responseHTML.substring(0,1)!='<')
+						var tab_response = responseHTML.split('<SEP>');
+						if( (tab_response.length!=2) || (tab_response[0].substring(0,1)!='<') )
 						{
 							$('#msg_saisir').removeAttr("class").addClass("alerte").html(responseHTML+' <button id="fermer_zone_saisir" type="button" class="retourner">Retour</button>');
 						}
@@ -368,11 +368,11 @@ $(document).ready
 						{
 							modification = false;
 							$('#msg_saisir').removeAttr("class").html('&nbsp;');
-							$('#table_saisir').html(responseHTML);
+							$('#table_saisir').html(tab_response[0]);
 							$('#table_saisir tbody tr th img').css('display','none'); // .hide(0) s'avère bcp plus lent dans FF et pose pb si bcp élèves / items ...
 							$('img[title]').tooltip({showURL:false});
-							$('#export_file1').attr("href", $("#filename").val()+ref+'_'+timestamp+'.zip' );
-							$('#export_file4').attr("href", $("#filename").val()+ref+'_'+timestamp+'_sans_notes.pdf' );
+							$('#export_file1').attr("href", dossier_export+'saisie_deportee_'+tab_response[1]+'.zip' );
+							$('#export_file4').attr("href", dossier_export+'tableau_sans_notes_'+tab_response[1]+'.pdf' );
 							colorer_cellules();
 							format_liens('#table_saisir');
 							infobulle();
@@ -403,7 +403,6 @@ $(document).ready
 			var description = $(this).parent().prev().prev().prev().prev().html();
 			var date_fr     = date.substring(17,date.length); // garder la date française
 			var objet_date  = new Date();
-			var timestamp   = parseInt(objet_date.getTime()/1000,10); // timestamp pour éviter les pbs de mise en cache de PDF de mêmes noms
 			// Masquer le tableau ; Afficher la zone associée et charger son contenu
 			$('#form0 , #form1').hide('fast');
 			$('#zone_voir').css("display","block");
@@ -414,7 +413,7 @@ $(document).ready
 				{
 					type : 'POST',
 					url : 'ajax.php?page='+PAGE,
-					data : 'f_action='+mode+'&f_ref='+ref+'&timestamp='+timestamp+'&f_date_fr='+encodeURIComponent(date_fr)+'&f_description='+encodeURIComponent(description)+'&f_groupe_nom='+encodeURIComponent(groupe),
+					data : 'f_action='+mode+'&f_ref='+ref+'&f_date_fr='+encodeURIComponent(date_fr)+'&f_description='+encodeURIComponent(description)+'&f_groupe_nom='+encodeURIComponent(groupe),
 					dataType : "html",
 					error : function(msg,string)
 					{
@@ -424,19 +423,20 @@ $(document).ready
 					success : function(responseHTML)
 					{
 						initialiser_compteur();
-						if(responseHTML.substring(0,1)!='<')
+						var tab_response = responseHTML.split('<SEP>');
+						if( (tab_response.length!=2) || (tab_response[0].substring(0,1)!='<') )
 						{
 							$('#msg_voir').removeAttr("class").addClass("alerte").html(responseHTML+' <button id="fermer_zone_voir" type="button" class="retourner">Retour</button>');
 						}
 						else
 						{
 							$('#msg_voir').removeAttr("class").html('&nbsp;');
-							$('#table_voir').html(responseHTML);
+							$('#table_voir').html(tab_response[0]);
 							$('#table_voir tbody tr th img').css('display','none'); // .hide(0) s'avère bcp plus lent dans FF et pose pb si bcp élèves / items ...
 							format_liens('#table_voir');
-							$('#export_file2').attr("href", $("#filename").val()+ref+'_'+timestamp+'.zip' );
-							$('#export_file3').attr("href", $("#filename").val()+ref+'_'+timestamp+'_sans_notes.pdf' );
-							$('#export_file5').attr("href", $("#filename").val()+ref+'_'+timestamp+'_avec_notes.pdf' );
+							$('#export_file2').attr("href", dossier_export+'saisie_deportee_'+tab_response[1]+'.zip' );
+							$('#export_file3').attr("href", dossier_export+'tableau_sans_notes_'+tab_response[1]+'.pdf' );
+							$('#export_file5').attr("href", dossier_export+'tableau_avec_notes_'+tab_response[1]+'.pdf' );
 							$('#table_voir tbody td').css({"background-color":"#DDF","text-align":"center","vertical-align":"middle","font-size":"110%"});
 							infobulle();
 						}
@@ -459,7 +459,6 @@ $(document).ready
 			var description = $(this).parent().prev().prev().prev().prev().html();
 			var date_fr     = date.substring(17,date.length); // garder la date française
 			var objet_date  = new Date();
-			var timestamp   = parseInt(objet_date.getTime()/1000,10); // timestamp pour éviter les pbs de mise en cache de PDF de mêmes noms
 			$('#form0 , #form1').hide('fast');
 			$('#zone_voir_repart').css("display","block");
 			$('#titre_voir_repart').html('Voir les répartitions des élèves à une évaluation | '+date_fr+' | '+description);
@@ -469,7 +468,7 @@ $(document).ready
 				{
 					type : 'POST',
 					url : 'ajax.php?page='+PAGE,
-					data : 'f_action='+mode+'&f_ref='+ref+'&timestamp='+timestamp+'&f_date_fr='+encodeURIComponent(date_fr)+'&f_description='+encodeURIComponent(description)+'&f_groupe_nom='+encodeURIComponent(groupe),
+					data : 'f_action='+mode+'&f_ref='+ref+'&f_date_fr='+encodeURIComponent(date_fr)+'&f_description='+encodeURIComponent(description)+'&f_groupe_nom='+encodeURIComponent(groupe),
 					dataType : "html",
 					error : function(msg,string)
 					{
@@ -479,8 +478,8 @@ $(document).ready
 					success : function(responseHTML)
 					{
 						initialiser_compteur();
-						tab_response = responseHTML.split('<SEP>');
-						if( tab_response.length!=2 )
+						var tab_response = responseHTML.split('<SEP>');
+						if( tab_response.length!=3 )
 						{
 							$('#msg_voir_repart').removeAttr("class").addClass("alerte").html(responseHTML+' <button id="fermer_zone_voir_repart" type="button" class="retourner">Retour</button>');
 						}
@@ -490,8 +489,8 @@ $(document).ready
 							$('#table_voir_repart1').html(tab_response[0]);
 							$('#table_voir_repart2').html(tab_response[1]);
 							format_liens('#zone_voir_repart');
-							$('#export_file6').attr("href", $("#filename").val()+ref+'_'+timestamp+'_repartition_quantitative.pdf' );
-							$('#export_file7').attr("href", $("#filename").val()+ref+'_'+timestamp+'_repartition_nominative.pdf' );
+							$('#export_file6').attr("href", dossier_export+'repartition_quantitative_'+tab_response[2]+'.pdf' );
+							$('#export_file7').attr("href", dossier_export+'repartition_nominative_'+tab_response[2]+'.pdf' );
 							$('#table_voir_repart1 tbody td').css({"background-color":"#DDF","font-weight":"normal","text-align":"center"});
 							$('#table_voir_repart2 tbody td').css({"background-color":"#DDF","font-weight":"normal","font-size":"85%"});
 							infobulle();

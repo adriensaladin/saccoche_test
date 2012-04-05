@@ -127,6 +127,7 @@ $select_selection_items = Formulaire::afficher_select(DB_STRUCTURE_COMMUN::DB_OP
 	// <![CDATA[
 	var select_groupe = "<?php echo str_replace('"','\"','<option value=""></option>'.$select_eleve); ?>";
 	// ]]>
+	var dossier_export = "./__tmp/export/";
 	var input_date = "<?php echo TODAY_FR ?>";
 	var date_mysql = "<?php echo TODAY_MYSQL ?>";
 	var input_autoeval = "<?php echo $date_autoeval ?>";
@@ -247,7 +248,6 @@ $select_selection_items = Formulaire::afficher_select(DB_STRUCTURE_COMMUN::DB_OP
 	<div>
 		<a id="to_zone_saisir_deport" href="#"><img src="./_img/toggle_plus.gif" alt="" title="Voir / masquer la saisie déportée." class="toggle" /></a> Saisie déportée
 		<div id="zone_saisir_deport" class="hide">
-			<input type="hidden" name="filename" id="filename" value="<?php echo './__tmp/export/saisie_'.$_SESSION['BASE'].'_'.$_SESSION['USER_ID'].'_'; ?>" />
 			<ul class="puce">
 				<li><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_professeur__evaluations_saisie_deportee">DOC : Saisie déportée.</a></span></li>
 				<li><a id="export_file1" class="lien_ext" href=""><span class="file file_txt">Récupérer un fichier vierge pour une saisie déportée (format <em>csv</em>).</span></a></li>

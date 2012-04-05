@@ -218,8 +218,10 @@ unset($DB_TAB);
 // Tableaux et variables pour mémoriser les infos ; dans cette partie on ne fait que les calculs (aucun affichage)
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
-$dossier         = './__tmp/export/';
-$fichier_lien    = 'releve_grille_item_etabl'.$_SESSION['BASE'].'_user'.$_SESSION['USER_ID'].'_'.time();
+$dossier = './__tmp/export/';
+$fichier = 'grille_item_'.clean_fichier($matiere_nom).'_'.clean_fichier($niveau_nom).'_<REPLACE>_'.fabriquer_fin_nom_fichier();
+$fichier_nom_type1 = ($type_generique) ? str_replace( '<REPLACE>' , 'generique' , $fichier ) : str_replace( '<REPLACE>' , clean_fichier($groupe_nom).'_individuel' , $fichier ) ;
+$fichier_nom_type2 = str_replace( '<REPLACE>' , clean_fichier($groupe_nom).'_synthese' , $fichier ) ;
 
 $tab_score_eleve_item         = array();	// Retenir les scores / élève / item
 $tab_score_item_eleve         = array();	// Retenir les scores / item / élève
@@ -374,7 +376,6 @@ $affichage_checkbox = ( $type_synthese && ($_SESSION['USER_PROFIL']=='professeur
 
 if( $type_generique || $type_individuel )
 {
-	$suffixe = ($type_individuel) ? 'individuel' : 'generique' ;
 	// Initialiser au cas où $aff_coef / $aff_socle / $aff_lien sont à 0
 	$texte_coef       = '';
 	$texte_socle      = '';
@@ -481,8 +482,8 @@ if( $type_generique || $type_individuel )
 		}
 	}
 	// On enregistre les sorties HTML et PDF
-	Ecrire_Fichier($dossier.$fichier_lien.'_'.$suffixe.'.html',$releve_HTML_individuel);
-	$releve_PDF->Output($dossier.$fichier_lien.'_'.$suffixe.'.pdf','F');
+	Ecrire_Fichier($dossier.$fichier_nom_type1.'.html',$releve_HTML_individuel);
+	$releve_PDF->Output($dossier.$fichier_nom_type1.'.pdf','F');
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -629,8 +630,8 @@ if($type_synthese)
 	$releve_HTML_synthese .= ($affichage_checkbox) ? '<p><label class="tab">Action <img alt="" src="./_img/bulle_aide.png" title="Cocher auparavant les cases adéquates." /> :</label><button type="button" class="ajouter" onclick="var form=document.getElementById(\'form_synthese\');form.action=\'./index.php?page=professeur_eval_saisie\';form.submit();">Préparer une évaluation.</button> <button type="button" class="ajouter" onclick="var form=document.getElementById(\'form_synthese\');form.action=\'./index.php?page=professeur_groupe_besoin\';form.submit();">Constituer un groupe de besoin.</button></p></form>' : '';
 	$releve_HTML_synthese .= '<script type="text/javascript">$("#table_s").tablesorter({ headers:{'.$num_hide.':{sorter:false}'.$num_hide_add.'} });</script>'; // Non placé dans le fichier js car mettre une variable à la place d'une valeur pour $num_hide ne fonctionne pas
 	// On enregistre les sorties HTML et PDF
-	Ecrire_Fichier($dossier.$fichier_lien.'_synthese.html',$releve_HTML_synthese);
-	$releve_PDF->Output($dossier.$fichier_lien.'_synthese.pdf','F');
+	Ecrire_Fichier($dossier.$fichier_nom_type2.'.html',$releve_HTML_synthese);
+	$releve_PDF->Output($dossier.$fichier_nom_type2.'.pdf','F');
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -641,7 +642,7 @@ if($affichage_direct)
 {
 	echo'<hr />';
 	echo'<ul class="puce">';
-	echo'<li><a class="lien_ext" href="'.$dossier.$fichier_lien.'_'.$suffixe.'.pdf"><span class="file file_pdf">Archiver / Imprimer (format <em>pdf</em>).</span></a></li>';
+	echo'<li><a class="lien_ext" href="'.$dossier.$fichier_nom_type1.'.pdf"><span class="file file_pdf">Archiver / Imprimer (format <em>pdf</em>).</span></a></li>';
 	echo'</ul>';
 	echo $releve_HTML_individuel;
 }
@@ -651,8 +652,8 @@ else
 	{
 		echo'<h2>Synthèse collective</h2>';
 		echo'<ul class="puce">';
-		echo'<li><a class="lien_ext" href="'.$dossier.$fichier_lien.'_synthese.pdf"><span class="file file_pdf">Archiver / Imprimer (format <em>pdf</em>).</span></a></li>';
-		echo'<li><a class="lien_ext" href="./releve-html.php?fichier='.$fichier_lien.'_synthese"><span class="file file_htm">Explorer / Manipuler (format <em>html</em>).</span></a></li>';
+		echo'<li><a class="lien_ext" href="'.$dossier.$fichier_nom_type2.'.pdf"><span class="file file_pdf">Archiver / Imprimer (format <em>pdf</em>).</span></a></li>';
+		echo'<li><a class="lien_ext" href="./releve-html.php?fichier='.$fichier_nom_type2.'"><span class="file file_htm">Explorer / Manipuler (format <em>html</em>).</span></a></li>';
 		echo'</ul>';
 	}
 	if( $type_generique || $type_individuel )
@@ -660,8 +661,8 @@ else
 		$h2 = ($type_individuel) ? 'Relevé individuel' : 'Relevé générique' ;
 		echo'<h2>'.$h2.'</h2>';
 		echo'<ul class="puce">';
-		echo'<li><a class="lien_ext" href="'.$dossier.$fichier_lien.'_'.$suffixe.'.pdf"><span class="file file_pdf">Archiver / Imprimer (format <em>pdf</em>).</span></a></li>';
-		echo'<li><a class="lien_ext" href="./releve-html.php?fichier='.$fichier_lien.'_'.$suffixe.'"><span class="file file_htm">Explorer / Manipuler (format <em>html</em>).</span></a></li>';
+		echo'<li><a class="lien_ext" href="'.$dossier.$fichier_nom_type1.'.pdf"><span class="file file_pdf">Archiver / Imprimer (format <em>pdf</em>).</span></a></li>';
+		echo'<li><a class="lien_ext" href="./releve-html.php?fichier='.$fichier_nom_type1.'"><span class="file file_htm">Explorer / Manipuler (format <em>html</em>).</span></a></li>';
 		echo'</ul>';
 	}
 }

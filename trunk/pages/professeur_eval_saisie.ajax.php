@@ -54,12 +54,11 @@ $couleur        = (isset($_POST['f_couleur']))         ? clean_texte($_POST['f_c
 $only_req       = (isset($_POST['f_restriction_req'])) ? TRUE                                           : FALSE;
 $doc_objet      = (isset($_POST['f_doc_objet']))       ? clean_texte($_POST['f_doc_objet'])             : '';
 $doc_url        = (isset($_POST['f_doc_url']))         ? clean_texte($_POST['f_doc_url'])               : '';
-$timestamp      = (isset($_POST['timestamp']))         ? (float)$_POST['timestamp']                     : time(); // Pas de (int) car sur les systèmes 32-bit, le max est 2147483647 alors que js envoie davantage (http://fr.php.net/manual/fr/language.types.integer.php#103506)
 
 $dossier_export = './__tmp/export/';
 $dossier_devoir_relatif = './__tmp/devoir/'.$_SESSION['BASE'].'/';
 $dossier_devoir_absolu  = SERVEUR_ADRESSE.'/__tmp/devoir/'.$_SESSION['BASE'].'/';
-$fnom_export = 'saisie_'.$_SESSION['BASE'].'_'.$_SESSION['USER_ID'].'_'.$ref.'_'.$timestamp;
+$fnom_export = $_SESSION['BASE'].'_'.clean_fichier($groupe_nom).'_'.clean_fichier($description).'_'.fabriquer_fin_nom_fichier();
 
 // Si "ref" est renseigné (pour Éditer ou Retirer ou Saisir ou ...), il contient l'id de l'évaluation + '_' + l'initiale du type de groupe + l'id du groupe
 // Dans le cas d'une duplication, "ref" sert à retrouver l'évaluation d'origine pour évenuellement récupérer l'ordre des items
@@ -534,13 +533,13 @@ if( ($action=='saisir') && $devoir_id && $groupe_id && $date_mysql && $date_visi
 	$export_csv .= $groupe_nom."\r\n".$date_fr."\r\n".$description."\r\n\r\n";
 	$export_csv .= 'CODAGES AUTORISÉS : 1 2 3 4 A N D'."\r\n";
 	$zip = new ZipArchive();
-	$result_open = $zip->open($dossier_export.$fnom_export.'.zip', ZIPARCHIVE::CREATE);
+	$result_open = $zip->open($dossier_export.'saisie_deportee_'.$fnom_export.'.zip', ZIPARCHIVE::CREATE);
 	if($result_open!==TRUE)
 	{
 		require('./_inc/tableau_zip_error.php');
 		exit('Problème de création de l\'archive ZIP ('.$result_open.$tab_zip_error[$result_open].') !');
 	}
-	$zip->addFromString($fnom_export.'.csv',csv($export_csv));
+	$zip->addFromString('saisie_deportee_'.$fnom_export.'.csv',csv($export_csv));
 	$zip->close();
 	//
 	// pdf contenant un tableau de saisie vide ; on a besoin de tourner du texte à 90°
@@ -566,7 +565,7 @@ if( ($action=='saisir') && $devoir_id && $groupe_id && $date_mysql && $date_visi
 		}
 		$sacoche_pdf->SetXY($sacoche_pdf->marge_gauche , $sacoche_pdf->GetY()+$sacoche_pdf->cases_hauteur);
 	}
-	$sacoche_pdf->Output($dossier_export.$fnom_export.'_sans_notes.pdf','F');
+	$sacoche_pdf->Output($dossier_export.'tableau_sans_notes_'.$fnom_export.'.pdf','F');
 	//
 	// c'est fini ; affichage du retour
 	//
@@ -588,6 +587,8 @@ if( ($action=='saisir') && $devoir_id && $groupe_id && $date_mysql && $date_visi
 		}
 	}
 	echo'</tbody>';
+	echo'<SEP>'; // Séparateur
+	echo $fnom_export;
 	exit();
 }
 
@@ -687,13 +688,13 @@ if( ($action=='voir') && $devoir_id && $groupe_id && $date_fr ) // $description 
 	$export_csv .= $groupe_nom."\r\n".$date_fr."\r\n".$description."\r\n\r\n";
 	$export_csv .= 'CODAGES AUTORISÉS : 1 2 3 4 A N D'."\r\n";
 	$zip = new ZipArchive();
-	$result_open = $zip->open($dossier_export.$fnom_export.'.zip', ZIPARCHIVE::CREATE);
+	$result_open = $zip->open($dossier_export.'saisie_deportee_'.$fnom_export.'.zip', ZIPARCHIVE::CREATE);
 	if($result_open!==TRUE)
 	{
 		require('./_inc/tableau_zip_error.php');
 		exit('Problème de création de l\'archive ZIP ('.$result_open.$tab_zip_error[$result_open].') !');
 	}
-	$zip->addFromString($fnom_export.'.csv',csv($export_csv));
+	$zip->addFromString('saisie_deportee_'.$fnom_export.'.csv',csv($export_csv));
 	$zip->close();
 	// / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / /
 	// pdf contenant un tableau de saisie vide ; on a besoin de tourner du texte à 90°
@@ -719,7 +720,7 @@ if( ($action=='voir') && $devoir_id && $groupe_id && $date_fr ) // $description 
 		}
 		$sacoche_pdf->SetXY($sacoche_pdf->marge_gauche , $sacoche_pdf->GetY()+$sacoche_pdf->cases_hauteur);
 	}
-	$sacoche_pdf->Output($dossier_export.$fnom_export.'_sans_notes.pdf','F');
+	$sacoche_pdf->Output($dossier_export.'tableau_sans_notes_'.$fnom_export.'.pdf','F');
 	// / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / /
 	// pdf contenant un tableau de saisie plein ; on a besoin de tourner du texte à 90°
 	// / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / /
@@ -744,7 +745,7 @@ if( ($action=='voir') && $devoir_id && $groupe_id && $date_fr ) // $description 
 		}
 		$sacoche_pdf->SetXY($sacoche_pdf->marge_gauche , $sacoche_pdf->GetY()+$sacoche_pdf->cases_hauteur);
 	}
-	$sacoche_pdf->Output($dossier_export.$fnom_export.'_avec_notes.pdf','F');
+	$sacoche_pdf->Output($dossier_export.'tableau_avec_notes_'.$fnom_export.'.pdf','F');
 	//
 	// c'est fini ; affichage du retour
 	//
@@ -766,6 +767,8 @@ if( ($action=='voir') && $devoir_id && $groupe_id && $date_fr ) // $description 
 		}
 	}
 	echo'</tbody>';
+	echo'<SEP>'; // Séparateur
+	echo $fnom_export;
 	exit();
 }
 
@@ -906,7 +909,7 @@ if( ($action=='voir_repart') && $devoir_id && $groupe_id && $date_fr ) // $descr
 		}
 		$sacoche_pdf->SetXY($sacoche_pdf->marge_gauche , $sacoche_pdf->GetY()+$sacoche_pdf->cases_hauteur);
 	}
-	$sacoche_pdf->Output($dossier_export.$fnom_export.'_repartition_quantitative.pdf','F');
+	$sacoche_pdf->Output($dossier_export.'repartition_quantitative_'.$fnom_export.'.pdf','F');
 	// / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / /
 	// pdf contenant un tableau avec la répartition nominative
 	// / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / /
@@ -940,10 +943,11 @@ if( ($action=='voir_repart') && $devoir_id && $groupe_id && $date_fr ) // $descr
 		}
 		$sacoche_pdf->SetXY($sacoche_pdf->marge_gauche , $sacoche_pdf->GetY()+$sacoche_pdf->cases_hauteur);
 	}
-	$sacoche_pdf->Output($dossier_export.$fnom_export.'_repartition_nominative.pdf','F');
+	$sacoche_pdf->Output($dossier_export.'repartition_nominative_'.$fnom_export.'.pdf','F');
 	//
 	// c'est fini...
 	//
+	echo'<SEP>'.$fnom_export;
 	exit();
 }
 
@@ -1107,8 +1111,8 @@ if( ($action=='imprimer_cartouche') && $devoir_id && $groupe_id && $date_fr && $
 		}
 	}
 	// On attaque l'élaboration des sorties HTML, CSV et PDF
-	$sacoche_htm = '<hr /><a class="lien_ext" href="'.$dossier_export.$fnom_export.'_cartouche.pdf"><span class="file file_pdf">Cartouches &rarr; Archiver / Imprimer (format <em>pdf</em>).</span></a><br />';
-	$sacoche_htm.= '<a class="lien_ext" href="'.$dossier_export.$fnom_export.'_cartouche.zip"><span class="file file_zip">Cartouches &rarr; Récupérer / Manipuler (fichier <em>csv</em> pour tableur).</span></a>';
+	$sacoche_htm = '<hr /><a class="lien_ext" href="'.$dossier_export.'cartouche_'.$fnom_export.'.pdf"><span class="file file_pdf">Cartouches &rarr; Archiver / Imprimer (format <em>pdf</em>).</span></a><br />';
+	$sacoche_htm.= '<a class="lien_ext" href="'.$dossier_export.'cartouche_'.$fnom_export.'.zip"><span class="file file_zip">Cartouches &rarr; Récupérer / Manipuler (fichier <em>csv</em> pour tableur).</span></a>';
 	$sacoche_csv = '';
 	// Appel de la classe et définition de qqs variables supplémentaires pour la mise en page PDF
 	$item_nb = count($tab_comp_id);
@@ -1176,16 +1180,16 @@ if( ($action=='imprimer_cartouche') && $devoir_id && $groupe_id && $date_fr && $
 	}
 	// On archive le cartouche dans un fichier tableur zippé (csv tabulé)
 	$zip = new ZipArchive();
-	$result_open = $zip->open($dossier_export.$fnom_export.'_cartouche.zip', ZIPARCHIVE::CREATE);
+	$result_open = $zip->open($dossier_export.'cartouche_'.$fnom_export.'.zip', ZIPARCHIVE::CREATE);
 	if($result_open!==TRUE)
 	{
 		require('./_inc/tableau_zip_error.php');
 		exit('Problème de création de l\'archive ZIP ('.$result_open.$tab_zip_error[$result_open].') !');
 	}
-	$zip->addFromString($fnom_export.'_cartouche.csv',csv($sacoche_csv));
+	$zip->addFromString('cartouche_'.$fnom_export.'.csv',csv($sacoche_csv));
 	$zip->close();
 	// On archive le cartouche dans un fichier pdf
-	$sacoche_pdf->Output($dossier_export.$fnom_export.'_cartouche.pdf','F');
+	$sacoche_pdf->Output($dossier_export.'cartouche_'.$fnom_export.'.pdf','F');
 	// Affichage
 	exit($sacoche_htm);
 }
@@ -1298,7 +1302,7 @@ if( ($action=='uploader_document') && $devoir_id && in_array($doc_objet,array('s
 		exit('Le fichier dépasse les '.FICHIER_TAILLE_MAX.' Ko autorisés !');
 	}
 	// Enregistrement du fichier
-	$fichier_nom = 'devoir_'.$devoir_id.'_'.$doc_objet.'_'.time().'.'.$extension;
+	$fichier_nom = 'devoir_'.$devoir_id.'_'.$doc_objet.'_'.time().'.'.$extension; // pas besoin de le rendre inaccessible -> fabriquer_fin_nom_fichier() inutilement lourd
 	if(!move_uploaded_file($fnom_serveur , $dossier_devoir_relatif.$fichier_nom))
 	{
 		exit('Le fichier n\'a pas pu être enregistré sur le serveur !');

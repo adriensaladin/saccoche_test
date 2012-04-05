@@ -428,7 +428,7 @@ $(document).ready
 		(
 			function()
 			{
-				// récupération du nom de la matière et du nom du groupe
+				// récupération du nom de la matière & du groupe
 				$('#f_matiere_nom').val( $("#f_matiere option:selected").text() );
 				$('#f_groupe_nom').val( $("#f_groupe option:selected").text() );
 				$(this).ajaxSubmit(ajaxOptions);

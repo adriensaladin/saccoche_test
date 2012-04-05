@@ -41,10 +41,13 @@ class DB_STRUCTURE_WEBMESTRE extends DB
  */
 public function DB_recuperer_statistiques()
 {
+	// La révision du 30 mars 2012 a fusionné les champs "user_statut" et "user_statut_date" en "user_sortie_date".
+	$DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , 'SHOW COLUMNS FROM sacoche_user LIKE "user_sortie_date"' , NULL);
+	$test_sortie = (count($DB_TAB)) ? 'user_sortie_date>NOW()' : 'user_statut=1' ;
 	// nb professeurs enregistrés ; nb élèves enregistrés
 	$DB_SQL = 'SELECT user_profil, COUNT(*) AS nombre ';
 	$DB_SQL.= 'FROM sacoche_user ';
-	$DB_SQL.= 'WHERE user_sortie_date>NOW() ';
+	$DB_SQL.= 'WHERE '.$test_sortie.' ';
 	$DB_SQL.= 'GROUP BY user_profil';
 	$DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL , TRUE , TRUE);
 	$prof_nb  = (isset($DB_TAB['professeur'])) ? $DB_TAB['professeur']['nombre'] : 0 ;
@@ -52,7 +55,7 @@ public function DB_recuperer_statistiques()
 	// nb professeurs connectés ; nb élèves connectés
 	$DB_SQL = 'SELECT user_profil, COUNT(*) AS nombre ';
 	$DB_SQL.= 'FROM sacoche_user ';
-	$DB_SQL.= 'WHERE user_sortie_date>NOW() AND user_connexion_date>DATE_SUB(NOW(),INTERVAL 6 MONTH) ';
+	$DB_SQL.= 'WHERE '.$test_sortie.' AND user_connexion_date>DATE_SUB(NOW(),INTERVAL 6 MONTH) ';
 	$DB_SQL.= 'GROUP BY user_profil';
 	$DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL , TRUE , TRUE);
 	$prof_use  = (isset($DB_TAB['professeur'])) ? $DB_TAB['professeur']['nombre'] : 0 ;

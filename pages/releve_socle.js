@@ -247,8 +247,9 @@ $(document).ready
 		(
 			function()
 			{
-				// récupération du nom du palier
+				// récupération du nom du palier & du groupe
 				$('#f_palier_nom').val( $("#f_palier option:selected").text() );
+				$('#f_groupe_nom').val( $("#f_groupe option:selected").text() );
 				$(this).ajaxSubmit(ajaxOptions);
 				return false;
 			}

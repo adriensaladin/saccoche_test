@@ -132,7 +132,7 @@ function verifier_arborescence_XML($arbreXML)
 {
 	// On ajoute déclaration et doctype au fichier (évite que l'utilisateur ait à se soucier de cette ligne et permet de le modifier en cas de réorganisation
 	// Attention, le chemin du DTD est relatif par rapport à l'emplacement du fichier XML (pas celui du script en cours) !
-	$fichier_adresse = './__tmp/import/referentiel_'.date('Y-m-d_H-i-s').'_'.mt_rand().'.xml';
+	$fichier_adresse = './__tmp/import/referentiel_'.fabriquer_fin_nom_fichier().'.xml';
 	$fichier_contenu = '<?xml version="1.0" encoding="UTF-8"?>'."\r\n".'<!DOCTYPE arbre SYSTEM "../../_dtd/referentiel.dtd">'."\r\n".$arbreXML;
 	$fichier_contenu = utf8($fichier_contenu); // Mettre en UTF-8 si besoin
 	// On enregistre temporairement dans un fichier pour analyse

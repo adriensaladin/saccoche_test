@@ -34,6 +34,7 @@ $only_presence = (isset($_POST['f_only_presence'])) ? 1                         
 $aff_socle_PA  = (isset($_POST['f_socle_PA']))      ? 1                                   : 0;
 $aff_socle_EV  = (isset($_POST['f_socle_EV']))      ? 1                                   : 0;
 $groupe_id     = (isset($_POST['f_groupe']))        ? clean_entier($_POST['f_groupe'])    : 0;
+$groupe_nom    = (isset($_POST['f_groupe_nom']))    ? clean_texte($_POST['f_groupe_nom']) : '';
 $mode          = (isset($_POST['f_mode']))          ? clean_texte($_POST['f_mode'])       : '';
 $aff_coef      = (isset($_POST['f_coef']))          ? 1                                   : 0;
 $aff_socle     = (isset($_POST['f_socle']))         ? 1                                   : 0;
@@ -481,25 +482,25 @@ foreach($tab_eleve as $tab)
 }
 
 // Chemins d'enregistrement
-$dossier      = './__tmp/export/';
-$fichier_lien = 'releve_socle_etabl'.$_SESSION['BASE'].'_user'.$_SESSION['USER_ID'].'_'.time();
+$dossier = './__tmp/export/';
+$fichier = 'releve_socle_detail_'.clean_fichier(substr($palier_nom,0,strpos($palier_nom,' ('))).'_'.clean_fichier($groupe_nom).'_'.fabriquer_fin_nom_fichier();
 // On enregistre les sorties HTML et PDF
-Ecrire_Fichier($dossier.$fichier_lien.'.html',$releve_html);
-$releve_pdf->Output($dossier.$fichier_lien.'.pdf','F');
+Ecrire_Fichier($dossier.$fichier.'.html',$releve_html);
+$releve_pdf->Output($dossier.$fichier.'.pdf','F');
 // Affichage du résultat
 if($affichage_direct)
 {
 	echo'<hr />';
 	echo'<ul class="puce">';
-	echo'<li><a class="lien_ext" href="'.$dossier.$fichier_lien.'.pdf"><span class="file file_pdf">Archiver / Imprimer (format <em>pdf</em>).</span></a></li>';
+	echo'<li><a class="lien_ext" href="'.$dossier.$fichier.'.pdf"><span class="file file_pdf">Archiver / Imprimer (format <em>pdf</em>).</span></a></li>';
 	echo'</ul>';
 	echo $releve_html;
 }
 else
 {
 	echo'<ul class="puce">';
-	echo'<li><a class="lien_ext" href="'.$dossier.$fichier_lien.'.pdf"><span class="file file_pdf">Archiver / Imprimer (format <em>pdf</em>).</span></a></li>';
-	echo'<li><a class="lien_ext" href="./releve-html.php?fichier='.$fichier_lien.'"><span class="file file_htm">Explorer / Détailler (format <em>html</em>).</span></a></li>';
+	echo'<li><a class="lien_ext" href="'.$dossier.$fichier.'.pdf"><span class="file file_pdf">Archiver / Imprimer (format <em>pdf</em>).</span></a></li>';
+	echo'<li><a class="lien_ext" href="./releve-html.php?fichier='.$fichier.'"><span class="file file_htm">Explorer / Détailler (format <em>html</em>).</span></a></li>';
 	echo'</ul>';
 }
 

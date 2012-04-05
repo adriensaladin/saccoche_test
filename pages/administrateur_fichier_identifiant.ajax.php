@@ -50,7 +50,7 @@ if( (($action=='generer_login')||($action=='generer_mdp')) && (in_array($profil,
 {
 	$prefixe = ($profil!='parents') ? 'user_' : 'parent_' ;
 	// Nom sans extension des fichiers de sortie
-	$fnom = 'identifiants_'.$_SESSION['BASE'].'_'.$profil.'_'.time();
+	$fnom = 'identifiants_'.$_SESSION['BASE'].'_'.$profil.'_'.fabriquer_fin_nom_fichier();
 	// La classe n'est affichée que pour l'élève
 	$avec_info = ($profil=='eleves') ? 'classe' : ( ($profil=='parents') ? 'enfant' : '' ) ;
 	//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
@@ -166,7 +166,7 @@ if($action=='user_export')
 		$fcontenu_csv .= $DB_ROW['user_login'].$separateur.''.$separateur.$DB_ROW['user_nom'].$separateur.$DB_ROW['user_prenom'].$separateur.$DB_ROW['user_profil'].$separateur.$DB_ROW['groupe_ref']."\r\n";
 	}
 	// On archive dans un fichier tableur zippé (csv tabulé)
-	$fnom = 'export_'.$_SESSION['BASE'].'_mdp_'.time();
+	$fnom = 'export_'.$_SESSION['BASE'].'_mdp_'.fabriquer_fin_nom_fichier();
 	$zip = new ZipArchive();
 	$result_open = $zip->open($dossier_export.$fnom.'.zip', ZIPARCHIVE::CREATE);
 	if($result_open!==TRUE)
@@ -200,7 +200,7 @@ if($action=='import_loginmdp')
 	{
 		exit('Erreur : l\'extension du fichier transmis est incorrecte !');
 	}
-	$fichier_dest = $action.'_'.$_SESSION['BASE'].'.txt' ;
+	$fichier_dest = $action.'_'.$_SESSION['BASE'].'_'.fabriquer_fin_nom_fichier().'.txt' ;
 	if(!move_uploaded_file($fnom_serveur , $dossier_import.$fichier_dest))
 	{
 		exit('Erreur : le fichier n\'a pas pu être enregistré sur le serveur.');
@@ -353,7 +353,7 @@ if($action=='import_loginmdp')
 	echo'<ul class="puce">';
 	if(count($fcontenu_pdf_tab))
 	{
-		$fnom = 'identifiants_'.$_SESSION['BASE'].'_'.time();
+		$fnom = 'identifiants_'.$_SESSION['BASE'].'_'.fabriquer_fin_nom_fichier();
 		$pdf = new PDF_Label(array('paper-size'=>'A4', 'metric'=>'mm', 'marginLeft'=>5, 'marginTop'=>5, 'NX'=>3, 'NY'=>8, 'SpaceX'=>7, 'SpaceY'=>5, 'width'=>60, 'height'=>30, 'font-size'=>11));
 		$pdf -> AddFont('Arial','' ,'arial.php');
 		$pdf -> SetFont('Arial'); // Permet de mieux distinguer les "l 1" etc. que la police Times ou Courrier
@@ -408,7 +408,7 @@ if( ($action=='import_gepi_eleves') || ($action=='import_gepi_profs') )
 	{
 		exit('Erreur : le nom du fichier n\'est pas "'.$tab_fnom_attendu[$action][0].'" !');
 	}
-	$fichier_dest = $action.'_'.$_SESSION['BASE'].'.txt' ;
+	$fichier_dest = $action.'_'.$_SESSION['BASE'].'_'.fabriquer_fin_nom_fichier().'.txt' ;
 
 	if(!move_uploaded_file($fnom_serveur , $dossier_import.$fichier_dest))
 	{
@@ -566,7 +566,7 @@ if($action=='import_ent')
 	{
 		exit('Erreur : l\'extension du fichier transmis est incorrecte !');
 	}
-	$fichier_dest = $action.'_'.$_SESSION['BASE'].'.txt' ;
+	$fichier_dest = $action.'_'.$_SESSION['BASE'].'_'.fabriquer_fin_nom_fichier().'.txt' ;
 	if(!move_uploaded_file($fnom_serveur , $dossier_import.$fichier_dest))
 	{
 		exit('Erreur : le fichier n\'a pas pu être enregistré sur le serveur.');
@@ -605,8 +605,8 @@ if($action=='import_ent')
 					$id_ent = str_replace('ID : ','UT',$id_ent); // Dans les CSV de Lilie & Celi@, il faut par exemple remplacer "ID : 75185265" par "UT75185265"
 				}
 				$tab_users_fichier['id_ent'][]    = clean_id_ent($id_ent);
-				$tab_users_fichier['nom'][]       = clean_nom($nom);
-				$tab_users_fichier['prenom'][]    = clean_prenom($prenom);
+				$tab_users_fichier['nom'][]       = clean_nom(clean_accents($nom)); // En cas de comparaison sur nom / prénom, maieux vaut éviter les accents
+				$tab_users_fichier['prenom'][]    = clean_prenom(clean_accents($prenom));
 				$tab_users_fichier['id_sconet'][] = clean_entier($id_sconet);
 			}
 		}
@@ -620,13 +620,13 @@ if($action=='import_ent')
 	$tab_users_base['prenom']    = array();
 	$tab_users_base['id_sconet'] = array();
 	$tab_users_base['info']      = array();
-	$tab_profils = array('eleve','parent','professeur','directeur'); // cybercolleges42 (au moins) contient les parents dans son csv
+	$tab_profils = array('eleve','parent','professeur','directeur');
 	$DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_users( $tab_profils , 2 /*actuels_et_anciens*/ , TRUE /*with_classe*/ );
 	foreach($DB_TAB as $DB_ROW)
 	{
 		$tab_users_base['id_ent'][$DB_ROW['user_id']]    = $DB_ROW['user_id_ent'];
-		$tab_users_base['nom'][$DB_ROW['user_id']]       = $DB_ROW['user_nom'];
-		$tab_users_base['prenom'][$DB_ROW['user_id']]    = $DB_ROW['user_prenom'];
+		$tab_users_base['nom'][$DB_ROW['user_id']]       = clean_accents($DB_ROW['user_nom']);
+		$tab_users_base['prenom'][$DB_ROW['user_id']]    = clean_accents($DB_ROW['user_prenom']);
 		$tab_users_base['id_sconet'][$DB_ROW['user_id']] = $DB_ROW['user_sconet_id'];
 		$tab_users_base['info'][$DB_ROW['user_id']]      = ($DB_ROW['user_profil']=='eleve') ? $DB_ROW['groupe_nom'] : mb_strtoupper($DB_ROW['user_profil']) ;
 	}

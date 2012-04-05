@@ -73,13 +73,13 @@ function redirection_SSO_ou_message_exit()
 		}
 		else
 		{
-			affich_message_exit('Authentification manquante','Session perdue, expirée ou incompatible.<br />Veuillez vous (re)-connecter&hellip;');
+			affich_message_exit('Authentification manquante','Session perdue, expirée ou incompatible.<br />Veuillez vous (re)-connecter.');
 		}
 	}
 	// si ajax
 	else
 	{
-		echo ( $test_get || $test_cookie ) ? 'Session perdue / expirée / incompatible. Veuillez actualiser la page.' : 'Session perdue / expirée / incompatible. Veuillez vous reconnecter&hellip;' ;
+		echo ( $test_get || $test_cookie ) ? 'Session perdue / expirée / incompatible. Veuillez actualiser la page.' : 'Session perdue / expirée / incompatible. Veuillez vous reconnecter.' ;
 		exit();
 	}
 }

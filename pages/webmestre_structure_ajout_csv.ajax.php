@@ -36,7 +36,7 @@ $max            = (isset($_POST['max']))            ? (int)$_POST['max']        
 $courriel_envoi = (isset($_POST['courriel_envoi'])) ? clean_entier($_POST['courriel_envoi']) : 0;
 
 $dossier_import   = './__tmp/import/';
-$fichier_csv_nom  = 'ajout_structures_'.mt_rand().'.csv';
+$fichier_csv_nom  = 'ajout_structures_'.fabriquer_fin_nom_fichier().'.csv';
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 // Import d'un fichier CSV avec le listing des structures

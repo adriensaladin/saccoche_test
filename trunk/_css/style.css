@@ -75,7 +75,7 @@ del{text-decoration:line-through;color:#666}
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 /* page accueil (identification) */
-#cadre_milieu {width:776px;margin:20px auto auto auto;padding:10px;background:#E6E6FF;border:2px solid #99F} /* coins arrondis via js */
+#cadre_milieu {width:736px;margin:20px auto auto auto;padding:10px;background:#E6E6FF;border:2px solid #99F} /* coins arrondis via js */
 
 /* zone identifiée */
 #cadre_haut {z-index:2;position:absolute;left:0;right:0;top:0;height:48px;background:#FFF url(../_img/background.gif) repeat 0 0;border-bottom:1px solid #77F;white-space:nowrap;min-width:980px;}
@@ -85,6 +85,15 @@ del{text-decoration:line-through;color:#666}
 #top_info {position:absolute;top:3px;left:4px}
 #logo     {position:absolute;top:1px;left:840px}
 #menu     {position:absolute;bottom:-2px;left:3px;right:0}
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+/* Titres de la page d'authentification                                                                */
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
+#cadre_milieu h2 {background:transparent url(../_img/sprite_accueil_1.png) 0 0 no-repeat;padding-left:24px;}
+#cadre_milieu h2.hebergement    {background-position: 0    0px}
+#cadre_milieu h2.identification {background-position: 0  -20px}
+#cadre_milieu h2.informations   {background-position: 0  -40px}
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 /* Boutons d'informations (dans #cadre_haut)                                                           */

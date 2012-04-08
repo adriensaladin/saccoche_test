@@ -193,7 +193,8 @@ $(document).ready
 						}
 						else if(responseHTML!=VERSION_PROG)
 						{
-							$('#ajax_version').addClass("alerte").html('Dernière version disponible <em>'+responseHTML+'</em>.');
+							$('#ajax_version').addClass("alerte").html('Dernière version disponible <em>'+responseHTML+'</em>.').after(' &rarr; <a class="lien_ext" href="'+SERVEUR_NEWS+'">Nouveautés</a>');
+							format_liens('#cadre_milieu');
 						}
 						else
 						{

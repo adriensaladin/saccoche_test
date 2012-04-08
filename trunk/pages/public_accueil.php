@@ -60,7 +60,7 @@ if(isset($_COOKIE[COOKIE_AUTHMODE]))
 
 <hr />
 
-<h2><img src="./_img/login.gif" alt="Identification" /> <?php echo($profil=='normal')?'Identification':'<span style="color:#C00">Accès webmestre</span>'; ?><?php echo $liens_autres_profils ?></h2>
+<h2 class="identification"><?php echo($profil=='normal')?'Identification':'<span style="color:#C00">Accès webmestre</span>'; ?><?php echo $liens_autres_profils ?></h2>
 <form action="#" method="post"><fieldset>
 	<input id="f_base" name="f_base" type="hidden" value="<?php echo $BASE ?>" />
 	<input id="f_profil" name="f_profil" type="hidden" value="<?php echo $profil ?>" />
@@ -69,7 +69,7 @@ if(isset($_COOKIE[COOKIE_AUTHMODE]))
 
 <hr />
 
-<h2><img src="./_img/serveur.png" alt="Hébergement" /> Hébergement</h2>
+<h2 class="hebergement">Hébergement</h2>
 <ul class="puce">
 	<li><em>SACoche</em> peut être téléchargé et installé sur différents serveurs.</li>
 	<li>Cette installation (<?php echo (HEBERGEUR_INSTALLATION=='mono-structure') ? HEBERGEUR_INSTALLATION : DB_WEBMESTRE_PUBLIC::DB_compter_structure() ; ?>) a été effectuée par : <?php echo (HEBERGEUR_ADRESSE_SITE) ? '<a class="lien_ext" href="'.html(HEBERGEUR_ADRESSE_SITE).'">'.html(HEBERGEUR_DENOMINATION).'</a>' : html(HEBERGEUR_DENOMINATION); ?> (<?php echo mailto(WEBMESTRE_COURRIEL,'SACoche','contact','Attention ! Si vous êtes élève, parent, professeur ou directeur, alors il ne faut pas contacter le webmestre du serveur, mais l\'administrateur de votre établissement qui a créé les comptes utilisateurs.'); ?>).</li>
@@ -78,7 +78,7 @@ if(isset($_COOKIE[COOKIE_AUTHMODE]))
 
 <hr />
 
-<h2><img src="./_img/puce/puce_astuce.png" alt="Informations" /> Informations</h2>
+<h2 class="informations">Informations</h2>
 <ul class="puce">
 	<li><em>SACoche</em> est un logiciel gratuit, libre, développé avec le soutien de <a class="lien_ext" href="http://www.sesamath.net"><em>Sésamath</em></a>.</li>
 	<li class="b">Consulter <a href="<?php echo SERVEUR_PROJET ?>" class="lien_ext">le site officiel de <em>SACoche</em></a> pour tout renseignement.</li>
@@ -87,4 +87,5 @@ if(isset($_COOKIE[COOKIE_AUTHMODE]))
 
 <script type="text/javascript">
 	var VERSION_PROG = "<?php echo VERSION_PROG ?>";
+	var SERVEUR_NEWS = "<?php echo SERVEUR_NEWS ?>";
 </script>

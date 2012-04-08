@@ -82,6 +82,7 @@ define('SERVEUR_TELECHARGEMENT',SERVEUR_PROJET.'/telechargement.php');   // URL 
 define('SERVEUR_RSS'           ,SERVEUR_PROJET.'/_rss/rss.xml');         // URL du fichier comportant le flux RSS
 define('SERVEUR_CNIL'          ,SERVEUR_PROJET.'/?fichier=cnil');        // URL de la page "CNIL (données personnelles)"
 define('SERVEUR_CONTACT'       ,SERVEUR_PROJET.'/?fichier=contact');     // URL de la page "Où échanger autour de SACoche ?"
+define('SERVEUR_NEWS'          ,SERVEUR_PROJET.'/?fichier=news');        // URL de la page "Historique des nouveautés"
 define('SERVEUR_GUIDE_ADMIN'   ,SERVEUR_PROJET.'/?fichier=guide_admin'); // URL de la documentation "Guide d'un administrateur de SACoche"
 define('SERVEUR_LPC_SIGNATURE' ,SERVEUR_SSL.'/appel_externe.php');       // URL du fichier chargé de signer un XML à importer dans LPC
 

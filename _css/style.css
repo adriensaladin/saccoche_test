@@ -146,9 +146,9 @@ del{text-decoration:line-through;color:#666}
 #menu a.etabl_duree            {background-position: 1px  -319px}
 #menu a.etabl_identite         {background-position: 1px  -339px}
 #menu a.etabl_login            {background-position: 1px  -359px}
-#menu a.eval_bilan             {background-position: 1px  -379px}
-#menu a.eval_demande           {background-position: 1px  -399px}
-#menu a.eval_saisie            {background-position: 1px  -419px}
+#menu a.evaluation_voir        {background-position: 1px  -379px} /* pas dans l'ordre mais outil sprite hs */
+#menu a.evaluation_demande     {background-position: 1px  -399px} /* pas dans l'ordre mais outil sprite hs */
+#menu a.evaluation_gestion     {background-position: 1px  -419px} /* pas dans l'ordre mais outil sprite hs */
 #menu a.fichier_export         {background-position: 1px  -439px}
 #menu a.fichier_import         {background-position: 1px  -459px}
 #menu a.groupe                 {background-position: 1px  -479px}

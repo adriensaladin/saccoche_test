@@ -65,12 +65,16 @@ if( ($action=='Afficher_evaluations') && $eleve_id && $date_debut && $date_fin )
 			}
 		}
 	}
+	else
+	{
+		$classe_id = DB_STRUCTURE_ELEVE::DB_recuperer_classe_eleve($eleve_id);
+	}
 	// Lister les évaluations
 	$script = '';
 	$DB_TAB = DB_STRUCTURE_ELEVE::DB_lister_devoirs_eleve($eleve_id,$classe_id,$date_debut_mysql,$date_fin_mysql);
 	if(!count($DB_TAB))
 	{
-		exit('Aucune évaluation trouvée sur cette période vous concernant !');
+		exit('Aucune évaluation trouvée sur la période indiquée !');
 	}
 	foreach($DB_TAB as $DB_ROW)
 	{

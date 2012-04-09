@@ -52,7 +52,7 @@ public function DB_recuperer_demandes_autorisees_matiere($matiere_id)
  * Récupérer les informations relatives à un item donné
  *
  * @param int   $item_id
- * @return int
+ * @return array
  */
 public function DB_recuperer_item_infos($item_id)
 {
@@ -188,6 +188,21 @@ public function DB_lister_demandes_eleve($user_id)
 	$DB_SQL.= 'ORDER BY sacoche_demande.matiere_id ASC, niveau_ref ASC, domaine_ref ASC, theme_ordre ASC, item_ordre ASC';
 	$DB_VAR = array(':user_id'=>$user_id);
 	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+}
+
+/**
+ * Récupérer la classe d'un élève
+ *
+ * @param int   $eleve_id
+ * @return int
+ */
+public function DB_recuperer_classe_eleve($eleve_id)
+{
+	$DB_SQL = 'SELECT eleve_classe_id ';
+	$DB_SQL.= 'FROM sacoche_user ';
+	$DB_SQL.= 'WHERE user_id=:user_id ';
+	$DB_VAR = array(':user_id'=>$eleve_id);
+	return DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
 /**

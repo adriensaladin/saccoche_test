@@ -1218,7 +1218,7 @@ $(document).ready
 				(
 					{
 						type : 'POST',
-						url : 'ajax.php?page=eleve_eval_demande_ajout',
+						url : 'ajax.php?page=evaluation_demande_eleve_ajout',
 						data : $("#form_demande_evaluation").serialize(),
 						dataType : "html",
 						error : function(msg,string)

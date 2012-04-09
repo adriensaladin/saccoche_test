@@ -53,6 +53,63 @@ $(document).ready
 			}
 		}
 
+		//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
+		//	Charger le select f_eleve en ajax
+		//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
+
+		function maj_eleve(groupe_id,groupe_type)
+		{
+			$.ajax
+			(
+				{
+					type : 'POST',
+					url : 'ajax.php?page=_maj_select_eleves',
+					data : 'f_groupe='+groupe_id+'&f_type='+groupe_type+'&f_statut=1&f_multiple=0',
+					dataType : "html",
+					error : function(msg,string)
+					{
+						$('#ajax_maj').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
+					},
+					success : function(responseHTML)
+					{
+						initialiser_compteur();
+						if(responseHTML.substring(0,7)=='<option')	// Attention aux caractères accentués : l'utf-8 pose des pbs pour ce test
+						{
+							$('#ajax_maj').removeAttr("class").html("&nbsp;");
+							$('#f_eleve').html(responseHTML).parent().show();
+						}
+						else
+						{
+							$('#ajax_maj').removeAttr("class").addClass("alerte").html(responseHTML);
+						}
+					}
+				}
+			);
+		}
+
+		$("#f_groupe").change
+		(
+			function()
+			{
+				// Pour un directeur ou un professeur, on met à jour f_eleve
+				// Pour un élève ou un parent cette fonction n'est pas appelée puisque son groupe (masqué) ne peut être changé
+				$("#f_eleve").html('<option value=""></option>').parent().hide();
+				$('#ajax_msg').removeAttr("class").html('');
+				$('#zone_eval_choix').hide();
+				var groupe_id = $("#f_groupe").val();
+				if(groupe_id)
+				{
+					groupe_type = $("#f_groupe option:selected").parent().attr('label');
+					$('#ajax_maj').removeAttr("class").addClass("loader").html("Connexion au serveur&hellip;");
+					maj_eleve(groupe_id,groupe_type);
+				}
+				else
+				{
+					$('#ajax_maj').removeAttr("class").html("&nbsp;");
+				}
+			}
+		);
+
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 //	Traitement du formulaire
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
@@ -153,7 +210,7 @@ $(document).ready
 //	Initialisation et chargement au changement d'élève (cas d'un parent responsable de plusieurs élèves)
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
-		function maj_eleve()
+		function maj_eval()
 		{
 			if($('#f_eleve option:selected').val())
 			{
@@ -170,11 +227,11 @@ $(document).ready
 		(
 			function()
 			{
-				maj_eleve();
+				maj_eval();
 			}
 		);
 
-		maj_eleve();
+		maj_eval();
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 //	Clic sur l'image pour Voir les notes saisies à un devoir ; retiré d'un fancybox afin de permettre d'utiliser ce fancybox pour une demande d'évaluation

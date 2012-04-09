@@ -54,7 +54,7 @@ $nb_demandes_formulees = DB_STRUCTURE_ELEVE::DB_compter_demandes_formulees_eleve
 $nb_demandes_possibles = max( 0 , $nb_demandes_autorisees - $nb_demandes_formulees ) ;
 if(!$nb_demandes_possibles)
 {
-	$reponse = ($nb_demandes_formulees>1) ? '<label class="erreur">Vous avez déjà formulé les '.$nb_demandes_formulees.' demandes autorisées pour cette matière.</label><br /><a href="./index.php?page=eleve_eval_demande">Veuillez en supprimer avant d\'en ajouter d\'autres !</a>' : 'Vous avez déjà formulé la demande autorisée pour cette matière.<br /><a href="./index.php?page=eleve_eval_demande">Veuillez la supprimer avant d\'en demander une autre !</a>' ;
+	$reponse = ($nb_demandes_formulees>1) ? '<label class="erreur">Vous avez déjà formulé les '.$nb_demandes_formulees.' demandes autorisées pour cette matière.</label><br /><a href="./index.php?page=evaluation_demande_eleve">Veuillez en supprimer avant d\'en ajouter d\'autres !</a>' : 'Vous avez déjà formulé la demande autorisée pour cette matière.<br /><a href="./index.php?page=evaluation_demande_eleve">Veuillez la supprimer avant d\'en demander une autre !</a>' ;
 	exit($reponse);
 }
 

@@ -38,6 +38,8 @@ $(document).ready
 		var modification = false;
 		var memo_pilotage = 'clavier';
 		var memo_input_id = false;
+		var colonne = 0;
+		var ligne   = 0;
 		var nb_colonnes = 1;
 		var nb_lignes   = 1;
 		// tri du tableau (avec jquery.tablesorter.js).
@@ -1194,6 +1196,32 @@ $(document).ready
 		//	Gérer la saisie des acquisitions au clavier
 		//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
+		function focus_cellule_suivante_en_evitant_sortie_tableau()
+		{
+			if(colonne==0)
+			{
+				colonne = nb_colonnes;
+				ligne = (ligne!=1) ? ligne-1 : nb_lignes ;
+			}
+			else if(colonne>nb_colonnes)
+			{
+				colonne = 1;
+				ligne = (ligne!=nb_lignes) ? ligne+1 : 1 ;
+			}
+			else if(ligne==0)
+			{
+				ligne = nb_lignes;
+				colonne = (colonne!=1) ? colonne-1 : nb_colonnes ;
+			}
+			else if(ligne>nb_lignes)
+			{
+				ligne = 1;
+				colonne = (colonne!=nb_colonnes) ? colonne+1 : 1 ;
+			}
+			var new_id = 'C'+colonne+'L'+ligne;
+			$('#'+new_id).focus();
+		}
+
 		$('#table_saisir tbody td input').live // live est utilisé pour prendre en compte les nouveaux éléments créés
 		('keydown',	// keydown au lieu de keyup permet de laisser appuyer sur la touche pour répéter une action
 			function(e)
@@ -1201,54 +1229,92 @@ $(document).ready
 				if(memo_pilotage=='clavier')
 				{
 					var id = $(this).attr("id");
-					var colonne = parseInt(id.substring(1,id.indexOf('L')),10);
-					var ligne   = parseInt(id.substring(id.indexOf('L')+1),10);
 					var findme = '.'+e.which+'.';
+					var endroit_report_note = 'cellule';
+					colonne = parseInt(id.substring(1,id.indexOf('L')),10);
+					ligne   = parseInt(id.substring(id.indexOf('L')+1),10);
 					if('.8.46.49.50.51.52.65.68.78.97.98.99.100.'.indexOf(findme)!=-1)
 					{
 						// Une touche d'item a été pressée
 						switch (e.which)
 						{
-							case   8: $(this).val('X').removeAttr("class").addClass('X'); break;				// backspace
-							case  46: $(this).val('X').removeAttr("class").addClass('X'); break;				// suppr
-							case  49: $(this).val('RR').removeAttr("class").addClass('RR'); break;			// 1
-							case  97: $(this).val('RR').removeAttr("class").addClass('RR'); break;			// 1
-							case  50: $(this).val('R').removeAttr("class").addClass('R'); break;				// 2
-							case  98: $(this).val('R').removeAttr("class").addClass('R'); break;				// 2
-							case  51: $(this).val('V').removeAttr("class").addClass('V'); break;				// 3
-							case  99: $(this).val('V').removeAttr("class").addClass('V'); break;				// 3
-							case  52: $(this).val('VV').removeAttr("class").addClass('VV'); break;			// 4
-							case 100: $(this).val('VV').removeAttr("class").addClass('VV'); break;			// 4
-							case  65: $(this).val('ABS').removeAttr("class").addClass('ABS'); break;		// A
-							case  78: $(this).val('NN').removeAttr("class").addClass('NN'); break; 			// N
-							case  68: $(this).val('DISP').removeAttr("class").addClass('DISP'); break;	// D
+							case   8: note = 'X';    break; // backspace
+							case  46: note = 'X';    break; // suppr
+							case  97: note = 'RR';   break; // 1
+							case  49: note = 'RR';   break; // 1 (&)
+							case  98: note = 'R';    break; // 2
+							case  50: note = 'R';    break; // 2 (é)
+							case  99: note = 'V';    break; // 3
+							case  51: note = 'V';    break; // 3 (")
+							case 100: note = 'VV';   break; // 4
+							case  52: note = 'VV';   break; // 4 (')
+							case  65: note = 'ABS';  break; // A
+							case  78: note = 'NN';   break; // N
+							case  68: note = 'DISP'; break; // D
 						}
-						$(this).parent().css("background-color","#F6D").focus();
+						endroit_report_note = $("input[name=f_endroit_report_note]:checked").val();
+						if( (typeof(endroit_report_note)=='undefined') || (endroit_report_note=='cellule') )
+						{
+							// pour une seule case
+							$(this).val(note).removeAttr("class").addClass(note);
+							$(this).parent().css("background-color","#F6D");
+							ligne++;
+						}
+						else if(endroit_report_note=='tableau')
+						{
+							// pour toutes les cases vides du tableau
+							$("#table_saisir tbody td input").each
+							(
+								function()
+								{
+									if($(this).val()=='X')
+									{
+										$(this).val(note).removeAttr("class").addClass(note);
+										$(this).parent().css("background-color","#F6D");
+									}
+								}
+							);
+						}
+						else if(endroit_report_note=='colonne')
+						{
+							// pour toutes les cases vides d'une colonne
+							$("#table_saisir tbody td input[id^=C"+colonne+"L]").each
+							(
+								function()
+								{
+									if($(this).val()=='X')
+									{
+										$(this).val(note).removeAttr("class").addClass(note);
+										$(this).parent().css("background-color","#F6D");
+									}
+								}
+							);
+							colonne++;
+						}
+						else if(endroit_report_note=='ligne')
+						{
+							// pour toutes les cases vides d'une ligne
+							$("#table_saisir tbody td input[id$=L"+ligne+"]").each
+							(
+								function()
+								{
+									if($(this).val()=='X')
+									{
+										$(this).val(note).removeAttr("class").addClass(note);
+										$(this).parent().css("background-color","#F6D");
+									}
+								}
+							);
+							ligne++;
+						}
 						if(modification==false)
 						{
 							$('#fermer_zone_saisir').removeAttr("class").addClass("annuler").html('Annuler / Retour');
 							modification = true;
 						}
 						$('#msg_saisir').removeAttr("class").html("&nbsp;");
-						// Passer à la case suivante
-						if(ligne<nb_lignes)
-						{
-							ligne++;
-						}
-						else
-						{
-							ligne = 1;
-							if(colonne<nb_colonnes)
-							{
-								colonne++;
-							}
-							else
-							{
-								colonne = 1;
-							}
-						}
-						var new_id = 'C'+colonne+'L'+ligne;
-						$('#'+new_id).focus();
+						focus_cellule_suivante_en_evitant_sortie_tableau();
+						endroit_report_note = 'cellule';
 					}
 					else if('.37.38.39.40.'.indexOf(findme)!=-1)
 					{
@@ -1260,28 +1326,7 @@ $(document).ready
 							case 39: colonne++; break; // flèche droit
 							case 40: ligne++;   break; // flèche bas
 						}
-						if(colonne==0)
-						{
-							colonne = nb_colonnes;
-							ligne = (ligne!=1) ? ligne-1 : nb_lignes ;
-						}
-						else if(colonne>nb_colonnes)
-						{
-							colonne = 1;
-							ligne = (ligne!=nb_lignes) ? ligne+1 : 1 ;
-						}
-						else if(ligne==0)
-						{
-							ligne = nb_lignes;
-							colonne = (colonne!=1) ? colonne-1 : nb_colonnes ;
-						}
-						else if(ligne>nb_lignes)
-						{
-							ligne = 1;
-							colonne = (colonne!=nb_colonnes) ? colonne+1 : 1 ;
-						}
-						var new_id = 'C'+colonne+'L'+ligne;
-						$('#'+new_id).focus();
+						focus_cellule_suivante_en_evitant_sortie_tableau();
 					}
 					else if(e.which==13)	// touche entrée
 					{
@@ -1293,7 +1338,18 @@ $(document).ready
 						// La touche escape a été pressée
 						$('#fermer_zone_saisir').click();
 					}
-					return false; // Permet notamment qu'IE fasse "page précédente" si on appuie sur backspace.
+					else if('.67.76.84.'.indexOf(findme)!=-1)
+					{
+						// Une touche de préparation de modification par lot a été pressée
+						switch (e.which)
+						{
+							case 67: endroit_report_note = 'colonne'; break; // C
+							case 76: endroit_report_note = 'ligne';   break; // L
+							case 84: endroit_report_note = 'tableau'; break; // T
+						}
+					}
+					$('#f_report_'+endroit_report_note).prop('checked',true);
+					return false; // Evite notamment qu'IE fasse "page précédente" si on appuie sur backspace.
 				}
 			}
 		);
@@ -1305,7 +1361,7 @@ $(document).ready
 		// Remplacer la cellule par les images de choix
 		$("#table_saisir tbody td.td_clavier").live
 		('mouseover',
-			function(e)
+			function()
 			{
 				if(memo_pilotage=='souris')
 				{
@@ -1320,6 +1376,8 @@ $(document).ready
 					{
 						// Récupérer les infos associées
 						memo_input_id = $(this).children("input").attr("id");
+						colonne = parseInt(memo_input_id.substring(1,memo_input_id.indexOf('L')),10);
+						ligne   = parseInt(memo_input_id.substring(memo_input_id.indexOf('L')+1),10);
 						var valeur = $(this).children("input").val();
 						$(this).children("input").hide();
 						$(this).removeAttr("class").addClass("td_souris").append( $("#td_souris_container").html() ).find("img[alt="+valeur+"]").addClass("on");
@@ -1345,70 +1403,74 @@ $(document).ready
 			}
 		);
 
-		// Renvoyer l'information dans la cellule
+		// Renvoyer l'information dans la ou les cellule(s)
 		$("div.td_souris img").live
 		('click',
 			function()
 			{
-				var valeur = $(this).attr("alt");
-				$("input#"+memo_input_id).val(valeur).removeAttr("class").addClass(valeur);
-				$(this).parent().children("img").removeAttr("class");
-				$(this).addClass("on").parent().parent().css("background-color","#F6D");
+				var note = $(this).attr("alt");
+				endroit_report_note = $("input[name=f_endroit_report_note]:checked").val();
+				if( (typeof(endroit_report_note)=='undefined') || (endroit_report_note=='cellule') )
+				{
+					// pour une seule case
+					$("input#"+memo_input_id).val(note).removeAttr("class").addClass(note);
+					$(this).parent().children("img").removeAttr("class");
+					$(this).addClass("on").parent().parent().css("background-color","#F6D");
+				}
+				else
+				{
+					if(endroit_report_note=='tableau')
+					{
+						// pour toutes les cases vides du tableau
+						$("#table_saisir tbody td input").each
+						(
+							function()
+							{
+								if($(this).val()=='X')
+								{
+									$(this).val(note).removeAttr("class").addClass(note);
+									$(this).parent().css("background-color","#F6D");
+								}
+							}
+						);
+					}
+					else if(endroit_report_note=='colonne')
+					{
+						// pour toutes les cases vides d'une colonne
+						$("#table_saisir tbody td input[id^=C"+colonne+"L]").each
+						(
+							function()
+							{
+								if($(this).val()=='X')
+								{
+									$(this).val(note).removeAttr("class").addClass(note);
+									$(this).parent().css("background-color","#F6D");
+								}
+							}
+						);
+					}
+					else if(endroit_report_note=='ligne')
+					{
+						// pour toutes les cases vides d'une ligne
+						$("#table_saisir tbody td input[id$=L"+ligne+"]").each
+						(
+							function()
+							{
+								if($(this).val()=='X')
+								{
+									$(this).val(note).removeAttr("class").addClass(note);
+									$(this).parent().css("background-color","#F6D");
+								}
+							}
+						);
+					}
+				}
 				if(modification==false)
 				{
 					$('#fermer_zone_saisir').removeAttr("class").addClass("annuler").html('Annuler / Retour');
 					modification = true;
 				}
 				$('#msg_saisir').removeAttr("class").html("&nbsp;");
-			}
-		);
-
-		//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-		//	Reporter une note dans toutes les cellules sans saisie
-		//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-
-		$('#report_note').click
-		(
-			function()
-			{
-				var note = $("input[name=f_defaut]:checked").val();
-				var findme = '.'+note+'.';
-				if( (typeof(note)=='undefined') || ('.VV.V.R.RR.ABS.NN.DISP.'.indexOf(findme)==-1) )
-				{
-					$('#msg_report').removeAttr("class").addClass("alerte").html('Aucun code coché !');
-					return false;
-				}
-				else
-				{
-					var compteur = 0;
-					$("#table_saisir tbody td input").each
-					(
-						function ()
-						{
-							if($(this).val()=='X')
-							{
-								$(this).val(note).removeAttr("class").addClass(note);
-								$(this).parent().css("background-color","#F6D");
-								compteur++;
-							}
-						}
-					);
-					if(!compteur)
-					{
-						$('#msg_report').removeAttr("class").addClass("alerte").html('Aucune cellule vide trouvée !');
-					}
-					else
-					{
-						var s = (compteur>1) ? 's' : '' ;
-						$('#msg_report').removeAttr("class").addClass("valide").html(compteur+' report'+s+' effectué'+s+'.');
-						if(modification==false)
-						{
-							$('#fermer_zone_saisir').removeAttr("class").addClass("annuler").html('Annuler / Retour');
-							modification = true;
-						}
-						$('#msg_saisir').removeAttr("class").html("&nbsp;");
-					}
-				}
 			}
 		);
 

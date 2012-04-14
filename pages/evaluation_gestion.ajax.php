@@ -472,7 +472,7 @@ if( ($action=='saisir') && $devoir_id && $groupe_id && $date_mysql && $date_visi
 	$tab_affich[0][0] = '<td>';
 	$tab_affich[0][0].= '<span class="manuel"><a class="pop_up" href="'.SERVEUR_DOCUMENTAIRE.'?fichier=support_professeur__evaluations_saisie_resultats">DOC : Saisie des résultats.</a></span>';
 	$tab_affich[0][0].= '<p>';
-	$tab_affich[0][0].= '<label for="radio_clavier"><input type="radio" id="radio_clavier" name="mode_saisie" value="clavier" /> <img alt="" src="./_img/pilot_keyboard.png" /> Piloter au clavier</label> <img alt="" src="./_img/bulle_aide.png" title="Sélectionner un rectangle blanc<br />au clavier (flèches) ou à la souris<br />puis utiliser les touches suivantes :<br />&nbsp;1 ; 2 ; 3 ; 4 ; A ; N ; D ; suppr" /><br />';
+	$tab_affich[0][0].= '<label for="radio_clavier"><input type="radio" id="radio_clavier" name="mode_saisie" value="clavier" /> <img alt="" src="./_img/pilot_keyboard.png" /> Piloter au clavier</label> <img alt="" src="./_img/bulle_aide.png" title="Sélectionner un rectangle blanc<br />au clavier (flèches) ou à la souris<br />puis utiliser les touches suivantes :<br />&nbsp;1 ; 2 ; 3 ; 4 ; A ; N ; D ; suppr .<br />Pour un report multiple, presser avant<br />C (Colonne), L (Ligne) ou T (Tableau)." /><br />';
 	$tab_affich[0][0].= '<label for="radio_souris"><input type="radio" id="radio_souris" name="mode_saisie" value="souris" /> <img alt="" src="./_img/pilot_mouse.png" /> Piloter à la souris</label> <img alt="" src="./_img/bulle_aide.png" title="Survoler une case du tableau avec la souris<br />puis cliquer sur une des images proposées." />';
 	$tab_affich[0][0].= '</p><p>';
 	$tab_affich[0][0].= '<label for="check_largeur"><input type="checkbox" id="check_largeur" name="check_largeur" value="retrecir_largeur" /> <img alt="" src="./_img/retrecir_largeur.gif" /> Largeur optimale</label> <img alt="" src="./_img/bulle_aide.png" title="Diminuer la largeur des colonnes<br />si les élèves sont nombreux." /><br />';
@@ -1081,7 +1081,7 @@ if( ($action=='imprimer_cartouche') && $devoir_id && $groupe_id && $date_fr && $
 	{
 		$item_ref = $DB_ROW['item_ref'];
 		$texte_socle = ($DB_ROW['entree_id']) ? '[S] ' : '[–] ';
-		$texte_coef  = ' ['.$DB_ROW['item_coef'].']';
+		$texte_coef  = '['.$DB_ROW['item_coef'].'] ';
 		$tab_comp_id[$DB_ROW['item_id']] = array($item_ref,$texte_socle.$texte_coef.$DB_ROW['item_nom']);
 	}
 	// résultats vierges
@@ -1114,6 +1114,7 @@ if( ($action=='imprimer_cartouche') && $devoir_id && $groupe_id && $date_fr && $
 	$sacoche_htm = '<hr /><a class="lien_ext" href="'.$dossier_export.'cartouche_'.$fnom_export.'.pdf"><span class="file file_pdf">Cartouches &rarr; Archiver / Imprimer (format <em>pdf</em>).</span></a><br />';
 	$sacoche_htm.= '<a class="lien_ext" href="'.$dossier_export.'cartouche_'.$fnom_export.'.zip"><span class="file file_zip">Cartouches &rarr; Récupérer / Manipuler (fichier <em>csv</em> pour tableur).</span></a>';
 	$sacoche_csv = '';
+	$separateur  = ';';
 	// Appel de la classe et définition de qqs variables supplémentaires pour la mise en page PDF
 	$item_nb = count($tab_comp_id);
 	if(!$only_req)
@@ -1141,8 +1142,8 @@ if( ($action=='imprimer_cartouche') && $devoir_id && $groupe_id && $date_fr && $
 					{
 						$ligne1_html .= '<td>'.html($tab_val_comp[0]).'</td>';
 						$ligne2_html .= '<td class="hc">'.affich_note_html($tab_result[$comp_id][$user_id],$date_fr,$description,false).'</td>';
-						$ligne1_csv .= $tab_val_comp[0]."\t";
-						$ligne2_csv .= $tab_result[$comp_id][$user_id]."\t";
+						$ligne1_csv .= '"'.$tab_val_comp[0].'"'.$separateur;
+						$ligne2_csv .= '"'.$tab_result[$comp_id][$user_id].'"'.$separateur;
 						$sacoche_pdf->cartouche_minimal_competence($tab_val_comp[0] , $tab_result[$comp_id][$user_id]);
 					}
 				}
@@ -1168,7 +1169,7 @@ if( ($action=='imprimer_cartouche') && $devoir_id && $groupe_id && $date_fr && $
 					if( ($only_req==false) || ($tab_result[$comp_id][$user_id]) )
 					{
 						$sacoche_htm .= '<tr><td>'.html($tab_val_comp[0]).'</td><td>'.html($tab_val_comp[1]).'</td><td>'.affich_note_html($tab_result[$comp_id][$user_id],$date_fr,$description,false).'</td></tr>';
-						$sacoche_csv .= $tab_val_comp[0]."\t".$tab_val_comp[1]."\t".$tab_result[$comp_id][$user_id]."\r\n";
+						$sacoche_csv .= '"'.$tab_val_comp[0].'"'.$separateur.'"'.$tab_val_comp[1].'"'.$separateur.'"'.$tab_result[$comp_id][$user_id].'"'."\r\n";
 						$sacoche_pdf->cartouche_complet_competence($tab_val_comp[0] , $tab_val_comp[1] , $tab_result[$comp_id][$user_id]);
 					}
 				}

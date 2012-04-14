@@ -34,6 +34,7 @@ $astuce_devoir_autoevaluation            = '<p>Vous pouvez permettre aux élève
 $astuce_devoir_joindre_fichiers          = '<p>Vous pouvez joindre ou référencer <b>un sujet et un corrigé</b> à une évaluation. <span class="manuel"><a class="pop_up" href="'.SERVEUR_DOCUMENTAIRE.'?fichier=support_professeur__evaluations_gestion#toggle_evaluations_fichiers">Documentation</a></span></p>';
 $astuce_devoir_partage                   = '<p>Vous pouvez <b>partager une évaluation avec des collègues</b>. <span class="manuel"><a class="pop_up" href="'.SERVEUR_DOCUMENTAIRE.'?fichier=support_professeur__evaluations_gestion#toggle_evaluations_profs">Documentation</a></span></p>';
 $astuce_devoir_ordonner_items            = '<p>Vous pouvez <b>choisir l\'ordre des items d\'une évaluation</b>. <span class="manuel"><a class="pop_up" href="'.SERVEUR_DOCUMENTAIRE.'?fichier=support_professeur__evaluations_gestion#toggle_evaluations_ordonner">Documentation</a></span></p>';
+$astuce_devoir_saisies_multiples         = '<p>Vous pouvez <b>saisir une note dans plusieurs cellules</b> simultanément. <span class="manuel"><a class="pop_up" href="'.SERVEUR_DOCUMENTAIRE.'?fichier=support_professeur__evaluations_saisie_resultats#toggle_saisies_multiples">Documentation</a></span></p>';
 $astuce_referentiel_lier_ressources      = '<p>Vous pouvez <b>associer aux items des ressources</b> pour un travail en autonomie des élèves. <span class="manuel"><a class="pop_up" href="'.SERVEUR_DOCUMENTAIRE.'?fichier=referentiels_socle__referentiel_lier_ressources">Documentation</a></span></p>';
 $astuce_referentiel_uploader_ressources  = '<p>Vous pouvez <b>mettre en ligne des ressources</b> pour ensuite les associer aux items. <span class="manuel"><a class="pop_up" href="'.SERVEUR_DOCUMENTAIRE.'?fichier=referentiels_socle__referentiel_uploader_ressources">Documentation</a></span></p>';
 $astuce_socle_choisir_langue             = '<p>Vous pouvez <b>indiquer la langue étrangère</b> des élèves pour le socle commun. <span class="manuel"><a class="pop_up" href="'.SERVEUR_DOCUMENTAIRE.'?fichier=referentiels_socle__socle_choisir_langue">Documentation</a></span></p>';
@@ -61,6 +62,7 @@ $tab_astuces = array(
 		$astuce_panneau_affichage,
 		$astuce_devoir_autoevaluation,
 		$astuce_devoir_joindre_fichiers,
+		$astuce_devoir_saisies_multiples,
 		$astuce_memorisation_selection_items,
 		$astuce_referentiel_lier_ressources,
 		$astuce_referentiel_uploader_ressources,

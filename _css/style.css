@@ -54,12 +54,6 @@ h4{display:block;font-size:100%;text-align:left;font-weight:bold;font-variant:sm
 a.anti_h2{background:transparent url(../_img/actualiser_small.png) no-repeat left;padding-left:15px;margin-left:1em;font-size:80%;font-weight:normal;font-variant:normal;letter-spacing:0;}
 a {color:#139;text-decoration:none}a:hover{color:#D41;text-decoration:underline}
 hr {display:block;height:1px;margin:1em 0;border-top:1px dotted #66F;}
-*.astuce {background:transparent url(../_img/puce/puce_astuce.png) no-repeat top left;padding-left:19px}
-*.danger {background:transparent url(../_img/puce/puce_danger.gif) no-repeat top left;padding-left:19px;color:#C00}
-*.manuel {background:#CCF        url(../_img/puce/puce_manuel.png) no-repeat top left;padding-left:19px}
-*.rss    {background:transparent url(../_img/puce/puce_rss.gif)    no-repeat top left;padding-left:19px}
-*.manuel:hover {background:transparent url(../_img/puce/puce_manuel_ouvert.png) no-repeat top left;}
-#titre_aide{background:transparent url(../_img/puce/puce_manuel_ouvert.png) no-repeat left;padding-left:24px;margin:1ex 2em;text-align:left}
 #aide_en_ligne {margin:1ex 1em}
 em {display:inline;font-style:normal;font-weight:bold;font-variant:small-caps} /* "SACoche" et divers noms propres ou sigles */
 del{text-decoration:line-through;color:#666}
@@ -69,6 +63,9 @@ del{text-decoration:line-through;color:#666}
 .t9{font-size:90%}
 .breakafter{page-break-after:always}
 .fd{float:right;margin-right:1em}
+.notnow{color:#666}.now{color:#000;background-color:#FF9;font-size:13px} /* 13px pour rétablir la taille des boutons dans les bilans officiels */
+div.appreciation {white-space:pre-wrap}
+td.moyenne {text-align:center;font-weight:bold;vertical-align:middle;font-size:130%}
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 /* Cadres principaux (dont le menu déroulant)                                                          */
@@ -78,12 +75,13 @@ del{text-decoration:line-through;color:#666}
 #cadre_milieu {width:736px;margin:20px auto auto auto;padding:10px;background:#E6E6FF;border:2px solid #99F} /* coins arrondis via js */
 
 /* zone identifiée */
-#cadre_haut {z-index:2;position:absolute;left:0;right:0;top:0;height:48px;background:#FFF url(../_img/background.gif) repeat 0 0;border-bottom:1px solid #77F;white-space:nowrap;min-width:980px;}
-#cadre_bas  {z-index:1;position:absolute;left:0;right:0;top:49px;background:#FFF url(../_img/fond09.png) repeat-x 0 0;padding:4px}
+#cadre_haut  {z-index:2;position:absolute;left:0;right:0;top:0;height:48px;background:#FFF url(../_img/background.gif) repeat 0 0;border-bottom:1px solid #77F;white-space:nowrap;min-width:980px;}
+#cadre_bas   {z-index:1;position:absolute;left:0;right:0;top:49px;background:#FFF url(../_img/fond09.png) repeat-x 0 0;padding:4px}
+#cadre_navig {z-index:3;position:fixed;top:2px;right:2px} /* top:59px;right:1px; */
 
 /* dans #cadre_haut */
 #top_info {position:absolute;top:3px;left:4px}
-#logo     {position:absolute;top:1px;left:840px}
+#logo     {position:absolute;top:1px;left:824px} /* left:840px */
 #menu     {position:absolute;bottom:-2px;left:3px;right:0}
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
@@ -99,28 +97,41 @@ del{text-decoration:line-through;color:#666}
 /* Boutons d'informations (dans #cadre_haut)                                                           */
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-#top_info span.button{display:inline-block;padding:1px 3px;margin:1px 0;background:#EEF url(../_img/sprite_top_1.png) 0 0 no-repeat;padding-left:20px;border:1px solid #99F;color:#333}
-#top_info span.alerte                {background-position: 2px    1px;font-weight:bold;color:#C00}
-#top_info span.connexion             {background-position: 2px  -19px;font-weight:bold}
-#top_info span.favicon               {background-position: 2px  -39px}
-#top_info span.firebug               {background-position: 2px  -59px}
-#top_info span.firephp               {background-position: 2px  -79px}
-#top_info span.home                  {background-position: 2px  -99px}
-#top_info span.profil_administrateur {background-position: 2px -119px}
-#top_info span.profil_directeur      {background-position: 2px -139px}
-#top_info span.profil_eleve          {background-position: 2px -159px}
-#top_info span.profil_parent         {background-position: 2px -179px}
-#top_info span.profil_professeur     {background-position: 2px -199px}
-#top_info span.profil_webmestre      {background-position: 2px -219px}
+#top_info span.button{display:inline-block;padding:1px 3px;margin:1px 0;background:#EEF url(../_img/sprite_top_1.png) 0 0 no-repeat;padding-left:19px;border:1px solid #99F;color:#333;line-height:16px}
+#top_info span.alerte                {background-position: 1px    1px;font-weight:bold;color:#C00}
+#top_info span.connexion             {background-position: 1px  -19px;font-weight:bold}
+#top_info span.favicon               {background-position: 1px  -39px}
+#top_info span.firebug               {background-position: 1px  -59px}
+#top_info span.firephp               {background-position: 1px  -79px}
+#top_info span.home                  {background-position: 1px  -99px}
+#top_info span.profil_administrateur {background-position: 1px -119px}
+#top_info span.profil_directeur      {background-position: 1px -139px}
+#top_info span.profil_eleve          {background-position: 1px -159px}
+#top_info span.profil_parent         {background-position: 1px -179px}
+#top_info span.profil_professeur     {background-position: 1px -199px}
+#top_info span.profil_webmestre      {background-position: 1px -219px}
 #top_info span.clock_fixe {background:#EEF url(../_img/clock_fixe.png) 2px center no-repeat;}
 #top_info span.clock_anim {background:#EEF url(../_img/clock_anim.gif) 2px center no-repeat;}
 #top_info #clock {padding-right:3px;background:#EEF url(../_img/point.gif) right top no-repeat;}
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+/* Boutons de navigation (dans #cadre_navig)                                                           */
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
+#cadre_navig a{display:block;width:18px;height:18px;border:1px solid #99F;margin-top:1px}
+#go_haut {background:#DDF url(../_img/fleche/go_haut.png) center center no-repeat}
+#go_bas  {background:#DDF url(../_img/fleche/go_bas.png)  center center no-repeat}
+#cadre_navig a:hover{background-color:#EEF}
+
+*.manuel  {background:#CCF        url(../_img/puce/puce_manuel.png)  no-repeat top left;padding-left:19px}
+*.rss     {background:transparent url(../_img/puce/puce_rss.gif)     no-repeat top left;padding-left:19px}
+*.manuel:hover {background:transparent url(../_img/puce/puce_manuel_ouvert.png) no-repeat top left;}
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 /* Menu déroulant (dans #cadre_haut)                                                                   */
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-#menu a {display:block;border:1px solid #77F;color:#FFF;background:#77F url(../_img/sprite_menu_5.png) 0 0 no-repeat;padding:1px 1px 1px 19px;margin:1px;height:16px}
+#menu a {display:block;border:1px solid #77F;color:#FFF;background:#77F url(../_img/sprite_menu_6.png) 0 0 no-repeat;padding:1px 1px 1px 19px;margin:1px;height:16px}
 #menu a:hover {background-color:#99F;color:#FFF;text-decoration:none}
 #menu li {float:left;}
 #menu li li {float:none}
@@ -146,9 +157,9 @@ del{text-decoration:line-through;color:#666}
 #menu a.etabl_duree            {background-position: 1px  -319px}
 #menu a.etabl_identite         {background-position: 1px  -339px}
 #menu a.etabl_login            {background-position: 1px  -359px}
-#menu a.evaluation_voir        {background-position: 1px  -379px} /* pas dans l'ordre mais outil sprite hs */
-#menu a.evaluation_demande     {background-position: 1px  -399px} /* pas dans l'ordre mais outil sprite hs */
-#menu a.evaluation_gestion     {background-position: 1px  -419px} /* pas dans l'ordre mais outil sprite hs */
+#menu a.evaluation_demande     {background-position: 1px  -379px} /* pas dans l'ordre mais outil sprite hs */
+#menu a.evaluation_gestion     {background-position: 1px  -399px} /* pas dans l'ordre mais outil sprite hs */
+#menu a.evaluation_voir        {background-position: 1px  -419px} /* pas dans l'ordre mais outil sprite hs */
 #menu a.fichier_export         {background-position: 1px  -439px}
 #menu a.fichier_import         {background-position: 1px  -459px}
 #menu a.groupe                 {background-position: 1px  -479px}
@@ -158,37 +169,42 @@ del{text-decoration:line-through;color:#666}
 #menu a.message_accueil        {background-position: 1px  -559px}
 #menu a.nettoyage              {background-position: 1px  -579px}
 #menu a.newsletter             {background-position: 1px  -599px}
-#menu a.parent                 {background-position: 1px  -619px}
-#menu a.periode                {background-position: 1px  -639px}
-#menu a.periode_groupe         {background-position: 1px  -659px}
-#menu a.professeur             {background-position: 1px  -679px}
-#menu a.referentiel_gestion    {background-position: 1px  -699px}
-#menu a.referentiel_voir       {background-position: 1px  -719px}
-#menu a.releve_grille          {background-position: 1px  -739px}
-#menu a.releve_items           {background-position: 1px  -759px}
-#menu a.releve_recherche       {background-position: 1px  -779px}
-#menu a.releve_reglages        {background-position: 1px  -799px}
-#menu a.releve_socle           {background-position: 1px  -819px}
-#menu a.releve_synthese        {background-position: 1px  -839px}
-#menu a.releve_synthese_socle  {background-position: 1px  -859px}
-#menu a.resilier               {background-position: 1px  -879px}
-#menu a.rss                    {background-position: 1px  -899px}
-#menu a.serveur_database       {background-position: 1px  -919px}
-#menu a.serveur_fichiers       {background-position: 1px  -939px}
-#menu a.serveur_geographie     {background-position: 1px  -959px}
-#menu a.serveur_identite       {background-position: 1px  -979px}
-#menu a.serveur_info           {background-position: 1px  -999px}
-#menu a.serveur_maintenance    {background-position: 1px -1019px}
-#menu a.serveur_proxy          {background-position: 1px -1039px}
-#menu a.socle_annuler          {background-position: 1px -1059px}
-#menu a.socle_fichier          {background-position: 1px -1079px}
-#menu a.socle_item             {background-position: 1px -1099px}
-#menu a.socle_langue           {background-position: 1px -1119px}
-#menu a.socle_pilier           {background-position: 1px -1139px}
-#menu a.statistiques           {background-position: 1px -1159px}
-#menu a.structure_ajout_csv    {background-position: 1px -1179px}
-#menu a.structure_gestion      {background-position: 1px -1199px}
-#menu a.structure_transfert    {background-position: 1px -1219px}
+#menu a.officiel_bulletin      {background-position: 1px  -619px}
+#menu a.officiel_palier1       {background-position: 1px  -639px}
+#menu a.officiel_palier2       {background-position: 1px  -659px}
+#menu a.officiel_palier3       {background-position: 1px  -679px}
+#menu a.officiel_reglages      {background-position: 1px  -699px}
+#menu a.officiel_releve        {background-position: 1px  -719px}
+#menu a.parent                 {background-position: 1px  -739px}
+#menu a.periode                {background-position: 1px  -759px}
+#menu a.periode_groupe         {background-position: 1px  -779px}
+#menu a.professeur             {background-position: 1px  -799px}
+#menu a.referentiel_gestion    {background-position: 1px  -819px}
+#menu a.referentiel_voir       {background-position: 1px  -839px}
+#menu a.releve_grille          {background-position: 1px  -859px}
+#menu a.releve_items           {background-position: 1px  -879px}
+#menu a.releve_recherche       {background-position: 1px  -899px}
+#menu a.releve_socle           {background-position: 1px  -919px}
+#menu a.releve_synthese        {background-position: 1px  -939px}
+#menu a.releve_synthese_socle  {background-position: 1px  -959px}
+#menu a.resilier               {background-position: 1px  -979px}
+#menu a.rss                    {background-position: 1px  -999px}
+#menu a.serveur_database       {background-position: 1px -1019px}
+#menu a.serveur_fichiers       {background-position: 1px -1039px}
+#menu a.serveur_geographie     {background-position: 1px -1059px}
+#menu a.serveur_identite       {background-position: 1px -1079px}
+#menu a.serveur_info           {background-position: 1px -1099px}
+#menu a.serveur_maintenance    {background-position: 1px -1119px}
+#menu a.serveur_proxy          {background-position: 1px -1139px}
+#menu a.socle_annuler          {background-position: 1px -1159px}
+#menu a.socle_fichier          {background-position: 1px -1179px}
+#menu a.socle_item             {background-position: 1px -1199px}
+#menu a.socle_langue           {background-position: 1px -1219px}
+#menu a.socle_pilier           {background-position: 1px -1239px}
+#menu a.statistiques           {background-position: 1px -1259px}
+#menu a.structure_ajout_csv    {background-position: 1px -1279px}
+#menu a.structure_gestion      {background-position: 1px -1299px}
+#menu a.structure_transfert    {background-position: 1px -1319px}
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 /* Logos page d'accueil une fois identifié (dans #cadre_bas)                                           */
@@ -198,12 +214,13 @@ del{text-decoration:line-through;color:#666}
 .info64  {background:transparent url(../_img/icone64/info.png)  no-repeat left;padding-left:70px;min-height:64px}
 .help64  {background:transparent url(../_img/icone64/help.png)  no-repeat left;padding-left:70px;min-height:64px}
 .user64  {background:transparent url(../_img/icone64/user.png)  no-repeat left;padding-left:70px;min-height:64px}
+.ecolo64 {background:transparent url(../_img/icone64/ecolo.png) no-repeat left;padding-left:70px;min-height:64px}
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 /* Liens vers un fichier à récupérer ou un document généré                                             */
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-.file      {background:transparent url(../_img/sprite_fichier_2.png) 0 0 no-repeat;padding-left:20px;}
+.file      {background:transparent url(../_img/sprite_fichier_2.png) 0 0 no-repeat;padding-left:19px;}
 .file_doc  {background-position: 0    0px}
 .file_docx {background-position: 0  -20px}
 .file_exe  {background-position: 0  -40px}
@@ -235,10 +252,33 @@ del{text-decoration:line-through;color:#666}
 .file_zip  {background-position: 0 -560px}
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+/* Images relatives aux états des bilans officiels                                                     */
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
+.off_etat {background:transparent url(../_img/sprite_officiel_1.png) 0 0 no-repeat;padding-left:19px;}
+.absence  {background-position: 0    0px}
+.vide     {background-position: 0  -20px}
+.rubrique {background-position: 0  -40px}
+.synthese {background-position: 0  -60px}
+.complet  {background-position: 0  -80px}
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+/* Puces diverses                                                                                      */
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
+*.travaux {background:#FF0        url(../_img/chantier.gif)          no-repeat 5px;     padding-left:50px;min-height:40px;line-height:40px;color:#000;font-weight:bold}
+*.noprint {background:transparent url(../_img/puce/puce_noprint.png) no-repeat top left;padding-left:19px;color:#C00}
+*.danger  {background:transparent url(../_img/puce/puce_danger.gif)  no-repeat top left;padding-left:19px;color:#C00}
+*.astuce  {background:transparent url(../_img/puce/puce_astuce.png)  no-repeat top left;padding-left:19px}
+*.manuel  {background:#CCF        url(../_img/puce/puce_manuel.png)  no-repeat top left;padding-left:19px}
+*.rss     {background:transparent url(../_img/puce/puce_rss.gif)     no-repeat top left;padding-left:19px}
+*.manuel:hover {background:transparent url(../_img/puce/puce_manuel_ouvert.png) no-repeat top left;}
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 /* Images cliquables                                                                                   */
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-body q {background:transparent url(../_img/sprite_action_4.png) 0 0 no-repeat;width:16px;height:16px;display:inline-block;vertical-align:middle;margin-left:5px;quotes:none}
+body q {background:transparent url(../_img/sprite_action_5.png) 0 0 no-repeat;width:16px;height:16px;display:inline-block;vertical-align:middle;margin-left:5px;quotes:none}
 body q:before, body q:after {content: "";} /* patch pour Safari : voir par exemple http://forum.alsacreations.com/topic-4-41216-1-Resolu-Modifier-le-style-des-citations-quotqquot.html */
 body q.activer            {background-position: 0     0px}
 body q.ajouter            {background-position: 0   -20px}
@@ -249,53 +289,57 @@ body q.choisir_eleve      {background-position: 0  -100px}
 body q.choisir_prof       {background-position: 0  -120px}
 body q.date_calendrier    {background-position: 0  -140px}
 body q.date_periode       {background-position: 0  -160px}
-body q.deconnecter        {background-position: 0  -180px}
-body q.demander_add       {background-position: 0  -200px} 
-body q.demander_non       {background-position: 0  -220px}
-body q.detailler          {background-position: 0  -240px}
+body q.demander_add       {background-position: 0  -180px}
+body q.demander_non       {background-position: 0  -200px}
+body q.detailler          {background-position: 0  -220px}
+body q.detailler_non      {background-position: 0  -240px}
 body q.dupliquer          {background-position: 0  -260px}
 body q.imprimer           {background-position: 0  -280px}
-body q.initialiser_mdp    {background-position: 0  -300px}
-body q.modifier           {background-position: 0  -320px}
-body q.modifier_non       {background-position: 0  -340px}
-body q.ordonner           {background-position: 0  -360px}
-body q.ordonner_non       {background-position: 0  -380px}
-body q.calculer           {background-position: 0  -400px}
-body q.calculer_non       {background-position: 0  -420px}
-body q.envoyer            {background-position: 0  -440px}
-body q.envoyer_non        {background-position: 0  -460px}
-body q.partager           {background-position: 0  -480px}
-body q.partager_non       {background-position: 0  -500px}
-body q.ress_ajouter       {background-position: 0  -520px}
-body q.ress_page_elaborer {background-position: 0  -540px}
-body q.retourner          {background-position: 0  -560px}
-body q.saisir             {background-position: 0  -580px}
-body q.saisir_non         {background-position: 0  -600px}
-body q.supprimer          {background-position: 0  -620px}
-body q.supprimer_non      {background-position: 0  -640px}
-body q.texte_editer       {background-position: 0  -660px}
-body q.uploader_doc       {background-position: 0  -680px}
-body q.uploader_doc_non   {background-position: 0  -600px}
-body q.valider            {background-position: 0  -720px}
-body q.voir               {background-position: 0  -740px}
-body q.voir_repart        {background-position: 0  -760px}
-body q.n1_add             {background-position: 0  -780px}
-body q.n1_del             {background-position: 0  -700px}
-body q.n1_edit            {background-position: 0  -820px}
-body q.n1_move            {background-position: 0  -840px}
-body q.n1_move2           {background-position: 0  -860px}
-body q.n2_add             {background-position: 0  -880px}
-body q.n2_del             {background-position: 0  -800px}
-body q.n2_edit            {background-position: 0  -920px}
-body q.n2_move            {background-position: 0  -940px}
-body q.n2_move2           {background-position: 0  -960px}
-body q.n3_add             {background-position: 0  -980px}
-body q.n3_del             {background-position: 0 -1000px}
-body q.n3_edit            {background-position: 0 -1020px}
-body q.n3_fus             {background-position: 0 -1040px}
-body q.n3_fus2            {background-position: 0 -1060px}
-body q.n3_move            {background-position: 0 -1080px}
-body q.n3_move2           {background-position: 0 -1100px}
+body q.imprimer_non       {background-position: 0  -300px}
+body q.initialiser_mdp    {background-position: 0  -320px}
+body q.modifier           {background-position: 0  -340px}
+body q.modifier_non       {background-position: 0  -360px}
+body q.ordonner           {background-position: 0  -380px}
+body q.ordonner_non       {background-position: 0  -400px}
+body q.calculer           {background-position: 0  -420px}
+body q.calculer_non       {background-position: 0  -440px}
+body q.envoyer            {background-position: 0  -460px}
+body q.envoyer_non        {background-position: 0  -480px}
+body q.partager           {background-position: 0  -500px}
+body q.partager_non       {background-position: 0  -520px}
+body q.ress_ajouter       {background-position: 0  -540px}
+body q.ress_page_elaborer {background-position: 0  -560px}
+body q.retourner          {background-position: 0  -580px}
+body q.saisir             {background-position: 0  -600px}
+body q.saisir_non         {background-position: 0  -620px}
+body q.supprimer          {background-position: 0  -640px}
+body q.supprimer_non      {background-position: 0  -660px}
+body q.tamponner          {background-position: 0  -680px}
+body q.tamponner_non      {background-position: 0  -700px}
+body q.texte_editer       {background-position: 0  -720px}
+body q.uploader_doc       {background-position: 0  -740px}
+body q.uploader_doc_non   {background-position: 0  -760px}
+body q.valider            {background-position: 0  -780px}
+body q.voir               {background-position: 0  -800px}
+body q.voir_non           {background-position: 0  -820px}
+body q.voir_repart        {background-position: 0  -840px}
+body q.n1_add             {background-position: 0  -860px}
+body q.n1_del             {background-position: 0  -880px}
+body q.n1_edit            {background-position: 0  -900px}
+body q.n1_move            {background-position: 0  -920px}
+body q.n1_move2           {background-position: 0  -940px}
+body q.n2_add             {background-position: 0  -960px}
+body q.n2_del             {background-position: 0  -980px}
+body q.n2_edit            {background-position: 0 -1000px}
+body q.n2_move            {background-position: 0 -1020px}
+body q.n2_move2           {background-position: 0 -1040px}
+body q.n3_add             {background-position: 0 -1060px}
+body q.n3_del             {background-position: 0 -1080px}
+body q.n3_edit            {background-position: 0 -1100px}
+body q.n3_fus             {background-position: 0 -1120px}
+body q.n3_fus2            {background-position: 0 -1140px}
+body q.n3_move            {background-position: 0 -1160px}
+body q.n3_move2           {background-position: 0 -1180px}
 body q:hover {cursor:pointer}	/* Curseur pointeur pour ces images qui sont des liens */
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
@@ -317,42 +361,53 @@ form label.mini{width:8em;}
 #zone_ressources span.tab{margin-left:6.5em}
 
 /* Boutons de validation */
-button{background:#DDF url(../_img/sprite_bouton_3.png) 0 0 no-repeat;padding:0 1px 0 20px;margin:1px 0;color:#139;border:1px solid #66F;}
-button.actualiser      {background-position: 3px    1px}
-button.ajouter         {background-position: 3px  -19px}
-button.annuler         {background-position: 3px  -39px}
-button.colorer         {background-position: 3px  -59px}
-button.deconnecter     {background-position: 3px  -79px}
-button.dump_export     {background-position: 3px  -99px}
-button.eclair          {background-position: 3px -119px}
-button.fichier_export  {background-position: 3px -139px}
-button.fichier_import  {background-position: 3px -159px}
-button.form_ajouter    {background-position: 3px -179px}
-button.form_retirer    {background-position: 3px -199px}
-button.generer         {background-position: 3px -219px}
-button.groupe_ajouter  {background-position: 3px -239px}
-button.groupe_retirer  {background-position: 3px -259px}
-button.mail_ecrire     {background-position: 3px -279px}
-button.mail_envoyer    {background-position: 3px -299px}
-button.mdp_groupe      {background-position: 3px -319px}
-button.mdp_perso       {background-position: 3px -339px}
-button.nettoyage       {background-position: 3px -359px}
-button.parametre       {background-position: 3px -379px}
-button.periode_ajouter {background-position: 3px -399px}
-button.periode_retirer {background-position: 3px -419px}
-button.rechercher      {background-position: 3px -439px}
-button.referencer_lien {background-position: 3px -459px}
-button.retourner       {background-position: 3px -479px}
-button.stats           {background-position: 3px -499px}
-button.supprimer       {background-position: 3px -519px}
-button.user_ajouter    {background-position: 3px -539px}
-button.user_desactiver {background-position: 3px -559px}
-button.valider         {background-position: 3px -579px}
+button{background:#DDF url(../_img/sprite_bouton_4.png) 0 0 no-repeat;padding:0 1px 0 19px;margin:1px 0;color:#139;border:1px solid #66F;line-height:17px}
+button.actualiser        {background-position: 3px    1px}
+button.ajouter           {background-position: 3px  -19px}
+button.annuler           {background-position: 3px  -39px}
+button.annuler_next      {background-position: 3px  -59px}
+button.annuler_prev      {background-position: 3px  -79px}
+button.colorer           {background-position: 3px  -99px}
+button.deconnecter       {background-position: 3px -119px}
+button.deconnecter:hover {background-position: 3px -139px}
+button.dump_export       {background-position: 3px -159px}
+button.eclair            {background-position: 3px -179px}
+button.fichier_export    {background-position: 3px -199px}
+button.fichier_import    {background-position: 3px -219px}
+button.form_ajouter      {background-position: 3px -239px}
+button.form_retirer      {background-position: 3px -259px}
+button.generer           {background-position: 3px -279px}
+button.go_dernier        {background-position: 3px -299px}
+button.go_precedent      {background-position: 3px -319px}
+button.go_premier        {background-position: 3px -339px}
+button.go_suivant        {background-position: 3px -359px}
+button.groupe_ajouter    {background-position: 3px -379px}
+button.groupe_retirer    {background-position: 3px -399px}
+button.mail_ecrire       {background-position: 3px -419px}
+button.mail_envoyer      {background-position: 3px -439px}
+button.mdp_groupe        {background-position: 3px -459px}
+button.mdp_perso         {background-position: 3px -479px}
+button.modifier          {background-position: 3px -499px}
+button.nettoyer          {background-position: 3px -519px}
+button.parametre         {background-position: 3px -539px}
+button.periode_ajouter   {background-position: 3px -559px}
+button.periode_retirer   {background-position: 3px -579px}
+button.rechercher        {background-position: 3px -599px}
+button.referencer_lien   {background-position: 3px -619px}
+button.retourner         {background-position: 3px -639px}
+button.signaler          {background-position: 3px -659px}
+button.stats             {background-position: 3px -679px}
+button.supprimer         {background-position: 3px -699px}
+button.user_ajouter      {background-position: 3px -719px}
+button.user_desactiver   {background-position: 3px -739px}
+button.valider           {background-position: 3px -759px}
+button.valider_next      {background-position: 3px -779px}
+button.valider_prev      {background-position: 3px -799px}
 
 button{width:auto;overflow:visible;} /* patch pour IE : voir http://jehiah.cz/archive/button-width-in-ie */
 button:hover,button.hover{background-color:#EEF;color:#D41;cursor:pointer;} /* button.hover pour une compatibilité avec AjaxUpload (pour background, car pas mieux pour cursor) */
-button[disabled]{opacity:0.5} /* background-color:#FFF;color:#888;border:1px solid #BBF */
-button[disabled]:hover,button[disabled]:hover{cursor:default}
+*[disabled]{opacity:0.5} /* background-color:#FFF;color:#888;border:1px solid #BBF */
+*[disabled]:hover,*[disabled].hover{cursor:default}
 button img{width:16px;height:16px}
 
 /* input / select / textarea */
@@ -948,7 +1003,7 @@ div.colorpicker input.stretch {text-align:center;letter-spacing:2px}
 .fancybox-title-outside-wrap {
 	position: relative;
 	margin-top: 10px;
-	color: #fff;
+	color: #FFF;
 }
 
 .fancybox-title-inside-wrap {
@@ -959,7 +1014,7 @@ div.colorpicker input.stretch {text-align:center;letter-spacing:2px}
 	position: absolute;
 	bottom: 0;
 	left: 0;	
-	color: #fff;
+	color: #FFF;
 	padding: 10px;
 	background: #000;
 	background: rgba(0, 0, 0, .8);

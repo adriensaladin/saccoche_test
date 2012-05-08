@@ -212,9 +212,9 @@ function clean_code($text)      { return perso_strtolower( trim($text) ); }
 function clean_texte($text)     { return trim($text); }
 function clean_courriel($text)  { return perso_strtolower( clean_accents( trim($text) ) ); }
 function clean_url($text)       { return perso_strtolower( trim($text) ); }
-function clean_id_ent($text)    { return mb_substr( clean_texte( (string)$text ) ,0,32 ); }
+function clean_id_ent($text)    { return mb_substr( clean_texte( (string)$text ) ,0,63 ); }
 function clean_entier($text)    { return intval($text); }
-function clean_decimal($text)   { return floatval($text); }
+function clean_decimal($text)   { return floatval(str_replace(',','.',$text)); }
 
 /*
 	Convertit les caractères spéciaux (&"'<>) en entité HTML pour éviter des problèmes d'affichage (INPUT, SELECT, TEXTAREA, XML...).

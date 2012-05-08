@@ -394,14 +394,15 @@ function affich_barre_synthese_html($td_width,$tab_infos,$total)
 }
 
 /**
- * Afficher un pourcentage d'items acquis pour une sortie socle HTML.
+ * Afficher un pourcentage d'items acquis pour une sortie socle HTML ou bulletin.
  *
  * @param string   $type_cellule   'td' | 'th'
  * @param array    $tab_infos      array( 'A' , 'VA' , 'NA' , 'nb' , '%' )
  * @param bool     $detail
+ * @param int|bool $largeur        en nombre de pixels
  * @return string
  */
-function affich_pourcentage_html($type_cellule,$tab_infos,$detail)
+function affich_pourcentage_html($type_cellule,$tab_infos,$detail,$largeur)
 {
 	if($tab_infos['%']===false)
 	{
@@ -411,8 +412,9 @@ function affich_pourcentage_html($type_cellule,$tab_infos,$detail)
 	elseif($tab_infos['%']<$_SESSION['CALCUL_SEUIL']['R']) {$etat = 'r';}
 	elseif($tab_infos['%']>$_SESSION['CALCUL_SEUIL']['V']) {$etat = 'v';}
 	else                                                   {$etat = 'o';}
+	$style = ($largeur) ? ' style="width:'.$largeur.'px"' : '' ;
 	$texte = html($tab_infos['%'].'% acquis ('.$tab_infos['A'].$_SESSION['ACQUIS_TEXTE']['A'].' '.$tab_infos['VA'].$_SESSION['ACQUIS_TEXTE']['VA'].' '.$tab_infos['NA'].$_SESSION['ACQUIS_TEXTE']['NA'].')');
-	return ($detail) ? '<'.$type_cellule.' class="hc '.$etat.'">'.$texte.'</'.$type_cellule.'>' : '<'.$type_cellule.' class="'.$etat.'" title="'.$texte.'"></'.$type_cellule.'>';
+	return ($detail) ? '<'.$type_cellule.' class="hc '.$etat.'"'.$style.'>'.$texte.'</'.$type_cellule.'>' : '<'.$type_cellule.' class="'.$etat.'" title="'.$texte.'"></'.$type_cellule.'>';
 }
 
 /**

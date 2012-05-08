@@ -90,101 +90,21 @@ if( !$orientation || !$couleur || !$legende || !$marge_min || !$pages_nb || !$ca
 
 Formulaire::save_choix('items_selection');
 
-// Période concernée
-if($periode_id==0)
-{
-	$date_mysql_debut = convert_date_french_to_mysql($date_debut);
-	$date_mysql_fin   = convert_date_french_to_mysql($date_fin);
-}
-else
-{
-	$DB_ROW = DB_STRUCTURE_COMMUN::DB_recuperer_dates_periode($groupe_id,$periode_id);
-	if(!count($DB_ROW))
-	{
-		exit('La classe et la période ne sont pas reliées !');
-	}
-	$date_mysql_debut = $DB_ROW['jointure_date_debut'];
-	$date_mysql_fin   = $DB_ROW['jointure_date_fin'];
-	$date_debut = convert_date_mysql_to_french($date_mysql_debut);
-	$date_fin   = convert_date_mysql_to_french($date_mysql_fin);
-}
-if($date_mysql_debut>$date_mysql_fin)
-{
-	exit('La date de début est postérieure à la date de fin !');
-}
-
-$tab_item = array();	// [item_id] => array(item_ref,item_nom,item_coef,item_cart,item_socle,item_lien,calcul_methode,calcul_limite);
-$tab_liste_item = array();	// [i] => item_id
-$tab_eleve      = array();	// [i] => array(eleve_id,eleve_nom,eleve_prenomeleve_id_gepi)
-$tab_matiere    = array();	// [matiere_id] => matiere_nom
-$tab_eval       = array();	// [eleve_id][matiere_id][item_id][devoir] => array(note,date,info) On utilise un tableau multidimensionnel vu qu'on ne sait pas à l'avance combien il y a d'évaluations pour un élève et un item donnés.
-$tab_matiere_for_item = array();	// [item_id] => matiere_id
-
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-// Récupération de la liste des items travaillés durant la période choisie, pour les élèves selectionnés
-// Récupération de la liste des matières travaillées
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-$tab_compet_liste = (isset($_POST['f_compet_liste'])) ? explode('_',$_POST['f_compet_liste']) : array() ;
-$tab_compet_liste = array_map('clean_entier',$tab_compet_liste);
-$liste_compet = implode(',',$tab_compet_liste);
-list($tab_item,$tab_matiere) = DB_STRUCTURE_BILAN::DB_recuperer_arborescence_selection($liste_eleve,$liste_compet,$date_mysql_debut,$date_mysql_fin,$aff_domaine,$aff_theme);
-// Si les items sont issus de plusieurs matières, alors on les regroupe en une seule.
-$is_multimatiere = (count($tab_matiere)>1) ? TRUE : FALSE ;
-if($is_multimatiere)
-{
-	$tab_matiere = array( 0 => implode(' - ',$tab_matiere) );
-}
-
-$item_nb = count($tab_item);
-if(!$item_nb)
-{
-	exit('Aucun item sélectionné n\'a été évalué pour ces élèves durant cette période !');
-}
-$tab_liste_item = array_keys($tab_item);
-$liste_item = implode(',',$tab_liste_item);
-
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-// Récupération de la liste des élèves
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-$tab_eleve = DB_STRUCTURE_BILAN::DB_lister_eleves_cibles($liste_eleve,$with_gepi=TRUE,$with_langue=FALSE);
-if(!is_array($tab_eleve))
-{
-	exit('Aucun élève trouvé correspondant aux identifiants transmis !');
-}
-$eleve_nb = count($tab_eleve);
-
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-// Récupération de la liste des résultats des évaluations associées à ces items donnés d'une matiere donnée, pour les élèves selectionnés, sur la période sélectionnée
-// Attention, il faut éliminer certains items qui peuvent potentiellement apparaitre dans des relevés d'élèves alors qu'ils n'ont pas été interrogés sur la période considérée (mais un camarade oui).
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-$tab_score_a_garder = array();
-$DB_TAB = DB_STRUCTURE_BILAN::DB_lister_date_last_eleves_items($liste_eleve,$liste_item);
-foreach($DB_TAB as $DB_ROW)
-{
-	$tab_score_a_garder[$DB_ROW['eleve_id']][$DB_ROW['item_id']] = ($DB_ROW['date_last']<$date_mysql_debut) ? false : true ;
-}
-
-$date_mysql_debut = ($retroactif=='non') ? $date_mysql_debut : false;
-$DB_TAB = DB_STRUCTURE_BILAN::DB_lister_result_eleves_matieres($liste_eleve , $liste_item , $date_mysql_debut , $date_mysql_fin , $_SESSION['USER_PROFIL']);
-foreach($DB_TAB as $DB_ROW)
-{
-	if($tab_score_a_garder[$DB_ROW['eleve_id']][$DB_ROW['item_id']])
-	{
-		$matiere_id = ($is_multimatiere) ? 0 : $DB_ROW['matiere_id'] ;
-		$tab_eval[$DB_ROW['eleve_id']][$matiere_id][$DB_ROW['item_id']][] = array('note'=>$DB_ROW['note'],'date'=>$DB_ROW['date'],'info'=>$DB_ROW['info']);
-		$tab_matiere_for_item[$DB_ROW['item_id']] = $matiere_id;	// sert pour la synthèse sur une sélection d'items issus de différentes matières
-	}
-}
-$matiere_nb = count(array_unique($tab_matiere_for_item));
-
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 // INCLUSION DU CODE COMMUN À PLUSIEURS PAGES
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-require('./_inc/code_releve_bilan_item.php');
+
+$make_for    = 'releve';
+$make_action = '';
+$make_html   = TRUE;
+$make_pdf    = TRUE;
+
+require('./_inc/code_items_releve.php');
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 // On retourne les résultats
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
 if($affichage_direct)
 {
 	echo'<hr />';
@@ -195,14 +115,12 @@ if($affichage_direct)
 }
 else
 {
-	if($type_bulletin)
+	if($type_individuel)
 	{
-		echo'<h2>Bulletin</h2>';
+		echo'<h2>Relevé individuel</h2>';
 		echo'<ul class="puce">';
-		echo'<li><a class="lien_ext" href="'.$dossier.str_replace('<REPLACE>','bulletin_note_appreciation',$fichier_nom).'.csv"><span class="file file_txt">Récupérer notes et appréciations à importer dans GEPI (format <em>csv</em> <img alt="" src="./_img/bulle_aide.png" title="Si le navigateur ouvre le fichier au lieu de l\'enregistrer, cliquer avec le bouton droit et choisir «&nbsp;Enregistrer&nbsp;sous...&nbsp;»." />).</span></a></li>';
-		echo'<li><a class="lien_ext" href="'.$dossier.str_replace('<REPLACE>','bulletin_note',$fichier_nom).'.csv"><span class="file file_txt">Récupérer les notes à importer dans GEPI (format <em>csv</em> <img alt="" src="./_img/bulle_aide.png" title="Si le navigateur ouvre le fichier au lieu de l\'enregistrer, cliquer avec le bouton droit et choisir «&nbsp;Enregistrer&nbsp;sous...&nbsp;»." />).</span></a></li>';
-		echo'<li><a class="lien_ext" href="'.$dossier.str_replace('<REPLACE>','bulletin_appreciation',$fichier_nom).'.csv"><span class="file file_txt">Récupérer les appréciations à importer dans GEPI (format <em>csv</em> <img alt="" src="./_img/bulle_aide.png" title="Si le navigateur ouvre le fichier au lieu de l\'enregistrer, cliquer avec le bouton droit et choisir «&nbsp;Enregistrer&nbsp;sous...&nbsp;»." />).</span></a></li>';
-		echo'<li><a class="lien_ext" href="./releve-html.php?fichier='.str_replace('<REPLACE>','bulletin',$fichier_nom).'"><span class="file file_htm">Explorer / Manipuler (format <em>html</em>).</span></a></li>';
+		echo'<li><a class="lien_ext" href="'.$dossier.str_replace('<REPLACE>','individuel',$fichier_nom).'.pdf"><span class="file file_pdf">Archiver / Imprimer (format <em>pdf</em>).</span></a></li>';
+		echo'<li><a class="lien_ext" href="./releve-html.php?fichier='.str_replace('<REPLACE>','individuel',$fichier_nom).'"><span class="file file_htm">Explorer / Manipuler (format <em>html</em>).</span></a></li>';
 		echo'</ul>';
 	}
 	if($type_synthese)
@@ -213,12 +131,19 @@ else
 		echo'<li><a class="lien_ext" href="./releve-html.php?fichier='.str_replace('<REPLACE>','synthese',$fichier_nom).'"><span class="file file_htm">Explorer / Manipuler (format <em>html</em>).</span></a></li>';
 		echo'</ul>';
 	}
-	if($type_individuel)
+	if($type_bulletin)
 	{
-		echo'<h2>Relevé individuel</h2>';
+		echo'<h2>Bulletin SACoche</h2>';
 		echo'<ul class="puce">';
-		echo'<li><a class="lien_ext" href="'.$dossier.str_replace('<REPLACE>','individuel',$fichier_nom).'.pdf"><span class="file file_pdf">Archiver / Imprimer (format <em>pdf</em>).</span></a></li>';
-		echo'<li><a class="lien_ext" href="./releve-html.php?fichier='.str_replace('<REPLACE>','individuel',$fichier_nom).'"><span class="file file_htm">Explorer / Manipuler (format <em>html</em>).</span></a></li>';
+		echo'<li><a class="lien_ext" href="./releve-html.php?fichier='.str_replace('<REPLACE>','bulletin',$fichier_nom).'"><span class="file file_htm">Explorer / Manipuler (format <em>html</em>).</span></a></li>';
+		echo $bulletin_form;
+		echo'</ul>';
+		echo $bulletin_alerte;
+		echo'<h2>Bulletin Gepi</h2>';
+		echo'<ul class="puce">';
+		echo'<li><a class="lien_ext" href="'.$dossier.str_replace('<REPLACE>','bulletin_note_appreciation',$fichier_nom).'.csv"><span class="file file_txt">Récupérer notes et appréciations à importer dans GEPI (format <em>csv</em> <img alt="" src="./_img/bulle_aide.png" title="Si le navigateur ouvre le fichier au lieu de l\'enregistrer, cliquer avec le bouton droit et choisir «&nbsp;Enregistrer&nbsp;sous...&nbsp;»." />).</span></a></li>';
+		echo'<li><a class="lien_ext" href="'.$dossier.str_replace('<REPLACE>','bulletin_note',$fichier_nom).'.csv"><span class="file file_txt">Récupérer les notes à importer dans GEPI (format <em>csv</em> <img alt="" src="./_img/bulle_aide.png" title="Si le navigateur ouvre le fichier au lieu de l\'enregistrer, cliquer avec le bouton droit et choisir «&nbsp;Enregistrer&nbsp;sous...&nbsp;»." />).</span></a></li>';
+		echo'<li><a class="lien_ext" href="'.$dossier.str_replace('<REPLACE>','bulletin_appreciation',$fichier_nom).'.csv"><span class="file file_txt">Récupérer les appréciations à importer dans GEPI (format <em>csv</em> <img alt="" src="./_img/bulle_aide.png" title="Si le navigateur ouvre le fichier au lieu de l\'enregistrer, cliquer avec le bouton droit et choisir «&nbsp;Enregistrer&nbsp;sous...&nbsp;»." />).</span></a></li>';
 		echo'</ul>';
 	}
 }

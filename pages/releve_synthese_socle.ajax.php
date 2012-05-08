@@ -303,7 +303,7 @@ foreach($tab_eleve as $tab)
 			$releve_html_body .= '<td class="nu2"></td>';
 			foreach($tab as $socle_id => $socle_nom)
 			{
-				$releve_html_body .= affich_pourcentage_html( 'td' , $tab_score_socle_eleve[$socle_id][$eleve_id] , $detail=false );
+				$releve_html_body .= affich_pourcentage_html( 'td' , $tab_score_socle_eleve[$socle_id][$eleve_id] , FALSE /*detail*/ , FALSE /*largeur*/ );
 			}
 		}
 		$releve_html_body .= '</tr>';

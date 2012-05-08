@@ -123,6 +123,7 @@ function __autoload($class_name)
 		'DB_STRUCTURE_WEBMESTRE'      => '_sql'.DIRECTORY_SEPARATOR.'requetes_structure_webmestre.php' ,
 
 		'DB_STRUCTURE_BILAN'          => '_sql'.DIRECTORY_SEPARATOR.'requetes_structure_bilan.php' ,
+		'DB_STRUCTURE_OFFICIEL'       => '_sql'.DIRECTORY_SEPARATOR.'requetes_structure_officiel.php' ,
 		'DB_STRUCTURE_COMMUN'         => '_sql'.DIRECTORY_SEPARATOR.'requetes_structure_commun.php' ,
 		'DB_STRUCTURE_MAJ_BASE'       => '_sql'.DIRECTORY_SEPARATOR.'requetes_structure_maj_base.php' ,
 		'DB_STRUCTURE_REFERENTIEL'    => '_sql'.DIRECTORY_SEPARATOR.'requetes_structure_referentiel.php' ,

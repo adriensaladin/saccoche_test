@@ -132,7 +132,7 @@ public function DB_lister_professeurs_groupe($groupe_id)
  */
 public function DB_lister_classes_groupes_professeur($prof_id)
 {
-	$DB_SQL = 'SELECT groupe_id, groupe_nom, groupe_type ';
+	$DB_SQL = 'SELECT groupe_id, groupe_nom, groupe_type, jointure_pp ';
 	$DB_SQL.= 'FROM sacoche_jointure_user_groupe ';
 	$DB_SQL.= 'LEFT JOIN sacoche_groupe USING (groupe_id) ';
 	$DB_SQL.= 'LEFT JOIN sacoche_niveau USING (niveau_id) ';
@@ -140,6 +140,23 @@ public function DB_lister_classes_groupes_professeur($prof_id)
 	$DB_SQL.= 'ORDER BY groupe_type ASC, niveau_ordre ASC, groupe_nom ASC';
 	$DB_VAR = array(':user_id'=>$prof_id,':type1'=>'classe',':type2'=>'groupe');
 	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+}
+
+/**
+ * lister_classes_eleves_from_groupes
+ *
+ * @param string   $listing_groupe_id   id des groupes séparés par des virgules
+ * @return array
+ */
+public function DB_lister_classes_eleves_from_groupes($listing_groupe_id)
+{
+	$DB_SQL = 'SELECT groupe_id, eleve_classe_id ';
+	$DB_SQL.= 'FROM sacoche_jointure_user_groupe ';
+	$DB_SQL.= 'LEFT JOIN sacoche_user USING (user_id) ';
+	$DB_SQL.= 'WHERE groupe_id IN ('.$listing_groupe_id.') AND user_profil=:profil AND user_sortie_date>NOW() AND eleve_classe_id!=0 ';
+	$DB_SQL.= 'GROUP BY groupe_id, eleve_classe_id ';
+	$DB_VAR = array(':profil'=>'eleve');
+	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR , TRUE);
 }
 
 /**
@@ -399,6 +416,25 @@ public function DB_lister_selection_items($user_id)
 	$DB_SQL.= 'FROM sacoche_selection_item ';
 	$DB_SQL.= 'WHERE user_id=:user_id ';
 	$DB_VAR = array(':user_id'=>$user_id);
+	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+}
+
+/**
+ * lister_jointure_groupe_periode ; le rangement par ordre de période permet, si les périodes se chevauchent, que javascript choisisse la 1ère par défaut
+ *
+ * @param string   $listing_user_id   id des élèves séparés par des virgules
+ * @return array
+ */
+public function DB_lister_periodes_bulletins_saisies_ouvertes($listing_user_id)
+{
+	$DB_SQL = 'SELECT periode_id, periode_nom, GROUP_CONCAT(user_id SEPARATOR "_") AS eleves_listing ';
+	$DB_SQL.= 'FROM sacoche_user ';
+	$DB_SQL.= 'LEFT JOIN sacoche_jointure_groupe_periode ON sacoche_user.eleve_classe_id=sacoche_jointure_groupe_periode.groupe_id ';
+	$DB_SQL.= 'LEFT JOIN sacoche_periode USING (periode_id) ';
+	$DB_SQL.= 'WHERE user_id IN ('.$listing_user_id.') AND officiel_bulletin=:etat ';
+	$DB_SQL.= 'GROUP BY periode_id ';
+	$DB_SQL.= 'ORDER BY periode_ordre ASC';
+	$DB_VAR = array(':etat'=>'2rubrique');
 	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 

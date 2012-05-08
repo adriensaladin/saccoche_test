@@ -200,6 +200,37 @@ public function DB_recuperer_arborescence_palier($palier_id=FALSE)
 }
 
 /**
+ * recuperer_groupe_nom
+ *
+ * @param int   $groupe_id
+ * @return string
+ */
+public function DB_recuperer_groupe_nom($groupe_id)
+{
+	$DB_SQL = 'SELECT groupe_nom ';
+	$DB_SQL.= 'FROM sacoche_groupe ';
+	$DB_SQL.= 'WHERE groupe_id=:groupe_id ';
+	$DB_VAR = array(':groupe_id'=>$groupe_id);
+	return DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+}
+
+/**
+ * Drecuperer_matieres_professeur
+ *
+ * @param int $user_id
+ * @return string
+ */
+public function DB_recuperer_matieres_professeur($user_id)
+{
+	$DB_SQL = 'SELECT GROUP_CONCAT(matiere_id SEPARATOR ",") AS listing_matieres_id ';
+	$DB_SQL.= 'FROM sacoche_jointure_user_matiere ';
+	$DB_SQL.= 'LEFT JOIN sacoche_matiere USING (matiere_id) ';
+	$DB_SQL.= 'WHERE user_id=:user_id AND matiere_active=1 ';
+	$DB_VAR = array(':user_id'=>$user_id);
+	return DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+}
+
+/**
  * lister_niveaux_etablissement
  *
  * @param bool $with_specifiques
@@ -214,6 +245,23 @@ public function DB_lister_niveaux_etablissement($with_specifiques)
 	$DB_SQL.= ($with_specifiques) ? '' : 'AND niveau_famille_categorie=1 ';
 	$DB_SQL.= 'ORDER BY niveau_ordre ASC';
 	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
+}
+
+/**
+ * lister_classes_etabl_for_bilan_officiel
+ *
+ * @param void
+ * @return array
+ */
+public function DB_lister_classes_etabl_for_bilan_officiel()
+{
+	$DB_SQL = 'SELECT groupe_id, groupe_nom ';
+	$DB_SQL.= 'FROM sacoche_groupe ';
+	$DB_SQL.= 'LEFT JOIN sacoche_niveau USING (niveau_id) ';
+	$DB_SQL.= 'WHERE groupe_type=:type1 ';
+	$DB_SQL.= 'ORDER BY niveau_ordre ASC, groupe_nom ASC';
+	$DB_VAR = array(':type1'=>'classe');
+	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
 /**
@@ -317,7 +365,26 @@ public function DB_lister_users_regroupement($profil,$statut,$groupe_type,$group
 	}
 	// On peut maintenant assembler les morceaux de la requête !
 	$DB_SQL = 'SELECT '.$champs.' '.$from.$ljoin.$where.$group.'ORDER BY '.$prefixe.'user_nom ASC, '.$prefixe.'user_prenom ASC';
-	$DB_VAR  = array( ':profil'=>str_replace('parent','eleve',$profil) , ':groupe'=>$groupe_id , ':niveau'=>$groupe_id , ':classe'=>0 ) ;
+	$DB_VAR = array( ':profil'=>str_replace('parent','eleve',$profil) , ':groupe'=>$groupe_id , ':niveau'=>$groupe_id , ':classe'=>0 ) ;
+	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+}
+
+/**
+ * lister_eleves_classe_et_groupe
+ * Utilisé dans le cas particulier des bilans officiels
+ *
+ * @param int   $classe_id
+ * @param int   $groupe_id
+ * @return array
+ */
+public function DB_lister_eleves_classe_et_groupe($classe_id,$groupe_id)
+{
+	$DB_SQL = 'SELECT user_id,user_nom,user_prenom ';
+	$DB_SQL.= 'FROM sacoche_jointure_user_groupe ';
+	$DB_SQL.= 'LEFT JOIN sacoche_user USING (user_id) ';
+	$DB_SQL.= 'WHERE groupe_id=:groupe AND eleve_classe_id=:classe AND user_profil=:profil AND user_sortie_date>NOW() ';
+	$DB_SQL.= 'ORDER BY user_nom ASC, user_prenom ASC ';
+	$DB_VAR = array( ':groupe'=>$groupe_id , ':classe'=>$classe_id , ':profil'=>'eleve' );
 	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
@@ -1146,6 +1213,7 @@ public function DB_OPT_professeurs_directeurs_etabl($statut)
 	$DB_SQL.= 'ORDER BY user_profil DESC, user_nom ASC, user_prenom ASC';
 	$DB_VAR = array(':profil1'=>'professeur',':profil2'=>'directeur');
 	$DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+	Formulaire::$tab_select_option_first = array(0,'Tampon de l\'établissement','');
 	Formulaire::$tab_select_optgroup = array('directeur'=>'Directeurs','professeur'=>'Professeurs');
 	return count($DB_TAB) ? $DB_TAB : 'Aucun professeur ou directeur trouvé.' ;
 }

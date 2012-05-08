@@ -30,88 +30,8 @@ $(document).ready
 	function()
 	{
 
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-//	ORDONNER => Gestion de l'ordre des matières avec jQuery UI Sortable
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-
-		var modification = false;
-
-		function modif_ordre()
-		{
-			if(modification==false)
-			{
-				$('#ajax_msg_ordre').removeAttr("class").addClass("alerte").html("Ordre non enregistré !");
-				modification = true;
-				return false;
-			}
-		}
-
-		$('#sortable').sortable( { cursor:'n-resize' , update:function(event,ui){modif_ordre();} } );
-
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-//	ORDONNER => Clic sur le lien pour mettre à jour l'ordre des matières
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-
-		$('#Enregistrer_ordre').click
-		(
-			function()
-			{
-				if(!modification)
-				{
-					$('#ajax_msg_ordre').removeAttr("class").addClass("alerte").html("Aucune modification effectuée !");
-				}
-				else
-				{
-					// On récupère la liste des matières dans l'ordre de la page
-					var tab_id = new Array();
-					$('#sortable').children('li').each
-					(
-						function()
-						{
-							var test_id = $(this).attr('id').substring(2);
-							if(test_id)
-							{
-								tab_id.push(test_id);
-							}
-						}
-					);
-					$('#form_ordonner button').prop('disabled',true);
-					$('#ajax_msg_ordre').removeAttr("class").addClass("loader").html("Connexion au serveur&hellip;");
-					$.ajax
-					(
-						{
-							type : 'POST',
-							url : 'ajax.php?page='+PAGE,
-							data : 'f_action=enregistrer_ordre&tab_id='+tab_id,
-							dataType : "html",
-							error : function(msg,string)
-							{
-								$('#form_ordonner button').prop('disabled',false);
-								$('#ajax_msg_ordre').removeAttr("class").addClass("alerte").html('Echec de la connexion !');
-								return false;
-							},
-							success : function(responseHTML)
-							{
-								initialiser_compteur();
-								$('#form_ordonner button').prop('disabled',false);
-								if(responseHTML!='ok')
-								{
-									$('#ajax_msg_ordre').removeAttr("class").addClass("alerte").html(responseHTML);
-								}
-								else
-								{
-									modification = false;
-									$('#ajax_msg_ordre').removeAttr("class").addClass("valide").html("Ordre enregistré !");
-								}
-							}
-						}
-					);
-				}
-			}
-		);
-
 		//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
-		//	PARAMÉTRAGE => Afficher masquer des thèmes ou des domaines
+		//	Afficher masquer des thèmes ou des domaines
 		//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
 
 		$('#form_synthese input').click
@@ -141,7 +61,7 @@ $(document).ready
 		);
 
 		//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
-		//	PARAMÉTRAGE => Enregistrer une modification
+		//	Enregistrer une modification
 		//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
 
 		$('#form_synthese button').click
@@ -166,7 +86,7 @@ $(document).ready
 					{
 						type : 'POST',
 						url : 'ajax.php?page='+PAGE,
-						data : 'f_action='+'modifier_mode_synthese'+'&f_methode='+f_methode+'&f_matiere='+f_matiere+'&f_niveau='+f_niveau,
+						data : 'f_methode='+f_methode+'&f_matiere='+f_matiere+'&f_niveau='+f_niveau,
 						dataType : "html",
 						error : function(msg,string)
 						{

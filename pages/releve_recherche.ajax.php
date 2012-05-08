@@ -131,7 +131,7 @@ if( $is_matiere_items_bilanMS || $is_matiere_items_bilanPA )
 		$tab_item[$DB_ROW['item_id']] = array('item_coef'=>$DB_ROW['item_coef'],'calcul_methode'=>$DB_ROW['calcul_methode'],'calcul_limite'=>$DB_ROW['calcul_limite']);
 	}
 	// Un directeur effectuant une recherche sur un grand nombre d'items pour tous les élèves de l'établissement peut provoquer un dépassement de mémoire.
-	$DB_TAB = DB_STRUCTURE_BILAN::DB_lister_result_eleves_matieres( $liste_eleve , $compet_liste , NULL /*date_mysql_debut*/ , NULL /*date_mysql_fin*/ , $_SESSION['USER_PROFIL'] , TRUE /*onlynote*/ );
+	$DB_TAB = DB_STRUCTURE_BILAN::DB_lister_result_eleves_items( $liste_eleve , $compet_liste , 0 /*matiere_id*/ , NULL /*date_mysql_debut*/ , NULL /*date_mysql_fin*/ , $_SESSION['USER_PROFIL'] , TRUE /*onlynote*/ );
 	foreach($DB_TAB as $DB_ROW)
 	{
 		$tab_eval[$DB_ROW['eleve_id']][$DB_ROW['item_id']][]['note'] = $DB_ROW['note'];
@@ -288,7 +288,7 @@ if( $is_matiere_items_bilanMS || $is_matiere_items_bilanPA )
 			if( in_array( $user_acquisition_etat , $critere_tab_seuil_acquis ) )
 			{
 				$checkbox = ($affichage_checkbox) ? '<td class="nu"><input type="checkbox" name="id_user[]" value="'.$user_id.'" /></td>' : '' ;
-				$tab_tr[] = '<tr>'.$checkbox.'<td>'.html($user_nom.' '.$user_prenom).'</td>'.affich_pourcentage_html( 'td' , $tab_eleve_pourcentage[$user_id] , $detail=true ).'</tr>';
+				$tab_tr[] = '<tr>'.$checkbox.'<td>'.html($user_nom.' '.$user_prenom).'</td>'.affich_pourcentage_html( 'td' , $tab_eleve_pourcentage[$user_id] , TRUE /*detail*/ , FALSE /*largeur*/ ).'</tr>';
 			}
 		}
 	}
@@ -340,7 +340,7 @@ if( $is_socle_item_pourcentage )
 			$drapeau_langue = $is_langue ? $eleve_langue : 0 ;
 			$image_langue = ($drapeau_langue) ? '<img src="./_img/drapeau/'.$drapeau_langue.'.gif" alt="" title="'.$tab_langues[$drapeau_langue]['texte'].'" /> ' : '' ;
 			$checkbox = ($affichage_checkbox) ? '<td class="nu"><input type="checkbox" name="id_user[]" value="'.$user_id.'" /></td>' : '' ;
-			$tab_tr[] = '<tr>'.$checkbox.'<td>'.$image_langue.html($user_nom.' '.$user_prenom).'</td>'.affich_pourcentage_html( 'td' , $tab_score_socle_eleve[$user_id] , $detail=true ).'</tr>';
+			$tab_tr[] = '<tr>'.$checkbox.'<td>'.$image_langue.html($user_nom.' '.$user_prenom).'</td>'.affich_pourcentage_html( 'td' , $tab_score_socle_eleve[$user_id] , TRUE /*detail*/ , FALSE /*largeur*/ ).'</tr>';
 		}
 	}
 }
@@ -370,7 +370,7 @@ if( $is_socle_item_validation || $is_socle_pilier_validation )
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
 $nb_resultats = count($tab_tr);
-$checkbox = ($affichage_checkbox && $nb_resultats) ? '<td class="nu"><input name="leurre" type="image" alt="" src="./_img/auto.gif" /><input id="all_check" type="image" alt="Tout cocher." src="./_img/all_check.gif" title="Tout cocher." /> <input id="all_uncheck" type="image" alt="Tout décocher." src="./_img/all_uncheck.gif" title="Tout décocher." /></td>' : '' ;
+$checkbox = ($affichage_checkbox && $nb_resultats) ? '<td class="nu"><input name="leurre" type="image" alt="leurre" src="./_img/auto.gif" /><input id="all_check" type="image" alt="Tout cocher." src="./_img/all_check.gif" title="Tout cocher." /> <input id="all_uncheck" type="image" alt="Tout décocher." src="./_img/all_uncheck.gif" title="Tout décocher." /></td>' : '' ;
 $releve_html  = '<hr />';
 $releve_html .= ($affichage_checkbox) ? '<form id="form_synthese" action="#" method="post">' : '' ;
 $releve_html .= '<table class="bilan"><thead><tr>'.$checkbox.'<th>Élève</th><th>État</th></tr></thead><tbody>';

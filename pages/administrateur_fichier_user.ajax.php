@@ -998,7 +998,7 @@ if( $step==31 )
 	$tab_liens_id_base = array('classes'=>$tab_i_classe_TO_id_base,'groupes'=>$tab_i_groupe_TO_id_base,'users'=>$tab_i_fichier_TO_id_base);
 	Ecrire_Fichier($dossier_import.'import_'.$action.'_'.$_SESSION['BASE'].'_'.session_id().'_liens_id_base.txt',serialize($tab_liens_id_base));
 	// On affiche
-	echo'<p><label class="valide">Veuillez vérifier le résultat de l\'analyse des classes.</label><input name="leurre" type="image" alt="" src="./_img/auto.gif" /></p>';
+	echo'<p><label class="valide">Veuillez vérifier le résultat de l\'analyse des classes.</label><input name="leurre" type="image" alt="leurre" src="./_img/auto.gif" /></p>';
 	// Pour sconet_professeurs_directeurs, les groupes ne figurent pas forcément dans le fichier si les services ne sont pas présents -> on ne procède qu'à des ajouts éventuels.
 	if($lignes_del)
 	{
@@ -1197,7 +1197,7 @@ if( $step==41 )
 	$tab_liens_id_base = array('classes'=>$tab_i_classe_TO_id_base,'groupes'=>$tab_i_groupe_TO_id_base,'users'=>$tab_i_fichier_TO_id_base);
 	Ecrire_Fichier($dossier_import.'import_'.$action.'_'.$_SESSION['BASE'].'_'.session_id().'_liens_id_base.txt',serialize($tab_liens_id_base));
 	// On affiche
-	echo'<p><label class="valide">Veuillez vérifier le résultat de l\'analyse des groupes.</label><input name="leurre" type="image" alt="" src="./_img/auto.gif" /></p>';
+	echo'<p><label class="valide">Veuillez vérifier le résultat de l\'analyse des groupes.</label><input name="leurre" type="image" alt="leurre" src="./_img/auto.gif" /></p>';
 	// Pour sconet_professeurs_directeurs, les groupes ne figurent pas forcément dans le fichier si les services ne sont pas présents -> on ne procède qu'à des ajouts éventuels.
 	if($lignes_del)
 	{
@@ -1507,7 +1507,7 @@ if( $step==51 )
 	$tab_liens_id_base = array('classes'=>$tab_i_classe_TO_id_base,'groupes'=>$tab_i_groupe_TO_id_base,'users'=>$tab_i_fichier_TO_id_base);
 	Ecrire_Fichier($dossier_import.'import_'.$action.'_'.$_SESSION['BASE'].'_'.session_id().'_liens_id_base.txt',serialize($tab_liens_id_base));
 	// On affiche
-	echo'<p><label class="valide">Veuillez vérifier le résultat de l\'analyse des utilisateurs.</label><input name="leurre" type="image" alt="" src="./_img/auto.gif" /></p>';
+	echo'<p><label class="valide">Veuillez vérifier le résultat de l\'analyse des utilisateurs.</label><input name="leurre" type="image" alt="leurre" src="./_img/auto.gif" /></p>';
 	if( $lignes_ajouter && $lignes_retirer )
 	{
 		echo'<p class="danger">Si des utilisateurs sont à la fois proposés pour être retirés et ajoutés, alors allez modifier leurs noms/prénoms puis reprenez l\'import au début.</p>';
@@ -2034,7 +2034,7 @@ if( $step==61 )
 			}
 		}
 	// On affiche
-	echo'<p><label class="valide">Veuillez vérifier le résultat de l\'analyse des affectations éventuelles.</label><input name="leurre" type="image" alt="" src="./_img/auto.gif" /></p>';
+	echo'<p><label class="valide">Veuillez vérifier le résultat de l\'analyse des affectations éventuelles.</label><input name="leurre" type="image" alt="leurre" src="./_img/auto.gif" /></p>';
 	if( $lignes_classes_del || $lignes_principal_del || $lignes_groupes_del )
 	{
 		echo'<p class="danger">Des suppressions sont proposées. Elles peuvent provenir d\'un fichier incomplet ou d\'ajouts manuels antérieurs dans SACoche. Décochez-les si besoin !</p>';
@@ -2241,7 +2241,7 @@ if( $step==71 )
 		}
 	}
 	// On affiche
-	echo'<p><label class="valide">Veuillez vérifier le résultat de l\'analyse des adresses.</label><input name="leurre" type="image" alt="" src="./_img/auto.gif" /></p>';
+	echo'<p><label class="valide">Veuillez vérifier le résultat de l\'analyse des adresses.</label><input name="leurre" type="image" alt="leurre" src="./_img/auto.gif" /></p>';
 	echo'<table>';
 	// Cas [1]
 	echo		'<tbody>';
@@ -2435,7 +2435,7 @@ if( $step==81 )
 		}
 	}
 	// On affiche
-	echo'<p><label class="valide">Veuillez vérifier le résultat de l\'analyse des liens de responsabilité.</label><input name="leurre" type="image" alt="" src="./_img/auto.gif" /></p>';
+	echo'<p><label class="valide">Veuillez vérifier le résultat de l\'analyse des liens de responsabilité.</label><input name="leurre" type="image" alt="leurre" src="./_img/auto.gif" /></p>';
 	echo'<table>';
 	// Cas [2]
 	echo		'<tbody>';

@@ -41,7 +41,7 @@ $prenom               = (isset($_POST['f_prenom']))               ? clean_prenom
 $courriel             = (isset($_POST['f_courriel']))             ? clean_courriel($_POST['f_courriel'])          : '';
 
 $dossier_images = './__tmp/logo/';
-$tab_ext_images = array('bmp','gif','jpg','jpeg','png','svg');
+$tab_ext_images = array('bmp','gif','jpg','jpeg','png');
 
 //	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
 // Contenu du select avec la liste des logos disponibles
@@ -77,7 +77,7 @@ elseif($action=='listing_logos')
 		$extension = strtolower(pathinfo($file,PATHINFO_EXTENSION));
 		if(in_array($extension,$tab_ext_images))
 		{
-			$li_logos .= '<li>'.html($file).' <q class="supprimer" title="Supprimer cette image du serveur (aucune confirmation ne sera demandée)."></q><br /><img style="margin:1ex 1ex 3ex" alt="'.html($file).'" src="'.$dossier_images.html($file).'" /></img></li>';
+			$li_logos .= '<li>'.html($file).' <img alt="'.html($file).'" src="'.$dossier_images.html($file).'" /><q class="supprimer" title="Supprimer cette image du serveur (aucune confirmation ne sera demandée)."></q></li>';
 		}
 	}
 	$li_logos = ($li_logos) ? $li_logos : '<li>Aucun fichier image trouvé !</li>';
@@ -90,6 +90,7 @@ elseif($action=='listing_logos')
 
 elseif($action=='upload_logo')
 {
+	// récupération des infos
 	$tab_file = $_FILES['userfile'];
 	$fnom_transmis = $tab_file['name'];
 	$fnom_serveur = $tab_file['tmp_name'];
@@ -100,12 +101,34 @@ elseif($action=='upload_logo')
 		require_once('./_inc/fonction_infos_serveur.php');
 		exit('Erreur : problème de transfert ! Fichier trop lourd ? min(memory_limit,post_max_size,upload_max_filesize)='.minimum_limitations_upload());
 	}
+	// vérifier l'extension
 	$extension = strtolower(pathinfo($fnom_transmis,PATHINFO_EXTENSION));
 	if(!in_array($extension,$tab_ext_images))
 	{
 		exit('Erreur : l\'extension du fichier transmis est incorrecte !');
 	}
-	if(!move_uploaded_file($fnom_serveur , $dossier_images.$fnom_transmis))
+	// vérifier le poids
+	if( $ftaille > 100*1000 )
+	{
+		$conseil = (($extension=='jpg')||($extension=='jpeg')) ? 'réduisez les dimensions de l\'image' : 'convertissez l\'image au format JPEG' ;
+		exit('Erreur : le poids du fichier dépasse les 100 Ko autorisés : '.$conseil.' !');
+	}
+	// vérifier la conformité du fichier image, récupérer les infos le concernant
+	$tab_infos = @getimagesize($fnom_serveur);
+	if($tab_infos==FALSE)
+	{
+		exit('Erreur : le fichier image ne semble pas valide !');
+	}
+	list($image_largeur, $image_hauteur, $image_type, $html_attributs) = $tab_infos;
+	$tab_extension_types = array( IMAGETYPE_GIF=>'gif' , IMAGETYPE_JPEG=>'jpeg' , IMAGETYPE_PNG=>'png' , IMAGETYPE_BMP=>'bmp' ); // http://www.php.net/manual/fr/function.exif-imagetype.php#refsect1-function.exif-imagetype-constants
+
+	if(!isset($tab_extension_types[$image_type]))
+	{
+		exit('Erreur : le fichier transmis n\'est pas un fichier image !');
+	}
+	$image_format = $tab_extension_types[$image_type];
+	// enregistrer le fichier
+	if(!move_uploaded_file($fnom_serveur , $dossier_images.clean_fichier($fnom_transmis)))
 	{
 		exit('Erreur : le fichier n\'a pas pu être enregistré sur le serveur.');
 	}

@@ -153,6 +153,15 @@ public static $tab_select_statut = array(
 	array('valeur'=>0 , 'texte'=>'comptes anciens (date de sortie présente et antérieure)')
 );
 
+public static $tab_select_appreciation = array(
+	array('valeur'=>0   , 'texte'=>'Non → pas de saisie d\'appréciation') ,
+	array('valeur'=>100 , 'texte'=>'Oui → 100 caractères maximum (très court)') ,
+	array('valeur'=>200 , 'texte'=>'Oui → 200 caractères maximum (court)') ,
+	array('valeur'=>300 , 'texte'=>'Oui → 300 caractères maximum (moyen)') ,
+	array('valeur'=>400 , 'texte'=>'Oui → 400 caractères maximum (long)') ,
+	array('valeur'=>500 , 'texte'=>'Oui → 500 caractères maximum (très long)')
+);
+
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 //	Variables utilisées pouvant être initialisés lors d'une requête puis utilisées lors de la construction du formulaire
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-

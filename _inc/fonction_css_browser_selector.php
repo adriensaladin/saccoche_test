@@ -169,8 +169,8 @@ function css_browser_selector($UserAgent=null)
 function afficher_navigateurs_modernes($chemin_image)
 {
 	$tab_navigo = array(
-		'chrome'   => array( 16 , 'http://www.google.fr/chrome') ,
-		'firefox'  => array( 10 , 'http://www.mozilla-europe.org/fr/') ,
+		'chrome'   => array( 18 , 'http://www.google.fr/chrome') ,
+		'firefox'  => array( 12 , 'http://www.mozilla-europe.org/fr/') ,
 		'opera'    => array( 11 , 'http://www.opera-fr.com/telechargements/') ,
 		'safari'   => array(  5 , 'http://www.apple.com/fr/safari/download/') ,
 		'explorer' => array(  9 , 'http://windows.microsoft.com/fr-FR/internet-explorer/products/ie/home')
@@ -191,8 +191,8 @@ function afficher_navigateurs_alertes($hr_avant='',$chemin_image='./_img',$hr_ap
 	$alerte_ancien = '<div class="astuce">Votre navigateur est dépassé ! Utilisez une version récente pour une navigation plus sure, rapide et efficace.</div>';
 	if($tab_infos['nav_modele']=='explorer')
 	{
-		if($tab_infos['nav_version']<7)      $alertes .= '<div class="danger">Votre navigateur est trop ancien pour utiliser <em>SACoche</em> ! Internet Explorer est utilisable à partir de sa version 7.</div>';
-		elseif($tab_infos['nav_version']<9)  $alertes .= '<div class="danger">Votre navigateur dysfonctionne ! Internet Explorer est particulièrement déconseillé avant sa version 9.</div>';
+		if($tab_infos['nav_version']<8)      $alertes .= '<div class="danger">Votre navigateur est trop ancien pour utiliser <em>SACoche</em> ! Internet Explorer est utilisable à partir de sa version 8.</div>';
+		elseif($tab_infos['nav_version']<9)  $alertes .= '<div class="danger">Votre navigateur dysfonctionne ! L\'usage d\'Internet Explorer est déconseillé avant sa version 9.</div>';
 	}
 	elseif($tab_infos['nav_modele']=='firefox')
 	{

@@ -213,29 +213,59 @@ declaration_entete( TRUE /*is_meta_robots*/ , TRUE /*is_favicon*/ , TRUE /*is_rs
 		echo'		<span class="button clock_fixe"><span id="clock">'.$_SESSION['DUREE_INACTIVITE'].' min</span></span>'."\r\n";
 		echo'		<button id="deconnecter" class="deconnecter">Déconnexion</button>'."\r\n";
 		echo'	</div>'."\r\n";
-		$fichier_menu = ($_SESSION['USER_PROFIL']!='webmestre') ? '__menu_'.$_SESSION['USER_PROFIL'] : '__menu_'.$_SESSION['USER_PROFIL'].'_'.HEBERGEUR_INSTALLATION ;
-		require_once('./pages/'.$fichier_menu.'.html'); // Le menu '<ul id="menu">...</ul>
+		// Le menu '<ul id="menu">...</ul>
+		if($_SESSION['USER_PROFIL']=='webmestre')
+		{
+			require_once('./pages/__menu_'.$_SESSION['USER_PROFIL'].'_'.HEBERGEUR_INSTALLATION.'.html');
+		}
+		else
+		{
+			$contenu_menu = file_get_contents('./pages/__menu_'.$_SESSION['USER_PROFIL'].'.html');
+			// La présence de certains éléments du menu dépend des choix de l'établissement
+			if( ($_SESSION['USER_PROFIL']=='professeur') || ($_SESSION['USER_PROFIL']=='directeur') )
+			{
+				$tab_paliers_actifs = explode(',',$_SESSION['LISTE_PALIERS_ACTIFS']);
+				for( $palier_id=1 ; $palier_id<4 ; $palier_id++ )
+				{
+					if(!in_array($palier_id,$tab_paliers_actifs))
+					{
+						$tab_bad = array(      '<li><a class="officiel_palier'.$palier_id.'"' , 'palier '.$palier_id.'</a></li>'     );
+						$tab_bon = array( '<!-- <li><a class="officiel_palier'.$palier_id.'"' , 'palier '.$palier_id.'</a></li> -->' );
+						$contenu_menu = str_replace( $tab_bad , $tab_bon , $contenu_menu );
+					}
+				}
+			}
+			echo $contenu_menu;
+		}
+		
 		echo'</div>'."\r\n";
+		echo'<div id="cadre_navig"><a id="go_haut" href="#cadre_haut" title="Haut de page"></a><a id="go_bas" href="#ancre_bas" title="Bas de page"></a></div>'."\r\n";
 		echo'<div id="cadre_bas">'."\r\n";
 		echo'	<h1>» '.$TITRE.'</h1>';
-		if(count($tab_messages_erreur))
-		{
-			echo'<hr /><div class="danger o">'.implode('</div><div class="danger o">',$tab_messages_erreur).'</div><hr />';
-		}
-		echo 	$CONTENU_PAGE;
-		echo'</div>'."\r\n";
 	}
 	else
 	{
 		// Accueil (identification ou procédure d'installation) : cadre unique (avec image SACoche & image hébergeur).
 		echo'<div id="cadre_milieu">'."\r\n";
-		$hebergeur_img  = ( (defined('HEBERGEUR_LOGO')) && (is_file('./__tmp/logo/'.HEBERGEUR_LOGO)) ) ? '<img alt="Hébergeur" src="./__tmp/logo/'.HEBERGEUR_LOGO.'" />' : '' ;
-		$hebergeur_lien = ( (defined('HEBERGEUR_ADRESSE_SITE')) && HEBERGEUR_ADRESSE_SITE && ($hebergeur_img) ) ? '<a href="'.html(HEBERGEUR_ADRESSE_SITE).'">'.$hebergeur_img.'</a>' : $hebergeur_img ;
-		$SACoche_lien   = '<a href="'.SERVEUR_PROJET.'"><img alt="Suivi d\'Acquisition de Compétences" src="./_img/logo_grand.gif" width="208" height="71" /></a>' ;
-		echo ($PAGE=='public_accueil') ? '<h1 class="logo">'.$SACoche_lien.$hebergeur_lien.'</h1>' : '<h1>» '.$TITRE.'</h1>' ;
-		echo 	$CONTENU_PAGE;
-		echo'</div>'."\r\n";
+		if($PAGE=='public_accueil')
+		{
+			$tab_image_infos = ( (defined('HEBERGEUR_LOGO')) && (is_file('./__tmp/logo/'.HEBERGEUR_LOGO)) ) ? getimagesize('./__tmp/logo/'.HEBERGEUR_LOGO) : array() ;
+			$hebergeur_img   = count($tab_image_infos) ? '<img alt="Hébergeur" src="./__tmp/logo/'.HEBERGEUR_LOGO.'" '.$tab_image_infos[3].' />' : '' ;
+			$hebergeur_lien  = ( (defined('HEBERGEUR_ADRESSE_SITE')) && HEBERGEUR_ADRESSE_SITE && ($hebergeur_img) ) ? '<a href="'.html(HEBERGEUR_ADRESSE_SITE).'">'.$hebergeur_img.'</a>' : $hebergeur_img ;
+			$SACoche_lien    = '<a href="'.SERVEUR_PROJET.'"><img alt="Suivi d\'Acquisition de Compétences" src="./_img/logo_grand.gif" width="208" height="71" /></a>' ;
+			echo'<h1 class="logo">'.$SACoche_lien.$hebergeur_lien.'</h1>';
+		}
+		else
+		{
+			echo'<h1>» '.$TITRE.'</h1>';
+		}
 	}
+	if(count($tab_messages_erreur))
+	{
+		echo'<hr /><div class="danger o">'.implode('</div><div class="danger o">',$tab_messages_erreur).'</div>';
+	}
+	echo $CONTENU_PAGE;
+	echo'<span id="ancre_bas"></span></div>'."\r\n";
 	?>
 	<script type="text/javascript">
 		var PAGE='<?php echo $PAGE ?>';

@@ -28,7 +28,7 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = "Bienvenue dans votre espace identifié";
 
-$tab_accueil = array( 'user'=>'' , 'alert'=>'' , 'info'=>array() , 'help'=>'' );
+$tab_accueil = array( 'user'=>'' , 'alert'=>'' , 'info'=>array() , 'help'=>'' , 'ecolo'=>'' );
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 //	Alertes (pour l'administrateur) ; affiché après mais à définir avant
@@ -116,7 +116,7 @@ else
 {
 	if(HEBERGEUR_INSTALLATION=='multi-structures')
 	{
-		$tab_accueil['user'] .= '<div>Adresse à utiliser pour une sélection automatique de l\'établissement&nbsp;: <b>'.SERVEUR_ADRESSE.'/?id='.$_SESSION['BASE'].'</b></div>';
+		$tab_accueil['user'] .= '<div>Adresse à utiliser pour une sélection automatique de l\'établissement&nbsp;: <b>'.SERVEUR_ADRESSE.'/?base='.$_SESSION['BASE'].'</b></div>';
 	}
 	if($_SESSION['CONNEXION_MODE']!='normal')
 	{
@@ -126,7 +126,7 @@ else
 }
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-//	Panneau d'informations
+//	Panneau d'informations ou message écolo
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
 if($_SESSION['USER_PROFIL']!='webmestre')
@@ -136,8 +136,12 @@ if($_SESSION['USER_PROFIL']!='webmestre')
 	{
 		foreach($DB_TAB as $key => $DB_ROW)
 		{
-			$tab_accueil['info'][$key] = '<p class="b i">Communication ('.html($DB_ROW['user_prenom']{0}.'. '.$DB_ROW['user_nom']).')&nbsp;:</p>'.'<p>'.nl2br(html($DB_ROW['message_contenu'])).'</p>';
+			$tab_accueil['info'][$key] = '<p class="b u">Communication ('.html($DB_ROW['user_prenom']{0}.'. '.$DB_ROW['user_nom']).')&nbsp;:</p>'.'<p>'.nl2br(html($DB_ROW['message_contenu'])).'</p>';
 		}
+	}
+	elseif($_SESSION['USER_PROFIL']!='administrateur')
+	{
+		$tab_accueil['ecolo'] = '<p class="b">Afin de préserver l\'environnement, n\'imprimer qu\'en cas de nécessité !</p><div>Enregistrer la version numérique d\'un document (grille, relevé, bilan) suffit pour le consulter, l\'archiver, le partager, &hellip;</div>';
 	}
 }
 

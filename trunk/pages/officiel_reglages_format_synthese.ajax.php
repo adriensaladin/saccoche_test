@@ -28,50 +28,15 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 if($_SESSION['SESAMATH_ID']==ID_DEMO) {exit('Action désactivée pour la démo...');}
 
-$action     = (isset($_POST['f_action']))  ? clean_texte($_POST['f_action'])   : '';
 $methode    = (isset($_POST['f_methode'])) ? clean_texte($_POST['f_methode'])  : '';
 $matiere_id = (isset($_POST['f_matiere'])) ? clean_entier($_POST['f_matiere']) : 0;
 $niveau_id  = (isset($_POST['f_niveau']))  ? clean_entier($_POST['f_niveau'])  : 0;
-
-// Contrôler la liste des ids transmis
-$tab_id = (isset($_POST['tab_id'])) ? array_map('clean_entier',explode(',',$_POST['tab_id'])) : array() ;
-$tab_id = array_filter($tab_id,'positif');
-
-//	////////////////////////////////////////////////////////////////////////////////////////////////////
-//	Modifier l'ordre des matières
-//	////////////////////////////////////////////////////////////////////////////////////////////////////
-
-if( ($action=='enregistrer_ordre') && count($tab_id) )
-{
-	$nb_modifs = 0;
-	// récupérer les ordres des matières pour les comparer (et ne mettre à jour que ce qui a changé).
-	$DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_matieres_etablissement( FALSE /*order_by_name*/ );
-	$tab_ordre_avant = array();
-	foreach($DB_TAB as $DB_ROW)
-	{
-		$tab_ordre_avant[$DB_ROW['matiere_id']] = $DB_ROW['matiere_ordre'];
-	}
-	foreach($tab_id as $key => $matiere_id)
-	{
-		$ordre_apres = $key+1;
-		if($ordre_apres!=$tab_ordre_avant[$matiere_id])
-		{
-			DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_matiere_ordre($matiere_id,$ordre_apres);
-			$nb_modifs++;
-		}
-	}
-	if(!$nb_modifs)
-	{
-		exit('Aucune modification effectuée !');
-	}
-	exit('ok');
-}
 
 //	////////////////////////////////////////////////////////////////////////////////////////////////////
 //	Modifier le mode de synthèse d'un référentiel
 //	////////////////////////////////////////////////////////////////////////////////////////////////////
 
-if( ($action=='modifier_mode_synthese') && in_array($methode,array('inconnu','sans','domaine','theme')) && $matiere_id && $niveau_id )
+if( in_array($methode,array('inconnu','sans','domaine','theme')) && $matiere_id && $niveau_id )
 {
 	DB_STRUCTURE_REFERENTIEL::DB_modifier_referentiel( $matiere_id , $niveau_id , array(':mode_synthese'=>$methode) );
 	exit('ok');

@@ -111,7 +111,7 @@ $(document).ready
 		( 'click' , function()
 			{
 				memo_li = $(this).parent();
-				logo = $(this).next().next().attr('alt');
+				logo = $(this).prev().attr('alt');
 				$('#ajax_listing').removeAttr("class").addClass("loader").html("Connexion au serveur&hellip;");
 				$.ajax
 				(
@@ -176,10 +176,10 @@ $(document).ready
 				$('#ajax_upload').removeAttr("class").addClass("erreur").html('Cliquer sur "Parcourir..." pour indiquer un chemin de fichier correct.');
 				return false;
 			}
-			else if ('.bmp.gif.jpg.jpeg.png.svg.'.indexOf('.'+fichier_extension.toLowerCase()+'.')==-1)
+			else if ('.bmp.gif.jpg.jpeg.png.'.indexOf('.'+fichier_extension.toLowerCase()+'.')==-1)
 			{
 				$("button").prop('disabled',false);
-				$('#ajax_upload').removeAttr("class").addClass("erreur").html('Le fichier "'+fichier_nom+'" n\'a pas une extension d\'image autorisée (bmp gif jpg jpeg png svg).');
+				$('#ajax_upload').removeAttr("class").addClass("erreur").html('Le fichier "'+fichier_nom+'" n\'a pas une extension d\'image autorisée (bmp gif jpg jpeg png).');
 				return false;
 			}
 			else

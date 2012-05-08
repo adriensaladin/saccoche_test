@@ -50,7 +50,7 @@ $select_f_statuts = Formulaire::afficher_select(Formulaire::$tab_select_statut  
 	<table class="form t9 hsort">
 		<thead>
 			<tr>
-				<th class="nu"><input name="leurre" type="image" alt="" src="./_img/auto.gif" /><input id="all_check" type="image" alt="Tout cocher." src="./_img/all_check.gif" title="Tout cocher." /><br /><input id="all_uncheck" type="image" alt="Tout décocher." src="./_img/all_uncheck.gif" title="Tout décocher." /></th>
+				<th class="nu"><input name="leurre" type="image" alt="leurre" src="./_img/auto.gif" /><input id="all_check" type="image" alt="Tout cocher." src="./_img/all_check.gif" title="Tout cocher." /><br /><input id="all_uncheck" type="image" alt="Tout décocher." src="./_img/all_uncheck.gif" title="Tout décocher." /></th>
 				<th>Id. ENT</th>
 				<th>Id. GEPI</th>
 				<th>Id Sconet</th>

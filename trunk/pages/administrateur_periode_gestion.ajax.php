@@ -87,7 +87,7 @@ else if( ($action=='supprimer') && $id )
 	// Effacer l'enregistrement
 	DB_STRUCTURE_ADMINISTRATEUR::DB_supprimer_periode($id);
 	// Log de l'action
-	ajouter_log_SACoche('Suppression d\'une période (n°'.$id.').');
+	ajouter_log_SACoche('Suppression d\'une période (n°'.$id.'), avec les bulletins associés.');
 	// Afficher le retour
 	echo'<td>ok</td>';
 }

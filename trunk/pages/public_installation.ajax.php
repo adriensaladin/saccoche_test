@@ -391,7 +391,8 @@ if( $step==6 )
 	if($nb_tables_presentes)
 	{
 		$s = ($nb_tables_presentes>1) ? 's' : '' ;
-		$affichage .= '<p><label class="alerte">'.$nb_tables_presentes.' table'.$s.' de SACoche étant déjà présente'.$s.' dans la base &laquo;&nbsp;<b>'.$BASE_NOM.'</b>&nbsp;&raquo;, les tables n\'ont pas été installées.</label></p>'."\r\n";
+		$base_nom = (HEBERGEUR_INSTALLATION=='mono-structure') ? SACOCHE_STRUCTURE_BD_NAME : SACOCHE_WEBMESTRE_BD_NAME ;
+		$affichage .= '<p><label class="alerte">'.$nb_tables_presentes.' table'.$s.' de SACoche étant déjà présente'.$s.' dans la base &laquo;&nbsp;<b>'.$base_nom.'</b>&nbsp;&raquo;, les tables n\'ont pas été installées.</label></p>'."\r\n";
 		$affichage .= '<p class="astuce">Si besoin, supprimez les tables manuellement, puis <a href="#" class="step6">relancer l\'étape 6.</a><label id="ajax_msg">&nbsp;</label></p>'."\r\n";
 		$affichage .= '<hr />'."\r\n";
 		$affichage .= '<h2>Installation logicielle terminée</h2>'."\r\n";

@@ -48,11 +48,11 @@ $(document).ready
 // Alerter sur la nécessité de valider
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
-		$("input").change
+		$("select , input").change
 		(
 			function()
 			{
-				$('#ajax_msg').removeAttr("class").addClass("erreur").html("Penser à valider les modifications.");
+				$('#ajax_msg').removeAttr("class").addClass("alerte").html("Penser à valider les modifications.");
 			}
 		);
 

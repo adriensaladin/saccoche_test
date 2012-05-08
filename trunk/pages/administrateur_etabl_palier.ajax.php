@@ -45,6 +45,10 @@ if($action=='Choix_paliers')
 		$palier_actif = (in_array($palier_id,$tab_id)) ? 1 : 0 ;
 		DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_palier($palier_id,$palier_actif);
 	}
+	// On mémorise aussi la liste des piliers actifs (base + session)
+	$liste_paliers_actifs = implode(',',$tab_id);
+	DB_STRUCTURE_COMMUN::DB_modifier_parametres( array('liste_paliers_actifs'=>$liste_paliers_actifs) );
+	$_SESSION['LISTE_PALIERS_ACTIFS'] = $liste_paliers_actifs;
 	exit('ok');
 }
 

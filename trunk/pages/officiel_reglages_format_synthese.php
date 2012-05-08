@@ -26,41 +26,12 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-$TITRE = "Paramétrage relevés &amp; bilans";
+$TITRE = "Format de synthèse par référentiel";
 ?>
 
-<div><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__gestion_releves_bilans">DOC : Réglages relevés &amp; bilans</a></span></div>
+<div><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=releves_bilans__reglages_syntheses_bilans#toggle_type_synthese">DOC : Réglages synthèses &amp; bilans &rarr; Format de synthèse adapté suivant chaque référentiel</a></span></div>
 
 <hr />
-
-<h2>Ordre d'affichage des matières</h2>
-
-<form action="#" method="post" id="form_ordonner"><fieldset>
-
-<?php
-// liste des matières
-$DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_matieres_etablissement( FALSE /*order_by_name*/ );
-if(!count($DB_TAB))
-{
-	echo'<p class="danger">Aucune matière enregistrée ou associée à l\'établissement !</p>'; // impossible vu qu'il y a au moins la matière transversale...
-}
-else
-{
-	echo'<ul id="sortable">';
-	foreach($DB_TAB as $DB_ROW)
-	{
-		echo'<li id="m_'.$DB_ROW['matiere_id'].'">'.html($DB_ROW['matiere_nom']).'</li>';
-	}
-	echo'</ul>';
-	echo'<p><span class="tab"></span><button id="Enregistrer_ordre" type="button" class="valider">Enregistrer cet ordre</button><label id="ajax_msg_ordre">&nbsp;</label></p>';
-}
-?>
-
-</fieldset></form>
-
-<hr />
-
-<h2>Type de synthèse adapté suivant chaque référentiel</h2>
 
 <form action="#" method="post" id="form_synthese"><fieldset>
 
@@ -126,4 +97,4 @@ else
 ?>
 
 </fieldset></form>
-<hr />
+<p />

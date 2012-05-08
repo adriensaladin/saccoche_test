@@ -173,6 +173,186 @@ function calculer_score($tab_devoirs,$calcul_methode,$calcul_limite)
 }
 
 /**
+ * Pour un bulletin d'une période et d'une classe donnée, calculer et mettre à jour toutes les moyennes qui en ont besoin et qui ne sont pas figées manuellement.
+ * Si demandé, calcule et met en session les moyennes des classe.
+ * 
+ * @param int    $periode_id
+ * @param int    $classe_id
+ * @param string $liste_eleve_id
+ * @param string $liste_matiere_id   renseigné pour un prof effectuant une saisie, vide sinon
+ * @param bool   $memo_moyennes_classe
+ * @return void
+ */
+function calculer_et_enregistrer_moyennes_eleves_bulletin($periode_id,$classe_id,$liste_eleve_id,$liste_matiere_id,$memo_moyennes_classe)
+{
+	if(!$liste_eleve_id) return FALSE;
+	// Dates période
+	$DB_ROW = DB_STRUCTURE_COMMUN::DB_recuperer_dates_periode($classe_id,$periode_id);
+	if(!count($DB_ROW)) return FALSE;
+	// Récupération de la liste des items travaillés et affiner la liste des matières concernées
+	$date_mysql_debut = $DB_ROW['jointure_date_debut'];
+	$date_mysql_fin   = $DB_ROW['jointure_date_fin'];
+	list($tab_item,$tab_matiere) = DB_STRUCTURE_BILAN::DB_recuperer_items_travailles($liste_eleve_id,$liste_matiere_id,$date_mysql_debut,$date_mysql_fin);
+	$item_nb = count($tab_item);
+	if(!$item_nb) return FALSE;
+	$tab_liste_item = array_keys($tab_item);
+	$liste_item_id = implode(',',$tab_liste_item);
+	// Récupération de la liste des résultats des évaluations associées à ces items donnés d'une ou plusieurs matieres, pour les élèves selectionnés, sur la période sélectionnée
+	// Attention, il faut éliminer certains items qui peuvent potentiellement apparaitre dans des relevés d'élèves alors qu'ils n'ont pas été interrogés sur la période considérée (mais un camarade oui).
+	$tab_score_a_garder = array();
+	$DB_TAB = DB_STRUCTURE_BILAN::DB_lister_date_last_eleves_items($liste_eleve_id,$liste_item_id);
+	foreach($DB_TAB as $DB_ROW)
+	{
+		$tab_score_a_garder[$DB_ROW['eleve_id']][$DB_ROW['item_id']] = ($DB_ROW['date_last']<$date_mysql_debut) ? false : true ;
+	}
+	$date_mysql_debut = false;
+	$DB_TAB = DB_STRUCTURE_BILAN::DB_lister_result_eleves_items($liste_eleve_id , $liste_item_id , -1 /*matiere_id*/ , $date_mysql_debut , $date_mysql_fin , $_SESSION['USER_PROFIL']);
+	foreach($DB_TAB as $DB_ROW)
+	{
+		if($tab_score_a_garder[$DB_ROW['eleve_id']][$DB_ROW['item_id']])
+		{
+			$tab_eval[$DB_ROW['eleve_id']][$DB_ROW['matiere_id']][$DB_ROW['item_id']][] = array('note'=>$DB_ROW['note']);
+		}
+	}
+	// On calcule les moyennes des élèves dans chaque matière
+	$tab_eleve_id = explode(',',$liste_eleve_id);
+	// On ne calcule pas les moyennes de classe à partir de ces données car on peut n'avoir ici qu'une partie de la classe
+	$tab_moyennes_calculees = array();	// $tab_moyennes_calculees[$matiere_id][$eleve_id]         Retenir la moyenne des scores d'acquisitions / matière / élève
+	// Pour chaque élève...
+	foreach($tab_eleve_id as $eleve_id)
+	{
+		// Si cet élève a été évalué...
+		if(isset($tab_eval[$eleve_id]))
+		{
+			// Pour chaque matiere...
+			foreach($tab_matiere as $matiere_id)
+			{
+				// Si cet élève a été évalué dans cette matière...
+				if(isset($tab_eval[$eleve_id][$matiere_id]))
+				{
+					$tab_score = array();
+					// Pour chaque item...
+					foreach($tab_eval[$eleve_id][$matiere_id] as $item_id => $tab_devoirs)
+					{
+						extract($tab_item[$item_id][0]);	// $item_ref $item_nom $item_coef $item_socle $item_lien $calcul_methode $calcul_limite
+						// calcul du bilan de l'item
+						$tab_score[$item_id] = calculer_score($tab_devoirs,$calcul_methode,$calcul_limite);
+					}
+					// calcul des bilans des scores
+					$tableau_score_filtre = array_filter($tab_score,'non_nul');
+					$nb_scores = count( $tableau_score_filtre );
+					// la moyenne peut être pondérée par des coefficients
+					$somme_scores_ponderes = 0;
+					$somme_coefs = 0;
+					if($nb_scores)
+					{
+						foreach($tableau_score_filtre as $item_id => $item_score)
+						{
+							$somme_scores_ponderes += $item_score*$tab_item[$item_id][0]['item_coef'];
+							$somme_coefs += $tab_item[$item_id][0]['item_coef'];
+						}
+					}
+					// et voilà la moyenne des pourcentages d'acquisition
+					$tab_moyennes_calculees[$matiere_id][$eleve_id] = ($somme_coefs) ? round($somme_scores_ponderes/$somme_coefs,0) / 5 : NULL ; // initialise à NULL pour les matières où il y a des saisies mais seulement ABS NN etc.
+				}
+			}
+		}
+	}
+	// Rechercher les notes déjà enregistrées, et si elles ont été calculées automatiquement ou imposées
+	$tab_moyennes_enregistrees      = array();
+	$tab_appreciations_enregistrees = array();
+	$DB_TAB = DB_STRUCTURE_OFFICIEL::DB_recuperer_bilan_officiel_notes($periode_id,$tab_eleve_id);
+	foreach($DB_TAB as $DB_ROW)
+	{
+		$tab_moyennes_enregistrees[$DB_ROW['rubrique_id']][$DB_ROW['eleve_id']] = ($DB_ROW['saisie_note']!==NULL) ? (float)$DB_ROW['saisie_note'] : FALSE ; // Pas NULL car un test isset() sur une valeur NULL renvoie FALSE !!! (voir qq lignes plus bas)
+		$tab_appreciations_enregistrees[$DB_ROW['rubrique_id']][$DB_ROW['eleve_id']] = $DB_ROW['saisie_appreciation'];
+	}
+	// Mettre à jour les notes qui le nécessitent
+	foreach($tab_moyennes_calculees as $matiere_id => $tab)
+	{
+		foreach($tab as $eleve_id => $note)
+		{
+			if( (!isset($tab_moyennes_enregistrees[$matiere_id][$eleve_id])) || ( ($tab_moyennes_enregistrees[$matiere_id][$eleve_id]!=$note) && ($tab_appreciations_enregistrees[$matiere_id][$eleve_id]=='') ) )
+			{
+				DB_STRUCTURE_OFFICIEL::DB_modifier_bilan_officiel_saisie('bulletin',$periode_id,$eleve_id,$matiere_id,0,$note,'');
+				$tab_moyennes_enregistrees[$matiere_id][$eleve_id] = $note;
+			}
+		}
+	}
+	// Calculer les moyennes de classe ; elles sont mises en session car on en a besoin si on consulte un par un les bulletins des élèves.
+	if($memo_moyennes_classe)
+	{
+		$_SESSION['tmp_moyenne'][$periode_id][$classe_id] = array();
+		foreach($tab_moyennes_enregistrees as $matiere_id => $tab)
+		{
+			$somme  = array_sum($tab_moyennes_enregistrees[$matiere_id]);
+			$nombre = count( array_filter($tab_moyennes_enregistrees[$matiere_id],'non_nul') );
+			$_SESSION['tmp_moyenne'][$periode_id][$classe_id][$matiere_id] = ($nombre) ? round($somme/$nombre,1) : FALSE ;
+		}
+	}
+}
+
+/**
+ * Pour un bulletin d'une période / d'un élève et d'une matière donné, calculer et forcer la mise à jour d'une moyenne (effacée ou figée).
+ * 
+ * @param int    $periode_id
+ * @param int    $classe_id
+ * @param int    $eleve_id
+ * @param array  $matiere_id
+ * @return float   la moyenne en question (FALSE si pb)
+ */
+function calculer_et_enregistrer_moyenne_precise_bulletin($periode_id,$classe_id,$eleve_id,$matiere_id)
+{
+	// Dates période
+	$DB_ROW = DB_STRUCTURE_COMMUN::DB_recuperer_dates_periode($classe_id,$periode_id);
+	if(!count($DB_ROW)) return FALSE;
+	// Récupération de la liste des items travaillés
+	$date_mysql_debut = $DB_ROW['jointure_date_debut'];
+	$date_mysql_fin   = $DB_ROW['jointure_date_fin'];
+	list($tab_item,$tab_matiere) = DB_STRUCTURE_BILAN::DB_recuperer_items_travailles($eleve_id,$matiere_id,$date_mysql_debut,$date_mysql_fin);
+	$item_nb = count($tab_item);
+	if(!$item_nb) return FALSE;
+	$tab_liste_item = array_keys($tab_item);
+	$liste_item_id = implode(',',$tab_liste_item);
+	// Récupération de la liste des résultats des évaluations associées à ces items donnés d'une ou plusieurs matieres, pour les élèves selectionnés, sur la période sélectionnée
+	$date_mysql_debut = false;
+	$DB_TAB = DB_STRUCTURE_BILAN::DB_lister_result_eleves_items($eleve_id , $liste_item_id , -1 /*matiere_id*/ , $date_mysql_debut , $date_mysql_fin , $_SESSION['USER_PROFIL']);
+	if(!count($DB_TAB)) return FALSE;
+	foreach($DB_TAB as $DB_ROW)
+	{
+		$tab_eval[$DB_ROW['item_id']][] = array('note'=>$DB_ROW['note']);
+	}
+	// On calcule la moyenne voulue
+	$tab_score = array();
+	// Pour chaque item...
+	foreach($tab_eval as $item_id => $tab_devoirs)
+	{
+		extract($tab_item[$item_id][0]);	// $item_ref $item_nom $item_coef $item_socle $item_lien $calcul_methode $calcul_limite
+		// calcul du bilan de l'item
+		$tab_score[$item_id] = calculer_score($tab_devoirs,$calcul_methode,$calcul_limite);
+	}
+	// calcul des bilans des scores
+	$tableau_score_filtre = array_filter($tab_score,'non_nul');
+	$nb_scores = count( $tableau_score_filtre );
+	// la moyenne peut être pondérée par des coefficients
+	$somme_scores_ponderes = 0;
+	$somme_coefs = 0;
+	if($nb_scores)
+	{
+		foreach($tableau_score_filtre as $item_id => $item_score)
+		{
+			$somme_scores_ponderes += $item_score*$tab_item[$item_id][0]['item_coef'];
+			$somme_coefs += $tab_item[$item_id][0]['item_coef'];
+		}
+	}
+	// et voilà la moyenne des pourcentages d'acquisition
+	if(!$somme_coefs) return FALSE;
+	$moyennes_calculee = round($somme_scores_ponderes/$somme_coefs,0) / 5 ;
+	DB_STRUCTURE_OFFICIEL::DB_modifier_bilan_officiel_saisie('bulletin',$periode_id,$eleve_id,$matiere_id,0,$moyennes_calculee,'');
+	return $moyennes_calculee;
+}
+
+/**
  * Ajout d'un log dans un fichier d'actions sensibles (un fichier par structure)
  * 
  * @param string $contenu   description de l'action
@@ -917,11 +1097,14 @@ function enregistrer_session_user($BASE,$DB_ROW)
 		'CAS_SERVEUR_PORT',
 		'ENVELOPPE_HORIZONTAL_GAUCHE','ENVELOPPE_HORIZONTAL_MILIEU','ENVELOPPE_HORIZONTAL_DROITE',
 		'ENVELOPPE_VERTICAL_HAUT','ENVELOPPE_VERTICAL_MILIEU','ENVELOPPE_VERTICAL_BAS',
-		'BULLETIN_MARGE_GAUCHE','BULLETIN_MARGE_DROIT','BULLETIN_MARGE_HAUT','BULLETIN_MARGE_BAS'
+		'OFFICIEL_MARGE_GAUCHE','OFFICIEL_MARGE_DROITE','OFFICIEL_MARGE_HAUT','OFFICIEL_MARGE_BAS',
+		'OFFICIEL_RELEVE_APPRECIATION_RUBRIQUE','OFFICIEL_RELEVE_APPRECIATION_GENERALE','OFFICIEL_RELEVE_MOYENNE_SCORES','OFFICIEL_RELEVE_POURCENTAGE_ACQUIS','OFFICIEL_RELEVE_CASES_NB','OFFICIEL_RELEVE_AFF_COEF','OFFICIEL_RELEVE_AFF_SOCLE','OFFICIEL_RELEVE_AFF_DOMAINE','OFFICIEL_RELEVE_AFF_THEME',
+		'OFFICIEL_BULLETIN_APPRECIATION_RUBRIQUE','OFFICIEL_BULLETIN_APPRECIATION_GENERALE','OFFICIEL_BULLETIN_MOYENNE_SCORES','OFFICIEL_BULLETIN_NOTE_SUR_20','OFFICIEL_BULLETIN_MOYENNE_CLASSE',
+		'OFFICIEL_SOCLE_APPRECIATION_RUBRIQUE','OFFICIEL_SOCLE_APPRECIATION_GENERALE','OFFICIEL_SOCLE_ONLY_PRESENCE','OFFICIEL_SOCLE_POURCENTAGE_ACQUIS','OFFICIEL_SOCLE_ETAT_VALIDATION'
 	);
 	$tab_type_tableau = array(
 		'CSS_BACKGROUND-COLOR','CALCUL_VALEUR','CALCUL_SEUIL','NOTE_TEXTE','NOTE_LEGENDE','ACQUIS_TEXTE','ACQUIS_LEGENDE',
-		'ETABLISSEMENT','ENVELOPPE','BULLETIN'
+		'ETABLISSEMENT','ENVELOPPE','OFFICIEL'
 	);
 	foreach($DB_TAB as $DB_ROW)
 	{
@@ -1201,7 +1384,7 @@ function afficher_arborescence_matiere_from_SQL($DB_TAB,$dynamique,$reference,$a
 	$span_avant = ($dynamique) ? '<span>' : '' ;
 	$span_apres = ($dynamique) ? '</span>' : '' ;
 	$retour  = '<ul class="ul_m1">';
-	$retour .= ($aff_input) ? '<input name="leurre" type="image" alt="" src="./_img/auto.gif" />'."\r\n" : "\r\n" ;
+	$retour .= ($aff_input) ? '<input name="leurre" type="image" alt="leurre" src="./_img/auto.gif" />'."\r\n" : "\r\n" ;
 	if(count($tab_matiere))
 	{
 		foreach($tab_matiere as $matiere_id => $matiere_texte)
@@ -1922,6 +2105,29 @@ function tester_date($date)
 {
 	$date_unix = strtotime($date);
 	return ( ($date_unix!==FALSE) && ($date_unix!==-1) ) ? TRUE : FALSE ;
+}
+
+/**
+ * Renvoyer les dimensions d'une image à mettre dans les attributs HTML si on veut limiter son affichage à une largeur / hauteur données.
+ * 
+ * @param int   $largeur_reelle
+ * @param int   $hauteur_reelle
+ * @param int   $largeur_maxi
+ * @param int   $hauteur_maxi
+ * @return array   [$largeur_imposee,$hauteur_imposee]
+ */
+function dimensions_affichage_image($largeur_reelle,$hauteur_reelle,$largeur_maxi,$hauteur_maxi)
+{
+	if( ($largeur_reelle>$largeur_maxi) || ($hauteur_reelle>$hauteur_maxi) )
+	{
+		$coef_reduction_largeur = $largeur_maxi/$largeur_reelle;
+		$coef_reduction_hauteur = $hauteur_maxi/$hauteur_reelle;
+		$coef_reduction = min($coef_reduction_largeur,$coef_reduction_hauteur);
+		$largeur_imposee = round($largeur_reelle*$coef_reduction);
+		$hauteur_imposee = round($hauteur_reelle*$coef_reduction);
+		return array($largeur_imposee,$hauteur_imposee);
+	}
+	return array($largeur_reelle,$hauteur_reelle);
 }
 
 ?>

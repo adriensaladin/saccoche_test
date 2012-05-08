@@ -97,12 +97,12 @@ if(count($DB_TAB))
 	}
 	else
 	{
-		echo'<p><label class="erreur">Aucune période prédéfinie n\'a été configurée par les administrateurs !</label></p>';
+		echo'<p><label class="erreur">Aucune période n\'a été configurée par les administrateurs !</label></p>';
 	}
 }
 else
 {
-	echo'<p><label class="erreur">Aucune classe et aucun groupe ne sont affectés !</label></p>';
+	echo'<p><label class="erreur">Aucune classe ni aucun groupe associé à votre compte !</label></p>';
 }
 
 ?>

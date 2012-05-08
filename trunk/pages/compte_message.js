@@ -200,11 +200,10 @@ $(document).ready
 		{
 			// Ne pas changer ici la valeur de "mode" (qui est à "ajouter" ou "modifier").
 			var message_contenu = $("#f_message_contenu").val();
-			$('#f_message').html(message_contenu);
 			afficher_textarea_reste( $('#f_message') , 255 );
 			// Afficher la zone
 			$.fancybox( { 'href':'#form_message' , onStart:function(){$('#form_message').css("display","block");} , onClosed:function(){$('#form_message').css("display","none");} , 'modal':true , 'centerOnScroll':true } );
-			$('#f_message').focus();
+			$('#f_message').focus().html(message_contenu);
 		};
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-

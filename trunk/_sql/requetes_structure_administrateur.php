@@ -1252,9 +1252,9 @@ public function DB_modifier_liaison_groupe_periode($groupe_id,$periode_id,$etat,
 		}
 		else
 		{
-			$DB_SQL = 'INSERT INTO sacoche_jointure_groupe_periode (groupe_id,periode_id,jointure_date_debut,jointure_date_fin,bulletin_modele,bulletin_etat) ';
-			$DB_SQL.= 'VALUES(:groupe_id,:periode_id,:date_debut,:date_fin,:bulletin_modele,:bulletin_etat)';
-			$DB_VAR = array(':groupe_id'=>$groupe_id,':periode_id'=>$periode_id,':date_debut'=>$date_debut_mysql,':date_fin'=>$date_fin_mysql,':bulletin_modele'=>$_SESSION['BULLETIN']['MODELE_DEFAUT'],':bulletin_etat'=>'ferme_vierge');
+			$DB_SQL = 'INSERT INTO sacoche_jointure_groupe_periode (groupe_id,periode_id,jointure_date_debut,jointure_date_fin) ';
+			$DB_SQL.= 'VALUES(:groupe_id,:periode_id,:date_debut,:date_fin)';
+			$DB_VAR = array(':groupe_id'=>$groupe_id,':periode_id'=>$periode_id,':date_debut'=>$date_debut_mysql,':date_fin'=>$date_fin_mysql);
 		}
 	}
 	else
@@ -1486,7 +1486,7 @@ public function DB_supprimer_periode($periode_id)
 	DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 	// Il faut aussi initialiser les archives des bilans officiels
 	$DB_SQL = 'UPDATE sacoche_officiel_archive ';
-	$DB_SQL = 'SET periode_id=0 ';
+	$DB_SQL.= 'SET periode_id=0 ';
 	$DB_SQL.= 'WHERE periode_id=:periode_id ';
 	DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }

@@ -1348,6 +1348,12 @@ $(document).ready
 							case 84: endroit_report_note = 'tableau'; break; // T
 						}
 					}
+					else if('.16.17.18.20.144.'.indexOf(findme)!=-1)
+					{
+						// Une touche Shift / Ctrl / Alt / CapsLock / VerrNum [*] a été pressée
+						// [*] 144 est aussi un signal particulier envoyé par un clavier étendu en parallèle à chaque appui sur une touche du pavé numérique pour signaler qu'il est actif
+						endroit_report_note = $("input[name=f_endroit_report_note]:checked").val();
+					}
 					$('#f_report_'+endroit_report_note).prop('checked',true);
 					return false; // Evite notamment qu'IE fasse "page précédente" si on appuie sur backspace.
 				}

@@ -338,16 +338,19 @@ foreach($tab_eleve as $tab)
 					// Bulletin - Appréciation
 					if( ($make_for=='officiel') && ($_SESSION['OFFICIEL']['BULLETIN_APPRECIATION_RUBRIQUE']) )
 					{
-						// $tab_saisie[$eleve_id][$matiere_id][0] est normalement toujours défini : soit calculé lors de l'initialisation du bulletin, soit effacé et non recalculé volontairement mais alors vaut NULL
-						foreach($tab_saisie[$eleve_id][$matiere_id] as $prof_id => $tab)
+						// $tab_saisie[$eleve_id][$matiere_id] n'est pas défini si bulletin dans note et pas d'appréciation encore saisie
+						if(isset($tab_saisie[$eleve_id][$matiere_id]))
 						{
-							if($prof_id) // Sinon c'est la note.
+							foreach($tab_saisie[$eleve_id][$matiere_id] as $prof_id => $tab)
 							{
-								extract($tab);	// $prof_info $appreciation $note
-								if($make_html)
+								if($prof_id) // Sinon c'est la note.
 								{
-									$action = ( ($BILAN_ETAT=='2rubrique') && ($make_action=='saisir') && ($prof_id==$_SESSION['USER_ID']) ) ? ' <button type="button" class="modifier">Modifier</button> <button type="button" class="supprimer">Supprimer</button>' : ' <button type="button" class="signaler">Signaler une erreur</button>' ;
-									$releve_HTML .= '<tr id="appr_'.$matiere_id.'_'.$prof_id.'"><td colspan="2" class="now"><div class="notnow">'.html($prof_info).$action.'</div><div class="appreciation">'.html($appreciation).'</div></td></tr>'."\r\n";
+									extract($tab);	// $prof_info $appreciation $note
+									if($make_html)
+									{
+										$action = ( ($BILAN_ETAT=='2rubrique') && ($make_action=='saisir') && ($prof_id==$_SESSION['USER_ID']) ) ? ' <button type="button" class="modifier">Modifier</button> <button type="button" class="supprimer">Supprimer</button>' : ' <button type="button" class="signaler">Signaler une erreur</button>' ;
+										$releve_HTML .= '<tr id="appr_'.$matiere_id.'_'.$prof_id.'"><td colspan="2" class="now"><div class="notnow">'.html($prof_info).$action.'</div><div class="appreciation">'.html($appreciation).'</div></td></tr>'."\r\n";
+									}
 								}
 							}
 						}
@@ -368,7 +371,7 @@ foreach($tab_eleve as $tab)
 					{
 						$tab_resultat_examen[$tab_matiere[$matiere_id]][] = 'Absence de note pour '.html($eleve_nom.' '.$eleve_prenom);
 					}
-					if( ($_SESSION['OFFICIEL']['BULLETIN_APPRECIATION_RUBRIQUE']) && (count($tab_saisie[$eleve_id][$matiere_id])<2) )
+					if( ($_SESSION['OFFICIEL']['BULLETIN_APPRECIATION_RUBRIQUE']) && ( (!isset($tab_saisie[$eleve_id][$matiere_id])) || (count($tab_saisie[$eleve_id][$matiere_id])<2) ) )
 					{
 						$tab_resultat_examen[$tab_matiere[$matiere_id]][] = 'Absence d\'appréciation pour '.html($eleve_nom.' '.$eleve_prenom);
 					}

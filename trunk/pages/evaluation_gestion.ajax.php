@@ -1323,7 +1323,12 @@ if( ($action=='retirer_document') && $devoir_id && in_array($doc_objet,array('su
 	// Suppression du fichier, uniquement si ce n'est pas un lien externe ou vers un devoir d'un autre établissement
 	if(mb_strpos($doc_url,$dossier_devoir_absolu)===0)
 	{
-		unlink(str_replace($dossier_devoir_absolu,$dossier_devoir_relatif,$doc_url));
+		$doc_url_relative = str_replace($dossier_devoir_absolu,$dossier_devoir_relatif,$doc_url);
+		// Il peut être référencé dans une autre évaluation et donc avoir déjà été effacé, ou ne pas être présent sur le serveur en cas de restauration de base ailleurs, etc.
+		if(file_exists($doc_url_relative))
+		{
+			unlink($doc_url_relative);
+		}
 	}
 	// Mise à jour dans la base
 	DB_STRUCTURE_PROFESSEUR::DB_modifier_devoir_document($devoir_id,$_SESSION['USER_ID'],$doc_objet,'');

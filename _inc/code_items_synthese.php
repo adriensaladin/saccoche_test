@@ -254,6 +254,7 @@ if($make_html)
 	$releve_HTML .= $affichage_direct ? '' : '<h2>'.html($texte_periode).'</h2>';
 	$releve_HTML .= '<div class="astuce">Cliquer sur les icones &laquo;<img src="./_img/toggle_plus.gif" alt="+" />&raquo; pour accéder au détail.</div>';
 	$separation = (count($tab_eleve)>1) ? '<hr class="breakafter" />' : '' ;
+	$legende_html = ($legende=='oui') ? affich_legende_html( FALSE /*codes_notation*/ , TRUE /*etat_acquisition*/ , FALSE /*pourcentage_acquis*/ , FALSE /*etat_validation*/ ) : '' ;
 }
 if($make_pdf)
 {
@@ -323,13 +324,13 @@ foreach($tab_eleve as $tab)
 						{
 							$bouton_nettoyer  = ($appreciation!='') ? ' <button type="button" class="nettoyer">Effacer et recalculer.</button>' : '' ;
 							$bouton_supprimer = ($note!==NULL)      ? ' <button type="button" class="supprimer">Supprimer sans recalculer</button>' : '' ;
-							$note = ($note!==NULL) ? ( ($_SESSION['OFFICIEL']['BULLETIN_NOTE_SUR_20']) ? $note : ($note*5).'%' ) : '-' ;
+							$note = ($note!==NULL) ? ( ($_SESSION['OFFICIEL']['BULLETIN_NOTE_SUR_20']) ? $note : ($note*5).'&nbsp;%' ) : '-' ;
 							$appreciation = ($appreciation!='') ? $appreciation : 'Moyenne calculée / reportée / actualisée automatiquement.' ;
 							$action = ( ($BILAN_ETAT=='2rubrique') && ($make_action=='saisir') ) ? ' <button type="button" class="modifier">Modifier</button>'.$bouton_nettoyer.$bouton_supprimer : '' ;
 							$moyenne_classe = '';
 							if( ($make_action=='consulter') && ($_SESSION['OFFICIEL']['BULLETIN_MOYENNE_CLASSE']) )
 							{
-								$note_moyenne = ($_SESSION['tmp_moyenne'][$periode_id][$classe_id][$matiere_id]!==NULL) ? ( ($_SESSION['OFFICIEL']['BULLETIN_NOTE_SUR_20']) ? number_format($_SESSION['tmp_moyenne'][$periode_id][$classe_id][$matiere_id],1,'.','') : round($_SESSION['tmp_moyenne'][$periode_id][$classe_id][$matiere_id]*5).'%' ) : '-' ;
+								$note_moyenne = ($_SESSION['tmp_moyenne_classe'][$periode_id][$classe_id][$matiere_id]!==NULL) ? ( ($_SESSION['OFFICIEL']['BULLETIN_NOTE_SUR_20']) ? number_format($_SESSION['tmp_moyenne_classe'][$periode_id][$classe_id][$matiere_id],1,'.','') : round($_SESSION['tmp_moyenne_classe'][$periode_id][$classe_id][$matiere_id]*5).'&nbsp;%' ) : '-' ;
 								$moyenne_classe = ' Moyenne de classe : '.$note_moyenne;
 							}
 							$releve_HTML .= '<tr id="note_'.$matiere_id.'_0"><td class="now moyenne">'.$note.'</td><td class="now"><span class="notnow">'.html($appreciation).$action.'</span>'.$moyenne_classe.'</td></tr>'."\r\n";
@@ -378,23 +379,34 @@ foreach($tab_eleve as $tab)
 				}
 			}
 		}
-		// Bulletin - Appréciation générale
+		// Bulletin - Appréciation générale + Moyenne générale
 		if( ($make_for=='officiel') && ($_SESSION['OFFICIEL']['BULLETIN_APPRECIATION_GENERALE']) && ($BILAN_ETAT=='3synthese') )
 		{
 			if($make_html)
 			{
-				$releve_HTML .= '<table class="bilan" style="width:900px"><tbody>';
-				$releve_HTML .= '<tr><th>Synthèse générale</th></tr>';
+				$releve_HTML .= '<table class="bilan" style="width:900px"><tbody>'."\r\n";
+				$releve_HTML .= '<tr><th colspan="2">Synthèse générale</th></tr>'."\r\n";
+				if( ($_SESSION['OFFICIEL']['BULLETIN_MOYENNE_SCORES']) && ($_SESSION['OFFICIEL']['BULLETIN_MOYENNE_GENERALE']) )
+				{
+					$note = ($_SESSION['tmp_moyenne_generale'][$periode_id][$classe_id][$eleve_id]!==NULL) ? ( ($_SESSION['OFFICIEL']['BULLETIN_NOTE_SUR_20']) ? $_SESSION['tmp_moyenne_generale'][$periode_id][$classe_id][$eleve_id] : round($_SESSION['tmp_moyenne_generale'][$periode_id][$classe_id][$eleve_id]*5).'&nbsp;%' ) : '-' ;
+					$moyenne_classe = '';
+					if( ($make_action=='consulter') && ($_SESSION['OFFICIEL']['BULLETIN_MOYENNE_CLASSE']) )
+					{
+						$note_moyenne = ($_SESSION['tmp_moyenne_generale'][$periode_id][$classe_id][0]!==NULL) ? ( ($_SESSION['OFFICIEL']['BULLETIN_NOTE_SUR_20']) ? number_format($_SESSION['tmp_moyenne_generale'][$periode_id][$classe_id][0],1,'.','') : round($_SESSION['tmp_moyenne_generale'][$periode_id][$classe_id][0]*5).'&nbsp;%' ) : '-' ;
+						$moyenne_classe = ' Moyenne de classe : '.$note_moyenne;
+					}
+					$releve_HTML .= '<tr><td class="now moyenne">'.$note.'</td><td class="now" style="width:850px"><span class="notnow">Moyenne générale (calculée / actualisée automatiquement).</span>'.$moyenne_classe.'</td></tr>'."\r\n";
+				}
 				if(isset($tab_saisie[$eleve_id][0]))
 				{
 					list($prof_id,$tab) = each($tab_saisie[$eleve_id][0]);
 					extract($tab);	// $prof_info $appreciation $note
 					$action = ( ($BILAN_ETAT=='3synthese') && ($make_action=='saisir') ) ? ' <button type="button" class="modifier">Modifier</button> <button type="button" class="supprimer">Supprimer</button>' : '' ;
-					$releve_HTML .= '<tr id="appr_0_'.$prof_id.'"><td class="now"><div class="notnow">'.html($prof_info).$action.'</div><div class="appreciation">'.html($appreciation).'</div></td></tr>'."\r\n";
+					$releve_HTML .= '<tr id="appr_0_'.$prof_id.'"><td colspan="2" class="now"><div class="notnow">'.html($prof_info).$action.'</div><div class="appreciation">'.html($appreciation).'</div></td></tr>'."\r\n";
 				}
 				elseif( ($BILAN_ETAT=='3synthese') && ($make_action=='saisir') )
 				{
-					$releve_HTML .= '<tr id="appr_0_'.$_SESSION['USER_ID'].'"><td class="now"><div class="hc"><button type="button" class="ajouter">Ajouter l\'appréciation générale.</button></div></td></tr>'."\r\n";
+					$releve_HTML .= '<tr id="appr_0_'.$_SESSION['USER_ID'].'"><td colspan="2" class="now"><div class="hc"><button type="button" class="ajouter">Ajouter l\'appréciation générale.</button></div></td></tr>'."\r\n";
 				}
 				$releve_HTML .= '</tbody></table>'."\r\n";
 			}
@@ -410,7 +422,7 @@ foreach($tab_eleve as $tab)
 		if( ( ($make_html) || ($make_pdf) ) && ($legende=='oui') )
 		{
 			if($make_pdf)  { $releve_PDF->bilan_synthese_legende($format); }
-			if($make_html) { $releve_HTML .= affich_legende_html($note_Lomer=FALSE,$etat_bilan=TRUE); }
+			if($make_html) { $releve_HTML .= $legende_html; }
 		}
 	}
 }

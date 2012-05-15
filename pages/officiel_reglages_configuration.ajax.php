@@ -47,6 +47,7 @@ $bulletin_appreciation_generale = (isset($_POST['f_bulletin_appreciation_general
 $bulletin_moyenne_scores        = (isset($_POST['f_bulletin_moyenne_scores']))        ? 1                                                        : 0;
 $bulletin_note_sur_20           = (isset($_POST['f_bulletin_note_sur_20']))           ? clean_entier($_POST['f_bulletin_note_sur_20'])           : 0; // Est transmis à 0 si f_bulletin_pourcentage coché
 $bulletin_moyenne_classe        = (isset($_POST['f_bulletin_moyenne_classe']))        ? 1                                                        : 0;
+$bulletin_moyenne_generale      = (isset($_POST['f_bulletin_moyenne_generale']))      ? 1                                                        : 0;
 $bulletin_couleur               = (isset($_POST['f_bulletin_couleur']))               ? clean_texte($_POST['f_bulletin_couleur'])                : '';
 $bulletin_legende               = (isset($_POST['f_bulletin_legende']))               ? clean_texte($_POST['f_bulletin_legende'])                : '';
 
@@ -104,6 +105,7 @@ if($objet=='bulletin')
 	$tab_parametres['officiel_bulletin_moyenne_scores']        = $bulletin_moyenne_scores;
 	$tab_parametres['officiel_bulletin_note_sur_20']           = $bulletin_note_sur_20;
 	$tab_parametres['officiel_bulletin_moyenne_classe']        = $bulletin_moyenne_classe;
+	$tab_parametres['officiel_bulletin_moyenne_generale']      = $bulletin_moyenne_generale;
 	$tab_parametres['officiel_bulletin_couleur']               = $bulletin_couleur;
 	$tab_parametres['officiel_bulletin_legende']               = $bulletin_legende;
 	DB_STRUCTURE_COMMUN::DB_modifier_parametres($tab_parametres);
@@ -113,6 +115,7 @@ if($objet=='bulletin')
 	$_SESSION['OFFICIEL']['BULLETIN_MOYENNE_SCORES']        = $bulletin_moyenne_scores ;
 	$_SESSION['OFFICIEL']['BULLETIN_NOTE_SUR_20']           = $bulletin_note_sur_20 ;
 	$_SESSION['OFFICIEL']['BULLETIN_MOYENNE_CLASSE']        = $bulletin_moyenne_classe ;
+	$_SESSION['OFFICIEL']['BULLETIN_MOYENNE_GENERALE']      = $bulletin_moyenne_generale ;
 	$_SESSION['OFFICIEL']['BULLETIN_COULEUR']               = $bulletin_couleur ;
 	$_SESSION['OFFICIEL']['BULLETIN_LEGENDE']               = $bulletin_legende ;
 	exit('ok');

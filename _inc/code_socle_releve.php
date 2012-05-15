@@ -389,11 +389,12 @@ if($make_html)
 	$releve_html .= $affichage_direct ? '' : '<h2>'.html($titre2).'</h2>';
 	$releve_html .= '<div class="astuce">Cliquer sur les icones &laquo;<img src="./_img/toggle_plus.gif" alt="+" />&raquo; pour accéder au détail.</div>';
 	$separation = (count($tab_eleve)>1) ? '<hr />' : '' ;
+	$legende_html = ($legende=='oui') ? affich_legende_html( FALSE /*codes_notation*/ , FALSE /*etat_acquisition*/ , $test_affichage_Pourcentage /*pourcentage_acquis*/ , $test_affichage_Validation /*etat_validation*/ ) : '' ;
 }
 if($make_pdf)
 {
 	// Appel de la classe et définition de qqs variables supplémentaires pour la mise en page PDF
-	$releve_pdf = new PDF($orientation='portrait',$marge_min=7.5,$couleur='oui');
+	$releve_pdf = new PDF($orientation='portrait',$marge_min=7.5,$couleur,$legende);
 	$releve_pdf->releve_socle_initialiser($test_affichage_Pourcentage,$test_affichage_Validation);
 	$break  = ($memo_demande=='palier') ? 0 : $tab_pilier[$pilier_id]['pilier_nb_lignes'] ;
 }
@@ -561,6 +562,11 @@ foreach($tab_eleve as $tab)
 	if($make_html)
 	{
 		$releve_html .= '</table>';
+	}
+	if( ( ($make_html) || ($make_pdf) ) && ($legende=='oui') )
+	{
+		if($make_html) { $releve_html .= $legende_html; }
+		if($make_pdf)  { $releve_pdf->releve_socle_legende($test_affichage_Pourcentage,$test_affichage_Validation); }
 	}
 }
 

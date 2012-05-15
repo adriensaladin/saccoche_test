@@ -43,6 +43,7 @@ table,select,textarea,input,button,div{font:100% "arial","helvetica","nimbus san
 p, *.p{margin-top:1em;margin-bottom:1em}
 img {vertical-align:middle}
 #aide_en_ligne img , .legende img {vertical-align:baseline}
+.legende div {margin-bottom:1px}
 /* td img {vertical-align:baseline} */
 /* label img {vertical-align:text-top} */
 h1{display:block;font-size:120%;text-align:left;font-weight:bold;font-variant:small-caps;color:#33A;letter-spacing:0.15em;margin:1ex 2em;}
@@ -562,7 +563,7 @@ table.bilan_synthese th, table.bilan_synthese td {padding:0 1px}
 /* Défini suivant les préférences de l'établissement : cf actualiser_style_session() dans fonction_divers.php */
 /*
 #tableau_validation tbody th.----- {background:#--- url(./_img/socle/arrow_----.gif) no-repeat center center;opacity:0.2}
-th.v- , td.v- {background:#---}
+th.v- , td.v- , span.v- {background:#---}
 #zone_information .v- {background:#---;padding:0 1em;margin-right:1ex}
 #tableau_validation tbody td[lang=lock] {background:#BBF url(./_img/socle/lock.gif) no-repeat center center;}
 #tableau_validation tbody td[lang=done] {background-image:url(./_img/socle/done.gif) no-repeat center center;}

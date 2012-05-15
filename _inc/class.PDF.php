@@ -366,7 +366,8 @@ class PDF extends FPDF
 			$this->distance_pied = 9;
 		}
 		// Couleurs prédéfinies
-		$this->tab_choix_couleur = ($this->couleur=='oui') ? array('NA'=>'rouge','VA'=>'jaune','A'=>'vert') : array('NA'=>'gris_fonce','VA'=>'gris_moyen','A'=>'gris_clair') ;
+		$this->tab_choix_couleur = ($this->couleur=='oui') ? array( 'NA'=>'rouge'      , 'VA'=>'jaune'      , 'A'=>'vert'        , 'v0'=>'invalidé'   , 'v1'=>'validé'     , 'v2'=>'non renseigné' )
+		                                                   : array( 'NA'=>'gris_fonce' , 'VA'=>'gris_moyen' , 'A'=>'gris_clair'  , 'v0'=>'gris_fonce' , 'v1'=>'gris_clair' , 'v2'=>'blanc'         ) ;
 		$this->tab_couleur['blanc']      = array('r'=>255,'v'=>255,'b'=>255);
 		$this->tab_couleur['gris_clair'] = array('r'=>230,'v'=>230,'b'=>230);
 		$this->tab_couleur['gris_moyen'] = array('r'=>190,'v'=>190,'b'=>190);
@@ -394,9 +395,9 @@ class PDF extends FPDF
 		$br = hexdec(substr($_SESSION['BACKGROUND_V2'],1,2));
 		$bv = hexdec(substr($_SESSION['BACKGROUND_V2'],3,2));
 		$bb = hexdec(substr($_SESSION['BACKGROUND_V2'],5,2));
-		$this->tab_couleur['v0'] = array('r'=>$rr,'v'=>$rv,'b'=>$rb);
-		$this->tab_couleur['v1'] = array('r'=>$vr,'v'=>$vv,'b'=>$vb);
-		$this->tab_couleur['v2'] = array('r'=>$br,'v'=>$bv,'b'=>$bb);
+		$this->tab_couleur['invalidé']      = array('r'=>$rr,'v'=>$rv,'b'=>$rb);
+		$this->tab_couleur['validé']        = array('r'=>$vr,'v'=>$vv,'b'=>$vb);
+		$this->tab_couleur['non renseigné'] = array('r'=>$br,'v'=>$bv,'b'=>$bb);
 		// Lettres utilisées en remplacement des images Lomer pour du noir et blanc
 		$this->tab_lettre['RR'] = $_SESSION['NOTE_TEXTE']['RR'];
 		$this->tab_lettre['R']  = $_SESSION['NOTE_TEXTE']['R'];
@@ -504,7 +505,7 @@ function afficher_etat_validation($gras,$tab_infos)
 	// $tab_infos contient 'etat' / 'date' / 'info'
 	$this->SetFont('Arial' , $gras , $this->taille_police);
 	$texte = ($tab_infos['etat']==2) ? '---' : $tab_infos['date'] ;
-	$this->choisir_couleur_fond('v'.$tab_infos['etat']);
+	$this->choisir_couleur_fond($this->tab_choix_couleur['v'.$tab_infos['etat']]);
 	$this->Cell( $this->validation_largeur , $this->cases_hauteur , pdf($texte) , 1 /*bordure*/ , 1 /*br*/ , 'C' /*alignement*/ , TRUE /*remplissage*/ );
 }
 
@@ -585,16 +586,17 @@ function afficher_pourcentage_acquis($gras,$tab_infos,$detail)
 	}
 
 	//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	//	Méthode pour afficher la légende ($type_legende vaut 'notes' ou 'acquis')
+	//	Méthode pour afficher la légende ( $type_legende = 'codes_notation' | 'etat_acquisition' | 'pourcentage_acquis' | 'etat_validation' )
 	//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	public function afficher_legende($type_legende,$ordonnee)
 	{
+		$espace = '     ';
 		$hauteur = min(4,$this->lignes_hauteur);
 		$this->SetFont('Arial' , '' , ceil($hauteur * 1.6));
 		$this->SetXY($this->marge_gauche , $ordonnee);
-		// Afficher la légende des notes
-		if($type_legende=='notes')
+		// Afficher la légende des codes de notation
+		if($type_legende=='codes_notation')
 		{
 			$memo_lomer_espace_largeur = $this->lomer_espace_largeur;
 			$memo_lomer_espace_hauteur = $this->lomer_espace_hauteur;
@@ -603,24 +605,49 @@ function afficher_pourcentage_acquis($gras,$tab_infos,$detail)
 			$this->taille_police = ceil($hauteur * 1.6); // On est obligé de le changer provisoirement car si impression N&B afficher_note_lomer() l'utilise
 			$this->calculer_dimensions_images($hauteur*1.5,$hauteur);
 			$this->afficher_note_lomer('RR',$border,$br=0);
-			$this->Write($hauteur , pdf($_SESSION['NOTE_LEGENDE']['RR']).'     ' , '');
+			$this->Write($hauteur , pdf($_SESSION['NOTE_LEGENDE']['RR']).$espace , '');
 			$this->afficher_note_lomer('R',$border,$br=0);
-			$this->Write($hauteur , pdf($_SESSION['NOTE_LEGENDE']['R']) .'     ' , '');
+			$this->Write($hauteur , pdf($_SESSION['NOTE_LEGENDE']['R']) .$espace , '');
 			$this->afficher_note_lomer('V',$border,$br=0);
-			$this->Write($hauteur , pdf($_SESSION['NOTE_LEGENDE']['V']) .'     ' , '');
+			$this->Write($hauteur , pdf($_SESSION['NOTE_LEGENDE']['V']) .$espace , '');
 			$this->afficher_note_lomer('VV',$border,$br=0);
-			$this->Write($hauteur , pdf($_SESSION['NOTE_LEGENDE']['VV']).'     ' , '');
+			$this->Write($hauteur , pdf($_SESSION['NOTE_LEGENDE']['VV']).$espace , '');
 			$this->calculer_dimensions_images($memo_lomer_espace_largeur,$memo_lomer_espace_hauteur);
 			$this->taille_police = $memo_taille_police;
 		}
 		// Afficher la légende des états d'acquisition
-		if($type_legende=='acquis')
+		if($type_legende=='etat_acquisition')
 		{
-			foreach($this->tab_choix_couleur as $etat => $couleur_fond)
+			$tab_etats = array('NA','VA','A');
+			foreach($tab_etats as $etat)
 			{
-				$this->choisir_couleur_fond($couleur_fond);
+				$this->choisir_couleur_fond($this->tab_choix_couleur[$etat]);
 				$this->Cell($hauteur*1.5 , $hauteur , pdf($_SESSION['ACQUIS_TEXTE'][$etat]) , 1 /*bordure*/ , 0 /*br*/ , 'C' /*alignement*/ , TRUE /*remplissage*/ );
-				$this->Write($hauteur , pdf($_SESSION['ACQUIS_LEGENDE'][$etat]).'     ' , '');
+				$this->Write($hauteur , pdf($_SESSION['ACQUIS_LEGENDE'][$etat]).$espace , '');
+			}
+		}
+		// Afficher la légende des pourcentages d'items acquis
+		if($type_legende=='pourcentage_acquis')
+		{
+			$tab_seuils = array('NA'=>'< '.$_SESSION['CALCUL_SEUIL']['R'].'%','VA'=>'médian','A'=>'> '.$_SESSION['CALCUL_SEUIL']['V'].'%');
+			$this->Write($hauteur , pdf('Pourcentages d\'items acquis :').$espace , '');
+			foreach($tab_seuils as $etat => $texte)
+			{
+				$this->choisir_couleur_fond($this->tab_choix_couleur[$etat]);
+				$this->Cell(20 , $hauteur , pdf($texte) , 1 /*bordure*/ , 0 /*br*/ , 'C' /*alignement*/ , TRUE /*remplissage*/ );
+				$this->Write($hauteur , $espace , '');
+			}
+		}
+		// Afficher la légende des états de validation
+		if($type_legende=='etat_validation')
+		{
+			$tab_etats = array('v1'=>'Validé','v0'=>'Invalidé','v2'=>'Non renseigné');
+			$this->Write($hauteur , pdf('États de validation :').$espace , '');
+			foreach($tab_etats as $etat => $texte)
+			{
+				$this->choisir_couleur_fond($this->tab_choix_couleur[$etat]);
+				$this->Cell(20 , $hauteur , pdf($texte) , 1 /*bordure*/ , 0 /*br*/ , 'C' /*alignement*/ , TRUE /*remplissage*/ );
+				$this->Write($hauteur , $espace , '');
 			}
 		}
 		$this->SetXY($this->marge_gauche , $ordonnee+$hauteur);
@@ -753,7 +780,7 @@ function afficher_pourcentage_acquis($gras,$tab_infos,$detail)
 	{
 		// Légende : en bas de page si 'multimatiere', à la suite si 'matiere'
 		$ordonnee = ($format=='multimatiere') ?  $this->page_hauteur - $this->marge_bas - $this->lignes_hauteur*0.5 : $this->GetY() + $this->lignes_hauteur*0.5 ;
-		$this->afficher_legende($type_legende='acquis' , $ordonnee);
+		$this->afficher_legende( 'etat_acquisition' /*type_legende*/ , $ordonnee );
 	}
 
 	//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -919,8 +946,8 @@ function afficher_pourcentage_acquis($gras,$tab_infos,$detail)
 	{
 		// Légende : à la suite si 'matiere' , en bas de page si 'multimatiere' ou 'selection',
 		$ordonnee = ($format=='matiere') ? $this->GetY() + $this->lignes_hauteur*0.2 : $this->page_hauteur - $this->marge_bas - $this->lignes_hauteur*1.5 ;
-		$this->afficher_legende($type_legende='notes'  , $ordonnee);
-		$this->afficher_legende($type_legende='acquis' , $this->GetY() + $this->lignes_hauteur*0.2);
+		$this->afficher_legende( 'codes_notation'   /*type_legende*/ , $ordonnee /*ordonnée*/ );
+		$this->afficher_legende( 'etat_acquisition' /*type_legende*/ , $this->GetY() + $this->lignes_hauteur*0.2 );
 	}
 
 	//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1043,7 +1070,7 @@ function afficher_pourcentage_acquis($gras,$tab_infos,$detail)
 
 	public function grille_referentiel_legende()
 	{
-		$this->afficher_legende($type_legende='notes'  , $this->page_hauteur - $this->marge_bas - $this->lignes_hauteur*0.8);
+		$this->afficher_legende( 'codes_notation' /*type_legende*/ , $this->page_hauteur - $this->marge_bas - $this->lignes_hauteur*0.8 /*ordonnée*/ );
 	}
 
 	/*
@@ -1058,11 +1085,13 @@ function afficher_pourcentage_acquis($gras,$tab_infos,$detail)
 	//	releve_socle_pilier()
 	//	releve_socle_section()
 	//	releve_socle_item()
+	//	releve_socle_legende()
 	//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	public function releve_socle_initialiser($test_affichage_Pourcentage,$test_affichage_Validation)
 	{
 		$this->cases_hauteur       = 4.5; // Dans le cas d'un bilan juste sur un pilier, il faudrait oprimiser la hauteur de ligne...
+		$this->lignes_hauteur      = $this->cases_hauteur;
 		$this->taille_police       = 6;
 		$this->pourcentage_largeur = 27.5;
 		$this->validation_largeur  = 17.5;
@@ -1177,6 +1206,20 @@ function afficher_pourcentage_acquis($gras,$tab_infos,$detail)
 		}
 	}
 
+	public function releve_socle_legende($test_affichage_Pourcentage,$test_affichage_Validation)
+	{
+		if($test_affichage_Pourcentage)
+		{
+			$ordonnee = ($test_affichage_Validation) ? $this->page_hauteur - $this->marge_bas - $this->lignes_hauteur*2 : $this->page_hauteur - $this->marge_bas - $this->lignes_hauteur*1 ;
+			$this->afficher_legende( 'pourcentage_acquis' /*type_legende*/ , $ordonnee /*ordonnée*/ );
+		}
+		if($test_affichage_Validation)
+		{
+			$ordonnee = $this->page_hauteur - $this->marge_bas - $this->lignes_hauteur*1 ;
+			$this->afficher_legende( 'etat_validation' /*type_legende*/ , $ordonnee /*ordonnée*/ );
+		}
+	}
+
 	//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	//	Méthodes pour la mise en page d'une synthèse des validations du socle commun
 	//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1184,6 +1227,7 @@ function afficher_pourcentage_acquis($gras,$tab_infos,$detail)
 	//	releve_synthese_socle_entete()
 	//	releve_synthese_socle_validation_eleve()
 	//	releve_synthese_socle_pourcentage_eleve()
+	//	releve_synthese_socle_legende()
 	//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	public function releve_synthese_socle_initialiser($titre_info,$groupe_nom,$palier_nom,$eleves_nb,$items_nb,$piliers_nb)
@@ -1191,10 +1235,11 @@ function afficher_pourcentage_acquis($gras,$tab_infos,$detail)
 		$this->SetMargins($this->marge_gauche , $this->marge_haut , $this->marge_droit);
 		$this->AddPage($this->orientation , 'A4');
 		$this->SetAutoPageBreak(TRUE);
-		$this->eleve_largeur = 40;
-		$this->cases_largeur = ($this->page_largeur - $this->marge_gauche - $this->marge_droit - $this->eleve_largeur - $piliers_nb) / ($items_nb); // - intercolonne de 1 * nb piliers
-		$this->cases_hauteur = ($this->page_hauteur - $this->marge_haut - $this->marge_bas - $this->taille_police - $eleves_nb) / ($eleves_nb+1); // - titre de 5 - ( interligne de 1 * nb élèves )
-		$this->cases_hauteur = min($this->cases_hauteur,10);
+		$this->eleve_largeur  = 40;
+		$this->cases_largeur  = ($this->page_largeur - $this->marge_gauche - $this->marge_droit - $this->eleve_largeur - $piliers_nb) / ($items_nb); // - intercolonne de 1 * nb piliers
+		$this->cases_hauteur  = ($this->page_hauteur - $this->marge_haut - $this->marge_bas - $this->taille_police - $eleves_nb - $this->legende*5) / ($eleves_nb+1); // - titre de 5 - ( interligne de 1 * nb élèves ) - legende
+		$this->cases_hauteur  = min($this->cases_hauteur,10);
+		$this->lignes_hauteur = $this->cases_hauteur;
 		$this->taille_police = 8;
 		// Intitulés
 		$this->SetFont('Arial' , 'B' , $this->taille_police*1.5);
@@ -1235,9 +1280,10 @@ function afficher_pourcentage_acquis($gras,$tab_infos,$detail)
 		foreach($tab_pilier as $pilier_id => $tab)
 		{
 			extract($tab);	// $pilier_ref $pilier_nom $pilier_nb_entrees
+			$texte = ( ($this->couleur=='non') && ($tab_user_pilier[$eleve_id][$pilier_id]['etat']==2) ) ? '-' : '' ;
 			$this->SetX( $this->GetX()+1 );
-			$this->choisir_couleur_fond('v'.$tab_user_pilier[$eleve_id][$pilier_id]['etat']);
-			$this->Cell($pilier_nb_entrees*$this->cases_largeur , $demi_hauteur , '' , 1 /*bordure*/ , 0 /*br*/ , 'C' /*alignement*/ , TRUE /*remplissage*/ );
+			$this->choisir_couleur_fond($this->tab_choix_couleur['v'.$tab_user_pilier[$eleve_id][$pilier_id]['etat']]);
+			$this->Cell($pilier_nb_entrees*$this->cases_largeur , $demi_hauteur , $texte , 1 /*bordure*/ , 0 /*br*/ , 'C' /*alignement*/ , TRUE /*remplissage*/ );
 		}
 		// positionnement pour la suite
 		$this->SetXY( $this->marge_gauche+$this->eleve_largeur , $this->GetY()+$demi_hauteur );
@@ -1250,9 +1296,10 @@ function afficher_pourcentage_acquis($gras,$tab_infos,$detail)
 			$this->SetX( $this->GetX()+1 );
 			foreach($tab as $socle_id => $socle_nom)
 			{
-				$couleur = ( ($tab_user_pilier[$eleve_id][$pilier_id]['etat']==1) && ($tab_user_entree[$eleve_id][$socle_id]['etat']==2) && (!$_SESSION['USER_DALTONISME']) ) ? 'gris_clair' : 'v'.$tab_user_entree[$eleve_id][$socle_id]['etat'] ;
+				$texte = ( ($this->couleur=='non') && ($tab_user_pilier[$eleve_id][$pilier_id]['etat']!=1) && ($tab_user_entree[$eleve_id][$socle_id]['etat']==2) ) ? '-' : '' ;
+				$couleur = ( ($tab_user_pilier[$eleve_id][$pilier_id]['etat']==1) && ($tab_user_entree[$eleve_id][$socle_id]['etat']==2) && (!$_SESSION['USER_DALTONISME']) ) ? 'gris_clair' : $this->tab_choix_couleur['v'.$tab_user_entree[$eleve_id][$socle_id]['etat']] ;
 				$this->choisir_couleur_fond($couleur);
-				$this->Cell( $this->cases_largeur , $demi_hauteur , '' , 1 /*bordure*/ , 0 /*br*/ , 'C' /*alignement*/ , TRUE /*remplissage*/ );
+				$this->Cell( $this->cases_largeur , $demi_hauteur , $texte , 1 /*bordure*/ , 0 /*br*/ , 'C' /*alignement*/ , TRUE /*remplissage*/ );
 			}
 		}
 		// positionnement pour la suite
@@ -1284,6 +1331,16 @@ function afficher_pourcentage_acquis($gras,$tab_infos,$detail)
 		}
 		// positionnement pour la suite
 		$this->SetXY( $this->marge_gauche , $this->GetY()+$this->cases_hauteur+1 );
+	}
+
+	public function releve_synthese_socle_legende($legende,$type)
+	{
+		if($this->legende)
+		{
+			$ordonnee = $this->page_hauteur - $this->marge_bas - $this->lignes_hauteur*0.5 ;
+			$type_legende = ($type=='pourcentage') ? 'pourcentage_acquis' : 'etat_validation' ;
+			$this->afficher_legende( $type_legende , $ordonnee );
+		}
 	}
 
 	//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-

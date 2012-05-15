@@ -121,7 +121,7 @@ $bouton_valider_autoeval = ($_SESSION['USER_PROFIL']=='eleve') ? '<button id="En
 			<tr><td class="nu" colspan="4"></td></tr>
 		</tbody>
 	</table>
-	<?php echo affich_legende_html($note_Lomer=TRUE,$etat_bilan=TRUE); ?>
+	<?php echo affich_legende_html( TRUE /*codes_notation*/ , TRUE /*etat_acquisition*/ , FALSE /*pourcentage_acquis*/ , FALSE /*etat_validation*/ ); ?>
 </div>
 
 <form action="#" method="post" id="zone_eval_saisir" class="hide" onsubmit="return false">
@@ -139,5 +139,5 @@ $bouton_valider_autoeval = ($_SESSION['USER_PROFIL']=='eleve') ? '<button id="En
 		</tbody>
 	</table>
 	<p class="ti"><?php echo $bouton_valider_autoeval ?><input type="hidden" name="f_devoir" id="f_devoir" value="" /> <button id="fermer_zone_saisir" type="button" class="retourner">Retour</button><label id="msg_saisir"></label></p>
-	<?php echo affich_legende_html($note_Lomer=TRUE,$etat_bilan=FALSE); ?>
+	<?php echo affich_legende_html( TRUE /*codes_notation*/ , FALSE /*etat_acquisition*/ , FALSE /*pourcentage_acquis*/ , FALSE /*etat_validation*/ ); ?>
 </form>

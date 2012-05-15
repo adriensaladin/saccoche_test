@@ -192,6 +192,13 @@ $eleve_nb = count($tab_eleve);
 if( !$type_generique && ( ($remplissage=='plein') || ($colonne_bilan=='oui') || $type_synthese || ($_SESSION['USER_PROFIL']=='eleve') ) )
 {
 	$DB_TAB = DB_STRUCTURE_BILAN::DB_lister_result_eleves_items($liste_eleve , $liste_item , $matiere_id , $date_debut=false , $date_fin=false , $_SESSION['USER_PROFIL']) ;
+
+	// Permet d'avoir des informations accessibles en cas d'erreur type « PHP Warning : Invalid argument supplied for foreach() ».
+	if(!is_array($DB_TAB))
+	{
+		ajouter_log_PHP( 'Demande de bilan' /*log_objet*/ , serialize($_POST) /*log_contenu*/ , __FILE__ /*log_fichier*/ , __LINE__ /*log_ligne*/ , TRUE /*only_sesamath*/ );
+	}
+
 	foreach($DB_TAB as $DB_ROW)
 	{
 		$user_id = ($_SESSION['USER_PROFIL']=='eleve') ? $_SESSION['USER_ID'] : $DB_ROW['eleve_id'] ;
@@ -387,6 +394,7 @@ if( $type_generique || $type_individuel )
 	$releve_HTML_individuel  = $affichage_direct ? '' : '<style type="text/css">'.$_SESSION['CSS'].'</style>';
 	$releve_HTML_individuel .= $affichage_direct ? '' : '<h1>Grille d\'items d\'un référentiel</h1>';
 	$releve_HTML_individuel .= $affichage_direct ? '' : '<h2>'.html($matiere_nom.' - Niveau '.$niveau_nom.$msg_socle).'</h2>';
+	$legende_html = ($legende=='oui') ? affich_legende_html( TRUE /*codes_notation*/ , FALSE /*etat_acquisition*/ , FALSE /*pourcentage_acquis*/ , FALSE /*etat_validation*/ ) : '' ;
 	// Appel de la classe et définition de qqs variables supplémentaires pour la mise en page PDF
 	$releve_PDF = new PDF($orientation,$marge_min,$couleur,$legende);
 	$releve_PDF->grille_referentiel_initialiser($cases_nb,$cases_largeur,$lignes_nb,$colonne_bilan,$colonne_vide);
@@ -478,7 +486,7 @@ if( $type_generique || $type_individuel )
 		if($legende=='oui')
 		{
 			$releve_PDF->grille_referentiel_legende();
-			$releve_HTML_individuel .= affich_legende_html($note_Lomer=TRUE,$etat_bilan=FALSE);
+			$releve_HTML_individuel .= $legende_html;
 		}
 	}
 	// On enregistre les sorties HTML et PDF

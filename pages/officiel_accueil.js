@@ -122,7 +122,6 @@ $(document).ready
 		tab_classe_action_to_adresse_page['tamponner'] = 'officiel_action_saisir';
 		tab_classe_action_to_adresse_page['detailler'] = 'officiel_action_examiner';
 		tab_classe_action_to_adresse_page['voir']      = 'officiel_action_consulter';
-
 		tab_classe_action_to_adresse_page['imprimer']  = 'officiel_action_imprimer';
 
 		//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
@@ -185,9 +184,11 @@ $(document).ready
 						$('#form_gestion , #table_bilans').hide(0);
 						$('#zone_chx_rubriques').show(0);
 					}
-					else
+					else if(memo_page=='officiel_action_imprimer')
 					{
-						alert('Fonctionnalité à venir...\nEncore un peu de patience !');
+						// Masquer le tableau ; Afficher la zone de choix des élèves, et si les bulletins sont déjà imprimés / archivés
+						$('#form_gestion , #table_bilans').hide(0);
+						$('#zone_chx_rubriques').show(0);
 					}
 				}
 			}

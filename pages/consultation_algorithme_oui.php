@@ -31,7 +31,7 @@ if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');
 <?php
 $tab_options = array();
 $tab_options['geometrique']  = 'Coefficient multiplié par 2 à chaque devoir (sur les 5 dernières saisies maximum).';
-$tab_options['arithmetique'] = 'Coefficient augmenté de 1 à chaque devoir (sur les 9 dernières saisies maximum).';;
+$tab_options['arithmetique'] = 'Coefficient augmenté de 1 à chaque devoir (sur les 9 dernières saisies maximum).';
 $tab_options['classique']    = 'Moyenne classique non pondérée (comptabiliser autant chaque saisie).';
 $tab_options['bestof1']      = 'Utiliser uniquement la meilleure saisie (une seule réussite suffit donc).';
 $tab_options['bestof2']      = 'Utiliser seulement les 2 meilleures saisies (dont on effectue la moyenne).';

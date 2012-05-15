@@ -383,6 +383,7 @@ if($type_individuel)
 		$releve_HTML_individuel .= $affichage_direct ? '' : '<h2>'.html($texte_periode).'</h2>';
 		$bilan_colspan = $cases_nb + 2 ;
 		$separation = (count($tab_eleve)>1) ? '<hr class="breakafter" />' : '' ;
+		$legende_html = ($legende=='oui') ? affich_legende_html( TRUE /*codes_notation*/ , TRUE /*etat_acquisition*/ , FALSE /*pourcentage_acquis*/ , FALSE /*etat_validation*/ ) : '' ;
 	}
 	if($make_pdf)
 	{
@@ -597,7 +598,7 @@ if($type_individuel)
 			}
 			if( ( ($make_html) || ($make_pdf) ) && ($legende=='oui') )
 			{
-				if($make_html) { $releve_HTML_individuel .= affich_legende_html($note_Lomer=TRUE,$etat_bilan=TRUE); }
+				if($make_html) { $releve_HTML_individuel .= $legende_html; }
 				if($make_pdf)  { $releve_PDF->bilan_item_individuel_legende($format); }
 			}
 		}

@@ -62,15 +62,15 @@ $tab_objets[]  = array( 'droit_socle_acces'=>'accéder au relevé avec les items
 // 7
 $tab_titres[]  = 'Bilans officiels &rarr; Relevé d\'évaluations';
 $tab_profils[] = array( 'directeur'=>'directeurs' , 'professeur'=>'tous les<br />professeurs' , 'profprincipal'=>'professeurs<br />principaux' , 'aucunprof'=>'aucun<br />professeur' );
-$tab_objets[]  = array( 'droit_officiel_releve_appreciation_generale'=>'éditer l\'appréciation générale' , 'droit_officiel_releve_impression_pdf'=>'générer la version PDF imprimable' );
+$tab_objets[]  = array( 'droit_officiel_releve_modifier_statut'=>'modifier le statut (accès saisies&hellip;)' , 'droit_officiel_releve_appreciation_generale'=>'éditer l\'appréciation générale' , 'droit_officiel_releve_impression_pdf'=>'générer la version PDF imprimable' );
 // 8
 $tab_titres[]  = 'Bilans officiels &rarr; Bulletin scolaire';
 $tab_profils[] = array( 'directeur'=>'directeurs' , 'professeur'=>'tous les<br />professeurs' , 'profprincipal'=>'professeurs<br />principaux' , 'aucunprof'=>'aucun<br />professeur' );
-$tab_objets[]  = array( 'droit_officiel_bulletin_appreciation_generale'=>'éditer l\'appréciation générale' , 'droit_officiel_bulletin_impression_pdf'=>'générer la version PDF imprimable' );
+$tab_objets[]  = array( 'droit_officiel_bulletin_modifier_statut'=>'modifier le statut (accès saisies&hellip;)' , 'droit_officiel_bulletin_appreciation_generale'=>'éditer l\'appréciation générale' , 'droit_officiel_bulletin_impression_pdf'=>'générer la version PDF imprimable' );
 // 9
 $tab_titres[]  = 'Bilans officiels &rarr; État de maîtrise du socle';
 $tab_profils[] = array( 'directeur'=>'directeurs' , 'professeur'=>'tous les<br />professeurs' , 'profprincipal'=>'professeurs<br />principaux' , 'aucunprof'=>'aucun<br />professeur' );
-$tab_objets[]  = array( 'droit_officiel_socle_appreciation_generale'=>'éditer l\'appréciation générale' , 'droit_officiel_socle_impression_pdf'=>'générer la version PDF imprimable' );
+$tab_objets[]  = array( 'droit_officiel_socle_modifier_statut'=>'modifier le statut (accès saisies&hellip;)' , 'droit_officiel_socle_appreciation_generale'=>'éditer l\'appréciation générale' , 'droit_officiel_socle_impression_pdf'=>'générer la version PDF imprimable' );
 // 10
 $tab_titres[]  = 'Consultation des archives des bilans officiels';
 $tab_profils[] = array( 'directeur'=>'directeurs' , 'professeur'=>'professeurs' , 'parent'=>'parents' , 'eleve'=>'élèves' );
@@ -88,10 +88,13 @@ $tab_false = array(
 	'droit_voir_officiel_releve_archive__parent','droit_voir_officiel_releve_archive__eleve',
 	'droit_voir_officiel_bulletin_archive__parent','droit_voir_officiel_bulletin_archive__eleve',
 	'droit_voir_officiel_socle_archive__parent','droit_voir_officiel_socle_archive__eleve',
+	'droit_officiel_releve_modifier_statut__professeur','droit_officiel_releve_modifier_statut__profprincipal',
 	'droit_officiel_releve_appreciation_generale__professeur','droit_officiel_releve_appreciation_generale__aucunprof',
 	'droit_officiel_releve_impression_pdf__professeur','droit_officiel_releve_impression_pdf__profprincipal',
+	'droit_officiel_bulletin_modifier_statut__professeur','droit_officiel_bulletin_modifier_statut__profprincipal',
 	'droit_officiel_bulletin_appreciation_generale__professeur','droit_officiel_bulletin_appreciation_generale__aucunprof',
 	'droit_officiel_bulletin_impression_pdf__professeur','droit_officiel_bulletin_impression_pdf__profprincipal',
+	'droit_officiel_socle_modifier_statut__professeur','droit_officiel_socle_modifier_statut__profprincipal',
 	'droit_officiel_socle_appreciation_generale__professeur','droit_officiel_socle_appreciation_generale__aucunprof',
 	'droit_officiel_socle_impression_pdf__professeur','droit_officiel_socle_impression_pdf__profprincipal'
 );

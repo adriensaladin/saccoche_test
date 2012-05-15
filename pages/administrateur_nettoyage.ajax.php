@@ -94,10 +94,10 @@ if($action=='purger')
 		}
 	}
 	ajouter_log_SACoche('Suppression de tous les groupes, hors classes, sans les devoirs associés.');
-	// Supprimer les jointures classes/périodes
-	DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_liaison_groupe_periode($groupe_id=true,$periode_id=true,$etat=false,$date_debut_mysql='',$date_fin_mysql='');
+	// Supprimer les jointures classes/périodes, et donc les états des bilans officiels
+	DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_liaison_groupe_periode( TRUE /*groupe_id*/ , TRUE /*periode_id*/ , FALSE /*etat*/ , '' /*date_debut_mysql*/ ,'' /*date_fin_mysql*/ );
 	// Supprimer les saisies des bilans officiels et archiver définitivement les bilans officiels imprimés
-	DB_STRUCTURE_ADMINISTRATEUR::DB_supprimer_saisies_bilans_officiels();
+	DB_STRUCTURE_ADMINISTRATEUR::DB_supprimer_saisies_et_archiver_bilans_officiels();
 	// Supprimer les comptes utilisateurs désactivés depuis plus de 3 ans
 	$DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_users_desactives_obsoletes();
 	if(count($DB_TAB))
@@ -112,14 +112,15 @@ if($action=='purger')
 	// Supprimer les demandes d'évaluations, ainsi que les reliquats de notes 'REQ'
 	DB_STRUCTURE_ADMINISTRATEUR::DB_supprimer_demandes_evaluation();
 	DB_STRUCTURE_ADMINISTRATEUR::DB_supprimer_saisies_REQ();
-	// En profiter pour optimiser les tables (1 fois par an, ça ne peut pas faire de mal)
+	// En profiter pour optimiser les tables (une fois par an, ça ne peut pas faire de mal)
 	DB_STRUCTURE_ADMINISTRATEUR::DB_optimiser_tables_structure();
 	// Débloquer l'application
 	debloquer_application('automate',$_SESSION['BASE']);
 	// Afficher le retour
 	echo'<li><label class="valide">Évaluations supprimées (saisies associées conservées).</label></li>';
 	echo'<li><label class="valide">Groupes supprimés (avec leurs associations).</label></li>';
-	echo'<li><label class="valide">Jointures classes / périodes supprimées.</label></li>';
+	echo'<li><label class="valide">Jointures classes / périodes / bilans officiels supprimées.</label></li>';
+	echo'<li><label class="valide">Bilans officiels imprimés archivés définitivement.</label></li>';
 	echo'<li><label class="valide">Comptes utilisateurs obsolètes supprimés.</label></li>';
 	echo'<li><label class="valide">Demandes d\'évaluations supprimées.</label></li>';
 	echo'<li><label class="valide">Tables optimisées par MySQL (équivalent d\'un défragmentage).</label></li>';

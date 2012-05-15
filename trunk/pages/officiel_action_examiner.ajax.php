@@ -105,7 +105,7 @@ $liste_eleve_id = implode(',',$tab_eleve_id);
 
 if( ($BILAN_TYPE=='bulletin') && $_SESSION['OFFICIEL']['BULLETIN_MOYENNE_SCORES'] )
 {
-	calculer_et_enregistrer_moyennes_eleves_bulletin( $periode_id , $classe_id , $liste_eleve_id , $liste_rubrique_id , FALSE /*memo_moyennes_classe*/ );
+	calculer_et_enregistrer_moyennes_eleves_bulletin( $periode_id , $classe_id , $liste_eleve_id , $liste_rubrique_id , FALSE /*memo_moyennes_classe*/ , FALSE /*memo_moyennes_generale*/ );
 }
 
 // Récupérer les saisies déjà effectuées pour le bilan officiel concerné
@@ -131,7 +131,7 @@ $make_pdf    = FALSE;
 if($BILAN_TYPE=='releve')
 {
 	$format          = 'multimatiere';
-	$with_coef       = 1;; // Il n'y a que des relevés par matière et pas de synthèse commune : on prend en compte les coefficients pour chaque relevé matière.
+	$with_coef       = 1; // Il n'y a que des relevés par matière et pas de synthèse commune : on prend en compte les coefficients pour chaque relevé matière.
 	$matiere_id      = true;
 	$matiere_nom     = '';
 	$groupe_id       = (!$is_sous_groupe) ? $classe_id  : $groupe_id ; // Le groupe = la classe (par défaut) ou le groupe transmis

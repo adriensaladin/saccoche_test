@@ -53,9 +53,11 @@ $tab_matieres = DB_STRUCTURE_COMMUN::DB_OPT_matieres_etabl();
 $tab_paliers  = DB_STRUCTURE_COMMUN::DB_OPT_paliers_etabl();
 $of_p = (count($tab_paliers)<2) ? 'non' : 'oui' ;
 
-$select_matiere = Formulaire::afficher_select($tab_matieres , $select_nom=false      , $option_first='non' , $selection=true                                 , $optgroup='non');
-$select_palier  = Formulaire::afficher_select($tab_paliers  , $select_nom='f_palier' , $option_first=$of_p , $selection=Formulaire::$tab_choix['palier_id'] , $optgroup='non');
-$select_groupe  = Formulaire::afficher_select($tab_groupes  , $select_nom='f_groupe' , $option_first='oui' , $selection=false                                , $optgroup='oui');
+$select_matiere = Formulaire::afficher_select($tab_matieres                   , $select_nom=false      , $option_first='non'  , $selection=true                                , $optgroup='non');
+$select_palier  = Formulaire::afficher_select($tab_paliers                    , $select_nom='f_palier' , $option_first=$of_p  , $selection=Formulaire::$tab_choix['palier_id'] , $optgroup='non');
+$select_groupe  = Formulaire::afficher_select($tab_groupes                    , $select_nom='f_groupe' , $option_first='oui'  , $selection=false                               , $optgroup='oui');
+$select_couleur = Formulaire::afficher_select(Formulaire::$tab_select_couleur , $select_nom='f_couleur' , $option_first='non' , $selection=Formulaire::$tab_choix['couleur']   , $optgroup='non');
+$select_legende = Formulaire::afficher_select(Formulaire::$tab_select_legende , $select_nom='f_legende' , $option_first='non' , $selection=Formulaire::$tab_choix['legende']   , $optgroup='non');
 ?>
 
 <ul class="puce">
@@ -76,6 +78,13 @@ $select_groupe  = Formulaire::afficher_select($tab_groupes  , $select_nom='f_gro
 	</p>
 	<label class="tab" for="f_groupe">Classe / groupe :</label><?php echo $select_groupe ?><input type="hidden" id="f_groupe_type" name="f_groupe_type" value="" /><input type="hidden" id="f_groupe_nom" name="f_groupe_nom" value="" /><label id="ajax_maj_eleve">&nbsp;</label><br />
 	<label class="tab" for="f_eleve"><img alt="" src="./_img/bulle_aide.png" title="Utiliser la touche &laquo;&nbsp;Shift&nbsp;&raquo; pour une sélection multiple contiguë.<br />Utiliser la touche &laquo;&nbsp;Ctrl&nbsp;&raquo; pour une sélection multiple non contiguë." /> Élève(s) :</label><select id="f_eleve" name="f_eleve[]" multiple size="7" class="hide"><option></option></select>
+	<div class="toggle">
+		<span class="tab"></span><a href="#" class="puce_plus toggle">Afficher plus d'options</a>
+	</div>
+	<div class="toggle hide">
+		<span class="tab"></span><a href="#" class="puce_moins toggle">Afficher moins d'options</a><br />
+		<label class="tab"><img alt="" src="./_img/bulle_aide.png" title="Pour le format pdf." /> Impression :</label><?php echo $select_couleur ?> <?php echo $select_legende ?>
+	</div>
 	<p><span class="tab"></span><button id="bouton_valider" type="submit" class="generer" disabled>Générer.</button><label id="ajax_msg">&nbsp;</label></p>
 </fieldset></form>
 

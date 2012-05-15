@@ -38,10 +38,16 @@ if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');
 if(!isset($BILAN_TYPE)) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = $tab_types[$BILAN_TYPE]['titre'];
 
-$droit_configuration = (in_array($_SESSION['USER_PROFIL'],array('administrateur','directeur'))) ? TRUE : FALSE ;
-
 require_once('./_inc/tableau_profils.php'); // Charge $tab_profil_libelle[$profil][court|long][1|2]
 $tab_profils = array('directeur','professeur','profprincipal');
+
+// Indication des profils pouvant modifier le statut d'un bilan
+$str_objet = str_replace( array(',aucunprof','aucunprof,','aucunprof') , '' , $_SESSION['DROIT_OFFICIEL_'.$tab_types[$BILAN_TYPE]['droit'].'_MODIFIER_STATUT'] );
+foreach($tab_profils as $profil)
+{
+	$str_objet = str_replace($profil,$tab_profil_libelle[$profil]['long'][2],$str_objet);
+}
+$profils_modifier_statut = ($str_objet=='') ? 'aucun' : ( (strpos($str_objet,',')===false) ? 'uniquement les '.$str_objet : str_replace(',',' + ',$str_objet) ) ;
 
 // Indication des profils ayant accès à l'appréciation générale
 $str_objet = str_replace( array(',aucunprof','aucunprof,','aucunprof') , '' , $_SESSION['DROIT_OFFICIEL_'.$tab_types[$BILAN_TYPE]['droit'].'_APPRECIATION_GENERALE'] );
@@ -59,14 +65,24 @@ foreach($tab_profils as $profil)
 }
 $profils_impression_pdf = ($str_objet=='') ? 'aucun' : ( (strpos($str_objet,',')===false) ? 'uniquement les '.$str_objet : str_replace(',',' + ',$str_objet) ) ;
 
+// Droit de modifier le statut d'un bilan (dans le cas PP, restera à affiner classe par classe...).
+$affichage_formulaire_statut = 
+( 
+	   ($_SESSION['USER_PROFIL']=='administrateur')
+	|| ( ($_SESSION['USER_PROFIL']=='directeur')  && (strpos($_SESSION['DROIT_OFFICIEL_'.$tab_types[$BILAN_TYPE]['droit'].'_MODIFIER_STATUT'],'directeur')!==false) )
+	|| ( ($_SESSION['USER_PROFIL']=='professeur') && (strpos($_SESSION['DROIT_OFFICIEL_'.$tab_types[$BILAN_TYPE]['droit'].'_MODIFIER_STATUT'],'professeur')!==false) )
+	|| ( ($_SESSION['USER_PROFIL']=='professeur') && (strpos($_SESSION['DROIT_OFFICIEL_'.$tab_types[$BILAN_TYPE]['droit'].'_MODIFIER_STATUT'],'profprincipal')!==false) && (DB_STRUCTURE_PROFESSEUR::DB_tester_prof_principal($_SESSION['USER_ID'])) )
+) ? TRUE : FALSE ;
+
 ?>
 
 <div class="travaux">Fonctionnalité en cours de développement&hellip;</div>
 <ul class="puce">
 	<li><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=releves_bilans__<?php echo $tab_types[$BILAN_TYPE]['doc'] ?>">DOC : Bilan officiel &rarr; <?php echo $tab_types[$BILAN_TYPE]['titre'] ?></a></span></li>
+	<li><span class="astuce">Profils autorisés à modifier le statut du bilan : <span class="u"><?php echo $profils_modifier_statut ?></span>.</span></li>
 	<li><span class="astuce">Profils autorisés à éditer l'appréciation générale : <span class="u"><?php echo $profils_appreciation_generale ?></span>.</span></li>
 	<li><span class="astuce">Profils autorisés à générer la version imprimable (<em>pdf</em>) : <span class="u"><?php echo $profils_impression_pdf ?></span>.</span></li>
-	<?php if($droit_configuration) echo'<li><span class="astuce">Vous pouvez utiliser l\'outil d\'<a href="./index.php?page=compte_message">affichage de messages en page d\'accueil</a> pour informer les professeurs de l\'ouverture à la saisie.</span></li>'; ?>
+	<?php if($affichage_formulaire_statut) echo'<li><span class="astuce">Vous pouvez utiliser l\'outil d\'<a href="./index.php?page=compte_message">affichage de messages en page d\'accueil</a> pour informer les professeurs de l\'ouverture à la saisie.</span></li>'; ?>
 </ul>
 
 <script type="text/javascript">
@@ -90,16 +106,16 @@ $tab_etats = array
 
 // Préparation du tableau avec les cellules à afficher
 $tab_affich = array(); // [classe_id_groupe_id][periode_id] (ligne colonne) ; les indices [check] sont ceux des checkbox multiples ; les indices [title] sont ceux des intitulés
-$tab_affich['check']['check'] = ($droit_configuration) ? '<td class="nu"><input name="leurre" type="image" alt="leurre" src="./_img/auto.gif" /></td>' : '' ;
-$tab_affich['check']['title'] = ($droit_configuration) ? '<td class="nu"></td>' : '' ;
-$tab_affich['title']['check'] = ($droit_configuration) ? '<td class="nu"></td>' : '' ;
+$tab_affich['check']['check'] = ($affichage_formulaire_statut) ? '<td class="nu"><input name="leurre" type="image" alt="leurre" src="./_img/auto.gif" /></td>' : '' ;
+$tab_affich['check']['title'] = ($affichage_formulaire_statut) ? '<td class="nu"></td>' : '' ;
+$tab_affich['title']['check'] = ($affichage_formulaire_statut) ? '<td class="nu"></td>' : '' ;
 $tab_affich['title']['title'] = '<td class="nu"></td>' ;
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 //	Récupération et traitement des données postées, si formulaire soumis
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
-if( ($droit_configuration) && ($_SESSION['SESAMATH_ID']!=ID_DEMO) )
+if( ($affichage_formulaire_statut) && ($_SESSION['SESAMATH_ID']!=ID_DEMO) )
 {
 	$tab_ids  = (isset($_POST['listing_ids'])) ? explode(',',$_POST['listing_ids']) : array() ;
 	$new_etat = (isset($_POST['etat']))        ? clean_texte($_POST['etat'])        : '' ;
@@ -141,17 +157,18 @@ foreach($DB_TAB as $DB_ROW)
 //	Alors quand les professeurs sont associés à des groupes, il faut chercher de quelle(s) classe(s) proviennent les élèves et proposer autant de choix partiels... sur ces classes
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
-$tab_classe = array(); // tableau important avec les informations [classe_id][0|groupe_id]
+$tab_classe = array(); // tableau important avec les droits [classe_id][0|groupe_id]
 $tab_groupe = array(); // tableau temporaire avec les noms des groupes du prof
 $tab_options_classes = array(); // Pour un futur formulaire select
 
-if($droit_configuration) // administrateur ou directeur
+if($_SESSION['USER_PROFIL']!='professeur') // administrateur | directeur
 {
-	$app_gene  = ( ($_SESSION['USER_PROFIL']=='directeur')      && (strpos($_SESSION['DROIT_OFFICIEL_'.$tab_types[$BILAN_TYPE]['droit'].'_APPRECIATION_GENERALE'],'directeur')!==false) ) ? TRUE : FALSE ;
-	$print_pdf = ( ($_SESSION['USER_PROFIL']=='administrateur') || (strpos($_SESSION['DROIT_OFFICIEL_'.$tab_types[$BILAN_TYPE]['droit'].'_IMPRESSION_PDF'],'directeur')!==false)        ) ? TRUE : FALSE ;
+	$droit_modifier_statut       = ( ($_SESSION['USER_PROFIL']=='administrateur') || (strpos($_SESSION['DROIT_OFFICIEL_'.$tab_types[$BILAN_TYPE]['droit'].'_MODIFIER_STATUT'],'directeur')!==false)       ) ? TRUE : FALSE ;
+	$droit_appreciation_generale = ( ($_SESSION['USER_PROFIL']=='directeur')      && (strpos($_SESSION['DROIT_OFFICIEL_'.$tab_types[$BILAN_TYPE]['droit'].'_APPRECIATION_GENERALE'],'directeur')!==false) ) ? TRUE : FALSE ;
+	$droit_impression_pdf        = ( ($_SESSION['USER_PROFIL']=='administrateur') || (strpos($_SESSION['DROIT_OFFICIEL_'.$tab_types[$BILAN_TYPE]['droit'].'_IMPRESSION_PDF'],'directeur')!==false)        ) ? TRUE : FALSE ;
 	foreach($tab_classe_etabl as $classe_id => $classe_nom)
 	{
-		$tab_classe[$classe_id][0] = array( 'app_gene'=>$app_gene , 'print_pdf'=>$print_pdf );
+		$tab_classe[$classe_id][0] = compact( 'droit_modifier_statut' , 'droit_appreciation_generale' , 'droit_impression_pdf' );
 		$tab_affich[$classe_id.'_0']['check'] = '<th class="nu"><input name="all_check" type="image" id="id_deb1_g'.$classe_id.'p" alt="Tout cocher." src="./_img/all_check.gif" title="Tout cocher." /><br /><input name="all_uncheck" type="image" id="id_deb2_g'.$classe_id.'p" alt="Tout décocher." src="./_img/all_uncheck.gif" title="Tout décocher." /></th>' ;
 		$tab_affich[$classe_id.'_0']['title'] = '<th id="groupe_'.$classe_id.'_0">'.html($classe_nom).'</th>' ;
 		$tab_options_classes[$classe_id.'_0'] = '<option value="'.$classe_id.'_0">'.html($classe_nom).'</option>';
@@ -165,10 +182,11 @@ else // professeur
 		if($DB_ROW['groupe_type']=='classe')
 		{
 			// Pour les classes, RAS
-			$app_gene  = ( (strpos($_SESSION['DROIT_OFFICIEL_'.$tab_types[$BILAN_TYPE]['droit'].'_APPRECIATION_GENERALE'],'professeur')!==false) || ( (strpos($_SESSION['DROIT_OFFICIEL_'.$tab_types[$BILAN_TYPE]['droit'].'_APPRECIATION_GENERALE'],'profprincipal')!==false) && $DB_ROW['jointure_pp'] ) ) ? TRUE : FALSE ;
-			$print_pdf = ( (strpos($_SESSION['DROIT_OFFICIEL_'.$tab_types[$BILAN_TYPE]['droit'].'_IMPRESSION_PDF'],'professeur')!==false)        || ( (strpos($_SESSION['DROIT_OFFICIEL_'.$tab_types[$BILAN_TYPE]['droit'].'_IMPRESSION_PDF'],'profprincipal')!==false)        && $DB_ROW['jointure_pp'] ) ) ? TRUE : FALSE ;
-			$tab_classe[$DB_ROW['groupe_id']][0] = array( 'app_gene'=>$app_gene , 'print_pdf'=>$print_pdf );
-			$tab_affich[$DB_ROW['groupe_id'].'_0']['check'] = '' ;
+			$droit_modifier_statut       = ( (strpos($_SESSION['DROIT_OFFICIEL_'.$tab_types[$BILAN_TYPE]['droit'].'_MODIFIER_STATUT'],'professeur')!==false)       || ( (strpos($_SESSION['DROIT_OFFICIEL_'.$tab_types[$BILAN_TYPE]['droit'].'_MODIFIER_STATUT'],'profprincipal')!==false)       && $DB_ROW['jointure_pp'] ) ) ? TRUE : FALSE ;
+			$droit_appreciation_generale = ( (strpos($_SESSION['DROIT_OFFICIEL_'.$tab_types[$BILAN_TYPE]['droit'].'_APPRECIATION_GENERALE'],'professeur')!==false) || ( (strpos($_SESSION['DROIT_OFFICIEL_'.$tab_types[$BILAN_TYPE]['droit'].'_APPRECIATION_GENERALE'],'profprincipal')!==false) && $DB_ROW['jointure_pp'] ) ) ? TRUE : FALSE ;
+			$droit_impression_pdf        = ( (strpos($_SESSION['DROIT_OFFICIEL_'.$tab_types[$BILAN_TYPE]['droit'].'_IMPRESSION_PDF'],'professeur')!==false)        || ( (strpos($_SESSION['DROIT_OFFICIEL_'.$tab_types[$BILAN_TYPE]['droit'].'_IMPRESSION_PDF'],'profprincipal')!==false)        && $DB_ROW['jointure_pp'] ) ) ? TRUE : FALSE ;
+			$tab_classe[$DB_ROW['groupe_id']][0] = compact( 'droit_modifier_statut' , 'droit_appreciation_generale' , 'droit_impression_pdf' );
+			$tab_affich[$DB_ROW['groupe_id'].'_0']['check'] = ($affichage_formulaire_statut) ? ( ($droit_modifier_statut) ? '<th class="nu"><input name="all_check" type="image" id="id_deb1_g'.$DB_ROW['groupe_id'].'p" alt="Tout cocher." src="./_img/all_check.gif" title="Tout cocher." /><br /><input name="all_uncheck" type="image" id="id_deb2_g'.$DB_ROW['groupe_id'].'p" alt="Tout décocher." src="./_img/all_uncheck.gif" title="Tout décocher." /></th>' : '<th class="nu"></th>' ) : '' ;
 			$tab_affich[$DB_ROW['groupe_id'].'_0']['title'] = '<th id="groupe_'.$DB_ROW['groupe_id'].'_0">'.html($DB_ROW['groupe_nom']).'</th>' ;
 			$tab_options_classes[$DB_ROW['groupe_id'].'_0'] = '<option value="'.$DB_ROW['groupe_id'].'_0">'.html($DB_ROW['groupe_nom']).'</option>';
 		}
@@ -189,10 +207,11 @@ else // professeur
 				foreach($DB_TAB[$groupe_id] as $tab)
 				{
 					$classe_id = $tab['eleve_classe_id'];
-					$app_gene  = (strpos($_SESSION['DROIT_OFFICIEL_'.$tab_types[$BILAN_TYPE]['droit'].'_APPRECIATION_GENERALE'],'professeur')!==false) ? TRUE : FALSE ;
-					$print_pdf = (strpos($_SESSION['DROIT_OFFICIEL_'.$tab_types[$BILAN_TYPE]['droit'].'_IMPRESSION_PDF'],'professeur')!==false)        ? TRUE : FALSE ;
-					$tab_classe[$classe_id][$groupe_id] = array( 'app_gene'=>$app_gene , 'print_pdf'=>$print_pdf );
-					$tab_affich[$classe_id.'_'.$groupe_id]['check'] = '' ;
+					$droit_modifier_statut       = FALSE ;
+					$droit_appreciation_generale = (strpos($_SESSION['DROIT_OFFICIEL_'.$tab_types[$BILAN_TYPE]['droit'].'_APPRECIATION_GENERALE'],'professeur')!==false) ? TRUE : FALSE ;
+					$droit_impression_pdf        = (strpos($_SESSION['DROIT_OFFICIEL_'.$tab_types[$BILAN_TYPE]['droit'].'_IMPRESSION_PDF'],'professeur')!==false)        ? TRUE : FALSE ;
+					$tab_classe[$classe_id][$groupe_id] = compact( 'droit_modifier_statut' , 'droit_appreciation_generale' , 'droit_impression_pdf' );
+					$tab_affich[$classe_id.'_'.$groupe_id]['check'] =  ($affichage_formulaire_statut) ? '<th class="nu"></th>' : '' ;
 					$tab_affich[$classe_id.'_'.$groupe_id]['title'] = '<th id="groupe_'.$classe_id.'_'.$groupe_id.'">'.html($tab_classe_etabl[$classe_id]).'<br />'.html($groupe_nom).'</th>' ;
 					$tab_options_classes[$classe_id.'_'.$groupe_id] = '<option value="'.$classe_id.'_'.$groupe_id.'">'.html($tab_classe_etabl[$classe_id].' - '.$groupe_nom).'</option>';
 				}
@@ -216,7 +235,7 @@ if(count($tab_classe))
 		unset($tab_ligne_id[0],$tab_ligne_id[1]);
 		foreach($DB_TAB as $DB_ROW)
 		{
-			$tab_affich['check'][$DB_ROW['periode_id']] = ($droit_configuration) ? '<th class="nu"><input name="all_check" type="image" id="id_fin1_p'.$DB_ROW['periode_id'].'" alt="Tout cocher." src="./_img/all_check.gif" title="Tout cocher." /> <input name="all_uncheck" type="image" id="id_fin2_p'.$DB_ROW['periode_id'].'" alt="Tout décocher." src="./_img/all_uncheck.gif" title="Tout décocher." /></th>' : '' ;
+			$tab_affich['check'][$DB_ROW['periode_id']] = ($affichage_formulaire_statut) ? '<th class="nu"><input name="all_check" type="image" id="id_fin1_p'.$DB_ROW['periode_id'].'" alt="Tout cocher." src="./_img/all_check.gif" title="Tout cocher." /> <input name="all_uncheck" type="image" id="id_fin2_p'.$DB_ROW['periode_id'].'" alt="Tout décocher." src="./_img/all_uncheck.gif" title="Tout décocher." /></th>' : '' ;
 			$tab_affich['title'][$DB_ROW['periode_id']] = '<th class="hc" id="periode_'.$DB_ROW['periode_id'].'">'.html($DB_ROW['periode_nom']).'</th>' ;
 			foreach($tab_ligne_id as $ligne_id)
 			{
@@ -243,18 +262,6 @@ if(count($tab_classe))
 			$affich_dates = (($BILAN_TYPE=='releve')||($BILAN_TYPE=='bulletin')) ? $date_affich_debut.' ~ '.$date_affich_fin : 'au '.$date_affich_fin.' (indicatif)' ;
 			// État
 			$affich_etat = '<span class="off_etat '.substr($etat,1).'">'.$tab_etats[$etat].'</span>';
-			// checkbox de gestion
-			if($droit_configuration)
-			{
-				$id = 'g'.$classe_id.'p'.$DB_ROW['periode_id'];
-				$label_avant = '<label for="'.$id.'">' ;
-				$checkbox    = ' <input id="'.$id.'" name="'.$id.'" type="checkbox" />';
-				$label_apres = '</label>' ;
-			}
-			else
-			{
-				$label_avant = $checkbox = $label_apres = '' ;
-			}
 			// images action : vérification
 			if($etat=='2rubrique')
 			{
@@ -292,6 +299,18 @@ if(count($tab_classe))
 			// Les images action de saisie et d'impression dépendent du groupe
 			foreach($tab_classe[$classe_id] as $groupe_id=> $tab_droits)
 			{
+				// checkbox de gestion
+				if( ($affichage_formulaire_statut) && ($tab_droits['droit_modifier_statut']) )
+				{
+					$id = 'g'.$classe_id.'p'.$DB_ROW['periode_id'];
+					$label_avant = '<label for="'.$id.'">' ;
+					$checkbox    = ' <input id="'.$id.'" name="'.$id.'" type="checkbox" />';
+					$label_apres = '</label>' ;
+				}
+				else
+				{
+					$label_avant = $checkbox = $label_apres = '' ;
+				}
 				// images action : saisie
 				if($_SESSION['USER_PROFIL']!='administrateur')
 				{
@@ -313,7 +332,7 @@ if(count($tab_classe))
 				{
 					if($etat=='3synthese')
 					{
-						$icone_tampon = ($tab_droits['app_gene']) ? ( ($_SESSION['OFFICIEL'][$tab_types[$BILAN_TYPE]['droit'].'_APPRECIATION_GENERALE']) ? '<q class="tamponner" title="Saisir l\'appréciation générale."></q>' : '<q class="tamponner_non" title="Bilan configuré sans saisie de synthèse."></q>' ) : '<q class="tamponner_non" title="Accès restreint à la saisie de l\'appréciation générale : '.$profils_appreciation_generale.'."></q>' ;
+						$icone_tampon = ($tab_droits['droit_appreciation_generale']) ? ( ($_SESSION['OFFICIEL'][$tab_types[$BILAN_TYPE]['droit'].'_APPRECIATION_GENERALE']) ? '<q class="tamponner" title="Saisir l\'appréciation générale."></q>' : '<q class="tamponner_non" title="Bilan configuré sans saisie de synthèse."></q>' ) : '<q class="tamponner_non" title="Accès restreint à la saisie de l\'appréciation générale : '.$profils_appreciation_generale.'."></q>' ;
 					}
 					else
 					{
@@ -325,7 +344,7 @@ if(count($tab_classe))
 					$icone_tampon = '';
 				}
 				// images action : impression
-				if($tab_droits['print_pdf'])
+				if($tab_droits['droit_impression_pdf'])
 				{
 					$icone_impression = ($etat=='4complet') ? '<q class="imprimer" title="Imprimer le bilan (PDF)."></q>' : '<q class="imprimer_non" title="L\'impression est possible une fois le bilan déclaré complet."></q>' ;
 				}
@@ -337,7 +356,7 @@ if(count($tab_classe))
 				{
 					$tab_affich[$classe_id.'_'.$groupe_id][$DB_ROW['periode_id']] = '<td id="cgp_'.$classe_id.'_'.$groupe_id.'_'.$DB_ROW['periode_id'].'" class="hc notnow">'.$label_avant.$affich_dates.'<br />'.$affich_etat.$checkbox.$label_apres.'<br />'.$icone_saisie.$icone_tampon.$icone_verification.$icone_voir.$icone_impression.'</td>';
 				}
-				elseif($droit_configuration)
+				elseif($checkbox!='')
 				{
 					$tab_affich[$classe_id.'_'.$groupe_id][$DB_ROW['periode_id']] = '<td class="hc notnow">'.$label_avant.$affich_dates.'<br />'.$affich_etat.$checkbox.$label_apres.'</td>';
 				}
@@ -366,7 +385,7 @@ if(count($tab_classe))
 		echo'<table id="table_bilans"><thead>';
 		foreach($tab_affich as $ligne_id => $tab_colonne)
 		{
-			echo ( ($ligne_id!='check') ||($droit_configuration) ) ? '<tr>'.implode('',$tab_colonne).'</tr>'."\r\n" : '' ;
+			echo ( ($ligne_id!='check') ||($affichage_formulaire_statut) ) ? '<tr>'.implode('',$tab_colonne).'</tr>'."\r\n" : '' ;
 			echo ($ligne_id=='title') ? '</thead><tbody>'."\r\n" : '' ;
 		}
 		echo'</tbody></table>';
@@ -375,7 +394,7 @@ if(count($tab_classe))
 		//	Affichage du formulaire pour modifier les états d'accès.
 		//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
-		if($droit_configuration)
+		if($affichage_formulaire_statut)
 		{
 			$tab_radio = array();
 			foreach($tab_etats as $etat_id => $etat_text)
@@ -385,7 +404,7 @@ if(count($tab_classe))
 			echo'
 				<form action="#" method="post" id="form_gestion">
 					<hr />
-					<p><span class="tab"></span><span class="u">Pour les cases cochées du tableau :</span><input id="listing_ids" name="listing_ids" type="hidden" value="" /></p>
+					<p><span class="tab"></span><span class="u">Pour les cases cochées du tableau (classes uniquement) :</span><input id="listing_ids" name="listing_ids" type="hidden" value="" /></p>
 					<div><label class="tab">Accès / Statut :</label>'.implode('<br /><span class="tab"></span>',$tab_radio).'</div>
 					<p><span class="tab"></span><button id="bouton_valider" type="button" class="valider">Valider</button><label id="ajax_msg_gestion">&nbsp;</label></p>
 				</form>

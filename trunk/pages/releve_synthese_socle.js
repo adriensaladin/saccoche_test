@@ -216,7 +216,9 @@ $(document).ready
 					f_palier      : { required:true },
 					'f_pilier[]'  : { required:true },
 					f_groupe      : { required:true },
-					'f_eleve[]'   : { required:true }
+					'f_eleve[]'   : { required:true },
+					f_couleur     : { required:true },
+					f_legende     : { required:true }
 				},
 				messages :
 				{
@@ -226,7 +228,9 @@ $(document).ready
 					f_palier      : { required:"palier manquant" },
 					'f_pilier[]'  : { required:"compétence(s) manquante(s)" },
 					f_groupe      : { required:"groupe manquant" },
-					'f_eleve[]'   : { required:"élève(s) manquant(s)" }
+					'f_eleve[]'   : { required:"élève(s) manquant(s)" },
+					f_couleur     : { required:"couleur manquante" },
+					f_legende     : { required:"légende manquante" }
 				},
 				errorElement : "label",
 				errorClass : "erreur",

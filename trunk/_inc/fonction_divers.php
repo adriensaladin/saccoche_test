@@ -181,9 +181,10 @@ function calculer_score($tab_devoirs,$calcul_methode,$calcul_limite)
  * @param string $liste_eleve_id
  * @param string $liste_matiere_id   renseigné pour un prof effectuant une saisie, vide sinon
  * @param bool   $memo_moyennes_classe
+ * @param bool   $memo_moyennes_generale
  * @return void
  */
-function calculer_et_enregistrer_moyennes_eleves_bulletin($periode_id,$classe_id,$liste_eleve_id,$liste_matiere_id,$memo_moyennes_classe)
+function calculer_et_enregistrer_moyennes_eleves_bulletin($periode_id,$classe_id,$liste_eleve_id,$liste_matiere_id,$memo_moyennes_classe,$memo_moyennes_generale)
 {
 	if(!$liste_eleve_id) return FALSE;
 	// Dates période
@@ -203,7 +204,7 @@ function calculer_et_enregistrer_moyennes_eleves_bulletin($periode_id,$classe_id
 	$DB_TAB = DB_STRUCTURE_BILAN::DB_lister_date_last_eleves_items($liste_eleve_id,$liste_item_id);
 	foreach($DB_TAB as $DB_ROW)
 	{
-		$tab_score_a_garder[$DB_ROW['eleve_id']][$DB_ROW['item_id']] = ($DB_ROW['date_last']<$date_mysql_debut) ? false : true ;
+		$tab_score_a_garder[$DB_ROW['eleve_id']][$DB_ROW['item_id']] = ($DB_ROW['date_last']<$date_mysql_debut) ? FALSE : TRUE ;
 	}
 	$date_mysql_debut = false;
 	$DB_TAB = DB_STRUCTURE_BILAN::DB_lister_result_eleves_items($liste_eleve_id , $liste_item_id , -1 /*matiere_id*/ , $date_mysql_debut , $date_mysql_fin , $_SESSION['USER_PROFIL']);
@@ -274,7 +275,7 @@ function calculer_et_enregistrer_moyennes_eleves_bulletin($periode_id,$classe_id
 		{
 			if( (!isset($tab_moyennes_enregistrees[$matiere_id][$eleve_id])) || ( ($tab_moyennes_enregistrees[$matiere_id][$eleve_id]!=$note) && ($tab_appreciations_enregistrees[$matiere_id][$eleve_id]=='') ) )
 			{
-				DB_STRUCTURE_OFFICIEL::DB_modifier_bilan_officiel_saisie('bulletin',$periode_id,$eleve_id,$matiere_id,0,$note,'');
+				DB_STRUCTURE_OFFICIEL::DB_modifier_bilan_officiel_saisie( 'bulletin' , $periode_id , $eleve_id , $matiere_id , 0 /*prof_id*/ , $note , '' /*appreciation*/ );
 				$tab_moyennes_enregistrees[$matiere_id][$eleve_id] = $note;
 			}
 		}
@@ -282,12 +283,45 @@ function calculer_et_enregistrer_moyennes_eleves_bulletin($periode_id,$classe_id
 	// Calculer les moyennes de classe ; elles sont mises en session car on en a besoin si on consulte un par un les bulletins des élèves.
 	if($memo_moyennes_classe)
 	{
-		$_SESSION['tmp_moyenne'][$periode_id][$classe_id] = array();
+		$_SESSION['tmp_moyenne_classe'][$periode_id][$classe_id] = array();
 		foreach($tab_moyennes_enregistrees as $matiere_id => $tab)
 		{
-			$somme  = array_sum($tab_moyennes_enregistrees[$matiere_id]);
-			$nombre = count( array_filter($tab_moyennes_enregistrees[$matiere_id],'non_nul') );
-			$_SESSION['tmp_moyenne'][$periode_id][$classe_id][$matiere_id] = ($nombre) ? round($somme/$nombre,1) : FALSE ;
+			if($matiere_id!=0)
+			{
+				$somme  = array_sum($tab_moyennes_enregistrees[$matiere_id]);
+				$nombre = count( array_filter($tab_moyennes_enregistrees[$matiere_id],'non_nul') );
+				$_SESSION['tmp_moyenne_classe'][$periode_id][$classe_id][$matiere_id] = ($nombre) ? round($somme/$nombre,1) : NULL ;
+			}
+		}
+	}
+	// Calculer les moyennes générales ; elles sont mises en session car on en a besoin si on consulte un par un les bulletins des élèves.
+	if($memo_moyennes_generale)
+	{
+		$_SESSION['tmp_moyenne_generale'][$periode_id][$classe_id] = array();
+		$tab_moyennes_enregistrees_par_eleve = array();
+		// inverser les clefs du tableau pour pouvoir effectuer les totaux par élève
+		foreach($tab_moyennes_enregistrees as $matiere_id => $tab)
+		{
+			if($matiere_id!=0)
+			{
+				foreach($tab as $eleve_id => $note)
+				{
+					$tab_moyennes_enregistrees_par_eleve[$eleve_id][$matiere_id] = $note;
+				}
+			}
+		}
+		foreach($tab_moyennes_enregistrees_par_eleve as $eleve_id => $tab)
+		{
+			$somme  = array_sum($tab_moyennes_enregistrees_par_eleve[$eleve_id]);
+			$nombre = count( array_filter($tab_moyennes_enregistrees_par_eleve[$eleve_id],'non_nul') );
+			$_SESSION['tmp_moyenne_generale'][$periode_id][$classe_id][$eleve_id] = ($nombre) ? round($somme/$nombre,1) : NULL ;
+		}
+		// Enfin, moyenne de classe des moyennes générales...
+		if($memo_moyennes_classe)
+		{
+			$somme  = array_sum($_SESSION['tmp_moyenne_generale'][$periode_id][$classe_id]);
+			$nombre = count( array_filter($_SESSION['tmp_moyenne_generale'][$periode_id][$classe_id],'non_nul') );
+			$_SESSION['tmp_moyenne_generale'][$periode_id][$classe_id][0] = ($nombre) ? round($somme/$nombre,1) : NULL ;
 		}
 	}
 }
@@ -1099,7 +1133,7 @@ function enregistrer_session_user($BASE,$DB_ROW)
 		'ENVELOPPE_VERTICAL_HAUT','ENVELOPPE_VERTICAL_MILIEU','ENVELOPPE_VERTICAL_BAS',
 		'OFFICIEL_MARGE_GAUCHE','OFFICIEL_MARGE_DROITE','OFFICIEL_MARGE_HAUT','OFFICIEL_MARGE_BAS',
 		'OFFICIEL_RELEVE_APPRECIATION_RUBRIQUE','OFFICIEL_RELEVE_APPRECIATION_GENERALE','OFFICIEL_RELEVE_MOYENNE_SCORES','OFFICIEL_RELEVE_POURCENTAGE_ACQUIS','OFFICIEL_RELEVE_CASES_NB','OFFICIEL_RELEVE_AFF_COEF','OFFICIEL_RELEVE_AFF_SOCLE','OFFICIEL_RELEVE_AFF_DOMAINE','OFFICIEL_RELEVE_AFF_THEME',
-		'OFFICIEL_BULLETIN_APPRECIATION_RUBRIQUE','OFFICIEL_BULLETIN_APPRECIATION_GENERALE','OFFICIEL_BULLETIN_MOYENNE_SCORES','OFFICIEL_BULLETIN_NOTE_SUR_20','OFFICIEL_BULLETIN_MOYENNE_CLASSE',
+		'OFFICIEL_BULLETIN_APPRECIATION_RUBRIQUE','OFFICIEL_BULLETIN_APPRECIATION_GENERALE','OFFICIEL_BULLETIN_MOYENNE_SCORES','OFFICIEL_BULLETIN_NOTE_SUR_20','OFFICIEL_BULLETIN_MOYENNE_CLASSE','OFFICIEL_BULLETIN_MOYENNE_GENERALE',
 		'OFFICIEL_SOCLE_APPRECIATION_RUBRIQUE','OFFICIEL_SOCLE_APPRECIATION_GENERALE','OFFICIEL_SOCLE_ONLY_PRESENCE','OFFICIEL_SOCLE_POURCENTAGE_ACQUIS','OFFICIEL_SOCLE_ETAT_VALIDATION'
 	);
 	$tab_type_tableau = array(
@@ -1192,9 +1226,9 @@ function actualiser_style_session()
 	$_SESSION['CSS'] .= '#tableau_validation tbody th.diag0 {background:'.$_SESSION['BACKGROUND_V0'].' url(./_img/socle/arrow_diag.gif) no-repeat center center;opacity:'.$_SESSION['OPACITY'].'}';
 	$_SESSION['CSS'] .= '#tableau_validation tbody th.diag1 {background:'.$_SESSION['BACKGROUND_V1'].' url(./_img/socle/arrow_diag.gif) no-repeat center center;opacity:'.$_SESSION['OPACITY'].'}';
 	$_SESSION['CSS'] .= '#tableau_validation tbody th.diag2 {background:'.$_SESSION['BACKGROUND_V2'].' url(./_img/socle/arrow_diag.gif) no-repeat center center;opacity:'.$_SESSION['OPACITY'].'}';
-	$_SESSION['CSS'] .= 'th.v0 , td.v0 {background:'.$_SESSION['BACKGROUND_V0'].'}';
-	$_SESSION['CSS'] .= 'th.v1 , td.v1 {background:'.$_SESSION['BACKGROUND_V1'].'}';
-	$_SESSION['CSS'] .= 'th.v2 , td.v2 {background:'.$_SESSION['BACKGROUND_V2'].'}';
+	$_SESSION['CSS'] .= 'th.v0 , td.v0 , span.v0 {background:'.$_SESSION['BACKGROUND_V0'].'}';
+	$_SESSION['CSS'] .= 'th.v1 , td.v1 , span.v1 {background:'.$_SESSION['BACKGROUND_V1'].'}';
+	$_SESSION['CSS'] .= 'th.v2 , td.v2 , span.v2 {background:'.$_SESSION['BACKGROUND_V2'].'}';
 	$_SESSION['CSS'] .= '#zone_information .v0 {background:'.$_SESSION['BACKGROUND_V0'].';padding:0 1em;margin-right:1ex}';
 	$_SESSION['CSS'] .= '#zone_information .v1 {background:'.$_SESSION['BACKGROUND_V1'].';padding:0 1em;margin-right:1ex}';
 	$_SESSION['CSS'] .= '#zone_information .v2 {background:'.$_SESSION['BACKGROUND_V2'].';padding:0 1em;margin-right:1ex}';

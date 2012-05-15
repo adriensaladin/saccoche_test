@@ -896,7 +896,7 @@ if( $step==20 )
 	// Edit au 11/05/2012 : a priori c'est corrigé, mais je laisse quand même le test au cas où, ça ne coûte rien...
 	if(!$test1)
 	{
-		ajouter_log_PHP( $log_objet='Import fichier '.$action , $log_contenu=serialize($tab_users_fichier) , $log_fichier=__FILE__ , $log_ligne=__LINE__ , $only_sesamath=true );
+		ajouter_log_PHP( 'Import fichier '.$action /*log_objet*/ , serialize($tab_users_fichier) /*log_contenu*/ , __FILE__ /*log_fichier*/ , __LINE__ /*log_ligne*/ , TRUE /*only_sesamath*/ );
 	}
 	// On enregistre
 	Ecrire_Fichier($dossier_import.'import_'.$action.'_'.$_SESSION['BASE'].'_'.session_id().'_users.txt',serialize($tab_users_fichier));

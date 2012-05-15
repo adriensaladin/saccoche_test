@@ -37,14 +37,14 @@ $motif  = (isset($_POST['f_motif']))  ? clean_texte($_POST['f_motif'])  : '';
 
 if($action=='debloquer')
 {
-	ajouter_log_PHP( $log_objet='Maintenance' , $log_contenu='Application accessible.' , $log_fichier=__FILE__ , $log_ligne=__LINE__ , $only_sesamath=false );
+	ajouter_log_PHP( 'Maintenance' /*log_objet*/ , 'Application accessible.' /*log_contenu*/ , __FILE__ /*log_fichier*/ , __LINE__ /*log_ligne*/ , FALSE /*only_sesamath*/ );
 	debloquer_application($_SESSION['USER_PROFIL'],'0');
 	exit('<label class="valide">Application accessible.</label>');
 }
 
 if($action=='bloquer')
 {
-	ajouter_log_PHP( $log_objet='Maintenance' , $log_contenu='Application fermée.' , $log_fichier=__FILE__ , $log_ligne=__LINE__ , $only_sesamath=false );
+	ajouter_log_PHP( 'Maintenance' /*log_objet*/ , 'Application fermée.' /*log_contenu*/ , __FILE__ /*log_fichier*/ , __LINE__ /*log_ligne*/ , FALSE /*only_sesamath*/ );
 	bloquer_application($_SESSION['USER_PROFIL'],'0',$motif);
 	exit('<label class="erreur">Application fermée : '.html($motif).'</label>');
 }
@@ -115,7 +115,7 @@ if($action=='maj_etape4')
 	$thead = '<tr><td colspan="2">Mise à jour automatique du '.date('d/m/Y H:i:s').'</td></tr>';
 	$tbody = '';
 	// Bloquer l'application
-	ajouter_log_PHP( $log_objet='Mise à jour des fichiers' , $log_contenu='Application fermée.' , $log_fichier=__FILE__ , $log_ligne=__LINE__ , $only_sesamath=false );
+	ajouter_log_PHP( 'Mise à jour des fichiers' /*log_objet*/ , 'Application fermée.' /*log_contenu*/ , __FILE__ /*log_fichier*/ , __LINE__ /*log_ligne*/ , FALSE /*only_sesamath*/ );
 	bloquer_application($_SESSION['USER_PROFIL'],'0','Mise à jour des fichiers en cours.');
 	// Dossiers : ordre croissant pour commencer par ceux les moins imbriqués : obligatoire pour l'ajout, et pour la suppression on teste si pas déjà supprimé.
 	ksort($_SESSION['tmp']['dossier']);
@@ -131,7 +131,7 @@ if($action=='maj_etape4')
 			$tbody .= '<tr><td class="v">Dossier ajouté</td><td>'.$dossier.'</td></tr>';
 			if( !Creer_Dossier($dossier_install.$dossier) )
 			{
-				ajouter_log_PHP( $log_objet='Mise à jour des fichiers' , $log_contenu='Application accessible.' , $log_fichier=__FILE__ , $log_ligne=__LINE__ , $only_sesamath=false );
+				ajouter_log_PHP( 'Mise à jour des fichiers' /*log_objet*/ , 'Application accessible.' /*log_contenu*/ , __FILE__ /*log_fichier*/ , __LINE__ /*log_ligne*/ , FALSE /*only_sesamath*/ );
 				debloquer_application($_SESSION['USER_PROFIL'],'0');
 				exit(']¤['.'pb'.']¤['."Dossier ".$dossier." non créé ou inaccessible en écriture !");
 			}
@@ -157,7 +157,7 @@ if($action=='maj_etape4')
 				// Fichier changé => maj (si le .htaccess a été changé, c'est sans doute volontaire, ne pas y toucher)
 				if( !copy( $dossier_dezip.$fichier , $dossier_install.$fichier ) )
 				{
-					ajouter_log_PHP( $log_objet='Mise à jour des fichiers' , $log_contenu='Application accessible.' , $log_fichier=__FILE__ , $log_ligne=__LINE__ , $only_sesamath=false );
+					ajouter_log_PHP( 'Mise à jour des fichiers' /*log_objet*/ , 'Application accessible.' /*log_contenu*/ , __FILE__ /*log_fichier*/ , __LINE__ /*log_ligne*/ , FALSE /*only_sesamath*/ );
 					debloquer_application($_SESSION['USER_PROFIL'],'0');
 					exit(']¤['.'pb'.']¤['."Erreur lors de l'écriture du fichier ".$fichier." !");
 				}
@@ -169,7 +169,7 @@ if($action=='maj_etape4')
 			// Fichier à ajouter (si le .htaccess n'y est pas, c'est sans doute volontaire, ne pas l'y remettre)
 			if( !copy( $dossier_dezip.$fichier , $dossier_install.$fichier ) )
 			{
-				ajouter_log_PHP( $log_objet='Mise à jour des fichiers' , $log_contenu='Application accessible.' , $log_fichier=__FILE__ , $log_ligne=__LINE__ , $only_sesamath=false );
+				ajouter_log_PHP( 'Mise à jour des fichiers' /*log_objet*/ , 'Application accessible.' /*log_contenu*/ , __FILE__ /*log_fichier*/ , __LINE__ /*log_ligne*/ , FALSE /*only_sesamath*/ );
 				debloquer_application($_SESSION['USER_PROFIL'],'0');
 				exit(']¤['.'pb'.']¤['."Erreur lors de l'écriture du fichier ".$fichier." !");
 			}
@@ -186,7 +186,7 @@ if($action=='maj_etape4')
 		}
 	}
 	// Débloquer l'application
-	ajouter_log_PHP( $log_objet='Mise à jour des fichiers' , $log_contenu='Application accessible.' , $log_fichier=__FILE__ , $log_ligne=__LINE__ , $only_sesamath=false );
+	ajouter_log_PHP( 'Mise à jour des fichiers' /*log_objet*/ , 'Application accessible.' /*log_contenu*/ , __FILE__ /*log_fichier*/ , __LINE__ /*log_ligne*/ , FALSE /*only_sesamath*/ );
 	debloquer_application($_SESSION['USER_PROFIL'],'0');
 	// Enregistrement du rapport
 	$fichier_chemin  = './__tmp/export/rapport_maj.html';

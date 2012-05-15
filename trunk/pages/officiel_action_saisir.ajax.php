@@ -118,7 +118,7 @@ if($ACTION=='enregistrer_note')
 	$note = ($_SESSION['OFFICIEL']['BULLETIN_NOTE_SUR_20']) ? round($moyenne,1) : round($moyenne/5,1) ;
 	$appreciation = 'Moyenne figée reportée par '.$_SESSION['USER_NOM'].' '.$_SESSION['USER_PRENOM'].'.';
 	DB_STRUCTURE_OFFICIEL::DB_modifier_bilan_officiel_saisie( $BILAN_TYPE , $periode_id , $eleve_id , $rubrique_id , 0 /*prof_id*/ , $note , $appreciation );
-	$note = ($_SESSION['OFFICIEL']['BULLETIN_NOTE_SUR_20']) ? $note : ($note*5).'%' ;
+	$note = ($_SESSION['OFFICIEL']['BULLETIN_NOTE_SUR_20']) ? $note : ($note*5).'&nbsp;%' ;
 	$action = ' <button type="button" class="modifier">Modifier</button> <button type="button" class="nettoyer">Effacer et recalculer.</button> <button type="button" class="supprimer">Supprimer sans recalculer</button>' ;
 	exit('<td class="now moyenne">'.$note.'</td><td class="now"><span class="notnow">'.html($appreciation).$action.'</span></td>');
 }
@@ -166,7 +166,7 @@ if($ACTION=='recalculer_note')
 	{
 		exit('Absence de données permettant de calculer cette moyenne !');
 	}
-	$note = ($_SESSION['OFFICIEL']['BULLETIN_NOTE_SUR_20']) ? $note : ($note*5).'%' ;
+	$note = ($_SESSION['OFFICIEL']['BULLETIN_NOTE_SUR_20']) ? $note : ($note*5).'&nbsp;%' ;
 	$appreciation = 'Moyenne calculée / reportée / actualisée automatiquement.' ;
 	exit('<td class="now moyenne">'.$note.'</td><td class="now"><span class="notnow">'.html($appreciation).' <button type="button" class="modifier">Modifier</button> <button type="button" class="supprimer">Supprimer sans recalculer</button></span></td>');
 }
@@ -211,7 +211,7 @@ if($ACTION=='initialiser')
 	if( ($BILAN_TYPE=='bulletin') && $_SESSION['OFFICIEL']['BULLETIN_MOYENNE_SCORES'] )
 	{
 		$liste_eleve_id = implode(',',$tab_eleve_id);
-		calculer_et_enregistrer_moyennes_eleves_bulletin( $periode_id , $classe_id , $liste_eleve_id , $liste_matiere_id , FALSE /*memo_moyennes_classe*/ );
+		calculer_et_enregistrer_moyennes_eleves_bulletin( $periode_id , $classe_id , $liste_eleve_id , $liste_matiere_id , FALSE /*memo_moyennes_classe*/ , $_SESSION['OFFICIEL']['BULLETIN_MOYENNE_GENERALE'] );
 	}
 }
 
@@ -290,10 +290,6 @@ elseif($BILAN_TYPE=='bulletin')
 	$tab_eleve      = array($eleve_id); // tableau de l'unique élève à considérer
 	$liste_eleve    = (string)$eleve_id;
 	$tab_matiere_id = $tab_matiere_id;
-	/*
-	Il reste ...
-	$_SESSION['OFFICIEL']['BULLETIN_MOYENNE_CLASSE'] <<< A FAIRE >>>
-	*/
 	require('./_inc/code_items_synthese.php');
 	$nom_bilan_html = 'releve_HTML';
 }
@@ -310,14 +306,11 @@ elseif(in_array($BILAN_TYPE,array('palier1','palier2','palier3')))
 	$aff_coef       = 0; // Sans objet, l'élève & sa famille n'ayant accès qu'à l'archive pdf
 	$aff_socle      = 0; // Sans objet, l'élève & sa famille n'ayant accès qu'à l'archive pdf
 	$aff_lien       = 0; // Sans objet, l'élève & sa famille n'ayant accès qu'à l'archive pdf
+	$couleur        = $_SESSION['OFFICIEL']['SOCLE_COULEUR'];
+	$legende        = $_SESSION['OFFICIEL']['SOCLE_LEGENDE'];
 	$tab_pilier_id  = $tab_pilier_id;
 	$tab_eleve_id   = array($eleve_id); // tableau de l'unique élève à considérer
 	$tab_matiere_id = array();
-	/*
-	Il reste ...
-	$_SESSION['OFFICIEL']['SOCLE_COULEUR'] ???
-	$_SESSION['OFFICIEL']['SOCLE_LEGENDE'] ???
-	*/
 	require('./_inc/code_socle_releve.php');
 	$nom_bilan_html = 'releve_html';
 }

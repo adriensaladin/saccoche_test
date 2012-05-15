@@ -200,7 +200,9 @@ $(document).ready
 					f_only_presence : { required:false },
 					f_coef          : { required:false },
 					f_socle         : { required:false },
-					f_lien          : { required:false }
+					f_lien          : { required:false },
+					f_couleur       : { required:true },
+					f_legende       : { required:true }
 				},
 				messages :
 				{
@@ -213,7 +215,9 @@ $(document).ready
 					f_only_presence : { },
 					f_coef          : { },
 					f_socle         : { },
-					f_lien          : { }
+					f_lien          : { },
+					f_couleur       : { required:"couleur manquante" },
+					f_legende       : { required:"légende manquante" }
 				},
 				errorElement : "label",
 				errorClass : "erreur",

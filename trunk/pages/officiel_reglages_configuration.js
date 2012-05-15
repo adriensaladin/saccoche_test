@@ -49,6 +49,21 @@ $(document).ready
 			}
 		);
 
+		$('#f_bulletin_appreciation_generale').change
+		(
+			function()
+			{
+				if(parseInt($('#f_bulletin_appreciation_generale').val(),10)>0)
+				{
+					$('#span_moyenne_generale').show();
+				}
+				else
+				{
+					$('#span_moyenne_generale').hide();
+				}
+			}
+		);
+
 		//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
 		//	Alerter sur la nécessité de valider
 		//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*

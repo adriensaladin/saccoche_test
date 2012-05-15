@@ -103,12 +103,11 @@ if($ACTION=='initialiser')
 	}
 	$form_choix_eleve .= '</select> <button id="go_suivant_eleve" type="button" class="go_suivant">Suivant</button> <button id="go_dernier_eleve" type="button" class="go_dernier">Dernier</button>&nbsp;&nbsp;&nbsp;<button id="fermer_zone_action_eleve" type="button" class="retourner">Retour</button></div></form><hr />';
 	$eleve_id = $tab_eleve_id[0];
-	// (re)calculer les moyennes des élèves, ainsi que les moyennes de classe (mises dans $_SESSION['tmp_moyenne'][$periode_id][$classe_id][$matiere_id]) 
+	// (re)calculer les moyennes des élèves, ainsi que les moyennes de classe et générales (mises dans $_SESSION['tmp_moyenne_classe'][$periode_id][$classe_id][$matiere_id] et $_SESSION['tmp_moyenne_generale'][$periode_id][$classe_id][$eleve_id]) 
 	if( ($BILAN_TYPE=='bulletin') && $_SESSION['OFFICIEL']['BULLETIN_MOYENNE_SCORES'] )
 	{
 		$liste_eleve_id = implode(',',$tab_eleve_id);
-		$memo_moyennes_classe = ($_SESSION['OFFICIEL']['BULLETIN_MOYENNE_CLASSE']) ? TRUE : FALSE ;
-		calculer_et_enregistrer_moyennes_eleves_bulletin( $periode_id , $classe_id , $liste_eleve_id , '' /*liste_matiere_id*/ , $memo_moyennes_classe );
+		calculer_et_enregistrer_moyennes_eleves_bulletin( $periode_id , $classe_id , $liste_eleve_id , '' /*liste_matiere_id*/ , $_SESSION['OFFICIEL']['BULLETIN_MOYENNE_CLASSE'] , $_SESSION['OFFICIEL']['BULLETIN_MOYENNE_GENERALE'] );
 	}
 }
 
@@ -187,10 +186,6 @@ elseif($BILAN_TYPE=='bulletin')
 	$tab_eleve      = array($eleve_id); // tableau de l'unique élève à considérer
 	$liste_eleve    = (string)$eleve_id;
 	$tab_matiere_id = array();
-	/*
-	Il reste ...
-	$_SESSION['OFFICIEL']['BULLETIN_MOYENNE_CLASSE'] <<< A FAIRE >>>
-	*/
 	require('./_inc/code_items_synthese.php');
 	$nom_bilan_html = 'releve_HTML';
 }
@@ -207,14 +202,11 @@ elseif(in_array($BILAN_TYPE,array('palier1','palier2','palier3')))
 	$aff_coef       = 0; // Sans objet, l'élève & sa famille n'ayant accès qu'à l'archive pdf
 	$aff_socle      = 0; // Sans objet, l'élève & sa famille n'ayant accès qu'à l'archive pdf
 	$aff_lien       = 0; // Sans objet, l'élève & sa famille n'ayant accès qu'à l'archive pdf
+	$couleur        = $_SESSION['OFFICIEL']['SOCLE_COULEUR'];
+	$legende        = $_SESSION['OFFICIEL']['SOCLE_LEGENDE'];
 	$tab_pilier_id  = $tab_pilier_id;
 	$tab_eleve_id   = array($eleve_id); // tableau de l'unique élève à considérer
 	$tab_matiere_id = array();
-	/*
-	Il reste ...
-	$_SESSION['OFFICIEL']['SOCLE_COULEUR'] ???
-	$_SESSION['OFFICIEL']['SOCLE_LEGENDE'] ???
-	*/
 	require('./_inc/code_socle_releve.php');
 	$nom_bilan_html = 'releve_html';
 }

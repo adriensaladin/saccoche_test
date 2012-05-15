@@ -28,12 +28,14 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 if($_SESSION['SESAMATH_ID']==ID_DEMO) {}
 
-$type          = (isset($_POST['f_type']))       ? clean_texte($_POST['f_type'])        : '';
-$mode          = (isset($_POST['f_mode']))       ? clean_texte($_POST['f_mode'])        : '';
-$palier_id     = (isset($_POST['f_palier']))     ? clean_entier($_POST['f_palier'])     : 0;
-$palier_nom    = (isset($_POST['f_palier_nom'])) ? clean_texte($_POST['f_palier_nom'])  : '';
-$groupe_id     = (isset($_POST['f_groupe']))     ? clean_entier($_POST['f_groupe'])     : 0;
-$groupe_nom    = (isset($_POST['f_groupe_nom'])) ? clean_texte($_POST['f_groupe_nom'])  : '';
+$type          = (isset($_POST['f_type']))       ? clean_texte($_POST['f_type'])       : '';
+$mode          = (isset($_POST['f_mode']))       ? clean_texte($_POST['f_mode'])       : '';
+$palier_id     = (isset($_POST['f_palier']))     ? clean_entier($_POST['f_palier'])    : 0;
+$palier_nom    = (isset($_POST['f_palier_nom'])) ? clean_texte($_POST['f_palier_nom']) : '';
+$groupe_id     = (isset($_POST['f_groupe']))     ? clean_entier($_POST['f_groupe'])    : 0;
+$groupe_nom    = (isset($_POST['f_groupe_nom'])) ? clean_texte($_POST['f_groupe_nom']) : '';
+$couleur       = (isset($_POST['f_couleur']))    ? clean_texte($_POST['f_couleur'])    : '';
+$legende       = (isset($_POST['f_legende']))    ? clean_texte($_POST['f_legende'])    : '';
 // Normalement ce sont des tableaux qui sont transmis, mais au cas où...
 $tab_pilier_id  = (isset($_POST['f_pilier']))  ? ( (is_array($_POST['f_pilier']))  ? $_POST['f_pilier']  : explode(',',$_POST['f_pilier'])  ) : array() ;
 $tab_eleve_id   = (isset($_POST['f_eleve']))   ? ( (is_array($_POST['f_eleve']))   ? $_POST['f_eleve']   : explode(',',$_POST['f_eleve'])   ) : array() ;
@@ -45,7 +47,7 @@ $tab_matiere_id = array_filter( array_map( 'clean_entier' , $tab_matiere_id ) , 
 $memo_demande  = (count($tab_pilier_id)>1) ? 'palier' : 'pilier' ;
 $liste_eleve   = implode(',',$tab_eleve_id);
 
-if( (!$palier_id) || (!$palier_nom) || (!$groupe_id) || (!$groupe_nom) || (!count($tab_eleve_id)) || (!count($tab_pilier_id)) || (!in_array($type,array('pourcentage','validation'))) || (!in_array($mode,array('auto','manuel'))) )
+if( (!$palier_id) || (!$palier_nom) || (!$groupe_id) || (!$groupe_nom) || (!count($tab_eleve_id)) || (!count($tab_pilier_id)) || (!in_array($type,array('pourcentage','validation'))) || (!in_array($mode,array('auto','manuel'))) || !$couleur || !$legende )
 {
 	exit('Erreur avec les données transmises !');
 }
@@ -53,7 +55,7 @@ if( (!$palier_id) || (!$palier_nom) || (!$groupe_id) || (!$groupe_nom) || (!coun
 Formulaire::save_choix('synthese_socle');
 
 // Permet d'avoir des informations accessibles en cas d'erreur type « PHP Fatal error : Allowed memory size of ... bytes exhausted ».
-// ajouter_log_PHP( $log_objet='Demande de bilan' , $log_contenu=serialize($_POST) , $log_fichier=__FILE__ , $log_ligne=__LINE__ , $only_sesamath=true );
+// ajouter_log_PHP( 'Demande de bilan' /*log_objet*/ , serialize($_POST) /*log_contenu*/ , __FILE__ /*log_fichier*/ , __LINE__ /*log_ligne*/ , TRUE /*only_sesamath*/ );
 
 $tab_pilier       = array();	// [pilier_id] => array(pilier_ref,pilier_nom,pilier_nb_entrees);
 $tab_socle        = array();	// [pilier_id][socle_id] => array(section_nom,socle_nom);
@@ -255,7 +257,7 @@ $releve_html .= $affichage_direct ? '' : '<style type="text/css">thead th{text-a
 $releve_html .= $affichage_direct ? '' : '<h1>Synthèse de maîtrise du socle : '.$titre_info1.'</h1>';
 $releve_html .= $affichage_direct ? '' : '<h2>'.html($groupe_nom).' - '.html($titre_info2).'</h2>';
 // Appel de la classe et définition de qqs variables supplémentaires pour la mise en page PDF
-$releve_pdf = new PDF($orientation='landscape',$marge_min=7.5,$couleur='oui');
+$releve_pdf = new PDF($orientation='landscape',$marge_min=7.5,$couleur,$legende);
 $releve_pdf->releve_synthese_socle_initialiser($titre_info1,$groupe_nom,$titre_info2,$eleves_nb,$items_nb,$piliers_nb);
 // - - - - - - - - - -
 // Lignes d'en-tête
@@ -343,6 +345,8 @@ foreach($tab_eleve as $tab)
 $releve_html .= ($affichage_checkbox) ? '<form id="form_synthese" action="#" method="post">' : '' ;
 $releve_html .= '<table class="bilan"><thead>'.$releve_html_head.'</thead><tbody>'.$releve_html_body.'</tbody></table>';
 $releve_html .= ($affichage_checkbox) ? '<p><label class="tab">Action <img alt="" src="./_img/bulle_aide.png" title="Cocher auparavant les cases adéquates." /> :</label><button type="button" class="ajouter" onclick="var form=document.getElementById(\'form_synthese\');form.action=\'./index.php?page=evaluation_gestion\';form.submit();">Préparer une évaluation.</button> <button type="button" class="ajouter" onclick="var form=document.getElementById(\'form_synthese\');form.action=\'./index.php?page=professeur_groupe_besoin\';form.submit();">Constituer un groupe de besoin.</button></p></form>' : '';
+$releve_html .= affich_legende_html( FALSE /*codes_notation*/ , FALSE /*etat_acquisition*/ , ($type=='pourcentage') /*pourcentage_acquis*/ , ($type=='validation') /*etat_validation*/ );
+$releve_pdf->releve_synthese_socle_legende($legende,$type);
 
 // Chemins d'enregistrement
 $dossier = './__tmp/export/';

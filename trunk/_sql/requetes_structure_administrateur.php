@@ -1419,12 +1419,12 @@ public function DB_supprimer_saisies_REQ()
 }
 
 /**
- * DB_supprimer_bulletins
+ * DB_supprimer_saisies_et_archiver_bilans_officiels
  *
  * @param void
  * @return void
  */
-public function DB_supprimer_saisies_bilans_officiels()
+public function DB_supprimer_saisies_et_archiver_bilans_officiels()
 {
 	DB::query(SACOCHE_STRUCTURE_BD_NAME , 'TRUNCATE sacoche_officiel_saisie' , NULL);
 	DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_officiel_archive SET periode_id=0' , NULL);

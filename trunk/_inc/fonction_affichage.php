@@ -335,19 +335,21 @@ function affich_score_html($score,$methode_tri,$pourcent='')
 /**
  * Afficher la légende pour une sortie HTML.
  *
- * Normalement au moins un des deux paramètres est passé à TRUE.
+ * Normalement au moins un des paramètres est passé à TRUE.
  *
- * @param bool $note_Lomer
- * @param bool $etat_bilan
+ * @param bool $codes_notation
+ * @param bool $etat_acquisition
+ * @param bool $pourcentage_acquis
+ * @param bool $etat_validation
  * @return string
  */
-function affich_legende_html($note_Lomer=FALSE,$etat_bilan=FALSE)
+function affich_legende_html( $codes_notation=FALSE , $etat_acquisition=FALSE , $pourcentage_acquis=FALSE , $etat_validation=FALSE )
 {
 	// initialisation variables
 	$retour = '';
 	$espace = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
-	// légende note_Lomer
-	if($note_Lomer)
+	// légende codes_notation
+	if($codes_notation)
 	{
 		$tab_notes = array('RR','R','V','VV');
 		$retour .= '<div class="ti">';
@@ -357,14 +359,38 @@ function affich_legende_html($note_Lomer=FALSE,$etat_bilan=FALSE)
 		}
 		$retour .= '</div>';
 	}
-	// légende etat_bilan
-	if($etat_bilan)
+	// légende etat_acquisition
+	if($etat_acquisition)
 	{
 		$tab_etats = array('NA'=>'r','VA'=>'o','A'=>'v');
 		$retour .= '<div class="ti">';
 		foreach($tab_etats as $etat => $couleur)
 		{
 			$retour .= '<span class="'.$couleur.'">&nbsp;'.html($_SESSION['ACQUIS_TEXTE'][$etat]).'&nbsp;</span> '.html($_SESSION['ACQUIS_LEGENDE'][$etat]).$espace;
+		}
+		$retour .= '</div>';
+	}
+	// légende pourcentage_acquis
+	if($pourcentage_acquis)
+	{
+		$endroit = ($etat_validation) ? ' (à gauche)' : '' ;
+		$tab_seuils = array('r'=>'&lt;&nbsp;'.$_SESSION['CALCUL_SEUIL']['R'].'%','o'=>'médian','v'=>'&gt;&nbsp;'.$_SESSION['CALCUL_SEUIL']['V'].'%');
+		$retour .= '<div class="ti">Pourcentages d\'items acquis'.$endroit.' :'.$espace;
+		foreach($tab_seuils as $couleur => $texte)
+		{
+			$retour .= '<span class="'.$couleur.'">&nbsp;'.$texte.'&nbsp;</span>'.$espace;
+		}
+		$retour .= '</div>';
+	}
+	// légende etat_validation
+	if($etat_validation)
+	{
+		$endroit = ($pourcentage_acquis) ? ' (à droite) ' : '' ;
+		$tab_etats = array(1=>'Validé',0=>'Invalidé',2=>'Non renseigné');
+		$retour .= '<div class="ti">États de validation'.$endroit.' :'.$espace;
+		foreach($tab_etats as $couleur => $texte)
+		{
+			$retour .= '<span class="v'.$couleur.'">&nbsp;'.$texte.'&nbsp;</span>'.$espace;
 		}
 		$retour .= '</div>';
 	}

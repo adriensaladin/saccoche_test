@@ -39,6 +39,8 @@ $mode          = (isset($_POST['f_mode']))          ? clean_texte($_POST['f_mode
 $aff_coef      = (isset($_POST['f_coef']))          ? 1                                   : 0;
 $aff_socle     = (isset($_POST['f_socle']))         ? 1                                   : 0;
 $aff_lien      = (isset($_POST['f_lien']))          ? 1                                   : 0;
+$couleur       = (isset($_POST['f_couleur']))       ? clean_texte($_POST['f_couleur'])    : '';
+$legende       = (isset($_POST['f_legende']))       ? clean_texte($_POST['f_legende'])    : '';
 // Normalement ce sont des tableaux qui sont transmis, mais au cas où...
 $tab_pilier_id  = (isset($_POST['f_pilier']))  ? ( (is_array($_POST['f_pilier']))  ? $_POST['f_pilier']  : explode(',',$_POST['f_pilier'])  ) : array() ;
 $tab_eleve_id   = (isset($_POST['f_eleve']))   ? ( (is_array($_POST['f_eleve']))   ? $_POST['f_eleve']   : explode(',',$_POST['f_eleve'])   ) : array() ;
@@ -60,7 +62,7 @@ if($_SESSION['USER_PROFIL']=='eleve')
 	$tab_eleve_id = array($_SESSION['USER_ID']);
 }
 
-if( (!$palier_id) || (!$palier_nom) || (!count($tab_pilier_id)) || (!in_array($mode,array('auto','manuel'))) )
+if( (!$palier_id) || (!$palier_nom) || (!count($tab_pilier_id)) || (!in_array($mode,array('auto','manuel'))) || !$couleur || !$legende )
 {
 	exit('Erreur avec les données transmises !');
 }
@@ -68,7 +70,7 @@ if( (!$palier_id) || (!$palier_nom) || (!count($tab_pilier_id)) || (!in_array($m
 Formulaire::save_choix('releve_socle');
 
 // Permet d'avoir des informations accessibles en cas d'erreur type « PHP Fatal error : Allowed memory size of ... bytes exhausted ».
-// ajouter_log_PHP( $log_objet='Demande de bilan' , $log_contenu=serialize($_POST) , $log_fichier=__FILE__ , $log_ligne=__LINE__ , $only_sesamath=true );
+// ajouter_log_PHP( 'Demande de bilan' /*log_objet*/ , serialize($_POST) /*log_contenu*/ , __FILE__ /*log_fichier*/ , __LINE__ /*log_ligne*/ , TRUE /*only_sesamath*/ );
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 // INCLUSION DU CODE COMMUN À PLUSIEURS PAGES

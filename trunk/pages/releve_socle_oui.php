@@ -94,9 +94,11 @@ $tab_paliers  = DB_STRUCTURE_COMMUN::DB_OPT_paliers_etabl();
 $tab_matieres = DB_STRUCTURE_COMMUN::DB_OPT_matieres_etabl();
 $of_p = (count($tab_paliers)<2) ? 'non' : 'oui' ;
 
-$select_palier  = Formulaire::afficher_select($tab_paliers  , $select_nom='f_palier' , $option_first=$of_p , $selection=Formulaire::$tab_choix['palier_id'] , $optgroup='non');
-$select_groupe  = Formulaire::afficher_select($tab_groupes  , $select_nom='f_groupe' , $option_first=$of_g , $selection=$sel_g                               , $optgroup=$og_g);
-$select_matiere = Formulaire::afficher_select($tab_matieres , $select_nom=false      , $option_first='non' , $selection=true                                 , $optgroup='non');
+$select_palier  = Formulaire::afficher_select($tab_paliers                    , $select_nom='f_palier'  , $option_first=$of_p , $selection=Formulaire::$tab_choix['palier_id'] , $optgroup='non');
+$select_groupe  = Formulaire::afficher_select($tab_groupes                    , $select_nom='f_groupe'  , $option_first=$of_g , $selection=$sel_g                              , $optgroup=$og_g);
+$select_matiere = Formulaire::afficher_select($tab_matieres                   , $select_nom=false       , $option_first='non' , $selection=true                                , $optgroup='non');
+$select_couleur = Formulaire::afficher_select(Formulaire::$tab_select_couleur , $select_nom='f_couleur' , $option_first='non' , $selection=Formulaire::$tab_choix['couleur']   , $optgroup='non');
+$select_legende = Formulaire::afficher_select(Formulaire::$tab_select_legende , $select_nom='f_legende' , $option_first='non' , $selection=Formulaire::$tab_choix['legende']   , $optgroup='non');
 ?>
 
 <p><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=releves_bilans__releve_socle">DOC : Relevé de maîtrise du socle.</a></span></p>
@@ -116,6 +118,13 @@ $select_matiere = Formulaire::afficher_select($tab_matieres , $select_nom=false 
 			<label class="tab">Items récoltés :</label><label for="f_mode_auto"><input type="radio" id="f_mode_auto" name="f_mode" value="auto"<?php echo $check_mode_auto ?> /> Automatique (recommandé) <img alt="" src="./_img/bulle_aide.png" title="Items de tous les référentiels, sauf pour la compétence 2 où on ne prend que les items des référentiels de la langue associée à l'élève." /></label>&nbsp;&nbsp;&nbsp;<label for="f_mode_manuel"><input type="radio" id="f_mode_manuel" name="f_mode" value="manuel"<?php echo $check_mode_manuel ?> /> Sélection manuelle <img alt="" src="./_img/bulle_aide.png" title="Pour choisir les matières des référentiels dont les items collectés sont issus." /></label>
 			<div id="div_matiere" class="<?php echo $class_div_matiere ?>"><span class="tab"></span><select id="f_matiere" name="f_matiere[]" multiple size="5"><?php echo $select_matiere ?></select></div>
 		</div>
+	</div>
+	<div class="toggle">
+		<span class="tab"></span><a href="#" class="puce_plus toggle">Afficher plus d'options</a>
+	</div>
+	<div class="toggle hide">
+		<span class="tab"></span><a href="#" class="puce_moins toggle">Afficher moins d'options</a><br />
+		<label class="tab"><img alt="" src="./_img/bulle_aide.png" title="Pour le format pdf." /> Impression :</label><?php echo $select_couleur ?> <?php echo $select_legende ?>
 	</div>
 	<p><span class="tab"></span><button id="bouton_valider" type="submit" class="generer">Générer.</button><label id="ajax_msg">&nbsp;</label></p>
 </fieldset></form>

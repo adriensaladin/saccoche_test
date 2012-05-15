@@ -312,11 +312,11 @@ public function load_choix_memo()
 			$tab_choix_new = compact('retroactif','only_socle','only_niveau','aff_coef','aff_socle','aff_lien','couleur','legende');
 			break;
 		case 'releve_socle' :
-			global $palier_id,$only_presence,$aff_coef,$aff_socle,$aff_lien,$aff_socle_PA,$aff_socle_EV,$mode;
-			$tab_choix_new = compact('palier_id','only_presence','aff_coef','aff_socle','aff_lien','aff_socle_PA','aff_socle_EV','mode');
+			global $palier_id,$only_presence,$aff_coef,$aff_socle,$aff_lien,$aff_socle_PA,$aff_socle_EV,$mode,$couleur,$legende;
+			$tab_choix_new = compact('palier_id','only_presence','aff_coef','aff_socle','aff_lien','aff_socle_PA','aff_socle_EV','mode','couleur','legende');
 		case 'synthese_socle' :
-			global $palier_id,$type,$mode;
-			$tab_choix_new = compact('palier_id','type','mode');
+			global $palier_id,$type,$mode,$couleur,$legende;
+			$tab_choix_new = compact('palier_id','type','mode','couleur','legende');
 			break;
 		case 'matiere' :
 			global $matiere_id;

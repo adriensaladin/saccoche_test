@@ -119,16 +119,16 @@ function sauvegarder_tables_base_etablissement($dossier_temp,$nb_lignes_maxi)
 	$DB_TAB = DB_STRUCTURE_COMMUN::DB_recuperer_tables_informations();
 	foreach($DB_TAB as $DB_ROW)
 	{
-		$tab_tables_info[] = array( 'Nom'=>$DB_ROW['Name'] , 'Nombre'=>ceil($DB_ROW['Rows']/$nb_lignes_maxi) );
+		$nombre_boucles = max( ceil($DB_ROW['Rows']/$nb_lignes_maxi) , 1 ); // Parcourir au moins une fois la boucle pour une table sans enregistrement
+		$tab_tables_info[] = array( 'Nom'=>$DB_ROW['Name'] , 'NombreBoucles'=>$nombre_boucles );
 	}
 	// Créer les fichiers sql table par table...
 	foreach($tab_tables_info as $tab_table_info)
 	{
-		$imax = max($tab_table_info['Nombre'],1); // Parcourir au moins une fois la boucle pour une table sans enregistrement
-		for($i=0 ; $i<$imax ; $i++)
+		for($numero_boucle=0 ; $numero_boucle<$tab_table_info['NombreBoucles'] ; $numero_boucle++)
 		{
 			$fichier_contenu = '';
-			if($i==0)
+			if($numero_boucle==0)
 			{
 				// ... la structure
 				$fichier_contenu .= 'DROP TABLE IF EXISTS '.$tab_table_info['Nom'].';'."\r\n";
@@ -137,7 +137,7 @@ function sauvegarder_tables_base_etablissement($dossier_temp,$nb_lignes_maxi)
 			}
 			// ... les données
 			$tab_ligne_insert = array();
-			$from = $i*$nb_lignes_maxi;
+			$from = $numero_boucle*$nb_lignes_maxi;
 			$DB_TAB = DB_STRUCTURE_COMMUN::DB_recuperer_table_donnees( $tab_table_info['Nom'] , $from ,$nb_lignes_maxi );
 			if(count($DB_TAB))
 			{
@@ -151,32 +151,10 @@ function sauvegarder_tables_base_etablissement($dossier_temp,$nb_lignes_maxi)
 				$fichier_contenu .= 'ALTER TABLE '.$tab_table_info['Nom'].' ENABLE KEYS;'."\r\n";
 			}
 			// Enregistrer le fichier
-			$fichier_sql_nom = 'dump_'.$tab_table_info['Nom'].'_'.sprintf("%03u",$i).'.sql';
+			$fichier_sql_nom = 'dump_'.$tab_table_info['Nom'].'_'.sprintf("%03u",$numero_boucle).'.sql';
 			Ecrire_Fichier($dossier_temp.$fichier_sql_nom,$fichier_contenu);
 		}
 	}
-}
-
-/**
- * zipper_fichiers_sauvegarde
- * Zipper les fichiers de svg
- *
- * @param string $dossier_temp
- * @param string $dossier_dump
- * @param string $fichier_zip_nom
- * @return void
- */
-
-function zipper_fichiers_sauvegarde($dossier_temp,$dossier_dump,$fichier_zip_nom)
-{
-	$zip = new ZipArchive();
-	$zip->open($dossier_dump.$fichier_zip_nom, ZIPARCHIVE::CREATE);
-	$tab_fichier = Lister_Contenu_Dossier($dossier_temp);
-	foreach($tab_fichier as $fichier_sql_nom)
-	{
-		$zip->addFile($dossier_temp.$fichier_sql_nom,$fichier_sql_nom);
-	}
-	$zip->close();
 }
 
 /**

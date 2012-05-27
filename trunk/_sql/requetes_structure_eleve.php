@@ -39,7 +39,7 @@ class DB_STRUCTURE_ELEVE extends DB
  * @param int   $matiere_id
  * @return int
  */
-public function DB_recuperer_demandes_autorisees_matiere($matiere_id)
+public static function DB_recuperer_demandes_autorisees_matiere($matiere_id)
 {
 	$DB_SQL = 'SELECT matiere_nb_demandes ';
 	$DB_SQL.= 'FROM sacoche_matiere ';
@@ -54,7 +54,7 @@ public function DB_recuperer_demandes_autorisees_matiere($matiere_id)
  * @param int   $item_id
  * @return array
  */
-public function DB_recuperer_item_infos($item_id)
+public static function DB_recuperer_item_infos($item_id)
 {
 	$DB_SQL = 'SELECT item_nom , item_cart , ';
 	$DB_SQL.= 'CONCAT(matiere_ref,".",niveau_ref,".",domaine_ref,theme_ordre,item_ordre) AS item_ref ';
@@ -74,7 +74,7 @@ public function DB_recuperer_item_infos($item_id)
  * @param int    $devoir_id
  * @return array
  */
-public function DB_recuperer_devoir_infos($devoir_id)
+public static function DB_recuperer_devoir_infos($devoir_id)
 {
 	$DB_SQL = 'SELECT prof_id , devoir_date , devoir_info , devoir_visible_date , devoir_autoeval_date , devoir_partage ';
 	$DB_SQL.= 'FROM sacoche_devoir ';
@@ -90,7 +90,7 @@ public function DB_recuperer_devoir_infos($devoir_id)
  * @param int $matiere_id
  * @return array
  */
-public function DB_recuperer_professeurs_eleve_matiere($eleve_id,$matiere_id)
+public static function DB_recuperer_professeurs_eleve_matiere($eleve_id,$matiere_id)
 {
 	// On connait la classe ($_SESSION['ELEVE_CLASSE_ID']), donc on commence par récupérer les groupes éventuels associés à l'élève
 	// DB::query(SACOCHE_STRUCTURE_BD_NAME , 'SET group_concat_max_len = ...'); // Pour lever si besoin une limitation de GROUP_CONCAT (group_concat_max_len est par défaut limité à une chaine de 1024 caractères).
@@ -135,7 +135,7 @@ public function DB_recuperer_professeurs_eleve_matiere($eleve_id,$matiere_id)
  * @param int $parent_id
  * @return array
  */
-public function DB_lister_classes_parent($parent_id)
+public static function DB_lister_classes_parent($parent_id)
 {
 	$DB_SQL = 'SELECT groupe_id, groupe_nom, groupe_type ';
 	$DB_SQL.= 'FROM sacoche_jointure_parent_eleve ';
@@ -157,7 +157,7 @@ public function DB_lister_classes_parent($parent_id)
  * @param string $liste_item_id   id des items séparés par des virgules
  * @return array
  */
-public function DB_lister_result_eleve_items($eleve_id,$liste_item_id)
+public static function DB_lister_result_eleve_items($eleve_id,$liste_item_id)
 {
 	$DB_SQL = 'SELECT item_id , saisie_note AS note ';
 	$DB_SQL.= 'FROM sacoche_saisie ';
@@ -173,7 +173,7 @@ public function DB_lister_result_eleve_items($eleve_id,$liste_item_id)
  * @param int    $user_id   id de l'élève
  * @return array
  */
-public function DB_lister_demandes_eleve($user_id)
+public static function DB_lister_demandes_eleve($user_id)
 {
 	$DB_SQL = 'SELECT sacoche_demande.*, ';
 	$DB_SQL.= 'CONCAT(niveau_ref,".",domaine_ref,theme_ordre,item_ordre) AS item_ref , ';
@@ -196,7 +196,7 @@ public function DB_lister_demandes_eleve($user_id)
  * @param int   $eleve_id
  * @return int
  */
-public function DB_recuperer_classe_eleve($eleve_id)
+public static function DB_recuperer_classe_eleve($eleve_id)
 {
 	$DB_SQL = 'SELECT eleve_classe_id ';
 	$DB_SQL.= 'FROM sacoche_user ';
@@ -214,7 +214,7 @@ public function DB_recuperer_classe_eleve($eleve_id)
  * @param string $date_fin_mysql
  * @return array
  */
-public function DB_lister_devoirs_eleve($eleve_id,$classe_id,$date_debut_mysql,$date_fin_mysql)
+public static function DB_lister_devoirs_eleve($eleve_id,$classe_id,$date_debut_mysql,$date_fin_mysql)
 {
 	$where_classe = ($classe_id) ? 'sacoche_devoir.groupe_id='.$classe_id.' OR ' : '';
 	$DB_SQL = 'SELECT sacoche_devoir.* , sacoche_user.user_nom AS prof_nom , sacoche_user.user_prenom AS prof_prenom ';
@@ -235,7 +235,7 @@ public function DB_lister_devoirs_eleve($eleve_id,$classe_id,$date_debut_mysql,$
  * @param int  $devoir_id
  * @return array
  */
-public function DB_lister_items_devoir_avec_infos_pour_eleves($devoir_id)
+public static function DB_lister_items_devoir_avec_infos_pour_eleves($devoir_id)
 {
 	$DB_SQL = 'SELECT item_id, item_nom, entree_id, ';
 	$DB_SQL.= 'item_cart, item_lien, matiere_id, referentiel_calcul_methode, referentiel_calcul_limite, ';
@@ -261,7 +261,7 @@ public function DB_lister_items_devoir_avec_infos_pour_eleves($devoir_id)
  * @param bool  $with_REQ   // Avec ou sans les repères de demandes d'évaluations
  * @return array
  */
-public function DB_lister_saisies_devoir_eleve($devoir_id,$eleve_id,$with_REQ)
+public static function DB_lister_saisies_devoir_eleve($devoir_id,$eleve_id,$with_REQ)
 {
 	$DB_SQL = 'SELECT item_id, saisie_note ';
 	$DB_SQL.= 'FROM sacoche_saisie ';
@@ -278,7 +278,7 @@ public function DB_lister_saisies_devoir_eleve($devoir_id,$eleve_id,$with_REQ)
  * @param int   $matiere_id
  * @return int
  */
-public function DB_compter_demandes_formulees_eleve_matiere($eleve_id,$matiere_id)
+public static function DB_compter_demandes_formulees_eleve_matiere($eleve_id,$matiere_id)
 {
 	$DB_SQL = 'SELECT COUNT(*) AS nombre ';
 	$DB_SQL.= 'FROM sacoche_demande ';
@@ -296,7 +296,7 @@ public function DB_compter_demandes_formulees_eleve_matiere($eleve_id,$matiere_i
  * @param int    $item_id
  * @return int
  */
-public function DB_tester_demande_existante($eleve_id,$matiere_id,$item_id)
+public static function DB_tester_demande_existante($eleve_id,$matiere_id,$item_id)
 {
 	$DB_SQL = 'SELECT demande_id ';
 	$DB_SQL.= 'FROM sacoche_demande ';
@@ -317,7 +317,7 @@ public function DB_tester_demande_existante($eleve_id,$matiere_id,$item_id)
  * @param string   $message
  * @return int
  */
-public function DB_ajouter_demande($eleve_id,$matiere_id,$item_id,$demande_score,$demande_statut,$message)
+public static function DB_ajouter_demande($eleve_id,$matiere_id,$item_id,$demande_score,$demande_statut,$message)
 {
 	$demande_messages = ($message) ? $_SESSION['USER_NOM'].' '.$_SESSION['USER_PRENOM']{0}.'.'."\r\n".$message : '' ;
 	$DB_SQL = 'INSERT INTO sacoche_demande(user_id,matiere_id,item_id,demande_date,demande_score,demande_statut,demande_messages) ';
@@ -333,7 +333,7 @@ public function DB_ajouter_demande($eleve_id,$matiere_id,$item_id,$demande_score
  * @param int   $demande_id
  * @return void
  */
-public function DB_supprimer_demande_precise($demande_id)
+public static function DB_supprimer_demande_precise($demande_id)
 {
 	$DB_SQL = 'DELETE FROM sacoche_demande ';
 	$DB_SQL.= 'WHERE demande_id=:demande_id ';

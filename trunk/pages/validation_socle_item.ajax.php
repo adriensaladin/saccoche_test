@@ -185,7 +185,7 @@ if( ($action=='Afficher_bilan') && $pilier_id && count($tab_domaine) && count($t
 					extract($tab_item[$item_id]);	// $calcul_methode $calcul_limite
 					// calcul du bilan de l'item
 					$score = calculer_score($tab_devoirs,$calcul_methode,$calcul_limite);
-					if($score!==false)
+					if($score!==FALSE)
 					{
 						// on détermine si elle est acquise ou pas
 						$indice = test_A($score) ? 'A' : ( test_NA($score) ? 'NA' : 'VA' ) ;
@@ -289,7 +289,7 @@ elseif( ($action=='Afficher_information') && $eleve_id && $pilier_id && $entree_
 			extract($tab_item[$item_id]);	// $item_ref $item_nom $matiere_id $calcul_methode $calcul_limite
 			// calcul du bilan de l'item
 			$score = calculer_score($tab_devoirs,$calcul_methode,$calcul_limite);
-			if($score!==false)
+			if($score!==FALSE)
 			{
 				// on détermine si elle est acquise ou pas
 				$indice = test_A($score) ? 'A' : ( test_NA($score) ? 'NA' : 'VA' ) ;

@@ -319,7 +319,8 @@ $(document).ready
 					f_restriction_socle  : { required:false },
 					f_restriction_niveau : { required:false },
 					f_couleur            : { required:true },
-					f_legende            : { required:true }
+					f_legende            : { required:true },
+					f_marge_min          : { required:true }
 				},
 				messages :
 				{
@@ -337,7 +338,8 @@ $(document).ready
 					f_restriction_socle  : { },
 					f_restriction_niveau : { },
 					f_couleur            : { required:"couleur manquante" },
-					f_legende            : { required:"légende manquante" }
+					f_legende            : { required:"légende manquante" },
+					f_marge_min          : { required:"marge mini manquante" }
 				},
 				errorElement : "label",
 				errorClass : "erreur",

@@ -98,7 +98,7 @@ if( ($action=='exporter') && $num && $max && ($num<$max) )
 	// Débloquer l'application
 	debloquer_application('automate',$export_id);
 	// Zipper les fichiers de svg
-	zipper_fichiers_sauvegarde($dossier_temp_sql,$dossier_temp_zip,$fichier_nom);
+	zipper_fichiers($dossier_temp_sql,$dossier_temp_zip,$fichier_nom);
 	// Appel suivant
 	exit(']¤['.'ok');
 }
@@ -107,7 +107,7 @@ elseif( ($action=='exporter') && $num && $max && ($num==$max) )
 	// Supprimer le dossier temporaire des sql
 	Supprimer_Dossier($dossier_temp_sql);
 	// Zipper les zip de svg
-	zipper_fichiers_sauvegarde($dossier_temp_zip,$dossier_dump,$fichier_zip_nom);
+	zipper_fichiers($dossier_temp_zip,$dossier_dump,$fichier_zip_nom);
 	// Supprimer le dossier temporaire des zip
 	Supprimer_Dossier($dossier_temp_zip);
 	// Game over
@@ -360,7 +360,7 @@ if( ($action=='importer') && $num && $max && ($num<$max) )
 	// Créer un utilisateur pour la base de données de la structure et lui attribuer ses droits
 	$base_id = ajouter_structure($import_id,$geo_id,$uai,$localisation,$denomination,$contact_nom,$contact_prenom,$contact_courriel,$date);
 	// Créer les dossiers de fichiers temporaires par établissement : vignettes verticales, flux RSS des demandes, cookies des choix de formulaires, sujets et corrigés de devoirs
-	$tab_sous_dossier = array('badge','cookie','devoir','rss');
+	$tab_sous_dossier = array('badge','cookie','devoir','officiel','rss');
 	foreach($tab_sous_dossier as $sous_dossier)
 	{
 		Creer_Dossier('./__tmp/'.$sous_dossier.'/'.$base_id);

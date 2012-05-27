@@ -138,7 +138,7 @@ if( ($action=='upload_signature') && ($user_id>=0) && ($user_texte!='') )
 	$image_format = $tab_extension_types[$image_type];
 	// enregistrer le fichier (temporairement)
 	$dossier     = './__tmp/export/';
-	$fichier_nom = 'signature_'.$_SESSION['BASE'].'_'.$user_id.'_'.fabriquer_fin_nom_fichier().'.'.$extension;
+	$fichier_nom = 'signature_'.$_SESSION['BASE'].'_'.$user_id.'_'.fabriquer_fin_nom_fichier__date_et_alea().'.'.$extension;
 	if(!move_uploaded_file($fnom_serveur , $dossier.$fichier_nom))
 	{
 		exit('Erreur : le fichier n\'a pas pu être enregistré sur le serveur.');

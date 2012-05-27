@@ -313,7 +313,7 @@ if( $is_socle_item_pourcentage )
 				extract($tab_item[$item_id]);	// $calcul_methode $calcul_limite
 				// calcul du bilan de l'item
 				$score = calculer_score($tab_devoirs,$calcul_methode,$calcul_limite);
-				if($score!==false)
+				if($score!==FALSE)
 				{
 					// on détermine si elle est acquise ou pas
 					$indice = test_A($score) ? 'A' : ( test_NA($score) ? 'NA' : 'VA' ) ;

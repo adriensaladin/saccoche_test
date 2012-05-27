@@ -39,7 +39,7 @@ class DB_STRUCTURE_SOCLE extends DB
  * @param void
  * @return array
  */
-public function DB_recuperer_associations_entrees_socle()
+public static function DB_recuperer_associations_entrees_socle()
 {
 	$DB_SQL = 'SELECT entree_id , item_nom , matiere_ref , niveau_ref , ';
 	$DB_SQL.= 'CONCAT(domaine_ref,theme_ordre,item_ordre) AS item_ref ';
@@ -62,7 +62,7 @@ public function DB_recuperer_associations_entrees_socle()
  * @param int $palier_id   id du palier
  * @return array|string
  */
-public function DB_recuperer_piliers($palier_id)
+public static function DB_recuperer_piliers($palier_id)
 {
 	$DB_SQL = 'SELECT * ';
 	$DB_SQL.= 'FROM sacoche_socle_pilier ';
@@ -79,7 +79,7 @@ public function DB_recuperer_piliers($palier_id)
  * @param string   $listing_domaine_id   id des domaines séparés par des virgules (facultatif, pour restreindre à des domaines précis)
  * @return array
  */
-public function DB_recuperer_arborescence_pilier($pilier_id,$listing_domaine_id='')
+public static function DB_recuperer_arborescence_pilier($pilier_id,$listing_domaine_id='')
 {
 	$where_domaine = ($listing_domaine_id) ? 'AND section_id IN('.$listing_domaine_id.') ' : '';
 	$DB_SQL = 'SELECT * ';
@@ -98,7 +98,7 @@ public function DB_recuperer_arborescence_pilier($pilier_id,$listing_domaine_id=
  * @param string $liste_pilier_id   id des piliers séparés par des virgules
  * @return array
  */
-public function DB_recuperer_arborescence_piliers($liste_pilier_id)
+public static function DB_recuperer_arborescence_piliers($liste_pilier_id)
 {
 	$DB_SQL = 'SELECT * ';
 	$DB_SQL.= 'FROM sacoche_socle_pilier ';
@@ -117,7 +117,7 @@ public function DB_recuperer_arborescence_piliers($liste_pilier_id)
  * @param string $user_profil
  * @return array
  */
-public function DB_lister_result_eleve_palier($eleve_id,$entree_id)
+public static function DB_lister_result_eleve_palier($eleve_id,$entree_id)
 {
 	$DB_SQL = 'SELECT item_id , saisie_note AS note , item_nom , ';
 	$DB_SQL.= 'CONCAT(matiere_ref,".",niveau_ref,".",domaine_ref,theme_ordre,item_ordre) AS item_ref , ';
@@ -143,7 +143,7 @@ public function DB_lister_result_eleve_palier($eleve_id,$entree_id)
  * @param bool     $only_sconet_id     restreindre (ou pas) aux élèves ayant un id sconet
  * @return array
  */
-public function DB_lister_eleves_cibles_actuels_avec_sconet_id($listing_eleve_id,$only_sconet_id)
+public static function DB_lister_eleves_cibles_actuels_avec_sconet_id($listing_eleve_id,$only_sconet_id)
 {
 	$DB_SQL = 'SELECT user_id , user_nom , user_prenom , user_sconet_id ';
 	$DB_SQL.= 'FROM sacoche_user ';
@@ -163,7 +163,7 @@ public function DB_lister_eleves_cibles_actuels_avec_sconet_id($listing_eleve_id
  * @param bool   $detail
  * @return array
  */
-public function DB_lister_infos_items($liste_item_id,$detail)
+public static function DB_lister_infos_items($liste_item_id,$detail)
 {
 	$DB_SQL = 'SELECT item_id , ';
 	if($detail)
@@ -194,7 +194,7 @@ public function DB_lister_infos_items($liste_item_id,$detail)
  * @param int      $palier_id        id d'un palier
  * @return array
  */
-public function DB_lister_jointure_user_entree($listing_eleves,$listing_entrees,$domaine_id,$pilier_id,$palier_id)
+public static function DB_lister_jointure_user_entree($listing_eleves,$listing_entrees,$domaine_id,$pilier_id,$palier_id)
 {
 	if($listing_entrees)
 	{
@@ -244,7 +244,7 @@ public function DB_lister_jointure_user_entree($listing_eleves,$listing_entrees,
  * @param int      $palier_id        id d'un palier
  * @return array
  */
-public function DB_lister_jointure_user_pilier($listing_eleves,$listing_piliers,$palier_id)
+public static function DB_lister_jointure_user_pilier($listing_eleves,$listing_piliers,$palier_id)
 {
 	if($palier_id)
 	{
@@ -272,7 +272,7 @@ public function DB_lister_jointure_user_pilier($listing_eleves,$listing_piliers,
  * @param bool     $only_positives
  * @return array
  */
-public function DB_lister_validations_items($listing_eleves,$only_positives)
+public static function DB_lister_validations_items($listing_eleves,$only_positives)
 {
 	$DB_SQL = 'SELECT palier_id , pilier_id , sacoche_jointure_user_entree.* ';
 	$DB_SQL.= 'FROM sacoche_jointure_user_entree ';
@@ -293,7 +293,7 @@ public function DB_lister_validations_items($listing_eleves,$only_positives)
  * @param bool   $only_positives
  * @return array
  */
-public function DB_lister_validations_competences($listing_eleves,$only_positives)
+public static function DB_lister_validations_competences($listing_eleves,$only_positives)
 {
 	$DB_SQL = 'SELECT palier_id , pilier_id , sacoche_jointure_user_pilier.* ';
 	$DB_SQL.= 'FROM sacoche_jointure_user_pilier ';
@@ -311,7 +311,7 @@ public function DB_lister_validations_competences($listing_eleves,$only_positive
  * @param void
  * @return array
  */
-public function DB_lister_eleves_identite_et_sconet()
+public static function DB_lister_eleves_identite_et_sconet()
 {
 	$DB_SQL = 'SELECT user_id, user_sconet_id, user_nom, user_prenom ';
 	$DB_SQL.= 'FROM sacoche_user ';
@@ -327,7 +327,7 @@ public function DB_lister_eleves_identite_et_sconet()
  * @param void
  * @return int
  */
-public function DB_compter_eleves_actuels_sans_id_sconet()
+public static function DB_compter_eleves_actuels_sans_id_sconet()
 {
 	$DB_SQL = 'SELECT COUNT(*) AS nombre ';
 	$DB_SQL.= 'FROM sacoche_user ';
@@ -347,7 +347,7 @@ public function DB_compter_eleves_actuels_sans_id_sconet()
  * @param string $validation_info
  * @return void
  */
-public function DB_ajouter_validation($type,$user_id,$element_id,$validation_etat,$validation_date_mysql,$validation_info)
+public static function DB_ajouter_validation($type,$user_id,$element_id,$validation_etat,$validation_date_mysql,$validation_info)
 {
 	$DB_SQL = 'INSERT INTO sacoche_jointure_user_'.$type.' ';
 	$DB_SQL.= 'VALUES(:user_id,:'.$type.'_id,:validation_etat,:validation_date_mysql,:validation_info)';
@@ -366,7 +366,7 @@ public function DB_ajouter_validation($type,$user_id,$element_id,$validation_eta
  * @param string $validation_info
  * @return void
  */
-public function DB_modifier_validation($type,$user_id,$element_id,$validation_etat,$validation_date_mysql,$validation_info)
+public static function DB_modifier_validation($type,$user_id,$element_id,$validation_etat,$validation_date_mysql,$validation_info)
 {
 	$DB_SQL = 'UPDATE sacoche_jointure_user_'.$type.' ';
 	$DB_SQL.= 'SET validation_'.$type.'_etat=:validation_etat, validation_'.$type.'_date=:validation_date_mysql, validation_'.$type.'_info=:validation_info ';
@@ -383,7 +383,7 @@ public function DB_modifier_validation($type,$user_id,$element_id,$validation_et
  * @param int    $element_id
  * @return void
  */
-public function DB_supprimer_validation($type,$user_id,$element_id)
+public static function DB_supprimer_validation($type,$user_id,$element_id)
 {
 	$DB_SQL = 'DELETE FROM sacoche_jointure_user_'.$type.' ';
 	$DB_SQL.= 'WHERE user_id=:user_id AND '.$type.'_id=:'.$type.'_id ';

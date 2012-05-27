@@ -1003,7 +1003,7 @@ if( $step==31 )
 	foreach($tab_classes_fichier['ref'] as $i_classe => $ref)
 	{
 		$id_base = array_search($ref,$tab_classes_base['ref']);
-		if($id_base!==false)
+		if($id_base!==FALSE)
 		{
 			$lignes_ras .= '<tr><th>'.html($tab_classes_base['ref'][$id_base]).'</th><td>'.html($tab_classes_base['nom'][$id_base]).'</td></tr>';
 			$tab_i_classe_TO_id_base[$i_classe] = $id_base;
@@ -1206,7 +1206,7 @@ if( $step==41 )
 	foreach($tab_groupes_fichier['ref'] as $i_groupe => $ref)
 	{
 		$id_base = array_search($ref,$tab_groupes_base['ref']);
-		if($id_base!==false)
+		if($id_base!==FALSE)
 		{
 			$lignes_ras .= '<tr><th>'.html($tab_groupes_base['ref'][$id_base]).'</th><td>'.html($tab_groupes_base['nom'][$id_base]).'</td></tr>';
 			$tab_i_groupe_TO_id_base[$i_groupe] = $id_base;
@@ -1780,7 +1780,7 @@ if( $step==52 )
 	{
 		// On archive les nouveaux identifiants dans un fichier tableur zippé (csv tabulé)
 		$profil = ($is_profil_eleve) ? 'eleve' : ( ($is_profil_parent) ? 'parent' : 'professeur_directeur' ) ;
-		$fnom = 'identifiants_'.$_SESSION['BASE'].'_'.$profil.'_'.fabriquer_fin_nom_fichier();
+		$fnom = 'identifiants_'.$_SESSION['BASE'].'_'.$profil.'_'.fabriquer_fin_nom_fichier__date_et_alea();
 		$zip = new ZipArchive();
 		$result_open = $zip->open($dossier_login_mdp.$fnom.'.zip', ZIPARCHIVE::CREATE);
 		if($result_open!==TRUE)

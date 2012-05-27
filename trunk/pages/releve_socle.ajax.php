@@ -41,6 +41,7 @@ $aff_socle     = (isset($_POST['f_socle']))         ? 1                         
 $aff_lien      = (isset($_POST['f_lien']))          ? 1                                   : 0;
 $couleur       = (isset($_POST['f_couleur']))       ? clean_texte($_POST['f_couleur'])    : '';
 $legende       = (isset($_POST['f_legende']))       ? clean_texte($_POST['f_legende'])    : '';
+$marge_min     = (isset($_POST['f_marge_min']))     ? clean_entier($_POST['f_marge_min']) : 0;
 // Normalement ce sont des tableaux qui sont transmis, mais au cas où...
 $tab_pilier_id  = (isset($_POST['f_pilier']))  ? ( (is_array($_POST['f_pilier']))  ? $_POST['f_pilier']  : explode(',',$_POST['f_pilier'])  ) : array() ;
 $tab_eleve_id   = (isset($_POST['f_eleve']))   ? ( (is_array($_POST['f_eleve']))   ? $_POST['f_eleve']   : explode(',',$_POST['f_eleve'])   ) : array() ;
@@ -62,12 +63,14 @@ if($_SESSION['USER_PROFIL']=='eleve')
 	$tab_eleve_id = array($_SESSION['USER_ID']);
 }
 
-if( (!$palier_id) || (!$palier_nom) || (!count($tab_pilier_id)) || (!in_array($mode,array('auto','manuel'))) || !$couleur || !$legende )
+if( (!$palier_id) || (!$palier_nom) || (!count($tab_pilier_id)) || (!in_array($mode,array('auto','manuel'))) || !$couleur || !$legende || !$marge_min )
 {
 	exit('Erreur avec les données transmises !');
 }
 
 Formulaire::save_choix('releve_socle');
+
+$marge_gauche = $marge_droite = $marge_haut = $marge_bas = $marge_min ;
 
 // Permet d'avoir des informations accessibles en cas d'erreur type « PHP Fatal error : Allowed memory size of ... bytes exhausted ».
 // ajouter_log_PHP( 'Demande de bilan' /*log_objet*/ , serialize($_POST) /*log_contenu*/ , __FILE__ /*log_fichier*/ , __LINE__ /*log_ligne*/ , TRUE /*only_sesamath*/ );
@@ -76,10 +79,10 @@ Formulaire::save_choix('releve_socle');
 // INCLUSION DU CODE COMMUN À PLUSIEURS PAGES
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
-$make_for    = 'releve';
-$make_action = '';
-$make_html   = TRUE;
-$make_pdf    = TRUE;
+$make_officiel = FALSE;
+$make_action   = '';
+$make_html     = TRUE;
+$make_pdf      = TRUE;
 
 require('./_inc/code_socle_releve.php');
 

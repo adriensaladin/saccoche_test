@@ -76,10 +76,11 @@ if($_SESSION['USER_PROFIL']=='eleve')
 }
 $tab_periodes = DB_STRUCTURE_COMMUN::DB_OPT_periodes_etabl();
 
-$select_groupe  = Formulaire::afficher_select($tab_groupes                    , $select_nom='f_groupe'  , $option_first=$of_g , $selection=$sel_g                             , $optgroup='oui'); // optgroup à oui y compris pour les élèves (formulaire invisible) car recherche du type de groupe dans le js
-$select_periode = Formulaire::afficher_select($tab_periodes                   , $select_nom='f_periode' , $option_first='val' , $selection=false                              , $optgroup='non');
-$select_couleur = Formulaire::afficher_select(Formulaire::$tab_select_couleur , $select_nom='f_couleur' , $option_first='non' , $selection=Formulaire::$tab_choix['couleur'] , $optgroup='non');
-$select_legende = Formulaire::afficher_select(Formulaire::$tab_select_legende , $select_nom='f_legende' , $option_first='non' , $selection=Formulaire::$tab_choix['legende'] , $optgroup='non');
+$select_groupe    = Formulaire::afficher_select($tab_groupes                      , $select_nom='f_groupe'    , $option_first=$of_g , $selection=$sel_g                              , $optgroup='oui'); // optgroup à oui y compris pour les élèves (formulaire invisible) car recherche du type de groupe dans le js
+$select_periode   = Formulaire::afficher_select($tab_periodes                     , $select_nom='f_periode'   , $option_first='val' , $selection=false                               , $optgroup='non');
+$select_marge_min = Formulaire::afficher_select(Formulaire::$tab_select_marge_min , $select_nom='f_marge_min' , $option_first='non' , $selection=Formulaire::$tab_choix['marge_min'] , $optgroup='non');
+$select_couleur   = Formulaire::afficher_select(Formulaire::$tab_select_couleur   , $select_nom='f_couleur'   , $option_first='non' , $selection=Formulaire::$tab_choix['couleur']   , $optgroup='non');
+$select_legende   = Formulaire::afficher_select(Formulaire::$tab_select_legende   , $select_nom='f_legende'   , $option_first='non' , $selection=Formulaire::$tab_choix['legende']   , $optgroup='non');
 
 // Dates par défaut de début et de fin
 $annee_debut = (date('n')>8) ? date('Y') : date('Y')-1 ;
@@ -161,7 +162,7 @@ echo ($nb_inconnu) ? '<label class="alerte">Il y a '.$nb_inconnu.' référentiel
 			<label class="tab"><img alt="" src="./_img/bulle_aide.png" title="Pour le format html, le détail des items peut être affiché." /> Indications :</label><label for="f_coef"><input type="checkbox" id="f_coef" name="f_coef" value="1"<?php echo $check_aff_coef ?> /> Coefficients</label>&nbsp;&nbsp;&nbsp;<label for="f_socle"><input type="checkbox" id="f_socle" name="f_socle" value="1"<?php echo $check_aff_socle ?> /> Appartenance au socle</label>&nbsp;&nbsp;&nbsp;<label for="f_lien"><input type="checkbox" id="f_lien" name="f_lien" value="1"<?php echo $check_aff_lien ?> /> Liens (ressources pour travailler)</label><br />
 			<label class="tab">Restrictions :</label><input type="checkbox" id="f_restriction_socle" name="f_restriction_socle" value="1"<?php echo $check_only_socle ?> /> <label for="f_restriction_socle">Uniquement les items liés du socle</label><br />
 			<label class="tab"></label><input type="checkbox" id="f_restriction_niveau" name="f_restriction_niveau" value="1"<?php echo $check_only_niveau ?> /> <label for="f_restriction_niveau">Utiliser uniquement les items du niveau <em id="niveau_nom"></em></label><input type="hidden" id="f_niveau" name="f_niveau" value="" /><br />
-			<label class="tab"><img alt="" src="./_img/bulle_aide.png" title="Pour le format pdf." /> Impression :</label><?php echo $select_couleur ?> <?php echo $select_legende ?>
+			<label class="tab"><img alt="" src="./_img/bulle_aide.png" title="Pour le format pdf." /> Impression :</label><?php echo $select_couleur ?> <?php echo $select_legende ?> <?php echo $select_marge_min ?>
 		</div>
 	</div>
 	<p>

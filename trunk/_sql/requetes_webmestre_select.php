@@ -40,7 +40,7 @@ class DB_WEBMESTRE_SELECT extends DB
  * @param void
  * @return array|string
  */
-public function DB_OPT_structures_sacoche()
+public static function DB_OPT_structures_sacoche()
 {
 	$DB_SQL = 'SELECT sacoche_base, structure_localisation, structure_denomination, geo_id, geo_nom ';
 	$DB_SQL.= 'FROM sacoche_structure ';

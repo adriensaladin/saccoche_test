@@ -57,7 +57,7 @@ else
 	// 2 En faire un csv zippé récupérable
 	$fichier_log_contenu = str_replace(array('<?php /*','*/ ?>'),'',$fichier_log_contenu);
 	$dossier_export = './__tmp/export/';
-	$fichier_export_nom = 'log_'.$_SESSION['BASE'].'_'.fabriquer_fin_nom_fichier();
+	$fichier_export_nom = 'log_'.$_SESSION['BASE'].'_'.fabriquer_fin_nom_fichier__date_et_alea();
 	$zip = new ZipArchive();
 	$result_open = $zip->open($dossier_export.$fichier_export_nom.'.zip', ZIPARCHIVE::CREATE);
 	if($result_open!==TRUE)

@@ -46,11 +46,11 @@ $tab_action = array('initialiser','charger');
 
 $tab_types = array
 (
-	'releve'   => array( 'droit'=>'RELEVE'   , 'titre'=>'Relevé d\'évaluations') ,
-	'bulletin' => array( 'droit'=>'BULLETIN' , 'titre'=>'Bulletin scolaire') ,
-	'palier1'  => array( 'droit'=>'SOCLE'    , 'titre'=>'Maîtrise du palier 1') ,
-	'palier2'  => array( 'droit'=>'SOCLE'    , 'titre'=>'Maîtrise du palier 2') ,
-	'palier3'  => array( 'droit'=>'SOCLE'    , 'titre'=>'Maîtrise du palier 3')
+	'releve'   => array( 'droit'=>'RELEVE'   , 'titre'=>'Relevé d\'évaluations' ) ,
+	'bulletin' => array( 'droit'=>'BULLETIN' , 'titre'=>'Bulletin scolaire'     ) ,
+	'palier1'  => array( 'droit'=>'SOCLE'    , 'titre'=>'Maîtrise du palier 1'  ) ,
+	'palier2'  => array( 'droit'=>'SOCLE'    , 'titre'=>'Maîtrise du palier 2'  ) ,
+	'palier3'  => array( 'droit'=>'SOCLE'    , 'titre'=>'Maîtrise du palier 3'  )
 );
 
 // On vérifie les paramètres principaux
@@ -78,7 +78,7 @@ if(!$BILAN_ETAT)
 }
 if(!in_array($BILAN_ETAT,array('2rubrique','3synthese')))
 {
-	exit('Bilan d\'accès interdit pour cette action !');
+	exit('Bilan interdit d\'accès pour cette action !');
 }
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
@@ -106,7 +106,21 @@ if($ACTION=='initialiser')
 	// (re)calculer les moyennes des élèves, ainsi que les moyennes de classe et générales (mises dans $_SESSION['tmp_moyenne_classe'][$periode_id][$classe_id][$matiere_id] et $_SESSION['tmp_moyenne_generale'][$periode_id][$classe_id][$eleve_id]) 
 	if( ($BILAN_TYPE=='bulletin') && $_SESSION['OFFICIEL']['BULLETIN_MOYENNE_SCORES'] )
 	{
-		$liste_eleve_id = implode(',',$tab_eleve_id);
+		// Attention ! On doit calculer des moyennes de classe, pas de groupe !
+		if(!$is_sous_groupe)
+		{
+			$liste_eleve_id = implode(',',$tab_eleve_id);
+		}
+		else
+		{
+			$tab_eleve_id_tmp = array();
+			$DB_TAB = DB_STRUCTURE_COMMUN::DB_lister_users_regroupement( 'eleve' , 1 /*statut*/ , 'classe' , $classe_id );
+			foreach($DB_TAB as $DB_ROW)
+			{
+				$tab_eleve_id_tmp[] = $DB_ROW['user_id'];
+			}
+			$liste_eleve_id = implode(',',$tab_eleve_id_tmp);
+		}
 		calculer_et_enregistrer_moyennes_eleves_bulletin( $periode_id , $classe_id , $liste_eleve_id , '' /*liste_matiere_id*/ , $_SESSION['OFFICIEL']['BULLETIN_MOYENNE_CLASSE'] , $_SESSION['OFFICIEL']['BULLETIN_MOYENNE_GENERALE'] );
 	}
 }
@@ -125,10 +139,10 @@ foreach($DB_TAB as $DB_ROW)
 // INCLUSION DU CODE COMMUN À PLUSIEURS PAGES
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
-$make_for    = 'officiel';
-$make_action = 'consulter';
-$make_html   = TRUE;
-$make_pdf    = FALSE;
+$make_officiel = TRUE;
+$make_action   = 'consulter';
+$make_html     = TRUE;
+$make_pdf      = FALSE;
 
 if($BILAN_TYPE=='releve')
 {
@@ -153,8 +167,11 @@ if($BILAN_TYPE=='releve')
 	$orientation     = 'portrait'; // pas jugé utile de le mettre en option...
 	$couleur         = $_SESSION['OFFICIEL']['RELEVE_COULEUR'];
 	$legende         = $_SESSION['OFFICIEL']['RELEVE_LEGENDE'];
-	$marge_min       = max( $_SESSION['OFFICIEL']['MARGE_GAUCHE'] , $_SESSION['OFFICIEL']['MARGE_DROITE'] , $_SESSION['OFFICIEL']['MARGE_HAUT'] ); // à revoir...
-	$pages_nb        = 'optimise'; // pas jugé utile de le mettre en option... à revoir...
+	$marge_gauche    = $_SESSION['OFFICIEL']['MARGE_GAUCHE'];
+	$marge_droite    = $_SESSION['OFFICIEL']['MARGE_DROITE'];
+	$marge_haut      = $_SESSION['OFFICIEL']['MARGE_HAUT'];
+	$marge_bas       = $_SESSION['OFFICIEL']['MARGE_BAS'];
+	$pages_nb        = 'optimise'; // pas jugé utile de le mettre en option... à voir...
 	$cases_nb        = $_SESSION['OFFICIEL']['RELEVE_CASES_NB'];
 	$cases_largeur   = 5; // pas jugé utile de le mettre en option...
 	$tab_eleve       = array($eleve_id); // tableau de l'unique élève à considérer
@@ -183,6 +200,10 @@ elseif($BILAN_TYPE=='bulletin')
 	$only_niveau    = 0; // pas jugé utile de le mettre en option...
 	$couleur        = $_SESSION['OFFICIEL']['BULLETIN_COULEUR'];
 	$legende        = $_SESSION['OFFICIEL']['BULLETIN_LEGENDE'];
+	$marge_gauche   = $_SESSION['OFFICIEL']['MARGE_GAUCHE'];
+	$marge_droite   = $_SESSION['OFFICIEL']['MARGE_DROITE'];
+	$marge_haut     = $_SESSION['OFFICIEL']['MARGE_HAUT'];
+	$marge_bas      = $_SESSION['OFFICIEL']['MARGE_BAS'];
 	$tab_eleve      = array($eleve_id); // tableau de l'unique élève à considérer
 	$liste_eleve    = (string)$eleve_id;
 	$tab_matiere_id = array();
@@ -204,6 +225,10 @@ elseif(in_array($BILAN_TYPE,array('palier1','palier2','palier3')))
 	$aff_lien       = 0; // Sans objet, l'élève & sa famille n'ayant accès qu'à l'archive pdf
 	$couleur        = $_SESSION['OFFICIEL']['SOCLE_COULEUR'];
 	$legende        = $_SESSION['OFFICIEL']['SOCLE_LEGENDE'];
+	$marge_gauche    = $_SESSION['OFFICIEL']['MARGE_GAUCHE'];
+	$marge_droite    = $_SESSION['OFFICIEL']['MARGE_DROITE'];
+	$marge_haut      = $_SESSION['OFFICIEL']['MARGE_HAUT'];
+	$marge_bas       = $_SESSION['OFFICIEL']['MARGE_BAS'];
 	$tab_pilier_id  = $tab_pilier_id;
 	$tab_eleve_id   = array($eleve_id); // tableau de l'unique élève à considérer
 	$tab_matiere_id = array();

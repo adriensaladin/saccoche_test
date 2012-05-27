@@ -58,7 +58,7 @@ $doc_url        = (isset($_POST['f_doc_url']))         ? clean_texte($_POST['f_d
 $dossier_export = './__tmp/export/';
 $dossier_devoir_relatif = './__tmp/devoir/'.$_SESSION['BASE'].'/';
 $dossier_devoir_absolu  = SERVEUR_ADRESSE.'/__tmp/devoir/'.$_SESSION['BASE'].'/';
-$fnom_export = $_SESSION['BASE'].'_'.clean_fichier($groupe_nom).'_'.clean_fichier($description).'_'.fabriquer_fin_nom_fichier();
+$fnom_export = $_SESSION['BASE'].'_'.clean_fichier($groupe_nom).'_'.clean_fichier($description).'_'.fabriquer_fin_nom_fichier__date_et_alea();
 
 // Si "ref" est renseigné (pour Éditer ou Retirer ou Saisir ou ...), il contient l'id de l'évaluation + '_' + l'initiale du type de groupe + l'id du groupe
 // Dans le cas d'une duplication, "ref" sert à retrouver l'évaluation d'origine pour évenuellement récupérer l'ordre des items
@@ -544,7 +544,7 @@ if( ($action=='saisir') && $devoir_id && $groupe_id && $date_mysql && $date_visi
 	//
 	// pdf contenant un tableau de saisie vide ; on a besoin de tourner du texte à 90°
 	//
-	$sacoche_pdf = new PDF($orientation='landscape',$marge_min=10,$couleur='non');
+	$sacoche_pdf = new PDF( FALSE /*officiel*/ , 'landscape' /*orientation*/ , 10 /*marge_gauche*/ , 10 /*marge_droite*/ , 10 /*marge_haut*/ , 10 /*marge_bas*/ , 'non' /*couleur*/ );
 	$sacoche_pdf->tableau_saisie_initialiser($eleve_nb,$item_nb);
 	// 1ère ligne : référence devoir, noms élèves
 	$sacoche_pdf->tableau_saisie_reference_devoir($groupe_nom,$date_fr,$description);
@@ -699,7 +699,7 @@ if( ($action=='voir') && $devoir_id && $groupe_id && $date_fr ) // $description 
 	// / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / /
 	// pdf contenant un tableau de saisie vide ; on a besoin de tourner du texte à 90°
 	// / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / /
-	$sacoche_pdf = new PDF($orientation='landscape',$marge_min=10,$couleur='non');
+	$sacoche_pdf = new PDF( FALSE /*officiel*/ , 'landscape' /*orientation*/ , 10 /*marge_gauche*/ , 10 /*marge_droite*/ , 10 /*marge_haut*/ , 10 /*marge_bas*/ , 'non' /*couleur*/ );
 	$sacoche_pdf->tableau_saisie_initialiser($eleve_nb,$item_nb);
 	// 1ère ligne : référence devoir, noms élèves
 	$sacoche_pdf->tableau_saisie_reference_devoir($groupe_nom,$date_fr,$description);
@@ -724,7 +724,7 @@ if( ($action=='voir') && $devoir_id && $groupe_id && $date_fr ) // $description 
 	// / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / /
 	// pdf contenant un tableau de saisie plein ; on a besoin de tourner du texte à 90°
 	// / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / /
-	$sacoche_pdf = new PDF($orientation='landscape',$marge_min=10,$couleur='oui');
+	$sacoche_pdf = new PDF( FALSE /*officiel*/ , 'landscape' /*orientation*/ , 10 /*marge_gauche*/ , 10 /*marge_droite*/ , 10 /*marge_haut*/ , 10 /*marge_bas*/ , 'oui' /*couleur*/ );
 	$sacoche_pdf->tableau_saisie_initialiser($eleve_nb,$item_nb);
 	// 1ère ligne : référence devoir, noms élèves
 	$sacoche_pdf->tableau_saisie_reference_devoir($groupe_nom,$date_fr,$description);
@@ -874,7 +874,7 @@ if( ($action=='voir_repart') && $devoir_id && $groupe_id && $date_fr ) // $descr
 	// / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / /
 	// pdf contenant un tableau avec la répartition quantitative
 	// / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / /
-	$sacoche_pdf = new PDF($orientation='portrait',$marge_min=10,$couleur='oui');
+	$sacoche_pdf = new PDF( FALSE /*officiel*/ , 'portrait' /*orientation*/ , 10 /*marge_gauche*/ , 10 /*marge_droite*/ , 10 /*marge_haut*/ , 10 /*marge_bas*/ , 'oui' /*couleur*/ );
 	$sacoche_pdf->tableau_devoir_repartition_quantitative_initialiser($item_nb);
 	// 1ère ligne : référence des codes
 	$sacoche_pdf->tableau_saisie_reference_devoir($groupe_nom,$date_fr,$description);
@@ -913,7 +913,7 @@ if( ($action=='voir_repart') && $devoir_id && $groupe_id && $date_fr ) // $descr
 	// / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / /
 	// pdf contenant un tableau avec la répartition nominative
 	// / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / /
-	$sacoche_pdf = new PDF($orientation='portrait',$marge_min=10,$couleur='oui');
+	$sacoche_pdf = new PDF( FALSE /*officiel*/ , 'portrait' /*orientation*/ , 10 /*marge_gauche*/ , 10 /*marge_droite*/ , 10 /*marge_haut*/ , 10 /*marge_bas*/ , 'oui' /*couleur*/ );
 	// il faut additionner le nombre maxi d'élèves par case de chaque item (sans descendre en dessous de 4 pour avoir la place d'afficher l'intitulé de l'item) afin de prévoir le nb de lignes nécessaires
 	$somme = 0;
 	foreach($tab_repartition_quantitatif as $item_id => $tab_effectifs)
@@ -1121,7 +1121,7 @@ if( ($action=='imprimer_cartouche') && $devoir_id && $groupe_id && $date_fr && $
 	{
 		$tab_user_nb_req = array_fill_keys( array_keys($tab_user_nb_req) , $item_nb );
 	}
-	$sacoche_pdf = new PDF($orientation,$marge_min,$couleur);
+	$sacoche_pdf = new PDF( FALSE /*officiel*/ , $orientation , $marge_min /*marge_gauche*/ , $marge_min /*marge_droite*/ , $marge_min /*marge_haut*/ , $marge_min /*marge_bas*/ , $couleur , 'oui' /*legende*/ );
 	$sacoche_pdf->cartouche_initialiser($cart_detail,$item_nb);
 	if($cart_detail=='minimal')
 	{
@@ -1249,7 +1249,7 @@ if( (isset($_GET['f_action'])) && ($_GET['f_action']=='importer_saisie_csv') )
 				if( (isset($tab_elements[$num_colonne])) && ($tab_elements[$num_colonne]!='') )
 				{
 					$score = $tab_elements[$num_colonne];
-					if(strpos($scores_autorises,$score)!==false)
+					if(strpos($scores_autorises,$score)!==FALSE)
 					{
 						$retour .= $eleve_id.'.'.$item_id.'.'.strtoupper($score).'|';
 					}
@@ -1303,7 +1303,7 @@ if( ($action=='uploader_document') && $devoir_id && in_array($doc_objet,array('s
 		exit('Le fichier dépasse les '.FICHIER_TAILLE_MAX.' Ko autorisés !');
 	}
 	// Enregistrement du fichier
-	$fichier_nom = 'devoir_'.$devoir_id.'_'.$doc_objet.'_'.time().'.'.$extension; // pas besoin de le rendre inaccessible -> fabriquer_fin_nom_fichier() inutilement lourd
+	$fichier_nom = 'devoir_'.$devoir_id.'_'.$doc_objet.'_'.time().'.'.$extension; // pas besoin de le rendre inaccessible -> fabriquer_fin_nom_fichier__date_et_alea() inutilement lourd
 	if(!move_uploaded_file($fnom_serveur , $dossier_devoir_relatif.$fichier_nom))
 	{
 		exit('Le fichier n\'a pas pu être enregistré sur le serveur !');

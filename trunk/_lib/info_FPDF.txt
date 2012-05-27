@@ -14,11 +14,13 @@ Ligne n°83 commentée : $this->SetFont('Times');
 Fichiers de polices Arial incorporés dans /font/ en n'ayant conservé que les caractères de l'encodage cp1252
 Pour infos : http://www.fpdf.org/fr/tutorial/tuto7.htm
 
-D'autres extensions de FPDF sont aussi utilisées par SACoche :
+D'autres extensions de FPDF sont aussi utilisées par SACoche (parfois modifiées, parfois partiellement) :
 http://www.fpdf.org/fr/script/script18.php	Pour optimiser la gestion de la mémoire.
 http://www.fpdf.org/fr/script/script31.php	Pour écrire un texte tourné.
-http://www.fpdf.org/fr/script/script6.php	Pour tracer un cercle (ou une ellipse).
+http://www.fpdf.org/fr/script/script6.php 	Pour tracer un cercle (ou une ellipse).
 http://www.fpdf.org/fr/script/script62.php	Pour ajuster un texte à la taille d'une cellule.
+http://www.fpdf.org/fr/script/script49.php	Pour savoir le nombre de lignes requises pour écrire un texte.
+http://www.fpdf.org/fr/script/script45.php	Pour afficher des images chargées en mémoire sans avoir besoin de passer par un fichier temporaire.
 
 Attention : à partir de FPDF 1.7 il faut remplacer 4x dans le script18 "DefPageFormat" par "DefPageSize" !
 http://www.fpdf.org/phorum/read.php?f=1&i=56024&t=56024

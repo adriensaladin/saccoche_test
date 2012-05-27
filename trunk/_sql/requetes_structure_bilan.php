@@ -39,7 +39,7 @@ class DB_STRUCTURE_BILAN extends DB
  * @param string   $listing_groupe_id   id des groupes séparés par des virgules
  * @return array
  */
-public function DB_recuperer_niveau_groupes($listing_groupe_id)
+public static function DB_recuperer_niveau_groupes($listing_groupe_id)
 {
 	$DB_SQL = 'SELECT groupe_id, niveau_id, niveau_nom ';
 	$DB_SQL.= 'FROM sacoche_groupe ';
@@ -61,7 +61,7 @@ public function DB_recuperer_niveau_groupes($listing_groupe_id)
  * @param bool   $aff_theme        1 pour préfixer avec les noms des thèmes, 0 sinon
  * @return array
  */
-public function DB_recuperer_arborescence_selection($liste_eleve_id,$liste_item_id,$date_mysql_debut,$date_mysql_fin,$aff_domaine,$aff_theme)
+public static function DB_recuperer_arborescence_selection($liste_eleve_id,$liste_item_id,$date_mysql_debut,$date_mysql_fin,$aff_domaine,$aff_theme)
 {
 	switch((string)$aff_domaine.(string)$aff_theme)
 	{
@@ -113,7 +113,7 @@ public function DB_recuperer_arborescence_selection($liste_eleve_id,$liste_item_
  * @param bool   $aff_theme        1 pour préfixer avec les noms des thèmes, 0 sinon
  * @return array
  */
-public function DB_recuperer_arborescence_bilan($liste_eleve_id,$matiere_id,$only_socle,$date_mysql_debut,$date_mysql_fin,$aff_domaine,$aff_theme)
+public static function DB_recuperer_arborescence_bilan($liste_eleve_id,$matiere_id,$only_socle,$date_mysql_debut,$date_mysql_fin,$aff_domaine,$aff_theme)
 {
 	$where_eleve      = (strpos($liste_eleve_id,',')) ? 'eleve_id IN('.$liste_eleve_id.') '    : 'eleve_id='.$liste_eleve_id.' ' ; // Pour IN(...) NE PAS passer la liste dans $DB_VAR sinon elle est convertie en nb entier
 	$where_matiere    = ($matiere_id>0)               ? 'AND matiere_id=:matiere '             : 'AND matiere_active=1 ' ;
@@ -178,7 +178,7 @@ public function DB_recuperer_arborescence_bilan($liste_eleve_id,$matiere_id,$onl
  * @param string $date_mysql_fin
  * @return array
  */
-public function DB_recuperer_items_travailles($liste_eleve_id,$liste_matiere_id,$date_mysql_debut,$date_mysql_fin)
+public static function DB_recuperer_items_travailles($liste_eleve_id,$liste_matiere_id,$date_mysql_debut,$date_mysql_fin)
 {
 	$join_matiere     = ($liste_matiere_id) ? '' : 'LEFT JOIN sacoche_matiere USING (matiere_id) ';
 	$where_matiere    = ($liste_matiere_id) ? 'AND matiere_id IN('.$liste_matiere_id.') ' : 'AND matiere_active=1 ';
@@ -222,7 +222,7 @@ public function DB_recuperer_items_travailles($liste_eleve_id,$liste_matiere_id,
  * @param string $date_mysql_fin
  * @return array
  */
-public function DB_recuperer_arborescence_synthese($liste_eleve_id,$matiere_id,$only_socle,$only_niveau,$mode_synthese='predefini',$date_mysql_debut,$date_mysql_fin)
+public static function DB_recuperer_arborescence_synthese($liste_eleve_id,$matiere_id,$only_socle,$only_niveau,$mode_synthese='predefini',$date_mysql_debut,$date_mysql_fin)
 {
 	$select_matiere    = (!$matiere_id)                ? 'matiere_id , matiere_nom , '                          : '' ;
 	$select_synthese   = ($mode_synthese=='predefini') ? ', referentiel_mode_synthese AS mode_synthese '        : '' ;
@@ -298,7 +298,7 @@ public function DB_recuperer_arborescence_synthese($liste_eleve_id,$matiere_id,$
  * @param string $liste_item_id   id des items séparés par des virgules
  * @return array
  */
-public function DB_lister_date_last_eleves_items($liste_eleve_id,$liste_item_id)
+public static function DB_lister_date_last_eleves_items($liste_eleve_id,$liste_item_id)
 {
 	$DB_SQL = 'SELECT eleve_id , item_id , MAX(saisie_date) AS date_last ';
 	$DB_SQL.= 'FROM sacoche_saisie ';
@@ -320,7 +320,7 @@ public function DB_lister_date_last_eleves_items($liste_eleve_id,$liste_item_id)
  * @param bool   $onlynote
  * @return array
  */
-public function DB_lister_result_eleves_items($liste_eleve_id,$liste_item_id,$matiere_id,$date_mysql_debut,$date_mysql_fin,$user_profil,$onlynote=FALSE)
+public static function DB_lister_result_eleves_items($liste_eleve_id,$liste_item_id,$matiere_id,$date_mysql_debut,$date_mysql_fin,$user_profil,$onlynote=FALSE)
 {
 	$sql_debut = ($date_mysql_debut)     ? 'AND saisie_date>=:date_debut '   : '';
 	$sql_fin   = ($date_mysql_fin)       ? 'AND saisie_date<=:date_fin '     : '';
@@ -353,7 +353,7 @@ public function DB_lister_result_eleves_items($liste_eleve_id,$liste_item_id,$ma
  * @param string $user_profil
  * @return array
  */
-public function DB_lister_result_eleves_palier_sans_infos_items($liste_eleve_id,$liste_entree_id,$user_profil)
+public static function DB_lister_result_eleves_palier_sans_infos_items($liste_eleve_id,$liste_entree_id,$user_profil)
 {
 	$sql_view  = ($user_profil=='eleve') ? 'AND saisie_visible_date<=NOW() ' : '';
 	$DB_SQL = 'SELECT eleve_id , entree_id AS socle_id , item_id , saisie_note AS note , ';
@@ -377,7 +377,7 @@ public function DB_lister_result_eleves_palier_sans_infos_items($liste_eleve_id,
  * @param bool     $with_langue
  * @return array|string                le tableau est de la forme [i] => array('eleve_id'=>...,'eleve_nom'=>...,'eleve_prenom'=>...,'eleve_id_gepi'=>...,'eleve_langue'=>...);
  */
-public function DB_lister_eleves_cibles($listing_eleve_id,$with_gepi,$with_langue)
+public static function DB_lister_eleves_cibles($listing_eleve_id,$with_gepi,$with_langue)
 {
 	$DB_SQL = 'SELECT user_id AS eleve_id , user_nom AS eleve_nom , user_prenom AS eleve_prenom ';
 	$DB_SQL.= ($with_gepi)   ? ', user_id_gepi AS eleve_id_gepi ' : '' ;
@@ -396,7 +396,7 @@ public function DB_lister_eleves_cibles($listing_eleve_id,$with_gepi,$with_langu
  * @param void
  * @return int
  */
-public function DB_compter_modes_synthese_inconnu()
+public static function DB_compter_modes_synthese_inconnu()
 {
 	$DB_SQL = 'SELECT COUNT(*) AS nombre ';
 	$DB_SQL.= 'FROM sacoche_referentiel ';

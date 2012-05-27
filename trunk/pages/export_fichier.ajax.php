@@ -64,7 +64,7 @@ if( ($type_export=='listing_users') && $groupe_id && isset($tab_types[$groupe_ty
 	}
 
 	// Finalisation de l'export CSV (archivage dans un fichier zippé)
-	$fnom = 'export_listing-eleves_'.clean_fichier($groupe_nom).'_'.fabriquer_fin_nom_fichier();
+	$fnom = 'export_listing-eleves_'.clean_fichier($groupe_nom).'_'.fabriquer_fin_nom_fichier__date_et_alea();
 	$zip = new ZipArchive();
 	$result_open = $zip->open($dossier_export.$fnom.'.zip', ZIPARCHIVE::CREATE);
 	if($result_open!==TRUE)
@@ -109,7 +109,7 @@ if( ($type_export=='listing_matiere') && $matiere_id && $matiere_nom )
 	}
 
 	// Finalisation de l'export CSV (archivage dans un fichier zippé)
-	$fnom = 'export_listing-items_'.clean_fichier($matiere_nom).'_'.fabriquer_fin_nom_fichier();
+	$fnom = 'export_listing-items_'.clean_fichier($matiere_nom).'_'.fabriquer_fin_nom_fichier__date_et_alea();
 	$zip = new ZipArchive();
 	$result_open = $zip->open($dossier_export.$fnom.'.zip', ZIPARCHIVE::CREATE);
 	if($result_open!==TRUE)
@@ -221,7 +221,7 @@ if( ($type_export=='arbre_matiere') && $matiere_id && $matiere_nom )
 	$export_html .= '</ul>'."\r\n";
 
 	// Finalisation de l'export CSV (archivage dans un fichier zippé)
-	$fnom = 'export_arbre-matiere_'.clean_fichier($matiere_nom).'_'.fabriquer_fin_nom_fichier();
+	$fnom = 'export_arbre-matiere_'.clean_fichier($matiere_nom).'_'.fabriquer_fin_nom_fichier__date_et_alea();
 	$zip = new ZipArchive();
 	$result_open = $zip->open($dossier_export.$fnom.'.zip', ZIPARCHIVE::CREATE);
 	if($result_open!==TRUE)
@@ -314,7 +314,7 @@ if( ($type_export=='arbre_socle') && $palier_id && $palier_nom )
 	$export_html .= '</ul>'."\r\n";
 
 	// Finalisation de l'export CSV (archivage dans un fichier zippé)
-	$fnom = 'export_arbre-socle_'.clean_fichier(substr($palier_nom,0,strpos($palier_nom,' ('))).'_'.fabriquer_fin_nom_fichier();
+	$fnom = 'export_arbre-socle_'.clean_fichier(substr($palier_nom,0,strpos($palier_nom,' ('))).'_'.fabriquer_fin_nom_fichier__date_et_alea();
 	$zip = new ZipArchive();
 	$result_open = $zip->open($dossier_export.$fnom.'.zip', ZIPARCHIVE::CREATE);
 	if($result_open!==TRUE)
@@ -434,7 +434,7 @@ if( ($type_export=='jointure_socle_matiere') && $palier_id && $palier_nom )
 	$export_html .= '</ul>'."\r\n";
 
 	// Finalisation de l'export CSV (archivage dans un fichier zippé)
-	$fnom = 'export_jointures_'.clean_fichier(substr($palier_nom,0,strpos($palier_nom,' ('))).'_'.fabriquer_fin_nom_fichier();
+	$fnom = 'export_jointures_'.clean_fichier(substr($palier_nom,0,strpos($palier_nom,' ('))).'_'.fabriquer_fin_nom_fichier__date_et_alea();
 	$zip = new ZipArchive();
 	$result_open = $zip->open($dossier_export.$fnom.'.zip', ZIPARCHIVE::CREATE);
 	if($result_open!==TRUE)

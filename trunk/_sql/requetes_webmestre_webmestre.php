@@ -39,7 +39,7 @@ class DB_WEBMESTRE_WEBMESTRE extends DB
  * @param int base_id
  * @return array
  */
-public function DB_recuperer_structure_by_Id($base_id)
+public static function DB_recuperer_structure_by_Id($base_id)
 {
 	$DB_SQL = 'SELECT * ';
 	$DB_SQL.= 'FROM sacoche_structure ';
@@ -54,7 +54,7 @@ public function DB_recuperer_structure_by_Id($base_id)
  * @param void
  * @return array
  */
-public function DB_lister_zones()
+public static function DB_lister_zones()
 {
 	$DB_SQL = 'SELECT * ';
 	$DB_SQL.= 'FROM sacoche_geo ';
@@ -68,7 +68,7 @@ public function DB_lister_zones()
  * @param void|string $listing_base_id   id des bases séparés par des virgules (tout si rien de transmis)
  * @return array
  */
-public function DB_lister_structures($listing_base_id=FALSE)
+public static function DB_lister_structures($listing_base_id=FALSE)
 {
 	$DB_SQL = 'SELECT * ';
 	$DB_SQL.= 'FROM sacoche_structure ';
@@ -84,7 +84,7 @@ public function DB_lister_structures($listing_base_id=FALSE)
  * @param string $listing_base_id   id des bases séparés par des virgules
  * @return array                    le tableau est de la forme [i] => array('contact_id'=>...,'contact_nom'=>...,'contact_prenom'=>...,'contact_courriel'=>...);
  */
-public function DB_lister_contacts_cibles($listing_base_id)
+public static function DB_lister_contacts_cibles($listing_base_id)
 {
 	$DB_SQL = 'SELECT sacoche_base AS contact_id , structure_contact_nom AS contact_nom , structure_contact_prenom AS contact_prenom , structure_contact_courriel AS contact_courriel ';
 	$DB_SQL.= 'FROM sacoche_structure ';
@@ -98,7 +98,7 @@ public function DB_lister_contacts_cibles($listing_base_id)
  * @param int $base_id
  * @return string | NULL
  */
-public function DB_tester_structure_Id($base_id)
+public static function DB_tester_structure_Id($base_id)
 {
 	$DB_SQL = 'SELECT structure_denomination ';
 	$DB_SQL.= 'FROM sacoche_structure ';
@@ -114,7 +114,7 @@ public function DB_tester_structure_Id($base_id)
  * @param int    $geo_id    inutile si recherche pour un ajout, mais id à éviter si recherche pour une modification
  * @return int
  */
-public function DB_tester_zone_nom($geo_nom,$geo_id=FALSE)
+public static function DB_tester_zone_nom($geo_nom,$geo_id=FALSE)
 {
 	$DB_SQL = 'SELECT geo_id ';
 	$DB_SQL.= 'FROM sacoche_geo ';
@@ -133,7 +133,7 @@ public function DB_tester_zone_nom($geo_nom,$geo_id=FALSE)
  * @param int    $base_id       inutile si recherche pour un ajout, mais id à éviter si recherche pour une modification
  * @return int
  */
-public function DB_tester_structure_UAI($structure_uai,$base_id=FALSE)
+public static function DB_tester_structure_UAI($structure_uai,$base_id=FALSE)
 {
 	$DB_SQL = 'SELECT sacoche_base ';
 	$DB_SQL.= 'FROM sacoche_structure ';
@@ -152,7 +152,7 @@ public function DB_tester_structure_UAI($structure_uai,$base_id=FALSE)
  * @param string $geo_nom
  * @return int
  */
-public function DB_ajouter_zone($geo_ordre,$geo_nom)
+public static function DB_ajouter_zone($geo_ordre,$geo_nom)
 {
 	$DB_SQL = 'INSERT INTO sacoche_geo(geo_ordre,geo_nom) ';
 	$DB_SQL.= 'VALUES(:geo_ordre,:geo_nom)';
@@ -175,7 +175,7 @@ public function DB_ajouter_zone($geo_ordre,$geo_nom)
  * @param string $inscription_date   Pour forcer la date d'inscription, par exemple en cas de transfert de bases académiques (facultatif).
  * @return int
  */
-public function DB_ajouter_structure($base_id,$geo_id,$structure_uai,$localisation,$denomination,$contact_nom,$contact_prenom,$contact_courriel,$inscription_date=0)
+public static function DB_ajouter_structure($base_id,$geo_id,$structure_uai,$localisation,$denomination,$contact_nom,$contact_prenom,$contact_courriel,$inscription_date=0)
 {
 	$chaine_date = ($inscription_date) ? ':inscription_date' : 'NOW()' ;
 	if($base_id==0)
@@ -205,7 +205,7 @@ public function DB_ajouter_structure($base_id,$geo_id,$structure_uai,$localisati
  * @param string $BD_pass
  * @return void
  */
-public function DB_ajouter_base_structure_et_user_mysql($base_id,$BD_name,$BD_user,$BD_pass)
+public static function DB_ajouter_base_structure_et_user_mysql($base_id,$BD_name,$BD_user,$BD_pass)
 {
 	// Créer la base de données de la structure
 	DB::query(SACOCHE_WEBMESTRE_BD_NAME , 'CREATE DATABASE sac_base_'.$base_id );
@@ -230,7 +230,7 @@ public function DB_ajouter_base_structure_et_user_mysql($base_id,$BD_name,$BD_us
  * @param string $contact_courriel
  * @return void
  */
-public function DB_modifier_structure($base_id,$geo_id,$structure_uai,$localisation,$denomination,$contact_nom,$contact_prenom,$contact_courriel)
+public static function DB_modifier_structure($base_id,$geo_id,$structure_uai,$localisation,$denomination,$contact_nom,$contact_prenom,$contact_courriel)
 {
 	$DB_SQL = 'UPDATE sacoche_structure ';
 	$DB_SQL.= 'SET geo_id=:geo_id,structure_uai=:structure_uai,structure_localisation=:localisation,structure_denomination=:denomination,structure_contact_nom=:contact_nom,structure_contact_prenom=:contact_prenom,structure_contact_courriel=:contact_courriel ';
@@ -247,7 +247,7 @@ public function DB_modifier_structure($base_id,$geo_id,$structure_uai,$localisat
  * @param string $geo_nom
  * @return void
  */
-public function DB_modifier_zone($geo_id,$geo_ordre,$geo_nom)
+public static function DB_modifier_zone($geo_id,$geo_ordre,$geo_nom)
 {
 	$DB_SQL = 'UPDATE sacoche_geo ';
 	$DB_SQL.= 'SET geo_ordre=:geo_ordre,geo_nom=:geo_nom ';
@@ -262,7 +262,7 @@ public function DB_modifier_zone($geo_id,$geo_ordre,$geo_nom)
  * @param int $geo_id
  * @return void
  */
-public function DB_supprimer_zone($geo_id)
+public static function DB_supprimer_zone($geo_id)
 {
 	$DB_SQL = 'DELETE FROM sacoche_geo ';
 	$DB_SQL.= 'WHERE geo_id=:geo_id ';
@@ -282,7 +282,7 @@ public function DB_supprimer_zone($geo_id)
  * @param int    $BASE 
  * @return void
  */
-public function DB_supprimer_structure($BASE)
+public static function DB_supprimer_structure($BASE)
 {
 	$DB_SQL = 'DELETE FROM sacoche_structure ';
 	$DB_SQL.= 'WHERE sacoche_base=:base ';
@@ -297,7 +297,7 @@ public function DB_supprimer_structure($BASE)
  * @param string $BD_user
  * @return void
  */
-public function DB_supprimer_base_structure_et_user_mysql($BD_name,$BD_user)
+public static function DB_supprimer_base_structure_et_user_mysql($BD_name,$BD_user)
 {
 	// Supprimer la base associée à la structure
 	DB::query(SACOCHE_WEBMESTRE_BD_NAME , 'DROP DATABASE '.$BD_name );

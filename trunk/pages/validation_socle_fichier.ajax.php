@@ -152,7 +152,7 @@ if( in_array( $action , array('export_lpc','export_sacoche') ) && $nb )
 		}
 	}
 	$fichier_extension = ($action=='export_lpc') ? 'xml' : 'zip' ;
-	$fichier_nom = str_replace('export_','import-',$action).'-'.clean_fichier($_SESSION['WEBMESTRE_UAI']).'_'.fabriquer_fin_nom_fichier().'.'.$fichier_extension; // LPC recommande le modèle "import-lpc-{timestamp}.xml"
+	$fichier_nom = str_replace('export_','import-',$action).'-'.clean_fichier($_SESSION['WEBMESTRE_UAI']).'_'.fabriquer_fin_nom_fichier__date_et_alea().'.'.$fichier_extension; // LPC recommande le modèle "import-lpc-{timestamp}.xml"
 	if($action=='export_lpc')
 	{
 		$xml.= '	</donnees>'."\r\n";
@@ -214,7 +214,7 @@ if( in_array( $action , array('import_sacoche','import_compatible') ) )
 	{
 		exit('Erreur : l\'extension du fichier transmis est incorrecte !');
 	}
-	$fichier_upload_nom = 'import_validations_'.$_SESSION['BASE'].'_'.fabriquer_fin_nom_fichier().'.xml';
+	$fichier_upload_nom = 'import_validations_'.$_SESSION['BASE'].'_'.fabriquer_fin_nom_fichier__date_et_alea().'.xml';
 	if($extension!='zip')
 	{
 		if(!move_uploaded_file($fnom_serveur , $dossier_import.$fichier_upload_nom))

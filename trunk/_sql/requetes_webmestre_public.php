@@ -41,7 +41,7 @@ class DB_WEBMESTRE_PUBLIC extends DB
  * @param void
  * @return array
  */
-public function DB_recuperer_tables_informations()
+public static function DB_recuperer_tables_informations()
 {
 	$DB_SQL = 'SHOW TABLE STATUS ';
 	$DB_SQL.= 'LIKE "sacoche_%" ';
@@ -55,7 +55,7 @@ public function DB_recuperer_tables_informations()
  * @param string $variable_nom   max_allowed_packet | max_user_connections | group_concat_max_len
  * @return array
  */
-public function DB_recuperer_variable_MySQL($variable_nom)
+public static function DB_recuperer_variable_MySQL($variable_nom)
 {
 	$DB_SQL = 'SHOW VARIABLES LIKE "'.$variable_nom.'"';
 	return DB::queryRow(SACOCHE_WEBMESTRE_BD_NAME , $DB_SQL , NULL);
@@ -69,7 +69,7 @@ public function DB_recuperer_variable_MySQL($variable_nom)
  * @param void
  * @return string
  */
-public function DB_recuperer_version_MySQL()
+public static function DB_recuperer_version_MySQL()
 {
 	$DB_SQL = 'SELECT VERSION()';
 	return DB::queryOne(SACOCHE_WEBMESTRE_BD_NAME , $DB_SQL , NULL);
@@ -81,7 +81,7 @@ public function DB_recuperer_version_MySQL()
  * @param string uai
  * @return int | NULL
  */
-public function DB_recuperer_structure_id_base_for_UAI($uai)
+public static function DB_recuperer_structure_id_base_for_UAI($uai)
 {
 	$DB_SQL = 'SELECT sacoche_base ';
 	$DB_SQL.= 'FROM sacoche_structure ';
@@ -96,7 +96,7 @@ public function DB_recuperer_structure_id_base_for_UAI($uai)
  * @param int base_id
  * @return string | NULL
  */
-public function DB_recuperer_structure_nom_for_Id($base_id)
+public static function DB_recuperer_structure_nom_for_Id($base_id)
 {
 	$DB_SQL = 'SELECT structure_denomination ';
 	$DB_SQL.= 'FROM sacoche_structure ';
@@ -111,7 +111,7 @@ public function DB_recuperer_structure_nom_for_Id($base_id)
  * @param void
  * @return string   n . structure(s)
  */
-public function DB_compter_structure()
+public static function DB_compter_structure()
 {
 	$DB_SQL = 'SELECT COUNT(sacoche_base) AS nombre ';
 	$DB_SQL.= 'FROM sacoche_structure ';
@@ -126,7 +126,7 @@ public function DB_compter_structure()
  * @param void
  * @return void
  */
-public function DB_creer_remplir_tables_webmestre()
+public static function DB_creer_remplir_tables_webmestre()
 {
 	$tab_files = array_diff( scandir(CHEMIN_SQL_WEBMESTRE) , array('.','..') ); // fonction Lister_Contenu_Dossier() inaccessible depuis la classe
 	foreach($tab_files as $file)

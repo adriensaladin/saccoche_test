@@ -53,11 +53,11 @@ $tab_action = array('initialiser','charger','enregistrer_appr','enregistrer_note
 
 $tab_types = array
 (
-	'releve'   => array( 'droit'=>'RELEVE'   , 'titre'=>'Relevé d\'évaluations') ,
-	'bulletin' => array( 'droit'=>'BULLETIN' , 'titre'=>'Bulletin scolaire') ,
-	'palier1'  => array( 'droit'=>'SOCLE'    , 'titre'=>'Maîtrise du palier 1') ,
-	'palier2'  => array( 'droit'=>'SOCLE'    , 'titre'=>'Maîtrise du palier 2') ,
-	'palier3'  => array( 'droit'=>'SOCLE'    , 'titre'=>'Maîtrise du palier 3')
+	'releve'   => array( 'droit'=>'RELEVE'   , 'titre'=>'Relevé d\'évaluations' ) ,
+	'bulletin' => array( 'droit'=>'BULLETIN' , 'titre'=>'Bulletin scolaire'     ) ,
+	'palier1'  => array( 'droit'=>'SOCLE'    , 'titre'=>'Maîtrise du palier 1'  ) ,
+	'palier2'  => array( 'droit'=>'SOCLE'    , 'titre'=>'Maîtrise du palier 2'  ) ,
+	'palier3'  => array( 'droit'=>'SOCLE'    , 'titre'=>'Maîtrise du palier 3'  )
 );
 
 // On vérifie les paramètres principaux
@@ -85,7 +85,7 @@ if(!$BILAN_ETAT)
 }
 if(!in_array($objet.$BILAN_ETAT,array('modifier2rubrique','tamponner3synthese')))
 {
-	exit('Bilan d\'accès interdit pour cette action !');
+	exit('Bilan interdit d\'accès pour cette action !');
 }
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
@@ -104,7 +104,7 @@ if($ACTION=='enregistrer_appr')
 		DB_STRUCTURE_OFFICIEL::DB_supprimer_bilan_officiel_saisie( $BILAN_TYPE , $periode_id , $eleve_id , 0 /*rubrique_id*/ );
 	}
 	DB_STRUCTURE_OFFICIEL::DB_modifier_bilan_officiel_saisie( $BILAN_TYPE , $periode_id , $eleve_id , $rubrique_id , $_SESSION['USER_ID'] , NULL , $appreciation );
-	$prof_info = $_SESSION['USER_NOM'].' '.$_SESSION['USER_PRENOM'];
+	$prof_info = $_SESSION['USER_NOM'].' '.$_SESSION['USER_PRENOM']{0}.'.';
 	$ACTION = ' <button type="button" class="modifier">Modifier</button> <button type="button" class="supprimer">Supprimer</button>';
 	exit('<div class="notnow">'.html($prof_info).$ACTION.'</div><div class="appreciation">'.html($appreciation).'</div>');
 }
@@ -116,7 +116,7 @@ if($ACTION=='enregistrer_note')
 		exit('Erreur avec les données transmises !');
 	}
 	$note = ($_SESSION['OFFICIEL']['BULLETIN_NOTE_SUR_20']) ? round($moyenne,1) : round($moyenne/5,1) ;
-	$appreciation = 'Moyenne figée reportée par '.$_SESSION['USER_NOM'].' '.$_SESSION['USER_PRENOM'].'.';
+	$appreciation = 'Moyenne figée reportée par '.$_SESSION['USER_NOM'].' '.$_SESSION['USER_PRENOM']{0}.'.';
 	DB_STRUCTURE_OFFICIEL::DB_modifier_bilan_officiel_saisie( $BILAN_TYPE , $periode_id , $eleve_id , $rubrique_id , 0 /*prof_id*/ , $note , $appreciation );
 	$note = ($_SESSION['OFFICIEL']['BULLETIN_NOTE_SUR_20']) ? $note : ($note*5).'&nbsp;%' ;
 	$action = ' <button type="button" class="modifier">Modifier</button> <button type="button" class="nettoyer">Effacer et recalculer.</button> <button type="button" class="supprimer">Supprimer sans recalculer</button>' ;
@@ -146,7 +146,7 @@ if($ACTION=='supprimer_note')
 		exit('Erreur avec les données transmises !');
 	}
 	$note = NULL;
-	$appreciation = 'Moyenne effacée par '.$_SESSION['USER_NOM'].' '.$_SESSION['USER_PRENOM'].'.';
+	$appreciation = 'Moyenne effacée par '.$_SESSION['USER_NOM'].' '.$_SESSION['USER_PRENOM']{0}.'.';
 	DB_STRUCTURE_OFFICIEL::DB_modifier_bilan_officiel_saisie( $BILAN_TYPE , $periode_id , $eleve_id , $rubrique_id , 0 /*prof_id*/ , $note , $appreciation );
 	exit('<td class="now moyenne">-</td><td class="now"><span class="notnow">'.html($appreciation).' <button type="button" class="modifier">Modifier</button> <button type="button" class="nettoyer">Effacer et recalculer.</button></span></td>');
 }
@@ -210,7 +210,22 @@ if($ACTION=='initialiser')
 	// (re)calculer les moyennes des élèves
 	if( ($BILAN_TYPE=='bulletin') && $_SESSION['OFFICIEL']['BULLETIN_MOYENNE_SCORES'] )
 	{
-		$liste_eleve_id = implode(',',$tab_eleve_id);
+		// Attention ! On doit calculer des moyennes de classe, pas de groupe !
+		if(!$is_sous_groupe)
+		{
+			$liste_eleve_id = implode(',',$tab_eleve_id);
+		}
+		else
+		{
+			$tab_eleve_id_tmp = array();
+			$DB_TAB = DB_STRUCTURE_COMMUN::DB_lister_users_regroupement( 'eleve' , 1 /*statut*/ , 'classe' , $classe_id );
+			foreach($DB_TAB as $DB_ROW)
+			{
+				$tab_eleve_id_tmp[] = $DB_ROW['user_id'];
+			}
+			$liste_eleve_id = implode(',',$tab_eleve_id_tmp);
+		}
+		$liste_matiere_id = ($BILAN_ETAT=='2rubrique') ? $liste_matiere_id : '' ; // Si un prof accède à la saisie de synthèse, il ne vaut pas seulement récupérer les données qui concerne ses matières.
 		calculer_et_enregistrer_moyennes_eleves_bulletin( $periode_id , $classe_id , $liste_eleve_id , $liste_matiere_id , FALSE /*memo_moyennes_classe*/ , $_SESSION['OFFICIEL']['BULLETIN_MOYENNE_GENERALE'] );
 	}
 }
@@ -229,10 +244,10 @@ foreach($DB_TAB as $DB_ROW)
 // INCLUSION DU CODE COMMUN À PLUSIEURS PAGES
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
-$make_for    = 'officiel';
-$make_action = 'saisir';
-$make_html   = TRUE;
-$make_pdf    = FALSE;
+$make_officiel = TRUE;
+$make_action   = 'saisir';
+$make_html     = TRUE;
+$make_pdf      = FALSE;
 
 if($BILAN_TYPE=='releve')
 {
@@ -257,7 +272,10 @@ if($BILAN_TYPE=='releve')
 	$orientation     = 'portrait'; // pas jugé utile de le mettre en option...
 	$couleur         = $_SESSION['OFFICIEL']['RELEVE_COULEUR'];
 	$legende         = $_SESSION['OFFICIEL']['RELEVE_LEGENDE'];
-	$marge_min       = max( $_SESSION['OFFICIEL']['MARGE_GAUCHE'] , $_SESSION['OFFICIEL']['MARGE_DROITE'] , $_SESSION['OFFICIEL']['MARGE_HAUT'] ); // à revoir...
+	$marge_gauche    = $_SESSION['OFFICIEL']['MARGE_GAUCHE'];
+	$marge_droite    = $_SESSION['OFFICIEL']['MARGE_DROITE'];
+	$marge_haut      = $_SESSION['OFFICIEL']['MARGE_HAUT'];
+	$marge_bas       = $_SESSION['OFFICIEL']['MARGE_BAS'];
 	$pages_nb        = 'optimise'; // pas jugé utile de le mettre en option... à revoir...
 	$cases_nb        = $_SESSION['OFFICIEL']['RELEVE_CASES_NB'];
 	$cases_largeur   = 5; // pas jugé utile de le mettre en option...
@@ -287,6 +305,10 @@ elseif($BILAN_TYPE=='bulletin')
 	$only_niveau    = 0; // pas jugé utile de le mettre en option...
 	$couleur        = $_SESSION['OFFICIEL']['BULLETIN_COULEUR'];
 	$legende        = $_SESSION['OFFICIEL']['BULLETIN_LEGENDE'];
+	$marge_gauche   = $_SESSION['OFFICIEL']['MARGE_GAUCHE'];
+	$marge_droite   = $_SESSION['OFFICIEL']['MARGE_DROITE'];
+	$marge_haut     = $_SESSION['OFFICIEL']['MARGE_HAUT'];
+	$marge_bas      = $_SESSION['OFFICIEL']['MARGE_BAS'];
 	$tab_eleve      = array($eleve_id); // tableau de l'unique élève à considérer
 	$liste_eleve    = (string)$eleve_id;
 	$tab_matiere_id = $tab_matiere_id;
@@ -308,6 +330,10 @@ elseif(in_array($BILAN_TYPE,array('palier1','palier2','palier3')))
 	$aff_lien       = 0; // Sans objet, l'élève & sa famille n'ayant accès qu'à l'archive pdf
 	$couleur        = $_SESSION['OFFICIEL']['SOCLE_COULEUR'];
 	$legende        = $_SESSION['OFFICIEL']['SOCLE_LEGENDE'];
+	$marge_gauche    = $_SESSION['OFFICIEL']['MARGE_GAUCHE'];
+	$marge_droite    = $_SESSION['OFFICIEL']['MARGE_DROITE'];
+	$marge_haut      = $_SESSION['OFFICIEL']['MARGE_HAUT'];
+	$marge_bas       = $_SESSION['OFFICIEL']['MARGE_BAS'];
 	$tab_pilier_id  = $tab_pilier_id;
 	$tab_eleve_id   = array($eleve_id); // tableau de l'unique élève à considérer
 	$tab_matiere_id = array();

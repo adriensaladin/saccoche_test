@@ -47,11 +47,11 @@ $is_sous_groupe = ($groupe_id) ? TRUE : FALSE ;
 
 $tab_types = array
 (
-	'releve'   => array( 'droit'=>'RELEVE'   , 'titre'=>'Relevé d\'évaluations') ,
-	'bulletin' => array( 'droit'=>'BULLETIN' , 'titre'=>'Bulletin scolaire') ,
-	'palier1'  => array( 'droit'=>'SOCLE'    , 'titre'=>'Maîtrise du palier 1') ,
-	'palier2'  => array( 'droit'=>'SOCLE'    , 'titre'=>'Maîtrise du palier 2') ,
-	'palier3'  => array( 'droit'=>'SOCLE'    , 'titre'=>'Maîtrise du palier 3')
+	'releve'   => array( 'droit'=>'RELEVE'   , 'titre'=>'Relevé d\'évaluations' ) ,
+	'bulletin' => array( 'droit'=>'BULLETIN' , 'titre'=>'Bulletin scolaire'     ) ,
+	'palier1'  => array( 'droit'=>'SOCLE'    , 'titre'=>'Maîtrise du palier 1'  ) ,
+	'palier2'  => array( 'droit'=>'SOCLE'    , 'titre'=>'Maîtrise du palier 2'  ) ,
+	'palier3'  => array( 'droit'=>'SOCLE'    , 'titre'=>'Maîtrise du palier 3'  )
 );
 
 // On vérifie les paramètres
@@ -79,7 +79,7 @@ if(!$BILAN_ETAT)
 }
 if(!in_array($BILAN_ETAT,array('2rubrique','3synthese')))
 {
-	exit('Bilan d\'accès interdit pour cette action !');
+	exit('Bilan interdit d\'accès pour cette action !');
 }
 
 // Lister les élèves concernés : soit d'une classe (en général) soit d'une classe ET d'un sous-groupe pour un prof affecté à un groupe d'élèves
@@ -105,7 +105,22 @@ $liste_eleve_id = implode(',',$tab_eleve_id);
 
 if( ($BILAN_TYPE=='bulletin') && $_SESSION['OFFICIEL']['BULLETIN_MOYENNE_SCORES'] )
 {
-	calculer_et_enregistrer_moyennes_eleves_bulletin( $periode_id , $classe_id , $liste_eleve_id , $liste_rubrique_id , FALSE /*memo_moyennes_classe*/ , FALSE /*memo_moyennes_generale*/ );
+	// Attention ! On doit calculer des moyennes de classe, pas de groupe !
+	if(!$is_sous_groupe)
+	{
+		$liste_eleve_id_tmp = $liste_eleve_id;
+	}
+	else
+	{
+		$tab_eleve_id_tmp = array();
+		$DB_TAB = DB_STRUCTURE_COMMUN::DB_lister_users_regroupement( 'eleve' , 1 /*statut*/ , 'classe' , $classe_id );
+		foreach($DB_TAB as $DB_ROW)
+		{
+			$tab_eleve_id_tmp[] = $DB_ROW['user_id'];
+		}
+		$liste_eleve_id_tmp = implode(',',$tab_eleve_id_tmp);
+	}
+	calculer_et_enregistrer_moyennes_eleves_bulletin( $periode_id , $classe_id , $liste_eleve_id_tmp , $liste_rubrique_id , FALSE /*memo_moyennes_classe*/ , FALSE /*memo_moyennes_generale*/ );
 }
 
 // Récupérer les saisies déjà effectuées pour le bilan officiel concerné
@@ -123,10 +138,10 @@ foreach($DB_TAB as $DB_ROW)
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
 $tab_resultat_examen = array();
-$make_for    = 'officiel';
-$make_action = 'examiner';
-$make_html   = FALSE;
-$make_pdf    = FALSE;
+$make_officiel = TRUE;
+$make_action   = 'examiner';
+$make_html     = FALSE;
+$make_pdf      = FALSE;
 
 if($BILAN_TYPE=='releve')
 {

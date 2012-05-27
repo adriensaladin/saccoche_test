@@ -50,27 +50,30 @@ $only_niveau   = (isset($_POST['f_restriction_niveau'])) ? $niveau_id           
 $mode_synthese = (isset($_POST['f_mode_synthese']))      ? clean_texte($_POST['f_mode_synthese']) : '';
 $couleur       = (isset($_POST['f_couleur']))            ? clean_texte($_POST['f_couleur'])       : '';
 $legende       = (isset($_POST['f_legende']))            ? clean_texte($_POST['f_legende'])       : '';
+$marge_min     = (isset($_POST['f_marge_min']))          ? clean_entier($_POST['f_marge_min'])    : 0;
 // Normalement c'est un tableau qui est transmis, mais au cas où...
 $tab_eleve = (isset($_POST['f_eleve'])) ? ( (is_array($_POST['f_eleve'])) ? $_POST['f_eleve'] : explode(',',$_POST['f_eleve']) ) : array() ;
 $tab_eleve = array_filter( array_map( 'clean_entier' , $tab_eleve ) , 'positif' );
 
 $liste_eleve   = implode(',',$tab_eleve);
 
-if( !$matiere_id || !$matiere_nom || !$groupe_id || !$groupe_nom || !count($tab_eleve) || ( !$periode_id && (!$date_debut || !$date_fin) ) || !$retroactif || !$mode_synthese || !$couleur || !$legende )
+if( !$matiere_id || !$matiere_nom || !$groupe_id || !$groupe_nom || !count($tab_eleve) || ( !$periode_id && (!$date_debut || !$date_fin) ) || !$retroactif || !$mode_synthese || !$couleur || !$legende || !$marge_min )
 {
 	exit('Erreur avec les données transmises !');
 }
 
 Formulaire::save_choix('synthese_matiere');
 
+$marge_gauche = $marge_droite = $marge_haut = $marge_bas = $marge_min ;
+
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 // INCLUSION DU CODE COMMUN À PLUSIEURS PAGES
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
-$make_for    = 'releve';
-$make_action = '';
-$make_html   = TRUE;
-$make_pdf    = TRUE;
+$make_officiel = FALSE;
+$make_action   = '';
+$make_html     = TRUE;
+$make_pdf      = TRUE;
 
 require('./_inc/code_items_synthese.php');
 

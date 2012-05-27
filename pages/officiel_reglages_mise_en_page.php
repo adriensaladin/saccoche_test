@@ -45,7 +45,7 @@ $options_marge_droite = str_replace( '"'.$_SESSION['OFFICIEL']['MARGE_DROITE'].'
 $options_marge_haut   = str_replace( '"'.$_SESSION['OFFICIEL']['MARGE_HAUT']  .'"' , '"'.$_SESSION['OFFICIEL']['MARGE_HAUT']  .'" selected' , $options_marge );
 $options_marge_bas    = str_replace( '"'.$_SESSION['OFFICIEL']['MARGE_BAS']   .'"' , '"'.$_SESSION['OFFICIEL']['MARGE_BAS']   .'" selected' , $options_marge );
 
-$options_tampon_signature = '<option value="restreindre">restreindre au tampon de l\'établissement (pas de signature d\'utilisateur)</option><option value="remplacer">remplacer le tampon de l\'établissement par la signature de l\'utilisateur (si présente)</option><option value="juxtaposer">juxtaposer la signature de l\'utilisateur (si présente) et le tampon de l\'établissement</option><option value="superposer">superpoper la signature de l\'utilisateur (si présente) au tampon de l\'établissement</option>';
+$options_tampon_signature = '<option value="sans">ne pas utiliser cette fonctionnalité</option><option value="tampon">utiliser uniquement le tampon de l\'établissement</option><option value="signature">utiliser uniquement la signature de l\'utilisateur</option><option value="signature_ou_tampon">utiliser la signature de l\'utilisateur, ou à défaut le tampon de l\'établissement</option>';
 $options_tampon_signature = str_replace( '"'.$_SESSION['OFFICIEL']['TAMPON_SIGNATURE'].'"' , '"'.$_SESSION['OFFICIEL']['TAMPON_SIGNATURE'].'" selected' , $options_tampon_signature );
 
 $class_enveloppe = ($_SESSION['OFFICIEL']['INFOS_RESPONSABLES']=='oui_force') ? '' : ' class="hide"' ;
@@ -78,7 +78,7 @@ foreach($DB_TAB as $DB_ROW)
 {
 	// Enregistrer temporairement le fichier sur le disque
 	$texte = ($DB_ROW['user_id']) ? 'Signature '.$DB_ROW['user_nom'].' '.$DB_ROW['user_prenom'] : 'Tampon de l\'établissement' ;
-	$fichier_nom = 'signature_'.$_SESSION['BASE'].'_'.$DB_ROW['user_id'].'_'.fabriquer_fin_nom_fichier().'.'.$DB_ROW['signature_format'];
+	$fichier_nom = 'signature_'.$_SESSION['BASE'].'_'.$DB_ROW['user_id'].'_'.fabriquer_fin_nom_fichier__date_et_alea().'.'.$DB_ROW['signature_format'];
 	Ecrire_Fichier($dossier.$fichier_nom,$DB_ROW['signature_contenu']);
 	// Générer la balise html pour afficher l'image
 	list($width,$height) = dimensions_affichage_image( $DB_ROW['signature_largeur'] , $DB_ROW['signature_hauteur'] , 200 /*largeur_maxi*/ , 200 /*hauteur_maxi*/ );

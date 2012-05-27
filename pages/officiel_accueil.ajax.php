@@ -48,7 +48,7 @@ if( (!$periode_id) || (!$rubrique_id) || (count($tab_periode_eleves)<2) || (!cou
 
 unset($tab_periode_eleves[0]);
 $tab_eleve_id = array_filter( array_map( 'clean_entier' , $tab_periode_eleves ) , 'positif' );
-$appreciation = 'Moyenne figée reportée par '.$_SESSION['USER_NOM'].' '.$_SESSION['USER_PRENOM'].'.';
+$appreciation = 'Moyenne figée reportée par '.$_SESSION['USER_NOM'].' '.$_SESSION['USER_PRENOM']{0}.'.';
 $nb_reports = 0;
 
 foreach($tab_eleves_moyennes as $eleve_moyenne)

@@ -96,8 +96,8 @@ if($action=='purger')
 	ajouter_log_SACoche('Suppression de tous les groupes, hors classes, sans les devoirs associés.');
 	// Supprimer les jointures classes/périodes, et donc les états des bilans officiels
 	DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_liaison_groupe_periode( TRUE /*groupe_id*/ , TRUE /*periode_id*/ , FALSE /*etat*/ , '' /*date_debut_mysql*/ ,'' /*date_fin_mysql*/ );
-	// Supprimer les saisies des bilans officiels et archiver définitivement les bilans officiels imprimés
-	DB_STRUCTURE_ADMINISTRATEUR::DB_supprimer_saisies_et_archiver_bilans_officiels();
+	// Supprimer les saisies & les archives des bilans officiels
+	DB_STRUCTURE_ADMINISTRATEUR::DB_supprimer_bilans_officiels();
 	// Supprimer les comptes utilisateurs désactivés depuis plus de 3 ans
 	$DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_users_desactives_obsoletes();
 	if(count($DB_TAB))

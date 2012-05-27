@@ -132,7 +132,7 @@ td.moyenne {text-align:center;font-weight:bold;vertical-align:middle;font-size:1
 /* Menu déroulant (dans #cadre_haut)                                                                   */
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-#menu a {display:block;border:1px solid #77F;color:#FFF;background:#77F url(../_img/sprite_menu_6.png) 0 0 no-repeat;padding:1px 1px 1px 19px;margin:1px;height:16px}
+#menu a {display:block;border:1px solid #77F;color:#FFF;background:#77F url(../_img/sprite_menu_7.png) 0 0 no-repeat;padding:1px 1px 1px 19px;margin:1px;height:16px}
 #menu a:hover {background-color:#99F;color:#FFF;text-decoration:none}
 #menu li {float:left;}
 #menu li li {float:none}
@@ -176,36 +176,37 @@ td.moyenne {text-align:center;font-weight:bold;vertical-align:middle;font-size:1
 #menu a.officiel_palier3       {background-position: 1px  -679px}
 #menu a.officiel_reglages      {background-position: 1px  -699px}
 #menu a.officiel_releve        {background-position: 1px  -719px}
-#menu a.parent                 {background-position: 1px  -739px}
-#menu a.periode                {background-position: 1px  -759px}
-#menu a.periode_groupe         {background-position: 1px  -779px}
-#menu a.professeur             {background-position: 1px  -799px}
-#menu a.referentiel_gestion    {background-position: 1px  -819px}
-#menu a.referentiel_voir       {background-position: 1px  -839px}
-#menu a.releve_grille          {background-position: 1px  -859px}
-#menu a.releve_items           {background-position: 1px  -879px}
-#menu a.releve_recherche       {background-position: 1px  -899px}
-#menu a.releve_socle           {background-position: 1px  -919px}
-#menu a.releve_synthese        {background-position: 1px  -939px}
-#menu a.releve_synthese_socle  {background-position: 1px  -959px}
-#menu a.resilier               {background-position: 1px  -979px}
-#menu a.rss                    {background-position: 1px  -999px}
-#menu a.serveur_database       {background-position: 1px -1019px}
-#menu a.serveur_fichiers       {background-position: 1px -1039px}
-#menu a.serveur_geographie     {background-position: 1px -1059px}
-#menu a.serveur_identite       {background-position: 1px -1079px}
-#menu a.serveur_info           {background-position: 1px -1099px}
-#menu a.serveur_maintenance    {background-position: 1px -1119px}
-#menu a.serveur_proxy          {background-position: 1px -1139px}
-#menu a.socle_annuler          {background-position: 1px -1159px}
-#menu a.socle_fichier          {background-position: 1px -1179px}
-#menu a.socle_item             {background-position: 1px -1199px}
-#menu a.socle_langue           {background-position: 1px -1219px}
-#menu a.socle_pilier           {background-position: 1px -1239px}
-#menu a.statistiques           {background-position: 1px -1259px}
-#menu a.structure_ajout_csv    {background-position: 1px -1279px}
-#menu a.structure_gestion      {background-position: 1px -1299px}
-#menu a.structure_transfert    {background-position: 1px -1319px}
+#menu a.officiel_voir_archive  {background-position: 1px  -739px}
+#menu a.parent                 {background-position: 1px  -759px}
+#menu a.periode                {background-position: 1px  -779px}
+#menu a.periode_groupe         {background-position: 1px  -799px}
+#menu a.professeur             {background-position: 1px  -819px}
+#menu a.referentiel_gestion    {background-position: 1px  -839px}
+#menu a.referentiel_voir       {background-position: 1px  -859px}
+#menu a.releve_grille          {background-position: 1px  -879px}
+#menu a.releve_items           {background-position: 1px  -899px}
+#menu a.releve_recherche       {background-position: 1px  -919px}
+#menu a.releve_socle           {background-position: 1px  -939px}
+#menu a.releve_synthese        {background-position: 1px  -959px}
+#menu a.releve_synthese_socle  {background-position: 1px  -979px}
+#menu a.resilier               {background-position: 1px  -999px}
+#menu a.rss                    {background-position: 1px -1019px}
+#menu a.serveur_database       {background-position: 1px -1039px}
+#menu a.serveur_fichiers       {background-position: 1px -1059px}
+#menu a.serveur_geographie     {background-position: 1px -1079px}
+#menu a.serveur_identite       {background-position: 1px -1099px}
+#menu a.serveur_info           {background-position: 1px -1119px}
+#menu a.serveur_maintenance    {background-position: 1px -1139px}
+#menu a.serveur_proxy          {background-position: 1px -1159px}
+#menu a.socle_annuler          {background-position: 1px -1179px}
+#menu a.socle_fichier          {background-position: 1px -1199px}
+#menu a.socle_item             {background-position: 1px -1219px}
+#menu a.socle_langue           {background-position: 1px -1239px}
+#menu a.socle_pilier           {background-position: 1px -1259px}
+#menu a.statistiques           {background-position: 1px -1279px}
+#menu a.structure_ajout_csv    {background-position: 1px -1299px}
+#menu a.structure_gestion      {background-position: 1px -1319px}
+#menu a.structure_transfert    {background-position: 1px -1339px}
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 /* Logos page d'accueil une fois identifié (dans #cadre_bas)                                           */
@@ -279,7 +280,7 @@ td.moyenne {text-align:center;font-weight:bold;vertical-align:middle;font-size:1
 /* Images cliquables                                                                                   */
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-body q {background:transparent url(../_img/sprite_action_5.png) 0 0 no-repeat;width:16px;height:16px;display:inline-block;vertical-align:middle;margin-left:5px;quotes:none}
+body q {background:transparent url(../_img/sprite_action_6.png) 0 0 no-repeat;width:16px;height:16px;display:inline-block;vertical-align:middle;margin-left:5px;quotes:none}
 body q:before, body q:after {content: "";} /* patch pour Safari : voir par exemple http://forum.alsacreations.com/topic-4-41216-1-Resolu-Modifier-le-style-des-citations-quotqquot.html */
 body q.activer            {background-position: 0     0px}
 body q.ajouter            {background-position: 0   -20px}
@@ -321,26 +322,28 @@ body q.texte_editer       {background-position: 0  -720px}
 body q.uploader_doc       {background-position: 0  -740px}
 body q.uploader_doc_non   {background-position: 0  -760px}
 body q.valider            {background-position: 0  -780px}
-body q.voir               {background-position: 0  -800px}
-body q.voir_non           {background-position: 0  -820px}
+body q.voir_archive       {background-position: 0  -800px}
+body q.voir_archive_non   {background-position: 0  -820px}
 body q.voir_repart        {background-position: 0  -840px}
-body q.n1_add             {background-position: 0  -860px}
-body q.n1_del             {background-position: 0  -880px}
-body q.n1_edit            {background-position: 0  -900px}
-body q.n1_move            {background-position: 0  -920px}
-body q.n1_move2           {background-position: 0  -940px}
-body q.n2_add             {background-position: 0  -960px}
-body q.n2_del             {background-position: 0  -980px}
-body q.n2_edit            {background-position: 0 -1000px}
-body q.n2_move            {background-position: 0 -1020px}
-body q.n2_move2           {background-position: 0 -1040px}
-body q.n3_add             {background-position: 0 -1060px}
-body q.n3_del             {background-position: 0 -1080px}
-body q.n3_edit            {background-position: 0 -1100px}
-body q.n3_fus             {background-position: 0 -1120px}
-body q.n3_fus2            {background-position: 0 -1140px}
-body q.n3_move            {background-position: 0 -1160px}
-body q.n3_move2           {background-position: 0 -1180px}
+body q.voir               {background-position: 0  -860px}
+body q.voir_non           {background-position: 0  -880px}
+body q.n1_add             {background-position: 0  -900px}
+body q.n1_del             {background-position: 0  -920px}
+body q.n1_edit            {background-position: 0  -940px}
+body q.n1_move            {background-position: 0  -960px}
+body q.n1_move2           {background-position: 0  -980px}
+body q.n2_add             {background-position: 0 -1000px}
+body q.n2_del             {background-position: 0 -1020px}
+body q.n2_edit            {background-position: 0 -1040px}
+body q.n2_move            {background-position: 0 -1060px}
+body q.n2_move2           {background-position: 0 -1080px}
+body q.n3_add             {background-position: 0 -1100px}
+body q.n3_del             {background-position: 0 -1120px}
+body q.n3_edit            {background-position: 0 -1140px}
+body q.n3_fus             {background-position: 0 -1160px}
+body q.n3_fus2            {background-position: 0 -1180px}
+body q.n3_move            {background-position: 0 -1200px}
+body q.n3_move2           {background-position: 0 -1220px}
 body q:hover {cursor:pointer}	/* Curseur pointeur pour ces images qui sont des liens */
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */

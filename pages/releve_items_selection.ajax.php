@@ -90,14 +90,16 @@ if( !$orientation || !$couleur || !$legende || !$marge_min || !$pages_nb || !$ca
 
 Formulaire::save_choix('items_selection');
 
+$marge_gauche = $marge_droite = $marge_haut = $marge_bas = $marge_min ;
+
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 // INCLUSION DU CODE COMMUN À PLUSIEURS PAGES
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
-$make_for    = 'releve';
-$make_action = '';
-$make_html   = TRUE;
-$make_pdf    = TRUE;
+$make_officiel = FALSE;
+$make_action   = '';
+$make_html     = TRUE;
+$make_pdf      = TRUE;
 
 require('./_inc/code_items_releve.php');
 

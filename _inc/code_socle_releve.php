@@ -35,7 +35,7 @@
 // Chemins d'enregistrement
 
 $dossier     = './__tmp/export/';
-$fichier_nom = 'releve_socle_detail_'.clean_fichier(substr($palier_nom,0,strpos($palier_nom,' ('))).'_'.clean_fichier($groupe_nom).'_'.fabriquer_fin_nom_fichier();
+$fichier_nom = ($make_action!='imprimer') ? 'releve_socle_detail_'.clean_fichier(substr($palier_nom,0,strpos($palier_nom,' ('))).'_'.clean_fichier($groupe_nom).'_'.fabriquer_fin_nom_fichier__date_et_alea() : 'officiel_'.$BILAN_TYPE.'_'.clean_fichier($groupe_nom).'_'.fabriquer_fin_nom_fichier__date_et_alea() ;
 
 // Tableau des langues
 
@@ -45,7 +45,7 @@ $tab_item_pilier  = array(); // id de l'item => id du pilier
 
 // Initialisation de tableaux
 
-$tab_pilier       = array();	// [pilier_id] => array(pilier_nom,pilier_nb_lignes);
+$tab_pilier       = array();	// [pilier_id] => array(pilier_nom);
 $tab_section      = array();	// [pilier_id][section_id] => section_nom;
 $tab_socle        = array();	// [section_id][socle_id] => socle_nom;
 $tab_entree_id    = array();	// [i] => entree_id
@@ -88,19 +88,17 @@ foreach($DB_TAB as $DB_ROW)
 	if( (!is_null($DB_ROW['pilier_id'])) && ($DB_ROW['pilier_id']!=$pilier_id) )
 	{
 		$pilier_id  = $DB_ROW['pilier_id'];
-		$tab_pilier[$pilier_id] = array('pilier_nom'=>$DB_ROW['pilier_nom'],'pilier_nb_lignes'=>1);
+		$tab_pilier[$pilier_id] = array('pilier_nom'=>$DB_ROW['pilier_nom']);
 	}
 	if( (!is_null($DB_ROW['section_id'])) && ($DB_ROW['section_id']!=$section_id) )
 	{
 		$section_id  = $DB_ROW['section_id'];
 		$tab_section[$pilier_id][$section_id] = $DB_ROW['section_nom'];
-		$tab_pilier[$pilier_id]['pilier_nb_lignes']++;
 	}
 	if( (!is_null($DB_ROW['entree_id'])) && ($DB_ROW['entree_id']!=$socle_id) )
 	{
 		$socle_id = $DB_ROW['entree_id'];
 		$tab_socle[$section_id][$socle_id] = $DB_ROW['entree_nom'];
-		$tab_pilier[$pilier_id]['pilier_nb_lignes']++;
 		$tab_entree_id[] = $socle_id;
 		if($mode=='auto')
 		{
@@ -238,7 +236,7 @@ foreach($tab_eleve as $tab)
 	{
 		foreach($tab_pilier as $pilier_id => $tab)
 		{
-			extract($tab);	// $pilier_nom $pilier_nb_lignes
+			extract($tab);	// $pilier_nom
 			// $tab_score_pilier_eleve[$pilier_id][$eleve_id] = $tab_init_compet;
 			// Pour chaque section...
 			if(isset($tab_section[$pilier_id]))
@@ -341,15 +339,14 @@ if($only_presence)
 {
 	foreach($tab_eleve as $tab)
 	{
-		extract($tab);
+		extract($tab);	// $eleve_id $eleve_nom $eleve_prenom $eleve_langue
 		if(count($tab_pilier))
 		{
 			foreach($tab_pilier as $pilier_id => $tab)
 			{
-				
 				if( ($test_affichage_Validation) && ($tab_user_pilier[$eleve_id][$pilier_id]['etat']!=2) )
 				{
-					$tab_contenu_presence['pilier'][$pilier_id][$eleve_id]   = TRUE;
+					$tab_contenu_presence['pilier'][$eleve_id][$pilier_id]   = TRUE;
 				}
 				if(isset($tab_section[$pilier_id]))
 				{
@@ -361,9 +358,9 @@ if($only_presence)
 							{
 								if( ($tab_score_socle_eleve[$socle_id][$eleve_id]['nb']) || ( ($test_affichage_Validation) && ($tab_user_entree[$eleve_id][$socle_id]['etat']!=2) ) )
 								{
-									$tab_contenu_presence['pilier'][$pilier_id][$eleve_id]   = TRUE;
-									$tab_contenu_presence['section'][$section_id][$eleve_id] = TRUE;
-									$tab_contenu_presence['item'][$socle_id][$eleve_id]      = TRUE;
+									$tab_contenu_presence['pilier'][$eleve_id][$pilier_id]               = TRUE;
+									$tab_contenu_presence['section'][$eleve_id][$pilier_id][$section_id] = TRUE;
+									$tab_contenu_presence['item'][$eleve_id][$pilier_id][$socle_id]      = TRUE;
 								}
 							}
 						}
@@ -375,10 +372,86 @@ if($only_presence)
 }
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+// Compter le nombre de lignes à afficher par élève par pilier
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
+$tab_nb_lignes = array();
+$tab_nb_lignes_par_pilier = array();
+$nb_lignes_appreciation_intermediaire_par_prof_hors_intitule = ($_SESSION['OFFICIEL']['SOCLE_APPRECIATION_RUBRIQUE']<250) ? 1 : 2 ;
+$nb_lignes_appreciation_generale_avec_intitule = 1+8 ;
+
+foreach($tab_eleve as $key => $tab)
+{
+	extract($tab);	// $eleve_id $eleve_nom $eleve_prenom $eleve_langue
+	if(count($tab_pilier))
+	{
+		foreach($tab_pilier as $pilier_id => $tab)
+		{
+			if($only_presence)
+			{
+				$is_pilier   = (isset($tab_contenu_presence['pilier'][$eleve_id][$pilier_id]))  ? 1                                                              : 0 ;
+				$nb_sections = (isset($tab_contenu_presence['section'][$eleve_id][$pilier_id])) ? count($tab_contenu_presence['section'][$eleve_id][$pilier_id]) : 0 ;
+				$nb_items    = (isset($tab_contenu_presence['item'][$eleve_id][$pilier_id]))    ? count($tab_contenu_presence['item'][$eleve_id][$pilier_id])    : 0 ;
+				$tab_nb_lignes[$eleve_id][$pilier_id] = $is_pilier + $nb_sections + $nb_items + 1 ;
+			}
+			else
+			{
+				if($key==0)
+				{
+					$tab_nb_lignes_par_pilier[$pilier_id] = 1;
+					if(isset($tab_section[$pilier_id]))
+					{
+						foreach($tab_section[$pilier_id] as $section_id => $section_nom)
+						{
+							$tab_nb_lignes_par_pilier[$pilier_id]++;
+							if(isset($tab_socle[$section_id]))
+							{
+								foreach($tab_socle[$section_id] as $socle_id => $socle_nom)
+								{
+									$tab_nb_lignes_par_pilier[$pilier_id]++;
+								}
+							}
+						}
+					}
+					$tab_nb_lignes_par_pilier[$pilier_id] += 1; // marge au dessus
+				}
+				$tab_nb_lignes[$eleve_id][$pilier_id] = $tab_nb_lignes_par_pilier[$pilier_id] + 1 ;
+			}
+			if( ($make_action=='imprimer') && ($_SESSION['OFFICIEL']['SOCLE_APPRECIATION_RUBRIQUE']) && (isset($tab_saisie[$eleve_id][$pilier_id])) )
+			{
+				$tab_nb_lignes[$eleve_id][$pilier_id] += ($nb_lignes_appreciation_intermediaire_par_prof_hors_intitule * count($tab_saisie[$eleve_id][$pilier_id]) ) + 1 ; // + 1 pour "Appréciation / Conseils pour progresser"
+			}
+		}
+	}
+}
+
+// Calcul des totaux une unique fois par élève
+$tab_nb_lignes_total_eleve = array();
+foreach($tab_nb_lignes as $eleve_id => $tab)
+{
+	$tab_nb_lignes_total_eleve[$eleve_id] = array_sum($tab);
+}
+
+// Nombre de boucles par élève (entre 1 et 3 pour les bilans officiels, dans ce cas $tab_destinataires[] est déjà complété ; une seule dans les autres cas).
+if(!isset($tab_destinataires))
+{
+	foreach($tab_eleve as $tab)
+	{
+		$tab_destinataires[$tab['eleve_id']][0] = TRUE ;
+	}
+}
+
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 // Elaboration du bilan relatif au socle, en HTML et PDF => Production et mise en page
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
-$affichage_direct = ( ( ( in_array($_SESSION['USER_PROFIL'],array('eleve','parent')) ) && (SACoche!='webservices') ) || ($make_for=='officiel') ) ? TRUE : FALSE ;
+// La classe FPDF a besoin de mémoire, malgré toutes les optimisations possibles, pour générer un PDF comportant parfois entre 100 et 200 pages.
+// De plus cette consommation n'est pas mesurable - non comptabilisée par memory_get_usage() - et non corrélée à la taille de l'objet PDF...
+// Un memory_limit() de 64Mo est ainsi dépassé avec un pdf d'environ 150 pages, ce qui est atteint avec 4 pages par élèves ou un groupe d'élèves > effectif moyen d'une classe.
+// D'où le ini_set(), même si cette directive peut être interdite dans la conf PHP ou via Suhosin (http://www.hardened-php.net/suhosin/configuration.html#suhosin.memory_limit)
+if($make_pdf) { @ini_set('memory_limit','256M'); @ini_alter('memory_limit','256M'); }
+
+$affichage_direct = ( ( ( in_array($_SESSION['USER_PROFIL'],array('eleve','parent')) ) && (SACoche!='webservices') ) || ($make_officiel) ) ? TRUE : FALSE ;
 
 $titre1 = ($mode=='manuel') ? 'Relevé de maîtrise du socle commun [matières resteintes]' : 'Relevé de maîtrise du socle commun' ;
 $titre2 = ($memo_demande=='palier') ? $palier_nom : $palier_nom.' – '.mb_substr($pilier_nom,0,mb_strpos($pilier_nom,'–')) ;
@@ -394,179 +467,214 @@ if($make_html)
 if($make_pdf)
 {
 	// Appel de la classe et définition de qqs variables supplémentaires pour la mise en page PDF
-	$releve_pdf = new PDF($orientation='portrait',$marge_min=7.5,$couleur,$legende);
+	$releve_pdf = new PDF( $make_officiel , 'portrait' /*orientation*/ , $marge_gauche , $marge_droite , $marge_haut , $marge_bas , $couleur , $legende );
 	$releve_pdf->releve_socle_initialiser($test_affichage_Pourcentage,$test_affichage_Validation);
-	$break  = ($memo_demande=='palier') ? 0 : $tab_pilier[$pilier_id]['pilier_nb_lignes'] ;
+	$break  = ($memo_demande=='palier') ? FALSE : TRUE ;
 }
 
 // Pour chaque élève...
 foreach($tab_eleve as $tab)
 {
 	extract($tab);	// $eleve_id $eleve_nom $eleve_prenom $eleve_langue
-	// On met le document au nom de l'élève, ou on établit un document générique
-	if($make_pdf)
+	foreach($tab_destinataires[$eleve_id] as $numero_tirage => $tab_adresse)
 	{
-		$releve_pdf->releve_socle_entete($titre1,$titre2,$break,$eleve_id,$eleve_nom,$eleve_prenom);
-	}
-	if($make_html)
-	{
-		if($make_for=='releve')
+		// On met le document au nom de l'élève, ou on établit un document générique
+		if($make_pdf)
 		{
-			$releve_html .= ($eleve_id) ? $separation.'<h2>'.html($eleve_nom).' '.html($eleve_prenom).'</h2>' : '<hr /><h2>Attestation générique</h2>' ;
+			$eleve_nb_lignes  = $tab_nb_lignes_total_eleve[$eleve_id];
+			$eleve_nb_lignes += ( $make_officiel && $_SESSION['OFFICIEL']['SOCLE_APPRECIATION_GENERALE'] ) ? $nb_lignes_appreciation_generale_avec_intitule : 0 ;
+			$tab_infos_entete = (!$make_officiel) ? array($titre1,$titre2) : array($tab_etabl_coords,$etabl_coords__bloc_hauteur,$tab_bloc_titres,$tab_adresse,$tag_date_heure_initiales) ;
+			$releve_pdf->releve_socle_entete( $tab_infos_entete , $break , $eleve_id , $eleve_nom , $eleve_prenom , $eleve_nb_lignes );
 		}
-		$releve_html .= '<table class="bilan">';
-	}
-	// Pour chaque pilier...
-	if(count($tab_pilier))
-	{
-		foreach($tab_pilier as $pilier_id => $tab)
+		if($make_html)
 		{
-			if( !$only_presence || isset($tab_contenu_presence['pilier'][$pilier_id][$eleve_id]) )
+			if(!$make_officiel)
 			{
-				extract($tab);	// $pilier_nom $pilier_nb_lignes
-				if( ($make_html) || ($make_pdf) )
+				$releve_html .= ($eleve_id) ? $separation.'<h2>'.html($eleve_nom).' '.html($eleve_prenom).'</h2>' : '<hr /><h2>Attestation générique</h2>' ;
+			}
+			$releve_html .= '<table class="bilan">';
+		}
+		// Pour chaque pilier...
+		if(count($tab_pilier))
+		{
+			foreach($tab_pilier as $pilier_id => $tab)
+			{
+				if( !$only_presence || isset($tab_contenu_presence['pilier'][$eleve_id][$pilier_id]) )
 				{
-					$drapeau_langue = (in_array($pilier_id,$tab_langue_piliers)) ? $eleve_langue : 0 ;
-					if($make_html)
+					extract($tab);	// $pilier_nom
+					if( ($make_html) || ($make_pdf) )
 					{
-						$case_score = $test_affichage_Pourcentage ? '<th class="nu"></th>' : '' ;
-						$case_valid = $test_affichage_Validation ? affich_validation_html( 'th' , $tab_user_pilier[$eleve_id][$pilier_id] , $detail=TRUE ) : '' ;
-						$image_langue = ($drapeau_langue) ? ' <img src="./_img/drapeau/'.$drapeau_langue.'.gif" alt="" title="'.$tab_langues[$drapeau_langue]['texte'].'" />' : '' ;
-						$releve_html .= '<tr>'.$case_score.'<th>'.html($pilier_nom).$image_langue.'</th>'.$case_valid.'<th class="nu"></th></tr>'."\r\n";
-					}
-					if($make_pdf)
-					{
-						$tab_pilier_validation = $test_affichage_Validation ? $tab_user_pilier[$eleve_id][$pilier_id] : array() ;
-						$releve_pdf->releve_socle_pilier($pilier_nom,$pilier_nb_lignes,$test_affichage_Validation,$tab_pilier_validation,$drapeau_langue);
-					}
-					// Pour chaque section...
-					if(isset($tab_section[$pilier_id]))
-					{
-						foreach($tab_section[$pilier_id] as $section_id => $section_nom)
+						$drapeau_langue = (in_array($pilier_id,$tab_langue_piliers)) ? $eleve_langue : 0 ;
+						if($make_html)
 						{
-							if( !$only_presence || isset($tab_contenu_presence['section'][$section_id][$eleve_id]) )
+							$case_score = $test_affichage_Pourcentage ? '<th class="nu"></th>' : '' ;
+							$case_valid = $test_affichage_Validation ? affich_validation_html( 'th' , $tab_user_pilier[$eleve_id][$pilier_id] , $detail=TRUE ) : '' ;
+							$image_langue = ($drapeau_langue) ? ' <img src="./_img/drapeau/'.$drapeau_langue.'.gif" alt="" title="'.$tab_langues[$drapeau_langue]['texte'].'" />' : '' ;
+							$releve_html .= '<tr>'.$case_score.'<th>'.html($pilier_nom).$image_langue.'</th>'.$case_valid.'<th class="nu"></th></tr>'."\r\n";
+						}
+						if($make_pdf)
+						{
+							$tab_pilier_validation = $test_affichage_Validation ? $tab_user_pilier[$eleve_id][$pilier_id] : array() ;
+							$releve_pdf->releve_socle_pilier( $pilier_nom , $tab_nb_lignes[$eleve_id][$pilier_id] , $test_affichage_Validation , $tab_pilier_validation , $drapeau_langue );
+						}
+						// Pour chaque section...
+						if(isset($tab_section[$pilier_id]))
+						{
+							foreach($tab_section[$pilier_id] as $section_id => $section_nom)
 							{
-								if($make_html)
+								if( !$only_presence || isset($tab_contenu_presence['section'][$eleve_id][$pilier_id][$section_id]) )
 								{
-									$case_score = $test_affichage_Pourcentage ? '<th class="nu"></th>' : '' ;
-									$case_valid = '<th class="nu"></th>' ;
-									$releve_html .= '<tr>'.$case_score.'<th colspan="2">'.html($section_nom).'</th>'.$case_valid.'</tr>'."\r\n";
-								}
-								if($make_pdf)
-								{
-									$releve_pdf->releve_socle_section($section_nom);
-								}
-								// Pour chaque item du socle...
-								if(isset($tab_socle[$section_id]))
-								{
-									foreach($tab_socle[$section_id] as $socle_id => $socle_nom)
+									if($make_html)
 									{
-										if( !$only_presence || isset($tab_contenu_presence['item'][$socle_id][$eleve_id]) )
+										$case_score = $test_affichage_Pourcentage ? '<th class="nu"></th>' : '' ;
+										$case_valid = '<th class="nu"></th>' ;
+										$releve_html .= '<tr>'.$case_score.'<th colspan="2">'.html($section_nom).'</th>'.$case_valid.'</tr>'."\r\n";
+									}
+									if($make_pdf)
+									{
+										$releve_pdf->releve_socle_section($section_nom);
+									}
+									// Pour chaque item du socle...
+									if(isset($tab_socle[$section_id]))
+									{
+										foreach($tab_socle[$section_id] as $socle_id => $socle_nom)
 										{
-											if($make_pdf)
+											if( !$only_presence || isset($tab_contenu_presence['item'][$eleve_id][$pilier_id][$socle_id]) )
 											{
-												$tab_item_pourcentage = $test_affichage_Pourcentage ? $tab_score_socle_eleve[$socle_id][$eleve_id] : array() ;
-												$tab_item_validation  = $test_affichage_Validation ? $tab_user_entree[$eleve_id][$socle_id] : array() ;
-												$releve_pdf->releve_socle_item($socle_nom,$test_affichage_Pourcentage,$tab_item_pourcentage,$test_affichage_Validation,$tab_item_validation);
-											}
-											if($make_html)
-											{
-												$socle_nom  = html($socle_nom);
-												$socle_nom  = (mb_strlen($socle_nom)<160) ? $socle_nom : mb_substr($socle_nom,0,150).' [...] <img src="./_img/bulle_aide.png" alt="" title="'.$socle_nom.'" />';
-												if( $tab_infos_socle_eleve[$socle_id][$eleve_id] )
+												if($make_pdf)
 												{
-													$lien_toggle = '<a href="#" id="to_'.$socle_id.'_'.$eleve_id.'"><img src="./_img/toggle_plus.gif" alt="" title="Voir / masquer le détail des items associés." class="toggle" /></a> ';
-													$div_competences = '<div id="'.$socle_id.'_'.$eleve_id.'" class="hide">'.'<div>'.implode('</div><div>',$tab_infos_socle_eleve[$socle_id][$eleve_id]).'</div>'.'</div>';
+													$tab_item_pourcentage = $test_affichage_Pourcentage ? $tab_score_socle_eleve[$socle_id][$eleve_id] : array() ;
+													$tab_item_validation  = $test_affichage_Validation ? $tab_user_entree[$eleve_id][$socle_id] : array() ;
+													$releve_pdf->releve_socle_item($socle_nom,$test_affichage_Pourcentage,$tab_item_pourcentage,$test_affichage_Validation,$tab_item_validation);
 												}
-												else
+												if($make_html)
 												{
-													$lien_toggle = '<img src="./_img/toggle_none.gif" alt="" /> ';
-													$div_competences = '';
+													$socle_nom  = html($socle_nom);
+													$socle_nom  = (mb_strlen($socle_nom)<160) ? $socle_nom : mb_substr($socle_nom,0,150).' [...] <img src="./_img/bulle_aide.png" alt="" title="'.$socle_nom.'" />';
+													if( $tab_infos_socle_eleve[$socle_id][$eleve_id] )
+													{
+														$lien_toggle = '<a href="#" id="to_'.$socle_id.'_'.$eleve_id.'"><img src="./_img/toggle_plus.gif" alt="" title="Voir / masquer le détail des items associés." class="toggle" /></a> ';
+														$div_competences = '<div id="'.$socle_id.'_'.$eleve_id.'" class="hide">'.'<div>'.implode('</div><div>',$tab_infos_socle_eleve[$socle_id][$eleve_id]).'</div>'.'</div>';
+													}
+													else
+													{
+														$lien_toggle = '<img src="./_img/toggle_none.gif" alt="" /> ';
+														$div_competences = '';
+													}
+													$case_score = $test_affichage_Pourcentage ? affich_pourcentage_html( 'td' , $tab_score_socle_eleve[$socle_id][$eleve_id] , TRUE /*detail*/ , FALSE /*largeur*/ ) : '' ;
+													$case_valid = $test_affichage_Validation ? affich_validation_html( 'td' , $tab_user_entree[$eleve_id][$socle_id] , $detail=TRUE ) : '' ;
+													$releve_html .= '<tr>'.$case_score.'<td colspan="2">'.$lien_toggle.$socle_nom.$div_competences.'</td>'.$case_valid.'</tr>'."\r\n";
 												}
-												$case_score = $test_affichage_Pourcentage ? affich_pourcentage_html( 'td' , $tab_score_socle_eleve[$socle_id][$eleve_id] , TRUE /*detail*/ , FALSE /*largeur*/ ) : '' ;
-												$case_valid = $test_affichage_Validation ? affich_validation_html( 'td' , $tab_user_entree[$eleve_id][$socle_id] , $detail=TRUE ) : '' ;
-												$releve_html .= '<tr>'.$case_score.'<td colspan="2">'.$lien_toggle.$socle_nom.$div_competences.'</td>'.$case_valid.'</tr>'."\r\n";
 											}
 										}
 									}
 								}
 							}
 						}
-					}
-					if( ($make_for=='officiel') && ($_SESSION['OFFICIEL']['SOCLE_APPRECIATION_RUBRIQUE']) )
-					{
-						if(isset($tab_saisie[$eleve_id][$pilier_id]))
+						// Appréciations intermédiaires (HTML)
+						if( ($make_html) && ($make_officiel) && ($_SESSION['OFFICIEL']['SOCLE_APPRECIATION_RUBRIQUE']) )
 						{
-							foreach($tab_saisie[$eleve_id][$pilier_id] as $prof_id => $tab)
+							if(isset($tab_saisie[$eleve_id][$pilier_id]))
 							{
-								extract($tab);	// $prof_info $appreciation $note
-								if($make_html)
+								foreach($tab_saisie[$eleve_id][$pilier_id] as $prof_id => $tab)
 								{
+									extract($tab);	// $prof_info $appreciation $note
 									$action = ( ($BILAN_ETAT=='2rubrique') && ($make_action=='saisir') && ($prof_id==$_SESSION['USER_ID']) ) ? ' <button type="button" class="modifier">Modifier</button> <button type="button" class="supprimer">Supprimer</button>' : ' <button type="button" class="signaler">Signaler une erreur</button>' ;
 									$releve_html .= '<tr id="appr_'.$pilier_id.'_'.$prof_id.'"><td colspan="4" class="now"><div class="notnow">'.html($prof_info).$action.'</div><div class="appreciation">'.html($appreciation).'</div></td></tr>'."\r\n";
 								}
 							}
-						}
-						if( $make_html && ($BILAN_ETAT=='2rubrique') && ($make_action=='saisir') )
-						{
-							if(!isset($tab_saisie[$eleve_id][$pilier_id][$_SESSION['USER_ID']]))
+							if( ($BILAN_ETAT=='2rubrique') && ($make_action=='saisir') )
 							{
-								$releve_html .= '<tr id="appr_'.$pilier_id.'_'.$_SESSION['USER_ID'].'"><td colspan="4" class="now"><div class="hc"><button type="button" class="ajouter">Ajouter une appréciation.</button></div></td></tr>'."\r\n";
+								if(!isset($tab_saisie[$eleve_id][$pilier_id][$_SESSION['USER_ID']]))
+								{
+									$releve_html .= '<tr id="appr_'.$pilier_id.'_'.$_SESSION['USER_ID'].'"><td colspan="4" class="now"><div class="hc"><button type="button" class="ajouter">Ajouter une appréciation.</button></div></td></tr>'."\r\n";
+								}
 							}
 						}
+						if($make_html)
+						{
+							$releve_html .= '<tr><td colspan="4" class="nu"></td></tr>'."\r\n";
+						}
 					}
-					if($make_html)
-					{
-						$releve_html .= '<tr><td colspan="4" class="nu"></td></tr>'."\r\n";
-					}
-				}
-				// Examen de présence des appréciations
-				if($make_action=='examiner')
-				{
-					if( ($_SESSION['OFFICIEL']['SOCLE_APPRECIATION_RUBRIQUE']) && (!isset($tab_saisie[$eleve_id][$pilier_id])) )
+					// Examen de présence des appréciations intermédiaires
+					if( ($make_action=='examiner') && ($_SESSION['OFFICIEL']['SOCLE_APPRECIATION_RUBRIQUE']) && (!isset($tab_saisie[$eleve_id][$pilier_id])) )
 					{
 						$tab_resultat_examen[$pilier_nom][] = 'Absence d\'appréciation pour '.html($eleve_nom.' '.$eleve_prenom);
 					}
+					// Impression des appréciations intermédiaires (PDF)
+					if( ($make_action=='imprimer') && ($_SESSION['OFFICIEL']['SOCLE_APPRECIATION_RUBRIQUE']) && (isset($tab_saisie[$eleve_id][$pilier_id])) )
+					{
+						$releve_pdf->releve_socle_appreciation_rubrique( $tab_saisie[$eleve_id][$pilier_id] );
+					}
 				}
 			}
-		}
-		if( ($make_for=='officiel') && ($_SESSION['OFFICIEL']['SOCLE_APPRECIATION_GENERALE']) )
-		{
-			if($make_html)
+			if( ($make_officiel) && ($_SESSION['OFFICIEL']['SOCLE_APPRECIATION_GENERALE']) )
 			{
-				$case_score = $test_affichage_Pourcentage ? '<th class="nu"></th>' : '' ;
-				$case_valid = $test_affichage_Validation  ? '<th class="nu"></th>' : '' ;
-				$releve_html .= '<tr>'.$case_score.'<th colspan="2">Synthèse générale</th>'.$case_valid.'</tr>'."\r\n";
-				if(isset($tab_saisie[$eleve_id][0]))
+				if($make_html)
 				{
-					list($prof_id,$tab) = each($tab_saisie[$eleve_id][0]);
-					extract($tab);	// $prof_info $appreciation $note
-					$action = ( ($BILAN_ETAT=='3synthese') && ($make_action=='saisir') ) ? ' <button type="button" class="modifier">Modifier</button> <button type="button" class="supprimer">Supprimer</button>' : '' ;
-					$releve_html .= '<tr id="appr_0_'.$prof_id.'">'.$case_score.'<td colspan="2" class="now"><div class="notnow">'.html($prof_info).$action.'</div><div class="appreciation">'.html($appreciation).'</div></td>'.$case_valid.'</tr>'."\r\n";
-				}
-				elseif( ($BILAN_ETAT=='3synthese') && ($make_action=='saisir') )
-				{
-					$releve_html .= '<tr id="appr_0_'.$_SESSION['USER_ID'].'">'.$case_score.'<td colspan="2" class="now"><div class="hc"><button type="button" class="ajouter">Ajouter l\'appréciation générale.</button></div></td>'.$case_valid.'</tr>'."\r\n";
+					$case_score = $test_affichage_Pourcentage ? '<th class="nu"></th>' : '' ;
+					$case_valid = $test_affichage_Validation  ? '<th class="nu"></th>' : '' ;
+					$releve_html .= '<tr>'.$case_score.'<th colspan="2">Synthèse générale</th>'.$case_valid.'</tr>'."\r\n";
+					if(isset($tab_saisie[$eleve_id][0]))
+					{
+						reset($tab_saisie[$eleve_id][0]);
+						list($prof_id,$tab) = each($tab_saisie[$eleve_id][0]);
+						extract($tab);	// $prof_info $appreciation $note
+						$action = ( ($BILAN_ETAT=='3synthese') && ($make_action=='saisir') ) ? ' <button type="button" class="modifier">Modifier</button> <button type="button" class="supprimer">Supprimer</button>' : '' ;
+						$releve_html .= '<tr id="appr_0_'.$prof_id.'">'.$case_score.'<td colspan="2" class="now"><div class="notnow">'.html($prof_info).$action.'</div><div class="appreciation">'.html($appreciation).'</div></td>'.$case_valid.'</tr>'."\r\n";
+					}
+					elseif( ($BILAN_ETAT=='3synthese') && ($make_action=='saisir') )
+					{
+						$releve_html .= '<tr id="appr_0_'.$_SESSION['USER_ID'].'">'.$case_score.'<td colspan="2" class="now"><div class="hc"><button type="button" class="ajouter">Ajouter l\'appréciation générale.</button></div></td>'.$case_valid.'</tr>'."\r\n";
+					}
 				}
 			}
-		}
-		// Examen de présence de l'appréciation générale
-		if( ($make_action=='examiner') && ($_SESSION['OFFICIEL']['SOCLE_APPRECIATION_GENERALE']) && (in_array(0,$tab_rubrique_id)) )
-		{
-			if(!isset($tab_saisie[$eleve_id][0]))
+			// Examen de présence de l'appréciation générale
+			if( ($make_action=='examiner') && ($_SESSION['OFFICIEL']['SOCLE_APPRECIATION_GENERALE']) && (in_array(0,$tab_rubrique_id)) && (!isset($tab_saisie[$eleve_id][0])) )
 			{
 				$tab_resultat_examen['Synthèse générale'][] = 'Absence d\'appréciation générale pour '.html($eleve_nom.' '.$eleve_prenom);
 			}
+			// Impression de l'appréciation générale
+			if( ($make_action=='imprimer') && ($_SESSION['OFFICIEL']['SOCLE_APPRECIATION_GENERALE']) )
+			{
+				if(isset($tab_saisie[$eleve_id][0]))
+				{
+					reset($tab_saisie[$eleve_id][0]);
+					list($prof_id,$tab_infos) = each($tab_saisie[$eleve_id][0]);
+					if( ($numero_tirage==0) || ($_SESSION['OFFICIEL']['TAMPON_SIGNATURE']=='sans') || ( ($_SESSION['OFFICIEL']['TAMPON_SIGNATURE']=='tampon') && (!$tab_signature[0]) ) || ( ($_SESSION['OFFICIEL']['TAMPON_SIGNATURE']=='signature') && (!$tab_signature[$prof_id]) ) || ( ($_SESSION['OFFICIEL']['TAMPON_SIGNATURE']=='signature_ou_tampon') && (!$tab_signature[0]) && (!$tab_signature[$prof_id]) ) )
+					{
+						$tab_image_tampon_signature = NULL;
+					}
+					else
+					{
+						$tab_image_tampon_signature = ( ($_SESSION['OFFICIEL']['TAMPON_SIGNATURE']=='signature') || (!$tab_signature[0]) ) ? $tab_signature[$prof_id] : $tab_signature[0] ;
+					}
+				}
+				else
+				{
+					$prof_id = 0;
+					$tab_infos = array('prof_info'=>'','appreciation'=>'');
+					$tab_image_tampon_signature = ( ($numero_tirage>0) && (in_array($_SESSION['OFFICIEL']['TAMPON_SIGNATURE'],array('tampon','signature_ou_tampon'))) ) ? $tab_signature[0] : NULL;
+				}
+				$releve_pdf->releve_socle_appreciation_generale( $prof_id , $tab_infos , $tab_image_tampon_signature , $nb_lignes_appreciation_generale_avec_intitule );
+			}
+			// Mémorisation des pages de début et de fin pour chaque élève pour découpe et archivage ultérieur
+			if($make_action=='imprimer')
+			{
+				$page_debut = (isset($page_fin)) ? $page_fin+1 : 1 ;
+				$page_fin   = $releve_pdf->page;
+				$tab_pages_decoupe_pdf[$eleve_id][$numero_tirage] = array( $eleve_nom.' '.$eleve_prenom , $page_debut.'-'.$page_fin );
+			}
+		} 
+		if($make_html)
+		{
+			$releve_html .= '</table>';
 		}
-	}
-	if($make_html)
-	{
-		$releve_html .= '</table>';
-	}
-	if( ( ($make_html) || ($make_pdf) ) && ($legende=='oui') )
-	{
-		if($make_html) { $releve_html .= $legende_html; }
-		if($make_pdf)  { $releve_pdf->releve_socle_legende($test_affichage_Pourcentage,$test_affichage_Validation); }
+		if( ( ($make_html) || ($make_pdf) ) && ($legende=='oui') )
+		{
+			if($make_html) { $releve_html .= $legende_html; }
+			if($make_pdf)  { $releve_pdf->releve_socle_legende($test_affichage_Pourcentage,$test_affichage_Validation); }
+		}
 	}
 }
 

@@ -42,17 +42,17 @@ foreach($tab_profils as $profil)
 $texte = ($str_objet=='') ? 'aucun' : ( (strpos($str_objet,',')===false) ? 'uniquement les '.$str_objet : str_replace(',',' + ',$str_objet) ) ;
 
 Formulaire::load_choix_memo();
-if( ($_SESSION['USER_PROFIL']=='directeur') && (strpos($_SESSION['DROIT_ANNULATION_PILIER'],'directeur')!==false) )
+if( ($_SESSION['USER_PROFIL']=='directeur') && (strpos($_SESSION['DROIT_ANNULATION_PILIER'],'directeur')!==FALSE) )
 {
 	$tab_groupes = DB_STRUCTURE_COMMUN::DB_OPT_classes_groupes_etabl();
 	$of_g = 'oui'; $og_g = 'oui'; 
 }
-elseif( ($_SESSION['USER_PROFIL']=='professeur') && (strpos($_SESSION['DROIT_ANNULATION_PILIER'],'professeur')!==false) )
+elseif( ($_SESSION['USER_PROFIL']=='professeur') && (strpos($_SESSION['DROIT_ANNULATION_PILIER'],'professeur')!==FALSE) )
 {
 	$tab_groupes = DB_STRUCTURE_COMMUN::DB_OPT_groupes_professeur($_SESSION['USER_ID']);
 	$of_g = 'oui'; $og_g = 'oui'; 
 }
-elseif( ($_SESSION['USER_PROFIL']=='professeur') && (strpos($_SESSION['DROIT_ANNULATION_PILIER'],'profprincipal')!==false) && (DB_STRUCTURE_PROFESSEUR::DB_tester_prof_principal($_SESSION['USER_ID'])) )
+elseif( ($_SESSION['USER_PROFIL']=='professeur') && (strpos($_SESSION['DROIT_ANNULATION_PILIER'],'profprincipal')!==FALSE) && (DB_STRUCTURE_PROFESSEUR::DB_tester_prof_principal($_SESSION['USER_ID'])) )
 {
 	$tab_groupes = DB_STRUCTURE_COMMUN::DB_OPT_classes_prof_principal($_SESSION['USER_ID']);
 	$of_g = 'non'; $og_g = 'non'; 

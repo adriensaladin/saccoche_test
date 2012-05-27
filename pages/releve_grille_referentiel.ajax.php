@@ -226,7 +226,7 @@ unset($DB_TAB);
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
 $dossier = './__tmp/export/';
-$fichier = 'grille_item_'.clean_fichier($matiere_nom).'_'.clean_fichier($niveau_nom).'_<REPLACE>_'.fabriquer_fin_nom_fichier();
+$fichier = 'grille_item_'.clean_fichier($matiere_nom).'_'.clean_fichier($niveau_nom).'_<REPLACE>_'.fabriquer_fin_nom_fichier__date_et_alea();
 $fichier_nom_type1 = ($type_generique) ? str_replace( '<REPLACE>' , 'generique' , $fichier ) : str_replace( '<REPLACE>' , clean_fichier($groupe_nom).'_individuel' , $fichier ) ;
 $fichier_nom_type2 = str_replace( '<REPLACE>' , clean_fichier($groupe_nom).'_synthese' , $fichier ) ;
 
@@ -378,6 +378,12 @@ if( $type_individuel )
 // Elaboration de la grille d'items d'un référentiel, en HTML et PDF
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
+// La classe FPDF est gourmande en mémoire malgré toutes les optimisations possibles.
+// De plus cette consommation n'est pas mesurable - non comptabilisée par memory_get_usage() - et non corrélée à la taille de l'objet PDF...
+// Un memory_limit() de 64Mo est ainsi dépassé avec un pdf d'environ 150 pages, ce qui est atteint avec 4 pages par élèves ou un groupe d'élèves > effectif moyen d'une classe.
+// D'où le ini_set(), même si cette directive peut être interdite dans la conf PHP ou via Suhosin (http://www.hardened-php.net/suhosin/configuration.html#suhosin.memory_limit)
+if($type_individuel) { @ini_set('memory_limit','256M'); @ini_alter('memory_limit','256M'); }
+
 $affichage_direct   = ( ( in_array($_SESSION['USER_PROFIL'],array('eleve','parent')) ) && (SACoche!='webservices') ) ? TRUE : FALSE ;
 $affichage_checkbox = ( $type_synthese && ($_SESSION['USER_PROFIL']=='professeur') && (SACoche!='webservices') )     ? TRUE : FALSE ;
 
@@ -396,7 +402,7 @@ if( $type_generique || $type_individuel )
 	$releve_HTML_individuel .= $affichage_direct ? '' : '<h2>'.html($matiere_nom.' - Niveau '.$niveau_nom.$msg_socle).'</h2>';
 	$legende_html = ($legende=='oui') ? affich_legende_html( TRUE /*codes_notation*/ , FALSE /*etat_acquisition*/ , FALSE /*pourcentage_acquis*/ , FALSE /*etat_validation*/ ) : '' ;
 	// Appel de la classe et définition de qqs variables supplémentaires pour la mise en page PDF
-	$releve_PDF = new PDF($orientation,$marge_min,$couleur,$legende);
+	$releve_PDF = new PDF( FALSE /*officiel*/ , $orientation , $marge_min /*marge_gauche*/ , $marge_min /*marge_droite*/ , $marge_min /*marge_haut*/ , $marge_min /*marge_bas*/ , $couleur , $legende );
 	$releve_PDF->grille_referentiel_initialiser($cases_nb,$cases_largeur,$lignes_nb,$colonne_bilan,$colonne_vide);
 	$separation = (count($tab_eleve)>1) ? '<hr />' : '' ;
 
@@ -509,7 +515,7 @@ if($type_synthese)
 	// Appel de la classe et redéfinition de qqs variables supplémentaires pour la mise en page PDF
 	// On définit l'orientation la plus adaptée
 	$orientation = ( ( ($eleve_nb>$item_nb) && ($tableau_tri_objet=='eleve') ) || ( ($item_nb>$eleve_nb) && ($tableau_tri_objet=='item') ) ) ? 'portrait' : 'landscape' ;
-	$releve_PDF = new PDF($orientation,$marge_min,$couleur);
+	$releve_PDF = new PDF( FALSE /*officiel*/ , $orientation , $marge_min /*marge_gauche*/ , $marge_min /*marge_droite*/ , $marge_min /*marge_haut*/ , $marge_min /*marge_bas*/ , $couleur , 'oui' /*legende*/ );
 	$releve_PDF->bilan_periode_synthese_initialiser($eleve_nb,$item_nb,$tableau_tri_objet);
 	$releve_PDF->bilan_periode_synthese_entete($tab_titre,$matiere_et_niveau,''/*texte_periode*/);
 	// 1ère ligne

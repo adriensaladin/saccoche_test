@@ -50,7 +50,7 @@ if( (($action=='generer_login')||($action=='generer_mdp')) && (in_array($profil,
 {
 	$prefixe = ($profil!='parents') ? 'user_' : 'parent_' ;
 	// Nom sans extension des fichiers de sortie
-	$fnom = 'identifiants_'.$_SESSION['BASE'].'_'.$profil.'_'.fabriquer_fin_nom_fichier();
+	$fnom = 'identifiants_'.$_SESSION['BASE'].'_'.$profil.'_'.fabriquer_fin_nom_fichier__date_et_alea();
 	// La classe n'est affichée que pour l'élève
 	$avec_info = ($profil=='eleves') ? 'classe' : ( ($profil=='parents') ? 'enfant' : '' ) ;
 	//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
@@ -166,7 +166,7 @@ if($action=='user_export')
 		$fcontenu_csv .= $DB_ROW['user_login'].$separateur.''.$separateur.$DB_ROW['user_nom'].$separateur.$DB_ROW['user_prenom'].$separateur.$DB_ROW['user_profil'].$separateur.$DB_ROW['groupe_ref']."\r\n";
 	}
 	// On archive dans un fichier tableur zippé (csv tabulé)
-	$fnom = 'export_'.$_SESSION['BASE'].'_mdp_'.fabriquer_fin_nom_fichier();
+	$fnom = 'export_'.$_SESSION['BASE'].'_mdp_'.fabriquer_fin_nom_fichier__date_et_alea();
 	$zip = new ZipArchive();
 	$result_open = $zip->open($dossier_export.$fnom.'.zip', ZIPARCHIVE::CREATE);
 	if($result_open!==TRUE)
@@ -200,7 +200,7 @@ if($action=='import_loginmdp')
 	{
 		exit('Erreur : l\'extension du fichier transmis est incorrecte !');
 	}
-	$fichier_dest = $action.'_'.$_SESSION['BASE'].'_'.fabriquer_fin_nom_fichier().'.txt' ;
+	$fichier_dest = $action.'_'.$_SESSION['BASE'].'_'.fabriquer_fin_nom_fichier__date_et_alea().'.txt' ;
 	if(!move_uploaded_file($fnom_serveur , $dossier_import.$fichier_dest))
 	{
 		exit('Erreur : le fichier n\'a pas pu être enregistré sur le serveur.');
@@ -353,7 +353,7 @@ if($action=='import_loginmdp')
 	echo'<ul class="puce">';
 	if(count($fcontenu_pdf_tab))
 	{
-		$fnom = 'identifiants_'.$_SESSION['BASE'].'_'.fabriquer_fin_nom_fichier();
+		$fnom = 'identifiants_'.$_SESSION['BASE'].'_'.fabriquer_fin_nom_fichier__date_et_alea();
 		$pdf = new PDF_Label(array('paper-size'=>'A4', 'metric'=>'mm', 'marginLeft'=>5, 'marginTop'=>5, 'NX'=>3, 'NY'=>8, 'SpaceX'=>7, 'SpaceY'=>5, 'width'=>60, 'height'=>30, 'font-size'=>11));
 		$pdf -> AddFont('Arial','' ,'arial.php');
 		$pdf -> SetFont('Arial'); // Permet de mieux distinguer les "l 1" etc. que la police Times ou Courrier
@@ -408,7 +408,7 @@ if( ($action=='import_gepi_eleves') || ($action=='import_gepi_profs') )
 	{
 		exit('Erreur : le nom du fichier n\'est pas "'.$tab_fnom_attendu[$action][0].'" !');
 	}
-	$fichier_dest = $action.'_'.$_SESSION['BASE'].'_'.fabriquer_fin_nom_fichier().'.txt' ;
+	$fichier_dest = $action.'_'.$_SESSION['BASE'].'_'.fabriquer_fin_nom_fichier__date_et_alea().'.txt' ;
 
 	if(!move_uploaded_file($fnom_serveur , $dossier_import.$fichier_dest))
 	{
@@ -566,7 +566,7 @@ if($action=='import_ent')
 	{
 		exit('Erreur : l\'extension du fichier transmis est incorrecte !');
 	}
-	$fichier_dest = $action.'_'.$_SESSION['BASE'].'_'.fabriquer_fin_nom_fichier().'.txt' ;
+	$fichier_dest = $action.'_'.$_SESSION['BASE'].'_'.fabriquer_fin_nom_fichier__date_et_alea().'.txt' ;
 	if(!move_uploaded_file($fnom_serveur , $dossier_import.$fichier_dest))
 	{
 		exit('Erreur : le fichier n\'a pas pu être enregistré sur le serveur.');

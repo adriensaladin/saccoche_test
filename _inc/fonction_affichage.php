@@ -63,7 +63,7 @@ function mailto($mail_adresse,$mail_sujet,$texte_lien,$mail_contenu='',$mail_cop
  * The latest version of this file can be obtained from http://iki.fi/hsivonen/php-utf8/
  * Version 1.0, 2003-05-30
  */
-function utf8ToUnicode(&$str)
+function utf8ToUnicode($str)
 {
 	$mState = 0;     // cached expected number of octets after the current octet until the beginning of the next UTF8 character sequence
 	$mUcs4  = 0;     // cached Unicode character
@@ -204,7 +204,7 @@ function utf8ToUnicode(&$str)
  * The latest version of this file can be obtained from http://iki.fi/hsivonen/php-utf8/
  * Version 1.0, 2003-05-30
  */
-function unicodeToUtf8(&$arr)
+function unicodeToUtf8($arr)
 {
 	$dest = '';
 	foreach ($arr as $src)

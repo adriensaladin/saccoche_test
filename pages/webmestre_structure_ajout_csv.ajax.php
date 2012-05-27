@@ -36,7 +36,7 @@ $max            = (isset($_POST['max']))            ? (int)$_POST['max']        
 $courriel_envoi = (isset($_POST['courriel_envoi'])) ? clean_entier($_POST['courriel_envoi']) : 0;
 
 $dossier_import   = './__tmp/import/';
-$fichier_csv_nom  = 'ajout_structures_'.fabriquer_fin_nom_fichier().'.csv';
+$fichier_csv_nom  = 'ajout_structures_'.fabriquer_fin_nom_fichier__date_et_alea().'.csv';
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 // Import d'un fichier CSV avec le listing des structures
@@ -177,7 +177,7 @@ if( ($action=='ajouter') && $num && $max )
 	// Créer un utilisateur pour la base de données de la structure et lui attribuer ses droits
 	$base_id = ajouter_structure($import_id,$geo_id,$uai,$localisation,$denomination,$contact_nom,$contact_prenom,$contact_courriel);
 	// Créer les dossiers de fichiers temporaires par établissement : vignettes verticales, flux RSS des demandes, cookies des choix de formulaires, sujets et corrigés de devoirs
-	$tab_sous_dossier = array('badge','cookie','devoir','rss');
+	$tab_sous_dossier = array('badge','cookie','devoir','officiel','rss');
 	foreach($tab_sous_dossier as $sous_dossier)
 	{
 		Creer_Dossier('./__tmp/'.$sous_dossier.'/'.$base_id);

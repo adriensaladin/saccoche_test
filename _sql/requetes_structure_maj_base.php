@@ -46,7 +46,7 @@ class DB_STRUCTURE_MAJ_BASE extends DB
  * @param void
  * @return string
  */
-public function DB_version_base()
+public static function DB_version_base()
 {
 	$DB_SQL = 'SELECT parametre_valeur ';
 	$DB_SQL.= 'FROM sacoche_parametre ';
@@ -62,7 +62,7 @@ public function DB_version_base()
  * @param string   $version_actuelle
  * @return void
  */
-public function DB_maj_base($version_actuelle)
+public static function DB_maj_base($version_actuelle)
 {
 
 	//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1940,6 +1940,37 @@ public function DB_maj_base($version_actuelle)
 			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ( "droit_officiel_releve_modifier_statut"   , "directeur,aucunprof" )' );
 			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ( "droit_officiel_bulletin_modifier_statut" , "directeur,aucunprof" )' );
 			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ( "droit_officiel_socle_modifier_statut"    , "directeur,aucunprof" )' );
+		}
+	}
+
+	//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	//	MAJ 2012-05-14 => 2012-05-19
+	//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	if($version_actuelle=='2012-05-14')
+	{
+		if($version_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
+		{
+			$version_actuelle = '2012-05-21';
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_actuelle.'" WHERE parametre_nom="version_base"' );
+			// renommage d'un champ de sacoche_parametre
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur=REPLACE(parametre_valeur,"restreindre","tampon") WHERE parametre_nom="officiel_tampon_signature"' );
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur=REPLACE(parametre_valeur,"remplacer","signature_ou_tampon") WHERE parametre_nom="officiel_tampon_signature"' );
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur=REPLACE(parametre_valeur,"superposer","signature_ou_tampon") WHERE parametre_nom="officiel_tampon_signature"' );
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur=REPLACE(parametre_valeur,"juxtaposer","signature_ou_tampon") WHERE parametre_nom="officiel_tampon_signature"' );
+			// renommage de paramètres
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_nom="droit_officiel_releve_voir_archive" WHERE parametre_nom="droit_voir_officiel_releve_archive"' );
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_nom="droit_officiel_bulletin_voir_archive" WHERE parametre_nom="droit_voir_officiel_bulletin_archive"' );
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_nom="droit_officiel_socle_voir_archive" WHERE parametre_nom="droit_voir_officiel_socle_archive"' );
+			// 7 dates de saisies trouvées vides dans ma base pour des évals sur des élèves sélectionnés vers le 10/10/2010...
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_saisie SET saisie_date="2010-10-10", saisie_visible_date="2010-10-10" WHERE saisie_date="0000-00-00" ' );
+			// modification mineure de sacoche_officiel_saisie
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_officiel_saisie CHANGE periode_id periode_id MEDIUMINT( 8 ) UNSIGNED NOT NULL DEFAULT 0 ' );
+			// conversion de sacoche_officiel_archive (vide) en sacoche_officiel_fichier
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'DROP TABLE IF EXISTS sacoche_officiel_archive' );
+			// La supprimer si elle existe : sinon dans le cas d'une restauration de base à une version antérieure (suivie de cette mise à jour), cette ancienne table éventuellement existante ne serait pas réinitialisée.
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'DROP TABLE IF EXISTS sacoche_officiel_fichier' );
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'CREATE TABLE sacoche_officiel_fichier ( user_id MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT 0, officiel_type ENUM("releve","bulletin","palier1","palier","palier3") COLLATE utf8_unicode_ci NOT NULL DEFAULT "bulletin", periode_id MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT 0, fichier_date DATE NOT NULL DEFAULT "0000-00-00", UNIQUE KEY user_id (user_id,officiel_type,periode_id), KEY officiel_type (officiel_type), KEY periode_id (periode_id) ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci ' );
 		}
 	}
 

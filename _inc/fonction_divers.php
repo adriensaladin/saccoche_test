@@ -42,14 +42,6 @@ function non_zero($n)
 	return $n!=0 ;
 }
 /**
- * Fonctions utilisées avec array_filter() ; teste si différent de "".
- * @return bool
- */
-function non_vide($n)
-{
-	return $n!='' ;
-}
-/**
  * Fonctions utilisées avec array_filter() ; teste si strictement positif.
  * @return bool
  */
@@ -608,7 +600,7 @@ function supprimer_mono_structure()
 	// Supprimer le fichier de connexion
 	unlink(CHEMIN_MYSQL.'serveur_sacoche_structure.php');
 	// Supprimer les dossiers de fichiers temporaires par établissement : vignettes verticales, flux RSS des demandes, cookies des choix de formulaires, sujets et corrigés de devoirs
-	$tab_sous_dossier = array('badge','cookie','devoir','rss');
+	$tab_sous_dossier = array('badge','cookie','devoir','officiel','rss');
 	foreach($tab_sous_dossier as $sous_dossier)
 	{
 		Supprimer_Dossier('./__tmp/'.$sous_dossier.'/'.'0');
@@ -639,7 +631,7 @@ function supprimer_multi_structure($BASE)
 	// Retirer l'enregistrement d'une structure dans la base du webmestre
 	DB_WEBMESTRE_WEBMESTRE::DB_supprimer_structure($BASE);
 	// Supprimer les dossiers de fichiers temporaires par établissement : vignettes verticales, flux RSS des demandes, cookies des choix de formulaires, sujets et corrigés de devoirs
-	$tab_sous_dossier = array('badge','cookie','devoir','rss');
+	$tab_sous_dossier = array('badge','cookie','devoir','officiel','rss');
 	foreach($tab_sous_dossier as $sous_dossier)
 	{
 		Supprimer_Dossier('./__tmp/'.$sous_dossier.'/'.$BASE);
@@ -727,12 +719,12 @@ function crypter_mdp($password)
 }
 
 /**
- * Ajouter la date et une valeur aléatoire pour terminer un nom de fichier.
+ * Fabrique une date et une valeur aléatoire pour terminer un nom de fichier.
  * 
  * @param void
  * @return string
  */
-function fabriquer_fin_nom_fichier()
+function fabriquer_fin_nom_fichier__date_et_alea()
 {
 	// date
 	$chaine_date = date('Y-m-d_H\hi\m\i\ns\s'); // lisible par un humain et compatible avec le système de fichiers
@@ -747,6 +739,38 @@ function fabriquer_fin_nom_fichier()
 	}
 	// retour
 	return $chaine_date.'_'.$chaine_alea;
+}
+
+/**
+ * Fabrique une fin se fichier pseudo-aléatoire pour terminer un nom de fichier.
+ * 
+ * Le suffixe est suffisamment tordu pour le rendre un privé et non retrouvable par un utilisateur, mais sans être totalement aléatoire car il doit fixe (retrouvé).
+ * Utilisé pour les flux RSS et les bilans officiels PDF.
+ * 
+ * @param string   $fichier_nom_debut
+ * @return string
+ */
+function fabriquer_fin_nom_fichier__pseudo_alea($fichier_nom_debut)
+{
+	return md5($fichier_nom_debut.$_SERVER['DOCUMENT_ROOT']);
+}
+
+/**
+ * Fabrique une fin se fichier pseudo-aléatoire pour terminer un nom de fichier.
+ * 
+ * Le suffixe est suffisamment tordu pour le rendre un privé et non retrouvable par un utilisateur, mais sans être totalement aléatoire car il doit fixe (retrouvé).
+ * Utilisé pour les flux RSS et les bilans officiels PDF.
+ * 
+ * @param int      $eleve_id
+ * @param string   $bilan_type
+ * @param int      $periode_id
+ * @return string
+ */
+function fabriquer_nom_fichier_bilan_officiel( $eleve_id , $bilan_type , $periode_id )
+{
+	$fichier_bilan_officiel_nom_debut = 'user'.$eleve_id.'_officiel_'.$bilan_type.'_periode'.$periode_id;
+	$fichier_bilan_officiel_nom_fin   = fabriquer_fin_nom_fichier__pseudo_alea($fichier_bilan_officiel_nom_debut);
+	return $fichier_bilan_officiel_nom_debut.'_'.$fichier_bilan_officiel_nom_fin.'.pdf';
 }
 
 /**
@@ -925,8 +949,8 @@ function nettoyer_fichiers_temporaires($BASE)
 	if(!file_exists($fichier_lock))
 	{
 		Ecrire_Fichier($fichier_lock,'');
-		// On verifie que certains sous-dossiers existent : 'devoir' n'a été ajouté qu'en mars 2012, 'cookie' et 'rss' étaient oublié depuis le formulaire Sésamath ('badge' a priori c'est bon)
-		$tab_sous_dossier = array( 'devoir' , 'cookie/'.$BASE , 'devoir/'.$BASE , 'rss/'.$BASE );
+		// On verifie que certains sous-dossiers existent : 'devoir' n'a été ajouté qu'en mars 2012, 'officiel' n'a été ajouté qu'en mai 2012, 'cookie' et 'rss' étaient oublié depuis le formulaire Sésamath ('badge' a priori c'est bon)
+		$tab_sous_dossier = array( 'devoir' , 'officiel' , 'cookie/'.$BASE , 'devoir/'.$BASE , 'officiel/'.$BASE , 'rss/'.$BASE );
 		foreach($tab_sous_dossier as $sous_dossier)
 		{
 			$dossier = './__tmp/'.$sous_dossier;
@@ -936,14 +960,15 @@ function nettoyer_fichiers_temporaires($BASE)
 				Ecrire_Fichier($dossier.'/index.htm','Circulez, il n\'y a rien à voir par ici !');
 			}
 		}
-		effacer_fichiers_temporaires('./__tmp/login-mdp'     ,     10); // Nettoyer ce dossier des fichiers antérieurs à 10 minutes
-		effacer_fichiers_temporaires('./__tmp/export'        ,     60); // Nettoyer ce dossier des fichiers antérieurs à 1 heure
-		effacer_fichiers_temporaires('./__tmp/dump-base'     ,     60); // Nettoyer ce dossier des fichiers antérieurs à 1 heure
-		effacer_fichiers_temporaires('./__tmp/import'        ,  10080); // Nettoyer ce dossier des fichiers antérieurs à 1 semaine
-		effacer_fichiers_temporaires('./__tmp/rss/'.$BASE    ,  43800); // Nettoyer ce dossier des fichiers antérieurs à 1 mois
-		effacer_fichiers_temporaires('./__tmp/badge/'.$BASE  , 525600); // Nettoyer ce dossier des fichiers antérieurs à 1 an
-		effacer_fichiers_temporaires('./__tmp/cookie/'.$BASE , 525600); // Nettoyer ce dossier des fichiers antérieurs à 1 an
-		effacer_fichiers_temporaires('./__tmp/devoir/'.$BASE , 43800*FICHIER_DUREE_CONSERVATION); // Nettoyer ce dossier des fichiers antérieurs à la date fixée par le webmestre (1 an par défaut)
+		effacer_fichiers_temporaires('./__tmp/login-mdp'       ,     10); // Nettoyer ce dossier des fichiers antérieurs à 10 minutes
+		effacer_fichiers_temporaires('./__tmp/export'          ,     60); // Nettoyer ce dossier des fichiers antérieurs à  1 heure
+		effacer_fichiers_temporaires('./__tmp/dump-base'       ,     60); // Nettoyer ce dossier des fichiers antérieurs à  1 heure
+		effacer_fichiers_temporaires('./__tmp/import'          ,  10080); // Nettoyer ce dossier des fichiers antérieurs à  1 semaine
+		effacer_fichiers_temporaires('./__tmp/rss/'.$BASE      ,  43800); // Nettoyer ce dossier des fichiers antérieurs à  1 mois
+		effacer_fichiers_temporaires('./__tmp/officiel/'.$BASE , 438000); // Nettoyer ce dossier des fichiers antérieurs à 10 mois
+		effacer_fichiers_temporaires('./__tmp/badge/'.$BASE    , 481800); // Nettoyer ce dossier des fichiers antérieurs à 11 mois
+		effacer_fichiers_temporaires('./__tmp/cookie/'.$BASE   , 525600); // Nettoyer ce dossier des fichiers antérieurs à  1 an
+		effacer_fichiers_temporaires('./__tmp/devoir/'.$BASE   , 43800*FICHIER_DUREE_CONSERVATION); // Nettoyer ce dossier des fichiers antérieurs à la date fixée par le webmestre (1 an par défaut)
 		unlink($fichier_lock);
 	}
 	// Si le fichier témoin du nettoyage existe, on vérifie que sa présence n'est pas anormale (cela s'est déjà produit...)
@@ -1918,6 +1943,28 @@ function Ecrire_Fichier($fichier_chemin,$fichier_contenu,$file_append=0)
 }
 
 /**
+ * zipper_fichiers
+ * Zipper les fichiers de svg
+ *
+ * @param string $dossier_fichiers_a_zipper
+ * @param string $dossier_zip_final
+ * @param string $fichier_zip_nom
+ * @return void
+ */
+
+function zipper_fichiers($dossier_fichiers_a_zipper,$dossier_zip_final,$fichier_zip_nom)
+{
+	$zip = new ZipArchive();
+	$zip->open($dossier_zip_final.$fichier_zip_nom, ZIPARCHIVE::CREATE);
+	$tab_fichier = Lister_Contenu_Dossier($dossier_fichiers_a_zipper);
+	foreach($tab_fichier as $fichier_sql_nom)
+	{
+		$zip->addFile($dossier_fichiers_a_zipper.$fichier_sql_nom,$fichier_sql_nom);
+	}
+	$zip->close();
+}
+
+/**
  * Dezipper un fichier contenant un ensemble de fichiers dans un dossier, avec son arborescence.
  * 
  * Inspiré de http://fr.php.net/manual/fr/ref.zip.php#79057
@@ -1981,16 +2028,9 @@ function unzip($fichier_zip,$dossier_dezip,$use_ZipArchive)
  */
 function adresse_RSS($prof_id)
 {
-	// Si le dossier n'existe pas, on le créé (possible car au début tous les RSS des établissements étaient dans un même dossier commun).
-	$dossier_nom = './__tmp/rss/'.$_SESSION['BASE'];
-	if(!is_dir($dossier_nom))
-	{
-		Creer_Dossier($dossier_nom);
-		Ecrire_Fichier($dossier_nom.'/index.htm','Circulez, il n\'y a rien à voir par ici !');
-	}
 	// Le nom du RSS est tordu pour le rendre un minimum privé, sans être totalement aléatoire car il doit être fixe (mais il n'y a rien de confidentiel non plus).
 	$fichier_nom_debut = 'rss_'.$prof_id;
-	$fichier_nom_fin   = md5($fichier_nom_debut.$_SERVER['DOCUMENT_ROOT']);
+	$fichier_nom_fin   = fabriquer_fin_nom_fichier__pseudo_alea($fichier_nom_debut);
 	$fichier_chemin    = $dossier_nom.'/'.$fichier_nom_debut.'_'.$fichier_nom_fin.'.xml';
 	if(!file_exists($fichier_chemin))
 	{

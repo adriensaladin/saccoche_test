@@ -218,7 +218,8 @@ $(document).ready
 					f_groupe      : { required:true },
 					'f_eleve[]'   : { required:true },
 					f_couleur     : { required:true },
-					f_legende     : { required:true }
+					f_legende     : { required:true },
+					f_marge_min   : { required:true }
 				},
 				messages :
 				{
@@ -230,7 +231,8 @@ $(document).ready
 					f_groupe      : { required:"groupe manquant" },
 					'f_eleve[]'   : { required:"élève(s) manquant(s)" },
 					f_couleur     : { required:"couleur manquante" },
-					f_legende     : { required:"légende manquante" }
+					f_legende     : { required:"légende manquante" },
+					f_marge_min   : { required:"marge mini manquante" }
 				},
 				errorElement : "label",
 				errorClass : "erreur",

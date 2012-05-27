@@ -63,7 +63,7 @@ if (!defined('E_USER_DEPRECATED')) {
 /**
  * phpCAS version. accessible for the user by phpCAS::getVersion().
  */
-define('PHPCAS_VERSION', '1.3.0');
+define('PHPCAS_VERSION', '1.3.1');
 
 /**
  * @addtogroup public
@@ -303,7 +303,7 @@ class phpCAS
      * @param string $server_hostname the hostname of the CAS server
      * @param string $server_port     the port the CAS server is running on
      * @param string $server_uri      the URI the CAS server is responding on
-     * @param bool   $changeSessionID Allow phpCAS to change the session_id (Single
+     * @param bool   $changeSessionID Allow phpCAS to change the session_id (Single 
      * Sign Out/handleLogoutRequests is based on that change)
      *
      * @return a newly created CAS_Client object
@@ -355,7 +355,7 @@ class phpCAS
      * @param string $server_hostname the hostname of the CAS server
      * @param string $server_port     the port the CAS server is running on
      * @param string $server_uri      the URI the CAS server is responding on
-     * @param bool   $changeSessionID Allow phpCAS to change the session_id (Single
+     * @param bool   $changeSessionID Allow phpCAS to change the session_id (Single 
      * Sign Out/handleLogoutRequests is based on that change)
      *
      * @return a newly created CAS_Client object
@@ -592,7 +592,7 @@ class phpCAS
         $dbg = debug_backtrace();
         $str = '';
         if (is_object($res)) {
-            $str .= '<= ' . get_class($arg);
+            $str .= '<= ' . get_class($res);
         } else {
             $str .= '<= ' . str_replace(array("\r\n", "\n", "\r"), "", var_export($res, true));
         }

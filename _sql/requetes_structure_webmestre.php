@@ -39,7 +39,7 @@ class DB_STRUCTURE_WEBMESTRE extends DB
  * @param void
  * @return array($prof_nb,$prof_use,$eleve_nb,$eleve_use,$score_nb)
  */
-public function DB_recuperer_statistiques()
+public static function DB_recuperer_statistiques()
 {
 	// La révision du 30 mars 2012 a fusionné les champs "user_statut" et "user_statut_date" en "user_sortie_date".
 	$DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , 'SHOW COLUMNS FROM sacoche_user LIKE "user_sortie_date"' , NULL);
@@ -75,7 +75,7 @@ public function DB_recuperer_statistiques()
  * @param int   $admin_id
  * @return array
  */
-public function DB_recuperer_admin_identite($admin_id)
+public static function DB_recuperer_admin_identite($admin_id)
 {
 	$DB_SQL = 'SELECT user_nom,user_prenom,user_login ';
 	$DB_SQL.= 'FROM sacoche_user ';
@@ -91,7 +91,7 @@ public function DB_recuperer_admin_identite($admin_id)
  * @param string  $password_crypte
  * @return void
  */
-public function DB_modifier_admin_mdp($admin_id,$password_crypte)
+public static function DB_modifier_admin_mdp($admin_id,$password_crypte)
 {
 	$DB_SQL = 'UPDATE sacoche_user ';
 	$DB_SQL.= 'SET user_password=:password_crypte ';
@@ -106,7 +106,7 @@ public function DB_modifier_admin_mdp($admin_id,$password_crypte)
  * @param void
  * @return void
  */
-public function DB_supprimer_tables_structure()
+public static function DB_supprimer_tables_structure()
 {
 	$tab_tables = array();
 	$DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME,'SHOW TABLE STATUS LIKE "sacoche_%"');

@@ -36,6 +36,7 @@ $groupe_id     = (isset($_POST['f_groupe']))     ? clean_entier($_POST['f_groupe
 $groupe_nom    = (isset($_POST['f_groupe_nom'])) ? clean_texte($_POST['f_groupe_nom']) : '';
 $couleur       = (isset($_POST['f_couleur']))    ? clean_texte($_POST['f_couleur'])    : '';
 $legende       = (isset($_POST['f_legende']))    ? clean_texte($_POST['f_legende'])    : '';
+$marge_min     = (isset($_POST['f_marge_min']))  ? clean_entier($_POST['f_marge_min']) : 0;
 // Normalement ce sont des tableaux qui sont transmis, mais au cas où...
 $tab_pilier_id  = (isset($_POST['f_pilier']))  ? ( (is_array($_POST['f_pilier']))  ? $_POST['f_pilier']  : explode(',',$_POST['f_pilier'])  ) : array() ;
 $tab_eleve_id   = (isset($_POST['f_eleve']))   ? ( (is_array($_POST['f_eleve']))   ? $_POST['f_eleve']   : explode(',',$_POST['f_eleve'])   ) : array() ;
@@ -47,7 +48,7 @@ $tab_matiere_id = array_filter( array_map( 'clean_entier' , $tab_matiere_id ) , 
 $memo_demande  = (count($tab_pilier_id)>1) ? 'palier' : 'pilier' ;
 $liste_eleve   = implode(',',$tab_eleve_id);
 
-if( (!$palier_id) || (!$palier_nom) || (!$groupe_id) || (!$groupe_nom) || (!count($tab_eleve_id)) || (!count($tab_pilier_id)) || (!in_array($type,array('pourcentage','validation'))) || (!in_array($mode,array('auto','manuel'))) || !$couleur || !$legende )
+if( (!$palier_id) || (!$palier_nom) || (!$groupe_id) || (!$groupe_nom) || (!count($tab_eleve_id)) || (!count($tab_pilier_id)) || (!in_array($type,array('pourcentage','validation'))) || (!in_array($mode,array('auto','manuel'))) || !$couleur || !$legende || !$marge_min )
 {
 	exit('Erreur avec les données transmises !');
 }
@@ -221,7 +222,7 @@ if($type=='pourcentage')
 					extract($tab_item[$item_id]);	// $calcul_methode $calcul_limite
 					// calcul du bilan de l'item
 					$score = calculer_score($tab_devoirs,$calcul_methode,$calcul_limite);
-					if($score!==false)
+					if($score!==FALSE)
 					{
 						// on détermine si elle est acquise ou pas
 						$indice = test_A($score) ? 'A' : ( test_NA($score) ? 'NA' : 'VA' ) ;
@@ -257,7 +258,7 @@ $releve_html .= $affichage_direct ? '' : '<style type="text/css">thead th{text-a
 $releve_html .= $affichage_direct ? '' : '<h1>Synthèse de maîtrise du socle : '.$titre_info1.'</h1>';
 $releve_html .= $affichage_direct ? '' : '<h2>'.html($groupe_nom).' - '.html($titre_info2).'</h2>';
 // Appel de la classe et définition de qqs variables supplémentaires pour la mise en page PDF
-$releve_pdf = new PDF($orientation='landscape',$marge_min=7.5,$couleur,$legende);
+$releve_pdf = new PDF( FALSE /*officiel*/ , 'landscape' /*orientation*/ , $marge_min /*marge_gauche*/ , $marge_min /*marge_droite*/ , $marge_min /*marge_haut*/ , $marge_min /*marge_bas*/ , $couleur , $legende );
 $releve_pdf->releve_synthese_socle_initialiser($titre_info1,$groupe_nom,$titre_info2,$eleves_nb,$items_nb,$piliers_nb);
 // - - - - - - - - - -
 // Lignes d'en-tête
@@ -350,7 +351,7 @@ $releve_pdf->releve_synthese_socle_legende($legende,$type);
 
 // Chemins d'enregistrement
 $dossier = './__tmp/export/';
-$fichier = 'releve_socle_synthese_'.clean_fichier(substr($palier_nom,0,strpos($palier_nom,' ('))).'_'.clean_fichier($groupe_nom).'_'.$type.'_'.fabriquer_fin_nom_fichier();
+$fichier = 'releve_socle_synthese_'.clean_fichier(substr($palier_nom,0,strpos($palier_nom,' ('))).'_'.clean_fichier($groupe_nom).'_'.$type.'_'.fabriquer_fin_nom_fichier__date_et_alea();
 // On enregistre les sorties HTML et PDF
 Ecrire_Fichier($dossier.$fichier.'.html',$releve_html);
 $releve_pdf->Output($dossier.$fichier.'.pdf','F');

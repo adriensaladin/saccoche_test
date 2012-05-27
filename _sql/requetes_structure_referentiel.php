@@ -40,7 +40,7 @@ class DB_STRUCTURE_REFERENTIEL extends DB
  * @param int    $niveau_id
  * @return int
  */
-public function DB_tester_referentiel($matiere_id,$niveau_id)
+public static function DB_tester_referentiel($matiere_id,$niveau_id)
 {
 	$DB_SQL = 'SELECT matiere_id ';
 	$DB_SQL.= 'FROM sacoche_referentiel ';
@@ -58,7 +58,7 @@ public function DB_tester_referentiel($matiere_id,$niveau_id)
  * @param string $partage_etat
  * @return void
  */
-public function DB_ajouter_referentiel($matiere_id,$niveau_id,$partage_etat)
+public static function DB_ajouter_referentiel($matiere_id,$niveau_id,$partage_etat)
 {
 	$DB_SQL = 'INSERT INTO sacoche_referentiel ';
 	$DB_SQL.= 'VALUES(:matiere_id,:niveau_id,:partage_etat,:partage_date,:calcul_methode,:calcul_limite,:mode_synthese)';
@@ -76,7 +76,7 @@ public function DB_ajouter_referentiel($matiere_id,$niveau_id,$partage_etat)
  * @param string $domaine_nom
  * @return int
  */
-public function DB_ajouter_referentiel_domaine($matiere_id,$niveau_id,$domaine_ordre,$domaine_ref,$domaine_nom)
+public static function DB_ajouter_referentiel_domaine($matiere_id,$niveau_id,$domaine_ordre,$domaine_ref,$domaine_nom)
 {
 	$DB_SQL = 'INSERT INTO sacoche_referentiel_domaine(matiere_id,niveau_id,domaine_ordre,domaine_ref,domaine_nom) ';
 	$DB_SQL.= 'VALUES(:matiere_id,:niveau_id,:domaine_ordre,:domaine_ref,:domaine_nom)';
@@ -93,7 +93,7 @@ public function DB_ajouter_referentiel_domaine($matiere_id,$niveau_id,$domaine_o
  * @param string $theme_nom
  * @return int
  */
-public function DB_ajouter_referentiel_theme($domaine_id,$theme_ordre,$theme_nom)
+public static function DB_ajouter_referentiel_theme($domaine_id,$theme_ordre,$theme_nom)
 {
 	$DB_SQL = 'INSERT INTO sacoche_referentiel_theme(domaine_id,theme_ordre,theme_nom) ';
 	$DB_SQL.= 'VALUES(:domaine_id,:theme_ordre,:theme_nom)';
@@ -113,7 +113,7 @@ public function DB_ajouter_referentiel_theme($domaine_id,$theme_ordre,$theme_nom
  * @param int    $item_cart
  * @return int
  */
-public function DB_ajouter_referentiel_item($theme_id,$socle_id,$item_ordre,$item_nom,$item_coef,$item_cart)
+public static function DB_ajouter_referentiel_item($theme_id,$socle_id,$item_ordre,$item_nom,$item_coef,$item_cart)
 {
 	$DB_SQL = 'INSERT INTO sacoche_referentiel_item(theme_id,entree_id,item_ordre,item_nom,item_coef,item_cart) ';
 	$DB_SQL.= 'VALUES(:theme_id,:socle_id,:item_ordre,:item_nom,:item_coef,:item_cart)';
@@ -130,7 +130,7 @@ public function DB_ajouter_referentiel_item($theme_id,$socle_id,$item_ordre,$ite
  * @param int    $domaine_ordre
  * @return int   test si déplacement effectué (0|1)
  */
-public function DB_deplacer_referentiel_domaine($domaine_id,$niveau_id,$domaine_ordre)
+public static function DB_deplacer_referentiel_domaine($domaine_id,$niveau_id,$domaine_ordre)
 {
 	$DB_SQL = 'UPDATE sacoche_referentiel_domaine ';
 	$DB_SQL.= 'SET niveau_id=:niveau_id, domaine_ordre=:domaine_ordre ';
@@ -148,7 +148,7 @@ public function DB_deplacer_referentiel_domaine($domaine_id,$niveau_id,$domaine_
  * @param int    $theme_ordre
  * @return int   test si déplacement effectué (0|1)
  */
-public function DB_deplacer_referentiel_theme($theme_id,$domaine_id,$theme_ordre)
+public static function DB_deplacer_referentiel_theme($theme_id,$domaine_id,$theme_ordre)
 {
 	$DB_SQL = 'UPDATE sacoche_referentiel_theme ';
 	$DB_SQL.= 'SET domaine_id=:domaine_id, theme_ordre=:theme_ordre ';
@@ -166,7 +166,7 @@ public function DB_deplacer_referentiel_theme($theme_id,$domaine_id,$theme_ordre
  * @param int    $item_ordre
  * @return int   test si déplacement effectué (0|1)
  */
-public function DB_deplacer_referentiel_item($item_id,$theme_id,$item_ordre)
+public static function DB_deplacer_referentiel_item($item_id,$theme_id,$item_ordre)
 {
 	$DB_SQL = 'UPDATE sacoche_referentiel_item ';
 	$DB_SQL.= 'SET theme_id=:theme_id, item_ordre=:item_ordre ';
@@ -186,7 +186,7 @@ public function DB_deplacer_referentiel_item($item_id,$theme_id,$item_ordre)
  * @param int    $niveau_id
  * @return void
  */
-public function DB_importer_arborescence_from_XML($arbreXML,$matiere_id,$niveau_id)
+public static function DB_importer_arborescence_from_XML($arbreXML,$matiere_id,$niveau_id)
 {
 	// décortiquer l'arbre XML
 	$xml = new DOMDocument;
@@ -244,7 +244,7 @@ public function DB_importer_arborescence_from_XML($arbreXML,$matiere_id,$niveau_
  * @param array   array(':partage_etat'=>$val, ':partage_date'=>$val , ':calcul_methode'=>$val , ':calcul_limite'=>$val , ':mode_synthese'=>$val );
  * @return void
  */
-public function DB_modifier_referentiel($matiere_id,$niveau_id,$DB_VAR)
+public static function DB_modifier_referentiel($matiere_id,$niveau_id,$DB_VAR)
 {
 	$tab_set = array();
 	foreach($DB_VAR as $key => $val)
@@ -274,7 +274,7 @@ public function DB_modifier_referentiel($matiere_id,$niveau_id,$DB_VAR)
  * @param string  $domaine_nom
  * @return int   nb de lignes modifiées (0|1)
  */
-public function DB_modifier_referentiel_domaine($domaine_id,$domaine_ref,$domaine_nom)
+public static function DB_modifier_referentiel_domaine($domaine_id,$domaine_ref,$domaine_nom)
 {
 	$DB_SQL = 'UPDATE sacoche_referentiel_domaine ';
 	$DB_SQL.= 'SET domaine_ref=:domaine_ref, domaine_nom=:domaine_nom ';
@@ -292,7 +292,7 @@ public function DB_modifier_referentiel_domaine($domaine_id,$domaine_ref,$domain
  * @param string  $theme_nom
  * @return int   nb de lignes modifiées (0|1)
  */
-public function DB_modifier_referentiel_theme($theme_id,$theme_nom)
+public static function DB_modifier_referentiel_theme($theme_id,$theme_nom)
 {
 	$DB_SQL = 'UPDATE sacoche_referentiel_theme ';
 	$DB_SQL.= 'SET theme_nom=:theme_nom ';
@@ -312,7 +312,7 @@ public function DB_modifier_referentiel_theme($theme_id,$theme_nom)
  * @param int     $item_cart
  * @return int   nb de lignes modifiées (0|1)
  */
-public function DB_modifier_referentiel_item($item_id,$socle_id,$item_nom,$item_coef,$item_cart)
+public static function DB_modifier_referentiel_item($item_id,$socle_id,$item_nom,$item_coef,$item_cart)
 {
 	$DB_SQL = 'UPDATE sacoche_referentiel_item ';
 	$DB_SQL.= 'SET entree_id=:socle_id, item_nom=:item_nom, item_coef=:item_coef, item_cart=:item_cart ';
@@ -329,7 +329,7 @@ public function DB_modifier_referentiel_item($item_id,$socle_id,$item_nom,$item_
  * @param string  $item_lien
  * @return void
  */
-public function DB_modifier_referentiel_lien_ressources($item_id,$item_lien)
+public static function DB_modifier_referentiel_lien_ressources($item_id,$item_lien)
 {
 	$DB_SQL = 'UPDATE sacoche_referentiel_item ';
 	$DB_SQL.= 'SET item_lien=:item_lien ';
@@ -345,7 +345,7 @@ public function DB_modifier_referentiel_lien_ressources($item_id,$item_lien)
  * @param int   $matiere_nb_demandes
  * @return void
  */
-public function DB_modifier_matiere_nb_demandes($matiere_id,$matiere_nb_demandes)
+public static function DB_modifier_matiere_nb_demandes($matiere_id,$matiere_nb_demandes)
 {
 	$DB_SQL = 'UPDATE sacoche_matiere ';
 	$DB_SQL.= 'SET matiere_nb_demandes=:matiere_nb_demandes ';
@@ -361,7 +361,7 @@ public function DB_modifier_matiere_nb_demandes($matiere_id,$matiere_nb_demandes
  * @param int $niveau_id
  * @return void
  */
-public function DB_supprimer_referentiel_matiere_niveau($matiere_id,$niveau_id)
+public static function DB_supprimer_referentiel_matiere_niveau($matiere_id,$niveau_id)
 {
 	$DB_SQL = 'DELETE sacoche_referentiel, sacoche_referentiel_domaine, sacoche_referentiel_theme, sacoche_referentiel_item, sacoche_jointure_devoir_item, sacoche_saisie ';
 	$DB_SQL.= 'FROM sacoche_referentiel ';
@@ -382,7 +382,7 @@ public function DB_supprimer_referentiel_matiere_niveau($matiere_id,$niveau_id)
  * @param int    $domaine_id
  * @return int
  */
-public function DB_supprimer_referentiel_domaine($domaine_id)
+public static function DB_supprimer_referentiel_domaine($domaine_id)
 {
 	$DB_SQL = 'DELETE sacoche_referentiel_domaine, sacoche_referentiel_theme, sacoche_referentiel_item, sacoche_jointure_devoir_item, sacoche_saisie, sacoche_demande ';
 	$DB_SQL.= 'FROM sacoche_referentiel_domaine ';
@@ -403,7 +403,7 @@ public function DB_supprimer_referentiel_domaine($domaine_id)
  * @param int    $theme_id
  * @return int
  */
-public function DB_supprimer_referentiel_theme($theme_id)
+public static function DB_supprimer_referentiel_theme($theme_id)
 {
 	$DB_SQL = 'DELETE sacoche_referentiel_theme, sacoche_referentiel_item, sacoche_jointure_devoir_item, sacoche_saisie, sacoche_demande ';
 	$DB_SQL.= 'FROM sacoche_referentiel_theme ';
@@ -426,7 +426,7 @@ public function DB_supprimer_referentiel_theme($theme_id)
  * @param bool   $with_notes   TRUE par défaut, FALSE dans le cas d'une fusion d'items (étudié ensuite par une autre fonction)
  * @return int
  */
-public function DB_supprimer_referentiel_item($item_id,$with_notes=TRUE)
+public static function DB_supprimer_referentiel_item($item_id,$with_notes=TRUE)
 {
 	// Supprimer l'item à fusionner et les demandes d'évaluations associées
 	$DB_SQL = 'DELETE sacoche_referentiel_item, sacoche_demande';
@@ -452,7 +452,7 @@ public function DB_supprimer_referentiel_item($item_id,$with_notes=TRUE)
  * @param int    $item_id_absorbant
  * @return void
  */
-public function DB_fusionner_referentiel_items($item_id_degageant,$item_id_absorbant)
+public static function DB_fusionner_referentiel_items($item_id_degageant,$item_id_absorbant)
 {
 	$DB_VAR = array(':item_id_degageant'=>$item_id_degageant,':item_id_absorbant'=>$item_id_absorbant);
 	// Dans le cas où les deux items ont été évalués dans une même évaluation, on est obligé de supprimer l'un des scores
@@ -521,7 +521,7 @@ public function DB_fusionner_referentiel_items($item_id_degageant,$item_id_absor
  * @param string   $operation     '+1' | '-1' 
  * @return void
  */
-public function DB_renumeroter_referentiel_elements($element_champ,$tab_elements_id,$operation)
+public static function DB_renumeroter_referentiel_elements($element_champ,$tab_elements_id,$operation)
 {
 	$listing_elements_id = implode(',',$tab_elements_id);
 	$DB_SQL = 'UPDATE sacoche_referentiel_'.$element_champ.' ';

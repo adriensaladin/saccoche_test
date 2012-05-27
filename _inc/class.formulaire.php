@@ -182,7 +182,7 @@ public static $tab_choix = array();
  * @param void
  * @return void
  */
-private function init_variables()
+private static function init_variables()
 {
 	Formulaire::$dossier_cookie = './__tmp/cookie/'.$_SESSION['BASE'];
 	Formulaire::$fichier_cookie = Formulaire::$dossier_cookie.'/user'.$_SESSION['USER_ID'].'.txt';
@@ -196,7 +196,7 @@ private function init_variables()
  * @param void
  * @return void
  */
-private function init_tab_choix()
+private static function init_tab_choix()
 {
 	Formulaire::init_variables();
 	$check_type_individuel = (in_array($_SESSION['USER_PROFIL'],array('parent','eleve'))) ? 1 : 0 ;
@@ -257,7 +257,7 @@ private function init_tab_choix()
  * @return void
  */
 
-public function load_choix_memo()
+public static function load_choix_memo()
 {
 	Formulaire::init_tab_choix();
 	// Récupération du contenu du "cookie"
@@ -279,7 +279,7 @@ public function load_choix_memo()
  * @return void
  */
 
- public function save_choix($page)
+ public static function save_choix($page)
 {
 	switch($page)
 	{
@@ -304,19 +304,19 @@ public function load_choix_memo()
 			$tab_choix_new = compact('aff_bilan_MS','aff_bilan_PA','aff_conv_sur20','retroactif','only_socle','aff_coef','aff_socle','aff_lien','aff_domaine','aff_theme','cases_nb','cases_largeur','orientation','couleur','legende','marge_min','pages_nb');
 			break;
 		case 'synthese_matiere' :
-			global $matiere_id,$mode_synthese,$retroactif,$only_socle,$only_niveau,$aff_coef,$aff_socle,$aff_lien,$couleur,$legende;
-			$tab_choix_new = compact('matiere_id','mode_synthese','retroactif','only_socle','only_niveau','aff_coef','aff_socle','aff_lien','couleur','legende');
+			global $matiere_id,$mode_synthese,$retroactif,$only_socle,$only_niveau,$aff_coef,$aff_socle,$aff_lien,$couleur,$legende,$marge_min;
+			$tab_choix_new = compact('matiere_id','mode_synthese','retroactif','only_socle','only_niveau','aff_coef','aff_socle','aff_lien','couleur','legende','marge_min');
 			break;
 		case 'synthese_multimatiere' :
-			global $retroactif,$only_socle,$only_niveau,$aff_coef,$aff_socle,$aff_lien,$couleur,$legende;
-			$tab_choix_new = compact('retroactif','only_socle','only_niveau','aff_coef','aff_socle','aff_lien','couleur','legende');
+			global $retroactif,$only_socle,$only_niveau,$aff_coef,$aff_socle,$aff_lien,$couleur,$legende,$marge_min;
+			$tab_choix_new = compact('retroactif','only_socle','only_niveau','aff_coef','aff_socle','aff_lien','couleur','legende','marge_min');
 			break;
 		case 'releve_socle' :
-			global $palier_id,$only_presence,$aff_coef,$aff_socle,$aff_lien,$aff_socle_PA,$aff_socle_EV,$mode,$couleur,$legende;
-			$tab_choix_new = compact('palier_id','only_presence','aff_coef','aff_socle','aff_lien','aff_socle_PA','aff_socle_EV','mode','couleur','legende');
+			global $palier_id,$only_presence,$aff_coef,$aff_socle,$aff_lien,$aff_socle_PA,$aff_socle_EV,$mode,$couleur,$legende,$marge_min;
+			$tab_choix_new = compact('palier_id','only_presence','aff_coef','aff_socle','aff_lien','aff_socle_PA','aff_socle_EV','mode','couleur','legende','marge_min');
 		case 'synthese_socle' :
-			global $palier_id,$type,$mode,$couleur,$legende;
-			$tab_choix_new = compact('palier_id','type','mode','couleur','legende');
+			global $palier_id,$type,$mode,$couleur,$legende,$marge_min;
+			$tab_choix_new = compact('palier_id','type','mode','couleur','legende','marge_min');
 			break;
 		case 'matiere' :
 			global $matiere_id;
@@ -356,7 +356,7 @@ public function load_choix_memo()
  * @param string            $optgroup     regroupement d'options éventuel [non] [oui]
  * @return string
  */
-public function afficher_select($DB_TAB,$select_nom,$option_first,$selection,$optgroup)
+public static function afficher_select($DB_TAB,$select_nom,$option_first,$selection,$optgroup)
 {
 	// On commence par la 1ère option
 	if($option_first==='non')

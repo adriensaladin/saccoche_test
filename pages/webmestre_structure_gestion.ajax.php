@@ -81,7 +81,7 @@ if( ($action=='ajouter') && isset($tab_geo[$geo_id]) && $localisation && $denomi
 	// Créer un utilisateur pour la base de données de la structure et lui attribuer ses droits
 	$base_id = ajouter_structure($base_id,$geo_id,$uai,$localisation,$denomination,$contact_nom,$contact_prenom,$contact_courriel);
 	// Créer les dossiers de fichiers temporaires par établissement : vignettes verticales, flux RSS des demandes, cookies des choix de formulaires, sujets et corrigés de devoirs
-	$tab_sous_dossier = array('badge','cookie','devoir','rss');
+	$tab_sous_dossier = array('badge','cookie','devoir','officiel','rss');
 	foreach($tab_sous_dossier as $sous_dossier)
 	{
 		Creer_Dossier('./__tmp/'.$sous_dossier.'/'.$base_id);

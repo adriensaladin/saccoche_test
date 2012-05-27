@@ -39,7 +39,7 @@ class DB_STRUCTURE_DIRECTEUR extends DB
  * @param void
  * @return array
  */
-public function DB_compter_saisies_prof_classe()
+public static function DB_compter_saisies_prof_classe()
 {
 	$DB_SQL = 'SELECT CONCAT(user_nom," ",user_prenom) AS professeur, groupe_nom, COUNT(saisie_note) AS nombre ';
 	$DB_SQL.= 'FROM sacoche_user ';

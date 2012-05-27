@@ -68,6 +68,35 @@ $(document).ready
 			}
 		);
 
+		$('#eleve_check_all').click
+		(
+			function()
+			{
+				$('#form_choix_eleves input[type=checkbox]').prop('checked',true);
+				return false;
+			}
+		);
+		$('#eleve_uncheck_all').click
+		(
+			function()
+			{
+				$('#form_choix_eleves input[type=checkbox]').prop('checked',false);
+				return false;
+			}
+		);
+
+		//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+		//	Clic sur une cellule (remplace un champ label, impossible à définir sur plusieurs colonnes)
+		//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
+		$('td.label').live
+		('click',
+			function()
+			{
+				$(this).parent().find("input[type=checkbox]").click();
+			}
+		);
+
 		//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 		//	Enregistrer les modifications de types et/ou d'accès
 		//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
@@ -100,6 +129,7 @@ $(document).ready
 		//	Initialisation de variables utiles accessibles depuis toute fonction
 		//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
+		var memo_objet         = '';
 		var memo_page          = '';
 		var memo_classe        = 0;
 		var memo_groupe        = 0;
@@ -118,11 +148,12 @@ $(document).ready
 		var memo_classe_last   = 0;
 
 		var tab_classe_action_to_adresse_page = new Array();
-		tab_classe_action_to_adresse_page['modifier']  = 'officiel_action_saisir';
-		tab_classe_action_to_adresse_page['tamponner'] = 'officiel_action_saisir';
-		tab_classe_action_to_adresse_page['detailler'] = 'officiel_action_examiner';
-		tab_classe_action_to_adresse_page['voir']      = 'officiel_action_consulter';
-		tab_classe_action_to_adresse_page['imprimer']  = 'officiel_action_imprimer';
+		tab_classe_action_to_adresse_page['modifier']     = 'officiel_action_saisir';
+		tab_classe_action_to_adresse_page['tamponner']    = 'officiel_action_saisir';
+		tab_classe_action_to_adresse_page['detailler']    = 'officiel_action_examiner';
+		tab_classe_action_to_adresse_page['voir']         = 'officiel_action_consulter';
+		tab_classe_action_to_adresse_page['imprimer']     = 'officiel_action_imprimer';
+		tab_classe_action_to_adresse_page['voir_archive'] = 'officiel_action_imprimer';
 
 		//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 		//	Clic sur une image action
@@ -132,19 +163,19 @@ $(document).ready
 		(
 			function()
 			{
-				var objet  = $(this).attr('class');
-				memo_page = tab_classe_action_to_adresse_page[objet];
+				memo_objet = $(this).attr('class');
+				memo_page = tab_classe_action_to_adresse_page[memo_objet];
 				if(typeof(memo_page)!='undefined')
 				{
 					var tab_ids = $(this).parent().attr('id').split('_');
 					memo_classe  = tab_ids[1];
 					memo_groupe  = tab_ids[2];
 					memo_periode = tab_ids[3];
-					$('#f_objet').val(objet);
+					$('#f_objet').val(memo_objet);
 					if( (memo_page=='officiel_action_saisir') || (memo_page=='officiel_action_consulter') )
 					{
 						// Masquer le tableau ; Afficher la zone action et charger son contenu
-						$('#form_gestion , #table_bilans').hide(0);
+						$('#form_gestion , #table_bilans , #puces_secondaires').hide(0);
 						$('#zone_action_eleve').html('<label class="loader">Connexion au serveur&hellip;</label>').show(0);
 						$.ajax
 						(
@@ -181,14 +212,20 @@ $(document).ready
 					else if(memo_page=='officiel_action_examiner')
 					{
 						// Masquer le tableau ; Afficher la zone de choix des rubriques
-						$('#form_gestion , #table_bilans').hide(0);
+						$('#form_gestion , #table_bilans , #puces_secondaires').hide(0);
+						$('#zone_action_classe h2').html('Recherche de saisies manquantes');
 						$('#zone_chx_rubriques').show(0);
 					}
 					else if(memo_page=='officiel_action_imprimer')
 					{
-						// Masquer le tableau ; Afficher la zone de choix des élèves, et si les bulletins sont déjà imprimés / archivés
-						$('#form_gestion , #table_bilans').hide(0);
-						$('#zone_chx_rubriques').show(0);
+						// Masquer le tableau ; Afficher la zone de choix des élèves, et si les bulletins sont déjà imprimés
+						var titre = (memo_objet=='imprimer') ? 'Imprimer le bilan (PDF)' : 'Consulter un bilan imprimé (PDF)' ;
+						configurer_form_choix_classe();
+						$('#form_gestion , #table_bilans , #puces_secondaires').hide(0);
+						$('#zone_action_classe h2').html(titre);
+						$('#report_periode').html( $('#periode_'+memo_periode).text()+' :' );
+						$('#zone_action_classe , #zone_'+memo_objet).show(0);
+						charger_formulaire_imprimer();
 					}
 				}
 			}
@@ -205,7 +242,7 @@ $(document).ready
 			function()
 			{
 				$('#zone_action_eleve').html("&nbsp;").hide(0);
-				$('#form_gestion , #table_bilans').show(0);
+				$('#form_gestion , #table_bilans , #puces_secondaires').show(0);
 				return(false);
 			}
 		);
@@ -215,7 +252,7 @@ $(document).ready
 			function()
 			{
 				$('#zone_chx_rubriques').hide(0);
-				$('#form_gestion , #table_bilans').show(0);
+				$('#form_gestion , #table_bilans , #puces_secondaires').show(0);
 				return(false);
 			}
 		);
@@ -225,8 +262,12 @@ $(document).ready
 			function()
 			{
 				$('#zone_resultat_classe').html("&nbsp;");
-				$('#zone_action_classe').hide(0);
-				$('#form_gestion , #table_bilans').show(0);
+				$('#imprimer_liens').html('');
+				var colspan = (memo_objet=='imprimer') ? 3 : 2 ;
+				$('#zone_'+memo_objet+' table tbody').html('<tr><td class="nu" colspan="'+colspan+'"></td></tr>');
+				$('#zone_action_classe , #zone_imprimer , #zone_voir_archive').css('display','none'); // .hide(0) ne fonctionne pas bien ici...
+				$('#ajax_msg_imprimer , #ajax_msg_voir_archive').removeAttr("class").html("");
+				$('#form_gestion , #table_bilans , #puces_secondaires').show(0);
 				return(false);
 			}
 		);
@@ -683,7 +724,121 @@ $(document).ready
 		);
 
 		//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-		//	[officiel_action_examiner] Actualiser l'état enabled/disabled des options du formulaire de navigation dans les classes, masquer les boutons de navigation
+		//	[officiel_action_imprimer] Lancer l'impression pour une liste d'élèves
+		//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
+		function imprimer(etape)
+		{
+			$('#ajax_msg_imprimer').removeAttr("class").addClass("loader").html("Connexion au serveur&hellip; Étape "+etape+"/4.");
+			$.ajax
+			(
+				{
+					type : 'POST',
+					url : 'ajax.php?page='+memo_page,
+					data : 'f_action='+'imprimer'+'&f_etape='+etape+'&f_bilan_type='+BILAN_TYPE+'&f_classe='+memo_classe+'&f_groupe='+memo_groupe+'&f_periode='+memo_periode+'&'+$('#form_hidden').serialize(),
+					dataType : "html",
+					error : function(msg,string)
+					{
+						$('#ajax_msg_imprimer').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
+						$('#form_choix_classe button , #form_choix_classe select , #valider_imprimer').prop('disabled',false);
+						return false;
+					},
+					success : function(responseHTML)
+					{
+						initialiser_compteur();
+						if( ( (etape<4) && (responseHTML!='ok') ) || ( (etape==4) && (responseHTML.substring(0,4)!='<ul ') ) )
+						{
+							$('#form_choix_classe button , #form_choix_classe select , #valider_imprimer').prop('disabled',false);
+							$('#ajax_msg_imprimer').removeAttr("class").addClass("alerte").html(responseHTML);
+						}
+						else if(etape<4)
+						{
+							etape++;
+							imprimer(etape);
+						}
+						else
+						{
+							$('#form_choix_classe button , #form_choix_classe select , #valider_imprimer').prop('disabled',false);
+							tab_listing_id = $('#f_listing_eleves').val().split(',');
+							for ( var key in tab_listing_id )
+							{
+								$('#id_'+tab_listing_id[key]).children('td:first').children('input').prop('checked',false);
+								$('#id_'+tab_listing_id[key]).children('td:last').html('Oui, le '+TODAY_FR);
+							}
+							$('#ajax_msg_imprimer').removeAttr("class").addClass("valide").html("Documents ci-dessous.");
+							$('#imprimer_liens').html(responseHTML);
+							format_liens('#imprimer_liens');
+						}
+					}
+				}
+			);
+		}
+
+		$('#valider_imprimer').click
+		(
+			function()
+			{
+				$('#imprimer_liens').html('');
+				var listing_id = new Array(); $("#form_choix_eleves input[type=checkbox]:checked").each(function(){listing_id.push($(this).val());});
+				if(!listing_id.length)
+				{
+					$('#ajax_msg_imprimer').removeAttr("class").addClass("erreur").html("Aucun élève coché !");
+					return false;
+				}
+				$('#f_listing_eleves').val(listing_id);
+				$('#form_choix_classe button , #form_choix_classe select , #valider_imprimer').prop('disabled',true);
+				imprimer(1);
+			}
+		);
+
+		//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+		//	[officiel_action_imprimer] Charger la liste de choix des élèves, et si les bulletins sont déjà imprimés
+		//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
+		function charger_formulaire_imprimer()
+		{
+			$('#imprimer_liens').html('');
+			var colspan = (memo_objet=='imprimer') ? 3 : 2 ;
+			$('#zone_'+memo_objet+' table tbody').html('<tr><td class="nu" colspan="'+colspan+'"></td></tr>');
+			$('#zone_voir_archive table tbody').html('<tr><td class="nu" colspan="2"></td></tr>');
+			$('#form_choix_classe button , #form_choix_classe select , #valider_imprimer').prop('disabled',true);
+			$('#ajax_msg_'+memo_objet).removeAttr("class").addClass("loader").html("Connexion au serveur&hellip;");
+			$.ajax
+			(
+				{
+					type : 'POST',
+					url : 'ajax.php?page='+memo_page,
+					data : 'f_action='+'initialiser'+'&f_bilan_type='+BILAN_TYPE+'&f_classe='+memo_classe+'&f_groupe='+memo_groupe+'&f_periode='+memo_periode+'&'+$('#form_hidden').serialize(),
+					dataType : "html",
+					error : function(msg,string)
+					{
+						$('#ajax_msg_'+memo_objet).removeAttr("class").addClass("alerte").html("Echec de la connexion !");
+						$('#form_choix_classe button , #form_choix_classe select').prop('disabled',false);
+						return false;
+					},
+					success : function(responseHTML)
+					{
+						initialiser_compteur();
+						if(responseHTML.substring(0,3)!='<tr')
+						{
+							$('#ajax_msg_'+memo_objet).removeAttr("class").addClass("alerte").html(responseHTML);
+							$('#form_choix_classe button , #form_choix_classe select').prop('disabled',false);
+						}
+						else
+						{
+							masquer_element_navigation_choix_classe();
+							$('#zone_'+memo_objet+' table tbody').html(responseHTML);
+							$('#ajax_msg_'+memo_objet).removeAttr("class").html("");
+							$('#form_choix_classe button , #form_choix_classe select , #valider_imprimer').prop('disabled',false);
+							format_liens('#zone_voir_archive');
+						}
+					}
+				}
+			);
+		}
+
+		//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+		//	[officiel_action_examiner|officiel_action_imprimer] Actualiser l'état enabled/disabled des options du formulaire de navigation dans les classes, masquer les boutons de navigation
 		//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
 		function masquer_element_navigation_choix_classe()
@@ -731,7 +886,7 @@ $(document).ready
 		}
 
 		//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-		//	[officiel_action_examiner] Navigation d'une classe à une autre
+		//	[officiel_action_examiner|officiel_action_imprimer] Navigation d'une classe à une autre
 		//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
 		function charger_nouvelle_classe(classe_groupe_id)
@@ -743,37 +898,44 @@ $(document).ready
 			var tab_indices = classe_groupe_id.toString().split('_'); // Sans toString() on obtient "error: split is not a function"
 			memo_classe = tab_indices[0];
 			memo_groupe = tab_indices[1];
-			$('#form_choix_classe button , #form_choix_classe select').prop('disabled',true);
-			$('#zone_resultat_classe').html('<label class="loader">Connexion au serveur&hellip;</label>');
-			$.ajax
-			(
-				{
-					type : 'POST',
-					url : 'ajax.php?page='+memo_page,
-					data : 'f_bilan_type='+BILAN_TYPE+'&f_classe='+memo_classe+'&f_groupe='+memo_groupe+'&f_periode='+memo_periode+'&'+$('#form_hidden').serialize(),
-					dataType : "html",
-					error : function(msg,string)
+			if(memo_page=='officiel_action_imprimer')
+			{
+				charger_formulaire_imprimer();
+			}
+			else if(memo_page=='officiel_action_examiner')
+			{
+				$('#form_choix_classe button , #form_choix_classe select').prop('disabled',true);
+				$('#zone_resultat_classe').html('<label class="loader">Connexion au serveur&hellip;</label>');
+				$.ajax
+				(
 					{
-						$('#zone_resultat_classe').html('<label class="alerte">Echec de la connexion !</label>');
-						$('#form_choix_classe button , #form_choix_classe select').prop('disabled',false);
-						return false;
-					},
-					success : function(responseHTML)
-					{
-						initialiser_compteur();
-						$('#form_choix_classe button , #form_choix_classe select').prop('disabled',false);
-						if(responseHTML.substring(0,14)!='<p class="ti">')
+						type : 'POST',
+						url : 'ajax.php?page='+memo_page,
+						data : 'f_bilan_type='+BILAN_TYPE+'&f_classe='+memo_classe+'&f_groupe='+memo_groupe+'&f_periode='+memo_periode+'&'+$('#form_hidden').serialize(),
+						dataType : "html",
+						error : function(msg,string)
 						{
-							$('#zone_resultat_classe').html('<label class="alerte">'+responseHTML+'</label>');
-						}
-						else
+							$('#zone_resultat_classe').html('<label class="alerte">Echec de la connexion !</label>');
+							$('#form_choix_classe button , #form_choix_classe select').prop('disabled',false);
+							return false;
+						},
+						success : function(responseHTML)
 						{
-							masquer_element_navigation_choix_classe();
-							$('#zone_resultat_classe').html(responseHTML);
+							initialiser_compteur();
+							$('#form_choix_classe button , #form_choix_classe select').prop('disabled',false);
+							if(responseHTML.substring(0,14)!='<p class="ti">')
+							{
+								$('#zone_resultat_classe').html('<label class="alerte">'+responseHTML+'</label>');
+							}
+							else
+							{
+								masquer_element_navigation_choix_classe();
+								$('#zone_resultat_classe').html(responseHTML);
+							}
 						}
 					}
-				}
-			);
+				);
+			}
 		}
 
 		$('#go_precedent_classe').click

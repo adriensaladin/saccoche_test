@@ -72,9 +72,9 @@ $tab_titres[]  = 'Bilans officiels &rarr; État de maîtrise du socle';
 $tab_profils[] = array( 'directeur'=>'directeurs' , 'professeur'=>'tous les<br />professeurs' , 'profprincipal'=>'professeurs<br />principaux' , 'aucunprof'=>'aucun<br />professeur' );
 $tab_objets[]  = array( 'droit_officiel_socle_modifier_statut'=>'modifier le statut (accès saisies&hellip;)' , 'droit_officiel_socle_appreciation_generale'=>'éditer l\'appréciation générale' , 'droit_officiel_socle_impression_pdf'=>'générer la version PDF imprimable' );
 // 10
-$tab_titres[]  = 'Consultation des archives des bilans officiels';
+$tab_titres[]  = 'Consultation des bilans officiels finalisés';
 $tab_profils[] = array( 'directeur'=>'directeurs' , 'professeur'=>'professeurs' , 'parent'=>'parents' , 'eleve'=>'élèves' );
-$tab_objets[]  = array( 'droit_voir_officiel_releve_archive'=>'archives des relevés d\'évaluations' , 'droit_voir_officiel_bulletin_archive'=>'archives des bulletins scolaires' , 'droit_voir_officiel_socle_archive'=>'archives des états de maîtrise du socle' );
+$tab_objets[]  = array( 'droit_officiel_releve_voir_archive'=>'accéder aux copies des relevés d\'évaluations' , 'droit_officiel_bulletin_voir_archive'=>'accéder aux copies des bulletins scolaires' , 'droit_officiel_socle_voir_archive'=>'accéder aux copies des états de maîtrise du socle' );
 
 // Indiquer les boutons devant être décochés lors d'une initialisation aux valeurs par défaut
 $tab_false = array(
@@ -85,9 +85,6 @@ $tab_false = array(
 	'droit_gerer_ressource__profcoordonnateur','droit_gerer_ressource__aucunprof',
 	'droit_bilan_note_sur_vingt__parent','droit_bilan_note_sur_vingt__eleve',
 	'droit_socle_etat_validation__parent','droit_socle_etat_validation__eleve',
-	'droit_voir_officiel_releve_archive__parent','droit_voir_officiel_releve_archive__eleve',
-	'droit_voir_officiel_bulletin_archive__parent','droit_voir_officiel_bulletin_archive__eleve',
-	'droit_voir_officiel_socle_archive__parent','droit_voir_officiel_socle_archive__eleve',
 	'droit_officiel_releve_modifier_statut__professeur','droit_officiel_releve_modifier_statut__profprincipal',
 	'droit_officiel_releve_appreciation_generale__professeur','droit_officiel_releve_appreciation_generale__aucunprof',
 	'droit_officiel_releve_impression_pdf__professeur','droit_officiel_releve_impression_pdf__profprincipal',
@@ -96,7 +93,10 @@ $tab_false = array(
 	'droit_officiel_bulletin_impression_pdf__professeur','droit_officiel_bulletin_impression_pdf__profprincipal',
 	'droit_officiel_socle_modifier_statut__professeur','droit_officiel_socle_modifier_statut__profprincipal',
 	'droit_officiel_socle_appreciation_generale__professeur','droit_officiel_socle_appreciation_generale__aucunprof',
-	'droit_officiel_socle_impression_pdf__professeur','droit_officiel_socle_impression_pdf__profprincipal'
+	'droit_officiel_socle_impression_pdf__professeur','droit_officiel_socle_impression_pdf__profprincipal',
+	'droit_officiel_releve_voir_archive__parent','droit_officiel_releve_voir_archive__eleve',
+	'droit_officiel_bulletin_voir_archive__parent','droit_officiel_bulletin_voir_archive__eleve',
+	'droit_officiel_socle_voir_archive__parent','droit_officiel_socle_voir_archive__eleve'
 );
 
 $tab_onlycheckbox = array(2,3,4,5,6,10);

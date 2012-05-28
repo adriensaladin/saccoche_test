@@ -471,6 +471,10 @@ class PDF extends FPDF
 	public function __construct($officiel,$orientation,$marge_gauche=5,$marge_droite=5,$marge_haut=5,$marge_bas=12,$couleur='oui',$legende='oui')
 	{
 		// Register var stream protocol => Voir MemImage()
+		if (in_array('var', stream_get_wrappers()))
+		{
+			stream_wrapper_unregister('var');
+		}
 		stream_wrapper_register('var', 'VariableStream');
 		// Appeler le constructeur de la classe mère
 		parent::FPDF($orientation , $unit='mm' , $format='A4');
@@ -749,8 +753,8 @@ class PDF extends FPDF
 			$is_trop_haut = ( $hauteur_requise > $hauteur_autorisee ) ? TRUE : FALSE ;
 			if($is_trop_haut)
 			{
-				$taille_police -= 0.1;
-				$taille_interligne -= 0.1;
+				$taille_police *= 0.9;
+				$taille_interligne *= 0.9;
 				$this->SetFontSize($taille_police);
 			}
 		}
@@ -760,12 +764,13 @@ class PDF extends FPDF
 		$memo_abscisse = $this->GetX();
 		$memo_ordonnee = $this->GetY();
 		$ordonnee = $this->GetY() + ($hauteur_autorisee - $hauteur_requise ) / 3 ; // Verticalement, on laisse 1/3 marge dessus et 2/3 marge dessous
+		$this->SetXY( $memo_abscisse , $ordonnee );
 		$tab_lignes = explode("\n",$split_texte);
 		for( $num_ligne=0 ; $num_ligne<$nb_lignes ; $num_ligne++ )
 		{
-			$this->SetXY( $memo_abscisse , $ordonnee );
-			$this->Write($taille_interligne,pdf($tab_lignes[$num_ligne]));
-			$ordonnee += $taille_interligne;
+			$this->CellFit( $largeur_autorisee , $taille_interligne , pdf($tab_lignes[$num_ligne]) , 0 /*bordure*/ , 2 /*br*/ , 'L' /*alignement*/ , FALSE /*remplissage*/ );
+			// $this->Write($taille_interligne,pdf($tab_lignes[$num_ligne]));
+			// $ordonnee += $taille_interligne;
 		}
 		$this->SetXY( $memo_abscisse , $memo_ordonnee+$hauteur_autorisee );
 	}
@@ -1697,16 +1702,17 @@ class PDF extends FPDF
 			$nb_lignes_prevues += $nb_lignes_appreciation_potentielle_par_prof_hors_intitule;
 		}
 		// Intitulé "Appréciations / Conseils :" + auteurs
+		$hauteur_ligne_auteurs = $ligne_hauteur*0.8;
 		$memoX = $this->GetX();
 		$memoY = $this->GetY();
-		$this->SetFont('Arial' , 'B' , $this->taille_police*1.2);
-		$this->Write( $ligne_hauteur , pdf('Appréciations / Conseils') );
+		$this->SetFont('Arial' , 'B' , $this->taille_police);
+		$this->Write( $hauteur_ligne_auteurs , pdf('Appréciations / Conseils') );
 		if(count($tab_auteurs))
 		{
 			$this->SetFont('Arial' , '' , $this->taille_police);
-			$this->Write( $ligne_hauteur , pdf('   [ '.implode(' ; ',$tab_auteurs).' ]') );
+			$this->Write( $hauteur_ligne_auteurs , pdf('   [ '.implode(' ; ',$tab_auteurs).' ]') );
 		}
-		$this->SetXY( $memoX , $memoY+$ligne_hauteur );
+		$this->SetXY( $memoX , $memoY+$hauteur_ligne_auteurs );
 		// cadre appréciations : affichage
 		$largeur_autorisee = $bloc_largeur;
 		$hauteur_autorisee = $ligne_hauteur*$nb_lignes_prevues;

@@ -437,18 +437,18 @@ foreach($tab_eleve as $tab)
 						$releve_HTML .= '</tbody></table>';
 					}
 					// Examen de présence des appréciations intermédiaires et des notes
-					if( ($make_action=='examiner') && ($_SESSION['OFFICIEL']['BULLETIN_MOYENNE_SCORES']) && ($tab_saisie[$eleve_id][$matiere_id][0]['note']===NULL) )
+					if( ($make_action=='examiner') && ($_SESSION['OFFICIEL']['BULLETIN_MOYENNE_SCORES']) && ( (!isset($tab_saisie[$eleve_id][$matiere_id][0])) || ($tab_saisie[$eleve_id][$matiere_id][0]['note']===NULL) ) )
 					{
 						$tab_resultat_examen[$tab_matiere[$matiere_id]][] = 'Absence de note pour '.html($eleve_nom.' '.$eleve_prenom);
 					}
-					if( ($make_action=='examiner') && ($_SESSION['OFFICIEL']['BULLETIN_APPRECIATION_RUBRIQUE']) && ( (!isset($tab_saisie[$eleve_id][$matiere_id])) || (count($tab_saisie[$eleve_id][$matiere_id])<2) ) )
+					if( ($make_action=='examiner') && ($_SESSION['OFFICIEL']['BULLETIN_APPRECIATION_RUBRIQUE']) && ( (!isset($tab_saisie[$eleve_id][$matiere_id])) || (end($tab_saisie[$eleve_id][$matiere_id])==0) ) )
 					{
 						$tab_resultat_examen[$tab_matiere[$matiere_id]][] = 'Absence d\'appréciation pour '.html($eleve_nom.' '.$eleve_prenom);
 					}
 					// Impression des appréciations intermédiaires (PDF)
 					if( ($make_action=='imprimer') && ($_SESSION['OFFICIEL']['BULLETIN_APPRECIATION_RUBRIQUE']) )
 					{
-						$releve_PDF->bilan_synthese_appreciation_rubrique( ( (!isset($tab_saisie[$eleve_id][$matiere_id])) || (count($tab_saisie[$eleve_id][$matiere_id])<2) ) ? NULL : $tab_saisie[$eleve_id][$matiere_id] , $tab_nb_lignes[$eleve_id][$matiere_id] - $nb_lignes_matiere_intitule_et_marge );
+						$releve_PDF->bilan_synthese_appreciation_rubrique( ( (!isset($tab_saisie[$eleve_id][$matiere_id])) || (end($tab_saisie[$eleve_id][$matiere_id])==0) ) ? NULL : $tab_saisie[$eleve_id][$matiere_id] , $tab_nb_lignes[$eleve_id][$matiere_id] - $nb_lignes_matiere_intitule_et_marge );
 					}
 				}
 			}

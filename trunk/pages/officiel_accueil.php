@@ -97,11 +97,15 @@ $affichage_formulaire_statut =
 </ul>
 
 <script type="text/javascript">
-	var TODAY_FR = "<?php echo TODAY_FR ?>";
-	var BILAN_TYPE="<?php echo $BILAN_TYPE ?>";
-	var APP_RUBRIQUE=<?php echo $_SESSION['OFFICIEL'][$tab_types[$BILAN_TYPE]['droit'].'_APPRECIATION_RUBRIQUE'] ?>;
-	var APP_GENERALE=<?php echo $_SESSION['OFFICIEL'][$tab_types[$BILAN_TYPE]['droit'].'_APPRECIATION_GENERALE'] ?>;
-	var NOTE_SUR_20=<?php echo $_SESSION['OFFICIEL']['BULLETIN_NOTE_SUR_20'] ?>;
+	var TODAY_FR   = "<?php echo TODAY_FR ?>";
+	var BILAN_TYPE = "<?php echo $BILAN_TYPE ?>";
+	var APP_RUBRIQUE = <?php echo $_SESSION['OFFICIEL'][$tab_types[$BILAN_TYPE]['droit'].'_APPRECIATION_RUBRIQUE'] ?>;
+	var APP_GENERALE = <?php echo $_SESSION['OFFICIEL'][$tab_types[$BILAN_TYPE]['droit'].'_APPRECIATION_GENERALE'] ?>;
+	var NOTE_SUR_20  = <?php echo $_SESSION['OFFICIEL']['BULLETIN_NOTE_SUR_20'] ?>;
+	var BACKGROUND_NA = "<?php echo $_SESSION['BACKGROUND_NA'] ?>";
+	var BACKGROUND_VA = "<?php echo $_SESSION['BACKGROUND_VA'] ?>";
+	var BACKGROUND_A  = "<?php echo $_SESSION['BACKGROUND_A'] ?>";
+	"'..'"
 </script>
 
 <hr />
@@ -498,7 +502,7 @@ if(count($tab_classe))
 				<p style="clear:both"><span class="tab"></span><button id="lancer_recherche" type="button" class="rechercher">Lancer la recherche</button> <button id="fermer_zone_chx_rubriques" type="button" class="annuler">Annuler</button><label id="ajax_msg_recherche">&nbsp;</label></p>
 			</form>
 		';
-		echo'<form action="#" method="post" id="form_hidden" class="hide"><div>'.$form_hidden.'<input type="hidden" id="f_objet" name="f_objet" value="" /><input type="hidden" id="f_listing_rubriques" name="f_listing_rubriques" value="" /><input type="hidden" id="f_listing_eleves" name="f_listing_eleves" value="" /></div></form>';
+		echo'<form action="#" method="post" id="form_hidden" class="hide"><div>'.$form_hidden.'<input type="hidden" id="f_objet" name="f_objet" value="" /><input type="hidden" id="f_listing_rubriques" name="f_listing_rubriques" value="" /><input type="hidden" id="f_listing_eleves" name="f_listing_eleves" value="" /><input type="hidden" id="f_mode" name="f_mode" value="texte" /></div></form>';
 
 		//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 		//	Formulaires utilisés pour les opérations ultérieures sur les bilans.
@@ -532,7 +536,7 @@ if(count($tab_classe))
 					</form>
 				</div>
 				<div id="zone_voir_archive" class="hide">
-					<p class="astuce">Ces bilans ne sont que des copies partielles, laissées à disposition pour information jusqu\'à la fin de l\'année scolaire.<br /><span class="u">Seul le document original fait foi.</u></p>
+					<p class="astuce">Ces bilans ne sont que des copies partielles, laissées à disposition pour information jusqu\'à la fin de l\'année scolaire.<br /><span class="u">Seul le document original fait foi.</span></p>
 					<table class="t9">
 						<thead>
 							<tr>

@@ -142,6 +142,7 @@ $make_officiel = TRUE;
 $make_action   = 'examiner';
 $make_html     = FALSE;
 $make_pdf      = FALSE;
+$make_graph    = FALSE;
 
 if($BILAN_TYPE=='releve')
 {

@@ -2029,6 +2029,7 @@ function unzip($fichier_zip,$dossier_dezip,$use_ZipArchive)
 function adresse_RSS($prof_id)
 {
 	// Le nom du RSS est tordu pour le rendre un minimum privé, sans être totalement aléatoire car il doit être fixe (mais il n'y a rien de confidentiel non plus).
+	$dossier_nom = './__tmp/rss/'.$_SESSION['BASE'];
 	$fichier_nom_debut = 'rss_'.$prof_id;
 	$fichier_nom_fin   = fabriquer_fin_nom_fichier__pseudo_alea($fichier_nom_debut);
 	$fichier_chemin    = $dossier_nom.'/'.$fichier_nom_debut.'_'.$fichier_nom_fin.'.xml';

@@ -31,6 +31,7 @@ if($_SESSION['SESAMATH_ID']==ID_DEMO){exit('Action désactivée pour la démo...
 $objet        = (isset($_POST['f_objet']))        ? clean_texte($_POST['f_objet'])        : '';
 $ACTION       = (isset($_POST['f_action']))       ? clean_texte($_POST['f_action'])       : '';
 $BILAN_TYPE   = (isset($_POST['f_bilan_type']))   ? clean_texte($_POST['f_bilan_type'])   : '';
+$mode         = (isset($_POST['f_mode']))         ? clean_texte($_POST['f_mode'])         : '';
 $periode_id   = (isset($_POST['f_periode']))      ? clean_entier($_POST['f_periode'])     : 0;
 $classe_id    = (isset($_POST['f_classe']))       ? clean_entier($_POST['f_classe'])      : 0;
 $groupe_id    = (isset($_POST['f_groupe']))       ? clean_entier($_POST['f_groupe'])      : 0;
@@ -50,6 +51,7 @@ $is_sous_groupe = ($groupe_id) ? TRUE : FALSE ;
 
 $tab_objet  = array('modifier','tamponner');
 $tab_action = array('initialiser','charger','enregistrer_appr','enregistrer_note','supprimer_appr','supprimer_note','recalculer_note');
+$tab_mode  = array('texte','graphique');
 
 $tab_types = array
 (
@@ -62,7 +64,7 @@ $tab_types = array
 
 // On vérifie les paramètres principaux
 
-if( (!in_array($ACTION,$tab_action)) || (!isset($tab_types[$BILAN_TYPE])) || (!in_array($objet,$tab_objet)) || !$periode_id || !$classe_id || ( (!$eleve_id)&&($ACTION!='initialiser') ) )
+if( (!in_array($ACTION,$tab_action)) || (!isset($tab_types[$BILAN_TYPE])) || (!in_array($objet,$tab_objet)) || (!in_array($mode,$tab_mode)) || !$periode_id || !$classe_id || ( (!$eleve_id)&&($ACTION!='initialiser') ) )
 {
 	exit('Erreur avec les données transmises !');
 }
@@ -191,7 +193,9 @@ if($ACTION=='initialiser')
 		$form_choix_eleve .= '<option value="'.$DB_ROW['user_id'].'">'.html($DB_ROW['user_nom'].' '.$DB_ROW['user_prenom']).'</option>';
 		$tab_eleve_id[] = $DB_ROW['user_id'];
 	}
-	$form_choix_eleve .= '</select> <button id="go_suivant_eleve" type="button" class="go_suivant">Suivant</button> <button id="go_dernier_eleve" type="button" class="go_dernier">Dernier</button>&nbsp;&nbsp;&nbsp;<button id="fermer_zone_action_eleve" type="button" class="retourner">Retour</button></div></form><hr />';
+	$form_choix_eleve .= '</select> <button id="go_suivant_eleve" type="button" class="go_suivant">Suivant</button> <button id="go_dernier_eleve" type="button" class="go_dernier">Dernier</button>&nbsp;&nbsp;&nbsp;<button id="fermer_zone_action_eleve" type="button" class="retourner">Retour</button>';
+	$form_choix_eleve .= ( ($BILAN_TYPE=='bulletin') && ($objet=='tamponner') ) ? ' <button id="change_mode" type="button" class="stats">Interface graphique</button>' : '' ;
+	$form_choix_eleve .= '</div></form><hr />';
 	$eleve_id = $tab_eleve_id[0];
 	// sous-titre
 	if($BILAN_ETAT=='3synthese')
@@ -226,7 +230,7 @@ if($ACTION=='initialiser')
 			$liste_eleve_id = implode(',',$tab_eleve_id_tmp);
 		}
 		$liste_matiere_id = ($BILAN_ETAT=='2rubrique') ? $liste_matiere_id : '' ; // Si un prof accède à la saisie de synthèse, il ne vaut pas seulement récupérer les données qui concerne ses matières.
-		calculer_et_enregistrer_moyennes_eleves_bulletin( $periode_id , $classe_id , $liste_eleve_id , $liste_matiere_id , FALSE /*memo_moyennes_classe*/ , $_SESSION['OFFICIEL']['BULLETIN_MOYENNE_GENERALE'] );
+		calculer_et_enregistrer_moyennes_eleves_bulletin( $periode_id , $classe_id , $liste_eleve_id , $liste_matiere_id , $_SESSION['OFFICIEL']['BULLETIN_MOYENNE_CLASSE'] , $_SESSION['OFFICIEL']['BULLETIN_MOYENNE_GENERALE'] );
 	}
 }
 
@@ -246,8 +250,9 @@ foreach($DB_TAB as $DB_ROW)
 
 $make_officiel = TRUE;
 $make_action   = 'saisir';
-$make_html     = TRUE;
+$make_html     = ( ($BILAN_TYPE=='bulletin') && ($objet=='tamponner') && ($mode=='graphique') ) ? FALSE : TRUE ;
 $make_pdf      = FALSE;
+$make_graph    = ( ($BILAN_TYPE=='bulletin') && ($objet=='tamponner') && ($mode=='graphique') ) ? TRUE : FALSE ;
 
 if($BILAN_TYPE=='releve')
 {
@@ -345,7 +350,12 @@ elseif(in_array($BILAN_TYPE,array('palier1','palier2','palier3')))
 // Affichage du résultat
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
-echo ($ACTION=='initialiser') ? '<h2>'.$sous_titre.'</h2>'.$form_choix_eleve.'<form action="#" method="post" id="zone_resultat_eleve" onsubmit="return false">'.${$nom_bilan_html}.'</form>' : ${$nom_bilan_html} ;
-exit();
-
+if($ACTION=='initialiser')
+{
+	exit('<h2>'.$sous_titre.'</h2>'.$form_choix_eleve.'<form action="#" method="post" id="zone_resultat_eleve" onsubmit="return false">'.${$nom_bilan_html}.'</form>'.$js_graph);
+}
+else
+{
+	exit(${$nom_bilan_html}.$js_graph);
+}
 ?>

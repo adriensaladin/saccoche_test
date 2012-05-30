@@ -50,7 +50,7 @@ $tab_eval       = array();	// [eleve_id][item_id][devoir] => array(note,date,inf
 
 // Initialisation de variables
 
-if( ($make_html) || ($make_pdf) )
+if( ($make_html) || ($make_pdf) || ($make_graph) )
 {
 	$tab_titre = array('matiere'=>'d\'une matière' , 'multimatiere'=>'multidisciplinaire');
 	if(!$aff_coef)  { $texte_coef       = ''; }
@@ -291,13 +291,15 @@ if($make_pdf) { @ini_set('memory_limit','256M'); @ini_alter('memory_limit','256M
 
 $affichage_direct = ( ( ( in_array($_SESSION['USER_PROFIL'],array('eleve','parent')) ) && (SACoche!='webservices') ) || ($make_officiel) ) ? TRUE : FALSE ;
 
+$tab_graph_data = array();
+
 // Préparatifs
-if($make_html)
+if( ($make_html) || ($make_graph) )
 {
 	$releve_HTML  = $affichage_direct ? '' : '<style type="text/css">'.$_SESSION['CSS'].'</style>';
 	$releve_HTML .= $affichage_direct ? '' : '<h1>Synthèse '.$tab_titre[$format].'</h1>';
 	$releve_HTML .= $affichage_direct ? '' : '<h2>'.html($texte_periode).'</h2>';
-	$releve_HTML .= '<div class="astuce">Cliquer sur les icones &laquo;<img src="./_img/toggle_plus.gif" alt="+" />&raquo; pour accéder au détail.</div>';
+	$releve_HTML .= (!$make_graph) ? '<div class="astuce">Cliquer sur les icones &laquo;<img src="./_img/toggle_plus.gif" alt="+" />&raquo; pour accéder au détail.</div>' : '<div id="div_graphique"></div>' ;
 	$separation = (count($tab_eleve)>1) ? '<hr class="breakafter" />' : '' ;
 	$legende_html = ($legende=='oui') ? affich_legende_html( FALSE /*codes_notation*/ , TRUE /*etat_acquisition*/ , FALSE /*pourcentage_acquis*/ , FALSE /*etat_validation*/ ) : '' ;
 }
@@ -316,7 +318,7 @@ foreach($tab_eleve as $tab)
 		if(isset($tab_infos_acquis_eleve[$eleve_id]))
 		{
 			// Intitulé
-			if($make_html) { $releve_HTML .= (!$make_officiel) ? $separation.'<h2>'.html($groupe_nom).' - '.html($eleve_nom).' '.html($eleve_prenom).'</h2>' : '' ; }
+			if($make_html) { $releve_HTML .= (!$make_officiel) ? $separation.'<h2>'.html($groupe_nom.' - '.$eleve_nom.' '.$eleve_prenom).'</h2>' : '' ; }
 			if($make_pdf)
 			{
 				$eleve_nb_lignes  = $tab_nb_lignes_total_eleve[$eleve_id];
@@ -329,6 +331,22 @@ foreach($tab_eleve as $tab)
 			{
 				if( (!$make_officiel) || (($make_action=='saisir')&&($BILAN_ETAT=='3synthese')) || (($make_action=='saisir')&&($BILAN_ETAT=='2rubrique')&&(in_array($matiere_id,$tab_matiere_id))) || (($make_action=='examiner')&&(in_array($matiere_id,$tab_matiere_id))) || ($make_action=='consulter') || ($make_action=='imprimer') )
 				{
+					// Bulletin - Interface graphique
+					if($make_graph)
+					{
+						$tab_graph_data['categories'][$matiere_id] = '"'.addcslashes($tab_matiere[$matiere_id],'"').'"';
+						$tab_graph_data['series_data_NA'][$matiere_id] = $tab_infos_matiere['total']['NA'];
+						$tab_graph_data['series_data_VA'][$matiere_id] = $tab_infos_matiere['total']['VA'];
+						$tab_graph_data['series_data_A'][$matiere_id]  = $tab_infos_matiere['total']['A'];
+						if($_SESSION['OFFICIEL']['BULLETIN_MOYENNE_SCORES'])
+						{
+							$tab_graph_data['series_data_MoyEleve'][$matiere_id] = ($tab_saisie[$eleve_id][$matiere_id][0]['note']!==NULL) ? $tab_saisie[$eleve_id][$matiere_id][0]['note'] : 'null' ;
+							if($_SESSION['OFFICIEL']['BULLETIN_MOYENNE_CLASSE'])
+							{
+								$tab_graph_data['series_data_MoyClasse'][$matiere_id] = ($_SESSION['tmp_moyenne_classe'][$periode_id][$classe_id][$matiere_id]!==NULL) ? $_SESSION['tmp_moyenne_classe'][$periode_id][$classe_id][$matiere_id] : 'null' ;
+							}
+						}
+					}
 					$tab_infos_matiere['total'] = array_filter($tab_infos_matiere['total'],'non_zero'); // Retirer les valeurs nulles
 					$total = array_sum($tab_infos_matiere['total']) ; // La somme ne peut être nulle, sinon la matière ne se serait pas affichée
 					if($make_pdf)
@@ -455,7 +473,7 @@ foreach($tab_eleve as $tab)
 			// Bulletin - Appréciation générale + Moyenne générale
 			if( ($make_officiel) && ($_SESSION['OFFICIEL']['BULLETIN_APPRECIATION_GENERALE']) && ($BILAN_ETAT=='3synthese') )
 			{
-				if($make_html)
+				if( ($make_html) || ($make_graph) )
 				{
 					$releve_HTML .= '<table class="bilan" style="width:900px"><tbody>'."\r\n";
 					$releve_HTML .= '<tr><th colspan="2">Synthèse générale</th></tr>'."\r\n";
@@ -545,5 +563,43 @@ foreach($tab_eleve as $tab)
 
 if($make_html) { Ecrire_Fichier($dossier.$fichier_nom.'.html',$releve_HTML); }
 if($make_pdf)  { $releve_PDF->Output($dossier.$fichier_nom.'.pdf','F'); }
+
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+// On fabrique les options js pour le diagramme graphique
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
+$js_graph = '';
+if($make_graph)
+{
+	$js_graph .= '<SCRIPT>';
+	// Matières sur l'axe des abscisses
+	$js_graph .= 'ChartOptions.title.text = "'.addcslashes(html($eleve_nom.' '.$eleve_prenom),'"').'";';
+	$js_graph .= 'ChartOptions.xAxis.categories = ['.implode(',',$tab_graph_data['categories']).'];';
+	// Second axe des ordonnés pour les moyennes
+	if(!$_SESSION['OFFICIEL']['BULLETIN_MOYENNE_SCORES'])
+	{
+		$js_graph .= 'delete ChartOptions.yAxis[1];';
+	}
+	else
+	{
+		$ymax = ($_SESSION['OFFICIEL']['BULLETIN_NOTE_SUR_20']) ? 20 : 100 ;
+		$js_graph .= 'ChartOptions.yAxis[1] = { min: 0, max: '.$ymax.', title: { style: { color: "#333" } , text: "Moyennes" }, opposite: true };';
+	}
+	// Séries de valeurs
+	$tab_graph_series = array();
+	$tab_graph_series['A']  = '{ name: "'.addcslashes($_SESSION['ACQUIS_LEGENDE']['A'],'"').'", data: ['.implode(',',$tab_graph_data['series_data_A']).'] }';
+	$tab_graph_series['VA'] = '{ name: "'.addcslashes($_SESSION['ACQUIS_LEGENDE']['VA'],'"').'", data: ['.implode(',',$tab_graph_data['series_data_VA']).'] }';
+	$tab_graph_series['NA'] = '{ name: "'.addcslashes($_SESSION['ACQUIS_LEGENDE']['NA'],'"').'", data: ['.implode(',',$tab_graph_data['series_data_NA']).'] }';
+	if(isset($tab_graph_data['series_data_MoyClasse']))
+	{
+		$tab_graph_series['MoyClasse'] = '{ type: "line", name: "Moyenne classe", data: ['.implode(',',$tab_graph_data['series_data_MoyClasse']).'], marker: {symbol: "circle"}, color: "#999", yAxis: 1 }';
+	}
+	if(isset($tab_graph_data['series_data_MoyEleve']))
+	{
+		$tab_graph_series['MoyEleve']  = '{ type: "line", name: "Moyenne élève", data: ['.implode(',',$tab_graph_data['series_data_MoyEleve']).'], marker: {symbol: "circle"}, color: "#139", yAxis: 1 }';
+	}
+	$js_graph .= 'ChartOptions.series = ['.implode(',',$tab_graph_series).'];';
+	$js_graph .= 'graphique = new Highcharts.Chart(ChartOptions);';
+}
 
 ?>

@@ -351,6 +351,7 @@ $make_officiel = TRUE;
 $make_action   = 'imprimer';
 $make_html     = FALSE;
 $make_pdf      = TRUE;
+$make_graph    = FALSE;
 
 if($BILAN_TYPE=='releve')
 {

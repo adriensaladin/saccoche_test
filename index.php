@@ -184,8 +184,8 @@ $tab_fichiers_head = array();
 $tab_fichiers_head[] = array( 'css' , compacter('./_css/style.css','mini') );
 $tab_fichiers_head[] = array( 'js'  , compacter('./_js/jquery-librairies.js','mini') );
 $tab_fichiers_head[] = array( 'js'  , compacter('./_js/script.js','pack') ); // la minification plante à sur le contenu de testURL() avec le message Fatal error: Uncaught exception 'JSMinException' with message 'Unterminated string literal.'
-if(($PAGE=='officiel')&&($SECTION=='accueil_bulletin')) $tab_fichiers_head[] = array( 'js'  , compacter('./_js/highcharts.js','mini') );
-if(is_file($filename_js_normal))                        $tab_fichiers_head[] = array( 'js' , compacter($filename_js_normal,'pack') );
+if($PAGE=='officiel_accueil')    $tab_fichiers_head[] = array( 'js'  , compacter('./_js/highcharts.js','mini') );
+if(is_file($filename_js_normal)) $tab_fichiers_head[] = array( 'js' , compacter($filename_js_normal,'pack') );
 
 // Affichage de l'en-tête
 declaration_entete( TRUE /*is_meta_robots*/ , TRUE /*is_favicon*/ , TRUE /*is_rss*/ , $tab_fichiers_head , $TITRE_NAVIGATEUR , $CSS_PERSO );

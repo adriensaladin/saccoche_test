@@ -24,6 +24,10 @@
  * 
  */
 
+// Variable globale Highcharts
+var graphique;
+var ChartOptions;
+
 // jQuery !
 $(document).ready
 (
@@ -276,9 +280,9 @@ $(document).ready
 		//	[officiel_action_saisir|officiel_action_consulter] Navigation d'un élève à un autre
 		//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
-		function charger_nouvel_eleve(eleve_id)
+		function charger_nouvel_eleve(eleve_id,reload)
 		{
-			if(eleve_id==memo_eleve)
+			if( (eleve_id==memo_eleve) && (!reload) )
 			{
 				return false;
 			}
@@ -310,7 +314,16 @@ $(document).ready
 						{
 							$('#go_selection_eleve option[value='+memo_eleve+']').prop('selected',true);
 							masquer_element_navigation_choix_eleve();
-							$('#zone_resultat_eleve').html(responseHTML);
+							var position_script = responseHTML.lastIndexOf('<SCRIPT>');
+							if(position_script==-1)
+							{
+								$('#zone_resultat_eleve').html(responseHTML);
+							}
+							else
+							{
+								$('#zone_resultat_eleve').html( responseHTML.substring(0,position_script) );
+								eval( responseHTML.substring(position_script+8) );
+							}
 							infobulle();
 							if(memo_auto_next || memo_auto_prev)
 							{
@@ -342,7 +355,7 @@ $(document).ready
 			function()
 			{
 				var eleve_id = $('#go_selection_eleve option:first').val();
-				charger_nouvel_eleve(eleve_id);
+				charger_nouvel_eleve(eleve_id,false);
 			}
 		);
 
@@ -351,7 +364,7 @@ $(document).ready
 			function()
 			{
 				var eleve_id = $('#go_selection_eleve option:last').val();
-				charger_nouvel_eleve(eleve_id);
+				charger_nouvel_eleve(eleve_id,false);
 			}
 		);
 
@@ -362,7 +375,7 @@ $(document).ready
 				if( $('#go_selection_eleve option:selected').prev().length )
 				{
 					var eleve_id = $('#go_selection_eleve option:selected').prev().val();
-					charger_nouvel_eleve(eleve_id);
+					charger_nouvel_eleve(eleve_id,false);
 				}
 			}
 		);
@@ -374,7 +387,7 @@ $(document).ready
 				if( $('#go_selection_eleve option:selected').next().length )
 				{
 					var eleve_id = $('#go_selection_eleve option:selected').next().val();
-					charger_nouvel_eleve(eleve_id);
+					charger_nouvel_eleve(eleve_id,false);
 				}
 			}
 		);
@@ -384,7 +397,26 @@ $(document).ready
 			function()
 			{
 				var eleve_id = $('#go_selection_eleve option:selected').val();
-				charger_nouvel_eleve(eleve_id);
+				charger_nouvel_eleve(eleve_id,false);
+			}
+		);
+
+		$('#change_mode').live // live est utilisé pour prendre en compte les nouveaux éléments créés
+		('click',
+			function()
+			{
+				if($('#f_mode').val()=='texte')
+				{
+					$('#change_mode').html('Interface détaillée');
+					$('#f_mode').val('graphique');
+				}
+				else
+				{
+					$('#change_mode').html('Interface graphique');
+					$('#f_mode').val('texte');
+				}
+				var eleve_id = $('#go_selection_eleve option:selected').val();
+				charger_nouvel_eleve(eleve_id,true);
 			}
 		);
 
@@ -430,6 +462,7 @@ $(document).ready
 			{
 				$('#f_appreciation').focus().html(champ_contenu);
 				afficher_textarea_reste( $('#f_appreciation') , memo_long_max );
+				window.scrollBy(0,50); // Pour avoir à l'écran les bouton de validation et d'annulation situés en dessous du textarea
 			}
 			if(memo_rubrique_type=='note')
 			{
@@ -1060,6 +1093,55 @@ $(document).ready
 				);
 			}
 		);
+
+		//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+		//	Options de base pour le graphique : sont complétées ensuite avec les données personnalisées
+		//	http://www.highcharts.com/documentation/how-to-use
+		//	http://www.highcharts.com/ref
+		//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
+		ChartOptions = {
+			chart: {
+				renderTo: 'div_graphique',
+				type: 'column'
+			 },
+			colors: [
+				BACKGROUND_A,
+				BACKGROUND_VA,
+				BACKGROUND_NA
+			],
+			title: {
+				style: { color: '#333' } ,
+				text: 'NOM Prénom' // MAJ ensuite
+			},
+			xAxis: {
+				labels: { style: { color: '#000' } },
+				categories: [] // MAJ ensuite
+			},
+			yAxis: [
+				{
+					labels: { enabled: false },
+					min: 0,
+					max: 100,
+					title: { style: { color: '#333' } , text: 'Items acquis' }
+				}, {} // MAJ ensuite
+			],
+			tooltip: {
+				formatter: function() {
+					return this.series.name +' : '+ (this.y);
+				}
+			},
+			plotOptions: {
+				column: {
+					stacking: 'percent'
+				}
+			},
+			series: [] // MAJ ensuite
+			,
+			credits: {
+				enabled: false
+			}
+		};
 
 	}
 );

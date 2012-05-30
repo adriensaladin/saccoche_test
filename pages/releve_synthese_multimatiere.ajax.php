@@ -74,6 +74,7 @@ $make_officiel = FALSE;
 $make_action   = '';
 $make_html     = TRUE;
 $make_pdf      = TRUE;
+$make_graph    = FALSE;
 
 require('./_inc/code_items_synthese.php');
 

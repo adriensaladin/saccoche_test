@@ -164,7 +164,7 @@ if($type=='validation')
 			$tab_user_entree[$eleve_id][$entree_id] = array('etat'=>2,'date'=>'','info'=>'');
 		}
 	}
-	//Maintenant on complète avec les valeurs de la base
+	// Maintenant on complète avec les valeurs de la base
 	$DB_TAB = DB_STRUCTURE_SOCLE::DB_lister_jointure_user_entree($liste_eleve,$listing_entree_id,$domaine_id=0,$pilier_id=0,$palier_id=0); // en fait on connait aussi le palier mais la requête est plus simple (pas de jointure) avec les entrées
 	foreach($DB_TAB as $DB_ROW)
 	{
@@ -178,7 +178,7 @@ if($type=='validation')
 			$tab_user_pilier[$eleve_id][$pilier_id] = array('etat'=>2,'date'=>'','info'=>'');
 		}
 	}
-	//Maintenant on complète avec les valeurs de la base
+	// Maintenant on complète avec les valeurs de la base
 	$listing_pilier_id = implode(',',array_keys($tab_pilier));
 	$DB_TAB = DB_STRUCTURE_SOCLE::DB_lister_jointure_user_pilier($liste_eleve,$listing_pilier_id,$palier_id=0); // en fait on connait aussi le palier mais la requête est plus simple (pas de jointure) avec les piliers
 	foreach($DB_TAB as $DB_ROW)

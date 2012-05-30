@@ -72,7 +72,7 @@ if(count($DB_TAB))
 
 	//	Assemblage et affichage du tableau.
 
-	echo'<p class="astuce">Ces bilans ne sont que des copies partielles, laissées à disposition pour information jusqu\'à la fin de l\'année scolaire.<br /><span class="u">Seul le document original fait foi.</u></p>';
+	echo'<p class="astuce">Ces bilans ne sont que des copies partielles, laissées à disposition pour information jusqu\'à la fin de l\'année scolaire.<br /><span class="u">Seul le document original fait foi.</span></p>';
 	echo'<table id="table_bilans"><thead><tr>'.implode('',$tab_thead).'</tr></thead><tbody>'."\r\n";
 	unset($tab_thead[0]);
 	foreach($tab_eleve_id as $eleve_id)

@@ -299,15 +299,15 @@ if(count($tab_classe))
 			{
 				if($etat=='1vide')
 				{
-					$icone_voir_html = '<q class="voir_non" title="Consultation du contenu en cours d\'élaboration sans objet (bilan déclaré vide)."></q>';
+					$icone_voir_html = '<q class="voir_non" title="Consultation du contenu sans objet (bilan déclaré vide)."></q>';
 				}
-				elseif($etat=='4complet')
+				elseif( ($etat=='4complet') && ($tab_types[$BILAN_TYPE]['droit']=='SOCLE') )
 				{
-					$icone_voir_html = '<q class="voir_non" title="Consultation du contenu en cours d\'élaboration sans objet (bilan déclaré finalisé)."></q>';
+					$icone_voir_html = '<q class="voir_non" title="Consultation du contenu inopportun (bilan finalisé : utiliser les archives PDF)."></q>';
 				}
 				else
 				{
-					$icone_voir_html = '<q class="voir" title="Consulter le contenu en cours d\'élaboration (format HTML)."></q>';
+					$icone_voir_html = '<q class="voir" title="Consulter le contenu (format HTML)."></q>';
 				}
 			}
 			else
@@ -502,13 +502,14 @@ if(count($tab_classe))
 				<p style="clear:both"><span class="tab"></span><button id="lancer_recherche" type="button" class="rechercher">Lancer la recherche</button> <button id="fermer_zone_chx_rubriques" type="button" class="annuler">Annuler</button><label id="ajax_msg_recherche">&nbsp;</label></p>
 			</form>
 		';
-		echo'<form action="#" method="post" id="form_hidden" class="hide"><div>'.$form_hidden.'<input type="hidden" id="f_objet" name="f_objet" value="" /><input type="hidden" id="f_listing_rubriques" name="f_listing_rubriques" value="" /><input type="hidden" id="f_listing_eleves" name="f_listing_eleves" value="" /><input type="hidden" id="f_mode" name="f_mode" value="texte" /></div></form>';
+		echo'<form action="#" method="post" id="form_hidden" class="hide"><div>'.$form_hidden.'<input type="hidden" id="f_objet" name="f_objet" value="" /><input type="hidden" id="f_listing_rubriques" name="f_listing_rubriques" value="" /><input type="hidden" id="f_mode" name="f_mode" value="texte" /></div></form>';
 
 		//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 		//	Formulaires utilisés pour les opérations ultérieures sur les bilans.
 		//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
 		echo'<div id="zone_action_eleve"></div>';
+		echo'<div id="bilan"></div>';
 		echo'
 			<div id="zone_action_classe" class="hide">
 				<h2>Recherche de saisies manquantes | Imprimer le bilan (PDF)</h2>

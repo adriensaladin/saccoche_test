@@ -237,7 +237,7 @@ if($ACTION=='initialiser')
 // Récupérer les saisies déjà effectuées pour le bilan officiel concerné
 
 $tab_saisie = array();	// [eleve_id][rubrique_id][prof_id] => array(prof_info,appreciation,note,info);
-$DB_TAB = DB_STRUCTURE_OFFICIEL::DB_recuperer_bilan_officiel_saisies($BILAN_TYPE,$periode_id,$eleve_id);
+$DB_TAB = DB_STRUCTURE_OFFICIEL::DB_recuperer_bilan_officiel_saisies( $BILAN_TYPE , $periode_id , $eleve_id , 0 /*prof_id*/ );
 foreach($DB_TAB as $DB_ROW)
 {
 	$tab_saisie[$DB_ROW['eleve_id']][$DB_ROW['rubrique_id']][$DB_ROW['prof_id']] = array( 'prof_info'=>$DB_ROW['prof_info'] , 'appreciation'=>$DB_ROW['saisie_appreciation'] , 'note'=>$DB_ROW['saisie_note'] );
@@ -253,6 +253,7 @@ $make_action   = 'saisir';
 $make_html     = ( ($BILAN_TYPE=='bulletin') && ($objet=='tamponner') && ($mode=='graphique') ) ? FALSE : TRUE ;
 $make_pdf      = FALSE;
 $make_graph    = ( ($BILAN_TYPE=='bulletin') && ($objet=='tamponner') && ($mode=='graphique') ) ? TRUE : FALSE ;
+$js_graph = '';
 
 if($BILAN_TYPE=='releve')
 {
@@ -358,4 +359,5 @@ else
 {
 	exit(${$nom_bilan_html}.$js_graph);
 }
+
 ?>

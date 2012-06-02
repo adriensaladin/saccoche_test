@@ -31,6 +31,7 @@ if($_SESSION['SESAMATH_ID']==ID_DEMO){exit('Action désactivée pour la démo...
 $objet      = (isset($_POST['f_objet']))      ? clean_texte($_POST['f_objet'])      : '';
 $ACTION     = (isset($_POST['f_action']))     ? clean_texte($_POST['f_action'])     : '';
 $BILAN_TYPE = (isset($_POST['f_bilan_type'])) ? clean_texte($_POST['f_bilan_type']) : '';
+$mode       = (isset($_POST['f_mode']))       ? clean_texte($_POST['f_mode'])       : '';
 $periode_id = (isset($_POST['f_periode']))    ? clean_entier($_POST['f_periode'])   : 0;
 $classe_id  = (isset($_POST['f_classe']))     ? clean_entier($_POST['f_classe'])    : 0;
 $groupe_id  = (isset($_POST['f_groupe']))     ? clean_entier($_POST['f_groupe'])    : 0;
@@ -76,7 +77,7 @@ if(!$BILAN_ETAT)
 {
 	exit('Bilan introuvable !');
 }
-if(!in_array($BILAN_ETAT,array('2rubrique','3synthese')))
+if( (in_array($BILAN_ETAT,array('0absence','1vide'))) || ( ($BILAN_ETAT=='4complet') && ($tab_types[$BILAN_TYPE]['droit']=='SOCLE') ) )
 {
 	exit('Bilan interdit d\'accès pour cette action !');
 }
@@ -101,7 +102,9 @@ if($ACTION=='initialiser')
 		$form_choix_eleve .= '<option value="'.$DB_ROW['user_id'].'">'.html($DB_ROW['user_nom'].' '.$DB_ROW['user_prenom']).'</option>';
 		$tab_eleve_id[] = $DB_ROW['user_id'];
 	}
-	$form_choix_eleve .= '</select> <button id="go_suivant_eleve" type="button" class="go_suivant">Suivant</button> <button id="go_dernier_eleve" type="button" class="go_dernier">Dernier</button>&nbsp;&nbsp;&nbsp;<button id="fermer_zone_action_eleve" type="button" class="retourner">Retour</button></div></form><hr />';
+	$form_choix_eleve .= '</select> <button id="go_suivant_eleve" type="button" class="go_suivant">Suivant</button> <button id="go_dernier_eleve" type="button" class="go_dernier">Dernier</button>&nbsp;&nbsp;&nbsp;<button id="fermer_zone_action_eleve" type="button" class="retourner">Retour</button>';
+	$form_choix_eleve .= ($BILAN_TYPE=='bulletin') ? ' <button id="change_mode" type="button" class="stats">Interface graphique</button>' : '' ;
+	$form_choix_eleve .= '</div></form><hr />';
 	$eleve_id = $tab_eleve_id[0];
 	// (re)calculer les moyennes des élèves, ainsi que les moyennes de classe et générales (mises dans $_SESSION['tmp_moyenne_classe'][$periode_id][$classe_id][$matiere_id] et $_SESSION['tmp_moyenne_generale'][$periode_id][$classe_id][$eleve_id]) 
 	if( ($BILAN_TYPE=='bulletin') && $_SESSION['OFFICIEL']['BULLETIN_MOYENNE_SCORES'] )
@@ -128,7 +131,7 @@ if($ACTION=='initialiser')
 // Récupérer les saisies déjà effectuées pour le bilan officiel concerné
 
 $tab_saisie = array();	// [eleve_id][rubrique_id][prof_id] => array(prof_info,appreciation,note,info);
-$DB_TAB = DB_STRUCTURE_OFFICIEL::DB_recuperer_bilan_officiel_saisies($BILAN_TYPE,$periode_id,$eleve_id);
+$DB_TAB = DB_STRUCTURE_OFFICIEL::DB_recuperer_bilan_officiel_saisies( $BILAN_TYPE , $periode_id , $eleve_id , 0 /*prof_id*/ );
 foreach($DB_TAB as $DB_ROW)
 {
 	$tab_saisie[$DB_ROW['eleve_id']][$DB_ROW['rubrique_id']][$DB_ROW['prof_id']] = array( 'prof_info'=>$DB_ROW['prof_info'] , 'appreciation'=>$DB_ROW['saisie_appreciation'] , 'note'=>$DB_ROW['saisie_note'] );
@@ -141,9 +144,10 @@ foreach($DB_TAB as $DB_ROW)
 
 $make_officiel = TRUE;
 $make_action   = 'consulter';
-$make_html     = TRUE;
+$make_html     = ( ($BILAN_TYPE=='bulletin') && ($mode=='graphique') ) ? FALSE : TRUE ;
 $make_pdf      = FALSE;
-$make_graph    = FALSE;
+$make_graph    = ( ($BILAN_TYPE=='bulletin') && ($mode=='graphique') ) ? TRUE : FALSE ;
+$js_graph = '';
 
 if($BILAN_TYPE=='releve')
 {
@@ -241,7 +245,13 @@ elseif(in_array($BILAN_TYPE,array('palier1','palier2','palier3')))
 // Affichage du résultat
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
-echo ($ACTION=='initialiser') ? '<h2>Consulter le contenu</h2>'.$form_choix_eleve.'<div id="zone_resultat_eleve">'.${$nom_bilan_html}.'</div>' : ${$nom_bilan_html} ;
-exit();
+if($ACTION=='initialiser')
+{
+	exit('<h2>Consulter le contenu</h2>'.$form_choix_eleve.'<div id="zone_resultat_eleve">'.${$nom_bilan_html}.'</div>'.$js_graph);
+}
+else
+{
+	exit(${$nom_bilan_html}.$js_graph);
+}
 
 ?>

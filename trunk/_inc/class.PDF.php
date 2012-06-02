@@ -881,6 +881,8 @@ class PDF extends FPDF
 	//	bilan_synthese_entete()        c'est là que les calculs se font pour une sortie "multimatiere"
 	//	bilan_synthese_ligne_matiere()
 	//	bilan_synthese_ligne_synthese()
+	//	bilan_synthese_appreciation_rubrique()
+	//	bilan_synthese_appreciation_generale()
 	//	bilan_synthese_legende()
 	//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -1176,6 +1178,8 @@ class PDF extends FPDF
 	//	bilan_item_individuel_initialiser()   c'est là que les calculs se font pour une sortie "matiere"
 	//	bilan_item_individuel_entete()        c'est là que les calculs se font pour une sortie "multimatiere" ou "selection"
 	//	bilan_item_individuel_transdisciplinaire_ligne_matiere()
+	//	bilan_item_individuel_appreciation_rubrique()
+	//	bilan_item_individuel_appreciation_generale()
 	//	bilan_item_individuel_debut_ligne_item()
 	//	bilan_item_individuel_ligne_synthese()
 	//	bilan_item_individuel_legende()
@@ -1431,6 +1435,7 @@ class PDF extends FPDF
 	//	grille_referentiel_domaine()
 	//	grille_referentiel_theme()
 	//	grille_referentiel_item()
+	//	grille_referentiel_legende()
 	//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	public function grille_referentiel_initialiser($cases_nb,$cases_largeur,$lignes_nb,$colonne_bilan,$colonne_vide)
@@ -1790,11 +1795,13 @@ class PDF extends FPDF
 	//	Méthodes pour la mise en page d'un releve d'attestation de socle commun
 	//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	//	releve_socle_initialiser()
+	//	releve_socle_identite()
 	//	releve_socle_entete()
 	//	releve_socle_pilier()
 	//	releve_socle_section()
 	//	releve_socle_item()
 	//	releve_socle_appreciation_rubrique()
+	//	releve_socle_appreciation_generale()
 	//	releve_socle_legende()
 	//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -2173,7 +2180,10 @@ class PDF extends FPDF
 
 	//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 	//	Méthodes pour la mise en page d'un bilan de synthèse d'un groupe sur une période
-	//	bilan_periode_synthese_initialiser() bilan_periode_synthese_entete() bilan_periode_synthese_pourcentages()
+	//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+	//	bilan_periode_synthese_initialiser()
+	//	bilan_periode_synthese_entete()
+	//	bilan_periode_synthese_pourcentages()
 	//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
 	public function bilan_periode_synthese_initialiser($eleve_nb,$item_nb,$tableau_tri_objet)
@@ -2284,7 +2294,14 @@ class PDF extends FPDF
 
 	//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 	//	Méthodes pour la mise en page d'un tableau vierge de saisie d'évaluation
-	//	tableau_saisie_initialiser() tableau_saisie_reference_devoir() tableau_saisie_reference_eleve() tableau_saisie_reference_item() tableau_saisie_cellule()
+	//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+	//	tableau_saisie_initialiser()
+	//	tableau_saisie_reference_devoir()
+	//	tableau_saisie_reference_eleve()
+	//	tableau_saisie_reference_item()
+	//	tableau_devoir_repartition_quantitative_initialiser()
+	//	tableau_devoir_repartition_nominative_initialiser()
+	//	tableau_devoir_repartition_nominative_entete()
 	//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
 	public function tableau_saisie_initialiser($eleve_nb,$item_nb)
@@ -2342,7 +2359,7 @@ class PDF extends FPDF
 
 	//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 	//	Méthodes pour la mise en page d'un bilan d'un devoir : répartition quantitative ou nominative
-	//	tableau_devoir_repartition_quantitative_initialiser() tableau_devoir_repartition_nominative_initialiser()
+	//	tableau_devoir_repartition_quantitative_initialiser() tableau_devoir_repartition_nominative_initialiser() tableau_devoir_repartition_nominative_entete()
 	//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
 	public function tableau_devoir_repartition_quantitative_initialiser($item_nb)
@@ -2404,7 +2421,12 @@ class PDF extends FPDF
 
 	//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 	//	Méthodes pour la mise en page d'un cartouche
-	//	cartouche_initialiser() cartouche_entete() cartouche_minimal_competence() cartouche_complet_competence() cartouche_interligne()
+	//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+	//	cartouche_initialiser()
+	//	cartouche_entete()
+	//	cartouche_minimal_competence()
+	//	cartouche_complet_competence()
+	//	cartouche_interligne()
 	//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
 	public function cartouche_initialiser($detail,$item_nb)
@@ -2467,6 +2489,69 @@ class PDF extends FPDF
 	public function cartouche_interligne($nb_lignes)
 	{
 		$this->SetXY($this->marge_gauche , $this->GetY() + $nb_lignes*$this->cases_hauteur);
+	}
+
+	//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+	//	Méthodes pour la mise en page d'un tableau d'appréciation d'un prof sur un bulletin
+	//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+	//	tableau_appreciation_initialiser()
+	//	tableau_appreciation_intitule()
+	//	tableau_appreciation_interligne()
+	//	tableau_appreciation_rubrique()
+	//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
+	public function tableau_appreciation_initialiser($nb_appreciations,$nb_eleves,$with_moyenne)
+	{
+		$eleve_matiere_largeur = 50; // valeur fixe
+		$note_largeur          = ($with_moyenne) ? 10 : 0 ; // valeur fixe
+		$nb_lignes_necessaires   = 1 + 2*$nb_appreciations + 0.5*$nb_eleves ; // titre + appreciations (2 lignes / app) + marges entre élèves (0.5 ligne / eleve)
+		$this->cases_largeur     = $this->page_largeur - $this->marge_gauche - $this->marge_droite - $eleve_matiere_largeur - $note_largeur ;
+		$this->lignes_hauteur    = ($this->page_hauteur - $this->marge_haut - $this->marge_bas) / $nb_lignes_necessaires;
+		$this->lignes_hauteur    = min($this->lignes_hauteur,8);
+		$this->taille_police     = $this->lignes_hauteur * 2;
+		$this->SetMargins($this->marge_gauche , $this->marge_haut , $this->marge_droite);
+		$this->AddPage($this->orientation , 'A4');
+		$this->SetAutoPageBreak(FALSE);
+	}
+
+	public function tableau_appreciation_intitule($intitule)
+	{
+		$this->SetFont('Arial' , 'B' , $this->taille_police*1.2);
+		$this->CellFit( $this->page_largeur - $this->marge_gauche - $this->marge_droite , $this->lignes_hauteur , pdf($intitule)  , 0 /*bordure*/ , 1 /*br*/ , 'C' /*alignement*/ , FALSE /*remplissage*/ );
+	}
+
+	public function tableau_appreciation_interligne()
+	{
+		$this->SetXY($this->marge_gauche , $this->GetY() + 0.5*$this->lignes_hauteur);
+	}
+
+	public function tableau_appreciation_rubrique($eleve_nom_prenom,$matiere_nom,$appreciation,$note,$with_moyenne)
+	{
+		$eleve_matiere_largeur = 50; // valeur fixe
+		$note_largeur          = 10; // valeur fixe
+		// cadre
+		$memo_x = $this->GetX();
+		$memo_y = $this->GetY();
+		$this->Cell( $this->page_largeur - $this->marge_gauche - $this->marge_droite , 2*$this->lignes_hauteur , '' , 1 /*bordure*/ , 0 /*br*/ , 'L' /*alignement*/ , FALSE /*remplissage*/ );
+		// nom-prénom + rubrique
+		$this->SetXY($memo_x , $memo_y);
+		$this->SetFont('Arial' , '' , $this->taille_police);
+		$this->CellFit( $eleve_matiere_largeur , $this->lignes_hauteur , pdf($eleve_nom_prenom) , 0 /*bordure*/ , 1 /*br*/ , 'L' /*alignement*/ , FALSE /*remplissage*/ );
+		$this->CellFit( $eleve_matiere_largeur , $this->lignes_hauteur , pdf($matiere_nom)      , 0 /*bordure*/ , 1 /*br*/ , 'L' /*alignement*/ , FALSE /*remplissage*/ );
+		// moyenne
+		$this->SetXY($memo_x+$eleve_matiere_largeur , $memo_y);
+		if($with_moyenne)
+		{
+			$moyenne_eleve = ($note!==NULL) ? ( ($_SESSION['OFFICIEL']['BULLETIN_NOTE_SUR_20']) ? number_format($note,1,',','') : ($note*5).'%' ) : '-' ;
+			$this->CellFit( $note_largeur , 2*$this->lignes_hauteur , pdf($moyenne_eleve) , 1 /*bordure*/ , 0 /*br*/ , 'C' /*alignement*/ , FALSE /*remplissage*/ );
+		}
+		else
+		{
+			$this->Line( $memo_x+$eleve_matiere_largeur , $memo_y , $memo_x+$eleve_matiere_largeur , $memo_y+2*$this->lignes_hauteur );
+		}
+		// appréciation
+		$this->afficher_appreciation( $this->cases_largeur , 2*$this->lignes_hauteur , $this->taille_police , $this->lignes_hauteur , $appreciation );
+		$this->SetXY($memo_x , $memo_y+2*$this->lignes_hauteur);
 	}
 
 }

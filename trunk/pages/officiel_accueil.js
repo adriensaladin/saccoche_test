@@ -407,16 +407,60 @@ $(document).ready
 			{
 				if($('#f_mode').val()=='texte')
 				{
-					$('#change_mode').html('Interface détaillée');
+					$('#change_mode').removeAttr("class").addClass("texte").html('Interface détaillée');
 					$('#f_mode').val('graphique');
 				}
 				else
 				{
-					$('#change_mode').html('Interface graphique');
+					$('#change_mode').removeAttr("class").addClass("stats").html('Interface graphique');
 					$('#f_mode').val('texte');
 				}
 				var eleve_id = $('#go_selection_eleve option:selected').val();
 				charger_nouvel_eleve(eleve_id,true);
+			}
+		);
+
+		//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+		//	[officiel_action_saisir|officiel_action_consulter] Clic sur le bouton pour imprimer ses appréciations
+		//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
+		$('#imprimer_appreciations').live // live est utilisé pour prendre en compte les nouveaux éléments créés
+		('click',
+			function()
+			{
+				$('#form_choix_eleve button , #form_choix_eleve select , #zone_resultat_eleve button').prop('disabled',true);
+				$.ajax
+				(
+					{
+						type : 'POST',
+						url : 'ajax.php?page=officiel_accueil',
+						data : 'f_action='+'imprimer_appreciations'+'&f_bilan_type='+BILAN_TYPE+'&f_classe='+memo_classe+'&f_groupe='+memo_groupe+'&f_periode='+memo_periode+'&'+$('#form_hidden').serialize(),
+						dataType : "html",
+						error : function(msg,string)
+						{
+							$.fancybox( '<label class="alerte">'+'Echec de la connexion !\nVeuillez recommencer.'+'</label>' , {'centerOnScroll':true} );
+							$('#form_choix_eleve button , #form_choix_eleve select , #zone_resultat_eleve button').prop('disabled',false);
+							return false;
+						},
+						success : function(responseHTML)
+						{
+							initialiser_compteur();
+							$('#form_choix_eleve button , #form_choix_eleve select , #zone_resultat_eleve button').prop('disabled',false);
+							if(responseHTML.substring(0,4)!='<ul ')
+							{
+								$.fancybox( '<label class="alerte">'+responseHTML+'</label>' , {'centerOnScroll':true} );
+							}
+							else
+							{
+								// Mis dans le div bilan et pas balancé directement dans le fancybox sinon le format_lien() nécessite un peu plus de largeur que le fancybox ne recalcule pas (et $.fancybox.update(); ne change rien).
+								// Malgré tout, pour Chrome par exemple, la largeur est mal clculée et provoque des retours à la ligne, d'où le minWidth ajouté.
+								$('#bilan').html('<div class="noprint">Afin de préserver l\'environnement, n\'imprimer qu\'en cas de nécessité !</div><p />'+responseHTML);
+								format_liens('#bilan');
+								$.fancybox( { 'href':'#bilan' , onClosed:function(){$('#bilan').html("");} , 'centerOnScroll':true , 'minWidth':550 } );
+							}
+						}
+					}
+				);
 			}
 		);
 
@@ -462,7 +506,7 @@ $(document).ready
 			{
 				$('#f_appreciation').focus().html(champ_contenu);
 				afficher_textarea_reste( $('#f_appreciation') , memo_long_max );
-				window.scrollBy(0,50); // Pour avoir à l'écran les bouton de validation et d'annulation situés en dessous du textarea
+				window.scrollBy(0,100); // Pour avoir à l'écran les bouton de validation et d'annulation situés en dessous du textarea
 			}
 			if(memo_rubrique_type=='note')
 			{
@@ -628,7 +672,7 @@ $(document).ready
 						dataType : "html",
 						error : function(msg,string)
 						{
-							alert("Echec de la connexion !");
+							$.fancybox( '<label class="alerte">'+'Echec de la connexion !\nVeuillez recommencer.'+'</label>' , {'centerOnScroll':true} );
 							$('#form_choix_eleve button , #form_choix_eleve select , #zone_resultat_eleve button').prop('disabled',false);
 							return false;
 						},
@@ -638,7 +682,7 @@ $(document).ready
 							$('#form_choix_eleve button , #form_choix_eleve select , #zone_resultat_eleve button').prop('disabled',false);
 							if( (responseHTML.substring(0,4)!='<div') && (responseHTML.substring(0,4)!='<td ') )
 							{
-								alert(responseHTML);
+								$.fancybox( '<label class="alerte">'+responseHTML+'</label>' , {'centerOnScroll':true} );
 							}
 							else
 							{
@@ -680,7 +724,7 @@ $(document).ready
 						dataType : "html",
 						error : function(msg,string)
 						{
-							alert("Echec de la connexion !");
+							$.fancybox( '<label class="alerte">'+'Echec de la connexion !\nVeuillez recommencer.'+'</label>' , {'centerOnScroll':true} );
 							$('#form_choix_eleve button , #form_choix_eleve select , #zone_resultat_eleve button').prop('disabled',false);
 							return false;
 						},
@@ -690,7 +734,7 @@ $(document).ready
 							$('#form_choix_eleve button , #form_choix_eleve select , #zone_resultat_eleve button').prop('disabled',false);
 							if( (responseHTML.substring(0,4)!='<div') && (responseHTML.substring(0,4)!='<td ') )
 							{
-								alert(responseHTML);
+								$.fancybox( '<label class="alerte">'+responseHTML+'</label>' , {'centerOnScroll':true} );
 							}
 							else
 							{
@@ -1112,7 +1156,7 @@ $(document).ready
 			],
 			title: {
 				style: { color: '#333' } ,
-				text: 'NOM Prénom' // MAJ ensuite
+				text: null // Pourrait être MAJ ensuite
 			},
 			xAxis: {
 				labels: { style: { color: '#000' } },

@@ -108,21 +108,6 @@ public static function DB_recuperer_bilan_officiel_notes($periode_id,$tab_eleve_
 }
 
 /**
- * recuperer_signature
- *
- * @param int    $user_id   0 pour le tampon de l'établissement
- * @return array
- */
-public static function DB_recuperer_signature($user_id)
-{
-	$DB_SQL = 'SELECT * ';
-	$DB_SQL.= 'FROM sacoche_signature ';
-	$DB_SQL.= 'WHERE user_id=:user_id ';
-	$DB_VAR = array(':user_id'=>$user_id);
-	return DB::queryRow(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-}
-
-/**
  * recuperer_signatures
  *
  * @param string   $listing_user_id

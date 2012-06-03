@@ -104,6 +104,18 @@ if($type_generique)
 	$type_synthese   = 0 ;
 }
 
+// La récupération de beaucoup d'informations peut provoquer un dépassement de mémoire.
+// Et la classe FPDF a besoin de mémoire, malgré toutes les optimisations possibles, pour générer un PDF comportant parfois entre 100 et 200 pages.
+// De plus la consommation d'une classe PHP n'est pas mesurable - non comptabilisée par memory_get_usage() - et non corrélée à la taille de l'objet PDF en l'occurrence...
+// Un memory_limit() de 64Mo est ainsi dépassé avec un pdf d'environ 150 pages, ce qui est atteint avec 4 pages par élèves ou un groupe d'élèves > effectif moyen d'une classe.
+// D'où le ini_set(), même si cette directive peut être interdite dans la conf PHP ou via Suhosin (http://www.hardened-php.net/suhosin/configuration.html#suhosin.memory_limit)
+// En complément, register_shutdown_function() permet de capter une erreur fatale de dépassement de mémoire.
+
+augmenter_memory_limit();
+register_shutdown_function('rapporter_erreur_fatale');
+
+// Initialisation de tableaux
+
 $tab_domaine        = array();	// [domaine_id] => array(domaine_ref,domaine_nom,domaine_nb_lignes);
 $tab_theme          = array();	// [domaine_id][theme_id] => array(theme_ref,theme_nom,theme_nb_lignes);
 $tab_item           = array();	// [theme_id][item_id] => array(item_ref,item_nom,item_coef,item_cart,item_socle,item_lien);
@@ -192,13 +204,6 @@ $eleve_nb = count($tab_eleve);
 if( !$type_generique && ( ($remplissage=='plein') || ($colonne_bilan=='oui') || $type_synthese || ($_SESSION['USER_PROFIL']=='eleve') ) )
 {
 	$DB_TAB = DB_STRUCTURE_BILAN::DB_lister_result_eleves_items($liste_eleve , $liste_item , $matiere_id , $date_debut=false , $date_fin=false , $_SESSION['USER_PROFIL']) ;
-
-	// Permet d'avoir des informations accessibles en cas d'erreur type « PHP Warning : Invalid argument supplied for foreach() ».
-	if(!is_array($DB_TAB))
-	{
-		ajouter_log_PHP( 'Demande de bilan' /*log_objet*/ , serialize($_POST) /*log_contenu*/ , __FILE__ /*log_fichier*/ , __LINE__ /*log_ligne*/ , TRUE /*only_sesamath*/ );
-	}
-
 	foreach($DB_TAB as $DB_ROW)
 	{
 		$user_id = ($_SESSION['USER_PROFIL']=='eleve') ? $_SESSION['USER_ID'] : $DB_ROW['eleve_id'] ;
@@ -377,12 +382,6 @@ if( $type_individuel )
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 // Elaboration de la grille d'items d'un référentiel, en HTML et PDF
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-
-// La classe FPDF est gourmande en mémoire malgré toutes les optimisations possibles.
-// De plus cette consommation n'est pas mesurable - non comptabilisée par memory_get_usage() - et non corrélée à la taille de l'objet PDF...
-// Un memory_limit() de 64Mo est ainsi dépassé avec un pdf d'environ 150 pages, ce qui est atteint avec 4 pages par élèves ou un groupe d'élèves > effectif moyen d'une classe.
-// D'où le ini_set(), même si cette directive peut être interdite dans la conf PHP ou via Suhosin (http://www.hardened-php.net/suhosin/configuration.html#suhosin.memory_limit)
-if($type_individuel) { @ini_set('memory_limit','256M'); @ini_alter('memory_limit','256M'); }
 
 $affichage_direct   = ( ( in_array($_SESSION['USER_PROFIL'],array('eleve','parent')) ) && (SACoche!='webservices') ) ? TRUE : FALSE ;
 $affichage_checkbox = ( $type_synthese && ($_SESSION['USER_PROFIL']=='professeur') && (SACoche!='webservices') )     ? TRUE : FALSE ;

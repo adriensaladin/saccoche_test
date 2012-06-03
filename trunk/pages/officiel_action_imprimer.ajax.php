@@ -269,7 +269,7 @@ if($_SESSION['OFFICIEL']['TAMPON_SIGNATURE']!='sans')
 	$DB_TAB = DB_STRUCTURE_OFFICIEL::DB_recuperer_signatures($listing_prof_id);
 	foreach($DB_TAB as $DB_ROW)
 	{
-		$tab_signature[$DB_ROW['user_id']] = array( $DB_ROW['signature_contenu'] , $DB_ROW['signature_format'] , $DB_ROW['signature_largeur'] , $DB_ROW['signature_hauteur'] );
+		$tab_signature[$DB_ROW['user_id']] = array( base64_decode($DB_ROW['signature_contenu']) , $DB_ROW['signature_format'] , $DB_ROW['signature_largeur'] , $DB_ROW['signature_hauteur'] );
 	}
 }
 

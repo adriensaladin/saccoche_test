@@ -502,7 +502,7 @@ if(count($tab_classe))
 				<p style="clear:both"><span class="tab"></span><button id="lancer_recherche" type="button" class="rechercher">Lancer la recherche</button> <button id="fermer_zone_chx_rubriques" type="button" class="annuler">Annuler</button><label id="ajax_msg_recherche">&nbsp;</label></p>
 			</form>
 		';
-		echo'<form action="#" method="post" id="form_hidden" class="hide"><div>'.$form_hidden.'<input type="hidden" id="f_objet" name="f_objet" value="" /><input type="hidden" id="f_listing_rubriques" name="f_listing_rubriques" value="" /><input type="hidden" id="f_mode" name="f_mode" value="texte" /></div></form>';
+		echo'<form action="#" method="post" id="form_hidden" class="hide"><div>'.$form_hidden.'<input type="hidden" id="f_objet" name="f_objet" value="" /><input type="hidden" id="f_listing_rubriques" name="f_listing_rubriques" value="" /><input type="hidden" id="f_listing_eleves" name="f_listing_eleves" value="" /><input type="hidden" id="f_mode" name="f_mode" value="texte" /></div></form>';
 
 		//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 		//	Formulaires utilisés pour les opérations ultérieures sur les bilans.

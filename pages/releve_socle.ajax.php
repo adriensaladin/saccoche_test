@@ -72,9 +72,6 @@ Formulaire::save_choix('releve_socle');
 
 $marge_gauche = $marge_droite = $marge_haut = $marge_bas = $marge_min ;
 
-// Permet d'avoir des informations accessibles en cas d'erreur type « PHP Fatal error : Allowed memory size of ... bytes exhausted ».
-// ajouter_log_PHP( 'Demande de bilan' /*log_objet*/ , serialize($_POST) /*log_contenu*/ , __FILE__ /*log_fichier*/ , __LINE__ /*log_ligne*/ , TRUE /*only_sesamath*/ );
-
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 // INCLUSION DU CODE COMMUN À PLUSIEURS PAGES
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-

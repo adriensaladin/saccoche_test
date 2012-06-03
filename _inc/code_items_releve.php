@@ -34,6 +34,16 @@
  * 
  */
 
+// La récupération de beaucoup d'informations peut provoquer un dépassement de mémoire.
+// Et la classe FPDF a besoin de mémoire, malgré toutes les optimisations possibles, pour générer un PDF comportant parfois entre 100 et 200 pages.
+// De plus la consommation d'une classe PHP n'est pas mesurable - non comptabilisée par memory_get_usage() - et non corrélée à la taille de l'objet PDF en l'occurrence...
+// Un memory_limit() de 64Mo est ainsi dépassé avec un pdf d'environ 150 pages, ce qui est atteint avec 4 pages par élèves ou un groupe d'élèves > effectif moyen d'une classe.
+// D'où le ini_set(), même si cette directive peut être interdite dans la conf PHP ou via Suhosin (http://www.hardened-php.net/suhosin/configuration.html#suhosin.memory_limit)
+// En complément, register_shutdown_function() permet de capter une erreur fatale de dépassement de mémoire.
+
+augmenter_memory_limit();
+register_shutdown_function('rapporter_erreur_fatale');
+
 /*
 $type_individuel   $type_synthese   $type_bulletin
 $format				matiere	selection	multimatiere
@@ -411,12 +421,6 @@ if(!isset($tab_destinataires))
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // Elaboration du bilan individuel, disciplinaire ou transdisciplinaire, en HTML et PDF
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-// La classe FPDF a besoin de mémoire, malgré toutes les optimisations possibles, pour générer un PDF comportant parfois entre 100 et 200 pages.
-// De plus cette consommation n'est pas mesurable - non comptabilisée par memory_get_usage() - et non corrélée à la taille de l'objet PDF...
-// Un memory_limit() de 64Mo est ainsi dépassé avec un pdf d'environ 150 pages, ce qui est atteint avec 4 pages par élèves ou un groupe d'élèves > effectif moyen d'une classe.
-// D'où le ini_set(), même si cette directive peut être interdite dans la conf PHP ou via Suhosin (http://www.hardened-php.net/suhosin/configuration.html#suhosin.memory_limit)
-if( ($make_pdf) && ($type_individuel) ) { @ini_set('memory_limit','256M'); @ini_alter('memory_limit','256M'); }
 
 $affichage_direct   = ( ( ( in_array($_SESSION['USER_PROFIL'],array('eleve','parent')) ) && (SACoche!='webservices') ) || ($make_officiel) ) ? TRUE : FALSE ;
 $affichage_checkbox = ( $type_synthese && ($_SESSION['USER_PROFIL']=='professeur') && (SACoche!='webservices') )                             ? TRUE : FALSE ;

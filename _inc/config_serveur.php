@@ -25,7 +25,10 @@
  * 
  */
 
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 // Vérifier la version de PHP
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
 $version_php_mini = '5.1';
 if(version_compare(PHP_VERSION,$version_php_mini,'<'))
 {
@@ -33,7 +36,10 @@ if(version_compare(PHP_VERSION,$version_php_mini,'<'))
 }
 $version_mysql_mini = '5.0'; // Pour l'installation
 
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 // Vérifier la présence des modules nécessaires
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
 $extensions_chargees = get_loaded_extensions();
 $extensions_requises = array('curl','dom','gd','mbstring','mysql','PDO','pdo_mysql','session','zip','zlib');
 $extensions_manquantes = array_diff($extensions_requises,$extensions_chargees);
@@ -42,7 +48,43 @@ if(count($extensions_manquantes))
 	affich_message_exit($titre='PHP incomplet',$contenu='Les modules PHP suivants sont manquants : '.implode($extensions_manquantes,' '));
 }
 
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+// La fonction error_get_last() n'est disponible que depuis PHP 5.2 ; SACoche exigeant PHP 5.1, la définir si besoin.
+// http://fr.php.net/manual/fr/function.error-get-last.php#103539
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
+if(!function_exists('error_get_last'))
+{
+	set_error_handler(
+			create_function(
+				'$errno,$errstr,$errfile,$errline,$errcontext',
+				'
+					global $__error_get_last_retval__;
+					$__error_get_last_retval__ = array(
+						\'type\'    => $errno,
+						\'message\' => $errstr,
+						\'file\'    => $errfile,
+						\'line\'    => $errline
+					);
+					return NULL;
+				'
+			)
+	);
+	function error_get_last()
+	{
+		global $__error_get_last_retval__;
+		if( !isset($__error_get_last_retval__) )
+		{
+			return NULL;
+		}
+		return $__error_get_last_retval__;
+	}
+}
+
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 // La fonction array_fill_keys() n'est disponible que depuis PHP 5.2 ; SACoche exigeant PHP 5.1, la définir si besoin.
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
 if(!function_exists('array_fill_keys'))
 {
 	function array_fill_keys($tab_clefs,$valeur)
@@ -51,7 +93,10 @@ if(!function_exists('array_fill_keys'))
 	}
 }
 
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 // Fixer le niveau de rapport d'erreurs PHP
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
 if(SERVEUR_TYPE == 'PROD')
 {
 	// Rapporter toutes les erreurs à part les E_NOTICE (c'est la configuration par défaut de php.ini) et E_STRICT qui est englobé dans E_ALL à compter de PHP 5.4.
@@ -63,32 +108,61 @@ else
 	ini_set('error_reporting',E_ALL | E_STRICT);
 }
 
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 // Définir le décalage horaire par défaut de toutes les fonctions date/heure 
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
 @date_default_timezone_set('Europe/Paris');
 
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 // Ne pas échapper les apostrophes pour Get/Post/Cookie
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
 ini_set('magic_quotes_gpc',0);
 ini_set('magic_quotes_sybase',0);
 
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 // Ne pas enregistrer les variables Environment/GET/POST/Cookie/Server comme des variables globales.
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
 // register_globals ne peut pas être définit durant le traitement avec "ini_set"...
 // ini_set(register_globals,0);
 
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 // Durée de vie des données (session...) sur le serveur, en nombre de secondes.
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
 ini_set('session.gc_maxlifetime',3000);
-// Le module doit utiliser seulement les cookies pour stocker les identifiants de sessions du côté du navigateur.
+
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 // Protection contre les attaques qui utilisent des identifiants de sessions dans les URL.
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
 ini_set('session.use_trans_sid', 0); 
+
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+// Le module doit utiliser seulement les cookies pour stocker les identifiants de sessions du côté du navigateur.
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
 ini_set('session.use_only_cookies',1);
 
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 // Ne pas autoriser les balises courtes d'ouverture de PHP (et possibilité d'utiliser XML sans passer par echo).
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
 ini_set('short_open_tag',0);
 
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 // Désactiver le mode de compatibilité avec le Zend Engine 1 (PHP 4).
 // Sinon l'utilisation de "simplexml_load_string()" ou "DOMDocument" (par exemples) provoquent des erreurs fatales, + incompatibilité avec classe PDO.
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
 ini_set('zend.ze1_compatibility_mode',0);
 
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 // Modifier l'encodage interne pour les fonctions mb_* (manipulation de chaînes de caractères multi-octets)
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
 mb_internal_encoding(CHARSET);
 
 /**
@@ -166,7 +240,10 @@ function __autoload($class_name)
 	}
 }
 
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 // Pour FirePHP
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
 if(DEBUG)
 {
 	ini_set('output_buffering','On');
@@ -183,6 +260,35 @@ function afficher_infos_debug()
 	$firephp->dump('SESSION', $_SESSION);
 	$tab_constantes = get_defined_constants(TRUE);
 	$firephp->dump('CONSTANTES', $tab_constantes['user']);
+}
+
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+// Augmenter le memory_limit (si autorisé) pour les pages les plus gourmandes
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
+function augmenter_memory_limit()
+{
+	if( (int)ini_get('memory_limit') < 256 )
+	{
+		@ini_set('memory_limit','256M');
+		@ini_alter('memory_limit','256M');
+	}
+}
+
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+// Pour intercepter les erreurs de dépassement de mémoire (une erreur fatale échappe à un try{...}catch(){...}).
+// Source : http://pmol.fr/programmation/web/la-gestion-des-erreurs-en-php/
+// Pour avoir des informations accessibles en cas d'erreur type « PHP Fatal error : Allowed memory size of ... bytes exhausted » on peut aussi mettre dans les pages sensibles :
+// ajouter_log_PHP( 'Demande de bilan' /*log_objet*/ , serialize($_POST) /*log_contenu*/ , __FILE__ /*log_fichier*/ , __LINE__ /*log_ligne*/ , TRUE /*only_sesamath*/ );
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
+function rapporter_erreur_fatale()
+{
+	$tab_last_error = error_get_last(); // tableau à 4 indices : type ; message ; file ; line
+	if( ($tab_last_error!==NULL) && ($tab_last_error['type']===E_ERROR) && (substr($tab_last_error['message'],0,19)=='Allowed memory size') )
+	{
+		affich_message_exit($titre='Mémoire insuffisante',$contenu='Mémoire de '.ini_get('memory_limit').' insuffisante ; sélectionner moins d\'élèves à la fois ou demander à votre hébergeur d\'augmenter la valeur "memory_limit".');
+	}
 }
 
 ?>

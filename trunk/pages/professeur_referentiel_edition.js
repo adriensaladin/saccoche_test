@@ -113,6 +113,7 @@ $(document).ready
 							else
 							{
 								$('#zone_choix_referentiel').hide();
+								initialiser_action_groupe();
 								$('#zone_elaboration_referentiel').html('<p><span class="tab"></span>Tout déployer / contracter : <a href="m2" class="all_extend"><img alt="m2" src="./_img/deploy_m2.gif" /></a> <a href="n1" class="all_extend"><img alt="n1" src="./_img/deploy_n1.gif" /></a> <a href="n2" class="all_extend"><img alt="n2" src="./_img/deploy_n2.gif" /></a> <a href="n3" class="all_extend"><img alt="n3" src="./_img/deploy_n3.gif" /></a><br /><span class="tab"></span><button id="fermer_zone_elaboration_referentiel" type="button" class="retourner">Retour à la liste des matières</button></p>'+'<h2>'+matiere_nom+'</h2>'+responseHTML);
 								// Récupérer le contenu des title des ressources avant que le tooltip ne les enlève
 								$('#zone_elaboration_referentiel li.li_n3').each
@@ -1037,6 +1038,228 @@ $(document).ready
 					else {$('#zone_elaboration_referentiel q.annuler').click();}
 				}
 				return false;
+			}
+		);
+
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+//	Gestion des manipulations complémentaires
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
+		function lister_options_select( granulosite , select_id , matiere_id_a_eviter )
+		{
+			var id_matieres = (matiere_id_a_eviter) ? listing_id_matieres_autorisees.replace(','+matiere_id_a_eviter+',',',') : listing_id_matieres_autorisees ;
+			id_matieres = id_matieres.substring(1,id_matieres.length-1);
+			$('#ajax_msg_groupe').removeAttr("class").addClass("loader").html("Connexion au serveur&hellip;");
+			$.ajax
+			(
+				{
+					type : 'POST',
+					url : 'ajax.php?page='+PAGE,
+					data : 'action=lister_options&granulosite='+granulosite+'&id_matieres='+id_matieres,
+					dataType : "html",
+					error : function(msg,string)
+					{
+						$('#ajax_msg_groupe').removeAttr("class").addClass("alerte").html('Echec de la connexion !');
+					},
+					success : function(responseHTML)
+					{
+						initialiser_compteur();
+						if(responseHTML.substring(0,7)=='<option')	// Attention aux caractères accentués : l'utf-8 pose des pbs pour ce test
+						{
+							$('#ajax_msg_groupe').removeAttr('class').html('');
+							$('#'+select_id).html(responseHTML).show(0);
+						}
+						else
+						{
+							$('#ajax_msg_groupe').removeAttr("class").addClass("alerte").html(responseHTML);
+						}
+					}
+				}
+			);
+		}
+
+		var modifier_action_groupe = function()
+		{
+			var action_groupe = $('#select_action_groupe_choix option:selected').val();
+			$('#bouton_valider_groupe').prop('disabled',true);
+			if(!action_groupe)
+			{
+				$('#groupe_modifier_avertissement , #select_action_groupe_modifier_objet , #select_action_groupe_modifier_id , #select_action_groupe_modifier_coef , #select_action_groupe_modifier_cart , #select_action_groupe_deplacer_id_initial , #select_action_deplacer_explication , #select_action_groupe_deplacer_id_final').css("display","none"); // hide(0) ne donne rien si appelé par initialiser_action_groupe()...
+				$('#ajax_msg_groupe').removeAttr('class').html('');
+			}
+			else if( (action_groupe=='modifier_coefficient') || (action_groupe=='modifier_panier') )
+			{
+				$('#select_action_groupe_modifier_id , #select_action_groupe_modifier_coef , #select_action_groupe_modifier_cart , #select_action_groupe_deplacer_id_initial , #select_action_deplacer_explication , #select_action_groupe_deplacer_id_final').hide(0);
+				$('#select_action_groupe_modifier_objet option:first').prop('selected',true);
+				$('#select_action_groupe_modifier_objet').show(0);
+				$('#ajax_msg_groupe').removeAttr('class').html('');
+			}
+			else if( (action_groupe=='deplacer_domaine') || (action_groupe=='deplacer_theme') )
+			{
+				$('#select_action_groupe_modifier_objet , #select_action_groupe_modifier_id , #select_action_groupe_modifier_coef , #select_action_groupe_modifier_cart , #select_action_deplacer_explication , #select_action_groupe_deplacer_id_final').hide(0);
+				$('#groupe_modifier_avertissement').show(0);
+				$('#select_action_groupe_deplacer_id_initial').html('<option value=""></option>');
+				lister_options_select( action_groupe.substring(9) , 'select_action_groupe_deplacer_id_initial' , 0 );
+			}
+		};
+
+		$("#select_action_groupe_choix").change( modifier_action_groupe );
+
+		function initialiser_action_groupe()
+		{
+			$('#select_action_groupe_choix option:first').prop('selected',true);
+			modifier_action_groupe();
+		}
+
+		$("#select_action_groupe_modifier_objet").change
+		(
+			function()
+			{
+				var modifier_objet = $('#select_action_groupe_modifier_objet option:selected').val();
+				$('#bouton_valider_groupe').prop('disabled',true);
+				if(!modifier_objet)
+				{
+					$('#select_action_groupe_modifier_id , #select_action_groupe_modifier_coef , #select_action_groupe_modifier_cart').hide(0);
+					$('#ajax_msg_groupe').removeAttr('class').html('');
+				}
+				else
+				{
+					$('#select_action_groupe_modifier_id').html('<option value=""></option>');
+					lister_options_select( modifier_objet , 'select_action_groupe_modifier_id' , 0 );
+				}
+			}
+		);
+
+		$("#select_action_groupe_modifier_id").change
+		(
+			function()
+			{
+				var action_groupe = $('#select_action_groupe_choix option:selected').val();
+				var modifier_id = $('#select_action_groupe_modifier_id option:selected').val();
+				$('#bouton_valider_groupe').prop('disabled',true);
+				if(!modifier_id)
+				{
+					$('#select_action_groupe_modifier_coef , #select_action_groupe_modifier_cart').hide(0);
+					$('#ajax_msg_groupe').removeAttr('class').html('');
+				}
+				else
+				{
+					if(action_groupe=='modifier_coefficient')
+					{
+						$('#select_action_groupe_modifier_cart').hide(0);
+						$('#select_action_groupe_modifier_coef option:first').prop('selected',true);
+						$('#select_action_groupe_modifier_coef').show(0);
+					}
+					else if(action_groupe=='modifier_panier')
+					{
+						$('#select_action_groupe_modifier_coef').hide(0);
+						$('#select_action_groupe_modifier_cart option:first').prop('selected',true);
+						$('#select_action_groupe_modifier_cart').show(0);
+					}
+				}
+			}
+		);
+
+		$("#select_action_groupe_deplacer_id_initial").change
+		(
+			function()
+			{
+				var action_groupe = $('#select_action_groupe_choix option:selected').val();
+				var deplacer_id_initial = $('#select_action_groupe_deplacer_id_initial option:selected').val();
+				$('#bouton_valider_groupe').prop('disabled',true);
+				if(!deplacer_id_initial)
+				{
+					$('#select_action_deplacer_explication , #select_action_groupe_deplacer_id_final').hide(0);
+					$('#ajax_msg_groupe').removeAttr('class').html('');
+				}
+				else
+				{
+					var tab_ids = deplacer_id_initial.split('_');
+					var matiere_id_a_eviter = tab_ids[0];
+					var option_a_desactiver = (action_groupe=='deplacer_domaine') ? 'deplacer_theme' : 'deplacer_domaine' ;
+					var option_a_activer    = (action_groupe=='deplacer_theme')   ? 'deplacer_theme' : 'deplacer_domaine' ;
+					var granulosite         = (action_groupe=='deplacer_domaine') ? 'referentiel'    : 'domaine' ;
+					$('#select_action_deplacer_explication option[value='+option_a_desactiver+']').prop('disabled',true);
+					$('#select_action_deplacer_explication option[value='+option_a_activer+']').prop('disabled',false).prop('selected',true);
+					$('#select_action_deplacer_explication').show(0);
+					$('#select_action_groupe_deplacer_id_final').html('<option value=""></option>');
+					lister_options_select( granulosite , 'select_action_groupe_deplacer_id_final' , matiere_id_a_eviter );
+				}
+			}
+		);
+
+		$("#select_action_groupe_modifier_coef").change
+		(
+			function()
+			{
+				var modifier_coef = $('#select_action_groupe_modifier_coef option:selected').val();
+				var etat_desactive = (modifier_coef==='') ? true : false ;
+				$('#bouton_valider_groupe').prop('disabled',etat_desactive);
+			}
+		);
+
+		$("#select_action_groupe_modifier_cart").change
+		(
+			function()
+			{
+				var modifier_cart = $('#select_action_groupe_modifier_cart option:selected').val();
+				var etat_desactive = (modifier_cart==='') ? true : false ;
+				$('#bouton_valider_groupe').prop('disabled',etat_desactive);
+			}
+		);
+
+		$("#select_action_groupe_deplacer_id_final").change
+		(
+			function()
+			{
+				var deplacer_id_final = $('#select_action_groupe_deplacer_id_final option:selected').val();
+				var etat_desactive = (deplacer_id_final) ? false : true ;
+				$('#bouton_valider_groupe').prop('disabled',etat_desactive);
+			}
+		);
+
+		$("#bouton_valider_groupe").click
+		(
+			function()
+			{
+				$('#ajax_msg_groupe').removeAttr("class").addClass("loader").html("Connexion au serveur&hellip;");
+				$.ajax
+				(
+					{
+						type : 'POST',
+						url : 'ajax.php?page='+PAGE,
+						data : 'action=action_complementaire&'+$('#zone_choix_referentiel').serialize(),
+						dataType : "html",
+						error : function(msg,string)
+						{
+							$('#ajax_msg_groupe').removeAttr("class").addClass("alerte").html('Echec de la connexion !');
+						},
+						success : function(responseHTML)
+						{
+							initialiser_compteur();
+							if(responseHTML=='ok')	// Attention aux caractères accentués : l'utf-8 pose des pbs pour ce test
+							{
+								$('#ajax_msg_groupe').removeAttr("class").addClass("valide").html("Demande réalisée !");
+								var action_groupe = $('#select_action_groupe_choix option:selected').val();
+								if( (action_groupe=='deplacer_domaine') || (action_groupe=='deplacer_theme') )
+								{
+									// maj 1er select éléments de référentiels
+									lister_options_select( action_groupe.substring(9) , 'select_action_groupe_deplacer_id_initial' , 0 );
+									// maj 2e select éléments de référentiels
+									var deplacer_id_initial = $('#select_action_groupe_deplacer_id_initial option:selected').val();
+									var tab_ids = deplacer_id_initial.split('_');
+									var matiere_id_a_eviter = tab_ids[0];
+									var granulosite         = (action_groupe=='deplacer_domaine') ? 'referentiel'    : 'domaine' ;
+									lister_options_select( granulosite , 'select_action_groupe_deplacer_id_final' , matiere_id_a_eviter );
+								}
+							}
+							else
+							{
+								$('#ajax_msg_groupe').removeAttr("class").addClass("alerte").html(responseHTML);
+							}
+						}
+					}
+				);
 			}
 		);
 

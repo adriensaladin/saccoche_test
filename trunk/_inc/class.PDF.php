@@ -1891,7 +1891,6 @@ class PDF extends FPDF
 				}
 				else
 				{
-					list( $titre , $palier_nom ) = $tab_infos_entete;
 					$hauteur_entete = 3*4.5 ; // HG L1 intitulé L2 palier-pilier ; HD L1 structure L2 élève
 				}
 				// On optimise la hauteur de ligne pour limiter le nombre de pages si possible dans le cas d'un palier avec tous les piliers.
@@ -1958,6 +1957,7 @@ class PDF extends FPDF
 		}
 		if(!$this->officiel)
 		{
+			list( $titre , $palier_nom ) = $tab_infos_entete;
 			// Intitulé
 			$this->SetFont('Arial' , 'B' , $this->taille_police*1.5);
 			$this->Cell( $this->page_largeur-$this->marge_droite-75 , $this->cases_hauteur , pdf($titre)      , 0 /*bordure*/ , 2 /*br*/ , 'L' /*alignement*/ , FALSE /*remplissage*/ );

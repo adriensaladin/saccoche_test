@@ -28,25 +28,38 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 if(($_SESSION['SESAMATH_ID']==ID_DEMO)&&($_POST['action']!='Voir')){exit('Action désactivée pour la démo...');}
 
-$action      = (isset($_POST['action']))     ? clean_texte($_POST['action'])     : '';
-$contexte    = (isset($_POST['contexte']))   ? clean_texte($_POST['contexte'])   : '';	// n1 ou n2 ou n3
-$matiere_id  = (isset($_POST['matiere']))    ? clean_entier($_POST['matiere'])   : 0;
-$element_id  = (isset($_POST['element']))    ? clean_entier($_POST['element'])   : 0;
-$element2_id = (isset($_POST['element2']))   ? clean_entier($_POST['element2'])  : 0;
-$parent_id   = (isset($_POST['parent']))     ? clean_entier($_POST['parent'])    : 0;
-$ordre       = (isset($_POST['ordre']))      ? clean_entier($_POST['ordre'])     : -1;
-$ref         = (isset($_POST['ref']))        ? clean_texte($_POST['ref'])        : '';
-$nom         = (isset($_POST['nom']))        ? clean_texte($_POST['nom'])        : '';
-$coef        = (isset($_POST['coef']))       ? clean_entier($_POST['coef'])      : -1;
-$cart        = (isset($_POST['cart']))       ? clean_entier($_POST['cart'])      : -1;
-$socle_id    = (isset($_POST['socle']))      ? clean_entier($_POST['socle'])     : -1;
+$action      = (isset($_POST['action']))      ? clean_texte($_POST['action'])      : '';
+$contexte    = (isset($_POST['contexte']))    ? clean_texte($_POST['contexte'])    : '';	// n1 | n2 | n3
+$granulosite = (isset($_POST['granulosite'])) ? clean_texte($_POST['granulosite']) : '';	// referentiel | domaine | theme
+$matiere_id  = (isset($_POST['matiere']))     ? clean_entier($_POST['matiere'])    : 0;
+$element_id  = (isset($_POST['element']))     ? clean_entier($_POST['element'])    : 0;
+$element2_id = (isset($_POST['element2']))    ? clean_entier($_POST['element2'])   : 0;
+$parent_id   = (isset($_POST['parent']))      ? clean_entier($_POST['parent'])     : 0;
+$ordre       = (isset($_POST['ordre']))       ? clean_entier($_POST['ordre'])      : -1;
+$ref         = (isset($_POST['ref']))         ? clean_texte($_POST['ref'])         : '';
+$nom         = (isset($_POST['nom']))         ? clean_texte($_POST['nom'])         : '';
+$coef        = (isset($_POST['coef']))        ? clean_entier($_POST['coef'])       : -1;
+$cart        = (isset($_POST['cart']))        ? clean_entier($_POST['cart'])       : -1;
+$socle_id    = (isset($_POST['socle']))       ? clean_entier($_POST['socle'])      : -1;
 
 $tab_id = (isset($_POST['tab_id'])) ? array_map('clean_entier',explode(',',$_POST['tab_id'])) : array() ;
 $tab_id = array_filter($tab_id,'positif');
 $tab_id2 = (isset($_POST['tab_id2'])) ? array_map('clean_entier',explode(',',$_POST['tab_id2'])) : array() ;
 $tab_id2 = array_filter($tab_id2,'positif');
 
-$tab_contexte = array( 'n1'=>'domaine' , 'n2'=>'theme' , 'n3'=>'item' );
+$tab_contexte    = array( 'n1'=>'domaine' , 'n2'=>'theme' , 'n3'=>'item' );
+$tab_granulosite = array( 'referentiel','domaine','theme' );
+
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+// Lister des référentiels ou domaines ou thèmes auquel un prof a accès (pour un formulaire select)
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
+if( ($action=='lister_options') && in_array($granulosite,$tab_granulosite) )
+{
+	$listing_id_matieres_autorisees = (isset($_POST['id_matieres'])) ? implode(',',array_map('clean_entier',explode(',',$_POST['id_matieres']))) : '0' ;
+	exit( Formulaire::afficher_select( DB_STRUCTURE_REFERENTIEL::DB_OPT_lister_elements_referentiels_prof( $_SESSION['USER_ID'] , $granulosite , $listing_id_matieres_autorisees ) , $select_nom=FALSE , $option_first='oui' , $selection=FALSE , $optgroup='non' ) );
+}
+
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 // Afficher les référentiels d'une matière
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
@@ -173,7 +186,7 @@ if( ($action=='add') && (in_array($contexte,array('n1','n2','n3'))) && $matiere_
 	// id des éléments suivants à renuméroter
 	if(count($tab_id)) // id des éléments suivants à renuméroter
 	{
-		DB_STRUCTURE_REFERENTIEL::DB_renumeroter_referentiel_elements($tab_contexte[$contexte],$tab_id,'+1');
+		DB_STRUCTURE_REFERENTIEL::DB_renumeroter_referentiel_liste_elements($tab_contexte[$contexte],$tab_id,'+1');
 	}
 	exit($contexte.'_'.$element_id);
 }
@@ -212,11 +225,11 @@ if( ($action=='move') && (in_array($contexte,array('n1','n2','n3'))) && $element
 	}
 	if(count($tab_id)) // id des éléments suivants l'emplacement de départ à renuméroter
 	{
-		DB_STRUCTURE_REFERENTIEL::DB_renumeroter_referentiel_elements($tab_contexte[$contexte],$tab_id,'-1');
+		DB_STRUCTURE_REFERENTIEL::DB_renumeroter_referentiel_liste_elements($tab_contexte[$contexte],$tab_id,'-1');
 	}
 	if(count($tab_id2)) // id des éléments suivants l'emplacement d'arrivée à renuméroter
 	{
-		DB_STRUCTURE_REFERENTIEL::DB_renumeroter_referentiel_elements($tab_contexte[$contexte],$tab_id2,'+1');
+		DB_STRUCTURE_REFERENTIEL::DB_renumeroter_referentiel_liste_elements($tab_contexte[$contexte],$tab_id2,'+1');
 	}
 	exit('ok');
 }
@@ -239,7 +252,7 @@ if( ($action=='del') && (in_array($contexte,array('n1','n2','n3'))) && $element_
 	}
 	if(count($tab_id)) // id des éléments suivants à renuméroter
 	{
-		DB_STRUCTURE_REFERENTIEL::DB_renumeroter_referentiel_elements($tab_contexte[$contexte],$tab_id,'-1');
+		DB_STRUCTURE_REFERENTIEL::DB_renumeroter_referentiel_liste_elements($tab_contexte[$contexte],$tab_id,'-1');
 	}
 	// Log de l'action
 	ajouter_log_SACoche('Suppression d\'un élément de référentiel ('.$tab_contexte[$contexte].' / '.$element_id.').');
@@ -259,13 +272,74 @@ if( ($action=='fus') && $element_id && $element2_id )
 	}
 	if(count($tab_id)) // id des éléments suivants à renuméroter
 	{
-		DB_STRUCTURE_REFERENTIEL::DB_renumeroter_referentiel_elements('item',$tab_id,'-1');
+		DB_STRUCTURE_REFERENTIEL::DB_renumeroter_referentiel_liste_elements('item',$tab_id,'-1');
 	}
 	// Mettre à jour les références vers l'item absorbant
 	DB_STRUCTURE_REFERENTIEL::DB_fusionner_referentiel_items($element_id,$element2_id);
 	// Log de l'action
 	ajouter_log_SACoche('Fusion d\'éléments de référentiel (item / '.$element_id.' / '.$element2_id.').');
 	exit('ok');
+}
+
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+// Actions complémentaires
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
+if($action=='action_complementaire')
+{
+	// Récupération des données
+	$action_groupe       = (isset($_POST['select_action_groupe']))                     ? clean_texte($_POST['select_action_groupe'])                     : '';
+	$granulosite         = (isset($_POST['select_action_groupe_modifier_objet']))      ? clean_texte($_POST['select_action_groupe_modifier_objet'])      : '';
+	$modifier_id         = (isset($_POST['select_action_groupe_modifier_id']))         ? clean_texte($_POST['select_action_groupe_modifier_id'])         : '';
+	$modifier_coef       = (isset($_POST['select_action_groupe_modifier_coef']))       ? clean_entier($_POST['select_action_groupe_modifier_coef'])      : -1;
+	$modifier_cart       = (isset($_POST['select_action_groupe_modifier_cart']))       ? clean_entier($_POST['select_action_groupe_modifier_cart'])      : -1;
+	$deplacer_id_initial = (isset($_POST['select_action_groupe_deplacer_id_initial'])) ? clean_texte($_POST['select_action_groupe_deplacer_id_initial']) : '';
+	$deplacer_id_final   = (isset($_POST['select_action_groupe_deplacer_id_final']))   ? clean_texte($_POST['select_action_groupe_deplacer_id_final'])   : '';
+	list($matiere_id        ,$parent_id        ,$objet_id        ,$objet_ordre        ) = array_map('clean_entier',explode('_',$modifier_id))         + array(0,0,0,0);
+	list($matiere_id_initial,$parent_id_initial,$objet_id_initial,$objet_ordre_initial) = array_map('clean_entier',explode('_',$deplacer_id_initial)) + array(0,0,0,0);
+	list($matiere_id_final  ,$parent_id_final  ,$objet_id_final  ,$objet_ordre_final  ) = array_map('clean_entier',explode('_',$deplacer_id_final))   + array(0,0,0,0);
+	// Vérification des données
+	$tab_action_groupe   = array('modifier_coefficient','modifier_panier','deplacer_domaine','deplacer_theme');
+	$test1 = ( ($action_groupe=='modifier_coefficient') && (in_array($granulosite,$tab_granulosite)) && ($matiere_id) && ($parent_id) && ($objet_id) && ($objet_ordre) && ($modifier_coef!=-1) ) ? TRUE : FALSE ;
+	$test2 = ( ($action_groupe=='modifier_panier')      && (in_array($granulosite,$tab_granulosite)) && ($matiere_id) && ($objet_id) && ($objet_ordre) && ($modifier_cart!=-1) ) ? TRUE : FALSE ;
+	$test3 = ( ($action_groupe=='deplacer_domaine')     && ($matiere_id_initial) && ($parent_id_initial) && ($objet_id_initial) && ($objet_ordre_initial) && ($parent_id_final) && ($matiere_id_final) && ($objet_id_final) && ($objet_ordre_final) ) ? TRUE : FALSE ;
+	$test4 = ( ($action_groupe=='deplacer_theme')       && ($matiere_id_initial) && ($parent_id_initial) && ($objet_id_initial) && ($objet_ordre_initial) && ($parent_id_final) && ($matiere_id_final) && ($objet_id_final) && ($objet_ordre_final) ) ? TRUE : FALSE ;
+	if( (!in_array($action_groupe,$tab_action_groupe)) || ( (!$test1) && (!$test2) && (!$test3) && (!$test4) ) )
+	{
+		exit('Erreur avec les données transmises !');
+	}
+	// cas 1/4 : modifier_coefficient
+	if($action_groupe=='modifier_coefficient')
+	{
+		$test_modif = DB_STRUCTURE_REFERENTIEL::DB_modifier_referentiel_items( $granulosite , $matiere_id , $objet_id , 'coef' , $modifier_coef );
+		$message = ($test_modif) ? 'ok' : 'Contenu inchangé ou items non trouvés !';
+		exit($message);
+	}
+	// cas 2/4 : modifier_panier
+	if($action_groupe=='modifier_panier')
+	{
+		$test_modif = DB_STRUCTURE_REFERENTIEL::DB_modifier_referentiel_items( $granulosite , $matiere_id , $objet_id , 'cart' , $modifier_cart );
+		$message = ($test_modif) ? 'ok' : 'Contenu inchangé ou items non trouvés !';
+		exit($message);
+	}
+	// cas 3/4 : deplacer_domaine ; il pourra rester des associations items/matières obsolète dans la table sacoche_demande... ; il pourra y avoir des domaine_ref identiques...
+	if($action_groupe=='deplacer_domaine')
+	{
+		$objet_ordre_final = DB_STRUCTURE_REFERENTIEL::DB_recuperer_domaine_ordre_max($matiere_id_final,$objet_id_final) + 1 ; // objet_id = niveau_id
+		$test_move = DB_STRUCTURE_REFERENTIEL::DB_deplacer_referentiel_domaine($objet_id_initial /*domaine_id*/,$objet_id_final /*niveau_id*/,$objet_ordre_final /*domaine_ordre*/,$matiere_id_final /*matiere_id*/);
+		if(!$test_move) { exit('Contenu inchangé ou élément non trouvé !'); }
+		DB_STRUCTURE_REFERENTIEL::DB_renumeroter_referentiel_domaines_suivants($matiere_id_initial /*matiere_id*/,$parent_id_initial /*niveau_id*/,$objet_ordre_initial /*ordre_id*/);
+		exit('ok');
+	}
+	// cas 4/4 : deplacer_theme ; il pourra rester des associations items/matières obsolète dans la table sacoche_demande...
+	if($action_groupe=='deplacer_theme')
+	{
+		$objet_ordre_final = DB_STRUCTURE_REFERENTIEL::DB_recuperer_theme_ordre_max($objet_id_final) + 1 ; // objet_id = domaine_id
+		$test_move = DB_STRUCTURE_REFERENTIEL::DB_deplacer_referentiel_theme($objet_id_initial /*theme_id*/,$objet_id_final /*domaine_id*/,$objet_ordre_final /*theme_ordre*/);
+		if(!$test_move) { exit('Contenu inchangé ou élément non trouvé !'); }
+		DB_STRUCTURE_REFERENTIEL::DB_renumeroter_referentiel_themes_suivants($parent_id_initial /*domaine_id*/,$objet_ordre_initial /*ordre_id*/);
+		exit('ok');
+	}
 }
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-

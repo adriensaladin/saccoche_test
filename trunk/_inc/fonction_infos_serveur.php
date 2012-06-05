@@ -394,7 +394,7 @@ function tableau_reglages_Suhosin()
 	$tab_lignes   = array(1=>'get','post','request');
 	$tab_colonnes = array(1=>'max_name_length','max_totalname_length','max_value_length','max_vars');
 	$tab_tr = array();
-	$tab_suhosin_options  = @ini_get_all( 'suhosin' , FALSE /*details*/ );
+	$tab_suhosin_options = (version_compare(PHP_VERSION,5.3,'<')) ? @ini_get_all( 'suhosin' ) : @ini_get_all( 'suhosin' , FALSE /*details*/ ) ; // http://fr.php.net/ini_get_all
 	$tab_tr[0] = '<tr><th>Suhosin</th>';
 	foreach($tab_lignes as $i_ligne => $categorie)
 	{

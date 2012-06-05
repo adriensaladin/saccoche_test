@@ -436,6 +436,7 @@ $(document).ready
 				errorPlacement : function(error,element)
 				{
 					if(element.is("select")) {element.after(error);}
+					else if(element.attr("id")=='f_info') {element.after(error);}
 					else if(element.attr("type")=="text") {element.next().after(error);}
 					else if(element.attr("type")=="checkbox") {$('#ajax_msg1').after(error);}
 				}

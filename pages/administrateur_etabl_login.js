@@ -91,7 +91,7 @@ $(document).ready
 						url : 'ajax.php?page='+PAGE,
 						data : datas,
 						dataType : "html",
-						error : function(msg,string)
+						error : function(jqXHR, textStatus, errorThrown)
 						{
 							$("#bouton_valider_login").prop('disabled',false);
 							$('#ajax_msg_login').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
@@ -132,7 +132,7 @@ $(document).ready
 						url : 'ajax.php?page='+PAGE,
 						data : 'action=mdp_mini&f_mdp_mini='+$('#f_mdp_mini option:selected').val(),
 						dataType : "html",
-						error : function(msg,string)
+						error : function(jqXHR, textStatus, errorThrown)
 						{
 							$("#bouton_valider_mdp_mini").prop('disabled',false);
 							$('#ajax_msg_mdp_mini').removeAttr("class").addClass("alerte").html("Echec de la connexion !");

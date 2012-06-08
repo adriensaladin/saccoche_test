@@ -86,7 +86,7 @@ $(document).ready
 						url : 'ajax.php?page='+PAGE,
 						data : 'f_action='+'calculer' + '&' + 'f_listing_id=' + f_listing_id,
 						dataType : "html",
-						error : function(msg,string)
+						error : function(jqXHR, textStatus, errorThrown)
 						{
 							$("#bouton_valider").prop('disabled',false);
 							$('#ajax_msg').removeAttr("class").addClass("alerte").html('Echec de la connexion !');
@@ -135,7 +135,7 @@ $(document).ready
 					url : 'ajax.php?page='+PAGE,
 					data : 'f_action=' + 'calculer' + '&num=' + num + '&max=' + max,
 					dataType : "html",
-					error : function(msg,string)
+					error : function(jqXHR, textStatus, errorThrown)
 					{
 						$('#ajax_msg1').removeAttr("class").addClass("alerte").html('Echec lors de la connexion au serveur !');
 						$('#ajax_msg2').html('<a id="a_reprise" href="#">Reprendre la procédure à l\'étape ' + num + ' sur ' + max + '.</a>');
@@ -238,7 +238,7 @@ $(document).ready
 					url : 'ajax.php?page='+PAGE,
 					data : 'f_action=supprimer&f_listing_id='+listing_id,
 					dataType : "html",
-					error : function(msg,string)
+					error : function(jqXHR, textStatus, errorThrown)
 					{
 						$('#ajax_supprimer').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
 						$("button").prop('disabled',false);

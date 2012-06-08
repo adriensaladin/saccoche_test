@@ -141,7 +141,7 @@ $(document).ready
 		}
 
 		// Fonction suivant l'envoi du formulaire (avec jquery.form.js)
-		function retour_form_erreur_sesamath(msg,string)
+		function retour_form_erreur_sesamath(jqXHR, textStatus, errorThrown)
 		{
 			$("#bouton_valider_sesamath").prop('disabled',false);
 			$('#ajax_msg_sesamath').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
@@ -248,7 +248,7 @@ $(document).ready
 		}
 
 		// Fonction suivant l'envoi du formulaire (avec jquery.form.js)
-		function retour_form_erreur_etablissement(msg,string)
+		function retour_form_erreur_etablissement(jqXHR, textStatus, errorThrown)
 		{
 			$("#bouton_valider_etablissement").prop('disabled',false);
 			$('#ajax_msg_etablissement').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
@@ -318,7 +318,7 @@ $(document).ready
 						url : 'ajax.php?page='+PAGE,
 						data : 'f_mois_bascule_annee_scolaire='+$('#f_mois_bascule_annee_scolaire option:selected').val(),
 						dataType : "html",
-						error : function(msg,string)
+						error : function(jqXHR, textStatus, errorThrown)
 						{
 							$("#bouton_valider_annee_scolaire").prop('disabled',false);
 							$('#ajax_msg_annee_scolaire').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
@@ -372,7 +372,7 @@ $(document).ready
 					url : 'ajax.php?page='+PAGE,
 					data : 'action=Afficher_form_geo1',
 					dataType : "html",
-					error : function(msg,string)
+					error : function(jqXHR, textStatus, errorThrown)
 					{
 						$('#ajax_msg_communautaire').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
 					},
@@ -406,7 +406,7 @@ $(document).ready
 					url : 'ajax.php?page='+PAGE,
 					data : 'action=Afficher_form_geo2&f_geo1='+geo1_val,
 					dataType : "html",
-					error : function(msg,string)
+					error : function(jqXHR, textStatus, errorThrown)
 					{
 						$('#f_recherche_geo select').prop('disabled',false);
 						$('#ajax_msg_communautaire').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
@@ -442,7 +442,7 @@ $(document).ready
 					url : 'ajax.php?page='+PAGE,
 					data : 'action=Afficher_form_geo3&f_geo1='+geo1_val+'&f_geo2='+geo2_val,
 					dataType : "html",
-					error : function(msg,string)
+					error : function(jqXHR, textStatus, errorThrown)
 					{
 						$('#f_recherche_geo select').prop('disabled',false);
 						$('#ajax_msg_communautaire').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
@@ -478,7 +478,7 @@ $(document).ready
 					url : 'ajax.php?page='+PAGE,
 					data : 'action=Afficher_structures&f_geo3='+geo3_val,
 					dataType : "html",
-					error : function(msg,string)
+					error : function(jqXHR, textStatus, errorThrown)
 					{
 						$('#f_recherche_geo select').prop('disabled',false);
 						$('#ajax_msg_communautaire').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
@@ -516,7 +516,7 @@ $(document).ready
 					url : 'ajax.php?page='+PAGE,
 					data : 'action=Afficher_structures&f_uai='+uai_val,
 					dataType : "html",
-					error : function(msg,string)
+					error : function(jqXHR, textStatus, errorThrown)
 					{
 						$('#rechercher_uai').prop('disabled',false);
 						$('#ajax_msg_communautaire').removeAttr("class").addClass("alerte").html("Echec de la connexion !");

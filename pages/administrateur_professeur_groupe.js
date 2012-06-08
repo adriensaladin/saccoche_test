@@ -53,7 +53,7 @@ $(document).ready
 						url  : 'ajax.php?page='+PAGE,
 						data : 'action='+action+'&user_id='+user_id+'&groupe_id='+groupe_id,
 						dataType : "html",
-						error : function(msg,string)
+						error : function(jqXHR, textStatus, errorThrown)
 						{
 							obj_bouton.prop('checked',check_old).show(0).parent().removeAttr('class').addClass(class_old);
 							$.fancybox( '<label class="alerte">'+'Echec de la connexion !\nVeuillez recommencer.'+'</label>' , {'centerOnScroll':true} );

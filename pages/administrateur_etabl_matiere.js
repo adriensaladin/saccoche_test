@@ -171,7 +171,7 @@ $(document).ready
 					url : 'ajax.php?page='+PAGE,
 					data : 'f_action=supprimer&f_id='+$('#f_id').val(),
 					dataType : "html",
-					error : function(msg,string)
+					error : function(jqXHR, textStatus, errorThrown)
 					{
 						$('#ajax_msg').parent().children('q').show();
 						$('#ajax_msg').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
@@ -297,7 +297,7 @@ $(document).ready
 					url : 'ajax.php?page='+PAGE,
 					data : data_action+'&'+data_parametre,
 					dataType : "html",
-					error : function(msg,string)
+					error : function(jqXHR, textStatus, errorThrown)
 					{
 						$('#ajax_msg_recherche').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
 					},
@@ -379,7 +379,7 @@ $(document).ready
 						url : 'ajax.php?page='+PAGE,
 						data : 'f_action=ajouter_partage&f_matiere='+matiere_id,
 						dataType : "html",
-						error : function(msg,string)
+						error : function(jqXHR, textStatus, errorThrown)
 						{
 							afficher_masquer_images_action('show');
 							$('#ajax_msg_recherche').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
@@ -451,7 +451,7 @@ $(document).ready
 						url : 'ajax.php?page='+PAGE,
 						data : 'f_action=deplacer_referentiels&f_id_avant='+matiere_id_avant+'&f_id_apres='+matiere_id_apres,
 						dataType : "html",
-						error : function(msg,string)
+						error : function(jqXHR, textStatus, errorThrown)
 						{
 							$('button').prop('disabled',false);
 							$('#ajax_msg_move').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
@@ -551,7 +551,7 @@ $(document).ready
 		}
 
 		// Fonction suivant l'envoi du formulaire (avec jquery.form.js)
-		function retour_form_erreur(msg,string)
+		function retour_form_erreur(jqXHR, textStatus, errorThrown)
 		{
 			please_wait = false;
 			$('#ajax_msg').parent().children('q').show();

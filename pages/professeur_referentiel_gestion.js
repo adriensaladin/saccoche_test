@@ -109,7 +109,7 @@ $(document).ready
 						url : 'ajax.php?page='+PAGE,
 						data : 'action=NbDemandes&matiere_id='+matiere_id+'&nb_demandes='+nb_demandes,
 						dataType : "html",
-						error : function(msg,string)
+						error : function(jqXHR, textStatus, errorThrown)
 						{
 							element.parent().find('label').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
 							return false;
@@ -150,7 +150,7 @@ $(document).ready
 						url : 'ajax.php?page='+PAGE,
 						data : 'action=Voir&ids='+ids,
 						dataType : "html",
-						error : function(msg,string)
+						error : function(jqXHR, textStatus, errorThrown)
 						{
 							$.fancybox( '<label class="alerte">'+'Echec de la connexion !'+'</label>' , {'centerOnScroll':true} );
 							$('label[for='+ids+']').remove();
@@ -213,7 +213,7 @@ $(document).ready
 						url : 'ajax.php?page='+PAGE,
 						data : 'action=Envoyer&ids='+ids,
 						dataType : "html",
-						error : function(msg,string)
+						error : function(jqXHR, textStatus, errorThrown)
 						{
 							$.fancybox( '<label class="alerte">'+'Echec de la connexion !'+'</label>' , {'centerOnScroll':true} );
 							$('label[for='+ids+']').remove();
@@ -293,7 +293,7 @@ $(document).ready
 						url : 'ajax.php?page='+PAGE,
 						data : 'action=Partager&ids='+ids+'&partage='+partage,
 						dataType : "html",
-						error : function(msg,string)
+						error : function(jqXHR, textStatus, errorThrown)
 						{
 							$('#ajax_msg').removeAttr("class").addClass("alerte").html('Echec de la connexion !');
 							return false;
@@ -347,7 +347,7 @@ $(document).ready
 						url : 'ajax.php?page='+PAGE,
 						data : 'action=Calculer&ids='+ids+'&methode='+methode+'&limite='+limite,
 						dataType : "html",
-						error : function(msg,string)
+						error : function(jqXHR, textStatus, errorThrown)
 						{
 							$('#ajax_msg').removeAttr("class").addClass("alerte").html('Echec de la connexion !');
 							return false;
@@ -394,7 +394,7 @@ $(document).ready
 						url : 'ajax.php?page='+PAGE,
 						data : 'action=Retirer&ids='+ids+'&partage='+partage,
 						dataType : "html",
-						error : function(msg,string)
+						error : function(jqXHR, textStatus, errorThrown)
 						{
 							$('#ajax_msg').removeAttr("class").addClass("alerte").html('Echec de la connexion !');
 							return false;
@@ -494,7 +494,7 @@ $(document).ready
 					url : 'ajax.php?page='+PAGE,
 					data : 'action=Afficher_structures',
 					dataType : "html",
-					error : function(msg,string)
+					error : function(jqXHR, textStatus, errorThrown)
 					{
 						$('#ajax_msg').removeAttr("class").addClass("alerte").html('Echec de la connexion ! <a href="#" id="charger_formulaire_structures">Veuillez essayer de nouveau.</a>');
 						return false;
@@ -561,7 +561,7 @@ $(document).ready
 					url : 'ajax.php?page=_maj_select_matieres_famille',
 					data : 'f_famille_matiere='+matiere_famille_id,
 					dataType : "html",
-					error : function(msg,string)
+					error : function(jqXHR, textStatus, errorThrown)
 					{
 						$('#ajax_maj_matiere').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
 					},
@@ -611,7 +611,7 @@ $(document).ready
 					url : 'ajax.php?page=_maj_select_niveaux_famille',
 					data : 'f_famille_niveau='+niveau_famille_id,
 					dataType : "html",
-					error : function(msg,string)
+					error : function(jqXHR, textStatus, errorThrown)
 					{
 						$('#ajax_maj_niveau').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
 					},
@@ -687,7 +687,7 @@ $(document).ready
 						url : 'ajax.php?page='+PAGE,
 						data : 'action=Lister_referentiels&matiere_id='+matiere_id+'&niveau_id='+niveau_id+'&structure_id='+structure_id,
 						dataType : "html",
-						error : function(msg,string)
+						error : function(jqXHR, textStatus, errorThrown)
 						{
 							$('#rechercher').prop('disabled',false);
 							$('#ajax_msg').removeAttr("class").addClass("alerte").html('Echec de la connexion !');
@@ -755,7 +755,7 @@ $(document).ready
 						url : 'ajax.php?page='+PAGE,
 						data : 'action=Voir_referentiel&referentiel_id='+referentiel_id,
 						dataType : "html",
-						error : function(msg,string)
+						error : function(jqXHR, textStatus, errorThrown)
 						{
 							$.fancybox( '<label class="alerte">'+'Echec de la connexion !'+'</label>' , {'centerOnScroll':true} );
 							$('label[id=temp]').remove();
@@ -821,7 +821,7 @@ $(document).ready
 						url : 'ajax.php?page='+PAGE,
 						data : 'action=Ajouter&ids=ids_'+matiere_id+'_'+niveau_id+'_'+matiere_perso+'&referentiel_id='+referentiel_id,
 						dataType : "html",
-						error : function(msg,string)
+						error : function(jqXHR, textStatus, errorThrown)
 						{
 							$('button').prop('disabled',false);
 							$('#ajax_msg_choisir').removeAttr("class").addClass("alerte").html('Echec de la connexion !');

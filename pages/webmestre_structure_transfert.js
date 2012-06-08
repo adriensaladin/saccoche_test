@@ -53,7 +53,7 @@ $(document).ready
 						url : 'ajax.php?page='+PAGE,
 						data : 'f_action=exporter&f_listing_id='+bases,
 						dataType : "html",
-						error : function(msg,string)
+						error : function(jqXHR, textStatus, errorThrown)
 						{
 							$("button").prop('disabled',false);
 							$('#ajax_msg_export').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
@@ -101,7 +101,7 @@ $(document).ready
 					url : 'ajax.php?page='+PAGE,
 					data : 'f_action=exporter' + '&num=' + num + '&max=' + max,
 					dataType : "html",
-					error : function(msg,string)
+					error : function(jqXHR, textStatus, errorThrown)
 					{
 						$('#ajax_msg_export').removeAttr("class").addClass("alerte").html('Echec lors de la connexion au serveur !');
 						$('#puce_info_export').html('<li><a id="a_reprise_export" href="#">Reprendre la procédure à l\'étape ' + num + ' sur ' + max + '.</a></li>');
@@ -324,7 +324,7 @@ $(document).ready
 					url : 'ajax.php?page='+PAGE,
 					data : 'f_action=importer' + '&num=' + num + '&max=' + max,
 					dataType : "html",
-					error : function(msg,string)
+					error : function(jqXHR, textStatus, errorThrown)
 					{
 						$('#ajax_msg_import').removeAttr("class").addClass("alerte").html('Echec lors de la connexion au serveur !');
 						$('#puce_info_import').html('<li><a id="a_reprise_import" href="#">Reprendre la procédure à l\'étape ' + num + ' sur ' + max + '.</a></li>');
@@ -428,7 +428,7 @@ $(document).ready
 					url : 'ajax.php?page='+PAGE,
 					data : 'f_action=supprimer&f_listing_id='+listing_id,
 					dataType : "html",
-					error : function(msg,string)
+					error : function(jqXHR, textStatus, errorThrown)
 					{
 						$('#ajax_supprimer_export').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
 						$("button").prop('disabled',false);
@@ -511,7 +511,7 @@ $(document).ready
 					url : 'ajax.php?page='+PAGE,
 					data : 'f_action=supprimer&f_listing_id='+listing_id,
 					dataType : "html",
-					error : function(msg,string)
+					error : function(jqXHR, textStatus, errorThrown)
 					{
 						$('#ajax_supprimer_import').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
 						$("button").prop('disabled',false);

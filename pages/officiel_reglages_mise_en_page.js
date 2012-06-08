@@ -105,7 +105,7 @@ $(document).ready
 						url : 'ajax.php?page='+PAGE,
 						data : 'f_action=mise_en_page&'+$('#form_mise_en_page').serialize(),
 						dataType : "html",
-						error : function(msg,string)
+						error : function(jqXHR, textStatus, errorThrown)
 						{
 							$("#bouton_valider_mise_en_page").prop('disabled',false);
 							$('#ajax_msg_mise_en_page').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
@@ -217,7 +217,7 @@ $(document).ready
 						url : 'ajax.php?page='+PAGE,
 						data : 'f_action=delete_signature&f_user_id='+sgn_id,
 						dataType : "html",
-						error : function(msg,string)
+						error : function(jqXHR, textStatus, errorThrown)
 						{
 							$('#ajax_upload').removeAttr("class").addClass("alerte").html('Echec de la connexion !');
 							return false;

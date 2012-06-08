@@ -188,9 +188,10 @@ $(document).ready
 								url : 'ajax.php?page='+memo_page,
 								data : 'f_action='+'initialiser'+'&f_bilan_type='+BILAN_TYPE+'&f_classe='+memo_classe+'&f_groupe='+memo_groupe+'&f_periode='+memo_periode+'&'+$('#form_hidden').serialize(),
 								dataType : "html",
-								error : function(msg,string)
+								error : function(jqXHR, textStatus, errorThrown)
 								{
-									$('#zone_action_eleve').html('<label class="alerte">Echec de la connexion ! <button id="fermer_zone_action_eleve" type="button" class="retourner">Retour</button></label>');
+									var message = (jqXHR.status!=500) ? 'Echec de la connexion !' : 'Erreur 500&hellip; Mémoire insuffisante ? Sélectionner moins d\'élèves à la fois ou demander à votre hébergeur d\'augmenter la valeur "memory_limit".' ;
+									$('#zone_action_eleve').html('<label class="alerte">'+message+' <button id="fermer_zone_action_eleve" type="button" class="retourner">Retour</button></label>');
 									return false;
 								},
 								success : function(responseHTML)
@@ -296,7 +297,7 @@ $(document).ready
 					url : 'ajax.php?page='+memo_page,
 					data : 'f_action='+'charger'+'&f_bilan_type='+BILAN_TYPE+'&f_classe='+memo_classe+'&f_groupe='+memo_groupe+'&f_periode='+memo_periode+'&f_user='+memo_eleve+'&'+$('#form_hidden').serialize(),
 					dataType : "html",
-					error : function(msg,string)
+					error : function(jqXHR, textStatus, errorThrown)
 					{
 						$('#zone_resultat_eleve').html('<label class="alerte">Echec de la connexion !</label>');
 						$('#form_choix_eleve button , #form_choix_eleve select , #zone_resultat_eleve button').prop('disabled',false);
@@ -436,7 +437,7 @@ $(document).ready
 						url : 'ajax.php?page=officiel_accueil',
 						data : 'f_action='+'imprimer_appreciations'+'&f_bilan_type='+BILAN_TYPE+'&f_classe='+memo_classe+'&f_groupe='+memo_groupe+'&f_periode='+memo_periode+'&'+$('#form_hidden').serialize(),
 						dataType : "html",
-						error : function(msg,string)
+						error : function(jqXHR, textStatus, errorThrown)
 						{
 							$.fancybox( '<label class="alerte">'+'Echec de la connexion !\nVeuillez recommencer.'+'</label>' , {'centerOnScroll':true} );
 							$('#form_choix_eleve button , #form_choix_eleve select , #zone_resultat_eleve button').prop('disabled',false);
@@ -616,7 +617,7 @@ $(document).ready
 						url : 'ajax.php?page='+memo_page,
 						data : 'f_action='+'enregistrer_'+memo_rubrique_type+'&f_bilan_type='+BILAN_TYPE+'&f_classe='+memo_classe+'&f_groupe='+memo_groupe+'&f_periode='+memo_periode+'&f_user='+memo_eleve+'&f_rubrique='+memo_rubrique_id+'&'+$('#form_hidden').serialize()+'&'+$('#zone_resultat_eleve').serialize(),
 						dataType : "html",
-						error : function(msg,string)
+						error : function(jqXHR, textStatus, errorThrown)
 						{
 							$('#ajax_msg_'+memo_rubrique_type).removeAttr("class").addClass("alerte").html("Echec de la connexion !");
 							$('#form_choix_eleve button , #form_choix_eleve select , #zone_resultat_eleve button').prop('disabled',false);
@@ -670,7 +671,7 @@ $(document).ready
 						url : 'ajax.php?page='+memo_page,
 						data : 'f_action='+'supprimer_'+memo_rubrique_type+'&f_bilan_type='+BILAN_TYPE+'&f_classe='+memo_classe+'&f_groupe='+memo_groupe+'&f_periode='+memo_periode+'&f_user='+memo_eleve+'&f_rubrique='+memo_rubrique_id+'&'+$('#form_hidden').serialize(),
 						dataType : "html",
-						error : function(msg,string)
+						error : function(jqXHR, textStatus, errorThrown)
 						{
 							$.fancybox( '<label class="alerte">'+'Echec de la connexion !\nVeuillez recommencer.'+'</label>' , {'centerOnScroll':true} );
 							$('#form_choix_eleve button , #form_choix_eleve select , #zone_resultat_eleve button').prop('disabled',false);
@@ -722,7 +723,7 @@ $(document).ready
 						url : 'ajax.php?page='+memo_page,
 						data : 'f_action='+'recalculer_note'+'&f_bilan_type='+BILAN_TYPE+'&f_classe='+memo_classe+'&f_groupe='+memo_groupe+'&f_periode='+memo_periode+'&f_user='+memo_eleve+'&f_rubrique='+memo_rubrique_id+'&'+$('#form_hidden').serialize(),
 						dataType : "html",
-						error : function(msg,string)
+						error : function(jqXHR, textStatus, errorThrown)
 						{
 							$.fancybox( '<label class="alerte">'+'Echec de la connexion !\nVeuillez recommencer.'+'</label>' , {'centerOnScroll':true} );
 							$('#form_choix_eleve button , #form_choix_eleve select , #zone_resultat_eleve button').prop('disabled',false);
@@ -770,9 +771,10 @@ $(document).ready
 						url : 'ajax.php?page='+memo_page,
 						data : 'f_bilan_type='+BILAN_TYPE+'&f_classe='+memo_classe+'&f_groupe='+memo_groupe+'&f_periode='+memo_periode+'&'+$('#form_hidden').serialize(),
 						dataType : "html",
-						error : function(msg,string)
+						error : function(jqXHR, textStatus, errorThrown)
 						{
-							$('#ajax_msg_recherche').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
+							var message = (jqXHR.status!=500) ? 'Echec de la connexion !' : 'Erreur 500&hellip; Mémoire insuffisante ? Sélectionner moins d\'élèves à la fois ou demander à votre hébergeur d\'augmenter la valeur "memory_limit".' ;
+							$('#ajax_msg_recherche').removeAttr("class").addClass("alerte").html(message);
 							$('#zone_chx_rubriques button').prop('disabled',false);
 							return false;
 						},
@@ -814,9 +816,10 @@ $(document).ready
 					url : 'ajax.php?page='+memo_page,
 					data : 'f_action='+'imprimer'+'&f_etape='+etape+'&f_bilan_type='+BILAN_TYPE+'&f_classe='+memo_classe+'&f_groupe='+memo_groupe+'&f_periode='+memo_periode+'&'+$('#form_hidden').serialize(),
 					dataType : "html",
-					error : function(msg,string)
+					error : function(jqXHR, textStatus, errorThrown)
 					{
-						$('#ajax_msg_imprimer').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
+						var message = (jqXHR.status!=500) ? 'Echec de la connexion !' : 'Erreur 500&hellip; Mémoire insuffisante ? Sélectionner moins d\'élèves à la fois ou demander à votre hébergeur d\'augmenter la valeur "memory_limit".' ;
+						$('#ajax_msg_imprimer').removeAttr("class").addClass("alerte").html(message);
 						$('#form_choix_classe button , #form_choix_classe select , #valider_imprimer').prop('disabled',false);
 						return false;
 					},
@@ -887,7 +890,7 @@ $(document).ready
 					url : 'ajax.php?page='+memo_page,
 					data : 'f_action='+'initialiser'+'&f_bilan_type='+BILAN_TYPE+'&f_classe='+memo_classe+'&f_groupe='+memo_groupe+'&f_periode='+memo_periode+'&'+$('#form_hidden').serialize(),
 					dataType : "html",
-					error : function(msg,string)
+					error : function(jqXHR, textStatus, errorThrown)
 					{
 						$('#ajax_msg_'+memo_objet).removeAttr("class").addClass("alerte").html("Echec de la connexion !");
 						$('#form_choix_classe button , #form_choix_classe select').prop('disabled',false);
@@ -990,7 +993,7 @@ $(document).ready
 						url : 'ajax.php?page='+memo_page,
 						data : 'f_bilan_type='+BILAN_TYPE+'&f_classe='+memo_classe+'&f_groupe='+memo_groupe+'&f_periode='+memo_periode+'&'+$('#form_hidden').serialize(),
 						dataType : "html",
-						error : function(msg,string)
+						error : function(jqXHR, textStatus, errorThrown)
 						{
 							$('#zone_resultat_classe').html('<label class="alerte">Echec de la connexion !</label>');
 							$('#form_choix_classe button , #form_choix_classe select').prop('disabled',false);
@@ -1113,7 +1116,7 @@ $(document).ready
 						url : 'ajax.php?page=compte_message',
 						data : $('#zone_signaler').serialize(),
 						dataType : "html",
-						error : function(msg,string)
+						error : function(jqXHR, textStatus, errorThrown)
 						{
 							$('#ajax_msg_signaler').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
 							$('#zone_signaler button').prop('disabled',false);

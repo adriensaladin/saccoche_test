@@ -143,7 +143,7 @@ $(document).ready
 		}
 
 		// Fonction suivant l'envoi du formulaire (avec jquery.form.js)
-		function retour_form_erreur(msg,string)
+		function retour_form_erreur(jqXHR, textStatus, errorThrown)
 		{
 			$("#bouton_valider").prop('disabled',false);
 			$('#ajax_msg').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
@@ -193,7 +193,7 @@ $(document).ready
 					url : 'ajax.php?page='+PAGE,
 					data : 'f_action=maj_etape'+etape_numero,
 					dataType : "html",
-					error : function(msg,string)
+					error : function(jqXHR, textStatus, errorThrown)
 					{
 						$('button').prop('disabled',false);
 						$('#ajax_maj').removeAttr("class").addClass("alerte").html('Echec de la connexion !');
@@ -258,7 +258,7 @@ $(document).ready
 					url : 'ajax.php?page='+PAGE,
 					data : 'f_action=verif_etape'+etape_numero,
 					dataType : "html",
-					error : function(msg,string)
+					error : function(jqXHR, textStatus, errorThrown)
 					{
 						$('button').prop('disabled',false);
 						$('#ajax_verif').removeAttr("class").addClass("alerte").html('Echec de la connexion !');

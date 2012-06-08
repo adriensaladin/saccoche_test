@@ -92,7 +92,7 @@ $(document).ready
 						url : 'ajax.php?page='+PAGE,
 						data : 'action=Voir_referentiel&matiere_id='+matiere_id+'&niveau_id='+niveau_id+'&matiere_ref='+matiere_ref,
 						dataType : "html",
-						error : function(msg,string)
+						error : function(jqXHR, textStatus, errorThrown)
 						{
 							$.fancybox( '<label class="alerte">'+'Echec de la connexion !'+'</label>' , {'centerOnScroll':true} );
 							$('label[for='+id+']').remove();
@@ -207,7 +207,7 @@ $(document).ready
 						url : 'ajax.php?page='+PAGE,
 						data : 'action=Enregistrer_lien&item_id='+item_id+'&item_lien='+encodeURIComponent(item_lien),
 						dataType : "html",
-						error : function(msg,string)
+						error : function(jqXHR, textStatus, errorThrown)
 						{
 							$('#n3_'+item_id).children('label').removeAttr("class").addClass("alerte").html('Echec de la connexion !');
 						},
@@ -258,7 +258,7 @@ $(document).ready
 						url : 'ajax.php?page='+PAGE,
 						data : 'action=Charger_ressources'+'&item_id='+item_id+'&item_lien='+encodeURIComponent(item_lien),
 						dataType : "html",
-						error : function(msg,string)
+						error : function(jqXHR, textStatus, errorThrown)
 						{
 							$.fancybox( '<label class="alerte">'+'Echec de la connexion !'+'</label>' , {'centerOnScroll':true} );
 							return false;
@@ -605,7 +605,7 @@ $(document).ready
 						url : 'ajax.php?page='+PAGE,
 						data : 'action=Enregistrer_ressources'+'&item_id='+item_id+'&item_nom='+encodeURIComponent(item_nom)+'&page_mode='+$('#page_mode').val()+'&ressources='+encodeURIComponent(tab_ressources.join('}¤{')),
 						dataType : "html",
-						error : function(msg,string)
+						error : function(jqXHR, textStatus, errorThrown)
 						{
 							$('#ajax_ressources_msg').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
 							return false;
@@ -659,7 +659,7 @@ $(document).ready
 						url : 'ajax.php?page='+PAGE,
 						data : 'action=Rechercher_liens_ressources'+'&item_id='+item_id+'&findme='+encodeURIComponent(findme),
 						dataType : "html",
-						error : function(msg,string)
+						error : function(jqXHR, textStatus, errorThrown)
 						{
 							$('#zone_resultat_recherche_liens').html('<label class="erreur">Echec de la connexion !</label>');
 							return false;
@@ -815,7 +815,7 @@ $(document).ready
 						url : 'ajax.php?page='+PAGE,
 						data : 'action=Rechercher_documents',
 						dataType : "html",
-						error : function(msg,string)
+						error : function(jqXHR, textStatus, errorThrown)
 						{
 							$('#zone_resultat_recherche_ressources').html('<label class="erreur">Echec de la connexion !</label>');
 							return false;

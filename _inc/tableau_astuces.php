@@ -28,6 +28,7 @@
 // Tableau avec la liste des astuces "Le saviez-vous ?" affichées après authentification.
 // A priori pas utile pour les webmestres / parents / élèves.
 
+$astuce_bulletin_scolaire                = '<p><em>SACoche</em> permet éditer des <b>bulletins scolaires</b> (avec appréciations, moyennes, coordonnées établissement et parents, signature numérique). <span class="manuel"><a class="pop_up" href="'.SERVEUR_DOCUMENTAIRE.'?fichier=releves_bilans__officiel_bulletin_scolaire">Documentation</a></span></p>';
 $astuce_panneau_affichage                = '<p>Vous pouvez <b>programmer l\'affichage d\'un message à destination d\'utilisateurs ciblés</b>. <span class="manuel"><a class="pop_up" href="'.SERVEUR_DOCUMENTAIRE.'?fichier=environnement_generalites__messages_accueil">Documentation</a></span></p>';
 $astuce_memorisation_selection_items     = '<p>Vous pouvez <b>mémoriser des regroupements d\'items</b> pour les années suivantes ou des bilans ciblés. <span class="manuel"><a class="pop_up" href="'.SERVEUR_DOCUMENTAIRE.'?fichier=support_professeur__gestion_regroupements_items">Documentation</a></span></p>';
 $astuce_devoir_autoevaluation            = '<p>Vous pouvez permettre aux élèves de <b>s\'autoévaluer sur un devoir</b>. <span class="manuel"><a class="pop_up" href="'.SERVEUR_DOCUMENTAIRE.'?fichier=support_professeur__evaluations_gestion#toggle_evaluations_autoeval">Documentation</a></span></p>';
@@ -45,12 +46,14 @@ $astuce_authentification_ent             = '<p>On peut se connecter à <em>SACoc
 
 $tab_astuces = array(
 	'administrateur' => array(
+		$astuce_bulletin_scolaire,
 		$astuce_panneau_affichage,
 		$astuce_socle_choisir_langue,
 		$astuce_faq_b2i,
 		$astuce_authentification_ent
 	),
 	'directeur' => array(
+		$astuce_bulletin_scolaire,
 		$astuce_panneau_affichage,
 		$astuce_socle_choisir_langue,
 		$astuce_memorisation_selection_items,
@@ -59,6 +62,7 @@ $tab_astuces = array(
 		$astuce_faq_b2i
 	),
 	'professeur' => array(
+		$astuce_bulletin_scolaire,
 		$astuce_panneau_affichage,
 		$astuce_devoir_autoevaluation,
 		$astuce_devoir_joindre_fichiers,

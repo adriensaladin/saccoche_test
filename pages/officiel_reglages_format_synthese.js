@@ -88,7 +88,7 @@ $(document).ready
 						url : 'ajax.php?page='+PAGE,
 						data : 'f_methode='+f_methode+'&f_matiere='+f_matiere+'&f_niveau='+f_niveau,
 						dataType : "html",
-						error : function(msg,string)
+						error : function(jqXHR, textStatus, errorThrown)
 						{
 							$('#bouton_'+ids).prop('disabled',false);
 							// $("#form_synthese button").prop('disabled',false);

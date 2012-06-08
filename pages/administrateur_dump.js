@@ -49,7 +49,7 @@ $(document).ready
 						url : 'ajax.php?page='+PAGE,
 						data : 'f_action=sauvegarder',
 						dataType : "html",
-						error : function(msg,string)
+						error : function(jqXHR, textStatus, errorThrown)
 						{
 							$("button").prop('disabled',false);
 							$('#ajax_msg1').removeAttr("class").addClass("alerte").html('Echec de la connexion !');
@@ -153,7 +153,7 @@ $(document).ready
 					url : 'ajax.php?page='+PAGE,
 					data : 'f_action=restaurer'+'&etape='+etape,
 					dataType : "html",
-					error : function(msg,string)
+					error : function(jqXHR, textStatus, errorThrown)
 					{
 						$("button").prop('disabled',false);
 						$('#ajax_msg2').removeAttr("class").addClass("alerte").html('Echec de la connexion !');

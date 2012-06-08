@@ -1122,20 +1122,21 @@ function enregistrer_session_user($BASE,$DB_ROW)
 	// Enregistrer en session le numéro de la base
 	$_SESSION['BASE']             = $BASE;
 	// Enregistrer en session les données associées à l'utilisateur (indices du tableau de session en majuscules).
-	$_SESSION['USER_PROFIL']      = $DB_ROW['user_profil'];
-	$_SESSION['USER_ID']          = (int) $DB_ROW['user_id'];
-	$_SESSION['USER_NOM']         = $DB_ROW['user_nom'];
-	$_SESSION['USER_PRENOM']      = $DB_ROW['user_prenom'];
-	$_SESSION['USER_LOGIN']       = $DB_ROW['user_login'];
-	$_SESSION['USER_DESCR']       = '['.$DB_ROW['user_profil'].'] '.$DB_ROW['user_prenom'].' '.$DB_ROW['user_nom'];
-	$_SESSION['USER_DALTONISME']  = $DB_ROW['user_daltonisme'];
-	$_SESSION['USER_ID_ENT']      = $DB_ROW['user_id_ent'];
-	$_SESSION['USER_ID_GEPI']     = $DB_ROW['user_id_gepi'];
-	$_SESSION['ELEVE_CLASSE_ID']  = (int) $DB_ROW['eleve_classe_id'];
-	$_SESSION['ELEVE_CLASSE_NOM'] = $DB_ROW['groupe_nom'];
-	$_SESSION['ELEVE_LANGUE']     = (int) $DB_ROW['eleve_langue'];
-	$_SESSION['DELAI_CONNEXION']  = (int) $DB_ROW['delai_connexion_secondes'];
-	$_SESSION['FIRST_CONNEXION']  = ($DB_ROW['user_connexion_date']=='0000-00-00 00:00:00') ? TRUE : FALSE ;
+	$_SESSION['USER_PROFIL']        = $DB_ROW['user_profil'];
+	$_SESSION['USER_ID']            = (int) $DB_ROW['user_id'];
+	$_SESSION['USER_NOM']           = $DB_ROW['user_nom'];
+	$_SESSION['USER_PRENOM']        = $DB_ROW['user_prenom'];
+	$_SESSION['USER_LOGIN']         = $DB_ROW['user_login'];
+	$_SESSION['USER_DESCR']         = '['.$DB_ROW['user_profil'].'] '.$DB_ROW['user_prenom'].' '.$DB_ROW['user_nom'];
+	$_SESSION['USER_DALTONISME']    = $DB_ROW['user_daltonisme'];
+	$_SESSION['USER_ID_ENT']        = $DB_ROW['user_id_ent'];
+	$_SESSION['USER_ID_GEPI']       = $DB_ROW['user_id_gepi'];
+	$_SESSION['USER_PARAM_ACCUEIL'] = $DB_ROW['user_param_accueil'];
+	$_SESSION['ELEVE_CLASSE_ID']    = (int) $DB_ROW['eleve_classe_id'];
+	$_SESSION['ELEVE_CLASSE_NOM']   = $DB_ROW['groupe_nom'];
+	$_SESSION['ELEVE_LANGUE']       = (int) $DB_ROW['eleve_langue'];
+	$_SESSION['DELAI_CONNEXION']    = (int) $DB_ROW['delai_connexion_secondes'];
+	$_SESSION['FIRST_CONNEXION']    = ($DB_ROW['user_connexion_date']=='0000-00-00 00:00:00') ? TRUE : FALSE ;
 	// Récupérer et Enregistrer en session les données des élèves associées à un responsable légal.
 	if($_SESSION['USER_PROFIL']=='parent')
 	{

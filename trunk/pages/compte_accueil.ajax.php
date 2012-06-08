@@ -1,3 +1,4 @@
+<?php
 /**
  * @version $Id$
  * @author Thomas Crespin <thomas.crespin@sesamath.net>
@@ -23,56 +24,36 @@
  * si ce n’est pas le cas, consultez : <http://www.gnu.org/licenses/>.
  * 
  */
-
-// jQuery !
-$(document).ready
-(
-	function()
-	{
+if($_SESSION['SESAMATH_ID']==ID_DEMO){exit('Action désactivée pour la démo...');}
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-//	Clic sur l'image pour Voir un référentiel de compétences
+//	Récupération des informations transmises
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-		$('q.voir').click
-		(
-			function()
-			{
-				ids = $(this).parent().attr('id');
-				afficher_masquer_images_action('hide');
-				new_label = '<label for="'+ids+'" class="loader">Connexion au serveur&hellip;</label>';
-				$(this).after(new_label);
-				$.ajax
-				(
-					{
-						type : 'POST',
-						url : 'ajax.php?page='+PAGE,
-						data : 'ids='+ids,
-						dataType : "html",
-						error : function(jqXHR, textStatus, errorThrown)
-						{
-							$.fancybox( '<label class="alerte">'+'Echec de la connexion !'+'</label>' , {'centerOnScroll':true} );
-							$('label[for='+ids+']').remove();
-							afficher_masquer_images_action('show');
-						},
-						success : function(responseHTML)
-						{
-							initialiser_compteur();
-							if(responseHTML.substring(0,18)!='<ul class="ul_m1">')
-							{
-								$.fancybox( '<label class="alerte">'+responseHTML+'</label>' , {'centerOnScroll':true} );
-							}
-							else
-							{
-								$.fancybox( '<p class="noprint">Afin de préserver l\'environnement, n\'imprimer qu\'en cas de nécessité !</p>'+responseHTML.replace('<ul class="ul_m2">','<q class="imprimer" title="Imprimer le référentiel." />'+'<ul class="ul_m2">') , {'centerOnScroll':true} );
-								infobulle();
-							}
-							$('label[for='+ids+']').remove();
-							afficher_masquer_images_action('show');
-						}
-					}
-				);
-			}
-		);
 
-	}
-);
+$f_type = (isset($_POST['f_type'])) ? clean_texte($_POST['f_type'])  : '';
+$f_etat = (isset($_POST['f_etat'])) ? clean_entier($_POST['f_etat']) : -1;
+
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+//	Vérification des informations transmises
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
+$tab_types = array( 'user'=>'modifiable' , 'alert'=>'imposé' , 'info'=>'imposé' , 'help'=>'modifiable' , 'ecolo'=>'modifiable' );
+
+if( (!isset($tab_types[$f_type])) || ($tab_types[$f_type]=='imposé') || ($f_etat==-1) )
+{
+	exit();
+}
+
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+//	Construction de la nouvelle chaine à mettre en session et à enregistrer dans la base
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
+foreach($tab_types as $key => $kill)
+{
+	$val = ($key==$f_type) ? $f_etat : ( (strpos($_SESSION['USER_PARAM_ACCUEIL'],$key)===FALSE) ? 0 : 1 ) ;
+	$tab_types[$key] = $val ;
+}
+
+$_SESSION['USER_PARAM_ACCUEIL'] = implode( ',' , array_keys( array_filter($tab_types) ) );
+DB_STRUCTURE_COMMUN::DB_modifier_user_param_accueil( $_SESSION['USER_ID'] , $_SESSION['USER_PARAM_ACCUEIL'] );
+?>

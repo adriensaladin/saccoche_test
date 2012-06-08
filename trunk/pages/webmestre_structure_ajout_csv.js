@@ -138,7 +138,7 @@ $(document).ready
 					url : 'ajax.php?page='+PAGE,
 					data : 'f_action=' + 'ajouter' + '&num=' + num + '&max=' + max + '&courriel_envoi=' + courriel_envoi,
 					dataType : "html",
-					error : function(msg,string)
+					error : function(jqXHR, textStatus, errorThrown)
 					{
 						$('#ajax_msg_import').removeAttr("class").addClass("alerte").html('Echec lors de la connexion au serveur !');
 						$('#puce_info_import').html('<li><a id="a_reprise_import" href="#">Reprendre la procédure à l\'étape ' + num + ' sur ' + max + '.</a></li>');
@@ -242,7 +242,7 @@ $(document).ready
 					url : 'ajax.php?page='+PAGE,
 					data : 'f_action=supprimer&f_listing_id='+listing_id,
 					dataType : "html",
-					error : function(msg,string)
+					error : function(jqXHR, textStatus, errorThrown)
 					{
 						$('#ajax_supprimer').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
 						$("button").prop('disabled',false);

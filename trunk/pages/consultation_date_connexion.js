@@ -85,7 +85,7 @@ $(document).ready
 					url : 'ajax.php?page='+PAGE,
 					data : 'f_profil='+profil+'&f_groupe_id='+groupe_id+'&f_groupe_type='+groupe_type,
 					dataType : "html",
-					error : function(msg,string)
+					error : function(jqXHR, textStatus, errorThrown)
 					{
 						$('#ajax_msg').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
 					},

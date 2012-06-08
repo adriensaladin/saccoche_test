@@ -44,7 +44,7 @@ $(document).ready
 					url : 'ajax.php?page='+PAGE,
 					data : 'f_action=select_logo',
 					dataType : "html",
-					error : function(msg,string)
+					error : function(jqXHR, textStatus, errorThrown)
 					{
 						$('#ajax_logo').removeAttr("class").addClass("alerte").html('Echec de la connexion !');
 						return false;
@@ -80,7 +80,7 @@ $(document).ready
 					url : 'ajax.php?page='+PAGE,
 					data : 'f_action=listing_logos',
 					dataType : "html",
-					error : function(msg,string)
+					error : function(jqXHR, textStatus, errorThrown)
 					{
 						$('#ajax_listing').removeAttr("class").addClass("alerte").html('Echec de la connexion !');
 						return false;
@@ -120,7 +120,7 @@ $(document).ready
 						url : 'ajax.php?page='+PAGE,
 						data : 'f_action=delete_logo&f_logo='+logo,
 						dataType : "html",
-						error : function(msg,string)
+						error : function(jqXHR, textStatus, errorThrown)
 						{
 							$('#ajax_listing').removeAttr("class").addClass("alerte").html('Echec de la connexion !');
 							return false;
@@ -332,7 +332,7 @@ $(document).ready
 		}
 
 		// Fonction suivant l'envoi du formulaire (avec jquery.form.js)
-		function retour_form_erreur(msg,string)
+		function retour_form_erreur(jqXHR, textStatus, errorThrown)
 		{
 			$("button").prop('disabled',false);
 			$('#ajax_msg').removeAttr("class").addClass("alerte").html("Echec de la connexion !");

@@ -212,6 +212,7 @@ td.moyenne {text-align:center;font-weight:bold;vertical-align:middle;font-size:1
 /* Logos page d'accueil une fois identifié (dans #cadre_bas)                                           */
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
+.rien64  {padding-left:70px}
 .alert64 {background:transparent url(../_img/icone64/alert.png) no-repeat left;padding-left:70px;min-height:64px}
 .info64  {background:transparent url(../_img/icone64/info.png)  no-repeat left;padding-left:70px;min-height:64px}
 .help64  {background:transparent url(../_img/icone64/help.png)  no-repeat left;padding-left:70px;min-height:64px}

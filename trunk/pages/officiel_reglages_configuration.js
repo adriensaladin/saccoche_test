@@ -117,7 +117,7 @@ $(document).ready
 						url : 'ajax.php?page='+PAGE,
 						data : 'objet='+objet+'&'+$('#form_'+objet).serialize(),
 						dataType : "html",
-						error : function(msg,string)
+						error : function(jqXHR, textStatus, errorThrown)
 						{
 							$('#bouton_valider_'+objet).prop('disabled',false);
 							$('#ajax_msg_'+objet).removeAttr("class").addClass("alerte").html("Echec de la connexion !");

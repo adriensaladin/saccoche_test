@@ -64,7 +64,7 @@ $(document).ready
 							url : 'ajax.php?page='+PAGE,
 							data : 'f_action='+action,
 							dataType : "html",
-							error : function(msg,string)
+							error : function(jqXHR, textStatus, errorThrown)
 							{
 								$("button").prop('disabled',false);
 								$('#ajax_msg_'+action).removeAttr("class").addClass("alerte").html('Echec de la connexion !');

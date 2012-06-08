@@ -232,7 +232,7 @@ function memoriser_selection_matieres_items(selection_items_nom)
 			url : 'ajax.php?page=compte_selection_items',
 			data : 'f_action='+'ajouter'+'&f_origine='+PAGE+'&f_compet_liste='+compet_liste+'&f_nom='+encodeURIComponent(selection_items_nom),
 			dataType : "html",
-			error : function(msg,string)
+			error : function(jqXHR, textStatus, errorThrown)
 			{
 				$('#ajax_msg_memo').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
 			},
@@ -526,7 +526,7 @@ function conserver_session_active()
 			url : 'ajax.php?page=conserver_session_active',
 			data : '',
 			dataType : "html",
-			error : function(msg,string)
+			error : function(jqXHR, textStatus, errorThrown)
 			{
 				alert('Avertissement : échec lors de la connexion au serveur !\nLe travail en cours pourrait ne pas pouvoir être sauvegardé...');
 			},
@@ -556,7 +556,7 @@ function fermer_session()
 			url : 'ajax.php?page=fermer_session',
 			data : '',
 			dataType : "html",
-			error : function(msg,string)
+			error : function(jqXHR, textStatus, errorThrown)
 			{
 				return false;
 			},
@@ -1060,7 +1060,7 @@ $(document).ready
 						url : 'ajax.php?page=date_calendrier',
 						data : get_data,
 						dataType : "html",
-						error : function(msg,string)
+						error : function(jqXHR, textStatus, errorThrown)
 						{
 							$('#ajax_alerte_calque').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
 							leave_erreur = true;
@@ -1221,7 +1221,7 @@ $(document).ready
 						url : 'ajax.php?page=evaluation_demande_eleve_ajout',
 						data : $("#form_demande_evaluation").serialize(),
 						dataType : "html",
-						error : function(msg,string)
+						error : function(jqXHR, textStatus, errorThrown)
 						{
 							$('#ajax_msg_confirmer_demande').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
 							$('#form_demande_evaluation button').prop('disabled',false);

@@ -177,7 +177,7 @@ $(document).ready
 		}
 
 		// Fonction suivant l'envoi du formulaire (avec jquery.form.js)
-		function retour_form_erreur1(msg,string)
+		function retour_form_erreur1(jqXHR, textStatus, errorThrown)
 		{
 			$("#bouton_valider_notes").prop('disabled',false);
 			$('#ajax_msg_notes').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
@@ -281,7 +281,7 @@ $(document).ready
 		}
 
 		// Fonction suivant l'envoi du formulaire (avec jquery.form.js)
-		function retour_form_erreur2(msg,string)
+		function retour_form_erreur2(jqXHR, textStatus, errorThrown)
 		{
 			$("#bouton_valider_acquis").prop('disabled',false);
 			$('#ajax_msg_acquis').removeAttr("class").addClass("alerte").html("Echec de la connexion !");

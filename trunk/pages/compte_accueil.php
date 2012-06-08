@@ -28,7 +28,16 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = "Bienvenue dans votre espace identifié";
 
+// user + help + ecolo peuvent être masqués
+// alert + info sont obligatoires
 $tab_accueil = array( 'user'=>'' , 'alert'=>'' , 'info'=>array() , 'help'=>'' , 'ecolo'=>'' );
+$tab_msg_rubrique_masquee = array( 'user'=>'Message de bienvenue' , 'help'=>'Astuce du jour' , 'ecolo'=>'Protégeons l\'environnement' );
+
+// Le temps de la mise à jour [2012-06-08], pour éviter tout souci ; [TODO] peut être retiré dans un an environ.
+if(!(isset($_SESSION['USER_PARAM_ACCUEIL'])))
+{
+	$_SESSION['USER_PARAM_ACCUEIL'] = 'user,alert,info,help,ecolo';
+}
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 //	Alertes (pour l'administrateur) ; affiché après mais à définir avant
@@ -53,14 +62,14 @@ if($_SESSION['USER_PROFIL']=='administrateur')
 }
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-//	Informations utilisateur : infos profil, infos selon profil, infos adresse de connexion
+//	Message de bienvenue (informations utilisateur : infos profil, infos selon profil, infos adresse de connexion)
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
 $tab_accueil['user'] = '';
 // infos connexion (pas si webmestre)
 if(isset($_SESSION['DELAI_CONNEXION']))
 {
-	$tab_accueil['user'] .= '<p class="i">Bonjour <b>'.html($_SESSION['USER_PRENOM']).'</b>. ';
+	$tab_accueil['user'] .= '<p class="i"><TG> Bonjour <b>'.html($_SESSION['USER_PRENOM']).'</b>. ';
 	if($_SESSION['FIRST_CONNEXION'])                           { $tab_accueil['user'] .= 'Heureux de faire votre connaissance&nbsp;; bonne découverte de <em>SACoche</em>&nbsp;!</p>'; }
 	elseif($_SESSION['DELAI_CONNEXION']<  43200 /*12*3600*/)   { $tab_accueil['user'] .= 'Déjà de retour&nbsp;? Décidément on ne se quitte plus&nbsp;!</p>'; }
 	elseif($_SESSION['DELAI_CONNEXION']< 108000 /*48*3600*/)   { $tab_accueil['user'] .= 'Bonne navigation, et merci de votre fidélité&nbsp;!</p>'; }
@@ -72,13 +81,13 @@ if(isset($_SESSION['DELAI_CONNEXION']))
 }
 elseif(isset($_SESSION['DEUXIEME_PASSAGE']))
 {
-	$tab_accueil['user'] .= '<p class="i">Encore là <b>'.html($_SESSION['USER_PRENOM']).'</b>&nbsp;? Vous avez raison, faîtes comme chez vous&nbsp;!';
+	$tab_accueil['user'] .= '<p class="i"><TG> Encore là <b>'.html($_SESSION['USER_PRENOM']).'</b>&nbsp;? Vous avez raison, faîtes comme chez vous&nbsp;!';
 	unset($_SESSION['DEUXIEME_PASSAGE']);
 	$_SESSION['PASSAGES_SUIVANTS'] = TRUE;
 }
 elseif(isset($_SESSION['PASSAGES_SUIVANTS']))
 {
-	$tab_accueil['user'] .= '<p class="i">Toujours là <b>'.html($_SESSION['USER_PRENOM']).'</b>&nbsp;? Pas de souci, restez le temps que vous voulez&nbsp;!';
+	$tab_accueil['user'] .= '<p class="i"><TG> Toujours là <b>'.html($_SESSION['USER_PRENOM']).'</b>&nbsp;? Pas de souci, restez le temps que vous voulez&nbsp;!';
 }
 // infos profil
 require_once('./_inc/tableau_profils.php'); // Charge $tab_profil_libelle[$profil][court|long][1|2]
@@ -141,12 +150,12 @@ if($_SESSION['USER_PROFIL']!='webmestre')
 	}
 	elseif($_SESSION['USER_PROFIL']!='administrateur')
 	{
-		$tab_accueil['ecolo'] = '<p class="b">Afin de préserver l\'environnement, n\'imprimer qu\'en cas de nécessité !</p><div>Enregistrer la version numérique d\'un document (grille, relevé, bilan) suffit pour le consulter, l\'archiver, le partager, &hellip;</div>';
+		$tab_accueil['ecolo'] = '<p class="b"><TG> Afin de préserver l\'environnement, n\'imprimer qu\'en cas de nécessité !</p><div>Enregistrer la version numérique d\'un document (grille, relevé, bilan) suffit pour le consulter, l\'archiver, le partager, &hellip;</div>';
 	}
 }
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-//	Astuces
+//	Astuce du jour
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
 /*
@@ -172,18 +181,30 @@ if($astuce_nombre)
 	$i_alea = mt_rand(0,99) / 100; // nombre aléatoire entre 0,00 et 0,99
 	$i_dist = pow($i_alea,$coef_distorsion) ; // distorsion pour accentuer le nombre de résultats proches de 0
 	$indice = (int)floor($astuce_nombre*$i_dist);
-	$tab_accueil['help'] .= '<p class="b i">Le saviez-vous ?</p>'.$tab_astuces[$_SESSION['USER_PROFIL']][$indice];
+	$tab_accueil['help'] .= '<p class="b i"><TG> Le saviez-vous ?</p>'.$tab_astuces[$_SESSION['USER_PROFIL']][$indice];
 }
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 //	Affichage
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+$tab_msg_rubrique_masquee = array( 'user'=>'Message de bienvenue' , 'help'=>'L\'astuce du moment' , 'ecolo'=>'Protégeons l\'environnement !' );
 
 foreach($tab_accueil as $type => $contenu)
 {
 	if( is_string($contenu) && ($contenu!='') )
 	{
-		echo'<hr /><div class="p '.$type.'64">'.$contenu.'</div>';
+		if(isset($tab_msg_rubrique_masquee[$type]))
+		{
+			$class_moins = (strpos($_SESSION['USER_PARAM_ACCUEIL'],$type)!==FALSE) ? '' : ' hide' ;
+			$class_plus  = (strpos($_SESSION['USER_PARAM_ACCUEIL'],$type)===FALSE) ? '' : ' hide' ;
+			$toggle_moins = '<a href="#toggle_accueil" class="to_'.$type.'"><img src="./_img/toggle_moins.gif" alt="" title="Masquer" /></a>';
+			$toggle_plus  = '<div id="'.$type.'_plus" class="rien64'.$class_plus.'"><a href="#toggle_accueil" class="to_'.$type.'"><img src="./_img/toggle_plus.gif" alt="" title="Voir" /> '.$tab_msg_rubrique_masquee[$type].'</a></div>';
+		}
+		else
+		{
+			$class_moins = $class_plus = $toggle_moins = $toggle_plus = 0 ;
+		}
+		echo'<hr />'.$toggle_plus.'<div id="'.$type.'_moins" class="p '.$type.'64'.$class_moins.'">'.str_replace('<TG>',$toggle_moins,$contenu).'</div>';
 	}
 	elseif( is_array($contenu) && count($contenu) )
 	{

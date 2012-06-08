@@ -353,7 +353,7 @@ $(document).ready
 					url : 'ajax.php?page='+PAGE,
 					data : 'f_action='+mode+'&f_ref='+ref+'&f_date_mysql='+date_mysql+'&f_description='+encodeURIComponent(description)+'&f_date_visible='+date_visible+'&f_groupe_nom='+encodeURIComponent(groupe)+'&f_date_fr='+encodeURIComponent(date_fr),
 					dataType : "html",
-					error : function(msg,string)
+					error : function(jqXHR, textStatus, errorThrown)
 					{
 						$('#msg_saisir').removeAttr("class").addClass("alerte").html('Echec de la connexion ! <button id="fermer_zone_saisir" type="button" class="retourner">Retour</button>');
 						return false;
@@ -417,7 +417,7 @@ $(document).ready
 					url : 'ajax.php?page='+PAGE,
 					data : 'f_action='+mode+'&f_ref='+ref+'&f_date_fr='+encodeURIComponent(date_fr)+'&f_description='+encodeURIComponent(description)+'&f_groupe_nom='+encodeURIComponent(groupe),
 					dataType : "html",
-					error : function(msg,string)
+					error : function(jqXHR, textStatus, errorThrown)
 					{
 						$('#msg_voir').removeAttr("class").addClass("alerte").html('Echec de la connexion ! <button id="fermer_zone_voir" type="button" class="retourner">Retour</button>');
 						return false;
@@ -472,7 +472,7 @@ $(document).ready
 					url : 'ajax.php?page='+PAGE,
 					data : 'f_action='+mode+'&f_ref='+ref+'&f_date_fr='+encodeURIComponent(date_fr)+'&f_description='+encodeURIComponent(description)+'&f_groupe_nom='+encodeURIComponent(groupe),
 					dataType : "html",
-					error : function(msg,string)
+					error : function(jqXHR, textStatus, errorThrown)
 					{
 						$('#msg_voir_repart').removeAttr("class").addClass("alerte").html('Echec de la connexion ! <button id="fermer_zone_voir_repart" type="button" class="retourner">Retour</button>');
 						return false;
@@ -554,7 +554,7 @@ $(document).ready
 					url : 'ajax.php?page='+PAGE,
 					data : 'f_action='+mode+'&f_ref='+ref,
 					dataType : "html",
-					error : function(msg,string)
+					error : function(jqXHR, textStatus, errorThrown)
 					{
 						$('#msg_ordonner').removeAttr("class").addClass("alerte").html('Echec de la connexion ! <button id="fermer_zone_ordonner" type="button" class="retourner">Retour</button>');
 						return false;
@@ -968,7 +968,7 @@ $(document).ready
 						url : 'ajax.php?page='+PAGE,
 						data : 'f_action=imprimer_cartouche&'+$("#zone_imprimer").serialize(),
 						dataType : "html",
-						error : function(msg,string)
+						error : function(jqXHR, textStatus, errorThrown)
 						{
 							$('button').prop('disabled',false);
 							$('#msg_imprimer').removeAttr("class").addClass("alerte").html('Echec de la connexion !');
@@ -1029,7 +1029,7 @@ $(document).ready
 						url : 'ajax.php?page='+PAGE,
 						data : 'f_action=indiquer_eleves_deja'+'&f_description='+$('#f_description').val()+'&f_date_debut='+f_date_debut,
 						dataType : "html",
-						error : function(msg,string)
+						error : function(jqXHR, textStatus, errorThrown)
 						{
 							$('button').prop('disabled',false);
 							$('#msg_indiquer_eleves_deja').removeAttr("class").addClass("alerte").html('Echec de la connexion !');
@@ -1516,7 +1516,7 @@ $(document).ready
 							url : 'ajax.php?page='+PAGE,
 							data : 'f_action=enregistrer_ordre&f_ref='+$('#Enregistrer_ordre').val()+'&tab_id='+tab_id,
 							dataType : "html",
-							error : function(msg,string)
+							error : function(jqXHR, textStatus, errorThrown)
 							{
 								$('button').prop('disabled',false);
 								$('#ajax_msg').removeAttr("class").addClass("alerte").html('Echec de la connexion !');
@@ -1580,7 +1580,7 @@ $(document).ready
 							url : 'ajax.php?page='+PAGE,
 							data : 'f_action=enregistrer_saisie'+'&f_ref='+$("#f_ref").val()+'&f_date_mysql='+$("#f_date_mysql").val()+'&f_date_visible='+$("#f_date_visible").val()+'&f_notes='+f_notes+'&f_description='+$("#f_description").val(),
 							dataType : "html",
-							error : function(msg,string)
+							error : function(jqXHR, textStatus, errorThrown)
 							{
 								$('button').prop('disabled',false);
 								$('#msg_saisir').removeAttr("class").addClass("alerte").html('Echec de la connexion !');
@@ -1713,7 +1713,7 @@ $(document).ready
 		}
 
 		// Fonction suivant l'envoi du formulaire (avec jquery.form.js)
-		function retour_form_erreur(msg,string)
+		function retour_form_erreur(jqXHR, textStatus, errorThrown)
 		{
 			please_wait = false;
 			$('#ajax_msg').parent().children('q').show();
@@ -1977,7 +1977,7 @@ $(document).ready
 						url : 'ajax.php?page='+PAGE,
 						data : 'f_action=retirer_document'+'&f_doc_objet='+objet+'&f_ref='+ref+'&f_doc_url='+url,
 						dataType : "html",
-						error : function(msg,string)
+						error : function(jqXHR, textStatus, errorThrown)
 						{
 							$('#ajax_document_upload').removeAttr("class").addClass("alerte").html(responseHTML);
 							activer_boutons_upload(ref);
@@ -2040,7 +2040,7 @@ $(document).ready
 							url : 'ajax.php?page='+PAGE,
 							data : 'f_action=referencer_document'+'&f_doc_objet='+objet+'&f_ref='+ref+'&f_doc_url='+url,
 							dataType : "html",
-							error : function(msg,string)
+							error : function(jqXHR, textStatus, errorThrown)
 							{
 								$('#ajax_document_upload').removeAttr("class").addClass("alerte").html(responseHTML);
 								activer_boutons_upload(ref);
@@ -2242,7 +2242,7 @@ $(document).ready
 		}
 
 		// Fonction suivant l'envoi du formulaire (avec jquery.form.js)
-		function retour_form_erreur0(msg,string)
+		function retour_form_erreur0(jqXHR, textStatus, errorThrown)
 		{
 			$('#ajax_msg0').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
 		}

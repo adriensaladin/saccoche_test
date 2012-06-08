@@ -30,47 +30,32 @@ $(document).ready
 	function()
 	{
 
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-//	Clic sur l'image pour Voir un référentiel de compétences
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-		$('q.voir').click
+		//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
+		//	Clic sur une image-lien afin d'afficher ou de masquer un élément de la page d'accueil
+		//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
+
+		$('a[href=#toggle_accueil]').click
 		(
 			function()
 			{
-				ids = $(this).parent().attr('id');
-				afficher_masquer_images_action('hide');
-				new_label = '<label for="'+ids+'" class="loader">Connexion au serveur&hellip;</label>';
-				$(this).after(new_label);
+				var type = $(this).attr('class').substring(3); // 'to_' + type
+				var src  = $(this).children('img').attr('src');
+				var symb1 = ( src.indexOf("plus") > 0 ) ? 'plus' : 'moins' ;
+				var symb2 = ( symb1=='moins' ) ? 'plus' : 'moins' ;
+				$('#'+type+'_'+symb1).hide(0);
+				$('#'+type+'_'+symb2).show(0);
+				// Au passage, une requête ajax discrète pour mémoriser cette préférence
+				var etat = ( symb1=='moins' ) ? 0 : 1 ;
 				$.ajax
 				(
 					{
 						type : 'POST',
 						url : 'ajax.php?page='+PAGE,
-						data : 'ids='+ids,
-						dataType : "html",
-						error : function(jqXHR, textStatus, errorThrown)
-						{
-							$.fancybox( '<label class="alerte">'+'Echec de la connexion !'+'</label>' , {'centerOnScroll':true} );
-							$('label[for='+ids+']').remove();
-							afficher_masquer_images_action('show');
-						},
-						success : function(responseHTML)
-						{
-							initialiser_compteur();
-							if(responseHTML.substring(0,18)!='<ul class="ul_m1">')
-							{
-								$.fancybox( '<label class="alerte">'+responseHTML+'</label>' , {'centerOnScroll':true} );
-							}
-							else
-							{
-								$.fancybox( '<p class="noprint">Afin de préserver l\'environnement, n\'imprimer qu\'en cas de nécessité !</p>'+responseHTML.replace('<ul class="ul_m2">','<q class="imprimer" title="Imprimer le référentiel." />'+'<ul class="ul_m2">') , {'centerOnScroll':true} );
-								infobulle();
-							}
-							$('label[for='+ids+']').remove();
-							afficher_masquer_images_action('show');
-						}
+						data : 'f_type='+type+'&f_etat='+etat,
+						dataType : "html"
 					}
 				);
+				return false;
 			}
 		);
 

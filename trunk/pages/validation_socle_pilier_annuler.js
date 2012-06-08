@@ -64,7 +64,7 @@ $(document).ready
 						url : 'ajax.php?page=_maj_select_piliers',
 						data : 'f_palier='+palier_id+'&f_first='+'non',
 						dataType : "html",
-						error : function(msg,string)
+						error : function(jqXHR, textStatus, errorThrown)
 						{
 							$('#ajax_maj_pilier').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
 						},
@@ -114,7 +114,7 @@ $(document).ready
 						url : 'ajax.php?page=_maj_select_eleves',
 						data : 'f_groupe='+groupe_id+'&f_type='+groupe_type+'&f_statut=1',
 						dataType : "html",
-						error : function(msg,string)
+						error : function(jqXHR, textStatus, errorThrown)
 						{
 							$('#ajax_maj_eleve').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
 						},
@@ -214,7 +214,7 @@ $(document).ready
 		}
 
 		// Fonction suivant l'envoi du formulaire (avec jquery.form.js)
-		function retour_form_erreur0(msg,string)
+		function retour_form_erreur0(jqXHR, textStatus, errorThrown)
 		{
 			$("button").prop('disabled',false);
 			$('#ajax_msg_choix').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
@@ -293,7 +293,7 @@ $(document).ready
 						url : 'ajax.php?page='+PAGE,
 						data : 'f_action=Enregistrer_validation&delete_id='+td_id,
 						dataType : "html",
-						error : function(msg,string)
+						error : function(jqXHR, textStatus, errorThrown)
 						{
 							$("button").prop('disabled',false);
 							$('#ajax_msg_validation').removeAttr("class").addClass("alerte").html('Echec de la connexion !');

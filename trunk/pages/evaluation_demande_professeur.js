@@ -218,7 +218,7 @@ $(document).ready
 		}
 
 		// Fonction suivant l'envoi du formulaire (avec jquery.form.js)
-		function retour_form_erreur0(msg,string)
+		function retour_form_erreur0(jqXHR, textStatus, errorThrown)
 		{
 			$('#ajax_msg0').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
 		}
@@ -275,7 +275,7 @@ $(document).ready
 					url : 'ajax.php?page=_maj_select_eval',
 					data : 'eval_type='+eval_type+'&groupe_id='+groupe_id,
 					dataType : "html",
-					error : function(msg,string)
+					error : function(jqXHR, textStatus, errorThrown)
 					{
 						$('#ajax_maj1').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
 					},
@@ -485,7 +485,7 @@ $(document).ready
 		}
 
 		// Fonction suivant l'envoi du formulaire (avec jquery.form.js)
-		function retour_form_erreur(msg,string)
+		function retour_form_erreur(jqXHR, textStatus, errorThrown)
 		{
 			$('button').prop('disabled',false);
 			$('#ajax_msg1').removeAttr("class").addClass("alerte").html("Echec de la connexion !");

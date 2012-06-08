@@ -95,7 +95,7 @@ $(document).ready
 					url : 'ajax.php?page=_maj_select_niveaux',
 					data : 'f_matiere='+matiere_val,
 					dataType : "html",
-					error : function(msg,string)
+					error : function(jqXHR, textStatus, errorThrown)
 					{
 						$('#ajax_maj_matiere').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
 					},
@@ -137,7 +137,7 @@ $(document).ready
 					url : 'ajax.php?page=_maj_select_eleves',
 					data : 'f_groupe='+groupe_val+'&f_type='+type+'&f_statut=1',
 					dataType : "html",
-					error : function(msg,string)
+					error : function(jqXHR, textStatus, errorThrown)
 					{
 						$('#ajax_maj_groupe').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
 					},
@@ -194,7 +194,7 @@ $(document).ready
 						url : 'ajax.php?page=_maj_select_matieres_prof',
 						data : 'f_matiere='+matiere_id+'&f_action='+modifier_action,
 						dataType : "html",
-						error : function(msg,string)
+						error : function(jqXHR, textStatus, errorThrown)
 						{
 							$('button').prop('disabled',false);
 						},
@@ -325,10 +325,11 @@ $(document).ready
 		}
 
 		// Fonction suivant l'envoi du formulaire (avec jquery.form.js)
-		function retour_form_erreur(msg,string)
+		function retour_form_erreur(jqXHR, textStatus, errorThrown)
 		{
 			$('button').prop('disabled',false);
-			$('#ajax_msg').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
+			var message = (jqXHR.status!=500) ? 'Echec de la connexion !' : 'Erreur 500&hellip; Mémoire insuffisante ? Sélectionner moins d\'élèves à la fois ou demander à votre hébergeur d\'augmenter la valeur "memory_limit".' ;
+			$('#ajax_msg').removeAttr("class").addClass("alerte").html(message);
 		}
 
 		// Fonction suivant l'envoi du formulaire (avec jquery.form.js)

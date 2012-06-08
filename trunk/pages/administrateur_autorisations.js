@@ -125,7 +125,7 @@ $(document).ready
 						url : 'ajax.php?page='+PAGE,
 						data : 'f_objet='+objet+'&f_profils='+tab_check,
 						dataType : "html",
-						error : function(msg,string)
+						error : function(jqXHR, textStatus, errorThrown)
 						{
 							obj_bouton.prop('disabled',false);
 							$('#ajax_msg_'+objet).removeAttr("class").addClass("alerte").html("Echec de la connexion !");

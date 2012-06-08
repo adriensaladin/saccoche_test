@@ -265,7 +265,7 @@ $(document).ready
 						url : 'ajax.php?page='+PAGE,
 						data : 'f_step='+f_step+'&f_action='+f_action,
 						dataType : "html",
-						error : function(msg,string)
+						error : function(jqXHR, textStatus, errorThrown)
 						{
 							$('#ajax_msg').removeAttr("class").addClass("alerte").html('Echec de la connexion !');
 							return false;
@@ -331,7 +331,7 @@ $(document).ready
 							url : 'ajax.php?page='+PAGE,
 							data : 'f_step='+f_step+'&f_action='+f_action+'&'+$("#form2").serialize(),
 							dataType : "html",
-							error : function(msg,string)
+							error : function(jqXHR, textStatus, errorThrown)
 							{
 								$('#ajax_msg').removeAttr("class").addClass("alerte").html('Echec de la connexion !');
 								return false;
@@ -385,7 +385,7 @@ $(document).ready
 						url : 'ajax.php?page='+PAGE,
 						data : 'f_step='+f_step+'&f_action='+f_action+'&f_check='+f_check,
 						dataType : "html",
-						error : function(msg,string)
+						error : function(jqXHR, textStatus, errorThrown)
 						{
 							$('#ajax_msg').removeAttr("class").addClass("alerte").html('Echec de la connexion !');
 							return false;
@@ -425,7 +425,7 @@ $(document).ready
 						url : 'ajax.php?page='+PAGE,
 						data : 'f_step=53&f_action='+f_action+'&'+$("#form2").serialize(),
 						dataType : "html",
-						error : function(msg,string)
+						error : function(jqXHR, textStatus, errorThrown)
 						{
 							$('#ajax_msg').removeAttr("class").addClass("alerte").html('Echec de la connexion !');
 							return false;

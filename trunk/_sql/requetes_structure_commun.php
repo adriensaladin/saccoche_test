@@ -545,6 +545,22 @@ public static function DB_modifier_user_daltonisme($user_id,$user_daltonisme)
 }
 
 /**
+ * Modifier sa configuration de la page d'accueil
+ *
+ * @param int   $user_id
+ * @param 0|1   $user_param_accueil
+ * @return void
+ */
+public static function DB_modifier_user_param_accueil($user_id,$user_param_accueil)
+{
+	$DB_SQL = 'UPDATE sacoche_user ';
+	$DB_SQL.= 'SET user_param_accueil=:user_param_accueil ';
+	$DB_SQL.= 'WHERE user_id=:user_id ';
+	$DB_VAR = array(':user_id'=>$user_id,':user_param_accueil'=>$user_param_accueil);
+	DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+}
+
+/**
  * modifier_mdp_utilisateur
  *
  * @param int    $user_id

@@ -60,7 +60,8 @@ Formulaire::save_choix('synthese_socle');
 // De plus la consommation d'une classe PHP n'est pas mesurable - non comptabilisée par memory_get_usage() - et non corrélée à la taille de l'objet PDF en l'occurrence...
 // Un memory_limit() de 64Mo est ainsi dépassé avec un pdf d'environ 150 pages, ce qui est atteint avec 4 pages par élèves ou un groupe d'élèves > effectif moyen d'une classe.
 // D'où le ini_set(), même si cette directive peut être interdite dans la conf PHP ou via Suhosin (http://www.hardened-php.net/suhosin/configuration.html#suhosin.memory_limit)
-// En complément, register_shutdown_function() permet de capter une erreur fatale de dépassement de mémoire.
+// En complément, register_shutdown_function() permet de capter une erreur fatale de dépassement de mémoire, sauf si CGI.
+// D'où une combinaison avec une détection par javascript du statusCode.
 
 augmenter_memory_limit();
 register_shutdown_function('rapporter_erreur_fatale');

@@ -102,7 +102,7 @@ $(document).ready
 					url : 'ajax.php?page='+PAGE,
 					data : 'f_action=supprimer&f_niveau='+$('#f_niveau').val(),
 					dataType : "html",
-					error : function(msg,string)
+					error : function(jqXHR, textStatus, errorThrown)
 					{
 						$('#ajax_msg').parent().children('q').show();
 						$('#ajax_msg').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
@@ -180,7 +180,7 @@ $(document).ready
 					url : 'ajax.php?page='+PAGE,
 					data : 'f_action=recherche_niveau_famille&f_famille='+famille_id,
 					dataType : "html",
-					error : function(msg,string)
+					error : function(jqXHR, textStatus, errorThrown)
 					{
 						$('#ajax_msg_recherche').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
 					},
@@ -241,7 +241,7 @@ $(document).ready
 						url : 'ajax.php?page='+PAGE,
 						data : 'f_action=ajouter&f_niveau='+niveau_id,
 						dataType : "html",
-						error : function(msg,string)
+						error : function(jqXHR, textStatus, errorThrown)
 						{
 							afficher_masquer_images_action('show');
 							$('#ajax_msg_recherche').removeAttr("class").addClass("alerte").html("Echec de la connexion !");

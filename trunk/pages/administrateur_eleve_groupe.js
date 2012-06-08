@@ -45,7 +45,7 @@ $(document).ready
 					url : 'ajax.php?page=_maj_select_eleves',
 					data : 'f_groupe_id='+groupe_id+'&f_groupe_type='+groupe_type+'&f_statut=1',
 					dataType : "html",
-					error : function(msg,string)
+					error : function(jqXHR, textStatus, errorThrown)
 					{
 						$('#ajax_msg').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
 					},
@@ -121,7 +121,7 @@ $(document).ready
 						url : 'ajax.php?page='+PAGE+'&action='+id,
 						data : $("form").serialize(),
 						dataType : "html",
-						error : function(msg,string)
+						error : function(jqXHR, textStatus, errorThrown)
 						{
 							$('button').prop('disabled',false);
 							$('#ajax_msg').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
@@ -157,7 +157,7 @@ $(document).ready
 				url : 'ajax.php?page='+PAGE+'&action=initialiser',
 				data : '',
 				dataType : "html",
-				error : function(msg,string)
+				error : function(jqXHR, textStatus, errorThrown)
 				{
 					$('#ajax_msg').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
 					return false;

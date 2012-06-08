@@ -18,6 +18,7 @@ CREATE TABLE sacoche_user (
 	eleve_langue        TINYINT(3)                                                       UNSIGNED                NOT NULL DEFAULT 100 COMMENT "Langue choisie pour le socle.",
 	user_id_ent         VARCHAR(63)                                                      COLLATE utf8_unicode_ci NOT NULL DEFAULT "" COMMENT "Paramètre renvoyé après une identification CAS depuis un ENT (ça peut être le login, mais ça peut aussi être un numéro interne à l'ENT...).",
 	user_id_gepi        VARCHAR(63)                                                      COLLATE utf8_unicode_ci NOT NULL DEFAULT "" COMMENT "Login de l'utilisateur dans Gepi utilisé pour un transfert note/moyenne vers un bulletin.",
+	user_param_accueil  VARCHAR(30)                                                      COLLATE utf8_unicode_ci NOT NULL DEFAULT "user,alert,info,help,ecolo",
 	PRIMARY KEY (user_id),
 	UNIQUE KEY user_login (user_login),
 	KEY user_profil (user_profil),

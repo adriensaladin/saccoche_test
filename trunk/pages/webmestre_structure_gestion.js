@@ -169,7 +169,7 @@ $(document).ready
 					url : 'ajax.php?page='+PAGE,
 					data : 'f_action=lister_admin&f_base_id='+base_id,
 					dataType : "html",
-					error : function(msg,string)
+					error : function(jqXHR, textStatus, errorThrown)
 					{
 						$('#init_form').html('<label id="ajax_msg" class="alerte">Echec de la connexion !</label><q class="annuler" title="Annuler."></q>')
 					},
@@ -286,7 +286,7 @@ $(document).ready
 						url : 'ajax.php?page='+PAGE,
 						data : 'f_action='+action+'&f_base_id='+base_id,
 						dataType : "html",
-						error : function(msg,string)
+						error : function(jqXHR, textStatus, errorThrown)
 						{
 							objet.addClass(action).attr('src',img_src);
 							return false;
@@ -326,7 +326,7 @@ $(document).ready
 					url : 'ajax.php?page='+PAGE,
 					data : 'f_action=supprimer&f_listing_id='+listing_id,
 					dataType : "html",
-					error : function(msg,string)
+					error : function(jqXHR, textStatus, errorThrown)
 					{
 						$('#ajax_supprimer').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
 						$("button").prop('disabled',false);
@@ -501,7 +501,7 @@ $(document).ready
 		}
 
 		// Fonction suivant l'envoi du formulaire (avec jquery.form.js)
-		function retour_form_erreur(msg,string)
+		function retour_form_erreur(jqXHR, textStatus, errorThrown)
 		{
 			please_wait = false;
 			$('#ajax_msg').parent().children('q').show();

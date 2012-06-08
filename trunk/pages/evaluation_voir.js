@@ -66,7 +66,7 @@ $(document).ready
 					url : 'ajax.php?page=_maj_select_eleves',
 					data : 'f_groupe='+groupe_id+'&f_type='+groupe_type+'&f_statut=1&f_multiple=0',
 					dataType : "html",
-					error : function(msg,string)
+					error : function(jqXHR, textStatus, errorThrown)
 					{
 						$('#ajax_maj').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
 					},
@@ -178,7 +178,7 @@ $(document).ready
 		}
 
 		// Fonction suivant l'envoi du formulaire (avec jquery.form.js)
-		function retour_form_erreur(msg,string)
+		function retour_form_erreur(jqXHR, textStatus, errorThrown)
 		{
 			$("#actualiser").prop('disabled',false);
 			$('#ajax_msg').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
@@ -258,7 +258,7 @@ $(document).ready
 						url : 'ajax.php?page='+PAGE,
 						data : 'f_action=Voir_notes&f_eleve='+$('#f_eleve option:selected').val()+'&f_devoir='+devoir_id,
 						dataType : "html",
-						error : function(msg,string)
+						error : function(jqXHR, textStatus, errorThrown)
 						{
 							$('#msg_voir').removeAttr("class").addClass("alerte").html('Echec de la connexion !');
 						},
@@ -308,7 +308,7 @@ $(document).ready
 						url : 'ajax.php?page='+PAGE,
 						data : 'f_action=Saisir_notes&f_eleve='+$('#f_eleve option:selected').val()+'&f_devoir='+devoir_id,
 						dataType : "html",
-						error : function(msg,string)
+						error : function(jqXHR, textStatus, errorThrown)
 						{
 							$.fancybox( '<label class="alerte">'+'Echec de la connexion !'+'</label>' , {'centerOnScroll':true} );
 							$('label[for='+td_id+']').remove();
@@ -409,7 +409,7 @@ $(document).ready
 							url : 'ajax.php?page='+PAGE,
 							data : 'f_action=Enregistrer_saisies'+'&'+$('#zone_eval_saisir').serialize(),
 							dataType : "html",
-							error : function(msg,string)
+							error : function(jqXHR, textStatus, errorThrown)
 							{
 								$('button').prop('disabled',false);
 								$('#msg_saisir').removeAttr("class").addClass("alerte").html('Echec de la connexion !');

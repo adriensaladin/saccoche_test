@@ -60,9 +60,7 @@ $tab_droits['evaluation_demande_eleve']                = $tab_droits_profil_elev
 $tab_droits['evaluation_demande_eleve_ajout']          = $tab_droits_profil_eleve;
 // Profil professeur
 $tab_droits['_maj_select_eval']                        = $tab_droits_profil_professeur;
-$tab_droits['_maj_select_matieres_famille']            = $tab_droits_profil_professeur;
 $tab_droits['_maj_select_matieres_prof']               = $tab_droits_profil_professeur;
-$tab_droits['_maj_select_niveaux_famille']             = $tab_droits_profil_professeur;
 $tab_droits['evaluation_demande_professeur']           = $tab_droits_profil_professeur;
 $tab_droits['evaluation_gestion']                      = $tab_droits_profil_professeur;
 $tab_droits['professeur_groupe_besoin']                = $tab_droits_profil_professeur;
@@ -144,6 +142,8 @@ $tab_droits['compte_message']                          = $tab_droits_profil_prof
 $tab_droits['consultation_date_connexion']             = $tab_droits_profil_prof_dir_admin;
 // Profil professeur | directeur
 $tab_droits['_maj_select_domaines']                    = $tab_droits_profil_prof_dir;
+$tab_droits['_maj_select_matieres_famille']            = $tab_droits_profil_prof_dir;
+$tab_droits['_maj_select_niveaux_famille']             = $tab_droits_profil_prof_dir;
 $tab_droits['officiel_action_consulter']               = $tab_droits_profil_prof_dir;
 $tab_droits['officiel_action_saisir']                  = $tab_droits_profil_prof_dir;
 $tab_droits['compte_selection_items']                  = $tab_droits_profil_prof_dir;

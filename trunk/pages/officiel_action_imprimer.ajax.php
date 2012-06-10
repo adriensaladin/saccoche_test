@@ -240,7 +240,7 @@ if( ($ACTION!='imprimer') || ($etape!=1) )
 // Initialiser les signatures numériques
 
 $tab_saisie    = array();	// [eleve_id][rubrique_id][prof_id] => array(prof_info,appreciation,note,info);
-$tab_signature = array();	// [prof_id] => array(contenu,format,largeur,hauteur);
+$tab_signature = array(0=>NULL);	// [prof_id] => array(contenu,format,largeur,hauteur);
 $tab_prof_id = array();
 $DB_TAB = DB_STRUCTURE_OFFICIEL::DB_recuperer_bilan_officiel_saisies( $BILAN_TYPE , $periode_id , $liste_eleve_id , 0 /*prof_id*/ );
 foreach($DB_TAB as $DB_ROW)

@@ -982,7 +982,6 @@ class PDF extends FPDF
 			}
 			else
 			{
-				list( $texte_format , $texte_periode , $groupe_nom ) = $tab_infos_entete;
 				$hauteur_entete = 2*4 ; // HG L1 intitulé L2 période ; HD L1 structure L2 élève classe
 			}
 			// On calcule la hauteur de la ligne et la taille de la police pour tout faire rentrer sur une page si possible (personnalisée par élève), un minimum de pages sinon
@@ -1005,6 +1004,7 @@ class PDF extends FPDF
 		}
 		if(!$this->officiel)
 		{
+			list( $texte_format , $texte_periode , $groupe_nom ) = $tab_infos_entete;
 			// Intitulé (dont éventuellement matière) / structure
 			$largeur_demi_page = ( $this->page_largeur - $this->marge_gauche - $this->marge_droite ) / 2;
 			$this->SetFont('Arial' , 'B' , $this->taille_police*1.5);
@@ -2146,7 +2146,7 @@ class PDF extends FPDF
 		$this->pourcentage_largeur = $this->cases_largeur;
 		$this->choisir_couleur_fond('gris_moyen');
 		$this->SetFont('Arial' , '' , $this->taille_police);
-		$this->Cell( $this->eleve_largeur , $this->cases_hauteur , pdf($eleve_nom.' '.$eleve_prenom) , 1 /*bordure*/ , 0 /*br*/ , 'L' /*alignement*/ , TRUE /*remplissage*/ );
+		$this->CellFit( $this->eleve_largeur , $this->cases_hauteur , pdf($eleve_nom.' '.$eleve_prenom) , 1 /*bordure*/ , 0 /*br*/ , 'L' /*alignement*/ , TRUE /*remplissage*/ );
 		if($drapeau_langue)
 		{
 			$taille_image = min($this->cases_hauteur,5);

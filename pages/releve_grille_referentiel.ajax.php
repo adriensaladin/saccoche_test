@@ -527,7 +527,7 @@ if($type_synthese)
 	{
 		foreach($tab_liste_item as $item_id)	// Pour chaque item...
 		{
-			$releve_PDF->VertCellFit($releve_PDF->cases_largeur, $releve_PDF->etiquette_hauteur, $tab_item_synthese[$item_id]['item_ref'], 1 /*border*/, 0 /*br*/, TRUE /*fill*/);
+			$releve_PDF->VertCellFit($releve_PDF->cases_largeur, $releve_PDF->etiquette_hauteur, pdf($tab_item_synthese[$item_id]['item_ref']), 1 /*border*/, 0 /*br*/, TRUE /*fill*/);
 			$releve_HTML_table_head .= '<th title="'.html($tab_item_synthese[$item_id]['item_nom']).'"><img alt="'.html($tab_item_synthese[$item_id]['item_ref']).'" src="./_img/php/etiquette.php?dossier='.$_SESSION['BASE'].'&amp;nom='.urlencode($tab_item_synthese[$item_id]['item_ref']).'&amp;size=8" /></th>';
 		}
 	}
@@ -536,7 +536,7 @@ if($type_synthese)
 		foreach($tab_eleve as $tab)	// Pour chaque élève...
 		{
 			extract($tab);	// $eleve_id $eleve_nom $eleve_prenom
-			$releve_PDF->VertCellFit($releve_PDF->cases_largeur, $releve_PDF->etiquette_hauteur, $eleve_nom.' '.$eleve_prenom, 1 /*border*/, 0 /*br*/, TRUE /*fill*/);
+			$releve_PDF->VertCellFit($releve_PDF->cases_largeur, $releve_PDF->etiquette_hauteur, pdf($eleve_nom.' '.$eleve_prenom), 1 /*border*/, 0 /*br*/, TRUE /*fill*/);
 			$releve_HTML_table_head .= '<th><img alt="'.html($eleve_nom.' '.$eleve_prenom).'" src="./_img/php/etiquette.php?dossier='.$_SESSION['BASE'].'&amp;nom='.urlencode($eleve_nom).'&amp;prenom='.urlencode($eleve_prenom).'&amp;size=8" /></th>';
 		}
 	}

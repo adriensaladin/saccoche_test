@@ -40,22 +40,6 @@ else
 {
 	$label_acces = '<label class="valide">Application accessible.</label>';
 }
-// Tests de droits suffisants pour la maj automatique
-$fichier_test_chemin_tmp = './__tmp/index.htm';
-$fichier_test_chemin_new = './_dtd/index.htm';
-Ecrire_Fichier($fichier_test_chemin_tmp,'Circulez, il n\'y a rien à voir par ici !');
-$test_copie = @copy( $fichier_test_chemin_tmp , $fichier_test_chemin_new );
-if( !$test_copie )
-{
-	$test_droits = '<label class="danger">Echec lors du test des droits en écriture !</label>';
-}
-else
-{
-	$test_droits = '<label class="valide">Réussite lors du test des droits en écriture !</label>';
-	unlink($fichier_test_chemin_new);
-}
-unlink($fichier_test_chemin_tmp);
-
 // Pas de bouton maj automatique si LCS
 $fichier = './webservices/import_lcs.php';
 if(!is_file($fichier))
@@ -87,8 +71,16 @@ else
 <h2>Mise à jour automatique des fichiers</h2>
 
 <form action="#" method="post" id="form_maj"><fieldset>
-	<label class="tab">Test d'écriture :</label><?php echo $test_droits ?><br />
+	<span class="tab"></span><button id="bouton_droit" type="button" class="parametre">Vérification des droits en écriture.</button><label id="ajax_droit">&nbsp;</label><br />
 	<span class="tab"></span><button id="bouton_maj" type="button" class="parametre"<?php echo $disabled ?>>Lancer la mise à jour automatique.</button><?php echo $label_maj ?>
+</fieldset></form>
+
+<hr />
+
+<h2>Vérification des fichiers en place</h2>
+
+<form action="#" method="post" id="form_verif"><fieldset>
+	<span class="tab"></span><button id="bouton_verif" type="button" class="parametre">Lancer la vérification.</button><label id="ajax_verif">&nbsp;</label>
 </fieldset></form>
 
 <hr />
@@ -100,14 +92,6 @@ else
 	<label class="tab">Action :</label><label for="f_bloquer"><input type="radio" id="f_bloquer" name="f_action" value="bloquer" /> Bloquer l'application</label>&nbsp;&nbsp;&nbsp;<label for="f_debloquer"><input type="radio" id="f_debloquer" name="f_action" value="debloquer" /> Débloquer l'application</label><br />
 	<div id="span_motif" class="hide"><label class="tab" for="f_motif">Motif :</label><select id="f_proposition" name="f_proposition"><option value="rien">autre motif</option><option value="mise-a-jour" selected>mise à jour</option><option value="maintenance">maintenance</option><option value="demenagement">déménagement</option></select> <input id="f_motif" name="f_motif" size="50" maxlength="100" type="text" value="Mise à jour des fichiers en cours." /></div>
 	<span class="tab"></span><button id="bouton_valider" type="submit" class="parametre">Valider cet état.</button><label id="ajax_msg">&nbsp;</label>
-</fieldset></form>
-
-<hr />
-
-<h2>Vérification des fichiers en place</h2>
-
-<form action="#" method="post" id="form_verif"><fieldset>
-	<span class="tab"></span><button id="bouton_verif" type="button" class="parametre">Lancer la vérification.</button><label id="ajax_verif">&nbsp;</label>
 </fieldset></form>
 
 <hr />

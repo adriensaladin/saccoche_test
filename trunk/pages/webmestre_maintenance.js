@@ -295,5 +295,48 @@ $(document).ready
 			}
 		);
 
+		//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
+		//	Vérification des droits en écriture
+		//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
+
+		$('#bouton_droit').click
+		(
+			function()
+			{
+				$('button').prop('disabled',true);
+				$('#ajax_droit').removeAttr("class").addClass("loader").html("Connexion au serveur&hellip;");
+				$.ajax
+				(
+					{
+						type : 'POST',
+						url : 'ajax.php?page='+PAGE,
+						data : 'f_action=verif_droits',
+						dataType : "html",
+						error : function(jqXHR, textStatus, errorThrown)
+						{
+							$('button').prop('disabled',false);
+							$('#ajax_droit').removeAttr("class").addClass("alerte").html('Echec de la connexion !');
+							return false;
+						},
+						success : function(responseHTML)
+						{
+							$('button').prop('disabled',false);
+							if(responseHTML=='ok')
+							{
+								$('#ajax_droit').removeAttr("class").addClass("valide").html('Vérification terminée !');
+								$.fancybox( { 'href':'./__tmp/export/rapport_droits.html' , 'type':'iframe' , 'width':'80%' , 'height':'80%' , 'centerOnScroll':true } );
+								initialiser_compteur();
+							}
+							else
+							{
+								$('#ajax_droit').removeAttr("class").addClass("alerte").html(responseHTML);
+							}
+							return false;
+						}
+					}
+				);
+			}
+		);
+
 	}
 );

@@ -50,6 +50,40 @@ if($action=='bloquer')
 }
 
 //	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
+// Vérification des droits en écriture
+//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
+
+if($action=='verif_droits')
+{
+	// Récupérer l'arborescence
+	$dossier_install = '.';
+	Analyser_Dossier( $dossier_install , strlen($dossier_install) , 'avant' );
+	// Pour l'affichage du retour
+	$thead = '<tr><td colspan="2">Vérification des droits en écriture du '.date('d/m/Y H:i:s').'</td></tr>';
+	$tbody = '';
+	// Dossiers
+	ksort($_SESSION['tmp']['dossier']);
+	foreach($_SESSION['tmp']['dossier'] as $dossier => $tab)
+	{
+		$dossier = ($dossier) ? '.'.$dossier : './' ;
+		$tbody .= (@is_writable($dossier)) ? '<tr><td class="v">Dossier accessible en écriture</td><td>'.$dossier.'</td></tr>' : '<tr><td class="r">Dossier aux droits insuffisants</td><td>'.$dossier.'</td></tr>' ;
+	}
+	// Fichiers
+	ksort($_SESSION['tmp']['fichier']);
+	foreach($_SESSION['tmp']['fichier'] as $fichier => $tab)
+	{
+		$fichier = '.'.$fichier;
+		$tbody .= (@is_writable($fichier)) ? '<tr><td class="v">Fichier accessible en écriture</td><td>'.$fichier.'</td></tr>' : '<tr><td class="r">Fichier aux droits insuffisants</td><td>'.$fichier.'</td></tr>' ;
+	}
+	// Enregistrement du rapport
+	$fichier_chemin  = './__tmp/export/rapport_droits.html';
+	$fichier_contenu = '<!DOCTYPE html><html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><style type="text/css">body{font-family:monospace;font-size:8pt}table{border-collapse:collapse}thead{background:#CCC;font-weight:bold;text-align:center}td{border:solid 1px;padding:2px;white-space:nowrap}.v{color:green}.r{color:red}.b{color:blue}</style></head><body><table><thead>'.$thead.'</thead><tbody>'.$tbody.'</tbody></table></body></html>';
+	Ecrire_Fichier($fichier_chemin,$fichier_contenu);
+	exit('ok');
+
+}
+
+//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
 // Mise à jour automatique des fichiers
 //	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
 

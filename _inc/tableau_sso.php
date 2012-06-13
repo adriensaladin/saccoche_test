@@ -69,9 +69,17 @@ $tab_connexion_info['cas']['toutatice']        = array( 'etat'=>1 , 'societe'=>'
 $tab_connexion_info['cas']['perso']            = array( 'etat'=>1 , 'societe'=>NULL                 , 'serveur_host'=>''                        , 'serveur_port'=>443  , 'serveur_root'=>''               , 'csv_infos'=>TRUE  , 'csv_entete'=>1 , 'csv_nom'=>1 , 'csv_prenom'=>2 , 'csv_id_ent'=>0 , 'csv_id_sconet'=>NULL , 'txt'=>"Configuration CAS manuelle." );
 
 /*
+$tab_connexion_info['cas']['ent_75']           = array( 'etat'=>1 , 'societe'=>'Itslearning'        , 'serveur_host'=>'cas.paris.fr'            , 'serveur_port'=>443  , 'serveur_root'=>'cas-ent75'      , 'csv_infos'=>TRUE  , 'csv_entete'=>1 , 'csv_nom'=>2 , 'csv_prenom'=>3 , 'csv_id_ent'=>4 , 'csv_id_sconet'=>NULL , 'txt'=>"ENT Paris (département 75)." );
 $tab_connexion_info['cas']['cartableenligne']  = array( 'serveur_host'=>'A-CHANGER.ac-creteil.fr'          , 'serveur_port'=>8443 , 'serveur_root'=>''                 , 'csv_entete'=>0 , 'csv_nom'=>0 , 'csv_prenom'=>0 , 'csv_id_ent'=>0 , 'csv_id_sconet'=>NULL , 'txt'=>"ENT Cartable en ligne de Créteil (EnvOLE Scribe)." );
 $tab_connexion_info['cas']['place-test']       = array( 'serveur_host'=>'www.preprod.place.e-lorraine.net' , 'serveur_port'=>443  , 'serveur_root'=>'cas'              , 'csv_entete'=>0 , 'csv_nom'=>0 , 'csv_prenom'=>0 , 'csv_id_ent'=>0 , 'csv_id_sconet'=>NULL , 'txt'=>"ENT Test Place (iTOP)." );
 $tab_connexion_info['cas']['scolastance-test'] = array( 'serveur_host'=>'preprod-cas.scolastance.com'      , 'serveur_port'=>443  , 'serveur_root'=>'cas-recette1_616' , 'csv_entete'=>1 , 'csv_nom'=>1 , 'csv_prenom'=>2 , 'csv_id_ent'=>3 , 'csv_id_sconet'=>NULL , 'txt'=>"ENT Test Scolastance." );
+https://cas.scolastance.com/cas-asp
+https://cas.scolastance.com/cas-ent74			http://ent74.scolastance.com/etablissements.aspx
+https://cas.scolastance.com/cas-entrouen	http://entrouen.scolastance.com/etablissements.aspx
+https://cas.scolastance.com/cas-ifsp			http://ifsp.scolastance.com/etablissements.aspx
+https://cas.scolastance.com/cas-client		http://client.scolastance.com/etablissements.aspx
+https://cas.scolastance.com/cas-sierra		http://sierra.scolastance.com/etablissements.aspx
+https://cas.scolastance.com/cas-demo			http://demo.scolastance.com/etablissements.aspx
 */
 
 $saml_rne = isset($_SESSION['WEBMESTRE_UAI']) ? $_SESSION['WEBMESTRE_UAI'] : '' ; // au moins à cause d'un appel de ce fichier depuis la doc

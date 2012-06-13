@@ -745,6 +745,11 @@ class PDF extends FPDF
 	public function afficher_appreciation($largeur_autorisee,$hauteur_autorisee,$taille_police,$taille_interligne,$texte)
 	{
 		$this->SetFont('Arial' , '' , $taille_police);
+		// Ajout d'espaces insécables judicieux et retrait d'espaces de mise en forme inappropriés
+		$e = chr(0xC2).chr(0xA0); // espace insécable en UTF-8 (http://fr.wikipedia.org/wiki/Espace_ins%C3%A9cable ; http://fr.wikipedia.org/wiki/UTF-8)
+		$tab_bad = array(   ' !' ,   ' ?' ,   ' :' ,   ' ;' ,   ' %' , ' .' , ' ,' );
+		$tab_bon = array( $e.'!' , $e.'?' , $e.':' , $e.';' , $e.'%' ,  '.' ,  ',' );
+		$texte = str_replace( $tab_bad , $tab_bon , $texte );
 		// Ajustement de la taille de la police et de l'interligne si appréciation trop longue
 		do
 		{
@@ -985,7 +990,6 @@ class PDF extends FPDF
 				$hauteur_entete = 2*4 ; // HG L1 intitulé L2 période ; HD L1 structure L2 élève classe
 			}
 			// On calcule la hauteur de la ligne et la taille de la police pour tout faire rentrer sur une page si possible (personnalisée par élève), un minimum de pages sinon
-			// On calcule la hauteur de la ligne et la taille de la police pour tout faire rentrer sur une page (personnalisée par élève)
 			$hauteur_dispo_par_page = $this->page_hauteur - $this->marge_haut - $this->marge_bas ;
 			$lignes_nb = ( $hauteur_entete / 4 ) + $eleve_nb_lignes + ($this->legende*1.5) ; // entête + synthèses + légendes
 			$hauteur_ligne_minimale = ($this->officiel) ? 4.5 : 3.5 ;
@@ -994,7 +998,8 @@ class PDF extends FPDF
 			do
 			{
 				$nb_pages++;
-				$hauteur_ligne_calcule = $nb_pages*$hauteur_dispo_par_page / $lignes_nb ;
+				$lignes_rabe = ($nb_pages-1)*10; // Prendre un peu de marge pour tenir compte des sauts de page laissant du blanc en bas de page si une rubrique ne rentre pas.
+				$hauteur_ligne_calcule = $nb_pages*$hauteur_dispo_par_page / ($lignes_nb+$lignes_rabe) ;
 			}
 			while($hauteur_ligne_calcule < $hauteur_ligne_minimale);
 			$this->lignes_hauteur = floor($hauteur_ligne_calcule*10)/10 ; // round($hauteur_ligne_calcule,1,PHP_ROUND_HALF_DOWN) à partir de PHP 5.3
@@ -1137,7 +1142,7 @@ class PDF extends FPDF
 		{
 			unset($tab_saisie[0]); // la note
 			$memo_y = $this->GetY();
-			$this->officiel_bloc_appreciation_intermediaire( $tab_saisie , $demi_largeur , $this->lignes_hauteur , 'bulletin' , $_SESSION['OFFICIEL']['BULLETIN_APPRECIATION_RUBRIQUE'] );
+			$this->officiel_bloc_appreciation_intermediaire( $tab_saisie , $demi_largeur , $this->lignes_hauteur , 'bulletin' , $_SESSION['OFFICIEL']['BULLETIN_APPRECIATION_RUBRIQUE'] , $cadre_hauteur );
 			$this->SetXY( $this->marge_gauche , $memo_y + $cadre_hauteur );
 		}
 		else
@@ -1685,7 +1690,7 @@ class PDF extends FPDF
 		return array($bloc_hauteur,$bloc_gauche_largeur_restante) ;
 	}
 
-	private function officiel_bloc_appreciation_intermediaire( $tab_saisie , $bloc_largeur , $ligne_hauteur , $bilan_type , $nb_caracteres_maxi )
+	private function officiel_bloc_appreciation_intermediaire( $tab_saisie , $bloc_largeur , $ligne_hauteur , $bilan_type , $nb_caracteres_maxi , $cadre_hauteur=0 )
 	{
 		// Récupération des données des appréciations
 		if($bilan_type!='bulletin')
@@ -1720,9 +1725,10 @@ class PDF extends FPDF
 		$this->SetXY( $memoX , $memoY+$hauteur_ligne_auteurs );
 		// cadre appréciations : affichage
 		$largeur_autorisee = $bloc_largeur;
-		$hauteur_autorisee = $ligne_hauteur*$nb_lignes_prevues;
+		$hauteur_autorisee = ($bilan_type!='bulletin') ? $ligne_hauteur*$nb_lignes_prevues : $cadre_hauteur-$hauteur_ligne_auteurs ;
 		$taille_police = $this->taille_police*1.2;
 		$taille_interligne = $ligne_hauteur*0.8;
+		// exit($cadre_hauteur.' || '.$ligne_hauteur.' || '.$nb_lignes_prevues.' || '.$hauteur_autorisee);
 		$this->afficher_appreciation( $largeur_autorisee , $hauteur_autorisee , $taille_police , $taille_interligne , $texte );
 	}
 

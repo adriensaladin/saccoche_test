@@ -359,9 +359,9 @@ foreach($tab_eleve as $tab)
 					{
 						$moyenne_eleve  = NULL;
 						$moyenne_classe = NULL;
-						if( ($make_officiel) && ($_SESSION['OFFICIEL']['BULLETIN_MOYENNE_SCORES']) )
+						if( ($make_officiel) && ($_SESSION['OFFICIEL']['BULLETIN_MOYENNE_SCORES']) && (isset($tab_saisie[$eleve_id][$matiere_id][0])) )
 						{
-							// $tab_saisie[$eleve_id][$matiere_id][0] est normalement toujours défini : soit calculé lors de l'initialisation du bulletin, soit effacé et non recalculé volontairement mais alors vaut NULL
+							// $tab_saisie[$eleve_id][$matiere_id][0] est normalement toujours défini : soit calculé lors de l'initialisation du bulletin, soit effacé et non recalculé volontairement mais alors vaut NULL (à moins que le choix de l'affichage d'une moyenne se fasse simultanément)
 							extract($tab_saisie[$eleve_id][$matiere_id][0]);	// $prof_info $appreciation $note
 							$moyenne_eleve = $note;
 							if($_SESSION['OFFICIEL']['BULLETIN_MOYENNE_CLASSE'])
@@ -417,9 +417,9 @@ foreach($tab_eleve as $tab)
 					if($make_html)
 					{
 						// Bulletin - Note (HTML)
-						if( ($make_html) && ($make_officiel) && ($_SESSION['OFFICIEL']['BULLETIN_MOYENNE_SCORES']) )
+						if( ($make_html) && ($make_officiel) && ($_SESSION['OFFICIEL']['BULLETIN_MOYENNE_SCORES']) && (isset($tab_saisie[$eleve_id][$matiere_id][0])) )
 						{
-							// $tab_saisie[$eleve_id][$matiere_id][0] est normalement toujours défini : soit calculé lors de l'initialisation du bulletin, soit effacé et non recalculé volontairement mais alors vaut NULL
+							// $tab_saisie[$eleve_id][$matiere_id][0] est normalement toujours défini : soit calculé lors de l'initialisation du bulletin, soit effacé et non recalculé volontairement mais alors vaut NULL (à moins que le choix de l'affichage d'une moyenne se fasse simultanément)
 							extract($tab_saisie[$eleve_id][$matiere_id][0]);	// $prof_info $appreciation $note
 							$bouton_nettoyer  = ($appreciation!='') ? ' <button type="button" class="nettoyer">Effacer et recalculer.</button>' : '' ;
 							$bouton_supprimer = ($note!==NULL)      ? ' <button type="button" class="supprimer">Supprimer sans recalculer</button>' : '' ;

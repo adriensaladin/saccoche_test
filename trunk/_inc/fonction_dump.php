@@ -91,16 +91,17 @@ function determiner_nombre_lignes_maxi_par_paquet()
 }
 
 /**
- * formater_guillemets
- * Fonction utilisée avec array_map() pour ajouter des guillemets autour des valeurs et échapper ceux éventuellement présents.
+ * formater_valeur
+ * Fonction utilisée avec array_map() pour ajouter des guillemets autour des contenus textes et échapper ceux éventuellement présents, ainsi que pour traiter le cas de NULL.
+ * Tester is_numeric() est inutile, la classe DB renvoyant des chaines même pour des valeurs numériques.
  *
  * @param string $val
  * @return string
  */
 
-function formater_guillemets($val)
+function formater_valeur($val)
 {
-	return '"'.str_replace('"','\"',$val).'"';
+	return (is_null($val)) ? 'NULL' : '"'.str_replace('"','\"',$val).'"' ;
 }
 
 /**
@@ -144,7 +145,7 @@ function sauvegarder_tables_base_etablissement($dossier_temp,$nb_lignes_maxi)
 				$fichier_contenu .= 'ALTER TABLE '.$tab_table_info['Nom'].' DISABLE KEYS;'."\r\n";
 				foreach($DB_TAB as $DB_ROW)
 				{
-					$DB_ROW = array_map('formater_guillemets',$DB_ROW);
+					$DB_ROW = array_map('formater_valeur',$DB_ROW);
 					$tab_ligne_insert[] = '('.implode(',',$DB_ROW).')';
 				}
 				$fichier_contenu .= 'INSERT INTO '.$tab_table_info['Nom'].' VALUES '."\r\n".implode(','."\r\n",$tab_ligne_insert).';'."\r\n";

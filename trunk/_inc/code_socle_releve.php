@@ -80,6 +80,8 @@ if( ($make_html) || ($make_pdf) )
 	if(!$aff_socle) { $texte_socle      = ''; }
 	if(!$aff_lien)  { $texte_lien_avant = ''; }
 	if(!$aff_lien)  { $texte_lien_apres = ''; }
+	$toggle_img   = ($aff_start) ? 'toggle_moins' : 'toggle_plus' ;
+	$toggle_class = ($aff_start) ? '' : ' class="hide"' ;
 }
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
@@ -465,7 +467,7 @@ if($make_html)
 	$releve_html  = $affichage_direct ? '' : '<style type="text/css">'.$_SESSION['CSS'].'</style>';
 	$releve_html .= $affichage_direct ? '' : '<h1>'.html($titre1).'</h1>';
 	$releve_html .= $affichage_direct ? '' : '<h2>'.html($titre2).'</h2>';
-	$releve_html .= '<div class="astuce">Cliquer sur les icones &laquo;<img src="./_img/toggle_plus.gif" alt="+" />&raquo; pour accéder au détail.</div>';
+	$releve_html .= '<div class="astuce">Cliquer sur <img src="./_img/toggle_plus.gif" alt="+" /> / <img src="./_img/toggle_moins.gif" alt="+" /> pour afficher / masquer le détail.</div>';
 	$separation = (count($tab_eleve)>1) ? '<hr />' : '' ;
 	$legende_html = ($legende=='oui') ? affich_legende_html( FALSE /*codes_notation*/ , FALSE /*etat_acquisition*/ , $test_affichage_Pourcentage /*pourcentage_acquis*/ , $test_affichage_Validation /*etat_validation*/ ) : '' ;
 }
@@ -558,8 +560,8 @@ foreach($tab_eleve as $tab)
 													$socle_nom  = (mb_strlen($socle_nom)<160) ? $socle_nom : mb_substr($socle_nom,0,150).' [...] <img src="./_img/bulle_aide.png" alt="" title="'.$socle_nom.'" />';
 													if( $tab_infos_socle_eleve[$socle_id][$eleve_id] )
 													{
-														$lien_toggle = '<a href="#" id="to_'.$socle_id.'_'.$eleve_id.'"><img src="./_img/toggle_plus.gif" alt="" title="Voir / masquer le détail des items associés." class="toggle" /></a> ';
-														$div_competences = '<div id="'.$socle_id.'_'.$eleve_id.'" class="hide">'.'<div>'.implode('</div><div>',$tab_infos_socle_eleve[$socle_id][$eleve_id]).'</div>'.'</div>';
+														$lien_toggle = '<a href="#" id="to_'.$socle_id.'_'.$eleve_id.'"><img src="./_img/'.$toggle_img.'.gif" alt="" title="Voir / masquer le détail des items associés." class="toggle" /></a> ';
+														$div_competences = '<div id="'.$socle_id.'_'.$eleve_id.'"'.$toggle_class.'>'.'<div>'.implode('</div><div>',$tab_infos_socle_eleve[$socle_id][$eleve_id]).'</div>'.'</div>';
 													}
 													else
 													{

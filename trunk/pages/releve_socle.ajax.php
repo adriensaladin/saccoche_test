@@ -39,6 +39,7 @@ $mode          = (isset($_POST['f_mode']))          ? clean_texte($_POST['f_mode
 $aff_coef      = (isset($_POST['f_coef']))          ? 1                                   : 0;
 $aff_socle     = (isset($_POST['f_socle']))         ? 1                                   : 0;
 $aff_lien      = (isset($_POST['f_lien']))          ? 1                                   : 0;
+$aff_start     = (isset($_POST['f_start']))         ? 1                                   : 0;
 $couleur       = (isset($_POST['f_couleur']))       ? clean_texte($_POST['f_couleur'])    : '';
 $legende       = (isset($_POST['f_legende']))       ? clean_texte($_POST['f_legende'])    : '';
 $marge_min     = (isset($_POST['f_marge_min']))     ? clean_entier($_POST['f_marge_min']) : 0;

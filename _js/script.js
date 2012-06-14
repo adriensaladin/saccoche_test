@@ -952,7 +952,7 @@ $(document).ready
 		);
 
 		/**
-		 * Clic sur une image-lien afin d'afficher ou de masquer le détail d'un bilan d'acquisition du socle
+		 * Clic sur une image-lien afin d'afficher ou de masquer le détail d'une synthese ou d'un relevé socle
 		 */
 		$('img.toggle').live
 		('click',

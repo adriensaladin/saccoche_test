@@ -73,7 +73,7 @@ function redirection_SSO_ou_message_exit()
 		}
 		else
 		{
-			affich_message_exit('Authentification manquante','Session perdue, expirée ou incompatible.<br />Veuillez vous (re)-connecter.');
+			affich_message_exit('Authentification manquante','Session perdue, expirée, incompatible ou non enregistrée (disque plein, chemin invalide).<br />Veuillez vous (re)-connecter.');
 		}
 	}
 	// si ajax

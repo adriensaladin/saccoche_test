@@ -68,6 +68,8 @@ if( ($make_html) || ($make_pdf) || ($make_graph) )
 	if(!$aff_socle) { $texte_socle      = ''; }
 	if(!$aff_lien)  { $texte_lien_avant = ''; }
 	if(!$aff_lien)  { $texte_lien_apres = ''; }
+	$toggle_img   = ($aff_start) ? 'toggle_moins' : 'toggle_plus' ;
+	$toggle_class = ($aff_start) ? '' : ' class="hide"' ;
 }
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
@@ -305,7 +307,7 @@ if( ($make_html) || ($make_graph) )
 	$releve_HTML  = $affichage_direct ? '' : '<style type="text/css">'.$_SESSION['CSS'].'</style>';
 	$releve_HTML .= $affichage_direct ? '' : '<h1>Synthèse '.$tab_titre[$format].'</h1>';
 	$releve_HTML .= $affichage_direct ? '' : '<h2>'.html($texte_periode).'</h2>';
-	$releve_HTML .= (!$make_graph) ? '<div class="astuce">Cliquer sur les icones &laquo;<img src="./_img/toggle_plus.gif" alt="+" />&raquo; pour accéder au détail.'.$bouton_print_appr.'</div>' : '<div id="div_graphique"></div>' ;
+	$releve_HTML .= (!$make_graph) ? '<div class="astuce">Cliquer sur <img src="./_img/toggle_plus.gif" alt="+" /> / <img src="./_img/toggle_moins.gif" alt="+" /> pour afficher / masquer le détail'.$bouton_print_appr.'</div>' : '<div id="div_graphique"></div>' ;
 	$separation = (count($tab_eleve)>1) ? '<hr class="breakafter" />' : '' ;
 	$legende_html = ($legende=='oui') ? affich_legende_html( FALSE /*codes_notation*/ , TRUE /*etat_acquisition*/ , FALSE /*pourcentage_acquis*/ , FALSE /*etat_validation*/ ) : '' ;
 }
@@ -407,9 +409,9 @@ foreach($tab_eleve as $tab)
 								$releve_HTML .= '<tr>';
 								$releve_HTML .= (!$make_officiel) ? affich_barre_synthese_html($width=180,$tab_infos_synthese,$total) : affich_pourcentage_html( 'td' , $tab_infos_synthese , FALSE /*detail*/ , 50 /*largeur*/ ) ;
 								$releve_HTML .= (!$make_officiel) ? '<td style="width:720px">' : '<td style="width:850px">' ;
-								$releve_HTML .= '<a href="#" id="to_'.$synthese_ref.'_'.$eleve_id.'"><img src="./_img/toggle_plus.gif" alt="" title="Voir / masquer le détail des items associés." class="toggle" /></a> ';
+								$releve_HTML .= '<a href="#" id="to_'.$synthese_ref.'_'.$eleve_id.'"><img src="./_img/'.$toggle_img.'.gif" alt="" title="Voir / masquer le détail des items associés." class="toggle" /></a> ';
 								$releve_HTML .= html($tab_synthese[$synthese_ref]);
-								$releve_HTML .= '<div id="'.$synthese_ref.'_'.$eleve_id.'" class="hide">'.implode('<br />',$tab_infos_detail_synthese[$eleve_id][$synthese_ref]).'</div>';
+								$releve_HTML .= '<div id="'.$synthese_ref.'_'.$eleve_id.'"'.$toggle_class.'>'.implode('<br />',$tab_infos_detail_synthese[$eleve_id][$synthese_ref]).'</div>';
 								$releve_HTML .= '</td></tr>';
 							}
 						}

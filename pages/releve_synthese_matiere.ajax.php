@@ -45,6 +45,7 @@ $niveau_id     = (isset($_POST['f_niveau']))             ? clean_entier($_POST['
 $aff_coef      = (isset($_POST['f_coef']))               ? 1                                      : 0;
 $aff_socle     = (isset($_POST['f_socle']))              ? 1                                      : 0;
 $aff_lien      = (isset($_POST['f_lien']))               ? 1                                      : 0;
+$aff_start     = (isset($_POST['f_start']))              ? 1                                      : 0;
 $only_socle    = (isset($_POST['f_restriction_socle']))  ? 1                                      : 0;
 $only_niveau   = (isset($_POST['f_restriction_niveau'])) ? $niveau_id                             : 0;
 $mode_synthese = (isset($_POST['f_mode_synthese']))      ? clean_texte($_POST['f_mode_synthese']) : '';

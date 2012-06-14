@@ -194,7 +194,7 @@ if($ACTION=='initialiser')
 		$tab_eleve_id[] = $DB_ROW['user_id'];
 	}
 	$form_choix_eleve .= '</select> <button id="go_suivant_eleve" type="button" class="go_suivant">Suivant</button> <button id="go_dernier_eleve" type="button" class="go_dernier">Dernier</button>&nbsp;&nbsp;&nbsp;<button id="fermer_zone_action_eleve" type="button" class="retourner">Retour</button>';
-	$form_choix_eleve .= ( ($BILAN_TYPE=='bulletin') && ($objet=='tamponner') ) ? ' <button id="change_mode" type="button" class="stats">Interface graphique</button>' : '' ;
+	$form_choix_eleve .= ( ($BILAN_TYPE=='bulletin') && ($objet=='tamponner') ) ? ( ($mode=='texte') ? ' <button id="change_mode" type="button" class="stats">Interface graphique</button>' : ' <button id="change_mode" type="button" class="texte">Interface détaillée</button>' ) : '' ;
 	$form_choix_eleve .= '</div></form><hr />';
 	$eleve_id = $tab_eleve_id[0];
 	// sous-titre
@@ -307,6 +307,7 @@ elseif($BILAN_TYPE=='bulletin')
 	$aff_coef       = 0; // Sans objet, l'élève & sa famille n'ayant accès qu'à l'archive pdf
 	$aff_socle      = 0; // Sans objet, l'élève & sa famille n'ayant accès qu'à l'archive pdf
 	$aff_lien       = 0; // Sans objet, l'élève & sa famille n'ayant accès qu'à l'archive pdf
+	$aff_start      = 0; // Sans objet, l'élève & sa famille n'ayant accès qu'à l'archive pdf
 	$only_socle     = 0; // pas jugé utile de le mettre en option...
 	$only_niveau    = 0; // pas jugé utile de le mettre en option...
 	$couleur        = $_SESSION['OFFICIEL']['BULLETIN_COULEUR'];
@@ -334,6 +335,7 @@ elseif(in_array($BILAN_TYPE,array('palier1','palier2','palier3')))
 	$aff_coef       = 0; // Sans objet, l'élève & sa famille n'ayant accès qu'à l'archive pdf
 	$aff_socle      = 0; // Sans objet, l'élève & sa famille n'ayant accès qu'à l'archive pdf
 	$aff_lien       = 0; // Sans objet, l'élève & sa famille n'ayant accès qu'à l'archive pdf
+	$aff_start      = 0; // Sans objet, l'élève & sa famille n'ayant accès qu'à l'archive pdf
 	$couleur        = $_SESSION['OFFICIEL']['SOCLE_COULEUR'];
 	$legende        = $_SESSION['OFFICIEL']['SOCLE_LEGENDE'];
 	$marge_gauche    = $_SESSION['OFFICIEL']['MARGE_GAUCHE'];

@@ -787,16 +787,25 @@ class PDF extends FPDF
 	public function afficher_signature($largeur_cadre_appreciation,$hauteur_autorisee,$tab_image_tampon_signature)
 	{
 		list($img_contenu,$img_format,$img_largeur,$img_hauteur) = $tab_image_tampon_signature;
+		// Les dimensions sont données en pixels, il faut les convertir en mm/
+		// Problème : dpi inconnue ! On prend 96 par défaut... mais ça peut être 72 ou 300 ou ... ça dépend de chaque image...
+		// mm = (pixels * 25.4) / dpi
+		// pixels = (mm * dpi) / 25.4
+		$coef_conversion = 25.4 / 96 ;
+		$img_largeur *= $coef_conversion;
+		$img_hauteur *= $coef_conversion;
 		$largeur_autorisee = $hauteur_autorisee * 2 ;
 		$coef_largeur = $largeur_autorisee / $img_largeur ;
 		$coef_hauteur = $hauteur_autorisee / $img_hauteur ;
 		$ratio = min( $coef_largeur , $coef_hauteur , 1 ) ;
 		$img_largeur *= $ratio;
 		$img_hauteur *= $ratio;
-		$img_pos_x = $this->GetX() + $largeur_cadre_appreciation - $img_largeur ;
+		$retrait_x = max($hauteur_autorisee,$img_largeur);
+		$img_pos_x = $this->GetX() + $largeur_cadre_appreciation - $retrait_x ;
 		$img_pos_y = $this->GetY() + ( $hauteur_autorisee - $img_hauteur ) / 2 ;
+		// echo'*'.$ratio.'*'.$img_largeur.'*'.$img_hauteur;
 		$this->MemImage($img_contenu,$img_pos_x,$img_pos_y,$img_largeur,$img_hauteur,strtoupper($img_format));
-		return $img_largeur;
+		return $retrait_x;
 	}
 
 	//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1638,7 +1647,6 @@ class PDF extends FPDF
 	{
 		// Placer les marques des pliures
 		$longueur_tiret = 1; // <= 5
-		$distance_tiret_bord_feuille = 5-$longueur_tiret;
 		$this->SetLineWidth(0.1);
 		$enveloppe_hauteur = $_SESSION['ENVELOPPE']['VERTICAL_HAUT'] + $_SESSION['ENVELOPPE']['VERTICAL_MILIEU'] + $_SESSION['ENVELOPPE']['VERTICAL_BAS'] ;
 		$enveloppe_largeur = $_SESSION['ENVELOPPE']['HORIZONTAL_GAUCHE'] + $_SESSION['ENVELOPPE']['HORIZONTAL_MILIEU'] + $_SESSION['ENVELOPPE']['HORIZONTAL_DROITE'] ;
@@ -1646,11 +1654,11 @@ class PDF extends FPDF
 		$jeu_horizontal = $enveloppe_largeur - $this->page_largeur - $jeu_minimum ;
 		$jeu_vertical   = $jeu_minimum ;
 		$ligne2_y = $this->page_hauteur - $enveloppe_hauteur - $jeu_vertical ;
-		$this->Line( $distance_tiret_bord_feuille , $ligne2_y , $this->marge_gauche , $ligne2_y );
-		$this->Line( $this->page_largeur-$this->marge_droite , $ligne2_y , $this->page_largeur-$distance_tiret_bord_feuille , $ligne2_y );
+		$this->Line( $this->marge_gauche-$longueur_tiret , $ligne2_y , $this->marge_gauche , $ligne2_y );
+		$this->Line( $this->page_largeur-$this->marge_droite , $ligne2_y , $this->page_largeur-$this->marge_droite+$longueur_tiret , $ligne2_y );
 		$ligne1_y = $ligne2_y - $enveloppe_hauteur - $jeu_vertical ;
-		$this->Line( $distance_tiret_bord_feuille , $ligne1_y , $this->marge_gauche , $ligne1_y );
-		$this->Line( $this->page_largeur-$this->marge_droite , $ligne1_y , $this->page_largeur-$distance_tiret_bord_feuille , $ligne1_y );
+		$this->Line( $this->marge_gauche-$longueur_tiret , $ligne1_y , $this->marge_gauche , $ligne1_y );
+		$this->Line( $this->page_largeur-$this->marge_droite , $ligne1_y , $this->page_largeur-$this->marge_droite+$longueur_tiret , $ligne1_y );
 		$jeu_vertical -= 1 ; // Le pliage est manuel donc imparfait et il y a l'épaisseur du papier ;)
 		// Déterminer et dessiner l'emplacement du bloc adresse
 		$interieur_coin_hg_x = $_SESSION['ENVELOPPE']['HORIZONTAL_GAUCHE'] ;
@@ -1728,7 +1736,6 @@ class PDF extends FPDF
 		$hauteur_autorisee = ($bilan_type!='bulletin') ? $ligne_hauteur*$nb_lignes_prevues : $cadre_hauteur-$hauteur_ligne_auteurs ;
 		$taille_police = $this->taille_police*1.2;
 		$taille_interligne = $ligne_hauteur*0.8;
-		// exit($cadre_hauteur.' || '.$ligne_hauteur.' || '.$nb_lignes_prevues.' || '.$hauteur_autorisee);
 		$this->afficher_appreciation( $largeur_autorisee , $hauteur_autorisee , $taille_police , $taille_interligne , $texte );
 	}
 
@@ -1776,14 +1783,7 @@ class PDF extends FPDF
 		$memoX = $this->GetX();
 		$memoY = $this->GetY();
 		// signature
-		if(!$tab_image_tampon_signature)
-		{
-			$largeur_signature = $hauteur_autorisee;
-		}
-		else
-		{
-			$largeur_signature = $this->afficher_signature( $largeur_autorisee , $hauteur_autorisee , $tab_image_tampon_signature );
-		}
+		$largeur_signature = ($tab_image_tampon_signature) ? $this->afficher_signature( $largeur_autorisee , $hauteur_autorisee , $tab_image_tampon_signature ) : $hauteur_autorisee ;
 		// contour cadre
 		$this->SetXY($memoX,$memoY);
 		$this->Cell( $largeur_autorisee , $hauteur_autorisee , '' , 1 /*bordure*/ , 2 /*br*/ , '' /*alignement*/ , FALSE /*remplissage*/ );

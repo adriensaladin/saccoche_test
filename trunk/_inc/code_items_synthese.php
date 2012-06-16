@@ -268,6 +268,15 @@ foreach($tab_eleve as $key => $tab)
 	{
 		if(isset($tab_score_eleve_item[$eleve_id][$matiere_id]))
 		{
+			// Ne pas compter les lignes de synthèses dont aucun item n'a été évalué
+			foreach($tab_score_eleve_item[$eleve_id][$matiere_id] as $synthese_ref => $tab_items)
+			{
+				$nb_items_evalues = count(array_filter($tab_items,'non_nul'));
+				if(!$nb_items_evalues)
+				{
+					unset($tab_score_eleve_item[$eleve_id][$matiere_id][$synthese_ref]);
+				}
+			}
 			$nb_lignes_rubriques = count($tab_score_eleve_item[$eleve_id][$matiere_id]) ;
 			$nb_lignes_appreciations = ( ($make_action=='imprimer') && ($_SESSION['OFFICIEL']['BULLETIN_APPRECIATION_RUBRIQUE']) && (isset($tab_saisie[$eleve_id][$matiere_id])) ) ? ($nb_lignes_appreciation_intermediaire_par_prof_hors_intitule * count($tab_saisie[$eleve_id][$matiere_id]) ) + 1 : 0 ; // + 1 pour "Appréciation / Conseils pour progresser"
 			$tab_nb_lignes[$eleve_id][$matiere_id] = $nb_lignes_matiere_intitule_et_marge + max($nb_lignes_rubriques,$nb_lignes_appreciations) ;
@@ -415,6 +424,12 @@ foreach($tab_eleve as $tab)
 								$releve_HTML .= '</td></tr>';
 							}
 						}
+					}
+					elseif( ($make_officiel) && ($make_pdf) )
+					{
+						// Il est possible qu'aucun item n'ait été évalué pour un élève (absent...) : il faut quand même dessiner un cadre pour ne pas provoquer un décalage, d'autant plus qu'il peut y avoir une appréciation à côté.
+						$hauteur_ligne_synthese = $tab_nb_lignes[$eleve_id][$matiere_id] - $nb_lignes_matiere_intitule_et_marge ;
+						$releve_PDF->bilan_synthese_ligne_synthese('',array('%'=>FALSE),0,$hauteur_ligne_synthese);
 					}
 					if($make_html)
 					{

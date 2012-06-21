@@ -39,7 +39,7 @@ $(document).ready
 		$('table#statistiques').tablesorter({ headers:{0:{sorter:false}} });
 		function trier_tableau()
 		{
-			if($('table#statistiques tbody tr').length)
+			if($('table#statistiques tbody tr').length>1)
 			{
 				$('table#statistiques').trigger('update');
 				$('table#statistiques').trigger('sorton',[sorting]);

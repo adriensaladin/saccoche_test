@@ -41,7 +41,7 @@ $(document).ready
 		$('table.form').tablesorter({ headers:{0:{sorter:false},8:{sorter:false},10:{sorter:false}} });
 		function trier_tableau()
 		{
-			if($('table.form tbody tr').length)
+			if($('table.form tbody tr').length>1)
 			{
 				$('table.form').trigger('update');
 				$('table.form').trigger('sorton',[sorting]);

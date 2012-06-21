@@ -29,6 +29,7 @@ if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');
 $TITRE = "Gérer les parents";
 
 // Récupérer d'éventuels paramètres pour restreindre l'affichage
+$action       = (isset($_POST['f_action']))       ? clean_texte($_POST['f_action'])       : '' ;
 $statut       = (isset($_POST['f_statut']))       ? clean_entier($_POST['f_statut'])       : 1  ;
 $debut_nom    = (isset($_POST['f_debut_nom']))    ? clean_nom($_POST['f_debut_nom'])       : '' ;
 $debut_prenom = (isset($_POST['f_debut_prenom'])) ? clean_prenom($_POST['f_debut_prenom']) : '' ;
@@ -39,70 +40,18 @@ $select_f_statuts = Formulaire::afficher_select(Formulaire::$tab_select_statut ,
 <p><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__gestion_parents">DOC : Gestion des parents</a></span></p>
 
 <form action="./index.php?page=administrateur_parent&amp;section=gestion" method="post" id="form0">
-	<div><label class="tab" for="f_debut_nom">Recherche :</label>le nom commence par <input type="text" id="f_debut_nom" name="f_debut_nom" value="<?php echo html($debut_nom) ?>" size="5" /> le prénom commence par <input type="text" id="f_debut_prenom" name="f_debut_prenom" value="<?php echo html($debut_prenom) ?>" size="5" /> <button id="actualiser" type="submit" class="actualiser">Actualiser.</button></div>
+	<div><label class="tab" for="f_debut_nom">Recherche :</label>le nom commence par <input type="text" id="f_debut_nom" name="f_debut_nom" value="<?php echo html($debut_nom) ?>" size="5" /> le prénom commence par <input type="text" id="f_debut_prenom" name="f_debut_prenom" value="<?php echo html($debut_prenom) ?>" size="5" /> <input type="hidden" id="f_action" name="f_action" value="afficher" /><button id="actualiser" type="submit" class="actualiser">Actualiser.</button></div>
 	<div><label class="tab" for="f_statut">Statut :</label><?php echo $select_f_statuts ?></div>
 </form>
 
-<form action="#" method="post" id="form1">
-	<hr />
-	<table class="form t9 hsort">
-		<thead>
-			<tr>
-				<th class="nu"><input name="leurre" type="image" alt="leurre" src="./_img/auto.gif" /><input id="all_check" type="image" alt="Tout cocher." src="./_img/all_check.gif" title="Tout cocher." /><br /><input id="all_uncheck" type="image" alt="Tout décocher." src="./_img/all_uncheck.gif" title="Tout décocher." /></th>
-				<th>Resp</th>
-				<th>Id. ENT</th>
-				<th>Id. GEPI</th>
-				<th>Id Sconet</th>
-				<th>Référence</th>
-				<th>Nom</th>
-				<th>Prénom</th>
-				<th>Login</th>
-				<th>Mot de passe</th>
-				<th>Date sortie</th>
-				<th class="nu"><q class="ajouter" title="Ajouter un parent."></q></th>
-			</tr>
-		</thead>
-		<tbody>
-			<?php
-			// Lister les parents
-			$DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_parents_avec_infos_enfants( FALSE /*with_adresse*/ , $statut , $debut_nom , $debut_prenom );
-			if(count($DB_TAB))
-			{
-				foreach($DB_TAB as $DB_ROW)
-				{
-					// Formater la date (dont on ne garde que le jour)
-					$date_mysql  = $DB_ROW['user_sortie_date'];
-					$date_affich = ($date_mysql!=SORTIE_DEFAUT_MYSQL) ? convert_date_mysql_to_french($date_mysql) : '-' ;
-					// Afficher une ligne du tableau
-					echo'<tr id="id_'.$DB_ROW['user_id'].'">';
-					echo	'<td class="nu"><input type="checkbox" name="f_ids" value="'.$DB_ROW['user_id'].'" /></td>';
-					echo	($DB_ROW['enfants_nombre']) ? '<td>'.$DB_ROW['enfants_nombre'].' <img alt="" src="./_img/bulle_aide.png" title="'.str_replace('§BR§','<br />',html($DB_ROW['enfants_liste'])).'" /></td>' : '<td>0 <img alt="" src="./_img/bulle_aide.png" title="Aucun lien de responsabilité !" /></td>' ;
-					echo	'<td class="label">'.html($DB_ROW['user_id_ent']).'</td>';
-					echo	'<td class="label">'.html($DB_ROW['user_id_gepi']).'</td>';
-					echo	'<td class="label">'.html($DB_ROW['user_sconet_id']).'</td>';
-					echo	'<td class="label">'.html($DB_ROW['user_reference']).'</td>';
-					echo	'<td class="label">'.html($DB_ROW['user_nom']).'</td>';
-					echo	'<td class="label">'.html($DB_ROW['user_prenom']).'</td>';
-					echo	'<td class="label">'.html($DB_ROW['user_login']).'</td>';
-					echo	'<td class="label i">champ crypté</td>';
-					echo	'<td class="label"><i>'.$date_mysql.'</i>'.$date_affich.'</td>';
-					echo	'<td class="nu">';
-					echo		'<q class="modifier" title="Modifier ce parent."></q>';
-					echo	'</td>';
-					echo'</tr>';
-				}
-			}
-			?>
-		</tbody>
-	</table>
-	<div id="zone_actions" style="margin-left:3em">
-		<div class="p"><span class="u">Pour les utilisateurs cochés :</span> <input id="listing_ids" name="listing_ids" type="hidden" value="" /><label id="ajax_msg1">&nbsp;</label></div>
-		<button id="retirer" type="button" class="user_desactiver">Retirer</button> (date de sortie au <?php echo TODAY_FR ?>).<br />
-		<button id="reintegrer" type="button" class="user_ajouter">Réintégrer</button> (retrait de la date de sortie).<br />
-		<button id="supprimer" type="button" class="supprimer">Supprimer</button> sans attendre 3 ans (uniquement si déjà sortis).
-	</div>
-</form>
-<div id="temp_td" class="hide"></div>
+<hr />
+
+<?php
+if($action=='afficher')
+{
+	require('./pages/administrateur_parent_gestion.inc.php');
+}
+?>
 
 <script type="text/javascript">
 	var input_date = "<?php echo TODAY_FR ?>";

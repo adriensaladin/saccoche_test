@@ -439,6 +439,7 @@ class PDF extends FPDF
 	private $eleve_id     = 0;
 	private $eleve_nom    = '';
 	private $eleve_prenom = '';
+	private $doc_titre    = '';
 	// Définition de qqs variables supplémentaires
 	private $cases_nb             = 0;
 	private $cases_largeur        = 0;
@@ -730,8 +731,9 @@ class PDF extends FPDF
 		{
 			$this->choisir_couleur_fond($this->tab_choix_couleur[$etat]);
 			$largeur_case = $largeur*$nb/$total ;
-			$texte = ($largeur_case>$hauteur) ? $nb.' '.$_SESSION['ACQUIS_TEXTE'][$etat] : $nb ;
-			$this->Cell($largeur_case , $hauteur , pdf($texte) , 0 /*bordure*/ , 0 /*br*/ , 'C' /*alignement*/ , TRUE /*remplissage*/ );
+			$texte_complet = $nb.' '.$_SESSION['ACQUIS_TEXTE'][$etat];
+			$texte = (strlen($texte_complet)<$largeur_case) ? $texte_complet : $nb ;
+			$this->CellFit($largeur_case , $hauteur , pdf($texte) , 0 /*bordure*/ , 0 /*br*/ , 'C' /*alignement*/ , TRUE /*remplissage*/ );
 		}
 		// Bordure unique autour
 		$this->SetXY($abscisse , $ordonnee);
@@ -954,6 +956,7 @@ class PDF extends FPDF
 			{
 				// Ecrire l'entête (qui ne dépend pas de la taille de la police calculée ensuite) et récupérer la place requise par cette entête.
 				list( $tab_etabl_coords , $etabl_coords__bloc_hauteur , $tab_bloc_titres , $tab_adresse , $tag_date_heure_initiales ) = $tab_infos_entete;
+				$this->doc_titre = $tab_bloc_titres[0].' - '.$tab_bloc_titres[1];
 				// Bloc adresse en positionnement contraint
 				if( (is_array($tab_adresse)) && ($_SESSION['OFFICIEL']['INFOS_RESPONSABLES']=='oui_force') )
 				{
@@ -1019,6 +1022,7 @@ class PDF extends FPDF
 		if(!$this->officiel)
 		{
 			list( $texte_format , $texte_periode , $groupe_nom ) = $tab_infos_entete;
+			$this->doc_titre = 'Synthèse '.$texte_format.' - '.$texte_periode;
 			// Intitulé (dont éventuellement matière) / structure
 			$largeur_demi_page = ( $this->page_largeur - $this->marge_gauche - $this->marge_droite ) / 2;
 			$this->SetFont('Arial' , 'B' , $this->taille_police*1.5);
@@ -1051,7 +1055,9 @@ class PDF extends FPDF
 			{
 				$this->AddPage($this->orientation , 'A4');
 				$this->SetFont('Arial' , 'B' , $this->taille_police);
-				$this->Cell( $this->page_largeur - $this->marge_gauche - $this->marge_droite , $this->lignes_hauteur , pdf($this->eleve_nom.' '.$this->eleve_prenom.' (suite)') , 0 /*bordure*/ , 1 /*br*/ , 'R' /*alignement*/ , FALSE /*remplissage*/ );
+				$this->choisir_couleur_texte('gris_fonce');
+				$this->Cell( $this->page_largeur - $this->marge_gauche - $this->marge_droite , $this->lignes_hauteur , pdf($this->doc_titre.' - '.$this->eleve_nom.' '.$this->eleve_prenom.' (suite)') , 0 /*bordure*/ , 1 /*br*/ , 'R' /*alignement*/ , FALSE /*remplissage*/ );
+				$this->choisir_couleur_texte('noir');
 			}
 			else
 			{
@@ -1119,21 +1125,18 @@ class PDF extends FPDF
 	public function bilan_synthese_ligne_synthese($synthese_nom,$tab_infos_synthese,$total,$hauteur_ligne_synthese)
 	{
 		$hauteur_ligne = $this->lignes_hauteur * $hauteur_ligne_synthese ;
-		if(!$this->officiel)
-		{
-			// Proportions acquis synthèse
-			$this->SetFont('Arial' , '' , $this->taille_police*0.8);
-			$this->afficher_proportion_acquis(40,$hauteur_ligne,$tab_infos_synthese,$total);
-			$intitule_synthese_largeur = $this->page_largeur - $this->marge_gauche - $this->marge_droite - 40 ;
-		}
-		else
-		{
+		$largeur_diagramme = ($this->officiel) ? 20 : 40 ;
+		$this->SetFont('Arial' , '' , $this->taille_police*0.8);
+		$this->afficher_proportion_acquis($largeur_diagramme,$hauteur_ligne,$tab_infos_synthese,$total);
+		$intitule_synthese_largeur = ( ($this->officiel) && ($_SESSION['OFFICIEL']['BULLETIN_APPRECIATION_RUBRIQUE']) ) ? ( $this->page_largeur - $this->marge_gauche - $this->marge_droite ) / 2 - $largeur_diagramme : $this->page_largeur - $this->marge_gauche - $this->marge_droite - $largeur_diagramme ;
+		// else
+		// {
 			// Pourcentage acquis synthèse
-			$this->pourcentage_largeur = 10;
-			$this->cases_hauteur = $hauteur_ligne;
-			$this->afficher_pourcentage_acquis( '' /*gras*/ , $tab_infos_synthese , 'rien' /*affich*/ );
-			$intitule_synthese_largeur = ($_SESSION['OFFICIEL']['BULLETIN_APPRECIATION_RUBRIQUE']) ? ( $this->page_largeur - $this->marge_gauche - $this->marge_droite ) / 2 - $this->pourcentage_largeur : $this->page_largeur - $this->marge_gauche - $this->marge_droite - $this->pourcentage_largeur ;
-		}
+			// $this->pourcentage_largeur = 10;
+			// $this->cases_hauteur = $hauteur_ligne;
+			// $this->afficher_pourcentage_acquis( '' /*gras*/ , $tab_infos_synthese , 'rien' /*affich*/ );
+			// $intitule_synthese_largeur = ($_SESSION['OFFICIEL']['BULLETIN_APPRECIATION_RUBRIQUE']) ? ( $this->page_largeur - $this->marge_gauche - $this->marge_droite ) / 2 - $this->pourcentage_largeur : $this->page_largeur - $this->marge_gauche - $this->marge_droite - $this->pourcentage_largeur ;
+		// }
 		// Intitulé synthèse
 		$this->SetFont('Arial' , '' , $this->taille_police);
 		$couleur_fond = ($this->couleur=='oui') ? 'gris_clair' : 'blanc' ;
@@ -1168,7 +1171,9 @@ class PDF extends FPDF
 		{
 			// Prendre une nouvelle page si ça ne rentre pas, avec recopie de l'identité de l'élève
 			$this->AddPage($this->orientation , 'A4');
-			$this->Cell($this->page_largeur/2 , $this->lignes_hauteur , pdf($this->eleve_nom.' '.$this->eleve_prenom.' (suite)') , 0 /*bordure*/ , 1 /*br*/ , 'R' /*alignement*/ , FALSE /*remplissage*/ );
+			$this->choisir_couleur_texte('gris_fonce');
+			$this->Cell( $this->page_largeur - $this->marge_gauche - $this->marge_droite , $this->lignes_hauteur , pdf($this->doc_titre.' - '.$this->eleve_nom.' '.$this->eleve_prenom.' (suite)') , 0 /*bordure*/ , 1 /*br*/ , 'R' /*alignement*/ , FALSE /*remplissage*/ );
+			$this->choisir_couleur_texte('noir');
 			$this->SetXY( $this->marge_gauche , $this->GetY() + 2 );
 		}
 		else
@@ -1266,6 +1271,7 @@ class PDF extends FPDF
 			{
 				// Ecrire l'entête (qui ne dépend pas de la taille de la police calculée ensuite) et récupérer la place requise par cette entête.
 				list( $tab_etabl_coords , $etabl_coords__bloc_hauteur , $tab_bloc_titres , $tab_adresse , $tag_date_heure_initiales ) = $tab_infos_entete;
+				$this->doc_titre = $tab_bloc_titres[0].' - '.$tab_bloc_titres[1];
 				// Bloc adresse en positionnement contraint
 				if( (is_array($tab_adresse)) && ($_SESSION['OFFICIEL']['INFOS_RESPONSABLES']=='oui_force') )
 				{
@@ -1309,6 +1315,7 @@ class PDF extends FPDF
 			else
 			{
 				list( $texte_format , $texte_periode , $groupe_nom ) = $tab_infos_entete;
+				$this->doc_titre = 'Bilan '.$texte_format.' - '.$texte_periode;
 				$hauteur_entete = 2*4 ; // HG L1 intitulé L2 période ; HD L1 structure L2 élève classe
 			}
 			// On calcule la hauteur de la ligne et la taille de la police pour tout faire rentrer sur une page si possible (personnalisée par élève), un minimum de pages sinon
@@ -1381,7 +1388,9 @@ class PDF extends FPDF
 		{
 			$this->Cell($largeur_demi_page , $this->lignes_hauteur , pdf($matiere_nom)                            , 0 /*bordure*/ , 0 /*br*/ , 'L' /*alignement*/ , FALSE /*remplissage*/ );
 			$this->SetFont('Arial' , 'B' , $this->taille_police);
-			$this->Cell($largeur_demi_page , $this->lignes_hauteur , pdf($this->eleve_nom.' '.$this->eleve_prenom.' (suite)') , 0 /*bordure*/ , 1 /*br*/ , 'R' /*alignement*/ , FALSE /*remplissage*/ );
+			$this->choisir_couleur_texte('gris_fonce');
+			$this->Cell( $largeur_demi_page , $this->lignes_hauteur , pdf($this->doc_titre.' - '.$this->eleve_nom.' '.$this->eleve_prenom.' (suite)') , 0 /*bordure*/ , 1 /*br*/ , 'R' /*alignement*/ , FALSE /*remplissage*/ );
+			$this->choisir_couleur_texte('noir');
 		}
 		else
 		{
@@ -1403,7 +1412,9 @@ class PDF extends FPDF
 		{
 			// Prendre une nouvelle page si ça ne rentre pas, avec recopie de l'identité de l'élève
 			$this->AddPage($this->orientation , 'A4');
-			$this->Cell($this->page_largeur/2 , $this->lignes_hauteur , pdf($this->eleve_nom.' '.$this->eleve_prenom.' (suite)') , 0 /*bordure*/ , 1 /*br*/ , 'R' /*alignement*/ , FALSE /*remplissage*/ );
+			$this->choisir_couleur_texte('gris_fonce');
+			$this->Cell( $this->page_largeur - $this->marge_gauche - $this->marge_droite , $this->lignes_hauteur , pdf($this->doc_titre.' - '.$this->eleve_nom.' '.$this->eleve_prenom.' (suite)') , 0 /*bordure*/ , 1 /*br*/ , 'R' /*alignement*/ , FALSE /*remplissage*/ );
+			$this->choisir_couleur_texte('noir');
 			$this->SetXY( $this->marge_gauche+$this->reference_largeur , $this->GetY() + 2 );
 		}
 		else

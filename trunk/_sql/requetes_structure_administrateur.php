@@ -1637,7 +1637,7 @@ public static function DB_deplacer_referentiel_matiere($matiere_id_avant,$matier
 	{
 		return FALSE;
 	}
-	foreach($tab_tables as $table_nom)
+	foreach($tab_tables as $table_nom => $table_champ)
 	{
 		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE '.$table_nom.' SET '.$table_champ.'='.$matiere_id_apres.' WHERE '.$table_champ.'='.$matiere_id_avant );
 	}

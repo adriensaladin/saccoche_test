@@ -171,6 +171,17 @@ mb_internal_encoding(CHARSET);
  * @param string   $class_name   nom de la classe
  * @return void
  */
+function load_class($class_name,$chemin)
+{
+	if(is_file($chemin))
+	{
+		require_once($chemin);
+	}
+	else
+	{
+		affich_message_exit($titre='Classe introuvable',$contenu='Le chemin de la classe '.$class_name.' est incorrect : '.$chemin);
+	}
+}
 function __autoload($class_name)
 {
 	$tab_classes = array(
@@ -181,7 +192,6 @@ function __autoload($class_name)
 		'FPDI'                        => '_lib'.DIRECTORY_SEPARATOR.'FPDI'.DIRECTORY_SEPARATOR.'fpdi.php' ,
 		'PDFMerger'                   => '_lib'.DIRECTORY_SEPARATOR.'FPDI'.DIRECTORY_SEPARATOR.'PDFMerger.php' ,
 		'phpCAS'                      => '_lib'.DIRECTORY_SEPARATOR.'phpCAS'.DIRECTORY_SEPARATOR.'CAS.php' ,
-		'SimpleSAML_Auth_Simple'      => '_lib'.DIRECTORY_SEPARATOR.'SimpleSAMLphp'.DIRECTORY_SEPARATOR.'lib'.DIRECTORY_SEPARATOR.'_autoload.php' ,
 
 		'cssmin'                      => '_inc'.DIRECTORY_SEPARATOR.'class.CssMinified.php' ,
 		'MyDOMDocument'               => '_inc'.DIRECTORY_SEPARATOR.'class.domdocument.php' ,
@@ -211,29 +221,35 @@ function __autoload($class_name)
 	);
 	if(isset($tab_classes[$class_name]))
 	{
-		$class_file = CHEMIN_SACOCHE.$tab_classes[$class_name];
-		if(is_file($class_file))
-		{
-			require_once($class_file);
-		}
-		else
-		{
-			affich_message_exit($titre='Classe introuvable',$contenu='Le chemin de la classe '.$class_name.' est incorrect : '.$class_file);
-		}
+		load_class($class_name,CHEMIN_SACOCHE.$tab_classes[$class_name]);
 	}
 	// Remplacement de l'autoload de phpCAS qui n'est pas chargé à cause de celui de SACoche
+	// Voir le fichier ./_lib/phpCAS/CAS/autoload.php
 	elseif(substr($class_name,0,4)=='CAS_')
 	{
-		$class_file = CHEMIN_SACOCHE.'_lib'.DIRECTORY_SEPARATOR.'phpCAS'.DIRECTORY_SEPARATOR.str_replace('_',DIRECTORY_SEPARATOR,$class_name).'.php';
-		if(is_file($class_file))
+		load_class($class_name,CHEMIN_SACOCHE.'_lib'.DIRECTORY_SEPARATOR.'phpCAS'.DIRECTORY_SEPARATOR.str_replace('_',DIRECTORY_SEPARATOR,$class_name).'.php');
+	}
+	// Remplacement de l'autoload de SimpleSAMLphp qui n'est pas chargé à cause de celui de SACoche
+	// Voir le fichier ./_lib/SimpleSAMLphp/lib/_autoload.php
+	else if(in_array($class_name, array('XMLSecurityKey', 'XMLSecurityDSig', 'XMLSecEnc'), TRUE))
+	{
+		load_class($class_name,CHEMIN_SACOCHE.'_lib'.DIRECTORY_SEPARATOR.'SimpleSAMLphp'.DIRECTORY_SEPARATOR.'lib'.DIRECTORY_SEPARATOR.'xmlseclibs.php');
+	}
+	else if(substr($class_name,0,7)=='sspmod_')
+	{
+		$modNameEnd  = strpos($class_name, '_', 7);
+		$module      = substr($class_name, 7, $modNameEnd - 7);
+		$moduleClass = substr($class_name, $modNameEnd + 1);
+		if(SimpleSAML_Module::isModuleEnabled($module))
 		{
-			require_once($class_file);
-		}
-		else
-		{
-			affich_message_exit($titre='Classe introuvable',$contenu='Le chemin de la classe '.$class_name.' est incorrect : '.$class_file);
+			load_class($class_name,SimpleSAML_Module::getModuleDir($module).'/lib/'.str_replace('_', DIRECTORY_SEPARATOR, $moduleClass).'.php');
 		}
 	}
+	elseif( (substr($class_name,0,5)=='SAML2') || (substr($class_name,0,10)=='SimpleSAML') )
+	{
+		load_class($class_name,CHEMIN_SACOCHE.'_lib'.DIRECTORY_SEPARATOR.'SimpleSAMLphp'.DIRECTORY_SEPARATOR.'lib'.DIRECTORY_SEPARATOR.str_replace('_','/',$class_name).'.php');
+	}
+	// La classe invoquée ne correspond pas à ce qui vient d'être passé en revue
 	else
 	{
 		affich_message_exit($titre='Classe introuvable',$contenu='La classe '.$class_name.' est inconnue.');

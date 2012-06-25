@@ -2089,6 +2089,12 @@ INSERT INTO sacoche_matiere VALUES
 (9906, 0, 1,  99, 0, 255, "P5"   , "5 Culture humaniste"),
 (9907, 0, 1,  99, 0, 255, "P6"   , "6 Compétences sociales et civiques"),
 (9908, 0, 1,  99, 0, 255, "P7"   , "7 Autonomie et l'initiative"),
+(9911, 0, 1,  99, 0, 255, "APS"  , "Apprendre à porter secours"),
+(9912, 0, 1,  99, 0, 255, "PSC1" , "Prévention et secours civiques de niveau 1"),
+(9913, 0, 1,  99, 0, 255, "PSC2" , "Prévention et secours civiques de niveau 2"),
+(9921, 0, 1,  99, 0, 255, "APER" , "Attestation de première éducation à la route"),
+(9922, 0, 1,  99, 0, 255, "ASSR1", "Attestation scolaire de sécurité routière de niveau 1"),
+(9923, 0, 1,  99, 0, 255, "ASSR2", "Attestation scolaire de sécurité routière de niveau 2"),
 (9991, 0, 1,  99, 0, 255, "DOC"  , "Documentation"),
 (9992, 0, 1,  99, 0, 255, "INFO" , "Informatique"),
 (9999, 1, 1,  99, 0, 255, "TRANS", "Transversal");

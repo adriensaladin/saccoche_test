@@ -2011,6 +2011,28 @@ public static function DB_maj_base($version_actuelle)
 		}
 	}
 
+	//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	//	MAJ 2012-06-07 => 2012-06-25
+	//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	if($version_actuelle=='2012-06-07')
+	{
+		if($version_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
+		{
+			$version_actuelle = '2012-06-25';
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_actuelle.'" WHERE parametre_nom="version_base"' );
+			// valeur renommée dans sacoche_niveau_famille
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_niveau_famille SET niveau_famille_nom="Cycles (primaire, collège, lycée)" WHERE niveau_famille_id=1' );
+			// ajout de matières
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (9911, 0, 1,  99, 0, 255, "APS"  , "Apprendre à porter secours") ' );
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (9912, 0, 1,  99, 0, 255, "PSC1" , "Prévention et secours civiques de niveau 1") ' );
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (9913, 0, 1,  99, 0, 255, "PSC2" , "Prévention et secours civiques de niveau 2") ' );
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (9921, 0, 1,  99, 0, 255, "APER" , "Attestation de première éducation à la route") ' );
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (9922, 0, 1,  99, 0, 255, "ASSR1", "Attestation scolaire de sécurité routière de niveau 1") ' );
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (9923, 0, 1,  99, 0, 255, "ASSR2", "Attestation scolaire de sécurité routière de niveau 2") ' );
+		}
+	}
+
 }
 
 }

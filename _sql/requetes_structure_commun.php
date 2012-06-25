@@ -797,7 +797,7 @@ public static function DB_OPT_familles_niveaux()
 	Formulaire::$tab_select_optgroup = array( 1=>'Niveaux classes' , 2=>'Niveaux spécifiques' );
 	$DB_SQL = 'SELECT niveau_famille_id AS valeur, niveau_famille_nom AS texte, niveau_famille_categorie AS optgroup ';
 	$DB_SQL.= 'FROM sacoche_niveau_famille ';
-	$DB_SQL.= 'ORDER BY niveau_famille_categorie ASC, niveau_famille_ordre ASC';
+	$DB_SQL.= 'ORDER BY niveau_famille_categorie DESC, niveau_famille_ordre ASC';
 	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
 }
 

@@ -18,7 +18,7 @@ INSERT INTO sacoche_niveau_famille VALUES
 ( 6, 1, 5, "Lycée technologique"),
 ( 7, 1, 6, "Lycée professionnel"),
 ( 8, 1, 7, "BTS"),
-( 1, 2, 1, "Cycles (niveaux 'longitudinaux')"),
+( 1, 2, 1, "Cycles (primaire, collège, lycée)"),
 ( 9, 2, 2, "CECRL (cadre européen commun de référence pour les langues)");
 
 ALTER TABLE sacoche_niveau_famille ENABLE KEYS;

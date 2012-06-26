@@ -45,7 +45,7 @@ function envoyer_arborescence_XML($sesamath_id,$sesamath_key,$matiere_id,$niveau
 	$tab_post['niveau_id']      = $niveau_id;
 	$tab_post['arbreXML']       = $arbreXML;
 	$tab_post['version_prog']   = VERSION_PROG; // Le service web doit être compatible
-	$tab_post['version_base']   = VERSION_BASE; // La base doit être compatible (problème de socle modifié...)
+	$tab_post['version_base']   = VERSION_BASE; // La base doit être compatible (table socle ou matières modifiée...)
 	$tab_post['adresse_retour'] = SERVEUR_ADRESSE;
 	$tab_post['integrite_key']  = fabriquer_chaine_integrite();
 	return url_get_contents(SERVEUR_COMMUNAUTAIRE,$tab_post,$timeout=10);
@@ -67,7 +67,7 @@ function recuperer_arborescence_XML($sesamath_id,$sesamath_key,$referentiel_id)
 	$tab_post['sesamath_key']   = $sesamath_key;
 	$tab_post['referentiel_id'] = $referentiel_id;
 	$tab_post['version_prog']   = VERSION_PROG; // Le service web doit être compatible
-	$tab_post['version_base']   = VERSION_BASE; // La base doit être compatible (problème de socle modifié...)
+	$tab_post['version_base']   = VERSION_BASE; // La base doit être compatible (table socle ou matières modifiée...)
 	$tab_post['adresse_retour'] = SERVEUR_ADRESSE;
 	$tab_post['integrite_key']  = fabriquer_chaine_integrite();
 	return url_get_contents(SERVEUR_COMMUNAUTAIRE,$tab_post,$timeout=10);
@@ -280,6 +280,7 @@ function afficher_liste_referentiels($sesamath_id,$sesamath_key,$matiere_id,$niv
 	$tab_post['niveau_id']    = $niveau_id;
 	$tab_post['structure_id'] = $structure_id;
 	$tab_post['version_prog'] = VERSION_PROG; // Le service web doit être compatible
+	$tab_post['version_base'] = VERSION_BASE; // La base doit être compatible (table socle ou matières modifiée...)
 	return url_get_contents(SERVEUR_COMMUNAUTAIRE,$tab_post);
 }
 
@@ -320,7 +321,7 @@ function signer_exportLPC($sesamath_id,$sesamath_key,$exportXML)
 	$tab_post['sesamath_key']   = $sesamath_key;
 	$tab_post['exportXML']      = $exportXML;
 	$tab_post['version_prog']   = VERSION_PROG; // Le service web doit être compatible
-	$tab_post['version_base']   = VERSION_BASE; // La base doit être compatible (problème de socle modifié...)
+	$tab_post['version_base']   = VERSION_BASE; // La base doit être compatible (table socle ou matières modifiée...)
 	$tab_post['adresse_retour'] = SERVEUR_ADRESSE;
 	$tab_post['integrite_key']  = fabriquer_chaine_integrite();
 	return url_get_contents(SERVEUR_LPC_SIGNATURE,$tab_post,$timeout=10);

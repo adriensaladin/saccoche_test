@@ -301,9 +301,9 @@ elseif( ($action=='Afficher_information') && $eleve_id && $pilier_id && $entree_
 		}
 	}
 	// On calcule les états d'acquisition à partir des A / VA / NA
-	$tab_score_socle_eleve['%'] = ($tab_score_socle_eleve['nb']) ? round( 50 * ( ($tab_score_socle_eleve['A']*2 + $tab_score_socle_eleve['VA']) / $tab_score_socle_eleve['nb'] ) ,0) : false ;
+	$tab_score_socle_eleve['%'] = ($tab_score_socle_eleve['nb']) ? round( 50 * ( ($tab_score_socle_eleve['A']*2 + $tab_score_socle_eleve['VA']) / $tab_score_socle_eleve['nb'] ) ,0) : FALSE ;
 	// Elaboration du bilan relatif au socle : mise en page, ligne de stats
-	if($tab_score_socle_eleve['%']===false)
+	if($tab_score_socle_eleve['%']===FALSE)
 	{
 		exit('Aucun item évalué n\'est relié avec cette entrée du socle !');
 	}

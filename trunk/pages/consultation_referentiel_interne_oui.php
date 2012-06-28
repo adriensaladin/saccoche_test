@@ -35,7 +35,7 @@ foreach($tab_profils as $profil)
 {
 	$str_objet = str_replace($profil,$tab_profil_libelle[$profil]['long'][2],$str_objet);
 }
-$texte = ($str_objet=='') ? 'aucun' : ( (strpos($str_objet,',')===false) ? 'uniquement les '.$str_objet : str_replace(',',' + ',$str_objet) ) ;
+$texte = ($str_objet=='') ? 'aucun' : ( (strpos($str_objet,',')===FALSE) ? 'uniquement les '.$str_objet : str_replace(',',' + ',$str_objet) ) ;
 ?>
 
 <ul class="puce">
@@ -138,14 +138,14 @@ else
 			$matiere_coord = (isset($tab['coord'])) ? '>'.$tab['coord'] : ' class="r hc">Aucun.' ;
 			$affichage .= '<tr><td colspan="7" class="nu">&nbsp;</td></tr>'."\r\n";
 			$affichage .= '<tr><td rowspan="'.$rowspan.'">'.$matiere_nom.'</td><td rowspan="'.$rowspan.'">'.$matiere_nb.'</td><td rowspan="'.$rowspan.'"'.$matiere_coord.'</td>';
-			$affichage_suite = false;
+			$affichage_suite = FALSE;
 			if(isset($tab_colonne[$matiere_id]))
 			{
 				foreach($tab_colonne[$matiere_id] as $niveau_id => $referentiel_info)
 				{
 					$ids = 'ids_'.$matiere_id.'_'.$niveau_id;
 					$colonnes = $referentiel_info.'<td class="nu" id="'.$ids.'"><q class="voir" title="Voir le détail de ce référentiel."></q></td>' ;
-					if($affichage_suite===false)
+					if($affichage_suite===FALSE)
 					{
 						$affichage .= '<td>'.$tab_niveau[$niveau_id].'</td>'.$colonnes;
 						$affichage_suite = '';

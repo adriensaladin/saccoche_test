@@ -117,12 +117,12 @@ if($connexion_mode=='cas')
 	// Pour tester, cette méthode statique créé un fichier de log sur ce qui se passe avec CAS
 	// phpCAS::setDebug('debugcas.txt');
 	// Initialiser la connexion avec CAS  ; le premier argument est la version du protocole CAS ; le dernier argument indique qu'on utilise la session existante
-	phpCAS::client(CAS_VERSION_2_0, $cas_serveur_host, (int)$cas_serveur_port, $cas_serveur_root, false);
+	phpCAS::client(CAS_VERSION_2_0, $cas_serveur_host, (int)$cas_serveur_port, $cas_serveur_root, FALSE);
 	phpCAS::setLang(PHPCAS_LANG_FRENCH);
 	// On indique qu'il n'y a pas de validation du certificat SSL à faire
 	phpCAS::setNoCasServerValidation();
 	// Gestion du single sign-out
-	phpCAS::handleLogoutRequests(false);
+	phpCAS::handleLogoutRequests(FALSE);
 	// Demander à CAS d'aller interroger le serveur
 	// Cette méthode permet de forcer CAS à demander au client de s'authentifier s'il ne trouve aucun client d'authentifié.
 	// (redirige vers le serveur d'authentification si aucun utilisateur authentifié n'a été trouvé par le client CAS)

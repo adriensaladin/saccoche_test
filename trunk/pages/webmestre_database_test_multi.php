@@ -121,7 +121,7 @@ if(isset($_POST['lancer_test']))
 	echo'<h2>2.8 Fermer la connexion webmestre</h2>';
 	echo'<pre class="b">mysql_close()</pre>';
 	$BDres = mysql_close($BDlink);
-	$affichage = var_export($BDres,true);
+	$affichage = var_export($BDres,TRUE);
 	echo ($BDres) ? '<pre class="v">'.$affichage.'</pre>' : '<pre class="r">'.$affichage.'</pre>';
 
 	echo('<hr />');
@@ -145,7 +145,7 @@ if(isset($_POST['lancer_test']))
 	echo'<h2>3.4 Fermer la connexion sac_user_0</h2>';
 	echo'<pre class="b">mysql_close()</pre>';
 	$BDres = mysql_close($BDlink);
-	$affichage = var_export($BDres,true);
+	$affichage = var_export($BDres,TRUE);
 	echo ($BDres) ? '<pre class="v">'.$affichage.'</pre>' : '<pre class="r">'.$affichage.'</pre>';
 
 	echo('<hr />');
@@ -184,7 +184,7 @@ if(isset($_POST['lancer_test']))
 	echo'<h2>4.5 Fermer la connexion webmestre</h2>';
 	echo'<pre class="b">mysql_close()</pre>';
 	$BDres = mysql_close($BDlink);
-	$affichage = var_export($BDres,true);
+	$affichage = var_export($BDres,TRUE);
 	echo ($BDres) ? '<pre class="v">'.$affichage.'</pre>' : '<pre class="r">'.$affichage.'</pre>';
 
 	echo('<hr />');

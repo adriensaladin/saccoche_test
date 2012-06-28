@@ -149,7 +149,7 @@ if(count($DB_TAB))
 		{
 			$theme_id  = $DB_ROW['theme_id'];
 			$theme_ref = $DB_ROW['niveau_ref'].'.'.$DB_ROW['domaine_ref'].$DB_ROW['theme_ordre'];
-			$first_theme_of_domaine = (isset($tab_theme[$domaine_id])) ? false : true ;
+			$first_theme_of_domaine = (isset($tab_theme[$domaine_id])) ? FALSE : TRUE ;
 			$tab_theme[$domaine_id][$theme_id] = array('theme_ref'=>$theme_ref,'theme_nom'=>$DB_ROW['theme_nom'],'theme_nb_lignes'=>1);
 			$lignes_nb++;
 		}
@@ -289,7 +289,7 @@ if(count($tab_eval))
 			}
 			else
 			{
-				$tab_moyenne_scores_eleve[$eleve_id] = false;
+				$tab_moyenne_scores_eleve[$eleve_id] = FALSE;
 			}
 			// ... un pour le nombre d\'items considérés acquis ou pas
 			if($nb_scores)
@@ -301,7 +301,7 @@ if(count($tab_eval))
 			}
 			else
 			{
-				$tab_pourcentage_acquis_eleve[$eleve_id] = false;
+				$tab_pourcentage_acquis_eleve[$eleve_id] = FALSE;
 			}
 		}
 	}
@@ -331,8 +331,8 @@ if($type_synthese)
 		}
 		else
 		{
-			$tab_moyenne_scores_item[$item_id]     = false;
-			$tab_pourcentage_acquis_item[$item_id] = false;
+			$tab_moyenne_scores_item[$item_id]     = FALSE;
+			$tab_pourcentage_acquis_item[$item_id] = FALSE;
 		}
 	}
 }
@@ -354,11 +354,11 @@ if( $type_synthese )
 	// $moyenne_moyenne_scores
 	$somme  = array_sum($tab_moyenne_scores_eleve);
 	$nombre = count( array_filter($tab_moyenne_scores_eleve,'non_nul') );
-	$moyenne_moyenne_scores = ($nombre) ? round($somme/$nombre,0) : false;
+	$moyenne_moyenne_scores = ($nombre) ? round($somme/$nombre,0) : FALSE;
 	// $moyenne_pourcentage_acquis
 	$somme  = array_sum($tab_pourcentage_acquis_eleve);
 	$nombre = count( array_filter($tab_pourcentage_acquis_eleve,'non_nul') );
-	$moyenne_pourcentage_acquis = ($nombre) ? round($somme/$nombre,0) : false;
+	$moyenne_pourcentage_acquis = ($nombre) ? round($somme/$nombre,0) : FALSE;
 }
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
@@ -466,13 +466,13 @@ if( $type_generique || $type_individuel )
 									}
 									if($remplissage=='plein')
 									{
-										$releve_HTML_individuel .= '<td>'.affich_note_html($note,$date,$info,false).'</td>';
+										$releve_HTML_individuel .= '<td>'.affich_note_html($note,$date,$info,FALSE).'</td>';
 										$releve_PDF->afficher_note_lomer($note,$border=1,$br=floor(($i+1)/$colspan));
 									}
 									else
 									{
 										$releve_HTML_individuel .= '<td>&nbsp;</td>';
-										$releve_PDF->Cell($cases_largeur , $releve_PDF->cases_hauteur , '' , 1 , floor(($i+1)/$colspan) , 'C' , true , '');
+										$releve_PDF->Cell($cases_largeur , $releve_PDF->cases_hauteur , '' , 1 , floor(($i+1)/$colspan) , 'C' , TRUE , '');
 									}
 								}
 								// Case bilan
@@ -519,7 +519,7 @@ if($type_synthese)
 	$releve_PDF->bilan_periode_synthese_initialiser($eleve_nb,$item_nb,$tableau_tri_objet);
 	$releve_PDF->bilan_periode_synthese_entete($tab_titre,$matiere_et_niveau,''/*texte_periode*/);
 	// 1ère ligne
-	$releve_PDF->Cell($releve_PDF->intitule_largeur , $releve_PDF->cases_hauteur , '' , 0 , 0 , 'C' , false , '');
+	$releve_PDF->Cell($releve_PDF->intitule_largeur , $releve_PDF->cases_hauteur , '' , 0 , 0 , 'C' , FALSE , '');
 	$releve_PDF->choisir_couleur_fond('gris_clair');
 	$th = ($tableau_tri_objet=='eleve') ? 'Elève' : 'Item' ;
 	$releve_HTML_table_head = '<thead><tr><th>'.$th.'</th>';
@@ -542,8 +542,8 @@ if($type_synthese)
 	}
 	$releve_PDF->SetX( $releve_PDF->GetX()+2 );
 	$releve_PDF->choisir_couleur_fond('gris_moyen');
-	$releve_PDF->VertCell($releve_PDF->cases_largeur , $releve_PDF->etiquette_hauteur , '[ * ]'  , 1 , 0 , 'C' , true , '');
-	$releve_PDF->VertCell($releve_PDF->cases_largeur , $releve_PDF->etiquette_hauteur , '[ ** ]' , 1 , 1 , 'C' , true , '');
+	$releve_PDF->VertCell($releve_PDF->cases_largeur , $releve_PDF->etiquette_hauteur , '[ * ]'  , 1 , 0 , 'C' , TRUE , '');
+	$releve_PDF->VertCell($releve_PDF->cases_largeur , $releve_PDF->etiquette_hauteur , '[ ** ]' , 1 , 1 , 'C' , TRUE , '');
 	$checkbox_vide = ($affichage_checkbox) ? '<th class="nu">&nbsp;</th>' : '' ;
 	$releve_HTML_table_head .= '<th class="nu">&nbsp;</th><th>[ * ]</th><th>[ ** ]</th>'.$checkbox_vide.'</tr></thead>'."\r\n";
 	// lignes suivantes
@@ -554,11 +554,11 @@ if($type_synthese)
 		{
 			extract($tab);	// $eleve_id $eleve_nom $eleve_prenom
 			$releve_PDF->choisir_couleur_fond('gris_clair');
-			$releve_PDF->CellFit($releve_PDF->intitule_largeur , $releve_PDF->cases_hauteur , pdf($eleve_nom.' '.$eleve_prenom) , 1 , 0 , 'L' , true , '');
+			$releve_PDF->CellFit($releve_PDF->intitule_largeur , $releve_PDF->cases_hauteur , pdf($eleve_nom.' '.$eleve_prenom) , 1 , 0 , 'L' , TRUE , '');
 			$releve_HTML_table_body .= '<tr><td>'.html($eleve_nom.' '.$eleve_prenom).'</td>';
 			foreach($tab_liste_item as $item_id)	// Pour chaque item...
 			{
-				$score = (isset($tab_score_eleve_item[$eleve_id][$item_id])) ? $tab_score_eleve_item[$eleve_id][$item_id] : false ;
+				$score = (isset($tab_score_eleve_item[$eleve_id][$item_id])) ? $tab_score_eleve_item[$eleve_id][$item_id] : FALSE ;
 				$releve_PDF->afficher_score_bilan($score,$br=0);
 				$releve_HTML_table_body .= affich_score_html($score,$tableau_tri_mode);
 			}
@@ -574,12 +574,12 @@ if($type_synthese)
 		foreach($tab_liste_item as $item_id)	// Pour chaque item...
 		{
 			$releve_PDF->choisir_couleur_fond('gris_clair');
-			$releve_PDF->CellFit($releve_PDF->intitule_largeur , $releve_PDF->cases_hauteur , pdf($tab_item_synthese[$item_id]['item_ref']) , 1 , 0 , 'L' , true , '');
+			$releve_PDF->CellFit($releve_PDF->intitule_largeur , $releve_PDF->cases_hauteur , pdf($tab_item_synthese[$item_id]['item_ref']) , 1 , 0 , 'L' , TRUE , '');
 			$releve_HTML_table_body .= '<tr><td title="'.html($tab_item_synthese[$item_id]['item_nom']).'">'.html($tab_item_synthese[$item_id]['item_ref']).'</td>';
 			foreach($tab_eleve as $tab)	// Pour chaque élève...
 			{
 				$eleve_id = $tab['eleve_id'];
-				$score = (isset($tab_score_eleve_item[$eleve_id][$item_id])) ? $tab_score_eleve_item[$eleve_id][$item_id] : false ;
+				$score = (isset($tab_score_eleve_item[$eleve_id][$item_id])) ? $tab_score_eleve_item[$eleve_id][$item_id] : FALSE ;
 				$releve_PDF->afficher_score_bilan($score,$br=0);
 				$releve_HTML_table_body .= affich_score_html($score,$tableau_tri_mode);
 			}
@@ -595,8 +595,8 @@ if($type_synthese)
 	$memo_y = $releve_PDF->GetY()+2;
 	$releve_PDF->SetY( $memo_y );
 	$releve_PDF->choisir_couleur_fond('gris_moyen');
-	$releve_PDF->CellFit($releve_PDF->intitule_largeur , $releve_PDF->cases_hauteur , 'moyenne scores [*]' , 1 , 2 , 'C' , true , '');
-	$releve_PDF->CellFit($releve_PDF->intitule_largeur , $releve_PDF->cases_hauteur , '% validations [**]' , 1 , 0 , 'C' , true , '');
+	$releve_PDF->CellFit($releve_PDF->intitule_largeur , $releve_PDF->cases_hauteur , 'moyenne scores [*]' , 1 , 2 , 'C' , TRUE , '');
+	$releve_PDF->CellFit($releve_PDF->intitule_largeur , $releve_PDF->cases_hauteur , '% validations [**]' , 1 , 0 , 'C' , TRUE , '');
 	$releve_HTML_table_foot1 = '<tr><th>moyenne scores [*]</th>';
 	$releve_HTML_table_foot2 = '<tr><th>% validations [**]</th>';
 	$checkbox = ($affichage_checkbox) ? '<tr><th class="nu">&nbsp;</th>' : '' ;

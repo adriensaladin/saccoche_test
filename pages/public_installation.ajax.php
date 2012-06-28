@@ -37,7 +37,7 @@ $affichage = '';
 
 if( $step==1 )
 {
-	$poursuivre = true;
+	$poursuivre = TRUE;
 	// Création des deux dossiers principaux, et vérification de leur accès en écriture
 	$tab_dossier = array('./__private','./__tmp');
 	foreach($tab_dossier as $dossier)
@@ -66,13 +66,13 @@ if( $step==1 )
 if( $step==2 )
 {
 	// Création des fichiers index.htm
-	$poursuivre1 = true;
+	$poursuivre1 = TRUE;
 	$tab_dossier = array('badge','cookie','devoir','dump-base','export','import','login-mdp','logo','officiel','rss');
 	foreach($tab_dossier as $dossier)
 	{
 		@umask(0000); // Met le chmod à 666 - 000 = 666 pour les fichiers prochains fichiers créés (et à 777 - 000 = 777 pour les dossiers).
 		$test = @file_put_contents('./__tmp/'.$dossier.'/index.htm','Circulez, il n\'y a rien à voir par ici !');
-		$poursuivre1 = ($test) ? $poursuivre1 : false ;
+		$poursuivre1 = ($test) ? $poursuivre1 : FALSE ;
 	}
 	if($poursuivre1)
 	{
@@ -85,7 +85,7 @@ if( $step==2 )
 	// Création du fichier .htaccess
 	@umask(0000); // Met le chmod à 666 - 000 = 666 pour les fichiers prochains fichiers créés (et à 777 - 000 = 777 pour les dossiers).
 	$test = @file_put_contents('./__private/.htaccess','deny from all'."\r\n");
-	$poursuivre2 = ($test) ? true : false ;
+	$poursuivre2 = ($test) ? TRUE : FALSE ;
 	if($poursuivre2)
 	{
 		$affichage .= '<label class="valide">Fichier &laquo;&nbsp;<b>.htaccess</b>&nbsp;&raquo; créé dans le dossier &laquo;&nbsp;<b>./__private/</b>&nbsp;&raquo;.</label><br />'."\r\n";
@@ -267,7 +267,7 @@ elseif( $step==51 )
 		// GRANT USAGE ON *.* TO 'sac_user_...'@'%' IDENTIFIED BY PASSWORD '...'
 		$res = @mysql_query('SHOW GRANTS FOR CURRENT_USER()');
 		$row = mysql_fetch_row($res);
-		if( (strpos($row[0],'ALL PRIVILEGES')==false) && (strpos($row[0],'WITH GRANT OPTION')==false) )
+		if( (strpos($row[0],'ALL PRIVILEGES')==FALSE) && (strpos($row[0],'WITH GRANT OPTION')==FALSE) )
 		{
 			exit('Erreur : ce compte MySQL n\'a pas les droits suffisants !');
 		}

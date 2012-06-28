@@ -275,7 +275,7 @@ if($action=='import_loginmdp')
 			}
 			else
 			{
-				$id_base = false;
+				$id_base = FALSE;
 			}
 			if(!$id_base)
 			{
@@ -872,7 +872,7 @@ if( ($action=='COPY_id_argos_profs_TO_id_ent') || ($action=='COPY_id_argos_eleve
 		exit($retour_Sarapis); // Erreur retournée par cURL
 	}
 	$xml = @simplexml_load_string($retour_Sarapis);
-	if($xml===false)
+	if($xml===FALSE)
 	{
 		exit('Erreur : le fichier récupéré n\'est pas un XML valide : problème possible de délai d\'attente trop long !');
 	}
@@ -919,7 +919,7 @@ if( ($action=='COPY_id_argos_profs_TO_id_ent') || ($action=='COPY_id_argos_eleve
 	$tab_users_base['prenom'] = array();
 	$tab_users_base['info']   = array();
 	$profil      = ($qui=='profs') ? array('professeur','directeur') : substr($qui,0,-1) ;
-	$with_classe = ($qui=='profs') ? false : true ;
+	$with_classe = ($qui=='profs') ? FALSE : TRUE ;
 	$DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_users( $profil , 1 /*only_actuels*/ , $with_classe );
 	foreach($DB_TAB as $DB_ROW)
 	{

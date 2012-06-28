@@ -85,7 +85,7 @@ if( ($action=='envoyer') && $num && $max && ($num<$max) )
 		$texte.= SERVEUR_PROJET.' (site du projet SACoche)'."\r\n\r\n";
 		$texte.= 'Cordialement'."\r\n";
 		$texte.= WEBMESTRE_PRENOM.' '.WEBMESTRE_NOM."\r\n\r\n";
-		$courriel_bilan = envoyer_webmestre_courriel($contact_courriel,$_SESSION['tmp']['titre'],$texte,false);
+		$courriel_bilan = envoyer_webmestre_courriel($contact_courriel,$_SESSION['tmp']['titre'],$texte,FALSE);
 		if(!$courriel_bilan)
 		{
 			exit('Erreur lors de l\'envoi du courriel !');

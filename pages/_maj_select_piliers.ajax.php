@@ -38,7 +38,7 @@ if( (!$palier) || (!in_array($option_first,array('oui','val','non'))) )
 	exit('Erreur avec les données transmises !');
 }
 
-$selection = ($option_first=='non') ? true : false ;
+$selection = ($option_first=='non') ? TRUE : FALSE ;
 
 echo Formulaire::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_piliers($palier) , $select_nom=false , $option_first , $selection , $optgroup='non');
 

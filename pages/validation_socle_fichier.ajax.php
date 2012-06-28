@@ -225,19 +225,19 @@ if( in_array( $action , array('import_sacoche','import_compatible') ) )
 	else
 	{
 		// Dézipper le fichier
-		if(extension_loaded('zip')!==true)
+		if(extension_loaded('zip')!==TRUE)
 		{
 			exit('Erreur : le serveur ne gère pas les fichiers ZIP ! Renvoyez votre fichier sans compression.');
 		}
 		$zip = new ZipArchive();
 		$result_open = $zip->open($fnom_serveur);
-		if($result_open!==true)
+		if($result_open!==TRUE)
 		{
 			require('./_inc/tableau_zip_error.php');
 			exit('Erreur : votre archive ZIP n\'a pas pu être ouverte ('.$result_open.$tab_zip_error[$result_open].') !');
 		}
 		$nom_fichier_extrait = 'import_validations.xml';
-		if($zip->extractTo($dossier_import,$nom_fichier_extrait)!==true)
+		if($zip->extractTo($dossier_import,$nom_fichier_extrait)!==TRUE)
 		{
 			exit('Erreur : fichier '.$nom_fichier_extrait.' non trouvé dans l\'archive ZIP !');
 		}
@@ -250,7 +250,7 @@ if( in_array( $action , array('import_sacoche','import_compatible') ) )
 	$fichier_contenu = file_get_contents($dossier_import.$fichier_upload_nom);
 	$fichier_contenu = utf8($fichier_contenu); // Mettre en UTF-8 si besoin
 	$xml = @simplexml_load_string($fichier_contenu);
-	if($xml===false)
+	if($xml===FALSE)
 	{
 		exit('Erreur : le fichier transmis n\'est pas un XML valide !');
 	}
@@ -322,11 +322,11 @@ if( in_array( $action , array('import_sacoche','import_compatible') ) )
 	$lignes_ignorer   = '';
 	$lignes_modifier  = '';
 	$lignes_inchanger = '';
-	$tab_indices_fichier = array_keys($tab_eleve_fichier['sconet_id']);
+	$tab_indices_fichier = (isset($tab_eleve_fichier['sconet_id'])) ? array_keys($tab_eleve_fichier['sconet_id']) : array() ;
 	// Parcourir chaque entrée du fichier
 	foreach($tab_indices_fichier as $i_fichier)
 	{
-		$id_base = false;
+		$id_base = FALSE;
 		// Recherche sur sconet_id
 		if( (!$id_base) && ($tab_eleve_fichier['sconet_id'][$i_fichier]) )
 		{

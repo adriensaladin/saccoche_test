@@ -119,7 +119,7 @@ if( ($action=='Partager') && $matiere_id && $niveau_id && ($perso==0) && in_arra
 	{
 		exit('Pour échanger avec le serveur communautaire, un administrateur doit identifier l\'établissement dans la base Sésamath.');
 	}
-	// Envoyer le référentiel (éventuellement vide pour l'effacer) vers le serveur de partage
+	// Envoyer le référentiel (éventuellement vide pour l'effacer) vers le serveur de partage, sauf si passage non<->bof
 	if($partage=='oui')
 	{
 		$DB_TAB = DB_STRUCTURE_COMMUN::DB_recuperer_arborescence(0,$matiere_id,$niveau_id,$only_socle=false,$only_item=false,$socle_nom=false);
@@ -128,7 +128,8 @@ if( ($action=='Partager') && $matiere_id && $niveau_id && ($perso==0) && in_arra
 	}
 	else
 	{
-		$reponse = envoyer_arborescence_XML($_SESSION['SESAMATH_ID'],$_SESSION['SESAMATH_KEY'],$matiere_id,$niveau_id,'');
+		$partage_avant = DB_STRUCTURE_REFERENTIEL::DB_recuperer_referentiel_partage_etat($matiere_id,$niveau_id);
+		$reponse = ($partage_avant=='oui') ? envoyer_arborescence_XML($_SESSION['SESAMATH_ID'],$_SESSION['SESAMATH_KEY'],$matiere_id,$niveau_id,'') : 'ok' ;
 	}
 	// Analyse de la réponse retournée par le serveur de partage
 	if($reponse!='ok')

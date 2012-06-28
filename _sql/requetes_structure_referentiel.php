@@ -83,6 +83,22 @@ public static function DB_OPT_lister_elements_referentiels_prof( $prof_id , $gra
 }
 
 /**
+ * DB_recuperer_referentiel_partage_etat
+ *
+ * @param int    $matiere_id
+ * @param int    $niveau_id
+ * @return string
+ */
+public static function DB_recuperer_referentiel_partage_etat($matiere_id,$niveau_id)
+{
+	$DB_SQL = 'SELECT referentiel_partage_etat ';
+	$DB_SQL.= 'FROM sacoche_referentiel ';
+	$DB_SQL.= 'WHERE matiere_id=:matiere_id AND niveau_id=:niveau_id ';
+	$DB_VAR = array(':matiere_id'=>$matiere_id,':niveau_id'=>$niveau_id);
+	return DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+}
+
+/**
  * DB_recuperer_domaine_ordre_max
  *
  * @param int    $matiere_id

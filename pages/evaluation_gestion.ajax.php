@@ -473,6 +473,7 @@ if( ($action=='saisir') && $devoir_id && $groupe_id && $date_mysql && $date_visi
 	$tab_affich[0][0].= '<span class="manuel"><a class="pop_up" href="'.SERVEUR_DOCUMENTAIRE.'?fichier=support_professeur__evaluations_saisie_resultats">DOC : Saisie des résultats.</a></span>';
 	$tab_affich[0][0].= '<p>';
 	$tab_affich[0][0].= '<label for="radio_clavier"><input type="radio" id="radio_clavier" name="mode_saisie" value="clavier" /> <img alt="" src="./_img/pilot_keyboard.png" /> Piloter au clavier</label> <img alt="" src="./_img/bulle_aide.png" title="Sélectionner un rectangle blanc<br />au clavier (flèches) ou à la souris<br />puis utiliser les touches suivantes :<br />&nbsp;1 ; 2 ; 3 ; 4 ; A ; N ; D ; suppr .<br />Pour un report multiple, presser avant<br />C (Colonne), L (Ligne) ou T (Tableau)." /><br />';
+	$tab_affich[0][0].= '<span id="arrow_continue"><label for="arrow_continue_down"><input type="radio" id="arrow_continue_down" name="arrow_continue" value="down" /> <img alt="" src="./_img/arrow_continue_down.png" /> par élève</label>&nbsp;&nbsp;&nbsp;<label for="arrow_continue_rigth"><input type="radio" id="arrow_continue_rigth" name="arrow_continue" value="rigth" /> <img alt="" src="./_img/arrow_continue_rigth.png" /> par item</label></span><br />';
 	$tab_affich[0][0].= '<label for="radio_souris"><input type="radio" id="radio_souris" name="mode_saisie" value="souris" /> <img alt="" src="./_img/pilot_mouse.png" /> Piloter à la souris</label> <img alt="" src="./_img/bulle_aide.png" title="Survoler une case du tableau avec la souris<br />puis cliquer sur une des images proposées." />';
 	$tab_affich[0][0].= '</p><p>';
 	$tab_affich[0][0].= '<label for="check_largeur"><input type="checkbox" id="check_largeur" name="check_largeur" value="retrecir_largeur" /> <img alt="" src="./_img/retrecir_largeur.gif" /> Largeur optimale</label> <img alt="" src="./_img/bulle_aide.png" title="Diminuer la largeur des colonnes<br />si les élèves sont nombreux." /><br />';
@@ -561,7 +562,7 @@ if( ($action=='saisir') && $devoir_id && $groupe_id && $date_mysql && $date_visi
 		$sacoche_pdf->tableau_saisie_reference_item($item_ref.$texte_socle,$DB_ROW['item_nom']);
 		for($i=0 ; $i<$eleve_nb ; $i++)
 		{
-			$sacoche_pdf->Cell($sacoche_pdf->cases_largeur , $sacoche_pdf->cases_hauteur , '' , 1 , 0 , 'C' , false , '');
+			$sacoche_pdf->Cell($sacoche_pdf->cases_largeur , $sacoche_pdf->cases_hauteur , '' , 1 , 0 , 'C' , FALSE , '');
 		}
 		$sacoche_pdf->SetXY($sacoche_pdf->marge_gauche , $sacoche_pdf->GetY()+$sacoche_pdf->cases_hauteur);
 	}
@@ -716,7 +717,7 @@ if( ($action=='voir') && $devoir_id && $groupe_id && $date_fr ) // $description 
 		$sacoche_pdf->tableau_saisie_reference_item($item_ref.$texte_socle,$DB_ROW['item_nom']);
 		for($i=0 ; $i<$eleve_nb ; $i++)
 		{
-			$sacoche_pdf->Cell($sacoche_pdf->cases_largeur , $sacoche_pdf->cases_hauteur , '' , 1 , 0 , 'C' , false , '');
+			$sacoche_pdf->Cell($sacoche_pdf->cases_largeur , $sacoche_pdf->cases_hauteur , '' , 1 , 0 , 'C' , FALSE , '');
 		}
 		$sacoche_pdf->SetXY($sacoche_pdf->marge_gauche , $sacoche_pdf->GetY()+$sacoche_pdf->cases_hauteur);
 	}
@@ -901,11 +902,11 @@ if( ($action=='voir_repart') && $devoir_id && $groupe_id && $date_fr ) // $descr
 			$pos_X = $memo_X + ($sacoche_pdf->cases_largeur - $rect_largeur) / 2 ;
 			$pos_Y = $memo_Y + ($sacoche_pdf->cases_hauteur - $rect_hauteur) / 2 ;
 			$sacoche_pdf->SetXY($pos_X , $pos_Y);
-			$sacoche_pdf->Cell($rect_largeur , $rect_hauteur , '' , 0 , 0 , 'C' , true , '');
+			$sacoche_pdf->Cell($rect_largeur , $rect_hauteur , '' , 0 , 0 , 'C' , TRUE , '');
 			// Écrire le %
 			$sacoche_pdf->SetXY($memo_X , $memo_Y);
 			$sacoche_pdf->SetFont('Arial' , '' , $sacoche_pdf->taille_police*(1+$coefficient));
-			$sacoche_pdf->Cell($sacoche_pdf->cases_largeur , $sacoche_pdf->cases_hauteur , pdf(round(100*$coefficient).'%') , 1 , 0 , 'C' , false , '');
+			$sacoche_pdf->Cell($sacoche_pdf->cases_largeur , $sacoche_pdf->cases_hauteur , pdf(round(100*$coefficient).'%') , 1 , 0 , 'C' , FALSE , '');
 		}
 		$sacoche_pdf->SetXY($sacoche_pdf->marge_gauche , $sacoche_pdf->GetY()+$sacoche_pdf->cases_hauteur);
 	}
@@ -935,11 +936,11 @@ if( ($action=='voir_repart') && $devoir_id && $groupe_id && $date_fr ) // $descr
 			$memo_Y = $sacoche_pdf->GetY();
 			foreach($tab_eleves as $key => $eleve_texte)
 			{
-				$sacoche_pdf->CellFit($sacoche_pdf->cases_largeur , $sacoche_pdf->lignes_hauteur , pdf($eleve_texte) , 0 , 2 , 'L' , false , '');
+				$sacoche_pdf->CellFit($sacoche_pdf->cases_largeur , $sacoche_pdf->lignes_hauteur , pdf($eleve_texte) , 0 , 2 , 'L' , FALSE , '');
 			}
 			// Ajouter la bordure
 			$sacoche_pdf->SetXY($memo_X , $memo_Y);
-			$sacoche_pdf->Cell($sacoche_pdf->cases_largeur , $sacoche_pdf->cases_hauteur , '' , 1 , 0 , 'C' , false , '');
+			$sacoche_pdf->Cell($sacoche_pdf->cases_largeur , $sacoche_pdf->cases_hauteur , '' , 1 , 0 , 'C' , FALSE , '');
 		}
 		$sacoche_pdf->SetXY($sacoche_pdf->marge_gauche , $sacoche_pdf->GetY()+$sacoche_pdf->cases_hauteur);
 	}
@@ -1051,8 +1052,8 @@ if( ($action=='enregistrer_saisie') && $devoir_id && $date_mysql && $date_visibl
 if( ($action=='imprimer_cartouche') && $devoir_id && $groupe_id && $date_fr && $cart_contenu && $cart_detail && $orientation && $marge_min && $couleur )
 {
 	Formulaire::save_choix('cartouche');
-	$with_nom    = (substr($cart_contenu,0,8)=='AVEC_nom')  ? true : false ;
-	$with_result = (substr($cart_contenu,9)=='AVEC_result') ? true : false ;
+	$with_nom    = (substr($cart_contenu,0,8)=='AVEC_nom')  ? TRUE : FALSE ;
+	$with_result = (substr($cart_contenu,9)=='AVEC_result') ? TRUE : FALSE ;
 	// liste des items
 	$DB_TAB_COMP = DB_STRUCTURE_PROFESSEUR::DB_lister_items_devoir( $devoir_id , FALSE /*with_lien*/ , TRUE /*with_coef*/ );
 	// liste des élèves
@@ -1138,10 +1139,10 @@ if( ($action=='imprimer_cartouche') && $devoir_id && $groupe_id && $date_fr && $
 				$ligne2_csv = ''; $ligne2_html = '';
 				foreach($tab_comp_id as $comp_id=>$tab_val_comp)
 				{
-					if( ($only_req==false) || ($tab_result[$comp_id][$user_id]) )
+					if( ($only_req==FALSE) || ($tab_result[$comp_id][$user_id]) )
 					{
 						$ligne1_html .= '<td>'.html($tab_val_comp[0]).'</td>';
-						$ligne2_html .= '<td class="hc">'.affich_note_html($tab_result[$comp_id][$user_id],$date_fr,$description,false).'</td>';
+						$ligne2_html .= '<td class="hc">'.affich_note_html($tab_result[$comp_id][$user_id],$date_fr,$description,FALSE).'</td>';
 						$ligne1_csv .= '"'.$tab_val_comp[0].'"'.$separateur;
 						$ligne2_csv .= '"'.$tab_result[$comp_id][$user_id].'"'.$separateur;
 						$sacoche_pdf->cartouche_minimal_competence($tab_val_comp[0] , $tab_result[$comp_id][$user_id]);
@@ -1166,9 +1167,9 @@ if( ($action=='imprimer_cartouche') && $devoir_id && $groupe_id && $date_fr && $
 				$sacoche_pdf->cartouche_entete( $texte_entete , $lignes_nb=$tab_user_nb_req[$user_id]+1 );
 				foreach($tab_comp_id as $comp_id=>$tab_val_comp)
 				{
-					if( ($only_req==false) || ($tab_result[$comp_id][$user_id]) )
+					if( ($only_req==FALSE) || ($tab_result[$comp_id][$user_id]) )
 					{
-						$sacoche_htm .= '<tr><td>'.html($tab_val_comp[0]).'</td><td>'.html($tab_val_comp[1]).'</td><td>'.affich_note_html($tab_result[$comp_id][$user_id],$date_fr,$description,false).'</td></tr>';
+						$sacoche_htm .= '<tr><td>'.html($tab_val_comp[0]).'</td><td>'.html($tab_val_comp[1]).'</td><td>'.affich_note_html($tab_result[$comp_id][$user_id],$date_fr,$description,FALSE).'</td></tr>';
 						$sacoche_csv .= '"'.$tab_val_comp[0].'"'.$separateur.'"'.$tab_val_comp[1].'"'.$separateur.'"'.$tab_result[$comp_id][$user_id].'"'."\r\n";
 						$sacoche_pdf->cartouche_complet_competence($tab_val_comp[0] , $tab_val_comp[1] , $tab_result[$comp_id][$user_id]);
 					}

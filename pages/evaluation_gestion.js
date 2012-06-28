@@ -37,9 +37,10 @@ $(document).ready
 		var mode = false;
 		var modification = false;
 		var memo_pilotage = 'clavier';
+		var memo_direction = 'down';
 		var memo_input_id = false;
-		var colonne = 0;
-		var ligne   = 0;
+		var colonne = 1;
+		var ligne   = 1;
 		var nb_colonnes = 1;
 		var nb_lignes   = 1;
 		// tri du tableau (avec jquery.tablesorter.js).
@@ -379,9 +380,14 @@ $(document).ready
 							format_liens('#table_saisir');
 							infobulle();
 							$('#radio_'+memo_pilotage).click();
+							$('#arrow_continue_'+memo_direction).click();
 							if(memo_pilotage=='clavier')
 							{
-								$('#C1L1').focus();
+								$('#C'+colonne+'L'+ligne).focus();
+							}
+							else
+							{
+								$('#arrow_continue').hide();
 							}
 							nb_colonnes = $('#table_saisir thead th').length;
 							nb_lignes   = $('#table_saisir tbody tr').length;
@@ -1106,15 +1112,33 @@ $(document).ready
 		//	Choix du mode de pilotage pour la saisie des résultats
 		//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
-		$('#table_saisir thead tr td input[type="radio"]').live // live est utilisé pour prendre en compte les nouveaux éléments créés
+		$('input[name=mode_saisie]').live // live est utilisé pour prendre en compte les nouveaux éléments créés
 		('click',
 			function()
 			{
 				memo_pilotage = $(this).val();
 				if(memo_pilotage=='clavier')
 				{
-					$("#C1L1").focus();
+					$('#arrow_continue').show(0);
+					$('#C'+colonne+'L'+ligne).focus();
 				}
+				else
+				{
+					$('#arrow_continue').hide(0);
+				}
+			}
+		);
+
+		//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+		//	Choix du sens de parcours pour la saisie des résultats (si pilotage au clavier)
+		//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+
+		$('input[name=arrow_continue]').live // live est utilisé pour prendre en compte les nouveaux éléments créés
+		('click',
+			function()
+			{
+				memo_direction = $(this).val();
+					$('#C'+colonne+'L'+ligne).focus();
 			}
 		);
 
@@ -1258,7 +1282,14 @@ $(document).ready
 							// pour une seule case
 							$(this).val(note).removeAttr("class").addClass(note);
 							$(this).parent().css("background-color","#F6D");
-							ligne++;
+							if(memo_direction=='down')
+							{
+								ligne++;
+							}
+							else
+							{
+								colonne++;
+							}
 						}
 						else if(endroit_report_note=='tableau')
 						{

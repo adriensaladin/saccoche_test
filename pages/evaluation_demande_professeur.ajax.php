@@ -107,7 +107,7 @@ if( ($action=='Afficher_demandes') && $matiere_id && $matiere_nom && $groupe_id 
 	{
 		unset($tab_autres[$DB_ROW['user_id']]);
 		$tab_demandes[] = $DB_ROW['demande_id'] ;
-		$score  = ($DB_ROW['demande_score']!==null) ? $DB_ROW['demande_score'] : false ;
+		$score  = ($DB_ROW['demande_score']!==null) ? $DB_ROW['demande_score'] : FALSE ;
 		$statut = ($DB_ROW['demande_statut']=='eleve') ? 'demande non traitée' : 'évaluation en préparation' ;
 		$class  = ($DB_ROW['demande_statut']=='eleve') ? ' class="new"' : '' ;
 		$commentaire = ($DB_ROW['demande_messages']) ? 'oui <img alt="" src="./_img/bulle_aide.png" title="'.str_replace(array("\r\n","\r","\n"),'<br />',html($DB_ROW['demande_messages'])).'" />' : 'non' ;

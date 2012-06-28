@@ -100,7 +100,7 @@ if(is_array($tab_groupes))
 		{
 			if(!isset($tab_memo_groupes[$DB_ROW['groupe_id']]))
 			{
-				$tab_memo_groupes[$DB_ROW['groupe_id']] = true;
+				$tab_memo_groupes[$DB_ROW['groupe_id']] = TRUE;
 				$tab_groupe_periode_js .= 'tab_groupe_periode['.$DB_ROW['groupe_id'].'] = new Array();';
 			}
 			$tab_groupe_periode_js .= 'tab_groupe_periode['.$DB_ROW['groupe_id'].']['.$DB_ROW['periode_id'].']="'.$DB_ROW['jointure_date_debut'].'_'.$DB_ROW['jointure_date_fin'].'";';

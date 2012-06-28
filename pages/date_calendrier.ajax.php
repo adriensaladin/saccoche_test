@@ -86,7 +86,7 @@ $calendrier_navigation .= '</div>';
 $calendrier_navigation .= '<div class="v1 t12 g cr">';
 $an   = ($m==1) ? $a-1 : $a;
 $mois = ($m==1) ? 12   : $m-1;
-if( ( ($m==1) && ($a<=$annee_mini) )==false)
+if( ( ($m==1) && ($a<=$annee_mini) ) == FALSE)
 	$calendrier_navigation .= '<input type="image" alt="Mois précédent" class="actu" src="./_img/fleche/fleche_g1.gif" id="calendrier_'.$mois.'_'.$an.'" />&nbsp;';
 else
 	$calendrier_navigation .= '<img alt="1 mois avant" src="./_img/fleche/fleche_g0.gif" />&nbsp;';

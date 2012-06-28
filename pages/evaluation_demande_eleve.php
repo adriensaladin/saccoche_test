@@ -70,7 +70,7 @@ else
 			$DB_TAB = DB_STRUCTURE_ELEVE::DB_lister_demandes_eleve($_SESSION['USER_ID']);
 			foreach($DB_TAB as $DB_ROW)
 			{
-				$score  = ($DB_ROW['demande_score']!==null) ? $DB_ROW['demande_score'] : false ;
+				$score  = ($DB_ROW['demande_score']!==null) ? $DB_ROW['demande_score'] : FALSE ;
 				$statut = ($DB_ROW['demande_statut']=='eleve') ? 'demande non traitée' : 'évaluation en préparation' ;
 				$texte_lien_avant = ($DB_ROW['item_lien']) ? '<a class="lien_ext" href="'.html($DB_ROW['item_lien']).'">' : '';
 				$texte_lien_apres = ($DB_ROW['item_lien']) ? '</a>' : '';

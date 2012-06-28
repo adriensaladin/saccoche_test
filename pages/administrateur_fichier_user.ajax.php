@@ -43,7 +43,7 @@ if( !isset($tab_actions[$action]) )
 }
 
 $action = $tab_actions[$action];
-$test_sconet = (substr($action,0,6)=='sconet') ? true : false ;
+$test_sconet = (substr($action,0,6)=='sconet') ? TRUE : FALSE ;
 $tab_extensions_autorisees = $test_sconet ? array('zip','xml') : array('txt','csv') ;
 $extension_fichier_dest    = $test_sconet ? 'xml'              : 'txt' ;
 $fichier_dest = 'import_'.$action.'_'.$_SESSION['BASE'].'_'.session_id().'.'.$extension_fichier_dest ;
@@ -127,13 +127,13 @@ if( $step==10 )
 	else
 	{
 		// Dézipper le fichier
-		if(extension_loaded('zip')!==true)
+		if(extension_loaded('zip')!==TRUE)
 		{
 			exit('Erreur : le serveur ne gère pas les fichiers ZIP ! Renvoyez votre fichier sans compression.');
 		}
 		$zip = new ZipArchive();
 		$result_open = $zip->open($fnom_serveur);
-		if($result_open!==true)
+		if($result_open!==TRUE)
 		{
 			require('./_inc/tableau_zip_error.php');
 			exit('Erreur : votre archive ZIP n\'a pas pu être ouverte ('.$result_open.$tab_zip_error[$result_open].') !');
@@ -151,7 +151,7 @@ if( $step==10 )
 			$annee_scolaire  = (date('n')>7) ? date('Y') : date('Y')-1 ;
 			$nom_fichier_extrait = 'sts_emp_'.$_SESSION['WEBMESTRE_UAI'].'_'.$annee_scolaire.'.xml';
 		}
-		if($zip->extractTo($dossier_import,$nom_fichier_extrait)!==true)
+		if($zip->extractTo($dossier_import,$nom_fichier_extrait)!==TRUE)
 		{
 			exit('Erreur : fichier '.$nom_fichier_extrait.' non trouvé dans l\'archive ZIP !');
 		}
@@ -215,12 +215,12 @@ if( $step==20 )
 		//	Étape 2a - Extraction sconet_professeurs_directeurs
 		//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 		$xml = @simplexml_load_file($dossier_import.$fichier_dest);
-		if($xml===false)
+		if($xml===FALSE)
 		{
 			exit('Erreur : le fichier transmis n\'est pas un XML valide !');
 		}
 		$uai = $xml->PARAMETRES->UAJ;
-		if($uai===false)
+		if($uai===FALSE)
 		{
 			exit('Erreur : le fichier transmis n\'est pas correct (erreur de numéro UAI) !');
 		}
@@ -449,12 +449,12 @@ if( $step==20 )
 		//	Étape 2b - Extraction sconet_eleves
 		//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 		$xml = @simplexml_load_file($dossier_import.$fichier_dest);
-		if($xml===false)
+		if($xml===FALSE)
 		{
 			exit('Erreur : le fichier transmis n\'est pas un XML valide !');
 		}
 		$uai = $xml->PARAMETRES->UAJ;
-		if($uai===false)
+		if($uai===FALSE)
 		{
 			exit('Erreur : le fichier transmis n\'est pas correct (erreur de numéro UAI) !');
 		}
@@ -546,12 +546,12 @@ if( $step==20 )
 		//	Étape 2c - Extraction sconet_parents
 		//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 		$xml = @simplexml_load_file($dossier_import.$fichier_dest);
-		if($xml===false)
+		if($xml===FALSE)
 		{
 			exit('Erreur : le fichier transmis n\'est pas un XML valide !');
 		}
 		$uai = $xml->PARAMETRES->UAJ;
-		if($uai===false)
+		if($uai===FALSE)
 		{
 			exit('Erreur : le fichier transmis n\'est pas correct (erreur de numéro UAI) !');
 		}
@@ -1382,8 +1382,8 @@ if( $step==42 )
 
 if( $step==51 )
 {
-	$is_profil_eleve  = (mb_strpos($action,'eleves'))  ? true : false ;
-	$is_profil_parent = (mb_strpos($action,'parents')) ? true : false ;
+	$is_profil_eleve  = (mb_strpos($action,'eleves'))  ? TRUE : FALSE ;
+	$is_profil_parent = (mb_strpos($action,'parents')) ? TRUE : FALSE ;
 	// On récupère le fichier avec des infos sur les correspondances : $tab_liens_id_base['classes'] -> $tab_i_classe_TO_id_base ; $tab_liens_id_base['groupes'] -> $tab_i_groupe_TO_id_base ; $tab_liens_id_base['users'] -> $tab_i_fichier_TO_id_base
 	$tab_liens_id_base = load_fichier('liens_id_base');
 	$tab_i_classe_TO_id_base  = $tab_liens_id_base['classes'];
@@ -1434,7 +1434,7 @@ if( $step==51 )
 	// Parcourir chaque entrée du fichier
 	foreach($tab_indices_fichier as $i_fichier)
 	{
-		$id_base = false;
+		$id_base = FALSE;
 		// Recherche sur sconet_id
 		if( (!$id_base) && ($tab_users_fichier['sconet_id'][$i_fichier]) )
 		{
@@ -1512,7 +1512,7 @@ if( $step==51 )
 				else
 				{
 					$td_modif .= ' || '.$champ_aff.' : '.html($tab_users_base[$champ_ref][$id_base]);
-					$tab_users_modifier[$id_base][$champ_ref] = false;
+					$tab_users_modifier[$id_base][$champ_ref] = FALSE;
 				}
 			}
 			if($tab_users_base['sortie'][$id_base]!=SORTIE_DEFAUT_MYSQL)

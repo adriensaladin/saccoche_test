@@ -216,11 +216,11 @@ if( $is_matiere_items_bilanMS || $is_matiere_items_bilanPA )
 {
 	$tab_eleve_moy_scores  = array();
 	$tab_eleve_pourcentage = array();
-	$tab_init = array('A'=>0,'VA'=>0,'NA'=>0,'nb'=>0,'%'=>false);
+	$tab_init = array('A'=>0,'VA'=>0,'NA'=>0,'nb'=>0,'%'=>FALSE);
 	// Pour chaque élève...
 	foreach($tab_eleve_id as $eleve_id)
 	{
-		$tab_eleve_moy_scores[$eleve_id]  = false;
+		$tab_eleve_moy_scores[$eleve_id]  = FALSE;
 		$tab_eleve_pourcentage[$eleve_id] = $tab_init;
 		// Si cet élève a été évalué...
 		if(isset($tab_eval[$eleve_id]))
@@ -249,8 +249,8 @@ if( $is_matiere_items_bilanMS || $is_matiere_items_bilanPA )
 				$somme_scores_simples = array_sum($tableau_score_filtre);
 			}
 			// ... un pour la moyenne des pourcentages d'acquisition
-			if($with_coef) { $tab_eleve_moy_scores[$eleve_id] = ($somme_coefs) ? round($somme_scores_ponderes/$somme_coefs,0) : false ; }
-			else           { $tab_eleve_moy_scores[$eleve_id] = ($nb_scores)   ? round($somme_scores_simples/$nb_scores,0)    : false ; }
+			if($with_coef) { $tab_eleve_moy_scores[$eleve_id] = ($somme_coefs) ? round($somme_scores_ponderes/$somme_coefs,0) : FALSE ; }
+			else           { $tab_eleve_moy_scores[$eleve_id] = ($nb_scores)   ? round($somme_scores_simples/$nb_scores,0)    : FALSE ; }
 			// ... un pour le nombre d\'items considérés acquis ou pas
 			if($nb_scores)
 			{
@@ -269,7 +269,7 @@ if( $is_matiere_items_bilanMS || $is_matiere_items_bilanPA )
 		extract($tab);	// $user_id $user_nom $user_prenom $eleve_langue
 		if($is_matiere_items_bilanMS)
 		{
-					if ($tab_eleve_moy_scores[$user_id]===false)                        {$user_acquisition_etat = 'X';}
+					if ($tab_eleve_moy_scores[$user_id]===FALSE)                        {$user_acquisition_etat = 'X';}
 			elseif ($tab_eleve_moy_scores[$user_id]<$_SESSION['CALCUL_SEUIL']['R']) {$user_acquisition_etat = 'NA';}
 			elseif ($tab_eleve_moy_scores[$user_id]>$_SESSION['CALCUL_SEUIL']['V']) {$user_acquisition_etat = 'A';}
 			else                                                                    {$user_acquisition_etat = 'VA';}
@@ -281,7 +281,7 @@ if( $is_matiere_items_bilanMS || $is_matiere_items_bilanPA )
 		}
 		elseif($is_matiere_items_bilanPA)
 		{
-					if ($tab_eleve_pourcentage[$user_id]['%']===false)                        {$user_acquisition_etat = 'X';}
+					if ($tab_eleve_pourcentage[$user_id]['%']===FALSE)                        {$user_acquisition_etat = 'X';}
 			elseif ($tab_eleve_pourcentage[$user_id]['%']<$_SESSION['CALCUL_SEUIL']['R']) {$user_acquisition_etat = 'NA';}
 			elseif ($tab_eleve_pourcentage[$user_id]['%']>$_SESSION['CALCUL_SEUIL']['V']) {$user_acquisition_etat = 'A';}
 			else                                                                          {$user_acquisition_etat = 'VA';}
@@ -324,14 +324,14 @@ if( $is_socle_item_pourcentage )
 			}
 		}
 		// On calcule les états d'acquisition à partir des A / VA / NA
-		$tab_score_socle_eleve[$eleve_id]['%'] = ($tab_score_socle_eleve[$eleve_id]['nb']) ? round( 50 * ( ($tab_score_socle_eleve[$eleve_id]['A']*2 + $tab_score_socle_eleve[$eleve_id]['VA']) / $tab_score_socle_eleve[$eleve_id]['nb'] ) ,0) : false ;
+		$tab_score_socle_eleve[$eleve_id]['%'] = ($tab_score_socle_eleve[$eleve_id]['nb']) ? round( 50 * ( ($tab_score_socle_eleve[$eleve_id]['A']*2 + $tab_score_socle_eleve[$eleve_id]['VA']) / $tab_score_socle_eleve[$eleve_id]['nb'] ) ,0) : FALSE ;
 	}
 	// On ne garde que les lignes qui satisfont au critère demandé
 	$tab_tr = array();
 	foreach($tab_eleve as $tab)
 	{
 		extract($tab);	// $user_id $user_nom $user_prenom $eleve_langue
-		    if ($tab_score_socle_eleve[$user_id]['%']===false)                        {$user_acquisition_etat = 'X';}
+		    if ($tab_score_socle_eleve[$user_id]['%']===FALSE)                        {$user_acquisition_etat = 'X';}
 		elseif ($tab_score_socle_eleve[$user_id]['%']<$_SESSION['CALCUL_SEUIL']['R']) {$user_acquisition_etat = 'NA';}
 		elseif ($tab_score_socle_eleve[$user_id]['%']>$_SESSION['CALCUL_SEUIL']['V']) {$user_acquisition_etat = 'A';}
 		else                                                                          {$user_acquisition_etat = 'VA';}

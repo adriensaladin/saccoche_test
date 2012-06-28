@@ -117,7 +117,7 @@ if( ($action=='initialiser') && (HEBERGEUR_INSTALLATION=='mono-structure') && $p
 	{
 		${$DB_ROW['parametre_nom']} = $DB_ROW['parametre_valeur'];
 	}
-	if(isset($webmestre_denomination,$connexion_mode,$connexion_nom)==false)
+	if(isset($webmestre_denomination,$connexion_mode,$connexion_nom)==FALSE)
 	{
 		exit('Erreur : base de l\'établissement incomplète !');
 	}
@@ -153,7 +153,7 @@ if( ( ($action=='initialiser') && ($BASE>0) && (HEBERGEUR_INSTALLATION=='multi-s
 	{
 		${$DB_ROW['parametre_nom']} = $DB_ROW['parametre_valeur'];
 	}
-	if(isset($connexion_mode,$connexion_nom)==false)
+	if(isset($connexion_mode,$connexion_nom)==FALSE)
 	{
 		exit('Erreur : base de l\'établissement incomplète !');
 	}

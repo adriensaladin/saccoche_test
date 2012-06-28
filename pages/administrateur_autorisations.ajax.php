@@ -77,7 +77,7 @@ if(!isset($tab_objet_profils[$f_objet]))
 if($f_profils=='')
 {
 	// Les profils peuvent être vides sauf certains paramètres devant contenir la chaine 'prof'
-	$test_options = ($test_objet_prof) ? false : true ;
+	$test_options = ($test_objet_prof) ? FALSE : TRUE ;
 }
 else
 {

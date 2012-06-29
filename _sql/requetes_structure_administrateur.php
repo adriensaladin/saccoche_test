@@ -165,16 +165,28 @@ public static function DB_lister_matieres_etablissement($order_by_name)
 /**
  * DB_lister_niveaux_famille
  *
- * @param int   famille_id
+ * @param int   niveau_famille_id
  * @return array
  */
-public static function DB_lister_niveaux_famille($famille_id)
+public static function DB_lister_niveaux_famille($niveau_famille_id)
 {
+	// Ajouter, si pertinent, les niveaux spécifiques qui sinon ne sont pas trouvés car à part...
+	$tab_sql = array(
+		1 => '',
+		2 => 'OR niveau_id IN(5,1,2,201) ',
+		3 => 'OR niveau_id IN(3,202,203) ',
+		4 => 'OR niveau_id IN(3,202,203) ',
+		5 => 'OR niveau_id IN(4,204,205,206) ',
+		6 => 'OR niveau_id IN(4,204,205,206) ',
+		7 => 'OR niveau_id IN(4,204,205,206) ',
+		8 => 'OR niveau_id IN(4,204,205,206) ',
+		9 => ''
+	);
 	$DB_SQL = 'SELECT niveau_id, niveau_ref, niveau_nom, niveau_actif ';
 	$DB_SQL.= 'FROM sacoche_niveau ';
-	$DB_SQL.= 'WHERE niveau_famille_id=:famille_id ' ;
+	$DB_SQL.= 'WHERE niveau_famille_id=:niveau_famille_id '.$tab_sql[$niveau_famille_id];
 	$DB_SQL.= 'ORDER BY niveau_ordre ASC';
-	$DB_VAR = array(':famille_id'=>$famille_id);
+	$DB_VAR = array(':niveau_famille_id'=>$niveau_famille_id);
 	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 

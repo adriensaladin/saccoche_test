@@ -455,6 +455,10 @@ public static function DB_modifier_referentiel_items( $granulosite , $matiere_id
 	$DB_VAR = array(':matiere_id'=>$matiere_id,':objet_id'=>$objet_id);
 	$listing_item_id = DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 	// Mettre à jour les items concernés
+	if(!$listing_item_id)
+	{
+		return 0;
+	}
 	$DB_SQL = 'UPDATE sacoche_referentiel_item ';
 	$DB_SQL.= 'SET item_'.$element.'=:valeur ';
 	$DB_SQL.= 'WHERE item_id IN('.$listing_item_id.') ';

@@ -82,7 +82,9 @@ https://cas.scolastance.com/cas-sierra		http://sierra.scolastance.com/etablissem
 https://cas.scolastance.com/cas-demo			http://demo.scolastance.com/etablissements.aspx
 */
 
-$saml_rne = isset($_SESSION['WEBMESTRE_UAI']) ? $_SESSION['WEBMESTRE_UAI'] : '' ; // au moins à cause d'un appel de ce fichier depuis la doc
-$tab_connexion_info['gepi']['saml']            = array( 'saml_url'=>'http://' , 'saml_rne'=>$saml_rne , 'saml_certif'=>'AA:FD:FF:98:48:18:A8:56:73:32:73:8F:33:53:04:8C:36:9B:E6:B2' , 'txt'=>"S'authentifier depuis GEPI (protocole SAML)." );
+// Vérifier la définition de ces variables car appel de ce fichier depuis la doc
+$saml_url = isset($_SESSION['GEPI_URL']) ? $_SESSION['GEPI_URL'] : 'http://' ; 
+$saml_rne = isset($_SESSION['GEPI_RNE']) ? $_SESSION['GEPI_RNE'] : ( isset($_SESSION['WEBMESTRE_UAI']) ? $_SESSION['WEBMESTRE_UAI'] : '' ) ;
+$tab_connexion_info['gepi']['saml']            = array( 'saml_url'=>$saml_url , 'saml_rne'=>$saml_rne , 'saml_certif'=>'AA:FD:FF:98:48:18:A8:56:73:32:73:8F:33:53:04:8C:36:9B:E6:B2' , 'txt'=>"S'authentifier depuis GEPI (protocole SAML)." );
 
 ?>

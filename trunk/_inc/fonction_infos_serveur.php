@@ -104,6 +104,22 @@ function max_execution_time()
 }
 
 /**
+ * max_input_vars
+ * Limite le nombre de variables transmises (POST ou GET).
+ * Information à recouper avec des limites Suhosin éventuelles.
+ * Disponible à compter de Lorsque PHP 5.3.9 uniquement.
+ * Voir http://www.php.net/manual/fr/info.configuration.php#ini.max-input-vars
+ *
+ * @param void
+ * @return string
+ */
+
+function max_input_vars()
+{
+	return (version_compare(phpversion(),'5.3.9','>=')) ? ini_get('max_input_vars') : '---' ;
+}
+
+/**
  * memory_limit
  * Cette option détermine la mémoire limite, en octets, qu'un script est autorisé à allouer.
  * Cela permet de prévenir l'utilisation de toute la mémoire par un script mal codé.
@@ -318,6 +334,7 @@ $tab_commentaires['version_mysql']        = 'Version 5.1 ou ultérieure conseill
 $tab_commentaires['version_sacoche_prog'] = 'Dernière version disponible : '.$tester_version;
 $tab_commentaires['version_sacoche_base'] = $complement.'Version attendue : '.VERSION_BASE;
 $tab_commentaires['max_execution_time']   = 'Par défaut 30 secondes.<br />Une valeur trop faible pourrait gêner les sauvegardes / restaurations de grosses bases.';
+$tab_commentaires['max_input_vars']       = 'Par défaut 1000.<br />Une valeur inférieure est susceptible de tronquer la transmission de formulaires importants.<br \>Disponible à compter de PHP 5.3.9 uniquement.';
 $tab_commentaires['memory_limit']         = 'Par défaut 128Mo (convient très bien).<br />Doit être plus grand que post_max_size (ci-dessous).<br />Une valeur inférieure à 128Mo peut poser problème (pour générer des bilans PDF en particulier).<br />Mais 64Mo voire 32Mo peuvent aussi convenir, tout dépend de l\'usage (nombre d\'élèves considérés à la fois, quantité de données&hellip;).';
 $tab_commentaires['post_max_size']        = 'Par défaut 8Mo.<br />Doit être plus grand que upload_max_filesize (ci-dessous).';
 $tab_commentaires['upload_max_filesize']  = 'Par défaut 2Mo.<br />A augmenter si on doit envoyer un fichier d\'une taille supérieure.';
@@ -361,6 +378,7 @@ function tableau_limitations_PHP()
 			</thead>
 			<tbody>
 				<tr><td><img alt="" title="'.$tab_commentaires['max_execution_time'].'" src="./_img/bulle_aide.png" /> max execution time</td><td class="hc">'.max_execution_time().'</td></tr>
+				<tr><td><img alt="" title="'.$tab_commentaires['max_input_vars'].'" src="./_img/bulle_aide.png" /> max input vars</td><td class="hc">'.max_input_vars().'</td></tr>
 				<tr><td><img alt="" title="'.$tab_commentaires['memory_limit'].'" src="./_img/bulle_aide.png" /> memory limit</td><td class="hc">'.memory_limit().'</td></tr>
 				<tr><td><img alt="" title="'.$tab_commentaires['post_max_size'].'" src="./_img/bulle_aide.png" /> post max size</td><td class="hc">'.post_max_size().'</td></tr>
 				<tr><td><img alt="" title="'.$tab_commentaires['upload_max_filesize'].'" src="./_img/bulle_aide.png" /> upload max filesize</td><td class="hc">'.upload_max_filesize().'</td></tr>

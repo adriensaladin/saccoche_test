@@ -202,7 +202,7 @@ foreach($tab_accueil as $type => $contenu)
 		}
 		else
 		{
-			$class_moins = $class_plus = $toggle_moins = $toggle_plus = 0 ;
+			$class_moins = $class_plus = $toggle_moins = $toggle_plus = '' ;
 		}
 		echo'<hr />'.$toggle_plus.'<div id="'.$type.'_moins" class="p '.$type.'64'.$class_moins.'">'.str_replace('<TG>',$toggle_moins,$contenu).'</div>';
 	}

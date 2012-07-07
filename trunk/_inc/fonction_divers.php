@@ -482,7 +482,7 @@ function compacter($chemin,$methode)
 {
 	$fichier_original_chemin = $chemin;
 	$fichier_original_date   = filemtime($fichier_original_chemin);
-	if(SERVEUR_TYPE == 'PROD')
+	if(SERVEUR_TYPE != 'PROD')
 	{
 		$fichier_extension       = pathinfo($chemin,PATHINFO_EXTENSION);
 		$fichier_compact_dossier = (substr($chemin,0,10)=='./sacoche/') ? './sacoche/__tmp/' : './__tmp/' ; // On peut se permettre d'enregistrer les js et css en dehors de leur dossier d'origine car les répertoires sont tous de mêmes niveaux

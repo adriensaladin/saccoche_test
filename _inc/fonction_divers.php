@@ -1671,12 +1671,19 @@ function exporter_arborescence_to_XML($DB_TAB)
  * On peut aussi l'utiliser pour récupérer le résultat d'un script PHP exécuté sur un serveur distant.
  * On peut alors envoyer au script des paramètres en POST.
  * 
+ * Concernant le timeout.
+ * La fonction set_time_limit(), tout comme la directive de configuration de php.ini max_execution_time, n'affectent que le temps d'exécution du script lui-même. Tout temps passé en dehors du script, comme un appel système utilisant system(), des opérations sur les flux, les requêtes sur base de données, etc. n'est pas pris en compte lors du calcul de la durée maximale d'exécution du script.
+ * Un appel cURL est un exemple d'opération de flux et n'est donc pas limité parun max_execution_time.
+ * Du point du vue de l'administrateur système, un timeout cURL élevé n'est pas un souci : une connexion ouverte sans trafic dessus, tant qu'il n'y en a pas des milliers, c'est pas important.
+ * Le timeout cURL sert juste à fixer "à partir de X secondes je n'attends plus et j'annonce que ça a planté", donc avec un timeout cURL élevé l'utilisateur risque juste de poireauter davantage avant de se prendre une erreur.
+ * Le timeout cURL sert aussi à ne pas laisser de connexion ouverte indéfiniment.
+ * 
  * @param string $url
  * @param array  $tab_post   tableau[nom]=>valeur de données à envoyer en POST (facultatif)
- * @param int    $timeout    valeur du timeout en s ; facultatif, par défaut 5 ; pour l'interrogation du LDAP (Bx) je suis obligé de monter à 30
+ * @param int    $timeout    valeur du timeout en s ; facultatif, par défaut 10
  * @return string
  */
-function url_get_contents($url,$tab_post=false,$timeout=5)
+function url_get_contents($url,$tab_post=false,$timeout=10)
 {
 	// Ne pas utiliser file_get_contents() car certains serveurs n'accepent pas d'utiliser une URL comme nom de fichier (gestionnaire fopen non activé).
 	// On utilise donc la bibliothèque cURL en remplacement

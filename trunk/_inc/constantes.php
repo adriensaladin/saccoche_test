@@ -82,14 +82,14 @@ define('SERVEUR_PROJET'        ,'https://sacoche.sesamath.net');         // URL 
 define('SERVEUR_SSL'           ,'https://sacoche.sesamath.net');         // URL du serveur Sésamath sécurisé (idem serveur projet SACoche depuis le 08/02/2012)
 define('SERVEUR_COMMUNAUTAIRE' ,SERVEUR_PROJET.'/appel_externe.php');    // URL du fichier chargé d'effectuer la liaison entre les installations de SACoche et le serveur communautaire concernant les référentiels.
 define('SERVEUR_DOCUMENTAIRE'  ,SERVEUR_PROJET.'/appel_doc.php');        // URL du fichier chargé d'afficher les documentations
-define('SERVEUR_VERSION'       ,SERVEUR_PROJET.'/sacoche/VERSION.txt');  // URL du fichier chargé de renvoyer le numéro de la dernière version disponible
+define('SERVEUR_LPC_SIGNATURE' ,SERVEUR_SSL   .'/appel_externe.php');    // URL du fichier chargé de signer un XML à importer dans LPC
 define('SERVEUR_TELECHARGEMENT',SERVEUR_PROJET.'/telechargement.php');   // URL du fichier renvoyant le ZIP de la dernière archive de SACoche disponible
-define('SERVEUR_RSS'           ,SERVEUR_PROJET.'/_rss/rss.xml');         // URL du fichier comportant le flux RSS
+define('SERVEUR_VERSION'       ,SERVEUR_PROJET.'/sacoche/VERSION.txt');  // URL du fichier chargé de renvoyer le numéro de la dernière version disponible
 define('SERVEUR_CNIL'          ,SERVEUR_PROJET.'/?fichier=cnil');        // URL de la page "CNIL (données personnelles)"
 define('SERVEUR_CONTACT'       ,SERVEUR_PROJET.'/?fichier=contact');     // URL de la page "Où échanger autour de SACoche ?"
+define('SERVEUR_GUIDE_ADMIN'   ,SERVEUR_PROJET.'/?fichier=guide_admin'); // URL de la page "Guide d'un administrateur de SACoche"
 define('SERVEUR_NEWS'          ,SERVEUR_PROJET.'/?fichier=news');        // URL de la page "Historique des nouveautés"
-define('SERVEUR_GUIDE_ADMIN'   ,SERVEUR_PROJET.'/?fichier=guide_admin'); // URL de la documentation "Guide d'un administrateur de SACoche"
-define('SERVEUR_LPC_SIGNATURE' ,SERVEUR_SSL.'/appel_externe.php');       // URL du fichier chargé de signer un XML à importer dans LPC
+define('SERVEUR_RSS'           ,SERVEUR_PROJET.'/_rss/rss.xml');         // URL du fichier comportant le flux RSS
 
 // cookies
 define('COOKIE_STRUCTURE','SACoche-etablissement');  // nom du cookie servant à retenir l'établissement sélectionné, afin de ne pas à avoir à le sélectionner de nouveau, et à pouvoir le retrouver si perte d'une session et tentative de reconnexion SSO.

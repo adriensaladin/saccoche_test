@@ -102,13 +102,13 @@ if($action=='maj_etape1')
 	{
 		exit(']¤['.'pb'.']¤['.'La mise à jour du module LCS-SACoche doit s\'effectuer via le LCS.');
 	}
-	$contenu_zip = url_get_contents(SERVEUR_TELECHARGEMENT,$tab_post=FALSE,$timeout=29);
+	$contenu_zip = url_get_contents( SERVEUR_TELECHARGEMENT ,FALSE /*tab_post*/ , 60 /*timeout*/ );
 	if(substr($contenu_zip,0,6)=='Erreur')
 	{
 		exit(']¤['.'pb'.']¤['.$contenu_zip);
 	}
 	Ecrire_Fichier($fichier_import,$contenu_zip);
-	exit(']¤['.'ok'.']¤['."Decompression de l'archive&hellip;");
+	exit(']¤['.'stop'.']¤['."Decompression de l'archive&hellip;");
 }
 
 //
@@ -256,7 +256,7 @@ if($action=='verif_etape1')
 	$tab_post = array();
 	$tab_post['verification'] = 1;
 	$tab_post['version'] = VERSION_PROG;
-	$contenu_zip = url_get_contents(SERVEUR_TELECHARGEMENT,$tab_post,$timeout=29);
+	$contenu_zip = url_get_contents( SERVEUR_TELECHARGEMENT , $tab_post , 60 /*timeout*/ );
 	if(substr($contenu_zip,0,6)=='Erreur')
 	{
 		exit(']¤['.'pb'.']¤['.$contenu_zip);

@@ -1763,6 +1763,10 @@ function url_get_contents($url,$tab_post=false,$timeout=10)
 		curl_setopt($ch, CURLOPT_POSTFIELDS, $tab_post);        // Toutes les données à passer lors d'une opération de HTTP POST. Peut être passé sous la forme d'une chaîne encodée URL, comme 'para1=val1&para2=val2&...' ou sous la forme d'un tableau dont le nom du champ est la clé, et les données du champ la valeur. Si le paramètre value est un tableau, l'en-tête Content-Type sera définie à multipart/form-data. 
 		curl_setopt($ch, CURLOPT_HTTPHEADER, array('Expect:')); // Eviter certaines erreurs curl 417 ; voir explication http://fr.php.net/manual/fr/function.curl-setopt.php#82418 ou http://www.gnegg.ch/2007/02/the-return-of-except-100-continue/
 	}
+	else
+	{
+		curl_setopt($ch, CURLOPT_POST, FALSE);                   // Si pas de données à poster, mieux vaut un appel en GET, sinon il est déjà arrivé que ça pose pb sur certains serveurs (erreur 503...). http://fr.php.net/manual/fr/function.curl-setopt.php#104387
+	}
 	$requete_reponse = curl_exec($ch);
 	if($requete_reponse === false)
 	{

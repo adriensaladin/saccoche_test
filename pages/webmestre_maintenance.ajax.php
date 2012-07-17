@@ -108,11 +108,11 @@ if($action=='maj_etape1')
 		exit(']¤['.'pb'.']¤['.$contenu_zip);
 	}
 	Ecrire_Fichier($fichier_import,$contenu_zip);
-	exit(']¤['.'stop'.']¤['."Decompression de l'archive&hellip;");
+	exit(']¤['.'ok'.']¤['."Décompression de l'archive&hellip;");
 }
 
 //
-// 2. Decompression de l'archive...
+// 2. Décompression de l'archive...
 //
 if($action=='maj_etape2')
 {
@@ -262,11 +262,11 @@ if($action=='verif_etape1')
 		exit(']¤['.'pb'.']¤['.$contenu_zip);
 	}
 	Ecrire_Fichier($fichier_import,$contenu_zip);
-	exit(']¤['.'ok'.']¤['."Decompression de l'archive&hellip;");
+	exit(']¤['.'ok'.']¤['."Décompression de l'archive&hellip;");
 }
 
 //
-// 2. Decompression de l'archive...
+// 2. Décompression de l'archive...
 //
 if($action=='verif_etape2')
 {

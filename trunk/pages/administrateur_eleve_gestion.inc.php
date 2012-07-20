@@ -26,7 +26,7 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-if(!isset($action))     {exit('Ce fichier ne peut être appelé directement !');}
+if(!isset($afficher))   {exit('Ce fichier ne peut être appelé directement !');}
 ?>
 
 <form action="#" method="post" id="form1">

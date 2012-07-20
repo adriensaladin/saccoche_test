@@ -29,9 +29,9 @@ if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');
 $TITRE = "Gérer les élèves";
 
 // Récupérer d'éventuels paramètres pour restreindre l'affichage
-$action      = (isset($_POST['f_action']))  ? clean_texte($_POST['f_action'])  : '' ;
-$statut      = (isset($_POST['f_statut']))  ? clean_entier($_POST['f_statut']) : 1    ;
-$groupe      = (isset($_POST['f_groupes'])) ? clean_texte($_POST['f_groupes']) : '' ;
+$afficher    = (isset($_POST['f_afficher'])) ? TRUE                             : FALSE ;
+$statut      = (isset($_POST['f_statut']))   ? clean_entier($_POST['f_statut']) : 1 ;
+$groupe      = (isset($_POST['f_groupes']))  ? clean_texte($_POST['f_groupes']) : '' ;
 $groupe_type = clean_texte( substr($groupe,0,1) );
 $groupe_id   = clean_entier( substr($groupe,1) );
 // Construire et personnaliser le formulaire pour restreindre l'affichage
@@ -43,13 +43,13 @@ $select_f_statuts = Formulaire::afficher_select(Formulaire::$tab_select_statut  
 
 <form action="./index.php?page=administrateur_eleve&amp;section=gestion" method="post" id="form0">
 	<div><label class="tab" for="f_groupe">Regroupement :</label><?php echo $select_f_groupes ?> <label id="ajax_msg0">&nbsp;</label></div>
-	<div><label class="tab" for="f_statut">Statut :</label><?php echo $select_f_statuts ?><input type="hidden" id="f_action" name="f_action" value="afficher" /></div>
+	<div><label class="tab" for="f_statut">Statut :</label><?php echo $select_f_statuts ?><input type="hidden" id="f_afficher" name="f_afficher" value="1" /></div>
 </form>
 
 <hr />
 
 <?php
-if($action=='afficher')
+if($afficher)
 {
 	require('./pages/administrateur_eleve_gestion.inc.php');
 }

@@ -31,7 +31,7 @@ $TITRE = "Adresses des parents";
 
 <?php
 // Récupérer d'éventuels paramètres pour restreindre l'affichage
-$action       = (isset($_POST['f_action']))       ? clean_texte($_POST['f_action'])        : '' ;
+$afficher     = (isset($_POST['f_afficher']))     ? TRUE                                   : FALSE ;
 $debut_nom    = (isset($_POST['f_debut_nom']))    ? clean_nom($_POST['f_debut_nom'])       : '' ;
 $debut_prenom = (isset($_POST['f_debut_prenom'])) ? clean_prenom($_POST['f_debut_prenom']) : '' ;
 ?>
@@ -39,13 +39,13 @@ $debut_prenom = (isset($_POST['f_debut_prenom'])) ? clean_prenom($_POST['f_debut
 <p><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__gestion_parents">DOC : Gestion des parents</a></span></p>
 
 <form action="./index.php?page=administrateur_parent&amp;section=adresse" method="post" id="form0">
-	<div><label class="tab" for="f_debut_nom">Recherche :</label>le nom commence par <input type="text" id="f_debut_nom" name="f_debut_nom" value="<?php echo html($debut_nom) ?>" size="5" /> le prénom commence par <input type="text" id="f_debut_prenom" name="f_debut_prenom" value="<?php echo html($debut_prenom) ?>" size="5" /> <input type="hidden" id="f_action" name="f_action" value="afficher" /><button id="actualiser" type="submit" class="actualiser">Actualiser.</button></div>
+	<div><label class="tab" for="f_debut_nom">Recherche :</label>le nom commence par <input type="text" id="f_debut_nom" name="f_debut_nom" value="<?php echo html($debut_nom) ?>" size="5" /> le prénom commence par <input type="text" id="f_debut_prenom" name="f_debut_prenom" value="<?php echo html($debut_prenom) ?>" size="5" /> <input type="hidden" id="f_afficher" name="f_afficher" value="1" /><button id="actualiser" type="submit" class="actualiser">Actualiser.</button></div>
 </form>
 
 <hr />
 
 <?php
-if($action=='afficher')
+if($afficher)
 {
 	require('./pages/administrateur_parent_adresse.inc.php');
 }

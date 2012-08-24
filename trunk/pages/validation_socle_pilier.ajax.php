@@ -50,7 +50,7 @@ if( ($action=='Afficher_bilan') && $palier_id && count($tab_pilier) && count($ta
 	$affichage = '';
 	// Tableau des langues
 	$tfoot = '';
-	require_once('./_inc/tableau_langues.php');
+	require(CHEMIN_DOSSIER_INCLUDE.'tableau_langues.php');
 	// Récupérer les données des élèves
 	$tab_eleve = DB_STRUCTURE_BILAN::DB_lister_eleves_cibles($listing_eleve_id,$with_gepi=FALSE,$with_langue=TRUE);
 	if(!is_array($tab_eleve))

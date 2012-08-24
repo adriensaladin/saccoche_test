@@ -45,5 +45,5 @@ foreach($tab_types as $BILAN_TYPE => $tab)
 }
 
 $fin = ($droit_voir_archives_pdf) ? 'oui' : 'non' ;
-require('./pages/'.$PAGE.'_'.$fin.'.php');
+require(CHEMIN_DOSSIER_PAGES.$PAGE.'_'.$fin.'.php');
 ?>

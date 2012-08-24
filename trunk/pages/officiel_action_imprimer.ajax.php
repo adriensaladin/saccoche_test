@@ -144,7 +144,7 @@ if($ACTION=='initialiser')
 			{
 				$archive_td = 'Non, pas encore imprimé' ;
 			}
-			elseif(is_file('./__tmp/officiel/'.$_SESSION['BASE'].'/'.fabriquer_nom_fichier_bilan_officiel( $eleve_id , $BILAN_TYPE , $periode_id )))
+			elseif(is_file(CHEMIN_DOSSIER_OFFICIEL.$_SESSION['BASE'].DS.fabriquer_nom_fichier_bilan_officiel( $eleve_id , $BILAN_TYPE , $periode_id )))
 			{
 				$_SESSION['tmp_droit_voir_archive'][$eleve_id.$BILAN_TYPE] = TRUE; // marqueur mis en session pour vérifier que c'est bien cet utilisateur qui veut voir (et à donc le droit de voir) le fichier, car il n'y a pas d'autre vérification de droit ensuite
 				$archive_td = '<a href="releve_pdf.php?fichier='.$eleve_id.'_'.$BILAN_TYPE.'_'.$periode_id.'" class="lien_ext">Oui, le '.convert_date_mysql_to_french($DB_TAB[$eleve_id][0]['fichier_date']).'</a>' ;
@@ -168,12 +168,11 @@ if($ACTION=='initialiser')
 
 if( ($ACTION=='imprimer') && ($etape==2) )
 {
-	$dossier_officiel = './__tmp/officiel/'.$_SESSION['BASE'].'/';
 	foreach($_SESSION['tmp']['tab_pages_decoupe_pdf'] as $eleve_id => $tab_tirages)
 	{
 		list( $eleve_identite , $page_plage ) = $tab_tirages[0];
 		DB_STRUCTURE_OFFICIEL::DB_modifier_bilan_officiel_fichier( $eleve_id , $BILAN_TYPE , $periode_id );
-		$fichier_extraction_chemin = $dossier_officiel.fabriquer_nom_fichier_bilan_officiel( $eleve_id , $BILAN_TYPE , $periode_id );
+		$fichier_extraction_chemin = CHEMIN_DOSSIER_OFFICIEL.$_SESSION['BASE'].DS.fabriquer_nom_fichier_bilan_officiel( $eleve_id , $BILAN_TYPE , $periode_id );
 		unset($_SESSION['tmp']['tab_pages_decoupe_pdf'][$eleve_id][0]);
 		$releve_pdf = new PDFMerger;
 		$pdf_string = $releve_pdf -> addPDF( $_SESSION['tmp']['dossier'].$_SESSION['tmp']['fichier_nom'].'.pdf' , $page_plage ) -> merge( 'file' , $fichier_extraction_chemin );
@@ -189,22 +188,21 @@ if( ($ACTION=='imprimer') && ($etape==3) )
 {
 	$date = date('Y-m-d');
 	$tab_pages_non_anonymes = array();
-	$dossier_officiel = './__tmp/officiel/'.$_SESSION['BASE'].'/';
-	$dossier_temp_pdf = './__tmp/export/pdf_'.mt_rand().'/';
-	Creer_ou_Vider_Dossier($dossier_temp_pdf);
+	$chemin_temp_pdf = CHEMIN_DOSSIER_EXPORT.'pdf_'.mt_rand().'/';
+	Creer_ou_Vider_Dossier($chemin_temp_pdf);
 	foreach($_SESSION['tmp']['tab_pages_decoupe_pdf'] as $eleve_id => $tab_tirages)
 	{
 		foreach($tab_tirages as $numero_tirage => $tab)
 		{
 			list( $eleve_identite , $page_plage ) = $tab;
 			$tab_pages_non_anonymes[]  = $page_plage;
-			$fichier_extraction_chemin = $dossier_temp_pdf.'officiel_'.$BILAN_TYPE.'_'.clean_fichier($eleve_identite).'_'.$date.'_resp'.$numero_tirage.'.pdf';
+			$fichier_extraction_chemin = $chemin_temp_pdf.'officiel_'.$BILAN_TYPE.'_'.clean_fichier($eleve_identite).'_'.$date.'_resp'.$numero_tirage.'.pdf';
 			$releve_pdf = new PDFMerger;
 			$pdf_string = $releve_pdf -> addPDF( $_SESSION['tmp']['dossier'].$_SESSION['tmp']['fichier_nom'].'.pdf' , $page_plage ) -> merge( 'file' , $fichier_extraction_chemin );
 		}
 	}
-	zipper_fichiers( $dossier_temp_pdf , $_SESSION['tmp']['dossier'] , $_SESSION['tmp']['fichier_nom'].'.zip' );
-	Supprimer_Dossier($dossier_temp_pdf);
+	zipper_fichiers( $chemin_temp_pdf , $_SESSION['tmp']['dossier'] , $_SESSION['tmp']['fichier_nom'].'.zip' );
+	Supprimer_Dossier($chemin_temp_pdf);
 	$_SESSION['tmp']['pages_non_anonymes'] = implode(',',$tab_pages_non_anonymes);
 	unset($_SESSION['tmp']['tab_pages_decoupe_pdf']);
 	exit('ok');
@@ -390,7 +388,7 @@ if($BILAN_TYPE=='releve')
 	$type_synthese   = 0;
 	$type_bulletin   = 0;
 	$tab_matiere_id  = array();
-	require('./_inc/code_items_releve.php');
+	require(CHEMIN_DOSSIER_INCLUDE.'code_items_releve.php');
 	$nom_bilan_html = 'releve_HTML_individuel';
 }
 elseif($BILAN_TYPE=='bulletin')
@@ -417,7 +415,7 @@ elseif($BILAN_TYPE=='bulletin')
 	$tab_eleve      = $tab_eleve_id;
 	$liste_eleve    = $liste_eleve_id;
 	$tab_matiere_id = array();
-	require('./_inc/code_items_synthese.php');
+	require(CHEMIN_DOSSIER_INCLUDE.'code_items_synthese.php');
 	$nom_bilan_html = 'releve_HTML';
 }
 elseif(in_array($BILAN_TYPE,array('palier1','palier2','palier3')))
@@ -443,7 +441,7 @@ elseif(in_array($BILAN_TYPE,array('palier1','palier2','palier3')))
 	$tab_pilier_id  = $tab_pilier_id;
 	$tab_eleve_id   = $tab_eleve_id;
 	$tab_matiere_id = array();
-	require('./_inc/code_socle_releve.php');
+	require(CHEMIN_DOSSIER_INCLUDE.'code_socle_releve.php');
 	$nom_bilan_html = 'releve_html';
 }
 

@@ -261,7 +261,6 @@ function utf8($text)
 	Nettoie le BOM éventuel d'un fichier UTF-8
 	Code inspiré de http://libre-d-esprit.thinking-days.net/2009/03/et-bom-le-script/
 */
-
 function deleteBOM($file)
 {
 	$fcontenu = file_get_contents($file);
@@ -271,25 +270,28 @@ function deleteBOM($file)
 	}
 }
 
-/*
-	Effacer d'anciens fichiers temporaires sur le serveur
-	On transmet en paramètre à la fonction : le dossier à vider + le délai d'expiration en minutes
-*/
-
+/**
+ * Effacer d'anciens fichiers temporaires sur le serveur.
+ * 
+ * @param string   $dossier      le dossier à vider
+ * @param int      $nb_minutes   le délai d'expiration en minutes
+ * @return void
+ */
 function effacer_fichiers_temporaires($dossier,$nb_minutes)
 {
 	if(is_dir($dossier))
 	{
 		$date_limite = time() - $nb_minutes*60;
 		$tab_fichier = Lister_Contenu_Dossier($dossier);
+		$ds = (substr($dossier,-1)==DS) ? '' : DS ;
 		foreach($tab_fichier as $fichier_nom)
 		{
-			$chemin_fichier = $dossier.'/'.$fichier_nom;
-			$extension = pathinfo($chemin_fichier,PATHINFO_EXTENSION);
-			$date_unix = filemtime($chemin_fichier);
-			if( (is_file($chemin_fichier)) && ($date_unix<$date_limite) && ($extension!='htm') )
+			$fichier = $dossier.$ds.$fichier_nom;
+			$extension = pathinfo($fichier,PATHINFO_EXTENSION);
+			$date_unix = filemtime($fichier);
+			if( (is_file($fichier)) && ($date_unix<$date_limite) && ($extension!='htm') )
 			{
-				unlink($chemin_fichier);
+				unlink($fichier);
 			}
 		}
 	}

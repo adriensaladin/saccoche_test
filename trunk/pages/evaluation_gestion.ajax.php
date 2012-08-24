@@ -55,9 +55,8 @@ $only_req       = (isset($_POST['f_restriction_req'])) ? TRUE                   
 $doc_objet      = (isset($_POST['f_doc_objet']))       ? clean_texte($_POST['f_doc_objet'])             : '';
 $doc_url        = (isset($_POST['f_doc_url']))         ? clean_texte($_POST['f_doc_url'])               : '';
 
-$dossier_export = './__tmp/export/';
-$dossier_devoir_relatif = './__tmp/devoir/'.$_SESSION['BASE'].'/';
-$dossier_devoir_absolu  = SERVEUR_ADRESSE.'/__tmp/devoir/'.$_SESSION['BASE'].'/';
+$chemin_devoir      =  CHEMIN_DOSSIER_DEVOIR.$_SESSION['BASE'].DS;
+$url_dossier_devoir = URL_DIR_DEVOIR.$_SESSION['BASE'].'/';
 $fnom_export = $_SESSION['BASE'].'_'.clean_fichier($groupe_nom).'_'.clean_fichier($description).'_'.fabriquer_fin_nom_fichier__date_et_alea();
 
 // Si "ref" est renseigné (pour Éditer ou Retirer ou Saisir ou ...), il contient l'id de l'évaluation + '_' + l'initiale du type de groupe + l'id du groupe
@@ -534,10 +533,10 @@ if( ($action=='saisir') && $devoir_id && $groupe_id && $date_mysql && $date_visi
 	$export_csv .= $groupe_nom."\r\n".$date_fr."\r\n".$description."\r\n\r\n";
 	$export_csv .= 'CODAGES AUTORISÉS : 1 2 3 4 A N D'."\r\n";
 	$zip = new ZipArchive();
-	$result_open = $zip->open($dossier_export.'saisie_deportee_'.$fnom_export.'.zip', ZIPARCHIVE::CREATE);
+	$result_open = $zip->open(CHEMIN_DOSSIER_EXPORT.'saisie_deportee_'.$fnom_export.'.zip', ZIPARCHIVE::CREATE);
 	if($result_open!==TRUE)
 	{
-		require('./_inc/tableau_zip_error.php');
+		require(CHEMIN_DOSSIER_INCLUDE.'tableau_zip_error.php');
 		exit('Problème de création de l\'archive ZIP ('.$result_open.$tab_zip_error[$result_open].') !');
 	}
 	$zip->addFromString('saisie_deportee_'.$fnom_export.'.csv',csv($export_csv));
@@ -566,7 +565,7 @@ if( ($action=='saisir') && $devoir_id && $groupe_id && $date_mysql && $date_visi
 		}
 		$sacoche_pdf->SetXY($sacoche_pdf->marge_gauche , $sacoche_pdf->GetY()+$sacoche_pdf->cases_hauteur);
 	}
-	$sacoche_pdf->Output($dossier_export.'tableau_sans_notes_'.$fnom_export.'.pdf','F');
+	$sacoche_pdf->Output(CHEMIN_DOSSIER_EXPORT.'tableau_sans_notes_'.$fnom_export.'.pdf','F');
 	//
 	// c'est fini ; affichage du retour
 	//
@@ -689,10 +688,10 @@ if( ($action=='voir') && $devoir_id && $groupe_id && $date_fr ) // $description 
 	$export_csv .= $groupe_nom."\r\n".$date_fr."\r\n".$description."\r\n\r\n";
 	$export_csv .= 'CODAGES AUTORISÉS : 1 2 3 4 A N D'."\r\n";
 	$zip = new ZipArchive();
-	$result_open = $zip->open($dossier_export.'saisie_deportee_'.$fnom_export.'.zip', ZIPARCHIVE::CREATE);
+	$result_open = $zip->open(CHEMIN_DOSSIER_EXPORT.'saisie_deportee_'.$fnom_export.'.zip', ZIPARCHIVE::CREATE);
 	if($result_open!==TRUE)
 	{
-		require('./_inc/tableau_zip_error.php');
+		require(CHEMIN_DOSSIER_INCLUDE.'tableau_zip_error.php');
 		exit('Problème de création de l\'archive ZIP ('.$result_open.$tab_zip_error[$result_open].') !');
 	}
 	$zip->addFromString('saisie_deportee_'.$fnom_export.'.csv',csv($export_csv));
@@ -721,7 +720,7 @@ if( ($action=='voir') && $devoir_id && $groupe_id && $date_fr ) // $description 
 		}
 		$sacoche_pdf->SetXY($sacoche_pdf->marge_gauche , $sacoche_pdf->GetY()+$sacoche_pdf->cases_hauteur);
 	}
-	$sacoche_pdf->Output($dossier_export.'tableau_sans_notes_'.$fnom_export.'.pdf','F');
+	$sacoche_pdf->Output(CHEMIN_DOSSIER_EXPORT.'tableau_sans_notes_'.$fnom_export.'.pdf','F');
 	// / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / /
 	// pdf contenant un tableau de saisie plein ; on a besoin de tourner du texte à 90°
 	// / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / /
@@ -746,7 +745,7 @@ if( ($action=='voir') && $devoir_id && $groupe_id && $date_fr ) // $description 
 		}
 		$sacoche_pdf->SetXY($sacoche_pdf->marge_gauche , $sacoche_pdf->GetY()+$sacoche_pdf->cases_hauteur);
 	}
-	$sacoche_pdf->Output($dossier_export.'tableau_avec_notes_'.$fnom_export.'.pdf','F');
+	$sacoche_pdf->Output(CHEMIN_DOSSIER_EXPORT.'tableau_avec_notes_'.$fnom_export.'.pdf','F');
 	//
 	// c'est fini ; affichage du retour
 	//
@@ -910,7 +909,7 @@ if( ($action=='voir_repart') && $devoir_id && $groupe_id && $date_fr ) // $descr
 		}
 		$sacoche_pdf->SetXY($sacoche_pdf->marge_gauche , $sacoche_pdf->GetY()+$sacoche_pdf->cases_hauteur);
 	}
-	$sacoche_pdf->Output($dossier_export.'repartition_quantitative_'.$fnom_export.'.pdf','F');
+	$sacoche_pdf->Output(CHEMIN_DOSSIER_EXPORT.'repartition_quantitative_'.$fnom_export.'.pdf','F');
 	// / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / /
 	// pdf contenant un tableau avec la répartition nominative
 	// / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / /
@@ -944,7 +943,7 @@ if( ($action=='voir_repart') && $devoir_id && $groupe_id && $date_fr ) // $descr
 		}
 		$sacoche_pdf->SetXY($sacoche_pdf->marge_gauche , $sacoche_pdf->GetY()+$sacoche_pdf->cases_hauteur);
 	}
-	$sacoche_pdf->Output($dossier_export.'repartition_nominative_'.$fnom_export.'.pdf','F');
+	$sacoche_pdf->Output(CHEMIN_DOSSIER_EXPORT.'repartition_nominative_'.$fnom_export.'.pdf','F');
 	//
 	// c'est fini...
 	//
@@ -1112,8 +1111,8 @@ if( ($action=='imprimer_cartouche') && $devoir_id && $groupe_id && $date_fr && $
 		}
 	}
 	// On attaque l'élaboration des sorties HTML, CSV et PDF
-	$sacoche_htm = '<hr /><a class="lien_ext" href="'.$dossier_export.'cartouche_'.$fnom_export.'.pdf"><span class="file file_pdf">Cartouches &rarr; Archiver / Imprimer (format <em>pdf</em>).</span></a><br />';
-	$sacoche_htm.= '<a class="lien_ext" href="'.$dossier_export.'cartouche_'.$fnom_export.'.zip"><span class="file file_zip">Cartouches &rarr; Récupérer / Manipuler (fichier <em>csv</em> pour tableur).</span></a>';
+	$sacoche_htm = '<hr /><a class="lien_ext" href="'.URL_DIR_EXPORT.'cartouche_'.$fnom_export.'.pdf"><span class="file file_pdf">Cartouches &rarr; Archiver / Imprimer (format <em>pdf</em>).</span></a><br />';
+	$sacoche_htm.= '<a class="lien_ext" href="'.URL_DIR_EXPORT.'cartouche_'.$fnom_export.'.zip"><span class="file file_zip">Cartouches &rarr; Récupérer / Manipuler (fichier <em>csv</em> pour tableur).</span></a>';
 	$sacoche_csv = '';
 	$separateur  = ';';
 	// Appel de la classe et définition de qqs variables supplémentaires pour la mise en page PDF
@@ -1182,16 +1181,16 @@ if( ($action=='imprimer_cartouche') && $devoir_id && $groupe_id && $date_fr && $
 	}
 	// On archive le cartouche dans un fichier tableur zippé (csv tabulé)
 	$zip = new ZipArchive();
-	$result_open = $zip->open($dossier_export.'cartouche_'.$fnom_export.'.zip', ZIPARCHIVE::CREATE);
+	$result_open = $zip->open(CHEMIN_DOSSIER_EXPORT.'cartouche_'.$fnom_export.'.zip', ZIPARCHIVE::CREATE);
 	if($result_open!==TRUE)
 	{
-		require('./_inc/tableau_zip_error.php');
+		require(CHEMIN_DOSSIER_INCLUDE.'tableau_zip_error.php');
 		exit('Problème de création de l\'archive ZIP ('.$result_open.$tab_zip_error[$result_open].') !');
 	}
 	$zip->addFromString('cartouche_'.$fnom_export.'.csv',csv($sacoche_csv));
 	$zip->close();
 	// On archive le cartouche dans un fichier pdf
-	$sacoche_pdf->Output($dossier_export.'cartouche_'.$fnom_export.'.pdf','F');
+	$sacoche_pdf->Output(CHEMIN_DOSSIER_EXPORT.'cartouche_'.$fnom_export.'.pdf','F');
 	// Affichage
 	exit($sacoche_htm);
 }
@@ -1210,7 +1209,7 @@ if( (isset($_GET['f_action'])) && ($_GET['f_action']=='importer_saisie_csv') )
 	$ferreur = $tab_file['error'];
 	if( (!file_exists($fnom_serveur)) || (!$ftaille) || ($ferreur) )
 	{
-		require_once('./_inc/fonction_infos_serveur.php');
+		require(CHEMIN_DOSSIER_INCLUDE.'fonction_infos_serveur.php');
 		exit('Erreur : problème de transfert ! Fichier trop lourd ? min(memory_limit,post_max_size,upload_max_filesize)='.minimum_limitations_upload());
 	}
 	$extension = strtolower(pathinfo($fnom_transmis,PATHINFO_EXTENSION));
@@ -1287,7 +1286,7 @@ if( ($action=='uploader_document') && $devoir_id && in_array($doc_objet,array('s
 	$ferreur = $tab_file['error'];
 	if( (!file_exists($fnom_serveur)) || (!$ftaille) || ($ferreur) )
 	{
-		require_once('./_inc/fonction_infos_serveur.php');
+		require(CHEMIN_DOSSIER_INCLUDE.'fonction_infos_serveur.php');
 		exit('Problème de transfert ! Fichier trop lourd ? min(memory_limit,post_max_size,upload_max_filesize)='.minimum_limitations_upload());
 	}
 	$extension = strtolower(pathinfo($fnom_transmis,PATHINFO_EXTENSION));
@@ -1305,14 +1304,14 @@ if( ($action=='uploader_document') && $devoir_id && in_array($doc_objet,array('s
 	}
 	// Enregistrement du fichier
 	$fichier_nom = 'devoir_'.$devoir_id.'_'.$doc_objet.'_'.time().'.'.$extension; // pas besoin de le rendre inaccessible -> fabriquer_fin_nom_fichier__date_et_alea() inutilement lourd
-	if(!move_uploaded_file($fnom_serveur , $dossier_devoir_relatif.$fichier_nom))
+	if(!move_uploaded_file($fnom_serveur , $chemin_devoir.$fichier_nom))
 	{
 		exit('Le fichier n\'a pas pu être enregistré sur le serveur !');
 	}
 	// Mise à jour dans la base
-	DB_STRUCTURE_PROFESSEUR::DB_modifier_devoir_document($devoir_id,$_SESSION['USER_ID'],$doc_objet,$dossier_devoir_absolu.$fichier_nom);
+	DB_STRUCTURE_PROFESSEUR::DB_modifier_devoir_document($devoir_id,$_SESSION['USER_ID'],$doc_objet,$url_dossier_devoir.$fichier_nom);
 	// Retour
-	exit('ok'.']¤['.$ref.']¤['.$doc_objet.']¤['.$dossier_devoir_absolu.$fichier_nom);
+	exit('ok'.']¤['.$ref.']¤['.$doc_objet.']¤['.$url_dossier_devoir.$fichier_nom);
 }
 
 //	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1322,13 +1321,13 @@ if( ($action=='uploader_document') && $devoir_id && in_array($doc_objet,array('s
 if( ($action=='retirer_document') && $devoir_id && in_array($doc_objet,array('sujet','corrige')) && $doc_url )
 {
 	// Suppression du fichier, uniquement si ce n'est pas un lien externe ou vers un devoir d'un autre établissement
-	if(mb_strpos($doc_url,$dossier_devoir_absolu)===0)
+	if(mb_strpos($doc_url,$url_dossier_devoir)===0)
 	{
-		$doc_url_relative = str_replace($dossier_devoir_absolu,$dossier_devoir_relatif,$doc_url);
+		$chemin_doc = str_replace($url_dossier_devoir,$chemin_devoir,$doc_url);
 		// Il peut être référencé dans une autre évaluation et donc avoir déjà été effacé, ou ne pas être présent sur le serveur en cas de restauration de base ailleurs, etc.
-		if(file_exists($doc_url_relative))
+		if(file_exists($chemin_doc))
 		{
-			unlink($doc_url_relative);
+			unlink($chemin_doc);
 		}
 	}
 	// Mise à jour dans la base

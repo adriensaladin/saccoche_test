@@ -76,7 +76,7 @@ if($action=='verif_droits')
 		$tbody .= (@is_writable($fichier)) ? '<tr><td class="v">Fichier accessible en écriture</td><td>'.$fichier.'</td></tr>' : '<tr><td class="r">Fichier aux droits insuffisants</td><td>'.$fichier.'</td></tr>' ;
 	}
 	// Enregistrement du rapport
-	$fichier_chemin  = './__tmp/export/rapport_droits.html';
+	$fichier_chemin  = CHEMIN_DOSSIER_EXPORT.'rapport_droits.html';
 	$fichier_contenu = '<!DOCTYPE html><html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><style type="text/css">body{font-family:monospace;font-size:8pt}table{border-collapse:collapse}thead{background:#CCC;font-weight:bold;text-align:center}td{border:solid 1px;padding:2px;white-space:nowrap}.v{color:green}.r{color:red}.b{color:blue}</style></head><body><table><thead>'.$thead.'</thead><tbody>'.$tbody.'</tbody></table></body></html>';
 	Ecrire_Fichier($fichier_chemin,$fichier_contenu);
 	exit('ok');
@@ -87,10 +87,9 @@ if($action=='verif_droits')
 // Mise à jour automatique des fichiers
 //	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
 
-$dossier_import  = './__tmp/import';
-$fichier_import  = $dossier_import.'/telechargement.zip';
-$dossier_dezip   = $dossier_import.'/SACoche';
-$dossier_install = '.';
+$fichier_import  = CHEMIN_DOSSIER_IMPORT.'telechargement.zip';
+$dossier_dezip   = CHEMIN_DOSSIER_IMPORT.'SACoche/';
+$dossier_install = CHEMIN_DOSSIER_SACOCHE;
 
 //
 // 1. Récupération de l'archive <em>ZIP</em>...
@@ -121,10 +120,10 @@ if($action=='maj_etape2')
 		Supprimer_Dossier($dossier_dezip);
 	}
 	// Dezipper dans le dossier temporaire
-	$code_erreur = unzip( $fichier_import , $dossier_import , TRUE /*use_ZipArchive*/ );
+	$code_erreur = unzip( $fichier_import , CHEMIN_DOSSIER_IMPORT , TRUE /*use_ZipArchive*/ );
 	if($code_erreur)
 	{
-		require('./_inc/tableau_zip_error.php');
+		require(CHEMIN_DOSSIER_INCLUDE.'tableau_zip_error.php');
 		exit(']¤['.'pb'.']¤['.'Fichiers impossibles à extraire ('.$code_erreur.$tab_zip_error[$code_erreur].') !');
 	}
 	exit(']¤['.'ok'.']¤['."Analyse des fichiers et recensement des dossiers&hellip;");
@@ -223,7 +222,7 @@ if($action=='maj_etape4')
 	ajouter_log_PHP( 'Mise à jour des fichiers' /*log_objet*/ , 'Application accessible.' /*log_contenu*/ , __FILE__ /*log_fichier*/ , __LINE__ /*log_ligne*/ , FALSE /*only_sesamath*/ );
 	debloquer_application($_SESSION['USER_PROFIL'],'0');
 	// Enregistrement du rapport
-	$fichier_chemin  = './__tmp/export/rapport_maj.html';
+	$fichier_chemin  = CHEMIN_DOSSIER_EXPORT.'rapport_maj.html';
 	$fichier_contenu = '<!DOCTYPE html><html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><style type="text/css">body{font-family:monospace;font-size:8pt}table{border-collapse:collapse}thead{background:#CCC;font-weight:bold;text-align:center}td{border:solid 1px;padding:2px;white-space:nowrap}.v{color:green}.r{color:red}.b{color:blue}</style></head><body><table><thead>'.$thead.'</thead><tbody>'.$tbody.'</tbody></table></body></html>';
 	Ecrire_Fichier($fichier_chemin,$fichier_contenu);
 	exit(']¤['.'ok'.']¤['.'Rapport des modifications apportées et nettoyage&hellip;');
@@ -243,9 +242,8 @@ if($action=='maj_etape5')
 // Vérification des fichiers
 //	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
 
-$dossier_import  = './__tmp/import';
-$fichier_import  = $dossier_import.'/verification.zip';
-$dossier_dezip   = $dossier_import.'/SACoche';
+$fichier_import  = CHEMIN_DOSSIER_IMPORT.'verification.zip';
+$dossier_dezip   = CHEMIN_DOSSIER_IMPORT.'SACoche/';
 $dossier_install = '.';
 
 //
@@ -275,10 +273,10 @@ if($action=='verif_etape2')
 		Supprimer_Dossier($dossier_dezip);
 	}
 	// Dezipper dans le dossier temporaire
-	$code_erreur = unzip( $fichier_import , $dossier_import , TRUE /*use_ZipArchive*/ );
+	$code_erreur = unzip( $fichier_import , CHEMIN_DOSSIER_IMPORT , TRUE /*use_ZipArchive*/ );
 	if($code_erreur)
 	{
-		require('./_inc/tableau_zip_error.php');
+		require(CHEMIN_DOSSIER_INCLUDE.'tableau_zip_error.php');
 		exit(']¤['.'pb'.']¤['.'Fichiers impossibles à extraire ('.$code_erreur.$tab_zip_error[$code_erreur].') !');
 	}
 	exit(']¤['.'ok'.']¤['."Analyse des fichiers et recensement des dossiers&hellip;");
@@ -351,7 +349,7 @@ if($action=='verif_etape4')
 		}
 	}
 	// Enregistrement du rapport
-	$fichier_chemin  = './__tmp/export/rapport_verif.html';
+	$fichier_chemin  = CHEMIN_DOSSIER_EXPORT.'rapport_verif.html';
 	$fichier_contenu = '<!DOCTYPE html><html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><style type="text/css">body{font-family:monospace;font-size:8pt}table{border-collapse:collapse}thead{background:#CCC;font-weight:bold;text-align:center}td{border:solid 1px black;padding:2px;white-space:nowrap}.v{color:green}.r{color:red}.b{color:blue}</style></head><body><table><thead>'.$thead.'</thead><tbody>'.$tbody_pb.$tbody_ok.'</tbody></table></body></html>';
 	Ecrire_Fichier($fichier_chemin,$fichier_contenu);
 	exit(']¤['.'ok'.']¤['.'Rapport des modifications apportées et nettoyage&hellip;');

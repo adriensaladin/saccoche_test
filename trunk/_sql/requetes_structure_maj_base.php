@@ -508,7 +508,7 @@ public static function DB_maj_base($version_actuelle)
 			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'DELETE FROM sacoche_niveau WHERE niveau_id=4' );
 			// récupérer qq infos pour maj la suite
 			$DB_ROW = DB::queryRow(SACOCHE_STRUCTURE_BD_NAME , 'SELECT parametre_valeur FROM sacoche_parametre WHERE parametre_nom="css_note_style"' );
-			require_once('./_inc/tableau_notes_txt.php');
+			require_once(CHEMIN_DOSSIER_INCLUDE.'tableau_notes_txt.php');
 			$rr = $tab_notes_txt[$DB_ROW['parametre_valeur']]['RR'];
 			$r  = $tab_notes_txt[$DB_ROW['parametre_valeur']]['R'];
 			$v  = $tab_notes_txt[$DB_ROW['parametre_valeur']]['V'];
@@ -779,7 +779,7 @@ public static function DB_maj_base($version_actuelle)
 			}
 			else
 			{
-				$requetes = file_get_contents('./_sql/structure/sacoche_niveau.sql');
+				$requetes = file_get_contents(CHEMIN_DOSSIER_SQL_STRUCTURE.'sacoche_niveau.sql');
 				DB::query(SACOCHE_STRUCTURE_BD_NAME , $requetes );
 				DB::close(SACOCHE_STRUCTURE_BD_NAME);
 			}
@@ -1087,7 +1087,7 @@ public static function DB_maj_base($version_actuelle)
 			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_jointure_parent_eleve CHANGE resp_legal_num resp_legal_num ENUM( "0", "1", "2" ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT "0" ' );
 			// suppression des vignettes (sans rapport avec la base, mais à effectuer, à cause du changement de la couleur de fond)
 			list($x,$y,$dossier) = (HEBERGEUR_INSTALLATION=='multi-structures') ? explode('_',SACOCHE_STRUCTURE_BD_NAME) : '0' ;
-			effacer_fichiers_temporaires('./__tmp/badge/'.$dossier , 0);
+			effacer_fichiers_temporaires(CHEMIN_DOSSIER_BADGE.$dossier , 0);
 		}
 	}
 
@@ -1187,8 +1187,8 @@ public static function DB_maj_base($version_actuelle)
 			$version_actuelle = '2011-08-18';
 			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_actuelle.'" WHERE parametre_nom="version_base"' );
 			// suppression de fichiers temporaires déplacés (sans rapport avec la base, mais à effectuer)
-			effacer_fichiers_temporaires('./__tmp/cookie',1);
-			effacer_fichiers_temporaires('./__tmp/rss',1);
+			effacer_fichiers_temporaires(CHEMIN_DOSSIER_COOKIE,1);
+			effacer_fichiers_temporaires(CHEMIN_DOSSIER_RSS,1);
 		}
 	}
 
@@ -1582,10 +1582,10 @@ public static function DB_maj_base($version_actuelle)
 			$DB_TAB_communes     = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , 'SELECT matiere_id, matiere_nb_demandes, matiere_ordre FROM sacoche_matiere WHERE matiere_id IN('.$listing_matieres_id.')');
 			$DB_TAB_specifiques  = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , 'SELECT matiere_id, matiere_nb_demandes, matiere_ordre, matiere_ref, matiere_nom FROM sacoche_matiere WHERE matiere_partage=0');
 			// nouvelles tables sacoche_matiere (intégration native de 1900 matières) et sacoche_matiere_famille
-			$requetes = file_get_contents(CHEMIN_SQL_STRUCTURE.'sacoche_matiere.sql');
+			$requetes = file_get_contents(CHEMIN_DOSSIER_SQL_STRUCTURE.'sacoche_matiere.sql');
 			DB::query(SACOCHE_STRUCTURE_BD_NAME , $requetes ); // Attention, sur certains LCS ça bloque au dela de 40 instructions MySQL (mais un INSERT multiple avec des milliers de lignes ne pose pas de pb).
 			DB::close(SACOCHE_STRUCTURE_BD_NAME);
-			$requetes = file_get_contents(CHEMIN_SQL_STRUCTURE.'sacoche_matiere_famille.sql');
+			$requetes = file_get_contents(CHEMIN_DOSSIER_SQL_STRUCTURE.'sacoche_matiere_famille.sql');
 			DB::query(SACOCHE_STRUCTURE_BD_NAME , $requetes ); // Attention, sur certains LCS ça bloque au dela de 40 instructions MySQL (mais un INSERT multiple avec des milliers de lignes ne pose pas de pb).
 			DB::close(SACOCHE_STRUCTURE_BD_NAME);
 			// incrément des ids pour éviter tout souci
@@ -1681,10 +1681,10 @@ public static function DB_maj_base($version_actuelle)
 			$listing_cycles_id  = DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , 'SELECT parametre_valeur FROM sacoche_parametre WHERE parametre_nom="cycles"' );
 			$listing_paliers_id = DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , 'SELECT parametre_valeur FROM sacoche_parametre WHERE parametre_nom="paliers"' );
 			// nouvelles tables sacoche_niveau et sacoche_niveau_famille
-			$requetes = file_get_contents(CHEMIN_SQL_STRUCTURE.'sacoche_niveau.sql');
+			$requetes = file_get_contents(CHEMIN_DOSSIER_SQL_STRUCTURE.'sacoche_niveau.sql');
 			DB::query(SACOCHE_STRUCTURE_BD_NAME , $requetes ); // Attention, sur certains LCS ça bloque au dela de 40 instructions MySQL (mais un INSERT multiple avec des milliers de lignes ne pose pas de pb).
 			DB::close(SACOCHE_STRUCTURE_BD_NAME);
-			$requetes = file_get_contents(CHEMIN_SQL_STRUCTURE.'sacoche_niveau_famille.sql');
+			$requetes = file_get_contents(CHEMIN_DOSSIER_SQL_STRUCTURE.'sacoche_niveau_famille.sql');
 			DB::query(SACOCHE_STRUCTURE_BD_NAME , $requetes ); // Attention, sur certains LCS ça bloque au dela de 40 instructions MySQL (mais un INSERT multiple avec des milliers de lignes ne pose pas de pb).
 			DB::close(SACOCHE_STRUCTURE_BD_NAME);
 			// ajout champ table sacoche_socle_palier
@@ -1733,7 +1733,7 @@ public static function DB_maj_base($version_actuelle)
 			$DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , 'SHOW TABLE STATUS LIKE "sacoche_socle_palier"');
 			if(!count($DB_TAB))
 			{
-				$requetes = file_get_contents(CHEMIN_SQL_STRUCTURE.'sacoche_socle_palier.sql');
+				$requetes = file_get_contents(CHEMIN_DOSSIER_SQL_STRUCTURE.'sacoche_socle_palier.sql');
 				DB::query(SACOCHE_STRUCTURE_BD_NAME , $requetes ); // Attention, sur certains LCS ça bloque au dela de 40 instructions MySQL (mais un INSERT multiple avec des milliers de lignes ne pose pas de pb).
 				DB::close(SACOCHE_STRUCTURE_BD_NAME);
 			}
@@ -1754,7 +1754,7 @@ public static function DB_maj_base($version_actuelle)
 			$DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , 'SHOW TABLE STATUS LIKE "sacoche_jointure_user_pilier"');
 			if(!count($DB_TAB))
 			{
-				$requetes = file_get_contents(CHEMIN_SQL_STRUCTURE.'sacoche_jointure_user_pilier.sql');
+				$requetes = file_get_contents(CHEMIN_DOSSIER_SQL_STRUCTURE.'sacoche_jointure_user_pilier.sql');
 				DB::query(SACOCHE_STRUCTURE_BD_NAME , $requetes ); // Attention, sur certains LCS ça bloque au dela de 40 instructions MySQL (mais un INSERT multiple avec des milliers de lignes ne pose pas de pb).
 				DB::close(SACOCHE_STRUCTURE_BD_NAME);
 			}
@@ -1825,9 +1825,9 @@ public static function DB_maj_base($version_actuelle)
 			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_devoir CHANGE devoir_doc_sujet devoir_doc_sujet     VARCHAR( 255 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT "" ' );
 			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_devoir CHANGE devoir_doc_corrige devoir_doc_corrige VARCHAR( 255 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT "" ' );
 			$base_id = (strpos(SACOCHE_STRUCTURE_BD_NAME,'sac_base_')===0) ? substr(SACOCHE_STRUCTURE_BD_NAME,9) : '0' ;
-			$chemin = SERVEUR_ADRESSE.'/__tmp/devoir/'.$base_id.'/';
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_devoir SET devoir_doc_sujet   = CONCAT("'.$chemin.'",devoir_doc_sujet)   WHERE devoir_doc_sujet!="" ' );
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_devoir SET devoir_doc_corrige = CONCAT("'.$chemin.'",devoir_doc_corrige) WHERE devoir_doc_corrige!="" ' );
+			$url_dossier_devoirs = URL_DIR_DEVOIR.$base_id.'/';
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_devoir SET devoir_doc_sujet   = CONCAT("'.$url_dossier_devoirs.'",devoir_doc_sujet)   WHERE devoir_doc_sujet!="" ' );
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_devoir SET devoir_doc_corrige = CONCAT("'.$url_dossier_devoirs.'",devoir_doc_corrige) WHERE devoir_doc_corrige!="" ' );
 			// ajout d'un champ pour ajouter un message à une demande d'évaluation
 			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_demande ADD demande_messages TEXT CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT "" ' );
 			// fusionner user_statut + user_statut_date = user_sortie_date

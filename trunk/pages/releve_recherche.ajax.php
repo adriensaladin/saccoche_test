@@ -86,7 +86,7 @@ if( (!$critere_valide) || (!$groupe_id) || (!$groupe_nom) || (!isset($tab_types[
 $tab_eleve      = array();	// [i] => array(eleve_id,eleve_nom,eleve_prenom)
 
 // Tableau des langues
-require_once('./_inc/tableau_langues.php');
+require(CHEMIN_DOSSIER_INCLUDE.'tableau_langues.php');
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 // Récupération de la liste des élèves

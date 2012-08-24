@@ -57,7 +57,7 @@ if( ($action=='Afficher_bilan') && $pilier_id && count($tab_domaine) && count($t
 	$affichage = '';
 	// Tableau des langues
 	$tfoot = '';
-	require_once('./_inc/tableau_langues.php');
+	require(CHEMIN_DOSSIER_INCLUDE.'tableau_langues.php');
 	$test_pilier_langue = (in_array($pilier_id,$tab_langue_piliers)) ? TRUE : FALSE ;
 	// Récupérer les données des élèves
 	$tab_eleve = DB_STRUCTURE_BILAN::DB_lister_eleves_cibles($listing_eleve_id,$with_gepi=FALSE,$with_langue=TRUE);
@@ -262,7 +262,7 @@ if( ($action=='Afficher_bilan') && $pilier_id && count($tab_domaine) && count($t
 elseif( ($action=='Afficher_information') && $eleve_id && $pilier_id && $entree_id && (in_array($mode,array('auto','manuel'))) )
 {
 	// Tableau des langues
-	require_once('./_inc/tableau_langues.php');
+	require(CHEMIN_DOSSIER_INCLUDE.'tableau_langues.php');
 	$test_pilier_langue = (in_array($pilier_id,$tab_langue_piliers)) ? TRUE : FALSE ;
 	// Récupération de la liste des résultats
 	$tab_eval = array();	// [item_id][]['note'] => note

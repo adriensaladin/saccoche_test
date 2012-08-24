@@ -30,7 +30,7 @@ $TITRE = "Caractéristiques du serveur";
 ?>
 
 <?php
-require_once('./_inc/fonction_infos_serveur.php');
+require(CHEMIN_DOSSIER_INCLUDE.'fonction_infos_serveur.php');
 echo tableau_versions_logicielles();
 echo tableau_limitations_PHP();
 echo tableau_limitations_MySQL();

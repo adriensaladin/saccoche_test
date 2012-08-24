@@ -29,5 +29,5 @@ if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');
 $TITRE = "Grille d'items d'un référentiel";
 
 $fin = (mb_substr_count($_SESSION['DROIT_VOIR_GRILLES_ITEMS'],$_SESSION['USER_PROFIL'])) ? 'oui' : 'non' ;
-require('./pages/'.$PAGE.'_'.$fin.'.php');
+require(CHEMIN_DOSSIER_PAGES.$PAGE.'_'.$fin.'.php');
 ?>

@@ -47,7 +47,7 @@ $debut_prenom = (isset($_POST['f_debut_prenom'])) ? clean_prenom($_POST['f_debut
 <?php
 if($afficher)
 {
-	require('./pages/administrateur_parent_adresse.inc.php');
+	require(CHEMIN_DOSSIER_PAGES.'administrateur_parent_adresse.inc.php');
 }
 ?>
 

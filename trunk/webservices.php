@@ -31,17 +31,18 @@
 
 // Atteste l'appel de cette page avant l'inclusion d'une autre
 define('SACoche','webservices');
+// Constantes de l'application
+require('./_inc/constantes.php');
 
-// Constantes / Fonctions de redirections / Configuration serveur
-require_once('./_inc/constantes.php');
-require_once('./_inc/fonction_redirection.php');
-require_once('./_inc/config_serveur.php');
+// Fonctions de redirections / Configuration serveur
+require(CHEMIN_DOSSIER_INCLUDE.'fonction_redirection.php');
+require(CHEMIN_DOSSIER_INCLUDE.'config_serveur.php');
 
 // Fonctions
-require_once('./_inc/fonction_clean.php');
-require_once('./_inc/fonction_sessions.php');
-require_once('./_inc/fonction_divers.php');
-require_once('./_inc/fonction_affichage.php');
+require(CHEMIN_DOSSIER_INCLUDE.'fonction_clean.php');
+require(CHEMIN_DOSSIER_INCLUDE.'fonction_sessions.php');
+require(CHEMIN_DOSSIER_INCLUDE.'fonction_divers.php');
+require(CHEMIN_DOSSIER_INCLUDE.'fonction_affichage.php');
 
 // On récupère les paramètres
 $WS_qui  = (isset($_POST['qui']))  ? clean_texte($_POST['qui']) : ( (isset($_GET['qui'])) ? clean_texte($_GET['qui']) : '' ) ;
@@ -56,7 +57,7 @@ if(!in_array($WS_qui,$tab_ws))
 {
 	exit('Erreur : nom du service web manquant ou incorrect !');
 }
-$fichier = './webservices/'.$WS_qui.'.php';
+$fichier = CHEMIN_DOSSIER_WEBSERVICES.$WS_qui.'.php';
 if(!is_file($fichier))
 {
 	exit('Erreur : le service web "'.$WS_qui.'" n\'est pas disponible sur cette installation !');

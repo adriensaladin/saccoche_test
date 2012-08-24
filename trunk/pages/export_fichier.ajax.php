@@ -38,8 +38,6 @@ $palier_nom  = (isset($_POST['f_palier_nom']))  ? clean_texte($_POST['f_palier_n
 
 $tab_types = array('Classes'=>'classe' , 'Groupes'=>'groupe' , 'Besoins'=>'groupe');
 
-$dossier_export = './__tmp/export/';
-
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 //	Export CSV des données des élèves d'une classe
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
@@ -66,10 +64,10 @@ if( ($type_export=='listing_users') && $groupe_id && isset($tab_types[$groupe_ty
 	// Finalisation de l'export CSV (archivage dans un fichier zippé)
 	$fnom = 'export_listing-eleves_'.clean_fichier($groupe_nom).'_'.fabriquer_fin_nom_fichier__date_et_alea();
 	$zip = new ZipArchive();
-	$result_open = $zip->open($dossier_export.$fnom.'.zip', ZIPARCHIVE::CREATE);
+	$result_open = $zip->open(CHEMIN_DOSSIER_EXPORT.$fnom.'.zip', ZIPARCHIVE::CREATE);
 	if($result_open!==TRUE)
 	{
-		require('./_inc/tableau_zip_error.php');
+		require(CHEMIN_DOSSIER_INCLUDE.'tableau_zip_error.php');
 		exit('Problème de création de l\'archive ZIP ('.$result_open.$tab_zip_error[$result_open].') !');
 	}
 	$zip->addFromString($fnom.'.csv',csv($export_csv));
@@ -78,7 +76,7 @@ if( ($type_export=='listing_users') && $groupe_id && isset($tab_types[$groupe_ty
 	$export_html .= '</tbody></table>'."\r\n";
 
 	// Affichage
-	echo'<ul class="puce"><li><a class="lien_ext" href="'.$dossier_export.$fnom.'.zip"><span class="file file_zip">Récupérez les données (fichier <em>csv</em> zippé.</span>)</a></li></ul>';
+	echo'<ul class="puce"><li><a class="lien_ext" href="'.URL_DIR_EXPORT.$fnom.'.zip"><span class="file file_zip">Récupérez les données (fichier <em>csv</em> zippé.</span>)</a></li></ul>';
 	echo $export_html;
 	exit();
 }
@@ -111,10 +109,10 @@ if( ($type_export=='listing_matiere') && $matiere_id && $matiere_nom )
 	// Finalisation de l'export CSV (archivage dans un fichier zippé)
 	$fnom = 'export_listing-items_'.clean_fichier($matiere_nom).'_'.fabriquer_fin_nom_fichier__date_et_alea();
 	$zip = new ZipArchive();
-	$result_open = $zip->open($dossier_export.$fnom.'.zip', ZIPARCHIVE::CREATE);
+	$result_open = $zip->open(CHEMIN_DOSSIER_EXPORT.$fnom.'.zip', ZIPARCHIVE::CREATE);
 	if($result_open!==TRUE)
 	{
-		require('./_inc/tableau_zip_error.php');
+		require(CHEMIN_DOSSIER_INCLUDE.'tableau_zip_error.php');
 		exit('Problème de création de l\'archive ZIP ('.$result_open.$tab_zip_error[$result_open].') !');
 	}
 	$zip->addFromString($fnom.'.csv',csv($export_csv));
@@ -123,7 +121,7 @@ if( ($type_export=='listing_matiere') && $matiere_id && $matiere_nom )
 	$export_html .= '</tbody></table>'."\r\n";
 
 	// Affichage
-	echo'<ul class="puce"><li><a class="lien_ext" href="'.$dossier_export.$fnom.'.zip"><span class="file file_zip">Récupérez les données (fichier <em>csv</em> zippé).</span></a></li></ul>';
+	echo'<ul class="puce"><li><a class="lien_ext" href="'.URL_DIR_EXPORT.$fnom.'.zip"><span class="file file_zip">Récupérez les données (fichier <em>csv</em> zippé).</span></a></li></ul>';
 	echo $export_html;
 	exit();
 }
@@ -223,10 +221,10 @@ if( ($type_export=='arbre_matiere') && $matiere_id && $matiere_nom )
 	// Finalisation de l'export CSV (archivage dans un fichier zippé)
 	$fnom = 'export_arbre-matiere_'.clean_fichier($matiere_nom).'_'.fabriquer_fin_nom_fichier__date_et_alea();
 	$zip = new ZipArchive();
-	$result_open = $zip->open($dossier_export.$fnom.'.zip', ZIPARCHIVE::CREATE);
+	$result_open = $zip->open(CHEMIN_DOSSIER_EXPORT.$fnom.'.zip', ZIPARCHIVE::CREATE);
 	if($result_open!==TRUE)
 	{
-		require('./_inc/tableau_zip_error.php');
+		require(CHEMIN_DOSSIER_INCLUDE.'tableau_zip_error.php');
 		exit('Problème de création de l\'archive ZIP ('.$result_open.$tab_zip_error[$result_open].') !');
 	}
 	$zip->addFromString($fnom.'.csv',csv($export_csv));
@@ -235,7 +233,7 @@ if( ($type_export=='arbre_matiere') && $matiere_id && $matiere_nom )
 	$export_html.= '</div>';
 
 	// Affichage
-	echo'<ul class="puce"><li><a class="lien_ext" href="'.$dossier_export.$fnom.'.zip"><span class="file file_zip">Récupérez l\'arborescence (fichier <em>csv</em> zippé).</span></a></li></ul>';
+	echo'<ul class="puce"><li><a class="lien_ext" href="'.URL_DIR_EXPORT.$fnom.'.zip"><span class="file file_zip">Récupérez l\'arborescence (fichier <em>csv</em> zippé).</span></a></li></ul>';
 	echo $export_html;
 	exit();
 }
@@ -316,10 +314,10 @@ if( ($type_export=='arbre_socle') && $palier_id && $palier_nom )
 	// Finalisation de l'export CSV (archivage dans un fichier zippé)
 	$fnom = 'export_arbre-socle_'.clean_fichier(substr($palier_nom,0,strpos($palier_nom,' ('))).'_'.fabriquer_fin_nom_fichier__date_et_alea();
 	$zip = new ZipArchive();
-	$result_open = $zip->open($dossier_export.$fnom.'.zip', ZIPARCHIVE::CREATE);
+	$result_open = $zip->open(CHEMIN_DOSSIER_EXPORT.$fnom.'.zip', ZIPARCHIVE::CREATE);
 	if($result_open!==TRUE)
 	{
-		require('./_inc/tableau_zip_error.php');
+		require(CHEMIN_DOSSIER_INCLUDE.'tableau_zip_error.php');
 		exit('Problème de création de l\'archive ZIP ('.$result_open.$tab_zip_error[$result_open].') !');
 	}
 	$zip->addFromString($fnom.'.csv',csv($export_csv));
@@ -328,7 +326,7 @@ if( ($type_export=='arbre_socle') && $palier_id && $palier_nom )
 	$export_html.= '</div>';
 
 	// Affichage
-	echo'<ul class="puce"><li><a class="lien_ext" href="'.$dossier_export.$fnom.'.zip"><span class="file file_zip">Récupérez l\'arborescence (fichier <em>csv</em> zippé).</span></a></li></ul>';
+	echo'<ul class="puce"><li><a class="lien_ext" href="'.URL_DIR_EXPORT.$fnom.'.zip"><span class="file file_zip">Récupérez l\'arborescence (fichier <em>csv</em> zippé).</span></a></li></ul>';
 	echo $export_html;
 	exit();
 }
@@ -436,10 +434,10 @@ if( ($type_export=='jointure_socle_matiere') && $palier_id && $palier_nom )
 	// Finalisation de l'export CSV (archivage dans un fichier zippé)
 	$fnom = 'export_jointures_'.clean_fichier(substr($palier_nom,0,strpos($palier_nom,' ('))).'_'.fabriquer_fin_nom_fichier__date_et_alea();
 	$zip = new ZipArchive();
-	$result_open = $zip->open($dossier_export.$fnom.'.zip', ZIPARCHIVE::CREATE);
+	$result_open = $zip->open(CHEMIN_DOSSIER_EXPORT.$fnom.'.zip', ZIPARCHIVE::CREATE);
 	if($result_open!==TRUE)
 	{
-		require('./_inc/tableau_zip_error.php');
+		require(CHEMIN_DOSSIER_INCLUDE.'tableau_zip_error.php');
 		exit('Problème de création de l\'archive ZIP ('.$result_open.$tab_zip_error[$result_open].') !');
 	}
 	$zip->addFromString($fnom.'.csv',csv($export_csv));
@@ -448,7 +446,7 @@ if( ($type_export=='jointure_socle_matiere') && $palier_id && $palier_nom )
 	$export_html.= '</div>';
 
 	// Affichage
-	echo'<ul class="puce"><li><a class="lien_ext" href="'.$dossier_export.$fnom.'.zip"><span class="file file_zip">Récupérez les associations (fichier <em>csv</em> zippé).</span></a></li></ul>';
+	echo'<ul class="puce"><li><a class="lien_ext" href="'.URL_DIR_EXPORT.$fnom.'.zip"><span class="file file_zip">Récupérez les associations (fichier <em>csv</em> zippé).</span></a></li></ul>';
 	echo $export_html;
 	exit();
 }

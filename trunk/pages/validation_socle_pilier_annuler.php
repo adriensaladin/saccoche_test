@@ -32,7 +32,7 @@ $TITRE = "Annuler une compétence validée du socle";
 
 <?php
 // Indication des profils ayant accès à cette page
-require_once('./_inc/tableau_profils.php'); // Charge $tab_profil_libelle[$profil][court|long][1|2]
+require(CHEMIN_DOSSIER_INCLUDE.'tableau_profils.php'); // Charge $tab_profil_libelle[$profil][court|long][1|2]
 $tab_profils = array('directeur','professeur','profprincipal');
 $str_objet = str_replace( array(',aucunprof','aucunprof,','aucunprof') , '' , $_SESSION['DROIT_ANNULATION_PILIER'] );
 foreach($tab_profils as $profil)

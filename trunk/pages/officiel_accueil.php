@@ -38,7 +38,7 @@ if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');
 if(!isset($BILAN_TYPE)) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = $tab_types[$BILAN_TYPE]['titre'];
 
-require_once('./_inc/tableau_profils.php'); // Charge $tab_profil_libelle[$profil][court|long][1|2]
+require(CHEMIN_DOSSIER_INCLUDE.'tableau_profils.php'); // Charge $tab_profil_libelle[$profil][court|long][1|2]
 $tab_profils = array('directeur','professeur','profprincipal');
 
 // Indication des profils pouvant modifier le statut d'un bilan

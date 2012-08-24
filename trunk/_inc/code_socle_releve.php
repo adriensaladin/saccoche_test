@@ -45,12 +45,11 @@ register_shutdown_function('rapporter_erreur_fatale');
 
 // Chemins d'enregistrement
 
-$dossier     = './__tmp/export/';
 $fichier_nom = ($make_action!='imprimer') ? 'releve_socle_detail_'.clean_fichier(substr($palier_nom,0,strpos($palier_nom,' ('))).'_'.clean_fichier($groupe_nom).'_'.fabriquer_fin_nom_fichier__date_et_alea() : 'officiel_'.$BILAN_TYPE.'_'.clean_fichier($groupe_nom).'_'.fabriquer_fin_nom_fichier__date_et_alea() ;
 
 // Tableau des langues
 
-require_once('./_inc/tableau_langues.php');
+require(CHEMIN_DOSSIER_INCLUDE.'tableau_langues.php');
 $tab_eleve_langue = array(); // id de l'élève => id de la langue
 $tab_item_pilier  = array(); // id de l'item => id du pilier
 
@@ -689,7 +688,7 @@ foreach($tab_eleve as $tab)
 // On enregistre les sorties HTML et PDF
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
-if($make_html) { Ecrire_Fichier($dossier.$fichier_nom.'.html',$releve_html); }
-if($make_pdf)  { $releve_pdf->Output($dossier.$fichier_nom.'.pdf','F'); }
+if($make_html) { Ecrire_Fichier(CHEMIN_DOSSIER_EXPORT.$fichier_nom.'.html',$releve_html); }
+if($make_pdf)  { $releve_pdf->Output(CHEMIN_DOSSIER_EXPORT.$fichier_nom.'.pdf','F'); }
 
 ?>

@@ -666,11 +666,15 @@ public static function DB_lister_referentiels()
  * @param void
  * @return int
  */
-public static function DB_compter_devoirs()
+public static function DB_compter_devoirs_annee_scolaire_precedente()
 {
+	$annee = (date("n")<$_SESSION['MOIS_BASCULE_ANNEE_SCOLAIRE']) ? date("Y")-1 : date("Y") ;
+	$jour_debut_annee_scolaire = $annee.'/'.sprintf("%02u",$_SESSION['MOIS_BASCULE_ANNEE_SCOLAIRE']).'/01'; // Date de fin de l'année scolaire précédente
 	$DB_SQL = 'SELECT COUNT(*) AS nombre ';
-	$DB_SQL.= 'FROM sacoche_devoir';
-	return DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
+	$DB_SQL.= 'FROM sacoche_devoir ';
+	$DB_SQL.= 'WHERE devoir_date<:devoir_date ';
+	$DB_VAR = array(':devoir_date'=>$jour_debut_annee_scolaire);
+	return DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
 /**

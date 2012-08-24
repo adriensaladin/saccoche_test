@@ -29,5 +29,5 @@ if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');
 $TITRE = "Référentiels partagés (serveur communautaire)";
 
 $fin = ( $_SESSION['SESAMATH_ID'] && $_SESSION['SESAMATH_KEY'] ) ? 'oui' : 'non' ;
-require('./pages/'.$PAGE.'_'.$fin.'.php');
+require(CHEMIN_DOSSIER_PAGES.$PAGE.'_'.$fin.'.php');
 ?>

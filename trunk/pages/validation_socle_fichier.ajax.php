@@ -35,9 +35,6 @@ $nb = count($tab_select_eleves);
 
 $top_depart = microtime(TRUE);
 
-$dossier_export = './__tmp/export/';
-$dossier_import = './__tmp/import/';
-
 //	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
 // Exporter un fichier de validations
 //	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
@@ -164,7 +161,7 @@ if( in_array( $action , array('export_lpc','export_sacoche') ) && $nb )
 		{
 			exit(html($xml));
 		}
-		Ecrire_Fichier( $dossier_export.$fichier_nom , $xml );
+		Ecrire_Fichier( CHEMIN_DOSSIER_EXPORT.$fichier_nom , $xml );
 	}
 	else
 	{
@@ -172,10 +169,10 @@ if( in_array( $action , array('export_lpc','export_sacoche') ) && $nb )
 		$xml.= '</sacoche>'."\r\n";
 		// L'export pour SACoche on peut le zipper (le gain est très significatif : facteur 40 à 50 !)
 		$zip = new ZipArchive();
-		$result_open = $zip->open($dossier_export.$fichier_nom, ZIPARCHIVE::CREATE);
+		$result_open = $zip->open(CHEMIN_DOSSIER_EXPORT.$fichier_nom, ZIPARCHIVE::CREATE);
 		if($result_open!==TRUE)
 		{
-			require('./_inc/tableau_zip_error.php');
+			require(CHEMIN_DOSSIER_INCLUDE.'tableau_zip_error.php');
 			exit('Erreur : problème de création de l\'archive ZIP ('.$result_open.$tab_zip_error[$result_open].') !');
 		}
 		$zip->addFromString('import_validations.xml',$xml);
@@ -187,7 +184,7 @@ if( in_array( $action , array('export_lpc','export_sacoche') ) && $nb )
 	$si = ($nb_items>1)   ? 's' : '' ;
 	$in = $only_positives ? '' : '(in)-' ;
 	echo'<li><label class="valide">Fichier d\'export généré : '.$nb_piliers.' '.$in.'validation'.$sp.' de compétence'.$sp.' et '.$nb_items.' '.$in.'validation'.$si.' d\'item'.$si.' concernant '.$nb_eleves.' élève'.$se.'.</label></li>';
-	echo'<li><a class="lien_ext" href="'.$dossier_export.$fichier_nom.'"><span class="file file_'.$fichier_extension.'">Récupérez le fichier au format <em>'.$fichier_extension.'</em>. <img alt="" src="./_img/bulle_aide.png" title="Si le navigateur ouvre le fichier au lieu de l\'enregistrer, cliquer avec le bouton droit et choisir «&nbsp;Enregistrer&nbsp;sous...&nbsp;»." /></span></a></li>';
+	echo'<li><a class="lien_ext" href="'.URL_DIR_EXPORT.$fichier_nom.'"><span class="file file_'.$fichier_extension.'">Récupérez le fichier au format <em>'.$fichier_extension.'</em>. <img alt="" src="./_img/bulle_aide.png" title="Si le navigateur ouvre le fichier au lieu de l\'enregistrer, cliquer avec le bouton droit et choisir «&nbsp;Enregistrer&nbsp;sous...&nbsp;»." /></span></a></li>';
 	echo'<li>Vous devrez indiquer dans <em>lpc</em> les dates suivantes : <span class="b">'.html(CNIL_DATE_ENGAGEMENT).'</span> (déclaration <em>cnil</em>) et <span class="b">'.html(CNIL_DATE_RECEPISSE).'</span> (retour du récépissé).</li>';
 	echo'<li><label class="alerte">Pour des raisons de sécurité et de confidentialité, ce fichier sera effacé du serveur dans 1h.</label></li>';
 	exit();
@@ -206,7 +203,7 @@ if( in_array( $action , array('import_sacoche','import_compatible') ) )
 	$ferreur = $tab_file['error'];
 	if( (!file_exists($fnom_serveur)) || (!$ftaille) || ($ferreur) )
 	{
-		require_once('./_inc/fonction_infos_serveur.php');
+		require(CHEMIN_DOSSIER_INCLUDE.'fonction_infos_serveur.php');
 		exit('Erreur : problème de transfert ! Fichier trop lourd ? min(memory_limit,post_max_size,upload_max_filesize)='.minimum_limitations_upload());
 	}
 	$extension = strtolower(pathinfo($fnom_transmis,PATHINFO_EXTENSION));
@@ -217,7 +214,7 @@ if( in_array( $action , array('import_sacoche','import_compatible') ) )
 	$fichier_upload_nom = 'import_validations_'.$_SESSION['BASE'].'_'.fabriquer_fin_nom_fichier__date_et_alea().'.xml';
 	if($extension!='zip')
 	{
-		if(!move_uploaded_file($fnom_serveur , $dossier_import.$fichier_upload_nom))
+		if(!move_uploaded_file($fnom_serveur , CHEMIN_DOSSIER_IMPORT.$fichier_upload_nom))
 		{
 			exit('Erreur : le fichier n\'a pas pu être enregistré sur le serveur.');
 		}
@@ -233,21 +230,21 @@ if( in_array( $action , array('import_sacoche','import_compatible') ) )
 		$result_open = $zip->open($fnom_serveur);
 		if($result_open!==TRUE)
 		{
-			require('./_inc/tableau_zip_error.php');
+			require(CHEMIN_DOSSIER_INCLUDE.'tableau_zip_error.php');
 			exit('Erreur : votre archive ZIP n\'a pas pu être ouverte ('.$result_open.$tab_zip_error[$result_open].') !');
 		}
 		$nom_fichier_extrait = 'import_validations.xml';
-		if($zip->extractTo($dossier_import,$nom_fichier_extrait)!==TRUE)
+		if($zip->extractTo(CHEMIN_DOSSIER_IMPORT,$nom_fichier_extrait)!==TRUE)
 		{
 			exit('Erreur : fichier '.$nom_fichier_extrait.' non trouvé dans l\'archive ZIP !');
 		}
 		$zip->close();
-		if(!rename($dossier_import.$nom_fichier_extrait , $dossier_import.$fichier_upload_nom))
+		if(!rename(CHEMIN_DOSSIER_IMPORT.$nom_fichier_extrait , CHEMIN_DOSSIER_IMPORT.$fichier_upload_nom))
 		{
 			exit('Erreur : le fichier n\'a pas pu être enregistré sur le serveur.');
 		}
 	}
-	$fichier_contenu = file_get_contents($dossier_import.$fichier_upload_nom);
+	$fichier_contenu = file_get_contents(CHEMIN_DOSSIER_IMPORT.$fichier_upload_nom);
 	$fichier_contenu = utf8($fichier_contenu); // Mettre en UTF-8 si besoin
 	$xml = @simplexml_load_string($fichier_contenu);
 	if($xml===FALSE)

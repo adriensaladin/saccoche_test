@@ -41,17 +41,14 @@ if( ( ($action=='exporter') && $nb_bases ) || ($action=='importer_csv') || (!iss
 	$_SESSION['tab_info'] = array();
 }
 
-$dossier_dump     = './__tmp/dump-base/';
-$dossier_temp_sql = './__tmp/dump-base/'.$_SESSION['alea'].'_sql/'; // Pour les sql d'une base
-$dossier_temp_zip = './__tmp/dump-base/'.$_SESSION['alea'].'_zip/'; // Pour les zip des sql des bases (à l'export mais pas à l'import sinon ce dossier n'est pas vidé si l'opération n'arrive pas à son terme).
-$dossier_export   = './__tmp/export/';
-$dossier_import   = './__tmp/import/';
+$dossier_temp_sql = CHEMIN_DOSSIER_DUMP.$_SESSION['alea'].'_sql'.DS; // Pour les sql d'une base
+$dossier_temp_zip = CHEMIN_DOSSIER_DUMP.$_SESSION['alea'].'_zip'.DS; // Pour les zip des sql des bases (à l'export mais pas à l'import sinon ce dossier n'est pas vidé si l'opération n'arrive pas à son terme).
 $fichier_csv_nom  = 'bases_dump_'.$_SESSION['datetime'].'_'.$_SESSION['alea'].'.csv';
 $fichier_zip_nom  = 'bases_dump_'.$_SESSION['datetime'].'_'.$_SESSION['alea'].'.zip';
 
 $separateur = ';';
 
-require('./_inc/fonction_dump.php');
+require(CHEMIN_DOSSIER_INCLUDE.'fonction_dump.php');
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 // Récupération de la liste des structures avant export des bases
@@ -67,7 +64,7 @@ if( ($action=='exporter') && $nb_bases )
 		$fichier_nom = 'dump_SACoche_'.$DB_ROW['sacoche_base'].'_'.$_SESSION['datetime'].'_'.mt_rand().'.zip';
 		$fichier_texte .= $DB_ROW['sacoche_base'].$separateur.$separateur.$DB_ROW['geo_id'].$separateur.$DB_ROW['structure_localisation'].$separateur.$DB_ROW['structure_denomination'].$separateur.$DB_ROW['structure_uai'].$separateur.$DB_ROW['structure_contact_nom'].$separateur.$DB_ROW['structure_contact_prenom'].$separateur.$DB_ROW['structure_contact_courriel'].$separateur.$DB_ROW['structure_inscription_date'].$separateur.$fichier_nom."\r\n";
 	}
-	Ecrire_Fichier($dossier_export.$fichier_csv_nom,$fichier_texte);
+	Ecrire_Fichier(CHEMIN_DOSSIER_EXPORT.$fichier_csv_nom,$fichier_texte);
 	$max = $nb_bases + 1 ; // La dernière étape consiste à zipper les fichiers de sauvegarde et à faire le ménage.
 	// Créer ou vider le dossier temporaire qui contiendra le zip des zip
 	Creer_ou_Vider_Dossier($dossier_temp_zip);
@@ -81,7 +78,7 @@ if( ($action=='exporter') && $nb_bases )
 if( ($action=='exporter') && $num && $max && ($num<$max) )
 {
 	// Récupérer la ligne de données
-	$fichier_texte = file_get_contents($dossier_export.$fichier_csv_nom);
+	$fichier_texte = file_get_contents(CHEMIN_DOSSIER_EXPORT.$fichier_csv_nom);
 	$tab_ligne = explode("\r\n",$fichier_texte);
 	// Récupérer une série d'infos, sachant que seuls $export_id et $fichier_nom sont utiles
 	list($export_id,$import_id,$geo_id,$localisation,$denomination,$uai,$contact_nom,$contact_prenom,$contact_courriel,$date,$fichier_nom) = explode($separateur,$tab_ligne[$num]);
@@ -107,12 +104,12 @@ elseif( ($action=='exporter') && $num && $max && ($num==$max) )
 	// Supprimer le dossier temporaire des sql
 	Supprimer_Dossier($dossier_temp_sql);
 	// Zipper les zip de svg
-	zipper_fichiers($dossier_temp_zip,$dossier_dump,$fichier_zip_nom);
+	zipper_fichiers($dossier_temp_zip,CHEMIN_DOSSIER_DUMP,$fichier_zip_nom);
 	// Supprimer le dossier temporaire des zip
 	Supprimer_Dossier($dossier_temp_zip);
 	// Game over
 	unset($_SESSION['datetime'],$_SESSION['alea']);
-	exit(']¤['.'ok'.']¤['.$dossier_export.$fichier_csv_nom.']¤['.$dossier_dump.$fichier_zip_nom);
+	exit(']¤['.'ok'.']¤['.URL_DIR_EXPORT.$fichier_csv_nom.']¤['.URL_DIR_DUMP.$fichier_zip_nom);
 }
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
@@ -129,7 +126,7 @@ if($action=='importer_csv')
 	// Récupération du fichier
 	if( (!file_exists($fnom_serveur)) || (!$ftaille) || ($ferreur) )
 	{
-		require_once('./_inc/fonction_infos_serveur.php');
+		require(CHEMIN_DOSSIER_INCLUDE.'fonction_infos_serveur.php');
 		exit('Erreur : problème de transfert ! Fichier trop lourd ? min(memory_limit,post_max_size,upload_max_filesize)='.minimum_limitations_upload());
 	}
 	$extension = strtolower(pathinfo($fnom_transmis,PATHINFO_EXTENSION));
@@ -137,7 +134,7 @@ if($action=='importer_csv')
 	{
 		exit('Erreur : l\'extension du fichier transmis est incorrecte !');
 	}
-	if(!move_uploaded_file($fnom_serveur , $dossier_import.$fichier_csv_nom))
+	if(!move_uploaded_file($fnom_serveur , CHEMIN_DOSSIER_IMPORT.$fichier_csv_nom))
 	{
 		exit('Erreur : le fichier n\'a pas pu être enregistré sur le serveur.');
 	}
@@ -149,7 +146,7 @@ if($action=='importer_csv')
 		$tab_geo[$DB_ROW['geo_id']] = TRUE;
 	}
 	// Tester si le contenu est correct, et mémoriser les infos en session
-	$contenu = file_get_contents($dossier_import.$fichier_csv_nom);
+	$contenu = file_get_contents(CHEMIN_DOSSIER_IMPORT.$fichier_csv_nom);
 	$contenu = utf8($contenu); // Mettre en UTF-8 si besoin
 	$tab_lignes = extraire_lignes($contenu); // Extraire les lignes du fichier
 	$separateur = extraire_separateur_csv($tab_lignes[0]); // Déterminer la nature du séparateur
@@ -229,7 +226,7 @@ if($action=='importer_csv')
 			}
 		}
 	}
-	unlink($dossier_import.$fichier_csv_nom);
+	unlink(CHEMIN_DOSSIER_IMPORT.$fichier_csv_nom);
 	if(!$nb_lignes_trouvees)
 	{
 		exit('Erreur : aucune ligne du fichier ne semble correcte !');
@@ -246,9 +243,9 @@ if($action=='importer_csv')
 	// Nettoyer des restes d'upload de zip éventuels
 	foreach($_SESSION['tab_info'] as $key => $tab_infos)
 	{
-		if(file_exists($dossier_dump.$tab_infos['fichier_nom']))
+		if(file_exists(CHEMIN_DOSSIER_DUMP.$tab_infos['fichier_nom']))
 		{
-			unlink($dossier_dump.$tab_infos['fichier_nom']);
+			unlink(CHEMIN_DOSSIER_DUMP.$tab_infos['fichier_nom']);
 		}
 	}
 	exit(']¤['.$info_lignes_trouvees);
@@ -272,7 +269,7 @@ if($action=='importer_zip')
 	// Récupération du fichier
 	if( (!file_exists($fnom_serveur)) || (!$ftaille) || ($ferreur) )
 	{
-		require_once('./_inc/fonction_infos_serveur.php');
+		require(CHEMIN_DOSSIER_INCLUDE.'fonction_infos_serveur.php');
 		exit('Erreur : problème de transfert ! Fichier trop lourd ? min(memory_limit,post_max_size,upload_max_filesize)='.minimum_limitations_upload());
 	}
 	$extension = strtolower(pathinfo($fnom_transmis,PATHINFO_EXTENSION));
@@ -280,20 +277,20 @@ if($action=='importer_zip')
 	{
 		exit('Erreur : l\'extension du fichier transmis est incorrecte !');
 	}
-	if(!move_uploaded_file($fnom_serveur , $dossier_import.$fichier_zip_nom))
+	if(!move_uploaded_file($fnom_serveur , CHEMIN_DOSSIER_IMPORT.$fichier_zip_nom))
 	{
 		exit('Erreur : le fichier n\'a pas pu être enregistré sur le serveur.');
 	}
 	// Dezipper dans le dossier dump (pas dans un sous-dossier "temporaire" sinon ce dossier n'est pas vidé si l'opération n'arrive pas à son terme).
-	$code_erreur = unzip( $dossier_import.$fichier_zip_nom , $dossier_dump , TRUE /*use_ZipArchive*/ );
+	$code_erreur = unzip( CHEMIN_DOSSIER_IMPORT.$fichier_zip_nom , CHEMIN_DOSSIER_DUMP , TRUE /*use_ZipArchive*/ );
 	if($code_erreur)
 	{
-		require('./_inc/tableau_zip_error.php');
+		require(CHEMIN_DOSSIER_INCLUDE.'tableau_zip_error.php');
 		exit('<li><label class="alerte">Erreur : votre archive ZIP n\'a pas pu être ouverte ('.$code_erreur.$tab_zip_error[$code_erreur].') !</label></li>');
 	}
-	unlink($dossier_import.$fichier_zip_nom);
+	unlink(CHEMIN_DOSSIER_IMPORT.$fichier_zip_nom);
 	// Vérifier le contenu : noms des fichiers
-	$tab_fichier = Lister_Contenu_Dossier($dossier_dump);
+	$tab_fichier = Lister_Contenu_Dossier(CHEMIN_DOSSIER_DUMP);
 	$nb_fichiers_introuvables = 0;
 	foreach($_SESSION['tab_info'] as $key => $tab_infos)
 	{
@@ -329,10 +326,10 @@ if( ($action=='importer') && $num && $max && ($num<$max) )
 	// Créer ou vider le dossier temporaire
 	Creer_ou_Vider_Dossier($dossier_temp_sql);
 	// Dezipper dans le dossier temporaire
-	$code_erreur = unzip( $dossier_dump.$fichier_nom , $dossier_temp_sql , TRUE /*use_ZipArchive*/ );
+	$code_erreur = unzip( CHEMIN_DOSSIER_DUMP.$fichier_nom , $dossier_temp_sql , TRUE /*use_ZipArchive*/ );
 	if($code_erreur)
 	{
-		require('./_inc/tableau_zip_error.php');
+		require(CHEMIN_DOSSIER_INCLUDE.'tableau_zip_error.php');
 		exit(']¤['.'<tr>'.$retour_cellules_non.'<td><label class="erreur">Erreur : fichiers de '.html($fichier_nom).' impossible à extraire ('.$code_erreur.$tab_zip_error[$code_erreur].') !</label></td>'.'</tr>');
 	}
 	// Vérifier le contenu : noms des fichiers
@@ -363,8 +360,8 @@ if( ($action=='importer') && $num && $max && ($num<$max) )
 	$tab_sous_dossier = array('badge','cookie','devoir','officiel','rss');
 	foreach($tab_sous_dossier as $sous_dossier)
 	{
-		Creer_Dossier('./__tmp/'.$sous_dossier.'/'.$base_id);
-		Ecrire_Fichier('./__tmp/'.$sous_dossier.'/'.$base_id.'/index.htm','Circulez, il n\'y a rien à voir par ici !');
+		Creer_Dossier(CHEMIN_DOSSIER_TMP.$sous_dossier.DS.$base_id);
+		Ecrire_Fichier(CHEMIN_DOSSIER_TMP.$sous_dossier.DS.$base_id.DS.'index.htm','Circulez, il n\'y a rien à voir par ici !');
 	}
 	// Charger les paramètres de connexion à cette base afin de pouvoir y effectuer des requêtes
 	charger_parametres_mysql_supplementaires($base_id);
@@ -381,7 +378,7 @@ elseif( ($action=='importer') && $num && $max && ($num==$max) )
 	// Supprimer les fichiers zip des bases
 	foreach($_SESSION['tab_info'] as $key => $tab_infos)
 	{
-		unlink($dossier_dump.$tab_infos['fichier_nom']);
+		unlink(CHEMIN_DOSSIER_DUMP.$tab_infos['fichier_nom']);
 	}
 	// Game over
 	unset($_SESSION['datetime'],$_SESSION['alea'],$_SESSION['tab_info']);

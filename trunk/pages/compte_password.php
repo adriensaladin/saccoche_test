@@ -30,5 +30,5 @@ $TITRE = "Changer son mot de passe";
 
 $fin = ( (in_array($_SESSION['USER_PROFIL'],array('administrateur','webmestre'))) || (mb_substr_count($_SESSION['DROIT_MODIFIER_MDP'],$_SESSION['USER_PROFIL'])) ) ? 'oui' : 'non' ;
 
-require('./pages/'.$PAGE.'_'.$fin.'.php');
+require(CHEMIN_DOSSIER_PAGES.$PAGE.'_'.$fin.'.php');
 ?>

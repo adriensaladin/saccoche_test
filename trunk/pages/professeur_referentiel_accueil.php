@@ -29,7 +29,7 @@ if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');
 $TITRE = "Gestion des référentiels";
 
 // Indication des profils ayant accès à ces pages
-require_once('./_inc/tableau_profils.php'); // Charge $tab_profil_libelle[$profil][court|long][1|2]
+require(CHEMIN_DOSSIER_INCLUDE.'tableau_profils.php'); // Charge $tab_profil_libelle[$profil][court|long][1|2]
 $tab_profils = array('professeur','profcoordonnateur','aucunprof');
 $texte_profil_gestion = $_SESSION['DROIT_GERER_REFERENTIEL'];
 foreach($tab_profils as $profil)

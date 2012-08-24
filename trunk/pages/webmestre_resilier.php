@@ -31,7 +31,7 @@ $TITRE = "Résilier l'inscription de l'établissement";
 // Page réservée aux installations mono-structure ; le menu webmestre d'une installation multi-structures ne permet normalement pas d'arriver ici
 if(HEBERGEUR_INSTALLATION=='mono-structure')
 {
-	require('./pages/'.$PAGE.'_mono.php');
+	require(CHEMIN_DOSSIER_PAGES.$PAGE.'_mono.php');
 }
 else
 {

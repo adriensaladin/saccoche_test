@@ -30,5 +30,5 @@ $TITRE = "Algorithme de calcul";
 
 $fin = (mb_substr_count($_SESSION['DROIT_VOIR_ALGORITHME'],$_SESSION['USER_PROFIL'])) ? 'oui' : 'non' ;
 
-require('./pages/'.$PAGE.'_'.$fin.'.php');
+require(CHEMIN_DOSSIER_PAGES.$PAGE.'_'.$fin.'.php');
 ?>

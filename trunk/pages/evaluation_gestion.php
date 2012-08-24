@@ -52,7 +52,7 @@ $TYPE = in_array($TYPE,array('groupe','selection')) ? $TYPE       : 'groupe' ;
 
 $TITRE = ($TYPE=='groupe') ? "Évaluer une classe ou un groupe" : "Évaluer des élèves sélectionnés" ;
 
-require('./_inc/fonction_affichage_sections_communes.php');
+require(CHEMIN_DOSSIER_INCLUDE.'fonction_affichage_sections_communes.php');
 
 // Formulaires de choix des élèves et de choix d'une période dans le cas d'une évaluation sur un groupe
 $select_eleve   = '';
@@ -110,8 +110,8 @@ if($TYPE=='groupe')
 // Sert à rechercher des élèves ayant passés une évaluation de même nom
 if($TYPE=='selection')
 {
-	$annee = ($_SESSION['MOIS_BASCULE_ANNEE_SCOLAIRE']<date("n")) ? date("Y") : date("Y")-1 ;
-	$date_start = '01/'.sprintf("%02u",$_SESSION['MOIS_BASCULE_ANNEE_SCOLAIRE']).'/'.$annee;
+	$annee = (date("n")<$_SESSION['MOIS_BASCULE_ANNEE_SCOLAIRE']) ? date("Y")-1 : date("Y") ;
+	$jour_debut_annee_scolaire = '01/'.sprintf("%02u",$_SESSION['MOIS_BASCULE_ANNEE_SCOLAIRE']).'/'.$annee;
 }
 
 // Dates par défaut
@@ -127,7 +127,7 @@ $select_selection_items = Formulaire::afficher_select(DB_STRUCTURE_COMMUN::DB_OP
 	// <![CDATA[
 	var select_groupe = "<?php echo str_replace('"','\"','<option value=""></option>'.$select_eleve); ?>";
 	// ]]>
-	var dossier_export = "./__tmp/export/";
+	var url_export = "<?php echo URL_DIR_EXPORT ?>";
 	var input_date = "<?php echo TODAY_FR ?>";
 	var date_mysql = "<?php echo TODAY_MYSQL ?>";
 	var input_autoeval = "<?php echo $date_autoeval ?>";
@@ -210,7 +210,7 @@ $select_selection_items = Formulaire::afficher_select(DB_STRUCTURE_COMMUN::DB_OP
 
 <?php if($TYPE=='selection'): ?>
 <form action="#" method="post" id="zone_eleve" class="arbre_dynamique hide">
-	<div><button id="indiquer_eleves_deja" type="button" class="eclair">Indiquer les élèves associés à une évaluation de même nom</button> depuis le <input id="f_date_deja" name="f_date_deja" size="9" type="text" value="<?php echo $date_start ?>" /><q class="date_calendrier" title="Cliquez sur cette image pour importer une date depuis un calendrier !"></q><label id="msg_indiquer_eleves_deja"></label></div>
+	<div><button id="indiquer_eleves_deja" type="button" class="eclair">Indiquer les élèves associés à une évaluation de même nom</button> depuis le <input id="f_date_deja" name="f_date_deja" size="9" type="text" value="<?php echo $jour_debut_annee_scolaire ?>" /><q class="date_calendrier" title="Cliquez sur cette image pour importer une date depuis un calendrier !"></q><label id="msg_indiquer_eleves_deja"></label></div>
 	<p>Cocher ci-dessous (<span class="astuce">cliquer sur un intitulé pour déployer son contenu</span>) :</p>
 	<?php echo afficher_form_element_checkbox_eleves_professeur(TRUE /*with_pourcent*/); ?>
 	<p class="danger">Une évaluation dont la saisie a commencé ne devrait pas voir ses élèves modifiés.<br />En particulier, retirer des élèves d'une évaluation efface les scores correspondants déjà saisis !</p>

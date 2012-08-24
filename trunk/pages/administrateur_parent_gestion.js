@@ -164,7 +164,7 @@ $(document).ready
 			afficher_masquer_images_action('hide');
 			// Récupérer les informations de la ligne concernée
 			var id         = $(this).parent().parent().attr('id').substring(3);
-			var td_resp    = $(this).parent().prev().prev().prev().prev().prev().prev().prev().prev().prev().prev();
+			    td_resp    = $(this).parent().prev().prev().prev().prev().prev().prev().prev().prev().prev().prev();
 			var id_ent     = $(this).parent().prev().prev().prev().prev().prev().prev().prev().prev().prev().html();
 			var id_gepi    = $(this).parent().prev().prev().prev().prev().prev().prev().prev().prev().html();
 			var sconet_id  = $(this).parent().prev().prev().prev().prev().prev().prev().prev().html();
@@ -383,7 +383,7 @@ $(document).ready
 						break;
 					case 'modifier':
 						$('#temp_td').html(td_resp); // Pour ne pas perdre l'objet avec l'infobulle, on est obligé de le copier ailleurs avant le html qui suit.
-						$('q.valider').parent().parent().prev().addClass("new").html(responseHTML).prepend( td_resp ).show();
+						$('q.valider').parent().parent().prev().addClass("new").html(responseHTML).children('td:first-child').after( td_resp ).parent().show();
 						$('q.valider').parent().parent().remove();
 						break;
 				}

@@ -41,7 +41,7 @@ $gepi_saml_certif = (isset($_POST['gepi_saml_certif'])) ? clean_texte($_POST['ge
 //	Mode de connexion (normal, SSO...)
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
-require_once('./_inc/tableau_sso.php');
+require(CHEMIN_DOSSIER_INCLUDE.'tableau_sso.php');
 
 if(!isset($tab_connexion_info[$f_connexion_mode][$f_connexion_nom]))
 {

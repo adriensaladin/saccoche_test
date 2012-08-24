@@ -306,7 +306,7 @@ if( ($action=='Enregistrer_saisies') && $devoir_id )
 	$guid  = 'autoeval_'.$devoir_id.'-'.$_SESSION['USER_ID'];
 	foreach($tab_profs_rss as $prof_id)
 	{
-		Modifier_RSS(adresse_RSS($prof_id),$titre,$texte,$guid);
+		Modifier_RSS($prof_id,$titre,$texte,$guid);
 	}
 	exit('ok');
 }

@@ -69,7 +69,7 @@ else
 		$SECTION = 'accueil';
 	}
 	// Afficher la bonne page et appeler le bon js / ajax par la suite
-	$fichier_section = './pages/'.$PAGE.'_'.$SECTION.'.php';
+	$fichier_section = CHEMIN_DOSSIER_PAGES.$PAGE.'_'.$SECTION.'.php';
 	if(is_file($fichier_section))
 	{
 		if( !isset($BILAN_TYPE) || in_array($BILAN_TYPE,array('releve','bulletin','palier1','palier2','palier3')) )

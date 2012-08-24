@@ -45,17 +45,24 @@ if(!(isset($_SESSION['USER_PARAM_ACCUEIL'])))
 
 if($_SESSION['USER_PROFIL']=='administrateur')
 {
+	$alerte_novice = FALSE ;
 	$DB_TAB = DB_STRUCTURE_COMMUN::DB_OPT_matieres_etabl();
 	if(!is_array($DB_TAB))
 	{
 		$tab_accueil['alert'] .= '<p class="danger">Aucune matière n\'est rattachée à l\'établissement ! <a href="./index.php?page=administrateur_etabl_matiere">Gestion des matières.</a></p>';
+		$alerte_novice = TRUE ;
 	}
 	$DB_TAB = DB_STRUCTURE_COMMUN::DB_OPT_niveaux_etabl();
 	if(!count($DB_TAB))
 	{
 		$tab_accueil['alert'] .= '<p class="danger">Aucun niveau n\'est rattaché à l\'établissement ! <a href="./index.php?page=administrateur_etabl_niveau">Gestion des niveaux.</a></p>';
+		$alerte_novice = TRUE ;
 	}
-	if($tab_accueil['alert'])
+	if(DB_STRUCTURE_ADMINISTRATEUR::DB_compter_devoirs_annee_scolaire_precedente())
+	{
+		$tab_accueil['alert'] .= '<p class="danger">Année scolaire précédente non nettoyée !<br />&nbsp;<br />Au changement d\'année scolaire il faut <a href="./index.php?page=administrateur_nettoyage">lancer l\'initialisation annuelle des données</a>.</p>';
+	}
+	if($alerte_novice)
 	{
 		$tab_accueil['alert'] .= '<p><span class="manuel"><a class="pop_up" href="'.SERVEUR_DOCUMENTAIRE.'?fichier=support_administrateur__guide">DOC : Guide d\'un administrateur de <em>SACoche</em>.</a></span></p>';
 	}
@@ -90,7 +97,7 @@ elseif(isset($_SESSION['PASSAGES_SUIVANTS']))
 	$tab_accueil['user'] .= '<p class="i"><TG> Toujours là <b>'.html($_SESSION['USER_PRENOM']).'</b>&nbsp;? Pas de souci, restez le temps que vous voulez&nbsp;!';
 }
 // infos profil
-require_once('./_inc/tableau_profils.php'); // Charge $tab_profil_libelle[$profil][court|long][1|2]
+require(CHEMIN_DOSSIER_INCLUDE.'tableau_profils.php'); // Charge $tab_profil_libelle[$profil][court|long][1|2]
 $tab_accueil['user'] .= '<p>Vous êtes dans l\'environnement <b>'.$tab_profil_libelle[$_SESSION['USER_PROFIL']]['long'][1].'</b>.</p>';
 // infos selon profil
 if($_SESSION['USER_PROFIL']=='parent')
@@ -119,18 +126,18 @@ elseif($_SESSION['USER_PROFIL']=='administrateur')
 // infos adresse de connexion
 if($_SESSION['USER_PROFIL']=='webmestre')
 {
-	$tab_accueil['user'] .= '<div>Pour vous connecter à cet espace, utilisez l\'adresse <b>'.SERVEUR_ADRESSE.'/?webmestre</b></div>';
+	$tab_accueil['user'] .= '<div>Pour vous connecter à cet espace, utilisez l\'adresse <b>'.URL_DIR_SACOCHE.'?webmestre</b></div>';
 }
 else
 {
 	if(HEBERGEUR_INSTALLATION=='multi-structures')
 	{
-		$tab_accueil['user'] .= '<div>Adresse à utiliser pour une sélection automatique de l\'établissement&nbsp;: <b>'.SERVEUR_ADRESSE.'/?base='.$_SESSION['BASE'].'</b></div>';
+		$tab_accueil['user'] .= '<div>Adresse à utiliser pour une sélection automatique de l\'établissement&nbsp;: <b>'.URL_DIR_SACOCHE.'?base='.$_SESSION['BASE'].'</b></div>';
 	}
 	if($_SESSION['CONNEXION_MODE']!='normal')
 	{
 		$get_base = ($_SESSION['BASE']) ? '&amp;base='.$_SESSION['BASE'] : '' ;
-		$tab_accueil['user'] .= '<div>Adresse à utiliser pour une connexion automatique avec l\'authentification externe&nbsp;: <b>'.SERVEUR_ADRESSE.'/?sso'.$get_base.'</b></div>';
+		$tab_accueil['user'] .= '<div>Adresse à utiliser pour une connexion automatique avec l\'authentification externe&nbsp;: <b>'.URL_DIR_SACOCHE.'?sso'.$get_base.'</b></div>';
 	}
 }
 
@@ -173,7 +180,7 @@ $tab_trie = array_count_values($tab_indices);
 ksort($tab_trie);
 var_dump( $tab_trie );
 */
-require_once('./_inc/tableau_astuces.php'); // Charge $tab_astuces[$profil][]
+require(CHEMIN_DOSSIER_INCLUDE.'tableau_astuces.php'); // Charge $tab_astuces[$profil][]
 $astuce_nombre = (isset($tab_astuces[$_SESSION['USER_PROFIL']])) ? count($tab_astuces[$_SESSION['USER_PROFIL']]) : 0 ;
 if($astuce_nombre)
 {

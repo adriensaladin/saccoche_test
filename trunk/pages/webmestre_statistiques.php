@@ -33,5 +33,5 @@ $TITRE = "Statistiques d'utilisation";
 
 <?php
 $fin = (HEBERGEUR_INSTALLATION=='multi-structures') ? 'multi' : 'mono' ;
-require('./pages/'.$PAGE.'_'.$fin.'.php');
+require(CHEMIN_DOSSIER_PAGES.$PAGE.'_'.$fin.'.php');
 ?>

@@ -29,5 +29,5 @@ if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');
 $TITRE = "Relevé de maîtrise du socle";
 
 $fin = (mb_substr_count($_SESSION['DROIT_SOCLE_ACCES'].',professeur,directeur',$_SESSION['USER_PROFIL'])) ? 'oui' : 'non' ;
-require('./pages/'.$PAGE.'_'.$fin.'.php');
+require(CHEMIN_DOSSIER_PAGES.$PAGE.'_'.$fin.'.php');
 ?>

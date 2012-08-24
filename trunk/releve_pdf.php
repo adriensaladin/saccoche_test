@@ -30,18 +30,19 @@
 
 // Atteste l'appel de cette page avant l'inclusion d'une autre
 define('SACoche','releve_pdf');
+// Constantes de l'application
+require('./_inc/constantes.php');
 
-// Constantes / Fonctions de redirections / Configuration serveur
-require_once('./_inc/constantes.php');
-require_once('./_inc/fonction_redirection.php');
-require_once('./_inc/config_serveur.php');
-require_once('./_inc/fonction_sessions.php');
+// Fonctions de redirections / Configuration serveur
+require(CHEMIN_DOSSIER_INCLUDE.'fonction_redirection.php');
+require(CHEMIN_DOSSIER_INCLUDE.'config_serveur.php');
+require(CHEMIN_DOSSIER_INCLUDE.'fonction_sessions.php');
 
 header('Content-Type: text/html; charset=utf-8');
 
 // Ouverture de la session et gestion des droits d'accès
 $PAGE = 'releve_pdf';
-require_once('./_inc/tableau_droits.php');
+require(CHEMIN_DOSSIER_INCLUDE.'tableau_droits.php');
 if(!isset($tab_droits[$PAGE]))
 {
 	affich_message_exit($titre='Droits manquants',$contenu='Droits de la page "'.$PAGE.'" manquants.');
@@ -49,8 +50,8 @@ if(!isset($tab_droits[$PAGE]))
 gestion_session($tab_droits[$PAGE]);
 
 // Autres fonctions à charger
-require_once('./_inc/fonction_clean.php');
-require_once('./_inc/fonction_divers.php');
+require(CHEMIN_DOSSIER_INCLUDE.'fonction_clean.php');
+require(CHEMIN_DOSSIER_INCLUDE.'fonction_divers.php');
 
 // Paramètre transmis
 $FICHIER = (isset($_GET['fichier'])) ? $_GET['fichier'] : '';
@@ -78,7 +79,7 @@ if(!isset($_SESSION['tmp_droit_voir_archive'][$eleve_id.$BILAN_TYPE]))
 	exit('Erreur de droit d\'accès ! Veuillez n\'utiliser qu\'un onglet.');
 }
 
-$fichier_archive = './__tmp/officiel/'.$_SESSION['BASE'].'/'.fabriquer_nom_fichier_bilan_officiel( $eleve_id , $BILAN_TYPE , $periode_id );
+$fichier_archive = CHEMIN_DOSSIER_OFFICIEL.$_SESSION['BASE'].DS.fabriquer_nom_fichier_bilan_officiel( $eleve_id , $BILAN_TYPE , $periode_id );
 if(!is_file($fichier_archive))
 {
 	exit('Erreur : archive non trouvée sur ce serveur.');
@@ -86,11 +87,11 @@ if(!is_file($fichier_archive))
 
 // Copie du fichier pour préserver son anonymat
 
-$fichier_copie = './__tmp/export/officiel_'.$BILAN_TYPE.'_archive_'.$eleve_id.'_'.$periode_id.'_'.fabriquer_fin_nom_fichier__date_et_alea().'.pdf' ;
-copy($fichier_archive,$fichier_copie);
+$fichier_copie_nom = 'officiel_'.$BILAN_TYPE.'_archive_'.$eleve_id.'_'.$periode_id.'_'.fabriquer_fin_nom_fichier__date_et_alea().'.pdf' ;
+copy($fichier_archive,CHEMIN_DOSSIER_EXPORT.$fichier_copie_nom);
 
 // Redirection du navigateur
 header('Status: 302 Found', TRUE, 302);
-header('Location: '.$fichier_copie);
+header('Location: '.URL_DIR_EXPORT.$fichier_copie_nom);
 exit();
 ?>

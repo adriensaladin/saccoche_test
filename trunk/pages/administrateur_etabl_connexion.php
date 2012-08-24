@@ -28,7 +28,7 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = "Mode d'identification";
 
-require_once('./_inc/tableau_sso.php');
+require(CHEMIN_DOSSIER_INCLUDE.'tableau_sso.php');
 
 // Surcharger les paramètres CAS perso (vides par défaut) avec ceux en session (éventuellement personnalisés).
 $tab_connexion_info['cas']['perso']['serveur_host'] = $_SESSION['CAS_SERVEUR_HOST'];
@@ -62,7 +62,7 @@ foreach($tab_connexion_mode as $connexion_mode => $mode_texte)
 
 // Modèle d'url SSO
 $get_base = ($_SESSION['BASE']) ? '&amp;base='.$_SESSION['BASE'] : '' ;
-$url_sso = SERVEUR_ADRESSE.'/?sso'.$get_base;
+$url_sso = URL_DIR_SACOCHE.'?sso'.$get_base;
 
 ?>
 

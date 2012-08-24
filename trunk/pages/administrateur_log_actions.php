@@ -33,7 +33,7 @@ $TITRE = "Log des actions sensibles";
 <p class="astuce">Ces logs sont enregistrés dans un fichier (pas dans la base) ; ils sont donc propres à un serveur et ne sont pas transférés lors d'une sauvegarde / restauration de base.</p>
 
 <?php
-$fichier_log_chemin = './__private/log/base_'.$_SESSION['BASE'].'.php';
+$fichier_log_chemin = CHEMIN_DOSSIER_LOG.'base_'.$_SESSION['BASE'].'.php';
 if(!file_exists($fichier_log_chemin))
 {
 	echo'<p class="danger">Le fichier n\'existe pas : probablement qu\'aucune action sensible n\'a encore été effectuée !</p>';
@@ -56,20 +56,19 @@ else
 	$table_log_extrait .= '</tbody></table>';
 	// 2 En faire un csv zippé récupérable
 	$fichier_log_contenu = str_replace(array('<?php /*','*/ ?>'),'',$fichier_log_contenu);
-	$dossier_export = './__tmp/export/';
 	$fichier_export_nom = 'log_'.$_SESSION['BASE'].'_'.fabriquer_fin_nom_fichier__date_et_alea();
 	$zip = new ZipArchive();
-	$result_open = $zip->open($dossier_export.$fichier_export_nom.'.zip', ZIPARCHIVE::CREATE);
+	$result_open = $zip->open(CHEMIN_DOSSIER_EXPORT.$fichier_export_nom.'.zip', ZIPARCHIVE::CREATE);
 	if($result_open!==TRUE)
 	{
-		require('./_inc/tableau_zip_error.php');
+		require(CHEMIN_DOSSIER_INCLUDE.'tableau_zip_error.php');
 		exit('Problème de création de l\'archive ZIP ('.$result_open.$tab_zip_error[$result_open].') !');
 	}
 	$zip->addFromString($fichier_export_nom.'.csv',csv($fichier_log_contenu));
 	$zip->close();
 	// Afficher tout ça
 	echo'<ul class="puce">';
-	echo'<li><a class="lien_ext" href="'.$dossier_export.$fichier_export_nom.'.zip"><span class="file file_txt">Récupérer le fichier complet (format <em>csv</em>).</span></a></li>';
+	echo'<li><a class="lien_ext" href="'.URL_DIR_EXPORT.$fichier_export_nom.'.zip"><span class="file file_txt">Récupérer le fichier complet (format <em>csv</em>).</span></a></li>';
 	echo'<li>Consulter les derniers logs ('.$nb_lignes.' ligne'.$s.') :</li>';
 	echo'</ul>';
 	echo $table_log_extrait;

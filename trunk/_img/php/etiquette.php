@@ -43,9 +43,16 @@
  * Donc imagecolorallocatealpha() a été remplacé par imagecolorallocate() et imagealphablending($image_finale, false); + imagesavealpha($image_finale, true); ont été retirés.
  */
 
+// Ce fichier est directement appelé par le navigateur et n'inclut pas tous les fichiers habituels.
+
 header("Content-type: image/png");
 
-require_once('../../_inc/fonction_clean.php');
+// Atteste l'appel de cette page avant l'inclusion d'une autre
+define('SACoche','etiquette');
+// Constantes de l'application
+require('../../_inc/constantes.php');
+
+require(CHEMIN_DOSSIER_INCLUDE.'fonction_clean.php');
 
 $dossier   = isset($_GET['dossier']) ? clean_entier($_GET['dossier']) : 'x' ;
 $nom       = isset($_GET['nom'])     ? clean_nom($_GET['nom'])        : ' ' ;
@@ -53,8 +60,8 @@ $prenom    = isset($_GET['prenom'])  ? clean_prenom($_GET['prenom'])  : ' ' ;
 $br_line   = isset($_GET['br'])      ? 2                              : 1 ; // 2 pour nom / retour à la ligne / prénom ; 1 pour nom / prénom à la suite
 $font_size = isset($_GET['size'])    ? clean_entier($_GET['size'])    : 10 ;
 
-$chemin = '../../__tmp/badge/'.$dossier;
-$fichier = $chemin.'/'.clean_login($nom.'_'.$prenom).'_'.$br_line.'_'.$font_size.'.png';
+$chemin  = CHEMIN_DOSSIER_BADGE.$dossier.DS;
+$fichier = $chemin.clean_login($nom.'_'.$prenom).'_'.$br_line.'_'.$font_size.'.png';
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Créer l'image si elle n'existe pas
@@ -75,7 +82,7 @@ if(!file_exists($fichier))
 	$image_tmp      = imagecreate($largeur_tmp,$hauteur_tmp);
 	$couleur_fond   = imagecolorallocate($image_tmp,221,221,255); // Le premier appel à imagecolorallocate() remplit la couleur de fond.
 	$couleur_texte  = imagecolorallocate($image_tmp,0,0,0);
-	$police         = './arial.ttf';
+	$police         = './arial.ttf'; // Dans le même dossier que ce script.
 	// imagettftext() : 3e param = angle de rotation ; 4e et 5e param = coordonnées du coin inférieur gauche du premier caractère
 	if($br_line==1)
 	{

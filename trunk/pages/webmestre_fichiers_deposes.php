@@ -28,7 +28,7 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = "Fichiers déposés";
 
-require_once('./_inc/fonction_infos_serveur.php');
+require(CHEMIN_DOSSIER_INCLUDE.'fonction_infos_serveur.php');
 
 $tab_select_taille_max = array(
 	 100=>'100 Ko',

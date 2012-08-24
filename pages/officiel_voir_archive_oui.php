@@ -62,7 +62,7 @@ if(count($DB_TAB))
 	{
 		if(strpos($_SESSION['DROIT_OFFICIEL_'.$tab_types[$DB_ROW['officiel_type']]['droit'].'_VOIR_ARCHIVE'],$_SESSION['USER_PROFIL'])!==FALSE)
 		{
-			if(is_file('./__tmp/officiel/'.$_SESSION['BASE'].'/'.fabriquer_nom_fichier_bilan_officiel( $DB_ROW['user_id'] , $DB_ROW['officiel_type'] , $DB_ROW['periode_id'] )))
+			if(is_file(CHEMIN_DOSSIER_OFFICIEL.$_SESSION['BASE'].DS.fabriquer_nom_fichier_bilan_officiel( $DB_ROW['user_id'] , $DB_ROW['officiel_type'] , $DB_ROW['periode_id'] )))
 			{
 				$_SESSION['tmp_droit_voir_archive'][$DB_ROW['user_id'].$DB_ROW['officiel_type']] = TRUE; // marqueur mis en session pour vérifier que c'est bien cet utilisateur qui veut voir (et à donc le droit de voir) le fichier, car il n'y a pas d'autre vérification de droit ensuite
 				$tab_tbody[$DB_ROW['user_id']][$DB_ROW['periode_id']][] = '<a href="releve_pdf.php?fichier='.$DB_ROW['user_id'].'_'.$DB_ROW['officiel_type'].'_'.$DB_ROW['periode_id'].'" class="lien_ext">'.$tab_types[$DB_ROW['officiel_type']]['titre'].'</a>' ;

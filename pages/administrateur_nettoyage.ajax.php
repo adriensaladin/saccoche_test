@@ -159,7 +159,7 @@ if($action=='supprimer')
 
 if($action=='effacer')
 {
-	effacer_fichiers_temporaires('./__tmp/badge/'.$_SESSION['BASE'] , 0);
+	effacer_fichiers_temporaires(CHEMIN_DOSSIER_BADGE.$_SESSION['BASE'] , 0);
 	// Afficher le retour
 	$top_arrivee = microtime(TRUE);
 	$duree = number_format($top_arrivee - $top_depart,2,',','');

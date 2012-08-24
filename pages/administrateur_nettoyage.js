@@ -45,7 +45,7 @@ $(document).ready
 				}
 				else if(action=='supprimer')
 				{
-					var continuer = (confirm("Attention : toutes les notes des élèves seront effacées !\nConfirmez-vous la suppression des scores et des validations ?")) ? true : false ;
+					var continuer = (confirm("Attention : toutes les notes des élèves seront effacées !\nConfirmez-vous la suppression des scores et des validations ?")) ? ( (confirm("C'est votre dernier mot ?\nVous voulez vraiment repartir de zéro ?")) ? true : false ) : false ;
 				}
 				else
 				{

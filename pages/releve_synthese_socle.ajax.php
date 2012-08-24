@@ -76,7 +76,7 @@ $tab_user_entree  = array();	// [eleve_id][entree_id] => array(etat,date,info); 
 $tab_user_pilier  = array();	// [eleve_id][pilier_id] => array(etat,date,info);   [type "validation" uniquement]
 
 // Tableau des langues
-require_once('./_inc/tableau_langues.php');
+require(CHEMIN_DOSSIER_INCLUDE.'tableau_langues.php');
 $tab_eleve_langue = array(); // id de l'élève => id de la langue
 $tab_item_pilier  = array(); // id de l'item => id du pilier
 
@@ -358,24 +358,23 @@ $releve_html .= affich_legende_html( FALSE /*codes_notation*/ , FALSE /*etat_acq
 $releve_pdf->releve_synthese_socle_legende($legende,$type);
 
 // Chemins d'enregistrement
-$dossier = './__tmp/export/';
 $fichier = 'releve_socle_synthese_'.clean_fichier(substr($palier_nom,0,strpos($palier_nom,' ('))).'_'.clean_fichier($groupe_nom).'_'.$type.'_'.fabriquer_fin_nom_fichier__date_et_alea();
 // On enregistre les sorties HTML et PDF
-Ecrire_Fichier($dossier.$fichier.'.html',$releve_html);
-$releve_pdf->Output($dossier.$fichier.'.pdf','F');
+Ecrire_Fichier(CHEMIN_DOSSIER_EXPORT.$fichier.'.html',$releve_html);
+$releve_pdf->Output(CHEMIN_DOSSIER_EXPORT.$fichier.'.pdf','F');
 // Affichage du résultat
 if($affichage_direct)
 {
 	echo'<hr />';
 	echo'<ul class="puce">';
-	echo'<li><a class="lien_ext" href="'.$dossier.$fichier.'.pdf"><span class="file file_pdf">Archiver / Imprimer (format <em>pdf</em>).</span></a></li>';
+	echo'<li><a class="lien_ext" href="'.URL_DIR_EXPORT.$fichier.'.pdf"><span class="file file_pdf">Archiver / Imprimer (format <em>pdf</em>).</span></a></li>';
 	echo'</ul>';
 	echo $releve_html;
 }
 else
 {
 	echo'<ul class="puce">';
-	echo'<li><a class="lien_ext" href="'.$dossier.$fichier.'.pdf"><span class="file file_pdf">Archiver / Imprimer (format <em>pdf</em>).</span></a></li>';
+	echo'<li><a class="lien_ext" href="'.URL_DIR_EXPORT.$fichier.'.pdf"><span class="file file_pdf">Archiver / Imprimer (format <em>pdf</em>).</span></a></li>';
 	echo'<li><a class="lien_ext" href="./releve-html.php?fichier='.$fichier.'"><span class="file file_htm">Explorer / Détailler (format <em>html</em>).</span></a></li>';
 	echo'</ul>';
 }

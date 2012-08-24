@@ -30,5 +30,5 @@ $TITRE = "Référentiels en place (dans l'établissement)";
 
 $fin = ( (mb_substr_count($_SESSION['DROIT_VOIR_REFERENTIELS'],$_SESSION['USER_PROFIL'])) || ($_SESSION['USER_PROFIL']=='administrateur') ) ? 'oui' : 'non' ;
 
-require('./pages/'.$PAGE.'_'.$fin.'.php');
+require(CHEMIN_DOSSIER_PAGES.$PAGE.'_'.$fin.'.php');
 ?>

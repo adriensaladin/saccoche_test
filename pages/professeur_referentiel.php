@@ -38,7 +38,7 @@ if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');
 
 <?php
 // Afficher la bonne page et appeler le bon js / ajax par la suite
-$fichier_section = './pages/'.$PAGE.'_'.$SECTION.'.php';
+$fichier_section = CHEMIN_DOSSIER_PAGES.$PAGE.'_'.$SECTION.'.php';
 if(is_file($fichier_section))
 {
 	$PAGE = $PAGE.'_'.$SECTION ;
@@ -46,6 +46,6 @@ if(is_file($fichier_section))
 }
 else
 {
-	require('./pages/'.$PAGE.'_'.'accueil'.'.php');
+	require(CHEMIN_DOSSIER_PAGES.$PAGE.'_'.'accueil'.'.php');
 }
 ?>

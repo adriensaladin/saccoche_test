@@ -28,7 +28,7 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = "Gérer ses groupes de besoin";
 
-require('./_inc/fonction_affichage_sections_communes.php');
+require(CHEMIN_DOSSIER_INCLUDE.'fonction_affichage_sections_communes.php');
 
 $tab_groupe_proprio = array();
 $tab_groupe_associe = array();

@@ -31,7 +31,7 @@ $TITRE = "Choisir la langue étrangère pour le socle commun";
 
 <?php
 // Fabrication des éléments select du formulaire
-require_once('./_inc/tableau_langues.php');
+require(CHEMIN_DOSSIER_INCLUDE.'tableau_langues.php');
 $tab_groupes = DB_STRUCTURE_COMMUN::DB_OPT_regroupements_etabl();
 $select_f_groupes = Formulaire::afficher_select($tab_groupes , $select_nom=false , $option_first='oui' , $selection=false , $optgroup='oui');
 $select_langue    = Formulaire::afficher_select($tab_langues , $select_nom=false , $option_first='non' , $selection=false , $optgroup='non');

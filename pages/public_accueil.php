@@ -45,7 +45,7 @@ $profil = (isset($_GET['webmestre'])) ? 'webmestre' : 'normal' ;
 $liens_autres_profils = ($profil=='normal') ? '<a class="anti_h2" href="index.php?webmestre">profil webmestre</a>' : '<a class="anti_h2" href="index.php">profils classiques</a>' ;
 
 // Alerte si navigateur trop ancien
-require_once('./_inc/fonction_css_browser_selector.php');
+require(CHEMIN_DOSSIER_INCLUDE.'fonction_css_browser_selector.php');
 echo afficher_navigateurs_alertes($hr_avant='<hr />',$chemin_image='./_img',$hr_apres='');
 
 // Alerte si pas de javascript activé

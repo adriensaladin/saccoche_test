@@ -31,7 +31,7 @@ $TITRE = "Transfert d'établissements";
 // Page réservée aux installations multi-structures ; le menu webmestre d'une installation mono-structure ne permet normalement pas d'arriver ici
 if(HEBERGEUR_INSTALLATION=='multi-structures')
 {
-	require('./pages/'.$PAGE.'_multi.php');
+	require(CHEMIN_DOSSIER_PAGES.$PAGE.'_multi.php');
 }
 else
 {

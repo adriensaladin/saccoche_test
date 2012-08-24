@@ -30,7 +30,7 @@ $TITRE = "Notation : codes, couleurs, légendes";
 
 // Évaluation : symboles colorés
 
-require_once('./_inc/tableau_notes_txt.php');
+require(CHEMIN_DOSSIER_INCLUDE.'tableau_notes_txt.php');
 
 $dossier = './_img/note/';
 $tab_notes_txt_js = 'var tab_notes_txt = new Array();';

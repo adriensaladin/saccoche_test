@@ -128,13 +128,13 @@ public static function DB_compter_structure()
  */
 public static function DB_creer_remplir_tables_webmestre()
 {
-	$tab_files = array_diff( scandir(CHEMIN_SQL_WEBMESTRE) , array('.','..') ); // fonction Lister_Contenu_Dossier() inaccessible depuis la classe
+	$tab_files = array_diff( scandir(CHEMIN_DOSSIER_SQL_WEBMESTRE) , array('.','..') ); // fonction Lister_Contenu_Dossier() inaccessible depuis la classe
 	foreach($tab_files as $file)
 	{
 		$extension = pathinfo($file,PATHINFO_EXTENSION);
 		if($extension=='sql')
 		{
-			$requetes = file_get_contents(CHEMIN_SQL_WEBMESTRE.$file);
+			$requetes = file_get_contents(CHEMIN_DOSSIER_SQL_WEBMESTRE.$file);
 			DB::query(SACOCHE_WEBMESTRE_BD_NAME , $requetes ); // Attention, sur certains LCS ça bloque au dela de 40 instructions MySQL (mais un INSERT multiple avec des milliers de lignes ne pose pas de pb).
 			/*
 			La classe PDO a un bug. Si on envoie plusieurs requêtes d'un coup ça passe, mais si on recommence juste après alors on récolte : "Cannot execute queries while other unbuffered queries are active.  Consider using PDOStatement::fetchAll().  Alternatively, if your code is only ever going to run against mysql, you may enable query buffering by setting the PDO::MYSQL_ATTR_USE_BUFFERED_QUERY attribute."

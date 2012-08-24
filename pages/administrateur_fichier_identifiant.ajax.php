@@ -35,10 +35,6 @@ $tab_select_users = (isset($_POST['select_users'])) ? ( (is_array($_POST['select
 $tab_select_users = array_filter( array_map( 'clean_entier' , $tab_select_users ) , 'positif' );
 $nb = count($tab_select_users);
 
-$dossier_export    = './__tmp/export/';
-$dossier_import    = './__tmp/import/';
-$dossier_login_mdp = './__tmp/login-mdp/';
-
 $tab_profils = array('eleves','parents','professeurs','directeurs');
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -108,10 +104,10 @@ if( (($action=='generer_login')||($action=='generer_mdp')) && (in_array($profil,
 		$fcontenu .= $DB_ROW[$prefixe.'sconet_id'].$separateur.$DB_ROW[$prefixe.'sconet_elenoet'].$separateur.$DB_ROW[$prefixe.'reference'].$separateur.$DB_ROW[$prefixe.'profil'].$separateur.$DB_ROW[$prefixe.'nom'].$separateur.$DB_ROW[$prefixe.'prenom'].$separateur.$login.$separateur.$mdp.$separateur.$info."\r\n";
 	}
 	$zip = new ZipArchive();
-	$result_open = $zip->open($dossier_login_mdp.$fnom.'.zip', ZIPARCHIVE::CREATE);
+	$result_open = $zip->open(CHEMIN_DOSSIER_LOGINPASS.$fnom.'.zip', ZIPARCHIVE::CREATE);
 	if($result_open!==TRUE)
 	{
-		require('./_inc/tableau_zip_error.php');
+		require(CHEMIN_DOSSIER_INCLUDE.'tableau_zip_error.php');
 		exit('Problème de création de l\'archive ZIP ('.$result_open.$tab_zip_error[$result_open].') !');
 	}
 	$zip->addFromString($fnom.'.csv',csv($fcontenu));
@@ -135,13 +131,13 @@ if( (($action=='generer_login')||($action=='generer_mdp')) && (in_array($profil,
 		$ligne4 = ($action=='generer_mdp')   ? 'Mot de passe : '.$tab_password[$DB_ROW[$prefixe.'id']] : 'Mot de passe : inchangé' ;
 		$pdf -> Add_Label(pdf($ligne1."\r\n".$ligne2."\r\n".$ligne3."\r\n".$ligne4));
 	}
-	$pdf->Output($dossier_login_mdp.$fnom.'.pdf','F');
+	$pdf->Output(CHEMIN_DOSSIER_LOGINPASS.$fnom.'.pdf','F');
 	//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 	//	Affichage du résultat
 	//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 	echo'<ul class="puce">';
-	echo'<li><a class="lien_ext" href="'.$dossier_login_mdp.$fnom.'.pdf"><span class="file file_pdf">Nouveaux identifiants &rarr; Archiver / Imprimer (étiquettes <em>pdf</em>)</span></a></li>';
-	echo'<li><a class="lien_ext" href="'.$dossier_login_mdp.$fnom.'.zip"><span class="file file_txt">Nouveaux identifiants &rarr; Récupérer / Manipuler (fichier <em>csv</em> pour tableur).</span></a></li>';
+	echo'<li><a class="lien_ext" href="'.URL_DIR_LOGINPASS.$fnom.'.pdf"><span class="file file_pdf">Nouveaux identifiants &rarr; Archiver / Imprimer (étiquettes <em>pdf</em>)</span></a></li>';
+	echo'<li><a class="lien_ext" href="'.URL_DIR_LOGINPASS.$fnom.'.zip"><span class="file file_txt">Nouveaux identifiants &rarr; Récupérer / Manipuler (fichier <em>csv</em> pour tableur).</span></a></li>';
 	if($action=='generer_mdp')
 	{
 		echo'<li><label class="alerte">Les mots de passe, cryptés, ne sont plus accessibles ultérieurement !</label></li>';
@@ -168,15 +164,15 @@ if($action=='user_export')
 	// On archive dans un fichier tableur zippé (csv tabulé)
 	$fnom = 'export_'.$_SESSION['BASE'].'_mdp_'.fabriquer_fin_nom_fichier__date_et_alea();
 	$zip = new ZipArchive();
-	$result_open = $zip->open($dossier_export.$fnom.'.zip', ZIPARCHIVE::CREATE);
+	$result_open = $zip->open(CHEMIN_DOSSIER_EXPORT.$fnom.'.zip', ZIPARCHIVE::CREATE);
 	if($result_open!==TRUE)
 	{
-		require('./_inc/tableau_zip_error.php');
+		require(CHEMIN_DOSSIER_INCLUDE.'tableau_zip_error.php');
 		exit('Problème de création de l\'archive ZIP ('.$result_open.$tab_zip_error[$result_open].') !');
 	}
 	$zip->addFromString($fnom.'.csv',csv($fcontenu_csv));
 	$zip->close();
-	exit('<ul class="puce"><li><a class="lien_ext" href="'.$dossier_export.$fnom.'.zip"><span class="file file_zip">Récupérez le fichier exporté de la base SACoche.</span></a></li></ul>');
+	exit('<ul class="puce"><li><a class="lien_ext" href="'.URL_DIR_EXPORT.$fnom.'.zip"><span class="file file_zip">Récupérez le fichier exporté de la base SACoche.</span></a></li></ul>');
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -192,7 +188,7 @@ if($action=='import_loginmdp')
 	$ferreur = $tab_file['error'];
 	if( (!file_exists($fnom_serveur)) || (!$ftaille) || ($ferreur) )
 	{
-		require_once('./_inc/fonction_infos_serveur.php');
+		require(CHEMIN_DOSSIER_INCLUDE.'fonction_infos_serveur.php');
 		exit('Erreur : problème de transfert ! Fichier trop lourd ? min(memory_limit,post_max_size,upload_max_filesize)='.minimum_limitations_upload());
 	}
 	$extension = strtolower(pathinfo($fnom_transmis,PATHINFO_EXTENSION));
@@ -201,7 +197,7 @@ if($action=='import_loginmdp')
 		exit('Erreur : l\'extension du fichier transmis est incorrecte !');
 	}
 	$fichier_dest = $action.'_'.$_SESSION['BASE'].'_'.fabriquer_fin_nom_fichier__date_et_alea().'.txt' ;
-	if(!move_uploaded_file($fnom_serveur , $dossier_import.$fichier_dest))
+	if(!move_uploaded_file($fnom_serveur , CHEMIN_DOSSIER_IMPORT.$fichier_dest))
 	{
 		exit('Erreur : le fichier n\'a pas pu être enregistré sur le serveur.');
 	}
@@ -211,7 +207,7 @@ if($action=='import_loginmdp')
 	$tab_users_fichier['mdp']    = array();
 	$tab_users_fichier['nom']    = array();
 	$tab_users_fichier['prenom'] = array();
-	$contenu = file_get_contents($dossier_import.$fichier_dest);
+	$contenu = file_get_contents(CHEMIN_DOSSIER_IMPORT.$fichier_dest);
 	$contenu = utf8($contenu); // Mettre en UTF-8 si besoin
 	$tab_lignes = extraire_lignes($contenu); // Extraire les lignes du fichier
 	$separateur = extraire_separateur_csv($tab_lignes[0]); // Déterminer la nature du séparateur
@@ -365,8 +361,8 @@ if($action=='import_loginmdp')
 		{
 			$pdf -> Add_Label(pdf($text));
 		}
-		$pdf->Output($dossier_login_mdp.$fnom.'.pdf','F');
-		echo'<li><a class="lien_ext" href="'.$dossier_login_mdp.$fnom.'.pdf"><span class="file file_pdf">Archiver / Imprimer les identifiants modifiés (étiquettes <em>pdf</em>).</span></a></li>';
+		$pdf->Output(CHEMIN_DOSSIER_LOGINPASS.$fnom.'.pdf','F');
+		echo'<li><a class="lien_ext" href="'.URL_DIR_LOGINPASS.$fnom.'.pdf"><span class="file file_pdf">Archiver / Imprimer les identifiants modifiés (étiquettes <em>pdf</em>).</span></a></li>';
 		echo'<li><label class="alerte">Les mots de passe, cryptés, ne sont plus accessibles ultérieurement !</label></li>';
 	}
 	// On affiche le bilan
@@ -400,7 +396,7 @@ if( ($action=='import_gepi_eleves') || ($action=='import_gepi_profs') )
 	$ferreur = $tab_file['error'];
 	if( (!file_exists($fnom_serveur)) || (!$ftaille) || ($ferreur) )
 	{
-		require_once('./_inc/fonction_infos_serveur.php');
+		require(CHEMIN_DOSSIER_INCLUDE.'fonction_infos_serveur.php');
 		exit('Erreur : problème de transfert ! Fichier trop lourd ? min(memory_limit,post_max_size,upload_max_filesize)='.minimum_limitations_upload());
 	}
 	$tab_fnom_attendu = array( 'import_gepi_eleves'=>array('base_eleve_gepi.csv') , 'import_gepi_profs'=>array('base_professeur_gepi.csv','base_cpe_gepi.csv') );
@@ -410,7 +406,7 @@ if( ($action=='import_gepi_eleves') || ($action=='import_gepi_profs') )
 	}
 	$fichier_dest = $action.'_'.$_SESSION['BASE'].'_'.fabriquer_fin_nom_fichier__date_et_alea().'.txt' ;
 
-	if(!move_uploaded_file($fnom_serveur , $dossier_import.$fichier_dest))
+	if(!move_uploaded_file($fnom_serveur , CHEMIN_DOSSIER_IMPORT.$fichier_dest))
 	{
 		exit('Erreur : le fichier n\'a pas pu être enregistré sur le serveur.');
 	}
@@ -420,7 +416,7 @@ if( ($action=='import_gepi_eleves') || ($action=='import_gepi_profs') )
 	$tab_users_fichier['nom']        = array();
 	$tab_users_fichier['prenom']     = array();
 	$tab_users_fichier['sconet_num'] = array(); // Ne servira que pour les élèves
-	$contenu = file_get_contents($dossier_import.$fichier_dest);
+	$contenu = file_get_contents(CHEMIN_DOSSIER_IMPORT.$fichier_dest);
 	$contenu = utf8($contenu); // Mettre en UTF-8 si besoin
 	$tab_lignes = extraire_lignes($contenu); // Extraire les lignes du fichier
 	$separateur = extraire_separateur_csv($tab_lignes[0]); // Déterminer la nature du séparateur
@@ -558,7 +554,7 @@ if($action=='import_ent')
 	$ferreur = $tab_file['error'];
 	if( (!file_exists($fnom_serveur)) || (!$ftaille) || ($ferreur) )
 	{
-		require_once('./_inc/fonction_infos_serveur.php');
+		require(CHEMIN_DOSSIER_INCLUDE.'fonction_infos_serveur.php');
 		exit('Erreur : problème de transfert ! Fichier trop lourd ? min(memory_limit,post_max_size,upload_max_filesize)='.minimum_limitations_upload());
 	}
 	$extension = strtolower(pathinfo($fnom_transmis,PATHINFO_EXTENSION));
@@ -567,19 +563,19 @@ if($action=='import_ent')
 		exit('Erreur : l\'extension du fichier transmis est incorrecte !');
 	}
 	$fichier_dest = $action.'_'.$_SESSION['BASE'].'_'.fabriquer_fin_nom_fichier__date_et_alea().'.txt' ;
-	if(!move_uploaded_file($fnom_serveur , $dossier_import.$fichier_dest))
+	if(!move_uploaded_file($fnom_serveur , CHEMIN_DOSSIER_IMPORT.$fichier_dest))
 	{
 		exit('Erreur : le fichier n\'a pas pu être enregistré sur le serveur.');
 	}
 	// Utiliser $_SESSION['CONNEXION_MODE'] et $_SESSION['CONNEXION_NOM'] pour déterminer l'emplacement des données à récupérer
-	require_once('./_inc/tableau_sso.php');
+	require(CHEMIN_DOSSIER_INCLUDE.'tableau_sso.php');
 	// Pour récupérer les données des utilisateurs
 	$tab_users_fichier              = array();
 	$tab_users_fichier['id_ent']    = array();
 	$tab_users_fichier['nom']       = array();
 	$tab_users_fichier['prenom']    = array();
 	$tab_users_fichier['id_sconet'] = array();
-	$contenu = file_get_contents($dossier_import.$fichier_dest);
+	$contenu = file_get_contents(CHEMIN_DOSSIER_IMPORT.$fichier_dest);
 	$contenu = utf8($contenu); // Mettre en UTF-8 si besoin
 	$tab_lignes = extraire_lignes($contenu); // Extraire les lignes du fichier
 	$separateur = extraire_separateur_csv($tab_lignes[0]); // Déterminer la nature du séparateur
@@ -757,7 +753,7 @@ if( ($action=='COPY_id_gepi_TO_id_ent') || ($action=='COPY_login_TO_id_ent') || 
 
 if($action=='COPY_id_lcs_TO_id_ent')
 {
-	$fichier = './webservices/import_lcs.php';
+	$fichier = CHEMIN_DOSSIER_WEBSERVICES.'import_lcs.php';
 	if(!is_file($fichier))
 	{
 		exit('Erreur : le fichier "'.$fichier.'" n\'a pas été trouvé !');
@@ -856,7 +852,7 @@ if($action=='COPY_id_lcs_TO_id_ent')
 
 if( ($action=='COPY_id_argos_profs_TO_id_ent') || ($action=='COPY_id_argos_eleves_TO_id_ent') || ($action=='COPY_id_argos_parents_TO_id_ent') )
 {
-	$fichier = './webservices/argos_import.php';
+	$fichier = CHEMIN_DOSSIER_WEBSERVICES.'argos_import.php';
 	if(!is_file($fichier))
 	{
 		exit('Erreur : le fichier "'.$fichier.'" n\'a pas été trouvé !');
@@ -865,7 +861,7 @@ if( ($action=='COPY_id_argos_profs_TO_id_ent') || ($action=='COPY_id_argos_eleve
 	$qui = substr($action,14,-10); // profs | eleves | parents
 	// Appeler le serveur LDAP et enregistrer le fichier temporairement pour aider au débuggage
 	$retour_Sarapis = recuperer_infos_LDAP($_SESSION['WEBMESTRE_UAI'],$qui);
-	Ecrire_Fichier( './__tmp/import/import_Sarapis_'.$_SESSION['WEBMESTRE_UAI'].'_'.$qui.'.xml' , $retour_Sarapis );
+	Ecrire_Fichier( CHEMIN_DOSSIER_IMPORT.'import_Sarapis_'.$_SESSION['WEBMESTRE_UAI'].'_'.$qui.'.xml' , $retour_Sarapis );
 	// Maintenant on regarde ce qu'il contient
 	if(mb_substr($retour_Sarapis,0,6)=='Erreur')
 	{

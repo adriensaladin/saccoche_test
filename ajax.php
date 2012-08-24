@@ -30,12 +30,13 @@
 
 // Atteste l'appel de cette page avant l'inclusion d'une autre
 define('SACoche','ajax');
+// Constantes de l'application
+require('./_inc/constantes.php');
 
-// Constantes / Fonctions de redirections / Configuration serveur
-require_once('./_inc/constantes.php');
-require_once('./_inc/fonction_redirection.php');
-require_once('./_inc/config_serveur.php');
-require_once('./_inc/fonction_sessions.php');
+// Fonctions de redirections / Configuration serveur
+require(CHEMIN_DOSSIER_INCLUDE.'fonction_redirection.php');
+require(CHEMIN_DOSSIER_INCLUDE.'config_serveur.php');
+require(CHEMIN_DOSSIER_INCLUDE.'fonction_sessions.php');
 
 // Détermination du CHARSET d'en-tête
 /*
@@ -54,10 +55,9 @@ if(!isset($_GET['page']))
 $PAGE = $_GET['page'];
 
 // Fichier d'informations sur l'hébergement (requis avant la gestion de la session).
-$fichier_constantes = CHEMIN_CONFIG.'constantes.php';
-if(is_file($fichier_constantes))
+if(is_file(CHEMIN_FICHIER_CONFIG_INSTALL))
 {
-	require_once($fichier_constantes);
+	require(CHEMIN_FICHIER_CONFIG_INSTALL);
 }
 elseif($PAGE!='public_installation')
 {
@@ -65,7 +65,7 @@ elseif($PAGE!='public_installation')
 }
 
 // Le fait de lister les droits d'accès de chaque page empêche de surcroit l'exploitation d'une vulnérabilité "include PHP" (http://www.certa.ssi.gouv.fr/site/CERTA-2003-ALE-003/).
-require_once('./_inc/tableau_droits.php');
+require(CHEMIN_DOSSIER_INCLUDE.'tableau_droits.php');
 if(!isset($tab_droits[$PAGE]))
 {
 	affich_message_exit($titre='Droits manquants',$contenu='Droits de la page "'.$PAGE.'" manquants.');
@@ -95,16 +95,16 @@ if($PAGE=='fermer_session')
 tester_blocage_application($_SESSION['BASE'],$demande_connexion_profil=false);
 
 // Autres fonctions à charger
-require_once('./_inc/fonction_clean.php');
-require_once('./_inc/fonction_divers.php');
-require_once('./_inc/fonction_appel_serveur_communautaire.php');
-require_once('./_inc/fonction_affichage.php');
+require(CHEMIN_DOSSIER_INCLUDE.'fonction_clean.php');
+require(CHEMIN_DOSSIER_INCLUDE.'fonction_divers.php');
+require(CHEMIN_DOSSIER_INCLUDE.'fonction_appel_serveur_communautaire.php');
+require(CHEMIN_DOSSIER_INCLUDE.'fonction_affichage.php');
 
 // Annuler un blocage par l'automate anormalement long
 annuler_blocage_anormal();
 
 // Patch fichier de config
-if(is_file($fichier_constantes))
+if(is_file(CHEMIN_FICHIER_CONFIG_INSTALL))
 {
 	// DEBUT PATCH CONFIG 1
 	// A compter du 05/12/2010, ajout de paramètres dans le fichier de constantes pour paramétrer cURL. [TODO] peut être retiré dans un an environ
@@ -129,8 +129,8 @@ if(is_file($fichier_constantes))
 	// FIN PATCH CONFIG 3
 }
 
-// Interface de connexion à la base, chargement et config (test sur $fichier_constantes car à éviter si procédure d'installation non terminée).
-if(is_file($fichier_constantes))
+// Interface de connexion à la base, chargement et config (test sur CHEMIN_FICHIER_CONFIG_INSTALL car à éviter si procédure d'installation non terminée).
+if(is_file(CHEMIN_FICHIER_CONFIG_INSTALL))
 {
 	// Choix des paramètres de connexion à la base de données adaptée...
 	// ...multi-structure ; base sacoche_structure_***
@@ -155,14 +155,12 @@ if(is_file($fichier_constantes))
 	{
 		affich_message_exit($titre='Configuration anormale',$contenu='Une anomalie dans les données d\'hébergement et/ou de session empêche l\'application de se poursuivre.');
 	}
-	// Ajout du chemin correspondant
-	$fichier_mysql_config = CHEMIN_MYSQL.$fichier_mysql_config.'.php';
-	$fichier_class_config = './_inc/'.$fichier_class_config.'.php';
 	// Chargement du fichier de connexion à la BDD
-	if(is_file($fichier_mysql_config))
+	define('CHEMIN_FICHIER_CONFIG_MYSQL',CHEMIN_DOSSIER_MYSQL.$fichier_mysql_config.'.php');
+	if(is_file(CHEMIN_FICHIER_CONFIG_MYSQL))
 	{
-		require_once($fichier_mysql_config);
-		require_once($fichier_class_config);
+		require(CHEMIN_FICHIER_CONFIG_MYSQL);
+		require(CHEMIN_DOSSIER_INCLUDE.$fichier_class_config.'.php');
 	}
 	elseif($PAGE!='public_installation')
 	{
@@ -171,7 +169,7 @@ if(is_file($fichier_constantes))
 }
 
 // Chargement de la page concernée
-$filename_php = './pages/'.$PAGE.'.ajax.php';
+$filename_php = CHEMIN_DOSSIER_PAGES.$PAGE.'.ajax.php';
 if(is_file($filename_php))
 {
 	require($filename_php);

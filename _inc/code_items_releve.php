@@ -53,7 +53,6 @@ $format				matiere	selection	multimatiere
 
 // Chemins d'enregistrement
 
-$dossier     = './__tmp/export/';
 $fichier_nom = ($make_action!='imprimer') ? 'releve_item_'.$format.'_'.clean_fichier($groupe_nom).'_<REPLACE>_'.fabriquer_fin_nom_fichier__date_et_alea() : 'officiel_'.$BILAN_TYPE.'_'.clean_fichier($groupe_nom).'_'.fabriquer_fin_nom_fichier__date_et_alea() ;
 
 // Initialisation de tableaux
@@ -694,8 +693,8 @@ if($type_individuel)
 		}
 	}
 	// On enregistre les sorties HTML et PDF
-	if($make_html) { Ecrire_Fichier($dossier.str_replace('<REPLACE>','individuel',$fichier_nom).'.html',$releve_HTML_individuel); }
-	if($make_pdf)  { $releve_PDF->Output($dossier.str_replace('<REPLACE>','individuel',$fichier_nom).'.pdf','F'); }
+	if($make_html) { Ecrire_Fichier(CHEMIN_DOSSIER_EXPORT.str_replace('<REPLACE>','individuel',$fichier_nom).'.html',$releve_HTML_individuel); }
+	if($make_pdf)  { $releve_PDF->Output(CHEMIN_DOSSIER_EXPORT.str_replace('<REPLACE>','individuel',$fichier_nom).'.pdf','F'); }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -850,8 +849,8 @@ if($type_synthese)
 	$releve_HTML_synthese .= ($affichage_checkbox) ? '<p><label class="tab">Action <img alt="" src="./_img/bulle_aide.png" title="Cocher auparavant les cases adéquates." /> :</label><button type="button" class="ajouter" onclick="var form=document.getElementById(\'form_synthese\');form.action=\'./index.php?page=evaluation_gestion\';form.submit();">Préparer une évaluation.</button> <button type="button" class="ajouter" onclick="var form=document.getElementById(\'form_synthese\');form.action=\'./index.php?page=professeur_groupe_besoin\';form.submit();">Constituer un groupe de besoin.</button></p></form>' : '';
 	$releve_HTML_synthese .= '<script type="text/javascript">$("#table_s").tablesorter({ headers:{'.$num_hide.':{sorter:false}'.$num_hide_add.'} });</script>'; // Non placé dans le fichier js car mettre une variable à la place d'une valeur pour $num_hide ne fonctionne pas
 	// On enregistre les sorties HTML et PDF
-	Ecrire_Fichier($dossier.str_replace('<REPLACE>','synthese',$fichier_nom).'.html',$releve_HTML_synthese);
-	$releve_PDF->Output($dossier.str_replace('<REPLACE>','synthese',$fichier_nom).'.pdf','F');
+	Ecrire_Fichier(CHEMIN_DOSSIER_EXPORT.str_replace('<REPLACE>','synthese',$fichier_nom).'.html',$releve_HTML_synthese);
+	$releve_PDF->Output(CHEMIN_DOSSIER_EXPORT.str_replace('<REPLACE>','synthese',$fichier_nom).'.pdf','F');
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -946,10 +945,10 @@ if($type_bulletin)
 	$bulletin_html .= '<table id="export20" class="hsort">'."\r\n".$bulletin_head.$bulletin_foot.$bulletin_body.'</table>'."\r\n";
 	$bulletin_html .= '<script type="text/javascript">$("#export20").tablesorter({ headers:{2:{sorter:false}} });</script>';
 	// On enregistre la sortie HTML et CSV
-	Ecrire_Fichier($dossier.str_replace('<REPLACE>','bulletin',$fichier_nom).'.html',$bulletin_html);
+	Ecrire_Fichier(CHEMIN_DOSSIER_EXPORT.str_replace('<REPLACE>','bulletin',$fichier_nom).'.html',$bulletin_html);
 	foreach($tab_bulletin_csv_gepi as $format => $bulletin_csv_gepi_contenu)
 	{
-		Ecrire_Fichier($dossier.str_replace('<REPLACE>','bulletin_'.$format,$fichier_nom).'.csv',utf8_decode($bulletin_csv_gepi_contenu));
+		Ecrire_Fichier(CHEMIN_DOSSIER_EXPORT.str_replace('<REPLACE>','bulletin_'.$format,$fichier_nom).'.csv',utf8_decode($bulletin_csv_gepi_contenu));
 	}
 }
 

@@ -198,9 +198,9 @@ if($action=='imprimer_appreciations')
 			}
 		}
 	}
-	$chemin_export = './__tmp/export/'.'releve_appreciations_'.clean_fichier($periode_nom).'_'.clean_fichier($classe_nom).'_'.fabriquer_fin_nom_fichier__date_et_alea().'.pdf';
-	$releve_PDF->Output($chemin_export,'F');
-	exit('<ul class="puce"><li><a class="lien_ext" href="'.$chemin_export.'"><span class="file file_pdf">Archiver / Imprimer (format <em>pdf</em>).</span></a></li></ul>');
+	$fichier_export = 'releve_appreciations_'.clean_fichier($periode_nom).'_'.clean_fichier($classe_nom).'_'.fabriquer_fin_nom_fichier__date_et_alea().'.pdf';
+	$releve_PDF->Output(CHEMIN_DOSSIER_EXPORT.$fichier_export,'F');
+	exit('<ul class="puce"><li><a class="lien_ext" href="'.URL_DIR_EXPORT.$fichier_export.'"><span class="file file_pdf">Archiver / Imprimer (format <em>pdf</em>).</span></a></li></ul>');
 }
 
 ?>

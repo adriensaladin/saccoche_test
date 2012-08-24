@@ -472,7 +472,7 @@ function tableau_serveur_et_client()
 	return'
 		<table class="p">
 			<tbody>
-				<tr><th>Identification du serveur</th><td class="hc">'.$_SERVER['SERVER_SOFTWARE'].' &lt;'.SERVEUR_ADRESSE.'&gt;</td></tr>
+				<tr><th>Identification du serveur</th><td class="hc">'.$_SERVER['SERVER_SOFTWARE'].' &lt;'.URL_INSTALL_SACOCHE.'&gt;</td></tr>
 				<tr><th>Identification du client</th><td class="hc">'.$_SERVER['HTTP_USER_AGENT'].'</td></tr>
 			</tbody>
 		</table>

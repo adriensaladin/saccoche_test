@@ -183,6 +183,7 @@ if( ($action=='modifier') && $id && $nom && $prenom && $login && ( $not_new_mdp 
 	DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_user( $id , $tab_donnees );
 	// Afficher le retour
 	echo'<td class="nu"><input type="checkbox" name="f_ids" value="'.$id.'" /></td>';
+	// td avec nb de liens de responsabilité ajouté en js
 	echo'<td class="label">'.html($id_ent).'</td>';
 	echo'<td class="label">'.html($id_gepi).'</td>';
 	echo'<td class="label">'.html($sconet_id).'</td>';

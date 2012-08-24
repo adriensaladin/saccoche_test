@@ -31,7 +31,7 @@ $TITRE = "Créer / paramétrer les référentiels";
 
 <?php
 // Indication des profils ayant accès à cette page
-require_once('./_inc/tableau_profils.php'); // Charge $tab_profil_libelle[$profil][court|long][1|2]
+require(CHEMIN_DOSSIER_INCLUDE.'tableau_profils.php'); // Charge $tab_profil_libelle[$profil][court|long][1|2]
 $tab_profils = array('professeur','profcoordonnateur','aucunprof');
 $texte_profil = $_SESSION['DROIT_GERER_REFERENTIEL'];
 foreach($tab_profils as $profil)

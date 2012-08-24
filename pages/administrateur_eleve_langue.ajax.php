@@ -34,7 +34,7 @@ $langue = (isset($_POST['select_langue'])) ? clean_entier($_POST['select_langue'
 $tab_select_eleves  = (isset($_POST['select_eleves']))  ? ( (is_array($_POST['select_eleves']))  ? $_POST['select_eleves']  : explode(',',$_POST['select_eleves'])  ) : array() ;
 $tab_select_eleves  = array_filter( array_map( 'clean_entier' , $tab_select_eleves  ) , 'positif' );
 
-require_once('./_inc/tableau_langues.php');
+require(CHEMIN_DOSSIER_INCLUDE.'tableau_langues.php');
 
 //
 // Modifier des associations

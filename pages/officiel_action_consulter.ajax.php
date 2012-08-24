@@ -186,7 +186,7 @@ if($BILAN_TYPE=='releve')
 	$type_synthese   = 0;
 	$type_bulletin   = 0;
 	$tab_matiere_id  = array();
-	require('./_inc/code_items_releve.php');
+	require(CHEMIN_DOSSIER_INCLUDE.'code_items_releve.php');
 	$nom_bilan_html = 'releve_HTML_individuel';
 }
 elseif($BILAN_TYPE=='bulletin')
@@ -213,7 +213,7 @@ elseif($BILAN_TYPE=='bulletin')
 	$tab_eleve      = array($eleve_id); // tableau de l'unique élève à considérer
 	$liste_eleve    = (string)$eleve_id;
 	$tab_matiere_id = array();
-	require('./_inc/code_items_synthese.php');
+	require(CHEMIN_DOSSIER_INCLUDE.'code_items_synthese.php');
 	$nom_bilan_html = 'releve_HTML';
 }
 elseif(in_array($BILAN_TYPE,array('palier1','palier2','palier3')))
@@ -239,7 +239,7 @@ elseif(in_array($BILAN_TYPE,array('palier1','palier2','palier3')))
 	$tab_pilier_id  = $tab_pilier_id;
 	$tab_eleve_id   = array($eleve_id); // tableau de l'unique élève à considérer
 	$tab_matiere_id = array();
-	require('./_inc/code_socle_releve.php');
+	require(CHEMIN_DOSSIER_INCLUDE.'code_socle_releve.php');
 	$nom_bilan_html = 'releve_html';
 }
 

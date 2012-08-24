@@ -49,7 +49,7 @@ $select_f_statuts = Formulaire::afficher_select(Formulaire::$tab_select_statut ,
 <?php
 if($afficher)
 {
-	require('./pages/administrateur_parent_gestion.inc.php');
+	require(CHEMIN_DOSSIER_PAGES.'administrateur_parent_gestion.inc.php');
 }
 ?>
 

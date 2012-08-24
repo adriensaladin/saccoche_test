@@ -33,11 +33,9 @@ $etape  = (isset($_POST['etape']))    ? clean_entier($_POST['etape'])   : 0;
 
 $top_depart = microtime(TRUE);
 
-$dossier_dump   = './__tmp/dump-base/';
-$dossier_temp   = './__tmp/dump-base/'.$_SESSION['BASE'].'/';
-$dossier_import = './__tmp/import/';
+$dossier_temp = CHEMIN_DOSSIER_DUMP.$_SESSION['BASE'].DS;
 
-require('./_inc/fonction_dump.php');
+require(CHEMIN_DOSSIER_INCLUDE.'fonction_dump.php');
 
 //	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
 // Sauvegarder la base
@@ -57,14 +55,14 @@ if($action=='sauvegarder')
 	debloquer_application('automate',$_SESSION['BASE']);
 	// Zipper les fichiers de svg
 	$fichier_zip_nom = 'dump_SACoche_'.$_SESSION['BASE'].'_'.fabriquer_fin_nom_fichier__date_et_alea().'.zip';
-	zipper_fichiers($dossier_temp,$dossier_dump,$fichier_zip_nom);
+	zipper_fichiers($dossier_temp,CHEMIN_DOSSIER_DUMP,$fichier_zip_nom);
 	// Supprimer le dossier temporaire
 	Supprimer_Dossier($dossier_temp);
 	// Afficher le retour
 	$top_arrivee = microtime(TRUE);
 	$duree = number_format($top_arrivee - $top_depart,2,',','');
 	echo'<li><label class="valide">Sauvegarde de la base réalisée en '.$duree.'s.</label></li>';
-	echo'<li><a class="lien_ext" href="'.$dossier_dump.$fichier_zip_nom.'"><span class="file file_zip">Récupérez le fichier de sauvegarde au format ZIP.</span></a></li>';
+	echo'<li><a class="lien_ext" href="'.URL_DIR_DUMP.$fichier_zip_nom.'"><span class="file file_zip">Récupérez le fichier de sauvegarde au format ZIP.</span></a></li>';
 	echo'<li><label class="alerte">Pour des raisons de sécurité et de confidentialité, ce fichier sera effacé du serveur dans 1h.</label></li>';
 	exit();
 }
@@ -82,7 +80,7 @@ elseif($action=='uploader')
 	$ferreur = $tab_file['error'];
 	if( (!file_exists($fnom_serveur)) || (!$ftaille) || ($ferreur) )
 	{
-		require_once('./_inc/fonction_infos_serveur.php');
+		require(CHEMIN_DOSSIER_INCLUDE.'fonction_infos_serveur.php');
 		exit('<li><label class="alerte">Erreur : problème de transfert ! Fichier trop lourd ? min(memory_limit,post_max_size,upload_max_filesize)='.minimum_limitations_upload().'</label></li>');
 	}
 	$extension = strtolower(pathinfo($fnom_transmis,PATHINFO_EXTENSION));
@@ -91,20 +89,20 @@ elseif($action=='uploader')
 		exit('<li><label class="alerte">Erreur : l\'extension du fichier transmis est incorrecte !</label></li>');
 	}
 	$fichier_upload_nom = 'dump_'.$_SESSION['BASE'].'_'.fabriquer_fin_nom_fichier__date_et_alea().'.zip';
-	if(!move_uploaded_file($fnom_serveur , $dossier_import.$fichier_upload_nom))
+	if(!move_uploaded_file($fnom_serveur , CHEMIN_DOSSIER_IMPORT.$fichier_upload_nom))
 	{
 		exit('<li><label class="alerte">Erreur : le fichier n\'a pas pu être enregistré sur le serveur.</label></li>');
 	}
 	// Créer ou vider le dossier temporaire
 	Creer_ou_Vider_Dossier($dossier_temp);
 	// Dezipper dans le dossier temporaire
-	$code_erreur = unzip( $dossier_import.$fichier_upload_nom , $dossier_temp , TRUE /*use_ZipArchive*/ );
+	$code_erreur = unzip( CHEMIN_DOSSIER_IMPORT.$fichier_upload_nom , $dossier_temp , TRUE /*use_ZipArchive*/ );
 	if($code_erreur)
 	{
-		require('./_inc/tableau_zip_error.php');
+		require(CHEMIN_DOSSIER_INCLUDE.'tableau_zip_error.php');
 		exit('<li><label class="alerte">Erreur : votre archive ZIP n\'a pas pu être ouverte ('.$code_erreur.$tab_zip_error[$code_erreur].') !</label></li>');
 	}
-	unlink($dossier_import.$fichier_upload_nom);
+	unlink(CHEMIN_DOSSIER_IMPORT.$fichier_upload_nom);
 	// Vérifier le contenu : noms des fichiers
 	$fichier_taille_maximale = verifier_dossier_decompression_sauvegarde($dossier_temp);
 	if(!$fichier_taille_maximale)

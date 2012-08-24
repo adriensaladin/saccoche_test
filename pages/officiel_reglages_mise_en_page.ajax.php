@@ -107,7 +107,7 @@ if( ($action=='upload_signature') && ($user_id>=0) && ($user_texte!='') )
 	$ferreur = $tab_file['error'];
 	if( (!file_exists($fnom_serveur)) || (!$ftaille) || ($ferreur) )
 	{
-		require_once('./_inc/fonction_infos_serveur.php');
+		require(CHEMIN_DOSSIER_INCLUDE.'fonction_infos_serveur.php');
 		exit('Erreur : problème de transfert ! Fichier trop lourd ? min(memory_limit,post_max_size,upload_max_filesize)='.minimum_limitations_upload());
 	}
 	// vérifier l'extension
@@ -137,18 +137,17 @@ if( ($action=='upload_signature') && ($user_id>=0) && ($user_texte!='') )
 	}
 	$image_format = $tab_extension_types[$image_type];
 	// enregistrer le fichier (temporairement)
-	$dossier     = './__tmp/export/';
 	$fichier_nom = 'signature_'.$_SESSION['BASE'].'_'.$user_id.'_'.fabriquer_fin_nom_fichier__date_et_alea().'.'.$extension;
-	if(!move_uploaded_file($fnom_serveur , $dossier.$fichier_nom))
+	if(!move_uploaded_file($fnom_serveur , CHEMIN_DOSSIER_EXPORT.$fichier_nom))
 	{
 		exit('Erreur : le fichier n\'a pas pu être enregistré sur le serveur.');
 	}
 	// stocker l'image dans la base
-	DB_STRUCTURE_OFFICIEL::DB_modifier_signature( $user_id , base64_encode(file_get_contents($dossier.$fichier_nom)) , $image_format , $image_largeur , $image_hauteur );
+	DB_STRUCTURE_OFFICIEL::DB_modifier_signature( $user_id , base64_encode(file_get_contents(CHEMIN_DOSSIER_EXPORT.$fichier_nom)) , $image_format , $image_largeur , $image_hauteur );
 	// Générer la balise html et afficher le retour
 	list($width,$height) = dimensions_affichage_image( $image_largeur , $image_hauteur , 200 /*largeur_maxi*/ , 200 /*hauteur_maxi*/ );
 	$user_texte = ($user_id) ? 'Signature '.$user_texte : $user_texte ;
-	exit('<li id="sgn_'.$user_id.'">'.html($user_texte).' : <img src="'.$dossier.$fichier_nom.'" alt="'.html($user_texte).'" width="'.$width.'" height="'.$height.'" /><q class="supprimer" title="Supprimer cette image (aucune confirmation ne sera demandée)."></q></li>');
+	exit('<li id="sgn_'.$user_id.'">'.html($user_texte).' : <img src="'.URL_DIR_EXPORT.$fichier_nom.'" alt="'.html($user_texte).'" width="'.$width.'" height="'.$height.'" /><q class="supprimer" title="Supprimer cette image (aucune confirmation ne sera demandée)."></q></li>');
 }
 
 //	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*

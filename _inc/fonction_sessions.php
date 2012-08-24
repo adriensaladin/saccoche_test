@@ -90,7 +90,9 @@ function init_session()
  */
 function close_session()
 {
+	// Pas besoin de session_start() car la session a déjà été ouverte avant appel à cette fonction.
 	$_SESSION = array();
+	session_unset();
 	setcookie(session_name(),'',time()-42000,'');
 	session_destroy();
 }

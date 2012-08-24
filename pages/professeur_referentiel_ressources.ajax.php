@@ -132,7 +132,7 @@ if( ($action=='Uploader_document') && isset($_FILES['userfile']) )
 	$ferreur = $tab_file['error'];
 	if( (!file_exists($fnom_serveur)) || (!$ftaille) || ($ferreur) )
 	{
-		require_once('./_inc/fonction_infos_serveur.php');
+		require(CHEMIN_DOSSIER_INCLUDE.'fonction_infos_serveur.php');
 		exit('Problème de transfert ! Fichier trop lourd ? min(memory_limit,post_max_size,upload_max_filesize)='.minimum_limitations_upload());
 	}
 	$extension = strtolower(pathinfo($fnom_transmis,PATHINFO_EXTENSION));

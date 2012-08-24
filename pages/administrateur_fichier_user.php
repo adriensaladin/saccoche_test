@@ -30,7 +30,7 @@ $TITRE = "Importer des fichiers d'utilisateurs";
 ?>
 
 <?php
-$alerte = DB_STRUCTURE_ADMINISTRATEUR::DB_compter_devoirs() ? '<p class="danger">La base actuelle contient des devoirs ; <span class="u">en début d\'année scolaire</span> vous devez <a href="./index.php?page=administrateur_nettoyage">purger la base avant d\'importer les nouveaux utilisateurs</a>.</p>' : '';
+$alerte = DB_STRUCTURE_ADMINISTRATEUR::DB_compter_devoirs_annee_scolaire_precedente() ? '<p class="danger b">Année scolaire précédente non nettoyée&nbsp;! Au changement d\'année scolaire il faut <a href="./index.php?page=administrateur_nettoyage">lancer l\'initialisation annuelle des données</a>.</p>' : '';
 
 $test_UAI = ($_SESSION['WEBMESTRE_UAI']) ? 'oui' : 'non' ;
 

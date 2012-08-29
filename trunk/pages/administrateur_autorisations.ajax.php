@@ -30,8 +30,8 @@ if($_SESSION['SESAMATH_ID']==ID_DEMO){exit('Action désactivée pour la démo...
 //	Récupération des informations transmises
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
-$f_objet   = (isset($_POST['f_objet']))   ? clean_texte($_POST['f_objet'])   : '';
-$f_profils = (isset($_POST['f_profils'])) ? clean_texte($_POST['f_profils']) : 'erreur';
+$f_objet   = (isset($_POST['f_objet']))   ? Clean::texte($_POST['f_objet'])   : '';
+$f_profils = (isset($_POST['f_profils'])) ? Clean::texte($_POST['f_profils']) : 'erreur';
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 //	Vérification des informations transmises

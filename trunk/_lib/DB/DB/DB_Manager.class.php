@@ -210,8 +210,15 @@ class DB_Manager {
 
       $aBacktrace = array();
       foreach(debug_backtrace() as $key=>$val) {
-        if(!isset($val['class']) || strpos($val['class'], 'DB')!==0) {
-          $aBacktrace[]='<strong>'.(isset($val['class']) ? $val['class'].'::' : '').$val['function'].'</strong> called at ['.$val['file'].':'.$val['line'].']';
+        if (!isset($val['class']) || strpos($val['class'], 'DB') !== 0) { // On prend pas les class des autres...
+          $str = '<strong>';
+          if (isset($val['class'])) { $str .= $val['class'] .'::'; }
+          if (isset($val['function'])) { $str .= $val['function']; }
+          $str .= '</strong> called at [';
+          if (isset($val['file'])) { $str .= $val['file'];}
+          if (isset($val['line'])) { $str .= $val['line'];}
+          $str .= ']';
+          $aBacktrace[] = $str;
         }
       }
 

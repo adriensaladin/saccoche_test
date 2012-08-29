@@ -52,7 +52,7 @@ if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');
 				echo'<tr id="id_'.$DB_ROW['geo_id'].'">';
 				echo	'<td>'.$DB_ROW['geo_id'].'</td>';
 				echo	'<td>'.$DB_ROW['geo_ordre'].'</td>';
-				echo	'<td>'.html($DB_ROW['geo_nom']).'</td>';
+				echo	'<td>'.To::html($DB_ROW['geo_nom']).'</td>';
 				echo	'<td class="nu">';
 				echo		'<q class="modifier" title="Modifier cette zone."></q>';
 				echo		'<q class="dupliquer" title="Dupliquer cette zone."></q>';

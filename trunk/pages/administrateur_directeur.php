@@ -29,9 +29,9 @@ if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');
 $TITRE = "Personnels de direction";
 
 // Récupérer d'éventuels paramètres pour restreindre l'affichage
-$statut       = (isset($_POST['f_statut']))       ? clean_entier($_POST['f_statut'])       : 1  ;
+$statut       = (isset($_POST['f_statut']))       ? Clean::entier($_POST['f_statut'])       : 1  ;
 // Construire et personnaliser le formulaire pour restreindre l'affichage
-$select_f_statuts = Formulaire::afficher_select(Formulaire::$tab_select_statut , $select_nom='f_statut' , $option_first='non' , $selection=$statut , $optgroup='non');
+$select_f_statuts = Form::afficher_select(Form::$tab_select_statut , $select_nom='f_statut' , $option_first='non' , $selection=$statut , $optgroup='non');
 ?>
 
 <p><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__gestion_directeurs">DOC : Gestion des directeurs</a></span></p>
@@ -72,13 +72,13 @@ $select_f_statuts = Formulaire::afficher_select(Formulaire::$tab_select_statut ,
 					// Afficher une ligne du tableau
 					echo'<tr id="id_'.$DB_ROW['user_id'].'">';
 					echo	'<td class="nu"><input type="checkbox" name="f_ids" value="'.$DB_ROW['user_id'].'" /></td>';
-					echo	'<td class="label">'.html($DB_ROW['user_id_ent']).'</td>';
-					echo	'<td class="label">'.html($DB_ROW['user_id_gepi']).'</td>';
-					echo	'<td class="label">'.html($DB_ROW['user_sconet_id']).'</td>';
-					echo	'<td class="label">'.html($DB_ROW['user_reference']).'</td>';
-					echo	'<td class="label">'.html($DB_ROW['user_nom']).'</td>';
-					echo	'<td class="label">'.html($DB_ROW['user_prenom']).'</td>';
-					echo	'<td class="label">'.html($DB_ROW['user_login']).'</td>';
+					echo	'<td class="label">'.To::html($DB_ROW['user_id_ent']).'</td>';
+					echo	'<td class="label">'.To::html($DB_ROW['user_id_gepi']).'</td>';
+					echo	'<td class="label">'.To::html($DB_ROW['user_sconet_id']).'</td>';
+					echo	'<td class="label">'.To::html($DB_ROW['user_reference']).'</td>';
+					echo	'<td class="label">'.To::html($DB_ROW['user_nom']).'</td>';
+					echo	'<td class="label">'.To::html($DB_ROW['user_prenom']).'</td>';
+					echo	'<td class="label">'.To::html($DB_ROW['user_login']).'</td>';
 					echo	'<td class="label i">champ crypté</td>';
 					echo	'<td class="label"><i>'.$date_mysql.'</i>'.$date_affich.'</td>';
 					echo	'<td class="nu">';

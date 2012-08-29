@@ -28,8 +28,8 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 
 // Fabrication des éléments select du formulaire, pour pouvoir prendre un référentiel d'une autre matière ou d'un autre niveau (demandé...).
-$select_famille_matiere = Formulaire::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_familles_matieres() , $select_nom='f_famille_matiere' , $option_first='oui' , $selection=FALSE , $optgroup='oui');
-$select_famille_niveau  = Formulaire::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_familles_niveaux()  , $select_nom='f_famille_niveau'  , $option_first='oui' , $selection=FALSE , $optgroup='oui');
+$select_famille_matiere = Form::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_familles_matieres() , $select_nom='f_famille_matiere' , $option_first='oui' , $selection=FALSE , $optgroup='oui');
+$select_famille_niveau  = Form::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_familles_niveaux()  , $select_nom='f_famille_niveau'  , $option_first='oui' , $selection=FALSE , $optgroup='oui');
 ?>
 
 <form action="#" method="post">

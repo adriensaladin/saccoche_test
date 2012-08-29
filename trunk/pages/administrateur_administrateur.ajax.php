@@ -28,15 +28,15 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 if($_SESSION['SESAMATH_ID']==ID_DEMO) {exit('Action désactivée pour la démo...');}
 
-$action     = (isset($_POST['f_action']))     ? clean_texte($_POST['f_action'])      : '';
-$id         = (isset($_POST['f_id']))         ? clean_entier($_POST['f_id'])         : 0;
-$id_ent     = (isset($_POST['f_id_ent']))     ? clean_texte($_POST['f_id_ent'])      : '';
-$id_gepi    = (isset($_POST['f_id_gepi']))    ? clean_texte($_POST['f_id_gepi'])     : '';
-$nom        = (isset($_POST['f_nom']))        ? clean_nom($_POST['f_nom'])           : '';
-$prenom     = (isset($_POST['f_prenom']))     ? clean_prenom($_POST['f_prenom'])     : '';
-$login      = (isset($_POST['f_login']))      ? clean_login($_POST['f_login'])       : '';
-$password   = (isset($_POST['f_password']))   ? clean_password($_POST['f_password']) : '' ;
-$not_new_mdp   = (isset($_POST['box_password'])) ? clean_entier($_POST['box_password']) : 0;
+$action      = (isset($_POST['f_action']))     ? Clean::texte($_POST['f_action'])      : '';
+$id          = (isset($_POST['f_id']))         ? Clean::entier($_POST['f_id'])         : 0;
+$id_ent      = (isset($_POST['f_id_ent']))     ? Clean::texte($_POST['f_id_ent'])      : '';
+$id_gepi     = (isset($_POST['f_id_gepi']))    ? Clean::texte($_POST['f_id_gepi'])     : '';
+$nom         = (isset($_POST['f_nom']))        ? Clean::nom($_POST['f_nom'])           : '';
+$prenom      = (isset($_POST['f_prenom']))     ? Clean::prenom($_POST['f_prenom'])     : '';
+$login       = (isset($_POST['f_login']))      ? Clean::login($_POST['f_login'])       : '';
+$password    = (isset($_POST['f_password']))   ? Clean::password($_POST['f_password']) : '' ;
+$not_new_mdp = (isset($_POST['box_password'])) ? Clean::entier($_POST['box_password']) : 0;
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 //	Ajouter un nouvel administrateur
@@ -69,12 +69,12 @@ if( ($action=='ajouter') && $nom && $prenom && $login && $password )
 	$user_id = DB_STRUCTURE_COMMUN::DB_ajouter_utilisateur($user_sconet_id=0,$user_sconet_elenoet=0,$reference='','administrateur',$nom,$prenom,$login,crypter_mdp($password),$classe_id=0,$id_ent,$id_gepi);
 	// Afficher le retour
 	echo'<tr id="id_'.$user_id.'" class="new">';
-	echo	'<td>'.html($id_ent).'</td>';
-	echo	'<td>'.html($id_gepi).'</td>';
-	echo	'<td>'.html($nom).'</td>';
-	echo	'<td>'.html($prenom).'</td>';
-	echo	'<td class="new">'.html($login).' <img alt="" title="Pensez à noter le login !"  src="./_img/bulle_aide.png" /></td>';
-	echo	'<td class="new">'.html($password).' <img alt="" title="Pensez à noter le mot de passe !" src="./_img/bulle_aide.png" /></td>';
+	echo	'<td>'.To::html($id_ent).'</td>';
+	echo	'<td>'.To::html($id_gepi).'</td>';
+	echo	'<td>'.To::html($nom).'</td>';
+	echo	'<td>'.To::html($prenom).'</td>';
+	echo	'<td class="new">'.To::html($login).' <img alt="" title="Pensez à noter le login !"  src="./_img/bulle_aide.png" /></td>';
+	echo	'<td class="new">'.To::html($password).' <img alt="" title="Pensez à noter le mot de passe !" src="./_img/bulle_aide.png" /></td>';
 	echo	'<td class="nu">';
 	echo		'<q class="modifier" title="Modifier cet administrateur."></q>';
 	echo		'<q class="supprimer" title="Retirer cet administrateur."></q>';
@@ -124,11 +124,11 @@ if( ($action=='modifier') && $id && $nom && $prenom && $login && ( $not_new_mdp 
 		$_SESSION['USER_PRENOM'] = $prenom ;
 	}
 	// Afficher le retour
-	echo'<td>'.html($id_ent).'</td>';
-	echo'<td>'.html($id_gepi).'</td>';
-	echo'<td>'.html($nom).'</td>';
-	echo'<td>'.html($prenom).'</td>';
-	echo'<td>'.html($login).'</td>';
+	echo'<td>'.To::html($id_ent).'</td>';
+	echo'<td>'.To::html($id_gepi).'</td>';
+	echo'<td>'.To::html($nom).'</td>';
+	echo'<td>'.To::html($prenom).'</td>';
+	echo'<td>'.To::html($login).'</td>';
 	echo ($not_new_mdp) ? '<td class="i">champ crypté</td>' : '<td class="new">'.$password.' <img alt="" src="./_img/bulle_aide.png" title="Pensez à noter le mot de passe !" /></td>' ;
 	echo'<td class="nu">';
 	echo	'<q class="modifier" title="Modifier ce administrateur."></q>';
@@ -150,7 +150,7 @@ if( ($action=='supprimer') && $id )
 	// Supprimer l'enregistrement
 	DB_STRUCTURE_ADMINISTRATEUR::DB_supprimer_utilisateur( $id , 'administrateur' );
 	// Log de l'action
-	ajouter_log_SACoche('Suppression d\'un utilisateur (administrateur '.$id.').');
+	SACocheLog::ajouter('Suppression d\'un utilisateur (administrateur '.$id.').');
 	// Afficher le retour
 	exit('<td>ok</td>');
 }

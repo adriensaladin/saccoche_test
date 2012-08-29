@@ -29,14 +29,14 @@ if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');
 if(($_SESSION['SESAMATH_ID']==ID_DEMO)&&($_POST['action']!='Voir')){exit('Action désactivée pour la démo...');}
 
 $action         = (isset($_POST['action']))         ? $_POST['action'] : '';
-$matiere_id     = (isset($_POST['matiere_id']))     ? clean_entier($_POST['matiere_id'])     : 0;
-$niveau_id      = (isset($_POST['niveau_id']))      ? clean_entier($_POST['niveau_id'])      : 0;
-$structure_id   = (isset($_POST['structure_id']))   ? clean_entier($_POST['structure_id'])   : 0;
-$nb_demandes    = (isset($_POST['nb_demandes']))    ? clean_entier($_POST['nb_demandes'])    : -1;	// Changer le nb de demandes
-$partage        = (isset($_POST['partage']))        ? clean_texte($_POST['partage'])         : '';	// Changer l'état de partage
-$methode        = (isset($_POST['methode']))        ? clean_texte($_POST['methode'])         : '';	// Changer le mode de calcul
-$limite         = (isset($_POST['limite']))         ? clean_entier($_POST['limite'])         : -1;	// Changer le nb d'items pris en compte
-$referentiel_id = (isset($_POST['referentiel_id'])) ? clean_entier($_POST['referentiel_id']) : -1;	// Référence du référentiel importé (0 si vierge), ou référence du référentiel à consulter
+$matiere_id     = (isset($_POST['matiere_id']))     ? Clean::entier($_POST['matiere_id'])     : 0;
+$niveau_id      = (isset($_POST['niveau_id']))      ? Clean::entier($_POST['niveau_id'])      : 0;
+$structure_id   = (isset($_POST['structure_id']))   ? Clean::entier($_POST['structure_id'])   : 0;
+$nb_demandes    = (isset($_POST['nb_demandes']))    ? Clean::entier($_POST['nb_demandes'])    : -1;	// Changer le nb de demandes
+$partage        = (isset($_POST['partage']))        ? Clean::texte($_POST['partage'])         : '';	// Changer l'état de partage
+$methode        = (isset($_POST['methode']))        ? Clean::texte($_POST['methode'])         : '';	// Changer le mode de calcul
+$limite         = (isset($_POST['limite']))         ? Clean::entier($_POST['limite'])         : -1;	// Changer le nb d'items pris en compte
+$referentiel_id = (isset($_POST['referentiel_id'])) ? Clean::entier($_POST['referentiel_id']) : -1;	// Référence du référentiel importé (0 si vierge), ou référence du référentiel à consulter
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 // Modifier le nb de demandes autorisées pour une matière
@@ -86,9 +86,9 @@ if(mb_substr_count($ids,'_')!=3)
 }
 
 list($prefixe,$matiere_id,$niveau_id,$perso) = explode('_',$ids);
-$matiere_id = clean_entier($matiere_id);
-$niveau_id  = clean_entier($niveau_id);
-$perso      = clean_entier($perso);
+$matiere_id = Clean::entier($matiere_id);
+$niveau_id  = Clean::entier($niveau_id);
+$perso      = Clean::entier($perso);
 
 $tab_partages = array('oui','non','bof','hs');
 $tab_methodes = array('geometrique','arithmetique','classique','bestof1','bestof2','bestof3');
@@ -140,7 +140,7 @@ if( ($action=='Partager') && $matiere_id && $niveau_id && ($perso==0) && in_arra
 	DB_STRUCTURE_REFERENTIEL::DB_modifier_referentiel( $matiere_id , $niveau_id , array(':partage_etat'=>$partage,':partage_date'=>TODAY_MYSQL) );
 	// Retour envoyé
 	$tab_partage = array('oui'=>'<img title="Référentiel partagé sur le serveur communautaire (MAJ le ◄DATE►)." alt="" src="./_img/etat/partage_oui.gif" />','non'=>'<img title="Référentiel non partagé avec la communauté (choix du ◄DATE►)." alt="" src="./_img/etat/partage_non.gif" />','bof'=>'<img title="Référentiel dont le partage est sans intérêt (pas novateur)." alt="" src="./_img/etat/partage_non.gif" />','hs'=>'<img title="Référentiel dont le partage est sans objet (matière spécifique)." alt="" src="./_img/etat/partage_non.gif" />');
-	exit( str_replace('◄DATE►',affich_date(TODAY_MYSQL),$tab_partage[$partage]) );
+	exit( str_replace('◄DATE►',Html::date(TODAY_MYSQL),$tab_partage[$partage]) );
 }
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
@@ -165,7 +165,7 @@ if( ($action=='Envoyer') && $matiere_id && $niveau_id && ($perso==0) )
 	// Tout s'est bien passé si on arrive jusque là...
 	DB_STRUCTURE_REFERENTIEL::DB_modifier_referentiel( $matiere_id , $niveau_id , array(':partage_date'=>TODAY_MYSQL) );
 	// Retour envoyé
-	exit('<img title="Référentiel partagé sur le serveur communautaire (MAJ le '.affich_date(TODAY_MYSQL).')." alt="" src="./_img/etat/partage_oui.gif" />');
+	exit('<img title="Référentiel partagé sur le serveur communautaire (MAJ le '.Html::date(TODAY_MYSQL).')." alt="" src="./_img/etat/partage_oui.gif" />');
 }
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
@@ -189,7 +189,7 @@ if( ($action=='Retirer') && $matiere_id && $niveau_id && in_array($partage,$tab_
 	}
 	DB_STRUCTURE_REFERENTIEL::DB_supprimer_referentiel_matiere_niveau($matiere_id,$niveau_id);
 	// Log de l'action
-	ajouter_log_SACoche('Suppression d\'un référentiel (matière '.$matiere_id.' / niveau '.$niveau_id.').');
+	SACocheLog::ajouter('Suppression d\'un référentiel (matière '.$matiere_id.' / niveau '.$niveau_id.').');
 	exit('ok');
 }
 

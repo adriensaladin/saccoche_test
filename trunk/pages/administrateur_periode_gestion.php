@@ -51,7 +51,7 @@ $TITRE = "Gérer les périodes";
 				// Afficher une ligne du tableau
 				echo'<tr id="id_'.$DB_ROW['periode_id'].'">';
 				echo	'<td>'.$DB_ROW['periode_ordre'].'</td>';
-				echo	'<td>'.html($DB_ROW['periode_nom']).'</td>';
+				echo	'<td>'.To::html($DB_ROW['periode_nom']).'</td>';
 				echo	'<td class="nu">';
 				echo		'<q class="modifier" title="Modifier cette période."></q>';
 				echo		'<q class="dupliquer" title="Dupliquer cette période."></q>';

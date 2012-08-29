@@ -28,17 +28,17 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 if($_SESSION['SESAMATH_ID']==ID_DEMO){exit('Action désactivée pour la démo...');}
 
-$objet      = (isset($_POST['f_objet']))      ? clean_texte($_POST['f_objet'])      : '';
-$ACTION     = (isset($_POST['f_action']))     ? clean_texte($_POST['f_action'])     : '';
-$BILAN_TYPE = (isset($_POST['f_bilan_type'])) ? clean_texte($_POST['f_bilan_type']) : '';
-$mode       = (isset($_POST['f_mode']))       ? clean_texte($_POST['f_mode'])       : '';
-$periode_id = (isset($_POST['f_periode']))    ? clean_entier($_POST['f_periode'])   : 0;
-$classe_id  = (isset($_POST['f_classe']))     ? clean_entier($_POST['f_classe'])    : 0;
-$groupe_id  = (isset($_POST['f_groupe']))     ? clean_entier($_POST['f_groupe'])    : 0;
-$eleve_id   = (isset($_POST['f_user']))       ? clean_entier($_POST['f_user'])      : 0;
+$objet      = (isset($_POST['f_objet']))      ? Clean::texte($_POST['f_objet'])      : '';
+$ACTION     = (isset($_POST['f_action']))     ? Clean::texte($_POST['f_action'])     : '';
+$BILAN_TYPE = (isset($_POST['f_bilan_type'])) ? Clean::texte($_POST['f_bilan_type']) : '';
+$mode       = (isset($_POST['f_mode']))       ? Clean::texte($_POST['f_mode'])       : '';
+$periode_id = (isset($_POST['f_periode']))    ? Clean::entier($_POST['f_periode'])   : 0;
+$classe_id  = (isset($_POST['f_classe']))     ? Clean::entier($_POST['f_classe'])    : 0;
+$groupe_id  = (isset($_POST['f_groupe']))     ? Clean::entier($_POST['f_groupe'])    : 0;
+$eleve_id   = (isset($_POST['f_user']))       ? Clean::entier($_POST['f_user'])      : 0;
 // Autres chaines spécifiques...
 $listing_piliers  = (isset($_POST['f_listing_piliers']))  ? $_POST['f_listing_piliers']  : '' ;
-$tab_pilier_id  = array_filter( array_map( 'clean_entier' , explode(',',$listing_piliers) )  , 'positif' );
+$tab_pilier_id  = array_filter( Clean::map_entier( explode(',',$listing_piliers) ) , 'positif' );
 $liste_pilier_id  = implode(',',$tab_pilier_id);
 
 $is_sous_groupe = ($groupe_id) ? TRUE : FALSE ;
@@ -96,10 +96,10 @@ if($ACTION=='initialiser')
 		exit('Aucun élève trouvé dans ce regroupement !');
 	}
 	$tab_eleve_id = array();
-	$form_choix_eleve = '<form action="#" method="post" id="form_choix_eleve"><div><b>'.html($periode_nom.' | '.$classe_nom ).' :</b> <button id="go_premier_eleve" type="button" class="go_premier">Premier</button> <button id="go_precedent_eleve" type="button" class="go_precedent">Précédent</button> <select id="go_selection_eleve" name="go_selection" class="b">';
+	$form_choix_eleve = '<form action="#" method="post" id="form_choix_eleve"><div><b>'.To::html($periode_nom.' | '.$classe_nom ).' :</b> <button id="go_premier_eleve" type="button" class="go_premier">Premier</button> <button id="go_precedent_eleve" type="button" class="go_precedent">Précédent</button> <select id="go_selection_eleve" name="go_selection" class="b">';
 	foreach($DB_TAB as $DB_ROW)
 	{
-		$form_choix_eleve .= '<option value="'.$DB_ROW['user_id'].'">'.html($DB_ROW['user_nom'].' '.$DB_ROW['user_prenom']).'</option>';
+		$form_choix_eleve .= '<option value="'.$DB_ROW['user_id'].'">'.To::html($DB_ROW['user_nom'].' '.$DB_ROW['user_prenom']).'</option>';
 		$tab_eleve_id[] = $DB_ROW['user_id'];
 	}
 	$form_choix_eleve .= '</select> <button id="go_suivant_eleve" type="button" class="go_suivant">Suivant</button> <button id="go_dernier_eleve" type="button" class="go_dernier">Dernier</button>&nbsp;&nbsp;&nbsp;<button id="fermer_zone_action_eleve" type="button" class="retourner">Retour</button>';

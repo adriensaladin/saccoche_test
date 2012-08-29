@@ -28,17 +28,17 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 if($_SESSION['SESAMATH_ID']==ID_DEMO){exit('Action désactivée pour la démo...');}
 
-$BILAN_TYPE   = (isset($_POST['f_bilan_type']))   ? clean_texte($_POST['f_bilan_type'])   : '';
-$periode_id   = (isset($_POST['f_periode']))      ? clean_entier($_POST['f_periode'])     : 0;
-$classe_id    = (isset($_POST['f_classe']))       ? clean_entier($_POST['f_classe'])      : 0;
-$groupe_id    = (isset($_POST['f_groupe']))       ? clean_entier($_POST['f_groupe'])      : 0;
+$BILAN_TYPE   = (isset($_POST['f_bilan_type']))   ? Clean::texte($_POST['f_bilan_type'])   : '';
+$periode_id   = (isset($_POST['f_periode']))      ? Clean::entier($_POST['f_periode'])     : 0;
+$classe_id    = (isset($_POST['f_classe']))       ? Clean::entier($_POST['f_classe'])      : 0;
+$groupe_id    = (isset($_POST['f_groupe']))       ? Clean::entier($_POST['f_groupe'])      : 0;
 // Autres chaines spécifiques...
 $listing_matieres  = (isset($_POST['f_listing_matieres']))  ? $_POST['f_listing_matieres']  : '' ;
 $listing_piliers   = (isset($_POST['f_listing_piliers']))   ? $_POST['f_listing_piliers']   : '' ;
 $listing_rubriques = (isset($_POST['f_listing_rubriques'])) ? $_POST['f_listing_rubriques'] : '' ;
-$tab_matiere_id  = array_filter( array_map( 'clean_entier' , explode(',',$listing_matieres) ) , 'positif' );
-$tab_pilier_id   = array_filter( array_map( 'clean_entier' , explode(',',$listing_piliers) )  , 'positif' );
-$tab_rubrique_id = array_map( 'clean_entier' , explode(',',$listing_rubriques) ); // Pas de array_filter(...,'positif') car la valeur 0 est autorisée
+$tab_matiere_id  = array_filter( Clean::map_entier( explode(',',$listing_matieres) ) , 'positif' );
+$tab_pilier_id   = array_filter( Clean::map_entier( explode(',',$listing_piliers) )  , 'positif' );
+$tab_rubrique_id = Clean::map_entier(explode(',',$listing_rubriques) ); // Pas de array_filter(...,'positif') car la valeur 0 est autorisée
 $liste_matiere_id  = implode(',',$tab_matiere_id);
 $liste_pilier_id   = implode(',',$tab_pilier_id);
 $liste_rubrique_id = implode(',',$tab_rubrique_id);
@@ -219,7 +219,7 @@ else
 	echo'<p class="ti"><label class="danger">'.$nb_pb_saisies.' saisie'.$ss.' manquante'.$ss.' répartie'.$ss.' parmi '.$nb_pb_rubriques.' rubrique'.$sr.' !</label></p>';
 	foreach($tab_resultat_examen as $rubrique_nom => $tab)
 	{
-		echo'<h4>'.html($rubrique_nom).'</h4>';
+		echo'<h4>'.To::html($rubrique_nom).'</h4>';
 		echo'<ul class="puce"><li>'.implode('</li><li>',$tab).'</li></ul>';
 	}
 	exit();

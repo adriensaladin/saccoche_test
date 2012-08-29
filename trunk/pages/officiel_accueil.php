@@ -134,7 +134,7 @@ $tab_affich['title']['title'] = '<td class="nu"></td>' ;
 if( ($affichage_formulaire_statut) && ($_SESSION['SESAMATH_ID']!=ID_DEMO) )
 {
 	$tab_ids  = (isset($_POST['listing_ids'])) ? explode(',',$_POST['listing_ids']) : array() ;
-	$new_etat = (isset($_POST['etat']))        ? clean_texte($_POST['etat'])        : '' ;
+	$new_etat = (isset($_POST['etat']))        ? Clean::texte($_POST['etat'])        : '' ;
 	if( count($tab_ids) && isset($tab_etats[$new_etat]) )
 	{
 		$champ = 'officiel_'.$BILAN_TYPE;
@@ -189,8 +189,8 @@ if($_SESSION['USER_PROFIL']!='professeur') // administrateur | directeur
 	{
 		$tab_classe[$classe_id][0] = compact( 'droit_modifier_statut' , 'droit_appreciation_generale' , 'droit_impression_pdf' , 'droit_voir_archives_pdf' );
 		$tab_affich[$classe_id.'_0']['check'] = '<th class="nu"><input name="all_check" type="image" id="id_deb1_g'.$classe_id.'p" alt="Tout cocher." src="./_img/all_check.gif" title="Tout cocher." /><br /><input name="all_uncheck" type="image" id="id_deb2_g'.$classe_id.'p" alt="Tout décocher." src="./_img/all_uncheck.gif" title="Tout décocher." /></th>' ;
-		$tab_affich[$classe_id.'_0']['title'] = '<th id="groupe_'.$classe_id.'_0">'.html($classe_nom).'</th>' ;
-		$tab_options_classes[$classe_id.'_0'] = '<option value="'.$classe_id.'_0">'.html($classe_nom).'</option>';
+		$tab_affich[$classe_id.'_0']['title'] = '<th id="groupe_'.$classe_id.'_0">'.To::html($classe_nom).'</th>' ;
+		$tab_options_classes[$classe_id.'_0'] = '<option value="'.$classe_id.'_0">'.To::html($classe_nom).'</option>';
 	}
 }
 else // professeur
@@ -206,13 +206,13 @@ else // professeur
 			$droit_impression_pdf        = ( (strpos($_SESSION['DROIT_OFFICIEL_'.$tab_types[$BILAN_TYPE]['droit'].'_IMPRESSION_PDF'],'professeur')!==FALSE)        || ( (strpos($_SESSION['DROIT_OFFICIEL_'.$tab_types[$BILAN_TYPE]['droit'].'_IMPRESSION_PDF'],'profprincipal')!==FALSE)        && $DB_ROW['jointure_pp'] ) ) ? TRUE : FALSE ;
 			$tab_classe[$DB_ROW['groupe_id']][0] = compact( 'droit_modifier_statut' , 'droit_appreciation_generale' , 'droit_impression_pdf' );
 			$tab_affich[$DB_ROW['groupe_id'].'_0']['check'] = ($affichage_formulaire_statut) ? ( ($droit_modifier_statut) ? '<th class="nu"><input name="all_check" type="image" id="id_deb1_g'.$DB_ROW['groupe_id'].'p" alt="Tout cocher." src="./_img/all_check.gif" title="Tout cocher." /><br /><input name="all_uncheck" type="image" id="id_deb2_g'.$DB_ROW['groupe_id'].'p" alt="Tout décocher." src="./_img/all_uncheck.gif" title="Tout décocher." /></th>' : '<th class="nu"></th>' ) : '' ;
-			$tab_affich[$DB_ROW['groupe_id'].'_0']['title'] = '<th id="groupe_'.$DB_ROW['groupe_id'].'_0">'.html($DB_ROW['groupe_nom']).'</th>' ;
-			$tab_options_classes[$DB_ROW['groupe_id'].'_0'] = '<option value="'.$DB_ROW['groupe_id'].'_0">'.html($DB_ROW['groupe_nom']).'</option>';
+			$tab_affich[$DB_ROW['groupe_id'].'_0']['title'] = '<th id="groupe_'.$DB_ROW['groupe_id'].'_0">'.To::html($DB_ROW['groupe_nom']).'</th>' ;
+			$tab_options_classes[$DB_ROW['groupe_id'].'_0'] = '<option value="'.$DB_ROW['groupe_id'].'_0">'.To::html($DB_ROW['groupe_nom']).'</option>';
 		}
 		else
 		{
 			// Pour les groupes, il faudra récupérer les classes dont sont issues les élèves
-			$tab_groupe[$DB_ROW['groupe_id']] = html($DB_ROW['groupe_nom']);
+			$tab_groupe[$DB_ROW['groupe_id']] = To::html($DB_ROW['groupe_nom']);
 		}
 	}
 	if(count($tab_groupe))
@@ -231,8 +231,8 @@ else // professeur
 					$droit_impression_pdf        = (strpos($_SESSION['DROIT_OFFICIEL_'.$tab_types[$BILAN_TYPE]['droit'].'_IMPRESSION_PDF'],'professeur')!==FALSE)        ? TRUE : FALSE ;
 					$tab_classe[$classe_id][$groupe_id] = compact( 'droit_modifier_statut' , 'droit_appreciation_generale' , 'droit_impression_pdf' );
 					$tab_affich[$classe_id.'_'.$groupe_id]['check'] =  ($affichage_formulaire_statut) ? '<th class="nu"></th>' : '' ;
-					$tab_affich[$classe_id.'_'.$groupe_id]['title'] = '<th id="groupe_'.$classe_id.'_'.$groupe_id.'">'.html($tab_classe_etabl[$classe_id]).'<br />'.html($groupe_nom).'</th>' ;
-					$tab_options_classes[$classe_id.'_'.$groupe_id] = '<option value="'.$classe_id.'_'.$groupe_id.'">'.html($tab_classe_etabl[$classe_id].' - '.$groupe_nom).'</option>';
+					$tab_affich[$classe_id.'_'.$groupe_id]['title'] = '<th id="groupe_'.$classe_id.'_'.$groupe_id.'">'.To::html($tab_classe_etabl[$classe_id]).'<br />'.To::html($groupe_nom).'</th>' ;
+					$tab_options_classes[$classe_id.'_'.$groupe_id] = '<option value="'.$classe_id.'_'.$groupe_id.'">'.To::html($tab_classe_etabl[$classe_id].' - '.$groupe_nom).'</option>';
 				}
 			}
 		}
@@ -255,7 +255,7 @@ if(count($tab_classe))
 		foreach($DB_TAB as $DB_ROW)
 		{
 			$tab_affich['check'][$DB_ROW['periode_id']] = ($affichage_formulaire_statut) ? '<th class="nu"><input name="all_check" type="image" id="id_fin1_p'.$DB_ROW['periode_id'].'" alt="Tout cocher." src="./_img/all_check.gif" title="Tout cocher." /> <input name="all_uncheck" type="image" id="id_fin2_p'.$DB_ROW['periode_id'].'" alt="Tout décocher." src="./_img/all_uncheck.gif" title="Tout décocher." /></th>' : '' ;
-			$tab_affich['title'][$DB_ROW['periode_id']] = '<th class="hc" id="periode_'.$DB_ROW['periode_id'].'">'.html($DB_ROW['periode_nom']).'</th>' ;
+			$tab_affich['title'][$DB_ROW['periode_id']] = '<th class="hc" id="periode_'.$DB_ROW['periode_id'].'">'.To::html($DB_ROW['periode_nom']).'</th>' ;
 			foreach($tab_ligne_id as $ligne_id)
 			{
 				$tab_affich[$ligne_id][$DB_ROW['periode_id']] = '<td class="hc">-</td>' ;
@@ -458,7 +458,7 @@ if(count($tab_classe))
 			$DB_TAB = DB_STRUCTURE_COMMUN::DB_OPT_piliers($palier_id);
 			foreach($DB_TAB as $DB_ROW)
 			{
-				$tab_checkbox_rubriques[$DB_ROW['valeur']] = '<input type="checkbox" name="f_rubrique[]" id="rubrique_'.$DB_ROW['valeur'].'" value="'.$DB_ROW['valeur'].'" checked'.$disabled.' /><label for="rubrique_'.$DB_ROW['valeur'].'"> '.html($DB_ROW['texte']).'</label><br />';
+				$tab_checkbox_rubriques[$DB_ROW['valeur']] = '<input type="checkbox" name="f_rubrique[]" id="rubrique_'.$DB_ROW['valeur'].'" value="'.$DB_ROW['valeur'].'" checked'.$disabled.' /><label for="rubrique_'.$DB_ROW['valeur'].'"> '.To::html($DB_ROW['texte']).'</label><br />';
 			}
 			$listing_piliers_id = implode(',',array_keys($tab_checkbox_rubriques));
 			$form_hidden .= '<input type="hidden" id="f_listing_piliers" name="f_listing_piliers" value="'.$listing_piliers_id.'" />';
@@ -475,7 +475,7 @@ if(count($tab_classe))
 			foreach($DB_TAB as $DB_ROW)
 			{
 				$checked = ( ($_SESSION['USER_PROFIL']!='professeur') || in_array($DB_ROW['matiere_id'],$tab_matieres_id) ) ? ' checked' : '' ;
-				$tab_checkbox_rubriques[$DB_ROW['matiere_id']] = '<input type="checkbox" name="f_rubrique[]" id="rubrique_'.$DB_ROW['matiere_id'].'" value="'.$DB_ROW['matiere_id'].'"'.$checked.$disabled.' /><label for="rubrique_'.$DB_ROW['matiere_id'].'"> '.html($DB_ROW['matiere_nom']).'</label><br />';
+				$tab_checkbox_rubriques[$DB_ROW['matiere_id']] = '<input type="checkbox" name="f_rubrique[]" id="rubrique_'.$DB_ROW['matiere_id'].'" value="'.$DB_ROW['matiere_id'].'"'.$checked.$disabled.' /><label for="rubrique_'.$DB_ROW['matiere_id'].'"> '.To::html($DB_ROW['matiere_nom']).'</label><br />';
 			}
 			$commentaire_selection = ' <div class="astuce">La recherche sera dans tous les cas aussi restreinte aux matières evaluées au cours de la période.</div>';
 		}

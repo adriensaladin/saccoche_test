@@ -29,14 +29,14 @@ if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');
 $TITRE = "Matières";
 
 // Formulaire des familles de matières, en 3 catégories
-$select_matiere_famille = Formulaire::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_familles_matieres() , $select_nom='f_famille' , $option_first='oui' , $selection=false , $optgroup='oui');
+$select_matiere_famille = Form::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_familles_matieres() , $select_nom='f_famille' , $option_first='oui' , $selection=false , $optgroup='oui');
 
 // Lister les matières de l'établissement
 $DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_matieres_etablissement( TRUE /*order_by_name*/ );
 $matieres_options = '<option value="0"></option>';
 foreach($DB_TAB as $DB_ROW)
 {
-	$matieres_options .= '<option value="'.$DB_ROW['matiere_id'].'">'.html($DB_ROW['matiere_nom'].' ('.$DB_ROW['matiere_ref'].')').'</option>' ;
+	$matieres_options .= '<option value="'.$DB_ROW['matiere_id'].'">'.To::html($DB_ROW['matiere_nom'].' ('.$DB_ROW['matiere_ref'].')').'</option>' ;
 }
 
 ?>
@@ -66,8 +66,8 @@ foreach($DB_TAB as $DB_ROW)
 			{
 				// Afficher une ligne du tableau
 				echo'<tr id="id_'.$DB_ROW['matiere_id'].'">';
-				echo	'<td>'.html($DB_ROW['matiere_ref']).'</td>';
-				echo	'<td>'.html($DB_ROW['matiere_nom']).'</td>';
+				echo	'<td>'.To::html($DB_ROW['matiere_ref']).'</td>';
+				echo	'<td>'.To::html($DB_ROW['matiere_nom']).'</td>';
 				echo	'<td class="nu">';
 				echo		'<q class="supprimer" title="Supprimer cette matière."></q>';
 				echo	'</td>';
@@ -97,8 +97,8 @@ foreach($DB_TAB as $DB_ROW)
 			{
 				// Afficher une ligne du tableau
 				echo'<tr id="id_'.$DB_ROW['matiere_id'].'">';
-				echo	'<td>'.html($DB_ROW['matiere_ref']).'</td>';
-				echo	'<td>'.html($DB_ROW['matiere_nom']).'</td>';
+				echo	'<td>'.To::html($DB_ROW['matiere_ref']).'</td>';
+				echo	'<td>'.To::html($DB_ROW['matiere_nom']).'</td>';
 				echo	'<td class="nu">';
 				echo		'<q class="modifier" title="Modifier cette matière."></q>';
 				echo		'<q class="supprimer" title="Supprimer cette matière."></q>';

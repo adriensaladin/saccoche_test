@@ -27,7 +27,7 @@
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 
-$admin_id = (isset($_POST['f_admin']))  ? clean_entier($_POST['f_admin']) : 0;
+$admin_id = (isset($_POST['f_admin']))  ? Clean::entier($_POST['f_admin']) : 0;
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 //	Modifier le mdp d'un administrateur et afficher les identifiants au webmestre
@@ -48,7 +48,7 @@ if($admin_id)
 	DB_STRUCTURE_WEBMESTRE::DB_modifier_admin_mdp($admin_id,crypter_mdp($admin_password));
 	// On affiche le retour
 	echo'<ul class="puce">';
-	echo'<li>Le mot de passe administrateur de <em>'.html($admin_prenom.' '.$admin_nom).'</em> vient d\'être réinitialisé.</li>';
+	echo'<li>Le mot de passe administrateur de <em>'.To::html($admin_prenom.' '.$admin_nom).'</em> vient d\'être réinitialisé.</li>';
 	echo'<li>nom d\'utilisateur " '.$admin_login.' "</li>';
 	echo'<li>mot de passe " '.$admin_password.' "</li>';
 	echo'<li>Pour se connecter comme administrateur, utiliser l\'adresse <a href="'.URL_DIR_SACOCHE.'">'.URL_INSTALL_SACOCHE.'</a></li>';

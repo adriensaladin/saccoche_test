@@ -28,7 +28,7 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 if($_SESSION['SESAMATH_ID']==ID_DEMO){exit('Action désactivée pour la démo...');}
 
-$daltonisme  = (isset($_POST['daltonisme']))  ? clean_entier($_POST['daltonisme'])  : -1 ;
+$daltonisme  = (isset($_POST['daltonisme']))  ? Clean::entier($_POST['daltonisme'])  : -1 ;
 
 //	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //	Mettre à jour la session + la base + le css perso

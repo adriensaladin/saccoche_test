@@ -31,13 +31,13 @@ if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');
 // En cas de multi-structures, il faut savoir dans quelle base récupérer les informations
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
-$BASE = (isset($_GET['base'])) ? clean_entier($_GET['base']) : 0;
+$BASE = (isset($_GET['base'])) ? Clean::entier($_GET['base']) : 0;
 
 if(HEBERGEUR_INSTALLATION=='multi-structures')
 {
 	if(!$BASE)
 	{
-		affich_message_exit($titre='Donnée manquante',$contenu='Paramètre indiquant la base concernée non transmis.');
+		exit_error( 'Donnée manquante' /*titre*/ , 'Paramètre indiquant la base concernée non transmis.' /*contenu*/ );
 	}
 	charger_parametres_mysql_supplementaires($BASE);
 }
@@ -56,7 +56,7 @@ foreach($DB_TAB as $DB_ROW)
 }
 if($connexion_mode=='normal')
 {
-	affich_message_exit($titre='Configuration manquante',$contenu='Etablissement non configuré par l\'administrateur pour utiliser un service d\'authentification externe.');
+	exit_error( 'Configuration manquante' /*titre*/ , 'Etablissement non configuré par l\'administrateur pour utiliser un service d\'authentification externe.' /*contenu*/ );
 }
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
@@ -107,12 +107,12 @@ if($connexion_mode=='gepi')
 	{
 		// On revient très probablement de la déconnexion de GEPI (en effet, au contraire de CAS, la page de déconnexion distante renvoie vers l'application au lieu de marquer un arrêt).
 		unset($_SESSION['SimpleSAMLphp_SESSION']);
-		affich_message_exit($titre='Deconnexion de Gepi',$contenu='Déconnexion du service d\'authentification Gepi effectuée.<br />Fermez votre navigateur par sécurité.');
+		exit_error( 'Deconnexion de Gepi' /*titre*/ , 'Déconnexion du service d\'authentification Gepi effectuée.<br />Fermez votre navigateur par sécurité.' /*contenu*/ );
 	}
 	else
 	{
 		// Bizarre... a priori on n'était pas connecté à GEPI... appel direct ?
-		affich_message_exit($titre='Deconnexion de Gepi',$contenu='Votre authentification sur Gepi n\'a pas été retrouvée.<br />Fermez votre navigateur par sécurité pour être certain d\'en être déconnecté.');
+		exit_error( 'Deconnexion de Gepi' /*titre*/ , 'Votre authentification sur Gepi n\'a pas été retrouvée.<br />Fermez votre navigateur par sécurité pour être certain d\'en être déconnecté.' /*contenu*/ );
 	}
 }
 

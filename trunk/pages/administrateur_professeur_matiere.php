@@ -56,8 +56,8 @@ else
 	$compteur = 0 ;
 	foreach($DB_TAB as $DB_ROW)
 	{
-		$tab_principal[$DB_ROW['matiere_id']][0] = '<th>'.html($DB_ROW['matiere_nom']).'</th>';
-		$tab_matieres[$DB_ROW['matiere_id']] = html($DB_ROW['matiere_nom']);
+		$tab_principal[$DB_ROW['matiere_id']][0] = '<th>'.To::html($DB_ROW['matiere_nom']).'</th>';
+		$tab_matieres[$DB_ROW['matiere_id']] = To::html($DB_ROW['matiere_nom']);
 		$tab_profs_par_matiere[$DB_ROW['matiere_id']] = '';
 		$tab_lignes_matieres[floor($compteur/8)][] = $DB_ROW['matiere_id'];
 		$compteur++;
@@ -74,8 +74,8 @@ else
 		$compteur = 0 ;
 		foreach($DB_TAB as $DB_ROW)
 		{
-			$tab_principal[0][$DB_ROW['user_id']] = '<th id="th_'.$DB_ROW['user_id'].'"><img alt="'.html($DB_ROW['user_nom'].' '.$DB_ROW['user_prenom']).'" src="./_img/php/etiquette.php?dossier='.$_SESSION['BASE'].'&amp;nom='.urlencode($DB_ROW['user_nom']).'&amp;prenom='.urlencode($DB_ROW['user_prenom']).'" /></th>';
-			$tab_profs[$DB_ROW['user_id']] = html($DB_ROW['user_nom'].' '.$DB_ROW['user_prenom']);
+			$tab_principal[0][$DB_ROW['user_id']] = '<th id="th_'.$DB_ROW['user_id'].'"><img alt="'.To::html($DB_ROW['user_nom'].' '.$DB_ROW['user_prenom']).'" src="./_img/php/etiquette.php?dossier='.$_SESSION['BASE'].'&amp;nom='.urlencode($DB_ROW['user_nom']).'&amp;prenom='.urlencode($DB_ROW['user_prenom']).'" /></th>';
+			$tab_profs[$DB_ROW['user_id']] = To::html($DB_ROW['user_nom'].' '.$DB_ROW['user_prenom']);
 			$tab_matieres_par_prof[$DB_ROW['user_id']] = '';
 			$tab_lignes_profs[floor($compteur/8)][] = $DB_ROW['user_id'];
 			$compteur++;

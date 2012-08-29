@@ -30,14 +30,14 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 if($_SESSION['SESAMATH_ID']==ID_DEMO) {}
 
-$groupe  = (isset($_POST['f_groupe']))  ? clean_entier($_POST['f_groupe'])  : 0;
-$matiere = (isset($_POST['f_matiere'])) ? clean_entier($_POST['f_matiere']) : 0;
+$groupe  = (isset($_POST['f_groupe']))  ? Clean::entier($_POST['f_groupe'])  : 0;
+$matiere = (isset($_POST['f_matiere'])) ? Clean::entier($_POST['f_matiere']) : 0;
 
 if(!$groupe)
 {
 	exit('Erreur avec les données transmises !');
 }
 
-echo Formulaire::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_matieres_groupe($groupe) , $select_nom=false , $option_first='oui' , $selection=$matiere , $optgroup='non');
+echo Form::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_matieres_groupe($groupe) , $select_nom=false , $option_first='oui' , $selection=$matiere , $optgroup='non');
 
 ?>

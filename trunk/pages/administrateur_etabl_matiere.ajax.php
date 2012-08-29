@@ -28,17 +28,17 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 if($_SESSION['SESAMATH_ID']==ID_DEMO) {exit('Action désactivée pour la démo...');}
 
-$action     = (isset($_POST['f_action']))   ? clean_texte($_POST['f_action'])    : '';
-$famille_id = (isset($_POST['f_famille']))  ? clean_entier($_POST['f_famille'])  : 0 ;
-$motclef    = (isset($_POST['f_motclef']))  ? clean_texte($_POST['f_motclef'])   : '' ;
-$matiere_id = (isset($_POST['f_matiere']))  ? clean_entier($_POST['f_matiere'])  : 0 ;
-$id_avant   = (isset($_POST['f_id_avant'])) ? clean_entier($_POST['f_id_avant']) : 0;
-$id_apres   = (isset($_POST['f_id_apres'])) ? clean_entier($_POST['f_id_apres']) : 0;
-$id         = (isset($_POST['f_id']))       ? clean_entier($_POST['f_id'])       : 0;
-$ref        = (isset($_POST['f_ref']))      ? clean_ref($_POST['f_ref'])         : '';
-$nom        = (isset($_POST['f_nom']))      ? clean_texte($_POST['f_nom'])       : '';
+$action     = (isset($_POST['f_action']))   ? Clean::texte($_POST['f_action'])    : '';
+$famille_id = (isset($_POST['f_famille']))  ? Clean::entier($_POST['f_famille'])  : 0 ;
+$motclef    = (isset($_POST['f_motclef']))  ? Clean::texte($_POST['f_motclef'])   : '' ;
+$matiere_id = (isset($_POST['f_matiere']))  ? Clean::entier($_POST['f_matiere'])  : 0 ;
+$id_avant   = (isset($_POST['f_id_avant'])) ? Clean::entier($_POST['f_id_avant']) : 0;
+$id_apres   = (isset($_POST['f_id_apres'])) ? Clean::entier($_POST['f_id_apres']) : 0;
+$id         = (isset($_POST['f_id']))       ? Clean::entier($_POST['f_id'])       : 0;
+$ref        = (isset($_POST['f_ref']))      ? Clean::ref($_POST['f_ref'])         : '';
+$nom        = (isset($_POST['f_nom']))      ? Clean::texte($_POST['f_nom'])       : '';
 
-$tab_id = (isset($_POST['tab_id']))   ? array_map('clean_entier',explode(',',$_POST['tab_id'])) : array() ;
+$tab_id = (isset($_POST['tab_id']))   ? Clean::map_entier(explode(',',$_POST['tab_id'])) : array() ;
 $tab_id = array_filter($tab_id,'positif');
 sort($tab_id);
 
@@ -53,7 +53,7 @@ if( ($action=='recherche_matiere_famille') && $famille_id )
 	{
 		$class = ($DB_ROW['matiere_active']) ? 'ajouter_non' : 'ajouter' ;
 		$title = ($DB_ROW['matiere_active']) ? 'Matière déjà choisie.' : 'Ajouter cette matière.' ;
-		echo'<li>'.html($DB_ROW['matiere_nom'].' ('.$DB_ROW['matiere_ref'].')').'<q id="add_'.$DB_ROW['matiere_id'].'" class="'.$class.'" title="'.$title.'"></q></li>';
+		echo'<li>'.To::html($DB_ROW['matiere_nom'].' ('.$DB_ROW['matiere_ref'].')').'<q id="add_'.$DB_ROW['matiere_id'].'" class="'.$class.'" title="'.$title.'"></q></li>';
 	}
 	exit();
 }
@@ -71,7 +71,7 @@ if( ($action=='recherche_matiere_motclef') && $motclef )
 		{
 			$class = ($DB_ROW['matiere_active']) ? 'ajouter_non' : 'ajouter' ;
 			$title = ($DB_ROW['matiere_active']) ? 'Matière déjà choisie.' : 'Ajouter cette matière.' ;
-			echo'<li>['.round($DB_ROW['score']).'%] <i>'.html($DB_ROW['matiere_famille_nom']).'</i> || '.html($DB_ROW['matiere_nom'].' ('.$DB_ROW['matiere_ref'].')').'<q id="add_'.$DB_ROW['matiere_id'].'" class="'.$class.'" title="'.$title.'"></q></li>';
+			echo'<li>['.round($DB_ROW['score']).'%] <i>'.To::html($DB_ROW['matiere_famille_nom']).'</i> || '.To::html($DB_ROW['matiere_nom'].' ('.$DB_ROW['matiere_ref'].')').'<q id="add_'.$DB_ROW['matiere_id'].'" class="'.$class.'" title="'.$title.'"></q></li>';
 		}
 	}
 	else
@@ -105,7 +105,7 @@ if( ($action=='ajouter_perso') && $ref && $nom )
 	// Insérer l'enregistrement
 	$id = DB_STRUCTURE_ADMINISTRATEUR::DB_ajouter_matiere_specifique($ref,$nom);
 	// Afficher le retour
-	exit(']¤['.$id.']¤['.html($ref).']¤['.html($nom));
+	exit(']¤['.$id.']¤['.To::html($ref).']¤['.To::html($nom));
 }
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
@@ -122,7 +122,7 @@ if( ($action=='modifier') && $id && $ref && $nom )
 	// Mettre à jour l'enregistrement
 	DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_matiere_specifique($id,$ref,$nom);
 	// Afficher le retour
-	exit(']¤['.$id.']¤['.html($ref).']¤['.html($nom));
+	exit(']¤['.$id.']¤['.To::html($ref).']¤['.To::html($nom));
 }
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
@@ -135,14 +135,14 @@ function retirer_ou_supprimer_matiere($id)
 	{
 		DB_STRUCTURE_ADMINISTRATEUR::DB_supprimer_matiere_specifique($id);
 		// Log de l'action
-		ajouter_log_SACoche('Suppression d\'une matière spécifique (n°'.$id.').');
-		ajouter_log_SACoche('Suppression de référentiels (matière '.$id.').');
+		SACocheLog::ajouter('Suppression d\'une matière spécifique (n°'.$id.').');
+		SACocheLog::ajouter('Suppression de référentiels (matière '.$id.').');
 	}
 	else
 	{
 		DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_matiere_partagee($id,0);
 		// Log de l'action
-		ajouter_log_SACoche('Retrait d\'une matière partagée (n°'.$id.').');
+		SACocheLog::ajouter('Retrait d\'une matière partagée (n°'.$id.').');
 	}
 }
 
@@ -167,7 +167,7 @@ if( ($action=='deplacer_referentiels') && $id_avant && $id_apres && ($id_avant!=
 		exit('Erreur : la nouvelle matière contient déjà des données !');
 	}
 	// Log de l'action
-	ajouter_log_SACoche('Déplacement des référentiels d\'une matière ('.$id_avant.' to '.$id_apres.').');
+	SACocheLog::ajouter('Déplacement des référentiels d\'une matière ('.$id_avant.' to '.$id_apres.').');
 	// Retirer l'ancienne matière partagée || Supprimer l'ancienne matière spécifique existante
 	retirer_ou_supprimer_matiere($id_avant);
 	exit('ok');

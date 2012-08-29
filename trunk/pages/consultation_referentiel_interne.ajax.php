@@ -36,8 +36,8 @@ if(mb_substr_count($ids,'_')!=2)
 }
 
 list($prefixe,$matiere_id,$niveau_id) = explode('_',$ids);
-$matiere_id  = clean_entier($matiere_id);
-$niveau_id   = clean_entier($niveau_id);
+$matiere_id  = Clean::entier($matiere_id);
+$niveau_id   = Clean::entier($niveau_id);
 
 if( $matiere_id && $niveau_id )
 {

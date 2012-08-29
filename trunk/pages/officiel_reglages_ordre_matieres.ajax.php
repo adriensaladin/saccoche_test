@@ -29,7 +29,7 @@ if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');
 if($_SESSION['SESAMATH_ID']==ID_DEMO) {exit('Action désactivée pour la démo...');}
 
 // Contrôler la liste des ids transmis
-$tab_id = (isset($_POST['tab_id'])) ? array_map('clean_entier',explode(',',$_POST['tab_id'])) : array() ;
+$tab_id = (isset($_POST['tab_id'])) ? Clean::map_entier(explode(',',$_POST['tab_id'])) : array() ;
 $tab_id = array_filter($tab_id,'positif');
 
 //	////////////////////////////////////////////////////////////////////////////////////////////////////

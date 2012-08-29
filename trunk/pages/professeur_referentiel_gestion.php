@@ -95,7 +95,7 @@ else
 	foreach($DB_TAB_MATIERES as $DB_ROW)
 	{
 		$tab_matiere[$DB_ROW['matiere_id']] = array(
-			'nom'         => html($DB_ROW['matiere_nom']) ,
+			'nom'         => To::html($DB_ROW['matiere_nom']) ,
 			'nb_demandes' => $DB_ROW['matiere_nb_demandes'] ,
 			'coord'       => $DB_ROW['jointure_coord']
 		);
@@ -111,7 +111,7 @@ else
 	{
 		foreach($DB_TAB_NIVEAUX as $DB_ROW)
 		{
-			$tab_niveau[$DB_ROW['valeur']] = html($DB_ROW['texte']);
+			$tab_niveau[$DB_ROW['valeur']] = To::html($DB_ROW['texte']);
 		}
 		// On récupère la liste des référentiels par matière et niveau
 		$tab_partage = array('oui'=>'<img title="Référentiel partagé sur le serveur communautaire (MAJ le ◄DATE►)." alt="" src="./_img/etat/partage_oui.gif" />','non'=>'<img title="Référentiel non partagé avec la communauté (choix du ◄DATE►)." alt="" src="./_img/etat/partage_non.gif" />','bof'=>'<img title="Référentiel dont le partage est sans intérêt (pas novateur)." alt="" src="./_img/etat/partage_non.gif" />','hs'=>'<img title="Référentiel dont le partage est sans objet (matière spécifique)." alt="" src="./_img/etat/partage_non.gif" />');
@@ -144,7 +144,7 @@ else
 					$nb_best = (int)substr($DB_ROW['referentiel_calcul_methode'],-1);
 					$methode_calcul_texte = ($DB_ROW['referentiel_calcul_limite']==0) ? 'Moyenne des '.$nb_best.' meilleures saisies.' : 'Moyenne des '.$nb_best.' meilleures saisies parmi les '.$DB_ROW['referentiel_calcul_limite'].' dernières.';
 				}
-				$tab_colonne[$DB_ROW['matiere_id']][$DB_ROW['niveau_id']] = '<td class="hc">'.str_replace('◄DATE►',affich_date($DB_ROW['referentiel_partage_date']),$tab_partage[$DB_ROW['referentiel_partage_etat']]).'</td>'.'<td>'.$methode_calcul_texte.'</td>';
+				$tab_colonne[$DB_ROW['matiere_id']][$DB_ROW['niveau_id']] = '<td class="hc">'.str_replace('◄DATE►',Html::date($DB_ROW['referentiel_partage_date']),$tab_partage[$DB_ROW['referentiel_partage_etat']]).'</td>'.'<td>'.$methode_calcul_texte.'</td>';
 				$script_contenu_tableaux .=   'tab_partage_etat["'.$DB_ROW['matiere_id'].'_'.$DB_ROW['niveau_id'].'"]="'.$DB_ROW['referentiel_partage_etat'].'";';
 				$script_contenu_tableaux .= 'tab_calcul_methode["'.$DB_ROW['matiere_id'].'_'.$DB_ROW['niveau_id'].'"]="'.$DB_ROW['referentiel_calcul_methode'].'";';
 				$script_contenu_tableaux .=  'tab_calcul_limite["'.$DB_ROW['matiere_id'].'_'.$DB_ROW['niveau_id'].'"]="'.$DB_ROW['referentiel_calcul_limite'].'";';
@@ -218,7 +218,7 @@ else
 	<?php
 	if($nb_matieres && $nb_niveaux);
 	{
-		$select_niveau = Formulaire::afficher_select($DB_TAB_NIVEAUX , $select_nom='f_niveau_create' , $option_first='oui' , $selection=FALSE , $optgroup='non');
+		$select_niveau = Form::afficher_select($DB_TAB_NIVEAUX , $select_nom='f_niveau_create' , $option_first='oui' , $selection=FALSE , $optgroup='non');
 		echo'<label class="tab" for="f_niveau_create">Niveau :</label>'.$select_niveau.'<label id="ajax_msg_choisir">&nbsp;</label>';
 	}
 	?>
@@ -244,8 +244,8 @@ else
 
 <?php
 // Fabrication des éléments select du formulaire, pour pouvoir prendre un référentiel d'une autre matière ou d'un autre niveau (demandé...).
-$select_famille_matiere = Formulaire::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_familles_matieres() , $select_nom='f_famille_matiere' , $option_first='oui' , $selection=FALSE , $optgroup='oui');
-$select_famille_niveau  = Formulaire::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_familles_niveaux()  , $select_nom='f_famille_niveau'  , $option_first='oui' , $selection=FALSE , $optgroup='oui');
+$select_famille_matiere = Form::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_familles_matieres() , $select_nom='f_famille_matiere' , $option_first='oui' , $selection=FALSE , $optgroup='oui');
+$select_famille_niveau  = Form::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_familles_niveaux()  , $select_nom='f_famille_niveau'  , $option_first='oui' , $selection=FALSE , $optgroup='oui');
 ?>
 
 <div id="choisir_referentiel_communautaire">

@@ -30,8 +30,8 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 if($_SESSION['SESAMATH_ID']==ID_DEMO) {}
 
-$eval_type = (isset($_POST['eval_type'])) ? clean_texte($_POST['eval_type'])  : '';	// 'groupe' ou 'select'
-$groupe_id = (isset($_POST['groupe_id'])) ? clean_entier($_POST['groupe_id']) : 0;	// utile uniquement pour $eval_type='groupe'
+$eval_type = (isset($_POST['eval_type'])) ? Clean::texte($_POST['eval_type'])  : '';	// 'groupe' ou 'select'
+$groupe_id = (isset($_POST['groupe_id'])) ? Clean::entier($_POST['groupe_id']) : 0;	// utile uniquement pour $eval_type='groupe'
 
 $tab_types = array('groupe','select');
 
@@ -52,6 +52,6 @@ foreach($DB_TAB as $key => $DB_ROW)
 	// Formater la date et la référence de l'évaluation
 	$date_affich         = convert_date_mysql_to_french($DB_ROW['devoir_date']);
 	$date_visible_affich = convert_date_mysql_to_french($DB_ROW['devoir_visible_date']);
-	echo'<option value="'.$DB_ROW['devoir_id'].'_'.$DB_ROW['groupe_id'].'"'.$selected.'>'.$date_affich.' || '.$date_visible_affich.' || '.html($DB_ROW['devoir_info']).'</option>';
+	echo'<option value="'.$DB_ROW['devoir_id'].'_'.$DB_ROW['groupe_id'].'"'.$selected.'>'.$date_affich.' || '.$date_visible_affich.' || '.To::html($DB_ROW['devoir_info']).'</option>';
 }
 ?>

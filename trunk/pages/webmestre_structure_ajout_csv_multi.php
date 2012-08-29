@@ -32,7 +32,7 @@ $separateur  = ';';
 $fichier_csv = 'ajout_structures.csv';
 $contenu_csv = 'Id_Import'.$separateur.'Id_Zone'.$separateur.'Localisation'.$separateur.'Dénomination'.$separateur.'UAI'.$separateur.'Contact_Nom'.$separateur.'Contact_Prénom'.$separateur.'Contact_Courriel'."\r\n";
 $contenu_csv.= ''.$separateur.'1'.$separateur.'Jolieville'.$separateur.'CLG du Bonheur'.$separateur.'0123456A'.$separateur.'EDISON'.$separateur.'Thomas'.$separateur.'t.edison@mail.fr'."\r\n";
-Ecrire_Fichier(CHEMIN_DOSSIER_TMP.$fichier_csv,$contenu_csv);
+FileSystem::ecrire_fichier(CHEMIN_DOSSIER_TMP.$fichier_csv,$contenu_csv);
 ?>
 
 <p><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_webmestre__structure_ajout_csv">DOC : Ajout CSV d'établissements (multi-structures)</a></span></p>

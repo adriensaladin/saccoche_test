@@ -29,10 +29,10 @@ if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');
 if($_SESSION['SESAMATH_ID']==ID_DEMO) {}
 
 $action         = (isset($_POST['action']))         ? $_POST['action']                       : '';
-$matiere_id     = (isset($_POST['matiere_id']))     ? clean_entier($_POST['matiere_id'])     : 0;
-$niveau_id      = (isset($_POST['niveau_id']))      ? clean_entier($_POST['niveau_id'])      : 0;
-$structure_id   = (isset($_POST['structure_id']))   ? clean_entier($_POST['structure_id'])   : 0;
-$referentiel_id = (isset($_POST['referentiel_id'])) ? clean_entier($_POST['referentiel_id']) : 0;
+$matiere_id     = (isset($_POST['matiere_id']))     ? Clean::entier($_POST['matiere_id'])     : 0;
+$niveau_id      = (isset($_POST['niveau_id']))      ? Clean::entier($_POST['niveau_id'])      : 0;
+$structure_id   = (isset($_POST['structure_id']))   ? Clean::entier($_POST['structure_id'])   : 0;
+$referentiel_id = (isset($_POST['referentiel_id'])) ? Clean::entier($_POST['referentiel_id']) : 0;
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 // Afficher le formulaire des structures ayant partagées au moins un référentiel

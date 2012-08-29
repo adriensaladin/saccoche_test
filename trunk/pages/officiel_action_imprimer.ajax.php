@@ -28,19 +28,19 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 if($_SESSION['SESAMATH_ID']==ID_DEMO){exit('Action désactivée pour la démo...');}
 
-$objet       = (isset($_POST['f_objet']))       ? clean_texte($_POST['f_objet'])       : '';
-$ACTION      = (isset($_POST['f_action']))      ? clean_texte($_POST['f_action'])      : '';
-$BILAN_TYPE  = (isset($_POST['f_bilan_type']))  ? clean_texte($_POST['f_bilan_type'])  : '';
-$periode_id  = (isset($_POST['f_periode']))     ? clean_entier($_POST['f_periode'])    : 0;
-$classe_id   = (isset($_POST['f_classe']))      ? clean_entier($_POST['f_classe'])     : 0;
-$groupe_id   = (isset($_POST['f_groupe']))      ? clean_entier($_POST['f_groupe'])     : 0;
-$etape       = (isset($_POST['f_etape']))       ? clean_entier($_POST['f_etape'])      : 0;
+$objet       = (isset($_POST['f_objet']))       ? Clean::texte($_POST['f_objet'])       : '';
+$ACTION      = (isset($_POST['f_action']))      ? Clean::texte($_POST['f_action'])      : '';
+$BILAN_TYPE  = (isset($_POST['f_bilan_type']))  ? Clean::texte($_POST['f_bilan_type'])  : '';
+$periode_id  = (isset($_POST['f_periode']))     ? Clean::entier($_POST['f_periode'])    : 0;
+$classe_id   = (isset($_POST['f_classe']))      ? Clean::entier($_POST['f_classe'])     : 0;
+$groupe_id   = (isset($_POST['f_groupe']))      ? Clean::entier($_POST['f_groupe'])     : 0;
+$etape       = (isset($_POST['f_etape']))       ? Clean::entier($_POST['f_etape'])      : 0;
 // Autres chaines spécifiques...
 $listing_piliers  = (isset($_POST['f_listing_piliers']))  ? $_POST['f_listing_piliers']  : '' ;
-$tab_pilier_id  = array_filter( array_map( 'clean_entier' , explode(',',$listing_piliers) )  , 'positif' );
+$tab_pilier_id  = array_filter( Clean::map_entier( explode(',',$listing_piliers) ) , 'positif' );
 $liste_pilier_id  = implode(',',$tab_pilier_id);
 $listing_eleves = (isset($_POST['f_listing_eleves']))  ? $_POST['f_listing_eleves']  : '' ;
-$tab_eleve_id   = array_filter( array_map( 'clean_entier' , explode(',',$listing_eleves) )  , 'positif' );
+$tab_eleve_id   = array_filter( Clean::map_entier( explode(',',$listing_eleves) )  , 'positif' );
 $liste_eleve_id = implode(',',$tab_eleve_id);
 
 $is_sous_groupe = ($groupe_id) ? TRUE : FALSE ;
@@ -101,7 +101,7 @@ if($ACTION=='initialiser')
 	foreach($DB_TAB as $DB_ROW)
 	{
 		$tab_eleve_id[] = $DB_ROW['user_id'];
-		$tab_eleve_td[$DB_ROW['user_id']] = html($DB_ROW['user_nom'].' '.$DB_ROW['user_prenom']);
+		$tab_eleve_td[$DB_ROW['user_id']] = To::html($DB_ROW['user_nom'].' '.$DB_ROW['user_prenom']);
 	}
 	// (re)calculer les moyennes des élèves, ainsi que les moyennes de classe et générales (mises dans $_SESSION['tmp_moyenne_classe'][$periode_id][$classe_id][$matiere_id] et $_SESSION['tmp_moyenne_generale'][$periode_id][$classe_id][$eleve_id]) 
 	if( ($objet=='imprimer') && ($BILAN_TYPE=='bulletin') && $_SESSION['OFFICIEL']['BULLETIN_MOYENNE_SCORES'] )
@@ -189,20 +189,20 @@ if( ($ACTION=='imprimer') && ($etape==3) )
 	$date = date('Y-m-d');
 	$tab_pages_non_anonymes = array();
 	$chemin_temp_pdf = CHEMIN_DOSSIER_EXPORT.'pdf_'.mt_rand().'/';
-	Creer_ou_Vider_Dossier($chemin_temp_pdf);
+	FileSystem::creer_ou_vider_dossier($chemin_temp_pdf);
 	foreach($_SESSION['tmp']['tab_pages_decoupe_pdf'] as $eleve_id => $tab_tirages)
 	{
 		foreach($tab_tirages as $numero_tirage => $tab)
 		{
 			list( $eleve_identite , $page_plage ) = $tab;
 			$tab_pages_non_anonymes[]  = $page_plage;
-			$fichier_extraction_chemin = $chemin_temp_pdf.'officiel_'.$BILAN_TYPE.'_'.clean_fichier($eleve_identite).'_'.$date.'_resp'.$numero_tirage.'.pdf';
+			$fichier_extraction_chemin = $chemin_temp_pdf.'officiel_'.$BILAN_TYPE.'_'.Clean::fichier($eleve_identite).'_'.$date.'_resp'.$numero_tirage.'.pdf';
 			$releve_pdf = new PDFMerger;
 			$pdf_string = $releve_pdf -> addPDF( $_SESSION['tmp']['dossier'].$_SESSION['tmp']['fichier_nom'].'.pdf' , $page_plage ) -> merge( 'file' , $fichier_extraction_chemin );
 		}
 	}
-	zipper_fichiers( $chemin_temp_pdf , $_SESSION['tmp']['dossier'] , $_SESSION['tmp']['fichier_nom'].'.zip' );
-	Supprimer_Dossier($chemin_temp_pdf);
+	FileSystem::zipper_fichiers( $chemin_temp_pdf , $_SESSION['tmp']['dossier'] , $_SESSION['tmp']['fichier_nom'].'.zip' );
+	FileSystem::supprimer_dossier($chemin_temp_pdf);
 	$_SESSION['tmp']['pages_non_anonymes'] = implode(',',$tab_pages_non_anonymes);
 	unset($_SESSION['tmp']['tab_pages_decoupe_pdf']);
 	exit('ok');

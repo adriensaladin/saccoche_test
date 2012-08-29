@@ -34,7 +34,7 @@ if($_SESSION['SESAMATH_ID']==ID_DEMO) {}
 
 if($_SESSION['USER_PROFIL']=='parent')
 {
-	$groupe_id = (isset($_POST['f_groupe'])) ? clean_entier($_POST['f_groupe']) : 0 ;
+	$groupe_id = (isset($_POST['f_groupe'])) ? Clean::entier($_POST['f_groupe']) : 0 ;
 	if(!$groupe_id)
 	{
 		exit('Erreur avec les données transmises !');
@@ -46,8 +46,8 @@ if($_SESSION['USER_PROFIL']=='parent')
 
 elseif( ($_SESSION['USER_PROFIL']=='administrateur') || (isset($_POST['f_groupe_id'])) ) // test supplémentaire sinon pb avec la page administrateur_eleve_langue partagée avec les directeurs
 {
-	$groupe_type = (isset($_POST['f_groupe_type'])) ? clean_texte($_POST['f_groupe_type']) : ''; // d n c g b
-	$groupe_id   = (isset($_POST['f_groupe_id']))   ? clean_entier($_POST['f_groupe_id'])  : 0;
+	$groupe_type = (isset($_POST['f_groupe_type'])) ? Clean::texte($_POST['f_groupe_type']) : ''; // d n c g b
+	$groupe_id   = (isset($_POST['f_groupe_id']))   ? Clean::entier($_POST['f_groupe_id'])  : 0;
 	$tab_types = array('d'=>'Divers' , 'n'=>'niveau' , 'c'=>'classe' , 'g'=>'groupe' , 'b'=>'besoin');
 	if( (!$groupe_id) || (!isset($tab_types[$groupe_type])) )
 	{
@@ -64,8 +64,8 @@ elseif( ($_SESSION['USER_PROFIL']=='administrateur') || (isset($_POST['f_groupe_
 
 else
 {
-	$groupe_type = (isset($_POST['f_type']))   ? clean_texte($_POST['f_type'])    : ''; // Classes Groupes Besoins
-	$groupe_id   = (isset($_POST['f_groupe'])) ? clean_entier($_POST['f_groupe']) : 0;
+	$groupe_type = (isset($_POST['f_type']))   ? Clean::texte($_POST['f_type'])    : ''; // Classes Groupes Besoins
+	$groupe_id   = (isset($_POST['f_groupe'])) ? Clean::entier($_POST['f_groupe']) : 0;
 	$tab_types = array('Classes'=>'classe' , 'Groupes'=>'groupe' , 'Besoins'=>'groupe');
 	if( (!$groupe_id) || (!isset($tab_types[$groupe_type])) )
 	{
@@ -76,13 +76,13 @@ else
 
 // Autres valeurs à récupérer.
 
-$statut       = (isset($_POST['f_statut']))   ? clean_entier($_POST['f_statut'])   : 0;
-$multiple     = (isset($_POST['f_multiple'])) ? clean_entier($_POST['f_multiple']) : 1 ;
+$statut       = (isset($_POST['f_statut']))   ? Clean::entier($_POST['f_statut'])   : 0;
+$multiple     = (isset($_POST['f_multiple'])) ? Clean::entier($_POST['f_multiple']) : 1 ;
 $option_first = ($multiple) ? 'non' : 'oui' ;
 $selection    = ($multiple) ? TRUE  : FALSE ;
 
 // Affichage du retour.
 
-echo Formulaire::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_eleves_regroupement($groupe_type,$groupe_id,$statut) , $select_nom=false , $option_first , $selection , $optgroup='non');
+echo Form::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_eleves_regroupement($groupe_type,$groupe_id,$statut) , $select_nom=false , $option_first , $selection , $optgroup='non');
 
 ?>

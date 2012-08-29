@@ -28,14 +28,14 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 if($_SESSION['SESAMATH_ID']==ID_DEMO) {exit('Action désactivée pour la démo...');}
 
-$action        = (isset($_POST['f_action']))  ? clean_texte($_POST['f_action'])  : '';
-$selection_id  = (isset($_POST['f_id']))      ? clean_entier($_POST['f_id'])     : 0;
-$selection_nom = (isset($_POST['f_nom']))     ? clean_texte($_POST['f_nom'])     : '';
-$origine       = (isset($_POST['f_origine'])) ? clean_texte($_POST['f_origine']) : '';
+$action        = (isset($_POST['f_action']))  ? Clean::texte($_POST['f_action'])  : '';
+$selection_id  = (isset($_POST['f_id']))      ? Clean::entier($_POST['f_id'])     : 0;
+$selection_nom = (isset($_POST['f_nom']))     ? Clean::texte($_POST['f_nom'])     : '';
+$origine       = (isset($_POST['f_origine'])) ? Clean::texte($_POST['f_origine']) : '';
 
 // Contrôler la liste des items transmis
 $tab_items = (isset($_POST['f_compet_liste'])) ? explode('_',$_POST['f_compet_liste']) : array() ;
-$tab_items = array_map('clean_entier',$tab_items);
+$tab_items = Clean::map_entier($tab_items);
 $tab_items = array_filter($tab_items,'positif');
 $nb_items = count($tab_items);
 
@@ -57,7 +57,7 @@ if( ($action=='ajouter') && $selection_nom && $nb_items && $origine )
 	{
 		$items_texte  = ($nb_items>1) ? $nb_items.' items' : '1 item' ;
 		echo'<tr id="id_'.$selection_id.'" class="new">';
-		echo	'<td>'.html($selection_nom).'</td>';
+		echo	'<td>'.To::html($selection_nom).'</td>';
 		echo	'<td>'.$items_texte.'</td>';
 		echo	'<td class="nu">';
 		echo		'<q class="modifier" title="Modifier cette sélection d\'items."></q>';
@@ -69,7 +69,7 @@ if( ($action=='ajouter') && $selection_nom && $nb_items && $origine )
 	}
 	else
 	{
-		echo'<option value="'.implode('_',$tab_items).'">'.html($selection_nom).'</option>';
+		echo'<option value="'.implode('_',$tab_items).'">'.To::html($selection_nom).'</option>';
 	}
 	exit();
 }
@@ -89,7 +89,7 @@ if( ($action=='modifier') && $selection_id && $selection_nom && $nb_items )
 	DB_STRUCTURE_PROFESSEUR::DB_modifier_selection_items($selection_id,$selection_nom,$tab_items);
 	// Afficher le retour
 	$items_texte  = ($nb_items>1) ? $nb_items.' items' : '1 item' ;
-	echo'<td>'.html($selection_nom).'</td>';
+	echo'<td>'.To::html($selection_nom).'</td>';
 	echo'<td>'.$items_texte.'</td>';
 	echo'<td class="nu">';
 	echo	'<q class="modifier" title="Modifier cette sélection d\'items."></q>';

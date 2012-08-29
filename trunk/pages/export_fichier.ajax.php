@@ -27,14 +27,14 @@
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 
-$type_export = (isset($_POST['f_type']))        ? clean_texte($_POST['f_type'])        : '';
-$groupe_id   = (isset($_POST['f_groupe']))      ? clean_entier($_POST['f_groupe'])     : 0;
-$groupe_type = (isset($_POST['f_groupe_type'])) ? clean_texte($_POST['f_groupe_type']) : '';
-$groupe_nom  = (isset($_POST['f_groupe_nom']))  ? clean_texte($_POST['f_groupe_nom'])  : '';
-$matiere_id  = (isset($_POST['f_matiere']))     ? clean_entier($_POST['f_matiere'])    : 0;
-$matiere_nom = (isset($_POST['f_matiere_nom'])) ? clean_texte($_POST['f_matiere_nom']) : '';
-$palier_id   = (isset($_POST['f_palier']))      ? clean_entier($_POST['f_palier'])     : 0;
-$palier_nom  = (isset($_POST['f_palier_nom']))  ? clean_texte($_POST['f_palier_nom'])  : '';
+$type_export = (isset($_POST['f_type']))        ? Clean::texte($_POST['f_type'])        : '';
+$groupe_id   = (isset($_POST['f_groupe']))      ? Clean::entier($_POST['f_groupe'])     : 0;
+$groupe_type = (isset($_POST['f_groupe_type'])) ? Clean::texte($_POST['f_groupe_type']) : '';
+$groupe_nom  = (isset($_POST['f_groupe_nom']))  ? Clean::texte($_POST['f_groupe_nom'])  : '';
+$matiere_id  = (isset($_POST['f_matiere']))     ? Clean::entier($_POST['f_matiere'])    : 0;
+$matiere_nom = (isset($_POST['f_matiere_nom'])) ? Clean::texte($_POST['f_matiere_nom']) : '';
+$palier_id   = (isset($_POST['f_palier']))      ? Clean::entier($_POST['f_palier'])     : 0;
+$palier_nom  = (isset($_POST['f_palier_nom']))  ? Clean::texte($_POST['f_palier_nom'])  : '';
 
 $tab_types = array('Classes'=>'classe' , 'Groupes'=>'groupe' , 'Besoins'=>'groupe');
 
@@ -57,12 +57,12 @@ if( ($type_export=='listing_users') && $groupe_id && isset($tab_types[$groupe_ty
 		foreach($DB_TAB as $DB_ROW)
 		{
 			$export_csv  .= $DB_ROW['user_id'].$separateur.$DB_ROW['user_login'].$separateur.$DB_ROW['user_nom'].$separateur.$DB_ROW['user_prenom'].$separateur.$groupe_nom."\r\n";
-			$export_html .= '<tr><td>'.$DB_ROW['user_id'].'</td><td>'.html($DB_ROW['user_login']).'</td><td>'.html($DB_ROW['user_nom']).'</td><td>'.html($DB_ROW['user_prenom']).'</td><td>'.html($groupe_nom).'</td></tr>'."\r\n";
+			$export_html .= '<tr><td>'.$DB_ROW['user_id'].'</td><td>'.To::html($DB_ROW['user_login']).'</td><td>'.To::html($DB_ROW['user_nom']).'</td><td>'.To::html($DB_ROW['user_prenom']).'</td><td>'.To::html($groupe_nom).'</td></tr>'."\r\n";
 		}
 	}
 
 	// Finalisation de l'export CSV (archivage dans un fichier zippé)
-	$fnom = 'export_listing-eleves_'.clean_fichier($groupe_nom).'_'.fabriquer_fin_nom_fichier__date_et_alea();
+	$fnom = 'export_listing-eleves_'.Clean::fichier($groupe_nom).'_'.fabriquer_fin_nom_fichier__date_et_alea();
 	$zip = new ZipArchive();
 	$result_open = $zip->open(CHEMIN_DOSSIER_EXPORT.$fnom.'.zip', ZIPARCHIVE::CREATE);
 	if($result_open!==TRUE)
@@ -70,7 +70,7 @@ if( ($type_export=='listing_users') && $groupe_id && isset($tab_types[$groupe_ty
 		require(CHEMIN_DOSSIER_INCLUDE.'tableau_zip_error.php');
 		exit('Problème de création de l\'archive ZIP ('.$result_open.$tab_zip_error[$result_open].') !');
 	}
-	$zip->addFromString($fnom.'.csv',csv($export_csv));
+	$zip->addFromString($fnom.'.csv',To::csv($export_csv));
 	$zip->close();
 	// Finalisation de l'export HTML
 	$export_html .= '</tbody></table>'."\r\n";
@@ -87,7 +87,7 @@ if( ($type_export=='listing_users') && $groupe_id && isset($tab_types[$groupe_ty
 
 if( ($type_export=='listing_matiere') && $matiere_id && $matiere_nom )
 {
-	Formulaire::save_choix('export_fichier');
+	Form::save_choix('export_fichier');
 	// Préparation de l'export CSV
 	$separateur = ';';
 	// ajout du préfixe 'ITEM_' pour éviter un bug avec M$ Excel « SYLK : Format de fichier non valide » (http://support.microsoft.com/kb/323626/fr). 
@@ -102,12 +102,12 @@ if( ($type_export=='listing_matiere') && $matiere_id && $matiere_nom )
 		{
 			$item_ref = $DB_ROW['matiere_ref'].'.'.$DB_ROW['niveau_ref'].'.'.$DB_ROW['domaine_ref'].$DB_ROW['theme_ordre'].$DB_ROW['item_ordre'];
 			$export_csv .= $DB_ROW['item_id'].$separateur.$matiere_nom.$separateur.$DB_ROW['niveau_nom'].$separateur.$item_ref.$separateur.'"'.$DB_ROW['item_nom'].'"'."\r\n";
-			$export_html .= '<tr><td>'.$DB_ROW['item_id'].'</td><td>'.html($matiere_nom).'</td><td>'.html($DB_ROW['niveau_nom']).'</td><td>'.html($item_ref).'</td><td>'.html($DB_ROW['item_nom']).'</td></tr>'."\r\n";
+			$export_html .= '<tr><td>'.$DB_ROW['item_id'].'</td><td>'.To::html($matiere_nom).'</td><td>'.To::html($DB_ROW['niveau_nom']).'</td><td>'.To::html($item_ref).'</td><td>'.To::html($DB_ROW['item_nom']).'</td></tr>'."\r\n";
 		}
 	}
 
 	// Finalisation de l'export CSV (archivage dans un fichier zippé)
-	$fnom = 'export_listing-items_'.clean_fichier($matiere_nom).'_'.fabriquer_fin_nom_fichier__date_et_alea();
+	$fnom = 'export_listing-items_'.Clean::fichier($matiere_nom).'_'.fabriquer_fin_nom_fichier__date_et_alea();
 	$zip = new ZipArchive();
 	$result_open = $zip->open(CHEMIN_DOSSIER_EXPORT.$fnom.'.zip', ZIPARCHIVE::CREATE);
 	if($result_open!==TRUE)
@@ -115,7 +115,7 @@ if( ($type_export=='listing_matiere') && $matiere_id && $matiere_nom )
 		require(CHEMIN_DOSSIER_INCLUDE.'tableau_zip_error.php');
 		exit('Problème de création de l\'archive ZIP ('.$result_open.$tab_zip_error[$result_open].') !');
 	}
-	$zip->addFromString($fnom.'.csv',csv($export_csv));
+	$zip->addFromString($fnom.'.csv',To::csv($export_csv));
 	$zip->close();
 	// Finalisation de l'export HTML
 	$export_html .= '</tbody></table>'."\r\n";
@@ -132,7 +132,7 @@ if( ($type_export=='listing_matiere') && $matiere_id && $matiere_nom )
 
 if( ($type_export=='arbre_matiere') && $matiere_id && $matiere_nom )
 {
-	Formulaire::save_choix('matiere');
+	Form::save_choix('matiere');
 	// Préparation de l'export CSV
 	$separateur = ';';
 	// ajout du préfixe 'ITEM_' pour éviter un bug avec M$ Excel « SYLK : Format de fichier non valide » (http://support.microsoft.com/kb/323626/fr). 
@@ -174,33 +174,33 @@ if( ($type_export=='arbre_matiere') && $matiere_id && $matiere_nom )
 	}
 	$export_csv .= $DB_ROW['matiere_ref'].' - '.$matiere_nom."\r\n";
 	$export_html .= '<ul class="ul_m1">'."\r\n";
-	$export_html .= '	<li class="li_m1"><span>'.html($DB_ROW['matiere_ref'].' - '.$matiere_nom).'</span>'."\r\n";
+	$export_html .= '	<li class="li_m1"><span>'.To::html($DB_ROW['matiere_ref'].' - '.$matiere_nom).'</span>'."\r\n";
 	$export_html .= '		<ul class="ul_m2">'."\r\n";
 	foreach($tab_niveau as $niveau_id => $niveau_nom)
 	{
 		$export_csv .= $separateur.$niveau_nom."\r\n";
-		$export_html .= '			<li class="li_m2"><span>'.html($niveau_nom).'</span>'."\r\n";
+		$export_html .= '			<li class="li_m2"><span>'.To::html($niveau_nom).'</span>'."\r\n";
 		$export_html .= '				<ul class="ul_n1">'."\r\n";
 		if(isset($tab_domaine[$niveau_id]))
 		{
 			foreach($tab_domaine[$niveau_id] as $domaine_id => $domaine_nom)
 			{
 				$export_csv .= $separateur.$separateur.$domaine_nom."\r\n";
-				$export_html .= '					<li class="li_n1"><span>'.html($domaine_nom).'</span>'."\r\n";
+				$export_html .= '					<li class="li_n1"><span>'.To::html($domaine_nom).'</span>'."\r\n";
 				$export_html .= '						<ul class="ul_n2">'."\r\n";
 				if(isset($tab_theme[$niveau_id][$domaine_id]))
 				{
 					foreach($tab_theme[$niveau_id][$domaine_id] as $theme_id => $theme_nom)
 					{
 						$export_csv .= $separateur.$separateur.$separateur.$theme_nom."\r\n";
-						$export_html .= '							<li class="li_n2"><span>'.html($theme_nom).'</span>'."\r\n";
+						$export_html .= '							<li class="li_n2"><span>'.To::html($theme_nom).'</span>'."\r\n";
 						$export_html .= '								<ul class="ul_n3">'."\r\n";
 						if(isset($tab_item[$niveau_id][$domaine_id][$theme_id]))
 						{
 							foreach($tab_item[$niveau_id][$domaine_id][$theme_id] as $item_id => $item_nom)
 							{
 								$export_csv .= $separateur.$separateur.$separateur.$separateur.'"'.$item_nom.'"'."\r\n";
-								$export_html .= '									<li class="li_n3">'.html($item_nom).'</li>'."\r\n";
+								$export_html .= '									<li class="li_n3">'.To::html($item_nom).'</li>'."\r\n";
 							}
 						}
 						$export_html .= '								</ul>'."\r\n";
@@ -219,7 +219,7 @@ if( ($type_export=='arbre_matiere') && $matiere_id && $matiere_nom )
 	$export_html .= '</ul>'."\r\n";
 
 	// Finalisation de l'export CSV (archivage dans un fichier zippé)
-	$fnom = 'export_arbre-matiere_'.clean_fichier($matiere_nom).'_'.fabriquer_fin_nom_fichier__date_et_alea();
+	$fnom = 'export_arbre-matiere_'.Clean::fichier($matiere_nom).'_'.fabriquer_fin_nom_fichier__date_et_alea();
 	$zip = new ZipArchive();
 	$result_open = $zip->open(CHEMIN_DOSSIER_EXPORT.$fnom.'.zip', ZIPARCHIVE::CREATE);
 	if($result_open!==TRUE)
@@ -227,7 +227,7 @@ if( ($type_export=='arbre_matiere') && $matiere_id && $matiere_nom )
 		require(CHEMIN_DOSSIER_INCLUDE.'tableau_zip_error.php');
 		exit('Problème de création de l\'archive ZIP ('.$result_open.$tab_zip_error[$result_open].') !');
 	}
-	$zip->addFromString($fnom.'.csv',csv($export_csv));
+	$zip->addFromString($fnom.'.csv',To::csv($export_csv));
 	$zip->close();
 	// Finalisation de l'export HTML
 	$export_html.= '</div>';
@@ -244,7 +244,7 @@ if( ($type_export=='arbre_matiere') && $matiere_id && $matiere_nom )
 
 if( ($type_export=='arbre_socle') && $palier_id && $palier_nom )
 {
-	Formulaire::save_choix('palier');
+	Form::save_choix('palier');
 	// Préparation de l'export CSV
 	$separateur = ';';
 	$export_csv  = 'PALIER'.$separateur.'PILIER'.$separateur.'SECTION'.$separateur.'ITEM'."\r\n\r\n";
@@ -278,26 +278,26 @@ if( ($type_export=='arbre_socle') && $palier_id && $palier_nom )
 	}
 	$export_csv .= $palier_nom."\r\n";
 	$export_html .= '<ul class="ul_m1">'."\r\n";
-	$export_html .= '	<li class="li_m1"><span>'.html($palier_nom).'</span>'."\r\n";
+	$export_html .= '	<li class="li_m1"><span>'.To::html($palier_nom).'</span>'."\r\n";
 	$export_html .= '		<ul class="ul_n1">'."\r\n";
 	foreach($tab_pilier as $pilier_id => $pilier_nom)
 	{
 		$export_csv .= $separateur.$pilier_nom."\r\n";
-		$export_html .= '			<li class="li_n1"><span>'.html($pilier_nom).'</span>'."\r\n";
+		$export_html .= '			<li class="li_n1"><span>'.To::html($pilier_nom).'</span>'."\r\n";
 		$export_html .= '				<ul class="ul_n2">'."\r\n";
 		if(isset($tab_section[$pilier_id]))
 		{
 			foreach($tab_section[$pilier_id] as $section_id => $section_nom)
 			{
 				$export_csv .= $separateur.$separateur.$section_nom."\r\n";
-				$export_html .= '					<li class="li_n2"><span>'.html($section_nom).'</span>'."\r\n";
+				$export_html .= '					<li class="li_n2"><span>'.To::html($section_nom).'</span>'."\r\n";
 				$export_html .= '						<ul class="ul_n3">'."\r\n";
 				if(isset($tab_entree[$pilier_id][$section_id]))
 				{
 					foreach($tab_entree[$pilier_id][$section_id] as $entree_id => $socle_nom)
 					{
 						$export_csv .= $separateur.$separateur.$separateur.'"'.$socle_nom.'"'."\r\n";
-						$export_html .= '							<li class="li_n3">'.html($socle_nom).'</li>'."\r\n";
+						$export_html .= '							<li class="li_n3">'.To::html($socle_nom).'</li>'."\r\n";
 					}
 				}
 				$export_html .= '						</ul>'."\r\n";
@@ -312,7 +312,7 @@ if( ($type_export=='arbre_socle') && $palier_id && $palier_nom )
 	$export_html .= '</ul>'."\r\n";
 
 	// Finalisation de l'export CSV (archivage dans un fichier zippé)
-	$fnom = 'export_arbre-socle_'.clean_fichier(substr($palier_nom,0,strpos($palier_nom,' ('))).'_'.fabriquer_fin_nom_fichier__date_et_alea();
+	$fnom = 'export_arbre-socle_'.Clean::fichier(substr($palier_nom,0,strpos($palier_nom,' ('))).'_'.fabriquer_fin_nom_fichier__date_et_alea();
 	$zip = new ZipArchive();
 	$result_open = $zip->open(CHEMIN_DOSSIER_EXPORT.$fnom.'.zip', ZIPARCHIVE::CREATE);
 	if($result_open!==TRUE)
@@ -320,7 +320,7 @@ if( ($type_export=='arbre_socle') && $palier_id && $palier_nom )
 		require(CHEMIN_DOSSIER_INCLUDE.'tableau_zip_error.php');
 		exit('Problème de création de l\'archive ZIP ('.$result_open.$tab_zip_error[$result_open].') !');
 	}
-	$zip->addFromString($fnom.'.csv',csv($export_csv));
+	$zip->addFromString($fnom.'.csv',To::csv($export_csv));
 	$zip->close();
 	// Finalisation de l'export HTML
 	$export_html.= '</div>';
@@ -337,7 +337,7 @@ if( ($type_export=='arbre_socle') && $palier_id && $palier_nom )
 
 if( ($type_export=='jointure_socle_matiere') && $palier_id && $palier_nom )
 {
-	Formulaire::save_choix('palier');
+	Form::save_choix('palier');
 	// Préparation de l'export CSV
 	$separateur = ';';
 	$export_csv  = 'PALIER SOCLE'.$separateur.'PILIER SOCLE'.$separateur.'SECTION SOCLE'.$separateur.'ITEM SOCLE'.$separateur.'ITEM MATIERE'."\r\n\r\n";
@@ -382,33 +382,33 @@ if( ($type_export=='jointure_socle_matiere') && $palier_id && $palier_nom )
 	// Elaboration de la sortie
 	$export_csv .= $palier_nom."\r\n";
 	$export_html .= '<ul class="ul_m1">'."\r\n";
-	$export_html .= '	<li class="li_m1"><span>'.html($palier_nom).'</span>'."\r\n";
+	$export_html .= '	<li class="li_m1"><span>'.To::html($palier_nom).'</span>'."\r\n";
 	$export_html .= '		<ul class="ul_n1">'."\r\n";
 	foreach($tab_pilier as $pilier_id => $pilier_nom)
 	{
 		$export_csv .= $separateur.$pilier_nom."\r\n";
-		$export_html .= '			<li class="li_n1"><span>'.html($pilier_nom).'</span>'."\r\n";
+		$export_html .= '			<li class="li_n1"><span>'.To::html($pilier_nom).'</span>'."\r\n";
 		$export_html .= '				<ul class="ul_n2">'."\r\n";
 		if(isset($tab_section[$pilier_id]))
 		{
 			foreach($tab_section[$pilier_id] as $section_id => $section_nom)
 			{
 				$export_csv .= $separateur.$separateur.$section_nom."\r\n";
-				$export_html .= '					<li class="li_n2"><span>'.html($section_nom).'</span>'."\r\n";
+				$export_html .= '					<li class="li_n2"><span>'.To::html($section_nom).'</span>'."\r\n";
 				$export_html .= '						<ul class="ul_n3">'."\r\n";
 				if(isset($tab_socle[$pilier_id][$section_id]))
 				{
 					foreach($tab_socle[$pilier_id][$section_id] as $socle_id => $socle_nom)
 					{
 						$export_csv .= $separateur.$separateur.$separateur.'"'.$socle_nom.'"'."\r\n";
-						$export_html .= '							<li class="li_n3"><span>'.html($socle_nom).'</span>'."\r\n";
+						$export_html .= '							<li class="li_n3"><span>'.To::html($socle_nom).'</span>'."\r\n";
 						if(isset($tab_jointure[$socle_id]))
 						{
 							$export_html .= '								<ul class="ul_m2">'."\r\n";
 							foreach($tab_jointure[$socle_id] as $item_descriptif)
 							{
 								$export_csv .= $separateur.$separateur.$separateur.$separateur.'"'.$item_descriptif.'"'."\r\n";
-								$export_html .= '									<li class="li_m2">'.html($item_descriptif).'</li>'."\r\n";
+								$export_html .= '									<li class="li_m2">'.To::html($item_descriptif).'</li>'."\r\n";
 							}
 							$export_html .= '								</ul>'."\r\n";
 						}
@@ -432,7 +432,7 @@ if( ($type_export=='jointure_socle_matiere') && $palier_id && $palier_nom )
 	$export_html .= '</ul>'."\r\n";
 
 	// Finalisation de l'export CSV (archivage dans un fichier zippé)
-	$fnom = 'export_jointures_'.clean_fichier(substr($palier_nom,0,strpos($palier_nom,' ('))).'_'.fabriquer_fin_nom_fichier__date_et_alea();
+	$fnom = 'export_jointures_'.Clean::fichier(substr($palier_nom,0,strpos($palier_nom,' ('))).'_'.fabriquer_fin_nom_fichier__date_et_alea();
 	$zip = new ZipArchive();
 	$result_open = $zip->open(CHEMIN_DOSSIER_EXPORT.$fnom.'.zip', ZIPARCHIVE::CREATE);
 	if($result_open!==TRUE)
@@ -440,7 +440,7 @@ if( ($type_export=='jointure_socle_matiere') && $palier_id && $palier_nom )
 		require(CHEMIN_DOSSIER_INCLUDE.'tableau_zip_error.php');
 		exit('Problème de création de l\'archive ZIP ('.$result_open.$tab_zip_error[$result_open].') !');
 	}
-	$zip->addFromString($fnom.'.csv',csv($export_csv));
+	$zip->addFromString($fnom.'.csv',To::csv($export_csv));
 	$zip->close();
 	// Finalisation de l'export HTML
 	$export_html.= '</div>';

@@ -28,11 +28,11 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 if($_SESSION['SESAMATH_ID']==ID_DEMO) {exit('Action désactivée pour la démo...');}
 
-$action = (isset($_POST['f_action'])) ? clean_texte($_POST['f_action'])  : '';
-$id     = (isset($_POST['f_id']))     ? clean_entier($_POST['f_id'])     : 0;
-$niveau = (isset($_POST['f_niveau'])) ? clean_entier($_POST['f_niveau']) : 0;
-$ref    = (isset($_POST['f_ref']))    ? clean_ref($_POST['f_ref'])       : '';
-$nom    = (isset($_POST['f_nom']))    ? clean_texte($_POST['f_nom'])     : '';
+$action = (isset($_POST['f_action'])) ? Clean::texte($_POST['f_action'])  : '';
+$id     = (isset($_POST['f_id']))     ? Clean::entier($_POST['f_id'])     : 0;
+$niveau = (isset($_POST['f_niveau'])) ? Clean::entier($_POST['f_niveau']) : 0;
+$ref    = (isset($_POST['f_ref']))    ? Clean::ref($_POST['f_ref'])       : '';
+$nom    = (isset($_POST['f_nom']))    ? Clean::texte($_POST['f_nom'])     : '';
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 //	Ajouter un nouveau groupe
@@ -49,8 +49,8 @@ if( ($action=='ajouter') && $niveau && $ref && $nom )
 	// Afficher le retour
 	echo'<tr id="id_'.$groupe_id.'" class="new">';
 	echo	'<td>{{NIVEAU_NOM}}</td>';
-	echo	'<td>'.html($ref).'</td>';
-	echo	'<td>'.html($nom).'</td>';
+	echo	'<td>'.To::html($ref).'</td>';
+	echo	'<td>'.To::html($nom).'</td>';
 	echo	'<td class="nu">';
 	echo		'<q class="modifier" title="Modifier ce groupe."></q>';
 	echo		'<q class="supprimer" title="Supprimer ce groupe."></q>';
@@ -72,8 +72,8 @@ else if( ($action=='modifier') && $id && $niveau && $ref && $nom )
 	DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_groupe_par_admin($id,$ref,$nom,$niveau);
 	// Afficher le retour
 	echo'<td>{{NIVEAU_NOM}}</td>';
-	echo'<td>'.html($ref).'</td>';
-	echo'<td>'.html($nom).'</td>';
+	echo'<td>'.To::html($ref).'</td>';
+	echo'<td>'.To::html($nom).'</td>';
 	echo'<td class="nu">';
 	echo	'<q class="modifier" title="Modifier ce groupe."></q>';
 	echo	'<q class="supprimer" title="Supprimer ce groupe."></q>';
@@ -88,7 +88,7 @@ else if( ($action=='supprimer') && $id )
 	// Effacer l'enregistrement
 	DB_STRUCTURE_ADMINISTRATEUR::DB_supprimer_groupe_par_admin( $id , 'groupe' , TRUE /*with_devoir*/ );
 	// Log de l'action
-	ajouter_log_SACoche('Suppression d\'un regroupement (groupe '.$id.'), avec les devoirs associés.');
+	SACocheLog::ajouter('Suppression d\'un regroupement (groupe '.$id.'), avec les devoirs associés.');
 	// Afficher le retour
 	echo'<td>ok</td>';
 }

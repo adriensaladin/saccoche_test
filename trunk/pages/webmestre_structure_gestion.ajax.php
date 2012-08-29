@@ -27,18 +27,18 @@
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 
-$action           = (isset($_POST['f_action']))           ? clean_texte($_POST['f_action'])              : '';
-$base_id          = (isset($_POST['f_base_id']))          ? clean_entier($_POST['f_base_id'])            : 0;
+$action           = (isset($_POST['f_action']))           ? Clean::texte($_POST['f_action'])              : '';
+$base_id          = (isset($_POST['f_base_id']))          ? Clean::entier($_POST['f_base_id'])            : 0;
 $listing_base_id  = (isset($_POST['f_listing_id']))       ? $_POST['f_listing_id']                       : '';
-$geo_id           = (isset($_POST['f_geo']))              ? clean_entier($_POST['f_geo'])                : 0;
+$geo_id           = (isset($_POST['f_geo']))              ? Clean::entier($_POST['f_geo'])                : 0;
 $localisation     = (isset($_POST['f_localisation']))     ? $_POST['f_localisation']                     : ''; // Ne pas appliquer trim()
-$denomination     = (isset($_POST['f_denomination']))     ? clean_texte($_POST['f_denomination'])        : '';
-$uai              = (isset($_POST['f_uai']))              ? clean_uai($_POST['f_uai'])                   : '';
-$contact_nom      = (isset($_POST['f_contact_nom']))      ? clean_nom($_POST['f_contact_nom'])           : '';
-$contact_prenom   = (isset($_POST['f_contact_prenom']))   ? clean_prenom($_POST['f_contact_prenom'])     : '';
-$contact_courriel = (isset($_POST['f_contact_courriel'])) ? clean_courriel($_POST['f_contact_courriel']) : '';
-$courriel_envoi   = (isset($_POST['f_courriel_envoi']))   ? clean_entier($_POST['f_courriel_envoi'])     : 0;
-$admin_id         = (isset($_POST['f_admin_id']))         ? clean_entier($_POST['f_admin_id'])           : 0;
+$denomination     = (isset($_POST['f_denomination']))     ? Clean::texte($_POST['f_denomination'])        : '';
+$uai              = (isset($_POST['f_uai']))              ? Clean::uai($_POST['f_uai'])                   : '';
+$contact_nom      = (isset($_POST['f_contact_nom']))      ? Clean::nom($_POST['f_contact_nom'])           : '';
+$contact_prenom   = (isset($_POST['f_contact_prenom']))   ? Clean::prenom($_POST['f_contact_prenom'])     : '';
+$contact_courriel = (isset($_POST['f_contact_courriel'])) ? Clean::courriel($_POST['f_contact_courriel']) : '';
+$courriel_envoi   = (isset($_POST['f_courriel_envoi']))   ? Clean::entier($_POST['f_courriel_envoi'])     : 0;
+$admin_id         = (isset($_POST['f_admin_id']))         ? Clean::entier($_POST['f_admin_id'])           : 0;
 
 // On récupère les zones géographiques pour 2 raisons :
 // => vérifier que l'identifiant transmis est cohérent
@@ -64,7 +64,7 @@ if( ($action=='ajouter') && isset($tab_geo[$geo_id]) && $localisation && $denomi
 		$structure_denomination = DB_WEBMESTRE_WEBMESTRE::DB_tester_structure_Id($base_id);
 		if($structure_denomination!==NULL)
 		{
-			exit('Erreur : identifiant déjà utilisé ('.html($structure_denomination).') !');
+			exit('Erreur : identifiant déjà utilisé ('.To::html($structure_denomination).') !');
 		}
 	}
 	// Vérifier que le n°UAI est disponible
@@ -84,8 +84,8 @@ if( ($action=='ajouter') && isset($tab_geo[$geo_id]) && $localisation && $denomi
 	$tab_sous_dossier = array('badge','cookie','devoir','officiel','rss');
 	foreach($tab_sous_dossier as $sous_dossier)
 	{
-		Creer_Dossier(CHEMIN_DOSSIER_TMP.$sous_dossier.DS.$base_id);
-		Ecrire_Fichier(CHEMIN_DOSSIER_TMP.$sous_dossier.DS.$base_id.DS.'index.htm','Circulez, il n\'y a rien à voir par ici !');
+		FileSystem::creer_dossier(CHEMIN_DOSSIER_TMP.$sous_dossier.DS.$base_id);
+		FileSystem::ecrire_fichier_index(CHEMIN_DOSSIER_TMP.$sous_dossier.DS.$base_id);
 	}
 	// Charger les paramètres de connexion à cette base afin de pouvoir y effectuer des requêtes
 	charger_parametres_mysql_supplementaires($base_id);
@@ -110,7 +110,7 @@ if( ($action=='ajouter') && isset($tab_geo[$geo_id]) && $localisation && $denomi
 	if($courriel_envoi)
 	{
 		$texte = contenu_courriel_inscription( $base_id , $denomination , $contact_nom , $contact_prenom , 'admin' , $password , URL_DIR_SACOCHE );
-		$courriel_bilan = envoyer_webmestre_courriel( $contact_courriel , 'Création compte' , $texte , FALSE );
+		$courriel_bilan = Sesamail::mail( $contact_courriel , 'Création compte' , $texte );
 		if(!$courriel_bilan)
 		{
 			exit('Erreur lors de l\'envoi du courriel !');
@@ -121,11 +121,11 @@ if( ($action=='ajouter') && isset($tab_geo[$geo_id]) && $localisation && $denomi
 	echo	'<td class="nu"><a href="#id_0"><img class="bloquer" src="./_img/etat/acces_oui.png" title="Bloquer cet établissement." /></a></td>';
 	echo	'<td class="nu"><input type="checkbox" name="f_ids" value="'.$base_id.'" /></td>';
 	echo	'<td class="label">'.$base_id.'</td>';
-	echo	'<td class="label"><i>'.sprintf("%02u",$tab_geo[$geo_id]['ordre']).'</i>'.html($tab_geo[$geo_id]['nom']).'</td>';
-	echo	'<td class="label">'.html($localisation).'<br />'.html($denomination).'</td>';
-	echo	'<td class="label">'.html($uai).'</td>';
-	echo	'<td class="label">'.html($contact_nom).'<br />'.html($contact_prenom).'</td>';
-	echo	'<td class="label">'.html($contact_courriel).'</td>';
+	echo	'<td class="label"><i>'.sprintf("%02u",$tab_geo[$geo_id]['ordre']).'</i>'.To::html($tab_geo[$geo_id]['nom']).'</td>';
+	echo	'<td class="label">'.To::html($localisation).'<br />'.To::html($denomination).'</td>';
+	echo	'<td class="label">'.To::html($uai).'</td>';
+	echo	'<td class="label">'.To::html($contact_nom).'<br />'.To::html($contact_prenom).'</td>';
+	echo	'<td class="label">'.To::html($contact_courriel).'</td>';
 	echo	'<td class="nu">';
 	echo		'<q class="modifier" title="Modifier cet établissement."></q>';
 	echo		'<q class="initialiser_mdp" title="Générer un nouveau mdp d\'un admin."></q>';
@@ -158,15 +158,15 @@ if( ($action=='modifier') && $base_id && isset($tab_geo[$geo_id]) && $localisati
 	$tab_parametres['webmestre_denomination'] = $denomination;
 	DB_STRUCTURE_COMMUN::DB_modifier_parametres($tab_parametres);
 	// On affiche le retour
-	$img = (!is_file(CHEMIN_DOSSIER_CONFIG.'blocage_webmestre_'.$base_id.'.txt')) ? '<img class="bloquer" src="./_img/etat/acces_oui.png" title="Bloquer cet établissement." />' : '<img class="debloquer" src="./_img/etat/acces_non.png" title="Débloquer cet établissement." />' ;
+	$img = (LockAcces::tester_blocage('webmestre',$base_id)===NULL) ? '<img class="bloquer" src="./_img/etat/acces_oui.png" title="Bloquer cet établissement." />' : '<img class="debloquer" src="./_img/etat/acces_non.png" title="Débloquer cet établissement." />' ;
 	echo'<td class="nu"><a href="#id_0">'.$img.'</a></td>';
 	echo'<td class="nu"><input type="checkbox" name="f_ids" value="'.$base_id.'" /></td>';
 	echo'<td class="label">'.$base_id.'</td>';
-	echo'<td class="label"><i>'.sprintf("%02u",$tab_geo[$geo_id]['ordre']).'</i>'.html($tab_geo[$geo_id]['nom']).'</td>';
-	echo'<td class="label">'.html($localisation).'<br />'.html($denomination).'</td>';
-	echo'<td class="label">'.html($uai).'</td>';
-	echo'<td class="label">'.html($contact_nom).'<br />'.html($contact_prenom).'</td>';
-	echo'<td class="label">'.html($contact_courriel).'</td>';
+	echo'<td class="label"><i>'.sprintf("%02u",$tab_geo[$geo_id]['ordre']).'</i>'.To::html($tab_geo[$geo_id]['nom']).'</td>';
+	echo'<td class="label">'.To::html($localisation).'<br />'.To::html($denomination).'</td>';
+	echo'<td class="label">'.To::html($uai).'</td>';
+	echo'<td class="label">'.To::html($contact_nom).'<br />'.To::html($contact_prenom).'</td>';
+	echo'<td class="label">'.To::html($contact_courriel).'</td>';
 	echo'<td class="nu">';
 	echo	'<q class="modifier" title="Modifier cet établissement."></q>';
 	echo	'<q class="initialiser_mdp" title="Générer un nouveau mdp d\'un admin."></q>';
@@ -182,7 +182,7 @@ if( ($action=='modifier') && $base_id && isset($tab_geo[$geo_id]) && $localisati
 if( ($action=='lister_admin') && $base_id )
 {
 	charger_parametres_mysql_supplementaires($base_id);
-	exit( Formulaire::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_administrateurs_etabl() , $select_nom=false , $option_first='non' , $selection=false , $optgroup='non') );
+	exit( Form::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_administrateurs_etabl() , $select_nom=false , $option_first='non' , $selection=false , $optgroup='non') );
 }
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
@@ -216,15 +216,15 @@ if( ($action=='initialiser_mdp') && $base_id && $admin_id )
 	DB_STRUCTURE_WEBMESTRE::DB_modifier_admin_mdp($admin_id,crypter_mdp($admin_password));
 	// Envoyer un courriel au contact
 	$courriel_contenu = contenu_courriel_nouveau_mdp( $base_id , $denomination , $contact_nom , $contact_prenom , $admin_nom , $admin_prenom , $admin_login , $admin_password , URL_DIR_SACOCHE );
-	$courriel_bilan = envoyer_webmestre_courriel( $contact_courriel , 'Modification mdp administrateur' , $courriel_contenu , FALSE );
+	$courriel_bilan = Sesamail::mail( $contact_courriel , 'Modification mdp administrateur' , $courriel_contenu );
 	if(!$courriel_bilan)
 	{
 		exit('Erreur lors de l\'envoi du courriel !');
 	}
 	// On affiche le retour
 	echo'<ok>';
-	echo'Le mot de passe de '.html($admin_prenom.' '.$admin_nom).',<BR />administrateur de l\'établissement '.html($denomination).',<BR />vient d\'être réinitialisé.<BR /><BR />';
-	echo'Les nouveaux identifiants ont été envoyés au contact '.html($contact_prenom).' '.html($contact_nom).',<BR />à son adresse de courriel '.html($contact_courriel).'.';
+	echo'Le mot de passe de '.To::html($admin_prenom.' '.$admin_nom).',<BR />administrateur de l\'établissement '.To::html($denomination).',<BR />vient d\'être réinitialisé.<BR /><BR />';
+	echo'Les nouveaux identifiants ont été envoyés au contact '.To::html($contact_prenom).' '.To::html($contact_nom).',<BR />à son adresse de courriel '.To::html($contact_courriel).'.';
 	exit();
 }
 
@@ -244,7 +244,7 @@ if( ($action=='supprimer') && $base_id )
 
 if( ($action=='supprimer') && $listing_base_id )
 {
-	$tab_base_id = array_filter( array_map( 'clean_entier' , explode(',',$listing_base_id) ) , 'positif' );
+	$tab_base_id = array_filter( Clean::map_entier( explode(',',$listing_base_id) ) , 'positif' );
 	foreach($tab_base_id as $base_id)
 	{
 		supprimer_multi_structure($base_id);
@@ -258,7 +258,7 @@ if( ($action=='supprimer') && $listing_base_id )
 
 if( ($action=='bloquer') && $base_id )
 {
-	bloquer_application($_SESSION['USER_PROFIL'],$base_id,'Action ciblée ; contacter le webmestre pour obtenir des précisions.');
+	LockAcces::bloquer_application($_SESSION['USER_PROFIL'],$base_id,'Action ciblée ; contacter le webmestre pour obtenir des précisions.');
 	exit('<img class="debloquer" src="./_img/etat/acces_non.png" title="Débloquer cet établissement." />');
 }
 
@@ -268,7 +268,7 @@ if( ($action=='bloquer') && $base_id )
 
 if( ($action=='debloquer') && $base_id )
 {
-	debloquer_application($_SESSION['USER_PROFIL'],$base_id);
+	LockAcces::debloquer_application($_SESSION['USER_PROFIL'],$base_id);
 	exit('<img class="bloquer" src="./_img/etat/acces_oui.png" title="Bloquer cet établissement." />');
 }
 

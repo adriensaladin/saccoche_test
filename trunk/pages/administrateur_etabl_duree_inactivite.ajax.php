@@ -28,7 +28,7 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 if($_SESSION['SESAMATH_ID']==ID_DEMO) {exit('Action désactivée pour la démo...');}
 
-$delai = (isset($_POST['f_delai'])) ? clean_entier($_POST['f_delai']) : 0;
+$delai = (isset($_POST['f_delai'])) ? Clean::entier($_POST['f_delai']) : 0;
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 //	Choix du délai avant une déconnexion automatique pour inactivité

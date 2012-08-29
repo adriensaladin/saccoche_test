@@ -30,34 +30,34 @@ if($_SESSION['SESAMATH_ID']==ID_DEMO) {exit('Action désactivée pour la démo..
 
 $objet                          = (isset($_POST['objet']))                            ? $_POST['objet']                                          : '';
 
-$releve_appreciation_rubrique   = (isset($_POST['f_releve_appreciation_rubrique']))   ? clean_entier($_POST['f_releve_appreciation_rubrique'])   : 0;
-$releve_appreciation_generale   = (isset($_POST['f_releve_appreciation_generale']))   ? clean_entier($_POST['f_releve_appreciation_generale'])   : 0;
+$releve_appreciation_rubrique   = (isset($_POST['f_releve_appreciation_rubrique']))   ? Clean::entier($_POST['f_releve_appreciation_rubrique'])   : 0;
+$releve_appreciation_generale   = (isset($_POST['f_releve_appreciation_generale']))   ? Clean::entier($_POST['f_releve_appreciation_generale'])   : 0;
 $releve_moyenne_scores          = (isset($_POST['f_releve_moyenne_scores']))          ? 1                                                        : 0;
 $releve_pourcentage_acquis      = (isset($_POST['f_releve_pourcentage_acquis']))      ? 1                                                        : 0;
-$releve_cases_nb                = (isset($_POST['f_releve_cases_nb']))                ? clean_entier($_POST['f_releve_cases_nb'])                : 0;
+$releve_cases_nb                = (isset($_POST['f_releve_cases_nb']))                ? Clean::entier($_POST['f_releve_cases_nb'])                : 0;
 $releve_aff_coef                = (isset($_POST['f_releve_aff_coef']))                ? 1                                                        : 0;
 $releve_aff_socle               = (isset($_POST['f_releve_aff_socle']))               ? 1                                                        : 0;
 $releve_aff_domaine             = (isset($_POST['f_releve_aff_domaine']))             ? 1                                                        : 0;
 $releve_aff_theme               = (isset($_POST['f_releve_aff_theme']))               ? 1                                                        : 0;
-$releve_couleur                 = (isset($_POST['f_releve_couleur']))                 ? clean_texte($_POST['f_releve_couleur'])                  : '';
-$releve_legende                 = (isset($_POST['f_releve_legende']))                 ? clean_texte($_POST['f_releve_legende'])                  : '';
+$releve_couleur                 = (isset($_POST['f_releve_couleur']))                 ? Clean::texte($_POST['f_releve_couleur'])                  : '';
+$releve_legende                 = (isset($_POST['f_releve_legende']))                 ? Clean::texte($_POST['f_releve_legende'])                  : '';
 
-$bulletin_appreciation_rubrique = (isset($_POST['f_bulletin_appreciation_rubrique'])) ? clean_entier($_POST['f_bulletin_appreciation_rubrique']) : 0;
-$bulletin_appreciation_generale = (isset($_POST['f_bulletin_appreciation_generale'])) ? clean_entier($_POST['f_bulletin_appreciation_generale']) : 0;
+$bulletin_appreciation_rubrique = (isset($_POST['f_bulletin_appreciation_rubrique'])) ? Clean::entier($_POST['f_bulletin_appreciation_rubrique']) : 0;
+$bulletin_appreciation_generale = (isset($_POST['f_bulletin_appreciation_generale'])) ? Clean::entier($_POST['f_bulletin_appreciation_generale']) : 0;
 $bulletin_moyenne_scores        = (isset($_POST['f_bulletin_moyenne_scores']))        ? 1                                                        : 0;
-$bulletin_note_sur_20           = (isset($_POST['f_bulletin_note_sur_20']))           ? clean_entier($_POST['f_bulletin_note_sur_20'])           : 0; // Est transmis à 0 si f_bulletin_pourcentage coché
+$bulletin_note_sur_20           = (isset($_POST['f_bulletin_note_sur_20']))           ? Clean::entier($_POST['f_bulletin_note_sur_20'])           : 0; // Est transmis à 0 si f_bulletin_pourcentage coché
 $bulletin_moyenne_classe        = (isset($_POST['f_bulletin_moyenne_classe']))        ? 1                                                        : 0;
 $bulletin_moyenne_generale      = (isset($_POST['f_bulletin_moyenne_generale']))      ? 1                                                        : 0;
-$bulletin_couleur               = (isset($_POST['f_bulletin_couleur']))               ? clean_texte($_POST['f_bulletin_couleur'])                : '';
-$bulletin_legende               = (isset($_POST['f_bulletin_legende']))               ? clean_texte($_POST['f_bulletin_legende'])                : '';
+$bulletin_couleur               = (isset($_POST['f_bulletin_couleur']))               ? Clean::texte($_POST['f_bulletin_couleur'])                : '';
+$bulletin_legende               = (isset($_POST['f_bulletin_legende']))               ? Clean::texte($_POST['f_bulletin_legende'])                : '';
 
-$socle_appreciation_rubrique    = (isset($_POST['f_socle_appreciation_rubrique']))    ? clean_entier($_POST['f_socle_appreciation_rubrique'])    : 0;
-$socle_appreciation_generale    = (isset($_POST['f_socle_appreciation_generale']))    ? clean_entier($_POST['f_socle_appreciation_generale'])    : 0;
+$socle_appreciation_rubrique    = (isset($_POST['f_socle_appreciation_rubrique']))    ? Clean::entier($_POST['f_socle_appreciation_rubrique'])    : 0;
+$socle_appreciation_generale    = (isset($_POST['f_socle_appreciation_generale']))    ? Clean::entier($_POST['f_socle_appreciation_generale'])    : 0;
 $socle_only_presence            = (isset($_POST['f_socle_only_presence']))            ? 1                                                        : 0;
 $socle_pourcentage_acquis       = (isset($_POST['f_socle_pourcentage_acquis']))       ? 1                                                        : 0;
 $socle_etat_validation          = (isset($_POST['f_socle_etat_validation']))          ? 1                                                        : 0;
-$socle_couleur                  = (isset($_POST['f_socle_couleur']))                  ? clean_texte($_POST['f_socle_couleur'])                   : '';
-$socle_legende                  = (isset($_POST['f_socle_legende']))                  ? clean_texte($_POST['f_socle_legende'])                   : '';
+$socle_couleur                  = (isset($_POST['f_socle_couleur']))                  ? Clean::texte($_POST['f_socle_couleur'])                   : '';
+$socle_legende                  = (isset($_POST['f_socle_legende']))                  ? Clean::texte($_POST['f_socle_legende'])                   : '';
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 //	Traitement du formulaire "Relevé d'évaluations"

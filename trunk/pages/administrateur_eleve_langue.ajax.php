@@ -29,10 +29,10 @@ if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');
 if(($_SESSION['SESAMATH_ID']==ID_DEMO)&&($_GET['action']!='initialiser')){exit('Action désactivée pour la démo...');}
 
 $action = (isset($_GET['action']))         ? $_GET['action']                       : '';
-$langue = (isset($_POST['select_langue'])) ? clean_entier($_POST['select_langue']) : 0 ;
+$langue = (isset($_POST['select_langue'])) ? Clean::entier($_POST['select_langue']) : 0 ;
 // Normalement c'est un tableau qui est transmis, mais au cas où...
 $tab_select_eleves  = (isset($_POST['select_eleves']))  ? ( (is_array($_POST['select_eleves']))  ? $_POST['select_eleves']  : explode(',',$_POST['select_eleves'])  ) : array() ;
-$tab_select_eleves  = array_filter( array_map( 'clean_entier' , $tab_select_eleves  ) , 'positif' );
+$tab_select_eleves  = array_filter( Clean::map_entier($tab_select_eleves) , 'positif' );
 
 require(CHEMIN_DOSSIER_INCLUDE.'tableau_langues.php');
 
@@ -70,14 +70,14 @@ $tab_user[0]             = '';
 $DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_classes_avec_niveaux($niveau_ordre='DESC');
 foreach($DB_TAB as $DB_ROW)
 {
-	$tab_niveau_groupe[$DB_ROW['niveau_id']][$DB_ROW['groupe_id']] = html($DB_ROW['groupe_nom']);
+	$tab_niveau_groupe[$DB_ROW['niveau_id']][$DB_ROW['groupe_id']] = To::html($DB_ROW['groupe_nom']);
 	$tab_user[$DB_ROW['groupe_id']] = '';
 }
 // Récupérer la liste des élèves / classes
 $DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_users( 'eleve' , 1 /*only_actuels*/ , FALSE /*with_classe*/ );
 foreach($DB_TAB as $DB_ROW)
 {
-	$tab_user[$DB_ROW['eleve_classe_id']] .= '<img src="./_img/drapeau/'.$DB_ROW['eleve_langue'].'.gif" alt="" title="'.$tab_langues[$DB_ROW['eleve_langue']]['texte'].'" /> '.html($DB_ROW['user_nom'].' '.$DB_ROW['user_prenom']).'<br />';
+	$tab_user[$DB_ROW['eleve_classe_id']] .= '<img src="./_img/drapeau/'.$DB_ROW['eleve_langue'].'.gif" alt="" title="'.$tab_langues[$DB_ROW['eleve_langue']]['texte'].'" /> '.To::html($DB_ROW['user_nom'].' '.$DB_ROW['user_prenom']).'<br />';
 }
 // Assemblage du tableau résultant
 $TH = array();

@@ -28,15 +28,15 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 if($_SESSION['SESAMATH_ID']==ID_DEMO) {exit('Action désactivée pour la démo...');}
 
-$action            = (isset($_POST['f_action']))            ? clean_texte($_POST['f_action'])            : '';
+$action            = (isset($_POST['f_action']))            ? Clean::texte($_POST['f_action'])            : '';
 $proxy_used        = (isset($_POST['f_proxy_used']))        ? 'oui'                                      : '';
-$proxy_name        = (isset($_POST['f_proxy_name']))        ? clean_texte($_POST['f_proxy_name'])        : '';
-$proxy_port        = (isset($_POST['f_proxy_port']))        ? clean_entier($_POST['f_proxy_port'])       : 0;
-$proxy_type        = (isset($_POST['f_proxy_type']))        ? clean_texte($_POST['f_proxy_type'])        : '';
+$proxy_name        = (isset($_POST['f_proxy_name']))        ? Clean::texte($_POST['f_proxy_name'])        : '';
+$proxy_port        = (isset($_POST['f_proxy_port']))        ? Clean::entier($_POST['f_proxy_port'])       : 0;
+$proxy_type        = (isset($_POST['f_proxy_type']))        ? Clean::texte($_POST['f_proxy_type'])        : '';
 $proxy_auth_used   = (isset($_POST['f_proxy_auth_used']))   ? 'oui'                                      : '';
-$proxy_auth_method = (isset($_POST['f_proxy_auth_method'])) ? clean_texte($_POST['f_proxy_auth_method']) : '';
-$proxy_auth_user   = (isset($_POST['f_proxy_auth_user']))   ? clean_texte($_POST['f_proxy_auth_user'])   : '';
-$proxy_auth_pass   = (isset($_POST['f_proxy_auth_pass']))   ? clean_texte($_POST['f_proxy_auth_pass'])   : '';
+$proxy_auth_method = (isset($_POST['f_proxy_auth_method'])) ? Clean::texte($_POST['f_proxy_auth_method']) : '';
+$proxy_auth_user   = (isset($_POST['f_proxy_auth_user']))   ? Clean::texte($_POST['f_proxy_auth_user'])   : '';
+$proxy_auth_pass   = (isset($_POST['f_proxy_auth_pass']))   ? Clean::texte($_POST['f_proxy_auth_pass'])   : '';
 
 //	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
 // Tester les réglages actuellement enregistrés

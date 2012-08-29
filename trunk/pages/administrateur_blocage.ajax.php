@@ -28,8 +28,8 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 if($_SESSION['SESAMATH_ID']==ID_DEMO) {exit('Action désactivée pour la démo...');}
 
-$action = (isset($_POST['f_action'])) ? clean_texte($_POST['f_action']) : '';
-$motif  = (isset($_POST['f_motif']))  ? clean_texte($_POST['f_motif'])  : '';
+$action = (isset($_POST['f_action'])) ? Clean::texte($_POST['f_action']) : '';
+$motif  = (isset($_POST['f_motif']))  ? Clean::texte($_POST['f_motif'])  : '';
 
 //	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
 // Bloquer ou débloquer l'application
@@ -37,13 +37,13 @@ $motif  = (isset($_POST['f_motif']))  ? clean_texte($_POST['f_motif'])  : '';
 
 if($action=='debloquer')
 {
-	debloquer_application($_SESSION['USER_PROFIL'],$_SESSION['BASE']);
+	LockAcces::debloquer_application($_SESSION['USER_PROFIL'],$_SESSION['BASE']);
 	exit('<label class="valide">Application accessible.</label>');
 }
 elseif($action=='bloquer')
 {
-	bloquer_application($_SESSION['USER_PROFIL'],$_SESSION['BASE'],$motif);
-	exit('<label class="erreur">Application fermée : '.html($motif).'</label>');
+	LockAcces::bloquer_application($_SESSION['USER_PROFIL'],$_SESSION['BASE'],$motif);
+	exit('<label class="erreur">Application fermée : '.To::html($motif).'</label>');
 }
 else
 {

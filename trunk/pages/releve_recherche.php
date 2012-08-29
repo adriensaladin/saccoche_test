@@ -30,18 +30,18 @@ $TITRE = "Recherche ciblée";
 
 // Fabrication des éléments select du formulaire
 $tab_groupes = ($_SESSION['USER_PROFIL']=='professeur') ? DB_STRUCTURE_COMMUN::DB_OPT_groupes_professeur($_SESSION['USER_ID']) : DB_STRUCTURE_COMMUN::DB_OPT_regroupements_etabl(FALSE/*sans*/) ;
-$select_groupe = Formulaire::afficher_select($tab_groupes , $select_nom='f_groupe' , $option_first='oui' , $selection=false , $optgroup='oui');
+$select_groupe = Form::afficher_select($tab_groupes , $select_nom='f_groupe' , $option_first='oui' , $selection=false , $optgroup='oui');
 
-Formulaire::$tab_select_optgroup = array( 1=>'item(s) matière(s)' , 2=>'item du socle' , 3=>'compétence du socle' );
-$select_critere_objet = Formulaire::afficher_select(Formulaire::$tab_select_recherche_objet , $select_nom='f_critere_objet' , $option_first='oui' , $selection=false , $optgroup='oui');
+Form::$tab_select_optgroup = array( 1=>'item(s) matière(s)' , 2=>'item du socle' , 3=>'compétence du socle' );
+$select_critere_objet = Form::afficher_select(Form::$tab_select_recherche_objet , $select_nom='f_critere_objet' , $option_first='oui' , $selection=false , $optgroup='oui');
 
-$select_critere_seuil_acquis = '<option value="NA" selected>'.html($_SESSION['ACQUIS_LEGENDE']['NA']).'</option><option value="VA">'.html($_SESSION['ACQUIS_LEGENDE']['VA']).'</option><option value="A">'.html($_SESSION['ACQUIS_LEGENDE']['A']).'</option><option value="X">Indéterminé</option>';
+$select_critere_seuil_acquis = '<option value="NA" selected>'.To::html($_SESSION['ACQUIS_LEGENDE']['NA']).'</option><option value="VA">'.To::html($_SESSION['ACQUIS_LEGENDE']['VA']).'</option><option value="A">'.To::html($_SESSION['ACQUIS_LEGENDE']['A']).'</option><option value="X">Indéterminé</option>';
 $select_critere_seuil_valide = '<option value="0" selected>Invalidé</option><option value="1">Validé</option><option value="2">Non renseigné</option>';
 
-$select_selection_items = Formulaire::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_selection_items($_SESSION['USER_ID']) , $select_nom='f_selection_items' , $option_first='oui' , $selection=false , $optgroup='non');
+$select_selection_items = Form::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_selection_items($_SESSION['USER_ID']) , $select_nom='f_selection_items' , $option_first='oui' , $selection=false , $optgroup='non');
 
-$select_matiere = Formulaire::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_matieres_etabl()  , $select_nom=false             , $option_first='non' , $selection=true  , $optgroup='non');
-$select_piliers = Formulaire::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_paliers_piliers() , $select_nom='f_select_pilier' , $option_first='oui' , $selection=false , $optgroup='oui');
+$select_matiere = Form::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_matieres_etabl()  , $select_nom=false             , $option_first='non' , $selection=true  , $optgroup='non');
+$select_piliers = Form::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_paliers_piliers() , $select_nom='f_select_pilier' , $option_first='oui' , $selection=false , $optgroup='oui');
 
 ?>
 

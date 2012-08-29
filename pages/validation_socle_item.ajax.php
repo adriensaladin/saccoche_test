@@ -28,21 +28,21 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 if(($_SESSION['SESAMATH_ID']==ID_DEMO)&&($_POST['f_action']!='Afficher_bilan')&&($_POST['f_action']!='Afficher_information')){exit('Action désactivée pour la démo...');}
 
-$action      = (isset($_POST['f_action']))  ? clean_texte($_POST['f_action'])   : '';
-$palier_id   = (isset($_POST['f_palier']))  ? clean_entier($_POST['f_palier'])  : 0;
-$pilier_id   = (isset($_POST['f_pilier']))  ? clean_entier($_POST['f_pilier'])  : 0;
-$eleve_id    = (isset($_POST['f_user']))    ? clean_entier($_POST['f_user'])    : 0;
-$entree_id   = (isset($_POST['f_item']))    ? clean_entier($_POST['f_item'])    : 0;
-$mode        = (isset($_POST['f_mode']))    ? clean_texte($_POST['f_mode'])     : '';
-$langue      = (isset($_POST['langue']))    ? clean_entier($_POST['langue'])    : 0;
+$action      = (isset($_POST['f_action']))  ? Clean::texte($_POST['f_action'])   : '';
+$palier_id   = (isset($_POST['f_palier']))  ? Clean::entier($_POST['f_palier'])  : 0;
+$pilier_id   = (isset($_POST['f_pilier']))  ? Clean::entier($_POST['f_pilier'])  : 0;
+$eleve_id    = (isset($_POST['f_user']))    ? Clean::entier($_POST['f_user'])    : 0;
+$entree_id   = (isset($_POST['f_item']))    ? Clean::entier($_POST['f_item'])    : 0;
+$mode        = (isset($_POST['f_mode']))    ? Clean::texte($_POST['f_mode'])     : '';
+$langue      = (isset($_POST['langue']))    ? Clean::entier($_POST['langue'])    : 0;
 // Normalement ce sont des tableaux qui sont transmis, mais au cas où...
 // De plus pour l'affichage du détail des acquisitions d'un item, f_matiere est transmis comme une chaine concaténée.
 $tab_eleve   = (isset($_POST['f_eleve']))   ? ( (is_array($_POST['f_eleve']))   ? $_POST['f_eleve']   : explode(',',$_POST['f_eleve'])   ) : array() ;
 $tab_domaine = (isset($_POST['f_domaine'])) ? ( (is_array($_POST['f_domaine'])) ? $_POST['f_domaine'] : explode(',',$_POST['f_domaine']) ) : array() ;
 $tab_matiere = (isset($_POST['f_matiere'])) ? ( (is_array($_POST['f_matiere'])) ? $_POST['f_matiere'] : explode(',',$_POST['f_matiere']) ) : array() ;
-$tab_eleve   = array_filter( array_map( 'clean_entier' , $tab_eleve   ) , 'positif' );
-$tab_domaine = array_filter( array_map( 'clean_entier' , $tab_domaine ) , 'positif' );
-$tab_matiere = array_filter( array_map( 'clean_entier' , $tab_matiere ) , 'positif' );
+$tab_eleve   = array_filter( Clean::map_entier($tab_eleve)   , 'positif' );
+$tab_domaine = array_filter( Clean::map_entier($tab_domaine) , 'positif' );
+$tab_matiere = array_filter( Clean::map_entier($tab_matiere) , 'positif' );
 
 $listing_eleve_id   = implode(',',$tab_eleve);
 $listing_domaine_id = implode(',',$tab_domaine);
@@ -53,7 +53,7 @@ $listing_domaine_id = implode(',',$tab_domaine);
 
 if( ($action=='Afficher_bilan') && $pilier_id && count($tab_domaine) && count($tab_eleve) && (in_array($mode,array('auto','manuel'))) )
 {
-	Formulaire::save_choix('validation_socle_item');
+	Form::save_choix('validation_socle_item');
 	$affichage = '';
 	// Tableau des langues
 	$tfoot = '';
@@ -72,7 +72,7 @@ if( ($action=='Afficher_bilan') && $pilier_id && count($tab_domaine) && count($t
 	foreach($tab_eleve as $tab)
 	{
 		extract($tab);	// $eleve_id $eleve_nom $eleve_prenom $eleve_langue
-		$affichage .= '<th><img id="I'.$eleve_id.'" alt="'.html($eleve_nom.' '.$eleve_prenom).'" src="./_img/php/etiquette.php?dossier='.$_SESSION['BASE'].'&amp;nom='.urlencode($eleve_nom).'&amp;prenom='.urlencode($eleve_prenom).'" /></th>';
+		$affichage .= '<th><img id="I'.$eleve_id.'" alt="'.To::html($eleve_nom.' '.$eleve_prenom).'" src="./_img/php/etiquette.php?dossier='.$_SESSION['BASE'].'&amp;nom='.urlencode($eleve_nom).'&amp;prenom='.urlencode($eleve_prenom).'" /></th>';
 		$tfoot .= '<td id="L'.$eleve_id.'" class="L'.$eleve_langue.'" title="'.$tab_langues[$eleve_langue]['texte'].'"></td>';
 		$tab_eleve_langue[$eleve_id] = $eleve_langue;
 		$tab_eleve_id[] = $eleve_id;
@@ -112,7 +112,7 @@ if( ($action=='Afficher_bilan') && $pilier_id && count($tab_domaine) && count($t
 				$affichage .= '<th id="S'.$section_id.'U'.$eleve_id.'" class="down1" title="Modifier la validation de tout le domaine pour cet élève."></th>';
 			}
 			$affichage .= '<th id="S'.$section_id.'" class="diag1" title="Modifier la validation de tout le domaine pour tous les élèves."></th>';
-			$affichage .= '<th class="nu" colspan="2"><div class="n2 b">'.html($DB_ROW['section_nom']).'</div></th>';
+			$affichage .= '<th class="nu" colspan="2"><div class="n2 b">'.To::html($DB_ROW['section_nom']).'</div></th>';
 			$affichage .= '</tr>';
 		}
 		if( (!is_null($DB_ROW['entree_id'])) && ($DB_ROW['entree_id']!=$entree_id) )
@@ -127,7 +127,7 @@ if( ($action=='Afficher_bilan') && $pilier_id && count($tab_domaine) && count($t
 				$affichage .= '<td id="S'.$section_id.'U'.$eleve_id.'E'.$entree_id.'"></td>'; // class/title + lang + contenu seront ajoutés ensuite 
 			}
 			$affichage .= '<th id="E'.$entree_id.'" class="left1" title="Modifier la validation de cet item pour tous les élèves."></th>';
-			$affichage .= '<th class="nu" colspan="2"><div class="n3">'.html($DB_ROW['entree_nom']).'</div></th>';
+			$affichage .= '<th class="nu" colspan="2"><div class="n3">'.To::html($DB_ROW['entree_nom']).'</div></th>';
 			$affichage .= '</tr>';
 		}
 	}
@@ -220,7 +220,7 @@ if( ($action=='Afficher_bilan') && $pilier_id && count($tab_domaine) && count($t
 	{
 		$etat = ($DB_ROW['validation_entree_etat']) ? 'Validé' : 'Invalidé' ;
 		$tab_modif_cellule[$DB_ROW['user_id']][$DB_ROW['entree_id']]['class'] = ' class="v'.$DB_ROW['validation_entree_etat'].'"';
-		$tab_modif_cellule[$DB_ROW['user_id']][$DB_ROW['entree_id']]['title'] = ' title="'.$etat.' le '.convert_date_mysql_to_french($DB_ROW['validation_entree_date']).' par '.html($DB_ROW['validation_entree_info']).'"';
+		$tab_modif_cellule[$DB_ROW['user_id']][$DB_ROW['entree_id']]['title'] = ' title="'.$etat.' le '.convert_date_mysql_to_french($DB_ROW['validation_entree_date']).' par '.To::html($DB_ROW['validation_entree_info']).'"';
 	}
 	// - - - - - - - - - - - - - - - - - - - - - - - - -
 	// Récupérer la liste des jointures : validations de piliers
@@ -294,7 +294,7 @@ elseif( ($action=='Afficher_information') && $eleve_id && $pilier_id && $entree_
 				// on détermine si elle est acquise ou pas
 				$indice = test_A($score) ? 'A' : ( test_NA($score) ? 'NA' : 'VA' ) ;
 				// on enregistre les infos
-				$tab_infos_socle_eleve[] = html($item_ref.' || '.$item_nom).'<span class="'.$tab_etat[$indice].'">&nbsp;['.$score.'%]&nbsp;</span>';
+				$tab_infos_socle_eleve[] = To::html($item_ref.' || '.$item_nom).'<span class="'.$tab_etat[$indice].'">&nbsp;['.$score.'%]&nbsp;</span>';
 				$tab_score_socle_eleve[$indice]++;
 				$tab_score_socle_eleve['nb']++;
 			}
@@ -310,7 +310,7 @@ elseif( ($action=='Afficher_information') && $eleve_id && $pilier_id && $entree_
 	    if($tab_score_socle_eleve['%']<$_SESSION['CALCUL_SEUIL']['R']) {$etat = 'r';}
 	elseif($tab_score_socle_eleve['%']>$_SESSION['CALCUL_SEUIL']['V']) {$etat = 'v';}
 	else                                                               {$etat = 'o';}
-	echo'<span class="'.$etat.'">&nbsp;'.$tab_score_socle_eleve['%'].'% acquis ('.$tab_score_socle_eleve['A'].html($_SESSION['ACQUIS_TEXTE']['A']).' '.$tab_score_socle_eleve['VA'].html($_SESSION['ACQUIS_TEXTE']['VA']).' '.$tab_score_socle_eleve['NA'].html($_SESSION['ACQUIS_TEXTE']['NA']).')&nbsp;</span>';
+	echo'<span class="'.$etat.'">&nbsp;'.$tab_score_socle_eleve['%'].'% acquis ('.$tab_score_socle_eleve['A'].To::html($_SESSION['ACQUIS_TEXTE']['A']).' '.$tab_score_socle_eleve['VA'].To::html($_SESSION['ACQUIS_TEXTE']['VA']).' '.$tab_score_socle_eleve['NA'].To::html($_SESSION['ACQUIS_TEXTE']['NA']).')&nbsp;</span>';
 	// Elaboration du bilan relatif au socle : mise en page, paragraphe des items
 	if( count($tab_infos_socle_eleve) )
 	{

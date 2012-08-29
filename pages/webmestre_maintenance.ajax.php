@@ -28,8 +28,8 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 if($_SESSION['SESAMATH_ID']==ID_DEMO) {exit('Action désactivée pour la démo...');}
 
-$action = (isset($_POST['f_action'])) ? clean_texte($_POST['f_action']) : '';
-$motif  = (isset($_POST['f_motif']))  ? clean_texte($_POST['f_motif'])  : '';
+$action = (isset($_POST['f_action'])) ? Clean::texte($_POST['f_action']) : '';
+$motif  = (isset($_POST['f_motif']))  ? Clean::texte($_POST['f_motif'])  : '';
 
 //	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
 // Bloquer ou débloquer l'application
@@ -38,15 +38,15 @@ $motif  = (isset($_POST['f_motif']))  ? clean_texte($_POST['f_motif'])  : '';
 if($action=='debloquer')
 {
 	ajouter_log_PHP( 'Maintenance' /*log_objet*/ , 'Application accessible.' /*log_contenu*/ , __FILE__ /*log_fichier*/ , __LINE__ /*log_ligne*/ , FALSE /*only_sesamath*/ );
-	debloquer_application($_SESSION['USER_PROFIL'],'0');
+	LockAcces::debloquer_application($_SESSION['USER_PROFIL'],'0');
 	exit('<label class="valide">Application accessible.</label>');
 }
 
 if($action=='bloquer')
 {
 	ajouter_log_PHP( 'Maintenance' /*log_objet*/ , 'Application fermée.' /*log_contenu*/ , __FILE__ /*log_fichier*/ , __LINE__ /*log_ligne*/ , FALSE /*only_sesamath*/ );
-	bloquer_application($_SESSION['USER_PROFIL'],'0',$motif);
-	exit('<label class="erreur">Application fermée : '.html($motif).'</label>');
+	LockAcces::bloquer_application($_SESSION['USER_PROFIL'],'0',$motif);
+	exit('<label class="erreur">Application fermée : '.To::html($motif).'</label>');
 }
 
 //	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
@@ -57,7 +57,7 @@ if($action=='verif_droits')
 {
 	// Récupérer l'arborescence
 	$dossier_install = '.';
-	Analyser_Dossier( $dossier_install , strlen($dossier_install) , 'avant' );
+	FileSystem::analyser_dossier( $dossier_install , strlen($dossier_install) , 'avant' );
 	// Pour l'affichage du retour
 	$thead = '<tr><td colspan="2">Vérification des droits en écriture du '.date('d/m/Y H:i:s').'</td></tr>';
 	$tbody = '';
@@ -78,7 +78,7 @@ if($action=='verif_droits')
 	// Enregistrement du rapport
 	$fichier_chemin  = CHEMIN_DOSSIER_EXPORT.'rapport_droits.html';
 	$fichier_contenu = '<!DOCTYPE html><html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><style type="text/css">body{font-family:monospace;font-size:8pt}table{border-collapse:collapse}thead{background:#CCC;font-weight:bold;text-align:center}td{border:solid 1px;padding:2px;white-space:nowrap}.v{color:green}.r{color:red}.b{color:blue}</style></head><body><table><thead>'.$thead.'</thead><tbody>'.$tbody.'</tbody></table></body></html>';
-	Ecrire_Fichier($fichier_chemin,$fichier_contenu);
+	FileSystem::ecrire_fichier($fichier_chemin,$fichier_contenu);
 	exit('ok');
 
 }
@@ -106,7 +106,7 @@ if($action=='maj_etape1')
 	{
 		exit(']¤['.'pb'.']¤['.$contenu_zip);
 	}
-	Ecrire_Fichier($fichier_import,$contenu_zip);
+	FileSystem::ecrire_fichier($fichier_import,$contenu_zip);
 	exit(']¤['.'ok'.']¤['."Décompression de l'archive&hellip;");
 }
 
@@ -117,10 +117,10 @@ if($action=='maj_etape2')
 {
 	if(is_dir($dossier_dezip))
 	{
-		Supprimer_Dossier($dossier_dezip);
+		FileSystem::supprimer_dossier($dossier_dezip);
 	}
 	// Dezipper dans le dossier temporaire
-	$code_erreur = unzip( $fichier_import , CHEMIN_DOSSIER_IMPORT , TRUE /*use_ZipArchive*/ );
+	$code_erreur = FileSystem::unzip( $fichier_import , CHEMIN_DOSSIER_IMPORT , TRUE /*use_ZipArchive*/ );
 	if($code_erreur)
 	{
 		require(CHEMIN_DOSSIER_INCLUDE.'tableau_zip_error.php');
@@ -135,8 +135,8 @@ if($action=='maj_etape2')
 if($action=='maj_etape3')
 {
 	$_SESSION['tmp'] = array();
-	Analyser_Dossier( $dossier_install , strlen($dossier_install) , 'avant' );
-	Analyser_Dossier( $dossier_dezip   , strlen($dossier_dezip)   , 'apres' );
+	FileSystem::analyser_dossier( $dossier_install , strlen($dossier_install) , 'avant' );
+	FileSystem::analyser_dossier( $dossier_dezip   , strlen($dossier_dezip)   , 'apres' );
 	exit(']¤['.'ok'.']¤['."Analyse et répercussion des modifications&hellip;");
 }
 
@@ -149,7 +149,7 @@ if($action=='maj_etape4')
 	$tbody = '';
 	// Bloquer l'application
 	ajouter_log_PHP( 'Mise à jour des fichiers' /*log_objet*/ , 'Application fermée.' /*log_contenu*/ , __FILE__ /*log_fichier*/ , __LINE__ /*log_ligne*/ , FALSE /*only_sesamath*/ );
-	bloquer_application($_SESSION['USER_PROFIL'],'0','Mise à jour des fichiers en cours.');
+	LockAcces::bloquer_application($_SESSION['USER_PROFIL'],'0','Mise à jour des fichiers en cours.');
 	// Dossiers : ordre croissant pour commencer par ceux les moins imbriqués : obligatoire pour l'ajout, et pour la suppression on teste si pas déjà supprimé.
 	ksort($_SESSION['tmp']['dossier']);
 	foreach($_SESSION['tmp']['dossier'] as $dossier => $tab)
@@ -162,10 +162,10 @@ if($action=='maj_etape4')
 		{
 			// Dossier à ajouter
 			$tbody .= '<tr><td class="v">Dossier ajouté</td><td>'.$dossier.'</td></tr>';
-			if( !Creer_Dossier($dossier_install.$dossier) )
+			if( !FileSystem::creer_dossier($dossier_install.$dossier) )
 			{
 				ajouter_log_PHP( 'Mise à jour des fichiers' /*log_objet*/ , 'Application accessible.' /*log_contenu*/ , __FILE__ /*log_fichier*/ , __LINE__ /*log_ligne*/ , FALSE /*only_sesamath*/ );
-				debloquer_application($_SESSION['USER_PROFIL'],'0');
+				LockAcces::debloquer_application($_SESSION['USER_PROFIL'],'0');
 				exit(']¤['.'pb'.']¤['."Dossier ".$dossier." non créé ou inaccessible en écriture !");
 			}
 		}
@@ -175,7 +175,7 @@ if($action=='maj_etape4')
 			$tbody .= '<tr><td class="r">Dossier supprimé</td><td>'.$dossier.'</td></tr>';
 			if(is_dir($dossier_install.$dossier))
 			{
-				Supprimer_Dossier($dossier_install.$dossier);
+				FileSystem::supprimer_dossier($dossier_install.$dossier);
 			}
 		}
 	}
@@ -191,7 +191,7 @@ if($action=='maj_etape4')
 				if( !copy( $dossier_dezip.$fichier , $dossier_install.$fichier ) )
 				{
 					ajouter_log_PHP( 'Mise à jour des fichiers' /*log_objet*/ , 'Application accessible.' /*log_contenu*/ , __FILE__ /*log_fichier*/ , __LINE__ /*log_ligne*/ , FALSE /*only_sesamath*/ );
-					debloquer_application($_SESSION['USER_PROFIL'],'0');
+					LockAcces::debloquer_application($_SESSION['USER_PROFIL'],'0');
 					exit(']¤['.'pb'.']¤['."Erreur lors de l'écriture du fichier ".$fichier." !");
 				}
 				$tbody .= '<tr><td class="b">Fichier modifié</td><td>'.$fichier.'</td></tr>';
@@ -203,7 +203,7 @@ if($action=='maj_etape4')
 			if( !copy( $dossier_dezip.$fichier , $dossier_install.$fichier ) )
 			{
 				ajouter_log_PHP( 'Mise à jour des fichiers' /*log_objet*/ , 'Application accessible.' /*log_contenu*/ , __FILE__ /*log_fichier*/ , __LINE__ /*log_ligne*/ , FALSE /*only_sesamath*/ );
-				debloquer_application($_SESSION['USER_PROFIL'],'0');
+				LockAcces::debloquer_application($_SESSION['USER_PROFIL'],'0');
 				exit(']¤['.'pb'.']¤['."Erreur lors de l'écriture du fichier ".$fichier." !");
 			}
 			$tbody .= '<tr><td class="v">Fichier ajouté</td><td>'.$fichier.'</td></tr>';
@@ -220,11 +220,11 @@ if($action=='maj_etape4')
 	}
 	// Débloquer l'application
 	ajouter_log_PHP( 'Mise à jour des fichiers' /*log_objet*/ , 'Application accessible.' /*log_contenu*/ , __FILE__ /*log_fichier*/ , __LINE__ /*log_ligne*/ , FALSE /*only_sesamath*/ );
-	debloquer_application($_SESSION['USER_PROFIL'],'0');
+	LockAcces::debloquer_application($_SESSION['USER_PROFIL'],'0');
 	// Enregistrement du rapport
 	$fichier_chemin  = CHEMIN_DOSSIER_EXPORT.'rapport_maj.html';
 	$fichier_contenu = '<!DOCTYPE html><html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><style type="text/css">body{font-family:monospace;font-size:8pt}table{border-collapse:collapse}thead{background:#CCC;font-weight:bold;text-align:center}td{border:solid 1px;padding:2px;white-space:nowrap}.v{color:green}.r{color:red}.b{color:blue}</style></head><body><table><thead>'.$thead.'</thead><tbody>'.$tbody.'</tbody></table></body></html>';
-	Ecrire_Fichier($fichier_chemin,$fichier_contenu);
+	FileSystem::ecrire_fichier($fichier_chemin,$fichier_contenu);
 	exit(']¤['.'ok'.']¤['.'Rapport des modifications apportées et nettoyage&hellip;');
 }
 
@@ -234,7 +234,7 @@ if($action=='maj_etape4')
 if($action=='maj_etape5')
 {
 	unset($_SESSION['tmp']);
-	Supprimer_Dossier($dossier_dezip);
+	FileSystem::supprimer_dossier($dossier_dezip);
 	exit(']¤['.'ok'.']¤['.VERSION_PROG);
 }
 
@@ -259,7 +259,7 @@ if($action=='verif_etape1')
 	{
 		exit(']¤['.'pb'.']¤['.$contenu_zip);
 	}
-	Ecrire_Fichier($fichier_import,$contenu_zip);
+	FileSystem::ecrire_fichier($fichier_import,$contenu_zip);
 	exit(']¤['.'ok'.']¤['."Décompression de l'archive&hellip;");
 }
 
@@ -270,10 +270,10 @@ if($action=='verif_etape2')
 {
 	if(is_dir($dossier_dezip))
 	{
-		Supprimer_Dossier($dossier_dezip);
+		FileSystem::supprimer_dossier($dossier_dezip);
 	}
 	// Dezipper dans le dossier temporaire
-	$code_erreur = unzip( $fichier_import , CHEMIN_DOSSIER_IMPORT , TRUE /*use_ZipArchive*/ );
+	$code_erreur = FileSystem::unzip( $fichier_import , CHEMIN_DOSSIER_IMPORT , TRUE /*use_ZipArchive*/ );
 	if($code_erreur)
 	{
 		require(CHEMIN_DOSSIER_INCLUDE.'tableau_zip_error.php');
@@ -288,8 +288,8 @@ if($action=='verif_etape2')
 if($action=='verif_etape3')
 {
 	$_SESSION['tmp'] = array();
-	Analyser_Dossier( $dossier_install , strlen($dossier_install) , 'avant' );
-	Analyser_Dossier( $dossier_dezip   , strlen($dossier_dezip)   , 'apres' , FALSE );
+	FileSystem::analyser_dossier( $dossier_install , strlen($dossier_install) , 'avant' );
+	FileSystem::analyser_dossier( $dossier_dezip   , strlen($dossier_dezip)   , 'apres' , FALSE );
 	exit(']¤['.'ok'.']¤['."Comparaison des données&hellip;");
 }
 
@@ -351,7 +351,7 @@ if($action=='verif_etape4')
 	// Enregistrement du rapport
 	$fichier_chemin  = CHEMIN_DOSSIER_EXPORT.'rapport_verif.html';
 	$fichier_contenu = '<!DOCTYPE html><html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><style type="text/css">body{font-family:monospace;font-size:8pt}table{border-collapse:collapse}thead{background:#CCC;font-weight:bold;text-align:center}td{border:solid 1px black;padding:2px;white-space:nowrap}.v{color:green}.r{color:red}.b{color:blue}</style></head><body><table><thead>'.$thead.'</thead><tbody>'.$tbody_pb.$tbody_ok.'</tbody></table></body></html>';
-	Ecrire_Fichier($fichier_chemin,$fichier_contenu);
+	FileSystem::ecrire_fichier($fichier_chemin,$fichier_contenu);
 	exit(']¤['.'ok'.']¤['.'Rapport des modifications apportées et nettoyage&hellip;');
 }
 
@@ -361,7 +361,7 @@ if($action=='verif_etape4')
 if($action=='verif_etape5')
 {
 	unset($_SESSION['tmp']);
-	Supprimer_Dossier($dossier_dezip);
+	FileSystem::supprimer_dossier($dossier_dezip);
 	exit(']¤['.'ok'.']¤['.VERSION_PROG);
 }
 

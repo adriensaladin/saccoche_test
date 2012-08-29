@@ -41,7 +41,7 @@ $select_connexions = '';
 $tab_param_js = '';
 foreach($tab_connexion_mode as $connexion_mode => $mode_texte)
 {
-	$select_connexions .= '<optgroup label="'.html($mode_texte).'">';
+	$select_connexions .= '<optgroup label="'.To::html($mode_texte).'">';
 	$tab_param_js .= 'tab_param["'.$connexion_mode.'"] = new Array();';
 	foreach($tab_connexion_info[$connexion_mode] as $connexion_nom => $tab_info)
 	{
@@ -50,10 +50,10 @@ foreach($tab_connexion_mode as $connexion_mode => $mode_texte)
 		switch($connexion_mode)
 		{
 			case 'cas' :
-				$tab_param_js .= 'tab_param["'.$connexion_mode.'"]["'.$connexion_nom.'"]="'.html($tab_info['etat'].']¤['.$tab_info['serveur_host'].']¤['.$tab_info['serveur_port'].']¤['.$tab_info['serveur_root']).'";';
+				$tab_param_js .= 'tab_param["'.$connexion_mode.'"]["'.$connexion_nom.'"]="'.To::html($tab_info['etat'].']¤['.$tab_info['serveur_host'].']¤['.$tab_info['serveur_port'].']¤['.$tab_info['serveur_root']).'";';
 				break;
 			case 'gepi' :
-				$tab_param_js .= 'tab_param["'.$connexion_mode.'"]["'.$connexion_nom.'"]="'.html($tab_info['saml_url'].']¤['.$tab_info['saml_rne'].']¤['.$tab_info['saml_certif']).'";';
+				$tab_param_js .= 'tab_param["'.$connexion_mode.'"]["'.$connexion_nom.'"]="'.To::html($tab_info['saml_url'].']¤['.$tab_info['saml_rne'].']¤['.$tab_info['saml_certif']).'";';
 				break;
 		}
 	}
@@ -77,14 +77,14 @@ $url_sso = URL_DIR_SACOCHE.'?sso'.$get_base;
 <form action="#" method="post"><fieldset>
 	<p><label class="tab">Choix :</label><select id="connexion_mode_nom" name="connexion_mode_nom"><?php echo $select_connexions ?></select></p>
 	<div id="cas_options" class="hide">
-		<label class="tab" for="cas_serveur_host">Domaine <img alt="" src="./_img/bulle_aide.png" title="Souvent de la forme 'cas.domaine.fr'." /> :</label><input id="cas_serveur_host" name="cas_serveur_host" size="30" type="text" value="<?php echo html($_SESSION['CAS_SERVEUR_HOST']) ?>" /><br />
-		<label class="tab" for="cas_serveur_port">Port <img alt="" src="./_img/bulle_aide.png" title="En général 443.<br />Déjà vu à 8443." /> :</label><input id="cas_serveur_port" name="cas_serveur_port" size="5" type="text" value="<?php echo html($_SESSION['CAS_SERVEUR_PORT']) ?>" /><br />
-		<label class="tab" for="cas_serveur_root">Chemin <img alt="" src="./_img/bulle_aide.png" title="En général vide.<br />Parfois 'cas'." /> :</label><input id="cas_serveur_root" name="cas_serveur_root" size="10" type="text" value="<?php echo html($_SESSION['CAS_SERVEUR_ROOT']) ?>" /><br />
+		<label class="tab" for="cas_serveur_host">Domaine <img alt="" src="./_img/bulle_aide.png" title="Souvent de la forme 'cas.domaine.fr'." /> :</label><input id="cas_serveur_host" name="cas_serveur_host" size="30" type="text" value="<?php echo To::html($_SESSION['CAS_SERVEUR_HOST']) ?>" /><br />
+		<label class="tab" for="cas_serveur_port">Port <img alt="" src="./_img/bulle_aide.png" title="En général 443.<br />Déjà vu à 8443." /> :</label><input id="cas_serveur_port" name="cas_serveur_port" size="5" type="text" value="<?php echo To::html($_SESSION['CAS_SERVEUR_PORT']) ?>" /><br />
+		<label class="tab" for="cas_serveur_root">Chemin <img alt="" src="./_img/bulle_aide.png" title="En général vide.<br />Parfois 'cas'." /> :</label><input id="cas_serveur_root" name="cas_serveur_root" size="10" type="text" value="<?php echo To::html($_SESSION['CAS_SERVEUR_ROOT']) ?>" /><br />
 	</div>
 	<div id="gepi_options" class="hide">
-		<label class="tab" for="gepi_saml_url">Adresse (URL) <img alt="" src="./_img/bulle_aide.png" title="Adresse web de GEPI.<br />http://adresse_web_de_mon_gepi" /> :</label><input id="gepi_saml_url" name="gepi_saml_url" size="30" type="text" value="<?php echo html($_SESSION['GEPI_URL']) ?>" /><br />
-		<label class="tab" for="gepi_saml_rne">UAI (ex-RNE) <img alt="" src="./_img/bulle_aide.png" title="Indispensable uniquement si installation multisite de GEPI." /> :</label><input id="gepi_saml_rne" name="gepi_saml_rne" size="10" type="text" value="<?php echo ($_SESSION['GEPI_RNE']) ? html($_SESSION['GEPI_RNE']) : html($_SESSION['WEBMESTRE_UAI']) ; ?>" /><br />
-		<label class="tab" for="gepi_saml_certif">Signature <img alt="" src="./_img/bulle_aide.png" title="Empreinte du certificat indiquée par GEPI (ne rien modifier par défaut)." /> :</label><input id="gepi_saml_certif" name="gepi_saml_certif" size="60" type="text" value="<?php echo html($_SESSION['GEPI_CERTIFICAT_EMPREINTE']) ?>" /><br />
+		<label class="tab" for="gepi_saml_url">Adresse (URL) <img alt="" src="./_img/bulle_aide.png" title="Adresse web de GEPI.<br />http://adresse_web_de_mon_gepi" /> :</label><input id="gepi_saml_url" name="gepi_saml_url" size="30" type="text" value="<?php echo To::html($_SESSION['GEPI_URL']) ?>" /><br />
+		<label class="tab" for="gepi_saml_rne">UAI (ex-RNE) <img alt="" src="./_img/bulle_aide.png" title="Indispensable uniquement si installation multisite de GEPI." /> :</label><input id="gepi_saml_rne" name="gepi_saml_rne" size="10" type="text" value="<?php echo ($_SESSION['GEPI_RNE']) ? To::html($_SESSION['GEPI_RNE']) : To::html($_SESSION['WEBMESTRE_UAI']) ; ?>" /><br />
+		<label class="tab" for="gepi_saml_certif">Signature <img alt="" src="./_img/bulle_aide.png" title="Empreinte du certificat indiquée par GEPI (ne rien modifier par défaut)." /> :</label><input id="gepi_saml_certif" name="gepi_saml_certif" size="60" type="text" value="<?php echo To::html($_SESSION['GEPI_CERTIFICAT_EMPREINTE']) ?>" /><br />
 	</div>
 	<p><span class="tab"></span><button id="bouton_valider" type="button" class="parametre">Valider ce mode d'identification.</button><label id="ajax_msg">&nbsp;</label></p>
 </fieldset></form>

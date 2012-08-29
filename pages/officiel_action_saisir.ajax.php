@@ -28,22 +28,22 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 if($_SESSION['SESAMATH_ID']==ID_DEMO){exit('Action désactivée pour la démo...');}
 
-$objet        = (isset($_POST['f_objet']))        ? clean_texte($_POST['f_objet'])        : '';
-$ACTION       = (isset($_POST['f_action']))       ? clean_texte($_POST['f_action'])       : '';
-$BILAN_TYPE   = (isset($_POST['f_bilan_type']))   ? clean_texte($_POST['f_bilan_type'])   : '';
-$mode         = (isset($_POST['f_mode']))         ? clean_texte($_POST['f_mode'])         : '';
-$periode_id   = (isset($_POST['f_periode']))      ? clean_entier($_POST['f_periode'])     : 0;
-$classe_id    = (isset($_POST['f_classe']))       ? clean_entier($_POST['f_classe'])      : 0;
-$groupe_id    = (isset($_POST['f_groupe']))       ? clean_entier($_POST['f_groupe'])      : 0;
-$eleve_id     = (isset($_POST['f_user']))         ? clean_entier($_POST['f_user'])        : 0;
-$rubrique_id  = (isset($_POST['f_rubrique']))     ? clean_entier($_POST['f_rubrique'])    : 0;
-$appreciation = (isset($_POST['f_appreciation'])) ? clean_texte($_POST['f_appreciation']) : '';
-$moyenne      = (isset($_POST['f_moyenne']))      ? clean_decimal($_POST['f_moyenne'])    : -1;
+$objet        = (isset($_POST['f_objet']))        ? Clean::texte($_POST['f_objet'])        : '';
+$ACTION       = (isset($_POST['f_action']))       ? Clean::texte($_POST['f_action'])       : '';
+$BILAN_TYPE   = (isset($_POST['f_bilan_type']))   ? Clean::texte($_POST['f_bilan_type'])   : '';
+$mode         = (isset($_POST['f_mode']))         ? Clean::texte($_POST['f_mode'])         : '';
+$periode_id   = (isset($_POST['f_periode']))      ? Clean::entier($_POST['f_periode'])     : 0;
+$classe_id    = (isset($_POST['f_classe']))       ? Clean::entier($_POST['f_classe'])      : 0;
+$groupe_id    = (isset($_POST['f_groupe']))       ? Clean::entier($_POST['f_groupe'])      : 0;
+$eleve_id     = (isset($_POST['f_user']))         ? Clean::entier($_POST['f_user'])        : 0;
+$rubrique_id  = (isset($_POST['f_rubrique']))     ? Clean::entier($_POST['f_rubrique'])    : 0;
+$appreciation = (isset($_POST['f_appreciation'])) ? Clean::texte($_POST['f_appreciation']) : '';
+$moyenne      = (isset($_POST['f_moyenne']))      ? Clean::decimal($_POST['f_moyenne'])    : -1;
 // Autres chaines spécifiques...
 $listing_matieres = (isset($_POST['f_listing_matieres'])) ? $_POST['f_listing_matieres'] : '' ;
 $listing_piliers  = (isset($_POST['f_listing_piliers']))  ? $_POST['f_listing_piliers']  : '' ;
-$tab_matiere_id = array_filter( array_map( 'clean_entier' , explode(',',$listing_matieres) ) , 'positif' );
-$tab_pilier_id  = array_filter( array_map( 'clean_entier' , explode(',',$listing_piliers) )  , 'positif' );
+$tab_matiere_id = array_filter( Clean::map_entier( explode(',',$listing_matieres) ) , 'positif' );
+$tab_pilier_id  = array_filter( Clean::map_entier( explode(',',$listing_piliers) )  , 'positif' );
 $liste_matiere_id = implode(',',$tab_matiere_id);
 $liste_pilier_id  = implode(',',$tab_pilier_id);
 
@@ -108,7 +108,7 @@ if($ACTION=='enregistrer_appr')
 	DB_STRUCTURE_OFFICIEL::DB_modifier_bilan_officiel_saisie( $BILAN_TYPE , $periode_id , $eleve_id , $rubrique_id , $_SESSION['USER_ID'] , NULL , $appreciation );
 	$prof_info = $_SESSION['USER_NOM'].' '.$_SESSION['USER_PRENOM']{0}.'.';
 	$ACTION = ' <button type="button" class="modifier">Modifier</button> <button type="button" class="supprimer">Supprimer</button>';
-	exit('<div class="notnow">'.html($prof_info).$ACTION.'</div><div class="appreciation">'.html($appreciation).'</div>');
+	exit('<div class="notnow">'.To::html($prof_info).$ACTION.'</div><div class="appreciation">'.To::html($appreciation).'</div>');
 }
 
 if($ACTION=='enregistrer_note')
@@ -122,7 +122,7 @@ if($ACTION=='enregistrer_note')
 	DB_STRUCTURE_OFFICIEL::DB_modifier_bilan_officiel_saisie( $BILAN_TYPE , $periode_id , $eleve_id , $rubrique_id , 0 /*prof_id*/ , $note , $appreciation );
 	$note = ($_SESSION['OFFICIEL']['BULLETIN_NOTE_SUR_20']) ? $note : ($note*5).'&nbsp;%' ;
 	$action = ' <button type="button" class="modifier">Modifier</button> <button type="button" class="nettoyer">Effacer et recalculer.</button> <button type="button" class="supprimer">Supprimer sans recalculer</button>' ;
-	exit('<td class="now moyenne">'.$note.'</td><td class="now"><span class="notnow">'.html($appreciation).$action.'</span></td>');
+	exit('<td class="now moyenne">'.$note.'</td><td class="now"><span class="notnow">'.To::html($appreciation).$action.'</span></td>');
 }
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
@@ -150,7 +150,7 @@ if($ACTION=='supprimer_note')
 	$note = NULL;
 	$appreciation = 'Moyenne effacée par '.$_SESSION['USER_NOM'].' '.$_SESSION['USER_PRENOM']{0}.'.';
 	DB_STRUCTURE_OFFICIEL::DB_modifier_bilan_officiel_saisie( $BILAN_TYPE , $periode_id , $eleve_id , $rubrique_id , 0 /*prof_id*/ , $note , $appreciation );
-	exit('<td class="now moyenne">-</td><td class="now"><span class="notnow">'.html($appreciation).' <button type="button" class="modifier">Modifier</button> <button type="button" class="nettoyer">Effacer et recalculer.</button></span></td>');
+	exit('<td class="now moyenne">-</td><td class="now"><span class="notnow">'.To::html($appreciation).' <button type="button" class="modifier">Modifier</button> <button type="button" class="nettoyer">Effacer et recalculer.</button></span></td>');
 }
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
@@ -170,7 +170,7 @@ if($ACTION=='recalculer_note')
 	}
 	$note = ($_SESSION['OFFICIEL']['BULLETIN_NOTE_SUR_20']) ? $note : ($note*5).'&nbsp;%' ;
 	$appreciation = 'Moyenne calculée / reportée / actualisée automatiquement.' ;
-	exit('<td class="now moyenne">'.$note.'</td><td class="now"><span class="notnow">'.html($appreciation).' <button type="button" class="modifier">Modifier</button> <button type="button" class="supprimer">Supprimer sans recalculer</button></span></td>');
+	exit('<td class="now moyenne">'.$note.'</td><td class="now"><span class="notnow">'.To::html($appreciation).' <button type="button" class="modifier">Modifier</button> <button type="button" class="supprimer">Supprimer sans recalculer</button></span></td>');
 }
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
@@ -187,10 +187,10 @@ if($ACTION=='initialiser')
 		exit('Aucun élève trouvé dans ce regroupement !');
 	}
 	$tab_eleve_id = array();
-	$form_choix_eleve = '<form action="#" method="post" id="form_choix_eleve"><div><b>'.html($periode_nom.' | '.$classe_nom ).' :</b> <button id="go_premier_eleve" type="button" class="go_premier">Premier</button> <button id="go_precedent_eleve" type="button" class="go_precedent">Précédent</button> <select id="go_selection_eleve" name="go_selection" class="b">';
+	$form_choix_eleve = '<form action="#" method="post" id="form_choix_eleve"><div><b>'.To::html($periode_nom.' | '.$classe_nom ).' :</b> <button id="go_premier_eleve" type="button" class="go_premier">Premier</button> <button id="go_precedent_eleve" type="button" class="go_precedent">Précédent</button> <select id="go_selection_eleve" name="go_selection" class="b">';
 	foreach($DB_TAB as $DB_ROW)
 	{
-		$form_choix_eleve .= '<option value="'.$DB_ROW['user_id'].'">'.html($DB_ROW['user_nom'].' '.$DB_ROW['user_prenom']).'</option>';
+		$form_choix_eleve .= '<option value="'.$DB_ROW['user_id'].'">'.To::html($DB_ROW['user_nom'].' '.$DB_ROW['user_prenom']).'</option>';
 		$tab_eleve_id[] = $DB_ROW['user_id'];
 	}
 	$form_choix_eleve .= '</select> <button id="go_suivant_eleve" type="button" class="go_suivant">Suivant</button> <button id="go_dernier_eleve" type="button" class="go_dernier">Dernier</button>&nbsp;&nbsp;&nbsp;<button id="fermer_zone_action_eleve" type="button" class="retourner">Retour</button>';

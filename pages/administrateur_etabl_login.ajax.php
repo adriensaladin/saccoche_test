@@ -28,7 +28,7 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 if($_SESSION['SESAMATH_ID']==ID_DEMO) {exit('Action désactivée pour la démo...');}
 
-$action = (isset($_POST['action'])) ? clean_texte($_POST['action']) : '';
+$action = (isset($_POST['action'])) ? Clean::texte($_POST['action']) : '';
 
 //	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //	Format des noms d'utilisateurs
@@ -42,7 +42,7 @@ if($action=='login')
 	{
 		// Récupération du champ
 		$champ = 'f_login_'.$profil;
-		${$champ} = (isset($_POST[$champ])) ? clean_texte($_POST[$champ]) : '' ;
+		${$champ} = (isset($_POST[$champ])) ? Clean::texte($_POST[$champ]) : '' ;
 		if(!${$champ})
 		{
 			exit('Profil '.$profil.' non transmis !');
@@ -74,7 +74,7 @@ if($action=='login')
 
 if($action=='mdp_mini')
 {
-	$mdp_longueur_mini = (isset($_POST['f_mdp_mini'])) ? clean_entier($_POST['f_mdp_mini']) : 0 ;
+	$mdp_longueur_mini = (isset($_POST['f_mdp_mini'])) ? Clean::entier($_POST['f_mdp_mini']) : 0 ;
 	if(!$mdp_longueur_mini)
 	{
 		exit('Valeur non transmise !');

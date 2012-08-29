@@ -52,7 +52,7 @@ else
 	foreach($DB_TAB_DOMAINES as $DB_ROW)
 	{
 		$ids = $DB_ROW['matiere_id'].'_'.$DB_ROW['niveau_id'];
-		$tab_domaines[$ids][] = '<li class="li_n1">'.html($DB_ROW['domaine_nom']).'</li>';
+		$tab_domaines[$ids][] = '<li class="li_n1">'.To::html($DB_ROW['domaine_nom']).'</li>';
 	}
 	// Récupérer la liste des thèmes de chaque référentiel
 	$tab_themes = array();
@@ -60,14 +60,14 @@ else
 	foreach($DB_TAB_THEMES as $DB_ROW)
 	{
 		$ids = $DB_ROW['matiere_id'].'_'.$DB_ROW['niveau_id'];
-		$tab_themes[$ids][] = '<li class="li_n2">'.html($DB_ROW['theme_nom']).'</li>';
+		$tab_themes[$ids][] = '<li class="li_n2">'.To::html($DB_ROW['theme_nom']).'</li>';
 	}
 	// Passer en revue les référentiels
 	foreach($DB_TAB as $DB_ROW)
 	{
 		$ids = $DB_ROW['matiere_id'].'_'.$DB_ROW['niveau_id'];
 		// Titre + boutons radio + bouton validation
-		echo'<h4>'.html($DB_ROW['matiere_nom'].' - '.$DB_ROW['niveau_nom']).'</h4>';
+		echo'<h4>'.To::html($DB_ROW['matiere_nom'].' - '.$DB_ROW['niveau_nom']).'</h4>';
 		echo'<ul class="puce"><li>Traitement :&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
 		foreach($tab_choix as $option_valeur => $option_texte)
 		{

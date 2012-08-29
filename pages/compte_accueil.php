@@ -76,7 +76,7 @@ $tab_accueil['user'] = '';
 // infos connexion (pas si webmestre)
 if(isset($_SESSION['DELAI_CONNEXION']))
 {
-	$tab_accueil['user'] .= '<p class="i"><TG> Bonjour <b>'.html($_SESSION['USER_PRENOM']).'</b>. ';
+	$tab_accueil['user'] .= '<p class="i"><TG> Bonjour <b>'.To::html($_SESSION['USER_PRENOM']).'</b>. ';
 	if($_SESSION['FIRST_CONNEXION'])                           { $tab_accueil['user'] .= 'Heureux de faire votre connaissance&nbsp;; bonne découverte de <em>SACoche</em>&nbsp;!</p>'; }
 	elseif($_SESSION['DELAI_CONNEXION']<  43200 /*12*3600*/)   { $tab_accueil['user'] .= 'Déjà de retour&nbsp;? Décidément on ne se quitte plus&nbsp;!</p>'; }
 	elseif($_SESSION['DELAI_CONNEXION']< 108000 /*48*3600*/)   { $tab_accueil['user'] .= 'Bonne navigation, et merci de votre fidélité&nbsp;!</p>'; }
@@ -88,13 +88,13 @@ if(isset($_SESSION['DELAI_CONNEXION']))
 }
 elseif(isset($_SESSION['DEUXIEME_PASSAGE']))
 {
-	$tab_accueil['user'] .= '<p class="i"><TG> Encore là <b>'.html($_SESSION['USER_PRENOM']).'</b>&nbsp;? Vous avez raison, faîtes comme chez vous&nbsp;!';
+	$tab_accueil['user'] .= '<p class="i"><TG> Encore là <b>'.To::html($_SESSION['USER_PRENOM']).'</b>&nbsp;? Vous avez raison, faîtes comme chez vous&nbsp;!';
 	unset($_SESSION['DEUXIEME_PASSAGE']);
 	$_SESSION['PASSAGES_SUIVANTS'] = TRUE;
 }
 elseif(isset($_SESSION['PASSAGES_SUIVANTS']))
 {
-	$tab_accueil['user'] .= '<p class="i"><TG> Toujours là <b>'.html($_SESSION['USER_PRENOM']).'</b>&nbsp;? Pas de souci, restez le temps que vous voulez&nbsp;!';
+	$tab_accueil['user'] .= '<p class="i"><TG> Toujours là <b>'.To::html($_SESSION['USER_PRENOM']).'</b>&nbsp;? Pas de souci, restez le temps que vous voulez&nbsp;!';
 }
 // infos profil
 require(CHEMIN_DOSSIER_INCLUDE.'tableau_profils.php'); // Charge $tab_profil_libelle[$profil][court|long][1|2]
@@ -107,7 +107,7 @@ if($_SESSION['USER_PROFIL']=='parent')
 		$tab_nom_enfants = array();
 		foreach($_SESSION['OPT_PARENT_ENFANTS'] as $DB_ROW)
 		{
-			$tab_nom_enfants[] =html($DB_ROW['texte']);
+			$tab_nom_enfants[] =To::html($DB_ROW['texte']);
 		}
 		$tab_accueil['user'] .= '<p>Élève(s) associé(s) à votre compte&nbsp;: <b>'.implode('</b> ; <b>',$tab_nom_enfants).'</b></p>';
 	}
@@ -152,7 +152,7 @@ if($_SESSION['USER_PROFIL']!='webmestre')
 	{
 		foreach($DB_TAB as $key => $DB_ROW)
 		{
-			$tab_accueil['info'][$key] = '<p class="b u">Communication ('.html($DB_ROW['user_prenom']{0}.'. '.$DB_ROW['user_nom']).')&nbsp;:</p>'.'<p>'.nl2br(html($DB_ROW['message_contenu'])).'</p>';
+			$tab_accueil['info'][$key] = '<p class="b u">Communication ('.To::html($DB_ROW['user_prenom']{0}.'. '.$DB_ROW['user_nom']).')&nbsp;:</p>'.'<p>'.nl2br(To::html($DB_ROW['message_contenu'])).'</p>';
 		}
 	}
 	elseif($_SESSION['USER_PROFIL']!='administrateur')

@@ -28,8 +28,8 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 if($_SESSION['SESAMATH_ID']==ID_DEMO) {exit('Action désactivée pour la démo...');}
 
-$taille_max         = (isset($_POST['f_taille_max']))         ? clean_entier($_POST['f_taille_max'])         : 0 ;
-$duree_conservation = (isset($_POST['f_duree_conservation'])) ? clean_entier($_POST['f_duree_conservation']) : 0 ;
+$taille_max         = (isset($_POST['f_taille_max']))         ? Clean::entier($_POST['f_taille_max'])         : 0 ;
+$duree_conservation = (isset($_POST['f_duree_conservation'])) ? Clean::entier($_POST['f_duree_conservation']) : 0 ;
 
 //	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //	Enregistrer des nouveaux réglages

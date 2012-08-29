@@ -31,24 +31,18 @@
 
 // Atteste l'appel de cette page avant l'inclusion d'une autre
 define('SACoche','webservices');
-// Constantes de l'application
-require('./_inc/constantes.php');
 
-// Fonctions de redirections / Configuration serveur
-require(CHEMIN_DOSSIER_INCLUDE.'fonction_redirection.php');
-require(CHEMIN_DOSSIER_INCLUDE.'config_serveur.php');
+// Constantes / Configuration serveur / Autoload classes / Fonction de sortie
+require('./_inc/_loader.php');
 
 // Fonctions
-require(CHEMIN_DOSSIER_INCLUDE.'fonction_clean.php');
-require(CHEMIN_DOSSIER_INCLUDE.'fonction_sessions.php');
 require(CHEMIN_DOSSIER_INCLUDE.'fonction_divers.php');
-require(CHEMIN_DOSSIER_INCLUDE.'fonction_affichage.php');
 
 // On récupère les paramètres
-$WS_qui  = (isset($_POST['qui']))  ? clean_texte($_POST['qui']) : ( (isset($_GET['qui'])) ? clean_texte($_GET['qui']) : '' ) ;
-$WS_cle  = (isset($_POST['cle']))  ? clean_texte($_POST['cle']) : '';
-$WS_uai  = (isset($_POST['uai']))  ? clean_uai($_POST['uai'])   : '';
-$WS_uid  = (isset($_POST['uid']))  ? clean_texte($_POST['uid']) : '';
+$WS_qui  = (isset($_POST['qui']))  ? Clean::texte($_POST['qui']) : ( (isset($_GET['qui'])) ? Clean::texte($_GET['qui']) : '' ) ;
+$WS_cle  = (isset($_POST['cle']))  ? Clean::texte($_POST['cle']) : '';
+$WS_uai  = (isset($_POST['uai']))  ? Clean::uai($_POST['uai'])   : '';
+$WS_uid  = (isset($_POST['uid']))  ? Clean::texte($_POST['uid']) : '';
 $WS_data = (isset($_POST['data'])) ? $_POST['data']             : ''; // tableau sérializé
 
 // On ne vérifie que le 1er paramètre (le service web prendra éventuellement en charge la suite).

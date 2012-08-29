@@ -72,12 +72,12 @@ else
 			$matiere_droit = ( (($_SESSION['DROIT_GERER_RESSOURCE']=='profcoordonnateur')&&($DB_ROW['jointure_coord'])) || ($_SESSION['DROIT_GERER_RESSOURCE']=='professeur') ) ? TRUE : FALSE ;
 			$icone_action  = ($matiere_droit) ? '<q class="modifier" title="Modifier les ressources de ce référentiel."></q>' : '<q class="modifier_non" title="Accès restreint : '.$texte_profil.'."></q>' ;
 			$tab_matiere[$DB_ROW['matiere_id']] = array(
-				'matiere_nom' => html($DB_ROW['matiere_nom']) ,
-				'matiere_ref' => clean_fichier($DB_ROW['matiere_ref']) ,
+				'matiere_nom' => To::html($DB_ROW['matiere_nom']) ,
+				'matiere_ref' => Clean::fichier($DB_ROW['matiere_ref']) ,
 				'matiere_act' => $icone_action
 			);
 		}
-		$tab_colonne[$DB_ROW['matiere_id']][$DB_ROW['niveau_id']] = '<td>'.html($DB_ROW['niveau_nom']).'</td><td class="nu" id="td_'.$DB_ROW['matiere_id'].'_'.$DB_ROW['niveau_id'].'">'.$tab_matiere[$DB_ROW['matiere_id']]['matiere_act'].'</td>';
+		$tab_colonne[$DB_ROW['matiere_id']][$DB_ROW['niveau_id']] = '<td>'.To::html($DB_ROW['niveau_nom']).'</td><td class="nu" id="td_'.$DB_ROW['matiere_id'].'_'.$DB_ROW['niveau_id'].'">'.$tab_matiere[$DB_ROW['matiere_id']]['matiere_act'].'</td>';
 	}
 	// On construit et affiche le tableau résultant
 	$affichage = '<table class="vm_nug"><thead><tr><th>Matière</th><th>Niveau</th><th class="nu"></th></tr></thead><tbody>'."\r\n";

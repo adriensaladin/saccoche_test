@@ -28,19 +28,19 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 if($_SESSION['SESAMATH_ID']==ID_DEMO) {exit('Action désactivée pour la démo...');}
 
-$action     = (isset($_POST['f_action'])) ? clean_texte($_POST['f_action'])  : '';
-$groupe_id  = (isset($_POST['f_id']))     ? clean_entier($_POST['f_id'])     : 0;
-$niveau     = (isset($_POST['f_niveau'])) ? clean_entier($_POST['f_niveau']) : 0;
-$groupe_nom = (isset($_POST['f_nom']))    ? clean_texte($_POST['f_nom'])     : '';
+$action     = (isset($_POST['f_action'])) ? Clean::texte($_POST['f_action'])  : '';
+$groupe_id  = (isset($_POST['f_id']))     ? Clean::entier($_POST['f_id'])     : 0;
+$niveau     = (isset($_POST['f_niveau'])) ? Clean::entier($_POST['f_niveau']) : 0;
+$groupe_nom = (isset($_POST['f_nom']))    ? Clean::texte($_POST['f_nom'])     : '';
 
 // Contrôler la liste des élèves transmis
 $tab_eleves = (isset($_POST['f_eleve_liste']))  ? explode('_',$_POST['f_eleve_liste'])  : array() ;
-$tab_eleves = array_map('clean_entier',$tab_eleves);
+$tab_eleves = Clean::map_entier($tab_eleves);
 $tab_eleves = array_filter($tab_eleves,'positif');
 $nb_eleves  = count($tab_eleves);
 // Contrôler la liste des profs transmis
 $tab_profs = (isset($_POST['f_prof_liste'])) ? explode('_',$_POST['f_prof_liste']) : array() ;
-$tab_profs = array_map('clean_entier',$tab_profs);
+$tab_profs = Clean::map_entier($tab_profs);
 $tab_profs = array_filter($tab_profs,'positif');
 $nb_profs = count($tab_profs);
 // Si profs transmis, en retirer le responsable (si le responsable est le seul prof, rien n'est transmis)
@@ -74,7 +74,7 @@ if( ($action=='ajouter') && $niveau && $groupe_nom && $nb_eleves )
 	$profs_texte   = ($nb_profs>1)  ? $nb_profs.' profs'   : 'moi seul' ;
 	echo'<tr id="id_'.$groupe_id.'" class="new">';
 	echo	'<td>{{NIVEAU_NOM}}</td>';
-	echo	'<td>'.html($groupe_nom).'</td>';
+	echo	'<td>'.To::html($groupe_nom).'</td>';
 	echo	'<td>'.$eleves_texte.'</td>';
 	echo	'<td>'.$profs_texte.'</td>';
 	echo	'<td class="nu">';
@@ -107,7 +107,7 @@ if( ($action=='modifier') && $groupe_id && $niveau && $groupe_nom && $nb_eleves 
 	$eleves_texte  = ($nb_eleves>1) ? $nb_eleves.' élèves' : '1 élève' ;
 	$profs_texte   = ($nb_profs>1)  ? $nb_profs.' profs'   : 'moi seul' ;
 	echo'<td>{{NIVEAU_NOM}}</td>';
-	echo'<td>'.html($groupe_nom).'</td>';
+	echo'<td>'.To::html($groupe_nom).'</td>';
 	echo'<td>'.$eleves_texte.'</td>';
 	echo'<td>'.$profs_texte.'</td>';
 	echo'<td class="nu">';
@@ -129,7 +129,7 @@ if( ($action=='supprimer') && $groupe_id )
 	// Effacer l'enregistrement
 	DB_STRUCTURE_PROFESSEUR::DB_supprimer_groupe_par_prof( $groupe_id , 'besoin' , TRUE /*with_devoir*/ );
 	// Log de l'action
-	ajouter_log_SACoche('Suppression d\'un regroupement (besoin '.$groupe_id.'), avec les devoirs associés.');
+	SACocheLog::ajouter('Suppression d\'un regroupement (besoin '.$groupe_id.'), avec les devoirs associés.');
 	// Afficher le retour
 	exit('<td>ok</td>');
 }

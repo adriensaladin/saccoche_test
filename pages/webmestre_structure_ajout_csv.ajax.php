@@ -27,13 +27,13 @@
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 
-$tab_base_id = (isset($_POST['f_listing_id'])) ? array_filter( array_map( 'clean_entier' , explode(',',$_POST['f_listing_id']) ) , 'positif' ) : array() ;
+$tab_base_id = (isset($_POST['f_listing_id'])) ? array_filter( Clean::map_entier( explode(',',$_POST['f_listing_id']) ) , 'positif' ) : array() ;
 $nb_bases    = count($tab_base_id);
 
-$action         = (isset($_POST['f_action']))       ? clean_texte($_POST['f_action'])        : '';
+$action         = (isset($_POST['f_action']))       ? Clean::texte($_POST['f_action'])        : '';
 $num            = (isset($_POST['num']))            ? (int)$_POST['num']                     : 0 ;	// Numéro de l'étape en cours
 $max            = (isset($_POST['max']))            ? (int)$_POST['max']                     : 0 ;	// Nombre d'étapes à effectuer
-$courriel_envoi = (isset($_POST['courriel_envoi'])) ? clean_entier($_POST['courriel_envoi']) : 0;
+$courriel_envoi = (isset($_POST['courriel_envoi'])) ? Clean::entier($_POST['courriel_envoi']) : 0;
 
 $fichier_csv_nom  = 'ajout_structures_'.fabriquer_fin_nom_fichier__date_et_alea().'.csv';
 
@@ -51,8 +51,7 @@ if($action=='importer_csv')
 	// Récupération du fichier
 	if( (!file_exists($fnom_serveur)) || (!$ftaille) || ($ferreur) )
 	{
-		require(CHEMIN_DOSSIER_INCLUDE.'fonction_infos_serveur.php');
-		exit('Erreur : problème de transfert ! Fichier trop lourd ? min(memory_limit,post_max_size,upload_max_filesize)='.minimum_limitations_upload());
+		exit('Erreur : problème de transfert ! Fichier trop lourd ? '.InfoServeur::minimum_limitations_upload());
 	}
 	$extension = strtolower(pathinfo($fnom_transmis,PATHINFO_EXTENSION));
 	if(!in_array($extension,array('txt','csv')))
@@ -73,7 +72,7 @@ if($action=='importer_csv')
 	// Tester si le contenu est correct, et mémoriser les infos en session
 	$_SESSION['tab_info'] = array();
 	$contenu = file_get_contents(CHEMIN_DOSSIER_IMPORT.$fichier_csv_nom);
-	$contenu = utf8($contenu); // Mettre en UTF-8 si besoin
+	$contenu = To::utf8($contenu); // Mettre en UTF-8 si besoin
 	$tab_lignes = extraire_lignes($contenu); // Extraire les lignes du fichier
 	$separateur = extraire_separateur_csv($tab_lignes[0]); // Déterminer la nature du séparateur
 	unset($tab_lignes[0]); // Supprimer la 1e ligne
@@ -94,16 +93,16 @@ if($action=='importer_csv')
 		if(count($tab_elements)==8)
 		{
 			$nb_lignes_trouvees++;
-			$tab_elements = array_map('clean_csv',$tab_elements);
+			$tab_elements = Clean::map_quotes($tab_elements);
 			list($import_id,$geo_id,$localisation,$denomination,$uai,$contact_nom,$contact_prenom,$contact_courriel) = $tab_elements;
-			$import_id        = clean_entier($import_id);
-			$geo_id           = clean_entier($geo_id);
+			$import_id        = Clean::entier($import_id);
+			$geo_id           = Clean::entier($geo_id);
 			$localisation     = $localisation; // Ne pas appliquer trim()
-			$denomination     = clean_texte($denomination);
-			$uai              = clean_uai($uai);
-			$contact_nom      = clean_nom($contact_nom);
-			$contact_prenom   = clean_prenom($contact_prenom);
-			$contact_courriel = clean_courriel($contact_courriel);
+			$denomination     = Clean::texte($denomination);
+			$uai              = Clean::uai($uai);
+			$contact_nom      = Clean::nom($contact_nom);
+			$contact_prenom   = Clean::prenom($contact_prenom);
+			$contact_courriel = Clean::courriel($contact_courriel);
 			$_SESSION['tab_info'][$nb_lignes_trouvees] = array( 'import_id'=>$import_id , 'geo_id'=>$geo_id , 'localisation'=>$localisation , 'denomination'=>$denomination , 'uai'=>$uai , 'contact_nom'=>$contact_nom , 'contact_prenom'=>$contact_prenom , 'contact_courriel'=>$contact_courriel );
 			// Vérifier la présence des informations
 			if( !$geo_id || !$localisation || !$denomination || !$contact_nom || !$contact_prenom || !$contact_courriel )
@@ -179,8 +178,8 @@ if( ($action=='ajouter') && $num && $max )
 	$tab_sous_dossier = array('badge','cookie','devoir','officiel','rss');
 	foreach($tab_sous_dossier as $sous_dossier)
 	{
-		Creer_Dossier(CHEMIN_DOSSIER_TMP.$sous_dossier.DS.$base_id);
-		Ecrire_Fichier(CHEMIN_DOSSIER_TMP.$sous_dossier.DS.$base_id.DS.'index.htm','Circulez, il n\'y a rien à voir par ici !');
+		FileSystem::creer_dossier(CHEMIN_DOSSIER_TMP.$sous_dossier.DS.$base_id);
+		FileSystem::ecrire_fichier_index(CHEMIN_DOSSIER_TMP.$sous_dossier.DS.$base_id);
 	}
 	// Charger les paramètres de connexion à cette base afin de pouvoir y effectuer des requêtes
 	charger_parametres_mysql_supplementaires($base_id);
@@ -206,7 +205,7 @@ if( ($action=='ajouter') && $num && $max )
 	if($courriel_envoi)
 	{
 		$courriel_contenu = contenu_courriel_inscription( $base_id , $denomination , $contact_nom , $contact_prenom , 'admin' , $password , URL_DIR_SACOCHE );
-		$courriel_bilan = envoyer_webmestre_courriel( $contact_courriel , 'Création compte' , $courriel_contenu , FALSE );
+		$courriel_bilan = Sesamail::mail( $contact_courriel , 'Création compte' , $courriel_contenu );
 		if(!$courriel_bilan)
 		{
 			exit('Erreur lors de l\'envoi du courriel !');
@@ -218,7 +217,7 @@ if( ($action=='ajouter') && $num && $max )
 		unset($_SESSION['tab_info']);
 	}
 	// Retour de l'affichage, appel suivant
-	exit(']¤['.'<tr><td class="nu"><input type="checkbox" name="f_ids" value="'.$base_id.'" /></td><td class="label">'.$base_id.'</td><td class="label">'.html($localisation.' | '.$denomination.' ['.$uai.']').'</td><td class="label">'.html($contact_nom.' '.$contact_prenom.' ('.$contact_courriel.')').'</td></tr>');
+	exit(']¤['.'<tr><td class="nu"><input type="checkbox" name="f_ids" value="'.$base_id.'" /></td><td class="label">'.$base_id.'</td><td class="label">'.To::html($localisation.' | '.$denomination.' ['.$uai.']').'</td><td class="label">'.To::html($contact_nom.' '.$contact_prenom.' ('.$contact_courriel.')').'</td></tr>');
 }
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-

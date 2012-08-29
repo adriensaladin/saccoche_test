@@ -32,8 +32,8 @@ $action = (isset($_GET['action'])) ? $_GET['action'] : '';
 // Normalement ce sont des tableaux qui sont transmis, mais au cas où...
 $tab_select_eleves  = (isset($_POST['select_eleves']))  ? ( (is_array($_POST['select_eleves']))  ? $_POST['select_eleves']  : explode(',',$_POST['select_eleves'])  ) : array() ;
 $tab_select_classes = (isset($_POST['select_classes'])) ? ( (is_array($_POST['select_classes'])) ? $_POST['select_classes'] : explode(',',$_POST['select_classes']) ) : array() ;
-$tab_select_eleves  = array_filter( array_map( 'clean_entier' , $tab_select_eleves  ) , 'positif' );
-$tab_select_classes = array_filter( array_map( 'clean_entier' , $tab_select_classes ) , 'positif' );
+$tab_select_eleves  = array_filter( Clean::map_entier($tab_select_eleves)  , 'positif' );
+$tab_select_classes = array_filter( Clean::map_entier($tab_select_classes) , 'positif' );
 
 // Ajouter des élèves à des classes
 if($action=='ajouter')
@@ -68,14 +68,14 @@ $tab_user[0]             = '';
 $DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_classes_avec_niveaux();
 foreach($DB_TAB as $DB_ROW)
 {
-	$tab_niveau_groupe[$DB_ROW['niveau_id']][$DB_ROW['groupe_id']] = html($DB_ROW['groupe_nom']);
+	$tab_niveau_groupe[$DB_ROW['niveau_id']][$DB_ROW['groupe_id']] = To::html($DB_ROW['groupe_nom']);
 	$tab_user[$DB_ROW['groupe_id']] = '';
 }
 // Récupérer la liste des élèves / classes
 $DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_users( 'eleve' , 1 /*only_actuels*/ , FALSE /*with_classe*/ );
 foreach($DB_TAB as $DB_ROW)
 {
-	$tab_user[$DB_ROW['eleve_classe_id']] .= html($DB_ROW['user_nom'].' '.$DB_ROW['user_prenom']).'<br />';
+	$tab_user[$DB_ROW['eleve_classe_id']] .= To::html($DB_ROW['user_nom'].' '.$DB_ROW['user_prenom']).'<br />';
 }
 // Assemblage du tableau résultant
 $TH = array();

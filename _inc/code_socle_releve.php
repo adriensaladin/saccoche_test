@@ -45,7 +45,7 @@ register_shutdown_function('rapporter_erreur_fatale');
 
 // Chemins d'enregistrement
 
-$fichier_nom = ($make_action!='imprimer') ? 'releve_socle_detail_'.clean_fichier(substr($palier_nom,0,strpos($palier_nom,' ('))).'_'.clean_fichier($groupe_nom).'_'.fabriquer_fin_nom_fichier__date_et_alea() : 'officiel_'.$BILAN_TYPE.'_'.clean_fichier($groupe_nom).'_'.fabriquer_fin_nom_fichier__date_et_alea() ;
+$fichier_nom = ($make_action!='imprimer') ? 'releve_socle_detail_'.Clean::fichier(substr($palier_nom,0,strpos($palier_nom,' ('))).'_'.Clean::fichier($groupe_nom).'_'.fabriquer_fin_nom_fichier__date_et_alea() : 'officiel_'.$BILAN_TYPE.'_'.Clean::fichier($groupe_nom).'_'.fabriquer_fin_nom_fichier__date_et_alea() ;
 
 // Tableau des langues
 
@@ -288,11 +288,11 @@ foreach($tab_eleve as $tab)
 											}
 											if($aff_lien)
 											{
-												$texte_lien_avant = ($item_lien) ? '<a class="lien_ext" href="'.html($item_lien).'">' : '';
+												$texte_lien_avant = ($item_lien) ? '<a class="lien_ext" href="'.To::html($item_lien).'">' : '';
 												$texte_lien_apres = ($item_lien) ? '</a>' : '';
 											}
 											$texte_demande_eval = ($_SESSION['USER_PROFIL']!='eleve') ? '' : ( ($item_cart) ? '<q class="demander_add" id="demande_'.$matiere_id.'_'.$item_id.'_'.$score.'" title="Ajouter aux demandes d\'évaluations."></q>' : '<q class="demander_non" title="Demande interdite."></q>' ) ;
-											$tab_infos_socle_eleve[$socle_id][$eleve_id][] = '<span class="'.$tab_etat[$indice].'">'.$texte_coef.$texte_socle.$texte_lien_avant.html($item_ref.' || '.$item_nom.' ['.$score.'%]').'</span>'.$texte_lien_apres.$texte_demande_eval;
+											$tab_infos_socle_eleve[$socle_id][$eleve_id][] = '<span class="'.$tab_etat[$indice].'">'.$texte_coef.$texte_socle.$texte_lien_avant.To::html($item_ref.' || '.$item_nom.' ['.$score.'%]').'</span>'.$texte_lien_apres.$texte_demande_eval;
 										}
 										// on enregistre les infos
 										$tab_score_socle_eleve[$socle_id][$eleve_id][$indice]++;
@@ -464,11 +464,11 @@ $titre2 = ($memo_demande=='palier') ? $palier_nom : $palier_nom.' – '.mb_subst
 if($make_html)
 {
 	$releve_html  = $affichage_direct ? '' : '<style type="text/css">'.$_SESSION['CSS'].'</style>';
-	$releve_html .= $affichage_direct ? '' : '<h1>'.html($titre1).'</h1>';
-	$releve_html .= $affichage_direct ? '' : '<h2>'.html($titre2).'</h2>';
+	$releve_html .= $affichage_direct ? '' : '<h1>'.To::html($titre1).'</h1>';
+	$releve_html .= $affichage_direct ? '' : '<h2>'.To::html($titre2).'</h2>';
 	$releve_html .= '<div class="astuce">Cliquer sur <img src="./_img/toggle_plus.gif" alt="+" /> / <img src="./_img/toggle_moins.gif" alt="+" /> pour afficher / masquer le détail.</div>';
 	$separation = (count($tab_eleve)>1) ? '<hr />' : '' ;
-	$legende_html = ($legende=='oui') ? affich_legende_html( FALSE /*codes_notation*/ , FALSE /*etat_acquisition*/ , $test_affichage_Pourcentage /*pourcentage_acquis*/ , $test_affichage_Validation /*etat_validation*/ ) : '' ;
+	$legende_html = ($legende=='oui') ? Html::legende( FALSE /*codes_notation*/ , FALSE /*etat_acquisition*/ , $test_affichage_Pourcentage /*pourcentage_acquis*/ , $test_affichage_Validation /*etat_validation*/ ) : '' ;
 }
 if($make_pdf)
 {
@@ -496,7 +496,7 @@ foreach($tab_eleve as $tab)
 		{
 			if(!$make_officiel)
 			{
-				$releve_html .= ($eleve_id) ? $separation.'<h2>'.html($eleve_nom).' '.html($eleve_prenom).'</h2>' : '<hr /><h2>Attestation générique</h2>' ;
+				$releve_html .= ($eleve_id) ? $separation.'<h2>'.To::html($eleve_nom).' '.To::html($eleve_prenom).'</h2>' : '<hr /><h2>Attestation générique</h2>' ;
 			}
 			$releve_html .= '<table class="bilan">';
 		}
@@ -514,9 +514,9 @@ foreach($tab_eleve as $tab)
 						if($make_html)
 						{
 							$case_score = $test_affichage_Pourcentage ? '<th class="nu"></th>' : '' ;
-							$case_valid = $test_affichage_Validation ? affich_validation_html( 'th' , $tab_user_pilier[$eleve_id][$pilier_id] , $detail=TRUE ) : '' ;
+							$case_valid = $test_affichage_Validation ? Html::td_validation( 'th' , $tab_user_pilier[$eleve_id][$pilier_id] , $detail=TRUE ) : '' ;
 							$image_langue = ($drapeau_langue) ? ' <img src="./_img/drapeau/'.$drapeau_langue.'.gif" alt="" title="'.$tab_langues[$drapeau_langue]['texte'].'" />' : '' ;
-							$releve_html .= '<tr>'.$case_score.'<th>'.html($pilier_nom).$image_langue.'</th>'.$case_valid.'<th class="nu"></th></tr>'."\r\n";
+							$releve_html .= '<tr>'.$case_score.'<th>'.To::html($pilier_nom).$image_langue.'</th>'.$case_valid.'<th class="nu"></th></tr>'."\r\n";
 						}
 						if($make_pdf)
 						{
@@ -534,7 +534,7 @@ foreach($tab_eleve as $tab)
 									{
 										$case_score = $test_affichage_Pourcentage ? '<th class="nu"></th>' : '' ;
 										$case_valid = '<th class="nu"></th>' ;
-										$releve_html .= '<tr>'.$case_score.'<th colspan="2">'.html($section_nom).'</th>'.$case_valid.'</tr>'."\r\n";
+										$releve_html .= '<tr>'.$case_score.'<th colspan="2">'.To::html($section_nom).'</th>'.$case_valid.'</tr>'."\r\n";
 									}
 									if($make_pdf)
 									{
@@ -555,7 +555,7 @@ foreach($tab_eleve as $tab)
 												}
 												if($make_html)
 												{
-													$socle_nom  = html($socle_nom);
+													$socle_nom  = To::html($socle_nom);
 													$socle_nom  = (mb_strlen($socle_nom)<160) ? $socle_nom : mb_substr($socle_nom,0,150).' [...] <img src="./_img/bulle_aide.png" alt="" title="'.$socle_nom.'" />';
 													if( $tab_infos_socle_eleve[$socle_id][$eleve_id] )
 													{
@@ -567,8 +567,8 @@ foreach($tab_eleve as $tab)
 														$lien_toggle = '<img src="./_img/toggle_none.gif" alt="" /> ';
 														$div_competences = '';
 													}
-													$case_score = $test_affichage_Pourcentage ? affich_pourcentage_html( 'td' , $tab_score_socle_eleve[$socle_id][$eleve_id] , TRUE /*detail*/ , FALSE /*largeur*/ ) : '' ;
-													$case_valid = $test_affichage_Validation ? affich_validation_html( 'td' , $tab_user_entree[$eleve_id][$socle_id] , $detail=TRUE ) : '' ;
+													$case_score = $test_affichage_Pourcentage ? Html::td_pourcentage( 'td' , $tab_score_socle_eleve[$socle_id][$eleve_id] , TRUE /*detail*/ , FALSE /*largeur*/ ) : '' ;
+													$case_valid = $test_affichage_Validation ? Html::td_validation( 'td' , $tab_user_entree[$eleve_id][$socle_id] , $detail=TRUE ) : '' ;
 													$releve_html .= '<tr>'.$case_score.'<td colspan="2">'.$lien_toggle.$socle_nom.$div_competences.'</td>'.$case_valid.'</tr>'."\r\n";
 												}
 											}
@@ -586,7 +586,7 @@ foreach($tab_eleve as $tab)
 								{
 									extract($tab);	// $prof_info $appreciation $note
 									$action = ( ($BILAN_ETAT=='2rubrique') && ($make_action=='saisir') && ($prof_id==$_SESSION['USER_ID']) ) ? ' <button type="button" class="modifier">Modifier</button> <button type="button" class="supprimer">Supprimer</button>' : ' <button type="button" class="signaler">Signaler une erreur</button>' ;
-									$releve_html .= '<tr id="appr_'.$pilier_id.'_'.$prof_id.'"><td colspan="4" class="now"><div class="notnow">'.html($prof_info).$action.'</div><div class="appreciation">'.html($appreciation).'</div></td></tr>'."\r\n";
+									$releve_html .= '<tr id="appr_'.$pilier_id.'_'.$prof_id.'"><td colspan="4" class="now"><div class="notnow">'.To::html($prof_info).$action.'</div><div class="appreciation">'.To::html($appreciation).'</div></td></tr>'."\r\n";
 								}
 							}
 							if( ($BILAN_ETAT=='2rubrique') && ($make_action=='saisir') )
@@ -605,7 +605,7 @@ foreach($tab_eleve as $tab)
 					// Examen de présence des appréciations intermédiaires
 					if( ($make_action=='examiner') && ($_SESSION['OFFICIEL']['SOCLE_APPRECIATION_RUBRIQUE']) && (!isset($tab_saisie[$eleve_id][$pilier_id])) )
 					{
-						$tab_resultat_examen[$pilier_nom][] = 'Absence d\'appréciation pour '.html($eleve_nom.' '.$eleve_prenom);
+						$tab_resultat_examen[$pilier_nom][] = 'Absence d\'appréciation pour '.To::html($eleve_nom.' '.$eleve_prenom);
 					}
 					// Impression des appréciations intermédiaires (PDF)
 					if( ($make_action=='imprimer') && ($_SESSION['OFFICIEL']['SOCLE_APPRECIATION_RUBRIQUE']) && (isset($tab_saisie[$eleve_id][$pilier_id])) )
@@ -627,7 +627,7 @@ foreach($tab_eleve as $tab)
 						list($prof_id,$tab) = each($tab_saisie[$eleve_id][0]);
 						extract($tab);	// $prof_info $appreciation $note
 						$action = ( ($BILAN_ETAT=='3synthese') && ($make_action=='saisir') ) ? ' <button type="button" class="modifier">Modifier</button> <button type="button" class="supprimer">Supprimer</button>' : '' ;
-						$releve_html .= '<tr id="appr_0_'.$prof_id.'">'.$case_score.'<td colspan="2" class="now"><div class="notnow">'.html($prof_info).$action.'</div><div class="appreciation">'.html($appreciation).'</div></td>'.$case_valid.'</tr>'."\r\n";
+						$releve_html .= '<tr id="appr_0_'.$prof_id.'">'.$case_score.'<td colspan="2" class="now"><div class="notnow">'.To::html($prof_info).$action.'</div><div class="appreciation">'.To::html($appreciation).'</div></td>'.$case_valid.'</tr>'."\r\n";
 					}
 					elseif( ($BILAN_ETAT=='3synthese') && ($make_action=='saisir') )
 					{
@@ -638,7 +638,7 @@ foreach($tab_eleve as $tab)
 			// Examen de présence de l'appréciation générale
 			if( ($make_action=='examiner') && ($_SESSION['OFFICIEL']['SOCLE_APPRECIATION_GENERALE']) && (in_array(0,$tab_rubrique_id)) && (!isset($tab_saisie[$eleve_id][0])) )
 			{
-				$tab_resultat_examen['Synthèse générale'][] = 'Absence d\'appréciation générale pour '.html($eleve_nom.' '.$eleve_prenom);
+				$tab_resultat_examen['Synthèse générale'][] = 'Absence d\'appréciation générale pour '.To::html($eleve_nom.' '.$eleve_prenom);
 			}
 			// Impression de l'appréciation générale
 			if( ($make_action=='imprimer') && ($_SESSION['OFFICIEL']['SOCLE_APPRECIATION_GENERALE']) )
@@ -688,7 +688,7 @@ foreach($tab_eleve as $tab)
 // On enregistre les sorties HTML et PDF
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
-if($make_html) { Ecrire_Fichier(CHEMIN_DOSSIER_EXPORT.$fichier_nom.'.html',$releve_html); }
+if($make_html) { FileSystem::ecrire_fichier(CHEMIN_DOSSIER_EXPORT.$fichier_nom.'.html',$releve_html); }
 if($make_pdf)  { $releve_pdf->Output(CHEMIN_DOSSIER_EXPORT.$fichier_nom.'.pdf','F'); }
 
 ?>

@@ -32,12 +32,12 @@ $BASE = 0;
 if(HEBERGEUR_INSTALLATION=='multi-structures')
 {
 	// Lecture d'un cookie sur le poste client servant à retenir le dernier établissement sélectionné si identification avec succès
-	$BASE = (isset($_COOKIE[COOKIE_STRUCTURE])) ? clean_entier($_COOKIE[COOKIE_STRUCTURE]) : 0 ;
+	$BASE = (isset($_COOKIE[COOKIE_STRUCTURE])) ? Clean::entier($_COOKIE[COOKIE_STRUCTURE]) : 0 ;
 	// Test si id d'établissement transmis dans l'URL
-	$BASE = (isset($_GET['id']))   ? clean_entier($_GET['id'])   : $BASE ; // Historiquement
-	$BASE = (isset($_GET['base'])) ? clean_entier($_GET['base']) : $BASE ; // Par harmonisation avec la connexion SSO
+	$BASE = (isset($_GET['id']))   ? Clean::entier($_GET['id'])   : $BASE ; // Historiquement
+	$BASE = (isset($_GET['base'])) ? Clean::entier($_GET['base']) : $BASE ; // Par harmonisation avec la connexion SSO
 	// Test si UAI d'établissement transmis dans l'URL
-	$BASE = (isset($_GET['uai'])) ? DB_WEBMESTRE_PUBLIC::DB_recuperer_structure_id_base_for_UAI(clean_uai($_GET['uai'])) : $BASE ;
+	$BASE = (isset($_GET['uai'])) ? DB_WEBMESTRE_PUBLIC::DB_recuperer_structure_id_base_for_UAI(Clean::uai($_GET['uai'])) : $BASE ;
 }
 // Test si affichage du formulaire spécial pour le webmestre
 $profil = (isset($_GET['webmestre'])) ? 'webmestre' : 'normal' ;
@@ -79,7 +79,7 @@ if(isset($_COOKIE[COOKIE_AUTHMODE]))
 <h2 class="hebergement">Hébergement</h2>
 <ul class="puce">
 	<li><em>SACoche</em> peut être téléchargé et installé sur différents serveurs.</li>
-	<li>Cette installation (<?php echo (HEBERGEUR_INSTALLATION=='mono-structure') ? HEBERGEUR_INSTALLATION : DB_WEBMESTRE_PUBLIC::DB_compter_structure() ; ?>) a été effectuée par : <?php echo (HEBERGEUR_ADRESSE_SITE) ? '<a class="lien_ext" href="'.html(HEBERGEUR_ADRESSE_SITE).'">'.html(HEBERGEUR_DENOMINATION).'</a>' : html(HEBERGEUR_DENOMINATION); ?> (<?php echo mailto(WEBMESTRE_COURRIEL,'SACoche','contact','Attention ! Si vous êtes élève, parent, professeur ou directeur, alors il ne faut pas contacter le webmestre du serveur, mais l\'administrateur de votre établissement qui a créé les comptes utilisateurs.'); ?>).</li>
+	<li>Cette installation (<?php echo (HEBERGEUR_INSTALLATION=='mono-structure') ? HEBERGEUR_INSTALLATION : DB_WEBMESTRE_PUBLIC::DB_compter_structure() ; ?>) a été effectuée par : <?php echo (HEBERGEUR_ADRESSE_SITE) ? '<a class="lien_ext" href="'.To::html(HEBERGEUR_ADRESSE_SITE).'">'.To::html(HEBERGEUR_DENOMINATION).'</a>' : To::html(HEBERGEUR_DENOMINATION); ?> (<?php echo Html::mailto(WEBMESTRE_COURRIEL,'SACoche','contact','Attention ! Si vous êtes élève, parent, professeur ou directeur, alors il ne faut pas contacter le webmestre du serveur, mais l\'administrateur de votre établissement qui a créé les comptes utilisateurs.'); ?>).</li>
 	<li><a class="lien_ext" href="<?php echo SERVEUR_CNIL ?>">Information CNIL</a>. Déclaration <?php echo intval(CNIL_NUMERO) ? 'n°'.CNIL_NUMERO : 'non renseignée' ; ?>.</li>
 </ul>
 

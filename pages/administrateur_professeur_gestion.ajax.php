@@ -28,19 +28,19 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 if($_SESSION['SESAMATH_ID']==ID_DEMO) {exit('Action désactivée pour la démo...');}
 
-$action      = (isset($_POST['f_action']))      ? clean_texte($_POST['f_action'])      : '';
-$id          = (isset($_POST['f_id']))          ? clean_entier($_POST['f_id'])         : 0;
-$id_ent      = (isset($_POST['f_id_ent']))      ? clean_texte($_POST['f_id_ent'])      : '';
-$id_gepi     = (isset($_POST['f_id_gepi']))     ? clean_texte($_POST['f_id_gepi'])     : '';
-$sconet_id   = (isset($_POST['f_sconet_id']))   ? clean_entier($_POST['f_sconet_id'])  : 0;
-$reference   = (isset($_POST['f_reference']))   ? clean_ref($_POST['f_reference'])     : '';
-$nom         = (isset($_POST['f_nom']))         ? clean_nom($_POST['f_nom'])           : '';
-$prenom      = (isset($_POST['f_prenom']))      ? clean_prenom($_POST['f_prenom'])     : '';
-$login       = (isset($_POST['f_login']))       ? clean_login($_POST['f_login'])       : '';
-$password    = (isset($_POST['f_password']))    ? clean_password($_POST['f_password']) : '' ;
-$not_new_mdp = (isset($_POST['box_password']))  ? clean_entier($_POST['box_password']) : 0;
-$sortie_date = (isset($_POST['f_sortie_date'])) ? clean_texte($_POST['f_sortie_date']) : '' ;
-$not_exit    = (isset($_POST['box_date']))      ? clean_entier($_POST['box_date'])     : 0;
+$action      = (isset($_POST['f_action']))      ? Clean::texte($_POST['f_action'])      : '';
+$id          = (isset($_POST['f_id']))          ? Clean::entier($_POST['f_id'])         : 0;
+$id_ent      = (isset($_POST['f_id_ent']))      ? Clean::texte($_POST['f_id_ent'])      : '';
+$id_gepi     = (isset($_POST['f_id_gepi']))     ? Clean::texte($_POST['f_id_gepi'])     : '';
+$sconet_id   = (isset($_POST['f_sconet_id']))   ? Clean::entier($_POST['f_sconet_id'])  : 0;
+$reference   = (isset($_POST['f_reference']))   ? Clean::ref($_POST['f_reference'])     : '';
+$nom         = (isset($_POST['f_nom']))         ? Clean::nom($_POST['f_nom'])           : '';
+$prenom      = (isset($_POST['f_prenom']))      ? Clean::prenom($_POST['f_prenom'])     : '';
+$login       = (isset($_POST['f_login']))       ? Clean::login($_POST['f_login'])       : '';
+$password    = (isset($_POST['f_password']))    ? Clean::password($_POST['f_password']) : '' ;
+$not_new_mdp = (isset($_POST['box_password']))  ? Clean::entier($_POST['box_password']) : 0;
+$sortie_date = (isset($_POST['f_sortie_date'])) ? Clean::texte($_POST['f_sortie_date']) : '' ;
+$not_exit    = (isset($_POST['box_date']))      ? Clean::entier($_POST['box_date'])     : 0;
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 //	Ajouter un nouveau professeur
@@ -104,14 +104,14 @@ if( ($action=='ajouter') && $nom && $prenom && $password )
 	// Afficher le retour
 	echo'<tr id="id_'.$user_id.'" class="new">';
 	echo	'<td class="nu"><input type="checkbox" name="f_ids" value="'.$user_id.'" /></td>';
-	echo	'<td class="label">'.html($id_ent).'</td>';
-	echo	'<td class="label">'.html($id_gepi).'</td>';
-	echo	'<td class="label">'.html($sconet_id).'</td>';
-	echo	'<td class="label">'.html($reference).'</td>';
-	echo	'<td class="label">'.html($nom).'</td>';
-	echo	'<td class="label">'.html($prenom).'</td>';
-	echo	'<td class="label new">'.html($login).' <img alt="" title="Pensez à relever le login généré !"  src="./_img/bulle_aide.png" /></td>';
-	echo	'<td class="label new">'.html($password).' <img alt="" title="Pensez à noter le mot de passe !" src="./_img/bulle_aide.png" /></td>';
+	echo	'<td class="label">'.To::html($id_ent).'</td>';
+	echo	'<td class="label">'.To::html($id_gepi).'</td>';
+	echo	'<td class="label">'.To::html($sconet_id).'</td>';
+	echo	'<td class="label">'.To::html($reference).'</td>';
+	echo	'<td class="label">'.To::html($nom).'</td>';
+	echo	'<td class="label">'.To::html($prenom).'</td>';
+	echo	'<td class="label new">'.To::html($login).' <img alt="" title="Pensez à relever le login généré !"  src="./_img/bulle_aide.png" /></td>';
+	echo	'<td class="label new">'.To::html($password).' <img alt="" title="Pensez à noter le mot de passe !" src="./_img/bulle_aide.png" /></td>';
 	echo	'<td class="label"><i>'.$sortie_date_mysql.'</i>'.$sortie_date.'</td>';
 	echo	'<td class="nu">';
 	echo		'<q class="modifier" title="Modifier ce professeur."></q>';
@@ -182,13 +182,13 @@ if( ($action=='modifier') && $id && $nom && $prenom && $login && ( $not_new_mdp 
 	DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_user( $id , $tab_donnees );
 	// Afficher le retour
 	echo'<td class="nu"><input type="checkbox" name="f_ids" value="'.$id.'" /></td>';
-	echo'<td class="label">'.html($id_ent).'</td>';
-	echo'<td class="label">'.html($id_gepi).'</td>';
-	echo'<td class="label">'.html($sconet_id).'</td>';
-	echo'<td class="label">'.html($reference).'</td>';
-	echo'<td class="label">'.html($nom).'</td>';
-	echo'<td class="label">'.html($prenom).'</td>';
-	echo'<td class="label">'.html($login).'</td>';
+	echo'<td class="label">'.To::html($id_ent).'</td>';
+	echo'<td class="label">'.To::html($id_gepi).'</td>';
+	echo'<td class="label">'.To::html($sconet_id).'</td>';
+	echo'<td class="label">'.To::html($reference).'</td>';
+	echo'<td class="label">'.To::html($nom).'</td>';
+	echo'<td class="label">'.To::html($prenom).'</td>';
+	echo'<td class="label">'.To::html($login).'</td>';
 	echo ($not_new_mdp) ? '<td class="label i">champ crypté</td>' : '<td class="label new">'.$password.' <img alt="" src="./_img/bulle_aide.png" title="Pensez à noter le mot de passe !" /></td>' ;
 	echo'<td class="label"><i>'.$sortie_date_mysql.'</i>'.$sortie_date.'</td>';
 	echo'<td class="nu">';

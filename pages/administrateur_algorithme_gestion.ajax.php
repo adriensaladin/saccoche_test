@@ -31,17 +31,17 @@ if(($_SESSION['SESAMATH_ID']==ID_DEMO)&&($_POST['action']!='calculer')){exit('Ac
 $action = (isset($_POST['action'])) ? $_POST['action'] : '';
 // Valeur d'un code (sur 100)
 $valeur = array();
-$valeur['RR'] = (isset($_POST['valeurRR'])) ? clean_entier($_POST['valeurRR']) :   0 ;
-$valeur['R']  = (isset($_POST['valeurR']))  ? clean_entier($_POST['valeurR'])  :  33 ;
-$valeur['V']  = (isset($_POST['valeurV']))  ? clean_entier($_POST['valeurV'])  :  67 ;
-$valeur['VV'] = (isset($_POST['valeurVV'])) ? clean_entier($_POST['valeurVV']) : 100 ;
+$valeur['RR'] = (isset($_POST['valeurRR'])) ? Clean::entier($_POST['valeurRR']) :   0 ;
+$valeur['R']  = (isset($_POST['valeurR']))  ? Clean::entier($_POST['valeurR'])  :  33 ;
+$valeur['V']  = (isset($_POST['valeurV']))  ? Clean::entier($_POST['valeurV'])  :  67 ;
+$valeur['VV'] = (isset($_POST['valeurVV'])) ? Clean::entier($_POST['valeurVV']) : 100 ;
 // Seuil d'aquisition (sur 100) 
 $seuil = array();
-$seuil['R'] = (isset($_POST['seuilR'])) ? clean_entier($_POST['seuilR']) : 40 ;
-$seuil['V'] = (isset($_POST['seuilV'])) ? clean_entier($_POST['seuilV']) : 60 ;
+$seuil['R'] = (isset($_POST['seuilR'])) ? Clean::entier($_POST['seuilR']) : 40 ;
+$seuil['V'] = (isset($_POST['seuilV'])) ? Clean::entier($_POST['seuilV']) : 60 ;
 // Méthode de calcul
-$methode = (isset($_POST['f_methode'])) ? clean_texte($_POST['f_methode']) : '' ;
-$limite  = (isset($_POST['f_limite']))  ? clean_entier($_POST['f_limite']) : 0 ;
+$methode = (isset($_POST['f_methode'])) ? Clean::texte($_POST['f_methode']) : '' ;
+$limite  = (isset($_POST['f_limite']))  ? Clean::entier($_POST['f_limite']) : 0 ;
 
 $tab_methodes = array('geometrique','arithmetique','classique','bestof1','bestof2','bestof3');
 $tab_limites['geometrique']  = array(1,2,3,4,5);

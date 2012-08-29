@@ -28,8 +28,8 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 if($_SESSION['SESAMATH_ID']==ID_DEMO) {exit('Action désactivée pour la démo...');}
 
-$password_ancien  = (isset($_POST['f_password0'])) ? clean_password($_POST['f_password0']) : '' ;
-$password_nouveau = (isset($_POST['f_password1'])) ? clean_password($_POST['f_password1']) : '' ;
+$password_ancien  = (isset($_POST['f_password0'])) ? Clean::password($_POST['f_password0']) : '' ;
+$password_nouveau = (isset($_POST['f_password1'])) ? Clean::password($_POST['f_password1']) : '' ;
 
 //	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //	Mettre à jour son mdp

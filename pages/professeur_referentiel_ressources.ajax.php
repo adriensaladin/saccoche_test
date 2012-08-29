@@ -28,16 +28,16 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 if(($_SESSION['SESAMATH_ID']==ID_DEMO)&&($_POST['action']!='Voir_referentiel')){exit('Action désactivée pour la démo...');}
 
-$action      = (isset($_POST['action']))      ? clean_texte($_POST['action'])      : '';
-$matiere_id  = (isset($_POST['matiere_id']))  ? clean_entier($_POST['matiere_id']) : 0;
-$matiere_ref = (isset($_POST['matiere_ref'])) ? clean_texte($_POST['matiere_ref']) : '';
-$niveau_id   = (isset($_POST['niveau_id']))   ? clean_entier($_POST['niveau_id'])  : 0;
-$item_id     = (isset($_POST['item_id']))     ? clean_entier($_POST['item_id'])    : 0;
-$item_nom    = (isset($_POST['item_nom']))    ? clean_texte($_POST['item_nom'])    : '';
-$item_lien   = (isset($_POST['item_lien']))   ? clean_texte($_POST['item_lien'])   : '';
-$objet       = (isset($_POST['page_mode']))   ? clean_texte($_POST['page_mode'])   : '';
-$ressources  = (isset($_POST['ressources']))  ? clean_texte($_POST['ressources'])  : '';
-$findme      = (isset($_POST['findme']))      ? clean_texte($_POST['findme'])      : '';
+$action      = (isset($_POST['action']))      ? Clean::texte($_POST['action'])      : '';
+$matiere_id  = (isset($_POST['matiere_id']))  ? Clean::entier($_POST['matiere_id']) : 0;
+$matiere_ref = (isset($_POST['matiere_ref'])) ? Clean::texte($_POST['matiere_ref']) : '';
+$niveau_id   = (isset($_POST['niveau_id']))   ? Clean::entier($_POST['niveau_id'])  : 0;
+$item_id     = (isset($_POST['item_id']))     ? Clean::entier($_POST['item_id'])    : 0;
+$item_nom    = (isset($_POST['item_nom']))    ? Clean::texte($_POST['item_nom'])    : '';
+$item_lien   = (isset($_POST['item_lien']))   ? Clean::texte($_POST['item_lien'])   : '';
+$objet       = (isset($_POST['page_mode']))   ? Clean::texte($_POST['page_mode'])   : '';
+$ressources  = (isset($_POST['ressources']))  ? Clean::texte($_POST['ressources'])  : '';
+$findme      = (isset($_POST['findme']))      ? Clean::texte($_POST['findme'])      : '';
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 // Afficher le référentiel d'une matière et d'un niveau
@@ -132,8 +132,7 @@ if( ($action=='Uploader_document') && isset($_FILES['userfile']) )
 	$ferreur = $tab_file['error'];
 	if( (!file_exists($fnom_serveur)) || (!$ftaille) || ($ferreur) )
 	{
-		require(CHEMIN_DOSSIER_INCLUDE.'fonction_infos_serveur.php');
-		exit('Problème de transfert ! Fichier trop lourd ? min(memory_limit,post_max_size,upload_max_filesize)='.minimum_limitations_upload());
+		exit('Problème de transfert ! Fichier trop lourd ? '.InfoServeur::minimum_limitations_upload());
 	}
 	$extension = strtolower(pathinfo($fnom_transmis,PATHINFO_EXTENSION));
 	if(in_array( $extension , array('bat','com','exe','php','zip') ))
@@ -148,7 +147,7 @@ if( ($action=='Uploader_document') && isset($_FILES['userfile']) )
 	{
 		exit('Le fichier dépasse les 500Ko autorisés pour ce service !');
 	}
-	exit( uploader_ressource( $_SESSION['SESAMATH_ID'] , $_SESSION['SESAMATH_KEY'] , $_SESSION['tmp']['matiere_ref'] , clean_fichier($fnom_transmis) , file_get_contents($fnom_serveur) ) );
+	exit( uploader_ressource( $_SESSION['SESAMATH_ID'] , $_SESSION['SESAMATH_KEY'] , $_SESSION['tmp']['matiere_ref'] , Clean::fichier($fnom_transmis) , file_get_contents($fnom_serveur) ) );
 }
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-

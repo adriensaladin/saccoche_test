@@ -29,7 +29,7 @@ if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');
 if($_SESSION['SESAMATH_ID']==ID_DEMO){exit('Action désactivée pour la démo...');}
 
 $action = (isset($_POST['f_action'])) ? $_POST['f_action']             : ''; // transmis la 1e fois manuellement, ensuite dans un INPUT
-$step   = (isset($_POST['f_step']))   ? clean_entier($_POST['f_step']) : 0;
+$step   = (isset($_POST['f_step']))   ? Clean::entier($_POST['f_step']) : 0;
 
 $tab_actions = array('sconet_professeurs_directeurs_oui'=>'sconet_professeurs_directeurs','tableur_professeurs_directeurs'=>'tableur_professeurs_directeurs','sconet_eleves_oui'=>'sconet_eleves','sconet_parents_oui'=>'sconet_parents','base-eleves_eleves'=>'base-eleves_eleves','tableur_eleves'=>'tableur_eleves');
 $tab_etapes  = array();
@@ -106,8 +106,7 @@ if( $step==10 )
 	$ferreur = $tab_file['error'];
 	if( (!file_exists($fnom_serveur)) || (!$ftaille) || ($ferreur) )
 	{
-		require(CHEMIN_DOSSIER_INCLUDE.'fonction_infos_serveur.php');
-		exit('Erreur : problème de transfert ! Fichier trop lourd ? min(memory_limit,post_max_size,upload_max_filesize)='.minimum_limitations_upload());
+		exit('Erreur : problème de transfert ! Fichier trop lourd ? '.InfoServeur::minimum_limitations_upload());
 	}
 	$extension = strtolower(pathinfo($fnom_transmis,PATHINFO_EXTENSION));
 	if(!in_array($extension,$tab_extensions_autorisees))
@@ -277,14 +276,14 @@ if( $step==20 )
 				// Prendre les professeurs, les CPE, le personnel de direction (je ne sais pas s'il y a d'autres cas)
 				if(in_array( $fonction , array('ENS','EDU','DIR') ))
 				{
-					$sconet_id = clean_entier($individu->attributes()->ID);
+					$sconet_id = Clean::entier($individu->attributes()->ID);
 					$i_fichier  = $sconet_id;
 					$tab_users_fichier['sconet_id'][$i_fichier]  = $sconet_id;
 					$tab_users_fichier['sconet_num'][$i_fichier] = 0;
 					$tab_users_fichier['reference'][$i_fichier]  = '';
 					$tab_users_fichier['profil'][$i_fichier]     = ($fonction=='DIR') ? 'directeur' : 'professeur' ;
-					$tab_users_fichier['nom'][$i_fichier]        = clean_nom($individu->NOM_USAGE);
-					$tab_users_fichier['prenom'][$i_fichier]     = clean_prenom($individu->PRENOM);
+					$tab_users_fichier['nom'][$i_fichier]        = Clean::nom($individu->NOM_USAGE);
+					$tab_users_fichier['prenom'][$i_fichier]     = Clean::prenom($individu->PRENOM);
 					$tab_users_fichier['classe'][$i_fichier]     = array();
 					$tab_users_fichier['groupe'][$i_fichier]     = array();
 					$tab_users_fichier['matiere'][$i_fichier]    = array();
@@ -293,9 +292,9 @@ if( $step==20 )
 					{
 						foreach ($individu->PROFS_PRINC->PROF_PRINC as $prof_princ)
 						{
-							$classe_ref = clean_ref($prof_princ->CODE_STRUCTURE);
-							$date_fin   = clean_ref($prof_princ->DATE_FIN);
-							$i_classe   = 'i'.clean_login($classe_ref); // 'i' car la référence peut être numérique (ex : 61) et cela pose problème que l'indice du tableau soit un entier (ajouter (string) n'y change rien) lors du array_multisort().
+							$classe_ref = Clean::ref($prof_princ->CODE_STRUCTURE);
+							$date_fin   = Clean::ref($prof_princ->DATE_FIN);
+							$i_classe   = 'i'.Clean::login($classe_ref); // 'i' car la référence peut être numérique (ex : 61) et cela pose problème que l'indice du tableau soit un entier (ajouter (string) n'y change rien) lors du array_multisort().
 							if($date_fin >= $date_aujourdhui)
 							{
 								$tab_users_fichier['classe'][$i_fichier][$i_classe] = 'PP';
@@ -338,9 +337,9 @@ if( $step==20 )
 		{
 			foreach ($xml->DONNEES->STRUCTURE->DIVISIONS->DIVISION as $division)
 			{
-				$classe_ref = clean_ref($division->attributes()->CODE);
-				$classe_nom = clean_texte($division->LIBELLE_LONG);
-				$i_classe   = 'i'.clean_login($classe_ref); // 'i' car la référence peut être numérique (ex : 61) et cela pose problème que l'indice du tableau soit un entier (ajouter (string) n'y change rien) lors du array_multisort().
+				$classe_ref = Clean::ref($division->attributes()->CODE);
+				$classe_nom = Clean::texte($division->LIBELLE_LONG);
+				$i_classe   = 'i'.Clean::login($classe_ref); // 'i' car la référence peut être numérique (ex : 61) et cela pose problème que l'indice du tableau soit un entier (ajouter (string) n'y change rien) lors du array_multisort().
 				// Au passage on ajoute la classe trouvée
 				if(!isset($tab_classes_fichier['ref'][$i_classe]))
 				{
@@ -361,7 +360,7 @@ if( $step==20 )
 						{
 							foreach ($service->ENSEIGNANTS->ENSEIGNANT as $enseignant)
 							{
-								$i_fichier = clean_entier($enseignant->attributes()->ID);
+								$i_fichier = Clean::entier($enseignant->attributes()->ID);
 								// Il arrive que des individus soient présents dans le fichier mais sans fonction ($xml->DONNEES->INDIVIDUS->INDIVIDU->FONCTION)
 								// Ce peut être un congé longue maladie, un congé maternité, une retraite en cours d'année...
 								// Du coup, ils ne sont pas récupérés dans $tab_users_fichier[]
@@ -394,9 +393,9 @@ if( $step==20 )
 		{
 			foreach ($xml->DONNEES->STRUCTURE->GROUPES->GROUPE as $groupe)
 			{
-				$groupe_ref = clean_ref($groupe->attributes()->CODE);
-				$groupe_nom = clean_texte($groupe->LIBELLE_LONG);
-				$i_groupe   = 'i'.clean_login($groupe_ref); // 'i' car la référence peut être numérique (ex : 61) et cela pose problème que l'indice du tableau soit un entier (ajouter (string) n'y change rien) lors du array_multisort().
+				$groupe_ref = Clean::ref($groupe->attributes()->CODE);
+				$groupe_nom = Clean::texte($groupe->LIBELLE_LONG);
+				$i_groupe   = 'i'.Clean::login($groupe_ref); // 'i' car la référence peut être numérique (ex : 61) et cela pose problème que l'indice du tableau soit un entier (ajouter (string) n'y change rien) lors du array_multisort().
 				// Au passage on ajoute le groupe trouvé
 				if(!isset($tab_groupes_fichier['ref'][$i_groupe]))
 				{
@@ -413,7 +412,7 @@ if( $step==20 )
 						{
 							foreach ($service->ENSEIGNANTS->ENSEIGNANT as $enseignant)
 							{
-								$i_fichier = clean_entier($enseignant->attributes()->ID);
+								$i_fichier = Clean::entier($enseignant->attributes()->ID);
 								// Il arrive que des individus soient présents dans le fichier mais sans fonction ($xml->DONNEES->INDIVIDUS->INDIVIDU->FONCTION)
 								// Ce peut être un congé longue maladie, un congé maternité, une retraite en cours d'année...
 								// Du coup, ils ne sont pas récupérés dans $tab_users_fichier[]
@@ -464,7 +463,7 @@ if( $step==20 )
 		{
 			foreach ($xml->DONNEES->ELEVES->ELEVE as $eleve)
 			{
-				$i_fichier = clean_entier($eleve->attributes()->ELEVE_ID);
+				$i_fichier = Clean::entier($eleve->attributes()->ELEVE_ID);
 				if($eleve->DATE_SORTIE)
 				{
 					$_SESSION['tmp']['date_sortie'][$i_fichier] = (string) $eleve->DATE_SORTIE; // format fr (jj/mm/aaaa)
@@ -472,14 +471,14 @@ if( $step==20 )
 				else
 				{
 					$tab_users_fichier['sconet_id'][$i_fichier]  = $i_fichier;
-					$tab_users_fichier['sconet_num'][$i_fichier] = clean_entier($eleve->attributes()->ELENOET);
-					$tab_users_fichier['reference'][$i_fichier]  = clean_ref($eleve->ID_NATIONAL);
+					$tab_users_fichier['sconet_num'][$i_fichier] = Clean::entier($eleve->attributes()->ELENOET);
+					$tab_users_fichier['reference'][$i_fichier]  = Clean::ref($eleve->ID_NATIONAL);
 					$tab_users_fichier['profil'][$i_fichier]     = 'eleve' ;
-					$tab_users_fichier['nom'][$i_fichier]        = clean_nom($eleve->NOM);
-					$tab_users_fichier['prenom'][$i_fichier]     = clean_prenom($eleve->PRENOM);
+					$tab_users_fichier['nom'][$i_fichier]        = Clean::nom($eleve->NOM);
+					$tab_users_fichier['prenom'][$i_fichier]     = Clean::prenom($eleve->PRENOM);
 					$tab_users_fichier['classe'][$i_fichier]     = '';
 					$tab_users_fichier['groupe'][$i_fichier]     = array();
-					$tab_users_fichier['niveau'][$i_fichier]     = clean_ref($eleve->CODE_MEF);
+					$tab_users_fichier['niveau'][$i_fichier]     = Clean::ref($eleve->CODE_MEF);
 				}
 			}
 		}
@@ -490,15 +489,15 @@ if( $step==20 )
 		{
 			foreach ($xml->DONNEES->STRUCTURES->STRUCTURES_ELEVE as $structures_eleve)
 			{
-				$i_fichier = clean_entier($structures_eleve->attributes()->ELEVE_ID);
+				$i_fichier = Clean::entier($structures_eleve->attributes()->ELEVE_ID);
 				if(!isset($_SESSION['tmp']['date_sortie'][$i_fichier]))	// les élèves marqués comme sortis de l'établissement sont encore dans le fichier reliés à une classe et d'autres bricoles...
 				{
 					foreach ($structures_eleve->STRUCTURE as $structure)
 					{
 						if($structure->TYPE_STRUCTURE == 'D')
 						{
-							$classe_ref = clean_ref($structure->CODE_STRUCTURE);
-							$i_classe   = 'i'.clean_login($classe_ref); // 'i' car la référence peut être numérique (ex : 61) et cela pose problème que l'indice du tableau soit un entier (ajouter (string) n'y change rien) lors du array_multisort().
+							$classe_ref = Clean::ref($structure->CODE_STRUCTURE);
+							$i_classe   = 'i'.Clean::login($classe_ref); // 'i' car la référence peut être numérique (ex : 61) et cela pose problème que l'indice du tableau soit un entier (ajouter (string) n'y change rien) lors du array_multisort().
 							$tab_users_fichier['classe'][$i_fichier] = $i_classe;
 							if(!isset($tab_classes_fichier['ref'][$i_classe]))
 							{
@@ -513,8 +512,8 @@ if( $step==20 )
 						}
 						elseif($structure->TYPE_STRUCTURE == 'G')
 						{
-							$groupe_ref = clean_ref($structure->CODE_STRUCTURE);
-							$i_groupe   = 'i'.clean_login($groupe_ref); // 'i' car la référence peut être numérique (ex : 61) et cela pose problème que l'indice du tableau soit un entier (ajouter (string) n'y change rien) lors du array_multisort().
+							$groupe_ref = Clean::ref($structure->CODE_STRUCTURE);
+							$i_groupe   = 'i'.Clean::login($groupe_ref); // 'i' car la référence peut être numérique (ex : 61) et cela pose problème que l'indice du tableau soit un entier (ajouter (string) n'y change rien) lors du array_multisort().
 							if(!isset($tab_users_fichier['groupe'][$i_fichier][$i_groupe]))
 							{
 								$tab_users_fichier['groupe'][$i_fichier][$i_groupe] = $groupe_ref;
@@ -560,7 +559,7 @@ if( $step==20 )
 		{
 			foreach ($xml->DONNEES->ADRESSES->ADRESSE as $adresse)
 			{
-				$tab_adresses[clean_entier($adresse->attributes()->ADRESSE_ID)] = array( clean_adresse($adresse->LIGNE1_ADRESSE) , clean_adresse($adresse->LIGNE2_ADRESSE) , clean_adresse($adresse->LIGNE3_ADRESSE) , clean_adresse($adresse->LIGNE4_ADRESSE) , clean_entier($adresse->CODE_POSTAL) , clean_commune($adresse->LIBELLE_POSTAL) , clean_pays($adresse->LL_PAYS) );
+				$tab_adresses[Clean::entier($adresse->attributes()->ADRESSE_ID)] = array( Clean::adresse($adresse->LIGNE1_ADRESSE) , Clean::adresse($adresse->LIGNE2_ADRESSE) , Clean::adresse($adresse->LIGNE3_ADRESSE) , Clean::adresse($adresse->LIGNE4_ADRESSE) , Clean::entier($adresse->CODE_POSTAL) , Clean::commune($adresse->LIBELLE_POSTAL) , Clean::pays($adresse->LL_PAYS) );
 			}
 		}
 		//
@@ -573,10 +572,10 @@ if( $step==20 )
 		{
 			foreach ($xml->DONNEES->RESPONSABLES->RESPONSABLE_ELEVE as $responsable)
 			{
-				$num_responsable = clean_entier($responsable->RESP_LEGAL);
+				$num_responsable = Clean::entier($responsable->RESP_LEGAL);
 				if($num_responsable)
 				{
-					$tab_enfants[clean_entier($responsable->PERSONNE_ID)][clean_entier($responsable->ELEVE_ID)] = $num_responsable;
+					$tab_enfants[Clean::entier($responsable->PERSONNE_ID)][Clean::entier($responsable->ELEVE_ID)] = $num_responsable;
 					$nb_lien_responsabilite++;
 				}
 			}
@@ -597,7 +596,7 @@ if( $step==20 )
 		{
 			foreach ($xml->DONNEES->PERSONNES->PERSONNE as $personne)
 			{
-				$i_fichier = clean_entier($personne->attributes()->PERSONNE_ID);
+				$i_fichier = Clean::entier($personne->attributes()->PERSONNE_ID);
 				if(isset($tab_enfants[$i_fichier]))
 				{
 					$nb_enfants_actuels = 0;
@@ -607,13 +606,13 @@ if( $step==20 )
 					}
 					if($nb_enfants_actuels)
 					{
-						$i_adresse = clean_entier($personne->ADRESSE_ID);
+						$i_adresse = Clean::entier($personne->ADRESSE_ID);
 						$tab_users_fichier['sconet_id'][$i_fichier]  = $i_fichier;
 						$tab_users_fichier['sconet_num'][$i_fichier] = 0;
 						$tab_users_fichier['reference'][$i_fichier]  = '';
 						$tab_users_fichier['profil'][$i_fichier]     = 'parent' ;
-						$tab_users_fichier['nom'][$i_fichier]        = clean_nom($personne->NOM);
-						$tab_users_fichier['prenom'][$i_fichier]     = clean_prenom($personne->PRENOM);
+						$tab_users_fichier['nom'][$i_fichier]        = Clean::nom($personne->NOM);
+						$tab_users_fichier['prenom'][$i_fichier]     = Clean::prenom($personne->PRENOM);
 						$tab_users_fichier['adresse'][$i_fichier]    = isset($tab_adresses[$i_adresse]) ? $tab_adresses[$i_adresse] : array('','','','',0,'','') ;
 						$tab_users_fichier['enfant'][$i_fichier]     = $tab_enfants[$i_fichier];
 					}
@@ -627,7 +626,7 @@ if( $step==20 )
 		//	Étape 2d - Extraction tableur_professeurs_directeurs
 		//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 		$contenu = file_get_contents(CHEMIN_DOSSIER_IMPORT.$fichier_dest);
-		$contenu = utf8($contenu); // Mettre en UTF-8 si besoin
+		$contenu = To::utf8($contenu); // Mettre en UTF-8 si besoin
 		$tab_lignes = extraire_lignes($contenu); // Extraire les lignes du fichier
 		$separateur = extraire_separateur_csv($tab_lignes[0]); // Déterminer la nature du séparateur
 		unset($tab_lignes[0]); // Supprimer la 1e ligne
@@ -640,17 +639,17 @@ if( $step==20 )
 			$tab_elements = array_slice($tab_elements,0,6);
 			if(count($tab_elements)>=4)
 			{
-				$tab_elements = array_map('clean_csv',$tab_elements);
+				$tab_elements = Clean::map_quotes($tab_elements);
 				list($reference,$nom,$prenom,$profil,$classes,$groupes) = $tab_elements + array(4=>NULL,NULL); // http://fr.php.net/manual/fr/function.list.php#103311
-				$profil = perso_strtolower($profil);
+				$profil = Clean::code($profil);
 				if( ($nom!='') && ($prenom!='') && ( ($profil=='professeur') || ($profil=='directeur') ) )
 				{
 					$tab_users_fichier['sconet_id'][]  = 0;
 					$tab_users_fichier['sconet_num'][] = 0;
-					$tab_users_fichier['reference'][]  = clean_ref($reference);
+					$tab_users_fichier['reference'][]  = Clean::ref($reference);
 					$tab_users_fichier['profil'][]     = $profil;
-					$tab_users_fichier['nom'][]        = clean_nom($nom);
-					$tab_users_fichier['prenom'][]     = clean_prenom($prenom);
+					$tab_users_fichier['nom'][]        = Clean::nom($nom);
+					$tab_users_fichier['prenom'][]     = Clean::prenom($prenom);
 					// classes
 					$tab_user_classes = array();
 					if(strlen($classes))
@@ -658,8 +657,8 @@ if( $step==20 )
 						$tab_classes = explode('|',$classes);
 						foreach ($tab_classes as $classe)
 						{
-							$classe_ref = mb_substr(clean_ref($classe),0,8);
-							$i_classe   = 'i'.clean_login($classe_ref); // 'i' car la référence peut être numérique (ex : 61) et cela pose problème que l'indice du tableau soit un entier (ajouter (string) n'y change rien) lors du array_multisort().
+							$classe_ref = mb_substr(Clean::ref($classe),0,8);
+							$i_classe   = 'i'.Clean::login($classe_ref); // 'i' car la référence peut être numérique (ex : 61) et cela pose problème que l'indice du tableau soit un entier (ajouter (string) n'y change rien) lors du array_multisort().
 							if( ($classe_ref) && (!isset($tab_classes_fichier['ref'][$i_classe])) )
 							{
 								$tab_classes_fichier['ref'][$i_classe]    = $classe_ref;
@@ -680,8 +679,8 @@ if( $step==20 )
 						$tab_groupes = explode('|',$groupes);
 						foreach ($tab_groupes as $groupe)
 						{
-							$groupe_ref = mb_substr(clean_ref($groupe),0,8);
-							$i_groupe   = 'i'.clean_login($groupe_ref); // 'i' car la référence peut être numérique (ex : 61) et cela pose problème que l'indice du tableau soit un entier (ajouter (string) n'y change rien) lors du array_multisort().
+							$groupe_ref = mb_substr(Clean::ref($groupe),0,8);
+							$i_groupe   = 'i'.Clean::login($groupe_ref); // 'i' car la référence peut être numérique (ex : 61) et cela pose problème que l'indice du tableau soit un entier (ajouter (string) n'y change rien) lors du array_multisort().
 							if( ($groupe_ref) && (!isset($tab_groupes_fichier['ref'][$i_groupe])) )
 							{
 								$tab_groupes_fichier['ref'][$i_groupe]    = $groupe_ref;
@@ -705,7 +704,7 @@ if( $step==20 )
 		//	Étape 2e - Extraction tableur_eleves
 		//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 		$contenu = file_get_contents(CHEMIN_DOSSIER_IMPORT.$fichier_dest);
-		$contenu = utf8($contenu); // Mettre en UTF-8 si besoin
+		$contenu = To::utf8($contenu); // Mettre en UTF-8 si besoin
 		$tab_lignes = extraire_lignes($contenu); // Extraire les lignes du fichier
 		$separateur = extraire_separateur_csv($tab_lignes[0]); // Déterminer la nature du séparateur
 		unset($tab_lignes[0]); // Supprimer la 1e ligne
@@ -718,19 +717,19 @@ if( $step==20 )
 			$tab_elements = array_slice($tab_elements,0,5);
 			if(count($tab_elements)>=4)
 			{
-				$tab_elements = array_map('clean_csv',$tab_elements);
+				$tab_elements = Clean::map_quotes($tab_elements);
 				list($reference,$nom,$prenom,$classe,$groupes) = $tab_elements + array(4=>NULL); // http://fr.php.net/manual/fr/function.list.php#103311
 				if( ($nom!='') && ($prenom!='') )
 				{
 					$tab_users_fichier['sconet_id'][]  = 0;
 					$tab_users_fichier['sconet_num'][] = 0;
-					$tab_users_fichier['reference'][]  = clean_ref($reference);
+					$tab_users_fichier['reference'][]  = Clean::ref($reference);
 					$tab_users_fichier['profil'][]     = 'eleve';
-					$tab_users_fichier['nom'][]        = clean_nom($nom);
-					$tab_users_fichier['prenom'][]     = clean_prenom($prenom);
+					$tab_users_fichier['nom'][]        = Clean::nom($nom);
+					$tab_users_fichier['prenom'][]     = Clean::prenom($prenom);
 					// classe
-					$classe_ref = mb_substr(clean_ref($classe),0,8);
-					$i_classe   = 'i'.clean_login($classe_ref); // 'i' car la référence peut être numérique (ex : 61) et cela pose problème que l'indice du tableau soit un entier (ajouter (string) n'y change rien) lors du array_multisort().
+					$classe_ref = mb_substr(Clean::ref($classe),0,8);
+					$i_classe   = 'i'.Clean::login($classe_ref); // 'i' car la référence peut être numérique (ex : 61) et cela pose problème que l'indice du tableau soit un entier (ajouter (string) n'y change rien) lors du array_multisort().
 					$tab_users_fichier['classe'][]     = $i_classe;
 					if( ($classe_ref) && (!isset($tab_classes_fichier['ref'][$i_classe])) )
 					{
@@ -745,8 +744,8 @@ if( $step==20 )
 						$tab_groupes = explode('|',$groupes);
 						foreach ($tab_groupes as $groupe)
 						{
-							$groupe_ref = mb_substr(clean_ref($groupe),0,8);
-							$i_groupe   = 'i'.clean_login($groupe_ref); // 'i' car la référence peut être numérique (ex : 61) et cela pose problème que l'indice du tableau soit un entier (ajouter (string) n'y change rien) lors du array_multisort().
+							$groupe_ref = mb_substr(Clean::ref($groupe),0,8);
+							$i_groupe   = 'i'.Clean::login($groupe_ref); // 'i' car la référence peut être numérique (ex : 61) et cela pose problème que l'indice du tableau soit un entier (ajouter (string) n'y change rien) lors du array_multisort().
 							if( ($groupe_ref) && (!isset($tab_groupes_fichier['ref'][$i_groupe])) )
 							{
 								$tab_groupes_fichier['ref'][$i_groupe]    = $groupe_ref;
@@ -770,13 +769,13 @@ if( $step==20 )
 		//	Étape 2f - Extraction base-eleves_eleves
 		//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 		$contenu = file_get_contents(CHEMIN_DOSSIER_IMPORT.$fichier_dest);
-		$contenu = utf8($contenu); // Mettre en UTF-8 si besoin
+		$contenu = To::utf8($contenu); // Mettre en UTF-8 si besoin
 		$tab_lignes = extraire_lignes($contenu); // Extraire les lignes du fichier
 		$separateur = extraire_separateur_csv($tab_lignes[0]); // Déterminer la nature du séparateur
 		// Utiliser la 1e ligne pour repérer les colonnes intéressantes
 		$tab_numero_colonne = array('nom'=>-100,'prenom'=>-100,'niveau'=>-100,'classe'=>-100);
 		$tab_elements = explode($separateur,$tab_lignes[0]);
-		$tab_elements = array_map('clean_csv',$tab_elements);
+		$tab_elements = Clean::map_quotes($tab_elements);
 		$numero_max = 0;
 		foreach ($tab_elements as $numero=>$element)
 		{
@@ -824,7 +823,7 @@ if( $step==20 )
 			$tab_elements = explode($separateur,$ligne_contenu);
 			if(count($tab_elements)>$numero_max)
 			{
-				$tab_elements = array_map('clean_csv',$tab_elements);
+				$tab_elements = Clean::map_quotes($tab_elements);
 				$nom    = $tab_elements[$tab_numero_colonne['nom']   ];
 				$prenom = $tab_elements[$tab_numero_colonne['prenom']];
 				$niveau = $tab_elements[$tab_numero_colonne['niveau']];
@@ -837,16 +836,16 @@ if( $step==20 )
 						$niveau = str_replace($tab_bad[$i],$bon,$niveau);
 						$classe = str_replace($tab_bad[$i],$bon,$classe);
 					}
-					$niveau_ref = mb_substr(clean_ref($niveau),0,8);
+					$niveau_ref = mb_substr(Clean::ref($niveau),0,8);
 					$classe_nom = mb_substr('['.$niveau_ref.'] '.$classe,0,20); // On fait autant de classes que de groupes de niveaux par classes.
-					$classe_ref = mb_substr(clean_ref($niveau_ref.'_'.md5($niveau_ref.$classe)),0,8);
-					$i_classe   = 'i'.clean_login($classe_ref); // 'i' car la référence peut être numérique (ex : 61) et cela pose problème que l'indice du tableau soit un entier (ajouter (string) n'y change rien) lors du array_multisort().
+					$classe_ref = mb_substr(Clean::ref($niveau_ref.'_'.md5($niveau_ref.$classe)),0,8);
+					$i_classe   = 'i'.Clean::login($classe_ref); // 'i' car la référence peut être numérique (ex : 61) et cela pose problème que l'indice du tableau soit un entier (ajouter (string) n'y change rien) lors du array_multisort().
 					$tab_users_fichier['sconet_id'][]  = 0;
 					$tab_users_fichier['sconet_num'][] = 0;
 					$tab_users_fichier['reference'][]  = '';
 					$tab_users_fichier['profil'][]     = 'eleve';
-					$tab_users_fichier['nom'][]        = clean_nom($nom);
-					$tab_users_fichier['prenom'][]     = clean_prenom($prenom);
+					$tab_users_fichier['nom'][]        = Clean::nom($nom);
+					$tab_users_fichier['prenom'][]     = Clean::prenom($prenom);
 					$tab_users_fichier['classe'][]     = $i_classe;
 					if( ($classe_ref) && (!isset($tab_classes_fichier['ref'][$i_classe])) )
 					{
@@ -896,10 +895,10 @@ if( $step==20 )
 		ajouter_log_PHP( 'Import fichier '.$action /*log_objet*/ , serialize($tab_users_fichier) /*log_contenu*/ , __FILE__ /*log_fichier*/ , __LINE__ /*log_ligne*/ , TRUE /*only_sesamath*/ );
 	}
 	// On enregistre
-	Ecrire_Fichier(CHEMIN_DOSSIER_IMPORT.'import_'.$action.'_'.$_SESSION['BASE'].'_'.session_id().'_users.txt',serialize($tab_users_fichier));
-	Ecrire_Fichier(CHEMIN_DOSSIER_IMPORT.'import_'.$action.'_'.$_SESSION['BASE'].'_'.session_id().'_classes.txt',serialize($tab_classes_fichier));
-	Ecrire_Fichier(CHEMIN_DOSSIER_IMPORT.'import_'.$action.'_'.$_SESSION['BASE'].'_'.session_id().'_groupes.txt',serialize($tab_groupes_fichier));
-	Ecrire_Fichier(CHEMIN_DOSSIER_IMPORT.'import_'.$action.'_'.$_SESSION['BASE'].'_'.session_id().'_liens_id_base.txt',serialize($tab_liens_id_base));
+	FileSystem::ecrire_fichier(CHEMIN_DOSSIER_IMPORT.'import_'.$action.'_'.$_SESSION['BASE'].'_'.session_id().'_users.txt',serialize($tab_users_fichier));
+	FileSystem::ecrire_fichier(CHEMIN_DOSSIER_IMPORT.'import_'.$action.'_'.$_SESSION['BASE'].'_'.session_id().'_classes.txt',serialize($tab_classes_fichier));
+	FileSystem::ecrire_fichier(CHEMIN_DOSSIER_IMPORT.'import_'.$action.'_'.$_SESSION['BASE'].'_'.session_id().'_groupes.txt',serialize($tab_groupes_fichier));
+	FileSystem::ecrire_fichier(CHEMIN_DOSSIER_IMPORT.'import_'.$action.'_'.$_SESSION['BASE'].'_'.session_id().'_liens_id_base.txt',serialize($tab_liens_id_base));
 	// On affiche le bilan des utilisateurs trouvés
 	if(count($tab_users_fichier['profil']))
 	{
@@ -1002,7 +1001,7 @@ if( $step==31 )
 		$id_base = array_search($ref,$tab_classes_base['ref']);
 		if($id_base!==FALSE)
 		{
-			$lignes_ras .= '<tr><th>'.html($tab_classes_base['ref'][$id_base]).'</th><td>'.html($tab_classes_base['nom'][$id_base]).'</td></tr>';
+			$lignes_ras .= '<tr><th>'.To::html($tab_classes_base['ref'][$id_base]).'</th><td>'.To::html($tab_classes_base['nom'][$id_base]).'</td></tr>';
 			$tab_i_classe_TO_id_base[$i_classe] = $id_base;
 			unset($tab_classes_fichier['ref'][$i_classe] , $tab_classes_fichier['nom'][$i_classe] ,  $tab_classes_fichier['niveau'][$i_classe] , $tab_classes_base['ref'][$id_base] , $tab_classes_base['nom'][$id_base]);
 		}
@@ -1013,7 +1012,7 @@ if( $step==31 )
 	{
 		foreach($tab_classes_base['ref'] as $id_base => $ref)
 		{
-			$lignes_del .= '<tr><th>'.html($ref).'</th><td>Supprimer <input id="del_'.$id_base.'" name="del_'.$id_base.'" type="checkbox" checked /> '.html($tab_classes_base['nom'][$id_base]).'</td></tr>';
+			$lignes_del .= '<tr><th>'.To::html($ref).'</th><td>Supprimer <input id="del_'.$id_base.'" name="del_'.$id_base.'" type="checkbox" checked /> '.To::html($tab_classes_base['nom'][$id_base]).'</td></tr>';
 		}
 	}
 	// Contenu du fichier à ajouter
@@ -1025,7 +1024,7 @@ if( $step==31 )
 		$DB_TAB = DB_STRUCTURE_COMMUN::DB_lister_niveaux_etablissement(FALSE /*with_specifiques*/);
 		foreach($DB_TAB as $DB_ROW)
 		{
-			$select_niveau .= '<option value="'.$DB_ROW['niveau_id'].'">'.html($DB_ROW['niveau_nom']).'</option>';
+			$select_niveau .= '<option value="'.$DB_ROW['niveau_id'].'">'.To::html($DB_ROW['niveau_nom']).'</option>';
 			$key = ($action=='sconet_eleves') ? $DB_ROW['code_mef'] : $DB_ROW['niveau_ref'] ;
 			$tab_niveau_ref[$key] = $DB_ROW['niveau_id'];
 		}
@@ -1057,12 +1056,12 @@ if( $step==31 )
 				}
 			}
 			$nom_classe = ($tab_classes_fichier['nom'][$i_classe]) ? $tab_classes_fichier['nom'][$i_classe] : $ref ;
-			$lignes_add .= '<tr><th><input id="add_'.$i_classe.'" name="add_'.$i_classe.'" type="checkbox" checked /> '.html($ref).'<input id="add_ref_'.$i_classe.'" name="add_ref_'.$i_classe.'" type="hidden" value="'.html($ref).'" /></th><td>Niveau : <select id="add_niv_'.$i_classe.'" name="add_niv_'.$i_classe.'">'.str_replace('value="'.$id_checked.'"','value="'.$id_checked.'" selected',$select_niveau).'</select> Nom complet : <input id="add_nom_'.$i_classe.'" name="add_nom_'.$i_classe.'" size="15" type="text" value="'.html($nom_classe).'" maxlength="20" /></td></tr>';
+			$lignes_add .= '<tr><th><input id="add_'.$i_classe.'" name="add_'.$i_classe.'" type="checkbox" checked /> '.To::html($ref).'<input id="add_ref_'.$i_classe.'" name="add_ref_'.$i_classe.'" type="hidden" value="'.To::html($ref).'" /></th><td>Niveau : <select id="add_niv_'.$i_classe.'" name="add_niv_'.$i_classe.'">'.str_replace('value="'.$id_checked.'"','value="'.$id_checked.'" selected',$select_niveau).'</select> Nom complet : <input id="add_nom_'.$i_classe.'" name="add_nom_'.$i_classe.'" size="15" type="text" value="'.To::html($nom_classe).'" maxlength="20" /></td></tr>';
 		}
 	}
 	// On enregistre (tableau mis à jour)
 	$tab_liens_id_base = array('classes'=>$tab_i_classe_TO_id_base,'groupes'=>$tab_i_groupe_TO_id_base,'users'=>$tab_i_fichier_TO_id_base);
-	Ecrire_Fichier(CHEMIN_DOSSIER_IMPORT.'import_'.$action.'_'.$_SESSION['BASE'].'_'.session_id().'_liens_id_base.txt',serialize($tab_liens_id_base));
+	FileSystem::ecrire_fichier(CHEMIN_DOSSIER_IMPORT.'import_'.$action.'_'.$_SESSION['BASE'].'_'.session_id().'_liens_id_base.txt',serialize($tab_liens_id_base));
 	// On affiche
 	echo'<p><label class="valide">Veuillez vérifier le résultat de l\'analyse des classes.</label><input name="leurre" type="image" alt="leurre" src="./_img/auto.gif" /></p>';
 	// Pour sconet_professeurs_directeurs, les groupes ne figurent pas forcément dans le fichier si les services ne sont pas présents -> on ne procède qu'à des ajouts éventuels.
@@ -1105,14 +1104,14 @@ if( $step==32 )
 		if( (substr($key,0,4)=='add_') && (!in_array(substr($key,0,8),array('add_ref_','add_nom_','add_niv_'))) )
 		{
 			$i = substr($key,4);
-			$tab_add[$i]['ref'] = clean_ref($_POST['add_ref_'.$i]);
-			$tab_add[$i]['nom'] = clean_ref($_POST['add_nom_'.$i]);
-			$tab_add[$i]['niv'] = clean_ref($_POST['add_niv_'.$i]);
+			$tab_add[$i]['ref'] = Clean::ref($_POST['add_ref_'.$i]);
+			$tab_add[$i]['nom'] = Clean::ref($_POST['add_nom_'.$i]);
+			$tab_add[$i]['niv'] = Clean::ref($_POST['add_niv_'.$i]);
 		}
 		elseif(substr($key,0,4)=='del_')
 		{
 			$id = substr($key,4);
-			$tab_del[] = clean_entier($id);
+			$tab_del[] = Clean::entier($id);
 		}
 	}
 	// Ajouter des classes éventuelles
@@ -1140,20 +1139,20 @@ if( $step==32 )
 				DB_STRUCTURE_ADMINISTRATEUR::DB_supprimer_groupe_par_admin( $groupe_id , 'classe' , TRUE /*with_devoir*/ );
 				$nb_del++;
 				// Log de l'action
-				ajouter_log_SACoche('Suppression d\'un regroupement (classe '.$groupe_id.'), avec les devoirs associés.');
+				SACocheLog::ajouter('Suppression d\'un regroupement (classe '.$groupe_id.'), avec les devoirs associés.');
 			}
 		}
 	}
 	// On enregistre (tableau mis à jour)
 	$tab_liens_id_base = array('classes'=>$tab_i_classe_TO_id_base,'groupes'=>$tab_i_groupe_TO_id_base,'users'=>$tab_i_fichier_TO_id_base);
-	Ecrire_Fichier(CHEMIN_DOSSIER_IMPORT.'import_'.$action.'_'.$_SESSION['BASE'].'_'.session_id().'_liens_id_base.txt',serialize($tab_liens_id_base));
+	FileSystem::ecrire_fichier(CHEMIN_DOSSIER_IMPORT.'import_'.$action.'_'.$_SESSION['BASE'].'_'.session_id().'_liens_id_base.txt',serialize($tab_liens_id_base));
 	// Afficher le bilan
 	$lignes = '';
 	$nb_fin = 0;
 	$DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_classes_avec_niveaux();
 	foreach($DB_TAB as $DB_ROW)
 	{
-		$lignes .= '<tr><td>'.html($DB_ROW['niveau_nom']).'</td><td>'.html($DB_ROW['groupe_ref']).'</td><td>'.html($DB_ROW['groupe_nom']).'</td></tr>'."\r\n";
+		$lignes .= '<tr><td>'.To::html($DB_ROW['niveau_nom']).'</td><td>'.To::html($DB_ROW['groupe_ref']).'</td><td>'.To::html($DB_ROW['groupe_nom']).'</td></tr>'."\r\n";
 		$nb_fin++;
 	}
 	$nb_ras = $nb_fin - $nb_add + $nb_del;
@@ -1205,7 +1204,7 @@ if( $step==41 )
 		$id_base = array_search($ref,$tab_groupes_base['ref']);
 		if($id_base!==FALSE)
 		{
-			$lignes_ras .= '<tr><th>'.html($tab_groupes_base['ref'][$id_base]).'</th><td>'.html($tab_groupes_base['nom'][$id_base]).'</td></tr>';
+			$lignes_ras .= '<tr><th>'.To::html($tab_groupes_base['ref'][$id_base]).'</th><td>'.To::html($tab_groupes_base['nom'][$id_base]).'</td></tr>';
 			$tab_i_groupe_TO_id_base[$i_groupe] = $id_base;
 			unset($tab_groupes_fichier['ref'][$i_groupe] , $tab_groupes_fichier['nom'][$i_groupe] ,  $tab_groupes_fichier['niveau'][$i_groupe] , $tab_groupes_base['ref'][$id_base] , $tab_groupes_base['nom'][$id_base]);
 		}
@@ -1216,7 +1215,7 @@ if( $step==41 )
 	{
 		foreach($tab_groupes_base['ref'] as $id_base => $ref)
 		{
-			$lignes_del .= '<tr><th>'.html($ref).'</th><td>Supprimer <input id="del_'.$id_base.'" name="del_'.$id_base.'" type="checkbox" checked /> '.html($tab_groupes_base['nom'][$id_base]).'</td></tr>';
+			$lignes_del .= '<tr><th>'.To::html($ref).'</th><td>Supprimer <input id="del_'.$id_base.'" name="del_'.$id_base.'" type="checkbox" checked /> '.To::html($tab_groupes_base['nom'][$id_base]).'</td></tr>';
 		}
 	}
 	// Contenu du fichier à ajouter
@@ -1228,7 +1227,7 @@ if( $step==41 )
 		$DB_TAB = DB_STRUCTURE_COMMUN::DB_lister_niveaux_etablissement(FALSE /*with_specifiques*/);
 		foreach($DB_TAB as $DB_ROW)
 		{
-			$select_niveau .= '<option value="'.$DB_ROW['niveau_id'].'">'.html($DB_ROW['niveau_nom']).'</option>';
+			$select_niveau .= '<option value="'.$DB_ROW['niveau_id'].'">'.To::html($DB_ROW['niveau_nom']).'</option>';
 			$key = ($action=='sconet_eleves') ? $DB_ROW['code_mef'] : $DB_ROW['niveau_ref'] ;
 			$tab_niveau_ref[$key] = $DB_ROW['niveau_id'];
 		}
@@ -1256,12 +1255,12 @@ if( $step==41 )
 				}
 			}
 			$nom_groupe = ($tab_groupes_fichier['nom'][$i_groupe]) ? $tab_groupes_fichier['nom'][$i_groupe] : $ref ;
-			$lignes_add .= '<tr><th><input id="add_'.$i_groupe.'" name="add_'.$i_groupe.'" type="checkbox" checked /> '.html($ref).'<input id="add_ref_'.$i_groupe.'" name="add_ref_'.$i_groupe.'" type="hidden" value="'.html($ref).'" /></th><td>Niveau : <select id="add_niv_'.$i_groupe.'" name="add_niv_'.$i_groupe.'">'.str_replace('value="'.$id_checked.'"','value="'.$id_checked.'" selected',$select_niveau).'</select> Nom complet : <input id="add_nom_'.$i_groupe.'" name="add_nom_'.$i_groupe.'" size="15" type="text" value="'.html($nom_groupe).'" maxlength="20" /></td></tr>';
+			$lignes_add .= '<tr><th><input id="add_'.$i_groupe.'" name="add_'.$i_groupe.'" type="checkbox" checked /> '.To::html($ref).'<input id="add_ref_'.$i_groupe.'" name="add_ref_'.$i_groupe.'" type="hidden" value="'.To::html($ref).'" /></th><td>Niveau : <select id="add_niv_'.$i_groupe.'" name="add_niv_'.$i_groupe.'">'.str_replace('value="'.$id_checked.'"','value="'.$id_checked.'" selected',$select_niveau).'</select> Nom complet : <input id="add_nom_'.$i_groupe.'" name="add_nom_'.$i_groupe.'" size="15" type="text" value="'.To::html($nom_groupe).'" maxlength="20" /></td></tr>';
 		}
 	}
 	// On enregistre (tableau mis à jour)
 	$tab_liens_id_base = array('classes'=>$tab_i_classe_TO_id_base,'groupes'=>$tab_i_groupe_TO_id_base,'users'=>$tab_i_fichier_TO_id_base);
-	Ecrire_Fichier(CHEMIN_DOSSIER_IMPORT.'import_'.$action.'_'.$_SESSION['BASE'].'_'.session_id().'_liens_id_base.txt',serialize($tab_liens_id_base));
+	FileSystem::ecrire_fichier(CHEMIN_DOSSIER_IMPORT.'import_'.$action.'_'.$_SESSION['BASE'].'_'.session_id().'_liens_id_base.txt',serialize($tab_liens_id_base));
 	// On affiche
 	echo'<p><label class="valide">Veuillez vérifier le résultat de l\'analyse des groupes.</label><input name="leurre" type="image" alt="leurre" src="./_img/auto.gif" /></p>';
 	// Pour sconet_professeurs_directeurs, les groupes ne figurent pas forcément dans le fichier si les services ne sont pas présents -> on ne procède qu'à des ajouts éventuels.
@@ -1304,14 +1303,14 @@ if( $step==42 )
 		if( (substr($key,0,4)=='add_') && (!in_array(substr($key,0,8),array('add_ref_','add_nom_','add_niv_'))) )
 		{
 			$i = substr($key,4);
-			$tab_add[$i]['ref'] = clean_ref($_POST['add_ref_'.$i]);
-			$tab_add[$i]['nom'] = clean_ref($_POST['add_nom_'.$i]);
-			$tab_add[$i]['niv'] = clean_ref($_POST['add_niv_'.$i]);
+			$tab_add[$i]['ref'] = Clean::ref($_POST['add_ref_'.$i]);
+			$tab_add[$i]['nom'] = Clean::ref($_POST['add_nom_'.$i]);
+			$tab_add[$i]['niv'] = Clean::ref($_POST['add_niv_'.$i]);
 		}
 		elseif(substr($key,0,4)=='del_')
 		{
 			$id = substr($key,4);
-			$tab_del[] = clean_entier($id);
+			$tab_del[] = Clean::entier($id);
 		}
 	}
 	// Ajouter des groupes éventuels
@@ -1339,20 +1338,20 @@ if( $step==42 )
 				DB_STRUCTURE_ADMINISTRATEUR::DB_supprimer_groupe_par_admin( $groupe_id , 'groupe' , TRUE /*with_devoir*/ );
 				$nb_del++;
 				// Log de l'action
-				ajouter_log_SACoche('Suppression d\'un regroupement (groupe '.$groupe_id.'), avec les devoirs associés.');
+				SACocheLog::ajouter('Suppression d\'un regroupement (groupe '.$groupe_id.'), avec les devoirs associés.');
 			}
 		}
 	}
 	// On enregistre (tableau mis à jour)
 	$tab_liens_id_base = array('classes'=>$tab_i_classe_TO_id_base,'groupes'=>$tab_i_groupe_TO_id_base,'users'=>$tab_i_fichier_TO_id_base);
-	Ecrire_Fichier(CHEMIN_DOSSIER_IMPORT.'import_'.$action.'_'.$_SESSION['BASE'].'_'.session_id().'_liens_id_base.txt',serialize($tab_liens_id_base));
+	FileSystem::ecrire_fichier(CHEMIN_DOSSIER_IMPORT.'import_'.$action.'_'.$_SESSION['BASE'].'_'.session_id().'_liens_id_base.txt',serialize($tab_liens_id_base));
 	// Afficher le bilan
 	$lignes = '';
 	$nb_fin = 0;
 	$DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_groupes_avec_niveaux();
 	foreach($DB_TAB as $DB_ROW)
 	{
-		$lignes .= '<tr><td>'.html($DB_ROW['niveau_nom']).'</td><td>'.html($DB_ROW['groupe_ref']).'</td><td>'.html($DB_ROW['groupe_nom']).'</td></tr>'."\r\n";
+		$lignes .= '<tr><td>'.To::html($DB_ROW['niveau_nom']).'</td><td>'.To::html($DB_ROW['groupe_ref']).'</td><td>'.To::html($DB_ROW['groupe_nom']).'</td></tr>'."\r\n";
 		$nb_fin++;
 	}
 	$nb_ras = $nb_fin - $nb_add + $nb_del;
@@ -1463,13 +1462,13 @@ if( $step==51 )
 		if( ($is_profil_eleve) && (!$id_base) && (!$tab_users_fichier['classe'][$i_fichier]) )
 		{
 			$indication = ($is_profil_eleve) ? substr($tab_users_fichier['classe'][$i_fichier],1) : $tab_users_fichier['profil'][$i_fichier] ;
-			$lignes_ignorer .= '<tr><th>Ignorer</th><td>'.html($tab_users_fichier['sconet_id'][$i_fichier].' / '.$tab_users_fichier['sconet_num'][$i_fichier].' / '.$tab_users_fichier['reference'][$i_fichier].' || '.$tab_users_fichier['nom'][$i_fichier].' '.$tab_users_fichier['prenom'][$i_fichier].' ('.$indication.')').'</td></tr>';
+			$lignes_ignorer .= '<tr><th>Ignorer</th><td>'.To::html($tab_users_fichier['sconet_id'][$i_fichier].' / '.$tab_users_fichier['sconet_num'][$i_fichier].' / '.$tab_users_fichier['reference'][$i_fichier].' || '.$tab_users_fichier['nom'][$i_fichier].' '.$tab_users_fichier['prenom'][$i_fichier].' ('.$indication.')').'</td></tr>';
 		}
 		// Cas [2] : présent dans le fichier, absent de la base, prof ou classe indiquée dans le fichier si élève : contenu à ajouter (nouvel élève ou nouveau professeur / directeur)
 		elseif( (!$id_base) && ( (!$is_profil_eleve) || ($tab_users_fichier['classe'][$i_fichier]) ) )
 		{
 			$indication = ($is_profil_eleve) ? substr($tab_users_fichier['classe'][$i_fichier],1) : $tab_users_fichier['profil'][$i_fichier] ;
-			$lignes_ajouter .= '<tr><th>Ajouter <input id="add_'.$i_fichier.'" name="add_'.$i_fichier.'" type="checkbox" checked /></th><td>'.html($tab_users_fichier['sconet_id'][$i_fichier].' / '.$tab_users_fichier['sconet_num'][$i_fichier].' / '.$tab_users_fichier['reference'][$i_fichier].' || '.$tab_users_fichier['nom'][$i_fichier].' '.$tab_users_fichier['prenom'][$i_fichier].' ('.$indication.')').'</td></tr>';
+			$lignes_ajouter .= '<tr><th>Ajouter <input id="add_'.$i_fichier.'" name="add_'.$i_fichier.'" type="checkbox" checked /></th><td>'.To::html($tab_users_fichier['sconet_id'][$i_fichier].' / '.$tab_users_fichier['sconet_num'][$i_fichier].' / '.$tab_users_fichier['reference'][$i_fichier].' || '.$tab_users_fichier['nom'][$i_fichier].' '.$tab_users_fichier['prenom'][$i_fichier].' ('.$indication.')').'</td></tr>';
 			$id_classe = ( ($is_profil_eleve) && isset($tab_i_classe_TO_id_base[$tab_users_fichier['classe'][$i_fichier]]) ) ? $tab_i_classe_TO_id_base[$tab_users_fichier['classe'][$i_fichier]] : 0 ;
 			$tab_users_ajouter[$i_fichier] = array( 'sconet_id'=>$tab_users_fichier['sconet_id'][$i_fichier] , 'sconet_num'=>$tab_users_fichier['sconet_num'][$i_fichier] , 'reference'=>$tab_users_fichier['reference'][$i_fichier] , 'nom'=>$tab_users_fichier['nom'][$i_fichier] , 'prenom'=>$tab_users_fichier['prenom'][$i_fichier] , 'profil'=>$tab_users_fichier['profil'][$i_fichier] , 'classe'=>$id_classe );
 		}
@@ -1478,14 +1477,14 @@ if( $step==51 )
 		{
 			$indication = ($is_profil_eleve) ? $tab_users_base['classe'][$id_base] : $tab_users_base['profil'][$id_base] ;
 			$date_sortie_fr = TODAY_FR;
-			$lignes_retirer .= '<tr><th>Retirer <input id="del_'.$id_base.'" name="del_'.$id_base.'" type="checkbox" checked /></th><td>'.html($tab_users_fichier['sconet_id'][$i_fichier].' / '.$tab_users_fichier['sconet_num'][$i_fichier].' / '.$tab_users_base['reference'][$id_base].' || '.$tab_users_base['nom'][$id_base].' '.$tab_users_base['prenom'][$id_base].' ('.$indication.')').' || <b>Sortie : non &rarr; '.$date_sortie_fr.'</b></td></tr>';
+			$lignes_retirer .= '<tr><th>Retirer <input id="del_'.$id_base.'" name="del_'.$id_base.'" type="checkbox" checked /></th><td>'.To::html($tab_users_fichier['sconet_id'][$i_fichier].' / '.$tab_users_fichier['sconet_num'][$i_fichier].' / '.$tab_users_base['reference'][$id_base].' || '.$tab_users_base['nom'][$id_base].' '.$tab_users_base['prenom'][$id_base].' ('.$indication.')').' || <b>Sortie : non &rarr; '.$date_sortie_fr.'</b></td></tr>';
 			$tab_users_retirer[$id_base] = convert_date_french_to_mysql($date_sortie_fr);
 		}
 		// Cas [4] : présent dans le fichier, présent dans la base, pas de classe dans le fichier (élèves uniquements), ancien dans la base : contenu inchangé (probablement des anciens élèves déjà écartés)
 		elseif( ($is_profil_eleve) && (!$tab_users_fichier['classe'][$i_fichier]) && ($tab_users_base['sortie'][$id_base]!=SORTIE_DEFAUT_MYSQL) )
 		{
 			$indication = ($is_profil_eleve) ? substr($tab_users_fichier['classe'][$i_fichier],1) : $tab_users_fichier['profil'][$i_fichier] ;
-			$lignes_inchanger .= '<tr><th>Ignorer</th><td>'.html($tab_users_fichier['sconet_id'][$i_fichier].' / '.$tab_users_fichier['sconet_num'][$i_fichier].' / '.$tab_users_fichier['reference'][$i_fichier].' || '.$tab_users_fichier['nom'][$i_fichier].' '.$tab_users_fichier['prenom'][$i_fichier].' ('.$indication.')').'</td></tr>';
+			$lignes_inchanger .= '<tr><th>Ignorer</th><td>'.To::html($tab_users_fichier['sconet_id'][$i_fichier].' / '.$tab_users_fichier['sconet_num'][$i_fichier].' / '.$tab_users_fichier['reference'][$i_fichier].' || '.$tab_users_fichier['nom'][$i_fichier].' '.$tab_users_fichier['prenom'][$i_fichier].' ('.$indication.')').'</td></tr>';
 		}
 		else
 		{
@@ -1502,13 +1501,13 @@ if( $step==51 )
 				}
 				if($tab_users_base[$champ_ref][$id_base]!=$tab_users_fichier[$champ_ref][$i_fichier])
 				{
-					$td_modif .= ' || <b>'.$champ_aff.' : '.html($tab_users_base[$champ_ref][$id_base]).' &rarr; '.html($tab_users_fichier[$champ_ref][$i_fichier]).'</b>';
+					$td_modif .= ' || <b>'.$champ_aff.' : '.To::html($tab_users_base[$champ_ref][$id_base]).' &rarr; '.To::html($tab_users_fichier[$champ_ref][$i_fichier]).'</b>';
 					$tab_users_modifier[$id_base][$champ_ref] = ($champ_ref!='classe') ? $tab_users_fichier[$champ_ref][$i_fichier] : $id_classe ;
 					$nb_modif++;
 				}
 				else
 				{
-					$td_modif .= ' || '.$champ_aff.' : '.html($tab_users_base[$champ_ref][$id_base]);
+					$td_modif .= ' || '.$champ_aff.' : '.To::html($tab_users_base[$champ_ref][$id_base]);
 					$tab_users_modifier[$id_base][$champ_ref] = FALSE;
 				}
 			}
@@ -1531,7 +1530,7 @@ if( $step==51 )
 			else
 			{
 				$indication = ($is_profil_eleve) ? $tab_users_base['classe'][$id_base] : $tab_users_base['profil'][$id_base] ;
-				$lignes_conserver .= '<tr><th>Conserver</th><td>'.html($tab_users_base['sconet_id'][$id_base].' / '.$tab_users_base['sconet_num'][$id_base].' / '.$tab_users_base['reference'][$id_base].' || '.$tab_users_base['nom'][$id_base].' '.$tab_users_base['prenom'][$id_base].' ('.$indication.')').'</td></tr>';
+				$lignes_conserver .= '<tr><th>Conserver</th><td>'.To::html($tab_users_base['sconet_id'][$id_base].' / '.$tab_users_base['sconet_num'][$id_base].' / '.$tab_users_base['reference'][$id_base].' || '.$tab_users_base['nom'][$id_base].' '.$tab_users_base['prenom'][$id_base].' ('.$indication.')').'</td></tr>';
 			}
 		}
 		// Supprimer l'entrée du fichier et celle de la base éventuelle
@@ -1553,14 +1552,14 @@ if( $step==51 )
 			{
 				$indication = ($is_profil_eleve) ? $tab_users_base['classe'][$id_base] : $tab_users_base['profil'][$id_base] ;
 				$date_sortie_fr = isset($_SESSION['tmp']['date_sortie'][$tab_users_base['sconet_id'][$id_base]]) ? $_SESSION['tmp']['date_sortie'][$tab_users_base['sconet_id'][$id_base]] : TODAY_FR ;
-				$lignes_retirer .= '<tr><th>Retirer <input id="del_'.$id_base.'" name="del_'.$id_base.'" type="checkbox" checked /></th><td>'.html($tab_users_base['sconet_id'][$id_base].' / '.$tab_users_base['sconet_num'][$id_base].' / '.$tab_users_base['reference'][$id_base].' || '.$tab_users_base['nom'][$id_base].' '.$tab_users_base['prenom'][$id_base].' ('.$indication.')').' || <b>Sortie : non &rarr; '.$date_sortie_fr.'</b></td></tr>';
+				$lignes_retirer .= '<tr><th>Retirer <input id="del_'.$id_base.'" name="del_'.$id_base.'" type="checkbox" checked /></th><td>'.To::html($tab_users_base['sconet_id'][$id_base].' / '.$tab_users_base['sconet_num'][$id_base].' / '.$tab_users_base['reference'][$id_base].' || '.$tab_users_base['nom'][$id_base].' '.$tab_users_base['prenom'][$id_base].' ('.$indication.')').' || <b>Sortie : non &rarr; '.$date_sortie_fr.'</b></td></tr>';
 				$tab_users_retirer[$id_base] = convert_date_french_to_mysql($date_sortie_fr);
 			}
 			// Cas [8] : absent dans le fichier, présent dans la base, ancien : contenu inchangé (restant ancien)
 			else
 			{
 				$indication = ($is_profil_eleve) ? $tab_users_base['classe'][$id_base] : $tab_users_base['profil'][$id_base] ;
-				$lignes_inchanger .= '<tr><th>Conserver</th><td>'.html($tab_users_base['sconet_id'][$id_base].' / '.$tab_users_base['sconet_num'][$id_base].' / '.$tab_users_base['reference'][$id_base].' || '.$tab_users_base['nom'][$id_base].' '.$tab_users_base['prenom'][$id_base].' ('.$indication.')').'</td></tr>';
+				$lignes_inchanger .= '<tr><th>Conserver</th><td>'.To::html($tab_users_base['sconet_id'][$id_base].' / '.$tab_users_base['sconet_num'][$id_base].' / '.$tab_users_base['reference'][$id_base].' || '.$tab_users_base['nom'][$id_base].' '.$tab_users_base['prenom'][$id_base].' ('.$indication.')').'</td></tr>';
 			}
 			unset( $tab_users_base['sconet_id'][$id_base] , $tab_users_base['sconet_num'][$id_base] , $tab_users_base['reference'][$id_base] , $tab_users_base['nom'][$id_base] , $tab_users_base['prenom'][$id_base] , $tab_users_base['classe'][$id_base] , $tab_users_base['sortie'][$id_base] );
 		}
@@ -1568,10 +1567,10 @@ if( $step==51 )
 	unset($_SESSION['tmp']['date_sortie']);
 	// On enregistre
 	$tab_memo_analyse = array('modifier'=>$tab_users_modifier,'ajouter'=>$tab_users_ajouter,'retirer'=>$tab_users_retirer);
-	Ecrire_Fichier(CHEMIN_DOSSIER_IMPORT.'import_'.$action.'_'.$_SESSION['BASE'].'_'.session_id().'_memo_analyse.txt',serialize($tab_memo_analyse));
+	FileSystem::ecrire_fichier(CHEMIN_DOSSIER_IMPORT.'import_'.$action.'_'.$_SESSION['BASE'].'_'.session_id().'_memo_analyse.txt',serialize($tab_memo_analyse));
 	// On enregistre (tableau mis à jour)
 	$tab_liens_id_base = array('classes'=>$tab_i_classe_TO_id_base,'groupes'=>$tab_i_groupe_TO_id_base,'users'=>$tab_i_fichier_TO_id_base);
-	Ecrire_Fichier(CHEMIN_DOSSIER_IMPORT.'import_'.$action.'_'.$_SESSION['BASE'].'_'.session_id().'_liens_id_base.txt',serialize($tab_liens_id_base));
+	FileSystem::ecrire_fichier(CHEMIN_DOSSIER_IMPORT.'import_'.$action.'_'.$_SESSION['BASE'].'_'.session_id().'_liens_id_base.txt',serialize($tab_liens_id_base));
 	// On affiche
 	echo'<p><label class="valide">Veuillez vérifier le résultat de l\'analyse des utilisateurs.</label><input name="leurre" type="image" alt="leurre" src="./_img/auto.gif" /></p>';
 	if( $lignes_ajouter && $lignes_retirer )
@@ -1642,15 +1641,15 @@ if( $step==52 )
 	{
 		if(substr($check_infos,0,4)=='mod_')
 		{
-			$tab_mod[] = clean_entier( substr($check_infos,4) );
+			$tab_mod[] = Clean::entier( substr($check_infos,4) );
 		}
 		elseif(substr($check_infos,0,4)=='add_')
 		{
-			$tab_add[] = clean_entier( substr($check_infos,4) );
+			$tab_add[] = Clean::entier( substr($check_infos,4) );
 		}
 		elseif(substr($check_infos,0,4)=='del_')
 		{
-			$tab_del[] = clean_entier( substr($check_infos,4) );
+			$tab_del[] = Clean::entier( substr($check_infos,4) );
 		}
 	}
 	// Dénombrer combien d'actuels et d'anciens au départ
@@ -1749,7 +1748,7 @@ if( $step==52 )
 	}
 	// On enregistre (tableau mis à jour)
 	$tab_liens_id_base = array('classes'=>$tab_i_classe_TO_id_base,'groupes'=>$tab_i_groupe_TO_id_base,'users'=>$tab_i_fichier_TO_id_base);
-	Ecrire_Fichier(CHEMIN_DOSSIER_IMPORT.'import_'.$action.'_'.$_SESSION['BASE'].'_'.session_id().'_liens_id_base.txt',serialize($tab_liens_id_base));
+	FileSystem::ecrire_fichier(CHEMIN_DOSSIER_IMPORT.'import_'.$action.'_'.$_SESSION['BASE'].'_'.session_id().'_liens_id_base.txt',serialize($tab_liens_id_base));
 	// Afficher le bilan
 	$lignes        = '';
 	$nb_fin_actuel = 0;
@@ -1760,11 +1759,11 @@ if( $step==52 )
 	foreach($DB_TAB as $DB_ROW)
 	{
 		$class       = (isset($tab_password[$DB_ROW['user_id']])) ? ' class="new"' : '' ;
-		$td_password = (isset($tab_password[$DB_ROW['user_id']])) ? '<td class="new">'.html($tab_password[$DB_ROW['user_id']]).'</td>' : '<td class="i">champ crypté</td>' ;
+		$td_password = (isset($tab_password[$DB_ROW['user_id']])) ? '<td class="new">'.To::html($tab_password[$DB_ROW['user_id']]).'</td>' : '<td class="i">champ crypté</td>' ;
 		if(TODAY_MYSQL<$DB_ROW['user_sortie_date']) {$nb_fin_actuel++;} else {$nb_fin_ancien++;}
 		$champ = ($is_profil_eleve) ? $DB_ROW['groupe_ref'] : $DB_ROW['user_profil'] ;
 		$date_affich = ($DB_ROW['user_sortie_date']!=SORTIE_DEFAUT_MYSQL) ? convert_date_mysql_to_french($DB_ROW['user_sortie_date']) : '-' ;
-		$lignes .= '<tr'.$class.'><td>'.html($DB_ROW['user_sconet_id']).'</td><td>'.html($DB_ROW['user_sconet_elenoet']).'</td><td>'.html($DB_ROW['user_reference']).'</td><td>'.html($champ).'</td><td>'.html($DB_ROW['user_nom']).'</td><td>'.html($DB_ROW['user_prenom']).'</td><td'.$class.'>'.html($DB_ROW['user_login']).'</td>'.$td_password.'<td>'.$date_affich.'</td></tr>'."\r\n";
+		$lignes .= '<tr'.$class.'><td>'.To::html($DB_ROW['user_sconet_id']).'</td><td>'.To::html($DB_ROW['user_sconet_elenoet']).'</td><td>'.To::html($DB_ROW['user_reference']).'</td><td>'.To::html($champ).'</td><td>'.To::html($DB_ROW['user_nom']).'</td><td>'.To::html($DB_ROW['user_prenom']).'</td><td'.$class.'>'.To::html($DB_ROW['user_login']).'</td>'.$td_password.'<td>'.$date_affich.'</td></tr>'."\r\n";
 	}
 	$s_debut_actuel = ($nb_debut_actuel>1) ? 's' : '';
 	$s_debut_ancien = ($nb_debut_ancien>1) ? 's' : '';
@@ -1785,7 +1784,7 @@ if( $step==52 )
 			require(CHEMIN_DOSSIER_INCLUDE.'tableau_zip_error.php');
 			exit('Problème de création de l\'archive ZIP ('.$result_open.$tab_zip_error[$result_open].') !');
 		}
-		$zip->addFromString($fnom.'.csv',csv($fcontenu_csv));
+		$zip->addFromString($fnom.'.csv',To::csv($fcontenu_csv));
 		$zip->close();
 		// On archive les nouveaux identifiants dans un fichier pdf (classe fpdf + script étiquettes)
 		$pdf = new PDF_Label(array('paper-size'=>'A4', 'metric'=>'mm', 'marginLeft'=>5, 'marginTop'=>5, 'NX'=>3, 'NY'=>8, 'SpaceX'=>7, 'SpaceY'=>5, 'width'=>60, 'height'=>30, 'font-size'=>11));
@@ -1797,7 +1796,7 @@ if( $step==52 )
 		sort($fcontenu_pdf_tab);
 		foreach($fcontenu_pdf_tab as $text)
 		{
-			$pdf -> Add_Label(pdf($text));
+			$pdf -> Add_Label(To::pdf($text));
 		}
 		$pdf->Output(CHEMIN_DOSSIER_LOGINPASS.$fnom.'.pdf','F');
 	}
@@ -1931,13 +1930,13 @@ if( $step==61 )
 						if(isset($tab_base_affectation[$user_id.'_'.$groupe_id]))
 						{
 							$tab_asso_prof_classe[$user_id.'_'.$groupe_id] = TRUE;
-							$lignes_classes_ras .= '<tr><th>Conserver</th><td>'.html($tab_users_fichier['nom'][$i_fichier].' '.$tab_users_fichier['prenom'][$i_fichier]).'</td><td>'.html($tab_base_classe[$groupe_id]).'</td></tr>';
+							$lignes_classes_ras .= '<tr><th>Conserver</th><td>'.To::html($tab_users_fichier['nom'][$i_fichier].' '.$tab_users_fichier['prenom'][$i_fichier]).'</td><td>'.To::html($tab_base_classe[$groupe_id]).'</td></tr>';
 							unset($tab_base_affectation[$user_id.'_'.$groupe_id]);
 						}
 						else
 						{
 							$tab_asso_prof_classe[$user_id.'_'.$groupe_id] = TRUE;
-							$lignes_classes_add .= '<tr><th>Ajouter <input id="classe_'.$user_id.'_'.$groupe_id.'_1" name="classe_'.$user_id.'_'.$groupe_id.'_1" type="checkbox" checked /></th><td>'.html($tab_users_fichier['nom'][$i_fichier].' '.$tab_users_fichier['prenom'][$i_fichier]).'</td><td>'.html($tab_base_classe[$groupe_id]).'</td></tr>';
+							$lignes_classes_add .= '<tr><th>Ajouter <input id="classe_'.$user_id.'_'.$groupe_id.'_1" name="classe_'.$user_id.'_'.$groupe_id.'_1" type="checkbox" checked /></th><td>'.To::html($tab_users_fichier['nom'][$i_fichier].' '.$tab_users_fichier['prenom'][$i_fichier]).'</td><td>'.To::html($tab_base_classe[$groupe_id]).'</td></tr>';
 						}
 					}
 				}
@@ -1949,7 +1948,7 @@ if( $step==61 )
 			foreach($tab_base_affectation as $key => $bool)
 			{
 				list($user_id,$groupe_id) = explode('_',$key);
-				$lignes_classes_del .= '<tr><th>Supprimer <input id="classe_'.$user_id.'_'.$groupe_id.'_0" name="classe_'.$user_id.'_'.$groupe_id.'_0" type="checkbox" checked /></th><td>'.html($tab_base_prof_identite[$user_id]).'</td><td>'.html($tab_base_classe[$groupe_id]).'</td></tr>';
+				$lignes_classes_del .= '<tr><th>Supprimer <input id="classe_'.$user_id.'_'.$groupe_id.'_0" name="classe_'.$user_id.'_'.$groupe_id.'_0" type="checkbox" checked /></th><td>'.To::html($tab_base_prof_identite[$user_id]).'</td><td>'.To::html($tab_base_classe[$groupe_id]).'</td></tr>';
 			}
 		}
 	}
@@ -1981,12 +1980,12 @@ if( $step==61 )
 							$groupe_id = $tab_i_classe_TO_id_base[$i_classe];
 							if(isset($tab_base_affectation[$user_id.'_'.$groupe_id]))
 							{
-								$lignes_principal_ras .= '<tr><th>Conserver</th><td>'.html($tab_users_fichier['nom'][$i_fichier].' '.$tab_users_fichier['prenom'][$i_fichier]).'</td><td>'.html($tab_base_classe[$groupe_id]).'</td></tr>';
+								$lignes_principal_ras .= '<tr><th>Conserver</th><td>'.To::html($tab_users_fichier['nom'][$i_fichier].' '.$tab_users_fichier['prenom'][$i_fichier]).'</td><td>'.To::html($tab_base_classe[$groupe_id]).'</td></tr>';
 								unset($tab_base_affectation[$user_id.'_'.$groupe_id]);
 							}
 							elseif(isset($tab_asso_prof_classe[$user_id.'_'.$groupe_id]))
 							{
-								$lignes_principal_add .= '<tr><th>Ajouter <input id="pp_'.$user_id.'_'.$groupe_id.'_1" name="pp_'.$user_id.'_'.$groupe_id.'_1" type="checkbox" checked /></th><td>'.html($tab_users_fichier['nom'][$i_fichier].' '.$tab_users_fichier['prenom'][$i_fichier]).'</td><td>'.html($tab_base_classe[$groupe_id]).'</td></tr>';
+								$lignes_principal_add .= '<tr><th>Ajouter <input id="pp_'.$user_id.'_'.$groupe_id.'_1" name="pp_'.$user_id.'_'.$groupe_id.'_1" type="checkbox" checked /></th><td>'.To::html($tab_users_fichier['nom'][$i_fichier].' '.$tab_users_fichier['prenom'][$i_fichier]).'</td><td>'.To::html($tab_base_classe[$groupe_id]).'</td></tr>';
 							}
 						}
 					}
@@ -1999,7 +1998,7 @@ if( $step==61 )
 			foreach($tab_base_affectation as $key => $bool)
 			{
 				list($user_id,$groupe_id) = explode('_',$key);
-				$lignes_principal_del .= '<tr><th>Supprimer <input id="pp_'.$user_id.'_'.$groupe_id.'_0" name="pp_'.$user_id.'_'.$groupe_id.'_0" type="checkbox" checked /></th><td>'.html($tab_base_prof_identite[$user_id]).'</td><td>'.html($tab_base_classe[$groupe_id]).'</td></tr>';
+				$lignes_principal_del .= '<tr><th>Supprimer <input id="pp_'.$user_id.'_'.$groupe_id.'_0" name="pp_'.$user_id.'_'.$groupe_id.'_0" type="checkbox" checked /></th><td>'.To::html($tab_base_prof_identite[$user_id]).'</td><td>'.To::html($tab_base_classe[$groupe_id]).'</td></tr>';
 			}
 		}
 		//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
@@ -2035,12 +2034,12 @@ if( $step==61 )
 						$matiere_id = $tab_matiere_ref_TO_id_base[$matiere_code];
 						if(isset($tab_base_affectation[$user_id.'_'.$matiere_id]))
 						{
-							$lignes_matieres_ras .= '<tr><th>Conserver</th><td>'.html($tab_users_fichier['nom'][$i_fichier].' '.$tab_users_fichier['prenom'][$i_fichier]).'</td><td>'.html($tab_base_matiere[$matiere_id]).'</td></tr>';
+							$lignes_matieres_ras .= '<tr><th>Conserver</th><td>'.To::html($tab_users_fichier['nom'][$i_fichier].' '.$tab_users_fichier['prenom'][$i_fichier]).'</td><td>'.To::html($tab_base_matiere[$matiere_id]).'</td></tr>';
 							unset($tab_base_affectation[$user_id.'_'.$matiere_id]);
 						}
 						else
 						{
-							$lignes_matieres_add .= '<tr><th>Ajouter <input id="matiere_'.$user_id.'_'.$matiere_id.'_1" name="matiere_'.$user_id.'_'.$matiere_id.'_1" type="checkbox" checked /></th><td>'.html($tab_users_fichier['nom'][$i_fichier].' '.$tab_users_fichier['prenom'][$i_fichier]).'</td><td>'.html($tab_base_matiere[$matiere_id]).'</td></tr>';
+							$lignes_matieres_add .= '<tr><th>Ajouter <input id="matiere_'.$user_id.'_'.$matiere_id.'_1" name="matiere_'.$user_id.'_'.$matiere_id.'_1" type="checkbox" checked /></th><td>'.To::html($tab_users_fichier['nom'][$i_fichier].' '.$tab_users_fichier['prenom'][$i_fichier]).'</td><td>'.To::html($tab_base_matiere[$matiere_id]).'</td></tr>';
 						}
 					}
 				}
@@ -2083,12 +2082,12 @@ if( $step==61 )
 					$groupe_id = $tab_i_groupe_TO_id_base[$i_groupe];
 					if(isset($tab_base_affectation[$user_id.'_'.$groupe_id]))
 					{
-						$lignes_groupes_ras .= '<tr><th>Conserver</th><td>'.html($tab_users_fichier['nom'][$i_fichier].' '.$tab_users_fichier['prenom'][$i_fichier]).'</td><td>'.html($tab_base_groupe[$groupe_id]).'</td></tr>';
+						$lignes_groupes_ras .= '<tr><th>Conserver</th><td>'.To::html($tab_users_fichier['nom'][$i_fichier].' '.$tab_users_fichier['prenom'][$i_fichier]).'</td><td>'.To::html($tab_base_groupe[$groupe_id]).'</td></tr>';
 						unset($tab_base_affectation[$user_id.'_'.$groupe_id]);
 					}
 					else
 					{
-						$lignes_groupes_add .= '<tr><th>Ajouter <input id="groupe_'.$user_id.'_'.$groupe_id.'_1" name="groupe_'.$user_id.'_'.$groupe_id.'_1" type="checkbox" checked /></th><td>'.html($tab_users_fichier['nom'][$i_fichier].' '.$tab_users_fichier['prenom'][$i_fichier]).'</td><td>'.html($tab_base_groupe[$groupe_id]).'</td></tr>';
+						$lignes_groupes_add .= '<tr><th>Ajouter <input id="groupe_'.$user_id.'_'.$groupe_id.'_1" name="groupe_'.$user_id.'_'.$groupe_id.'_1" type="checkbox" checked /></th><td>'.To::html($tab_users_fichier['nom'][$i_fichier].' '.$tab_users_fichier['prenom'][$i_fichier]).'</td><td>'.To::html($tab_base_groupe[$groupe_id]).'</td></tr>';
 					}
 				}
 			}
@@ -2100,7 +2099,7 @@ if( $step==61 )
 		foreach($tab_base_affectation as $key => $bool)
 		{
 			list($user_id,$groupe_id) = explode('_',$key);
-			$lignes_groupes_del .= '<tr><th>Supprimer <input id="groupe_'.$user_id.'_'.$groupe_id.'_0" name="groupe_'.$user_id.'_'.$groupe_id.'_0" type="checkbox" checked /></th><td>'.html($tab_base_user_identite[$user_id]).'</td><td>'.html($tab_base_groupe[$groupe_id]).'</td></tr>';
+			$lignes_groupes_del .= '<tr><th>Supprimer <input id="groupe_'.$user_id.'_'.$groupe_id.'_0" name="groupe_'.$user_id.'_'.$groupe_id.'_0" type="checkbox" checked /></th><td>'.To::html($tab_base_user_identite[$user_id]).'</td><td>'.To::html($tab_base_groupe[$groupe_id]).'</td></tr>';
 		}
 	}
 	// On affiche
@@ -2285,7 +2284,7 @@ if( $step==71 )
 		{
 			if( $tab_users_fichier['adresse'][$i_fichier][0] || $tab_users_fichier['adresse'][$i_fichier][1] || $tab_users_fichier['adresse'][$i_fichier][2] || $tab_users_fichier['adresse'][$i_fichier][3] || $tab_users_fichier['adresse'][$i_fichier][4] || $tab_users_fichier['adresse'][$i_fichier][5] )
 			{
-				$lignes_ajouter .= '<tr><th>Ajouter <input id="add_'.$i_fichier.'" name="add_'.$i_fichier.'" type="checkbox" checked /></th><td>'.html($tab_users_fichier['nom'][$i_fichier].' '.$tab_users_fichier['prenom'][$i_fichier]).'</td><td>'.html($tab_users_fichier['adresse'][$i_fichier][0].' / '.$tab_users_fichier['adresse'][$i_fichier][1].' / '.$tab_users_fichier['adresse'][$i_fichier][2].' / '.$tab_users_fichier['adresse'][$i_fichier][3].' / '.$tab_users_fichier['adresse'][$i_fichier][4].' / '.$tab_users_fichier['adresse'][$i_fichier][5].' / '.$tab_users_fichier['adresse'][$i_fichier][6]).'</td></tr>';
+				$lignes_ajouter .= '<tr><th>Ajouter <input id="add_'.$i_fichier.'" name="add_'.$i_fichier.'" type="checkbox" checked /></th><td>'.To::html($tab_users_fichier['nom'][$i_fichier].' '.$tab_users_fichier['prenom'][$i_fichier]).'</td><td>'.To::html($tab_users_fichier['adresse'][$i_fichier][0].' / '.$tab_users_fichier['adresse'][$i_fichier][1].' / '.$tab_users_fichier['adresse'][$i_fichier][2].' / '.$tab_users_fichier['adresse'][$i_fichier][3].' / '.$tab_users_fichier['adresse'][$i_fichier][4].' / '.$tab_users_fichier['adresse'][$i_fichier][5].' / '.$tab_users_fichier['adresse'][$i_fichier][6]).'</td></tr>';
 			}
 		}
 		// Cas [2] : parent présent dans le fichier, adresse présente de la base
@@ -2297,23 +2296,23 @@ if( $step==71 )
 			{
 				if($tab_users_fichier['adresse'][$i_fichier][$indice]==$tab_base_adresse[$id_base][$indice])
 				{
-					$td_contenu[] = html($tab_base_adresse[$id_base][$indice]);
+					$td_contenu[] = To::html($tab_base_adresse[$id_base][$indice]);
 				}
 				else
 				{
-					$td_contenu[] = '<b>'.html($tab_base_adresse[$id_base][$indice]).' &rarr; '.html($tab_users_fichier['adresse'][$i_fichier][$indice]).'</b>';
+					$td_contenu[] = '<b>'.To::html($tab_base_adresse[$id_base][$indice]).' &rarr; '.To::html($tab_users_fichier['adresse'][$i_fichier][$indice]).'</b>';
 					$nb_differences++;
 				}
 			}
 			if($nb_differences==0)
 			{
 				// Cas [2a] : adresses identiques &rarr; conserver
-				$lignes_conserver .= '<tr><th>Conserver</th><td>'.html($tab_users_fichier['nom'][$i_fichier].' '.$tab_users_fichier['prenom'][$i_fichier]).'</td><td>'.implode(' || ',$td_contenu).'</td></tr>';
+				$lignes_conserver .= '<tr><th>Conserver</th><td>'.To::html($tab_users_fichier['nom'][$i_fichier].' '.$tab_users_fichier['prenom'][$i_fichier]).'</td><td>'.implode(' || ',$td_contenu).'</td></tr>';
 			}
 			else
 			{
 				// Cas [2b] : adresses différentes &rarr; modifier
-				$lignes_modifier .= '<tr><th>Modifier <input id="mod_'.$i_fichier.'" name="mod_'.$i_fichier.'" type="checkbox" checked /></th><td>'.html($tab_users_fichier['nom'][$i_fichier].' '.$tab_users_fichier['prenom'][$i_fichier]).'</td><td>'.implode(' || ',$td_contenu).'</td></tr>';
+				$lignes_modifier .= '<tr><th>Modifier <input id="mod_'.$i_fichier.'" name="mod_'.$i_fichier.'" type="checkbox" checked /></th><td>'.To::html($tab_users_fichier['nom'][$i_fichier].' '.$tab_users_fichier['prenom'][$i_fichier]).'</td><td>'.implode(' || ',$td_contenu).'</td></tr>';
 			}
 		}
 	}
@@ -2359,7 +2358,7 @@ if( $step==72 )
 	{
 		if(substr($check_infos,0,4)=='mod_')
 		{
-			$i_fichier = clean_entier( substr($check_infos,4) );
+			$i_fichier = Clean::entier( substr($check_infos,4) );
 			if( isset($tab_i_fichier_TO_id_base[$i_fichier]) && isset($tab_users_fichier['adresse'][$i_fichier]) )
 			{
 				DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_adresse_parent( $tab_i_fichier_TO_id_base[$i_fichier] , $tab_users_fichier['adresse'][$i_fichier] );
@@ -2368,7 +2367,7 @@ if( $step==72 )
 		}
 		elseif(substr($check_infos,0,4)=='add_')
 		{
-			$i_fichier = clean_entier( substr($check_infos,4) );
+			$i_fichier = Clean::entier( substr($check_infos,4) );
 			if( isset($tab_i_fichier_TO_id_base[$i_fichier]) && isset($tab_users_fichier['adresse'][$i_fichier]) )
 			{
 				DB_STRUCTURE_ADMINISTRATEUR::DB_ajouter_adresse_parent( $tab_i_fichier_TO_id_base[$i_fichier] , $tab_users_fichier['adresse'][$i_fichier] );
@@ -2449,7 +2448,7 @@ if( $step==81 )
 			}
 		}
 	}
-	Ecrire_Fichier(CHEMIN_DOSSIER_IMPORT.'import_'.$action.'_'.$_SESSION['BASE'].'_'.session_id().'_memo_analyse.txt',serialize($tab_memo_analyse));
+	FileSystem::ecrire_fichier(CHEMIN_DOSSIER_IMPORT.'import_'.$action.'_'.$_SESSION['BASE'].'_'.session_id().'_memo_analyse.txt',serialize($tab_memo_analyse));
 	// Pour préparer l'affichage
 	$lignes_modifier  = '';
 	$lignes_conserver = '';
@@ -2475,12 +2474,12 @@ if( $step==81 )
 				{
 					if($parent_affich_base!='X')
 					{
-						$td_contenu[] = 'Responsable n°'.$num.' : '.html($parent_affich_base);
+						$td_contenu[] = 'Responsable n°'.$num.' : '.To::html($parent_affich_base);
 					}
 				}
 				else
 				{
-					$td_contenu[] = 'Responsable n°'.$num.' : <b>'.html($parent_affich_base).' &rarr; '.html($parent_affich_fichier).'</b>';
+					$td_contenu[] = 'Responsable n°'.$num.' : <b>'.To::html($parent_affich_base).' &rarr; '.To::html($parent_affich_fichier).'</b>';
 					$nb_differences++;
 				}
 				if($parent_id_fichier!==FALSE)
@@ -2502,12 +2501,12 @@ if( $step==81 )
 			if($nb_differences==0)
 			{
 				// Cas [1] : responsables identiques &rarr; conserver
-				$lignes_conserver .= '<tr><th>Conserver</th><td>'.html($tab_base_eleve_infos['eleve']['nom'].' '.$tab_base_eleve_infos['eleve']['prenom']).'</td><td>'.implode('<br />',$td_contenu).'</td></tr>';
+				$lignes_conserver .= '<tr><th>Conserver</th><td>'.To::html($tab_base_eleve_infos['eleve']['nom'].' '.$tab_base_eleve_infos['eleve']['prenom']).'</td><td>'.implode('<br />',$td_contenu).'</td></tr>';
 			}
 			else
 			{
 				// Cas [2] : au moins une différence  &rarr; modifier
-				$lignes_modifier .= '<tr><th>Modifier <input id="mod_'.$tab_base_eleve_infos['eleve']['id'].'" name="mod_'.$tab_base_eleve_infos['eleve']['id'].'" type="checkbox" checked /></th><td>'.html($tab_base_eleve_infos['eleve']['nom'].' '.$tab_base_eleve_infos['eleve']['prenom']).'</td><td>'.implode('<br />',$td_contenu).'</td></tr>';
+				$lignes_modifier .= '<tr><th>Modifier <input id="mod_'.$tab_base_eleve_infos['eleve']['id'].'" name="mod_'.$tab_base_eleve_infos['eleve']['id'].'" type="checkbox" checked /></th><td>'.To::html($tab_base_eleve_infos['eleve']['nom'].' '.$tab_base_eleve_infos['eleve']['prenom']).'</td><td>'.implode('<br />',$td_contenu).'</td></tr>';
 			}
 		}
 	}
@@ -2544,7 +2543,7 @@ if( $step==82 )
 	{
 		if(substr($check_infos,0,4)=='mod_')
 		{
-			$eleve_id = clean_entier( substr($check_infos,4) );
+			$eleve_id = Clean::entier( substr($check_infos,4) );
 			if( isset($tab_memo_analyse[$eleve_id]) )
 			{
 				$tab_eleve_id[] = $eleve_id;

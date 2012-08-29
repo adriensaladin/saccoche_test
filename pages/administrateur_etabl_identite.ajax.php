@@ -29,25 +29,25 @@ if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');
 if($_SESSION['SESAMATH_ID']==ID_DEMO) {exit('Action désactivée pour la démo...');}
 
 $action                      = (isset($_POST['action']))                        ? $_POST['action']                                      : '';
-$geo1                        = (isset($_POST['f_geo1']))                        ? clean_entier($_POST['f_geo1'])                        : 0;
-$geo2                        = (isset($_POST['f_geo2']))                        ? clean_entier($_POST['f_geo2'])                        : 0;
-$geo3                        = (isset($_POST['f_geo3']))                        ? clean_entier($_POST['f_geo3'])                        : 0;
-$uai                         = (isset($_POST['f_uai']))                         ? clean_uai($_POST['f_uai'])                            : '';
+$geo1                        = (isset($_POST['f_geo1']))                        ? Clean::entier($_POST['f_geo1'])                        : 0;
+$geo2                        = (isset($_POST['f_geo2']))                        ? Clean::entier($_POST['f_geo2'])                        : 0;
+$geo3                        = (isset($_POST['f_geo3']))                        ? Clean::entier($_POST['f_geo3'])                        : 0;
+$uai                         = (isset($_POST['f_uai']))                         ? Clean::uai($_POST['f_uai'])                            : '';
 
-$sesamath_id                 = (isset($_POST['f_sesamath_id']))                 ? clean_entier($_POST['f_sesamath_id'])                 : 0;
-$sesamath_uai                = (isset($_POST['f_sesamath_uai']))                ? clean_uai($_POST['f_sesamath_uai'])                   : '';
-$sesamath_type_nom           = (isset($_POST['f_sesamath_type_nom']))           ? clean_texte($_POST['f_sesamath_type_nom'])            : '';
-$sesamath_key                = (isset($_POST['f_sesamath_key']))                ? clean_texte($_POST['f_sesamath_key'])                 : '';
+$sesamath_id                 = (isset($_POST['f_sesamath_id']))                 ? Clean::entier($_POST['f_sesamath_id'])                 : 0;
+$sesamath_uai                = (isset($_POST['f_sesamath_uai']))                ? Clean::uai($_POST['f_sesamath_uai'])                   : '';
+$sesamath_type_nom           = (isset($_POST['f_sesamath_type_nom']))           ? Clean::texte($_POST['f_sesamath_type_nom'])            : '';
+$sesamath_key                = (isset($_POST['f_sesamath_key']))                ? Clean::texte($_POST['f_sesamath_key'])                 : '';
 
-$etablissement_denomination  = (isset($_POST['f_etablissement_denomination']))  ? clean_texte($_POST['f_etablissement_denomination'])   : '';
-$etablissement_adresse1      = (isset($_POST['f_etablissement_adresse1']))      ? clean_texte($_POST['f_etablissement_adresse1'])       : '';
-$etablissement_adresse2      = (isset($_POST['f_etablissement_adresse2']))      ? clean_texte($_POST['f_etablissement_adresse2'])       : '';
-$etablissement_adresse3      = (isset($_POST['f_etablissement_adresse3']))      ? clean_texte($_POST['f_etablissement_adresse3'])       : '';
-$etablissement_telephone     = (isset($_POST['f_etablissement_telephone']))     ? clean_texte($_POST['f_etablissement_telephone'])      : '';
-$etablissement_fax           = (isset($_POST['f_etablissement_fax']))           ? clean_texte($_POST['f_etablissement_fax'])            : '';
-$etablissement_courriel      = (isset($_POST['f_etablissement_courriel']))      ? clean_texte($_POST['f_etablissement_courriel'])       : '';
+$etablissement_denomination  = (isset($_POST['f_etablissement_denomination']))  ? Clean::texte($_POST['f_etablissement_denomination'])   : '';
+$etablissement_adresse1      = (isset($_POST['f_etablissement_adresse1']))      ? Clean::texte($_POST['f_etablissement_adresse1'])       : '';
+$etablissement_adresse2      = (isset($_POST['f_etablissement_adresse2']))      ? Clean::texte($_POST['f_etablissement_adresse2'])       : '';
+$etablissement_adresse3      = (isset($_POST['f_etablissement_adresse3']))      ? Clean::texte($_POST['f_etablissement_adresse3'])       : '';
+$etablissement_telephone     = (isset($_POST['f_etablissement_telephone']))     ? Clean::texte($_POST['f_etablissement_telephone'])      : '';
+$etablissement_fax           = (isset($_POST['f_etablissement_fax']))           ? Clean::texte($_POST['f_etablissement_fax'])            : '';
+$etablissement_courriel      = (isset($_POST['f_etablissement_courriel']))      ? Clean::texte($_POST['f_etablissement_courriel'])       : '';
 
-$mois_bascule_annee_scolaire = (isset($_POST['f_mois_bascule_annee_scolaire'])) ? clean_entier($_POST['f_mois_bascule_annee_scolaire']) : 0;
+$mois_bascule_annee_scolaire = (isset($_POST['f_mois_bascule_annee_scolaire'])) ? Clean::entier($_POST['f_mois_bascule_annee_scolaire']) : 0;
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 //	Mettre à jour le formulaire f_geo1 et le renvoyer en HTML

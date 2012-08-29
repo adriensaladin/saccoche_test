@@ -27,12 +27,12 @@
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 
-$tab_base_id = (isset($_POST['f_listing_id'])) ? array_filter( array_map( 'clean_entier' , explode(',',$_POST['f_listing_id']) ) , 'positif' ) : array() ;
+$tab_base_id = (isset($_POST['f_listing_id'])) ? array_filter( Clean::map_entier( explode(',',$_POST['f_listing_id']) ) , 'positif' ) : array() ;
 $nb_bases    = count($tab_base_id);
 
-$action = (isset($_POST['f_action'])) ? clean_texte($_POST['f_action']) : '';
-$num    = (isset($_POST['num']))      ? clean_entier($_POST['num'])     : 0 ;	// Numéro de l'étape en cours
-$max    = (isset($_POST['max']))      ? clean_entier($_POST['max'])     : 0 ;	// Nombre d'étapes à effectuer
+$action = (isset($_POST['f_action'])) ? Clean::texte($_POST['f_action']) : '';
+$num    = (isset($_POST['num']))      ? Clean::entier($_POST['num'])     : 0 ;	// Numéro de l'étape en cours
+$max    = (isset($_POST['max']))      ? Clean::entier($_POST['max'])     : 0 ;	// Nombre d'étapes à effectuer
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 // Récupération de la liste des structures avant recherche des stats
@@ -77,7 +77,7 @@ if( ($action=='calculer') && $num && $max && ($num<$max) )
 	$_SESSION['tmp']['totaux']['eleve_use'] += $eleve_use;
 	$_SESSION['tmp']['totaux']['score_nb']  += $score_nb;
 	// Retour
-	exit('ok-<tr><td class="nu"><input type="checkbox" name="f_ids" value="'.$base_id.'" /></td><td class="label">'.$base_id.'</td><td class="label">'.html($structure_denomination).'</td><td class="label">'.html($contact).'</td><td class="label">'.$inscription_date.'</td><td class="label">'.$prof_nb.'</td><td class="label">'.$prof_use.'</td><td class="label">'.$eleve_nb.'</td><td class="label">'.$eleve_use.'</td><td class="label"><i>'.sprintf("%07u",$score_nb).'</i>'.number_format($score_nb,0,'',' ').'</td></tr>');
+	exit('ok-<tr><td class="nu"><input type="checkbox" name="f_ids" value="'.$base_id.'" /></td><td class="label">'.$base_id.'</td><td class="label">'.To::html($structure_denomination).'</td><td class="label">'.To::html($contact).'</td><td class="label">'.$inscription_date.'</td><td class="label">'.$prof_nb.'</td><td class="label">'.$prof_use.'</td><td class="label">'.$eleve_nb.'</td><td class="label">'.$eleve_use.'</td><td class="label"><i>'.sprintf("%07u",$score_nb).'</i>'.number_format($score_nb,0,'',' ').'</td></tr>');
 }
 if( ($action=='calculer') && $num && $max && ($num==$max) )
 {

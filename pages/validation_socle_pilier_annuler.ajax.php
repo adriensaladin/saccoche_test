@@ -28,16 +28,16 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 if(($_SESSION['SESAMATH_ID']==ID_DEMO)&&($_POST['f_action']!='Afficher_bilan')){exit('Action désactivée pour la démo...');}
 
-$action     = (isset($_POST['f_action'])) ? clean_texte($_POST['f_action'])  : '';
-$eleve_id   = (isset($_POST['f_user']))   ? clean_entier($_POST['f_user'])   : 0;
-$palier_id  = (isset($_POST['f_palier'])) ? clean_entier($_POST['f_palier']) : 0;
-$pilier_id  = (isset($_POST['f_pilier'])) ? clean_entier($_POST['f_pilier']) : 0;
-$delete_id  = (isset($_POST['delete_id'])) ? clean_texte($_POST['delete_id']) : '';
+$action     = (isset($_POST['f_action'])) ? Clean::texte($_POST['f_action'])  : '';
+$eleve_id   = (isset($_POST['f_user']))   ? Clean::entier($_POST['f_user'])   : 0;
+$palier_id  = (isset($_POST['f_palier'])) ? Clean::entier($_POST['f_palier']) : 0;
+$pilier_id  = (isset($_POST['f_pilier'])) ? Clean::entier($_POST['f_pilier']) : 0;
+$delete_id  = (isset($_POST['delete_id'])) ? Clean::texte($_POST['delete_id']) : '';
 // Normalement ce sont des tableaux qui sont transmis, mais au cas où...
 $tab_pilier = (isset($_POST['f_pilier'])) ? ( (is_array($_POST['f_pilier'])) ? $_POST['f_pilier'] : explode(',',$_POST['f_pilier']) ) : array() ;
 $tab_eleve  = (isset($_POST['f_eleve']))  ? ( (is_array($_POST['f_eleve']))  ? $_POST['f_eleve']  : explode(',',$_POST['f_eleve'])  ) : array() ;
-$tab_pilier = array_filter( array_map( 'clean_entier' , $tab_pilier ) , 'positif' );
-$tab_eleve  = array_filter( array_map( 'clean_entier' , $tab_eleve  ) , 'positif' );
+$tab_pilier = array_filter( Clean::map_entier($tab_pilier) , 'positif' );
+$tab_eleve  = array_filter( Clean::map_entier($tab_eleve)  , 'positif' );
 
 $listing_eleve_id = implode(',',$tab_eleve);
 
@@ -47,7 +47,7 @@ $listing_eleve_id = implode(',',$tab_eleve);
 
 if( ($action=='Afficher_bilan') && $palier_id && count($tab_pilier) && count($tab_eleve) )
 {
-	Formulaire::save_choix('palier');
+	Form::save_choix('palier');
 	$affichage = '';
 	// Tableau des langues
 	$tfoot = '';
@@ -64,7 +64,7 @@ if( ($action=='Afficher_bilan') && $palier_id && count($tab_pilier) && count($ta
 	foreach($tab_eleve as $tab)
 	{
 		extract($tab);	// $eleve_id $eleve_nom $eleve_prenom $eleve_id_gepi
-		$affichage .= '<th><img id="I'.$eleve_id.'" alt="'.html($eleve_nom.' '.$eleve_prenom).'" src="./_img/php/etiquette.php?dossier='.$_SESSION['BASE'].'&amp;nom='.urlencode($eleve_nom).'&amp;prenom='.urlencode($eleve_prenom).'" /></th>';
+		$affichage .= '<th><img id="I'.$eleve_id.'" alt="'.To::html($eleve_nom.' '.$eleve_prenom).'" src="./_img/php/etiquette.php?dossier='.$_SESSION['BASE'].'&amp;nom='.urlencode($eleve_nom).'&amp;prenom='.urlencode($eleve_prenom).'" /></th>';
 		$tfoot .= '<td class="L'.$eleve_langue.'" title="'.$tab_langues[$eleve_langue]['texte'].'"></td>';
 		$tab_eleve_id[] = $eleve_id;
 	}
@@ -95,7 +95,7 @@ if( ($action=='Afficher_bilan') && $palier_id && count($tab_pilier) && count($ta
 			{
 				$affichage .= '<td id="U'.$eleve_id.'C'.$pilier_id.'" class="v3"></td>';
 			}
-			$affichage .= '<th class="nu" colspan="2"><div class="n1">'.html($DB_ROW['pilier_nom']).'</div></th>';
+			$affichage .= '<th class="nu" colspan="2"><div class="n1">'.To::html($DB_ROW['pilier_nom']).'</div></th>';
 			$affichage .= '</tr>';
 		}
 	}
@@ -113,7 +113,7 @@ if( ($action=='Afficher_bilan') && $palier_id && count($tab_pilier) && count($ta
 		if($DB_ROW['validation_pilier_etat'])
 		{
 			$tab_bad[] = 'U'.$DB_ROW['user_id'].'C'.$DB_ROW['pilier_id'].'" class="v3">';
-			$tab_bon[] = 'U'.$DB_ROW['user_id'].'C'.$DB_ROW['pilier_id'].'" class="v'.$DB_ROW['validation_pilier_etat'].'" title="Validé le '.convert_date_mysql_to_french($DB_ROW['validation_pilier_date']).' par '.html($DB_ROW['validation_pilier_info']).'" lang="lock">';
+			$tab_bon[] = 'U'.$DB_ROW['user_id'].'C'.$DB_ROW['pilier_id'].'" class="v'.$DB_ROW['validation_pilier_etat'].'" title="Validé le '.convert_date_mysql_to_french($DB_ROW['validation_pilier_date']).' par '.To::html($DB_ROW['validation_pilier_info']).'" lang="lock">';
 		}
 	}
 	$affichage = str_replace($tab_bad,$tab_bon,$affichage);

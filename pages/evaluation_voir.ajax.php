@@ -28,11 +28,11 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 if(($_SESSION['SESAMATH_ID']==ID_DEMO)&&($_POST['f_action']!='Afficher_evaluations')&&($_POST['f_action']!='Voir_notes')){exit('Action désactivée pour la démo...');}
 
-$action     = (isset($_POST['f_action']))     ? clean_texte($_POST['f_action'])     : '';
-$eleve_id   = (isset($_POST['f_eleve']))      ? clean_entier($_POST['f_eleve'])     : 0;
-$date_debut = (isset($_POST['f_date_debut'])) ? clean_texte($_POST['f_date_debut']) : '';
-$date_fin   = (isset($_POST['f_date_fin']))   ? clean_texte($_POST['f_date_fin'])   : '';
-$devoir_id  = (isset($_POST['f_devoir']))     ? clean_entier($_POST['f_devoir'])    : 0;
+$action     = (isset($_POST['f_action']))     ? Clean::texte($_POST['f_action'])     : '';
+$eleve_id   = (isset($_POST['f_eleve']))      ? Clean::entier($_POST['f_eleve'])     : 0;
+$date_debut = (isset($_POST['f_date_debut'])) ? Clean::texte($_POST['f_date_debut']) : '';
+$date_fin   = (isset($_POST['f_date_fin']))   ? Clean::texte($_POST['f_date_fin'])   : '';
+$devoir_id  = (isset($_POST['f_devoir']))     ? Clean::entier($_POST['f_devoir'])    : 0;
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 //	Afficher une liste d'évaluations
@@ -83,9 +83,9 @@ if( ($action=='Afficher_evaluations') && $eleve_id && $date_debut && $date_fin )
 		$image_corrige = ($DB_ROW['devoir_doc_corrige']) ? '<a href="'.$DB_ROW['devoir_doc_corrige'].'" target="_blank"><img alt="corrigé" src="./_img/document/corrige_oui.png" title="Corrigé disponible." /></a>' : '<img alt="corrigé" src="./_img/document/corrige_non.png" />' ;
 		// Afficher une ligne du tableau
 		echo'<tr>';
-		echo	'<td><i>'.html($DB_ROW['devoir_date']).'</i>'.html($date_affich).'</td>';
-		echo	'<td>'.html($DB_ROW['prof_nom'].' '.$DB_ROW['prof_prenom']{0}.'.').'</td>';
-		echo	'<td>'.html($DB_ROW['devoir_info']).'</td>';
+		echo	'<td><i>'.To::html($DB_ROW['devoir_date']).'</i>'.To::html($date_affich).'</td>';
+		echo	'<td>'.To::html($DB_ROW['prof_nom'].' '.$DB_ROW['prof_prenom']{0}.'.').'</td>';
+		echo	'<td>'.To::html($DB_ROW['devoir_info']).'</td>';
 		echo	'<td>'.$image_sujet.$image_corrige.'</td>';
 		echo	'<td class="nu" id="devoir_'.$DB_ROW['devoir_id'].'">';
 		echo		'<q class="voir" title="Voir les items et les notes (si saisies)."></q>';
@@ -138,11 +138,11 @@ if( ($action=='Voir_notes') && $eleve_id && $devoir_id )
 		$DB_ROW = $DB_TAB_COMP[$item_id][0];
 		$item_ref = $DB_ROW['item_ref'];
 		$texte_socle = ($DB_ROW['entree_id']) ? '[S] ' : '[–] ';
-		$texte_lien_avant = ($DB_ROW['item_lien']) ? '<a class="lien_ext" href="'.html($DB_ROW['item_lien']).'">' : '';
+		$texte_lien_avant = ($DB_ROW['item_lien']) ? '<a class="lien_ext" href="'.To::html($DB_ROW['item_lien']).'">' : '';
 		$texte_lien_apres = ($DB_ROW['item_lien']) ? '</a>' : '';
 		$score = (isset($tab_devoirs[$item_id])) ? calculer_score($tab_devoirs[$item_id],$DB_ROW['referentiel_calcul_methode'],$DB_ROW['referentiel_calcul_limite']) : FALSE ;
 		$texte_demande_eval = ($_SESSION['USER_PROFIL']!='eleve') ? '' : ( ($DB_ROW['item_cart']) ? '<q class="demander_add" id="demande_'.$DB_ROW['matiere_id'].'_'.$item_id.'_'.$score.'" title="Ajouter aux demandes d\'évaluations."></q>' : '<q class="demander_non" title="Demande interdite."></q>' ) ;
-		$tab_affich[$item_id] = '<tr><td>'.html($item_ref).'</td><td>'.$texte_socle.$texte_lien_avant.html($DB_ROW['item_nom']).$texte_lien_apres.$texte_demande_eval.'</td><td class="hc">-</td>'.affich_score_html($score,$methode_tri='score',$pourcent='').'</tr>';
+		$tab_affich[$item_id] = '<tr><td>'.To::html($item_ref).'</td><td>'.$texte_socle.$texte_lien_avant.To::html($DB_ROW['item_nom']).$texte_lien_apres.$texte_demande_eval.'</td><td class="hc">-</td>'.Html::td_score($score,$methode_tri='score',$pourcent='').'</tr>';
 	}
 	// récupérer les saisies et les ajouter
 	$DB_TAB = DB_STRUCTURE_ELEVE::DB_lister_saisies_devoir_eleve( $devoir_id , $eleve_id , FALSE /*with_REQ*/ );
@@ -151,7 +151,7 @@ if( ($action=='Voir_notes') && $eleve_id && $devoir_id )
 		// Test pour éviter les pbs des élèves changés de groupes ou des items modifiés en cours de route
 		if(isset($tab_affich[$DB_ROW['item_id']]))
 		{
-			$tab_affich[$DB_ROW['item_id']] = str_replace('>-<','>'.affich_note_html($DB_ROW['saisie_note'],'','',$tri=true).'<',$tab_affich[$DB_ROW['item_id']]);
+			$tab_affich[$DB_ROW['item_id']] = str_replace('>-<','>'.Html::note($DB_ROW['saisie_note'],'','',$tri=true).'<',$tab_affich[$DB_ROW['item_id']]);
 		}
 	}
 	exit(implode('',$tab_affich));
@@ -193,11 +193,11 @@ if( ($action=='Saisir_notes') && $eleve_id && $devoir_id )
 		$DB_ROW = $DB_TAB_COMP[$item_id][0];
 		$item_ref = $DB_ROW['item_ref'];
 		$texte_socle = ($DB_ROW['entree_id']) ? '[S] ' : '[–] ';
-		$texte_lien_avant = ($DB_ROW['item_lien']) ? '<a class="lien_ext" href="'.html($DB_ROW['item_lien']).'">' : '';
+		$texte_lien_avant = ($DB_ROW['item_lien']) ? '<a class="lien_ext" href="'.To::html($DB_ROW['item_lien']).'">' : '';
 		$texte_lien_apres = ($DB_ROW['item_lien']) ? '</a>' : '';
 		$boutons = (isset($tab_radio[$item_id])) ? $tab_radio[$item_id] : str_replace( 'value="X"' , 'value="X" checked' , $radio_boutons ) ;
 		$boutons = str_replace( 'item_X' , 'item_'.$item_id , $boutons );
-		echo'<tr>'.$boutons.'<td>'.html($item_ref).'<br />'.$texte_socle.$texte_lien_avant.html($DB_ROW['item_nom']).$texte_lien_apres.'</td></tr>';
+		echo'<tr>'.$boutons.'<td>'.To::html($item_ref).'<br />'.$texte_socle.$texte_lien_avant.To::html($DB_ROW['item_nom']).$texte_lien_apres.'</td></tr>';
 	}
 	exit();
 }

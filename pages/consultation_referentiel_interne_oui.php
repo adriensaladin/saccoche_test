@@ -66,7 +66,7 @@ else
 	foreach($DB_TAB as $DB_ROW)
 	{
 		$tab_matiere[$DB_ROW['matiere_id']] = array(
-			'nom'         => html($DB_ROW['matiere_nom']) ,
+			'nom'         => To::html($DB_ROW['matiere_nom']) ,
 			'nb_demandes' => $DB_ROW['matiere_nb_demandes']
 		);
 	}
@@ -82,7 +82,7 @@ else
 		echo'<p><span class="astuce">Cliquer sur l\'&oelig;il pour voir le détail d\'un référentiel.</span></p>';
 		foreach($DB_TAB as $DB_ROW)
 		{
-			$tab_niveau[$DB_ROW['niveau_id']] = html($DB_ROW['niveau_nom']);
+			$tab_niveau[$DB_ROW['niveau_id']] = To::html($DB_ROW['niveau_nom']);
 		}
 		// On récupère la liste des coordonnateurs responsables par matières
 		$DB_TAB = DB_STRUCTURE_COMMUN::DB_lister_identite_coordonnateurs_par_matiere();
@@ -90,7 +90,7 @@ else
 		{
 			foreach($DB_TAB as $DB_ROW)
 			{
-				$tab_matiere[$DB_ROW['matiere_id']]['coord'] = str_replace('][','<br />',html($DB_ROW['coord_liste']));
+				$tab_matiere[$DB_ROW['matiere_id']]['coord'] = str_replace('][','<br />',To::html($DB_ROW['coord_liste']));
 			}
 		}
 		// On récupère la liste des référentiels par matière et niveau
@@ -124,7 +124,7 @@ else
 					$nb_best = (int)substr($DB_ROW['referentiel_calcul_methode'],-1);
 					$methode_calcul_texte = ($DB_ROW['referentiel_calcul_limite']==0) ? 'Moyenne des '.$nb_best.' meilleures saisies.' : 'Moyenne des '.$nb_best.' meilleures saisies parmi les '.$DB_ROW['referentiel_calcul_limite'].' dernières.';
 				}
-				$tab_colonne[$DB_ROW['matiere_id']][$DB_ROW['niveau_id']] = '<td class="hc">'.str_replace('◄DATE►',affich_date($DB_ROW['referentiel_partage_date']),$tab_partage[$DB_ROW['referentiel_partage_etat']]).'</td>'.'<td>'.$methode_calcul_texte.'</td>';
+				$tab_colonne[$DB_ROW['matiere_id']][$DB_ROW['niveau_id']] = '<td class="hc">'.str_replace('◄DATE►',Html::date($DB_ROW['referentiel_partage_date']),$tab_partage[$DB_ROW['referentiel_partage_etat']]).'</td>'.'<td>'.$methode_calcul_texte.'</td>';
 			}
 		}
 		// On construit et affiche le tableau résultant

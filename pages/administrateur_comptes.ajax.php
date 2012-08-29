@@ -33,7 +33,7 @@ if($_SESSION['SESAMATH_ID']==ID_DEMO){exit('Action désactivée pour la démo...
 $action     = (isset($_POST['f_action']))     ? $_POST['f_action']     : '';
 $listing_id = (isset($_POST['f_listing_id'])) ? $_POST['f_listing_id'] : '';
 
-$tab_user_id = array_filter( array_map( 'clean_entier' , explode(',',$listing_id) ) , 'positif' );
+$tab_user_id = array_filter( Clean::map_entier( explode(',',$listing_id) ) , 'positif' );
 $nb_user = count($tab_user_id);
 
 if( !$nb_user )
@@ -77,7 +77,7 @@ if($action=='supprimer')
 			DB_STRUCTURE_ADMINISTRATEUR::DB_supprimer_utilisateur( $DB_ROW['user_id'] , $DB_ROW['user_profil'] );
 			$tab_user_id[] = $DB_ROW['user_id'];
 			// Log de l'action
-			ajouter_log_SACoche('Suppression d\'un utilisateur ('.$DB_ROW['user_profil'].' '.$DB_ROW['user_id'].').');
+			SACocheLog::ajouter('Suppression d\'un utilisateur ('.$DB_ROW['user_profil'].' '.$DB_ROW['user_id'].').');
 		}
 	}
 	$retour = (count($tab_user_id)) ? 'ok,'.implode(',',$tab_user_id) : 'Aucun compte indiqué n\'est supprimable !' ;

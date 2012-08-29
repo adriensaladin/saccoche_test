@@ -30,13 +30,13 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 if($_SESSION['SESAMATH_ID']==ID_DEMO) {}
 
-$niveau_famille_id = (isset($_POST['f_famille_niveau'])) ? clean_entier($_POST['f_famille_niveau']) : 0;
+$niveau_famille_id = (isset($_POST['f_famille_niveau'])) ? Clean::entier($_POST['f_famille_niveau']) : 0;
 
 if(!$niveau_famille_id)
 {
 	exit('Erreur avec les données transmises !');
 }
 
-echo Formulaire::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_niveaux_famille($niveau_famille_id) , $select_nom=FALSE , $option_first='val' , $selection=FALSE , $optgroup='non');
+echo Form::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_niveaux_famille($niveau_famille_id) , $select_nom=FALSE , $option_first='val' , $selection=FALSE , $optgroup='non');
 
 ?>

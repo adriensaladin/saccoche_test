@@ -29,8 +29,8 @@ if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');
 if(($_SESSION['SESAMATH_ID']==ID_DEMO)&&($_GET['action']!='initialiser')){exit('Action désactivée pour la démo...');}
 
 $action     = (isset($_POST['action']))     ? $_POST['action']                   : '' ;
-$matiere_id = (isset($_POST['matiere_id'])) ? clean_entier($_POST['matiere_id']) : 0 ;
-$user_id    = (isset($_POST['user_id']))    ? clean_entier($_POST['user_id'])    : 0 ;
+$matiere_id = (isset($_POST['matiere_id'])) ? Clean::entier($_POST['matiere_id']) : 0 ;
+$user_id    = (isset($_POST['user_id']))    ? Clean::entier($_POST['user_id'])    : 0 ;
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 //	Ajouter un professeur à une matière

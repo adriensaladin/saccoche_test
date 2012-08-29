@@ -30,7 +30,7 @@ if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');
 
 <?php
 $selection = (isset($_POST['listing_ids'])) ? explode(',',$_POST['listing_ids']) : FALSE ; // demande d'exports depuis structure_multi.php
-$select_structure = Formulaire::afficher_select(DB_WEBMESTRE_SELECT::DB_OPT_structures_sacoche() , $select_nom=false , $option_first='non' , $selection , $optgroup='oui') ;
+$select_structure = Form::afficher_select(DB_WEBMESTRE_SELECT::DB_OPT_structures_sacoche() , $select_nom=false , $option_first='non' , $selection , $optgroup='oui') ;
 ?>
 
 <p><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_webmestre__structure_transfert">DOC : Transfert d'établissements (multi-structures)</a></span></p>

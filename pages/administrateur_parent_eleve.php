@@ -31,8 +31,8 @@ $TITRE = "Parents &amp; élèves";
 
 <?php
 // Fabrication des éléments select du formulaire
-$select_f_groupes = Formulaire::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_regroupements_etabl()         , $select_nom=false , $option_first='oui' , $selection=false , $optgroup='oui');
-$select_f_parents = Formulaire::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_parents_etabl($user_statut=1) , $select_nom=false , $option_first='oui' , $selection=false , $optgroup='non');
+$select_f_groupes = Form::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_regroupements_etabl()         , $select_nom=false , $option_first='oui' , $selection=false , $optgroup='oui');
+$select_f_parents = Form::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_parents_etabl($user_statut=1) , $select_nom=false , $option_first='oui' , $selection=false , $optgroup='non');
 
 ?>
 

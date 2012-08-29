@@ -36,7 +36,7 @@ if(count($DB_TAB))
 	$tab_tbody = array();
 	foreach($DB_TAB as $DB_ROW)
 	{
-		$tab_thead[$DB_ROW['periode_id']] = '<th class="hc">'.html($DB_ROW['periode_nom']).'</th>';
+		$tab_thead[$DB_ROW['periode_id']] = '<th class="hc">'.To::html($DB_ROW['periode_nom']).'</th>';
 	}
 
 	// identifiants élèves concernés
@@ -51,7 +51,7 @@ if(count($DB_TAB))
 		foreach($_SESSION['OPT_PARENT_ENFANTS'] as $tab)
 		{
 			$tab_eleve_id[] = $tab['valeur'];
-			$tab_tbody[$tab['valeur']][0] = '<th>'.html($tab['texte']).'</th>';
+			$tab_tbody[$tab['valeur']][0] = '<th>'.To::html($tab['texte']).'</th>';
 		}
 	}
 

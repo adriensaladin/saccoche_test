@@ -56,14 +56,14 @@ $TITRE = "Connexion SSO";
 // Si transmission d'un UAI
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
-$UAI = (isset($_GET['uai'])) ? clean_uai($_GET['uai']) : '' ;
+$UAI = (isset($_GET['uai'])) ? Clean::uai($_GET['uai']) : '' ;
 
 if( (HEBERGEUR_INSTALLATION=='multi-structures') && ($UAI!='') )
 {
 	$BASE = DB_WEBMESTRE_PUBLIC::DB_recuperer_structure_id_base_for_UAI($UAI);
 	if(!$BASE)
 	{
-		affich_message_exit($titre='Paramètre incorrect',$contenu='Le numéro UAI transmis n\'est pas référencé sur cette installation de SACoche.');
+		exit_error( 'Paramètre incorrect' /*titre*/ , 'Le numéro UAI transmis n\'est pas référencé sur cette installation de SACoche.' /*contenu*/ );
 	}
 	// Remplacer l'info par le numéro de base correspondant dans toutes les variables accessibles à PHP avant que la classe SSO ne s'en mèle.
 	$bad = 'uai='.$_GET['uai'];
@@ -80,13 +80,13 @@ if( (HEBERGEUR_INSTALLATION=='multi-structures') && ($UAI!='') )
 // En cas de multi-structures, il faut savoir dans quelle base récupérer les informations
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
-$BASE = (isset($_GET['base'])) ? clean_entier($_GET['base']) : ( (isset($_COOKIE[COOKIE_STRUCTURE])) ? clean_entier($_COOKIE[COOKIE_STRUCTURE]) : 0 ) ;
+$BASE = (isset($_GET['base'])) ? Clean::entier($_GET['base']) : ( (isset($_COOKIE[COOKIE_STRUCTURE])) ? Clean::entier($_COOKIE[COOKIE_STRUCTURE]) : 0 ) ;
 
 if(HEBERGEUR_INSTALLATION=='multi-structures')
 {
 	if(!$BASE)
 	{
-		affich_message_exit($titre='Donnée manquante',$contenu='Paramètre indiquant la base concernée non transmis.');
+		exit_error( 'Donnée manquante' /*titre*/ , 'Paramètre indiquant la base concernée non transmis.' /*contenu*/ );
 	}
 	charger_parametres_mysql_supplementaires($BASE);
 }
@@ -105,7 +105,7 @@ foreach($DB_TAB as $DB_ROW)
 }
 if($connexion_mode=='normal')
 {
-	affich_message_exit($titre='Configuration manquante',$contenu='Etablissement non configuré par l\'administrateur pour utiliser un service d\'authentification externe.');
+	exit_error( 'Configuration manquante' /*titre*/ , 'Etablissement non configuré par l\'administrateur pour utiliser un service d\'authentification externe.' /*contenu*/ );
 }
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
@@ -135,13 +135,15 @@ if($connexion_mode=='cas')
 	list($auth_resultat,$auth_DB_ROW) = tester_authentification_user($BASE,$id_ENT,$password=false,$connexion_mode);
 	if($auth_resultat!='ok')
 	{
-		affich_message_exit($titre='Incident authentification',$contenu=$auth_resultat);
+		exit_error( 'Incident authentification' /*titre*/ , $auth_resultat /*contenu*/ );
 	}
 	enregistrer_session_user($BASE,$auth_DB_ROW);
 	// Redirection vers la page demandée en cas de succès.
 	// En théorie il faudrait laisser la suite du code se poursuivre, ce qui n'est pas impossible, mais ça pose le souci de la transmission de &verif_cookie
 	$protocole = ( isset($_SERVER['HTTPS']) && ($_SERVER['HTTPS']=='on') ) ? 'https://' : 'http://' ;
-	redirection_immediate($protocole.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'].'&verif_cookie');
+	// Rediriger le navigateur.
+	header('Status: 307 Temporary Redirect', TRUE, 307);
+	header('Location: '.$protocole.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'].'&verif_cookie');
 	exit();
 }
 
@@ -182,7 +184,7 @@ if($connexion_mode=='gepi')
 	list($auth_resultat,$auth_DB_ROW) = tester_authentification_user($BASE,$login_GEPI,$password=false,$connexion_mode);
 	if($auth_resultat!='ok')
 	{
-		affich_message_exit($titre='Incident authentification',$contenu=$auth_resultat);
+		exit_error( 'Incident authentification' /*titre*/ , $auth_resultat /*contenu*/ );
 	}
 	enregistrer_session_user($BASE,$auth_DB_ROW);
 	// Pas de redirection car passage possible d'infos en POST à conserver ; tant pis pour la vérification du cookie...

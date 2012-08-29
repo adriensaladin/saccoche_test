@@ -33,10 +33,10 @@ if($_SESSION['SESAMATH_ID']==ID_DEMO){exit('Action désactivée pour la démo...
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
 // Récupérer et vérifier les données transmises
-$matiere_id = (isset($_POST['matiere_id'])) ? clean_entier($_POST['matiere_id']) : 0;
-$item_id    = (isset($_POST['item_id']))    ? clean_entier($_POST['item_id'])    : 0;
-$score      = (isset($_POST['score']))      ? clean_entier($_POST['score'])      : -2; // normalement entier entre 0 et 100 ou -1 si non évalué
-$message    = (isset($_POST['message']))    ? clean_texte($_POST['message'])     : '' ;
+$matiere_id = (isset($_POST['matiere_id'])) ? Clean::entier($_POST['matiere_id']) : 0;
+$item_id    = (isset($_POST['item_id']))    ? Clean::entier($_POST['item_id'])    : 0;
+$score      = (isset($_POST['score']))      ? Clean::entier($_POST['score'])      : -2; // normalement entier entre 0 et 100 ou -1 si non évalué
+$message    = (isset($_POST['message']))    ? Clean::texte($_POST['message'])     : '' ;
 if( ($matiere_id==0) || ($item_id==0) || ($score==-2) )
 {
 	exit('Erreur avec les données transmises !');

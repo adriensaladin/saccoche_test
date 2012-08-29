@@ -28,31 +28,31 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 if($_SESSION['SESAMATH_ID']==ID_DEMO){exit('Action désactivée pour la démo...');}
 
-$objet             = (isset($_POST['objet']))             ? clean_texte($_POST['objet'])             : '' ;
+$objet             = (isset($_POST['objet']))             ?    Clean::texte($_POST['objet'])             : '' ;
 
-$note_image_style  = (isset($_POST['note_image_style']))  ? clean_texte($_POST['note_image_style'])  : '' ;
+$note_image_style  = (isset($_POST['note_image_style']))  ?    Clean::texte($_POST['note_image_style'])  : '' ;
 
-$note_texte_RR     = (isset($_POST['note_texte_RR']))     ? mb_substr(clean_texte($_POST['note_texte_RR']),0,40)     : '' ;
-$note_texte_R      = (isset($_POST['note_texte_R']))      ? mb_substr(clean_texte($_POST['note_texte_R']),0,40)      : '' ;
-$note_texte_V      = (isset($_POST['note_texte_V']))      ? mb_substr(clean_texte($_POST['note_texte_V']),0,40)      : '' ;
-$note_texte_VV     = (isset($_POST['note_texte_VV']))     ? mb_substr(clean_texte($_POST['note_texte_VV']),0,40)     : '' ;
+$note_texte_RR     = (isset($_POST['note_texte_RR']))     ? Clean::txt_note($_POST['note_texte_RR'])     : '' ;
+$note_texte_R      = (isset($_POST['note_texte_R']))      ? Clean::txt_note($_POST['note_texte_R'])      : '' ;
+$note_texte_V      = (isset($_POST['note_texte_V']))      ? Clean::txt_note($_POST['note_texte_V'])      : '' ;
+$note_texte_VV     = (isset($_POST['note_texte_VV']))     ? Clean::txt_note($_POST['note_texte_VV'])     : '' ;
 
-$note_legende_RR   = (isset($_POST['note_legende_RR']))   ? mb_substr(clean_texte($_POST['note_legende_RR']),0,40)   : '' ;
-$note_legende_R    = (isset($_POST['note_legende_R']))    ? mb_substr(clean_texte($_POST['note_legende_R']),0,40)    : '' ;
-$note_legende_V    = (isset($_POST['note_legende_V']))    ? mb_substr(clean_texte($_POST['note_legende_V']),0,40)    : '' ;
-$note_legende_VV   = (isset($_POST['note_legende_VV']))   ? mb_substr(clean_texte($_POST['note_legende_VV']),0,40)   : '' ;
+$note_legende_RR   = (isset($_POST['note_legende_RR']))   ? Clean::txt_note($_POST['note_legende_RR'])   : '' ;
+$note_legende_R    = (isset($_POST['note_legende_R']))    ? Clean::txt_note($_POST['note_legende_R'])    : '' ;
+$note_legende_V    = (isset($_POST['note_legende_V']))    ? Clean::txt_note($_POST['note_legende_V'])    : '' ;
+$note_legende_VV   = (isset($_POST['note_legende_VV']))   ? Clean::txt_note($_POST['note_legende_VV'])   : '' ;
 
-$acquis_texte_NA   = (isset($_POST['acquis_texte_NA']))   ? mb_substr(clean_texte($_POST['acquis_texte_NA']),0,40)   : '' ;
-$acquis_texte_VA   = (isset($_POST['acquis_texte_VA']))   ? mb_substr(clean_texte($_POST['acquis_texte_VA']),0,40)   : '' ;
-$acquis_texte_A    = (isset($_POST['acquis_texte_A']))    ? mb_substr(clean_texte($_POST['acquis_texte_A']),0,40)    : '' ;
+$acquis_texte_NA   = (isset($_POST['acquis_texte_NA']))   ? Clean::txt_note($_POST['acquis_texte_NA'])   : '' ;
+$acquis_texte_VA   = (isset($_POST['acquis_texte_VA']))   ? Clean::txt_note($_POST['acquis_texte_VA'])   : '' ;
+$acquis_texte_A    = (isset($_POST['acquis_texte_A']))    ? Clean::txt_note($_POST['acquis_texte_A'])    : '' ;
 
-$acquis_legende_NA = (isset($_POST['acquis_legende_NA'])) ? mb_substr(clean_texte($_POST['acquis_legende_NA']),0,40) : '' ;
-$acquis_legende_VA = (isset($_POST['acquis_legende_VA'])) ? mb_substr(clean_texte($_POST['acquis_legende_VA']),0,40) : '' ;
-$acquis_legende_A  = (isset($_POST['acquis_legende_A']))  ? mb_substr(clean_texte($_POST['acquis_legende_A']),0,40)  : '' ;
+$acquis_legende_NA = (isset($_POST['acquis_legende_NA'])) ? Clean::txt_note($_POST['acquis_legende_NA']) : '' ;
+$acquis_legende_VA = (isset($_POST['acquis_legende_VA'])) ? Clean::txt_note($_POST['acquis_legende_VA']) : '' ;
+$acquis_legende_A  = (isset($_POST['acquis_legende_A']))  ? Clean::txt_note($_POST['acquis_legende_A'])  : '' ;
 
-$acquis_color_NA   = (isset($_POST['acquis_color_NA']))   ? clean_texte($_POST['acquis_color_NA'])   : '' ;
-$acquis_color_VA   = (isset($_POST['acquis_color_VA']))   ? clean_texte($_POST['acquis_color_VA'])   : '' ;
-$acquis_color_A    = (isset($_POST['acquis_color_A']))    ? clean_texte($_POST['acquis_color_A'])    : '' ;
+$acquis_color_NA   = (isset($_POST['acquis_color_NA']))   ?    Clean::texte($_POST['acquis_color_NA'])   : '' ;
+$acquis_color_VA   = (isset($_POST['acquis_color_VA']))   ?    Clean::texte($_POST['acquis_color_VA'])   : '' ;
+$acquis_color_A    = (isset($_POST['acquis_color_A']))    ?    Clean::texte($_POST['acquis_color_A'])    : '' ;
 
 $longueur_NA = mb_strlen($acquis_color_NA);
 $longueur_VA = mb_strlen($acquis_color_VA);

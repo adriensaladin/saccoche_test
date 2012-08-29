@@ -28,23 +28,23 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 if(($_SESSION['SESAMATH_ID']==ID_DEMO)&&($_POST['action']!='Voir')){exit('Action désactivée pour la démo...');}
 
-$action      = (isset($_POST['action']))      ? clean_texte($_POST['action'])      : '';
-$contexte    = (isset($_POST['contexte']))    ? clean_texte($_POST['contexte'])    : '';	// n1 | n2 | n3
-$granulosite = (isset($_POST['granulosite'])) ? clean_texte($_POST['granulosite']) : '';	// referentiel | domaine | theme
-$matiere_id  = (isset($_POST['matiere']))     ? clean_entier($_POST['matiere'])    : 0;
-$element_id  = (isset($_POST['element']))     ? clean_entier($_POST['element'])    : 0;
-$element2_id = (isset($_POST['element2']))    ? clean_entier($_POST['element2'])   : 0;
-$parent_id   = (isset($_POST['parent']))      ? clean_entier($_POST['parent'])     : 0;
-$ordre       = (isset($_POST['ordre']))       ? clean_entier($_POST['ordre'])      : -1;
-$ref         = (isset($_POST['ref']))         ? clean_texte($_POST['ref'])         : '';
-$nom         = (isset($_POST['nom']))         ? clean_texte($_POST['nom'])         : '';
-$coef        = (isset($_POST['coef']))        ? clean_entier($_POST['coef'])       : -1;
-$cart        = (isset($_POST['cart']))        ? clean_entier($_POST['cart'])       : -1;
-$socle_id    = (isset($_POST['socle']))       ? clean_entier($_POST['socle'])      : -1;
+$action      = (isset($_POST['action']))      ? Clean::texte($_POST['action'])      : '';
+$contexte    = (isset($_POST['contexte']))    ? Clean::texte($_POST['contexte'])    : '';	// n1 | n2 | n3
+$granulosite = (isset($_POST['granulosite'])) ? Clean::texte($_POST['granulosite']) : '';	// referentiel | domaine | theme
+$matiere_id  = (isset($_POST['matiere']))     ? Clean::entier($_POST['matiere'])    : 0;
+$element_id  = (isset($_POST['element']))     ? Clean::entier($_POST['element'])    : 0;
+$element2_id = (isset($_POST['element2']))    ? Clean::entier($_POST['element2'])   : 0;
+$parent_id   = (isset($_POST['parent']))      ? Clean::entier($_POST['parent'])     : 0;
+$ordre       = (isset($_POST['ordre']))       ? Clean::entier($_POST['ordre'])      : -1;
+$ref         = (isset($_POST['ref']))         ? Clean::texte($_POST['ref'])         : '';
+$nom         = (isset($_POST['nom']))         ? Clean::texte($_POST['nom'])         : '';
+$coef        = (isset($_POST['coef']))        ? Clean::entier($_POST['coef'])       : -1;
+$cart        = (isset($_POST['cart']))        ? Clean::entier($_POST['cart'])       : -1;
+$socle_id    = (isset($_POST['socle']))       ? Clean::entier($_POST['socle'])      : -1;
 
-$tab_id = (isset($_POST['tab_id'])) ? array_map('clean_entier',explode(',',$_POST['tab_id'])) : array() ;
+$tab_id = (isset($_POST['tab_id'])) ? Clean::map_entier(explode(',',$_POST['tab_id'])) : array() ;
 $tab_id = array_filter($tab_id,'positif');
-$tab_id2 = (isset($_POST['tab_id2'])) ? array_map('clean_entier',explode(',',$_POST['tab_id2'])) : array() ;
+$tab_id2 = (isset($_POST['tab_id2'])) ? Clean::map_entier(explode(',',$_POST['tab_id2'])) : array() ;
 $tab_id2 = array_filter($tab_id2,'positif');
 
 $tab_contexte    = array( 'n1'=>'domaine' , 'n2'=>'theme' , 'n3'=>'item' );
@@ -56,8 +56,8 @@ $tab_granulosite = array( 'referentiel','domaine','theme' );
 
 if( ($action=='lister_options') && in_array($granulosite,$tab_granulosite) )
 {
-	$listing_id_matieres_autorisees = (isset($_POST['id_matieres'])) ? implode(',',array_map('clean_entier',explode(',',$_POST['id_matieres']))) : '0' ;
-	exit( Formulaire::afficher_select( DB_STRUCTURE_REFERENTIEL::DB_OPT_lister_elements_referentiels_prof( $_SESSION['USER_ID'] , $granulosite , $listing_id_matieres_autorisees ) , $select_nom=FALSE , $option_first='oui' , $selection=FALSE , $optgroup='non' ) );
+	$listing_id_matieres_autorisees = (isset($_POST['id_matieres'])) ? implode(',',Clean::map_entier(explode(',',$_POST['id_matieres']))) : '0' ;
+	exit( Form::afficher_select( DB_STRUCTURE_REFERENTIEL::DB_OPT_lister_elements_referentiels_prof( $_SESSION['USER_ID'] , $granulosite , $listing_id_matieres_autorisees ) , $select_nom=FALSE , $option_first='oui' , $selection=FALSE , $optgroup='non' ) );
 }
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
@@ -100,12 +100,12 @@ if( ($action=='Voir') && $matiere_id )
 			$cart_image  = ($DB_ROW['item_cart']) ? 'oui' : 'non' ;
 			$cart_texte  = '<img src="./_img/etat/cart_'.$cart_image.'.png" title="'.$cart_title.'" />';
 			$socle_image = ($DB_ROW['entree_id']) ? 'oui' : 'non' ;
-			$socle_nom   = ($DB_ROW['entree_id']) ? html($DB_ROW['entree_nom']) : 'Hors-socle.' ;
+			$socle_nom   = ($DB_ROW['entree_id']) ? To::html($DB_ROW['entree_nom']) : 'Hors-socle.' ;
 			$socle_texte = '<img src="./_img/etat/socle_'.$socle_image.'.png" alt="" title="'.$socle_nom.'" lang="id_'.$DB_ROW['entree_id'].'" />';
 			$lien_image  = ($DB_ROW['item_lien']) ? 'oui' : 'non' ;
-			$lien_nom    = ($DB_ROW['item_lien']) ? html($DB_ROW['item_lien']) : 'Absence de ressource.' ;
+			$lien_nom    = ($DB_ROW['item_lien']) ? To::html($DB_ROW['item_lien']) : 'Absence de ressource.' ;
 			$lien_texte  = '<img src="./_img/etat/link_'.$lien_image.'.png" alt="" title="'.$lien_nom.'" />';
-			$tab_item[$niveau_id][$domaine_id][$theme_id][$item_id] = $coef_texte.$cart_texte.$socle_texte.$lien_texte.html($DB_ROW['item_nom']);
+			$tab_item[$niveau_id][$domaine_id][$theme_id][$item_id] = $coef_texte.$cart_texte.$socle_texte.$lien_texte.To::html($DB_ROW['item_nom']);
 		}
 	}
 	// Attention : envoyer des balises vides sous la forme <q ... /> plante jquery 1.4 (ça marchait avec la 1.3.2).
@@ -134,19 +134,19 @@ if( ($action=='Voir') && $matiere_id )
 	{
 		foreach($tab_niveau as $niveau_id => $niveau_nom)
 		{
-			echo'	<li class="li_m2" id="m2_'.$niveau_id.'"><span>'.html($niveau_nom).'</span>'.$images_niveau."\r\n";
+			echo'	<li class="li_m2" id="m2_'.$niveau_id.'"><span>'.To::html($niveau_nom).'</span>'.$images_niveau."\r\n";
 			echo'		<ul class="ul_n1">'."\r\n";
 			if(isset($tab_domaine[$niveau_id]))
 			{
 				foreach($tab_domaine[$niveau_id] as $domaine_id => $domaine_nom)
 				{
-					echo'			<li class="li_n1" id="n1_'.$domaine_id.'"><span>'.html($domaine_nom).'</span>'.$images_domaine."\r\n";
+					echo'			<li class="li_n1" id="n1_'.$domaine_id.'"><span>'.To::html($domaine_nom).'</span>'.$images_domaine."\r\n";
 					echo'				<ul class="ul_n2">'."\r\n";
 					if(isset($tab_theme[$niveau_id][$domaine_id]))
 					{
 						foreach($tab_theme[$niveau_id][$domaine_id] as $theme_id => $theme_nom)
 						{
-							echo'					<li class="li_n2" id="n2_'.$theme_id.'"><span>'.html($theme_nom).'</span>'.$images_theme."\r\n";
+							echo'					<li class="li_n2" id="n2_'.$theme_id.'"><span>'.To::html($theme_nom).'</span>'.$images_theme."\r\n";
 							echo'						<ul class="ul_n3">'."\r\n";
 							if(isset($tab_item[$niveau_id][$domaine_id][$theme_id]))
 							{
@@ -255,7 +255,7 @@ if( ($action=='del') && (in_array($contexte,array('n1','n2','n3'))) && $element_
 		DB_STRUCTURE_REFERENTIEL::DB_renumeroter_referentiel_liste_elements($tab_contexte[$contexte],$tab_id,'-1');
 	}
 	// Log de l'action
-	ajouter_log_SACoche('Suppression d\'un élément de référentiel ('.$tab_contexte[$contexte].' / '.$element_id.').');
+	SACocheLog::ajouter('Suppression d\'un élément de référentiel ('.$tab_contexte[$contexte].' / '.$element_id.').');
 	exit('ok');
 }
 
@@ -277,7 +277,7 @@ if( ($action=='fus') && $element_id && $element2_id )
 	// Mettre à jour les références vers l'item absorbant
 	DB_STRUCTURE_REFERENTIEL::DB_fusionner_referentiel_items($element_id,$element2_id);
 	// Log de l'action
-	ajouter_log_SACoche('Fusion d\'éléments de référentiel (item / '.$element_id.' / '.$element2_id.').');
+	SACocheLog::ajouter('Fusion d\'éléments de référentiel (item / '.$element_id.' / '.$element2_id.').');
 	exit('ok');
 }
 
@@ -288,16 +288,16 @@ if( ($action=='fus') && $element_id && $element2_id )
 if($action=='action_complementaire')
 {
 	// Récupération des données
-	$action_groupe       = (isset($_POST['select_action_groupe']))                     ? clean_texte($_POST['select_action_groupe'])                     : '';
-	$granulosite         = (isset($_POST['select_action_groupe_modifier_objet']))      ? clean_texte($_POST['select_action_groupe_modifier_objet'])      : '';
-	$modifier_id         = (isset($_POST['select_action_groupe_modifier_id']))         ? clean_texte($_POST['select_action_groupe_modifier_id'])         : '';
-	$modifier_coef       = (isset($_POST['select_action_groupe_modifier_coef']))       ? clean_entier($_POST['select_action_groupe_modifier_coef'])      : -1;
-	$modifier_cart       = (isset($_POST['select_action_groupe_modifier_cart']))       ? clean_entier($_POST['select_action_groupe_modifier_cart'])      : -1;
-	$deplacer_id_initial = (isset($_POST['select_action_groupe_deplacer_id_initial'])) ? clean_texte($_POST['select_action_groupe_deplacer_id_initial']) : '';
-	$deplacer_id_final   = (isset($_POST['select_action_groupe_deplacer_id_final']))   ? clean_texte($_POST['select_action_groupe_deplacer_id_final'])   : '';
-	list($matiere_id        ,$parent_id        ,$objet_id        ,$objet_ordre        ) = array_map('clean_entier',explode('_',$modifier_id))         + array(0,0,0,0);
-	list($matiere_id_initial,$parent_id_initial,$objet_id_initial,$objet_ordre_initial) = array_map('clean_entier',explode('_',$deplacer_id_initial)) + array(0,0,0,0);
-	list($matiere_id_final  ,$parent_id_final  ,$objet_id_final  ,$objet_ordre_final  ) = array_map('clean_entier',explode('_',$deplacer_id_final))   + array(0,0,0,0);
+	$action_groupe       = (isset($_POST['select_action_groupe']))                     ? Clean::texte($_POST['select_action_groupe'])                     : '';
+	$granulosite         = (isset($_POST['select_action_groupe_modifier_objet']))      ? Clean::texte($_POST['select_action_groupe_modifier_objet'])      : '';
+	$modifier_id         = (isset($_POST['select_action_groupe_modifier_id']))         ? Clean::texte($_POST['select_action_groupe_modifier_id'])         : '';
+	$modifier_coef       = (isset($_POST['select_action_groupe_modifier_coef']))       ? Clean::entier($_POST['select_action_groupe_modifier_coef'])      : -1;
+	$modifier_cart       = (isset($_POST['select_action_groupe_modifier_cart']))       ? Clean::entier($_POST['select_action_groupe_modifier_cart'])      : -1;
+	$deplacer_id_initial = (isset($_POST['select_action_groupe_deplacer_id_initial'])) ? Clean::texte($_POST['select_action_groupe_deplacer_id_initial']) : '';
+	$deplacer_id_final   = (isset($_POST['select_action_groupe_deplacer_id_final']))   ? Clean::texte($_POST['select_action_groupe_deplacer_id_final'])   : '';
+	list($matiere_id        ,$parent_id        ,$objet_id        ,$objet_ordre        ) = Clean::map_entier(explode('_',$modifier_id))         + array(0,0,0,0);
+	list($matiere_id_initial,$parent_id_initial,$objet_id_initial,$objet_ordre_initial) = Clean::map_entier(explode('_',$deplacer_id_initial)) + array(0,0,0,0);
+	list($matiere_id_final  ,$parent_id_final  ,$objet_id_final  ,$objet_ordre_final  ) = Clean::map_entier(explode('_',$deplacer_id_final))   + array(0,0,0,0);
 	// Vérification des données
 	$tab_action_groupe   = array('modifier_coefficient','modifier_panier','deplacer_domaine','deplacer_theme');
 	$test1 = ( ($action_groupe=='modifier_coefficient') && (in_array($granulosite,$tab_granulosite)) && ($matiere_id) && ($parent_id) && ($objet_id) && ($objet_ordre) && ($modifier_coef!=-1) ) ? TRUE : FALSE ;

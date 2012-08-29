@@ -29,7 +29,7 @@ if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');
 $TITRE = "Niveaux";
 
 // Formulaire des familles de niveaux, en 2 catégories
-$select_niveau_famille = Formulaire::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_familles_niveaux() , $select_nom='f_famille' , $option_first='oui' , $selection=FALSE , $optgroup='oui');
+$select_niveau_famille = Form::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_familles_niveaux() , $select_nom='f_famille' , $option_first='oui' , $selection=FALSE , $optgroup='oui');
 ?>
 
 <div><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__gestion_niveaux">DOC : Niveaux</a></span></div>
@@ -51,8 +51,8 @@ $select_niveau_famille = Formulaire::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT
 			foreach($DB_TAB as $DB_ROW)
 			{
 				echo'<tr id="id_'.$DB_ROW['niveau_id'].'">';
-				echo'	<td class="label">'.html($DB_ROW['niveau_ref']).'</td>';
-				echo'	<td class="label">'.html($DB_ROW['niveau_nom']).'</td>';
+				echo'	<td class="label">'.To::html($DB_ROW['niveau_ref']).'</td>';
+				echo'	<td class="label">'.To::html($DB_ROW['niveau_nom']).'</td>';
 				echo	'<td class="nu">';
 				echo		'<q class="supprimer" title="Supprimer ce niveau."></q>';
 				echo	'</td>';

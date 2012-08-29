@@ -28,10 +28,10 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 if($_SESSION['SESAMATH_ID']==ID_DEMO) {exit('Action désactivée pour la démo...');}
 
-$action = (isset($_POST['f_action'])) ? clean_texte($_POST['f_action']) : '';
-$id     = (isset($_POST['f_id']))     ? clean_entier($_POST['f_id'])    : 0;
-$nom    = (isset($_POST['f_nom']))    ? clean_texte($_POST['f_nom'])    : '';
-$ordre  = (isset($_POST['f_ordre']))  ? clean_entier($_POST['f_ordre']) : 0;
+$action = (isset($_POST['f_action'])) ? Clean::texte($_POST['f_action']) : '';
+$id     = (isset($_POST['f_id']))     ? Clean::entier($_POST['f_id'])    : 0;
+$nom    = (isset($_POST['f_nom']))    ? Clean::texte($_POST['f_nom'])    : '';
+$ordre  = (isset($_POST['f_ordre']))  ? Clean::entier($_POST['f_ordre']) : 0;
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 //	Ajouter une nouvelle période / Dupliquer une pédiode existante
@@ -48,7 +48,7 @@ if( (($action=='ajouter')||($action=='dupliquer')) && $ordre && $nom )
 	// Afficher le retour
 	echo'<tr id="id_'.$periode_id.'" class="new">';
 	echo	'<td>'.$ordre.'</td>';
-	echo	'<td>'.html($nom).'</td>';
+	echo	'<td>'.To::html($nom).'</td>';
 	echo	'<td class="nu">';
 	echo		'<q class="modifier" title="Modifier cette période."></q>';
 	echo		'<q class="dupliquer" title="Dupliquer cette période."></q>';
@@ -71,7 +71,7 @@ else if( ($action=='modifier') && $id && $ordre && $nom )
 	DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_periode($id,$ordre,$nom);
 	// Afficher le retour
 	echo'<td>'.$ordre.'</td>';
-	echo'<td>'.html($nom).'</td>';
+	echo'<td>'.To::html($nom).'</td>';
 	echo'<td class="nu">';
 	echo	'<q class="modifier" title="Modifier cette période."></q>';
 	echo	'<q class="dupliquer" title="Dupliquer cette période."></q>';
@@ -87,7 +87,7 @@ else if( ($action=='supprimer') && $id )
 	// Effacer l'enregistrement
 	DB_STRUCTURE_ADMINISTRATEUR::DB_supprimer_periode($id);
 	// Log de l'action
-	ajouter_log_SACoche('Suppression d\'une période (n°'.$id.'), avec les bulletins associés.');
+	SACocheLog::ajouter('Suppression d\'une période (n°'.$id.'), avec les bulletins associés.');
 	// Afficher le retour
 	echo'<td>ok</td>';
 }

@@ -28,10 +28,10 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 if($_SESSION['SESAMATH_ID']==ID_DEMO) {exit('Action désactivée pour la démo...');}
 
-$action = (isset($_POST['f_action'])) ? clean_texte($_POST['f_action']) : '';
-$id     = (isset($_POST['f_id']))     ? clean_entier($_POST['f_id'])    : 0;
-$ordre  = (isset($_POST['f_ordre']))  ? clean_entier($_POST['f_ordre']) : 0;
-$nom    = (isset($_POST['f_nom']))    ? clean_texte($_POST['f_nom'])    : '';
+$action = (isset($_POST['f_action'])) ? Clean::texte($_POST['f_action']) : '';
+$id     = (isset($_POST['f_id']))     ? Clean::entier($_POST['f_id'])    : 0;
+$ordre  = (isset($_POST['f_ordre']))  ? Clean::entier($_POST['f_ordre']) : 0;
+$nom    = (isset($_POST['f_nom']))    ? Clean::texte($_POST['f_nom'])    : '';
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 //	Ajouter une nouvelle zone / Dupliquer une pédiode existante
@@ -49,7 +49,7 @@ if( (($action=='ajouter')||($action=='dupliquer')) && $ordre )
 	echo'<tr id="id_'.$geo_id.'" class="new">';
 	echo	'<td>'.$geo_id.'</td>';
 	echo	'<td>'.$ordre.'</td>';
-	echo	'<td>'.html($nom).'</td>';
+	echo	'<td>'.To::html($nom).'</td>';
 	echo	'<td class="nu">';
 	echo		'<q class="modifier" title="Modifier cette zone."></q>';
 	echo		'<q class="dupliquer" title="Dupliquer cette zone."></q>';
@@ -73,7 +73,7 @@ else if( ($action=='modifier') && $id && $ordre && $nom )
 	// Afficher le retour
 	echo'<td>'.$id.'</td>';
 	echo'<td>'.$ordre.'</td>';
-	echo'<td>'.html($nom).'</td>';
+	echo'<td>'.To::html($nom).'</td>';
 	echo'<td class="nu">';
 	echo	'<q class="modifier" title="Modifier cette zone."></q>';
 	echo	'<q class="dupliquer" title="Dupliquer cette zone."></q>';
@@ -90,7 +90,7 @@ else if( ($action=='supprimer') && ($id>1) )
 	// Effacer l'enregistrement
 	DB_WEBMESTRE_WEBMESTRE::DB_supprimer_zone($id);
 	// Log de l'action
-	ajouter_log_SACoche('Suppression d\'une zone géographique (n°'.$geo_id.').');
+	SACocheLog::ajouter('Suppression d\'une zone géographique (n°'.$geo_id.').');
 	// Afficher le retour
 	echo'<td>ok</td>';
 }

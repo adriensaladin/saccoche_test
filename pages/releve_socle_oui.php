@@ -29,23 +29,23 @@ if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');
 ?>
 
 <?php
-Formulaire::load_choix_memo();
-$check_only_presence = (Formulaire::$tab_choix['only_presence']) ? ' checked' : '' ;
-$check_aff_coef      = (Formulaire::$tab_choix['aff_coef'])      ? ' checked' : '' ;
-$check_aff_socle     = (Formulaire::$tab_choix['aff_socle'])     ? ' checked' : '' ;
-$check_aff_lien      = (Formulaire::$tab_choix['aff_lien'])      ? ' checked' : '' ;
-$check_aff_start     = (Formulaire::$tab_choix['aff_start'])     ? ' checked' : '' ;
-$check_socle_PA      = (Formulaire::$tab_choix['aff_socle_PA'])  ? ' checked' : '' ;
-$check_socle_EV      = (Formulaire::$tab_choix['aff_socle_EV'])  ? ' checked' : '' ;
+Form::load_choix_memo();
+$check_only_presence = (Form::$tab_choix['only_presence']) ? ' checked' : '' ;
+$check_aff_coef      = (Form::$tab_choix['aff_coef'])      ? ' checked' : '' ;
+$check_aff_socle     = (Form::$tab_choix['aff_socle'])     ? ' checked' : '' ;
+$check_aff_lien      = (Form::$tab_choix['aff_lien'])      ? ' checked' : '' ;
+$check_aff_start     = (Form::$tab_choix['aff_start'])     ? ' checked' : '' ;
+$check_socle_PA      = (Form::$tab_choix['aff_socle_PA'])  ? ' checked' : '' ;
+$check_socle_EV      = (Form::$tab_choix['aff_socle_EV'])  ? ' checked' : '' ;
 if(in_array($_SESSION['USER_PROFIL'],array('parent','eleve')))
 {
 	// Une éventuelle restriction d'accès doit surcharger toute mémorisation antérieure de formulaire
 	$check_socle_PA = (mb_substr_count($_SESSION['DROIT_SOCLE_POURCENTAGE_ACQUIS'],$_SESSION['USER_PROFIL'])) ? ' checked' : '' ;
 	$check_socle_EV = (mb_substr_count($_SESSION['DROIT_SOCLE_ETAT_VALIDATION']   ,$_SESSION['USER_PROFIL'])) ? ' checked' : '' ;
 }
-$check_mode_auto   = (Formulaire::$tab_choix['mode']=='auto')   ? ' checked' : '' ;
-$check_mode_manuel = (Formulaire::$tab_choix['mode']=='manuel') ? ' checked' : '' ;
-$class_div_matiere = (Formulaire::$tab_choix['mode']=='manuel') ? 'show'     : 'hide' ;
+$check_mode_auto   = (Form::$tab_choix['mode']=='auto')   ? ' checked' : '' ;
+$check_mode_manuel = (Form::$tab_choix['mode']=='manuel') ? ' checked' : '' ;
+$class_div_matiere = (Form::$tab_choix['mode']=='manuel') ? 'show'     : 'hide' ;
 $socle_PA = '<label for="f_socle_PA"><input type="checkbox" id="f_socle_PA" name="f_socle_PA" value="1"'.$check_socle_PA.' /> Pourcentage d\'items acquis</label>';
 $socle_EV = '<label for="f_socle_EV"><input type="checkbox" id="f_socle_EV" name="f_socle_EV" value="1"'.$check_socle_EV.' /> État de validation</label>';
 if($_SESSION['USER_PROFIL']=='directeur')
@@ -65,7 +65,7 @@ elseif($_SESSION['USER_PROFIL']=='professeur')
 
 if( ($_SESSION['USER_PROFIL']=='parent') && ($_SESSION['NB_ENFANTS']!=1) )
 {
-	$tab_groupes  = $_SESSION['OPT_PARENT_CLASSES']; Formulaire::$tab_select_optgroup = array('classe'=>'Classes');
+	$tab_groupes  = $_SESSION['OPT_PARENT_CLASSES']; Form::$tab_select_optgroup = array('classe'=>'Classes');
 	$multiple_eleve = ''; // volontaire
 	$select_eleves = '<option></option>'; // maj en ajax suivant le choix du groupe
 	$of_g = 'oui'; $sel_g = false; $og_g = 'oui'; $class_form_eleve = 'show'; $class_option_groupe = 'hide'; $class_option_mode = 'hide';
@@ -74,9 +74,9 @@ if( ($_SESSION['USER_PROFIL']=='parent') && ($_SESSION['NB_ENFANTS']!=1) )
 }
 if( ($_SESSION['USER_PROFIL']=='parent') && ($_SESSION['NB_ENFANTS']==1) )
 {
-	$tab_groupes  = array(0=>array('valeur'=>$_SESSION['ELEVE_CLASSE_ID'],'texte'=>$_SESSION['ELEVE_CLASSE_NOM'],'optgroup'=>'classe')); Formulaire::$tab_select_optgroup = array('classe'=>'Classes');
+	$tab_groupes  = array(0=>array('valeur'=>$_SESSION['ELEVE_CLASSE_ID'],'texte'=>$_SESSION['ELEVE_CLASSE_NOM'],'optgroup'=>'classe')); Form::$tab_select_optgroup = array('classe'=>'Classes');
 	$multiple_eleve = '';
-	$select_eleves = '<option value="'.$_SESSION['OPT_PARENT_ENFANTS'][0]['valeur'].'" selected>'.html($_SESSION['OPT_PARENT_ENFANTS'][0]['texte']).'</option>';
+	$select_eleves = '<option value="'.$_SESSION['OPT_PARENT_ENFANTS'][0]['valeur'].'" selected>'.To::html($_SESSION['OPT_PARENT_ENFANTS'][0]['texte']).'</option>';
 	$of_g = 'non'; $sel_g = true;  $og_g = 'non'; $class_form_eleve = 'hide'; $class_option_groupe = 'show'; $class_option_mode = 'hide';
 	$socle_PA = (mb_substr_count($_SESSION['DROIT_SOCLE_POURCENTAGE_ACQUIS'],$_SESSION['USER_PROFIL'])) ? $socle_PA : '<del>Pourcentage d\'items acquis</del>' ;
 	$socle_EV = (mb_substr_count($_SESSION['DROIT_SOCLE_ETAT_VALIDATION'],$_SESSION['USER_PROFIL']))    ? $socle_EV : '<del>État de validation</del>' ;
@@ -86,7 +86,7 @@ elseif($_SESSION['USER_PROFIL']=='eleve')
 {
 	$tab_groupes  = array(0=>array('valeur'=>$_SESSION['ELEVE_CLASSE_ID'],'texte'=>$_SESSION['ELEVE_CLASSE_NOM']));
 	$multiple_eleve = '';
-	$select_eleves = '<option value="'.$_SESSION['USER_ID'].'" selected>'.html($_SESSION['USER_NOM'].' '.$_SESSION['USER_PRENOM']).'</option>';
+	$select_eleves = '<option value="'.$_SESSION['USER_ID'].'" selected>'.To::html($_SESSION['USER_NOM'].' '.$_SESSION['USER_PRENOM']).'</option>';
 	$of_g = 'non'; $sel_g = true;  $og_g = 'non'; $class_form_eleve = 'hide'; $class_option_groupe = 'show'; $class_option_mode = 'hide';
 	$socle_PA = (mb_substr_count($_SESSION['DROIT_SOCLE_POURCENTAGE_ACQUIS'],$_SESSION['USER_PROFIL'])) ? $socle_PA : '<del>Pourcentage d\'items acquis</del>' ;
 	$socle_EV = (mb_substr_count($_SESSION['DROIT_SOCLE_ETAT_VALIDATION'],$_SESSION['USER_PROFIL']))    ? $socle_EV : '<del>État de validation</del>' ;
@@ -95,12 +95,12 @@ $tab_paliers  = DB_STRUCTURE_COMMUN::DB_OPT_paliers_etabl();
 $tab_matieres = DB_STRUCTURE_COMMUN::DB_OPT_matieres_etabl();
 $of_p = (count($tab_paliers)<2) ? 'non' : 'oui' ;
 
-$select_palier    = Formulaire::afficher_select($tab_paliers                      , $select_nom='f_palier'    , $option_first=$of_p , $selection=Formulaire::$tab_choix['palier_id'] , $optgroup='non');
-$select_groupe    = Formulaire::afficher_select($tab_groupes                      , $select_nom='f_groupe'    , $option_first=$of_g , $selection=$sel_g                              , $optgroup=$og_g);
-$select_matiere   = Formulaire::afficher_select($tab_matieres                     , $select_nom=false         , $option_first='non' , $selection=true                                , $optgroup='non');
-$select_marge_min = Formulaire::afficher_select(Formulaire::$tab_select_marge_min , $select_nom='f_marge_min' , $option_first='non' , $selection=Formulaire::$tab_choix['marge_min'] , $optgroup='non');
-$select_couleur   = Formulaire::afficher_select(Formulaire::$tab_select_couleur   , $select_nom='f_couleur'   , $option_first='non' , $selection=Formulaire::$tab_choix['couleur']   , $optgroup='non');
-$select_legende   = Formulaire::afficher_select(Formulaire::$tab_select_legende   , $select_nom='f_legende'   , $option_first='non' , $selection=Formulaire::$tab_choix['legende']   , $optgroup='non');
+$select_palier    = Form::afficher_select($tab_paliers                      , $select_nom='f_palier'    , $option_first=$of_p , $selection=Form::$tab_choix['palier_id'] , $optgroup='non');
+$select_groupe    = Form::afficher_select($tab_groupes                      , $select_nom='f_groupe'    , $option_first=$of_g , $selection=$sel_g                              , $optgroup=$og_g);
+$select_matiere   = Form::afficher_select($tab_matieres                     , $select_nom=false         , $option_first='non' , $selection=true                                , $optgroup='non');
+$select_marge_min = Form::afficher_select(Form::$tab_select_marge_min , $select_nom='f_marge_min' , $option_first='non' , $selection=Form::$tab_choix['marge_min'] , $optgroup='non');
+$select_couleur   = Form::afficher_select(Form::$tab_select_couleur   , $select_nom='f_couleur'   , $option_first='non' , $selection=Form::$tab_choix['couleur']   , $optgroup='non');
+$select_legende   = Form::afficher_select(Form::$tab_select_legende   , $select_nom='f_legende'   , $option_first='non' , $selection=Form::$tab_choix['legende']   , $optgroup='non');
 ?>
 
 <p><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=releves_bilans__releve_socle">DOC : Relevé de maîtrise du socle.</a></span></p>

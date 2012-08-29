@@ -27,18 +27,18 @@
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 
-$action   = (isset($_POST['f_action']))   ? clean_texte($_POST['f_action'])      : '';
-$BASE     = (isset($_POST['f_base']))     ? clean_entier($_POST['f_base'])       : 0;
-$profil   = (isset($_POST['f_profil']))   ? clean_texte($_POST['f_profil'])      : '';	// normal | webmestre
-$login    = (isset($_POST['f_login']))    ? clean_login($_POST['f_login'])       : '';
-$password = (isset($_POST['f_password'])) ? clean_password($_POST['f_password']) : '';
+$action   = (isset($_POST['f_action']))   ? Clean::texte($_POST['f_action'])      : '';
+$BASE     = (isset($_POST['f_base']))     ? Clean::entier($_POST['f_base'])       : 0;
+$profil   = (isset($_POST['f_profil']))   ? Clean::texte($_POST['f_profil'])      : '';	// normal | webmestre
+$login    = (isset($_POST['f_login']))    ? Clean::login($_POST['f_login'])       : '';
+$password = (isset($_POST['f_password'])) ? Clean::password($_POST['f_password']) : '';
 
 /*
  * Afficher le formulaire de choix des établissements (installation multi-structures)
  */
 function afficher_formulaire_etablissement($BASE,$profil)
 {
-	$options_structures = Formulaire::afficher_select(DB_WEBMESTRE_SELECT::DB_OPT_structures_sacoche() , $select_nom=false , $option_first='non' , $selection=$BASE , $optgroup='oui');
+	$options_structures = Form::afficher_select(DB_WEBMESTRE_SELECT::DB_OPT_structures_sacoche() , $select_nom=false , $option_first='non' , $selection=$BASE , $optgroup='oui');
 	echo'<label class="tab" for="f_base">Établissement :</label><select id="f_base" name="f_base" tabindex="1" >'.$options_structures.'</select><br />'."\r\n";
 	echo'<span class="tab"></span><button id="f_choisir" type="button" tabindex="2" class="valider">Choisir cet établissement.</button><label id="ajax_msg">&nbsp;</label><br />'."\r\n";
 	echo'<input id="f_profil" name="f_profil" type="hidden" value="'.$profil.'" />'."\r\n";
@@ -50,7 +50,7 @@ function afficher_formulaire_etablissement($BASE,$profil)
 function afficher_nom_etablissement($BASE,$denomination)
 {
 	$changer = (HEBERGEUR_INSTALLATION=='multi-structures') ? ' - <a id="f_changer" href="#">changer</a>' : '' ;
-	echo'<label class="tab">Établissement :</label><input id="f_base" name="f_base" type="hidden" value="'.$BASE.'" /><em>'.html($denomination).'</em>'.$changer.'<br />'."\r\n";
+	echo'<label class="tab">Établissement :</label><input id="f_base" name="f_base" type="hidden" value="'.$BASE.'" /><em>'.To::html($denomination).'</em>'.$changer.'<br />'."\r\n";
 }
 
 /*
@@ -76,7 +76,7 @@ function afficher_formulaire_identification($profil,$mode='normal',$nom='')
 	{
 		echo'<label class="tab">Mode de connexion :</label>';
 		echo	'<label for="f_mode_normal"><input type="radio" id="f_mode_normal" name="f_mode" value="normal" /> formulaire <em>SACoche</em></label>&nbsp;&nbsp;&nbsp;';
-		echo	'<label for="f_mode_'.$mode.'"><input type="radio" id="f_mode_'.$mode.'" name="f_mode" value="'.$mode.'" checked /> authentification extérieure <em>'.html($mode.'-'.$nom).'</em></label><br />'."\r\n";
+		echo	'<label for="f_mode_'.$mode.'"><input type="radio" id="f_mode_'.$mode.'" name="f_mode" value="'.$mode.'" checked /> authentification extérieure <em>'.To::html($mode.'-'.$nom).'</em></label><br />'."\r\n";
 		echo'<fieldset id="fieldset_normal" class="hide">'."\r\n";
 		echo'<label class="tab" for="f_login">Nom d\'utilisateur :</label><input id="f_login" name="f_login" size="20" type="text" value="" tabindex="2" autocomplete="off" /><br />'."\r\n";
 		echo'<label class="tab" for="f_password">Mot de passe :</label><input id="f_password" name="f_password" size="20" type="password" value="" tabindex="3" autocomplete="off" /><br />'."\r\n";

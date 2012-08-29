@@ -53,12 +53,12 @@ if(!isset($afficher))   {exit('Ce fichier ne peut être appelé directement !');
 					$parent_id = ($DB_ROW['parent_id']) ? 'M' : 'A' ; // Indiquer si le parent a une adresse dans la base ou pas.
 					// Afficher une ligne du tableau
 					echo'<tr id="id_'.$parent_id.$DB_ROW['user_id'].'">';
-					echo	($DB_ROW['enfants_nombre']) ? '<td>'.$DB_ROW['enfants_nombre'].' <img alt="" src="./_img/bulle_aide.png" title="'.str_replace('§BR§','<br />',html($DB_ROW['enfants_liste'])).'" /></td>' : '<td>0 <img alt="" src="./_img/bulle_aide.png" title="Aucun lien de responsabilité !" /></td>' ;
-					echo	'<td>'.html($DB_ROW['user_nom'].' '.$DB_ROW['user_prenom']).'</td>';
-					echo	'<td><span>'.html($DB_ROW['adresse_ligne1']).'</span> ; <span>'.html($DB_ROW['adresse_ligne2']).'</span> ; <span>'.html($DB_ROW['adresse_ligne3']).'</span> ; <span>'.html($DB_ROW['adresse_ligne4']).'</span></td>';
-					echo	'<td>'.html($DB_ROW['adresse_postal_code']).'</td>';
-					echo	'<td>'.html($DB_ROW['adresse_postal_libelle']).'</td>';
-					echo	'<td>'.html($DB_ROW['adresse_pays_nom']).'</td>';
+					echo	($DB_ROW['enfants_nombre']) ? '<td>'.$DB_ROW['enfants_nombre'].' <img alt="" src="./_img/bulle_aide.png" title="'.str_replace('§BR§','<br />',To::html($DB_ROW['enfants_liste'])).'" /></td>' : '<td>0 <img alt="" src="./_img/bulle_aide.png" title="Aucun lien de responsabilité !" /></td>' ;
+					echo	'<td>'.To::html($DB_ROW['user_nom'].' '.$DB_ROW['user_prenom']).'</td>';
+					echo	'<td><span>'.To::html($DB_ROW['adresse_ligne1']).'</span> ; <span>'.To::html($DB_ROW['adresse_ligne2']).'</span> ; <span>'.To::html($DB_ROW['adresse_ligne3']).'</span> ; <span>'.To::html($DB_ROW['adresse_ligne4']).'</span></td>';
+					echo	'<td>'.To::html($DB_ROW['adresse_postal_code']).'</td>';
+					echo	'<td>'.To::html($DB_ROW['adresse_postal_libelle']).'</td>';
+					echo	'<td>'.To::html($DB_ROW['adresse_pays_nom']).'</td>';
 					echo	'<td class="nu">';
 					echo		'<q class="modifier" title="Modifier ce parent."></q>';
 					echo	'</td>';

@@ -30,19 +30,15 @@
 
 // Atteste l'appel de cette page avant l'inclusion d'une autre
 define('SACoche','releve');
-// Constantes de l'application
-require('./_inc/constantes.php');
 
-// Fonctions de redirections / Configuration serveur
-require(CHEMIN_DOSSIER_INCLUDE.'fonction_redirection.php');
-require(CHEMIN_DOSSIER_INCLUDE.'config_serveur.php');
+// Constantes / Configuration serveur / Autoload classes / Fonction de sortie
+require('./_inc/_loader.php');
 
 // Paramètre transmis ; attention à l'exploitation d'une vulnérabilité "include PHP" (http://www.certa.ssi.gouv.fr/site/CERTA-2003-ALE-003/)
 $FICHIER = (isset($_GET['fichier'])) ? str_replace(array('/','\\'),'',$_GET['fichier']) : ''; // On ne nettoie pas le caractère "." car le paramètre peut le contenir.
 
 // Fonctions
 require(CHEMIN_DOSSIER_INCLUDE.'fonction_divers.php');
-require(CHEMIN_DOSSIER_INCLUDE.'fonction_affichage.php');
 
 ob_start();
 // Chargement de la page concernée

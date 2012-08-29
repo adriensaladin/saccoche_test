@@ -204,7 +204,7 @@ class FileSystem
    * @param string   $fichier_chemin
    * @param string   $fichier_contenu
    * @param int      facultatif ; si constante FILE_APPEND envoyée, alors ajoute en fin de fichier au lieu d'écraser le contenu
-   * @return void
+   * @return TRUE    (par compatibilité avec ecrire_fichier_si_possible()
    */
   public static function ecrire_fichier($fichier_chemin,$fichier_contenu,$file_append=0)
   {
@@ -214,6 +214,7 @@ class FileSystem
     {
       exit('Erreur : problème lors de l\'écriture du fichier '.FileSystem::fin_chemin($fichier_chemin).' !');
     }
+    return TRUE;
   }
 
   /**
@@ -235,14 +236,14 @@ class FileSystem
    * 
    * @param string   $dossier_chemin   Chemin jusqu'au dossier, SANS le séparateur final.
    * @param bool     $obligatoire      Facultatif, TRUE par défaut.
-   * @return void
+   * @return bool
    */
   public static function ecrire_fichier_index($dossier_chemin,$obligatoire=TRUE)
   {
     $fichier_chemin  = $dossier_chemin.DS.'index.htm';
     $fichier_contenu = 'Circulez, il n\'y a rien à voir par ici !';
-    if($obligatoire) FileSystem::ecrire_fichier( $fichier_chemin , $fichier_contenu );
-    else FileSystem::ecrire_fichier_si_possible( $fichier_chemin , $fichier_contenu );
+    if($obligatoire) return FileSystem::ecrire_fichier( $fichier_chemin , $fichier_contenu );
+    else return FileSystem::ecrire_fichier_si_possible( $fichier_chemin , $fichier_contenu );
   }
 
   /**

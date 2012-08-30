@@ -28,22 +28,21 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 if($_SESSION['SESAMATH_ID']==ID_DEMO){exit('Action désactivée pour la démo...');}
 
-$objet        = (isset($_POST['f_objet']))        ? Clean::texte($_POST['f_objet'])        : '';
-$ACTION       = (isset($_POST['f_action']))       ? Clean::texte($_POST['f_action'])       : '';
-$BILAN_TYPE   = (isset($_POST['f_bilan_type']))   ? Clean::texte($_POST['f_bilan_type'])   : '';
-$mode         = (isset($_POST['f_mode']))         ? Clean::texte($_POST['f_mode'])         : '';
-$periode_id   = (isset($_POST['f_periode']))      ? Clean::entier($_POST['f_periode'])     : 0;
-$classe_id    = (isset($_POST['f_classe']))       ? Clean::entier($_POST['f_classe'])      : 0;
-$groupe_id    = (isset($_POST['f_groupe']))       ? Clean::entier($_POST['f_groupe'])      : 0;
-$eleve_id     = (isset($_POST['f_user']))         ? Clean::entier($_POST['f_user'])        : 0;
-$rubrique_id  = (isset($_POST['f_rubrique']))     ? Clean::entier($_POST['f_rubrique'])    : 0;
-$appreciation = (isset($_POST['f_appreciation'])) ? Clean::texte($_POST['f_appreciation']) : '';
-$moyenne      = (isset($_POST['f_moyenne']))      ? Clean::decimal($_POST['f_moyenne'])    : -1;
+$objet        = (isset($_POST['f_objet']))        ? clean_texte($_POST['f_objet'])        : '';
+$ACTION       = (isset($_POST['f_action']))       ? clean_texte($_POST['f_action'])       : '';
+$BILAN_TYPE   = (isset($_POST['f_bilan_type']))   ? clean_texte($_POST['f_bilan_type'])   : '';
+$periode_id   = (isset($_POST['f_periode']))      ? clean_entier($_POST['f_periode'])     : 0;
+$classe_id    = (isset($_POST['f_classe']))       ? clean_entier($_POST['f_classe'])      : 0;
+$groupe_id    = (isset($_POST['f_groupe']))       ? clean_entier($_POST['f_groupe'])      : 0;
+$eleve_id     = (isset($_POST['f_user']))         ? clean_entier($_POST['f_user'])        : 0;
+$rubrique_id  = (isset($_POST['f_rubrique']))     ? clean_entier($_POST['f_rubrique'])    : 0;
+$appreciation = (isset($_POST['f_appreciation'])) ? clean_texte($_POST['f_appreciation']) : '';
+$moyenne      = (isset($_POST['f_moyenne']))      ? clean_decimal($_POST['f_moyenne'])    : -1;
 // Autres chaines spécifiques...
 $listing_matieres = (isset($_POST['f_listing_matieres'])) ? $_POST['f_listing_matieres'] : '' ;
 $listing_piliers  = (isset($_POST['f_listing_piliers']))  ? $_POST['f_listing_piliers']  : '' ;
-$tab_matiere_id = array_filter( Clean::map_entier( explode(',',$listing_matieres) ) , 'positif' );
-$tab_pilier_id  = array_filter( Clean::map_entier( explode(',',$listing_piliers) )  , 'positif' );
+$tab_matiere_id = array_filter( array_map( 'clean_entier' , explode(',',$listing_matieres) ) , 'positif' );
+$tab_pilier_id  = array_filter( array_map( 'clean_entier' , explode(',',$listing_piliers) )  , 'positif' );
 $liste_matiere_id = implode(',',$tab_matiere_id);
 $liste_pilier_id  = implode(',',$tab_pilier_id);
 
@@ -51,7 +50,6 @@ $is_sous_groupe = ($groupe_id) ? TRUE : FALSE ;
 
 $tab_objet  = array('modifier','tamponner');
 $tab_action = array('initialiser','charger','enregistrer_appr','enregistrer_note','supprimer_appr','supprimer_note','recalculer_note');
-$tab_mode  = array('texte','graphique');
 
 $tab_types = array
 (
@@ -64,7 +62,7 @@ $tab_types = array
 
 // On vérifie les paramètres principaux
 
-if( (!in_array($ACTION,$tab_action)) || (!isset($tab_types[$BILAN_TYPE])) || (!in_array($objet,$tab_objet)) || (!in_array($mode,$tab_mode)) || !$periode_id || !$classe_id || ( (!$eleve_id)&&($ACTION!='initialiser') ) )
+if( (!in_array($ACTION,$tab_action)) || (!isset($tab_types[$BILAN_TYPE])) || (!in_array($objet,$tab_objet)) || !$periode_id || !$classe_id || ( (!$eleve_id)&&($ACTION!='initialiser') ) )
 {
 	exit('Erreur avec les données transmises !');
 }
@@ -193,9 +191,7 @@ if($ACTION=='initialiser')
 		$form_choix_eleve .= '<option value="'.$DB_ROW['user_id'].'">'.html($DB_ROW['user_nom'].' '.$DB_ROW['user_prenom']).'</option>';
 		$tab_eleve_id[] = $DB_ROW['user_id'];
 	}
-	$form_choix_eleve .= '</select> <button id="go_suivant_eleve" type="button" class="go_suivant">Suivant</button> <button id="go_dernier_eleve" type="button" class="go_dernier">Dernier</button>&nbsp;&nbsp;&nbsp;<button id="fermer_zone_action_eleve" type="button" class="retourner">Retour</button>';
-	$form_choix_eleve .= ( ($BILAN_TYPE=='bulletin') && ($objet=='tamponner') ) ? ( ($mode=='texte') ? ' <button id="change_mode" type="button" class="stats">Interface graphique</button>' : ' <button id="change_mode" type="button" class="texte">Interface détaillée</button>' ) : '' ;
-	$form_choix_eleve .= '</div></form><hr />';
+	$form_choix_eleve .= '</select> <button id="go_suivant_eleve" type="button" class="go_suivant">Suivant</button> <button id="go_dernier_eleve" type="button" class="go_dernier">Dernier</button>&nbsp;&nbsp;&nbsp;<button id="fermer_zone_action_eleve" type="button" class="retourner">Retour</button></div></form><hr />';
 	$eleve_id = $tab_eleve_id[0];
 	// sous-titre
 	if($BILAN_ETAT=='3synthese')
@@ -230,14 +226,14 @@ if($ACTION=='initialiser')
 			$liste_eleve_id = implode(',',$tab_eleve_id_tmp);
 		}
 		$liste_matiere_id = ($BILAN_ETAT=='2rubrique') ? $liste_matiere_id : '' ; // Si un prof accède à la saisie de synthèse, il ne vaut pas seulement récupérer les données qui concerne ses matières.
-		calculer_et_enregistrer_moyennes_eleves_bulletin( $periode_id , $classe_id , $liste_eleve_id , $liste_matiere_id , $_SESSION['OFFICIEL']['BULLETIN_MOYENNE_CLASSE'] , $_SESSION['OFFICIEL']['BULLETIN_MOYENNE_GENERALE'] );
+		calculer_et_enregistrer_moyennes_eleves_bulletin( $periode_id , $classe_id , $liste_eleve_id , $liste_matiere_id , FALSE /*memo_moyennes_classe*/ , $_SESSION['OFFICIEL']['BULLETIN_MOYENNE_GENERALE'] );
 	}
 }
 
 // Récupérer les saisies déjà effectuées pour le bilan officiel concerné
 
 $tab_saisie = array();	// [eleve_id][rubrique_id][prof_id] => array(prof_info,appreciation,note,info);
-$DB_TAB = DB_STRUCTURE_OFFICIEL::DB_recuperer_bilan_officiel_saisies( $BILAN_TYPE , $periode_id , $eleve_id , 0 /*prof_id*/ );
+$DB_TAB = DB_STRUCTURE_OFFICIEL::DB_recuperer_bilan_officiel_saisies($BILAN_TYPE,$periode_id,$eleve_id);
 foreach($DB_TAB as $DB_ROW)
 {
 	$tab_saisie[$DB_ROW['eleve_id']][$DB_ROW['rubrique_id']][$DB_ROW['prof_id']] = array( 'prof_info'=>$DB_ROW['prof_info'] , 'appreciation'=>$DB_ROW['saisie_appreciation'] , 'note'=>$DB_ROW['saisie_note'] );
@@ -250,10 +246,8 @@ foreach($DB_TAB as $DB_ROW)
 
 $make_officiel = TRUE;
 $make_action   = 'saisir';
-$make_html     = ( ($BILAN_TYPE=='bulletin') && ($objet=='tamponner') && ($mode=='graphique') ) ? FALSE : TRUE ;
+$make_html     = TRUE;
 $make_pdf      = FALSE;
-$make_graph    = ( ($BILAN_TYPE=='bulletin') && ($objet=='tamponner') && ($mode=='graphique') ) ? TRUE : FALSE ;
-$js_graph = '';
 
 if($BILAN_TYPE=='releve')
 {
@@ -262,7 +256,7 @@ if($BILAN_TYPE=='releve')
 	$aff_bilan_PA    = $_SESSION['OFFICIEL']['RELEVE_POURCENTAGE_ACQUIS'];
 	$aff_conv_sur20  = 0; // pas jugé utile de le mettre en option...
 	$with_coef       = 1; // Il n'y a que des relevés par matière et pas de synthèse commune : on prend en compte les coefficients pour chaque relevé matière.
-	$matiere_id      = TRUE;
+	$matiere_id      = true;
 	$matiere_nom     = '';
 	$groupe_id       = (!$is_sous_groupe) ? $classe_id  : $groupe_id ; // Le groupe = la classe (par défaut) ou le groupe transmis
 	$groupe_nom      = (!$is_sous_groupe) ? $classe_nom : $classe_nom.' - '.DB_STRUCTURE_COMMUN::DB_recuperer_groupe_nom($groupe_id) ;
@@ -292,7 +286,7 @@ if($BILAN_TYPE=='releve')
 	$type_synthese   = 0;
 	$type_bulletin   = 0;
 	$tab_matiere_id  = $tab_matiere_id;
-	require(CHEMIN_DOSSIER_INCLUDE.'code_items_releve.php');
+	require('./_inc/code_items_releve.php');
 	$nom_bilan_html = 'releve_HTML_individuel';
 }
 elseif($BILAN_TYPE=='bulletin')
@@ -307,7 +301,6 @@ elseif($BILAN_TYPE=='bulletin')
 	$aff_coef       = 0; // Sans objet, l'élève & sa famille n'ayant accès qu'à l'archive pdf
 	$aff_socle      = 0; // Sans objet, l'élève & sa famille n'ayant accès qu'à l'archive pdf
 	$aff_lien       = 0; // Sans objet, l'élève & sa famille n'ayant accès qu'à l'archive pdf
-	$aff_start      = 0; // Sans objet, l'élève & sa famille n'ayant accès qu'à l'archive pdf
 	$only_socle     = 0; // pas jugé utile de le mettre en option...
 	$only_niveau    = 0; // pas jugé utile de le mettre en option...
 	$couleur        = $_SESSION['OFFICIEL']['BULLETIN_COULEUR'];
@@ -319,7 +312,7 @@ elseif($BILAN_TYPE=='bulletin')
 	$tab_eleve      = array($eleve_id); // tableau de l'unique élève à considérer
 	$liste_eleve    = (string)$eleve_id;
 	$tab_matiere_id = $tab_matiere_id;
-	require(CHEMIN_DOSSIER_INCLUDE.'code_items_synthese.php');
+	require('./_inc/code_items_synthese.php');
 	$nom_bilan_html = 'releve_HTML';
 }
 elseif(in_array($BILAN_TYPE,array('palier1','palier2','palier3')))
@@ -335,7 +328,6 @@ elseif(in_array($BILAN_TYPE,array('palier1','palier2','palier3')))
 	$aff_coef       = 0; // Sans objet, l'élève & sa famille n'ayant accès qu'à l'archive pdf
 	$aff_socle      = 0; // Sans objet, l'élève & sa famille n'ayant accès qu'à l'archive pdf
 	$aff_lien       = 0; // Sans objet, l'élève & sa famille n'ayant accès qu'à l'archive pdf
-	$aff_start      = 0; // Sans objet, l'élève & sa famille n'ayant accès qu'à l'archive pdf
 	$couleur        = $_SESSION['OFFICIEL']['SOCLE_COULEUR'];
 	$legende        = $_SESSION['OFFICIEL']['SOCLE_LEGENDE'];
 	$marge_gauche    = $_SESSION['OFFICIEL']['MARGE_GAUCHE'];
@@ -345,7 +337,7 @@ elseif(in_array($BILAN_TYPE,array('palier1','palier2','palier3')))
 	$tab_pilier_id  = $tab_pilier_id;
 	$tab_eleve_id   = array($eleve_id); // tableau de l'unique élève à considérer
 	$tab_matiere_id = array();
-	require(CHEMIN_DOSSIER_INCLUDE.'code_socle_releve.php');
+	require('./_inc/code_socle_releve.php');
 	$nom_bilan_html = 'releve_html';
 }
 
@@ -353,13 +345,7 @@ elseif(in_array($BILAN_TYPE,array('palier1','palier2','palier3')))
 // Affichage du résultat
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
-if($ACTION=='initialiser')
-{
-	exit('<h2>'.$sous_titre.'</h2>'.$form_choix_eleve.'<form action="#" method="post" id="zone_resultat_eleve" onsubmit="return false">'.${$nom_bilan_html}.'</form>'.$js_graph);
-}
-else
-{
-	exit(${$nom_bilan_html}.$js_graph);
-}
+echo ($ACTION=='initialiser') ? '<h2>'.$sous_titre.'</h2>'.$form_choix_eleve.'<form action="#" method="post" id="zone_resultat_eleve" onsubmit="return false">'.${$nom_bilan_html}.'</form>' : ${$nom_bilan_html} ;
+exit();
 
 ?>

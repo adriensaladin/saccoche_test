@@ -28,19 +28,19 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 if($_SESSION['SESAMATH_ID']==ID_DEMO){exit('Action désactivée pour la démo...');}
 
-$objet       = (isset($_POST['f_objet']))       ? Clean::texte($_POST['f_objet'])       : '';
-$ACTION      = (isset($_POST['f_action']))      ? Clean::texte($_POST['f_action'])      : '';
-$BILAN_TYPE  = (isset($_POST['f_bilan_type']))  ? Clean::texte($_POST['f_bilan_type'])  : '';
-$periode_id  = (isset($_POST['f_periode']))     ? Clean::entier($_POST['f_periode'])    : 0;
-$classe_id   = (isset($_POST['f_classe']))      ? Clean::entier($_POST['f_classe'])     : 0;
-$groupe_id   = (isset($_POST['f_groupe']))      ? Clean::entier($_POST['f_groupe'])     : 0;
-$etape       = (isset($_POST['f_etape']))       ? Clean::entier($_POST['f_etape'])      : 0;
+$objet       = (isset($_POST['f_objet']))       ? clean_texte($_POST['f_objet'])       : '';
+$ACTION      = (isset($_POST['f_action']))      ? clean_texte($_POST['f_action'])      : '';
+$BILAN_TYPE  = (isset($_POST['f_bilan_type']))  ? clean_texte($_POST['f_bilan_type'])  : '';
+$periode_id  = (isset($_POST['f_periode']))     ? clean_entier($_POST['f_periode'])    : 0;
+$classe_id   = (isset($_POST['f_classe']))      ? clean_entier($_POST['f_classe'])     : 0;
+$groupe_id   = (isset($_POST['f_groupe']))      ? clean_entier($_POST['f_groupe'])     : 0;
+$etape       = (isset($_POST['f_etape']))       ? clean_entier($_POST['f_etape'])      : 0;
 // Autres chaines spécifiques...
 $listing_piliers  = (isset($_POST['f_listing_piliers']))  ? $_POST['f_listing_piliers']  : '' ;
-$tab_pilier_id  = array_filter( Clean::map_entier( explode(',',$listing_piliers) ) , 'positif' );
+$tab_pilier_id  = array_filter( array_map( 'clean_entier' , explode(',',$listing_piliers) )  , 'positif' );
 $liste_pilier_id  = implode(',',$tab_pilier_id);
 $listing_eleves = (isset($_POST['f_listing_eleves']))  ? $_POST['f_listing_eleves']  : '' ;
-$tab_eleve_id   = array_filter( Clean::map_entier( explode(',',$listing_eleves) )  , 'positif' );
+$tab_eleve_id   = array_filter( array_map( 'clean_entier' , explode(',',$listing_eleves) )  , 'positif' );
 $liste_eleve_id = implode(',',$tab_eleve_id);
 
 $is_sous_groupe = ($groupe_id) ? TRUE : FALSE ;
@@ -144,7 +144,7 @@ if($ACTION=='initialiser')
 			{
 				$archive_td = 'Non, pas encore imprimé' ;
 			}
-			elseif(is_file(CHEMIN_DOSSIER_OFFICIEL.$_SESSION['BASE'].DS.fabriquer_nom_fichier_bilan_officiel( $eleve_id , $BILAN_TYPE , $periode_id )))
+			elseif(is_file('./__tmp/officiel/'.$_SESSION['BASE'].'/'.fabriquer_nom_fichier_bilan_officiel( $eleve_id , $BILAN_TYPE , $periode_id )))
 			{
 				$_SESSION['tmp_droit_voir_archive'][$eleve_id.$BILAN_TYPE] = TRUE; // marqueur mis en session pour vérifier que c'est bien cet utilisateur qui veut voir (et à donc le droit de voir) le fichier, car il n'y a pas d'autre vérification de droit ensuite
 				$archive_td = '<a href="releve_pdf.php?fichier='.$eleve_id.'_'.$BILAN_TYPE.'_'.$periode_id.'" class="lien_ext">Oui, le '.convert_date_mysql_to_french($DB_TAB[$eleve_id][0]['fichier_date']).'</a>' ;
@@ -168,14 +168,15 @@ if($ACTION=='initialiser')
 
 if( ($ACTION=='imprimer') && ($etape==2) )
 {
+	$dossier_officiel = './__tmp/officiel/'.$_SESSION['BASE'].'/';
 	foreach($_SESSION['tmp']['tab_pages_decoupe_pdf'] as $eleve_id => $tab_tirages)
 	{
 		list( $eleve_identite , $page_plage ) = $tab_tirages[0];
 		DB_STRUCTURE_OFFICIEL::DB_modifier_bilan_officiel_fichier( $eleve_id , $BILAN_TYPE , $periode_id );
-		$fichier_extraction_chemin = CHEMIN_DOSSIER_OFFICIEL.$_SESSION['BASE'].DS.fabriquer_nom_fichier_bilan_officiel( $eleve_id , $BILAN_TYPE , $periode_id );
+		$fichier_extraction_chemin = $dossier_officiel.fabriquer_nom_fichier_bilan_officiel( $eleve_id , $BILAN_TYPE , $periode_id );
 		unset($_SESSION['tmp']['tab_pages_decoupe_pdf'][$eleve_id][0]);
 		$releve_pdf = new PDFMerger;
-		$pdf_string = $releve_pdf -> addPDF( CHEMIN_DOSSIER_EXPORT.$_SESSION['tmp']['fichier_nom'].'.pdf' , $page_plage ) -> merge( 'file' , $fichier_extraction_chemin );
+		$pdf_string = $releve_pdf -> addPDF( $_SESSION['tmp']['dossier'].$_SESSION['tmp']['fichier_nom'].'.pdf' , $page_plage ) -> merge( 'file' , $fichier_extraction_chemin );
 	}
 	exit('ok');
 }
@@ -188,21 +189,22 @@ if( ($ACTION=='imprimer') && ($etape==3) )
 {
 	$date = date('Y-m-d');
 	$tab_pages_non_anonymes = array();
-	$chemin_temp_pdf = CHEMIN_DOSSIER_EXPORT.'pdf_'.mt_rand().'/';
-	FileSystem::creer_ou_vider_dossier($chemin_temp_pdf);
+	$dossier_officiel = './__tmp/officiel/'.$_SESSION['BASE'].'/';
+	$dossier_temp_pdf = './__tmp/export/pdf_'.mt_rand().'/';
+	Creer_ou_Vider_Dossier($dossier_temp_pdf);
 	foreach($_SESSION['tmp']['tab_pages_decoupe_pdf'] as $eleve_id => $tab_tirages)
 	{
 		foreach($tab_tirages as $numero_tirage => $tab)
 		{
 			list( $eleve_identite , $page_plage ) = $tab;
 			$tab_pages_non_anonymes[]  = $page_plage;
-			$fichier_extraction_chemin = $chemin_temp_pdf.'officiel_'.$BILAN_TYPE.'_'.Clean::fichier($eleve_identite).'_'.$date.'_resp'.$numero_tirage.'.pdf';
+			$fichier_extraction_chemin = $dossier_temp_pdf.'officiel_'.$BILAN_TYPE.'_'.clean_fichier($eleve_identite).'_'.$date.'_resp'.$numero_tirage.'.pdf';
 			$releve_pdf = new PDFMerger;
-			$pdf_string = $releve_pdf -> addPDF( CHEMIN_DOSSIER_EXPORT.$_SESSION['tmp']['fichier_nom'].'.pdf' , $page_plage ) -> merge( 'file' , $fichier_extraction_chemin );
+			$pdf_string = $releve_pdf -> addPDF( $_SESSION['tmp']['dossier'].$_SESSION['tmp']['fichier_nom'].'.pdf' , $page_plage ) -> merge( 'file' , $fichier_extraction_chemin );
 		}
 	}
-	FileSystem::zipper_fichiers( $chemin_temp_pdf , CHEMIN_DOSSIER_EXPORT , $_SESSION['tmp']['fichier_nom'].'.zip' );
-	FileSystem::supprimer_dossier($chemin_temp_pdf);
+	zipper_fichiers( $dossier_temp_pdf , $_SESSION['tmp']['dossier'] , $_SESSION['tmp']['fichier_nom'].'.zip' );
+	Supprimer_Dossier($dossier_temp_pdf);
 	$_SESSION['tmp']['pages_non_anonymes'] = implode(',',$tab_pages_non_anonymes);
 	unset($_SESSION['tmp']['tab_pages_decoupe_pdf']);
 	exit('ok');
@@ -215,13 +217,13 @@ if( ($ACTION=='imprimer') && ($etape==3) )
 if( ($ACTION=='imprimer') && ($etape==4) )
 {
 	$releve_pdf = new PDFMerger;
-	$pdf_string = $releve_pdf -> addPDF( CHEMIN_DOSSIER_EXPORT.$_SESSION['tmp']['fichier_nom'].'.pdf' , $_SESSION['tmp']['pages_non_anonymes'] ) -> merge( 'file' , CHEMIN_DOSSIER_EXPORT.$_SESSION['tmp']['fichier_nom'].'.pdf' );
+	$pdf_string = $releve_pdf -> addPDF( $_SESSION['tmp']['dossier'].$_SESSION['tmp']['fichier_nom'].'.pdf' , $_SESSION['tmp']['pages_non_anonymes'] ) -> merge( 'file' , $_SESSION['tmp']['dossier'].$_SESSION['tmp']['fichier_nom'].'.pdf' );
 	echo'<ul class="puce">';
-	echo'<li><a class="lien_ext" href="'.URL_DIR_EXPORT.$_SESSION['tmp']['fichier_nom'].'.pdf"><span class="file file_pdf">Récupérer, pour impression, l\'ensemble des bilans officiels en un seul document.</span></a></li>';
-	echo'<li><a class="lien_ext" href="'.URL_DIR_EXPORT.$_SESSION['tmp']['fichier_nom'].'.zip"><span class="file file_zip">Récupérer, pour archivage, les bilans officiels dans des documents individuels.</span></a></li>';
+	echo'<li><a class="lien_ext" href="'.$_SESSION['tmp']['dossier'].$_SESSION['tmp']['fichier_nom'].'.pdf"><span class="file file_pdf">Récupérer, pour impression, l\'ensemble des bilans officiels en un seul document.</span></a></li>';
+	echo'<li><a class="lien_ext" href="'.$_SESSION['tmp']['dossier'].$_SESSION['tmp']['fichier_nom'].'.zip"><span class="file file_zip">Récupérer, pour archivage, les bilans officiels dans des documents individuels.</span></a></li>';
 	echo'</ul>';
 	echo'<p class="danger">Archivez soigneusement ces bilans : les originaux ne sont pas conservés sur le serveur !</p>';
-	unset( $_SESSION['tmp']['fichier_nom'] , $_SESSION['tmp']['pages_non_anonymes'] );
+	unset( $_SESSION['tmp']['dossier'] , $_SESSION['tmp']['fichier_nom'] , $_SESSION['tmp']['pages_non_anonymes'] );
 	exit();
 }
 
@@ -238,9 +240,9 @@ if( ($ACTION!='imprimer') || ($etape!=1) )
 // Initialiser les signatures numériques
 
 $tab_saisie    = array();	// [eleve_id][rubrique_id][prof_id] => array(prof_info,appreciation,note,info);
-$tab_signature = array(0=>NULL);	// [prof_id] => array(contenu,format,largeur,hauteur);
+$tab_signature = array();	// [prof_id] => array(contenu,format,largeur,hauteur);
 $tab_prof_id = array();
-$DB_TAB = DB_STRUCTURE_OFFICIEL::DB_recuperer_bilan_officiel_saisies( $BILAN_TYPE , $periode_id , $liste_eleve_id , 0 /*prof_id*/ );
+$DB_TAB = DB_STRUCTURE_OFFICIEL::DB_recuperer_bilan_officiel_saisies($BILAN_TYPE,$periode_id,$liste_eleve_id);
 foreach($DB_TAB as $DB_ROW)
 {
 	$tab_saisie[$DB_ROW['eleve_id']][$DB_ROW['rubrique_id']][$DB_ROW['prof_id']] = array( 'prof_info'=>$DB_ROW['prof_info'] , 'appreciation'=>$DB_ROW['saisie_appreciation'] , 'note'=>$DB_ROW['saisie_note'] );
@@ -267,7 +269,7 @@ if($_SESSION['OFFICIEL']['TAMPON_SIGNATURE']!='sans')
 	$DB_TAB = DB_STRUCTURE_OFFICIEL::DB_recuperer_signatures($listing_prof_id);
 	foreach($DB_TAB as $DB_ROW)
 	{
-		$tab_signature[$DB_ROW['user_id']] = array( base64_decode($DB_ROW['signature_contenu']) , $DB_ROW['signature_format'] , $DB_ROW['signature_largeur'] , $DB_ROW['signature_hauteur'] );
+		$tab_signature[$DB_ROW['user_id']] = array( $DB_ROW['signature_contenu'] , $DB_ROW['signature_format'] , $DB_ROW['signature_largeur'] , $DB_ROW['signature_hauteur'] );
 	}
 }
 
@@ -349,7 +351,6 @@ $make_officiel = TRUE;
 $make_action   = 'imprimer';
 $make_html     = FALSE;
 $make_pdf      = TRUE;
-$make_graph    = FALSE;
 
 if($BILAN_TYPE=='releve')
 {
@@ -358,7 +359,7 @@ if($BILAN_TYPE=='releve')
 	$aff_bilan_PA    = $_SESSION['OFFICIEL']['RELEVE_POURCENTAGE_ACQUIS'];
 	$aff_conv_sur20  = 0; // pas jugé utile de le mettre en option...
 	$with_coef       = 1; // Il n'y a que des relevés par matière et pas de synthèse commune : on prend en compte les coefficients pour chaque relevé matière.
-	$matiere_id      = TRUE;
+	$matiere_id      = true;
 	$matiere_nom     = '';
 	$groupe_id       = (!$is_sous_groupe) ? $classe_id  : $groupe_id ; // Le groupe = la classe (par défaut) ou le groupe transmis
 	$groupe_nom      = (!$is_sous_groupe) ? $classe_nom : $classe_nom.' - '.DB_STRUCTURE_COMMUN::DB_recuperer_groupe_nom($groupe_id) ;
@@ -388,7 +389,7 @@ if($BILAN_TYPE=='releve')
 	$type_synthese   = 0;
 	$type_bulletin   = 0;
 	$tab_matiere_id  = array();
-	require(CHEMIN_DOSSIER_INCLUDE.'code_items_releve.php');
+	require('./_inc/code_items_releve.php');
 	$nom_bilan_html = 'releve_HTML_individuel';
 }
 elseif($BILAN_TYPE=='bulletin')
@@ -403,7 +404,6 @@ elseif($BILAN_TYPE=='bulletin')
 	$aff_coef       = 0; // Sans objet, l'élève & sa famille n'ayant accès qu'à l'archive pdf
 	$aff_socle      = 0; // Sans objet, l'élève & sa famille n'ayant accès qu'à l'archive pdf
 	$aff_lien       = 0; // Sans objet, l'élève & sa famille n'ayant accès qu'à l'archive pdf
-	$aff_start      = 0; // Sans objet, l'élève & sa famille n'ayant accès qu'à l'archive pdf
 	$only_socle     = 0; // pas jugé utile de le mettre en option...
 	$only_niveau    = 0; // pas jugé utile de le mettre en option...
 	$couleur        = $_SESSION['OFFICIEL']['BULLETIN_COULEUR'];
@@ -415,7 +415,7 @@ elseif($BILAN_TYPE=='bulletin')
 	$tab_eleve      = $tab_eleve_id;
 	$liste_eleve    = $liste_eleve_id;
 	$tab_matiere_id = array();
-	require(CHEMIN_DOSSIER_INCLUDE.'code_items_synthese.php');
+	require('./_inc/code_items_synthese.php');
 	$nom_bilan_html = 'releve_HTML';
 }
 elseif(in_array($BILAN_TYPE,array('palier1','palier2','palier3')))
@@ -431,7 +431,6 @@ elseif(in_array($BILAN_TYPE,array('palier1','palier2','palier3')))
 	$aff_coef       = 0; // Sans objet, l'élève & sa famille n'ayant accès qu'à l'archive pdf
 	$aff_socle      = 0; // Sans objet, l'élève & sa famille n'ayant accès qu'à l'archive pdf
 	$aff_lien       = 0; // Sans objet, l'élève & sa famille n'ayant accès qu'à l'archive pdf
-	$aff_start      = 0; // Sans objet, l'élève & sa famille n'ayant accès qu'à l'archive pdf
 	$couleur        = $_SESSION['OFFICIEL']['SOCLE_COULEUR'];
 	$legende        = $_SESSION['OFFICIEL']['SOCLE_LEGENDE'];
 	$marge_gauche   = $_SESSION['OFFICIEL']['MARGE_GAUCHE'];
@@ -441,7 +440,7 @@ elseif(in_array($BILAN_TYPE,array('palier1','palier2','palier3')))
 	$tab_pilier_id  = $tab_pilier_id;
 	$tab_eleve_id   = $tab_eleve_id;
 	$tab_matiere_id = array();
-	require(CHEMIN_DOSSIER_INCLUDE.'code_socle_releve.php');
+	require('./_inc/code_socle_releve.php');
 	$nom_bilan_html = 'releve_html';
 }
 
@@ -449,6 +448,7 @@ elseif(in_array($BILAN_TYPE,array('palier1','palier2','palier3')))
 // Affichage du résultat (pas grand chose : la découpe du PDF intervient lors d'appels ajax ultérieurs)
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
+$_SESSION['tmp']['dossier']     = $dossier;
 $_SESSION['tmp']['fichier_nom'] = $fichier_nom;
 $_SESSION['tmp']['tab_pages_decoupe_pdf'] = $tab_pages_decoupe_pdf;
 exit('ok');

@@ -46,9 +46,9 @@ function envoyer_arborescence_XML($sesamath_id,$sesamath_key,$matiere_id,$niveau
 	$tab_post['arbreXML']       = $arbreXML;
 	$tab_post['version_prog']   = VERSION_PROG; // Le service web doit être compatible
 	$tab_post['version_base']   = VERSION_BASE; // La base doit être compatible (table socle ou matières modifiée...)
-	$tab_post['adresse_retour'] = URL_INSTALL_SACOCHE;
+	$tab_post['adresse_retour'] = SERVEUR_ADRESSE;
 	$tab_post['integrite_key']  = fabriquer_chaine_integrite();
-	return url_get_contents(SERVEUR_COMMUNAUTAIRE,$tab_post);
+	return url_get_contents(SERVEUR_COMMUNAUTAIRE,$tab_post,$timeout=10);
 }
 
 /**
@@ -68,9 +68,9 @@ function recuperer_arborescence_XML($sesamath_id,$sesamath_key,$referentiel_id)
 	$tab_post['referentiel_id'] = $referentiel_id;
 	$tab_post['version_prog']   = VERSION_PROG; // Le service web doit être compatible
 	$tab_post['version_base']   = VERSION_BASE; // La base doit être compatible (table socle ou matières modifiée...)
-	$tab_post['adresse_retour'] = URL_INSTALL_SACOCHE;
+	$tab_post['adresse_retour'] = SERVEUR_ADRESSE;
 	$tab_post['integrite_key']  = fabriquer_chaine_integrite();
-	return url_get_contents(SERVEUR_COMMUNAUTAIRE,$tab_post);
+	return url_get_contents(SERVEUR_COMMUNAUTAIRE,$tab_post,$timeout=10);
 }
 
 
@@ -99,8 +99,8 @@ function analyser_XML($fichier_adresse)
 {
 	// Récupération du contenu du fichier
 	$fichier_contenu = file_get_contents($fichier_adresse);
-	$fichier_contenu = To::utf8($fichier_contenu); // Mettre en UTF-8 si besoin
-	FileSystem::ecrire_fichier($fichier_adresse,$fichier_contenu); // Mettre à jour le fichier au cas où.
+	$fichier_contenu = utf8($fichier_contenu); // Mettre en UTF-8 si besoin
+	Ecrire_Fichier($fichier_adresse,$fichier_contenu); // Mettre à jour le fichier au cas où.
 	// Analyse XML (s'arrête à la 1ère erreur trouvée)
 	$xml_parser = xml_parser_create();
 	$valid_XML = xml_parse($xml_parser , $fichier_contenu , TRUE);
@@ -132,11 +132,11 @@ function verifier_arborescence_XML($arbreXML)
 {
 	// On ajoute déclaration et doctype au fichier (évite que l'utilisateur ait à se soucier de cette ligne et permet de le modifier en cas de réorganisation
 	// Attention, le chemin du DTD est relatif par rapport à l'emplacement du fichier XML (pas celui du script en cours) !
-	$fichier_adresse = CHEMIN_DOSSIER_IMPORT.'referentiel_'.fabriquer_fin_nom_fichier__date_et_alea().'.xml';
+	$fichier_adresse = './__tmp/import/referentiel_'.fabriquer_fin_nom_fichier__date_et_alea().'.xml';
 	$fichier_contenu = '<?xml version="1.0" encoding="UTF-8"?>'."\r\n".'<!DOCTYPE arbre SYSTEM "../../_dtd/referentiel.dtd">'."\r\n".$arbreXML;
-	$fichier_contenu = To::utf8($fichier_contenu); // Mettre en UTF-8 si besoin
+	$fichier_contenu = utf8($fichier_contenu); // Mettre en UTF-8 si besoin
 	// On enregistre temporairement dans un fichier pour analyse
-	FileSystem::ecrire_fichier($fichier_adresse,$fichier_contenu);
+	Ecrire_Fichier($fichier_adresse,$fichier_contenu);
 	// On lance le test
 	$test_XML_valide = analyser_XML($fichier_adresse);
 	// On efface le fichier temporaire
@@ -158,7 +158,7 @@ function Sesamath_enregistrer_structure($sesamath_id,$sesamath_key)
 	$tab_post['sesamath_id']    = $sesamath_id;
 	$tab_post['sesamath_key']   = $sesamath_key;
 	$tab_post['version_prog']   = VERSION_PROG; // Le service web doit être compatible
-	$tab_post['adresse_retour'] = URL_INSTALL_SACOCHE;
+	$tab_post['adresse_retour'] = SERVEUR_ADRESSE;
 	return url_get_contents(SERVEUR_COMMUNAUTAIRE,$tab_post);
 }
 
@@ -322,9 +322,9 @@ function signer_exportLPC($sesamath_id,$sesamath_key,$exportXML)
 	$tab_post['exportXML']      = $exportXML;
 	$tab_post['version_prog']   = VERSION_PROG; // Le service web doit être compatible
 	$tab_post['version_base']   = VERSION_BASE; // La base doit être compatible (table socle ou matières modifiée...)
-	$tab_post['adresse_retour'] = URL_INSTALL_SACOCHE;
+	$tab_post['adresse_retour'] = SERVEUR_ADRESSE;
 	$tab_post['integrite_key']  = fabriquer_chaine_integrite();
-	return url_get_contents(SERVEUR_LPC_SIGNATURE,$tab_post);
+	return url_get_contents(SERVEUR_LPC_SIGNATURE,$tab_post,$timeout=10);
 }
 
 /**
@@ -345,7 +345,7 @@ function afficher_liens_ressources($sesamath_id,$sesamath_key,$item_id,$item_lie
 	$tab_post['item_id']        = $item_id;
 	$tab_post['item_lien']      = $item_lien;
 	$tab_post['version_prog']   = VERSION_PROG; // Le service web doit être compatible
-	$tab_post['adresse_retour'] = URL_INSTALL_SACOCHE;
+	$tab_post['adresse_retour'] = SERVEUR_ADRESSE;
 	return url_get_contents(SERVEUR_COMMUNAUTAIRE,$tab_post);
 }
 
@@ -371,7 +371,7 @@ function fabriquer_liens_ressources($sesamath_id,$sesamath_key,$item_id,$item_no
 	$tab_post['objet']          = $objet;
 	$tab_post['page_serialize'] = $page_serialize;
 	$tab_post['version_prog']   = VERSION_PROG; // Le service web doit être compatible
-	$tab_post['adresse_retour'] = URL_INSTALL_SACOCHE;
+	$tab_post['adresse_retour'] = SERVEUR_ADRESSE;
 	$tab_post['integrite_key']  = fabriquer_chaine_integrite();
 	return url_get_contents(SERVEUR_COMMUNAUTAIRE,$tab_post);
 }
@@ -434,9 +434,9 @@ function uploader_ressource($sesamath_id,$sesamath_key,$matiere_ref,$fichier_nom
 	$tab_post['fichier_nom']     = $fichier_nom;
 	$tab_post['fichier_contenu'] = base64_encode($fichier_contenu);
 	$tab_post['version_prog']    = VERSION_PROG; // Le service web doit être compatible
-	$tab_post['adresse_retour']  = URL_INSTALL_SACOCHE;
+	$tab_post['adresse_retour']  = SERVEUR_ADRESSE;
 	$tab_post['integrite_key']   = fabriquer_chaine_integrite();
-	return url_get_contents(SERVEUR_COMMUNAUTAIRE,$tab_post,30 /*timeout*/);
+	return url_get_contents(SERVEUR_COMMUNAUTAIRE,$tab_post,$timeout=20);
 }
 
 /**
@@ -462,7 +462,7 @@ function fabriquer_md5_file($fichier)
 function fabriquer_chaine_integrite()
 {
 	// Liste de fichiers représentatifs mais n'impactant pas sur des modifs à la marge.
-	require(CHEMIN_DOSSIER_INCLUDE.'tableau_fichier_integrite.php');
+	include_once('./_inc/tableau_fichier_integrite.php');
 	// Fabrication de la chaine
 	$chaine = '';
 	$tab_crlf = array("\r\n","\r","\n");
@@ -470,7 +470,7 @@ function fabriquer_chaine_integrite()
 	{
 		// Lors du transfert FTP de fichiers, il arrive que les \r\n en fin de ligne soient convertis en \n, ce qui fait que md5_file() renvoie un résultat différent.
 		// Pour y remédier on utilise son équivalent md5(file_get_contents()) couplé à une suppression des caractères de fin de ligne.
-		$chaine .= md5( str_replace( $tab_crlf , '' , file_get_contents(CHEMIN_DOSSIER_SACOCHE.$fichier) ) );
+		$chaine .= md5( str_replace( $tab_crlf , '' , file_get_contents('./'.$fichier) ) );
 	}
 	return md5($chaine);
 }

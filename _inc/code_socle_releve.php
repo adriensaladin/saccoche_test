@@ -45,11 +45,12 @@ register_shutdown_function('rapporter_erreur_fatale');
 
 // Chemins d'enregistrement
 
-$fichier_nom = ($make_action!='imprimer') ? 'releve_socle_detail_'.Clean::fichier(substr($palier_nom,0,strpos($palier_nom,' ('))).'_'.Clean::fichier($groupe_nom).'_'.fabriquer_fin_nom_fichier__date_et_alea() : 'officiel_'.$BILAN_TYPE.'_'.Clean::fichier($groupe_nom).'_'.fabriquer_fin_nom_fichier__date_et_alea() ;
+$dossier     = './__tmp/export/';
+$fichier_nom = ($make_action!='imprimer') ? 'releve_socle_detail_'.clean_fichier(substr($palier_nom,0,strpos($palier_nom,' ('))).'_'.clean_fichier($groupe_nom).'_'.fabriquer_fin_nom_fichier__date_et_alea() : 'officiel_'.$BILAN_TYPE.'_'.clean_fichier($groupe_nom).'_'.fabriquer_fin_nom_fichier__date_et_alea() ;
 
 // Tableau des langues
 
-require(CHEMIN_DOSSIER_INCLUDE.'tableau_langues.php');
+require_once('./_inc/tableau_langues.php');
 $tab_eleve_langue = array(); // id de l'élève => id de la langue
 $tab_item_pilier  = array(); // id de l'item => id du pilier
 
@@ -79,8 +80,6 @@ if( ($make_html) || ($make_pdf) )
 	if(!$aff_socle) { $texte_socle      = ''; }
 	if(!$aff_lien)  { $texte_lien_avant = ''; }
 	if(!$aff_lien)  { $texte_lien_apres = ''; }
-	$toggle_img   = ($aff_start) ? 'toggle_moins' : 'toggle_plus' ;
-	$toggle_class = ($aff_start) ? '' : ' class="hide"' ;
 }
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
@@ -466,9 +465,9 @@ if($make_html)
 	$releve_html  = $affichage_direct ? '' : '<style type="text/css">'.$_SESSION['CSS'].'</style>';
 	$releve_html .= $affichage_direct ? '' : '<h1>'.html($titre1).'</h1>';
 	$releve_html .= $affichage_direct ? '' : '<h2>'.html($titre2).'</h2>';
-	$releve_html .= '<div class="astuce">Cliquer sur <img src="./_img/toggle_plus.gif" alt="+" /> / <img src="./_img/toggle_moins.gif" alt="+" /> pour afficher / masquer le détail.</div>';
+	$releve_html .= '<div class="astuce">Cliquer sur les icones &laquo;<img src="./_img/toggle_plus.gif" alt="+" />&raquo; pour accéder au détail.</div>';
 	$separation = (count($tab_eleve)>1) ? '<hr />' : '' ;
-	$legende_html = ($legende=='oui') ? Html::legende( FALSE /*codes_notation*/ , FALSE /*etat_acquisition*/ , $test_affichage_Pourcentage /*pourcentage_acquis*/ , $test_affichage_Validation /*etat_validation*/ ) : '' ;
+	$legende_html = ($legende=='oui') ? affich_legende_html( FALSE /*codes_notation*/ , FALSE /*etat_acquisition*/ , $test_affichage_Pourcentage /*pourcentage_acquis*/ , $test_affichage_Validation /*etat_validation*/ ) : '' ;
 }
 if($make_pdf)
 {
@@ -514,7 +513,7 @@ foreach($tab_eleve as $tab)
 						if($make_html)
 						{
 							$case_score = $test_affichage_Pourcentage ? '<th class="nu"></th>' : '' ;
-							$case_valid = $test_affichage_Validation ? Html::td_validation( 'th' , $tab_user_pilier[$eleve_id][$pilier_id] , $detail=TRUE ) : '' ;
+							$case_valid = $test_affichage_Validation ? affich_validation_html( 'th' , $tab_user_pilier[$eleve_id][$pilier_id] , $detail=TRUE ) : '' ;
 							$image_langue = ($drapeau_langue) ? ' <img src="./_img/drapeau/'.$drapeau_langue.'.gif" alt="" title="'.$tab_langues[$drapeau_langue]['texte'].'" />' : '' ;
 							$releve_html .= '<tr>'.$case_score.'<th>'.html($pilier_nom).$image_langue.'</th>'.$case_valid.'<th class="nu"></th></tr>'."\r\n";
 						}
@@ -559,16 +558,16 @@ foreach($tab_eleve as $tab)
 													$socle_nom  = (mb_strlen($socle_nom)<160) ? $socle_nom : mb_substr($socle_nom,0,150).' [...] <img src="./_img/bulle_aide.png" alt="" title="'.$socle_nom.'" />';
 													if( $tab_infos_socle_eleve[$socle_id][$eleve_id] )
 													{
-														$lien_toggle = '<a href="#" id="to_'.$socle_id.'_'.$eleve_id.'"><img src="./_img/'.$toggle_img.'.gif" alt="" title="Voir / masquer le détail des items associés." class="toggle" /></a> ';
-														$div_competences = '<div id="'.$socle_id.'_'.$eleve_id.'"'.$toggle_class.'>'.'<div>'.implode('</div><div>',$tab_infos_socle_eleve[$socle_id][$eleve_id]).'</div>'.'</div>';
+														$lien_toggle = '<a href="#" id="to_'.$socle_id.'_'.$eleve_id.'"><img src="./_img/toggle_plus.gif" alt="" title="Voir / masquer le détail des items associés." class="toggle" /></a> ';
+														$div_competences = '<div id="'.$socle_id.'_'.$eleve_id.'" class="hide">'.'<div>'.implode('</div><div>',$tab_infos_socle_eleve[$socle_id][$eleve_id]).'</div>'.'</div>';
 													}
 													else
 													{
 														$lien_toggle = '<img src="./_img/toggle_none.gif" alt="" /> ';
 														$div_competences = '';
 													}
-													$case_score = $test_affichage_Pourcentage ? Html::td_pourcentage( 'td' , $tab_score_socle_eleve[$socle_id][$eleve_id] , TRUE /*detail*/ , FALSE /*largeur*/ ) : '' ;
-													$case_valid = $test_affichage_Validation ? Html::td_validation( 'td' , $tab_user_entree[$eleve_id][$socle_id] , $detail=TRUE ) : '' ;
+													$case_score = $test_affichage_Pourcentage ? affich_pourcentage_html( 'td' , $tab_score_socle_eleve[$socle_id][$eleve_id] , TRUE /*detail*/ , FALSE /*largeur*/ ) : '' ;
+													$case_valid = $test_affichage_Validation ? affich_validation_html( 'td' , $tab_user_entree[$eleve_id][$socle_id] , $detail=TRUE ) : '' ;
 													$releve_html .= '<tr>'.$case_score.'<td colspan="2">'.$lien_toggle.$socle_nom.$div_competences.'</td>'.$case_valid.'</tr>'."\r\n";
 												}
 											}
@@ -688,7 +687,7 @@ foreach($tab_eleve as $tab)
 // On enregistre les sorties HTML et PDF
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
-if($make_html) { FileSystem::ecrire_fichier(CHEMIN_DOSSIER_EXPORT.$fichier_nom.'.html',$releve_html); }
-if($make_pdf)  { $releve_pdf->Output(CHEMIN_DOSSIER_EXPORT.$fichier_nom.'.pdf','F'); }
+if($make_html) { Ecrire_Fichier($dossier.$fichier_nom.'.html',$releve_html); }
+if($make_pdf)  { $releve_pdf->Output($dossier.$fichier_nom.'.pdf','F'); }
 
 ?>

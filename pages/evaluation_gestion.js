@@ -37,10 +37,9 @@ $(document).ready
 		var mode = false;
 		var modification = false;
 		var memo_pilotage = 'clavier';
-		var memo_direction = 'down';
 		var memo_input_id = false;
-		var colonne = 1;
-		var ligne   = 1;
+		var colonne = 0;
+		var ligne   = 0;
 		var nb_colonnes = 1;
 		var nb_lignes   = 1;
 		// tri du tableau (avec jquery.tablesorter.js).
@@ -374,20 +373,15 @@ $(document).ready
 							$('#table_saisir').html(tab_response[0]);
 							$('#table_saisir tbody tr th img').css('display','none'); // .hide(0) s'avère bcp plus lent dans FF et pose pb si bcp élèves / items ...
 							$('img[title]').tooltip({showURL:false});
-							$('#export_file1').attr("href", url_export+'saisie_deportee_'+tab_response[1]+'.zip' );
-							$('#export_file4').attr("href", url_export+'tableau_sans_notes_'+tab_response[1]+'.pdf' );
+							$('#export_file1').attr("href", dossier_export+'saisie_deportee_'+tab_response[1]+'.zip' );
+							$('#export_file4').attr("href", dossier_export+'tableau_sans_notes_'+tab_response[1]+'.pdf' );
 							colorer_cellules();
 							format_liens('#table_saisir');
 							infobulle();
 							$('#radio_'+memo_pilotage).click();
-							$('#arrow_continue_'+memo_direction).click();
 							if(memo_pilotage=='clavier')
 							{
-								$('#C'+colonne+'L'+ligne).focus();
-							}
-							else
-							{
-								$('#arrow_continue').hide();
+								$('#C1L1').focus();
 							}
 							nb_colonnes = $('#table_saisir thead th').length;
 							nb_lignes   = $('#table_saisir tbody tr').length;
@@ -442,9 +436,9 @@ $(document).ready
 							$('#table_voir').html(tab_response[0]);
 							$('#table_voir tbody tr th img').css('display','none'); // .hide(0) s'avère bcp plus lent dans FF et pose pb si bcp élèves / items ...
 							format_liens('#table_voir');
-							$('#export_file2').attr("href", url_export+'saisie_deportee_'+tab_response[1]+'.zip' );
-							$('#export_file3').attr("href", url_export+'tableau_sans_notes_'+tab_response[1]+'.pdf' );
-							$('#export_file5').attr("href", url_export+'tableau_avec_notes_'+tab_response[1]+'.pdf' );
+							$('#export_file2').attr("href", dossier_export+'saisie_deportee_'+tab_response[1]+'.zip' );
+							$('#export_file3').attr("href", dossier_export+'tableau_sans_notes_'+tab_response[1]+'.pdf' );
+							$('#export_file5').attr("href", dossier_export+'tableau_avec_notes_'+tab_response[1]+'.pdf' );
 							$('#table_voir tbody td').css({"background-color":"#DDF","text-align":"center","vertical-align":"middle","font-size":"110%"});
 							infobulle();
 						}
@@ -497,8 +491,8 @@ $(document).ready
 							$('#table_voir_repart1').html(tab_response[0]);
 							$('#table_voir_repart2').html(tab_response[1]);
 							format_liens('#zone_voir_repart');
-							$('#export_file6').attr("href", url_export+'repartition_quantitative_'+tab_response[2]+'.pdf' );
-							$('#export_file7').attr("href", url_export+'repartition_nominative_'+tab_response[2]+'.pdf' );
+							$('#export_file6').attr("href", dossier_export+'repartition_quantitative_'+tab_response[2]+'.pdf' );
+							$('#export_file7').attr("href", dossier_export+'repartition_nominative_'+tab_response[2]+'.pdf' );
 							$('#table_voir_repart1 tbody td').css({"background-color":"#DDF","font-weight":"normal","text-align":"center"});
 							$('#table_voir_repart2 tbody td').css({"background-color":"#DDF","font-weight":"normal","font-size":"85%"});
 							infobulle();
@@ -1112,33 +1106,15 @@ $(document).ready
 		//	Choix du mode de pilotage pour la saisie des résultats
 		//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
-		$('input[name=mode_saisie]').live // live est utilisé pour prendre en compte les nouveaux éléments créés
+		$('#table_saisir thead tr td input[type="radio"]').live // live est utilisé pour prendre en compte les nouveaux éléments créés
 		('click',
 			function()
 			{
 				memo_pilotage = $(this).val();
 				if(memo_pilotage=='clavier')
 				{
-					$('#arrow_continue').show(0);
-					$('#C'+colonne+'L'+ligne).focus();
+					$("#C1L1").focus();
 				}
-				else
-				{
-					$('#arrow_continue').hide(0);
-				}
-			}
-		);
-
-		//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-		//	Choix du sens de parcours pour la saisie des résultats (si pilotage au clavier)
-		//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-
-		$('input[name=arrow_continue]').live // live est utilisé pour prendre en compte les nouveaux éléments créés
-		('click',
-			function()
-			{
-				memo_direction = $(this).val();
-					$('#C'+colonne+'L'+ligne).focus();
 			}
 		);
 
@@ -1282,14 +1258,7 @@ $(document).ready
 							// pour une seule case
 							$(this).val(note).removeAttr("class").addClass(note);
 							$(this).parent().css("background-color","#F6D");
-							if(memo_direction=='down')
-							{
-								ligne++;
-							}
-							else
-							{
-								colonne++;
-							}
+							ligne++;
 						}
 						else if(endroit_report_note=='tableau')
 						{

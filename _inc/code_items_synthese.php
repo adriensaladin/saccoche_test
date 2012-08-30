@@ -45,7 +45,10 @@ register_shutdown_function('rapporter_erreur_fatale');
 
 // Chemins d'enregistrement
 
-$fichier_nom = ($make_action!='imprimer') ? 'releve_synthese_'.$format.'_'.Clean::fichier($groupe_nom).'_'.fabriquer_fin_nom_fichier__date_et_alea() : 'officiel_'.$BILAN_TYPE.'_'.Clean::fichier($groupe_nom).'_'.fabriquer_fin_nom_fichier__date_et_alea() ;
+$dossier     = './__tmp/export/';
+$fichier_nom = ($make_action!='imprimer') ? 'releve_synthese_'.$format.'_'.clean_fichier($groupe_nom).'_'.fabriquer_fin_nom_fichier__date_et_alea() : 'officiel_'.$BILAN_TYPE.'_'.clean_fichier($groupe_nom).'_'.fabriquer_fin_nom_fichier__date_et_alea() ;
+
+
 
 // Initialisation de tableaux
 
@@ -65,8 +68,6 @@ if( ($make_html) || ($make_pdf) || ($make_graph) )
 	if(!$aff_socle) { $texte_socle      = ''; }
 	if(!$aff_lien)  { $texte_lien_avant = ''; }
 	if(!$aff_lien)  { $texte_lien_apres = ''; }
-	$toggle_img   = ($aff_start) ? 'toggle_moins' : 'toggle_plus' ;
-	$toggle_class = ($aff_start) ? '' : ' class="hide"' ;
 }
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
@@ -238,8 +239,7 @@ foreach($tab_eleve as $key => $tab)
 					$nb_acquis      = count( array_filter($tableau_score_filtre,'test_A') );
 					$nb_non_acquis  = count( array_filter($tableau_score_filtre,'test_NA') );
 					$nb_voie_acquis = $nb_scores - $nb_acquis - $nb_non_acquis;
-					// $tab_infos_acquis_eleve[$eleve_id][$matiere_id][$synthese_ref] = (!$make_officiel) ? array( 'NA'=>$nb_non_acquis , 'VA'=>$nb_voie_acquis , 'A'=>$nb_acquis ) : array( 'NA'=>$nb_non_acquis , 'VA'=>$nb_voie_acquis , 'A'=>$nb_acquis, 'nb'=>$nb_scores , '%'=>round( 50 * ( ($nb_acquis*2 + $nb_voie_acquis) / $nb_scores ) ,0) ) ;
-					$tab_infos_acquis_eleve[$eleve_id][$matiere_id][$synthese_ref] = array( 'NA'=>$nb_non_acquis , 'VA'=>$nb_voie_acquis , 'A'=>$nb_acquis );
+					$tab_infos_acquis_eleve[$eleve_id][$matiere_id][$synthese_ref] = (!$make_officiel) ? array( 'NA'=>$nb_non_acquis , 'VA'=>$nb_voie_acquis , 'A'=>$nb_acquis ) : array( 'NA'=>$nb_non_acquis , 'VA'=>$nb_voie_acquis , 'A'=>$nb_acquis, 'nb'=>$nb_scores , '%'=>round( 50 * ( ($nb_acquis*2 + $nb_voie_acquis) / $nb_scores ) ,0) ) ;
 					$tab_infos_acquis_eleve[$eleve_id][$matiere_id]['total']['NA'] += $nb_non_acquis;
 					$tab_infos_acquis_eleve[$eleve_id][$matiere_id]['total']['VA'] += $nb_voie_acquis;
 					$tab_infos_acquis_eleve[$eleve_id][$matiere_id]['total']['A']  += $nb_acquis;
@@ -266,15 +266,6 @@ foreach($tab_eleve as $key => $tab)
 	{
 		if(isset($tab_score_eleve_item[$eleve_id][$matiere_id]))
 		{
-			// Ne pas compter les lignes de synthèses dont aucun item n'a été évalué
-			foreach($tab_score_eleve_item[$eleve_id][$matiere_id] as $synthese_ref => $tab_items)
-			{
-				$nb_items_evalues = count(array_filter($tab_items,'non_nul'));
-				if(!$nb_items_evalues)
-				{
-					unset($tab_score_eleve_item[$eleve_id][$matiere_id][$synthese_ref]);
-				}
-			}
 			$nb_lignes_rubriques = count($tab_score_eleve_item[$eleve_id][$matiere_id]) ;
 			$nb_lignes_appreciations = ( ($make_action=='imprimer') && ($_SESSION['OFFICIEL']['BULLETIN_APPRECIATION_RUBRIQUE']) && (isset($tab_saisie[$eleve_id][$matiere_id])) ) ? ($nb_lignes_appreciation_intermediaire_par_prof_hors_intitule * count($tab_saisie[$eleve_id][$matiere_id]) ) + 1 : 0 ; // + 1 pour "Appréciation / Conseils pour progresser"
 			$tab_nb_lignes[$eleve_id][$matiere_id] = $nb_lignes_matiere_intitule_et_marge + max($nb_lignes_rubriques,$nb_lignes_appreciations) ;
@@ -314,11 +305,9 @@ if( ($make_html) || ($make_graph) )
 	$releve_HTML  = $affichage_direct ? '' : '<style type="text/css">'.$_SESSION['CSS'].'</style>';
 	$releve_HTML .= $affichage_direct ? '' : '<h1>Synthèse '.$tab_titre[$format].'</h1>';
 	$releve_HTML .= $affichage_direct ? '' : '<h2>'.html($texte_periode).'</h2>';
-	$releve_HTML .= (!$make_graph) ? '<div class="astuce">Cliquer sur <img src="./_img/toggle_plus.gif" alt="+" /> / <img src="./_img/toggle_moins.gif" alt="+" /> pour afficher / masquer le détail'.$bouton_print_appr.'</div>' : '<div id="div_graphique"></div>' ;
+	$releve_HTML .= (!$make_graph) ? '<div class="astuce">Cliquer sur les icones &laquo;<img src="./_img/toggle_plus.gif" alt="+" />&raquo; pour accéder au détail.'.$bouton_print_appr.'</div>' : '<div id="div_graphique"></div>' ;
 	$separation = (count($tab_eleve)>1) ? '<hr class="breakafter" />' : '' ;
-	$legende_html = ($legende=='oui') ? Html::legende( FALSE /*codes_notation*/ , TRUE /*etat_acquisition*/ , FALSE /*pourcentage_acquis*/ , FALSE /*etat_validation*/ ) : '' ;
-	$width_barre = (!$make_officiel) ? 180 : 50 ;
-	$width_texte = 900 - $width_barre;
+	$legende_html = ($legende=='oui') ? affich_legende_html( FALSE /*codes_notation*/ , TRUE /*etat_acquisition*/ , FALSE /*pourcentage_acquis*/ , FALSE /*etat_validation*/ ) : '' ;
 }
 if($make_pdf)
 {
@@ -370,9 +359,9 @@ foreach($tab_eleve as $tab)
 					{
 						$moyenne_eleve  = NULL;
 						$moyenne_classe = NULL;
-						if( ($make_officiel) && ($_SESSION['OFFICIEL']['BULLETIN_MOYENNE_SCORES']) && (isset($tab_saisie[$eleve_id][$matiere_id][0])) )
+						if( ($make_officiel) && ($_SESSION['OFFICIEL']['BULLETIN_MOYENNE_SCORES']) )
 						{
-							// $tab_saisie[$eleve_id][$matiere_id][0] est normalement toujours défini : soit calculé lors de l'initialisation du bulletin, soit effacé et non recalculé volontairement mais alors vaut NULL (à moins que le choix de l'affichage d'une moyenne se fasse simultanément)
+							// $tab_saisie[$eleve_id][$matiere_id][0] est normalement toujours défini : soit calculé lors de l'initialisation du bulletin, soit effacé et non recalculé volontairement mais alors vaut NULL
 							extract($tab_saisie[$eleve_id][$matiere_id][0]);	// $prof_info $appreciation $note
 							$moyenne_eleve = $note;
 							if($_SESSION['OFFICIEL']['BULLETIN_MOYENNE_CLASSE'])
@@ -385,7 +374,7 @@ foreach($tab_eleve as $tab)
 					if($make_html)
 					{
 						$releve_HTML .= '<table class="bilan" style="width:900px;margin-bottom:0"><tbody>';
-						$releve_HTML .= '<tr><th style="width:540px">'.html($tab_matiere[$matiere_id]).'</th>'.Html::td_barre_synthese($width=360,$tab_infos_matiere['total'],$total).'</tr>';
+						$releve_HTML .= '<tr><th style="width:540px">'.html($tab_matiere[$matiere_id]).'</th>'.affich_barre_synthese_html($width=360,$tab_infos_matiere['total'],$total).'</tr>';
 						$releve_HTML .= '</tbody></table>'; // Utilisation de 2 tableaux sinon bugs constatés lors de l'affichage des détails...
 						$releve_HTML .= '<table class="bilan" style="width:900px;margin-top:0"><tbody>';
 					}
@@ -394,39 +383,43 @@ foreach($tab_eleve as $tab)
 					$nb_syntheses = count($tab_infos_matiere);
 					if($nb_syntheses)
 					{
-						$hauteur_ligne_synthese = ($make_officiel) ? ( $tab_nb_lignes[$eleve_id][$matiere_id] - $nb_lignes_matiere_intitule_et_marge ) / count($tab_infos_matiere) : 1 ;
+						$hauteur_ligne_synthese = ( $tab_nb_lignes[$eleve_id][$matiere_id] - $nb_lignes_matiere_intitule_et_marge ) / count($tab_infos_matiere) ;
 						foreach($tab_infos_matiere as $synthese_ref => $tab_infos_synthese)
 						{
-							$tab_infos_synthese = array_filter($tab_infos_synthese,'non_zero'); // Retirer les valeurs nulles
-							$total = array_sum($tab_infos_synthese) ; // La somme ne peut être nulle (sinon la matière ne se serait pas affichée)
+							if(!$make_officiel)
+							{
+								$tab_infos_synthese = array_filter($tab_infos_synthese,'non_zero'); // Retirer les valeurs nulles
+								$total = array_sum($tab_infos_synthese) ; // La somme ne peut être nulle (sinon la matière ne se serait pas affichée)
+							}
 							if($make_pdf)
 							{
-								$releve_PDF->bilan_synthese_ligne_synthese($tab_synthese[$synthese_ref],$tab_infos_synthese,$total,$hauteur_ligne_synthese);
+								if(!$make_officiel)
+								{
+									$releve_PDF->bilan_synthese_ligne_synthese($tab_synthese[$synthese_ref],$tab_infos_synthese,$total,1);
+								}
+								else
+								{
+									$releve_PDF->bilan_synthese_ligne_synthese($tab_synthese[$synthese_ref],$tab_infos_synthese,0,$hauteur_ligne_synthese);
+								}
 							}
 							if($make_html)
 							{
 								$releve_HTML .= '<tr>';
-								$releve_HTML .= Html::td_barre_synthese($width_barre,$tab_infos_synthese,$total);
-								$releve_HTML .= '<td style="width:'.$width_texte.'px">' ;
-								$releve_HTML .= '<a href="#" id="to_'.$synthese_ref.'_'.$eleve_id.'"><img src="./_img/'.$toggle_img.'.gif" alt="" title="Voir / masquer le détail des items associés." class="toggle" /></a> ';
+								$releve_HTML .= (!$make_officiel) ? affich_barre_synthese_html($width=180,$tab_infos_synthese,$total) : affich_pourcentage_html( 'td' , $tab_infos_synthese , FALSE /*detail*/ , 50 /*largeur*/ ) ;
+								$releve_HTML .= (!$make_officiel) ? '<td style="width:720px">' : '<td style="width:850px">' ;
+								$releve_HTML .= '<a href="#" id="to_'.$synthese_ref.'_'.$eleve_id.'"><img src="./_img/toggle_plus.gif" alt="" title="Voir / masquer le détail des items associés." class="toggle" /></a> ';
 								$releve_HTML .= html($tab_synthese[$synthese_ref]);
-								$releve_HTML .= '<div id="'.$synthese_ref.'_'.$eleve_id.'"'.$toggle_class.'>'.implode('<br />',$tab_infos_detail_synthese[$eleve_id][$synthese_ref]).'</div>';
+								$releve_HTML .= '<div id="'.$synthese_ref.'_'.$eleve_id.'" class="hide">'.implode('<br />',$tab_infos_detail_synthese[$eleve_id][$synthese_ref]).'</div>';
 								$releve_HTML .= '</td></tr>';
 							}
 						}
 					}
-					elseif( ($make_officiel) && ($make_pdf) )
-					{
-						// Il est possible qu'aucun item n'ait été évalué pour un élève (absent...) : il faut quand même dessiner un cadre pour ne pas provoquer un décalage, d'autant plus qu'il peut y avoir une appréciation à côté.
-						$hauteur_ligne_synthese = $tab_nb_lignes[$eleve_id][$matiere_id] - $nb_lignes_matiere_intitule_et_marge ;
-						$releve_PDF->bilan_synthese_ligne_synthese('',array(),0,$hauteur_ligne_synthese);
-					}
 					if($make_html)
 					{
 						// Bulletin - Note (HTML)
-						if( ($make_html) && ($make_officiel) && ($_SESSION['OFFICIEL']['BULLETIN_MOYENNE_SCORES']) && (isset($tab_saisie[$eleve_id][$matiere_id][0])) )
+						if( ($make_html) && ($make_officiel) && ($_SESSION['OFFICIEL']['BULLETIN_MOYENNE_SCORES']) )
 						{
-							// $tab_saisie[$eleve_id][$matiere_id][0] est normalement toujours défini : soit calculé lors de l'initialisation du bulletin, soit effacé et non recalculé volontairement mais alors vaut NULL (à moins que le choix de l'affichage d'une moyenne se fasse simultanément)
+							// $tab_saisie[$eleve_id][$matiere_id][0] est normalement toujours défini : soit calculé lors de l'initialisation du bulletin, soit effacé et non recalculé volontairement mais alors vaut NULL
 							extract($tab_saisie[$eleve_id][$matiere_id][0]);	// $prof_info $appreciation $note
 							$bouton_nettoyer  = ($appreciation!='') ? ' <button type="button" class="nettoyer">Effacer et recalculer.</button>' : '' ;
 							$bouton_supprimer = ($note!==NULL)      ? ' <button type="button" class="supprimer">Supprimer sans recalculer</button>' : '' ;
@@ -574,8 +567,8 @@ foreach($tab_eleve as $tab)
 // On enregistre les sorties HTML et PDF
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
-if($make_html) { FileSystem::ecrire_fichier(CHEMIN_DOSSIER_EXPORT.$fichier_nom.'.html',$releve_HTML); }
-if($make_pdf)  { $releve_PDF->Output(CHEMIN_DOSSIER_EXPORT.$fichier_nom.'.pdf','F'); }
+if($make_html) { Ecrire_Fichier($dossier.$fichier_nom.'.html',$releve_HTML); }
+if($make_pdf)  { $releve_PDF->Output($dossier.$fichier_nom.'.pdf','F'); }
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 // On fabrique les options js pour le diagramme graphique

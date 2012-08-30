@@ -46,7 +46,7 @@ if($action=='bloquer')
 {
 	ajouter_log_PHP( 'Maintenance' /*log_objet*/ , 'Application fermée.' /*log_contenu*/ , __FILE__ /*log_fichier*/ , __LINE__ /*log_ligne*/ , FALSE /*only_sesamath*/ );
 	LockAcces::bloquer_application($_SESSION['USER_PROFIL'],'0',$motif);
-	exit('<label class="erreur">Application fermée : '.To::html($motif).'</label>');
+	exit('<label class="erreur">Application fermée : '.html($motif).'</label>');
 }
 
 //	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
@@ -123,8 +123,7 @@ if($action=='maj_etape2')
 	$code_erreur = FileSystem::unzip( $fichier_import , CHEMIN_DOSSIER_IMPORT , TRUE /*use_ZipArchive*/ );
 	if($code_erreur)
 	{
-		require(CHEMIN_DOSSIER_INCLUDE.'tableau_zip_error.php');
-		exit(']¤['.'pb'.']¤['.'Fichiers impossibles à extraire ('.$code_erreur.$tab_zip_error[$code_erreur].') !');
+		exit(']¤['.'pb'.']¤['.'Fichiers impossibles à extraire ('.FileSystem::$tab_zip_error[$code_erreur].') !');
 	}
 	exit(']¤['.'ok'.']¤['."Analyse des fichiers et recensement des dossiers&hellip;");
 }
@@ -276,8 +275,7 @@ if($action=='verif_etape2')
 	$code_erreur = FileSystem::unzip( $fichier_import , CHEMIN_DOSSIER_IMPORT , TRUE /*use_ZipArchive*/ );
 	if($code_erreur)
 	{
-		require(CHEMIN_DOSSIER_INCLUDE.'tableau_zip_error.php');
-		exit(']¤['.'pb'.']¤['.'Fichiers impossibles à extraire ('.$code_erreur.$tab_zip_error[$code_erreur].') !');
+		exit(']¤['.'pb'.']¤['.'Fichiers impossibles à extraire ('.FileSystem::$tab_zip_error[$code_erreur].') !');
 	}
 	exit(']¤['.'ok'.']¤['."Analyse des fichiers et recensement des dossiers&hellip;");
 }

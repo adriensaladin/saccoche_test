@@ -49,7 +49,7 @@ if( (($action=='ajouter')||($action=='dupliquer')) && $ordre )
 	echo'<tr id="id_'.$geo_id.'" class="new">';
 	echo	'<td>'.$geo_id.'</td>';
 	echo	'<td>'.$ordre.'</td>';
-	echo	'<td>'.To::html($nom).'</td>';
+	echo	'<td>'.html($nom).'</td>';
 	echo	'<td class="nu">';
 	echo		'<q class="modifier" title="Modifier cette zone."></q>';
 	echo		'<q class="dupliquer" title="Dupliquer cette zone."></q>';
@@ -73,7 +73,7 @@ else if( ($action=='modifier') && $id && $ordre && $nom )
 	// Afficher le retour
 	echo'<td>'.$id.'</td>';
 	echo'<td>'.$ordre.'</td>';
-	echo'<td>'.To::html($nom).'</td>';
+	echo'<td>'.html($nom).'</td>';
 	echo'<td class="nu">';
 	echo	'<q class="modifier" title="Modifier cette zone."></q>';
 	echo	'<q class="dupliquer" title="Dupliquer cette zone."></q>';

@@ -57,7 +57,7 @@ if( ($action=='ajouter') && $selection_nom && $nb_items && $origine )
 	{
 		$items_texte  = ($nb_items>1) ? $nb_items.' items' : '1 item' ;
 		echo'<tr id="id_'.$selection_id.'" class="new">';
-		echo	'<td>'.To::html($selection_nom).'</td>';
+		echo	'<td>'.html($selection_nom).'</td>';
 		echo	'<td>'.$items_texte.'</td>';
 		echo	'<td class="nu">';
 		echo		'<q class="modifier" title="Modifier cette sélection d\'items."></q>';
@@ -69,7 +69,7 @@ if( ($action=='ajouter') && $selection_nom && $nb_items && $origine )
 	}
 	else
 	{
-		echo'<option value="'.implode('_',$tab_items).'">'.To::html($selection_nom).'</option>';
+		echo'<option value="'.implode('_',$tab_items).'">'.html($selection_nom).'</option>';
 	}
 	exit();
 }
@@ -89,7 +89,7 @@ if( ($action=='modifier') && $selection_id && $selection_nom && $nb_items )
 	DB_STRUCTURE_PROFESSEUR::DB_modifier_selection_items($selection_id,$selection_nom,$tab_items);
 	// Afficher le retour
 	$items_texte  = ($nb_items>1) ? $nb_items.' items' : '1 item' ;
-	echo'<td>'.To::html($selection_nom).'</td>';
+	echo'<td>'.html($selection_nom).'</td>';
 	echo'<td>'.$items_texte.'</td>';
 	echo'<td class="nu">';
 	echo	'<q class="modifier" title="Modifier cette sélection d\'items."></q>';

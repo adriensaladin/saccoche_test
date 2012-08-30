@@ -81,7 +81,7 @@ foreach($DB_TAB as $DB_ROW)
 	FileSystem::ecrire_fichier( CHEMIN_DOSSIER_EXPORT.$fichier_nom , base64_decode($DB_ROW['signature_contenu']) );
 	// Générer la balise html pour afficher l'image
 	list($width,$height) = dimensions_affichage_image( $DB_ROW['signature_largeur'] , $DB_ROW['signature_hauteur'] , 200 /*largeur_maxi*/ , 200 /*hauteur_maxi*/ );
-	$li_signatures .= '<li id="sgn_'.$DB_ROW['user_id'].'">'.To::html($texte).' : <img src="'.URL_DIR_EXPORT.$fichier_nom.'" alt="'.To::html($texte).'" width="'.$width.'" height="'.$height.'" /><q class="supprimer" title="Supprimer cette image (aucune confirmation ne sera demandée)."></q></li>';
+	$li_signatures .= '<li id="sgn_'.$DB_ROW['user_id'].'">'.html($texte).' : <img src="'.URL_DIR_EXPORT.$fichier_nom.'" alt="'.html($texte).'" width="'.$width.'" height="'.$height.'" /><q class="supprimer" title="Supprimer cette image (aucune confirmation ne sera demandée)."></q></li>';
 }
 $li_signatures = ($li_signatures) ? $li_signatures : '<li id="sgn_none">Aucun fichier image trouvé !</li>';
 

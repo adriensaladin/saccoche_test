@@ -52,6 +52,6 @@ foreach($DB_TAB as $key => $DB_ROW)
 	// Formater la date et la référence de l'évaluation
 	$date_affich         = convert_date_mysql_to_french($DB_ROW['devoir_date']);
 	$date_visible_affich = convert_date_mysql_to_french($DB_ROW['devoir_visible_date']);
-	echo'<option value="'.$DB_ROW['devoir_id'].'_'.$DB_ROW['groupe_id'].'"'.$selected.'>'.$date_affich.' || '.$date_visible_affich.' || '.To::html($DB_ROW['devoir_info']).'</option>';
+	echo'<option value="'.$DB_ROW['devoir_id'].'_'.$DB_ROW['groupe_id'].'"'.$selected.'>'.$date_affich.' || '.$date_visible_affich.' || '.html($DB_ROW['devoir_info']).'</option>';
 }
 ?>

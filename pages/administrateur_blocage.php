@@ -32,7 +32,7 @@ $TITRE = "Blocage des connexions";
 $blocage_msg = LockAcces::tester_blocage('administrateur',$_SESSION['BASE']);
 if($blocage_msg!==NULL)
 {
-	$label = '<label class="erreur">Application fermée : '.To::html($blocage_msg).'</label>';
+	$label = '<label class="erreur">Application fermée : '.html($blocage_msg).'</label>';
 }
 else
 {

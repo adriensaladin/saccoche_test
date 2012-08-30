@@ -25,6 +25,30 @@
  * 
  */
 
+/*
+ * Convertir les caractères spéciaux (&"'<>) en entité HTML pour éviter des problèmes d'affichage (INPUT, SELECT, TEXTAREA, XML...).
+ * Pour que les retours à la lignes soient convertis en <br /> il faut coupler dette fontion à la fonction nl2br()
+ * 
+ * @param string
+ * @return string
+ */
+function html($text)
+{
+	// Ne pas modifier ce code à la légère : les résultats sont différents suivant que ce soit un affichage direct ou ajax, suivant la version de PHP (5.1 ou 5.3)...
+	return (perso_mb_detect_encoding_utf8($text)) ? htmlspecialchars($text,ENT_COMPAT,'UTF-8') : utf8_encode(htmlspecialchars($text,ENT_COMPAT)) ;
+}
+
+/*
+ * Réciproque de html()
+ * 
+ * @param string
+ * @return string
+ */
+function html_decode($text)
+{
+	return htmlspecialchars_decode($text,ENT_COMPAT) ;
+}
+
 /**
  * Fonctions utilisées avec array_filter() ; teste si différent de FALSE.
  * @return bool
@@ -1279,15 +1303,15 @@ function afficher_arborescence_matiere_from_SQL($DB_TAB,$dynamique,$reference,$a
 				case 'texte' :	$socle_texte = ($DB_ROW['entree_id']) ? '[S] ' : '[–] ';
 												break;
 				case 'image' :	$socle_image = ($DB_ROW['entree_id']) ? 'oui' : 'non' ;
-												$socle_title = ($DB_ROW['entree_id']) ? To::html($DB_ROW['entree_nom']) : 'Hors-socle.' ;
+												$socle_title = ($DB_ROW['entree_id']) ? html($DB_ROW['entree_nom']) : 'Hors-socle.' ;
 												$socle_texte = '<img src="./_img/etat/socle_'.$socle_image.'.png" title="'.$socle_title.'" /> ';
 			}
 			switch($aff_lien)
 			{
-				case 'click' :	$lien_texte_avant = ($DB_ROW['item_lien']) ? '<a class="lien_ext" href="'.To::html($DB_ROW['item_lien']).'">' : '';
+				case 'click' :	$lien_texte_avant = ($DB_ROW['item_lien']) ? '<a class="lien_ext" href="'.html($DB_ROW['item_lien']).'">' : '';
 												$lien_texte_apres = ($DB_ROW['item_lien']) ? '</a>' : '';
 				case 'image' :	$lien_image = ($DB_ROW['item_lien']) ? 'oui' : 'non' ;
-												$lien_title = ($DB_ROW['item_lien']) ? To::html($DB_ROW['item_lien']) : 'Absence de ressource.' ;
+												$lien_title = ($DB_ROW['item_lien']) ? html($DB_ROW['item_lien']) : 'Absence de ressource.' ;
 												$lien_texte = '<img src="./_img/etat/link_'.$lien_image.'.png" title="'.$lien_title.'" /> ';
 			}
 			if($aff_input)
@@ -1297,7 +1321,7 @@ function afficher_arborescence_matiere_from_SQL($DB_TAB,$dynamique,$reference,$a
 				$label_texte_apres = '</label>';
 			}
 			$item_texte = ($reference) ? $DB_ROW['domaine_ref'].$DB_ROW['theme_ordre'].$DB_ROW['item_ordre'].' - '.$DB_ROW['item_nom'] : $DB_ROW['item_nom'] ;
-			$tab_item[$matiere_id][$niveau_id][$domaine_id][$theme_id][$item_id] = $input_texte.$label_texte_avant.$coef_texte.$cart_texte.$socle_texte.$lien_texte.$lien_texte_avant.To::html($item_texte).$lien_texte_apres.$label_texte_apres;
+			$tab_item[$matiere_id][$niveau_id][$domaine_id][$theme_id][$item_id] = $input_texte.$label_texte_avant.$coef_texte.$cart_texte.$socle_texte.$lien_texte.$lien_texte_avant.html($item_texte).$lien_texte_apres.$label_texte_apres;
 		}
 	}
 	// Affichage de l'arborescence
@@ -1309,25 +1333,25 @@ function afficher_arborescence_matiere_from_SQL($DB_TAB,$dynamique,$reference,$a
 	{
 		foreach($tab_matiere as $matiere_id => $matiere_texte)
 		{
-			$retour .= '<li class="li_m1">'.$span_avant.To::html($matiere_texte).$span_apres."\r\n";
+			$retour .= '<li class="li_m1">'.$span_avant.html($matiere_texte).$span_apres."\r\n";
 			$retour .= '<ul class="ul_m2">'."\r\n";
 			if(isset($tab_niveau[$matiere_id]))
 			{
 				foreach($tab_niveau[$matiere_id] as $niveau_id => $niveau_texte)
 				{
-					$retour .= '<li class="li_m2">'.$span_avant.To::html($niveau_texte).$span_apres."\r\n";
+					$retour .= '<li class="li_m2">'.$span_avant.html($niveau_texte).$span_apres."\r\n";
 					$retour .= '<ul class="ul_n1">'."\r\n";
 					if(isset($tab_domaine[$matiere_id][$niveau_id]))
 					{
 						foreach($tab_domaine[$matiere_id][$niveau_id] as $domaine_id => $domaine_texte)
 						{
-							$retour .= '<li class="li_n1">'.$span_avant.To::html($domaine_texte).$span_apres.$input_all."\r\n";
+							$retour .= '<li class="li_n1">'.$span_avant.html($domaine_texte).$span_apres.$input_all."\r\n";
 							$retour .= '<ul class="ul_n2">'."\r\n";
 							if(isset($tab_theme[$matiere_id][$niveau_id][$domaine_id]))
 							{
 								foreach($tab_theme[$matiere_id][$niveau_id][$domaine_id] as $theme_id => $theme_texte)
 								{
-									$retour .= '<li class="li_n2">'.$span_avant.To::html($theme_texte).$span_apres.$input_all."\r\n";
+									$retour .= '<li class="li_n2">'.$span_avant.html($theme_texte).$span_apres.$input_all."\r\n";
 									$retour .= '<ul class="ul_n3">'."\r\n";
 									if(isset($tab_item[$matiere_id][$niveau_id][$domaine_id][$theme_id]))
 									{
@@ -1409,7 +1433,7 @@ function afficher_arborescence_socle_from_SQL($DB_TAB,$dynamique,$reference,$aff
 				$label_texte_apres = '</label>';
 			}
 			$entree_texte = ($reference) ? $DB_ROW['pilier_ref'].'.'.$DB_ROW['section_ordre'].'.'.$DB_ROW['entree_ordre'].' - '.$DB_ROW['entree_nom'] : $DB_ROW['entree_nom'] ;
-			$tab_entree[$palier_id][$pilier_id][$section_id][$entree_id] = $input_texte.$label_texte_avant.To::html($entree_texte).$label_texte_apres;
+			$tab_entree[$palier_id][$pilier_id][$section_id][$entree_id] = $input_texte.$label_texte_avant.html($entree_texte).$label_texte_apres;
 		}
 	}
 	// Affichage de l'arborescence
@@ -1420,21 +1444,21 @@ function afficher_arborescence_socle_from_SQL($DB_TAB,$dynamique,$reference,$aff
 	{
 		foreach($tab_palier as $palier_id => $palier_texte)
 		{
-			$retour .= '<li class="li_m1" id="palier_'.$palier_id.'">'.$span_avant.To::html($palier_texte).$span_apres."\r\n";
+			$retour .= '<li class="li_m1" id="palier_'.$palier_id.'">'.$span_avant.html($palier_texte).$span_apres."\r\n";
 			$retour .= '<ul class="ul_n1">'."\r\n";
 			if(isset($tab_pilier[$palier_id]))
 			{
 				foreach($tab_pilier[$palier_id] as $pilier_id => $pilier_texte)
 				{
 					$aff_id = ($ids) ? ' id="P'.$pilier_id.'"' : '' ;
-					$retour .= '<li class="li_n1"'.$aff_id.'>'.$span_avant.To::html($pilier_texte).$span_apres."\r\n";
+					$retour .= '<li class="li_n1"'.$aff_id.'>'.$span_avant.html($pilier_texte).$span_apres."\r\n";
 					$retour .= '<ul class="ul_n2">'."\r\n";
 					if(isset($tab_section[$palier_id][$pilier_id]))
 					{
 						foreach($tab_section[$palier_id][$pilier_id] as $section_id => $section_texte)
 						{
 							$aff_id = ($ids) ? ' id="S'.$section_id.'"' : '' ;
-							$retour .= '<li class="li_n2"'.$aff_id.'>'.$span_avant.To::html($section_texte).$span_apres."\r\n";
+							$retour .= '<li class="li_n2"'.$aff_id.'>'.$span_avant.html($section_texte).$span_apres."\r\n";
 							$retour .= '<ul class="ul_n3">'."\r\n";
 							if(isset($tab_entree[$palier_id][$pilier_id][$section_id]))
 							{
@@ -1502,17 +1526,17 @@ function exporter_arborescence_to_XML($DB_TAB)
 	{
 		foreach($tab_domaine as $domaine_id => $tab_domaine_info)
 		{
-			$arbreXML .= "\t".'<domaine ref="'.$tab_domaine_info['ref'].'" nom="'.To::html($tab_domaine_info['nom']).'">'."\r\n";
+			$arbreXML .= "\t".'<domaine ref="'.$tab_domaine_info['ref'].'" nom="'.html($tab_domaine_info['nom']).'">'."\r\n";
 			if(isset($tab_theme[$domaine_id]))
 			{
 				foreach($tab_theme[$domaine_id] as $theme_id => $tab_theme_info)
 				{
-					$arbreXML .= "\t\t".'<theme nom="'.To::html($tab_theme_info['nom']).'">'."\r\n";
+					$arbreXML .= "\t\t".'<theme nom="'.html($tab_theme_info['nom']).'">'."\r\n";
 					if(isset($tab_item[$domaine_id][$theme_id]))
 					{
 						foreach($tab_item[$domaine_id][$theme_id] as $item_id => $tab_item_info)
 						{
-							$arbreXML .= "\t\t\t".'<item socle="'.$tab_item_info['socle'].'" nom="'.To::html($tab_item_info['nom']).'" coef="'.$tab_item_info['coef'].'" cart="'.$tab_item_info['cart'].'" lien="'.To::html($tab_item_info['lien']).'" />'."\r\n";
+							$arbreXML .= "\t\t\t".'<item socle="'.$tab_item_info['socle'].'" nom="'.html($tab_item_info['nom']).'" coef="'.$tab_item_info['coef'].'" cart="'.$tab_item_info['cart'].'" lien="'.html($tab_item_info['lien']).'" />'."\r\n";
 						}
 					}
 					$arbreXML .= "\t\t".'</theme>'."\r\n";
@@ -1731,9 +1755,9 @@ function Modifier_RSS($prof_id,$titre,$texte,$guid)
 	$date = date("r",time());
 	$fichier_contenu = file_get_contents($fichier_chemin);
 	$article ='	<item>'."\r\n";
-	$article.='		<title>'.To::html($titre).'</title>'."\r\n";
+	$article.='		<title>'.html($titre).'</title>'."\r\n";
 	$article.='		<link>'.URL_INSTALL_SACOCHE.'</link>'."\r\n";
-	$article.='		<description>'.To::html($texte).'</description>'."\r\n";
+	$article.='		<description>'.html($texte).'</description>'."\r\n";
 	$article.='		<pubDate>'.$date.'</pubDate>'."\r\n";
 	$article.='		<guid isPermaLink="false">'.$guid.'</guid>'."\r\n";
 	$article.='	</item>'."\r\n\r\n";

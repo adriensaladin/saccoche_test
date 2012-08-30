@@ -219,7 +219,7 @@ else
 	echo'<p class="ti"><label class="danger">'.$nb_pb_saisies.' saisie'.$ss.' manquante'.$ss.' répartie'.$ss.' parmi '.$nb_pb_rubriques.' rubrique'.$sr.' !</label></p>';
 	foreach($tab_resultat_examen as $rubrique_nom => $tab)
 	{
-		echo'<h4>'.To::html($rubrique_nom).'</h4>';
+		echo'<h4>'.html($rubrique_nom).'</h4>';
 		echo'<ul class="puce"><li>'.implode('</li><li>',$tab).'</li></ul>';
 	}
 	exit();

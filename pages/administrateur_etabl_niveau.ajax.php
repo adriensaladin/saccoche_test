@@ -43,7 +43,7 @@ if( ($action=='recherche_niveau_famille') && $famille_id )
 	{
 		$class = ($DB_ROW['niveau_actif']) ? 'ajouter_non' : 'ajouter' ;
 		$title = ($DB_ROW['niveau_actif']) ? 'Niveau déjà choisi.' : 'Ajouter ce niveau.' ;
-		echo'<li>'.To::html($DB_ROW['niveau_nom'].' ('.$DB_ROW['niveau_ref'].')').'<q id="add_'.$DB_ROW['niveau_id'].'" class="'.$class.'" title="'.$title.'"></q></li>';
+		echo'<li>'.html($DB_ROW['niveau_nom'].' ('.$DB_ROW['niveau_ref'].')').'<q id="add_'.$DB_ROW['niveau_id'].'" class="'.$class.'" title="'.$title.'"></q></li>';
 	}
 	exit();
 }

@@ -262,7 +262,7 @@ elseif( $step==51 )
 	$BDlink = @mysql_connect($BD_host.':'.$BD_port,$BD_user,$BD_pass);
 	if(!$BDlink)
 	{
-		exit('Erreur : impossible de se connecter à MySQL ["'.To::html(trim(mysql_error())).'"] !');
+		exit('Erreur : impossible de se connecter à MySQL ["'.html(trim(mysql_error())).'"] !');
 	}
 	// vérifier la version de MySQL
 	$res = @mysql_query('SELECT VERSION()');
@@ -292,7 +292,7 @@ elseif( $step==51 )
 			$res = @mysql_query('CREATE DATABASE '.$BD_name.' DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci');
 			if(!$bool && !$res)
 			{
-				exit('Erreur : impossible d\'accéder et de créer la base "sacoche_webmestre" ["'.To::html(trim(mysql_error())).'"] !');
+				exit('Erreur : impossible d\'accéder et de créer la base "sacoche_webmestre" ["'.html(trim(mysql_error())).'"] !');
 			}
 		}
 		// Créer le fichier de connexion de la base de données du webmestre, installation multi-structures
@@ -329,7 +329,7 @@ elseif( $step==51 )
 			$options = '<option value=""></option>';
 			foreach($tab_tables as $table)
 			{
-				$options .= '<option value="'.To::html($table).'">'.To::html($table).'</option>';
+				$options .= '<option value="'.html($table).'">'.html($table).'</option>';
 			}
 			$affichage .= '<label class="tab" for="f_name">Nom de la base :</label><select id="f_name" name="f_name">'.$options.'</select><br />'."\r\n";
 		}
@@ -338,7 +338,7 @@ elseif( $step==51 )
 			// Sinon, c'est un input
 			$affichage .= '<label class="tab" for="f_name">Nom de la base :</label><input id="f_name" name="f_name" size="20" type="text" value="" /><br />'."\r\n";
 		}
-		$affichage .= '<span class="tab"></span><input id="f_host" name="f_host" size="20" type="hidden" value="'.To::html($BD_host).'" /><input id="f_port" name="f_port" size="20" type="hidden" value="'.$BD_port.'" /><input id="f_user" name="f_user" size="20" type="hidden" value="'.To::html($BD_user).'" /><input id="f_pass" name="f_pass" size="20" type="hidden" value="'.To::html($BD_pass).'" /><input id="f_step" name="f_step" type="hidden" value="52" /><button id="f_submit" type="submit" class="valider">Valider.</button><label id="ajax_msg">&nbsp;</label>'."\r\n";
+		$affichage .= '<span class="tab"></span><input id="f_host" name="f_host" size="20" type="hidden" value="'.html($BD_host).'" /><input id="f_port" name="f_port" size="20" type="hidden" value="'.$BD_port.'" /><input id="f_user" name="f_user" size="20" type="hidden" value="'.html($BD_user).'" /><input id="f_pass" name="f_pass" size="20" type="hidden" value="'.html($BD_pass).'" /><input id="f_step" name="f_step" type="hidden" value="52" /><button id="f_submit" type="submit" class="valider">Valider.</button><label id="ajax_msg">&nbsp;</label>'."\r\n";
 		$affichage .= '</fieldset>'."\r\n";
 	}
 	echo $affichage;
@@ -362,7 +362,7 @@ elseif( $step==52 )
 	$BDlink = @mysql_connect($BD_host.':'.$BD_port,$BD_user,$BD_pass);
 	if(!$BDlink)
 	{
-		exit('Erreur : impossible de se connecter à MySQL ["'.To::html(trim(mysql_error())).'"] !');
+		exit('Erreur : impossible de se connecter à MySQL ["'.html(trim(mysql_error())).'"] !');
 	}
 	if(HEBERGEUR_INSTALLATION!='mono-structure')
 	{
@@ -372,7 +372,7 @@ elseif( $step==52 )
 	$bool = @mysql_select_db($BD_name,$BDlink);
 	if(!$bool)
 	{
-		exit('Erreur : impossible d\'accéder à la base "'.To::html($BD_name).'" ["'.To::html(trim(mysql_error())).'"] !');
+		exit('Erreur : impossible d\'accéder à la base "'.html($BD_name).'" ["'.html(trim(mysql_error())).'"] !');
 	}
 	// Créer le fichier de connexion de la base de données du webmestre, installation multi-structures
 	fabriquer_fichier_connexion_base(0,$BD_host,$BD_port,$BD_name,$BD_user,$BD_pass);

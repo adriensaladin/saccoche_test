@@ -66,7 +66,7 @@ else
 	foreach($DB_TAB as $DB_ROW)
 	{
 		$tab_matiere[$DB_ROW['matiere_id']] = array(
-			'nom'         => To::html($DB_ROW['matiere_nom']) ,
+			'nom'         => html($DB_ROW['matiere_nom']) ,
 			'nb_demandes' => $DB_ROW['matiere_nb_demandes']
 		);
 	}
@@ -82,7 +82,7 @@ else
 		echo'<p><span class="astuce">Cliquer sur l\'&oelig;il pour voir le détail d\'un référentiel.</span></p>';
 		foreach($DB_TAB as $DB_ROW)
 		{
-			$tab_niveau[$DB_ROW['niveau_id']] = To::html($DB_ROW['niveau_nom']);
+			$tab_niveau[$DB_ROW['niveau_id']] = html($DB_ROW['niveau_nom']);
 		}
 		// On récupère la liste des coordonnateurs responsables par matières
 		$DB_TAB = DB_STRUCTURE_COMMUN::DB_lister_identite_coordonnateurs_par_matiere();
@@ -90,7 +90,7 @@ else
 		{
 			foreach($DB_TAB as $DB_ROW)
 			{
-				$tab_matiere[$DB_ROW['matiere_id']]['coord'] = str_replace('][','<br />',To::html($DB_ROW['coord_liste']));
+				$tab_matiere[$DB_ROW['matiere_id']]['coord'] = str_replace('][','<br />',html($DB_ROW['coord_liste']));
 			}
 		}
 		// On récupère la liste des référentiels par matière et niveau

@@ -51,8 +51,8 @@ $select_niveau_famille = Form::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_famil
 			foreach($DB_TAB as $DB_ROW)
 			{
 				echo'<tr id="id_'.$DB_ROW['niveau_id'].'">';
-				echo'	<td class="label">'.To::html($DB_ROW['niveau_ref']).'</td>';
-				echo'	<td class="label">'.To::html($DB_ROW['niveau_nom']).'</td>';
+				echo'	<td class="label">'.html($DB_ROW['niveau_ref']).'</td>';
+				echo'	<td class="label">'.html($DB_ROW['niveau_nom']).'</td>';
 				echo	'<td class="nu">';
 				echo		'<q class="supprimer" title="Supprimer ce niveau."></q>';
 				echo	'</td>';

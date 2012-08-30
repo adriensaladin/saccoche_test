@@ -49,8 +49,8 @@ if( ($action=='ajouter') && $niveau && $ref && $nom )
 	// Afficher le retour
 	echo'<tr id="id_'.$groupe_id.'" class="new">';
 	echo	'<td>{{NIVEAU_NOM}}</td>';
-	echo	'<td>'.To::html($ref).'</td>';
-	echo	'<td>'.To::html($nom).'</td>';
+	echo	'<td>'.html($ref).'</td>';
+	echo	'<td>'.html($nom).'</td>';
 	echo	'<td class="nu">';
 	echo		'<q class="modifier" title="Modifier ce groupe."></q>';
 	echo		'<q class="supprimer" title="Supprimer ce groupe."></q>';
@@ -72,8 +72,8 @@ else if( ($action=='modifier') && $id && $niveau && $ref && $nom )
 	DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_groupe_par_admin($id,$ref,$nom,$niveau);
 	// Afficher le retour
 	echo'<td>{{NIVEAU_NOM}}</td>';
-	echo'<td>'.To::html($ref).'</td>';
-	echo'<td>'.To::html($nom).'</td>';
+	echo'<td>'.html($ref).'</td>';
+	echo'<td>'.html($nom).'</td>';
 	echo'<td class="nu">';
 	echo	'<q class="modifier" title="Modifier ce groupe."></q>';
 	echo	'<q class="supprimer" title="Supprimer ce groupe."></q>';

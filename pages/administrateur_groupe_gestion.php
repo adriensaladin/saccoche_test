@@ -51,9 +51,9 @@ $TITRE = "Gérer les groupes";
 			{
 				// Afficher une ligne du tableau
 				echo'<tr id="id_'.$DB_ROW['groupe_id'].'">';
-				echo	'<td><i>'.sprintf("%02u",$DB_ROW['niveau_ordre']).'</i>'.To::html($DB_ROW['niveau_nom']).'</td>';
-				echo	'<td>'.To::html($DB_ROW['groupe_ref']).'</td>';
-				echo	'<td>'.To::html($DB_ROW['groupe_nom']).'</td>';
+				echo	'<td><i>'.sprintf("%02u",$DB_ROW['niveau_ordre']).'</i>'.html($DB_ROW['niveau_nom']).'</td>';
+				echo	'<td>'.html($DB_ROW['groupe_ref']).'</td>';
+				echo	'<td>'.html($DB_ROW['groupe_nom']).'</td>';
 				echo	'<td class="nu">';
 				echo		'<q class="modifier" title="Modifier ce groupe."></q>';
 				echo		'<q class="supprimer" title="Supprimer ce groupe."></q>';
@@ -74,8 +74,8 @@ if(count($DB_TAB))
 {
 	foreach($DB_TAB as $DB_ROW)
 	{
-		$select_niveau .= '<option value="'.$DB_ROW['niveau_id'].'">'.To::html($DB_ROW['niveau_nom']).'</option>';
-		$tab_niveau_ordre_js .= 'tab_niveau_ordre["'.To::html($DB_ROW['niveau_nom']).'"]="'.sprintf("%02u",$DB_ROW['niveau_ordre']).'";';
+		$select_niveau .= '<option value="'.$DB_ROW['niveau_id'].'">'.html($DB_ROW['niveau_nom']).'</option>';
+		$tab_niveau_ordre_js .= 'tab_niveau_ordre["'.html($DB_ROW['niveau_nom']).'"]="'.sprintf("%02u",$DB_ROW['niveau_ordre']).'";';
 	}
 }
 else

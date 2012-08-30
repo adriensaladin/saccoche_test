@@ -50,7 +50,7 @@ function afficher_formulaire_etablissement($BASE,$profil)
 function afficher_nom_etablissement($BASE,$denomination)
 {
 	$changer = (HEBERGEUR_INSTALLATION=='multi-structures') ? ' - <a id="f_changer" href="#">changer</a>' : '' ;
-	echo'<label class="tab">Établissement :</label><input id="f_base" name="f_base" type="hidden" value="'.$BASE.'" /><em>'.To::html($denomination).'</em>'.$changer.'<br />'."\r\n";
+	echo'<label class="tab">Établissement :</label><input id="f_base" name="f_base" type="hidden" value="'.$BASE.'" /><em>'.html($denomination).'</em>'.$changer.'<br />'."\r\n";
 }
 
 /*
@@ -76,7 +76,7 @@ function afficher_formulaire_identification($profil,$mode='normal',$nom='')
 	{
 		echo'<label class="tab">Mode de connexion :</label>';
 		echo	'<label for="f_mode_normal"><input type="radio" id="f_mode_normal" name="f_mode" value="normal" /> formulaire <em>SACoche</em></label>&nbsp;&nbsp;&nbsp;';
-		echo	'<label for="f_mode_'.$mode.'"><input type="radio" id="f_mode_'.$mode.'" name="f_mode" value="'.$mode.'" checked /> authentification extérieure <em>'.To::html($mode.'-'.$nom).'</em></label><br />'."\r\n";
+		echo	'<label for="f_mode_'.$mode.'"><input type="radio" id="f_mode_'.$mode.'" name="f_mode" value="'.$mode.'" checked /> authentification extérieure <em>'.html($mode.'-'.$nom).'</em></label><br />'."\r\n";
 		echo'<fieldset id="fieldset_normal" class="hide">'."\r\n";
 		echo'<label class="tab" for="f_login">Nom d\'utilisateur :</label><input id="f_login" name="f_login" size="20" type="text" value="" tabindex="2" autocomplete="off" /><br />'."\r\n";
 		echo'<label class="tab" for="f_password">Mot de passe :</label><input id="f_password" name="f_password" size="20" type="password" value="" tabindex="3" autocomplete="off" /><br />'."\r\n";

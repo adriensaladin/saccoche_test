@@ -213,11 +213,11 @@ foreach($tab_eleve as $key => $tab)
 					}
 					if($aff_lien)
 					{
-						$texte_lien_avant = ($item_lien) ? '<a class="lien_ext" href="'.To::html($item_lien).'">' : '';
+						$texte_lien_avant = ($item_lien) ? '<a class="lien_ext" href="'.html($item_lien).'">' : '';
 						$texte_lien_apres = ($item_lien) ? '</a>' : '';
 					}
 					$texte_demande_eval = ($_SESSION['USER_PROFIL']!='eleve') ? '' : ( ($item_cart) ? '<q class="demander_add" id="demande_'.$matiere_id.'_'.$item_id.'_'.$score.'" title="Ajouter aux demandes d\'évaluations."></q>' : '<q class="demander_non" title="Demande interdite."></q>' ) ;
-					$tab_infos_detail_synthese[$eleve_id][$synthese_ref][] = '<span class="'.$tab_etat[$indice].'">'.$texte_coef.$texte_socle.$texte_lien_avant.To::html($item_ref.' || '.$item_nom.' ['.$score.'%]').'</span>'.$texte_lien_apres.$texte_demande_eval;
+					$tab_infos_detail_synthese[$eleve_id][$synthese_ref][] = '<span class="'.$tab_etat[$indice].'">'.$texte_coef.$texte_socle.$texte_lien_avant.html($item_ref.' || '.$item_nom.' ['.$score.'%]').'</span>'.$texte_lien_apres.$texte_demande_eval;
 				}
 			}
 		}
@@ -313,7 +313,7 @@ if( ($make_html) || ($make_graph) )
 	$bouton_print_appr = ((!$make_graph)&&($make_officiel)) ? ' <button id="imprimer_appreciations" type="button" class="imprimer">Imprimer ses appréciations</button>' : '' ;
 	$releve_HTML  = $affichage_direct ? '' : '<style type="text/css">'.$_SESSION['CSS'].'</style>';
 	$releve_HTML .= $affichage_direct ? '' : '<h1>Synthèse '.$tab_titre[$format].'</h1>';
-	$releve_HTML .= $affichage_direct ? '' : '<h2>'.To::html($texte_periode).'</h2>';
+	$releve_HTML .= $affichage_direct ? '' : '<h2>'.html($texte_periode).'</h2>';
 	$releve_HTML .= (!$make_graph) ? '<div class="astuce">Cliquer sur <img src="./_img/toggle_plus.gif" alt="+" /> / <img src="./_img/toggle_moins.gif" alt="+" /> pour afficher / masquer le détail'.$bouton_print_appr.'</div>' : '<div id="div_graphique"></div>' ;
 	$separation = (count($tab_eleve)>1) ? '<hr class="breakafter" />' : '' ;
 	$legende_html = ($legende=='oui') ? Html::legende( FALSE /*codes_notation*/ , TRUE /*etat_acquisition*/ , FALSE /*pourcentage_acquis*/ , FALSE /*etat_validation*/ ) : '' ;
@@ -335,7 +335,7 @@ foreach($tab_eleve as $tab)
 		if(isset($tab_infos_acquis_eleve[$eleve_id]))
 		{
 			// Intitulé
-			if($make_html) { $releve_HTML .= (!$make_officiel) ? $separation.'<h2>'.To::html($groupe_nom.' - '.$eleve_nom.' '.$eleve_prenom).'</h2>' : '' ; }
+			if($make_html) { $releve_HTML .= (!$make_officiel) ? $separation.'<h2>'.html($groupe_nom.' - '.$eleve_nom.' '.$eleve_prenom).'</h2>' : '' ; }
 			if($make_pdf)
 			{
 				$eleve_nb_lignes  = $tab_nb_lignes_total_eleve[$eleve_id];
@@ -385,7 +385,7 @@ foreach($tab_eleve as $tab)
 					if($make_html)
 					{
 						$releve_HTML .= '<table class="bilan" style="width:900px;margin-bottom:0"><tbody>';
-						$releve_HTML .= '<tr><th style="width:540px">'.To::html($tab_matiere[$matiere_id]).'</th>'.Html::td_barre_synthese($width=360,$tab_infos_matiere['total'],$total).'</tr>';
+						$releve_HTML .= '<tr><th style="width:540px">'.html($tab_matiere[$matiere_id]).'</th>'.Html::td_barre_synthese($width=360,$tab_infos_matiere['total'],$total).'</tr>';
 						$releve_HTML .= '</tbody></table>'; // Utilisation de 2 tableaux sinon bugs constatés lors de l'affichage des détails...
 						$releve_HTML .= '<table class="bilan" style="width:900px;margin-top:0"><tbody>';
 					}
@@ -409,7 +409,7 @@ foreach($tab_eleve as $tab)
 								$releve_HTML .= Html::td_barre_synthese($width_barre,$tab_infos_synthese,$total);
 								$releve_HTML .= '<td style="width:'.$width_texte.'px">' ;
 								$releve_HTML .= '<a href="#" id="to_'.$synthese_ref.'_'.$eleve_id.'"><img src="./_img/'.$toggle_img.'.gif" alt="" title="Voir / masquer le détail des items associés." class="toggle" /></a> ';
-								$releve_HTML .= To::html($tab_synthese[$synthese_ref]);
+								$releve_HTML .= html($tab_synthese[$synthese_ref]);
 								$releve_HTML .= '<div id="'.$synthese_ref.'_'.$eleve_id.'"'.$toggle_class.'>'.implode('<br />',$tab_infos_detail_synthese[$eleve_id][$synthese_ref]).'</div>';
 								$releve_HTML .= '</td></tr>';
 							}
@@ -439,7 +439,7 @@ foreach($tab_eleve as $tab)
 								$note_moyenne = ($_SESSION['tmp_moyenne_classe'][$periode_id][$classe_id][$matiere_id]!==NULL) ? ( ($_SESSION['OFFICIEL']['BULLETIN_NOTE_SUR_20']) ? number_format($_SESSION['tmp_moyenne_classe'][$periode_id][$classe_id][$matiere_id],1,'.','') : round($_SESSION['tmp_moyenne_classe'][$periode_id][$classe_id][$matiere_id]*5).'&nbsp;%' ) : '-' ;
 								$moyenne_classe = ' Moyenne de classe : '.$note_moyenne;
 							}
-							$releve_HTML .= '<tr id="note_'.$matiere_id.'_0"><td class="now moyenne">'.$note.'</td><td class="now"><span class="notnow">'.To::html($appreciation).$action.'</span>'.$moyenne_classe.'</td></tr>'."\r\n";
+							$releve_HTML .= '<tr id="note_'.$matiere_id.'_0"><td class="now moyenne">'.$note.'</td><td class="now"><span class="notnow">'.html($appreciation).$action.'</span>'.$moyenne_classe.'</td></tr>'."\r\n";
 						}
 						// Bulletin - Appréciations intermédiaires (HTML)
 						if( ($make_html) && ($make_officiel) && ($_SESSION['OFFICIEL']['BULLETIN_APPRECIATION_RUBRIQUE']) )
@@ -453,7 +453,7 @@ foreach($tab_eleve as $tab)
 									{
 										extract($tab);	// $prof_info $appreciation $note
 										$action = ( ($BILAN_ETAT=='2rubrique') && ($make_action=='saisir') && ($prof_id==$_SESSION['USER_ID']) ) ? ' <button type="button" class="modifier">Modifier</button> <button type="button" class="supprimer">Supprimer</button>' : ( ($prof_id!=$_SESSION['USER_ID']) ? ' <button type="button" class="signaler">Signaler une erreur</button>' : '' ) ;
-										$releve_HTML .= '<tr id="appr_'.$matiere_id.'_'.$prof_id.'"><td colspan="2" class="now"><div class="notnow">'.To::html($prof_info).$action.'</div><div class="appreciation">'.To::html($appreciation).'</div></td></tr>'."\r\n";
+										$releve_HTML .= '<tr id="appr_'.$matiere_id.'_'.$prof_id.'"><td colspan="2" class="now"><div class="notnow">'.html($prof_info).$action.'</div><div class="appreciation">'.html($appreciation).'</div></td></tr>'."\r\n";
 									}
 								}
 							}
@@ -470,11 +470,11 @@ foreach($tab_eleve as $tab)
 					// Examen de présence des appréciations intermédiaires et des notes
 					if( ($make_action=='examiner') && ($_SESSION['OFFICIEL']['BULLETIN_MOYENNE_SCORES']) && ( (!isset($tab_saisie[$eleve_id][$matiere_id][0])) || ($tab_saisie[$eleve_id][$matiere_id][0]['note']===NULL) ) )
 					{
-						$tab_resultat_examen[$tab_matiere[$matiere_id]][] = 'Absence de note pour '.To::html($eleve_nom.' '.$eleve_prenom);
+						$tab_resultat_examen[$tab_matiere[$matiere_id]][] = 'Absence de note pour '.html($eleve_nom.' '.$eleve_prenom);
 					}
 					if( ($make_action=='examiner') && ($_SESSION['OFFICIEL']['BULLETIN_APPRECIATION_RUBRIQUE']) && ( (!isset($tab_saisie[$eleve_id][$matiere_id])) || (max(array_keys($tab_saisie[$eleve_id][$matiere_id]))==0) ) )
 					{
-						$tab_resultat_examen[$tab_matiere[$matiere_id]][] = 'Absence d\'appréciation pour '.To::html($eleve_nom.' '.$eleve_prenom);
+						$tab_resultat_examen[$tab_matiere[$matiere_id]][] = 'Absence d\'appréciation pour '.html($eleve_nom.' '.$eleve_prenom);
 					}
 					// Impression des appréciations intermédiaires (PDF)
 					if( ($make_action=='imprimer') && ($_SESSION['OFFICIEL']['BULLETIN_APPRECIATION_RUBRIQUE']) )
@@ -506,7 +506,7 @@ foreach($tab_eleve as $tab)
 						list($prof_id,$tab) = each($tab_saisie[$eleve_id][0]);
 						extract($tab);	// $prof_info $appreciation $note
 						$action = ( ($BILAN_ETAT=='3synthese') && ($make_action=='saisir') ) ? ' <button type="button" class="modifier">Modifier</button> <button type="button" class="supprimer">Supprimer</button>' : '' ;
-						$releve_HTML .= '<tr id="appr_0_'.$prof_id.'"><td colspan="2" class="now"><div class="notnow">'.To::html($prof_info).$action.'</div><div class="appreciation">'.To::html($appreciation).'</div></td></tr>'."\r\n";
+						$releve_HTML .= '<tr id="appr_0_'.$prof_id.'"><td colspan="2" class="now"><div class="notnow">'.html($prof_info).$action.'</div><div class="appreciation">'.html($appreciation).'</div></td></tr>'."\r\n";
 					}
 					elseif( ($BILAN_ETAT=='3synthese') && ($make_action=='saisir') )
 					{
@@ -518,7 +518,7 @@ foreach($tab_eleve as $tab)
 			// Examen de présence de l'appréciation générale
 			if( ($make_action=='examiner') && ($_SESSION['OFFICIEL']['BULLETIN_APPRECIATION_GENERALE']) && (in_array(0,$tab_rubrique_id)) && (!isset($tab_saisie[$eleve_id][0])) )
 			{
-				$tab_resultat_examen['Synthèse générale'][] = 'Absence d\'appréciation générale pour '.To::html($eleve_nom.' '.$eleve_prenom);
+				$tab_resultat_examen['Synthèse générale'][] = 'Absence d\'appréciation générale pour '.html($eleve_nom.' '.$eleve_prenom);
 			}
 			// Impression de l'appréciation générale + Moyenne générale
 			if( ($make_action=='imprimer') && ($_SESSION['OFFICIEL']['BULLETIN_APPRECIATION_GENERALE']) )

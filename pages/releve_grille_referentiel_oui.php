@@ -73,7 +73,7 @@ if( ($_SESSION['USER_PROFIL']=='parent') && ($_SESSION['NB_ENFANTS']==1) )
 	$tab_groupes  = array(0=>array('valeur'=>$_SESSION['ELEVE_CLASSE_ID'],'texte'=>$_SESSION['ELEVE_CLASSE_NOM']));
 	$of_g = 'non'; $sel_g = true;  $og_g = 'non'; $class_form_type = 'hide'; $class_form_eleve = 'hide'; $sel_n = 'val';
 	$multiple_eleve = '';
-	$select_eleves = '<option value="'.$_SESSION['OPT_PARENT_ENFANTS'][0]['valeur'].'" selected>'.To::html($_SESSION['OPT_PARENT_ENFANTS'][0]['texte']).'</option>';
+	$select_eleves = '<option value="'.$_SESSION['OPT_PARENT_ENFANTS'][0]['valeur'].'" selected>'.html($_SESSION['OPT_PARENT_ENFANTS'][0]['texte']).'</option>';
 }
 if($_SESSION['USER_PROFIL']=='eleve')
 {
@@ -81,7 +81,7 @@ if($_SESSION['USER_PROFIL']=='eleve')
 	$tab_groupes  = array(0=>array('valeur'=>$_SESSION['ELEVE_CLASSE_ID'],'texte'=>$_SESSION['ELEVE_CLASSE_NOM']));
 	$of_g = 'non'; $sel_g = true;  $og_g = 'non'; $class_form_type = 'hide'; $class_form_eleve = 'hide'; $sel_n = 'val';
 	$multiple_eleve = '';
-	$select_eleves = '<option value="'.$_SESSION['USER_ID'].'" selected>'.To::html($_SESSION['USER_NOM'].' '.$_SESSION['USER_PRENOM']).'</option>';
+	$select_eleves = '<option value="'.$_SESSION['USER_ID'].'" selected>'.html($_SESSION['USER_NOM'].' '.$_SESSION['USER_PRENOM']).'</option>';
 }
 
 $select_tri_objet     = Form::afficher_select(Form::$tab_select_tri_objet     , $select_nom='f_tri_objet'     , $option_first='non' , $selection=Form::$tab_choix['tableau_tri_objet'] , $optgroup='non');

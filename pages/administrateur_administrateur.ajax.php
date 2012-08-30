@@ -69,12 +69,12 @@ if( ($action=='ajouter') && $nom && $prenom && $login && $password )
 	$user_id = DB_STRUCTURE_COMMUN::DB_ajouter_utilisateur($user_sconet_id=0,$user_sconet_elenoet=0,$reference='','administrateur',$nom,$prenom,$login,crypter_mdp($password),$classe_id=0,$id_ent,$id_gepi);
 	// Afficher le retour
 	echo'<tr id="id_'.$user_id.'" class="new">';
-	echo	'<td>'.To::html($id_ent).'</td>';
-	echo	'<td>'.To::html($id_gepi).'</td>';
-	echo	'<td>'.To::html($nom).'</td>';
-	echo	'<td>'.To::html($prenom).'</td>';
-	echo	'<td class="new">'.To::html($login).' <img alt="" title="Pensez à noter le login !"  src="./_img/bulle_aide.png" /></td>';
-	echo	'<td class="new">'.To::html($password).' <img alt="" title="Pensez à noter le mot de passe !" src="./_img/bulle_aide.png" /></td>';
+	echo	'<td>'.html($id_ent).'</td>';
+	echo	'<td>'.html($id_gepi).'</td>';
+	echo	'<td>'.html($nom).'</td>';
+	echo	'<td>'.html($prenom).'</td>';
+	echo	'<td class="new">'.html($login).' <img alt="" title="Pensez à noter le login !"  src="./_img/bulle_aide.png" /></td>';
+	echo	'<td class="new">'.html($password).' <img alt="" title="Pensez à noter le mot de passe !" src="./_img/bulle_aide.png" /></td>';
 	echo	'<td class="nu">';
 	echo		'<q class="modifier" title="Modifier cet administrateur."></q>';
 	echo		'<q class="supprimer" title="Retirer cet administrateur."></q>';
@@ -124,11 +124,11 @@ if( ($action=='modifier') && $id && $nom && $prenom && $login && ( $not_new_mdp 
 		$_SESSION['USER_PRENOM'] = $prenom ;
 	}
 	// Afficher le retour
-	echo'<td>'.To::html($id_ent).'</td>';
-	echo'<td>'.To::html($id_gepi).'</td>';
-	echo'<td>'.To::html($nom).'</td>';
-	echo'<td>'.To::html($prenom).'</td>';
-	echo'<td>'.To::html($login).'</td>';
+	echo'<td>'.html($id_ent).'</td>';
+	echo'<td>'.html($id_gepi).'</td>';
+	echo'<td>'.html($nom).'</td>';
+	echo'<td>'.html($prenom).'</td>';
+	echo'<td>'.html($login).'</td>';
 	echo ($not_new_mdp) ? '<td class="i">champ crypté</td>' : '<td class="new">'.$password.' <img alt="" src="./_img/bulle_aide.png" title="Pensez à noter le mot de passe !" /></td>' ;
 	echo'<td class="nu">';
 	echo	'<q class="modifier" title="Modifier ce administrateur."></q>';

@@ -74,7 +74,7 @@ if( ($action=='ajouter') && $niveau && $groupe_nom && $nb_eleves )
 	$profs_texte   = ($nb_profs>1)  ? $nb_profs.' profs'   : 'moi seul' ;
 	echo'<tr id="id_'.$groupe_id.'" class="new">';
 	echo	'<td>{{NIVEAU_NOM}}</td>';
-	echo	'<td>'.To::html($groupe_nom).'</td>';
+	echo	'<td>'.html($groupe_nom).'</td>';
 	echo	'<td>'.$eleves_texte.'</td>';
 	echo	'<td>'.$profs_texte.'</td>';
 	echo	'<td class="nu">';
@@ -107,7 +107,7 @@ if( ($action=='modifier') && $groupe_id && $niveau && $groupe_nom && $nb_eleves 
 	$eleves_texte  = ($nb_eleves>1) ? $nb_eleves.' élèves' : '1 élève' ;
 	$profs_texte   = ($nb_profs>1)  ? $nb_profs.' profs'   : 'moi seul' ;
 	echo'<td>{{NIVEAU_NOM}}</td>';
-	echo'<td>'.To::html($groupe_nom).'</td>';
+	echo'<td>'.html($groupe_nom).'</td>';
 	echo'<td>'.$eleves_texte.'</td>';
 	echo'<td>'.$profs_texte.'</td>';
 	echo'<td class="nu">';

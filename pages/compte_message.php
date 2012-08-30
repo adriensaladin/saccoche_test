@@ -71,13 +71,13 @@ $select_profil.= '<option value="professeur">Professeurs</option><option value="
 					$destinataires_liste  = str_replace(',','_',mb_substr($DB_ROW['message_destinataires'],1,-1));
 					$destinataires_nombre = (mb_substr_count($DB_ROW['message_destinataires'],',')-1);
 					$destinataires_nombre = ($destinataires_nombre>1) ? $destinataires_nombre.' destinataires' : $destinataires_nombre.' destinataire' ;
-					// $message_contenu      = (mb_strlen($DB_ROW['message_contenu'])<30) ? To::html($DB_ROW['message_contenu']) : To::html(mb_substr($DB_ROW['message_contenu'],0,25)).' <img alt="" src="./_img/bulle_aide.png" title="'.str_replace(array("\r\n","\r","\n"),'<br />',To::html($DB_ROW['message_contenu'])).'" />' ;
+					// $message_contenu      = (mb_strlen($DB_ROW['message_contenu'])<30) ? html($DB_ROW['message_contenu']) : html(mb_substr($DB_ROW['message_contenu'],0,25)).' <img alt="" src="./_img/bulle_aide.png" title="'.str_replace(array("\r\n","\r","\n"),'<br />',html($DB_ROW['message_contenu'])).'" />' ;
 					// Afficher une ligne du tableau
 					echo'<tr id="id_'.$DB_ROW['message_id'].'">';
 					echo	'<td><i>'.$DB_ROW['message_debut_date'].'</i>'.$date_debut_affich.'</td>';
 					echo	'<td><i>'.$DB_ROW['message_fin_date'].'</i>'.$date_fin_affich.'</td>';
 					echo	'<td>'.$destinataires_nombre.'</td>';
-					echo	'<td>'.To::html(mb_substr($DB_ROW['message_contenu'],0,30)).'</td>';
+					echo	'<td>'.html(mb_substr($DB_ROW['message_contenu'],0,30)).'</td>';
 					echo	'<td class="nu">';
 					echo		'<q class="modifier" title="Modifier ce message."></q>';
 					echo		'<q class="supprimer" title="Supprimer ce message."></q>';
@@ -85,7 +85,7 @@ $select_profil.= '<option value="professeur">Professeurs</option><option value="
 					echo'</tr>';
 					// Pour js
 					$script .= 'tab_destinataires['.$DB_ROW['message_id'].']="'.$destinataires_liste.'";';
-					$script .= 'tab_msg_contenus['.$DB_ROW['message_id'].']="'.str_replace(array("\r\n","\r","\n"),array('\r\n','\r','\n'),To::html($DB_ROW['message_contenu'])).'";';
+					$script .= 'tab_msg_contenus['.$DB_ROW['message_id'].']="'.str_replace(array("\r\n","\r","\n"),array('\r\n','\r','\n'),html($DB_ROW['message_contenu'])).'";';
 				}
 			}
 			else

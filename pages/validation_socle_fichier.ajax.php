@@ -87,7 +87,7 @@ if( in_array( $action , array('export_lpc','export_sacoche') ) && $nb )
 		$xml.= '	<entete>'."\r\n";
 		$xml.= '		<editeur>SESAMATH</editeur>'."\r\n";
 		$xml.= '		<application>SACOCHE</application>'."\r\n";
-		$xml.= '		<etablissement>'.To::html($_SESSION['WEBMESTRE_UAI']).'</etablissement>'."\r\n";
+		$xml.= '		<etablissement>'.html($_SESSION['WEBMESTRE_UAI']).'</etablissement>'."\r\n";
 		$xml.= '	</entete>'."\r\n";
 		$xml.= '	<donnees>'."\r\n";
 	}
@@ -102,7 +102,7 @@ if( in_array( $action , array('export_lpc','export_sacoche') ) && $nb )
 		if(isset($tab_validations[$user_id]))
 		{
 			$nb_eleves++;
-			$xml.= '		<eleve id="'.$tab_user['sconet_id'].'" nom="'.To::html($tab_user['nom']).'" prenom="'.To::html($tab_user['prenom']).'">'."\r\n";
+			$xml.= '		<eleve id="'.$tab_user['sconet_id'].'" nom="'.html($tab_user['nom']).'" prenom="'.html($tab_user['prenom']).'">'."\r\n";
 			foreach($tab_validations[$user_id] as $palier_id => $tab_pilier)
 			{
 				$xml.= '			<palier id="'.$palier_id.'">'."\r\n";
@@ -118,7 +118,7 @@ if( in_array( $action , array('export_lpc','export_sacoche') ) && $nb )
 						if(!$only_positives)
 						{
 							$xml.= '						<etat>'.$tab_item[0]['etat'].'</etat>'."\r\n";
-							$xml.= '						<info>'.To::html($tab_item[0]['info']).'</info>'."\r\n";
+							$xml.= '						<info>'.html($tab_item[0]['info']).'</info>'."\r\n";
 						}
 						$xml.= '					</validation>'."\r\n";
 						unset($tab_item[0]);
@@ -135,7 +135,7 @@ if( in_array( $action , array('export_lpc','export_sacoche') ) && $nb )
 							if(!$only_positives)
 							{
 								$xml.= '							<etat>'.$tab_item_infos['etat'].'</etat>'."\r\n";
-								$xml.= '							<info>'.To::html($tab_item_infos['info']).'</info>'."\r\n";
+								$xml.= '							<info>'.html($tab_item_infos['info']).'</info>'."\r\n";
 							}
 							$xml.= '						</renseignement>'."\r\n";
 							$xml.= '					</item>'."\r\n";
@@ -159,7 +159,7 @@ if( in_array( $action , array('export_lpc','export_sacoche') ) && $nb )
 		$xml = signer_exportLPC($_SESSION['SESAMATH_ID'],$_SESSION['SESAMATH_KEY'],$xml); // fonction sur le modèle de envoyer_arborescence_XML()
 		if(substr($xml,0,5)!='<?xml')
 		{
-			exit(To::html($xml));
+			exit(html($xml));
 		}
 		FileSystem::ecrire_fichier( CHEMIN_DOSSIER_EXPORT.$fichier_nom , $xml );
 	}
@@ -168,15 +168,7 @@ if( in_array( $action , array('export_lpc','export_sacoche') ) && $nb )
 		$xml.= '	</donnees>'."\r\n";
 		$xml.= '</sacoche>'."\r\n";
 		// L'export pour SACoche on peut le zipper (le gain est très significatif : facteur 40 à 50 !)
-		$zip = new ZipArchive();
-		$result_open = $zip->open(CHEMIN_DOSSIER_EXPORT.$fichier_nom, ZIPARCHIVE::CREATE);
-		if($result_open!==TRUE)
-		{
-			require(CHEMIN_DOSSIER_INCLUDE.'tableau_zip_error.php');
-			exit('Erreur : problème de création de l\'archive ZIP ('.$result_open.$tab_zip_error[$result_open].') !');
-		}
-		$zip->addFromString('import_validations.xml',$xml);
-		$zip->close();
+		FileSystem::zip( CHEMIN_DOSSIER_EXPORT.$fichier_nom , 'import_validations.xml' , $xml );
 	}
 	// Afficher le retour
 	$se = ($nb_eleves>1)  ? 's' : '' ;
@@ -185,7 +177,7 @@ if( in_array( $action , array('export_lpc','export_sacoche') ) && $nb )
 	$in = $only_positives ? '' : '(in)-' ;
 	echo'<li><label class="valide">Fichier d\'export généré : '.$nb_piliers.' '.$in.'validation'.$sp.' de compétence'.$sp.' et '.$nb_items.' '.$in.'validation'.$si.' d\'item'.$si.' concernant '.$nb_eleves.' élève'.$se.'.</label></li>';
 	echo'<li><a class="lien_ext" href="'.URL_DIR_EXPORT.$fichier_nom.'"><span class="file file_'.$fichier_extension.'">Récupérez le fichier au format <em>'.$fichier_extension.'</em>. <img alt="" src="./_img/bulle_aide.png" title="Si le navigateur ouvre le fichier au lieu de l\'enregistrer, cliquer avec le bouton droit et choisir «&nbsp;Enregistrer&nbsp;sous...&nbsp;»." /></span></a></li>';
-	echo'<li>Vous devrez indiquer dans <em>lpc</em> les dates suivantes : <span class="b">'.To::html(CNIL_DATE_ENGAGEMENT).'</span> (déclaration <em>cnil</em>) et <span class="b">'.To::html(CNIL_DATE_RECEPISSE).'</span> (retour du récépissé).</li>';
+	echo'<li>Vous devrez indiquer dans <em>lpc</em> les dates suivantes : <span class="b">'.html(CNIL_DATE_ENGAGEMENT).'</span> (déclaration <em>cnil</em>) et <span class="b">'.html(CNIL_DATE_RECEPISSE).'</span> (retour du récépissé).</li>';
 	echo'<li><label class="alerte">Pour des raisons de sécurité et de confidentialité, ce fichier sera effacé du serveur dans 1h.</label></li>';
 	exit();
 }
@@ -220,28 +212,12 @@ if( in_array( $action , array('import_sacoche','import_compatible') ) )
 	}
 	else
 	{
-		// Dézipper le fichier
+		// Dézipper le fichier (on considère alors que c'est un zip venant de SACoche et contenant import_validations.xml)
 		if(extension_loaded('zip')!==TRUE)
 		{
 			exit('Erreur : le serveur ne gère pas les fichiers ZIP ! Renvoyez votre fichier sans compression.');
 		}
-		$zip = new ZipArchive();
-		$result_open = $zip->open($fnom_serveur);
-		if($result_open!==TRUE)
-		{
-			require(CHEMIN_DOSSIER_INCLUDE.'tableau_zip_error.php');
-			exit('Erreur : votre archive ZIP n\'a pas pu être ouverte ('.$result_open.$tab_zip_error[$result_open].') !');
-		}
-		$nom_fichier_extrait = 'import_validations.xml';
-		if($zip->extractTo(CHEMIN_DOSSIER_IMPORT,$nom_fichier_extrait)!==TRUE)
-		{
-			exit('Erreur : fichier '.$nom_fichier_extrait.' non trouvé dans l\'archive ZIP !');
-		}
-		$zip->close();
-		if(!rename(CHEMIN_DOSSIER_IMPORT.$nom_fichier_extrait , CHEMIN_DOSSIER_IMPORT.$fichier_upload_nom))
-		{
-			exit('Erreur : le fichier n\'a pas pu être enregistré sur le serveur.');
-		}
+		unzip_one( $fnom_serveur , 'import_validations.xml' , $fichier_upload_nom );
 	}
 	$fichier_contenu = file_get_contents(CHEMIN_DOSSIER_IMPORT.$fichier_upload_nom);
 	$fichier_contenu = To::utf8($fichier_contenu); // Mettre en UTF-8 si besoin
@@ -275,7 +251,7 @@ if( in_array( $action , array('import_sacoche','import_compatible') ) )
 							{
 								$date = Clean::texte($competence->validation->date) ;
 								$etat = ($competence->validation->etat) ? Clean::entier($competence->validation->etat) : 1 ;
-								$info = ($competence->validation->info) ? To::html_decode($competence->validation->info) : $action ;
+								$info = ($competence->validation->info) ? html_decode($competence->validation->info) : $action ;
 								$tab_validations['pilier'][$pilier_id] = array('date'=>$date,'etat'=>$etat,'info'=>$info);
 							}
 							if( ($competence->item) && ($competence->item->renseignement) && ($competence->item->renseignement->date) )
@@ -287,7 +263,7 @@ if( in_array( $action , array('import_sacoche','import_compatible') ) )
 										$item_id = Clean::entier($item->attributes()->id);
 										$date = Clean::texte($item->renseignement->date) ;
 										$etat = ($item->renseignement->etat) ? Clean::entier($item->renseignement->etat) : 1 ;
-										$info = ($item->renseignement->info) ? To::html_decode($item->renseignement->info) : $action ;
+										$info = ($item->renseignement->info) ? html_decode($item->renseignement->info) : $action ;
 										$tab_validations['entree'][$item_id] = array('date'=>$date,'etat'=>$etat,'info'=>$info);
 									}
 								}
@@ -343,7 +319,7 @@ if( in_array( $action , array('import_sacoche','import_compatible') ) )
 		// Cas [1] : non trouvé dans la base : contenu à ignorer
 		if(!$id_base)
 		{
-			$lignes_ignorer .= '<li><em>Ignoré</em> (non trouvé dans la base) : '.To::html($tab_users_fichier['nom'][$i_fichier].' '.$tab_users_fichier['prenom'][$i_fichier]).' ('.$tab_users_fichier['sconet_id'][$i_fichier].')</li>';
+			$lignes_ignorer .= '<li><em>Ignoré</em> (non trouvé dans la base) : '.html($tab_users_fichier['nom'][$i_fichier].' '.$tab_users_fichier['prenom'][$i_fichier]).' ('.$tab_users_fichier['sconet_id'][$i_fichier].')</li>';
 			unset( $tab_eleve_fichier['validations'][$i_fichier] );
 		}
 		// Cas [2] : trouvé dans la base : contenu à étudier par la suite
@@ -412,11 +388,11 @@ if( in_array( $action , array('import_sacoche','import_compatible') ) )
 			if($nb_modifs)
 			{
 				$s = ($nb_modifs>1) ? 's' : '' ;
-				$lignes_modifier .= '<li><em>Modifié</em> ('.$nb_modifs.' import'.$s.' de validation'.$s.' ) : '.To::html($tab_eleve_base['nom'][$id_base].' '.$tab_eleve_base['prenom'][$id_base]).' ('.$tab_eleve_base['sconet_id'][$id_base].')</li>';
+				$lignes_modifier .= '<li><em>Modifié</em> ('.$nb_modifs.' import'.$s.' de validation'.$s.' ) : '.html($tab_eleve_base['nom'][$id_base].' '.$tab_eleve_base['prenom'][$id_base]).' ('.$tab_eleve_base['sconet_id'][$id_base].')</li>';
 			}
 			else
 			{
-				$lignes_inchanger .= '<li><em>Inchangé</em> (pas de validations nouvelles) : '.To::html($tab_eleve_base['nom'][$id_base].' '.$tab_eleve_base['prenom'][$id_base]).' ('.$tab_eleve_base['sconet_id'][$id_base].')</li>';
+				$lignes_inchanger .= '<li><em>Inchangé</em> (pas de validations nouvelles) : '.html($tab_eleve_base['nom'][$id_base].' '.$tab_eleve_base['prenom'][$id_base]).' ('.$tab_eleve_base['sconet_id'][$id_base].')</li>';
 			}
 		}
 	}

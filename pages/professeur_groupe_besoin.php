@@ -43,8 +43,8 @@ foreach($DB_TAB as $DB_ROW)
 	{
 		$tab_groupe_proprio[$DB_ROW['groupe_id']] = array
 		(
-			'niveau'     => '<i>'.sprintf("%02u",$DB_ROW['niveau_ordre']).'</i>'.To::html($DB_ROW['niveau_nom']) ,
-			'nom'        => To::html($DB_ROW['groupe_nom']) ,
+			'niveau'     => '<i>'.sprintf("%02u",$DB_ROW['niveau_ordre']).'</i>'.html($DB_ROW['niveau_nom']) ,
+			'nom'        => html($DB_ROW['groupe_nom']) ,
 			'eleve'      => array() ,
 			'professeur' => array()
 		);
@@ -54,7 +54,7 @@ foreach($DB_TAB as $DB_ROW)
 		$tab_niveau_groupe[$DB_ROW['niveau_id']][] = $DB_ROW['groupe_id'];
 		$tab_groupe_associe[$DB_ROW['groupe_id']] = array
 		(
-			'nom'        => To::html($DB_ROW['groupe_nom']) ,
+			'nom'        => html($DB_ROW['groupe_nom']) ,
 			'eleve'      => '' ,
 			'professeur' => ''
 		);
@@ -75,7 +75,7 @@ if( count($DB_TAB) )
 		}
 		else
 		{
-			$tab_groupe_associe[$DB_ROW['groupe_id']][$DB_ROW['user_profil']] .= ($DB_ROW['jointure_pp']) ? '<span class="proprio">'.To::html($DB_ROW['user_nom'].' '.$DB_ROW['user_prenom']).'</span><br />' : To::html($DB_ROW['user_nom'].' '.$DB_ROW['user_prenom']).'<br />' ;
+			$tab_groupe_associe[$DB_ROW['groupe_id']][$DB_ROW['user_profil']] .= ($DB_ROW['jointure_pp']) ? '<span class="proprio">'.html($DB_ROW['user_nom'].' '.$DB_ROW['user_prenom']).'</span><br />' : html($DB_ROW['user_nom'].' '.$DB_ROW['user_prenom']).'<br />' ;
 		}
 	}
 }
@@ -90,8 +90,8 @@ if(count($DB_TAB))
 {
 	foreach($DB_TAB as $DB_ROW)
 	{
-		$select_niveau .= '<option value="'.$DB_ROW['niveau_id'].'">'.To::html($DB_ROW['niveau_nom']).'</option>';
-		$tab_niveau_ordre_js .= 'tab_niveau_ordre["'.To::html($DB_ROW['niveau_nom']).'"]="'.sprintf("%02u",$DB_ROW['niveau_ordre']).'";';
+		$select_niveau .= '<option value="'.$DB_ROW['niveau_id'].'">'.html($DB_ROW['niveau_nom']).'</option>';
+		$tab_niveau_ordre_js .= 'tab_niveau_ordre["'.html($DB_ROW['niveau_nom']).'"]="'.sprintf("%02u",$DB_ROW['niveau_ordre']).'";';
 	}
 }
 else

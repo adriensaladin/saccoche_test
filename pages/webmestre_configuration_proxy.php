@@ -62,15 +62,15 @@ foreach($tab_select_proxy_auth_method as $option_value => $option_texte)
 <form action="#" method="post" id="form_proxy"><fieldset>
 	<span class="tab"></span><label for="f_proxy_used"><input type="checkbox" id="f_proxy_used" name="f_proxy_used" value="1"<?php echo $check_proxy_used ?> /> Mon serveur nécessite d'utiliser un proxy.</label>
 	<div id="div_proxy_used" class="<?php echo $class_proxy_used ?>">
-		<label class="tab" for="f_proxy_name">Nom du proxy <img alt="" src="./_img/bulle_aide.png" title="Exemple : proxy2" /> :</label><input id="f_proxy_name" name="f_proxy_name" size="10" type="text" value="<?php echo To::html(SERVEUR_PROXY_NAME); ?>" /><br />
-		<label class="tab" for="f_proxy_port">Numéro du port <img alt="" src="./_img/bulle_aide.png" title="Exemple : 8080" /> :</label><input id="f_proxy_port" name="f_proxy_port" size="5" type="text" value="<?php echo To::html(SERVEUR_PROXY_PORT); ?>" /><br />
+		<label class="tab" for="f_proxy_name">Nom du proxy <img alt="" src="./_img/bulle_aide.png" title="Exemple : proxy2" /> :</label><input id="f_proxy_name" name="f_proxy_name" size="10" type="text" value="<?php echo html(SERVEUR_PROXY_NAME); ?>" /><br />
+		<label class="tab" for="f_proxy_port">Numéro du port <img alt="" src="./_img/bulle_aide.png" title="Exemple : 8080" /> :</label><input id="f_proxy_port" name="f_proxy_port" size="5" type="text" value="<?php echo html(SERVEUR_PROXY_PORT); ?>" /><br />
 		<label class="tab" for="f_proxy_type">Type de proxy <img alt="" src="./_img/bulle_aide.png" title="Par défaut HTTP" /> :</label><select id="f_proxy_type" name="f_proxy_type"><?php echo $select_proxy_type ?></select><br />
 		&nbsp;<br />
 		<span class="tab"></span><label for="f_proxy_auth_used"><input type="checkbox" id="f_proxy_auth_used" name="f_proxy_auth_used" value="1"<?php echo $check_proxy_auth_used ?> /> Ce proxy nécessite une authentification.</label>
 		<div id="div_proxy_auth_used" class="<?php echo $class_proxy_auth_used ?>">
 			<label class="tab" for="f_proxy_auth_method">Méthode <img alt="" src="./_img/bulle_aide.png" title="Par défaut BASIC.<br />Seuls deux protocoles sont actuellement supportés par cURL." /> :</label><select id="f_proxy_auth_method" name="f_proxy_auth_method"><?php echo $select_proxy_auth_method ?></select><br />
-			<label class="tab" for="f_proxy_auth_user">Nom d'utilisateur :</label><input id="f_proxy_auth_user" name="f_proxy_auth_user" size="10" type="text" value="<?php echo To::html(SERVEUR_PROXY_AUTH_USER); ?>" /><br />
-			<label class="tab" for="f_proxy_auth_pass">Mot de passe : </label><input id="f_proxy_auth_pass" name="f_proxy_auth_pass" size="10" type="text" value="<?php echo To::html(SERVEUR_PROXY_AUTH_PASS); ?>" />
+			<label class="tab" for="f_proxy_auth_user">Nom d'utilisateur :</label><input id="f_proxy_auth_user" name="f_proxy_auth_user" size="10" type="text" value="<?php echo html(SERVEUR_PROXY_AUTH_USER); ?>" /><br />
+			<label class="tab" for="f_proxy_auth_pass">Mot de passe : </label><input id="f_proxy_auth_pass" name="f_proxy_auth_pass" size="10" type="text" value="<?php echo html(SERVEUR_PROXY_AUTH_PASS); ?>" />
 		</div>
 	</div>
 	<p>

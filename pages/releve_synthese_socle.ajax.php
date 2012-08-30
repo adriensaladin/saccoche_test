@@ -264,7 +264,7 @@ $titre_info2 = ($memo_demande=='palier') ? $palier_nom : $palier_nom.' – '.mb_
 $releve_html  = $affichage_direct ? '' : '<style type="text/css">'.$_SESSION['CSS'].'</style>';
 $releve_html .= $affichage_direct ? '' : '<style type="text/css">thead th{text-align:center}tbody th,tbody td{width:8px;height:8px;vertical-align:middle}.nu2{background:#EAEAFF;border:none;}	/* classe existante nu non utilisée à cause de son height imposé */</style>';
 $releve_html .= $affichage_direct ? '' : '<h1>Synthèse de maîtrise du socle : '.$titre_info1.'</h1>';
-$releve_html .= $affichage_direct ? '' : '<h2>'.To::html($groupe_nom).' - '.To::html($titre_info2).'</h2>';
+$releve_html .= $affichage_direct ? '' : '<h2>'.html($groupe_nom).' - '.html($titre_info2).'</h2>';
 // Appel de la classe et définition de qqs variables supplémentaires pour la mise en page PDF
 $releve_pdf = new PDF( FALSE /*officiel*/ , 'landscape' /*orientation*/ , $marge_min /*marge_gauche*/ , $marge_min /*marge_droite*/ , $marge_min /*marge_haut*/ , $marge_min /*marge_bas*/ , $couleur , $legende );
 $releve_pdf->releve_synthese_socle_initialiser($titre_info1,$groupe_nom,$titre_info2,$eleves_nb,$items_nb,$piliers_nb);
@@ -277,7 +277,7 @@ foreach($tab_pilier as $tab)
 {
 	extract($tab);	// $pilier_ref $pilier_nom $pilier_nb_entrees
 	$texte = ($pilier_nb_entrees>10) ? 'Compétence ' : 'Comp. ' ;
-	$releve_html_head .= '<th class="nu2"></th><th colspan="'.$pilier_nb_entrees.'" title="'.To::html($pilier_nom).'">'.$texte.$pilier_ref.'</th>';
+	$releve_html_head .= '<th class="nu2"></th><th colspan="'.$pilier_nb_entrees.'" title="'.html($pilier_nom).'">'.$texte.$pilier_ref.'</th>';
 }
 $releve_html_head .= '</tr><tr>';
 foreach($tab_socle as $tab)
@@ -285,7 +285,7 @@ foreach($tab_socle as $tab)
 	$releve_html_head .= '<th class="nu2"></th>';
 	foreach($tab as $socle_nom)
 	{
-		$releve_html_head .= '<th class="info" title="'.To::html($socle_nom).'"></th>';
+		$releve_html_head .= '<th class="info" title="'.html($socle_nom).'"></th>';
 	}
 }
 $releve_html_head .= '</tr>';
@@ -307,7 +307,7 @@ foreach($tab_eleve as $tab)
 		// Indication des pourcentages
 		// - - - - -
 		$checkbox = ($affichage_checkbox) ? '<th class="nu2"><input type="checkbox" name="id_user[]" value="'.$eleve_id.'" /></th>' : '' ;
-		$releve_html_body .= '<tr>'.$checkbox.'<th>'.$image_langue.To::html($eleve_nom.' '.$eleve_prenom).'</th>';
+		$releve_html_body .= '<tr>'.$checkbox.'<th>'.$image_langue.html($eleve_nom.' '.$eleve_prenom).'</th>';
 		// Pour chaque entrée du socle...
 		foreach($tab_socle as $pilier_id => $tab)
 		{
@@ -326,7 +326,7 @@ foreach($tab_eleve as $tab)
 		// Indication des compétences validées
 		// - - - - -
 		$checkbox = ($affichage_checkbox) ? '<th class="nu" rowspan="2"><input type="checkbox" name="id_user[]" value="'.$eleve_id.'" /></th>' : '' ;
-		$releve_html_body .= '<tr>'.$checkbox.'<th rowspan="2">'.$image_langue.To::html($eleve_nom.' '.$eleve_prenom).'</th>';
+		$releve_html_body .= '<tr>'.$checkbox.'<th rowspan="2">'.$image_langue.html($eleve_nom.' '.$eleve_prenom).'</th>';
 		// Pour chaque pilier...
 		foreach($tab_pilier as $pilier_id => $tab)
 		{

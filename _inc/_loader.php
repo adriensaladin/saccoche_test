@@ -113,6 +113,7 @@ define('LONGUEUR_CHEMIN_SACOCHE' , strlen(CHEMIN_DOSSIER_SACOCHE)-1);
 // Vers des sous-dossiers, avec séparateur final.
 define('CHEMIN_DOSSIER_PRIVATE'       , CHEMIN_DOSSIER_SACOCHE.'__private'.DS);
 define('CHEMIN_DOSSIER_TMP'           , CHEMIN_DOSSIER_SACOCHE.'__tmp'.DS);
+define('CHEMIN_DOSSIER_IMG'           , CHEMIN_DOSSIER_SACOCHE.'_img'.DS);
 define('CHEMIN_DOSSIER_INCLUDE'       , CHEMIN_DOSSIER_SACOCHE.'_inc'.DS);
 define('CHEMIN_DOSSIER_FPDF_FONT'     , CHEMIN_DOSSIER_SACOCHE.'_lib'.DS.'FPDF'.DS.'font'.DS);
 define('CHEMIN_DOSSIER_SQL'           , CHEMIN_DOSSIER_SACOCHE.'_sql'.DS);
@@ -163,6 +164,7 @@ define('URL_DIR_SACOCHE',$url.'/'); // avec slash final
 $tab_bad = array( CHEMIN_DOSSIER_SACOCHE , DS );
 $tab_bon = array( URL_DIR_SACOCHE        , '/');
 define('URL_DIR_TMP'      , str_replace( $tab_bad , $tab_bon , CHEMIN_DOSSIER_TMP       ) );
+define('URL_DIR_IMG'      , str_replace( $tab_bad , $tab_bon , CHEMIN_DOSSIER_IMG       ) );
 define('URL_DIR_DEVOIR'   , str_replace( $tab_bad , $tab_bon , CHEMIN_DOSSIER_DEVOIR    ) );
 define('URL_DIR_DUMP'     , str_replace( $tab_bad , $tab_bon , CHEMIN_DOSSIER_DUMP      ) );
 define('URL_DIR_EXPORT'   , str_replace( $tab_bad , $tab_bon , CHEMIN_DOSSIER_EXPORT    ) );
@@ -188,7 +190,7 @@ define('SERVEUR_NEWS'          ,SERVEUR_PROJET.'/?fichier=news');        // URL 
 define('SERVEUR_RSS'           ,SERVEUR_PROJET.'/_rss/rss.xml');         // URL du fichier comportant le flux RSS
 
 // ============================================================================
-// Autres constantes diverses... et importantes !
+// Autres constantes diverses... et parfois importantes !
 // ============================================================================
 
 // Identifiants particuliers (à ne pas modifier)
@@ -260,6 +262,7 @@ function __autoload($class_name)
 		'PDFMerger'                   => '_lib'.DS.'FPDI'.DS.'PDFMerger.php' ,
 		'phpCAS'                      => '_lib'.DS.'phpCAS'.DS.'CAS.php' ,
 
+		'Browser'                     => '_inc'.DS.'class.Browser.php' ,
 		'Clean'                       => '_inc'.DS.'class.Clean.php' ,
 		'cssmin'                      => '_inc'.DS.'class.CssMinified.php' ,
 		'FileSystem'                  => '_inc'.DS.'class.FileSystem.php' ,

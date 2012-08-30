@@ -48,7 +48,7 @@ foreach($DB_TAB as $DB_ROW)
 	$date_affich = ($date_mysql!='0000-00-00') ? convert_date_mysql_to_french($date_mysql) : '-' ;
 	// Afficher une ligne du tableau
 	echo'<tr>';
-	echo	'<td>'.To::html($DB_ROW['user_identite']).'</td>';
+	echo	'<td>'.html($DB_ROW['user_identite']).'</td>';
 	echo	'<td><i>'.$date_mysql.'</i>'.$date_affich.'</td>';
 	echo'</tr>';
 }

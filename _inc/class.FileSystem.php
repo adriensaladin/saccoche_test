@@ -29,6 +29,38 @@ class FileSystem
 {
 
   // //////////////////////////////////////////////////
+  // Tableau avec les messages d'erreurs correspondants aux codes renvoyés par la librairie ZipArchive
+  // http://fr.php.net/manual/fr/zip.constants.php#83827
+  // //////////////////////////////////////////////////
+
+  public static $tab_zip_error = array(
+     0 =>  "0 | OK | pas d'erreur",
+     1 =>  "1 | MULTIDISK | multi-volumes non supporté",
+     2 =>  "2 | RENAME | échec renommage fichier temporaire",
+     3 =>  "3 | CLOSE | échec fermeture archive",
+     4 =>  "4 | SEEK | erreur recherche",
+     5 =>  "5 | READ | erreur lecture",
+     6 =>  "6 | WRITE | erreur écriture",
+     7 =>  "7 | CRC | erreur contrôle redondance cyclique",
+     8 =>  "8 | ZIPCLOSED | conteneur de l'archive fermé",
+     9 =>  "9 | NOENT | pas de fichier",
+    10 => "10 | EXISTS | fichier déjà existant",
+    11 => "11 | OPEN | fichier impossible à ouvrir",
+    12 => "12 | TMPOPEN | échec création fichier temporaire",
+    13 => "13 | ZLIB | erreur Zlib",
+    14 => "14 | MEMORY | défaillance allocation mémoire",
+    15 => "15 | CHANGED | entrée modifiée",
+    16 => "16 | COMPNOTSUPP | méthode de compression non supportée",
+    17 => "17 | EOF | fin de fichier prématurée",
+    18 => "18 | INVAL | argument invalide",
+    19 => "19 | NOZIP | n'est pas une archive zip",
+    20 => "20 | INTERNAL | erreur interne",
+    21 => "21 | INCONS | archive incohérente",
+    22 => "22 | REMOVE | fichier impossible à supprimer",
+    23 => "23 | DELETED | entrée supprimée"
+  );
+
+  // //////////////////////////////////////////////////
   // Méthodes privées (internes)
   // //////////////////////////////////////////////////
 
@@ -204,7 +236,7 @@ class FileSystem
    * @param string   $fichier_chemin
    * @param string   $fichier_contenu
    * @param int      facultatif ; si constante FILE_APPEND envoyée, alors ajoute en fin de fichier au lieu d'écraser le contenu
-   * @return TRUE    (par compatibilité avec ecrire_fichier_si_possible()
+   * @return TRUE    par compatibilité avec ecrire_fichier_si_possible()
    */
   public static function ecrire_fichier($fichier_chemin,$fichier_contenu,$file_append=0)
   {
@@ -361,25 +393,75 @@ class FileSystem
   }
 
   /**
-   * Dezipper un fichier contenant un ensemble de fichiers dans un dossier, avec son arborescence.
+   * Zipper un fichier seul.
+   * Exit sur une phrase d'erreur si problème
+   * 
+   * @param string   $chemin_fichier_zip   chemin de l'archive zip à créer
+   * @param string   $fichier_nom          nom du fichier dans l'archive zip
+   * @param string   $fichier_contenu      contenu à zipper
+   * @return void
+   */
+  public static function zip( $chemin_fichier_zip , $fichier_nom , $fichier_contenu )
+  {
+    $zip = new ZipArchive();
+    $result_open = $zip->open($chemin_fichier_zip, ZIPARCHIVE::CREATE);
+    if($result_open!==TRUE)
+    {
+      exit('Problème de création de l\'archive ZIP ('.FileSystem::$tab_zip_error[$result_open].') !');
+    }
+    $zip->addFromString($fichier_nom,$fichier_contenu);
+    $zip->close();
+  }
+
+  /**
+   * Dezipper une archive contenant un seul fichier.
+   * Exit sur une phrase d'erreur si problème
+   * Le chemin d'extraction n'est pas indiqué : c'est CHEMIN_DOSSIER_IMPORT (idem pour le chemin du fichier final)
+   * 
+   * @param string   $chemin_fichier_zip   chemin de l'archive zip
+   * @param string   $fichier_nom_archive  nom du fichier à rechercher dans l'archive zip
+   * @param string   $fichier_nom_final    nom du fichier une fois extrait
+   * @return void
+   */
+  public static function unzip_one($chemin_fichier_zip,$fichier_nom_archive,$fichier_nom_final)
+  {
+    $zip = new ZipArchive();
+    $result_open = $zip->open($chemin_fichier_zip);
+    if($result_open!==TRUE)
+    {
+      exit('Problème d\'ouverture de l\'archive ZIP ('.FileSystem::$tab_zip_error[$result_open].') !');
+    }
+    if($zip->extractTo(CHEMIN_DOSSIER_IMPORT,$fichier_nom_archive)!==TRUE)
+    {
+      exit('Fichier '.$fichier_nom_archive.' non trouvé dans l\'archive ZIP !');
+    }
+    $zip->close();
+    if(!rename(CHEMIN_DOSSIER_IMPORT.$fichier_nom_archive , CHEMIN_DOSSIER_IMPORT.$fichier_nom_final))
+    {
+      exit('Le fichier extrait n\'a pas pu être enregistré sur le serveur.');
+    }
+  }
+
+  /**
+   * Dezipper une archive contenant un ensemble de fichiers dans un dossier, avec son arborescence.
    * 
    * Inspiré de http://fr.php.net/manual/fr/ref.zip.php#79057
    * A l'origine pour remplacer $zip = new ZipArchive(); $result_open = $zip->open($fichier_import); qui plante sur le serveur Nantais s'il y a trop de fichiers dans le zip (code erreur "5 READ").
    * Mais il s'avère finalement que ça ne fonctionne pas mieux...
    * 
-   * @param string   $fichier_zip
+   * @param string   $chemin_fichier_zip
    * @param string   $dossier_dezip
-   * @return bool    $use_ZipArchive
+   * @param bool     $use_ZipArchive
    * @return int     code d'erreur (0 si RAS)
    */
-  public static function unzip($fichier_zip,$dossier_dezip,$use_ZipArchive)
+  public static function unzip($chemin_fichier_zip,$dossier_dezip,$use_ZipArchive)
   {
     // Utiliser la classe ZipArchive http://fr.php.net/manual/fr/class.ziparchive.php (PHP 5 >= 5.2.0, PECL zip >= 1.1.0)
     if($use_ZipArchive)
     {
       $zip = new ZipArchive();
-      $result_open = $zip->open($fichier_zip);
-      if($result_open!==true)
+      $result_open = $zip->open($chemin_fichier_zip);
+      if($result_open!==TRUE)
       {
         return $result_open;
       }
@@ -390,7 +472,7 @@ class FileSystem
     else
     {
       $ds = (substr($dossier_dezip,-1)==DS) ? '' : DS ;
-      $contenu_zip = zip_open($fichier_zip);
+      $contenu_zip = zip_open($chemin_fichier_zip);
       if(!is_resource($contenu_zip))
       {
         return $contenu_zip;

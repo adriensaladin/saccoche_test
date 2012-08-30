@@ -36,7 +36,7 @@ $DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_matieres_etablissement( TRUE /*
 $matieres_options = '<option value="0"></option>';
 foreach($DB_TAB as $DB_ROW)
 {
-	$matieres_options .= '<option value="'.$DB_ROW['matiere_id'].'">'.To::html($DB_ROW['matiere_nom'].' ('.$DB_ROW['matiere_ref'].')').'</option>' ;
+	$matieres_options .= '<option value="'.$DB_ROW['matiere_id'].'">'.html($DB_ROW['matiere_nom'].' ('.$DB_ROW['matiere_ref'].')').'</option>' ;
 }
 
 ?>
@@ -66,8 +66,8 @@ foreach($DB_TAB as $DB_ROW)
 			{
 				// Afficher une ligne du tableau
 				echo'<tr id="id_'.$DB_ROW['matiere_id'].'">';
-				echo	'<td>'.To::html($DB_ROW['matiere_ref']).'</td>';
-				echo	'<td>'.To::html($DB_ROW['matiere_nom']).'</td>';
+				echo	'<td>'.html($DB_ROW['matiere_ref']).'</td>';
+				echo	'<td>'.html($DB_ROW['matiere_nom']).'</td>';
 				echo	'<td class="nu">';
 				echo		'<q class="supprimer" title="Supprimer cette matière."></q>';
 				echo	'</td>';
@@ -97,8 +97,8 @@ foreach($DB_TAB as $DB_ROW)
 			{
 				// Afficher une ligne du tableau
 				echo'<tr id="id_'.$DB_ROW['matiere_id'].'">';
-				echo	'<td>'.To::html($DB_ROW['matiere_ref']).'</td>';
-				echo	'<td>'.To::html($DB_ROW['matiere_nom']).'</td>';
+				echo	'<td>'.html($DB_ROW['matiere_ref']).'</td>';
+				echo	'<td>'.html($DB_ROW['matiere_nom']).'</td>';
 				echo	'<td class="nu">';
 				echo		'<q class="modifier" title="Modifier cette matière."></q>';
 				echo		'<q class="supprimer" title="Supprimer cette matière."></q>';

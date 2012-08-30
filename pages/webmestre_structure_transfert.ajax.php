@@ -283,8 +283,7 @@ if($action=='importer_zip')
 	$code_erreur = FileSystem::unzip( CHEMIN_DOSSIER_IMPORT.$fichier_zip_nom , CHEMIN_DOSSIER_DUMP , TRUE /*use_ZipArchive*/ );
 	if($code_erreur)
 	{
-		require(CHEMIN_DOSSIER_INCLUDE.'tableau_zip_error.php');
-		exit('<li><label class="alerte">Erreur : votre archive ZIP n\'a pas pu être ouverte ('.$code_erreur.$tab_zip_error[$code_erreur].') !</label></li>');
+		exit('<li><label class="alerte">Erreur : votre archive ZIP n\'a pas pu être ouverte ('.FileSystem::$tab_zip_error[$code_erreur].') !</label></li>');
 	}
 	unlink(CHEMIN_DOSSIER_IMPORT.$fichier_zip_nom);
 	// Vérifier le contenu : noms des fichiers
@@ -320,34 +319,33 @@ if( ($action=='importer') && $num && $max && ($num<$max) )
 	// Récupérer la série d'infos
 	extract($_SESSION['tab_info'][$num]); // import_id / geo_id / localisation / denomination / uai / contact_nom / contact_prenom / contact_courriel / date / fichier_nom
 	// Préparer le retour en cas de pb
-	$retour_cellules_non = '<td class="nu"></td><td>---</td><td>'.To::html($localisation.' | '.$denomination).'</td><td>'.To::html($contact_nom.' '.$contact_prenom).'</td>';
+	$retour_cellules_non = '<td class="nu"></td><td>---</td><td>'.html($localisation.' | '.$denomination).'</td><td>'.html($contact_nom.' '.$contact_prenom).'</td>';
 	// Créer ou vider le dossier temporaire
 	FileSystem::creer_ou_vider_dossier($dossier_temp_sql);
 	// Dezipper dans le dossier temporaire
 	$code_erreur = FileSystem::unzip( CHEMIN_DOSSIER_DUMP.$fichier_nom , $dossier_temp_sql , TRUE /*use_ZipArchive*/ );
 	if($code_erreur)
 	{
-		require(CHEMIN_DOSSIER_INCLUDE.'tableau_zip_error.php');
-		exit(']¤['.'<tr>'.$retour_cellules_non.'<td><label class="erreur">Erreur : fichiers de '.To::html($fichier_nom).' impossible à extraire ('.$code_erreur.$tab_zip_error[$code_erreur].') !</label></td>'.'</tr>');
+		exit(']¤['.'<tr>'.$retour_cellules_non.'<td><label class="erreur">Erreur : fichiers de '.html($fichier_nom).' impossible à extraire ('.FileSystem::$tab_zip_error[$code_erreur].') !</label></td>'.'</tr>');
 	}
 	// Vérifier le contenu : noms des fichiers
 	$fichier_taille_maximale = verifier_dossier_decompression_sauvegarde($dossier_temp_sql);
 	if(!$fichier_taille_maximale)
 	{
 		FileSystem::supprimer_dossier($dossier_temp_sql); // Pas seulement vider, au cas où il y aurait des sous-dossiers créés par l'archive.
-		exit(']¤['.'<tr>'.$retour_cellules_non.'<td><label class="erreur">Erreur : le contenu de '.To::html($fichier_nom).' ne semble pas être une sauvegarde de base !</label></td>'.'</tr>');
+		exit(']¤['.'<tr>'.$retour_cellules_non.'<td><label class="erreur">Erreur : le contenu de '.html($fichier_nom).' ne semble pas être une sauvegarde de base !</label></td>'.'</tr>');
 	}
 	// Vérifier le contenu : taille des requêtes
 	if( !verifier_taille_requetes($fichier_taille_maximale) )
 	{
 		FileSystem::supprimer_dossier($dossier_temp_sql); // Pas seulement vider, au cas où il y aurait des sous-dossiers créés par l'archive.
-		exit(']¤['.'<tr>'.$retour_cellules_non.'<td><label class="erreur">Erreur : '.To::html($fichier_nom).' contient au moins un fichier dont la taille dépasse la limitation <em>max_allowed_packet</em> de MySQL !</label></td>'.'</tr>');
+		exit(']¤['.'<tr>'.$retour_cellules_non.'<td><label class="erreur">Erreur : '.html($fichier_nom).' contient au moins un fichier dont la taille dépasse la limitation <em>max_allowed_packet</em> de MySQL !</label></td>'.'</tr>');
 	}
 	// Vérifier le contenu : version de la base compatible avec la version logicielle
 	if( version_base_fichier_svg($dossier_temp_sql) > VERSION_BASE )
 	{
 		FileSystem::supprimer_dossier($dossier_temp_sql); // Pas seulement vider, au cas où il y aurait des sous-dossiers créés par l'archive.
-		exit(']¤['.'<tr>'.$retour_cellules_non.'<td><label class="erreur">Erreur : '.To::html($fichier_nom).' contient une sauvegarde plus récente que celle supportée par cette installation ! Il faut mettre à jour SACoche.</label></td>'.'</tr>');
+		exit(']¤['.'<tr>'.$retour_cellules_non.'<td><label class="erreur">Erreur : '.html($fichier_nom).' contient une sauvegarde plus récente que celle supportée par cette installation ! Il faut mettre à jour SACoche.</label></td>'.'</tr>');
 	}
 	// Insérer l'enregistrement dans la base du webmestre
 	// Créer le fichier de connexion de la base de données de la structure
@@ -368,7 +366,7 @@ if( ($action=='importer') && $num && $max && ($num<$max) )
 	// Supprimer le dossier temporaire
 	FileSystem::supprimer_dossier($dossier_temp_sql);
 	// Retour du succès, appel suivant
-	$retour_cellules_oui = '<td class="nu"><input type="checkbox" name="f_ids" value="'.$base_id.'" /></td><td class="label">'.$base_id.'</td><td class="label">'.To::html($localisation.' | '.$denomination.' ['.$uai.']').'</td><td class="label">'.To::html($contact_nom.' '.$contact_prenom.' ('.$contact_courriel.')').'</td>';
+	$retour_cellules_oui = '<td class="nu"><input type="checkbox" name="f_ids" value="'.$base_id.'" /></td><td class="label">'.$base_id.'</td><td class="label">'.html($localisation.' | '.$denomination.' ['.$uai.']').'</td><td class="label">'.html($contact_nom.' '.$contact_prenom.' ('.$contact_courriel.')').'</td>';
 	exit(']¤['.'<tr>'.$retour_cellules_oui.'<td class="label"><label class="valide">'.$texte_etape.' avec succès.</label></td>'.'</tr>');
 }
 elseif( ($action=='importer') && $num && $max && ($num==$max) )

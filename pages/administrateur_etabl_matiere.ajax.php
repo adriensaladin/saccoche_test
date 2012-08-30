@@ -53,7 +53,7 @@ if( ($action=='recherche_matiere_famille') && $famille_id )
 	{
 		$class = ($DB_ROW['matiere_active']) ? 'ajouter_non' : 'ajouter' ;
 		$title = ($DB_ROW['matiere_active']) ? 'Matière déjà choisie.' : 'Ajouter cette matière.' ;
-		echo'<li>'.To::html($DB_ROW['matiere_nom'].' ('.$DB_ROW['matiere_ref'].')').'<q id="add_'.$DB_ROW['matiere_id'].'" class="'.$class.'" title="'.$title.'"></q></li>';
+		echo'<li>'.html($DB_ROW['matiere_nom'].' ('.$DB_ROW['matiere_ref'].')').'<q id="add_'.$DB_ROW['matiere_id'].'" class="'.$class.'" title="'.$title.'"></q></li>';
 	}
 	exit();
 }
@@ -71,7 +71,7 @@ if( ($action=='recherche_matiere_motclef') && $motclef )
 		{
 			$class = ($DB_ROW['matiere_active']) ? 'ajouter_non' : 'ajouter' ;
 			$title = ($DB_ROW['matiere_active']) ? 'Matière déjà choisie.' : 'Ajouter cette matière.' ;
-			echo'<li>['.round($DB_ROW['score']).'%] <i>'.To::html($DB_ROW['matiere_famille_nom']).'</i> || '.To::html($DB_ROW['matiere_nom'].' ('.$DB_ROW['matiere_ref'].')').'<q id="add_'.$DB_ROW['matiere_id'].'" class="'.$class.'" title="'.$title.'"></q></li>';
+			echo'<li>['.round($DB_ROW['score']).'%] <i>'.html($DB_ROW['matiere_famille_nom']).'</i> || '.html($DB_ROW['matiere_nom'].' ('.$DB_ROW['matiere_ref'].')').'<q id="add_'.$DB_ROW['matiere_id'].'" class="'.$class.'" title="'.$title.'"></q></li>';
 		}
 	}
 	else
@@ -105,7 +105,7 @@ if( ($action=='ajouter_perso') && $ref && $nom )
 	// Insérer l'enregistrement
 	$id = DB_STRUCTURE_ADMINISTRATEUR::DB_ajouter_matiere_specifique($ref,$nom);
 	// Afficher le retour
-	exit(']¤['.$id.']¤['.To::html($ref).']¤['.To::html($nom));
+	exit(']¤['.$id.']¤['.html($ref).']¤['.html($nom));
 }
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
@@ -122,7 +122,7 @@ if( ($action=='modifier') && $id && $ref && $nom )
 	// Mettre à jour l'enregistrement
 	DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_matiere_specifique($id,$ref,$nom);
 	// Afficher le retour
-	exit(']¤['.$id.']¤['.To::html($ref).']¤['.To::html($nom));
+	exit(']¤['.$id.']¤['.html($ref).']¤['.html($nom));
 }
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-

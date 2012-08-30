@@ -46,7 +46,7 @@ foreach($tab_notes_txt as $note_nom => $tab_note_texte)
 		$simulation_lignes[2] .= 	'<td><img alt="'.$tab_note_texte['R'].'" src="'.$dossier.$note_nom.'/h/R.gif" /><br />'.$tab_note_texte['R'].'</td>';
 		$simulation_lignes[3] .= 	'<td><img alt="'.$tab_note_texte['V'].'" src="'.$dossier.$note_nom.'/h/V.gif" /><br />'.$tab_note_texte['V'].'</td>';
 		$simulation_lignes[4] .= 	'<td><img alt="'.$tab_note_texte['VV'].'" src="'.$dossier.$note_nom.'/h/VV.gif" /><br />'.$tab_note_texte['VV'].'</td>';
-		$tab_notes_txt_js .= 'tab_notes_txt["'.To::html($note_nom).'"] = new Array();';
+		$tab_notes_txt_js .= 'tab_notes_txt["'.html($note_nom).'"] = new Array();';
 		$tab_notes_txt_js .= 'tab_notes_txt["'.$note_nom.'"]["RR"]="'.$tab_note_texte['RR'].'";';
 		$tab_notes_txt_js .= 'tab_notes_txt["'.$note_nom.'"]["R"]="'.$tab_note_texte['R'].'";';
 		$tab_notes_txt_js .= 'tab_notes_txt["'.$note_nom.'"]["V"]="'.$tab_note_texte['V'].'";';
@@ -60,7 +60,7 @@ $note_equiv_div = '';
 $tab_note = array('RR','R','V','VV');
 foreach($tab_note as $note)
 {
-	$note_equiv_div .= '<div class="ti"><input type="text" class="hc" size="2" maxlength="3" id="note_texte_'.$note.'" name="note_texte_'.$note.'" value="'.To::html($_SESSION['NOTE_TEXTE'][$note]).'" /> <input type="text" size="30" maxlength="40" id="note_legende_'.$note.'" name="note_legende_'.$note.'" value="'.To::html($_SESSION['NOTE_LEGENDE'][$note]).'" /></div>';
+	$note_equiv_div .= '<div class="ti"><input type="text" class="hc" size="2" maxlength="3" id="note_texte_'.$note.'" name="note_texte_'.$note.'" value="'.html($_SESSION['NOTE_TEXTE'][$note]).'" /> <input type="text" size="30" maxlength="40" id="note_legende_'.$note.'" name="note_legende_'.$note.'" value="'.html($_SESSION['NOTE_LEGENDE'][$note]).'" /></div>';
 }
 
 // États d'acquisitions calculés : couleurs de fond, équivalents textes, légende
@@ -72,7 +72,7 @@ $acquis_box = '';
 foreach($tab_acquis as $acquis => $class)
 {
 	$acquis_box .= '<div class="colorpicker '.$class.'">';
-	$acquis_box .= '<p><input type="text" class="hc" size="2" maxlength="3" id="acquis_texte_'.$acquis.'" name="acquis_texte_'.$acquis.'" value="'.To::html($_SESSION['ACQUIS_TEXTE'][$acquis]).'" /><br /><input type="text" class="hc" size="25" maxlength="40" id="acquis_legende_'.$acquis.'" name="acquis_legende_'.$acquis.'" value="'.To::html($_SESSION['ACQUIS_LEGENDE'][$acquis]).'" /></p>';
+	$acquis_box .= '<p><input type="text" class="hc" size="2" maxlength="3" id="acquis_texte_'.$acquis.'" name="acquis_texte_'.$acquis.'" value="'.html($_SESSION['ACQUIS_TEXTE'][$acquis]).'" /><br /><input type="text" class="hc" size="25" maxlength="40" id="acquis_legende_'.$acquis.'" name="acquis_legende_'.$acquis.'" value="'.html($_SESSION['ACQUIS_LEGENDE'][$acquis]).'" /></p>';
 	$acquis_box .= '<div><button type="button" name="color_'.$acquis.'" value="'.$_SESSION['BACKGROUND_'.$acquis].'" class="colorer">Couleur de l\'établissement.</button></div>';
 	$acquis_box .= '<div><button type="button" name="color_'.$acquis.'" value="'.$tab_defaut[$acquis].'" class="colorer">Couleur par défaut.</button></div>';
 	$acquis_box .= '<p><input type="text" class="stretch" size="8" id="acquis_color_'.$acquis.'" name="acquis_color_'.$acquis.'" value="'.$_SESSION['BACKGROUND_'.$acquis].'" style="background-color:'.$_SESSION['BACKGROUND_'.$acquis].'" /><br /></p>';

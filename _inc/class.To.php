@@ -33,30 +33,6 @@ class To
   // //////////////////////////////////////////////////
 
   /*
-   * Convertir les caractères spéciaux (&"'<>) en entité HTML pour éviter des problèmes d'affichage (INPUT, SELECT, TEXTAREA, XML...).
-   * Pour que les retours à la lignes soient convertis en <br /> il faut coupler dette fontion à la fonction nl2br()
-   * 
-   * @param string
-   * @return string
-   */
-  public static function html($text)
-  {
-    // Ne pas modifier ce code à la légère : les résultats sont différents suivant que ce soit un affichage direct ou ajax, suivant la version de PHP (5.1 ou 5.3)...
-    return (perso_mb_detect_encoding_utf8($text)) ? htmlspecialchars($text,ENT_COMPAT,'UTF-8') : utf8_encode(htmlspecialchars($text,ENT_COMPAT)) ;
-  }
-
-  /*
-   * Réciproque de html()
-   * 
-   * @param string
-   * @return string
-   */
-  public static function html_decode($text)
-  {
-    return htmlspecialchars_decode($text,ENT_COMPAT) ;
-  }
-
-  /*
    * Convertir l'utf-8 en windows-1252 pour compatibilité avec FPDF
    * 
    * @param string

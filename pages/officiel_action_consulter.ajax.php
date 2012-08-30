@@ -96,10 +96,10 @@ if($ACTION=='initialiser')
 		exit('Aucun élève trouvé dans ce regroupement !');
 	}
 	$tab_eleve_id = array();
-	$form_choix_eleve = '<form action="#" method="post" id="form_choix_eleve"><div><b>'.To::html($periode_nom.' | '.$classe_nom ).' :</b> <button id="go_premier_eleve" type="button" class="go_premier">Premier</button> <button id="go_precedent_eleve" type="button" class="go_precedent">Précédent</button> <select id="go_selection_eleve" name="go_selection" class="b">';
+	$form_choix_eleve = '<form action="#" method="post" id="form_choix_eleve"><div><b>'.html($periode_nom.' | '.$classe_nom ).' :</b> <button id="go_premier_eleve" type="button" class="go_premier">Premier</button> <button id="go_precedent_eleve" type="button" class="go_precedent">Précédent</button> <select id="go_selection_eleve" name="go_selection" class="b">';
 	foreach($DB_TAB as $DB_ROW)
 	{
-		$form_choix_eleve .= '<option value="'.$DB_ROW['user_id'].'">'.To::html($DB_ROW['user_nom'].' '.$DB_ROW['user_prenom']).'</option>';
+		$form_choix_eleve .= '<option value="'.$DB_ROW['user_id'].'">'.html($DB_ROW['user_nom'].' '.$DB_ROW['user_prenom']).'</option>';
 		$tab_eleve_id[] = $DB_ROW['user_id'];
 	}
 	$form_choix_eleve .= '</select> <button id="go_suivant_eleve" type="button" class="go_suivant">Suivant</button> <button id="go_dernier_eleve" type="button" class="go_dernier">Dernier</button>&nbsp;&nbsp;&nbsp;<button id="fermer_zone_action_eleve" type="button" class="retourner">Retour</button>';

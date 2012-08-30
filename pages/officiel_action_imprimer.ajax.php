@@ -101,7 +101,7 @@ if($ACTION=='initialiser')
 	foreach($DB_TAB as $DB_ROW)
 	{
 		$tab_eleve_id[] = $DB_ROW['user_id'];
-		$tab_eleve_td[$DB_ROW['user_id']] = To::html($DB_ROW['user_nom'].' '.$DB_ROW['user_prenom']);
+		$tab_eleve_td[$DB_ROW['user_id']] = html($DB_ROW['user_nom'].' '.$DB_ROW['user_prenom']);
 	}
 	// (re)calculer les moyennes des élèves, ainsi que les moyennes de classe et générales (mises dans $_SESSION['tmp_moyenne_classe'][$periode_id][$classe_id][$matiere_id] et $_SESSION['tmp_moyenne_generale'][$periode_id][$classe_id][$eleve_id]) 
 	if( ($objet=='imprimer') && ($BILAN_TYPE=='bulletin') && $_SESSION['OFFICIEL']['BULLETIN_MOYENNE_SCORES'] )
@@ -175,7 +175,7 @@ if( ($ACTION=='imprimer') && ($etape==2) )
 		$fichier_extraction_chemin = CHEMIN_DOSSIER_OFFICIEL.$_SESSION['BASE'].DS.fabriquer_nom_fichier_bilan_officiel( $eleve_id , $BILAN_TYPE , $periode_id );
 		unset($_SESSION['tmp']['tab_pages_decoupe_pdf'][$eleve_id][0]);
 		$releve_pdf = new PDFMerger;
-		$pdf_string = $releve_pdf -> addPDF( $_SESSION['tmp']['dossier'].$_SESSION['tmp']['fichier_nom'].'.pdf' , $page_plage ) -> merge( 'file' , $fichier_extraction_chemin );
+		$pdf_string = $releve_pdf -> addPDF( CHEMIN_DOSSIER_EXPORT.$_SESSION['tmp']['fichier_nom'].'.pdf' , $page_plage ) -> merge( 'file' , $fichier_extraction_chemin );
 	}
 	exit('ok');
 }
@@ -198,10 +198,10 @@ if( ($ACTION=='imprimer') && ($etape==3) )
 			$tab_pages_non_anonymes[]  = $page_plage;
 			$fichier_extraction_chemin = $chemin_temp_pdf.'officiel_'.$BILAN_TYPE.'_'.Clean::fichier($eleve_identite).'_'.$date.'_resp'.$numero_tirage.'.pdf';
 			$releve_pdf = new PDFMerger;
-			$pdf_string = $releve_pdf -> addPDF( $_SESSION['tmp']['dossier'].$_SESSION['tmp']['fichier_nom'].'.pdf' , $page_plage ) -> merge( 'file' , $fichier_extraction_chemin );
+			$pdf_string = $releve_pdf -> addPDF( CHEMIN_DOSSIER_EXPORT.$_SESSION['tmp']['fichier_nom'].'.pdf' , $page_plage ) -> merge( 'file' , $fichier_extraction_chemin );
 		}
 	}
-	FileSystem::zipper_fichiers( $chemin_temp_pdf , $_SESSION['tmp']['dossier'] , $_SESSION['tmp']['fichier_nom'].'.zip' );
+	FileSystem::zipper_fichiers( $chemin_temp_pdf , CHEMIN_DOSSIER_EXPORT , $_SESSION['tmp']['fichier_nom'].'.zip' );
 	FileSystem::supprimer_dossier($chemin_temp_pdf);
 	$_SESSION['tmp']['pages_non_anonymes'] = implode(',',$tab_pages_non_anonymes);
 	unset($_SESSION['tmp']['tab_pages_decoupe_pdf']);
@@ -215,13 +215,13 @@ if( ($ACTION=='imprimer') && ($etape==3) )
 if( ($ACTION=='imprimer') && ($etape==4) )
 {
 	$releve_pdf = new PDFMerger;
-	$pdf_string = $releve_pdf -> addPDF( $_SESSION['tmp']['dossier'].$_SESSION['tmp']['fichier_nom'].'.pdf' , $_SESSION['tmp']['pages_non_anonymes'] ) -> merge( 'file' , $_SESSION['tmp']['dossier'].$_SESSION['tmp']['fichier_nom'].'.pdf' );
+	$pdf_string = $releve_pdf -> addPDF( CHEMIN_DOSSIER_EXPORT.$_SESSION['tmp']['fichier_nom'].'.pdf' , $_SESSION['tmp']['pages_non_anonymes'] ) -> merge( 'file' , CHEMIN_DOSSIER_EXPORT.$_SESSION['tmp']['fichier_nom'].'.pdf' );
 	echo'<ul class="puce">';
-	echo'<li><a class="lien_ext" href="'.$_SESSION['tmp']['dossier'].$_SESSION['tmp']['fichier_nom'].'.pdf"><span class="file file_pdf">Récupérer, pour impression, l\'ensemble des bilans officiels en un seul document.</span></a></li>';
-	echo'<li><a class="lien_ext" href="'.$_SESSION['tmp']['dossier'].$_SESSION['tmp']['fichier_nom'].'.zip"><span class="file file_zip">Récupérer, pour archivage, les bilans officiels dans des documents individuels.</span></a></li>';
+	echo'<li><a class="lien_ext" href="'.URL_DIR_EXPORT.$_SESSION['tmp']['fichier_nom'].'.pdf"><span class="file file_pdf">Récupérer, pour impression, l\'ensemble des bilans officiels en un seul document.</span></a></li>';
+	echo'<li><a class="lien_ext" href="'.URL_DIR_EXPORT.$_SESSION['tmp']['fichier_nom'].'.zip"><span class="file file_zip">Récupérer, pour archivage, les bilans officiels dans des documents individuels.</span></a></li>';
 	echo'</ul>';
 	echo'<p class="danger">Archivez soigneusement ces bilans : les originaux ne sont pas conservés sur le serveur !</p>';
-	unset( $_SESSION['tmp']['dossier'] , $_SESSION['tmp']['fichier_nom'] , $_SESSION['tmp']['pages_non_anonymes'] );
+	unset( $_SESSION['tmp']['fichier_nom'] , $_SESSION['tmp']['pages_non_anonymes'] );
 	exit();
 }
 
@@ -449,7 +449,6 @@ elseif(in_array($BILAN_TYPE,array('palier1','palier2','palier3')))
 // Affichage du résultat (pas grand chose : la découpe du PDF intervient lors d'appels ajax ultérieurs)
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
-$_SESSION['tmp']['dossier']     = $dossier;
 $_SESSION['tmp']['fichier_nom'] = $fichier_nom;
 $_SESSION['tmp']['tab_pages_decoupe_pdf'] = $tab_pages_decoupe_pdf;
 exit('ok');

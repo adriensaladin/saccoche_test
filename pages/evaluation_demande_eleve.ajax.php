@@ -28,10 +28,10 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 if($_SESSION['SESAMATH_ID']==ID_DEMO) {exit('Action désactivée pour la démo...');}
 
-$action     = (isset($_POST['f_action']))     ? Clean::texte($_POST['f_action'])      : '';
-$demande_id = (isset($_POST['f_demande_id'])) ? Clean::entier($_POST['f_demande_id']) : 0;
-$item_id    = (isset($_POST['f_item_id']))    ? Clean::entier($_POST['f_item_id'])    : 0;
-$matiere_id = (isset($_POST['f_matiere_id'])) ? Clean::entier($_POST['f_matiere_id']) : 0;
+$action     = (isset($_POST['f_action']))     ? clean_texte($_POST['f_action'])      : '';
+$demande_id = (isset($_POST['f_demande_id'])) ? clean_entier($_POST['f_demande_id']) : 0;
+$item_id    = (isset($_POST['f_item_id']))    ? clean_entier($_POST['f_item_id'])    : 0;
+$matiere_id = (isset($_POST['f_matiere_id'])) ? clean_entier($_POST['f_matiere_id']) : 0;
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 //	Supprimer une demande
@@ -50,7 +50,7 @@ if( ($action=='supprimer') && $demande_id && $item_id && $matiere_id )
 	$DB_COL = DB_STRUCTURE_ELEVE::DB_recuperer_professeurs_eleve_matiere($_SESSION['USER_ID'],$matiere_id);
 	foreach($DB_COL as $prof_id)
 	{
-		Modifier_RSS($prof_id,$titre,$texte,$guid);
+		Modifier_RSS(adresse_RSS($prof_id),$titre,$texte,$guid);
 	}
 	// Affichage du retour
 	exit('ok');

@@ -1087,7 +1087,7 @@ public static function DB_maj_base($version_actuelle)
 			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_jointure_parent_eleve CHANGE resp_legal_num resp_legal_num ENUM( "0", "1", "2" ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT "0" ' );
 			// suppression des vignettes (sans rapport avec la base, mais à effectuer, à cause du changement de la couleur de fond)
 			list($x,$y,$dossier) = (HEBERGEUR_INSTALLATION=='multi-structures') ? explode('_',SACOCHE_STRUCTURE_BD_NAME) : '0' ;
-			FileSystem::effacer_fichiers_temporaires(CHEMIN_DOSSIER_BADGE.$dossier , 0);
+			effacer_fichiers_temporaires(CHEMIN_DOSSIER_BADGE.$dossier , 0);
 		}
 	}
 
@@ -1187,8 +1187,8 @@ public static function DB_maj_base($version_actuelle)
 			$version_actuelle = '2011-08-18';
 			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_actuelle.'" WHERE parametre_nom="version_base"' );
 			// suppression de fichiers temporaires déplacés (sans rapport avec la base, mais à effectuer)
-			FileSystem::effacer_fichiers_temporaires(CHEMIN_DOSSIER_COOKIE,0);
-			FileSystem::effacer_fichiers_temporaires(CHEMIN_DOSSIER_RSS,0);
+			effacer_fichiers_temporaires(CHEMIN_DOSSIER_COOKIE,1);
+			effacer_fichiers_temporaires(CHEMIN_DOSSIER_RSS,1);
 		}
 	}
 

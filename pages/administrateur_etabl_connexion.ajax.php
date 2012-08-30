@@ -28,14 +28,14 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 if($_SESSION['SESAMATH_ID']==ID_DEMO) {exit('Action désactivée pour la démo...');}
 
-$f_connexion_mode = (isset($_POST['f_connexion_mode'])) ? Clean::texte($_POST['f_connexion_mode']) : '';
-$f_connexion_nom  = (isset($_POST['f_connexion_nom']))  ? Clean::texte($_POST['f_connexion_nom'])  : '';
-$cas_serveur_host = (isset($_POST['cas_serveur_host'])) ? Clean::texte($_POST['cas_serveur_host'])  : '';
-$cas_serveur_port = (isset($_POST['cas_serveur_port'])) ? Clean::entier($_POST['cas_serveur_port']) : 0;
-$cas_serveur_root = (isset($_POST['cas_serveur_root'])) ? Clean::texte($_POST['cas_serveur_root'])  : '';
-$gepi_saml_url    = (isset($_POST['gepi_saml_url']))    ? Clean::texte($_POST['gepi_saml_url'])     : '';
-$gepi_saml_rne    = (isset($_POST['gepi_saml_rne']))    ? Clean::texte($_POST['gepi_saml_rne'])     : '';
-$gepi_saml_certif = (isset($_POST['gepi_saml_certif'])) ? Clean::texte($_POST['gepi_saml_certif'])  : '';
+$f_connexion_mode = (isset($_POST['f_connexion_mode'])) ? clean_texte($_POST['f_connexion_mode']) : '';
+$f_connexion_nom  = (isset($_POST['f_connexion_nom']))  ? clean_texte($_POST['f_connexion_nom'])  : '';
+$cas_serveur_host = (isset($_POST['cas_serveur_host'])) ? clean_texte($_POST['cas_serveur_host'])  : '';
+$cas_serveur_port = (isset($_POST['cas_serveur_port'])) ? clean_entier($_POST['cas_serveur_port']) : 0;
+$cas_serveur_root = (isset($_POST['cas_serveur_root'])) ? clean_texte($_POST['cas_serveur_root'])  : '';
+$gepi_saml_url    = (isset($_POST['gepi_saml_url']))    ? clean_texte($_POST['gepi_saml_url'])     : '';
+$gepi_saml_rne    = (isset($_POST['gepi_saml_rne']))    ? clean_texte($_POST['gepi_saml_rne'])     : '';
+$gepi_saml_certif = (isset($_POST['gepi_saml_certif'])) ? clean_texte($_POST['gepi_saml_certif'])  : '';
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 //	Mode de connexion (normal, SSO...)

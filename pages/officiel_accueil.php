@@ -134,7 +134,7 @@ $tab_affich['title']['title'] = '<td class="nu"></td>' ;
 if( ($affichage_formulaire_statut) && ($_SESSION['SESAMATH_ID']!=ID_DEMO) )
 {
 	$tab_ids  = (isset($_POST['listing_ids'])) ? explode(',',$_POST['listing_ids']) : array() ;
-	$new_etat = (isset($_POST['etat']))        ? Clean::texte($_POST['etat'])        : '' ;
+	$new_etat = (isset($_POST['etat']))        ? clean_texte($_POST['etat'])        : '' ;
 	if( count($tab_ids) && isset($tab_etats[$new_etat]) )
 	{
 		$champ = 'officiel_'.$BILAN_TYPE;

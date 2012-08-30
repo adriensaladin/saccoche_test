@@ -49,19 +49,19 @@ header("Content-type: image/png");
 
 // Atteste l'appel de cette page avant l'inclusion d'une autre
 define('SACoche','etiquette');
-// Constantes / Configuration serveur / Autoload classes / Fonction de sortie
-require('../../_inc/_loader.php');
-// Non chargé par le loader dont on ne prend que le début
-require(CHEMIN_DOSSIER_INCLUDE.'class.Clean.php');
+// Constantes de l'application
+require('../../_inc/constantes.php');
 
-$dossier   = isset($_GET['dossier']) ? Clean::entier($_GET['dossier']) : 'x' ;
-$nom       = isset($_GET['nom'])     ? Clean::nom($_GET['nom'])        : ' ' ;
-$prenom    = isset($_GET['prenom'])  ? Clean::prenom($_GET['prenom'])  : ' ' ;
-$br_line   = isset($_GET['br'])      ? 2                               : 1 ; // 2 pour nom / retour à la ligne / prénom ; 1 pour nom / prénom à la suite
-$font_size = isset($_GET['size'])    ? Clean::entier($_GET['size'])    : 10 ;
+require(CHEMIN_DOSSIER_INCLUDE.'fonction_clean.php');
+
+$dossier   = isset($_GET['dossier']) ? clean_entier($_GET['dossier']) : 'x' ;
+$nom       = isset($_GET['nom'])     ? clean_nom($_GET['nom'])        : ' ' ;
+$prenom    = isset($_GET['prenom'])  ? clean_prenom($_GET['prenom'])  : ' ' ;
+$br_line   = isset($_GET['br'])      ? 2                              : 1 ; // 2 pour nom / retour à la ligne / prénom ; 1 pour nom / prénom à la suite
+$font_size = isset($_GET['size'])    ? clean_entier($_GET['size'])    : 10 ;
 
 $chemin  = CHEMIN_DOSSIER_BADGE.$dossier.DS;
-$fichier = $chemin.Clean::login($nom.'_'.$prenom).'_'.$br_line.'_'.$font_size.'.png';
+$fichier = $chemin.clean_login($nom.'_'.$prenom).'_'.$br_line.'_'.$font_size.'.png';
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Créer l'image si elle n'existe pas

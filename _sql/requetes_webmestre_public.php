@@ -128,7 +128,7 @@ public static function DB_compter_structure()
  */
 public static function DB_creer_remplir_tables_webmestre()
 {
-	$tab_files = FileSystem::lister_contenu_dossier(CHEMIN_DOSSIER_SQL_WEBMESTRE);
+	$tab_files = array_diff( scandir(CHEMIN_DOSSIER_SQL_WEBMESTRE) , array('.','..') ); // fonction Lister_Contenu_Dossier() inaccessible depuis la classe
 	foreach($tab_files as $file)
 	{
 		$extension = pathinfo($file,PATHINFO_EXTENSION);

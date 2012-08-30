@@ -32,7 +32,7 @@ $action = (isset($_POST['action']))   ? $_POST['action']   : '';
 $profil = (isset($_POST['f_profil'])) ? $_POST['f_profil'] : '';
 // Normalement c'est un tableau qui est transmis, mais au cas où...
 $tab_select_users = (isset($_POST['select_users'])) ? ( (is_array($_POST['select_users'])) ? $_POST['select_users'] : explode(',',$_POST['select_users']) ) : array() ;
-$tab_select_users = array_filter( Clean::map_entier($tab_select_users) , 'positif' );
+$tab_select_users = array_filter( array_map( 'clean_entier' , $tab_select_users ) , 'positif' );
 $nb = count($tab_select_users);
 
 $tab_profils = array('eleves','parents','professeurs','directeurs');
@@ -103,7 +103,15 @@ if( (($action=='generer_login')||($action=='generer_mdp')) && (in_array($profil,
 		$info  = (isset($DB_ROW['info']))   ? $DB_ROW['info'] : '' ;
 		$fcontenu .= $DB_ROW[$prefixe.'sconet_id'].$separateur.$DB_ROW[$prefixe.'sconet_elenoet'].$separateur.$DB_ROW[$prefixe.'reference'].$separateur.$DB_ROW[$prefixe.'profil'].$separateur.$DB_ROW[$prefixe.'nom'].$separateur.$DB_ROW[$prefixe.'prenom'].$separateur.$login.$separateur.$mdp.$separateur.$info."\r\n";
 	}
-	FileSystem::zip( CHEMIN_DOSSIER_LOGINPASS.$fnom.'.zip' , $fnom.'.csv' , To::csv($fcontenu) );
+	$zip = new ZipArchive();
+	$result_open = $zip->open(CHEMIN_DOSSIER_LOGINPASS.$fnom.'.zip', ZIPARCHIVE::CREATE);
+	if($result_open!==TRUE)
+	{
+		require(CHEMIN_DOSSIER_INCLUDE.'tableau_zip_error.php');
+		exit('Problème de création de l\'archive ZIP ('.$result_open.$tab_zip_error[$result_open].') !');
+	}
+	$zip->addFromString($fnom.'.csv',csv($fcontenu));
+	$zip->close();
 	//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 	//	Générer une sortie pdf : classe fpdf + script étiquettes (login ou mdp) (élève ou prof)
 	//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
@@ -116,12 +124,12 @@ if( (($action=='generer_login')||($action=='generer_mdp')) && (in_array($profil,
 	$pdf -> SetDrawColor(145,145,145);
 	foreach($DB_TAB as $DB_ROW)
 	{
-		$ligne1 = Clean::perso_ucwords($DB_ROW[$prefixe.'profil']) ;
-		$ligne1.= (isset($DB_ROW['info']))   ? ' : '.Clean::perso_ucwords($DB_ROW['info']) : '' ;
+		$ligne1 = perso_ucwords($DB_ROW[$prefixe.'profil']) ;
+		$ligne1.= (isset($DB_ROW['info']))   ? ' : '.perso_ucwords($DB_ROW['info']) : '' ;
 		$ligne2 = $DB_ROW[$prefixe.'nom'].' '.$DB_ROW[$prefixe.'prenom'];
 		$ligne3 = ($action=='generer_login') ? 'Utilisateur : '.$tab_login[$DB_ROW[$prefixe.'id']] : 'Utilisateur : '.$DB_ROW[$prefixe.'login'] ;
 		$ligne4 = ($action=='generer_mdp')   ? 'Mot de passe : '.$tab_password[$DB_ROW[$prefixe.'id']] : 'Mot de passe : inchangé' ;
-		$pdf -> Add_Label(To::pdf($ligne1."\r\n".$ligne2."\r\n".$ligne3."\r\n".$ligne4));
+		$pdf -> Add_Label(pdf($ligne1."\r\n".$ligne2."\r\n".$ligne3."\r\n".$ligne4));
 	}
 	$pdf->Output(CHEMIN_DOSSIER_LOGINPASS.$fnom.'.pdf','F');
 	//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
@@ -155,7 +163,15 @@ if($action=='user_export')
 	}
 	// On archive dans un fichier tableur zippé (csv tabulé)
 	$fnom = 'export_'.$_SESSION['BASE'].'_mdp_'.fabriquer_fin_nom_fichier__date_et_alea();
-	FileSystem::zip( CHEMIN_DOSSIER_EXPORT.$fnom.'.zip' , $fnom.'.csv' , To::csv($fcontenu_csv) );
+	$zip = new ZipArchive();
+	$result_open = $zip->open(CHEMIN_DOSSIER_EXPORT.$fnom.'.zip', ZIPARCHIVE::CREATE);
+	if($result_open!==TRUE)
+	{
+		require(CHEMIN_DOSSIER_INCLUDE.'tableau_zip_error.php');
+		exit('Problème de création de l\'archive ZIP ('.$result_open.$tab_zip_error[$result_open].') !');
+	}
+	$zip->addFromString($fnom.'.csv',csv($fcontenu_csv));
+	$zip->close();
 	exit('<ul class="puce"><li><a class="lien_ext" href="'.URL_DIR_EXPORT.$fnom.'.zip"><span class="file file_zip">Récupérez le fichier exporté de la base SACoche.</span></a></li></ul>');
 }
 
@@ -172,7 +188,8 @@ if($action=='import_loginmdp')
 	$ferreur = $tab_file['error'];
 	if( (!file_exists($fnom_serveur)) || (!$ftaille) || ($ferreur) )
 	{
-		exit('Erreur : problème de transfert ! Fichier trop lourd ? '.InfoServeur::minimum_limitations_upload());
+		require(CHEMIN_DOSSIER_INCLUDE.'fonction_infos_serveur.php');
+		exit('Erreur : problème de transfert ! Fichier trop lourd ? min(memory_limit,post_max_size,upload_max_filesize)='.minimum_limitations_upload());
 	}
 	$extension = strtolower(pathinfo($fnom_transmis,PATHINFO_EXTENSION));
 	if(!in_array($extension,array('txt','csv')))
@@ -191,7 +208,7 @@ if($action=='import_loginmdp')
 	$tab_users_fichier['nom']    = array();
 	$tab_users_fichier['prenom'] = array();
 	$contenu = file_get_contents(CHEMIN_DOSSIER_IMPORT.$fichier_dest);
-	$contenu = To::utf8($contenu); // Mettre en UTF-8 si besoin
+	$contenu = utf8($contenu); // Mettre en UTF-8 si besoin
 	$tab_lignes = extraire_lignes($contenu); // Extraire les lignes du fichier
 	$separateur = extraire_separateur_csv($tab_lignes[0]); // Déterminer la nature du séparateur
 	unset($tab_lignes[0]); // Supprimer la 1e ligne
@@ -201,14 +218,14 @@ if($action=='import_loginmdp')
 		$tab_elements = array_slice($tab_elements,0,4);
 		if(count($tab_elements)==4)
 		{
-			$tab_elements = Clean::map_quotes($tab_elements);
+			$tab_elements = array_map('clean_csv',$tab_elements);
 			list($login,$mdp,$nom,$prenom) = $tab_elements;
 			if( ($nom!='') && ($prenom!='') )
 			{
-				$tab_users_fichier['login'][]  = mb_substr(Clean::login($login),0,20);
-				$tab_users_fichier['mdp'][]    = ($mdp!='inchangé') ? mb_substr(Clean::password($mdp),0,20) : '';
-				$tab_users_fichier['nom'][]    = Clean::nom($nom);
-				$tab_users_fichier['prenom'][] = Clean::prenom($prenom);
+				$tab_users_fichier['login'][]  = mb_substr(clean_login($login),0,20);
+				$tab_users_fichier['mdp'][]    = ($mdp!='inchangé') ? mb_substr(clean_password($mdp),0,20) : '';
+				$tab_users_fichier['nom'][]    = clean_nom($nom);
+				$tab_users_fichier['prenom'][] = clean_prenom($prenom);
 			}
 		}
 	}
@@ -342,7 +359,7 @@ if($action=='import_loginmdp')
 		sort($fcontenu_pdf_tab);
 		foreach($fcontenu_pdf_tab as $text)
 		{
-			$pdf -> Add_Label(To::pdf($text));
+			$pdf -> Add_Label(pdf($text));
 		}
 		$pdf->Output(CHEMIN_DOSSIER_LOGINPASS.$fnom.'.pdf','F');
 		echo'<li><a class="lien_ext" href="'.URL_DIR_LOGINPASS.$fnom.'.pdf"><span class="file file_pdf">Archiver / Imprimer les identifiants modifiés (étiquettes <em>pdf</em>).</span></a></li>';
@@ -379,7 +396,8 @@ if( ($action=='import_gepi_eleves') || ($action=='import_gepi_profs') )
 	$ferreur = $tab_file['error'];
 	if( (!file_exists($fnom_serveur)) || (!$ftaille) || ($ferreur) )
 	{
-		exit('Erreur : problème de transfert ! Fichier trop lourd ? '.InfoServeur::minimum_limitations_upload());
+		require(CHEMIN_DOSSIER_INCLUDE.'fonction_infos_serveur.php');
+		exit('Erreur : problème de transfert ! Fichier trop lourd ? min(memory_limit,post_max_size,upload_max_filesize)='.minimum_limitations_upload());
 	}
 	$tab_fnom_attendu = array( 'import_gepi_eleves'=>array('base_eleve_gepi.csv') , 'import_gepi_profs'=>array('base_professeur_gepi.csv','base_cpe_gepi.csv') );
 	if(!in_array($fnom_transmis,$tab_fnom_attendu[$action]))
@@ -399,7 +417,7 @@ if( ($action=='import_gepi_eleves') || ($action=='import_gepi_profs') )
 	$tab_users_fichier['prenom']     = array();
 	$tab_users_fichier['sconet_num'] = array(); // Ne servira que pour les élèves
 	$contenu = file_get_contents(CHEMIN_DOSSIER_IMPORT.$fichier_dest);
-	$contenu = To::utf8($contenu); // Mettre en UTF-8 si besoin
+	$contenu = utf8($contenu); // Mettre en UTF-8 si besoin
 	$tab_lignes = extraire_lignes($contenu); // Extraire les lignes du fichier
 	$separateur = extraire_separateur_csv($tab_lignes[0]); // Déterminer la nature du séparateur
 	// Pas de ligne d'en-tête à supprimer
@@ -409,17 +427,17 @@ if( ($action=='import_gepi_eleves') || ($action=='import_gepi_profs') )
 		$tab_elements = explode($separateur,$ligne_contenu);
 		if(count($tab_elements)>2)
 		{
-			$tab_elements = Clean::map_quotes($tab_elements);
+			$tab_elements = array_map('clean_csv',$tab_elements);
 			$id_gepi    = $tab_elements[2];
 			$nom        = $tab_elements[0];
 			$prenom     = $tab_elements[1];
 			$sconet_num = (isset($tab_elements[4])) ? $tab_elements[4] : 0;
 			if( ($id_gepi!='') && ($nom!='') && ($prenom!='') )
 			{
-				$tab_users_fichier['id_gepi'][] = Clean::id_ent($id_gepi);
-				$tab_users_fichier['nom'][]     = Clean::nom($nom);
-				$tab_users_fichier['prenom'][]  = Clean::prenom($prenom);
-				$tab_users_fichier['sconet_num'][] = Clean::entier($sconet_num);
+				$tab_users_fichier['id_gepi'][] = clean_id_ent($id_gepi);
+				$tab_users_fichier['nom'][]     = clean_nom($nom);
+				$tab_users_fichier['prenom'][]  = clean_prenom($prenom);
+				$tab_users_fichier['sconet_num'][] = clean_entier($sconet_num);
 			}
 		}
 	}
@@ -536,7 +554,8 @@ if($action=='import_ent')
 	$ferreur = $tab_file['error'];
 	if( (!file_exists($fnom_serveur)) || (!$ftaille) || ($ferreur) )
 	{
-		exit('Erreur : problème de transfert ! Fichier trop lourd ? '.InfoServeur::minimum_limitations_upload());
+		require(CHEMIN_DOSSIER_INCLUDE.'fonction_infos_serveur.php');
+		exit('Erreur : problème de transfert ! Fichier trop lourd ? min(memory_limit,post_max_size,upload_max_filesize)='.minimum_limitations_upload());
 	}
 	$extension = strtolower(pathinfo($fnom_transmis,PATHINFO_EXTENSION));
 	if(!in_array($extension,array('txt','csv')))
@@ -557,7 +576,7 @@ if($action=='import_ent')
 	$tab_users_fichier['prenom']    = array();
 	$tab_users_fichier['id_sconet'] = array();
 	$contenu = file_get_contents(CHEMIN_DOSSIER_IMPORT.$fichier_dest);
-	$contenu = To::utf8($contenu); // Mettre en UTF-8 si besoin
+	$contenu = utf8($contenu); // Mettre en UTF-8 si besoin
 	$tab_lignes = extraire_lignes($contenu); // Extraire les lignes du fichier
 	$separateur = extraire_separateur_csv($tab_lignes[0]); // Déterminer la nature du séparateur
 	if($tab_connexion_info[$_SESSION['CONNEXION_MODE']][$_SESSION['CONNEXION_NOM']]['csv_entete'])
@@ -570,7 +589,7 @@ if($action=='import_ent')
 		$tab_elements = explode($separateur,$ligne_contenu);
 		if(count($tab_elements)>2)
 		{
-			$tab_elements = Clean::map_quotes($tab_elements);
+			$tab_elements = array_map('clean_csv',$tab_elements);
 			$id_ent    = $tab_elements[ $tab_connexion_info[$_SESSION['CONNEXION_MODE']][$_SESSION['CONNEXION_NOM']]['csv_id_ent'] ];
 			$nom       = $tab_elements[ $tab_connexion_info[$_SESSION['CONNEXION_MODE']][$_SESSION['CONNEXION_NOM']]['csv_nom']    ];
 			$prenom    = $tab_elements[ $tab_connexion_info[$_SESSION['CONNEXION_MODE']][$_SESSION['CONNEXION_NOM']]['csv_prenom'] ];
@@ -581,10 +600,10 @@ if($action=='import_ent')
 				{
 					$id_ent = str_replace('ID : ','UT',$id_ent); // Dans les CSV de Lilie & Celi@, il faut par exemple remplacer "ID : 75185265" par "UT75185265"
 				}
-				$tab_users_fichier['id_ent'][]    = Clean::id_ent($id_ent);
-				$tab_users_fichier['nom'][]       = Clean::nom(Clean::accents($nom)); // En cas de comparaison sur nom / prénom, maieux vaut éviter les accents
-				$tab_users_fichier['prenom'][]    = Clean::prenom(Clean::accents($prenom));
-				$tab_users_fichier['id_sconet'][] = Clean::entier($id_sconet);
+				$tab_users_fichier['id_ent'][]    = clean_id_ent($id_ent);
+				$tab_users_fichier['nom'][]       = clean_nom(clean_accents($nom)); // En cas de comparaison sur nom / prénom, maieux vaut éviter les accents
+				$tab_users_fichier['prenom'][]    = clean_prenom(clean_accents($prenom));
+				$tab_users_fichier['id_sconet'][] = clean_entier($id_sconet);
 			}
 		}
 	}
@@ -602,8 +621,8 @@ if($action=='import_ent')
 	foreach($DB_TAB as $DB_ROW)
 	{
 		$tab_users_base['id_ent'][$DB_ROW['user_id']]    = $DB_ROW['user_id_ent'];
-		$tab_users_base['nom'][$DB_ROW['user_id']]       = Clean::accents($DB_ROW['user_nom']);
-		$tab_users_base['prenom'][$DB_ROW['user_id']]    = Clean::accents($DB_ROW['user_prenom']);
+		$tab_users_base['nom'][$DB_ROW['user_id']]       = clean_accents($DB_ROW['user_nom']);
+		$tab_users_base['prenom'][$DB_ROW['user_id']]    = clean_accents($DB_ROW['user_prenom']);
 		$tab_users_base['id_sconet'][$DB_ROW['user_id']] = $DB_ROW['user_sconet_id'];
 		$tab_users_base['info'][$DB_ROW['user_id']]      = ($DB_ROW['user_profil']=='eleve') ? $DB_ROW['groupe_nom'] : mb_strtoupper($DB_ROW['user_profil']) ;
 	}
@@ -791,7 +810,7 @@ if($action=='COPY_id_lcs_TO_id_ent')
 			}
 			else
 			{
-				$id_ent_LCS = Clean::id_ent($tab_valeurs_retournees[0]);
+				$id_ent_LCS = clean_id_ent($tab_valeurs_retournees[0]);
 				if($DB_ROW['user_id_ent']==$id_ent_LCS)
 				{
 					// Contenu de SACoche à ignorer : id_ent identique
@@ -842,7 +861,7 @@ if( ($action=='COPY_id_argos_profs_TO_id_ent') || ($action=='COPY_id_argos_eleve
 	$qui = substr($action,14,-10); // profs | eleves | parents
 	// Appeler le serveur LDAP et enregistrer le fichier temporairement pour aider au débuggage
 	$retour_Sarapis = recuperer_infos_LDAP($_SESSION['WEBMESTRE_UAI'],$qui);
-	FileSystem::ecrire_fichier( CHEMIN_DOSSIER_IMPORT.'import_Sarapis_'.$_SESSION['WEBMESTRE_UAI'].'_'.$qui.'.xml' , $retour_Sarapis );
+	Ecrire_Fichier( CHEMIN_DOSSIER_IMPORT.'import_Sarapis_'.$_SESSION['WEBMESTRE_UAI'].'_'.$qui.'.xml' , $retour_Sarapis );
 	// Maintenant on regarde ce qu'il contient
 	if(mb_substr($retour_Sarapis,0,6)=='Erreur')
 	{
@@ -868,9 +887,9 @@ if( ($action=='COPY_id_argos_profs_TO_id_ent') || ($action=='COPY_id_argos_eleve
 		{
 			if($qui!='parents')
 			{
-				$tab_users_ldap['id_ent'][] = Clean::id_ent($utilisateur->uid);
-				$tab_users_ldap['nom'][]    = Clean::nom($utilisateur->nom);
-				$tab_users_ldap['prenom'][] = Clean::prenom($utilisateur->prenom);
+				$tab_users_ldap['id_ent'][] = clean_id_ent($utilisateur->uid);
+				$tab_users_ldap['nom'][]    = clean_nom($utilisateur->nom);
+				$tab_users_ldap['prenom'][] = clean_prenom($utilisateur->prenom);
 			}
 			elseif($qui=='parents') /* forcément */
 			{
@@ -879,9 +898,9 @@ if( ($action=='COPY_id_argos_profs_TO_id_ent') || ($action=='COPY_id_argos_eleve
 					foreach ($utilisateur->responsables->responsable as $responsable)
 					{
 						$id = (int) $responsable->entpersonlogin->attributes()->jointure; // Car ils reviennent plusieurs fois dans le fichier.
-						$tab_users_ldap['id_ent'][$id] = Clean::id_ent($responsable->uid);
-						$tab_users_ldap['nom'][$id]    = Clean::nom($responsable->nom);
-						$tab_users_ldap['prenom'][$id] = Clean::prenom($responsable->prenom);
+						$tab_users_ldap['id_ent'][$id] = clean_id_ent($responsable->uid);
+						$tab_users_ldap['nom'][$id]    = clean_nom($responsable->nom);
+						$tab_users_ldap['prenom'][$id] = clean_prenom($responsable->prenom);
 					}
 				}
 			}

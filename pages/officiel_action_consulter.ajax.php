@@ -28,17 +28,17 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 if($_SESSION['SESAMATH_ID']==ID_DEMO){exit('Action désactivée pour la démo...');}
 
-$objet      = (isset($_POST['f_objet']))      ? Clean::texte($_POST['f_objet'])      : '';
-$ACTION     = (isset($_POST['f_action']))     ? Clean::texte($_POST['f_action'])     : '';
-$BILAN_TYPE = (isset($_POST['f_bilan_type'])) ? Clean::texte($_POST['f_bilan_type']) : '';
-$mode       = (isset($_POST['f_mode']))       ? Clean::texte($_POST['f_mode'])       : '';
-$periode_id = (isset($_POST['f_periode']))    ? Clean::entier($_POST['f_periode'])   : 0;
-$classe_id  = (isset($_POST['f_classe']))     ? Clean::entier($_POST['f_classe'])    : 0;
-$groupe_id  = (isset($_POST['f_groupe']))     ? Clean::entier($_POST['f_groupe'])    : 0;
-$eleve_id   = (isset($_POST['f_user']))       ? Clean::entier($_POST['f_user'])      : 0;
+$objet      = (isset($_POST['f_objet']))      ? clean_texte($_POST['f_objet'])      : '';
+$ACTION     = (isset($_POST['f_action']))     ? clean_texte($_POST['f_action'])     : '';
+$BILAN_TYPE = (isset($_POST['f_bilan_type'])) ? clean_texte($_POST['f_bilan_type']) : '';
+$mode       = (isset($_POST['f_mode']))       ? clean_texte($_POST['f_mode'])       : '';
+$periode_id = (isset($_POST['f_periode']))    ? clean_entier($_POST['f_periode'])   : 0;
+$classe_id  = (isset($_POST['f_classe']))     ? clean_entier($_POST['f_classe'])    : 0;
+$groupe_id  = (isset($_POST['f_groupe']))     ? clean_entier($_POST['f_groupe'])    : 0;
+$eleve_id   = (isset($_POST['f_user']))       ? clean_entier($_POST['f_user'])      : 0;
 // Autres chaines spécifiques...
 $listing_piliers  = (isset($_POST['f_listing_piliers']))  ? $_POST['f_listing_piliers']  : '' ;
-$tab_pilier_id  = array_filter( Clean::map_entier( explode(',',$listing_piliers) ) , 'positif' );
+$tab_pilier_id  = array_filter( array_map( 'clean_entier' , explode(',',$listing_piliers) )  , 'positif' );
 $liste_pilier_id  = implode(',',$tab_pilier_id);
 
 $is_sous_groupe = ($groupe_id) ? TRUE : FALSE ;

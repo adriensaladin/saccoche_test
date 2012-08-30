@@ -32,9 +32,13 @@ $tab_messages_erreur = array();
 
 // Atteste l'appel de cette page avant l'inclusion d'une autre
 define('SACoche','index');
+// Constantes de l'application
+require('./_inc/constantes.php');
 
-// Constantes / Configuration serveur / Autoload classes / Fonction de sortie
-require('./_inc/_loader.php');
+// Fonctions de redirections / Configuration serveur
+require(CHEMIN_DOSSIER_INCLUDE.'fonction_redirection.php');
+require(CHEMIN_DOSSIER_INCLUDE.'config_serveur.php');
+require(CHEMIN_DOSSIER_INCLUDE.'fonction_sessions.php');
 
 // Page et section appelées ; normalement transmis en $_GET mais $_POST possibles depuis GEPI
     if(isset($_GET['page']))  { $PAGE = $_GET['page']; }
@@ -52,7 +56,7 @@ if(is_file(CHEMIN_FICHIER_CONFIG_INSTALL))
 }
 elseif($PAGE!='public_installation')
 {
-	exit_error( 'Informations hébergement manquantes' /*titre*/ , 'Les informations relatives à l\'hébergeur n\'ont pas été trouvées.' /*contenu*/ , TRUE /*setup*/ );
+	affich_message_exit($titre='Informations hébergement manquantes',$contenu='Informations concernant l\'hébergeur manquantes.',$lien='<a href="./index.php?page=public_installation">Procédure d\'installation de SACoche.</a>');
 }
 
 // Le fait de lister les droits d'accès de chaque page empêche de surcroit l'exploitation d'une vulnérabilité "include PHP" (http://www.certa.ssi.gouv.fr/site/CERTA-2003-ALE-003/).
@@ -64,16 +68,21 @@ if(!isset($tab_droits[$PAGE]))
 }
 
 // Ouverture de la session et gestion des droits d'accès
-Session::execute($tab_droits[$PAGE]);
+gestion_session($tab_droits[$PAGE]);
 
 // Pour le devel
 if (DEBUG) afficher_infos_debug();
 
-// Blocage éventuel par le webmestre ou un administrateur ou l'automate (on ne peut pas le tester avant car il faut avoir récupéré les données de session)
-LockAcces::stopper_si_blocage( $_SESSION['BASE'] , FALSE /*demande_connexion_profil*/ );
+// Blocage éventuel par le webmestre ou un administrateur (on ne peut pas le tester avant car il faut avoir récupéré les données de session)
+tester_blocage_application($_SESSION['BASE'],$demande_connexion_profil=false);
 
 // Autres fonctions à charger
+require(CHEMIN_DOSSIER_INCLUDE.'fonction_clean.php');
 require(CHEMIN_DOSSIER_INCLUDE.'fonction_divers.php');
+require(CHEMIN_DOSSIER_INCLUDE.'fonction_affichage.php');
+
+// Annuler un blocage par l'automate anormalement long
+annuler_blocage_anormal();
 
 // Patch fichier de config
 if(is_file(CHEMIN_FICHIER_CONFIG_INSTALL))
@@ -125,7 +134,7 @@ if(is_file(CHEMIN_FICHIER_CONFIG_INSTALL))
 	}
 	else
 	{
-		exit_error( 'Configuration anormale' /*titre*/ , 'Une anomalie dans les données d\'hébergement et/ou de session empêche l\'application de se poursuivre.' /*contenu*/ );
+		affich_message_exit($titre='Configuration anormale',$contenu='Une anomalie dans les données d\'hébergement et/ou de session empêche l\'application de se poursuivre.');
 	}
 	// Chargement du fichier de connexion à la BDD
 	define('CHEMIN_FICHIER_CONFIG_MYSQL',CHEMIN_DOSSIER_MYSQL.$fichier_mysql_config.'.php');
@@ -136,12 +145,12 @@ if(is_file(CHEMIN_FICHIER_CONFIG_INSTALL))
 	}
 	elseif($PAGE!='public_installation')
 	{
-		exit_error( 'Paramètres BDD manquants' /*titre*/ , 'Les paramètres de connexion à la base de données n\'ont pas été trouvés.' /*contenu*/ , TRUE /*setup*/ );
+		affich_message_exit($titre='Paramètres BDD manquants',$contenu='Paramètres de connexion à la base de données manquants.',$lien='<a href="./index.php?page=public_installation">Procédure d\'installation de SACoche.</a>');
 	}
 }
 
 // Authentification requise par SSO
-if(Session::$_sso_redirect)
+if(defined('LOGIN_SSO'))
 {
 	require(CHEMIN_DOSSIER_PAGES.'public_login_SSO.php');
 }

@@ -27,14 +27,14 @@
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 
-$type_export = (isset($_POST['f_type']))        ? Clean::texte($_POST['f_type'])        : '';
-$groupe_id   = (isset($_POST['f_groupe']))      ? Clean::entier($_POST['f_groupe'])     : 0;
-$groupe_type = (isset($_POST['f_groupe_type'])) ? Clean::texte($_POST['f_groupe_type']) : '';
-$groupe_nom  = (isset($_POST['f_groupe_nom']))  ? Clean::texte($_POST['f_groupe_nom'])  : '';
-$matiere_id  = (isset($_POST['f_matiere']))     ? Clean::entier($_POST['f_matiere'])    : 0;
-$matiere_nom = (isset($_POST['f_matiere_nom'])) ? Clean::texte($_POST['f_matiere_nom']) : '';
-$palier_id   = (isset($_POST['f_palier']))      ? Clean::entier($_POST['f_palier'])     : 0;
-$palier_nom  = (isset($_POST['f_palier_nom']))  ? Clean::texte($_POST['f_palier_nom'])  : '';
+$type_export = (isset($_POST['f_type']))        ? clean_texte($_POST['f_type'])        : '';
+$groupe_id   = (isset($_POST['f_groupe']))      ? clean_entier($_POST['f_groupe'])     : 0;
+$groupe_type = (isset($_POST['f_groupe_type'])) ? clean_texte($_POST['f_groupe_type']) : '';
+$groupe_nom  = (isset($_POST['f_groupe_nom']))  ? clean_texte($_POST['f_groupe_nom'])  : '';
+$matiere_id  = (isset($_POST['f_matiere']))     ? clean_entier($_POST['f_matiere'])    : 0;
+$matiere_nom = (isset($_POST['f_matiere_nom'])) ? clean_texte($_POST['f_matiere_nom']) : '';
+$palier_id   = (isset($_POST['f_palier']))      ? clean_entier($_POST['f_palier'])     : 0;
+$palier_nom  = (isset($_POST['f_palier_nom']))  ? clean_texte($_POST['f_palier_nom'])  : '';
 
 $tab_types = array('Classes'=>'classe' , 'Groupes'=>'groupe' , 'Besoins'=>'groupe');
 
@@ -62,8 +62,16 @@ if( ($type_export=='listing_users') && $groupe_id && isset($tab_types[$groupe_ty
 	}
 
 	// Finalisation de l'export CSV (archivage dans un fichier zippé)
-	$fnom = 'export_listing-eleves_'.Clean::fichier($groupe_nom).'_'.fabriquer_fin_nom_fichier__date_et_alea();
-	FileSystem::zip( CHEMIN_DOSSIER_EXPORT.$fnom.'.zip' , $fnom.'.csv' , To::csv($export_csv) );
+	$fnom = 'export_listing-eleves_'.clean_fichier($groupe_nom).'_'.fabriquer_fin_nom_fichier__date_et_alea();
+	$zip = new ZipArchive();
+	$result_open = $zip->open(CHEMIN_DOSSIER_EXPORT.$fnom.'.zip', ZIPARCHIVE::CREATE);
+	if($result_open!==TRUE)
+	{
+		require(CHEMIN_DOSSIER_INCLUDE.'tableau_zip_error.php');
+		exit('Problème de création de l\'archive ZIP ('.$result_open.$tab_zip_error[$result_open].') !');
+	}
+	$zip->addFromString($fnom.'.csv',csv($export_csv));
+	$zip->close();
 	// Finalisation de l'export HTML
 	$export_html .= '</tbody></table>'."\r\n";
 
@@ -79,7 +87,7 @@ if( ($type_export=='listing_users') && $groupe_id && isset($tab_types[$groupe_ty
 
 if( ($type_export=='listing_matiere') && $matiere_id && $matiere_nom )
 {
-	Form::save_choix('export_fichier');
+	Formulaire::save_choix('export_fichier');
 	// Préparation de l'export CSV
 	$separateur = ';';
 	// ajout du préfixe 'ITEM_' pour éviter un bug avec M$ Excel « SYLK : Format de fichier non valide » (http://support.microsoft.com/kb/323626/fr). 
@@ -99,8 +107,16 @@ if( ($type_export=='listing_matiere') && $matiere_id && $matiere_nom )
 	}
 
 	// Finalisation de l'export CSV (archivage dans un fichier zippé)
-	$fnom = 'export_listing-items_'.Clean::fichier($matiere_nom).'_'.fabriquer_fin_nom_fichier__date_et_alea();
-	FileSystem::zip( CHEMIN_DOSSIER_EXPORT.$fnom.'.zip' , $fnom.'.csv' , To::csv($export_csv) );
+	$fnom = 'export_listing-items_'.clean_fichier($matiere_nom).'_'.fabriquer_fin_nom_fichier__date_et_alea();
+	$zip = new ZipArchive();
+	$result_open = $zip->open(CHEMIN_DOSSIER_EXPORT.$fnom.'.zip', ZIPARCHIVE::CREATE);
+	if($result_open!==TRUE)
+	{
+		require(CHEMIN_DOSSIER_INCLUDE.'tableau_zip_error.php');
+		exit('Problème de création de l\'archive ZIP ('.$result_open.$tab_zip_error[$result_open].') !');
+	}
+	$zip->addFromString($fnom.'.csv',csv($export_csv));
+	$zip->close();
 	// Finalisation de l'export HTML
 	$export_html .= '</tbody></table>'."\r\n";
 
@@ -116,7 +132,7 @@ if( ($type_export=='listing_matiere') && $matiere_id && $matiere_nom )
 
 if( ($type_export=='arbre_matiere') && $matiere_id && $matiere_nom )
 {
-	Form::save_choix('matiere');
+	Formulaire::save_choix('matiere');
 	// Préparation de l'export CSV
 	$separateur = ';';
 	// ajout du préfixe 'ITEM_' pour éviter un bug avec M$ Excel « SYLK : Format de fichier non valide » (http://support.microsoft.com/kb/323626/fr). 
@@ -203,8 +219,16 @@ if( ($type_export=='arbre_matiere') && $matiere_id && $matiere_nom )
 	$export_html .= '</ul>'."\r\n";
 
 	// Finalisation de l'export CSV (archivage dans un fichier zippé)
-	$fnom = 'export_arbre-matiere_'.Clean::fichier($matiere_nom).'_'.fabriquer_fin_nom_fichier__date_et_alea();
-	FileSystem::zip( CHEMIN_DOSSIER_EXPORT.$fnom.'.zip' , $fnom.'.csv' , To::csv($export_csv) );
+	$fnom = 'export_arbre-matiere_'.clean_fichier($matiere_nom).'_'.fabriquer_fin_nom_fichier__date_et_alea();
+	$zip = new ZipArchive();
+	$result_open = $zip->open(CHEMIN_DOSSIER_EXPORT.$fnom.'.zip', ZIPARCHIVE::CREATE);
+	if($result_open!==TRUE)
+	{
+		require(CHEMIN_DOSSIER_INCLUDE.'tableau_zip_error.php');
+		exit('Problème de création de l\'archive ZIP ('.$result_open.$tab_zip_error[$result_open].') !');
+	}
+	$zip->addFromString($fnom.'.csv',csv($export_csv));
+	$zip->close();
 	// Finalisation de l'export HTML
 	$export_html.= '</div>';
 
@@ -220,7 +244,7 @@ if( ($type_export=='arbre_matiere') && $matiere_id && $matiere_nom )
 
 if( ($type_export=='arbre_socle') && $palier_id && $palier_nom )
 {
-	Form::save_choix('palier');
+	Formulaire::save_choix('palier');
 	// Préparation de l'export CSV
 	$separateur = ';';
 	$export_csv  = 'PALIER'.$separateur.'PILIER'.$separateur.'SECTION'.$separateur.'ITEM'."\r\n\r\n";
@@ -288,8 +312,16 @@ if( ($type_export=='arbre_socle') && $palier_id && $palier_nom )
 	$export_html .= '</ul>'."\r\n";
 
 	// Finalisation de l'export CSV (archivage dans un fichier zippé)
-	$fnom = 'export_arbre-socle_'.Clean::fichier(substr($palier_nom,0,strpos($palier_nom,' ('))).'_'.fabriquer_fin_nom_fichier__date_et_alea();
-	FileSystem::zip( CHEMIN_DOSSIER_EXPORT.$fnom.'.zip' , $fnom.'.csv' , To::csv($export_csv) );
+	$fnom = 'export_arbre-socle_'.clean_fichier(substr($palier_nom,0,strpos($palier_nom,' ('))).'_'.fabriquer_fin_nom_fichier__date_et_alea();
+	$zip = new ZipArchive();
+	$result_open = $zip->open(CHEMIN_DOSSIER_EXPORT.$fnom.'.zip', ZIPARCHIVE::CREATE);
+	if($result_open!==TRUE)
+	{
+		require(CHEMIN_DOSSIER_INCLUDE.'tableau_zip_error.php');
+		exit('Problème de création de l\'archive ZIP ('.$result_open.$tab_zip_error[$result_open].') !');
+	}
+	$zip->addFromString($fnom.'.csv',csv($export_csv));
+	$zip->close();
 	// Finalisation de l'export HTML
 	$export_html.= '</div>';
 
@@ -305,7 +337,7 @@ if( ($type_export=='arbre_socle') && $palier_id && $palier_nom )
 
 if( ($type_export=='jointure_socle_matiere') && $palier_id && $palier_nom )
 {
-	Form::save_choix('palier');
+	Formulaire::save_choix('palier');
 	// Préparation de l'export CSV
 	$separateur = ';';
 	$export_csv  = 'PALIER SOCLE'.$separateur.'PILIER SOCLE'.$separateur.'SECTION SOCLE'.$separateur.'ITEM SOCLE'.$separateur.'ITEM MATIERE'."\r\n\r\n";
@@ -400,8 +432,16 @@ if( ($type_export=='jointure_socle_matiere') && $palier_id && $palier_nom )
 	$export_html .= '</ul>'."\r\n";
 
 	// Finalisation de l'export CSV (archivage dans un fichier zippé)
-	$fnom = 'export_jointures_'.Clean::fichier(substr($palier_nom,0,strpos($palier_nom,' ('))).'_'.fabriquer_fin_nom_fichier__date_et_alea();
-	FileSystem::zip( CHEMIN_DOSSIER_EXPORT.$fnom.'.zip' , $fnom.'.csv' , To::csv($export_csv) );
+	$fnom = 'export_jointures_'.clean_fichier(substr($palier_nom,0,strpos($palier_nom,' ('))).'_'.fabriquer_fin_nom_fichier__date_et_alea();
+	$zip = new ZipArchive();
+	$result_open = $zip->open(CHEMIN_DOSSIER_EXPORT.$fnom.'.zip', ZIPARCHIVE::CREATE);
+	if($result_open!==TRUE)
+	{
+		require(CHEMIN_DOSSIER_INCLUDE.'tableau_zip_error.php');
+		exit('Problème de création de l\'archive ZIP ('.$result_open.$tab_zip_error[$result_open].') !');
+	}
+	$zip->addFromString($fnom.'.csv',csv($export_csv));
+	$zip->close();
 	// Finalisation de l'export HTML
 	$export_html.= '</div>';
 

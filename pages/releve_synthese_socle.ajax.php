@@ -28,22 +28,22 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 if($_SESSION['SESAMATH_ID']==ID_DEMO) {}
 
-$type          = (isset($_POST['f_type']))       ? Clean::texte($_POST['f_type'])       : '';
-$mode          = (isset($_POST['f_mode']))       ? Clean::texte($_POST['f_mode'])       : '';
-$palier_id     = (isset($_POST['f_palier']))     ? Clean::entier($_POST['f_palier'])    : 0;
-$palier_nom    = (isset($_POST['f_palier_nom'])) ? Clean::texte($_POST['f_palier_nom']) : '';
-$groupe_id     = (isset($_POST['f_groupe']))     ? Clean::entier($_POST['f_groupe'])    : 0;
-$groupe_nom    = (isset($_POST['f_groupe_nom'])) ? Clean::texte($_POST['f_groupe_nom']) : '';
-$couleur       = (isset($_POST['f_couleur']))    ? Clean::texte($_POST['f_couleur'])    : '';
-$legende       = (isset($_POST['f_legende']))    ? Clean::texte($_POST['f_legende'])    : '';
-$marge_min     = (isset($_POST['f_marge_min']))  ? Clean::entier($_POST['f_marge_min']) : 0;
+$type          = (isset($_POST['f_type']))       ? clean_texte($_POST['f_type'])       : '';
+$mode          = (isset($_POST['f_mode']))       ? clean_texte($_POST['f_mode'])       : '';
+$palier_id     = (isset($_POST['f_palier']))     ? clean_entier($_POST['f_palier'])    : 0;
+$palier_nom    = (isset($_POST['f_palier_nom'])) ? clean_texte($_POST['f_palier_nom']) : '';
+$groupe_id     = (isset($_POST['f_groupe']))     ? clean_entier($_POST['f_groupe'])    : 0;
+$groupe_nom    = (isset($_POST['f_groupe_nom'])) ? clean_texte($_POST['f_groupe_nom']) : '';
+$couleur       = (isset($_POST['f_couleur']))    ? clean_texte($_POST['f_couleur'])    : '';
+$legende       = (isset($_POST['f_legende']))    ? clean_texte($_POST['f_legende'])    : '';
+$marge_min     = (isset($_POST['f_marge_min']))  ? clean_entier($_POST['f_marge_min']) : 0;
 // Normalement ce sont des tableaux qui sont transmis, mais au cas où...
 $tab_pilier_id  = (isset($_POST['f_pilier']))  ? ( (is_array($_POST['f_pilier']))  ? $_POST['f_pilier']  : explode(',',$_POST['f_pilier'])  ) : array() ;
 $tab_eleve_id   = (isset($_POST['f_eleve']))   ? ( (is_array($_POST['f_eleve']))   ? $_POST['f_eleve']   : explode(',',$_POST['f_eleve'])   ) : array() ;
 $tab_matiere_id = (isset($_POST['f_matiere'])) ? ( (is_array($_POST['f_matiere'])) ? $_POST['f_matiere'] : explode(',',$_POST['f_matiere']) ) : array() ;
-$tab_pilier_id  = array_filter( Clean::map_entier($tab_pilier_id)  , 'positif' );
-$tab_eleve_id   = array_filter( Clean::map_entier($tab_eleve_id)   , 'positif' );
-$tab_matiere_id = array_filter( Clean::map_entier($tab_matiere_id) , 'positif' );
+$tab_pilier_id  = array_filter( array_map( 'clean_entier' , $tab_pilier_id  ) , 'positif' );
+$tab_eleve_id   = array_filter( array_map( 'clean_entier' , $tab_eleve_id   ) , 'positif' );
+$tab_matiere_id = array_filter( array_map( 'clean_entier' , $tab_matiere_id ) , 'positif' );
 
 $memo_demande  = (count($tab_pilier_id)>1) ? 'palier' : 'pilier' ;
 $liste_eleve   = implode(',',$tab_eleve_id);
@@ -53,7 +53,7 @@ if( (!$palier_id) || (!$palier_nom) || (!$groupe_id) || (!$groupe_nom) || (!coun
 	exit('Erreur avec les données transmises !');
 }
 
-Form::save_choix('synthese_socle');
+Formulaire::save_choix('synthese_socle');
 
 // La récupération de beaucoup d'informations peut provoquer un dépassement de mémoire.
 // Et la classe FPDF a besoin de mémoire, malgré toutes les optimisations possibles, pour générer un PDF comportant parfois entre 100 et 200 pages.
@@ -314,7 +314,7 @@ foreach($tab_eleve as $tab)
 			$releve_html_body .= '<td class="nu2"></td>';
 			foreach($tab as $socle_id => $socle_nom)
 			{
-				$releve_html_body .= Html::td_pourcentage( 'td' , $tab_score_socle_eleve[$socle_id][$eleve_id] , FALSE /*detail*/ , FALSE /*largeur*/ );
+				$releve_html_body .= affich_pourcentage_html( 'td' , $tab_score_socle_eleve[$socle_id][$eleve_id] , FALSE /*detail*/ , FALSE /*largeur*/ );
 			}
 		}
 		$releve_html_body .= '</tr>';
@@ -332,7 +332,7 @@ foreach($tab_eleve as $tab)
 		{
 			extract($tab);	// $pilier_ref $pilier_nom $pilier_nb_entrees
 			$releve_html_body .= '<td class="nu2"></td>';
-			$releve_html_body .= Html::td_validation( 'td' , $tab_user_pilier[$eleve_id][$pilier_id] , $detail=false , $etat_pilier=false , $colspan=$pilier_nb_entrees );
+			$releve_html_body .= affich_validation_html( 'td' , $tab_user_pilier[$eleve_id][$pilier_id] , $detail=false , $etat_pilier=false , $colspan=$pilier_nb_entrees );
 		}
 		$releve_html_body .= '</tr><tr>';
 		// - - - - -
@@ -344,7 +344,7 @@ foreach($tab_eleve as $tab)
 			$releve_html_body .= '<td class="nu2"></td>';
 			foreach($tab as $socle_id => $socle_nom)
 			{
-				$releve_html_body .= Html::td_validation( 'td' , $tab_user_entree[$eleve_id][$socle_id] , $detail=false , $tab_user_pilier[$eleve_id][$pilier_id]['etat'] );
+				$releve_html_body .= affich_validation_html( 'td' , $tab_user_entree[$eleve_id][$socle_id] , $detail=false , $tab_user_pilier[$eleve_id][$pilier_id]['etat'] );
 			}
 		}
 		$releve_html_body .= '</tr>';
@@ -354,13 +354,13 @@ foreach($tab_eleve as $tab)
 $releve_html .= ($affichage_checkbox) ? '<form id="form_synthese" action="#" method="post">' : '' ;
 $releve_html .= '<table class="bilan"><thead>'.$releve_html_head.'</thead><tbody>'.$releve_html_body.'</tbody></table>';
 $releve_html .= ($affichage_checkbox) ? '<p><label class="tab">Action <img alt="" src="./_img/bulle_aide.png" title="Cocher auparavant les cases adéquates." /> :</label><button type="button" class="ajouter" onclick="var form=document.getElementById(\'form_synthese\');form.action=\'./index.php?page=evaluation_gestion\';form.submit();">Préparer une évaluation.</button> <button type="button" class="ajouter" onclick="var form=document.getElementById(\'form_synthese\');form.action=\'./index.php?page=professeur_groupe_besoin\';form.submit();">Constituer un groupe de besoin.</button></p></form>' : '';
-$releve_html .= Html::legende( FALSE /*codes_notation*/ , FALSE /*etat_acquisition*/ , ($type=='pourcentage') /*pourcentage_acquis*/ , ($type=='validation') /*etat_validation*/ );
+$releve_html .= affich_legende_html( FALSE /*codes_notation*/ , FALSE /*etat_acquisition*/ , ($type=='pourcentage') /*pourcentage_acquis*/ , ($type=='validation') /*etat_validation*/ );
 $releve_pdf->releve_synthese_socle_legende($legende,$type);
 
 // Chemins d'enregistrement
-$fichier = 'releve_socle_synthese_'.Clean::fichier(substr($palier_nom,0,strpos($palier_nom,' ('))).'_'.Clean::fichier($groupe_nom).'_'.$type.'_'.fabriquer_fin_nom_fichier__date_et_alea();
+$fichier = 'releve_socle_synthese_'.clean_fichier(substr($palier_nom,0,strpos($palier_nom,' ('))).'_'.clean_fichier($groupe_nom).'_'.$type.'_'.fabriquer_fin_nom_fichier__date_et_alea();
 // On enregistre les sorties HTML et PDF
-FileSystem::ecrire_fichier(CHEMIN_DOSSIER_EXPORT.$fichier.'.html',$releve_html);
+Ecrire_Fichier(CHEMIN_DOSSIER_EXPORT.$fichier.'.html',$releve_html);
 $releve_pdf->Output(CHEMIN_DOSSIER_EXPORT.$fichier.'.pdf','F');
 // Affichage du résultat
 if($affichage_direct)

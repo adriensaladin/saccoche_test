@@ -73,7 +73,7 @@ else
 			$icone_action  = ($matiere_droit) ? '<q class="modifier" title="Modifier les ressources de ce référentiel."></q>' : '<q class="modifier_non" title="Accès restreint : '.$texte_profil.'."></q>' ;
 			$tab_matiere[$DB_ROW['matiere_id']] = array(
 				'matiere_nom' => html($DB_ROW['matiere_nom']) ,
-				'matiere_ref' => Clean::fichier($DB_ROW['matiere_ref']) ,
+				'matiere_ref' => clean_fichier($DB_ROW['matiere_ref']) ,
 				'matiere_act' => $icone_action
 			);
 		}

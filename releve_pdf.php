@@ -30,9 +30,13 @@
 
 // Atteste l'appel de cette page avant l'inclusion d'une autre
 define('SACoche','releve_pdf');
+// Constantes de l'application
+require('./_inc/constantes.php');
 
-// Constantes / Configuration serveur / Autoload classes / Fonction de sortie
-require('./_inc/_loader.php');
+// Fonctions de redirections / Configuration serveur
+require(CHEMIN_DOSSIER_INCLUDE.'fonction_redirection.php');
+require(CHEMIN_DOSSIER_INCLUDE.'config_serveur.php');
+require(CHEMIN_DOSSIER_INCLUDE.'fonction_sessions.php');
 
 header('Content-Type: text/html; charset=utf-8');
 
@@ -41,11 +45,12 @@ $PAGE = 'releve_pdf';
 require(CHEMIN_DOSSIER_INCLUDE.'tableau_droits.php');
 if(!isset($tab_droits[$PAGE]))
 {
-	exit_error( 'Droits manquants' /*titre*/ , 'Droits de la page "'.$PAGE.'" manquants.' /*contenu*/ );
+	affich_message_exit($titre='Droits manquants',$contenu='Droits de la page "'.$PAGE.'" manquants.');
 }
-Session::execute($tab_droits[$PAGE]);
+gestion_session($tab_droits[$PAGE]);
 
 // Autres fonctions à charger
+require(CHEMIN_DOSSIER_INCLUDE.'fonction_clean.php');
 require(CHEMIN_DOSSIER_INCLUDE.'fonction_divers.php');
 
 // Paramètre transmis
@@ -54,9 +59,9 @@ $FICHIER = (isset($_GET['fichier'])) ? $_GET['fichier'] : '';
 // Extraction des infos
 list( $eleve_id , $BILAN_TYPE , $periode_id ) = explode( '_' , $FICHIER) + Array( NULL , NULL , NULL );
 
-$BILAN_TYPE = Clean::texte($BILAN_TYPE);
-$periode_id = Clean::entier($periode_id);
-$eleve_id   = Clean::entier($eleve_id);
+$BILAN_TYPE = clean_texte($BILAN_TYPE);
+$periode_id = clean_entier($periode_id);
+$eleve_id   = clean_entier($eleve_id);
 
 $tab_types = array( 'releve' , 'bulletin' , 'palier1' , 'palier2' , 'palier3' );
 

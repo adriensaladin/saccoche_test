@@ -30,11 +30,11 @@ $TITRE = "Gérer les parents";
 
 // Récupérer d'éventuels paramètres pour restreindre l'affichage
 $afficher     = (isset($_POST['f_afficher']))     ? TRUE                                   : FALSE ;
-$statut       = (isset($_POST['f_statut']))       ? Clean::entier($_POST['f_statut'])       : 1  ;
-$debut_nom    = (isset($_POST['f_debut_nom']))    ? Clean::nom($_POST['f_debut_nom'])       : '' ;
-$debut_prenom = (isset($_POST['f_debut_prenom'])) ? Clean::prenom($_POST['f_debut_prenom']) : '' ;
+$statut       = (isset($_POST['f_statut']))       ? clean_entier($_POST['f_statut'])       : 1  ;
+$debut_nom    = (isset($_POST['f_debut_nom']))    ? clean_nom($_POST['f_debut_nom'])       : '' ;
+$debut_prenom = (isset($_POST['f_debut_prenom'])) ? clean_prenom($_POST['f_debut_prenom']) : '' ;
 // Construire et personnaliser le formulaire pour restreindre l'affichage
-$select_f_statuts = Form::afficher_select(Form::$tab_select_statut , $select_nom='f_statut' , $option_first='non' , $selection=$statut , $optgroup='non');
+$select_f_statuts = Formulaire::afficher_select(Formulaire::$tab_select_statut , $select_nom='f_statut' , $option_first='non' , $selection=$statut , $optgroup='non');
 ?>
 
 <p><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__gestion_parents">DOC : Gestion des parents</a></span></p>

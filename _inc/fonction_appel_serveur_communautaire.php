@@ -99,8 +99,8 @@ function analyser_XML($fichier_adresse)
 {
 	// Récupération du contenu du fichier
 	$fichier_contenu = file_get_contents($fichier_adresse);
-	$fichier_contenu = To::utf8($fichier_contenu); // Mettre en UTF-8 si besoin
-	FileSystem::ecrire_fichier($fichier_adresse,$fichier_contenu); // Mettre à jour le fichier au cas où.
+	$fichier_contenu = utf8($fichier_contenu); // Mettre en UTF-8 si besoin
+	Ecrire_Fichier($fichier_adresse,$fichier_contenu); // Mettre à jour le fichier au cas où.
 	// Analyse XML (s'arrête à la 1ère erreur trouvée)
 	$xml_parser = xml_parser_create();
 	$valid_XML = xml_parse($xml_parser , $fichier_contenu , TRUE);
@@ -134,9 +134,9 @@ function verifier_arborescence_XML($arbreXML)
 	// Attention, le chemin du DTD est relatif par rapport à l'emplacement du fichier XML (pas celui du script en cours) !
 	$fichier_adresse = CHEMIN_DOSSIER_IMPORT.'referentiel_'.fabriquer_fin_nom_fichier__date_et_alea().'.xml';
 	$fichier_contenu = '<?xml version="1.0" encoding="UTF-8"?>'."\r\n".'<!DOCTYPE arbre SYSTEM "../../_dtd/referentiel.dtd">'."\r\n".$arbreXML;
-	$fichier_contenu = To::utf8($fichier_contenu); // Mettre en UTF-8 si besoin
+	$fichier_contenu = utf8($fichier_contenu); // Mettre en UTF-8 si besoin
 	// On enregistre temporairement dans un fichier pour analyse
-	FileSystem::ecrire_fichier($fichier_adresse,$fichier_contenu);
+	Ecrire_Fichier($fichier_adresse,$fichier_contenu);
 	// On lance le test
 	$test_XML_valide = analyser_XML($fichier_adresse);
 	// On efface le fichier temporaire

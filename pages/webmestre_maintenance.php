@@ -31,10 +31,10 @@ $TITRE = "Maintenance &amp; mise à jour";
 
 <?php
 // Initialisation de l'état de l'accès
-$blocage_msg = LockAcces::tester_blocage('webmestre',0);
-if($blocage_msg!==NULL)
+$fichier_blocage_webmestre = CHEMIN_DOSSIER_CONFIG.'blocage_webmestre_0.txt';
+if(is_file($fichier_blocage_webmestre))
 {
-	$label_acces = '<label class="erreur">Application fermée : '.html($blocage_msg).'</label>';
+	$label_acces = '<label class="erreur">Application fermée : '.html(file_get_contents($fichier_blocage_webmestre)).'</label>';
 }
 else
 {

@@ -101,7 +101,7 @@ else
 
 // Réception d'un formulaire depuis un tableau de synthèse bilan
 $tab_users = ( isset($_POST['id_user']) && is_array($_POST['id_user']) ) ? $_POST['id_user'] : array() ;
-$tab_users = Clean::map_entier($tab_users);
+$tab_users = array_map('clean_entier',$tab_users);
 $tab_users = array_filter($tab_users,'positif');
 $nb_users  = count($tab_users);
 $txt_users = ($nb_users) ? ( ($nb_users>1) ? $nb_users.' élèves' : $nb_users.' élève' ) : 'aucun' ;

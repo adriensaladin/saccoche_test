@@ -28,19 +28,19 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 if($_SESSION['SESAMATH_ID']==ID_DEMO) {exit('Action désactivée pour la démo...');}
 
-$action      = (isset($_POST['f_action']))      ? Clean::texte($_POST['f_action'])      : '';
-$id          = (isset($_POST['f_id']))          ? Clean::entier($_POST['f_id'])         : 0;
-$id_ent      = (isset($_POST['f_id_ent']))      ? Clean::texte($_POST['f_id_ent'])      : '';
-$id_gepi     = (isset($_POST['f_id_gepi']))     ? Clean::texte($_POST['f_id_gepi'])     : '';
-$sconet_id   = (isset($_POST['f_sconet_id']))   ? Clean::entier($_POST['f_sconet_id'])  : 0;
-$reference   = (isset($_POST['f_reference']))   ? Clean::ref($_POST['f_reference'])     : '';
-$nom         = (isset($_POST['f_nom']))         ? Clean::nom($_POST['f_nom'])           : '';
-$prenom      = (isset($_POST['f_prenom']))      ? Clean::prenom($_POST['f_prenom'])     : '';
-$login       = (isset($_POST['f_login']))       ? Clean::login($_POST['f_login'])       : '';
-$password    = (isset($_POST['f_password']))    ? Clean::password($_POST['f_password']) : '' ;
-$not_new_mdp = (isset($_POST['box_password']))  ? Clean::entier($_POST['box_password']) : 0;
-$sortie_date = (isset($_POST['f_sortie_date'])) ? Clean::texte($_POST['f_sortie_date']) : '' ;
-$not_exit    = (isset($_POST['box_date']))      ? Clean::entier($_POST['box_date'])     : 0;
+$action      = (isset($_POST['f_action']))      ? clean_texte($_POST['f_action'])      : '';
+$id          = (isset($_POST['f_id']))          ? clean_entier($_POST['f_id'])         : 0;
+$id_ent      = (isset($_POST['f_id_ent']))      ? clean_texte($_POST['f_id_ent'])      : '';
+$id_gepi     = (isset($_POST['f_id_gepi']))     ? clean_texte($_POST['f_id_gepi'])     : '';
+$sconet_id   = (isset($_POST['f_sconet_id']))   ? clean_entier($_POST['f_sconet_id'])  : 0;
+$reference   = (isset($_POST['f_reference']))   ? clean_ref($_POST['f_reference'])     : '';
+$nom         = (isset($_POST['f_nom']))         ? clean_nom($_POST['f_nom'])           : '';
+$prenom      = (isset($_POST['f_prenom']))      ? clean_prenom($_POST['f_prenom'])     : '';
+$login       = (isset($_POST['f_login']))       ? clean_login($_POST['f_login'])       : '';
+$password    = (isset($_POST['f_password']))    ? clean_password($_POST['f_password']) : '' ;
+$not_new_mdp = (isset($_POST['box_password']))  ? clean_entier($_POST['box_password']) : 0;
+$sortie_date = (isset($_POST['f_sortie_date'])) ? clean_texte($_POST['f_sortie_date']) : '' ;
+$not_exit    = (isset($_POST['box_date']))      ? clean_entier($_POST['box_date'])     : 0;
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 //	Ajouter un nouveau parent

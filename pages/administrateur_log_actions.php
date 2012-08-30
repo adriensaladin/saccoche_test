@@ -33,14 +33,14 @@ $TITRE = "Log des actions sensibles";
 <p class="astuce">Ces logs sont enregistrés dans un fichier (pas dans la base) ; ils sont donc propres à un serveur et ne sont pas transférés lors d'une sauvegarde / restauration de base.</p>
 
 <?php
-$fichier_log_contenu = SACocheLog::lire();
-if($fichier_log_contenu===NULL)
+$fichier_log_chemin = CHEMIN_DOSSIER_LOG.'base_'.$_SESSION['BASE'].'.php';
+if(!file_exists($fichier_log_chemin))
 {
 	echo'<p class="danger">Le fichier n\'existe pas : probablement qu\'aucune action sensible n\'a encore été effectuée !</p>';
 }
 else
 {
-	
+	$fichier_log_contenu = file_get_contents($fichier_log_chemin);
 	// 1 En extraire le plus récent (les 100 derniers enregistrements)
 	$table_log_extrait = '<table class="p"><thead><tr><th>Date &amp; Heure</th><th>Utilisateur</th><th>Action</th></tr></thead><tbody>';
 	$tab_lignes = extraire_lignes($fichier_log_contenu);
@@ -51,13 +51,21 @@ else
 	for( $indice_ligne=$indice_ligne_debut ; $indice_ligne>$indice_ligne_fin ; $indice_ligne-- )
 	{
 		list( $balise_debut , $date_heure , $utilisateur , $action , $balise_fin ) = explode("\t",$tab_lignes[$indice_ligne]);
-		$table_log_extrait .= '<tr><td>'.$date_heure.'</td><td>'.$utilisateur.'</td><td>'.$action.'</td></tr>'; // Pas de html(), cela a déjà été fait lors de l'enregistrement des logs
+		$table_log_extrait .= '<tr><td>'.$date_heure.'</td><td>'.html($utilisateur).'</td><td>'.html($action).'</td></tr>';
 	}
 	$table_log_extrait .= '</tbody></table>';
 	// 2 En faire un csv zippé récupérable
 	$fichier_log_contenu = str_replace(array('<?php /*','*/ ?>'),'',$fichier_log_contenu);
 	$fichier_export_nom = 'log_'.$_SESSION['BASE'].'_'.fabriquer_fin_nom_fichier__date_et_alea();
-	FileSystem::zip( CHEMIN_DOSSIER_EXPORT.$fichier_export_nom.'.zip' , $fichier_export_nom.'.csv' , To::csv($fichier_log_contenu) );
+	$zip = new ZipArchive();
+	$result_open = $zip->open(CHEMIN_DOSSIER_EXPORT.$fichier_export_nom.'.zip', ZIPARCHIVE::CREATE);
+	if($result_open!==TRUE)
+	{
+		require(CHEMIN_DOSSIER_INCLUDE.'tableau_zip_error.php');
+		exit('Problème de création de l\'archive ZIP ('.$result_open.$tab_zip_error[$result_open].') !');
+	}
+	$zip->addFromString($fichier_export_nom.'.csv',csv($fichier_log_contenu));
+	$zip->close();
 	// Afficher tout ça
 	echo'<ul class="puce">';
 	echo'<li><a class="lien_ext" href="'.URL_DIR_EXPORT.$fichier_export_nom.'.zip"><span class="file file_txt">Récupérer le fichier complet (format <em>csv</em>).</span></a></li>';

@@ -68,7 +68,7 @@ $options_vertical_milieu   = str_replace( '"'.$_SESSION['ENVELOPPE']['VERTICAL_M
 $options_vertical_bas      = str_replace( '"'.$_SESSION['ENVELOPPE']['VERTICAL_BAS']     .'"' , '"'.$_SESSION['ENVELOPPE']['VERTICAL_BAS']     .'" selected' , fabriquer_chaine_option(15,25) );
 
 // Formulaire avec la liste des directeurs et professeurs
-$select_user = Form::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_professeurs_directeurs_etabl( 1 /*statut*/) , 'f_user' /*select_nom*/ , 'val' /*option_first*/ , FALSE /*selection*/ , 'oui' /*optgroup*/ );
+$select_user = Formulaire::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_professeurs_directeurs_etabl( 1 /*statut*/) , 'f_user' /*select_nom*/ , 'val' /*option_first*/ , FALSE /*selection*/ , 'oui' /*optgroup*/ );
 
 // Récupérer les signatures existantes, dont le tampon de l'établissement.
 $li_signatures = '';
@@ -78,7 +78,7 @@ foreach($DB_TAB as $DB_ROW)
 	// Enregistrer temporairement le fichier sur le disque
 	$texte = ($DB_ROW['user_id']) ? 'Signature '.$DB_ROW['user_nom'].' '.$DB_ROW['user_prenom'] : 'Tampon de l\'établissement' ;
 	$fichier_nom = 'signature_'.$_SESSION['BASE'].'_'.$DB_ROW['user_id'].'_'.fabriquer_fin_nom_fichier__date_et_alea().'.'.$DB_ROW['signature_format'];
-	FileSystem::ecrire_fichier( CHEMIN_DOSSIER_EXPORT.$fichier_nom , base64_decode($DB_ROW['signature_contenu']) );
+	Ecrire_Fichier( CHEMIN_DOSSIER_EXPORT.$fichier_nom , base64_decode($DB_ROW['signature_contenu']) );
 	// Générer la balise html pour afficher l'image
 	list($width,$height) = dimensions_affichage_image( $DB_ROW['signature_largeur'] , $DB_ROW['signature_hauteur'] , 200 /*largeur_maxi*/ , 200 /*hauteur_maxi*/ );
 	$li_signatures .= '<li id="sgn_'.$DB_ROW['user_id'].'">'.html($texte).' : <img src="'.URL_DIR_EXPORT.$fichier_nom.'" alt="'.html($texte).'" width="'.$width.'" height="'.$height.'" /><q class="supprimer" title="Supprimer cette image (aucune confirmation ne sera demandée)."></q></li>';

@@ -29,10 +29,10 @@ if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');
 if(($_SESSION['SESAMATH_ID']==ID_DEMO)&&($_GET['action']!='initialiser')){exit('Action désactivée pour la démo...');}
 
 $action = (isset($_GET['action']))         ? $_GET['action']                       : '';
-$langue = (isset($_POST['select_langue'])) ? Clean::entier($_POST['select_langue']) : 0 ;
+$langue = (isset($_POST['select_langue'])) ? clean_entier($_POST['select_langue']) : 0 ;
 // Normalement c'est un tableau qui est transmis, mais au cas où...
 $tab_select_eleves  = (isset($_POST['select_eleves']))  ? ( (is_array($_POST['select_eleves']))  ? $_POST['select_eleves']  : explode(',',$_POST['select_eleves'])  ) : array() ;
-$tab_select_eleves  = array_filter( Clean::map_entier($tab_select_eleves) , 'positif' );
+$tab_select_eleves  = array_filter( array_map( 'clean_entier' , $tab_select_eleves  ) , 'positif' );
 
 require(CHEMIN_DOSSIER_INCLUDE.'tableau_langues.php');
 

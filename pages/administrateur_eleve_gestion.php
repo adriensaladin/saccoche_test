@@ -30,13 +30,13 @@ $TITRE = "Gérer les élèves";
 
 // Récupérer d'éventuels paramètres pour restreindre l'affichage
 $afficher    = (isset($_POST['f_afficher'])) ? TRUE                             : FALSE ;
-$statut      = (isset($_POST['f_statut']))   ? Clean::entier($_POST['f_statut']) : 1 ;
-$groupe      = (isset($_POST['f_groupes']))  ? Clean::texte($_POST['f_groupes']) : '' ;
-$groupe_type = Clean::texte( substr($groupe,0,1) );
-$groupe_id   = Clean::entier( substr($groupe,1) );
+$statut      = (isset($_POST['f_statut']))   ? clean_entier($_POST['f_statut']) : 1 ;
+$groupe      = (isset($_POST['f_groupes']))  ? clean_texte($_POST['f_groupes']) : '' ;
+$groupe_type = clean_texte( substr($groupe,0,1) );
+$groupe_id   = clean_entier( substr($groupe,1) );
 // Construire et personnaliser le formulaire pour restreindre l'affichage
-$select_f_groupes = Form::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_regroupements_etabl() , $select_nom='f_groupes' , $option_first='oui' , $selection=$groupe , $optgroup='oui');
-$select_f_statuts = Form::afficher_select(Form::$tab_select_statut                    , $select_nom='f_statut'  , $option_first='non' , $selection=$statut , $optgroup='non');
+$select_f_groupes = Formulaire::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_regroupements_etabl() , $select_nom='f_groupes' , $option_first='oui' , $selection=$groupe , $optgroup='oui');
+$select_f_statuts = Formulaire::afficher_select(Formulaire::$tab_select_statut                    , $select_nom='f_statut'  , $option_first='non' , $selection=$statut , $optgroup='non');
 ?>
 
 <p><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__gestion_eleves">DOC : Gestion des élèves</a></span></p>

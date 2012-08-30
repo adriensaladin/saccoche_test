@@ -31,21 +31,21 @@ if($_SESSION['SESAMATH_ID']==ID_DEMO) {exit('Action désactivée pour la démo..
 $action             = (isset($_POST['f_action']))             ? $_POST['f_action']                          : '';
 
 $tab_coordonnees    = (isset($_POST['f_coordonnees']))        ? $_POST['f_coordonnees']                     : array();
-$infos_responsables = (isset($_POST['f_infos_responsables'])) ? Clean::texte($_POST['f_infos_responsables']) : '';
-$horizontal_gauche  = (isset($_POST['f_horizontal_gauche']))  ? Clean::entier($_POST['f_horizontal_gauche']) : 0;
-$horizontal_milieu  = (isset($_POST['f_horizontal_milieu']))  ? Clean::entier($_POST['f_horizontal_milieu']) : 0;
-$horizontal_droite  = (isset($_POST['f_horizontal_droite']))  ? Clean::entier($_POST['f_horizontal_droite']) : 0;
-$vertical_haut      = (isset($_POST['f_vertical_haut']))      ? Clean::entier($_POST['f_vertical_haut'])     : 0;
-$vertical_milieu    = (isset($_POST['f_vertical_milieu']))    ? Clean::entier($_POST['f_vertical_milieu'])   : 0;
-$vertical_bas       = (isset($_POST['f_vertical_bas']))       ? Clean::entier($_POST['f_vertical_bas'])      : 0;
-$nombre_exemplaires = (isset($_POST['f_nombre_exemplaires'])) ? Clean::texte($_POST['f_nombre_exemplaires']) : '';
-$marge_gauche       = (isset($_POST['f_marge_gauche']))       ? Clean::entier($_POST['f_marge_gauche'])      : 0;
-$marge_droite       = (isset($_POST['f_marge_droite']))       ? Clean::entier($_POST['f_marge_droite'])      : 0;
-$marge_haut         = (isset($_POST['f_marge_haut']))         ? Clean::entier($_POST['f_marge_haut'])        : 0;
-$marge_bas          = (isset($_POST['f_marge_bas']))          ? Clean::entier($_POST['f_marge_bas'])         : 0;
-$tampon_signature   = (isset($_POST['f_tampon_signature']))   ? Clean::texte($_POST['f_tampon_signature'])   : '';
-$user_id            = (isset($_POST['f_user_id']))            ? Clean::entier($_POST['f_user_id'])           : -1;
-$user_texte         = (isset($_POST['f_user_texte']))         ? Clean::texte($_POST['f_user_texte'])         : '';
+$infos_responsables = (isset($_POST['f_infos_responsables'])) ? clean_texte($_POST['f_infos_responsables']) : '';
+$horizontal_gauche  = (isset($_POST['f_horizontal_gauche']))  ? clean_entier($_POST['f_horizontal_gauche']) : 0;
+$horizontal_milieu  = (isset($_POST['f_horizontal_milieu']))  ? clean_entier($_POST['f_horizontal_milieu']) : 0;
+$horizontal_droite  = (isset($_POST['f_horizontal_droite']))  ? clean_entier($_POST['f_horizontal_droite']) : 0;
+$vertical_haut      = (isset($_POST['f_vertical_haut']))      ? clean_entier($_POST['f_vertical_haut'])     : 0;
+$vertical_milieu    = (isset($_POST['f_vertical_milieu']))    ? clean_entier($_POST['f_vertical_milieu'])   : 0;
+$vertical_bas       = (isset($_POST['f_vertical_bas']))       ? clean_entier($_POST['f_vertical_bas'])      : 0;
+$nombre_exemplaires = (isset($_POST['f_nombre_exemplaires'])) ? clean_texte($_POST['f_nombre_exemplaires']) : '';
+$marge_gauche       = (isset($_POST['f_marge_gauche']))       ? clean_entier($_POST['f_marge_gauche'])      : 0;
+$marge_droite       = (isset($_POST['f_marge_droite']))       ? clean_entier($_POST['f_marge_droite'])      : 0;
+$marge_haut         = (isset($_POST['f_marge_haut']))         ? clean_entier($_POST['f_marge_haut'])        : 0;
+$marge_bas          = (isset($_POST['f_marge_bas']))          ? clean_entier($_POST['f_marge_bas'])         : 0;
+$tampon_signature   = (isset($_POST['f_tampon_signature']))   ? clean_texte($_POST['f_tampon_signature'])   : '';
+$user_id            = (isset($_POST['f_user_id']))            ? clean_entier($_POST['f_user_id'])           : -1;
+$user_texte         = (isset($_POST['f_user_texte']))         ? clean_texte($_POST['f_user_texte'])         : '';
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 //	Traitement du formulaire form_mise_en_page
@@ -107,7 +107,8 @@ if( ($action=='upload_signature') && ($user_id>=0) && ($user_texte!='') )
 	$ferreur = $tab_file['error'];
 	if( (!file_exists($fnom_serveur)) || (!$ftaille) || ($ferreur) )
 	{
-		exit('Erreur : problème de transfert ! Fichier trop lourd ? '.InfoServeur::minimum_limitations_upload());
+		require(CHEMIN_DOSSIER_INCLUDE.'fonction_infos_serveur.php');
+		exit('Erreur : problème de transfert ! Fichier trop lourd ? min(memory_limit,post_max_size,upload_max_filesize)='.minimum_limitations_upload());
 	}
 	// vérifier l'extension
 	$extension = strtolower(pathinfo($fnom_transmis,PATHINFO_EXTENSION));

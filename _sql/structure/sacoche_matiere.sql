@@ -2154,6 +2154,6 @@ INSERT INTO sacoche_matiere VALUES
 (9923, 0, 1,  99, 0, 255, "ASSR2", "Attestation scolaire de sécurité routière de niveau 2"),
 (9991, 0, 1,  99, 0, 255, "DOC"  , "Documentation"),
 (9992, 0, 1,  99, 0, 255, "INFO" , "Informatique"),
-(9999, 0, 1,  99, 0, 255, "TRANS", "Transversal");
+(9999, 1, 1,  99, 0, 255, "TRANS", "Transversal");
 
 ALTER TABLE sacoche_matiere ENABLE KEYS;

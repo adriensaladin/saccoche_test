@@ -30,25 +30,66 @@
 // Seul un développeur averti peut jouer sur certains paramètres...
 //	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
 
-// Chemin dans le système de fichiers du serveur vers le dossier d'installation de l'application SACoche (pour des manipulations de fichiers locaux), avec séparateur final.
-define('DS',DIRECTORY_SEPARATOR);
-define('CHEMIN_DOSSIER_SACOCHE'  , realpath(dirname(dirname(__FILE__))).DS);
-define('LONGUEUR_CHEMIN_SACOCHE' , strlen(CHEMIN_DOSSIER_SACOCHE)-1);
-
 // VERSION_PROG : version des fichiers installés, à comparer avec la dernière version disponible sur le serveur communautaire ; pour une conversion en entier : list($annee,$mois,$jour) = explode('-',substr(VERSION_PROG,0,10); $indice_version = (date('Y')-2011)*365 + date('z',mktime(0,0,0,$mois,$jour,$annee));
 // VERSION_BASE : version de la base associée, à comparer avec la version de la base actuellement installée
-define('VERSION_PROG', file_get_contents(CHEMIN_DOSSIER_SACOCHE.'VERSION.txt') );	// Dans un fichier texte pour permettre un appel au serveur communautaire sans lui faire utiliser PHP.
+define('VERSION_PROG', @file_get_contents('VERSION.txt') );	// Ne pas mettre de chemin ! Dans un fichier texte pour permettre un appel au serveur communautaire sans lui faire utiliser PHP.
 define('VERSION_BASE','2012-07-07');
+
+// Quelques chemins, avec le séparateur final
+define('CHEMIN_SACOCHE'       , realpath(dirname(dirname(__FILE__))).DIRECTORY_SEPARATOR);
+define('DOSSIER_MYSQL'        , '__private'.DIRECTORY_SEPARATOR.'mysql'.DIRECTORY_SEPARATOR);
+define('DOSSIER_CONFIG'       , '__private'.DIRECTORY_SEPARATOR.'config'.DIRECTORY_SEPARATOR);
+define('DOSSIER_FONT'         , '_lib'.DIRECTORY_SEPARATOR.'FPDF'.DIRECTORY_SEPARATOR.'font'.DIRECTORY_SEPARATOR);
+define('DOSSIER_SQL_STRUCTURE', '_sql'.DIRECTORY_SEPARATOR.'structure'.DIRECTORY_SEPARATOR);
+define('DOSSIER_SQL_WEBMESTRE', '_sql'.DIRECTORY_SEPARATOR.'webmestre'.DIRECTORY_SEPARATOR);
+define('CHEMIN_MYSQL'         , CHEMIN_SACOCHE.DOSSIER_MYSQL);
+define('CHEMIN_CONFIG'        , CHEMIN_SACOCHE.DOSSIER_CONFIG);
+define('CHEMIN_SQL_STRUCTURE' , CHEMIN_SACOCHE.DOSSIER_SQL_STRUCTURE);
+define('CHEMIN_SQL_WEBMESTRE' , CHEMIN_SACOCHE.DOSSIER_SQL_WEBMESTRE);
+define('FPDF_FONTPATH'        , CHEMIN_SACOCHE.DOSSIER_FONT); // Pour FPDF (répertoire où se situent les polices)
+
+define('ID_DEMO'                   ,9999); // id de l'établissement de démonstration (pour $_SESSION['SESAMATH_ID']) ; 0 pose des pbs, et il fallait prendre un id disponible dans la base d'établissements de Sésamath
+define('ID_MATIERE_PARTAGEE_MAX'   ,9999); // id de la matière transversale dans la table "sacoche_matiere" ; c'est l'id maximal des matières partagées (les id des matières spécifiques sont supérieurs)
+define('ID_NIVEAU_MAX'             ,1000); // Un id de niveau supérieur correspond à un id de famille qui a été incrémenté de cette constante
+define('ID_FAMILLE_MATIERE_USUELLE',  99);
 
 // CHARSET : "iso-8859-1" ou "utf-8" suivant l'encodage utilisé ; présence aussi d'un "AddDefaultCharset ..." dans le fichier .htaccess
 // Cependant, tous les fichiers étant en UTF-8 et le code prévu pour manipuler des données en UTF-8, changer le CHARSET semble assez hasardeux pour ne pas dire risqué...
 define('CHARSET','utf-8');
 
-// Identifiants particuliers (à ne pas modifier)
-define('ID_DEMO'                   ,9999); // id de l'établissement de démonstration (pour $_SESSION['SESAMATH_ID']) ; 0 pose des pbs, et il fallait prendre un id disponible dans la base d'établissements de Sésamath
-define('ID_MATIERE_PARTAGEE_MAX'   ,9999); // id de la matière transversale dans la table "sacoche_matiere" ; c'est l'id maximal des matières partagées (les id des matières spécifiques sont supérieurs)
-define('ID_NIVEAU_MAX'             ,1000); // Un id de niveau supérieur correspond à un id de famille qui a été incrémenté de cette constante
-define('ID_FAMILLE_MATIERE_USUELLE',  99);
+// SERVEUR_ADRESSE
+$_SERVER['HTTP_HOST'] = isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : $_SERVER['SERVER_NAME'] ; // Rarissime, mais il est arrivé que ce ne soit pas défini (http 1.1 impose au client web de préciser un nom de site, ce qui n'était pas le cas en http 1.0 ; http 1.1 date de 1999, avec un brouillon en 1996).
+$protocole = ( isset($_SERVER['HTTPS']) && ($_SERVER['HTTPS']=='on') ) ? 'https://' : 'http://';
+$chemin = $protocole.$_SERVER['HTTP_HOST'].$_SERVER['SCRIPT_NAME'];
+$fin = strpos($chemin,SACoche); // pas mb_strpos pour éviter une erreur fatale d'entrée.
+if($fin)
+{
+	$chemin = substr($chemin,0,$fin-1); // pas mb_substr pour éviter une erreur fatale d'entrée.
+}
+define('SERVEUR_ADRESSE',$chemin);
+
+// SERVEUR_TYPE
+// On ne peut pas savoir avec certitude si un serveur est "local" car aucune méthode ne fonctionne à tous les coups :
+// - $_SERVER['HTTP_HOST'] peut ne pas renvoyer localhost sur un serveur local (si configuration de domaines locaux via fichiers hosts / httpd.conf par exemple).
+// - gethostbyname($_SERVER['HTTP_HOST']) peut renvoyer "127.0.0.1" sur un serveur non local car un serveur a en général 2 ip (une publique - ou privée s'il est sur un lan - et une locale).
+// - $_SERVER['SERVER_ADDR'] peut renvoyer "127.0.0.1" avec nginx + apache sur 127.0.0.1 ...
+$test_local = ( ($_SERVER['HTTP_HOST']=='localhost') || ($_SERVER['HTTP_HOST']=='127.0.0.1') || (substr($_SERVER['HTTP_HOST'],-6)=='.local') ) ? TRUE : FALSE ;
+$serveur = ($test_local) ? 'LOCAL' : ( (strpos($_SERVER['HTTP_HOST'],'.devsesamath.net')) ? 'DEV' : 'PROD' ) ;
+define('SERVEUR_TYPE',$serveur); // PROD | DEV | LOCAL
+
+// urls
+define('SERVEUR_PROJET'        ,'https://sacoche.sesamath.net');         // URL du projet SACoche (en https depuis le 08/02/2012)
+define('SERVEUR_SSL'           ,'https://sacoche.sesamath.net');         // URL du serveur Sésamath sécurisé (idem serveur projet SACoche depuis le 08/02/2012)
+define('SERVEUR_COMMUNAUTAIRE' ,SERVEUR_PROJET.'/appel_externe.php');    // URL du fichier chargé d'effectuer la liaison entre les installations de SACoche et le serveur communautaire concernant les référentiels.
+define('SERVEUR_DOCUMENTAIRE'  ,SERVEUR_PROJET.'/appel_doc.php');        // URL du fichier chargé d'afficher les documentations
+define('SERVEUR_VERSION'       ,SERVEUR_PROJET.'/sacoche/VERSION.txt');  // URL du fichier chargé de renvoyer le numéro de la dernière version disponible
+define('SERVEUR_TELECHARGEMENT',SERVEUR_PROJET.'/telechargement.php');   // URL du fichier renvoyant le ZIP de la dernière archive de SACoche disponible
+define('SERVEUR_RSS'           ,SERVEUR_PROJET.'/_rss/rss.xml');         // URL du fichier comportant le flux RSS
+define('SERVEUR_CNIL'          ,SERVEUR_PROJET.'/?fichier=cnil');        // URL de la page "CNIL (données personnelles)"
+define('SERVEUR_CONTACT'       ,SERVEUR_PROJET.'/?fichier=contact');     // URL de la page "Où échanger autour de SACoche ?"
+define('SERVEUR_NEWS'          ,SERVEUR_PROJET.'/?fichier=news');        // URL de la page "Historique des nouveautés"
+define('SERVEUR_GUIDE_ADMIN'   ,SERVEUR_PROJET.'/?fichier=guide_admin'); // URL de la documentation "Guide d'un administrateur de SACoche"
+define('SERVEUR_LPC_SIGNATURE' ,SERVEUR_SSL.'/appel_externe.php');       // URL du fichier chargé de signer un XML à importer dans LPC
 
 // cookies
 define('COOKIE_STRUCTURE','SACoche-etablissement');  // nom du cookie servant à retenir l'établissement sélectionné, afin de ne pas à avoir à le sélectionner de nouveau, et à pouvoir le retrouver si perte d'une session et tentative de reconnexion SSO.
@@ -60,81 +101,6 @@ define('TODAY_FR'    ,date("d/m/Y"));
 define('TODAY_MYSQL' ,date("Y-m-d"));
 define('SORTIE_DEFAUT_FR'    ,'31/12/9999'); // inutilisé
 define('SORTIE_DEFAUT_MYSQL' ,'9999-12-31');
-
-// Chemins dans le système de fichiers du serveur (pour des manipulations de fichiers locaux), avec séparateur final
-define('CHEMIN_DOSSIER_PRIVATE'       , CHEMIN_DOSSIER_SACOCHE.'__private'.DS);
-define('CHEMIN_DOSSIER_TMP'           , CHEMIN_DOSSIER_SACOCHE.'__tmp'.DS);
-define('CHEMIN_DOSSIER_INCLUDE'       , CHEMIN_DOSSIER_SACOCHE.'_inc'.DS);
-define('CHEMIN_DOSSIER_FPDF_FONT'     , CHEMIN_DOSSIER_SACOCHE.'_lib'.DS.'FPDF'.DS.'font'.DS);
-define('CHEMIN_DOSSIER_SQL_STRUCTURE' , CHEMIN_DOSSIER_SACOCHE.'_sql'.DS.'structure'.DS);
-define('CHEMIN_DOSSIER_SQL_WEBMESTRE' , CHEMIN_DOSSIER_SACOCHE.'_sql'.DS.'webmestre'.DS);
-define('CHEMIN_DOSSIER_PAGES'         , CHEMIN_DOSSIER_SACOCHE.'pages'.DS);
-define('CHEMIN_DOSSIER_WEBSERVICES'   , CHEMIN_DOSSIER_SACOCHE.'webservices'.DS);
-define('CHEMIN_DOSSIER_CONFIG'        , CHEMIN_DOSSIER_PRIVATE.'config'.DS);
-define('CHEMIN_DOSSIER_LOG'           , CHEMIN_DOSSIER_PRIVATE.'log'.DS);
-define('CHEMIN_DOSSIER_MYSQL'         , CHEMIN_DOSSIER_PRIVATE.'mysql'.DS);
-define('CHEMIN_DOSSIER_BADGE'         , CHEMIN_DOSSIER_TMP.'badge'.DS);
-define('CHEMIN_DOSSIER_COOKIE'        , CHEMIN_DOSSIER_TMP.'cookie'.DS);
-define('CHEMIN_DOSSIER_DEVOIR'        , CHEMIN_DOSSIER_TMP.'devoir'.DS);
-define('CHEMIN_DOSSIER_DUMP'          , CHEMIN_DOSSIER_TMP.'dump-base'.DS);
-define('CHEMIN_DOSSIER_EXPORT'        , CHEMIN_DOSSIER_TMP.'export'.DS);
-define('CHEMIN_DOSSIER_IMPORT'        , CHEMIN_DOSSIER_TMP.'import'.DS);
-define('CHEMIN_DOSSIER_LOGINPASS'     , CHEMIN_DOSSIER_TMP.'login-mdp'.DS);
-define('CHEMIN_DOSSIER_LOGO'          , CHEMIN_DOSSIER_TMP.'logo'.DS);
-define('CHEMIN_DOSSIER_OFFICIEL'      , CHEMIN_DOSSIER_TMP.'officiel'.DS);
-define('CHEMIN_DOSSIER_RSS'           , CHEMIN_DOSSIER_TMP.'rss'.DS);
-define('CHEMIN_FICHIER_CONFIG_INSTALL', CHEMIN_DOSSIER_CONFIG.'constantes.php');
-//      CHEMIN_FICHIER_CONFIG_MYSQL     est défini dans index.php ou ajax.php, en fonction du type d'installation et d'utilisateur connecté
-define('FPDF_FONTPATH'                , CHEMIN_DOSSIER_FPDF_FONT); // Pour FPDF (répertoire où se situent les polices)
-
-// URLs de l'application (les chemins restent relatifs pour les images ou les css/js...)
-$_SERVER['HTTP_HOST'] = isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : $_SERVER['SERVER_NAME'] ; // Rarissime, mais il est arrivé que ce ne soit pas défini (http 1.1 impose au client web de préciser un nom de site, ce qui n'était pas le cas en http 1.0 ; http 1.1 date de 1999, avec un brouillon en 1996).
-$protocole = ( isset($_SERVER['HTTPS']) && ($_SERVER['HTTPS']=='on') ) ? 'https://' : 'http://';
-$url = $protocole.$_SERVER['HTTP_HOST'].$_SERVER['SCRIPT_NAME'];
-$fin = strpos($url,SACoche); // pas mb_strpos pour éviter une erreur fatale d'entrée.
-if($fin)
-{
-	$url = substr($url,0,$fin-1); // pas mb_substr pour éviter une erreur fatale d'entrée.
-}
-// Il manque "/sacoche" à l'URL si appelé depuis le projet
-if(defined('APPEL_SITE_PROJET'))
-{
-	$url .= '/sacoche';
-}
-define('URL_INSTALL_SACOCHE',$url); // la seule constante sans slash final
-define('URL_DIR_SACOCHE',$url.'/'); // avec slash final
-$tab_bad = array( CHEMIN_DOSSIER_SACOCHE , DS );
-$tab_bon = array( URL_DIR_SACOCHE        , '/');
-define('URL_DIR_TMP'      , str_replace( $tab_bad , $tab_bon , CHEMIN_DOSSIER_TMP       ) );
-define('URL_DIR_DEVOIR'   , str_replace( $tab_bad , $tab_bon , CHEMIN_DOSSIER_DEVOIR    ) );
-define('URL_DIR_DUMP'     , str_replace( $tab_bad , $tab_bon , CHEMIN_DOSSIER_DUMP      ) );
-define('URL_DIR_EXPORT'   , str_replace( $tab_bad , $tab_bon , CHEMIN_DOSSIER_EXPORT    ) );
-define('URL_DIR_LOGINPASS', str_replace( $tab_bad , $tab_bon , CHEMIN_DOSSIER_LOGINPASS ) );
-define('URL_DIR_LOGO'     , str_replace( $tab_bad , $tab_bon , CHEMIN_DOSSIER_LOGO      ) );
-define('URL_DIR_RSS'      , str_replace( $tab_bad , $tab_bon , CHEMIN_DOSSIER_RSS       ) );
-
-// URL externes à l'application
-define('SERVEUR_PROJET'        ,'https://sacoche.sesamath.net');         // URL du projet SACoche (en https depuis le 08/02/2012)
-define('SERVEUR_SSL'           ,'https://sacoche.sesamath.net');         // URL du serveur Sésamath sécurisé (idem serveur projet SACoche depuis le 08/02/2012)
-define('SERVEUR_COMMUNAUTAIRE' ,SERVEUR_PROJET.'/appel_externe.php');    // URL du fichier chargé d'effectuer la liaison entre les installations de SACoche et le serveur communautaire concernant les référentiels.
-define('SERVEUR_DOCUMENTAIRE'  ,SERVEUR_PROJET.'/appel_doc.php');        // URL du fichier chargé d'afficher les documentations
-define('SERVEUR_LPC_SIGNATURE' ,SERVEUR_SSL   .'/appel_externe.php');    // URL du fichier chargé de signer un XML à importer dans LPC
-define('SERVEUR_TELECHARGEMENT',SERVEUR_PROJET.'/telechargement.php');   // URL du fichier renvoyant le ZIP de la dernière archive de SACoche disponible
-define('SERVEUR_VERSION'       ,SERVEUR_PROJET.'/sacoche/VERSION.txt');  // URL du fichier chargé de renvoyer le numéro de la dernière version disponible
-define('SERVEUR_CNIL'          ,SERVEUR_PROJET.'/?fichier=cnil');        // URL de la page "CNIL (données personnelles)"
-define('SERVEUR_CONTACT'       ,SERVEUR_PROJET.'/?fichier=contact');     // URL de la page "Où échanger autour de SACoche ?"
-define('SERVEUR_GUIDE_ADMIN'   ,SERVEUR_PROJET.'/?fichier=guide_admin'); // URL de la page "Guide d'un administrateur de SACoche"
-define('SERVEUR_NEWS'          ,SERVEUR_PROJET.'/?fichier=news');        // URL de la page "Historique des nouveautés"
-define('SERVEUR_RSS'           ,SERVEUR_PROJET.'/_rss/rss.xml');         // URL du fichier comportant le flux RSS
-
-// SERVEUR_TYPE
-// On ne peut pas savoir avec certitude si un serveur est "local" car aucune méthode ne fonctionne à tous les coups :
-// - $_SERVER['HTTP_HOST'] peut ne pas renvoyer localhost sur un serveur local (si configuration de domaines locaux via fichiers hosts / httpd.conf par exemple).
-// - gethostbyname($_SERVER['HTTP_HOST']) peut renvoyer "127.0.0.1" sur un serveur non local car un serveur a en général 2 ip (une publique - ou privée s'il est sur un lan - et une locale).
-// - $_SERVER['SERVER_ADDR'] peut renvoyer "127.0.0.1" avec nginx + apache sur 127.0.0.1 ...
-$test_local = ( ($_SERVER['HTTP_HOST']=='localhost') || ($_SERVER['HTTP_HOST']=='127.0.0.1') || (substr($_SERVER['HTTP_HOST'],-6)=='.local') ) ? TRUE : FALSE ;
-$serveur = ($test_local) ? 'LOCAL' : ( (strpos($_SERVER['HTTP_HOST'],'.devsesamath.net')) ? 'DEV' : 'PROD' ) ;
-define('SERVEUR_TYPE',$serveur); // PROD | DEV | LOCAL
 
 // DEBUG
 if(SERVEUR_TYPE=='PROD')

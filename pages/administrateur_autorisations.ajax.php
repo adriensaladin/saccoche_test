@@ -30,8 +30,8 @@ if($_SESSION['SESAMATH_ID']==ID_DEMO){exit('Action désactivée pour la démo...
 //	Récupération des informations transmises
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
-$f_objet   = (isset($_POST['f_objet']))   ? Clean::texte($_POST['f_objet'])   : '';
-$f_profils = (isset($_POST['f_profils'])) ? Clean::texte($_POST['f_profils']) : 'erreur';
+$f_objet   = (isset($_POST['f_objet']))   ? clean_texte($_POST['f_objet'])   : '';
+$f_profils = (isset($_POST['f_profils'])) ? clean_texte($_POST['f_profils']) : 'erreur';
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 //	Vérification des informations transmises
@@ -77,7 +77,7 @@ if(!isset($tab_objet_profils[$f_objet]))
 if($f_profils=='')
 {
 	// Les profils peuvent être vides sauf certains paramètres devant contenir la chaine 'prof'
-	$test_options = ($test_objet_prof) ? FALSE : TRUE ;
+	$test_options = ($test_objet_prof) ? false : true ;
 }
 else
 {

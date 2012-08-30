@@ -60,14 +60,14 @@ foreach($tab_options as $value)
 }
 
 // Indication des profils ayant accès à cette page
-require(CHEMIN_DOSSIER_INCLUDE.'tableau_profils.php'); // Charge $tab_profil_libelle[$profil][court|long][1|2]
+require_once('./_inc/tableau_profils.php'); // Charge $tab_profil_libelle[$profil][court|long][1|2]
 $tab_profils = array('directeur','professeur','eleve','parent');
 $str_objet = $_SESSION['DROIT_VOIR_ALGORITHME'];
 foreach($tab_profils as $profil)
 {
 	$str_objet = str_replace($profil,$tab_profil_libelle[$profil]['long'][2],$str_objet);
 }
-$texte = ($str_objet=='') ? 'aucun' : ( (strpos($str_objet,',')===FALSE) ? 'uniquement les '.$str_objet : str_replace(',',' + ',$str_objet) ) ;
+$texte = ($str_objet=='') ? 'aucun' : ( (strpos($str_objet,',')===false) ? 'uniquement les '.$str_objet : str_replace(',',' + ',$str_objet) ) ;
 ?>
 
 <ul class="puce">

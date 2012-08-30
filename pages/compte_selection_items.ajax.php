@@ -28,14 +28,14 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 if($_SESSION['SESAMATH_ID']==ID_DEMO) {exit('Action désactivée pour la démo...');}
 
-$action        = (isset($_POST['f_action']))  ? Clean::texte($_POST['f_action'])  : '';
-$selection_id  = (isset($_POST['f_id']))      ? Clean::entier($_POST['f_id'])     : 0;
-$selection_nom = (isset($_POST['f_nom']))     ? Clean::texte($_POST['f_nom'])     : '';
-$origine       = (isset($_POST['f_origine'])) ? Clean::texte($_POST['f_origine']) : '';
+$action        = (isset($_POST['f_action']))  ? clean_texte($_POST['f_action'])  : '';
+$selection_id  = (isset($_POST['f_id']))      ? clean_entier($_POST['f_id'])     : 0;
+$selection_nom = (isset($_POST['f_nom']))     ? clean_texte($_POST['f_nom'])     : '';
+$origine       = (isset($_POST['f_origine'])) ? clean_texte($_POST['f_origine']) : '';
 
 // Contrôler la liste des items transmis
 $tab_items = (isset($_POST['f_compet_liste'])) ? explode('_',$_POST['f_compet_liste']) : array() ;
-$tab_items = Clean::map_entier($tab_items);
+$tab_items = array_map('clean_entier',$tab_items);
 $tab_items = array_filter($tab_items,'positif');
 $nb_items = count($tab_items);
 

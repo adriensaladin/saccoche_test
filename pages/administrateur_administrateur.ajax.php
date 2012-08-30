@@ -28,15 +28,15 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 if($_SESSION['SESAMATH_ID']==ID_DEMO) {exit('Action désactivée pour la démo...');}
 
-$action      = (isset($_POST['f_action']))     ? Clean::texte($_POST['f_action'])      : '';
-$id          = (isset($_POST['f_id']))         ? Clean::entier($_POST['f_id'])         : 0;
-$id_ent      = (isset($_POST['f_id_ent']))     ? Clean::texte($_POST['f_id_ent'])      : '';
-$id_gepi     = (isset($_POST['f_id_gepi']))    ? Clean::texte($_POST['f_id_gepi'])     : '';
-$nom         = (isset($_POST['f_nom']))        ? Clean::nom($_POST['f_nom'])           : '';
-$prenom      = (isset($_POST['f_prenom']))     ? Clean::prenom($_POST['f_prenom'])     : '';
-$login       = (isset($_POST['f_login']))      ? Clean::login($_POST['f_login'])       : '';
-$password    = (isset($_POST['f_password']))   ? Clean::password($_POST['f_password']) : '' ;
-$not_new_mdp = (isset($_POST['box_password'])) ? Clean::entier($_POST['box_password']) : 0;
+$action     = (isset($_POST['f_action']))     ? clean_texte($_POST['f_action'])      : '';
+$id         = (isset($_POST['f_id']))         ? clean_entier($_POST['f_id'])         : 0;
+$id_ent     = (isset($_POST['f_id_ent']))     ? clean_texte($_POST['f_id_ent'])      : '';
+$id_gepi    = (isset($_POST['f_id_gepi']))    ? clean_texte($_POST['f_id_gepi'])     : '';
+$nom        = (isset($_POST['f_nom']))        ? clean_nom($_POST['f_nom'])           : '';
+$prenom     = (isset($_POST['f_prenom']))     ? clean_prenom($_POST['f_prenom'])     : '';
+$login      = (isset($_POST['f_login']))      ? clean_login($_POST['f_login'])       : '';
+$password   = (isset($_POST['f_password']))   ? clean_password($_POST['f_password']) : '' ;
+$not_new_mdp   = (isset($_POST['box_password'])) ? clean_entier($_POST['box_password']) : 0;
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 //	Ajouter un nouvel administrateur
@@ -150,7 +150,7 @@ if( ($action=='supprimer') && $id )
 	// Supprimer l'enregistrement
 	DB_STRUCTURE_ADMINISTRATEUR::DB_supprimer_utilisateur( $id , 'administrateur' );
 	// Log de l'action
-	SACocheLog::ajouter('Suppression d\'un utilisateur (administrateur '.$id.').');
+	ajouter_log_SACoche('Suppression d\'un utilisateur (administrateur '.$id.').');
 	// Afficher le retour
 	exit('<td>ok</td>');
 }

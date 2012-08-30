@@ -31,18 +31,21 @@
 // Atteste l'appel de cette page avant l'inclusion d'une autre
 define('SACoche','releve');
 
-// Constantes / Configuration serveur / Autoload classes / Fonction de sortie
-require('./_inc/_loader.php');
+// Constantes / Fonctions de redirections / Configuration serveur
+require_once('./_inc/constantes.php');
+require_once('./_inc/fonction_redirection.php');
+require_once('./_inc/config_serveur.php');
 
 // Paramètre transmis ; attention à l'exploitation d'une vulnérabilité "include PHP" (http://www.certa.ssi.gouv.fr/site/CERTA-2003-ALE-003/)
 $FICHIER = (isset($_GET['fichier'])) ? str_replace(array('/','\\'),'',$_GET['fichier']) : ''; // On ne nettoie pas le caractère "." car le paramètre peut le contenir.
 
 // Fonctions
-require(CHEMIN_DOSSIER_INCLUDE.'fonction_divers.php');
+require_once('./_inc/fonction_divers.php');
+require_once('./_inc/fonction_affichage.php');
 
 ob_start();
 // Chargement de la page concernée
-$filename_html = CHEMIN_DOSSIER_EXPORT.$FICHIER.'.html';
+$filename_html = './__tmp/export/'.$FICHIER.'.html';
 if(is_file($filename_html))
 {
 	require($filename_html);

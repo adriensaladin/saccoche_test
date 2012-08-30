@@ -41,7 +41,7 @@ $(document).ready
 		$('table.form').tablesorter({ headers:{0:{sorter:false},9:{sorter:false},11:{sorter:false}} });
 		function trier_tableau()
 		{
-			if($('table.form tbody tr').length>1)
+			if($('table.form tbody tr').length)
 			{
 				$('table.form').trigger('update');
 				$('table.form').trigger('sorton',[sorting]);
@@ -55,12 +55,9 @@ $(document).ready
 
 		function reload()
 		{
+			$('#ajax_msg0').addClass("loader").html("Connexion au serveur&hellip;");
 			$('#form1').remove();
-			if($('#f_groupes option:selected').val())
-			{
-				$('#ajax_msg0').addClass("loader").html("Connexion au serveur&hellip;");
-				$('#form0').submit();
-			}
+			$('#form0').submit();
 		}
 
 		$('#form0 select').change

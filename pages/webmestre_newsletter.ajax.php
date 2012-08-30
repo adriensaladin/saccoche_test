@@ -29,14 +29,14 @@ if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');
 
 // Transmis en tableau pour la newsletter, mais en chaine pour la suppression
 $tab_base_id = (isset($_POST['f_base'])) ? ( (is_array($_POST['f_base'])) ? $_POST['f_base'] : explode(',',$_POST['f_base']) ) : array() ;
-$tab_base_id = array_filter( Clean::map_entier($tab_base_id) , 'positif' );
+$tab_base_id = array_filter( array_map( 'clean_entier' , $tab_base_id ) , 'positif' );
 $nb_bases    = count($tab_base_id);
 
-$action  = (isset($_POST['f_action']))  ? Clean::texte($_POST['f_action'])  : '';
-$titre   = (isset($_POST['f_titre']))   ? Clean::texte($_POST['f_titre'])   : '';
-$contenu = (isset($_POST['f_contenu'])) ? Clean::texte($_POST['f_contenu']) : '';
-$num     = (isset($_POST['num']))       ? Clean::entier($_POST['num'])      : 0 ;	// Numéro de l'étape en cours
-$max     = (isset($_POST['max']))       ? Clean::entier($_POST['max'])      : 0 ;	// Nombre d'étapes à effectuer
+$action  = (isset($_POST['f_action']))  ? clean_texte($_POST['f_action'])  : '';
+$titre   = (isset($_POST['f_titre']))   ? clean_texte($_POST['f_titre'])   : '';
+$contenu = (isset($_POST['f_contenu'])) ? clean_texte($_POST['f_contenu']) : '';
+$num     = (isset($_POST['num']))       ? clean_entier($_POST['num'])      : 0 ;	// Numéro de l'étape en cours
+$max     = (isset($_POST['max']))       ? clean_entier($_POST['max'])      : 0 ;	// Nombre d'étapes à effectuer
 $pack    = 10 ;	// Nombre de mails envoyés à chaque étape
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
@@ -81,11 +81,11 @@ if( ($action=='envoyer') && $num && $max && ($num<$max) )
 		$texte = 'Bonjour '.$contact_prenom.' '.$contact_nom.'.'."\r\n\r\n";
 		$texte.= $_SESSION['tmp']['contenu']."\r\n\r\n";
 		$texte.= 'Rappel des adresses à utiliser :'."\r\n";
-		$texte.= URL_DIR_SACOCHE.'?id='.$base_id.' (hébergement de l\'établissement)'."\r\n";
+		$texte.= SERVEUR_ADRESSE.'/?id='.$base_id.' (hébergement de l\'établissement)'."\r\n";
 		$texte.= SERVEUR_PROJET.' (site du projet SACoche)'."\r\n\r\n";
 		$texte.= 'Cordialement'."\r\n";
 		$texte.= WEBMESTRE_PRENOM.' '.WEBMESTRE_NOM."\r\n\r\n";
-		$courriel_bilan = Sesamail::mail( $contact_courriel , $_SESSION['tmp']['titre'] , $texte );
+		$courriel_bilan = envoyer_webmestre_courriel($contact_courriel,$_SESSION['tmp']['titre'],$texte,false);
 		if(!$courriel_bilan)
 		{
 			exit('Erreur lors de l\'envoi du courriel !');

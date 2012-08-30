@@ -46,8 +46,8 @@ $TITRE = "Nombre de saisies";
 			{
 				// Afficher une ligne du tableau
 				echo'<tr>';
-				echo	'<td>'.To::html($DB_ROW['professeur']).'</td>';
-				echo	'<td>'.To::html($DB_ROW['groupe_nom']).'</td>';
+				echo	'<td>'.html($DB_ROW['professeur']).'</td>';
+				echo	'<td>'.html($DB_ROW['groupe_nom']).'</td>';
 				echo	'<td class="hc">'.$DB_ROW['nombre'].'</td>';
 				echo'</tr>';
 			}

@@ -70,9 +70,9 @@ if($TYPE=='groupe')
 	foreach($DB_TAB as $DB_ROW)
 	{
 		$groupe = strtoupper($DB_ROW['groupe_type']{0}).$DB_ROW['groupe_id'];
-		$tab_options[$DB_ROW['groupe_type']] .= '<option value="'.$groupe.'">'.To::html($DB_ROW['groupe_nom']).'</option>';
+		$tab_options[$DB_ROW['groupe_type']] .= '<option value="'.$groupe.'">'.html($DB_ROW['groupe_nom']).'</option>';
 		$tab_niveau_js .= 'tab_niveau["'.$groupe.'"]="'.sprintf("%02u",$DB_ROW['niveau_ordre']).'";';
-		$tab_groupe_js .= 'tab_groupe["'.$groupe.'"]="'.To::html($DB_ROW['groupe_nom']).'";';
+		$tab_groupe_js .= 'tab_groupe["'.$groupe.'"]="'.html($DB_ROW['groupe_nom']).'";';
 		if($DB_ROW['groupe_type']!='besoin')
 		{
 			$tab_id_classe_groupe[] = $DB_ROW['groupe_id'];

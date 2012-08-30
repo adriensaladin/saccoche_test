@@ -300,7 +300,7 @@ class Html
   {
     $insert_tri = ($tri) ? '<i>'.Html::$tab_tri_note[$note].'</i>' : '';
     $dossier = (in_array($note,array('RR','R','V','VV'))) ? $_SESSION['NOTE_DOSSIER'].'/h/' : 'commun/h/';
-    $title = ( ($date!='') || ($info!='') ) ? ' title="'.To::html($info).'<br />'.Html::date($date).'"' : '' ;
+    $title = ( ($date!='') || ($info!='') ) ? ' title="'.html($info).'<br />'.Html::date($date).'"' : '' ;
     return (in_array($note,array('REQ','-',''))) ? '&nbsp;' : $insert_tri.'<img'.$title.' alt="'.$note.'" src="./_img/note/'.$dossier.$note.'.gif" />';
   }
 
@@ -350,7 +350,7 @@ class Html
       $retour .= '<div class="ti">';
       foreach($tab_notes as $note)
       {
-        $retour .= '<img alt="'.$note.'" src="./_img/note/'.$_SESSION['NOTE_DOSSIER'].'/h/'.$note.'.gif" /> '.To::html($_SESSION['NOTE_LEGENDE'][$note]).$espace;
+        $retour .= '<img alt="'.$note.'" src="./_img/note/'.$_SESSION['NOTE_DOSSIER'].'/h/'.$note.'.gif" /> '.html($_SESSION['NOTE_LEGENDE'][$note]).$espace;
       }
       $retour .= '</div>';
     }
@@ -361,7 +361,7 @@ class Html
       $retour .= '<div class="ti">';
       foreach($tab_etats as $etat => $couleur)
       {
-        $retour .= '<span class="'.$couleur.'">&nbsp;'.To::html($_SESSION['ACQUIS_TEXTE'][$etat]).'&nbsp;</span> '.To::html($_SESSION['ACQUIS_LEGENDE'][$etat]).$espace;
+        $retour .= '<span class="'.$couleur.'">&nbsp;'.html($_SESSION['ACQUIS_TEXTE'][$etat]).'&nbsp;</span> '.html($_SESSION['ACQUIS_LEGENDE'][$etat]).$espace;
       }
       $retour .= '</div>';
     }
@@ -433,7 +433,7 @@ class Html
     elseif($tab_infos['%']>$_SESSION['CALCUL_SEUIL']['V']) {$etat = 'v';}
     else                                                   {$etat = 'o';}
     $style = ($largeur) ? ' style="width:'.$largeur.'px"' : '' ;
-    $texte = To::html($tab_infos['%'].'% acquis ('.$tab_infos['A'].$_SESSION['ACQUIS_TEXTE']['A'].' '.$tab_infos['VA'].$_SESSION['ACQUIS_TEXTE']['VA'].' '.$tab_infos['NA'].$_SESSION['ACQUIS_TEXTE']['NA'].')');
+    $texte = html($tab_infos['%'].'% acquis ('.$tab_infos['A'].$_SESSION['ACQUIS_TEXTE']['A'].' '.$tab_infos['VA'].$_SESSION['ACQUIS_TEXTE']['VA'].' '.$tab_infos['NA'].$_SESSION['ACQUIS_TEXTE']['NA'].')');
     return ($detail) ? '<'.$type_cellule.' class="hc '.$etat.'"'.$style.'>'.$texte.'</'.$type_cellule.'>' : '<'.$type_cellule.' class="'.$etat.'" title="'.$texte.'"></'.$type_cellule.'>';
   }
 
@@ -450,7 +450,7 @@ class Html
   public static function td_validation( $type_cellule , $tab_infos , $detail , $etat_pilier=FALSE , $colspan=FALSE )
   {
     $etat    = ($tab_infos['etat']==1) ? 'Validé' : 'Invalidé' ;
-    $bulle   = ($tab_infos['etat']==2) ? '' : ' title="'.$etat.' le '.$tab_infos['date'].' par '.To::html($tab_infos['info']).'"' ;
+    $bulle   = ($tab_infos['etat']==2) ? '' : ' title="'.$etat.' le '.$tab_infos['date'].' par '.html($tab_infos['info']).'"' ;
     $colspan = ($colspan) ? ' colspan="'.$colspan.'"' : '' ; // État de validation d'un pilier dans un colspan
     $class   = ($detail) ? ' class="hc v'.$tab_infos['etat'].'"' : ( ( ($etat_pilier==1) && ($tab_infos['etat']==2) && (!$_SESSION['USER_DALTONISME']) ) ? '' : ' class="v'.$tab_infos['etat'].'"' ) ; // État de validation d'un item à indiquer comme inutile si le pilier est validé
     $texte   = ($detail) ? ( ($tab_infos['etat']==2) ? '---' : $tab_infos['date'] ) : '' ;

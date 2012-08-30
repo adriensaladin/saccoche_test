@@ -276,7 +276,7 @@ if( $is_matiere_items_bilanMS || $is_matiere_items_bilanPA )
 			if( in_array( $user_acquisition_etat , $critere_tab_seuil_acquis ) )
 			{
 				$checkbox = ($affichage_checkbox) ? '<td class="nu"><input type="checkbox" name="id_user[]" value="'.$user_id.'" /></td>' : '' ;
-				$tab_tr[] = '<tr>'.$checkbox.'<td>'.To::html($user_nom.' '.$user_prenom).'</td>'.Html::td_score( $tab_eleve_moy_scores[$user_id] , 'score' /*methode_tri*/ , $pourcent='').'</tr>';
+				$tab_tr[] = '<tr>'.$checkbox.'<td>'.html($user_nom.' '.$user_prenom).'</td>'.Html::td_score( $tab_eleve_moy_scores[$user_id] , 'score' /*methode_tri*/ , $pourcent='').'</tr>';
 			}
 		}
 		elseif($is_matiere_items_bilanPA)
@@ -288,7 +288,7 @@ if( $is_matiere_items_bilanMS || $is_matiere_items_bilanPA )
 			if( in_array( $user_acquisition_etat , $critere_tab_seuil_acquis ) )
 			{
 				$checkbox = ($affichage_checkbox) ? '<td class="nu"><input type="checkbox" name="id_user[]" value="'.$user_id.'" /></td>' : '' ;
-				$tab_tr[] = '<tr>'.$checkbox.'<td>'.To::html($user_nom.' '.$user_prenom).'</td>'.Html::td_pourcentage( 'td' , $tab_eleve_pourcentage[$user_id] , TRUE /*detail*/ , FALSE /*largeur*/ ).'</tr>';
+				$tab_tr[] = '<tr>'.$checkbox.'<td>'.html($user_nom.' '.$user_prenom).'</td>'.Html::td_pourcentage( 'td' , $tab_eleve_pourcentage[$user_id] , TRUE /*detail*/ , FALSE /*largeur*/ ).'</tr>';
 			}
 		}
 	}
@@ -340,7 +340,7 @@ if( $is_socle_item_pourcentage )
 			$drapeau_langue = $is_langue ? $eleve_langue : 0 ;
 			$image_langue = ($drapeau_langue) ? '<img src="./_img/drapeau/'.$drapeau_langue.'.gif" alt="" title="'.$tab_langues[$drapeau_langue]['texte'].'" /> ' : '' ;
 			$checkbox = ($affichage_checkbox) ? '<td class="nu"><input type="checkbox" name="id_user[]" value="'.$user_id.'" /></td>' : '' ;
-			$tab_tr[] = '<tr>'.$checkbox.'<td>'.$image_langue.To::html($user_nom.' '.$user_prenom).'</td>'.Html::td_pourcentage( 'td' , $tab_score_socle_eleve[$user_id] , TRUE /*detail*/ , FALSE /*largeur*/ ).'</tr>';
+			$tab_tr[] = '<tr>'.$checkbox.'<td>'.$image_langue.html($user_nom.' '.$user_prenom).'</td>'.Html::td_pourcentage( 'td' , $tab_score_socle_eleve[$user_id] , TRUE /*detail*/ , FALSE /*largeur*/ ).'</tr>';
 		}
 	}
 }
@@ -360,7 +360,7 @@ if( $is_socle_item_validation || $is_socle_pilier_validation )
 			$drapeau_langue = $is_langue ? $eleve_langue : 0 ;
 			$image_langue = ($drapeau_langue) ? '<img src="./_img/drapeau/'.$drapeau_langue.'.gif" alt="" title="'.$tab_langues[$drapeau_langue]['texte'].'" /> ' : '' ;
 			$checkbox = ($affichage_checkbox) ? '<td class="nu"><input type="checkbox" name="id_user[]" value="'.$user_id.'" /></td>' : '' ;
-			$tab_tr[] = '<tr>'.$checkbox.'<td>'.$image_langue.To::html($user_nom.' '.$user_prenom).'</td>'.Html::td_validation( 'td' , $tab_user_validation[$user_id] , $detail=true ).'</tr>';
+			$tab_tr[] = '<tr>'.$checkbox.'<td>'.$image_langue.html($user_nom.' '.$user_prenom).'</td>'.Html::td_validation( 'td' , $tab_user_validation[$user_id] , $detail=true ).'</tr>';
 		}
 	}
 }

@@ -54,11 +54,11 @@ $TITRE = "Gérer les administrateurs";
 				{
 					// Afficher une ligne du tableau
 					echo'<tr id="id_'.$DB_ROW['user_id'].'">';
-					echo	'<td>'.To::html($DB_ROW['user_id_ent']).'</td>';
-					echo	'<td>'.To::html($DB_ROW['user_id_gepi']).'</td>';
-					echo	'<td>'.To::html($DB_ROW['user_nom']).'</td>';
-					echo	'<td>'.To::html($DB_ROW['user_prenom']).'</td>';
-					echo	'<td>'.To::html($DB_ROW['user_login']).'</td>';
+					echo	'<td>'.html($DB_ROW['user_id_ent']).'</td>';
+					echo	'<td>'.html($DB_ROW['user_id_gepi']).'</td>';
+					echo	'<td>'.html($DB_ROW['user_nom']).'</td>';
+					echo	'<td>'.html($DB_ROW['user_prenom']).'</td>';
+					echo	'<td>'.html($DB_ROW['user_login']).'</td>';
 					echo	'<td class="i">champ crypté</td>';
 					echo	'<td class="nu">';
 					echo		'<q class="modifier" title="Modifier cet administrateur."></q>';

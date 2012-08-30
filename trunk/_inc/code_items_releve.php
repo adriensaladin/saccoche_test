@@ -432,7 +432,7 @@ if($type_individuel)
 	{
 		$releve_HTML_individuel  = $affichage_direct ? '' : '<style type="text/css">'.$_SESSION['CSS'].'</style>';
 		$releve_HTML_individuel .= $affichage_direct ? '' : '<h1>Bilan '.$tab_titre[$format].'</h1>';
-		$releve_HTML_individuel .= $affichage_direct ? '' : '<h2>'.To::html($texte_periode).'</h2>';
+		$releve_HTML_individuel .= $affichage_direct ? '' : '<h2>'.html($texte_periode).'</h2>';
 		$bilan_colspan = $cases_nb + 2 ;
 		$separation = (count($tab_eleve)>1) ? '<hr class="breakafter" />' : '' ;
 		$legende_html = ($legende=='oui') ? Html::legende( TRUE /*codes_notation*/ , TRUE /*etat_acquisition*/ , FALSE /*pourcentage_acquis*/ , FALSE /*etat_validation*/ ) : '' ;
@@ -454,7 +454,7 @@ if($type_individuel)
 			if(isset($tab_eval[$eleve_id]))
 			{
 				// Intitulé
-				if($make_html) { $releve_HTML_individuel .= (!$make_officiel) ? $separation.'<h2>'.To::html($groupe_nom).' - '.To::html($eleve_nom).' '.To::html($eleve_prenom).'</h2>' : '' ; }
+				if($make_html) { $releve_HTML_individuel .= (!$make_officiel) ? $separation.'<h2>'.html($groupe_nom).' - '.html($eleve_nom).' '.html($eleve_prenom).'</h2>' : '' ; }
 				if($make_pdf)
 				{
 					$eleve_nb_lignes  = $tab_nb_lignes_total_eleve[$eleve_id];
@@ -479,7 +479,7 @@ if($type_individuel)
 								}
 								if($make_html)
 								{
-									$releve_HTML_individuel .= '<h3>'.To::html($matiere_nom).'</h3>';
+									$releve_HTML_individuel .= '<h3>'.html($matiere_nom).'</h3>';
 									// On passe au tableau
 									$releve_HTML_table_head = '<thead><tr><th>Ref.</th><th>Nom de l\'item</th>';
 									for($num_case=0;$num_case<$cases_nb;$num_case++)
@@ -506,11 +506,11 @@ if($type_individuel)
 									{
 										if($aff_lien)
 										{
-											$texte_lien_avant = ($item_lien) ? '<a class="lien_ext" href="'.To::html($item_lien).'">' : '';
+											$texte_lien_avant = ($item_lien) ? '<a class="lien_ext" href="'.html($item_lien).'">' : '';
 											$texte_lien_apres = ($item_lien) ? '</a>' : '';
 										}
 										$texte_demande_eval = ($_SESSION['USER_PROFIL']!='eleve') ? '' : ( ($item_cart) ? '<q class="demander_add" id="demande_'.$matiere_id.'_'.$item_id.'_'.$tab_score_eleve_item[$eleve_id][$matiere_id][$item_id].'" title="Ajouter aux demandes d\'évaluations."></q>' : '<q class="demander_non" title="Demande interdite."></q>' ) ;
-										$releve_HTML_table_body .= '<tr><td>'.$item_ref.'</td><td>'.$texte_coef.$texte_socle.$texte_lien_avant.To::html($item_nom).$texte_lien_apres.$texte_demande_eval.'</td>';
+										$releve_HTML_table_body .= '<tr><td>'.$item_ref.'</td><td>'.$texte_coef.$texte_socle.$texte_lien_avant.html($item_nom).$texte_lien_apres.$texte_demande_eval.'</td>';
 									}
 									if($make_pdf)
 									{
@@ -602,7 +602,7 @@ if($type_individuel)
 										{
 											extract($tab);	// $prof_info $appreciation $note
 											$action = ( ($BILAN_ETAT=='2rubrique') && ($make_action=='saisir') && ($prof_id==$_SESSION['USER_ID']) ) ? ' <button type="button" class="modifier">Modifier</button> <button type="button" class="supprimer">Supprimer</button>' : ' <button type="button" class="signaler">Signaler une erreur</button>' ;
-											$appreciations .= '<tr id="appr_'.$matiere_id.'_'.$prof_id.'"><td class="nu">&nbsp;</td><td colspan="'.$bilan_colspan.'" class="now"><div class="notnow">'.To::html($prof_info).$action.'</div><div class="appreciation">'.To::html($appreciation).'</div></td></tr>'."\r\n";
+											$appreciations .= '<tr id="appr_'.$matiere_id.'_'.$prof_id.'"><td class="nu">&nbsp;</td><td colspan="'.$bilan_colspan.'" class="now"><div class="notnow">'.html($prof_info).$action.'</div><div class="appreciation">'.html($appreciation).'</div></td></tr>'."\r\n";
 										}
 									}
 									if( ($BILAN_ETAT=='2rubrique') && ($make_action=='saisir') )
@@ -618,7 +618,7 @@ if($type_individuel)
 							// Examen de présence des appréciations intermédiaires
 							if( ($make_action=='examiner') && ($_SESSION['OFFICIEL']['RELEVE_APPRECIATION_RUBRIQUE']) && (!isset($tab_saisie[$eleve_id][$matiere_id])) )
 							{
-								$tab_resultat_examen[$matiere_nom][] = 'Absence d\'appréciation pour '.To::html($eleve_nom.' '.$eleve_prenom);
+								$tab_resultat_examen[$matiere_nom][] = 'Absence d\'appréciation pour '.html($eleve_nom.' '.$eleve_prenom);
 							}
 							// Impression des appréciations intermédiaires (PDF)
 							if( ($make_action=='imprimer') && ($_SESSION['OFFICIEL']['RELEVE_APPRECIATION_RUBRIQUE']) && (isset($tab_saisie[$eleve_id][$matiere_id])) )
@@ -639,7 +639,7 @@ if($type_individuel)
 							list($prof_id,$tab) = each($tab_saisie[$eleve_id][0]);
 							extract($tab);	// $prof_info $appreciation $note
 							$action = ( ($BILAN_ETAT=='3synthese') && ($make_action=='saisir') ) ? ' <button type="button" class="modifier">Modifier</button> <button type="button" class="supprimer">Supprimer</button>' : '' ;
-							$releve_HTML_individuel .= '<tr id="appr_0_'.$prof_id.'"><td class="now"><div class="notnow">'.To::html($prof_info).$action.'</div><div class="appreciation">'.To::html($appreciation).'</div></td></tr>'."\r\n";
+							$releve_HTML_individuel .= '<tr id="appr_0_'.$prof_id.'"><td class="now"><div class="notnow">'.html($prof_info).$action.'</div><div class="appreciation">'.html($appreciation).'</div></td></tr>'."\r\n";
 						}
 						elseif( ($BILAN_ETAT=='3synthese') && ($make_action=='saisir') )
 						{
@@ -651,7 +651,7 @@ if($type_individuel)
 				// Examen de présence de l'appréciation générale
 				if( ($make_action=='examiner') && ($_SESSION['OFFICIEL']['RELEVE_APPRECIATION_GENERALE']) && (in_array(0,$tab_rubrique_id)) && (!isset($tab_saisie[$eleve_id][0])) )
 				{
-					$tab_resultat_examen['Synthèse générale'][] = 'Absence d\'appréciation générale pour '.To::html($eleve_nom.' '.$eleve_prenom);
+					$tab_resultat_examen['Synthèse générale'][] = 'Absence d\'appréciation générale pour '.html($eleve_nom.' '.$eleve_prenom);
 				}
 				// Impression de l'appréciation générale
 				if( ($make_action=='imprimer') && ($_SESSION['OFFICIEL']['RELEVE_APPRECIATION_GENERALE']) )
@@ -706,10 +706,10 @@ if($type_synthese)
 	$matiere_et_groupe = ($format=='matiere') ? $matiere_nom.' - '.$groupe_nom : $groupe_nom ;
 	$releve_HTML_synthese  = $affichage_direct ? '' : '<style type="text/css">'.$_SESSION['CSS'].'</style>';
 	$releve_HTML_synthese .= $affichage_direct ? '' : '<h1>Bilan '.$tab_titre[$format].'</h1>';
-	$releve_HTML_synthese .= '<h2>'.To::html($matiere_et_groupe).'</h2>';
+	$releve_HTML_synthese .= '<h2>'.html($matiere_et_groupe).'</h2>';
 	if($texte_periode)
 	{
-		$releve_HTML_synthese .= '<h2>'.To::html($texte_periode).'</h2>';
+		$releve_HTML_synthese .= '<h2>'.html($texte_periode).'</h2>';
 	}
 	// Appel de la classe et redéfinition de qqs variables supplémentaires pour la mise en page PDF
 	// On définit l'orientation la plus adaptée
@@ -727,7 +727,7 @@ if($type_synthese)
 		foreach($tab_liste_item as $item_id)	// Pour chaque item...
 		{
 			$releve_PDF->VertCellFit($releve_PDF->cases_largeur, $releve_PDF->etiquette_hauteur, $tab_item[$item_id][0]['item_ref'], 1 /*border*/, 0 /*br*/, TRUE /*fill*/);
-			$releve_HTML_table_head .= '<th title="'.To::html($tab_item[$item_id][0]['item_nom']).'"><img alt="'.To::html($tab_item[$item_id][0]['item_ref']).'" src="./_img/php/etiquette.php?dossier='.$_SESSION['BASE'].'&amp;nom='.urlencode($tab_item[$item_id][0]['item_ref']).'&amp;size=8" /></th>';
+			$releve_HTML_table_head .= '<th title="'.html($tab_item[$item_id][0]['item_nom']).'"><img alt="'.html($tab_item[$item_id][0]['item_ref']).'" src="./_img/php/etiquette.php?dossier='.$_SESSION['BASE'].'&amp;nom='.urlencode($tab_item[$item_id][0]['item_ref']).'&amp;size=8" /></th>';
 		}
 	}
 	else
@@ -736,7 +736,7 @@ if($type_synthese)
 		{
 			extract($tab);	// $eleve_id $eleve_nom $eleve_prenom $eleve_id_gepi
 			$releve_PDF->VertCellFit($releve_PDF->cases_largeur, $releve_PDF->etiquette_hauteur, $eleve_nom.' '.$eleve_prenom, 1 /*border*/, 0 /*br*/, TRUE /*fill*/);
-			$releve_HTML_table_head .= '<th><img alt="'.To::html($eleve_nom.' '.$eleve_prenom).'" src="./_img/php/etiquette.php?dossier='.$_SESSION['BASE'].'&amp;nom='.urlencode($eleve_nom).'&amp;prenom='.urlencode($eleve_prenom).'&amp;size=8" /></th>';
+			$releve_HTML_table_head .= '<th><img alt="'.html($eleve_nom.' '.$eleve_prenom).'" src="./_img/php/etiquette.php?dossier='.$_SESSION['BASE'].'&amp;nom='.urlencode($eleve_nom).'&amp;prenom='.urlencode($eleve_prenom).'&amp;size=8" /></th>';
 		}
 	}
 	$releve_PDF->SetX( $releve_PDF->GetX()+2 );
@@ -754,7 +754,7 @@ if($type_synthese)
 			extract($tab);	// $eleve_id $eleve_nom $eleve_prenom $eleve_id_gepi
 			$releve_PDF->choisir_couleur_fond('gris_clair');
 			$releve_PDF->CellFit($releve_PDF->intitule_largeur , $releve_PDF->cases_hauteur , To::pdf($eleve_nom.' '.$eleve_prenom) , 1 , 0 , 'L' , TRUE , '');
-			$releve_HTML_table_body .= '<tr><td>'.To::html($eleve_nom.' '.$eleve_prenom).'</td>';
+			$releve_HTML_table_body .= '<tr><td>'.html($eleve_nom.' '.$eleve_prenom).'</td>';
 			foreach($tab_liste_item as $item_id)	// Pour chaque item...
 			{
 				$matiere_id = $tab_matiere_for_item[$item_id];
@@ -780,7 +780,7 @@ if($type_synthese)
 			$matiere_id = $tab_matiere_for_item[$item_id];
 			$releve_PDF->choisir_couleur_fond('gris_clair');
 			$releve_PDF->CellFit($releve_PDF->intitule_largeur , $releve_PDF->cases_hauteur , To::pdf($tab_item[$item_id][0]['item_ref']) , 1 , 0 , 'L' , TRUE , '');
-			$releve_HTML_table_body .= '<tr><td title="'.To::html($tab_item[$item_id][0]['item_nom']).'">'.To::html($tab_item[$item_id][0]['item_ref']).'</td>';
+			$releve_HTML_table_body .= '<tr><td title="'.html($tab_item[$item_id][0]['item_nom']).'">'.html($tab_item[$item_id][0]['item_ref']).'</td>';
 			foreach($tab_eleve as $tab)	// Pour chaque élève...
 			{
 				$eleve_id = $tab['eleve_id'];
@@ -870,7 +870,7 @@ if($type_bulletin)
 			$nb_periodes_ouvertes = count($DB_TAB);
 			if($nb_periodes_ouvertes==1)
 			{
-				$bulletin_periode = '['.To::html($DB_TAB[0]['periode_nom']).']<input type="hidden" id="f_periode_eleves" name="f_periode_eleves" value="'.$DB_TAB[0]['periode_id'].'_'.$DB_TAB[0]['eleves_listing'].'" />' ;
+				$bulletin_periode = '['.html($DB_TAB[0]['periode_nom']).']<input type="hidden" id="f_periode_eleves" name="f_periode_eleves" value="'.$DB_TAB[0]['periode_id'].'_'.$DB_TAB[0]['eleves_listing'].'" />' ;
 			}
 			elseif($nb_periodes_ouvertes>1)
 			{
@@ -878,7 +878,7 @@ if($type_bulletin)
 				foreach($DB_TAB as $DB_ROW)
 				{
 					$selected = ($DB_ROW['periode_id']==$periode_id) ? ' selected' : '' ;
-					$bulletin_periode .= '<option value="'.$DB_ROW['periode_id'].'_'.$DB_ROW['eleves_listing'].'"'.$selected.'>'.To::html($DB_ROW['periode_nom']).'</option>';
+					$bulletin_periode .= '<option value="'.$DB_ROW['periode_id'].'_'.$DB_ROW['eleves_listing'].'"'.$selected.'>'.html($DB_ROW['periode_nom']).'</option>';
 				}
 				$bulletin_periode = '<select id="f_periode_eleves" name="f_periode_eleves">'.$bulletin_periode.'</select>';
 			}
@@ -904,7 +904,7 @@ if($type_bulletin)
 		{
 			$note         = ($tab_moyenne_scores_eleve[$matiere_id][$eleve_id] !== false)     ? sprintf("%04.1f",$tab_moyenne_scores_eleve[$matiere_id][$eleve_id]/5)                                                           : '-' ;
 			$appreciation = ($tab_pourcentage_acquis_eleve[$matiere_id][$eleve_id] !== false) ? $tab_pourcentage_acquis_eleve[$matiere_id][$eleve_id].'% d\'items acquis ('.$tab_infos_acquis_eleve[$matiere_id][$eleve_id].')' : '-' ;
-			$bulletin_body     .= '<tr><th>'.To::html($eleve_nom.' '.$eleve_prenom).'</th><td>'.$note.'</td><td>'.$appreciation.'</td></tr>'."\r\n";
+			$bulletin_body     .= '<tr><th>'.html($eleve_nom.' '.$eleve_prenom).'</th><td>'.$note.'</td><td>'.$appreciation.'</td></tr>'."\r\n";
 			$note         = str_replace('.',',',$note); // Pour GEPI je remplace le point décimal par une virgule sinon le tableur convertit en date...
 			$tab_bulletin_csv_gepi['note_appreciation'] .= $eleve_id_gepi.';'.$note.';'.$appreciation."\r\n";
 			$tab_bulletin_csv_gepi['note']              .= $eleve_id_gepi.';'.$note."\r\n";
@@ -921,7 +921,7 @@ if($type_bulletin)
 		{
 			if($format=='matiere')
 			{
-				$bulletin_matiere = '['.To::html($matiere_nom).']<input type="hidden" id="f_rubrique" name="f_rubrique" value="'.$matiere_id.'" />';
+				$bulletin_matiere = '['.html($matiere_nom).']<input type="hidden" id="f_rubrique" name="f_rubrique" value="'.$matiere_id.'" />';
 			}
 			else
 			{
@@ -939,7 +939,7 @@ if($type_bulletin)
 	$bulletin_body  = '<tbody>'."\r\n".$bulletin_body.'</tbody>'."\r\n";
 	$bulletin_foot  = '<tfoot><tr><th>Moyenne '.$info_ponderation_complete.' sur 20</th><th>'.sprintf("%04.1f",$moyenne_moyenne_scores/5).'</th><th>'.$moyenne_pourcentage_acquis.'% d\'items acquis</th></tr></tfoot>'."\r\n";
 	$bulletin_html  = '<h1>Bilan disciplinaire</h1>';
-	$bulletin_html .= '<h2>'.To::html($matiere_nom.' - '.$groupe_nom).'</h2>';
+	$bulletin_html .= '<h2>'.html($matiere_nom.' - '.$groupe_nom).'</h2>';
 	$bulletin_html .= '<h2>Du '.$date_debut.' au '.$date_fin.$date_complement.'</h2>';
 	$bulletin_html .= '<h2>Tableau de notes sur 20</h2>';
 	$bulletin_html .= '<table id="export20" class="hsort">'."\r\n".$bulletin_head.$bulletin_foot.$bulletin_body.'</table>'."\r\n";

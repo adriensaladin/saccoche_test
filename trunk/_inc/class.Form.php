@@ -375,7 +375,7 @@ class Form
     {
       // ... avec une option initiale dont le contenu est à récupérer
       list($option_valeur,$option_texte,$option_class) = Form::$tab_select_option_first;
-      $options = '<option value="'.$option_valeur.'" class="'.$option_class.'">'.To::html($option_texte).'</option>';
+      $options = '<option value="'.$option_valeur.'" class="'.$option_class.'">'.html($option_texte).'</option>';
     }
     if(is_array($DB_TAB))
     {
@@ -385,8 +385,8 @@ class Form
         // ... classiquement, sans regroupements
         foreach($DB_TAB as $DB_ROW)
         {
-          $class = (isset($DB_ROW['class'])) ? ' class="'.To::html($DB_ROW['class']).'"' : '';
-          $options .= '<option value="'.$DB_ROW['valeur'].'"'.$class.'>'.To::html($DB_ROW['texte']).'</option>';
+          $class = (isset($DB_ROW['class'])) ? ' class="'.html($DB_ROW['class']).'"' : '';
+          $options .= '<option value="'.$DB_ROW['valeur'].'"'.$class.'>'.html($DB_ROW['texte']).'</option>';
         }
       }
       elseif($optgroup==='oui')
@@ -395,12 +395,12 @@ class Form
         $tab_options = array();
         foreach($DB_TAB as $DB_ROW)
         {
-          $class = (isset($DB_ROW['class'])) ? ' class="'.To::html($DB_ROW['class']).'"' : '';
-          $tab_options[$DB_ROW['optgroup']][] = '<option value="'.$DB_ROW['valeur'].'"'.$class.'>'.To::html($DB_ROW['texte']).'</option>';
+          $class = (isset($DB_ROW['class'])) ? ' class="'.html($DB_ROW['class']).'"' : '';
+          $tab_options[$DB_ROW['optgroup']][] = '<option value="'.$DB_ROW['valeur'].'"'.$class.'>'.html($DB_ROW['texte']).'</option>';
         }
         foreach($tab_options as $group_key => $tab_group_options)
         {
-          $options .= '<optgroup label="'.To::html(Form::$tab_select_optgroup[$group_key]).'">'.implode('',$tab_group_options).'</optgroup>';
+          $options .= '<optgroup label="'.html(Form::$tab_select_optgroup[$group_key]).'">'.implode('',$tab_group_options).'</optgroup>';
         }
       }
       // On sélectionne les options qu'il faut... (fait après le foreach précédent sinon c'est compliqué à gérer simultanément avec les groupes d'options éventuels

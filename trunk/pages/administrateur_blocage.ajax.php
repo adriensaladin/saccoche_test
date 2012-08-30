@@ -43,7 +43,7 @@ if($action=='debloquer')
 elseif($action=='bloquer')
 {
 	LockAcces::bloquer_application($_SESSION['USER_PROFIL'],$_SESSION['BASE'],$motif);
-	exit('<label class="erreur">Application fermée : '.To::html($motif).'</label>');
+	exit('<label class="erreur">Application fermée : '.html($motif).'</label>');
 }
 else
 {

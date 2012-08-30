@@ -63,7 +63,7 @@ if( ($action=='Afficher_bilan') && $palier_id && count($tab_pilier) && count($ta
 	foreach($tab_eleve as $tab)
 	{
 		extract($tab);	// $eleve_id $eleve_nom $eleve_prenom $eleve_langue
-		$affichage .= '<th><img id="I'.$eleve_id.'" alt="'.To::html($eleve_nom.' '.$eleve_prenom).'" src="./_img/php/etiquette.php?dossier='.$_SESSION['BASE'].'&amp;nom='.urlencode($eleve_nom).'&amp;prenom='.urlencode($eleve_prenom).'" /></th>';
+		$affichage .= '<th><img id="I'.$eleve_id.'" alt="'.html($eleve_nom.' '.$eleve_prenom).'" src="./_img/php/etiquette.php?dossier='.$_SESSION['BASE'].'&amp;nom='.urlencode($eleve_nom).'&amp;prenom='.urlencode($eleve_prenom).'" /></th>';
 		$tfoot .= '<td class="L'.$eleve_langue.'" title="'.$tab_langues[$eleve_langue]['texte'].'"></td>';
 		$tab_eleve_id[] = $eleve_id;
 	}
@@ -100,7 +100,7 @@ if( ($action=='Afficher_bilan') && $palier_id && count($tab_pilier) && count($ta
 				$affichage .= '<td id="U'.$eleve_id.'C'.$pilier_id.'" class="v2"></td>';
 			}
 			$affichage .= '<th id="C'.$pilier_id.'" class="left1" title="Modifier la validation de cette compétence pour tous les élèves."></th>';
-			$affichage .= '<th class="nu" colspan="2"><div class="n1">'.To::html($DB_ROW['pilier_nom']).'</div></th>';
+			$affichage .= '<th class="nu" colspan="2"><div class="n1">'.html($DB_ROW['pilier_nom']).'</div></th>';
 			$affichage .= '</tr>';
 		}
 	}
@@ -118,7 +118,7 @@ if( ($action=='Afficher_bilan') && $palier_id && count($tab_pilier) && count($ta
 		$etat = ($DB_ROW['validation_pilier_etat']) ? 'Validé' : 'Invalidé' ;
 		$lang = ($DB_ROW['validation_pilier_etat']) ? ' lang="lock"' : '' ;
 		$tab_bad[] = 'U'.$DB_ROW['user_id'].'C'.$DB_ROW['pilier_id'].'" class="v2">';
-		$tab_bon[] = 'U'.$DB_ROW['user_id'].'C'.$DB_ROW['pilier_id'].'" class="v'.$DB_ROW['validation_pilier_etat'].'" title="'.$etat.' le '.convert_date_mysql_to_french($DB_ROW['validation_pilier_date']).' par '.To::html($DB_ROW['validation_pilier_info']).'"'.$lang.'>';
+		$tab_bon[] = 'U'.$DB_ROW['user_id'].'C'.$DB_ROW['pilier_id'].'" class="v'.$DB_ROW['validation_pilier_etat'].'" title="'.$etat.' le '.convert_date_mysql_to_french($DB_ROW['validation_pilier_date']).' par '.html($DB_ROW['validation_pilier_info']).'"'.$lang.'>';
 	}
 	$affichage = str_replace($tab_bad,$tab_bon,$affichage);
 	// $affichage = str_replace('class="v2"','class="v2" title="Cliquer pour valider ou invalider."',$affichage); // Retiré car embêtant si modifié ensuite.
@@ -155,14 +155,14 @@ elseif( ($action=='Afficher_information') && $eleve_id && $pilier_id )
 		if( (!is_null($DB_ROW['section_id'])) && ($DB_ROW['section_id']!=$section_id) )
 		{
 			$section_id = $DB_ROW['section_id'];
-			$affichage_socle .= '<div class="n2 i">'.To::html($DB_ROW['section_nom']).'</div>';
+			$affichage_socle .= '<div class="n2 i">'.html($DB_ROW['section_nom']).'</div>';
 			$entree_id  = 0;
 		}
 		if( (!is_null($DB_ROW['entree_id'])) && ($DB_ROW['entree_id']!=$entree_id) )
 		{
 			$entree_id = $DB_ROW['entree_id'];
 			$etat = (isset($tab_item[$DB_ROW['entree_id']])) ? $tab_item[$DB_ROW['entree_id']] : 2 ;
-			$affichage_socle .= '<div class="n3"><tt class="v'.$etat.'">'.$tab_texte_items[$etat].'</tt>'.To::html($DB_ROW['entree_nom']).'</div>';
+			$affichage_socle .= '<div class="n3"><tt class="v'.$etat.'">'.$tab_texte_items[$etat].'</tt>'.html($DB_ROW['entree_nom']).'</div>';
 			$tab_validation_socle[$etat]++;
 		}
 	}

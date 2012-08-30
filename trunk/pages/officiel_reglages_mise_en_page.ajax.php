@@ -146,7 +146,7 @@ if( ($action=='upload_signature') && ($user_id>=0) && ($user_texte!='') )
 	// Générer la balise html et afficher le retour
 	list($width,$height) = dimensions_affichage_image( $image_largeur , $image_hauteur , 200 /*largeur_maxi*/ , 200 /*hauteur_maxi*/ );
 	$user_texte = ($user_id) ? 'Signature '.$user_texte : $user_texte ;
-	exit('<li id="sgn_'.$user_id.'">'.To::html($user_texte).' : <img src="'.URL_DIR_EXPORT.$fichier_nom.'" alt="'.To::html($user_texte).'" width="'.$width.'" height="'.$height.'" /><q class="supprimer" title="Supprimer cette image (aucune confirmation ne sera demandée)."></q></li>');
+	exit('<li id="sgn_'.$user_id.'">'.html($user_texte).' : <img src="'.URL_DIR_EXPORT.$fichier_nom.'" alt="'.html($user_texte).'" width="'.$width.'" height="'.$height.'" /><q class="supprimer" title="Supprimer cette image (aucune confirmation ne sera demandée)."></q></li>');
 }
 
 //	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*

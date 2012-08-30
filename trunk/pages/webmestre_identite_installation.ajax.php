@@ -56,7 +56,7 @@ if($action=='select_logo')
 		if(in_array($extension,$tab_ext_images))
 		{
 			$selected = ($file==HEBERGEUR_LOGO) ? ' selected' : '' ;
-			$options_logo .= '<option value="'.To::html($file).'"'.$selected.'>'.To::html($file).'</option>';
+			$options_logo .= '<option value="'.html($file).'"'.$selected.'>'.html($file).'</option>';
 		}
 	}
 	$options_logo = ($options_logo) ? '<option value=""></option>'.$options_logo : '<option value="" disabled>Aucun fichier image trouvé !</option>';
@@ -76,7 +76,7 @@ elseif($action=='listing_logos')
 		$extension = strtolower(pathinfo($file,PATHINFO_EXTENSION));
 		if(in_array($extension,$tab_ext_images))
 		{
-			$li_logos .= '<li>'.To::html($file).' <img alt="'.To::html($file).'" src="'.URL_DIR_LOGO.To::html($file).'" /><q class="supprimer" title="Supprimer cette image du serveur (aucune confirmation ne sera demandée)."></q></li>';
+			$li_logos .= '<li>'.html($file).' <img alt="'.html($file).'" src="'.URL_DIR_LOGO.html($file).'" /><q class="supprimer" title="Supprimer cette image du serveur (aucune confirmation ne sera demandée)."></q></li>';
 		}
 	}
 	$li_logos = ($li_logos) ? $li_logos : '<li>Aucun fichier image trouvé !</li>';

@@ -95,7 +95,7 @@ else
 	foreach($DB_TAB_MATIERES as $DB_ROW)
 	{
 		$tab_matiere[$DB_ROW['matiere_id']] = array(
-			'nom'         => To::html($DB_ROW['matiere_nom']) ,
+			'nom'         => html($DB_ROW['matiere_nom']) ,
 			'nb_demandes' => $DB_ROW['matiere_nb_demandes'] ,
 			'coord'       => $DB_ROW['jointure_coord']
 		);
@@ -111,7 +111,7 @@ else
 	{
 		foreach($DB_TAB_NIVEAUX as $DB_ROW)
 		{
-			$tab_niveau[$DB_ROW['valeur']] = To::html($DB_ROW['texte']);
+			$tab_niveau[$DB_ROW['valeur']] = html($DB_ROW['texte']);
 		}
 		// On récupère la liste des référentiels par matière et niveau
 		$tab_partage = array('oui'=>'<img title="Référentiel partagé sur le serveur communautaire (MAJ le ◄DATE►)." alt="" src="./_img/etat/partage_oui.gif" />','non'=>'<img title="Référentiel non partagé avec la communauté (choix du ◄DATE►)." alt="" src="./_img/etat/partage_non.gif" />','bof'=>'<img title="Référentiel dont le partage est sans intérêt (pas novateur)." alt="" src="./_img/etat/partage_non.gif" />','hs'=>'<img title="Référentiel dont le partage est sans objet (matière spécifique)." alt="" src="./_img/etat/partage_non.gif" />');

@@ -217,7 +217,7 @@ if( ($action=='ajouter') && $num && $max )
 		unset($_SESSION['tab_info']);
 	}
 	// Retour de l'affichage, appel suivant
-	exit(']¤['.'<tr><td class="nu"><input type="checkbox" name="f_ids" value="'.$base_id.'" /></td><td class="label">'.$base_id.'</td><td class="label">'.To::html($localisation.' | '.$denomination.' ['.$uai.']').'</td><td class="label">'.To::html($contact_nom.' '.$contact_prenom.' ('.$contact_courriel.')').'</td></tr>');
+	exit(']¤['.'<tr><td class="nu"><input type="checkbox" name="f_ids" value="'.$base_id.'" /></td><td class="label">'.$base_id.'</td><td class="label">'.html($localisation.' | '.$denomination.' ['.$uai.']').'</td><td class="label">'.html($contact_nom.' '.$contact_prenom.' ('.$contact_courriel.')').'</td></tr>');
 }
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-

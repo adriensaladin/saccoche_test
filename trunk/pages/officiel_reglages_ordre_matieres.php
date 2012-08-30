@@ -46,7 +46,7 @@ $TITRE = "Ordre d'affichage des matières";
 		echo'<ul id="sortable">';
 		foreach($DB_TAB as $DB_ROW)
 		{
-			echo'<li id="m_'.$DB_ROW['matiere_id'].'">'.To::html($DB_ROW['matiere_nom']).'</li>';
+			echo'<li id="m_'.$DB_ROW['matiere_id'].'">'.html($DB_ROW['matiere_nom']).'</li>';
 		}
 		echo'</ul>';
 		echo'<p><span class="tab"></span><button id="Enregistrer_ordre" type="button" class="valider">Enregistrer cet ordre</button><label id="ajax_msg_ordre">&nbsp;</label></p>';

@@ -46,10 +46,10 @@ if( ($action=='ajouter') && $user_id )
 	// Insérer l'enregistrement
 	DB_STRUCTURE_ADMINISTRATEUR::DB_ajouter_adresse_parent( $user_id , array($ligne1,$ligne2,$ligne3,$ligne4,$code_postal,$commune,$pays) );
 	// Afficher le retour
-	echo'<td><span>'.To::html($ligne1).'</span> ; <span>'.To::html($ligne2).'</span> ; <span>'.To::html($ligne3).'</span> ; <span>'.To::html($ligne4).'</span></td>';
-	echo'<td>'.To::html($code_postal).'</td>';
-	echo'<td>'.To::html($commune).'</td>';
-	echo'<td>'.To::html($pays).'</td>';
+	echo'<td><span>'.html($ligne1).'</span> ; <span>'.html($ligne2).'</span> ; <span>'.html($ligne3).'</span> ; <span>'.html($ligne4).'</span></td>';
+	echo'<td>'.html($code_postal).'</td>';
+	echo'<td>'.html($commune).'</td>';
+	echo'<td>'.html($pays).'</td>';
 	echo'<td class="nu">';
 	echo	'<q class="modifier" title="Modifier ce parent."></q>';
 	echo'</td>';
@@ -63,10 +63,10 @@ if( ($action=='modifier') && $user_id )
 	// Insérer l'enregistrement
 	$user_id = DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_adresse_parent( $user_id , array($ligne1,$ligne2,$ligne3,$ligne4,$code_postal,$commune,$pays) );
 	// Afficher le retour
-	echo'<td><span>'.To::html($ligne1).'</span> ; <span>'.To::html($ligne2).'</span> ; <span>'.To::html($ligne3).'</span> ; <span>'.To::html($ligne4).'</span></td>';
-	echo'<td>'.To::html($code_postal).'</td>';
-	echo'<td>'.To::html($commune).'</td>';
-	echo'<td>'.To::html($pays).'</td>';
+	echo'<td><span>'.html($ligne1).'</span> ; <span>'.html($ligne2).'</span> ; <span>'.html($ligne3).'</span> ; <span>'.html($ligne4).'</span></td>';
+	echo'<td>'.html($code_postal).'</td>';
+	echo'<td>'.html($commune).'</td>';
+	echo'<td>'.html($pays).'</td>';
 	echo'<td class="nu">';
 	echo	'<q class="modifier" title="Modifier ce parent."></q>';
 	echo'</td>';

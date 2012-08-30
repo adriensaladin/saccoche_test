@@ -34,7 +34,7 @@ $TITRE = "Maintenance &amp; mise à jour";
 $blocage_msg = LockAcces::tester_blocage('webmestre',0);
 if($blocage_msg!==NULL)
 {
-	$label_acces = '<label class="erreur">Application fermée : '.To::html($blocage_msg).'</label>';
+	$label_acces = '<label class="erreur">Application fermée : '.html($blocage_msg).'</label>';
 }
 else
 {

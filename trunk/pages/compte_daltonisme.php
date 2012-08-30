@@ -37,8 +37,8 @@ $td_dalton = '<td class="nu">&nbsp;</td>';
 $tab_note = array('RR','R','V','VV');
 foreach($tab_note as $note)
 {
-	$td_normal .= '<td>note '.To::html($_SESSION['NOTE_TEXTE'][$note]).'<br /><img alt="" src="./_img/note/'.$_SESSION['NOTE_IMAGE_STYLE'].'/h/'.$note.'.gif" /></td>';
-	$td_dalton .= '<td>note '.To::html($_SESSION['NOTE_TEXTE'][$note]).'<br /><img alt="" src="./_img/note/Dalton/h/'.$note.'.gif" /></td>';
+	$td_normal .= '<td>note '.html($_SESSION['NOTE_TEXTE'][$note]).'<br /><img alt="" src="./_img/note/'.$_SESSION['NOTE_IMAGE_STYLE'].'/h/'.$note.'.gif" /></td>';
+	$td_dalton .= '<td>note '.html($_SESSION['NOTE_TEXTE'][$note]).'<br /><img alt="" src="./_img/note/Dalton/h/'.$note.'.gif" /></td>';
 }
 
 // couleurs des états d'acquisition
@@ -47,8 +47,8 @@ $td_dalton .= '<td class="nu">&nbsp;</td>';
 $tab_acquis = array('NA'=>'#909090','VA'=>'#BEBEBE','A'=>'#EAEAEA');
 foreach($tab_acquis as $acquis => $style)
 {
-	$td_normal .= '<td style="background-color:'.$_SESSION['CSS_BACKGROUND-COLOR'][$acquis].'">acquisition<br />'.To::html($_SESSION['ACQUIS_TEXTE'][$acquis]).'</td>';
-	$td_dalton .= '<td style="background-color:'.$style.'">acquisition<br />'.To::html($_SESSION['ACQUIS_TEXTE'][$acquis]).'</td>';
+	$td_normal .= '<td style="background-color:'.$_SESSION['CSS_BACKGROUND-COLOR'][$acquis].'">acquisition<br />'.html($_SESSION['ACQUIS_TEXTE'][$acquis]).'</td>';
+	$td_dalton .= '<td style="background-color:'.$style.'">acquisition<br />'.html($_SESSION['ACQUIS_TEXTE'][$acquis]).'</td>';
 }
 
 // couleurs des états de validation

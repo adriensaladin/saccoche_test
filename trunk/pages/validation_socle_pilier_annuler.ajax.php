@@ -64,7 +64,7 @@ if( ($action=='Afficher_bilan') && $palier_id && count($tab_pilier) && count($ta
 	foreach($tab_eleve as $tab)
 	{
 		extract($tab);	// $eleve_id $eleve_nom $eleve_prenom $eleve_id_gepi
-		$affichage .= '<th><img id="I'.$eleve_id.'" alt="'.To::html($eleve_nom.' '.$eleve_prenom).'" src="./_img/php/etiquette.php?dossier='.$_SESSION['BASE'].'&amp;nom='.urlencode($eleve_nom).'&amp;prenom='.urlencode($eleve_prenom).'" /></th>';
+		$affichage .= '<th><img id="I'.$eleve_id.'" alt="'.html($eleve_nom.' '.$eleve_prenom).'" src="./_img/php/etiquette.php?dossier='.$_SESSION['BASE'].'&amp;nom='.urlencode($eleve_nom).'&amp;prenom='.urlencode($eleve_prenom).'" /></th>';
 		$tfoot .= '<td class="L'.$eleve_langue.'" title="'.$tab_langues[$eleve_langue]['texte'].'"></td>';
 		$tab_eleve_id[] = $eleve_id;
 	}
@@ -95,7 +95,7 @@ if( ($action=='Afficher_bilan') && $palier_id && count($tab_pilier) && count($ta
 			{
 				$affichage .= '<td id="U'.$eleve_id.'C'.$pilier_id.'" class="v3"></td>';
 			}
-			$affichage .= '<th class="nu" colspan="2"><div class="n1">'.To::html($DB_ROW['pilier_nom']).'</div></th>';
+			$affichage .= '<th class="nu" colspan="2"><div class="n1">'.html($DB_ROW['pilier_nom']).'</div></th>';
 			$affichage .= '</tr>';
 		}
 	}
@@ -113,7 +113,7 @@ if( ($action=='Afficher_bilan') && $palier_id && count($tab_pilier) && count($ta
 		if($DB_ROW['validation_pilier_etat'])
 		{
 			$tab_bad[] = 'U'.$DB_ROW['user_id'].'C'.$DB_ROW['pilier_id'].'" class="v3">';
-			$tab_bon[] = 'U'.$DB_ROW['user_id'].'C'.$DB_ROW['pilier_id'].'" class="v'.$DB_ROW['validation_pilier_etat'].'" title="Validé le '.convert_date_mysql_to_french($DB_ROW['validation_pilier_date']).' par '.To::html($DB_ROW['validation_pilier_info']).'" lang="lock">';
+			$tab_bon[] = 'U'.$DB_ROW['user_id'].'C'.$DB_ROW['pilier_id'].'" class="v'.$DB_ROW['validation_pilier_etat'].'" title="Validé le '.convert_date_mysql_to_french($DB_ROW['validation_pilier_date']).' par '.html($DB_ROW['validation_pilier_info']).'" lang="lock">';
 		}
 	}
 	$affichage = str_replace($tab_bad,$tab_bon,$affichage);

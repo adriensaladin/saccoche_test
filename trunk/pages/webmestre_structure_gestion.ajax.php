@@ -64,7 +64,7 @@ if( ($action=='ajouter') && isset($tab_geo[$geo_id]) && $localisation && $denomi
 		$structure_denomination = DB_WEBMESTRE_WEBMESTRE::DB_tester_structure_Id($base_id);
 		if($structure_denomination!==NULL)
 		{
-			exit('Erreur : identifiant déjà utilisé ('.To::html($structure_denomination).') !');
+			exit('Erreur : identifiant déjà utilisé ('.html($structure_denomination).') !');
 		}
 	}
 	// Vérifier que le n°UAI est disponible
@@ -121,11 +121,11 @@ if( ($action=='ajouter') && isset($tab_geo[$geo_id]) && $localisation && $denomi
 	echo	'<td class="nu"><a href="#id_0"><img class="bloquer" src="./_img/etat/acces_oui.png" title="Bloquer cet établissement." /></a></td>';
 	echo	'<td class="nu"><input type="checkbox" name="f_ids" value="'.$base_id.'" /></td>';
 	echo	'<td class="label">'.$base_id.'</td>';
-	echo	'<td class="label"><i>'.sprintf("%02u",$tab_geo[$geo_id]['ordre']).'</i>'.To::html($tab_geo[$geo_id]['nom']).'</td>';
-	echo	'<td class="label">'.To::html($localisation).'<br />'.To::html($denomination).'</td>';
-	echo	'<td class="label">'.To::html($uai).'</td>';
-	echo	'<td class="label">'.To::html($contact_nom).'<br />'.To::html($contact_prenom).'</td>';
-	echo	'<td class="label">'.To::html($contact_courriel).'</td>';
+	echo	'<td class="label"><i>'.sprintf("%02u",$tab_geo[$geo_id]['ordre']).'</i>'.html($tab_geo[$geo_id]['nom']).'</td>';
+	echo	'<td class="label">'.html($localisation).'<br />'.html($denomination).'</td>';
+	echo	'<td class="label">'.html($uai).'</td>';
+	echo	'<td class="label">'.html($contact_nom).'<br />'.html($contact_prenom).'</td>';
+	echo	'<td class="label">'.html($contact_courriel).'</td>';
 	echo	'<td class="nu">';
 	echo		'<q class="modifier" title="Modifier cet établissement."></q>';
 	echo		'<q class="initialiser_mdp" title="Générer un nouveau mdp d\'un admin."></q>';
@@ -162,11 +162,11 @@ if( ($action=='modifier') && $base_id && isset($tab_geo[$geo_id]) && $localisati
 	echo'<td class="nu"><a href="#id_0">'.$img.'</a></td>';
 	echo'<td class="nu"><input type="checkbox" name="f_ids" value="'.$base_id.'" /></td>';
 	echo'<td class="label">'.$base_id.'</td>';
-	echo'<td class="label"><i>'.sprintf("%02u",$tab_geo[$geo_id]['ordre']).'</i>'.To::html($tab_geo[$geo_id]['nom']).'</td>';
-	echo'<td class="label">'.To::html($localisation).'<br />'.To::html($denomination).'</td>';
-	echo'<td class="label">'.To::html($uai).'</td>';
-	echo'<td class="label">'.To::html($contact_nom).'<br />'.To::html($contact_prenom).'</td>';
-	echo'<td class="label">'.To::html($contact_courriel).'</td>';
+	echo'<td class="label"><i>'.sprintf("%02u",$tab_geo[$geo_id]['ordre']).'</i>'.html($tab_geo[$geo_id]['nom']).'</td>';
+	echo'<td class="label">'.html($localisation).'<br />'.html($denomination).'</td>';
+	echo'<td class="label">'.html($uai).'</td>';
+	echo'<td class="label">'.html($contact_nom).'<br />'.html($contact_prenom).'</td>';
+	echo'<td class="label">'.html($contact_courriel).'</td>';
 	echo'<td class="nu">';
 	echo	'<q class="modifier" title="Modifier cet établissement."></q>';
 	echo	'<q class="initialiser_mdp" title="Générer un nouveau mdp d\'un admin."></q>';
@@ -223,8 +223,8 @@ if( ($action=='initialiser_mdp') && $base_id && $admin_id )
 	}
 	// On affiche le retour
 	echo'<ok>';
-	echo'Le mot de passe de '.To::html($admin_prenom.' '.$admin_nom).',<BR />administrateur de l\'établissement '.To::html($denomination).',<BR />vient d\'être réinitialisé.<BR /><BR />';
-	echo'Les nouveaux identifiants ont été envoyés au contact '.To::html($contact_prenom).' '.To::html($contact_nom).',<BR />à son adresse de courriel '.To::html($contact_courriel).'.';
+	echo'Le mot de passe de '.html($admin_prenom.' '.$admin_nom).',<BR />administrateur de l\'établissement '.html($denomination).',<BR />vient d\'être réinitialisé.<BR /><BR />';
+	echo'Les nouveaux identifiants ont été envoyés au contact '.html($contact_prenom).' '.html($contact_nom).',<BR />à son adresse de courriel '.html($contact_courriel).'.';
 	exit();
 }
 

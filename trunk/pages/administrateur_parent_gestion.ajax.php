@@ -105,14 +105,14 @@ if( ($action=='ajouter') && $nom && $prenom && $password )
 	echo'<tr id="id_'.$user_id.'" class="new">';
 	echo	'<td class="nu"><input type="checkbox" name="f_ids" value="'.$user_id.'" /></td>';
 	echo	'<td class="label">0 <img alt="" src="./_img/bulle_aide.png" title="Aucun lien de responsabilité !" /></td>';
-	echo	'<td class="label">'.To::html($id_ent).'</td>';
-	echo	'<td class="label">'.To::html($id_gepi).'</td>';
-	echo	'<td class="label">'.To::html($sconet_id).'</td>';
-	echo	'<td class="label">'.To::html($reference).'</td>';
-	echo	'<td class="label">'.To::html($nom).'</td>';
-	echo	'<td class="label">'.To::html($prenom).'</td>';
-	echo	'<td class="label new">'.To::html($login).' <img alt="" title="Pensez à relever le login généré !" src="./_img/bulle_aide.png" /></td>';
-	echo	'<td class="label new">'.To::html($password).' <img alt="" title="Pensez à noter le mot de passe !" src="./_img/bulle_aide.png" /></td>';
+	echo	'<td class="label">'.html($id_ent).'</td>';
+	echo	'<td class="label">'.html($id_gepi).'</td>';
+	echo	'<td class="label">'.html($sconet_id).'</td>';
+	echo	'<td class="label">'.html($reference).'</td>';
+	echo	'<td class="label">'.html($nom).'</td>';
+	echo	'<td class="label">'.html($prenom).'</td>';
+	echo	'<td class="label new">'.html($login).' <img alt="" title="Pensez à relever le login généré !" src="./_img/bulle_aide.png" /></td>';
+	echo	'<td class="label new">'.html($password).' <img alt="" title="Pensez à noter le mot de passe !" src="./_img/bulle_aide.png" /></td>';
 	echo	'<td class="label"><i>'.$sortie_date_mysql.'</i>'.$sortie_date.'</td>';
 	echo	'<td class="nu">';
 	echo		'<q class="modifier" title="Modifier ce parent."></q>';
@@ -184,13 +184,13 @@ if( ($action=='modifier') && $id && $nom && $prenom && $login && ( $not_new_mdp 
 	// Afficher le retour
 	echo'<td class="nu"><input type="checkbox" name="f_ids" value="'.$id.'" /></td>';
 	// td avec nb de liens de responsabilité ajouté en js
-	echo'<td class="label">'.To::html($id_ent).'</td>';
-	echo'<td class="label">'.To::html($id_gepi).'</td>';
-	echo'<td class="label">'.To::html($sconet_id).'</td>';
-	echo'<td class="label">'.To::html($reference).'</td>';
-	echo'<td class="label">'.To::html($nom).'</td>';
-	echo'<td class="label">'.To::html($prenom).'</td>';
-	echo'<td class="label">'.To::html($login).'</td>';
+	echo'<td class="label">'.html($id_ent).'</td>';
+	echo'<td class="label">'.html($id_gepi).'</td>';
+	echo'<td class="label">'.html($sconet_id).'</td>';
+	echo'<td class="label">'.html($reference).'</td>';
+	echo'<td class="label">'.html($nom).'</td>';
+	echo'<td class="label">'.html($prenom).'</td>';
+	echo'<td class="label">'.html($login).'</td>';
 	echo ($not_new_mdp) ? '<td class="label i">champ crypté</td>' : '<td class="label new">'.$password.' <img alt="" src="./_img/bulle_aide.png" title="Pensez à noter le mot de passe !" /></td>' ;
 	echo'<td class="label"><i>'.$sortie_date_mysql.'</i>'.$sortie_date.'</td>';
 	echo'<td class="nu">';

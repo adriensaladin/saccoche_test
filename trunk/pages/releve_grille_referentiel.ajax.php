@@ -398,7 +398,7 @@ if( $type_generique || $type_individuel )
 	$msg_socle = ($only_socle) ? ' - Socle uniquement' : '' ;
 	$releve_HTML_individuel  = $affichage_direct ? '' : '<style type="text/css">'.$_SESSION['CSS'].'</style>';
 	$releve_HTML_individuel .= $affichage_direct ? '' : '<h1>Grille d\'items d\'un référentiel</h1>';
-	$releve_HTML_individuel .= $affichage_direct ? '' : '<h2>'.To::html($matiere_nom.' - Niveau '.$niveau_nom.$msg_socle).'</h2>';
+	$releve_HTML_individuel .= $affichage_direct ? '' : '<h2>'.html($matiere_nom.' - Niveau '.$niveau_nom.$msg_socle).'</h2>';
 	$legende_html = ($legende=='oui') ? Html::legende( TRUE /*codes_notation*/ , FALSE /*etat_acquisition*/ , FALSE /*pourcentage_acquis*/ , FALSE /*etat_validation*/ ) : '' ;
 	// Appel de la classe et définition de qqs variables supplémentaires pour la mise en page PDF
 	$releve_PDF = new PDF( FALSE /*officiel*/ , $orientation , $marge_min /*marge_gauche*/ , $marge_min /*marge_droite*/ , $marge_min /*marge_haut*/ , $marge_min /*marge_bas*/ , $couleur , $legende );
@@ -411,7 +411,7 @@ if( $type_generique || $type_individuel )
 		extract($tab);	// $eleve_id $eleve_nom $eleve_prenom
 		// On met le document au nom de l'élève, ou on établit un document générique
 		$releve_PDF->grille_referentiel_entete($matiere_nom,$niveau_nom,$eleve_id,$eleve_nom,$eleve_prenom);
-		$releve_HTML_individuel .= ($eleve_id) ? $separation.'<h2>'.To::html($eleve_nom).' '.To::html($eleve_prenom).'</h2>' : $separation.'<h2>Grille générique</h2>' ;
+		$releve_HTML_individuel .= ($eleve_id) ? $separation.'<h2>'.html($eleve_nom).' '.html($eleve_prenom).'</h2>' : $separation.'<h2>Grille générique</h2>' ;
 		$releve_HTML_individuel .= '<table class="bilan">';
 		// Pour chaque domaine...
 		if(count($tab_domaine))
@@ -419,7 +419,7 @@ if( $type_generique || $type_individuel )
 			foreach($tab_domaine as $domaine_id => $tab)
 			{
 				extract($tab);	// $domaine_ref $domaine_nom $domaine_nb_lignes
-				$releve_HTML_individuel .= '<tr><th colspan="2" class="domaine">'.To::html($domaine_nom).'</th><th colspan="'.$colspan.'" class="nu"></th></tr>'."\r\n";
+				$releve_HTML_individuel .= '<tr><th colspan="2" class="domaine">'.html($domaine_nom).'</th><th colspan="'.$colspan.'" class="nu"></th></tr>'."\r\n";
 				$releve_PDF->grille_referentiel_domaine($domaine_nom,$domaine_nb_lignes);
 				// Pour chaque thème...
 				if(isset($tab_theme[$domaine_id]))
@@ -427,7 +427,7 @@ if( $type_generique || $type_individuel )
 					foreach($tab_theme[$domaine_id] as $theme_id => $tab)
 					{
 						extract($tab);	// $theme_ref $theme_nom $theme_nb_lignes
-						$releve_HTML_individuel .= '<tr><th>'.$theme_ref.'</th><th>'.To::html($theme_nom).'</th><th colspan="'.$colspan.'" class="nu"></th></tr>'."\r\n";
+						$releve_HTML_individuel .= '<tr><th>'.$theme_ref.'</th><th>'.html($theme_nom).'</th><th colspan="'.$colspan.'" class="nu"></th></tr>'."\r\n";
 						$releve_PDF->grille_referentiel_theme($theme_ref,$theme_nom,$theme_nb_lignes);
 						// Pour chaque item...
 						if(isset($tab_item[$theme_id]))
@@ -445,12 +445,12 @@ if( $type_generique || $type_individuel )
 								}
 								if($aff_lien)
 								{
-									$texte_lien_avant = ($item_lien) ? '<a class="lien_ext" href="'.To::html($item_lien).'">' : '';
+									$texte_lien_avant = ($item_lien) ? '<a class="lien_ext" href="'.html($item_lien).'">' : '';
 									$texte_lien_apres = ($item_lien) ? '</a>' : '';
 								}
 								$score = (isset($tab_score_eleve_item[$eleve_id][$item_id])) ? $tab_score_eleve_item[$eleve_id][$item_id] : FALSE ;
 								$texte_demande_eval = ($_SESSION['USER_PROFIL']!='eleve') ? '' : ( ($item_cart) ? '<q class="demander_add" id="demande_'.$matiere_id.'_'.$item_id.'_'.$score.'" title="Ajouter aux demandes d\'évaluations."></q>' : '<q class="demander_non" title="Demande interdite."></q>' ) ;
-								$releve_HTML_individuel .= '<tr><td>'.$item_ref.'</td><td>'.$texte_coef.$texte_socle.$texte_lien_avant.To::html($item_nom).$texte_lien_apres.$texte_demande_eval.'</td>';
+								$releve_HTML_individuel .= '<tr><td>'.$item_ref.'</td><td>'.$texte_coef.$texte_socle.$texte_lien_avant.html($item_nom).$texte_lien_apres.$texte_demande_eval.'</td>';
 								$releve_PDF->grille_referentiel_item($item_ref,$texte_coef.$texte_socle.$item_nom);
 								// Pour chaque case...
 								for($i=0;$i<$cases_nb;$i++)
@@ -510,7 +510,7 @@ if($type_synthese)
 	$matiere_et_niveau = $matiere_nom.' - Niveau '.$niveau_nom.$msg_socle ;
 	$releve_HTML_synthese  = $affichage_direct ? '' : '<style type="text/css">'.$_SESSION['CSS'].'</style>';
 	$releve_HTML_synthese .= $affichage_direct ? '' : '<h1>Bilan '.$tab_titre.'</h1>';
-	$releve_HTML_synthese .= '<h2>'.To::html($matiere_et_niveau).'</h2>';
+	$releve_HTML_synthese .= '<h2>'.html($matiere_et_niveau).'</h2>';
 	// Appel de la classe et redéfinition de qqs variables supplémentaires pour la mise en page PDF
 	// On définit l'orientation la plus adaptée
 	$orientation = ( ( ($eleve_nb>$item_nb) && ($tableau_tri_objet=='eleve') ) || ( ($item_nb>$eleve_nb) && ($tableau_tri_objet=='item') ) ) ? 'portrait' : 'landscape' ;
@@ -527,7 +527,7 @@ if($type_synthese)
 		foreach($tab_liste_item as $item_id)	// Pour chaque item...
 		{
 			$releve_PDF->VertCellFit($releve_PDF->cases_largeur, $releve_PDF->etiquette_hauteur, To::pdf($tab_item_synthese[$item_id]['item_ref']), 1 /*border*/, 0 /*br*/, TRUE /*fill*/);
-			$releve_HTML_table_head .= '<th title="'.To::html($tab_item_synthese[$item_id]['item_nom']).'"><img alt="'.To::html($tab_item_synthese[$item_id]['item_ref']).'" src="./_img/php/etiquette.php?dossier='.$_SESSION['BASE'].'&amp;nom='.urlencode($tab_item_synthese[$item_id]['item_ref']).'&amp;size=8" /></th>';
+			$releve_HTML_table_head .= '<th title="'.html($tab_item_synthese[$item_id]['item_nom']).'"><img alt="'.html($tab_item_synthese[$item_id]['item_ref']).'" src="./_img/php/etiquette.php?dossier='.$_SESSION['BASE'].'&amp;nom='.urlencode($tab_item_synthese[$item_id]['item_ref']).'&amp;size=8" /></th>';
 		}
 	}
 	else
@@ -536,7 +536,7 @@ if($type_synthese)
 		{
 			extract($tab);	// $eleve_id $eleve_nom $eleve_prenom
 			$releve_PDF->VertCellFit($releve_PDF->cases_largeur, $releve_PDF->etiquette_hauteur, To::pdf($eleve_nom.' '.$eleve_prenom), 1 /*border*/, 0 /*br*/, TRUE /*fill*/);
-			$releve_HTML_table_head .= '<th><img alt="'.To::html($eleve_nom.' '.$eleve_prenom).'" src="./_img/php/etiquette.php?dossier='.$_SESSION['BASE'].'&amp;nom='.urlencode($eleve_nom).'&amp;prenom='.urlencode($eleve_prenom).'&amp;size=8" /></th>';
+			$releve_HTML_table_head .= '<th><img alt="'.html($eleve_nom.' '.$eleve_prenom).'" src="./_img/php/etiquette.php?dossier='.$_SESSION['BASE'].'&amp;nom='.urlencode($eleve_nom).'&amp;prenom='.urlencode($eleve_prenom).'&amp;size=8" /></th>';
 		}
 	}
 	$releve_PDF->SetX( $releve_PDF->GetX()+2 );
@@ -554,7 +554,7 @@ if($type_synthese)
 			extract($tab);	// $eleve_id $eleve_nom $eleve_prenom
 			$releve_PDF->choisir_couleur_fond('gris_clair');
 			$releve_PDF->CellFit($releve_PDF->intitule_largeur , $releve_PDF->cases_hauteur , To::pdf($eleve_nom.' '.$eleve_prenom) , 1 , 0 , 'L' , TRUE , '');
-			$releve_HTML_table_body .= '<tr><td>'.To::html($eleve_nom.' '.$eleve_prenom).'</td>';
+			$releve_HTML_table_body .= '<tr><td>'.html($eleve_nom.' '.$eleve_prenom).'</td>';
 			foreach($tab_liste_item as $item_id)	// Pour chaque item...
 			{
 				$score = (isset($tab_score_eleve_item[$eleve_id][$item_id])) ? $tab_score_eleve_item[$eleve_id][$item_id] : FALSE ;
@@ -574,7 +574,7 @@ if($type_synthese)
 		{
 			$releve_PDF->choisir_couleur_fond('gris_clair');
 			$releve_PDF->CellFit($releve_PDF->intitule_largeur , $releve_PDF->cases_hauteur , To::pdf($tab_item_synthese[$item_id]['item_ref']) , 1 , 0 , 'L' , TRUE , '');
-			$releve_HTML_table_body .= '<tr><td title="'.To::html($tab_item_synthese[$item_id]['item_nom']).'">'.To::html($tab_item_synthese[$item_id]['item_ref']).'</td>';
+			$releve_HTML_table_body .= '<tr><td title="'.html($tab_item_synthese[$item_id]['item_nom']).'">'.html($tab_item_synthese[$item_id]['item_ref']).'</td>';
 			foreach($tab_eleve as $tab)	// Pour chaque élève...
 			{
 				$eleve_id = $tab['eleve_id'];

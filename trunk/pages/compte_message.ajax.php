@@ -92,7 +92,7 @@ if( ($action=='ajouter') && $date_debut_fr && $date_fin_fr && $message_contenu &
 	echo	'<td><i>'.$date_debut_mysql.'</i>'.$date_debut_fr.'</td>';
 	echo	'<td><i>'.$date_fin_mysql.'</i>'.$date_fin_fr.'</td>';
 	echo	'<td>'.$destinataires_nombre.'</td>';
-	echo	'<td>'.To::html(mb_substr($message_contenu,0,30)).'</td>';
+	echo	'<td>'.html(mb_substr($message_contenu,0,30)).'</td>';
 	echo	'<td class="nu">';
 	echo		'<q class="modifier" title="Modifier ce message."></q>';
 	echo		'<q class="supprimer" title="Supprimer ce message."></q>';
@@ -100,7 +100,7 @@ if( ($action=='ajouter') && $date_debut_fr && $date_fin_fr && $message_contenu &
 	echo'</tr>';
 	echo'<SCRIPT>';
 	echo'tab_destinataires['.$message_id.']="'.implode('_',$tab_destinataires).'";';
-	echo'tab_msg_contenus['.$message_id.']="'.str_replace(array("\r\n","\r","\n"),array('\r\n','\r','\n'),To::html($message_contenu)).'";';
+	echo'tab_msg_contenus['.$message_id.']="'.str_replace(array("\r\n","\r","\n"),array('\r\n','\r','\n'),html($message_contenu)).'";';
 	exit();
 }
 
@@ -122,14 +122,14 @@ if( ($action=='modifier') && $message_id && $date_debut_fr && $date_fin_fr && $m
 	echo'<td><i>'.$date_debut_mysql.'</i>'.$date_debut_fr.'</td>';
 	echo'<td><i>'.$date_fin_mysql.'</i>'.$date_fin_fr.'</td>';
 	echo'<td>'.$destinataires_nombre.'</td>';
-	echo'<td>'.To::html(mb_substr($message_contenu,0,30)).'</td>';
+	echo'<td>'.html(mb_substr($message_contenu,0,30)).'</td>';
 	echo'<td class="nu">';
 	echo	'<q class="modifier" title="Modifier ce message."></q>';
 	echo	'<q class="supprimer" title="Supprimer ce message."></q>';
 	echo'</td>';
 	echo'<SCRIPT>';
 	echo'tab_destinataires['.$message_id.']="'.implode('_',$tab_destinataires).'";';
-	echo'tab_msg_contenus['.$message_id.']="'.str_replace(array("\r\n","\r","\n"),array('\r\n','\r','\n'),To::html($message_contenu)).'";';
+	echo'tab_msg_contenus['.$message_id.']="'.str_replace(array("\r\n","\r","\n"),array('\r\n','\r','\n'),html($message_contenu)).'";';
 	exit();
 }
 

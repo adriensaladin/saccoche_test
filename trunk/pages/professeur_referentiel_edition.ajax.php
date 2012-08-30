@@ -100,12 +100,12 @@ if( ($action=='Voir') && $matiere_id )
 			$cart_image  = ($DB_ROW['item_cart']) ? 'oui' : 'non' ;
 			$cart_texte  = '<img src="./_img/etat/cart_'.$cart_image.'.png" title="'.$cart_title.'" />';
 			$socle_image = ($DB_ROW['entree_id']) ? 'oui' : 'non' ;
-			$socle_nom   = ($DB_ROW['entree_id']) ? To::html($DB_ROW['entree_nom']) : 'Hors-socle.' ;
+			$socle_nom   = ($DB_ROW['entree_id']) ? html($DB_ROW['entree_nom']) : 'Hors-socle.' ;
 			$socle_texte = '<img src="./_img/etat/socle_'.$socle_image.'.png" alt="" title="'.$socle_nom.'" lang="id_'.$DB_ROW['entree_id'].'" />';
 			$lien_image  = ($DB_ROW['item_lien']) ? 'oui' : 'non' ;
-			$lien_nom    = ($DB_ROW['item_lien']) ? To::html($DB_ROW['item_lien']) : 'Absence de ressource.' ;
+			$lien_nom    = ($DB_ROW['item_lien']) ? html($DB_ROW['item_lien']) : 'Absence de ressource.' ;
 			$lien_texte  = '<img src="./_img/etat/link_'.$lien_image.'.png" alt="" title="'.$lien_nom.'" />';
-			$tab_item[$niveau_id][$domaine_id][$theme_id][$item_id] = $coef_texte.$cart_texte.$socle_texte.$lien_texte.To::html($DB_ROW['item_nom']);
+			$tab_item[$niveau_id][$domaine_id][$theme_id][$item_id] = $coef_texte.$cart_texte.$socle_texte.$lien_texte.html($DB_ROW['item_nom']);
 		}
 	}
 	// Attention : envoyer des balises vides sous la forme <q ... /> plante jquery 1.4 (ça marchait avec la 1.3.2).
@@ -134,19 +134,19 @@ if( ($action=='Voir') && $matiere_id )
 	{
 		foreach($tab_niveau as $niveau_id => $niveau_nom)
 		{
-			echo'	<li class="li_m2" id="m2_'.$niveau_id.'"><span>'.To::html($niveau_nom).'</span>'.$images_niveau."\r\n";
+			echo'	<li class="li_m2" id="m2_'.$niveau_id.'"><span>'.html($niveau_nom).'</span>'.$images_niveau."\r\n";
 			echo'		<ul class="ul_n1">'."\r\n";
 			if(isset($tab_domaine[$niveau_id]))
 			{
 				foreach($tab_domaine[$niveau_id] as $domaine_id => $domaine_nom)
 				{
-					echo'			<li class="li_n1" id="n1_'.$domaine_id.'"><span>'.To::html($domaine_nom).'</span>'.$images_domaine."\r\n";
+					echo'			<li class="li_n1" id="n1_'.$domaine_id.'"><span>'.html($domaine_nom).'</span>'.$images_domaine."\r\n";
 					echo'				<ul class="ul_n2">'."\r\n";
 					if(isset($tab_theme[$niveau_id][$domaine_id]))
 					{
 						foreach($tab_theme[$niveau_id][$domaine_id] as $theme_id => $theme_nom)
 						{
-							echo'					<li class="li_n2" id="n2_'.$theme_id.'"><span>'.To::html($theme_nom).'</span>'.$images_theme."\r\n";
+							echo'					<li class="li_n2" id="n2_'.$theme_id.'"><span>'.html($theme_nom).'</span>'.$images_theme."\r\n";
 							echo'						<ul class="ul_n3">'."\r\n";
 							if(isset($tab_item[$niveau_id][$domaine_id][$theme_id]))
 							{

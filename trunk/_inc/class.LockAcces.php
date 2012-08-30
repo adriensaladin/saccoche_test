@@ -128,19 +128,19 @@ class LockAcces
     $blocage_msg = LockAcces::tester_blocage('webmestre',0);
     if( ($blocage_msg!==NULL) && ($_SESSION['USER_PROFIL']!='webmestre') && (($_SESSION['USER_PROFIL']!='public')||($demande_connexion_profil!=FALSE)) )
     {
-      exit_error( 'Blocage par le webmestre' /*titre*/ , To::html('Blocage par le webmestre - '.$blocage_msg) /*contenu*/ );
+      exit_error( 'Blocage par le webmestre' /*titre*/ , html('Blocage par le webmestre - '.$blocage_msg) /*contenu*/ );
     }
     // Blocage demandé par le webmestre pour un établissement donné (multi-structures).
     $blocage_msg = LockAcces::tester_blocage('webmestre',$BASE);
     if( ($blocage_msg!==NULL) && ($_SESSION['USER_PROFIL']!='webmestre') && (($_SESSION['USER_PROFIL']!='public')||($demande_connexion_profil!=FALSE)) )
     {
-      exit_error('Blocage par le webmestre' /*titre*/ , To::html('Blocage par le webmestre - '.$blocage_msg) /*contenu*/ );
+      exit_error('Blocage par le webmestre' /*titre*/ , html('Blocage par le webmestre - '.$blocage_msg) /*contenu*/ );
     }
     // Blocage demandé par un administrateur pour son établissement.
     $blocage_msg = LockAcces::tester_blocage('administrateur',$BASE);
     if( ($blocage_msg!==NULL) && (!in_array($_SESSION['USER_PROFIL'],array('webmestre','administrateur'))) && (($_SESSION['USER_PROFIL']!='public')||(!in_array($demande_connexion_profil,array(FALSE,'webmestre','administrateur')))) )
     {
-      exit_error( 'Blocage par un administrateur' /*titre*/ , To::html('Blocage par un administrateur - '.$blocage_msg) /*contenu*/ );
+      exit_error( 'Blocage par un administrateur' /*titre*/ , html('Blocage par un administrateur - '.$blocage_msg) /*contenu*/ );
     }
     // Blocage demandé par l'automate pour un établissement donné.
     $blocage_msg = LockAcces::tester_blocage('automate',$BASE);
@@ -150,7 +150,7 @@ class LockAcces
       // Pour cette raison on teste une durée de vie anormalement longue d'une tel fichier de blocage (puisqu'il ne devrait être que temporaire).
       if( time() - filemtime(LockAcces::chemin_fichier_blocage('automate',$BASE)) < 5*60 )
       {
-        exit_error( 'Blocage automatique' /*titre*/ , To::html('Blocage automatique - '.$blocage_msg) /*contenu*/ );
+        exit_error( 'Blocage automatique' /*titre*/ , html('Blocage automatique - '.$blocage_msg) /*contenu*/ );
       }
       else
       {

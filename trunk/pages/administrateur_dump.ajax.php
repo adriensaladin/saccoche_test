@@ -98,8 +98,7 @@ elseif($action=='uploader')
 	$code_erreur = FileSystem::unzip( CHEMIN_DOSSIER_IMPORT.$fichier_upload_nom , $dossier_temp , TRUE /*use_ZipArchive*/ );
 	if($code_erreur)
 	{
-		require(CHEMIN_DOSSIER_INCLUDE.'tableau_zip_error.php');
-		exit('<li><label class="alerte">Erreur : votre archive ZIP n\'a pas pu être ouverte ('.$code_erreur.$tab_zip_error[$code_erreur].') !</label></li>');
+		exit('<li><label class="alerte">Erreur : votre archive ZIP n\'a pas pu être ouverte ('.FileSystem::$tab_zip_error[$code_erreur].') !</label></li>');
 	}
 	unlink(CHEMIN_DOSSIER_IMPORT.$fichier_upload_nom);
 	// Vérifier le contenu : noms des fichiers

@@ -72,13 +72,13 @@ $select_f_statuts = Form::afficher_select(Form::$tab_select_statut , $select_nom
 					// Afficher une ligne du tableau
 					echo'<tr id="id_'.$DB_ROW['user_id'].'">';
 					echo	'<td class="nu"><input type="checkbox" name="f_ids" value="'.$DB_ROW['user_id'].'" /></td>';
-					echo	'<td class="label">'.To::html($DB_ROW['user_id_ent']).'</td>';
-					echo	'<td class="label">'.To::html($DB_ROW['user_id_gepi']).'</td>';
-					echo	'<td class="label">'.To::html($DB_ROW['user_sconet_id']).'</td>';
-					echo	'<td class="label">'.To::html($DB_ROW['user_reference']).'</td>';
-					echo	'<td class="label">'.To::html($DB_ROW['user_nom']).'</td>';
-					echo	'<td class="label">'.To::html($DB_ROW['user_prenom']).'</td>';
-					echo	'<td class="label">'.To::html($DB_ROW['user_login']).'</td>';
+					echo	'<td class="label">'.html($DB_ROW['user_id_ent']).'</td>';
+					echo	'<td class="label">'.html($DB_ROW['user_id_gepi']).'</td>';
+					echo	'<td class="label">'.html($DB_ROW['user_sconet_id']).'</td>';
+					echo	'<td class="label">'.html($DB_ROW['user_reference']).'</td>';
+					echo	'<td class="label">'.html($DB_ROW['user_nom']).'</td>';
+					echo	'<td class="label">'.html($DB_ROW['user_prenom']).'</td>';
+					echo	'<td class="label">'.html($DB_ROW['user_login']).'</td>';
 					echo	'<td class="label i">champ crypté</td>';
 					echo	'<td class="label"><i>'.$date_mysql.'</i>'.$date_affich.'</td>';
 					echo	'<td class="nu">';

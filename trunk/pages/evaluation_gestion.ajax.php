@@ -168,18 +168,18 @@ if( ($action=='lister_evaluations') && $type && ( ($type=='selection') || ($aff_
 		echo	'<td><i>'.$DB_ROW['devoir_date'].'</i>'.$date_affich.'</td>';
 		echo	'<td>'.$date_visible.'</td>';
 		echo	'<td>'.$date_autoeval.'</td>';
-		echo	($type=='groupe') ? '<td>'.To::html($DB_ROW['groupe_nom']).'</td>' : '<td>'.$DB_ROW['users_nombre'].' élève'.$us.'</td>' ;
-		echo	'<td>'.To::html($DB_ROW['devoir_info']).'</td>';
+		echo	($type=='groupe') ? '<td>'.html($DB_ROW['groupe_nom']).'</td>' : '<td>'.$DB_ROW['users_nombre'].' élève'.$us.'</td>' ;
+		echo	'<td>'.html($DB_ROW['devoir_info']).'</td>';
 		echo	'<td>'.$DB_ROW['items_nombre'].' item'.$cs.'</td>';
 		echo	'<td>'.$profs_nombre.'</td>';
 		echo	'<td>'.$image_sujet.$image_corrige;
-		echo	($proprio) ? '<q class="uploader_doc" title="Ajouter / retirer un sujet ou une correction."></q>' : '<q class="uploader_doc_non" title="Non modifiable (évaluation du collègue '.To::html($DB_ROW['proprietaire']).')."></q>' ;
+		echo	($proprio) ? '<q class="uploader_doc" title="Ajouter / retirer un sujet ou une correction."></q>' : '<q class="uploader_doc_non" title="Non modifiable (évaluation du collègue '.html($DB_ROW['proprietaire']).')."></q>' ;
 		echo	'</td>';
 		echo	'<td class="nu" id="devoir_'.$ref.'">';
-		echo		($proprio) ? '<q class="modifier" title="Modifier cette évaluation (date, description, ...)."></q>' : '<q class="modifier_non" title="Non modifiable (évaluation du collègue '.To::html($DB_ROW['proprietaire']).')."></q>' ;
-		echo		($proprio) ? '<q class="ordonner" title="Réordonner les items de cette évaluation."></q>' : '<q class="ordonner_non" title="Non réordonnable (évaluation du collègue '.To::html($DB_ROW['proprietaire']).')."></q>' ;
+		echo		($proprio) ? '<q class="modifier" title="Modifier cette évaluation (date, description, ...)."></q>' : '<q class="modifier_non" title="Non modifiable (évaluation du collègue '.html($DB_ROW['proprietaire']).')."></q>' ;
+		echo		($proprio) ? '<q class="ordonner" title="Réordonner les items de cette évaluation."></q>' : '<q class="ordonner_non" title="Non réordonnable (évaluation du collègue '.html($DB_ROW['proprietaire']).')."></q>' ;
 		echo		'<q class="dupliquer" title="Dupliquer cette évaluation."></q>';
-		echo		($proprio) ? '<q class="supprimer" title="Supprimer cette évaluation."></q>' : '<q class="supprimer_non" title="Non supprimable (évaluation du collègue '.To::html($DB_ROW['proprietaire']).')."></q>' ;
+		echo		($proprio) ? '<q class="supprimer" title="Supprimer cette évaluation."></q>' : '<q class="supprimer_non" title="Non supprimable (évaluation du collègue '.html($DB_ROW['proprietaire']).')."></q>' ;
 		echo		'<q class="imprimer" title="Imprimer un cartouche pour cette évaluation."></q>';
 		echo		'<q class="saisir" title="Saisir les acquisitions des élèves à cette évaluation."></q>';
 		echo		'<q class="voir" title="Voir les acquisitions des élèves à cette évaluation."></q>';
@@ -263,7 +263,7 @@ if( (($action=='ajouter')||(($action=='dupliquer')&&($devoir_id))) && $type && $
 	echo'<td>'.$date_visible.'</td>';
 	echo'<td>'.$date_autoeval.'</td>';
 	echo ($type=='groupe') ? '<td>{{GROUPE_NOM}}</td>' : '<td>'.$nb_eleves.' élève'.$us.'</td>' ;
-	echo'<td>'.To::html($description).'</td>';
+	echo'<td>'.html($description).'</td>';
 	echo'<td>'.$nb_items.' item'.$cs.'</td>';
 	echo'<td>'.$profs_nombre.'</td>';
 	echo'<td>'.$image_sujet.$image_corrige.'<q class="uploader_doc" title="Ajouter / retirer un sujet ou une correction."></q></td>';
@@ -353,7 +353,7 @@ if( ($action=='modifier') && $devoir_id && $groupe_id && $date && $date_visible 
 	echo'<td>'.$date_visible.'</td>';
 	echo'<td>'.$date_autoeval.'</td>';
 	echo ($type=='groupe') ? '<td>{{GROUPE_NOM}}</td>' : '<td>'.$nb_eleves.' élève'.$us.'</td>' ;
-	echo'<td>'.To::html($description).'</td>';
+	echo'<td>'.html($description).'</td>';
 	echo'<td>'.$nb_items.' item'.$cs.'</td>';
 	echo'<td>'.$profs_nombre.'</td>';
 	echo'<td>'.$image_sujet.$image_corrige.'<q class="uploader_doc" title="Ajouter / retirer un sujet ou une correction."></q></td>';
@@ -413,7 +413,7 @@ if( ($action=='ordonner') && $devoir_id )
 		$item_ref = $DB_ROW['item_ref'];
 		$texte_socle = ($DB_ROW['entree_id']) ? ' [S]' : ' [–]';
 		$texte_coef  = ' ['.$DB_ROW['item_coef'].']';
-		echo'<li id="i'.$DB_ROW['item_id'].'"><b>'.To::html($item_ref.$texte_socle.$texte_coef).'</b> - '.To::html($DB_ROW['item_nom']).'</li>';
+		echo'<li id="i'.$DB_ROW['item_id'].'"><b>'.html($item_ref.$texte_socle.$texte_coef).'</b> - '.html($DB_ROW['item_nom']).'</li>';
 	}
 	echo'</ul>';
 	echo'<p>';
@@ -478,7 +478,7 @@ if( ($action=='saisir') && $devoir_id && $groupe_id && $date_mysql && $date_visi
 	$tab_affich[0][0].= '<label for="check_largeur"><input type="checkbox" id="check_largeur" name="check_largeur" value="retrecir_largeur" /> <img alt="" src="./_img/retrecir_largeur.gif" /> Largeur optimale</label> <img alt="" src="./_img/bulle_aide.png" title="Diminuer la largeur des colonnes<br />si les élèves sont nombreux." /><br />';
 	$tab_affich[0][0].= '<label for="check_hauteur"><input type="checkbox" id="check_hauteur" name="check_hauteur" value="retrecir_hauteur" /> <img alt="" src="./_img/retrecir_hauteur.gif" /> Hauteur optimale</label> <img alt="" src="./_img/bulle_aide.png" title="Diminuer la hauteur des lignes<br />si les items sont nombreux." />';
 	$tab_affich[0][0].= '</p>';
-	$tab_affich[0][0].= '<button id="Enregistrer_saisie" type="button" class="valider">Enregistrer les saisies</button><input type="hidden" name="f_ref" id="f_ref" value="'.$ref.'" /><input id="f_date_mysql" name="f_date_mysql" type="hidden" value="'.$date_mysql.'" /><input id="f_date_visible" name="f_date_visible" type="hidden" value="'.$date_visible.'" /><input id="f_description" name="f_description" type="hidden" value="'.To::html($description).'" /><br />';
+	$tab_affich[0][0].= '<button id="Enregistrer_saisie" type="button" class="valider">Enregistrer les saisies</button><input type="hidden" name="f_ref" id="f_ref" value="'.$ref.'" /><input id="f_date_mysql" name="f_date_mysql" type="hidden" value="'.$date_mysql.'" /><input id="f_date_visible" name="f_date_visible" type="hidden" value="'.$date_visible.'" /><input id="f_description" name="f_description" type="hidden" value="'.html($description).'" /><br />';
 	$tab_affich[0][0].= '<button id="fermer_zone_saisir" type="button" class="retourner">Retour</button>';
 	$tab_affich[0][0].= '</td>';
 	// première ligne (noms prénoms des élèves)
@@ -487,8 +487,8 @@ if( ($action=='saisir') && $devoir_id && $groupe_id && $date_mysql && $date_visi
 	$csv_nb_colonnes = 1;
 	foreach($DB_TAB_USER as $DB_ROW)
 	{
-		$tab_affich[0][$DB_ROW['user_id']] = '<th><img alt="'.To::html($DB_ROW['user_nom'].' '.$DB_ROW['user_prenom']).'" src="./_img/php/etiquette.php?dossier='.$_SESSION['BASE'].'&amp;nom='.urlencode($DB_ROW['user_nom']).'&amp;prenom='.urlencode($DB_ROW['user_prenom']).'&amp;br" /></th>';
-		$tab_user_id[$DB_ROW['user_id']] = To::html($DB_ROW['user_prenom'].' '.$DB_ROW['user_nom']);
+		$tab_affich[0][$DB_ROW['user_id']] = '<th><img alt="'.html($DB_ROW['user_nom'].' '.$DB_ROW['user_prenom']).'" src="./_img/php/etiquette.php?dossier='.$_SESSION['BASE'].'&amp;nom='.urlencode($DB_ROW['user_nom']).'&amp;prenom='.urlencode($DB_ROW['user_prenom']).'&amp;br" /></th>';
+		$tab_user_id[$DB_ROW['user_id']] = html($DB_ROW['user_prenom'].' '.$DB_ROW['user_nom']);
 		$csv_ligne_eleve_nom .= '"'.$DB_ROW['user_prenom'].' '.$DB_ROW['user_nom'].'"'.$separateur;
 		$csv_ligne_eleve_id  .= $DB_ROW['user_id'].$separateur;
 		$csv_nb_colonnes++;
@@ -500,7 +500,7 @@ if( ($action=='saisir') && $devoir_id && $groupe_id && $date_mysql && $date_visi
 		$item_ref = $DB_ROW['item_ref'];
 		$texte_socle = ($DB_ROW['entree_id']) ? ' [S]' : ' [–]';
 		$texte_coef  = ' ['.$DB_ROW['item_coef'].']';
-		$tab_affich[$DB_ROW['item_id']][0] = '<th><b>'.To::html($item_ref.$texte_socle.$texte_coef).'</b> <img alt="" src="./_img/bulle_aide.png" title="'.To::html($DB_ROW['item_nom']).'" /><div>'.To::html($DB_ROW['item_nom']).'</div></th>';
+		$tab_affich[$DB_ROW['item_id']][0] = '<th><b>'.html($item_ref.$texte_socle.$texte_coef).'</b> <img alt="" src="./_img/bulle_aide.png" title="'.html($DB_ROW['item_nom']).'" /><div>'.html($DB_ROW['item_nom']).'</div></th>';
 		$tab_comp_id[$DB_ROW['item_id']] = $item_ref;
 		$export_csv .= $DB_ROW['item_id'].str_repeat($separateur,$csv_nb_colonnes).$item_ref.$texte_socle.$texte_coef.' '.$DB_ROW['item_nom']."\r\n";
 	}
@@ -532,15 +532,7 @@ if( ($action=='saisir') && $devoir_id && $groupe_id && $date_mysql && $date_visi
 	// Enregistrer le csv
 	$export_csv .= $groupe_nom."\r\n".$date_fr."\r\n".$description."\r\n\r\n";
 	$export_csv .= 'CODAGES AUTORISÉS : 1 2 3 4 A N D'."\r\n";
-	$zip = new ZipArchive();
-	$result_open = $zip->open(CHEMIN_DOSSIER_EXPORT.'saisie_deportee_'.$fnom_export.'.zip', ZIPARCHIVE::CREATE);
-	if($result_open!==TRUE)
-	{
-		require(CHEMIN_DOSSIER_INCLUDE.'tableau_zip_error.php');
-		exit('Problème de création de l\'archive ZIP ('.$result_open.$tab_zip_error[$result_open].') !');
-	}
-	$zip->addFromString('saisie_deportee_'.$fnom_export.'.csv',To::csv($export_csv));
-	$zip->close();
+	FileSystem::zip( CHEMIN_DOSSIER_EXPORT.'saisie_deportee_'.$fnom_export.'.zip' , 'saisie_deportee_'.$fnom_export.'.csv' , To::csv($export_csv) );
 	//
 	// pdf contenant un tableau de saisie vide ; on a besoin de tourner du texte à 90°
 	//
@@ -630,8 +622,8 @@ if( ($action=='voir') && $devoir_id && $groupe_id && $date_fr ) // $description 
 	$csv_ligne_eleve_id  = $separateur;
 	foreach($DB_TAB_USER as $DB_ROW)
 	{
-		$tab_affich[0][$DB_ROW['user_id']] = '<th><img alt="'.To::html($DB_ROW['user_nom'].' '.$DB_ROW['user_prenom']).'" src="./_img/php/etiquette.php?dossier='.$_SESSION['BASE'].'&amp;nom='.urlencode($DB_ROW['user_nom']).'&amp;prenom='.urlencode($DB_ROW['user_prenom']).'&amp;br" /></th>';
-		$tab_user_id[$DB_ROW['user_id']] = To::html($DB_ROW['user_nom'].' '.$DB_ROW['user_prenom']);
+		$tab_affich[0][$DB_ROW['user_id']] = '<th><img alt="'.html($DB_ROW['user_nom'].' '.$DB_ROW['user_prenom']).'" src="./_img/php/etiquette.php?dossier='.$_SESSION['BASE'].'&amp;nom='.urlencode($DB_ROW['user_nom']).'&amp;prenom='.urlencode($DB_ROW['user_prenom']).'&amp;br" /></th>';
+		$tab_user_id[$DB_ROW['user_id']] = html($DB_ROW['user_nom'].' '.$DB_ROW['user_prenom']);
 		$csv_ligne_eleve_nom .= '"'.$DB_ROW['user_prenom'].' '.$DB_ROW['user_nom'].'"'.$separateur;
 		$csv_ligne_eleve_id  .= $DB_ROW['user_id'].$separateur;
 	}
@@ -644,9 +636,9 @@ if( ($action=='voir') && $devoir_id && $groupe_id && $date_fr ) // $description 
 		$item_ref = $DB_ROW['item_ref'];
 		$texte_socle = ($DB_ROW['entree_id']) ? ' [S]' : ' [–]';
 		$texte_coef  = ' ['.$DB_ROW['item_coef'].']';
-		$texte_lien_avant = ($DB_ROW['item_lien']) ? '<a class="lien_ext" href="'.To::html($DB_ROW['item_lien']).'">' : '';
+		$texte_lien_avant = ($DB_ROW['item_lien']) ? '<a class="lien_ext" href="'.html($DB_ROW['item_lien']).'">' : '';
 		$texte_lien_apres = ($DB_ROW['item_lien']) ? '</a>' : '';
-		$tab_affich[$DB_ROW['item_id']][0] = '<th><b>'.$texte_lien_avant.To::html($item_ref.$texte_socle.$texte_coef).$texte_lien_apres.'</b> <img alt="" src="./_img/bulle_aide.png" title="'.To::html($DB_ROW['item_nom']).'" /><div>'.To::html($DB_ROW['item_nom']).'</div></th>';
+		$tab_affich[$DB_ROW['item_id']][0] = '<th><b>'.$texte_lien_avant.html($item_ref.$texte_socle.$texte_coef).$texte_lien_apres.'</b> <img alt="" src="./_img/bulle_aide.png" title="'.html($DB_ROW['item_nom']).'" /><div>'.html($DB_ROW['item_nom']).'</div></th>';
 		$tab_comp_id[$DB_ROW['item_id']] = $item_ref;
 		$csv_lignes_scores[$DB_ROW['item_id']][0] = $DB_ROW['item_id'];
 		$csv_colonne_texte[$DB_ROW['item_id']]    = $item_ref.$texte_socle.$texte_coef.' '.$DB_ROW['item_nom'];
@@ -687,15 +679,7 @@ if( ($action=='voir') && $devoir_id && $groupe_id && $date_fr ) // $description 
 	// Enregistrer le csv
 	$export_csv .= $groupe_nom."\r\n".$date_fr."\r\n".$description."\r\n\r\n";
 	$export_csv .= 'CODAGES AUTORISÉS : 1 2 3 4 A N D'."\r\n";
-	$zip = new ZipArchive();
-	$result_open = $zip->open(CHEMIN_DOSSIER_EXPORT.'saisie_deportee_'.$fnom_export.'.zip', ZIPARCHIVE::CREATE);
-	if($result_open!==TRUE)
-	{
-		require(CHEMIN_DOSSIER_INCLUDE.'tableau_zip_error.php');
-		exit('Problème de création de l\'archive ZIP ('.$result_open.$tab_zip_error[$result_open].') !');
-	}
-	$zip->addFromString('saisie_deportee_'.$fnom_export.'.csv',To::csv($export_csv));
-	$zip->close();
+	FileSystem::zip( CHEMIN_DOSSIER_EXPORT.'saisie_deportee_'.$fnom_export.'.zip' , 'saisie_deportee_'.$fnom_export.'.csv' , To::csv($export_csv) );
 	// / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / /
 	// pdf contenant un tableau de saisie vide ; on a besoin de tourner du texte à 90°
 	// / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / /
@@ -798,7 +782,7 @@ if( ($action=='voir_repart') && $devoir_id && $groupe_id && $date_fr ) // $descr
 	// noms prénoms des élèves
 	foreach($DB_TAB_USER as $DB_ROW)
 	{
-		$tab_user_id[$DB_ROW['user_id']] = To::html($DB_ROW['user_nom'].' '.$DB_ROW['user_prenom']);
+		$tab_user_id[$DB_ROW['user_id']] = html($DB_ROW['user_nom'].' '.$DB_ROW['user_prenom']);
 	}
 	// noms des items
 	foreach($DB_TAB_ITEM as $DB_ROW)
@@ -843,10 +827,10 @@ if( ($action=='voir_repart') && $devoir_id && $groupe_id && $date_fr ) // $descr
 	echo'<thead><tr>'.$affichage_repartition_head.'</tr></thead><tbody>';
 	foreach($tab_item_id as $item_id=>$tab_infos_item)
 	{
-		$texte_lien_avant = ($tab_infos_item[2]) ? '<a class="lien_ext" href="'.To::html($tab_infos_item[2]).'">' : '';
+		$texte_lien_avant = ($tab_infos_item[2]) ? '<a class="lien_ext" href="'.html($tab_infos_item[2]).'">' : '';
 		$texte_lien_apres = ($tab_infos_item[2]) ? '</a>' : '';
 		echo'<tr>';
-		echo'<th><b>'.$texte_lien_avant.To::html($tab_infos_item[0]).$texte_lien_apres.'</b><br />'.To::html($tab_infos_item[1]).'</th>';
+		echo'<th><b>'.$texte_lien_avant.html($tab_infos_item[0]).$texte_lien_apres.'</b><br />'.html($tab_infos_item[1]).'</th>';
 		foreach($tab_repartition_quantitatif[$item_id] as $code=>$note_nb)
 		{
 			echo'<td style="font-size:'.round(75+100*$note_nb/$eleve_nb).'%">'.round(100*$note_nb/$eleve_nb).'%</td>';
@@ -860,10 +844,10 @@ if( ($action=='voir_repart') && $devoir_id && $groupe_id && $date_fr ) // $descr
 	echo'<thead><tr>'.$affichage_repartition_head.'</tr></thead><tbody>';
 	foreach($tab_item_id as $item_id=>$tab_infos_item)
 	{
-		$texte_lien_avant = ($tab_infos_item[2]) ? '<a class="lien_ext" href="'.To::html($tab_infos_item[2]).'">' : '';
+		$texte_lien_avant = ($tab_infos_item[2]) ? '<a class="lien_ext" href="'.html($tab_infos_item[2]).'">' : '';
 		$texte_lien_apres = ($tab_infos_item[2]) ? '</a>' : '';
 		echo'<tr>';
-		echo'<th><b>'.$texte_lien_avant.To::html($tab_infos_item[0]).$texte_lien_apres.'</b><br />'.To::html($tab_infos_item[1]).'</th>';
+		echo'<th><b>'.$texte_lien_avant.html($tab_infos_item[0]).$texte_lien_apres.'</b><br />'.html($tab_infos_item[1]).'</th>';
 		foreach($tab_repartition_nominatif[$item_id] as $code=>$tab_eleves)
 		{
 			echo'<td>'.implode('<br />',$tab_eleves).'</td>';
@@ -1073,7 +1057,7 @@ if( ($action=='imprimer_cartouche') && $devoir_id && $groupe_id && $date_fr && $
 	// enregistrer noms prénoms des élèves
 	foreach($DB_TAB_USER as $DB_ROW)
 	{
-		$tab_user_id[$DB_ROW['user_id']] = ($with_nom) ? To::html($DB_ROW['user_prenom'].' '.$DB_ROW['user_nom']) : '' ;
+		$tab_user_id[$DB_ROW['user_id']] = ($with_nom) ? html($DB_ROW['user_prenom'].' '.$DB_ROW['user_nom']) : '' ;
 		$tab_user_nb_req[$DB_ROW['user_id']] = 0 ;
 	}
 	// enregistrer refs noms items
@@ -1131,7 +1115,7 @@ if( ($action=='imprimer_cartouche') && $devoir_id && $groupe_id && $date_fr && $
 			if($tab_user_nb_req[$user_id])
 			{
 				$texte_entete = $date_fr.' - '.$description.' - '.$val_user;
-				$sacoche_htm .= '<table class="bilan"><thead><tr><th colspan="'.$tab_user_nb_req[$user_id].'">'.To::html($texte_entete).'</th></tr></thead><tbody>';
+				$sacoche_htm .= '<table class="bilan"><thead><tr><th colspan="'.$tab_user_nb_req[$user_id].'">'.html($texte_entete).'</th></tr></thead><tbody>';
 				$sacoche_csv .= $texte_entete."\r\n";
 				$sacoche_pdf->cartouche_entete( $texte_entete , $lignes_nb=4 );
 				$ligne1_csv = ''; $ligne1_html = '';
@@ -1140,7 +1124,7 @@ if( ($action=='imprimer_cartouche') && $devoir_id && $groupe_id && $date_fr && $
 				{
 					if( ($only_req==FALSE) || ($tab_result[$comp_id][$user_id]) )
 					{
-						$ligne1_html .= '<td>'.To::html($tab_val_comp[0]).'</td>';
+						$ligne1_html .= '<td>'.html($tab_val_comp[0]).'</td>';
 						$ligne2_html .= '<td class="hc">'.Html::note($tab_result[$comp_id][$user_id],$date_fr,$description,FALSE).'</td>';
 						$ligne1_csv .= '"'.$tab_val_comp[0].'"'.$separateur;
 						$ligne2_csv .= '"'.$tab_result[$comp_id][$user_id].'"'.$separateur;
@@ -1161,14 +1145,14 @@ if( ($action=='imprimer_cartouche') && $devoir_id && $groupe_id && $date_fr && $
 			if($tab_user_nb_req[$user_id])
 			{
 				$texte_entete = $date_fr.' - '.$description.' - '.$val_user;
-				$sacoche_htm .= '<table class="bilan"><thead><tr><th colspan="3">'.To::html($texte_entete).'</th></tr></thead><tbody>';
+				$sacoche_htm .= '<table class="bilan"><thead><tr><th colspan="3">'.html($texte_entete).'</th></tr></thead><tbody>';
 				$sacoche_csv .= $texte_entete."\r\n";
 				$sacoche_pdf->cartouche_entete( $texte_entete , $lignes_nb=$tab_user_nb_req[$user_id]+1 );
 				foreach($tab_comp_id as $comp_id=>$tab_val_comp)
 				{
 					if( ($only_req==FALSE) || ($tab_result[$comp_id][$user_id]) )
 					{
-						$sacoche_htm .= '<tr><td>'.To::html($tab_val_comp[0]).'</td><td>'.To::html($tab_val_comp[1]).'</td><td>'.Html::note($tab_result[$comp_id][$user_id],$date_fr,$description,FALSE).'</td></tr>';
+						$sacoche_htm .= '<tr><td>'.html($tab_val_comp[0]).'</td><td>'.html($tab_val_comp[1]).'</td><td>'.Html::note($tab_result[$comp_id][$user_id],$date_fr,$description,FALSE).'</td></tr>';
 						$sacoche_csv .= '"'.$tab_val_comp[0].'"'.$separateur.'"'.$tab_val_comp[1].'"'.$separateur.'"'.$tab_result[$comp_id][$user_id].'"'."\r\n";
 						$sacoche_pdf->cartouche_complet_competence($tab_val_comp[0] , $tab_val_comp[1] , $tab_result[$comp_id][$user_id]);
 					}
@@ -1180,15 +1164,7 @@ if( ($action=='imprimer_cartouche') && $devoir_id && $groupe_id && $date_fr && $
 		}
 	}
 	// On archive le cartouche dans un fichier tableur zippé (csv tabulé)
-	$zip = new ZipArchive();
-	$result_open = $zip->open(CHEMIN_DOSSIER_EXPORT.'cartouche_'.$fnom_export.'.zip', ZIPARCHIVE::CREATE);
-	if($result_open!==TRUE)
-	{
-		require(CHEMIN_DOSSIER_INCLUDE.'tableau_zip_error.php');
-		exit('Problème de création de l\'archive ZIP ('.$result_open.$tab_zip_error[$result_open].') !');
-	}
-	$zip->addFromString('cartouche_'.$fnom_export.'.csv',To::csv($sacoche_csv));
-	$zip->close();
+	FileSystem::zip( CHEMIN_DOSSIER_EXPORT.'cartouche_'.$fnom_export.'.zip' , 'cartouche_'.$fnom_export.'.csv' , To::csv($sacoche_csv) );
 	// On archive le cartouche dans un fichier pdf
 	$sacoche_pdf->Output(CHEMIN_DOSSIER_EXPORT.'cartouche_'.$fnom_export.'.pdf','F');
 	// Affichage
@@ -1219,7 +1195,7 @@ if( (isset($_GET['f_action'])) && ($_GET['f_action']=='importer_saisie_csv') )
 	$contenu_csv = file_get_contents($fnom_serveur);
 	$contenu_csv = To::utf8($contenu_csv); // Mettre en UTF-8 si besoin
 	$tab_lignes = extraire_lignes($contenu_csv); // Extraire les lignes du fichier
-	$separateur = extraire_separateur_To::csv($tab_lignes[0]); // Déterminer la nature du séparateur
+	$separateur = extraire_separateur_csv($tab_lignes[0]); // Déterminer la nature du séparateur
 	// Pas de ligne d'en-tête à supprimer
 	// Mémoriser les eleve_id de la 1ère ligne
 	$tab_eleve = array();

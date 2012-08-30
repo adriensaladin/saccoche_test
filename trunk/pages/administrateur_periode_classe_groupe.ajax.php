@@ -92,7 +92,7 @@ if(!count($DB_TAB))
 }
 foreach($DB_TAB as $DB_ROW)
 {
-	$tab_groupe[$DB_ROW['groupe_id']]    = '<th>'.To::html($DB_ROW['groupe_nom']).'</th>';
+	$tab_groupe[$DB_ROW['groupe_id']]    = '<th>'.html($DB_ROW['groupe_nom']).'</th>';
 	$tab_graphique[$DB_ROW['groupe_id']] = '';
 }
 // Récupérer la liste des périodes, dans l'ordre choisi par l'admin
@@ -103,7 +103,7 @@ if(!count($DB_TAB))
 }
 foreach($DB_TAB as $DB_ROW)
 {
-	$tab_periode[$DB_ROW['periode_id']] = '<th>'.To::html($DB_ROW['periode_nom']).'</th>';
+	$tab_periode[$DB_ROW['periode_id']] = '<th>'.html($DB_ROW['periode_nom']).'</th>';
 }
 // Récupérer l'amplitude complète sur l'ensemble des périodes
 $DB_ROW = DB_STRUCTURE_ADMINISTRATEUR::DB_recuperer_amplitude_periodes();
@@ -118,7 +118,7 @@ foreach($DB_TAB as $DB_ROW)
 	$groupe_id = $DB_ROW['groupe_id'];
 	$date_affich_debut = convert_date_mysql_to_french($DB_ROW['jointure_date_debut']);
 	$date_affich_fin   = convert_date_mysql_to_french($DB_ROW['jointure_date_fin']);
-	$tab_jointure[$groupe_id][$DB_ROW['periode_id']] = To::html($date_affich_debut).' ~ '.To::html($date_affich_fin).' <input type="image" alt="Importer ces dates" src="./_img/date_add.png" title="Cliquer pour importer ces dates dans les champs." />';
+	$tab_jointure[$groupe_id][$DB_ROW['periode_id']] = html($date_affich_debut).' ~ '.html($date_affich_fin).' <input type="image" alt="Importer ces dates" src="./_img/date_add.png" title="Cliquer pour importer ces dates dans les champs." />';
 	// graphique (début)
 	if($memo_groupe_id!=$groupe_id)
 	{

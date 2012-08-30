@@ -48,7 +48,7 @@ if( (($action=='ajouter')||($action=='dupliquer')) && $ordre && $nom )
 	// Afficher le retour
 	echo'<tr id="id_'.$periode_id.'" class="new">';
 	echo	'<td>'.$ordre.'</td>';
-	echo	'<td>'.To::html($nom).'</td>';
+	echo	'<td>'.html($nom).'</td>';
 	echo	'<td class="nu">';
 	echo		'<q class="modifier" title="Modifier cette période."></q>';
 	echo		'<q class="dupliquer" title="Dupliquer cette période."></q>';
@@ -71,7 +71,7 @@ else if( ($action=='modifier') && $id && $ordre && $nom )
 	DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_periode($id,$ordre,$nom);
 	// Afficher le retour
 	echo'<td>'.$ordre.'</td>';
-	echo'<td>'.To::html($nom).'</td>';
+	echo'<td>'.html($nom).'</td>';
 	echo'<td class="nu">';
 	echo	'<q class="modifier" title="Modifier cette période."></q>';
 	echo	'<q class="dupliquer" title="Dupliquer cette période."></q>';

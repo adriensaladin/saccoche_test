@@ -32,7 +32,7 @@ $options_geo = '';
 $DB_TAB = DB_WEBMESTRE_WEBMESTRE::DB_lister_zones();
 foreach($DB_TAB as $DB_ROW)
 {
-	$options_geo .= '<option value="'.$DB_ROW['geo_id'].'">'.To::html($DB_ROW['geo_nom']).'</option>';
+	$options_geo .= '<option value="'.$DB_ROW['geo_id'].'">'.html($DB_ROW['geo_nom']).'</option>';
 }
 ?>
 
@@ -71,11 +71,11 @@ foreach($DB_TAB as $DB_ROW)
 				echo	'<td class="nu"><a href="#id_0">'.$img.'</a></td>';
 				echo	'<td class="nu"><input type="checkbox" name="f_ids" value="'.$DB_ROW['sacoche_base'].'" /></td>';
 				echo	'<td class="label">'.$DB_ROW['sacoche_base'].'</td>';
-				echo	'<td class="label"><i>'.sprintf("%02u",$DB_ROW['geo_ordre']).'</i>'.To::html($DB_ROW['geo_nom']).'</td>';
-				echo	'<td class="label">'.To::html($DB_ROW['structure_localisation']).'<br />'.To::html($DB_ROW['structure_denomination']).'</td>';
-				echo	'<td class="label">'.To::html($DB_ROW['structure_uai']).'</td>';
-				echo	'<td class="label">'.To::html($DB_ROW['structure_contact_nom']).'<br />'.To::html($DB_ROW['structure_contact_prenom']).'</td>';
-				echo	'<td class="label">'.To::html($DB_ROW['structure_contact_courriel']).'</td>';
+				echo	'<td class="label"><i>'.sprintf("%02u",$DB_ROW['geo_ordre']).'</i>'.html($DB_ROW['geo_nom']).'</td>';
+				echo	'<td class="label">'.html($DB_ROW['structure_localisation']).'<br />'.html($DB_ROW['structure_denomination']).'</td>';
+				echo	'<td class="label">'.html($DB_ROW['structure_uai']).'</td>';
+				echo	'<td class="label">'.html($DB_ROW['structure_contact_nom']).'<br />'.html($DB_ROW['structure_contact_prenom']).'</td>';
+				echo	'<td class="label">'.html($DB_ROW['structure_contact_courriel']).'</td>';
 				echo	'<td class="nu">';
 				echo		'<q class="modifier" title="Modifier cet établissement."></q>';
 				echo		'<q class="initialiser_mdp" title="Générer un nouveau mdp d\'un admin."></q>';

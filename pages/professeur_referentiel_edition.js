@@ -97,7 +97,7 @@ $(document).ready
 						url : 'ajax.php?page='+PAGE,
 						data : 'action=Voir&matiere='+matiere_id,
 						dataType : "html",
-						error : function(jqXHR, textStatus, errorThrown)
+						error : function(msg,string)
 						{
 							$.fancybox( '<label class="alerte">'+'Echec de la connexion !'+'</label>' , {'centerOnScroll':true} );
 							$('label[for='+id+']').remove();
@@ -553,7 +553,7 @@ $(document).ready
 						url : 'ajax.php?page='+PAGE,
 						data : 'action=add&contexte='+contexte+'&matiere='+matiere_id+'&parent='+parent_id+'&ordre='+ordre+'&tab_id='+tab_id+'&ref='+ref+'&coef='+coef+'&cart='+cart+'&socle='+socle+'&nom='+encodeURIComponent(nom),
 						dataType : "html",
-						error : function(jqXHR, textStatus, errorThrown)
+						error : function(msg,string)
 						{
 							$('#ajax_msg').removeAttr("class").addClass("alerte").html('Echec de la connexion !');
 						},
@@ -677,7 +677,7 @@ $(document).ready
 						url : 'ajax.php?page='+PAGE,
 						data : 'action=edit&contexte='+contexte+'&element='+element_id+'&ref='+ref+'&coef='+coef+'&cart='+cart+'&socle='+socle+'&nom='+encodeURIComponent(nom),
 						dataType : "html",
-						error : function(jqXHR, textStatus, errorThrown)
+						error : function(msg,string)
 						{
 							$('#ajax_msg').removeAttr("class").addClass("alerte").html('Echec de la connexion !');
 						},
@@ -749,7 +749,7 @@ $(document).ready
 						url : 'ajax.php?page='+PAGE,
 						data : 'action=del&contexte='+contexte+'&element='+element_id+'&tab_id='+tab_id,
 						dataType : "html",
-						error : function(jqXHR, textStatus, errorThrown)
+						error : function(msg,string)
 						{
 							$('#ajax_msg').removeAttr("class").addClass("alerte").html('Echec de la connexion !');
 						},
@@ -806,7 +806,7 @@ $(document).ready
 						url : 'ajax.php?page='+PAGE,
 						data : 'action=fus&element='+element_id+'&tab_id='+tab_id+'&element2='+element2_id,
 						dataType : "html",
-						error : function(jqXHR, textStatus, errorThrown)
+						error : function(msg,string)
 						{
 							$('#ajax_msg').removeAttr("class").addClass("alerte").html('Echec de la connexion !');
 						},
@@ -916,7 +916,7 @@ $(document).ready
 						url : 'ajax.php?page='+PAGE,
 						data : 'action=move&contexte='+contexte+'&element='+element_id+'&tab_id='+tab_id+'&parent='+parent_id+'&ordre='+ordre+'&tab_id2='+tab_id2,
 						dataType : "html",
-						error : function(jqXHR, textStatus, errorThrown)
+						error : function(msg,string)
 						{
 							$('#ajax_msg').removeAttr("class").addClass("alerte").html('Echec de la connexion !');
 						},
@@ -1057,7 +1057,7 @@ $(document).ready
 					url : 'ajax.php?page='+PAGE,
 					data : 'action=lister_options&granulosite='+granulosite+'&id_matieres='+id_matieres,
 					dataType : "html",
-					error : function(jqXHR, textStatus, errorThrown)
+					error : function(msg,string)
 					{
 						$('#ajax_msg_groupe').removeAttr("class").addClass("alerte").html('Echec de la connexion !');
 					},
@@ -1230,7 +1230,7 @@ $(document).ready
 						url : 'ajax.php?page='+PAGE,
 						data : 'action=action_complementaire&'+$('#zone_choix_referentiel').serialize(),
 						dataType : "html",
-						error : function(jqXHR, textStatus, errorThrown)
+						error : function(msg,string)
 						{
 							$('#ajax_msg_groupe').removeAttr("class").addClass("alerte").html('Echec de la connexion !');
 						},

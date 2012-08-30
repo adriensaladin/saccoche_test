@@ -29,10 +29,10 @@ if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');
 $TITRE = "Blocage des connexions";
 
 // Initialisation de l'état de l'accès
-$blocage_msg = LockAcces::tester_blocage('administrateur',$_SESSION['BASE']);
-if($blocage_msg!==NULL)
+$fichier_blocage_administrateur = CHEMIN_CONFIG.'blocage_administrateur_'.$_SESSION['BASE'].'.txt';
+if(is_file($fichier_blocage_administrateur))
 {
-	$label = '<label class="erreur">Application fermée : '.html($blocage_msg).'</label>';
+	$label = '<label class="erreur">Application fermée : '.html(file_get_contents($fichier_blocage_administrateur)).'</label>';
 }
 else
 {

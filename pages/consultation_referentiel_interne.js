@@ -48,7 +48,7 @@ $(document).ready
 						url : 'ajax.php?page='+PAGE,
 						data : 'ids='+ids,
 						dataType : "html",
-						error : function(jqXHR, textStatus, errorThrown)
+						error : function(msg,string)
 						{
 							$.fancybox( '<label class="alerte">'+'Echec de la connexion !'+'</label>' , {'centerOnScroll':true} );
 							$('label[for='+ids+']').remove();

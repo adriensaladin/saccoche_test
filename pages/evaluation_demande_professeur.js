@@ -35,7 +35,7 @@ $(document).ready
 		$('table.form').tablesorter({ headers:{0:{sorter:false},4:{sorter:false},9:{sorter:false}} });
 		function trier_tableau()
 		{
-			if($('table.form tbody tr').length>1)
+			if($('table.form tbody tr td').length>1)
 			{
 				$('table.form').trigger('update');
 				$('table.form').trigger('sorton',[sorting]);
@@ -218,7 +218,7 @@ $(document).ready
 		}
 
 		// Fonction suivant l'envoi du formulaire (avec jquery.form.js)
-		function retour_form_erreur0(jqXHR, textStatus, errorThrown)
+		function retour_form_erreur0(msg,string)
 		{
 			$('#ajax_msg0').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
 		}
@@ -275,7 +275,7 @@ $(document).ready
 					url : 'ajax.php?page=_maj_select_eval',
 					data : 'eval_type='+eval_type+'&groupe_id='+groupe_id,
 					dataType : "html",
-					error : function(jqXHR, textStatus, errorThrown)
+					error : function(msg,string)
 					{
 						$('#ajax_maj1').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
 					},
@@ -485,7 +485,7 @@ $(document).ready
 		}
 
 		// Fonction suivant l'envoi du formulaire (avec jquery.form.js)
-		function retour_form_erreur(jqXHR, textStatus, errorThrown)
+		function retour_form_erreur(msg,string)
 		{
 			$('button').prop('disabled',false);
 			$('#ajax_msg1').removeAttr("class").addClass("alerte").html("Echec de la connexion !");

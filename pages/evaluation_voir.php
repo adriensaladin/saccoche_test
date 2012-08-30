@@ -48,7 +48,7 @@ if( ($_SESSION['USER_PROFIL']=='parent') && ($_SESSION['NB_ENFANTS']!=1) )
 {
 	$tab_groupes  = array();
 	$of_g = 'non'; $sel_g = false; $class_form_groupe = 'hide'; $class_form_eleve = 'show';
-	$select_eleves = Form::afficher_select($_SESSION['OPT_PARENT_ENFANTS'] , $select_nom=false , $option_first='oui' , $selection=false , $optgroup='non');
+	$select_eleves = Formulaire::afficher_select($_SESSION['OPT_PARENT_ENFANTS'] , $select_nom=false , $option_first='oui' , $selection=false , $optgroup='non');
 }
 if( ($_SESSION['USER_PROFIL']=='parent') && ($_SESSION['NB_ENFANTS']==1) )
 {
@@ -62,7 +62,7 @@ if($_SESSION['USER_PROFIL']=='eleve')
 	$of_g = 'non'; $sel_g = false; $class_form_groupe = 'hide'; $class_form_eleve = 'hide';
 	$select_eleves = '<option value="'.$_SESSION['USER_ID'].'" selected>'.html($_SESSION['USER_NOM'].' '.$_SESSION['USER_PRENOM']).'</option>';
 }
-$select_groupe = Form::afficher_select($tab_groupes , $select_nom='f_groupe' , $option_first=$of_g , $selection=$sel_g , $optgroup='oui'); // optgroup à oui y compris pour les élèves (formulaire invisible) car recherche du type de groupe dans le js
+$select_groupe = Formulaire::afficher_select($tab_groupes , $select_nom='f_groupe' , $option_first=$of_g , $selection=$sel_g , $optgroup='oui'); // optgroup à oui y compris pour les élèves (formulaire invisible) car recherche du type de groupe dans le js
 // Dates par défaut de début et de fin
 $date_debut = date("d/m/Y",mktime(0,0,0,date("m")-2,date("d"),date("Y"))); // 2 mois avant
 $date_fin   = date("d/m/Y",mktime(0,0,0,date("m")+4,date("d"),date("Y"))); // 4 mois après
@@ -121,7 +121,7 @@ $bouton_valider_autoeval = ($_SESSION['USER_PROFIL']=='eleve') ? '<button id="En
 			<tr><td class="nu" colspan="4"></td></tr>
 		</tbody>
 	</table>
-	<?php echo Html::legende( TRUE /*codes_notation*/ , TRUE /*etat_acquisition*/ , FALSE /*pourcentage_acquis*/ , FALSE /*etat_validation*/ ); ?>
+	<?php echo affich_legende_html( TRUE /*codes_notation*/ , TRUE /*etat_acquisition*/ , FALSE /*pourcentage_acquis*/ , FALSE /*etat_validation*/ ); ?>
 </div>
 
 <form action="#" method="post" id="zone_eval_saisir" class="hide" onsubmit="return false">
@@ -139,5 +139,5 @@ $bouton_valider_autoeval = ($_SESSION['USER_PROFIL']=='eleve') ? '<button id="En
 		</tbody>
 	</table>
 	<p class="ti"><?php echo $bouton_valider_autoeval ?><input type="hidden" name="f_devoir" id="f_devoir" value="" /> <button id="fermer_zone_saisir" type="button" class="retourner">Retour</button><label id="msg_saisir"></label></p>
-	<?php echo Html::legende( TRUE /*codes_notation*/ , FALSE /*etat_acquisition*/ , FALSE /*pourcentage_acquis*/ , FALSE /*etat_validation*/ ); ?>
+	<?php echo affich_legende_html( TRUE /*codes_notation*/ , FALSE /*etat_acquisition*/ , FALSE /*pourcentage_acquis*/ , FALSE /*etat_validation*/ ); ?>
 </form>

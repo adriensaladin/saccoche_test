@@ -28,7 +28,7 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = "Gérer ses regroupements d'items";
 
-require(CHEMIN_DOSSIER_INCLUDE.'fonction_affichage_sections_communes.php');
+require('./_inc/fonction_affichage_sections_communes.php');
 ?>
 
 <ul class="puce">

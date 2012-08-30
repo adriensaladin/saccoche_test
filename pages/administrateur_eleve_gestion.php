@@ -29,29 +29,29 @@ if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');
 $TITRE = "Gérer les élèves";
 
 // Récupérer d'éventuels paramètres pour restreindre l'affichage
-$afficher    = (isset($_POST['f_afficher'])) ? TRUE                             : FALSE ;
-$statut      = (isset($_POST['f_statut']))   ? Clean::entier($_POST['f_statut']) : 1 ;
-$groupe      = (isset($_POST['f_groupes']))  ? Clean::texte($_POST['f_groupes']) : '' ;
-$groupe_type = Clean::texte( substr($groupe,0,1) );
-$groupe_id   = Clean::entier( substr($groupe,1) );
+$action      = (isset($_POST['f_action']))  ? clean_texte($_POST['f_action'])  : '' ;
+$statut      = (isset($_POST['f_statut']))  ? clean_entier($_POST['f_statut']) : 1    ;
+$groupe      = (isset($_POST['f_groupes'])) ? clean_texte($_POST['f_groupes']) : '' ;
+$groupe_type = clean_texte( substr($groupe,0,1) );
+$groupe_id   = clean_entier( substr($groupe,1) );
 // Construire et personnaliser le formulaire pour restreindre l'affichage
-$select_f_groupes = Form::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_regroupements_etabl() , $select_nom='f_groupes' , $option_first='oui' , $selection=$groupe , $optgroup='oui');
-$select_f_statuts = Form::afficher_select(Form::$tab_select_statut                    , $select_nom='f_statut'  , $option_first='non' , $selection=$statut , $optgroup='non');
+$select_f_groupes = Formulaire::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_regroupements_etabl() , $select_nom='f_groupes' , $option_first='oui' , $selection=$groupe , $optgroup='oui');
+$select_f_statuts = Formulaire::afficher_select(Formulaire::$tab_select_statut                    , $select_nom='f_statut'  , $option_first='non' , $selection=$statut , $optgroup='non');
 ?>
 
 <p><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__gestion_eleves">DOC : Gestion des élèves</a></span></p>
 
 <form action="./index.php?page=administrateur_eleve&amp;section=gestion" method="post" id="form0">
 	<div><label class="tab" for="f_groupe">Regroupement :</label><?php echo $select_f_groupes ?> <label id="ajax_msg0">&nbsp;</label></div>
-	<div><label class="tab" for="f_statut">Statut :</label><?php echo $select_f_statuts ?><input type="hidden" id="f_afficher" name="f_afficher" value="1" /></div>
+	<div><label class="tab" for="f_statut">Statut :</label><?php echo $select_f_statuts ?><input type="hidden" id="f_action" name="f_action" value="afficher" /></div>
 </form>
 
 <hr />
 
 <?php
-if($afficher)
+if($action=='afficher')
 {
-	require(CHEMIN_DOSSIER_PAGES.'administrateur_eleve_gestion.inc.php');
+	require('./pages/administrateur_eleve_gestion.inc.php');
 }
 ?>
 

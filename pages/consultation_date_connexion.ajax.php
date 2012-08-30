@@ -28,9 +28,9 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 if($_SESSION['SESAMATH_ID']==ID_DEMO) {}
 
-$profil      = (isset($_POST['f_profil']))      ? Clean::texte($_POST['f_profil'])      : ''; // professeur directeur eleve parent
-$groupe_type = (isset($_POST['f_groupe_type'])) ? Clean::texte($_POST['f_groupe_type']) : ''; // d n c g b
-$groupe_id   = (isset($_POST['f_groupe_id']))   ? Clean::entier($_POST['f_groupe_id'])  : 0;
+$profil      = (isset($_POST['f_profil']))      ? clean_texte($_POST['f_profil'])      : ''; // professeur directeur eleve parent
+$groupe_type = (isset($_POST['f_groupe_type'])) ? clean_texte($_POST['f_groupe_type']) : ''; // d n c g b
+$groupe_id   = (isset($_POST['f_groupe_id']))   ? clean_entier($_POST['f_groupe_id'])  : 0;
 $tab_types   = array('d'=>'all' , 'n'=>'niveau' , 'c'=>'classe' , 'g'=>'groupe' , 'b'=>'besoin');
 
 if( (!$profil) || (!$groupe_id) || (!isset($tab_types[$groupe_type])) )

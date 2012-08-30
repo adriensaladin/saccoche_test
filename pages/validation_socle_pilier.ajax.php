@@ -28,15 +28,15 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 if(($_SESSION['SESAMATH_ID']==ID_DEMO)&&($_POST['f_action']!='Afficher_bilan')&&($_POST['f_action']!='Afficher_information')){exit('Action désactivée pour la démo...');}
 
-$action     = (isset($_POST['f_action'])) ? Clean::texte($_POST['f_action'])  : '';
-$eleve_id   = (isset($_POST['f_user']))   ? Clean::entier($_POST['f_user'])   : 0;
-$palier_id  = (isset($_POST['f_palier'])) ? Clean::entier($_POST['f_palier']) : 0;
-$pilier_id  = (isset($_POST['f_pilier'])) ? Clean::entier($_POST['f_pilier']) : 0; // Sert à afficher les informations pour aider à valider un pilier précis pour un élève donné.
+$action     = (isset($_POST['f_action'])) ? clean_texte($_POST['f_action'])  : '';
+$eleve_id   = (isset($_POST['f_user']))   ? clean_entier($_POST['f_user'])   : 0;
+$palier_id  = (isset($_POST['f_palier'])) ? clean_entier($_POST['f_palier']) : 0;
+$pilier_id  = (isset($_POST['f_pilier'])) ? clean_entier($_POST['f_pilier']) : 0; // Sert à afficher les informations pour aider à valider un pilier précis pour un élève donné.
 // Normalement ce sont des tableaux qui sont transmis, mais au cas où...
 $tab_pilier = (isset($_POST['f_pilier'])) ? ( (is_array($_POST['f_pilier'])) ? $_POST['f_pilier'] : explode(',',$_POST['f_pilier']) ) : array() ;
 $tab_eleve  = (isset($_POST['f_eleve']))  ? ( (is_array($_POST['f_eleve']))  ? $_POST['f_eleve']  : explode(',',$_POST['f_eleve'])  ) : array() ;
-$tab_pilier = array_filter( Clean::map_entier($tab_pilier) , 'positif' );
-$tab_eleve  = array_filter( Clean::map_entier($tab_eleve)  , 'positif' );
+$tab_pilier = array_filter( array_map( 'clean_entier' , $tab_pilier ) , 'positif' );
+$tab_eleve  = array_filter( array_map( 'clean_entier' , $tab_eleve  ) , 'positif' );
 
 $listing_eleve_id = implode(',',$tab_eleve);
 
@@ -46,11 +46,11 @@ $listing_eleve_id = implode(',',$tab_eleve);
 
 if( ($action=='Afficher_bilan') && $palier_id && count($tab_pilier) && count($tab_eleve) )
 {
-	Form::save_choix('palier');
+	Formulaire::save_choix('palier');
 	$affichage = '';
 	// Tableau des langues
 	$tfoot = '';
-	require(CHEMIN_DOSSIER_INCLUDE.'tableau_langues.php');
+	require_once('./_inc/tableau_langues.php');
 	// Récupérer les données des élèves
 	$tab_eleve = DB_STRUCTURE_BILAN::DB_lister_eleves_cibles($listing_eleve_id,$with_gepi=FALSE,$with_langue=TRUE);
 	if(!is_array($tab_eleve))

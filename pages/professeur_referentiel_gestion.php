@@ -31,7 +31,7 @@ $TITRE = "Créer / paramétrer les référentiels";
 
 <?php
 // Indication des profils ayant accès à cette page
-require(CHEMIN_DOSSIER_INCLUDE.'tableau_profils.php'); // Charge $tab_profil_libelle[$profil][court|long][1|2]
+require_once('./_inc/tableau_profils.php'); // Charge $tab_profil_libelle[$profil][court|long][1|2]
 $tab_profils = array('professeur','profcoordonnateur','aucunprof');
 $texte_profil = $_SESSION['DROIT_GERER_REFERENTIEL'];
 foreach($tab_profils as $profil)
@@ -144,7 +144,7 @@ else
 					$nb_best = (int)substr($DB_ROW['referentiel_calcul_methode'],-1);
 					$methode_calcul_texte = ($DB_ROW['referentiel_calcul_limite']==0) ? 'Moyenne des '.$nb_best.' meilleures saisies.' : 'Moyenne des '.$nb_best.' meilleures saisies parmi les '.$DB_ROW['referentiel_calcul_limite'].' dernières.';
 				}
-				$tab_colonne[$DB_ROW['matiere_id']][$DB_ROW['niveau_id']] = '<td class="hc">'.str_replace('◄DATE►',Html::date($DB_ROW['referentiel_partage_date']),$tab_partage[$DB_ROW['referentiel_partage_etat']]).'</td>'.'<td>'.$methode_calcul_texte.'</td>';
+				$tab_colonne[$DB_ROW['matiere_id']][$DB_ROW['niveau_id']] = '<td class="hc">'.str_replace('◄DATE►',affich_date($DB_ROW['referentiel_partage_date']),$tab_partage[$DB_ROW['referentiel_partage_etat']]).'</td>'.'<td>'.$methode_calcul_texte.'</td>';
 				$script_contenu_tableaux .=   'tab_partage_etat["'.$DB_ROW['matiere_id'].'_'.$DB_ROW['niveau_id'].'"]="'.$DB_ROW['referentiel_partage_etat'].'";';
 				$script_contenu_tableaux .= 'tab_calcul_methode["'.$DB_ROW['matiere_id'].'_'.$DB_ROW['niveau_id'].'"]="'.$DB_ROW['referentiel_calcul_methode'].'";';
 				$script_contenu_tableaux .=  'tab_calcul_limite["'.$DB_ROW['matiere_id'].'_'.$DB_ROW['niveau_id'].'"]="'.$DB_ROW['referentiel_calcul_limite'].'";';
@@ -218,7 +218,7 @@ else
 	<?php
 	if($nb_matieres && $nb_niveaux);
 	{
-		$select_niveau = Form::afficher_select($DB_TAB_NIVEAUX , $select_nom='f_niveau_create' , $option_first='oui' , $selection=FALSE , $optgroup='non');
+		$select_niveau = Formulaire::afficher_select($DB_TAB_NIVEAUX , $select_nom='f_niveau_create' , $option_first='oui' , $selection=FALSE , $optgroup='non');
 		echo'<label class="tab" for="f_niveau_create">Niveau :</label>'.$select_niveau.'<label id="ajax_msg_choisir">&nbsp;</label>';
 	}
 	?>
@@ -244,8 +244,8 @@ else
 
 <?php
 // Fabrication des éléments select du formulaire, pour pouvoir prendre un référentiel d'une autre matière ou d'un autre niveau (demandé...).
-$select_famille_matiere = Form::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_familles_matieres() , $select_nom='f_famille_matiere' , $option_first='oui' , $selection=FALSE , $optgroup='oui');
-$select_famille_niveau  = Form::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_familles_niveaux()  , $select_nom='f_famille_niveau'  , $option_first='oui' , $selection=FALSE , $optgroup='oui');
+$select_famille_matiere = Formulaire::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_familles_matieres() , $select_nom='f_famille_matiere' , $option_first='oui' , $selection=FALSE , $optgroup='oui');
+$select_famille_niveau  = Formulaire::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_familles_niveaux()  , $select_nom='f_famille_niveau'  , $option_first='oui' , $selection=FALSE , $optgroup='oui');
 ?>
 
 <div id="choisir_referentiel_communautaire">

@@ -74,21 +74,16 @@ public static function DB_recuperer_pays_majoritaire()
  * @param string $officiel_type
  * @param int    $periode_id
  * @param string $liste_eleve_id
- * @param int    $prof_id     Pour restreindre aux saisies d'un prof, auquel cas on récupère aussi le nom de la matière correspondante (que pour $officiel_type="bulletin" actuellement).
  * @return array
  */
-public static function DB_recuperer_bilan_officiel_saisies($officiel_type,$periode_id,$liste_eleve_id,$prof_id)
+public static function DB_recuperer_bilan_officiel_saisies($officiel_type,$periode_id,$liste_eleve_id)
 {
-	$DB_SQL = 'SELECT prof_id, eleve_id, rubrique_id, saisie_note, saisie_appreciation, CONCAT(user_nom," ",SUBSTRING(user_prenom,1,1),".") AS prof_info ';
-	$DB_SQL.= ($prof_id) ? ', matiere_nom ' : '' ;
+	$DB_SQL = 'SELECT eleve_id, rubrique_id, prof_id, saisie_note, saisie_appreciation, CONCAT(user_nom," ",SUBSTRING(user_prenom,1,1),".") AS prof_info ';
 	$DB_SQL.= 'FROM sacoche_officiel_saisie ';
 	$DB_SQL.= 'LEFT JOIN sacoche_user ON sacoche_officiel_saisie.prof_id=sacoche_user.user_id ';
-	$DB_SQL.= ($prof_id) ? 'LEFT JOIN sacoche_matiere ON sacoche_officiel_saisie.rubrique_id=sacoche_matiere.matiere_id ' : '' ;
 	$DB_SQL.= 'WHERE officiel_type=:officiel_type AND periode_id=:periode_id AND eleve_id IN('.$liste_eleve_id.') ';
-	$DB_SQL.= ($prof_id) ? ( ($_SESSION['OFFICIEL']['BULLETIN_MOYENNE_SCORES']) ? 'AND prof_id IN(:prof_id,0) ' :  'AND prof_id=:prof_id ' ) : '' ;
-	$DB_VAR = array(':officiel_type'=>$officiel_type,':periode_id'=>$periode_id,':prof_id'=>$prof_id);
-	$prof_key = ($prof_id) ? TRUE : FALSE ;
-	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR, $prof_key);
+	$DB_VAR = array(':officiel_type'=>$officiel_type,':periode_id'=>$periode_id);
+	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
 /**
@@ -105,6 +100,21 @@ public static function DB_recuperer_bilan_officiel_notes($periode_id,$tab_eleve_
 	$DB_SQL.= 'WHERE officiel_type=:officiel_type AND periode_id=:periode_id AND eleve_id IN ('.implode(',',$tab_eleve_id).') AND prof_id=:prof_id ';
 	$DB_VAR = array(':officiel_type'=>'bulletin',':periode_id'=>$periode_id,':prof_id'=>0);
 	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+}
+
+/**
+ * recuperer_signature
+ *
+ * @param int    $user_id   0 pour le tampon de l'établissement
+ * @return array
+ */
+public static function DB_recuperer_signature($user_id)
+{
+	$DB_SQL = 'SELECT * ';
+	$DB_SQL.= 'FROM sacoche_signature ';
+	$DB_SQL.= 'WHERE user_id=:user_id ';
+	$DB_VAR = array(':user_id'=>$user_id);
+	return DB::queryRow(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
 /**

@@ -32,24 +32,24 @@ if( ($_SESSION['SESAMATH_ID']==ID_DEMO) && (!in_array($_POST['f_action'],array('
 //	Récupération des valeurs transmises
 //	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-$action          = (isset($_POST['f_action']))          ? Clean::texte($_POST['f_action'])          : '';
-$profil          = (isset($_POST['f_profil']))          ? Clean::texte($_POST['f_profil'])          : ''; // administrateur professeur directeur eleve parent
-$groupe_type     = (isset($_POST['f_groupe_type']))     ? Clean::texte($_POST['f_groupe_type'])     : ''; // d n c g b
-$groupe_id       = (isset($_POST['f_groupe_id']))       ? Clean::entier($_POST['f_groupe_id'])      : 0;
-$message_id      = (isset($_POST['f_id']))              ? Clean::entier($_POST['f_id'])             : 0;
-$date_debut_fr   = (isset($_POST['f_debut_date']))      ? Clean::texte($_POST['f_debut_date'])      : '';
-$date_fin_fr     = (isset($_POST['f_fin_date']))        ? Clean::texte($_POST['f_fin_date'])        : '';
-$message_contenu = (isset($_POST['f_message_contenu'])) ? Clean::texte($_POST['f_message_contenu']) : '' ;
+$action          = (isset($_POST['f_action']))          ? clean_texte($_POST['f_action'])          : '';
+$profil          = (isset($_POST['f_profil']))          ? clean_texte($_POST['f_profil'])          : ''; // administrateur professeur directeur eleve parent
+$groupe_type     = (isset($_POST['f_groupe_type']))     ? clean_texte($_POST['f_groupe_type'])     : ''; // d n c g b
+$groupe_id       = (isset($_POST['f_groupe_id']))       ? clean_entier($_POST['f_groupe_id'])      : 0;
+$message_id      = (isset($_POST['f_id']))              ? clean_entier($_POST['f_id'])             : 0;
+$date_debut_fr   = (isset($_POST['f_debut_date']))      ? clean_texte($_POST['f_debut_date'])      : '';
+$date_fin_fr     = (isset($_POST['f_fin_date']))        ? clean_texte($_POST['f_fin_date'])        : '';
+$message_contenu = (isset($_POST['f_message_contenu'])) ? clean_texte($_POST['f_message_contenu']) : '' ;
 
 // Contrôler la liste des destinataires transmis
 $tab_destinataires = (isset($_POST['f_destinataires_liste'])) ? explode('_',$_POST['f_destinataires_liste']) : array() ;
-$tab_destinataires = Clean::map_entier($tab_destinataires);
+$tab_destinataires = array_map('clean_entier',$tab_destinataires);
 $tab_destinataires = array_filter($tab_destinataires,'positif');
 $nb_destinataires  = count($tab_destinataires);
 
 // Contrôler la liste des destinataires à récupérer
 $tab_ids  = (isset($_POST['f_ids'])) ? explode('_',$_POST['f_ids']) : array() ;
-$tab_ids  = Clean::map_entier($tab_ids);
+$tab_ids  = array_map('clean_entier',$tab_ids);
 $tab_ids  = array_filter($tab_ids,'positif');
 $nb_ids   = count($tab_ids);
 
@@ -63,14 +63,14 @@ if( ($action=='afficher_users') && $profil && $groupe_id && isset($tab_types[$gr
 {
 	$champs = ($profil!='parent') ? 'CONCAT(user_nom," ",user_prenom) AS texte , user_id AS valeur' : 'CONCAT(parent.user_nom," ",parent.user_prenom," (",enfant.user_nom," ",enfant.user_prenom,")") AS texte , parent.user_id AS valeur' ;
 	$DB_TAB = DB_STRUCTURE_COMMUN::DB_lister_users_regroupement( $profil /*profil*/ , TRUE /*statut*/ , $tab_types[$groupe_type] , $groupe_id , $champs ) ;
-	exit( Form::afficher_select($DB_TAB , $select_nom=false , $option_first='non' , $selection=true , $optgroup='non') );
+	exit( Formulaire::afficher_select($DB_TAB , $select_nom=false , $option_first='non' , $selection=true , $optgroup='non') );
 }
 
 if( ($action=='afficher_destinataires') && $nb_ids )
 {
 	$champs = ($profil!='parent') ? 'CONCAT(user_nom," ",user_prenom) AS texte , user_id AS valeur' : 'CONCAT(parent.user_nom," ",parent.user_prenom," (",enfant.user_nom," ",enfant.user_prenom,")") AS texte , parent.user_id AS valeur' ;
 	$DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_users_cibles( implode(',',$tab_ids) , 'user_id AS valeur, CONCAT(user_nom," ",user_prenom) AS texte' , '' /*avec_info*/ );
-	exit( Form::afficher_select($DB_TAB , $select_nom=false , $option_first='non' , $selection=true , $optgroup='non') );
+	exit( Formulaire::afficher_select($DB_TAB , $select_nom=false , $option_first='non' , $selection=true , $optgroup='non') );
 }
 
 //	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

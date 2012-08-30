@@ -30,16 +30,16 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 if($_SESSION['SESAMATH_ID']==ID_DEMO) {}
 
-$palier       = (isset($_POST['f_palier'])) ? Clean::entier($_POST['f_palier']) : 0;
-$option_first = (isset($_POST['f_first']))  ? Clean::texte($_POST['f_first'])   : '';
+$palier       = (isset($_POST['f_palier'])) ? clean_entier($_POST['f_palier']) : 0;
+$option_first = (isset($_POST['f_first']))  ? clean_texte($_POST['f_first'])   : '';
 
 if( (!$palier) || (!in_array($option_first,array('oui','val','non'))) )
 {
 	exit('Erreur avec les données transmises !');
 }
 
-$selection = ($option_first=='non') ? TRUE : FALSE ;
+$selection = ($option_first=='non') ? true : false ;
 
-echo Form::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_piliers($palier) , $select_nom=false , $option_first , $selection , $optgroup='non');
+echo Formulaire::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_piliers($palier) , $select_nom=false , $option_first , $selection , $optgroup='non');
 
 ?>

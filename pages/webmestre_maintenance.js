@@ -143,7 +143,7 @@ $(document).ready
 		}
 
 		// Fonction suivant l'envoi du formulaire (avec jquery.form.js)
-		function retour_form_erreur(jqXHR, textStatus, errorThrown)
+		function retour_form_erreur(msg,string)
 		{
 			$("#bouton_valider").prop('disabled',false);
 			$('#ajax_msg').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
@@ -193,7 +193,7 @@ $(document).ready
 					url : 'ajax.php?page='+PAGE,
 					data : 'f_action=maj_etape'+etape_numero,
 					dataType : "html",
-					error : function(jqXHR, textStatus, errorThrown)
+					error : function(msg,string)
 					{
 						$('button').prop('disabled',false);
 						$('#ajax_maj').removeAttr("class").addClass("alerte").html('Echec de la connexion !');
@@ -258,7 +258,7 @@ $(document).ready
 					url : 'ajax.php?page='+PAGE,
 					data : 'f_action=verif_etape'+etape_numero,
 					dataType : "html",
-					error : function(jqXHR, textStatus, errorThrown)
+					error : function(msg,string)
 					{
 						$('button').prop('disabled',false);
 						$('#ajax_verif').removeAttr("class").addClass("alerte").html('Echec de la connexion !');
@@ -292,49 +292,6 @@ $(document).ready
 				etape_numero = 0 ;
 				$('button').prop('disabled',true);
 				verif_etape("Récupération de l'archive <em>zip</em>&hellip;");
-			}
-		);
-
-		//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
-		//	Vérification des droits en écriture
-		//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
-
-		$('#bouton_droit').click
-		(
-			function()
-			{
-				$('button').prop('disabled',true);
-				$('#ajax_droit').removeAttr("class").addClass("loader").html("Connexion au serveur&hellip;");
-				$.ajax
-				(
-					{
-						type : 'POST',
-						url : 'ajax.php?page='+PAGE,
-						data : 'f_action=verif_droits',
-						dataType : "html",
-						error : function(jqXHR, textStatus, errorThrown)
-						{
-							$('button').prop('disabled',false);
-							$('#ajax_droit').removeAttr("class").addClass("alerte").html('Echec de la connexion !');
-							return false;
-						},
-						success : function(responseHTML)
-						{
-							$('button').prop('disabled',false);
-							if(responseHTML=='ok')
-							{
-								$('#ajax_droit').removeAttr("class").addClass("valide").html('Vérification terminée !');
-								$.fancybox( { 'href':'./__tmp/export/rapport_droits.html' , 'type':'iframe' , 'width':'80%' , 'height':'80%' , 'centerOnScroll':true } );
-								initialiser_compteur();
-							}
-							else
-							{
-								$('#ajax_droit').removeAttr("class").addClass("alerte").html(responseHTML);
-							}
-							return false;
-						}
-					}
-				);
 			}
 		);
 

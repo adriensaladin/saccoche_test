@@ -201,7 +201,6 @@ $(document).ready
 					f_coef          : { required:false },
 					f_socle         : { required:false },
 					f_lien          : { required:false },
-					f_start         : { required:false },
 					f_couleur       : { required:true },
 					f_legende       : { required:true },
 					f_marge_min     : { required:true }
@@ -218,7 +217,6 @@ $(document).ready
 					f_coef          : { },
 					f_socle         : { },
 					f_lien          : { },
-					f_start         : { },
 					f_couleur       : { required:"couleur manquante" },
 					f_legende       : { required:"légende manquante" },
 					f_marge_min     : { required:"marge mini manquante" }

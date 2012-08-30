@@ -42,7 +42,7 @@ $(document).ready
 		$('table.bilan_synthese').tablesorter({ headers:{0:{sorter:false},1:{sorter:false},8:{sorter:false}} });
 		function trier_tableau()
 		{
-			if($('table.bilan_synthese tbody tr').length>1)
+			if($('table.bilan_synthese tbody tr').length)
 			{
 				$('table.bilan_synthese').trigger('update');
 				$('table.bilan_synthese').trigger('sorton',[sorting]);

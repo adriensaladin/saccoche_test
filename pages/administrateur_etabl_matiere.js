@@ -42,12 +42,12 @@ $(document).ready
 		$('#form_perso   table.form').tablesorter({ headers:{2:{sorter:false}} });
 		function trier_tableau()
 		{
-			if($('#form_partage table.form tbody tr').length>1)
+			if($('#form_partage table.form tbody tr').length)
 			{
 				$('#form_partage table.form').trigger('update');
 				$('#form_partage table.form').trigger('sorton',[sorting]);
 			}
-			if($('#form_perso table.form tbody tr').length>1)
+			if($('#form_perso table.form tbody tr').length)
 			{
 				$('#form_perso table.form').trigger('update');
 				$('#form_perso table.form').trigger('sorton',[sorting]);

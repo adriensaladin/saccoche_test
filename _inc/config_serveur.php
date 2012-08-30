@@ -122,10 +122,10 @@ ini_set('magic_quotes_gpc',0);
 ini_set('magic_quotes_sybase',0);
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-// Ne pas enregistrer les variables environnement GET/POST/Cookie/Server comme des variables globales.
+// Ne pas enregistrer les variables Environment/GET/POST/Cookie/Server comme des variables globales.
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
-// register_globals ne peut pas être définie durant le traitement avec "ini_set"...
+// register_globals ne peut pas être définit durant le traitement avec "ini_set"...
 // ini_set(register_globals,0);
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
@@ -171,85 +171,69 @@ mb_internal_encoding(CHARSET);
  * @param string   $class_name   nom de la classe
  * @return void
  */
-function load_class($class_name,$chemin)
-{
-	if(is_file($chemin))
-	{
-		require($chemin);
-	}
-	else
-	{
-		affich_message_exit($titre='Classe introuvable',$contenu='Le chemin de la classe '.$class_name.' est incorrect : '.$chemin);
-	}
-}
 function __autoload($class_name)
 {
 	$tab_classes = array(
-		'DB'                          => '_lib'.DS.'DB'.DS.'DB.class.php' ,
-		'FirePHP'                     => '_lib'.DS.'FirePHPCore'.DS.'FirePHP.class.php' ,
-		'FPDF'                        => '_lib'.DS.'FPDF'.DS.'fpdf.php' ,
-		'PDF_Label'                   => '_lib'.DS.'FPDF'.DS.'PDF_Label.php' ,
-		'FPDI'                        => '_lib'.DS.'FPDI'.DS.'fpdi.php' ,
-		'PDFMerger'                   => '_lib'.DS.'FPDI'.DS.'PDFMerger.php' ,
-		'phpCAS'                      => '_lib'.DS.'phpCAS'.DS.'CAS.php' ,
+		'DB'                          => '_lib'.DIRECTORY_SEPARATOR.'DB'.DIRECTORY_SEPARATOR.'DB.class.php' ,
+		'FirePHP'                     => '_lib'.DIRECTORY_SEPARATOR.'FirePHPCore'.DIRECTORY_SEPARATOR.'FirePHP.class.php' ,
+		'FPDF'                        => '_lib'.DIRECTORY_SEPARATOR.'FPDF'.DIRECTORY_SEPARATOR.'fpdf.php' ,
+		'PDF_Label'                   => '_lib'.DIRECTORY_SEPARATOR.'FPDF'.DIRECTORY_SEPARATOR.'PDF_Label.php' ,
+		'FPDI'                        => '_lib'.DIRECTORY_SEPARATOR.'FPDI'.DIRECTORY_SEPARATOR.'fpdi.php' ,
+		'PDFMerger'                   => '_lib'.DIRECTORY_SEPARATOR.'FPDI'.DIRECTORY_SEPARATOR.'PDFMerger.php' ,
+		'phpCAS'                      => '_lib'.DIRECTORY_SEPARATOR.'phpCAS'.DIRECTORY_SEPARATOR.'CAS.php' ,
+		'SimpleSAML_Auth_Simple'      => '_lib'.DIRECTORY_SEPARATOR.'SimpleSAMLphp'.DIRECTORY_SEPARATOR.'lib'.DIRECTORY_SEPARATOR.'_autoload.php' ,
 
-		'cssmin'                      => '_inc'.DS.'class.CssMinified.php' ,
-		'MyDOMDocument'               => '_inc'.DS.'class.domdocument.php' ,
-		'JSMin'                       => '_inc'.DS.'class.JavaScriptMinified.php' ,
-		'JavaScriptPacker'            => '_inc'.DS.'class.JavaScriptPacker.php' ,
-		'PDF'                         => '_inc'.DS.'class.PDF.php' ,
+		'cssmin'                      => '_inc'.DIRECTORY_SEPARATOR.'class.CssMinified.php' ,
+		'MyDOMDocument'               => '_inc'.DIRECTORY_SEPARATOR.'class.domdocument.php' ,
+		'JSMin'                       => '_inc'.DIRECTORY_SEPARATOR.'class.JavaScriptMinified.php' ,
+		'JavaScriptPacker'            => '_inc'.DIRECTORY_SEPARATOR.'class.JavaScriptPacker.php' ,
+		'PDF'                         => '_inc'.DIRECTORY_SEPARATOR.'class.PDF.php' ,
 
-		'Formulaire'                  => '_inc'.DS.'class.formulaire.php' ,
+		'Formulaire'                  => '_inc'.DIRECTORY_SEPARATOR.'class.formulaire.php' ,
 
-		'DB_STRUCTURE_ADMINISTRATEUR' => '_sql'.DS.'requetes_structure_administrateur.php' ,
-		'DB_STRUCTURE_DIRECTEUR'      => '_sql'.DS.'requetes_structure_directeur.php' ,
-		'DB_STRUCTURE_ELEVE'          => '_sql'.DS.'requetes_structure_eleve.php' ,
-		'DB_STRUCTURE_PROFESSEUR'     => '_sql'.DS.'requetes_structure_professeur.php' ,
-		'DB_STRUCTURE_PUBLIC'         => '_sql'.DS.'requetes_structure_public.php' ,
-		'DB_STRUCTURE_WEBMESTRE'      => '_sql'.DS.'requetes_structure_webmestre.php' ,
+		'DB_STRUCTURE_ADMINISTRATEUR' => '_sql'.DIRECTORY_SEPARATOR.'requetes_structure_administrateur.php' ,
+		'DB_STRUCTURE_DIRECTEUR'      => '_sql'.DIRECTORY_SEPARATOR.'requetes_structure_directeur.php' ,
+		'DB_STRUCTURE_ELEVE'          => '_sql'.DIRECTORY_SEPARATOR.'requetes_structure_eleve.php' ,
+		'DB_STRUCTURE_PROFESSEUR'     => '_sql'.DIRECTORY_SEPARATOR.'requetes_structure_professeur.php' ,
+		'DB_STRUCTURE_PUBLIC'         => '_sql'.DIRECTORY_SEPARATOR.'requetes_structure_public.php' ,
+		'DB_STRUCTURE_WEBMESTRE'      => '_sql'.DIRECTORY_SEPARATOR.'requetes_structure_webmestre.php' ,
 
-		'DB_STRUCTURE_BILAN'          => '_sql'.DS.'requetes_structure_bilan.php' ,
-		'DB_STRUCTURE_OFFICIEL'       => '_sql'.DS.'requetes_structure_officiel.php' ,
-		'DB_STRUCTURE_COMMUN'         => '_sql'.DS.'requetes_structure_commun.php' ,
-		'DB_STRUCTURE_MAJ_BASE'       => '_sql'.DS.'requetes_structure_maj_base.php' ,
-		'DB_STRUCTURE_REFERENTIEL'    => '_sql'.DS.'requetes_structure_referentiel.php' ,
-		'DB_STRUCTURE_SOCLE'          => '_sql'.DS.'requetes_structure_socle.php' ,
+		'DB_STRUCTURE_BILAN'          => '_sql'.DIRECTORY_SEPARATOR.'requetes_structure_bilan.php' ,
+		'DB_STRUCTURE_OFFICIEL'       => '_sql'.DIRECTORY_SEPARATOR.'requetes_structure_officiel.php' ,
+		'DB_STRUCTURE_COMMUN'         => '_sql'.DIRECTORY_SEPARATOR.'requetes_structure_commun.php' ,
+		'DB_STRUCTURE_MAJ_BASE'       => '_sql'.DIRECTORY_SEPARATOR.'requetes_structure_maj_base.php' ,
+		'DB_STRUCTURE_REFERENTIEL'    => '_sql'.DIRECTORY_SEPARATOR.'requetes_structure_referentiel.php' ,
+		'DB_STRUCTURE_SOCLE'          => '_sql'.DIRECTORY_SEPARATOR.'requetes_structure_socle.php' ,
 
-		'DB_WEBMESTRE_PUBLIC'         => '_sql'.DS.'requetes_webmestre_public.php' ,
-		'DB_WEBMESTRE_SELECT'         => '_sql'.DS.'requetes_webmestre_select.php' ,
-		'DB_WEBMESTRE_WEBMESTRE'      => '_sql'.DS.'requetes_webmestre_webmestre.php'
+		'DB_WEBMESTRE_PUBLIC'         => '_sql'.DIRECTORY_SEPARATOR.'requetes_webmestre_public.php' ,
+		'DB_WEBMESTRE_SELECT'         => '_sql'.DIRECTORY_SEPARATOR.'requetes_webmestre_select.php' ,
+		'DB_WEBMESTRE_WEBMESTRE'      => '_sql'.DIRECTORY_SEPARATOR.'requetes_webmestre_webmestre.php'
 	);
 	if(isset($tab_classes[$class_name]))
 	{
-		load_class($class_name,CHEMIN_DOSSIER_SACOCHE.$tab_classes[$class_name]);
-	}
-	// Remplacement de l'autoload de phpCAS qui n'est pas chargé à cause de celui de SACoche
-	// Voir le fichier ./_lib/phpCAS/CAS/autoload.php
-	elseif(substr($class_name,0,4)=='CAS_')
-	{
-		load_class($class_name,CHEMIN_DOSSIER_SACOCHE.'_lib'.DS.'phpCAS'.DS.str_replace('_',DS,$class_name).'.php');
-	}
-	// Remplacement de l'autoload de SimpleSAMLphp qui n'est pas chargé à cause de celui de SACoche
-	// Voir le fichier ./_lib/SimpleSAMLphp/lib/_autoload.php
-	else if(in_array($class_name, array('XMLSecurityKey', 'XMLSecurityDSig', 'XMLSecEnc'), TRUE))
-	{
-		load_class($class_name,CHEMIN_DOSSIER_SACOCHE.'_lib'.DS.'SimpleSAMLphp'.DS.'lib'.DS.'xmlseclibs.php');
-	}
-	else if(substr($class_name,0,7)=='sspmod_')
-	{
-		$modNameEnd  = strpos($class_name, '_', 7);
-		$module      = substr($class_name, 7, $modNameEnd - 7);
-		$moduleClass = substr($class_name, $modNameEnd + 1);
-		if(SimpleSAML_Module::isModuleEnabled($module))
+		$class_file = CHEMIN_SACOCHE.$tab_classes[$class_name];
+		if(is_file($class_file))
 		{
-			load_class($class_name,SimpleSAML_Module::getModuleDir($module).'/lib/'.str_replace('_', DS, $moduleClass).'.php');
+			require_once($class_file);
+		}
+		else
+		{
+			affich_message_exit($titre='Classe introuvable',$contenu='Le chemin de la classe '.$class_name.' est incorrect : '.$class_file);
 		}
 	}
-	elseif( (substr($class_name,0,5)=='SAML2') || (substr($class_name,0,10)=='SimpleSAML') )
+	// Remplacement de l'autoload de phpCAS qui n'est pas chargé à cause de celui de SACoche
+	elseif(substr($class_name,0,4)=='CAS_')
 	{
-		load_class($class_name,CHEMIN_DOSSIER_SACOCHE.'_lib'.DS.'SimpleSAMLphp'.DS.'lib'.DS.str_replace('_','/',$class_name).'.php');
+		$class_file = CHEMIN_SACOCHE.'_lib'.DIRECTORY_SEPARATOR.'phpCAS'.DIRECTORY_SEPARATOR.str_replace('_',DIRECTORY_SEPARATOR,$class_name).'.php';
+		if(is_file($class_file))
+		{
+			require_once($class_file);
+		}
+		else
+		{
+			affich_message_exit($titre='Classe introuvable',$contenu='Le chemin de la classe '.$class_name.' est incorrect : '.$class_file);
+		}
 	}
-	// La classe invoquée ne correspond pas à ce qui vient d'être passé en revue
 	else
 	{
 		affich_message_exit($titre='Classe introuvable',$contenu='La classe '.$class_name.' est inconnue.');

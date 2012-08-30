@@ -30,11 +30,11 @@ $TITRE = "Caractéristiques du serveur";
 ?>
 
 <?php
-echo InfoServeur::tableau_versions_logicielles();
-echo InfoServeur::tableau_limitations_PHP();
-echo InfoServeur::tableau_limitations_MySQL();
-echo InfoServeur::tableau_configuration_PHP();
-echo InfoServeur::tableau_reglages_Suhosin();
-echo InfoServeur::tableau_modules_PHP($nb_lignes=5);
-echo InfoServeur::tableau_serveur_et_client();
+require_once('./_inc/fonction_infos_serveur.php');
+echo tableau_versions_logicielles();
+echo tableau_limitations_PHP();
+echo tableau_limitations_MySQL();
+echo tableau_reglages_Suhosin();
+echo tableau_modules_PHP($nb_lignes=5);
+echo tableau_serveur_et_client();
 ?>

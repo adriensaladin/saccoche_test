@@ -28,7 +28,7 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = "Mode d'identification";
 
-require(CHEMIN_DOSSIER_INCLUDE.'tableau_sso.php');
+require_once('./_inc/tableau_sso.php');
 
 // Surcharger les paramètres CAS perso (vides par défaut) avec ceux en session (éventuellement personnalisés).
 $tab_connexion_info['cas']['perso']['serveur_host'] = $_SESSION['CAS_SERVEUR_HOST'];
@@ -62,7 +62,7 @@ foreach($tab_connexion_mode as $connexion_mode => $mode_texte)
 
 // Modèle d'url SSO
 $get_base = ($_SESSION['BASE']) ? '&amp;base='.$_SESSION['BASE'] : '' ;
-$url_sso = URL_DIR_SACOCHE.'?sso'.$get_base;
+$url_sso = SERVEUR_ADRESSE.'/?sso'.$get_base;
 
 ?>
 
@@ -84,7 +84,7 @@ $url_sso = URL_DIR_SACOCHE.'?sso'.$get_base;
 	<div id="gepi_options" class="hide">
 		<label class="tab" for="gepi_saml_url">Adresse (URL) <img alt="" src="./_img/bulle_aide.png" title="Adresse web de GEPI.<br />http://adresse_web_de_mon_gepi" /> :</label><input id="gepi_saml_url" name="gepi_saml_url" size="30" type="text" value="<?php echo html($_SESSION['GEPI_URL']) ?>" /><br />
 		<label class="tab" for="gepi_saml_rne">UAI (ex-RNE) <img alt="" src="./_img/bulle_aide.png" title="Indispensable uniquement si installation multisite de GEPI." /> :</label><input id="gepi_saml_rne" name="gepi_saml_rne" size="10" type="text" value="<?php echo ($_SESSION['GEPI_RNE']) ? html($_SESSION['GEPI_RNE']) : html($_SESSION['WEBMESTRE_UAI']) ; ?>" /><br />
-		<label class="tab" for="gepi_saml_certif">Signature <img alt="" src="./_img/bulle_aide.png" title="Empreinte du certificat indiquée par GEPI (ne rien modifier par défaut)." /> :</label><input id="gepi_saml_certif" name="gepi_saml_certif" size="60" type="text" value="<?php echo html($_SESSION['GEPI_CERTIFICAT_EMPREINTE']) ?>" /><br />
+		<label class="tab" for="gepi_saml_certif">Signature <img alt="" src="./_img/bulle_aide.png" title="[ Expliquer où trouver l'empreinte du certificat... ]" /> :</label><input id="gepi_saml_certif" name="gepi_saml_certif" size="60" type="text" value="<?php echo html($_SESSION['GEPI_CERTIFICAT_EMPREINTE']) ?>" /><br />
 	</div>
 	<p><span class="tab"></span><button id="bouton_valider" type="button" class="parametre">Valider ce mode d'identification.</button><label id="ajax_msg">&nbsp;</label></p>
 </fieldset></form>

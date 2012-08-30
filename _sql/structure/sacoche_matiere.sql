@@ -97,7 +97,6 @@ INSERT INTO sacoche_matiere VALUES
 (  71, 0, 0, 100, 0, 255, "MRECH", "Méthodologie de recherche"),
 (  72, 0, 0, 100, 0, 255, "ISIC" , "Isic"),
 (  73, 0, 0, 100, 0, 255, "ISAP" , "Isap"),
-(  74, 0, 0, 100, 0, 255, "DECPR", "Découverte professionnelle"),
 (  80, 0, 0, 100, 0, 255, "MOENG", "Modules (français - maths - hist.geo - LV1)"),
 (  81, 0, 0, 100, 0, 255, "AAALO", "Actions appliquées et d'adaptation locale"),
 (  82, 0, 0, 100, 0, 255, "ARRDI", "Accès en responsabilité aux ress. doc. informatisées ets"),
@@ -109,11 +108,6 @@ INSERT INTO sacoche_matiere VALUES
 (  88, 0, 0, 100, 0, 255, "ACTIP", "Action professionnelle"),
 (  89, 0, 0, 100, 0, 255, "STRTI", "Stratégie et techniques d'intervention"),
 (  90, 0, 0, 100, 0, 255, "MEQUI", "Management d'équipe"),
-(  91, 0, 0, 100, 0, 255, "EPE"  , "Etude personnalisée encadrée"),
-(  92, 0, 0, 100, 0, 255, "ATELP", "Atelier de professionnalisation"),
-(  93, 0, 0, 100, 0, 255, "FILOC", "Formation d'initiative locale"),
-(  94, 0, 0, 100, 0, 255, "AT-PX", "Ateliers principaux"),
-(  95, 0, 0, 100, 0, 255, "AT-CO", "Ateliers complémentaires"),
 (  98, 0, 0, 100, 0, 255, "AEAID", "Acccompagn.éducatif - aide devoirs leçons"),
 (  99, 0, 0, 100, 0, 255, "ACNSD", "Activités non spécialisées diverses"),
 
@@ -178,7 +172,6 @@ INSERT INTO sacoche_matiere VALUES
 
 -- Langues vivantes
 
-( 300, 0, 0,   3, 0, 255, "FLE"  , "Français langue étrangère"),
 ( 301, 0, 0,   3, 0, 255, "ALL"  , "Allemand"),
 ( 302, 0, 0,   3, 0, 255, "AGL"  , "Anglais"),
 ( 303, 0, 0,   3, 0, 255, "ARA"  , "Arabe"),
@@ -263,18 +256,7 @@ INSERT INTO sacoche_matiere VALUES
 ( 384, 0, 0,   3, 0, 255, "NEE9" , "Néerlandais lettres étrangères"),
 ( 385, 0, 0,   3, 0, 255, "POL9" , "Polonais lettres étrangères"),
 ( 386, 0, 0,   3, 0, 255, "RUS9" , "Russe lettres étrangères"),
-( 387, 0, 0,   3, 0, 255, "ALL8" , "Littérature étrangère en allemand"),
-( 388, 0, 0,   3, 0, 255, "AGL8" , "Littérature étrangère en anglais"),
-( 389, 0, 0,   3, 0, 255, "ARA8" , "Littérature étrangère en arabe"),
-( 390, 0, 0,   3, 0, 255, "CHI8" , "Littérature étrangère en chinois"),
-( 391, 0, 0,   3, 0, 255, "DAN8" , "Littérature étrangère en danois"),
-( 392, 0, 0,   3, 0, 255, "ESP8" , "Littérature étrangère en espagnol"),
-( 393, 0, 0,   3, 0, 255, "ITA8" , "Littérature étrangère en italien"),
-( 394, 0, 0,   3, 0, 255, "JAP8" , "Littérature étrangère en japonais"),
-( 395, 0, 0,   3, 0, 255, "POR8" , "Littérature étrangère en portugais"),
-( 396, 0, 0,   3, 0, 255, "NEE8" , "Littérature étrangère en néerlandais"),
-( 397, 0, 0,   3, 0, 255, "NEE8" , "Littérature étrangère en néerlandais"),
-( 398, 0, 0,   3, 0, 255, "RUS8" , "Littérature étrangère en russe"),
+( 397, 0, 0,   3, 0, 255, "FLE"  , "Français langue étrangère"),
 ( 399, 0, 0,   3, 0, 255, "LANDI", "Langues divers"),
 
 -- Histoire géographie
@@ -338,13 +320,10 @@ INSERT INTO sacoche_matiere VALUES
 ( 518, 0, 0,   5, 0, 255, "PRESE", "Prestations et services"),
 ( 519, 0, 0,   5, 0, 255, "RSHUM", "Ressources humaines"),
 ( 520, 0, 0,   5, 0, 255, "ADDRH", "Administ. develop. ressources humaines"),
-( 521, 0, 0,   5, 0, 255, "SSPOL", "Sciences sociales et politiques"),
-( 522, 0, 0,   5, 0, 255, "ECOAP", "Economie approfondie"),
 ( 599, 0, 0,   5, 0, 255, "SECSD", "Sciences économiques et sociales divers"),
 
 -- Sciences
 
-( 601, 0, 0,   6, 0, 255, "EIST" , "Enseignement intégré de science et technologie"),
 ( 602, 0, 0,   6, 0, 255, "TPPHC", "Travaux pratiques de physique-chimie"),
 ( 603, 0, 0,   6, 0, 255, "CH-GE", "Chimie générale"),
 ( 605, 0, 0,   6, 0, 255, "TPMAT", "Travaux pratiques mathemat. sup. ou spe."),
@@ -460,7 +439,6 @@ INSERT INTO sacoche_matiere VALUES
 ( 717, 0, 0,   7, 0, 255, "TECTA", "Technologie et travaux d'atelier"),
 ( 718, 0, 0,   7, 0, 255, "TECIM", "Technologie industrielle module"),
 ( 719, 0, 0,   7, 0, 255, "ATCTK", "Atelier de conception - technologie"),
-( 720, 0, 0,   7, 0, 255, "TREAL", "Technologie de réalisation"),
 ( 721, 0, 0,   7, 0, 255, "TECME", "Technologie : métallurgie"),
 ( 722, 0, 0,   7, 0, 255, "TECDE", "Technologie et dessin"),
 ( 723, 0, 0,   7, 0, 255, "TECES", "Technologie des équipements et supports"),
@@ -478,8 +456,6 @@ INSERT INTO sacoche_matiere VALUES
 ( 735, 0, 0,   7, 0, 255, "CITEC", "Création & innovation technologiques"),
 ( 736, 0, 0,   7, 0, 255, "INTEC", "Innovation technologique et eco-concept."),
 ( 737, 0, 0,   7, 0, 255, "ETT"  , "Enseignements technologiques transversaux"),
-( 738, 0, 0,   7, 0, 255, "STECH", "Sciences et technologie"),
-( 739, 0, 0,   7, 0, 255, "TFABR", "Technologie de fabrication"),
 ( 799, 0, 0,   7, 0, 255, "TECDI", "Technologie divers"),
 
 -- Éducation musicale
@@ -554,10 +530,7 @@ INSERT INTO sacoche_matiere VALUES
 ( 915, 0, 0,   9, 0, 255, "AT-3D", "Atelier 3d"),
 ( 916, 0, 0,   9, 0, 255, "CVISU", "Culture visuelle"),
 ( 917, 0, 0,   9, 0, 255, "CPHOV", "Culture photographique et visuelle"),
-( 918, 0, 0,   9, 0, 255, "CDESG", "Culture du design graphique"),
-( 919, 0, 0,   9, 0, 255, "CTYPO", "Culture typographique"),
-( 920, 0, 0,   9, 0, 255, "PPGRA", "Pratique plastique & graphique"),
-( 921, 0, 0,   9, 0, 255, "DANAL", "Dessin analytique"),
+( 998, 0, 0,   9, 0, 255, "AEART", "Accompagn. Educatif - pratiq.art.culturel"),
 ( 999, 0, 0,   9, 0, 255, "A-PLD", "Arts plastiques divers"),
 
 -- Éducation physique et sportive
@@ -710,7 +683,6 @@ INSERT INTO sacoche_matiere VALUES
 (1228, 0, 0,  12, 0, 255, "TECFA", "Technologie de fabrication"),
 (1229, 0, 0,  12, 0, 255, "G-OST", "Gestion-organ scient travail"),
 (1230, 0, 0,  12, 0, 255, "CH-AE", "Chimie appliquée à l'ennoblissement"),
-(1234, 0, 0,  12, 0, 255, "CDIRP", "Conception dévelop. industrialisation realisation produits"),
 (1240, 0, 0,  12, 0, 255, "GNIND", "Génie industriel"),
 (1241, 0, 0,  12, 0, 255, "LGTEC", "Langage technique"),
 (1242, 0, 0,  12, 0, 255, "ATCGP", "Atelier-controles et gestion de product"),
@@ -856,7 +828,6 @@ INSERT INTO sacoche_matiere VALUES
 (1750, 0, 0,  17, 0, 255, "GCMTP", "Génie civil et matériels travaux publics"),
 (1751, 0, 0,  17, 0, 255, "PO-GC", "Projet d'ouvrage (génie civil)"),
 (1752, 0, 0,  17, 0, 255, "ARCHC", "Architecture et construction"),
-(1753, 0, 0,  17, 0, 255, "AHUDD", "Architecture, habitat & urbanisme, développement durable"),
 (1799, 0, 0,  17, 0, 255, "GNCID", "Génie civil divers"),
 
 -- Génie thermique
@@ -1431,8 +1402,6 @@ INSERT INTO sacoche_matiere VALUES
 (3085, 0, 0,  30, 0, 255, "BAT2D", "Biologie agro. territoir.& devel.durable"),
 (3086, 0, 0,  30, 0, 255, "VIVAN", "Chimie - biochimie - sciences du vivant"),
 (3087, 0, 0,  30, 0, 255, "MESIN", "Mesure et instrumentation"),
-(3088, 0, 0,  30, 0, 255, "ECAGT", "Ecologie agronomie et territoires"),
-(3089, 0, 0,  30, 0, 255, "MAPHY", "Microbiologie appliquée & physiopathologie"),
 (3099, 0, 0,  30, 0, 255, "BTGBD", "Biotechnologie génie bio divers"),
 
 -- Biotechnologie santé environnement collectivités
@@ -1516,7 +1485,6 @@ INSERT INTO sacoche_matiere VALUES
 (3241, 0, 0,  32, 0, 255, "MASSS", "Methodo.appliq.secteur sanit.& soc."),
 (3242, 0, 0,  32, 0, 255, "HEMAN", "Hématologie - anatomopathologie"),
 (3243, 0, 0,  32, 0, 255, "SANTS", "Sante & social"),
-(3244, 0, 0,  32, 0, 255, "AOCCL", "Anatomie-occlusodontie"),
 (3299, 0, 0,  32, 0, 255, "PRMDI", "Paramédical divers"),
 
 -- Soins personnels
@@ -1686,10 +1654,6 @@ INSERT INTO sacoche_matiere VALUES
 (3654, 0, 0,  36, 0, 255, "T-NOT", "Techniques du notariat"),
 (3655, 0, 0,  36, 0, 255, "APA-N", "Activités prof. appliquées (notariat)"),
 (3656, 0, 0,  36, 0, 255, "OIRAE", "Organisat.indust.&règlement.aéronautique"),
-(3657, 0, 0,  36, 0, 255, "DGEMC", "Droit et grands enjeux du monde contemporain"),
-(3659, 0, 0,  36, 0, 255, "ENVEJ", "Environnement économique et juridique"),
-(3660, 0, 0,  36, 0, 255, "COJAT", "Cadre organisationnel juridique activité touristique"),
-(3661, 0, 0,  36, 0, 255, "DR-VD", "Droit et veille juridique"),
 (3699, 0, 0,  36, 0, 255, "DR-LD", "Droit et législation divers"),
 
 -- Informatique de gestion
@@ -1723,7 +1687,6 @@ INSERT INTO sacoche_matiere VALUES
 (3728, 0, 0,  37, 0, 255, "ALGOA", "Algorithmique appliquée"),
 (3729, 0, 0,  37, 0, 255, "AEMJI", "An.eco.manager.jurid. services informatiques"),
 (3730, 0, 0,  37, 0, 255, "MTINF", "Méthodes et techniques informatiques"),
-(3731, 0, 0,  37, 0, 255, "ISCNU", "Informatique et sciences du numérique"),
 (3799, 0, 0,  37, 0, 255, "IFGSD", "Informatique de gestion divers"),
 
 -- Économie
@@ -1758,7 +1721,6 @@ INSERT INTO sacoche_matiere VALUES
 (3828, 0, 0,  38, 0, 255, "EEMNO", "Environ. eco et managerial du notariat"),
 (3829, 0, 0,  38, 0, 255, "ECONS", "Economie - consommation"),
 (3830, 0, 0,  38, 0, 255, "PFEG" , "Principes fondament. Économie & gestion"),
-(3831, 0, 0,  38, 0, 255, "ECOOR", "Economie et organisation"),
 (3899, 0, 0,  38, 0, 255, "E-ODI", "Economie divers"),
 
 -- Comptabilité - finances
@@ -1852,8 +1814,6 @@ INSERT INTO sacoche_matiere VALUES
 (4055, 0, 0,  40, 0, 255, "GTMED", "Gestion de projet touristique multimédia"),
 (4056, 0, 0,  40, 0, 255, "OTETA", "Organisation et technique des étages"),
 (4057, 0, 0,  40, 0, 255, "MERTC", "Mercatique et techniques de commercialisation"),
-(4059, 0, 0,  40, 0, 255, "MERTC", "Tourisme et territoire"),
-(4060, 0, 0,  40, 0, 255, "MCPT" , "Mercatique conception prestation touristique"),
 (4099, 0, 0,  40, 0, 255, "HOTDI", "Hôtellerie tourisme divers"),
 
 -- Communication
@@ -1911,11 +1871,6 @@ INSERT INTO sacoche_matiere VALUES
 (4151, 0, 0,  41, 0, 255, "TPIII", "Travail partenariat instut.et interinsti"),
 (4152, 0, 0,  41, 0, 255, "COPRO", "Communication professionnelle"),
 (4153, 0, 0,  41, 0, 255, "DYPAR", "Implications ds dynamiques partenariales"),
-(4154, 0, 0,  41, 0, 255, "GRCLI", "Gestion de la relation client"),
-(4155, 0, 0,  41, 0, 255, "GINFT", "Gestion de l'information touristique"),
-(4156, 0, 0,  41, 0, 255, "IMMED", "Information et multimedias"),
-(4157, 0, 0,  41, 0, 255, "ITOUR", "Information et tourismatique"),
-(4158, 0, 0,  41, 0, 255, "CCOMM", "Culture de la communication"),
 (4199, 0, 0,  41, 0, 255, "CMNDV", "Communication divers"),
 
 -- Assurances
@@ -1997,18 +1952,6 @@ INSERT INTO sacoche_matiere VALUES
 (4402, 0, 0,  44, 0, 255, "ETCPU", "Etudes commerciales et études publicitaires"),
 (4403, 0, 0,  44, 0, 255, "SMCPU", "Stratégie et moyens de communication publicitaire"),
 (4499, 0, 0,  44, 0, 255, "PUBDI", "Publicité divers"),
-
--- Métiers des arts appliqués (suite)
-
-(4501, 0, 0,  45, 0, 255, "HUMOD", "Humanités modernes"),
-(4502, 0, 0,  45, 0, 255, "SMAJU", "Stratégie marketing juridique"),
-(4503, 0, 0,  45, 0, 255, "CPRTE", "Cultures et pratiques techniques"),
-(4504, 0, 0,  45, 0, 255, "PPLME", "Pratiques plastiques et médiations"),
-(4505, 0, 0,  45, 0, 255, "IPRRE", "Innovation, prospective et recherche"),
-(4506, 0, 0,  45, 0, 255, "LEXRE", "Laboratoire expérimentation et recherche"),
-(4507, 0, 0,  45, 0, 255, "MACPR", "Macro-projet"),
-(4508, 0, 0,  45, 0, 255, "MREPR", "Mémoire de recherche professionnel"),
-(4509, 0, 0,  45, 0, 255, "MELVE", "Mémoire en langue vivante etrangère"),
 
 -- Langue technique
 
@@ -2146,14 +2089,8 @@ INSERT INTO sacoche_matiere VALUES
 (9906, 0, 1,  99, 0, 255, "P5"   , "5 Culture humaniste"),
 (9907, 0, 1,  99, 0, 255, "P6"   , "6 Compétences sociales et civiques"),
 (9908, 0, 1,  99, 0, 255, "P7"   , "7 Autonomie et l'initiative"),
-(9911, 0, 1,  99, 0, 255, "APS"  , "Apprendre à porter secours"),
-(9912, 0, 1,  99, 0, 255, "PSC1" , "Prévention et secours civiques de niveau 1"),
-(9913, 0, 1,  99, 0, 255, "PSC2" , "Prévention et secours civiques de niveau 2"),
-(9921, 0, 1,  99, 0, 255, "APER" , "Attestation de première éducation à la route"),
-(9922, 0, 1,  99, 0, 255, "ASSR1", "Attestation scolaire de sécurité routière de niveau 1"),
-(9923, 0, 1,  99, 0, 255, "ASSR2", "Attestation scolaire de sécurité routière de niveau 2"),
 (9991, 0, 1,  99, 0, 255, "DOC"  , "Documentation"),
 (9992, 0, 1,  99, 0, 255, "INFO" , "Informatique"),
-(9999, 0, 1,  99, 0, 255, "TRANS", "Transversal");
+(9999, 1, 1,  99, 0, 255, "TRANS", "Transversal");
 
 ALTER TABLE sacoche_matiere ENABLE KEYS;

@@ -28,28 +28,28 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 if($_SESSION['SESAMATH_ID']==ID_DEMO) {}
 
-$palier_id     = (isset($_POST['f_palier']))        ? Clean::entier($_POST['f_palier'])    : 0;
-$palier_nom    = (isset($_POST['f_palier_nom']))    ? Clean::texte($_POST['f_palier_nom']) : '';
+$palier_id     = (isset($_POST['f_palier']))        ? clean_entier($_POST['f_palier'])    : 0;
+$palier_nom    = (isset($_POST['f_palier_nom']))    ? clean_texte($_POST['f_palier_nom']) : '';
 $only_presence = (isset($_POST['f_only_presence'])) ? 1                                   : 0;
 $aff_socle_PA  = (isset($_POST['f_socle_PA']))      ? 1                                   : 0;
 $aff_socle_EV  = (isset($_POST['f_socle_EV']))      ? 1                                   : 0;
-$groupe_id     = (isset($_POST['f_groupe']))        ? Clean::entier($_POST['f_groupe'])    : 0;
-$groupe_nom    = (isset($_POST['f_groupe_nom']))    ? Clean::texte($_POST['f_groupe_nom']) : '';
-$mode          = (isset($_POST['f_mode']))          ? Clean::texte($_POST['f_mode'])       : '';
+$groupe_id     = (isset($_POST['f_groupe']))        ? clean_entier($_POST['f_groupe'])    : 0;
+$groupe_nom    = (isset($_POST['f_groupe_nom']))    ? clean_texte($_POST['f_groupe_nom']) : '';
+$mode          = (isset($_POST['f_mode']))          ? clean_texte($_POST['f_mode'])       : '';
 $aff_coef      = (isset($_POST['f_coef']))          ? 1                                   : 0;
 $aff_socle     = (isset($_POST['f_socle']))         ? 1                                   : 0;
 $aff_lien      = (isset($_POST['f_lien']))          ? 1                                   : 0;
 $aff_start     = (isset($_POST['f_start']))         ? 1                                   : 0;
-$couleur       = (isset($_POST['f_couleur']))       ? Clean::texte($_POST['f_couleur'])    : '';
-$legende       = (isset($_POST['f_legende']))       ? Clean::texte($_POST['f_legende'])    : '';
-$marge_min     = (isset($_POST['f_marge_min']))     ? Clean::entier($_POST['f_marge_min']) : 0;
+$couleur       = (isset($_POST['f_couleur']))       ? clean_texte($_POST['f_couleur'])    : '';
+$legende       = (isset($_POST['f_legende']))       ? clean_texte($_POST['f_legende'])    : '';
+$marge_min     = (isset($_POST['f_marge_min']))     ? clean_entier($_POST['f_marge_min']) : 0;
 // Normalement ce sont des tableaux qui sont transmis, mais au cas où...
 $tab_pilier_id  = (isset($_POST['f_pilier']))  ? ( (is_array($_POST['f_pilier']))  ? $_POST['f_pilier']  : explode(',',$_POST['f_pilier'])  ) : array() ;
 $tab_eleve_id   = (isset($_POST['f_eleve']))   ? ( (is_array($_POST['f_eleve']))   ? $_POST['f_eleve']   : explode(',',$_POST['f_eleve'])   ) : array() ;
 $tab_matiere_id = (isset($_POST['f_matiere'])) ? ( (is_array($_POST['f_matiere'])) ? $_POST['f_matiere'] : explode(',',$_POST['f_matiere']) ) : array() ;
-$tab_pilier_id  = array_filter( Clean::map_entier($tab_pilier_id)  , 'positif' );
-$tab_eleve_id   = array_filter( Clean::map_entier($tab_eleve_id)   , 'positif' );
-$tab_matiere_id = array_filter( Clean::map_entier($tab_matiere_id) , 'positif' );
+$tab_pilier_id  = array_filter( array_map( 'clean_entier' , $tab_pilier_id  ) , 'positif' );
+$tab_eleve_id   = array_filter( array_map( 'clean_entier' , $tab_eleve_id   ) , 'positif' );
+$tab_matiere_id = array_filter( array_map( 'clean_entier' , $tab_matiere_id ) , 'positif' );
 
 // En cas de manipulation du formulaire (avec Firebug par exemple) ; on pourrait aussi vérifier pour un parent que c'est bien un de ses enfants...
 if(in_array($_SESSION['USER_PROFIL'],array('parent','eleve')))
@@ -69,7 +69,7 @@ if( (!$palier_id) || (!$palier_nom) || (!count($tab_pilier_id)) || (!in_array($m
 	exit('Erreur avec les données transmises !');
 }
 
-Form::save_choix('releve_socle');
+Formulaire::save_choix('releve_socle');
 
 $marge_gauche = $marge_droite = $marge_haut = $marge_bas = $marge_min ;
 
@@ -83,7 +83,7 @@ $make_html     = TRUE;
 $make_pdf      = TRUE;
 $make_graph    = FALSE;
 
-require(CHEMIN_DOSSIER_INCLUDE.'code_socle_releve.php');
+require('./_inc/code_socle_releve.php');
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 // Affichage du résultat
@@ -93,14 +93,14 @@ if($affichage_direct)
 {
 	echo'<hr />';
 	echo'<ul class="puce">';
-	echo'<li><a class="lien_ext" href="'.URL_DIR_EXPORT.$fichier_nom.'.pdf"><span class="file file_pdf">Archiver / Imprimer (format <em>pdf</em>).</span></a></li>';
+	echo'<li><a class="lien_ext" href="'.$dossier.$fichier_nom.'.pdf"><span class="file file_pdf">Archiver / Imprimer (format <em>pdf</em>).</span></a></li>';
 	echo'</ul>';
 	echo $releve_html;
 }
 else
 {
 	echo'<ul class="puce">';
-	echo'<li><a class="lien_ext" href="'.URL_DIR_EXPORT.$fichier_nom.'.pdf"><span class="file file_pdf">Archiver / Imprimer (format <em>pdf</em>).</span></a></li>';
+	echo'<li><a class="lien_ext" href="'.$dossier.$fichier_nom.'.pdf"><span class="file file_pdf">Archiver / Imprimer (format <em>pdf</em>).</span></a></li>';
 	echo'<li><a class="lien_ext" href="./releve-html.php?fichier='.$fichier_nom.'"><span class="file file_htm">Explorer / Détailler (format <em>html</em>).</span></a></li>';
 	echo'</ul>';
 }

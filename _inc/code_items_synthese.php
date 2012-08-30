@@ -45,7 +45,10 @@ register_shutdown_function('rapporter_erreur_fatale');
 
 // Chemins d'enregistrement
 
-$fichier_nom = ($make_action!='imprimer') ? 'releve_synthese_'.$format.'_'.Clean::fichier($groupe_nom).'_'.fabriquer_fin_nom_fichier__date_et_alea() : 'officiel_'.$BILAN_TYPE.'_'.Clean::fichier($groupe_nom).'_'.fabriquer_fin_nom_fichier__date_et_alea() ;
+$dossier     = './__tmp/export/';
+$fichier_nom = ($make_action!='imprimer') ? 'releve_synthese_'.$format.'_'.clean_fichier($groupe_nom).'_'.fabriquer_fin_nom_fichier__date_et_alea() : 'officiel_'.$BILAN_TYPE.'_'.clean_fichier($groupe_nom).'_'.fabriquer_fin_nom_fichier__date_et_alea() ;
+
+
 
 // Initialisation de tableaux
 
@@ -238,8 +241,7 @@ foreach($tab_eleve as $key => $tab)
 					$nb_acquis      = count( array_filter($tableau_score_filtre,'test_A') );
 					$nb_non_acquis  = count( array_filter($tableau_score_filtre,'test_NA') );
 					$nb_voie_acquis = $nb_scores - $nb_acquis - $nb_non_acquis;
-					// $tab_infos_acquis_eleve[$eleve_id][$matiere_id][$synthese_ref] = (!$make_officiel) ? array( 'NA'=>$nb_non_acquis , 'VA'=>$nb_voie_acquis , 'A'=>$nb_acquis ) : array( 'NA'=>$nb_non_acquis , 'VA'=>$nb_voie_acquis , 'A'=>$nb_acquis, 'nb'=>$nb_scores , '%'=>round( 50 * ( ($nb_acquis*2 + $nb_voie_acquis) / $nb_scores ) ,0) ) ;
-					$tab_infos_acquis_eleve[$eleve_id][$matiere_id][$synthese_ref] = array( 'NA'=>$nb_non_acquis , 'VA'=>$nb_voie_acquis , 'A'=>$nb_acquis );
+					$tab_infos_acquis_eleve[$eleve_id][$matiere_id][$synthese_ref] = (!$make_officiel) ? array( 'NA'=>$nb_non_acquis , 'VA'=>$nb_voie_acquis , 'A'=>$nb_acquis ) : array( 'NA'=>$nb_non_acquis , 'VA'=>$nb_voie_acquis , 'A'=>$nb_acquis, 'nb'=>$nb_scores , '%'=>round( 50 * ( ($nb_acquis*2 + $nb_voie_acquis) / $nb_scores ) ,0) ) ;
 					$tab_infos_acquis_eleve[$eleve_id][$matiere_id]['total']['NA'] += $nb_non_acquis;
 					$tab_infos_acquis_eleve[$eleve_id][$matiere_id]['total']['VA'] += $nb_voie_acquis;
 					$tab_infos_acquis_eleve[$eleve_id][$matiere_id]['total']['A']  += $nb_acquis;
@@ -316,9 +318,7 @@ if( ($make_html) || ($make_graph) )
 	$releve_HTML .= $affichage_direct ? '' : '<h2>'.html($texte_periode).'</h2>';
 	$releve_HTML .= (!$make_graph) ? '<div class="astuce">Cliquer sur <img src="./_img/toggle_plus.gif" alt="+" /> / <img src="./_img/toggle_moins.gif" alt="+" /> pour afficher / masquer le détail'.$bouton_print_appr.'</div>' : '<div id="div_graphique"></div>' ;
 	$separation = (count($tab_eleve)>1) ? '<hr class="breakafter" />' : '' ;
-	$legende_html = ($legende=='oui') ? Html::legende( FALSE /*codes_notation*/ , TRUE /*etat_acquisition*/ , FALSE /*pourcentage_acquis*/ , FALSE /*etat_validation*/ ) : '' ;
-	$width_barre = (!$make_officiel) ? 180 : 50 ;
-	$width_texte = 900 - $width_barre;
+	$legende_html = ($legende=='oui') ? affich_legende_html( FALSE /*codes_notation*/ , TRUE /*etat_acquisition*/ , FALSE /*pourcentage_acquis*/ , FALSE /*etat_validation*/ ) : '' ;
 }
 if($make_pdf)
 {
@@ -385,7 +385,7 @@ foreach($tab_eleve as $tab)
 					if($make_html)
 					{
 						$releve_HTML .= '<table class="bilan" style="width:900px;margin-bottom:0"><tbody>';
-						$releve_HTML .= '<tr><th style="width:540px">'.html($tab_matiere[$matiere_id]).'</th>'.Html::td_barre_synthese($width=360,$tab_infos_matiere['total'],$total).'</tr>';
+						$releve_HTML .= '<tr><th style="width:540px">'.html($tab_matiere[$matiere_id]).'</th>'.affich_barre_synthese_html($width=360,$tab_infos_matiere['total'],$total).'</tr>';
 						$releve_HTML .= '</tbody></table>'; // Utilisation de 2 tableaux sinon bugs constatés lors de l'affichage des détails...
 						$releve_HTML .= '<table class="bilan" style="width:900px;margin-top:0"><tbody>';
 					}
@@ -394,20 +394,30 @@ foreach($tab_eleve as $tab)
 					$nb_syntheses = count($tab_infos_matiere);
 					if($nb_syntheses)
 					{
-						$hauteur_ligne_synthese = ($make_officiel) ? ( $tab_nb_lignes[$eleve_id][$matiere_id] - $nb_lignes_matiere_intitule_et_marge ) / count($tab_infos_matiere) : 1 ;
+						$hauteur_ligne_synthese = ( $tab_nb_lignes[$eleve_id][$matiere_id] - $nb_lignes_matiere_intitule_et_marge ) / count($tab_infos_matiere) ;
 						foreach($tab_infos_matiere as $synthese_ref => $tab_infos_synthese)
 						{
-							$tab_infos_synthese = array_filter($tab_infos_synthese,'non_zero'); // Retirer les valeurs nulles
-							$total = array_sum($tab_infos_synthese) ; // La somme ne peut être nulle (sinon la matière ne se serait pas affichée)
+							if(!$make_officiel)
+							{
+								$tab_infos_synthese = array_filter($tab_infos_synthese,'non_zero'); // Retirer les valeurs nulles
+								$total = array_sum($tab_infos_synthese) ; // La somme ne peut être nulle (sinon la matière ne se serait pas affichée)
+							}
 							if($make_pdf)
 							{
-								$releve_PDF->bilan_synthese_ligne_synthese($tab_synthese[$synthese_ref],$tab_infos_synthese,$total,$hauteur_ligne_synthese);
+								if(!$make_officiel)
+								{
+									$releve_PDF->bilan_synthese_ligne_synthese($tab_synthese[$synthese_ref],$tab_infos_synthese,$total,1);
+								}
+								else
+								{
+									$releve_PDF->bilan_synthese_ligne_synthese($tab_synthese[$synthese_ref],$tab_infos_synthese,0,$hauteur_ligne_synthese);
+								}
 							}
 							if($make_html)
 							{
 								$releve_HTML .= '<tr>';
-								$releve_HTML .= Html::td_barre_synthese($width_barre,$tab_infos_synthese,$total);
-								$releve_HTML .= '<td style="width:'.$width_texte.'px">' ;
+								$releve_HTML .= (!$make_officiel) ? affich_barre_synthese_html($width=180,$tab_infos_synthese,$total) : affich_pourcentage_html( 'td' , $tab_infos_synthese , FALSE /*detail*/ , 50 /*largeur*/ ) ;
+								$releve_HTML .= (!$make_officiel) ? '<td style="width:720px">' : '<td style="width:850px">' ;
 								$releve_HTML .= '<a href="#" id="to_'.$synthese_ref.'_'.$eleve_id.'"><img src="./_img/'.$toggle_img.'.gif" alt="" title="Voir / masquer le détail des items associés." class="toggle" /></a> ';
 								$releve_HTML .= html($tab_synthese[$synthese_ref]);
 								$releve_HTML .= '<div id="'.$synthese_ref.'_'.$eleve_id.'"'.$toggle_class.'>'.implode('<br />',$tab_infos_detail_synthese[$eleve_id][$synthese_ref]).'</div>';
@@ -419,7 +429,7 @@ foreach($tab_eleve as $tab)
 					{
 						// Il est possible qu'aucun item n'ait été évalué pour un élève (absent...) : il faut quand même dessiner un cadre pour ne pas provoquer un décalage, d'autant plus qu'il peut y avoir une appréciation à côté.
 						$hauteur_ligne_synthese = $tab_nb_lignes[$eleve_id][$matiere_id] - $nb_lignes_matiere_intitule_et_marge ;
-						$releve_PDF->bilan_synthese_ligne_synthese('',array(),0,$hauteur_ligne_synthese);
+						$releve_PDF->bilan_synthese_ligne_synthese('',array('%'=>FALSE),0,$hauteur_ligne_synthese);
 					}
 					if($make_html)
 					{
@@ -574,8 +584,8 @@ foreach($tab_eleve as $tab)
 // On enregistre les sorties HTML et PDF
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
-if($make_html) { FileSystem::ecrire_fichier(CHEMIN_DOSSIER_EXPORT.$fichier_nom.'.html',$releve_HTML); }
-if($make_pdf)  { $releve_PDF->Output(CHEMIN_DOSSIER_EXPORT.$fichier_nom.'.pdf','F'); }
+if($make_html) { Ecrire_Fichier($dossier.$fichier_nom.'.html',$releve_HTML); }
+if($make_pdf)  { $releve_PDF->Output($dossier.$fichier_nom.'.pdf','F'); }
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 // On fabrique les options js pour le diagramme graphique

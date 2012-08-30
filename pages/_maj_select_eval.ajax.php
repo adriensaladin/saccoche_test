@@ -30,8 +30,8 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 if($_SESSION['SESAMATH_ID']==ID_DEMO) {}
 
-$eval_type = (isset($_POST['eval_type'])) ? Clean::texte($_POST['eval_type'])  : '';	// 'groupe' ou 'select'
-$groupe_id = (isset($_POST['groupe_id'])) ? Clean::entier($_POST['groupe_id']) : 0;	// utile uniquement pour $eval_type='groupe'
+$eval_type = (isset($_POST['eval_type'])) ? clean_texte($_POST['eval_type'])  : '';	// 'groupe' ou 'select'
+$groupe_id = (isset($_POST['groupe_id'])) ? clean_entier($_POST['groupe_id']) : 0;	// utile uniquement pour $eval_type='groupe'
 
 $tab_types = array('groupe','select');
 

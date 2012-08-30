@@ -33,27 +33,27 @@ if($_SESSION['SESAMATH_ID']==ID_DEMO) {}
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
 // info groupe
-$groupe_type = (isset($_POST['f_groupe_type'])) ? Clean::texte($_POST['f_groupe_type']) : ''; // d n c g b
-$groupe_id   = (isset($_POST['f_groupe_id']))   ? Clean::entier($_POST['f_groupe_id'])  : 0;
-$groupe_nom  = (isset($_POST['f_groupe_nom']))  ? Clean::texte($_POST['f_groupe_nom'])  : '';
+$groupe_type = (isset($_POST['f_groupe_type'])) ? clean_texte($_POST['f_groupe_type']) : ''; // d n c g b
+$groupe_id   = (isset($_POST['f_groupe_id']))   ? clean_entier($_POST['f_groupe_id'])  : 0;
+$groupe_nom  = (isset($_POST['f_groupe_nom']))  ? clean_texte($_POST['f_groupe_nom'])  : '';
 
-$critere_objet = (isset($_POST['f_critere_objet'])) ? Clean::texte($_POST['f_critere_objet']) : '';
+$critere_objet = (isset($_POST['f_critere_objet'])) ? clean_texte($_POST['f_critere_objet']) : '';
 $with_coef     = (isset($_POST['f_with_coef']))     ? 1                                      : 0;
 
 // item(s) matière(s)
 $tab_compet_liste = (isset($_POST['f_matiere_items_liste'])) ? explode('_',$_POST['f_matiere_items_liste']) : array() ;
-$tab_compet_liste = Clean::map_entier($tab_compet_liste);
+$tab_compet_liste = array_map('clean_entier',$tab_compet_liste);
 $compet_liste = implode(',',$tab_compet_liste);
 $compet_nombre = count($tab_compet_liste);
 
 // item ou pilier socle
-$socle_item_id   = (isset($_POST['f_socle_item_id'])) ? Clean::entier($_POST['f_socle_item_id']) : 0;
-$socle_pilier_id = (isset($_POST['f_select_pilier'])) ? Clean::entier($_POST['f_select_pilier']) : 0;
+$socle_item_id   = (isset($_POST['f_socle_item_id'])) ? clean_entier($_POST['f_socle_item_id']) : 0;
+$socle_pilier_id = (isset($_POST['f_select_pilier'])) ? clean_entier($_POST['f_select_pilier']) : 0;
 
 // mode de recherche (situation n°3 uniquement)
-$mode           = (isset($_POST['f_mode']))    ? Clean::texte($_POST['f_mode'])     : '';
+$mode           = (isset($_POST['f_mode']))    ? clean_texte($_POST['f_mode'])     : '';
 $tab_matiere_id = (isset($_POST['f_matiere'])) ? ( (is_array($_POST['f_matiere'])) ? $_POST['f_matiere'] : explode(',',$_POST['f_matiere']) ) : array() ;
-$tab_matiere_id = array_filter( Clean::map_entier($tab_matiere_id) , 'positif' );
+$tab_matiere_id = array_filter( array_map( 'clean_entier' , $tab_matiere_id ) , 'positif' );
 
 // Normalement ce sont des tableaux qui sont transmis, mais au cas où...
 $critere_tab_seuil_acquis = ( (isset($_POST['f_critere_seuil_acquis'])) && (is_array($_POST['f_critere_seuil_acquis'])) ) ? $_POST['f_critere_seuil_acquis'] : array();
@@ -86,7 +86,7 @@ if( (!$critere_valide) || (!$groupe_id) || (!$groupe_nom) || (!isset($tab_types[
 $tab_eleve      = array();	// [i] => array(eleve_id,eleve_nom,eleve_prenom)
 
 // Tableau des langues
-require(CHEMIN_DOSSIER_INCLUDE.'tableau_langues.php');
+require_once('./_inc/tableau_langues.php');
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 // Récupération de la liste des élèves
@@ -276,7 +276,7 @@ if( $is_matiere_items_bilanMS || $is_matiere_items_bilanPA )
 			if( in_array( $user_acquisition_etat , $critere_tab_seuil_acquis ) )
 			{
 				$checkbox = ($affichage_checkbox) ? '<td class="nu"><input type="checkbox" name="id_user[]" value="'.$user_id.'" /></td>' : '' ;
-				$tab_tr[] = '<tr>'.$checkbox.'<td>'.html($user_nom.' '.$user_prenom).'</td>'.Html::td_score( $tab_eleve_moy_scores[$user_id] , 'score' /*methode_tri*/ , $pourcent='').'</tr>';
+				$tab_tr[] = '<tr>'.$checkbox.'<td>'.html($user_nom.' '.$user_prenom).'</td>'.affich_score_html( $tab_eleve_moy_scores[$user_id] , 'score' /*methode_tri*/ , $pourcent='').'</tr>';
 			}
 		}
 		elseif($is_matiere_items_bilanPA)
@@ -288,7 +288,7 @@ if( $is_matiere_items_bilanMS || $is_matiere_items_bilanPA )
 			if( in_array( $user_acquisition_etat , $critere_tab_seuil_acquis ) )
 			{
 				$checkbox = ($affichage_checkbox) ? '<td class="nu"><input type="checkbox" name="id_user[]" value="'.$user_id.'" /></td>' : '' ;
-				$tab_tr[] = '<tr>'.$checkbox.'<td>'.html($user_nom.' '.$user_prenom).'</td>'.Html::td_pourcentage( 'td' , $tab_eleve_pourcentage[$user_id] , TRUE /*detail*/ , FALSE /*largeur*/ ).'</tr>';
+				$tab_tr[] = '<tr>'.$checkbox.'<td>'.html($user_nom.' '.$user_prenom).'</td>'.affich_pourcentage_html( 'td' , $tab_eleve_pourcentage[$user_id] , TRUE /*detail*/ , FALSE /*largeur*/ ).'</tr>';
 			}
 		}
 	}
@@ -340,7 +340,7 @@ if( $is_socle_item_pourcentage )
 			$drapeau_langue = $is_langue ? $eleve_langue : 0 ;
 			$image_langue = ($drapeau_langue) ? '<img src="./_img/drapeau/'.$drapeau_langue.'.gif" alt="" title="'.$tab_langues[$drapeau_langue]['texte'].'" /> ' : '' ;
 			$checkbox = ($affichage_checkbox) ? '<td class="nu"><input type="checkbox" name="id_user[]" value="'.$user_id.'" /></td>' : '' ;
-			$tab_tr[] = '<tr>'.$checkbox.'<td>'.$image_langue.html($user_nom.' '.$user_prenom).'</td>'.Html::td_pourcentage( 'td' , $tab_score_socle_eleve[$user_id] , TRUE /*detail*/ , FALSE /*largeur*/ ).'</tr>';
+			$tab_tr[] = '<tr>'.$checkbox.'<td>'.$image_langue.html($user_nom.' '.$user_prenom).'</td>'.affich_pourcentage_html( 'td' , $tab_score_socle_eleve[$user_id] , TRUE /*detail*/ , FALSE /*largeur*/ ).'</tr>';
 		}
 	}
 }
@@ -360,7 +360,7 @@ if( $is_socle_item_validation || $is_socle_pilier_validation )
 			$drapeau_langue = $is_langue ? $eleve_langue : 0 ;
 			$image_langue = ($drapeau_langue) ? '<img src="./_img/drapeau/'.$drapeau_langue.'.gif" alt="" title="'.$tab_langues[$drapeau_langue]['texte'].'" /> ' : '' ;
 			$checkbox = ($affichage_checkbox) ? '<td class="nu"><input type="checkbox" name="id_user[]" value="'.$user_id.'" /></td>' : '' ;
-			$tab_tr[] = '<tr>'.$checkbox.'<td>'.$image_langue.html($user_nom.' '.$user_prenom).'</td>'.Html::td_validation( 'td' , $tab_user_validation[$user_id] , $detail=true ).'</tr>';
+			$tab_tr[] = '<tr>'.$checkbox.'<td>'.$image_langue.html($user_nom.' '.$user_prenom).'</td>'.affich_validation_html( 'td' , $tab_user_validation[$user_id] , $detail=true ).'</tr>';
 		}
 	}
 }

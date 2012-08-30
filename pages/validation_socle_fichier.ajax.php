@@ -28,12 +28,15 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 if($_SESSION['SESAMATH_ID']==ID_DEMO) {exit('Action désactivée pour la démo...');}
 
-$action = (isset($_POST['f_action'])) ? Clean::texte($_POST['f_action']) : '';
-$tab_select_eleves = (isset($_POST['select_eleves'])) ? Clean::map_entier( explode(',',$_POST['select_eleves']) ) : array() ;
+$action = (isset($_POST['f_action'])) ? clean_texte($_POST['f_action']) : '';
+$tab_select_eleves = (isset($_POST['select_eleves'])) ? array_map('clean_entier',explode(',',$_POST['select_eleves'])) : array() ;
 $tab_select_eleves = array_filter($tab_select_eleves,'positif');
 $nb = count($tab_select_eleves);
 
 $top_depart = microtime(TRUE);
+
+$dossier_export = './__tmp/export/';
+$dossier_import = './__tmp/import/';
 
 //	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
 // Exporter un fichier de validations
@@ -149,7 +152,7 @@ if( in_array( $action , array('export_lpc','export_sacoche') ) && $nb )
 		}
 	}
 	$fichier_extension = ($action=='export_lpc') ? 'xml' : 'zip' ;
-	$fichier_nom = str_replace('export_','import-',$action).'-'.Clean::fichier($_SESSION['WEBMESTRE_UAI']).'_'.fabriquer_fin_nom_fichier__date_et_alea().'.'.$fichier_extension; // LPC recommande le modèle "import-lpc-{timestamp}.xml"
+	$fichier_nom = str_replace('export_','import-',$action).'-'.clean_fichier($_SESSION['WEBMESTRE_UAI']).'_'.fabriquer_fin_nom_fichier__date_et_alea().'.'.$fichier_extension; // LPC recommande le modèle "import-lpc-{timestamp}.xml"
 	if($action=='export_lpc')
 	{
 		$xml.= '	</donnees>'."\r\n";
@@ -161,14 +164,22 @@ if( in_array( $action , array('export_lpc','export_sacoche') ) && $nb )
 		{
 			exit(html($xml));
 		}
-		FileSystem::ecrire_fichier( CHEMIN_DOSSIER_EXPORT.$fichier_nom , $xml );
+		Ecrire_Fichier( $dossier_export.$fichier_nom , $xml );
 	}
 	else
 	{
 		$xml.= '	</donnees>'."\r\n";
 		$xml.= '</sacoche>'."\r\n";
 		// L'export pour SACoche on peut le zipper (le gain est très significatif : facteur 40 à 50 !)
-		FileSystem::zip( CHEMIN_DOSSIER_EXPORT.$fichier_nom , 'import_validations.xml' , $xml );
+		$zip = new ZipArchive();
+		$result_open = $zip->open($dossier_export.$fichier_nom, ZIPARCHIVE::CREATE);
+		if($result_open!==TRUE)
+		{
+			require('./_inc/tableau_zip_error.php');
+			exit('Erreur : problème de création de l\'archive ZIP ('.$result_open.$tab_zip_error[$result_open].') !');
+		}
+		$zip->addFromString('import_validations.xml',$xml);
+		$zip->close();
 	}
 	// Afficher le retour
 	$se = ($nb_eleves>1)  ? 's' : '' ;
@@ -176,7 +187,7 @@ if( in_array( $action , array('export_lpc','export_sacoche') ) && $nb )
 	$si = ($nb_items>1)   ? 's' : '' ;
 	$in = $only_positives ? '' : '(in)-' ;
 	echo'<li><label class="valide">Fichier d\'export généré : '.$nb_piliers.' '.$in.'validation'.$sp.' de compétence'.$sp.' et '.$nb_items.' '.$in.'validation'.$si.' d\'item'.$si.' concernant '.$nb_eleves.' élève'.$se.'.</label></li>';
-	echo'<li><a class="lien_ext" href="'.URL_DIR_EXPORT.$fichier_nom.'"><span class="file file_'.$fichier_extension.'">Récupérez le fichier au format <em>'.$fichier_extension.'</em>. <img alt="" src="./_img/bulle_aide.png" title="Si le navigateur ouvre le fichier au lieu de l\'enregistrer, cliquer avec le bouton droit et choisir «&nbsp;Enregistrer&nbsp;sous...&nbsp;»." /></span></a></li>';
+	echo'<li><a class="lien_ext" href="'.$dossier_export.$fichier_nom.'"><span class="file file_'.$fichier_extension.'">Récupérez le fichier au format <em>'.$fichier_extension.'</em>. <img alt="" src="./_img/bulle_aide.png" title="Si le navigateur ouvre le fichier au lieu de l\'enregistrer, cliquer avec le bouton droit et choisir «&nbsp;Enregistrer&nbsp;sous...&nbsp;»." /></span></a></li>';
 	echo'<li>Vous devrez indiquer dans <em>lpc</em> les dates suivantes : <span class="b">'.html(CNIL_DATE_ENGAGEMENT).'</span> (déclaration <em>cnil</em>) et <span class="b">'.html(CNIL_DATE_RECEPISSE).'</span> (retour du récépissé).</li>';
 	echo'<li><label class="alerte">Pour des raisons de sécurité et de confidentialité, ce fichier sera effacé du serveur dans 1h.</label></li>';
 	exit();
@@ -195,7 +206,8 @@ if( in_array( $action , array('import_sacoche','import_compatible') ) )
 	$ferreur = $tab_file['error'];
 	if( (!file_exists($fnom_serveur)) || (!$ftaille) || ($ferreur) )
 	{
-		exit('Erreur : problème de transfert ! Fichier trop lourd ? '.InfoServeur::minimum_limitations_upload());
+		require_once('./_inc/fonction_infos_serveur.php');
+		exit('Erreur : problème de transfert ! Fichier trop lourd ? min(memory_limit,post_max_size,upload_max_filesize)='.minimum_limitations_upload());
 	}
 	$extension = strtolower(pathinfo($fnom_transmis,PATHINFO_EXTENSION));
 	if(!in_array($extension,array('xml','zip')))
@@ -205,22 +217,38 @@ if( in_array( $action , array('import_sacoche','import_compatible') ) )
 	$fichier_upload_nom = 'import_validations_'.$_SESSION['BASE'].'_'.fabriquer_fin_nom_fichier__date_et_alea().'.xml';
 	if($extension!='zip')
 	{
-		if(!move_uploaded_file($fnom_serveur , CHEMIN_DOSSIER_IMPORT.$fichier_upload_nom))
+		if(!move_uploaded_file($fnom_serveur , $dossier_import.$fichier_upload_nom))
 		{
 			exit('Erreur : le fichier n\'a pas pu être enregistré sur le serveur.');
 		}
 	}
 	else
 	{
-		// Dézipper le fichier (on considère alors que c'est un zip venant de SACoche et contenant import_validations.xml)
+		// Dézipper le fichier
 		if(extension_loaded('zip')!==TRUE)
 		{
 			exit('Erreur : le serveur ne gère pas les fichiers ZIP ! Renvoyez votre fichier sans compression.');
 		}
-		unzip_one( $fnom_serveur , 'import_validations.xml' , $fichier_upload_nom );
+		$zip = new ZipArchive();
+		$result_open = $zip->open($fnom_serveur);
+		if($result_open!==TRUE)
+		{
+			require('./_inc/tableau_zip_error.php');
+			exit('Erreur : votre archive ZIP n\'a pas pu être ouverte ('.$result_open.$tab_zip_error[$result_open].') !');
+		}
+		$nom_fichier_extrait = 'import_validations.xml';
+		if($zip->extractTo($dossier_import,$nom_fichier_extrait)!==TRUE)
+		{
+			exit('Erreur : fichier '.$nom_fichier_extrait.' non trouvé dans l\'archive ZIP !');
+		}
+		$zip->close();
+		if(!rename($dossier_import.$nom_fichier_extrait , $dossier_import.$fichier_upload_nom))
+		{
+			exit('Erreur : le fichier n\'a pas pu être enregistré sur le serveur.');
+		}
 	}
-	$fichier_contenu = file_get_contents(CHEMIN_DOSSIER_IMPORT.$fichier_upload_nom);
-	$fichier_contenu = To::utf8($fichier_contenu); // Mettre en UTF-8 si besoin
+	$fichier_contenu = file_get_contents($dossier_import.$fichier_upload_nom);
+	$fichier_contenu = utf8($fichier_contenu); // Mettre en UTF-8 si besoin
 	$xml = @simplexml_load_string($fichier_contenu);
 	if($xml===FALSE)
 	{
@@ -232,25 +260,25 @@ if( in_array( $action , array('import_sacoche','import_compatible') ) )
 	{
 		foreach ($xml->donnees->eleve as $eleve)
 		{
-			$tab_eleve_fichier['sconet_id'][] = Clean::entier($eleve->attributes()->id);
-			$tab_eleve_fichier['nom'][]       = Clean::nom($eleve->attributes()->nom);
-			$tab_eleve_fichier['prenom'][]    = Clean::prenom($eleve->attributes()->prenom);
+			$tab_eleve_fichier['sconet_id'][] = clean_entier($eleve->attributes()->id);
+			$tab_eleve_fichier['nom'][]       = clean_nom($eleve->attributes()->nom);
+			$tab_eleve_fichier['prenom'][]    = clean_prenom($eleve->attributes()->prenom);
 			// Indication des (in-)validations
 			$tab_validations = array();
 			if($eleve->palier)
 			{
 				foreach ($eleve->palier as $palier)
 				{
-					$palier_id = Clean::entier($palier->attributes()->id);
+					$palier_id = clean_entier($palier->attributes()->id);
 					if($palier->competence)
 					{
 						foreach ($palier->competence as $competence)
 						{
-							$pilier_id = Clean::entier($competence->attributes()->id);
+							$pilier_id = clean_entier($competence->attributes()->id);
 							if( ($competence->validation) && ($competence->validation->date) )
 							{
-								$date = Clean::texte($competence->validation->date) ;
-								$etat = ($competence->validation->etat) ? Clean::entier($competence->validation->etat) : 1 ;
+								$date = clean_texte($competence->validation->date) ;
+								$etat = ($competence->validation->etat) ? clean_entier($competence->validation->etat) : 1 ;
 								$info = ($competence->validation->info) ? html_decode($competence->validation->info) : $action ;
 								$tab_validations['pilier'][$pilier_id] = array('date'=>$date,'etat'=>$etat,'info'=>$info);
 							}
@@ -260,9 +288,9 @@ if( in_array( $action , array('import_sacoche','import_compatible') ) )
 								{
 									if( ($item->renseignement) && ($item->renseignement->date) )
 									{
-										$item_id = Clean::entier($item->attributes()->id);
-										$date = Clean::texte($item->renseignement->date) ;
-										$etat = ($item->renseignement->etat) ? Clean::entier($item->renseignement->etat) : 1 ;
+										$item_id = clean_entier($item->attributes()->id);
+										$date = clean_texte($item->renseignement->date) ;
+										$etat = ($item->renseignement->etat) ? clean_entier($item->renseignement->etat) : 1 ;
 										$info = ($item->renseignement->info) ? html_decode($item->renseignement->info) : $action ;
 										$tab_validations['entree'][$item_id] = array('date'=>$date,'etat'=>$etat,'info'=>$info);
 									}

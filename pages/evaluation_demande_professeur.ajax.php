@@ -28,22 +28,22 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 if(($_SESSION['SESAMATH_ID']==ID_DEMO)&&($_POST['f_action']!='Afficher_demandes')){exit('Action désactivée pour la démo...');}
 
-$action        = (isset($_POST['f_action']))        ? Clean::texte($_POST['f_action'])        : '';			// pour le form0
-$action        = (isset($_POST['f_quoi']))          ? Clean::texte($_POST['f_quoi'])          : $action;	// pour le form1
-$matiere_id    = (isset($_POST['f_matiere']))       ? Clean::entier($_POST['f_matiere'])      : 0;
-$matiere_nom   = (isset($_POST['f_matiere_nom']))   ? Clean::texte($_POST['f_matiere_nom'])   : '';
-$groupe_id     = (isset($_POST['f_groupe_id']))     ? Clean::entier($_POST['f_groupe_id'])    : 0;			// C'est l'id du groupe d'appartenance de l'élève, pas l'id du groupe associé à un devoir
-$groupe_type   = (isset($_POST['f_groupe_type']))   ? Clean::texte($_POST['f_groupe_type'])   : '';
-$groupe_nom    = (isset($_POST['f_groupe_nom']))    ? Clean::texte($_POST['f_groupe_nom'])    : '';
+$action        = (isset($_POST['f_action']))        ? clean_texte($_POST['f_action'])        : '';			// pour le form0
+$action        = (isset($_POST['f_quoi']))          ? clean_texte($_POST['f_quoi'])          : $action;	// pour le form1
+$matiere_id    = (isset($_POST['f_matiere']))       ? clean_entier($_POST['f_matiere'])      : 0;
+$matiere_nom   = (isset($_POST['f_matiere_nom']))   ? clean_texte($_POST['f_matiere_nom'])   : '';
+$groupe_id     = (isset($_POST['f_groupe_id']))     ? clean_entier($_POST['f_groupe_id'])    : 0;			// C'est l'id du groupe d'appartenance de l'élève, pas l'id du groupe associé à un devoir
+$groupe_type   = (isset($_POST['f_groupe_type']))   ? clean_texte($_POST['f_groupe_type'])   : '';
+$groupe_nom    = (isset($_POST['f_groupe_nom']))    ? clean_texte($_POST['f_groupe_nom'])    : '';
 
-$qui           = (isset($_POST['f_qui']))           ? Clean::texte($_POST['f_qui'])           : '';
-$date          = (isset($_POST['f_date']))          ? Clean::texte($_POST['f_date'])          : '';
-$date_visible  = (isset($_POST['f_date_visible']))  ? Clean::texte($_POST['f_date_visible'])  : '';
-$date_autoeval = (isset($_POST['f_date_autoeval'])) ? Clean::texte($_POST['f_date_autoeval']) : '';
-$info          = (isset($_POST['f_info']))          ? Clean::texte($_POST['f_info'])          : '';
-$devoir_ids    = (isset($_POST['f_devoir']))        ? Clean::texte($_POST['f_devoir'])        : '';
-$suite         = (isset($_POST['f_suite']))         ? Clean::texte($_POST['f_suite'])         : '';
-$message       = (isset($_POST['f_message']))       ? Clean::texte($_POST['f_message'])       : '' ;
+$qui           = (isset($_POST['f_qui']))           ? clean_texte($_POST['f_qui'])           : '';
+$date          = (isset($_POST['f_date']))          ? clean_texte($_POST['f_date'])          : '';
+$date_visible  = (isset($_POST['f_date_visible']))  ? clean_texte($_POST['f_date_visible'])  : '';
+$date_autoeval = (isset($_POST['f_date_autoeval'])) ? clean_texte($_POST['f_date_autoeval']) : '';
+$info          = (isset($_POST['f_info']))          ? clean_texte($_POST['f_info'])          : '';
+$devoir_ids    = (isset($_POST['f_devoir']))        ? clean_texte($_POST['f_devoir'])        : '';
+$suite         = (isset($_POST['f_suite']))         ? clean_texte($_POST['f_suite'])         : '';
+$message       = (isset($_POST['f_message']))       ? clean_texte($_POST['f_message'])       : '' ;
 
 $tab_demande_id = array();
 $tab_user_id    = array();
@@ -61,9 +61,9 @@ if(count($tab_ids))
 		$tab_item_id[]    = $tab_id[2];
 		$tab_user_item[]  = (int)$tab_id[1].'x'.(int)$tab_id[2];
 	}
-	$tab_demande_id = array_filter( Clean::map_entier($tab_demande_id)            ,'positif');
-	$tab_user_id    = array_filter( Clean::map_entier(array_unique($tab_user_id)) ,'positif');
-	$tab_item_id    = array_filter( Clean::map_entier(array_unique($tab_item_id)) ,'positif');
+	$tab_demande_id = array_filter( array_map('clean_entier',$tab_demande_id)            ,'positif');
+	$tab_user_id    = array_filter( array_map('clean_entier',array_unique($tab_user_id)) ,'positif');
+	$tab_item_id    = array_filter( array_map('clean_entier',array_unique($tab_item_id)) ,'positif');
 }
 $nb_demandes = count($tab_demande_id);
 $nb_users    = count($tab_user_id);
@@ -119,7 +119,7 @@ if( ($action=='Afficher_demandes') && $matiere_id && $matiere_nom && $groupe_id 
 		$retour .= '<td class="label">$'.$DB_ROW['item_id'].'$</td>';
 		$retour .= '<td class="label">'.html($groupe_nom).'</td>';
 		$retour .= '<td class="label">'.html($tab_eleves[$DB_ROW['user_id']]).'</td>';
-		$retour .= str_replace( '<td class="' , '<td class="label ' , Html::td_score($score,'score',$pourcent='') );
+		$retour .= str_replace( '<td class="' , '<td class="label ' , affich_score_html($score,'score',$pourcent='') );
 		$retour .= '<td class="label"><i>'.html($DB_ROW['demande_date']).'</i>'.convert_date_mysql_to_french($DB_ROW['demande_date']).'</td>';
 		$retour .= '<td class="label">'.$statut.'</td>';
 		$retour .= '<td class="label">'.$commentaire.'</td>';

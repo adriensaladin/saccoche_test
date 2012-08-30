@@ -31,18 +31,18 @@ $TITRE = "Synthèse d'une matière";
 
 <?php
 // L'élève ne choisit évidemment pas sa classe ni nom nom, mais on construit qd même les formulaires, on les remplit et on les cache (permet un code unique et une transmission des infos en ajax comme pour les autres profils).
-Form::load_choix_memo();
-$check_synthese_predefini = (Form::$tab_choix['mode_synthese']=='predefini') ? ' checked' : '' ;
-$check_synthese_domaine   = (Form::$tab_choix['mode_synthese']=='domaine')   ? ' checked' : '' ;
-$check_synthese_theme     = (Form::$tab_choix['mode_synthese']=='theme')     ? ' checked' : '' ;
-$check_retro_oui          = (Form::$tab_choix['retroactif']=='oui') ? ' checked' : '' ;
-$check_retro_non          = (Form::$tab_choix['retroactif']=='non') ? ' checked' : '' ;
-$check_only_socle         = (Form::$tab_choix['only_socle'])        ? ' checked' : '' ;
-$check_only_niveau        = (Form::$tab_choix['only_niveau'])       ? ' checked' : '' ;
-$check_aff_coef           = (Form::$tab_choix['aff_coef'])          ? ' checked' : '' ;
-$check_aff_socle          = (Form::$tab_choix['aff_socle'])         ? ' checked' : '' ;
-$check_aff_lien           = (Form::$tab_choix['aff_lien'])          ? ' checked' : '' ;
-$check_aff_start          = (Form::$tab_choix['aff_start'])         ? ' checked' : '' ;
+Formulaire::load_choix_memo();
+$check_synthese_predefini = (Formulaire::$tab_choix['mode_synthese']=='predefini') ? ' checked' : '' ;
+$check_synthese_domaine   = (Formulaire::$tab_choix['mode_synthese']=='domaine')   ? ' checked' : '' ;
+$check_synthese_theme     = (Formulaire::$tab_choix['mode_synthese']=='theme')     ? ' checked' : '' ;
+$check_retro_oui          = (Formulaire::$tab_choix['retroactif']=='oui') ? ' checked' : '' ;
+$check_retro_non          = (Formulaire::$tab_choix['retroactif']=='non') ? ' checked' : '' ;
+$check_only_socle         = (Formulaire::$tab_choix['only_socle'])        ? ' checked' : '' ;
+$check_only_niveau        = (Formulaire::$tab_choix['only_niveau'])       ? ' checked' : '' ;
+$check_aff_coef           = (Formulaire::$tab_choix['aff_coef'])          ? ' checked' : '' ;
+$check_aff_socle          = (Formulaire::$tab_choix['aff_socle'])         ? ' checked' : '' ;
+$check_aff_lien           = (Formulaire::$tab_choix['aff_lien'])          ? ' checked' : '' ;
+$check_aff_start          = (Formulaire::$tab_choix['aff_start'])         ? ' checked' : '' ;
 if($_SESSION['USER_PROFIL']=='directeur')
 {
 	$tab_groupes  = DB_STRUCTURE_COMMUN::DB_OPT_classes_groupes_etabl();
@@ -61,7 +61,7 @@ if($_SESSION['USER_PROFIL']=='professeur')
 }
 if( ($_SESSION['USER_PROFIL']=='parent') && ($_SESSION['NB_ENFANTS']!=1) )
 {
-	$tab_groupes  = $_SESSION['OPT_PARENT_CLASSES']; Form::$tab_select_optgroup = array('classe'=>'Classes');
+	$tab_groupes  = $_SESSION['OPT_PARENT_CLASSES']; Formulaire::$tab_select_optgroup = array('classe'=>'Classes');
 	$tab_matieres = DB_STRUCTURE_COMMUN::DB_OPT_matieres_etabl();
 	$of_g = 'oui'; $sel_g = false; $class_form_eleve = 'show'; $class_form_periode = 'hide'; $class_form_option = 'hide';
 	$multiple_eleve = ''; // volontaire
@@ -69,7 +69,7 @@ if( ($_SESSION['USER_PROFIL']=='parent') && ($_SESSION['NB_ENFANTS']!=1) )
 }
 if( ($_SESSION['USER_PROFIL']=='parent') && ($_SESSION['NB_ENFANTS']==1) )
 {
-	$tab_groupes  = array(0=>array('valeur'=>$_SESSION['ELEVE_CLASSE_ID'],'texte'=>$_SESSION['ELEVE_CLASSE_NOM'],'optgroup'=>'classe')); Form::$tab_select_optgroup = array('classe'=>'Classes');
+	$tab_groupes  = array(0=>array('valeur'=>$_SESSION['ELEVE_CLASSE_ID'],'texte'=>$_SESSION['ELEVE_CLASSE_NOM'],'optgroup'=>'classe')); Formulaire::$tab_select_optgroup = array('classe'=>'Classes');
 	$tab_matieres = DB_STRUCTURE_COMMUN::DB_OPT_matieres_eleve($_SESSION['OPT_PARENT_ENFANTS'][0]['valeur']);
 	$of_g = 'non'; $sel_g = true; $class_form_eleve = 'hide'; $class_form_periode = 'show'; $class_form_option = 'hide';
 	$multiple_eleve = '';
@@ -77,7 +77,7 @@ if( ($_SESSION['USER_PROFIL']=='parent') && ($_SESSION['NB_ENFANTS']==1) )
 }
 if($_SESSION['USER_PROFIL']=='eleve')
 {
-	$tab_groupes  = array(0=>array('valeur'=>$_SESSION['ELEVE_CLASSE_ID'],'texte'=>$_SESSION['ELEVE_CLASSE_NOM'],'optgroup'=>'classe')); Form::$tab_select_optgroup = array('classe'=>'Classes');
+	$tab_groupes  = array(0=>array('valeur'=>$_SESSION['ELEVE_CLASSE_ID'],'texte'=>$_SESSION['ELEVE_CLASSE_NOM'],'optgroup'=>'classe')); Formulaire::$tab_select_optgroup = array('classe'=>'Classes');
 	$tab_matieres = DB_STRUCTURE_COMMUN::DB_OPT_matieres_eleve($_SESSION['USER_ID']);
 	$of_g = 'non'; $sel_g = true;  $class_form_eleve = 'hide'; $class_form_periode = 'show'; $class_form_option = 'show';
 	$multiple_eleve = '';
@@ -85,12 +85,12 @@ if($_SESSION['USER_PROFIL']=='eleve')
 }
 $tab_periodes = DB_STRUCTURE_COMMUN::DB_OPT_periodes_etabl();
 
-$select_groupe    = Form::afficher_select($tab_groupes                      , $select_nom='f_groupe'    , $option_first=$of_g , $selection=$sel_g                               , $optgroup='oui'); // optgroup à oui y compris pour les élèves (formulaire invisible) car recherche du type de groupe dans le js
-$select_matiere   = Form::afficher_select($tab_matieres                     , $select_nom='f_matiere'   , $option_first='oui' , $selection=Form::$tab_choix['matiere_id'] , $optgroup='non');
-$select_periode   = Form::afficher_select($tab_periodes                     , $select_nom='f_periode'   , $option_first='val' , $selection=false                                , $optgroup='non');
-$select_marge_min = Form::afficher_select(Form::$tab_select_marge_min , $select_nom='f_marge_min' , $option_first='non' , $selection=Form::$tab_choix['marge_min']  , $optgroup='non');
-$select_couleur   = Form::afficher_select(Form::$tab_select_couleur   , $select_nom='f_couleur'   , $option_first='non' , $selection=Form::$tab_choix['couleur']    , $optgroup='non');
-$select_legende   = Form::afficher_select(Form::$tab_select_legende   , $select_nom='f_legende'   , $option_first='non' , $selection=Form::$tab_choix['legende']    , $optgroup='non');
+$select_groupe    = Formulaire::afficher_select($tab_groupes                      , $select_nom='f_groupe'    , $option_first=$of_g , $selection=$sel_g                               , $optgroup='oui'); // optgroup à oui y compris pour les élèves (formulaire invisible) car recherche du type de groupe dans le js
+$select_matiere   = Formulaire::afficher_select($tab_matieres                     , $select_nom='f_matiere'   , $option_first='oui' , $selection=Formulaire::$tab_choix['matiere_id'] , $optgroup='non');
+$select_periode   = Formulaire::afficher_select($tab_periodes                     , $select_nom='f_periode'   , $option_first='val' , $selection=false                                , $optgroup='non');
+$select_marge_min = Formulaire::afficher_select(Formulaire::$tab_select_marge_min , $select_nom='f_marge_min' , $option_first='non' , $selection=Formulaire::$tab_choix['marge_min']  , $optgroup='non');
+$select_couleur   = Formulaire::afficher_select(Formulaire::$tab_select_couleur   , $select_nom='f_couleur'   , $option_first='non' , $selection=Formulaire::$tab_choix['couleur']    , $optgroup='non');
+$select_legende   = Formulaire::afficher_select(Formulaire::$tab_select_legende   , $select_nom='f_legende'   , $option_first='non' , $selection=Formulaire::$tab_choix['legende']    , $optgroup='non');
 
 // Dates par défaut de début et de fin
 $annee_debut = (date('n')>8) ? date('Y') : date('Y')-1 ;

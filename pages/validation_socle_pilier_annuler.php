@@ -32,7 +32,7 @@ $TITRE = "Annuler une compétence validée du socle";
 
 <?php
 // Indication des profils ayant accès à cette page
-require(CHEMIN_DOSSIER_INCLUDE.'tableau_profils.php'); // Charge $tab_profil_libelle[$profil][court|long][1|2]
+require_once('./_inc/tableau_profils.php'); // Charge $tab_profil_libelle[$profil][court|long][1|2]
 $tab_profils = array('directeur','professeur','profprincipal');
 $str_objet = str_replace( array(',aucunprof','aucunprof,','aucunprof') , '' , $_SESSION['DROIT_ANNULATION_PILIER'] );
 foreach($tab_profils as $profil)
@@ -41,7 +41,7 @@ foreach($tab_profils as $profil)
 }
 $texte = ($str_objet=='') ? 'aucun' : ( (strpos($str_objet,',')===FALSE) ? 'uniquement les '.$str_objet : str_replace(',',' + ',$str_objet) ) ;
 
-Form::load_choix_memo();
+Formulaire::load_choix_memo();
 if( ($_SESSION['USER_PROFIL']=='directeur') && (strpos($_SESSION['DROIT_ANNULATION_PILIER'],'directeur')!==FALSE) )
 {
 	$tab_groupes = DB_STRUCTURE_COMMUN::DB_OPT_classes_groupes_etabl();
@@ -65,8 +65,8 @@ else
 $tab_paliers = DB_STRUCTURE_COMMUN::DB_OPT_paliers_etabl();
 $of_p = (count($tab_paliers)<2) ? 'non' : 'oui' ;
 
-$select_palier = Form::afficher_select($tab_paliers , $select_nom='f_palier' , $option_first=$of_p , $selection=Form::$tab_choix['palier_id'] , $optgroup='non');
-$select_groupe = Form::afficher_select($tab_groupes , $select_nom='f_groupe' , $option_first=$of_g , $selection=false                               , $optgroup=$og_g);
+$select_palier = Formulaire::afficher_select($tab_paliers , $select_nom='f_palier' , $option_first=$of_p , $selection=Formulaire::$tab_choix['palier_id'] , $optgroup='non');
+$select_groupe = Formulaire::afficher_select($tab_groupes , $select_nom='f_groupe' , $option_first=$of_g , $selection=false                               , $optgroup=$og_g);
 ?>
 
 <ul class="puce">

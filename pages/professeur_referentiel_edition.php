@@ -31,7 +31,7 @@ $TITRE = "Modifier le contenu des référentiels";
 
 <?php
 // Indication des profils ayant accès à cette page
-require(CHEMIN_DOSSIER_INCLUDE.'tableau_profils.php'); // Charge $tab_profil_libelle[$profil][court|long][1|2]
+require_once('./_inc/tableau_profils.php'); // Charge $tab_profil_libelle[$profil][court|long][1|2]
 $tab_profils = array('professeur','profcoordonnateur','aucunprof');
 $texte_profil = $_SESSION['DROIT_GERER_REFERENTIEL'];
 foreach($tab_profils as $profil)
@@ -73,7 +73,7 @@ else
 			$icone_action  = ($matiere_droit) ? '<q class="modifier" title="Modifier les référentiels de cette matière."></q>' : '<q class="modifier_non" title="Accès restreint : '.$texte_profil.'."></q>' ;
 			$tab_matiere[$DB_ROW['matiere_id']] = array( 
 				'matiere_nom' => html($DB_ROW['matiere_nom']) ,
-				'matiere_ref' => Clean::fichier($DB_ROW['matiere_ref']) ,
+				'matiere_ref' => clean_fichier($DB_ROW['matiere_ref']) ,
 				'matiere_col' => '<td class="nu" id="td_'.$DB_ROW['matiere_id'].'">'.$icone_action.'</td>' ,
 				'niveau_nb'=>1
 			);

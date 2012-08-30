@@ -80,7 +80,7 @@ else
 				echo	'<td><i>'.html($DB_ROW['demande_date']).'</i>'.convert_date_mysql_to_french($DB_ROW['demande_date']).'</td>';
 				echo	'<td>'.html($DB_ROW['matiere_nom']).'</td>';
 				echo	'<td>'.$texte_lien_avant.html($DB_ROW['item_ref']).$texte_lien_apres.' <img alt="" src="./_img/bulle_aide.png" title="'.html($DB_ROW['item_nom']).'" /></td>';
-				echo	Html::td_score($score,'score',$pourcent='');
+				echo	affich_score_html($score,'score',$pourcent='');
 				echo	'<td>'.$statut.'</td>';
 				echo	'<td>'.$commentaire.'</td>';
 				echo	'<td class="nu"><q class="supprimer" title="Supprimer cette demande d\'évaluation."></q></td>';

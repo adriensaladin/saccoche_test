@@ -27,12 +27,12 @@
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 
-$tab_base_id = (isset($_POST['f_listing_id'])) ? array_filter( Clean::map_entier( explode(',',$_POST['f_listing_id']) ) , 'positif' ) : array() ;
+$tab_base_id = (isset($_POST['f_listing_id'])) ? array_filter( array_map( 'clean_entier' , explode(',',$_POST['f_listing_id']) ) , 'positif' ) : array() ;
 $nb_bases    = count($tab_base_id);
 
-$action = (isset($_POST['f_action'])) ? Clean::texte($_POST['f_action']) : '';
-$num    = (isset($_POST['num']))      ? Clean::entier($_POST['num'])     : 0 ;	// Numéro de l'étape en cours
-$max    = (isset($_POST['max']))      ? Clean::entier($_POST['max'])     : 0 ;	// Nombre d'étapes à effectuer
+$action = (isset($_POST['f_action'])) ? clean_texte($_POST['f_action']) : '';
+$num    = (isset($_POST['num']))      ? clean_entier($_POST['num'])     : 0 ;	// Numéro de l'étape en cours
+$max    = (isset($_POST['max']))      ? clean_entier($_POST['max'])     : 0 ;	// Nombre d'étapes à effectuer
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 // Récupération de la liste des structures avant recherche des stats

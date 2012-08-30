@@ -33,8 +33,11 @@ $tab_messages_erreur = array();
 // Atteste l'appel de cette page avant l'inclusion d'une autre
 define('SACoche','index');
 
-// Constantes / Configuration serveur / Autoload classes / Fonction de sortie
-require('./_inc/_loader.php');
+// Constantes / Fonctions de redirections / Configuration serveur / Session
+require_once('./_inc/constantes.php');
+require_once('./_inc/fonction_redirection.php');
+require_once('./_inc/config_serveur.php');
+require_once('./_inc/fonction_sessions.php');
 
 // Page et section appelées ; normalement transmis en $_GET mais $_POST possibles depuis GEPI
     if(isset($_GET['page']))  { $PAGE = $_GET['page']; }
@@ -46,17 +49,18 @@ elseif(isset($_POST['section'])) { $SECTION = $_POST['section']; }
 else                             { $SECTION = ''; }
 
 // Fichier d'informations sur l'hébergement (requis avant la gestion de la session).
-if(is_file(CHEMIN_FICHIER_CONFIG_INSTALL))
+$fichier_constantes = CHEMIN_CONFIG.'constantes.php';
+if(is_file($fichier_constantes))
 {
-	require(CHEMIN_FICHIER_CONFIG_INSTALL);
+	require_once($fichier_constantes);
 }
 elseif($PAGE!='public_installation')
 {
-	exit_error( 'Informations hébergement manquantes' /*titre*/ , 'Les informations relatives à l\'hébergeur n\'ont pas été trouvées.' /*contenu*/ , TRUE /*setup*/ );
+	affich_message_exit($titre='Informations hébergement manquantes',$contenu='Informations concernant l\'hébergeur manquantes.',$lien='<a href="./index.php?page=public_installation">Procédure d\'installation de SACoche.</a>');
 }
 
 // Le fait de lister les droits d'accès de chaque page empêche de surcroit l'exploitation d'une vulnérabilité "include PHP" (http://www.certa.ssi.gouv.fr/site/CERTA-2003-ALE-003/).
-require(CHEMIN_DOSSIER_INCLUDE.'tableau_droits.php');
+require_once('./_inc/tableau_droits.php');
 if(!isset($tab_droits[$PAGE]))
 {
 	$tab_messages_erreur[] = 'Erreur : droits de la page "'.$PAGE.'" manquants.';
@@ -64,36 +68,41 @@ if(!isset($tab_droits[$PAGE]))
 }
 
 // Ouverture de la session et gestion des droits d'accès
-Session::execute($tab_droits[$PAGE]);
+gestion_session($tab_droits[$PAGE]);
 
 // Pour le devel
 if (DEBUG) afficher_infos_debug();
 
-// Blocage éventuel par le webmestre ou un administrateur ou l'automate (on ne peut pas le tester avant car il faut avoir récupéré les données de session)
-LockAcces::stopper_si_blocage( $_SESSION['BASE'] , FALSE /*demande_connexion_profil*/ );
+// Blocage éventuel par le webmestre ou un administrateur (on ne peut pas le tester avant car il faut avoir récupéré les données de session)
+tester_blocage_application($_SESSION['BASE'],$demande_connexion_profil=false);
 
 // Autres fonctions à charger
-require(CHEMIN_DOSSIER_INCLUDE.'fonction_divers.php');
+require_once('./_inc/fonction_clean.php');
+require_once('./_inc/fonction_divers.php');
+require_once('./_inc/fonction_affichage.php');
+
+// Annuler un blocage par l'automate anormalement long
+annuler_blocage_anormal();
 
 // Patch fichier de config
-if(is_file(CHEMIN_FICHIER_CONFIG_INSTALL))
+if(is_file($fichier_constantes))
 {
 	// DEBUT PATCH CONFIG 1
-	// A compter du 05/12/2010, ajout de paramètres dans le fichier de constantes pour paramétrer cURL. [TODO] peut être retiré dans un an environ
+	// A compter du 05/12/2010, ajout de paramètres dans le fichier de constantes pour paramétrer cURL. [à retirer dans quelques mois]
 	if(!defined('SERVEUR_PROXY_USED'))
 	{
 		fabriquer_fichier_hebergeur_info( array('SERVEUR_PROXY_USED'=>'','SERVEUR_PROXY_NAME'=>'','SERVEUR_PROXY_PORT'=>'','SERVEUR_PROXY_TYPE'=>'','SERVEUR_PROXY_AUTH_USED'=>'','SERVEUR_PROXY_AUTH_METHOD'=>'','SERVEUR_PROXY_AUTH_USER'=>'','SERVEUR_PROXY_AUTH_PASS'=>'') );
 	}
 	// FIN PATCH CONFIG 1
 	// DEBUT PATCH CONFIG 2
-	// A compter du 26/05/2011, ajout de paramètres dans le fichier de constantes pour les dates CNIL. [TODO] peut être retiré dans un an environ
+	// A compter du 26/05/2011, ajout de paramètres dans le fichier de constantes pour les dates CNIL. [à retirer dans quelques mois]
 	if(!defined('CNIL_NUMERO'))
 	{
 		fabriquer_fichier_hebergeur_info( array('CNIL_NUMERO'=>HEBERGEUR_CNIL,'CNIL_DATE_ENGAGEMENT'=>'','CNIL_DATE_RECEPISSE'=>'') );
 	}
 	// FIN PATCH CONFIG 2
 	// DEBUT PATCH CONFIG 3
-	// A compter du 14/03/2012, ajout de paramètres dans le fichier de constantes pour les fichiers associés aux devoirs. [TODO] peut être retiré dans un an environ
+	// A compter du 14/03/2012, ajout de paramètres dans le fichier de constantes pour les fichiers associés aux devoirs. [à retirer dans quelques mois]
 	if(!defined('FICHIER_DUREE_CONSERVATION'))
 	{
 		fabriquer_fichier_hebergeur_info( array('FICHIER_TAILLE_MAX'=>500,'FICHIER_DUREE_CONSERVATION'=>12) );
@@ -101,8 +110,8 @@ if(is_file(CHEMIN_FICHIER_CONFIG_INSTALL))
 	// FIN PATCH CONFIG 3
 }
 
-// Interface de connexion à la base, chargement et config (test sur CHEMIN_FICHIER_CONFIG_INSTALL car à éviter si procédure d'installation non terminée).
-if(is_file(CHEMIN_FICHIER_CONFIG_INSTALL))
+// Interface de connexion à la base, chargement et config (test sur $fichier_constantes car à éviter si procédure d'installation non terminée).
+if(is_file($fichier_constantes))
 {
 	// Choix des paramètres de connexion à la base de données adaptée...
 	// ...multi-structure ; base sacoche_structure_***
@@ -125,35 +134,37 @@ if(is_file(CHEMIN_FICHIER_CONFIG_INSTALL))
 	}
 	else
 	{
-		exit_error( 'Configuration anormale' /*titre*/ , 'Une anomalie dans les données d\'hébergement et/ou de session empêche l\'application de se poursuivre.' /*contenu*/ );
+		affich_message_exit($titre='Configuration anormale',$contenu='Une anomalie dans les données d\'hébergement et/ou de session empêche l\'application de se poursuivre.');
 	}
+	// Ajout du chemin correspondant
+	$fichier_mysql_config = CHEMIN_MYSQL.$fichier_mysql_config.'.php';
+	$fichier_class_config = './_inc/'.$fichier_class_config.'.php';
 	// Chargement du fichier de connexion à la BDD
-	define('CHEMIN_FICHIER_CONFIG_MYSQL',CHEMIN_DOSSIER_MYSQL.$fichier_mysql_config.'.php');
-	if(is_file(CHEMIN_FICHIER_CONFIG_MYSQL))
+	if(is_file($fichier_mysql_config))
 	{
-		require(CHEMIN_FICHIER_CONFIG_MYSQL);
-		require(CHEMIN_DOSSIER_INCLUDE.$fichier_class_config.'.php');
+		require_once($fichier_mysql_config);
+		require_once($fichier_class_config);
 	}
 	elseif($PAGE!='public_installation')
 	{
-		exit_error( 'Paramètres BDD manquants' /*titre*/ , 'Les paramètres de connexion à la base de données n\'ont pas été trouvés.' /*contenu*/ , TRUE /*setup*/ );
+		affich_message_exit($titre='Paramètres BDD manquants',$contenu='Paramètres de connexion à la base de données manquants.',$lien='<a href="./index.php?page=public_installation">Procédure d\'installation de SACoche.</a>');
 	}
 }
 
 // Authentification requise par SSO
-if(Session::$_sso_redirect)
+if(defined('LOGIN_SSO'))
 {
-	require(CHEMIN_DOSSIER_PAGES.'public_login_SSO.php');
+	require('./pages/public_login_SSO.php');
 }
 
 ob_start();
 // Chargement de la page concernée
-$filename_php = CHEMIN_DOSSIER_PAGES.$PAGE.'.php';
+$filename_php = './pages/'.$PAGE.'.php';
 if(!is_file($filename_php))
 {
 	$tab_messages_erreur[] = 'Erreur : page "'.$filename_php.'" manquante (supprimée, déplacée, non créée...).';
 	$PAGE = ($_SESSION['USER_PROFIL']=='public') ? 'public_accueil' :'compte_accueil' ;
-	$filename_php = CHEMIN_DOSSIER_PAGES.$PAGE.'.php';
+	$filename_php = './pages/'.$PAGE.'.php';
 }
 require($filename_php);
 // Affichage dans une variable
@@ -173,8 +184,8 @@ $tab_fichiers_head = array();
 $tab_fichiers_head[] = array( 'css' , compacter('./_css/style.css','mini') );
 $tab_fichiers_head[] = array( 'js'  , compacter('./_js/jquery-librairies.js','mini') );
 $tab_fichiers_head[] = array( 'js'  , compacter('./_js/script.js','pack') ); // la minification plante à sur le contenu de testURL() avec le message Fatal error: Uncaught exception 'JSMinException' with message 'Unterminated string literal.'
-if($PAGE=='officiel_accueil')    $tab_fichiers_head[] = array( 'js'  , compacter('./_js/highcharts.js','mini') );
-if(is_file($filename_js_normal)) $tab_fichiers_head[] = array( 'js' , compacter($filename_js_normal,'pack') );
+if(($PAGE=='officiel')&&($SECTION=='accueil_bulletin')) $tab_fichiers_head[] = array( 'js'  , compacter('./_js/highcharts.js','mini') );
+if(is_file($filename_js_normal))                        $tab_fichiers_head[] = array( 'js' , compacter($filename_js_normal,'pack') );
 
 // Affichage de l'en-tête
 declaration_entete( TRUE /*is_meta_robots*/ , TRUE /*is_favicon*/ , TRUE /*is_rss*/ , $tab_fichiers_head , $TITRE_NAVIGATEUR , $CSS_PERSO );
@@ -206,11 +217,11 @@ declaration_entete( TRUE /*is_meta_robots*/ , TRUE /*is_favicon*/ , TRUE /*is_rs
 		// Le menu '<ul id="menu">...</ul>
 		if($_SESSION['USER_PROFIL']=='webmestre')
 		{
-			require(CHEMIN_DOSSIER_PAGES.'__menu_'.$_SESSION['USER_PROFIL'].'_'.HEBERGEUR_INSTALLATION.'.html');
+			require_once('./pages/__menu_'.$_SESSION['USER_PROFIL'].'_'.HEBERGEUR_INSTALLATION.'.html');
 		}
 		else
 		{
-			$contenu_menu = file_get_contents(CHEMIN_DOSSIER_PAGES.'__menu_'.$_SESSION['USER_PROFIL'].'.html');
+			$contenu_menu = file_get_contents('./pages/__menu_'.$_SESSION['USER_PROFIL'].'.html');
 			// La présence de certains éléments du menu dépend des choix de l'établissement
 			if( ($_SESSION['USER_PROFIL']=='professeur') || ($_SESSION['USER_PROFIL']=='directeur') )
 			{
@@ -239,8 +250,8 @@ declaration_entete( TRUE /*is_meta_robots*/ , TRUE /*is_favicon*/ , TRUE /*is_rs
 		echo'<div id="cadre_milieu">'."\r\n";
 		if($PAGE=='public_accueil')
 		{
-			$tab_image_infos = ( (defined('HEBERGEUR_LOGO')) && (is_file(CHEMIN_DOSSIER_LOGO.HEBERGEUR_LOGO)) ) ? getimagesize(CHEMIN_DOSSIER_LOGO.HEBERGEUR_LOGO) : array() ;
-			$hebergeur_img   = count($tab_image_infos) ? '<img alt="Hébergeur" src="'.URL_DIR_LOGO.HEBERGEUR_LOGO.'" '.$tab_image_infos[3].' />' : '' ;
+			$tab_image_infos = ( (defined('HEBERGEUR_LOGO')) && (is_file('./__tmp/logo/'.HEBERGEUR_LOGO)) ) ? getimagesize('./__tmp/logo/'.HEBERGEUR_LOGO) : array() ;
+			$hebergeur_img   = count($tab_image_infos) ? '<img alt="Hébergeur" src="./__tmp/logo/'.HEBERGEUR_LOGO.'" '.$tab_image_infos[3].' />' : '' ;
 			$hebergeur_lien  = ( (defined('HEBERGEUR_ADRESSE_SITE')) && HEBERGEUR_ADRESSE_SITE && ($hebergeur_img) ) ? '<a href="'.html(HEBERGEUR_ADRESSE_SITE).'">'.$hebergeur_img.'</a>' : $hebergeur_img ;
 			$SACoche_lien    = '<a href="'.SERVEUR_PROJET.'"><img alt="Suivi d\'Acquisition de Compétences" src="./_img/logo_grand.gif" width="208" height="71" /></a>' ;
 			echo'<h1 class="logo">'.$SACoche_lien.$hebergeur_lien.'</h1>';

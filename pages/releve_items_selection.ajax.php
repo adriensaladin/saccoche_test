@@ -32,35 +32,35 @@ $format            = 'selection';
 $aff_bilan_MS      = (isset($_POST['f_bilan_MS']))    ? 1                                     : 0;
 $aff_bilan_PA      = (isset($_POST['f_bilan_PA']))    ? 1                                     : 0;
 $aff_conv_sur20    = (isset($_POST['f_conv_sur20']))  ? 1                                     : 0;
-$tableau_tri_objet = (isset($_POST['f_tri_objet']))   ? Clean::texte($_POST['f_tri_objet'])    : '';
-$tableau_tri_mode  = (isset($_POST['f_tri_mode']))    ? Clean::texte($_POST['f_tri_mode'])     : '';
+$tableau_tri_objet = (isset($_POST['f_tri_objet']))   ? clean_texte($_POST['f_tri_objet'])    : '';
+$tableau_tri_mode  = (isset($_POST['f_tri_mode']))    ? clean_texte($_POST['f_tri_mode'])     : '';
 $with_coef         = (isset($_POST['f_with_coef']))   ? 1                                     : 0;
-$groupe_id         = (isset($_POST['f_groupe']))      ? Clean::entier($_POST['f_groupe'])      : 0;
-$groupe_nom        = (isset($_POST['f_groupe_nom']))  ? Clean::texte($_POST['f_groupe_nom'])   : '';
-$matiere_id        = TRUE;
+$groupe_id         = (isset($_POST['f_groupe']))      ? clean_entier($_POST['f_groupe'])      : 0;
+$groupe_nom        = (isset($_POST['f_groupe_nom']))  ? clean_texte($_POST['f_groupe_nom'])   : '';
+$matiere_id        = true;
 $matiere_nom       = '';
-$periode_id        = (isset($_POST['f_periode']))     ? Clean::entier($_POST['f_periode'])     : 0;
-$date_debut        = (isset($_POST['f_date_debut']))  ? Clean::texte($_POST['f_date_debut'])   : '';
-$date_fin          = (isset($_POST['f_date_fin']))    ? Clean::texte($_POST['f_date_fin'])     : '';
-$retroactif        = (isset($_POST['f_retroactif']))  ? Clean::texte($_POST['f_retroactif'])   : '';
+$periode_id        = (isset($_POST['f_periode']))     ? clean_entier($_POST['f_periode'])     : 0;
+$date_debut        = (isset($_POST['f_date_debut']))  ? clean_texte($_POST['f_date_debut'])   : '';
+$date_fin          = (isset($_POST['f_date_fin']))    ? clean_texte($_POST['f_date_fin'])     : '';
+$retroactif        = (isset($_POST['f_retroactif']))  ? clean_texte($_POST['f_retroactif'])   : '';
 $aff_coef          = (isset($_POST['f_coef']))        ? 1                                     : 0;
 $aff_socle         = (isset($_POST['f_socle']))       ? 1                                     : 0;
 $aff_lien          = (isset($_POST['f_lien']))        ? 1                                     : 0;
 $aff_domaine       = (isset($_POST['f_domaine']))     ? 1                                     : 0;
 $aff_theme         = (isset($_POST['f_theme']))       ? 1                                     : 0;
-$orientation       = (isset($_POST['f_orientation'])) ? Clean::texte($_POST['f_orientation'])  : '';
-$couleur           = (isset($_POST['f_couleur']))     ? Clean::texte($_POST['f_couleur'])      : '';
-$legende           = (isset($_POST['f_legende']))     ? Clean::texte($_POST['f_legende'])      : '';
-$marge_min         = (isset($_POST['f_marge_min']))   ? Clean::entier($_POST['f_marge_min'])   : 0;
-$pages_nb          = (isset($_POST['f_pages_nb']))    ? Clean::texte($_POST['f_pages_nb'])     : '';
-$cases_nb          = (isset($_POST['f_cases_nb']))    ? Clean::entier($_POST['f_cases_nb'])    : 0;
-$cases_largeur     = (isset($_POST['f_cases_larg']))  ? Clean::entier($_POST['f_cases_larg'])  : 0;
+$orientation       = (isset($_POST['f_orientation'])) ? clean_texte($_POST['f_orientation'])  : '';
+$couleur           = (isset($_POST['f_couleur']))     ? clean_texte($_POST['f_couleur'])      : '';
+$legende           = (isset($_POST['f_legende']))     ? clean_texte($_POST['f_legende'])      : '';
+$marge_min         = (isset($_POST['f_marge_min']))   ? clean_entier($_POST['f_marge_min'])   : 0;
+$pages_nb          = (isset($_POST['f_pages_nb']))    ? clean_texte($_POST['f_pages_nb'])     : '';
+$cases_nb          = (isset($_POST['f_cases_nb']))    ? clean_entier($_POST['f_cases_nb'])    : 0;
+$cases_largeur     = (isset($_POST['f_cases_larg']))  ? clean_entier($_POST['f_cases_larg'])  : 0;
 
 // Normalement ce sont des tableaux qui sont transmis, mais au cas où...
 $tab_eleve = (isset($_POST['f_eleve'])) ? ( (is_array($_POST['f_eleve'])) ? $_POST['f_eleve'] : explode(',',$_POST['f_eleve']) ) : array() ;
 $tab_type  = (isset($_POST['f_type']))  ? ( (is_array($_POST['f_type']))  ? $_POST['f_type']  : explode(',',$_POST['f_type'])  ) : array() ;
-$tab_eleve = array_filter( Clean::map_entier($tab_eleve) , 'positif' );
-$tab_type  = Clean::map_texte($tab_type);
+$tab_eleve = array_filter( array_map( 'clean_entier' , $tab_eleve ) , 'positif' );
+$tab_type  = array_map( 'clean_texte' , $tab_type );
 
 // En cas de manipulation du formulaire (avec Firebug par exemple) ; on pourrait aussi vérifier pour un parent que c'est bien un de ses enfants...
 if(in_array($_SESSION['USER_PROFIL'],array('parent','eleve')))
@@ -88,7 +88,7 @@ if( !$orientation || !$couleur || !$legende || !$marge_min || !$pages_nb || !$ca
 	exit('Erreur avec les données transmises !');
 }
 
-Form::save_choix('items_selection');
+Formulaire::save_choix('items_selection');
 
 $marge_gauche = $marge_droite = $marge_haut = $marge_bas = $marge_min ;
 
@@ -100,9 +100,8 @@ $make_officiel = FALSE;
 $make_action   = '';
 $make_html     = TRUE;
 $make_pdf      = TRUE;
-$make_graph    = FALSE;
 
-require(CHEMIN_DOSSIER_INCLUDE.'code_items_releve.php');
+require('./_inc/code_items_releve.php');
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 // On retourne les résultats
@@ -112,7 +111,7 @@ if($affichage_direct)
 {
 	echo'<hr />';
 	echo'<ul class="puce">';
-	echo'<li><a class="lien_ext" href="'.URL_DIR_EXPORT.str_replace('<REPLACE>','individuel',$fichier_nom).'.pdf"><span class="file file_pdf">Archiver / Imprimer (format <em>pdf</em>).</span></a></li>';
+	echo'<li><a class="lien_ext" href="'.$dossier.str_replace('<REPLACE>','individuel',$fichier_nom).'.pdf"><span class="file file_pdf">Archiver / Imprimer (format <em>pdf</em>).</span></a></li>';
 	echo'</ul>';
 	echo $releve_HTML_individuel;
 }
@@ -122,7 +121,7 @@ else
 	{
 		echo'<h2>Relevé individuel</h2>';
 		echo'<ul class="puce">';
-		echo'<li><a class="lien_ext" href="'.URL_DIR_EXPORT.str_replace('<REPLACE>','individuel',$fichier_nom).'.pdf"><span class="file file_pdf">Archiver / Imprimer (format <em>pdf</em>).</span></a></li>';
+		echo'<li><a class="lien_ext" href="'.$dossier.str_replace('<REPLACE>','individuel',$fichier_nom).'.pdf"><span class="file file_pdf">Archiver / Imprimer (format <em>pdf</em>).</span></a></li>';
 		echo'<li><a class="lien_ext" href="./releve-html.php?fichier='.str_replace('<REPLACE>','individuel',$fichier_nom).'"><span class="file file_htm">Explorer / Manipuler (format <em>html</em>).</span></a></li>';
 		echo'</ul>';
 	}
@@ -130,7 +129,7 @@ else
 	{
 		echo'<h2>Synthèse collective</h2>';
 		echo'<ul class="puce">';
-		echo'<li><a class="lien_ext" href="'.URL_DIR_EXPORT.str_replace('<REPLACE>','synthese',$fichier_nom).'.pdf"><span class="file file_pdf">Archiver / Imprimer (format <em>pdf</em>).</span></a></li>';
+		echo'<li><a class="lien_ext" href="'.$dossier.str_replace('<REPLACE>','synthese',$fichier_nom).'.pdf"><span class="file file_pdf">Archiver / Imprimer (format <em>pdf</em>).</span></a></li>';
 		echo'<li><a class="lien_ext" href="./releve-html.php?fichier='.str_replace('<REPLACE>','synthese',$fichier_nom).'"><span class="file file_htm">Explorer / Manipuler (format <em>html</em>).</span></a></li>';
 		echo'</ul>';
 	}
@@ -144,9 +143,9 @@ else
 		echo $bulletin_alerte;
 		echo'<h2>Bulletin Gepi</h2>';
 		echo'<ul class="puce">';
-		echo'<li><a class="lien_ext" href="'.URL_DIR_EXPORT.str_replace('<REPLACE>','bulletin_note_appreciation',$fichier_nom).'.csv"><span class="file file_txt">Récupérer notes et appréciations à importer dans GEPI (format <em>csv</em> <img alt="" src="./_img/bulle_aide.png" title="Si le navigateur ouvre le fichier au lieu de l\'enregistrer, cliquer avec le bouton droit et choisir «&nbsp;Enregistrer&nbsp;sous...&nbsp;»." />).</span></a></li>';
-		echo'<li><a class="lien_ext" href="'.URL_DIR_EXPORT.str_replace('<REPLACE>','bulletin_note',$fichier_nom).'.csv"><span class="file file_txt">Récupérer les notes à importer dans GEPI (format <em>csv</em> <img alt="" src="./_img/bulle_aide.png" title="Si le navigateur ouvre le fichier au lieu de l\'enregistrer, cliquer avec le bouton droit et choisir «&nbsp;Enregistrer&nbsp;sous...&nbsp;»." />).</span></a></li>';
-		echo'<li><a class="lien_ext" href="'.URL_DIR_EXPORT.str_replace('<REPLACE>','bulletin_appreciation',$fichier_nom).'.csv"><span class="file file_txt">Récupérer les appréciations à importer dans GEPI (format <em>csv</em> <img alt="" src="./_img/bulle_aide.png" title="Si le navigateur ouvre le fichier au lieu de l\'enregistrer, cliquer avec le bouton droit et choisir «&nbsp;Enregistrer&nbsp;sous...&nbsp;»." />).</span></a></li>';
+		echo'<li><a class="lien_ext" href="'.$dossier.str_replace('<REPLACE>','bulletin_note_appreciation',$fichier_nom).'.csv"><span class="file file_txt">Récupérer notes et appréciations à importer dans GEPI (format <em>csv</em> <img alt="" src="./_img/bulle_aide.png" title="Si le navigateur ouvre le fichier au lieu de l\'enregistrer, cliquer avec le bouton droit et choisir «&nbsp;Enregistrer&nbsp;sous...&nbsp;»." />).</span></a></li>';
+		echo'<li><a class="lien_ext" href="'.$dossier.str_replace('<REPLACE>','bulletin_note',$fichier_nom).'.csv"><span class="file file_txt">Récupérer les notes à importer dans GEPI (format <em>csv</em> <img alt="" src="./_img/bulle_aide.png" title="Si le navigateur ouvre le fichier au lieu de l\'enregistrer, cliquer avec le bouton droit et choisir «&nbsp;Enregistrer&nbsp;sous...&nbsp;»." />).</span></a></li>';
+		echo'<li><a class="lien_ext" href="'.$dossier.str_replace('<REPLACE>','bulletin_appreciation',$fichier_nom).'.csv"><span class="file file_txt">Récupérer les appréciations à importer dans GEPI (format <em>csv</em> <img alt="" src="./_img/bulle_aide.png" title="Si le navigateur ouvre le fichier au lieu de l\'enregistrer, cliquer avec le bouton droit et choisir «&nbsp;Enregistrer&nbsp;sous...&nbsp;»." />).</span></a></li>';
 		echo'</ul>';
 	}
 }

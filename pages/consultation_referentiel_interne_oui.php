@@ -28,14 +28,14 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 
 // Indication des profils ayant accès à cette page
-require(CHEMIN_DOSSIER_INCLUDE.'tableau_profils.php'); // Charge $tab_profil_libelle[$profil][court|long][1|2]
+require_once('./_inc/tableau_profils.php'); // Charge $tab_profil_libelle[$profil][court|long][1|2]
 $tab_profils = array('directeur','professeur','eleve','parent');
 $str_objet = $_SESSION['DROIT_VOIR_REFERENTIELS'];
 foreach($tab_profils as $profil)
 {
 	$str_objet = str_replace($profil,$tab_profil_libelle[$profil]['long'][2],$str_objet);
 }
-$texte = ($str_objet=='') ? 'aucun' : ( (strpos($str_objet,',')===FALSE) ? 'uniquement les '.$str_objet : str_replace(',',' + ',$str_objet) ) ;
+$texte = ($str_objet=='') ? 'aucun' : ( (strpos($str_objet,',')===false) ? 'uniquement les '.$str_objet : str_replace(',',' + ',$str_objet) ) ;
 ?>
 
 <ul class="puce">
@@ -124,7 +124,7 @@ else
 					$nb_best = (int)substr($DB_ROW['referentiel_calcul_methode'],-1);
 					$methode_calcul_texte = ($DB_ROW['referentiel_calcul_limite']==0) ? 'Moyenne des '.$nb_best.' meilleures saisies.' : 'Moyenne des '.$nb_best.' meilleures saisies parmi les '.$DB_ROW['referentiel_calcul_limite'].' dernières.';
 				}
-				$tab_colonne[$DB_ROW['matiere_id']][$DB_ROW['niveau_id']] = '<td class="hc">'.str_replace('◄DATE►',Html::date($DB_ROW['referentiel_partage_date']),$tab_partage[$DB_ROW['referentiel_partage_etat']]).'</td>'.'<td>'.$methode_calcul_texte.'</td>';
+				$tab_colonne[$DB_ROW['matiere_id']][$DB_ROW['niveau_id']] = '<td class="hc">'.str_replace('◄DATE►',affich_date($DB_ROW['referentiel_partage_date']),$tab_partage[$DB_ROW['referentiel_partage_etat']]).'</td>'.'<td>'.$methode_calcul_texte.'</td>';
 			}
 		}
 		// On construit et affiche le tableau résultant
@@ -138,14 +138,14 @@ else
 			$matiere_coord = (isset($tab['coord'])) ? '>'.$tab['coord'] : ' class="r hc">Aucun.' ;
 			$affichage .= '<tr><td colspan="7" class="nu">&nbsp;</td></tr>'."\r\n";
 			$affichage .= '<tr><td rowspan="'.$rowspan.'">'.$matiere_nom.'</td><td rowspan="'.$rowspan.'">'.$matiere_nb.'</td><td rowspan="'.$rowspan.'"'.$matiere_coord.'</td>';
-			$affichage_suite = FALSE;
+			$affichage_suite = false;
 			if(isset($tab_colonne[$matiere_id]))
 			{
 				foreach($tab_colonne[$matiere_id] as $niveau_id => $referentiel_info)
 				{
 					$ids = 'ids_'.$matiere_id.'_'.$niveau_id;
 					$colonnes = $referentiel_info.'<td class="nu" id="'.$ids.'"><q class="voir" title="Voir le détail de ce référentiel."></q></td>' ;
-					if($affichage_suite===FALSE)
+					if($affichage_suite===false)
 					{
 						$affichage .= '<td>'.$tab_niveau[$niveau_id].'</td>'.$colonnes;
 						$affichage_suite = '';

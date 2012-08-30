@@ -24,10 +24,6 @@
  * 
  */
 
-// Variable globale Highcharts
-var graphique;
-var ChartOptions;
-
 // jQuery !
 $(document).ready
 (
@@ -188,10 +184,9 @@ $(document).ready
 								url : 'ajax.php?page='+memo_page,
 								data : 'f_action='+'initialiser'+'&f_bilan_type='+BILAN_TYPE+'&f_classe='+memo_classe+'&f_groupe='+memo_groupe+'&f_periode='+memo_periode+'&'+$('#form_hidden').serialize(),
 								dataType : "html",
-								error : function(jqXHR, textStatus, errorThrown)
+								error : function(msg,string)
 								{
-									var message = (jqXHR.status!=500) ? 'Echec de la connexion !' : 'Erreur 500&hellip; Mémoire insuffisante ? Sélectionner moins d\'élèves à la fois ou demander à votre hébergeur d\'augmenter la valeur "memory_limit".' ;
-									$('#zone_action_eleve').html('<label class="alerte">'+message+' <button id="fermer_zone_action_eleve" type="button" class="retourner">Retour</button></label>');
+									$('#zone_action_eleve').html('<label class="alerte">Echec de la connexion ! <button id="fermer_zone_action_eleve" type="button" class="retourner">Retour</button></label>');
 									return false;
 								},
 								success : function(responseHTML)
@@ -281,9 +276,9 @@ $(document).ready
 		//	[officiel_action_saisir|officiel_action_consulter] Navigation d'un élève à un autre
 		//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
-		function charger_nouvel_eleve(eleve_id,reload)
+		function charger_nouvel_eleve(eleve_id)
 		{
-			if( (eleve_id==memo_eleve) && (!reload) )
+			if(eleve_id==memo_eleve)
 			{
 				return false;
 			}
@@ -297,7 +292,7 @@ $(document).ready
 					url : 'ajax.php?page='+memo_page,
 					data : 'f_action='+'charger'+'&f_bilan_type='+BILAN_TYPE+'&f_classe='+memo_classe+'&f_groupe='+memo_groupe+'&f_periode='+memo_periode+'&f_user='+memo_eleve+'&'+$('#form_hidden').serialize(),
 					dataType : "html",
-					error : function(jqXHR, textStatus, errorThrown)
+					error : function(msg,string)
 					{
 						$('#zone_resultat_eleve').html('<label class="alerte">Echec de la connexion !</label>');
 						$('#form_choix_eleve button , #form_choix_eleve select , #zone_resultat_eleve button').prop('disabled',false);
@@ -315,16 +310,7 @@ $(document).ready
 						{
 							$('#go_selection_eleve option[value='+memo_eleve+']').prop('selected',true);
 							masquer_element_navigation_choix_eleve();
-							var position_script = responseHTML.lastIndexOf('<SCRIPT>');
-							if(position_script==-1)
-							{
-								$('#zone_resultat_eleve').html(responseHTML);
-							}
-							else
-							{
-								$('#zone_resultat_eleve').html( responseHTML.substring(0,position_script) );
-								eval( responseHTML.substring(position_script+8) );
-							}
+							$('#zone_resultat_eleve').html(responseHTML);
 							infobulle();
 							if(memo_auto_next || memo_auto_prev)
 							{
@@ -356,7 +342,7 @@ $(document).ready
 			function()
 			{
 				var eleve_id = $('#go_selection_eleve option:first').val();
-				charger_nouvel_eleve(eleve_id,false);
+				charger_nouvel_eleve(eleve_id);
 			}
 		);
 
@@ -365,7 +351,7 @@ $(document).ready
 			function()
 			{
 				var eleve_id = $('#go_selection_eleve option:last').val();
-				charger_nouvel_eleve(eleve_id,false);
+				charger_nouvel_eleve(eleve_id);
 			}
 		);
 
@@ -376,7 +362,7 @@ $(document).ready
 				if( $('#go_selection_eleve option:selected').prev().length )
 				{
 					var eleve_id = $('#go_selection_eleve option:selected').prev().val();
-					charger_nouvel_eleve(eleve_id,false);
+					charger_nouvel_eleve(eleve_id);
 				}
 			}
 		);
@@ -388,7 +374,7 @@ $(document).ready
 				if( $('#go_selection_eleve option:selected').next().length )
 				{
 					var eleve_id = $('#go_selection_eleve option:selected').next().val();
-					charger_nouvel_eleve(eleve_id,false);
+					charger_nouvel_eleve(eleve_id);
 				}
 			}
 		);
@@ -398,70 +384,7 @@ $(document).ready
 			function()
 			{
 				var eleve_id = $('#go_selection_eleve option:selected').val();
-				charger_nouvel_eleve(eleve_id,false);
-			}
-		);
-
-		$('#change_mode').live // live est utilisé pour prendre en compte les nouveaux éléments créés
-		('click',
-			function()
-			{
-				if($('#f_mode').val()=='texte')
-				{
-					$('#change_mode').removeAttr("class").addClass("texte").html('Interface détaillée');
-					$('#f_mode').val('graphique');
-				}
-				else
-				{
-					$('#change_mode').removeAttr("class").addClass("stats").html('Interface graphique');
-					$('#f_mode').val('texte');
-				}
-				var eleve_id = $('#go_selection_eleve option:selected').val();
-				charger_nouvel_eleve(eleve_id,true);
-			}
-		);
-
-		//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-		//	[officiel_action_saisir|officiel_action_consulter] Clic sur le bouton pour imprimer ses appréciations
-		//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-
-		$('#imprimer_appreciations').live // live est utilisé pour prendre en compte les nouveaux éléments créés
-		('click',
-			function()
-			{
-				$('#form_choix_eleve button , #form_choix_eleve select , #zone_resultat_eleve button').prop('disabled',true);
-				$.ajax
-				(
-					{
-						type : 'POST',
-						url : 'ajax.php?page=officiel_accueil',
-						data : 'f_action='+'imprimer_appreciations'+'&f_bilan_type='+BILAN_TYPE+'&f_classe='+memo_classe+'&f_groupe='+memo_groupe+'&f_periode='+memo_periode+'&'+$('#form_hidden').serialize(),
-						dataType : "html",
-						error : function(jqXHR, textStatus, errorThrown)
-						{
-							$.fancybox( '<label class="alerte">'+'Echec de la connexion !\nVeuillez recommencer.'+'</label>' , {'centerOnScroll':true} );
-							$('#form_choix_eleve button , #form_choix_eleve select , #zone_resultat_eleve button').prop('disabled',false);
-							return false;
-						},
-						success : function(responseHTML)
-						{
-							initialiser_compteur();
-							$('#form_choix_eleve button , #form_choix_eleve select , #zone_resultat_eleve button').prop('disabled',false);
-							if(responseHTML.substring(0,4)!='<ul ')
-							{
-								$.fancybox( '<label class="alerte">'+responseHTML+'</label>' , {'centerOnScroll':true} );
-							}
-							else
-							{
-								// Mis dans le div bilan et pas balancé directement dans le fancybox sinon le format_lien() nécessite un peu plus de largeur que le fancybox ne recalcule pas (et $.fancybox.update(); ne change rien).
-								// Malgré tout, pour Chrome par exemple, la largeur est mal clculée et provoque des retours à la ligne, d'où le minWidth ajouté.
-								$('#bilan').html('<div class="noprint">Afin de préserver l\'environnement, n\'imprimer qu\'en cas de nécessité !</div><p />'+responseHTML);
-								format_liens('#bilan');
-								$.fancybox( { 'href':'#bilan' , onClosed:function(){$('#bilan').html("");} , 'centerOnScroll':true , 'minWidth':550 } );
-							}
-						}
-					}
-				);
+				charger_nouvel_eleve(eleve_id);
 			}
 		);
 
@@ -507,7 +430,6 @@ $(document).ready
 			{
 				$('#f_appreciation').focus().html(champ_contenu);
 				afficher_textarea_reste( $('#f_appreciation') , memo_long_max );
-				window.scrollBy(0,100); // Pour avoir à l'écran les bouton de validation et d'annulation situés en dessous du textarea
 			}
 			if(memo_rubrique_type=='note')
 			{
@@ -617,7 +539,7 @@ $(document).ready
 						url : 'ajax.php?page='+memo_page,
 						data : 'f_action='+'enregistrer_'+memo_rubrique_type+'&f_bilan_type='+BILAN_TYPE+'&f_classe='+memo_classe+'&f_groupe='+memo_groupe+'&f_periode='+memo_periode+'&f_user='+memo_eleve+'&f_rubrique='+memo_rubrique_id+'&'+$('#form_hidden').serialize()+'&'+$('#zone_resultat_eleve').serialize(),
 						dataType : "html",
-						error : function(jqXHR, textStatus, errorThrown)
+						error : function(msg,string)
 						{
 							$('#ajax_msg_'+memo_rubrique_type).removeAttr("class").addClass("alerte").html("Echec de la connexion !");
 							$('#form_choix_eleve button , #form_choix_eleve select , #zone_resultat_eleve button').prop('disabled',false);
@@ -671,9 +593,9 @@ $(document).ready
 						url : 'ajax.php?page='+memo_page,
 						data : 'f_action='+'supprimer_'+memo_rubrique_type+'&f_bilan_type='+BILAN_TYPE+'&f_classe='+memo_classe+'&f_groupe='+memo_groupe+'&f_periode='+memo_periode+'&f_user='+memo_eleve+'&f_rubrique='+memo_rubrique_id+'&'+$('#form_hidden').serialize(),
 						dataType : "html",
-						error : function(jqXHR, textStatus, errorThrown)
+						error : function(msg,string)
 						{
-							$.fancybox( '<label class="alerte">'+'Echec de la connexion !\nVeuillez recommencer.'+'</label>' , {'centerOnScroll':true} );
+							alert("Echec de la connexion !");
 							$('#form_choix_eleve button , #form_choix_eleve select , #zone_resultat_eleve button').prop('disabled',false);
 							return false;
 						},
@@ -683,7 +605,7 @@ $(document).ready
 							$('#form_choix_eleve button , #form_choix_eleve select , #zone_resultat_eleve button').prop('disabled',false);
 							if( (responseHTML.substring(0,4)!='<div') && (responseHTML.substring(0,4)!='<td ') )
 							{
-								$.fancybox( '<label class="alerte">'+responseHTML+'</label>' , {'centerOnScroll':true} );
+								alert(responseHTML);
 							}
 							else
 							{
@@ -723,9 +645,9 @@ $(document).ready
 						url : 'ajax.php?page='+memo_page,
 						data : 'f_action='+'recalculer_note'+'&f_bilan_type='+BILAN_TYPE+'&f_classe='+memo_classe+'&f_groupe='+memo_groupe+'&f_periode='+memo_periode+'&f_user='+memo_eleve+'&f_rubrique='+memo_rubrique_id+'&'+$('#form_hidden').serialize(),
 						dataType : "html",
-						error : function(jqXHR, textStatus, errorThrown)
+						error : function(msg,string)
 						{
-							$.fancybox( '<label class="alerte">'+'Echec de la connexion !\nVeuillez recommencer.'+'</label>' , {'centerOnScroll':true} );
+							alert("Echec de la connexion !");
 							$('#form_choix_eleve button , #form_choix_eleve select , #zone_resultat_eleve button').prop('disabled',false);
 							return false;
 						},
@@ -735,7 +657,7 @@ $(document).ready
 							$('#form_choix_eleve button , #form_choix_eleve select , #zone_resultat_eleve button').prop('disabled',false);
 							if( (responseHTML.substring(0,4)!='<div') && (responseHTML.substring(0,4)!='<td ') )
 							{
-								$.fancybox( '<label class="alerte">'+responseHTML+'</label>' , {'centerOnScroll':true} );
+								alert(responseHTML);
 							}
 							else
 							{
@@ -771,10 +693,9 @@ $(document).ready
 						url : 'ajax.php?page='+memo_page,
 						data : 'f_bilan_type='+BILAN_TYPE+'&f_classe='+memo_classe+'&f_groupe='+memo_groupe+'&f_periode='+memo_periode+'&'+$('#form_hidden').serialize(),
 						dataType : "html",
-						error : function(jqXHR, textStatus, errorThrown)
+						error : function(msg,string)
 						{
-							var message = (jqXHR.status!=500) ? 'Echec de la connexion !' : 'Erreur 500&hellip; Mémoire insuffisante ? Sélectionner moins d\'élèves à la fois ou demander à votre hébergeur d\'augmenter la valeur "memory_limit".' ;
-							$('#ajax_msg_recherche').removeAttr("class").addClass("alerte").html(message);
+							$('#ajax_msg_recherche').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
 							$('#zone_chx_rubriques button').prop('disabled',false);
 							return false;
 						},
@@ -816,10 +737,9 @@ $(document).ready
 					url : 'ajax.php?page='+memo_page,
 					data : 'f_action='+'imprimer'+'&f_etape='+etape+'&f_bilan_type='+BILAN_TYPE+'&f_classe='+memo_classe+'&f_groupe='+memo_groupe+'&f_periode='+memo_periode+'&'+$('#form_hidden').serialize(),
 					dataType : "html",
-					error : function(jqXHR, textStatus, errorThrown)
+					error : function(msg,string)
 					{
-						var message = (jqXHR.status!=500) ? 'Echec de la connexion !' : 'Erreur 500&hellip; Mémoire insuffisante ? Sélectionner moins d\'élèves à la fois ou demander à votre hébergeur d\'augmenter la valeur "memory_limit".' ;
-						$('#ajax_msg_imprimer').removeAttr("class").addClass("alerte").html(message);
+						$('#ajax_msg_imprimer').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
 						$('#form_choix_classe button , #form_choix_classe select , #valider_imprimer').prop('disabled',false);
 						return false;
 					},
@@ -890,7 +810,7 @@ $(document).ready
 					url : 'ajax.php?page='+memo_page,
 					data : 'f_action='+'initialiser'+'&f_bilan_type='+BILAN_TYPE+'&f_classe='+memo_classe+'&f_groupe='+memo_groupe+'&f_periode='+memo_periode+'&'+$('#form_hidden').serialize(),
 					dataType : "html",
-					error : function(jqXHR, textStatus, errorThrown)
+					error : function(msg,string)
 					{
 						$('#ajax_msg_'+memo_objet).removeAttr("class").addClass("alerte").html("Echec de la connexion !");
 						$('#form_choix_classe button , #form_choix_classe select').prop('disabled',false);
@@ -993,7 +913,7 @@ $(document).ready
 						url : 'ajax.php?page='+memo_page,
 						data : 'f_bilan_type='+BILAN_TYPE+'&f_classe='+memo_classe+'&f_groupe='+memo_groupe+'&f_periode='+memo_periode+'&'+$('#form_hidden').serialize(),
 						dataType : "html",
-						error : function(jqXHR, textStatus, errorThrown)
+						error : function(msg,string)
 						{
 							$('#zone_resultat_classe').html('<label class="alerte">Echec de la connexion !</label>');
 							$('#form_choix_classe button , #form_choix_classe select').prop('disabled',false);
@@ -1116,7 +1036,7 @@ $(document).ready
 						url : 'ajax.php?page=compte_message',
 						data : $('#zone_signaler').serialize(),
 						dataType : "html",
-						error : function(jqXHR, textStatus, errorThrown)
+						error : function(msg,string)
 						{
 							$('#ajax_msg_signaler').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
 							$('#zone_signaler button').prop('disabled',false);
@@ -1140,55 +1060,6 @@ $(document).ready
 				);
 			}
 		);
-
-		//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-		//	Options de base pour le graphique : sont complétées ensuite avec les données personnalisées
-		//	http://www.highcharts.com/documentation/how-to-use
-		//	http://www.highcharts.com/ref
-		//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-
-		ChartOptions = {
-			chart: {
-				renderTo: 'div_graphique',
-				type: 'column'
-			 },
-			colors: [
-				BACKGROUND_A,
-				BACKGROUND_VA,
-				BACKGROUND_NA
-			],
-			title: {
-				style: { color: '#333' } ,
-				text: null // Pourrait être MAJ ensuite
-			},
-			xAxis: {
-				labels: { style: { color: '#000' } },
-				categories: [] // MAJ ensuite
-			},
-			yAxis: [
-				{
-					labels: { enabled: false },
-					min: 0,
-					max: 100,
-					title: { style: { color: '#333' } , text: 'Items acquis' }
-				}, {} // MAJ ensuite
-			],
-			tooltip: {
-				formatter: function() {
-					return this.series.name +' : '+ (this.y);
-				}
-			},
-			plotOptions: {
-				column: {
-					stacking: 'percent'
-				}
-			},
-			series: [] // MAJ ensuite
-			,
-			credits: {
-				enabled: false
-			}
-		};
 
 	}
 );

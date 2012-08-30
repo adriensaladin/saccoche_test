@@ -184,8 +184,8 @@ public static $tab_choix = array();
  */
 private static function init_variables()
 {
-	Formulaire::$dossier_cookie = CHEMIN_DOSSIER_COOKIE.$_SESSION['BASE'].DS;
-	Formulaire::$fichier_cookie = Formulaire::$dossier_cookie.'user'.$_SESSION['USER_ID'].'.txt';
+	Formulaire::$dossier_cookie = './__tmp/cookie/'.$_SESSION['BASE'];
+	Formulaire::$fichier_cookie = Formulaire::$dossier_cookie.'/user'.$_SESSION['USER_ID'].'.txt';
 }
 
 /**

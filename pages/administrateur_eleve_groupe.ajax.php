@@ -32,8 +32,8 @@ $action = (isset($_GET['action'])) ? $_GET['action'] : '';
 // Normalement ce sont des tableaux qui sont transmis, mais au cas où...
 $tab_select_eleves  = (isset($_POST['select_eleves']))  ? ( (is_array($_POST['select_eleves']))  ? $_POST['select_eleves']  : explode(',',$_POST['select_eleves'])  ) : array() ;
 $tab_select_groupes = (isset($_POST['select_groupes'])) ? ( (is_array($_POST['select_groupes'])) ? $_POST['select_groupes'] : explode(',',$_POST['select_groupes']) ) : array() ;
-$tab_select_eleves  = array_filter( Clean::map_entier($tab_select_eleves)  , 'positif' );
-$tab_select_groupes = array_filter( Clean::map_entier($tab_select_groupes) , 'positif' );
+$tab_select_eleves  = array_filter( array_map( 'clean_entier' , $tab_select_eleves  ) , 'positif' );
+$tab_select_groupes = array_filter( array_map( 'clean_entier' , $tab_select_groupes ) , 'positif' );
 
 // Ajouter des élèves à des groupes
 if($action=='ajouter')

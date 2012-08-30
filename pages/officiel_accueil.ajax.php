@@ -33,7 +33,7 @@ if($_SESSION['SESAMATH_ID']==ID_DEMO){exit('Action désactivée pour la démo...
 // - pour forcer des reports de notes par un prof depuis "releve_items_matiere.js" ou "releve_items_selection.js"
 // - pour générer une impression PDF des appréciations d'un prof
 
-$action = (isset($_POST['f_action'])) ? Clean::texte($_POST['f_action']) : '';
+$action = (isset($_POST['f_action'])) ? clean_texte($_POST['f_action']) : '';
 
 if(!in_array($action,array('reporter_notes','imprimer_appreciations')))
 {
@@ -50,7 +50,7 @@ if($action=='reporter_notes')
 	$tab_periode_eleves  = (isset($_POST['f_periode_eleves']))  ? explode('_',$_POST['f_periode_eleves'])  : '' ;
 	$tab_eleves_moyennes = (isset($_POST['f_eleves_moyennes'])) ? explode('x',$_POST['f_eleves_moyennes']) : '' ;
 
-	$rubrique_id = (isset($_POST['f_rubrique'])) ? Clean::entier($_POST['f_rubrique']) : 0;
+	$rubrique_id = (isset($_POST['f_rubrique'])) ? clean_entier($_POST['f_rubrique']) : 0;
 	$periode_id  = (count($tab_periode_eleves))  ? $tab_periode_eleves[0]             : 0;
 
 	// On vérifie les paramètres principaux
@@ -63,7 +63,7 @@ if($action=='reporter_notes')
 	// On passe en revue les données
 
 	unset($tab_periode_eleves[0]);
-	$tab_eleve_id = array_filter( Clean::map_entier($tab_periode_eleves) , 'positif' );
+	$tab_eleve_id = array_filter( array_map( 'clean_entier' , $tab_periode_eleves ) , 'positif' );
 	$appreciation = 'Moyenne figée reportée par '.$_SESSION['USER_NOM'].' '.$_SESSION['USER_PRENOM']{0}.'.';
 	$nb_reports = 0;
 
@@ -99,10 +99,10 @@ if($action=='reporter_notes')
 if($action=='imprimer_appreciations')
 {
 
-	$BILAN_TYPE   = (isset($_POST['f_bilan_type']))   ? Clean::texte($_POST['f_bilan_type'])   : '';
-	$periode_id   = (isset($_POST['f_periode']))      ? Clean::entier($_POST['f_periode'])     : 0;
-	$classe_id    = (isset($_POST['f_classe']))       ? Clean::entier($_POST['f_classe'])      : 0;
-	$groupe_id    = (isset($_POST['f_groupe']))       ? Clean::entier($_POST['f_groupe'])      : 0;
+	$BILAN_TYPE   = (isset($_POST['f_bilan_type']))   ? clean_texte($_POST['f_bilan_type'])   : '';
+	$periode_id   = (isset($_POST['f_periode']))      ? clean_entier($_POST['f_periode'])     : 0;
+	$classe_id    = (isset($_POST['f_classe']))       ? clean_entier($_POST['f_classe'])      : 0;
+	$groupe_id    = (isset($_POST['f_groupe']))       ? clean_entier($_POST['f_groupe'])      : 0;
 
 	// On vérifie les paramètres principaux
 
@@ -198,9 +198,9 @@ if($action=='imprimer_appreciations')
 			}
 		}
 	}
-	$fichier_export = 'releve_appreciations_'.Clean::fichier($periode_nom).'_'.Clean::fichier($classe_nom).'_'.fabriquer_fin_nom_fichier__date_et_alea().'.pdf';
-	$releve_PDF->Output(CHEMIN_DOSSIER_EXPORT.$fichier_export,'F');
-	exit('<ul class="puce"><li><a class="lien_ext" href="'.URL_DIR_EXPORT.$fichier_export.'"><span class="file file_pdf">Archiver / Imprimer (format <em>pdf</em>).</span></a></li></ul>');
+	$chemin_export = './__tmp/export/'.'releve_appreciations_'.clean_fichier($periode_nom).'_'.clean_fichier($classe_nom).'_'.fabriquer_fin_nom_fichier__date_et_alea().'.pdf';
+	$releve_PDF->Output($chemin_export,'F');
+	exit('<ul class="puce"><li><a class="lien_ext" href="'.$chemin_export.'"><span class="file file_pdf">Archiver / Imprimer (format <em>pdf</em>).</span></a></li></ul>');
 }
 
 ?>

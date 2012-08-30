@@ -25,30 +25,6 @@
  * 
  */
 
-/*
- * Convertir les caractères spéciaux (&"'<>) en entité HTML pour éviter des problèmes d'affichage (INPUT, SELECT, TEXTAREA, XML...).
- * Pour que les retours à la lignes soient convertis en <br /> il faut coupler dette fontion à la fonction nl2br()
- * 
- * @param string
- * @return string
- */
-function html($text)
-{
-	// Ne pas modifier ce code à la légère : les résultats sont différents suivant que ce soit un affichage direct ou ajax, suivant la version de PHP (5.1 ou 5.3)...
-	return (perso_mb_detect_encoding_utf8($text)) ? htmlspecialchars($text,ENT_COMPAT,'UTF-8') : utf8_encode(htmlspecialchars($text,ENT_COMPAT)) ;
-}
-
-/*
- * Réciproque de html()
- * 
- * @param string
- * @return string
- */
-function html_decode($text)
-{
-	return htmlspecialchars_decode($text,ENT_COMPAT) ;
-}
-
 /**
  * Fonctions utilisées avec array_filter() ; teste si différent de FALSE.
  * @return bool
@@ -99,9 +75,9 @@ function is_renseigne($etat)
  * @param int $seuil (facultatif)
  * @return bool
  */
-function test_A($score,$seuil=NULL)
+function test_A($score,$seuil=null)
 {
-	$seuil = ($seuil===NULL) ? $_SESSION['CALCUL_SEUIL']['V'] : $seuil ;
+	$seuil = ($seuil===null) ? $_SESSION['CALCUL_SEUIL']['V'] : $seuil ;
 	return $score>$seuil ;
 }
 
@@ -114,9 +90,9 @@ function test_A($score,$seuil=NULL)
  * @param int $seuil
  * @return bool
  */
-function test_NA($score,$seuil=NULL)
+function test_NA($score,$seuil=null)
 {
-	$seuil = ($seuil===NULL) ? $_SESSION['CALCUL_SEUIL']['R'] : $seuil ;
+	$seuil = ($seuil===null) ? $_SESSION['CALCUL_SEUIL']['R'] : $seuil ;
 	return $score<$seuil ;
 }
 
@@ -403,6 +379,24 @@ function calculer_et_enregistrer_moyenne_precise_bulletin($periode_id,$classe_id
 }
 
 /**
+ * Ajout d'un log dans un fichier d'actions sensibles (un fichier par structure)
+ * 
+ * @param string $contenu   description de l'action
+ * @return void
+ */
+function ajouter_log_SACoche($contenu)
+{
+	$chemin_fichier = './__private/log/base_'.$_SESSION['BASE'].'.php';
+	$tab_ligne = array();
+	$tab_ligne[] = '<?php /*';
+	$tab_ligne[] = date('d-m-Y H:i:s');
+	$tab_ligne[] = html($_SESSION['USER_PROFIL'].' ['.$_SESSION['USER_ID'].'] '.$_SESSION['USER_NOM'].' '.$_SESSION['USER_PRENOM']);
+	$tab_ligne[] = html($contenu);
+	$tab_ligne[] = '*/ ?>'."\r\n";
+	Ecrire_Fichier($chemin_fichier, implode("\t",$tab_ligne), FILE_APPEND);
+}
+
+/**
  * Ajout d'un log PHP dans le fichier error-log du serveur Web
  * 
  * @param string $log_objet       objet du log
@@ -414,7 +408,7 @@ function calculer_et_enregistrer_moyenne_precise_bulletin($periode_id,$classe_id
  */
 function ajouter_log_PHP($log_objet,$log_contenu,$log_fichier,$log_ligne,$only_sesamath=true)
 {
-	if( (!$only_sesamath) || (strpos(URL_INSTALL_SACOCHE,SERVEUR_PROJET)===0) )
+	if( (!$only_sesamath) || (strpos(SERVEUR_ADRESSE,SERVEUR_PROJET)===0) )
 	{
 		$SEP = ' ║ ';
 		error_log('SACoche info' . $SEP . $log_objet . $SEP . 'base '.$_SESSION['BASE'] . $SEP . 'user '.$_SESSION['USER_ID'] . $SEP . basename($log_fichier).' '.$log_ligne . $SEP . $log_contenu,0);
@@ -482,38 +476,34 @@ function declaration_entete( $is_meta_robots ,$is_favicon , $is_rss , $tab_fichi
  * 
  * @param string $chemin    chemin complet vers le fichier
  * @param string $methode   soit "pack" soit "mini"
- * @return string           chemin vers le fichier à prendre en compte (à indiquer dans la page web) ; il sera relatif si non compressé, absolu si compressé
+ * @return string           chemin complet vers le fichier à prendre en compte
  */
 function compacter($chemin,$methode)
 {
 	$fichier_original_chemin = $chemin;
 	$fichier_original_date   = filemtime($fichier_original_chemin);
-	$fichier_original_url    = $fichier_original_chemin.'?t='.$fichier_original_date;
 	if(SERVEUR_TYPE == 'PROD')
 	{
-		// On peut se permettre d'enregistrer les js et css en dehors de leur dossier d'origine car les répertoires sont tous de mêmes niveaux
-		// Pour un css l'extension doit être conservée (pour un js aussi, le serveur pouvant se baser sur les extensions pour sa gestion du cache et des charset)
-		$fichier_original_extension = pathinfo($fichier_original_chemin,PATHINFO_EXTENSION);
-		$fichier_chemin_sans_slash  = substr( str_replace( array('./sacoche/','./','/') , array('','','__') , $fichier_original_chemin ) , 0 , -(strlen($fichier_original_extension)+1) );
-		$fichier_compact_nom        = $fichier_chemin_sans_slash.'_'.$fichier_original_date.'.'.$methode.'.'.$fichier_original_extension;
-		$fichier_compact_chemin     = (!defined('APPEL_SITE_PROJET')) ? CHEMIN_DOSSIER_TMP.$fichier_compact_nom : str_replace(DS.'sacoche'.DS,DS ,CHEMIN_DOSSIER_TMP).$fichier_compact_nom ;
-		$fichier_compact_url        = (!defined('APPEL_SITE_PROJET')) ? URL_DIR_TMP       .$fichier_compact_nom : str_replace('/sacoche/'    ,'/',URL_DIR_TMP       ).$fichier_compact_nom ;
-		$fichier_compact_date       = (is_file($fichier_compact_chemin)) ? filemtime($fichier_compact_chemin) : 0 ;
+		$fichier_extension       = pathinfo($chemin,PATHINFO_EXTENSION);
+		$fichier_compact_dossier = (substr($chemin,0,10)=='./sacoche/') ? './sacoche/__tmp/' : './__tmp/' ; // On peut se permettre d'enregistrer les js et css en dehors de leur dossier d'origine car les répertoires sont tous de mêmes niveaux
+		$fichier_compact_nom     = substr( str_replace( array('./sacoche/','./','/') , array('','','__') , $chemin ) ,0,-(strlen($fichier_extension)+1));
+		$fichier_compact_chemin  = $fichier_compact_dossier.$fichier_compact_nom.'_'.$fichier_original_date.'.'.$methode.'.'.$fichier_extension; // Pour un css l'extension doit être conservée (pour un js peu importe)
+		$fichier_compact_date    = (is_file($fichier_compact_chemin)) ? filemtime($fichier_compact_chemin) : 0 ;
 		// Sur le serveur en production, on compresse le fichier s'il ne l'est pas
 		if($fichier_compact_date<$fichier_original_date)
 		{
 			$fichier_original_contenu = file_get_contents($fichier_original_chemin);
 			$fichier_original_contenu = utf8_decode($fichier_original_contenu); // Attention, il faut envoyer à ces classes de l'iso et pas de l'utf8.
-			if( ($fichier_original_extension=='js') && ($methode=='pack') )
+			if( ($fichier_extension=='js') && ($methode=='pack') )
 			{
 				$myPacker = new JavaScriptPacker($fichier_original_contenu, 62, true, false);
 				$fichier_compact_contenu = $myPacker->pack();
 			}
-			elseif( ($fichier_original_extension=='js') && ($methode=='mini') )
+			elseif( ($fichier_extension=='js') && ($methode=='mini') )
 			{
 				$fichier_compact_contenu = JSMin::minify($fichier_original_contenu);
 			}
-			elseif( ($fichier_original_extension=='css') && ($methode=='mini') )
+			elseif( ($fichier_extension=='css') && ($methode=='mini') )
 			{
 				$fichier_compact_contenu = cssmin::minify($fichier_original_contenu);
 			}
@@ -523,16 +513,17 @@ function compacter($chemin,$methode)
 				$fichier_compact_contenu = $fichier_original_contenu;
 			}
 			$fichier_compact_contenu = utf8_encode($fichier_compact_contenu);	// On réencode donc en UTF-8...
+			@umask(0000); // Met le chmod à 666 - 000 = 666 pour les fichiers prochains fichiers créés (et à 777 - 000 = 777 pour les dossiers).
+			$test_ecriture = @file_put_contents($fichier_compact_chemin,$fichier_compact_contenu);
 			// Il se peut que le droit en écriture ne soit pas autorisé et que la procédure d'install ne l'ai pas encore vérifié ou que le dossier __tmp n'ait pas encore été créé.
-			$test_ecriture = FileSystem::ecrire_fichier_si_possible($fichier_compact_chemin,$fichier_compact_contenu);
-			return $test_ecriture ? $fichier_compact_url : $fichier_original_url ;
+			return $test_ecriture ? $fichier_compact_chemin : $fichier_original_chemin.'?t='.$fichier_original_date ;
 		}
-		return $fichier_compact_url;
+		return $fichier_compact_chemin;
 	}
 	else
 	{
-		// Sur un serveur local on n'encombre pas le SVN, en DEV on garde le fichier normal pour debugguer si besoin.
-		return $fichier_original_url;
+		// Sur le serveur local, on travaille avec le fichier normal pour le debugguer si besoin et ne pas encombrer le SVN
+		return $fichier_original_chemin.'?t='.$fichier_original_date;
 	}
 }
 
@@ -549,16 +540,16 @@ function compacter($chemin,$methode)
  */
 function charger_parametres_mysql_supplementaires($BASE)
 {
-	$file_config_base_structure_multi = CHEMIN_DOSSIER_MYSQL.'serveur_sacoche_structure_'.$BASE.'.php';
+	$file_config_base_structure_multi = CHEMIN_MYSQL.'serveur_sacoche_structure_'.$BASE.'.php';
 	if(is_file($file_config_base_structure_multi))
 	{
 		global $_CONST; // Car si on charge les paramètres dans une fonction, ensuite ils ne sont pas trouvés par la classe de connexion.
-		require($file_config_base_structure_multi);
-		require(CHEMIN_DOSSIER_INCLUDE.'class.DB.config.sacoche_structure.php');
+		require_once($file_config_base_structure_multi);
+		require_once(CHEMIN_SACOCHE.'_inc'.DIRECTORY_SEPARATOR.'class.DB.config.sacoche_structure.php');
 	}
 	else
 	{
-		exit_error( 'Paramètre incorrect' /*titre*/ , 'Le fichier avec les paramètres de la base n°'.$BASE.' est manquant !' /*contenu*/ );
+		affich_message_exit($titre='Paramètre incorrect',$contenu='Le fichier avec les paramètres de la base n°'.$BASE.' est manquant !');
 	}
 }
 
@@ -607,17 +598,19 @@ function supprimer_mono_structure()
 	// Supprimer les tables de la base
 	DB_STRUCTURE_WEBMESTRE::DB_supprimer_tables_structure();
 	// Supprimer le fichier de connexion
-	unlink(CHEMIN_DOSSIER_MYSQL.'serveur_sacoche_structure.php');
+	unlink(CHEMIN_MYSQL.'serveur_sacoche_structure.php');
 	// Supprimer les dossiers de fichiers temporaires par établissement : vignettes verticales, flux RSS des demandes, cookies des choix de formulaires, sujets et corrigés de devoirs
 	$tab_sous_dossier = array('badge','cookie','devoir','officiel','rss');
 	foreach($tab_sous_dossier as $sous_dossier)
 	{
-		FileSystem::supprimer_dossier(CHEMIN_DOSSIER_TMP.$sous_dossier.DS.'0');
+		Supprimer_Dossier('./__tmp/'.$sous_dossier.'/'.'0');
 	}
 	// Supprimer les éventuels fichiers de blocage
-	LockAcces::supprimer_fichiers_blocage(0);
+	@unlink(CHEMIN_CONFIG.'blocage_webmestre_0.txt');
+	@unlink(CHEMIN_CONFIG.'blocage_administrateur_0.txt');
+	@unlink(CHEMIN_CONFIG.'blocage_automate_0.txt');
 	// Log de l'action
-	SACocheLog::ajouter('Résiliation de l\'inscription.');
+	ajouter_log_SACoche('Résiliation de l\'inscription.');
 }
 
 /**
@@ -634,19 +627,21 @@ function supprimer_multi_structure($BASE)
 	// Supprimer la base de données d'une structure, et son utilisateur MySQL une fois défait de ses droits.
 	DB_WEBMESTRE_WEBMESTRE::DB_supprimer_base_structure_et_user_mysql($BD_name,$BD_user);
 	// Supprimer le fichier de connexion
-	unlink(CHEMIN_DOSSIER_MYSQL.'serveur_sacoche_structure_'.$BASE.'.php');
+	unlink(CHEMIN_MYSQL.'serveur_sacoche_structure_'.$BASE.'.php');
 	// Retirer l'enregistrement d'une structure dans la base du webmestre
 	DB_WEBMESTRE_WEBMESTRE::DB_supprimer_structure($BASE);
 	// Supprimer les dossiers de fichiers temporaires par établissement : vignettes verticales, flux RSS des demandes, cookies des choix de formulaires, sujets et corrigés de devoirs
 	$tab_sous_dossier = array('badge','cookie','devoir','officiel','rss');
 	foreach($tab_sous_dossier as $sous_dossier)
 	{
-		FileSystem::supprimer_dossier(CHEMIN_DOSSIER_TMP.$sous_dossier.DS.$BASE);
+		Supprimer_Dossier('./__tmp/'.$sous_dossier.'/'.$BASE);
 	}
 	// Supprimer les éventuels fichiers de blocage
-	LockAcces::supprimer_fichiers_blocage($BASE);
+	@unlink(CHEMIN_CONFIG.'blocage_webmestre_'.$BASE.'.txt');
+	@unlink(CHEMIN_CONFIG.'blocage_administrateur_'.$BASE.'.txt');
+	@unlink(CHEMIN_CONFIG.'blocage_automate_'.$BASE.'.txt');
 	// Log de l'action
-	SACocheLog::ajouter('Suppression de la structure n°'.$BASE.'.');
+	ajouter_log_SACoche('Suppression de la structure n°'.$BASE.'.');
 }
 
 /**
@@ -661,16 +656,16 @@ function maj_base_si_besoin($BASE)
 	if($version_base != VERSION_BASE)
 	{
 		// On ne met pas à jour la base tant que le webmestre bloque l'accès à l'application, car sinon cela pourrait se produire avant le transfert de tous les fichiers.
-		if(LockAcces::tester_blocage('webmestre',0)===NULL)
+		if(!is_file(CHEMIN_CONFIG.'blocage_webmestre_0.txt'))
 		{
 			// Bloquer l'application
-			LockAcces::bloquer_application('automate',$BASE,'Mise à jour de la base en cours.');
+			bloquer_application('automate',$BASE,'Mise à jour de la base en cours.');
 			// Lancer une mise à jour de la base
 			DB_STRUCTURE_MAJ_BASE::DB_maj_base($version_base);
 			// Log de l'action
-			SACocheLog::ajouter('Mise à jour automatique de la base '.SACOCHE_STRUCTURE_BD_NAME.'.');
+			ajouter_log_SACoche('Mise à jour automatique de la base '.SACOCHE_STRUCTURE_BD_NAME.'.');
 			// Débloquer l'application
-			LockAcces::debloquer_application('automate',$BASE);
+			debloquer_application('automate',$BASE);
 		}
 	}
 }
@@ -686,8 +681,8 @@ function maj_base_si_besoin($BASE)
 function fabriquer_login($prenom,$nom,$profil)
 {
 	$modele = $_SESSION['MODELE_'.strtoupper($profil)];
-	$login_prenom = mb_substr( str_replace(array('.','-','_'),'',Clean::login($prenom)) , 0 , mb_substr_count($modele,'p') );
-	$login_nom    = mb_substr( str_replace(array('.','-','_'),'',Clean::login($nom))    , 0 , mb_substr_count($modele,'n') );
+	$login_prenom = mb_substr( str_replace(array('.','-','_'),'',clean_login($prenom)) , 0 , mb_substr_count($modele,'p') );
+	$login_nom    = mb_substr( str_replace(array('.','-','_'),'',clean_login($nom))    , 0 , mb_substr_count($modele,'n') );
 	$login_separe = str_replace(array('p','n'),'',$modele);
 	$login = ($modele{0}=='p') ? $login_prenom.$login_separe.$login_nom : $login_nom.$login_separe.$login_prenom ;
 	return $login;
@@ -786,7 +781,7 @@ function fabriquer_nom_fichier_bilan_officiel( $eleve_id , $bilan_type , $period
  */
 function fabriquer_fichier_hebergeur_info($tab_constantes_modifiees)
 {
-	$fichier_nom     = CHEMIN_DOSSIER_CONFIG.'constantes.php';
+	$fichier_nom     = CHEMIN_CONFIG.'constantes.php';
 	$tab_constantes_requises = array(
 		'HEBERGEUR_INSTALLATION',
 		'HEBERGEUR_DENOMINATION',
@@ -821,7 +816,7 @@ function fabriquer_fichier_hebergeur_info($tab_constantes_modifiees)
 		$fichier_contenu.= 'define(\''.$constante_nom.'\''.$espaces.',\''.str_replace('\'','\\\'',$constante_valeur).'\');'."\r\n";
 	}
 	$fichier_contenu.= '?>'."\r\n";
-	FileSystem::ecrire_fichier($fichier_nom,$fichier_contenu);
+	Ecrire_Fichier($fichier_nom,$fichier_contenu);
 }
 
 /**
@@ -838,19 +833,19 @@ function fabriquer_fichier_connexion_base($base_id,$BD_host,$BD_port,$BD_name,$B
 {
 	if( (HEBERGEUR_INSTALLATION=='multi-structures') && ($base_id>0) )
 	{
-		$fichier_nom = CHEMIN_DOSSIER_MYSQL.'serveur_sacoche_structure_'.$base_id.'.php';
+		$fichier_nom = CHEMIN_MYSQL.'serveur_sacoche_structure_'.$base_id.'.php';
 		$fichier_descriptif = 'Paramètres MySQL de la base de données SACoche n°'.$base_id.' (installation multi-structures).';
 		$prefixe = 'STRUCTURE';
 	}
 	elseif(HEBERGEUR_INSTALLATION=='mono-structure')
 	{
-		$fichier_nom = CHEMIN_DOSSIER_MYSQL.'serveur_sacoche_structure.php';
+		$fichier_nom = CHEMIN_MYSQL.'serveur_sacoche_structure.php';
 		$fichier_descriptif = 'Paramètres MySQL de la base de données SACoche (installation mono-structure).';
 		$prefixe = 'STRUCTURE';
 	}
 	else	// (HEBERGEUR_INSTALLATION=='multi-structures') && ($base_id==0)
 	{
-		$fichier_nom = CHEMIN_DOSSIER_MYSQL.'serveur_sacoche_webmestre.php';
+		$fichier_nom = CHEMIN_MYSQL.'serveur_sacoche_webmestre.php';
 		$fichier_descriptif = 'Paramètres MySQL de la base de données SACoche du webmestre (installation multi-structures).';
 		$prefixe = 'WEBMESTRE';
 	}
@@ -862,7 +857,7 @@ function fabriquer_fichier_connexion_base($base_id,$BD_host,$BD_port,$BD_name,$B
 	$fichier_contenu .= 'define(\'SACOCHE_'.$prefixe.'_BD_USER\',\''.$BD_user.'\');	// Nom d\'utilisateur'."\r\n";
 	$fichier_contenu .= 'define(\'SACOCHE_'.$prefixe.'_BD_PASS\',\''.$BD_pass.'\');	// Mot de passe'."\r\n";
 	$fichier_contenu .= '?>'."\r\n";
-	FileSystem::ecrire_fichier($fichier_nom,$fichier_contenu);
+	Ecrire_Fichier($fichier_nom,$fichier_contenu);
 }
 
 /**
@@ -884,6 +879,106 @@ function modifier_mdp_webmestre($password_ancien,$password_nouveau)
 	$password_nouveau_crypte = crypter_mdp($password_nouveau);
 	fabriquer_fichier_hebergeur_info( array('WEBMESTRE_PASSWORD_MD5'=>$password_nouveau_crypte) );
 	return 'ok';
+}
+
+/**
+ * Bloquer l'accès à SACoche (les profils concernés dépendent du profil qui exerce le blocage).
+ * 
+ * @param string $profil_demandeur (webmestre|administrateur|automate)
+ * @param int    $id_base   (0 si demande mono-structure ou du webmestre multi-structures de bloquer tous les établissements)
+ * @param string $motif
+ * @return void
+ */
+function bloquer_application($profil_demandeur,$id_base,$motif)
+{
+	$fichier_nom = CHEMIN_CONFIG.'blocage_'.$profil_demandeur.'_'.$id_base.'.txt' ;
+	Ecrire_Fichier($fichier_nom,$motif);
+	// Log de l'action
+	ajouter_log_SACoche('Blocage de l\'accès à l\'application ['.$motif.'].');
+}
+
+/**
+ * Débloquer l'accès à SACoche.
+ * 
+ * @param string $profil_demandeur (webmestre|administrateur|automate)
+ * @param int    $id_base   (0 si demande mono-structure ou du webmestre multi-structures de débloquer tous les établissements)
+ * @return void
+ */
+function debloquer_application($profil_demandeur,$id_base)
+{
+	$fichier_nom = CHEMIN_CONFIG.'blocage_'.$profil_demandeur.'_'.$id_base.'.txt' ;
+	@unlink($fichier_nom);
+	// Log de l'action
+	ajouter_log_SACoche('Déblocage de l\'accès à l\'application.');
+}
+
+/**
+ * Annuler un blocage anormal à SACoche.
+ * 
+ * Concerne un blocage demandé par l'automate pour un établissement donné.
+ * Au cas où une procédure de sauvegarde / restauration / nettoyage / tranfert échouerait, un fichier de blocage automatique pourrait être créé et ne pas être effacé.
+ * Pour cette raison on teste une durée de vie anormalement longue d'une tel fichier de blocage (puisqu'il ne devrait être que temporaire).
+ * 
+ * Nécessite que la session soit ouverte.
+ * N'est pas effectué au moment de l'appel à tester_blocage_application() car nécessite des fonctions pas encore chargées (le test du blocage devant être effectué dès que possible).
+ * Appelé depuis les pages index.php + ajax.php + lors d'une demande d'identification d'un utilisateur (sauf webmestre)
+ * 
+ * @param void
+ * @return void
+ */
+function annuler_blocage_anormal()
+{
+	if(isset($_SESSION['blocage_anormal']))
+	{
+		unset($_SESSION['blocage_anormal']);
+		debloquer_application('automate',$BASE);
+	}
+}
+
+/**
+ * Nettoyer les fichiers temporaires
+ * Fonction appeler lors d'une nouvelle connexion d'un utilisateur (pas mis en page d'accueil sinon c'est appelé trop souvent)
+ * 
+ * @param int       $BASE
+ * @return void
+ */
+function nettoyer_fichiers_temporaires($BASE)
+{
+	// On essaye de faire en sorte que plusieurs nettoyages ne se lancent pas simultanément (sinon on trouve des warning php dans les logs)
+	$fichier_lock = './__tmp/lock.txt';
+	if(!file_exists($fichier_lock))
+	{
+		Ecrire_Fichier($fichier_lock,'');
+		// On verifie que certains sous-dossiers existent : 'devoir' n'a été ajouté qu'en mars 2012, 'officiel' n'a été ajouté qu'en mai 2012, 'cookie' et 'rss' étaient oublié depuis le formulaire Sésamath ('badge' a priori c'est bon)
+		$tab_sous_dossier = array( 'devoir' , 'officiel' , 'cookie/'.$BASE , 'devoir/'.$BASE , 'officiel/'.$BASE , 'rss/'.$BASE );
+		foreach($tab_sous_dossier as $sous_dossier)
+		{
+			$dossier = './__tmp/'.$sous_dossier;
+			if(!is_dir($dossier))
+			{
+				Creer_Dossier($dossier);
+				Ecrire_Fichier($dossier.'/index.htm','Circulez, il n\'y a rien à voir par ici !');
+			}
+		}
+		effacer_fichiers_temporaires('./__tmp/login-mdp'       ,     10); // Nettoyer ce dossier des fichiers antérieurs à 10 minutes
+		effacer_fichiers_temporaires('./__tmp/export'          ,     60); // Nettoyer ce dossier des fichiers antérieurs à  1 heure
+		effacer_fichiers_temporaires('./__tmp/dump-base'       ,     60); // Nettoyer ce dossier des fichiers antérieurs à  1 heure
+		effacer_fichiers_temporaires('./__tmp/import'          ,  10080); // Nettoyer ce dossier des fichiers antérieurs à  1 semaine
+		effacer_fichiers_temporaires('./__tmp/rss/'.$BASE      ,  43800); // Nettoyer ce dossier des fichiers antérieurs à  1 mois
+		effacer_fichiers_temporaires('./__tmp/officiel/'.$BASE , 438000); // Nettoyer ce dossier des fichiers antérieurs à 10 mois
+		effacer_fichiers_temporaires('./__tmp/badge/'.$BASE    , 481800); // Nettoyer ce dossier des fichiers antérieurs à 11 mois
+		effacer_fichiers_temporaires('./__tmp/cookie/'.$BASE   , 525600); // Nettoyer ce dossier des fichiers antérieurs à  1 an
+		effacer_fichiers_temporaires('./__tmp/devoir/'.$BASE   , 43800*FICHIER_DUREE_CONSERVATION); // Nettoyer ce dossier des fichiers antérieurs à la date fixée par le webmestre (1 an par défaut)
+		unlink($fichier_lock);
+	}
+	// Si le fichier témoin du nettoyage existe, on vérifie que sa présence n'est pas anormale (cela s'est déjà produit...)
+	else
+	{
+		if( time() - filemtime($fichier_lock) > 30 )
+		{
+			unlink($fichier_lock);
+		}
+	}
 }
 
 /**
@@ -975,8 +1070,9 @@ function tester_authentification_user($BASE,$login,$password,$mode_connection)
 		}
 		return array($message,array());
 	}
-	// Blocage éventuel par le webmestre ou un administrateur ou l'automate
-	LockAcces::stopper_si_blocage( $BASE , $DB_ROW['user_profil'] );
+	// Blocage éventuel par le webmestre ou un administrateur
+	tester_blocage_application($BASE,$DB_ROW['user_profil']);
+	annuler_blocage_anormal();
 	// Si tentatives trop rapprochées...
 	if($DB_ROW['user_tentative_date']!='0000-00-00 00:00:00') // Sinon $DB_ROW['delai_tentative_secondes'] vaut NULL
 	{
@@ -1022,7 +1118,7 @@ function tester_authentification_user($BASE,$login,$password,$mode_connection)
 function enregistrer_session_user($BASE,$DB_ROW)
 {
 	// On en profite pour effacer les fichiers inutiles
-	FileSystem::nettoyer_fichiers_temporaires($BASE);
+	nettoyer_fichiers_temporaires($BASE);
 	// Enregistrer en session le numéro de la base
 	$_SESSION['BASE']             = $BASE;
 	// Enregistrer en session les données associées à l'utilisateur (indices du tableau de session en majuscules).
@@ -1167,6 +1263,26 @@ function actualiser_style_session()
 }
 
 /**
+ * Envoyer un courriel au webmestre.
+ * 
+ * @param string   $adresse
+ * @param string   $objet
+ * @param string   $contenu
+ * @return bool
+ */
+function envoyer_webmestre_courriel($adresse,$objet,$contenu)
+{
+	$param = 'From: '.WEBMESTRE_PRENOM.' '.WEBMESTRE_NOM.' <'.WEBMESTRE_COURRIEL.'>'."\n";
+	$param.= 'Reply-To: '.WEBMESTRE_PRENOM.' '.WEBMESTRE_NOM.' <'.WEBMESTRE_COURRIEL.'>'."\n";
+	$param.= 'Content-type: text/plain; charset=utf-8'."\r\n"; // \r\n ici et \n avant : http://fr.php.net/manual/fr/function.mail.php#103590
+	// Pb avec les accents dans l'entête (sujet, expéditeur...) ; le charset n'a d'effet que sur le corps et les clients de messagerie interprètent différemment le reste (UTF-8 ou ISO-8859-1 etc.).
+	// $back=($retour)?'-fwebmestre@sesaprof.net':'';
+	// Fonction bridée : 5° paramètre supprimé << Warning: mail(): SAFE MODE Restriction in effect. The fifth parameter is disabled in SAFE MODE.
+	$envoi = @mail( $adresse , clean_accents('[SACoche - '.HEBERGEUR_DENOMINATION.'] '.$objet) , $contenu , clean_accents($param) );
+	return $envoi ;
+}
+
+/**
  * Fabriquer le contenu du courriel d'insription envoyé au contact de l'établissement et 1er admin
  * 
  * @param int      $base_id
@@ -1175,15 +1291,15 @@ function actualiser_style_session()
  * @param string   $contact_prenom
  * @param string   $admin_login
  * @param string   $admin_password
- * @param string   $url_dir_sacoche
+ * @param string   $serveur_adresse
  * @return string
  */
-function contenu_courriel_inscription($base_id,$denomination,$contact_nom,$contact_prenom,$admin_login,$admin_password,$url_dir_sacoche)
+function contenu_courriel_inscription($base_id,$denomination,$contact_nom,$contact_prenom,$admin_login,$admin_password,$serveur_adresse)
 {
 	$texte = 'Bonjour '.$contact_prenom.' '.$contact_nom.'.'."\r\n\r\n";
-	$texte.= 'Je viens de créer une base SACoche pour l\'établissement "'.$denomination.'" sur le site hébergé par "'.HEBERGEUR_DENOMINATION.'". Pour accéder au site sans avoir besoin de sélectionner votre établissement, utilisez le lien suivant :'."\r\n".$url_dir_sacoche.'?id='.$base_id."\r\n\r\n";
+	$texte.= 'Je viens de créer une base SACoche pour l\'établissement "'.$denomination.'" sur le site hébergé par "'.HEBERGEUR_DENOMINATION.'". Pour accéder au site sans avoir besoin de sélectionner votre établissement, utilisez le lien suivant :'."\r\n".$serveur_adresse.'/?id='.$base_id."\r\n\r\n";
 	$texte.= 'Vous êtes maintenant le contact de votre établissement pour cette installation de SACoche.'."\r\n".'Pour modifier l\'identité de la personne référente, il suffit de me communiquer ses coordonnées.'."\r\n\r\n";
-	$texte.= 'Un premier compte administrateur a été créé. Pour se connecter comme administrateur, utiliser le lien'."\r\n".$url_dir_sacoche.'?id='.$base_id."\r\n".'et entrer les identifiants'."\r\n".'nom d\'utilisateur :   '.$admin_login."\r\n".'mot de passe :   '.$admin_password."\r\n\r\n";
+	$texte.= 'Un premier compte administrateur a été créé. Pour se connecter comme administrateur, utiliser le lien'."\r\n".$serveur_adresse.'/?id='.$base_id."\r\n".'et entrer les identifiants'."\r\n".'nom d\'utilisateur :   '.$admin_login."\r\n".'mot de passe :   '.$admin_password."\r\n\r\n";
 	$texte.= 'Ces identifiants sont modifiables depuis l\'espace d\'administration.'."\r\n".'Un administrateur peut déléguer son rôle en créant d\'autres administrateurs.'."\r\n\r\n";
 	$texte.= 'Ce logiciel est mis à votre disposition gratuitement, mais sans garantie, conformément à la licence libre GNU GPL3.'."\r\n".'Les administrateurs et les professeurs sont responsables de toute conséquence d\'une mauvaise manipulation de leur part.'."\r\n\r\n";
 	$texte.= 'Merci de consulter la documentation disponible depuis le site du projet :'."\r\n".SERVEUR_PROJET."\r\n\r\n";
@@ -1205,14 +1321,14 @@ function contenu_courriel_inscription($base_id,$denomination,$contact_nom,$conta
  * @param string   $admin_prenom
  * @param string   $admin_login
  * @param string   $admin_password
- * @param string   $url_dir_sacoche
+ * @param string   $serveur_adresse
  * @return string
  */
-function contenu_courriel_nouveau_mdp($base_id,$denomination,$contact_nom,$contact_prenom,$admin_nom,$admin_prenom,$admin_login,$admin_password,$url_dir_sacoche)
+function contenu_courriel_nouveau_mdp($base_id,$denomination,$contact_nom,$contact_prenom,$admin_nom,$admin_prenom,$admin_login,$admin_password,$serveur_adresse)
 {
 	$texte = 'Bonjour '.$contact_prenom.' '.$contact_nom.'.'."\r\n\r\n";
 	$texte.= 'Je viens de réinitialiser le mot de passe de '.$admin_prenom.' '.$admin_nom.', administrateur de SACoche pour l\'établissement "'.$denomination.'" sur le site hébergé par "'.HEBERGEUR_DENOMINATION.'".'."\r\n\r\n";
-	$texte.= 'Pour se connecter, cet administrateur doit utiliser le lien'."\r\n".$url_dir_sacoche.'?id='.$base_id."\r\n".'et entrer les identifiants'."\r\n".'nom d\'utilisateur :   '.$admin_login."\r\n".'mot de passe :   '.$admin_password."\r\n\r\n";
+	$texte.= 'Pour se connecter, cet administrateur doit utiliser le lien'."\r\n".$serveur_adresse.'/?id='.$base_id."\r\n".'et entrer les identifiants'."\r\n".'nom d\'utilisateur :   '.$admin_login."\r\n".'mot de passe :   '.$admin_password."\r\n\r\n";
 	$texte.= 'Ces identifiants sont modifiables depuis l\'espace d\'administration.'."\r\n".'Un administrateur peut déléguer son rôle en créant d\'autres administrateurs.'."\r\n\r\n";
 	$texte.= 'Rappel : ce logiciel est mis à votre disposition gratuitement, mais sans garantie, conformément à la licence libre GNU GPL3.'."\r\n".'Les administrateurs et les professeurs sont responsables de toute conséquence d\'une mauvaise manipulation de leur part.'."\r\n\r\n";
 	$texte.= 'Merci de consulter la documentation disponible depuis le site du projet :'."\r\n".SERVEUR_PROJET."\r\n\r\n";
@@ -1673,65 +1789,286 @@ function recuperer_numero_derniere_version()
 }
 
 /**
- * Retourne le nom du fichier RSS d'un prof.
+ * Liste le contenu d'un dossier (fichiers et dossiers).
+ * 
+ * @param string   $dossier
+ * @return array
+ */
+function Lister_Contenu_Dossier($dossier)
+{
+	return array_diff( scandir($dossier) , array('.','..') );
+}
+
+/**
+ * Liste les noms des fichiers contenus dans un dossier, sans le contenu temporaire ou personnel.
+ * 
+ * @param string   $dossier
+ * @return array
+ */
+function Lister_Contenu_Dossier_Programme($dossier)
+{
+	return array_diff( scandir($dossier) , array('.','..','__private','__tmp','webservices','.svn') );
+}
+
+/**
+ * Tester l'existence d'un dossier, le créer, tester son accès en écriture.
+ * 
+ * @param string   $dossier
+ * @return bool
+ */
+function Creer_Dossier($dossier)
+{
+	global $affichage;
+	// Le dossier existe-t-il déjà ?
+	if(is_dir($dossier))
+	{
+		$affichage .= '<label for="rien" class="valide">Dossier &laquo;&nbsp;<b>'.$dossier.'</b>&nbsp;&raquo; déjà en place.</label><br />'."\r\n";
+		return TRUE;
+	}
+	@umask(0000); // Met le chmod à 666 - 000 = 666 pour les fichiers prochains fichiers créés (et à 777 - 000 = 777 pour les dossiers).
+	$test = @mkdir($dossier);
+	// Le dossier a-t-il bien été créé ?
+	if(!$test)
+	{
+		$affichage .= '<label for="rien" class="erreur">Echec lors de la création du dossier &laquo;&nbsp;<b>'.$dossier.'</b>&nbsp;&raquo; : veuillez le créer manuellement.</label><br />'."\r\n";
+		return FALSE;
+	}
+	$affichage .= '<label for="rien" class="valide">Dossier &laquo;&nbsp;<b>'.$dossier.'</b>&nbsp;&raquo; créé.</label><br />'."\r\n";
+	// Le dossier est-il accessible en écriture ?
+	$test = is_writable($dossier);
+	if(!$test)
+	{
+		$affichage .= '<label for="rien" class="erreur">Dossier &laquo;&nbsp;<b>'.$dossier.'</b>&nbsp;&raquo; inaccessible en écriture : veuillez en changer les droits manuellement.</label><br />'."\r\n";
+		return FALSE;
+	}
+	// Si on arrive là, c'est bon...
+	$affichage .= '<label for="rien" class="valide">Dossier &laquo;&nbsp;<b>'.$dossier.'</b>&nbsp;&raquo; accessible en écriture.</label><br />'."\r\n";
+	return TRUE;
+}
+
+/**
+ * Vider un dossier ne contenant que d'éventuels fichiers.
+ * 
+ * @param string   $dossier
+ * @return void
+ */
+function Vider_Dossier($dossier)
+{
+	if(is_dir($dossier))
+	{
+		$tab_fichier = Lister_Contenu_Dossier($dossier);
+		foreach($tab_fichier as $fichier_nom)
+		{
+			unlink($dossier.'/'.$fichier_nom);
+		}
+	}
+}
+
+/**
+ * Créer un dossier s'il n'existe pas, le vider de ses éventuels fichiers sinon.
+ * 
+ * @param string   $dossier
+ * @return void
+ */
+function Creer_ou_Vider_Dossier($dossier)
+{
+	if(!is_dir($dossier))
+	{
+		Creer_Dossier($dossier);
+	}
+	else
+	{
+		Vider_Dossier($dossier);
+	}
+}
+
+/**
+ * Supprimer un dossier, après avoir effacé récursivement son contenu.
+ * 
+ * @param string   $dossier
+ * @return void
+ */
+function Supprimer_Dossier($dossier)
+{
+	if(is_dir($dossier))
+	{
+		$tab_contenu = Lister_Contenu_Dossier($dossier);
+		foreach($tab_contenu as $contenu)
+		{
+			$chemin_contenu = $dossier.'/'.$contenu;
+			if(is_dir($chemin_contenu))
+			{
+				Supprimer_Dossier($chemin_contenu);
+			}
+			else
+			{
+				unlink($chemin_contenu);
+			}
+		}
+		rmdir($dossier);
+	}
+}
+
+/**
+ * Recense récursivement les dossiers présents et les md5 des fichiers (utilisé pour la maj automatique par le webmestre).
+ * 
+ * @param string   $dossier
+ * @param int      $longueur_prefixe   longueur de $dossier lors du premier appel
+ * @param string   $indice   "avant" ou "apres"
+ * @param bool     $calc_md5   TRUE par défaut, FALSE si le fichier est son MD5
+ * @return void
+ */
+function Analyser_Dossier($dossier,$longueur_prefixe,$indice,$calc_md5=TRUE)
+{
+	$tab_contenu = Lister_Contenu_Dossier_Programme($dossier);
+	foreach($tab_contenu as $contenu)
+	{
+		$chemin_contenu = $dossier.'/'.$contenu;
+		if(is_dir($chemin_contenu))
+		{
+			Analyser_Dossier($chemin_contenu,$longueur_prefixe,$indice,$calc_md5);
+		}
+		else
+		{
+			$_SESSION['tmp']['fichier'][substr($chemin_contenu,$longueur_prefixe)][$indice] = ($calc_md5) ? fabriquer_md5_file($chemin_contenu) : file_get_contents($chemin_contenu) ;
+		}
+	}
+	$_SESSION['tmp']['dossier'][substr($dossier,$longueur_prefixe)][$indice] = TRUE;
+}
+
+/**
+ * Ecrire du contenu dans un fichier, exit() en cas d'erreur
+ * 
+ * @param string   $fichier_chemin
+ * @param string   $fichier_contenu
+ * @param int      facultatif ; si constante FILE_APPEND envoyée, alors ajoute en fin de fichier au lieu d'écraser le contenu
+ * @return void
+ */
+function Ecrire_Fichier($fichier_chemin,$fichier_contenu,$file_append=0)
+{
+	@umask(0000); // Met le chmod à 666 - 000 = 666 pour les fichiers prochains fichiers créés (et à 777 - 000 = 777 pour les dossiers).
+	$test_ecriture = @file_put_contents($fichier_chemin,$fichier_contenu,$file_append);
+	if($test_ecriture===false)
+	{
+		exit('Erreur : problème lors de l\'écriture du fichier '.$fichier_chemin.' !');
+	}
+}
+
+/**
+ * zipper_fichiers
+ * Zipper les fichiers de svg
+ *
+ * @param string $dossier_fichiers_a_zipper
+ * @param string $dossier_zip_final
+ * @param string $fichier_zip_nom
+ * @return void
+ */
+
+function zipper_fichiers($dossier_fichiers_a_zipper,$dossier_zip_final,$fichier_zip_nom)
+{
+	$zip = new ZipArchive();
+	$zip->open($dossier_zip_final.$fichier_zip_nom, ZIPARCHIVE::CREATE);
+	$tab_fichier = Lister_Contenu_Dossier($dossier_fichiers_a_zipper);
+	foreach($tab_fichier as $fichier_sql_nom)
+	{
+		$zip->addFile($dossier_fichiers_a_zipper.$fichier_sql_nom,$fichier_sql_nom);
+	}
+	$zip->close();
+}
+
+/**
+ * Dezipper un fichier contenant un ensemble de fichiers dans un dossier, avec son arborescence.
+ * 
+ * Inspiré de http://fr.php.net/manual/fr/ref.zip.php#79057
+ * A l'origine pour remplacer $zip = new ZipArchive(); $result_open = $zip->open($fichier_import); qui plante sur le serveur Nantais s'il y a trop de fichiers dans le zip (code erreur "5 READ").
+ * Mais il s'avère finalement que ça ne fonctionne pas mieux...
+ * 
+ * @param string   $fichier_zip
+ * @param string   $dossier_dezip   sans le slash final
+ * @return bool    $use_ZipArchive
+ * @return int     code d'erreur (0 si RAS)
+ */
+function unzip($fichier_zip,$dossier_dezip,$use_ZipArchive)
+{
+	// Utiliser la classe ZipArchive http://fr.php.net/manual/fr/class.ziparchive.php (PHP 5 >= 5.2.0, PECL zip >= 1.1.0)
+	if($use_ZipArchive)
+	{
+		$zip = new ZipArchive();
+		$result_open = $zip->open($fichier_zip);
+		if($result_open!==true)
+		{
+			return $result_open;
+		}
+		$zip->extractTo($dossier_dezip);
+		$zip->close();
+	}
+	// Utiliser les fonctions Zip http://fr.php.net/manual/fr/ref.zip.php (PHP 4 >= 4.1.0, PHP 5 >= 5.2.0, PECL zip >= 1.0.0)
+	else
+	{
+		$dossier_dezip .= '/';
+		$contenu_zip = zip_open($fichier_zip);
+		if(!is_resource($contenu_zip))
+		{
+			return $contenu_zip;
+		}
+		while( $zip_element = zip_read($contenu_zip) )
+		{
+			zip_entry_open($contenu_zip, $zip_element);
+			if (substr(zip_entry_name($zip_element), -1) == '/')
+			{
+				// C'est un dossier
+				mkdir( $dossier_dezip.substr(zip_entry_name($zip_element), 0, -1) );
+			}
+			else
+			{
+				// C'est un fichier
+				file_put_contents( $dossier_dezip.zip_entry_name($zip_element) , zip_entry_read($zip_element,zip_entry_filesize($zip_element)) );
+			}
+			zip_entry_close($zip_element);
+		}
+		zip_close($contenu_zip);
+	}
+	// Tout c'est bien passé
+	return 0;
+}
+
+/**
+ * Retourne le chemin du fichier RSS d'un prof ; s'il n'existe pas, en créer un vierge (pour recueillir les demandes d'évaluations des élèves).
  * 
  * @param int     $prof_id
  * @return string
  */
-function nom_fichier_RSS($prof_id)
+function adresse_RSS($prof_id)
 {
 	// Le nom du RSS est tordu pour le rendre un minimum privé, sans être totalement aléatoire car il doit être fixe (mais il n'y a rien de confidentiel non plus).
+	$dossier_nom = './__tmp/rss/'.$_SESSION['BASE'];
 	$fichier_nom_debut = 'rss_'.$prof_id;
 	$fichier_nom_fin   = fabriquer_fin_nom_fichier__pseudo_alea($fichier_nom_debut);
-	return $fichier_nom_debut.'_'.$fichier_nom_fin.'.xml';
-}
-
-/**
- * Créer un fichier RSS d'un prof vierge (pour recueillir les demandes d'évaluations des élèves).
- * 
- * @param string   $fichier_chemin
- * @return void
- */
-function creer_RSS($fichier_chemin)
-{
-	$fichier_contenu ='<?xml version="1.0" encoding="utf-8"?>'."\r\n";
-	$fichier_contenu.='<rss version="2.0">'."\r\n";
-	$fichier_contenu.='<channel>'."\r\n\r\n";
-	$fichier_contenu.='	<title>SACoche</title>'."\r\n";
-	$fichier_contenu.='	<link>'.URL_INSTALL_SACOCHE.'</link>'."\r\n";
-	$fichier_contenu.='	<description>Demandes d\'évaluations.</description>'."\r\n";
-	$fichier_contenu.='	<language>fr-FR</language>'."\r\n";
-	$fichier_contenu.='	<lastBuildDate>'.date("r",time()).'</lastBuildDate>'."\r\n";
-	$fichier_contenu.='	<docs>http://www.scriptol.fr/rss/RSS-2.0.html</docs>'."\r\n";
-	$fichier_contenu.='	<image>'."\r\n";
-	$fichier_contenu.='		<url>'.SERVEUR_PROJET.'/_img/logo_rss.png</url>'."\r\n";
-	$fichier_contenu.='		<title>SACoche</title>'."\r\n";
-	$fichier_contenu.='		<link>'.SERVEUR_PROJET.'</link>'."\r\n";
-	$fichier_contenu.='		<width>144</width>'."\r\n";
-	$fichier_contenu.='		<height>45</height>'."\r\n";
-	$fichier_contenu.='		<description></description>'."\r\n";
-	$fichier_contenu.='	</image>'."\r\n\r\n";
-	$fichier_contenu.='</channel>'."\r\n";
-	$fichier_contenu.='</rss>'."\r\n";
-	FileSystem::ecrire_fichier($fichier_chemin,$fichier_contenu);
-}
-
-/**
- * Retourne l'URL du fichier RSS d'un prof.
- * 
- * @param int   $prof_id
- * @return string
- */
-function url_RSS($prof_id)
-{
-	$fichier_nom    = nom_fichier_RSS($prof_id);
-	$fichier_chemin = CHEMIN_DOSSIER_RSS.$_SESSION['BASE'].DS.$fichier_nom;
-	// S'il n'existe pas, en créer un vierge.
+	$fichier_chemin    = $dossier_nom.'/'.$fichier_nom_debut.'_'.$fichier_nom_fin.'.xml';
 	if(!file_exists($fichier_chemin))
 	{
-		creer_RSS($fichier_chemin);
+		$fichier_contenu ='<?xml version="1.0" encoding="utf-8"?>'."\r\n";
+		$fichier_contenu.='<rss version="2.0">'."\r\n";
+		$fichier_contenu.='<channel>'."\r\n\r\n";
+		$fichier_contenu.='	<title>SACoche</title>'."\r\n";
+		$fichier_contenu.='	<link>'.SERVEUR_ADRESSE.'</link>'."\r\n";
+		$fichier_contenu.='	<description>Demandes d\'évaluations.</description>'."\r\n";
+		$fichier_contenu.='	<language>fr-FR</language>'."\r\n";
+		$fichier_contenu.='	<lastBuildDate>'.date("r",time()).'</lastBuildDate>'."\r\n";
+		$fichier_contenu.='	<docs>http://www.scriptol.fr/rss/RSS-2.0.html</docs>'."\r\n";
+		$fichier_contenu.='	<image>'."\r\n";
+		$fichier_contenu.='		<url>'.SERVEUR_PROJET.'/_img/logo_rss.png</url>'."\r\n";
+		$fichier_contenu.='		<title>SACoche</title>'."\r\n";
+		$fichier_contenu.='		<link>'.SERVEUR_PROJET.'</link>'."\r\n";
+		$fichier_contenu.='		<width>144</width>'."\r\n";
+		$fichier_contenu.='		<height>45</height>'."\r\n";
+		$fichier_contenu.='		<description></description>'."\r\n";
+		$fichier_contenu.='	</image>'."\r\n\r\n";
+		$fichier_contenu.='</channel>'."\r\n";
+		$fichier_contenu.='</rss>'."\r\n";
+		Ecrire_Fichier($fichier_chemin,$fichier_contenu);
 	}
-	return URL_DIR_RSS.$_SESSION['BASE'].'/'.$fichier_nom;
+	return $fichier_chemin;
 }
 
 /**
@@ -1743,20 +2080,14 @@ function url_RSS($prof_id)
  * @param string   $guid
  * @return void
  */
-function Modifier_RSS($prof_id,$titre,$texte,$guid)
+function Modifier_RSS($fichier_chemin,$titre,$texte,$guid)
 {
-	$fichier_chemin = CHEMIN_DOSSIER_RSS.$_SESSION['BASE'].DS.nom_fichier_RSS($prof_id);
-	// S'il n'existe pas, en créer un vierge.
-	if(!file_exists($fichier_chemin))
-	{
-		creer_RSS($fichier_chemin);
-	}
 	// Ajouter l'article
 	$date = date("r",time());
-	$fichier_contenu = file_get_contents($fichier_chemin);
+	$fichier_contenu = file_get_contents($fichier_chemin); // Il existe déjà car adresse_RSS() a forcément été appelée avant
 	$article ='	<item>'."\r\n";
 	$article.='		<title>'.html($titre).'</title>'."\r\n";
-	$article.='		<link>'.URL_INSTALL_SACOCHE.'</link>'."\r\n";
+	$article.='		<link>'.SERVEUR_ADRESSE.'</link>'."\r\n";
 	$article.='		<description>'.html($texte).'</description>'."\r\n";
 	$article.='		<pubDate>'.$date.'</pubDate>'."\r\n";
 	$article.='		<guid isPermaLink="false">'.$guid.'</guid>'."\r\n";
@@ -1775,7 +2106,7 @@ function Modifier_RSS($prof_id,$titre,$texte,$guid)
 		$fichier_contenu = mb_substr($fichier_contenu,0,$pos).'</item>'."\r\n\r\n".'</channel>'."\r\n";
 	}
 	// Enregistrer
-	FileSystem::ecrire_fichier($fichier_chemin,$fichier_contenu);
+	Ecrire_Fichier($fichier_chemin,$fichier_contenu);
 }
 
 /**
@@ -1884,30 +2215,6 @@ function dimensions_affichage_image($largeur_reelle,$hauteur_reelle,$largeur_max
 		return array($largeur_imposee,$hauteur_imposee);
 	}
 	return array($largeur_reelle,$hauteur_reelle);
-}
-
-/**
- * Passer d'une date MySQL AAAA-MM-JJ à une date française JJ/MM/AAAA.
- *
- * @param string $date   AAAA-MM-JJ
- * @return string        JJ/MM/AAAA
- */
-function convert_date_mysql_to_french($date)
-{
-	list($annee,$mois,$jour) = explode('-',$date);
-	return $jour.'/'.$mois.'/'.$annee;
-}
-
-/**
- * Passer d'une date française JJ/MM/AAAA à une date MySQL AAAA-MM-JJ.
- *
- * @param string $date   JJ/MM/AAAA
- * @return string        AAAA-MM-JJ
- */
-function convert_date_french_to_mysql($date)
-{
-	list($jour,$mois,$annee) = explode('/',$date);
-	return $annee.'-'.$mois.'-'.$jour;
 }
 
 ?>

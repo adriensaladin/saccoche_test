@@ -87,7 +87,7 @@ $(document).ready
 						url : 'ajax.php?page='+PAGE+'&action='+id,
 						data : $("form").serialize(),
 						dataType : "html",
-						error : function(jqXHR, textStatus, errorThrown)
+						error : function(msg,string)
 						{
 							$('button').prop('disabled',false);
 							$('#ajax_msg').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
@@ -123,7 +123,7 @@ $(document).ready
 				url : 'ajax.php?page='+PAGE+'&action=initialiser',
 				data : '',
 				dataType : "html",
-				error : function(jqXHR, textStatus, errorThrown)
+				error : function(msg,string)
 				{
 					$('#ajax_msg').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
 					return false;

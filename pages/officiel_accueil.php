@@ -38,7 +38,7 @@ if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');
 if(!isset($BILAN_TYPE)) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = $tab_types[$BILAN_TYPE]['titre'];
 
-require(CHEMIN_DOSSIER_INCLUDE.'tableau_profils.php'); // Charge $tab_profil_libelle[$profil][court|long][1|2]
+require_once('./_inc/tableau_profils.php'); // Charge $tab_profil_libelle[$profil][court|long][1|2]
 $tab_profils = array('directeur','professeur','profprincipal');
 
 // Indication des profils pouvant modifier le statut d'un bilan
@@ -47,7 +47,7 @@ foreach($tab_profils as $profil)
 {
 	$str_objet = str_replace($profil,$tab_profil_libelle[$profil]['long'][2],$str_objet);
 }
-$profils_modifier_statut = ($str_objet=='') ? 'aucun' : ( (strpos($str_objet,',')===FALSE) ? 'uniquement les '.$str_objet : str_replace(',',' + ',$str_objet) ) ;
+$profils_modifier_statut = ($str_objet=='') ? 'aucun' : ( (strpos($str_objet,',')===false) ? 'uniquement les '.$str_objet : str_replace(',',' + ',$str_objet) ) ;
 
 // Indication des profils ayant accès à l'appréciation générale
 $str_objet = str_replace( array(',aucunprof','aucunprof,','aucunprof') , '' , $_SESSION['DROIT_OFFICIEL_'.$tab_types[$BILAN_TYPE]['droit'].'_APPRECIATION_GENERALE'] );
@@ -55,7 +55,7 @@ foreach($tab_profils as $profil)
 {
 	$str_objet = str_replace($profil,$tab_profil_libelle[$profil]['long'][2],$str_objet);
 }
-$profils_appreciation_generale = ($str_objet=='') ? 'aucun' : ( (strpos($str_objet,',')===FALSE) ? 'uniquement les '.$str_objet : str_replace(',',' + ',$str_objet) ) ;
+$profils_appreciation_generale = ($str_objet=='') ? 'aucun' : ( (strpos($str_objet,',')===false) ? 'uniquement les '.$str_objet : str_replace(',',' + ',$str_objet) ) ;
 
 // Indication des profils ayant accès à l'impression PDF
 $str_objet = str_replace( array(',aucunprof','aucunprof,','aucunprof') , '' , $_SESSION['DROIT_OFFICIEL_'.$tab_types[$BILAN_TYPE]['droit'].'_IMPRESSION_PDF'] );
@@ -63,7 +63,7 @@ foreach($tab_profils as $profil)
 {
 	$str_objet = str_replace($profil,$tab_profil_libelle[$profil]['long'][2],$str_objet);
 }
-$profils_impression_pdf = ($str_objet=='') ? 'aucun' : ( (strpos($str_objet,',')===FALSE) ? 'uniquement les '.$str_objet : str_replace(',',' + ',$str_objet) ) ;
+$profils_impression_pdf = ($str_objet=='') ? 'aucun' : ( (strpos($str_objet,',')===false) ? 'uniquement les '.$str_objet : str_replace(',',' + ',$str_objet) ) ;
 
 // Indication des profils ayant accès aux copies des impressions PDF
 $tab_profils = array('directeur','professeur','eleve','parent');
@@ -72,7 +72,7 @@ foreach($tab_profils as $profil)
 {
 	$str_objet = str_replace($profil,$tab_profil_libelle[$profil]['long'][2],$str_objet);
 }
-$profils_archives_pdf = ($str_objet=='') ? 'aucun' : ( (strpos($str_objet,',')===FALSE) ? 'uniquement les '.$str_objet : str_replace(',',' + ',$str_objet) ) ;
+$profils_archives_pdf = ($str_objet=='') ? 'aucun' : ( (strpos($str_objet,',')===false) ? 'uniquement les '.$str_objet : str_replace(',',' + ',$str_objet) ) ;
 
 // Droit de modifier le statut d'un bilan (dans le cas PP, restera à affiner classe par classe...).
 $affichage_formulaire_statut = 
@@ -134,7 +134,7 @@ $tab_affich['title']['title'] = '<td class="nu"></td>' ;
 if( ($affichage_formulaire_statut) && ($_SESSION['SESAMATH_ID']!=ID_DEMO) )
 {
 	$tab_ids  = (isset($_POST['listing_ids'])) ? explode(',',$_POST['listing_ids']) : array() ;
-	$new_etat = (isset($_POST['etat']))        ? Clean::texte($_POST['etat'])        : '' ;
+	$new_etat = (isset($_POST['etat']))        ? clean_texte($_POST['etat'])        : '' ;
 	if( count($tab_ids) && isset($tab_etats[$new_etat]) )
 	{
 		$champ = 'officiel_'.$BILAN_TYPE;
@@ -502,7 +502,7 @@ if(count($tab_classe))
 				<p style="clear:both"><span class="tab"></span><button id="lancer_recherche" type="button" class="rechercher">Lancer la recherche</button> <button id="fermer_zone_chx_rubriques" type="button" class="annuler">Annuler</button><label id="ajax_msg_recherche">&nbsp;</label></p>
 			</form>
 		';
-		echo'<form action="#" method="post" id="form_hidden" class="hide"><div>'.$form_hidden.'<input type="hidden" id="f_objet" name="f_objet" value="" /><input type="hidden" id="f_listing_rubriques" name="f_listing_rubriques" value="" /><input type="hidden" id="f_listing_eleves" name="f_listing_eleves" value="" /><input type="hidden" id="f_mode" name="f_mode" value="texte" /></div></form>';
+		echo'<form action="#" method="post" id="form_hidden" class="hide"><div>'.$form_hidden.'<input type="hidden" id="f_objet" name="f_objet" value="" /><input type="hidden" id="f_listing_rubriques" name="f_listing_rubriques" value="" /><input type="hidden" id="f_mode" name="f_mode" value="texte" /></div></form>';
 
 		//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 		//	Formulaires utilisés pour les opérations ultérieures sur les bilans.

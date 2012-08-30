@@ -84,7 +84,7 @@ $(document).ready
 							url : 'ajax.php?page='+PAGE,
 							data : 'tab_id='+tab_id,
 							dataType : "html",
-							error : function(jqXHR, textStatus, errorThrown)
+							error : function(msg,string)
 							{
 								$('#form_ordonner button').prop('disabled',false);
 								$('#ajax_msg_ordre').removeAttr("class").addClass("alerte").html('Echec de la connexion !');

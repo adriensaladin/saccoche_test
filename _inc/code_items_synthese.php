@@ -45,7 +45,10 @@ register_shutdown_function('rapporter_erreur_fatale');
 
 // Chemins d'enregistrement
 
-$fichier_nom = ($make_action!='imprimer') ? 'releve_synthese_'.$format.'_'.Clean::fichier($groupe_nom).'_'.fabriquer_fin_nom_fichier__date_et_alea() : 'officiel_'.$BILAN_TYPE.'_'.Clean::fichier($groupe_nom).'_'.fabriquer_fin_nom_fichier__date_et_alea() ;
+$dossier     = './__tmp/export/';
+$fichier_nom = ($make_action!='imprimer') ? 'releve_synthese_'.$format.'_'.clean_fichier($groupe_nom).'_'.fabriquer_fin_nom_fichier__date_et_alea() : 'officiel_'.$BILAN_TYPE.'_'.clean_fichier($groupe_nom).'_'.fabriquer_fin_nom_fichier__date_et_alea() ;
+
+
 
 // Initialisation de tableaux
 
@@ -316,9 +319,7 @@ if( ($make_html) || ($make_graph) )
 	$releve_HTML .= $affichage_direct ? '' : '<h2>'.html($texte_periode).'</h2>';
 	$releve_HTML .= (!$make_graph) ? '<div class="astuce">Cliquer sur <img src="./_img/toggle_plus.gif" alt="+" /> / <img src="./_img/toggle_moins.gif" alt="+" /> pour afficher / masquer le détail'.$bouton_print_appr.'</div>' : '<div id="div_graphique"></div>' ;
 	$separation = (count($tab_eleve)>1) ? '<hr class="breakafter" />' : '' ;
-	$legende_html = ($legende=='oui') ? Html::legende( FALSE /*codes_notation*/ , TRUE /*etat_acquisition*/ , FALSE /*pourcentage_acquis*/ , FALSE /*etat_validation*/ ) : '' ;
-	$width_barre = (!$make_officiel) ? 180 : 50 ;
-	$width_texte = 900 - $width_barre;
+	$legende_html = ($legende=='oui') ? affich_legende_html( FALSE /*codes_notation*/ , TRUE /*etat_acquisition*/ , FALSE /*pourcentage_acquis*/ , FALSE /*etat_validation*/ ) : '' ;
 }
 if($make_pdf)
 {
@@ -385,7 +386,7 @@ foreach($tab_eleve as $tab)
 					if($make_html)
 					{
 						$releve_HTML .= '<table class="bilan" style="width:900px;margin-bottom:0"><tbody>';
-						$releve_HTML .= '<tr><th style="width:540px">'.html($tab_matiere[$matiere_id]).'</th>'.Html::td_barre_synthese($width=360,$tab_infos_matiere['total'],$total).'</tr>';
+						$releve_HTML .= '<tr><th style="width:540px">'.html($tab_matiere[$matiere_id]).'</th>'.affich_barre_synthese_html($width=360,$tab_infos_matiere['total'],$total).'</tr>';
 						$releve_HTML .= '</tbody></table>'; // Utilisation de 2 tableaux sinon bugs constatés lors de l'affichage des détails...
 						$releve_HTML .= '<table class="bilan" style="width:900px;margin-top:0"><tbody>';
 					}
@@ -406,8 +407,8 @@ foreach($tab_eleve as $tab)
 							if($make_html)
 							{
 								$releve_HTML .= '<tr>';
-								$releve_HTML .= Html::td_barre_synthese($width_barre,$tab_infos_synthese,$total);
-								$releve_HTML .= '<td style="width:'.$width_texte.'px">' ;
+								$releve_HTML .= (!$make_officiel) ? affich_barre_synthese_html($width=180,$tab_infos_synthese,$total) : affich_pourcentage_html( 'td' , $tab_infos_synthese , FALSE /*detail*/ , 50 /*largeur*/ ) ;
+								$releve_HTML .= (!$make_officiel) ? '<td style="width:720px">' : '<td style="width:850px">' ;
 								$releve_HTML .= '<a href="#" id="to_'.$synthese_ref.'_'.$eleve_id.'"><img src="./_img/'.$toggle_img.'.gif" alt="" title="Voir / masquer le détail des items associés." class="toggle" /></a> ';
 								$releve_HTML .= html($tab_synthese[$synthese_ref]);
 								$releve_HTML .= '<div id="'.$synthese_ref.'_'.$eleve_id.'"'.$toggle_class.'>'.implode('<br />',$tab_infos_detail_synthese[$eleve_id][$synthese_ref]).'</div>';
@@ -574,8 +575,8 @@ foreach($tab_eleve as $tab)
 // On enregistre les sorties HTML et PDF
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
-if($make_html) { FileSystem::ecrire_fichier(CHEMIN_DOSSIER_EXPORT.$fichier_nom.'.html',$releve_HTML); }
-if($make_pdf)  { $releve_PDF->Output(CHEMIN_DOSSIER_EXPORT.$fichier_nom.'.pdf','F'); }
+if($make_html) { Ecrire_Fichier($dossier.$fichier_nom.'.html',$releve_HTML); }
+if($make_pdf)  { $releve_PDF->Output($dossier.$fichier_nom.'.pdf','F'); }
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 // On fabrique les options js pour le diagramme graphique

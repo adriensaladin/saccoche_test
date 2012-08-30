@@ -28,22 +28,22 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 if($_SESSION['SESAMATH_ID']==ID_DEMO){exit('Action désactivée pour la démo...');}
 
-$objet        = (isset($_POST['f_objet']))        ? Clean::texte($_POST['f_objet'])        : '';
-$ACTION       = (isset($_POST['f_action']))       ? Clean::texte($_POST['f_action'])       : '';
-$BILAN_TYPE   = (isset($_POST['f_bilan_type']))   ? Clean::texte($_POST['f_bilan_type'])   : '';
-$mode         = (isset($_POST['f_mode']))         ? Clean::texte($_POST['f_mode'])         : '';
-$periode_id   = (isset($_POST['f_periode']))      ? Clean::entier($_POST['f_periode'])     : 0;
-$classe_id    = (isset($_POST['f_classe']))       ? Clean::entier($_POST['f_classe'])      : 0;
-$groupe_id    = (isset($_POST['f_groupe']))       ? Clean::entier($_POST['f_groupe'])      : 0;
-$eleve_id     = (isset($_POST['f_user']))         ? Clean::entier($_POST['f_user'])        : 0;
-$rubrique_id  = (isset($_POST['f_rubrique']))     ? Clean::entier($_POST['f_rubrique'])    : 0;
-$appreciation = (isset($_POST['f_appreciation'])) ? Clean::texte($_POST['f_appreciation']) : '';
-$moyenne      = (isset($_POST['f_moyenne']))      ? Clean::decimal($_POST['f_moyenne'])    : -1;
+$objet        = (isset($_POST['f_objet']))        ? clean_texte($_POST['f_objet'])        : '';
+$ACTION       = (isset($_POST['f_action']))       ? clean_texte($_POST['f_action'])       : '';
+$BILAN_TYPE   = (isset($_POST['f_bilan_type']))   ? clean_texte($_POST['f_bilan_type'])   : '';
+$mode         = (isset($_POST['f_mode']))         ? clean_texte($_POST['f_mode'])         : '';
+$periode_id   = (isset($_POST['f_periode']))      ? clean_entier($_POST['f_periode'])     : 0;
+$classe_id    = (isset($_POST['f_classe']))       ? clean_entier($_POST['f_classe'])      : 0;
+$groupe_id    = (isset($_POST['f_groupe']))       ? clean_entier($_POST['f_groupe'])      : 0;
+$eleve_id     = (isset($_POST['f_user']))         ? clean_entier($_POST['f_user'])        : 0;
+$rubrique_id  = (isset($_POST['f_rubrique']))     ? clean_entier($_POST['f_rubrique'])    : 0;
+$appreciation = (isset($_POST['f_appreciation'])) ? clean_texte($_POST['f_appreciation']) : '';
+$moyenne      = (isset($_POST['f_moyenne']))      ? clean_decimal($_POST['f_moyenne'])    : -1;
 // Autres chaines spécifiques...
 $listing_matieres = (isset($_POST['f_listing_matieres'])) ? $_POST['f_listing_matieres'] : '' ;
 $listing_piliers  = (isset($_POST['f_listing_piliers']))  ? $_POST['f_listing_piliers']  : '' ;
-$tab_matiere_id = array_filter( Clean::map_entier( explode(',',$listing_matieres) ) , 'positif' );
-$tab_pilier_id  = array_filter( Clean::map_entier( explode(',',$listing_piliers) )  , 'positif' );
+$tab_matiere_id = array_filter( array_map( 'clean_entier' , explode(',',$listing_matieres) ) , 'positif' );
+$tab_pilier_id  = array_filter( array_map( 'clean_entier' , explode(',',$listing_piliers) )  , 'positif' );
 $liste_matiere_id = implode(',',$tab_matiere_id);
 $liste_pilier_id  = implode(',',$tab_pilier_id);
 
@@ -292,7 +292,7 @@ if($BILAN_TYPE=='releve')
 	$type_synthese   = 0;
 	$type_bulletin   = 0;
 	$tab_matiere_id  = $tab_matiere_id;
-	require(CHEMIN_DOSSIER_INCLUDE.'code_items_releve.php');
+	require('./_inc/code_items_releve.php');
 	$nom_bilan_html = 'releve_HTML_individuel';
 }
 elseif($BILAN_TYPE=='bulletin')
@@ -319,7 +319,7 @@ elseif($BILAN_TYPE=='bulletin')
 	$tab_eleve      = array($eleve_id); // tableau de l'unique élève à considérer
 	$liste_eleve    = (string)$eleve_id;
 	$tab_matiere_id = $tab_matiere_id;
-	require(CHEMIN_DOSSIER_INCLUDE.'code_items_synthese.php');
+	require('./_inc/code_items_synthese.php');
 	$nom_bilan_html = 'releve_HTML';
 }
 elseif(in_array($BILAN_TYPE,array('palier1','palier2','palier3')))
@@ -345,7 +345,7 @@ elseif(in_array($BILAN_TYPE,array('palier1','palier2','palier3')))
 	$tab_pilier_id  = $tab_pilier_id;
 	$tab_eleve_id   = array($eleve_id); // tableau de l'unique élève à considérer
 	$tab_matiere_id = array();
-	require(CHEMIN_DOSSIER_INCLUDE.'code_socle_releve.php');
+	require('./_inc/code_socle_releve.php');
 	$nom_bilan_html = 'releve_html';
 }
 

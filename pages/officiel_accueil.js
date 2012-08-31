@@ -24,10 +24,6 @@
  * 
  */
 
-// Variable globale Highcharts
-var graphique;
-var ChartOptions;
-
 // jQuery !
 $(document).ready
 (
@@ -72,35 +68,6 @@ $(document).ready
 			}
 		);
 
-		$('#eleve_check_all').click
-		(
-			function()
-			{
-				$('#form_choix_eleves input[type=checkbox]').prop('checked',true);
-				return false;
-			}
-		);
-		$('#eleve_uncheck_all').click
-		(
-			function()
-			{
-				$('#form_choix_eleves input[type=checkbox]').prop('checked',false);
-				return false;
-			}
-		);
-
-		//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-		//	Clic sur une cellule (remplace un champ label, impossible à définir sur plusieurs colonnes)
-		//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-
-		$('td.label').live
-		('click',
-			function()
-			{
-				$(this).parent().find("input[type=checkbox]").click();
-			}
-		);
-
 		//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 		//	Enregistrer les modifications de types et/ou d'accès
 		//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
@@ -133,7 +100,6 @@ $(document).ready
 		//	Initialisation de variables utiles accessibles depuis toute fonction
 		//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
-		var memo_objet         = '';
 		var memo_page          = '';
 		var memo_classe        = 0;
 		var memo_groupe        = 0;
@@ -152,12 +118,12 @@ $(document).ready
 		var memo_classe_last   = 0;
 
 		var tab_classe_action_to_adresse_page = new Array();
-		tab_classe_action_to_adresse_page['modifier']     = 'officiel_action_saisir';
-		tab_classe_action_to_adresse_page['tamponner']    = 'officiel_action_saisir';
-		tab_classe_action_to_adresse_page['detailler']    = 'officiel_action_examiner';
-		tab_classe_action_to_adresse_page['voir']         = 'officiel_action_consulter';
-		tab_classe_action_to_adresse_page['imprimer']     = 'officiel_action_imprimer';
-		tab_classe_action_to_adresse_page['voir_archive'] = 'officiel_action_imprimer';
+		tab_classe_action_to_adresse_page['modifier']  = 'officiel_action_saisir';
+		tab_classe_action_to_adresse_page['tamponner'] = 'officiel_action_saisir';
+		tab_classe_action_to_adresse_page['detailler'] = 'officiel_action_examiner';
+		tab_classe_action_to_adresse_page['voir']      = 'officiel_action_consulter';
+
+		tab_classe_action_to_adresse_page['imprimer']  = 'officiel_action_imprimer';
 
 		//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 		//	Clic sur une image action
@@ -167,19 +133,19 @@ $(document).ready
 		(
 			function()
 			{
-				memo_objet = $(this).attr('class');
-				memo_page = tab_classe_action_to_adresse_page[memo_objet];
+				var objet  = $(this).attr('class');
+				memo_page = tab_classe_action_to_adresse_page[objet];
 				if(typeof(memo_page)!='undefined')
 				{
 					var tab_ids = $(this).parent().attr('id').split('_');
 					memo_classe  = tab_ids[1];
 					memo_groupe  = tab_ids[2];
 					memo_periode = tab_ids[3];
-					$('#f_objet').val(memo_objet);
+					$('#f_objet').val(objet);
 					if( (memo_page=='officiel_action_saisir') || (memo_page=='officiel_action_consulter') )
 					{
 						// Masquer le tableau ; Afficher la zone action et charger son contenu
-						$('#form_gestion , #table_bilans , #puces_secondaires').hide(0);
+						$('#form_gestion , #table_bilans').hide(0);
 						$('#zone_action_eleve').html('<label class="loader">Connexion au serveur&hellip;</label>').show(0);
 						$.ajax
 						(
@@ -188,10 +154,9 @@ $(document).ready
 								url : 'ajax.php?page='+memo_page,
 								data : 'f_action='+'initialiser'+'&f_bilan_type='+BILAN_TYPE+'&f_classe='+memo_classe+'&f_groupe='+memo_groupe+'&f_periode='+memo_periode+'&'+$('#form_hidden').serialize(),
 								dataType : "html",
-								error : function(jqXHR, textStatus, errorThrown)
+								error : function(msg,string)
 								{
-									var message = (jqXHR.status!=500) ? 'Echec de la connexion !' : 'Erreur 500&hellip; Mémoire insuffisante ? Sélectionner moins d\'élèves à la fois ou demander à votre hébergeur d\'augmenter la valeur "memory_limit".' ;
-									$('#zone_action_eleve').html('<label class="alerte">'+message+' <button id="fermer_zone_action_eleve" type="button" class="retourner">Retour</button></label>');
+									$('#zone_action_eleve').html('<label class="alerte">Echec de la connexion ! <button id="fermer_zone_action_eleve" type="button" class="retourner">Retour</button></label>');
 									return false;
 								},
 								success : function(responseHTML)
@@ -217,20 +182,12 @@ $(document).ready
 					else if(memo_page=='officiel_action_examiner')
 					{
 						// Masquer le tableau ; Afficher la zone de choix des rubriques
-						$('#form_gestion , #table_bilans , #puces_secondaires').hide(0);
-						$('#zone_action_classe h2').html('Recherche de saisies manquantes');
+						$('#form_gestion , #table_bilans').hide(0);
 						$('#zone_chx_rubriques').show(0);
 					}
-					else if(memo_page=='officiel_action_imprimer')
+					else
 					{
-						// Masquer le tableau ; Afficher la zone de choix des élèves, et si les bulletins sont déjà imprimés
-						var titre = (memo_objet=='imprimer') ? 'Imprimer le bilan (PDF)' : 'Consulter un bilan imprimé (PDF)' ;
-						configurer_form_choix_classe();
-						$('#form_gestion , #table_bilans , #puces_secondaires').hide(0);
-						$('#zone_action_classe h2').html(titre);
-						$('#report_periode').html( $('#periode_'+memo_periode).text()+' :' );
-						$('#zone_action_classe , #zone_'+memo_objet).show(0);
-						charger_formulaire_imprimer();
+						alert('Fonctionnalité à venir...\nEncore un peu de patience !');
 					}
 				}
 			}
@@ -247,7 +204,7 @@ $(document).ready
 			function()
 			{
 				$('#zone_action_eleve').html("&nbsp;").hide(0);
-				$('#form_gestion , #table_bilans , #puces_secondaires').show(0);
+				$('#form_gestion , #table_bilans').show(0);
 				return(false);
 			}
 		);
@@ -257,7 +214,7 @@ $(document).ready
 			function()
 			{
 				$('#zone_chx_rubriques').hide(0);
-				$('#form_gestion , #table_bilans , #puces_secondaires').show(0);
+				$('#form_gestion , #table_bilans').show(0);
 				return(false);
 			}
 		);
@@ -267,12 +224,8 @@ $(document).ready
 			function()
 			{
 				$('#zone_resultat_classe').html("&nbsp;");
-				$('#imprimer_liens').html('');
-				var colspan = (memo_objet=='imprimer') ? 3 : 2 ;
-				$('#zone_'+memo_objet+' table tbody').html('<tr><td class="nu" colspan="'+colspan+'"></td></tr>');
-				$('#zone_action_classe , #zone_imprimer , #zone_voir_archive').css('display','none'); // .hide(0) ne fonctionne pas bien ici...
-				$('#ajax_msg_imprimer , #ajax_msg_voir_archive').removeAttr("class").html("");
-				$('#form_gestion , #table_bilans , #puces_secondaires').show(0);
+				$('#zone_action_classe').hide(0);
+				$('#form_gestion , #table_bilans').show(0);
 				return(false);
 			}
 		);
@@ -281,9 +234,9 @@ $(document).ready
 		//	[officiel_action_saisir|officiel_action_consulter] Navigation d'un élève à un autre
 		//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
-		function charger_nouvel_eleve(eleve_id,reload)
+		function charger_nouvel_eleve(eleve_id)
 		{
-			if( (eleve_id==memo_eleve) && (!reload) )
+			if(eleve_id==memo_eleve)
 			{
 				return false;
 			}
@@ -297,7 +250,7 @@ $(document).ready
 					url : 'ajax.php?page='+memo_page,
 					data : 'f_action='+'charger'+'&f_bilan_type='+BILAN_TYPE+'&f_classe='+memo_classe+'&f_groupe='+memo_groupe+'&f_periode='+memo_periode+'&f_user='+memo_eleve+'&'+$('#form_hidden').serialize(),
 					dataType : "html",
-					error : function(jqXHR, textStatus, errorThrown)
+					error : function(msg,string)
 					{
 						$('#zone_resultat_eleve').html('<label class="alerte">Echec de la connexion !</label>');
 						$('#form_choix_eleve button , #form_choix_eleve select , #zone_resultat_eleve button').prop('disabled',false);
@@ -315,16 +268,7 @@ $(document).ready
 						{
 							$('#go_selection_eleve option[value='+memo_eleve+']').prop('selected',true);
 							masquer_element_navigation_choix_eleve();
-							var position_script = responseHTML.lastIndexOf('<SCRIPT>');
-							if(position_script==-1)
-							{
-								$('#zone_resultat_eleve').html(responseHTML);
-							}
-							else
-							{
-								$('#zone_resultat_eleve').html( responseHTML.substring(0,position_script) );
-								eval( responseHTML.substring(position_script+8) );
-							}
+							$('#zone_resultat_eleve').html(responseHTML);
 							infobulle();
 							if(memo_auto_next || memo_auto_prev)
 							{
@@ -356,7 +300,7 @@ $(document).ready
 			function()
 			{
 				var eleve_id = $('#go_selection_eleve option:first').val();
-				charger_nouvel_eleve(eleve_id,false);
+				charger_nouvel_eleve(eleve_id);
 			}
 		);
 
@@ -365,7 +309,7 @@ $(document).ready
 			function()
 			{
 				var eleve_id = $('#go_selection_eleve option:last').val();
-				charger_nouvel_eleve(eleve_id,false);
+				charger_nouvel_eleve(eleve_id);
 			}
 		);
 
@@ -376,7 +320,7 @@ $(document).ready
 				if( $('#go_selection_eleve option:selected').prev().length )
 				{
 					var eleve_id = $('#go_selection_eleve option:selected').prev().val();
-					charger_nouvel_eleve(eleve_id,false);
+					charger_nouvel_eleve(eleve_id);
 				}
 			}
 		);
@@ -388,7 +332,7 @@ $(document).ready
 				if( $('#go_selection_eleve option:selected').next().length )
 				{
 					var eleve_id = $('#go_selection_eleve option:selected').next().val();
-					charger_nouvel_eleve(eleve_id,false);
+					charger_nouvel_eleve(eleve_id);
 				}
 			}
 		);
@@ -398,70 +342,7 @@ $(document).ready
 			function()
 			{
 				var eleve_id = $('#go_selection_eleve option:selected').val();
-				charger_nouvel_eleve(eleve_id,false);
-			}
-		);
-
-		$('#change_mode').live // live est utilisé pour prendre en compte les nouveaux éléments créés
-		('click',
-			function()
-			{
-				if($('#f_mode').val()=='texte')
-				{
-					$('#change_mode').removeAttr("class").addClass("texte").html('Interface détaillée');
-					$('#f_mode').val('graphique');
-				}
-				else
-				{
-					$('#change_mode').removeAttr("class").addClass("stats").html('Interface graphique');
-					$('#f_mode').val('texte');
-				}
-				var eleve_id = $('#go_selection_eleve option:selected').val();
-				charger_nouvel_eleve(eleve_id,true);
-			}
-		);
-
-		//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-		//	[officiel_action_saisir|officiel_action_consulter] Clic sur le bouton pour imprimer ses appréciations
-		//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-
-		$('#imprimer_appreciations').live // live est utilisé pour prendre en compte les nouveaux éléments créés
-		('click',
-			function()
-			{
-				$('#form_choix_eleve button , #form_choix_eleve select , #zone_resultat_eleve button').prop('disabled',true);
-				$.ajax
-				(
-					{
-						type : 'POST',
-						url : 'ajax.php?page=officiel_accueil',
-						data : 'f_action='+'imprimer_appreciations'+'&f_bilan_type='+BILAN_TYPE+'&f_classe='+memo_classe+'&f_groupe='+memo_groupe+'&f_periode='+memo_periode+'&'+$('#form_hidden').serialize(),
-						dataType : "html",
-						error : function(jqXHR, textStatus, errorThrown)
-						{
-							$.fancybox( '<label class="alerte">'+'Echec de la connexion !\nVeuillez recommencer.'+'</label>' , {'centerOnScroll':true} );
-							$('#form_choix_eleve button , #form_choix_eleve select , #zone_resultat_eleve button').prop('disabled',false);
-							return false;
-						},
-						success : function(responseHTML)
-						{
-							initialiser_compteur();
-							$('#form_choix_eleve button , #form_choix_eleve select , #zone_resultat_eleve button').prop('disabled',false);
-							if(responseHTML.substring(0,4)!='<ul ')
-							{
-								$.fancybox( '<label class="alerte">'+responseHTML+'</label>' , {'centerOnScroll':true} );
-							}
-							else
-							{
-								// Mis dans le div bilan et pas balancé directement dans le fancybox sinon le format_lien() nécessite un peu plus de largeur que le fancybox ne recalcule pas (et $.fancybox.update(); ne change rien).
-								// Malgré tout, pour Chrome par exemple, la largeur est mal clculée et provoque des retours à la ligne, d'où le minWidth ajouté.
-								$('#bilan').html('<div class="noprint">Afin de préserver l\'environnement, n\'imprimer qu\'en cas de nécessité !</div><p />'+responseHTML);
-								format_liens('#bilan');
-								$.fancybox( { 'href':'#bilan' , onClosed:function(){$('#bilan').html("");} , 'centerOnScroll':true , 'minWidth':550 } );
-							}
-						}
-					}
-				);
+				charger_nouvel_eleve(eleve_id);
 			}
 		);
 
@@ -507,7 +388,6 @@ $(document).ready
 			{
 				$('#f_appreciation').focus().html(champ_contenu);
 				afficher_textarea_reste( $('#f_appreciation') , memo_long_max );
-				window.scrollBy(0,100); // Pour avoir à l'écran les bouton de validation et d'annulation situés en dessous du textarea
 			}
 			if(memo_rubrique_type=='note')
 			{
@@ -617,7 +497,7 @@ $(document).ready
 						url : 'ajax.php?page='+memo_page,
 						data : 'f_action='+'enregistrer_'+memo_rubrique_type+'&f_bilan_type='+BILAN_TYPE+'&f_classe='+memo_classe+'&f_groupe='+memo_groupe+'&f_periode='+memo_periode+'&f_user='+memo_eleve+'&f_rubrique='+memo_rubrique_id+'&'+$('#form_hidden').serialize()+'&'+$('#zone_resultat_eleve').serialize(),
 						dataType : "html",
-						error : function(jqXHR, textStatus, errorThrown)
+						error : function(msg,string)
 						{
 							$('#ajax_msg_'+memo_rubrique_type).removeAttr("class").addClass("alerte").html("Echec de la connexion !");
 							$('#form_choix_eleve button , #form_choix_eleve select , #zone_resultat_eleve button').prop('disabled',false);
@@ -671,9 +551,9 @@ $(document).ready
 						url : 'ajax.php?page='+memo_page,
 						data : 'f_action='+'supprimer_'+memo_rubrique_type+'&f_bilan_type='+BILAN_TYPE+'&f_classe='+memo_classe+'&f_groupe='+memo_groupe+'&f_periode='+memo_periode+'&f_user='+memo_eleve+'&f_rubrique='+memo_rubrique_id+'&'+$('#form_hidden').serialize(),
 						dataType : "html",
-						error : function(jqXHR, textStatus, errorThrown)
+						error : function(msg,string)
 						{
-							$.fancybox( '<label class="alerte">'+'Echec de la connexion !\nVeuillez recommencer.'+'</label>' , {'centerOnScroll':true} );
+							alert("Echec de la connexion !");
 							$('#form_choix_eleve button , #form_choix_eleve select , #zone_resultat_eleve button').prop('disabled',false);
 							return false;
 						},
@@ -683,7 +563,7 @@ $(document).ready
 							$('#form_choix_eleve button , #form_choix_eleve select , #zone_resultat_eleve button').prop('disabled',false);
 							if( (responseHTML.substring(0,4)!='<div') && (responseHTML.substring(0,4)!='<td ') )
 							{
-								$.fancybox( '<label class="alerte">'+responseHTML+'</label>' , {'centerOnScroll':true} );
+								alert(responseHTML);
 							}
 							else
 							{
@@ -723,9 +603,9 @@ $(document).ready
 						url : 'ajax.php?page='+memo_page,
 						data : 'f_action='+'recalculer_note'+'&f_bilan_type='+BILAN_TYPE+'&f_classe='+memo_classe+'&f_groupe='+memo_groupe+'&f_periode='+memo_periode+'&f_user='+memo_eleve+'&f_rubrique='+memo_rubrique_id+'&'+$('#form_hidden').serialize(),
 						dataType : "html",
-						error : function(jqXHR, textStatus, errorThrown)
+						error : function(msg,string)
 						{
-							$.fancybox( '<label class="alerte">'+'Echec de la connexion !\nVeuillez recommencer.'+'</label>' , {'centerOnScroll':true} );
+							alert("Echec de la connexion !");
 							$('#form_choix_eleve button , #form_choix_eleve select , #zone_resultat_eleve button').prop('disabled',false);
 							return false;
 						},
@@ -735,7 +615,7 @@ $(document).ready
 							$('#form_choix_eleve button , #form_choix_eleve select , #zone_resultat_eleve button').prop('disabled',false);
 							if( (responseHTML.substring(0,4)!='<div') && (responseHTML.substring(0,4)!='<td ') )
 							{
-								$.fancybox( '<label class="alerte">'+responseHTML+'</label>' , {'centerOnScroll':true} );
+								alert(responseHTML);
 							}
 							else
 							{
@@ -771,10 +651,9 @@ $(document).ready
 						url : 'ajax.php?page='+memo_page,
 						data : 'f_bilan_type='+BILAN_TYPE+'&f_classe='+memo_classe+'&f_groupe='+memo_groupe+'&f_periode='+memo_periode+'&'+$('#form_hidden').serialize(),
 						dataType : "html",
-						error : function(jqXHR, textStatus, errorThrown)
+						error : function(msg,string)
 						{
-							var message = (jqXHR.status!=500) ? 'Echec de la connexion !' : 'Erreur 500&hellip; Mémoire insuffisante ? Sélectionner moins d\'élèves à la fois ou demander à votre hébergeur d\'augmenter la valeur "memory_limit".' ;
-							$('#ajax_msg_recherche').removeAttr("class").addClass("alerte").html(message);
+							$('#ajax_msg_recherche').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
 							$('#zone_chx_rubriques button').prop('disabled',false);
 							return false;
 						},
@@ -803,122 +682,7 @@ $(document).ready
 		);
 
 		//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-		//	[officiel_action_imprimer] Lancer l'impression pour une liste d'élèves
-		//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-
-		function imprimer(etape)
-		{
-			$('#ajax_msg_imprimer').removeAttr("class").addClass("loader").html("Connexion au serveur&hellip; Étape "+etape+"/4.");
-			$.ajax
-			(
-				{
-					type : 'POST',
-					url : 'ajax.php?page='+memo_page,
-					data : 'f_action='+'imprimer'+'&f_etape='+etape+'&f_bilan_type='+BILAN_TYPE+'&f_classe='+memo_classe+'&f_groupe='+memo_groupe+'&f_periode='+memo_periode+'&'+$('#form_hidden').serialize(),
-					dataType : "html",
-					error : function(jqXHR, textStatus, errorThrown)
-					{
-						var message = (jqXHR.status!=500) ? 'Echec de la connexion !' : 'Erreur 500&hellip; Mémoire insuffisante ? Sélectionner moins d\'élèves à la fois ou demander à votre hébergeur d\'augmenter la valeur "memory_limit".' ;
-						$('#ajax_msg_imprimer').removeAttr("class").addClass("alerte").html(message);
-						$('#form_choix_classe button , #form_choix_classe select , #valider_imprimer').prop('disabled',false);
-						return false;
-					},
-					success : function(responseHTML)
-					{
-						initialiser_compteur();
-						if( ( (etape<4) && (responseHTML!='ok') ) || ( (etape==4) && (responseHTML.substring(0,4)!='<ul ') ) )
-						{
-							$('#form_choix_classe button , #form_choix_classe select , #valider_imprimer').prop('disabled',false);
-							$('#ajax_msg_imprimer').removeAttr("class").addClass("alerte").html(responseHTML);
-						}
-						else if(etape<4)
-						{
-							etape++;
-							imprimer(etape);
-						}
-						else
-						{
-							$('#form_choix_classe button , #form_choix_classe select , #valider_imprimer').prop('disabled',false);
-							tab_listing_id = $('#f_listing_eleves').val().split(',');
-							for ( var key in tab_listing_id )
-							{
-								$('#id_'+tab_listing_id[key]).children('td:first').children('input').prop('checked',false);
-								$('#id_'+tab_listing_id[key]).children('td:last').html('Oui, le '+TODAY_FR);
-							}
-							$('#ajax_msg_imprimer').removeAttr("class").addClass("valide").html("Documents ci-dessous.");
-							$('#imprimer_liens').html(responseHTML);
-							format_liens('#imprimer_liens');
-						}
-					}
-				}
-			);
-		}
-
-		$('#valider_imprimer').click
-		(
-			function()
-			{
-				$('#imprimer_liens').html('');
-				var listing_id = new Array(); $("#form_choix_eleves input[type=checkbox]:checked").each(function(){listing_id.push($(this).val());});
-				if(!listing_id.length)
-				{
-					$('#ajax_msg_imprimer').removeAttr("class").addClass("erreur").html("Aucun élève coché !");
-					return false;
-				}
-				$('#f_listing_eleves').val(listing_id);
-				$('#form_choix_classe button , #form_choix_classe select , #valider_imprimer').prop('disabled',true);
-				imprimer(1);
-			}
-		);
-
-		//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-		//	[officiel_action_imprimer] Charger la liste de choix des élèves, et si les bulletins sont déjà imprimés
-		//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-
-		function charger_formulaire_imprimer()
-		{
-			$('#imprimer_liens').html('');
-			var colspan = (memo_objet=='imprimer') ? 3 : 2 ;
-			$('#zone_'+memo_objet+' table tbody').html('<tr><td class="nu" colspan="'+colspan+'"></td></tr>');
-			$('#zone_voir_archive table tbody').html('<tr><td class="nu" colspan="2"></td></tr>');
-			$('#form_choix_classe button , #form_choix_classe select , #valider_imprimer').prop('disabled',true);
-			$('#ajax_msg_'+memo_objet).removeAttr("class").addClass("loader").html("Connexion au serveur&hellip;");
-			$.ajax
-			(
-				{
-					type : 'POST',
-					url : 'ajax.php?page='+memo_page,
-					data : 'f_action='+'initialiser'+'&f_bilan_type='+BILAN_TYPE+'&f_classe='+memo_classe+'&f_groupe='+memo_groupe+'&f_periode='+memo_periode+'&'+$('#form_hidden').serialize(),
-					dataType : "html",
-					error : function(jqXHR, textStatus, errorThrown)
-					{
-						$('#ajax_msg_'+memo_objet).removeAttr("class").addClass("alerte").html("Echec de la connexion !");
-						$('#form_choix_classe button , #form_choix_classe select').prop('disabled',false);
-						return false;
-					},
-					success : function(responseHTML)
-					{
-						initialiser_compteur();
-						if(responseHTML.substring(0,3)!='<tr')
-						{
-							$('#ajax_msg_'+memo_objet).removeAttr("class").addClass("alerte").html(responseHTML);
-							$('#form_choix_classe button , #form_choix_classe select').prop('disabled',false);
-						}
-						else
-						{
-							masquer_element_navigation_choix_classe();
-							$('#zone_'+memo_objet+' table tbody').html(responseHTML);
-							$('#ajax_msg_'+memo_objet).removeAttr("class").html("");
-							$('#form_choix_classe button , #form_choix_classe select , #valider_imprimer').prop('disabled',false);
-							format_liens('#zone_voir_archive');
-						}
-					}
-				}
-			);
-		}
-
-		//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-		//	[officiel_action_examiner|officiel_action_imprimer] Actualiser l'état enabled/disabled des options du formulaire de navigation dans les classes, masquer les boutons de navigation
+		//	[officiel_action_examiner] Actualiser l'état enabled/disabled des options du formulaire de navigation dans les classes, masquer les boutons de navigation
 		//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
 		function masquer_element_navigation_choix_classe()
@@ -966,7 +730,7 @@ $(document).ready
 		}
 
 		//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-		//	[officiel_action_examiner|officiel_action_imprimer] Navigation d'une classe à une autre
+		//	[officiel_action_examiner] Navigation d'une classe à une autre
 		//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
 		function charger_nouvelle_classe(classe_groupe_id)
@@ -978,44 +742,37 @@ $(document).ready
 			var tab_indices = classe_groupe_id.toString().split('_'); // Sans toString() on obtient "error: split is not a function"
 			memo_classe = tab_indices[0];
 			memo_groupe = tab_indices[1];
-			if(memo_page=='officiel_action_imprimer')
-			{
-				charger_formulaire_imprimer();
-			}
-			else if(memo_page=='officiel_action_examiner')
-			{
-				$('#form_choix_classe button , #form_choix_classe select').prop('disabled',true);
-				$('#zone_resultat_classe').html('<label class="loader">Connexion au serveur&hellip;</label>');
-				$.ajax
-				(
+			$('#form_choix_classe button , #form_choix_classe select').prop('disabled',true);
+			$('#zone_resultat_classe').html('<label class="loader">Connexion au serveur&hellip;</label>');
+			$.ajax
+			(
+				{
+					type : 'POST',
+					url : 'ajax.php?page='+memo_page,
+					data : 'f_bilan_type='+BILAN_TYPE+'&f_classe='+memo_classe+'&f_groupe='+memo_groupe+'&f_periode='+memo_periode+'&'+$('#form_hidden').serialize(),
+					dataType : "html",
+					error : function(msg,string)
 					{
-						type : 'POST',
-						url : 'ajax.php?page='+memo_page,
-						data : 'f_bilan_type='+BILAN_TYPE+'&f_classe='+memo_classe+'&f_groupe='+memo_groupe+'&f_periode='+memo_periode+'&'+$('#form_hidden').serialize(),
-						dataType : "html",
-						error : function(jqXHR, textStatus, errorThrown)
+						$('#zone_resultat_classe').html('<label class="alerte">Echec de la connexion !</label>');
+						$('#form_choix_classe button , #form_choix_classe select').prop('disabled',false);
+						return false;
+					},
+					success : function(responseHTML)
+					{
+						initialiser_compteur();
+						$('#form_choix_classe button , #form_choix_classe select').prop('disabled',false);
+						if(responseHTML.substring(0,14)!='<p class="ti">')
 						{
-							$('#zone_resultat_classe').html('<label class="alerte">Echec de la connexion !</label>');
-							$('#form_choix_classe button , #form_choix_classe select').prop('disabled',false);
-							return false;
-						},
-						success : function(responseHTML)
+							$('#zone_resultat_classe').html('<label class="alerte">'+responseHTML+'</label>');
+						}
+						else
 						{
-							initialiser_compteur();
-							$('#form_choix_classe button , #form_choix_classe select').prop('disabled',false);
-							if(responseHTML.substring(0,14)!='<p class="ti">')
-							{
-								$('#zone_resultat_classe').html('<label class="alerte">'+responseHTML+'</label>');
-							}
-							else
-							{
-								masquer_element_navigation_choix_classe();
-								$('#zone_resultat_classe').html(responseHTML);
-							}
+							masquer_element_navigation_choix_classe();
+							$('#zone_resultat_classe').html(responseHTML);
 						}
 					}
-				);
-			}
+				}
+			);
 		}
 
 		$('#go_precedent_classe').click
@@ -1116,7 +873,7 @@ $(document).ready
 						url : 'ajax.php?page=compte_message',
 						data : $('#zone_signaler').serialize(),
 						dataType : "html",
-						error : function(jqXHR, textStatus, errorThrown)
+						error : function(msg,string)
 						{
 							$('#ajax_msg_signaler').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
 							$('#zone_signaler button').prop('disabled',false);
@@ -1140,55 +897,6 @@ $(document).ready
 				);
 			}
 		);
-
-		//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-		//	Options de base pour le graphique : sont complétées ensuite avec les données personnalisées
-		//	http://www.highcharts.com/documentation/how-to-use
-		//	http://www.highcharts.com/ref
-		//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-
-		ChartOptions = {
-			chart: {
-				renderTo: 'div_graphique',
-				type: 'column'
-			 },
-			colors: [
-				BACKGROUND_A,
-				BACKGROUND_VA,
-				BACKGROUND_NA
-			],
-			title: {
-				style: { color: '#333' } ,
-				text: null // Pourrait être MAJ ensuite
-			},
-			xAxis: {
-				labels: { style: { color: '#000' } },
-				categories: [] // MAJ ensuite
-			},
-			yAxis: [
-				{
-					labels: { enabled: false },
-					min: 0,
-					max: 100,
-					title: { style: { color: '#333' } , text: 'Items acquis' }
-				}, {} // MAJ ensuite
-			],
-			tooltip: {
-				formatter: function() {
-					return this.series.name +' : '+ (this.y);
-				}
-			},
-			plotOptions: {
-				column: {
-					stacking: 'percent'
-				}
-			},
-			series: [] // MAJ ensuite
-			,
-			credits: {
-				enabled: false
-			}
-		};
 
 	}
 );

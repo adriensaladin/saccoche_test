@@ -30,17 +30,17 @@ if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');
 
 <?php
 // L'élève ne choisit évidemment pas sa classe ni nom nom, mais on construit qd même les formulaires, on les remplit et on les cache (permet un code unique et une transmission des infos en ajax comme pour les autres profils).
-Form::load_choix_memo();
-$check_type_generique  = (Form::$tab_choix['type_generique'])    ? ' checked' : '' ;
-$class_form_generique  = (Form::$tab_choix['type_generique'])    ? 'hide'     : 'show' ;
-$check_type_individuel = (Form::$tab_choix['type_individuel'])   ? ' checked' : '' ;
-$class_form_individuel = (Form::$tab_choix['type_individuel'])   ? 'show'     : 'hide' ;
-$check_type_synthese   = (Form::$tab_choix['type_synthese'])     ? ' checked' : '' ;
-$class_form_synthese   = (Form::$tab_choix['type_synthese'])     ? 'show'     : 'hide' ;
-$check_only_socle      = (Form::$tab_choix['only_socle'])        ? ' checked' : '' ;
-$check_aff_coef        = (Form::$tab_choix['aff_coef'])          ? ' checked' : '' ;
-$check_aff_socle       = (Form::$tab_choix['aff_socle'])         ? ' checked' : '' ;
-$check_aff_lien        = (Form::$tab_choix['aff_lien'])          ? ' checked' : '' ;
+Formulaire::load_choix_memo();
+$check_type_generique  = (Formulaire::$tab_choix['type_generique'])    ? ' checked' : '' ;
+$class_form_generique  = (Formulaire::$tab_choix['type_generique'])    ? 'hide'     : 'show' ;
+$check_type_individuel = (Formulaire::$tab_choix['type_individuel'])   ? ' checked' : '' ;
+$class_form_individuel = (Formulaire::$tab_choix['type_individuel'])   ? 'show'     : 'hide' ;
+$check_type_synthese   = (Formulaire::$tab_choix['type_synthese'])     ? ' checked' : '' ;
+$class_form_synthese   = (Formulaire::$tab_choix['type_synthese'])     ? 'show'     : 'hide' ;
+$check_only_socle      = (Formulaire::$tab_choix['only_socle'])        ? ' checked' : '' ;
+$check_aff_coef        = (Formulaire::$tab_choix['aff_coef'])          ? ' checked' : '' ;
+$check_aff_socle       = (Formulaire::$tab_choix['aff_socle'])         ? ' checked' : '' ;
+$check_aff_lien        = (Formulaire::$tab_choix['aff_lien'])          ? ' checked' : '' ;
 $bouton_modifier_matieres = '';
 if($_SESSION['USER_PROFIL']=='directeur')
 {
@@ -84,19 +84,19 @@ if($_SESSION['USER_PROFIL']=='eleve')
 	$select_eleves = '<option value="'.$_SESSION['USER_ID'].'" selected>'.html($_SESSION['USER_NOM'].' '.$_SESSION['USER_PRENOM']).'</option>';
 }
 
-$select_tri_objet     = Form::afficher_select(Form::$tab_select_tri_objet     , $select_nom='f_tri_objet'     , $option_first='non' , $selection=Form::$tab_choix['tableau_tri_objet'] , $optgroup='non');
-$select_tri_mode      = Form::afficher_select(Form::$tab_select_tri_mode      , $select_nom='f_tri_mode'      , $option_first='non' , $selection=Form::$tab_choix['tableau_tri_mode']  , $optgroup='non');
-$select_remplissage   = Form::afficher_select(Form::$tab_select_remplissage   , $select_nom='f_remplissage'   , $option_first='non' , $selection=Form::$tab_choix['remplissage']       , $optgroup='non');
-$select_colonne_bilan = Form::afficher_select(Form::$tab_select_colonne_bilan , $select_nom='f_colonne_bilan' , $option_first='non' , $selection=Form::$tab_choix['colonne_bilan']     , $optgroup='non');
-$select_colonne_vide  = Form::afficher_select(Form::$tab_select_colonne_vide  , $select_nom='f_colonne_vide'  , $option_first='non' , $selection=Form::$tab_choix['colonne_vide']      , $optgroup='non');
-$select_matiere       = Form::afficher_select($tab_matieres                         , $select_nom='f_matiere'       , $option_first='oui' , $selection=Form::$tab_choix['matiere_id']        , $optgroup='non');
-$select_groupe        = Form::afficher_select($tab_groupes                          , $select_nom='f_groupe'        , $option_first=$of_g , $selection=$sel_g                                      , $optgroup=$og_g);
-$select_orientation   = Form::afficher_select(Form::$tab_select_orientation   , $select_nom='f_orientation'   , $option_first='non' , $selection=Form::$tab_choix['orientation']       , $optgroup='non');
-$select_marge_min     = Form::afficher_select(Form::$tab_select_marge_min     , $select_nom='f_marge_min'     , $option_first='non' , $selection=Form::$tab_choix['marge_min']         , $optgroup='non');
-$select_couleur       = Form::afficher_select(Form::$tab_select_couleur       , $select_nom='f_couleur'       , $option_first='non' , $selection=Form::$tab_choix['couleur']           , $optgroup='non');
-$select_legende       = Form::afficher_select(Form::$tab_select_legende       , $select_nom='f_legende'       , $option_first='non' , $selection=Form::$tab_choix['legende']           , $optgroup='non');
-$select_cases_nb      = Form::afficher_select(Form::$tab_select_cases_nb      , $select_nom='f_cases_nb'      , $option_first='non' , $selection=Form::$tab_choix['cases_nb']          , $optgroup='non');
-$select_cases_larg    = Form::afficher_select(Form::$tab_select_cases_size    , $select_nom='f_cases_larg'    , $option_first='non' , $selection=Form::$tab_choix['cases_largeur']     , $optgroup='non');
+$select_tri_objet     = Formulaire::afficher_select(Formulaire::$tab_select_tri_objet     , $select_nom='f_tri_objet'     , $option_first='non' , $selection=Formulaire::$tab_choix['tableau_tri_objet'] , $optgroup='non');
+$select_tri_mode      = Formulaire::afficher_select(Formulaire::$tab_select_tri_mode      , $select_nom='f_tri_mode'      , $option_first='non' , $selection=Formulaire::$tab_choix['tableau_tri_mode']  , $optgroup='non');
+$select_remplissage   = Formulaire::afficher_select(Formulaire::$tab_select_remplissage   , $select_nom='f_remplissage'   , $option_first='non' , $selection=Formulaire::$tab_choix['remplissage']       , $optgroup='non');
+$select_colonne_bilan = Formulaire::afficher_select(Formulaire::$tab_select_colonne_bilan , $select_nom='f_colonne_bilan' , $option_first='non' , $selection=Formulaire::$tab_choix['colonne_bilan']     , $optgroup='non');
+$select_colonne_vide  = Formulaire::afficher_select(Formulaire::$tab_select_colonne_vide  , $select_nom='f_colonne_vide'  , $option_first='non' , $selection=Formulaire::$tab_choix['colonne_vide']      , $optgroup='non');
+$select_matiere       = Formulaire::afficher_select($tab_matieres                         , $select_nom='f_matiere'       , $option_first='oui' , $selection=Formulaire::$tab_choix['matiere_id']        , $optgroup='non');
+$select_groupe        = Formulaire::afficher_select($tab_groupes                          , $select_nom='f_groupe'        , $option_first=$of_g , $selection=$sel_g                                      , $optgroup=$og_g);
+$select_orientation   = Formulaire::afficher_select(Formulaire::$tab_select_orientation   , $select_nom='f_orientation'   , $option_first='non' , $selection=Formulaire::$tab_choix['orientation']       , $optgroup='non');
+$select_marge_min     = Formulaire::afficher_select(Formulaire::$tab_select_marge_min     , $select_nom='f_marge_min'     , $option_first='non' , $selection=Formulaire::$tab_choix['marge_min']         , $optgroup='non');
+$select_couleur       = Formulaire::afficher_select(Formulaire::$tab_select_couleur       , $select_nom='f_couleur'       , $option_first='non' , $selection=Formulaire::$tab_choix['couleur']           , $optgroup='non');
+$select_legende       = Formulaire::afficher_select(Formulaire::$tab_select_legende       , $select_nom='f_legende'       , $option_first='non' , $selection=Formulaire::$tab_choix['legende']           , $optgroup='non');
+$select_cases_nb      = Formulaire::afficher_select(Formulaire::$tab_select_cases_nb      , $select_nom='f_cases_nb'      , $option_first='non' , $selection=Formulaire::$tab_choix['cases_nb']          , $optgroup='non');
+$select_cases_larg    = Formulaire::afficher_select(Formulaire::$tab_select_cases_size    , $select_nom='f_cases_larg'    , $option_first='non' , $selection=Formulaire::$tab_choix['cases_largeur']     , $optgroup='non');
 ?>
 
 <p><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=releves_bilans__releve_grille_referentiel">DOC : Grille d'items d'un référentiel.</a></span></p>
@@ -125,7 +125,7 @@ $select_cases_larg    = Form::afficher_select(Form::$tab_select_cases_size    , 
 	<div class="toggle hide">
 		<span class="tab"></span><a href="#" class="puce_moins toggle">Afficher moins d'options</a><br />
 		<label class="tab">Restriction :</label><input type="checkbox" id="f_restriction" name="f_restriction" value="1"<?php echo $check_only_socle ?> /> <label>Uniquement les items liés du socle</label><br />
-		<label class="tab">Indications :</label><input type="checkbox" id="f_coef" name="f_coef" value="1"<?php echo $check_aff_coef ?> /> <label for="f_coef">Coefficients</label>&nbsp;&nbsp;&nbsp;<input type="checkbox" id="f_socle" name="f_socle" value="1"<?php echo $check_aff_socle ?> /> <label for="f_socle">Appartenance au socle</label>&nbsp;&nbsp;&nbsp;<input type="checkbox" id="f_lien" name="f_lien" value="1"<?php echo $check_aff_lien ?> /> <label for="f_lien">Liens (ressources pour travailler)</label><br />
+		<label class="tab">Indications :</label><input type="checkbox" id="f_coef" name="f_coef" value="1"<?php echo $check_aff_coef ?> /> <label for="f_coef">Coefficients</label>&nbsp;&nbsp;&nbsp;<input type="checkbox" id="f_socle" name="f_socle" value="1"<?php echo $check_aff_socle ?> /> <label for="f_socle">Socle</label>&nbsp;&nbsp;&nbsp;<input type="checkbox" id="f_lien" name="f_lien" value="1"<?php echo $check_aff_lien ?> /> <label for="f_lien">Liens (ressources pour travailler)</label><br />
 		<label class="tab"><img alt="" src="./_img/bulle_aide.png" title="Pour le format pdf." /> Impression :</label><?php echo $select_orientation ?> <?php echo $select_couleur ?> <?php echo $select_legende ?> <?php echo $select_marge_min ?><br />
 		<label class="tab">Évaluations :</label><?php echo $select_cases_nb ?> de largeur <?php echo $select_cases_larg ?>
 	</div>

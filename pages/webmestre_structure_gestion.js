@@ -42,7 +42,7 @@ $(document).ready
 		$('table.bilan_synthese').tablesorter({ headers:{0:{sorter:false},1:{sorter:false},8:{sorter:false}} });
 		function trier_tableau()
 		{
-			if($('table.bilan_synthese tbody tr').length>1)
+			if($('table.bilan_synthese tbody tr').length)
 			{
 				$('table.bilan_synthese').trigger('update');
 				$('table.bilan_synthese').trigger('sorton',[sorting]);
@@ -169,7 +169,7 @@ $(document).ready
 					url : 'ajax.php?page='+PAGE,
 					data : 'f_action=lister_admin&f_base_id='+base_id,
 					dataType : "html",
-					error : function(jqXHR, textStatus, errorThrown)
+					error : function(msg,string)
 					{
 						$('#init_form').html('<label id="ajax_msg" class="alerte">Echec de la connexion !</label><q class="annuler" title="Annuler."></q>')
 					},
@@ -286,7 +286,7 @@ $(document).ready
 						url : 'ajax.php?page='+PAGE,
 						data : 'f_action='+action+'&f_base_id='+base_id,
 						dataType : "html",
-						error : function(jqXHR, textStatus, errorThrown)
+						error : function(msg,string)
 						{
 							objet.addClass(action).attr('src',img_src);
 							return false;
@@ -326,7 +326,7 @@ $(document).ready
 					url : 'ajax.php?page='+PAGE,
 					data : 'f_action=supprimer&f_listing_id='+listing_id,
 					dataType : "html",
-					error : function(jqXHR, textStatus, errorThrown)
+					error : function(msg,string)
 					{
 						$('#ajax_supprimer').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
 						$("button").prop('disabled',false);
@@ -501,7 +501,7 @@ $(document).ready
 		}
 
 		// Fonction suivant l'envoi du formulaire (avec jquery.form.js)
-		function retour_form_erreur(jqXHR, textStatus, errorThrown)
+		function retour_form_erreur(msg,string)
 		{
 			please_wait = false;
 			$('#ajax_msg').parent().children('q').show();

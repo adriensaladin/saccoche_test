@@ -28,21 +28,21 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 if(($_SESSION['SESAMATH_ID']==ID_DEMO)&&($_POST['f_action']!='Afficher_bilan')&&($_POST['f_action']!='Afficher_information')){exit('Action désactivée pour la démo...');}
 
-$action      = (isset($_POST['f_action']))  ? Clean::texte($_POST['f_action'])   : '';
-$palier_id   = (isset($_POST['f_palier']))  ? Clean::entier($_POST['f_palier'])  : 0;
-$pilier_id   = (isset($_POST['f_pilier']))  ? Clean::entier($_POST['f_pilier'])  : 0;
-$eleve_id    = (isset($_POST['f_user']))    ? Clean::entier($_POST['f_user'])    : 0;
-$entree_id   = (isset($_POST['f_item']))    ? Clean::entier($_POST['f_item'])    : 0;
-$mode        = (isset($_POST['f_mode']))    ? Clean::texte($_POST['f_mode'])     : '';
-$langue      = (isset($_POST['langue']))    ? Clean::entier($_POST['langue'])    : 0;
+$action      = (isset($_POST['f_action']))  ? clean_texte($_POST['f_action'])   : '';
+$palier_id   = (isset($_POST['f_palier']))  ? clean_entier($_POST['f_palier'])  : 0;
+$pilier_id   = (isset($_POST['f_pilier']))  ? clean_entier($_POST['f_pilier'])  : 0;
+$eleve_id    = (isset($_POST['f_user']))    ? clean_entier($_POST['f_user'])    : 0;
+$entree_id   = (isset($_POST['f_item']))    ? clean_entier($_POST['f_item'])    : 0;
+$mode        = (isset($_POST['f_mode']))    ? clean_texte($_POST['f_mode'])     : '';
+$langue      = (isset($_POST['langue']))    ? clean_entier($_POST['langue'])    : 0;
 // Normalement ce sont des tableaux qui sont transmis, mais au cas où...
 // De plus pour l'affichage du détail des acquisitions d'un item, f_matiere est transmis comme une chaine concaténée.
 $tab_eleve   = (isset($_POST['f_eleve']))   ? ( (is_array($_POST['f_eleve']))   ? $_POST['f_eleve']   : explode(',',$_POST['f_eleve'])   ) : array() ;
 $tab_domaine = (isset($_POST['f_domaine'])) ? ( (is_array($_POST['f_domaine'])) ? $_POST['f_domaine'] : explode(',',$_POST['f_domaine']) ) : array() ;
 $tab_matiere = (isset($_POST['f_matiere'])) ? ( (is_array($_POST['f_matiere'])) ? $_POST['f_matiere'] : explode(',',$_POST['f_matiere']) ) : array() ;
-$tab_eleve   = array_filter( Clean::map_entier($tab_eleve)   , 'positif' );
-$tab_domaine = array_filter( Clean::map_entier($tab_domaine) , 'positif' );
-$tab_matiere = array_filter( Clean::map_entier($tab_matiere) , 'positif' );
+$tab_eleve   = array_filter( array_map( 'clean_entier' , $tab_eleve   ) , 'positif' );
+$tab_domaine = array_filter( array_map( 'clean_entier' , $tab_domaine ) , 'positif' );
+$tab_matiere = array_filter( array_map( 'clean_entier' , $tab_matiere ) , 'positif' );
 
 $listing_eleve_id   = implode(',',$tab_eleve);
 $listing_domaine_id = implode(',',$tab_domaine);
@@ -53,11 +53,11 @@ $listing_domaine_id = implode(',',$tab_domaine);
 
 if( ($action=='Afficher_bilan') && $pilier_id && count($tab_domaine) && count($tab_eleve) && (in_array($mode,array('auto','manuel'))) )
 {
-	Form::save_choix('validation_socle_item');
+	Formulaire::save_choix('validation_socle_item');
 	$affichage = '';
 	// Tableau des langues
 	$tfoot = '';
-	require(CHEMIN_DOSSIER_INCLUDE.'tableau_langues.php');
+	require_once('./_inc/tableau_langues.php');
 	$test_pilier_langue = (in_array($pilier_id,$tab_langue_piliers)) ? TRUE : FALSE ;
 	// Récupérer les données des élèves
 	$tab_eleve = DB_STRUCTURE_BILAN::DB_lister_eleves_cibles($listing_eleve_id,$with_gepi=FALSE,$with_langue=TRUE);
@@ -185,7 +185,7 @@ if( ($action=='Afficher_bilan') && $pilier_id && count($tab_domaine) && count($t
 					extract($tab_item[$item_id]);	// $calcul_methode $calcul_limite
 					// calcul du bilan de l'item
 					$score = calculer_score($tab_devoirs,$calcul_methode,$calcul_limite);
-					if($score!==FALSE)
+					if($score!==false)
 					{
 						// on détermine si elle est acquise ou pas
 						$indice = test_A($score) ? 'A' : ( test_NA($score) ? 'NA' : 'VA' ) ;
@@ -262,7 +262,7 @@ if( ($action=='Afficher_bilan') && $pilier_id && count($tab_domaine) && count($t
 elseif( ($action=='Afficher_information') && $eleve_id && $pilier_id && $entree_id && (in_array($mode,array('auto','manuel'))) )
 {
 	// Tableau des langues
-	require(CHEMIN_DOSSIER_INCLUDE.'tableau_langues.php');
+	require_once('./_inc/tableau_langues.php');
 	$test_pilier_langue = (in_array($pilier_id,$tab_langue_piliers)) ? TRUE : FALSE ;
 	// Récupération de la liste des résultats
 	$tab_eval = array();	// [item_id][]['note'] => note
@@ -289,7 +289,7 @@ elseif( ($action=='Afficher_information') && $eleve_id && $pilier_id && $entree_
 			extract($tab_item[$item_id]);	// $item_ref $item_nom $matiere_id $calcul_methode $calcul_limite
 			// calcul du bilan de l'item
 			$score = calculer_score($tab_devoirs,$calcul_methode,$calcul_limite);
-			if($score!==FALSE)
+			if($score!==false)
 			{
 				// on détermine si elle est acquise ou pas
 				$indice = test_A($score) ? 'A' : ( test_NA($score) ? 'NA' : 'VA' ) ;
@@ -301,9 +301,9 @@ elseif( ($action=='Afficher_information') && $eleve_id && $pilier_id && $entree_
 		}
 	}
 	// On calcule les états d'acquisition à partir des A / VA / NA
-	$tab_score_socle_eleve['%'] = ($tab_score_socle_eleve['nb']) ? round( 50 * ( ($tab_score_socle_eleve['A']*2 + $tab_score_socle_eleve['VA']) / $tab_score_socle_eleve['nb'] ) ,0) : FALSE ;
+	$tab_score_socle_eleve['%'] = ($tab_score_socle_eleve['nb']) ? round( 50 * ( ($tab_score_socle_eleve['A']*2 + $tab_score_socle_eleve['VA']) / $tab_score_socle_eleve['nb'] ) ,0) : false ;
 	// Elaboration du bilan relatif au socle : mise en page, ligne de stats
-	if($tab_score_socle_eleve['%']===FALSE)
+	if($tab_score_socle_eleve['%']===false)
 	{
 		exit('Aucun item évalué n\'est relié avec cette entrée du socle !');
 	}

@@ -30,10 +30,10 @@ $TITRE = "Importer / Imposer des identifiants";
 ?>
 
 <?php
-require(CHEMIN_DOSSIER_INCLUDE.'tableau_sso.php');
+require_once('./_inc/tableau_sso.php');
 
 // Fabrication des éléments select du formulaire
-$select_groupe = Form::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_regroupements_etabl(FALSE/*sans*/) , $select_nom='f_groupe' , $option_first='oui' , $selection=false , $optgroup='oui');
+$select_groupe = Formulaire::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_regroupements_etabl(FALSE/*sans*/) , $select_nom='f_groupe' , $option_first='oui' , $selection=false , $optgroup='oui');
 ?>
 
 <ul class="puce">

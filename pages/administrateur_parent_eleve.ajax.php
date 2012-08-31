@@ -29,8 +29,8 @@ if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');
 if(($_SESSION['SESAMATH_ID']==ID_DEMO)&&($_GET['action']!='initialiser')){exit('Action désactivée pour la démo...');}
 
 $action         = (isset($_POST['f_action']))     ? $_POST['f_action']                 : '';
-$eleve_id       = (isset($_POST['f_eleve_id']))   ? Clean::entier($_POST['f_eleve_id']) : 0 ;
-$tab_parents_id = (isset($_POST['f_parents_id'])) ? Clean::map_entier( explode(',','0,'.$_POST['f_parents_id']) ) : array() ; // On ajoute "0," pour que les ids soient indexés sur 1;2;3;4 ($resp_legal_num)
+$eleve_id       = (isset($_POST['f_eleve_id']))   ? clean_entier($_POST['f_eleve_id']) : 0 ;
+$tab_parents_id = (isset($_POST['f_parents_id'])) ? array_map('clean_entier',explode(',','0,'.$_POST['f_parents_id'])) : array() ; // On ajoute "0," pour que les ids soient indexés sur 1;2;3;4 ($resp_legal_num)
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 // Modifier la liste des parents d'un élève
@@ -62,7 +62,7 @@ if( ($action=='afficher_parents') && $eleve_id )
 	{
 		$identite        = html($DB_ROW['user_nom'].' '.$DB_ROW['user_prenom']);
 		$tab_adresse     = array( $DB_ROW['adresse_ligne1'] , $DB_ROW['adresse_ligne2'] , $DB_ROW['adresse_ligne3'] , $DB_ROW['adresse_ligne4'] , $DB_ROW['adresse_postal_code'] , $DB_ROW['adresse_postal_libelle'] , $DB_ROW['adresse_pays_nom'] );
-		$adresse         = html(implode(' ; ',array_filter($tab_adresse)));
+		$adresse         = html(implode(' ; ',array_filter($tab_adresse,'non_vide')));
 		$responsabilites = html($DB_ROW['enfants_liste']);
 		$tab_parents[$DB_ROW['resp_legal_num']] = '<table id="parent_'.$DB_ROW['parent_id'].'"><tbody><tr><th class="vu" style="width:6em">$TITRE$</th><td><em>'.$identite.'</em><hr /><img alt="" src="./_img/home.png" /> '.$adresse.'<br /><img alt="" src="./_img/groupe.png" /> '.$responsabilites.'</td><th class="nu"><q class="modifier" title="Changer ce responsable."></q><q class="supprimer" title="Retirer ce responsable."></q></th></tr></tbody></table>';
 	}

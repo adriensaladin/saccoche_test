@@ -41,7 +41,7 @@ $(document).ready
 		$('table.form').tablesorter({ headers:{0:{sorter:false},9:{sorter:false},11:{sorter:false}} });
 		function trier_tableau()
 		{
-			if($('table.form tbody tr').length>1)
+			if($('table.form tbody tr').length)
 			{
 				$('table.form').trigger('update');
 				$('table.form').trigger('sorton',[sorting]);
@@ -55,12 +55,9 @@ $(document).ready
 
 		function reload()
 		{
+			$('#ajax_msg0').addClass("loader").html("Connexion au serveur&hellip;");
 			$('#form1').remove();
-			if($('#f_groupes option:selected').val())
-			{
-				$('#ajax_msg0').addClass("loader").html("Connexion au serveur&hellip;");
-				$('#form0').submit();
-			}
+			$('#form0').submit();
 		}
 
 		$('#form0 select').change
@@ -358,7 +355,7 @@ $(document).ready
 		}
 
 		// Fonction suivant l'envoi du formulaire (avec jquery.form.js)
-		function retour_form_erreur(jqXHR, textStatus, errorThrown)
+		function retour_form_erreur(msg,string)
 		{
 			please_wait = false;
 			$('#ajax_msg').parent().children('q').show();
@@ -431,7 +428,7 @@ $(document).ready
 							url : 'ajax.php?page='+'administrateur_comptes',
 							data : 'f_action='+f_action+'&f_listing_id='+listing_id,
 							dataType : "html",
-							error : function(jqXHR, textStatus, errorThrown)
+							error : function(msg,string)
 							{
 								$('#ajax_msg1').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
 								$('#zone_actions button').prop('disabled',false);

@@ -27,18 +27,18 @@
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 
-$action           = (isset($_POST['f_action']))           ? Clean::texte($_POST['f_action'])              : '';
-$base_id          = (isset($_POST['f_base_id']))          ? Clean::entier($_POST['f_base_id'])            : 0;
+$action           = (isset($_POST['f_action']))           ? clean_texte($_POST['f_action'])              : '';
+$base_id          = (isset($_POST['f_base_id']))          ? clean_entier($_POST['f_base_id'])            : 0;
 $listing_base_id  = (isset($_POST['f_listing_id']))       ? $_POST['f_listing_id']                       : '';
-$geo_id           = (isset($_POST['f_geo']))              ? Clean::entier($_POST['f_geo'])                : 0;
+$geo_id           = (isset($_POST['f_geo']))              ? clean_entier($_POST['f_geo'])                : 0;
 $localisation     = (isset($_POST['f_localisation']))     ? $_POST['f_localisation']                     : ''; // Ne pas appliquer trim()
-$denomination     = (isset($_POST['f_denomination']))     ? Clean::texte($_POST['f_denomination'])        : '';
-$uai              = (isset($_POST['f_uai']))              ? Clean::uai($_POST['f_uai'])                   : '';
-$contact_nom      = (isset($_POST['f_contact_nom']))      ? Clean::nom($_POST['f_contact_nom'])           : '';
-$contact_prenom   = (isset($_POST['f_contact_prenom']))   ? Clean::prenom($_POST['f_contact_prenom'])     : '';
-$contact_courriel = (isset($_POST['f_contact_courriel'])) ? Clean::courriel($_POST['f_contact_courriel']) : '';
-$courriel_envoi   = (isset($_POST['f_courriel_envoi']))   ? Clean::entier($_POST['f_courriel_envoi'])     : 0;
-$admin_id         = (isset($_POST['f_admin_id']))         ? Clean::entier($_POST['f_admin_id'])           : 0;
+$denomination     = (isset($_POST['f_denomination']))     ? clean_texte($_POST['f_denomination'])        : '';
+$uai              = (isset($_POST['f_uai']))              ? clean_uai($_POST['f_uai'])                   : '';
+$contact_nom      = (isset($_POST['f_contact_nom']))      ? clean_nom($_POST['f_contact_nom'])           : '';
+$contact_prenom   = (isset($_POST['f_contact_prenom']))   ? clean_prenom($_POST['f_contact_prenom'])     : '';
+$contact_courriel = (isset($_POST['f_contact_courriel'])) ? clean_courriel($_POST['f_contact_courriel']) : '';
+$courriel_envoi   = (isset($_POST['f_courriel_envoi']))   ? clean_entier($_POST['f_courriel_envoi'])     : 0;
+$admin_id         = (isset($_POST['f_admin_id']))         ? clean_entier($_POST['f_admin_id'])           : 0;
 
 // On récupère les zones géographiques pour 2 raisons :
 // => vérifier que l'identifiant transmis est cohérent
@@ -81,11 +81,11 @@ if( ($action=='ajouter') && isset($tab_geo[$geo_id]) && $localisation && $denomi
 	// Créer un utilisateur pour la base de données de la structure et lui attribuer ses droits
 	$base_id = ajouter_structure($base_id,$geo_id,$uai,$localisation,$denomination,$contact_nom,$contact_prenom,$contact_courriel);
 	// Créer les dossiers de fichiers temporaires par établissement : vignettes verticales, flux RSS des demandes, cookies des choix de formulaires, sujets et corrigés de devoirs
-	$tab_sous_dossier = array('badge','cookie','devoir','officiel','rss');
+	$tab_sous_dossier = array('badge','cookie','devoir','rss');
 	foreach($tab_sous_dossier as $sous_dossier)
 	{
-		FileSystem::creer_dossier(CHEMIN_DOSSIER_TMP.$sous_dossier.DS.$base_id);
-		FileSystem::ecrire_fichier_index(CHEMIN_DOSSIER_TMP.$sous_dossier.DS.$base_id);
+		Creer_Dossier('./__tmp/'.$sous_dossier.'/'.$base_id);
+		Ecrire_Fichier('./__tmp/'.$sous_dossier.'/'.$base_id.'/index.htm','Circulez, il n\'y a rien à voir par ici !');
 	}
 	// Charger les paramètres de connexion à cette base afin de pouvoir y effectuer des requêtes
 	charger_parametres_mysql_supplementaires($base_id);
@@ -109,8 +109,8 @@ if( ($action=='ajouter') && isset($tab_geo[$geo_id]) && $localisation && $denomi
 	// Et lui envoyer un courriel
 	if($courriel_envoi)
 	{
-		$texte = contenu_courriel_inscription( $base_id , $denomination , $contact_nom , $contact_prenom , 'admin' , $password , URL_DIR_SACOCHE );
-		$courriel_bilan = Sesamail::mail( $contact_courriel , 'Création compte' , $texte );
+		$texte = contenu_courriel_inscription( $base_id , $denomination , $contact_nom , $contact_prenom , 'admin' , $password , SERVEUR_ADRESSE );
+		$courriel_bilan = envoyer_webmestre_courriel( $contact_courriel , 'Création compte' , $texte , FALSE );
 		if(!$courriel_bilan)
 		{
 			exit('Erreur lors de l\'envoi du courriel !');
@@ -158,7 +158,7 @@ if( ($action=='modifier') && $base_id && isset($tab_geo[$geo_id]) && $localisati
 	$tab_parametres['webmestre_denomination'] = $denomination;
 	DB_STRUCTURE_COMMUN::DB_modifier_parametres($tab_parametres);
 	// On affiche le retour
-	$img = (LockAcces::tester_blocage('webmestre',$base_id)===NULL) ? '<img class="bloquer" src="./_img/etat/acces_oui.png" title="Bloquer cet établissement." />' : '<img class="debloquer" src="./_img/etat/acces_non.png" title="Débloquer cet établissement." />' ;
+	$img = (!is_file(CHEMIN_CONFIG.'blocage_webmestre_'.$base_id.'.txt')) ? '<img class="bloquer" src="./_img/etat/acces_oui.png" title="Bloquer cet établissement." />' : '<img class="debloquer" src="./_img/etat/acces_non.png" title="Débloquer cet établissement." />' ;
 	echo'<td class="nu"><a href="#id_0">'.$img.'</a></td>';
 	echo'<td class="nu"><input type="checkbox" name="f_ids" value="'.$base_id.'" /></td>';
 	echo'<td class="label">'.$base_id.'</td>';
@@ -182,7 +182,7 @@ if( ($action=='modifier') && $base_id && isset($tab_geo[$geo_id]) && $localisati
 if( ($action=='lister_admin') && $base_id )
 {
 	charger_parametres_mysql_supplementaires($base_id);
-	exit( Form::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_administrateurs_etabl() , $select_nom=false , $option_first='non' , $selection=false , $optgroup='non') );
+	exit( Formulaire::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_administrateurs_etabl() , $select_nom=false , $option_first='non' , $selection=false , $optgroup='non') );
 }
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
@@ -215,8 +215,8 @@ if( ($action=='initialiser_mdp') && $base_id && $admin_id )
 	$admin_password = fabriquer_mdp();
 	DB_STRUCTURE_WEBMESTRE::DB_modifier_admin_mdp($admin_id,crypter_mdp($admin_password));
 	// Envoyer un courriel au contact
-	$courriel_contenu = contenu_courriel_nouveau_mdp( $base_id , $denomination , $contact_nom , $contact_prenom , $admin_nom , $admin_prenom , $admin_login , $admin_password , URL_DIR_SACOCHE );
-	$courriel_bilan = Sesamail::mail( $contact_courriel , 'Modification mdp administrateur' , $courriel_contenu );
+	$courriel_contenu = contenu_courriel_nouveau_mdp( $base_id , $denomination , $contact_nom , $contact_prenom , $admin_nom , $admin_prenom , $admin_login , $admin_password , SERVEUR_ADRESSE );
+	$courriel_bilan = envoyer_webmestre_courriel( $contact_courriel , 'Modification mdp administrateur' , $courriel_contenu , FALSE );
 	if(!$courriel_bilan)
 	{
 		exit('Erreur lors de l\'envoi du courriel !');
@@ -244,7 +244,7 @@ if( ($action=='supprimer') && $base_id )
 
 if( ($action=='supprimer') && $listing_base_id )
 {
-	$tab_base_id = array_filter( Clean::map_entier( explode(',',$listing_base_id) ) , 'positif' );
+	$tab_base_id = array_filter( array_map( 'clean_entier' , explode(',',$listing_base_id) ) , 'positif' );
 	foreach($tab_base_id as $base_id)
 	{
 		supprimer_multi_structure($base_id);
@@ -258,7 +258,7 @@ if( ($action=='supprimer') && $listing_base_id )
 
 if( ($action=='bloquer') && $base_id )
 {
-	LockAcces::bloquer_application($_SESSION['USER_PROFIL'],$base_id,'Action ciblée ; contacter le webmestre pour obtenir des précisions.');
+	bloquer_application($_SESSION['USER_PROFIL'],$base_id,'Action ciblée ; contacter le webmestre pour obtenir des précisions.');
 	exit('<img class="debloquer" src="./_img/etat/acces_non.png" title="Débloquer cet établissement." />');
 }
 
@@ -268,7 +268,7 @@ if( ($action=='bloquer') && $base_id )
 
 if( ($action=='debloquer') && $base_id )
 {
-	LockAcces::debloquer_application($_SESSION['USER_PROFIL'],$base_id);
+	debloquer_application($_SESSION['USER_PROFIL'],$base_id);
 	exit('<img class="bloquer" src="./_img/etat/acces_oui.png" title="Bloquer cet établissement." />');
 }
 

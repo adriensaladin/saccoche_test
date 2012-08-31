@@ -37,10 +37,9 @@ $(document).ready
 		var mode = false;
 		var modification = false;
 		var memo_pilotage = 'clavier';
-		var memo_direction = 'down';
 		var memo_input_id = false;
-		var colonne = 1;
-		var ligne   = 1;
+		var colonne = 0;
+		var ligne   = 0;
 		var nb_colonnes = 1;
 		var nb_lignes   = 1;
 		// tri du tableau (avec jquery.tablesorter.js).
@@ -354,7 +353,7 @@ $(document).ready
 					url : 'ajax.php?page='+PAGE,
 					data : 'f_action='+mode+'&f_ref='+ref+'&f_date_mysql='+date_mysql+'&f_description='+encodeURIComponent(description)+'&f_date_visible='+date_visible+'&f_groupe_nom='+encodeURIComponent(groupe)+'&f_date_fr='+encodeURIComponent(date_fr),
 					dataType : "html",
-					error : function(jqXHR, textStatus, errorThrown)
+					error : function(msg,string)
 					{
 						$('#msg_saisir').removeAttr("class").addClass("alerte").html('Echec de la connexion ! <button id="fermer_zone_saisir" type="button" class="retourner">Retour</button>');
 						return false;
@@ -374,20 +373,15 @@ $(document).ready
 							$('#table_saisir').html(tab_response[0]);
 							$('#table_saisir tbody tr th img').css('display','none'); // .hide(0) s'avère bcp plus lent dans FF et pose pb si bcp élèves / items ...
 							$('img[title]').tooltip({showURL:false});
-							$('#export_file1').attr("href", url_export+'saisie_deportee_'+tab_response[1]+'.zip' );
-							$('#export_file4').attr("href", url_export+'tableau_sans_notes_'+tab_response[1]+'.pdf' );
+							$('#export_file1').attr("href", dossier_export+'saisie_deportee_'+tab_response[1]+'.zip' );
+							$('#export_file4').attr("href", dossier_export+'tableau_sans_notes_'+tab_response[1]+'.pdf' );
 							colorer_cellules();
 							format_liens('#table_saisir');
 							infobulle();
 							$('#radio_'+memo_pilotage).click();
-							$('#arrow_continue_'+memo_direction).click();
 							if(memo_pilotage=='clavier')
 							{
-								$('#C'+colonne+'L'+ligne).focus();
-							}
-							else
-							{
-								$('#arrow_continue').hide();
+								$('#C1L1').focus();
 							}
 							nb_colonnes = $('#table_saisir thead th').length;
 							nb_lignes   = $('#table_saisir tbody tr').length;
@@ -423,7 +417,7 @@ $(document).ready
 					url : 'ajax.php?page='+PAGE,
 					data : 'f_action='+mode+'&f_ref='+ref+'&f_date_fr='+encodeURIComponent(date_fr)+'&f_description='+encodeURIComponent(description)+'&f_groupe_nom='+encodeURIComponent(groupe),
 					dataType : "html",
-					error : function(jqXHR, textStatus, errorThrown)
+					error : function(msg,string)
 					{
 						$('#msg_voir').removeAttr("class").addClass("alerte").html('Echec de la connexion ! <button id="fermer_zone_voir" type="button" class="retourner">Retour</button>');
 						return false;
@@ -442,9 +436,9 @@ $(document).ready
 							$('#table_voir').html(tab_response[0]);
 							$('#table_voir tbody tr th img').css('display','none'); // .hide(0) s'avère bcp plus lent dans FF et pose pb si bcp élèves / items ...
 							format_liens('#table_voir');
-							$('#export_file2').attr("href", url_export+'saisie_deportee_'+tab_response[1]+'.zip' );
-							$('#export_file3').attr("href", url_export+'tableau_sans_notes_'+tab_response[1]+'.pdf' );
-							$('#export_file5').attr("href", url_export+'tableau_avec_notes_'+tab_response[1]+'.pdf' );
+							$('#export_file2').attr("href", dossier_export+'saisie_deportee_'+tab_response[1]+'.zip' );
+							$('#export_file3').attr("href", dossier_export+'tableau_sans_notes_'+tab_response[1]+'.pdf' );
+							$('#export_file5').attr("href", dossier_export+'tableau_avec_notes_'+tab_response[1]+'.pdf' );
 							$('#table_voir tbody td').css({"background-color":"#DDF","text-align":"center","vertical-align":"middle","font-size":"110%"});
 							infobulle();
 						}
@@ -478,7 +472,7 @@ $(document).ready
 					url : 'ajax.php?page='+PAGE,
 					data : 'f_action='+mode+'&f_ref='+ref+'&f_date_fr='+encodeURIComponent(date_fr)+'&f_description='+encodeURIComponent(description)+'&f_groupe_nom='+encodeURIComponent(groupe),
 					dataType : "html",
-					error : function(jqXHR, textStatus, errorThrown)
+					error : function(msg,string)
 					{
 						$('#msg_voir_repart').removeAttr("class").addClass("alerte").html('Echec de la connexion ! <button id="fermer_zone_voir_repart" type="button" class="retourner">Retour</button>');
 						return false;
@@ -497,8 +491,8 @@ $(document).ready
 							$('#table_voir_repart1').html(tab_response[0]);
 							$('#table_voir_repart2').html(tab_response[1]);
 							format_liens('#zone_voir_repart');
-							$('#export_file6').attr("href", url_export+'repartition_quantitative_'+tab_response[2]+'.pdf' );
-							$('#export_file7').attr("href", url_export+'repartition_nominative_'+tab_response[2]+'.pdf' );
+							$('#export_file6').attr("href", dossier_export+'repartition_quantitative_'+tab_response[2]+'.pdf' );
+							$('#export_file7').attr("href", dossier_export+'repartition_nominative_'+tab_response[2]+'.pdf' );
 							$('#table_voir_repart1 tbody td').css({"background-color":"#DDF","font-weight":"normal","text-align":"center"});
 							$('#table_voir_repart2 tbody td').css({"background-color":"#DDF","font-weight":"normal","font-size":"85%"});
 							infobulle();
@@ -560,7 +554,7 @@ $(document).ready
 					url : 'ajax.php?page='+PAGE,
 					data : 'f_action='+mode+'&f_ref='+ref,
 					dataType : "html",
-					error : function(jqXHR, textStatus, errorThrown)
+					error : function(msg,string)
 					{
 						$('#msg_ordonner').removeAttr("class").addClass("alerte").html('Echec de la connexion ! <button id="fermer_zone_ordonner" type="button" class="retourner">Retour</button>');
 						return false;
@@ -974,7 +968,7 @@ $(document).ready
 						url : 'ajax.php?page='+PAGE,
 						data : 'f_action=imprimer_cartouche&'+$("#zone_imprimer").serialize(),
 						dataType : "html",
-						error : function(jqXHR, textStatus, errorThrown)
+						error : function(msg,string)
 						{
 							$('button').prop('disabled',false);
 							$('#msg_imprimer').removeAttr("class").addClass("alerte").html('Echec de la connexion !');
@@ -1035,7 +1029,7 @@ $(document).ready
 						url : 'ajax.php?page='+PAGE,
 						data : 'f_action=indiquer_eleves_deja'+'&f_description='+$('#f_description').val()+'&f_date_debut='+f_date_debut,
 						dataType : "html",
-						error : function(jqXHR, textStatus, errorThrown)
+						error : function(msg,string)
 						{
 							$('button').prop('disabled',false);
 							$('#msg_indiquer_eleves_deja').removeAttr("class").addClass("alerte").html('Echec de la connexion !');
@@ -1112,33 +1106,15 @@ $(document).ready
 		//	Choix du mode de pilotage pour la saisie des résultats
 		//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
-		$('input[name=mode_saisie]').live // live est utilisé pour prendre en compte les nouveaux éléments créés
+		$('#table_saisir thead tr td input[type="radio"]').live // live est utilisé pour prendre en compte les nouveaux éléments créés
 		('click',
 			function()
 			{
 				memo_pilotage = $(this).val();
 				if(memo_pilotage=='clavier')
 				{
-					$('#arrow_continue').show(0);
-					$('#C'+colonne+'L'+ligne).focus();
+					$("#C1L1").focus();
 				}
-				else
-				{
-					$('#arrow_continue').hide(0);
-				}
-			}
-		);
-
-		//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-		//	Choix du sens de parcours pour la saisie des résultats (si pilotage au clavier)
-		//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-
-		$('input[name=arrow_continue]').live // live est utilisé pour prendre en compte les nouveaux éléments créés
-		('click',
-			function()
-			{
-				memo_direction = $(this).val();
-					$('#C'+colonne+'L'+ligne).focus();
 			}
 		);
 
@@ -1282,14 +1258,7 @@ $(document).ready
 							// pour une seule case
 							$(this).val(note).removeAttr("class").addClass(note);
 							$(this).parent().css("background-color","#F6D");
-							if(memo_direction=='down')
-							{
-								ligne++;
-							}
-							else
-							{
-								colonne++;
-							}
+							ligne++;
 						}
 						else if(endroit_report_note=='tableau')
 						{
@@ -1547,7 +1516,7 @@ $(document).ready
 							url : 'ajax.php?page='+PAGE,
 							data : 'f_action=enregistrer_ordre&f_ref='+$('#Enregistrer_ordre').val()+'&tab_id='+tab_id,
 							dataType : "html",
-							error : function(jqXHR, textStatus, errorThrown)
+							error : function(msg,string)
 							{
 								$('button').prop('disabled',false);
 								$('#ajax_msg').removeAttr("class").addClass("alerte").html('Echec de la connexion !');
@@ -1611,7 +1580,7 @@ $(document).ready
 							url : 'ajax.php?page='+PAGE,
 							data : 'f_action=enregistrer_saisie'+'&f_ref='+$("#f_ref").val()+'&f_date_mysql='+$("#f_date_mysql").val()+'&f_date_visible='+$("#f_date_visible").val()+'&f_notes='+f_notes+'&f_description='+$("#f_description").val(),
 							dataType : "html",
-							error : function(jqXHR, textStatus, errorThrown)
+							error : function(msg,string)
 							{
 								$('button').prop('disabled',false);
 								$('#msg_saisir').removeAttr("class").addClass("alerte").html('Echec de la connexion !');
@@ -1744,7 +1713,7 @@ $(document).ready
 		}
 
 		// Fonction suivant l'envoi du formulaire (avec jquery.form.js)
-		function retour_form_erreur(jqXHR, textStatus, errorThrown)
+		function retour_form_erreur(msg,string)
 		{
 			please_wait = false;
 			$('#ajax_msg').parent().children('q').show();
@@ -2008,7 +1977,7 @@ $(document).ready
 						url : 'ajax.php?page='+PAGE,
 						data : 'f_action=retirer_document'+'&f_doc_objet='+objet+'&f_ref='+ref+'&f_doc_url='+url,
 						dataType : "html",
-						error : function(jqXHR, textStatus, errorThrown)
+						error : function(msg,string)
 						{
 							$('#ajax_document_upload').removeAttr("class").addClass("alerte").html(responseHTML);
 							activer_boutons_upload(ref);
@@ -2071,7 +2040,7 @@ $(document).ready
 							url : 'ajax.php?page='+PAGE,
 							data : 'f_action=referencer_document'+'&f_doc_objet='+objet+'&f_ref='+ref+'&f_doc_url='+url,
 							dataType : "html",
-							error : function(jqXHR, textStatus, errorThrown)
+							error : function(msg,string)
 							{
 								$('#ajax_document_upload').removeAttr("class").addClass("alerte").html(responseHTML);
 								activer_boutons_upload(ref);
@@ -2273,7 +2242,7 @@ $(document).ready
 		}
 
 		// Fonction suivant l'envoi du formulaire (avec jquery.form.js)
-		function retour_form_erreur0(jqXHR, textStatus, errorThrown)
+		function retour_form_erreur0(msg,string)
 		{
 			$('#ajax_msg0').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
 		}

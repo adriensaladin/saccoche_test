@@ -116,7 +116,7 @@ $(document).ready
 						url : 'ajax.php?page=_maj_select_piliers',
 						data : 'f_palier='+palier_id+'&f_first='+'non',
 						dataType : "html",
-						error : function(jqXHR, textStatus, errorThrown)
+						error : function(msg,string)
 						{
 							$('#ajax_maj_pilier').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
 						},
@@ -166,7 +166,7 @@ $(document).ready
 						url : 'ajax.php?page=_maj_select_eleves',
 						data : 'f_groupe='+groupe_id+'&f_type='+groupe_type+'&f_statut=1',
 						dataType : "html",
-						error : function(jqXHR, textStatus, errorThrown)
+						error : function(msg,string)
 						{
 							$('#ajax_maj_eleve').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
 						},
@@ -216,10 +216,7 @@ $(document).ready
 					f_palier      : { required:true },
 					'f_pilier[]'  : { required:true },
 					f_groupe      : { required:true },
-					'f_eleve[]'   : { required:true },
-					f_couleur     : { required:true },
-					f_legende     : { required:true },
-					f_marge_min   : { required:true }
+					'f_eleve[]'   : { required:true }
 				},
 				messages :
 				{
@@ -229,10 +226,7 @@ $(document).ready
 					f_palier      : { required:"palier manquant" },
 					'f_pilier[]'  : { required:"compétence(s) manquante(s)" },
 					f_groupe      : { required:"groupe manquant" },
-					'f_eleve[]'   : { required:"élève(s) manquant(s)" },
-					f_couleur     : { required:"couleur manquante" },
-					f_legende     : { required:"légende manquante" },
-					f_marge_min   : { required:"marge mini manquante" }
+					'f_eleve[]'   : { required:"élève(s) manquant(s)" }
 				},
 				errorElement : "label",
 				errorClass : "erreur",
@@ -286,11 +280,10 @@ $(document).ready
 		}
 
 		// Fonction suivant l'envoi du formulaire (avec jquery.form.js)
-		function retour_form_erreur(jqXHR, textStatus, errorThrown)
+		function retour_form_erreur(msg,string)
 		{
 			$('button').prop('disabled',false);
-			var message = (jqXHR.status!=500) ? 'Echec de la connexion !' : 'Erreur 500&hellip; Mémoire insuffisante ? Sélectionner moins d\'élèves à la fois ou demander à votre hébergeur d\'augmenter la valeur "memory_limit".' ;
-			$('#ajax_msg').removeAttr("class").addClass("alerte").html(message);
+			$('#ajax_msg').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
 		}
 
 		// Fonction suivant l'envoi du formulaire (avec jquery.form.js)

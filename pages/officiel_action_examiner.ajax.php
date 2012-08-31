@@ -28,17 +28,17 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 if($_SESSION['SESAMATH_ID']==ID_DEMO){exit('Action désactivée pour la démo...');}
 
-$BILAN_TYPE   = (isset($_POST['f_bilan_type']))   ? Clean::texte($_POST['f_bilan_type'])   : '';
-$periode_id   = (isset($_POST['f_periode']))      ? Clean::entier($_POST['f_periode'])     : 0;
-$classe_id    = (isset($_POST['f_classe']))       ? Clean::entier($_POST['f_classe'])      : 0;
-$groupe_id    = (isset($_POST['f_groupe']))       ? Clean::entier($_POST['f_groupe'])      : 0;
+$BILAN_TYPE   = (isset($_POST['f_bilan_type']))   ? clean_texte($_POST['f_bilan_type'])   : '';
+$periode_id   = (isset($_POST['f_periode']))      ? clean_entier($_POST['f_periode'])     : 0;
+$classe_id    = (isset($_POST['f_classe']))       ? clean_entier($_POST['f_classe'])      : 0;
+$groupe_id    = (isset($_POST['f_groupe']))       ? clean_entier($_POST['f_groupe'])      : 0;
 // Autres chaines spécifiques...
 $listing_matieres  = (isset($_POST['f_listing_matieres']))  ? $_POST['f_listing_matieres']  : '' ;
 $listing_piliers   = (isset($_POST['f_listing_piliers']))   ? $_POST['f_listing_piliers']   : '' ;
 $listing_rubriques = (isset($_POST['f_listing_rubriques'])) ? $_POST['f_listing_rubriques'] : '' ;
-$tab_matiere_id  = array_filter( Clean::map_entier( explode(',',$listing_matieres) ) , 'positif' );
-$tab_pilier_id   = array_filter( Clean::map_entier( explode(',',$listing_piliers) )  , 'positif' );
-$tab_rubrique_id = Clean::map_entier(explode(',',$listing_rubriques) ); // Pas de array_filter(...,'positif') car la valeur 0 est autorisée
+$tab_matiere_id  = array_filter( array_map( 'clean_entier' , explode(',',$listing_matieres) ) , 'positif' );
+$tab_pilier_id   = array_filter( array_map( 'clean_entier' , explode(',',$listing_piliers) )  , 'positif' );
+$tab_rubrique_id = array_map( 'clean_entier' , explode(',',$listing_rubriques) ); // Pas de array_filter(...,'positif') car la valeur 0 est autorisée
 $liste_matiere_id  = implode(',',$tab_matiere_id);
 $liste_pilier_id   = implode(',',$tab_pilier_id);
 $liste_rubrique_id = implode(',',$tab_rubrique_id);
@@ -47,11 +47,11 @@ $is_sous_groupe = ($groupe_id) ? TRUE : FALSE ;
 
 $tab_types = array
 (
-	'releve'   => array( 'droit'=>'RELEVE'   , 'titre'=>'Relevé d\'évaluations' ) ,
-	'bulletin' => array( 'droit'=>'BULLETIN' , 'titre'=>'Bulletin scolaire'     ) ,
-	'palier1'  => array( 'droit'=>'SOCLE'    , 'titre'=>'Maîtrise du palier 1'  ) ,
-	'palier2'  => array( 'droit'=>'SOCLE'    , 'titre'=>'Maîtrise du palier 2'  ) ,
-	'palier3'  => array( 'droit'=>'SOCLE'    , 'titre'=>'Maîtrise du palier 3'  )
+	'releve'   => array( 'droit'=>'RELEVE'   , 'titre'=>'Relevé d\'évaluations') ,
+	'bulletin' => array( 'droit'=>'BULLETIN' , 'titre'=>'Bulletin scolaire') ,
+	'palier1'  => array( 'droit'=>'SOCLE'    , 'titre'=>'Maîtrise du palier 1') ,
+	'palier2'  => array( 'droit'=>'SOCLE'    , 'titre'=>'Maîtrise du palier 2') ,
+	'palier3'  => array( 'droit'=>'SOCLE'    , 'titre'=>'Maîtrise du palier 3')
 );
 
 // On vérifie les paramètres
@@ -79,7 +79,7 @@ if(!$BILAN_ETAT)
 }
 if(!in_array($BILAN_ETAT,array('2rubrique','3synthese')))
 {
-	exit('Bilan interdit d\'accès pour cette action !');
+	exit('Bilan d\'accès interdit pour cette action !');
 }
 
 // Lister les élèves concernés : soit d'une classe (en général) soit d'une classe ET d'un sous-groupe pour un prof affecté à un groupe d'élèves
@@ -105,28 +105,13 @@ $liste_eleve_id = implode(',',$tab_eleve_id);
 
 if( ($BILAN_TYPE=='bulletin') && $_SESSION['OFFICIEL']['BULLETIN_MOYENNE_SCORES'] )
 {
-	// Attention ! On doit calculer des moyennes de classe, pas de groupe !
-	if(!$is_sous_groupe)
-	{
-		$liste_eleve_id_tmp = $liste_eleve_id;
-	}
-	else
-	{
-		$tab_eleve_id_tmp = array();
-		$DB_TAB = DB_STRUCTURE_COMMUN::DB_lister_users_regroupement( 'eleve' , 1 /*statut*/ , 'classe' , $classe_id );
-		foreach($DB_TAB as $DB_ROW)
-		{
-			$tab_eleve_id_tmp[] = $DB_ROW['user_id'];
-		}
-		$liste_eleve_id_tmp = implode(',',$tab_eleve_id_tmp);
-	}
-	calculer_et_enregistrer_moyennes_eleves_bulletin( $periode_id , $classe_id , $liste_eleve_id_tmp , $liste_rubrique_id , FALSE /*memo_moyennes_classe*/ , FALSE /*memo_moyennes_generale*/ );
+	calculer_et_enregistrer_moyennes_eleves_bulletin( $periode_id , $classe_id , $liste_eleve_id , $liste_rubrique_id , FALSE /*memo_moyennes_classe*/ );
 }
 
 // Récupérer les saisies déjà effectuées pour le bilan officiel concerné
 
 $tab_saisie = array();	// [eleve_id][rubrique_id][prof_id] => array(prof_info,appreciation,note,info);
-$DB_TAB = DB_STRUCTURE_OFFICIEL::DB_recuperer_bilan_officiel_saisies( $BILAN_TYPE , $periode_id , $liste_eleve_id , 0 /*prof_id*/ );
+$DB_TAB = DB_STRUCTURE_OFFICIEL::DB_recuperer_bilan_officiel_saisies($BILAN_TYPE,$periode_id,$liste_eleve_id);
 foreach($DB_TAB as $DB_ROW)
 {
 	$tab_saisie[$DB_ROW['eleve_id']][$DB_ROW['rubrique_id']][$DB_ROW['prof_id']] = array( 'prof_info'=>$DB_ROW['prof_info'] , 'appreciation'=>$DB_ROW['saisie_appreciation'] , 'note'=>$DB_ROW['saisie_note'] );
@@ -138,17 +123,16 @@ foreach($DB_TAB as $DB_ROW)
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
 $tab_resultat_examen = array();
-$make_officiel = TRUE;
-$make_action   = 'examiner';
-$make_html     = FALSE;
-$make_pdf      = FALSE;
-$make_graph    = FALSE;
+$make_for    = 'officiel';
+$make_action = 'examiner';
+$make_html   = FALSE;
+$make_pdf    = FALSE;
 
 if($BILAN_TYPE=='releve')
 {
 	$format          = 'multimatiere';
-	$with_coef       = 1; // Il n'y a que des relevés par matière et pas de synthèse commune : on prend en compte les coefficients pour chaque relevé matière.
-	$matiere_id      = TRUE;
+	$with_coef       = 1;; // Il n'y a que des relevés par matière et pas de synthèse commune : on prend en compte les coefficients pour chaque relevé matière.
+	$matiere_id      = true;
 	$matiere_nom     = '';
 	$groupe_id       = (!$is_sous_groupe) ? $classe_id  : $groupe_id ; // Le groupe = la classe (par défaut) ou le groupe transmis
 	$groupe_nom      = (!$is_sous_groupe) ? $classe_nom : $classe_nom.' - '.DB_STRUCTURE_COMMUN::DB_recuperer_groupe_nom($groupe_id) ;
@@ -165,7 +149,7 @@ if($BILAN_TYPE=='releve')
 	$type_synthese   = 0;
 	$type_bulletin   = 0;
 	$tab_matiere_id = $tab_rubrique_id; // N'est pas utilisé pour la récupération des résultats mais juste pour tester si on doit vérifier cette partie (ce serait un double souci sinon : il faut tester les bilans élèves qui ont des résultats ailleurs + ce tableau peut contenir la valeur 0).
-	require(CHEMIN_DOSSIER_INCLUDE.'code_items_releve.php');
+	require('./_inc/code_items_releve.php');
 	// $nom_bilan_html = 'releve_HTML_individuel';
 }
 elseif($BILAN_TYPE=='bulletin')
@@ -182,7 +166,7 @@ elseif($BILAN_TYPE=='bulletin')
 	$tab_eleve      = $tab_eleve_id;
 	$liste_eleve    = $liste_eleve_id;
 	$tab_matiere_id = $tab_rubrique_id; // N'est pas utilisé pour la récupération des résultats mais juste pour tester si on doit vérifier cette partie (ce serait un double souci sinon : il faut tester les bilans élèves qui ont des résultats ailleurs + ce tableau peut contenir la valeur 0).
-	require(CHEMIN_DOSSIER_INCLUDE.'code_items_synthese.php');
+	require('./_inc/code_items_synthese.php');
 	// $nom_bilan_html = 'releve_HTML';
 }
 elseif(in_array($BILAN_TYPE,array('palier1','palier2','palier3')))
@@ -198,7 +182,7 @@ elseif(in_array($BILAN_TYPE,array('palier1','palier2','palier3')))
 	$tab_pilier_id  = $tab_pilier_id; // Pas $tab_rubrique_id car il ne faut pas juste restreindre à la liste des rubriques dont on souhaite vérifier l'appréciation afin de récupérer les bilans de tous les élèves concernés.
 	$tab_eleve_id   = $tab_eleve_id;
 	$tab_matiere_id = array();
-	require(CHEMIN_DOSSIER_INCLUDE.'code_socle_releve.php');
+	require('./_inc/code_socle_releve.php');
 	// $nom_bilan_html = 'releve_html';
 }
 

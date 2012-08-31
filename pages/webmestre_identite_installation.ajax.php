@@ -28,19 +28,20 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 if($_SESSION['SESAMATH_ID']==ID_DEMO) {exit('Action désactivée pour la démo...');}
 
-$action               = (isset($_POST['f_action']))               ? Clean::texte($_POST['f_action'])               : '';
-$denomination         = (isset($_POST['f_denomination']))         ? Clean::texte($_POST['f_denomination'])         : '';
-$uai                  = (isset($_POST['f_uai']))                  ? Clean::uai($_POST['f_uai'])                    : '';
-$adresse_site         = (isset($_POST['f_adresse_site']))         ? Clean::url($_POST['f_adresse_site'])           : '';
-$logo                 = (isset($_POST['f_logo']))                 ? Clean::texte($_POST['f_logo'])                 : '';
-$cnil_numero          = (isset($_POST['f_cnil_numero']))          ? Clean::entier($_POST['f_cnil_numero'])         : 0;
-$cnil_date_engagement = (isset($_POST['f_cnil_date_engagement'])) ? Clean::texte($_POST['f_cnil_date_engagement']) : '';
-$cnil_date_recepisse  = (isset($_POST['f_cnil_date_recepisse']))  ? Clean::texte($_POST['f_cnil_date_recepisse'])  : '';
-$nom                  = (isset($_POST['f_nom']))                  ? Clean::nom($_POST['f_nom'])                    : '';
-$prenom               = (isset($_POST['f_prenom']))               ? Clean::prenom($_POST['f_prenom'])              : '';
-$courriel             = (isset($_POST['f_courriel']))             ? Clean::courriel($_POST['f_courriel'])          : '';
+$action               = (isset($_POST['f_action']))               ? clean_texte($_POST['f_action'])               : '';
+$denomination         = (isset($_POST['f_denomination']))         ? clean_texte($_POST['f_denomination'])         : '';
+$uai                  = (isset($_POST['f_uai']))                  ? clean_uai($_POST['f_uai'])                    : '';
+$adresse_site         = (isset($_POST['f_adresse_site']))         ? clean_url($_POST['f_adresse_site'])           : '';
+$logo                 = (isset($_POST['f_logo']))                 ? clean_texte($_POST['f_logo'])                 : '';
+$cnil_numero          = (isset($_POST['f_cnil_numero']))          ? clean_entier($_POST['f_cnil_numero'])         : 0;
+$cnil_date_engagement = (isset($_POST['f_cnil_date_engagement'])) ? clean_texte($_POST['f_cnil_date_engagement']) : '';
+$cnil_date_recepisse  = (isset($_POST['f_cnil_date_recepisse']))  ? clean_texte($_POST['f_cnil_date_recepisse'])  : '';
+$nom                  = (isset($_POST['f_nom']))                  ? clean_nom($_POST['f_nom'])                    : '';
+$prenom               = (isset($_POST['f_prenom']))               ? clean_prenom($_POST['f_prenom'])              : '';
+$courriel             = (isset($_POST['f_courriel']))             ? clean_courriel($_POST['f_courriel'])          : '';
 
-$tab_ext_images = array('bmp','gif','jpg','jpeg','png');
+$dossier_images = './__tmp/logo/';
+$tab_ext_images = array('bmp','gif','jpg','jpeg','png','svg');
 
 //	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
 // Contenu du select avec la liste des logos disponibles
@@ -48,7 +49,7 @@ $tab_ext_images = array('bmp','gif','jpg','jpeg','png');
 
 if($action=='select_logo')
 {
-	$tab_files = FileSystem::lister_contenu_dossier(CHEMIN_DOSSIER_LOGO);
+	$tab_files = Lister_Contenu_Dossier($dossier_images);
 	$options_logo = '';
 	foreach($tab_files as $file)
 	{
@@ -69,14 +70,14 @@ if($action=='select_logo')
 
 elseif($action=='listing_logos')
 {
-	$tab_files = FileSystem::lister_contenu_dossier(CHEMIN_DOSSIER_LOGO);
+	$tab_files = Lister_Contenu_Dossier($dossier_images);
 	$li_logos = '';
 	foreach($tab_files as $file)
 	{
 		$extension = strtolower(pathinfo($file,PATHINFO_EXTENSION));
 		if(in_array($extension,$tab_ext_images))
 		{
-			$li_logos .= '<li>'.html($file).' <img alt="'.html($file).'" src="'.URL_DIR_LOGO.html($file).'" /><q class="supprimer" title="Supprimer cette image du serveur (aucune confirmation ne sera demandée)."></q></li>';
+			$li_logos .= '<li>'.html($file).' <q class="supprimer" title="Supprimer cette image du serveur (aucune confirmation ne sera demandée)."></q><br /><img style="margin:1ex 1ex 3ex" alt="'.html($file).'" src="'.$dossier_images.html($file).'" /></img></li>';
 		}
 	}
 	$li_logos = ($li_logos) ? $li_logos : '<li>Aucun fichier image trouvé !</li>';
@@ -89,7 +90,6 @@ elseif($action=='listing_logos')
 
 elseif($action=='upload_logo')
 {
-	// récupération des infos
 	$tab_file = $_FILES['userfile'];
 	$fnom_transmis = $tab_file['name'];
 	$fnom_serveur = $tab_file['tmp_name'];
@@ -97,36 +97,15 @@ elseif($action=='upload_logo')
 	$ferreur = $tab_file['error'];
 	if( (!file_exists($fnom_serveur)) || (!$ftaille) || ($ferreur) )
 	{
-		exit('Erreur : problème de transfert ! Fichier trop lourd ? '.InfoServeur::minimum_limitations_upload());
+		require_once('./_inc/fonction_infos_serveur.php');
+		exit('Erreur : problème de transfert ! Fichier trop lourd ? min(memory_limit,post_max_size,upload_max_filesize)='.minimum_limitations_upload());
 	}
-	// vérifier l'extension
 	$extension = strtolower(pathinfo($fnom_transmis,PATHINFO_EXTENSION));
 	if(!in_array($extension,$tab_ext_images))
 	{
 		exit('Erreur : l\'extension du fichier transmis est incorrecte !');
 	}
-	// vérifier le poids
-	if( $ftaille > 100*1000 )
-	{
-		$conseil = (($extension=='jpg')||($extension=='jpeg')) ? 'réduisez les dimensions de l\'image' : 'convertissez l\'image au format JPEG' ;
-		exit('Erreur : le poids du fichier dépasse les 100 Ko autorisés : '.$conseil.' !');
-	}
-	// vérifier la conformité du fichier image, récupérer les infos le concernant
-	$tab_infos = @getimagesize($fnom_serveur);
-	if($tab_infos==FALSE)
-	{
-		exit('Erreur : le fichier image ne semble pas valide !');
-	}
-	list($image_largeur, $image_hauteur, $image_type, $html_attributs) = $tab_infos;
-	$tab_extension_types = array( IMAGETYPE_GIF=>'gif' , IMAGETYPE_JPEG=>'jpeg' , IMAGETYPE_PNG=>'png' , IMAGETYPE_BMP=>'bmp' ); // http://www.php.net/manual/fr/function.exif-imagetype.php#refsect1-function.exif-imagetype-constants
-
-	if(!isset($tab_extension_types[$image_type]))
-	{
-		exit('Erreur : le fichier transmis n\'est pas un fichier image !');
-	}
-	$image_format = $tab_extension_types[$image_type];
-	// enregistrer le fichier
-	if(!move_uploaded_file($fnom_serveur , CHEMIN_DOSSIER_LOGO.Clean::fichier($fnom_transmis)))
+	if(!move_uploaded_file($fnom_serveur , $dossier_images.$fnom_transmis))
 	{
 		exit('Erreur : le fichier n\'a pas pu être enregistré sur le serveur.');
 	}
@@ -139,7 +118,7 @@ elseif($action=='upload_logo')
 
 elseif( ($action=='delete_logo') && $logo )
 {
-	unlink(CHEMIN_DOSSIER_LOGO.$logo);
+	unlink($dossier_images.$logo);
 	// Si on supprime l'image actuellement utilisée, alors la retirer du fichier
 	if($logo==HEBERGEUR_LOGO)
 	{

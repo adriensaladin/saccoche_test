@@ -28,9 +28,9 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 if($_SESSION['SESAMATH_ID']==ID_DEMO) {exit('Action désactivée pour la démo...');}
 
-$action = (isset($_POST['f_action'])) ? Clean::texte($_POST['f_action']) : '';
+$action = (isset($_POST['f_action'])) ? clean_texte($_POST['f_action']) : '';
 
-$tab_id = (isset($_POST['tab_id']))   ? Clean::map_entier(explode(',',$_POST['tab_id'])) : array() ;
+$tab_id = (isset($_POST['tab_id']))   ? array_map('clean_entier',explode(',',$_POST['tab_id'])) : array() ;
 $tab_id = array_filter($tab_id,'positif');
 sort($tab_id);
 
@@ -45,10 +45,6 @@ if($action=='Choix_paliers')
 		$palier_actif = (in_array($palier_id,$tab_id)) ? 1 : 0 ;
 		DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_palier($palier_id,$palier_actif);
 	}
-	// On mémorise aussi la liste des piliers actifs (base + session)
-	$liste_paliers_actifs = implode(',',$tab_id);
-	DB_STRUCTURE_COMMUN::DB_modifier_parametres( array('liste_paliers_actifs'=>$liste_paliers_actifs) );
-	$_SESSION['LISTE_PALIERS_ACTIFS'] = $liste_paliers_actifs;
 	exit('ok');
 }
 

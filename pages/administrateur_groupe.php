@@ -51,7 +51,7 @@ elseif($SECTION=='classe_groupe')
 	$PAGE = 'administrateur_periode';
 }
 // Afficher la bonne page et appeler le bon js / ajax par la suite
-$fichier_section = CHEMIN_DOSSIER_PAGES.$PAGE.'_'.$SECTION.'.php';
+$fichier_section = './pages/'.$PAGE.'_'.$SECTION.'.php';
 if(is_file($fichier_section))
 {
 	$PAGE = $PAGE.'_'.$SECTION ;
@@ -59,7 +59,7 @@ if(is_file($fichier_section))
 }
 else
 {
-	echo'<p class="astuce">Choisissez une rubrique ci-dessus&hellip;</p>';
+	echo'<p><span class="astuce">Choisissez une rubrique ci-dessus...</span></p>';
 	echo'<p><span class="manuel"><a class="pop_up" href="'.SERVEUR_DOCUMENTAIRE.'?fichier=support_administrateur__gestion_groupes">DOC : Gestion des groupes</a></span></p>';
 }
 ?>

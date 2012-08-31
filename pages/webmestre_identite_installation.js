@@ -44,7 +44,7 @@ $(document).ready
 					url : 'ajax.php?page='+PAGE,
 					data : 'f_action=select_logo',
 					dataType : "html",
-					error : function(jqXHR, textStatus, errorThrown)
+					error : function(msg,string)
 					{
 						$('#ajax_logo').removeAttr("class").addClass("alerte").html('Echec de la connexion !');
 						return false;
@@ -80,7 +80,7 @@ $(document).ready
 					url : 'ajax.php?page='+PAGE,
 					data : 'f_action=listing_logos',
 					dataType : "html",
-					error : function(jqXHR, textStatus, errorThrown)
+					error : function(msg,string)
 					{
 						$('#ajax_listing').removeAttr("class").addClass("alerte").html('Echec de la connexion !');
 						return false;
@@ -111,7 +111,7 @@ $(document).ready
 		( 'click' , function()
 			{
 				memo_li = $(this).parent();
-				logo = $(this).prev().attr('alt');
+				logo = $(this).next().next().attr('alt');
 				$('#ajax_listing').removeAttr("class").addClass("loader").html("Connexion au serveur&hellip;");
 				$.ajax
 				(
@@ -120,7 +120,7 @@ $(document).ready
 						url : 'ajax.php?page='+PAGE,
 						data : 'f_action=delete_logo&f_logo='+logo,
 						dataType : "html",
-						error : function(jqXHR, textStatus, errorThrown)
+						error : function(msg,string)
 						{
 							$('#ajax_listing').removeAttr("class").addClass("alerte").html('Echec de la connexion !');
 							return false;
@@ -176,10 +176,10 @@ $(document).ready
 				$('#ajax_upload').removeAttr("class").addClass("erreur").html('Cliquer sur "Parcourir..." pour indiquer un chemin de fichier correct.');
 				return false;
 			}
-			else if ('.bmp.gif.jpg.jpeg.png.'.indexOf('.'+fichier_extension.toLowerCase()+'.')==-1)
+			else if ('.bmp.gif.jpg.jpeg.png.svg.'.indexOf('.'+fichier_extension.toLowerCase()+'.')==-1)
 			{
 				$("button").prop('disabled',false);
-				$('#ajax_upload').removeAttr("class").addClass("erreur").html('Le fichier "'+fichier_nom+'" n\'a pas une extension d\'image autorisée (bmp gif jpg jpeg png).');
+				$('#ajax_upload').removeAttr("class").addClass("erreur").html('Le fichier "'+fichier_nom+'" n\'a pas une extension d\'image autorisée (bmp gif jpg jpeg png svg).');
 				return false;
 			}
 			else
@@ -332,7 +332,7 @@ $(document).ready
 		}
 
 		// Fonction suivant l'envoi du formulaire (avec jquery.form.js)
-		function retour_form_erreur(jqXHR, textStatus, errorThrown)
+		function retour_form_erreur(msg,string)
 		{
 			$("button").prop('disabled',false);
 			$('#ajax_msg').removeAttr("class").addClass("alerte").html("Echec de la connexion !");

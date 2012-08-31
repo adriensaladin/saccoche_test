@@ -29,16 +29,16 @@ if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');
 
 // Créer un csv d'exemple
 $separateur  = ';';
-$fichier_csv = 'ajout_structures.csv';
+$adresse_csv = './__tmp/ajout_structures.csv';
 $contenu_csv = 'Id_Import'.$separateur.'Id_Zone'.$separateur.'Localisation'.$separateur.'Dénomination'.$separateur.'UAI'.$separateur.'Contact_Nom'.$separateur.'Contact_Prénom'.$separateur.'Contact_Courriel'."\r\n";
 $contenu_csv.= ''.$separateur.'1'.$separateur.'Jolieville'.$separateur.'CLG du Bonheur'.$separateur.'0123456A'.$separateur.'EDISON'.$separateur.'Thomas'.$separateur.'t.edison@mail.fr'."\r\n";
-FileSystem::ecrire_fichier(CHEMIN_DOSSIER_TMP.$fichier_csv,$contenu_csv);
+Ecrire_Fichier($adresse_csv,$contenu_csv);
 ?>
 
 <p><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_webmestre__structure_ajout_csv">DOC : Ajout CSV d'établissements (multi-structures)</a></span></p>
 
 <ul class="puce">
-	<li><a class="lien_ext" href="<?php echo URL_DIR_TMP.$fichier_csv ?>"><span class="file file_txt">Récupérer le modèle de fichier <em>CSV</em> à utiliser.</span></a></li>
+	<li><a class="lien_ext" href="<?php echo $adresse_csv ?>"><span class="file file_txt">Récupérer le modèle de fichier <em>CSV</em> à utiliser.</span></a></li>
 </ul>
 
 <hr />
@@ -65,7 +65,7 @@ FileSystem::ecrire_fichier(CHEMIN_DOSSIER_TMP.$fichier_csv,$contenu_csv);
 	<table class="form" id="transfert">
 		<thead>
 			<tr>
-				<th class="nu"><input name="leurre" type="image" alt="leurre" src="./_img/auto.gif" /><input id="all_check" type="image" alt="Tout cocher." src="./_img/all_check.gif" title="Tout cocher." /> <input id="all_uncheck" type="image" alt="Tout décocher." src="./_img/all_uncheck.gif" title="Tout décocher." /></th>
+				<th class="nu"><input name="leurre" type="image" alt="" src="./_img/auto.gif" /><input id="all_check" type="image" alt="Tout cocher." src="./_img/all_check.gif" title="Tout cocher." /> <input id="all_uncheck" type="image" alt="Tout décocher." src="./_img/all_uncheck.gif" title="Tout décocher." /></th>
 				<th>Id</th>
 				<th>Structure</th>
 				<th>Contact</th>

@@ -45,7 +45,7 @@ $(document).ready
 				}
 				else if(action=='supprimer')
 				{
-					var continuer = (confirm("Attention : toutes les notes des élèves seront effacées !\nConfirmez-vous la suppression des scores et des validations ?")) ? ( (confirm("C'est votre dernier mot ?\nVous voulez vraiment repartir de zéro ?")) ? true : false ) : false ;
+					var continuer = (confirm("Attention : toutes les notes des élèves seront effacées !\nConfirmez-vous la suppression des scores et des validations ?")) ? true : false ;
 				}
 				else
 				{
@@ -64,7 +64,7 @@ $(document).ready
 							url : 'ajax.php?page='+PAGE,
 							data : 'f_action='+action,
 							dataType : "html",
-							error : function(jqXHR, textStatus, errorThrown)
+							error : function(msg,string)
 							{
 								$("button").prop('disabled',false);
 								$('#ajax_msg_'+action).removeAttr("class").addClass("alerte").html('Echec de la connexion !');

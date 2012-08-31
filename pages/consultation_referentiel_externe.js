@@ -44,7 +44,7 @@ $(document).ready
 					url : 'ajax.php?page='+PAGE,
 					data : 'action=Afficher_structures',
 					dataType : "html",
-					error : function(jqXHR, textStatus, errorThrown)
+					error : function(msg,string)
 					{
 						$('#ajax_msg').removeAttr("class").addClass("alerte").html('Echec de la connexion ! <a href="#" id="charger_formulaire_structures">Veuillez essayer de nouveau.</a>');
 						return false;
@@ -85,7 +85,7 @@ $(document).ready
 					url : 'ajax.php?page=_maj_select_matieres_famille',
 					data : 'f_famille_matiere='+matiere_famille_id,
 					dataType : "html",
-					error : function(jqXHR, textStatus, errorThrown)
+					error : function(msg,string)
 					{
 						$('#ajax_maj_matiere').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
 					},
@@ -135,7 +135,7 @@ $(document).ready
 					url : 'ajax.php?page=_maj_select_niveaux_famille',
 					data : 'f_famille_niveau='+niveau_famille_id,
 					dataType : "html",
-					error : function(jqXHR, textStatus, errorThrown)
+					error : function(msg,string)
 					{
 						$('#ajax_maj_niveau').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
 					},
@@ -210,7 +210,7 @@ $(document).ready
 						url : 'ajax.php?page='+PAGE,
 						data : 'action=Lister_referentiels&matiere_id='+matiere_id+'&niveau_id='+niveau_id+'&structure_id='+structure_id,
 						dataType : "html",
-						error : function(jqXHR, textStatus, errorThrown)
+						error : function(msg,string)
 						{
 							$('#rechercher').prop('disabled',false);
 							$('#ajax_msg').removeAttr("class").addClass("alerte").html('Echec de la connexion !');
@@ -257,7 +257,7 @@ $(document).ready
 						url : 'ajax.php?page='+PAGE,
 						data : 'action=Voir_referentiel&referentiel_id='+referentiel_id,
 						dataType : "html",
-						error : function(jqXHR, textStatus, errorThrown)
+						error : function(msg,string)
 						{
 							$.fancybox( '<label class="alerte">'+'Echec de la connexion !'+'</label>' , {'centerOnScroll':true} );
 							$('label[id=temp]').remove();
@@ -271,7 +271,7 @@ $(document).ready
 							}
 							else
 							{
-								$.fancybox( '<p class="noprint">Afin de préserver l\'environnement, n\'imprimer qu\'en cas de nécessité !</p>'+'<ul class="ul_m1"><li class="li_m1"><b>'+description+'</b><q class="imprimer" title="Imprimer le référentiel."></q>'+responseHTML+'</li></ul>' , {'centerOnScroll':true} );
+								$.fancybox( '<ul class="ul_m1"><li class="li_m1"><b>'+description+'</b><q class="imprimer" title="Imprimer le référentiel."></q>'+responseHTML+'</li></ul>' , {'centerOnScroll':true} );
 								infobulle();
 							}
 							$('label[id=temp]').remove();

@@ -46,7 +46,7 @@ class DB_STRUCTURE_MAJ_BASE extends DB
  * @param void
  * @return string
  */
-public static function DB_version_base()
+public function DB_version_base()
 {
 	$DB_SQL = 'SELECT parametre_valeur ';
 	$DB_SQL.= 'FROM sacoche_parametre ';
@@ -62,7 +62,7 @@ public static function DB_version_base()
  * @param string   $version_actuelle
  * @return void
  */
-public static function DB_maj_base($version_actuelle)
+public function DB_maj_base($version_actuelle)
 {
 
 	//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -508,7 +508,7 @@ public static function DB_maj_base($version_actuelle)
 			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'DELETE FROM sacoche_niveau WHERE niveau_id=4' );
 			// récupérer qq infos pour maj la suite
 			$DB_ROW = DB::queryRow(SACOCHE_STRUCTURE_BD_NAME , 'SELECT parametre_valeur FROM sacoche_parametre WHERE parametre_nom="css_note_style"' );
-			require_once(CHEMIN_DOSSIER_INCLUDE.'tableau_notes_txt.php');
+			require_once('./_inc/tableau_notes_txt.php');
 			$rr = $tab_notes_txt[$DB_ROW['parametre_valeur']]['RR'];
 			$r  = $tab_notes_txt[$DB_ROW['parametre_valeur']]['R'];
 			$v  = $tab_notes_txt[$DB_ROW['parametre_valeur']]['V'];
@@ -779,7 +779,7 @@ public static function DB_maj_base($version_actuelle)
 			}
 			else
 			{
-				$requetes = file_get_contents(CHEMIN_DOSSIER_SQL_STRUCTURE.'sacoche_niveau.sql');
+				$requetes = file_get_contents('./_sql/structure/sacoche_niveau.sql');
 				DB::query(SACOCHE_STRUCTURE_BD_NAME , $requetes );
 				DB::close(SACOCHE_STRUCTURE_BD_NAME);
 			}
@@ -1087,7 +1087,7 @@ public static function DB_maj_base($version_actuelle)
 			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_jointure_parent_eleve CHANGE resp_legal_num resp_legal_num ENUM( "0", "1", "2" ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT "0" ' );
 			// suppression des vignettes (sans rapport avec la base, mais à effectuer, à cause du changement de la couleur de fond)
 			list($x,$y,$dossier) = (HEBERGEUR_INSTALLATION=='multi-structures') ? explode('_',SACOCHE_STRUCTURE_BD_NAME) : '0' ;
-			FileSystem::effacer_fichiers_temporaires(CHEMIN_DOSSIER_BADGE.$dossier , 0);
+			effacer_fichiers_temporaires('./__tmp/badge/'.$dossier , 0);
 		}
 	}
 
@@ -1187,8 +1187,8 @@ public static function DB_maj_base($version_actuelle)
 			$version_actuelle = '2011-08-18';
 			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_actuelle.'" WHERE parametre_nom="version_base"' );
 			// suppression de fichiers temporaires déplacés (sans rapport avec la base, mais à effectuer)
-			FileSystem::effacer_fichiers_temporaires(CHEMIN_DOSSIER_COOKIE,0);
-			FileSystem::effacer_fichiers_temporaires(CHEMIN_DOSSIER_RSS,0);
+			effacer_fichiers_temporaires('./__tmp/cookie',1);
+			effacer_fichiers_temporaires('./__tmp/rss',1);
 		}
 	}
 
@@ -1582,10 +1582,10 @@ public static function DB_maj_base($version_actuelle)
 			$DB_TAB_communes     = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , 'SELECT matiere_id, matiere_nb_demandes, matiere_ordre FROM sacoche_matiere WHERE matiere_id IN('.$listing_matieres_id.')');
 			$DB_TAB_specifiques  = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , 'SELECT matiere_id, matiere_nb_demandes, matiere_ordre, matiere_ref, matiere_nom FROM sacoche_matiere WHERE matiere_partage=0');
 			// nouvelles tables sacoche_matiere (intégration native de 1900 matières) et sacoche_matiere_famille
-			$requetes = file_get_contents(CHEMIN_DOSSIER_SQL_STRUCTURE.'sacoche_matiere.sql');
+			$requetes = file_get_contents(CHEMIN_SQL_STRUCTURE.'sacoche_matiere.sql');
 			DB::query(SACOCHE_STRUCTURE_BD_NAME , $requetes ); // Attention, sur certains LCS ça bloque au dela de 40 instructions MySQL (mais un INSERT multiple avec des milliers de lignes ne pose pas de pb).
 			DB::close(SACOCHE_STRUCTURE_BD_NAME);
-			$requetes = file_get_contents(CHEMIN_DOSSIER_SQL_STRUCTURE.'sacoche_matiere_famille.sql');
+			$requetes = file_get_contents(CHEMIN_SQL_STRUCTURE.'sacoche_matiere_famille.sql');
 			DB::query(SACOCHE_STRUCTURE_BD_NAME , $requetes ); // Attention, sur certains LCS ça bloque au dela de 40 instructions MySQL (mais un INSERT multiple avec des milliers de lignes ne pose pas de pb).
 			DB::close(SACOCHE_STRUCTURE_BD_NAME);
 			// incrément des ids pour éviter tout souci
@@ -1681,10 +1681,10 @@ public static function DB_maj_base($version_actuelle)
 			$listing_cycles_id  = DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , 'SELECT parametre_valeur FROM sacoche_parametre WHERE parametre_nom="cycles"' );
 			$listing_paliers_id = DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , 'SELECT parametre_valeur FROM sacoche_parametre WHERE parametre_nom="paliers"' );
 			// nouvelles tables sacoche_niveau et sacoche_niveau_famille
-			$requetes = file_get_contents(CHEMIN_DOSSIER_SQL_STRUCTURE.'sacoche_niveau.sql');
+			$requetes = file_get_contents(CHEMIN_SQL_STRUCTURE.'sacoche_niveau.sql');
 			DB::query(SACOCHE_STRUCTURE_BD_NAME , $requetes ); // Attention, sur certains LCS ça bloque au dela de 40 instructions MySQL (mais un INSERT multiple avec des milliers de lignes ne pose pas de pb).
 			DB::close(SACOCHE_STRUCTURE_BD_NAME);
-			$requetes = file_get_contents(CHEMIN_DOSSIER_SQL_STRUCTURE.'sacoche_niveau_famille.sql');
+			$requetes = file_get_contents(CHEMIN_SQL_STRUCTURE.'sacoche_niveau_famille.sql');
 			DB::query(SACOCHE_STRUCTURE_BD_NAME , $requetes ); // Attention, sur certains LCS ça bloque au dela de 40 instructions MySQL (mais un INSERT multiple avec des milliers de lignes ne pose pas de pb).
 			DB::close(SACOCHE_STRUCTURE_BD_NAME);
 			// ajout champ table sacoche_socle_palier
@@ -1733,7 +1733,7 @@ public static function DB_maj_base($version_actuelle)
 			$DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , 'SHOW TABLE STATUS LIKE "sacoche_socle_palier"');
 			if(!count($DB_TAB))
 			{
-				$requetes = file_get_contents(CHEMIN_DOSSIER_SQL_STRUCTURE.'sacoche_socle_palier.sql');
+				$requetes = file_get_contents(CHEMIN_SQL_STRUCTURE.'sacoche_socle_palier.sql');
 				DB::query(SACOCHE_STRUCTURE_BD_NAME , $requetes ); // Attention, sur certains LCS ça bloque au dela de 40 instructions MySQL (mais un INSERT multiple avec des milliers de lignes ne pose pas de pb).
 				DB::close(SACOCHE_STRUCTURE_BD_NAME);
 			}
@@ -1754,7 +1754,7 @@ public static function DB_maj_base($version_actuelle)
 			$DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , 'SHOW TABLE STATUS LIKE "sacoche_jointure_user_pilier"');
 			if(!count($DB_TAB))
 			{
-				$requetes = file_get_contents(CHEMIN_DOSSIER_SQL_STRUCTURE.'sacoche_jointure_user_pilier.sql');
+				$requetes = file_get_contents(CHEMIN_SQL_STRUCTURE.'sacoche_jointure_user_pilier.sql');
 				DB::query(SACOCHE_STRUCTURE_BD_NAME , $requetes ); // Attention, sur certains LCS ça bloque au dela de 40 instructions MySQL (mais un INSERT multiple avec des milliers de lignes ne pose pas de pb).
 				DB::close(SACOCHE_STRUCTURE_BD_NAME);
 			}
@@ -1774,7 +1774,7 @@ public static function DB_maj_base($version_actuelle)
 			// ajout d'une table sacoche_selection_item
 			// La supprimer si elle existe : sinon dans le cas d'une restauration de base à une version antérieure (suivie de cette mise à jour), cette ancienne table éventuellement existante ne serait pas réinitialisée.
 			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'DROP TABLE IF EXISTS sacoche_selection_item' );
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'CREATE TABLE sacoche_selection_item ( selection_item_id MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT, user_id MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT 0, selection_item_nom   VARCHAR(60)  COLLATE utf8_unicode_ci NOT NULL DEFAULT "", selection_item_liste TEXT COLLATE utf8_unicode_ci NOT NULL DEFAULT "", PRIMARY KEY (selection_item_id), KEY user_id (user_id) ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci ' );
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'CREATE TABLE sacoche_selection_item ( selection_item_id    MEDIUMINT(8) UNSIGNED                NOT NULL AUTO_INCREMENT, user_id              MEDIUMINT(8) UNSIGNED                NOT NULL DEFAULT 0, selection_item_nom   VARCHAR(60)  COLLATE utf8_unicode_ci NOT NULL DEFAULT "", selection_item_liste TEXT         COLLATE utf8_unicode_ci NOT NULL DEFAULT "", PRIMARY KEY (selection_item_id), KEY user_id (user_id) ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci ' );
 		}
 	}
 
@@ -1825,9 +1825,9 @@ public static function DB_maj_base($version_actuelle)
 			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_devoir CHANGE devoir_doc_sujet devoir_doc_sujet     VARCHAR( 255 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT "" ' );
 			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_devoir CHANGE devoir_doc_corrige devoir_doc_corrige VARCHAR( 255 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT "" ' );
 			$base_id = (strpos(SACOCHE_STRUCTURE_BD_NAME,'sac_base_')===0) ? substr(SACOCHE_STRUCTURE_BD_NAME,9) : '0' ;
-			$url_dossier_devoirs = URL_DIR_DEVOIR.$base_id.'/';
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_devoir SET devoir_doc_sujet   = CONCAT("'.$url_dossier_devoirs.'",devoir_doc_sujet)   WHERE devoir_doc_sujet!="" ' );
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_devoir SET devoir_doc_corrige = CONCAT("'.$url_dossier_devoirs.'",devoir_doc_corrige) WHERE devoir_doc_corrige!="" ' );
+			$chemin = SERVEUR_ADRESSE.'/__tmp/devoir/'.$base_id.'/';
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_devoir SET devoir_doc_sujet   = CONCAT("'.$chemin.'",devoir_doc_sujet)   WHERE devoir_doc_sujet!="" ' );
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_devoir SET devoir_doc_corrige = CONCAT("'.$chemin.'",devoir_doc_corrige) WHERE devoir_doc_corrige!="" ' );
 			// ajout d'un champ pour ajouter un message à une demande d'évaluation
 			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_demande ADD demande_messages TEXT CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT "" ' );
 			// fusionner user_statut + user_statut_date = user_sortie_date
@@ -1841,297 +1841,7 @@ public static function DB_maj_base($version_actuelle)
 			// ajout d'une table sacoche_message
 			// La supprimer si elle existe : sinon dans le cas d'une restauration de base à une version antérieure (suivie de cette mise à jour), cette ancienne table éventuellement existante ne serait pas réinitialisée.
 			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'DROP TABLE IF EXISTS sacoche_message' );
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'CREATE TABLE IF NOT EXISTS sacoche_message ( message_id MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT, user_id MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT 0, message_debut_date DATE NOT NULL DEFAULT "0000-00-00", message_fin_date DATE NOT NULL DEFAULT "0000-00-00", message_destinataires TEXT COLLATE utf8_unicode_ci NOT NULL DEFAULT "", message_contenu TINYTEXT COLLATE utf8_unicode_ci NOT NULL DEFAULT "", PRIMARY KEY (message_id), KEY user_id (user_id) ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci ' );
-		}
-	}
-
-	//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	//	MAJ 2012-03-29 => 2012-05-01
-	//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-	if($version_actuelle=='2012-03-29')
-	{
-		if($version_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
-		{
-			$version_actuelle = '2012-05-01';
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_actuelle.'" WHERE parametre_nom="version_base"' );
-			// modification sacoche_jointure_groupe_periode
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_jointure_groupe_periode DROP bulletin_modele, DROP bulletin_etat' );
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_jointure_groupe_periode ADD officiel_releve ENUM( "", "1vide","2rubrique","3synthese","4complet" ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT "", ADD officiel_bulletin ENUM( "", "1vide","2rubrique","3synthese","4complet" ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT "", ADD officiel_palier1 ENUM( "", "1vide","2rubrique","3synthese","4complet" ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT "", ADD officiel_palier2 ENUM( "", "1vide","2rubrique","3synthese","4complet" ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT "", ADD officiel_palier3 ENUM( "", "1vide","2rubrique","3synthese","4complet" ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT ""' );
-			// modification sacoche_parametre
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_nom="officiel_infos_etablissement" WHERE parametre_nom="bulletin_infos_etablissement"' );
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_nom="officiel_infos_responsables"  WHERE parametre_nom="bulletin_infos_responsables" ' );
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_nom="officiel_nombre_exemplaires"  WHERE parametre_nom="bulletin_nombre_exemplaires" ' );
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_nom="officiel_marge_gauche"        WHERE parametre_nom="bulletin_marge_gauche"       ' );
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_nom="officiel_marge_droite"        WHERE parametre_nom="bulletin_marge_droite"       ' );
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_nom="officiel_marge_haut"          WHERE parametre_nom="bulletin_marge_haut"         ' );
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_nom="officiel_marge_bas"           WHERE parametre_nom="bulletin_marge_bas"          ' );
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_nom="droit_officiel_bulletin_appreciation_generale" WHERE parametre_nom="droit_bulletin_appreciation_generale"' );
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_nom="droit_officiel_bulletin_impression_pdf" WHERE parametre_nom="droit_bulletin_impression_pdf"' );
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ( "droit_voir_officiel_releve_archive"            , "directeur,professeur" )' );
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ( "droit_voir_officiel_bulletin_archive"          , "directeur,professeur" )' );
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ( "droit_voir_officiel_socle_archive"             , "directeur,professeur" )' );
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ( "droit_officiel_releve_appreciation_generale"   , "directeur,profprincipal" )' );
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ( "droit_officiel_releve_impression_pdf"          , "directeur,aucunprof" )' );
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ( "droit_officiel_socle_appreciation_generale"    , "directeur,profprincipal" )' );
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ( "droit_officiel_socle_impression_pdf"           , "directeur,aucunprof" )' );
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'DELETE FROM sacoche_parametre WHERE parametre_nom IN ( "bulletin_modele_defaut","cycles","paliers,bulletin_item_appreciation_matiere_presence,bulletin_item_appreciation_matiere_longueur,bulletin_item_appreciation_generale_presence,bulletin_item_pourcentage_acquis_presence,bulletin_item_pourcentage_acquis_modifiable,bulletin_item_pourcentage_acquis_classe,bulletin_item_note_moyenne_score_presence,bulletin_item_note_moyenne_score_modifiable,bulletin_item_note_moyenne_score_classe,bulletin_socle_pourcentage_acquis_presence,bulletin_socle_etat_validation_presence,bulletin_socle_appreciation_generale_presence" )' );
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ( "officiel_tampon_signature"                     , "remplacer" )' );
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ( "officiel_releve_appreciation_rubrique"         , "300" )' );
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ( "officiel_releve_appreciation_generale"         , "400" )' );
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ( "officiel_releve_moyenne_scores"                , "1" )' );
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ( "officiel_releve_pourcentage_acquis"            , "1" )' );
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ( "officiel_releve_cases_nb"                      , "4" )' );
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ( "officiel_releve_aff_coef"                      , "0" )' );
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ( "officiel_releve_aff_socle"                     , "1" )' );
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ( "officiel_releve_aff_domaine"                   , "0" )' );
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ( "officiel_releve_aff_theme"                     , "0" )' );
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ( "officiel_releve_couleur"                       , "oui" )' );
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ( "officiel_releve_legende"                       , "oui" )' );
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ( "officiel_bulletin_appreciation_rubrique"       , "200" )' );
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ( "officiel_bulletin_appreciation_generale"       , "400" )' );
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ( "officiel_bulletin_moyenne_scores"              , "1" )' );
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ( "officiel_bulletin_note_sur_20"                 , "1" )' );
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ( "officiel_bulletin_moyenne_classe"              , "1" )' );
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ( "officiel_bulletin_couleur"                     , "oui" )' );
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ( "officiel_bulletin_legende"                     , "oui" )' );
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ( "officiel_socle_appreciation_rubrique"          , "0" )' );
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ( "officiel_socle_appreciation_generale"          , "400" )' );
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ( "officiel_socle_only_presence"                  , "0" )' );
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ( "officiel_socle_pourcentage_acquis"             , "1" )' );
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ( "officiel_socle_etat_validation"                , "1" )' );
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ( "officiel_socle_couleur"                        , "oui" )' );
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ( "officiel_socle_legende"                        , "oui" )' );
-			// suppression sacoche_bulletin
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'DROP TABLE IF EXISTS sacoche_bulletin' );
-			// ajout d'une table sacoche_officiel_saisie
-			// La supprimer si elle existe : sinon dans le cas d'une restauration de base à une version antérieure (suivie de cette mise à jour), cette ancienne table éventuellement existante ne serait pas réinitialisée.
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'DROP TABLE IF EXISTS sacoche_officiel_saisie' );
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'CREATE TABLE IF NOT EXISTS sacoche_officiel_saisie ( officiel_type ENUM("releve","bulletin","palier1","palier2","palier3") COLLATE utf8_unicode_ci NOT NULL DEFAULT "bulletin", periode_id SMALLINT(5) UNSIGNED NOT NULL DEFAULT 0, eleve_id MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT 0, rubrique_id SMALLINT(5) UNSIGNED NOT NULL DEFAULT 0 COMMENT "matiere_id ou pilier_id ; 0 pour l\'appréciation générale", prof_id MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT 0 COMMENT "0 pour la note, avec commentaire dans saisie_appreciation si report non automatique", saisie_note DECIMAL(3,1) UNSIGNED DEFAULT NULL COMMENT "sur 20, à multiplier par 5 pour avoir le pourcentage", saisie_appreciation TEXT COLLATE utf8_unicode_ci NOT NULL DEFAULT "", PRIMARY KEY ( eleve_id , officiel_type , periode_id , rubrique_id , prof_id ), KEY officiel_type (officiel_type), KEY periode_id (periode_id), KEY rubrique_id (rubrique_id), KEY prof_id (prof_id) ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci ' );
-			// ajout d'une table sacoche_officiel_archive
-			// La supprimer si elle existe : sinon dans le cas d'une restauration de base à une version antérieure (suivie de cette mise à jour), cette ancienne table éventuellement existante ne serait pas réinitialisée.
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'DROP TABLE IF EXISTS sacoche_officiel_archive' );
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'CREATE TABLE sacoche_officiel_archive ( user_id MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT 0, officiel_type ENUM("releve","bulletin","palier1","palier","palier3") COLLATE utf8_unicode_ci NOT NULL DEFAULT "bulletin", periode_id MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT 0 COMMENT "mis à zéro lors d\'un changement d\'année", archive_date DATE NOT NULL DEFAULT "0000-00-00", archive_document MEDIUMBLOB NOT NULL, KEY user_id (user_id), KEY officiel_type (officiel_type), KEY periode_id (periode_id) ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci ' );
-			// ajout d'une table sacoche_signature
-			// La supprimer si elle existe : sinon dans le cas d'une restauration de base à une version antérieure (suivie de cette mise à jour), cette ancienne table éventuellement existante ne serait pas réinitialisée.
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'DROP TABLE IF EXISTS sacoche_signature' );
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'CREATE TABLE IF NOT EXISTS sacoche_signature ( user_id MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT 0 COMMENT "0 pour le tampon de l\'établissement", signature_contenu  MEDIUMBLOB NOT NULL, signature_format CHAR(4) COLLATE utf8_unicode_ci NOT NULL DEFAULT "", signature_largeur SMALLINT(5) UNSIGNED NOT NULL DEFAULT 0, signature_hauteur SMALLINT(5) UNSIGNED NOT NULL DEFAULT 0, PRIMARY KEY (user_id) ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci ' );
-			// modification des deux champs pour les identifiants externes ; déjà fait le 29/03/2012 mais oublié pour les nouveaux établissements
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_user CHANGE user_id_ent  user_id_ent  VARCHAR( 63 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT "" COMMENT "Paramètre renvoyé après une identification CAS depuis un ENT (ça peut être le login, mais ça peut aussi être un numéro interne à l\'ENT...)." ' );
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_user CHANGE user_id_gepi user_id_gepi VARCHAR( 63 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT "" COMMENT "Login de l\'utilisateur dans Gepi utilisé pour un transfert note/moyenne vers un bulletin." ' );
-			// ajout d'une ligne dans sacoche_parametre pour retenir la liste des paliers car on en a besoin pour personnaliser certains menus
-			$listing_paliers_id = DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , 'SELECT GROUP_CONCAT(palier_id SEPARATOR ",") AS listing_paliers_id FROM sacoche_socle_palier WHERE palier_actif=1 ORDER BY palier_ordre ASC' );
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ( "liste_paliers_actifs" , "'.$listing_paliers_id.'" )' );
-		}
-	}
-
-	//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	//	MAJ 2012-05-01 => 2012-05-14
-	//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-	if($version_actuelle=='2012-05-01')
-	{
-		if($version_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
-		{
-			$version_actuelle = '2012-05-14';
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_actuelle.'" WHERE parametre_nom="version_base"' );
-			// ajout de paramètres
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ( "officiel_bulletin_moyenne_generale"      , "0" )' );
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ( "droit_officiel_releve_modifier_statut"   , "directeur,aucunprof" )' );
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ( "droit_officiel_bulletin_modifier_statut" , "directeur,aucunprof" )' );
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ( "droit_officiel_socle_modifier_statut"    , "directeur,aucunprof" )' );
-		}
-	}
-
-	//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	//	MAJ 2012-05-14 => 2012-05-21
-	//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-	if($version_actuelle=='2012-05-14')
-	{
-		if($version_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
-		{
-			$version_actuelle = '2012-05-21';
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_actuelle.'" WHERE parametre_nom="version_base"' );
-			// renommage d'un champ de sacoche_parametre
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur=REPLACE(parametre_valeur,"restreindre","tampon") WHERE parametre_nom="officiel_tampon_signature"' );
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur=REPLACE(parametre_valeur,"remplacer","signature_ou_tampon") WHERE parametre_nom="officiel_tampon_signature"' );
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur=REPLACE(parametre_valeur,"superposer","signature_ou_tampon") WHERE parametre_nom="officiel_tampon_signature"' );
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur=REPLACE(parametre_valeur,"juxtaposer","signature_ou_tampon") WHERE parametre_nom="officiel_tampon_signature"' );
-			// renommage de paramètres
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_nom="droit_officiel_releve_voir_archive" WHERE parametre_nom="droit_voir_officiel_releve_archive"' );
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_nom="droit_officiel_bulletin_voir_archive" WHERE parametre_nom="droit_voir_officiel_bulletin_archive"' );
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_nom="droit_officiel_socle_voir_archive" WHERE parametre_nom="droit_voir_officiel_socle_archive"' );
-			// 7 dates de saisies trouvées vides dans ma base pour des évals sur des élèves sélectionnés vers le 10/10/2010...
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_saisie SET saisie_date="2010-10-10", saisie_visible_date="2010-10-10" WHERE saisie_date="0000-00-00" ' );
-			// modification mineure de sacoche_officiel_saisie
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_officiel_saisie CHANGE periode_id periode_id MEDIUMINT( 8 ) UNSIGNED NOT NULL DEFAULT 0 ' );
-			// conversion de sacoche_officiel_archive (vide) en sacoche_officiel_fichier
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'DROP TABLE IF EXISTS sacoche_officiel_archive' );
-			// La supprimer si elle existe : sinon dans le cas d'une restauration de base à une version antérieure (suivie de cette mise à jour), cette ancienne table éventuellement existante ne serait pas réinitialisée.
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'DROP TABLE IF EXISTS sacoche_officiel_fichier' );
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'CREATE TABLE sacoche_officiel_fichier ( user_id MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT 0, officiel_type ENUM("releve","bulletin","palier1","palier","palier3") COLLATE utf8_unicode_ci NOT NULL DEFAULT "bulletin", periode_id MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT 0, fichier_date DATE NOT NULL DEFAULT "0000-00-00", UNIQUE KEY user_id (user_id,officiel_type,periode_id), KEY officiel_type (officiel_type), KEY periode_id (periode_id) ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci ' );
-		}
-	}
-
-	//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	//	MAJ 2012-05-21 => 2012-06-03
-	//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-	if($version_actuelle=='2012-05-21')
-	{
-		if($version_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
-		{
-			$version_actuelle = '2012-06-03';
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_actuelle.'" WHERE parametre_nom="version_base"' );
-			// enregistrement des signatures en base64 sinon souci lors de sauvegarde/restauration de bases
-			$DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , 'SELECT user_id, signature_contenu FROM sacoche_signature');
-			if(count($DB_TAB))
-			{
-				foreach($DB_TAB as $DB_ROW)
-				{
-					DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_signature SET signature_contenu=:signature_contenu WHERE user_id='.$DB_ROW['user_id'] , array(':signature_contenu'=>base64_encode($DB_ROW['signature_contenu'])) );
-				}
-			}
-		}
-	}
-
-	//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	//	MAJ 2012-06-03 => 2012-06-07
-	//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-	if($version_actuelle=='2012-06-03')
-	{
-		if($version_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
-		{
-			$version_actuelle = '2012-06-07';
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_actuelle.'" WHERE parametre_nom="version_base"' );
-			// ajout d'un champs pour enregistrer les préférences de l'utilisateur relatives aux messages d'accueil
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_user ADD user_param_accueil VARCHAR( 30 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT "user,alert,info,help,ecolo"' );
-		}
-	}
-
-	//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	//	MAJ 2012-06-07 => 2012-06-25
-	//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-	if($version_actuelle=='2012-06-07')
-	{
-		if($version_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
-		{
-			$version_actuelle = '2012-06-25';
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_actuelle.'" WHERE parametre_nom="version_base"' );
-			// valeur renommée dans sacoche_niveau_famille
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_niveau_famille SET niveau_famille_nom="Cycles (primaire, collège, lycée)" WHERE niveau_famille_id=1' );
-			// ajout de matières
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (9911, 0, 1,  99, 0, 255, "APS"  , "Apprendre à porter secours") ' );
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (9912, 0, 1,  99, 0, 255, "PSC1" , "Prévention et secours civiques de niveau 1") ' );
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (9913, 0, 1,  99, 0, 255, "PSC2" , "Prévention et secours civiques de niveau 2") ' );
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (9921, 0, 1,  99, 0, 255, "APER" , "Attestation de première éducation à la route") ' );
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (9922, 0, 1,  99, 0, 255, "ASSR1", "Attestation scolaire de sécurité routière de niveau 1") ' );
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (9923, 0, 1,  99, 0, 255, "ASSR2", "Attestation scolaire de sécurité routière de niveau 2") ' );
-		}
-	}
-
-	//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	//	MAJ 2012-06-25 => 2012-06-28
-	//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-	if($version_actuelle=='2012-06-25')
-	{
-		if($version_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
-		{
-			$version_actuelle = '2012-06-28';
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_actuelle.'" WHERE parametre_nom="version_base"' );
-			// correctifs de champs mal initialisés
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_nom="droit_officiel_releve_modifier_statut"   WHERE parametre_nom="droit_officiel_releve_changer_etat"' );
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_nom="droit_officiel_bulletin_modifier_statut" WHERE parametre_nom="droit_officiel_bulletin_changer_etat"' );
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_nom="droit_officiel_socle_modifier_statut"    WHERE parametre_nom="droit_officiel_socle_changer_etat"' );
-		}
-	}
-
-	//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	//	MAJ 2012-06-28 => 2012-07-07
-	//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-	if($version_actuelle=='2012-06-28')
-	{
-		if($version_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
-		{
-			$version_actuelle = '2012-07-07';
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_actuelle.'" WHERE parametre_nom="version_base"' );
-			// déplacement matière FLE
-			$tab_tables = array(
-				'sacoche_matiere'               => 'matiere_id',
-				'sacoche_jointure_user_matiere' => 'matiere_id',
-				'sacoche_demande'               => 'matiere_id',
-				'sacoche_referentiel'           => 'matiere_id',
-				'sacoche_referentiel_domaine'   => 'matiere_id',
-				'sacoche_officiel_saisie'       => 'rubrique_id'
-			);
-			foreach($tab_tables as $table_nom => $table_champ)
-			{
-				DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE '.$table_nom.' SET '.$table_champ.'=300 WHERE '.$table_champ.'=397' );
-			}
-			// ajout d'une famille de matières
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere_famille VALUES ( 45, 3, "Métiers des arts appliqués (suite)") ' );
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_matiere_famille SET matiere_famille_nom="Métiers des arts appliqués" WHERE matiere_famille_id=27 ' );
-			// ajout de matières
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (  74, 0, 0, 100, 0, 255, "DECPR", "Découverte professionnelle") ' );
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (  91, 0, 0, 100, 0, 255, "EPE"  , "Etude personnalisée encadrée") ' );
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (  92, 0, 0, 100, 0, 255, "ATELP", "Atelier de professionnalisation") ' );
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (  93, 0, 0, 100, 0, 255, "FILOC", "Formation d\'initiative locale") ' );
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (  94, 0, 0, 100, 0, 255, "AT-PX", "Ateliers principaux") ' );
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (  95, 0, 0, 100, 0, 255, "AT-CO", "Ateliers complémentaires") ' );
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES ( 387, 0, 0,   3, 0, 255, "ALL8" , "Littérature étrangère en allemand") ' );
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES ( 388, 0, 0,   3, 0, 255, "AGL8" , "Littérature étrangère en anglais") ' );
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES ( 389, 0, 0,   3, 0, 255, "ARA8" , "Littérature étrangère en arabe") ' );
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES ( 390, 0, 0,   3, 0, 255, "CHI8" , "Littérature étrangère en chinois") ' );
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES ( 391, 0, 0,   3, 0, 255, "DAN8" , "Littérature étrangère en danois") ' );
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES ( 392, 0, 0,   3, 0, 255, "ESP8" , "Littérature étrangère en espagnol") ' );
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES ( 393, 0, 0,   3, 0, 255, "ITA8" , "Littérature étrangère en italien") ' );
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES ( 394, 0, 0,   3, 0, 255, "JAP8" , "Littérature étrangère en japonais") ' );
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES ( 395, 0, 0,   3, 0, 255, "POR8" , "Littérature étrangère en portugais") ' );
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES ( 396, 0, 0,   3, 0, 255, "NEE8" , "Littérature étrangère en néerlandais") ' );
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES ( 397, 0, 0,   3, 0, 255, "NEE8" , "Littérature étrangère en néerlandais") ' );
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES ( 398, 0, 0,   3, 0, 255, "RUS8" , "Littérature étrangère en russe") ' );
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES ( 521, 0, 0,   5, 0, 255, "SSPOL", "Sciences sociales et politiques") ' );
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES ( 522, 0, 0,   5, 0, 255, "ECOAP", "Economie approfondie") ' );
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES ( 601, 0, 0,   6, 0, 255, "EIST" , "Enseignement intégré de science et technologie") ' ); // Créée en attendant que la matière apparaisse officiellement...
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES ( 720, 0, 0,   7, 0, 255, "TREAL", "Technologie de réalisation") ' );
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES ( 738, 0, 0,   7, 0, 255, "STECH", "Sciences et technologie") ' );
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES ( 739, 0, 0,   7, 0, 255, "TFABR", "Technologie de fabrication") ' );
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES ( 918, 0, 0,   9, 0, 255, "CDESG", "Culture du design graphique") ' );
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES ( 919, 0, 0,   9, 0, 255, "CTYPO", "Culture typographique") ' );
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES ( 920, 0, 0,   9, 0, 255, "PPGRA", "Pratique plastique & graphique") ' );
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES ( 921, 0, 0,   9, 0, 255, "DANAL", "Dessin analytique") ' );
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (1234, 0, 0,  12, 0, 255, "CDIRP", "Conception dévelop. industrialisation realisation produits") ' );
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (1753, 0, 0,  17, 0, 255, "AHUDD", "Architecture, habitat & urbanisme, développement durable") ' );
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (3088, 0, 0,  30, 0, 255, "ECAGT", "Ecologie agronomie et territoires") ' );
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (3089, 0, 0,  30, 0, 255, "MAPHY", "Microbiologie appliquée & physiopathologie") ' );
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (3244, 0, 0,  32, 0, 255, "AOCCL", "Anatomie-occlusodontie") ' );
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (3657, 0, 0,  36, 0, 255, "DGEMC", "Droit et grands enjeux du monde contemporain") ' );
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (3659, 0, 0,  36, 0, 255, "ENVEJ", "Environnement économique et juridique") ' );
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (3660, 0, 0,  36, 0, 255, "COJAT", "Cadre organisationnel juridique activité touristique") ' );
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (3661, 0, 0,  36, 0, 255, "DR-VD", "Droit et veille juridique") ' );
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (3731, 0, 0,  37, 0, 255, "ISCNU", "Informatique et sciences du numérique") ' );
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (3831, 0, 0,  38, 0, 255, "ECOOR", "Economie et organisation") ' );
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (4059, 0, 0,  40, 0, 255, "MERTC", "Tourisme et territoire") ' );
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (4060, 0, 0,  40, 0, 255, "MCPT" , "Mercatique conception prestation touristique") ' );
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (4154, 0, 0,  41, 0, 255, "GRCLI", "Gestion de la relation client") ' );
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (4155, 0, 0,  41, 0, 255, "GINFT", "Gestion de l\'information touristique") ' );
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (4156, 0, 0,  41, 0, 255, "IMMED", "Information et multimedias") ' );
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (4157, 0, 0,  41, 0, 255, "ITOUR", "Information et tourismatique") ' );
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (4158, 0, 0,  41, 0, 255, "CCOMM", "Culture de la communication") ' );
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (4501, 0, 0,  45, 0, 255, "HUMOD", "Humanités modernes") ' );
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (4502, 0, 0,  45, 0, 255, "SMAJU", "Stratégie marketing juridique") ' );
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (4503, 0, 0,  45, 0, 255, "CPRTE", "Cultures et pratiques techniques") ' );
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (4504, 0, 0,  45, 0, 255, "PPLME", "Pratiques plastiques et médiations") ' );
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (4505, 0, 0,  45, 0, 255, "IPRRE", "Innovation, prospective et recherche") ' );
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (4506, 0, 0,  45, 0, 255, "LEXRE", "Laboratoire expérimentation et recherche") ' );
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (4507, 0, 0,  45, 0, 255, "MACPR", "Macro-projet") ' );
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (4508, 0, 0,  45, 0, 255, "MREPR", "Mémoire de recherche professionnel") ' );
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (4509, 0, 0,  45, 0, 255, "MELVE", "Mémoire en langue vivante etrangère") ' );
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'CREATE TABLE IF NOT EXISTS sacoche_message ( message_id            MEDIUMINT(8) UNSIGNED            NOT NULL AUTO_INCREMENT, user_id               MEDIUMINT(8) UNSIGNED            NOT NULL DEFAULT 0, message_debut_date    DATE                             NOT NULL DEFAULT "0000-00-00", message_fin_date      DATE                             NOT NULL DEFAULT "0000-00-00", message_destinataires TEXT COLLATE utf8_unicode_ci     NOT NULL DEFAULT "", message_contenu       TINYTEXT COLLATE utf8_unicode_ci NOT NULL DEFAULT "", PRIMARY KEY (message_id), KEY user_id (user_id) ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci ' );
 		}
 	}
 

@@ -41,7 +41,7 @@ class DB_STRUCTURE_COMMUN extends DB
  * @param string $requetes
  * @return void
  */
-public static function DB_executer_requetes_MySQL($requetes)
+public function DB_executer_requetes_MySQL($requetes)
 {
 	DB::query(SACOCHE_STRUCTURE_BD_NAME , $requetes );
 }
@@ -54,7 +54,7 @@ public static function DB_executer_requetes_MySQL($requetes)
  * @param void
  * @return array
  */
-public static function DB_recuperer_tables_informations()
+public function DB_recuperer_tables_informations()
 {
 	$DB_SQL = 'SHOW TABLE STATUS ';
 	$DB_SQL.= 'LIKE "sacoche_%" ';
@@ -69,7 +69,7 @@ public static function DB_recuperer_tables_informations()
  * @param string $table_nom
  * @return array
  */
-public static function DB_recuperer_table_structure($table_nom)
+public function DB_recuperer_table_structure($table_nom)
 {
 	$DB_SQL = 'SHOW CREATE TABLE '.$table_nom;
 	return DB::queryRow(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
@@ -83,7 +83,7 @@ public static function DB_recuperer_table_structure($table_nom)
  * @param int    $limit_nombre
  * @return array
  */
-public static function DB_recuperer_table_donnees($table_nom,$limit_depart,$limit_nombre)
+public function DB_recuperer_table_donnees($table_nom,$limit_depart,$limit_nombre)
 {
 	$DB_SQL = 'SELECT * ';
 	$DB_SQL.= 'FROM '.$table_nom.' ';
@@ -99,7 +99,7 @@ public static function DB_recuperer_table_donnees($table_nom,$limit_depart,$limi
  * @param string   $variable_nom   max_allowed_packet | max_user_connections | group_concat_max_len
  * @return array
  */
-public static function DB_recuperer_variable_MySQL($variable_nom)
+public function DB_recuperer_variable_MySQL($variable_nom)
 {
 	$DB_SQL = 'SHOW VARIABLES LIKE "'.$variable_nom.'"';
 	return DB::queryRow(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
@@ -113,7 +113,7 @@ public static function DB_recuperer_variable_MySQL($variable_nom)
  * @param void
  * @return string
  */
-public static function DB_recuperer_version_MySQL()
+public function DB_recuperer_version_MySQL()
 {
 	$DB_SQL = 'SELECT VERSION()';
 	return DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
@@ -126,7 +126,7 @@ public static function DB_recuperer_version_MySQL()
  * @param int    $periode_id   id de la période
  * @return array
  */
-public static function DB_recuperer_dates_periode($groupe_id,$periode_id)
+public function DB_recuperer_dates_periode($groupe_id,$periode_id)
 {
 	$DB_SQL = 'SELECT jointure_date_debut, jointure_date_fin ';
 	$DB_SQL.= 'FROM sacoche_jointure_groupe_periode ';
@@ -148,7 +148,7 @@ public static function DB_recuperer_dates_periode($groupe_id,$periode_id)
  * @param bool $socle_nom    avec ou pas le nom des items du socle associés
  * @return array
  */
-public static function DB_recuperer_arborescence($prof_id,$matiere_id,$niveau_id,$only_socle,$only_item,$socle_nom)
+public function DB_recuperer_arborescence($prof_id,$matiere_id,$niveau_id,$only_socle,$only_item,$socle_nom)
 {
 	$select_socle_nom  = ($socle_nom)  ? 'entree_id,entree_nom ' : 'entree_id ' ;
 	$join_user_matiere = ($prof_id)    ? 'LEFT JOIN sacoche_jointure_user_matiere USING (matiere_id) ' : '' ;
@@ -187,7 +187,7 @@ public static function DB_recuperer_arborescence($prof_id,$matiere_id,$niveau_id
  * @param int   $palier_id (facultatif ; les paliers de l'établissement sinon
  * @return array
  */
-public static function DB_recuperer_arborescence_palier($palier_id=FALSE)
+public function DB_recuperer_arborescence_palier($palier_id=FALSE)
 {
 	$DB_SQL = 'SELECT * ';
 	$DB_SQL.= 'FROM sacoche_socle_palier ';
@@ -200,43 +200,12 @@ public static function DB_recuperer_arborescence_palier($palier_id=FALSE)
 }
 
 /**
- * recuperer_groupe_nom
- *
- * @param int   $groupe_id
- * @return string
- */
-public static function DB_recuperer_groupe_nom($groupe_id)
-{
-	$DB_SQL = 'SELECT groupe_nom ';
-	$DB_SQL.= 'FROM sacoche_groupe ';
-	$DB_SQL.= 'WHERE groupe_id=:groupe_id ';
-	$DB_VAR = array(':groupe_id'=>$groupe_id);
-	return DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-}
-
-/**
- * Drecuperer_matieres_professeur
- *
- * @param int $user_id
- * @return string
- */
-public static function DB_recuperer_matieres_professeur($user_id)
-{
-	$DB_SQL = 'SELECT GROUP_CONCAT(matiere_id SEPARATOR ",") AS listing_matieres_id ';
-	$DB_SQL.= 'FROM sacoche_jointure_user_matiere ';
-	$DB_SQL.= 'LEFT JOIN sacoche_matiere USING (matiere_id) ';
-	$DB_SQL.= 'WHERE user_id=:user_id AND matiere_active=1 ';
-	$DB_VAR = array(':user_id'=>$user_id);
-	return DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-}
-
-/**
  * lister_niveaux_etablissement
  *
  * @param bool $with_specifiques
  * @return array
  */
-public static function DB_lister_niveaux_etablissement($with_specifiques)
+public function DB_lister_niveaux_etablissement($with_specifiques)
 {
 	$DB_SQL = 'SELECT niveau_id, niveau_ordre, niveau_ref, code_mef, niveau_nom ';
 	$DB_SQL.= 'FROM sacoche_niveau ';
@@ -248,29 +217,12 @@ public static function DB_lister_niveaux_etablissement($with_specifiques)
 }
 
 /**
- * lister_classes_etabl_for_bilan_officiel
- *
- * @param void
- * @return array
- */
-public static function DB_lister_classes_etabl_for_bilan_officiel()
-{
-	$DB_SQL = 'SELECT groupe_id, groupe_nom ';
-	$DB_SQL.= 'FROM sacoche_groupe ';
-	$DB_SQL.= 'LEFT JOIN sacoche_niveau USING (niveau_id) ';
-	$DB_SQL.= 'WHERE groupe_type=:type1 ';
-	$DB_SQL.= 'ORDER BY niveau_ordre ASC, groupe_nom ASC';
-	$DB_VAR = array(':type1'=>'classe');
-	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-}
-
-/**
  * lister_identite_coordonnateurs_par_matiere
  *
  * @param void
  * @return array   matiere_id et coord_liste avec identités séparées par "]["
  */
-public static function DB_lister_identite_coordonnateurs_par_matiere()
+public function DB_lister_identite_coordonnateurs_par_matiere()
 {
 	$DB_SQL = 'SELECT matiere_id, GROUP_CONCAT(CONCAT(user_nom," ",user_prenom) SEPARATOR "][") AS coord_liste ';
 	$DB_SQL.= 'FROM sacoche_jointure_user_matiere ';
@@ -292,7 +244,7 @@ public static function DB_lister_identite_coordonnateurs_par_matiere()
  * @param string $champs        par défaut user_id,user_nom,user_prenom
  * @return array
  */
-public static function DB_lister_users_regroupement($profil,$statut,$groupe_type,$groupe_id,$champs='user_id,user_nom,user_prenom')
+public function DB_lister_users_regroupement($profil,$statut,$groupe_type,$groupe_id,$champs='user_id,user_nom,user_prenom')
 {
 	$as      = ($profil!='parent') ? '' : ' AS enfant' ;
 	$prefixe = ($profil!='parent') ? 'sacoche_user.' : 'enfant.' ;
@@ -365,26 +317,7 @@ public static function DB_lister_users_regroupement($profil,$statut,$groupe_type
 	}
 	// On peut maintenant assembler les morceaux de la requête !
 	$DB_SQL = 'SELECT '.$champs.' '.$from.$ljoin.$where.$group.'ORDER BY '.$prefixe.'user_nom ASC, '.$prefixe.'user_prenom ASC';
-	$DB_VAR = array( ':profil'=>str_replace('parent','eleve',$profil) , ':groupe'=>$groupe_id , ':niveau'=>$groupe_id , ':classe'=>0 ) ;
-	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-}
-
-/**
- * lister_eleves_classe_et_groupe
- * Utilisé dans le cas particulier des bilans officiels
- *
- * @param int   $classe_id
- * @param int   $groupe_id
- * @return array
- */
-public static function DB_lister_eleves_classe_et_groupe($classe_id,$groupe_id)
-{
-	$DB_SQL = 'SELECT user_id,user_nom,user_prenom ';
-	$DB_SQL.= 'FROM sacoche_jointure_user_groupe ';
-	$DB_SQL.= 'LEFT JOIN sacoche_user USING (user_id) ';
-	$DB_SQL.= 'WHERE groupe_id=:groupe AND eleve_classe_id=:classe AND user_profil=:profil AND user_sortie_date>NOW() ';
-	$DB_SQL.= 'ORDER BY user_nom ASC, user_prenom ASC ';
-	$DB_VAR = array( ':groupe'=>$groupe_id , ':classe'=>$classe_id , ':profil'=>'eleve' );
+	$DB_VAR  = array( ':profil'=>str_replace('parent','eleve',$profil) , ':groupe'=>$groupe_id , ':niveau'=>$groupe_id , ':classe'=>0 ) ;
 	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
@@ -395,7 +328,7 @@ public static function DB_lister_eleves_classe_et_groupe($classe_id,$groupe_id)
  * @param int    $niveau_id    0 par défaut pour tous les niveaux
  * @return array
  */
-public static function DB_lister_referentiels_infos_details_matieres_niveaux( $matiere_id=0 , $niveau_id=0 )
+public function DB_lister_referentiels_infos_details_matieres_niveaux( $matiere_id=0 , $niveau_id=0 )
 {
 	$DB_SQL = 'SELECT matiere_id, niveau_id, niveau_nom, referentiel_partage_etat, referentiel_partage_date, referentiel_calcul_methode, referentiel_calcul_limite ';
 	$DB_SQL.= 'FROM sacoche_referentiel ';
@@ -413,7 +346,7 @@ public static function DB_lister_referentiels_infos_details_matieres_niveaux( $m
  * @param int    $user_id
  * @return array
  */
-public static function DB_lister_messages_user_auteur($user_id)
+public function DB_lister_messages_user_auteur($user_id)
 {
 	$DB_SQL = 'SELECT message_id, message_debut_date, message_fin_date, message_destinataires, message_contenu ';
 	$DB_SQL.= 'FROM sacoche_message ';
@@ -429,7 +362,7 @@ public static function DB_lister_messages_user_auteur($user_id)
  * @param int    $user_id
  * @return array
  */
-public static function DB_lister_messages_user_destinataire($user_id)
+public function DB_lister_messages_user_destinataire($user_id)
 {
 	$DB_SQL = 'SELECT user_nom, user_prenom, message_contenu ';
 	$DB_SQL.= 'FROM sacoche_message ';
@@ -446,7 +379,7 @@ public static function DB_lister_messages_user_destinataire($user_id)
  * @param string   $listing_groupes_id   id des groupes séparés par des virgules
  * @return array
  */
-public static function DB_lister_jointure_groupe_periode($listing_groupes_id)
+public function DB_lister_jointure_groupe_periode($listing_groupes_id)
 {
 	$DB_SQL = 'SELECT sacoche_jointure_groupe_periode.* ';
 	$DB_SQL.= 'FROM sacoche_jointure_groupe_periode ';
@@ -472,7 +405,7 @@ public static function DB_lister_jointure_groupe_periode($listing_groupes_id)
  * @param string $user_id_gepi      facultatif
  * @return int
  */
-public static function DB_ajouter_utilisateur($user_sconet_id,$user_sconet_elenoet,$user_reference,$user_profil,$user_nom,$user_prenom,$user_login,$password_crypte,$eleve_classe_id=0,$user_id_ent='',$user_id_gepi='')
+public function DB_ajouter_utilisateur($user_sconet_id,$user_sconet_elenoet,$user_reference,$user_profil,$user_nom,$user_prenom,$user_login,$password_crypte,$eleve_classe_id=0,$user_id_ent='',$user_id_gepi='')
 {
 	$DB_SQL = 'INSERT INTO sacoche_user(user_sconet_id,user_sconet_elenoet,user_reference,user_profil,user_nom,user_prenom,user_login,user_password,eleve_classe_id,user_id_ent,user_id_gepi) ';
 	$DB_SQL.= 'VALUES(:user_sconet_id,:user_sconet_elenoet,:user_reference,:user_profil,:user_nom,:user_prenom,:user_login,:password_crypte,:eleve_classe_id,:user_id_ent,:user_id_gepi)';
@@ -491,7 +424,7 @@ public static function DB_ajouter_utilisateur($user_sconet_id,$user_sconet_eleno
  * @param string $tab_destinataires
  * @return int
  */
-public static function DB_ajouter_message($user_id,$date_debut_mysql,$date_fin_mysql,$message_contenu,$tab_destinataires)
+public function DB_ajouter_message($user_id,$date_debut_mysql,$date_fin_mysql,$message_contenu,$tab_destinataires)
 {
 	$listing_destinataires = count($tab_destinataires) ? ','.implode(',',$tab_destinataires).',' : '' ;
 	$DB_SQL = 'INSERT INTO sacoche_message(user_id,message_debut_date,message_fin_date,message_destinataires,message_contenu) ';
@@ -516,7 +449,7 @@ public static function DB_ajouter_message($user_id,$date_debut_mysql,$date_fin_m
  * @param array tableau $parametre_nom => $parametre_valeur des paramètres à modfifier
  * @return void
  */
-public static function DB_modifier_parametres($tab_parametres)
+public function DB_modifier_parametres($tab_parametres)
 {
 	$DB_SQL = 'UPDATE sacoche_parametre ';
 	$DB_SQL.= 'SET parametre_valeur=:parametre_valeur ';
@@ -535,28 +468,12 @@ public static function DB_modifier_parametres($tab_parametres)
  * @param 0|1   $user_daltonisme
  * @return void
  */
-public static function DB_modifier_user_daltonisme($user_id,$user_daltonisme)
+public function DB_modifier_user_daltonisme($user_id,$user_daltonisme)
 {
 	$DB_SQL = 'UPDATE sacoche_user ';
 	$DB_SQL.= 'SET user_daltonisme=:user_daltonisme ';
 	$DB_SQL.= 'WHERE user_id=:user_id ';
 	$DB_VAR = array(':user_id'=>$user_id,':user_daltonisme'=>$user_daltonisme);
-	DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-}
-
-/**
- * Modifier sa configuration de la page d'accueil
- *
- * @param int   $user_id
- * @param 0|1   $user_param_accueil
- * @return void
- */
-public static function DB_modifier_user_param_accueil($user_id,$user_param_accueil)
-{
-	$DB_SQL = 'UPDATE sacoche_user ';
-	$DB_SQL.= 'SET user_param_accueil=:user_param_accueil ';
-	$DB_SQL.= 'WHERE user_id=:user_id ';
-	$DB_VAR = array(':user_id'=>$user_id,':user_param_accueil'=>$user_param_accueil);
 	DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
@@ -568,7 +485,7 @@ public static function DB_modifier_user_param_accueil($user_id,$user_param_accue
  * @param string $password_nouveau_crypte
  * @return string   'ok' ou 'Le mot de passe actuel est incorrect !'
  */
-public static function DB_modifier_mdp_utilisateur($user_id,$password_ancien_crypte,$password_nouveau_crypte)
+public function DB_modifier_mdp_utilisateur($user_id,$password_ancien_crypte,$password_nouveau_crypte)
 {
 	// Tester si l'ancien mot de passe correspond à celui enregistré
 	$DB_SQL = 'SELECT user_id ';
@@ -600,7 +517,7 @@ public static function DB_modifier_mdp_utilisateur($user_id,$password_ancien_cry
  * @param string $tab_destinataires
  * @return void
  */
-public static function DB_modifier_message($message_id,$user_id,$date_debut_mysql,$date_fin_mysql,$message_contenu,$tab_destinataires)
+public function DB_modifier_message($message_id,$user_id,$date_debut_mysql,$date_fin_mysql,$message_contenu,$tab_destinataires)
 	{
 	$listing_destinataires = count($tab_destinataires) ? ','.implode(',',$tab_destinataires).',' : '' ;
 	$DB_SQL = 'UPDATE sacoche_message ';
@@ -617,7 +534,7 @@ public static function DB_modifier_message($message_id,$user_id,$date_debut_mysq
  * @param int   $user_id
  * @return void
  */
-public static function DB_supprimer_message($message_id,$user_id)
+public function DB_supprimer_message($message_id,$user_id)
 {
 	$DB_SQL = 'DELETE FROM sacoche_message ';
 	$DB_SQL.= 'WHERE message_id=:message_id AND user_id=:user_id ';
@@ -631,15 +548,15 @@ public static function DB_supprimer_message($message_id,$user_id)
  * @param void
  * @return void
  */
-public static function DB_creer_remplir_tables_structure()
+public function DB_creer_remplir_tables_structure()
 {
-	$tab_files = FileSystem::lister_contenu_dossier(CHEMIN_DOSSIER_SQL_STRUCTURE);
+	$tab_files = array_diff( scandir(CHEMIN_SQL_STRUCTURE) , array('.','..') ); // fonction Lister_Contenu_Dossier() inaccessible depuis la classe
 	foreach($tab_files as $file)
 	{
 		$extension = pathinfo($file,PATHINFO_EXTENSION);
 		if($extension=='sql')
 		{
-			$requetes = file_get_contents(CHEMIN_DOSSIER_SQL_STRUCTURE.$file);
+			$requetes = file_get_contents(CHEMIN_SQL_STRUCTURE.$file);
 			DB::query(SACOCHE_STRUCTURE_BD_NAME , $requetes ); // Attention, sur certains LCS ça bloque au dela de 40 instructions MySQL (mais un INSERT multiple avec des milliers de lignes ne pose pas de pb).
 			/*
 			La classe PDO a un bug. Si on envoie plusieurs requêtes d'un coup ça passe, mais si on recommence juste après alors on récolte : "Cannot execute queries while other unbuffered queries are active.  Consider using PDOStatement::fetchAll().  Alternatively, if your code is only ever going to run against mysql, you may enable query buffering by setting the PDO::MYSQL_ATTR_USE_BUFFERED_QUERY attribute."
@@ -656,7 +573,7 @@ public static function DB_creer_remplir_tables_structure()
  * @param void
  * @return array|string
  */
-public static function DB_OPT_matieres_etabl()
+public function DB_OPT_matieres_etabl()
 {
 	$DB_SQL = 'SELECT matiere_id AS valeur, matiere_nom AS texte ';
 	$DB_SQL.= 'FROM sacoche_matiere ';
@@ -672,9 +589,9 @@ public static function DB_OPT_matieres_etabl()
  * @param void
  * @return array
  */
-public static function DB_OPT_familles_matieres()
+public function DB_OPT_familles_matieres()
 {
-	Form::$tab_select_optgroup = array( 1=>'Enseignements usuels' , 2=>'Enseignements généraux' , 3=>'Enseignements spécifiques' );
+	Formulaire::$tab_select_optgroup = array( 1=>'Enseignements usuels' , 2=>'Enseignements généraux' , 3=>'Enseignements spécifiques' );
 	$DB_SQL = 'SELECT matiere_famille_id AS valeur, matiere_famille_nom AS texte, matiere_famille_categorie AS optgroup ';
 	$DB_SQL.= 'FROM sacoche_matiere_famille ';
 	$DB_SQL.= 'ORDER BY matiere_famille_categorie ASC, matiere_famille_nom ASC';
@@ -688,9 +605,9 @@ public static function DB_OPT_familles_matieres()
  * @param int   matiere_famille_id
  * @return array
  */
-public static function DB_OPT_matieres_famille($matiere_famille_id)
+public function DB_OPT_matieres_famille($matiere_famille_id)
 {
-	Form::$tab_select_option_first = array(ID_MATIERE_PARTAGEE_MAX+$matiere_famille_id,'Toutes les matières de cette famille','');
+	Formulaire::$tab_select_option_first = array(ID_MATIERE_PARTAGEE_MAX+$matiere_famille_id,'Toutes les matières de cette famille','');
 	$DB_SQL = 'SELECT matiere_id AS valeur, matiere_nom AS texte ';
 	$DB_SQL.= 'FROM sacoche_matiere ';
 	$DB_SQL.= ($matiere_famille_id==ID_FAMILLE_MATIERE_USUELLE) ? 'WHERE matiere_usuelle=1 ' : 'WHERE matiere_famille_id='.$matiere_famille_id.' ' ;
@@ -704,7 +621,7 @@ public static function DB_OPT_matieres_famille($matiere_famille_id)
  * @param int $user_id
  * @return array|string
  */
-public static function DB_OPT_matieres_professeur($user_id)
+public function DB_OPT_matieres_professeur($user_id)
 {
 	$DB_SQL = 'SELECT matiere_id AS valeur, matiere_nom AS texte, matiere_nb_demandes AS info ';
 	$DB_SQL.= 'FROM sacoche_jointure_user_matiere ';
@@ -722,7 +639,7 @@ public static function DB_OPT_matieres_professeur($user_id)
  * @param int $user_id
  * @return array|string
  */
-public static function DB_OPT_matieres_eleve($user_id)
+public function DB_OPT_matieres_eleve($user_id)
 {
 	// On connait la classe ($_SESSION['ELEVE_CLASSE_ID']), donc on commence par récupérer les groupes éventuels associés à l'élève
 	// DB::query(SACOCHE_STRUCTURE_BD_NAME , 'SET group_concat_max_len = ...'); // Pour lever si besoin une limitation de GROUP_CONCAT (group_concat_max_len est par défaut limité à une chaine de 1024 caractères).
@@ -770,7 +687,7 @@ public static function DB_OPT_matieres_eleve($user_id)
  * @param int $groupe_id     id de la classe ou du groupe
  * @return array|string
  */
-public static function DB_OPT_matieres_groupe($groupe_id)
+public function DB_OPT_matieres_groupe($groupe_id)
 {
 	// On récupère les matières des professeurs qui sont associés au groupe
 	$DB_SQL = 'SELECT matiere_id AS valeur, matiere_nom AS texte ';
@@ -792,12 +709,12 @@ public static function DB_OPT_matieres_groupe($groupe_id)
  * @param void
  * @return array
  */
-public static function DB_OPT_familles_niveaux()
+public function DB_OPT_familles_niveaux()
 {
-	Form::$tab_select_optgroup = array( 1=>'Niveaux classes' , 2=>'Niveaux spécifiques' );
+	Formulaire::$tab_select_optgroup = array( 1=>'Niveaux classes' , 2=>'Niveaux spécifiques' );
 	$DB_SQL = 'SELECT niveau_famille_id AS valeur, niveau_famille_nom AS texte, niveau_famille_categorie AS optgroup ';
 	$DB_SQL.= 'FROM sacoche_niveau_famille ';
-	$DB_SQL.= 'ORDER BY niveau_famille_categorie DESC, niveau_famille_ordre ASC';
+	$DB_SQL.= 'ORDER BY niveau_famille_categorie ASC, niveau_famille_ordre ASC';
 	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
 }
 
@@ -807,7 +724,7 @@ public static function DB_OPT_familles_niveaux()
  * @param void
  * @return array
  */
-public static function DB_OPT_niveaux_etabl()
+public function DB_OPT_niveaux_etabl()
 {
 	$DB_SQL = 'SELECT niveau_id AS valeur, niveau_nom AS texte ';
 	$DB_SQL.= 'FROM sacoche_niveau ';
@@ -822,9 +739,9 @@ public static function DB_OPT_niveaux_etabl()
  * @param void
  * @return array
  */
-public static function DB_OPT_niveaux()
+public function DB_OPT_niveaux()
 {
-	Form::$tab_select_option_first = array(0,'Tous les niveaux','');
+	Formulaire::$tab_select_option_first = array(0,'Tous les niveaux','');
 	$DB_SQL = 'SELECT niveau_id AS valeur, niveau_nom AS texte ';
 	$DB_SQL.= 'FROM sacoche_niveau ';
 	$DB_SQL.= 'ORDER BY niveau_ordre ASC';
@@ -838,24 +755,12 @@ public static function DB_OPT_niveaux()
  * @param int   niveau_famille_id
  * @return array
  */
-public static function DB_OPT_niveaux_famille($niveau_famille_id)
+public function DB_OPT_niveaux_famille($niveau_famille_id)
 {
-	Form::$tab_select_option_first = array(ID_NIVEAU_MAX+$niveau_famille_id,'Tous les niveaux de cette famille','');
-	// Ajouter, si pertinent, les niveaux spécifiques qui sinon ne sont pas trouvés car à part...
-	$tab_sql = array(
-		1 => '',
-		2 => 'OR niveau_id IN(5,1,2,201) ',
-		3 => 'OR niveau_id IN(3,202,203) ',
-		4 => 'OR niveau_id IN(3,202,203) ',
-		5 => 'OR niveau_id IN(4,204,205,206) ',
-		6 => 'OR niveau_id IN(4,204,205,206) ',
-		7 => 'OR niveau_id IN(4,204,205,206) ',
-		8 => 'OR niveau_id IN(4,204,205,206) ',
-		9 => ''
-	);
+	Formulaire::$tab_select_option_first = array(ID_NIVEAU_MAX+$niveau_famille_id,'Tous les niveaux de cette famille','');
 	$DB_SQL = 'SELECT niveau_id AS valeur, niveau_nom AS texte ';
 	$DB_SQL.= 'FROM sacoche_niveau ';
-	$DB_SQL.= 'WHERE niveau_famille_id=:niveau_famille_id '.$tab_sql[$niveau_famille_id];
+	$DB_SQL.= 'WHERE niveau_famille_id=:niveau_famille_id ' ;
 	$DB_SQL.= 'ORDER BY niveau_ordre ASC';
 	$DB_VAR = array(':niveau_famille_id'=>$niveau_famille_id);
 	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
@@ -867,7 +772,7 @@ public static function DB_OPT_niveaux_famille($niveau_famille_id)
  * @param int $matiere_id
  * @return array|string
  */
-public static function DB_OPT_niveaux_matiere($matiere_id)
+public function DB_OPT_niveaux_matiere($matiere_id)
 {
 	// On récupère les matières des professeurs qui sont associés au groupe
 	$DB_SQL = 'SELECT niveau_id AS valeur, niveau_nom AS texte ';
@@ -886,7 +791,7 @@ public static function DB_OPT_niveaux_matiere($matiere_id)
  * @param void
  * @return array|string
  */
-public static function DB_OPT_paliers_etabl()
+public function DB_OPT_paliers_etabl()
 {
 	$DB_SQL = 'SELECT palier_id AS valeur, palier_nom AS texte ';
 	$DB_SQL.= 'FROM sacoche_socle_palier ';
@@ -902,7 +807,7 @@ public static function DB_OPT_paliers_etabl()
  * @param void
  * @return array|string
  */
-public static function DB_OPT_paliers_piliers()
+public function DB_OPT_paliers_piliers()
 {
 	$DB_SQL = 'SELECT pilier_id AS valeur, pilier_nom AS texte, palier_id AS optgroup, palier_nom AS optgroup_info ';
 	$DB_SQL.= 'FROM sacoche_socle_palier ';
@@ -915,7 +820,7 @@ public static function DB_OPT_paliers_piliers()
 	{
 		$tab_optgroup[$DB_ROW['optgroup']] = $DB_ROW['optgroup_info'];
 	}
-	Form::$tab_select_optgroup = $tab_optgroup;
+	Formulaire::$tab_select_optgroup = $tab_optgroup;
 	return count($DB_TAB) ? $DB_TAB : 'Aucun palier du socle commun n\'est rattaché à l\'établissement.' ;
 }
 
@@ -925,9 +830,9 @@ public static function DB_OPT_paliers_piliers()
  * @param int $palier_id   id du palier
  * @return array|string
  */
-public static function DB_OPT_piliers($palier_id)
+public function DB_OPT_piliers($palier_id)
 {
-	Form::$tab_select_option_first = array(0,'Toutes les compétences','');
+	Formulaire::$tab_select_option_first = array(0,'Toutes les compétences','');
 	$DB_SQL = 'SELECT pilier_id AS valeur, pilier_nom AS texte ';
 	$DB_SQL.= 'FROM sacoche_socle_pilier ';
 	$DB_SQL.= 'WHERE palier_id=:palier_id ';
@@ -943,9 +848,9 @@ public static function DB_OPT_piliers($palier_id)
  * @param int $pilier_id   id du pilier
  * @return array|string
  */
-public static function DB_OPT_domaines($pilier_id)
+public function DB_OPT_domaines($pilier_id)
 {
-	Form::$tab_select_option_first = array(0,'Tous les domaines','');
+	Formulaire::$tab_select_option_first = array(0,'Tous les domaines','');
 	$DB_SQL = 'SELECT section_id AS valeur, section_nom AS texte ';
 	$DB_SQL.= 'FROM sacoche_socle_section ';
 	$DB_SQL.= 'WHERE pilier_id=:pilier_id ';
@@ -963,7 +868,7 @@ public static function DB_OPT_domaines($pilier_id)
  * @param bool   $tout   TRUE par défaut => pour avoir un choix "Tout l'établissement"
  * @return array|string
  */
-public static function DB_OPT_regroupements_etabl($sans=TRUE,$tout=TRUE)
+public function DB_OPT_regroupements_etabl($sans=TRUE,$tout=TRUE)
 {
 	// Options du select : catégorie "Divers"
 	$DB_TAB_divers = array();
@@ -994,7 +899,7 @@ public static function DB_OPT_regroupements_etabl($sans=TRUE,$tout=TRUE)
 	$DB_TAB_classe_groupe = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 	// On assemble tous ces tableaux à la suite
 	$DB_TAB = array_merge($DB_TAB_divers,$DB_TAB_niveau,$DB_TAB_classe_groupe);
-	Form::$tab_select_optgroup = array('divers'=>'Divers','niveau'=>'Niveaux','classe'=>'Classes','groupe'=>'Groupes');
+	Formulaire::$tab_select_optgroup = array('divers'=>'Divers','niveau'=>'Niveaux','classe'=>'Classes','groupe'=>'Groupes');
 	return $DB_TAB ;
 
 }
@@ -1005,7 +910,7 @@ public static function DB_OPT_regroupements_etabl($sans=TRUE,$tout=TRUE)
  * @param void
  * @return array|string
  */
-public static function DB_OPT_groupes_etabl()
+public function DB_OPT_groupes_etabl()
 {
 	$DB_SQL = 'SELECT groupe_id AS valeur, groupe_nom AS texte ';
 	$DB_SQL.= 'FROM sacoche_groupe ';
@@ -1024,9 +929,9 @@ public static function DB_OPT_groupes_etabl()
  * @param int $user_id
  * @return array|string
  */
-public static function DB_OPT_groupes_professeur($user_id)
+public function DB_OPT_groupes_professeur($user_id)
 {
-	Form::$tab_select_option_first = array(0,'Fiche générique','');
+	Formulaire::$tab_select_option_first = array(0,'Fiche générique','');
 	$DB_SQL = 'SELECT groupe_id AS valeur, groupe_nom AS texte, groupe_type AS optgroup ';
 	$DB_SQL.= 'FROM sacoche_jointure_user_groupe ';
 	$DB_SQL.= 'LEFT JOIN sacoche_groupe USING (groupe_id) ';
@@ -1035,7 +940,7 @@ public static function DB_OPT_groupes_professeur($user_id)
 	$DB_SQL.= 'ORDER BY groupe_type ASC, niveau_ordre ASC, groupe_nom ASC';
 	$DB_VAR = array(':user_id'=>$user_id,':type4'=>'eval');
 	$DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-	Form::$tab_select_optgroup = array('classe'=>'Classes','groupe'=>'Groupes','besoin'=>'Besoins');
+	Formulaire::$tab_select_optgroup = array('classe'=>'Classes','groupe'=>'Groupes','besoin'=>'Besoins');
 	return count($DB_TAB) ? $DB_TAB : 'Aucune classe et aucun groupe ne vous sont affectés.' ;
 }
 
@@ -1045,7 +950,7 @@ public static function DB_OPT_groupes_professeur($user_id)
  * @param void
  * @return array|string
  */
-public static function DB_OPT_classes_etabl()
+public function DB_OPT_classes_etabl()
 {
 	$DB_SQL = 'SELECT groupe_id AS valeur, CONCAT(groupe_nom," (",groupe_ref,")") AS texte ';
 	$DB_SQL.= 'FROM sacoche_groupe ';
@@ -1064,9 +969,9 @@ public static function DB_OPT_classes_etabl()
  * @param void
  * @return array|string
  */
-public static function DB_OPT_classes_groupes_etabl()
+public function DB_OPT_classes_groupes_etabl()
 {
-	Form::$tab_select_option_first = array(0,'Fiche générique','');
+	Formulaire::$tab_select_option_first = array(0,'Fiche générique','');
 	$DB_SQL = 'SELECT groupe_id AS valeur, groupe_nom AS texte, groupe_type AS optgroup ';
 	$DB_SQL.= 'FROM sacoche_groupe ';
 	$DB_SQL.= 'LEFT JOIN sacoche_niveau USING (niveau_id) ';
@@ -1074,7 +979,7 @@ public static function DB_OPT_classes_groupes_etabl()
 	$DB_SQL.= 'ORDER BY groupe_type ASC, niveau_ordre ASC, groupe_nom ASC';
 	$DB_VAR = array(':type1'=>'classe',':type2'=>'groupe');
 	$DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-	Form::$tab_select_optgroup = array('classe'=>'Classes','groupe'=>'Groupes');
+	Formulaire::$tab_select_optgroup = array('classe'=>'Classes','groupe'=>'Groupes');
 	return count($DB_TAB) ? $DB_TAB : 'Aucune classe et aucun groupe ne sont enregistrés.' ;
 }
 
@@ -1084,7 +989,7 @@ public static function DB_OPT_classes_groupes_etabl()
  * @param int $user_id
  * @return array|string
  */
-public static function DB_OPT_classes_prof_principal($user_id)
+public function DB_OPT_classes_prof_principal($user_id)
 {
 	$DB_SQL = 'SELECT groupe_id AS valeur, groupe_nom AS texte ';
 	$DB_SQL.= 'FROM sacoche_jointure_user_groupe ';
@@ -1104,7 +1009,7 @@ public static function DB_OPT_classes_prof_principal($user_id)
  * @param int   $parent_id
  * @return array|string
  */
-public static function DB_OPT_classes_parent($parent_id)
+public function DB_OPT_classes_parent($parent_id)
 {
 	$DB_SQL = 'SELECT groupe_id AS valeur, groupe_nom AS texte, "classe" AS optgroup ';
 	$DB_SQL.= 'FROM sacoche_jointure_parent_eleve ';
@@ -1124,7 +1029,7 @@ public static function DB_OPT_classes_parent($parent_id)
  * @param int $user_id
  * @return array|string
  */
-public static function DB_OPT_selection_items($user_id)
+public function DB_OPT_selection_items($user_id)
 {
 	$DB_SQL = 'SELECT REPLACE(TRIM(BOTH "," FROM selection_item_liste),",","_") AS valeur, selection_item_nom AS texte ';
 	$DB_SQL.= 'FROM sacoche_selection_item ';
@@ -1141,9 +1046,9 @@ public static function DB_OPT_selection_items($user_id)
  * @param bool   $alerte   affiche un message d'erreur si aucune periode n'est trouvée
  * @return array|string
  */
-public static function DB_OPT_periodes_etabl($alerte=FALSE)
+public function DB_OPT_periodes_etabl($alerte=FALSE)
 {
-	Form::$tab_select_option_first = array(0,'Personnalisée','');
+	Formulaire::$tab_select_option_first = array(0,'Personnalisée','');
 	$DB_SQL = 'SELECT periode_id AS valeur, periode_nom AS texte ';
 	$DB_SQL.= 'FROM sacoche_periode ';
 	$DB_SQL.= 'ORDER BY periode_ordre ASC';
@@ -1157,11 +1062,11 @@ public static function DB_OPT_periodes_etabl($alerte=FALSE)
  * @param void
  * @return array|string
  */
-public static function DB_OPT_administrateurs_etabl()
+public function DB_OPT_administrateurs_etabl()
 {
 	$DB_SQL = 'SELECT user_id AS valeur, CONCAT(user_nom," ",user_prenom) AS texte ';
 	$DB_SQL.= 'FROM sacoche_user ';
-	$DB_SQL.= 'WHERE user_profil=:profil '; // AND user_sortie_date>NOW() est inutile pour les admins, et évite une erreur qd cette fonction est appelée via un webmestre multi-structures alors que la base de l'établ n'est pas à jour
+	$DB_SQL.= 'WHERE user_profil=:profil AND user_sortie_date>NOW() ';
 	$DB_SQL.= 'ORDER BY user_nom ASC, user_prenom ASC';
 	$DB_VAR = array(':profil'=>'administrateur');
 	$DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
@@ -1174,7 +1079,7 @@ public static function DB_OPT_administrateurs_etabl()
  * @param void
  * @return array|string
  */
-public static function DB_OPT_directeurs_etabl()
+public function DB_OPT_directeurs_etabl()
 {
 	$DB_SQL = 'SELECT user_id AS valeur, CONCAT(user_nom," ",user_prenom) AS texte ';
 	$DB_SQL.= 'FROM sacoche_user ';
@@ -1192,7 +1097,7 @@ public static function DB_OPT_directeurs_etabl()
  * @param int    $groupe_id     facultatif ; id du niveau ou de la classe ou du groupe
  * @return array|string
  */
-public static function DB_OPT_professeurs_etabl($groupe_type='all',$groupe_id=0)
+public function DB_OPT_professeurs_etabl($groupe_type='all',$groupe_id=0)
 {
 	$select = 'SELECT user_id AS valeur, CONCAT(user_nom," ",user_prenom) AS texte ';
 	$where  = 'WHERE user_profil=:profil AND user_sortie_date>NOW() ';
@@ -1232,7 +1137,7 @@ public static function DB_OPT_professeurs_etabl($groupe_type='all',$groupe_id=0)
  * @param int $statut   statut des utilisateurs (1 pour actuel, 0 pour ancien)
  * @return array|string
  */
-public static function DB_OPT_professeurs_directeurs_etabl($statut)
+public function DB_OPT_professeurs_directeurs_etabl($statut)
 {
 	$test_date_sortie = ($statut) ? 'user_sortie_date>NOW()' : 'user_sortie_date<NOW()' ; // Pas besoin de tester l'égalité, NOW() renvoyant un datetime
 	$DB_SQL = 'SELECT user_id AS valeur, CONCAT(user_nom," ",user_prenom) AS texte, user_profil AS optgroup ';
@@ -1241,8 +1146,7 @@ public static function DB_OPT_professeurs_directeurs_etabl($statut)
 	$DB_SQL.= 'ORDER BY user_profil DESC, user_nom ASC, user_prenom ASC';
 	$DB_VAR = array(':profil1'=>'professeur',':profil2'=>'directeur');
 	$DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-	Form::$tab_select_option_first = array(0,'Tampon de l\'établissement','');
-	Form::$tab_select_optgroup = array('directeur'=>'Directeurs','professeur'=>'Professeurs');
+	Formulaire::$tab_select_optgroup = array('directeur'=>'Directeurs','professeur'=>'Professeurs');
 	return count($DB_TAB) ? $DB_TAB : 'Aucun professeur ou directeur trouvé.' ;
 }
 
@@ -1254,7 +1158,7 @@ public static function DB_OPT_professeurs_directeurs_etabl($statut)
  * @param int    $groupe_id     facultatif ; id du niveau ou de la classe ou du groupe
  * @return array|string
  */
-public static function DB_OPT_parents_etabl($statut,$groupe_type='all',$groupe_id=0)
+public function DB_OPT_parents_etabl($statut,$groupe_type='all',$groupe_id=0)
 {
 	$test_date_sortie = ($statut) ? 'user_sortie_date>NOW()' : 'user_sortie_date<NOW()' ; // Pas besoin de tester l'égalité, NOW() renvoyant un datetime
 	$select = 'SELECT parent.user_id AS valeur, CONCAT(parent.user_nom," ",parent.user_prenom) AS texte ';
@@ -1306,7 +1210,7 @@ public static function DB_OPT_parents_etabl($statut,$groupe_type='all',$groupe_i
  * @param int    $statut        statut des utilisateurs (1 pour actuel, 0 pour ancien)
  * @return array|string
  */
-public static function DB_OPT_eleves_regroupement($groupe_type,$groupe_id,$statut)
+public function DB_OPT_eleves_regroupement($groupe_type,$groupe_id,$statut)
 {
 	$test_date_sortie = ($statut) ? 'user_sortie_date>NOW()' : 'user_sortie_date<NOW()' ; // Pas besoin de tester l'égalité, NOW() renvoyant un datetime
 	if($_SESSION['USER_PROFIL']=='parent')
@@ -1362,7 +1266,7 @@ public static function DB_OPT_eleves_regroupement($groupe_type,$groupe_id,$statu
  * @param int   $parent_id
  * @return array|string
  */
-public static function DB_OPT_enfants_parent($parent_id)
+public function DB_OPT_enfants_parent($parent_id)
 {
 	$DB_SQL = 'SELECT user_id AS valeur, CONCAT(user_nom," ",user_prenom) AS texte, eleve_classe_id AS classe_id ';
 	$DB_SQL.= 'FROM sacoche_jointure_parent_eleve ';

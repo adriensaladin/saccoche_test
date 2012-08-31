@@ -26,20 +26,20 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-$TITRE = "Relevé d'items sélectionnés";
+$TITRE = "Bilan d'items sélectionnés";
 ?>
 
 <?php
-Form::load_choix_memo();
-$check_type_individuel = (Form::$tab_choix['type_individuel'])   ? ' checked' : '' ;
-$class_form_individuel = (Form::$tab_choix['type_individuel'])   ? 'show'     : 'hide' ;
-$check_type_synthese   = (Form::$tab_choix['type_synthese'])     ? ' checked' : '' ;
-$class_form_synthese   = (Form::$tab_choix['type_synthese'])     ? 'show'     : 'hide' ;
-$check_type_bulletin   = (Form::$tab_choix['type_bulletin'])     ? ' checked' : '' ;
-$check_bilan_MS        = (Form::$tab_choix['aff_bilan_MS'])      ? ' checked' : '' ;
-$check_bilan_PA        = (Form::$tab_choix['aff_bilan_PA'])      ? ' checked' : '' ;
-$check_conv_sur20      = (Form::$tab_choix['aff_conv_sur20'])    ? ' checked' : '' ;
-$check_with_coef       = (Form::$tab_choix['with_coef'])         ? ' checked' : '' ;
+Formulaire::load_choix_memo();
+$check_type_individuel = (Formulaire::$tab_choix['type_individuel'])   ? ' checked' : '' ;
+$class_form_individuel = (Formulaire::$tab_choix['type_individuel'])   ? 'show'     : 'hide' ;
+$check_type_synthese   = (Formulaire::$tab_choix['type_synthese'])     ? ' checked' : '' ;
+$class_form_synthese   = (Formulaire::$tab_choix['type_synthese'])     ? 'show'     : 'hide' ;
+$check_type_bulletin   = (Formulaire::$tab_choix['type_bulletin'])     ? ' checked' : '' ;
+$check_bilan_MS        = (Formulaire::$tab_choix['aff_bilan_MS'])      ? ' checked' : '' ;
+$check_bilan_PA        = (Formulaire::$tab_choix['aff_bilan_PA'])      ? ' checked' : '' ;
+$check_conv_sur20      = (Formulaire::$tab_choix['aff_conv_sur20'])    ? ' checked' : '' ;
+$check_with_coef       = (Formulaire::$tab_choix['with_coef'])         ? ' checked' : '' ;
 $class_form_with_coef  = ($check_type_synthese || $check_type_bulletin || ($check_type_individuel && $check_bilan_MS) ) ? 'show' : 'hide' ;
 // Ci-après sans objet car cette page n'est proposée qu'aux professeurs.
 /*
@@ -51,29 +51,29 @@ if(in_array($_SESSION['USER_PROFIL'],array('parent','eleve')))
 	$check_conv_sur20 = (mb_substr_count($_SESSION['DROIT_BILAN_NOTE_SUR_VINGT']    ,$_SESSION['USER_PROFIL'])) ? ' checked' : '' ;
 }
 */
-$check_retro_oui       = (Form::$tab_choix['retroactif']=='oui') ? ' checked' : '' ;
-$check_retro_non       = (Form::$tab_choix['retroactif']=='non') ? ' checked' : '' ;
-$check_aff_coef        = (Form::$tab_choix['aff_coef'])          ? ' checked' : '' ;
-$check_aff_socle       = (Form::$tab_choix['aff_socle'])         ? ' checked' : '' ;
-$check_aff_lien        = (Form::$tab_choix['aff_lien'])          ? ' checked' : '' ;
-$check_aff_domaine     = (Form::$tab_choix['aff_domaine'])       ? ' checked' : '' ;
-$check_aff_theme       = (Form::$tab_choix['aff_theme'])         ? ' checked' : '' ;
+$check_retro_oui       = (Formulaire::$tab_choix['retroactif']=='oui') ? ' checked' : '' ;
+$check_retro_non       = (Formulaire::$tab_choix['retroactif']=='non') ? ' checked' : '' ;
+$check_aff_coef        = (Formulaire::$tab_choix['aff_coef'])          ? ' checked' : '' ;
+$check_aff_socle       = (Formulaire::$tab_choix['aff_socle'])         ? ' checked' : '' ;
+$check_aff_lien        = (Formulaire::$tab_choix['aff_lien'])          ? ' checked' : '' ;
+$check_aff_domaine     = (Formulaire::$tab_choix['aff_domaine'])       ? ' checked' : '' ;
+$check_aff_theme       = (Formulaire::$tab_choix['aff_theme'])         ? ' checked' : '' ;
 $tab_groupes   = DB_STRUCTURE_COMMUN::DB_OPT_groupes_professeur($_SESSION['USER_ID']);
 $tab_periodes  = DB_STRUCTURE_COMMUN::DB_OPT_periodes_etabl();
 
-$select_tri_objet   = Form::afficher_select(Form::$tab_select_tri_objet   , $select_nom='f_tri_objet'   , $option_first='non' , $selection=Form::$tab_choix['tableau_tri_objet'] , $optgroup='non');
-$select_tri_mode    = Form::afficher_select(Form::$tab_select_tri_mode    , $select_nom='f_tri_mode'    , $option_first='non' , $selection=Form::$tab_choix['tableau_tri_mode']  , $optgroup='non');
-$select_groupe      = Form::afficher_select($tab_groupes                        , $select_nom='f_groupe'      , $option_first='oui' , $selection=false                                       , $optgroup='oui');
-$select_periode     = Form::afficher_select($tab_periodes                       , $select_nom='f_periode'     , $option_first='val' , $selection=false                                       , $optgroup='non');
-$select_orientation = Form::afficher_select(Form::$tab_select_orientation , $select_nom='f_orientation' , $option_first='non' , $selection=Form::$tab_choix['orientation']       , $optgroup='non');
-$select_marge_min   = Form::afficher_select(Form::$tab_select_marge_min   , $select_nom='f_marge_min'   , $option_first='non' , $selection=Form::$tab_choix['marge_min']         , $optgroup='non');
-$select_pages_nb    = Form::afficher_select(Form::$tab_select_pages_nb    , $select_nom='f_pages_nb'    , $option_first='non' , $selection=Form::$tab_choix['pages_nb']          , $optgroup='non');
-$select_couleur     = Form::afficher_select(Form::$tab_select_couleur     , $select_nom='f_couleur'     , $option_first='non' , $selection=Form::$tab_choix['couleur']           , $optgroup='non');
-$select_legende     = Form::afficher_select(Form::$tab_select_legende     , $select_nom='f_legende'     , $option_first='non' , $selection=Form::$tab_choix['legende']           , $optgroup='non');
-$select_cases_nb    = Form::afficher_select(Form::$tab_select_cases_nb    , $select_nom='f_cases_nb'    , $option_first='non' , $selection=Form::$tab_choix['cases_nb']          , $optgroup='non');
-$select_cases_larg  = Form::afficher_select(Form::$tab_select_cases_size  , $select_nom='f_cases_larg'  , $option_first='non' , $selection=Form::$tab_choix['cases_largeur']     , $optgroup='non');
+$select_tri_objet   = Formulaire::afficher_select(Formulaire::$tab_select_tri_objet   , $select_nom='f_tri_objet'   , $option_first='non' , $selection=Formulaire::$tab_choix['tableau_tri_objet'] , $optgroup='non');
+$select_tri_mode    = Formulaire::afficher_select(Formulaire::$tab_select_tri_mode    , $select_nom='f_tri_mode'    , $option_first='non' , $selection=Formulaire::$tab_choix['tableau_tri_mode']  , $optgroup='non');
+$select_groupe      = Formulaire::afficher_select($tab_groupes                        , $select_nom='f_groupe'      , $option_first='oui' , $selection=false                                       , $optgroup='oui');
+$select_periode     = Formulaire::afficher_select($tab_periodes                       , $select_nom='f_periode'     , $option_first='val' , $selection=false                                       , $optgroup='non');
+$select_orientation = Formulaire::afficher_select(Formulaire::$tab_select_orientation , $select_nom='f_orientation' , $option_first='non' , $selection=Formulaire::$tab_choix['orientation']       , $optgroup='non');
+$select_marge_min   = Formulaire::afficher_select(Formulaire::$tab_select_marge_min   , $select_nom='f_marge_min'   , $option_first='non' , $selection=Formulaire::$tab_choix['marge_min']         , $optgroup='non');
+$select_pages_nb    = Formulaire::afficher_select(Formulaire::$tab_select_pages_nb    , $select_nom='f_pages_nb'    , $option_first='non' , $selection=Formulaire::$tab_choix['pages_nb']          , $optgroup='non');
+$select_couleur     = Formulaire::afficher_select(Formulaire::$tab_select_couleur     , $select_nom='f_couleur'     , $option_first='non' , $selection=Formulaire::$tab_choix['couleur']           , $optgroup='non');
+$select_legende     = Formulaire::afficher_select(Formulaire::$tab_select_legende     , $select_nom='f_legende'     , $option_first='non' , $selection=Formulaire::$tab_choix['legende']           , $optgroup='non');
+$select_cases_nb    = Formulaire::afficher_select(Formulaire::$tab_select_cases_nb    , $select_nom='f_cases_nb'    , $option_first='non' , $selection=Formulaire::$tab_choix['cases_nb']          , $optgroup='non');
+$select_cases_larg  = Formulaire::afficher_select(Formulaire::$tab_select_cases_size  , $select_nom='f_cases_larg'  , $option_first='non' , $selection=Formulaire::$tab_choix['cases_largeur']     , $optgroup='non');
 
-$select_selection_items = Form::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_selection_items($_SESSION['USER_ID']) , $select_nom='f_selection_items' , $option_first='oui' , $selection=false , $optgroup='non');
+$select_selection_items = Formulaire::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_selection_items($_SESSION['USER_ID']) , $select_nom='f_selection_items' , $option_first='oui' , $selection=false , $optgroup='non');
 
 // Dates par défaut de début et de fin
 $annee_debut = (date('n')>8) ? date('Y') : date('Y')-1 ;
@@ -100,7 +100,7 @@ if(is_array($tab_groupes))
 		{
 			if(!isset($tab_memo_groupes[$DB_ROW['groupe_id']]))
 			{
-				$tab_memo_groupes[$DB_ROW['groupe_id']] = TRUE;
+				$tab_memo_groupes[$DB_ROW['groupe_id']] = true;
 				$tab_groupe_periode_js .= 'tab_groupe_periode['.$DB_ROW['groupe_id'].'] = new Array();';
 			}
 			$tab_groupe_periode_js .= 'tab_groupe_periode['.$DB_ROW['groupe_id'].']['.$DB_ROW['periode_id'].']="'.$DB_ROW['jointure_date_debut'].'_'.$DB_ROW['jointure_date_fin'].'";';
@@ -114,12 +114,12 @@ if(is_array($tab_groupes))
 	<?php echo $tab_groupe_periode_js ?> 
 </script>
 
-<div><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=releves_bilans__releve_items_selection">DOC : Relevé d'items sélectionnés.</a></span></div>
+<div><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=releves_bilans__releve_items_selection">DOC : Bilan d'items sélectionnés.</a></span></div>
 
 <hr />
 
 <form action="#" method="post" id="form_select"><fieldset>
-	<label class="tab">Type de document :</label><label for="f_type_individuel"><input type="checkbox" id="f_type_individuel" name="f_type[]" value="individuel"<?php echo $check_type_individuel ?> /> Relevé individuel</label>&nbsp;&nbsp;&nbsp;<label for="f_type_synthese"><input type="checkbox" id="f_type_synthese" name="f_type[]" value="synthese"<?php echo $check_type_synthese ?> /> Synthèse collective</label>&nbsp;&nbsp;&nbsp;<label for="f_type_bulletin"><input type="checkbox" id="f_type_bulletin" name="f_type[]" value="bulletin"<?php echo $check_type_bulletin ?> /> Bulletin (moyenne &amp; appréciation)</label><br />
+	<label class="tab">Type de bilan :</label><label for="f_type_individuel"><input type="checkbox" id="f_type_individuel" name="f_type[]" value="individuel"<?php echo $check_type_individuel ?> /> Relevé individuel</label>&nbsp;&nbsp;&nbsp;<label for="f_type_synthese"><input type="checkbox" id="f_type_synthese" name="f_type[]" value="synthese"<?php echo $check_type_synthese ?> /> Synthèse collective</label>&nbsp;&nbsp;&nbsp;<label for="f_type_bulletin"><input type="checkbox" id="f_type_bulletin" name="f_type[]" value="bulletin"<?php echo $check_type_bulletin ?> /> Bulletin (moyenne &amp; appréciation)</label><br />
 	<span id="options_individuel" class="<?php echo $class_form_individuel ?>">
 		<label class="tab"><img alt="" src="./_img/bulle_aide.png" title="Pour le relévé individuel, deux lignes de synthèse peuvent être ajoutées.<br />Dans ce cas, une note sur 20 peut aussi être affichée." /> Opt. relevé :</label><label for="f_bilan_MS"><input type="checkbox" id="f_bilan_MS" name="f_bilan_MS" value="1"<?php echo $check_bilan_MS ?> /> Moyenne des scores</label>&nbsp;&nbsp;&nbsp;<label for="f_bilan_PA"><input type="checkbox" id="f_bilan_PA" name="f_bilan_PA" value="1"<?php echo $check_bilan_PA ?> /> Pourcentage d'items acquis</label>&nbsp;&nbsp;&nbsp;<label for="f_conv_sur20"><input type="checkbox" id="f_conv_sur20" name="f_conv_sur20" value="1"<?php echo $check_conv_sur20 ?> /> Proposition de note sur 20</label><br />
 	</span>

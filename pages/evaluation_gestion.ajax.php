@@ -28,45 +28,46 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 if( ($_SESSION['SESAMATH_ID']==ID_DEMO) && (!in_array($_POST['f_action'],array('lister_evaluations','ordonner','indiquer_eleves_deja','saisir','voir','voir_repart','imprimer_cartouche'))) ) {exit('Action désactivée pour la démo...');}
 
-$action         = (isset($_POST['f_action']))          ? Clean::texte($_POST['f_action'])                : '';
-$type           = (isset($_POST['f_type']))            ? Clean::texte($_POST['f_type'])                  : '';
-$aff_classe_txt = (isset($_POST['f_aff_classe']))      ? Clean::texte($_POST['f_aff_classe'])            : '';
-$aff_classe_id  = (isset($_POST['f_aff_classe']))      ? Clean::entier(substr($_POST['f_aff_classe'],1)) : 0;
-$aff_periode    = (isset($_POST['f_aff_periode']))     ? Clean::entier($_POST['f_aff_periode'])          : 0;
-$date_debut     = (isset($_POST['f_date_debut']))      ? Clean::texte($_POST['f_date_debut'])            : '';
-$date_fin       = (isset($_POST['f_date_fin']))        ? Clean::texte($_POST['f_date_fin'])              : '';
-$ref            = (isset($_POST['f_ref']))             ? Clean::texte($_POST['f_ref'])                   : '';
-$date           = (isset($_POST['f_date']))            ? Clean::texte($_POST['f_date'])                  : '';
-$date_fr        = (isset($_POST['f_date_fr']))         ? Clean::texte($_POST['f_date_fr'])               : '';
-$date_mysql     = (isset($_POST['f_date_mysql']))      ? Clean::texte($_POST['f_date_mysql'])            : '';
-$date_visible   = (isset($_POST['f_date_visible']))    ? Clean::texte($_POST['f_date_visible'])          : ''; // Peut valoir une date (JJ/MM/AAAA) ou "identique"
-$date_autoeval  = (isset($_POST['f_date_autoeval']))   ? Clean::texte($_POST['f_date_autoeval'])         : ''; // Peut valoir une date (JJ/MM/AAAA) ou "sans objet"
-$description    = (isset($_POST['f_description']))     ? Clean::texte($_POST['f_description'])           : '';
-$doc_sujet      = (isset($_POST['f_doc_sujet']))       ? Clean::texte($_POST['f_doc_sujet'])             : ''; // Pas Clean::fichier() car transmis pour "modifier" et "dupliquer" avec le chemin complet http://...
-$doc_corrige    = (isset($_POST['f_doc_corrige']))     ? Clean::texte($_POST['f_doc_corrige'])           : ''; // Pas Clean::fichier() car transmis pour "modifier" et "dupliquer" avec le chemin complet http://...
-$groupe         = (isset($_POST['f_groupe']))          ? Clean::texte($_POST['f_groupe'])                : '';
-$groupe_nom     = (isset($_POST['f_groupe_nom']))      ? Clean::texte($_POST['f_groupe_nom'])            : '';
-$cart_contenu   = (isset($_POST['f_contenu']))         ? Clean::texte($_POST['f_contenu'])               : '';
-$cart_detail    = (isset($_POST['f_detail']))          ? Clean::texte($_POST['f_detail'])                : '';
-$orientation    = (isset($_POST['f_orientation']))     ? Clean::texte($_POST['f_orientation'])           : '';
-$marge_min      = (isset($_POST['f_marge_min']))       ? Clean::texte($_POST['f_marge_min'])             : '';
-$couleur        = (isset($_POST['f_couleur']))         ? Clean::texte($_POST['f_couleur'])               : '';
+$action         = (isset($_POST['f_action']))          ? clean_texte($_POST['f_action'])                : '';
+$type           = (isset($_POST['f_type']))            ? clean_texte($_POST['f_type'])                  : '';
+$aff_classe_txt = (isset($_POST['f_aff_classe']))      ? clean_texte($_POST['f_aff_classe'])            : '';
+$aff_classe_id  = (isset($_POST['f_aff_classe']))      ? clean_entier(substr($_POST['f_aff_classe'],1)) : 0;
+$aff_periode    = (isset($_POST['f_aff_periode']))     ? clean_entier($_POST['f_aff_periode'])          : 0;
+$date_debut     = (isset($_POST['f_date_debut']))      ? clean_texte($_POST['f_date_debut'])            : '';
+$date_fin       = (isset($_POST['f_date_fin']))        ? clean_texte($_POST['f_date_fin'])              : '';
+$ref            = (isset($_POST['f_ref']))             ? clean_texte($_POST['f_ref'])                   : '';
+$date           = (isset($_POST['f_date']))            ? clean_texte($_POST['f_date'])                  : '';
+$date_fr        = (isset($_POST['f_date_fr']))         ? clean_texte($_POST['f_date_fr'])               : '';
+$date_mysql     = (isset($_POST['f_date_mysql']))      ? clean_texte($_POST['f_date_mysql'])            : '';
+$date_visible   = (isset($_POST['f_date_visible']))    ? clean_texte($_POST['f_date_visible'])          : ''; // Peut valoir une date (JJ/MM/AAAA) ou "identique"
+$date_autoeval  = (isset($_POST['f_date_autoeval']))   ? clean_texte($_POST['f_date_autoeval'])         : ''; // Peut valoir une date (JJ/MM/AAAA) ou "sans objet"
+$description    = (isset($_POST['f_description']))     ? clean_texte($_POST['f_description'])           : '';
+$doc_sujet      = (isset($_POST['f_doc_sujet']))       ? clean_texte($_POST['f_doc_sujet'])             : ''; // Pas clean_fichier() car transmis pour "modifier" et "dupliquer" avec le chemin complet http://...
+$doc_corrige    = (isset($_POST['f_doc_corrige']))     ? clean_texte($_POST['f_doc_corrige'])           : ''; // Pas clean_fichier() car transmis pour "modifier" et "dupliquer" avec le chemin complet http://...
+$groupe         = (isset($_POST['f_groupe']))          ? clean_texte($_POST['f_groupe'])                : '';
+$groupe_nom     = (isset($_POST['f_groupe_nom']))      ? clean_texte($_POST['f_groupe_nom'])            : '';
+$cart_contenu   = (isset($_POST['f_contenu']))         ? clean_texte($_POST['f_contenu'])               : '';
+$cart_detail    = (isset($_POST['f_detail']))          ? clean_texte($_POST['f_detail'])                : '';
+$orientation    = (isset($_POST['f_orientation']))     ? clean_texte($_POST['f_orientation'])           : '';
+$marge_min      = (isset($_POST['f_marge_min']))       ? clean_texte($_POST['f_marge_min'])             : '';
+$couleur        = (isset($_POST['f_couleur']))         ? clean_texte($_POST['f_couleur'])               : '';
 $only_req       = (isset($_POST['f_restriction_req'])) ? TRUE                                           : FALSE;
-$doc_objet      = (isset($_POST['f_doc_objet']))       ? Clean::texte($_POST['f_doc_objet'])             : '';
-$doc_url        = (isset($_POST['f_doc_url']))         ? Clean::texte($_POST['f_doc_url'])               : '';
+$doc_objet      = (isset($_POST['f_doc_objet']))       ? clean_texte($_POST['f_doc_objet'])             : '';
+$doc_url        = (isset($_POST['f_doc_url']))         ? clean_texte($_POST['f_doc_url'])               : '';
 
-$chemin_devoir      =  CHEMIN_DOSSIER_DEVOIR.$_SESSION['BASE'].DS;
-$url_dossier_devoir = URL_DIR_DEVOIR.$_SESSION['BASE'].'/';
-$fnom_export = $_SESSION['BASE'].'_'.Clean::fichier($groupe_nom).'_'.Clean::fichier($description).'_'.fabriquer_fin_nom_fichier__date_et_alea();
+$dossier_export = './__tmp/export/';
+$dossier_devoir_relatif = './__tmp/devoir/'.$_SESSION['BASE'].'/';
+$dossier_devoir_absolu  = SERVEUR_ADRESSE.'/__tmp/devoir/'.$_SESSION['BASE'].'/';
+$fnom_export = $_SESSION['BASE'].'_'.clean_fichier($groupe_nom).'_'.clean_fichier($description).'_'.fabriquer_fin_nom_fichier();
 
 // Si "ref" est renseigné (pour Éditer ou Retirer ou Saisir ou ...), il contient l'id de l'évaluation + '_' + l'initiale du type de groupe + l'id du groupe
 // Dans le cas d'une duplication, "ref" sert à retrouver l'évaluation d'origine pour évenuellement récupérer l'ordre des items
 if(mb_strpos($ref,'_'))
 {
 	list($devoir_id,$groupe_temp) = explode('_',$ref,2);
-	$devoir_id = Clean::entier($devoir_id);
+	$devoir_id = clean_entier($devoir_id);
 	// Si "groupe" est transmis en POST (pour Ajouter ou Éditer), il faut le prendre comme référence nouvelle ; sinon, on prend le groupe extrait de "ref"
-	$groupe = ($groupe) ? $groupe : Clean::texte($groupe_temp) ;
+	$groupe = ($groupe) ? $groupe : clean_texte($groupe_temp) ;
 }
 else
 {
@@ -79,7 +80,7 @@ if($groupe)
 	$groupe_type_initiale = $groupe{0};
 	$tab_groupe  = array('classe'=>'C','groupe'=>'G','besoin'=>'B','eval'=>'E');
 	$groupe_type = array_search($groupe_type_initiale,$tab_groupe);
-	$groupe_id   = Clean::entier(mb_substr($groupe,1));
+	$groupe_id   = clean_entier(mb_substr($groupe,1));
 }
 else
 {
@@ -89,21 +90,21 @@ else
 
 // Contrôler la liste des items transmis
 $tab_id     = (isset($_POST['tab_id'])) ? explode(',',$_POST['tab_id']) : array() ;
-$tab_id     = Clean::map_entier($tab_id);
+$tab_id     = array_map('clean_entier',$tab_id);
 $tab_id     = array_filter($tab_id,'positif');
 // Contrôler la liste des items transmis
 $tab_items  = (isset($_POST['f_compet_liste'])) ? explode('_',$_POST['f_compet_liste']) : array() ;
-$tab_items  = Clean::map_entier($tab_items);
+$tab_items  = array_map('clean_entier',$tab_items);
 $tab_items  = array_filter($tab_items,'positif');
 $nb_items   = count($tab_items);
 // Contrôler la liste des élèves transmis (sur des élèves sélectionnés uniquement)
 $tab_eleves = (isset($_POST['f_eleve_liste']))  ? explode('_',$_POST['f_eleve_liste'])  : array() ;
-$tab_eleves = Clean::map_entier($tab_eleves);
+$tab_eleves = array_map('clean_entier',$tab_eleves);
 $tab_eleves = array_filter($tab_eleves,'positif');
 $nb_eleves  = count($tab_eleves);
 // Contrôler la liste des profs transmis
 $tab_profs  = (isset($_POST['f_prof_liste'])) ? explode('_',$_POST['f_prof_liste']) : array() ;
-$tab_profs  = Clean::map_entier($tab_profs);
+$tab_profs  = array_map('clean_entier',$tab_profs);
 $tab_profs  = array_filter($tab_profs,'positif');
 // Liste des notes transmises
 $tab_notes  = (isset($_POST['f_notes'])) ? explode(',',$_POST['f_notes']) : array() ;
@@ -386,11 +387,11 @@ if( ($action=='supprimer') && $devoir_id && ( ($type=='groupe') || $groupe_id ) 
 	{
 		// supprimer le groupe spécialement associé (invisible à l'utilisateur) et les entrées dans sacoche_jointure_user_groupe pour une évaluation avec des élèves piochés en dehors de tout groupe prédéfini
 		DB_STRUCTURE_PROFESSEUR::DB_supprimer_groupe_par_prof( $groupe_id , $groupe_type , FALSE /*with_devoir*/ );
-		SACocheLog::ajouter('Suppression d\'un regroupement ('.$groupe_type.' '.$groupe_id.'), sans les devoirs associés.');
+		ajouter_log_SACoche('Suppression d\'un regroupement ('.$groupe_type.' '.$groupe_id.'), sans les devoirs associés.');
 	}
 	// on supprime l'évaluation avec ses saisies
 	DB_STRUCTURE_PROFESSEUR::DB_supprimer_devoir_et_saisies($devoir_id,$_SESSION['USER_ID']);
-	SACocheLog::ajouter('Suppression d\'un devoir ('.$devoir_id.') avec les saisies associées.');
+	ajouter_log_SACoche('Suppression d\'un devoir ('.$devoir_id.') avec les saisies associées.');
 	// Afficher le retour
 	exit('<td>ok</td>');
 }
@@ -472,7 +473,6 @@ if( ($action=='saisir') && $devoir_id && $groupe_id && $date_mysql && $date_visi
 	$tab_affich[0][0].= '<span class="manuel"><a class="pop_up" href="'.SERVEUR_DOCUMENTAIRE.'?fichier=support_professeur__evaluations_saisie_resultats">DOC : Saisie des résultats.</a></span>';
 	$tab_affich[0][0].= '<p>';
 	$tab_affich[0][0].= '<label for="radio_clavier"><input type="radio" id="radio_clavier" name="mode_saisie" value="clavier" /> <img alt="" src="./_img/pilot_keyboard.png" /> Piloter au clavier</label> <img alt="" src="./_img/bulle_aide.png" title="Sélectionner un rectangle blanc<br />au clavier (flèches) ou à la souris<br />puis utiliser les touches suivantes :<br />&nbsp;1 ; 2 ; 3 ; 4 ; A ; N ; D ; suppr .<br />Pour un report multiple, presser avant<br />C (Colonne), L (Ligne) ou T (Tableau)." /><br />';
-	$tab_affich[0][0].= '<span id="arrow_continue"><label for="arrow_continue_down"><input type="radio" id="arrow_continue_down" name="arrow_continue" value="down" /> <img alt="" src="./_img/arrow_continue_down.png" /> par élève</label>&nbsp;&nbsp;&nbsp;<label for="arrow_continue_rigth"><input type="radio" id="arrow_continue_rigth" name="arrow_continue" value="rigth" /> <img alt="" src="./_img/arrow_continue_rigth.png" /> par item</label></span><br />';
 	$tab_affich[0][0].= '<label for="radio_souris"><input type="radio" id="radio_souris" name="mode_saisie" value="souris" /> <img alt="" src="./_img/pilot_mouse.png" /> Piloter à la souris</label> <img alt="" src="./_img/bulle_aide.png" title="Survoler une case du tableau avec la souris<br />puis cliquer sur une des images proposées." />';
 	$tab_affich[0][0].= '</p><p>';
 	$tab_affich[0][0].= '<label for="check_largeur"><input type="checkbox" id="check_largeur" name="check_largeur" value="retrecir_largeur" /> <img alt="" src="./_img/retrecir_largeur.gif" /> Largeur optimale</label> <img alt="" src="./_img/bulle_aide.png" title="Diminuer la largeur des colonnes<br />si les élèves sont nombreux." /><br />';
@@ -532,11 +532,19 @@ if( ($action=='saisir') && $devoir_id && $groupe_id && $date_mysql && $date_visi
 	// Enregistrer le csv
 	$export_csv .= $groupe_nom."\r\n".$date_fr."\r\n".$description."\r\n\r\n";
 	$export_csv .= 'CODAGES AUTORISÉS : 1 2 3 4 A N D'."\r\n";
-	FileSystem::zip( CHEMIN_DOSSIER_EXPORT.'saisie_deportee_'.$fnom_export.'.zip' , 'saisie_deportee_'.$fnom_export.'.csv' , To::csv($export_csv) );
+	$zip = new ZipArchive();
+	$result_open = $zip->open($dossier_export.'saisie_deportee_'.$fnom_export.'.zip', ZIPARCHIVE::CREATE);
+	if($result_open!==TRUE)
+	{
+		require('./_inc/tableau_zip_error.php');
+		exit('Problème de création de l\'archive ZIP ('.$result_open.$tab_zip_error[$result_open].') !');
+	}
+	$zip->addFromString('saisie_deportee_'.$fnom_export.'.csv',csv($export_csv));
+	$zip->close();
 	//
 	// pdf contenant un tableau de saisie vide ; on a besoin de tourner du texte à 90°
 	//
-	$sacoche_pdf = new PDF( FALSE /*officiel*/ , 'landscape' /*orientation*/ , 10 /*marge_gauche*/ , 10 /*marge_droite*/ , 10 /*marge_haut*/ , 10 /*marge_bas*/ , 'non' /*couleur*/ );
+	$sacoche_pdf = new PDF($orientation='landscape',$marge_min=10,$couleur='non');
 	$sacoche_pdf->tableau_saisie_initialiser($eleve_nb,$item_nb);
 	// 1ère ligne : référence devoir, noms élèves
 	$sacoche_pdf->tableau_saisie_reference_devoir($groupe_nom,$date_fr,$description);
@@ -553,11 +561,11 @@ if( ($action=='saisir') && $devoir_id && $groupe_id && $date_mysql && $date_visi
 		$sacoche_pdf->tableau_saisie_reference_item($item_ref.$texte_socle,$DB_ROW['item_nom']);
 		for($i=0 ; $i<$eleve_nb ; $i++)
 		{
-			$sacoche_pdf->Cell($sacoche_pdf->cases_largeur , $sacoche_pdf->cases_hauteur , '' , 1 , 0 , 'C' , FALSE , '');
+			$sacoche_pdf->Cell($sacoche_pdf->cases_largeur , $sacoche_pdf->cases_hauteur , '' , 1 , 0 , 'C' , false , '');
 		}
 		$sacoche_pdf->SetXY($sacoche_pdf->marge_gauche , $sacoche_pdf->GetY()+$sacoche_pdf->cases_hauteur);
 	}
-	$sacoche_pdf->Output(CHEMIN_DOSSIER_EXPORT.'tableau_sans_notes_'.$fnom_export.'.pdf','F');
+	$sacoche_pdf->Output($dossier_export.'tableau_sans_notes_'.$fnom_export.'.pdf','F');
 	//
 	// c'est fini ; affichage du retour
 	//
@@ -679,11 +687,19 @@ if( ($action=='voir') && $devoir_id && $groupe_id && $date_fr ) // $description 
 	// Enregistrer le csv
 	$export_csv .= $groupe_nom."\r\n".$date_fr."\r\n".$description."\r\n\r\n";
 	$export_csv .= 'CODAGES AUTORISÉS : 1 2 3 4 A N D'."\r\n";
-	FileSystem::zip( CHEMIN_DOSSIER_EXPORT.'saisie_deportee_'.$fnom_export.'.zip' , 'saisie_deportee_'.$fnom_export.'.csv' , To::csv($export_csv) );
+	$zip = new ZipArchive();
+	$result_open = $zip->open($dossier_export.'saisie_deportee_'.$fnom_export.'.zip', ZIPARCHIVE::CREATE);
+	if($result_open!==TRUE)
+	{
+		require('./_inc/tableau_zip_error.php');
+		exit('Problème de création de l\'archive ZIP ('.$result_open.$tab_zip_error[$result_open].') !');
+	}
+	$zip->addFromString('saisie_deportee_'.$fnom_export.'.csv',csv($export_csv));
+	$zip->close();
 	// / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / /
 	// pdf contenant un tableau de saisie vide ; on a besoin de tourner du texte à 90°
 	// / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / /
-	$sacoche_pdf = new PDF( FALSE /*officiel*/ , 'landscape' /*orientation*/ , 10 /*marge_gauche*/ , 10 /*marge_droite*/ , 10 /*marge_haut*/ , 10 /*marge_bas*/ , 'non' /*couleur*/ );
+	$sacoche_pdf = new PDF($orientation='landscape',$marge_min=10,$couleur='non');
 	$sacoche_pdf->tableau_saisie_initialiser($eleve_nb,$item_nb);
 	// 1ère ligne : référence devoir, noms élèves
 	$sacoche_pdf->tableau_saisie_reference_devoir($groupe_nom,$date_fr,$description);
@@ -700,15 +716,15 @@ if( ($action=='voir') && $devoir_id && $groupe_id && $date_fr ) // $description 
 		$sacoche_pdf->tableau_saisie_reference_item($item_ref.$texte_socle,$DB_ROW['item_nom']);
 		for($i=0 ; $i<$eleve_nb ; $i++)
 		{
-			$sacoche_pdf->Cell($sacoche_pdf->cases_largeur , $sacoche_pdf->cases_hauteur , '' , 1 , 0 , 'C' , FALSE , '');
+			$sacoche_pdf->Cell($sacoche_pdf->cases_largeur , $sacoche_pdf->cases_hauteur , '' , 1 , 0 , 'C' , false , '');
 		}
 		$sacoche_pdf->SetXY($sacoche_pdf->marge_gauche , $sacoche_pdf->GetY()+$sacoche_pdf->cases_hauteur);
 	}
-	$sacoche_pdf->Output(CHEMIN_DOSSIER_EXPORT.'tableau_sans_notes_'.$fnom_export.'.pdf','F');
+	$sacoche_pdf->Output($dossier_export.'tableau_sans_notes_'.$fnom_export.'.pdf','F');
 	// / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / /
 	// pdf contenant un tableau de saisie plein ; on a besoin de tourner du texte à 90°
 	// / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / /
-	$sacoche_pdf = new PDF( FALSE /*officiel*/ , 'landscape' /*orientation*/ , 10 /*marge_gauche*/ , 10 /*marge_droite*/ , 10 /*marge_haut*/ , 10 /*marge_bas*/ , 'oui' /*couleur*/ );
+	$sacoche_pdf = new PDF($orientation='landscape',$marge_min=10,$couleur='oui');
 	$sacoche_pdf->tableau_saisie_initialiser($eleve_nb,$item_nb);
 	// 1ère ligne : référence devoir, noms élèves
 	$sacoche_pdf->tableau_saisie_reference_devoir($groupe_nom,$date_fr,$description);
@@ -729,7 +745,7 @@ if( ($action=='voir') && $devoir_id && $groupe_id && $date_fr ) // $description 
 		}
 		$sacoche_pdf->SetXY($sacoche_pdf->marge_gauche , $sacoche_pdf->GetY()+$sacoche_pdf->cases_hauteur);
 	}
-	$sacoche_pdf->Output(CHEMIN_DOSSIER_EXPORT.'tableau_avec_notes_'.$fnom_export.'.pdf','F');
+	$sacoche_pdf->Output($dossier_export.'tableau_avec_notes_'.$fnom_export.'.pdf','F');
 	//
 	// c'est fini ; affichage du retour
 	//
@@ -858,7 +874,7 @@ if( ($action=='voir_repart') && $devoir_id && $groupe_id && $date_fr ) // $descr
 	// / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / /
 	// pdf contenant un tableau avec la répartition quantitative
 	// / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / /
-	$sacoche_pdf = new PDF( FALSE /*officiel*/ , 'portrait' /*orientation*/ , 10 /*marge_gauche*/ , 10 /*marge_droite*/ , 10 /*marge_haut*/ , 10 /*marge_bas*/ , 'oui' /*couleur*/ );
+	$sacoche_pdf = new PDF($orientation='portrait',$marge_min=10,$couleur='oui');
 	$sacoche_pdf->tableau_devoir_repartition_quantitative_initialiser($item_nb);
 	// 1ère ligne : référence des codes
 	$sacoche_pdf->tableau_saisie_reference_devoir($groupe_nom,$date_fr,$description);
@@ -885,19 +901,19 @@ if( ($action=='voir_repart') && $devoir_id && $groupe_id && $date_fr ) // $descr
 			$pos_X = $memo_X + ($sacoche_pdf->cases_largeur - $rect_largeur) / 2 ;
 			$pos_Y = $memo_Y + ($sacoche_pdf->cases_hauteur - $rect_hauteur) / 2 ;
 			$sacoche_pdf->SetXY($pos_X , $pos_Y);
-			$sacoche_pdf->Cell($rect_largeur , $rect_hauteur , '' , 0 , 0 , 'C' , TRUE , '');
+			$sacoche_pdf->Cell($rect_largeur , $rect_hauteur , '' , 0 , 0 , 'C' , true , '');
 			// Écrire le %
 			$sacoche_pdf->SetXY($memo_X , $memo_Y);
 			$sacoche_pdf->SetFont('Arial' , '' , $sacoche_pdf->taille_police*(1+$coefficient));
-			$sacoche_pdf->Cell($sacoche_pdf->cases_largeur , $sacoche_pdf->cases_hauteur , To::pdf(round(100*$coefficient).'%') , 1 , 0 , 'C' , FALSE , '');
+			$sacoche_pdf->Cell($sacoche_pdf->cases_largeur , $sacoche_pdf->cases_hauteur , pdf(round(100*$coefficient).'%') , 1 , 0 , 'C' , false , '');
 		}
 		$sacoche_pdf->SetXY($sacoche_pdf->marge_gauche , $sacoche_pdf->GetY()+$sacoche_pdf->cases_hauteur);
 	}
-	$sacoche_pdf->Output(CHEMIN_DOSSIER_EXPORT.'repartition_quantitative_'.$fnom_export.'.pdf','F');
+	$sacoche_pdf->Output($dossier_export.'repartition_quantitative_'.$fnom_export.'.pdf','F');
 	// / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / /
 	// pdf contenant un tableau avec la répartition nominative
 	// / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / /
-	$sacoche_pdf = new PDF( FALSE /*officiel*/ , 'portrait' /*orientation*/ , 10 /*marge_gauche*/ , 10 /*marge_droite*/ , 10 /*marge_haut*/ , 10 /*marge_bas*/ , 'oui' /*couleur*/ );
+	$sacoche_pdf = new PDF($orientation='portrait',$marge_min=10,$couleur='oui');
 	// il faut additionner le nombre maxi d'élèves par case de chaque item (sans descendre en dessous de 4 pour avoir la place d'afficher l'intitulé de l'item) afin de prévoir le nb de lignes nécessaires
 	$somme = 0;
 	foreach($tab_repartition_quantitatif as $item_id => $tab_effectifs)
@@ -919,15 +935,15 @@ if( ($action=='voir_repart') && $devoir_id && $groupe_id && $date_fr ) // $descr
 			$memo_Y = $sacoche_pdf->GetY();
 			foreach($tab_eleves as $key => $eleve_texte)
 			{
-				$sacoche_pdf->CellFit($sacoche_pdf->cases_largeur , $sacoche_pdf->lignes_hauteur , To::pdf($eleve_texte) , 0 , 2 , 'L' , FALSE , '');
+				$sacoche_pdf->CellFit($sacoche_pdf->cases_largeur , $sacoche_pdf->lignes_hauteur , pdf($eleve_texte) , 0 , 2 , 'L' , false , '');
 			}
 			// Ajouter la bordure
 			$sacoche_pdf->SetXY($memo_X , $memo_Y);
-			$sacoche_pdf->Cell($sacoche_pdf->cases_largeur , $sacoche_pdf->cases_hauteur , '' , 1 , 0 , 'C' , FALSE , '');
+			$sacoche_pdf->Cell($sacoche_pdf->cases_largeur , $sacoche_pdf->cases_hauteur , '' , 1 , 0 , 'C' , false , '');
 		}
 		$sacoche_pdf->SetXY($sacoche_pdf->marge_gauche , $sacoche_pdf->GetY()+$sacoche_pdf->cases_hauteur);
 	}
-	$sacoche_pdf->Output(CHEMIN_DOSSIER_EXPORT.'repartition_nominative_'.$fnom_export.'.pdf','F');
+	$sacoche_pdf->Output($dossier_export.'repartition_nominative_'.$fnom_export.'.pdf','F');
 	//
 	// c'est fini...
 	//
@@ -1034,9 +1050,9 @@ if( ($action=='enregistrer_saisie') && $devoir_id && $date_mysql && $date_visibl
 
 if( ($action=='imprimer_cartouche') && $devoir_id && $groupe_id && $date_fr && $cart_contenu && $cart_detail && $orientation && $marge_min && $couleur )
 {
-	Form::save_choix('cartouche');
-	$with_nom    = (substr($cart_contenu,0,8)=='AVEC_nom')  ? TRUE : FALSE ;
-	$with_result = (substr($cart_contenu,9)=='AVEC_result') ? TRUE : FALSE ;
+	Formulaire::save_choix('cartouche');
+	$with_nom    = (substr($cart_contenu,0,8)=='AVEC_nom')  ? true : false ;
+	$with_result = (substr($cart_contenu,9)=='AVEC_result') ? true : false ;
 	// liste des items
 	$DB_TAB_COMP = DB_STRUCTURE_PROFESSEUR::DB_lister_items_devoir( $devoir_id , FALSE /*with_lien*/ , TRUE /*with_coef*/ );
 	// liste des élèves
@@ -1095,8 +1111,8 @@ if( ($action=='imprimer_cartouche') && $devoir_id && $groupe_id && $date_fr && $
 		}
 	}
 	// On attaque l'élaboration des sorties HTML, CSV et PDF
-	$sacoche_htm = '<hr /><a class="lien_ext" href="'.URL_DIR_EXPORT.'cartouche_'.$fnom_export.'.pdf"><span class="file file_pdf">Cartouches &rarr; Archiver / Imprimer (format <em>pdf</em>).</span></a><br />';
-	$sacoche_htm.= '<a class="lien_ext" href="'.URL_DIR_EXPORT.'cartouche_'.$fnom_export.'.zip"><span class="file file_zip">Cartouches &rarr; Récupérer / Manipuler (fichier <em>csv</em> pour tableur).</span></a>';
+	$sacoche_htm = '<hr /><a class="lien_ext" href="'.$dossier_export.'cartouche_'.$fnom_export.'.pdf"><span class="file file_pdf">Cartouches &rarr; Archiver / Imprimer (format <em>pdf</em>).</span></a><br />';
+	$sacoche_htm.= '<a class="lien_ext" href="'.$dossier_export.'cartouche_'.$fnom_export.'.zip"><span class="file file_zip">Cartouches &rarr; Récupérer / Manipuler (fichier <em>csv</em> pour tableur).</span></a>';
 	$sacoche_csv = '';
 	$separateur  = ';';
 	// Appel de la classe et définition de qqs variables supplémentaires pour la mise en page PDF
@@ -1105,7 +1121,7 @@ if( ($action=='imprimer_cartouche') && $devoir_id && $groupe_id && $date_fr && $
 	{
 		$tab_user_nb_req = array_fill_keys( array_keys($tab_user_nb_req) , $item_nb );
 	}
-	$sacoche_pdf = new PDF( FALSE /*officiel*/ , $orientation , $marge_min /*marge_gauche*/ , $marge_min /*marge_droite*/ , $marge_min /*marge_haut*/ , $marge_min /*marge_bas*/ , $couleur , 'oui' /*legende*/ );
+	$sacoche_pdf = new PDF($orientation,$marge_min,$couleur);
 	$sacoche_pdf->cartouche_initialiser($cart_detail,$item_nb);
 	if($cart_detail=='minimal')
 	{
@@ -1122,10 +1138,10 @@ if( ($action=='imprimer_cartouche') && $devoir_id && $groupe_id && $date_fr && $
 				$ligne2_csv = ''; $ligne2_html = '';
 				foreach($tab_comp_id as $comp_id=>$tab_val_comp)
 				{
-					if( ($only_req==FALSE) || ($tab_result[$comp_id][$user_id]) )
+					if( ($only_req==false) || ($tab_result[$comp_id][$user_id]) )
 					{
 						$ligne1_html .= '<td>'.html($tab_val_comp[0]).'</td>';
-						$ligne2_html .= '<td class="hc">'.Html::note($tab_result[$comp_id][$user_id],$date_fr,$description,FALSE).'</td>';
+						$ligne2_html .= '<td class="hc">'.affich_note_html($tab_result[$comp_id][$user_id],$date_fr,$description,false).'</td>';
 						$ligne1_csv .= '"'.$tab_val_comp[0].'"'.$separateur;
 						$ligne2_csv .= '"'.$tab_result[$comp_id][$user_id].'"'.$separateur;
 						$sacoche_pdf->cartouche_minimal_competence($tab_val_comp[0] , $tab_result[$comp_id][$user_id]);
@@ -1150,9 +1166,9 @@ if( ($action=='imprimer_cartouche') && $devoir_id && $groupe_id && $date_fr && $
 				$sacoche_pdf->cartouche_entete( $texte_entete , $lignes_nb=$tab_user_nb_req[$user_id]+1 );
 				foreach($tab_comp_id as $comp_id=>$tab_val_comp)
 				{
-					if( ($only_req==FALSE) || ($tab_result[$comp_id][$user_id]) )
+					if( ($only_req==false) || ($tab_result[$comp_id][$user_id]) )
 					{
-						$sacoche_htm .= '<tr><td>'.html($tab_val_comp[0]).'</td><td>'.html($tab_val_comp[1]).'</td><td>'.Html::note($tab_result[$comp_id][$user_id],$date_fr,$description,FALSE).'</td></tr>';
+						$sacoche_htm .= '<tr><td>'.html($tab_val_comp[0]).'</td><td>'.html($tab_val_comp[1]).'</td><td>'.affich_note_html($tab_result[$comp_id][$user_id],$date_fr,$description,false).'</td></tr>';
 						$sacoche_csv .= '"'.$tab_val_comp[0].'"'.$separateur.'"'.$tab_val_comp[1].'"'.$separateur.'"'.$tab_result[$comp_id][$user_id].'"'."\r\n";
 						$sacoche_pdf->cartouche_complet_competence($tab_val_comp[0] , $tab_val_comp[1] , $tab_result[$comp_id][$user_id]);
 					}
@@ -1164,9 +1180,17 @@ if( ($action=='imprimer_cartouche') && $devoir_id && $groupe_id && $date_fr && $
 		}
 	}
 	// On archive le cartouche dans un fichier tableur zippé (csv tabulé)
-	FileSystem::zip( CHEMIN_DOSSIER_EXPORT.'cartouche_'.$fnom_export.'.zip' , 'cartouche_'.$fnom_export.'.csv' , To::csv($sacoche_csv) );
+	$zip = new ZipArchive();
+	$result_open = $zip->open($dossier_export.'cartouche_'.$fnom_export.'.zip', ZIPARCHIVE::CREATE);
+	if($result_open!==TRUE)
+	{
+		require('./_inc/tableau_zip_error.php');
+		exit('Problème de création de l\'archive ZIP ('.$result_open.$tab_zip_error[$result_open].') !');
+	}
+	$zip->addFromString('cartouche_'.$fnom_export.'.csv',csv($sacoche_csv));
+	$zip->close();
 	// On archive le cartouche dans un fichier pdf
-	$sacoche_pdf->Output(CHEMIN_DOSSIER_EXPORT.'cartouche_'.$fnom_export.'.pdf','F');
+	$sacoche_pdf->Output($dossier_export.'cartouche_'.$fnom_export.'.pdf','F');
 	// Affichage
 	exit($sacoche_htm);
 }
@@ -1185,7 +1209,8 @@ if( (isset($_GET['f_action'])) && ($_GET['f_action']=='importer_saisie_csv') )
 	$ferreur = $tab_file['error'];
 	if( (!file_exists($fnom_serveur)) || (!$ftaille) || ($ferreur) )
 	{
-		exit('Erreur : problème de transfert ! Fichier trop lourd ? '.InfoServeur::minimum_limitations_upload());
+		require_once('./_inc/fonction_infos_serveur.php');
+		exit('Erreur : problème de transfert ! Fichier trop lourd ? min(memory_limit,post_max_size,upload_max_filesize)='.minimum_limitations_upload());
 	}
 	$extension = strtolower(pathinfo($fnom_transmis,PATHINFO_EXTENSION));
 	if(!in_array($extension,array('txt','csv')))
@@ -1193,7 +1218,7 @@ if( (isset($_GET['f_action'])) && ($_GET['f_action']=='importer_saisie_csv') )
 		exit('Erreur : l\'extension du fichier transmis est incorrecte !');
 	}
 	$contenu_csv = file_get_contents($fnom_serveur);
-	$contenu_csv = To::utf8($contenu_csv); // Mettre en UTF-8 si besoin
+	$contenu_csv = utf8($contenu_csv); // Mettre en UTF-8 si besoin
 	$tab_lignes = extraire_lignes($contenu_csv); // Extraire les lignes du fichier
 	$separateur = extraire_separateur_csv($tab_lignes[0]); // Déterminer la nature du séparateur
 	// Pas de ligne d'en-tête à supprimer
@@ -1203,7 +1228,7 @@ if( (isset($_GET['f_action'])) && ($_GET['f_action']=='importer_saisie_csv') )
 	unset($tab_elements[0]);
 	foreach ($tab_elements as $num_colonne => $element_contenu)
 	{
-		$eleve_id = Clean::entier($element_contenu);
+		$eleve_id = clean_entier($element_contenu);
 		if($eleve_id)
 		{
 			$tab_eleve[$num_colonne] = $eleve_id ;
@@ -1216,7 +1241,7 @@ if( (isset($_GET['f_action'])) && ($_GET['f_action']=='importer_saisie_csv') )
 	foreach ($tab_lignes as $ligne_contenu)
 	{
 		$tab_elements = explode($separateur,$ligne_contenu);
-		$item_id = Clean::entier($tab_elements[0]);
+		$item_id = clean_entier($tab_elements[0]);
 		if($item_id)
 		{
 			foreach ($tab_eleve as $num_colonne => $eleve_id)
@@ -1224,7 +1249,7 @@ if( (isset($_GET['f_action'])) && ($_GET['f_action']=='importer_saisie_csv') )
 				if( (isset($tab_elements[$num_colonne])) && ($tab_elements[$num_colonne]!='') )
 				{
 					$score = $tab_elements[$num_colonne];
-					if(strpos($scores_autorises,$score)!==FALSE)
+					if(strpos($scores_autorises,$score)!==false)
 					{
 						$retour .= $eleve_id.'.'.$item_id.'.'.strtoupper($score).'|';
 					}
@@ -1261,7 +1286,8 @@ if( ($action=='uploader_document') && $devoir_id && in_array($doc_objet,array('s
 	$ferreur = $tab_file['error'];
 	if( (!file_exists($fnom_serveur)) || (!$ftaille) || ($ferreur) )
 	{
-		exit('Problème de transfert ! Fichier trop lourd ? '.InfoServeur::minimum_limitations_upload());
+		require_once('./_inc/fonction_infos_serveur.php');
+		exit('Problème de transfert ! Fichier trop lourd ? min(memory_limit,post_max_size,upload_max_filesize)='.minimum_limitations_upload());
 	}
 	$extension = strtolower(pathinfo($fnom_transmis,PATHINFO_EXTENSION));
 	if(in_array( $extension , array('bat','com','exe','php','zip') ))
@@ -1277,15 +1303,15 @@ if( ($action=='uploader_document') && $devoir_id && in_array($doc_objet,array('s
 		exit('Le fichier dépasse les '.FICHIER_TAILLE_MAX.' Ko autorisés !');
 	}
 	// Enregistrement du fichier
-	$fichier_nom = 'devoir_'.$devoir_id.'_'.$doc_objet.'_'.time().'.'.$extension; // pas besoin de le rendre inaccessible -> fabriquer_fin_nom_fichier__date_et_alea() inutilement lourd
-	if(!move_uploaded_file($fnom_serveur , $chemin_devoir.$fichier_nom))
+	$fichier_nom = 'devoir_'.$devoir_id.'_'.$doc_objet.'_'.time().'.'.$extension; // pas besoin de le rendre inaccessible -> fabriquer_fin_nom_fichier() inutilement lourd
+	if(!move_uploaded_file($fnom_serveur , $dossier_devoir_relatif.$fichier_nom))
 	{
 		exit('Le fichier n\'a pas pu être enregistré sur le serveur !');
 	}
 	// Mise à jour dans la base
-	DB_STRUCTURE_PROFESSEUR::DB_modifier_devoir_document($devoir_id,$_SESSION['USER_ID'],$doc_objet,$url_dossier_devoir.$fichier_nom);
+	DB_STRUCTURE_PROFESSEUR::DB_modifier_devoir_document($devoir_id,$_SESSION['USER_ID'],$doc_objet,$dossier_devoir_absolu.$fichier_nom);
 	// Retour
-	exit('ok'.']¤['.$ref.']¤['.$doc_objet.']¤['.$url_dossier_devoir.$fichier_nom);
+	exit('ok'.']¤['.$ref.']¤['.$doc_objet.']¤['.$dossier_devoir_absolu.$fichier_nom);
 }
 
 //	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1295,14 +1321,9 @@ if( ($action=='uploader_document') && $devoir_id && in_array($doc_objet,array('s
 if( ($action=='retirer_document') && $devoir_id && in_array($doc_objet,array('sujet','corrige')) && $doc_url )
 {
 	// Suppression du fichier, uniquement si ce n'est pas un lien externe ou vers un devoir d'un autre établissement
-	if(mb_strpos($doc_url,$url_dossier_devoir)===0)
+	if(mb_strpos($doc_url,$dossier_devoir_absolu)===0)
 	{
-		$chemin_doc = str_replace($url_dossier_devoir,$chemin_devoir,$doc_url);
-		// Il peut être référencé dans une autre évaluation et donc avoir déjà été effacé, ou ne pas être présent sur le serveur en cas de restauration de base ailleurs, etc.
-		if(file_exists($chemin_doc))
-		{
-			unlink($chemin_doc);
-		}
+		unlink(str_replace($dossier_devoir_absolu,$dossier_devoir_relatif,$doc_url));
 	}
 	// Mise à jour dans la base
 	DB_STRUCTURE_PROFESSEUR::DB_modifier_devoir_document($devoir_id,$_SESSION['USER_ID'],$doc_objet,'');

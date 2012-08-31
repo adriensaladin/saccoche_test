@@ -205,7 +205,7 @@ $(document).ready
 					url : 'ajax.php?page=_maj_select_eleves',
 					data : 'f_groupe='+groupe_id+'&f_type='+groupe_type+'&f_statut=1',
 					dataType : "html",
-					error : function(jqXHR, textStatus, errorThrown)
+					error : function(msg,string)
 					{
 						$('#ajax_maj').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
 					},
@@ -269,12 +269,10 @@ $(document).ready
 					f_coef               : { required:false },
 					f_socle              : { required:false },
 					f_lien               : { required:false },
-					f_start              : { required:false },
 					f_restriction_socle  : { required:false },
 					f_restriction_niveau : { required:false },
 					f_couleur            : { required:true },
-					f_legende            : { required:true },
-					f_marge_min          : { required:true }
+					f_legende            : { required:true }
 				},
 				messages :
 				{
@@ -287,12 +285,10 @@ $(document).ready
 					f_coef               : { },
 					f_socle              : { },
 					f_lien               : { },
-					f_start              : { },
 					f_restriction_socle  : { },
 					f_restriction_niveau : { },
 					f_couleur            : { required:"couleur manquante" },
-					f_legende            : { required:"légende manquante" },
-					f_marge_min          : { required:"marge mini manquante" }
+					f_legende            : { required:"légende manquante" }
 				},
 				errorElement : "label",
 				errorClass : "erreur",
@@ -348,11 +344,10 @@ $(document).ready
 		}
 
 		// Fonction suivant l'envoi du formulaire (avec jquery.form.js)
-		function retour_form_erreur(jqXHR, textStatus, errorThrown)
+		function retour_form_erreur(msg,string)
 		{
 			$('button').prop('disabled',false);
-			var message = (jqXHR.status!=500) ? 'Echec de la connexion !' : 'Erreur 500&hellip; Mémoire insuffisante ? Sélectionner moins d\'élèves à la fois ou demander à votre hébergeur d\'augmenter la valeur "memory_limit".' ;
-			$('#ajax_msg').removeAttr("class").addClass("alerte").html(message);
+			$('#ajax_msg').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
 		}
 
 		// Fonction suivant l'envoi du formulaire (avec jquery.form.js)
@@ -372,7 +367,7 @@ $(document).ready
 				$('#ajax_msg').removeAttr("class").html('');
 				// Mis dans le div bilan et pas balancé directement dans le fancybox sinon le format_lien() nécessite un peu plus de largeur que le fancybox ne recalcule pas (et $.fancybox.update(); ne change rien).
 				// Malgré tout, pour Chrome par exemple, la largeur est mal clculée et provoque des retours à la ligne, d'où le minWidth ajouté.
-				$('#bilan').html('<div class="noprint">Afin de préserver l\'environnement, n\'imprimer qu\'en cas de nécessité !</div>'+responseHTML);
+				$('#bilan').html(responseHTML);
 				format_liens('#bilan');
 				$.fancybox( { 'href':'#bilan' , onClosed:function(){$('#bilan').html("");} , 'centerOnScroll':true , 'minWidth':400 } );
 			}

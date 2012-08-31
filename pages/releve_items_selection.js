@@ -219,7 +219,7 @@ $(document).ready
 					url : 'ajax.php?page=_maj_select_eleves',
 					data : 'f_groupe='+groupe_val+'&f_type='+type+'&f_statut=1',
 					dataType : "html",
-					error : function(jqXHR, textStatus, errorThrown)
+					error : function(msg,string)
 					{
 						$('#ajax_maj').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
 					},
@@ -458,11 +458,10 @@ $(document).ready
 		}
 
 		// Fonction suivant l'envoi du formulaire (avec jquery.form.js)
-		function retour_form_erreur(jqXHR, textStatus, errorThrown)
+		function retour_form_erreur(msg,string)
 		{
 			$('button').prop('disabled',false);
-			var message = (jqXHR.status!=500) ? 'Echec de la connexion !' : 'Erreur 500&hellip; Mémoire insuffisante ? Sélectionner moins d\'élèves à la fois ou demander à votre hébergeur d\'augmenter la valeur "memory_limit".' ;
-			$('#ajax_msg').removeAttr("class").addClass("alerte").html(message);
+			$('#ajax_msg').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
 		}
 
 		// Fonction suivant l'envoi du formulaire (avec jquery.form.js)
@@ -482,7 +481,7 @@ $(document).ready
 				$('#ajax_msg').removeAttr("class").html('');
 				// Mis dans le div bilan et pas balancé directement dans le fancybox sinon le format_lien() nécessite un peu plus de largeur que le fancybox ne recalcule pas (et $.fancybox.update(); ne change rien).
 				// Malgré tout, pour Chrome par exemple, la largeur est mal clculée et provoque des retours à la ligne, d'où le minWidth ajouté.
-				$('#bilan').html('<div class="noprint">Afin de préserver l\'environnement, n\'imprimer qu\'en cas de nécessité !</div>'+responseHTML);
+				$('#bilan').html(responseHTML);
 				format_liens('#bilan');
 				$.fancybox( { 'href':'#bilan' , onClosed:function(){$('#bilan').html("");} , 'centerOnScroll':true , 'minWidth':400 } );
 			}
@@ -491,48 +490,6 @@ $(document).ready
 				$('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);
 			}
 		} 
-
-		//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-		//	Forcer le report de notes vers un bulletin SACoche
-		//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-
-		$('#bouton_report').live // live est utilisé pour prendre en compte les nouveaux éléments créés
-		('click',
-			function()
-			{
-				$('#form_report_bulletin button, #form_report_bulletin select').prop('disabled',true);
-				$('#ajax_msg_report').removeAttr("class").addClass("loader").html("Connexion au serveur&hellip;");
-				$.ajax
-				(
-					{
-						type : 'POST',
-						url : 'ajax.php?page=officiel_accueil',
-						data : 'f_action='+'reporter_notes'+'&f_periode_eleves='+$('#f_periode_eleves').val()+'&f_eleves_moyennes='+$('#f_eleves_moyennes').val()+'&f_rubrique='+$('#f_rubrique').val(),
-						// data : $('#form_report_bulletin').serialize(), le select f_rubrique n'est curieusement pas envoyé...
-						dataType : "html",
-						error : function(jqXHR, textStatus, errorThrown)
-						{
-							$('#ajax_msg_report').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
-							$('#form_report_bulletin button, #form_report_bulletin select').prop('disabled',false);
-							return false;
-						},
-						success : function(responseHTML)
-						{
-							initialiser_compteur();
-							$('#form_report_bulletin button, #form_report_bulletin select').prop('disabled',false);
-							if(responseHTML.substring(0,4)!='Note')
-							{
-								$('#ajax_msg_report').removeAttr("class").addClass("alerte").html(responseHTML);
-							}
-							else
-							{
-								$('#ajax_msg_report').removeAttr("class").addClass("valide").html(responseHTML);
-							}
-						}
-					}
-				);
-			}
-		);
 
 	}
 );

@@ -162,7 +162,7 @@ $(document).ready
 						url : 'ajax.php?page='+PAGE,
 						data : 'f_action='+'afficher_destinataires'+'&f_ids='+destinataires_liste,
 						dataType : "html",
-						error : function(jqXHR, textStatus, errorThrown)
+						error : function(msg,string)
 						{
 							$('label[id=temp]').remove();
 							$.fancybox( '<label class="alerte">'+'Echec de la connexion !\nVeuillez recommencer.'+'</label>' , {'centerOnScroll':true} );
@@ -200,10 +200,11 @@ $(document).ready
 		{
 			// Ne pas changer ici la valeur de "mode" (qui est à "ajouter" ou "modifier").
 			var message_contenu = $("#f_message_contenu").val();
+			$('#f_message').html(message_contenu);
 			afficher_textarea_reste( $('#f_message') , 255 );
 			// Afficher la zone
 			$.fancybox( { 'href':'#form_message' , onStart:function(){$('#form_message').css("display","block");} , onClosed:function(){$('#form_message').css("display","none");} , 'modal':true , 'centerOnScroll':true } );
-			$('#f_message').focus().html(message_contenu);
+			$('#f_message').focus();
 		};
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
@@ -276,7 +277,7 @@ $(document).ready
 					url : 'ajax.php?page='+PAGE,
 					data : 'f_action='+'afficher_users'+'&f_profil='+profil+'&f_groupe_id='+groupe_id+'&f_groupe_type='+groupe_type,
 					dataType : "html",
-					error : function(jqXHR, textStatus, errorThrown)
+					error : function(msg,string)
 					{
 						$('#ajax_msg_destinataires').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
 					},
@@ -491,7 +492,7 @@ $(document).ready
 		}
 
 		// Fonction suivant l'envoi du formulaire (avec jquery.form.js)
-		function retour_form_erreur(jqXHR, textStatus, errorThrown)
+		function retour_form_erreur(msg,string)
 		{
 			please_wait = false;
 			$('#ajax_msg').parent().children('q').show();

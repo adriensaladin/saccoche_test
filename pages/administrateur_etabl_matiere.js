@@ -42,12 +42,12 @@ $(document).ready
 		$('#form_perso   table.form').tablesorter({ headers:{2:{sorter:false}} });
 		function trier_tableau()
 		{
-			if($('#form_partage table.form tbody tr').length>1)
+			if($('#form_partage table.form tbody tr').length)
 			{
 				$('#form_partage table.form').trigger('update');
 				$('#form_partage table.form').trigger('sorton',[sorting]);
 			}
-			if($('#form_perso table.form tbody tr').length>1)
+			if($('#form_perso table.form tbody tr').length)
 			{
 				$('#form_perso table.form').trigger('update');
 				$('#form_perso table.form').trigger('sorton',[sorting]);
@@ -171,7 +171,7 @@ $(document).ready
 					url : 'ajax.php?page='+PAGE,
 					data : 'f_action=supprimer&f_id='+$('#f_id').val(),
 					dataType : "html",
-					error : function(jqXHR, textStatus, errorThrown)
+					error : function(msg,string)
 					{
 						$('#ajax_msg').parent().children('q').show();
 						$('#ajax_msg').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
@@ -297,7 +297,7 @@ $(document).ready
 					url : 'ajax.php?page='+PAGE,
 					data : data_action+'&'+data_parametre,
 					dataType : "html",
-					error : function(jqXHR, textStatus, errorThrown)
+					error : function(msg,string)
 					{
 						$('#ajax_msg_recherche').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
 					},
@@ -379,7 +379,7 @@ $(document).ready
 						url : 'ajax.php?page='+PAGE,
 						data : 'f_action=ajouter_partage&f_matiere='+matiere_id,
 						dataType : "html",
-						error : function(jqXHR, textStatus, errorThrown)
+						error : function(msg,string)
 						{
 							afficher_masquer_images_action('show');
 							$('#ajax_msg_recherche').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
@@ -451,7 +451,7 @@ $(document).ready
 						url : 'ajax.php?page='+PAGE,
 						data : 'f_action=deplacer_referentiels&f_id_avant='+matiere_id_avant+'&f_id_apres='+matiere_id_apres,
 						dataType : "html",
-						error : function(jqXHR, textStatus, errorThrown)
+						error : function(msg,string)
 						{
 							$('button').prop('disabled',false);
 							$('#ajax_msg_move').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
@@ -551,7 +551,7 @@ $(document).ready
 		}
 
 		// Fonction suivant l'envoi du formulaire (avec jquery.form.js)
-		function retour_form_erreur(jqXHR, textStatus, errorThrown)
+		function retour_form_erreur(msg,string)
 		{
 			please_wait = false;
 			$('#ajax_msg').parent().children('q').show();

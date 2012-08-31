@@ -30,12 +30,12 @@ if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');
 // Réception d'un formulaire depuis un tableau de synthèse bilan
 // Dans ce cas il s'agit d'une évaluation sur une sélection d'élèves.
 $tab_items = ( isset($_POST['id_item']) && is_array($_POST['id_item']) ) ? $_POST['id_item'] : array() ;
-$tab_items = Clean::map_entier($tab_items);
+$tab_items = array_map('clean_entier',$tab_items);
 $tab_items = array_filter($tab_items,'positif');
 $nb_items  = count($tab_items);
 $txt_items = ($nb_items) ? ( ($nb_items>1) ? $nb_items.' items' : $nb_items.' item' ) : 'aucun' ;
 $tab_users = ( isset($_POST['id_user']) && is_array($_POST['id_user']) ) ? $_POST['id_user'] : array() ;
-$tab_users = Clean::map_entier($tab_users);
+$tab_users = array_map('clean_entier',$tab_users);
 $tab_users = array_filter($tab_users,'positif');
 $nb_users  = count($tab_users);
 $txt_users = ($nb_users) ? ( ($nb_users>1) ? $nb_users.' élèves' : $nb_users.' élève' ) : 'aucun' ;
@@ -52,7 +52,7 @@ $TYPE = in_array($TYPE,array('groupe','selection')) ? $TYPE       : 'groupe' ;
 
 $TITRE = ($TYPE=='groupe') ? "Évaluer une classe ou un groupe" : "Évaluer des élèves sélectionnés" ;
 
-require(CHEMIN_DOSSIER_INCLUDE.'fonction_affichage_sections_communes.php');
+require('./_inc/fonction_affichage_sections_communes.php');
 
 // Formulaires de choix des élèves et de choix d'une période dans le cas d'une évaluation sur un groupe
 $select_eleve   = '';
@@ -86,7 +86,7 @@ if($TYPE=='groupe')
 		}
 	}
 	// Élément de formulaire "f_aff_periode" pour le choix d'une période
-	$select_periode = Form::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_periodes_etabl() , $select_nom='f_aff_periode' , $option_first='val' , $selection=false , $optgroup='non');
+	$select_periode = Formulaire::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_periodes_etabl() , $select_nom='f_aff_periode' , $option_first='val' , $selection=false , $optgroup='non');
 	// On désactive les périodes prédéfinies pour le choix "toute classe / tout groupe" initialement sélectionné
 	$select_periode = preg_replace( '#'.'value="([1-9].*?)"'.'#' , 'value="$1" disabled' , $select_periode );
 	// Fabrication du tableau javascript "tab_groupe_periode" pour les jointures groupes/périodes
@@ -110,8 +110,8 @@ if($TYPE=='groupe')
 // Sert à rechercher des élèves ayant passés une évaluation de même nom
 if($TYPE=='selection')
 {
-	$annee = (date("n")<$_SESSION['MOIS_BASCULE_ANNEE_SCOLAIRE']) ? date("Y")-1 : date("Y") ;
-	$jour_debut_annee_scolaire = '01/'.sprintf("%02u",$_SESSION['MOIS_BASCULE_ANNEE_SCOLAIRE']).'/'.$annee;
+	$annee = ($_SESSION['MOIS_BASCULE_ANNEE_SCOLAIRE']<date("n")) ? date("Y") : date("Y")-1 ;
+	$date_start = '01/'.sprintf("%02u",$_SESSION['MOIS_BASCULE_ANNEE_SCOLAIRE']).'/'.$annee;
 }
 
 // Dates par défaut
@@ -119,7 +119,7 @@ $date_debut    = date("d/m/Y",mktime(0,0,0,date("m")-2,date("d"),date("Y"))); //
 $date_fin      = date("d/m/Y",mktime(0,0,0,date("m")+1,date("d"),date("Y"))); // 1 mois après
 $date_autoeval = date("d/m/Y",mktime(0,0,0,date("m"),date("d")+7,date("Y"))); // 1 semaine après
 
-$select_selection_items = Form::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_selection_items($_SESSION['USER_ID']) , $select_nom='f_selection_items' , $option_first='oui' , $selection=false , $optgroup='non');
+$select_selection_items = Formulaire::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_selection_items($_SESSION['USER_ID']) , $select_nom='f_selection_items' , $option_first='oui' , $selection=false , $optgroup='non');
 ?>
 
 <script type="text/javascript">
@@ -127,7 +127,7 @@ $select_selection_items = Form::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_sele
 	// <![CDATA[
 	var select_groupe = "<?php echo str_replace('"','\"','<option value=""></option>'.$select_eleve); ?>";
 	// ]]>
-	var url_export = "<?php echo URL_DIR_EXPORT ?>";
+	var dossier_export = "./__tmp/export/";
 	var input_date = "<?php echo TODAY_FR ?>";
 	var date_mysql = "<?php echo TODAY_MYSQL ?>";
 	var input_autoeval = "<?php echo $date_autoeval ?>";
@@ -210,7 +210,7 @@ $select_selection_items = Form::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_sele
 
 <?php if($TYPE=='selection'): ?>
 <form action="#" method="post" id="zone_eleve" class="arbre_dynamique hide">
-	<div><button id="indiquer_eleves_deja" type="button" class="eclair">Indiquer les élèves associés à une évaluation de même nom</button> depuis le <input id="f_date_deja" name="f_date_deja" size="9" type="text" value="<?php echo $jour_debut_annee_scolaire ?>" /><q class="date_calendrier" title="Cliquez sur cette image pour importer une date depuis un calendrier !"></q><label id="msg_indiquer_eleves_deja"></label></div>
+	<div><button id="indiquer_eleves_deja" type="button" class="eclair">Indiquer les élèves associés à une évaluation de même nom</button> depuis le <input id="f_date_deja" name="f_date_deja" size="9" type="text" value="<?php echo $date_start ?>" /><q class="date_calendrier" title="Cliquez sur cette image pour importer une date depuis un calendrier !"></q><label id="msg_indiquer_eleves_deja"></label></div>
 	<p>Cocher ci-dessous (<span class="astuce">cliquer sur un intitulé pour déployer son contenu</span>) :</p>
 	<?php echo afficher_form_element_checkbox_eleves_professeur(TRUE /*with_pourcent*/); ?>
 	<p class="danger">Une évaluation dont la saisie a commencé ne devrait pas voir ses élèves modifiés.<br />En particulier, retirer des élèves d'une évaluation efface les scores correspondants déjà saisis !</p>
@@ -241,8 +241,7 @@ $select_selection_items = Form::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_sele
 		<label for="f_report_cellule">[ <input type="radio" id="f_report_cellule" name="f_endroit_report_note" value="cellule" checked /> la cellule ]</label>
 		<label for="f_report_colonne">[ <input type="radio" id="f_report_colonne" name="f_endroit_report_note" value="colonne" /> la <span class="u">C</span>olonne ]</label>
 		<label for="f_report_ligne">[ <input type="radio" id="f_report_ligne" name="f_endroit_report_note" value="ligne" /> la <span class="u">L</span>igne ]</label>
-		<label for="f_report_tableau">[ <input type="radio" id="f_report_tableau" name="f_endroit_report_note" value="tableau" /> le <span class="u">T</span>ableau ]</label>.
-		<span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_professeur__evaluations_saisie_resultats#toggle_saisies_multiples ">DOC : Report multiple.</a></span>
+		<label for="f_report_tableau">[ <input type="radio" id="f_report_tableau" name="f_endroit_report_note" value="tableau" /> le <span class="u">T</span>ableau ]</label> .
 	</p>
 	<div>
 		<a id="to_zone_saisir_deport" href="#"><img src="./_img/toggle_plus.gif" alt="" title="Voir / masquer la saisie déportée." class="toggle" /></a> Saisie déportée
@@ -299,12 +298,12 @@ $select_selection_items = Form::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_sele
 
 <?php
 // Fabrication des éléments select du formulaire
-Form::load_choix_memo();
-$select_cart_contenu = Form::afficher_select(Form::$tab_select_cart_contenu , $select_nom='f_contenu'     , $option_first='non' , $selection=Form::$tab_choix['cart_contenu'] , $optgroup='non');
-$select_cart_detail  = Form::afficher_select(Form::$tab_select_cart_detail  , $select_nom='f_detail'      , $option_first='non' , $selection=Form::$tab_choix['cart_detail']  , $optgroup='non');
-$select_orientation  = Form::afficher_select(Form::$tab_select_orientation  , $select_nom='f_orientation' , $option_first='non' , $selection=Form::$tab_choix['orientation']  , $optgroup='non');
-$select_couleur      = Form::afficher_select(Form::$tab_select_couleur      , $select_nom='f_couleur'     , $option_first='non' , $selection=Form::$tab_choix['couleur']      , $optgroup='non');
-$select_marge_min    = Form::afficher_select(Form::$tab_select_marge_min    , $select_nom='f_marge_min'   , $option_first='non' , $selection=Form::$tab_choix['marge_min']    , $optgroup='non');
+Formulaire::load_choix_memo();
+$select_cart_contenu = Formulaire::afficher_select(Formulaire::$tab_select_cart_contenu , $select_nom='f_contenu'     , $option_first='non' , $selection=Formulaire::$tab_choix['cart_contenu'] , $optgroup='non');
+$select_cart_detail  = Formulaire::afficher_select(Formulaire::$tab_select_cart_detail  , $select_nom='f_detail'      , $option_first='non' , $selection=Formulaire::$tab_choix['cart_detail']  , $optgroup='non');
+$select_orientation  = Formulaire::afficher_select(Formulaire::$tab_select_orientation  , $select_nom='f_orientation' , $option_first='non' , $selection=Formulaire::$tab_choix['orientation']  , $optgroup='non');
+$select_couleur      = Formulaire::afficher_select(Formulaire::$tab_select_couleur      , $select_nom='f_couleur'     , $option_first='non' , $selection=Formulaire::$tab_choix['couleur']      , $optgroup='non');
+$select_marge_min    = Formulaire::afficher_select(Formulaire::$tab_select_marge_min    , $select_nom='f_marge_min'   , $option_first='non' , $selection=Formulaire::$tab_choix['marge_min']    , $optgroup='non');
 ?>
 
 <form action="#" method="post" id="zone_imprimer" class="hide"><fieldset>

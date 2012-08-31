@@ -26,12 +26,12 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-$TITRE = "Relevés / Synthèses";
+$TITRE = "Relevés / Bilans";
 ?>
 
 <?php
 // Afficher la bonne page et appeler le bon js / ajax par la suite
-$fichier_section = CHEMIN_DOSSIER_PAGES.$PAGE.'_'.$SECTION.'.php';
+$fichier_section = './pages/'.$PAGE.'_'.$SECTION.'.php';
 if(is_file($fichier_section))
 {
 	$PAGE = $PAGE.'_'.$SECTION ;

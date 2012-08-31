@@ -1,0 +1,298 @@
+<?php
+/**
+ * @version $Id$
+ * @author Thomas Crespin <thomas.crespin@sesamath.net>
+ * @copyright Thomas Crespin 2010
+ * 
+ * ****************************************************************************************************
+ * SACoche <http://sacoche.sesamath.net> - Suivi d'Acquisitions de Compétences
+ * © Thomas Crespin pour Sésamath <http://www.sesamath.net> - Tous droits réservés.
+ * Logiciel placé sous la licence libre GPL 3 <http://www.rodage.org/gpl-3.0.fr.html>.
+ * ****************************************************************************************************
+ * 
+ * Ce fichier est une partie de SACoche.
+ * 
+ * SACoche est un logiciel libre ; vous pouvez le redistribuer ou le modifier suivant les termes 
+ * de la “GNU General Public License” telle que publiée par la Free Software Foundation :
+ * soit la version 3 de cette licence, soit (à votre gré) toute version ultérieure.
+ * 
+ * SACoche est distribué dans l’espoir qu’il vous sera utile, mais SANS AUCUNE GARANTIE :
+ * sans même la garantie implicite de COMMERCIALISABILITÉ ni d’ADÉQUATION À UN OBJECTIF PARTICULIER.
+ * Consultez la Licence Générale Publique GNU pour plus de détails.
+ * 
+ * Vous devriez avoir reçu une copie de la Licence Générale Publique GNU avec SACoche ;
+ * si ce n’est pas le cas, consultez : <http://www.gnu.org/licenses/>.
+ * 
+ */
+
+/** 
+ * Fonctions de nettoyage des chaînes avant stockage ou affichage.
+ * 
+ * Les conseils à suivre que l'on donne génréralement sont les suivants :
+ * + Desactiver magic_quotes_gpc() pour ne pas avoir à jouer conditionnellement avec stripslashes() et addslashes()
+ * + Avant stockage dans la BDD utiliser mysql_real_escape_string() et intval()
+ * + Avant affichage utiliser htmlspecialchars() couplé à nl2br() si on veut les sauts de ligne (hors textarea)
+ * Ici c'est inutile, les fonctions mises en place et la classe PDO s'occupent de tout.
+ * 
+ */
+
+// Fonction pour remédier à l'éventuelle configuration de magic_quotes_gpc à On (directive obsolète depuis PHP 5.3.0 et supprimée depuis PHP 6.0.0).
+// array_map() génère une erreur si le tableau contient lui-même un tableau ; à la place on peut utiliser array_walk_recursive() ou la fonction ci-dessous présente dans le code de MySQL_Dumper et PunBB) :
+// function stripslashes_array($val){$val = is_array($val) ? array_map('stripslashes_array',$val) : stripslashes($val);return $val;}
+function anti_magic_quotes_gpc()
+{
+	if(get_magic_quotes_gpc())
+	{
+		function tab_stripslashes(&$val,$key)
+		{
+			$val = stripslashes($val);
+		}
+		array_walk_recursive($_POST  ,'tab_stripslashes');
+		array_walk_recursive($_GET   ,'tab_stripslashes');
+		array_walk_recursive($_COOKIE,'tab_stripslashes');
+	}
+}
+anti_magic_quotes_gpc();
+
+/*
+	Quelques "sous-fonctions" utilisées
+	Attention ! strtr() renvoie n'importe quoi en UTF-8 car il fonctionne octet par octet et non caractère par caractère, or l'UTF-8 est multi-octets...
+*/
+
+define( 'FILENAME_CHARS' , utf8_decode('-.0123456789_abcdefghijklmnopqrstuvwxyz') );
+define( 'LATIN1_LC_CHARS' , utf8_decode('abcdefghijklmnopqrstuvwxyzàáâãäåæçèéêëìíîïñòóôõöœøŕšùúûüýÿžðþ') );
+define( 'LATIN1_UC_CHARS' , utf8_decode('ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÑÒÓÔÕÖŒØŔŠÙÚÛÜÝŸŽÐÞ') );
+define( 'LATIN1_YES_ACCENT' , utf8_decode('ÀÁÂÃÄÅàáâãäåÞþÇçÐðÈÉÊËèéêëÌÍÎÏìíîïÑñÒÓÔÕÖØòóôõöøŔŕŠšßÙÚÛÜùúûüÝŸýÿŽž') );
+define( 'LATIN1_NOT_ACCENT' , utf8_decode('AAAAAAaaaaaaBbCcDdEEEEeeeeIIIIiiiiNnOOOOOOooooooRrSssUUUUuuuuYYyyZz') );
+
+// Fonction pour remplacer mb_detect_encoding() à cause d'un bug => http://fr2.php.net/manual/en/function.mb-detect-encoding.php#81936
+function perso_mb_detect_encoding_utf8($text)
+{
+	return (mb_detect_encoding($text.' ',"auto",TRUE)=='UTF-8');
+}
+
+// Equivalent de "strtoupper()" pour mettre en majuscules y compris les caractères accentués
+function perso_strtoupper($text)
+{
+	return (perso_mb_detect_encoding_utf8($text)) ? mb_convert_case($text,MB_CASE_UPPER,'UTF-8') : strtr($text,LATIN1_LC_CHARS,LATIN1_UC_CHARS) ;
+}
+
+// Equivalent de "strtolower()" pour mettre en minuscules y compris les caractères accentués
+function perso_strtolower($text)
+{
+	return (perso_mb_detect_encoding_utf8($text)) ? mb_convert_case($text,MB_CASE_LOWER,'UTF-8') : strtr($text,LATIN1_UC_CHARS,LATIN1_LC_CHARS) ;
+}
+
+// Enlever les accents
+function clean_accents($text)
+{
+	return (perso_mb_detect_encoding_utf8($text)) ? utf8_encode(strtr(utf8_decode($text),LATIN1_YES_ACCENT,LATIN1_NOT_ACCENT)) : strtr($text,LATIN1_YES_ACCENT,LATIN1_NOT_ACCENT) ;
+}
+
+// Enlever les caractères diacritiques
+function clean_diacris($text)
+{
+	$bad = array('Ç','ç','Æ' ,'æ' ,'Œ' ,'œ' );
+	$bon = array('C','c','AE','ae','OE','oe');
+	return str_replace($bad,$bon,$text);
+}
+
+// Equivalent de "ucwords()" adaptée aux caractères accentués et aux expressions séparées par autre chose qu'une espace (virgule, point, tiret, parenthèse...)
+function perso_ucwords($text)
+{
+	return (perso_mb_detect_encoding_utf8($text)) ? mb_convert_case($text,MB_CASE_TITLE,'UTF-8') : trim(preg_replace('/([^a-z'.LATIN1_LC_CHARS.']|^)([a-z'.LATIN1_LC_CHARS.'])/e', 'stripslashes("$1".perso_strtoupper("$2"))', perso_strtolower($text)));
+}
+
+// Enlever les guillemets éventuels entourants des champs dans un fichier csv (fonction utilisée avec "array_map()")
+function clean_csv($text)
+{
+	if(mb_strlen($text)>1)
+	{
+		$tab_guillemets = array('"','\'');
+		$premier = mb_substr($text,0,1);
+		$dernier = mb_substr($text,-1);
+		if( ($premier==$dernier) && (in_array($premier,$tab_guillemets)) )
+		{
+			$text = mb_substr($text,1,-1);
+		}
+	}
+	return $text;
+}
+
+// Enlever les symboles embétants
+function clean_symboles($text)
+{
+	$bad = array('&','<','>','\\','"','\'','/','`','’');
+	$bon = '';
+	return str_replace($bad,$bon,$text);
+}
+
+// Ne conserver que les lettres minuscules et mettre des tirets pour le reste
+function only_letters($text)
+{
+	$lettres = (perso_mb_detect_encoding_utf8($text)) ? utf8_decode($text) : $text ;
+	if(strlen($lettres))
+	{
+		$tab_lettres = str_split($lettres);
+		foreach($tab_lettres as $key => $lettre)
+		{
+			$tab_lettres[$key] = (strpos(FILENAME_CHARS,$lettre)!==FALSE) ? $lettre : '-' ;
+		}
+		$lettres = implode('',$tab_lettres);
+	}
+	return (perso_mb_detect_encoding_utf8($text)) ? utf8_encode($lettres) : $lettres ;
+}
+
+// Abréger une expression dépassement le nb de caractères autorisés
+function tronquer_chaine($texte,$longueur_totale_maxi)
+{
+	$nb_car = mb_strlen($texte);
+	// Expression trop longue
+	if($nb_car>$longueur_totale_maxi)
+	{
+		// On la coupe en morceaux placés dans $tab_sections
+		$tab_sections = array();
+		$i_section = -1;
+		$liste_autres = ' -.\'"`&~,';
+		$car_is_autre = NULL;
+		for( $i_car=0 ; $i_car<$nb_car ; $i_car++ )
+		{
+			$car = $texte{$i_car};
+			$test_this_car_autre = (strpos($liste_autres,$car)!==FALSE) ? TRUE : FALSE ;
+			if($test_this_car_autre!==$car_is_autre)
+			{
+				$i_section++;
+				$car_is_autre = $test_this_car_autre;
+				$tab_sections[$i_section] = $car;
+			}
+			else
+			{
+				$tab_sections[$i_section] .= $car;
+			}
+		}
+		// On abrège les morceaux nécessaires jusqu'à avoir une taille raisonnable
+		$longueur_mot_maxi = 3;
+		$nb_sections = count($tab_sections);
+		for( $i_section=$nb_sections-1 ; $i_section>=0 ; $i_section-- )
+		{
+			$longueur_section = mb_strlen($tab_sections[$i_section]);
+			if($longueur_section>$longueur_mot_maxi)
+			{
+				$tab_sections[$i_section] = $tab_sections[$i_section]{0}.'.';
+				$nb_car = $nb_car - $longueur_section + 2 ;
+				if($nb_car<=$longueur_totale_maxi)
+				{
+					break;
+				}
+			}
+		}
+		// On regroupe les morceaux
+		$texte = implode('',$tab_sections);
+	}
+	return $texte;
+}
+
+/*
+	Les fonctions centrales à modifier sans avoir à modifier tous les scripts.
+	En général il s'agit d'harmoniser les données de la base ou d'aider l'utilisateur (en évitant les problèmes de casse par exemple).
+	Le login est davantage nettoyé car il y a un risque d'engendrer des comportements incertains (à l'affichage ou à l'enregistrement) avec les applications externes (pmwiki, phpbb...).
+*/
+function clean_login($text)     { return str_replace(' ','', perso_strtolower( clean_accents( clean_diacris( clean_symboles( trim($text) ) ) ) ) ); }
+function clean_fichier($text)   { return only_letters( perso_strtolower( clean_accents( clean_diacris( trim($text) ) ) ) ); }
+function clean_password($text)  { return trim($text); }
+function clean_ref($text)       { return perso_strtoupper( trim($text) ); }
+function clean_nom($text)       { return tronquer_chaine( perso_strtoupper( trim($text) ) , 25); }
+function clean_uai($text)       { return perso_strtoupper( trim($text) ); }
+function clean_prenom($text)    { return tronquer_chaine( perso_ucwords( trim($text) ) , 25); }
+function clean_structure($text) { return perso_ucwords( trim($text) ); }
+function clean_adresse($text)   { return tronquer_chaine( perso_ucwords( trim($text) ) , 50); }
+function clean_commune($text)   { return tronquer_chaine( perso_strtoupper( trim($text) ) , 45); }
+function clean_pays($text)      { return tronquer_chaine( perso_strtoupper( trim($text) ) , 35); }
+function clean_code($text)      { return perso_strtolower( trim($text) ); }
+function clean_texte($text)     { return trim($text); }
+function clean_courriel($text)  { return perso_strtolower( clean_accents( trim($text) ) ); }
+function clean_url($text)       { return perso_strtolower( trim($text) ); }
+function clean_id_ent($text)    { return mb_substr( clean_texte( (string)$text ) ,0,32 ); }
+function clean_entier($text)    { return intval($text); }
+function clean_decimal($text)   { return floatval($text); }
+
+/*
+	Convertit les caractères spéciaux (&"'<>) en entité HTML pour éviter des problèmes d'affichage (INPUT, SELECT, TEXTAREA, XML...).
+	Pour que les retours à la lignes soient convertis en <br /> il faut coupler dette fontion à la fonction nl2br()
+*/
+function html($text)
+{
+	// Ne pas modifier ce code à la légère : les résultats sont différents suivant que ce soit un affichage direct ou ajax, suivant la version de PHP (5.1 ou 5.3)...
+	return (perso_mb_detect_encoding_utf8($text)) ? htmlspecialchars($text,ENT_COMPAT,'UTF-8') : utf8_encode(htmlspecialchars($text,ENT_COMPAT)) ;
+}
+function html_decode($text)
+{
+	return htmlspecialchars_decode($text,ENT_COMPAT) ;
+}
+
+/*
+	Convertit l'utf-8 en windows-1252 pour compatibilité avec FPDF
+*/
+function pdf($text)
+{
+	mb_substitute_character(0x00A0);	// Pour mettre " " au lieu de "?" en remplacement des caractères non convertis.
+	return mb_convert_encoding($text,'Windows-1252','UTF-8');
+}
+
+/*
+	Convertit l'utf-8 en windows-1252 pour un export CSV compatible avec Ooo et Word.
+*/
+function csv($text)
+{
+	mb_substitute_character(0x00A0);	// Pour mettre " " au lieu de "?" en remplacement des caractères non convertis.
+	return mb_convert_encoding($text,'Windows-1252','UTF-8');
+}
+
+/*
+	Convertit un contenu en UTF-8 si besoin ; à effectuer en particulier pour les imports tableur.
+	Remarque : si on utilise utf8_encode() ou mb_convert_encoding() sans le paramètre 'Windows-1252' ça pose des pbs pour '’' 'Œ' 'œ' etc.
+*/
+function utf8($text)
+{
+	return ( (!perso_mb_detect_encoding_utf8($text)) || (!mb_check_encoding($text,'UTF-8')) ) ? mb_convert_encoding($text,'UTF-8','Windows-1252') : $text ;
+}
+
+/*
+	Nettoie le BOM éventuel d'un fichier UTF-8
+	Code inspiré de http://libre-d-esprit.thinking-days.net/2009/03/et-bom-le-script/
+*/
+
+function deleteBOM($file)
+{
+	$fcontenu = file_get_contents($file);
+	if (substr($fcontenu,0,3) == "\xEF\xBB\xBF")	// Ne pas utiliser mb_substr() sinon ça ne fonctionne pas
+	{
+		Ecrire_Fichier($file, substr($fcontenu,3));	// Ne pas utiliser mb_substr() sinon ça ne fonctionne pas
+	}
+}
+
+/*
+	Effacer d'anciens fichiers temporaires sur le serveur
+	On transmet en paramètre à la fonction : le dossier à vider + le délai d'expiration en minutes
+*/
+
+function effacer_fichiers_temporaires($dossier,$nb_minutes)
+{
+	if(is_dir($dossier))
+	{
+		$date_limite = time() - $nb_minutes*60;
+		$tab_fichier = Lister_Contenu_Dossier($dossier);
+		foreach($tab_fichier as $fichier_nom)
+		{
+			$chemin_fichier = $dossier.'/'.$fichier_nom;
+			$extension = pathinfo($chemin_fichier,PATHINFO_EXTENSION);
+			$date_unix = filemtime($chemin_fichier);
+			if( (is_file($chemin_fichier)) && ($date_unix<$date_limite) && ($extension!='htm') )
+			{
+				unlink($chemin_fichier);
+			}
+		}
+	}
+}
+
+?>

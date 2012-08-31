@@ -48,11 +48,11 @@ $(document).ready
 // Alerter sur la nécessité de valider
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
-		$("select , input").change
+		$("input").change
 		(
 			function()
 			{
-				$('#ajax_msg').removeAttr("class").addClass("alerte").html("Penser à valider les modifications.");
+				$('#ajax_msg').removeAttr("class").addClass("erreur").html("Penser à valider les modifications.");
 			}
 		);
 
@@ -143,7 +143,7 @@ $(document).ready
 						url : 'ajax.php?page='+PAGE,
 						data : 'f_connexion_mode='+connexion_mode+'&f_connexion_nom='+connexion_nom+'&'+$("form").serialize(),
 						dataType : "html",
-						error : function(jqXHR, textStatus, errorThrown)
+						error : function(msg,string)
 						{
 							$("#bouton_valider").prop('disabled',false);
 							$('#ajax_msg').removeAttr("class").addClass("alerte").html("Echec de la connexion !");

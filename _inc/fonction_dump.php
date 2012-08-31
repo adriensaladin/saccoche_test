@@ -91,17 +91,16 @@ function determiner_nombre_lignes_maxi_par_paquet()
 }
 
 /**
- * formater_valeur
- * Fonction utilisée avec array_map() pour ajouter des guillemets autour des contenus textes et échapper ceux éventuellement présents, ainsi que pour traiter le cas de NULL.
- * Tester is_numeric() est inutile, la classe DB renvoyant des chaines même pour des valeurs numériques.
+ * formater_guillemets
+ * Fonction utilisée avec array_map() pour ajouter des guillemets autour des valeurs et échapper ceux éventuellement présents.
  *
  * @param string $val
  * @return string
  */
 
-function formater_valeur($val)
+function formater_guillemets($val)
 {
-	return (is_null($val)) ? 'NULL' : '"'.str_replace('"','\"',$val).'"' ;
+	return '"'.str_replace('"','\"',$val).'"';
 }
 
 /**
@@ -120,16 +119,16 @@ function sauvegarder_tables_base_etablissement($dossier_temp,$nb_lignes_maxi)
 	$DB_TAB = DB_STRUCTURE_COMMUN::DB_recuperer_tables_informations();
 	foreach($DB_TAB as $DB_ROW)
 	{
-		$nombre_boucles = max( ceil($DB_ROW['Rows']/$nb_lignes_maxi) , 1 ); // Parcourir au moins une fois la boucle pour une table sans enregistrement
-		$tab_tables_info[] = array( 'Nom'=>$DB_ROW['Name'] , 'NombreBoucles'=>$nombre_boucles );
+		$tab_tables_info[] = array( 'Nom'=>$DB_ROW['Name'] , 'Nombre'=>ceil($DB_ROW['Rows']/$nb_lignes_maxi) );
 	}
 	// Créer les fichiers sql table par table...
 	foreach($tab_tables_info as $tab_table_info)
 	{
-		for($numero_boucle=0 ; $numero_boucle<$tab_table_info['NombreBoucles'] ; $numero_boucle++)
+		$imax = max($tab_table_info['Nombre'],1); // Parcourir au moins une fois la boucle pour une table sans enregistrement
+		for($i=0 ; $i<$imax ; $i++)
 		{
 			$fichier_contenu = '';
-			if($numero_boucle==0)
+			if($i==0)
 			{
 				// ... la structure
 				$fichier_contenu .= 'DROP TABLE IF EXISTS '.$tab_table_info['Nom'].';'."\r\n";
@@ -138,24 +137,46 @@ function sauvegarder_tables_base_etablissement($dossier_temp,$nb_lignes_maxi)
 			}
 			// ... les données
 			$tab_ligne_insert = array();
-			$from = $numero_boucle*$nb_lignes_maxi;
+			$from = $i*$nb_lignes_maxi;
 			$DB_TAB = DB_STRUCTURE_COMMUN::DB_recuperer_table_donnees( $tab_table_info['Nom'] , $from ,$nb_lignes_maxi );
 			if(count($DB_TAB))
 			{
 				$fichier_contenu .= 'ALTER TABLE '.$tab_table_info['Nom'].' DISABLE KEYS;'."\r\n";
 				foreach($DB_TAB as $DB_ROW)
 				{
-					$DB_ROW = array_map('formater_valeur',$DB_ROW);
+					$DB_ROW = array_map('formater_guillemets',$DB_ROW);
 					$tab_ligne_insert[] = '('.implode(',',$DB_ROW).')';
 				}
 				$fichier_contenu .= 'INSERT INTO '.$tab_table_info['Nom'].' VALUES '."\r\n".implode(','."\r\n",$tab_ligne_insert).';'."\r\n";
 				$fichier_contenu .= 'ALTER TABLE '.$tab_table_info['Nom'].' ENABLE KEYS;'."\r\n";
 			}
 			// Enregistrer le fichier
-			$fichier_sql_nom = 'dump_'.$tab_table_info['Nom'].'_'.sprintf("%03u",$numero_boucle).'.sql';
-			FileSystem::ecrire_fichier($dossier_temp.$fichier_sql_nom,$fichier_contenu);
+			$fichier_sql_nom = 'dump_'.$tab_table_info['Nom'].'_'.sprintf("%03u",$i).'.sql';
+			Ecrire_Fichier($dossier_temp.$fichier_sql_nom,$fichier_contenu);
 		}
 	}
+}
+
+/**
+ * zipper_fichiers_sauvegarde
+ * Zipper les fichiers de svg
+ *
+ * @param string $dossier_temp
+ * @param string $dossier_dump
+ * @param string $fichier_zip_nom
+ * @return void
+ */
+
+function zipper_fichiers_sauvegarde($dossier_temp,$dossier_dump,$fichier_zip_nom)
+{
+	$zip = new ZipArchive();
+	$zip->open($dossier_dump.$fichier_zip_nom, ZIPARCHIVE::CREATE);
+	$tab_fichier = Lister_Contenu_Dossier($dossier_temp);
+	foreach($tab_fichier as $fichier_sql_nom)
+	{
+		$zip->addFile($dossier_temp.$fichier_sql_nom,$fichier_sql_nom);
+	}
+	$zip->close();
 }
 
 /**
@@ -169,7 +190,7 @@ function sauvegarder_tables_base_etablissement($dossier_temp,$nb_lignes_maxi)
 function verifier_dossier_decompression_sauvegarde($dossier)
 {
 	$fichier_taille_maximale = 0;
-	$tab_fichier = FileSystem::lister_contenu_dossier($dossier);
+	$tab_fichier = Lister_Contenu_Dossier($dossier);
 	foreach($tab_fichier as $fichier_nom)
 	{
 		$prefixe   = substr($fichier_nom,0,13);
@@ -226,7 +247,7 @@ function version_base_fichier_svg($dossier)
 function restaurer_tables_base_etablissement($dossier_temp,$etape)
 {
 	// Pour chaque fichier...
-	$tab_fichier = FileSystem::lister_contenu_dossier($dossier_temp);
+	$tab_fichier = Lister_Contenu_Dossier($dossier_temp);
 	natsort($tab_fichier); // Si plusieurs fichiers correspondent à une table, il faut que la requête de création soit lancée avant les requêtes d'insertion
 	$tab_fichier = array_values($tab_fichier); // Pour réindexer dans l'ordre et à partir de 0
 	$nb_fichiers  = count($tab_fichier);
@@ -267,7 +288,7 @@ function restaurer_tables_base_etablissement($dossier_temp,$etape)
 		{
 			DB_STRUCTURE_MAJ_BASE::DB_maj_base($version_base_restauree);
 			// Log de l'action
-			SACocheLog::ajouter('Mise à jour automatique de la base '.SACOCHE_STRUCTURE_BD_NAME.'.');
+			ajouter_log_SACoche('Mise à jour automatique de la base '.SACOCHE_STRUCTURE_BD_NAME.'.');
 			return'Restauration de la base terminée et base mise à jour';
 		}
 		return'Restauration de la base terminée';

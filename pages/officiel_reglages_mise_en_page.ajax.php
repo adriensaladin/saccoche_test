@@ -31,21 +31,21 @@ if($_SESSION['SESAMATH_ID']==ID_DEMO) {exit('Action désactivée pour la démo..
 $action             = (isset($_POST['f_action']))             ? $_POST['f_action']                          : '';
 
 $tab_coordonnees    = (isset($_POST['f_coordonnees']))        ? $_POST['f_coordonnees']                     : array();
-$infos_responsables = (isset($_POST['f_infos_responsables'])) ? Clean::texte($_POST['f_infos_responsables']) : '';
-$horizontal_gauche  = (isset($_POST['f_horizontal_gauche']))  ? Clean::entier($_POST['f_horizontal_gauche']) : 0;
-$horizontal_milieu  = (isset($_POST['f_horizontal_milieu']))  ? Clean::entier($_POST['f_horizontal_milieu']) : 0;
-$horizontal_droite  = (isset($_POST['f_horizontal_droite']))  ? Clean::entier($_POST['f_horizontal_droite']) : 0;
-$vertical_haut      = (isset($_POST['f_vertical_haut']))      ? Clean::entier($_POST['f_vertical_haut'])     : 0;
-$vertical_milieu    = (isset($_POST['f_vertical_milieu']))    ? Clean::entier($_POST['f_vertical_milieu'])   : 0;
-$vertical_bas       = (isset($_POST['f_vertical_bas']))       ? Clean::entier($_POST['f_vertical_bas'])      : 0;
-$nombre_exemplaires = (isset($_POST['f_nombre_exemplaires'])) ? Clean::texte($_POST['f_nombre_exemplaires']) : '';
-$marge_gauche       = (isset($_POST['f_marge_gauche']))       ? Clean::entier($_POST['f_marge_gauche'])      : 0;
-$marge_droite       = (isset($_POST['f_marge_droite']))       ? Clean::entier($_POST['f_marge_droite'])      : 0;
-$marge_haut         = (isset($_POST['f_marge_haut']))         ? Clean::entier($_POST['f_marge_haut'])        : 0;
-$marge_bas          = (isset($_POST['f_marge_bas']))          ? Clean::entier($_POST['f_marge_bas'])         : 0;
-$tampon_signature   = (isset($_POST['f_tampon_signature']))   ? Clean::texte($_POST['f_tampon_signature'])   : '';
-$user_id            = (isset($_POST['f_user_id']))            ? Clean::entier($_POST['f_user_id'])           : -1;
-$user_texte         = (isset($_POST['f_user_texte']))         ? Clean::texte($_POST['f_user_texte'])         : '';
+$infos_responsables = (isset($_POST['f_infos_responsables'])) ? clean_texte($_POST['f_infos_responsables']) : '';
+$horizontal_gauche  = (isset($_POST['f_horizontal_gauche']))  ? clean_entier($_POST['f_horizontal_gauche']) : 0;
+$horizontal_milieu  = (isset($_POST['f_horizontal_milieu']))  ? clean_entier($_POST['f_horizontal_milieu']) : 0;
+$horizontal_droite  = (isset($_POST['f_horizontal_droite']))  ? clean_entier($_POST['f_horizontal_droite']) : 0;
+$vertical_haut      = (isset($_POST['f_vertical_haut']))      ? clean_entier($_POST['f_vertical_haut'])     : 0;
+$vertical_milieu    = (isset($_POST['f_vertical_milieu']))    ? clean_entier($_POST['f_vertical_milieu'])   : 0;
+$vertical_bas       = (isset($_POST['f_vertical_bas']))       ? clean_entier($_POST['f_vertical_bas'])      : 0;
+$nombre_exemplaires = (isset($_POST['f_nombre_exemplaires'])) ? clean_texte($_POST['f_nombre_exemplaires']) : '';
+$marge_gauche       = (isset($_POST['f_marge_gauche']))       ? clean_entier($_POST['f_marge_gauche'])      : 0;
+$marge_droite       = (isset($_POST['f_marge_droite']))       ? clean_entier($_POST['f_marge_droite'])      : 0;
+$marge_haut         = (isset($_POST['f_marge_haut']))         ? clean_entier($_POST['f_marge_haut'])        : 0;
+$marge_bas          = (isset($_POST['f_marge_bas']))          ? clean_entier($_POST['f_marge_bas'])         : 0;
+$tampon_signature   = (isset($_POST['f_tampon_signature']))   ? clean_texte($_POST['f_tampon_signature'])   : '';
+$user_id            = (isset($_POST['f_user_id']))            ? clean_entier($_POST['f_user_id'])           : -1;
+$user_texte         = (isset($_POST['f_user_texte']))         ? clean_texte($_POST['f_user_texte'])         : '';
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 //	Traitement du formulaire form_mise_en_page
@@ -107,7 +107,8 @@ if( ($action=='upload_signature') && ($user_id>=0) && ($user_texte!='') )
 	$ferreur = $tab_file['error'];
 	if( (!file_exists($fnom_serveur)) || (!$ftaille) || ($ferreur) )
 	{
-		exit('Erreur : problème de transfert ! Fichier trop lourd ? '.InfoServeur::minimum_limitations_upload());
+		require_once('./_inc/fonction_infos_serveur.php');
+		exit('Erreur : problème de transfert ! Fichier trop lourd ? min(memory_limit,post_max_size,upload_max_filesize)='.minimum_limitations_upload());
 	}
 	// vérifier l'extension
 	$extension = strtolower(pathinfo($fnom_transmis,PATHINFO_EXTENSION));
@@ -136,17 +137,18 @@ if( ($action=='upload_signature') && ($user_id>=0) && ($user_texte!='') )
 	}
 	$image_format = $tab_extension_types[$image_type];
 	// enregistrer le fichier (temporairement)
-	$fichier_nom = 'signature_'.$_SESSION['BASE'].'_'.$user_id.'_'.fabriquer_fin_nom_fichier__date_et_alea().'.'.$extension;
-	if(!move_uploaded_file($fnom_serveur , CHEMIN_DOSSIER_EXPORT.$fichier_nom))
+	$dossier     = './__tmp/export/';
+	$fichier_nom = 'signature_'.$_SESSION['BASE'].'_'.$user_id.'_'.fabriquer_fin_nom_fichier().'.'.$extension;
+	if(!move_uploaded_file($fnom_serveur , $dossier.$fichier_nom))
 	{
 		exit('Erreur : le fichier n\'a pas pu être enregistré sur le serveur.');
 	}
 	// stocker l'image dans la base
-	DB_STRUCTURE_OFFICIEL::DB_modifier_signature( $user_id , base64_encode(file_get_contents(CHEMIN_DOSSIER_EXPORT.$fichier_nom)) , $image_format , $image_largeur , $image_hauteur );
+	DB_STRUCTURE_OFFICIEL::DB_modifier_signature( $user_id , file_get_contents($dossier.$fichier_nom) , $image_format , $image_largeur , $image_hauteur );
 	// Générer la balise html et afficher le retour
 	list($width,$height) = dimensions_affichage_image( $image_largeur , $image_hauteur , 200 /*largeur_maxi*/ , 200 /*hauteur_maxi*/ );
 	$user_texte = ($user_id) ? 'Signature '.$user_texte : $user_texte ;
-	exit('<li id="sgn_'.$user_id.'">'.html($user_texte).' : <img src="'.URL_DIR_EXPORT.$fichier_nom.'" alt="'.html($user_texte).'" width="'.$width.'" height="'.$height.'" /><q class="supprimer" title="Supprimer cette image (aucune confirmation ne sera demandée)."></q></li>');
+	exit('<li id="sgn_'.$user_id.'">'.html($user_texte).' : <img src="'.$dossier.$fichier_nom.'" alt="'.html($user_texte).'" width="'.$width.'" height="'.$height.'" /><q class="supprimer" title="Supprimer cette image (aucune confirmation ne sera demandée)."></q></li>');
 }
 
 //	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*

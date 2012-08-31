@@ -28,6 +28,8 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = "Fichiers déposés";
 
+require_once('./_inc/fonction_infos_serveur.php');
+
 $tab_select_taille_max = array(
 	 100=>'100 Ko',
 	 200=>'200 Ko',
@@ -75,7 +77,7 @@ foreach($tab_select_duree_conservation as $option_value => $option_texte)
 	<p>
 		Vous pouvez choisir la taille maximale autorisée de ces fichiers.<br />
 		La valeur par défaut est 500 Ko (limite considérée raisonnable vu l'usage destiné).<br />
-		<span class="astuce">Il faut aussi tenir compte de la configuration du serveur : <?php echo InfoServeur::minimum_limitations_upload() ?>.</span>
+		<span class="astuce">Il faut aussi tenir compte de la configuration du serveur : min(memory_limit,post_max_size,upload_max_filesize) = <?php echo minimum_limitations_upload() ?>.</span>
 	</p>
 	<label class="tab" for="f_taille_max">Taille maximale :</label><select id="f_taille_max" name="f_taille_max"><?php echo $select_taille_max ?></select>
 	<p>

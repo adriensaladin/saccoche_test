@@ -40,7 +40,7 @@ class DB_STRUCTURE_PUBLIC extends DB
  * @param string $login
  * @return array
  */
-public static function DB_recuperer_donnees_utilisateur($mode_connection,$login)
+public function DB_recuperer_donnees_utilisateur($mode_connection,$login)
 {
 	switch($mode_connection)
 	{
@@ -65,7 +65,7 @@ public static function DB_recuperer_donnees_utilisateur($mode_connection,$login)
  * @param void
  * @return string
  */
-public static function DB_version_base()
+public function DB_version_base()
 {
 	$DB_SQL = 'SELECT parametre_valeur ';
 	$DB_SQL.= 'FROM sacoche_parametre ';
@@ -80,7 +80,7 @@ public static function DB_version_base()
  * @param string   $listing_param   nom des paramètres entourés de guillemets et séparés par des virgules (tout si rien de transmis)
  * @return array
  */
-public static function DB_lister_parametres($listing_param='')
+public function DB_lister_parametres($listing_param='')
 {
 	$DB_SQL = 'SELECT parametre_nom, parametre_valeur ';
 	$DB_SQL.= 'FROM sacoche_parametre ';
@@ -96,7 +96,7 @@ public static function DB_lister_parametres($listing_param='')
  * @param int     $user_id
  * @return void
  */
-public static function DB_enregistrer_date($champ,$user_id)
+public function DB_enregistrer_date($champ,$user_id)
 {
 	$DB_SQL = 'UPDATE sacoche_user ';
 	$DB_SQL.= 'SET user_'.$champ.'_date=NOW() ';

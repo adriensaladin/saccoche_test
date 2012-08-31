@@ -49,21 +49,6 @@ $(document).ready
 			}
 		);
 
-		$('#f_bulletin_appreciation_generale').change
-		(
-			function()
-			{
-				if(parseInt($('#f_bulletin_appreciation_generale').val(),10)>0)
-				{
-					$('#span_moyenne_generale').show();
-				}
-				else
-				{
-					$('#span_moyenne_generale').hide();
-				}
-			}
-		);
-
 		//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
 		//	Alerter sur la nécessité de valider
 		//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
@@ -117,7 +102,7 @@ $(document).ready
 						url : 'ajax.php?page='+PAGE,
 						data : 'objet='+objet+'&'+$('#form_'+objet).serialize(),
 						dataType : "html",
-						error : function(jqXHR, textStatus, errorThrown)
+						error : function(msg,string)
 						{
 							$('#bouton_valider_'+objet).prop('disabled',false);
 							$('#ajax_msg_'+objet).removeAttr("class").addClass("alerte").html("Echec de la connexion !");

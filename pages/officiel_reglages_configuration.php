@@ -28,41 +28,40 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = "Configuration des bilans officiels";
 
-$select_releve_appreciation_rubrique   = Form::afficher_select(Form::$tab_select_appreciation , $select_nom='f_releve_appreciation_rubrique'   , $option_first='non' , $selection=$_SESSION['OFFICIEL']['RELEVE_APPRECIATION_RUBRIQUE']   , $optgroup='non');
-$select_releve_appreciation_generale   = Form::afficher_select(Form::$tab_select_appreciation , $select_nom='f_releve_appreciation_generale'   , $option_first='non' , $selection=$_SESSION['OFFICIEL']['RELEVE_APPRECIATION_GENERALE']   , $optgroup='non');
-$select_releve_cases_nb                = Form::afficher_select(Form::$tab_select_cases_nb     , $select_nom='f_releve_cases_nb'                , $option_first='non' , $selection=$_SESSION['OFFICIEL']['RELEVE_CASES_NB']                , $optgroup='non');
-$select_releve_couleur                 = Form::afficher_select(Form::$tab_select_couleur      , $select_nom='f_releve_couleur'                 , $option_first='non' , $selection=$_SESSION['OFFICIEL']['RELEVE_COULEUR']                 , $optgroup='non');
-$select_releve_legende                 = Form::afficher_select(Form::$tab_select_legende      , $select_nom='f_releve_legende'                 , $option_first='non' , $selection=$_SESSION['OFFICIEL']['RELEVE_LEGENDE']                 , $optgroup='non');
+$select_releve_appreciation_rubrique   = Formulaire::afficher_select(Formulaire::$tab_select_appreciation , $select_nom='f_releve_appreciation_rubrique'   , $option_first='non' , $selection=$_SESSION['OFFICIEL']['RELEVE_APPRECIATION_RUBRIQUE']   , $optgroup='non');
+$select_releve_appreciation_generale   = Formulaire::afficher_select(Formulaire::$tab_select_appreciation , $select_nom='f_releve_appreciation_generale'   , $option_first='non' , $selection=$_SESSION['OFFICIEL']['RELEVE_APPRECIATION_GENERALE']   , $optgroup='non');
+$select_releve_cases_nb                = Formulaire::afficher_select(Formulaire::$tab_select_cases_nb     , $select_nom='f_releve_cases_nb'                , $option_first='non' , $selection=$_SESSION['OFFICIEL']['RELEVE_CASES_NB']                , $optgroup='non');
+$select_releve_couleur                 = Formulaire::afficher_select(Formulaire::$tab_select_couleur      , $select_nom='f_releve_couleur'                 , $option_first='non' , $selection=$_SESSION['OFFICIEL']['RELEVE_COULEUR']                 , $optgroup='non');
+$select_releve_legende                 = Formulaire::afficher_select(Formulaire::$tab_select_legende      , $select_nom='f_releve_legende'                 , $option_first='non' , $selection=$_SESSION['OFFICIEL']['RELEVE_LEGENDE']                 , $optgroup='non');
 
-$select_bulletin_appreciation_rubrique = Form::afficher_select(Form::$tab_select_appreciation , $select_nom='f_bulletin_appreciation_rubrique' , $option_first='non' , $selection=$_SESSION['OFFICIEL']['BULLETIN_APPRECIATION_RUBRIQUE'] , $optgroup='non');
-$select_bulletin_appreciation_generale = Form::afficher_select(Form::$tab_select_appreciation , $select_nom='f_bulletin_appreciation_generale' , $option_first='non' , $selection=$_SESSION['OFFICIEL']['BULLETIN_APPRECIATION_GENERALE'] , $optgroup='non');
-$select_bulletin_couleur               = Form::afficher_select(Form::$tab_select_couleur      , $select_nom='f_bulletin_couleur'               , $option_first='non' , $selection=$_SESSION['OFFICIEL']['BULLETIN_COULEUR']               , $optgroup='non');
-$select_bulletin_legende               = Form::afficher_select(Form::$tab_select_legende      , $select_nom='f_bulletin_legende'               , $option_first='non' , $selection=$_SESSION['OFFICIEL']['BULLETIN_LEGENDE']               , $optgroup='non');
+$select_bulletin_appreciation_rubrique = Formulaire::afficher_select(Formulaire::$tab_select_appreciation , $select_nom='f_bulletin_appreciation_rubrique' , $option_first='non' , $selection=$_SESSION['OFFICIEL']['BULLETIN_APPRECIATION_RUBRIQUE'] , $optgroup='non');
+$select_bulletin_appreciation_generale = Formulaire::afficher_select(Formulaire::$tab_select_appreciation , $select_nom='f_bulletin_appreciation_generale' , $option_first='non' , $selection=$_SESSION['OFFICIEL']['BULLETIN_APPRECIATION_GENERALE'] , $optgroup='non');
+$select_bulletin_couleur               = Formulaire::afficher_select(Formulaire::$tab_select_couleur      , $select_nom='f_bulletin_couleur'               , $option_first='non' , $selection=$_SESSION['OFFICIEL']['BULLETIN_COULEUR']               , $optgroup='non');
+$select_bulletin_legende               = Formulaire::afficher_select(Formulaire::$tab_select_legende      , $select_nom='f_bulletin_legende'               , $option_first='non' , $selection=$_SESSION['OFFICIEL']['BULLETIN_LEGENDE']               , $optgroup='non');
 
-$select_socle_appreciation_rubrique    = Form::afficher_select(Form::$tab_select_appreciation , $select_nom='f_socle_appreciation_rubrique'    , $option_first='non' , $selection=$_SESSION['OFFICIEL']['SOCLE_APPRECIATION_RUBRIQUE']    , $optgroup='non');
-$select_socle_appreciation_generale    = Form::afficher_select(Form::$tab_select_appreciation , $select_nom='f_socle_appreciation_generale'    , $option_first='non' , $selection=$_SESSION['OFFICIEL']['SOCLE_APPRECIATION_GENERALE']    , $optgroup='non');
-$select_socle_couleur                  = Form::afficher_select(Form::$tab_select_couleur      , $select_nom='f_socle_couleur'                  , $option_first='non' , $selection=$_SESSION['OFFICIEL']['SOCLE_COULEUR']                  , $optgroup='non');
-$select_socle_legende                  = Form::afficher_select(Form::$tab_select_legende      , $select_nom='f_socle_legende'                  , $option_first='non' , $selection=$_SESSION['OFFICIEL']['SOCLE_LEGENDE']                  , $optgroup='non');
+$select_socle_appreciation_rubrique    = Formulaire::afficher_select(Formulaire::$tab_select_appreciation , $select_nom='f_socle_appreciation_rubrique'    , $option_first='non' , $selection=$_SESSION['OFFICIEL']['SOCLE_APPRECIATION_RUBRIQUE']    , $optgroup='non');
+$select_socle_appreciation_generale    = Formulaire::afficher_select(Formulaire::$tab_select_appreciation , $select_nom='f_socle_appreciation_generale'    , $option_first='non' , $selection=$_SESSION['OFFICIEL']['SOCLE_APPRECIATION_GENERALE']    , $optgroup='non');
+$select_socle_couleur                  = Formulaire::afficher_select(Formulaire::$tab_select_couleur      , $select_nom='f_socle_couleur'                  , $option_first='non' , $selection=$_SESSION['OFFICIEL']['SOCLE_COULEUR']                  , $optgroup='non');
+$select_socle_legende                  = Formulaire::afficher_select(Formulaire::$tab_select_legende      , $select_nom='f_socle_legende'                  , $option_first='non' , $selection=$_SESSION['OFFICIEL']['SOCLE_LEGENDE']                  , $optgroup='non');
 
-$check_releve_moyenne_scores     = ($_SESSION['OFFICIEL']['RELEVE_MOYENNE_SCORES'])          ? ' checked' : '' ;
-$check_releve_pourcentage_acquis = ($_SESSION['OFFICIEL']['RELEVE_POURCENTAGE_ACQUIS'])      ? ' checked' : '' ;
-$check_releve_aff_coef           = ($_SESSION['OFFICIEL']['RELEVE_AFF_COEF'])                ? ' checked' : '' ;
-$check_releve_aff_socle          = ($_SESSION['OFFICIEL']['RELEVE_AFF_SOCLE'])               ? ' checked' : '' ;
-$check_releve_aff_domaine        = ($_SESSION['OFFICIEL']['RELEVE_AFF_DOMAINE'])             ? ' checked' : '' ;
-$check_releve_aff_theme          = ($_SESSION['OFFICIEL']['RELEVE_AFF_THEME'])               ? ' checked' : '' ;
+$check_releve_moyenne_scores     = ($_SESSION['OFFICIEL']['RELEVE_MOYENNE_SCORES'])     ? ' checked' : '' ;
+$check_releve_pourcentage_acquis = ($_SESSION['OFFICIEL']['RELEVE_POURCENTAGE_ACQUIS']) ? ' checked' : '' ;
+$check_releve_aff_coef           = ($_SESSION['OFFICIEL']['RELEVE_AFF_COEF'])           ? ' checked' : '' ;
+$check_releve_aff_socle          = ($_SESSION['OFFICIEL']['RELEVE_AFF_SOCLE'])          ? ' checked' : '' ;
+$check_releve_aff_domaine        = ($_SESSION['OFFICIEL']['RELEVE_AFF_DOMAINE'])        ? ' checked' : '' ;
+$check_releve_aff_theme          = ($_SESSION['OFFICIEL']['RELEVE_AFF_THEME'])          ? ' checked' : '' ;
 
-$check_bulletin_moyenne_scores   = ($_SESSION['OFFICIEL']['BULLETIN_MOYENNE_SCORES'])        ? ' checked' : '' ;
-$check_bulletin_note_sur_20      = ($_SESSION['OFFICIEL']['BULLETIN_NOTE_SUR_20'])           ? ' checked' : '' ;
-$check_bulletin_pourcentage      = (!$_SESSION['OFFICIEL']['BULLETIN_NOTE_SUR_20'])          ? ' checked' : '' ;
-$check_bulletin_moyenne_classe   = ($_SESSION['OFFICIEL']['BULLETIN_MOYENNE_CLASSE'])        ? ' checked' : '' ;
-$check_bulletin_moyenne_generale = ($_SESSION['OFFICIEL']['BULLETIN_MOYENNE_GENERALE'])      ? ' checked' : '' ;
+$check_bulletin_moyenne_scores   = ($_SESSION['OFFICIEL']['BULLETIN_MOYENNE_SCORES'])   ? ' checked' : '' ;
+$check_bulletin_note_sur_20      = ($_SESSION['OFFICIEL']['BULLETIN_NOTE_SUR_20'])      ? ' checked' : '' ;
+$check_bulletin_pourcentage      = (!$_SESSION['OFFICIEL']['BULLETIN_NOTE_SUR_20'])     ? ' checked' : '' ;
 
-$check_socle_only_presence       = ($_SESSION['OFFICIEL']['SOCLE_ONLY_PRESENCE'])            ? ' checked' : '' ;
-$check_socle_pourcentage_acquis  = ($_SESSION['OFFICIEL']['SOCLE_POURCENTAGE_ACQUIS'])       ? ' checked' : '' ;
-$check_socle_etat_validation     = ($_SESSION['OFFICIEL']['SOCLE_ETAT_VALIDATION'])          ? ' checked' : '' ;
+$check_bulletin_moyenne_classe   = ($_SESSION['OFFICIEL']['BULLETIN_MOYENNE_CLASSE'])   ? ' checked' : '' ;
 
-$class_span_moyennes             = ($_SESSION['OFFICIEL']['BULLETIN_MOYENNE_SCORES'])        ? 'show'     : 'hide' ;
-$class_span_moyenne_generale     = ($_SESSION['OFFICIEL']['BULLETIN_APPRECIATION_GENERALE']) ? 'show'     : 'hide' ;
+$check_socle_only_presence       = ($_SESSION['OFFICIEL']['SOCLE_ONLY_PRESENCE'])       ? ' checked' : '' ;
+$check_socle_pourcentage_acquis  = ($_SESSION['OFFICIEL']['SOCLE_POURCENTAGE_ACQUIS'])  ? ' checked' : '' ;
+$check_socle_etat_validation     = ($_SESSION['OFFICIEL']['SOCLE_ETAT_VALIDATION'])     ? ' checked' : '' ;
+
+$class_span_moyennes             = ($_SESSION['OFFICIEL']['BULLETIN_MOYENNE_SCORES'])   ? 'show'     : 'hide' ;
 
 ?>
 
@@ -97,10 +96,7 @@ $class_span_moyenne_generale     = ($_SESSION['OFFICIEL']['BULLETIN_APPRECIATION
 		<label for="f_bulletin_moyenne_scores"><input type="checkbox" id="f_bulletin_moyenne_scores" name="f_bulletin_moyenne_scores" value="1"<?php echo $check_bulletin_moyenne_scores ?> /> Moyenne des scores</label>
 		<span id="span_moyennes" class="<?php echo $class_span_moyennes ?>">
 			[ <label for="f_bulletin_note_sur_20"><input type="radio" id="f_bulletin_note_sur_20" name="f_bulletin_note_sur_20" value="1"<?php echo $check_bulletin_note_sur_20 ?> /> en note sur 20</label> | <label for="f_bulletin_pourcentage"><input type="radio" id="f_bulletin_pourcentage" name="f_bulletin_note_sur_20" value="0"<?php echo $check_bulletin_pourcentage ?> /> en pourcentage</label> ]&nbsp;&nbsp;&nbsp;
-			<label for="f_bulletin_moyenne_classe"><input type="checkbox" id="f_bulletin_moyenne_classe" name="f_bulletin_moyenne_classe" value="1"<?php echo $check_bulletin_moyenne_classe ?> /> Moyenne de la classe</label>&nbsp;&nbsp;&nbsp;
-			<span id="span_moyenne_generale" class="<?php echo $class_span_moyenne_generale ?>">
-				<label for="f_bulletin_moyenne_generale"><input type="checkbox" id="f_bulletin_moyenne_generale" name="f_bulletin_moyenne_generale" value="1"<?php echo $check_bulletin_moyenne_generale ?> /> Moyenne générale</label>
-			</span>
+			<label for="f_bulletin_moyenne_classe"><input type="checkbox" id="f_bulletin_moyenne_classe" name="f_bulletin_moyenne_classe" value="1"<?php echo $check_bulletin_moyenne_classe ?> /> Moyenne de la classe</label>
 		</span><br />
 		<label class="tab">Impression :</label><?php echo $select_bulletin_couleur ?> <?php echo $select_bulletin_legende ?>
 	</p>

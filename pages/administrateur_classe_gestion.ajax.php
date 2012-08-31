@@ -28,11 +28,11 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 if($_SESSION['SESAMATH_ID']==ID_DEMO) {exit('Action désactivée pour la démo...');}
 
-$action = (isset($_POST['f_action'])) ? Clean::texte($_POST['f_action'])  : '';
-$id     = (isset($_POST['f_id']))     ? Clean::entier($_POST['f_id'])     : 0;
-$niveau = (isset($_POST['f_niveau'])) ? Clean::entier($_POST['f_niveau']) : 0;
-$ref    = (isset($_POST['f_ref']))    ? Clean::ref($_POST['f_ref'])       : '';
-$nom    = (isset($_POST['f_nom']))    ? Clean::texte($_POST['f_nom'])     : '';
+$action = (isset($_POST['f_action'])) ? clean_texte($_POST['f_action'])  : '';
+$id     = (isset($_POST['f_id']))     ? clean_entier($_POST['f_id'])     : 0;
+$niveau = (isset($_POST['f_niveau'])) ? clean_entier($_POST['f_niveau']) : 0;
+$ref    = (isset($_POST['f_ref']))    ? clean_ref($_POST['f_ref'])       : '';
+$nom    = (isset($_POST['f_nom']))    ? clean_texte($_POST['f_nom'])     : '';
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 //	Ajouter une nouvelle classe
@@ -88,7 +88,7 @@ else if( ($action=='supprimer') && $id )
 	// Effacer l'enregistrement
 	DB_STRUCTURE_ADMINISTRATEUR::DB_supprimer_groupe_par_admin( $id , 'classe' , TRUE /*with_devoir*/ );
 	// Log de l'action
-	SACocheLog::ajouter('Suppression d\'un groupe (classe '.$id.'), avec les devoirs associés.');
+	ajouter_log_SACoche('Suppression d\'un groupe (classe '.$id.'), avec les devoirs associés.');
 	// Afficher le retour
 	echo'<td>ok</td>';
 }

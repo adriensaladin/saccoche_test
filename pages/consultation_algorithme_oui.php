@@ -31,7 +31,7 @@ if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');
 <?php
 $tab_options = array();
 $tab_options['geometrique']  = 'Coefficient multiplié par 2 à chaque devoir (sur les 5 dernières saisies maximum).';
-$tab_options['arithmetique'] = 'Coefficient augmenté de 1 à chaque devoir (sur les 9 dernières saisies maximum).';
+$tab_options['arithmetique'] = 'Coefficient augmenté de 1 à chaque devoir (sur les 9 dernières saisies maximum).';;
 $tab_options['classique']    = 'Moyenne classique non pondérée (comptabiliser autant chaque saisie).';
 $tab_options['bestof1']      = 'Utiliser uniquement la meilleure saisie (une seule réussite suffit donc).';
 $tab_options['bestof2']      = 'Utiliser seulement les 2 meilleures saisies (dont on effectue la moyenne).';
@@ -60,14 +60,14 @@ foreach($tab_options as $value)
 }
 
 // Indication des profils ayant accès à cette page
-require(CHEMIN_DOSSIER_INCLUDE.'tableau_profils.php'); // Charge $tab_profil_libelle[$profil][court|long][1|2]
+require_once('./_inc/tableau_profils.php'); // Charge $tab_profil_libelle[$profil][court|long][1|2]
 $tab_profils = array('directeur','professeur','eleve','parent');
 $str_objet = $_SESSION['DROIT_VOIR_ALGORITHME'];
 foreach($tab_profils as $profil)
 {
 	$str_objet = str_replace($profil,$tab_profil_libelle[$profil]['long'][2],$str_objet);
 }
-$texte = ($str_objet=='') ? 'aucun' : ( (strpos($str_objet,',')===FALSE) ? 'uniquement les '.$str_objet : str_replace(',',' + ',$str_objet) ) ;
+$texte = ($str_objet=='') ? 'aucun' : ( (strpos($str_objet,',')===false) ? 'uniquement les '.$str_objet : str_replace(',',' + ',$str_objet) ) ;
 ?>
 
 <ul class="puce">

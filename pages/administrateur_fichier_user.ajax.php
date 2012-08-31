@@ -140,7 +140,7 @@ if( $step==10 )
 			$annee_scolaire  = (date('n')>7) ? date('Y') : date('Y')-1 ;
 			$nom_fichier_extrait = 'sts_emp_'.$_SESSION['WEBMESTRE_UAI'].'_'.$annee_scolaire.'.xml';
 		}
-		unzip_one( $fnom_serveur , $nom_fichier_extrait , $fichier_dest );
+		FileSystem::unzip_one( $fnom_serveur , $nom_fichier_extrait , $fichier_dest );
 	}
 	// On affiche le bilan et les puces des étapes
 	echo'<ul id="step">'.$tab_etapes[$action].'</ul>';

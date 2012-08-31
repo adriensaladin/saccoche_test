@@ -82,7 +82,7 @@ $(document).ready
 						url : 'ajax.php?page='+PAGE,
 						data : 'f_action=Choix_paliers&tab_id='+check_ids,
 						dataType : "html",
-						error : function(jqXHR, textStatus, errorThrown)
+						error : function(msg,string)
 						{
 							$("#bouton_valider").prop('disabled',false);
 							$('#ajax_msg').removeAttr("class").addClass("alerte").html("Echec de la connexion !");

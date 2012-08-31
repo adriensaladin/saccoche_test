@@ -9,7 +9,7 @@ DROP TABLE IF EXISTS sacoche_officiel_saisie;
 
 CREATE TABLE sacoche_officiel_saisie (
 	officiel_type       ENUM("releve","bulletin","palier1","palier2","palier3") COLLATE utf8_unicode_ci NOT NULL DEFAULT "bulletin",
-	periode_id          MEDIUMINT(8)                                            UNSIGNED                NOT NULL DEFAULT 0,
+	periode_id          SMALLINT(5)                                             UNSIGNED                NOT NULL DEFAULT 0,
 	eleve_id            MEDIUMINT(8)                                            UNSIGNED                NOT NULL DEFAULT 0,
 	rubrique_id         SMALLINT(5)                                             UNSIGNED                NOT NULL DEFAULT 0    COMMENT "matiere_id ou pilier_id ; 0 pour l'appréciation générale",
 	prof_id             MEDIUMINT(8)                                            UNSIGNED                NOT NULL DEFAULT 0    COMMENT "0 pour la moyenne, avec commentaire dans saisie_appreciation si report non automatique",

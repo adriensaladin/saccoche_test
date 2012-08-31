@@ -40,7 +40,7 @@ class DB_WEBMESTRE_SELECT extends DB
  * @param void
  * @return array|string
  */
-public static function DB_OPT_structures_sacoche()
+public function DB_OPT_structures_sacoche()
 {
 	$DB_SQL = 'SELECT sacoche_base, structure_localisation, structure_denomination, geo_id, geo_nom ';
 	$DB_SQL.= 'FROM sacoche_structure ';
@@ -52,7 +52,7 @@ public static function DB_OPT_structures_sacoche()
 		$tab_retour_champs = array();
 		foreach($DB_TAB as $DB_ROW)
 		{
-			Form::$tab_select_optgroup[$DB_ROW['geo_id']] = $DB_ROW['geo_nom'];
+			Formulaire::$tab_select_optgroup[$DB_ROW['geo_id']] = $DB_ROW['geo_nom'];
 			$tab_retour_champs[] = array('valeur'=>$DB_ROW['sacoche_base'],'texte'=>$DB_ROW['structure_localisation'].' | '.$DB_ROW['structure_denomination'],'optgroup'=>$DB_ROW['geo_id']);
 		}
 		return $tab_retour_champs;

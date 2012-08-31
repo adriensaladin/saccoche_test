@@ -55,7 +55,7 @@ $(document).ready
 					url : 'ajax.php?page='+PAGE,
 					data : 'f_action=initialiser&f_base='+$("#f_base").val()+'&f_profil='+$("#f_profil").val(),
 					dataType : "html",
-					error : function(jqXHR, textStatus, errorThrown)
+					error : function(msg,string)
 					{
 						$('#ajax_msg').removeAttr("class").addClass("alerte").html('Echec de la connexion !');
 						return false;
@@ -91,7 +91,7 @@ $(document).ready
 						url : 'ajax.php?page='+PAGE,
 						data : 'f_action=charger&f_base='+$('#f_base option:selected').val()+'&f_profil='+$("#f_profil").val(),
 						dataType : "html",
-						error : function(jqXHR, textStatus, errorThrown)
+						error : function(msg,string)
 						{
 							$('button').prop('disabled',false);
 							$('#ajax_msg').removeAttr("class").addClass("alerte").html('Echec de la connexion !');
@@ -129,7 +129,7 @@ $(document).ready
 						url : 'ajax.php?page='+PAGE,
 						data : 'f_action=choisir&f_base='+$('#f_base').val()+'&f_profil='+$("#f_profil").val(),
 						dataType : "html",
-						error : function(jqXHR, textStatus, errorThrown)
+						error : function(msg,string)
 						{
 							$('#f_changer').show();
 							$('#ajax_msg').removeAttr("class").addClass("alerte").html('Echec de la connexion !');
@@ -180,7 +180,7 @@ $(document).ready
 					url : 'ajax.php?page='+PAGE,
 					data : 'f_action=tester_version',
 					dataType : "html",
-					error : function(jqXHR, textStatus, errorThrown)
+					error : function(msg,string)
 					{
 						$('#ajax_version').addClass("alerte").html('Echec de la connexion avec le serveur communautaire !');
 						return false;
@@ -278,7 +278,7 @@ $(document).ready
 		}
 
 		// Fonction suivant l'envoi du formulaire (avec jquery.form.js)
-		function retour_form_erreur(jqXHR, textStatus, errorThrown)
+		function retour_form_erreur(msg,string)
 		{
 			$('button').prop('disabled',false);
 			$('#ajax_msg').removeAttr("class").addClass("alerte").html("Echec de la connexion !");

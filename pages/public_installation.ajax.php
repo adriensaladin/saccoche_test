@@ -28,7 +28,7 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 if($_SESSION['SESAMATH_ID']==ID_DEMO) {exit('Action désactivée pour la démo...');}
 
-$step = (isset($_POST['f_step'])) ? Clean::entier($_POST['f_step']) : '';
+$step = (isset($_POST['f_step'])) ? clean_entier($_POST['f_step']) : '';
 $affichage = '';
 
 //	////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -37,37 +37,20 @@ $affichage = '';
 
 if( $step==1 )
 {
-	$poursuivre = TRUE;
+	$poursuivre = true;
 	// Création des deux dossiers principaux, et vérification de leur accès en écriture
-	$tab_dossier = array(
-		CHEMIN_DOSSIER_PRIVATE,
-		CHEMIN_DOSSIER_TMP
-	);
+	$tab_dossier = array('./__private','./__tmp');
 	foreach($tab_dossier as $dossier)
 	{
-		$poursuivre = $poursuivre && FileSystem::creer_dossier($dossier,$affichage);
+		$poursuivre = $poursuivre && Creer_Dossier($dossier);
 	}
 	// Création des sous-dossiers, et vérification de leur accès en éciture
 	if($poursuivre)
 	{
-		$tab_dossier = array(
-			CHEMIN_DOSSIER_CONFIG,
-			CHEMIN_DOSSIER_LOG,
-			CHEMIN_DOSSIER_MYSQL,
-			CHEMIN_DOSSIER_BADGE,
-			CHEMIN_DOSSIER_COOKIE,
-			CHEMIN_DOSSIER_DEVOIR,
-			CHEMIN_DOSSIER_DUMP,
-			CHEMIN_DOSSIER_EXPORT,
-			CHEMIN_DOSSIER_IMPORT,
-			CHEMIN_DOSSIER_LOGINPASS,
-			CHEMIN_DOSSIER_LOGO,
-			CHEMIN_DOSSIER_OFFICIEL,
-			CHEMIN_DOSSIER_RSS
-		);
+		$tab_dossier = array('./__private/config','./__private/log','./__private/mysql','./__tmp/badge','./__tmp/cookie','./__tmp/devoir','./__tmp/dump-base','./__tmp/export','./__tmp/import','./__tmp/login-mdp','./__tmp/logo','./__tmp/rss');
 		foreach($tab_dossier as $dossier)
 		{
-			$poursuivre = $poursuivre && FileSystem::creer_dossier($dossier,$affichage);
+			$poursuivre = $poursuivre && Creer_Dossier($dossier);
 		}
 	}
 	// Affichage du résultat des opérations
@@ -83,29 +66,33 @@ if( $step==1 )
 if( $step==2 )
 {
 	// Création des fichiers index.htm
-	$poursuivre1 = TRUE;
-	$tab_dossier = array('badge','cookie','devoir','dump-base','export','import','login-mdp','logo','officiel','rss');
+	$poursuivre1 = true;
+	$tab_dossier = array('badge','cookie','devoir','dump-base','export','import','login-mdp','logo','rss');
 	foreach($tab_dossier as $dossier)
 	{
-		$poursuivre1 = $poursuivre1 && FileSystem::ecrire_fichier_index( CHEMIN_DOSSIER_TMP.$dossier , FALSE /*obligatoire*/ ) ;
+		@umask(0000); // Met le chmod à 666 - 000 = 666 pour les fichiers prochains fichiers créés (et à 777 - 000 = 777 pour les dossiers).
+		$test = @file_put_contents('./__tmp/'.$dossier.'/index.htm','Circulez, il n\'y a rien à voir par ici !');
+		$poursuivre1 = ($test) ? $poursuivre1 : false ;
 	}
 	if($poursuivre1)
 	{
-		$affichage .= '<label class="valide">Fichiers &laquo;&nbsp;<b>index.htm</b>&nbsp;&raquo; créés dans chaque sous-dossier de &laquo;&nbsp;<b>'.FileSystem::fin_chemin(CHEMIN_DOSSIER_TMP).'</b>&nbsp;&raquo;.</label><br />'."\r\n";
+		$affichage .= '<label class="valide">Fichiers &laquo;&nbsp;<b>index.htm</b>&nbsp;&raquo; créés dans chaque sous-dossier de &laquo;&nbsp;<b>./__tmp/</b>&nbsp;&raquo;.</label><br />'."\r\n";
 	}
 	else
 	{
 		$affichage .= '<label class="erreur">Echec lors de la création d\'un ou plusieurs fichiers &laquo;&nbsp;<b>index.htm</b>&nbsp;&raquo; dans chaque dossier précédent.</label><br />'."\r\n";
 	}
 	// Création du fichier .htaccess
-	$poursuivre2 = FileSystem::ecrire_fichier_si_possible( CHEMIN_DOSSIER_PRIVATE.'.htaccess' , 'deny from all'."\r\n" );
+	@umask(0000); // Met le chmod à 666 - 000 = 666 pour les fichiers prochains fichiers créés (et à 777 - 000 = 777 pour les dossiers).
+	$test = @file_put_contents('./__private/.htaccess','deny from all'."\r\n");
+	$poursuivre2 = ($test) ? true : false ;
 	if($poursuivre2)
 	{
-		$affichage .= '<label class="valide">Fichier &laquo;&nbsp;<b>.htaccess</b>&nbsp;&raquo; créé dans le dossier &laquo;&nbsp;<b>'.FileSystem::fin_chemin(CHEMIN_DOSSIER_PRIVATE).'</b>&nbsp;&raquo;.</label>'."\r\n";
+		$affichage .= '<label class="valide">Fichier &laquo;&nbsp;<b>.htaccess</b>&nbsp;&raquo; créé dans le dossier &laquo;&nbsp;<b>./__private/</b>&nbsp;&raquo;.</label><br />'."\r\n";
 	}
 	else
 	{
-		$affichage .= '<label class="erreur">Echec lors de la création du fichier &laquo;&nbsp;<b>.htaccess</b>&nbsp;&raquo; dans le dossier &laquo;&nbsp;<b>'.FileSystem::fin_chemin(CHEMIN_DOSSIER_PRIVATE).'</b>&nbsp;&raquo;.</label>.'."\r\n";
+		$affichage .= '<label class="erreur">Echec lors de la création du fichier &laquo;&nbsp;<b>.htaccess</b>&nbsp;&raquo; dans le dossier &laquo;&nbsp;<b>./__private/</b>&nbsp;&raquo;.</label><br />Veuiller y recopier celui se trouvant par exemple dans le dossier <b>./_inc/</b>.'."\r\n";
 	}
 	// Affichage du résultat des opérations
 	echo $affichage;
@@ -126,7 +113,7 @@ if( $step==3 )
 	}
 	else
 	{
-		$affichage .= '<p><label class="astuce">Le fichier &laquo;&nbsp;<b>'.FileSystem::fin_chemin(CHEMIN_FICHIER_CONFIG_INSTALL).'</b>&nbsp;&raquo; n\'existant pas (cas d\'une première installation), ou étant corrompu, vous devez renseigner les étapes 4 et 5.</label></p>'."\r\n";
+		$affichage .= '<p><label class="astuce">Le fichier &laquo;&nbsp;<b>'.$fichier_constantes.'</b>&nbsp;&raquo; n\'existant pas (cas d\'une première installation), ou étant corrompu, vous devez renseigner les étapes 4 et 5.</label></p>'."\r\n";
 		$affichage .= '<h2>Type d\'installation</h2>'."\r\n";
 		$affichage .= '<p class="astuce">Le type d\'installation, déterminant, n\'est pas modifiable ultérieurement : sélectionnez ce qui vous correspond vraiment !</p>'."\r\n";
 		$affichage .= '<ul class="puce"><li><a href="#" class="step4" id="mono-structure">Installation d\'un unique établissement sur ce serveur, nécessitant une seule base de données.</a></li></ul>'."\r\n";
@@ -147,7 +134,7 @@ if( $step==3 )
 if( $step==4 )
 {
 	// récupérer et teste le paramètre
-	$installation = (isset($_POST['f_installation'])) ? Clean::texte($_POST['f_installation']) : '';
+	$installation = (isset($_POST['f_installation'])) ? clean_texte($_POST['f_installation']) : '';
 	if( in_array($installation,array('mono-structure','multi-structures')) )
 	{
 		$exemple_denomination = ($installation=='mono-structure') ? 'Collège de Trucville' : 'Rectorat du paradis' ;
@@ -185,14 +172,14 @@ if( $step==4 )
 if( $step==41 )
 {
 	// récupérer et tester les paramètres
-	$installation = (isset($_POST['f_installation'])) ? Clean::texte($_POST['f_installation']) : '';
-	$denomination = (isset($_POST['f_denomination'])) ? Clean::texte($_POST['f_denomination']) : '';
-	$uai          = (isset($_POST['f_uai']))          ? Clean::uai($_POST['f_uai'])            : '';
-	$adresse_site = (isset($_POST['f_adresse_site'])) ? Clean::url($_POST['f_adresse_site'])   : '';
-	$nom          = (isset($_POST['f_nom']))          ? Clean::nom($_POST['f_nom'])            : '';
-	$prenom       = (isset($_POST['f_prenom']))       ? Clean::prenom($_POST['f_prenom'])      : '';
-	$courriel     = (isset($_POST['f_courriel']))     ? Clean::courriel($_POST['f_courriel'])  : '';
-	$password     = (isset($_POST['f_password1']))    ? Clean::password($_POST['f_password1']) : '';
+	$installation = (isset($_POST['f_installation'])) ? clean_texte($_POST['f_installation']) : '';
+	$denomination = (isset($_POST['f_denomination'])) ? clean_texte($_POST['f_denomination']) : '';
+	$uai          = (isset($_POST['f_uai']))          ? clean_uai($_POST['f_uai'])            : '';
+	$adresse_site = (isset($_POST['f_adresse_site'])) ? clean_url($_POST['f_adresse_site'])   : '';
+	$nom          = (isset($_POST['f_nom']))          ? clean_nom($_POST['f_nom'])            : '';
+	$prenom       = (isset($_POST['f_prenom']))       ? clean_prenom($_POST['f_prenom'])      : '';
+	$courriel     = (isset($_POST['f_courriel']))     ? clean_courriel($_POST['f_courriel'])  : '';
+	$password     = (isset($_POST['f_password1']))    ? clean_password($_POST['f_password1']) : '';
 	if( in_array($installation,array('mono-structure','multi-structures')) && $denomination && $nom && $prenom && $courriel && $password )
 	{
 		// Il faut tout transmettre car à ce stade le fichier n'existe pas.
@@ -218,19 +205,19 @@ if( $step==5 )
 	// A ce niveau, le fichier d'informations sur l'hébergement doit exister.
 	if(!defined('HEBERGEUR_INSTALLATION'))
 	{
-		$affichage .= '<label class="valide">Les données du fichier <b>'.FileSystem::fin_chemin(CHEMIN_FICHIER_CONFIG_INSTALL).'</b> n\'ont pas été correctement chargées.</label>'."\r\n";
+		$affichage .= '<label class="valide">Les données du fichier <b>'.$fichier_constantes.'</b> n\'ont pas été correctement chargées.</label>'."\r\n";
 		$affichage .= '<p><span class="tab"><a href="#" class="step3">Retour à l\'étape 3.</a><label id="ajax_msg">&nbsp;</label></span></p>' ;
 	}
-	elseif(is_file(CHEMIN_FICHIER_CONFIG_MYSQL))
+	elseif(is_file($fichier_mysql_config))
 	{
-		$affichage .= '<p><label class="valide">Le fichier <b>'.FileSystem::fin_chemin(CHEMIN_FICHIER_CONFIG_MYSQL).'</b> existe déjà ; modifiez-en manuellement le contenu si les paramètres sont incorrects.</label></p>'."\r\n";
+		$affichage .= '<p><label class="valide">Le fichier <b>'.$fichier_mysql_config.'</b> existe déjà ; modifiez-en manuellement le contenu si les paramètres sont incorrects.</label></p>'."\r\n";
 		$affichage .= '<p><span class="tab"><a href="#" class="step6">Passer à l\'étape 6.</a><label id="ajax_msg">&nbsp;</label></span></p>' ;
 	}
 	else
 	{
 		// afficher le formulaire pour entrer les paramètres
 		$texte_alerte = (HEBERGEUR_INSTALLATION=='multi-structures') ? 'ce compte mysql doit avoir des droits d\'administration de bases et d\'utilisateurs (typiquement un utilisateur "root")' : 'la base à utiliser doit déjà exister (elle ne sera pas créée par SACoche) ; veuillez la créer manuellement maintenant si besoin' ;
-		$affichage .= '<p><label class="astuce">Le fichier &laquo;&nbsp;<b>'.FileSystem::fin_chemin(CHEMIN_FICHIER_CONFIG_MYSQL).'</b>&nbsp;&raquo; n\'existant pas, indiquez ci-dessous vos paramètres de connexion à la base de données.</label></p>'."\r\n";
+		$affichage .= '<p><label class="astuce">Le fichier &laquo;&nbsp;<b>'.$fichier_mysql_config.'</b>&nbsp;&raquo; n\'existant pas, indiquez ci-dessous vos paramètres de connexion à la base de données.</label></p>'."\r\n";
 		$affichage .= '<p class="danger">Comme indiqué précédemment, '.$texte_alerte.'.</p>'."\r\n";
 		$affichage .= '<fieldset>'."\r\n";
 		$affichage .= '<h2>Paramètres MySQL</h2>'."\r\n";
@@ -250,14 +237,14 @@ elseif( $step==51 )
 	// A ce niveau, le fichier d'informations sur l'hébergement doit exister.
 	if(!defined('HEBERGEUR_INSTALLATION'))
 	{
-		exit('Erreur : problème avec le fichier : '.FileSystem::fin_chemin(CHEMIN_FICHIER_CONFIG_INSTALL).' !');
+		exit('Erreur : problème avec le fichier : '.$fichier_constantes.' !');
 	}
 	// récupérer et tester les paramètres
-	$BD_host = (isset($_POST['f_host'])) ? Clean::texte($_POST['f_host']) : '';
-	$BD_port = (isset($_POST['f_port'])) ? Clean::entier($_POST['f_port']) : 0;
-	$BD_name = (isset($_POST['f_name'])) ? Clean::texte($_POST['f_name']) : '';
-	$BD_user = (isset($_POST['f_user'])) ? Clean::texte($_POST['f_user']) : '';
-	$BD_pass = (isset($_POST['f_pass'])) ? Clean::texte($_POST['f_pass']) : '';
+	$BD_host = (isset($_POST['f_host'])) ? clean_texte($_POST['f_host']) : '';
+	$BD_port = (isset($_POST['f_port'])) ? clean_entier($_POST['f_port']) : 0;
+	$BD_name = (isset($_POST['f_name'])) ? clean_texte($_POST['f_name']) : '';
+	$BD_user = (isset($_POST['f_user'])) ? clean_texte($_POST['f_user']) : '';
+	$BD_pass = (isset($_POST['f_pass'])) ? clean_texte($_POST['f_pass']) : '';
 	// tester la connexion
 	$BDlink = @mysql_connect($BD_host.':'.$BD_port,$BD_user,$BD_pass);
 	if(!$BDlink)
@@ -268,9 +255,9 @@ elseif( $step==51 )
 	$res = @mysql_query('SELECT VERSION()');
 	$row = mysql_fetch_row($res);
 	$mysql_version = (float)substr($row[0],0,3);
-	if(version_compare($mysql_version,MYSQL_VERSION_MINI_REQUISE,'<'))
+	if($mysql_version<$version_mysql_mini)
 	{
-		exit('Erreur : MySQL trop ancien (version utilisée '.$mysql_version.' ; version minimum requise '.MYSQL_VERSION_MINI_REQUISE.') !');
+		exit('Erreur : MySQL trop ancien (version utilisée '.$mysql_version.' ; version minimum requise '.$version_mysql_mini.') !');
 	}
 	if(HEBERGEUR_INSTALLATION=='multi-structures')
 	{
@@ -280,7 +267,7 @@ elseif( $step==51 )
 		// GRANT USAGE ON *.* TO 'sac_user_...'@'%' IDENTIFIED BY PASSWORD '...'
 		$res = @mysql_query('SHOW GRANTS FOR CURRENT_USER()');
 		$row = mysql_fetch_row($res);
-		if( (strpos($row[0],'ALL PRIVILEGES')==FALSE) && (strpos($row[0],'WITH GRANT OPTION')==FALSE) )
+		if( (strpos($row[0],'ALL PRIVILEGES')==false) && (strpos($row[0],'WITH GRANT OPTION')==false) )
 		{
 			exit('Erreur : ce compte MySQL n\'a pas les droits suffisants !');
 		}
@@ -350,14 +337,14 @@ elseif( $step==52 )
 	// A ce niveau, le fichier d'informations sur l'hébergement doit exister.
 	if(!defined('HEBERGEUR_INSTALLATION'))
 	{
-		exit('Erreur : problème avec le fichier : '.FileSystem::fin_chemin(CHEMIN_FICHIER_CONFIG_INSTALL).' !');
+		exit('Erreur : problème avec le fichier : '.$fichier_constantes.' !');
 	}
 	// récupérer et tester les paramètres
-	$BD_host = (isset($_POST['f_host'])) ? Clean::texte($_POST['f_host']) : '';
-	$BD_port = (isset($_POST['f_port'])) ? Clean::entier($_POST['f_port']) : 0;
-	$BD_name = (isset($_POST['f_name'])) ? Clean::texte($_POST['f_name']) : '';
-	$BD_user = (isset($_POST['f_user'])) ? Clean::texte($_POST['f_user']) : '';
-	$BD_pass = (isset($_POST['f_pass'])) ? Clean::texte($_POST['f_pass']) : '';
+	$BD_host = (isset($_POST['f_host'])) ? clean_texte($_POST['f_host']) : '';
+	$BD_port = (isset($_POST['f_port'])) ? clean_entier($_POST['f_port']) : 0;
+	$BD_name = (isset($_POST['f_name'])) ? clean_texte($_POST['f_name']) : '';
+	$BD_user = (isset($_POST['f_user'])) ? clean_texte($_POST['f_user']) : '';
+	$BD_pass = (isset($_POST['f_pass'])) ? clean_texte($_POST['f_pass']) : '';
 	// tester la connexion
 	$BDlink = @mysql_connect($BD_host.':'.$BD_port,$BD_user,$BD_pass);
 	if(!$BDlink)
@@ -389,14 +376,14 @@ elseif( $step==52 )
 if( $step==6 )
 {
 	// A ce niveau, le fichier d'informations sur l'hébergement doit exister.
-	if(!is_file(CHEMIN_FICHIER_CONFIG_INSTALL))
+	if(!is_file($fichier_constantes))
 	{
-		exit('Erreur : problème avec le fichier : '.FileSystem::fin_chemin(CHEMIN_FICHIER_CONFIG_INSTALL).' !');
+		exit('Erreur : problème avec le fichier : '.$fichier_constantes.' !');
 	}
 	// A ce niveau, le fichier de connexion à la base de données doit exister.
-	if(!is_file(CHEMIN_FICHIER_CONFIG_MYSQL))
+	if(!is_file($fichier_mysql_config))
 	{
-		exit('Erreur : problème avec le fichier : '.FileSystem::fin_chemin(CHEMIN_FICHIER_CONFIG_MYSQL).' !');
+		exit('Erreur : problème avec le fichier : '.$fichier_mysql_config.' !');
 	}
 	// On cherche d'éventuelles tables existantes de SACoche.
 	$DB_TAB = (HEBERGEUR_INSTALLATION=='mono-structure') ? DB_STRUCTURE_COMMUN::DB_recuperer_tables_informations() : DB_WEBMESTRE_PUBLIC::DB_recuperer_tables_informations() ;
@@ -409,7 +396,7 @@ if( $step==6 )
 		$affichage .= '<p class="astuce">Si besoin, supprimez les tables manuellement, puis <a href="#" class="step6">relancer l\'étape 6.</a><label id="ajax_msg">&nbsp;</label></p>'."\r\n";
 		$affichage .= '<hr />'."\r\n";
 		$affichage .= '<h2>Installation logicielle terminée</h2>'."\r\n";
-		$affichage .= '<p>Pour se connecter avec le compte webmestre : <a href="'.URL_DIR_SACOCHE.'?webmestre">'.URL_DIR_SACOCHE.'?webmestre</a></p>'."\r\n";
+		$affichage .= '<p>Pour se connecter avec le compte webmestre : <a href="'.SERVEUR_ADRESSE.'/?webmestre">'.SERVEUR_ADRESSE.'/?webmestre</a></p>'."\r\n";
 	}
 	else
 	{
@@ -437,11 +424,11 @@ if( $step==6 )
 				De même, en multi-structures, il faudrait tester la présence de tous les dossiers éventuels...
 				Peut-être qu'une étape supplémentaire serait bienvenue, même si dans ce cas on n'a plus ensuite les identifiants admin sous les yeux...
 			*/
-			$tab_sous_dossier = array('badge','cookie','devoir','officiel','rss');
+			$tab_sous_dossier = array('badge','cookie','devoir','rss');
 			foreach($tab_sous_dossier as $sous_dossier)
 			{
-				FileSystem::creer_dossier( CHEMIN_DOSSIER_TMP.$sous_dossier.DS.'0' , $affichage );
-				FileSystem::ecrire_fichier_index(CHEMIN_DOSSIER_TMP.$sous_dossier.DS.'0');
+				Creer_Dossier('./__tmp/'.$sous_dossier.'/'.'0');
+				Ecrire_Fichier('./__tmp/'.$sous_dossier.'/'.'0'.'/index.htm','Circulez, il n\'y a rien à voir par ici !');
 			}
 			// Affichage du retour
 			$affichage .= '<p><label class="valide">Les tables de la base de données ont été installées.</label></p>'."\r\n";
@@ -453,8 +440,8 @@ if( $step==6 )
 			$affichage .= '<label class="alerte">Notez ces identifiants avant de poursuivre !</label>'."\r\n";
 			$affichage .= '<hr />'."\r\n";
 			$affichage .= '<h2>Installation logicielle terminée</h2>'."\r\n";
-			$affichage .= '<p>Se connecter avec le compte webmestre : <a href="'.URL_DIR_SACOCHE.'?webmestre">'.URL_DIR_SACOCHE.'?webmestre</a></p>'."\r\n";
-			$affichage .= '<p>Se connecter avec le compte administrateur : <a href="'.URL_DIR_SACOCHE.'">'.URL_INSTALL_SACOCHE.'</a></p>'."\r\n";
+			$affichage .= '<p>Se connecter avec le compte webmestre : <a href="'.SERVEUR_ADRESSE.'/?webmestre">'.SERVEUR_ADRESSE.'/?webmestre</a></p>'."\r\n";
+			$affichage .= '<p>Se connecter avec le compte administrateur : <a href="'.SERVEUR_ADRESSE.'">'.SERVEUR_ADRESSE.'</a></p>'."\r\n";
 		}
 		elseif(HEBERGEUR_INSTALLATION=='multi-structures')
 		{
@@ -462,7 +449,7 @@ if( $step==6 )
 			$affichage .= '<p><label class="valide">Les tables de la base de données du webmestre ont été installées.</label></p>'."\r\n";
 			$affichage .= '<hr />'."\r\n";
 			$affichage .= '<h2>Installation logicielle terminée</h2>'."\r\n";
-			$affichage .= '<p>Se connecter avec le compte webmestre pour gérer les structures hébergées : <a href="'.URL_DIR_SACOCHE.'?webmestre">'.URL_DIR_SACOCHE.'?webmestre</a></p>'."\r\n";
+			$affichage .= '<p>Se connecter avec le compte webmestre pour gérer les structures hébergées : <a href="'.SERVEUR_ADRESSE.'/?webmestre">'.SERVEUR_ADRESSE.'?webmestre</a></p>'."\r\n";
 		}
 	}
 	echo $affichage;

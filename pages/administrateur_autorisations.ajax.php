@@ -30,8 +30,8 @@ if($_SESSION['SESAMATH_ID']==ID_DEMO){exit('Action désactivée pour la démo...
 //	Récupération des informations transmises
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
-$f_objet   = (isset($_POST['f_objet']))   ? Clean::texte($_POST['f_objet'])   : '';
-$f_profils = (isset($_POST['f_profils'])) ? Clean::texte($_POST['f_profils']) : 'erreur';
+$f_objet   = (isset($_POST['f_objet']))   ? clean_texte($_POST['f_objet'])   : '';
+$f_profils = (isset($_POST['f_profils'])) ? clean_texte($_POST['f_profils']) : 'erreur';
 
 //	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 //	Vérification des informations transmises
@@ -54,6 +54,9 @@ $tab_objet_profils['droit_bilan_note_sur_vingt']     = array('parent','eleve');
 $tab_objet_profils['droit_socle_acces']              = array('parent','eleve');
 $tab_objet_profils['droit_socle_pourcentage_acquis'] = array('parent','eleve');
 $tab_objet_profils['droit_socle_etat_validation']    = array('parent','eleve');
+$tab_objet_profils['droit_voir_officiel_releve_archive']   = array('directeur','professeur','parent','eleve');
+$tab_objet_profils['droit_voir_officiel_bulletin_archive'] = array('directeur','professeur','parent','eleve');
+$tab_objet_profils['droit_voir_officiel_socle_archive']    = array('directeur','professeur','parent','eleve');
 $tab_objet_profils['droit_officiel_releve_modifier_statut']         = array('directeur','professeur','profprincipal','aucunprof');
 $tab_objet_profils['droit_officiel_releve_appreciation_generale']   = array('directeur','professeur','profprincipal','aucunprof');
 $tab_objet_profils['droit_officiel_releve_impression_pdf']          = array('directeur','professeur','profprincipal','aucunprof');
@@ -63,9 +66,6 @@ $tab_objet_profils['droit_officiel_bulletin_impression_pdf']        = array('dir
 $tab_objet_profils['droit_officiel_socle_modifier_statut']          = array('directeur','professeur','profprincipal','aucunprof');
 $tab_objet_profils['droit_officiel_socle_appreciation_generale']    = array('directeur','professeur','profprincipal','aucunprof');
 $tab_objet_profils['droit_officiel_socle_impression_pdf']           = array('directeur','professeur','profprincipal','aucunprof');
-$tab_objet_profils['droit_officiel_releve_voir_archive']   = array('directeur','professeur','parent','eleve');
-$tab_objet_profils['droit_officiel_bulletin_voir_archive'] = array('directeur','professeur','parent','eleve');
-$tab_objet_profils['droit_officiel_socle_voir_archive']    = array('directeur','professeur','parent','eleve');
 
 $test_objet_prof = in_array($f_objet,array('droit_validation_entree','droit_validation_pilier','droit_annulation_pilier','droit_bulletin_appreciation_generale','droit_bulletin_impression_pdf')) ? TRUE : FALSE ;
 
@@ -77,7 +77,7 @@ if(!isset($tab_objet_profils[$f_objet]))
 if($f_profils=='')
 {
 	// Les profils peuvent être vides sauf certains paramètres devant contenir la chaine 'prof'
-	$test_options = ($test_objet_prof) ? FALSE : TRUE ;
+	$test_options = ($test_objet_prof) ? false : true ;
 }
 else
 {

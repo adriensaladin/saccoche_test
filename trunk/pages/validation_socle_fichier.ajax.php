@@ -217,7 +217,7 @@ if( in_array( $action , array('import_sacoche','import_compatible') ) )
 		{
 			exit('Erreur : le serveur ne gère pas les fichiers ZIP ! Renvoyez votre fichier sans compression.');
 		}
-		unzip_one( $fnom_serveur , 'import_validations.xml' , $fichier_upload_nom );
+		FileSystem::unzip_one( $fnom_serveur , 'import_validations.xml' , $fichier_upload_nom );
 	}
 	$fichier_contenu = file_get_contents(CHEMIN_DOSSIER_IMPORT.$fichier_upload_nom);
 	$fichier_contenu = To::utf8($fichier_contenu); // Mettre en UTF-8 si besoin

@@ -79,8 +79,9 @@ if(!file_exists($fichier))
 	$interligne     = $font_size*1.2;
 	$hauteur_tmp    = $font_size*2*$br_line;
 	$largeur_tmp    = $font_size*40;
-	$image_tmp      = imagecreate($largeur_tmp,$hauteur_tmp);
-	$couleur_fond   = imagecolorallocate($image_tmp,221,221,255); // Le premier appel à imagecolorallocate() remplit la couleur de fond.
+	$image_tmp      = function_exists('imagecreatetruecolor') ? imagecreatetruecolor($largeur_tmp,$hauteur_tmp) : imagecreate($largeur_tmp,$hauteur_tmp) ;
+	$couleur_fond   = imagecolorallocate($image_tmp,221,221,255); // Le premier appel à imagecolorallocate() remplit la couleur de fond si imagecreate().
+	$couleur_fill   = imagefill($image_tmp, 0, 0, $couleur_fond); // Si imagecreatetruecolor(), l'image est noire et il faut la remplir explicitement.
 	$couleur_texte  = imagecolorallocate($image_tmp,0,0,0);
 	$police         = './arial.ttf'; // Dans le même dossier que ce script.
 	// imagettftext() : 3e param = angle de rotation ; 4e et 5e param = coordonnées du coin inférieur gauche du premier caractère
@@ -130,7 +131,7 @@ if(!file_exists($fichier))
 		}
 	}
 	// Créer l'image finale aux bonnes dimensions
-	$image_finale = imagecreate($largeur_finale,$hauteur_finale);
+	$image_finale = function_exists('imagecreatetruecolor') ? imagecreatetruecolor($largeur_finale,$hauteur_finale) : imagecreate($largeur_finale,$hauteur_finale) ;
 	// imagettftext() : 3e et 4e param = coordonnées du point de destination ; 5e et 6e param = coordonnées du point source
 	imagecopy($image_finale,$image_tmp,0,0,$h_g_x-1,$h_g_y-1,$largeur_finale,$hauteur_finale);
 	imagedestroy($image_tmp);
@@ -140,7 +141,7 @@ if(!file_exists($fichier))
 	{
 		$largeur = imagesx($image_depart);
 		$hauteur = imagesy($image_depart);
-		$image_tournee = imagecreate($hauteur,$largeur);
+		$image_tournee = function_exists('imagecreatetruecolor') ? imagecreatetruecolor($hauteur,$largeur) : imagecreate($hauteur,$largeur) ;
 		if($image_tournee)
 		{
 			for( $i=0 ; $i<$largeur ; $i++)

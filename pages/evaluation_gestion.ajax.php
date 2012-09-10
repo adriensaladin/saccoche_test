@@ -1177,22 +1177,13 @@ if( ($action=='imprimer_cartouche') && $devoir_id && $groupe_id && $date_fr && $
 
 if( (isset($_GET['f_action'])) && ($_GET['f_action']=='importer_saisie_csv') )
 {
-	// Récupérer le contenu du fichier
-	$tab_file = $_FILES['userfile'];
-	$fnom_transmis = $tab_file['name'];
-	$fnom_serveur = $tab_file['tmp_name'];
-	$ftaille = $tab_file['size'];
-	$ferreur = $tab_file['error'];
-	if( (!file_exists($fnom_serveur)) || (!$ftaille) || ($ferreur) )
+	$fichier_nom = 'saisie_deportee_'.$_SESSION['BASE'].'_'.$_SESSION['USER_ID'].'_'.fabriquer_fin_nom_fichier__date_et_alea().'.<EXT>';
+	$result = FileSystem::recuperer_upload( CHEMIN_DOSSIER_IMPORT /*fichier_chemin*/ , $fichier_nom /*fichier_nom*/ , array('txt','csv') /*tab_extensions_autorisees*/ , NULL /*tab_extensions_interdites*/ , NULL /*taille_maxi*/ , NULL /*filename_in_zip*/ );
+	if($result!==TRUE)
 	{
-		exit('Erreur : problème de transfert ! Fichier trop lourd ? '.InfoServeur::minimum_limitations_upload());
+		exit('Erreur : '.$result);
 	}
-	$extension = strtolower(pathinfo($fnom_transmis,PATHINFO_EXTENSION));
-	if(!in_array($extension,array('txt','csv')))
-	{
-		exit('Erreur : l\'extension du fichier transmis est incorrecte !');
-	}
-	$contenu_csv = file_get_contents($fnom_serveur);
+	$contenu_csv = file_get_contents(CHEMIN_DOSSIER_IMPORT.FileSystem::$file_saved_name);
 	$contenu_csv = To::utf8($contenu_csv); // Mettre en UTF-8 si besoin
 	$tab_lignes = extraire_lignes($contenu_csv); // Extraire les lignes du fichier
 	$separateur = extraire_separateur_csv($tab_lignes[0]); // Déterminer la nature du séparateur
@@ -1251,41 +1242,18 @@ if( ($action=='referencer_document') && $devoir_id && in_array($doc_objet,array(
 //	Uploader un sujet ou un corrigé d'évaluation
 //	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-if( ($action=='uploader_document') && $devoir_id && in_array($doc_objet,array('sujet','corrige')) && isset($_FILES['userfile']) )
+if( ($action=='uploader_document') && $devoir_id && in_array($doc_objet,array('sujet','corrige')) )
 {
-	// Récupération du fichier
-	$tab_file = $_FILES['userfile'];
-	$fnom_transmis = $tab_file['name'];
-	$fnom_serveur  = $tab_file['tmp_name'];
-	$ftaille = $tab_file['size'];
-	$ferreur = $tab_file['error'];
-	if( (!file_exists($fnom_serveur)) || (!$ftaille) || ($ferreur) )
+	$fichier_nom = 'devoir_'.$devoir_id.'_'.$doc_objet.'_'.time().'.<EXT>'; // pas besoin de le rendre inaccessible -> fabriquer_fin_nom_fichier__date_et_alea() inutilement lourd
+	$result = FileSystem::recuperer_upload( $chemin_devoir /*fichier_chemin*/ , $fichier_nom /*fichier_nom*/ , NULL /*tab_extensions_autorisees*/ , array('bat','com','exe','php','zip') /*tab_extensions_interdites*/ , FICHIER_TAILLE_MAX /*taille_maxi*/ , NULL /*filename_in_zip*/ );
+	if($result!==TRUE)
 	{
-		exit('Problème de transfert ! Fichier trop lourd ? '.InfoServeur::minimum_limitations_upload());
-	}
-	$extension = strtolower(pathinfo($fnom_transmis,PATHINFO_EXTENSION));
-	if(in_array( $extension , array('bat','com','exe','php','zip') ))
-	{
-		exit('L\'extension du fichier transmis est interdite !');
-	}
-	if($fnom_transmis{0}=='.')
-	{
-		exit('Le nom du fichier ne doit pas commencer par un point !');
-	}
-	if($ftaille>FICHIER_TAILLE_MAX*1000)
-	{
-		exit('Le fichier dépasse les '.FICHIER_TAILLE_MAX.' Ko autorisés !');
-	}
-	// Enregistrement du fichier
-	$fichier_nom = 'devoir_'.$devoir_id.'_'.$doc_objet.'_'.time().'.'.$extension; // pas besoin de le rendre inaccessible -> fabriquer_fin_nom_fichier__date_et_alea() inutilement lourd
-	if(!move_uploaded_file($fnom_serveur , $chemin_devoir.$fichier_nom))
-	{
-		exit('Le fichier n\'a pas pu être enregistré sur le serveur !');
+		exit($result);
 	}
 	// Mise à jour dans la base
-	DB_STRUCTURE_PROFESSEUR::DB_modifier_devoir_document($devoir_id,$_SESSION['USER_ID'],$doc_objet,$url_dossier_devoir.$fichier_nom);
+	DB_STRUCTURE_PROFESSEUR::DB_modifier_devoir_document($devoir_id,$_SESSION['USER_ID'],$doc_objet,$url_dossier_devoir.FileSystem::$file_saved_name);
 	// Retour
-	exit('ok'.']¤['.$ref.']¤['.$doc_objet.']¤['.$url_dossier_devoir.$fichier_nom);
+	exit('ok'.']¤['.$ref.']¤['.$doc_objet.']¤['.$url_dossier_devoir.FileSystem::$file_saved_name);
 }
 
 //	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

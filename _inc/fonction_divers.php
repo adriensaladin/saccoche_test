@@ -1844,7 +1844,7 @@ function tester_UAI($uai)
 	$uai_nombre = substr($uai,0,7);
 	$uai_lettre = substr($uai,-1);
 	$reste = $uai_nombre - (23*floor($uai_nombre/23));
-	$alphabet = "ABCDEFGHJKLMNPRSTUVWXYZ";
+	$alphabet = 'ABCDEFGHJKLMNPRSTUVWXYZ';
 	$clef = substr($alphabet,$reste,1);
 	return ($clef==$uai_lettre) ? TRUE : FALSE;
 }

@@ -39,9 +39,9 @@ $objet       = (isset($_POST['page_mode']))   ? Clean::texte($_POST['page_mode']
 $ressources  = (isset($_POST['ressources']))  ? Clean::texte($_POST['ressources'])  : '';
 $findme      = (isset($_POST['findme']))      ? Clean::texte($_POST['findme'])      : '';
 
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Afficher le référentiel d'une matière et d'un niveau
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 if( ($action=='Voir_referentiel') && $matiere_id && $niveau_id && $matiere_ref )
 {
@@ -51,9 +51,9 @@ if( ($action=='Voir_referentiel') && $matiere_id && $niveau_id && $matiere_ref )
 	exit( afficher_arborescence_matiere_from_SQL($DB_TAB,$dynamique=true,$reference=true,$aff_coef=false,$aff_cart=false,$aff_socle=false,$aff_lien='image',$aff_input=false,$aff_id_li='n3') );
 }
 
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Renommer un domaine / un thème / un item
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 if( ($action=='Enregistrer_lien') && $item_id )
 {
@@ -61,18 +61,18 @@ if( ($action=='Enregistrer_lien') && $item_id )
 	exit('ok');
 }
 
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Élaborer ou d'éditer sur le serveur communautaire une page de liens pour travailler
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 if( ($action=='Charger_ressources') && $item_id )
 {
 	exit( afficher_liens_ressources($_SESSION['SESAMATH_ID'],$_SESSION['SESAMATH_KEY'],$item_id,$item_lien) );
 }
 
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Enregistrer sur le serveur communautaire le contenu d'une page de liens pour travailler
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 if( ($action=='Enregistrer_ressources') && $item_id && $item_nom && in_array($objet,array('page_create','page_update')) && $ressources )
 {
@@ -93,27 +93,27 @@ if( ($action=='Enregistrer_ressources') && $item_id && $item_nom && in_array($ob
 	exit( fabriquer_liens_ressources($_SESSION['SESAMATH_ID'],$_SESSION['SESAMATH_KEY'],$item_id,$item_nom,$objet,serialize($tab_elements)) );
 }
 
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Rechercher sur le serveur communautaire à partir de mots clefs des liens existants de ressources pour travailler
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 if( ($action=='Rechercher_liens_ressources') && $item_id && $findme )
 {
 	exit( rechercher_liens_ressources($_SESSION['SESAMATH_ID'],$_SESSION['SESAMATH_KEY'],$item_id,$findme) );
 }
 
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Rechercher sur le serveur communautaire des documents ressources existants uploadés par l'établissement
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 if($action=='Rechercher_documents')
 {
 	exit( rechercher_documents($_SESSION['SESAMATH_ID'],$_SESSION['SESAMATH_KEY']) );
 }
 
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Uploader une ressource sur le serveur communautaire
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /*
 Pour uploader une ressource directement sur le serveur communautaire, le fichier "professeur_referentiel_edition.php" devrait l'appeller dans une iframe (le bouton d'upload du formulaire devant se trouver sur ce serveur). Mais :
@@ -123,36 +123,22 @@ Finalement, j'ai opté pour le plus simple même si ce n'est pas le plus économ
 Ca va qu'une limite de 500Ko est imposée...
 */
 
-if( ($action=='Uploader_document') && isset($_FILES['userfile']) )
+if($action=='Uploader_document')
 {
-	$tab_file = $_FILES['userfile'];
-	$fnom_transmis = $tab_file['name'];
-	$fnom_serveur  = $tab_file['tmp_name'];
-	$ftaille = $tab_file['size'];
-	$ferreur = $tab_file['error'];
-	if( (!file_exists($fnom_serveur)) || (!$ftaille) || ($ferreur) )
+	$result = FileSystem::recuperer_upload( CHEMIN_DOSSIER_IMPORT /*fichier_chemin*/ , NULL /*fichier_nom*/ , NULL /*tab_extensions_autorisees*/ , array('bat','com','exe','php','zip') /*tab_extensions_interdites*/ , 500 /*taille_maxi*/ , NULL /*filename_in_zip*/ );
+	if($result!==TRUE)
 	{
-		exit('Problème de transfert ! Fichier trop lourd ? '.InfoServeur::minimum_limitations_upload());
+		exit($result);
 	}
-	$extension = strtolower(pathinfo($fnom_transmis,PATHINFO_EXTENSION));
-	if(in_array( $extension , array('bat','com','exe','php','zip') ))
-	{
-		exit('L\'extension du fichier transmis est interdite !');
-	}
-	if($fnom_transmis{0}=='.')
-	{
-		exit('Le nom du fichier ne doit pas commencer par un point !');
-	}
-	if($ftaille>500000)
-	{
-		exit('Le fichier dépasse les 500Ko autorisés pour ce service !');
-	}
-	exit( uploader_ressource( $_SESSION['SESAMATH_ID'] , $_SESSION['SESAMATH_KEY'] , $_SESSION['tmp']['matiere_ref'] , Clean::fichier($fnom_transmis) , file_get_contents($fnom_serveur) ) );
+	$fichier_nom = Clean::fichier(FileSystem::$file_upload_name);
+	$reponse = uploader_ressource( $_SESSION['SESAMATH_ID'] , $_SESSION['SESAMATH_KEY'] , $_SESSION['tmp']['matiere_ref'] , $fichier_nom , file_get_contents(CHEMIN_DOSSIER_IMPORT.FileSystem::$file_saved_name) );
+	unlink(CHEMIN_DOSSIER_IMPORT.FileSystem::$file_saved_name);
+	exit($reponse);
 }
 
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
 // On ne devrait pas en arriver là...
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 exit('Erreur avec les données transmises !');
 

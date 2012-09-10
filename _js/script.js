@@ -145,7 +145,7 @@ function analyse_mdp(mdp)
 /**
  * Fonction pour imprimer un contenu
  *
- * En javascript, print() s'applique à l'objet window, et l'usage d'une feuille se style adaptée n'a pas permis d'obtenir un résultat satisfaisant.
+ * En javascript, print() s'applique à l'objet window, et l'usage d'une feuille de style adaptée n'a pas permis d'obtenir un résultat satisfaisant.
  * D'où l'ouverture d'un pop-up (inspiration : http://www.asp-php.net/ressources/bouts_de_code.aspx?id=342).
  *
  * @param object contenu
@@ -395,10 +395,10 @@ function afficher_textarea_reste(textarea_obj,textarea_maxi_length)
 	$('#'+textarea_obj.attr('id')+'_reste').html(reste_nb+reste_str).removeAttr("class").addClass(reste_class);
 }
 
-//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
 //	Gestion de la durée d'inactivité
 //	On utilise un cookie plutôt qu'une variable js car ceci permet de gérer plusieurs onglets.
-//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /**
  * Fonction pour écrire un cookie
@@ -1019,14 +1019,14 @@ $(document).ready
 		}
 
 		/**
-		 * Calque pour afficher un calendrier
+		 * Ajoute au document un calque qui est utilisé pour afficher un calendrier ou une photo d'un élève
 		 */
-
-		// Ajoute au document le calque d'aide au remplissage
 		$('<div id="calque"></div>').appendTo(document.body).hide();
 		var leave_erreur = false;
 
-		// Afficher le calque et le compléter : calendrier
+		/**
+		 * Afficher le calque et le compléter : calendrier
+		 */
 		$('q.date_calendrier').live
 		('click',
 			function(e)
@@ -1051,13 +1051,13 @@ $(document).ready
 				posY = e.pageY-5;
 				$("#calque").css('left',posX + 'px');
 				$("#calque").css('top',posY + 'px');
-				$("#calque").html('<label id="ajax_alerte_calque" for="nada" class="loader">Connexion au serveur&hellip;</label>').show();
+				$("#calque").html('<label id="ajax_alerte_calque" class="loader">Connexion au serveur&hellip;</label>').show();
 				// Charger en Ajax le contenu du calque
 				$.ajax
 				(
 					{
 						type : 'GET',
-						url : 'ajax.php?page=date_calendrier',
+						url : 'ajax.php?page=calque_date_calendrier',
 						data : get_data,
 						dataType : "html",
 						error : function(jqXHR, textStatus, errorThrown)
@@ -1068,6 +1068,52 @@ $(document).ready
 						success : function(responseHTML)
 						{
 							if(responseHTML.substring(0,4)=='<h5>')	// Attention aux caractères accentués : l'utf-8 pose des pbs pour ce test
+							{
+								$('#calque').html(responseHTML);
+								leave_erreur = false;
+							}
+							else
+							{
+								$('#ajax_alerte_calque').removeAttr("class").addClass("alerte").html(responseHTML);
+								leave_erreur = true;
+							}
+						}
+					}
+				);
+			}
+		);
+
+		/**
+		 * Afficher le calque et le compléter : photo élève
+		 */
+		$('q.voir_photo').live
+		('click',
+			function(e)
+			{
+				// Récupérer les infos associées
+				user_id = $(this).prev('select').children('option:selected').val();   // id de l'élève
+				// Afficher le calque
+				posX = e.pageX-40;
+				posY = e.pageY-178;
+				$("#calque").css('left',posX + 'px');
+				$("#calque").css('top',posY + 'px');
+				$("#calque").html('<label id="ajax_alerte_calque" class="loader">Connexion au serveur&hellip;</label>').show();
+				// Charger en Ajax le contenu du calque
+				$.ajax
+				(
+					{
+						type : 'GET',
+						url : 'ajax.php?page=calque_voir_photo',
+						data : 'user_id='+user_id,
+						dataType : "html",
+						error : function(jqXHR, textStatus, errorThrown)
+						{
+							$('#ajax_alerte_calque').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
+							leave_erreur = true;
+						},
+						success : function(responseHTML)
+						{
+							if(responseHTML.substring(0,5)=='<div ')	// Attention aux caractères accentués : l'utf-8 pose des pbs pour ce test
 							{
 								$('#calque').html(responseHTML);
 								leave_erreur = false;
@@ -1125,7 +1171,7 @@ $(document).ready
 			(
 				{
 					type : 'GET',
-					url : 'ajax.php?page=date_calendrier',
+					url : 'ajax.php?page=calque_date_calendrier',
 					data : 'm='+mois+'&a='+annee,
 					dataType : "html",
 					success : function(responseHTML)

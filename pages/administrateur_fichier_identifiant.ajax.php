@@ -165,24 +165,11 @@ if($action=='user_export')
 
 if($action=='import_loginmdp')
 {
-	$tab_file = $_FILES['userfile'];
-	$fnom_transmis = $tab_file['name'];
-	$fnom_serveur = $tab_file['tmp_name'];
-	$ftaille = $tab_file['size'];
-	$ferreur = $tab_file['error'];
-	if( (!file_exists($fnom_serveur)) || (!$ftaille) || ($ferreur) )
+	$fichier_nom = $action.'_'.$_SESSION['BASE'].'_'.fabriquer_fin_nom_fichier__date_et_alea().'.txt' ;
+	$result = FileSystem::recuperer_upload( CHEMIN_DOSSIER_IMPORT /*fichier_chemin*/ , $fichier_nom /*fichier_nom*/ , array('txt','csv') /*tab_extensions_autorisees*/ , NULL /*tab_extensions_interdites*/ , NULL /*taille_maxi*/ , NULL /*filename_in_zip*/ );
+	if($result!==TRUE)
 	{
-		exit('Erreur : problème de transfert ! Fichier trop lourd ? '.InfoServeur::minimum_limitations_upload());
-	}
-	$extension = strtolower(pathinfo($fnom_transmis,PATHINFO_EXTENSION));
-	if(!in_array($extension,array('txt','csv')))
-	{
-		exit('Erreur : l\'extension du fichier transmis est incorrecte !');
-	}
-	$fichier_dest = $action.'_'.$_SESSION['BASE'].'_'.fabriquer_fin_nom_fichier__date_et_alea().'.txt' ;
-	if(!move_uploaded_file($fnom_serveur , CHEMIN_DOSSIER_IMPORT.$fichier_dest))
-	{
-		exit('Erreur : le fichier n\'a pas pu être enregistré sur le serveur.');
+		exit('Erreur : '.$result);
 	}
 	// Pour récupérer les données des utilisateurs
 	$tab_users_fichier           = array();
@@ -190,7 +177,7 @@ if($action=='import_loginmdp')
 	$tab_users_fichier['mdp']    = array();
 	$tab_users_fichier['nom']    = array();
 	$tab_users_fichier['prenom'] = array();
-	$contenu = file_get_contents(CHEMIN_DOSSIER_IMPORT.$fichier_dest);
+	$contenu = file_get_contents(CHEMIN_DOSSIER_IMPORT.$fichier_nom);
 	$contenu = To::utf8($contenu); // Mettre en UTF-8 si besoin
 	$tab_lignes = extraire_lignes($contenu); // Extraire les lignes du fichier
 	$separateur = extraire_separateur_csv($tab_lignes[0]); // Déterminer la nature du séparateur
@@ -372,25 +359,16 @@ if($action=='import_loginmdp')
 
 if( ($action=='import_gepi_eleves') || ($action=='import_gepi_profs') )
 {
-	$tab_file = $_FILES['userfile'];
-	$fnom_transmis = $tab_file['name'];
-	$fnom_serveur = $tab_file['tmp_name'];
-	$ftaille = $tab_file['size'];
-	$ferreur = $tab_file['error'];
-	if( (!file_exists($fnom_serveur)) || (!$ftaille) || ($ferreur) )
+	$fichier_nom = $action.'_'.$_SESSION['BASE'].'_'.fabriquer_fin_nom_fichier__date_et_alea().'.txt';
+	$result = FileSystem::recuperer_upload( CHEMIN_DOSSIER_IMPORT /*fichier_chemin*/ , $fichier_nom /*fichier_nom*/ , array('csv') /*tab_extensions_autorisees*/ , NULL /*tab_extensions_interdites*/ , NULL /*taille_maxi*/ , NULL /*filename_in_zip*/ );
+	if($result!==TRUE)
 	{
-		exit('Erreur : problème de transfert ! Fichier trop lourd ? '.InfoServeur::minimum_limitations_upload());
+		exit('Erreur : '.$result);
 	}
 	$tab_fnom_attendu = array( 'import_gepi_eleves'=>array('base_eleve_gepi.csv') , 'import_gepi_profs'=>array('base_professeur_gepi.csv','base_cpe_gepi.csv') );
-	if(!in_array($fnom_transmis,$tab_fnom_attendu[$action]))
+	if(!in_array(FileSystem::$file_upload_name,$tab_fnom_attendu[$action]))
 	{
 		exit('Erreur : le nom du fichier n\'est pas "'.$tab_fnom_attendu[$action][0].'" !');
-	}
-	$fichier_dest = $action.'_'.$_SESSION['BASE'].'_'.fabriquer_fin_nom_fichier__date_et_alea().'.txt' ;
-
-	if(!move_uploaded_file($fnom_serveur , CHEMIN_DOSSIER_IMPORT.$fichier_dest))
-	{
-		exit('Erreur : le fichier n\'a pas pu être enregistré sur le serveur.');
 	}
 	// Pour récupérer les données des utilisateurs
 	$tab_users_fichier               = array();
@@ -398,7 +376,7 @@ if( ($action=='import_gepi_eleves') || ($action=='import_gepi_profs') )
 	$tab_users_fichier['nom']        = array();
 	$tab_users_fichier['prenom']     = array();
 	$tab_users_fichier['sconet_num'] = array(); // Ne servira que pour les élèves
-	$contenu = file_get_contents(CHEMIN_DOSSIER_IMPORT.$fichier_dest);
+	$contenu = file_get_contents(CHEMIN_DOSSIER_IMPORT.$fichier_nom);
 	$contenu = To::utf8($contenu); // Mettre en UTF-8 si besoin
 	$tab_lignes = extraire_lignes($contenu); // Extraire les lignes du fichier
 	$separateur = extraire_separateur_csv($tab_lignes[0]); // Déterminer la nature du séparateur
@@ -529,24 +507,11 @@ if( ($action=='import_gepi_eleves') || ($action=='import_gepi_profs') )
 
 if($action=='import_ent')
 {
-	$tab_file = $_FILES['userfile'];
-	$fnom_transmis = $tab_file['name'];
-	$fnom_serveur = $tab_file['tmp_name'];
-	$ftaille = $tab_file['size'];
-	$ferreur = $tab_file['error'];
-	if( (!file_exists($fnom_serveur)) || (!$ftaille) || ($ferreur) )
+	$fichier_nom = $action.'_'.$_SESSION['BASE'].'_'.fabriquer_fin_nom_fichier__date_et_alea().'.txt';
+	$result = FileSystem::recuperer_upload( CHEMIN_DOSSIER_IMPORT /*fichier_chemin*/ , $fichier_nom /*fichier_nom*/ , array('txt','csv') /*tab_extensions_autorisees*/ , NULL /*tab_extensions_interdites*/ , NULL /*taille_maxi*/ , NULL /*filename_in_zip*/ );
+	if($result!==TRUE)
 	{
-		exit('Erreur : problème de transfert ! Fichier trop lourd ? '.InfoServeur::minimum_limitations_upload());
-	}
-	$extension = strtolower(pathinfo($fnom_transmis,PATHINFO_EXTENSION));
-	if(!in_array($extension,array('txt','csv')))
-	{
-		exit('Erreur : l\'extension du fichier transmis est incorrecte !');
-	}
-	$fichier_dest = $action.'_'.$_SESSION['BASE'].'_'.fabriquer_fin_nom_fichier__date_et_alea().'.txt' ;
-	if(!move_uploaded_file($fnom_serveur , CHEMIN_DOSSIER_IMPORT.$fichier_dest))
-	{
-		exit('Erreur : le fichier n\'a pas pu être enregistré sur le serveur.');
+		exit('Erreur : '.$result);
 	}
 	// Utiliser $_SESSION['CONNEXION_MODE'] et $_SESSION['CONNEXION_NOM'] pour déterminer l'emplacement des données à récupérer
 	require(CHEMIN_DOSSIER_INCLUDE.'tableau_sso.php');
@@ -556,7 +521,7 @@ if($action=='import_ent')
 	$tab_users_fichier['nom']       = array();
 	$tab_users_fichier['prenom']    = array();
 	$tab_users_fichier['id_sconet'] = array();
-	$contenu = file_get_contents(CHEMIN_DOSSIER_IMPORT.$fichier_dest);
+	$contenu = file_get_contents(CHEMIN_DOSSIER_IMPORT.$fichier_nom);
 	$contenu = To::utf8($contenu); // Mettre en UTF-8 si besoin
 	$tab_lignes = extraire_lignes($contenu); // Extraire les lignes du fichier
 	$separateur = extraire_separateur_csv($tab_lignes[0]); // Déterminer la nature du séparateur

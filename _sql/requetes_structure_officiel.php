@@ -28,7 +28,7 @@
 // Extension de classe qui étend DB (pour permettre l'autoload)
 
 // Ces méthodes ne concernent qu'une base STRUCTURE.
-// Ces méthodes ne concernent essentiellement les tables "sacoche_officiel_saisie", "sacoche_officiel_fichier", "sacoche_signature".
+// Ces méthodes ne concernent essentiellement les tables "sacoche_officiel_saisie", "sacoche_officiel_fichier", "sacoche_image".
 
 class DB_STRUCTURE_OFFICIEL extends DB
 {
@@ -116,7 +116,7 @@ public static function DB_recuperer_bilan_officiel_notes($periode_id,$tab_eleve_
 public static function DB_recuperer_signatures($listing_user_id)
 {
 	$DB_SQL = 'SELECT * ';
-	$DB_SQL.= 'FROM sacoche_signature ';
+	$DB_SQL.= 'FROM sacoche_image ';
 	$DB_SQL.= 'WHERE user_id IN ('.$listing_user_id.') ';
 	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
 }
@@ -128,9 +128,10 @@ public static function DB_recuperer_signatures($listing_user_id)
  */
 public static function DB_lister_signatures()
 {
-	$DB_SQL = 'SELECT sacoche_signature.*, user_nom, user_prenom ';
-	$DB_SQL.= 'FROM sacoche_signature ';
+	$DB_SQL = 'SELECT sacoche_image.*, user_nom, user_prenom ';
+	$DB_SQL.= 'FROM sacoche_image ';
 	$DB_SQL.= 'LEFT JOIN sacoche_user USING (user_id) ';
+	$DB_SQL.= 'WHERE image_objet="signature" ';
 	$DB_SQL.= 'ORDER BY user_nom ASC, user_prenom ASC';
 	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
 }
@@ -216,17 +217,17 @@ public static function DB_modifier_bilan_officiel_fichier($user_id,$officiel_typ
  * modifier_signature
  *
  * @param int    $user_id   0 pour le tampon de l'établissement
- * @param string $signature_contenu
- * @param string $signature_format
- * @param int    $signature_largeur
- * @param int    $signature_hauteur
+ * @param string $image_contenu
+ * @param string $image_format
+ * @param int    $image_largeur
+ * @param int    $image_hauteur
  * @return void
  */
-public static function DB_modifier_signature($user_id,$signature_contenu,$signature_format,$signature_largeur,$signature_hauteur)
+public static function DB_modifier_signature($user_id,$image_contenu,$image_format,$image_largeur,$image_hauteur)
 {
-	$DB_SQL = 'REPLACE INTO sacoche_signature (user_id, signature_contenu, signature_format, signature_largeur, signature_hauteur) ';
-	$DB_SQL.= 'VALUES(:user_id, :signature_contenu, :signature_format, :signature_largeur, :signature_hauteur) ';
-	$DB_VAR = array(':user_id'=>$user_id,':signature_contenu'=>$signature_contenu,':signature_format'=>$signature_format,':signature_largeur'=>$signature_largeur,':signature_hauteur'=>$signature_hauteur);
+	$DB_SQL = 'REPLACE INTO sacoche_image (user_id, image_objet, image_contenu, image_format, image_largeur, image_hauteur) ';
+	$DB_SQL.= 'VALUES(:user_id, :image_objet, :image_contenu, :image_format, :image_largeur, :image_hauteur) ';
+	$DB_VAR = array(':user_id'=>$user_id,':image_objet'=>'signature',':image_contenu'=>$image_contenu,':image_format'=>$image_format,':image_largeur'=>$image_largeur,':image_hauteur'=>$image_hauteur);
 	DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
@@ -257,7 +258,7 @@ public static function DB_supprimer_bilan_officiel_saisie($officiel_type,$period
  */
 public static function DB_supprimer_signature($user_id)
 {
-	$DB_SQL = 'DELETE FROM sacoche_signature ';
+	$DB_SQL = 'DELETE FROM sacoche_image ';
 	$DB_SQL.= 'WHERE user_id=:user_id ';
 	$DB_VAR = array(':user_id'=>$user_id);
 	DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);

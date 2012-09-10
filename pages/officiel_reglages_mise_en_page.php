@@ -77,10 +77,10 @@ foreach($DB_TAB as $DB_ROW)
 {
 	// Enregistrer temporairement le fichier sur le disque
 	$texte = ($DB_ROW['user_id']) ? 'Signature '.$DB_ROW['user_nom'].' '.$DB_ROW['user_prenom'] : 'Tampon de l\'établissement' ;
-	$fichier_nom = 'signature_'.$_SESSION['BASE'].'_'.$DB_ROW['user_id'].'_'.fabriquer_fin_nom_fichier__date_et_alea().'.'.$DB_ROW['signature_format'];
-	FileSystem::ecrire_fichier( CHEMIN_DOSSIER_EXPORT.$fichier_nom , base64_decode($DB_ROW['signature_contenu']) );
+	$fichier_nom = 'signature_'.$_SESSION['BASE'].'_'.$DB_ROW['user_id'].'_'.fabriquer_fin_nom_fichier__date_et_alea().'.'.$DB_ROW['image_format'];
+	FileSystem::ecrire_fichier( CHEMIN_DOSSIER_EXPORT.$fichier_nom , base64_decode($DB_ROW['image_contenu']) );
 	// Générer la balise html pour afficher l'image
-	list($width,$height) = dimensions_affichage_image( $DB_ROW['signature_largeur'] , $DB_ROW['signature_hauteur'] , 200 /*largeur_maxi*/ , 200 /*hauteur_maxi*/ );
+	list($width,$height) = dimensions_affichage_image( $DB_ROW['image_largeur'] , $DB_ROW['image_hauteur'] , 200 /*largeur_maxi*/ , 200 /*hauteur_maxi*/ );
 	$li_signatures .= '<li id="sgn_'.$DB_ROW['user_id'].'">'.html($texte).' : <img src="'.URL_DIR_EXPORT.$fichier_nom.'" alt="'.html($texte).'" width="'.$width.'" height="'.$height.'" /><q class="supprimer" title="Supprimer cette image (aucune confirmation ne sera demandée)."></q></li>';
 }
 $li_signatures = ($li_signatures) ? $li_signatures : '<li id="sgn_none">Aucun fichier image trouvé !</li>';

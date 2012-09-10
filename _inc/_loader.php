@@ -82,9 +82,8 @@ if(get_magic_quotes_gpc())
 // - $_SERVER['HTTP_HOST'] peut ne pas renvoyer localhost sur un serveur local (si configuration de domaines locaux via fichiers hosts / httpd.conf par exemple).
 // - gethostbyname($_SERVER['HTTP_HOST']) peut renvoyer "127.0.0.1" sur un serveur non local car un serveur a en général 2 ip (une publique - ou privée s'il est sur un lan - et une locale).
 // - $_SERVER['SERVER_ADDR'] peut renvoyer "127.0.0.1" avec nginx + apache sur 127.0.0.1 ...
-$HOST = (isset($_SERVER['HTTP_HOST'])) ? $_SERVER['HTTP_HOST'] : '' ; // Peut ne pas être renseigné (rare : appel cli, requête http bizarre...)
-$test_local = ( ($HOST=='localhost') || ($HOST=='127.0.0.1') || (mb_substr($HOST,-6)=='.local') ) ? TRUE : FALSE ;
-$serveur = ($test_local) ? 'LOCAL' : ( (substr($HOST,-18)=='.sesamath.net:8080') ? 'DEV' : 'PROD' ) ;
+$test_local = ( ($_SERVER['HTTP_HOST']=='localhost') || ($_SERVER['HTTP_HOST']=='127.0.0.1') || (mb_substr($_SERVER['HTTP_HOST'],-6)=='.local') ) ? TRUE : FALSE ;
+$serveur = ($test_local) ? 'LOCAL' : ( (mb_strpos($_SERVER['HTTP_HOST'],'.devsesamath.net')) ? 'DEV' : 'PROD' ) ;
 define('SERVEUR_TYPE',$serveur); // PROD | DEV | LOCAL
 
 // ============================================================================
@@ -169,7 +168,6 @@ define('URL_DIR_IMG'      , str_replace( $tab_bad , $tab_bon , CHEMIN_DOSSIER_IM
 define('URL_DIR_DEVOIR'   , str_replace( $tab_bad , $tab_bon , CHEMIN_DOSSIER_DEVOIR    ) );
 define('URL_DIR_DUMP'     , str_replace( $tab_bad , $tab_bon , CHEMIN_DOSSIER_DUMP      ) );
 define('URL_DIR_EXPORT'   , str_replace( $tab_bad , $tab_bon , CHEMIN_DOSSIER_EXPORT    ) );
-define('URL_DIR_IMPORT'   , str_replace( $tab_bad , $tab_bon , CHEMIN_DOSSIER_IMPORT    ) );
 define('URL_DIR_LOGINPASS', str_replace( $tab_bad , $tab_bon , CHEMIN_DOSSIER_LOGINPASS ) );
 define('URL_DIR_LOGO'     , str_replace( $tab_bad , $tab_bon , CHEMIN_DOSSIER_LOGO      ) );
 define('URL_DIR_RSS'      , str_replace( $tab_bad , $tab_bon , CHEMIN_DOSSIER_RSS       ) );
@@ -209,6 +207,12 @@ define('COOKIE_DEBUG'    ,'SACoche-debug');          // nom du cookie servant à
 // session
 define('SESSION_NOM','SACoche-session'); // Est aussi défini dans /_lib/SimpleSAMLphp/config/config.php
 
+// dates
+define('TODAY_FR'    ,date("d/m/Y"));
+define('TODAY_MYSQL' ,date("Y-m-d"));
+define('SORTIE_DEFAUT_FR'    ,'31/12/9999'); // inutilisé
+define('SORTIE_DEFAUT_MYSQL' ,'9999-12-31');
+
 // Version des fichiers installés.
 // À comparer avec la dernière version disponible sur le serveur communautaire.
 // Pour une conversion en entier : list($annee,$mois,$jour) = explode('-',substr(VERSION_PROG,0,10); $indice_version = (date('Y')-2011)*365 + date('z',mktime(0,0,0,$mois,$jour,$annee));
@@ -217,24 +221,6 @@ define('VERSION_PROG', file_get_contents(CHEMIN_DOSSIER_SACOCHE.'VERSION.txt') )
 // Version de la base associée.
 // À comparer avec la version de la base actuellement en place.
 define('VERSION_BASE', file_get_contents(CHEMIN_DOSSIER_SQL.'version_bdd.txt') ); // Dans un fichier texte pour faciliter la maintenance par les développeurs.
-
-// dates
-define('TODAY_FR'    ,date("d/m/Y"));
-define('TODAY_MYSQL' ,date("Y-m-d"));
-define('SORTIE_DEFAUT_FR'    ,'31/12/9999'); // inutilisé
-define('SORTIE_DEFAUT_MYSQL' ,'9999-12-31');
-
-// Dimension maxi d'une photo redimensionnée (en pixels).
-// Prendre un nombre divisible par 3 et par 4, donc un multiple de 12.
-// Avec 180 (12x15), au format 2/3 ça donne 120/180 et au format 3/4 ça donne 135/180 ; c'est un peu grand à l'écran.
-// Avec 144 (12x12), au format 2/3 ça donne  96/144 et au format 3/4 ça donne 108/144 ; c'est un choix intermédiaire.
-// Avec 120 (12x10), au format 2/3 ça donne  80/120 et au format 3/4 ça donne  90/120 ; c'est un peu petit à l'écran.
-define('PHOTO_DIMENSION_MAXI',144);
-// Le format jpeg est le plus adapté aux photos ; un facteur 90 Permet un gain de poids significatif (>50% par rapport à 100), pour une perte de qualité minime.
-// Avec une dimension maxi imposée de 180 pixels, on arrive à 8~9 Ko par photo par élève dans la base (en comptant le base64_encode).
-// Avec une dimension maxi imposée de 144 pixels, on arrive à 6~7 Ko par photo par élève dans la base (en comptant le base64_encode).
-// Avec une dimension maxi imposée de 120 pixels, on arrive à 4~5 Ko par photo par élève dans la base (en comptant le base64_encode).
-define('JPEG_QUALITY',90);
 
 // ============================================================================
 // Auto-chargement des classes
@@ -301,10 +287,9 @@ function __autoload($class_name)
 		'DB_STRUCTURE_WEBMESTRE'      => '_sql'.DS.'requetes_structure_webmestre.php' ,
 
 		'DB_STRUCTURE_BILAN'          => '_sql'.DS.'requetes_structure_bilan.php' ,
+		'DB_STRUCTURE_OFFICIEL'       => '_sql'.DS.'requetes_structure_officiel.php' ,
 		'DB_STRUCTURE_COMMUN'         => '_sql'.DS.'requetes_structure_commun.php' ,
 		'DB_STRUCTURE_MAJ_BASE'       => '_sql'.DS.'requetes_structure_maj_base.php' ,
-		'DB_STRUCTURE_OFFICIEL'       => '_sql'.DS.'requetes_structure_officiel.php' ,
-		'DB_STRUCTURE_PHOTO'          => '_sql'.DS.'requetes_structure_photo.php' ,
 		'DB_STRUCTURE_REFERENTIEL'    => '_sql'.DS.'requetes_structure_referentiel.php' ,
 		'DB_STRUCTURE_SOCLE'          => '_sql'.DS.'requetes_structure_socle.php' ,
 
@@ -350,7 +335,7 @@ function __autoload($class_name)
 }
 
 // ============================================================================
-// Quelques fonctions utiles : perso_mb_detect_encoding_utf8() - augmenter_memory_limit() - rapporter_erreur_fatale_memoire() - rapporter_erreur_fatale_phpcas() - exit_error()
+// Quelques fonctions utiles : perso_mb_detect_encoding_utf8() - augmenter_memory_limit() - rapporter_erreur_fatale() - exit_error()
 // ============================================================================
 
 /**
@@ -390,43 +375,10 @@ function augmenter_memory_limit()
  * @param void
  * @return void
  */
-function rapporter_erreur_fatale_memoire()
+function rapporter_erreur_fatale()
 {
 	$tab_last_error = error_get_last(); // tableau à 4 indices : type ; message ; file ; line
 	if( ($tab_last_error!==NULL) && ($tab_last_error['type']===E_ERROR) && (mb_substr($tab_last_error['message'],0,19)=='Allowed memory size') )
-	{
-		exit_error( 'Mémoire insuffisante' /*titre*/ , 'Mémoire de '.ini_get('memory_limit').' insuffisante ; sélectionner moins d\'élèves à la fois ou demander à votre hébergeur d\'augmenter la valeur "memory_limit".' /*contenu*/ );
-	}
-}
-
-/*
- * Pour intercepter les erreurs de phpCAS (une erreur fatale échappe à un try{...}catch(){...}).
- *
- * phpCAS renvoie parfois des erreurs fatales
- * pas beaucoup, pas systématiquement, mais régulièrement
- * 
- * Une cause (je ne sais pas encore si c'est la seule cause)
- * est que le XML renvoyé par le serveur CAS est syntaxiquement invalide.
- * En général car il contient un caractère parmi & < >
- * 
- * Quand c'est un &, avant l'erreur fatale on a un warning : DOMDocument::loadXML(): xmlParseEntityRef: no name in Entity...
- * Quand c'est un <, avant l'erreur fatale on a un warning : DOMDocument::loadXML(): StartTag: invalid element name...
- * Quand c'est un >, avant l'erreur fatale on a un warning : DOMDocument::loadXML(): Start tag expected, '<' not found in Entity...
- * L'ENT doit s'arranger pour envoyer un XML valide, donc :
- * - soit convertir ces caractères en entités HTML (&amp; &lt; &gt;)
- * - soit retirer ces caractères ou les remplacer par d'autres
- * - soit utiliser des sections CDATA : <![CDATA[some text & some more text]]>
- * 
- * Par ailleurs, il est tout de même dommage que phpCas ne renvoie pas un message plus causant 
- * (genre xml parse error, ou à défaut invalid Response).
- * 
- * @param void
- * @return void
- */
-function rapporter_erreur_fatale_phpcas()
-{
-	$tab_last_error = error_get_last(); // tableau à 4 indices : type ; message ; file ; line
-	if( ($tab_last_error!==NULL) && ( ($tab_last_error['type']==E_ERROR) || ($tab_last_error['type']>=E_CORE_ERROR) ) )
 	{
 		exit_error( 'Mémoire insuffisante' /*titre*/ , 'Mémoire de '.ini_get('memory_limit').' insuffisante ; sélectionner moins d\'élèves à la fois ou demander à votre hébergeur d\'augmenter la valeur "memory_limit".' /*contenu*/ );
 	}
@@ -516,14 +468,6 @@ function afficher_infos_debug()
 	$firephp->dump('SESSION', $_SESSION);
 	$tab_constantes = get_defined_constants(TRUE);
 	$firephp->dump('CONSTANTES', $tab_constantes['user']);
-}
-
-/*
- * Pour phpCAS
- */
-if(DEBUG)
-{
-	define('CHEMIN_FICHIER_PHPCAS_DEBUG', CHEMIN_DOSSIER_TMP.'debugcas.txt');
 }
 
 // ============================================================================

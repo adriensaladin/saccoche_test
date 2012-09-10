@@ -42,9 +42,9 @@ $(document).ready
 		selectionner_periode_adaptee();
 		reporter_niveau_groupe();
 
-		// ////////////////////////////////////////////////////////////////////////////////////////////////////
+		//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
 		//	Enlever le message ajax et le résultat précédent au changement d'un select
-		// ////////////////////////////////////////////////////////////////////////////////////////////////////
+		//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
 
 		$('select').change
 		(
@@ -55,9 +55,9 @@ $(document).ready
 			}
 		);
 
-		// ////////////////////////////////////////////////////////////////////////////////////////////////////
+		//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
 		//	Afficher masquer des éléments du formulaire
-		// ////////////////////////////////////////////////////////////////////////////////////////////////////
+		//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
 
 		var autoperiode = true; // Tant qu'on ne modifie pas manuellement le choix des périodes, modification automatique du formulaire
 
@@ -83,13 +83,13 @@ $(document).ready
 			}
 		);
 
-		// ////////////////////////////////////////////////////////////////////////////////////////////////////
+		//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 		//	Changement de groupe
 		//	-> choisir automatiquement la meilleure période si un changement manuel de période n'a jamais été effectué
 		//	-> afficher le formulaire de périodes s'il est masqué
 		//	-> choisir automatiquement le niveau du groupe associé
 		//	-> afficher le formulaire des options s'il est masqué
-		// ////////////////////////////////////////////////////////////////////////////////////////////////////
+		//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
 		function selectionner_periode_adaptee()
 		{
@@ -194,9 +194,9 @@ $(document).ready
 			}
 		);
 
-		// ////////////////////////////////////////////////////////////////////////////////////////////////////
+		//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
 		//	Charger les selects f_eleve (pour le professeur et le directeur) et f_matiere (pour le directeur) en ajax
-		// ////////////////////////////////////////////////////////////////////////////////////////////////////
+		//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
 
 		function maj_matiere(groupe_id,matiere_id) // Uniquement pour un directeur
 		{
@@ -292,9 +292,9 @@ $(document).ready
 			}
 		);
 
-		// ////////////////////////////////////////////////////////////////////////////////////////////////////
+		//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
 		//	Soumettre le formulaire principal
-		// ////////////////////////////////////////////////////////////////////////////////////////////////////
+		//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
 
 		// Le formulaire qui va être analysé et traité en AJAX
 		var formulaire = $("#form_select");

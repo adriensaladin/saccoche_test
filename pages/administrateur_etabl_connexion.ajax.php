@@ -34,12 +34,12 @@ $cas_serveur_host = (isset($_POST['cas_serveur_host'])) ? Clean::texte($_POST['c
 $cas_serveur_port = (isset($_POST['cas_serveur_port'])) ? Clean::entier($_POST['cas_serveur_port']) : 0;
 $cas_serveur_root = (isset($_POST['cas_serveur_root'])) ? Clean::texte($_POST['cas_serveur_root'])  : '';
 $gepi_saml_url    = (isset($_POST['gepi_saml_url']))    ? Clean::texte($_POST['gepi_saml_url'])     : '';
-$gepi_saml_rne    = (isset($_POST['gepi_saml_rne']))    ? Clean::uai($_POST['gepi_saml_rne'])       : '';
+$gepi_saml_rne    = (isset($_POST['gepi_saml_rne']))    ? Clean::texte($_POST['gepi_saml_rne'])     : '';
 $gepi_saml_certif = (isset($_POST['gepi_saml_certif'])) ? Clean::texte($_POST['gepi_saml_certif'])  : '';
 
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 //	Mode de connexion (normal, SSO...)
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
 require(CHEMIN_DOSSIER_INCLUDE.'tableau_sso.php');
 

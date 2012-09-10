@@ -85,9 +85,9 @@ if($BILAN_ETAT!='4complet')
 	exit('Bilan interdit d\'accès pour cette action !');
 }
 
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 // Affichage de la liste des élèves + recalcul des moyennes dans le cas d'impression d'un bulletin (sans incidence tant qu'on n'imprime pas, sauf pour la visualisation graphique)
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
 if($ACTION=='initialiser')
 {
@@ -162,9 +162,9 @@ if($ACTION=='initialiser')
 	exit();
 }
 
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 // IMPRIMER ETAPE 2/4 - Le PDF complet est généré ; on archive individuellement les bilans anonymes (qui vont y rester une année scolaire)
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
 if( ($ACTION=='imprimer') && ($etape==2) )
 {
@@ -180,15 +180,15 @@ if( ($ACTION=='imprimer') && ($etape==2) )
 	exit('ok');
 }
 
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 // IMPRIMER ETAPE 3/4 - Le PDF complet est généré ; on découpe individuellement les bilans par responsables puis on zippe l'ensemble
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
 if( ($ACTION=='imprimer') && ($etape==3) )
 {
 	$date = date('Y-m-d');
 	$tab_pages_non_anonymes = array();
-	$chemin_temp_pdf = CHEMIN_DOSSIER_EXPORT.'pdf_'.mt_rand().DS;
+	$chemin_temp_pdf = CHEMIN_DOSSIER_EXPORT.'pdf_'.mt_rand().'/';
 	FileSystem::creer_ou_vider_dossier($chemin_temp_pdf);
 	foreach($_SESSION['tmp']['tab_pages_decoupe_pdf'] as $eleve_id => $tab_tirages)
 	{
@@ -208,9 +208,9 @@ if( ($ACTION=='imprimer') && ($etape==3) )
 	exit('ok');
 }
 
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 // IMPRIMER ETAPE 4/4 - Le PDF complet est généré ; on n'en garde que les bilans non anonymes
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
 if( ($ACTION=='imprimer') && ($etape==4) )
 {
@@ -225,9 +225,9 @@ if( ($ACTION=='imprimer') && ($etape==4) )
 	exit();
 }
 
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 // IMPRIMER ETAPE 1/4 - Génération de l'impression PDF (archive + responsables)
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
 if( ($ACTION!='imprimer') || ($etape!=1) )
 {
@@ -267,7 +267,7 @@ if($_SESSION['OFFICIEL']['TAMPON_SIGNATURE']!='sans')
 	$DB_TAB = DB_STRUCTURE_OFFICIEL::DB_recuperer_signatures($listing_prof_id);
 	foreach($DB_TAB as $DB_ROW)
 	{
-		$tab_signature[$DB_ROW['user_id']] = array( base64_decode($DB_ROW['image_contenu']) , $DB_ROW['image_format'] , $DB_ROW['image_largeur'] , $DB_ROW['image_hauteur'] );
+		$tab_signature[$DB_ROW['user_id']] = array( base64_decode($DB_ROW['signature_contenu']) , $DB_ROW['signature_format'] , $DB_ROW['signature_largeur'] , $DB_ROW['signature_hauteur'] );
 	}
 }
 
@@ -339,10 +339,10 @@ $tab_bloc_titres = array( 0 => $tab_types[$BILAN_TYPE]['titre'] , 1 => 'Année s
 
 $tag_date_heure_initiales = date('d/m/Y H:i').' '.$_SESSION['USER_PRENOM']{0}.'.'.$_SESSION['USER_NOM']{0}.'.';
 
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 // Initialisation de variables supplémentaires
 // INCLUSION DU CODE COMMUN À PLUSIEURS PAGES
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
 $tab_pages_decoupe_pdf = array();
 $make_officiel = TRUE;
@@ -445,9 +445,9 @@ elseif(in_array($BILAN_TYPE,array('palier1','palier2','palier3')))
 	$nom_bilan_html = 'releve_html';
 }
 
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 // Affichage du résultat (pas grand chose : la découpe du PDF intervient lors d'appels ajax ultérieurs)
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
 $_SESSION['tmp']['fichier_nom'] = $fichier_nom;
 $_SESSION['tmp']['tab_pages_decoupe_pdf'] = $tab_pages_decoupe_pdf;

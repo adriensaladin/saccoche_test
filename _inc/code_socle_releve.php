@@ -41,7 +41,7 @@
 // D'où une combinaison avec une détection par javascript du statusCode.
 
 augmenter_memory_limit();
-register_shutdown_function('rapporter_erreur_fatale_memoire');
+register_shutdown_function('rapporter_erreur_fatale');
 
 // Chemins d'enregistrement
 
@@ -83,9 +83,9 @@ if( ($make_html) || ($make_pdf) )
 	$toggle_class = ($aff_start) ? '' : ' class="hide"' ;
 }
 
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 // Récupération de la liste des items du socle pour le ou les piliers sélectionné(s)
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
 $DB_TAB = ($memo_demande=='pilier') ? DB_STRUCTURE_SOCLE::DB_recuperer_arborescence_pilier($tab_pilier_id[0]) : DB_STRUCTURE_SOCLE::DB_recuperer_arborescence_piliers(implode(',',$tab_pilier_id)) ;
 if(!count($DB_TAB))
@@ -120,9 +120,9 @@ foreach($DB_TAB as $DB_ROW)
 }
 $listing_entree_id = implode(',',$tab_entree_id);
 
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 // Récupération de la liste des élèves (si demandé)
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
 if($_SESSION['USER_PROFIL']=='eleve')
 {
@@ -145,9 +145,9 @@ else
 	$tab_eleve[] = array('eleve_id'=>0,'eleve_nom'=>'','eleve_prenom'=>'','eleve_langue'=>0);
 }
 
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 // Récupération de la liste des résultats (si pas fiche générique)
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
 if($groupe_id && count($tab_eleve_id))
 {
@@ -180,9 +180,9 @@ else
 // Ces tableaux ne servent plus
 unset($tab_item_pilier,$tab_eleve_langue);
 
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 // Récupération de la liste des validations (si demandé)
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
 if($test_affichage_Validation)
 {
@@ -217,20 +217,20 @@ if($test_affichage_Validation)
 	}
 }
 
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 /* 
  * Libérer de la place mémoire car les scripts de bilans sont assez gourmands.
  * Supprimer $DB_TAB ne fonctionne pas si on ne force pas auparavant la fermeture de la connexion.
  * SebR devrait peut-être envisager d'ajouter une méthode qui libère cette mémoire, si c'est possible...
  */
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
 DB::close(SACOCHE_STRUCTURE_BD_NAME);
 unset($DB_TAB);
 
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 // Elaboration du bilan relatif au socle, en HTML et PDF => Tableaux et variables pour mémoriser les infos ; dans cette partie on ne fait que les calculs (aucun affichage)
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
 $tab_etat = array('A'=>'v','VA'=>'o','NA'=>'r');
 $tab_init_compet = array('A'=>0,'VA'=>0,'NA'=>0,'nb'=>0);
@@ -342,9 +342,9 @@ if($test_affichage_Pourcentage)
 	}
 }
 
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 // Restriction de l'affichage aux seuls éléments évalués ou validés (si demandé)
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
 $tab_contenu_presence = array( 'pilier'=>array() , 'section'=>array() , 'item'=>array() );
 if($only_presence)
@@ -383,9 +383,9 @@ if($only_presence)
 	}
 }
 
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 // Compter le nombre de lignes à afficher par élève par pilier
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
 $tab_nb_lignes = array();
 $tab_nb_lignes_par_pilier = array();
@@ -453,9 +453,9 @@ if(!isset($tab_destinataires))
 	}
 }
 
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 // Elaboration du bilan relatif au socle, en HTML et PDF => Production et mise en page
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
 $affichage_direct = ( ( ( in_array($_SESSION['USER_PROFIL'],array('eleve','parent')) ) && (SACoche!='webservices') ) || ($make_officiel) ) ? TRUE : FALSE ;
 
@@ -684,9 +684,9 @@ foreach($tab_eleve as $tab)
 	}
 }
 
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 // On enregistre les sorties HTML et PDF
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
 if($make_html) { FileSystem::ecrire_fichier(CHEMIN_DOSSIER_EXPORT.$fichier_nom.'.html',$releve_html); }
 if($make_pdf)  { $releve_pdf->Output(CHEMIN_DOSSIER_EXPORT.$fichier_nom.'.pdf','F'); }

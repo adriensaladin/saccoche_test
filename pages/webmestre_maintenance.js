@@ -30,9 +30,9 @@ $(document).ready
 	function()
 	{
 
-		// ////////////////////////////////////////////////////////////////////////////////////////////////////
+		//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
 		//	Afficher / masquer le choix du motif du blocage
-		// ////////////////////////////////////////////////////////////////////////////////////////////////////
+		//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
 
 		$('#f_debloquer , #f_bloquer').click
 		(
@@ -50,9 +50,9 @@ $(document).ready
 			}
 		);
 
-		// ////////////////////////////////////////////////////////////////////////////////////////////////////
+		//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
 		//	Autocompléter le motif du blocage
-		// ////////////////////////////////////////////////////////////////////////////////////////////////////
+		//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
 
 		tab_proposition = new Array();
 		tab_proposition["rien"]         = "";
@@ -68,9 +68,9 @@ $(document).ready
 			}
 		);
 
-		// ////////////////////////////////////////////////////////////////////////////////////////////////////
+		//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
 		//	Mise à jour des label comparant la version installée et la version disponible
-		// ////////////////////////////////////////////////////////////////////////////////////////////////////
+		//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
 
 		function maj_label_versions()
 		{
@@ -80,9 +80,9 @@ $(document).ready
 
 		maj_label_versions();
 
-		// ////////////////////////////////////////////////////////////////////////////////////////////////////
+		//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
 		// Traitement du formulaire principal
-		// ////////////////////////////////////////////////////////////////////////////////////////////////////
+		//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
 
 		// Le formulaire qui va être analysé et traité en AJAX
 		var formulaire = $('#form');
@@ -166,9 +166,9 @@ $(document).ready
 			}
 		} 
 
-		// ////////////////////////////////////////////////////////////////////////////////////////////////////
+		//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
 		//	Mise à jour automatique des fichiers
-		// ////////////////////////////////////////////////////////////////////////////////////////////////////
+		//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
 
 		var etape_numero = 0 ;
 
@@ -181,7 +181,7 @@ $(document).ready
 				$('#ajax_version_installee').html(etape_info);
 				maj_label_versions();
 				$('button').prop('disabled',false);
-				$.fancybox( { 'href':url_export_rapport_maj , 'type':'iframe' , 'width':'80%' , 'height':'80%' , 'centerOnScroll':true } );
+				$.fancybox( { 'href':'./__tmp/export/rapport_maj.html' , 'type':'iframe' , 'width':'80%' , 'height':'80%' , 'centerOnScroll':true } );
 				initialiser_compteur();
 				return false;
 			}
@@ -235,9 +235,9 @@ $(document).ready
 			}
 		);
 
-		// ////////////////////////////////////////////////////////////////////////////////////////////////////
+		//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
 		//	Vérification des fichiers en place
-		// ////////////////////////////////////////////////////////////////////////////////////////////////////
+		//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
 
 		function verif_etape(etape_info)
 		{
@@ -246,7 +246,7 @@ $(document).ready
 			{
 				$('#ajax_verif').removeAttr("class").addClass("valide").html('Vérification terminée !');
 				$('button').prop('disabled',false);
-				$.fancybox( { 'href':url_export_rapport_verif , 'type':'iframe' , 'width':'80%' , 'height':'80%' , 'centerOnScroll':true } );
+				$.fancybox( { 'href':'./__tmp/export/rapport_verif.html' , 'type':'iframe' , 'width':'80%' , 'height':'80%' , 'centerOnScroll':true } );
 				initialiser_compteur();
 				return false;
 			}
@@ -295,9 +295,9 @@ $(document).ready
 			}
 		);
 
-		// ////////////////////////////////////////////////////////////////////////////////////////////////////
+		//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
 		//	Vérification des droits en écriture
-		// ////////////////////////////////////////////////////////////////////////////////////////////////////
+		//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
 
 		$('#bouton_droit').click
 		(
@@ -324,7 +324,7 @@ $(document).ready
 							if(responseHTML=='ok')
 							{
 								$('#ajax_droit').removeAttr("class").addClass("valide").html('Vérification terminée !');
-								$.fancybox( { 'href':url_export_rapport_droits , 'type':'iframe' , 'width':'80%' , 'height':'80%' , 'centerOnScroll':true } );
+								$.fancybox( { 'href':'./__tmp/export/rapport_droits.html' , 'type':'iframe' , 'width':'80%' , 'height':'80%' , 'centerOnScroll':true } );
 								initialiser_compteur();
 							}
 							else

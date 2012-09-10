@@ -47,10 +47,10 @@ $tab_droits_profil_eleve_parent_prof_dir = array( 'public'=>0 , 'eleve'=>1 , 'pa
 // Tous profils
 $tab_droits['fermer_session']                          = $tab_droits_profil_tous; // Au cas où plusieurs onglets sont ouverts dont l'un a déjà déconnecté
 // Profils identifiés
-$tab_droits['calque_date_calendrier']                  = $tab_droits_profil_identifie;
 $tab_droits['conserver_session_active']                = $tab_droits_profil_identifie;
 $tab_droits['compte_accueil']                          = $tab_droits_profil_identifie;
 $tab_droits['compte_password']                         = $tab_droits_profil_identifie;
+$tab_droits['date_calendrier']                         = $tab_droits_profil_identifie;
 // Profil public
 $tab_droits['public_accueil']                          = $tab_droits_profil_public;
 $tab_droits['public_installation']                     = $tab_droits_profil_public;
@@ -91,7 +91,6 @@ $tab_droits['administrateur_eleve']                    = $tab_droits_profil_admi
 $tab_droits['administrateur_eleve_classe']             = $tab_droits_profil_administrateur;
 $tab_droits['administrateur_eleve_gestion']            = $tab_droits_profil_administrateur;
 $tab_droits['administrateur_eleve_groupe']             = $tab_droits_profil_administrateur;
-$tab_droits['administrateur_eleve_photo']              = $tab_droits_profil_administrateur;
 $tab_droits['administrateur_etabl_connexion']          = $tab_droits_profil_administrateur;
 $tab_droits['administrateur_etabl_duree_inactivite']   = $tab_droits_profil_administrateur;
 $tab_droits['administrateur_etabl_identite']           = $tab_droits_profil_administrateur;
@@ -145,7 +144,6 @@ $tab_droits['consultation_date_connexion']             = $tab_droits_profil_prof
 $tab_droits['_maj_select_domaines']                    = $tab_droits_profil_prof_dir;
 $tab_droits['_maj_select_matieres_famille']            = $tab_droits_profil_prof_dir;
 $tab_droits['_maj_select_niveaux_famille']             = $tab_droits_profil_prof_dir;
-$tab_droits['calque_voir_photo']                       = $tab_droits_profil_prof_dir;
 $tab_droits['officiel_action_consulter']               = $tab_droits_profil_prof_dir;
 $tab_droits['officiel_action_saisir']                  = $tab_droits_profil_prof_dir;
 $tab_droits['compte_selection_items']                  = $tab_droits_profil_prof_dir;
@@ -153,7 +151,6 @@ $tab_droits['consultation_referentiel_externe']        = $tab_droits_profil_prof
 $tab_droits['export_fichier']                          = $tab_droits_profil_prof_dir;
 $tab_droits['releve_recherche']                        = $tab_droits_profil_prof_dir;
 $tab_droits['releve_synthese_socle']                   = $tab_droits_profil_prof_dir;
-$tab_droits['consultation_trombinoscope']              = $tab_droits_profil_prof_dir;
 $tab_droits['validation_socle']                        = $tab_droits_profil_prof_dir;
 $tab_droits['validation_socle_item']                   = $tab_droits_profil_prof_dir;
 $tab_droits['validation_socle_pilier']                 = $tab_droits_profil_prof_dir;

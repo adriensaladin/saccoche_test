@@ -178,7 +178,7 @@ function verifier_dossier_decompression_sauvegarde($dossier)
 		{
 			return false;
 		}
-		$fichier_taille_maximale = max( $fichier_taille_maximale , filesize($dossier.$fichier_nom) );
+		$fichier_taille_maximale = max( $fichier_taille_maximale , filesize($dossier.'/'.$fichier_nom) );
 	}
 	return $fichier_taille_maximale;
 }

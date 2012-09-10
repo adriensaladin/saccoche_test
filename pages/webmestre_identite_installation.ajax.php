@@ -42,9 +42,9 @@ $courriel             = (isset($_POST['f_courriel']))             ? Clean::courr
 
 $tab_ext_images = array('bmp','gif','jpg','jpeg','png');
 
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
+//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
 // Contenu du select avec la liste des logos disponibles
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
+//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
 
 if($action=='select_logo')
 {
@@ -63,11 +63,11 @@ if($action=='select_logo')
 	exit($options_logo);
 }
 
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
+//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
 // Contenu du ul avec la liste des logos disponibles
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
+//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
 
-if($action=='listing_logos')
+elseif($action=='listing_logos')
 {
 	$tab_files = FileSystem::lister_contenu_dossier(CHEMIN_DOSSIER_LOGO);
 	$li_logos = '';
@@ -83,40 +83,61 @@ if($action=='listing_logos')
 	exit($li_logos);
 }
 
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
+//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
 //	Uploader un logo
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
+//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
 
-if($action=='upload_logo')
+elseif($action=='upload_logo')
 {
-	$result = FileSystem::recuperer_upload( CHEMIN_DOSSIER_LOGO /*fichier_chemin*/ , NULL /*fichier_nom*/ , $tab_ext_images /*tab_extensions_autorisees*/ , NULL /*tab_extensions_interdites*/ , 100 /*taille_maxi*/ , NULL /*filename_in_zip*/ );
-	if($result!==TRUE)
+	// récupération des infos
+	$tab_file = $_FILES['userfile'];
+	$fnom_transmis = $tab_file['name'];
+	$fnom_serveur = $tab_file['tmp_name'];
+	$ftaille = $tab_file['size'];
+	$ferreur = $tab_file['error'];
+	if( (!file_exists($fnom_serveur)) || (!$ftaille) || ($ferreur) )
 	{
-		exit('Erreur : '.$result);
+		exit('Erreur : problème de transfert ! Fichier trop lourd ? '.InfoServeur::minimum_limitations_upload());
+	}
+	// vérifier l'extension
+	$extension = strtolower(pathinfo($fnom_transmis,PATHINFO_EXTENSION));
+	if(!in_array($extension,$tab_ext_images))
+	{
+		exit('Erreur : l\'extension du fichier transmis est incorrecte !');
+	}
+	// vérifier le poids
+	if( $ftaille > 100*1000 )
+	{
+		$conseil = (($extension=='jpg')||($extension=='jpeg')) ? 'réduisez les dimensions de l\'image' : 'convertissez l\'image au format JPEG' ;
+		exit('Erreur : le poids du fichier dépasse les 100 Ko autorisés : '.$conseil.' !');
 	}
 	// vérifier la conformité du fichier image, récupérer les infos le concernant
-	$tab_infos = @getimagesize(CHEMIN_DOSSIER_LOGO.FileSystem::$file_saved_name);
+	$tab_infos = @getimagesize($fnom_serveur);
 	if($tab_infos==FALSE)
 	{
-		unlink(CHEMIN_DOSSIER_LOGO.FileSystem::$file_saved_name);
 		exit('Erreur : le fichier image ne semble pas valide !');
 	}
 	list($image_largeur, $image_hauteur, $image_type, $html_attributs) = $tab_infos;
 	$tab_extension_types = array( IMAGETYPE_GIF=>'gif' , IMAGETYPE_JPEG=>'jpeg' , IMAGETYPE_PNG=>'png' , IMAGETYPE_BMP=>'bmp' ); // http://www.php.net/manual/fr/function.exif-imagetype.php#refsect1-function.exif-imagetype-constants
-	// vérifier le type 
+
 	if(!isset($tab_extension_types[$image_type]))
 	{
-		unlink(CHEMIN_DOSSIER_LOGO.FileSystem::$file_saved_name);
 		exit('Erreur : le fichier transmis n\'est pas un fichier image !');
 	}
-	exit('ok');
+	$image_format = $tab_extension_types[$image_type];
+	// enregistrer le fichier
+	if(!move_uploaded_file($fnom_serveur , CHEMIN_DOSSIER_LOGO.Clean::fichier($fnom_transmis)))
+	{
+		exit('Erreur : le fichier n\'a pas pu être enregistré sur le serveur.');
+	}
+	echo'ok';
 }
 
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
+//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
 //	Supprimer un logo
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
+//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
 
-if( ($action=='delete_logo') && $logo )
+elseif( ($action=='delete_logo') && $logo )
 {
 	unlink(CHEMIN_DOSSIER_LOGO.$logo);
 	// Si on supprime l'image actuellement utilisée, alors la retirer du fichier
@@ -124,14 +145,14 @@ if( ($action=='delete_logo') && $logo )
 	{
 		fabriquer_fichier_hebergeur_info( array('HEBERGEUR_LOGO'=>'') );
 	}
-	exit('ok');
+	echo'ok';
 }
 
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
+//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
 // Enregistrer le nouveau fichier de paramètres
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
+//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
 
-if( ($action=='enregistrer') && $denomination && $nom && $prenom && $courriel )
+elseif( ($action=='enregistrer') && $denomination && $nom && $prenom && $courriel )
 {
 	fabriquer_fichier_hebergeur_info( array('HEBERGEUR_DENOMINATION'=>$denomination,'HEBERGEUR_UAI'=>$uai,'HEBERGEUR_ADRESSE_SITE'=>$adresse_site,'HEBERGEUR_LOGO'=>$logo,'CNIL_NUMERO'=>$cnil_numero,'CNIL_DATE_ENGAGEMENT'=>$cnil_date_engagement,'CNIL_DATE_RECEPISSE'=>$cnil_date_recepisse,'WEBMESTRE_NOM'=>$nom,'WEBMESTRE_PRENOM'=>$prenom,'WEBMESTRE_COURRIEL'=>$courriel) );
 	if(HEBERGEUR_INSTALLATION=='mono-structure')
@@ -145,13 +166,11 @@ if( ($action=='enregistrer') && $denomination && $nom && $prenom && $courriel )
 	// On modifie aussi la session
 	$_SESSION['USER_NOM']     = $nom ;
 	$_SESSION['USER_PRENOM']  = $prenom ;
-	exit('ok');
+	echo'ok';
 }
 
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-// On ne devrait pas en arriver là...
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-exit('Erreur avec les données transmises !');
-
+else
+{
+	echo'Erreur avec les données transmises !';
+}
 ?>

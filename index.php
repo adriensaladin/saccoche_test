@@ -151,7 +151,7 @@ ob_start();
 $filename_php = CHEMIN_DOSSIER_PAGES.$PAGE.'.php';
 if(!is_file($filename_php))
 {
-	$tab_messages_erreur[] = 'Erreur : fichier '.FileSystem::fin_chemin($filename_php).' manquant.';
+	$tab_messages_erreur[] = 'Erreur : page "'.$filename_php.'" manquante (supprimée, déplacée, non créée...).';
 	$PAGE = ($_SESSION['USER_PROFIL']=='public') ? 'public_accueil' :'compte_accueil' ;
 	$filename_php = CHEMIN_DOSSIER_PAGES.$PAGE.'.php';
 }

@@ -142,7 +142,7 @@ class InfoServeur
     $tab_tr = array();
     foreach($tab_objets as $nom_objet => $nom_affichage)
     {
-      $tab_tr[] = '<tr><td><img alt="" title="'.InfoServeur::commentaire($nom_objet).'" src="./_img/bulle_aide.png" /> '.$nom_affichage.'</td>'.call_user_func('InfoServeur::'.$nom_objet).'</tr>';
+      $tab_tr[] = '<tr><td><img alt="" title="'.InfoServeur::commentaire($nom_objet).'" src="./_img/bulle_aide.png" /> '.$nom_affichage.'</td>'.call_user_func('InfoServeur::'.$nom_objet).'</td></tr>';
     }
     return'<table class="p"><thead><tr><th colspan="2">'.$titre.'</th></tr></thead><tbody>'.implode('',$tab_tr).'</tbody></table>';
   }
@@ -611,29 +611,6 @@ class InfoServeur
     return InfoServeur::tableau_deux_colonnes( 'Configuration de PHP' , $tab_objets );
   }
 
-  public static function tableau_modules_PHP($nb_lignes)
-  {
-    global $tab_commentaires;
-    $tab_modules_requis = array('curl','dom','gd','mbstring','mysql','pdo','pdo_mysql','session','zip','zlib');
-    $lignes = '';
-    $tab_modules = InfoServeur::modules_php();
-    $nb_modules = count($tab_modules);
-    $nb_colonnes = ceil($nb_modules/$nb_lignes);
-    for($numero_ligne=0 ; $numero_ligne<$nb_lignes ; $numero_ligne++)
-    {
-      $lignes .= '<tr>';
-      for($numero_colonne=0 ; $numero_colonne<$nb_colonnes ; $numero_colonne++)
-      {
-        $indice = $numero_colonne*$nb_lignes + $numero_ligne ;
-        $style  = ( ($indice<$nb_modules) && (in_array(strtolower($tab_modules[$indice]),$tab_modules_requis)) ) ? ' style="background:'.InfoServeur::$tab_couleur['vert'].'"' : '' ;
-        $lignes .= ($indice<$nb_modules) ? '<td'.$style.'>'.$tab_modules[$indice].'</td>' : '<td class="hc">-</td>' ;
-      }
-      $lignes .= '</tr>';
-    }
-    $tr_head = '<tr><th colspan="'.$nb_colonnes.'">Modules PHP compilés et chargés <img alt="" title="'.InfoServeur::commentaire('modules_PHP').'" src="./_img/bulle_aide.png" /></th></tr>';
-    return'<table class="p"><thead>'.$tr_head.'</thead><tbody>'.$lignes.'</tbody></table>';
-  }
-
   public static function tableau_reglages_Suhosin()
   {
     $tab_lignes   = array(1=>'get','post','request');
@@ -657,37 +634,27 @@ class InfoServeur
     return'<table class="p"><tbody>'.implode('',$tab_tr).'</tbody></table>';
   }
 
-  public static function tableau_reglages_GD()
+  public static function tableau_modules_PHP($nb_lignes)
   {
-    $jpeg = (version_compare(PHP_VERSION,5.3,'<')) ? 'JPG' : 'JPEG' ;
-    $tab_objets = array(
-      'GD Version'       => 'Version', // 
-      'FreeType Support' => 'Support FreeType', // Requis pour imagettftext()
-      $jpeg.' Support'   => 'Support JPEG',
-      'PNG Support'      => 'Support PNG',
-      'GIF Read Support' => 'Support GIF' // "GIF Create Support" non testé car on n'écrit que des jpg (photos) et des png (étiquettes) de toutes façons.
-    );
-    $tab_gd_options = gd_info(); // http://fr.php.net/manual/fr/function.gd-info.php
-    $tab_tr = array();
-    foreach($tab_objets as $nom_objet => $nom_affichage)
+    global $tab_commentaires;
+    $tab_modules_requis = array('curl','dom','gd','mbstring','mysql','pdo','pdo_mysql','session','zip','zlib');
+    $lignes = '';
+    $tab_modules = InfoServeur::modules_php();
+    $nb_modules = count($tab_modules);
+    $nb_colonnes = ceil($nb_modules/$nb_lignes);
+    for($numero_ligne=0 ; $numero_ligne<$nb_lignes ; $numero_ligne++)
     {
-      if($nom_objet=='GD Version')
+      $lignes .= '<tr>';
+      for($numero_colonne=0 ; $numero_colonne<$nb_colonnes ; $numero_colonne++)
       {
-        $search_version = preg_match( '/[0-9.]+/' , $tab_gd_options[$nom_objet] , $tab_match);
-        $gd_version = ($search_version) ? $tab_match[0] : '' ;
-        $img = ($nom_objet=='GD Version') ? '<img alt="" title="La fonction imagecreatetruecolor() requiert la bibliothèque GD version 2.0.1 ou supérieure, 2.0.28 ou supérieure étant recommandée." src="./_img/bulle_aide.png" /> ' : '' ;
-             if(version_compare($gd_version,'2.0.28','>=')) $td = InfoServeur::cellule_coloree_centree($tab_gd_options[$nom_objet],'vert');
-        else if(version_compare($gd_version,'2.0.1' ,'>=')) $td = InfoServeur::cellule_coloree_centree($tab_gd_options[$nom_objet],'jaune');
-        else                                                $td = InfoServeur::cellule_coloree_centree($tab_gd_options[$nom_objet],'rouge');
+        $indice = $numero_colonne*$nb_lignes + $numero_ligne ;
+        $style  = ( ($indice<$nb_modules) && (in_array(strtolower($tab_modules[$indice]),$tab_modules_requis)) ) ? ' style="background:'.InfoServeur::$tab_couleur['vert'].'"' : '' ;
+        $lignes .= ($indice<$nb_modules) ? '<td'.$style.'>'.$tab_modules[$indice].'</td>' : '<td class="hc">-</td>' ;
       }
-      else
-      {
-        $img = '' ;
-        $td = ($tab_gd_options[$nom_objet]) ? InfoServeur::cellule_coloree_centree('ON','vert') : InfoServeur::cellule_coloree_centree('OFF','rouge') ;
-      }
-      $tab_tr[] = '<tr><td>'.$img.$nom_affichage.'</td>'.$td.'</tr>';
+      $lignes .= '</tr>';
     }
-    return'<table class="p"><thead><tr><th colspan="2">Bibliothèque GD</th></tr></thead><tbody>'.implode('',$tab_tr).'</tbody></table>';
+    $tr_head = '<tr><th colspan="'.$nb_colonnes.'">Modules PHP compilés et chargés <img alt="" title="'.InfoServeur::commentaire('modules_PHP').'" src="./_img/bulle_aide.png" /></th></tr>';
+    return'<table class="p"><thead>'.$tr_head.'</thead><tbody>'.$lignes.'</tbody></table>';
   }
 
   public static function tableau_serveur_et_client()

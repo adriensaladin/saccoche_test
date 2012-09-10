@@ -36,9 +36,9 @@ $TITRE = "Dates des périodes";
 
 <?php
 
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 //	Affichage du bilan des affectations des périodes aux classes & groupes ; en plusieurs requêtes pour récupérer les périodes sans classes-groupes et les classes-groupes sans périodes
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
 $tab_groupe    = array();
 $tab_periode   = array();
@@ -72,14 +72,11 @@ if(count($DB_TAB))
 		$listing_groupes_id = implode(',',array_keys($tab_groupe));
 		$DB_TAB = DB_STRUCTURE_COMMUN::DB_lister_jointure_groupe_periode($listing_groupes_id);
 		$memo_groupe_id = 0;
-		if(count($DB_TAB))
+		foreach($DB_TAB as $DB_ROW)
 		{
-			foreach($DB_TAB as $DB_ROW)
-			{
-				$date_affich_debut = convert_date_mysql_to_french($DB_ROW['jointure_date_debut']);
-				$date_affich_fin   = convert_date_mysql_to_french($DB_ROW['jointure_date_fin']);
-				$tab_jointure[$DB_ROW['groupe_id']][$DB_ROW['periode_id']] = html($date_affich_debut).' ~ '.html($date_affich_fin);
-			}
+			$date_affich_debut = convert_date_mysql_to_french($DB_ROW['jointure_date_debut']);
+			$date_affich_fin   = convert_date_mysql_to_french($DB_ROW['jointure_date_fin']);
+			$tab_jointure[$DB_ROW['groupe_id']][$DB_ROW['periode_id']] = html($date_affich_debut).' ~ '.html($date_affich_fin);
 		}
 
 		// Fabrication du tableau résultant

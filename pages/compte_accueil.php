@@ -39,9 +39,9 @@ if(!(isset($_SESSION['USER_PARAM_ACCUEIL'])))
 	$_SESSION['USER_PARAM_ACCUEIL'] = 'user,alert,info,help,ecolo';
 }
 
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 //	Alertes (pour l'administrateur) ; affiché après mais à définir avant
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
 if($_SESSION['USER_PROFIL']=='administrateur')
 {
@@ -60,7 +60,7 @@ if($_SESSION['USER_PROFIL']=='administrateur')
 	}
 	if(DB_STRUCTURE_ADMINISTRATEUR::DB_compter_devoirs_annee_scolaire_precedente())
 	{
-		$tab_accueil['alert'] .= '<p class="danger">Année scolaire précédente non archivée !<br />&nbsp;<br />Au changement d\'année scolaire il faut <a href="./index.php?page=administrateur_nettoyage">lancer l\'initialisation annuelle des données</a>.</p>';
+		$tab_accueil['alert'] .= '<p class="danger">Année scolaire précédente non nettoyée !<br />&nbsp;<br />Au changement d\'année scolaire il faut <a href="./index.php?page=administrateur_nettoyage">lancer l\'initialisation annuelle des données</a>.</p>';
 	}
 	if($alerte_novice)
 	{
@@ -68,9 +68,9 @@ if($_SESSION['USER_PROFIL']=='administrateur')
 	}
 }
 
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 //	Message de bienvenue (informations utilisateur : infos profil, infos selon profil, infos adresse de connexion)
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
 $tab_accueil['user'] = '';
 // infos connexion (pas si webmestre)
@@ -141,9 +141,9 @@ else
 	}
 }
 
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 //	Panneau d'informations ou message écolo
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
 if($_SESSION['USER_PROFIL']!='webmestre')
 {
@@ -161,9 +161,9 @@ if($_SESSION['USER_PROFIL']!='webmestre')
 	}
 }
 
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 //	Astuce du jour
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 
 /*
 $nombre_indices = 10;
@@ -191,9 +191,9 @@ if($astuce_nombre)
 	$tab_accueil['help'] .= '<p class="b i"><TG> Le saviez-vous ?</p>'.$tab_astuces[$_SESSION['USER_PROFIL']][$indice];
 }
 
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 //	Affichage
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
+//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 $tab_msg_rubrique_masquee = array( 'user'=>'Message de bienvenue' , 'help'=>'L\'astuce du moment' , 'ecolo'=>'Protégeons l\'environnement !' );
 
 foreach($tab_accueil as $type => $contenu)

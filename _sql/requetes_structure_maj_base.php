@@ -2135,30 +2135,6 @@ public static function DB_maj_base($version_actuelle)
 		}
 	}
 
-	//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	//	MAJ 2012-07-07 => 2012-09-10
-	//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-	if($version_actuelle=='2012-07-07')
-	{
-		if($version_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
-		{
-			$version_actuelle = '2012-09-10';
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_actuelle.'" WHERE parametre_nom="version_base"' );
-			// renommage et modification de la table sacoche_signature (pour sacoche_image)
-			// supprimer la table sacoche_image si elle existe : sinon dans le cas d'une restauration de base à une version antérieure (suivie de cette mise à jour), cette table éventuellement existante gène.
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'DROP TABLE IF EXISTS sacoche_image' );
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'RENAME TABLE sacoche_signature TO sacoche_image' );
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_image CHANGE signature_contenu image_contenu MEDIUMBLOB NOT NULL' );
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_image CHANGE signature_format image_format CHAR( 4 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT ""' );
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_image CHANGE signature_largeur image_largeur SMALLINT( 5 ) UNSIGNED NOT NULL DEFAULT 0' );
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_image CHANGE signature_hauteur image_hauteur SMALLINT( 5 ) UNSIGNED NOT NULL DEFAULT 0' );
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_image ADD image_objet ENUM( "signature", "photo" ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT "photo" AFTER user_id' );
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_image SET image_objet="signature"' );
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_image ADD INDEX image_objet( image_objet )' );
-		}
-	}
-
 }
 
 }

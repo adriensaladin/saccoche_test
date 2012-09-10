@@ -37,30 +37,16 @@ $courriel_envoi = (isset($_POST['courriel_envoi'])) ? Clean::entier($_POST['cour
 
 $fichier_csv_nom  = 'ajout_structures_'.fabriquer_fin_nom_fichier__date_et_alea().'.csv';
 
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Import d'un fichier CSV avec le listing des structures
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 if($action=='importer_csv')
 {
-	$tab_file = $_FILES['userfile'];
-	$fnom_transmis = $tab_file['name'];
-	$fnom_serveur  = $tab_file['tmp_name'];
-	$ftaille       = $tab_file['size'];
-	$ferreur       = $tab_file['error'];
-	// Récupération du fichier
-	if( (!file_exists($fnom_serveur)) || (!$ftaille) || ($ferreur) )
+	$result = FileSystem::recuperer_upload( CHEMIN_DOSSIER_IMPORT /*fichier_chemin*/ , $fichier_csv_nom /*fichier_nom*/ , array('txt','csv') /*tab_extensions_autorisees*/ , NULL /*tab_extensions_interdites*/ , NULL /*taille_maxi*/ , NULL /*filename_in_zip*/ );
+	if($result!==TRUE)
 	{
-		exit('Erreur : problème de transfert ! Fichier trop lourd ? '.InfoServeur::minimum_limitations_upload());
-	}
-	$extension = strtolower(pathinfo($fnom_transmis,PATHINFO_EXTENSION));
-	if(!in_array($extension,array('txt','csv')))
-	{
-		exit('Erreur : l\'extension du fichier transmis est incorrecte !');
-	}
-	if(!move_uploaded_file($fnom_serveur , CHEMIN_DOSSIER_IMPORT.$fichier_csv_nom))
-	{
-		exit('Erreur : le fichier n\'a pas pu être enregistré sur le serveur.');
+		exit('Erreur : '.$result);
 	}
 	// On récupère les zones géographiques pour vérifier que l'identifiant transmis est cohérent
 	$tab_geo = array();
@@ -156,9 +142,9 @@ if($action=='importer_csv')
 	exit(']¤['.$info_lignes_trouvees);
 }
 
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Etape d'ajout d'un nouvel établissement
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 if( ($action=='ajouter') && $num && $max )
 {
@@ -220,9 +206,9 @@ if( ($action=='ajouter') && $num && $max )
 	exit(']¤['.'<tr><td class="nu"><input type="checkbox" name="f_ids" value="'.$base_id.'" /></td><td class="label">'.$base_id.'</td><td class="label">'.html($localisation.' | '.$denomination.' ['.$uai.']').'</td><td class="label">'.html($contact_nom.' '.$contact_prenom.' ('.$contact_courriel.')').'</td></tr>');
 }
 
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
 //	Supprimer plusieurs structures existantes
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 if( ($action=='supprimer') && $nb_bases )
 {
@@ -233,9 +219,9 @@ if( ($action=='supprimer') && $nb_bases )
 	exit('<ok>');
 }
 
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
 //	On ne devrait pas en arriver là...
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 exit('Erreur avec les données transmises !');
 

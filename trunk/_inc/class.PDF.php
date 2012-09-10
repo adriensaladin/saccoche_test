@@ -2195,13 +2195,13 @@ class PDF extends FPDF
 		}
 	}
 
-	//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+	// ////////////////////////////////////////////////////////////////////////////////////////////////////
 	//	Méthodes pour la mise en page d'un bilan de synthèse d'un groupe sur une période
-	//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+	// ////////////////////////////////////////////////////////////////////////////////////////////////////
 	//	bilan_periode_synthese_initialiser()
 	//	bilan_periode_synthese_entete()
 	//	bilan_periode_synthese_pourcentages()
-	//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+	// ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	public function bilan_periode_synthese_initialiser($eleve_nb,$item_nb,$tableau_tri_objet)
 	{
@@ -2309,9 +2309,9 @@ class PDF extends FPDF
 		}
 	}
 
-	//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+	// ////////////////////////////////////////////////////////////////////////////////////////////////////
 	//	Méthodes pour la mise en page d'un tableau vierge de saisie d'évaluation
-	//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+	// ////////////////////////////////////////////////////////////////////////////////////////////////////
 	//	tableau_saisie_initialiser()
 	//	tableau_saisie_reference_devoir()
 	//	tableau_saisie_reference_eleve()
@@ -2319,7 +2319,7 @@ class PDF extends FPDF
 	//	tableau_devoir_repartition_quantitative_initialiser()
 	//	tableau_devoir_repartition_nominative_initialiser()
 	//	tableau_devoir_repartition_nominative_entete()
-	//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+	// ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	public function tableau_saisie_initialiser($eleve_nb,$item_nb)
 	{
@@ -2374,10 +2374,10 @@ class PDF extends FPDF
 		$this->SetXY($memo_x+$this->reference_largeur , $memo_y);
 	}
 
-	//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+	// ////////////////////////////////////////////////////////////////////////////////////////////////////
 	//	Méthodes pour la mise en page d'un bilan d'un devoir : répartition quantitative ou nominative
 	//	tableau_devoir_repartition_quantitative_initialiser() tableau_devoir_repartition_nominative_initialiser() tableau_devoir_repartition_nominative_entete()
-	//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+	// ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	public function tableau_devoir_repartition_quantitative_initialiser($item_nb)
 	{
@@ -2436,15 +2436,15 @@ class PDF extends FPDF
 		}
 	}
 
-	//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+	// ////////////////////////////////////////////////////////////////////////////////////////////////////
 	//	Méthodes pour la mise en page d'un cartouche
-	//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+	// ////////////////////////////////////////////////////////////////////////////////////////////////////
 	//	cartouche_initialiser()
 	//	cartouche_entete()
 	//	cartouche_minimal_competence()
 	//	cartouche_complet_competence()
 	//	cartouche_interligne()
-	//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+	// ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	public function cartouche_initialiser($detail,$item_nb)
 	{
@@ -2508,14 +2508,14 @@ class PDF extends FPDF
 		$this->SetXY($this->marge_gauche , $this->GetY() + $nb_lignes*$this->cases_hauteur);
 	}
 
-	//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+	// ////////////////////////////////////////////////////////////////////////////////////////////////////
 	//	Méthodes pour la mise en page d'un tableau d'appréciation d'un prof sur un bulletin
-	//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+	// ////////////////////////////////////////////////////////////////////////////////////////////////////
 	//	tableau_appreciation_initialiser()
 	//	tableau_appreciation_intitule()
 	//	tableau_appreciation_interligne()
 	//	tableau_appreciation_rubrique()
-	//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+	// ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	public function tableau_appreciation_initialiser($nb_appreciations,$nb_eleves,$with_moyenne)
 	{

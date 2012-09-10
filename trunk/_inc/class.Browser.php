@@ -73,7 +73,7 @@ class Browser
   {
     $tab_retour = array( 'nav_modele'=>'' , 'nav_version'=>0 , 'environnement'=>'' );
     // Variable à analyser
-    $UserAgent = ($UserAgent) ? strtolower($UserAgent) : strtolower($_SERVER['HTTP_USER_AGENT']) ;
+    $UserAgent = ($UserAgent) ? strtolower($UserAgent) : ( isset($_SERVER['HTTP_USER_AGENT']) ? strtolower($_SERVER['HTTP_USER_AGENT']) : '' ) ;
     // Détection du navigateur et si possible de sa version
     if( (!preg_match('#opera|webtv#', $UserAgent)) && (strstr($UserAgent,'msie')) )
     {

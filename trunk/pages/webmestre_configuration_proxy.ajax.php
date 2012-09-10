@@ -38,9 +38,9 @@ $proxy_auth_method = (isset($_POST['f_proxy_auth_method'])) ? Clean::texte($_POS
 $proxy_auth_user   = (isset($_POST['f_proxy_auth_user']))   ? Clean::texte($_POST['f_proxy_auth_user'])   : '';
 $proxy_auth_pass   = (isset($_POST['f_proxy_auth_pass']))   ? Clean::texte($_POST['f_proxy_auth_pass'])   : '';
 
-//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Tester les réglages actuellement enregistrés
-//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 if($action=='tester')
 {
@@ -49,9 +49,9 @@ if($action=='tester')
 	exit('<h2>Résultat du test</h2>'.$affichage);
 }
 
-//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Enregistrer des nouveaux réglages
-//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 fabriquer_fichier_hebergeur_info( array('SERVEUR_PROXY_USED'=>$proxy_used,'SERVEUR_PROXY_NAME'=>$proxy_name,'SERVEUR_PROXY_PORT'=>$proxy_port,'SERVEUR_PROXY_TYPE'=>$proxy_type,'SERVEUR_PROXY_AUTH_USED'=>$proxy_auth_used,'SERVEUR_PROXY_AUTH_METHOD'=>$proxy_auth_method,'SERVEUR_PROXY_AUTH_USER'=>$proxy_auth_user,'SERVEUR_PROXY_AUTH_PASS'=>$proxy_auth_pass) );
 exit('ok');

@@ -1604,7 +1604,11 @@ public static function DB_supprimer_utilisateur($user_id,$user_profil)
 		$DB_SQL = 'DELETE FROM sacoche_officiel_saisie ';
 		$DB_SQL.= 'WHERE prof_id=:user_id';
 		DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-		$DB_SQL = 'DELETE FROM sacoche_signature ';
+	}
+	if( ($user_profil=='eleve') || ($user_profil=='professeur') || ($user_profil=='directeur') )
+	{
+		// photo si élève ; signature si professeur ou directeur
+		$DB_SQL = 'DELETE FROM sacoche_image ';
 		$DB_SQL.= 'WHERE user_id=:user_id';
 		DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 	}
@@ -1950,10 +1954,10 @@ public static function DB_corriger_anomalies()
 	$tab_bilan[] = '<label class="'.$classe.'">Jointures élève/classe : '.$message.'.</label>';
 	// Recherche d'anomalies : signature associée à un user supprimé...
 	// Attention, l'id de user à 0 est normal pour le tampon de l'établissement
-	$DB_SQL = 'DELETE sacoche_signature ';
-	$DB_SQL.= 'FROM sacoche_signature ';
+	$DB_SQL = 'DELETE sacoche_image ';
+	$DB_SQL.= 'FROM sacoche_image ';
 	$DB_SQL.= 'LEFT JOIN sacoche_user USING (user_id) ';
-	$DB_SQL.= 'WHERE sacoche_signature.user_id!=0 AND sacoche_user.user_id IS NULL ';
+	$DB_SQL.= 'WHERE sacoche_image.user_id!=0 AND sacoche_user.user_id IS NULL ';
 	DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
 	$nb_modifs = DB::rowCount(SACOCHE_STRUCTURE_BD_NAME);
 	$message = (!$nb_modifs) ? 'rien à signaler' : ( ($nb_modifs>1) ? $nb_modifs.' anomalies supprimées' : '1 anomalie supprimée' ) ;

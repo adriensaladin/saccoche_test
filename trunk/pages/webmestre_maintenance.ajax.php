@@ -31,9 +31,9 @@ if($_SESSION['SESAMATH_ID']==ID_DEMO) {exit('Action désactivée pour la démo..
 $action = (isset($_POST['f_action'])) ? Clean::texte($_POST['f_action']) : '';
 $motif  = (isset($_POST['f_motif']))  ? Clean::texte($_POST['f_motif'])  : '';
 
-//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Bloquer ou débloquer l'application
-//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 if($action=='debloquer')
 {
@@ -49,9 +49,9 @@ if($action=='bloquer')
 	exit('<label class="erreur">Application fermée : '.html($motif).'</label>');
 }
 
-//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Vérification des droits en écriture
-//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 if($action=='verif_droits')
 {
@@ -65,7 +65,7 @@ if($action=='verif_droits')
 	ksort($_SESSION['tmp']['dossier']);
 	foreach($_SESSION['tmp']['dossier'] as $dossier => $tab)
 	{
-		$dossier = ($dossier) ? '.'.$dossier : './' ;
+		$dossier = ($dossier) ? '.'.$dossier : '.'.DS ;
 		$tbody .= (@is_writable($dossier)) ? '<tr><td class="v">Dossier accessible en écriture</td><td>'.$dossier.'</td></tr>' : '<tr><td class="r">Dossier aux droits insuffisants</td><td>'.$dossier.'</td></tr>' ;
 	}
 	// Fichiers
@@ -83,12 +83,12 @@ if($action=='verif_droits')
 
 }
 
-//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Mise à jour automatique des fichiers
-//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 $fichier_import  = CHEMIN_DOSSIER_IMPORT.'telechargement.zip';
-$dossier_dezip   = CHEMIN_DOSSIER_IMPORT.'SACoche/';
+$dossier_dezip   = CHEMIN_DOSSIER_IMPORT.'SACoche'.DS;
 $dossier_install = CHEMIN_DOSSIER_SACOCHE;
 
 //
@@ -237,13 +237,13 @@ if($action=='maj_etape5')
 	exit(']¤['.'ok'.']¤['.VERSION_PROG);
 }
 
-//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Vérification des fichiers
-//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 $fichier_import  = CHEMIN_DOSSIER_IMPORT.'verification.zip';
-$dossier_dezip   = CHEMIN_DOSSIER_IMPORT.'SACoche/';
-$dossier_install = '.';
+$dossier_dezip   = CHEMIN_DOSSIER_IMPORT.'SACoche'.DS;
+$dossier_install = '.'.DS;
 
 //
 // 1. Récupération de l'archive <em>ZIP</em>...
@@ -363,9 +363,9 @@ if($action=='verif_etape5')
 	exit(']¤['.'ok'.']¤['.VERSION_PROG);
 }
 
-//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
 // On ne devrait pas en arriver là...
-//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 exit('Erreur avec les données transmises !');
 

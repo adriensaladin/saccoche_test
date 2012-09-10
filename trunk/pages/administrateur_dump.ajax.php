@@ -37,9 +37,9 @@ $dossier_temp = CHEMIN_DOSSIER_DUMP.$_SESSION['BASE'].DS;
 
 require(CHEMIN_DOSSIER_INCLUDE.'fonction_dump.php');
 
-//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Sauvegarder la base
-//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 if($action=='sauvegarder')
 {
@@ -67,30 +67,17 @@ if($action=='sauvegarder')
 	exit();
 }
 
-//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
 //	Uploader et dezipper / vérifier un fichier à restaurer
-//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 elseif($action=='uploader')
 {
-	$tab_file = $_FILES['userfile'];
-	$fnom_transmis = $tab_file['name'];
-	$fnom_serveur = $tab_file['tmp_name'];
-	$ftaille = $tab_file['size'];
-	$ferreur = $tab_file['error'];
-	if( (!file_exists($fnom_serveur)) || (!$ftaille) || ($ferreur) )
-	{
-		exit('<li><label class="alerte">Erreur : problème de transfert ! Fichier trop lourd ? '.InfoServeur::minimum_limitations_upload().'</label></li>');
-	}
-	$extension = strtolower(pathinfo($fnom_transmis,PATHINFO_EXTENSION));
-	if($extension!='zip')
-	{
-		exit('<li><label class="alerte">Erreur : l\'extension du fichier transmis est incorrecte !</label></li>');
-	}
 	$fichier_upload_nom = 'dump_'.$_SESSION['BASE'].'_'.fabriquer_fin_nom_fichier__date_et_alea().'.zip';
-	if(!move_uploaded_file($fnom_serveur , CHEMIN_DOSSIER_IMPORT.$fichier_upload_nom))
+	$result = FileSystem::recuperer_upload( CHEMIN_DOSSIER_IMPORT /*fichier_chemin*/ , $fichier_upload_nom /*fichier_nom*/ , array('zip') /*tab_extensions_autorisees*/ , NULL /*tab_extensions_interdites*/ , NULL /*taille_maxi*/ , NULL /*filename_in_zip*/ );
+	if($result!==TRUE)
 	{
-		exit('<li><label class="alerte">Erreur : le fichier n\'a pas pu être enregistré sur le serveur.</label></li>');
+		exit('<li><label class="alerte">Erreur : '.$result.'</label></li>');
 	}
 	// Créer ou vider le dossier temporaire
 	FileSystem::creer_ou_vider_dossier($dossier_temp);
@@ -98,6 +85,7 @@ elseif($action=='uploader')
 	$code_erreur = FileSystem::unzip( CHEMIN_DOSSIER_IMPORT.$fichier_upload_nom , $dossier_temp , TRUE /*use_ZipArchive*/ );
 	if($code_erreur)
 	{
+		FileSystem::supprimer_dossier($dossier_temp); // Pas seulement vider, au cas où il y aurait des sous-dossiers créés par l'archive.
 		exit('<li><label class="alerte">Erreur : votre archive ZIP n\'a pas pu être ouverte ('.FileSystem::$tab_zip_error[$code_erreur].') !</label></li>');
 	}
 	unlink(CHEMIN_DOSSIER_IMPORT.$fichier_upload_nom);

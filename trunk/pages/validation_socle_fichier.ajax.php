@@ -35,9 +35,9 @@ $nb = count($tab_select_eleves);
 
 $top_depart = microtime(TRUE);
 
-//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Exporter un fichier de validations
-//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 if( in_array( $action , array('export_lpc','export_sacoche') ) && $nb )
 {
@@ -182,44 +182,20 @@ if( in_array( $action , array('export_lpc','export_sacoche') ) && $nb )
 	exit();
 }
 
-//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
 //	Importer un fichier de validations
-//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 if( in_array( $action , array('import_sacoche','import_compatible') ) )
 {
-	$tab_file = $_FILES['userfile'];
-	$fnom_transmis = $tab_file['name'];
-	$fnom_serveur = $tab_file['tmp_name'];
-	$ftaille = $tab_file['size'];
-	$ferreur = $tab_file['error'];
-	if( (!file_exists($fnom_serveur)) || (!$ftaille) || ($ferreur) )
+	// Si c'est un fichier zippé, on considère alors que c'est un zip devant venir de SACoche, et contenant import_validations.xml
+	$fichier_nom = 'import_validations_'.$_SESSION['BASE'].'_'.fabriquer_fin_nom_fichier__date_et_alea().'.xml';
+	$result = FileSystem::recuperer_upload( CHEMIN_DOSSIER_IMPORT /*fichier_chemin*/ , $fichier_nom /*fichier_nom*/ , array('xml','zip') /*tab_extensions_autorisees*/ , NULL /*tab_extensions_interdites*/ , NULL /*taille_maxi*/ , 'import_validations.xml' /*filename_in_zip*/ );
+	if($result!==TRUE)
 	{
-		exit('Erreur : problème de transfert ! Fichier trop lourd ? '.InfoServeur::minimum_limitations_upload());
+		exit('Erreur : '.$result);
 	}
-	$extension = strtolower(pathinfo($fnom_transmis,PATHINFO_EXTENSION));
-	if(!in_array($extension,array('xml','zip')))
-	{
-		exit('Erreur : l\'extension du fichier transmis est incorrecte !');
-	}
-	$fichier_upload_nom = 'import_validations_'.$_SESSION['BASE'].'_'.fabriquer_fin_nom_fichier__date_et_alea().'.xml';
-	if($extension!='zip')
-	{
-		if(!move_uploaded_file($fnom_serveur , CHEMIN_DOSSIER_IMPORT.$fichier_upload_nom))
-		{
-			exit('Erreur : le fichier n\'a pas pu être enregistré sur le serveur.');
-		}
-	}
-	else
-	{
-		// Dézipper le fichier (on considère alors que c'est un zip venant de SACoche et contenant import_validations.xml)
-		if(extension_loaded('zip')!==TRUE)
-		{
-			exit('Erreur : le serveur ne gère pas les fichiers ZIP ! Renvoyez votre fichier sans compression.');
-		}
-		FileSystem::unzip_one( $fnom_serveur , 'import_validations.xml' , $fichier_upload_nom );
-	}
-	$fichier_contenu = file_get_contents(CHEMIN_DOSSIER_IMPORT.$fichier_upload_nom);
+	$fichier_contenu = file_get_contents(CHEMIN_DOSSIER_IMPORT.$fichier_nom);
 	$fichier_contenu = To::utf8($fichier_contenu); // Mettre en UTF-8 si besoin
 	$xml = @simplexml_load_string($fichier_contenu);
 	if($xml===FALSE)

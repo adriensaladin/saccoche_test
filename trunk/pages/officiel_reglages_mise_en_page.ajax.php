@@ -47,9 +47,9 @@ $tampon_signature   = (isset($_POST['f_tampon_signature']))   ? Clean::texte($_P
 $user_id            = (isset($_POST['f_user_id']))            ? Clean::entier($_POST['f_user_id'])           : -1;
 $user_texte         = (isset($_POST['f_user_texte']))         ? Clean::texte($_POST['f_user_texte'])         : '';
 
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
 //	Traitement du formulaire form_mise_en_page
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 if( ($action=='mise_en_page') && $infos_responsables && $horizontal_gauche && $horizontal_milieu && $horizontal_droite && $vertical_haut && $vertical_milieu && $vertical_bas && $nombre_exemplaires && $marge_gauche && $marge_droite && $marge_haut && $marge_bas && $tampon_signature )
 {
@@ -93,65 +93,45 @@ if( ($action=='mise_en_page') && $infos_responsables && $horizontal_gauche && $h
 	exit('ok');
 }
 
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
 //	Traitement du formulaire form_tampon (upload d'un fichier image)
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 if( ($action=='upload_signature') && ($user_id>=0) && ($user_texte!='') )
 {
-	// récupération des infos
-	$tab_file = $_FILES['userfile'];
-	$fnom_transmis = $tab_file['name'];
-	$fnom_serveur = $tab_file['tmp_name'];
-	$ftaille = $tab_file['size'];
-	$ferreur = $tab_file['error'];
-	if( (!file_exists($fnom_serveur)) || (!$ftaille) || ($ferreur) )
+	$fichier_nom = 'signature_'.$_SESSION['BASE'].'_'.$user_id.'_'.fabriquer_fin_nom_fichier__date_et_alea().'.<EXT>';
+	$result = FileSystem::recuperer_upload( CHEMIN_DOSSIER_IMPORT /*fichier_chemin*/ , $fichier_nom /*fichier_nom*/ , array('gif','jpg','jpeg','png') /*tab_extensions_autorisees*/ , NULL /*tab_extensions_interdites*/ , 100 /*taille_maxi*/ , NULL /*filename_in_zip*/ );
+	if($result!==TRUE)
 	{
-		exit('Erreur : problème de transfert ! Fichier trop lourd ? '.InfoServeur::minimum_limitations_upload());
-	}
-	// vérifier l'extension
-	$extension = strtolower(pathinfo($fnom_transmis,PATHINFO_EXTENSION));
-	$tab_extension_images = array('gif','jpg','jpeg','png');
-	if(!in_array($extension,$tab_extension_images))
-	{
-		exit('Erreur : l\'extension du fichier transmis est incorrecte !');
-	}
-	// vérifier le poids
-	if( $ftaille > 100*1000 )
-	{
-		$conseil = (($extension=='jpg')||($extension=='jpeg')) ? 'réduisez les dimensions de l\'image' : 'convertissez l\'image au format JPEG' ;
-		exit('Erreur : le poids du fichier dépasse les 100 Ko autorisés : '.$conseil.' !');
+		exit('Erreur : '.$result);
 	}
 	// vérifier la conformité du fichier image, récupérer les infos le concernant
-	$tab_infos = @getimagesize($fnom_serveur);
+	$tab_infos = @getimagesize(CHEMIN_DOSSIER_IMPORT.FileSystem::$file_saved_name);
 	if($tab_infos==FALSE)
 	{
+		unlink(CHEMIN_DOSSIER_IMPORT.FileSystem::$file_saved_name);
 		exit('Erreur : le fichier image ne semble pas valide !');
 	}
 	list($image_largeur, $image_hauteur, $image_type, $html_attributs) = $tab_infos;
 	$tab_extension_types = array( IMAGETYPE_GIF=>'gif' , IMAGETYPE_JPEG=>'jpeg' , IMAGETYPE_PNG=>'png' ); // http://www.php.net/manual/fr/function.exif-imagetype.php#refsect1-function.exif-imagetype-constants
+	// vérifier le type 
 	if(!isset($tab_extension_types[$image_type]))
 	{
+		unlink(CHEMIN_DOSSIER_IMPORT.FileSystem::$file_saved_name);
 		exit('Erreur : le fichier transmis n\'est pas un fichier image (type '.$image_type.') !');
 	}
 	$image_format = $tab_extension_types[$image_type];
-	// enregistrer le fichier (temporairement)
-	$fichier_nom = 'signature_'.$_SESSION['BASE'].'_'.$user_id.'_'.fabriquer_fin_nom_fichier__date_et_alea().'.'.$extension;
-	if(!move_uploaded_file($fnom_serveur , CHEMIN_DOSSIER_EXPORT.$fichier_nom))
-	{
-		exit('Erreur : le fichier n\'a pas pu être enregistré sur le serveur.');
-	}
 	// stocker l'image dans la base
-	DB_STRUCTURE_OFFICIEL::DB_modifier_signature( $user_id , base64_encode(file_get_contents(CHEMIN_DOSSIER_EXPORT.$fichier_nom)) , $image_format , $image_largeur , $image_hauteur );
+	DB_STRUCTURE_OFFICIEL::DB_modifier_signature( $user_id , base64_encode(file_get_contents(CHEMIN_DOSSIER_IMPORT.FileSystem::$file_saved_name)) , $image_format , $image_largeur , $image_hauteur );
 	// Générer la balise html et afficher le retour
 	list($width,$height) = dimensions_affichage_image( $image_largeur , $image_hauteur , 200 /*largeur_maxi*/ , 200 /*hauteur_maxi*/ );
 	$user_texte = ($user_id) ? 'Signature '.$user_texte : $user_texte ;
-	exit('<li id="sgn_'.$user_id.'">'.html($user_texte).' : <img src="'.URL_DIR_EXPORT.$fichier_nom.'" alt="'.html($user_texte).'" width="'.$width.'" height="'.$height.'" /><q class="supprimer" title="Supprimer cette image (aucune confirmation ne sera demandée)."></q></li>');
+	exit('<li id="sgn_'.$user_id.'">'.html($user_texte).' : <img src="'.URL_DIR_IMPORT.FileSystem::$file_saved_name.'" alt="'.html($user_texte).'" width="'.$width.'" height="'.$height.'" /><q class="supprimer" title="Supprimer cette image (aucune confirmation ne sera demandée)."></q></li>');
 }
 
-//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
-//	Supprimer le tampon de l'établissement
-//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+//	Supprimer un fichier image (tampon de l'établissement ou signature)
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 if( ($action=='delete_signature') && ($user_id>=0) )
 {
@@ -159,9 +139,9 @@ if( ($action=='delete_signature') && ($user_id>=0) )
 	exit('ok');
 }
 
-//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
 //	On ne devrait pas en arriver là...
-//	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 exit('Erreur avec les données transmises !');
 

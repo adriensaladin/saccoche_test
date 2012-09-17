@@ -67,7 +67,7 @@ $(document).ready
 							error : function(jqXHR, textStatus, errorThrown)
 							{
 								$("button").prop('disabled',false);
-								$('#ajax_msg_'+action).removeAttr("class").addClass("alerte").html('Echec de la connexion !');
+								$('#ajax_msg_'+action).removeAttr("class").addClass("alerte").html('Échec de la connexion !');
 								return false;
 							},
 							success : function(responseHTML)

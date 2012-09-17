@@ -661,6 +661,36 @@ public static function DB_lister_referentiels()
 }
 
 /**
+ * compter_matieres_etabl
+ *
+ * @param void
+ * @return int
+ */
+public static function compter_matieres_etabl()
+{
+	$DB_SQL = 'SELECT COUNT(*) AS nombre ';
+	$DB_SQL.= 'FROM sacoche_matiere ';
+	$DB_SQL.= 'WHERE matiere_active=1 ';
+	return DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
+}
+
+/**
+ * compter_niveaux_etabl
+ *
+ * @param bool $with_specifiques
+ * @return int
+ */
+public static function compter_niveaux_etabl($with_specifiques)
+{
+	$DB_SQL = 'SELECT COUNT(*) AS nombre ';
+	$DB_SQL.= 'FROM sacoche_niveau ';
+	$DB_SQL.= ($with_specifiques) ? '' : 'LEFT JOIN sacoche_niveau_famille USING (niveau_famille_id) ';
+	$DB_SQL.= 'WHERE niveau_actif=1 ';
+	$DB_SQL.= ($with_specifiques) ? '' : 'AND niveau_famille_categorie=1 ';
+	return DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
+}
+
+/**
  * compter_devoirs
  *
  * @param void

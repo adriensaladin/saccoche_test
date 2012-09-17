@@ -174,7 +174,7 @@ $(document).ready
 					error : function(jqXHR, textStatus, errorThrown)
 					{
 						$('#ajax_msg').parent().children('q').show();
-						$('#ajax_msg').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
+						$('#ajax_msg').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
 						return false;
 					},
 					success : function(responseHTML)
@@ -299,7 +299,7 @@ $(document).ready
 					dataType : "html",
 					error : function(jqXHR, textStatus, errorThrown)
 					{
-						$('#ajax_msg_recherche').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
+						$('#ajax_msg_recherche').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
 					},
 					success : function(responseHTML)
 					{
@@ -382,7 +382,7 @@ $(document).ready
 						error : function(jqXHR, textStatus, errorThrown)
 						{
 							afficher_masquer_images_action('show');
-							$('#ajax_msg_recherche').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
+							$('#ajax_msg_recherche').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
 							return false;
 						},
 						success : function(responseHTML)
@@ -454,7 +454,7 @@ $(document).ready
 						error : function(jqXHR, textStatus, errorThrown)
 						{
 							$('button').prop('disabled',false);
-							$('#ajax_msg_move').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
+							$('#ajax_msg_move').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
 							return false;
 						},
 						success : function(responseHTML)
@@ -555,7 +555,7 @@ $(document).ready
 		{
 			please_wait = false;
 			$('#ajax_msg').parent().children('q').show();
-			$('#ajax_msg').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
+			$('#ajax_msg').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
 		}
 
 		// Fonction suivant l'envoi du formulaire (avec jquery.form.js)

@@ -94,7 +94,7 @@ $(document).ready
 						error : function(jqXHR, textStatus, errorThrown)
 						{
 							$("#bouton_valider_login").prop('disabled',false);
-							$('#ajax_msg_login').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
+							$('#ajax_msg_login').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
 							return false;
 						},
 						success : function(responseHTML)
@@ -135,7 +135,7 @@ $(document).ready
 						error : function(jqXHR, textStatus, errorThrown)
 						{
 							$("#bouton_valider_mdp_mini").prop('disabled',false);
-							$('#ajax_msg_mdp_mini').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
+							$('#ajax_msg_mdp_mini').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
 							return false;
 						},
 						success : function(responseHTML)

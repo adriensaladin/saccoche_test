@@ -190,7 +190,7 @@ $(document).ready
 								dataType : "html",
 								error : function(jqXHR, textStatus, errorThrown)
 								{
-									var message = (jqXHR.status!=500) ? 'Echec de la connexion !' : 'Erreur 500&hellip; Mémoire insuffisante ? Sélectionner moins d\'élèves à la fois ou demander à votre hébergeur d\'augmenter la valeur "memory_limit".' ;
+									var message = (jqXHR.status!=500) ? 'Échec de la connexion !' : 'Erreur 500&hellip; Mémoire insuffisante ? Sélectionner moins d\'élèves à la fois ou demander à votre hébergeur d\'augmenter la valeur "memory_limit".' ;
 									$('#zone_action_eleve').html('<label class="alerte">'+message+' <button id="fermer_zone_action_eleve" type="button" class="retourner">Retour</button></label>');
 									return false;
 								},
@@ -299,7 +299,7 @@ $(document).ready
 					dataType : "html",
 					error : function(jqXHR, textStatus, errorThrown)
 					{
-						$('#zone_resultat_eleve').html('<label class="alerte">Echec de la connexion !</label>');
+						$('#zone_resultat_eleve').html('<label class="alerte">Échec de la connexion !</label>');
 						$('#form_choix_eleve button , #form_choix_eleve select , #zone_resultat_eleve button').prop('disabled',false);
 						return false;
 					},
@@ -439,7 +439,7 @@ $(document).ready
 						dataType : "html",
 						error : function(jqXHR, textStatus, errorThrown)
 						{
-							$.fancybox( '<label class="alerte">'+'Echec de la connexion !\nVeuillez recommencer.'+'</label>' , {'centerOnScroll':true} );
+							$.fancybox( '<label class="alerte">'+'Échec de la connexion !\nVeuillez recommencer.'+'</label>' , {'centerOnScroll':true} );
 							$('#form_choix_eleve button , #form_choix_eleve select , #zone_resultat_eleve button').prop('disabled',false);
 							return false;
 						},
@@ -619,7 +619,7 @@ $(document).ready
 						dataType : "html",
 						error : function(jqXHR, textStatus, errorThrown)
 						{
-							$('#ajax_msg_'+memo_rubrique_type).removeAttr("class").addClass("alerte").html("Echec de la connexion !");
+							$('#ajax_msg_'+memo_rubrique_type).removeAttr("class").addClass("alerte").html("Échec de la connexion !");
 							$('#form_choix_eleve button , #form_choix_eleve select , #zone_resultat_eleve button').prop('disabled',false);
 							return false;
 						},
@@ -673,7 +673,7 @@ $(document).ready
 						dataType : "html",
 						error : function(jqXHR, textStatus, errorThrown)
 						{
-							$.fancybox( '<label class="alerte">'+'Echec de la connexion !\nVeuillez recommencer.'+'</label>' , {'centerOnScroll':true} );
+							$.fancybox( '<label class="alerte">'+'Échec de la connexion !\nVeuillez recommencer.'+'</label>' , {'centerOnScroll':true} );
 							$('#form_choix_eleve button , #form_choix_eleve select , #zone_resultat_eleve button').prop('disabled',false);
 							return false;
 						},
@@ -725,7 +725,7 @@ $(document).ready
 						dataType : "html",
 						error : function(jqXHR, textStatus, errorThrown)
 						{
-							$.fancybox( '<label class="alerte">'+'Echec de la connexion !\nVeuillez recommencer.'+'</label>' , {'centerOnScroll':true} );
+							$.fancybox( '<label class="alerte">'+'Échec de la connexion !\nVeuillez recommencer.'+'</label>' , {'centerOnScroll':true} );
 							$('#form_choix_eleve button , #form_choix_eleve select , #zone_resultat_eleve button').prop('disabled',false);
 							return false;
 						},
@@ -773,7 +773,7 @@ $(document).ready
 						dataType : "html",
 						error : function(jqXHR, textStatus, errorThrown)
 						{
-							var message = (jqXHR.status!=500) ? 'Echec de la connexion !' : 'Erreur 500&hellip; Mémoire insuffisante ? Sélectionner moins d\'élèves à la fois ou demander à votre hébergeur d\'augmenter la valeur "memory_limit".' ;
+							var message = (jqXHR.status!=500) ? 'Échec de la connexion !' : 'Erreur 500&hellip; Mémoire insuffisante ? Sélectionner moins d\'élèves à la fois ou demander à votre hébergeur d\'augmenter la valeur "memory_limit".' ;
 							$('#ajax_msg_recherche').removeAttr("class").addClass("alerte").html(message);
 							$('#zone_chx_rubriques button').prop('disabled',false);
 							return false;
@@ -818,7 +818,7 @@ $(document).ready
 					dataType : "html",
 					error : function(jqXHR, textStatus, errorThrown)
 					{
-						var message = (jqXHR.status!=500) ? 'Echec de la connexion !' : 'Erreur 500&hellip; Mémoire insuffisante ? Sélectionner moins d\'élèves à la fois ou demander à votre hébergeur d\'augmenter la valeur "memory_limit".' ;
+						var message = (jqXHR.status!=500) ? 'Échec de la connexion !' : 'Erreur 500&hellip; Mémoire insuffisante ? Sélectionner moins d\'élèves à la fois ou demander à votre hébergeur d\'augmenter la valeur "memory_limit".' ;
 						$('#ajax_msg_imprimer').removeAttr("class").addClass("alerte").html(message);
 						$('#form_choix_classe button , #form_choix_classe select , #valider_imprimer').prop('disabled',false);
 						return false;
@@ -892,7 +892,7 @@ $(document).ready
 					dataType : "html",
 					error : function(jqXHR, textStatus, errorThrown)
 					{
-						$('#ajax_msg_'+memo_objet).removeAttr("class").addClass("alerte").html("Echec de la connexion !");
+						$('#ajax_msg_'+memo_objet).removeAttr("class").addClass("alerte").html("Échec de la connexion !");
 						$('#form_choix_classe button , #form_choix_classe select').prop('disabled',false);
 						return false;
 					},
@@ -995,7 +995,7 @@ $(document).ready
 						dataType : "html",
 						error : function(jqXHR, textStatus, errorThrown)
 						{
-							$('#zone_resultat_classe').html('<label class="alerte">Echec de la connexion !</label>');
+							$('#zone_resultat_classe').html('<label class="alerte">Échec de la connexion !</label>');
 							$('#form_choix_classe button , #form_choix_classe select').prop('disabled',false);
 							return false;
 						},
@@ -1118,7 +1118,7 @@ $(document).ready
 						dataType : "html",
 						error : function(jqXHR, textStatus, errorThrown)
 						{
-							$('#ajax_msg_signaler').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
+							$('#ajax_msg_signaler').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
 							$('#zone_signaler button').prop('disabled',false);
 							return false;
 						},

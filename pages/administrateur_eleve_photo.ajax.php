@@ -164,7 +164,7 @@ if( ($action=='envoyer_zip') ) //  $masque non encore testé car non récupéré
 	// Créer ou vider le dossier temporaire
 	FileSystem::creer_ou_vider_dossier($dossier_temp);
 	// Dezipper dans le dossier temporaire
-	$code_erreur = FileSystem::unzip( CHEMIN_DOSSIER_IMPORT.$fichier_nom , $dossier_temp , TRUE /*use_ZipArchive*/ );
+	$code_erreur = FileSystem::unzip( CHEMIN_DOSSIER_IMPORT.$fichier_nom , $dossier_temp , FALSE /*use_ZipArchive*/ );
 	unlink(CHEMIN_DOSSIER_IMPORT.$fichier_nom);
 	if($code_erreur)
 	{
@@ -178,7 +178,7 @@ if( ($action=='envoyer_zip') ) //  $masque non encore testé car non récupéré
 	{
 		foreach($DB_TAB as $DB_ROW)
 		{
-			$tab_bon = array( $DB_ROW['user_sconet_id'] , $DB_ROW['user_sconet_elenoet'] , Clean::login($DB_ROW['user_reference']) , Clean::login($DB_ROW['user_nom']) , Clean::login($DB_ROW['user_prenom']) , $DB_ROW['user_login'] , Clean::login($DB_ROW['user_id_ent']) );
+			$tab_bon = array( $DB_ROW['user_sconet_id'] , $DB_ROW['user_sconet_elenoet'] , Clean::fichier($DB_ROW['user_reference']) , Clean::fichier($DB_ROW['user_nom']) , Clean::fichier($DB_ROW['user_prenom']) , Clean::fichier($DB_ROW['user_login']) , Clean::fichier($DB_ROW['user_id_ent']) );
 			$tab_fichier_masque[$DB_ROW['user_id']] = str_replace( $tab_bad , $tab_bon , $masque );
 		}
 	}
@@ -189,7 +189,7 @@ if( ($action=='envoyer_zip') ) //  $masque non encore testé car non récupéré
 	$tab_fichier = FileSystem::lister_contenu_dossier($dossier_temp);
 	foreach($tab_fichier as $fichier_nom)
 	{
-		$user_id = array_search(Clean::login($fichier_nom),$tab_fichier_masque);
+		$user_id = array_search(Clean::fichier($fichier_nom),$tab_fichier_masque);
 		if(!$user_id)
 		{
 			$tbody .= '<tr><td class="r">'.html($fichier_nom).'</td><td>Pas de correspondance trouvée.</td></tr>';

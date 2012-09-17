@@ -30,7 +30,8 @@ $TITRE = "Importer des fichiers d'utilisateurs";
 ?>
 
 <?php
-$alerte = DB_STRUCTURE_ADMINISTRATEUR::DB_compter_devoirs_annee_scolaire_precedente() ? '<p class="danger b">Année scolaire précédente non nettoyée&nbsp;! Au changement d\'année scolaire il faut <a href="./index.php?page=administrateur_nettoyage">lancer l\'initialisation annuelle des données</a>.</p>' : '';
+$alerte = DB_STRUCTURE_ADMINISTRATEUR::DB_compter_devoirs_annee_scolaire_precedente() ? '<p class="danger b">Année scolaire précédente non nettoyée&nbsp;! Au changement d\'année scolaire il faut <a href="./index.php?page=administrateur_nettoyage">lancer l\'initialisation annuelle des données</a>.</p>' : '' ;
+$alerte.= DB_STRUCTURE_ADMINISTRATEUR::compter_niveaux_etabl( FALSE /*with_specifiques*/ ) ? '' : '<p class="danger b">Aucun niveau de classe choisi pour l\'établissement&nbsp;! Commencez par <a href="./index.php?page=administrateur_etabl_niveau">indiquer les niveaux de classe de votre établissement</a>.</p>' ;
 
 $test_UAI = ($_SESSION['WEBMESTRE_UAI']) ? 'oui' : 'non' ;
 

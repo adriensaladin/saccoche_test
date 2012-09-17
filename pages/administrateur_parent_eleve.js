@@ -56,7 +56,7 @@ $(document).ready
 					dataType : "html",
 					error : function(jqXHR, textStatus, errorThrown)
 					{
-						$('#ajax_msg').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
+						$('#ajax_msg').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
 					},
 					success : function(responseHTML)
 					{
@@ -126,7 +126,7 @@ $(document).ready
 						dataType : "html",
 						error : function(jqXHR, textStatus, errorThrown)
 						{
-							$('#ajax_msg').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
+							$('#ajax_msg').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
 						},
 						success : function(responseHTML)
 						{
@@ -273,7 +273,7 @@ $(document).ready
 						{
 							$('button').prop('disabled',false);
 							afficher_masquer_images_action('show');
-							$('#ajax_msg2').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
+							$('#ajax_msg2').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
 						},
 						success : function(responseHTML)
 						{

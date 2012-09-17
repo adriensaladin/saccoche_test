@@ -236,25 +236,26 @@ class Clean
     En général il s'agit d'harmoniser les données de la base ou d'aider l'utilisateur (en évitant les problèmes de casse par exemple).
     Le login est davantage nettoyé car il y a un risque d'engendrer des comportements incertains (à l'affichage ou à l'enregistrement) avec les applications externes (pmwiki, phpbb...).
   */
-  public static function login($text)     { return str_replace(' ','', Clean::perso_strtolower( Clean::accents( Clean::ligatures( Clean::symboles( trim($text) ) ) ) ) ); }
-  public static function fichier($text)   { return Clean::only_letters( Clean::perso_strtolower( Clean::accents( Clean::ligatures( trim($text) ) ) ) ); }
-  public static function password($text)  { return trim($text); }
-  public static function ref($text)       { return Clean::perso_strtoupper( trim($text) ); }
-  public static function nom($text)       { return Clean::tronquer_chaine( Clean::perso_strtoupper( trim($text) ) , 25); }
-  public static function uai($text)       { return Clean::perso_strtoupper( trim($text) ); }
-  public static function prenom($text)    { return Clean::tronquer_chaine( Clean::perso_ucwords( trim($text) ) , 25); }
-  public static function structure($text) { return Clean::perso_ucwords( trim($text) ); }
-  public static function adresse($text)   { return Clean::tronquer_chaine( Clean::perso_ucwords( trim($text) ) , 50); }
-  public static function commune($text)   { return Clean::tronquer_chaine( Clean::perso_strtoupper( trim($text) ) , 45); }
-  public static function pays($text)      { return Clean::tronquer_chaine( Clean::perso_strtoupper( trim($text) ) , 35); }
-  public static function code($text)      { return Clean::perso_strtolower( trim($text) ); }
-  public static function texte($text)     { return trim($text); }
-  public static function courriel($text)  { return Clean::perso_strtolower( Clean::accents( trim($text) ) ); }
-  public static function url($text)       { return Clean::perso_strtolower( trim($text) ); }
-  public static function id_ent($text)    { return mb_substr( Clean::texte( (string)$text ) ,0,63 ); }
-  public static function entier($text)    { return intval($text); }
-  public static function decimal($text)   { return floatval(str_replace(',','.',$text)); }
-  public static function txt_note($text)  { return Clean::tronquer_chaine( trim($text) , 40); }
+  public static function login($text)        { return str_replace(' ','', Clean::perso_strtolower( Clean::accents( Clean::ligatures( Clean::symboles( trim($text) ) ) ) ) ); }
+  public static function fichier($text)      { return Clean::only_letters( Clean::perso_strtolower( Clean::accents( Clean::ligatures( trim($text) ) ) ) ); }
+  public static function zip_filename($text) { return Clean::fichier(iconv('CP850','UTF-8',$text)); } //  filenames stored in the ZIP archives created on non-Unix systems are encoded in CP850 http://fr.php.net/manual/fr/function.zip-entry-name.php#87130
+  public static function password($text)     { return trim($text); }
+  public static function ref($text)          { return Clean::perso_strtoupper( trim($text) ); }
+  public static function nom($text)          { return Clean::tronquer_chaine( Clean::perso_strtoupper( trim($text) ) , 25); }
+  public static function uai($text)          { return Clean::perso_strtoupper( trim($text) ); }
+  public static function prenom($text)       { return Clean::tronquer_chaine( Clean::perso_ucwords( trim($text) ) , 25); }
+  public static function structure($text)    { return Clean::perso_ucwords( trim($text) ); }
+  public static function adresse($text)      { return Clean::tronquer_chaine( Clean::perso_ucwords( trim($text) ) , 50); }
+  public static function commune($text)      { return Clean::tronquer_chaine( Clean::perso_strtoupper( trim($text) ) , 45); }
+  public static function pays($text)         { return Clean::tronquer_chaine( Clean::perso_strtoupper( trim($text) ) , 35); }
+  public static function code($text)         { return Clean::perso_strtolower( trim($text) ); }
+  public static function texte($text)        { return trim($text); }
+  public static function courriel($text)     { return Clean::perso_strtolower( Clean::accents( trim($text) ) ); }
+  public static function url($text)          { return Clean::perso_strtolower( trim($text) ); }
+  public static function id_ent($text)       { return mb_substr( Clean::texte( (string)$text ) ,0,63 ); }
+  public static function entier($text)       { return intval($text); }
+  public static function decimal($text)      { return floatval(str_replace(',','.',$text)); }
+  public static function txt_note($text)     { return Clean::tronquer_chaine( trim($text) , 40); }
 
   public static function map_entier($array)
   {

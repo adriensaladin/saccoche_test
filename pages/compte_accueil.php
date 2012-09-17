@@ -46,16 +46,19 @@ if(!(isset($_SESSION['USER_PARAM_ACCUEIL'])))
 if($_SESSION['USER_PROFIL']=='administrateur')
 {
 	$alerte_novice = FALSE ;
-	$DB_TAB = DB_STRUCTURE_COMMUN::DB_OPT_matieres_etabl();
-	if(!is_array($DB_TAB))
+	if(!DB_STRUCTURE_ADMINISTRATEUR::compter_matieres_etabl())
 	{
-		$tab_accueil['alert'] .= '<p class="danger">Aucune matière n\'est rattachée à l\'établissement ! <a href="./index.php?page=administrateur_etabl_matiere">Gestion des matières.</a></p>';
+		$tab_accueil['alert'] .= '<p class="danger">Aucune matière n\'est choisie pour l\'établissement ! <a href="./index.php?page=administrateur_etabl_matiere">Gestion des matières.</a></p>';
 		$alerte_novice = TRUE ;
 	}
-	$DB_TAB = DB_STRUCTURE_COMMUN::DB_OPT_niveaux_etabl();
-	if(!count($DB_TAB))
+	if(!DB_STRUCTURE_ADMINISTRATEUR::compter_niveaux_etabl( TRUE /*with_specifiques*/ ))
 	{
-		$tab_accueil['alert'] .= '<p class="danger">Aucun niveau n\'est rattaché à l\'établissement ! <a href="./index.php?page=administrateur_etabl_niveau">Gestion des niveaux.</a></p>';
+		$tab_accueil['alert'] .= '<p class="danger">Aucun niveau n\'est choisi pour l\'établissement ! <a href="./index.php?page=administrateur_etabl_niveau">Gestion des niveaux.</a></p>';
+		$alerte_novice = TRUE ;
+	}
+	elseif(!DB_STRUCTURE_ADMINISTRATEUR::compter_niveaux_etabl( FALSE /*with_specifiques*/ ))
+	{
+		$tab_accueil['alert'] .= '<p class="danger">Aucun niveau de classe n\'est choisi pour l\'établissement ! <a href="./index.php?page=administrateur_etabl_niveau">Gestion des niveaux.</a></p>';
 		$alerte_novice = TRUE ;
 	}
 	if(DB_STRUCTURE_ADMINISTRATEUR::DB_compter_devoirs_annee_scolaire_precedente())

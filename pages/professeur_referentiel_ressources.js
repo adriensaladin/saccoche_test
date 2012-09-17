@@ -94,7 +94,7 @@ $(document).ready
 						dataType : "html",
 						error : function(jqXHR, textStatus, errorThrown)
 						{
-							$.fancybox( '<label class="alerte">'+'Echec de la connexion !'+'</label>' , {'centerOnScroll':true} );
+							$.fancybox( '<label class="alerte">'+'Échec de la connexion !'+'</label>' , {'centerOnScroll':true} );
 							$('label[for='+id+']').remove();
 							afficher_masquer_images_action('show');
 						},
@@ -209,7 +209,7 @@ $(document).ready
 						dataType : "html",
 						error : function(jqXHR, textStatus, errorThrown)
 						{
-							$('#n3_'+item_id).children('label').removeAttr("class").addClass("alerte").html('Echec de la connexion !');
+							$('#n3_'+item_id).children('label').removeAttr("class").addClass("alerte").html('Échec de la connexion !');
 						},
 						success : function(responseHTML)
 						{
@@ -260,7 +260,7 @@ $(document).ready
 						dataType : "html",
 						error : function(jqXHR, textStatus, errorThrown)
 						{
-							$.fancybox( '<label class="alerte">'+'Echec de la connexion !'+'</label>' , {'centerOnScroll':true} );
+							$.fancybox( '<label class="alerte">'+'Échec de la connexion !'+'</label>' , {'centerOnScroll':true} );
 							return false;
 						},
 						success : function(responseHTML)
@@ -607,7 +607,7 @@ $(document).ready
 						dataType : "html",
 						error : function(jqXHR, textStatus, errorThrown)
 						{
-							$('#ajax_ressources_msg').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
+							$('#ajax_ressources_msg').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
 							return false;
 						},
 						success : function(responseHTML)
@@ -661,7 +661,7 @@ $(document).ready
 						dataType : "html",
 						error : function(jqXHR, textStatus, errorThrown)
 						{
-							$('#zone_resultat_recherche_liens').html('<label class="erreur">Echec de la connexion !</label>');
+							$('#zone_resultat_recherche_liens').html('<label class="erreur">Échec de la connexion !</label>');
 							return false;
 						},
 						success : function(responseHTML)
@@ -817,7 +817,7 @@ $(document).ready
 						dataType : "html",
 						error : function(jqXHR, textStatus, errorThrown)
 						{
-							$('#zone_resultat_recherche_ressources').html('<label class="erreur">Echec de la connexion !</label>');
+							$('#zone_resultat_recherche_ressources').html('<label class="erreur">Échec de la connexion !</label>');
 							return false;
 						},
 						success : function(responseHTML)

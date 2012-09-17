@@ -89,10 +89,10 @@ class Sesamail
     
     // Les headers communs à tous nos mails
     $this->headers = '';
+    
     // Return-Path
-    if (defined('MAIL_RETURN_PATH')) {
-      $this->headers .= 'Return-Path: ' .$this->default_sender ."\r\n"; 
-    }
+    $this->headers .= 'Return-Path: ' .$this->default_sender ."\r\n"; 
+    
     // Content
     $this->headers .= 'Content-type: text/plain; charset=' .$this->charset ."\r\n";
     $this->headers .= 'Content-Transfer-Encoding: 8bit'."\r\n";

@@ -362,7 +362,7 @@ $(document).ready
 		{
 			please_wait = false;
 			$('#ajax_msg').parent().children('q').show();
-			$('#ajax_msg').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
+			$('#ajax_msg').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
 		}
 
 		// Fonction suivant l'envoi du formulaire (avec jquery.form.js)
@@ -433,7 +433,7 @@ $(document).ready
 							dataType : "html",
 							error : function(jqXHR, textStatus, errorThrown)
 							{
-								$('#ajax_msg1').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
+								$('#ajax_msg1').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
 								$('#zone_actions button').prop('disabled',false);
 							},
 							success : function(responseHTML)

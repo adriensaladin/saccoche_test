@@ -95,7 +95,7 @@ if( $step==2 )
 	}
 	else
 	{
-		$affichage .= '<label class="erreur">Échec lors de la création d\'un ou plusieurs fichiers &laquo;&nbsp;<b>index.htm</b>&nbsp;&raquo; dans chaque dossier précédent.</label><br />'."\r\n";
+		$affichage .= '<label class="erreur">Echec lors de la création d\'un ou plusieurs fichiers &laquo;&nbsp;<b>index.htm</b>&nbsp;&raquo; dans chaque dossier précédent.</label><br />'."\r\n";
 	}
 	// Création du fichier .htaccess
 	$poursuivre2 = FileSystem::ecrire_fichier_si_possible( CHEMIN_DOSSIER_PRIVATE.'.htaccess' , 'deny from all'."\r\n" );
@@ -105,7 +105,7 @@ if( $step==2 )
 	}
 	else
 	{
-		$affichage .= '<label class="erreur">Échec lors de la création du fichier &laquo;&nbsp;<b>.htaccess</b>&nbsp;&raquo; dans le dossier &laquo;&nbsp;<b>'.FileSystem::fin_chemin(CHEMIN_DOSSIER_PRIVATE).'</b>&nbsp;&raquo;.</label>.'."\r\n";
+		$affichage .= '<label class="erreur">Echec lors de la création du fichier &laquo;&nbsp;<b>.htaccess</b>&nbsp;&raquo; dans le dossier &laquo;&nbsp;<b>'.FileSystem::fin_chemin(CHEMIN_DOSSIER_PRIVATE).'</b>&nbsp;&raquo;.</label>.'."\r\n";
 	}
 	// Affichage du résultat des opérations
 	echo $affichage;

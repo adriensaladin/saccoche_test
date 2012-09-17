@@ -180,7 +180,7 @@ $(document).ready
 		function retour_form_erreur1(jqXHR, textStatus, errorThrown)
 		{
 			$("#bouton_valider_notes").prop('disabled',false);
-			$('#ajax_msg_notes').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
+			$('#ajax_msg_notes').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
 		}
 
 		// Fonction suivant l'envoi du formulaire (avec jquery.form.js)
@@ -284,7 +284,7 @@ $(document).ready
 		function retour_form_erreur2(jqXHR, textStatus, errorThrown)
 		{
 			$("#bouton_valider_acquis").prop('disabled',false);
-			$('#ajax_msg_acquis').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
+			$('#ajax_msg_acquis').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
 		}
 
 		// Fonction suivant l'envoi du formulaire (avec jquery.form.js)

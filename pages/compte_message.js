@@ -165,7 +165,7 @@ $(document).ready
 						error : function(jqXHR, textStatus, errorThrown)
 						{
 							$('label[id=temp]').remove();
-							$.fancybox( '<label class="alerte">'+'Échec de la connexion !\nVeuillez recommencer.'+'</label>' , {'centerOnScroll':true} );
+							$.fancybox( '<label class="alerte">'+'Echec de la connexion !\nVeuillez recommencer.'+'</label>' , {'centerOnScroll':true} );
 							return false;
 						},
 						success : function(responseHTML)
@@ -278,7 +278,7 @@ $(document).ready
 					dataType : "html",
 					error : function(jqXHR, textStatus, errorThrown)
 					{
-						$('#ajax_msg_destinataires').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
+						$('#ajax_msg_destinataires').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
 					},
 					success : function(responseHTML)
 					{
@@ -495,7 +495,7 @@ $(document).ready
 		{
 			please_wait = false;
 			$('#ajax_msg').parent().children('q').show();
-			$('#ajax_msg').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
+			$('#ajax_msg').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
 		}
 
 		// Fonction suivant l'envoi du formulaire (avec jquery.form.js)

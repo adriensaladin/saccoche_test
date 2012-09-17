@@ -60,12 +60,9 @@ foreach($DB_TAB as $DB_ROW)
 // On récupère les photos
 $listing_user_id = implode(',',array_keys($tab_vignettes));
 $DB_TAB = DB_STRUCTURE_PHOTO::lister_photos($listing_user_id);
-if(count($DB_TAB))
+foreach($DB_TAB as $DB_ROW)
 {
-	foreach($DB_TAB as $DB_ROW)
-	{
-		$tab_vignettes[$DB_ROW['user_id']]['image'] = '<img width="'.$DB_ROW['image_largeur'].'" height="'.$DB_ROW['image_hauteur'].'" src="data:'.image_type_to_mime_type(IMAGETYPE_JPEG).';base64,'.$DB_ROW['image_contenu'].'" alt="" />';
-	}
+	$tab_vignettes[$DB_ROW['user_id']]['image'] = '<img width="'.$DB_ROW['image_largeur'].'" height="'.$DB_ROW['image_hauteur'].'" src="data:'.image_type_to_mime_type(IMAGETYPE_JPEG).';base64,'.$DB_ROW['image_contenu'].'" alt="" />';
 }
 // On affiche tout ça
 foreach($tab_vignettes as $user_id => $tab)

@@ -120,7 +120,7 @@ $(document).ready
 						error : function(jqXHR, textStatus, errorThrown)
 						{
 							$('#bouton_valider_'+objet).prop('disabled',false);
-							$('#ajax_msg_'+objet).removeAttr("class").addClass("alerte").html("Échec de la connexion !");
+							$('#ajax_msg_'+objet).removeAttr("class").addClass("alerte").html("Echec de la connexion !");
 							return false;
 						},
 						success : function(responseHTML)

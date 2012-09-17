@@ -220,7 +220,7 @@ $(document).ready
 		// Fonction suivant l'envoi du formulaire (avec jquery.form.js)
 		function retour_form_erreur0(jqXHR, textStatus, errorThrown)
 		{
-			$('#ajax_msg0').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
+			$('#ajax_msg0').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
 		}
 
 		// Fonction suivant l'envoi du formulaire (avec jquery.form.js)
@@ -277,7 +277,7 @@ $(document).ready
 					dataType : "html",
 					error : function(jqXHR, textStatus, errorThrown)
 					{
-						$('#ajax_maj1').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
+						$('#ajax_maj1').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
 					},
 					success : function(responseHTML)
 					{
@@ -488,7 +488,7 @@ $(document).ready
 		function retour_form_erreur(jqXHR, textStatus, errorThrown)
 		{
 			$('button').prop('disabled',false);
-			$('#ajax_msg1').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
+			$('#ajax_msg1').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
 		}
 
 		// Fonction suivant l'envoi du formulaire (avec jquery.form.js)

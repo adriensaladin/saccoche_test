@@ -99,7 +99,7 @@ $(document).ready
 						dataType : "html",
 						error : function(jqXHR, textStatus, errorThrown)
 						{
-							$.fancybox( '<label class="alerte">'+'Échec de la connexion !'+'</label>' , {'centerOnScroll':true} );
+							$.fancybox( '<label class="alerte">'+'Echec de la connexion !'+'</label>' , {'centerOnScroll':true} );
 							$('label[for='+id+']').remove();
 							afficher_masquer_images_action('show');
 						},
@@ -555,7 +555,7 @@ $(document).ready
 						dataType : "html",
 						error : function(jqXHR, textStatus, errorThrown)
 						{
-							$('#ajax_msg').removeAttr("class").addClass("alerte").html('Échec de la connexion !');
+							$('#ajax_msg').removeAttr("class").addClass("alerte").html('Echec de la connexion !');
 						},
 						success : function(responseHTML)
 						{
@@ -679,7 +679,7 @@ $(document).ready
 						dataType : "html",
 						error : function(jqXHR, textStatus, errorThrown)
 						{
-							$('#ajax_msg').removeAttr("class").addClass("alerte").html('Échec de la connexion !');
+							$('#ajax_msg').removeAttr("class").addClass("alerte").html('Echec de la connexion !');
 						},
 						success : function(responseHTML)
 						{
@@ -751,7 +751,7 @@ $(document).ready
 						dataType : "html",
 						error : function(jqXHR, textStatus, errorThrown)
 						{
-							$('#ajax_msg').removeAttr("class").addClass("alerte").html('Échec de la connexion !');
+							$('#ajax_msg').removeAttr("class").addClass("alerte").html('Echec de la connexion !');
 						},
 						success : function(responseHTML)
 						{
@@ -808,7 +808,7 @@ $(document).ready
 						dataType : "html",
 						error : function(jqXHR, textStatus, errorThrown)
 						{
-							$('#ajax_msg').removeAttr("class").addClass("alerte").html('Échec de la connexion !');
+							$('#ajax_msg').removeAttr("class").addClass("alerte").html('Echec de la connexion !');
 						},
 						success : function(responseHTML)
 						{
@@ -918,7 +918,7 @@ $(document).ready
 						dataType : "html",
 						error : function(jqXHR, textStatus, errorThrown)
 						{
-							$('#ajax_msg').removeAttr("class").addClass("alerte").html('Échec de la connexion !');
+							$('#ajax_msg').removeAttr("class").addClass("alerte").html('Echec de la connexion !');
 						},
 						success : function(responseHTML)
 						{
@@ -1059,7 +1059,7 @@ $(document).ready
 					dataType : "html",
 					error : function(jqXHR, textStatus, errorThrown)
 					{
-						$('#ajax_msg_groupe').removeAttr("class").addClass("alerte").html('Échec de la connexion !');
+						$('#ajax_msg_groupe').removeAttr("class").addClass("alerte").html('Echec de la connexion !');
 					},
 					success : function(responseHTML)
 					{
@@ -1232,7 +1232,7 @@ $(document).ready
 						dataType : "html",
 						error : function(jqXHR, textStatus, errorThrown)
 						{
-							$('#ajax_msg_groupe').removeAttr("class").addClass("alerte").html('Échec de la connexion !');
+							$('#ajax_msg_groupe').removeAttr("class").addClass("alerte").html('Echec de la connexion !');
 						},
 						success : function(responseHTML)
 						{

@@ -171,7 +171,7 @@ $(document).ready
 					dataType : "html",
 					error : function(jqXHR, textStatus, errorThrown)
 					{
-						$('#init_form').html('<label id="ajax_msg" class="alerte">Échec de la connexion !</label><q class="annuler" title="Annuler."></q>')
+						$('#init_form').html('<label id="ajax_msg" class="alerte">Echec de la connexion !</label><q class="annuler" title="Annuler."></q>')
 					},
 					success : function(responseHTML)
 					{
@@ -328,7 +328,7 @@ $(document).ready
 					dataType : "html",
 					error : function(jqXHR, textStatus, errorThrown)
 					{
-						$('#ajax_supprimer').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
+						$('#ajax_supprimer').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
 						$("button").prop('disabled',false);
 						afficher_masquer_images_action('show');
 					},
@@ -505,7 +505,7 @@ $(document).ready
 		{
 			please_wait = false;
 			$('#ajax_msg').parent().children('q').show();
-			$('#ajax_msg').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
+			$('#ajax_msg').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
 		}
 
 		// Fonction suivant l'envoi du formulaire (avec jquery.form.js)

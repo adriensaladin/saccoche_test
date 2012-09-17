@@ -47,7 +47,7 @@ $(document).ready
 					dataType : "html",
 					error : function(jqXHR, textStatus, errorThrown)
 					{
-						$('#ajax_msg').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
+						$('#ajax_msg').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
 					},
 					success : function(responseHTML)
 					{
@@ -124,7 +124,7 @@ $(document).ready
 						error : function(jqXHR, textStatus, errorThrown)
 						{
 							$('button').prop('disabled',false);
-							$('#ajax_msg').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
+							$('#ajax_msg').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
 							return false;
 						},
 						success : function(responseHTML)
@@ -159,7 +159,7 @@ $(document).ready
 				dataType : "html",
 				error : function(jqXHR, textStatus, errorThrown)
 				{
-					$('#ajax_msg').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
+					$('#ajax_msg').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
 					return false;
 				},
 				success : function(responseHTML)

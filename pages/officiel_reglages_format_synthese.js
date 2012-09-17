@@ -92,7 +92,7 @@ $(document).ready
 						{
 							$('#bouton_'+ids).prop('disabled',false);
 							// $("#form_synthese button").prop('disabled',false);
-							$('#ajax_msg').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
+							$('#ajax_msg').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
 							return false;
 						},
 						success : function(responseHTML)

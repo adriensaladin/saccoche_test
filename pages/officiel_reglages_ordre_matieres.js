@@ -87,7 +87,7 @@ $(document).ready
 							error : function(jqXHR, textStatus, errorThrown)
 							{
 								$('#form_ordonner button').prop('disabled',false);
-								$('#ajax_msg_ordre').removeAttr("class").addClass("alerte").html('Échec de la connexion !');
+								$('#ajax_msg_ordre').removeAttr("class").addClass("alerte").html('Echec de la connexion !');
 								return false;
 							},
 							success : function(responseHTML)

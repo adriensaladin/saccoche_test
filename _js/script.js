@@ -234,7 +234,7 @@ function memoriser_selection_matieres_items(selection_items_nom)
 			dataType : "html",
 			error : function(jqXHR, textStatus, errorThrown)
 			{
-				$('#ajax_msg_memo').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
+				$('#ajax_msg_memo').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
 			},
 			success : function(responseHTML)
 			{
@@ -1062,7 +1062,7 @@ $(document).ready
 						dataType : "html",
 						error : function(jqXHR, textStatus, errorThrown)
 						{
-							$('#ajax_alerte_calque').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
+							$('#ajax_alerte_calque').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
 							leave_erreur = true;
 						},
 						success : function(responseHTML)
@@ -1108,7 +1108,7 @@ $(document).ready
 						dataType : "html",
 						error : function(jqXHR, textStatus, errorThrown)
 						{
-							$('#ajax_alerte_calque').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
+							$('#ajax_alerte_calque').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
 							leave_erreur = true;
 						},
 						success : function(responseHTML)
@@ -1269,7 +1269,7 @@ $(document).ready
 						dataType : "html",
 						error : function(jqXHR, textStatus, errorThrown)
 						{
-							$('#ajax_msg_confirmer_demande').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
+							$('#ajax_msg_confirmer_demande').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
 							$('#form_demande_evaluation button').prop('disabled',false);
 						},
 						success : function(responseHTML)

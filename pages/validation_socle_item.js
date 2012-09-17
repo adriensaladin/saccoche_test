@@ -98,7 +98,7 @@ $(document).ready
 						dataType : "html",
 						error : function(jqXHR, textStatus, errorThrown)
 						{
-							$('#ajax_maj_pilier').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
+							$('#ajax_maj_pilier').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
 						},
 						success : function(responseHTML)
 						{
@@ -149,7 +149,7 @@ $(document).ready
 						dataType : "html",
 						error : function(jqXHR, textStatus, errorThrown)
 						{
-							$('#ajax_maj_domaine').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
+							$('#ajax_maj_domaine').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
 						},
 						success : function(responseHTML)
 						{
@@ -197,7 +197,7 @@ $(document).ready
 						dataType : "html",
 						error : function(jqXHR, textStatus, errorThrown)
 						{
-							$('#ajax_maj_eleve').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
+							$('#ajax_maj_eleve').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
 						},
 						success : function(responseHTML)
 						{
@@ -310,7 +310,7 @@ $(document).ready
 		function retour_form_erreur0(jqXHR, textStatus, errorThrown)
 		{
 			$("button").prop('disabled',false);
-			$('#ajax_msg_choix').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
+			$('#ajax_msg_choix').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
 		}
 
 		// Fonction suivant l'envoi du formulaire (avec jquery.form.js)
@@ -480,7 +480,7 @@ $(document).ready
 					dataType : "html",
 					error : function(jqXHR, textStatus, errorThrown)
 					{
-						$('#ajax_msg_information').removeAttr("class").addClass("alerte").html('Échec de la connexion !');
+						$('#ajax_msg_information').removeAttr("class").addClass("alerte").html('Echec de la connexion !');
 						return false;
 					},
 					success : function(responseHTML)
@@ -554,7 +554,7 @@ $(document).ready
 						error : function(jqXHR, textStatus, errorThrown)
 						{
 							$("button").prop('disabled',false);
-							$('#ajax_msg_validation').removeAttr("class").addClass("alerte").html('Échec de la connexion !');
+							$('#ajax_msg_validation').removeAttr("class").addClass("alerte").html('Echec de la connexion !');
 							return false;
 						},
 						success : function(responseHTML)

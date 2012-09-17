@@ -68,7 +68,7 @@ $(document).ready
 					dataType : "html",
 					error : function(jqXHR, textStatus, errorThrown)
 					{
-						$('#ajax_maj').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
+						$('#ajax_maj').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
 					},
 					success : function(responseHTML)
 					{
@@ -181,7 +181,7 @@ $(document).ready
 		function retour_form_erreur(jqXHR, textStatus, errorThrown)
 		{
 			$("#actualiser").prop('disabled',false);
-			$('#ajax_msg').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
+			$('#ajax_msg').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
 		}
 
 		// Fonction suivant l'envoi du formulaire (avec jquery.form.js)
@@ -260,7 +260,7 @@ $(document).ready
 						dataType : "html",
 						error : function(jqXHR, textStatus, errorThrown)
 						{
-							$('#msg_voir').removeAttr("class").addClass("alerte").html('Échec de la connexion !');
+							$('#msg_voir').removeAttr("class").addClass("alerte").html('Echec de la connexion !');
 						},
 						success : function(responseHTML)
 						{
@@ -310,7 +310,7 @@ $(document).ready
 						dataType : "html",
 						error : function(jqXHR, textStatus, errorThrown)
 						{
-							$.fancybox( '<label class="alerte">'+'Échec de la connexion !'+'</label>' , {'centerOnScroll':true} );
+							$.fancybox( '<label class="alerte">'+'Echec de la connexion !'+'</label>' , {'centerOnScroll':true} );
 							$('label[for='+td_id+']').remove();
 							$('#zone_eval_choix q').show();
 						},
@@ -412,7 +412,7 @@ $(document).ready
 							error : function(jqXHR, textStatus, errorThrown)
 							{
 								$('button').prop('disabled',false);
-								$('#msg_saisir').removeAttr("class").addClass("alerte").html('Échec de la connexion !');
+								$('#msg_saisir').removeAttr("class").addClass("alerte").html('Echec de la connexion !');
 								return false;
 							},
 							success : function(responseHTML)

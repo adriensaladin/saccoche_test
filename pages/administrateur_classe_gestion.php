@@ -80,7 +80,7 @@ if(count($DB_TAB))
 }
 else
 {
-	$select_niveau .= '<option value="" disabled>Aucun niveau de classe n\'est choisi pour l\'établissement !</option>';
+	$select_niveau .= '<option value="" disabled>Aucun niveau n\'est rattaché à l\'établissement !</option>';
 }
 ?>
 

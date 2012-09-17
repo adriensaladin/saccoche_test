@@ -144,7 +144,7 @@ $(document).ready
 		function retour_form_erreur_sesamath(jqXHR, textStatus, errorThrown)
 		{
 			$("#bouton_valider_sesamath").prop('disabled',false);
-			$('#ajax_msg_sesamath').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
+			$('#ajax_msg_sesamath').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
 		}
 
 		// Fonction suivant l'envoi du formulaire (avec jquery.form.js)
@@ -251,7 +251,7 @@ $(document).ready
 		function retour_form_erreur_etablissement(jqXHR, textStatus, errorThrown)
 		{
 			$("#bouton_valider_etablissement").prop('disabled',false);
-			$('#ajax_msg_etablissement').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
+			$('#ajax_msg_etablissement').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
 		}
 
 		// Fonction suivant l'envoi du formulaire (avec jquery.form.js)
@@ -321,7 +321,7 @@ $(document).ready
 						error : function(jqXHR, textStatus, errorThrown)
 						{
 							$("#bouton_valider_annee_scolaire").prop('disabled',false);
-							$('#ajax_msg_annee_scolaire').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
+							$('#ajax_msg_annee_scolaire').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
 							return false;
 						},
 						success : function(responseHTML)
@@ -374,7 +374,7 @@ $(document).ready
 					dataType : "html",
 					error : function(jqXHR, textStatus, errorThrown)
 					{
-						$('#ajax_msg_communautaire').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
+						$('#ajax_msg_communautaire').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
 					},
 					success : function(responseHTML)
 					{
@@ -409,7 +409,7 @@ $(document).ready
 					error : function(jqXHR, textStatus, errorThrown)
 					{
 						$('#f_recherche_geo select').prop('disabled',false);
-						$('#ajax_msg_communautaire').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
+						$('#ajax_msg_communautaire').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
 					},
 					success : function(responseHTML)
 					{
@@ -445,7 +445,7 @@ $(document).ready
 					error : function(jqXHR, textStatus, errorThrown)
 					{
 						$('#f_recherche_geo select').prop('disabled',false);
-						$('#ajax_msg_communautaire').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
+						$('#ajax_msg_communautaire').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
 					},
 					success : function(responseHTML)
 					{
@@ -481,7 +481,7 @@ $(document).ready
 					error : function(jqXHR, textStatus, errorThrown)
 					{
 						$('#f_recherche_geo select').prop('disabled',false);
-						$('#ajax_msg_communautaire').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
+						$('#ajax_msg_communautaire').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
 					},
 					success : function(responseHTML)
 					{
@@ -519,7 +519,7 @@ $(document).ready
 					error : function(jqXHR, textStatus, errorThrown)
 					{
 						$('#rechercher_uai').prop('disabled',false);
-						$('#ajax_msg_communautaire').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
+						$('#ajax_msg_communautaire').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
 					},
 					success : function(responseHTML)
 					{

@@ -56,7 +56,7 @@ $(document).ready
 						error : function(jqXHR, textStatus, errorThrown)
 						{
 							obj_bouton.prop('checked',check_old).show(0).parent().removeAttr('class').addClass(class_old);
-							$.fancybox( '<label class="alerte">'+'Echec de la connexion !\nVeuillez recommencer.'+'</label>' , {'centerOnScroll':true} );
+							$.fancybox( '<label class="alerte">'+'Échec de la connexion !\nVeuillez recommencer.'+'</label>' , {'centerOnScroll':true} );
 							return false;
 						},
 						success : function(responseHTML)
@@ -124,7 +124,7 @@ $(document).ready
 						error : function(jqXHR, textStatus, errorThrown)
 						{
 							obj_bouton.prop('disabled',false).prop('checked',check_old).parent().removeAttr('class').addClass(class_old);
-							$.fancybox( '<label class="alerte">'+'Echec de la connexion !\nVeuillez recommencer.'+'</label>' , {'centerOnScroll':true} );
+							$.fancybox( '<label class="alerte">'+'Échec de la connexion !\nVeuillez recommencer.'+'</label>' , {'centerOnScroll':true} );
 							return false;
 						},
 						success : function(responseHTML)

@@ -83,7 +83,7 @@ $(document).ready
 						dataType : "html",
 						error : function(jqXHR, textStatus, errorThrown)
 						{
-							$('#ajax_msg_tester').removeAttr("class").addClass("alerte").html('Echec de la connexion !');
+							$('#ajax_msg_tester').removeAttr("class").addClass("alerte").html('Échec de la connexion !');
 							return false;
 						},
 						success : function(responseHTML)
@@ -185,7 +185,7 @@ $(document).ready
 		function retour_form_erreur(jqXHR, textStatus, errorThrown)
 		{
 			$('button').prop('disabled',false);
-			$('#ajax_msg_enregistrer').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
+			$('#ajax_msg_enregistrer').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
 		}
 
 		// Fonction suivant l'envoi du formulaire (avec jquery.form.js)

@@ -145,7 +145,7 @@ class FileSystem
     // Le dossier a-t-il bien été créé ?
     if(!$test)
     {
-      $affichage .= '<label for="rien" class="erreur">Echec lors de la création du dossier &laquo;&nbsp;<b>'.FileSystem::fin_chemin($dossier).'</b>&nbsp;&raquo; : veuillez le créer manuellement.</label><br />'."\r\n";
+      $affichage .= '<label for="rien" class="erreur">Échec lors de la création du dossier &laquo;&nbsp;<b>'.FileSystem::fin_chemin($dossier).'</b>&nbsp;&raquo; : veuillez le créer manuellement.</label><br />'."\r\n";
       return FALSE;
     }
     $affichage .= '<label for="rien" class="valide">Dossier &laquo;&nbsp;<b>'.FileSystem::fin_chemin($dossier).'</b>&nbsp;&raquo; créé.</label><br />'."\r\n";
@@ -425,7 +425,7 @@ class FileSystem
    * 
    * @param string   $chemin_fichier_zip   chemin de l'archive zip
    * @param string   $fichier_nom_archive  nom du fichier à rechercher dans l'archive zip
-   * @param string   $chemin_nom_final    chemin du fichier une fois extrait
+   * @param string   $chemin_nom_final     chemin du fichier une fois extrait
    * @return void
    */
   public static function unzip_one($chemin_fichier_zip,$fichier_nom_archive,$chemin_nom_final)
@@ -456,7 +456,7 @@ class FileSystem
    * 
    * @param string   $chemin_fichier_zip
    * @param string   $dossier_dezip
-   * @param bool     $use_ZipArchive
+   * @param bool     $use_ZipArchive   FALSE permet de nettoyer les noms des fichiers extraits : à préférer donc
    * @return int     code d'erreur (0 si RAS)
    */
   public static function unzip($chemin_fichier_zip,$dossier_dezip,$use_ZipArchive)
@@ -493,7 +493,7 @@ class FileSystem
         else
         {
           // C'est un fichier
-          file_put_contents( $dossier_dezip.$ds.zip_entry_name($zip_element) , zip_entry_read($zip_element,zip_entry_filesize($zip_element)) );
+          file_put_contents( $dossier_dezip.$ds.Clean::zip_filename(zip_entry_name($zip_element)) , zip_entry_read($zip_element,zip_entry_filesize($zip_element)) );
         }
         zip_entry_close($zip_element);
       }

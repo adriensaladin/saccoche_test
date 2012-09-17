@@ -108,7 +108,7 @@ $(document).ready
 						error : function(jqXHR, textStatus, errorThrown)
 						{
 							$("#bouton_valider_mise_en_page").prop('disabled',false);
-							$('#ajax_msg_mise_en_page').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
+							$('#ajax_msg_mise_en_page').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
 							return false;
 						},
 						success : function(responseHTML)
@@ -219,7 +219,7 @@ $(document).ready
 						dataType : "html",
 						error : function(jqXHR, textStatus, errorThrown)
 						{
-							$('#ajax_upload').removeAttr("class").addClass("alerte").html('Echec de la connexion !');
+							$('#ajax_upload').removeAttr("class").addClass("alerte").html('Échec de la connexion !');
 							return false;
 						},
 						success : function(responseHTML)

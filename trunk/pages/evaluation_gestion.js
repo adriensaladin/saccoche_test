@@ -356,7 +356,7 @@ $(document).ready
 					dataType : "html",
 					error : function(jqXHR, textStatus, errorThrown)
 					{
-						$('#msg_saisir').removeAttr("class").addClass("alerte").html('Echec de la connexion ! <button id="fermer_zone_saisir" type="button" class="retourner">Retour</button>');
+						$('#msg_saisir').removeAttr("class").addClass("alerte").html('Échec de la connexion ! <button id="fermer_zone_saisir" type="button" class="retourner">Retour</button>');
 						return false;
 					},
 					success : function(responseHTML)
@@ -425,7 +425,7 @@ $(document).ready
 					dataType : "html",
 					error : function(jqXHR, textStatus, errorThrown)
 					{
-						$('#msg_voir').removeAttr("class").addClass("alerte").html('Echec de la connexion ! <button id="fermer_zone_voir" type="button" class="retourner">Retour</button>');
+						$('#msg_voir').removeAttr("class").addClass("alerte").html('Échec de la connexion ! <button id="fermer_zone_voir" type="button" class="retourner">Retour</button>');
 						return false;
 					},
 					success : function(responseHTML)
@@ -480,7 +480,7 @@ $(document).ready
 					dataType : "html",
 					error : function(jqXHR, textStatus, errorThrown)
 					{
-						$('#msg_voir_repart').removeAttr("class").addClass("alerte").html('Echec de la connexion ! <button id="fermer_zone_voir_repart" type="button" class="retourner">Retour</button>');
+						$('#msg_voir_repart').removeAttr("class").addClass("alerte").html('Échec de la connexion ! <button id="fermer_zone_voir_repart" type="button" class="retourner">Retour</button>');
 						return false;
 					},
 					success : function(responseHTML)
@@ -562,7 +562,7 @@ $(document).ready
 					dataType : "html",
 					error : function(jqXHR, textStatus, errorThrown)
 					{
-						$('#msg_ordonner').removeAttr("class").addClass("alerte").html('Echec de la connexion ! <button id="fermer_zone_ordonner" type="button" class="retourner">Retour</button>');
+						$('#msg_ordonner').removeAttr("class").addClass("alerte").html('Échec de la connexion ! <button id="fermer_zone_ordonner" type="button" class="retourner">Retour</button>');
 						return false;
 					},
 					success : function(responseHTML)
@@ -977,7 +977,7 @@ $(document).ready
 						error : function(jqXHR, textStatus, errorThrown)
 						{
 							$('button').prop('disabled',false);
-							$('#msg_imprimer').removeAttr("class").addClass("alerte").html('Echec de la connexion !');
+							$('#msg_imprimer').removeAttr("class").addClass("alerte").html('Échec de la connexion !');
 							return false;
 						},
 						success : function(responseHTML)
@@ -1038,7 +1038,7 @@ $(document).ready
 						error : function(jqXHR, textStatus, errorThrown)
 						{
 							$('button').prop('disabled',false);
-							$('#msg_indiquer_eleves_deja').removeAttr("class").addClass("alerte").html('Echec de la connexion !');
+							$('#msg_indiquer_eleves_deja').removeAttr("class").addClass("alerte").html('Échec de la connexion !');
 							return false;
 						},
 						success : function(responseHTML)
@@ -1550,7 +1550,7 @@ $(document).ready
 							error : function(jqXHR, textStatus, errorThrown)
 							{
 								$('button').prop('disabled',false);
-								$('#ajax_msg').removeAttr("class").addClass("alerte").html('Echec de la connexion !');
+								$('#ajax_msg').removeAttr("class").addClass("alerte").html('Échec de la connexion !');
 								return false;
 							},
 							success : function(responseHTML)
@@ -1614,7 +1614,7 @@ $(document).ready
 							error : function(jqXHR, textStatus, errorThrown)
 							{
 								$('button').prop('disabled',false);
-								$('#msg_saisir').removeAttr("class").addClass("alerte").html('Echec de la connexion !');
+								$('#msg_saisir').removeAttr("class").addClass("alerte").html('Échec de la connexion !');
 								return false;
 							},
 							success : function(responseHTML)
@@ -1748,7 +1748,7 @@ $(document).ready
 		{
 			please_wait = false;
 			$('#ajax_msg').parent().children('q').show();
-			$('#ajax_msg').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
+			$('#ajax_msg').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
 		}
 
 		// Fonction suivant l'envoi du formulaire (avec jquery.form.js)
@@ -2275,7 +2275,7 @@ $(document).ready
 		// Fonction suivant l'envoi du formulaire (avec jquery.form.js)
 		function retour_form_erreur0(jqXHR, textStatus, errorThrown)
 		{
-			$('#ajax_msg0').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
+			$('#ajax_msg0').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
 		}
 
 		// Fonction suivant l'envoi du formulaire (avec jquery.form.js)

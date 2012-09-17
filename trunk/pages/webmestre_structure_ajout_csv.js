@@ -140,7 +140,7 @@ $(document).ready
 					dataType : "html",
 					error : function(jqXHR, textStatus, errorThrown)
 					{
-						$('#ajax_msg_import').removeAttr("class").addClass("alerte").html('Echec lors de la connexion au serveur !');
+						$('#ajax_msg_import').removeAttr("class").addClass("alerte").html('Échec lors de la connexion au serveur !');
 						$('#puce_info_import').html('<li><a id="a_reprise_import" href="#">Reprendre la procédure à l\'étape ' + num + ' sur ' + max + '.</a></li>');
 					},
 					success : function(responseHTML)
@@ -244,7 +244,7 @@ $(document).ready
 					dataType : "html",
 					error : function(jqXHR, textStatus, errorThrown)
 					{
-						$('#ajax_supprimer').removeAttr("class").addClass("alerte").html("Echec de la connexion !");
+						$('#ajax_supprimer').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
 						$("button").prop('disabled',false);
 						// afficher_masquer_images_action('show');
 					},

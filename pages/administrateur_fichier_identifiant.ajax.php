@@ -302,6 +302,7 @@ if($action=='import_loginmdp')
 					DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_user( $id_base , array(':login'=>$login) );
 					$lignes_mod .= '<tr class="new"><td>'.html($tab_users_fichier['nom'][$i_fichier].' '.$tab_users_fichier['prenom'][$i_fichier].' ('.$tab_users_base['info'][$id_base].')').'</td><td class="b">Utilisateur : '.html($login).'</td><td class="i">Mot de passe : inchangé</td></tr>';
 					$fcontenu_pdf_tab[] = $tab_users_base['info'][$id_base]."\r\n".$tab_users_base['nom'][$id_base].' '.$tab_users_base['prenom'][$id_base]."\r\n".'Utilisateur : '.$login."\r\n".'Mot de passe : <span class="i">inchangé</span>';
+					$tab_users_base['login'][$id_base] = $login; // Prendre en compte cette modif de login dans les comparaisons futures
 				}
 				else
 				{
@@ -311,6 +312,7 @@ if($action=='import_loginmdp')
 					DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_user( $id_base , array(':login'=>$login,':password'=>crypter_mdp($password)) );
 					$lignes_mod .= '<tr class="new"><td>'.html($tab_users_fichier['nom'][$i_fichier].' '.$tab_users_fichier['prenom'][$i_fichier].' ('.$tab_users_base['info'][$id_base].')').'</td><td class="b">Utilisateur : '.html($login).'</td><td class="b">Mot de passe : '.html($password).'</td></tr>';
 					$fcontenu_pdf_tab[] = $tab_users_base['info'][$id_base]."\r\n".$tab_users_base['nom'][$id_base].' '.$tab_users_base['prenom'][$id_base]."\r\n".'Utilisateur : '.$login."\r\n".'Mot de passe : '.$password;
+					$tab_users_base['login'][$id_base] = $login; // Prendre en compte cette modif de login dans les comparaisons futures
 				}
 			}
 		}

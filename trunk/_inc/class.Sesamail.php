@@ -334,6 +334,10 @@ class Sesamail
   
   /**
    * Encode un header et retourne la chaîne correspondante préfixée (sauf To et Subject)
+   *
+   * La fonction mb_encode_mimeheader() revoie une chaine contenant "UTF-8" qui pose problèmes à certains lecteurs de messageries qui attendent "utf-8".
+   * Et lui donner strtolower($this->charset) comme paramètre n'y change rien, d'où le traitement a posteriori avec str_replace().
+   *
    * @param string $header Le nom du header (To, Subject, From, Reply-To, etc.)
    * @param string $str La valeur du header (la chaîne à encoder comme le nom d'un destinataire ou le sujet)
    * @param string $adress L'éventuelle adresse mail
@@ -343,7 +347,7 @@ class Sesamail
     // On ajoute toujours le header en préfixe, et on le virera après si To ou Subject
     // pour que la césure soit à la bonne place
     if ($str != '') {
-      $enc_str = mb_encode_mimeheader($header .': ' .$str, $this->charset, "Q");
+      $enc_str = str_replace( mb_internal_encoding() , strtolower(mb_internal_encoding()) , mb_encode_mimeheader($header .': ' .$str, $this->charset, "Q") );
     }
     else { // si on laisse mb_encode_mimeheader il vire l'espace de fin
       $enc_str = $header .': ';

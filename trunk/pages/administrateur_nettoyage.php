@@ -63,7 +63,7 @@ $TITRE = "Nettoyer / Initialiser la base";
 
 <h2>Suppression des notes et des validations</h2>
 
-<div class="danger">Cet fonctionnalité ne doit être utilisée qu'exceptionnellement, pour repartir à zéro après une année de test (<span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__gestion_nettoyage#toggle_suppression_notes_validations">DOC</a></span>) !</div>
+<div class="danger">Cette fonctionnalité ne doit être utilisée qu'exceptionnellement, pour repartir à zéro après une année de test (<span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__gestion_nettoyage#toggle_suppression_notes_validations">DOC</a></span>) !</div>
 <form action="#" method="post" id="form_supprimer"><fieldset>
 	<span class="tab"></span><button id="bouton_supprimer" type="button" class="nettoyer">Supprimer les scores d'évaluations et les validations.</button><label id="ajax_msg_supprimer">&nbsp;</label>
 </fieldset></form>

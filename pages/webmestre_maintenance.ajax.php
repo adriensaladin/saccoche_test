@@ -184,7 +184,7 @@ if($action=='maj_etape4')
 	{
 		if( (isset($tab['avant'])) && (isset($tab['apres'])) )
 		{
-			if( ($tab['avant']!=$tab['apres']) && (substr($fichier,-9)!='.htaccess') )
+			if( ($tab['avant']!=$tab['apres']) && ($fichier!='/.htaccess') )
 			{
 				// Fichier changé => maj (si le .htaccess a été changé, c'est sans doute volontaire, ne pas y toucher)
 				if( !copy( $dossier_dezip.$fichier , $dossier_install.$fichier ) )
@@ -196,7 +196,7 @@ if($action=='maj_etape4')
 				$tbody .= '<tr><td class="b">Fichier modifié</td><td>'.$fichier.'</td></tr>';
 			}
 		}
-		elseif( (!isset($tab['avant'])) && (substr($fichier,-9)!='.htaccess') )
+		elseif( (!isset($tab['avant'])) && ($fichier!='/.htaccess') )
 		{
 			// Fichier à ajouter (si le .htaccess n'y est pas, c'est sans doute volontaire, ne pas l'y remettre)
 			if( !copy( $dossier_dezip.$fichier , $dossier_install.$fichier ) )
@@ -325,7 +325,7 @@ if($action=='verif_etape4')
 	{
 		if( (isset($tab['avant'])) && (isset($tab['apres'])) )
 		{
-			if( ($tab['avant']==$tab['apres']) || (substr($fichier,-9)=='.htaccess') )
+			if( ($tab['avant']==$tab['apres']) || ($fichier=='/.htaccess') )
 			{
 				// Fichier identique (si le .htaccess a été changé, c'est sans doute volontaire, ne pas y toucher)
 				$tbody_ok .= '<tr class="v"><td>Fichier identique</td><td>'.$fichier.'</td></tr>';
@@ -336,7 +336,7 @@ if($action=='verif_etape4')
 				$tbody_pb .= '<tr class="r"><td>Fichier différent</td><td>'.$fichier.'</td></tr>';
 			}
 		}
-		elseif( (!isset($tab['avant'])) && (substr($fichier,-9)!='.htaccess') )
+		elseif( (!isset($tab['avant'])) && ($fichier!='/.htaccess') )
 		{
 			// Fichier manquant
 			$tbody_pb .= '<tr class="r"><td>Fichier manquant</td><td>'.$fichier.'</td></tr>';

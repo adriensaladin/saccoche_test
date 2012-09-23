@@ -120,9 +120,8 @@ function sauvegarder_tables_base_etablissement($dossier_temp,$nb_lignes_maxi)
 	$DB_TAB = DB_STRUCTURE_COMMUN::DB_recuperer_tables_informations();
 	foreach($DB_TAB as $DB_ROW)
 	{
-		$nb_lignes_maxi_for_table = ($DB_ROW['Name']!='sacoche_image') ? $nb_lignes_maxi : $nb_lignes_maxi / 100 ;
-		$nombre_boucles = max( ceil($DB_ROW['Rows']/$nb_lignes_maxi_for_table) , 1 ); // Parcourir au moins une fois la boucle pour une table sans enregistrement
-		$tab_tables_info[] = array( 'Nom'=>$DB_ROW['Name'] , 'NombreLignes'=>$nb_lignes_maxi_for_table , 'NombreBoucles'=>$nombre_boucles );
+		$nombre_boucles = max( ceil($DB_ROW['Rows']/$nb_lignes_maxi) , 1 ); // Parcourir au moins une fois la boucle pour une table sans enregistrement
+		$tab_tables_info[] = array( 'Nom'=>$DB_ROW['Name'] , 'NombreBoucles'=>$nombre_boucles );
 	}
 	// Créer les fichiers sql table par table...
 	foreach($tab_tables_info as $tab_table_info)
@@ -139,8 +138,8 @@ function sauvegarder_tables_base_etablissement($dossier_temp,$nb_lignes_maxi)
 			}
 			// ... les données
 			$tab_ligne_insert = array();
-			$from = $numero_boucle*$tab_table_info['NombreLignes'];
-			$DB_TAB = DB_STRUCTURE_COMMUN::DB_recuperer_table_donnees( $tab_table_info['Nom'] , $from ,$tab_table_info['NombreLignes'] );
+			$from = $numero_boucle*$nb_lignes_maxi;
+			$DB_TAB = DB_STRUCTURE_COMMUN::DB_recuperer_table_donnees( $tab_table_info['Nom'] , $from ,$nb_lignes_maxi );
 			if(count($DB_TAB))
 			{
 				$fichier_contenu .= 'ALTER TABLE '.$tab_table_info['Nom'].' DISABLE KEYS;'."\r\n";

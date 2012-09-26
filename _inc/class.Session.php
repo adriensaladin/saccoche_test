@@ -112,7 +112,7 @@ class Session
       }
       else
       {
-        exit_error( 'Authentification manquante' /*titre*/ , 'Session perdue, expirée, incompatible ou non enregistrée (disque plein, chemin invalide).<br />Veuillez vous (re)-connecter.' /*contenu*/ );
+        exit_error( 'Authentification manquante' /*titre*/ , 'Session perdue, expirée, incompatible ou non enregistrée (inactivité, disque plein, chemin invalide, &hellip;).<br />Veuillez vous (re)-connecter.' /*contenu*/ );
       }
     }
     // si ajax

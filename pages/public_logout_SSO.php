@@ -37,7 +37,7 @@ if(HEBERGEUR_INSTALLATION=='multi-structures')
 {
 	if(!$BASE)
 	{
-		exit_error( 'Donnée manquante' /*titre*/ , 'Paramètre indiquant la base concernée non transmis.' /*contenu*/ );
+		exit_error( 'Donnée manquante' /*titre*/ , 'Référence de base manquante (le paramètre "base" n\'a pas été transmis en GET ou n\'est pas un entier).' /*contenu*/ );
 	}
 	charger_parametres_mysql_supplementaires($BASE);
 }
@@ -56,7 +56,7 @@ foreach($DB_TAB as $DB_ROW)
 }
 if($connexion_mode=='normal')
 {
-	exit_error( 'Configuration manquante' /*titre*/ , 'Etablissement non configuré par l\'administrateur pour utiliser un service d\'authentification externe.' /*contenu*/ );
+	exit_error( 'Configuration manquante' /*titre*/ , 'Etablissement non paramétré par l\'administrateur pour utiliser un service d\'authentification externe.<br />Un administrateur doit renseigner cette configuration dans le menu [Paramétrages][Mode&nbsp;d\'identification].' /*contenu*/ );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////

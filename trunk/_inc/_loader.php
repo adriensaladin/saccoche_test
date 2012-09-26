@@ -56,7 +56,7 @@ $extensions_requises = array('curl','dom','gd','mbstring','mysql','PDO','pdo_mys
 $extensions_manquantes = array_diff($extensions_requises,$extensions_chargees);
 if(count($extensions_manquantes))
 {
-	exit_error( 'PHP incomplet' /*titre*/ , 'Module(s) PHP manquant(s) : '.implode($extensions_manquantes,' ') /*contenu*/ );
+	exit_error( 'PHP incomplet' /*titre*/ , 'Module(s) PHP manquant(s) : '.implode($extensions_manquantes,' ').'<br />Ce serveur n\'a pas la configuration minimale requise.' /*contenu*/ );
 }
 
 // Remédier à l'éventuelle configuration de magic_quotes_gpc à On (directive obsolète depuis PHP 5.3.0 et supprimée en PHP 6.0.0).
@@ -224,7 +224,7 @@ define('TODAY_MYSQL' ,date("Y-m-d"));
 define('SORTIE_DEFAUT_FR'    ,'31/12/9999'); // inutilisé
 define('SORTIE_DEFAUT_MYSQL' ,'9999-12-31');
 
-// Dimension maxi d'une photo redimensionnée (en pixels).
+// Dimension maxi d'une photo redimensionnée (en pixels) ; utilisé aussi dans le style.css : .photo {min-height:180px} (144+36)
 // Prendre un nombre divisible par 3 et par 4, donc un multiple de 12.
 // Avec 180 (12x15), au format 2/3 ça donne 120/180 et au format 3/4 ça donne 135/180 ; c'est un peu grand à l'écran.
 // Avec 144 (12x12), au format 2/3 ça donne  96/144 et au format 3/4 ça donne 108/144 ; c'est un choix intermédiaire.
@@ -350,8 +350,21 @@ function __autoload($class_name)
 }
 
 // ============================================================================
-// Quelques fonctions utiles : perso_mb_detect_encoding_utf8() - augmenter_memory_limit() - rapporter_erreur_fatale_memoire() - rapporter_erreur_fatale_phpcas() - exit_error()
+// Quelques fonctions utiles : html() - perso_mb_detect_encoding_utf8() - augmenter_memory_limit() - rapporter_erreur_fatale_memoire() - rapporter_erreur_fatale_phpcas() - exit_error()
 // ============================================================================
+
+/*
+ * Convertir les caractères spéciaux (&"'<>) en entité HTML pour éviter des problèmes d'affichage (INPUT, SELECT, TEXTAREA, XML, ou simple texte HTML valide...).
+ * Pour que les retours à la lignes soient convertis en <br /> il faut coupler dette fontion à la fonction nl2br()
+ * 
+ * @param string
+ * @return string
+ */
+function html($text)
+{
+	// Ne pas modifier ce code à la légère : les résultats sont différents suivant que ce soit un affichage direct ou ajax, suivant la version de PHP (5.1 ou 5.3)...
+	return (perso_mb_detect_encoding_utf8($text)) ? htmlspecialchars($text,ENT_COMPAT,'UTF-8') : utf8_encode(htmlspecialchars($text,ENT_COMPAT)) ;
+}
 
 /**
  * Fonction pour remplacer mb_detect_encoding() à cause d'un bug : http://fr2.php.net/manual/en/function.mb-detect-encoding.php#81936
@@ -436,7 +449,7 @@ function rapporter_erreur_fatale_phpcas()
  * Afficher une page HTML minimaliste avec un message explicatif et un lien pour retourner en page d'accueil (si AJAX, renvoyer juste un message).
  * 
  * @param string $titre     titre de la page
- * @param string $contenu   contenu HTML affiché (ou AJAX retourné)
+ * @param string $contenu   contenu HTML affiché (ou AJAX retourné) ; il doit déjà avoir été filtré si besoin avec html()
  * @param bool   $setup     facultatif ; TRUE pour un lien vers la procédure d'installation au lieu d'un lien vers l'accueil.
  * @return void
  */
@@ -457,7 +470,7 @@ function exit_error($titre,$contenu,$setup=FALSE)
 	}
 	else
 	{
-		echo $contenu;
+		echo str_replace('<br />',' ',$contenu);
 	}
 	exit();
 }

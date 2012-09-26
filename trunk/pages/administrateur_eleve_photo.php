@@ -36,6 +36,7 @@ $select_groupe = Form::afficher_select($tab_groupes , $select_nom='f_groupe' , $
 ?>
 
 <p><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__photos_eleves">DOC : Photos des élèves</a></span></p>
+<div class="danger">Respectez les conditions légales d'utilisation (droit à l'image précisé dans la documentation ci-dessus).</div>
 
 <script type="text/javascript">
 	var url_export_rapport = "<?php echo URL_DIR_EXPORT.'rapport_zip_photos_'.$_SESSION['BASE'].'.html' ?>";

@@ -588,7 +588,7 @@ if( ($action=='saisir') && $devoir_id && $groupe_id && $date_mysql && $date_visi
 //	Voir les items acquis par les élèves à une évaluation
 //	Générer en même temps un csv à récupérer pour une saisie déportée
 //	Générer en même temps un pdf contenant un tableau de saisie vide
-//	Générer en même temps un pdf contenant un tableau de saisie plein
+//	Générer en même temps un pdf contenant un tableau de saisie plein, couleur ou noir & blanc
 //	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 if( ($action=='voir') && $devoir_id && $groupe_id && $date_fr ) // $description et $groupe_nom sont aussi transmis
@@ -706,7 +706,7 @@ if( ($action=='voir') && $devoir_id && $groupe_id && $date_fr ) // $description 
 	}
 	$sacoche_pdf->Output(CHEMIN_DOSSIER_EXPORT.'tableau_sans_notes_'.$fnom_export.'.pdf','F');
 	// / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / /
-	// pdf contenant un tableau de saisie plein ; on a besoin de tourner du texte à 90°
+	// pdf contenant un tableau de saisie plein, en couleurs ; on a besoin de tourner du texte à 90°
 	// / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / /
 	$sacoche_pdf = new PDF( FALSE /*officiel*/ , 'landscape' /*orientation*/ , 10 /*marge_gauche*/ , 10 /*marge_droite*/ , 10 /*marge_haut*/ , 10 /*marge_bas*/ , 'oui' /*couleur*/ );
 	$sacoche_pdf->tableau_saisie_initialiser($eleve_nb,$item_nb);
@@ -729,7 +729,32 @@ if( ($action=='voir') && $devoir_id && $groupe_id && $date_fr ) // $description 
 		}
 		$sacoche_pdf->SetXY($sacoche_pdf->marge_gauche , $sacoche_pdf->GetY()+$sacoche_pdf->cases_hauteur);
 	}
-	$sacoche_pdf->Output(CHEMIN_DOSSIER_EXPORT.'tableau_avec_notes_'.$fnom_export.'.pdf','F');
+	$sacoche_pdf->Output(CHEMIN_DOSSIER_EXPORT.'tableau_avec_notes_couleur_'.$fnom_export.'.pdf','F');
+	// / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / /
+	// pdf contenant un tableau de saisie plein, en noir & blanc ; on a besoin de tourner du texte à 90°
+	// / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / /
+	$sacoche_pdf = new PDF( FALSE /*officiel*/ , 'landscape' /*orientation*/ , 10 /*marge_gauche*/ , 10 /*marge_droite*/ , 10 /*marge_haut*/ , 10 /*marge_bas*/ , 'non' /*couleur*/ );
+	$sacoche_pdf->tableau_saisie_initialiser($eleve_nb,$item_nb);
+	// 1ère ligne : référence devoir, noms élèves
+	$sacoche_pdf->tableau_saisie_reference_devoir($groupe_nom,$date_fr,$description);
+	foreach($DB_TAB_USER as $DB_ROW)
+	{
+		$sacoche_pdf->tableau_saisie_reference_eleve($DB_ROW['user_nom'].' '.$DB_ROW['user_prenom']);
+	}
+	// ligne suivantes : référence item, cases vides
+	$sacoche_pdf->SetXY($sacoche_pdf->marge_gauche , $sacoche_pdf->marge_haut+$sacoche_pdf->etiquette_hauteur);
+	foreach($DB_TAB_COMP as $DB_ROW_COMP)
+	{
+		$item_ref = $DB_ROW_COMP['item_ref'];
+		$texte_socle = ($DB_ROW_COMP['entree_id']) ? ' [S]' : ' [–]';
+		$sacoche_pdf->tableau_saisie_reference_item($item_ref.$texte_socle,$DB_ROW_COMP['item_nom']);
+		foreach($DB_TAB_USER as $DB_ROW_USER)
+		{
+			$sacoche_pdf->afficher_note_lomer( $csv_lignes_scores[$DB_ROW_COMP['item_id']][$DB_ROW_USER['user_id']] , $border=1 , $br=0 );
+		}
+		$sacoche_pdf->SetXY($sacoche_pdf->marge_gauche , $sacoche_pdf->GetY()+$sacoche_pdf->cases_hauteur);
+	}
+	$sacoche_pdf->Output(CHEMIN_DOSSIER_EXPORT.'tableau_avec_notes_monochrome_'.$fnom_export.'.pdf','F');
 	//
 	// c'est fini ; affichage du retour
 	//

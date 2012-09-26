@@ -46,7 +46,7 @@ header('Content-Type: text/html; charset=utf-8');
 // Page appelée
 if(!isset($_GET['page']))
 {
-	exit_error( 'Référence manquante' /*titre*/ , 'Référence de page manquante.' /*contenu*/ );
+	exit_error( 'Référence manquante' /*titre*/ , 'Référence de page manquante (le paramètre "page" n\'a pas été transmis en GET).' /*contenu*/ );
 }
 $PAGE = $_GET['page'];
 
@@ -57,14 +57,14 @@ if(is_file(CHEMIN_FICHIER_CONFIG_INSTALL))
 }
 elseif($PAGE!='public_installation')
 {
-	exit_error( 'Informations hébergement manquantes' /*titre*/ , 'Les informations relatives à l\'hébergeur n\'ont pas été trouvées.' /*contenu*/ , TRUE /*setup*/ );
+	exit_error( 'Informations hébergement manquantes' /*titre*/ , 'Les informations relatives à l\'hébergeur n\'ont pas été trouvées.<br />C\'est probablement votre première installation de SACoche, ou bien le fichier "'.FileSystem::fin_chemin(CHEMIN_FICHIER_CONFIG_INSTALL).'" a été supprimé.<br />Cliquer sur le lien ci-dessous.' /*contenu*/ , TRUE /*setup*/ );
 }
 
 // Le fait de lister les droits d'accès de chaque page empêche de surcroit l'exploitation d'une vulnérabilité "include PHP" (http://www.certa.ssi.gouv.fr/site/CERTA-2003-ALE-003/).
 require(CHEMIN_DOSSIER_INCLUDE.'tableau_droits.php');
 if(!isset($tab_droits[$PAGE]))
 {
-	exit_error( 'Droits manquants' /*titre*/ , 'Droits de la page "'.$PAGE.'" manquants.' /*contenu*/ );
+	exit_error( 'Droits manquants' /*titre*/ , 'Droits de la page "'.$PAGE.'" manquants.<br />Soit le paramètre "page" transmis en GET est incorrect, soit les droits de cette page n\'ont pas été attribués dans le fichier "'.FileSystem::fin_chemin(CHEMIN_DOSSIER_INCLUDE.'tableau_droits.php').'".' /*contenu*/ );
 }
 
 // Ouverture de la session et gestion des droits d'accès
@@ -144,7 +144,7 @@ if(is_file(CHEMIN_FICHIER_CONFIG_INSTALL))
 	}
 	else
 	{
-		exit_error( 'Configuration anormale' /*titre*/ , 'Une anomalie dans les données d\'hébergement et/ou de session empêche l\'application de se poursuivre.' /*contenu*/ );
+		exit_error( 'Configuration anormale' /*titre*/ , 'Une anomalie dans les données d\'hébergement et/ou de session empêche l\'application de se poursuivre.<br />HEBERGEUR_INSTALLATION vaut '.HEBERGEUR_INSTALLATION.'<br />$_SESSION["USER_PROFIL"] vaut '.$_SESSION['USER_PROFIL'] /*contenu*/ );
 	}
 	// Chargement du fichier de connexion à la BDD
 	define('CHEMIN_FICHIER_CONFIG_MYSQL',CHEMIN_DOSSIER_MYSQL.$fichier_mysql_config.'.php');
@@ -155,7 +155,7 @@ if(is_file(CHEMIN_FICHIER_CONFIG_INSTALL))
 	}
 	elseif($PAGE!='public_installation')
 	{
-		exit_error( 'Paramètres BDD manquants' /*titre*/ , 'Les paramètres de connexion à la base de données n\'ont pas été trouvés.' /*contenu*/ , TRUE /*setup*/ );
+		exit_error( 'Paramètres BDD manquants' /*titre*/ , 'Les paramètres de connexion à la base de données n\'ont pas été trouvés.<br />C\'est probablement votre première installation de SACoche, ou bien le fichier "'.FileSystem::fin_chemin(CHEMIN_FICHIER_CONFIG_MYSQL).'" a été supprimé.<br />Cliquer sur le lien ci-dessous.' /*contenu*/ , TRUE /*setup*/ );
 	}
 }
 

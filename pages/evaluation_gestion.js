@@ -444,8 +444,7 @@ $(document).ready
 							format_liens('#table_voir');
 							$('#export_file2').attr("href", url_export+'saisie_deportee_'+tab_response[1]+'.zip' );
 							$('#export_file3').attr("href", url_export+'tableau_sans_notes_'+tab_response[1]+'.pdf' );
-							$('#export_file5').attr("href", url_export+'tableau_avec_notes_couleur_'+tab_response[1]+'.pdf' );
-							$('#export_file8').attr("href", url_export+'tableau_avec_notes_monochrome_'+tab_response[1]+'.pdf' );
+							$('#export_file5').attr("href", url_export+'tableau_avec_notes_'+tab_response[1]+'.pdf' );
 							$('#table_voir tbody td').css({"background-color":"#DDF","text-align":"center","vertical-align":"middle","font-size":"110%"});
 							infobulle();
 						}

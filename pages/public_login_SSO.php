@@ -63,7 +63,7 @@ if( (HEBERGEUR_INSTALLATION=='multi-structures') && ($UAI!='') )
 	$BASE = DB_WEBMESTRE_PUBLIC::DB_recuperer_structure_id_base_for_UAI($UAI);
 	if(!$BASE)
 	{
-		exit_error( 'Paramètre incorrect' /*titre*/ , 'Le numéro UAI transmis n\'est pas référencé sur cette installation de SACoche : vérifiez son exactitude et si cet établissement est bien inscrit sur ce serveur.' /*contenu*/ );
+		exit_error( 'Paramètre incorrect' /*titre*/ , 'Le numéro UAI transmis n\'est pas référencé sur cette installation de SACoche.' /*contenu*/ );
 	}
 	// Remplacer l'info par le numéro de base correspondant dans toutes les variables accessibles à PHP avant que la classe SSO ne s'en mèle.
 	$bad = 'uai='.$_GET['uai'];
@@ -86,7 +86,7 @@ if(HEBERGEUR_INSTALLATION=='multi-structures')
 {
 	if(!$BASE)
 	{
-		exit_error( 'Donnée manquante' /*titre*/ , 'Référence de base manquante (le paramètre "base" n\'a pas été transmis en GET ou n\'est pas un entier et n\'a pas non plus été trouvé dans un Cookie).' /*contenu*/ );
+		exit_error( 'Donnée manquante' /*titre*/ , 'Paramètre indiquant la base concernée non transmis.' /*contenu*/ );
 	}
 	charger_parametres_mysql_supplementaires($BASE);
 }
@@ -105,7 +105,7 @@ foreach($DB_TAB as $DB_ROW)
 }
 if($connexion_mode=='normal')
 {
-	exit_error( 'Configuration manquante' /*titre*/ , 'Etablissement non paramétré par l\'administrateur pour utiliser un service d\'authentification externe.<br />Un administrateur doit renseigner cette configuration dans le menu [Paramétrages][Mode&nbsp;d\'identification].' /*contenu*/ );
+	exit_error( 'Configuration manquante' /*titre*/ , 'Etablissement non configuré par l\'administrateur pour utiliser un service d\'authentification externe.' /*contenu*/ );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////

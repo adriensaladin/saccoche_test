@@ -598,9 +598,9 @@ if($type_synthese)
 	$releve_PDF->SetY( $memo_y );
 	$releve_PDF->choisir_couleur_fond('gris_moyen');
 	$releve_PDF->CellFit($releve_PDF->intitule_largeur , $releve_PDF->cases_hauteur , 'moyenne scores [*]' , 1 , 2 , 'C' , TRUE , '');
-	$releve_PDF->CellFit($releve_PDF->intitule_largeur , $releve_PDF->cases_hauteur , '% items acquis [**]' , 1 , 0 , 'C' , TRUE , '');
+	$releve_PDF->CellFit($releve_PDF->intitule_largeur , $releve_PDF->cases_hauteur , '% validations [**]' , 1 , 0 , 'C' , TRUE , '');
 	$releve_HTML_table_foot1 = '<tr><th>moyenne scores [*]</th>';
-	$releve_HTML_table_foot2 = '<tr><th>% items acquis [**]</th>';
+	$releve_HTML_table_foot2 = '<tr><th>% validations [**]</th>';
 	$checkbox = ($affichage_checkbox) ? '<tr><th class="nu">&nbsp;</th>' : '' ;
 	$memo_x = $releve_PDF->GetX();
 	$releve_PDF->SetXY($memo_x,$memo_y);

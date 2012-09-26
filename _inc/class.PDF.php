@@ -464,10 +464,6 @@ class PDF extends FPDF
 	private $lomer_espace_hauteur = 0;
 	private $lomer_image_largeur  = 0;
 	private $lomer_image_hauteur  = 0;
-	// Définition de qqs variables supplémentaires
-	private $coef_conv_pixel_to_mm = 0;
-	private $photo_hauteur_maxi    = 0;
-	private $cadre_photo_hauteur   = 0;
 
 	//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	//	Méthode Magique - Constructeur
@@ -552,11 +548,6 @@ class PDF extends FPDF
 		$this->tab_lettre['R']  = $_SESSION['NOTE_TEXTE']['R'];
 		$this->tab_lettre['V']  = $_SESSION['NOTE_TEXTE']['V'];
 		$this->tab_lettre['VV'] = $_SESSION['NOTE_TEXTE']['VV'];
-		// Les dimensions d'une image (photo, signature) sont données en pixels, et il faut les convertir en mm.
-		// Problème : dpi inconnue ! On prend 96 par défaut... mais ça peut être 72 ou 300 ou ... ça dépend de chaque image...
-		// mm = (pixels * 25.4) / dpi
-		// pixels = (mm * dpi) / 25.4
-		$this->coef_conv_pixel_to_mm = 25.4 / 96 ;
 	}
 
 	//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -798,8 +789,13 @@ class PDF extends FPDF
 	public function afficher_signature($largeur_cadre_appreciation,$hauteur_autorisee,$tab_image_tampon_signature)
 	{
 		list($img_contenu,$img_format,$img_largeur,$img_hauteur) = $tab_image_tampon_signature;
-		$img_largeur *= $this->coef_conv_pixel_to_mm;
-		$img_hauteur *= $this->coef_conv_pixel_to_mm;
+		// Les dimensions sont données en pixels, il faut les convertir en mm/
+		// Problème : dpi inconnue ! On prend 96 par défaut... mais ça peut être 72 ou 300 ou ... ça dépend de chaque image...
+		// mm = (pixels * 25.4) / dpi
+		// pixels = (mm * dpi) / 25.4
+		$coef_conversion = 25.4 / 96 ;
+		$img_largeur *= $coef_conversion;
+		$img_hauteur *= $coef_conversion;
 		$largeur_autorisee = $hauteur_autorisee * 2 ;
 		$coef_largeur = $largeur_autorisee / $img_largeur ;
 		$coef_hauteur = $hauteur_autorisee / $img_hauteur ;
@@ -809,6 +805,7 @@ class PDF extends FPDF
 		$retrait_x = max($hauteur_autorisee,$img_largeur);
 		$img_pos_x = $this->GetX() + $largeur_cadre_appreciation - $retrait_x ;
 		$img_pos_y = $this->GetY() + ( $hauteur_autorisee - $img_hauteur ) / 2 ;
+		// echo'*'.$ratio.'*'.$img_largeur.'*'.$img_hauteur;
 		$this->MemImage($img_contenu,$img_pos_x,$img_pos_y,$img_largeur,$img_hauteur,strtoupper($img_format));
 		return $retrait_x;
 	}
@@ -2572,71 +2569,6 @@ class PDF extends FPDF
 		// appréciation
 		$this->afficher_appreciation( $this->cases_largeur , 2*$this->lignes_hauteur , $this->taille_police , $this->lignes_hauteur , $appreciation );
 		$this->SetXY($memo_x , $memo_y+2*$this->lignes_hauteur);
-	}
-
-	// ////////////////////////////////////////////////////////////////////////////////////////////////////
-	//	Méthodes pour la mise en page d'un trombinoscope
-	// ////////////////////////////////////////////////////////////////////////////////////////////////////
-	//	trombinoscope_initialiser()
-	//	trombinoscope_vignette()
-	// ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-	public function trombinoscope_initialiser($regroupement)
-	{
-		$this->taille_police = 10;
-		$this->SetMargins($this->marge_gauche , $this->marge_haut , $this->marge_droite);
-		$this->AddPage($this->orientation , 'A4');
-		$this->SetAutoPageBreak(TRUE);
-		// Titre
-		$this->SetFont('Arial' , 'B' , $this->taille_police*1.2);
-		$this->CellFit( $this->page_largeur - $this->marge_gauche - $this->marge_droite , 7 , To::pdf($regroupement)  , 0 /*bordure*/ , 1 /*br*/ , 'C' /*alignement*/ , FALSE /*remplissage*/ );
-		// Avertissement
-		$this->SetFont('Arial' , '' , $this->taille_police*0.9);
-		$this->SetX( $this->GetX() + 5 );
-		$message = 'Le trombinoscope est privé (accessible aux seuls personnels habilités) et réservé à un usage pédagogique interne (il ne doit pas être transmis à un tiers), ceci quel que soit son support (numérique ou imprimé). Pour davantage d\'informations relatives au respect de la vie privée et au droit à l\'image, consulter la documentation correspondante (intégrée à l\'application et disponible sur internet).';
-		$this->MultiCell( $this->page_largeur - $this->marge_gauche - $this->marge_droite - 2*5 , 4 , To::pdf($message)  , 1 /*bordure*/ , 'L' /*alignement*/ , FALSE /*remplissage*/ );
-		// Next...
-		$this->SetY( $this->GetY() + 2 );
-		$this->SetFont('Arial' , '' , $this->taille_police);
-		$this->photo_hauteur_maxi   = PHOTO_DIMENSION_MAXI*$this->coef_conv_pixel_to_mm;
-		$this->cadre_photo_hauteur  = $this->photo_hauteur_maxi + 0.5 + 8 ; // 0.5 marge + 2x4mm pour lignes nom et prénom
-	}
-
-	public function trombinoscope_vignette($tab_vignette)
-	{
-		$espacement_x = 2;
-		$espacement_y = 2;
-		// On récupère les infos
-		extract($tab_vignette); // $user_nom $user_prenom $img_width $img_height $img_src $img_title
-		$img_width  *= $this->coef_conv_pixel_to_mm;
-		$img_height *= $this->coef_conv_pixel_to_mm;
-		// retour à la ligne si manque de place
-		if( $this->GetX() + $img_width + $this->marge_droite > $this->page_largeur )
-		{
-			$this->SetXY( $this->marge_gauche , $this->GetY() + $this->cadre_photo_hauteur + $espacement_y );
-			// saut de page si manque de place
-			if( $this->GetY() + $this->cadre_photo_hauteur + $this->marge_bas > $this->page_hauteur )
-			{
-				$this->AddPage($this->orientation , 'A4');
-			}
-		}
-		// image
-		$memo_x = $this->GetX();
-		$memo_y = $this->GetY();
-		if($img_src)
-		{
-			$this->MemImage(base64_decode($img_src),$memo_x,$memo_y,$img_width,$img_height,'JPEG');
-		}
-		else
-		{
-			$this->Image('./_img/trombinoscope_vide.png',$memo_x,$memo_y,$img_width,$img_height,'PNG');
-		}
-		// nom & prénom
-		$this->SetXY( $memo_x , $memo_y + $this->photo_hauteur_maxi + 0.5 );
-		$this->CellFit( $img_width , 4 , To::pdf($user_nom)    , 0 /*bordure*/ , 2 /*br*/ , 'C' /*alignement*/ , FALSE /*remplissage*/ );
-		$this->CellFit( $img_width , 4 , To::pdf($user_prenom) , 0 /*bordure*/ , 2 /*br*/ , 'C' /*alignement*/ , FALSE /*remplissage*/ );
-		// positionnement pour la photo suivante
-		$this->SetXY( $memo_x + $img_width + $espacement_x , $memo_y );
 	}
 
 }

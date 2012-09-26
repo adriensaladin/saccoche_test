@@ -735,7 +735,7 @@ div.td_souris img.on {background-color:#FF0}
 /* Vignette photo                                                                                      */
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-.photo {float:left;padding:3px;margin:6px;border:1px dashed #77F;text-align:center;min-height:180px} /* 144+36 */
+.photo {float:left;padding:3px;margin:6px;border:1px dashed #77F;text-align:center}
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 /* Pour la gestion privée (livre d'or, RSS)                                                            */

@@ -26,6 +26,19 @@
  */
 
 /*
+ * Convertir les caractères spéciaux (&"'<>) en entité HTML pour éviter des problèmes d'affichage (INPUT, SELECT, TEXTAREA, XML...).
+ * Pour que les retours à la lignes soient convertis en <br /> il faut coupler dette fontion à la fonction nl2br()
+ * 
+ * @param string
+ * @return string
+ */
+function html($text)
+{
+	// Ne pas modifier ce code à la légère : les résultats sont différents suivant que ce soit un affichage direct ou ajax, suivant la version de PHP (5.1 ou 5.3)...
+	return (perso_mb_detect_encoding_utf8($text)) ? htmlspecialchars($text,ENT_COMPAT,'UTF-8') : utf8_encode(htmlspecialchars($text,ENT_COMPAT)) ;
+}
+
+/*
  * Réciproque de html()
  * 
  * @param string
@@ -545,7 +558,7 @@ function charger_parametres_mysql_supplementaires($BASE)
 	}
 	else
 	{
-		exit_error( 'Paramètres BDD manquants' /*titre*/ , 'Les paramètres de connexion à la base de données n\'ont pas été trouvés.<br />Le fichier "'.FileSystem::fin_chemin($file_config_base_structure_multi).'" (base n°'.$BASE.') est manquant !' /*contenu*/ );
+		exit_error( 'Paramètre incorrect' /*titre*/ , 'Le fichier avec les paramètres de la base n°'.$BASE.' est manquant !' /*contenu*/ );
 	}
 }
 
@@ -957,8 +970,8 @@ function tester_authentification_user($BASE,$login,$password,$mode_connection)
 		switch($mode_connection)
 		{
 			case 'normal' : $message = 'Nom d\'utilisateur incorrect !'; break;
-			case 'cas'    : $message = 'Identification réussie mais identifiant SSO "'.$login.'" inconnu dans SACoche !<br />Un administrateur doit renseigner que l\'identifiant ENT associé à votre compte SACoche est "'.$login.'"&hellip;<br />Il doit pour cela se connecter à SACoche, menu [Gestion&nbsp;courante], et indiquer "'.$login.'" dans la case [Id.&nbsp;Gepi] de la ligne correspondant à votre compte.'; break;
-			case 'gepi'   : $message = 'Identification réussie mais login GEPI "'.$login.'" inconnu dans SACoche !<br />Un administrateur doit renseigner que l\'identifiant GEPI associé à votre compte SACoche est "'.$login.'"&hellip;<br />Il doit pour cela se connecter à SACoche, menu [Gestion&nbsp;courante], et indiquer "'.$login.'" dans la case [Id.&nbsp;ENT] de la ligne correspondant à votre compte.'; break;
+			case 'cas'    : $message = 'Identification réussie mais identifiant SSO "'.$login.'" inconnu dans SACoche !<br />Un administrateur doit renseigner que l\'identifiant ENT associé à votre compte SACoche est "'.$login.'"&hellip;'; break;
+			case 'gepi'   : $message = 'Identification réussie mais login GEPI "'.$login.'" inconnu dans SACoche !<br />Un administrateur doit renseigner que l\'identifiant GEPI associé à votre compte SACoche est "'.$login.'"&hellip;'; break;
 		}
 		return array($message,array());
 	}

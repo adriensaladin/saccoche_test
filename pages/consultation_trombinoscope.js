@@ -63,7 +63,7 @@ $(document).ready
 				{
 					type : 'POST',
 					url : 'ajax.php?page='+PAGE,
-					data : 'f_groupe_id='+groupe_id+'&f_groupe_type='+groupe_type+'&f_groupe_nom='+groupe_nom,
+					data : 'f_groupe_id='+groupe_id+'&f_groupe_type='+groupe_type,
 					dataType : "html",
 					error : function(jqXHR, textStatus, errorThrown)
 					{
@@ -72,15 +72,14 @@ $(document).ready
 					success : function(responseHTML)
 					{
 						initialiser_compteur();
-						if(responseHTML.substring(0,4)!='<h2>')
+						if(responseHTML.substring(0,5)!='<div ')
 						{
 							$('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);
 						}
 						else
 						{
 							$('#ajax_msg').removeAttr("class").addClass("valide").html("Demande réalisée !");
-							$('#bilan').html(responseHTML);
-							format_liens('#bilan');
+							$('#bilan').html('<p class="noprint">Afin de préserver l\'environnement, n\'imprimer qu\'en cas de nécessité !</p>'+'<h2>'+groupe_nom+'<q class="imprimer" title="Imprimer le trombinoscope."></q></h2>'+responseHTML);
 							infobulle();
 						}
 					}

@@ -269,8 +269,7 @@ $select_selection_items = Form::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_sele
 				<li><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_professeur__evaluations_saisie_deportee">DOC : Saisie déportée.</a></span></li>
 				<li><a id="export_file2" class="lien_ext" href=""><span class="file file_txt">Récupérer un fichier des scores pour une saisie déportée (format <em>csv</em>).</span></a></li>
 				<li><a id="export_file3" class="lien_ext" href=""><span class="file file_pdf">Imprimer un tableau vierge utilisable pour un report manuel des notes (format <em>pdf</em>).</span></a></li>
-				<li><a id="export_file5" class="lien_ext" href=""><span class="file file_pdf">Archiver / Imprimer le tableau avec les scores (format <em>pdf</em> en couleurs).</span></a></li>
-				<li><a id="export_file8" class="lien_ext" href=""><span class="file file_pdf">Archiver / Imprimer le tableau avec les scores (format <em>pdf</em> monochrome).</span></a></li>
+				<li><a id="export_file5" class="lien_ext" href=""><span class="file file_pdf">Archiver / Imprimer le tableau avec les scores (format <em>pdf</em>).</span></a></li>
 			</ul>
 		</div>
 	</p>

@@ -143,50 +143,13 @@ define('FPDF_FONTPATH'                , CHEMIN_DOSSIER_FPDF_FONT); // Pour FPDF 
 if(SACoche=='etiquette') return;
 
 // ============================================================================
-// URL de base du serveur
-// ============================================================================
-
-// Code issu de la fonction _getServerUrl() issue de phpCAS/CAS/Client.php
-// Les variables HTTP_X_FORWARDED_* sont définies quand un serveur web (ou un proxy) qui récupère la main la passe à un serveur php (qui peut ou pas être un autre serveur web, mais en général pas accessible directement).
-// Daniel privilégie HTTP_HOST (qui provient de la requete HTTP) à SERVER_NAME (qui vient de la conf du serveur) quand les 2 existent, mais phpCAS fait le contraire ; en général c'est pareil, sauf s'il y a des alias sans redirection (ex d'un site qui donne les mêmes pages avec et sans les www), dans ce cas le 1er est l'alias demandé et le 2nd le nom principal configuré du serveur (qui peut être avec ou sans les www, suivant la conf).
-// Il arrive (très rarement) que HTTP_HOST ne soit pas défini (HTTP 1.1 impose au client web de préciser un nom de site, ce qui n'était pas le cas en HTTP 1.0 ; HTTP 1.1 date de 1999, avec un brouillon en 1996).
-
-function getServerUrl()
-{
-	if (!empty($_SERVER['HTTP_X_FORWARDED_HOST']))
-	{
-		// explode the host list separated by comma and use the first host
-		$tab_hosts = explode(',', $_SERVER['HTTP_X_FORWARDED_HOST']);
-		return $tab_hosts[0];
-	}
-	else if (!empty($_SERVER['HTTP_X_FORWARDED_SERVER']))
-	{
-		return $_SERVER['HTTP_X_FORWARDED_SERVER'];
-	}
-	else if (!empty($_SERVER['HTTP_HOST']))
-	{
-		return $_SERVER['HTTP_HOST'];
-	}
-	else if (!empty($_SERVER['SERVER_NAME']))
-	{
-		return $_SERVER['SERVER_NAME'];
-	}
-	exit_error( 'HOST indéfini' /*titre*/ , 'SACoche n\'arrive pas à déterminer le nom du serveur hôte !<br />HTTP_X_FORWARDED_HOST, HTTP_HOST, HTTP_X_FORWARDED_SERVER et SERVER_NAME sont tous indéfinis.' /*contenu*/ );
-}
-
-function getServerProtocole()
-{
-	// $_SERVER['HTTPS'] peut valoir 'on' ou 'off' ou ''
-	return ( isset($_SERVER['HTTPS']) && ($_SERVER['HTTPS']=='on') ) ? 'https://' : 'http://' ;
-}
-
-define('URL_BASE',getServerProtocole().getServerUrl());
-
-// ============================================================================
 // URLs de l'application (les chemins restent relatifs pour les images ou les css/js...)
 // ============================================================================
 
-$url = URL_BASE.$_SERVER['SCRIPT_NAME'];
+// Il arrive (très rarement) que HTTP_HOST ne soit pas défini (http 1.1 impose au client web de préciser un nom de site, ce qui n'était pas le cas en http 1.0 ; http 1.1 date de 1999, avec un brouillon en 1996).
+$_SERVER['HTTP_HOST'] = isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : $_SERVER['SERVER_NAME'] ;
+$protocole = ( isset($_SERVER['HTTPS']) && ($_SERVER['HTTPS']=='on') ) ? 'https://' : 'http://';
+$url = $protocole.$_SERVER['HTTP_HOST'].$_SERVER['SCRIPT_NAME'];
 $fin = mb_strpos($url,SACoche);
 if($fin)
 {

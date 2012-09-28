@@ -147,9 +147,10 @@ if($connexion_mode=='cas')
 	enregistrer_session_user($BASE,$auth_DB_ROW);
 	// Redirection vers la page demandée en cas de succès.
 	// En théorie il faudrait laisser la suite du code se poursuivre, ce qui n'est pas impossible, mais ça pose le souci de la transmission de &verif_cookie
+	$protocole = ( isset($_SERVER['HTTPS']) && ($_SERVER['HTTPS']=='on') ) ? 'https://' : 'http://' ;
 	// Rediriger le navigateur.
 	header('Status: 307 Temporary Redirect', TRUE, 307);
-	header('Location: '.URL_BASE.$_SERVER['REQUEST_URI'].'&verif_cookie');
+	header('Location: '.$protocole.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'].'&verif_cookie');
 	exit();
 }
 

@@ -190,7 +190,8 @@ declaration_entete( TRUE /*is_meta_robots*/ , TRUE /*is_favicon*/ , TRUE /*is_rs
 		echo'		<span class="button favicon"><a class="lien_ext" href="'.SERVEUR_PROJET.'">Site officiel</a></span>'."\r\n";
 		if(SERVEUR_TYPE!='PROD')
 		{
-			$url_page   = URL_BASE.$_SERVER['REQUEST_URI'];
+			$protocole  = ( isset($_SERVER['HTTPS']) && ($_SERVER['HTTPS']=='on') ) ? 'https://' : 'http://' ;
+			$url_page   = $protocole.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
 			$separateur = (strpos($url_page,'?')) ? '&' : '?' ;
 			$span_class = DEBUG ? 'firephp' : 'firebug' ;
 			$get_debug  = DEBUG ? 'debug=0' : 'debug=1' ;

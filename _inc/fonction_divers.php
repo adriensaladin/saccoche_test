@@ -957,8 +957,8 @@ function tester_authentification_user($BASE,$login,$password,$mode_connection)
 		switch($mode_connection)
 		{
 			case 'normal' : $message = 'Nom d\'utilisateur incorrect !'; break;
-			case 'cas'    : $message = 'Identification réussie mais identifiant SSO "'.$login.'" inconnu dans SACoche !<br />Un administrateur doit renseigner que l\'identifiant ENT associé à votre compte SACoche est "'.$login.'"&hellip;<br />Il doit pour cela se connecter à SACoche, menu [Gestion&nbsp;courante], et indiquer "'.$login.'" dans la case [Id.&nbsp;Gepi] de la ligne correspondant à votre compte.'; break;
-			case 'gepi'   : $message = 'Identification réussie mais login GEPI "'.$login.'" inconnu dans SACoche !<br />Un administrateur doit renseigner que l\'identifiant GEPI associé à votre compte SACoche est "'.$login.'"&hellip;<br />Il doit pour cela se connecter à SACoche, menu [Gestion&nbsp;courante], et indiquer "'.$login.'" dans la case [Id.&nbsp;ENT] de la ligne correspondant à votre compte.'; break;
+			case 'cas'    : $message = 'Identification réussie mais identifiant SSO "'.$login.'" inconnu dans SACoche !<br />Un administrateur doit renseigner que l\'identifiant ENT associé à votre compte SACoche est "'.$login.'"&hellip;<br />Il doit pour cela se connecter à SACoche, menu [Gestion&nbsp;courante], et indiquer "'.$login.'" dans la case [Id.&nbsp;ENT] de la ligne correspondant à votre compte.'; break;
+			case 'gepi'   : $message = 'Identification réussie mais login GEPI "'.$login.'" inconnu dans SACoche !<br />Un administrateur doit renseigner que l\'identifiant GEPI associé à votre compte SACoche est "'.$login.'"&hellip;<br />Il doit pour cela se connecter à SACoche, menu [Gestion&nbsp;courante], et indiquer "'.$login.'" dans la case [Id.&nbsp;Gepi] de la ligne correspondant à votre compte.'; break;
 		}
 		return array($message,array());
 	}

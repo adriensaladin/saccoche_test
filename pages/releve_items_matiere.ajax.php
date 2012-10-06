@@ -32,7 +32,7 @@ if($_SESSION['SESAMATH_ID']==ID_DEMO) {}
 // Reporter des notes -> redirection vers la page pour le traiter
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-if( (isset($_POST['f_action'])) && ($_POST['f_action']=='reporter_notes')
+if( (isset($_POST['f_action'])) && ($_POST['f_action']=='reporter_notes') )
 {
 	require(CHEMIN_DOSSIER_INCLUDE.'code_report_notes_releve_to_bulletin.php');
 }

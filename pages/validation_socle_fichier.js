@@ -144,7 +144,7 @@ $(document).ready
 					{
 						type : 'POST',
 						url : 'ajax.php?page='+PAGE,
-						data : 'csrf='+CSRF+'&f_action='+action+'&select_eleves='+select_eleves,
+						data : 'f_action='+action + '&' + 'select_eleves=' + select_eleves,
 						dataType : "html",
 						error : function(jqXHR, textStatus, errorThrown)
 						{

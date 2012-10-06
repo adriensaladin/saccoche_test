@@ -31,7 +31,7 @@ $(document).ready
 	{
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Gestion de l'ordre des matières avec jQuery UI Sortable
+//	Gestion de l'ordre des matières avec jQuery UI Sortable
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		var modification = false;
@@ -49,7 +49,7 @@ $(document).ready
 		$('#sortable').sortable( { cursor:'n-resize' , update:function(event,ui){modif_ordre();} } );
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Clic sur le lien pour mettre à jour l'ordre des matières
+//	Clic sur le lien pour mettre à jour l'ordre des matières
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		$('#Enregistrer_ordre').click
@@ -82,7 +82,7 @@ $(document).ready
 						{
 							type : 'POST',
 							url : 'ajax.php?page='+PAGE,
-							data : 'csrf='+CSRF+'&tab_id='+tab_id,
+							data : 'tab_id='+tab_id,
 							dataType : "html",
 							error : function(jqXHR, textStatus, errorThrown)
 							{

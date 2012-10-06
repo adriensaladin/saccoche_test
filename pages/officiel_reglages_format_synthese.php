@@ -39,7 +39,7 @@ $TITRE = "Format de synthèse par référentiel";
 
 $DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_referentiels();
 
-if(empty($DB_TAB))
+if(!count($DB_TAB))
 {
 	echo'<p class="danger">Aucun référentiel enregistré !</p>';
 }

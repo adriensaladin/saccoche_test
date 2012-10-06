@@ -26,10 +26,7 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Récupération des valeurs transmises
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
+if($_SESSION['SESAMATH_ID']==ID_DEMO){exit('Action désactivée pour la démo...');}
 
 $BILAN_TYPE   = (isset($_POST['f_bilan_type']))   ? Clean::texte($_POST['f_bilan_type'])   : '';
 $periode_id   = (isset($_POST['f_periode']))      ? Clean::entier($_POST['f_periode'])     : 0;
@@ -67,7 +64,7 @@ if( (!isset($tab_types[$BILAN_TYPE])) || !$periode_id || !$classe_id || (!count(
 // On vérifie que le bilan est bien accessible en modification et on récupère les infos associées
 
 $DB_ROW = DB_STRUCTURE_OFFICIEL::DB_recuperer_bilan_officiel_infos($classe_id,$periode_id,$BILAN_TYPE);
-if(empty($DB_ROW))
+if(!count($DB_ROW))
 {
 	exit('Association classe / période introuvable !');
 }
@@ -88,7 +85,7 @@ if(!in_array($BILAN_ETAT,array('2rubrique','3synthese')))
 // Lister les élèves concernés : soit d'une classe (en général) soit d'une classe ET d'un sous-groupe pour un prof affecté à un groupe d'élèves
 
 $DB_TAB = (!$is_sous_groupe) ? DB_STRUCTURE_COMMUN::DB_lister_users_regroupement( 'eleve' , 1 /*statut*/ , 'classe' , $classe_id ) : DB_STRUCTURE_COMMUN::DB_lister_eleves_classe_et_groupe($classe_id,$groupe_id) ;
-if(empty($DB_TAB))
+if(!count($DB_TAB))
 {
 	exit('Aucun élève trouvé dans ce regroupement !');
 }
@@ -150,8 +147,6 @@ $make_graph    = FALSE;
 if($BILAN_TYPE=='releve')
 {
 	$format          = 'multimatiere';
-	$aff_bilan_MS    = $_SESSION['OFFICIEL']['RELEVE_MOYENNE_SCORES'];
-	$aff_bilan_PA    = $_SESSION['OFFICIEL']['RELEVE_POURCENTAGE_ACQUIS'];
 	$with_coef       = 1; // Il n'y a que des relevés par matière et pas de synthèse commune : on prend en compte les coefficients pour chaque relevé matière.
 	$matiere_id      = TRUE;
 	$matiere_nom     = '';

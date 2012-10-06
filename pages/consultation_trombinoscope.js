@@ -63,7 +63,7 @@ $(document).ready
 				{
 					type : 'POST',
 					url : 'ajax.php?page='+PAGE,
-					data : 'csrf='+CSRF+'&f_groupe_id='+groupe_id+'&f_groupe_type='+groupe_type+'&f_groupe_nom='+groupe_nom,
+					data : 'f_groupe_id='+groupe_id+'&f_groupe_type='+groupe_type+'&f_groupe_nom='+groupe_nom,
 					dataType : "html",
 					error : function(jqXHR, textStatus, errorThrown)
 					{

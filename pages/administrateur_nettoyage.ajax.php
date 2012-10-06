@@ -86,7 +86,7 @@ if($action=='purger')
 	SACocheLog::ajouter('Suppression de tous les devoirs sans les saisies associées.');
 	// Supprimer tous les types de groupes, sauf les classes (donc 'groupe' ; 'besoin' ; 'eval'), ainsi que les jointures avec les périodes.
 	$DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_groupes_sauf_classes();
-	if(!empty($DB_TAB))
+	if(count($DB_TAB))
 	{
 		foreach($DB_TAB as $DB_ROW)
 		{
@@ -100,7 +100,7 @@ if($action=='purger')
 	DB_STRUCTURE_ADMINISTRATEUR::DB_supprimer_bilans_officiels();
 	// Supprimer les comptes utilisateurs désactivés depuis plus de 3 ans
 	$DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_users_desactives_obsoletes();
-	if(!empty($DB_TAB))
+	if(count($DB_TAB))
 	{
 		foreach($DB_TAB as $DB_ROW)
 		{

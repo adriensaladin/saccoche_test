@@ -48,7 +48,7 @@ $user_id            = (isset($_POST['f_user_id']))            ? Clean::entier($_
 $user_texte         = (isset($_POST['f_user_texte']))         ? Clean::texte($_POST['f_user_texte'])         : '';
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Traitement du formulaire form_mise_en_page
+//	Traitement du formulaire form_mise_en_page
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 if( ($action=='mise_en_page') && $infos_responsables && $horizontal_gauche && $horizontal_milieu && $horizontal_droite && $vertical_haut && $vertical_milieu && $vertical_bas && $nombre_exemplaires && $marge_gauche && $marge_droite && $marge_haut && $marge_bas && $tampon_signature )
@@ -94,7 +94,7 @@ if( ($action=='mise_en_page') && $infos_responsables && $horizontal_gauche && $h
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Traitement du formulaire form_tampon (upload d'un fichier image)
+//	Traitement du formulaire form_tampon (upload d'un fichier image)
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 if( ($action=='upload_signature') && ($user_id>=0) && ($user_texte!='') )
@@ -130,7 +130,7 @@ if( ($action=='upload_signature') && ($user_id>=0) && ($user_texte!='') )
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Supprimer un fichier image (tampon de l'établissement ou signature)
+//	Supprimer un fichier image (tampon de l'établissement ou signature)
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 if( ($action=='delete_signature') && ($user_id>=0) )
@@ -140,7 +140,7 @@ if( ($action=='delete_signature') && ($user_id>=0) )
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// On ne devrait pas en arriver là...
+//	On ne devrait pas en arriver là...
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 exit('Erreur avec les données transmises !');

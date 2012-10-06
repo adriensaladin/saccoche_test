@@ -180,7 +180,7 @@ if( ($action=='identifier') && ($profil=='webmestre') && ($login=='webmestre') &
 
 if( ($action=='identifier') && ($profil=='normal') && ($login!='') && ($password!='') )
 {
-	list($auth_resultat,$auth_DB_ROW) = tester_authentification_user( $BASE , $login , $password , 'normal' /*mode_connection*/ );
+	list($auth_resultat,$auth_DB_ROW) = tester_authentification_user($BASE,$login,$password,$mode_connection='normal');
 	if($auth_resultat=='ok')
 	{
 		enregistrer_session_user($BASE,$auth_DB_ROW);

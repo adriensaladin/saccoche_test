@@ -66,8 +66,8 @@ if(!isset($tab_droits[$PAGE]))
 // Ouverture de la session et gestion des droits d'accès
 Session::execute($tab_droits[$PAGE]);
 
-// Infos DEBUG dans FirePHP
-if (DEBUG>3) afficher_infos_debug_FirePHP();
+// Pour le devel
+if (DEBUG) afficher_infos_debug();
 
 // Blocage éventuel par le webmestre ou un administrateur ou l'automate (on ne peut pas le tester avant car il faut avoir récupéré les données de session)
 LockAcces::stopper_si_blocage( $_SESSION['BASE'] , FALSE /*demande_connexion_profil*/ );
@@ -176,9 +176,6 @@ $tab_fichiers_head[] = array( 'js'  , compacter('./_js/script.js','pack') ); // 
 if($PAGE=='officiel_accueil')    $tab_fichiers_head[] = array( 'js'  , compacter('./_js/highcharts.js','mini') );
 if(is_file($filename_js_normal)) $tab_fichiers_head[] = array( 'js' , compacter($filename_js_normal,'pack') );
 
-// Jeton CSRF
-$CSRF = isset($tab_verif_csrf[$PAGE]) ? generer_jeton_anti_CSRF($PAGE) : '' ;
-
 // Affichage de l'en-tête
 declaration_entete( TRUE /*is_meta_robots*/ , TRUE /*is_favicon*/ , TRUE /*is_rss*/ , $tab_fichiers_head , $TITRE_NAVIGATEUR , $CSS_PERSO );
 ?>
@@ -191,6 +188,15 @@ declaration_entete( TRUE /*is_meta_robots*/ , TRUE /*is_favicon*/ , TRUE /*is_rs
 		echo'	<img id="logo" alt="SACoche" src="./_img/logo_petit2.png" width="147" height="46" />'."\r\n";
 		echo'	<div id="top_info">'."\r\n";
 		echo'		<span class="button favicon"><a class="lien_ext" href="'.SERVEUR_PROJET.'">Site officiel</a></span>'."\r\n";
+		if(SERVEUR_TYPE!='PROD')
+		{
+			$url_page   = URL_BASE.$_SERVER['REQUEST_URI'];
+			$separateur = (strpos($url_page,'?')) ? '&' : '?' ;
+			$span_class = DEBUG ? 'firephp' : 'firebug' ;
+			$get_debug  = DEBUG ? 'debug=0' : 'debug=1' ;
+			$txt_debug  = DEBUG ? 'on&rarr;off' : 'off&rarr;on' ;
+			echo'		<span class="button '.$span_class.'"><a href="'.html($url_page.$separateur.$get_debug).'">'.$txt_debug.'</a></span>'."\r\n";
+		}
 		echo'		<span class="button home">'.html($_SESSION['ETABLISSEMENT']['DENOMINATION']).'</span>'."\r\n";
 		echo'		<span class="button profil_'.$_SESSION['USER_PROFIL'].'">'.html($_SESSION['USER_PRENOM'].' '.$_SESSION['USER_NOM']).' ('.$_SESSION['USER_PROFIL'].')</span>'."\r\n";
 		echo'		<span class="button clock_fixe"><span id="clock">'.$_SESSION['DUREE_INACTIVITE'].' min</span></span>'."\r\n";
@@ -252,7 +258,6 @@ declaration_entete( TRUE /*is_meta_robots*/ , TRUE /*is_favicon*/ , TRUE /*is_rs
 	?>
 	<script type="text/javascript">
 		var PAGE='<?php echo $PAGE ?>';
-		var CSRF='<?php echo $CSRF ?>';
 		var DUREE_AUTORISEE='<?php echo $_SESSION['DUREE_INACTIVITE'] ?>';
 		var DUREE_AFFICHEE='<?php echo $_SESSION['DUREE_INACTIVITE'] ?>';
 		var CONNEXION_USED='<?php echo (isset($_COOKIE[COOKIE_AUTHMODE])) ? $_COOKIE[COOKIE_AUTHMODE] : 'normal' ; ?>';

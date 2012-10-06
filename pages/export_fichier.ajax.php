@@ -39,7 +39,7 @@ $palier_nom  = (isset($_POST['f_palier_nom']))  ? Clean::texte($_POST['f_palier_
 $tab_types = array('Classes'=>'classe' , 'Groupes'=>'groupe' , 'Besoins'=>'groupe');
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Export CSV des données des élèves d'une classe
+//	Export CSV des données des élèves d'une classe
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 if( ($type_export=='listing_users') && $groupe_id && isset($tab_types[$groupe_type]) && $groupe_nom )
@@ -52,7 +52,7 @@ if( ($type_export=='listing_users') && $groupe_id && isset($tab_types[$groupe_ty
 	$export_html = '<table class="p"><thead><tr><th>Id</th><th>Login</th><th>Nom</th><th>Prénom</th><th>Groupe</th></tr></thead><tbody>'."\r\n";
 	// Récupérer les élèves de la classe ou du groupe
 	$DB_TAB = DB_STRUCTURE_COMMUN::DB_lister_users_regroupement( 'eleve' /*profil*/ , TRUE /*statut*/ , $tab_types[$groupe_type] , $groupe_id , 'user_id,user_login,user_nom,user_prenom' );
-	if(!empty($DB_TAB))
+	if(count($DB_TAB))
 	{
 		foreach($DB_TAB as $DB_ROW)
 		{
@@ -74,7 +74,7 @@ if( ($type_export=='listing_users') && $groupe_id && isset($tab_types[$groupe_ty
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Export CSV des données des items d'une matière
+//	Export CSV des données des items d'une matière
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 if( ($type_export=='listing_matiere') && $matiere_id && $matiere_nom )
@@ -88,7 +88,7 @@ if( ($type_export=='listing_matiere') && $matiere_id && $matiere_nom )
 	$export_html = '<table class="p"><thead><tr><th>Id</th><th>Matière</th><th>Niveau</th><th>Référence</th><th>Nom</th></tr></thead><tbody>'."\r\n";
 
 	$DB_TAB = DB_STRUCTURE_COMMUN::DB_recuperer_arborescence($prof_id=0,$matiere_id,$niveau_id=0,$only_socle=false,$only_item=true,$socle_nom=false);
-	if(!empty($DB_TAB))
+	if(count($DB_TAB))
 	{
 		foreach($DB_TAB as $DB_ROW)
 		{
@@ -111,7 +111,7 @@ if( ($type_export=='listing_matiere') && $matiere_id && $matiere_nom )
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Export CSV de l'arborescence des items d'une matière
+//	Export CSV de l'arborescence des items d'une matière
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 if( ($type_export=='arbre_matiere') && $matiere_id && $matiere_nom )
@@ -215,7 +215,7 @@ if( ($type_export=='arbre_matiere') && $matiere_id && $matiere_nom )
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Export CSV de l'arborescence du socle
+//	Export CSV de l'arborescence du socle
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 if( ($type_export=='arbre_socle') && $palier_id && $palier_nom )
@@ -300,7 +300,7 @@ if( ($type_export=='arbre_socle') && $palier_id && $palier_nom )
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Export CSV des liens des matières rattachés aux liens du socle
+//	Export CSV des liens des matières rattachés aux liens du socle
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 if( ($type_export=='jointure_socle_matiere') && $palier_id && $palier_nom )
@@ -412,7 +412,7 @@ if( ($type_export=='jointure_socle_matiere') && $palier_id && $palier_nom )
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// On ne devrait pas arriver jusque là.
+//	On ne devrait pas arriver jusque là.
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 exit('Erreur avec les données transmises !');

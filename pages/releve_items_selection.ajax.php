@@ -28,19 +28,6 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 if($_SESSION['SESAMATH_ID']==ID_DEMO) {}
 
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Reporter des notes -> redirection vers la page pour le traiter
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-if( (isset($_POST['f_action'])) && ($_POST['f_action']=='reporter_notes')
-{
-	require(CHEMIN_DOSSIER_INCLUDE.'code_report_notes_releve_to_bulletin.php');
-}
-
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Autres cas
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-
 $format            = 'selection';
 $aff_bilan_MS      = (isset($_POST['f_bilan_MS']))    ? 1                                     : 0;
 $aff_bilan_PA      = (isset($_POST['f_bilan_PA']))    ? 1                                     : 0;

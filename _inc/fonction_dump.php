@@ -141,7 +141,7 @@ function sauvegarder_tables_base_etablissement($dossier_temp,$nb_lignes_maxi)
 			$tab_ligne_insert = array();
 			$from = $numero_boucle*$tab_table_info['NombreLignes'];
 			$DB_TAB = DB_STRUCTURE_COMMUN::DB_recuperer_table_donnees( $tab_table_info['Nom'] , $from ,$tab_table_info['NombreLignes'] );
-			if(!empty($DB_TAB))
+			if(count($DB_TAB))
 			{
 				$fichier_contenu .= 'ALTER TABLE '.$tab_table_info['Nom'].' DISABLE KEYS;'."\r\n";
 				foreach($DB_TAB as $DB_ROW)

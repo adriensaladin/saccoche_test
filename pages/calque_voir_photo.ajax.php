@@ -37,7 +37,7 @@ if(!$user_id)
 
 // On récupère la photo
 $DB_ROW = DB_STRUCTURE_PHOTO::recuperer_photo($user_id);
-$image = (!empty($DB_ROW)) ? '<img width="'.$DB_ROW['image_largeur'].'" height="'.$DB_ROW['image_hauteur'].'" src="data:'.image_type_to_mime_type(IMAGETYPE_JPEG).';base64,'.$DB_ROW['image_contenu'].'" alt="" />' : '<img width="'.(PHOTO_DIMENSION_MAXI*2/3).'" height="'.PHOTO_DIMENSION_MAXI.'" src="./_img/trombinoscope_vide.png" alt="" title="absence de photo" />' ;
+$image = (count($DB_ROW)) ? '<img width="'.$DB_ROW['image_largeur'].'" height="'.$DB_ROW['image_hauteur'].'" src="data:'.image_type_to_mime_type(IMAGETYPE_JPEG).';base64,'.$DB_ROW['image_contenu'].'" alt="" />' : '<img width="'.(PHOTO_DIMENSION_MAXI*2/3).'" height="'.PHOTO_DIMENSION_MAXI.'" src="./_img/trombinoscope_vide.png" alt="" title="absence de photo" />' ;
 
 // On affiche le résultat
 echo'<div class="photo">'.$image.'</div>';

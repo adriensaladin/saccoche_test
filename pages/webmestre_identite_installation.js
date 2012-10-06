@@ -42,7 +42,7 @@ $(document).ready
 				{
 					type : 'POST',
 					url : 'ajax.php?page='+PAGE,
-					data : 'csrf='+CSRF+'&f_action=select_logo',
+					data : 'f_action=select_logo',
 					dataType : "html",
 					error : function(jqXHR, textStatus, errorThrown)
 					{
@@ -78,7 +78,7 @@ $(document).ready
 				{
 					type : 'POST',
 					url : 'ajax.php?page='+PAGE,
-					data : 'csrf='+CSRF+'&f_action=listing_logos',
+					data : 'f_action=listing_logos',
 					dataType : "html",
 					error : function(jqXHR, textStatus, errorThrown)
 					{
@@ -118,7 +118,7 @@ $(document).ready
 					{
 						type : 'POST',
 						url : 'ajax.php?page='+PAGE,
-						data : 'csrf='+CSRF+'&f_action=delete_logo'+'&f_logo='+logo,
+						data : 'f_action=delete_logo&f_logo='+logo,
 						dataType : "html",
 						error : function(jqXHR, textStatus, errorThrown)
 						{
@@ -207,7 +207,7 @@ $(document).ready
 		}
 
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
-		// Gérer les focus et click pour les boutons radio
+		//	Gérer les focus et click pour les boutons radio
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		$('#f_cnil_numero').focus
@@ -297,7 +297,7 @@ $(document).ready
 		// Options d'envoi du formulaire (avec jquery.form.js)
 		var ajaxOptions =
 		{
-			url : 'ajax.php?page='+PAGE+'&csrf='+CSRF,
+			url : 'ajax.php?page='+PAGE,
 			type : 'POST',
 			dataType : "html",
 			clearForm : false,

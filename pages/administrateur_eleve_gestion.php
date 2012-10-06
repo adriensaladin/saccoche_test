@@ -29,8 +29,7 @@ if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');
 $TITRE = "Gérer les élèves";
 
 // Récupérer d'éventuels paramètres pour restreindre l'affichage
-// Pas de passage par la page ajax.php, mais pas besoin ici de protection contre attaques type CSRF
-$afficher    = (isset($_POST['f_afficher'])) ? TRUE                              : FALSE ;
+$afficher    = (isset($_POST['f_afficher'])) ? TRUE                             : FALSE ;
 $statut      = (isset($_POST['f_statut']))   ? Clean::entier($_POST['f_statut']) : 1 ;
 $groupe      = (isset($_POST['f_groupes']))  ? Clean::texte($_POST['f_groupes']) : '' ;
 $groupe_type = Clean::texte( substr($groupe,0,1) );

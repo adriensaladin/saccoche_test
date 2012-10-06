@@ -31,7 +31,7 @@ $(document).ready
 	{
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Clic sur l'image pour Voir un référentiel de compétences
+//	Clic sur l'image pour Voir un référentiel de compétences
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 		$('q.voir').click
 		(
@@ -46,7 +46,7 @@ $(document).ready
 					{
 						type : 'POST',
 						url : 'ajax.php?page='+PAGE,
-						data : 'csrf='+CSRF+'&ids='+ids,
+						data : 'ids='+ids,
 						dataType : "html",
 						error : function(jqXHR, textStatus, errorThrown)
 						{

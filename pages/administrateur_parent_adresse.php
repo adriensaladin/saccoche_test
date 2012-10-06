@@ -31,8 +31,7 @@ $TITRE = "Adresses des parents";
 
 <?php
 // Récupérer d'éventuels paramètres pour restreindre l'affichage
-// Pas de passage par la page ajax.php, mais pas besoin ici de protection contre attaques type CSRF
-$afficher     = (isset($_POST['f_afficher']))     ? TRUE                                    : FALSE ;
+$afficher     = (isset($_POST['f_afficher']))     ? TRUE                                   : FALSE ;
 $debut_nom    = (isset($_POST['f_debut_nom']))    ? Clean::nom($_POST['f_debut_nom'])       : '' ;
 $debut_prenom = (isset($_POST['f_debut_prenom'])) ? Clean::prenom($_POST['f_debut_prenom']) : '' ;
 ?>

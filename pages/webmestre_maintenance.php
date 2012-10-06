@@ -40,21 +40,17 @@ else
 {
 	$label_acces = '<label class="valide">Application accessible.</label>';
 }
-// Pas de bouton maj automatique si LCS ou serveur Sésamath
-if(IS_HEBERGEMENT_SESAMATH)
-{
-	$disabled = ' disabled';
-	$label_maj = '<label id="ajax_maj" class="erreur">La mise à jour de SACoche sur le serveur Sésamath doit s\'effectuer en déployant le SVN.</label>';
-}
-else if(is_file(CHEMIN_FICHIER_WS_LCS))
-{
-	$disabled = ' disabled';
-	$label_maj = '<label id="ajax_maj" class="erreur">La mise à jour du module LCS-SACoche doit s\'effectuer via le LCS.</label>';
-}
-else
+// Pas de bouton maj automatique si LCS
+$fichier = './webservices/import_lcs.php';
+if(!is_file($fichier))
 {
 	$disabled = '';
 	$label_maj = '<label id="ajax_maj">&nbsp;</label>';
+}
+else
+{
+	$disabled = ' disabled';
+	$label_maj = '<label id="ajax_maj" class="erreur">La mise à jour du module LCS-SACoche doit s\'effectuer via le LCS.</label>';
 }
 ?>
 

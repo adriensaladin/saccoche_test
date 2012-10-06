@@ -53,7 +53,7 @@ $(document).ready
 		);
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Clic sur le lien pour revenir au formulaire principal
+//	Clic sur le lien pour revenir au formulaire principal
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 		$('#bouton_annuler').live // live est utilisé pour prendre en compte les nouveaux éléments créés
 		('click',
@@ -66,7 +66,7 @@ $(document).ready
 		);
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Éléments dynamiques du formulaire
+//	Éléments dynamiques du formulaire
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		// Tout cocher ou tout décocher
@@ -263,7 +263,7 @@ $(document).ready
 					{
 						type : 'POST',
 						url : 'ajax.php?page='+PAGE,
-						data : 'csrf='+CSRF+'&f_step='+f_step+'&f_action='+f_action,
+						data : 'f_step='+f_step+'&f_action='+f_action,
 						dataType : "html",
 						error : function(jqXHR, textStatus, errorThrown)
 						{
@@ -329,7 +329,7 @@ $(document).ready
 						{
 							type : 'POST',
 							url : 'ajax.php?page='+PAGE,
-							data : 'csrf='+CSRF+'&f_step='+f_step+'&f_action='+f_action+'&'+$("#form2").serialize(),
+							data : 'f_step='+f_step+'&f_action='+f_action+'&'+$("#form2").serialize(),
 							dataType : "html",
 							error : function(jqXHR, textStatus, errorThrown)
 							{
@@ -383,7 +383,7 @@ $(document).ready
 					{
 						type : 'POST',
 						url : 'ajax.php?page='+PAGE,
-						data : 'csrf='+CSRF+'&f_step='+f_step+'&f_action='+f_action+'&f_check='+f_check,
+						data : 'f_step='+f_step+'&f_action='+f_action+'&f_check='+f_check,
 						dataType : "html",
 						error : function(jqXHR, textStatus, errorThrown)
 						{
@@ -423,7 +423,7 @@ $(document).ready
 					{
 						type : 'POST',
 						url : 'ajax.php?page='+PAGE,
-						data : 'csrf='+CSRF+'&f_step=53'+'&f_action='+f_action+'&'+$("#form2").serialize(),
+						data : 'f_step=53&f_action='+f_action+'&'+$("#form2").serialize(),
 						dataType : "html",
 						error : function(jqXHR, textStatus, errorThrown)
 						{

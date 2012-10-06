@@ -31,7 +31,7 @@ $(document).ready
 	{
 
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
-		// Enlever le message ajax et le résultat précédent au changement d'un select
+		//	Enlever le message ajax et le résultat précédent au changement d'un select
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		$('select').change
@@ -44,7 +44,7 @@ $(document).ready
 		);
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Traitement du formulaire
+//	Traitement du formulaire
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		// Le formulaire qui va être analysé et traité en AJAX
@@ -71,7 +71,7 @@ $(document).ready
 		// Options d'envoi du formulaire (avec jquery.form.js)
 		var ajaxOptions =
 		{
-			url : 'ajax.php?page='+PAGE+'&csrf='+CSRF,
+			url : 'ajax.php?page='+PAGE,
 			type : 'POST',
 			dataType : "html",
 			clearForm : false,

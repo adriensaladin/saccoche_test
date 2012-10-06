@@ -31,7 +31,7 @@ $(document).ready
 	{
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Formulaire et traitement
+//	Formulaire et traitement
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		$('#bouton_valider').click
@@ -71,7 +71,7 @@ $(document).ready
 					{
 						type : 'POST',
 						url : 'ajax.php?page='+PAGE,
-						data : 'csrf='+CSRF+'&f_action=envoyer'+'&f_titre='+titre+'&f_contenu='+contenu+'&f_base='+f_listing_id,
+						data : 'f_action=' + 'envoyer' + '&f_titre=' + titre + '&f_contenu=' + contenu + '&f_base=' + f_listing_id,
 						dataType : "html",
 						error : function(jqXHR, textStatus, errorThrown)
 						{
@@ -118,7 +118,7 @@ $(document).ready
 				{
 					type : 'POST',
 					url : 'ajax.php?page='+PAGE,
-					data : 'csrf='+CSRF+'&f_action=envoyer'+'&num='+num+'&max='+max,
+					data : 'f_action=' + 'envoyer' + '&num=' + num + '&max=' + max,
 					dataType : "html",
 					error : function(jqXHR, textStatus, errorThrown)
 					{
@@ -179,7 +179,7 @@ $(document).ready
 		);
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Clic sur un bouton pour effectuer une action sur les structures sélectionnées
+//	Clic sur un bouton pour effectuer une action sur les structures sélectionnées
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		var supprimer_structures_selectionnees = function(listing_id)
@@ -192,7 +192,7 @@ $(document).ready
 				{
 					type : 'POST',
 					url : 'ajax.php?page='+PAGE,
-					data : 'csrf='+CSRF+'&f_action=supprimer'+'&f_base='+listing_id,
+					data : 'f_action=supprimer&f_base='+listing_id,
 					dataType : "html",
 					error : function(jqXHR, textStatus, errorThrown)
 					{

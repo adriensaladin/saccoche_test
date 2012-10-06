@@ -31,7 +31,7 @@ $(document).ready
 	{
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Initialisation
+//	Initialisation
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		var mode = false;
@@ -56,7 +56,7 @@ $(document).ready
 		trier_tableau();
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Fonctions utilisées
+//	Fonctions utilisées
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		/**
@@ -157,7 +157,7 @@ $(document).ready
 		};
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Clic sur un bouton pour confirmer le retrait d'une matière partagée
+//	Clic sur un bouton pour confirmer le retrait d'une matière partagée
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		var retirer_partage = function()
@@ -169,7 +169,7 @@ $(document).ready
 				{
 					type : 'POST',
 					url : 'ajax.php?page='+PAGE,
-					data : 'csrf='+CSRF+'&f_action=supprimer'+'&f_id='+$('#f_id').val(),
+					data : 'f_action=supprimer&f_id='+$('#f_id').val(),
 					dataType : "html",
 					error : function(jqXHR, textStatus, errorThrown)
 					{
@@ -230,7 +230,7 @@ $(document).ready
 		}
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Appel des fonctions en fonction des événements ; live est utilisé pour prendre en compte les nouveaux éléments créés
+//	Appel des fonctions en fonction des événements ; live est utilisé pour prendre en compte les nouveaux éléments créés
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		$('#form_partage q.ajouter').click( ajouter_partage );
@@ -244,7 +244,7 @@ $(document).ready
 		$('#f_motclef').live(        'keyup' , function(e){intercepter_motclef(e);} );
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Clic sur le bouton pour fermer le cadre de recherche d'une matière partagée à ajouter
+//	Clic sur le bouton pour fermer le cadre de recherche d'une matière partagée à ajouter
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		$('#ajout_annuler').click
@@ -258,7 +258,7 @@ $(document).ready
 		);
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Choix du mode de recherche d'une matière partagée
+//	Choix du mode de recherche d'une matière partagée
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		$('#f_recherche_mode input').click
@@ -284,7 +284,7 @@ $(document).ready
 		);
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Actualisation du résultat de la recherche des matières par famille ou mot clef
+//	Actualisation du résultat de la recherche des matières par famille ou mot clef
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		function maj_resultat_recherche(data_action,data_parametre)
@@ -295,7 +295,7 @@ $(document).ready
 				{
 					type : 'POST',
 					url : 'ajax.php?page='+PAGE,
-					data : 'csrf='+CSRF+'&'+data_action+'&'+data_parametre,
+					data : data_action+'&'+data_parametre,
 					dataType : "html",
 					error : function(jqXHR, textStatus, errorThrown)
 					{
@@ -320,7 +320,7 @@ $(document).ready
 		}
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Changement du select f_famille => actualisation du résultat de la recherche
+//	Changement du select f_famille => actualisation du résultat de la recherche
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		$("#f_famille").change
@@ -341,7 +341,7 @@ $(document).ready
 		);
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Clic sur bouton rechercher_motclef => actualisation du résultat de la recherche
+//	Clic sur bouton rechercher_motclef => actualisation du résultat de la recherche
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		$('#rechercher_motclef').click
@@ -362,7 +362,7 @@ $(document).ready
 		);
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Clic sur un bouton pour ajouter une matière partagée trouvée suite à une recherche
+//	Clic sur un bouton pour ajouter une matière partagée trouvée suite à une recherche
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		$('#f_recherche_resultat q.ajouter').live // live est utilisé pour prendre en compte les nouveaux éléments créés
@@ -377,7 +377,7 @@ $(document).ready
 					{
 						type : 'POST',
 						url : 'ajax.php?page='+PAGE,
-						data : 'csrf='+CSRF+'&f_action=ajouter_partage'+'&f_matiere='+matiere_id,
+						data : 'f_action=ajouter_partage&f_matiere='+matiere_id,
 						dataType : "html",
 						error : function(jqXHR, textStatus, errorThrown)
 						{
@@ -416,7 +416,7 @@ $(document).ready
 		);
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Clic sur le bouton pour déplacer les référentiels d'une matière vers une autre
+//	Clic sur le bouton pour déplacer les référentiels d'une matière vers une autre
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		$('#deplacer_referentiels').click
@@ -449,7 +449,7 @@ $(document).ready
 					{
 						type : 'POST',
 						url : 'ajax.php?page='+PAGE,
-						data : 'csrf='+CSRF+'&f_action=deplacer_referentiels'+'&f_id_avant='+matiere_id_avant+'&f_id_apres='+matiere_id_apres,
+						data : 'f_action=deplacer_referentiels&f_id_avant='+matiere_id_avant+'&f_id_apres='+matiere_id_apres,
 						dataType : "html",
 						error : function(jqXHR, textStatus, errorThrown)
 						{
@@ -479,7 +479,7 @@ $(document).ready
 		);
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Traitement du formulaire
+//	Traitement du formulaire
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		// Le formulaire qui va être analysé et traité en AJAX
@@ -508,7 +508,7 @@ $(document).ready
 		// Options d'envoi du formulaire (avec jquery.form.js)
 		var ajaxOptions =
 		{
-			url : 'ajax.php?page='+PAGE+'&csrf='+CSRF,
+			url : 'ajax.php?page='+PAGE,
 			type : 'POST',
 			dataType : "html",
 			clearForm : false,

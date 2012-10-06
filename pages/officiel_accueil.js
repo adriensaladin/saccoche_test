@@ -35,7 +35,7 @@ $(document).ready
 	{
 
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
-		// Clic pour tout cocher ou tout décocher
+		//	Clic pour tout cocher ou tout décocher
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		$('#table_bilans input[name=all_check]').click
@@ -90,7 +90,7 @@ $(document).ready
 		);
 
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
-		// Clic sur une cellule (remplace un champ label, impossible à définir sur plusieurs colonnes)
+		//	Clic sur une cellule (remplace un champ label, impossible à définir sur plusieurs colonnes)
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		$('td.label').live
@@ -102,7 +102,7 @@ $(document).ready
 		);
 
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
-		// Enregistrer les modifications de types et/ou d'accès
+		//	Enregistrer les modifications de types et/ou d'accès
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		$('#bouton_valider').click
@@ -122,7 +122,6 @@ $(document).ready
 				}
 				$('#ajax_msg_gestion').removeAttr("class").addClass("loader").html("Connexion au serveur&hellip;");
 				$('#listing_ids').val(listing_id);
-				$('#csrf').val(CSRF);
 				var form = document.getElementById('form_gestion');
 				form.action = './index.php?page=officiel&section=accueil_'+BILAN_TYPE;
 				form.method = 'post';
@@ -131,11 +130,11 @@ $(document).ready
 		);
 
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
-		// Initialisation de variables utiles accessibles depuis toute fonction
+		//	Initialisation de variables utiles accessibles depuis toute fonction
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		var memo_objet         = '';
-		var memo_section       = '';
+		var memo_page          = '';
 		var memo_classe        = 0;
 		var memo_groupe        = 0;
 		var memo_periode       = 0;
@@ -152,16 +151,16 @@ $(document).ready
 		var memo_classe_first  = 0;
 		var memo_classe_last   = 0;
 
-		var tab_classe_action_to_section = new Array();
-		tab_classe_action_to_section['modifier']     = 'officiel_saisir';
-		tab_classe_action_to_section['tamponner']    = 'officiel_saisir';
-		tab_classe_action_to_section['detailler']    = 'officiel_examiner';
-		tab_classe_action_to_section['voir']         = 'officiel_consulter';
-		tab_classe_action_to_section['imprimer']     = 'officiel_imprimer';
-		tab_classe_action_to_section['voir_archive'] = 'officiel_imprimer';
+		var tab_classe_action_to_adresse_page = new Array();
+		tab_classe_action_to_adresse_page['modifier']     = 'officiel_action_saisir';
+		tab_classe_action_to_adresse_page['tamponner']    = 'officiel_action_saisir';
+		tab_classe_action_to_adresse_page['detailler']    = 'officiel_action_examiner';
+		tab_classe_action_to_adresse_page['voir']         = 'officiel_action_consulter';
+		tab_classe_action_to_adresse_page['imprimer']     = 'officiel_action_imprimer';
+		tab_classe_action_to_adresse_page['voir_archive'] = 'officiel_action_imprimer';
 
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
-		// Clic sur une image action
+		//	Clic sur une image action
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		$('#table_bilans q').click
@@ -169,15 +168,15 @@ $(document).ready
 			function()
 			{
 				memo_objet = $(this).attr('class');
-				memo_section = tab_classe_action_to_section[memo_objet];
-				if(typeof(memo_section)!='undefined')
+				memo_page = tab_classe_action_to_adresse_page[memo_objet];
+				if(typeof(memo_page)!='undefined')
 				{
 					var tab_ids = $(this).parent().attr('id').split('_');
 					memo_classe  = tab_ids[1];
 					memo_groupe  = tab_ids[2];
 					memo_periode = tab_ids[3];
 					$('#f_objet').val(memo_objet);
-					if( (memo_section=='officiel_saisir') || (memo_section=='officiel_consulter') )
+					if( (memo_page=='officiel_action_saisir') || (memo_page=='officiel_action_consulter') )
 					{
 						// Masquer le tableau ; Afficher la zone action et charger son contenu
 						$('#form_gestion , #table_bilans , #puces_secondaires').hide(0);
@@ -186,8 +185,8 @@ $(document).ready
 						(
 							{
 								type : 'POST',
-								url : 'ajax.php?page='+PAGE,
-								data : 'csrf='+CSRF+'&f_section='+memo_section+'&f_action='+'initialiser'+'&f_bilan_type='+BILAN_TYPE+'&f_classe='+memo_classe+'&f_groupe='+memo_groupe+'&f_periode='+memo_periode+'&'+$('#form_hidden').serialize(),
+								url : 'ajax.php?page='+memo_page,
+								data : 'f_action='+'initialiser'+'&f_bilan_type='+BILAN_TYPE+'&f_classe='+memo_classe+'&f_groupe='+memo_groupe+'&f_periode='+memo_periode+'&'+$('#form_hidden').serialize(),
 								dataType : "html",
 								error : function(jqXHR, textStatus, errorThrown)
 								{
@@ -215,14 +214,14 @@ $(document).ready
 							}
 						);
 					}
-					else if(memo_section=='officiel_examiner')
+					else if(memo_page=='officiel_action_examiner')
 					{
 						// Masquer le tableau ; Afficher la zone de choix des rubriques
 						$('#form_gestion , #table_bilans , #puces_secondaires').hide(0);
 						$('#zone_action_classe h2').html('Recherche de saisies manquantes');
 						$('#zone_chx_rubriques').show(0);
 					}
-					else if(memo_section=='officiel_imprimer')
+					else if(memo_page=='officiel_action_imprimer')
 					{
 						// Masquer le tableau ; Afficher la zone de choix des élèves, et si les bulletins sont déjà imprimés
 						var titre = (memo_objet=='imprimer') ? 'Imprimer le bilan (PDF)' : 'Consulter un bilan imprimé (PDF)' ;
@@ -238,9 +237,9 @@ $(document).ready
 		);
 
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
-		// Clic sur le bouton pour fermer la zone action_eleve
-		// Clic sur le bouton pour fermer la zone de choix des rubriques
-		// Clic sur le bouton pour fermer la zone zone_action_classe
+		//	Clic sur le bouton pour fermer la zone action_eleve
+		//	Clic sur le bouton pour fermer la zone de choix des rubriques
+		//	Clic sur le bouton pour fermer la zone zone_action_classe
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		$('#fermer_zone_action_eleve').live // live est utilisé pour prendre en compte les nouveaux éléments créés
@@ -279,7 +278,7 @@ $(document).ready
 		);
 
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
-		// [officiel_saisir|officiel_consulter] Navigation d'un élève à un autre
+		//	[officiel_action_saisir|officiel_action_consulter] Navigation d'un élève à un autre
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		function charger_nouvel_eleve(eleve_id,reload)
@@ -295,8 +294,8 @@ $(document).ready
 			(
 				{
 					type : 'POST',
-					url : 'ajax.php?page='+PAGE,
-					data : 'csrf='+CSRF+'&f_section='+memo_section+'&f_action='+'charger'+'&f_bilan_type='+BILAN_TYPE+'&f_classe='+memo_classe+'&f_groupe='+memo_groupe+'&f_periode='+memo_periode+'&f_user='+memo_eleve+'&'+$('#form_hidden').serialize(),
+					url : 'ajax.php?page='+memo_page,
+					data : 'f_action='+'charger'+'&f_bilan_type='+BILAN_TYPE+'&f_classe='+memo_classe+'&f_groupe='+memo_groupe+'&f_periode='+memo_periode+'&f_user='+memo_eleve+'&'+$('#form_hidden').serialize(),
 					dataType : "html",
 					error : function(jqXHR, textStatus, errorThrown)
 					{
@@ -423,7 +422,7 @@ $(document).ready
 		);
 
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
-		// [officiel_saisir|officiel_consulter] Clic sur le bouton pour imprimer ses appréciations
+		//	[officiel_action_saisir|officiel_action_consulter] Clic sur le bouton pour imprimer ses appréciations
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		$('#imprimer_appreciations').live // live est utilisé pour prendre en compte les nouveaux éléments créés
@@ -435,8 +434,8 @@ $(document).ready
 				(
 					{
 						type : 'POST',
-						url : 'ajax.php?page='+PAGE,
-						data : 'csrf='+CSRF+'&f_action='+'imprimer_appreciations'+'&f_bilan_type='+BILAN_TYPE+'&f_classe='+memo_classe+'&f_groupe='+memo_groupe+'&f_periode='+memo_periode+'&'+$('#form_hidden').serialize(),
+						url : 'ajax.php?page=officiel_accueil',
+						data : 'f_action='+'imprimer_appreciations'+'&f_bilan_type='+BILAN_TYPE+'&f_classe='+memo_classe+'&f_groupe='+memo_groupe+'&f_periode='+memo_periode+'&'+$('#form_hidden').serialize(),
 						dataType : "html",
 						error : function(jqXHR, textStatus, errorThrown)
 						{
@@ -467,8 +466,8 @@ $(document).ready
 		);
 
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
-		// [officiel_saisir] Clic sur le bouton pour ajouter une appréciation (une note de s'ajoute pas, mais elle peut se modifier ou se recalculer si NULL ou se recalculer)
-		// [officiel_saisir] Clic sur le bouton pour modifier une note ou une saisie d'appréciation
+		//	[officiel_action_saisir] Clic sur le bouton pour ajouter une appréciation (une note de s'ajoute pas, mais elle peut se modifier ou se recalculer si NULL ou se recalculer)
+		//	[officiel_action_saisir] Clic sur le bouton pour modifier une note ou une saisie d'appréciation
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		function afficher_textarea_appreciation_ou_input_moyenne(obj_lieu,champ_contenu)
@@ -539,7 +538,7 @@ $(document).ready
 		);
 
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
-		// [officiel_saisir] Indiquer le nombre de caractères restant autorisés dans le textarea
+		//	[officiel_action_saisir] Indiquer le nombre de caractères restant autorisés dans le textarea
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		$('#f_appreciation').live // live est utilisé pour prendre en compte les nouveaux éléments créés
@@ -551,7 +550,7 @@ $(document).ready
 		);
 
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
-		// [officiel_saisir] Clic sur un bouton pour annuler une saisie de note ou d'appréciation
+		//	[officiel_action_saisir] Clic sur un bouton pour annuler une saisie de note ou d'appréciation
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		$('#annuler_appr , #annuler_appr_suivant , #annuler_appr_precedent , #annuler_note , #annuler_note_suivant , #annuler_note_precedent').live // live est utilisé pour prendre en compte les nouveaux éléments créés
@@ -575,7 +574,7 @@ $(document).ready
 		);
 
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
-		// [officiel_saisir] Clic sur un bouton pour valider une saisie de note ou d'appréciation
+		//	[officiel_action_saisir] Clic sur un bouton pour valider une saisie de note ou d'appréciation
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		$('#valider_appr , #valider_appr_suivant , #valider_appr_precedent , #valider_note , #valider_note_suivant , #valider_note_precedent').live // live est utilisé pour prendre en compte les nouveaux éléments créés
@@ -615,8 +614,8 @@ $(document).ready
 				(
 					{
 						type : 'POST',
-						url : 'ajax.php?page='+PAGE,
-						data : 'csrf='+CSRF+'&f_section='+memo_section+'&f_action='+'enregistrer_'+memo_rubrique_type+'&f_bilan_type='+BILAN_TYPE+'&f_classe='+memo_classe+'&f_groupe='+memo_groupe+'&f_periode='+memo_periode+'&f_user='+memo_eleve+'&f_rubrique='+memo_rubrique_id+'&'+$('#form_hidden').serialize()+'&'+$('#zone_resultat_eleve').serialize(),
+						url : 'ajax.php?page='+memo_page,
+						data : 'f_action='+'enregistrer_'+memo_rubrique_type+'&f_bilan_type='+BILAN_TYPE+'&f_classe='+memo_classe+'&f_groupe='+memo_groupe+'&f_periode='+memo_periode+'&f_user='+memo_eleve+'&f_rubrique='+memo_rubrique_id+'&'+$('#form_hidden').serialize()+'&'+$('#zone_resultat_eleve').serialize(),
 						dataType : "html",
 						error : function(jqXHR, textStatus, errorThrown)
 						{
@@ -652,7 +651,7 @@ $(document).ready
 		);
 
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
-		// [officiel_saisir] Clic sur le bouton pour supprimer une saisie de note ou d'appréciation
+		//	[officiel_action_saisir] Clic sur le bouton pour supprimer une saisie de note ou d'appréciation
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		$('#zone_resultat_eleve button.supprimer').live // live est utilisé pour prendre en compte les nouveaux éléments créés
@@ -669,8 +668,8 @@ $(document).ready
 				(
 					{
 						type : 'POST',
-						url : 'ajax.php?page='+PAGE,
-						data : 'csrf='+CSRF+'&f_section='+memo_section+'&f_action='+'supprimer_'+memo_rubrique_type+'&f_bilan_type='+BILAN_TYPE+'&f_classe='+memo_classe+'&f_groupe='+memo_groupe+'&f_periode='+memo_periode+'&f_user='+memo_eleve+'&f_rubrique='+memo_rubrique_id+'&'+$('#form_hidden').serialize(),
+						url : 'ajax.php?page='+memo_page,
+						data : 'f_action='+'supprimer_'+memo_rubrique_type+'&f_bilan_type='+BILAN_TYPE+'&f_classe='+memo_classe+'&f_groupe='+memo_groupe+'&f_periode='+memo_periode+'&f_user='+memo_eleve+'&f_rubrique='+memo_rubrique_id+'&'+$('#form_hidden').serialize(),
 						dataType : "html",
 						error : function(jqXHR, textStatus, errorThrown)
 						{
@@ -704,7 +703,7 @@ $(document).ready
 		);
 
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
-		// [officiel_saisir] Clic sur le bouton pour recalculer une note (soit effacée - NULL - soit figée car reportée manuellement)
+		//	[officiel_action_saisir] Clic sur le bouton pour recalculer une note (soit effacée - NULL - soit figée car reportée manuellement)
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		$('#zone_resultat_eleve button.nettoyer').live // live est utilisé pour prendre en compte les nouveaux éléments créés
@@ -721,8 +720,8 @@ $(document).ready
 				(
 					{
 						type : 'POST',
-						url : 'ajax.php?page='+PAGE,
-						data : 'csrf='+CSRF+'&f_section='+memo_section+'&f_action='+'recalculer_note'+'&f_bilan_type='+BILAN_TYPE+'&f_classe='+memo_classe+'&f_groupe='+memo_groupe+'&f_periode='+memo_periode+'&f_user='+memo_eleve+'&f_rubrique='+memo_rubrique_id+'&'+$('#form_hidden').serialize(),
+						url : 'ajax.php?page='+memo_page,
+						data : 'f_action='+'recalculer_note'+'&f_bilan_type='+BILAN_TYPE+'&f_classe='+memo_classe+'&f_groupe='+memo_groupe+'&f_periode='+memo_periode+'&f_user='+memo_eleve+'&f_rubrique='+memo_rubrique_id+'&'+$('#form_hidden').serialize(),
 						dataType : "html",
 						error : function(jqXHR, textStatus, errorThrown)
 						{
@@ -749,7 +748,7 @@ $(document).ready
 		);
 
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
-		// [officiel_examiner] Charger le contenu (résultat de l'examen pour une classe)
+		//	[officiel_action_examiner] Charger le contenu (résultat de l'examen pour une classe)
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		$('#lancer_recherche').click
@@ -769,8 +768,8 @@ $(document).ready
 				(
 					{
 						type : 'POST',
-						url : 'ajax.php?page='+PAGE,
-						data : 'csrf='+CSRF+'&f_section='+memo_section+'&f_bilan_type='+BILAN_TYPE+'&f_classe='+memo_classe+'&f_groupe='+memo_groupe+'&f_periode='+memo_periode+'&'+$('#form_hidden').serialize(),
+						url : 'ajax.php?page='+memo_page,
+						data : 'f_bilan_type='+BILAN_TYPE+'&f_classe='+memo_classe+'&f_groupe='+memo_groupe+'&f_periode='+memo_periode+'&'+$('#form_hidden').serialize(),
 						dataType : "html",
 						error : function(jqXHR, textStatus, errorThrown)
 						{
@@ -804,7 +803,7 @@ $(document).ready
 		);
 
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
-		// [officiel_imprimer] Lancer l'impression pour une liste d'élèves
+		//	[officiel_action_imprimer] Lancer l'impression pour une liste d'élèves
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		function imprimer(etape)
@@ -814,8 +813,8 @@ $(document).ready
 			(
 				{
 					type : 'POST',
-					url : 'ajax.php?page='+PAGE,
-					data : 'csrf='+CSRF+'&f_section='+memo_section+'&f_action='+'imprimer'+'&f_etape='+etape+'&f_bilan_type='+BILAN_TYPE+'&f_classe='+memo_classe+'&f_groupe='+memo_groupe+'&f_periode='+memo_periode+'&'+$('#form_hidden').serialize(),
+					url : 'ajax.php?page='+memo_page,
+					data : 'f_action='+'imprimer'+'&f_etape='+etape+'&f_bilan_type='+BILAN_TYPE+'&f_classe='+memo_classe+'&f_groupe='+memo_groupe+'&f_periode='+memo_periode+'&'+$('#form_hidden').serialize(),
 					dataType : "html",
 					error : function(jqXHR, textStatus, errorThrown)
 					{
@@ -873,7 +872,7 @@ $(document).ready
 		);
 
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
-		// [officiel_imprimer] Charger la liste de choix des élèves, et si les bulletins sont déjà imprimés
+		//	[officiel_action_imprimer] Charger la liste de choix des élèves, et si les bulletins sont déjà imprimés
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		function charger_formulaire_imprimer()
@@ -888,8 +887,8 @@ $(document).ready
 			(
 				{
 					type : 'POST',
-					url : 'ajax.php?page='+PAGE,
-					data : 'csrf='+CSRF+'&f_section='+memo_section+'&f_action='+'initialiser'+'&f_bilan_type='+BILAN_TYPE+'&f_classe='+memo_classe+'&f_groupe='+memo_groupe+'&f_periode='+memo_periode+'&'+$('#form_hidden').serialize(),
+					url : 'ajax.php?page='+memo_page,
+					data : 'f_action='+'initialiser'+'&f_bilan_type='+BILAN_TYPE+'&f_classe='+memo_classe+'&f_groupe='+memo_groupe+'&f_periode='+memo_periode+'&'+$('#form_hidden').serialize(),
 					dataType : "html",
 					error : function(jqXHR, textStatus, errorThrown)
 					{
@@ -919,7 +918,7 @@ $(document).ready
 		}
 
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
-		// [officiel_examiner|officiel_imprimer] Actualiser l'état enabled/disabled des options du formulaire de navigation dans les classes, masquer les boutons de navigation
+		//	[officiel_action_examiner|officiel_action_imprimer] Actualiser l'état enabled/disabled des options du formulaire de navigation dans les classes, masquer les boutons de navigation
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		function masquer_element_navigation_choix_classe()
@@ -946,7 +945,7 @@ $(document).ready
 			var numero = 0;
 			tab_id_option_to_numero = new Array();
 			tab_numero_to_id_option = new Array();
-			var indice = (memo_section=='officiel_examiner') ? 'examiner' : 'imprimer' ;
+			var indice = (memo_page=='officiel_action_examiner') ? 'examiner' : 'imprimer' ;
 			$('#go_selection_classe option').each
 			(
 				function()
@@ -967,7 +966,7 @@ $(document).ready
 		}
 
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
-		// [officiel_examiner|officiel_imprimer] Navigation d'une classe à une autre
+		//	[officiel_action_examiner|officiel_action_imprimer] Navigation d'une classe à une autre
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		function charger_nouvelle_classe(classe_groupe_id)
@@ -979,11 +978,11 @@ $(document).ready
 			var tab_indices = classe_groupe_id.toString().split('_'); // Sans toString() on obtient "error: split is not a function"
 			memo_classe = tab_indices[0];
 			memo_groupe = tab_indices[1];
-			if(memo_section=='officiel_imprimer')
+			if(memo_page=='officiel_action_imprimer')
 			{
 				charger_formulaire_imprimer();
 			}
-			else if(memo_section=='officiel_examiner')
+			else if(memo_page=='officiel_action_examiner')
 			{
 				$('#form_choix_classe button , #form_choix_classe select').prop('disabled',true);
 				$('#zone_resultat_classe').html('<label class="loader">Connexion au serveur&hellip;</label>');
@@ -991,8 +990,8 @@ $(document).ready
 				(
 					{
 						type : 'POST',
-						url : 'ajax.php?page='+PAGE,
-						data : 'csrf='+CSRF+'&f_section='+memo_section+'&f_page='+BILAN_TYPE+'&f_bilan_type='+BILAN_TYPE+'&f_classe='+memo_classe+'&f_groupe='+memo_groupe+'&f_periode='+memo_periode+'&'+$('#form_hidden').serialize(),
+						url : 'ajax.php?page='+memo_page,
+						data : 'f_bilan_type='+BILAN_TYPE+'&f_classe='+memo_classe+'&f_groupe='+memo_groupe+'&f_periode='+memo_periode+'&'+$('#form_hidden').serialize(),
 						dataType : "html",
 						error : function(jqXHR, textStatus, errorThrown)
 						{
@@ -1057,7 +1056,7 @@ $(document).ready
 		);
 
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
-		// [officiel_saisir|officiel_consulter] Afficher le formulaire pour signaler une erreur
+		//	[officiel_action_saisir|officiel_action_consulter] Afficher le formulaire pour signaler une erreur
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		$('#zone_resultat_eleve button.signaler').live // live est utilisé pour prendre en compte les nouveaux éléments créés
@@ -1076,7 +1075,7 @@ $(document).ready
 		);
 
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
-		// [officiel_saisir|officiel_consulter] Indiquer le nombre de caractères restant autorisés dans le textarea
+		//	[officiel_action_saisir|officiel_action_consulter] Indiquer le nombre de caractères restant autorisés dans le textarea
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		$('#f_message_contenu').keyup
@@ -1088,7 +1087,7 @@ $(document).ready
 		);
 
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
-		// [officiel_saisir|officiel_consulter] Clic sur le bouton pour fermer le cadre de rédaction d'un signalement d'erreur (annuler / retour)
+		//	[officiel_action_saisir|officiel_action_consulter] Clic sur le bouton pour fermer le cadre de rédaction d'un signalement d'erreur (annuler / retour)
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		$('#annuler_signaler').click
@@ -1101,7 +1100,7 @@ $(document).ready
 		);
 
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
-		// [officiel_saisir|officiel_consulter] Valider le formulaire pour signaler une erreur
+		//	[officiel_action_saisir|officiel_action_consulter] Valider le formulaire pour signaler une erreur
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		$('#valider_signaler').click
@@ -1114,8 +1113,8 @@ $(document).ready
 				(
 					{
 						type : 'POST',
-						url : 'ajax.php?page='+PAGE,
-						data : 'csrf='+CSRF+'&'+$('#zone_signaler').serialize(),
+						url : 'ajax.php?page=compte_message',
+						data : $('#zone_signaler').serialize(),
 						dataType : "html",
 						error : function(jqXHR, textStatus, errorThrown)
 						{
@@ -1143,9 +1142,9 @@ $(document).ready
 		);
 
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
-		// Options de base pour le graphique : sont complétées ensuite avec les données personnalisées
-		// http://www.highcharts.com/documentation/how-to-use
-		// http://www.highcharts.com/ref
+		//	Options de base pour le graphique : sont complétées ensuite avec les données personnalisées
+		//	http://www.highcharts.com/documentation/how-to-use
+		//	http://www.highcharts.com/ref
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		ChartOptions = {

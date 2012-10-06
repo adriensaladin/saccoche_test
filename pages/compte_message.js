@@ -43,7 +43,7 @@ $(document).ready
 		}
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Fonctions utilisées
+//	Fonctions utilisées
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		/**
@@ -160,7 +160,7 @@ $(document).ready
 					{
 						type : 'POST',
 						url : 'ajax.php?page='+PAGE,
-						data : 'csrf='+CSRF+'&f_action=afficher_destinataires'+'&f_ids='+destinataires_liste,
+						data : 'f_action='+'afficher_destinataires'+'&f_ids='+destinataires_liste,
 						dataType : "html",
 						error : function(jqXHR, textStatus, errorThrown)
 						{
@@ -207,7 +207,7 @@ $(document).ready
 		};
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Appel des fonctions en fonction des événements ; live est utilisé pour prendre en compte les nouveaux éléments créés
+//	Appel des fonctions en fonction des événements ; live est utilisé pour prendre en compte les nouveaux éléments créés
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		$('q.ajouter').click( ajouter );
@@ -220,7 +220,7 @@ $(document).ready
 		$('q.texte_editer').live(  'click' , editer_contenu_message );
 
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
-		// Indiquer le nombre de caractères restant autorisés dans le textarea
+		//	Indiquer le nombre de caractères restant autorisés dans le textarea
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		$('#f_message').keyup
@@ -232,7 +232,7 @@ $(document).ready
 		);
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Mettre à jour le formulaire avec la liste des utilisateurs pour un regroupement et un profil donnés
+//	Mettre à jour le formulaire avec la liste des utilisateurs pour un regroupement et un profil donnés
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		function maj_affichage()
@@ -274,7 +274,7 @@ $(document).ready
 				{
 					type : 'POST',
 					url : 'ajax.php?page='+PAGE,
-					data : 'csrf='+CSRF+'&f_action=afficher_users'+'&f_profil='+profil+'&f_groupe_id='+groupe_id+'&f_groupe_type='+groupe_type,
+					data : 'f_action='+'afficher_users'+'&f_profil='+profil+'&f_groupe_id='+groupe_id+'&f_groupe_type='+groupe_type,
 					dataType : "html",
 					error : function(jqXHR, textStatus, errorThrown)
 					{
@@ -309,7 +309,7 @@ $(document).ready
 		);
 
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
-		// Clic sur le bouton pour ajouter des destinataires
+		//	Clic sur le bouton pour ajouter des destinataires
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		$('#ajouter_destinataires').click
@@ -335,7 +335,7 @@ $(document).ready
 		);
 
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
-		// Clic sur le bouton pour retirer des destinataires
+		//	Clic sur le bouton pour retirer des destinataires
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		$('#retirer_destinataires').click
@@ -356,7 +356,7 @@ $(document).ready
 		);
 
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
-		// Clic sur le bouton pour valider le choix des destinataires associés à un message
+		//	Clic sur le bouton pour valider le choix des destinataires associés à un message
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		$('#valider_destinataires').click
@@ -386,7 +386,7 @@ $(document).ready
 		);
 
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
-		// Clic sur le bouton pour valider le contenu d'un message
+		//	Clic sur le bouton pour valider le contenu d'un message
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		$('#valider_message').click
@@ -401,8 +401,8 @@ $(document).ready
 		);
 
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
-		// Clic sur le bouton pour fermer le cadre des destinataires associés à un message (annuler / retour)
-		// Clic sur le bouton pour fermer le cadre de rédaction du contenu d'un message (annuler / retour)
+		//	Clic sur le bouton pour fermer le cadre des destinataires associés à un message (annuler / retour)
+		//	Clic sur le bouton pour fermer le cadre de rédaction du contenu d'un message (annuler / retour)
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		$('#annuler_destinataires , #annuler_message').click
@@ -415,7 +415,7 @@ $(document).ready
 		);
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Traitement du formulaire
+//	Traitement du formulaire
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		// Le formulaire qui va être analysé et traité en AJAX
@@ -448,7 +448,7 @@ $(document).ready
 		// Options d'envoi du formulaire (avec jquery.form.js)
 		var ajaxOptions =
 		{
-			url : 'ajax.php?page='+PAGE+'&csrf='+CSRF,
+			url : 'ajax.php?page='+PAGE,
 			type : 'POST',
 			dataType : "html",
 			clearForm : false,

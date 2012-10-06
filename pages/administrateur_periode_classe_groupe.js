@@ -85,7 +85,7 @@ $(document).ready
 					{
 						type : 'POST',
 						url : 'ajax.php?page='+PAGE+'&action='+id,
-						data : 'csrf='+CSRF+'&'+$("form").serialize(),
+						data : $("form").serialize(),
 						dataType : "html",
 						error : function(jqXHR, textStatus, errorThrown)
 						{
@@ -121,7 +121,7 @@ $(document).ready
 			{
 				type : 'POST',
 				url : 'ajax.php?page='+PAGE+'&action=initialiser',
-				data : 'csrf='+CSRF,
+				data : '',
 				dataType : "html",
 				error : function(jqXHR, textStatus, errorThrown)
 				{

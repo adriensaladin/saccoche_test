@@ -510,10 +510,10 @@ class InfoServeur
    * Normalement on a memory_limit > post_max_size > upload_max_filesize
    * Cette fonction retourne le minimum de ces 3 valeurs (attention, ce ne sont pas des entiers mais des chaines avec des unités).
    *
-   * @param bool    $avec_explication
+   * @param void
    * @return string "min(memory_limit,post_max_size,upload_max_filesize)=..."
    */
-  public static function minimum_limitations_upload($avec_explication=TRUE)
+  public static function minimum_limitations_upload()
   {
     $tab_limit_chaine = array( ini_get('memory_limit') , ini_get('post_max_size') , ini_get('upload_max_filesize') );
     $valeur_mini = 0;
@@ -538,7 +538,7 @@ class InfoServeur
         $chaine_mini = $chaine;
       }
     }
-    return ($avec_explication) ? 'min(memory_limit,post_max_size,upload_max_filesize) = '.$chaine_mini : $chaine_mini ;
+    return 'min(memory_limit,post_max_size,upload_max_filesize) = '.$chaine_mini;
   }
 
   /**

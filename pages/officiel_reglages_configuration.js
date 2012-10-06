@@ -31,7 +31,7 @@ $(document).ready
 	{
 
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
-		// Afficher masquer des éléments du formulaire
+		//	Afficher masquer des éléments du formulaire
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		$('#f_bulletin_moyenne_scores').click
@@ -65,7 +65,7 @@ $(document).ready
 		);
 
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
-		// Alerter sur la nécessité de valider
+		//	Alerter sur la nécessité de valider
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		$("#form_releve input , #form_releve select").change
@@ -115,7 +115,7 @@ $(document).ready
 					{
 						type : 'POST',
 						url : 'ajax.php?page='+PAGE,
-						data : 'csrf='+CSRF+'&objet='+objet+'&'+$('#form_'+objet).serialize(),
+						data : 'objet='+objet+'&'+$('#form_'+objet).serialize(),
 						dataType : "html",
 						error : function(jqXHR, textStatus, errorThrown)
 						{

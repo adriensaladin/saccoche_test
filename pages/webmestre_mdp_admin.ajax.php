@@ -30,13 +30,13 @@ if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');
 $admin_id = (isset($_POST['f_admin']))  ? Clean::entier($_POST['f_admin']) : 0;
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Modifier le mdp d'un administrateur et afficher les identifiants au webmestre
+//	Modifier le mdp d'un administrateur et afficher les identifiants au webmestre
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 if($admin_id)
 {
 	// Informations sur l'admin : nom / prénom / login.
 	$DB_ROW = DB_STRUCTURE_WEBMESTRE::DB_recuperer_admin_identite($admin_id);
-	if(empty($DB_ROW))
+	if(!count($DB_ROW))
 	{
 		exit('Erreur : administrateur introuvable !');
 	}

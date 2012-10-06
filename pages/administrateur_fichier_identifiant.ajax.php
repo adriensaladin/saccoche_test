@@ -38,8 +38,8 @@ $nb = count($tab_select_users);
 $tab_profils = array('eleves','parents','professeurs','directeurs');
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// Initialiser plusieurs noms d'utilisateurs élèves | parents | professeurs | directeurs
-// Initialiser plusieurs mots de passe élèves | parents | professeurs | directeurs
+//	Initialiser plusieurs noms d'utilisateurs élèves | parents | professeurs | directeurs
+//	Initialiser plusieurs mots de passe élèves | parents | professeurs | directeurs
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 if( (($action=='generer_login')||($action=='generer_mdp')) && (in_array($profil,$tab_profils)) && $nb )
@@ -49,9 +49,9 @@ if( (($action=='generer_login')||($action=='generer_mdp')) && (in_array($profil,
 	$fnom = 'identifiants_'.$_SESSION['BASE'].'_'.$profil.'_'.fabriquer_fin_nom_fichier__date_et_alea();
 	// La classe n'est affichée que pour l'élève
 	$avec_info = ($profil=='eleves') ? 'classe' : ( ($profil=='parents') ? 'enfant' : '' ) ;
-	// ////////////////////////////////////////////////////////////////////////////////////////////////////
-	// Initialiser plusieurs noms d'utilisateurs
-	// ////////////////////////////////////////////////////////////////////////////////////////////////////
+	//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+	//	Initialiser plusieurs noms d'utilisateurs
+	//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 	if($action=='generer_login')
 	{
 		$tab_login = array();
@@ -73,9 +73,9 @@ if( (($action=='generer_login')||($action=='generer_mdp')) && (in_array($profil,
 			$tab_login[$DB_ROW[$prefixe.'id']] = $login;
 		}
 	}
-	// ////////////////////////////////////////////////////////////////////////////////////////////////////
-	// Initialiser plusieurs mots de passe
-	// ////////////////////////////////////////////////////////////////////////////////////////////////////
+	//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+	//	Initialiser plusieurs mots de passe
+	//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 	if($action=='generer_mdp')
 	{
 		$tab_password = array();
@@ -90,9 +90,9 @@ if( (($action=='generer_login')||($action=='generer_mdp')) && (in_array($profil,
 		$listing_champs = ($profil!='parents') ? 'user_id,user_sconet_id,user_sconet_elenoet,user_reference,user_profil,user_nom,user_prenom,user_login' :  'parent.user_id AS parent_id,parent.user_sconet_id AS parent_sconet_id,parent.user_sconet_elenoet AS parent_sconet_elenoet,parent.user_reference AS parent_reference,parent.user_profil AS parent_profil,parent.user_nom AS parent_nom,parent.user_prenom AS parent_prenom,parent.user_login AS parent_login' ;
 		$DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_users_cibles(implode(',',$tab_select_users),$listing_champs,$avec_info);
 	}
-	// ////////////////////////////////////////////////////////////////////////////////////////////////////
-	// Générer une sortie csv zippé (login ou mdp) (élève ou prof)
-	// ////////////////////////////////////////////////////////////////////////////////////////////////////
+	//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+	//	Générer une sortie csv zippé (login ou mdp) (élève ou prof)
+	//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 	$separateur = ';';
 	$champ_nom = ($profil=='eleves') ? 'CLASSE' : 'PROFIL' ;
 	$fcontenu = 'SCONET_ID'.$separateur.'SCONET_N°'.$separateur.'REFERENCE'.$separateur.'PROFIL'.$separateur.'NOM'.$separateur.'PRENOM'.$separateur.'LOGIN'.$separateur.'MOT DE PASSE'.$separateur.'INFO'."\r\n\r\n";
@@ -104,9 +104,9 @@ if( (($action=='generer_login')||($action=='generer_mdp')) && (in_array($profil,
 		$fcontenu .= $DB_ROW[$prefixe.'sconet_id'].$separateur.$DB_ROW[$prefixe.'sconet_elenoet'].$separateur.$DB_ROW[$prefixe.'reference'].$separateur.$DB_ROW[$prefixe.'profil'].$separateur.$DB_ROW[$prefixe.'nom'].$separateur.$DB_ROW[$prefixe.'prenom'].$separateur.$login.$separateur.$mdp.$separateur.$info."\r\n";
 	}
 	FileSystem::zip( CHEMIN_DOSSIER_LOGINPASS.$fnom.'.zip' , $fnom.'.csv' , To::csv($fcontenu) );
-	// ////////////////////////////////////////////////////////////////////////////////////////////////////
-	// Générer une sortie pdf : classe fpdf + script étiquettes (login ou mdp) (élève ou prof)
-	// ////////////////////////////////////////////////////////////////////////////////////////////////////
+	//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+	//	Générer une sortie pdf : classe fpdf + script étiquettes (login ou mdp) (élève ou prof)
+	//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 	$font_size = ($profil!='parents') ? 11 : 10 ;
 	$pdf = new PDF_Label(array('paper-size'=>'A4', 'metric'=>'mm', 'marginLeft'=>5, 'marginTop'=>5, 'NX'=>3, 'NY'=>8, 'SpaceX'=>7, 'SpaceY'=>5, 'width'=>60, 'height'=>30, 'font-size'=>$font_size));
 	$pdf -> AddFont('Arial','' ,'arial.php');
@@ -124,9 +124,9 @@ if( (($action=='generer_login')||($action=='generer_mdp')) && (in_array($profil,
 		$pdf -> Add_Label(To::pdf($ligne1."\r\n".$ligne2."\r\n".$ligne3."\r\n".$ligne4));
 	}
 	$pdf->Output(CHEMIN_DOSSIER_LOGINPASS.$fnom.'.pdf','F');
-	// ////////////////////////////////////////////////////////////////////////////////////////////////////
-	// Affichage du résultat
-	// ////////////////////////////////////////////////////////////////////////////////////////////////////
+	//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+	//	Affichage du résultat
+	//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 	echo'<ul class="puce">';
 	echo'<li><a class="lien_ext" href="'.URL_DIR_LOGINPASS.$fnom.'.pdf"><span class="file file_pdf">Nouveaux identifiants &rarr; Archiver / Imprimer (étiquettes <em>pdf</em>)</span></a></li>';
 	echo'<li><a class="lien_ext" href="'.URL_DIR_LOGINPASS.$fnom.'.zip"><span class="file file_txt">Nouveaux identifiants &rarr; Récupérer / Manipuler (fichier <em>csv</em> pour tableur).</span></a></li>';
@@ -139,7 +139,7 @@ if( (($action=='generer_login')||($action=='generer_mdp')) && (in_array($profil,
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// Export CSV du contenu de la base des utilisateurs (login nom prénom de SACoche)
+//	Export CSV du contenu de la base des utilisateurs (login nom prénom de SACoche)
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 if($action=='user_export')
@@ -160,7 +160,7 @@ if($action=='user_export')
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// Import CSV du contenu d'un fichier pour forcer les logins ou/et mdp utilisateurs de SACoche
+//	Import CSV du contenu d'un fichier pour forcer les logins ou/et mdp utilisateurs de SACoche
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 if($action=='import_loginmdp')
@@ -356,7 +356,7 @@ if($action=='import_loginmdp')
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// Import CSV du contenu d'un fichier pour forcer les identifiants élèves ou professeurs de GEPI
+//	Import CSV du contenu d'un fichier pour forcer les identifiants élèves ou professeurs de GEPI
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 if( ($action=='import_gepi_eleves') || ($action=='import_gepi_profs') )
@@ -504,7 +504,7 @@ if( ($action=='import_gepi_eleves') || ($action=='import_gepi_profs') )
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// Import CSV du contenu d'un fichier pour forcer les identifiants d'un ENT
+//	Import CSV du contenu d'un fichier pour forcer les identifiants d'un ENT
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 if($action=='import_ent')
@@ -682,10 +682,10 @@ if($action=='import_ent')
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// Dupliquer l'identifiant de Gepi enregistré comme identifiant de l'ENT (COPY_id_gepi_TO_id_ent)
-// Dupliquer le login de SACoche enregistré comme identifiant de l'ENT (COPY_login_TO_id_ent)
-// Dupliquer l'identifiant de l'ENT enregistré comme identifiant de Gepi (COPY_id_ent_TO_id_gepi)
-// Dupliquer le login de SACoche enregistré comme identifiant de Gepi (COPY_login_TO_id_gepi)
+//	Dupliquer l'identifiant de Gepi enregistré comme identifiant de l'ENT (COPY_id_gepi_TO_id_ent)
+//	Dupliquer le login de SACoche enregistré comme identifiant de l'ENT (COPY_login_TO_id_ent)
+//	Dupliquer l'identifiant de l'ENT enregistré comme identifiant de Gepi (COPY_id_ent_TO_id_gepi)
+//	Dupliquer le login de SACoche enregistré comme identifiant de Gepi (COPY_login_TO_id_gepi)
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 if( ($action=='COPY_id_gepi_TO_id_ent') || ($action=='COPY_login_TO_id_ent') || ($action=='COPY_id_ent_TO_id_gepi') || ($action=='COPY_login_TO_id_gepi') )
@@ -696,20 +696,17 @@ if( ($action=='COPY_id_gepi_TO_id_ent') || ($action=='COPY_login_TO_id_ent') || 
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// Dupliquer l'identifiant récupéré du LCS comme identifiant de l'ENT (COPY_id_lcs_TO_id_ent)
+//	Dupliquer l'identifiant récupéré du LCS comme identifiant de l'ENT (COPY_id_lcs_TO_id_ent)
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 if($action=='COPY_id_lcs_TO_id_ent')
 {
-	if(IS_HEBERGEMENT_SESAMATH)
+	$fichier = CHEMIN_DOSSIER_WEBSERVICES.'import_lcs.php';
+	if(!is_file($fichier))
 	{
-		exit('Erreur : cette fonctionnalité est sans objet sur le serveur Sésamath !');
+		exit('Erreur : le fichier "'.$fichier.'" n\'a pas été trouvé !');
 	}
-	if(!is_file(CHEMIN_FICHIER_WS_LCS))
-	{
-		exit('Erreur : le fichier "'.FileSystem::fin_chemin(CHEMIN_FICHIER_WS_LCS).'" n\'a pas été trouvé !');
-	}
-	require(CHEMIN_FICHIER_WS_LCS); // Charge la fonction "recuperer_infos_user_LCS()"
+	require($fichier); // Charge la fonction "recuperer_infos_user_LCS()"
 	// On récupère le contenu de la base, on va passer les users en revue un par un
 	$DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_users( array('eleve','parent','professeur','directeur') , 1 /*only_actuels*/ , TRUE /*with_classe*/ );
 	// Pour chaque user de la base, rechercher son uid dans le LCS
@@ -798,20 +795,17 @@ if($action=='COPY_id_lcs_TO_id_ent')
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// Dupliquer l'identifiant récupéré d'Argos comme identifiant de l'ENT (COPY_id_argos_*_TO_id_ent)
+//	Dupliquer l'identifiant récupéré d'Argos comme identifiant de l'ENT (COPY_id_argos_*_TO_id_ent)
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 if( ($action=='COPY_id_argos_profs_TO_id_ent') || ($action=='COPY_id_argos_eleves_TO_id_ent') || ($action=='COPY_id_argos_parents_TO_id_ent') )
 {
-	if(IS_HEBERGEMENT_SESAMATH)
+	$fichier = CHEMIN_DOSSIER_WEBSERVICES.'argos_import.php';
+	if(!is_file($fichier))
 	{
-		exit('Erreur : cette fonctionnalité est sans objet sur le serveur Sésamath !');
+		exit('Erreur : le fichier "'.$fichier.'" n\'a pas été trouvé !');
 	}
-	if(!is_file(CHEMIN_FICHIER_WS_ARGOS))
-	{
-		exit('Erreur : le fichier "'.FileSystem::fin_chemin(CHEMIN_FICHIER_WS_ARGOS).'" n\'a pas été trouvé !');
-	}
-	require(CHEMIN_FICHIER_WS_ARGOS); // Charge la fonction "recuperer_infos_LDAP()"
+	require($fichier); // Charge la fonction "recuperer_infos_LDAP()"
 	$qui = substr($action,14,-10); // profs | eleves | parents
 	// Appeler le serveur LDAP et enregistrer le fichier temporairement pour aider au débuggage
 	$retour_Sarapis = recuperer_infos_LDAP($_SESSION['WEBMESTRE_UAI'],$qui);
@@ -959,7 +953,7 @@ if( ($action=='COPY_id_argos_profs_TO_id_ent') || ($action=='COPY_id_argos_eleve
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// On ne devrait pas en arriver là...
+//	On ne devrait pas en arriver là...
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 exit('Erreur avec les données transmises !');

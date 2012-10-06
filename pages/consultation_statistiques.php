@@ -40,7 +40,7 @@ $TITRE = "Nombre de saisies";
 	<tbody>
 		<?php
 		$DB_TAB = DB_STRUCTURE_DIRECTEUR::DB_compter_saisies_prof_classe();
-		if(!empty($DB_TAB))
+		if(count($DB_TAB))
 		{
 			foreach($DB_TAB as $DB_ROW)
 			{

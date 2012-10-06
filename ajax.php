@@ -70,8 +70,8 @@ if(!isset($tab_droits[$PAGE]))
 // Ouverture de la session et gestion des droits d'accès
 Session::execute($tab_droits[$PAGE]);
 
-// Infos DEBUG dans FirePHP
-if (DEBUG>3) afficher_infos_debug_FirePHP();
+// Pour le devel
+if (DEBUG) afficher_infos_debug();
 
 // Arrêt s'il fallait seulement mettre la session à jour (la session d'un user connecté n'a pas été perdue si on arrive jusqu'ici)
 if($PAGE=='conserver_session_active')
@@ -93,12 +93,6 @@ LockAcces::stopper_si_blocage( $_SESSION['BASE'] , FALSE /*demande_connexion_pro
 // Autres fonctions à charger
 require(CHEMIN_DOSSIER_INCLUDE.'fonction_divers.php');
 require(CHEMIN_DOSSIER_INCLUDE.'fonction_appel_serveur_communautaire.php');
-
-// Jeton CSRF
-if(isset($tab_verif_csrf[$PAGE]))
-{
-	verifier_jeton_anti_CSRF($PAGE);
-}
 
 // Patch fichier de config
 if(is_file(CHEMIN_FICHIER_CONFIG_INSTALL))

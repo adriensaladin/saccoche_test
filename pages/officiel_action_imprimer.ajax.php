@@ -26,10 +26,7 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Récupération des valeurs transmises
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
+if($_SESSION['SESAMATH_ID']==ID_DEMO){exit('Action désactivée pour la démo...');}
 
 $objet       = (isset($_POST['f_objet']))       ? Clean::texte($_POST['f_objet'])       : '';
 $ACTION      = (isset($_POST['f_action']))      ? Clean::texte($_POST['f_action'])      : '';
@@ -70,7 +67,7 @@ if( (!in_array($ACTION,$tab_action)) || (!isset($tab_types[$BILAN_TYPE])) || (!i
 // On vérifie que le bilan est bien accessible en impression et on récupère les infos associées
 
 $DB_ROW = DB_STRUCTURE_OFFICIEL::DB_recuperer_bilan_officiel_infos($classe_id,$periode_id,$BILAN_TYPE);
-if(empty($DB_ROW))
+if(!count($DB_ROW))
 {
 	exit('Association classe / période introuvable !');
 }
@@ -95,7 +92,7 @@ if($BILAN_ETAT!='4complet')
 if($ACTION=='initialiser')
 {
 	$DB_TAB = (!$is_sous_groupe) ? DB_STRUCTURE_COMMUN::DB_lister_users_regroupement( 'eleve' , 1 /*statut*/ , 'classe' , $classe_id ) : DB_STRUCTURE_COMMUN::DB_lister_eleves_classe_et_groupe($classe_id,$groupe_id) ;
-	if(empty($DB_TAB))
+	if(!count($DB_TAB))
 	{
 		exit('Aucun élève trouvé dans ce regroupement !');
 	}

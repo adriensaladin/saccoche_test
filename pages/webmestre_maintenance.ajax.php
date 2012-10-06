@@ -96,13 +96,10 @@ $dossier_install = CHEMIN_DOSSIER_SACOCHE;
 //
 if($action=='maj_etape1')
 {
-	if(IS_HEBERGEMENT_SESAMATH)
+	$fichier = './webservices/import_lcs.php';
+	if(is_file($fichier))
 	{
-		exit(']¤['.'pb'.']¤['.'La mise à jour de SACoche sur le serveur Sésamath doit s\'effectuer en déployant le SVN !');
-	}
-	if(is_file(CHEMIN_FICHIER_WS_LCS))
-	{
-		exit(']¤['.'pb'.']¤['.'La mise à jour du module LCS-SACoche doit s\'effectuer via le LCS !');
+		exit(']¤['.'pb'.']¤['.'La mise à jour du module LCS-SACoche doit s\'effectuer via le LCS.');
 	}
 	$contenu_zip = url_get_contents( SERVEUR_TELECHARGEMENT ,FALSE /*tab_post*/ , 60 /*timeout*/ );
 	if(substr($contenu_zip,0,6)=='Erreur')

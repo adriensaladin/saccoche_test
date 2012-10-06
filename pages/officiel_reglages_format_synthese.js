@@ -31,7 +31,7 @@ $(document).ready
 	{
 
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
-		// Afficher masquer des thèmes ou des domaines
+		//	Afficher masquer des thèmes ou des domaines
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		$('#form_synthese input').click
@@ -61,7 +61,7 @@ $(document).ready
 		);
 
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
-		// Enregistrer une modification
+		//	Enregistrer une modification
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		$('#form_synthese button').click
@@ -86,7 +86,7 @@ $(document).ready
 					{
 						type : 'POST',
 						url : 'ajax.php?page='+PAGE,
-						data : 'csrf='+CSRF+'&f_methode='+f_methode+'&f_matiere='+f_matiere+'&f_niveau='+f_niveau,
+						data : 'f_methode='+f_methode+'&f_matiere='+f_matiere+'&f_niveau='+f_niveau,
 						dataType : "html",
 						error : function(jqXHR, textStatus, errorThrown)
 						{

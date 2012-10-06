@@ -25,8 +25,6 @@
  * 
  */
 
-if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-
 /**
  * Code inclus commun aux pages
  * [./pages/releve_socle.ajax.php]
@@ -90,7 +88,7 @@ if( ($make_html) || ($make_pdf) )
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 $DB_TAB = ($memo_demande=='pilier') ? DB_STRUCTURE_SOCLE::DB_recuperer_arborescence_pilier($tab_pilier_id[0]) : DB_STRUCTURE_SOCLE::DB_recuperer_arborescence_piliers(implode(',',$tab_pilier_id)) ;
-if(empty($DB_TAB))
+if(!count($DB_TAB))
 {
 	exit('Aucun item référencé pour cette partie du socle commun !');
 }
@@ -236,8 +234,8 @@ unset($DB_TAB);
 
 $tab_etat = array('A'=>'v','VA'=>'o','NA'=>'r');
 $tab_init_compet = array('A'=>0,'VA'=>0,'NA'=>0,'nb'=>0);
-// $tab_score_pilier_eleve  = array();	// [pilier_id][eleve_id] => array(A,VA,NA,nb,%)  // Retenir le nb d'items acquis ou pas / pilier / élève
-// $tab_score_section_eleve = array();	// [section_id][eleve_id] => array(A,VA,NA,nb,%) // Retenir le nb d'items acquis ou pas / section / élève
+//	$tab_score_pilier_eleve  = array();	// [pilier_id][eleve_id] => array(A,VA,NA,nb,%)  // Retenir le nb d'items acquis ou pas / pilier / élève
+//	$tab_score_section_eleve = array();	// [section_id][eleve_id] => array(A,VA,NA,nb,%) // Retenir le nb d'items acquis ou pas / section / élève
 $tab_score_socle_eleve   = array();	// [socle_id][eleve_id] => array(A,VA,NA,nb,%)   // Retenir le nb d'items acquis ou pas / item / élève
 $tab_infos_socle_eleve   = array();	// [socle_id][eleve_id] => array()               // Retenir les infos sur les items travaillés et leurs scores / item du socle / élève
 

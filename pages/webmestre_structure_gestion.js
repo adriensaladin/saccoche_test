@@ -31,7 +31,7 @@ $(document).ready
 	{
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Initialisation
+//	Initialisation
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		var mode = false;
@@ -51,7 +51,7 @@ $(document).ready
 		trier_tableau();
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Clic sur une cellule (remplace un champ label, impossible à définir sur plusieurs colonnes)
+//	Clic sur une cellule (remplace un champ label, impossible à définir sur plusieurs colonnes)
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		$('td.label').live
@@ -63,7 +63,7 @@ $(document).ready
 		);
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Fonctions utilisées
+//	Fonctions utilisées
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		/**
@@ -167,7 +167,7 @@ $(document).ready
 				{
 					type : 'POST',
 					url : 'ajax.php?page='+PAGE,
-					data : 'csrf='+CSRF+'&f_action=lister_admin'+'&f_base_id='+base_id,
+					data : 'f_action=lister_admin&f_base_id='+base_id,
 					dataType : "html",
 					error : function(jqXHR, textStatus, errorThrown)
 					{
@@ -233,7 +233,7 @@ $(document).ready
 		}
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Appel des fonctions en fonction des événements ; live est utilisé pour prendre en compte les nouveaux éléments créés
+//	Appel des fonctions en fonction des événements ; live est utilisé pour prendre en compte les nouveaux éléments créés
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		$('q.ajouter').click( ajouter );
@@ -245,7 +245,7 @@ $(document).ready
 		$('table.bilan_synthese input , table.bilan_synthese select').live( 'keyup' , function(e){intercepter(e);} );
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Éléments dynamiques du formulaire
+//	Éléments dynamiques du formulaire
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		// Tout cocher ou tout décocher
@@ -267,7 +267,7 @@ $(document).ready
 		);
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Clic sur un bouton pour bloquer ou débloquer une structure
+//	Clic sur un bouton pour bloquer ou débloquer une structure
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		$('img[class=bloquer] , img[class=debloquer]').live
@@ -284,7 +284,7 @@ $(document).ready
 					{
 						type : 'POST',
 						url : 'ajax.php?page='+PAGE,
-						data : 'csrf='+CSRF+'&f_action='+action+'&f_base_id='+base_id,
+						data : 'f_action='+action+'&f_base_id='+base_id,
 						dataType : "html",
 						error : function(jqXHR, textStatus, errorThrown)
 						{
@@ -311,7 +311,7 @@ $(document).ready
 		);
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Clic sur un bouton pour effectuer une action sur les structures cochées
+//	Clic sur un bouton pour effectuer une action sur les structures cochées
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		var supprimer_structures_cochees = function(listing_id)
@@ -324,7 +324,7 @@ $(document).ready
 				{
 					type : 'POST',
 					url : 'ajax.php?page='+PAGE,
-					data : 'csrf='+CSRF+'&f_action=supprimer'+'&f_listing_id='+listing_id,
+					data : 'f_action=supprimer&f_listing_id='+listing_id,
 					dataType : "html",
 					error : function(jqXHR, textStatus, errorThrown)
 					{
@@ -394,7 +394,7 @@ $(document).ready
 		);
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Traitement du formulaire
+//	Traitement du formulaire
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		// Le formulaire qui va être analysé et traité en AJAX
@@ -437,7 +437,7 @@ $(document).ready
 		// Options d'envoi du formulaire (avec jquery.form.js)
 		var ajaxOptions =
 		{
-			url : 'ajax.php?page='+PAGE+'&csrf='+CSRF,
+			url : 'ajax.php?page='+PAGE,
 			type : 'POST',
 			dataType : "html",
 			clearForm : false,

@@ -63,7 +63,7 @@ foreach($DB_TAB as $DB_ROW)
 
 // Récupérer la liste des élèves et professeurs / groupes de besoin
 
-if( !empty($DB_TAB) )
+if( count($DB_TAB) )
 {
 	$listing_groupes_id = implode( ',' , array_merge(array_keys($tab_groupe_proprio),array_keys($tab_groupe_associe)) );
 	$DB_TAB = DB_STRUCTURE_PROFESSEUR::DB_lister_users_avec_groupes_besoins($listing_groupes_id);
@@ -86,7 +86,7 @@ $select_niveau = '<option value=""></option>';
 $tab_niveau_ordre_js = 'var tab_niveau_ordre = new Array();';
 
 $DB_TAB = DB_STRUCTURE_COMMUN::DB_lister_niveaux_etablissement(FALSE /*with_specifiques*/);
-if(!empty($DB_TAB))
+if(count($DB_TAB))
 {
 	foreach($DB_TAB as $DB_ROW)
 	{
@@ -100,7 +100,6 @@ else
 }
 
 // Réception d'un formulaire depuis un tableau de synthèse bilan
-// Pas de passage par la page ajax.php, mais pas besoin ici de protection contre attaques type CSRF
 $tab_users = ( isset($_POST['id_user']) && is_array($_POST['id_user']) ) ? $_POST['id_user'] : array() ;
 $tab_users = Clean::map_entier($tab_users);
 $tab_users = array_filter($tab_users,'positif');

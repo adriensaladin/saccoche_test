@@ -31,6 +31,8 @@ $(document).ready
 	function()
 	{
 
+		arrondir_coins('#cadre_milieu','10px');
+
 		function curseur()
 		{
 			if($("#f_profil").val()=='webmestre')
@@ -51,7 +53,7 @@ $(document).ready
 				{
 					type : 'POST',
 					url : 'ajax.php?page='+PAGE,
-					data : 'csrf='+CSRF+'&f_action=initialiser'+'&f_base='+$("#f_base").val()+'&f_profil='+$("#f_profil").val(),
+					data : 'f_action=initialiser&f_base='+$("#f_base").val()+'&f_profil='+$("#f_profil").val(),
 					dataType : "html",
 					error : function(jqXHR, textStatus, errorThrown)
 					{
@@ -87,7 +89,7 @@ $(document).ready
 					{
 						type : 'POST',
 						url : 'ajax.php?page='+PAGE,
-						data : 'csrf='+CSRF+'&f_action=charger'+'&f_base='+$('#f_base option:selected').val()+'&f_profil='+$("#f_profil").val(),
+						data : 'f_action=charger&f_base='+$('#f_base option:selected').val()+'&f_profil='+$("#f_profil").val(),
 						dataType : "html",
 						error : function(jqXHR, textStatus, errorThrown)
 						{
@@ -125,7 +127,7 @@ $(document).ready
 					{
 						type : 'POST',
 						url : 'ajax.php?page='+PAGE,
-						data : 'csrf='+CSRF+'&f_action=choisir'+'&f_base='+$('#f_base').val()+'&f_profil='+$("#f_profil").val(),
+						data : 'f_action=choisir&f_base='+$('#f_base').val()+'&f_profil='+$("#f_profil").val(),
 						dataType : "html",
 						error : function(jqXHR, textStatus, errorThrown)
 						{
@@ -151,7 +153,7 @@ $(document).ready
 			}
 		);
 
-		// Afficher / masquer le formulaire d'identifiants SACoche si formulaire ENT possible
+		//	Afficher / masquer le formulaire d'identifiants SACoche si formulaire ENT possible
 		$('input[type=radio]').live // live est utilisé pour prendre en compte les nouveaux éléments créés
 		('change',
 			function()
@@ -176,7 +178,7 @@ $(document).ready
 				{
 					type : 'POST',
 					url : 'ajax.php?page='+PAGE,
-					data : 'csrf='+CSRF+'&f_action=tester_version',
+					data : 'f_action=tester_version',
 					dataType : "html",
 					error : function(jqXHR, textStatus, errorThrown)
 					{
@@ -233,7 +235,7 @@ $(document).ready
 		// Options d'envoi du formulaire (avec jquery.form.js)
 		var ajaxOptions =
 		{
-			url : 'ajax.php?page='+PAGE+'&csrf='+CSRF,
+			url : 'ajax.php?page='+PAGE,
 			type : 'POST',
 			dataType : "html",
 			clearForm : false,

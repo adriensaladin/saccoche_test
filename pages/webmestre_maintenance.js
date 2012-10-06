@@ -31,7 +31,7 @@ $(document).ready
 	{
 
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
-		// Afficher / masquer le choix du motif du blocage
+		//	Afficher / masquer le choix du motif du blocage
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		$('#f_debloquer , #f_bloquer').click
@@ -51,7 +51,7 @@ $(document).ready
 		);
 
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
-		// Autocompléter le motif du blocage
+		//	Autocompléter le motif du blocage
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		tab_proposition = new Array();
@@ -69,7 +69,7 @@ $(document).ready
 		);
 
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
-		// Mise à jour des label comparant la version installée et la version disponible
+		//	Mise à jour des label comparant la version installée et la version disponible
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		function maj_label_versions()
@@ -108,7 +108,7 @@ $(document).ready
 		// Options d'envoi du formulaire (avec jquery.form.js)
 		var ajaxOptions =
 		{
-			url : 'ajax.php?page='+PAGE+'&csrf='+CSRF,
+			url : 'ajax.php?page='+PAGE,
 			type : 'POST',
 			dataType : "html",
 			clearForm : false,
@@ -167,7 +167,7 @@ $(document).ready
 		} 
 
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
-		// Mise à jour automatique des fichiers
+		//	Mise à jour automatique des fichiers
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		var etape_numero = 0 ;
@@ -191,7 +191,7 @@ $(document).ready
 				{
 					type : 'POST',
 					url : 'ajax.php?page='+PAGE,
-					data : 'csrf='+CSRF+'&f_action=maj_etape'+etape_numero,
+					data : 'f_action=maj_etape'+etape_numero,
 					dataType : "html",
 					error : function(jqXHR, textStatus, errorThrown)
 					{
@@ -236,7 +236,7 @@ $(document).ready
 		);
 
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
-		// Vérification des fichiers en place
+		//	Vérification des fichiers en place
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		function verif_etape(etape_info)
@@ -256,7 +256,7 @@ $(document).ready
 				{
 					type : 'POST',
 					url : 'ajax.php?page='+PAGE,
-					data : 'csrf='+CSRF+'&f_action=verif_etape'+etape_numero,
+					data : 'f_action=verif_etape'+etape_numero,
 					dataType : "html",
 					error : function(jqXHR, textStatus, errorThrown)
 					{
@@ -296,7 +296,7 @@ $(document).ready
 		);
 
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
-		// Vérification des droits en écriture
+		//	Vérification des droits en écriture
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		$('#bouton_droit').click
@@ -310,7 +310,7 @@ $(document).ready
 					{
 						type : 'POST',
 						url : 'ajax.php?page='+PAGE,
-						data : 'csrf='+CSRF+'&f_action=verif_droits',
+						data : 'f_action=verif_droits',
 						dataType : "html",
 						error : function(jqXHR, textStatus, errorThrown)
 						{

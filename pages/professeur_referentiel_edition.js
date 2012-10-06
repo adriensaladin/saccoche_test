@@ -25,7 +25,7 @@
  */
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Permettre l'utilisation de caractères spéciaux
+//	Permettre l'utilisation de caractères spéciaux
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 var tab_entite_nom = new Array('&sup2;','&sup3;','&times;','&divide;','&minus;','&pi;','&rarr;','&radic;','&infin;','&asymp;','&ne;','&le;','&ge;');
@@ -42,7 +42,7 @@ function entity_convert(string)
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Pour mémoriser les liens des ressources avant que le tooltip ne bouffe les title.
+//	Pour mémoriser les liens des ressources avant que le tooltip ne bouffe les title.
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 var tab_ressources = new Array();
@@ -77,7 +77,7 @@ $(document).ready
 		images[3] += '<q class="n3_del" lang="del" title="Supprimer cet item (et renuméroter)."></q>';
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Charger le form zone_elaboration_referentiel en ajax
+//	Charger le form zone_elaboration_referentiel en ajax
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		$('#zone_choix_referentiel q.modifier').click
@@ -95,7 +95,7 @@ $(document).ready
 					{
 						type : 'POST',
 						url : 'ajax.php?page='+PAGE,
-						data : 'csrf='+CSRF+'&action=Voir'+'&matiere='+matiere_id,
+						data : 'action=Voir&matiere='+matiere_id,
 						dataType : "html",
 						error : function(jqXHR, textStatus, errorThrown)
 						{
@@ -136,7 +136,7 @@ $(document).ready
 		);
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Clic sur le bouton pour fermer la zone compet
+//	Clic sur le bouton pour fermer la zone compet
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		$('#fermer_zone_elaboration_referentiel').live // live est utilisé pour prendre en compte les nouveaux éléments créés
@@ -151,7 +151,7 @@ $(document).ready
 		);
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Clic sur l'image pour Ajouter un domaine, ou un thème, ou un item
+//	Clic sur l'image pour Ajouter un domaine, ou un thème, ou un item
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		$('#zone_elaboration_referentiel q[lang=add]').live // live est utilisé pour prendre en compte les nouveaux éléments créés
@@ -211,7 +211,7 @@ $(document).ready
 		);
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Clic sur l'image pour Éditer un domaine, ou un thème, ou un item
+//	Clic sur l'image pour Éditer un domaine, ou un thème, ou un item
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		$('#zone_elaboration_referentiel q[lang=edit]').live // live est utilisé pour prendre en compte les nouveaux éléments créés
@@ -289,7 +289,7 @@ $(document).ready
 		);
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Clic sur l'image pour Supprimer un domaine (avec son contenu), ou un thème (avec son contenu), ou un item
+//	Clic sur l'image pour Supprimer un domaine (avec son contenu), ou un thème (avec son contenu), ou un item
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		$('#zone_elaboration_referentiel q[lang=del]').live // live est utilisé pour prendre en compte les nouveaux éléments créés
@@ -335,7 +335,7 @@ $(document).ready
 		);
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Clic sur l'image pour Fusionner deux items
+//	Clic sur l'image pour Fusionner deux items
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		$('#zone_elaboration_referentiel q[lang=fus]').live // live est utilisé pour prendre en compte les nouveaux éléments créés
@@ -354,7 +354,7 @@ $(document).ready
 		);
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Clic sur l'image pour Déplacer un domaine (avec son contenu), ou un thème (avec son contenu), ou un item
+//	Clic sur l'image pour Déplacer un domaine (avec son contenu), ou un thème (avec son contenu), ou un item
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		$('#zone_elaboration_referentiel q[lang=move]').live // live est utilisé pour prendre en compte les nouveaux éléments créés
@@ -404,7 +404,7 @@ $(document).ready
 		);
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Clic sur l'image pour afficher les items du socle
+//	Clic sur l'image pour afficher les items du socle
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		$('#zone_elaboration_referentiel q.choisir_compet').live // live est utilisé pour prendre en compte les nouveaux éléments créés
@@ -423,7 +423,7 @@ $(document).ready
 		);
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Clic sur le bouton pour confirmer la relation au socle d'un item
+//	Clic sur le bouton pour confirmer la relation au socle d'un item
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		$('#choisir_socle_valider').click
@@ -451,7 +451,7 @@ $(document).ready
 		);
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Clic sur le bouton pour Annuler le choix dans le socle
+//	Clic sur le bouton pour Annuler le choix dans le socle
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		$('#choisir_socle_annuler').click
@@ -464,7 +464,7 @@ $(document).ready
 		);
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Clic sur l'image pour confirmer l'ajout d'un domaine, ou d'un thème, ou d'un item
+//	Clic sur l'image pour confirmer l'ajout d'un domaine, ou d'un thème, ou d'un item
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		$('#zone_elaboration_referentiel q.valider[lang=ajouter]').live // live est utilisé pour prendre en compte les nouveaux éléments créés
@@ -551,7 +551,7 @@ $(document).ready
 					{
 						type : 'POST',
 						url : 'ajax.php?page='+PAGE,
-						data : 'csrf='+CSRF+'&action=add'+'&contexte='+contexte+'&matiere='+matiere_id+'&parent='+parent_id+'&ordre='+ordre+'&tab_id='+tab_id+'&ref='+ref+'&coef='+coef+'&cart='+cart+'&socle='+socle+'&nom='+encodeURIComponent(nom),
+						data : 'action=add&contexte='+contexte+'&matiere='+matiere_id+'&parent='+parent_id+'&ordre='+ordre+'&tab_id='+tab_id+'&ref='+ref+'&coef='+coef+'&cart='+cart+'&socle='+socle+'&nom='+encodeURIComponent(nom),
 						dataType : "html",
 						error : function(jqXHR, textStatus, errorThrown)
 						{
@@ -604,7 +604,7 @@ $(document).ready
 		);
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Clic sur l'image pour confirmer l'édition d'un domaine, ou d'un thème, ou d'un item
+//	Clic sur l'image pour confirmer l'édition d'un domaine, ou d'un thème, ou d'un item
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		$('#zone_elaboration_referentiel q.valider[lang=editer]').live // live est utilisé pour prendre en compte les nouveaux éléments créés
@@ -675,7 +675,7 @@ $(document).ready
 					{
 						type : 'POST',
 						url : 'ajax.php?page='+PAGE,
-						data : 'csrf='+CSRF+'&action=edit'+'&contexte='+contexte+'&element='+element_id+'&ref='+ref+'&coef='+coef+'&cart='+cart+'&socle='+socle+'&nom='+encodeURIComponent(nom),
+						data : 'action=edit&contexte='+contexte+'&element='+element_id+'&ref='+ref+'&coef='+coef+'&cart='+cart+'&socle='+socle+'&nom='+encodeURIComponent(nom),
 						dataType : "html",
 						error : function(jqXHR, textStatus, errorThrown)
 						{
@@ -721,7 +721,7 @@ $(document).ready
 		);
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Clic sur l'image pour confirmer la suppression d'un domaine (avec son contenu), ou d'un thème (avec son contenu), ou d'un item
+//	Clic sur l'image pour confirmer la suppression d'un domaine (avec son contenu), ou d'un thème (avec son contenu), ou d'un item
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		$('#zone_elaboration_referentiel q.valider[lang=supprimer]').live // live est utilisé pour prendre en compte les nouveaux éléments créés
@@ -747,7 +747,7 @@ $(document).ready
 					{
 						type : 'POST',
 						url : 'ajax.php?page='+PAGE,
-						data : 'csrf='+CSRF+'&action=del'+'&contexte='+contexte+'&element='+element_id+'&tab_id='+tab_id,
+						data : 'action=del&contexte='+contexte+'&element='+element_id+'&tab_id='+tab_id,
 						dataType : "html",
 						error : function(jqXHR, textStatus, errorThrown)
 						{
@@ -772,7 +772,7 @@ $(document).ready
 		);
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Clic sur l'image pour confirmer la fusion d'un item avec un second qui l'absorbe
+//	Clic sur l'image pour confirmer la fusion d'un item avec un second qui l'absorbe
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		$('#zone_elaboration_referentiel q[lang=fus2]').live // live est utilisé pour prendre en compte les nouveaux éléments créés
@@ -804,7 +804,7 @@ $(document).ready
 					{
 						type : 'POST',
 						url : 'ajax.php?page='+PAGE,
-						data : 'csrf='+CSRF+'&action=fus'+'&element='+element_id+'&tab_id='+tab_id+'&element2='+element2_id,
+						data : 'action=fus&element='+element_id+'&tab_id='+tab_id+'&element2='+element2_id,
 						dataType : "html",
 						error : function(jqXHR, textStatus, errorThrown)
 						{
@@ -830,7 +830,7 @@ $(document).ready
 		);
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Clic sur l'image pour confirmer le déplacement d'un domaine, ou d'un thème, ou d'un item
+//	Clic sur l'image pour confirmer le déplacement d'un domaine, ou d'un thème, ou d'un item
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		$('#zone_elaboration_referentiel q[lang=move2]').live // live est utilisé pour prendre en compte les nouveaux éléments créés
@@ -914,7 +914,7 @@ $(document).ready
 					{
 						type : 'POST',
 						url : 'ajax.php?page='+PAGE,
-						data : 'csrf='+CSRF+'&action=move'+'&contexte='+contexte+'&element='+element_id+'&tab_id='+tab_id+'&parent='+parent_id+'&ordre='+ordre+'&tab_id2='+tab_id2,
+						data : 'action=move&contexte='+contexte+'&element='+element_id+'&tab_id='+tab_id+'&parent='+parent_id+'&ordre='+ordre+'&tab_id2='+tab_id2,
 						dataType : "html",
 						error : function(jqXHR, textStatus, errorThrown)
 						{
@@ -949,7 +949,7 @@ $(document).ready
 		);
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Clic sur l'image pour Annuler un ajout
+//	Clic sur l'image pour Annuler un ajout
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		$('#zone_elaboration_referentiel q.annuler[lang=ajouter]').live // live est utilisé pour prendre en compte les nouveaux éléments créés
@@ -962,7 +962,7 @@ $(document).ready
 		);
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Clic sur l'image pour Annuler un renommage
+//	Clic sur l'image pour Annuler un renommage
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		$('#zone_elaboration_referentiel q.annuler[lang=editer]').live // live est utilisé pour prendre en compte les nouveaux éléments créés
@@ -976,7 +976,7 @@ $(document).ready
 		);
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Clic sur l'image pour Annuler une suppression
+//	Clic sur l'image pour Annuler une suppression
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		$('#zone_elaboration_referentiel q.annuler[lang=supprimer]').live // live est utilisé pour prendre en compte les nouveaux éléments créés
@@ -990,7 +990,7 @@ $(document).ready
 		);
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Clic sur l'image pour Annuler une fusion
+//	Clic sur l'image pour Annuler une fusion
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		$('#zone_elaboration_referentiel q.annuler[lang=fusionner]').live // live est utilisé pour prendre en compte les nouveaux éléments créés
@@ -1005,7 +1005,7 @@ $(document).ready
 		);
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Clic sur l'image pour Annuler un déplacement
+//	Clic sur l'image pour Annuler un déplacement
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		$('#zone_elaboration_referentiel q.annuler[lang=deplacer]').live // live est utilisé pour prendre en compte les nouveaux éléments créés
@@ -1020,7 +1020,7 @@ $(document).ready
 		);
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Intercepter la touche entrée ou escape pour valider ou annuler les modifications
+//	Intercepter la touche entrée ou escape pour valider ou annuler les modifications
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		$('input').live // live est utilisé pour prendre en compte les nouveaux éléments créés
@@ -1042,7 +1042,7 @@ $(document).ready
 		);
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Gestion des manipulations complémentaires
+//	Gestion des manipulations complémentaires
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		function lister_options_select( granulosite , select_id , matiere_id_a_eviter )
@@ -1055,7 +1055,7 @@ $(document).ready
 				{
 					type : 'POST',
 					url : 'ajax.php?page='+PAGE,
-					data : 'csrf='+CSRF+'&action=lister_options'+'&granulosite='+granulosite+'&id_matieres='+id_matieres,
+					data : 'action=lister_options&granulosite='+granulosite+'&id_matieres='+id_matieres,
 					dataType : "html",
 					error : function(jqXHR, textStatus, errorThrown)
 					{
@@ -1228,7 +1228,7 @@ $(document).ready
 					{
 						type : 'POST',
 						url : 'ajax.php?page='+PAGE,
-						data : 'csrf='+CSRF+'&action=action_complementaire'+'&'+$('#zone_choix_referentiel').serialize(),
+						data : 'action=action_complementaire&'+$('#zone_choix_referentiel').serialize(),
 						dataType : "html",
 						error : function(jqXHR, textStatus, errorThrown)
 						{

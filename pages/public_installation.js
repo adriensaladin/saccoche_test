@@ -30,6 +30,8 @@ $(document).ready
 	function()
 	{
 
+		arrondir_coins('#cadre_milieu','10px');
+
 		// ********************
 		// * Départ | Étape n -> Étape 1
 		// ********************
@@ -46,7 +48,7 @@ $(document).ready
 					{
 						type : 'POST',
 						url : 'ajax.php?page='+PAGE,
-						data : 'csrf='+CSRF+'&f_step=1',
+						data : 'f_step=1',
 						dataType : "html",
 						error : function(jqXHR, textStatus, errorThrown)
 						{
@@ -89,7 +91,7 @@ $(document).ready
 					{
 						type : 'POST',
 						url : 'ajax.php?page='+PAGE,
-						data : 'csrf='+CSRF+'&f_step=2',
+						data : 'f_step=2',
 						dataType : "html",
 						error : function(jqXHR, textStatus, errorThrown)
 						{
@@ -132,7 +134,7 @@ $(document).ready
 					{
 						type : 'POST',
 						url : 'ajax.php?page='+PAGE,
-						data : 'csrf='+CSRF+'&f_step=3',
+						data : 'f_step=3',
 						dataType : "html",
 						error : function(jqXHR, textStatus, errorThrown)
 						{
@@ -178,7 +180,7 @@ $(document).ready
 					{
 						type : 'POST',
 						url : 'ajax.php?page='+PAGE,
-						data : 'csrf='+CSRF+'&f_step=4'+'&f_installation='+f_installation,
+						data : 'f_step=4&f_installation='+f_installation,
 						dataType : "html",
 						error : function(jqXHR, textStatus, errorThrown)
 						{
@@ -211,7 +213,7 @@ $(document).ready
 		// * Étape 4 -> Étape 41
 		// ********************
 
-		// Analyse de la robustesse du mot de passe
+		//	Analyse de la robustesse du mot de passe
 		$('#f_password1').live // live est utilisé pour prendre en compte les nouveaux éléments créés
 		('keyup',
 			function()
@@ -261,7 +263,7 @@ $(document).ready
 		// Options d'envoi du formulaire (avec jquery.form.js)
 		var ajaxOptions_info_heberg =
 		{
-			url : 'ajax.php?page='+PAGE+'&csrf='+CSRF,
+			url : 'ajax.php?page='+PAGE,
 			type : 'POST',
 			dataType : "html",
 			clearForm : false,
@@ -335,7 +337,7 @@ $(document).ready
 					{
 						type : 'POST',
 						url : 'ajax.php?page='+PAGE,
-						data : 'csrf='+CSRF+'&f_step=5',
+						data : 'f_step=5',
 						dataType : "html",
 						error : function(jqXHR, textStatus, errorThrown)
 						{
@@ -393,7 +395,7 @@ $(document).ready
 		// Options d'envoi du formulaire (avec jquery.form.js)
 		var ajaxOptions_param_mysql =
 		{
-			url : 'ajax.php?page='+PAGE+'&csrf='+CSRF,
+			url : 'ajax.php?page='+PAGE,
 			type : 'POST',
 			dataType : "html",
 			clearForm : false,
@@ -482,7 +484,7 @@ $(document).ready
 					{
 						type : 'POST',
 						url : 'ajax.php?page='+PAGE,
-						data : 'csrf='+CSRF+'&f_step=6',
+						data : 'f_step=6',
 						dataType : "html",
 						error : function(jqXHR, textStatus, errorThrown)
 						{

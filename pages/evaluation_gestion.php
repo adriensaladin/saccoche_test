@@ -29,7 +29,6 @@ if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');
 
 // Réception d'un formulaire depuis un tableau de synthèse bilan
 // Dans ce cas il s'agit d'une évaluation sur une sélection d'élèves.
-// Pas de passage par la page ajax.php, mais pas besoin ici de protection contre attaques type CSRF
 $tab_items = ( isset($_POST['id_item']) && is_array($_POST['id_item']) ) ? $_POST['id_item'] : array() ;
 $tab_items = Clean::map_entier($tab_items);
 $tab_items = array_filter($tab_items,'positif');

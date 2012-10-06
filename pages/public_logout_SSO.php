@@ -28,30 +28,16 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// En cas de multi-structures, il faut savoir dans quelle base récupérer les informations.
-// Cette page est appelée par SACoche et dans ce cas c'est "base" qui est transmis.
+// En cas de multi-structures, il faut savoir dans quelle base récupérer les informations
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-$BASE = 0;
+$BASE = (isset($_GET['base'])) ? Clean::entier($_GET['base']) : 0;
+
 if(HEBERGEUR_INSTALLATION=='multi-structures')
 {
-	// Lecture d'un cookie sur le poste client servant à retenir le dernier établissement sélectionné si identification avec succès
-	$BASE = (isset($_COOKIE[COOKIE_STRUCTURE])) ? Clean::entier($_COOKIE[COOKIE_STRUCTURE]) : 0 ;
-	// Test si id d'établissement transmis dans l'URL ; historiquement "id" si connexion normale et "base" si connexion SSO
-	$BASE = (isset($_GET['id']))   ? Clean::entier($_GET['id'])   : $BASE ;
-	$BASE = (isset($_GET['base'])) ? Clean::entier($_GET['base']) : $BASE ;
-	// Test si UAI d'établissement transmis dans l'URL
-	$BASE = (isset($_GET['uai'])) ? DB_WEBMESTRE_PUBLIC::DB_recuperer_structure_id_base_for_UAI(Clean::uai($_GET['uai'])) : $BASE ;
 	if(!$BASE)
 	{
-		if(isset($_GET['uai']))
-		{
-			exit_error( 'Paramètre incorrect' /*titre*/ , 'Le numéro UAI transmis n\'est pas référencé sur cette installation de SACoche : vérifiez son exactitude et si cet établissement est bien inscrit sur ce serveur.' /*contenu*/ );
-		}
-		else
-		{
-			exit_error( 'Donnée manquante' /*titre*/ , 'Référence de base manquante (le paramètre "base" ou "id" n\'a pas été transmis en GET ou n\'est pas un entier et n\'a pas non plus été trouvé dans un Cookie).' /*contenu*/ );
-		}
+		exit_error( 'Donnée manquante' /*titre*/ , 'Référence de base manquante (le paramètre "base" n\'a pas été transmis en GET ou n\'est pas un entier).' /*contenu*/ );
 	}
 	charger_parametres_mysql_supplementaires($BASE);
 }
@@ -80,9 +66,9 @@ if($connexion_mode=='normal')
 if($connexion_mode=='cas')
 {
 	// Pour tester, cette méthode statique créé un fichier de log sur ce qui se passe avec CAS
-	if (DEBUG_PHPCAS)
+	if (DEBUG)
 	{
-		phpCAS::setDebug(CHEMIN_FICHIER_DEBUG_PHPCAS);
+		phpCAS::setDebug(CHEMIN_FICHIER_PHPCAS_DEBUG);
 	}
 	// Initialiser la connexion avec CAS  ; le premier argument est la version du protocole CAS ; le dernier argument indique qu'on utilise la session existante
 	phpCAS::client(CAS_VERSION_2_0, $cas_serveur_host, (int)$cas_serveur_port, $cas_serveur_root, FALSE);

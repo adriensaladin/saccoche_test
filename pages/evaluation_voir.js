@@ -54,7 +54,7 @@ $(document).ready
 		}
 
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
-		// Charger le select f_eleve en ajax
+		//	Charger le select f_eleve en ajax
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		function maj_eleve(groupe_id,groupe_type)
@@ -111,7 +111,7 @@ $(document).ready
 		);
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Traitement du formulaire
+//	Traitement du formulaire
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		// Le formulaire qui va être analysé et traité en AJAX
@@ -142,7 +142,7 @@ $(document).ready
 		// Options d'envoi du formulaire (avec jquery.form.js)
 		var ajaxOptions =
 		{
-			url : 'ajax.php?page='+PAGE+'&csrf='+CSRF,
+			url : 'ajax.php?page='+PAGE,
 			type : 'POST',
 			dataType : "html",
 			clearForm : false,
@@ -207,7 +207,7 @@ $(document).ready
 		} 
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Initialisation et chargement au changement d'élève (cas d'un parent responsable de plusieurs élèves)
+//	Initialisation et chargement au changement d'élève (cas d'un parent responsable de plusieurs élèves)
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		function maj_eval()
@@ -234,7 +234,7 @@ $(document).ready
 		maj_eval();
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Clic sur l'image pour Voir les notes saisies à un devoir ; retiré d'un fancybox afin de permettre d'utiliser ce fancybox pour une demande d'évaluation
+//	Clic sur l'image pour Voir les notes saisies à un devoir ; retiré d'un fancybox afin de permettre d'utiliser ce fancybox pour une demande d'évaluation
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		$('#zone_eval_choix q.voir').live // live est utilisé pour prendre en compte les nouveaux éléments créés
@@ -256,7 +256,7 @@ $(document).ready
 					{
 						type : 'POST',
 						url : 'ajax.php?page='+PAGE,
-						data : 'csrf='+CSRF+'&f_action=Voir_notes'+'&f_eleve='+$('#f_eleve option:selected').val()+'&f_devoir='+devoir_id,
+						data : 'f_action=Voir_notes&f_eleve='+$('#f_eleve option:selected').val()+'&f_devoir='+devoir_id,
 						dataType : "html",
 						error : function(jqXHR, textStatus, errorThrown)
 						{
@@ -284,7 +284,7 @@ $(document).ready
 		);
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Clic sur l'image pour Saisir les notes d'un devoir (auto-évaluation)
+//	Clic sur l'image pour Saisir les notes d'un devoir (auto-évaluation)
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		$('#zone_eval_choix q.saisir').live // live est utilisé pour prendre en compte les nouveaux éléments créés
@@ -306,7 +306,7 @@ $(document).ready
 					{
 						type : 'POST',
 						url : 'ajax.php?page='+PAGE,
-						data : 'csrf='+CSRF+'&f_action=Saisir_notes'+'&f_eleve='+$('#f_eleve option:selected').val()+'&f_devoir='+devoir_id,
+						data : 'f_action=Saisir_notes&f_eleve='+$('#f_eleve option:selected').val()+'&f_devoir='+devoir_id,
 						dataType : "html",
 						error : function(jqXHR, textStatus, errorThrown)
 						{
@@ -343,7 +343,7 @@ $(document).ready
 		);
 
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
-		// Réagir à la modification d'une note
+		//	Réagir à la modification d'une note
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		var modification = false;
@@ -359,7 +359,7 @@ $(document).ready
 		);
 
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
-		// Clic sur le bouton pour fermer la zone servant à voir les acquisitions à une évaluation
+		//	Clic sur le bouton pour fermer la zone servant à voir les acquisitions à une évaluation
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		$('#fermer_zone_voir').click
@@ -373,7 +373,7 @@ $(document).ready
 		);
 
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
-		// Clic sur le bouton pour fermer le formulaire servant à saisir les acquisitions à une évaluation
+		//	Clic sur le bouton pour fermer le formulaire servant à saisir les acquisitions à une évaluation
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		$('#fermer_zone_saisir').click
@@ -386,7 +386,7 @@ $(document).ready
 		);
 
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
-		// Clic sur le lien pour mettre à jour les acquisitions à une évaluation
+		//	Clic sur le lien pour mettre à jour les acquisitions à une évaluation
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		$('#Enregistrer_saisie').click // live est utilisé pour prendre en compte les nouveaux éléments créés
@@ -407,7 +407,7 @@ $(document).ready
 						{
 							type : 'POST',
 							url : 'ajax.php?page='+PAGE,
-							data : 'csrf='+CSRF+'&f_action=Enregistrer_saisies'+'&'+$('#zone_eval_saisir').serialize(),
+							data : 'f_action=Enregistrer_saisies'+'&'+$('#zone_eval_saisir').serialize(),
 							dataType : "html",
 							error : function(jqXHR, textStatus, errorThrown)
 							{

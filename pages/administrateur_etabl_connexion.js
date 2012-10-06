@@ -31,7 +31,7 @@ $(document).ready
 	{
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Intercepter la touche entrée
+//	Intercepter la touche entrée
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 		$('input').keyup
 		(
@@ -123,7 +123,7 @@ $(document).ready
 		actualiser_formulaire();
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Mode d'identification (normal, CAS...) & paramètres associés
+//	Mode d'identification (normal, CAS...) & paramètres associés
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		$('#bouton_valider').click
@@ -146,7 +146,7 @@ $(document).ready
 					{
 						type : 'POST',
 						url : 'ajax.php?page='+PAGE,
-						data : 'csrf='+CSRF+'&f_connexion_mode='+connexion_mode+'&f_connexion_nom='+connexion_nom+'&'+$("form").serialize(),
+						data : 'f_connexion_mode='+connexion_mode+'&f_connexion_nom='+connexion_nom+'&'+$("form").serialize(),
 						dataType : "html",
 						error : function(jqXHR, textStatus, errorThrown)
 						{

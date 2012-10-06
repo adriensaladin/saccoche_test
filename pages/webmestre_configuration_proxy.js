@@ -31,7 +31,7 @@ $(document).ready
 	{
 
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
-		// Afficher masquer des éléments du formulaire
+		//	Afficher masquer des éléments du formulaire
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		$('#f_proxy_used').click
@@ -51,7 +51,7 @@ $(document).ready
 		);
 
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
-		// Masquer les message si formulaire modifié
+		//	Masquer les message si formulaire modifié
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		$('input,select').change
@@ -65,7 +65,7 @@ $(document).ready
 		);
 
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
-		// Tester les réglages actuellement enregistrés
+		//	Tester les réglages actuellement enregistrés
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		$('#f_tester').click
@@ -79,7 +79,7 @@ $(document).ready
 					{
 						type : 'POST',
 						url : 'ajax.php?page='+PAGE,
-						data : 'csrf='+CSRF+'&f_action=tester',
+						data : 'f_action=tester',
 						dataType : "html",
 						error : function(jqXHR, textStatus, errorThrown)
 						{
@@ -104,7 +104,7 @@ $(document).ready
 		);
 
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
-		// Soumettre le formulaire principal => Enregistrer des nouveaux réglages
+		//	Soumettre le formulaire principal => Enregistrer des nouveaux réglages
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		// Le formulaire qui va être analysé et traité en AJAX
@@ -146,7 +146,7 @@ $(document).ready
 		// Options d'envoi du formulaire (avec jquery.form.js)
 		var ajaxOptions =
 		{
-			url : 'ajax.php?page='+PAGE+'&csrf='+CSRF,
+			url : 'ajax.php?page='+PAGE,
 			type : 'POST',
 			dataType : "html",
 			clearForm : false,

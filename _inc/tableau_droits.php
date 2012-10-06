@@ -84,6 +84,7 @@ $tab_droits['administrateur_blocage']                  = $tab_droits_profil_admi
 $tab_droits['administrateur_classe']                   = $tab_droits_profil_administrateur;
 $tab_droits['administrateur_classe_gestion']           = $tab_droits_profil_administrateur;
 $tab_droits['administrateur_codes_couleurs']           = $tab_droits_profil_administrateur;
+$tab_droits['administrateur_comptes']                  = $tab_droits_profil_administrateur;
 $tab_droits['administrateur_directeur']                = $tab_droits_profil_administrateur;
 $tab_droits['administrateur_dump']                     = $tab_droits_profil_administrateur;
 $tab_droits['administrateur_eleve']                    = $tab_droits_profil_administrateur;
@@ -122,7 +123,6 @@ $tab_droits['administrateur_resilier']                 = $tab_droits_profil_admi
 // Profil webmestre
 $tab_droits['webmestre_configuration_proxy']           = $tab_droits_profil_webmestre;
 $tab_droits['webmestre_database_test']                 = $tab_droits_profil_webmestre;
-$tab_droits['webmestre_debug']                         = $tab_droits_profil_webmestre;
 $tab_droits['webmestre_fichiers_deposes']              = $tab_droits_profil_webmestre;
 $tab_droits['webmestre_geographie']                    = $tab_droits_profil_webmestre;
 $tab_droits['webmestre_identite_installation']         = $tab_droits_profil_webmestre;
@@ -137,6 +137,8 @@ $tab_droits['webmestre_structure_transfert']           = $tab_droits_profil_webm
 // Profil professeur | directeur | administrateur
 $tab_droits['officiel']                                = $tab_droits_profil_prof_dir_admin;
 $tab_droits['officiel_accueil']                        = $tab_droits_profil_prof_dir_admin;
+$tab_droits['officiel_action_examiner']                = $tab_droits_profil_prof_dir_admin;
+$tab_droits['officiel_action_imprimer']                = $tab_droits_profil_prof_dir_admin;
 $tab_droits['compte_message']                          = $tab_droits_profil_prof_dir_admin;
 $tab_droits['consultation_date_connexion']             = $tab_droits_profil_prof_dir_admin;
 // Profil professeur | directeur
@@ -144,6 +146,8 @@ $tab_droits['_maj_select_domaines']                    = $tab_droits_profil_prof
 $tab_droits['_maj_select_matieres_famille']            = $tab_droits_profil_prof_dir;
 $tab_droits['_maj_select_niveaux_famille']             = $tab_droits_profil_prof_dir;
 $tab_droits['calque_voir_photo']                       = $tab_droits_profil_prof_dir;
+$tab_droits['officiel_action_consulter']               = $tab_droits_profil_prof_dir;
+$tab_droits['officiel_action_saisir']                  = $tab_droits_profil_prof_dir;
 $tab_droits['compte_selection_items']                  = $tab_droits_profil_prof_dir;
 $tab_droits['consultation_referentiel_externe']        = $tab_droits_profil_prof_dir;
 $tab_droits['export_fichier']                          = $tab_droits_profil_prof_dir;
@@ -183,38 +187,4 @@ $tab_droits['consultation_referentiel_interne']        = array( 'public'=>0 , 'e
 $tab_droits['releve_pdf']                              = array( 'public'=>0 , 'eleve'=>1 , 'parent'=>1 , 'professeur'=>1 , 'directeur'=>1 , 'administrateur'=>1 , 'webmestre'=>0 );
 $tab_droits['public_login_SSO']                        = array( 'public'=>1 , 'eleve'=>1 , 'parent'=>1 , 'professeur'=>1 , 'directeur'=>1 , 'administrateur'=>1 , 'webmestre'=>0 ); // Attention ! Il faut inclure "public" car un échange est encore effectué avec ce fichier après enregistrement des données de session...
 
-// Tableau avec les pages pour lesquelles une vérification de jeton est effectuée lors d'un appel AJAX pour contrer les attaques de type CSRF
-// @see http://fr.wikipedia.org/wiki/Cross-site_request_forgery
-// @see http://www.siteduzero.com/tutoriel-3-157576-securisation-des-failles-csrf.html
-$tab_sans_verif_csrf = array
-(
-	// appel depuis plusieurs pages + pas de vérif utile
-	'_maj_select_directeurs',
-	'_maj_select_domaines',
-	'_maj_select_eleves',
-	'_maj_select_eval',
-	'_maj_select_matieres',
-	'_maj_select_matieres_famille',
-	'_maj_select_matieres_prof',
-	'_maj_select_niveaux',
-	'_maj_select_niveaux_famille',
-	'_maj_select_parents',
-	'_maj_select_piliers',
-	'_maj_select_professeurs',
-	'_maj_select_professeurs_directeurs',
-	'calque_date_calendrier',
-	'calque_voir_photo',
-	'compte_selection_items',
-	'conserver_session_active',
-	'evaluation_demande_eleve_ajout',
-	'fermer_session',
-	// sans objet + pas de formulaire
-	'public_login_SSO', 
-	'public_logout_SSO',
-	'releve',
-	'releve_pdf'
-);
-
-$tab_verif_csrf = array_fill_keys ( array_diff( array_keys($tab_droits) , $tab_sans_verif_csrf ) , TRUE );
-ksort($tab_verif_csrf);
 ?>

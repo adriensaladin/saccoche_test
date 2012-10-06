@@ -61,7 +61,7 @@ public static function DB_recuperer_amplitude_periodes()
 	$DB_SQL = 'SELECT MIN(jointure_date_debut) AS tout_debut , MAX(jointure_date_fin) AS toute_fin ';
 	$DB_SQL.= 'FROM sacoche_jointure_groupe_periode ';
 	$DB_ROW = DB::queryRow(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
-	if(!empty($DB_ROW))
+	if(count($DB_ROW))
 	{
 		// On ajoute un jour pour dessiner les barres jusqu'au jour suivant (accessoirement, ça évite aussi une possible division par 0).
 		$DB_SQL = 'SELECT DATEDIFF(DATE_ADD(:toute_fin,INTERVAL 1 DAY),:tout_debut) AS nb_jours_total ';
@@ -426,7 +426,7 @@ public static function DB_lister_parents_actuels_avec_infos_for_eleve($eleve_id)
 	$DB_SQL.= 'ORDER BY resp_legal_num ASC ';
 	$DB_VAR = array(':eleve_id'=>$eleve_id);
 	$DB_TAB_parents = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR, TRUE, TRUE);
-	if(empty($DB_TAB_parents))
+	if(!count($DB_TAB_parents))
 	{
 		return array();
 	}
@@ -735,8 +735,8 @@ public static function DB_compter_users_suivant_statut($profil)
 	$DB_SQL.= 'WHERE '.$where;
 	$DB_SQL.= 'GROUP BY statut';
 	$DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR , TRUE , TRUE);
-	$nb_actuels = ( (!empty($DB_TAB)) && (isset($DB_TAB[1])) ) ? $DB_TAB[1]['nombre'] : 0 ;
-	$nb_anciens = ( (!empty($DB_TAB)) && (isset($DB_TAB[0])) ) ? $DB_TAB[0]['nombre'] : 0 ;
+	$nb_actuels = ( (count($DB_TAB)) && (isset($DB_TAB[1])) ) ? $DB_TAB[1]['nombre'] : 0 ;
+	$nb_anciens = ( (count($DB_TAB)) && (isset($DB_TAB[0])) ) ? $DB_TAB[0]['nombre'] : 0 ;
 	return array($nb_actuels,$nb_anciens);
 }
 
@@ -755,7 +755,7 @@ public static function DB_tester_matiere_reference($matiere_ref,$matiere_id=FALS
 	$DB_SQL.= ($matiere_id) ? 'AND matiere_id!=:matiere_id ' : '' ;
 	$DB_VAR = array(':matiere_ref'=>$matiere_ref,':matiere_id'=>$matiere_id);
 	$DB_SQL.= 'LIMIT 1'; // utile
-	return (int)DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+	return DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
 /**
@@ -773,7 +773,7 @@ public static function DB_tester_classe_reference($groupe_ref,$groupe_id=FALSE)
 	$DB_SQL.= ($groupe_id) ? 'AND groupe_id!=:groupe_id ' : '' ;
 	$DB_SQL.= 'LIMIT 1'; // utile
 	$DB_VAR = array(':groupe_type'=>'classe',':groupe_ref'=>$groupe_ref,':groupe_id'=>$groupe_id);
-	return (int)DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+	return DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
 /**
@@ -791,7 +791,7 @@ public static function DB_tester_groupe_reference($groupe_ref,$groupe_id=FALSE)
 	$DB_SQL.= ($groupe_id) ? 'AND groupe_id!=:groupe_id ' : '' ;
 	$DB_SQL.= 'LIMIT 1'; // utile
 	$DB_VAR = array(':groupe_type'=>'groupe',':groupe_ref'=>$groupe_ref,':groupe_id'=>$groupe_id);
-	return (int)DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+	return DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
 /**
@@ -809,7 +809,7 @@ public static function DB_tester_periode_nom($periode_nom,$periode_id=FALSE)
 	$DB_SQL.= ($periode_id) ? 'AND periode_id!=:periode_id ' : '' ;
 	$DB_SQL.= 'LIMIT 1'; // utile
 	$DB_VAR = array(':periode_nom'=>$periode_nom,':periode_id'=>$periode_id);
-	return (int)DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+	return DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
 /**
@@ -830,7 +830,7 @@ public static function DB_tester_utilisateur_identifiant($champ_nom,$champ_valeu
 	$DB_SQL.= ($user_id)     ? 'AND user_id!=:user_id ' : '' ;
 	$DB_SQL.= 'LIMIT 1'; // utile
 	$DB_VAR = array(':champ_valeur'=>$champ_valeur,':user_profil'=>$user_profil,':user_id'=>$user_id);
-	return (int)DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+	return DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
 /**
@@ -1253,7 +1253,7 @@ public static function DB_modifier_liaison_professeur_matiere($user_id,$matiere_
 		$DB_SQL.= 'WHERE user_id=:user_id AND matiere_id=:matiere_id ';
 		$DB_VAR = array(':user_id'=>$user_id,':matiere_id'=>$matiere_id);
 		$DB_ROW = DB::queryRow(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-		if(empty($DB_ROW))
+		if(!count($DB_ROW))
 		{
 			$DB_SQL = 'INSERT INTO sacoche_jointure_user_matiere (user_id,matiere_id,jointure_coord) ';
 			$DB_SQL.= 'VALUES(:user_id,:matiere_id,:coord)';
@@ -1653,7 +1653,7 @@ public static function DB_supprimer_utilisateur($user_id,$user_profil)
 public static function DB_optimiser_tables_structure()
 {
 	$DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , 'SHOW TABLE STATUS LIKE "sacoche_%"');
-	if(!empty($DB_TAB))
+	if(count($DB_TAB))
 	{
 		foreach($DB_TAB as $DB_ROW)
 		{

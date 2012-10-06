@@ -31,7 +31,7 @@ $(document).ready
 	{
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-//	Charger le formulaire listant les structures ayant partagées un référentiel (appel au serveur communautaire)
+// Charger le formulaire listant les structures ayant partagées un référentiel (appel au serveur communautaire)
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		var charger_formulaire_structures = function()
@@ -42,7 +42,7 @@ $(document).ready
 				{
 					type : 'POST',
 					url : 'ajax.php?page='+PAGE,
-					data : 'action=Afficher_structures',
+					data : 'csrf='+CSRF+'&action=Afficher_structures',
 					dataType : "html",
 					error : function(jqXHR, textStatus, errorThrown)
 					{
@@ -73,7 +73,7 @@ $(document).ready
 		$('#charger_formulaire_structures').live(  'click' , charger_formulaire_structures );
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-//	Charger le select f_matiere en ajax
+// Charger le select f_matiere en ajax
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		function maj_matiere(matiere_famille_id)
@@ -123,7 +123,7 @@ $(document).ready
 		);
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-//	Charger le select f_niveau en ajax
+// Charger le select f_niveau en ajax
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		function maj_niveau(niveau_famille_id)
@@ -173,7 +173,7 @@ $(document).ready
 		);
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-//	Réagir au changement dans un select
+// Réagir au changement dans un select
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		$('select').change
@@ -186,7 +186,7 @@ $(document).ready
 		);
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-//	Clic sur le bouton pour chercher des référentiels partagés sur d'autres niveaux ou matières
+// Clic sur le bouton pour chercher des référentiels partagés sur d'autres niveaux ou matières
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		$('#rechercher').click
@@ -208,7 +208,7 @@ $(document).ready
 					{
 						type : 'POST',
 						url : 'ajax.php?page='+PAGE,
-						data : 'action=Lister_referentiels&matiere_id='+matiere_id+'&niveau_id='+niveau_id+'&structure_id='+structure_id,
+						data : 'csrf='+CSRF+'&action=Lister_referentiels'+'&matiere_id='+matiere_id+'&niveau_id='+niveau_id+'&structure_id='+structure_id,
 						dataType : "html",
 						error : function(jqXHR, textStatus, errorThrown)
 						{
@@ -237,7 +237,7 @@ $(document).ready
 		);
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-//	Clic sur l'image pour Voir le détail d'un référentiel partagé
+// Clic sur l'image pour Voir le détail d'un référentiel partagé
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		$('#choisir_referentiel_communautaire q.voir').live // live est utilisé pour prendre en compte les nouveaux éléments créés
@@ -255,7 +255,7 @@ $(document).ready
 					{
 						type : 'POST',
 						url : 'ajax.php?page='+PAGE,
-						data : 'action=Voir_referentiel&referentiel_id='+referentiel_id,
+						data : 'csrf='+CSRF+'&action=Voir_referentiel'+'&referentiel_id='+referentiel_id,
 						dataType : "html",
 						error : function(jqXHR, textStatus, errorThrown)
 						{

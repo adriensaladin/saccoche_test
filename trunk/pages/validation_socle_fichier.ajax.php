@@ -71,7 +71,7 @@ if( in_array( $action , array('export_lpc','export_sacoche') ) && $nb )
 		$tab_eleves[$DB_ROW['user_id']] = array('nom'=>$DB_ROW['user_nom'],'prenom'=>$DB_ROW['user_prenom'],'sconet_id'=>$DB_ROW['user_sconet_id']);
 	}
 	// Elèves trouvés ?
-	if(!count($DB_TAB))
+	if(empty($DB_TAB))
 	{
 		$identifiant = $only_sconet_id ? 'n\'ont pas d\'identifiant Sconet ou ' : '' ;
 		exit('Erreur : les élèves trouvés '.$identifiant.'sont anciens !');
@@ -183,7 +183,7 @@ if( in_array( $action , array('export_lpc','export_sacoche') ) && $nb )
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-//	Importer un fichier de validations
+// Importer un fichier de validations
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 if( in_array( $action , array('import_sacoche','import_compatible') ) )
@@ -380,9 +380,9 @@ if( in_array( $action , array('import_sacoche','import_compatible') ) )
 	exit();
 }
 
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
 // On ne devrait pas en arriver là...
-//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 exit('Erreur avec les données transmises !');
 

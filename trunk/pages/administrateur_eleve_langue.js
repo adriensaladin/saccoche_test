@@ -34,7 +34,7 @@ $(document).ready
 
 		$("#select_eleves").hide();
 
-		//	Charger le select f_eleve en ajax
+		// Charger le select f_eleve en ajax
 
 		function maj_eleve(groupe_id,groupe_type)
 		{
@@ -118,7 +118,7 @@ $(document).ready
 					{
 						type : 'POST',
 						url : 'ajax.php?page='+PAGE+'&action=associer',
-						data : $("form").serialize(),
+						data : 'csrf='+CSRF+'&'+$("form").serialize(),
 						dataType : "html",
 						error : function(jqXHR, textStatus, errorThrown)
 						{
@@ -154,7 +154,7 @@ $(document).ready
 			{
 				type : 'POST',
 				url : 'ajax.php?page='+PAGE+'&action=initialiser',
-				data : '',
+				data : 'csrf='+CSRF,
 				dataType : "html",
 				error : function(jqXHR, textStatus, errorThrown)
 				{

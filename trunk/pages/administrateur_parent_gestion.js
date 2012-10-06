@@ -31,7 +31,7 @@ $(document).ready
 	{
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-//	Initialisation
+// Initialisation
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		var mode = false;
@@ -70,7 +70,7 @@ $(document).ready
 		);
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-//	Clic sur une cellule (remplace un champ label, impossible à définir sur plusieurs colonnes)
+// Clic sur une cellule (remplace un champ label, impossible à définir sur plusieurs colonnes)
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		$('td.label').live
@@ -82,7 +82,7 @@ $(document).ready
 		);
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-//	Clic pour tout cocher ou tout décocher
+// Clic pour tout cocher ou tout décocher
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		$('#all_check').click
@@ -103,8 +103,8 @@ $(document).ready
 		);
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-//	Clic sur le checkbox pour affecter ou non un nouveau mot de passe
-//	Clic sur le checkbox pour choisir ou non une date de sortie
+// Clic sur le checkbox pour affecter ou non un nouveau mot de passe
+// Clic sur le checkbox pour choisir ou non une date de sortie
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 		$('#box_password , #box_date').live // live est utilisé pour prendre en compte les nouveaux éléments créés
 		('click',
@@ -122,7 +122,7 @@ $(document).ready
 		);
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-//	Fonctions utilisées
+// Fonctions utilisées
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		/**
@@ -244,7 +244,7 @@ $(document).ready
 		}
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-//	Appel des fonctions en fonction des événements ; live est utilisé pour prendre en compte les nouveaux éléments créés
+// Appel des fonctions en fonction des événements ; live est utilisé pour prendre en compte les nouveaux éléments créés
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		$('q.ajouter').click( ajouter );
@@ -254,7 +254,7 @@ $(document).ready
 		$('table.form input , table.form select').live( 'keyup' , function(e){intercepter(e);} );
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-//	Traitement du formulaire
+// Traitement du formulaire
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		// Le formulaire qui va être analysé et traité en AJAX
@@ -297,7 +297,7 @@ $(document).ready
 		// Options d'envoi du formulaire (avec jquery.form.js)
 		var ajaxOptions =
 		{
-			url : 'ajax.php?page='+PAGE,
+			url : 'ajax.php?page='+PAGE+'&csrf='+CSRF,
 			type : 'POST',
 			dataType : "html",
 			clearForm : false,
@@ -394,7 +394,7 @@ $(document).ready
 		} 
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-//	Clic sur un bouton pour effectuer une action sur les utilisateurs cochés
+// Clic sur un bouton pour effectuer une action sur les utilisateurs cochés
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		$('#zone_actions button').click
@@ -425,8 +425,8 @@ $(document).ready
 					(
 						{
 							type : 'POST',
-							url : 'ajax.php?page='+'administrateur_comptes',
-							data : 'f_action='+f_action+'&f_listing_id='+listing_id,
+							url : 'ajax.php?page='+PAGE,
+							data : 'csrf='+CSRF+'&f_action='+f_action+'&f_listing_id='+listing_id,
 							dataType : "html",
 							error : function(jqXHR, textStatus, errorThrown)
 							{

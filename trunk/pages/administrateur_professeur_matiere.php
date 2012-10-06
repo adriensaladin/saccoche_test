@@ -47,7 +47,7 @@ $tab_lignes_profs      = array();
 
 // Récupérer la liste des matières
 $DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_matieres_etablissement( TRUE /*order_by_name*/ );
-if(!count($DB_TAB))
+if(empty($DB_TAB))
 {
 	echo'<p class="danger">Aucune matière trouvée !</p>';
 }
@@ -65,7 +65,7 @@ else
 
 	// Récupérer la liste des professeurs
 	$DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_users( 'professeur' , 1 /*only_actuels*/ , FALSE /*with_classe*/ );
-	if(!count($DB_TAB))
+	if(empty($DB_TAB))
 	{
 		echo'<p class="danger">Aucun compte professeur trouvé !</p>';
 	}

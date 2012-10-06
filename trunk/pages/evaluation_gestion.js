@@ -31,7 +31,7 @@ $(document).ready
 	{
 
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
-		//	Initialisation
+		// Initialisation
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		var mode = false;
@@ -65,7 +65,7 @@ $(document).ready
 		trier_tableau();
 
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
-		//	Fonctions utilisées
+		// Fonctions utilisées
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		function activer_boutons_upload(ref)
@@ -352,7 +352,7 @@ $(document).ready
 				{
 					type : 'POST',
 					url : 'ajax.php?page='+PAGE,
-					data : 'f_action='+mode+'&f_ref='+ref+'&f_date_mysql='+date_mysql+'&f_description='+encodeURIComponent(description)+'&f_date_visible='+date_visible+'&f_groupe_nom='+encodeURIComponent(groupe)+'&f_date_fr='+encodeURIComponent(date_fr),
+					data : 'csrf='+CSRF+'&f_action='+mode+'&f_ref='+ref+'&f_date_mysql='+date_mysql+'&f_description='+encodeURIComponent(description)+'&f_date_visible='+date_visible+'&f_groupe_nom='+encodeURIComponent(groupe)+'&f_date_fr='+encodeURIComponent(date_fr),
 					dataType : "html",
 					error : function(jqXHR, textStatus, errorThrown)
 					{
@@ -421,7 +421,7 @@ $(document).ready
 				{
 					type : 'POST',
 					url : 'ajax.php?page='+PAGE,
-					data : 'f_action='+mode+'&f_ref='+ref+'&f_date_fr='+encodeURIComponent(date_fr)+'&f_description='+encodeURIComponent(description)+'&f_groupe_nom='+encodeURIComponent(groupe),
+					data : 'csrf='+CSRF+'&f_action='+mode+'&f_ref='+ref+'&f_date_fr='+encodeURIComponent(date_fr)+'&f_description='+encodeURIComponent(description)+'&f_groupe_nom='+encodeURIComponent(groupe),
 					dataType : "html",
 					error : function(jqXHR, textStatus, errorThrown)
 					{
@@ -477,7 +477,7 @@ $(document).ready
 				{
 					type : 'POST',
 					url : 'ajax.php?page='+PAGE,
-					data : 'f_action='+mode+'&f_ref='+ref+'&f_date_fr='+encodeURIComponent(date_fr)+'&f_description='+encodeURIComponent(description)+'&f_groupe_nom='+encodeURIComponent(groupe),
+					data : 'csrf='+CSRF+'&f_action='+mode+'&f_ref='+ref+'&f_date_fr='+encodeURIComponent(date_fr)+'&f_description='+encodeURIComponent(description)+'&f_groupe_nom='+encodeURIComponent(groupe),
 					dataType : "html",
 					error : function(jqXHR, textStatus, errorThrown)
 					{
@@ -559,7 +559,7 @@ $(document).ready
 				{
 					type : 'POST',
 					url : 'ajax.php?page='+PAGE,
-					data : 'f_action='+mode+'&f_ref='+ref,
+					data : 'csrf='+CSRF+'&f_action='+mode+'&f_ref='+ref,
 					dataType : "html",
 					error : function(jqXHR, textStatus, errorThrown)
 					{
@@ -634,7 +634,7 @@ $(document).ready
 		};
 
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
-		//	Appel des fonctions en fonction des événements ; live est utilisé pour prendre en compte les nouveaux éléments créés
+		// Appel des fonctions en fonction des événements ; live est utilisé pour prendre en compte les nouveaux éléments créés
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		$('q.ajouter').click( ajouter );
@@ -656,7 +656,7 @@ $(document).ready
 		$('q.uploader_doc').live(   'click' , uploader_doc );
 
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
-		//	Cocher / décocher par lot des individus
+		// Cocher / décocher par lot des individus
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		$('#prof_check_all').click
@@ -677,7 +677,7 @@ $(document).ready
 		);
 
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
-		//	Clic sur le checkbox pour choisir ou non une date visible différente de la date du devoir
+		// Clic sur le checkbox pour choisir ou non une date visible différente de la date du devoir
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		$('#box_date').live // live est utilisé pour prendre en compte les nouveaux éléments créés
@@ -697,7 +697,7 @@ $(document).ready
 		);
 
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
-		//	Clic sur le checkbox pour choisir ou non une date d'auto-évaluation
+		// Clic sur le checkbox pour choisir ou non une date d'auto-évaluation
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		$('#box_autoeval').live // live est utilisé pour prendre en compte les nouveaux éléments créés
@@ -718,7 +718,7 @@ $(document).ready
 		);
 
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
-		//	Reporter la date visible si modif date du devoir et demande dates identiques
+		// Reporter la date visible si modif date du devoir et demande dates identiques
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		$('#f_date').live // live est utilisé pour prendre en compte les nouveaux éléments créés
@@ -733,9 +733,9 @@ $(document).ready
 		);
 
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
-		//	Clic sur le bouton pour fermer le cadre des items associés à une évaluation (annuler / retour)
-		//	Clic sur le bouton pour fermer le cadre des élèves associés à une évaluation (annuler / retour) (uniquement pour des élèves sélectionnés)
-		//	Clic sur le bouton pour fermer le cadre des professeurs associés à une évaluation (annuler / retour)
+		// Clic sur le bouton pour fermer le cadre des items associés à une évaluation (annuler / retour)
+		// Clic sur le bouton pour fermer le cadre des élèves associés à une évaluation (annuler / retour) (uniquement pour des élèves sélectionnés)
+		// Clic sur le bouton pour fermer le cadre des professeurs associés à une évaluation (annuler / retour)
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		$('#annuler_compet , #annuler_eleve , #annuler_profs , #fermer_zone_upload').click
@@ -748,7 +748,7 @@ $(document).ready
 		);
 
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
-		//	Clic sur le bouton pour fermer le formulaire servant à saisir les acquisitions des élèves à une évaluation
+		// Clic sur le bouton pour fermer le formulaire servant à saisir les acquisitions des élèves à une évaluation
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		$('#fermer_zone_saisir').live // live est utilisé pour prendre en compte les nouveaux éléments créés
@@ -764,7 +764,7 @@ $(document).ready
 		);
 
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
-		//	Clic sur le bouton pour fermer le formulaire servant à réordonner les items d'une évaluation
+		// Clic sur le bouton pour fermer le formulaire servant à réordonner les items d'une évaluation
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		$('#fermer_zone_ordonner').live // live est utilisé pour prendre en compte les nouveaux éléments créés
@@ -780,7 +780,7 @@ $(document).ready
 		);
 
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
-		//	Clic sur le bouton pour fermer le bloc pour voir les acquisitions des élèves à une évaluation
+		// Clic sur le bouton pour fermer le bloc pour voir les acquisitions des élèves à une évaluation
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		$('#fermer_zone_voir').live // live est utilisé pour prendre en compte les nouveaux éléments créés
@@ -796,7 +796,7 @@ $(document).ready
 		);
 
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
-		//	Clic sur le bouton pour fermer le bloc pour voir les répartitions des élèves à une évaluation
+		// Clic sur le bouton pour fermer le bloc pour voir les répartitions des élèves à une évaluation
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		$('#fermer_zone_voir_repart').live // live est utilisé pour prendre en compte les nouveaux éléments créés
@@ -812,7 +812,7 @@ $(document).ready
 		);
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-//	Clic sur le bouton pour fermer le formulaire servant à imprimer le cartouche d'une évaluation
+// Clic sur le bouton pour fermer le formulaire servant à imprimer le cartouche d'une évaluation
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 		$('#fermer_zone_imprimer').click
 		(
@@ -828,7 +828,7 @@ $(document).ready
 		);
 
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
-		//	Clic sur le bouton pour valider le choix des items associés à une évaluation
+		// Clic sur le bouton pour valider le choix des items associés à une évaluation
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		$('#valider_compet').click
@@ -854,7 +854,7 @@ $(document).ready
 		);
 
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
-		//	Clic sur le bouton pour valider le choix des élèves associés à une évaluation (uniquement pour des élèves sélectionnés)
+		// Clic sur le bouton pour valider le choix des élèves associés à une évaluation (uniquement pour des élèves sélectionnés)
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		$('#valider_eleve').click
@@ -886,7 +886,7 @@ $(document).ready
 		);
 
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
-		//	Clic sur le bouton pour valider le choix des profs associés à une évaluation
+		// Clic sur le bouton pour valider le choix des profs associés à une évaluation
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		$('#valider_profs').click
@@ -912,7 +912,7 @@ $(document).ready
 		);
 
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
-		//	Demande pour sélectionner d'une liste d'items mémorisés
+		// Demande pour sélectionner d'une liste d'items mémorisés
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		$('#f_selection_items').change
@@ -924,7 +924,7 @@ $(document).ready
 		);
 
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
-		//	Clic sur le bouton pour mémoriser un choix d'items
+		// Clic sur le bouton pour mémoriser un choix d'items
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		$('#f_enregistrer_items').click
@@ -936,7 +936,7 @@ $(document).ready
 		);
 
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
-		//	Fonction pour colorer les cases du tableau de saisie des items déjà enregistrés
+		// Fonction pour colorer les cases du tableau de saisie des items déjà enregistrés
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		function colorer_cellules()
@@ -958,7 +958,7 @@ $(document).ready
 		}
 
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
-		//	Validation de la demande de génération d'un cartouche pour une évaluation
+		// Validation de la demande de génération d'un cartouche pour une évaluation
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		$('#f_submit_imprimer').click
@@ -973,7 +973,7 @@ $(document).ready
 					{
 						type : 'POST',
 						url : 'ajax.php?page='+PAGE,
-						data : 'f_action=imprimer_cartouche&'+$("#zone_imprimer").serialize(),
+						data : 'csrf='+CSRF+'&f_action=imprimer_cartouche'+'&'+$("#zone_imprimer").serialize(),
 						dataType : "html",
 						error : function(jqXHR, textStatus, errorThrown)
 						{
@@ -1003,8 +1003,8 @@ $(document).ready
 		);
 
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
-		//	Demande d'indiquer la liste des élèves associés à une évaluation de même nom (uniquement pour des élèves sélectionnés)
-		//	Reprise d'un développement initié par Alain Pottier <alain.pottier613@orange.fr>
+		// Demande d'indiquer la liste des élèves associés à une évaluation de même nom (uniquement pour des élèves sélectionnés)
+		// Reprise d'un développement initié par Alain Pottier <alain.pottier613@orange.fr>
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		$('#indiquer_eleves_deja').click
@@ -1034,7 +1034,7 @@ $(document).ready
 					{
 						type : 'POST',
 						url : 'ajax.php?page='+PAGE,
-						data : 'f_action=indiquer_eleves_deja'+'&f_description='+$('#f_description').val()+'&f_date_debut='+f_date_debut,
+						data : 'csrf='+CSRF+'&f_action=indiquer_eleves_deja'+'&f_description='+$('#f_description').val()+'&f_date_debut='+f_date_debut,
 						dataType : "html",
 						error : function(jqXHR, textStatus, errorThrown)
 						{
@@ -1110,7 +1110,7 @@ $(document).ready
 		);
 
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
-		//	Choix du mode de pilotage pour la saisie des résultats
+		// Choix du mode de pilotage pour la saisie des résultats
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		$('input[name=mode_saisie]').live // live est utilisé pour prendre en compte les nouveaux éléments créés
@@ -1131,7 +1131,7 @@ $(document).ready
 		);
 
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
-		//	Choix du sens de parcours pour la saisie des résultats (si pilotage au clavier)
+		// Choix du sens de parcours pour la saisie des résultats (si pilotage au clavier)
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		$('input[name=arrow_continue]').live // live est utilisé pour prendre en compte les nouveaux éléments créés
@@ -1144,7 +1144,7 @@ $(document).ready
 		);
 
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
-		//	Choix de rétrécir ou pas les colonnes sur #table_saisir
+		// Choix de rétrécir ou pas les colonnes sur #table_saisir
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		$('#table_saisir #check_largeur').live // live est utilisé pour prendre en compte les nouveaux éléments créés
@@ -1166,7 +1166,7 @@ $(document).ready
 		);
 
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
-		//	Choix de rétrécir ou pas les colonnes sur #table_voir
+		// Choix de rétrécir ou pas les colonnes sur #table_voir
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		$('#table_voir #check_largeur').live // live est utilisé pour prendre en compte les nouveaux éléments créés
@@ -1196,7 +1196,7 @@ $(document).ready
 		);
 
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
-		//	Choix de rétrécir ou pas les lignes sur #table_saisir ou #table_voir
+		// Choix de rétrécir ou pas les lignes sur #table_saisir ou #table_voir
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		$('#check_hauteur').live // live est utilisé pour prendre en compte les nouveaux éléments créés
@@ -1218,7 +1218,7 @@ $(document).ready
 		);
 
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
-		//	Gérer la saisie des acquisitions au clavier
+		// Gérer la saisie des acquisitions au clavier
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		function focus_cellule_suivante_en_evitant_sortie_tableau()
@@ -1393,7 +1393,7 @@ $(document).ready
 		);
 
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
-		//	Gérer la saisie des acquisitions à la souris
+		// Gérer la saisie des acquisitions à la souris
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		// Remplacer la cellule par les images de choix
@@ -1513,7 +1513,7 @@ $(document).ready
 		);
 
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
-		//	Clic sur le lien pour mettre à jour l'ordre des items d'une évaluation
+		// Clic sur le lien pour mettre à jour l'ordre des items d'une évaluation
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		$('#Enregistrer_ordre').live // live est utilisé pour prendre en compte les nouveaux éléments créés
@@ -1546,7 +1546,7 @@ $(document).ready
 						{
 							type : 'POST',
 							url : 'ajax.php?page='+PAGE,
-							data : 'f_action=enregistrer_ordre&f_ref='+$('#Enregistrer_ordre').val()+'&tab_id='+tab_id,
+							data : 'csrf='+CSRF+'&f_action=enregistrer_ordre'+'&f_ref='+$('#Enregistrer_ordre').val()+'&tab_id='+tab_id,
 							dataType : "html",
 							error : function(jqXHR, textStatus, errorThrown)
 							{
@@ -1576,7 +1576,7 @@ $(document).ready
 		);
 
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
-		//	Clic sur le lien pour mettre à jour les acquisitions des élèves à une évaluation
+		// Clic sur le lien pour mettre à jour les acquisitions des élèves à une évaluation
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		$('#Enregistrer_saisie').live // live est utilisé pour prendre en compte les nouveaux éléments créés
@@ -1610,7 +1610,7 @@ $(document).ready
 						{
 							type : 'POST',
 							url : 'ajax.php?page='+PAGE,
-							data : 'f_action=enregistrer_saisie'+'&f_ref='+$("#f_ref").val()+'&f_date_mysql='+$("#f_date_mysql").val()+'&f_date_visible='+$("#f_date_visible").val()+'&f_notes='+f_notes+'&f_description='+$("#f_description").val(),
+							data : 'csrf='+CSRF+'&f_action=enregistrer_saisie'+'&f_ref='+$("#f_ref").val()+'&f_date_mysql='+$("#f_date_mysql").val()+'&f_date_visible='+$("#f_date_visible").val()+'&f_notes='+f_notes+'&f_description='+$("#f_description").val(),
 							dataType : "html",
 							error : function(jqXHR, textStatus, errorThrown)
 							{
@@ -1641,7 +1641,7 @@ $(document).ready
 		);
 
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
-		//	Traitement du formulaire principal
+		// Traitement du formulaire principal
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		// Le formulaire qui va être analysé et traité en AJAX
@@ -1687,7 +1687,7 @@ $(document).ready
 		// Options d'envoi du formulaire (avec jquery.form.js)
 		var ajaxOptions =
 		{
-			url : 'ajax.php?page='+PAGE,
+			url : 'ajax.php?page='+PAGE+'&csrf='+CSRF,
 			type : 'POST',
 			dataType : "html",
 			clearForm : false,
@@ -2007,7 +2007,7 @@ $(document).ready
 					{
 						type : 'POST',
 						url : 'ajax.php?page='+PAGE,
-						data : 'f_action=retirer_document'+'&f_doc_objet='+objet+'&f_ref='+ref+'&f_doc_url='+url,
+						data : 'csrf='+CSRF+'&f_action=retirer_document'+'&f_doc_objet='+objet+'&f_ref='+ref+'&f_doc_url='+url,
 						dataType : "html",
 						error : function(jqXHR, textStatus, errorThrown)
 						{
@@ -2070,7 +2070,7 @@ $(document).ready
 						{
 							type : 'POST',
 							url : 'ajax.php?page='+PAGE,
-							data : 'f_action=referencer_document'+'&f_doc_objet='+objet+'&f_ref='+ref+'&f_doc_url='+url,
+							data : 'csrf='+CSRF+'&f_action=referencer_document'+'&f_doc_objet='+objet+'&f_ref='+ref+'&f_doc_url='+url,
 							dataType : "html",
 							error : function(jqXHR, textStatus, errorThrown)
 							{
@@ -2105,10 +2105,10 @@ $(document).ready
 		);
 
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
-		//	Traitement du premier formulaire pour afficher le tableau avec la liste des évaluations
+		// Traitement du premier formulaire pour afficher le tableau avec la liste des évaluations
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-		//	Afficher masquer des options de la grille (uniquement pour un groupe)
+		// Afficher masquer des options de la grille (uniquement pour un groupe)
 
 		var autoperiode = true; // Tant qu'on ne modifie pas manuellement le choix des périodes, modification automatique du formulaire
 
@@ -2134,7 +2134,7 @@ $(document).ready
 			}
 		);
 
-		//	Changement de groupe (uniquement pour un groupe)
+		// Changement de groupe (uniquement pour un groupe)
 		// -> desactiver les périodes prédéfinies en cas de groupe de besoin
 		// -> choisir automatiquement la meilleure période et chercher les évaluations si un changement manuel de période n'a jamais été effectué
 
@@ -2240,7 +2240,7 @@ $(document).ready
 		// Options d'envoi du formulaire (avec jquery.form.js)
 		var ajaxOptions0 =
 		{
-			url : 'ajax.php?page='+PAGE,
+			url : 'ajax.php?page='+PAGE+'&csrf='+CSRF,
 			type : 'POST',
 			dataType : "html",
 			clearForm : false,

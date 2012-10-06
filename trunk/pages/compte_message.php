@@ -61,7 +61,7 @@ $select_profil.= '<option value="professeur">Professeurs</option><option value="
 			$script = '';
 			// Lister les messages dont le user est l'auteur
 			$DB_TAB = DB_STRUCTURE_COMMUN::DB_lister_messages_user_auteur($_SESSION['USER_ID']);
-			if(count($DB_TAB))
+			if(!empty($DB_TAB))
 			{
 				foreach($DB_TAB as $DB_ROW)
 				{

@@ -25,6 +25,8 @@
  * 
  */
 
+if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
+
 /**
  * Code inclus commun aux pages
  * [./pages/releve_items_matiere.ajax.php]
@@ -89,7 +91,7 @@ if($periode_id==0)
 else
 {
 	$DB_ROW = DB_STRUCTURE_COMMUN::DB_recuperer_dates_periode($groupe_id,$periode_id);
-	if(!count($DB_ROW))
+	if(empty($DB_ROW))
 	{
 		exit('La classe et la période ne sont pas reliées !');
 	}
@@ -419,9 +421,9 @@ if(!isset($tab_destinataires))
 	}
 }
 
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Elaboration du bilan individuel, disciplinaire ou transdisciplinaire, en HTML et PDF
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 $affichage_direct   = ( ( ( in_array($_SESSION['USER_PROFIL'],array('eleve','parent')) ) && (SACoche!='webservices') ) || ($make_officiel) ) ? TRUE : FALSE ;
 $affichage_checkbox = ( $type_synthese && ($_SESSION['USER_PROFIL']=='professeur') && (SACoche!='webservices') )                             ? TRUE : FALSE ;
@@ -697,9 +699,9 @@ if($type_individuel)
 	if($make_pdf)  { $releve_PDF->Output(CHEMIN_DOSSIER_EXPORT.str_replace('<REPLACE>','individuel',$fichier_nom).'.pdf','F'); }
 }
 
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Elaboration de la synthèse collective en HTML et PDF
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 if($type_synthese)
 {
@@ -726,7 +728,7 @@ if($type_synthese)
 	{
 		foreach($tab_liste_item as $item_id)	// Pour chaque item...
 		{
-			$releve_PDF->VertCellFit($releve_PDF->cases_largeur, $releve_PDF->etiquette_hauteur, $tab_item[$item_id][0]['item_ref'], 1 /*border*/, 0 /*br*/, TRUE /*fill*/);
+			$releve_PDF->VertCellFit($releve_PDF->cases_largeur, $releve_PDF->etiquette_hauteur, To::pdf($tab_item[$item_id][0]['item_ref']), 1 /*border*/, 0 /*br*/, TRUE /*fill*/);
 			$releve_HTML_table_head .= '<th title="'.html($tab_item[$item_id][0]['item_nom']).'"><img alt="'.html($tab_item[$item_id][0]['item_ref']).'" src="./_img/php/etiquette.php?dossier='.$_SESSION['BASE'].'&amp;nom='.urlencode($tab_item[$item_id][0]['item_ref']).'&amp;size=8" /></th>';
 		}
 	}
@@ -735,7 +737,7 @@ if($type_synthese)
 		foreach($tab_eleve as $tab)	// Pour chaque élève...
 		{
 			extract($tab);	// $eleve_id $eleve_nom $eleve_prenom $eleve_id_gepi
-			$releve_PDF->VertCellFit($releve_PDF->cases_largeur, $releve_PDF->etiquette_hauteur, $eleve_nom.' '.$eleve_prenom, 1 /*border*/, 0 /*br*/, TRUE /*fill*/);
+			$releve_PDF->VertCellFit($releve_PDF->cases_largeur, $releve_PDF->etiquette_hauteur, To::pdf($eleve_nom.' '.$eleve_prenom), 1 /*border*/, 0 /*br*/, TRUE /*fill*/);
 			$releve_HTML_table_head .= '<th><img alt="'.html($eleve_nom.' '.$eleve_prenom).'" src="./_img/php/etiquette.php?dossier='.$_SESSION['BASE'].'&amp;nom='.urlencode($eleve_nom).'&amp;prenom='.urlencode($eleve_prenom).'&amp;size=8" /></th>';
 		}
 	}
@@ -853,9 +855,9 @@ if($type_synthese)
 	$releve_PDF->Output(CHEMIN_DOSSIER_EXPORT.str_replace('<REPLACE>','synthese',$fichier_nom).'.pdf','F');
 }
 
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Elaboration du bulletin (moyenne et/ou appréciation) en HTML + CSV pour GEPI + Formulaire pour report prof
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 if($type_bulletin)
 {
@@ -867,7 +869,7 @@ if($type_bulletin)
 		{
 			// Attention : $groupe_id peut être un identifiant de groupe et non de classe, auquel cas les élèves peuvent être issus de différentes classes dont les états des bulletins sont différents...
 			$DB_TAB = DB_STRUCTURE_PROFESSEUR::DB_lister_periodes_bulletins_saisies_ouvertes($liste_eleve);
-			$nb_periodes_ouvertes = count($DB_TAB);
+			$nb_periodes_ouvertes = !empty($DB_TAB);
 			if($nb_periodes_ouvertes==1)
 			{
 				$bulletin_periode = '['.html($DB_TAB[0]['periode_nom']).']<input type="hidden" id="f_periode_eleves" name="f_periode_eleves" value="'.$DB_TAB[0]['periode_id'].'_'.$DB_TAB[0]['eleves_listing'].'" />' ;

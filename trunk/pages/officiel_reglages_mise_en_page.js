@@ -103,7 +103,7 @@ $(document).ready
 					{
 						type : 'POST',
 						url : 'ajax.php?page='+PAGE,
-						data : 'f_action=mise_en_page&'+$('#form_mise_en_page').serialize(),
+						data : 'csrf='+CSRF+'&f_action=mise_en_page'+'&'+$('#form_mise_en_page').serialize(),
 						dataType : "html",
 						error : function(jqXHR, textStatus, errorThrown)
 						{
@@ -215,7 +215,7 @@ $(document).ready
 					{
 						type : 'POST',
 						url : 'ajax.php?page='+PAGE,
-						data : 'f_action=delete_signature&f_user_id='+sgn_id,
+						data : 'csrf='+CSRF+'&f_action=delete_signature'+'&f_user_id='+sgn_id,
 						dataType : "html",
 						error : function(jqXHR, textStatus, errorThrown)
 						{

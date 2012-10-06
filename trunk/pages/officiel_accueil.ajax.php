@@ -28,68 +28,33 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 if($_SESSION['SESAMATH_ID']==ID_DEMO){exit('Action désactivée pour la démo...');}
 
-// Ce fichier n'a pas de rapport avec "officiel.accueil.php".
-// Il est utilisé :
-// - pour forcer des reports de notes par un prof depuis "releve_items_matiere.js" ou "releve_items_selection.js"
-// - pour générer une impression PDF des appréciations d'un prof
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+// Récupération des valeurs transmises
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-$action = (isset($_POST['f_action'])) ? Clean::texte($_POST['f_action']) : '';
+$action  = (isset($_POST['f_action']))  ? Clean::texte($_POST['f_action'])  : '' ;
+$section = (isset($_POST['f_section'])) ? Clean::texte($_POST['f_section']) : '' ;
 
-if(!in_array($action,array('reporter_notes','imprimer_appreciations')))
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+// Saisir    : affichage des données d'un élève | enregistrement/suppression d'une appréciation ou d'une note | recalculer une note
+// Examiner  : recherche des saisies manquantes (notes et appréciations)
+// Consulter : affichage des données d'un élève (HTML)
+// Imprimer  : affichage de la liste des élèves | étape d'impression PDF
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+if( in_array( $section , array('officiel_saisir','officiel_examiner','officiel_consulter','officiel_imprimer') ) )
 {
-	exit('Erreur avec les données transmises !');
+	require(CHEMIN_DOSSIER_INCLUDE.'code_'.$section.'.php');
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Forcer des reports de notes par un prof
+// Signaler une erreur
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-if($action=='reporter_notes')
+if($action=='signaler_erreur')
 {
-
-	$tab_periode_eleves  = (isset($_POST['f_periode_eleves']))  ? explode('_',$_POST['f_periode_eleves'])  : '' ;
-	$tab_eleves_moyennes = (isset($_POST['f_eleves_moyennes'])) ? explode('x',$_POST['f_eleves_moyennes']) : '' ;
-
-	$rubrique_id = (isset($_POST['f_rubrique'])) ? Clean::entier($_POST['f_rubrique']) : 0;
-	$periode_id  = (count($tab_periode_eleves))  ? $tab_periode_eleves[0]             : 0;
-
-	// On vérifie les paramètres principaux
-
-	if( (!$periode_id) || (!$rubrique_id) || (count($tab_periode_eleves)<2) || (!count($tab_eleves_moyennes)) || ($_SESSION['USER_PROFIL']!='professeur') || (!$_SESSION['OFFICIEL']['BULLETIN_MOYENNE_SCORES']) )
-	{
-		exit('Erreur avec les données transmises !');
-	}
-
-	// On passe en revue les données
-
-	unset($tab_periode_eleves[0]);
-	$tab_eleve_id = array_filter( Clean::map_entier($tab_periode_eleves) , 'positif' );
-	$appreciation = 'Moyenne figée reportée par '.$_SESSION['USER_NOM'].' '.$_SESSION['USER_PRENOM']{0}.'.';
-	$nb_reports = 0;
-
-	foreach($tab_eleves_moyennes as $eleve_moyenne)
-	{
-		list($eleve_id,$moyenne) = explode('_',$eleve_moyenne);
-		$eleve_id = (int)$eleve_id;
-		$note = round($moyenne,1);
-		// $tab_eleve_id contient la liste des élèves dont il faut changer les notes ; ce peut n'être qu'une intersection groupe x classe
-		// $tab_eleves_moyennes contient les moyennes de tous les élèves du groupe ou de la classe
-		if(in_array($eleve_id,$tab_eleve_id))
-		{
-			DB_STRUCTURE_OFFICIEL::DB_modifier_bilan_officiel_saisie( 'bulletin' /*BILAN_TYPE*/ , $periode_id , $eleve_id , $rubrique_id , 0 /*prof_id*/ , $note , $appreciation );
-			$nb_reports++;
-		}
-	}
-
-	// On affiche le résultat
-
-	if(!$nb_reports)
-	{
-		exit('Erreur avec les données transmises !');
-	}
-	$s = ($nb_reports>1) ? 's' : '' ;
-	exit('Note'.$s.' reportée'.$s.' pour '.$nb_reports.' élève'.$s.'.');
-
+	$_POST['f_action']='ajouter';
+	require(CHEMIN_DOSSIER_PAGES.'compte_message.ajax.php');
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -123,7 +88,7 @@ if($action=='imprimer_appreciations')
 	// On vérifie que le bilan est bien accessible et on récupère les infos associées
 
 	$DB_ROW = DB_STRUCTURE_OFFICIEL::DB_recuperer_bilan_officiel_infos($classe_id,$periode_id,$BILAN_TYPE);
-	if(!count($DB_ROW))
+	if(empty($DB_ROW))
 	{
 		exit('Association classe / période introuvable !');
 	}
@@ -141,7 +106,7 @@ if($action=='imprimer_appreciations')
 
 	$is_sous_groupe = ($groupe_id) ? TRUE : FALSE ;
 	$DB_TAB = (!$is_sous_groupe) ? DB_STRUCTURE_COMMUN::DB_lister_users_regroupement( 'eleve' , 1 /*statut*/ , 'classe' , $classe_id ) : DB_STRUCTURE_COMMUN::DB_lister_eleves_classe_et_groupe($classe_id,$groupe_id) ;
-	if(!count($DB_TAB))
+	if(empty($DB_TAB))
 	{
 		exit('Aucun élève trouvé dans ce regroupement !');
 	}
@@ -156,7 +121,7 @@ if($action=='imprimer_appreciations')
 
 	$tab_saisie = array();	// [eleve_id][rubrique_id] => array(matiere_nom,appreciation,note);
 	$DB_TAB = DB_STRUCTURE_OFFICIEL::DB_recuperer_bilan_officiel_saisies( $BILAN_TYPE , $periode_id , $liste_eleve_id , $_SESSION['USER_ID'] ); // Restreindre au prof ? Récupérer nom matière ou palier ?
-	if( (!count($DB_TAB)) || (!isset($DB_TAB[$_SESSION['USER_ID']])) )
+	if( (empty($DB_TAB)) || (!isset($DB_TAB[$_SESSION['USER_ID']])) )
 	{
 		exit('Aucune appréciation trouvée de votre part !');
 	}
@@ -202,5 +167,11 @@ if($action=='imprimer_appreciations')
 	$releve_PDF->Output(CHEMIN_DOSSIER_EXPORT.$fichier_export,'F');
 	exit('<ul class="puce"><li><a class="lien_ext" href="'.URL_DIR_EXPORT.$fichier_export.'"><span class="file file_pdf">Archiver / Imprimer (format <em>pdf</em>).</span></a></li></ul>');
 }
+
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+// On ne devrait pas en arriver là !
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+exit('Erreur avec les données transmises !');
 
 ?>

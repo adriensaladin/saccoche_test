@@ -28,17 +28,20 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = ''; // Pas de titre pour que le logo s'affiche à la place
 
+// En cas de multi-structures, il faut savoir dans quelle base récupérer les informations.
+// Un UAI ou un id de base peut être transmis, mais on peut aussi retrouver l'information dans un cookie.
 $BASE = 0;
 if(HEBERGEUR_INSTALLATION=='multi-structures')
 {
 	// Lecture d'un cookie sur le poste client servant à retenir le dernier établissement sélectionné si identification avec succès
 	$BASE = (isset($_COOKIE[COOKIE_STRUCTURE])) ? Clean::entier($_COOKIE[COOKIE_STRUCTURE]) : 0 ;
-	// Test si id d'établissement transmis dans l'URL
-	$BASE = (isset($_GET['id']))   ? Clean::entier($_GET['id'])   : $BASE ; // Historiquement
-	$BASE = (isset($_GET['base'])) ? Clean::entier($_GET['base']) : $BASE ; // Par harmonisation avec la connexion SSO
+	// Test si id d'établissement transmis dans l'URL ; historiquement "id" si connexion normale et "base" si connexion SSO
+	$BASE = (isset($_GET['id']))   ? Clean::entier($_GET['id'])   : $BASE ;
+	$BASE = (isset($_GET['base'])) ? Clean::entier($_GET['base']) : $BASE ;
 	// Test si UAI d'établissement transmis dans l'URL
 	$BASE = (isset($_GET['uai'])) ? DB_WEBMESTRE_PUBLIC::DB_recuperer_structure_id_base_for_UAI(Clean::uai($_GET['uai'])) : $BASE ;
 }
+
 // Test si affichage du formulaire spécial pour le webmestre
 $profil = (isset($_GET['webmestre'])) ? 'webmestre' : 'normal' ;
 // Bascule profil webmestre / profils autres

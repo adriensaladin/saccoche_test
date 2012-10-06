@@ -192,7 +192,7 @@ function calculer_et_enregistrer_moyennes_eleves_bulletin($periode_id,$classe_id
 	if(!$liste_eleve_id) return FALSE;
 	// Dates période
 	$DB_ROW = DB_STRUCTURE_COMMUN::DB_recuperer_dates_periode($classe_id,$periode_id);
-	if(!count($DB_ROW)) return FALSE;
+	if(empty($DB_ROW)) return FALSE;
 	// Récupération de la liste des items travaillés et affiner la liste des matières concernées
 	$date_mysql_debut = $DB_ROW['jointure_date_debut'];
 	$date_mysql_fin   = $DB_ROW['jointure_date_fin'];
@@ -342,7 +342,7 @@ function calculer_et_enregistrer_moyenne_precise_bulletin($periode_id,$classe_id
 {
 	// Dates période
 	$DB_ROW = DB_STRUCTURE_COMMUN::DB_recuperer_dates_periode($classe_id,$periode_id);
-	if(!count($DB_ROW)) return FALSE;
+	if(empty($DB_ROW)) return FALSE;
 	// Récupération de la liste des items travaillés
 	$date_mysql_debut = $DB_ROW['jointure_date_debut'];
 	$date_mysql_fin   = $DB_ROW['jointure_date_fin'];
@@ -354,7 +354,7 @@ function calculer_et_enregistrer_moyenne_precise_bulletin($periode_id,$classe_id
 	// Récupération de la liste des résultats des évaluations associées à ces items donnés d'une ou plusieurs matieres, pour les élèves selectionnés, sur la période sélectionnée
 	$date_mysql_debut = false;
 	$DB_TAB = DB_STRUCTURE_BILAN::DB_lister_result_eleves_items($eleve_id , $liste_item_id , -1 /*matiere_id*/ , $date_mysql_debut , $date_mysql_fin , $_SESSION['USER_PROFIL']);
-	if(!count($DB_TAB)) return FALSE;
+	if(empty($DB_TAB)) return FALSE;
 	foreach($DB_TAB as $DB_ROW)
 	{
 		$tab_eval[$DB_ROW['item_id']][] = array('note'=>$DB_ROW['note']);
@@ -952,7 +952,7 @@ function tester_authentification_user($BASE,$login,$password,$mode_connection)
 	// Récupérer les données associées à l'utilisateur.
 	$DB_ROW = DB_STRUCTURE_PUBLIC::DB_recuperer_donnees_utilisateur($mode_connection,$login);
 	// Si login non trouvé...
-	if(!count($DB_ROW))
+	if(empty($DB_ROW))
 	{
 		switch($mode_connection)
 		{
@@ -1011,7 +1011,7 @@ function enregistrer_session_user($BASE,$DB_ROW)
 	// On en profite pour effacer les fichiers inutiles
 	FileSystem::nettoyer_fichiers_temporaires($BASE);
 	// Enregistrer en session le numéro de la base
-	$_SESSION['BASE']             = $BASE;
+	$_SESSION['BASE']               = $BASE;
 	// Enregistrer en session les données associées à l'utilisateur (indices du tableau de session en majuscules).
 	$_SESSION['USER_PROFIL']        = $DB_ROW['user_profil'];
 	$_SESSION['USER_ID']            = (int) $DB_ROW['user_id'];
@@ -1897,4 +1897,50 @@ function convert_date_french_to_mysql($date)
 	return $annee.'-'.$mois.'-'.$jour;
 }
 
+/**
+ * Générer un jeton CSRF pour un passage donné sur une page donnée (le met en session et renvoie sa valeur).
+ * Peut provoquer de fausses alertes si utilisation de plusieurs onglets d'une même page...
+ * La session doit être ouverte.
+ *
+ * @param string $page
+ * @return string
+ */
+function generer_jeton_anti_CSRF($page)
+{
+	$_SESSION['CSRF'][$page] = uniqid();
+	return $_SESSION['CSRF'][$page];
+}
+
+/**
+ * Appelé par ajax.php pour vérifier un jeton CSRF lors d'un appel ajax (soumission de données) d'une page donnée (vérifie sa valeur en session, quitte si pb).
+ * Peut être aussi potentiellement appelé par de rares pages PHP s'envoyant un formulaire sans passer par AJAX (seule officiel_accueil.php est concerné au 10/2012).
+ * Peut provoquer de fausses alertes si utilisation de plusieurs onglets d'une même page...
+ * On utilise REQUEST car c'est tranmis en POST si Ajax maison mais en GET si utilisation de jquery.form.js.
+ * La session doit être ouverte.
+ *
+ * @param string $page
+ * @return void
+ */
+function verifier_jeton_anti_CSRF($page)
+{
+	if( empty($_REQUEST['csrf']) || empty($_SESSION['CSRF'][$page]) || ($_REQUEST['csrf']!=$_SESSION['CSRF'][$page]) )
+	{
+		exit_error( 'Alerte CSRF' /*titre*/ , 'Jeton invalide. Éviter une même page ouverte dans plusieurs onglets.' /*contenu*/ , FALSE /*setup*/ );
+	}
+}
+
+/**
+ * Renvoyer une taille de fichier lisible pour un humain :)
+ * @see http://fr2.php.net/manual/fr/function.filesize.php#106569
+ *
+ * @param int $bytes
+ * @param int $decimals (facultatif)
+ * @return string
+ */
+function afficher_fichier_taille($bytes, $decimals = 1)
+{
+	$size_unit = ' KMGTP';
+	$factor = floor((strlen($bytes) - 1) / 3);
+	return round( $bytes / pow(1024,$factor) , $decimals ) . $size_unit[$factor].'o';
+}
 ?>

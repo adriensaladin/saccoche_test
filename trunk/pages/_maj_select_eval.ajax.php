@@ -41,7 +41,7 @@ if( (!$groupe_id) || (!in_array($eval_type,$tab_types)) )
 }
 // Lister les dernières évaluations d'une classe ou d'un groupe ou d'un groupe de besoin
 $DB_TAB = DB_STRUCTURE_PROFESSEUR::DB_lister_devoirs_prof_groupe_sans_infos_last($_SESSION['USER_ID'],$groupe_id,$eval_type);
-if(!count($DB_TAB))
+if(empty($DB_TAB))
 {
 	exit('<option value="" disabled>Aucun devoir n\'a été trouvé pour ce groupe d\'élèves !</option>');
 }

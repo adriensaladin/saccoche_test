@@ -31,7 +31,7 @@ $(document).ready
 	{
 
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
-		//	Afficher / masquer le choix du motif du blocage
+		// Afficher / masquer le choix du motif du blocage
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		$('#f_debloquer , #f_bloquer').click
@@ -51,7 +51,7 @@ $(document).ready
 		);
 
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
-		//	Autocompléter le motif du blocage
+		// Autocompléter le motif du blocage
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		tab_proposition = new Array();
@@ -94,7 +94,7 @@ $(document).ready
 		// Options d'envoi du formulaire (avec jquery.form.js)
 		var ajaxOptions =
 		{
-			url : 'ajax.php?page='+PAGE,
+			url : 'ajax.php?page='+PAGE+'&csrf='+CSRF,
 			type : 'POST',
 			dataType : "html",
 			clearForm : false,

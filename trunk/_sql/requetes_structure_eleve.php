@@ -301,9 +301,8 @@ public static function DB_tester_demande_existante($eleve_id,$matiere_id,$item_i
 	$DB_SQL = 'SELECT demande_id ';
 	$DB_SQL.= 'FROM sacoche_demande ';
 	$DB_SQL.= 'WHERE user_id=:eleve_id AND matiere_id=:matiere_id AND item_id=:item_id ';
-	// LIMIT 1 inutile
 	$DB_VAR = array(':eleve_id'=>$eleve_id,':matiere_id'=>$matiere_id,':item_id'=>$item_id);
-	return DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+	return (int)DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
 /**

@@ -38,7 +38,7 @@ $tab_select_periodes        = array_filter( Clean::map_entier($tab_select_period
 $tab_select_classes_groupes = array_filter( Clean::map_entier($tab_select_classes_groupes) , 'positif' );
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-//	Ajouter des périodes à des classes & groupes
+// Ajouter des périodes à des classes & groupes
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 if( ($action=='ajouter') && $date_debut && $date_fin )
@@ -61,7 +61,7 @@ if( ($action=='ajouter') && $date_debut && $date_fin )
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-//	Retirer des périodes à des classes & groupes
+// Retirer des périodes à des classes & groupes
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 elseif($action=='retirer')
@@ -76,7 +76,7 @@ elseif($action=='retirer')
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-//	Affichage du bilan des affectations des périodes aux classes & groupes ; en plusieurs requêtes pour récupérer les périodes sans classes-groupes et les classes-groupes sans périodes
+// Affichage du bilan des affectations des périodes aux classes & groupes ; en plusieurs requêtes pour récupérer les périodes sans classes-groupes et les classes-groupes sans périodes
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 echo'<hr />';
@@ -86,7 +86,7 @@ $tab_jointure  = array();
 $tab_graphique = array();
 // Récupérer la liste des classes & groupes, dans l'ordre des niveaux
 $DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_classes_et_groupes_avec_niveaux();
-if(!count($DB_TAB))
+if(empty($DB_TAB))
 {
 	exit('Aucune classe et aucun groupe ne sont enregistrés !');
 }
@@ -97,7 +97,7 @@ foreach($DB_TAB as $DB_ROW)
 }
 // Récupérer la liste des périodes, dans l'ordre choisi par l'admin
 $DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_periodes();
-if(!count($DB_TAB))
+if(empty($DB_TAB))
 {
 	exit('Aucune période n\'est enregistrée !');
 }

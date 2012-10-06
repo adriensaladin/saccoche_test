@@ -73,7 +73,7 @@ td.moyenne {text-align:center;font-weight:bold;vertical-align:middle;font-size:1
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 /* page accueil (identification) */
-#cadre_milieu {width:736px;margin:20px auto auto auto;padding:10px;background:#E6E6FF;border:2px solid #99F} /* coins arrondis via js */
+#cadre_milieu {width:736px;margin:20px auto auto auto;padding:10px;background:#E6E6FF;border:2px solid #99F;border-radius:10px}
 
 /* zone identifiée */
 #cadre_haut  {z-index:2;position:absolute;left:0;right:0;top:0;height:48px;background:#FFF url(../_img/background.gif) repeat 0 0;border-bottom:1px solid #77F;white-space:nowrap;min-width:980px;}
@@ -98,19 +98,17 @@ td.moyenne {text-align:center;font-weight:bold;vertical-align:middle;font-size:1
 /* Boutons d'informations (dans #cadre_haut)                                                           */
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-#top_info span.button{display:inline-block;padding:1px 3px;margin:1px 0;background:#EEF url(../_img/sprite_top_1.png) 0 0 no-repeat;padding-left:19px;border:1px solid #99F;color:#333;line-height:16px}
+#top_info span.button{display:inline-block;padding:1px 3px;margin:1px 0;background:#EEF url(../_img/sprite_top_2.png) 0 0 no-repeat;padding-left:19px;border:1px solid #99F;color:#333;line-height:16px}
 #top_info span.alerte                {background-position: 1px    1px;font-weight:bold;color:#C00}
 #top_info span.connexion             {background-position: 1px  -19px;font-weight:bold}
 #top_info span.favicon               {background-position: 1px  -39px}
-#top_info span.firebug               {background-position: 1px  -59px}
-#top_info span.firephp               {background-position: 1px  -79px}
-#top_info span.home                  {background-position: 1px  -99px}
-#top_info span.profil_administrateur {background-position: 1px -119px}
-#top_info span.profil_directeur      {background-position: 1px -139px}
-#top_info span.profil_eleve          {background-position: 1px -159px}
-#top_info span.profil_parent         {background-position: 1px -179px}
-#top_info span.profil_professeur     {background-position: 1px -199px}
-#top_info span.profil_webmestre      {background-position: 1px -219px}
+#top_info span.home                  {background-position: 1px  -59px}
+#top_info span.profil_administrateur {background-position: 1px  -79px}
+#top_info span.profil_directeur      {background-position: 1px  -99px}
+#top_info span.profil_eleve          {background-position: 1px -119px}
+#top_info span.profil_parent         {background-position: 1px -139px}
+#top_info span.profil_professeur     {background-position: 1px -159px}
+#top_info span.profil_webmestre      {background-position: 1px -179px}
 #top_info span.clock_fixe {background:#EEF url(../_img/clock_fixe.png) 2px center no-repeat;}
 #top_info span.clock_anim {background:#EEF url(../_img/clock_anim.gif) 2px center no-repeat;}
 #top_info #clock {padding-right:3px;background:#EEF url(../_img/point.gif) right top no-repeat;}
@@ -132,7 +130,7 @@ td.moyenne {text-align:center;font-weight:bold;vertical-align:middle;font-size:1
 /* Menu déroulant (dans #cadre_haut)                                                                   */
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-#menu a {display:block;border:1px solid #77F;color:#FFF;background:#77F url(../_img/sprite_menu_8.png) 0 0 no-repeat;padding:1px 1px 1px 19px;margin:1px;height:16px}
+#menu a {display:block;border:1px solid #77F;color:#FFF;background:#77F url(../_img/sprite_menu_9.png) 0 0 no-repeat;padding:1px 1px 1px 19px;margin:1px;height:16px}
 #menu a:hover {background-color:#99F;color:#FFF;text-decoration:none}
 #menu li {float:left;}
 #menu li li {float:none}
@@ -192,22 +190,23 @@ td.moyenne {text-align:center;font-weight:bold;vertical-align:middle;font-size:1
 #menu a.resilier              {background-position: 1px  -999px}
 #menu a.rss                   {background-position: 1px -1019px}
 #menu a.serveur_database      {background-position: 1px -1039px}
-#menu a.serveur_fichiers      {background-position: 1px -1059px}
-#menu a.serveur_geographie    {background-position: 1px -1079px}
-#menu a.serveur_identite      {background-position: 1px -1099px}
-#menu a.serveur_info          {background-position: 1px -1119px}
-#menu a.serveur_maintenance   {background-position: 1px -1139px}
-#menu a.serveur_proxy         {background-position: 1px -1159px}
-#menu a.socle_annuler         {background-position: 1px -1179px}
-#menu a.socle_fichier         {background-position: 1px -1199px}
-#menu a.socle_item            {background-position: 1px -1219px}
-#menu a.socle_langue          {background-position: 1px -1239px}
-#menu a.socle_pilier          {background-position: 1px -1259px}
-#menu a.statistiques          {background-position: 1px -1279px}
-#menu a.structure_ajout_csv   {background-position: 1px -1299px}
-#menu a.structure_gestion     {background-position: 1px -1319px}
-#menu a.structure_transfert   {background-position: 1px -1339px}
-#menu a.trombinoscope         {background-position: 1px -1359px}
+#menu a.serveur_debug         {background-position: 1px -1059px}
+#menu a.serveur_fichiers      {background-position: 1px -1079px}
+#menu a.serveur_geographie    {background-position: 1px -1099px}
+#menu a.serveur_identite      {background-position: 1px -1119px}
+#menu a.serveur_info          {background-position: 1px -1139px}
+#menu a.serveur_maintenance   {background-position: 1px -1159px}
+#menu a.serveur_proxy         {background-position: 1px -1179px}
+#menu a.socle_annuler         {background-position: 1px -1199px}
+#menu a.socle_fichier         {background-position: 1px -1219px}
+#menu a.socle_item            {background-position: 1px -1239px}
+#menu a.socle_langue          {background-position: 1px -1259px}
+#menu a.socle_pilier          {background-position: 1px -1279px}
+#menu a.statistiques          {background-position: 1px -1299px}
+#menu a.structure_ajout_csv   {background-position: 1px -1319px}
+#menu a.structure_gestion     {background-position: 1px -1339px}
+#menu a.structure_transfert   {background-position: 1px -1359px}
+#menu a.trombinoscope         {background-position: 1px -1379px}
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 /* Logos page d'accueil une fois identifié (dans #cadre_bas)                                           */
@@ -836,9 +835,7 @@ div.colorpicker input.stretch {text-align:center;letter-spacing:2px}
 	background: #f9f9f9;
 	color: #444;
 	text-shadow: none;
-	-webkit-border-radius: 4px;
-	   -moz-border-radius: 4px;
-			border-radius: 4px;
+	border-radius: 4px;
 }
 
 .fancybox-opened {
@@ -846,9 +843,7 @@ div.colorpicker input.stretch {text-align:center;letter-spacing:2px}
 }
 
 .fancybox-opened .fancybox-outer {
-	-webkit-box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
-	   -moz-box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
-	        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+	box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
 }
 
 .fancybox-inner {
@@ -1011,9 +1006,7 @@ div.colorpicker input.stretch {text-align:center;letter-spacing:2px}
 	padding: 2px 20px;
 	background: transparent; /* Fallback for web browsers that doesn't support RGBa */
 	background: rgba(0, 0, 0, 0.7);
-	-webkit-border-radius: 15px;
-	   -moz-border-radius: 15px;
-			border-radius: 15px;
+	border-radius: 15px;
 	text-shadow: 0 1px 2px #222;
 	color: #FFF;
 	font-weight: bold;

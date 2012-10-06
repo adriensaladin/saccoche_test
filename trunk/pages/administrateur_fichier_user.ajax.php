@@ -62,9 +62,9 @@ function load_fichier($nom)
 	return $tableau;
 }
 
-// ////////////////////////////////////////////////////////////////////////////////////////////////////	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-//	Liste des étapes suivant le mode d'import
-// ////////////////////////////////////////////////////////////////////////////////////////////////////	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+// Liste des étapes suivant le mode d'import
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 $tab_etapes['sconet_professeurs_directeurs']   = '<li id="step1">Étape 1 - Récupération du fichier</li>';
 $tab_etapes['sconet_professeurs_directeurs']  .= '<li id="step2">Étape 2 - Extraction des données</li>';
@@ -93,9 +93,9 @@ $tab_etapes['base-eleves_eleves']             .= '<li id="step3">Étape 3 - Clas
 $tab_etapes['base-eleves_eleves']             .= '<li id="step5">Étape 4 - Utilisateurs (ajouts / modifications / suppressions)</li>';
 $tab_etapes['base-eleves_eleves']             .= '<li id="step9">Étape 5 - Nettoyage des fichiers temporaires</li>';
 
-// ////////////////////////////////////////////////////////////////////////////////////////////////////	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-//	Étape 10 - Récupération du fichier (sconet_professeurs_directeurs | tableur_professeurs_directeurs | sconet_eleves | sconet_parents | base-eleves_eleves | tableur_eleves)
-// ////////////////////////////////////////////////////////////////////////////////////////////////////	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+// Étape 10 - Récupération du fichier (sconet_professeurs_directeurs | tableur_professeurs_directeurs | sconet_eleves | sconet_parents | base-eleves_eleves | tableur_eleves)
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 if( $step==10 )
 {
@@ -128,9 +128,9 @@ if( $step==10 )
 	exit();
 }
 
-// ////////////////////////////////////////////////////////////////////////////////////////////////////	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-//	Étape 20 - Extraction des données (sconet_professeurs_directeurs | tableur_professeurs_directeurs | sconet_eleves | sconet_parents | base-eleves_eleves | tableur_eleves)
-// ////////////////////////////////////////////////////////////////////////////////////////////////////	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+// Étape 20 - Extraction des données (sconet_professeurs_directeurs | tableur_professeurs_directeurs | sconet_eleves | sconet_parents | base-eleves_eleves | tableur_eleves)
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 if( $step==20 )
 {
@@ -169,7 +169,7 @@ if( $step==20 )
 	if($action=='sconet_professeurs_directeurs')
 	{
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
-		//	Étape 2a - Extraction sconet_professeurs_directeurs
+		// Étape 2a - Extraction sconet_professeurs_directeurs
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
 		$xml = @simplexml_load_file(CHEMIN_DOSSIER_IMPORT.$fichier_dest);
 		if($xml===FALSE)
@@ -403,7 +403,7 @@ if( $step==20 )
 	if($action=='sconet_eleves')
 	{
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
-		//	Étape 2b - Extraction sconet_eleves
+		// Étape 2b - Extraction sconet_eleves
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
 		$xml = @simplexml_load_file(CHEMIN_DOSSIER_IMPORT.$fichier_dest);
 		if($xml===FALSE)
@@ -500,7 +500,7 @@ if( $step==20 )
 	if($action=='sconet_parents')
 	{
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
-		//	Étape 2c - Extraction sconet_parents
+		// Étape 2c - Extraction sconet_parents
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
 		$xml = @simplexml_load_file(CHEMIN_DOSSIER_IMPORT.$fichier_dest);
 		if($xml===FALSE)
@@ -584,7 +584,7 @@ if( $step==20 )
 	if($action=='tableur_professeurs_directeurs')
 	{
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
-		//	Étape 2d - Extraction tableur_professeurs_directeurs
+		// Étape 2d - Extraction tableur_professeurs_directeurs
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
 		$contenu = file_get_contents(CHEMIN_DOSSIER_IMPORT.$fichier_dest);
 		$contenu = To::utf8($contenu); // Mettre en UTF-8 si besoin
@@ -662,7 +662,7 @@ if( $step==20 )
 	if($action=='tableur_eleves')
 	{
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
-		//	Étape 2e - Extraction tableur_eleves
+		// Étape 2e - Extraction tableur_eleves
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
 		$contenu = file_get_contents(CHEMIN_DOSSIER_IMPORT.$fichier_dest);
 		$contenu = To::utf8($contenu); // Mettre en UTF-8 si besoin
@@ -727,7 +727,7 @@ if( $step==20 )
 	if($action=='base-eleves_eleves')
 	{
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
-		//	Étape 2f - Extraction base-eleves_eleves
+		// Étape 2f - Extraction base-eleves_eleves
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
 		$contenu = file_get_contents(CHEMIN_DOSSIER_IMPORT.$fichier_dest);
 		$contenu = To::utf8($contenu); // Mettre en UTF-8 si besoin
@@ -932,9 +932,9 @@ if( $step==20 )
 	exit();
 }
 
-// ////////////////////////////////////////////////////////////////////////////////////////////////////	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-//	Étape 31 - Analyse des données des classes (sconet_professeurs_directeurs | sconet_eleves | base-eleves_eleves | tableur_professeurs_directeurs | tableur_eleves)
-// ////////////////////////////////////////////////////////////////////////////////////////////////////	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+// Étape 31 - Analyse des données des classes (sconet_professeurs_directeurs | sconet_eleves | base-eleves_eleves | tableur_professeurs_directeurs | tableur_eleves)
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 if( $step==31 )
 {
@@ -1046,9 +1046,9 @@ if( $step==31 )
 	exit();
 }
 
-// ////////////////////////////////////////////////////////////////////////////////////////////////////	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-//	Étape 32 - Traitement des actions à effectuer sur les classes (sconet_professeurs_directeurs | sconet_eleves | base-eleves_eleves | tableur_professeurs_directeurs | tableur_eleves)
-// ////////////////////////////////////////////////////////////////////////////////////////////////////	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+// Étape 32 - Traitement des actions à effectuer sur les classes (sconet_professeurs_directeurs | sconet_eleves | base-eleves_eleves | tableur_professeurs_directeurs | tableur_eleves)
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 if( $step==32 )
 {
@@ -1135,9 +1135,9 @@ if( $step==32 )
 	exit();
 }
 
-// ////////////////////////////////////////////////////////////////////////////////////////////////////	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-//	Étape 41 - Analyse des données des groupes (sconet_professeurs_directeurs | sconet_eleves | tableur_professeurs_directeurs | tableur_eleves)
-// ////////////////////////////////////////////////////////////////////////////////////////////////////	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+// Étape 41 - Analyse des données des groupes (sconet_professeurs_directeurs | sconet_eleves | tableur_professeurs_directeurs | tableur_eleves)
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 if( $step==41 )
 {
@@ -1245,9 +1245,9 @@ if( $step==41 )
 	exit();
 }
 
-// ////////////////////////////////////////////////////////////////////////////////////////////////////	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-//	Étape 42 - Traitement des actions à effectuer sur les groupes (sconet_professeurs_directeurs | sconet_eleves | tableur_professeurs_directeurs | tableur_eleves)
-// ////////////////////////////////////////////////////////////////////////////////////////////////////	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+// Étape 42 - Traitement des actions à effectuer sur les groupes (sconet_professeurs_directeurs | sconet_eleves | tableur_professeurs_directeurs | tableur_eleves)
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 if( $step==42 )
 {
@@ -1333,9 +1333,9 @@ if( $step==42 )
 	exit();
 }
 
-// ////////////////////////////////////////////////////////////////////////////////////////////////////	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-//	Étape 51 - Analyse des données des utilisateurs (sconet_professeurs_directeurs | tableur_professeurs_directeurs | sconet_eleves | sconet_parents | base-eleves_eleves | tableur_eleves)
-// ////////////////////////////////////////////////////////////////////////////////////////////////////	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+// Étape 51 - Analyse des données des utilisateurs (sconet_professeurs_directeurs | tableur_professeurs_directeurs | sconet_eleves | sconet_parents | base-eleves_eleves | tableur_eleves)
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 if( $step==51 )
 {
@@ -1578,9 +1578,9 @@ if( $step==51 )
 	exit();
 }
 
-// ////////////////////////////////////////////////////////////////////////////////////////////////////	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-//	Étape 52 - Traitement des actions à effectuer sur les utilisateurs (sconet_professeurs_directeurs | tableur_professeurs_directeurs | sconet_eleves | sconet_parents | base-eleves_eleves | tableur_eleves)
-// ////////////////////////////////////////////////////////////////////////////////////////////////////	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+// Étape 52 - Traitement des actions à effectuer sur les utilisateurs (sconet_professeurs_directeurs | tableur_professeurs_directeurs | sconet_eleves | sconet_parents | base-eleves_eleves | tableur_eleves)
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 if( $step==52 )
 {
@@ -1784,9 +1784,9 @@ if( $step==52 )
 	exit();
 }
 
-// ////////////////////////////////////////////////////////////////////////////////////////////////////	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-//	Étape 53 - Récupérer les identifiants des nouveaux utilisateurs (sconet_professeurs_directeurs | tableur_professeurs_directeurs | sconet_eleves | sconet_parents | base-eleves_eleves | tableur_eleves)
-// ////////////////////////////////////////////////////////////////////////////////////////////////////	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+// Étape 53 - Récupérer les identifiants des nouveaux utilisateurs (sconet_professeurs_directeurs | tableur_professeurs_directeurs | sconet_eleves | sconet_parents | base-eleves_eleves | tableur_eleves)
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 if( $step==53 )
 {
@@ -1814,9 +1814,9 @@ if( $step==53 )
 	exit();
 }
 
-// ////////////////////////////////////////////////////////////////////////////////////////////////////	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-//	Étape 61 - Modification d'affectations éventuelles (sconet_professeurs_directeurs | sconet_eleves | tableur_professeurs_directeurs | tableur_eleves)
-// ////////////////////////////////////////////////////////////////////////////////////////////////////	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+// Étape 61 - Modification d'affectations éventuelles (sconet_professeurs_directeurs | sconet_eleves | tableur_professeurs_directeurs | tableur_eleves)
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 if( $step==61 )
 {
@@ -1846,9 +1846,9 @@ if( $step==61 )
 	//
 	if( ($action=='sconet_professeurs_directeurs') || ($action=='tableur_professeurs_directeurs') )
 	{
-		//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+		// ////////////////////////////////////////////////////////////////////////////////////////////////////
 		// associations profs/classes
-		//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+		// ////////////////////////////////////////////////////////////////////////////////////////////////////
 		// Garder trace des associations profs/classes pour faire le lien avec les propositions d'ajouts profs/pp
 		$tab_asso_prof_classe = array();
 		// Garder trace des identités des profs de la base
@@ -1907,9 +1907,9 @@ if( $step==61 )
 	}
 	if($action=='sconet_professeurs_directeurs')
 	{
-		//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+		// ////////////////////////////////////////////////////////////////////////////////////////////////////
 		// associations profs/PP
-		//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+		// ////////////////////////////////////////////////////////////////////////////////////////////////////
 		// On récupère le contenu de la base pour comparer : $tab_base_affectation[user_id_groupe_id]=true ($tab_base_classe déjà renseigné)
 		$tab_base_affectation = array();
 		$DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_jointure_professeurs_principaux();
@@ -1954,9 +1954,9 @@ if( $step==61 )
 				$lignes_principal_del .= '<tr><th>Supprimer <input id="pp_'.$user_id.'_'.$groupe_id.'_0" name="pp_'.$user_id.'_'.$groupe_id.'_0" type="checkbox" checked /></th><td>'.html($tab_base_prof_identite[$user_id]).'</td><td>'.html($tab_base_classe[$groupe_id]).'</td></tr>';
 			}
 		}
-		//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+		// ////////////////////////////////////////////////////////////////////////////////////////////////////
 		// associations profs/matières
-		//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+		// ////////////////////////////////////////////////////////////////////////////////////////////////////
 		// On récupère le contenu de la base pour comparer : $tab_base_affectation[user_id_matiere_id]=TRUE + $tab_base_matiere[matiere_id]=matiere_nom + $tab_matiere_ref_TO_id_base[matiere_ref]=id_base
 		// En deux requêtes sinon on ne récupère pas les matieres sans utilisateurs affectés.
 		$tab_base_matiere = array();
@@ -2000,9 +2000,9 @@ if( $step==61 )
 		}
 		// Retirer des matières semble sans intérêt.
 	}
-	//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+	// ////////////////////////////////////////////////////////////////////////////////////////////////////
 	// associations profs/groupes ou élèves/groupes
-	//	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+	// ////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Garder trace des identités des utilisateurs de la base
 	$tab_base_user_identite = array();
 	// On récupère le contenu de la base pour comparer : $tab_base_affectation[user_id_groupe_id]=true et $tab_base_groupe[groupe_id]=groupe_nom
@@ -2112,9 +2112,9 @@ if( $step==61 )
 	exit();
 }
 
-// ////////////////////////////////////////////////////////////////////////////////////////////////////	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-//	Étape 62 - Traitement des ajouts d'affectations éventuelles (sconet_professeurs_directeurs | sconet_eleves | tableur_professeurs_directeurs | tableur_eleves)
-// ////////////////////////////////////////////////////////////////////////////////////////////////////	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+// Étape 62 - Traitement des ajouts d'affectations éventuelles (sconet_professeurs_directeurs | sconet_eleves | tableur_professeurs_directeurs | tableur_eleves)
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 if( $step==62 )
 {
@@ -2194,9 +2194,9 @@ if( $step==62 )
 	exit();
 }
 
-// ////////////////////////////////////////////////////////////////////////////////////////////////////	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-//	Étape 71 - Adresses des parents (sconet_parents)
-// ////////////////////////////////////////////////////////////////////////////////////////////////////	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+// Étape 71 - Adresses des parents (sconet_parents)
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 if( $step==71 )
 {
@@ -2292,9 +2292,9 @@ if( $step==71 )
 	exit();
 }
 
-// ////////////////////////////////////////////////////////////////////////////////////////////////////	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-//	Étape 72 - Traitement des ajouts/modifications d'adresses éventuelles (sconet_parents)
-// ////////////////////////////////////////////////////////////////////////////////////////////////////	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+// Étape 72 - Traitement des ajouts/modifications d'adresses éventuelles (sconet_parents)
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 if( $step==72 )
 {
@@ -2335,9 +2335,9 @@ if( $step==72 )
 	exit();
 }
 
-// ////////////////////////////////////////////////////////////////////////////////////////////////////	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-//	Étape 81 - Liens de responsabilités des parents (sconet_parents)
-// ////////////////////////////////////////////////////////////////////////////////////////////////////	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+// Étape 81 - Liens de responsabilités des parents (sconet_parents)
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 if( $step==81 )
 {
@@ -2481,9 +2481,9 @@ if( $step==81 )
 	exit();
 }
 
-// ////////////////////////////////////////////////////////////////////////////////////////////////////	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-//	Étape 82 - Traitement des liens de responsabilités des parents (sconet_parents)
-// ////////////////////////////////////////////////////////////////////////////////////////////////////	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+// Étape 82 - Traitement des liens de responsabilités des parents (sconet_parents)
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 if( $step==82 )
 {
@@ -2524,9 +2524,9 @@ if( $step==82 )
 	exit();
 }
 
-// ////////////////////////////////////////////////////////////////////////////////////////////////////	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-//	Étape 90 - Nettoyage des fichiers temporaires (sconet_professeurs_directeurs | tableur_professeurs_directeurs | sconet_eleves | base-eleves_eleves | tableur_eleves)
-// ////////////////////////////////////////////////////////////////////////////////////////////////////	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+// Étape 90 - Nettoyage des fichiers temporaires (sconet_professeurs_directeurs | tableur_professeurs_directeurs | sconet_eleves | base-eleves_eleves | tableur_eleves)
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 if( $step==90 )
 {
@@ -2541,9 +2541,9 @@ if( $step==90 )
 	exit();
 }
 
-// ////////////////////////////////////////////////////////////////////////////////////////////////////	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-//	On ne devrait pas en arriver là...
-// ////////////////////////////////////////////////////////////////////////////////////////////////////	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+// On ne devrait pas en arriver là...
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 exit('Erreur avec les données transmises !');
 

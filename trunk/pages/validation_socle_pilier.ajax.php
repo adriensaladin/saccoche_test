@@ -41,7 +41,7 @@ $tab_eleve  = array_filter( Clean::map_entier($tab_eleve)  , 'positif' );
 $listing_eleve_id = implode(',',$tab_eleve);
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-//	Afficher le tableau avec les états de validations
+// Afficher le tableau avec les états de validations
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 if( ($action=='Afficher_bilan') && $palier_id && count($tab_pilier) && count($tab_eleve) )
@@ -127,7 +127,7 @@ if( ($action=='Afficher_bilan') && $palier_id && count($tab_pilier) && count($ta
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-//	Afficher les informations pour aider à valider un pilier précis pour un élève donné
+// Afficher les informations pour aider à valider un pilier précis pour un élève donné
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 elseif( ($action=='Afficher_information') && $eleve_id && $pilier_id )
@@ -135,7 +135,7 @@ elseif( ($action=='Afficher_information') && $eleve_id && $pilier_id )
 	// Récupération de la liste des validations des items du palier
 	$tab_item = array();	// [entree_id] => 0/1;
 	$DB_TAB = DB_STRUCTURE_SOCLE::DB_lister_jointure_user_entree($eleve_id,$listing_entree_id='',$domaine_id=0,$pilier_id,$palier_id=0);
-	if(!count($DB_TAB))
+	if(empty($DB_TAB))
 	{
 		exit('Aucune validation d\'item n\'est renseignée pour cette compétence !');
 	}
@@ -177,7 +177,7 @@ elseif( ($action=='Afficher_information') && $eleve_id && $pilier_id )
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-//	Enregistrer les états de validation
+// Enregistrer les états de validation
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 elseif($action=='Enregistrer_validation')
 {

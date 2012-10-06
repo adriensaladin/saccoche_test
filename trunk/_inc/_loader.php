@@ -88,21 +88,6 @@ $serveur = ($test_local) ? 'LOCAL' : ( (substr($HOST,-18)=='.sesamath.net:8080')
 define('SERVEUR_TYPE',$serveur); // PROD | DEV | LOCAL
 
 // ============================================================================
-// Fixer le niveau de rapport d'erreurs PHP
-// ============================================================================
-
-if(SERVEUR_TYPE == 'PROD')
-{
-	// Rapporter toutes les erreurs à part les E_NOTICE (c'est la configuration par défaut de php.ini) et E_STRICT qui est englobé dans E_ALL à compter de PHP 5.4.
-	ini_set('error_reporting',E_ALL & ~E_STRICT & ~E_NOTICE);
-}
-else
-{
-	// Rapporter toutes les erreurs PHP sur le serveur local (http://fr.php.net/manual/fr/errorfunc.constants.php)
-	ini_set('error_reporting',E_ALL | E_STRICT);
-}
-
-// ============================================================================
 // Chemins dans le système de fichiers du serveur (pour des manipulations de fichiers locaux)
 // ============================================================================
 
@@ -135,12 +120,110 @@ define('CHEMIN_DOSSIER_LOGINPASS'     , CHEMIN_DOSSIER_TMP.'login-mdp'.DS);
 define('CHEMIN_DOSSIER_LOGO'          , CHEMIN_DOSSIER_TMP.'logo'.DS);
 define('CHEMIN_DOSSIER_OFFICIEL'      , CHEMIN_DOSSIER_TMP.'officiel'.DS);
 define('CHEMIN_DOSSIER_RSS'           , CHEMIN_DOSSIER_TMP.'rss'.DS);
-define('CHEMIN_FICHIER_CONFIG_INSTALL', CHEMIN_DOSSIER_CONFIG.'constantes.php');
 //      CHEMIN_FICHIER_CONFIG_MYSQL     est défini dans index.php ou ajax.php, en fonction du type d'installation et d'utilisateur connecté
 define('FPDF_FONTPATH'                , CHEMIN_DOSSIER_FPDF_FONT); // Pour FPDF (répertoire où se situent les polices)
 
+// Vers des fichiers.
+define('CHEMIN_FICHIER_CONFIG_INSTALL', CHEMIN_DOSSIER_CONFIG.'constantes.php');
+define('CHEMIN_FICHIER_DEBUG_CONFIG'  , CHEMIN_DOSSIER_TMP.'debug.txt');
+define('CHEMIN_FICHIER_DEBUG_PHPCAS'  , CHEMIN_DOSSIER_TMP.'debugcas_'.md5($_SERVER['DOCUMENT_ROOT']).'.txt');
+define('CHEMIN_FICHIER_WS_LCS'        , CHEMIN_DOSSIER_WEBSERVICES.'import_lcs.php');
+define('CHEMIN_FICHIER_WS_ARGOS'      , CHEMIN_DOSSIER_WEBSERVICES.'argos_import.php');
+
+// ============================================================================
+// Constantes de DEBUG
+// ============================================================================
+
+/**
+ *   1 => afficher toutes les erreurs PHP
+ *   2 => enregistrer les dialogues avec le serveur CAS (dans le fichier de log phpCAS)
+ *   4 => résultats des requêtes SQL (dans la console Firefox avec FirePHP)
+ *   8 => valeurs de $_SESSION       (dans la console Firefox avec FirePHP)
+ *  16 => valeurs de $_POST          (dans la console Firefox avec FirePHP)
+ *  32 => valeurs de $_GET           (dans la console Firefox avec FirePHP)
+ *  64 => valeurs de $_FILES         (dans la console Firefox avec FirePHP)
+ * 128 => valeurs de $_COOKIE        (dans la console Firefox avec FirePHP)
+ * 256 => valeurs des constantes PHP (dans la console Firefox avec FirePHP)
+ *
+ * On fonctionne comme pour les droits unix wrx, en testant chaque bit en partant de la droite.
+ * Pour choisir les infos voulues, il faut mettre en DEBUG la somme des valeurs correspondantes.
+ * Par exemple 7 = 4 + 2 + 1 = requêtes SQL + logs CAS + erreurs PHP
+ * La valeur minimale est 0 (pas de debug) et la valeur maximale est 511.
+ */
+
+// Dans un fichier texte du dossier TMP pour ne pas être dans la distribution ni écrasé par les maj et être accessible en écriture, en particulier par l'espace webmestre.
+define('DEBUG', !is_file(CHEMIN_FICHIER_DEBUG_CONFIG) ? 0 : (int)file_get_contents(CHEMIN_FICHIER_DEBUG_CONFIG) );
+
+// Les lignes suivantes ne doivent pas être modifiées : pour changer le niveau de debug modifier seulement le fichier alimentant la constante DEBUG
+define('DEBUG_PHP',     DEBUG &   1 ? TRUE : FALSE );
+define('DEBUG_PHPCAS',  DEBUG &   2 ? TRUE : FALSE );
+define('DEBUG_SQL',     DEBUG &   4 ? TRUE : FALSE );
+define('DEBUG_SESSION', DEBUG &   8 ? TRUE : FALSE );
+define('DEBUG_POST',    DEBUG &  16 ? TRUE : FALSE );
+define('DEBUG_GET',     DEBUG &  32 ? TRUE : FALSE );
+define('DEBUG_FILES',   DEBUG &  64 ? TRUE : FALSE );
+define('DEBUG_COOKIE',  DEBUG & 128 ? TRUE : FALSE );
+define('DEBUG_CONST',   DEBUG & 256 ? TRUE : FALSE );
+
+// ============================================================================
+// DEBUG - Fixer le niveau de rapport d'erreurs PHP
+// ============================================================================
+
+if(DEBUG_PHP)
+{
+	// Rapporter toutes les erreurs PHP (http://fr.php.net/manual/fr/errorfunc.constants.php)
+	ini_set('error_reporting',E_ALL | E_STRICT);
+}
+else
+{
+	// Rapporter les erreurs à part les E_NOTICE (c'est la configuration par défaut de php.ini) et E_STRICT qui est englobé dans E_ALL à compter de PHP 5.4.
+	ini_set('error_reporting',E_ALL & ~E_STRICT & ~E_NOTICE);
+}
+
+// ============================================================================
 // Si appel depuis /_img/php/etiquette.php alors on n'a pas besoin d'aller plus loin dans ce fichier inclus.
+// ============================================================================
+
 if(SACoche=='etiquette') return;
+
+// ============================================================================
+// DEBUG - Sorties FirePHP
+// ============================================================================
+
+if(DEBUG>3)
+{
+	ini_set('output_buffering','On');
+	$firephp = FirePHP::getInstance(TRUE);
+	function afficher_infos_debug_FirePHP()
+	{
+		global $firephp;
+		if(DEBUG_SESSION)
+		{
+			$firephp->dump('SESSION', $_SESSION);
+		}
+		if(DEBUG_POST)
+		{
+			$firephp->dump('POST', $_POST);
+		}
+		if(DEBUG_GET)
+		{
+			$firephp->dump('GET', $_GET);
+		}
+		if(DEBUG_FILES)
+		{
+			$firephp->dump('FILES', $_FILES);
+		}
+		if(DEBUG_COOKIE)
+		{
+			$firephp->dump('COOKIE', $_COOKIE);
+		}
+		if(DEBUG_CONST)
+		{
+			$tab_constantes = get_defined_constants(TRUE);
+			$firephp->dump('CONSTANTES', $tab_constantes['user']);
+		}
+	}
+}
 
 // ============================================================================
 // URL de base du serveur
@@ -211,6 +294,9 @@ define('URL_DIR_LOGINPASS', str_replace( $tab_bad , $tab_bon , CHEMIN_DOSSIER_LO
 define('URL_DIR_LOGO'     , str_replace( $tab_bad , $tab_bon , CHEMIN_DOSSIER_LOGO      ) );
 define('URL_DIR_RSS'      , str_replace( $tab_bad , $tab_bon , CHEMIN_DOSSIER_RSS       ) );
 
+// Vers des fichiers.
+define('URL_FICHIER_DEBUG_PHPCAS' , str_replace( $tab_bad , $tab_bon , CHEMIN_FICHIER_DEBUG_PHPCAS ) );
+
 // ============================================================================
 // URL externes appelées par l'application
 // ============================================================================
@@ -232,6 +318,10 @@ define('SERVEUR_RSS'           ,SERVEUR_PROJET.'/_rss/rss.xml');         // URL 
 // Autres constantes diverses... et parfois importantes !
 // ============================================================================
 
+// test si c'est l'hébergement Sésamath qui est utilisé
+$is_hebergement_sesamath = (mb_strpos(URL_BASE,'https://sacoche.sesamath.net')!==FALSE) ? TRUE : FALSE ;
+define('IS_HEBERGEMENT_SESAMATH',$is_hebergement_sesamath);
+
 // Identifiants particuliers (à ne pas modifier)
 define('ID_DEMO'                   ,9999); // id de l'établissement de démonstration (pour $_SESSION['SESAMATH_ID']) ; 0 pose des pbs, et il fallait prendre un id disponible dans la base d'établissements de Sésamath
 define('ID_MATIERE_PARTAGEE_MAX'   ,9999); // id de la matière transversale dans la table "sacoche_matiere" ; c'est l'id maximal des matières partagées (les id des matières spécifiques sont supérieurs)
@@ -241,7 +331,6 @@ define('ID_FAMILLE_MATIERE_USUELLE',  99);
 // cookies
 define('COOKIE_STRUCTURE','SACoche-etablissement');  // nom du cookie servant à retenir l'établissement sélectionné, afin de ne pas à avoir à le sélectionner de nouveau, et à pouvoir le retrouver si perte d'une session et tentative de reconnexion SSO.
 define('COOKIE_AUTHMODE' ,'SACoche-mode-connexion'); // nom du cookie servant à retenir le dernier mode de connexion utilisé par un user connecté, afin de pouvoir le retrouver si perte d'une session et tentative de reconnexion SSO.
-define('COOKIE_DEBUG'    ,'SACoche-debug');          // nom du cookie servant à retenir si le mode debug est activé (pas en PROD).
 
 // session
 define('SESSION_NOM','SACoche-session'); // Est aussi défini dans /_lib/SimpleSAMLphp/config/config.php
@@ -478,31 +567,41 @@ function rapporter_erreur_fatale_phpcas()
 	$tab_last_error = error_get_last(); // tableau à 4 indices : type ; message ; file ; line
 	if( ($tab_last_error!==NULL) && ( ($tab_last_error['type']==E_ERROR) || ($tab_last_error['type']>=E_CORE_ERROR) ) )
 	{
-		exit_error( 'Mémoire insuffisante' /*titre*/ , 'Mémoire de '.ini_get('memory_limit').' insuffisante ; sélectionner moins d\'élèves à la fois ou demander à votre hébergeur d\'augmenter la valeur "memory_limit".' /*contenu*/ );
+		exit_error( 'Erreur CAS' /*titre*/ , $tab_last_error['message'] /*contenu*/ );
 	}
 }
 
 /*
- * Afficher une page HTML minimaliste avec un message explicatif et un lien pour retourner en page d'accueil (si AJAX, renvoyer juste un message).
+ * Afficher une page HTML minimale (mais aux couleurs de SACoche) avec un message explicatif et un lien pour retourner en page d'accueil (si AJAX, renvoyer juste un message).
  * 
  * @param string $titre     titre de la page
  * @param string $contenu   contenu HTML affiché (ou AJAX retourné) ; il doit déjà avoir été filtré si besoin avec html()
  * @param bool   $setup     facultatif ; TRUE pour un lien vers la procédure d'installation au lieu d'un lien vers l'accueil.
  * @return void
  */
-function exit_error($titre,$contenu,$setup=FALSE)
+function exit_error( $titre , $contenu , $setup=FALSE )
 {
-	if(SACoche=='index')
+	if(SACoche!='ajax')
 	{
 		$tab_lien = ($setup) ? array('href'=>'index.php?page=public_installation','txt'=>'Procédure d\'installation') : array('href'=>'index.php','txt'=>'Retour en page d\'accueil') ;
+		// start html
 		header('Content-Type: text/html; charset='.CHARSET);
-		echo'<!DOCTYPE html>';
-		echo'<html>';
-		echo'<head><meta http-equiv="Content-Type" content="text/html; charset='.CHARSET.'" /><title>SACoche » '.$titre.'</title></head>';
-		echo'<body style="background:#EAEAFF;font:15px sans-serif;color:#D00">';
-		echo'<p>'.$contenu.'</p>';
+		echo'<!DOCTYPE html><html>';
+		// head
+		echo'<head>';
+		echo'<meta http-equiv="Content-Type" content="text/html; charset='.CHARSET.'" />';
+		echo'<link rel="stylesheet" type="text/css" href="./_css/style.css" />';
+		echo'<style type="text/css">#cadre_milieu{color:#D00}</style>';
+		echo'<title>SACoche » '.$titre.'</title>';
+		echo'</head>';
+		// body
+		echo'<body><div id="cadre_milieu">';
+		echo'<div class="hc"><img src="./_img/logo_grand.gif" alt="SACoche" width="208" height="71" /></div>';
+		echo'<h1>» '.$titre.'</h1>';
+		echo'<p>'.str_replace('<br />','</p><p>',$contenu).'</p>';
 		echo'<p><a href="./'.$tab_lien['href'].'">'.$tab_lien['txt'].' de SACoche.</a></p>';
-		echo'</body>';
+		echo'</div></body>';
+		// end html
 		echo'</html>';
 	}
 	else
@@ -510,70 +609,6 @@ function exit_error($titre,$contenu,$setup=FALSE)
 		echo str_replace('<br />',' ',$contenu);
 	}
 	exit();
-}
-
-// ============================================================================
-// Débogage - FirePHP
-// ============================================================================
-
-if(SERVEUR_TYPE=='PROD')
-{
-	// pas de DEBUG en PROD
-	define('DEBUG',FALSE);
-}
-elseif(isset($_GET['debug']))
-{
-	if($_GET['debug'])
-	{
-		// demande explicite d'activer le mode DEBUG
-		define('DEBUG',TRUE);
-		setcookie(COOKIE_DEBUG,1,0,'');
-	}
-	else
-	{
-		// demande explicite de désactiver le mode DEBUG
-		define('DEBUG',FALSE);
-		setcookie(COOKIE_DEBUG,'',time()-42000,'');
-	}
-}
-elseif(isset($_COOKIE[COOKIE_DEBUG]))
-{
-	// mode DEBUG à conserver
-	define('DEBUG',TRUE);
-}
-else
-{
-	// pas de mode DEBUG à conserver
-	define('DEBUG',FALSE);
-}
-
-/*
- * Pour FirePHP
- */
-if(DEBUG)
-{
-	ini_set('output_buffering','On');
-	$firephp = FirePHP::getInstance(TRUE);
-}
-
-function afficher_infos_debug()
-{
-	global $firephp;
-	$firephp->dump('COOKIE', $_COOKIE);
-	$firephp->dump('FILES', $_FILES);
-	$firephp->dump('GET', $_GET);
-	$firephp->dump('POST', $_POST);
-	$firephp->dump('SESSION', $_SESSION);
-	$tab_constantes = get_defined_constants(TRUE);
-	$firephp->dump('CONSTANTES', $tab_constantes['user']);
-}
-
-/*
- * Pour phpCAS
- */
-if(DEBUG)
-{
-	define('CHEMIN_FICHIER_PHPCAS_DEBUG', CHEMIN_DOSSIER_TMP.'debugcas.txt');
 }
 
 // ============================================================================

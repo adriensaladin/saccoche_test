@@ -99,7 +99,7 @@ $select_piliers = Form::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_paliers_pili
 	<?php
 	// Affichage de la liste des items du socle pour chaque palier
 	$DB_TAB = DB_STRUCTURE_COMMUN::DB_recuperer_arborescence_palier();
-	if(count($DB_TAB))
+	if(!empty($DB_TAB))
 	{
 		echo afficher_arborescence_socle_from_SQL($DB_TAB,$dynamique=true,$reference=false,$aff_input=true,$ids=false);
 	}

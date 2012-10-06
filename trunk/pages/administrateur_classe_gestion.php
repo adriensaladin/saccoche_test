@@ -70,7 +70,7 @@ $tab_niveau_ordre_js = 'var tab_niveau_ordre = new Array();';
 $select_niveau = '<option value=""></option>';
 
 $DB_TAB = DB_STRUCTURE_COMMUN::DB_lister_niveaux_etablissement(FALSE /*with_specifiques*/);
-if(count($DB_TAB))
+if(!empty($DB_TAB))
 {
 	foreach($DB_TAB as $DB_ROW)
 	{

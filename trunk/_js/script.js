@@ -396,8 +396,8 @@ function afficher_textarea_reste(textarea_obj,textarea_maxi_length)
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-//	Gestion de la durée d'inactivité
-//	On utilise un cookie plutôt qu'une variable js car ceci permet de gérer plusieurs onglets.
+// Gestion de la durée d'inactivité
+// On utilise un cookie plutôt qu'une variable js car ceci permet de gérer plusieurs onglets.
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /**
@@ -641,41 +641,6 @@ function setVolume(volume)
 }
 
 /**
- * Fonction pour arrondir les coins des boites avec bordures
- *
- * En CSS3 il y a la propriété border-radius : http://www.w3.org/TR/css3-background/#the-border-radius
- * Actuellement elle est pré-déclinée par qqs navigateurs :
- * => Gecko, 	avec -moz-border-radius 		(valable pour Firefox, Camino et tout navigateur basé sur Gecko),
- * => Webkit, 	avec -webkit-border-radius 	(valable pour Safari, Chrome et tout navigateur basé sur Webkit).
- * => KHTML, 	avec -khtml-border-radius 	(valable pour Konqueror),
- * => Opera, 	avec -o-border-radius 	(valable pour Opéra depuis la version 10.50),
- * => MSIE à partir de sa version 9
- * Sinon (MSIE...) il y a des techniques tordues et pas universelles (div imbriqués, pixel par pixel...).
- * => http://plugins.jquery.com/project/backgroundCanvas
- * => http://plugins.jquery.com/project/roundCorners => fonctionne à peu près mais temps de calcul long + plante IE si masquage cadre_haut + fait disparaitre la ligne centrale et pb de bordures à cause de l'overflow...
- * => http://plugins.jquery.com/project/DivCorners => reste figé en largeur et en hauteur
- * => http://plugins.jquery.com/project/curvy-corners => erreur inexpliquée sous IE, marge sous FF (il faut ajouter un margin 10px), très joli sinon (http://www.curvycorners.net/instructions/)
- *
- * @param void
- * @return void
- */
-function arrondir_coins(element,taille)
-{
-	// On cherche si le navigateur sait gérer cet attribut css3, éventuellement avec une syntaxe propriétaire
-	     if(document.body.style['BorderRadius'] !== undefined)       {style = 'border-radius';}
-	else if(document.body.style['borderRadius'] !== undefined)       {style = 'border-radius';} // Opéra (commence par une minuscule...)
-	else if(document.body.style['MozBorderRadius'] !== undefined)    {style = '-moz-border-radius';}
-	else if(document.body.style['WebkitBorderRadius'] !== undefined) {style = '-webkit-border-radius';}
-	else if(document.body.style['KhtmlBorderRadius'] !== undefined)  {style = '-khtml-border-radius';}
-	else if(document.body.style['OBorderRadius'] !== undefined)      {style = '-o-border-radius';}
-	else {style = false;}
-	if(style !== false)
-	{
-		$(element).css(style,taille);
-	}
-}
-
-/**
  * Ajout de méthodes pour jquery.validate.js
  */
 
@@ -804,7 +769,7 @@ $(document).ready
 	function()
 	{
 
-		//	Initialisation
+		// Initialisation
 		format_liens('body');
 		infobulle();
 
@@ -847,7 +812,7 @@ $(document).ready
 		 * Feinte de balayeur trouvée : insérer en premier un input type image inoffensif.
 		 * Mais il faut aussi saisir son interception, sinon le formulaire est envoyée et la page rechargée.
 		 */
-		//	
+		// 
 		$('input[name=leurre]').live
 		(
 			'click' , function()
@@ -1234,7 +1199,7 @@ $(document).ready
 				            + '</form>';
 				$.fancybox( contenu , { 'modal':true , 'centerOnScroll':true } );
 				$('#form_demande_evaluation textarea').focus();
-				//	Indiquer le nombre de caractères restant autorisés dans le textarea
+				// Indiquer le nombre de caractères restant autorisés dans le textarea
 				$('#zone_message').keyup
 				(
 					function()

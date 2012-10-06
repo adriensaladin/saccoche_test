@@ -83,7 +83,7 @@ $(document).ready
 				{
 					type : 'POST',
 					url : 'ajax.php?page='+PAGE,
-					data : 'f_profil='+profil+'&f_groupe_id='+groupe_id+'&f_groupe_type='+groupe_type,
+					data : 'csrf='+CSRF+'&f_profil='+profil+'&f_groupe_id='+groupe_id+'&f_groupe_type='+groupe_type,
 					dataType : "html",
 					error : function(jqXHR, textStatus, errorThrown)
 					{

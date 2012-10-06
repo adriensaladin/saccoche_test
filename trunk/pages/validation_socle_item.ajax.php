@@ -48,7 +48,7 @@ $listing_eleve_id   = implode(',',$tab_eleve);
 $listing_domaine_id = implode(',',$tab_domaine);
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-//	Afficher le tableau avec les états de validations
+// Afficher le tableau avec les états de validations
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 if( ($action=='Afficher_bilan') && $pilier_id && count($tab_domaine) && count($tab_eleve) && (in_array($mode,array('auto','manuel'))) )
@@ -256,7 +256,7 @@ if( ($action=='Afficher_bilan') && $pilier_id && count($tab_domaine) && count($t
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-//	Afficher les informations pour aider à valider un item précis pour un élève donné
+// Afficher les informations pour aider à valider un item précis pour un élève donné
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 elseif( ($action=='Afficher_information') && $eleve_id && $pilier_id && $entree_id && (in_array($mode,array('auto','manuel'))) )
@@ -319,7 +319,7 @@ elseif( ($action=='Afficher_information') && $eleve_id && $pilier_id && $entree_
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-//	Enregistrer les états de validation
+// Enregistrer les états de validation
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 elseif($action=='Enregistrer_validation')
 {

@@ -85,13 +85,14 @@ $tab_colonne = array();
 
 // On récupère la liste des matières où le professeur est rattaché, et s'il en est coordonnateur
 $DB_TAB_MATIERES = DB_STRUCTURE_PROFESSEUR::DB_lister_matieres_professeur_infos_referentiel($_SESSION['USER_ID']);
-$nb_matieres = count($DB_TAB_MATIERES);
-if(!$nb_matieres)
+if(empty($DB_TAB_MATIERES))
 {
+	$nb_matieres = 0;
 	echo'<hr /><p><span class="danger">Vous n\'êtes rattaché à aucune matière de l\'établissement !</span></p>';
 }
 else
 {
+	$nb_matieres = count($DB_TAB_MATIERES);
 	foreach($DB_TAB_MATIERES as $DB_ROW)
 	{
 		$tab_matiere[$DB_ROW['matiere_id']] = array(
@@ -102,13 +103,14 @@ else
 	}
 	// On récupère la liste des niveaux utilisés par l'établissement, que l'on conserve pour un formulaire
 	$DB_TAB_NIVEAUX = DB_STRUCTURE_COMMUN::DB_OPT_niveaux_etabl();
-	$nb_niveaux = count($DB_TAB_NIVEAUX);
-	if(!$nb_niveaux)
+	if(empty($DB_TAB_NIVEAUX))
 	{
+		$nb_niveaux = 0;
 		echo'<hr /><p><span class="danger">Aucun niveau n\'est rattaché à l\'établissement !</span></p>';
 	}
 	else
 	{
+		$nb_niveaux = count($DB_TAB_NIVEAUX);
 		foreach($DB_TAB_NIVEAUX as $DB_ROW)
 		{
 			$tab_niveau[$DB_ROW['valeur']] = html($DB_ROW['texte']);
@@ -116,7 +118,7 @@ else
 		// On récupère la liste des référentiels par matière et niveau
 		$tab_partage = array('oui'=>'<img title="Référentiel partagé sur le serveur communautaire (MAJ le ◄DATE►)." alt="" src="./_img/etat/partage_oui.gif" />','non'=>'<img title="Référentiel non partagé avec la communauté (choix du ◄DATE►)." alt="" src="./_img/etat/partage_non.gif" />','bof'=>'<img title="Référentiel dont le partage est sans intérêt (pas novateur)." alt="" src="./_img/etat/partage_non.gif" />','hs'=>'<img title="Référentiel dont le partage est sans objet (matière spécifique)." alt="" src="./_img/etat/partage_non.gif" />');
 		$DB_TAB = DB_STRUCTURE_COMMUN::DB_lister_referentiels_infos_details_matieres_niveaux();
-		if(count($DB_TAB))
+		if(!empty($DB_TAB))
 		{
 			foreach($DB_TAB as $DB_ROW)
 			{

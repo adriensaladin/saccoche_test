@@ -576,7 +576,7 @@ public static function DB_modifier_mdp_utilisateur($user_id,$password_ancien_cry
 	$DB_SQL.= 'WHERE user_id=:user_id AND user_password=:password_crypte ';
 	$DB_VAR = array(':user_id'=>$user_id,':password_crypte'=>$password_ancien_crypte);
 	$DB_ROW = DB::queryRow(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-	if(!count($DB_ROW))
+	if(empty($DB_ROW))
 	{
 		return 'Le mot de passe actuel est incorrect !';
 	}
@@ -663,7 +663,7 @@ public static function DB_OPT_matieres_etabl()
 	$DB_SQL.= 'WHERE matiere_active=1 ';
 	$DB_SQL.= 'ORDER BY matiere_nom ASC';
 	$DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
-	return count($DB_TAB) ? $DB_TAB : 'Aucune matière n\'est rattachée à l\'établissement.' ;
+	return !empty($DB_TAB) ? $DB_TAB : 'Aucune matière n\'est rattachée à l\'établissement.' ;
 }
 
 /**
@@ -713,7 +713,7 @@ public static function DB_OPT_matieres_professeur($user_id)
 	$DB_SQL.= 'ORDER BY matiere_nom ASC';
 	$DB_VAR = array(':user_id'=>$user_id);
 	$DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-	return count($DB_TAB) ? $DB_TAB : 'Vous n\'êtes rattaché à aucune matière.' ;
+	return !empty($DB_TAB) ? $DB_TAB : 'Vous n\'êtes rattaché à aucune matière.' ;
 }
 
 /**
@@ -761,7 +761,7 @@ public static function DB_OPT_matieres_eleve($user_id)
 	$DB_SQL.= 'ORDER BY matiere_nom ASC';
 	$DB_VAR = array(':partage'=>0);
 	$DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-	return count($DB_TAB) ? $DB_TAB : 'Vous n\'avez pas de professeur rattaché à une matière !' ;
+	return !empty($DB_TAB) ? $DB_TAB : 'Vous n\'avez pas de professeur rattaché à une matière !' ;
 }
 
 /**
@@ -783,7 +783,7 @@ public static function DB_OPT_matieres_groupe($groupe_id)
 	$DB_SQL.= 'ORDER BY matiere_nom ASC';
 	$DB_VAR = array(':groupe_id'=>$groupe_id,':profil'=>'professeur');
 	$DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-	return count($DB_TAB) ? $DB_TAB : 'Aucun professeur du groupe est rattaché à une matière.' ;
+	return !empty($DB_TAB) ? $DB_TAB : 'Aucun professeur du groupe est rattaché à une matière.' ;
 }
 
 /**
@@ -877,7 +877,7 @@ public static function DB_OPT_niveaux_matiere($matiere_id)
 	$DB_SQL.= 'ORDER BY niveau_ordre ASC';
 	$DB_VAR = array(':matiere_id'=>$matiere_id);
 	$DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-	return count($DB_TAB) ? $DB_TAB : 'Aucun référentiel est rattaché à cette matière.' ;
+	return !empty($DB_TAB) ? $DB_TAB : 'Aucun référentiel est rattaché à cette matière.' ;
 }
 
 /**
@@ -893,7 +893,7 @@ public static function DB_OPT_paliers_etabl()
 	$DB_SQL.= 'WHERE palier_actif=1 ';
 	$DB_SQL.= 'ORDER BY palier_ordre ASC';
 	$DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
-	return count($DB_TAB) ? $DB_TAB : 'Aucun palier du socle commun n\'est rattaché à l\'établissement.' ;
+	return !empty($DB_TAB) ? $DB_TAB : 'Aucun palier du socle commun n\'est rattaché à l\'établissement.' ;
 }
 
 /**
@@ -916,7 +916,7 @@ public static function DB_OPT_paliers_piliers()
 		$tab_optgroup[$DB_ROW['optgroup']] = $DB_ROW['optgroup_info'];
 	}
 	Form::$tab_select_optgroup = $tab_optgroup;
-	return count($DB_TAB) ? $DB_TAB : 'Aucun palier du socle commun n\'est rattaché à l\'établissement.' ;
+	return !empty($DB_TAB) ? $DB_TAB : 'Aucun palier du socle commun n\'est rattaché à l\'établissement.' ;
 }
 
 /**
@@ -934,7 +934,7 @@ public static function DB_OPT_piliers($palier_id)
 	$DB_SQL.= 'ORDER BY pilier_ordre ASC';
 	$DB_VAR = array(':palier_id'=>$palier_id);
 	$DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-	return count($DB_TAB) ? $DB_TAB : 'Aucune compétence trouvée pour ce palier.' ;
+	return !empty($DB_TAB) ? $DB_TAB : 'Aucune compétence trouvée pour ce palier.' ;
 }
 
 /**
@@ -952,7 +952,7 @@ public static function DB_OPT_domaines($pilier_id)
 	$DB_SQL.= 'ORDER BY section_ordre ASC';
 	$DB_VAR = array(':pilier_id'=>$pilier_id);
 	$DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-	return count($DB_TAB) ? $DB_TAB : 'Aucun domaine trouvé pour ce pilier.' ;
+	return !empty($DB_TAB) ? $DB_TAB : 'Aucun domaine trouvé pour ce pilier.' ;
 }
 
 /**
@@ -1014,7 +1014,7 @@ public static function DB_OPT_groupes_etabl()
 	$DB_SQL.= 'ORDER BY niveau_ordre ASC, groupe_nom ASC';
 	$DB_VAR = array(':type'=>'groupe');
 	$DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-	return count($DB_TAB) ? $DB_TAB : 'Aucun groupe n\'est enregistré.' ;
+	return !empty($DB_TAB) ? $DB_TAB : 'Aucun groupe n\'est enregistré.' ;
 }
 
 /**
@@ -1036,7 +1036,7 @@ public static function DB_OPT_groupes_professeur($user_id)
 	$DB_VAR = array(':user_id'=>$user_id,':type4'=>'eval');
 	$DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 	Form::$tab_select_optgroup = array('classe'=>'Classes','groupe'=>'Groupes','besoin'=>'Besoins');
-	return count($DB_TAB) ? $DB_TAB : 'Aucune classe et aucun groupe ne vous sont affectés.' ;
+	return !empty($DB_TAB) ? $DB_TAB : 'Aucune classe et aucun groupe ne vous sont affectés.' ;
 }
 
 /**
@@ -1054,7 +1054,7 @@ public static function DB_OPT_classes_etabl()
 	$DB_SQL.= 'ORDER BY niveau_ordre ASC, groupe_nom ASC';
 	$DB_VAR = array(':type'=>'classe');
 	$DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-	return count($DB_TAB) ? $DB_TAB : 'Aucune classe n\'est enregistrée.' ;
+	return !empty($DB_TAB) ? $DB_TAB : 'Aucune classe n\'est enregistrée.' ;
 }
 
 /**
@@ -1075,7 +1075,7 @@ public static function DB_OPT_classes_groupes_etabl()
 	$DB_VAR = array(':type1'=>'classe',':type2'=>'groupe');
 	$DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 	Form::$tab_select_optgroup = array('classe'=>'Classes','groupe'=>'Groupes');
-	return count($DB_TAB) ? $DB_TAB : 'Aucune classe et aucun groupe ne sont enregistrés.' ;
+	return !empty($DB_TAB) ? $DB_TAB : 'Aucune classe et aucun groupe ne sont enregistrés.' ;
 }
 
 /**
@@ -1095,7 +1095,7 @@ public static function DB_OPT_classes_prof_principal($user_id)
 	$DB_SQL.= 'ORDER BY niveau_ordre ASC, groupe_nom ASC';
 	$DB_VAR = array(':user_id'=>$user_id,':type1'=>'classe',':pp'=>1);
 	$DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-	return count($DB_TAB) ? $DB_TAB : 'Vous n\'êtes professeur principal d\'aucune classe.' ;
+	return !empty($DB_TAB) ? $DB_TAB : 'Vous n\'êtes professeur principal d\'aucune classe.' ;
 }
 
 /**
@@ -1115,7 +1115,7 @@ public static function DB_OPT_classes_parent($parent_id)
 	$DB_SQL.= 'ORDER BY resp_legal_num ASC, user_nom ASC, user_prenom ASC ';
 	$DB_VAR = array(':parent_id'=>$parent_id);
 	$DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-	return count($DB_TAB) ? $DB_TAB : 'Aucune classe ne comporte un élève associé à ce compte.' ;
+	return !empty($DB_TAB) ? $DB_TAB : 'Aucune classe ne comporte un élève associé à ce compte.' ;
 }
 
 /**
@@ -1132,7 +1132,7 @@ public static function DB_OPT_selection_items($user_id)
 	$DB_SQL.= 'ORDER BY selection_item_nom ASC';
 	$DB_VAR = array(':user_id'=>$user_id);
 	$DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-	return count($DB_TAB) ? $DB_TAB : 'Vous n\'avez mémorisé aucune sélection d\'items.' ;
+	return !empty($DB_TAB) ? $DB_TAB : 'Vous n\'avez mémorisé aucune sélection d\'items.' ;
 }
 
 /**
@@ -1148,7 +1148,7 @@ public static function DB_OPT_periodes_etabl($alerte=FALSE)
 	$DB_SQL.= 'FROM sacoche_periode ';
 	$DB_SQL.= 'ORDER BY periode_ordre ASC';
 	$DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
-	return count($DB_TAB) ? $DB_TAB : ( ($alerte) ? 'Aucune période n\'est enregistrée.' : array() ) ;
+	return !empty($DB_TAB) ? $DB_TAB : ( ($alerte) ? 'Aucune période n\'est enregistrée.' : array() ) ;
 }
 
 /**
@@ -1165,7 +1165,7 @@ public static function DB_OPT_administrateurs_etabl()
 	$DB_SQL.= 'ORDER BY user_nom ASC, user_prenom ASC';
 	$DB_VAR = array(':profil'=>'administrateur');
 	$DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-	return count($DB_TAB) ? $DB_TAB : 'Aucun administrateur enregistré !' ;
+	return !empty($DB_TAB) ? $DB_TAB : 'Aucun administrateur enregistré !' ;
 }
 
 /**
@@ -1182,7 +1182,7 @@ public static function DB_OPT_directeurs_etabl()
 	$DB_SQL.= 'ORDER BY user_nom ASC, user_prenom ASC';
 	$DB_VAR = array(':profil'=>'directeur');
 	$DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-	return count($DB_TAB) ? $DB_TAB : 'Aucun directeur enregistré.' ;
+	return !empty($DB_TAB) ? $DB_TAB : 'Aucun directeur enregistré.' ;
 }
 
 /**
@@ -1222,7 +1222,7 @@ public static function DB_OPT_professeurs_etabl($groupe_type='all',$groupe_id=0)
 	$DB_SQL = $select.$from.$ljoin.$where.$group.$order;
 	$DB_VAR = array(':profil'=>'professeur',':niveau'=>$groupe_id,':groupe'=>$groupe_id);
 	$DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-	return count($DB_TAB) ? $DB_TAB : 'Aucun professeur enregistré.' ;
+	return !empty($DB_TAB) ? $DB_TAB : 'Aucun professeur enregistré.' ;
 }
 
 /**
@@ -1243,7 +1243,7 @@ public static function DB_OPT_professeurs_directeurs_etabl($statut)
 	$DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 	Form::$tab_select_option_first = array(0,'Tampon de l\'établissement','');
 	Form::$tab_select_optgroup = array('directeur'=>'Directeurs','professeur'=>'Professeurs');
-	return count($DB_TAB) ? $DB_TAB : 'Aucun professeur ou directeur trouvé.' ;
+	return !empty($DB_TAB) ? $DB_TAB : 'Aucun professeur ou directeur trouvé.' ;
 }
 
 /**
@@ -1295,7 +1295,7 @@ public static function DB_OPT_parents_etabl($statut,$groupe_type='all',$groupe_i
 	$DB_SQL = $select.$from.$ljoin.$where.$group.$order;
 	$DB_VAR = array(':profil'=>'parent',':niveau'=>$groupe_id,':classe'=>$groupe_id,':groupe'=>$groupe_id);
 	$DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-	return count($DB_TAB) ? $DB_TAB : 'Aucun responsable trouvé.' ;
+	return !empty($DB_TAB) ? $DB_TAB : 'Aucun responsable trouvé.' ;
 }
 
 /**
@@ -1353,7 +1353,7 @@ public static function DB_OPT_eleves_regroupement($groupe_type,$groupe_id,$statu
 		$DB_SQL.= 'ORDER BY user_nom ASC, user_prenom ASC';
 		$DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 	}
-	return count($DB_TAB) ? $DB_TAB : 'Aucun élève trouvé.' ;
+	return !empty($DB_TAB) ? $DB_TAB : 'Aucun élève trouvé.' ;
 }
 
 /**
@@ -1371,7 +1371,7 @@ public static function DB_OPT_enfants_parent($parent_id)
 	$DB_SQL.= 'ORDER BY resp_legal_num ASC, user_nom ASC, user_prenom ASC ';
 	$DB_VAR = array(':parent_id'=>$parent_id);
 	$DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-	return count($DB_TAB) ? $DB_TAB : 'Aucun élève associé à ce compte.' ;
+	return !empty($DB_TAB) ? $DB_TAB : 'Aucun élève associé à ce compte.' ;
 }
 
 }

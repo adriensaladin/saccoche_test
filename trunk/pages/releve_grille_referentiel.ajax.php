@@ -131,7 +131,7 @@ $tab_eval           = array();	// [eleve_id][item_id] => array(note,date,info)
 
 $lignes_nb = 0;
 $DB_TAB = DB_STRUCTURE_COMMUN::DB_recuperer_arborescence( 0 /*prof_id*/ , $matiere_id , $niveau_id , $only_socle , FALSE /*only_item*/ , FALSE /*socle_nom*/ );
-if(count($DB_TAB))
+if(!empty($DB_TAB))
 {
 	$domaine_id = 0;
 	$theme_id   = 0;
@@ -205,7 +205,7 @@ $eleve_nb = count($tab_eleve);
 if( !$type_generique && ( ($remplissage=='plein') || ($colonne_bilan=='oui') || $type_synthese || ($_SESSION['USER_PROFIL']=='eleve') ) )
 {
 	$DB_TAB = DB_STRUCTURE_BILAN::DB_lister_result_eleves_items($liste_eleve , $liste_item , $matiere_id , $date_debut=false , $date_fin=false , $_SESSION['USER_PROFIL']) ;
-	if(count($DB_TAB))
+	if(!empty($DB_TAB))
 	{
 		foreach($DB_TAB as $DB_ROW)
 		{
@@ -502,9 +502,9 @@ if( $type_generique || $type_individuel )
 	$releve_PDF->Output(CHEMIN_DOSSIER_EXPORT.$fichier_nom_type1.'.pdf','F');
 }
 
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Elaboration de la synthèse collective en HTML et PDF
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 if($type_synthese)
 {
@@ -650,9 +650,9 @@ if($type_synthese)
 	$releve_PDF->Output(CHEMIN_DOSSIER_EXPORT.$fichier_nom_type2.'.pdf','F');
 }
 
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Affichage du résultat
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 if($affichage_direct)
 {

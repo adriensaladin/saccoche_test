@@ -47,6 +47,9 @@ $select_groupe = Form::afficher_select($tab_groupes , $select_nom='f_groupe' , $
 <h2>Ajout multiple</h2>
 
 <form action="#" method="post" id="form2"><fieldset>
+	<p class="astuce">
+		Taille maximale du fichier : <b><?php echo InfoServeur::minimum_limitations_upload(FALSE /*avec_explication*/) ?></b> (<a href="./index.php?page=compte_info_serveur">voir les caractéristiques du serveur</a>).
+	</p>
 	<label class="tab" for="f_masque">Noms des fichiers :</label><input id="f_masque" name="f_masque" size="50" maxlength="50" type="text" value="" /><br />
 	<label class="tab" for="bouton_zip">Upload fichier <em>zip</em> :</label><button id="bouton_zip" type="button" class="fichier_import">Parcourir...</button><label id="ajax_msg_zip">&nbsp;</label>
 </fieldset></form>

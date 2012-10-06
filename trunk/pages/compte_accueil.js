@@ -31,7 +31,7 @@ $(document).ready
 	{
 
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
-		//	Clic sur une image-lien afin d'afficher ou de masquer un élément de la page d'accueil
+		// Clic sur une image-lien afin d'afficher ou de masquer un élément de la page d'accueil
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		$('a[href=#toggle_accueil]').click
@@ -51,7 +51,7 @@ $(document).ready
 					{
 						type : 'POST',
 						url : 'ajax.php?page='+PAGE,
-						data : 'f_type='+type+'&f_etat='+etat,
+						data : 'csrf='+CSRF+'&f_type='+type+'&f_etat='+etat,
 						dataType : "html"
 					}
 				);

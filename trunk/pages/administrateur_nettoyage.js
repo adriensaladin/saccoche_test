@@ -62,7 +62,7 @@ $(document).ready
 						{
 							type : 'POST',
 							url : 'ajax.php?page='+PAGE,
-							data : 'f_action='+action,
+							data : 'csrf='+CSRF+'&f_action='+action,
 							dataType : "html",
 							error : function(jqXHR, textStatus, errorThrown)
 							{

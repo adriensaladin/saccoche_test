@@ -71,6 +71,73 @@ class Session
   }
 
   /*
+   * Renvoyer l'IP
+   * 
+   * @param void
+   * @return string
+   */
+	private static function get_IP()
+	{
+		/**
+		 * Si PHP est derrière un reverse proxy ou un load balancer, REMOTE_ADDR peut contenir l'ip du proxy.
+		 * Normalement, le proxy doit renseigner HTTP_X_REAL_IP, ou HTTP_X_FORWARDED_FOR.
+		 * Au CITIC, REMOTE_ADDR est correct, et chez OVH aussi (avec apache derrière nginx ou pas).
+		 */
+		$ip = $_SERVER['REMOTE_ADDR'];
+		if (isset($_SERVER['HTTP_X_REAL_IP']))
+		{
+			$ip = $_SERVER['HTTP_X_REAL_IP'];
+		}
+		elseif (isset($_SERVER['HTTP_X_FORWARDED_FOR']))
+		{
+			$forwarded = $_SERVER['HTTP_X_FORWARDED_FOR'];
+			// on s'arrête à la 1re virgule si on en trouve une
+			$tab_forwarded = preg_split("/,| /",$forwarded);
+			$ip_candidate = $tab_forwarded[0];
+			$ip_composantes = explode('.', $ip_candidate);
+			// On vérifie que ça ressemble à une ip (au cas où on aurait une chaîne bizarre ou vide on garde notre REMOTE_ADDR)
+			if (count($ip_composantes) == 4 && min($ip_composantes) >=0 && max($ip_composantes) < 256 && max($ip_composantes) > 0)
+			{
+				$ip = $ip_candidate;
+			}
+		}
+		// petit truc pour s'assurer d'avoir une IP valide
+		return ($ip == long2ip(ip2long($ip))) ? $ip : '' ;
+	}
+
+  /*
+   * Renvoyer une clef associée au navigateur et à la session en cours
+   * 
+   * @param void
+   * @return void
+   */
+	private static function get_UserAgent()
+	{
+		if(isset($_SERVER['HTTP_USER_AGENT']))
+		{
+			// Eviter que l'activation de FireBug + FirePHP n'oblige à se réidentifier.
+			$pos_FirePHP = strpos($_SERVER['HTTP_USER_AGENT'],' FirePHP');
+			$user_agent = ($pos_FirePHP===FALSE) ? $_SERVER['HTTP_USER_AGENT'] : substr($_SERVER['HTTP_USER_AGENT'],0,$pos_FirePHP) ;
+		}
+		else
+		{
+			$user_agent = '';
+		}
+		return $user_agent;
+	}
+
+  /*
+   * Renvoyer une clef associée au navigateur, à l'adresse IP et à la session en cours
+   * 
+   * @param void
+   * @return void
+   */
+	private static function session_key()
+	{
+		return md5( Session::get_IP() . Session::get_UserAgent() . session_id() );
+	}
+
+  /*
    * Initialiser une session ouverte
    * 
    * @param void
@@ -79,6 +146,8 @@ class Session
   private static function init()
   {
     $_SESSION = array();
+    // Clef pour éviter les vols de session
+    $_SESSION['SESSION_KEY']      = Session::session_key();
     // Numéro de la base
     $_SESSION['BASE']             = 0;
     // Données associées à l'utilisateur.
@@ -100,7 +169,7 @@ class Session
    */
   private static function exit_sauf_SSO()
   {
-    $test_get = ( (isset($_GET['sso'])) && ( (isset($_GET['base'])) || (isset($_GET['uai'])) || (HEBERGEUR_INSTALLATION=='mono-structure') ) ) ? TRUE : FALSE ;
+    $test_get = ( (isset($_GET['sso'])) && ( (isset($_GET['base'])) || (isset($_GET['id'])) || (isset($_GET['uai'])) || (HEBERGEUR_INSTALLATION=='mono-structure') ) ) ? TRUE : FALSE ;
     $test_cookie = ( ( (isset($_COOKIE[COOKIE_STRUCTURE])) || (HEBERGEUR_INSTALLATION=='mono-structure') ) && (isset($_COOKIE[COOKIE_AUTHMODE])) && ($_COOKIE[COOKIE_AUTHMODE]!='normal') ) ? TRUE : FALSE ;
     // si html
     if(SACoche=='index')
@@ -210,29 +279,35 @@ class Session
           Session::close();Session::open_new();Session::init();
         }
       }
+      elseif($_SESSION['SESSION_KEY'] != Session::session_key())
+      {
+        // 2.2. Session retrouvée, mais louche car IP ou navigateur modifié (tentative de piratage ? c'est cependant difficile de récupérer le cookie d'un tiers, voire impossible avec les autres protections dont SACoche bénéficie).
+        Session::close();
+        exit_error( 'Session incompatible avec votre connexion' /*titre*/ , 'Modification d\'adresse IP ou de navigateur a été détectée !<br />Par sécurité, vous devez vous reconnecter.' /*contenu*/ );
+      }
       elseif($_SESSION['USER_PROFIL'] == 'public')
       {
-        // 2.2. Session retrouvée, utilisateur non identifié
+        // 2.3. Session retrouvée, utilisateur non identifié
         if(!$TAB_PROFILS_AUTORISES['public'])
         {
-          // 2.2.1. Espace non identifié => Espace identifié : redirection pour identification
+          // 2.3.1. Espace non identifié => Espace identifié : redirection pour identification
           Session::exit_sauf_SSO(); // Pas d'initialisation de session sinon la redirection avec le SSO tourne en boucle.
         }
         else
         {
-          // 2.2.2. Espace non identifié => Espace non identifié : RAS
+          // 2.3.2. Espace non identifié => Espace non identifié : RAS
         }
       }
       else
       {
-        // 2.3. Session retrouvée, utilisateur identifié
+        // 2.4. Session retrouvée, utilisateur identifié
         if($TAB_PROFILS_AUTORISES[$_SESSION['USER_PROFIL']])
         {
-          // 2.3.1. Espace identifié => Espace identifié identique : RAS
+          // 2.4.1. Espace identifié => Espace identifié identique : RAS
         }
         elseif($TAB_PROFILS_AUTORISES['public'])
         {
-          // 2.3.2. Espace identifié => Espace non identifié : création d'une nouvelle session vierge, pas de message d'alerte pour indiquer que la session perdue
+          // 2.4.2. Espace identifié => Espace non identifié : création d'une nouvelle session vierge, pas de message d'alerte pour indiquer que la session perdue
           // A un moment il fallait tester que ce n'était pas un appel ajax,pour éviter une déconnexion si appel au calendrier qui était dans l'espace public, mais ce n'est plus le cas...
           // Par contre il faut conserver la session de SimpleSAMLphp pour laisser à l'utilisateur la choix de se déconnecter ou non de son SSO.
           $SimpleSAMLphp_SESSION = ( ($_SESSION['CONNEXION_MODE']=='gepi') && (isset($_SESSION['SimpleSAMLphp_SESSION'])) ) ? $_SESSION['SimpleSAMLphp_SESSION'] : FALSE ; // isset() pour le cas où l'admin vient de cocher le mode Gepi mais c'est connecté sans juste avant
@@ -241,7 +316,7 @@ class Session
         }
         elseif(!$TAB_PROFILS_AUTORISES['public']) // (forcément)
         {
-          // 2.3.3. Espace identifié => Autre espace identifié incompatible : redirection pour une nouvelle identification
+          // 2.4.3. Espace identifié => Autre espace identifié incompatible : redirection pour une nouvelle identification
           // Pas de redirection SSO sinon on tourne en boucle (il faudrait faire une déconnexion SSO préalable).
           exit_error( 'Page interdite avec votre profil' /*titre*/ , 'Vous avez appelé une page inaccessible avec votre identification actuelle !<br />Déconnectez-vous ou retournez à la page précédente.' /*contenu*/ );
         }

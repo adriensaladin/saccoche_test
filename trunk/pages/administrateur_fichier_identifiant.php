@@ -88,9 +88,18 @@ $select_groupe = Form::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_regroupements
 		<hr />
 		<p><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__gestion_mode_identification__LCS">DOC : Intégration de SACoche dans un LCS</a></span></p>
 		<?php
-		$fichier = './webservices/import_lcs.php';
-		echo (is_file($fichier)) ? '<button name="dupliquer" id="COPY_id_lcs_TO_id_ent" type="button" class="mdp_groupe">Récupérer l\'identifiant LCS</button> comme identifiant de l\'ENT pour tous les utilisateurs.'
-		                         : '<div class="danger">Le fichier &laquo;&nbsp;<b>'.$fichier.'</b>&nbsp;&raquo; devant figurer dans le paquet lcs-sacoche n\'a pas été détecté !</div>' ;
+		if(IS_HEBERGEMENT_SESAMATH)
+		{
+			echo'<div class="danger">Cette fonctionnalité, réservée au paquet LCS-SACoche, est sans objet sur le serveur Sésamath !</div>';
+		}
+		else if(!is_file(CHEMIN_FICHIER_WS_LCS))
+		{
+			echo'<div class="danger">Le fichier &laquo;&nbsp;<b>'.FileSystem::fin_chemin(CHEMIN_FICHIER_WS_LCS).'</b>&nbsp;&raquo; uniquement présent dans le paquet LCS-SACoche n\'a pas été détecté !</div>';
+		}
+		else
+		{
+			echo'<button name="dupliquer" id="COPY_id_lcs_TO_id_ent" type="button" class="mdp_groupe">Récupérer l\'identifiant LCS</button> comme identifiant de l\'ENT pour tous les utilisateurs.';
+		}
 		?>
 	</fieldset>
 
@@ -98,11 +107,20 @@ $select_groupe = Form::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_regroupements
 		<hr />
 		<p><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__gestion_mode_identification__argos">DOC : Intégration de SACoche dans Argos</a></span></p>
 		<?php
-		$fichier = './webservices/argos_import.php';
-		echo (is_file($fichier)) ? '<button name="dupliquer" id="COPY_id_argos_profs_TO_id_ent" type="button" class="mdp_groupe">Récupérer l\'identifiant Argos</button> comme identifiant de l\'ENT pour tous les professeurs &amp; directeurs.<br />
-		                            <button name="dupliquer" id="COPY_id_argos_eleves_TO_id_ent" type="button" class="mdp_groupe">Récupérer l\'identifiant Argos</button> comme identifiant de l\'ENT pour tous les élèves.<br />
-		                            <button name="dupliquer" id="COPY_id_argos_parents_TO_id_ent" type="button" class="mdp_groupe">Récupérer l\'identifiant Argos</button> comme identifiant de l\'ENT pour tous les responsables légaux.'
-		                         : '<div class="danger">Le fichier &laquo;&nbsp;<b>'.$fichier.'</b>&nbsp;&raquo; devant figurer dans l\'installation académique Argos n\'a pas été détecté !</div>' ;
+		if(IS_HEBERGEMENT_SESAMATH)
+		{
+			echo'<div class="danger">Cette fonctionnalité, réservée à l\'installation académique Argos, est sans objet sur le serveur Sésamath !</div>';
+		}
+		else if(!is_file(CHEMIN_FICHIER_WS_ARGOS))
+		{
+			echo'<div class="danger">Le fichier &laquo;&nbsp;<b>'.FileSystem::fin_chemin(CHEMIN_FICHIER_WS_ARGOS).'</b>&nbsp;&raquo; uniquement présent sur l\'installation académique Argos n\'a pas été détecté !</div>';
+		}
+		else
+		{
+			echo'<button name="dupliquer" id="COPY_id_argos_profs_TO_id_ent" type="button" class="mdp_groupe">Récupérer l\'identifiant Argos</button> comme identifiant de l\'ENT pour tous les professeurs &amp; directeurs.<br />'
+			   .'<button name="dupliquer" id="COPY_id_argos_eleves_TO_id_ent" type="button" class="mdp_groupe">Récupérer l\'identifiant Argos</button> comme identifiant de l\'ENT pour tous les élèves.<br />'
+			   .'<button name="dupliquer" id="COPY_id_argos_parents_TO_id_ent" type="button" class="mdp_groupe">Récupérer l\'identifiant Argos</button> comme identifiant de l\'ENT pour tous les responsables légaux.';
+		}
 		?>
 	</fieldset>
 

@@ -47,7 +47,7 @@ $(document).ready
 					{
 						type : 'POST',
 						url : 'ajax.php?page='+PAGE,
-						data : 'f_action=sauvegarder',
+						data : 'csrf='+CSRF+'&f_action=sauvegarder',
 						dataType : "html",
 						error : function(jqXHR, textStatus, errorThrown)
 						{
@@ -151,7 +151,7 @@ $(document).ready
 				{
 					type : 'POST',
 					url : 'ajax.php?page='+PAGE,
-					data : 'f_action=restaurer'+'&etape='+etape,
+					data : 'csrf='+CSRF+'&f_action=restaurer'+'&etape='+etape,
 					dataType : "html",
 					error : function(jqXHR, textStatus, errorThrown)
 					{

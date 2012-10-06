@@ -82,6 +82,73 @@ $affichage_formulaire_statut =
 	|| ( ($_SESSION['USER_PROFIL']=='professeur') && (strpos($_SESSION['DROIT_OFFICIEL_'.$tab_types[$BILAN_TYPE]['droit'].'_MODIFIER_STATUT'],'professeur')!==FALSE) )
 	|| ( ($_SESSION['USER_PROFIL']=='professeur') && (strpos($_SESSION['DROIT_OFFICIEL_'.$tab_types[$BILAN_TYPE]['droit'].'_MODIFIER_STATUT'],'profprincipal')!==FALSE) && (DB_STRUCTURE_PROFESSEUR::DB_tester_prof_principal($_SESSION['USER_ID'])) )
 ) ? TRUE : FALSE ;
+$tab_etats = array
+(
+	'0absence'  => 'indéfini',
+	'1vide'     => 'Vide (fermé)',
+	'2rubrique' => '<span class="now">Saisies Profs</span>',
+	'3synthese' => '<span class="now">Saisie Synthèse</span>',
+	'4complet'  => 'Complet (fermé)'
+);
+
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+// Récupération et traitement des données postées, si formulaire soumis
+// Pas de passage par la page ajax.php => protection contre attaques type CSRF ajoutée ici
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+if( ($affichage_formulaire_statut) && ($_SESSION['SESAMATH_ID']!=ID_DEMO) )
+{
+	$tab_ids  = (isset($_POST['listing_ids'])) ? explode(',',$_POST['listing_ids']) : array() ;
+	$new_etat = (isset($_POST['etat']))        ? Clean::texte($_POST['etat'])        : '' ;
+	if( count($tab_ids) && isset($tab_etats[$new_etat]) )
+	{
+		verifier_jeton_anti_CSRF($PAGE);
+		$champ = 'officiel_'.$BILAN_TYPE;
+		$new_etat = ($new_etat!='x') ? $new_etat : '' ;
+		foreach($tab_ids as $ids)
+		{
+			list( $classe_id , $periode_id ) = explode('p',substr($ids,1));
+			if( (int)$classe_id && (int)$periode_id )
+			{
+				DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_bilan_officiel($classe_id,$periode_id,$champ,$new_etat);
+			}
+		}
+	}
+}
+
+$tab_etats = array
+(
+	'0absence'  => 'indéfini',
+	'1vide'     => 'Vide (fermé)',
+	'2rubrique' => '<span class="now">Saisies Profs</span>',
+	'3synthese' => '<span class="now">Saisie Synthèse</span>',
+	'4complet'  => 'Complet (fermé)'
+);
+
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+// Récupération et traitement des données postées, si formulaire soumis
+// Pas de passage par la page ajax.php => protection contre attaques type CSRF ajoutée ici
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+if( ($affichage_formulaire_statut) && ($_SESSION['SESAMATH_ID']!=ID_DEMO) )
+{
+	$tab_ids  = (isset($_POST['listing_ids'])) ? explode(',',$_POST['listing_ids']) : array() ;
+	$new_etat = (isset($_POST['etat']))        ? Clean::texte($_POST['etat'])        : '' ;
+	if( count($tab_ids) && isset($tab_etats[$new_etat]) )
+	{
+		verifier_jeton_anti_CSRF($PAGE);
+		$champ = 'officiel_'.$BILAN_TYPE;
+		$new_etat = ($new_etat!='x') ? $new_etat : '' ;
+		foreach($tab_ids as $ids)
+		{
+			list( $classe_id , $periode_id ) = explode('p',substr($ids,1));
+			if( (int)$classe_id && (int)$periode_id )
+			{
+				DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_bilan_officiel($classe_id,$periode_id,$champ,$new_etat);
+			}
+		}
+	}
+}
 
 ?>
 
@@ -111,48 +178,10 @@ $affichage_formulaire_statut =
 <hr />
 
 <?php
-$tab_etats = array
-(
-	'0absence'  => 'indéfini',
-	'1vide'     => 'Vide (fermé)',
-	'2rubrique' => '<span class="now">Saisies Profs</span>',
-	'3synthese' => '<span class="now">Saisie Synthèse</span>',
-	'4complet'  => 'Complet (fermé)'
-);
-
-// Préparation du tableau avec les cellules à afficher
-$tab_affich = array(); // [classe_id_groupe_id][periode_id] (ligne colonne) ; les indices [check] sont ceux des checkbox multiples ; les indices [title] sont ceux des intitulés
-$tab_affich['check']['check'] = ($affichage_formulaire_statut) ? '<td class="nu"><input name="leurre" type="image" alt="leurre" src="./_img/auto.gif" /></td>' : '' ;
-$tab_affich['check']['title'] = ($affichage_formulaire_statut) ? '<td class="nu"></td>' : '' ;
-$tab_affich['title']['check'] = ($affichage_formulaire_statut) ? '<td class="nu"></td>' : '' ;
-$tab_affich['title']['title'] = '<td class="nu"></td>' ;
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-//	Récupération et traitement des données postées, si formulaire soumis
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-if( ($affichage_formulaire_statut) && ($_SESSION['SESAMATH_ID']!=ID_DEMO) )
-{
-	$tab_ids  = (isset($_POST['listing_ids'])) ? explode(',',$_POST['listing_ids']) : array() ;
-	$new_etat = (isset($_POST['etat']))        ? Clean::texte($_POST['etat'])        : '' ;
-	if( count($tab_ids) && isset($tab_etats[$new_etat]) )
-	{
-		$champ = 'officiel_'.$BILAN_TYPE;
-		$new_etat = ($new_etat!='x') ? $new_etat : '' ;
-		foreach($tab_ids as $ids)
-		{
-			list( $classe_id , $periode_id ) = explode('p',substr($ids,1));
-			if( (int)$classe_id && (int)$periode_id )
-			{
-				DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_bilan_officiel($classe_id,$periode_id,$champ,$new_etat);
-			}
-		}
-	}
-}
-
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-//	Récupération de la liste des classes de l'établissement.
-//	Utile pour les profils administrateurs / directeurs, et requis concernant les professeurs pour une recherche s'il est affecté à des groupes.
+// Récupération de la liste des classes de l'établissement.
+// Utile pour les profils administrateurs / directeurs, et requis concernant les professeurs pour une recherche s'il est affecté à des groupes.
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 $DB_TAB = DB_STRUCTURE_COMMUN::DB_lister_classes_etabl_for_bilan_officiel();
@@ -164,13 +193,13 @@ foreach($DB_TAB as $DB_ROW)
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-//	Récupérer la liste des classes accessibles à l'utilisateur.
-//	Indiquer celles potentiellement accessibles à l'utilisateur pour l'appréciation générale.
-//	Indiquer celles potentiellement accessibles à l'utilisateur pour l'impression PDF.
+// Récupérer la liste des classes accessibles à l'utilisateur.
+// Indiquer celles potentiellement accessibles à l'utilisateur pour l'appréciation générale.
+// Indiquer celles potentiellement accessibles à l'utilisateur pour l'impression PDF.
 //
-//	Pour les administrateurs et les directeurs, ce sont les classes de l'établissement.
-//	Mais attention, les bilans ne sont définis que sur les classes, pas sur des groupes (car il ne peut y avoir qu'un type de bilan par élève / période).
-//	Alors quand les professeurs sont associés à des groupes, il faut chercher de quelle(s) classe(s) proviennent les élèves et proposer autant de choix partiels... sur ces classes
+// Pour les administrateurs et les directeurs, ce sont les classes de l'établissement.
+// Mais attention, les bilans ne sont définis que sur les classes, pas sur des groupes (car il ne peut y avoir qu'un type de bilan par élève / période).
+// Alors quand les professeurs sont associés à des groupes, il faut chercher de quelle(s) classe(s) proviennent les élèves et proposer autant de choix partiels... sur ces classes
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 $tab_classe = array(); // tableau important avec les droits [classe_id][0|groupe_id]
@@ -178,6 +207,13 @@ $tab_groupe = array(); // tableau temporaire avec les noms des groupes du prof
 $tab_options_classes = array(); // Pour un futur formulaire select
 
 $droit_voir_archives_pdf = (strpos($_SESSION['DROIT_OFFICIEL_'.$tab_types[$BILAN_TYPE]['droit'].'_VOIR_ARCHIVE'],'professeur')!==FALSE) ? TRUE : FALSE ;
+
+// Préparation du tableau avec les cellules à afficher
+$tab_affich = array(); // [classe_id_groupe_id][periode_id] (ligne colonne) ; les indices [check] sont ceux des checkbox multiples ; les indices [title] sont ceux des intitulés
+$tab_affich['check']['check'] = ($affichage_formulaire_statut) ? '<td class="nu"><input name="leurre" type="image" alt="leurre" src="./_img/auto.gif" /></td>' : '' ;
+$tab_affich['check']['title'] = ($affichage_formulaire_statut) ? '<td class="nu"></td>' : '' ;
+$tab_affich['title']['check'] = ($affichage_formulaire_statut) ? '<td class="nu"></td>' : '' ;
+$tab_affich['title']['title'] = '<td class="nu"></td>' ;
 
 if($_SESSION['USER_PROFIL']!='professeur') // administrateur | directeur
 {
@@ -243,12 +279,12 @@ if(count($tab_classe))
 {
 
 	// ////////////////////////////////////////////////////////////////////////////////////////////////////
-	//	Récupérer la liste des périodes, dans l'ordre choisi par l'admin.
-	//	Initialiser au passages les cellules du tableau à afficher
+	// Récupérer la liste des périodes, dans l'ordre choisi par l'admin.
+	// Initialiser au passages les cellules du tableau à afficher
 	// ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	$DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_periodes();
-	if(count($DB_TAB))
+	if(!empty($DB_TAB))
 	{
 		$tab_ligne_id = array_keys($tab_affich);
 		unset($tab_ligne_id[0],$tab_ligne_id[1]);
@@ -264,8 +300,8 @@ if(count($tab_classe))
 		}
 
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
-		//	Récupérer la liste des jointures classes / périodes.
-		//	Pour les groupes, on prend les dates de classes dont les élèves sont issus.
+		// Récupérer la liste des jointures classes / périodes.
+		// Pour les groupes, on prend les dates de classes dont les élèves sont issus.
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		$tab_js_disabled = '';
@@ -405,13 +441,13 @@ if(count($tab_classe))
 		}
 
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
-		//	Affichage d'un tableau js utilisé pour désactiver des options d'un select.
+		// Affichage d'un tableau js utilisé pour désactiver des options d'un select.
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		echo'<script type="text/javascript">var tab_disabled = new Array();tab_disabled["examiner"] = new Array();tab_disabled["imprimer"] = new Array();'.$tab_js_disabled.'</script>';
 
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
-		//	Affichage du tableau.
+		// Affichage du tableau.
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		echo'<table id="table_bilans"><thead>';
@@ -423,7 +459,7 @@ if(count($tab_classe))
 		echo'</tbody></table>';
 
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
-		//	Affichage du formulaire pour modifier les états d'accès.
+		// Affichage du formulaire pour modifier les états d'accès.
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		if($affichage_formulaire_statut)
@@ -436,7 +472,7 @@ if(count($tab_classe))
 			echo'
 				<form action="#" method="post" id="form_gestion">
 					<hr />
-					<p><span class="tab"></span><span class="u">Pour les cases cochées du tableau (classes uniquement) :</span><input id="listing_ids" name="listing_ids" type="hidden" value="" /></p>
+					<p><span class="tab"></span><span class="u">Pour les cases cochées du tableau (classes uniquement) :</span><input id="listing_ids" name="listing_ids" type="hidden" value="" /><input id="csrf" name="csrf" type="hidden" value="" /></p>
 					<div><label class="tab">Accès / Statut :</label>'.implode('<br /><span class="tab"></span>',$tab_radio).'</div>
 					<p><span class="tab"></span><button id="bouton_valider" type="button" class="valider">Valider</button><label id="ajax_msg_gestion">&nbsp;</label></p>
 				</form>
@@ -444,8 +480,8 @@ if(count($tab_classe))
 		}
 
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
-		//	Formulaire de choix des matières ou des piliers pour une recherche de saisies manquantes. -> zone_chx_rubriques
-		//	Paramètres supplémentaires envoyés pour éviter d'avoir à les retrouver à chaque fois. -> form_hidden
+		// Formulaire de choix des matières ou des piliers pour une recherche de saisies manquantes. -> zone_chx_rubriques
+		// Paramètres supplémentaires envoyés pour éviter d'avoir à les retrouver à chaque fois. -> form_hidden
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		$form_hidden = '';
@@ -505,7 +541,7 @@ if(count($tab_classe))
 		echo'<form action="#" method="post" id="form_hidden" class="hide"><div>'.$form_hidden.'<input type="hidden" id="f_objet" name="f_objet" value="" /><input type="hidden" id="f_listing_rubriques" name="f_listing_rubriques" value="" /><input type="hidden" id="f_listing_eleves" name="f_listing_eleves" value="" /><input type="hidden" id="f_mode" name="f_mode" value="texte" /></div></form>';
 
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
-		//	Formulaires utilisés pour les opérations ultérieures sur les bilans.
+		// Formulaires utilisés pour les opérations ultérieures sur les bilans.
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		echo'<div id="zone_action_eleve"></div>';
@@ -557,7 +593,7 @@ if(count($tab_classe))
 		';
 
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
-		//	Formulaire pour signaler une erreur dans une appréciation.
+		// Formulaire pour signaler une erreur dans une appréciation.
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		$date_plus3jours = date("d/m/Y",mktime(0,0,0,date("m"),date("d")+3,date("Y")));
@@ -569,7 +605,7 @@ if(count($tab_classe))
 					<input type="hidden" value="'.TODAY_FR.'" name="f_debut_date" id="f_debut_date" />
 					<input type="hidden" value="'.$date_plus3jours.'" name="f_fin_date" id="f_fin_date" />
 					<input type="hidden" value="" name="f_destinataires_liste" id="f_destinataires_liste" />
-					<input type="hidden" value="ajouter" name="f_action" id="f_action" />
+					<input type="hidden" value="signaler_erreur" name="f_action" id="f_action" />
 					<label for="f_message_contenu" class="tab">Contenu du message :</label><textarea name="f_message_contenu" id="f_message_contenu" rows="5" cols="75"></textarea><br />
 					<span class="tab"></span><label id="f_message_contenu_reste"></label><br />
 					<span class="tab"></span><button id="valider_signaler" type="button" class="valider">Valider</button>&nbsp;&nbsp;&nbsp;<button id="annuler_signaler" type="button" class="annuler">Annuler / Retour</button><label id="ajax_msg_signaler">&nbsp;</label>

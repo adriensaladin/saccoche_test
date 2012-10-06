@@ -48,7 +48,7 @@ $TITRE = "Gérer les administrateurs";
 			<?php
 			// Lister les administrateurs
 			$DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_users( 'administrateur' , 1 /*only_actuels*/ , FALSE /*with_classe*/ );
-			if(count($DB_TAB))
+			if(!empty($DB_TAB))
 			{
 				foreach($DB_TAB as $DB_ROW)
 				{

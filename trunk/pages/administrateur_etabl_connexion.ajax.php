@@ -38,7 +38,7 @@ $gepi_saml_rne    = (isset($_POST['gepi_saml_rne']))    ? Clean::uai($_POST['gep
 $gepi_saml_certif = (isset($_POST['gepi_saml_certif'])) ? Clean::texte($_POST['gepi_saml_certif'])  : '';
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-//	Mode de connexion (normal, SSO...)
+// Mode de connexion (normal, SSO...)
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 require(CHEMIN_DOSSIER_INCLUDE.'tableau_sso.php');

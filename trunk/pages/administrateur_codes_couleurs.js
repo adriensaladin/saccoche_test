@@ -31,7 +31,7 @@ $(document).ready
 	{
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-//	Reporter dans les input equiv_txt les valeurs préféfinies lors du clic sur un bouton radio (jeu de symboles colorés).
+// Reporter dans les input equiv_txt les valeurs préféfinies lors du clic sur un bouton radio (jeu de symboles colorés).
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		$('table.simulation input[type=radio]').click
@@ -47,7 +47,7 @@ $(document).ready
 		);
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-//	Activation du colorpicker pour les 3 champs input.
+// Activation du colorpicker pour les 3 champs input.
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		var f = $.farbtastic('#colorpicker');
@@ -61,7 +61,7 @@ $(document).ready
 		);
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-//	Reporter dans un input colorpicker une valeur préféfinie lors du clic sur un bouton (couleur de fond).
+// Reporter dans un input colorpicker une valeur préféfinie lors du clic sur un bouton (couleur de fond).
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		$('div.colorpicker button').click
@@ -73,8 +73,8 @@ $(document).ready
 		);
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-//	Affecter aux div la même couleur de fond que celle du input.
-//	Utilisation d'un test en boucle car un simple test change() ne fonctionne pas.
+// Affecter aux div la même couleur de fond que celle du input.
+// Utilisation d'un test en boucle car un simple test change() ne fonctionne pas.
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		function reporter_couleur()
@@ -142,7 +142,7 @@ $(document).ready
 		// Options d'envoi du formulaire (avec jquery.form.js)
 		var ajaxOptions1 =
 		{
-			url : 'ajax.php?page='+PAGE,
+			url : 'ajax.php?page='+PAGE+'&csrf='+CSRF,
 			type : 'POST',
 			dataType : "html",
 			clearForm : false,
@@ -246,7 +246,7 @@ $(document).ready
 		// Options d'envoi du formulaire (avec jquery.form.js)
 		var ajaxOptions2 =
 		{
-			url : 'ajax.php?page='+PAGE,
+			url : 'ajax.php?page='+PAGE+'&csrf='+CSRF,
 			type : 'POST',
 			dataType : "html",
 			clearForm : false,

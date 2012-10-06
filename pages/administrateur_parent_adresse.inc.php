@@ -46,7 +46,7 @@ if(!isset($afficher))   {exit('Ce fichier ne peut être appelé directement !');
 			<?php
 			// Lister les parents
 			$DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_parents_avec_infos_enfants( TRUE /*with_adresse*/ , TRUE /*statut*/ , $debut_nom , $debut_prenom );
-			if(count($DB_TAB))
+			if(!empty($DB_TAB))
 			{
 				foreach($DB_TAB as $DB_ROW)
 				{

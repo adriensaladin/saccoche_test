@@ -43,7 +43,7 @@ public static function DB_recuperer_statistiques()
 {
 	// La révision du 30 mars 2012 a fusionné les champs "user_statut" et "user_statut_date" en "user_sortie_date".
 	$DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , 'SHOW COLUMNS FROM sacoche_user LIKE "user_sortie_date"' , NULL);
-	$test_sortie = (count($DB_TAB)) ? 'user_sortie_date>NOW()' : 'user_statut=1' ;
+	$test_sortie = (!empty($DB_TAB)) ? 'user_sortie_date>NOW()' : 'user_statut=1' ;
 	// nb professeurs enregistrés ; nb élèves enregistrés
 	$DB_SQL = 'SELECT user_profil, COUNT(*) AS nombre ';
 	$DB_SQL.= 'FROM sacoche_user ';

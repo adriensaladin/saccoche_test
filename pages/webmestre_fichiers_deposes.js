@@ -31,7 +31,7 @@ $(document).ready
 	{
 
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
-		//	Réagir si formulaire modifié
+		// Réagir si formulaire modifié
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		$('select').change
@@ -43,7 +43,7 @@ $(document).ready
 		);
 
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
-		//	Soumettre le formulaire principal => Enregistrer des nouveaux réglages
+		// Soumettre le formulaire principal => Enregistrer des nouveaux réglages
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		// Le formulaire qui va être analysé et traité en AJAX
@@ -73,7 +73,7 @@ $(document).ready
 		// Options d'envoi du formulaire (avec jquery.form.js)
 		var ajaxOptions =
 		{
-			url : 'ajax.php?page='+PAGE,
+			url : 'ajax.php?page='+PAGE+'&csrf='+CSRF,
 			type : 'POST',
 			dataType : "html",
 			clearForm : false,

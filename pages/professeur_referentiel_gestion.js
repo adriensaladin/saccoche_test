@@ -42,7 +42,7 @@ $(document).ready
 		select_limite += '</select>';
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-//	Changement de méthode -> desactiver les limites autorisées suivant les cas
+// Changement de méthode -> desactiver les limites autorisées suivant les cas
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		// Tableaux utilisés pour savoir quelles options desactiver
@@ -91,7 +91,7 @@ $(document).ready
 		$('#f_methode').live('change', actualiser_select_limite );
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-//	Changement de nb de demandes autorisées pour une matière -> soumission
+// Changement de nb de demandes autorisées pour une matière -> soumission
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		$('select[name=f_eleve_demandes]').change
@@ -107,7 +107,7 @@ $(document).ready
 					{
 						type : 'POST',
 						url : 'ajax.php?page='+PAGE,
-						data : 'action=NbDemandes&matiere_id='+matiere_id+'&nb_demandes='+nb_demandes,
+						data : 'csrf='+CSRF+'&action=NbDemandes'+'&matiere_id='+matiere_id+'&nb_demandes='+nb_demandes,
 						dataType : "html",
 						error : function(jqXHR, textStatus, errorThrown)
 						{
@@ -132,7 +132,7 @@ $(document).ready
 		);
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-//	Clic sur l'image pour Voir un référentiel de son établissement
+// Clic sur l'image pour Voir un référentiel de son établissement
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		$('table.vm_nug q.voir').live // live est utilisé pour prendre en compte les nouveaux éléments créés
@@ -148,7 +148,7 @@ $(document).ready
 					{
 						type : 'POST',
 						url : 'ajax.php?page='+PAGE,
-						data : 'action=Voir&ids='+ids,
+						data : 'csrf='+CSRF+'&action=Voir'+'&ids='+ids,
 						dataType : "html",
 						error : function(jqXHR, textStatus, errorThrown)
 						{
@@ -177,7 +177,7 @@ $(document).ready
 		);
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-//	Clic sur l'image pour Modifier le partage d'un référentiel
+// Clic sur l'image pour Modifier le partage d'un référentiel
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		$('q.partager').live // live est utilisé pour prendre en compte les nouveaux éléments créés
@@ -195,7 +195,7 @@ $(document).ready
 		);
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-//	Clic sur l'image pour Mettre à jour sur le serveur de partage la dernière version d'un référentiel
+// Clic sur l'image pour Mettre à jour sur le serveur de partage la dernière version d'un référentiel
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		$('q.envoyer').live // live est utilisé pour prendre en compte les nouveaux éléments créés
@@ -211,7 +211,7 @@ $(document).ready
 					{
 						type : 'POST',
 						url : 'ajax.php?page='+PAGE,
-						data : 'action=Envoyer&ids='+ids,
+						data : 'csrf='+CSRF+'&action=Envoyer'+'&ids='+ids,
 						dataType : "html",
 						error : function(jqXHR, textStatus, errorThrown)
 						{
@@ -241,7 +241,7 @@ $(document).ready
 		);
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-//	Clic sur l'image pour Modifier le mode de calcul d'un référentiel
+// Clic sur l'image pour Modifier le mode de calcul d'un référentiel
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		$('q.calculer').live // live est utilisé pour prendre en compte les nouveaux éléments créés
@@ -261,7 +261,7 @@ $(document).ready
 		);
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-//	Clic sur l'image pour Retirer un référentiel
+// Clic sur l'image pour Retirer un référentiel
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		$('q.supprimer').live // live est utilisé pour prendre en compte les nouveaux éléments créés
@@ -276,7 +276,7 @@ $(document).ready
 		);
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-//	Clic sur l'image pour Valider la modification du partage d'un référentiel
+// Clic sur l'image pour Valider la modification du partage d'un référentiel
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		$('q.valider[lang=partager]').live // live est utilisé pour prendre en compte les nouveaux éléments créés
@@ -291,7 +291,7 @@ $(document).ready
 					{
 						type : 'POST',
 						url : 'ajax.php?page='+PAGE,
-						data : 'action=Partager&ids='+ids+'&partage='+partage,
+						data : 'csrf='+CSRF+'&action=Partager'+'&ids='+ids+'&partage='+partage,
 						dataType : "html",
 						error : function(jqXHR, textStatus, errorThrown)
 						{
@@ -329,7 +329,7 @@ $(document).ready
 		);
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-//	Clic sur l'image pour Valider la modification du mode de calcul d'un référentiel
+// Clic sur l'image pour Valider la modification du mode de calcul d'un référentiel
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		$('q.valider[lang=calculer]').live // live est utilisé pour prendre en compte les nouveaux éléments créés
@@ -345,7 +345,7 @@ $(document).ready
 					{
 						type : 'POST',
 						url : 'ajax.php?page='+PAGE,
-						data : 'action=Calculer&ids='+ids+'&methode='+methode+'&limite='+limite,
+						data : 'csrf='+CSRF+'&action=Calculer'+'&ids='+ids+'&methode='+methode+'&limite='+limite,
 						dataType : "html",
 						error : function(jqXHR, textStatus, errorThrown)
 						{
@@ -376,7 +376,7 @@ $(document).ready
 		);
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-//	Clic sur l'image pour Valider la suppression d'un référentiel
+// Clic sur l'image pour Valider la suppression d'un référentiel
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		$('q.valider[lang=retirer]').live // live est utilisé pour prendre en compte les nouveaux éléments créés
@@ -392,7 +392,7 @@ $(document).ready
 					{
 						type : 'POST',
 						url : 'ajax.php?page='+PAGE,
-						data : 'action=Retirer&ids='+ids+'&partage='+partage,
+						data : 'csrf='+CSRF+'&action=Retirer'+'&ids='+ids+'&partage='+partage,
 						dataType : "html",
 						error : function(jqXHR, textStatus, errorThrown)
 						{
@@ -422,7 +422,7 @@ $(document).ready
 		);
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-//	Clic sur l'image pour Ajouter un référentiel => affichage de choisir_referentiel même dans le cas d'une matière spécifique à l'établissement
+// Clic sur l'image pour Ajouter un référentiel => affichage de choisir_referentiel même dans le cas d'une matière spécifique à l'établissement
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		$('q.ajouter').live // live est utilisé pour prendre en compte les nouveaux éléments créés
@@ -464,7 +464,7 @@ $(document).ready
 		);
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-//	Clic sur le bouton pour Annuler le choix d'un référentiel
+// Clic sur le bouton pour Annuler le choix d'un référentiel
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		$('#choisir_annuler').click
@@ -480,7 +480,7 @@ $(document).ready
 		);
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-//	Charger le formulaire listant les structures ayant partagées un référentiel (appel au serveur communautaire)
+// Charger le formulaire listant les structures ayant partagées un référentiel (appel au serveur communautaire)
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		var charger_formulaire_structures = function()
@@ -492,7 +492,7 @@ $(document).ready
 				{
 					type : 'POST',
 					url : 'ajax.php?page='+PAGE,
-					data : 'action=Afficher_structures',
+					data : 'csrf='+CSRF+'&action=Afficher_structures',
 					dataType : "html",
 					error : function(jqXHR, textStatus, errorThrown)
 					{
@@ -521,7 +521,7 @@ $(document).ready
 		$('#charger_formulaire_structures').live(  'click' , charger_formulaire_structures );
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-//	Clic sur le bouton pour Afficher le formulaire de recherche sur le serveur communautaire
+// Clic sur le bouton pour Afficher le formulaire de recherche sur le serveur communautaire
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		$('#choisir_rechercher').click
@@ -549,7 +549,7 @@ $(document).ready
 		);
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-//	Charger le select f_matiere en ajax
+// Charger le select f_matiere en ajax
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		function maj_matiere(matiere_famille_id)
@@ -599,7 +599,7 @@ $(document).ready
 		);
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-//	Charger le select f_niveau en ajax
+// Charger le select f_niveau en ajax
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		function maj_niveau(niveau_famille_id)
@@ -649,7 +649,7 @@ $(document).ready
 		);
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-//	Réagir au changement dans un select
+// Réagir au changement dans un select
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		$('#choisir_referentiel_communautaire select').change
@@ -663,7 +663,7 @@ $(document).ready
 		);
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-//	Clic sur le bouton pour chercher des référentiels partagés sur d'autres niveaux ou matières
+// Clic sur le bouton pour chercher des référentiels partagés sur d'autres niveaux ou matières
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		$('#rechercher').click
@@ -685,7 +685,7 @@ $(document).ready
 					{
 						type : 'POST',
 						url : 'ajax.php?page='+PAGE,
-						data : 'action=Lister_referentiels&matiere_id='+matiere_id+'&niveau_id='+niveau_id+'&structure_id='+structure_id,
+						data : 'csrf='+CSRF+'&action=Lister_referentiels'+'&matiere_id='+matiere_id+'&niveau_id='+niveau_id+'&structure_id='+structure_id,
 						dataType : "html",
 						error : function(jqXHR, textStatus, errorThrown)
 						{
@@ -717,7 +717,7 @@ $(document).ready
 		);
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-//	Clic sur une image pour choisir un référentiel donné
+// Clic sur une image pour choisir un référentiel donné
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		$('#choisir_referentiel_communautaire q.valider').live // live est utilisé pour prendre en compte les nouveaux éléments créés
@@ -735,7 +735,7 @@ $(document).ready
 		);
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-//	Clic sur l'image pour Voir le détail d'un référentiel partagé
+// Clic sur l'image pour Voir le détail d'un référentiel partagé
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		$('#choisir_referentiel_communautaire q.voir').live // live est utilisé pour prendre en compte les nouveaux éléments créés
@@ -753,7 +753,7 @@ $(document).ready
 					{
 						type : 'POST',
 						url : 'ajax.php?page='+PAGE,
-						data : 'action=Voir_referentiel&referentiel_id='+referentiel_id,
+						data : 'csrf='+CSRF+'&action=Voir_referentiel'+'&referentiel_id='+referentiel_id,
 						dataType : "html",
 						error : function(jqXHR, textStatus, errorThrown)
 						{
@@ -780,7 +780,7 @@ $(document).ready
 		);
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-//	Clic sur le bouton pour Annuler la recherche sur le serveur communautaire
+// Clic sur le bouton pour Annuler la recherche sur le serveur communautaire
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		$('#rechercher_annuler').click
@@ -795,7 +795,7 @@ $(document).ready
 		);
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-//	Clic sur un bouton pour Valider le choix d'un referentiel (vierge ou issu du serveur communautaire)
+// Clic sur un bouton pour Valider le choix d'un referentiel (vierge ou issu du serveur communautaire)
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		$('#choisir_initialiser , #choisir_importer').click
@@ -819,7 +819,7 @@ $(document).ready
 					{
 						type : 'POST',
 						url : 'ajax.php?page='+PAGE,
-						data : 'action=Ajouter&ids=ids_'+matiere_id+'_'+niveau_id+'_'+matiere_perso+'&referentiel_id='+referentiel_id,
+						data : 'csrf='+CSRF+'&action=Ajouter'+'&ids=ids_'+matiere_id+'_'+niveau_id+'_'+matiere_perso+'&referentiel_id='+referentiel_id,
 						dataType : "html",
 						error : function(jqXHR, textStatus, errorThrown)
 						{
@@ -878,7 +878,7 @@ $(document).ready
 		);
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-//	Clic sur l'image pour Annuler la suppression ou la modification du partage ou la modification du mode de calcul d'un référentiel
+// Clic sur l'image pour Annuler la suppression ou la modification du partage ou la modification du mode de calcul d'un référentiel
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		$('q.annuler').live // live est utilisé pour prendre en compte les nouveaux éléments créés

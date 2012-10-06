@@ -451,7 +451,7 @@ public static function DB_tester_prof_principal($user_id)
 	$DB_SQL.= 'WHERE user_id=:user_id AND jointure_pp=:pp ';
 	$DB_SQL.= 'LIMIT 1'; // utile
 	$DB_VAR = array(':user_id'=>$user_id,':pp'=>1);
-	return DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+	return (int)DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
 /**
@@ -469,7 +469,7 @@ public static function DB_tester_groupe_nom($groupe_nom,$groupe_id=FALSE)
 	$DB_SQL.= ($groupe_id) ? 'AND groupe_id!=:groupe_id ' : '' ;
 	$DB_SQL.= 'LIMIT 1'; // utile
 	$DB_VAR = array(':groupe_type'=>'besoin',':groupe_nom'=>$groupe_nom,':groupe_id'=>$groupe_id);
-	return DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+	return (int)DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
 /**
@@ -488,7 +488,7 @@ public static function DB_tester_selection_items_nom($user_id,$selection_item_no
 	$DB_SQL.= ($selection_item_id) ? 'AND selection_item_id!=:selection_item_id ' : '' ;
 	$DB_SQL.= 'LIMIT 1'; // utile
 	$DB_VAR = array(':user_id'=>$user_id,':selection_item_nom'=>$selection_item_nom,':selection_item_id'=>$selection_item_id);
-	return DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+	return (int)DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
 /**
@@ -726,7 +726,7 @@ public static function DB_modifier_liaison_devoir_item($devoir_id,$tab_items,$mo
 			$DB_SQL.= 'WHERE devoir_id=:devoir_id AND jointure_ordre>0 ';
 			$DB_VAR = array(':devoir_id'=>$devoir_ordonne_id);
 			$DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-			if(count($DB_TAB))
+			if(!empty($DB_TAB))
 			{
 				foreach($DB_TAB as $DB_ROW)
 				{

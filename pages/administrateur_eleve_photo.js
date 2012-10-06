@@ -62,7 +62,7 @@ $(document).ready
 				{
 					type : 'POST',
 					url : 'ajax.php?page='+PAGE+'&f_action=afficher',
-					data : 'f_groupe_id='+groupe_id+'&f_groupe_type='+groupe_type,
+					data : 'csrf='+CSRF+'&f_groupe_id='+groupe_id+'&f_groupe_type='+groupe_type,
 					dataType : "html",
 					error : function(jqXHR, textStatus, errorThrown)
 					{
@@ -263,7 +263,7 @@ $(document).ready
 					{
 						type : 'POST',
 						url : 'ajax.php?page='+PAGE+'&f_action=supprimer_photo',
-						data : 'f_user_id='+user_id,
+						data : 'csrf='+CSRF+'&f_user_id='+user_id,
 						dataType : "html",
 						error : function(jqXHR, textStatus, errorThrown)
 						{

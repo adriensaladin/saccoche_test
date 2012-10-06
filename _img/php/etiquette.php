@@ -79,7 +79,9 @@ if(!file_exists($fichier))
 	$interligne     = $font_size*1.2;
 	$hauteur_tmp    = $font_size*2*$br_line;
 	$largeur_tmp    = $font_size*40;
-	$image_tmp      = function_exists('imagecreatetruecolor') ? imagecreatetruecolor($largeur_tmp,$hauteur_tmp) : imagecreate($largeur_tmp,$hauteur_tmp) ;
+	// imagecreatetruecolor() n'est pas utilisé ici sinon imagecopy() utilisé ensuite peut faire apparaitre une bande noire...
+	// $image_tmp      = function_exists('imagecreatetruecolor') ? imagecreatetruecolor($largeur_tmp,$hauteur_tmp) : imagecreate($largeur_tmp,$hauteur_tmp) ;
+	$image_tmp      = imagecreate($largeur_tmp,$hauteur_tmp) ;
 	$couleur_fond   = imagecolorallocate($image_tmp,221,221,255); // Le premier appel à imagecolorallocate() remplit la couleur de fond si imagecreate().
 	$couleur_fill   = imagefill($image_tmp, 0, 0, $couleur_fond); // Si imagecreatetruecolor(), l'image est noire et il faut la remplir explicitement.
 	$couleur_texte  = imagecolorallocate($image_tmp,0,0,0);

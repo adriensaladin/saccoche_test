@@ -43,7 +43,7 @@ if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');
 </style>
 
 <?php
-
+// Pas de passage par la page ajax.php, mais pas besoin ici de protection contre attaques type CSRF
 if(isset($_POST['lancer_test']))
 {
 	define('SACOCHE_STRUCTURE_BD_HOST',SACOCHE_WEBMESTRE_BD_HOST);

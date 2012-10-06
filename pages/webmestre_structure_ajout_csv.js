@@ -100,7 +100,7 @@ $(document).ready
 		}
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-//	Demande d'import du csv => soumission du formulaire
+// Demande d'import du csv => soumission du formulaire
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		$('#bouton_importer').click
@@ -123,7 +123,7 @@ $(document).ready
 		);
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-//	Demande d'import du csv => étapes du traitement
+// Demande d'import du csv => étapes du traitement
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		function importer()
@@ -136,7 +136,7 @@ $(document).ready
 				{
 					type : 'POST',
 					url : 'ajax.php?page='+PAGE,
-					data : 'f_action=' + 'ajouter' + '&num=' + num + '&max=' + max + '&courriel_envoi=' + courriel_envoi,
+					data : 'csrf='+CSRF+'&f_action=ajouter'+'&num='+num+'&max='+max+'&courriel_envoi='+courriel_envoi,
 					dataType : "html",
 					error : function(jqXHR, textStatus, errorThrown)
 					{
@@ -193,7 +193,7 @@ $(document).ready
 		);
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-//	Éléments dynamiques du formulaire
+// Éléments dynamiques du formulaire
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		// Tout cocher ou tout décocher
@@ -215,7 +215,7 @@ $(document).ready
 		);
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-//	Clic sur une cellule (remplace un champ label, impossible à définir sur plusieurs colonnes)
+// Clic sur une cellule (remplace un champ label, impossible à définir sur plusieurs colonnes)
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		$('td.label').live
@@ -227,7 +227,7 @@ $(document).ready
 		);
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-//	Clic sur un bouton pour effectuer une action sur les structures cochées
+// Clic sur un bouton pour effectuer une action sur les structures cochées
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		var supprimer_structures_cochees = function(listing_id)
@@ -240,7 +240,7 @@ $(document).ready
 				{
 					type : 'POST',
 					url : 'ajax.php?page='+PAGE,
-					data : 'f_action=supprimer&f_listing_id='+listing_id,
+					data : 'csrf='+CSRF+'&f_action=supprimer'+'&f_listing_id='+listing_id,
 					dataType : "html",
 					error : function(jqXHR, textStatus, errorThrown)
 					{

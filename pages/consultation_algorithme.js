@@ -31,7 +31,7 @@ $(document).ready
 	{
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-//	Changement de méthode -> desactiver les limites autorisées suivant les cas
+// Changement de méthode -> desactiver les limites autorisées suivant les cas
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 		// Tableaux utilisés pour savoir quelles options desactiver
 		var tableau_limites_autorisees = new Array();
@@ -174,7 +174,7 @@ $(document).ready
 		// Options d'envoi du formulaire (avec jquery.form.js)
 		var ajaxOptions =
 		{
-			url : 'ajax.php?page='+PAGE,
+			url : 'ajax.php?page='+PAGE+'&csrf='+CSRF,
 			type : 'POST',
 			dataType : "html",
 			clearForm : false,

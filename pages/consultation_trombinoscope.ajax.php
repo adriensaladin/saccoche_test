@@ -44,7 +44,7 @@ if( (!$groupe_id) || (!$groupe_nom) || (!isset($tab_types[$groupe_type])) )
 }
 // On récupère les élèves
 $DB_TAB = DB_STRUCTURE_COMMUN::DB_lister_users_regroupement( 'eleve' , TRUE /*statut*/ , $tab_types[$groupe_type] , $groupe_id ) ;
-if(!count($DB_TAB))
+if(empty($DB_TAB))
 {
 	exit('Aucun élève trouvé dans ce regroupement.');
 }
@@ -65,7 +65,7 @@ foreach($DB_TAB as $DB_ROW)
 // On récupère les photos
 $listing_user_id = implode(',',array_keys($tab_vignettes));
 $DB_TAB = DB_STRUCTURE_PHOTO::lister_photos($listing_user_id);
-if(count($DB_TAB))
+if(!empty($DB_TAB))
 {
 	foreach($DB_TAB as $DB_ROW)
 	{

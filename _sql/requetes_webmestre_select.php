@@ -47,7 +47,7 @@ public static function DB_OPT_structures_sacoche()
 	$DB_SQL.= 'LEFT JOIN sacoche_geo USING (geo_id) ';
 	$DB_SQL.= 'ORDER BY geo_ordre ASC, structure_localisation ASC, structure_denomination ASC';
 	$DB_TAB = DB::queryTab(SACOCHE_WEBMESTRE_BD_NAME , $DB_SQL , NULL);
-	if(count($DB_TAB))
+	if(!empty($DB_TAB))
 	{
 		$tab_retour_champs = array();
 		foreach($DB_TAB as $DB_ROW)

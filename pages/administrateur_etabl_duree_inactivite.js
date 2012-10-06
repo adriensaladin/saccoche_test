@@ -39,7 +39,7 @@ $(document).ready
 		);
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-//	Validation du formulaire
+// Validation du formulaire
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 		$('#bouton_valider').click
 		(
@@ -53,7 +53,7 @@ $(document).ready
 					{
 						type : 'POST',
 						url : 'ajax.php?page='+PAGE,
-						data : 'f_delai='+delai,
+						data : 'csrf='+CSRF+'&f_delai='+delai,
 						dataType : "html",
 						error : function(jqXHR, textStatus, errorThrown)
 						{

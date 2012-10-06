@@ -29,7 +29,8 @@ if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');
 $TITRE = "Gérer les professeurs";
 
 // Récupérer d'éventuels paramètres pour restreindre l'affichage
-$statut       = (isset($_POST['f_statut']))       ? Clean::entier($_POST['f_statut'])       : 1  ;
+// Pas de passage par la page ajax.php, mais pas besoin ici de protection contre attaques type CSRF
+$statut = (isset($_POST['f_statut'])) ? Clean::entier($_POST['f_statut']) : 1 ;
 // Construire et personnaliser le formulaire pour restreindre l'affichage
 $select_f_statuts = Form::afficher_select(Form::$tab_select_statut , $select_nom='f_statut' , $option_first='non' , $selection=$statut , $optgroup='non');
 ?>
@@ -62,7 +63,7 @@ $select_f_statuts = Form::afficher_select(Form::$tab_select_statut , $select_nom
 			<?php
 			// Lister les professeurs
 			$DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_users( 'professeur' , $statut , FALSE /*with_classe*/ );
-			if(count($DB_TAB))
+			if(!empty($DB_TAB))
 			{
 				foreach($DB_TAB as $DB_ROW)
 				{

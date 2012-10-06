@@ -44,7 +44,7 @@ $(document).ready
 		trier_tableau();
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-//	Clic sur le checkbox pour choisir ou non une date visible différente de la date du devoir
+// Clic sur le checkbox pour choisir ou non une date visible différente de la date du devoir
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
@@ -121,10 +121,10 @@ $(document).ready
 		);
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-//	Traitement du premier formulaire pour afficher le tableau avec la liste des demandes
+// Traitement du premier formulaire pour afficher le tableau avec la liste des demandes
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-		//	Afficher masquer des options du formulaire
+		// Afficher masquer des options du formulaire
 
 		$('#f_periode').change
 		(
@@ -172,7 +172,7 @@ $(document).ready
 		// Options d'envoi du formulaire (avec jquery.form.js)
 		var ajaxOptions0 =
 		{
-			url : 'ajax.php?page='+PAGE,
+			url : 'ajax.php?page='+PAGE+'&csrf='+CSRF,
 			type : 'POST',
 			dataType : "html",
 			clearForm : false,
@@ -248,7 +248,7 @@ $(document).ready
 		}
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-//	Clic sur une cellule (remplace un champ label, impossible à définir sur plusieurs colonnes)
+// Clic sur une cellule (remplace un champ label, impossible à définir sur plusieurs colonnes)
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 		$('td.label').live
 		('click',
@@ -259,7 +259,7 @@ $(document).ready
 		);
 
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
-		//	Charger le select f_devoir en ajax
+		// Charger le select f_devoir en ajax
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		function maj_evaluation()
@@ -298,7 +298,7 @@ $(document).ready
 		}
 
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
-		//	Éléments dynamiques du formulaire
+		// Éléments dynamiques du formulaire
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		// Tout cocher ou tout décocher
@@ -362,7 +362,7 @@ $(document).ready
 			}
 		);
 
-		//	Charger le select "f_devoir" en ajax si "f_qui" change et que "f_quoi" est à "completer"
+		// Charger le select "f_devoir" en ajax si "f_qui" change et que "f_quoi" est à "completer"
 		$('#f_qui').change
 		(
 			function()
@@ -382,7 +382,7 @@ $(document).ready
 			}
 		);
 
-		//	Indiquer le nombre de caractères restant autorisés dans le textarea
+		// Indiquer le nombre de caractères restant autorisés dans le textarea
 		$('#f_message').keyup
 		(
 			function()
@@ -392,7 +392,7 @@ $(document).ready
 		);
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-//	Traitement du formulaire principal
+// Traitement du formulaire principal
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		// Le formulaire qui va être analysé et traité en AJAX
@@ -446,7 +446,7 @@ $(document).ready
 		// Options d'envoi du formulaire (avec jquery.form.js)
 		var ajaxOptions =
 		{
-			url : 'ajax.php?page='+PAGE,
+			url : 'ajax.php?page='+PAGE+'&csrf='+CSRF,
 			type : 'POST',
 			dataType : "html",
 			clearForm : false,

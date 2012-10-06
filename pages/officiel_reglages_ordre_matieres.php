@@ -37,7 +37,7 @@ $TITRE = "Ordre d'affichage des matières";
 	<?php
 	// liste des matières
 	$DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_matieres_etablissement( FALSE /*order_by_name*/ );
-	if(!count($DB_TAB))
+	if(empty($DB_TAB))
 	{
 		echo'<p class="danger">Aucune matière enregistrée ou associée à l\'établissement !</p>'; // impossible vu qu'il y a au moins la matière transversale...
 	}

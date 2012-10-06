@@ -57,7 +57,7 @@ if(!isset($afficher))   {exit('Ce fichier ne peut être appelé directement !');
 				$groupe_type = ($groupe_id==1) ? 'sdf' : 'all' ;
 			}
 			$DB_TAB = DB_STRUCTURE_COMMUN::DB_lister_users_regroupement( 'eleve' /*profil*/ , $statut /*statut*/ , $groupe_type , $groupe_id , 'user_id,user_id_ent,user_id_gepi,user_sconet_id,user_sconet_elenoet,user_reference,user_nom,user_prenom,user_login,user_sortie_date' );
-			if(count($DB_TAB))
+			if(!empty($DB_TAB))
 			{
 				foreach($DB_TAB as $DB_ROW)
 				{

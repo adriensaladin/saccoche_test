@@ -79,7 +79,7 @@ public static function DB_OPT_lister_elements_referentiels_prof( $prof_id , $gra
 	$DB_SQL.= 'ORDER BY matiere_nom ASC, niveau_ordre ASC'.$order_by;
 	$DB_VAR = array(':user_id'=>$prof_id);
 	$DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-	return count($DB_TAB) ? $DB_TAB : 'Aucun élément de référentiel trouvé.' ;
+	return !empty($DB_TAB) ? $DB_TAB : 'Aucun élément de référentiel trouvé.' ;
 }
 
 /**
@@ -141,9 +141,8 @@ public static function DB_tester_referentiel($matiere_id,$niveau_id)
 	$DB_SQL = 'SELECT matiere_id ';
 	$DB_SQL.= 'FROM sacoche_referentiel ';
 	$DB_SQL.= 'WHERE matiere_id=:matiere_id AND niveau_id=:niveau_id ';
-	// LIMIT 1 inutile
 	$DB_VAR = array(':matiere_id'=>$matiere_id,':niveau_id'=>$niveau_id);
-	return DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+	return (int)DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
 /**

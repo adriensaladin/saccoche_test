@@ -27,10 +27,10 @@
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 
-//	Récupérer la liste des périodes, dans l'ordre choisi par l'admin.
+// Récupérer la liste des périodes, dans l'ordre choisi par l'admin.
 
 $DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_periodes();
-if(count($DB_TAB))
+if(!empty($DB_TAB))
 {
 	$tab_thead = ($_SESSION['USER_PROFIL']=='eleve') ? array(0=>'') : array(0=>'<th class="nu"></th>');
 	$tab_tbody = array();
@@ -70,7 +70,7 @@ if(count($DB_TAB))
 		}
 	}
 
-	//	Assemblage et affichage du tableau.
+	// Assemblage et affichage du tableau.
 
 	echo'<p class="astuce">Ces bilans ne sont que des copies partielles, laissées à disposition pour information jusqu\'à la fin de l\'année scolaire.<br /><span class="u">Seul le document original fait foi.</span></p>';
 	echo'<table id="table_bilans"><thead><tr>'.implode('',$tab_thead).'</tr></thead><tbody>'."\r\n";

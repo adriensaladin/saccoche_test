@@ -25,7 +25,7 @@
  */
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-//	Permettre l'utilisation de caractères spéciaux
+// Permettre l'utilisation de caractères spéciaux
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 var tab_entite_nom = new Array('&sup2;','&sup3;','&times;','&divide;','&minus;','&pi;','&rarr;','&radic;','&infin;','&asymp;','&ne;','&le;','&ge;');
@@ -70,7 +70,7 @@ $(document).ready
 		images[4] += '<q class="valider" title="Sélectionner cette ressource"></q>';
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-//	Charger le form zone_elaboration_referentiel en ajax
+// Charger le form zone_elaboration_referentiel en ajax
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		$('#zone_choix_referentiel q.modifier').click
@@ -90,7 +90,7 @@ $(document).ready
 					{
 						type : 'POST',
 						url : 'ajax.php?page='+PAGE,
-						data : 'action=Voir_referentiel&matiere_id='+matiere_id+'&niveau_id='+niveau_id+'&matiere_ref='+matiere_ref,
+						data : 'csrf='+CSRF+'&action=Voir_referentiel'+'&matiere_id='+matiere_id+'&niveau_id='+niveau_id+'&matiere_ref='+matiere_ref,
 						dataType : "html",
 						error : function(jqXHR, textStatus, errorThrown)
 						{
@@ -132,7 +132,7 @@ $(document).ready
 		);
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-//	Clic sur le bouton pour fermer la zone compet
+// Clic sur le bouton pour fermer la zone compet
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		$('#fermer_zone_elaboration_referentiel').live // live est utilisé pour prendre en compte les nouveaux éléments créés
@@ -147,7 +147,7 @@ $(document).ready
 		);
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-//	Clic sur l'image pour voir la page correspondant au lien
+// Clic sur l'image pour voir la page correspondant au lien
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		$('#zone_elaboration_referentiel q.voir').live // live est utilisé pour prendre en compte les nouveaux éléments créés
@@ -171,7 +171,7 @@ $(document).ready
 		);
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-//	Réagir au changement dans un formulaire de lien associé à un item
+// Réagir au changement dans un formulaire de lien associé à un item
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		$('#zone_elaboration_referentiel input').live // live est utilisé pour prendre en compte les nouveaux éléments créés
@@ -184,7 +184,7 @@ $(document).ready
 		);
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-//	Clic sur l'image pour valider la modification du lien associé à un item
+// Clic sur l'image pour valider la modification du lien associé à un item
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		$('#zone_elaboration_referentiel q.valider').live // live est utilisé pour prendre en compte les nouveaux éléments créés
@@ -205,7 +205,7 @@ $(document).ready
 					{
 						type : 'POST',
 						url : 'ajax.php?page='+PAGE,
-						data : 'action=Enregistrer_lien&item_id='+item_id+'&item_lien='+encodeURIComponent(item_lien),
+						data : 'csrf='+CSRF+'&action=Enregistrer_lien'+'&item_id='+item_id+'&item_lien='+encodeURIComponent(item_lien),
 						dataType : "html",
 						error : function(jqXHR, textStatus, errorThrown)
 						{
@@ -234,7 +234,7 @@ $(document).ready
 		);
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-//	Clic sur l'image afin d'élaborer ou d'éditer sur le serveur communautaire une page de liens pour travailler
+// Clic sur l'image afin d'élaborer ou d'éditer sur le serveur communautaire une page de liens pour travailler
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		$('#zone_elaboration_referentiel q.ress_page_elaborer').live // live est utilisé pour prendre en compte les nouveaux éléments créés
@@ -256,7 +256,7 @@ $(document).ready
 					{
 						type : 'POST',
 						url : 'ajax.php?page='+PAGE,
-						data : 'action=Charger_ressources'+'&item_id='+item_id+'&item_lien='+encodeURIComponent(item_lien),
+						data : 'csrf='+CSRF+'&action=Charger_ressources'+'&item_id='+item_id+'&item_lien='+encodeURIComponent(item_lien),
 						dataType : "html",
 						error : function(jqXHR, textStatus, errorThrown)
 						{
@@ -298,7 +298,7 @@ $(document).ready
 		);
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-//	Clic sur le bouton pour Annuler la page de liens pour travailler
+// Clic sur le bouton pour Annuler la page de liens pour travailler
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		$('#choisir_ressources_annuler').click
@@ -313,7 +313,7 @@ $(document).ready
 		);
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-//	Clic sur le bouton pour supprimer un élément d'une page de liens pour travailler
+// Clic sur le bouton pour supprimer un élément d'une page de liens pour travailler
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		$('#sortable q.supprimer').live // live est utilisé pour prendre en compte les nouveaux éléments créés
@@ -332,7 +332,7 @@ $(document).ready
 		);
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-//	Clic sur un bouton pour modifier un élément d'une page de liens pour travailler
+// Clic sur un bouton pour modifier un élément d'une page de liens pour travailler
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		$('#sortable q.modifier').live // live est utilisé pour prendre en compte les nouveaux éléments créés
@@ -359,7 +359,7 @@ $(document).ready
 		);
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-//	Clic sur un bouton pour dupliquer un élément d'une page de liens pour travailler
+// Clic sur un bouton pour dupliquer un élément d'une page de liens pour travailler
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		$('#sortable q.dupliquer').live // live est utilisé pour prendre en compte les nouveaux éléments créés
@@ -386,7 +386,7 @@ $(document).ready
 		);
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-//	Clic sur un bouton pour annuler la modification d'un élément d'une page de liens pour travailler
+// Clic sur un bouton pour annuler la modification d'un élément d'une page de liens pour travailler
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		$('#sortable q.annuler').live // live est utilisé pour prendre en compte les nouveaux éléments créés
@@ -414,7 +414,7 @@ $(document).ready
 		);
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-//	Clic sur un bouton pour valider la modification d'un élément d'une page de liens pour travailler
+// Clic sur un bouton pour valider la modification d'un élément d'une page de liens pour travailler
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		$('#sortable q.valider').live // live est utilisé pour prendre en compte les nouveaux éléments créés
@@ -474,7 +474,7 @@ $(document).ready
 		);
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-//	Clic sur le bouton pour ajouter un sous-titre de paragraphe dans une page de liens pour travailler
+// Clic sur le bouton pour ajouter un sous-titre de paragraphe dans une page de liens pour travailler
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		$('#paragraphe_ajouter').click
@@ -501,7 +501,7 @@ $(document).ready
 		);
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-//	Clic sur le bouton pour ajouter une ressource dans une page de liens pour travailler
+// Clic sur le bouton pour ajouter une ressource dans une page de liens pour travailler
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		$('#lien_ajouter').click
@@ -544,7 +544,7 @@ $(document).ready
 		);
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-//	Clic sur le bouton pour valider et enregistrer le contenu d'une page de liens pour travailler
+// Clic sur le bouton pour valider et enregistrer le contenu d'une page de liens pour travailler
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		$('#choisir_ressources_valider').click
@@ -603,7 +603,7 @@ $(document).ready
 					{
 						type : 'POST',
 						url : 'ajax.php?page='+PAGE,
-						data : 'action=Enregistrer_ressources'+'&item_id='+item_id+'&item_nom='+encodeURIComponent(item_nom)+'&page_mode='+$('#page_mode').val()+'&ressources='+encodeURIComponent(tab_ressources.join('}¤{')),
+						data : 'csrf='+CSRF+'&action=Enregistrer_ressources'+'&item_id='+item_id+'&item_nom='+encodeURIComponent(item_nom)+'&page_mode='+$('#page_mode').val()+'&ressources='+encodeURIComponent(tab_ressources.join('}¤{')),
 						dataType : "html",
 						error : function(jqXHR, textStatus, errorThrown)
 						{
@@ -636,7 +636,7 @@ $(document).ready
 		);
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-//	Clic sur le bouton pour rechercher des liens existants à partir de mots clefs
+// Clic sur le bouton pour rechercher des liens existants à partir de mots clefs
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		$('#liens_rechercher').click
@@ -657,7 +657,7 @@ $(document).ready
 					{
 						type : 'POST',
 						url : 'ajax.php?page='+PAGE,
-						data : 'action=Rechercher_liens_ressources'+'&item_id='+item_id+'&findme='+encodeURIComponent(findme),
+						data : 'csrf='+CSRF+'&action=Rechercher_liens_ressources'+'&item_id='+item_id+'&findme='+encodeURIComponent(findme),
 						dataType : "html",
 						error : function(jqXHR, textStatus, errorThrown)
 						{
@@ -688,7 +688,7 @@ $(document).ready
 		);
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-//	Clic sur le bouton pour ajouter un lien trouvé suite à une recherche
+// Clic sur le bouton pour ajouter un lien trouvé suite à une recherche
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		$('#zone_resultat_recherche_liens q.ajouter').live // live est utilisé pour prendre en compte les nouveaux éléments créés
@@ -707,7 +707,7 @@ $(document).ready
 		);
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-//	Uploader une ressource
+// Uploader une ressource
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		// Envoi du fichier avec jquery.ajaxupload.js
@@ -799,7 +799,7 @@ $(document).ready
 		$('#bouton_import').prop('disabled',true);
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-//	Clic sur le bouton pour rechercher des ressources existantes uploadées par l'établissement
+// Clic sur le bouton pour rechercher des ressources existantes uploadées par l'établissement
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		$('#ressources_rechercher').click
@@ -813,7 +813,7 @@ $(document).ready
 					{
 						type : 'POST',
 						url : 'ajax.php?page='+PAGE,
-						data : 'action=Rechercher_documents',
+						data : 'csrf='+CSRF+'&action=Rechercher_documents',
 						dataType : "html",
 						error : function(jqXHR, textStatus, errorThrown)
 						{
@@ -844,7 +844,7 @@ $(document).ready
 		);
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-//	Clic sur le bouton pour ajouter une ressource trouvée suite à une recherche
+// Clic sur le bouton pour ajouter une ressource trouvée suite à une recherche
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		$('#zone_resultat_recherche_ressources q.valider').live // live est utilisé pour prendre en compte les nouveaux éléments créés
@@ -862,7 +862,7 @@ $(document).ready
 		);
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-//	Passer de zone_ressources_form à zone_ressources_upload et vice-versa ; report d'un lien vers une ressource.
+// Passer de zone_ressources_form à zone_ressources_upload et vice-versa ; report d'un lien vers une ressource.
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		$('#afficher_zone_ressources_upload').click
@@ -885,7 +885,7 @@ $(document).ready
 		);
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-//	Intercepter la touche entrée ou escape pour valider ou annuler les modifications
+// Intercepter la touche entrée ou escape pour valider ou annuler les modifications
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		$('input').live // live est utilisé pour prendre en compte les nouveaux éléments créés

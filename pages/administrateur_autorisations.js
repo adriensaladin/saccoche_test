@@ -106,7 +106,7 @@ $(document).ready
 		);
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-//	Soumission du formulaire
+// Soumission du formulaire
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		$('#form_autorisations button[name=valider]').click
@@ -123,7 +123,7 @@ $(document).ready
 					{
 						type : 'POST',
 						url : 'ajax.php?page='+PAGE,
-						data : 'f_objet='+objet+'&f_profils='+tab_check,
+						data : 'csrf='+CSRF+'&f_objet='+objet+'&f_profils='+tab_check,
 						dataType : "html",
 						error : function(jqXHR, textStatus, errorThrown)
 						{

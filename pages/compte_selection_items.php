@@ -50,7 +50,7 @@ require(CHEMIN_DOSSIER_INCLUDE.'fonction_affichage_sections_communes.php');
 			<?php
 			$tab_listing_js = '';
 			$DB_TAB = DB_STRUCTURE_PROFESSEUR::DB_lister_selection_items($_SESSION['USER_ID']);
-			if(count($DB_TAB))
+			if(!empty($DB_TAB))
 			{
 				foreach($DB_TAB as $DB_ROW)
 				{

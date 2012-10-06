@@ -42,7 +42,7 @@ $tab_eleve  = array_filter( Clean::map_entier($tab_eleve)  , 'positif' );
 $listing_eleve_id = implode(',',$tab_eleve);
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-//	Afficher le tableau avec les états de validations ET NE CONSERVER QUE LES VALIDATIONS POSITIVES
+// Afficher le tableau avec les états de validations ET NE CONSERVER QUE LES VALIDATIONS POSITIVES
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 if( ($action=='Afficher_bilan') && $palier_id && count($tab_pilier) && count($tab_eleve) )
@@ -122,7 +122,7 @@ if( ($action=='Afficher_bilan') && $palier_id && count($tab_pilier) && count($ta
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-//	Supprimer une validation positive
+// Supprimer une validation positive
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 elseif( ($action=='Enregistrer_validation') && ($delete_id) )
 {

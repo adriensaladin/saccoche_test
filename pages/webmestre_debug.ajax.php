@@ -26,66 +26,55 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-if($_SESSION['SESAMATH_ID']==ID_DEMO){exit('Action désactivée pour la démo...');}
+if($_SESSION['SESAMATH_ID']==ID_DEMO) {exit('Action désactivée pour la démo...');}
 
-// Peut être appelé depuis toutes les pages de gestion des utilisateurs ( élèves, parents, profs, directeurs ) sauf les admins
+$action = (isset($_POST['f_action'])) ? Clean::texte($_POST['f_action']) : '';
 
-$action     = (isset($_POST['f_action']))     ? $_POST['f_action']     : '';
-$listing_id = (isset($_POST['f_listing_id'])) ? $_POST['f_listing_id'] : '';
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+// Modifier les paramètres de debug
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-$tab_user_id = array_filter( Clean::map_entier( explode(',',$listing_id) ) , 'positif' );
-$nb_user = count($tab_user_id);
-
-if( !$nb_user )
+if($action=='modifier_debug')
 {
-	exit('Aucun compte récupéré !');
-}
-
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-//	Retirer des comptes
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-if($action=='retirer')
-{
-	DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_users_statut($tab_user_id,FALSE);
-	exit('ok,'.implode(',',$tab_user_id));
-}
-
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-//	Réintégrer des comptes
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-if($action=='reintegrer')
-{
-	DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_users_statut($tab_user_id,TRUE);
-	exit('ok,'.implode(',',$tab_user_id));
-}
-
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-//	Supprimer des comptes
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-if($action=='supprimer')
-{
-	// Récupérer le profil des utilisateurs indiqués, vérifier qu'ils sont déjà sortis et qu'on y a pas glissé l'id d'un administrateur
-	$DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_users_cibles( implode(',',$tab_user_id) , 'user_id,user_profil,user_sortie_date' , '' /*avec_info*/ );
-	$tab_user_id = array();
-	foreach($DB_TAB as $DB_ROW)
+	$debug = 0;
+	$tab_debug = array(
+		'PHP'     =>   1,
+		'PHPCAS'  =>   2,
+		'SQL'     =>   4,
+		'SESSION' =>   8,
+		'POST'    =>  16,
+		'GET'     =>  32,
+		'FILES'   =>  64,
+		'COOKIE'  => 128,
+		'CONST'   => 256
+	);
+	foreach($tab_debug as $debug_mode => $debug_val)
 	{
-		if( ($DB_ROW['user_sortie_date']<=TODAY_MYSQL) && ($DB_ROW['user_profil']!='administrateur') )
-		{
-			DB_STRUCTURE_ADMINISTRATEUR::DB_supprimer_utilisateur( $DB_ROW['user_id'] , $DB_ROW['user_profil'] );
-			$tab_user_id[] = $DB_ROW['user_id'];
-			// Log de l'action
-			SACocheLog::ajouter('Suppression d\'un utilisateur ('.$DB_ROW['user_profil'].' '.$DB_ROW['user_id'].').');
-		}
+		$debug += (isset($_POST['f_debug_'.$debug_mode])) ? $debug_val : 0 ;
 	}
-	$retour = (count($tab_user_id)) ? 'ok,'.implode(',',$tab_user_id) : 'Aucun compte indiqué n\'est supprimable !' ;
-	exit($retour);
+	if($debug)
+	{
+		FileSystem::ecrire_fichier( CHEMIN_FICHIER_DEBUG_CONFIG , $debug );
+	}
+	else
+	{
+		unlink(CHEMIN_FICHIER_DEBUG_CONFIG);
+	}
+	exit('ok');
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-//	On ne devrait pas en arriver là...
+// Effacer le fichier de logs de phpCAS
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+if($action=='effacer_logs_phpCAS')
+{
+	unlink(CHEMIN_FICHIER_DEBUG_PHPCAS);
+	exit('ok');
+}
+
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+// On ne devrait pas en arriver là...
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 exit('Erreur avec les données transmises !');

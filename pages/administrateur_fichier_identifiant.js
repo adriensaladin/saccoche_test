@@ -148,7 +148,7 @@ $(document).ready
 					{
 						type : 'POST',
 						url : 'ajax.php?page='+PAGE,
-						data : 'action=' + 'user_export',
+						data : 'csrf='+CSRF+'&action='+'user_export',
 						dataType : "html",
 						error : function(jqXHR, textStatus, errorThrown)
 						{
@@ -203,7 +203,7 @@ $(document).ready
 					{
 						type : 'POST',
 						url : 'ajax.php?page='+PAGE,
-						data : 'action=' + action + '&' + $("form").serialize(),
+						data : 'csrf='+CSRF+'&action='+action+'&'+$("form").serialize(),
 						dataType : "html",
 						error : function(jqXHR, textStatus, errorThrown)
 						{
@@ -352,7 +352,7 @@ $(document).ready
 					{
 						type : 'POST',
 						url : 'ajax.php?page='+PAGE,
-						data : 'action=' + action,
+						data : 'csrf='+CSRF+'&action='+action,
 						dataType : "html",
 						error : function(jqXHR, textStatus, errorThrown)
 						{

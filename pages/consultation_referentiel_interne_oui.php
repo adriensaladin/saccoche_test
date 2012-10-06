@@ -56,7 +56,7 @@ $tab_colonne = array();
 
 // On récupère la liste des matières utilisées par l'établissement
 $DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_matieres_etablissement( TRUE /*order_by_name*/ );
-$nb_matieres = count($DB_TAB);
+$nb_matieres = !empty($DB_TAB);
 if(!$nb_matieres)
 {
 	echo'<p><span class="danger">Aucune matière associée à l\'établissement !</span></p>';
@@ -72,7 +72,7 @@ else
 	}
 	// On récupère la liste des niveaux utilisés par l'établissement
 	$DB_TAB = DB_STRUCTURE_COMMUN::DB_lister_niveaux_etablissement(TRUE /*with_specifiques*/);
-	$nb_niveaux = count($DB_TAB);
+	$nb_niveaux = !empty($DB_TAB);
 	if(!$nb_niveaux)
 	{
 		echo'<p><span class="danger">Aucun niveau n\'est rattaché à l\'établissement !</span></p>';
@@ -86,7 +86,7 @@ else
 		}
 		// On récupère la liste des coordonnateurs responsables par matières
 		$DB_TAB = DB_STRUCTURE_COMMUN::DB_lister_identite_coordonnateurs_par_matiere();
-		if(count($DB_TAB))
+		if(!empty($DB_TAB))
 		{
 			foreach($DB_TAB as $DB_ROW)
 			{
@@ -96,7 +96,7 @@ else
 		// On récupère la liste des référentiels par matière et niveau
 		$tab_partage = array('oui'=>'<img title="Référentiel partagé sur le serveur communautaire (MAJ le ◄DATE►)." alt="" src="./_img/etat/partage_oui.gif" />','non'=>'<img title="Référentiel non partagé avec la communauté (choix du ◄DATE►)." alt="" src="./_img/etat/partage_non.gif" />','bof'=>'<img title="Référentiel dont le partage est sans intérêt (pas novateur)." alt="" src="./_img/etat/partage_non.gif" />','hs'=>'<img title="Référentiel dont le partage est sans objet (matière spécifique)." alt="" src="./_img/etat/partage_non.gif" />');
 		$DB_TAB = DB_STRUCTURE_COMMUN::DB_lister_referentiels_infos_details_matieres_niveaux();
-		if(count($DB_TAB))
+		if(!empty($DB_TAB))
 		{
 			foreach($DB_TAB as $DB_ROW)
 			{

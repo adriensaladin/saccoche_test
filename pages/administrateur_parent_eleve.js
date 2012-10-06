@@ -31,7 +31,7 @@ $(document).ready
 	{
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-//	Variables devant être accessible
+// Variables devant être accessible
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		var memo_td_html = '';
@@ -42,7 +42,7 @@ $(document).ready
 		$("#select_eleve").hide();
 
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
-		//	Charger le select f_eleve en ajax
+		// Charger le select f_eleve en ajax
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		function maj_eleve(groupe_id,groupe_type)
@@ -100,7 +100,7 @@ $(document).ready
 		);
 
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
-		//	Charger la liste des responsables d'un élève
+		// Charger la liste des responsables d'un élève
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		$("#select_eleve").change
@@ -122,7 +122,7 @@ $(document).ready
 					{
 						type : 'POST',
 						url : 'ajax.php?page='+PAGE,
-						data : 'f_action='+'afficher_parents'+'&f_eleve_id='+eleve_id,
+						data : 'csrf='+CSRF+'&f_action=afficher_parents'+'&f_eleve_id='+eleve_id,
 						dataType : "html",
 						error : function(jqXHR, textStatus, errorThrown)
 						{
@@ -148,7 +148,7 @@ $(document).ready
 		);
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-//	ORDONNER => Clic sur une image pour échanger deux responsables
+// ORDONNER => Clic sur une image pour échanger deux responsables
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		$('#fieldset_parents input[type=image]').live // live est utilisé pour prendre en compte les nouveaux éléments créés
@@ -170,7 +170,7 @@ $(document).ready
 		);
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-//	SUPPRIMER => Clic sur une image pour retirer un responsable
+// SUPPRIMER => Clic sur une image pour retirer un responsable
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		$('q.supprimer').live // live est utilisé pour prendre en compte les nouveaux éléments créés
@@ -184,8 +184,8 @@ $(document).ready
 		);
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-//	AJOUTER => Clic sur une image pour ajouter un responsable
-//	MODIFIER => Clic sur une image pour modifier un responsable
+// AJOUTER => Clic sur une image pour ajouter un responsable
+// MODIFIER => Clic sur une image pour modifier un responsable
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		$('q.ajouter , q.modifier').live // live est utilisé pour prendre en compte les nouveaux éléments créés
@@ -201,7 +201,7 @@ $(document).ready
 		);
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-//	VALIDER => Clic sur une image pour valider l'ajout / la modification d'un responsable
+// VALIDER => Clic sur une image pour valider l'ajout / la modification d'un responsable
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		$('q.valider').live // live est utilisé pour prendre en compte les nouveaux éléments créés
@@ -228,7 +228,7 @@ $(document).ready
 		);
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-//	ANNULER => Clic sur une image pour annuler l'ajout / la modification d'un responsable
+// ANNULER => Clic sur une image pour annuler l'ajout / la modification d'un responsable
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		$('q.annuler').live // live est utilisé pour prendre en compte les nouveaux éléments créés
@@ -241,7 +241,7 @@ $(document).ready
 		);
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-//	ENVOYER les modifications apportées
+// ENVOYER les modifications apportées
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		$("#Enregistrer").live // live est utilisé pour prendre en compte les nouveaux éléments créés
@@ -267,7 +267,7 @@ $(document).ready
 					{
 						type : 'POST',
 						url : 'ajax.php?page='+PAGE,
-						data : 'f_action='+'enregistrer_parents'+'&f_eleve_id='+eleve_id+'&f_parents_id='+tab_parents_id,
+						data : 'csrf='+CSRF+'&f_action=enregistrer_parents'+'&f_eleve_id='+eleve_id+'&f_parents_id='+tab_parents_id,
 						dataType : "html",
 						error : function(jqXHR, textStatus, errorThrown)
 						{

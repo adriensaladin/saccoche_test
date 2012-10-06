@@ -47,7 +47,7 @@ $tab_lignes_profs     = array();
 
 // Récupérer la liste des classes
 $DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_classes_avec_niveaux();
-if(!count($DB_TAB))
+if(empty($DB_TAB))
 {
 	echo'<p class="danger">Aucune classe trouvée !</p>';
 }
@@ -63,7 +63,7 @@ else
 
 	// Récupérer la liste des professeurs
 	$DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_users( 'professeur' , 1 /*only_actuels*/ , FALSE /*with_classe*/ );
-	if(!count($DB_TAB))
+	if(empty($DB_TAB))
 	{
 		echo'<p class="danger">Aucun compte professeur trouvé !</p>';
 	}

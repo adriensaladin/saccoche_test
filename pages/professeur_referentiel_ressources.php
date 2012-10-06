@@ -53,7 +53,7 @@ $acces_serveur_communautaire = ( $_SESSION['SESAMATH_ID'] && $_SESSION['SESAMATH
 <?php
 // On récupère la liste des référentiels des matières auxquelles le professeur est rattaché, et s'il en est coordonnateur
 $DB_TAB = DB_STRUCTURE_PROFESSEUR::DB_lister_matieres_niveaux_referentiels_professeur($_SESSION['USER_ID']);
-if(!count($DB_TAB))
+if(empty($DB_TAB))
 {
 	echo'<ul class="puce">';
 	echo'<li><span class="danger">Aucun référentiel présent parmi les matières qui vous sont rattachées !</span></li>';

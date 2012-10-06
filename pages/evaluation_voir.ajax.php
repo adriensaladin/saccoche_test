@@ -35,7 +35,7 @@ $date_fin   = (isset($_POST['f_date_fin']))   ? Clean::texte($_POST['f_date_fin'
 $devoir_id  = (isset($_POST['f_devoir']))     ? Clean::entier($_POST['f_devoir'])    : 0;
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-//	Afficher une liste d'évaluations
+// Afficher une liste d'évaluations
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 if( ($action=='Afficher_evaluations') && $eleve_id && $date_debut && $date_fin )
@@ -72,7 +72,7 @@ if( ($action=='Afficher_evaluations') && $eleve_id && $date_debut && $date_fin )
 	// Lister les évaluations
 	$script = '';
 	$DB_TAB = DB_STRUCTURE_ELEVE::DB_lister_devoirs_eleve($eleve_id,$classe_id,$date_debut_mysql,$date_fin_mysql);
-	if(!count($DB_TAB))
+	if(empty($DB_TAB))
 	{
 		exit('Aucune évaluation trouvée sur la période indiquée !');
 	}
@@ -110,7 +110,7 @@ if( ($action=='Afficher_evaluations') && $eleve_id && $date_debut && $date_fin )
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-//	Voir les notes saisies à un devoir
+// Voir les notes saisies à un devoir
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 if( ($action=='Voir_notes') && $eleve_id && $devoir_id )
@@ -118,7 +118,7 @@ if( ($action=='Voir_notes') && $eleve_id && $devoir_id )
 	// liste des items
 	$DB_TAB_COMP = DB_STRUCTURE_ELEVE::DB_lister_items_devoir_avec_infos_pour_eleves($devoir_id);
 	// Normalement, un devoir est toujours lié à au moins un item... sauf si l'item a été supprimé dans le référentiel !
-	if(!count($DB_TAB_COMP))
+	if(empty($DB_TAB_COMP))
 	{
 		exit('Ce devoir n\'est associé à aucun item !');
 	}
@@ -158,7 +158,7 @@ if( ($action=='Voir_notes') && $eleve_id && $devoir_id )
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-//	Saisir les notes d'un devoir (auto-évaluation)
+// Saisir les notes d'un devoir (auto-évaluation)
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 if( ($action=='Saisir_notes') && $eleve_id && $devoir_id )
@@ -166,7 +166,7 @@ if( ($action=='Saisir_notes') && $eleve_id && $devoir_id )
 	// liste des items
 	$DB_TAB_COMP = DB_STRUCTURE_ELEVE::DB_lister_items_devoir_avec_infos_pour_eleves($devoir_id);
 	// Normalement, un devoir est toujours lié à au moins un item... sauf si l'item a été supprimé dans le référentiel !
-	if(!count($DB_TAB_COMP))
+	if(empty($DB_TAB_COMP))
 	{
 		exit('Ce devoir n\'est associé à aucun item !');
 	}
@@ -202,15 +202,15 @@ if( ($action=='Saisir_notes') && $eleve_id && $devoir_id )
 	exit();
 }
 
-//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//	Enregistrer des notes saisies (auto-évaluation)
-//	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+// Enregistrer des notes saisies (auto-évaluation)
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 if( ($action=='Enregistrer_saisies') && $devoir_id )
 {
 	// On récupère les informations associées à ce devoir et on vérifie que l'élève est en droit de s'y auto-évaluer.
 	$DB_ROW = DB_STRUCTURE_ELEVE::DB_recuperer_devoir_infos($devoir_id);
-	if(!count($DB_ROW))
+	if(empty($DB_ROW))
 	{
 		exit('Devoir introuvable !');
 	}
@@ -312,7 +312,7 @@ if( ($action=='Enregistrer_saisies') && $devoir_id )
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-//	On ne devrait pas en arriver là
+// On ne devrait pas en arriver là
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 exit('Erreur avec les données transmises !');

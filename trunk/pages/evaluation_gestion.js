@@ -1814,9 +1814,9 @@ $(document).ready
 		new AjaxUpload
 		('#import_file',
 			{
-				action: 'ajax.php?page='+PAGE+'&f_action=importer_saisie_csv',
+				action: 'ajax.php?page='+PAGE+'f_action=importer_saisie_csv',
 				name: 'userfile',
-				data : {'toto':10},
+				data : {'csrf':CSRF},
 				autoSubmit: true,
 				responseType: "html",
 				onChange: changer_fichier,
@@ -1906,7 +1906,7 @@ $(document).ready
 			{
 				action: 'ajax.php?page='+PAGE,
 				name: 'userfile',
-				data: {'f_action':'uploader_document','f_doc_objet':'sujet','f_ref':'maj_plus_tard'},
+				data: {'csrf':CSRF,'f_action':'uploader_document','f_doc_objet':'sujet','f_ref':'maj_plus_tard'},
 				autoSubmit: true,
 				responseType: "html",
 				onChange: changer_fichier_document,
@@ -1921,7 +1921,7 @@ $(document).ready
 			{
 				action: 'ajax.php?page='+PAGE,
 				name: 'userfile',
-				data: {'f_action':'uploader_document','f_doc_objet':'corrige','f_ref':'maj_plus_tard'},
+				data: {'csrf':CSRF,'f_action':'uploader_document','f_doc_objet':'corrige','f_ref':'maj_plus_tard'},
 				autoSubmit: true,
 				responseType: "html",
 				onChange: changer_fichier_document,

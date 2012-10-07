@@ -98,7 +98,7 @@ $(document).ready
 			{
 				action: 'ajax.php?page='+PAGE,
 				name: 'userfile',
-				data: {'f_step':10,'f_action':'sconet_eleves_oui'},
+				data: {'csrf':CSRF,'f_step':10,'f_action':'sconet_eleves_oui'},
 				autoSubmit: true,
 				responseType: "html",
 				onChange: changer_fichier,
@@ -111,7 +111,7 @@ $(document).ready
 			{
 				action: 'ajax.php?page='+PAGE,
 				name: 'userfile',
-				data: {'f_step':10,'f_action':'sconet_parents_oui'},
+				data: {'csrf':CSRF,'f_step':10,'f_action':'sconet_parents_oui'},
 				autoSubmit: true,
 				responseType: "html",
 				onChange: changer_fichier,
@@ -124,7 +124,7 @@ $(document).ready
 			{
 				action: 'ajax.php?page='+PAGE,
 				name: 'userfile',
-				data: {'f_step':10,'f_action':'sconet_professeurs_directeurs_oui'},
+				data: {'csrf':CSRF,'f_step':10,'f_action':'sconet_professeurs_directeurs_oui'},
 				autoSubmit: true,
 				responseType: "html",
 				onChange: changer_fichier,
@@ -137,7 +137,7 @@ $(document).ready
 			{
 				action: 'ajax.php?page='+PAGE,
 				name: 'userfile',
-				data: {'f_step':10,'f_action':'base-eleves_eleves'},
+				data: {'csrf':CSRF,'f_step':10,'f_action':'base-eleves_eleves'},
 				autoSubmit: true,
 				responseType: "html",
 				onChange: changer_fichier,
@@ -150,7 +150,7 @@ $(document).ready
 			{
 				action: 'ajax.php?page='+PAGE,
 				name: 'userfile',
-				data: {'f_step':10,'f_action':'tableur_eleves'},
+				data: {'csrf':CSRF,'f_step':10,'f_action':'tableur_eleves'},
 				autoSubmit: true,
 				responseType: "html",
 				onChange: changer_fichier,
@@ -163,7 +163,7 @@ $(document).ready
 			{
 				action: 'ajax.php?page='+PAGE,
 				name: 'userfile',
-				data: {'f_step':10,'f_action':'tableur_professeurs_directeurs'},
+				data: {'csrf':CSRF,'f_step':10,'f_action':'tableur_professeurs_directeurs'},
 				autoSubmit: true,
 				responseType: "html",
 				onChange: changer_fichier,

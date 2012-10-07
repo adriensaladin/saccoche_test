@@ -243,7 +243,7 @@ $(document).ready
 			{
 				action: 'ajax.php?page='+PAGE,
 				name: 'userfile',
-				data: {'action':'import_loginmdp'},
+				data: {'csrf':CSRF,'action':'import_loginmdp'},
 				autoSubmit: true,
 				responseType: "html",
 				onChange: changer_fichier,
@@ -256,7 +256,7 @@ $(document).ready
 			{
 				action: 'ajax.php?page='+PAGE,
 				name: 'userfile',
-				data: {'action':'import_ent'},
+				data: {'csrf':CSRF,'action':'import_ent'},
 				autoSubmit: true,
 				responseType: "html",
 				onChange: changer_fichier,
@@ -269,7 +269,7 @@ $(document).ready
 			{
 				action: 'ajax.php?page='+PAGE,
 				name: 'userfile',
-				data: {'action':'import_gepi_eleves'},
+				data: {'csrf':CSRF,'action':'import_gepi_eleves'},
 				autoSubmit: true,
 				responseType: "html",
 				onChange: changer_fichier,
@@ -282,7 +282,7 @@ $(document).ready
 			{
 				action: 'ajax.php?page='+PAGE,
 				name: 'userfile',
-				data: {'action':'import_gepi_profs'},
+				data: {'csrf':CSRF,'action':'import_gepi_profs'},
 				autoSubmit: true,
 				responseType: "html",
 				onChange: changer_fichier,

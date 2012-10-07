@@ -186,7 +186,7 @@ $(document).ready
 				{
 					action: 'ajax.php?page='+PAGE,
 					name: 'userfile',
-					data: {'csrf':CSRF,'f_action':'import_sacoche'},
+					data: {'f_action':'import_sacoche'},
 					autoSubmit: true,
 					responseType: "html",
 					onChange: changer_fichier,
@@ -203,7 +203,7 @@ $(document).ready
 				{
 					action: 'ajax.php?page='+PAGE,
 					name: 'userfile',
-					data: {'csrf':CSRF,'f_action':'import_compatible'},
+					data: {'f_action':'import_compatible'},
 					autoSubmit: true,
 					responseType: "html",
 					onChange: changer_fichier,

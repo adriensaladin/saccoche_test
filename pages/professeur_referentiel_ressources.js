@@ -716,7 +716,7 @@ $(document).ready
 			{
 				action: 'ajax.php?page='+PAGE,
 				name: 'userfile',
-				data: {'csrf':CSRF,'action':'Uploader_document'},
+				data: {'action':'Uploader_document'},
 				autoSubmit: true,
 				responseType: "html",
 				onChange: changer_fichier,

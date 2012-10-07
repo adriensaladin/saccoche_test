@@ -152,7 +152,7 @@ $(document).ready
 			{
 				action: 'ajax.php?page='+PAGE,
 				name: 'userfile',
-				data: {'csrf':CSRF,'f_action':'upload_logo'},
+				data: {'f_action':'upload_logo'},
 				autoSubmit: true,
 				responseType: "html",
 				onChange: changer_fichier,

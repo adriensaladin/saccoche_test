@@ -84,7 +84,7 @@ $(document).ready
 			{
 				action: 'ajax.php?page='+PAGE,
 				name: 'userfile',
-				data: {'csrf':CSRF,'f_action':'uploader'},
+				data: {'f_action':'uploader'},
 				autoSubmit: true,
 				responseType: "html",
 				onChange: changer_fichier,

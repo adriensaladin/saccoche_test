@@ -51,7 +51,7 @@ $(document).ready
 					{
 						type : 'POST',
 						url  : 'ajax.php?page='+PAGE,
-						data : 'csrf='+CSRF+'&action='+action+'&user_id='+user_id+'&groupe_id='+groupe_id,
+						data : 'action='+action+'&user_id='+user_id+'&groupe_id='+groupe_id,
 						dataType : "html",
 						error : function(jqXHR, textStatus, errorThrown)
 						{

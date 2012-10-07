@@ -94,7 +94,7 @@ $(document).ready
 										{
 											action: 'ajax.php?page='+PAGE+'&f_action=envoyer_photo',
 											name: 'userfile',
-											data: {'f_user_id':user_id},
+											data: {'csrf':CSRF,'f_user_id':user_id},
 											autoSubmit: true,
 											responseType: "html",
 											onChange: changer_fichier,
@@ -128,7 +128,7 @@ $(document).ready
 			{
 				action: 'ajax.php?page='+PAGE+'&f_action=envoyer_zip',
 				name: 'userfile',
-				data: {'f_masque':'maj_plus_tard'},
+				data: {'csrf':CSRF,'f_masque':'maj_plus_tard'},
 				autoSubmit: true,
 				responseType: "html",
 				onChange: changer_fichier_zip,
@@ -286,7 +286,7 @@ $(document).ready
 									{
 										action: 'ajax.php?page='+PAGE+'&f_action=envoyer_photo',
 										name: 'userfile',
-										data: {'f_user_id':user_id},
+										data: {'csrf':CSRF,'f_user_id':user_id},
 										autoSubmit: true,
 										responseType: "html",
 										onChange: changer_fichier,

@@ -176,7 +176,7 @@ $(document).ready
 			{
 				action: 'ajax.php?page='+PAGE,
 				name: 'userfile',
-				data: {'f_action':'importer_csv'},
+				data: {'csrf':CSRF,'f_action':'importer_csv'},
 				autoSubmit: true,
 				responseType: "html",
 				onChange: changer_fichier_csv,
@@ -189,7 +189,7 @@ $(document).ready
 			{
 				action: 'ajax.php?page='+PAGE,
 				name: 'userfile',
-				data: {'f_action':'importer_zip'},
+				data: {'csrf':CSRF,'f_action':'importer_zip'},
 				autoSubmit: true,
 				responseType: "html",
 				onChange: changer_fichier_zip,

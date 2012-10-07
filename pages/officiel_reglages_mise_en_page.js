@@ -140,7 +140,7 @@ $(document).ready
 			{
 				action: 'ajax.php?page='+PAGE,
 				name: 'userfile',
-				data: {'f_action':'upload_signature','f_user_id':user_id,'f_user_texte':user_texte},
+				data: {'csrf':CSRF,'f_action':'upload_signature','f_user_id':user_id,'f_user_texte':user_texte},
 				autoSubmit: true,
 				responseType: "html",
 				onChange: changer_fichier,

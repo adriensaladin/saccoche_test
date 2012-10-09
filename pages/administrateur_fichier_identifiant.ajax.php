@@ -515,9 +515,8 @@ if($action=='import_ent')
 	{
 		exit('Erreur : '.$result);
 	}
-	// Récupérer les infos sur le CSV associé à l'ENT
+	// Utiliser $_SESSION['CONNEXION_MODE'] et $_SESSION['CONNEXION_NOM'] pour déterminer l'emplacement des données à récupérer
 	require(CHEMIN_DOSSIER_INCLUDE.'tableau_sso.php');
-	$tab_infos_csv = $tab_connexion_info[$_SESSION['CONNEXION_MODE']][$_SESSION['CONNEXION_DEPARTEMENT'].'|'.$_SESSION['CONNEXION_NOM']];
 	// Pour récupérer les données des utilisateurs
 	$tab_users_fichier              = array();
 	$tab_users_fichier['id_ent']    = array();
@@ -528,8 +527,10 @@ if($action=='import_ent')
 	$contenu = To::utf8($contenu); // Mettre en UTF-8 si besoin
 	$tab_lignes = extraire_lignes($contenu); // Extraire les lignes du fichier
 	$separateur = extraire_separateur_csv($tab_lignes[0]); // Déterminer la nature du séparateur
-	// Supprimer la ou les première(s) ligne(s) ou aucune
-	$tab_lignes = array_slice( $tab_lignes , $tab_infos_csv['csv_entete'] );
+	if($tab_connexion_info[$_SESSION['CONNEXION_MODE']][$_SESSION['CONNEXION_NOM']]['csv_entete'])
+	{
+		unset($tab_lignes[0]); // Supprimer la 1e ligne
+	}
 	// Récupérer les données
 	foreach ($tab_lignes as $ligne_contenu)
 	{
@@ -537,10 +538,10 @@ if($action=='import_ent')
 		if(count($tab_elements)>2)
 		{
 			$tab_elements = Clean::map_quotes($tab_elements);
-			$id_ent    = $tab_elements[ $tab_infos_csv['csv_id_ent'] ];
-			$nom       = $tab_elements[ $tab_infos_csv['csv_nom']    ];
-			$prenom    = $tab_elements[ $tab_infos_csv['csv_prenom'] ];
-			$id_sconet = ($tab_infos_csv['csv_id_sconet']==NULL) ? '' : $tab_elements[ $tab_infos_csv['csv_id_sconet'] ] ;
+			$id_ent    = $tab_elements[ $tab_connexion_info[$_SESSION['CONNEXION_MODE']][$_SESSION['CONNEXION_NOM']]['csv_id_ent'] ];
+			$nom       = $tab_elements[ $tab_connexion_info[$_SESSION['CONNEXION_MODE']][$_SESSION['CONNEXION_NOM']]['csv_nom']    ];
+			$prenom    = $tab_elements[ $tab_connexion_info[$_SESSION['CONNEXION_MODE']][$_SESSION['CONNEXION_NOM']]['csv_prenom'] ];
+			$id_sconet = ($tab_connexion_info[$_SESSION['CONNEXION_MODE']][$_SESSION['CONNEXION_NOM']]['csv_id_sconet']==NULL) ? '' : $tab_elements[ $tab_connexion_info[$_SESSION['CONNEXION_MODE']][$_SESSION['CONNEXION_NOM']]['csv_id_sconet'] ] ;
 			if( ($id_ent!='') && ($nom!='') && ($prenom!='') )
 			{
 				if(in_array($_SESSION['CONNEXION_NOM'],array('celia','lilie')))

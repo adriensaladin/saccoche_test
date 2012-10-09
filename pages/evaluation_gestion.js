@@ -1814,7 +1814,7 @@ $(document).ready
 		new AjaxUpload
 		('#import_file',
 			{
-				action: 'ajax.php?page='+PAGE+'&f_action=importer_saisie_csv',
+				action: 'ajax.php?page='+PAGE+'f_action=importer_saisie_csv',
 				name: 'userfile',
 				data : {'csrf':CSRF},
 				autoSubmit: true,

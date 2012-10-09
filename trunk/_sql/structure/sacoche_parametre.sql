@@ -27,6 +27,7 @@ INSERT INTO sacoche_parametre VALUES
 ( "annee_utilisation_numero"                      , "1" ),
 ( "connexion_mode"                                , "normal" ),
 ( "connexion_nom"                                 , "sacoche" ),
+( "connexion_departement"                         , "" ),
 ( "modele_directeur"                              , "ppp.nnnnnnnn" ),
 ( "modele_professeur"                             , "ppp.nnnnnnnn" ),
 ( "modele_eleve"                                  , "ppp.nnnnnnnn" ),

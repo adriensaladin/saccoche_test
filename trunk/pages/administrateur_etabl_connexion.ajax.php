@@ -28,8 +28,8 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 if($_SESSION['SESAMATH_ID']==ID_DEMO) {exit('Action désactivée pour la démo...');}
 
-$f_connexion_mode = (isset($_POST['f_connexion_mode'])) ? Clean::texte($_POST['f_connexion_mode']) : '';
-$f_connexion_nom  = (isset($_POST['f_connexion_nom']))  ? Clean::texte($_POST['f_connexion_nom'])  : '';
+$f_connexion_mode = (isset($_POST['f_connexion_mode'])) ? Clean::texte($_POST['f_connexion_mode'])  : '';
+$f_connexion_ref  = (isset($_POST['f_connexion_ref']))  ? Clean::texte($_POST['f_connexion_ref'])   : '';
 $cas_serveur_host = (isset($_POST['cas_serveur_host'])) ? Clean::texte($_POST['cas_serveur_host'])  : '';
 $cas_serveur_port = (isset($_POST['cas_serveur_port'])) ? Clean::entier($_POST['cas_serveur_port']) : 0;
 $cas_serveur_root = (isset($_POST['cas_serveur_root'])) ? Clean::texte($_POST['cas_serveur_root'])  : '';
@@ -43,17 +43,20 @@ $gepi_saml_certif = (isset($_POST['gepi_saml_certif'])) ? Clean::texte($_POST['g
 
 require(CHEMIN_DOSSIER_INCLUDE.'tableau_sso.php');
 
-if(!isset($tab_connexion_info[$f_connexion_mode][$f_connexion_nom]))
+if(!isset($tab_connexion_info[$f_connexion_mode][$f_connexion_ref]))
 {
 	exit('Erreur avec les données transmises !');
 }
 
+list($f_connexion_departement,$f_connexion_nom) = explode('|',$f_connexion_ref);
+
 if($f_connexion_mode=='normal')
 {
-	DB_STRUCTURE_COMMUN::DB_modifier_parametres( array('connexion_mode'=>$f_connexion_mode,'connexion_nom'=>$f_connexion_nom) );
+	DB_STRUCTURE_COMMUN::DB_modifier_parametres( array('connexion_mode'=>$f_connexion_mode,'connexion_nom'=>$f_connexion_nom,'connexion_departement'=>$f_connexion_departement) );
 	// ne pas oublier de mettre aussi à jour la session (normalement faudrait pas car connecté avec l'ancien mode, mais sinon pb d'initalisation du formulaire)
-	$_SESSION['CONNEXION_MODE'] = $f_connexion_mode;
-	$_SESSION['CONNEXION_NOM']  = $f_connexion_nom;
+	$_SESSION['CONNEXION_MODE']        = $f_connexion_mode;
+	$_SESSION['CONNEXION_NOM']         = $f_connexion_nom;
+	$_SESSION['CONNEXION_DEPARTEMENT'] = $f_connexion_departement;
 	exit('ok');
 }
 
@@ -73,10 +76,11 @@ if($f_connexion_mode=='cas')
 		exit('Syntaxe du chemin incorrect !');
 	}
 	// C'est ok
-	DB_STRUCTURE_COMMUN::DB_modifier_parametres( array('connexion_mode'=>$f_connexion_mode,'connexion_nom'=>$f_connexion_nom,'cas_serveur_host'=>$cas_serveur_host,'cas_serveur_port'=>$cas_serveur_port,'cas_serveur_root'=>$cas_serveur_root) );
+	DB_STRUCTURE_COMMUN::DB_modifier_parametres( array('connexion_mode'=>$f_connexion_mode,'connexion_nom'=>$f_connexion_nom,'connexion_departement'=>$f_connexion_departement,'cas_serveur_host'=>$cas_serveur_host,'cas_serveur_port'=>$cas_serveur_port,'cas_serveur_root'=>$cas_serveur_root) );
 	// ne pas oublier de mettre aussi à jour la session (normalement faudrait pas car connecté avec l'ancien mode, mais sinon pb d'initalisation du formulaire)
-	$_SESSION['CONNEXION_MODE']   = $f_connexion_mode;
-	$_SESSION['CONNEXION_NOM']    = $f_connexion_nom;
+	$_SESSION['CONNEXION_MODE']        = $f_connexion_mode;
+	$_SESSION['CONNEXION_NOM']         = $f_connexion_nom;
+	$_SESSION['CONNEXION_DEPARTEMENT'] = $f_connexion_departement;
 	$_SESSION['CAS_SERVEUR_HOST'] = $cas_serveur_host;
 	$_SESSION['CAS_SERVEUR_PORT'] = $cas_serveur_port;
 	$_SESSION['CAS_SERVEUR_ROOT'] = $cas_serveur_root;
@@ -104,10 +108,11 @@ if($f_connexion_mode=='gepi')
 		exit('Adresse de Gepi incorrecte [ '.$fichier_distant.' ]');
 	}
 	// C'est ok
-	DB_STRUCTURE_COMMUN::DB_modifier_parametres( array('connexion_mode'=>$f_connexion_mode,'connexion_nom'=>$f_connexion_nom,'gepi_url'=>$gepi_saml_url,'gepi_rne'=>$gepi_saml_rne,'gepi_certificat_empreinte'=>$gepi_saml_certif) );
+	DB_STRUCTURE_COMMUN::DB_modifier_parametres( array('connexion_mode'=>$f_connexion_mode,'connexion_nom'=>$f_connexion_nom,'connexion_departement'=>$f_connexion_departement,'gepi_url'=>$gepi_saml_url,'gepi_rne'=>$gepi_saml_rne,'gepi_certificat_empreinte'=>$gepi_saml_certif) );
 	// ne pas oublier de mettre aussi à jour la session (normalement faudrait pas car connecté avec l'ancien mode, mais sinon pb d'initalisation du formulaire)
-	$_SESSION['CONNEXION_MODE']   = $f_connexion_mode;
-	$_SESSION['CONNEXION_NOM']    = $f_connexion_nom;
+	$_SESSION['CONNEXION_MODE']        = $f_connexion_mode;
+	$_SESSION['CONNEXION_NOM']         = $f_connexion_nom;
+	$_SESSION['CONNEXION_DEPARTEMENT'] = $f_connexion_departement;
 	$_SESSION['GEPI_URL'] = $gepi_saml_url;
 	$_SESSION['GEPI_RNE'] = $gepi_saml_rne;
 	$_SESSION['GEPI_CERTIFICAT_EMPREINTE'] = $gepi_saml_certif;

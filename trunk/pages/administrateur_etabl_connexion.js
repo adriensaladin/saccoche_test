@@ -79,7 +79,7 @@ $(document).ready
 				$('#cas_serveur_host').val( tab_infos[1] );
 				$('#cas_serveur_port').val( tab_infos[2] );
 				$('#cas_serveur_root').val( tab_infos[3] );
-				if(connexion_ref=='perso')
+				if(connexion_ref=='|perso')
 				{
 					$('#cas_options').show();
 				}

@@ -2178,6 +2178,55 @@ public static function DB_maj_base($version_actuelle)
 		}
 	}
 
+	// ////////////////////////////////////////////////////////////////////////////////////////////////////
+	// MAJ 2012-10-06 => 2012-10-09
+	// ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	if($version_actuelle=='2012-10-06')
+	{
+		if($version_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
+		{
+			$version_actuelle = '2012-10-09';
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_actuelle.'" WHERE parametre_nom="version_base"' );
+			// ajout d'un paramètre de département pour les connexions ENT (sert dans l'affichage du menu déroulant) ; à initialiser.
+			$connexion_nom = DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , 'SELECT parametre_valeur FROM sacoche_parametre WHERE parametre_nom="connexion_nom"' );
+			$tab_correspondance = array
+			(
+				'sacoche' => '', 'perso' => '', 'saml' => '',
+				'ent_02' => '02', 'ent_02_v2' => '02',
+				'ent_04' => '04', 'ent_04_v2' => '04',
+				'ent_52' => '52', 'ent_52_v2' => '52',
+				'ent_06' => '06',
+				'elie' => '23',
+				'ent_27' => '27',
+				'ent_38' => '38',
+				'cybercolleges42' => '42',
+				'mirabelle' => '57',
+				'ent_60' => '60',
+				'laclasse' => '69',
+				'cartabledesavoie' => '73',
+				'ent_77' => '77',
+				'ent_80' => '80',
+				'ent_90' => '90',
+				'ent_92' => '92',
+				'celia' => '93',
+				'lilie' => '93',
+				'ent_95' => '95',
+				'ent_reunion' => '974'
+			);
+			if(isset($tab_correspondance[$connexion_nom]))
+			{
+				$connexion_departement = $tab_correspondance[$connexion_nom];
+			}
+			else
+			{
+				$webmestre_uai = DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , 'SELECT parametre_valeur FROM sacoche_parametre WHERE parametre_nom="webmestre_uai"' );
+				$connexion_departement = ($webmestre_uai) ? substr($webmestre_uai,1,2) : '' ;
+			}
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ( "connexion_departement" , "'.$connexion_departement.'" )' );
+		}
+	}
+
 }
 
 }

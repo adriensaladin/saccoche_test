@@ -68,18 +68,18 @@ $(document).ready
 			$('#cas_options , #gepi_options , #lien_direct , #info_inacheve').hide();
 			// on récupère les infos
 			var valeur = $('#connexion_mode_nom option:selected').val();
-			var tab_infos = valeur.split('|');
+			var tab_infos = valeur.split('~');
 			var connexion_mode = tab_infos[0];
-			var connexion_nom  = tab_infos[1];
+			var connexion_ref  = tab_infos[1];
 			if(connexion_mode=='cas')
 			{
-				var valeur = tab_param[connexion_mode][connexion_nom];
+				var valeur = tab_param[connexion_mode][connexion_ref];
 				var tab_infos = valeur.split(']¤[');
 				var is_operationnel = tab_infos[0];
 				$('#cas_serveur_host').val( tab_infos[1] );
 				$('#cas_serveur_port').val( tab_infos[2] );
 				$('#cas_serveur_root').val( tab_infos[3] );
-				if(connexion_nom=='perso')
+				if(connexion_ref=='perso')
 				{
 					$('#cas_options').show();
 				}
@@ -96,7 +96,7 @@ $(document).ready
 			}
 			else if(connexion_mode=='gepi')
 			{
-				var valeur = tab_param[connexion_mode][connexion_nom];
+				var valeur = tab_param[connexion_mode][connexion_ref];
 				var tab_infos = valeur.split(']¤[');
 				$('#gepi_saml_url').val( tab_infos[0] );
 				$('#gepi_saml_rne').val( tab_infos[1] );
@@ -131,9 +131,9 @@ $(document).ready
 			function()
 			{
 				var connexion_mode_nom = $('#connexion_mode_nom option:selected').val();
-				var tab_infos = connexion_mode_nom.split('|');
+				var tab_infos = connexion_mode_nom.split('~');
 				var connexion_mode = tab_infos[0];
-				var connexion_nom  = tab_infos[1];
+				var connexion_ref  = tab_infos[1];
 				if(connexion_mode=='gepi')
 				{
 					// Le RNE n'étant pas obligatoire, et pas forcément un vrai RNE dans Gepi (pour les établ sans UAI, c'est un identifiant choisi...), on ne vérifie rien.
@@ -146,7 +146,7 @@ $(document).ready
 					{
 						type : 'POST',
 						url : 'ajax.php?page='+PAGE,
-						data : 'csrf='+CSRF+'&f_connexion_mode='+connexion_mode+'&f_connexion_nom='+connexion_nom+'&'+$("form").serialize(),
+						data : 'csrf='+CSRF+'&f_connexion_mode='+connexion_mode+'&f_connexion_ref='+connexion_ref+'&'+$("form").serialize(),
 						dataType : "html",
 						error : function(jqXHR, textStatus, errorThrown)
 						{

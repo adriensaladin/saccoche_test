@@ -31,9 +31,9 @@ $TITRE = "Mode d'identification";
 require(CHEMIN_DOSSIER_INCLUDE.'tableau_sso.php');
 
 // Surcharger les paramètres CAS perso (vides par défaut) avec ceux en session (éventuellement personnalisés).
-$tab_connexion_info['cas']['perso']['serveur_host'] = $_SESSION['CAS_SERVEUR_HOST'];
-$tab_connexion_info['cas']['perso']['serveur_port'] = $_SESSION['CAS_SERVEUR_PORT'];
-$tab_connexion_info['cas']['perso']['serveur_root'] = $_SESSION['CAS_SERVEUR_ROOT'];
+$tab_connexion_info['cas']['|perso']['serveur_host'] = $_SESSION['CAS_SERVEUR_HOST'];
+$tab_connexion_info['cas']['|perso']['serveur_port'] = $_SESSION['CAS_SERVEUR_PORT'];
+$tab_connexion_info['cas']['|perso']['serveur_root'] = $_SESSION['CAS_SERVEUR_ROOT'];
 
 // Liste des possibilités
 // Retenir en variable javascript les paramètres des serveurs CAS et de Gepi, ainsi que l'état des connecteurs CAS (opérationnels ou pas)
@@ -43,17 +43,19 @@ foreach($tab_connexion_mode as $connexion_mode => $mode_texte)
 {
 	$select_connexions .= '<optgroup label="'.html($mode_texte).'">';
 	$tab_param_js .= 'tab_param["'.$connexion_mode.'"] = new Array();';
-	foreach($tab_connexion_info[$connexion_mode] as $connexion_nom => $tab_info)
+	foreach($tab_connexion_info[$connexion_mode] as $connexion_ref => $tab_info)
 	{
-		$selected = ( ($connexion_mode==$_SESSION['CONNEXION_MODE']) && ($connexion_nom==$_SESSION['CONNEXION_NOM']) ) ? ' selected' : '' ;
-		$select_connexions .= '<option value="'.$connexion_mode.'|'.$connexion_nom.'"'.$selected.'>'.$tab_info['txt'].'</option>';
+		$selected = ( ($connexion_mode==$_SESSION['CONNEXION_MODE']) && ($connexion_ref==$_SESSION['CONNEXION_DEPARTEMENT'].'|'.$_SESSION['CONNEXION_NOM']) ) ? ' selected' : '' ;
+		list($departement,$connexion_nom) = explode('|',$connexion_ref);
+		$departement = $departement ? $departement.' | ' : '' ;
+		$select_connexions .= '<option value="'.$connexion_mode.'~'.$connexion_ref.'"'.$selected.'>'.$departement.$tab_info['txt'].'</option>';
 		switch($connexion_mode)
 		{
 			case 'cas' :
-				$tab_param_js .= 'tab_param["'.$connexion_mode.'"]["'.$connexion_nom.'"]="'.html($tab_info['etat'].']¤['.$tab_info['serveur_host'].']¤['.$tab_info['serveur_port'].']¤['.$tab_info['serveur_root']).'";';
+				$tab_param_js .= 'tab_param["'.$connexion_mode.'"]["'.$connexion_ref.'"]="'.html($tab_info['etat'].']¤['.$tab_info['serveur_host'].']¤['.$tab_info['serveur_port'].']¤['.$tab_info['serveur_root']).'";';
 				break;
 			case 'gepi' :
-				$tab_param_js .= 'tab_param["'.$connexion_mode.'"]["'.$connexion_nom.'"]="'.html($tab_info['saml_url'].']¤['.$tab_info['saml_rne'].']¤['.$tab_info['saml_certif']).'";';
+				$tab_param_js .= 'tab_param["'.$connexion_mode.'"]["'.$connexion_ref.'"]="'.html($tab_info['saml_url'].']¤['.$tab_info['saml_rne'].']¤['.$tab_info['saml_certif']).'";';
 				break;
 		}
 	}
@@ -78,7 +80,7 @@ $url_sso = URL_DIR_SACOCHE.'?sso'.$get_base;
 	<p><label class="tab">Choix :</label><select id="connexion_mode_nom" name="connexion_mode_nom"><?php echo $select_connexions ?></select></p>
 	<div id="cas_options" class="hide">
 		<label class="tab" for="cas_serveur_host">Domaine <img alt="" src="./_img/bulle_aide.png" title="Souvent de la forme 'cas.domaine.fr'." /> :</label><input id="cas_serveur_host" name="cas_serveur_host" size="30" type="text" value="<?php echo html($_SESSION['CAS_SERVEUR_HOST']) ?>" /><br />
-		<label class="tab" for="cas_serveur_port">Port <img alt="" src="./_img/bulle_aide.png" title="En général 443.<br />Déjà vu à 8443." /> :</label><input id="cas_serveur_port" name="cas_serveur_port" size="5" type="text" value="<?php echo html($_SESSION['CAS_SERVEUR_PORT']) ?>" /><br />
+		<label class="tab" for="cas_serveur_port">Port <img alt="" src="./_img/bulle_aide.png" title="En général 443.<br />Parfois 8443." /> :</label><input id="cas_serveur_port" name="cas_serveur_port" size="5" type="text" value="<?php echo html($_SESSION['CAS_SERVEUR_PORT']) ?>" /><br />
 		<label class="tab" for="cas_serveur_root">Chemin <img alt="" src="./_img/bulle_aide.png" title="En général vide.<br />Parfois 'cas'." /> :</label><input id="cas_serveur_root" name="cas_serveur_root" size="10" type="text" value="<?php echo html($_SESSION['CAS_SERVEUR_ROOT']) ?>" /><br />
 	</div>
 	<div id="gepi_options" class="hide">

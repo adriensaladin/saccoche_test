@@ -2136,6 +2136,14 @@ INSERT INTO sacoche_matiere VALUES
 (9032, 0, 0,  90, 0, 255, "CALVN", "Enseignement religieux calviniste"),
 (9099, 0, 0,  90, 0, 255, "RLGDI", "Enseignement religieux divers"),
 
+-- Champs professionnels en SEGPA (http://www.education.gouv.fr/cid24467/mene0900316c.html)
+
+(9801, 0, 0,  98, 0, 255, "CPHAB", "Habitat"),
+(9802, 0, 0,  98, 0, 255, "CPHAS", "Hygiène - Alimentation - Services"),
+(9803, 0, 0,  98, 0, 255, "CPERE", "Espace rural et environnement"),
+(9804, 0, 0,  98, 0, 255, "CPVDM", "Vente - Distribution - Magasinage"),
+(9805, 0, 0,  98, 0, 255, "CPPI" , "Production industrielle"),
+
 -- Matières principales
 
 (9901, 0, 1,  99, 0, 255, "P1"   , "1 Maîtrise de la langue française"),

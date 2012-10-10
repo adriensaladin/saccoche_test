@@ -2227,6 +2227,26 @@ public static function DB_maj_base($version_actuelle)
 		}
 	}
 
+	// ////////////////////////////////////////////////////////////////////////////////////////////////////
+	// MAJ 2012-10-09 => 2012-10-10
+	// ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	if($version_actuelle=='2012-10-09')
+	{
+		if($version_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
+		{
+			$version_actuelle = '2012-10-10';
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_actuelle.'" WHERE parametre_nom="version_base"' );
+			// Intégration des champs professionnels de SEGPA comme nouvelles matières.
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere_famille VALUES ( 98, 3, "Champs professionnels en SEGPA")' );
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (9801, 0, 0,  98, 0, 255, "CPHAB", "Habitat")' );
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (9802, 0, 0,  98, 0, 255, "CPHAS", "Hygiène - Alimentation - Services")' );
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (9803, 0, 0,  98, 0, 255, "CPERE", "Espace rural et environnement")' );
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (9804, 0, 0,  98, 0, 255, "CPVDM", "Vente - Distribution - Magasinage")' );
+			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (9805, 0, 0,  98, 0, 255, "CPPI" , "Production industrielle")' );
+		}
+	}
+
 }
 
 }

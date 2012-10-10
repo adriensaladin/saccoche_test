@@ -189,13 +189,19 @@ if( ($action=='envoyer_zip') ) //  $masque non encore testé car non récupéré
 	$tab_fichier = FileSystem::lister_contenu_dossier($dossier_temp);
 	foreach($tab_fichier as $fichier_nom)
 	{
-		$user_id = array_search(Clean::fichier($fichier_nom),$tab_fichier_masque);
-		if(!$user_id)
+		$tab_user_id = array_keys( $tab_fichier_masque , Clean::fichier($fichier_nom) );
+		$nb_user_find = count($tab_user_id);
+		if($nb_user_find == 0)
 		{
 			$tbody .= '<tr><td class="r">'.html($fichier_nom).'</td><td>Pas de correspondance trouvée.</td></tr>';
 		}
+		elseif($nb_user_find > 1)
+		{
+			$tbody .= '<tr><td class="r">'.html($fichier_nom).'</td><td>Plusieurs correspondances trouvées.</td></tr>';
+		}
 		else
 		{
+			list($inutile,$user_id) = each($tab_user_id);
 			// traiter l'image : la vérifier, la redimensionner, l'enregistrer en BDD, et effacer les fichiers temporaires
 			$result = photo_file_to_base($user_id,$dossier_temp.$fichier_nom);
 			if(is_string($result))

@@ -168,15 +168,45 @@ if($connexion_mode=='cas')
 				$str_traces .= $trace['class'].' :->: ';
 				unset($trace['class']);
 			}
-			// function & args
+
 			if (isset($trace['function']))
 			{
+				// le nom de la fct concernée
 				$str_traces .= $trace['function'];
 				unset($trace['function']);
+				// et ses arguments
 				if (isset($trace['args']))
 				{
-					$str_traces .= '('.implode(', ',$trace['args']).')';
+					// faut ajouter les traces, mais $trace['args'] peut contenir des objets impossible à afficher
+					// on pourrait récupérer la sortie du dump mais ça peut être gros, on affichera donc que 
+					// la classe des objets ou bien "array"
+					$args_aff = array();
+					foreach ($trace['args'] as $arg)
+					{
+						if (is_scalar($arg))
+						{
+							$args_aff[] = $arg;
+						}
+						elseif (is_array($arg))
+						{
+							$args_aff[] = '[array ' .count($arg) .' elts]';
+						}
+						elseif (is_object($arg))
+						{
+							$args_aff[] = 'obj ' .get_class($arg);
+						}
+						else
+						{
+							$args_aff[] = 'type ' .gettype($arg);
+						}
+					}
+					// reste que des strings, on ajoute à la trace globale
+					$str_traces .= '(' .implode(', ', $args_aff) .')';
 					unset($trace['args']);
+				}
+				else
+				{ // pas d'args, on ajoute les () pour mieux voir que c'est une fct
+					$str_traces .= '()';
 				}
 			}
 			// line
@@ -233,6 +263,18 @@ if($connexion_mode=='cas')
 	phpCAS::setNoCasServerValidation();
 	// Gestion du single sign-out
 	phpCAS::handleLogoutRequests(FALSE);
+	// Appliquer un proxy si défini par le webmestre ; voir url_get_contents() pour les commentaires.
+	if( (defined('SERVEUR_PROXY_USED')) && (SERVEUR_PROXY_USED) )
+	{
+		phpCAS::setExtraCurlOption(CURLOPT_PROXY     , SERVEUR_PROXY_NAME);
+		phpCAS::setExtraCurlOption(CURLOPT_PROXYPORT , (int)SERVEUR_PROXY_PORT);
+		phpCAS::setExtraCurlOption(CURLOPT_PROXYTYPE , constant(SERVEUR_PROXY_TYPE));
+		if(SERVEUR_PROXY_AUTH_USED)
+		{
+			phpCAS::setExtraCurlOption(CURLOPT_PROXYAUTH    , constant(SERVEUR_PROXY_AUTH_METHOD));
+			phpCAS::setExtraCurlOption(CURLOPT_PROXYUSERPWD , SERVEUR_PROXY_AUTH_USER.':'.SERVEUR_PROXY_AUTH_PASS);
+		}
+	}
 	// Demander à CAS d'aller interroger le serveur
 	// Cette méthode permet de forcer CAS à demander au client de s'authentifier s'il ne trouve aucun client d'authentifié.
 	// (redirige vers le serveur d'authentification si aucun utilisateur authentifié n'a été trouvé par le client CAS)

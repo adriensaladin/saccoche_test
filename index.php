@@ -162,7 +162,7 @@ ob_end_clean();
 
 // Titre du navigateur
 $TITRE_NAVIGATEUR = 'SACoche » Espace '.$_SESSION['USER_PROFIL'].' » ';
-$TITRE_NAVIGATEUR.= ($TITRE) ? $TITRE : 'Evaluer par compétences et valider le socle commun' ;
+$TITRE_NAVIGATEUR.= ($TITRE) ? $TITRE : 'Evaluer par comptétences et valider le socle commun' ;
 
 // Css personnalisé
 $CSS_PERSO = (isset($_SESSION['CSS'])) ? '<style type="text/css">'.$_SESSION['CSS'].'</style>' : NULL ;

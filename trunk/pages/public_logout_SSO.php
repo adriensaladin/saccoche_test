@@ -91,6 +91,18 @@ if($connexion_mode=='cas')
 	phpCAS::setNoCasServerValidation();
 	// Gestion du single sign-out
 	phpCAS::handleLogoutRequests(FALSE);
+	// Appliquer un proxy si défini par le webmestre ; voir url_get_contents() pour les commentaires.
+	if( (defined('SERVEUR_PROXY_USED')) && (SERVEUR_PROXY_USED) )
+	{
+		phpCAS::setExtraCurlOption(CURLOPT_PROXY     , SERVEUR_PROXY_NAME);
+		phpCAS::setExtraCurlOption(CURLOPT_PROXYPORT , (int)SERVEUR_PROXY_PORT);
+		phpCAS::setExtraCurlOption(CURLOPT_PROXYTYPE , constant(SERVEUR_PROXY_TYPE));
+		if(SERVEUR_PROXY_AUTH_USED)
+		{
+			phpCAS::setExtraCurlOption(CURLOPT_PROXYAUTH    , constant(SERVEUR_PROXY_AUTH_METHOD));
+			phpCAS::setExtraCurlOption(CURLOPT_PROXYUSERPWD , SERVEUR_PROXY_AUTH_USER.':'.SERVEUR_PROXY_AUTH_PASS);
+		}
+	}
 	// Déconnexion de CAS
 	phpCAS::logout();
 	exit();

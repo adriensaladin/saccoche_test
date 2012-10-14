@@ -79,6 +79,7 @@ td.moyenne {text-align:center;font-weight:bold;vertical-align:middle;font-size:1
 #cadre_haut  {z-index:2;position:absolute;left:0;right:0;top:0;height:48px;background:#FFF url(../_img/background.gif) repeat 0 0;border-bottom:1px solid #77F;white-space:nowrap;min-width:980px;}
 #cadre_bas   {z-index:1;position:absolute;left:0;right:0;top:49px;background:#FFF url(../_img/fond09.png) repeat-x 0 0;padding:4px}
 #cadre_navig {z-index:3;position:fixed;top:2px;right:2px} /* top:59px;right:1px; */
+#cadre_photo {z-index:4;position:fixed;top:60px;right:2px;text-align:center;background:#FFF;padding:3px;border:1px dashed #77F;display:none}
 
 /* dans #cadre_haut */
 #top_info {position:absolute;top:3px;left:4px}
@@ -281,7 +282,7 @@ td.moyenne {text-align:center;font-weight:bold;vertical-align:middle;font-size:1
 /* Images cliquables                                                                                   */
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-body q {background:transparent url(../_img/sprite_action_7.png) 0 0 no-repeat;width:16px;height:16px;display:inline-block;vertical-align:middle;margin-left:4px;quotes:none}
+body q {background:transparent url(../_img/sprite_action_8.png) 0 0 no-repeat;width:16px;height:16px;display:inline-block;vertical-align:middle;margin-left:4px;quotes:none}
 body q:before, body q:after {content: "";} /* patch pour Safari : voir par exemple http://forum.alsacreations.com/topic-4-41216-1-Resolu-Modifier-le-style-des-citations-quotqquot.html */
 body q.activer            {background-position: 0     0px}
 body q.ajouter            {background-position: 0   -20px}
@@ -325,27 +326,26 @@ body q.uploader_doc_non   {background-position: 0  -760px}
 body q.valider            {background-position: 0  -780px}
 body q.voir_archive       {background-position: 0  -800px}
 body q.voir_archive_non   {background-position: 0  -820px}
-body q.voir_photo         {background-position: 0  -840px}
-body q.voir_repart        {background-position: 0  -860px}
-body q.voir               {background-position: 0  -880px}
-body q.voir_non           {background-position: 0  -900px}
-body q.n1_add             {background-position: 0  -920px}
-body q.n1_del             {background-position: 0  -940px}
-body q.n1_edit            {background-position: 0  -960px}
-body q.n1_move            {background-position: 0  -980px}
-body q.n1_move2           {background-position: 0 -1000px}
-body q.n2_add             {background-position: 0 -1020px}
-body q.n2_del             {background-position: 0 -1040px}
-body q.n2_edit            {background-position: 0 -1060px}
-body q.n2_move            {background-position: 0 -1080px}
-body q.n2_move2           {background-position: 0 -1100px}
-body q.n3_add             {background-position: 0 -1120px}
-body q.n3_del             {background-position: 0 -1140px}
-body q.n3_edit            {background-position: 0 -1160px}
-body q.n3_fus             {background-position: 0 -1180px}
-body q.n3_fus2            {background-position: 0 -1200px}
-body q.n3_move            {background-position: 0 -1220px}
-body q.n3_move2           {background-position: 0 -1240px}
+body q.voir_repart        {background-position: 0  -840px}
+body q.voir               {background-position: 0  -860px}
+body q.voir_non           {background-position: 0  -880px}
+body q.n1_add             {background-position: 0  -900px}
+body q.n1_del             {background-position: 0  -920px}
+body q.n1_edit            {background-position: 0  -940px}
+body q.n1_move            {background-position: 0  -960px}
+body q.n1_move2           {background-position: 0  -980px}
+body q.n2_add             {background-position: 0 -1000px}
+body q.n2_del             {background-position: 0 -1020px}
+body q.n2_edit            {background-position: 0 -1040px}
+body q.n2_move            {background-position: 0 -1060px}
+body q.n2_move2           {background-position: 0 -1080px}
+body q.n3_add             {background-position: 0 -1100px}
+body q.n3_del             {background-position: 0 -1120px}
+body q.n3_edit            {background-position: 0 -1140px}
+body q.n3_fus             {background-position: 0 -1160px}
+body q.n3_fus2            {background-position: 0 -1180px}
+body q.n3_move            {background-position: 0 -1200px}
+body q.n3_move2           {background-position: 0 -1220px}
 body q:hover {cursor:pointer}	/* Curseur pointeur pour ces images qui sont des liens */
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
@@ -367,7 +367,7 @@ form label.mini{width:8em;}
 #zone_ressources span.tab{margin-left:6.5em}
 
 /* Boutons de validation */
-button{background:#DDF url(../_img/sprite_bouton_5.png) 0 0 no-repeat;padding:0 1px 0 19px;margin:1px 0;color:#139;border:1px solid #66F;line-height:17px}
+button{background:#DDF url(../_img/sprite_bouton_6.png) 0 0 no-repeat;padding:0 1px 0 19px;margin:1px 0;color:#139;border:1px solid #66F;line-height:17px}
 button.actualiser        {background-position: 3px    1px}
 button.ajouter           {background-position: 3px  -19px}
 button.annuler           {background-position: 3px  -39px}
@@ -411,6 +411,7 @@ button.user_desactiver   {background-position: 3px -779px}
 button.valider           {background-position: 3px -799px}
 button.valider_next      {background-position: 3px -819px}
 button.valider_prev      {background-position: 3px -839px}
+button.voir_photo        {background-position: 3px -859px}
 
 button{width:auto;overflow:visible;} /* patch pour IE : voir http://jehiah.cz/archive/button-width-in-ie */
 button:hover,button.hover{background-color:#EEF;color:#D41;cursor:pointer;} /* button.hover pour une compatibilité avec AjaxUpload (pour background, car pas mieux pour cursor) */

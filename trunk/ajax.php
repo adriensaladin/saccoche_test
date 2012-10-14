@@ -97,7 +97,7 @@ require(CHEMIN_DOSSIER_INCLUDE.'fonction_appel_serveur_communautaire.php');
 // Jeton CSRF
 if(isset($tab_verif_csrf[$PAGE]))
 {
-	verifier_jeton_anti_CSRF($PAGE);
+	Session::verifier_jeton_anti_CSRF($PAGE);
 }
 
 // Patch fichier de config

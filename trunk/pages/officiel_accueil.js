@@ -210,6 +210,11 @@ $(document).ready
 										memo_eleve_first = $('#go_selection_eleve option:first').val();
 										memo_eleve_last  = $('#go_selection_eleve option:last').val();
 										masquer_element_navigation_choix_eleve();
+										if($('#voir_photo').length==0)
+										{
+											charger_photo_eleve();
+										}
+										$('#cadre_photo').show(0);
 									}
 								}
 							}
@@ -248,6 +253,7 @@ $(document).ready
 			function()
 			{
 				$('#zone_action_eleve').html("&nbsp;").hide(0);
+				$('#cadre_photo').hide(0);
 				$('#form_gestion , #table_bilans , #puces_secondaires').show(0);
 				return(false);
 			}
@@ -316,6 +322,10 @@ $(document).ready
 						{
 							$('#go_selection_eleve option[value='+memo_eleve+']').prop('selected',true);
 							masquer_element_navigation_choix_eleve();
+							if($('#voir_photo').length==0)
+							{
+								charger_photo_eleve();
+							}
 							var position_script = responseHTML.lastIndexOf('<SCRIPT>');
 							if(position_script==-1)
 							{
@@ -1190,6 +1200,58 @@ $(document).ready
 				enabled: false
 			}
 		};
+
+		// ////////////////////////////////////////////////////////////////////////////////////////////////////
+		// Afficher / Masquer la photo d'un élève (module bulletin)
+		// ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+		function charger_photo_eleve()
+		{
+			$("#cadre_photo").html('<label id="ajax_photo" class="loader">Connexion au serveur&hellip;</label>');
+			$.ajax
+			(
+				{
+					type : 'GET',
+					url : 'ajax.php?page=calque_voir_photo',
+					data : 'user_id='+memo_eleve,
+					dataType : "html",
+					error : function(jqXHR, textStatus, errorThrown)
+					{
+						$('#ajax_photo').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
+						leave_erreur = true;
+					},
+					success : function(responseHTML)
+					{
+						if(responseHTML.substring(0,5)=='<img ')	// Attention aux caractères accentués : l'utf-8 pose des pbs pour ce test
+						{
+							$('#cadre_photo').html('<div>'+responseHTML+'</div><button id="fermer_calque_photo" type="button" class="annuler">Fermer</button>');
+							leave_erreur = false;
+						}
+						else
+						{
+							$('#ajax_photo').removeAttr("class").addClass("alerte").html(responseHTML);
+							leave_erreur = true;
+						}
+					}
+				}
+			);
+		}
+
+		$('#voir_photo').live
+		('click',
+			function()
+			{
+				charger_photo_eleve();
+			}
+		);
+
+		$('#fermer_calque_photo').live
+		('click',
+			function()
+			{
+				$('#cadre_photo').html('<button id="voir_photo" type="button" class="voir_photo">Photo</button>');
+			}
+		);
 
 	}
 );

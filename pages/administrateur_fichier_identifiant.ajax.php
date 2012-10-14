@@ -359,7 +359,7 @@ if($action=='import_loginmdp')
 // Import CSV du contenu d'un fichier pour forcer les identifiants élèves ou professeurs de GEPI
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-if( ($action=='import_gepi_profs') || ($action=='import_gepi_parents') || ($action=='import_gepi_eleves') )
+if( ($action=='import_gepi_eleves') || ($action=='import_gepi_profs') )
 {
 	$fichier_nom = $action.'_'.$_SESSION['BASE'].'_'.fabriquer_fin_nom_fichier__date_et_alea().'.txt';
 	$result = FileSystem::recuperer_upload( CHEMIN_DOSSIER_IMPORT /*fichier_chemin*/ , $fichier_nom /*fichier_nom*/ , array('csv') /*tab_extensions_autorisees*/ , NULL /*tab_extensions_interdites*/ , NULL /*taille_maxi*/ , NULL /*filename_in_zip*/ );
@@ -367,7 +367,7 @@ if( ($action=='import_gepi_profs') || ($action=='import_gepi_parents') || ($acti
 	{
 		exit('Erreur : '.$result);
 	}
-	$tab_fnom_attendu = array( 'import_gepi_profs'=>array('base_professeur_gepi.csv','base_cpe_gepi.csv') , 'import_gepi_parents'=>array('base_responsable_gepi.csv') , 'import_gepi_eleves'=>array('base_eleve_gepi.csv') );
+	$tab_fnom_attendu = array( 'import_gepi_eleves'=>array('base_eleve_gepi.csv') , 'import_gepi_profs'=>array('base_professeur_gepi.csv','base_cpe_gepi.csv') );
 	if(!in_array(FileSystem::$file_upload_name,$tab_fnom_attendu[$action]))
 	{
 		exit('Erreur : le nom du fichier n\'est pas "'.$tab_fnom_attendu[$action][0].'" !');
@@ -411,8 +411,8 @@ if( ($action=='import_gepi_profs') || ($action=='import_gepi_parents') || ($acti
 	$tab_users_base['nom']        = array();
 	$tab_users_base['prenom']     = array();
 	$tab_users_base['sconet_num'] = array(); // Ne servira que pour les élèves
-	$profil      = ($action=='import_gepi_profs') ? array('professeur','directeur') : substr($action,12,-1) ;
-	$DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_users( $profil , 1 /*only_actuels*/ , FALSE /*with_classe*/ );
+	$profil = ($action=='import_gepi_eleves') ? 'eleve' : 'professeur' ;
+	$DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_users( $profil , 2 /*actuels_et_anciens*/ , FALSE /*with_classe*/ );
 	foreach($DB_TAB as $DB_ROW)
 	{
 		$tab_users_base['id_gepi'][$DB_ROW['user_id']]    = $DB_ROW['user_id_gepi'];

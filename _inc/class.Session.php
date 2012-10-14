@@ -76,66 +76,66 @@ class Session
    * @param void
    * @return string
    */
-  private static function get_IP()
-  {
-    /**
-     * Si PHP est derrière un reverse proxy ou un load balancer, REMOTE_ADDR peut contenir l'ip du proxy.
-     * Normalement, le proxy doit renseigner HTTP_X_REAL_IP, ou HTTP_X_FORWARDED_FOR.
-     * Au CITIC, REMOTE_ADDR est correct, et chez OVH aussi (avec apache derrière nginx ou pas).
-     */
-    $ip = $_SERVER['REMOTE_ADDR'];
-    if (isset($_SERVER['HTTP_X_REAL_IP']))
-    {
-      $ip = $_SERVER['HTTP_X_REAL_IP'];
-    }
-    elseif (isset($_SERVER['HTTP_X_FORWARDED_FOR']))
-    {
-      $forwarded = $_SERVER['HTTP_X_FORWARDED_FOR'];
-      // on s'arrête à la 1re virgule si on en trouve une
-      $tab_forwarded = preg_split("/,| /",$forwarded);
-      $ip_candidate = $tab_forwarded[0];
-      $ip_composantes = explode('.', $ip_candidate);
-      // On vérifie que ça ressemble à une ip (au cas où on aurait une chaîne bizarre ou vide on garde notre REMOTE_ADDR)
-      if (count($ip_composantes) == 4 && min($ip_composantes) >=0 && max($ip_composantes) < 256 && max($ip_composantes) > 0)
-      {
-        $ip = $ip_candidate;
-      }
-    }
-    // petit truc pour s'assurer d'avoir une IP valide
-    return ($ip == long2ip(ip2long($ip))) ? $ip : '' ;
-  }
+	private static function get_IP()
+	{
+		/**
+		 * Si PHP est derrière un reverse proxy ou un load balancer, REMOTE_ADDR peut contenir l'ip du proxy.
+		 * Normalement, le proxy doit renseigner HTTP_X_REAL_IP, ou HTTP_X_FORWARDED_FOR.
+		 * Au CITIC, REMOTE_ADDR est correct, et chez OVH aussi (avec apache derrière nginx ou pas).
+		 */
+		$ip = $_SERVER['REMOTE_ADDR'];
+		if (isset($_SERVER['HTTP_X_REAL_IP']))
+		{
+			$ip = $_SERVER['HTTP_X_REAL_IP'];
+		}
+		elseif (isset($_SERVER['HTTP_X_FORWARDED_FOR']))
+		{
+			$forwarded = $_SERVER['HTTP_X_FORWARDED_FOR'];
+			// on s'arrête à la 1re virgule si on en trouve une
+			$tab_forwarded = preg_split("/,| /",$forwarded);
+			$ip_candidate = $tab_forwarded[0];
+			$ip_composantes = explode('.', $ip_candidate);
+			// On vérifie que ça ressemble à une ip (au cas où on aurait une chaîne bizarre ou vide on garde notre REMOTE_ADDR)
+			if (count($ip_composantes) == 4 && min($ip_composantes) >=0 && max($ip_composantes) < 256 && max($ip_composantes) > 0)
+			{
+				$ip = $ip_candidate;
+			}
+		}
+		// petit truc pour s'assurer d'avoir une IP valide
+		return ($ip == long2ip(ip2long($ip))) ? $ip : '' ;
+	}
 
   /*
    * Renvoyer une clef associée au navigateur et à la session en cours
    * 
    * @param void
-   * @return string
+   * @return void
    */
-  private static function get_UserAgent()
-  {
-    if(isset($_SERVER['HTTP_USER_AGENT']))
-    {
-      // Eviter que l'activation de FireBug + FirePHP n'oblige à se réidentifier.
-      $pos_FirePHP = strpos($_SERVER['HTTP_USER_AGENT'],' FirePHP');
-      $user_agent = ($pos_FirePHP===FALSE) ? $_SERVER['HTTP_USER_AGENT'] : substr($_SERVER['HTTP_USER_AGENT'],0,$pos_FirePHP) ;
-    }
-    else
-    {
-      $user_agent = '';
-    }
-    return $user_agent;
-  }
+	private static function get_UserAgent()
+	{
+		if(isset($_SERVER['HTTP_USER_AGENT']))
+		{
+			// Eviter que l'activation de FireBug + FirePHP n'oblige à se réidentifier.
+			$pos_FirePHP = strpos($_SERVER['HTTP_USER_AGENT'],' FirePHP');
+			$user_agent = ($pos_FirePHP===FALSE) ? $_SERVER['HTTP_USER_AGENT'] : substr($_SERVER['HTTP_USER_AGENT'],0,$pos_FirePHP) ;
+		}
+		else
+		{
+			$user_agent = '';
+		}
+		return $user_agent;
+	}
 
   /*
    * Renvoyer une clef associée au navigateur, à l'adresse IP et à la session en cours
    * 
    * @param void
-   * @return string
+   * @return void
    */
-  private static function session_key()
-  {
-    return md5( Session::get_IP() . Session::get_UserAgent() . session_id() );
-  }
+	private static function session_key()
+	{
+		return md5( Session::get_IP() . Session::get_UserAgent() . session_id() );
+	}
 
   /*
    * Initialiser une session ouverte
@@ -181,21 +181,14 @@ class Session
       }
       else
       {
-        // onglets incompatibles ouverts, inactivité, disque plein, chemin invalide, ...
-        exit_error( 'Authentification manquante' /*titre*/ , 'Session perdue / expirée (onglets incompatibles ouverts ?).<br />Veuillez vous (re)-connecter.' /*contenu*/ );
+        exit_error( 'Authentification manquante' /*titre*/ , 'Session perdue, expirée, incompatible ou non enregistrée (inactivité, disque plein, chemin invalide, &hellip;).<br />Veuillez vous (re)-connecter.' /*contenu*/ );
       }
     }
     // si ajax
     else
     {
-      if( $test_get || $test_cookie )
-      {
-        exit_error( 'Authentification manquante' /*titre*/ , 'Session perdue / expirée (onglets incompatibles ouverts ?). Veuillez actualiser la page.' /*contenu*/ );
-      }
-       else
-      {
-        exit_error( 'Authentification manquante' /*titre*/ , 'Session perdue / expirée (onglets incompatibles ouverts ?). Veuillez vous (re)-connecter.' /*contenu*/ );
-      }
+      echo ( $test_get || $test_cookie ) ? 'Session perdue / expirée / incompatible. Veuillez actualiser la page.' : 'Session perdue / expirée / incompatible. Veuillez vous reconnecter.' ;
+      exit();
     }
   }
 
@@ -330,40 +323,6 @@ class Session
       }
     }
   }
-
-  /*
-   * Générer un jeton CSRF pour une page donnée (le met en session et renvoie sa valeur).
-   * Inutile d'essayer de le fixer uniquement sur l'IP ou la Session car pour ce type d'attaque c'est le navigateur de l'utilisateur qui est utilisé.
-   * On est donc contraint d'utuliser un élément aléatoire ou indicateur de temps.
-   * Pour éviter de fausses alertes si utilisation de plusieurs onglets d'une même page, on ne retient pas qu'un seul jeton par page.
-   * La session doit être ouverte.
-   * 
-   * @param string $page
-   * @return string
-   */
-  public static function generer_jeton_anti_CSRF($page)
-  {
-    $csrf_key = uniqid();
-    $_SESSION['CSRF'][$csrf_key.'.'.$page] = TRUE;
-    return $csrf_key;
-  }
-
-  /**
-   * Appelé par ajax.php pour vérifier un jeton CSRF lors d'un appel ajax (soumission de données) d'une page donnée (vérifie sa valeur en session, quitte si pb).
-   * Peut être aussi potentiellement appelé par de rares pages PHP s'envoyant un formulaire sans passer par AJAX (seule officiel_accueil.php est concerné au 10/2012).
-   * On utilise REQUEST car c'est tranmis en POST si Ajax maison mais en GET si utilisation de jquery.form.js.
-   * La session doit être ouverte.
-   *
-   * @param string $page
-   * @return void
-   */
-  public static function verifier_jeton_anti_CSRF($page)
-  {
-    if( empty($_REQUEST['csrf']) || empty($_SESSION['CSRF'][$_REQUEST['csrf'].'.'.$page]) )
-    {
-      exit_error( 'Alerte CSRF' /*titre*/ , 'Jeton anti-CSRF invalide.<br />Plusieurs onglets ouverts avec des sessions incompatibles ?' /*contenu*/ , FALSE /*setup*/ );
-    }
-}
 
 }
 ?>

@@ -265,37 +265,24 @@ $(document).ready
 			}
 		);
 		new AjaxUpload
-		('#import_gepi_profs',
-			{
-				action: 'ajax.php?page='+PAGE,
-				name: 'userfile',
-				data: {'csrf':CSRF,'action':'import_gepi_profs'},
-				autoSubmit: true,
-				responseType: "html",
-				onChange: changer_fichier,
-				onSubmit: verifier_fichier,
-				onComplete: retourner_fichier
-			}
-		);
-		new AjaxUpload
-		('#import_gepi_parents',
-			{
-				action: 'ajax.php?page='+PAGE,
-				name: 'userfile',
-				data: {'csrf':CSRF,'action':'import_gepi_parents'},
-				autoSubmit: true,
-				responseType: "html",
-				onChange: changer_fichier,
-				onSubmit: verifier_fichier,
-				onComplete: retourner_fichier
-			}
-		);
-		new AjaxUpload
 		('#import_gepi_eleves',
 			{
 				action: 'ajax.php?page='+PAGE,
 				name: 'userfile',
 				data: {'csrf':CSRF,'action':'import_gepi_eleves'},
+				autoSubmit: true,
+				responseType: "html",
+				onChange: changer_fichier,
+				onSubmit: verifier_fichier,
+				onComplete: retourner_fichier
+			}
+		);
+		new AjaxUpload
+		('#import_gepi_profs',
+			{
+				action: 'ajax.php?page='+PAGE,
+				name: 'userfile',
+				data: {'csrf':CSRF,'action':'import_gepi_profs'},
 				autoSubmit: true,
 				responseType: "html",
 				onChange: changer_fichier,

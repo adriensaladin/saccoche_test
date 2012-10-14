@@ -177,7 +177,7 @@ if($PAGE=='officiel_accueil')    $tab_fichiers_head[] = array( 'js'  , compacter
 if(is_file($filename_js_normal)) $tab_fichiers_head[] = array( 'js' , compacter($filename_js_normal,'pack') );
 
 // Jeton CSRF
-$CSRF = isset($tab_verif_csrf[$PAGE]) ? Session::generer_jeton_anti_CSRF($PAGE) : '' ;
+$CSRF = isset($tab_verif_csrf[$PAGE]) ? generer_jeton_anti_CSRF($PAGE) : '' ;
 
 // Affichage de l'en-tête
 declaration_entete( TRUE /*is_meta_robots*/ , TRUE /*is_favicon*/ , TRUE /*is_rss*/ , $tab_fichiers_head , $TITRE_NAVIGATEUR , $CSS_PERSO );

@@ -208,9 +208,7 @@ $tab_sans_verif_csrf = array
 	'conserver_session_active',
 	'evaluation_demande_eleve_ajout',
 	'fermer_session',
-	// sans objet (sans besoin d'identification) + sinon si la session a expiré alors elle est réinitialisée de façon transparente lors de l'appel ajax mais forcément le jeton de session n'est pas retrouvé
-	'public_accueil',
-	// sans objet car pas de formulaire
+	// sans objet + pas de formulaire
 	'public_login_SSO', 
 	'public_logout_SSO',
 	'releve',

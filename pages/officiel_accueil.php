@@ -102,7 +102,7 @@ if( ($affichage_formulaire_statut) && ($_SESSION['SESAMATH_ID']!=ID_DEMO) )
 	$new_etat = (isset($_POST['etat']))        ? Clean::texte($_POST['etat'])        : '' ;
 	if( count($tab_ids) && isset($tab_etats[$new_etat]) )
 	{
-		verifier_jeton_anti_CSRF($PAGE);
+		Session::verifier_jeton_anti_CSRF($PAGE);
 		$champ = 'officiel_'.$BILAN_TYPE;
 		$new_etat = ($new_etat!='x') ? $new_etat : '' ;
 		foreach($tab_ids as $ids)
@@ -136,7 +136,7 @@ if( ($affichage_formulaire_statut) && ($_SESSION['SESAMATH_ID']!=ID_DEMO) )
 	$new_etat = (isset($_POST['etat']))        ? Clean::texte($_POST['etat'])        : '' ;
 	if( count($tab_ids) && isset($tab_etats[$new_etat]) )
 	{
-		verifier_jeton_anti_CSRF($PAGE);
+		Session::verifier_jeton_anti_CSRF($PAGE);
 		$champ = 'officiel_'.$BILAN_TYPE;
 		$new_etat = ($new_etat!='x') ? $new_etat : '' ;
 		foreach($tab_ids as $ids)
@@ -162,6 +162,8 @@ if( ($affichage_formulaire_statut) && ($_SESSION['SESAMATH_ID']!=ID_DEMO) )
 	<li><span class="astuce">Profils autorisés à consulter les copies imprimées (<em>pdf</em>) : <span class="u"><?php echo $profils_archives_pdf ?></span>.</span></li>
 	<?php if($affichage_formulaire_statut) echo'<li><span class="astuce">Vous pouvez utiliser l\'outil d\'<a href="./index.php?page=compte_message">affichage de messages en page d\'accueil</a> pour informer les professeurs de l\'ouverture à la saisie.</span></li>'; ?>
 </ul>
+
+<div id="cadre_photo"><button id="voir_photo" type="button" class="voir_photo">Photo</button></div>
 
 <script type="text/javascript">
 	var TODAY_FR   = "<?php echo TODAY_FR ?>";

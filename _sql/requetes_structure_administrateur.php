@@ -1671,14 +1671,12 @@ public static function DB_optimiser_tables_structure()
  */
 public static function DB_deplacer_referentiel_matiere($matiere_id_avant,$matiere_id_apres)
 {
-	$tab_tables = array(
-		'sacoche_jointure_user_matiere'=>'matiere_id',
-		'sacoche_demande'=>'matiere_id',
-		'sacoche_referentiel'=>'matiere_id',
-		'sacoche_referentiel_domaine'=>'matiere_id',
-		'sacoche_officiel_saisie'=>'rubrique_id'
-	);
+	// Vérification que c'est possible (matière de destination vierge de données
 	$nb_pbs = 0;
+	$tab_tables = array(
+		'sacoche_referentiel'=>'matiere_id',
+		'sacoche_referentiel_domaine'=>'matiere_id'
+	);
 	foreach($tab_tables as $table_nom => $table_champ)
 	{
 		$nb_pbs += DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , 'SELECT COUNT(*) AS nombre FROM '.$table_nom.' WHERE '.$table_champ.'='.$matiere_id_apres );
@@ -1687,6 +1685,14 @@ public static function DB_deplacer_referentiel_matiere($matiere_id_avant,$matier
 	{
 		return FALSE;
 	}
+	// Déplacer les référentiels d'une matière vers une autre
+	$tab_tables = array(
+		'sacoche_jointure_user_matiere'=>'matiere_id',
+		'sacoche_demande'=>'matiere_id',
+		'sacoche_referentiel'=>'matiere_id',
+		'sacoche_referentiel_domaine'=>'matiere_id',
+		'sacoche_officiel_saisie'=>'rubrique_id'
+	);
 	foreach($tab_tables as $table_nom => $table_champ)
 	{
 		DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE '.$table_nom.' SET '.$table_champ.'='.$matiere_id_apres.' WHERE '.$table_champ.'='.$matiere_id_avant );

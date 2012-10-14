@@ -984,7 +984,7 @@ $(document).ready
 		}
 
 		/**
-		 * Ajoute au document un calque qui est utilisé pour afficher un calendrier ou une photo d'un élève
+		 * Ajoute au document un calque qui est utilisé pour afficher un calendrier
 		 */
 		$('<div id="calque"></div>').appendTo(document.body).hide();
 		var leave_erreur = false;
@@ -1033,52 +1033,6 @@ $(document).ready
 						success : function(responseHTML)
 						{
 							if(responseHTML.substring(0,4)=='<h5>')	// Attention aux caractères accentués : l'utf-8 pose des pbs pour ce test
-							{
-								$('#calque').html(responseHTML);
-								leave_erreur = false;
-							}
-							else
-							{
-								$('#ajax_alerte_calque').removeAttr("class").addClass("alerte").html(responseHTML);
-								leave_erreur = true;
-							}
-						}
-					}
-				);
-			}
-		);
-
-		/**
-		 * Afficher le calque et le compléter : photo élève
-		 */
-		$('q.voir_photo').live
-		('click',
-			function(e)
-			{
-				// Récupérer les infos associées
-				user_id = $(this).prev('select').children('option:selected').val();   // id de l'élève
-				// Afficher le calque
-				posX = e.pageX-40;
-				posY = e.pageY-178;
-				$("#calque").css('left',posX + 'px');
-				$("#calque").css('top',posY + 'px');
-				$("#calque").html('<label id="ajax_alerte_calque" class="loader">Connexion au serveur&hellip;</label>').show();
-				// Charger en Ajax le contenu du calque
-				$.ajax
-				(
-					{
-						type : 'GET',
-						url : 'ajax.php?page=calque_voir_photo',
-						data : 'user_id='+user_id,
-						dataType : "html",
-						error : function(jqXHR, textStatus, errorThrown)
-						{
-							$('#ajax_alerte_calque').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
-							leave_erreur = true;
-						},
-						success : function(responseHTML)
-						{
-							if(responseHTML.substring(0,5)=='<div ')	// Attention aux caractères accentués : l'utf-8 pose des pbs pour ce test
 							{
 								$('#calque').html(responseHTML);
 								leave_erreur = false;

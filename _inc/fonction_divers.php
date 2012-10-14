@@ -1898,38 +1898,6 @@ function convert_date_french_to_mysql($date)
 }
 
 /**
- * Générer un jeton CSRF pour un passage donné sur une page donnée (le met en session et renvoie sa valeur).
- * Peut provoquer de fausses alertes si utilisation de plusieurs onglets d'une même page...
- * La session doit être ouverte.
- *
- * @param string $page
- * @return string
- */
-function generer_jeton_anti_CSRF($page)
-{
-	$_SESSION['CSRF'][$page] = uniqid();
-	return $_SESSION['CSRF'][$page];
-}
-
-/**
- * Appelé par ajax.php pour vérifier un jeton CSRF lors d'un appel ajax (soumission de données) d'une page donnée (vérifie sa valeur en session, quitte si pb).
- * Peut être aussi potentiellement appelé par de rares pages PHP s'envoyant un formulaire sans passer par AJAX (seule officiel_accueil.php est concerné au 10/2012).
- * Peut provoquer de fausses alertes si utilisation de plusieurs onglets d'une même page...
- * On utilise REQUEST car c'est tranmis en POST si Ajax maison mais en GET si utilisation de jquery.form.js.
- * La session doit être ouverte.
- *
- * @param string $page
- * @return void
- */
-function verifier_jeton_anti_CSRF($page)
-{
-	if( empty($_REQUEST['csrf']) || empty($_SESSION['CSRF'][$page]) || ($_REQUEST['csrf']!=$_SESSION['CSRF'][$page]) )
-	{
-		exit_error( 'Alerte CSRF' /*titre*/ , 'Jeton invalide. Éviter une même page ouverte dans plusieurs onglets.' /*contenu*/ , FALSE /*setup*/ );
-	}
-}
-
-/**
  * Renvoyer une taille de fichier lisible pour un humain :)
  * @see http://fr2.php.net/manual/fr/function.filesize.php#106569
  *

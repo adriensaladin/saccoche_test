@@ -1075,7 +1075,7 @@ $(document).ready
 		('click',
 			function()
 			{
-				retour = $(this).attr("href").substring(0,10); // substring() car si l'identifiant de session est passé dans l'URL (session.use-trans-sid à ON) on peut récolter un truc comme "14/08/2012?SACoche-session=507ac2c6e1007ce8d311ab221fb41aeabaf879f79317c" !
+				retour = $(this).attr("href");
 				retour = retour.replace(/\-/g,"/"); // http://javascript.developpez.com/sources/?page=tips#replaceall
 				$("#"+champ).val( retour ).focus();
 				$("#calque").html('&nbsp;').hide();

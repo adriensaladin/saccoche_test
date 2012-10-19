@@ -46,30 +46,18 @@ $tab_debug = array(
 foreach($tab_debug as $debug_mode => $debug_texte)
 {
 	$checked = constant('DEBUG_'.$debug_mode) ? ' checked' : '' ;
-	$lignes_debug .= '<label class="tab" for="f_debug_'.$debug_mode.'">'.$debug_mode.'</label><input type="checkbox" id="f_debug_'.$debug_mode.'" name="f_debug_'.$debug_mode.'" value="1"'.$checked.' /> '.$debug_texte.'<br />';
+	$lignes_debug .= '<label class="tab" for="f_debug_'.$debug_mode.'">'.$debug_mode.'</label><input type="checkbox" id="f_debug_'.$debug_mode.'" name="f_debug_'.$debug_mode.'" value="1"'.$checked.' /> '.$debug_texte.'</label><br />';
 }
-// Fichiers de logs phpCAS
-$tab_files = FileSystem::lister_contenu_dossier(CHEMIN_LOGS_PHPCAS);
-$listing_fichiers = '';
-foreach($tab_files as $file)
+// Fichier logs phpCAS
+if(is_file(CHEMIN_FICHIER_DEBUG_PHPCAS))
 {
-	if(substr($file,0,9)=='debugcas_')
-	{
-		if(HEBERGEUR_INSTALLATION=='mono-structure')
-		{
-			$etabl = 'pour l\'établissement';
-		}
-		else
-		{
-			$tab = explode('_',$file);
-			$etabl = 'pour la base n°'.$tab[1];
-		}
-		$listing_fichiers .= '<li id="'.html(substr($file,0,-4)).'">Logs présents '.$etabl.', le fichier pesant '.afficher_fichier_taille(filesize(CHEMIN_LOGS_PHPCAS.$file)).'<q class="voir" title="Récupérer ce fichier."></q><q class="supprimer" title="Supprimer ce fichier."></q></li>';
-	}
+	$info = 'Ce fichier de logs existe et pèse '.afficher_fichier_taille(filesize(CHEMIN_FICHIER_DEBUG_PHPCAS)).' : <a href="'.URL_FICHIER_DEBUG_PHPCAS.'" class="lien_ext">voir son contenu</a>.';
+	$disabled = '';
 }
-if(!$listing_fichiers)
+else
 {
-	$listing_fichiers .= '<li>Pas de fichier trouvé.</li>';
+	$info = 'Ce fichier de logs n\'est pas présent.';
+	$disabled = ' disabled';
 }
 ?>
 
@@ -86,21 +74,10 @@ if(!$listing_fichiers)
 
 <hr />
 
-<h2>Chemin des logs phpCAS</h2>
+<h2>Fichier de logs phpCAS</h2>
 <form action="#" method="post" id="form_phpCAS"><fieldset>
-	<p class="astuce">Si des fichiers de logs phpCAS existent déjà, ils ne seront pas déplacés : penser à les supprimer avant.</p>
-	<label class="tab" for="f_chemin_logs">Chemin</label><input type="text" size="100" id="f_chemin_logs" name="f_chemin_logs" value="<?php echo CHEMIN_LOGS_PHPCAS ?>" /><br />
-	<span class="tab"></span><button id="bouton_save_chemin" type="button" class="parametre">Enregistrer.</button><label id="ajax_save_chemin">&nbsp;</label>
+	<p class="astuce"><?php echo $info; ?></p>
+	<span class="tab"></span><button id="bouton_effacer" type="button" class="supprimer"<?php echo $disabled; ?>>Effacer le fichier.</button><label id="ajax_effacer">&nbsp;</label>
 </fieldset></form>
 
 <hr />
-
-<h2>Fichiers de logs phpCAS</h2>
-<ul id="fichiers_logs" class="puce">
-	<?php echo $listing_fichiers; ?>
-</ul>
-
-<hr />
-
-<div id="bilan">
-</div>

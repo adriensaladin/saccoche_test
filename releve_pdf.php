@@ -38,11 +38,12 @@ header('Content-Type: text/html; charset=utf-8');
 
 // Ouverture de la session et gestion des droits d'accès
 $PAGE = 'releve_pdf';
-if(!Session::verif_droit_acces($PAGE))
+require(CHEMIN_DOSSIER_INCLUDE.'tableau_droits.php');
+if(!isset($tab_droits[$PAGE]))
 {
-	exit_error( 'Droits manquants' /*titre*/ , 'Droits de la page "'.$PAGE.'" manquants.<br />Les droits de cette page n\'ont pas été attribués dans le fichier "'.FileSystem::fin_chemin(CHEMIN_DOSSIER_INCLUDE.'tableau_droits.php').'".' /*contenu*/ );
+	exit_error( 'Droits manquants' /*titre*/ , 'Droits de la page "'.$PAGE.'" manquants.<br />Les droits de cette page n\'ont pas été attribués dans le fichier'.FileSystem::fin_chemin(CHEMIN_DOSSIER_INCLUDE.'tableau_droits.php') /*contenu*/ );
 }
-Session::execute();
+Session::execute($tab_droits[$PAGE]);
 
 // Autres fonctions à charger
 require(CHEMIN_DOSSIER_INCLUDE.'fonction_divers.php');

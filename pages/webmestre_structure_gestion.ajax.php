@@ -75,12 +75,6 @@ if( ($action=='ajouter') && isset($tab_geo[$geo_id]) && $localisation && $denomi
 			exit('Erreur : numéro UAI déjà utilisé !');
 		}
 	}
-	// Vérifier le domaine du serveur mail
-	$mail_domaine = tester_domaine_courriel_valide($contact_courriel);
-	if($mail_domaine!==TRUE)
-	{
-		exit('Erreur avec le domaine '.$mail_domaine.' !');
-	}
 	// Insérer l'enregistrement dans la base du webmestre
 	// Créer le fichier de connexion de la base de données de la structure
 	// Créer la base de données de la structure

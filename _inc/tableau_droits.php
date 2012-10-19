@@ -25,10 +25,10 @@
  * 
  */
 
-// //////////////////////////////////////////////////
 // Tableau avec les différents droits d'accès aux pages suivant le profil
 // Il faut aussi indiquer le format page_section pour les appels ajax
-// //////////////////////////////////////////////////
+
+$tab_droits = array();
 
 $tab_droits_profil_tous                  = array( 'public'=>1 , 'eleve'=>1 , 'parent'=>1 , 'professeur'=>1 , 'directeur'=>1 , 'administrateur'=>1 , 'webmestre'=>1 );
 $tab_droits_profil_identifie             = array( 'public'=>0 , 'eleve'=>1 , 'parent'=>1 , 'professeur'=>1 , 'directeur'=>1 , 'administrateur'=>1 , 'webmestre'=>1 );
@@ -44,146 +44,179 @@ $tab_droits_profil_prof_dir_admin        = array( 'public'=>0 , 'eleve'=>0 , 'pa
 $tab_droits_profil_dir_admin             = array( 'public'=>0 , 'eleve'=>0 , 'parent'=>0 , 'professeur'=>0 , 'directeur'=>1 , 'administrateur'=>1 , 'webmestre'=>0 );
 $tab_droits_profil_eleve_parent_prof_dir = array( 'public'=>0 , 'eleve'=>1 , 'parent'=>1 , 'professeur'=>1 , 'directeur'=>1 , 'administrateur'=>0 , 'webmestre'=>0 );
 
-$tab_droits_par_page = array
+// Tous profils
+$tab_droits['fermer_session']                          = $tab_droits_profil_tous; // Au cas où plusieurs onglets sont ouverts dont l'un a déjà déconnecté
+// Profils identifiés
+$tab_droits['calque_date_calendrier']                  = $tab_droits_profil_identifie;
+$tab_droits['conserver_session_active']                = $tab_droits_profil_identifie;
+$tab_droits['compte_accueil']                          = $tab_droits_profil_identifie;
+$tab_droits['compte_password']                         = $tab_droits_profil_identifie;
+// Profil public
+$tab_droits['public_accueil']                          = $tab_droits_profil_public;
+$tab_droits['public_installation']                     = $tab_droits_profil_public;
+$tab_droits['public_logout_SSO']                       = $tab_droits_profil_public;
+// Profil élève
+$tab_droits['evaluation_demande_eleve']                = $tab_droits_profil_eleve;
+$tab_droits['evaluation_demande_eleve_ajout']          = $tab_droits_profil_eleve;
+// Profil professeur
+$tab_droits['_maj_select_eval']                        = $tab_droits_profil_professeur;
+$tab_droits['_maj_select_matieres_prof']               = $tab_droits_profil_professeur;
+$tab_droits['evaluation_demande_professeur']           = $tab_droits_profil_professeur;
+$tab_droits['evaluation_gestion']                      = $tab_droits_profil_professeur;
+$tab_droits['professeur_groupe_besoin']                = $tab_droits_profil_professeur;
+$tab_droits['professeur_referentiel']                  = $tab_droits_profil_professeur;
+$tab_droits['professeur_referentiel_gestion']          = $tab_droits_profil_professeur;
+$tab_droits['professeur_referentiel_edition']          = $tab_droits_profil_professeur;
+$tab_droits['professeur_referentiel_ressources']       = $tab_droits_profil_professeur;
+$tab_droits['releve_items_selection']                  = $tab_droits_profil_professeur;
+// Profil directeur
+$tab_droits['_maj_select_matieres']                    = $tab_droits_profil_directeur;
+$tab_droits['consultation_statistiques']               = $tab_droits_profil_directeur;
+// Profil administrateur
+$tab_droits['_maj_select_directeurs']                  = $tab_droits_profil_administrateur;
+$tab_droits['_maj_select_parents']                     = $tab_droits_profil_administrateur;
+$tab_droits['_maj_select_professeurs']                 = $tab_droits_profil_administrateur;
+$tab_droits['_maj_select_professeurs_directeurs']      = $tab_droits_profil_administrateur;
+$tab_droits['administrateur_administrateur']           = $tab_droits_profil_administrateur;
+$tab_droits['administrateur_algorithme_gestion']       = $tab_droits_profil_administrateur;
+$tab_droits['administrateur_autorisations']            = $tab_droits_profil_administrateur;
+$tab_droits['administrateur_blocage']                  = $tab_droits_profil_administrateur;
+$tab_droits['administrateur_classe']                   = $tab_droits_profil_administrateur;
+$tab_droits['administrateur_classe_gestion']           = $tab_droits_profil_administrateur;
+$tab_droits['administrateur_codes_couleurs']           = $tab_droits_profil_administrateur;
+$tab_droits['administrateur_directeur']                = $tab_droits_profil_administrateur;
+$tab_droits['administrateur_dump']                     = $tab_droits_profil_administrateur;
+$tab_droits['administrateur_eleve']                    = $tab_droits_profil_administrateur;
+$tab_droits['administrateur_eleve_classe']             = $tab_droits_profil_administrateur;
+$tab_droits['administrateur_eleve_gestion']            = $tab_droits_profil_administrateur;
+$tab_droits['administrateur_eleve_groupe']             = $tab_droits_profil_administrateur;
+$tab_droits['administrateur_eleve_photo']              = $tab_droits_profil_administrateur;
+$tab_droits['administrateur_etabl_connexion']          = $tab_droits_profil_administrateur;
+$tab_droits['administrateur_etabl_duree_inactivite']   = $tab_droits_profil_administrateur;
+$tab_droits['administrateur_etabl_identite']           = $tab_droits_profil_administrateur;
+$tab_droits['administrateur_etabl_login']              = $tab_droits_profil_administrateur;
+$tab_droits['administrateur_etabl_matiere']            = $tab_droits_profil_administrateur;
+$tab_droits['administrateur_etabl_niveau']             = $tab_droits_profil_administrateur;
+$tab_droits['administrateur_etabl_palier']             = $tab_droits_profil_administrateur;
+$tab_droits['administrateur_fichier_identifiant']      = $tab_droits_profil_administrateur;
+$tab_droits['administrateur_fichier_user']             = $tab_droits_profil_administrateur;
+$tab_droits['administrateur_groupe']                   = $tab_droits_profil_administrateur;
+$tab_droits['administrateur_groupe_gestion']           = $tab_droits_profil_administrateur;
+$tab_droits['administrateur_log_actions']              = $tab_droits_profil_administrateur;
+$tab_droits['administrateur_nettoyage']                = $tab_droits_profil_administrateur;
+$tab_droits['administrateur_parent']                   = $tab_droits_profil_administrateur;
+$tab_droits['administrateur_parent_gestion']           = $tab_droits_profil_administrateur;
+$tab_droits['administrateur_parent_adresse']           = $tab_droits_profil_administrateur;
+$tab_droits['administrateur_parent_eleve']             = $tab_droits_profil_administrateur;
+$tab_droits['administrateur_periode']                  = $tab_droits_profil_administrateur;
+$tab_droits['administrateur_periode_classe_groupe']    = $tab_droits_profil_administrateur;
+$tab_droits['administrateur_periode_gestion']          = $tab_droits_profil_administrateur;
+$tab_droits['administrateur_professeur']               = $tab_droits_profil_administrateur;
+$tab_droits['administrateur_professeur_classe']        = $tab_droits_profil_administrateur;
+$tab_droits['administrateur_professeur_coordonnateur'] = $tab_droits_profil_administrateur;
+$tab_droits['administrateur_professeur_gestion']       = $tab_droits_profil_administrateur;
+$tab_droits['administrateur_professeur_groupe']        = $tab_droits_profil_administrateur;
+$tab_droits['administrateur_professeur_matiere']       = $tab_droits_profil_administrateur;
+$tab_droits['administrateur_professeur_principal']     = $tab_droits_profil_administrateur;
+$tab_droits['administrateur_resilier']                 = $tab_droits_profil_administrateur;
+// Profil webmestre
+$tab_droits['webmestre_configuration_proxy']           = $tab_droits_profil_webmestre;
+$tab_droits['webmestre_database_test']                 = $tab_droits_profil_webmestre;
+$tab_droits['webmestre_debug']                         = $tab_droits_profil_webmestre;
+$tab_droits['webmestre_fichiers_deposes']              = $tab_droits_profil_webmestre;
+$tab_droits['webmestre_geographie']                    = $tab_droits_profil_webmestre;
+$tab_droits['webmestre_identite_installation']         = $tab_droits_profil_webmestre;
+$tab_droits['webmestre_maintenance']                   = $tab_droits_profil_webmestre;
+$tab_droits['webmestre_mdp_admin']                     = $tab_droits_profil_webmestre;
+$tab_droits['webmestre_newsletter']                    = $tab_droits_profil_webmestre;
+$tab_droits['webmestre_resilier']                      = $tab_droits_profil_webmestre;
+$tab_droits['webmestre_statistiques']                  = $tab_droits_profil_webmestre;
+$tab_droits['webmestre_structure_ajout_csv']           = $tab_droits_profil_webmestre;
+$tab_droits['webmestre_structure_gestion']             = $tab_droits_profil_webmestre;
+$tab_droits['webmestre_structure_transfert']           = $tab_droits_profil_webmestre;
+// Profil professeur | directeur | administrateur
+$tab_droits['officiel']                                = $tab_droits_profil_prof_dir_admin;
+$tab_droits['officiel_accueil']                        = $tab_droits_profil_prof_dir_admin;
+$tab_droits['compte_message']                          = $tab_droits_profil_prof_dir_admin;
+$tab_droits['consultation_date_connexion']             = $tab_droits_profil_prof_dir_admin;
+// Profil professeur | directeur
+$tab_droits['_maj_select_domaines']                    = $tab_droits_profil_prof_dir;
+$tab_droits['_maj_select_matieres_famille']            = $tab_droits_profil_prof_dir;
+$tab_droits['_maj_select_niveaux_famille']             = $tab_droits_profil_prof_dir;
+$tab_droits['calque_voir_photo']                       = $tab_droits_profil_prof_dir;
+$tab_droits['compte_selection_items']                  = $tab_droits_profil_prof_dir;
+$tab_droits['consultation_referentiel_externe']        = $tab_droits_profil_prof_dir;
+$tab_droits['export_fichier']                          = $tab_droits_profil_prof_dir;
+$tab_droits['releve_recherche']                        = $tab_droits_profil_prof_dir;
+$tab_droits['releve_synthese_socle']                   = $tab_droits_profil_prof_dir;
+$tab_droits['consultation_trombinoscope']              = $tab_droits_profil_prof_dir;
+$tab_droits['validation_socle']                        = $tab_droits_profil_prof_dir;
+$tab_droits['validation_socle_item']                   = $tab_droits_profil_prof_dir;
+$tab_droits['validation_socle_pilier']                 = $tab_droits_profil_prof_dir;
+$tab_droits['validation_socle_pilier_annuler']         = $tab_droits_profil_prof_dir;
+// Profil directeur | administrateur
+$tab_droits['administrateur_eleve_langue']             = $tab_droits_profil_dir_admin;
+$tab_droits['officiel_reglages_ordre_matieres']        = $tab_droits_profil_dir_admin;
+$tab_droits['officiel_reglages_format_synthese']       = $tab_droits_profil_dir_admin;
+$tab_droits['officiel_reglages_mise_en_page']          = $tab_droits_profil_dir_admin;
+$tab_droits['officiel_reglages_configuration']         = $tab_droits_profil_dir_admin;
+$tab_droits['validation_socle_fichier']                = $tab_droits_profil_dir_admin;
+// Profil élève | parent | professeur | directeur
+$tab_droits['_maj_select_piliers']                     = $tab_droits_profil_eleve_parent_prof_dir;
+$tab_droits['_maj_select_niveaux']                     = $tab_droits_profil_eleve_parent_prof_dir;
+$tab_droits['compte_daltonisme']                       = $tab_droits_profil_eleve_parent_prof_dir;
+$tab_droits['consultation_algorithme']                 = $tab_droits_profil_eleve_parent_prof_dir;
+$tab_droits['consultation_groupe_periode']             = $tab_droits_profil_eleve_parent_prof_dir;
+$tab_droits['evaluation_voir']                         = $tab_droits_profil_eleve_parent_prof_dir;
+$tab_droits['releve']                                  = $tab_droits_profil_eleve_parent_prof_dir;
+$tab_droits['releve_grille_referentiel']               = $tab_droits_profil_eleve_parent_prof_dir;
+$tab_droits['releve_items_matiere']                    = $tab_droits_profil_eleve_parent_prof_dir;
+$tab_droits['releve_items_multimatiere']               = $tab_droits_profil_eleve_parent_prof_dir;
+$tab_droits['releve_socle']                            = $tab_droits_profil_eleve_parent_prof_dir;
+$tab_droits['releve_synthese_matiere']                 = $tab_droits_profil_eleve_parent_prof_dir;
+$tab_droits['releve_synthese_multimatiere']            = $tab_droits_profil_eleve_parent_prof_dir;
+// Profils particuliers à gérer au cas par cas
+$tab_droits['_maj_select_eleves']                      = array( 'public'=>0 , 'eleve'=>0 , 'parent'=>1 , 'professeur'=>1 , 'directeur'=>1 , 'administrateur'=>1 , 'webmestre'=>0 );
+$tab_droits['compte_info_serveur']                     = array( 'public'=>0 , 'eleve'=>0 , 'parent'=>0 , 'professeur'=>0 , 'directeur'=>0 , 'administrateur'=>1 , 'webmestre'=>1 );
+$tab_droits['officiel_voir_archive']                   = array( 'public'=>0 , 'eleve'=>1 , 'parent'=>1 , 'professeur'=>0 , 'directeur'=>0 , 'administrateur'=>0 , 'webmestre'=>0 );
+$tab_droits['consultation_referentiel_interne']        = array( 'public'=>0 , 'eleve'=>1 , 'parent'=>1 , 'professeur'=>1 , 'directeur'=>1 , 'administrateur'=>1 , 'webmestre'=>0 );
+$tab_droits['releve_pdf']                              = array( 'public'=>0 , 'eleve'=>1 , 'parent'=>1 , 'professeur'=>1 , 'directeur'=>1 , 'administrateur'=>1 , 'webmestre'=>0 );
+$tab_droits['public_login_SSO']                        = array( 'public'=>1 , 'eleve'=>1 , 'parent'=>1 , 'professeur'=>1 , 'directeur'=>1 , 'administrateur'=>1 , 'webmestre'=>0 ); // Attention ! Il faut inclure "public" car un échange est encore effectué avec ce fichier après enregistrement des données de session...
+
+// Tableau avec les pages pour lesquelles une vérification de jeton est effectuée lors d'un appel AJAX pour contrer les attaques de type CSRF
+// @see http://fr.wikipedia.org/wiki/Cross-site_request_forgery
+// @see http://www.siteduzero.com/tutoriel-3-157576-securisation-des-failles-csrf.html
+$tab_sans_verif_csrf = array
 (
-	// Tous profils
-	'fermer_session'                          => $tab_droits_profil_tous, // Au cas où plusieurs onglets sont ouverts dont l'un a déjà déconnecté
-	// Profils identifiés
-	'calque_date_calendrier'                  => $tab_droits_profil_identifie,
-	'conserver_session_active'                => $tab_droits_profil_identifie,
-	'compte_accueil'                          => $tab_droits_profil_identifie,
-	'compte_password'                         => $tab_droits_profil_identifie,
-	// Profil public
-	'public_accueil'                          => $tab_droits_profil_public,
-	'public_installation'                     => $tab_droits_profil_public,
-	'public_logout_SSO'                       => $tab_droits_profil_public,
-	// Profil élève
-	'evaluation_demande_eleve'                => $tab_droits_profil_eleve,
-	'evaluation_demande_eleve_ajout'          => $tab_droits_profil_eleve,
-	// Profil professeur
-	'_maj_select_eval'                        => $tab_droits_profil_professeur,
-	'_maj_select_matieres_prof'               => $tab_droits_profil_professeur,
-	'evaluation_demande_professeur'           => $tab_droits_profil_professeur,
-	'evaluation_gestion'                      => $tab_droits_profil_professeur,
-	'professeur_groupe_besoin'                => $tab_droits_profil_professeur,
-	'professeur_referentiel'                  => $tab_droits_profil_professeur,
-	'professeur_referentiel_gestion'          => $tab_droits_profil_professeur,
-	'professeur_referentiel_edition'          => $tab_droits_profil_professeur,
-	'professeur_referentiel_ressources'       => $tab_droits_profil_professeur,
-	'releve_items_selection'                  => $tab_droits_profil_professeur,
-	// Profil directeur
-	'_maj_select_matieres'                    => $tab_droits_profil_directeur,
-	'consultation_statistiques'               => $tab_droits_profil_directeur,
-	// Profil administrateur
-	'_maj_select_directeurs'                  => $tab_droits_profil_administrateur,
-	'_maj_select_parents'                     => $tab_droits_profil_administrateur,
-	'_maj_select_professeurs'                 => $tab_droits_profil_administrateur,
-	'_maj_select_professeurs_directeurs'      => $tab_droits_profil_administrateur,
-	'administrateur_administrateur'           => $tab_droits_profil_administrateur,
-	'administrateur_algorithme_gestion'       => $tab_droits_profil_administrateur,
-	'administrateur_autorisations'            => $tab_droits_profil_administrateur,
-	'administrateur_blocage'                  => $tab_droits_profil_administrateur,
-	'administrateur_classe'                   => $tab_droits_profil_administrateur,
-	'administrateur_classe_gestion'           => $tab_droits_profil_administrateur,
-	'administrateur_codes_couleurs'           => $tab_droits_profil_administrateur,
-	'administrateur_directeur'                => $tab_droits_profil_administrateur,
-	'administrateur_dump'                     => $tab_droits_profil_administrateur,
-	'administrateur_eleve'                    => $tab_droits_profil_administrateur,
-	'administrateur_eleve_classe'             => $tab_droits_profil_administrateur,
-	'administrateur_eleve_gestion'            => $tab_droits_profil_administrateur,
-	'administrateur_eleve_groupe'             => $tab_droits_profil_administrateur,
-	'administrateur_eleve_photo'              => $tab_droits_profil_administrateur,
-	'administrateur_etabl_connexion'          => $tab_droits_profil_administrateur,
-	'administrateur_etabl_duree_inactivite'   => $tab_droits_profil_administrateur,
-	'administrateur_etabl_identite'           => $tab_droits_profil_administrateur,
-	'administrateur_etabl_login'              => $tab_droits_profil_administrateur,
-	'administrateur_etabl_matiere'            => $tab_droits_profil_administrateur,
-	'administrateur_etabl_niveau'             => $tab_droits_profil_administrateur,
-	'administrateur_etabl_palier'             => $tab_droits_profil_administrateur,
-	'administrateur_fichier_identifiant'      => $tab_droits_profil_administrateur,
-	'administrateur_fichier_user'             => $tab_droits_profil_administrateur,
-	'administrateur_groupe'                   => $tab_droits_profil_administrateur,
-	'administrateur_groupe_gestion'           => $tab_droits_profil_administrateur,
-	'administrateur_log_actions'              => $tab_droits_profil_administrateur,
-	'administrateur_nettoyage'                => $tab_droits_profil_administrateur,
-	'administrateur_parent'                   => $tab_droits_profil_administrateur,
-	'administrateur_parent_gestion'           => $tab_droits_profil_administrateur,
-	'administrateur_parent_adresse'           => $tab_droits_profil_administrateur,
-	'administrateur_parent_eleve'             => $tab_droits_profil_administrateur,
-	'administrateur_periode'                  => $tab_droits_profil_administrateur,
-	'administrateur_periode_classe_groupe'    => $tab_droits_profil_administrateur,
-	'administrateur_periode_gestion'          => $tab_droits_profil_administrateur,
-	'administrateur_professeur'               => $tab_droits_profil_administrateur,
-	'administrateur_professeur_classe'        => $tab_droits_profil_administrateur,
-	'administrateur_professeur_coordonnateur' => $tab_droits_profil_administrateur,
-	'administrateur_professeur_gestion'       => $tab_droits_profil_administrateur,
-	'administrateur_professeur_groupe'        => $tab_droits_profil_administrateur,
-	'administrateur_professeur_matiere'       => $tab_droits_profil_administrateur,
-	'administrateur_professeur_principal'     => $tab_droits_profil_administrateur,
-	'administrateur_resilier'                 => $tab_droits_profil_administrateur,
-	// Profil webmestre
-	'webmestre_configuration_proxy'           => $tab_droits_profil_webmestre,
-	'webmestre_database_test'                 => $tab_droits_profil_webmestre,
-	'webmestre_debug'                         => $tab_droits_profil_webmestre,
-	'webmestre_fichiers_deposes'              => $tab_droits_profil_webmestre,
-	'webmestre_geographie'                    => $tab_droits_profil_webmestre,
-	'webmestre_identite_installation'         => $tab_droits_profil_webmestre,
-	'webmestre_maintenance'                   => $tab_droits_profil_webmestre,
-	'webmestre_mdp_admin'                     => $tab_droits_profil_webmestre,
-	'webmestre_newsletter'                    => $tab_droits_profil_webmestre,
-	'webmestre_resilier'                      => $tab_droits_profil_webmestre,
-	'webmestre_statistiques'                  => $tab_droits_profil_webmestre,
-	'webmestre_structure_ajout_csv'           => $tab_droits_profil_webmestre,
-	'webmestre_structure_gestion'             => $tab_droits_profil_webmestre,
-	'webmestre_structure_transfert'           => $tab_droits_profil_webmestre,
-	// Profil professeur | directeur | administrateur
-	'officiel'                                => $tab_droits_profil_prof_dir_admin,
-	'officiel_accueil'                        => $tab_droits_profil_prof_dir_admin,
-	'compte_message'                          => $tab_droits_profil_prof_dir_admin,
-	'consultation_date_connexion'             => $tab_droits_profil_prof_dir_admin,
-	// Profil professeur | directeur
-	'_maj_select_domaines'                    => $tab_droits_profil_prof_dir,
-	'_maj_select_matieres_famille'            => $tab_droits_profil_prof_dir,
-	'_maj_select_niveaux_famille'             => $tab_droits_profil_prof_dir,
-	'calque_voir_photo'                       => $tab_droits_profil_prof_dir,
-	'compte_selection_items'                  => $tab_droits_profil_prof_dir,
-	'consultation_referentiel_externe'        => $tab_droits_profil_prof_dir,
-	'export_fichier'                          => $tab_droits_profil_prof_dir,
-	'releve_recherche'                        => $tab_droits_profil_prof_dir,
-	'releve_synthese_socle'                   => $tab_droits_profil_prof_dir,
-	'consultation_trombinoscope'              => $tab_droits_profil_prof_dir,
-	'validation_socle'                        => $tab_droits_profil_prof_dir,
-	'validation_socle_item'                   => $tab_droits_profil_prof_dir,
-	'validation_socle_pilier'                 => $tab_droits_profil_prof_dir,
-	'validation_socle_pilier_annuler'         => $tab_droits_profil_prof_dir,
-	// Profil directeur | administrateur
-	'administrateur_eleve_langue'             => $tab_droits_profil_dir_admin,
-	'officiel_reglages_ordre_matieres'        => $tab_droits_profil_dir_admin,
-	'officiel_reglages_format_synthese'       => $tab_droits_profil_dir_admin,
-	'officiel_reglages_mise_en_page'          => $tab_droits_profil_dir_admin,
-	'officiel_reglages_configuration'         => $tab_droits_profil_dir_admin,
-	'validation_socle_fichier'                => $tab_droits_profil_dir_admin,
-	// Profil élève | parent | professeur | directeur
-	'_maj_select_piliers'                     => $tab_droits_profil_eleve_parent_prof_dir,
-	'_maj_select_niveaux'                     => $tab_droits_profil_eleve_parent_prof_dir,
-	'compte_daltonisme'                       => $tab_droits_profil_eleve_parent_prof_dir,
-	'consultation_algorithme'                 => $tab_droits_profil_eleve_parent_prof_dir,
-	'consultation_groupe_periode'             => $tab_droits_profil_eleve_parent_prof_dir,
-	'evaluation_voir'                         => $tab_droits_profil_eleve_parent_prof_dir,
-	'releve'                                  => $tab_droits_profil_eleve_parent_prof_dir,
-	'releve_grille_referentiel'               => $tab_droits_profil_eleve_parent_prof_dir,
-	'releve_items_matiere'                    => $tab_droits_profil_eleve_parent_prof_dir,
-	'releve_items_multimatiere'               => $tab_droits_profil_eleve_parent_prof_dir,
-	'releve_socle'                            => $tab_droits_profil_eleve_parent_prof_dir,
-	'releve_synthese_matiere'                 => $tab_droits_profil_eleve_parent_prof_dir,
-	'releve_synthese_multimatiere'            => $tab_droits_profil_eleve_parent_prof_dir,
-	// Profils particuliers à gérer au cas par cas
-	'_maj_select_eleves'                      => array( 'public'=>0 , 'eleve'=>0 , 'parent'=>1 , 'professeur'=>1 , 'directeur'=>1 , 'administrateur'=>1 , 'webmestre'=>0 ),
-	'compte_info_serveur'                     => array( 'public'=>0 , 'eleve'=>0 , 'parent'=>0 , 'professeur'=>0 , 'directeur'=>0 , 'administrateur'=>1 , 'webmestre'=>1 ),
-	'officiel_voir_archive'                   => array( 'public'=>0 , 'eleve'=>1 , 'parent'=>1 , 'professeur'=>0 , 'directeur'=>0 , 'administrateur'=>0 , 'webmestre'=>0 ),
-	'consultation_referentiel_interne'        => array( 'public'=>0 , 'eleve'=>1 , 'parent'=>1 , 'professeur'=>1 , 'directeur'=>1 , 'administrateur'=>1 , 'webmestre'=>0 ),
-	'releve_pdf'                              => array( 'public'=>0 , 'eleve'=>1 , 'parent'=>1 , 'professeur'=>1 , 'directeur'=>1 , 'administrateur'=>1 , 'webmestre'=>0 ),
-	'public_login_SSO'                        => array( 'public'=>1 , 'eleve'=>1 , 'parent'=>1 , 'professeur'=>1 , 'directeur'=>1 , 'administrateur'=>1 , 'webmestre'=>0 ) // Attention ! Il faut inclure "public" car un échange est encore effectué avec ce fichier après enregistrement des données de session...
+	// appel depuis plusieurs pages + pas de vérif utile
+	'_maj_select_directeurs',
+	'_maj_select_domaines',
+	'_maj_select_eleves',
+	'_maj_select_eval',
+	'_maj_select_matieres',
+	'_maj_select_matieres_famille',
+	'_maj_select_matieres_prof',
+	'_maj_select_niveaux',
+	'_maj_select_niveaux_famille',
+	'_maj_select_parents',
+	'_maj_select_piliers',
+	'_maj_select_professeurs',
+	'_maj_select_professeurs_directeurs',
+	'calque_date_calendrier',
+	'calque_voir_photo',
+	'compte_selection_items',
+	'conserver_session_active',
+	'evaluation_demande_eleve_ajout',
+	'fermer_session',
+	// sans objet (sans besoin d'identification) + sinon si la session a expiré alors elle est réinitialisée de façon transparente lors de l'appel ajax mais forcément le jeton de session n'est pas retrouvé
+	'public_accueil',
+	// sans objet car pas de formulaire
+	'public_login_SSO', 
+	'public_logout_SSO',
+	'releve',
+	'releve_pdf'
 );
 
+$tab_verif_csrf = array_fill_keys ( array_diff( array_keys($tab_droits) , $tab_sans_verif_csrf ) , TRUE );
+ksort($tab_verif_csrf);
 ?>

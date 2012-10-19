@@ -190,6 +190,12 @@ if($action=='importer_csv')
 			{
 				$tab_erreur['mail']['nb']++;
 			}
+			// Vérifier le domaine du serveur mail
+			$mail_domaine = tester_domaine_courriel_valide($contact_courriel);
+			if($mail_domaine!==TRUE)
+			{
+				$tab_erreur['mail']['nb']++;
+			}
 			// Vérifier que la date est correcte
 			if(!tester_date($date))
 			{

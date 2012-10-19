@@ -43,6 +43,18 @@ $(document).ready
 		);
 
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
+		// Retirer un message de confirmation ou d'erreur
+		// ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+		$("#form_phpCAS input").change
+		(
+			function()
+			{
+				$('#ajax_save_chemin').removeAttr("class").html("");
+			}
+		);
+
+		// ////////////////////////////////////////////////////////////////////////////////////////////////////
 		// Modifier les paramètres de debug
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -85,41 +97,109 @@ $(document).ready
 		);
 
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
-		// Effacer le fichier de logs de phpCAS
+		// Modifier le chemin des logs phpCAS
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-		$('#bouton_effacer').click
+		$('#bouton_save_chemin').click
 		(
 			function()
 			{
-				$('#bouton_effacer').prop('disabled',true);
-				$('#ajax_effacer').removeAttr("class").addClass("loader").html("Connexion au serveur&hellip;");
+				$('#bouton_save_chemin').prop('disabled',true);
+				$('#ajax_save_chemin').removeAttr("class").addClass("loader").html("Connexion au serveur&hellip;");
 				$.ajax
 				(
 					{
 						type : 'POST',
 						url : 'ajax.php?page='+PAGE,
-						data : 'csrf='+CSRF+'&f_action=effacer_logs_phpCAS',
+						data : 'csrf='+CSRF+'&f_action=modifier_chemin_phpCAS'+'&'+$('#form_phpCAS').serialize(),
 						dataType : "html",
 						error : function(jqXHR, textStatus, errorThrown)
 						{
-							$('#bouton_effacer').prop('disabled',false);
-							$('#ajax_effacer').removeAttr("class").addClass("alerte").html('Échec de la connexion !');
+							$('#bouton_save_chemin').prop('disabled',false);
+							$('#ajax_save_chemin').removeAttr("class").addClass("alerte").html('Échec de la connexion !');
 							return false;
 						},
 						success : function(responseHTML)
 						{
+							$('#bouton_save_chemin').prop('disabled',false);
 							if(responseHTML=='ok')
 							{
-								$('#form_phpCAS p.astuce').html('Ce fichier de logs n\'est pas présent.');
-								$('#ajax_effacer').removeAttr("class").addClass("valide").html('Fichier effacé.');
+								$('#ajax_save_chemin').removeAttr("class").addClass("valide").html('Chemin enregistré.');
 								initialiser_compteur();
 							}
 							else
 							{
-								$('#bouton_effacer').prop('disabled',false);
-								$('#ajax_effacer').removeAttr("class").addClass("alerte").html(responseHTML);
+								$('#ajax_save_chemin').removeAttr("class").addClass("alerte").html(responseHTML);
 							}
+							return false;
+						}
+					}
+				);
+			}
+		);
+
+		// ////////////////////////////////////////////////////////////////////////////////////////////////////
+		// Intercepter la touche entrée pour éviter une soumission d'un formulaire sans contrôle
+		// ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+		$('#form_phpCAS').submit
+		(
+			function()
+			{
+				$("#bouton_save_chemin").click();
+				return false;
+			}
+		);
+
+		// ////////////////////////////////////////////////////////////////////////////////////////////////////
+		// Voir | Effacer un fichier de logs de phpCAS
+		// ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+		$('#fichiers_logs q').click
+		(
+			function()
+			{
+				var f_action  = $(this).attr('class');
+				var f_fichier = $(this).parent().attr('id');
+				afficher_masquer_images_action('hide');
+				new_label  = '<label class="loader">Connexion au serveur&hellip;</label>';
+				$(this).after(new_label);
+				$.ajax
+				(
+					{
+						type : 'POST',
+						url : 'ajax.php?page='+PAGE,
+						data : 'csrf='+CSRF+'&f_action='+f_action+'&f_fichier='+f_fichier,
+						dataType : "html",
+						error : function(jqXHR, textStatus, errorThrown)
+						{
+							$.fancybox( '<label class="alerte">'+'Échec de la connexion !'+'</label>' , {'centerOnScroll':true} );
+							$('#fichiers_logs label').remove();
+							afficher_masquer_images_action('show');
+							return false;
+						},
+						success : function(responseHTML)
+						{
+							if( (f_action=='supprimer') && (responseHTML=='ok') )
+							{
+								initialiser_compteur();
+								$('#'+f_fichier).remove();
+							}
+							else if( (f_action=='voir') && (responseHTML.substring(0,4)=='<ul ') )
+							{
+								initialiser_compteur();
+								// Mis dans le div bilan et pas balancé directement dans le fancybox sinon le format_lien() nécessite un peu plus de largeur que le fancybox ne recalcule pas (et $.fancybox.update(); ne change rien).
+								// Malgré tout, pour Chrome par exemple, la largeur est mal clculée et provoque des retours à la ligne, d'où le minWidth ajouté.
+								$('#bilan').html(responseHTML);
+								format_liens('#bilan');
+								$.fancybox( { 'href':'#bilan' , onClosed:function(){$('#bilan').html("");} , 'centerOnScroll':true , 'minWidth':300 } );
+							}
+							else
+							{
+								$.fancybox( '<label class="alerte">'+responseHTML+'</label>' , {'centerOnScroll':true} );
+							}
+							$('#fichiers_logs label').remove();
+							afficher_masquer_images_action('show');
 							return false;
 						}
 					}

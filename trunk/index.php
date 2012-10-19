@@ -56,15 +56,14 @@ elseif($PAGE!='public_installation')
 }
 
 // Le fait de lister les droits d'accès de chaque page empêche de surcroit l'exploitation d'une vulnérabilité "include PHP" (http://www.certa.ssi.gouv.fr/site/CERTA-2003-ALE-003/).
-require(CHEMIN_DOSSIER_INCLUDE.'tableau_droits.php');
-if(!isset($tab_droits[$PAGE]))
+if(!Session::verif_droit_acces($PAGE))
 {
-	$tab_messages_erreur[] = 'Erreur : droits de la page "'.$PAGE.'" manquants ; soit le paramètre "page" transmis en GET est incorrect, soit les droits de cette page n\'ont pas été attribués dans le fichier'.FileSystem::fin_chemin(CHEMIN_DOSSIER_INCLUDE.'tableau_droits.php.');
+	$tab_messages_erreur[] = 'Erreur : droits de la page "'.$PAGE.'" manquants ; soit le paramètre "page" transmis en GET est incorrect, soit les droits de cette page n\'ont pas été attribués dans le fichier "'.FileSystem::fin_chemin(CHEMIN_DOSSIER_INCLUDE.'tableau_droits.php.').'".';
 	$PAGE = (substr($PAGE,0,6)=='public') ? 'public_accueil' : 'compte_accueil' ;
 }
 
 // Ouverture de la session et gestion des droits d'accès
-Session::execute($tab_droits[$PAGE]);
+Session::execute();
 
 // Infos DEBUG dans FirePHP
 if (DEBUG>3) afficher_infos_debug_FirePHP();
@@ -99,6 +98,15 @@ if(is_file(CHEMIN_FICHIER_CONFIG_INSTALL))
 		fabriquer_fichier_hebergeur_info( array('FICHIER_TAILLE_MAX'=>500,'FICHIER_DUREE_CONSERVATION'=>12) );
 	}
 	// FIN PATCH CONFIG 3
+	// DEBUT PATCH CONFIG 4
+	// A compter du 18/10/2012, ajout de paramètre dans le fichier de constantes pour le chemin des logs phpCAS. [TODO] peut être retiré dans un an environ
+	if(!defined('CHEMIN_LOGS_PHPCAS'))
+	{
+		fabriquer_fichier_hebergeur_info( array('CHEMIN_LOGS_PHPCAS'=>CHEMIN_DOSSIER_TMP) );
+		$ancien_fichier = CHEMIN_DOSSIER_TMP.'debugcas_'.md5($_SERVER['DOCUMENT_ROOT']).'.txt';
+		if(is_file($ancien_fichier)) unlink($ancien_fichier);
+	}
+	// FIN PATCH CONFIG 4
 }
 
 // Interface de connexion à la base, chargement et config (test sur CHEMIN_FICHIER_CONFIG_INSTALL car à éviter si procédure d'installation non terminée).
@@ -177,7 +185,7 @@ if($PAGE=='officiel_accueil')    $tab_fichiers_head[] = array( 'js'  , compacter
 if(is_file($filename_js_normal)) $tab_fichiers_head[] = array( 'js' , compacter($filename_js_normal,'pack') );
 
 // Jeton CSRF
-$CSRF = isset($tab_verif_csrf[$PAGE]) ? Session::generer_jeton_anti_CSRF($PAGE) : '' ;
+Session::generer_jeton_anti_CSRF($PAGE);
 
 // Affichage de l'en-tête
 declaration_entete( TRUE /*is_meta_robots*/ , TRUE /*is_favicon*/ , TRUE /*is_rss*/ , $tab_fichiers_head , $TITRE_NAVIGATEUR , $CSS_PERSO );
@@ -252,7 +260,7 @@ declaration_entete( TRUE /*is_meta_robots*/ , TRUE /*is_favicon*/ , TRUE /*is_rs
 	?>
 	<script type="text/javascript">
 		var PAGE='<?php echo $PAGE ?>';
-		var CSRF='<?php echo $CSRF ?>';
+		var CSRF='<?php echo Session::$_CSRF_value ?>';
 		var DUREE_AUTORISEE='<?php echo $_SESSION['DUREE_INACTIVITE'] ?>';
 		var DUREE_AFFICHEE='<?php echo $_SESSION['DUREE_INACTIVITE'] ?>';
 		var CONNEXION_USED='<?php echo (isset($_COOKIE[COOKIE_AUTHMODE])) ? $_COOKIE[COOKIE_AUTHMODE] : 'normal' ; ?>';

@@ -133,6 +133,12 @@ if( ($action=='delete_logo') && $logo )
 
 if( ($action=='enregistrer') && $denomination && $nom && $prenom && $courriel )
 {
+	// Vérifier le domaine du serveur mail
+	$mail_domaine = tester_domaine_courriel_valide($courriel);
+	if($mail_domaine!==TRUE)
+	{
+		exit('Erreur avec le domaine '.$mail_domaine.' !');
+	}
 	fabriquer_fichier_hebergeur_info( array('HEBERGEUR_DENOMINATION'=>$denomination,'HEBERGEUR_UAI'=>$uai,'HEBERGEUR_ADRESSE_SITE'=>$adresse_site,'HEBERGEUR_LOGO'=>$logo,'CNIL_NUMERO'=>$cnil_numero,'CNIL_DATE_ENGAGEMENT'=>$cnil_date_engagement,'CNIL_DATE_RECEPISSE'=>$cnil_date_recepisse,'WEBMESTRE_NOM'=>$nom,'WEBMESTRE_PRENOM'=>$prenom,'WEBMESTRE_COURRIEL'=>$courriel) );
 	if(HEBERGEUR_INSTALLATION=='mono-structure')
 	{

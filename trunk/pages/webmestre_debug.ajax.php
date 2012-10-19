@@ -28,7 +28,9 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 if($_SESSION['SESAMATH_ID']==ID_DEMO) {exit('Action désactivée pour la démo...');}
 
-$action = (isset($_POST['f_action'])) ? Clean::texte($_POST['f_action']) : '';
+$action       = (isset($_POST['f_action']))      ? Clean::texte($_POST['f_action'])      : '';
+$chemin_logs  = (isset($_POST['f_chemin_logs'])) ? Clean::texte($_POST['f_chemin_logs']) : '';
+$fichier_logs = (isset($_POST['f_fichier']))     ? Clean::fichier($_POST['f_fichier'])   : '';
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Modifier les paramètres de debug
@@ -64,13 +66,46 @@ if($action=='modifier_debug')
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Effacer le fichier de logs de phpCAS
+// Modifier le chemin des logs phpCAS
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-if($action=='effacer_logs_phpCAS')
+if( ($action=='modifier_chemin_phpCAS') && ($chemin_logs) )
 {
-	unlink(CHEMIN_FICHIER_DEBUG_PHPCAS);
+	$chemin_logs = (substr($chemin_logs,-1)==DS) ? $chemin_logs : $chemin_logs.DS ;
+	// Vérifier chemin valide
+	if(!is_dir($chemin_logs))
+	{
+		exit('Chemin invalide (ce dossier n\'existe pas) !');
+	}
+	// Tester droits en écriture
+	if( !FileSystem::ecrire_fichier_si_possible( $chemin_logs.'debugcas_test_ecriture.txt' , 'ok' ) )
+	{
+		exit('Droits en écriture dans ce dossier insuffisants !');
+	}
+	// ok
+	unlink($chemin_logs.'debugcas_test_ecriture.txt');
+	fabriquer_fichier_hebergeur_info( array('CHEMIN_LOGS_PHPCAS'=>$chemin_logs) );
 	exit('ok');
+}
+
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+// Effacer un fichier de logs de phpCAS
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+if( ($action=='supprimer') && $fichier_logs )
+{
+	unlink(CHEMIN_LOGS_PHPCAS.$fichier_logs.'.txt');
+	exit('ok');
+}
+
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+// Récupérer un fichier de logs de phpCAS
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+if( ($action=='voir') && $fichier_logs )
+{
+	FileSystem::zip( CHEMIN_DOSSIER_EXPORT.$fichier_logs.'.zip' , $fichier_logs.'.txt' , file_get_contents(CHEMIN_LOGS_PHPCAS.$fichier_logs.'.txt') );
+	exit('<ul class="puce"><li><a class="lien_ext" href="'.URL_DIR_EXPORT.$fichier_logs.'.zip'.'"><span class="file file_zip">Fichier de logs au format <em>zip</em>.</li></ul>');
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////

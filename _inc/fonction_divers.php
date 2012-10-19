@@ -797,7 +797,8 @@ function fabriquer_fichier_hebergeur_info($tab_constantes_modifiees)
 		'SERVEUR_PROXY_AUTH_USER',
 		'SERVEUR_PROXY_AUTH_PASS',
 		'FICHIER_TAILLE_MAX',
-		'FICHIER_DUREE_CONSERVATION'
+		'FICHIER_DUREE_CONSERVATION',
+		'CHEMIN_LOGS_PHPCAS'
 	);
 	$fichier_contenu = '<?php'."\r\n";
 	$fichier_contenu.= '// Informations concernant l\'hébergement et son webmestre (n°UAI uniquement pour une installation de type mono-structure)'."\r\n";
@@ -805,7 +806,9 @@ function fabriquer_fichier_hebergeur_info($tab_constantes_modifiees)
 	{
 		$constante_valeur = (isset($tab_constantes_modifiees[$constante_nom])) ? $tab_constantes_modifiees[$constante_nom] : constant($constante_nom);
 		$espaces = str_repeat(' ',26-strlen($constante_nom));
-		$fichier_contenu.= 'define(\''.$constante_nom.'\''.$espaces.',\''.str_replace('\'','\\\'',$constante_valeur).'\');'."\r\n";
+		$quote = '\'';
+		// var_export() permet d'échapper \ ' et inclus des ' autour.
+		$fichier_contenu.= 'define('.$quote.$constante_nom.$quote.$espaces.','.var_export((string)$constante_valeur,TRUE).');'."\r\n";
 	}
 	$fichier_contenu.= '?>'."\r\n";
 	FileSystem::ecrire_fichier($fichier_nom,$fichier_contenu);
@@ -1810,6 +1813,19 @@ function extraire_separateur_csv($ligne)
 function tester_courriel($courriel)
 {
 	return preg_match('/^[^@]+@[a-zA-Z0-9._-]+\.[a-zA-Z]+$/',$courriel) ? TRUE : FALSE;
+}
+
+/**
+ * Vérifier que le domaine du serveur mail peut recevoir des mails, c'est à dire qu'il a un serveur de mail déclaré dans les DNS).
+ * Ça évite tous les domaines avec une coquille du genre @gmaill.com, @hoatmail.com, @gmaol.com, @laoste.net, etc.
+ *
+ * @param string $mail_adresse
+ * @return bool|string $mail_domaine   TRUE | le domaine en cas de problème
+ */
+function tester_domaine_courriel_valide($mail_adresse)
+{
+	$mail_domaine = mb_substr( $mail_adresse , mb_strpos($mail_adresse,'@')+1 );
+	return (getmxrr($mail_domaine,$tab_mxhosts)==TRUE) ? TRUE : $mail_domaine ;
 }
 
 /**

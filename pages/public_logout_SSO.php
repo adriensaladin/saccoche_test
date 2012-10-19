@@ -82,7 +82,9 @@ if($connexion_mode=='cas')
 	// Pour tester, cette méthode statique créé un fichier de log sur ce qui se passe avec CAS
 	if (DEBUG_PHPCAS)
 	{
-		phpCAS::setDebug(CHEMIN_FICHIER_DEBUG_PHPCAS);
+		$fichier_nom_debut = 'debugcas_'.$BASE;
+		$fichier_nom_fin   = fabriquer_fin_nom_fichier__pseudo_alea($fichier_nom_debut);
+		phpCAS::setDebug(CHEMIN_LOGS_PHPCAS.$fichier_nom_debut.'_'.$fichier_nom_fin.'.txt');
 	}
 	// Initialiser la connexion avec CAS  ; le premier argument est la version du protocole CAS ; le dernier argument indique qu'on utilise la session existante
 	phpCAS::client(CAS_VERSION_2_0, $cas_serveur_host, (int)$cas_serveur_port, $cas_serveur_root, FALSE);

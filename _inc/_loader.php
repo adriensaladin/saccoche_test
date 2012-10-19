@@ -126,7 +126,6 @@ define('FPDF_FONTPATH'                , CHEMIN_DOSSIER_FPDF_FONT); // Pour FPDF 
 // Vers des fichiers.
 define('CHEMIN_FICHIER_CONFIG_INSTALL', CHEMIN_DOSSIER_CONFIG.'constantes.php');
 define('CHEMIN_FICHIER_DEBUG_CONFIG'  , CHEMIN_DOSSIER_TMP.'debug.txt');
-define('CHEMIN_FICHIER_DEBUG_PHPCAS'  , CHEMIN_DOSSIER_TMP.'debugcas_'.md5($_SERVER['DOCUMENT_ROOT']).'.txt');
 define('CHEMIN_FICHIER_WS_LCS'        , CHEMIN_DOSSIER_WEBSERVICES.'import_lcs.php');
 define('CHEMIN_FICHIER_WS_ARGOS'      , CHEMIN_DOSSIER_WEBSERVICES.'argos_import.php');
 
@@ -293,9 +292,6 @@ define('URL_DIR_IMPORT'   , str_replace( $tab_bad , $tab_bon , CHEMIN_DOSSIER_IM
 define('URL_DIR_LOGINPASS', str_replace( $tab_bad , $tab_bon , CHEMIN_DOSSIER_LOGINPASS ) );
 define('URL_DIR_LOGO'     , str_replace( $tab_bad , $tab_bon , CHEMIN_DOSSIER_LOGO      ) );
 define('URL_DIR_RSS'      , str_replace( $tab_bad , $tab_bon , CHEMIN_DOSSIER_RSS       ) );
-
-// Vers des fichiers.
-define('URL_FICHIER_DEBUG_PHPCAS' , str_replace( $tab_bad , $tab_bon , CHEMIN_FICHIER_DEBUG_PHPCAS ) );
 
 // ============================================================================
 // URL externes appelées par l'application

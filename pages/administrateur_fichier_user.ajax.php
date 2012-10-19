@@ -176,10 +176,19 @@ if( $step==20 )
 		{
 			exit('Erreur : le fichier transmis n\'est pas un XML valide !');
 		}
-		$uai = $xml->PARAMETRES->UAJ;
-		if($uai===FALSE)
+		$editeur_prive_edt = (string)$xml->PARAMETRES->APPLICATION_SOURCE;
+		if($xml->PARAMETRES->APPLICATION_SOURCE)
 		{
-			exit('Erreur : le fichier transmis n\'est pas correct (erreur de numéro UAI) !');
+			exit('Erreur : le fichier transmis est issu d\'un éditeur privé d\'emploi du temps, pas de STS !');
+		}
+		$uai = (string)$xml->PARAMETRES->UAJ->attributes()->CODE;
+		if(!$uai)
+		{
+			exit('Erreur : le fichier transmis ne comporte pas de numéro UAI !');
+		}
+		if($uai!=$_SESSION['WEBMESTRE_UAI'])
+		{
+			exit('Erreur : le fichier transmis est issu de l\'établissement '.$uai.' et non '.$_SESSION['WEBMESTRE_UAI'].' !');
 		}
 		/*
 		 * Les matières des profs peuvent être récupérées de 2 façons :
@@ -507,10 +516,14 @@ if( $step==20 )
 		{
 			exit('Erreur : le fichier transmis n\'est pas un XML valide !');
 		}
-		$uai = $xml->PARAMETRES->UAJ;
-		if($uai===FALSE)
+		$uai = (string)$xml->PARAMETRES->UAJ;
+		if(!$uai)
 		{
-			exit('Erreur : le fichier transmis n\'est pas correct (erreur de numéro UAI) !');
+			exit('Erreur : le fichier transmis ne comporte pas de numéro UAI !');
+		}
+		if($uai!=$_SESSION['WEBMESTRE_UAI'])
+		{
+			exit('Erreur : le fichier transmis est issu de l\'établissement '.$uai.' et non '.$_SESSION['WEBMESTRE_UAI'].' !');
 		}
 		//
 		// On recense les adresses dans un tableau temporaire.
@@ -870,6 +883,10 @@ if( $step==20 )
 			$s = ($nombre>1) ? 's' : '' ;
 			echo'<p><label class="valide">'.$nombre.' '.$tab_profil_libelle[$profil]['long'][min(2,$nombre)].' trouvé'.$s.'.</label></p>';
 		}
+	}
+	else if($action=='sconet_parents')
+	{
+		echo'<p><label class="alerte">Aucun parent trouvé ayant un enfant dans l\'établissement : importer d\'abord les élèves !</label></p>';
 	}
 	else
 	{

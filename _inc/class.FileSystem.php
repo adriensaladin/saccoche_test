@@ -405,7 +405,7 @@ class FileSystem
    * Zipper un fichier seul.
    * Exit sur une phrase d'erreur si problème
    * 
-   * @param string   $chemin_fichier_zip   chemin de l'archive zip à créer
+   * @param string   $chemin_fichier_zip   chemin et nom de l'archive zip à créer
    * @param string   $fichier_nom          nom du fichier dans l'archive zip
    * @param string   $fichier_contenu      contenu à zipper
    * @return void
@@ -427,7 +427,7 @@ class FileSystem
    * Exit sur une phrase d'erreur si problème
    * Le chemin d'extraction n'est pas indiqué : c'est CHEMIN_DOSSIER_IMPORT (idem pour le chemin du fichier final)
    * 
-   * @param string   $chemin_fichier_zip   chemin de l'archive zip
+   * @param string   $chemin_fichier_zip   chemin et nom de l'archive zip
    * @param string   $fichier_nom_archive  nom du fichier à rechercher dans l'archive zip
    * @param string   $chemin_nom_final     chemin du fichier une fois extrait
    * @return void

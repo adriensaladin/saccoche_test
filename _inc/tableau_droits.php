@@ -166,6 +166,7 @@ $tab_droits_par_page = array
 	// Profil élève | parent | professeur | directeur
 	'_maj_select_piliers'                     => $tab_droits_profil_eleve_parent_prof_dir,
 	'_maj_select_niveaux'                     => $tab_droits_profil_eleve_parent_prof_dir,
+	'compte_cnil'                             => $tab_droits_profil_eleve_parent_prof_dir,
 	'compte_daltonisme'                       => $tab_droits_profil_eleve_parent_prof_dir,
 	'consultation_algorithme'                 => $tab_droits_profil_eleve_parent_prof_dir,
 	'consultation_groupe_periode'             => $tab_droits_profil_eleve_parent_prof_dir,

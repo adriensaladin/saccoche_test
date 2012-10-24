@@ -96,6 +96,9 @@ $select_groupe  = Form::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_groupes_prof
 			<tr><td class="nu" colspan="9"></td></tr>
 		</tbody>
 	</table>
+	<p><ul class="puce">
+		<li><a id="voir_messages" href="#">Récupérer les messages.</a></li>
+	</ul></p>
 	<div id="zone_actions" class="hide">
 		<h2>Avec les demandes cochées :<input type="hidden" id="ids" name="ids" value="" /></h2>
 		<fieldset>
@@ -126,3 +129,4 @@ $select_groupe  = Form::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_groupes_prof
 		</p>
 	</div>
 </form>
+<div id="zone_messages" class="hide"></div>

@@ -86,7 +86,7 @@ if( ($action=='Afficher_demandes') && $matiere_id && $matiere_nom && $groupe_id 
 	$DB_TAB = DB_STRUCTURE_COMMUN::DB_OPT_eleves_regroupement($tab_types[$groupe_type],$groupe_id,$user_statut=1);
 	if(!is_array($DB_TAB))
 	{
-		exit($DB_TAB);	// Erreur : aucun élève de ce regroupement n\'est enregistré !
+		exit($DB_TAB);	// Erreur : aucun élève de ce regroupement n'est enregistré !
 	}
 	$tab_eleves = array();
 	$tab_autres = array();
@@ -96,7 +96,12 @@ if( ($action=='Afficher_demandes') && $matiere_id && $matiere_nom && $groupe_id 
 		$tab_autres[$DB_ROW['valeur']] = $DB_ROW['texte'];
 	}
 	$listing_user_id = implode(',', array_keys($tab_eleves) );
-	// Lister les demandes
+	// Lister les demandes (et les messages associés)
+	$fnom_export = 'messages_'.$_SESSION['BASE'].'_'.Clean::fichier($matiere_nom).'_'.Clean::fichier($groupe_nom).'_'.fabriquer_fin_nom_fichier__date_et_alea();
+	$separateur = ';';
+	$messages_html = '<p><a class="lien_ext" href="'.URL_DIR_EXPORT.$fnom_export.'.zip'.'"><span class="file file_zip">Récupérer / Manipuler (fichier <em>csv</em> pour tableur).</span></a></p>';
+	$messages_html.= '<table><thead><tr><th>Item</th><th>Élève</th><th>Message</th></tr></thead><tbody>';
+	$messages_csv  = $matiere_nom."\r\n".$groupe_nom."\r\n\r\n".'Item'.$separateur.'Élève'.$separateur.'Message'.$separateur."\r\n";
 	$tab_demandes = array();
 	$DB_TAB = DB_STRUCTURE_PROFESSEUR::DB_lister_demandes_prof($matiere_id,$listing_user_id);
 	if(empty($DB_TAB))
@@ -111,6 +116,8 @@ if( ($action=='Afficher_demandes') && $matiere_id && $matiere_nom && $groupe_id 
 		$statut = ($DB_ROW['demande_statut']=='eleve') ? 'demande non traitée' : 'évaluation en préparation' ;
 		$class  = ($DB_ROW['demande_statut']=='eleve') ? ' class="new"' : '' ;
 		$commentaire = ($DB_ROW['demande_messages']) ? 'oui <img alt="" src="./_img/bulle_aide.png" title="'.str_replace(array("\r\n","\r","\n"),'<br />',html($DB_ROW['demande_messages'])).'" />' : 'non' ;
+		$messages_html .= '<tr><td>'.html($DB_ROW['item_ref']).'</td><td>'.html($tab_eleves[$DB_ROW['user_id']]).'</td><td>'.str_replace(array("\r\n","\r","\n"),'<br />',html($DB_ROW['demande_messages'])).'</td></tr>';
+		$messages_csv  .= '"'.$DB_ROW['item_ref'].'"'.$separateur.'"'.$tab_eleves[$DB_ROW['user_id']].'"'.$separateur.'"'.$DB_ROW['demande_messages'].'"'."\r\n";
 		// Afficher une ligne du tableau 
 		$retour .= '<tr'.$class.'>';
 		$retour .= '<td class="nu"><input type="checkbox" name="f_ids" value="'.$DB_ROW['demande_id'].'x'.$DB_ROW['user_id'].'x'.$DB_ROW['item_id'].'" /></td>';
@@ -125,6 +132,7 @@ if( ($action=='Afficher_demandes') && $matiere_id && $matiere_nom && $groupe_id 
 		$retour .= '<td class="label">'.$commentaire.'</td>';
 		$retour .= '</tr>';
 	}
+	$messages_html .= '</tbody></table>';
 	// Calculer pour chaque item sa popularité (le nb de demandes pour les élèves affichés)
 	$listing_demande_id = implode(',', $tab_demandes );
 	$DB_TAB = DB_STRUCTURE_PROFESSEUR::DB_recuperer_item_popularite($listing_demande_id,$listing_user_id);
@@ -136,8 +144,10 @@ if( ($action=='Afficher_demandes') && $matiere_id && $matiere_nom && $groupe_id 
 		$tab_bad[] = '$'.$DB_ROW['item_id'].'$';
 		$tab_bon[] = '<i>'.sprintf("%02u",$DB_ROW['popularite']).'</i>'.$DB_ROW['popularite'].' demande'.$s;
 	}
-	// Inclure dans le retour la liste des élèves sans demandes
-	exit('<td>'.implode('<br />',$tab_autres).'</td>'.'<¤>'.str_replace($tab_bad,$tab_bon,$retour));
+	// Enregistrer le csv des commentaires
+	FileSystem::zip( CHEMIN_DOSSIER_EXPORT.$fnom_export.'.zip' , $fnom_export.'.csv' , To::csv($messages_csv) );
+	// Inclure dans le retour la liste des élèves sans demandes et le tableau des commentaires
+	exit('ok'.'<¤>'.$messages_html.'<¤>'.'<td>'.implode('<br />',$tab_autres).'</td>'.'<¤>'.str_replace($tab_bad,$tab_bon,$retour));
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////

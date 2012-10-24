@@ -692,9 +692,12 @@ class InfoServeur
 
   public static function tableau_serveur_et_client()
   {
-    $ligne1 = '<tr><th>Identification du serveur</th>'.InfoServeur::cellule_centree($_SERVER['SERVER_SOFTWARE'].' &lt;'.URL_INSTALL_SACOCHE.'&gt;').'</tr>';
-    $ligne2 = '<tr><th>Identification du client</th>'.InfoServeur::cellule_centree($_SERVER['HTTP_USER_AGENT']).'</tr>';
-    return'<table class="p"><tbody>'.$ligne1.$ligne2.'</tbody></table>';
+    $tab_tr = array();
+    $tab_tr[] = '<tr><th>Identification du Client</th><td>'.html($_SERVER['HTTP_USER_AGENT']).'</td></tr>';
+    $tab_tr[] = '<tr><th>Identification du Serveur</th><td>'.html($_SERVER['SERVER_SOFTWARE'].' '.PHP_SAPI).'</td></tr>';
+    $tab_tr[] = '<tr><th>Système d\'exploitation</th><td>'.html(php_uname('s').' '.php_uname('r')).'</td></tr>';
+    $tab_tr[] = '<tr><th>Adresse d\'installation</th><td>'.html(URL_INSTALL_SACOCHE).'</td></tr>';
+    return'<table class="p"><tbody>'.implode('',$tab_tr).'</tbody></table>';
   }
 
 }

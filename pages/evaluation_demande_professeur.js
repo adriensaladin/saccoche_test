@@ -228,21 +228,17 @@ $(document).ready
 		{
 			initialiser_compteur();
 			tab_response = responseHTML.split('<¤>');
-			if( tab_response[0]!='ok' )
+			if( tab_response.length!=2 )
 			{
-				$('#ajax_msg0').removeAttr("class").addClass("alerte").html(tab_response[0]);
+				$('#ajax_msg0').removeAttr("class").addClass("alerte").html(responseHTML);
 			}
 			else
 			{
-				response_msg = tab_response[1];
-				response_td  = tab_response[2];
-				response_tr  = tab_response[3];
+				response_td = tab_response[0];
+				response_tr = tab_response[1];
 				$('#ajax_msg0').removeAttr("class").addClass("valide").html("Demande réalisée !");
-				
-				$('#zone_messages').html(response_msg);
 				$('table.form tbody').html(response_tr);
 				$('#tr_sans').html(response_td);
-				format_liens('#zone_messages');
 				trier_tableau();
 				infobulle();
 				$('#form1').show();
@@ -250,17 +246,6 @@ $(document).ready
 				$("#zone_actions").show(0);
 			}
 		}
-
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Clic pour voir les messages des élèves
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-		$('#voir_messages').live
-		('click',
-			function()
-			{
-				$.fancybox( { 'href':'#zone_messages' , onStart:function(){$('#zone_messages').css("display","block");} , onClosed:function(){$('#zone_messages').css("display","none");} , 'centerOnScroll':true } );
-			}
-		);
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Clic sur une cellule (remplace un champ label, impossible à définir sur plusieurs colonnes)

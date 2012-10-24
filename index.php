@@ -154,20 +154,13 @@ if(Session::$_sso_redirect)
 	require(CHEMIN_DOSSIER_PAGES.'public_login_SSO.php');
 }
 
-// Page CNIL si message d'information CNIL non validé.
-if(isset($_SESSION['STOP_CNIL']))
-{
-	$tab_messages_erreur[] = 'Avant d\'utiliser <em>SACoche</em>, vous devez valider le formulaire ci-dessous.';
-	$PAGE = 'compte_cnil';
-}
-
 ob_start();
 // Chargement de la page concernée
 $filename_php = CHEMIN_DOSSIER_PAGES.$PAGE.'.php';
 if(!is_file($filename_php))
 {
 	$tab_messages_erreur[] = 'Erreur : fichier '.FileSystem::fin_chemin($filename_php).' manquant.';
-	$PAGE = ($_SESSION['USER_PROFIL']=='public') ? 'public_accueil' : ( (isset($_SESSION['STOP_CNIL'])) ? 'compte_cnil' : 'compte_accueil' ) ;
+	$PAGE = ($_SESSION['USER_PROFIL']=='public') ? 'public_accueil' :'compte_accueil' ;
 	$filename_php = CHEMIN_DOSSIER_PAGES.$PAGE.'.php';
 }
 require($filename_php);

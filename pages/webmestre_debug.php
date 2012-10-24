@@ -50,7 +50,7 @@ foreach($tab_debug as $debug_mode => $debug_texte)
 }
 // Fichiers de logs phpCAS
 $tab_files = FileSystem::lister_contenu_dossier(CHEMIN_LOGS_PHPCAS);
-$tab_fichiers = array();
+$listing_fichiers = '';
 foreach($tab_files as $file)
 {
 	if(substr($file,0,9)=='debugcas_')
@@ -58,19 +58,19 @@ foreach($tab_files as $file)
 		if(HEBERGEUR_INSTALLATION=='mono-structure')
 		{
 			$etabl = 'pour l\'établissement';
-			$id_etabl = 0;
 		}
 		else
 		{
 			$tab = explode('_',$file);
-			$id_etabl = $tab[1];
-			$etabl = 'pour la base n°'.$id_etabl;
+			$etabl = 'pour la base n°'.$tab[1];
 		}
-		$tab_fichiers[$id_etabl] = '<li id="'.html(substr($file,0,-4)).'">Logs présents '.$etabl.', le fichier pesant '.afficher_fichier_taille(filesize(CHEMIN_LOGS_PHPCAS.$file)).'<q class="voir" title="Récupérer ce fichier."></q><q class="supprimer" title="Supprimer ce fichier."></q></li>';
+		$listing_fichiers .= '<li id="'.html(substr($file,0,-4)).'">Logs présents '.$etabl.', le fichier pesant '.afficher_fichier_taille(filesize(CHEMIN_LOGS_PHPCAS.$file)).'<q class="voir" title="Récupérer ce fichier."></q><q class="supprimer" title="Supprimer ce fichier."></q></li>';
 	}
-	ksort($tab_fichiers);
 }
-$listing_fichiers = count($tab_fichiers) ? implode('',$tab_fichiers) : '<li>Pas de fichier trouvé.</li>' ;
+if(!$listing_fichiers)
+{
+	$listing_fichiers .= '<li>Pas de fichier trouvé.</li>';
+}
 ?>
 
 <hr />

@@ -80,12 +80,12 @@ $tab_accueil['user'] = '';
 if(isset($_SESSION['DELAI_CONNEXION']))
 {
 	$tab_accueil['user'] .= '<p class="i"><TG> Bonjour <b>'.html($_SESSION['USER_PRENOM']).'</b>. ';
-	if($_SESSION['FIRST_CONNEXION'])                             { $tab_accueil['user'] .= 'Heureux de faire votre connaissance&nbsp;; bonne découverte de <em>SACoche</em>&nbsp;!</p>'; }
-	elseif($_SESSION['DELAI_CONNEXION']<  43200 /*0.5*24*3600*/) { $tab_accueil['user'] .= 'Déjà de retour&nbsp;? Décidément on ne se quitte plus&nbsp;!</p>'; }
-	elseif($_SESSION['DELAI_CONNEXION']< 108000 /*  2*24*3600*/) { $tab_accueil['user'] .= 'Bonne navigation, et merci de votre fidélité&nbsp;!</p>'; }
-	elseif($_SESSION['DELAI_CONNEXION']< 604800 /*  7*24*3600*/) { $tab_accueil['user'] .= 'Content de vous retrouver après cette pause de quelques jours&nbsp;!</p>'; }
-	elseif($_SESSION['DELAI_CONNEXION']<3024000 /* 35*24*3600*/) { $tab_accueil['user'] .= 'Quel plaisir de vous revoir&nbsp;: le temps semble long sans vous&nbsp;!</p>'; }
-	else                                                         { $tab_accueil['user'] .= 'On ne s\'était pas vu depuis trop longtemps&nbsp;: vous nous avez manqué&nbsp;!</p>'; }
+	if($_SESSION['FIRST_CONNEXION'])                           { $tab_accueil['user'] .= 'Heureux de faire votre connaissance&nbsp;; bonne découverte de <em>SACoche</em>&nbsp;!</p>'; }
+	elseif($_SESSION['DELAI_CONNEXION']<  43200 /*12*3600*/)   { $tab_accueil['user'] .= 'Déjà de retour&nbsp;? Décidément on ne se quitte plus&nbsp;!</p>'; }
+	elseif($_SESSION['DELAI_CONNEXION']< 108000 /*48*3600*/)   { $tab_accueil['user'] .= 'Bonne navigation, et merci de votre fidélité&nbsp;!</p>'; }
+	elseif($_SESSION['DELAI_CONNEXION']< 604800 /*7*24*3600*/) { $tab_accueil['user'] .= 'Content de vous retrouver après cette pause de quelques jours&nbsp;!</p>'; }
+	elseif($_SESSION['DELAI_CONNEXION']<3000000 /* <3024000*/) { $tab_accueil['user'] .= 'Quel plaisir de vous revoir&nbsp;: le temps semble long sans vous&nbsp;!</p>'; }
+	else                                                       { $tab_accueil['user'] .= 'On ne s\'était pas vu depuis trop longtemps&nbsp;: vous nous avez manqué&nbsp;!</p>'; }
 	unset( $_SESSION['FIRST_CONNEXION'] , $_SESSION['DELAI_CONNEXION'] );
 	$_SESSION['DEUXIEME_PASSAGE'] = TRUE;
 }

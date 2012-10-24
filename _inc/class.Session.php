@@ -27,7 +27,7 @@
 
 
 /**
- * Classe pour gérer les sessions et les jetons anti-CSRF.
+ * Classe pour gérer les sessions.
  * La session est transmise via le cookie "$_COOKIE[SESSION_NOM]".
  */
 class Session
@@ -419,7 +419,7 @@ class Session
   /*
    * Générer un jeton CSRF pour une page donnée (le met en session).
    * Inutile d'essayer de le fixer uniquement sur l'IP ou la Session car pour ce type d'attaque c'est le navigateur de l'utilisateur qui est utilisé.
-   * On est donc contraint d'utiliser un élément aléatoire ou indicateur de temps.
+   * On est donc contraint d'utuliser un élément aléatoire ou indicateur de temps.
    * Pour éviter de fausses alertes si utilisation de plusieurs onglets d'une même page, on ne retient pas qu'un seul jeton par page.
    * La session doit être ouverte.
    * 
@@ -430,14 +430,14 @@ class Session
   {
     if(Session::page_avec_jeton_CSRF($page))
     {
-      Session::$_CSRF_value = uniqid(); // sera écrit dans la page pour javascript l'envoie
+      Session::$_CSRF_value = uniqid();
       $_SESSION['CSRF'][Session::$_CSRF_value.'.'.$page] = TRUE;
     }
   }
 
   /**
    * Appelé par ajax.php pour vérifier un jeton CSRF lors d'un appel ajax (soumission de données) d'une page donnée (vérifie sa valeur en session, quitte si pb).
-   * Peut être aussi potentiellement appelé par de rares pages PHP s'envoyant un formulaire sans passer par AJAX (seule officiel_accueil.php est concernée au 10/2012).
+   * Peut être aussi potentiellement appelé par de rares pages PHP s'envoyant un formulaire sans passer par AJAX (seule officiel_accueil.php est concerné au 10/2012).
    * On utilise REQUEST car c'est tranmis en POST si Ajax maison mais en GET si utilisation de jquery.form.js.
    * La session doit être ouverte.
    *

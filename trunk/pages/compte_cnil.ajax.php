@@ -24,18 +24,28 @@
  * si ce n’est pas le cas, consultez : <http://www.gnu.org/licenses/>.
  * 
  */
+if($_SESSION['SESAMATH_ID']==ID_DEMO){exit('Action désactivée pour la démo...');}
 
-if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-$TITRE = "Caractéristiques du serveur";
-?>
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+// Récupération des informations transmises
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-<?php
-echo InfoServeur::tableau_serveur_et_client();
-echo InfoServeur::tableau_versions_logicielles();
-echo InfoServeur::tableau_limitations_PHP();
-echo InfoServeur::tableau_limitations_MySQL();
-echo InfoServeur::tableau_configuration_PHP();
-echo InfoServeur::tableau_modules_PHP(5 /*nb_lignes*/);
-echo InfoServeur::tableau_reglages_Suhosin();
-echo InfoServeur::tableau_reglages_GD();
+$action = (isset($_POST['f_action'])) ? Clean::texte($_POST['f_action'])  : '';
+
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+// Activation du compte
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+if($action=='Valider_CNIL')
+{
+	DB_STRUCTURE_PUBLIC::DB_enregistrer_date( 'connexion' , $_SESSION['USER_ID'] );
+	unset($_SESSION['STOP_CNIL']);
+	exit('ok');
+}
+
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+// On ne devrait pas en arriver là...
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+exit('Erreur avec les données transmises !');
 ?>

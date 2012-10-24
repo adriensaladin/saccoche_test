@@ -992,10 +992,13 @@ function tester_authentification_user($BASE,$login,$password,$mode_connection)
 	{
 		return array('Identification réussie mais ce compte est desactivé !',array());
 	}
-	// Mémoriser la date de la (dernière) connexion
-	DB_STRUCTURE_PUBLIC::DB_enregistrer_date( 'connexion' , $DB_ROW['user_id'] );
+	// Mémoriser la date de la (dernière) connexion (pour les autres cas, sera enregistré lors de la confirmation de la prise en compte des infos CNIL).
+	if( ($DB_ROW['user_connexion_date']!='0000-00-00 00:00:00') || in_array($DB_ROW['user_profil'],array('webmestre','administrateur')) )
+	{
+		DB_STRUCTURE_PUBLIC::DB_enregistrer_date( 'connexion' , $DB_ROW['user_id'] );
+	}
 	// Enregistrement d'un cookie sur le poste client servant à retenir le dernier établissement sélectionné si identification avec succès
-	setcookie(COOKIE_STRUCTURE,$BASE,time()+60*60*24*365,'');
+	setcookie(COOKIE_STRUCTURE,$BASE,time()+31536000,''); /* 60*60*24*365 */
 	// Enregistrement d'un cookie sur le poste client servant à retenir le dernier mode de connexion utilisé si identification avec succès
 	setcookie(COOKIE_AUTHMODE,$mode_connection,0,'');
 	// Si on arrive ici c'est que l'identification s'est bien effectuée !
@@ -1031,6 +1034,10 @@ function enregistrer_session_user($BASE,$DB_ROW)
 	$_SESSION['ELEVE_LANGUE']       = (int) $DB_ROW['eleve_langue'];
 	$_SESSION['DELAI_CONNEXION']    = (int) $DB_ROW['delai_connexion_secondes'];
 	$_SESSION['FIRST_CONNEXION']    = ($DB_ROW['user_connexion_date']=='0000-00-00 00:00:00') ? TRUE : FALSE ;
+	if( ($DB_ROW['user_connexion_date']=='0000-00-00 00:00:00') && !in_array($DB_ROW['user_profil'],array('webmestre','administrateur')) )
+	{
+		$_SESSION['STOP_CNIL'] = TRUE;
+	}
 	// Récupérer et Enregistrer en session les données des élèves associées à un responsable légal.
 	if($_SESSION['USER_PROFIL']=='parent')
 	{

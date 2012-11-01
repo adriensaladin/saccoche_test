@@ -51,19 +51,19 @@ $liens_autres_profils = ($profil=='normal') ? '<a class="anti_h2" href="index.ph
 echo Browser::afficher_navigateurs_alertes();
 
 // Alerte si pas de javascript activé
-echo'<noscript><hr /><div class="probleme">Vous devez activer le javascript dans votre navigateur pour utiliser <em>SACoche</em>.</div></noscript>';
+echo'<noscript><hr /><div class="danger">Vous devez activer le javascript dans votre navigateur pour utiliser <em>SACoche</em>.</div></noscript>';
 
 // Alerte non déconnexion de l'ENT si deconnexion de SACoche depuis un compte connecté via un ENT
 if( (isset($_COOKIE[COOKIE_STRUCTURE])) && (isset($_COOKIE[COOKIE_AUTHMODE])) && ($_COOKIE[COOKIE_AUTHMODE]!='normal') )
 {
 	echo'<hr />';
-	echo'<div class="danger">Attention : vous n\'êtes pas déconnecté du service d\'authentification externe, on peut revenir dans <em>SACoche</em> sans s\'identifier !<br />Fermez votre navigateur ou <a href="index.php?page=public_logout_SSO&amp;base='.$_COOKIE[COOKIE_STRUCTURE].'">déconnectez-vous de ce service</a>.</div>';
+	echo'<div class="danger">Attention : vous n\'êtes pas déconnecté du service d\'authentification externe, on peut revenir dans <em>SACoche</em> sans s\'identifier ! Fermez votre navigateur ou <a href="index.php?page=public_logout_SSO&amp;base='.$_COOKIE[COOKIE_STRUCTURE].'">déconnectez-vous de ce service</a>.</div>';
 }
 
 // Supprimer le cookie avec le mode d'identification, servant à une reconnexion SSO, devenu inutile puisque déconnecté à présent.
 if(isset($_COOKIE[COOKIE_AUTHMODE]))
 {
-	setcookie( COOKIE_AUTHMODE /*name*/ , '' /*value*/, time()-42000 /*expire*/ , '/' /*path*/ , getServerUrl() /*domain*/ );
+	setcookie(COOKIE_AUTHMODE,'',time()-42000,'');
 }
 ?>
 

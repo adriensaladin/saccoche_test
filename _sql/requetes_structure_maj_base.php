@@ -2247,26 +2247,6 @@ public static function DB_maj_base($version_actuelle)
 		}
 	}
 
-	// ////////////////////////////////////////////////////////////////////////////////////////////////////
-	// MAJ 2012-10-10 => 2012-10-26
-	// ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-	if($version_actuelle=='2012-10-10')
-	{
-		if($version_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
-		{
-			$version_actuelle = '2012-10-26';
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_actuelle.'" WHERE parametre_nom="version_base"' );
-			// Passage de champs DATE à NULL possible et par défaut.
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_user   CHANGE user_connexion_date  user_connexion_date  DATETIME NULL DEFAULT NULL' );
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_user   CHANGE user_tentative_date  user_tentative_date  DATETIME NULL DEFAULT NULL' );
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_devoir CHANGE devoir_autoeval_date devoir_autoeval_date DATE     NULL DEFAULT NULL' );
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_user   SET  user_connexion_date=NULL WHERE  user_connexion_date="0000-00-00 00:00:00"' );
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_user   SET  user_tentative_date=NULL WHERE  user_tentative_date="0000-00-00 00:00:00"' );
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_devoir SET devoir_autoeval_date=NULL WHERE devoir_autoeval_date="0000-00-00"' );
-		}
-	}
-
 }
 
 }

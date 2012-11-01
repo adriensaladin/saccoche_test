@@ -406,7 +406,7 @@ if( $step==6 )
 	}
 	// On cherche d'éventuelles tables existantes de SACoche.
 	$DB_TAB = (HEBERGEUR_INSTALLATION=='mono-structure') ? DB_STRUCTURE_COMMUN::DB_recuperer_tables_informations() : DB_WEBMESTRE_PUBLIC::DB_recuperer_tables_informations() ;
-	$nb_tables_presentes = !empty($DB_TAB) ? count($DB_TAB) : 0 ;
+	$nb_tables_presentes = !empty($DB_TAB);
 	if($nb_tables_presentes)
 	{
 		$s = ($nb_tables_presentes>1) ? 's' : '' ;

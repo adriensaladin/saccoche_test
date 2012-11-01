@@ -197,6 +197,10 @@ if($astuce_nombre)
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Affichage
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// Alerte si pas de javascript activé
+echo'<noscript><hr /><div class="probleme">Vous devez activer le javascript dans votre navigateur pour utiliser <em>SACoche</em>.</div></noscript>';
+
 $tab_msg_rubrique_masquee = array( 'user'=>'Message de bienvenue' , 'help'=>'L\'astuce du moment' , 'ecolo'=>'Protégeons l\'environnement !' );
 
 foreach($tab_accueil as $type => $contenu)

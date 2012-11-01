@@ -89,7 +89,7 @@ if( ($action=='Afficher_evaluations') && $eleve_id && $date_debut && $date_fin )
 		echo	'<td>'.$image_sujet.$image_corrige.'</td>';
 		echo	'<td class="nu" id="devoir_'.$DB_ROW['devoir_id'].'">';
 		echo		'<q class="voir" title="Voir les items et les notes (si saisies)."></q>';
-		if($DB_ROW['devoir_autoeval_date']=='0000-00-00')
+		if($DB_ROW['devoir_autoeval_date']===NULL)
 		{
 			echo'<q class="saisir_non" title="Devoir sans auto-évaluation."></q>';
 		}
@@ -214,7 +214,7 @@ if( ($action=='Enregistrer_saisies') && $devoir_id )
 	{
 		exit('Devoir introuvable !');
 	}
-	if($DB_ROW['devoir_autoeval_date']=='0000-00-00')
+	if($DB_ROW['devoir_autoeval_date']===NULL)
 	{
 		exit('Devoir sans auto-évaluation !');
 	}

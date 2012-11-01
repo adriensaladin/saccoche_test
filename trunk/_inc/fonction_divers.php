@@ -968,7 +968,7 @@ function tester_authentification_user($BASE,$login,$password,$mode_connection)
 	// Blocage éventuel par le webmestre ou un administrateur ou l'automate
 	LockAcces::stopper_si_blocage( $BASE , $DB_ROW['user_profil'] );
 	// Si tentatives trop rapprochées...
-	if($DB_ROW['user_tentative_date']!='0000-00-00 00:00:00') // Sinon $DB_ROW['delai_tentative_secondes'] vaut NULL
+	if($DB_ROW['user_tentative_date']!==NULL) // Sinon $DB_ROW['delai_tentative_secondes'] vaut NULL
 	{
 		if($DB_ROW['delai_tentative_secondes']<3)
 		{
@@ -993,14 +993,14 @@ function tester_authentification_user($BASE,$login,$password,$mode_connection)
 		return array('Identification réussie mais ce compte est desactivé !',array());
 	}
 	// Mémoriser la date de la (dernière) connexion (pour les autres cas, sera enregistré lors de la confirmation de la prise en compte des infos CNIL).
-	if( ($DB_ROW['user_connexion_date']!='0000-00-00 00:00:00') || in_array($DB_ROW['user_profil'],array('webmestre','administrateur')) )
+	if( ($DB_ROW['user_connexion_date']!==NULL) || in_array($DB_ROW['user_profil'],array('webmestre','administrateur')) )
 	{
 		DB_STRUCTURE_PUBLIC::DB_enregistrer_date( 'connexion' , $DB_ROW['user_id'] );
 	}
 	// Enregistrement d'un cookie sur le poste client servant à retenir le dernier établissement sélectionné si identification avec succès
-	setcookie(COOKIE_STRUCTURE,$BASE,time()+31536000,''); /* 60*60*24*365 */
+	setcookie( COOKIE_STRUCTURE /*name*/ , $BASE /*value*/ , time()+31536000 /*expire*/ , '/' /*path*/ , getServerUrl() /*domain*/ ); /* 60*60*24*365 */
 	// Enregistrement d'un cookie sur le poste client servant à retenir le dernier mode de connexion utilisé si identification avec succès
-	setcookie(COOKIE_AUTHMODE,$mode_connection,0,'');
+	setcookie( COOKIE_AUTHMODE /*name*/ , $mode_connection /*value*/ , 0 /*expire*/ , '/' /*path*/ , getServerUrl() /*domain*/ );
 	// Si on arrive ici c'est que l'identification s'est bien effectuée !
 	return array('ok',$DB_ROW);
 }
@@ -1032,9 +1032,9 @@ function enregistrer_session_user($BASE,$DB_ROW)
 	$_SESSION['ELEVE_CLASSE_ID']    = (int) $DB_ROW['eleve_classe_id'];
 	$_SESSION['ELEVE_CLASSE_NOM']   = $DB_ROW['groupe_nom'];
 	$_SESSION['ELEVE_LANGUE']       = (int) $DB_ROW['eleve_langue'];
-	$_SESSION['DELAI_CONNEXION']    = (int) $DB_ROW['delai_connexion_secondes'];
-	$_SESSION['FIRST_CONNEXION']    = ($DB_ROW['user_connexion_date']=='0000-00-00 00:00:00') ? TRUE : FALSE ;
-	if( ($DB_ROW['user_connexion_date']=='0000-00-00 00:00:00') && !in_array($DB_ROW['user_profil'],array('webmestre','administrateur')) )
+	$_SESSION['DELAI_CONNEXION']    = (int) $DB_ROW['delai_connexion_secondes']; // Vaut (int)NULL = 0 à la 1e connexion, mais dans ce cas $_SESSION['FIRST_CONNEXION'] est testé avant.
+	$_SESSION['FIRST_CONNEXION']    = ($DB_ROW['user_connexion_date']===NULL) ? TRUE : FALSE ;
+	if( ($DB_ROW['user_connexion_date']===NULL) && !in_array($DB_ROW['user_profil'],array('webmestre','administrateur')) )
 	{
 		$_SESSION['STOP_CNIL'] = TRUE;
 	}
@@ -1912,10 +1912,11 @@ function convert_date_mysql_to_french($date)
  * Passer d'une date française JJ/MM/AAAA à une date MySQL AAAA-MM-JJ.
  *
  * @param string $date   JJ/MM/AAAA
- * @return string        AAAA-MM-JJ
+ * @return string|NULL   AAAA-MM-JJ
  */
 function convert_date_french_to_mysql($date)
 {
+	if($date=='00/00/0000') return NULL;
 	list($jour,$mois,$annee) = explode('/',$date);
 	return $annee.'-'.$mois.'-'.$jour;
 }

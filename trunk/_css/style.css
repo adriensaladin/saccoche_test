@@ -278,6 +278,7 @@ td.moyenne {text-align:center;font-weight:bold;vertical-align:middle;font-size:1
 *.manuel  {background:#CCF        url(../_img/puce/puce_manuel.png)  no-repeat top left;padding-left:19px}
 *.rss     {background:transparent url(../_img/puce/puce_rss.gif)     no-repeat top left;padding-left:19px}
 *.manuel:hover {background:transparent url(../_img/puce/puce_manuel_ouvert.png) no-repeat top left;}
+*.probleme {background:#FF3;color:#C00;font-weight:bold}
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 /* Images cliquables                                                                                   */

@@ -99,7 +99,7 @@ function afficher_form_element_checkbox_collegues()
 	}
 	else
 	{
-		$nb_profs              = !empty($DB_TAB);
+		$nb_profs              = !empty($DB_TAB) ? count($DB_TAB) : 0 ;
 		$nb_profs_maxi_par_col = 20;
 		$nb_cols               = floor(($nb_profs-1)/$nb_profs_maxi_par_col)+1;
 		$nb_profs_par_col      = ceil($nb_profs/$nb_cols);

@@ -869,7 +869,7 @@ if($type_bulletin)
 		{
 			// Attention : $groupe_id peut être un identifiant de groupe et non de classe, auquel cas les élèves peuvent être issus de différentes classes dont les états des bulletins sont différents...
 			$DB_TAB = DB_STRUCTURE_PROFESSEUR::DB_lister_periodes_bulletins_saisies_ouvertes($liste_eleve);
-			$nb_periodes_ouvertes = !empty($DB_TAB);
+			$nb_periodes_ouvertes = !empty($DB_TAB) ? count($DB_TAB) : 0 ;
 			if($nb_periodes_ouvertes==1)
 			{
 				$bulletin_periode = '['.html($DB_TAB[0]['periode_nom']).']<input type="hidden" id="f_periode_eleves" name="f_periode_eleves" value="'.$DB_TAB[0]['periode_id'].'_'.$DB_TAB[0]['eleves_listing'].'" />' ;

@@ -29,11 +29,11 @@
 
 define(  'CHROME_VERSION_MINI_REQUISE'   , 1); define(  'CHROME_TEXTE_MINI_REQUIS'     , 'Version 1 minimum (sortie en 2008).');
 define(  'CHROME_VERSION_MINI_CONSEILLEE', 5);
-define(  'CHROME_VERSION_LAST'           ,21); define(  'CHROME_URL_DOWNLOAD'          , 'http://www.google.fr/chrome');
+define(  'CHROME_VERSION_LAST'           ,22); define(  'CHROME_URL_DOWNLOAD'          , 'http://www.google.fr/chrome');
 
 define( 'FIREFOX_VERSION_MINI_REQUISE'   , 3); define( 'FIREFOX_TEXTE_MINI_REQUIS'     , 'Version 3 minimum (sortie en 2008).');
 define( 'FIREFOX_VERSION_MINI_CONSEILLEE', 4);
-define( 'FIREFOX_VERSION_LAST'           ,15); define( 'FIREFOX_URL_DOWNLOAD'          , 'http://www.mozilla-europe.org/fr/');
+define( 'FIREFOX_VERSION_LAST'           ,16); define( 'FIREFOX_URL_DOWNLOAD'          , 'http://www.mozilla-europe.org/fr/');
 
 define(   'OPERA_VERSION_MINI_REQUISE'   , 9); define(   'OPERA_TEXTE_MINI_REQUIS'     , 'Version 9 minimum (sortie en 2006).');
 define(   'OPERA_VERSION_MINI_CONSEILLEE',11);
@@ -222,22 +222,22 @@ class Browser
     $alerte_ancien = '<div class="astuce">Votre navigateur est dépassé ! Utilisez une version récente pour une navigation plus sure, rapide et efficace.</div>';
     if($tab_infos['nav_modele']=='explorer')
     {
-      if($tab_infos['nav_version']<constant(strtoupper($tab_infos['nav_modele']).'_VERSION_MINI_REQUISE'))        $alertes .= '<div class="danger">Votre navigateur est trop ancien pour utiliser <em>SACoche</em> ! Internet Explorer est utilisable à partir de sa version 8.</div>';
-      elseif($tab_infos['nav_version']<constant(strtoupper($tab_infos['nav_modele']).'_VERSION_MINI_CONSEILLEE')) $alertes .= '<div class="danger">Votre navigateur dysfonctionne ! L\'usage d\'Internet Explorer est déconseillé avant sa version 9.</div>';
+      if($tab_infos['nav_version']<constant(strtoupper($tab_infos['nav_modele']).'_VERSION_MINI_REQUISE'))        $alertes .= '<div class="probleme">Votre navigateur est trop ancien pour utiliser <em>SACoche</em> ! Internet Explorer est utilisable à partir de sa version 8.</div>';
+      elseif($tab_infos['nav_version']<constant(strtoupper($tab_infos['nav_modele']).'_VERSION_MINI_CONSEILLEE')) $alertes .= '<div class="probleme">Votre navigateur dysfonctionne ! L\'usage d\'Internet Explorer est déconseillé avant sa version 9.</div>';
     }
     elseif($tab_infos['nav_modele']=='firefox')
     {
-      if($tab_infos['nav_version']<constant(strtoupper($tab_infos['nav_modele']).'_VERSION_MINI_REQUISE'))        $alertes .= '<div class="danger">Votre navigateur est trop ancien pour utiliser <em>SACoche</em> ! Firefox est utilisable à partir de sa version 3.</div>';
+      if($tab_infos['nav_version']<constant(strtoupper($tab_infos['nav_modele']).'_VERSION_MINI_REQUISE'))        $alertes .= '<div class="probleme">Votre navigateur est trop ancien pour utiliser <em>SACoche</em> ! Firefox est utilisable à partir de sa version 3.</div>';
       elseif($tab_infos['nav_version']<constant(strtoupper($tab_infos['nav_modele']).'_VERSION_MINI_CONSEILLEE')) $alertes .= $alerte_ancien;
     }
     elseif($tab_infos['nav_modele']=='opera')
     {
-      if($tab_infos['nav_version']<constant(strtoupper($tab_infos['nav_modele']).'_VERSION_MINI_REQUISE'))        $alertes .= '<div class="danger">Votre navigateur est trop ancien pour utiliser <em>SACoche</em> ! Opéra est utilisable à partir de sa version 9.</div>';
+      if($tab_infos['nav_version']<constant(strtoupper($tab_infos['nav_modele']).'_VERSION_MINI_REQUISE'))        $alertes .= '<div class="probleme">Votre navigateur est trop ancien pour utiliser <em>SACoche</em> ! Opéra est utilisable à partir de sa version 9.</div>';
       elseif($tab_infos['nav_version']<constant(strtoupper($tab_infos['nav_modele']).'_VERSION_MINI_CONSEILLEE')) $alertes .= $alerte_ancien;
     }
     elseif($tab_infos['nav_modele']=='safari')
     {
-      if($tab_infos['nav_version']<constant(strtoupper($tab_infos['nav_modele']).'_VERSION_MINI_REQUISE'))        $alertes .= '<div class="danger">Votre navigateur est trop ancien pour utiliser <em>SACoche</em> ! Safari est utilisable à partir de sa version 3.</div>';
+      if($tab_infos['nav_version']<constant(strtoupper($tab_infos['nav_modele']).'_VERSION_MINI_REQUISE'))        $alertes .= '<div class="probleme">Votre navigateur est trop ancien pour utiliser <em>SACoche</em> ! Safari est utilisable à partir de sa version 3.</div>';
       elseif($tab_infos['nav_version']<constant(strtoupper($tab_infos['nav_modele']).'_VERSION_MINI_CONSEILLEE')) $alertes .= $alerte_ancien;
     }
     return ($alertes) ? '<hr />'.$alertes.'<div class="astuce">Installez '.implode(' ou ',Browser::afficher_navigateurs_modernes()).'.</div>' : '' ;

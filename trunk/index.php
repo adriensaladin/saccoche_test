@@ -59,11 +59,15 @@ elseif($PAGE!='public_installation')
 if(!Session::verif_droit_acces($PAGE))
 {
 	$tab_messages_erreur[] = 'Erreur : droits de la page "'.$PAGE.'" manquants ; soit le paramètre "page" transmis en GET est incorrect, soit les droits de cette page n\'ont pas été attribués dans le fichier "'.FileSystem::fin_chemin(CHEMIN_DOSSIER_INCLUDE.'tableau_droits.php.').'".';
-	$PAGE = (substr($PAGE,0,6)=='public') ? 'public_accueil' : 'compte_accueil' ;
+	// La page vers laquelle rediriger sera définie après ouverture de la session
 }
 
 // Ouverture de la session et gestion des droits d'accès
 Session::execute();
+if(count($tab_messages_erreur))
+{
+	$PAGE = ($_SESSION['USER_PROFIL'] == 'public') ? 'public_accueil' : 'compte_accueil' ;
+}
 
 // Infos DEBUG dans FirePHP
 if (DEBUG>3) afficher_infos_debug_FirePHP();
@@ -260,7 +264,7 @@ declaration_entete( TRUE /*is_meta_robots*/ , TRUE /*is_favicon*/ , TRUE /*is_rs
 	}
 	if(count($tab_messages_erreur))
 	{
-		echo'<hr /><div class="danger o">'.implode('</div><div class="danger o">',$tab_messages_erreur).'</div>';
+		echo'<hr /><div class="probleme">'.implode('</div><div class="probleme">',$tab_messages_erreur).'</div>';
 	}
 	echo $CONTENU_PAGE;
 	echo'<span id="ancre_bas"></span></div>'."\r\n";

@@ -140,6 +140,7 @@ if( ( ($action=='initialiser') && ($BASE>0) && (HEBERGEUR_INSTALLATION=='multi-s
 	if($structure_denomination===NULL)
 	{
 		// Sans doute un établissement supprimé, mais le cookie est encore là
+		setcookie( COOKIE_STRUCTURE /*name*/ , '' /*value*/ , time()-42000 /*expire*/ , '' /*path*/ ); // précédente version...
 		setcookie( COOKIE_STRUCTURE /*name*/ , '' /*value*/ , time()-42000 /*expire*/ , '/' /*path*/ , getServerUrl() /*domain*/ );
 		exit('Erreur : établissement non trouvé dans la base d\'administration !');
 	}

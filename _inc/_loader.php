@@ -492,7 +492,7 @@ function html($text)
  * Fonction pour remplacer mb_detect_encoding() à cause d'un bug : http://fr2.php.net/manual/en/function.mb-detect-encoding.php#81936
  *
  * @param string
- * @return string
+ * @return bool
  */
 function perso_mb_detect_encoding_utf8($text)
 {

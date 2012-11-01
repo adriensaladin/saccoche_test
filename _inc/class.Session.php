@@ -114,6 +114,15 @@ class Session
    */
   private static function param()
   {
+    // Header à envoyer avant toute génération de cookie pour mettre en place une stratégie de confidentialité compacte.
+    // La plateforme pour les préférences de confidentialité est un standart W3C nommé en anglais "Platform for Privacy Preferences" d'où "P3P".
+    // Permet d'éviter des soucis avec IE si son paramétrage de confidentialité des cookies est en position haute.
+    // @see http://www.webmaster-hub.com/topic/3754-cookies-et-strategie-de-confidentialite/
+    // @see http://www.yoyodesign.org/doc/w3c/p3p1/#compact_policies
+    // @see http://www.yoyodesign.org/doc/w3c/p3p1/#ref_file_policyref
+    // @see http://www.symantec.com/region/fr/resources/protocole.html
+    // @see http://fr.php.net/manual/fr/function.setcookie.php#102352
+    header('P3P:policyref="'.URL_DIR_SACOCHE.'p3p.xml",CP="NON DSP COR CURa OUR NOR UNI"');
     session_name(SESSION_NOM);
     session_cache_limiter('nocache');
   }
@@ -227,6 +236,8 @@ class Session
     }
     else
     {
+      // La page n'a pas de droit défini, elle ne sera donc pas chargée ; on renseigne toutefois Session::$tab_droits_page pour ne pas provoquer d'erreur.
+      Session::$tab_droits_page = $tab_droits_profil_tous;
       return FALSE;
     }
   }
@@ -260,7 +271,7 @@ class Session
     // Pas besoin de session_start() car la session a déjà été ouverte avant appel à cette fonction.
     $_SESSION = array();
     session_unset();
-    setcookie(session_name(),'',time()-42000,'');
+    setcookie( session_name() /*name*/ , '' /*value*/, time()-42000 /*expire*/ , '/' /*path*/ , getServerUrl() /*domain*/ );
     session_destroy();
   }
 

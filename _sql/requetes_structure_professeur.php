@@ -349,11 +349,11 @@ public static function DB_lister_devoirs_prof_groupe_sans_infos_last($prof_id,$g
 	$DB_SQL = 'SELECT sacoche_devoir.* ';
 	$DB_SQL.= 'FROM sacoche_devoir ';
 	$DB_SQL.= 'LEFT JOIN sacoche_groupe USING (groupe_id) ';
-	$DB_SQL.= 'WHERE prof_id=:prof_id ';
+	$DB_SQL.= 'WHERE ( prof_id=:prof_id OR devoir_partage LIKE :prof_id_like ) ';
 	$DB_SQL.= ($groupe_type=='groupe') ? 'AND groupe_type!=:type4 AND groupe_id=:groupe_id ' : 'AND groupe_type=:type4 ' ;
 	$DB_SQL.= 'ORDER BY devoir_date DESC ';
 	$DB_SQL.= 'LIMIT 20 ';
-	$DB_VAR = array(':prof_id'=>$prof_id,':groupe_id'=>$groupe_id,':type4'=>'eval');
+	$DB_VAR = array(':prof_id'=>$prof_id,':prof_id_like'=>'%,'.$prof_id.',%',':groupe_id'=>$groupe_id,':type4'=>'eval');
 	return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 

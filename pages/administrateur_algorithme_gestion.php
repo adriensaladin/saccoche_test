@@ -30,6 +30,7 @@ $TITRE = "Algorithme de calcul";
 ?>
 
 <?php
+// Option select : méthode de calcul
 $tab_options = array();
 $tab_options['geometrique']  = 'Coefficient multiplié par 2 à chaque devoir (sur les 5 dernières saisies maximum).';
 $tab_options['arithmetique'] = 'Coefficient augmenté de 1 à chaque devoir (sur les 9 dernières saisies maximum).';
@@ -44,6 +45,7 @@ foreach($tab_options as $value => $texte)
 	$options_methode .= '<option value="'.$value.'"'.$selected.'>'.$texte.'</option>';
 }
 
+// Option select : nb de saisies
 $tab_options = array(0,1,2,3,4,5,6,7,8,9,10,15,20,30,40,50);
 $options_limite = '';
 foreach($tab_options as $value)
@@ -59,6 +61,17 @@ foreach($tab_options as $value)
 	$selected = ($value==$_SESSION['CALCUL_LIMITE']) ? ' selected' : '' ;
 	$options_limite .= '<option value="'.$value.'"'.$selected.'>'.$texte.'</option>';
 }
+
+// Option select : éval antérieures
+$tab_options = array();
+$tab_options['non'] = 'Sans prise en compte des évaluations antérieures.';
+$tab_options['oui'] = 'Avec prise en compte des évaluations antérieures.';
+$options_retroactif = '';
+foreach($tab_options as $value => $texte)
+{
+	$selected = ($value==$_SESSION['CALCUL_RETROACTIF']) ? ' selected' : '' ;
+	$options_retroactif .= '<option value="'.$value.'"'.$selected.'>'.$texte.'</option>';
+}
 ?>
 
 <form action="#" method="post" id="form_input">
@@ -69,7 +82,7 @@ foreach($tab_options as $value)
 		</th><th>
 			Méthode de calcul par défaut (modifiable pour chaque référentiel)
 		</th><th>
-			Seuil d'aquisition (sur 100)
+			Seuil d'acquisition (sur 100)
 		</th></tr>
 	</thead>
 	<tbody>
@@ -79,9 +92,9 @@ foreach($tab_options as $value)
 			<label class="tab mini" for="valeurV" >saisie <img alt="" src="./_img/note/<?php echo $_SESSION['NOTE_IMAGE_STYLE'] ?>/h/V.gif" />  :</label><input type="text" size="3" id="valeurV"  name="valeurV"  value="<?php echo $_SESSION['CALCUL_VALEUR']['V']  ?>" /><br />
 			<label class="tab mini" for="valeurVV">saisie <img alt="" src="./_img/note/<?php echo $_SESSION['NOTE_IMAGE_STYLE'] ?>/h/VV.gif" /> :</label><input type="text" size="3" id="valeurVV" name="valeurVV" value="<?php echo $_SESSION['CALCUL_VALEUR']['VV'] ?>" /><br />
 		</td><td>
-			&nbsp;<br />
 			<select id="f_methode" name="f_methode"><?php echo $options_methode ?></select><br />
 			<select id="f_limite" name="f_limite"><?php echo $options_limite ?></select><br />
+			<select id="f_retroactif" name="f_retroactif"><?php echo $options_retroactif ?></select>
 		</td><td>
 			&nbsp;<br />
 			<label class="tab mini" for="seuilR">non acquis :</label>&lt; <input type="text" size="3" id="seuilR" name="seuilR" value="<?php echo $_SESSION['CALCUL_SEUIL']['R'] ?>" /><br />

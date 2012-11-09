@@ -53,12 +53,12 @@ $tab_matieres = DB_STRUCTURE_COMMUN::DB_OPT_matieres_etabl();
 $tab_paliers  = DB_STRUCTURE_COMMUN::DB_OPT_paliers_etabl();
 $of_p = (count($tab_paliers)<2) ? 'non' : 'oui' ;
 
-$select_matiere   = Form::afficher_select($tab_matieres                     , $select_nom=false         , $option_first='non'  , $selection=true                                , $optgroup='non');
-$select_palier    = Form::afficher_select($tab_paliers                      , $select_nom='f_palier'    , $option_first=$of_p  , $selection=Form::$tab_choix['palier_id'] , $optgroup='non');
-$select_groupe    = Form::afficher_select($tab_groupes                      , $select_nom='f_groupe'    , $option_first='oui'  , $selection=false                               , $optgroup='oui');
-$select_marge_min = Form::afficher_select(Form::$tab_select_marge_min , $select_nom='f_marge_min' , $option_first='non'  , $selection=Form::$tab_choix['marge_min'] , $optgroup='non');
-$select_couleur   = Form::afficher_select(Form::$tab_select_couleur   , $select_nom='f_couleur'    , $option_first='non' , $selection=Form::$tab_choix['couleur']   , $optgroup='non');
-$select_legende   = Form::afficher_select(Form::$tab_select_legende   , $select_nom='f_legende'    , $option_first='non' , $selection=Form::$tab_choix['legende']   , $optgroup='non');
+$select_matiere   = Form::afficher_select($tab_matieres               , $select_nom=FALSE         , $option_first='non' , $selection=TRUE                          , $optgroup='non');
+$select_palier    = Form::afficher_select($tab_paliers                , $select_nom='f_palier'    , $option_first=$of_p , $selection=Form::$tab_choix['palier_id'] , $optgroup='non');
+$select_groupe    = Form::afficher_select($tab_groupes                , $select_nom='f_groupe'    , $option_first='oui' , $selection=FALSE                         , $optgroup='oui');
+$select_marge_min = Form::afficher_select(Form::$tab_select_marge_min , $select_nom='f_marge_min' , $option_first='non' , $selection=Form::$tab_choix['marge_min'] , $optgroup='non');
+$select_couleur   = Form::afficher_select(Form::$tab_select_couleur   , $select_nom='f_couleur'   , $option_first='non' , $selection=Form::$tab_choix['couleur']   , $optgroup='non');
+$select_legende   = Form::afficher_select(Form::$tab_select_legende   , $select_nom='f_legende'   , $option_first='non' , $selection=Form::$tab_choix['legende']   , $optgroup='non');
 ?>
 
 <ul class="puce">

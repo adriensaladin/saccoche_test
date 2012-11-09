@@ -1870,7 +1870,7 @@ if( $step==61 )
 		$tab_asso_prof_classe = array();
 		// Garder trace des identités des profs de la base
 		$tab_base_prof_identite = array();
-		// On récupère le contenu de la base pour comparer : $tab_base_affectation[user_id_groupe_id]=true $tab_base_classe[groupe_id]=groupe_nom
+		// On récupère le contenu de la base pour comparer : $tab_base_affectation[user_id_groupe_id]=TRUE $tab_base_classe[groupe_id]=groupe_nom
 		// En deux requêtes sinon on ne récupère pas les groupes sans utilisateurs affectés.
 		$tab_base_classe = array();
 		$DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_classes();
@@ -1927,7 +1927,7 @@ if( $step==61 )
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
 		// associations profs/PP
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
-		// On récupère le contenu de la base pour comparer : $tab_base_affectation[user_id_groupe_id]=true ($tab_base_classe déjà renseigné)
+		// On récupère le contenu de la base pour comparer : $tab_base_affectation[user_id_groupe_id]=TRUE ($tab_base_classe déjà renseigné)
 		$tab_base_affectation = array();
 		$DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_jointure_professeurs_principaux();
 		foreach($DB_TAB as $DB_ROW)
@@ -2022,7 +2022,7 @@ if( $step==61 )
 	// ////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Garder trace des identités des utilisateurs de la base
 	$tab_base_user_identite = array();
-	// On récupère le contenu de la base pour comparer : $tab_base_affectation[user_id_groupe_id]=true et $tab_base_groupe[groupe_id]=groupe_nom
+	// On récupère le contenu de la base pour comparer : $tab_base_affectation[user_id_groupe_id]=TRUE et $tab_base_groupe[groupe_id]=groupe_nom
 	// En deux requêtes sinon on ne récupère pas les groupes sans utilisateurs affectés.
 	$tab_base_groupe = array();
 	$DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_groupes();

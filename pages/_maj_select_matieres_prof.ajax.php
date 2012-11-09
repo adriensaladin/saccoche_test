@@ -34,6 +34,6 @@ $action  = (isset($_POST['f_action']))  ? Clean::texte($_POST['f_action'])   : '
 $matiere = (isset($_POST['f_matiere'])) ? Clean::entier($_POST['f_matiere']) : 0;
 
 $tab_matieres = ($action=='ajouter') ? DB_STRUCTURE_COMMUN::DB_OPT_matieres_etabl() : DB_STRUCTURE_COMMUN::DB_OPT_matieres_professeur($_SESSION['USER_ID']) ;
-echo Form::afficher_select( $tab_matieres , $select_nom=false , $option_first='oui' , $selection=$matiere , $optgroup='non' );
+echo Form::afficher_select( $tab_matieres , $select_nom=FALSE , $option_first='oui' , $selection=$matiere , $optgroup='non' );
 
 ?>

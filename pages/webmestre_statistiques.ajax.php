@@ -94,7 +94,7 @@ if( ($action=='supprimer') && $nb_bases )
 {
 	foreach($tab_base_id as $base_id)
 	{
-		supprimer_multi_structure($base_id);
+		Webmestre::supprimer_multi_structure($base_id);
 	}
 	exit('<ok>');
 }

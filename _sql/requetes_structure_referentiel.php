@@ -156,8 +156,8 @@ public static function DB_tester_referentiel($matiere_id,$niveau_id)
 public static function DB_ajouter_referentiel($matiere_id,$niveau_id,$partage_etat)
 {
 	$DB_SQL = 'INSERT INTO sacoche_referentiel ';
-	$DB_SQL.= 'VALUES(:matiere_id,:niveau_id,:partage_etat,:partage_date,:calcul_methode,:calcul_limite,:mode_synthese)';
-	$DB_VAR = array(':matiere_id'=>$matiere_id,':niveau_id'=>$niveau_id,':partage_etat'=>$partage_etat,':partage_date'=>TODAY_MYSQL,':calcul_methode'=>$_SESSION['CALCUL_METHODE'],':calcul_limite'=>$_SESSION['CALCUL_LIMITE'],':mode_synthese'=>'inconnu');
+	$DB_SQL.= 'VALUES(:matiere_id,:niveau_id,:partage_etat,:partage_date,:calcul_methode,:calcul_limite,:calcul_retroactif,:mode_synthese)';
+	$DB_VAR = array(':matiere_id'=>$matiere_id,':niveau_id'=>$niveau_id,':partage_etat'=>$partage_etat,':partage_date'=>TODAY_MYSQL,':calcul_methode'=>$_SESSION['CALCUL_METHODE'],':calcul_limite'=>$_SESSION['CALCUL_LIMITE'],':calcul_retroactif'=>$_SESSION['CALCUL_RETROACTIF'],':mode_synthese'=>'inconnu');
 	DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
@@ -338,7 +338,7 @@ public static function DB_importer_arborescence_from_XML($arbreXML,$matiere_id,$
  *
  * @param int     $matiere_id
  * @param int     $niveau_id
- * @param array   array(':partage_etat'=>$val, ':partage_date'=>$val , ':calcul_methode'=>$val , ':calcul_limite'=>$val , ':mode_synthese'=>$val );
+ * @param array   array(':partage_etat'=>$val, ':partage_date'=>$val , ':calcul_methode'=>$val , ':calcul_limite'=>$val , ':calcul_retroactif'=>$val , ':mode_synthese'=>$val );
  * @return void
  */
 public static function DB_modifier_referentiel($matiere_id,$niveau_id,$DB_VAR)
@@ -346,14 +346,7 @@ public static function DB_modifier_referentiel($matiere_id,$niveau_id,$DB_VAR)
 	$tab_set = array();
 	foreach($DB_VAR as $key => $val)
 	{
-		switch($key)
-		{
-			case ':partage_etat'   : $tab_set[] = 'referentiel_partage_etat='.$key;   break;
-			case ':partage_date'   : $tab_set[] = 'referentiel_partage_date='.$key;   break;
-			case ':calcul_methode' : $tab_set[] = 'referentiel_calcul_methode='.$key; break;
-			case ':calcul_limite'  : $tab_set[] = 'referentiel_calcul_limite='.$key;  break;
-			case ':mode_synthese'  : $tab_set[] = 'referentiel_mode_synthese='.$key;  break;
-		}
+		$tab_set[] = 'referentiel_'.substr($key,1).'='.$key; // Par exemple : referentiel_partage_etat=:partage_etat
 	}
 	$DB_SQL = 'UPDATE sacoche_referentiel ';
 	$DB_SQL.= 'SET '.implode(', ',$tab_set).' ';

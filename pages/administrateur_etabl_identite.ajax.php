@@ -55,7 +55,7 @@ $mois_bascule_annee_scolaire = (isset($_POST['f_mois_bascule_annee_scolaire'])) 
 
 if($action=='Afficher_form_geo1')
 {
-	exit( Sesamath_afficher_formulaire_geo1() );
+	exit( ServeurCommunautaire::Sesamath_afficher_formulaire_geo1() );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -64,7 +64,7 @@ if($action=='Afficher_form_geo1')
 
 if( ($action=='Afficher_form_geo2') && ($geo1>0) )
 {
-	exit( Sesamath_afficher_formulaire_geo2($geo1) );
+	exit( ServeurCommunautaire::Sesamath_afficher_formulaire_geo2($geo1) );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -73,7 +73,7 @@ if( ($action=='Afficher_form_geo2') && ($geo1>0) )
 
 if( ($action=='Afficher_form_geo3') && ($geo1>0) && ($geo2>0) )
 {
-	exit( Sesamath_afficher_formulaire_geo3($geo1,$geo2) );
+	exit( ServeurCommunautaire::Sesamath_afficher_formulaire_geo3($geo1,$geo2) );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -82,7 +82,7 @@ if( ($action=='Afficher_form_geo3') && ($geo1>0) && ($geo2>0) )
 
 if( ($action=='Afficher_structures') && ( ($geo3>0) || ($uai!='') ) )
 {
-	echo ($geo3) ? Sesamath_lister_structures_by_commune($geo3) : Sesamath_recuperer_structure_by_UAI($uai) ;
+	echo ($geo3) ? ServeurCommunautaire::Sesamath_lister_structures_by_commune($geo3) : ServeurCommunautaire::Sesamath_recuperer_structure_by_UAI($uai) ;
 	exit();
 }
 
@@ -92,7 +92,7 @@ if( ($action=='Afficher_structures') && ( ($geo3>0) || ($uai!='') ) )
 
 if( $sesamath_id && $sesamath_type_nom && $sesamath_key )
 {
-	$retour = Sesamath_enregistrer_structure($sesamath_id,$sesamath_key);
+	$retour = ServeurCommunautaire::Sesamath_enregistrer_structure($sesamath_id,$sesamath_key);
 	if($retour!='ok')
 	{
 		exit($retour);

@@ -39,8 +39,8 @@ if( in_array($daltonisme,array(0,1)) )
 	$_SESSION['USER_DALTONISME'] = $daltonisme;
 	DB_STRUCTURE_COMMUN::DB_modifier_user_daltonisme( $_SESSION['USER_ID'] , $daltonisme );
 	// Enregistrer en session le CSS personnalisé
-	adapter_session_daltonisme();
-	actualiser_style_session();
+	SessionUser::adapter_daltonisme();
+	SessionUser::actualiser_style();
 	exit('ok');
 }
 

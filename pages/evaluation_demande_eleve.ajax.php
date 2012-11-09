@@ -50,7 +50,7 @@ if( ($action=='supprimer') && $demande_id && $item_id && $matiere_id )
 	$DB_COL = DB_STRUCTURE_ELEVE::DB_recuperer_professeurs_eleve_matiere($_SESSION['USER_ID'],$matiere_id);
 	foreach($DB_COL as $prof_id)
 	{
-		Modifier_RSS($prof_id,$titre,$texte,$guid);
+		RSS::modifier_fichier_prof($prof_id,$titre,$texte,$guid);
 	}
 	// Affichage du retour
 	exit('ok');

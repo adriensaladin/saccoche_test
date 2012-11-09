@@ -55,7 +55,7 @@ if( ($action=='ajouter') && $date_debut && $date_fin )
 	{
 		foreach($tab_select_classes_groupes as $groupe_id)
 		{
-			DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_liaison_groupe_periode($groupe_id,$periode_id,true,$date_debut_mysql,$date_fin_mysql);
+			DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_liaison_groupe_periode( $groupe_id , $periode_id , TRUE , $date_debut_mysql , $date_fin_mysql );
 		}
 	}
 }
@@ -70,7 +70,7 @@ elseif($action=='retirer')
 	{
 		foreach($tab_select_classes_groupes as $groupe_id)
 		{
-			DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_liaison_groupe_periode($groupe_id,$periode_id,false);
+			DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_liaison_groupe_periode( $groupe_id , $periode_id , FALSE );
 		}
 	}
 }

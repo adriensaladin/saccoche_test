@@ -30,18 +30,18 @@ $TITRE = "Recherche ciblée";
 
 // Fabrication des éléments select du formulaire
 $tab_groupes = ($_SESSION['USER_PROFIL']=='professeur') ? DB_STRUCTURE_COMMUN::DB_OPT_groupes_professeur($_SESSION['USER_ID']) : DB_STRUCTURE_COMMUN::DB_OPT_regroupements_etabl(FALSE/*sans*/) ;
-$select_groupe = Form::afficher_select($tab_groupes , $select_nom='f_groupe' , $option_first='oui' , $selection=false , $optgroup='oui');
+$select_groupe = Form::afficher_select($tab_groupes , $select_nom='f_groupe' , $option_first='oui' , $selection=FALSE , $optgroup='oui');
 
 Form::$tab_select_optgroup = array( 1=>'item(s) matière(s)' , 2=>'item du socle' , 3=>'compétence du socle' );
-$select_critere_objet = Form::afficher_select(Form::$tab_select_recherche_objet , $select_nom='f_critere_objet' , $option_first='oui' , $selection=false , $optgroup='oui');
+$select_critere_objet = Form::afficher_select(Form::$tab_select_recherche_objet , $select_nom='f_critere_objet' , $option_first='oui' , $selection=FALSE , $optgroup='oui');
 
 $select_critere_seuil_acquis = '<option value="NA" selected>'.html($_SESSION['ACQUIS_LEGENDE']['NA']).'</option><option value="VA">'.html($_SESSION['ACQUIS_LEGENDE']['VA']).'</option><option value="A">'.html($_SESSION['ACQUIS_LEGENDE']['A']).'</option><option value="X">Indéterminé</option>';
 $select_critere_seuil_valide = '<option value="0" selected>Invalidé</option><option value="1">Validé</option><option value="2">Non renseigné</option>';
 
-$select_selection_items = Form::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_selection_items($_SESSION['USER_ID']) , $select_nom='f_selection_items' , $option_first='oui' , $selection=false , $optgroup='non');
+$select_selection_items = Form::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_selection_items($_SESSION['USER_ID']) , $select_nom='f_selection_items' , $option_first='oui' , $selection=FALSE , $optgroup='non');
 
-$select_matiere = Form::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_matieres_etabl()  , $select_nom=false             , $option_first='non' , $selection=true  , $optgroup='non');
-$select_piliers = Form::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_paliers_piliers() , $select_nom='f_select_pilier' , $option_first='oui' , $selection=false , $optgroup='oui');
+$select_matiere = Form::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_matieres_etabl()  , $select_nom=FALSE             , $option_first='non' , $selection=TRUE  , $optgroup='non');
+$select_piliers = Form::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_paliers_piliers() , $select_nom='f_select_pilier' , $option_first='oui' , $selection=FALSE , $optgroup='oui');
 
 ?>
 
@@ -83,8 +83,8 @@ $select_piliers = Form::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_paliers_pili
 	<?php
 	// Affichage de la liste des items pour toutes les matières d'un professeur ou toutes les matières de l'établissement si directeur, sur tous les niveaux
 	$user_id = ($_SESSION['USER_PROFIL']=='professeur') ? $_SESSION['USER_ID'] : 0 ;
-	$DB_TAB = DB_STRUCTURE_COMMUN::DB_recuperer_arborescence($user_id,$matiere_id=0,$niveau_id=0,$only_socle=false,$only_item=false,$socle_nom=false);
-	echo afficher_arborescence_matiere_from_SQL($DB_TAB,$dynamique=true,$reference=true,$aff_coef=false,$aff_cart=false,$aff_socle='texte',$aff_lien=false,$aff_input=true);
+	$DB_TAB = DB_STRUCTURE_COMMUN::DB_recuperer_arborescence( $user_id , 0 /*matiere_id*/ , 0 /*niveau_id*/, FALSE /*only_socle*/ , FALSE /*only_item*/ , FALSE /*socle_nom*/ );
+	echo Html::afficher_arborescence_matiere_from_SQL( $DB_TAB , TRUE /*dynamique*/ , TRUE /*reference*/ , FALSE /*aff_coef*/ , FALSE /*aff_cart*/ , 'texte' /*aff_socle*/ , FALSE /*aff_lien*/ , TRUE /*aff_input*/ );
 	?>
 	<p><span class="tab"></span><button id="valider_matieres_items" type="button" class="valider">Valider la sélection</button>&nbsp;&nbsp;&nbsp;<button id="annuler_matieres_items" type="button" class="annuler">Annuler / Retour</button></p>
 	<hr />
@@ -101,7 +101,7 @@ $select_piliers = Form::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_paliers_pili
 	$DB_TAB = DB_STRUCTURE_COMMUN::DB_recuperer_arborescence_palier();
 	if(!empty($DB_TAB))
 	{
-		echo afficher_arborescence_socle_from_SQL($DB_TAB,$dynamique=true,$reference=false,$aff_input=true,$ids=false);
+		echo Html::afficher_arborescence_socle_from_SQL( $DB_TAB , TRUE /*dynamique*/ , FALSE /*reference*/ , TRUE /*aff_input*/ , FALSE /*ids*/ );
 	}
 	else
 	{

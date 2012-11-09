@@ -43,7 +43,7 @@ if( ($password_ancien!='') && ($password_nouveau!='') )
 	}
 	else
 	{
-		exit( modifier_mdp_webmestre( $password_ancien , $password_nouveau ) );
+		exit( Webmestre::modifier_mdp_webmestre( $password_ancien , $password_nouveau ) );
 	}
 }
 

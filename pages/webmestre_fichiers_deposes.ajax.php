@@ -37,7 +37,7 @@ $duree_conservation = (isset($_POST['f_duree_conservation'])) ? Clean::entier($_
 
 if( $taille_max && $duree_conservation )
 {
-	fabriquer_fichier_hebergeur_info( array('FICHIER_TAILLE_MAX'=>$taille_max,'FICHIER_DUREE_CONSERVATION'=>$duree_conservation) );
+	FileSystem::fabriquer_fichier_hebergeur_info( array('FICHIER_TAILLE_MAX'=>$taille_max,'FICHIER_DUREE_CONSERVATION'=>$duree_conservation) );
 	exit('ok');
 }
 

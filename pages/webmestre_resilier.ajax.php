@@ -28,6 +28,6 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 if($_SESSION['SESAMATH_ID']==ID_DEMO) {exit('Action désactivée pour la démo...');}
 
-supprimer_mono_structure();
+Webmestre::supprimer_mono_structure();
 exit('ok');
 ?>

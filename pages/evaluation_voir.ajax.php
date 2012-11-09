@@ -151,7 +151,7 @@ if( ($action=='Voir_notes') && $eleve_id && $devoir_id )
 		// Test pour éviter les pbs des élèves changés de groupes ou des items modifiés en cours de route
 		if(isset($tab_affich[$DB_ROW['item_id']]))
 		{
-			$tab_affich[$DB_ROW['item_id']] = str_replace( '>-<' , '>'.Html::note($DB_ROW['saisie_note'],'','',TRUE /*tri*/).'<' , $tab_affich[$DB_ROW['item_id']] );
+			$tab_affich[$DB_ROW['item_id']] = str_replace('>-<','>'.Html::note($DB_ROW['saisie_note'],'','',$tri=true).'<',$tab_affich[$DB_ROW['item_id']]);
 		}
 	}
 	exit(implode('',$tab_affich));
@@ -306,7 +306,7 @@ if( ($action=='Enregistrer_saisies') && $devoir_id )
 	$guid  = 'autoeval_'.$devoir_id.'-'.$_SESSION['USER_ID'];
 	foreach($tab_profs_rss as $prof_id)
 	{
-		RSS::modifier_fichier_prof($prof_id,$titre,$texte,$guid);
+		Modifier_RSS($prof_id,$titre,$texte,$guid);
 	}
 	exit('ok');
 }

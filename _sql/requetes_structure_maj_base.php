@@ -2267,29 +2267,6 @@ public static function DB_maj_base($version_actuelle)
 		}
 	}
 
-	// ////////////////////////////////////////////////////////////////////////////////////////////////////
-	// MAJ 2012-10-26 => 2012-11-05
-	// ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-	if($version_actuelle=='2012-10-26')
-	{
-		if($version_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
-		{
-			$version_actuelle = '2012-11-05';
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_actuelle.'" WHERE parametre_nom="version_base"' );
-			// ajout de paramètres
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ( "officiel_releve_only_socle"           , "0"   )' );
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ( "officiel_releve_retroactif"           , "non" )' );
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ( "officiel_releve_conv_sur20"           , "0"   )' );
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ( "officiel_bulletin_only_socle"         , "0"   )' );
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ( "officiel_bulletin_retroactif"         , "non" )' );
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ( "officiel_bulletin_barre_acquisitions" , "1"   )' );
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ( "calcul_retroactif"                    , "non" )' );
-			// ajouter une entrée dans sacoche_referentiel pour paramétrer la prise en compte des évaluations antérieures par défaut
-			DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_referentiel ADD referentiel_calcul_retroactif ENUM("non","oui") COLLATE utf8_unicode_ci NOT NULL DEFAULT "non" COMMENT "Avec ou sans prise en compte des évaluations antérieures. Valeur surclassant la configuration par défaut." AFTER referentiel_calcul_limite' );
-		}
-	}
-
 }
 
 }

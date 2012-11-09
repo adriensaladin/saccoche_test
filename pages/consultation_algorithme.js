@@ -91,17 +91,6 @@ $(document).ready
 			}
 		);
 
-		// Variables globales
-		var memo_valeurRR   = 0;
-		var memo_valeurR    = 0;
-		var memo_valeurV    = 0;
-		var memo_valeurVV   = 0;
-		var memo_methode    = '';
-		var memo_limite     = 0;
-		var memo_retroactif = '';
-		var memo_seuilR     = 0;
-		var memo_seuilV     = 0;
-
 		// Demande d'initialisation du formulaire avec les valeurs de l'établissement
 		// Un simple boutton de type "reset" ne peut être utilisé en cas d'enregistrement en cours de procédure
 		$('#initialiser_etablissement').click
@@ -114,27 +103,20 @@ $(document).ready
 				$('#valeurVV').val(memo_valeurVV);
 				$('#f_methode option[value='+memo_methode+']').prop('selected',true);
 				$('#f_limite option[value='+memo_limite+']').prop('selected',true);
-				$('#f_retroactif option[value='+memo_retroactif+']').prop('selected',true);
 				$('#seuilR').val(memo_seuilR);
 				$('#seuilV').val(memo_seuilV);
 				actualiser_select_limite();
 			}
 		);
-
 		// Donc il faut retenir les valeurs initiales et les replacer
-		function memoriser_valeurs()
-		{
-			memo_valeurRR   = $('#valeurRR').val();
-			memo_valeurR    = $('#valeurR').val();
-			memo_valeurV    = $('#valeurV').val();
-			memo_valeurVV   = $('#valeurVV').val();
-			memo_methode    = $('#f_methode option:selected').val();
-			memo_limite     = $('#f_limite option:selected').val();
-			memo_retroactif = $('#f_retroactif option:selected').val();
-			memo_seuilR     = $('#seuilR').val();
-			memo_seuilV     = $('#seuilV').val();
-		}
-		memoriser_valeurs();
+		var memo_valeurRR = $('#valeurRR').val();
+		var memo_valeurR  = $('#valeurR').val();
+		var memo_valeurV  = $('#valeurV').val();
+		var memo_valeurVV = $('#valeurVV').val();
+		var memo_methode  = $('#f_methode option:selected').val();
+		var memo_limite   = $('#f_limite option:selected').val();
+		var memo_seuilR   = $('#seuilR').val();
+		var memo_seuilV   = $('#seuilV').val();
 
 		// Demande d'initialisation du formulaire avec les valeurs par défaut
 		$('#initialiser_defaut').click
@@ -145,9 +127,8 @@ $(document).ready
 				$('#valeurR').val(33);
 				$('#valeurV').val(67);
 				$('#valeurVV').val(100);
-				$('#f_methode option[value=geometrique]').prop('selected',true);
-				$('#f_limite option[value=5]').prop('selected',true);
-				$('#f_retroactif option[value=non]').prop('selected',true);
+				$('#f_methode option[value="geometrique"]').prop('selected',true);
+				$('#f_limite option[value="5"]').prop('selected',true);
 				$('#seuilR').val(40);
 				$('#seuilV').val(60);
 				actualiser_select_limite();
@@ -163,27 +144,25 @@ $(document).ready
 			{
 				rules :
 				{
-					valeurRR     : { required:true, digits:true },
-					valeurR      : { required:true, digits:true },
-					valeurV      : { required:true, digits:true },
-					valeurVV     : { required:true, digits:true },
-					f_methode    : { required:true },
-					f_limite     : { required:true },
-					f_retroactif : { required:true },
-					seuilR       : { required:true, digits:true },
-					seuilV       : { required:true, digits:true }
+					valeurRR  : { required:true, digits:true },
+					valeurR   : { required:true, digits:true },
+					valeurV   : { required:true, digits:true },
+					valeurVV  : { required:true, digits:true },
+					f_methode : { required:true },
+					f_limite  : { required:true },
+					seuilR    : { required:true, digits:true },
+					seuilV    : { required:true, digits:true }
 				},
 				messages :
 				{
-					valeurRR     : { required:"valeur requise", digits:"nombre entier requis" },
-					valeurR      : { required:"valeur requise", digits:"nombre entier requis" },
-					valeurV      : { required:"valeur requise", digits:"nombre entier requis" },
-					valeurVV     : { required:"valeur requise", digits:"nombre entier requis" },
-					f_methode    : { required:"méthode requise" },
-					f_limite     : { required:"méthode requise" },
-					f_retroactif : { required:"méthode requise" },
-					seuilR       : { required:"valeur requise", digits:"nombre entier requis" },
-					seuilV       : { required:"valeur requise", digits:"nombre entier requis" }
+					valeurRR :  { required:"valeur requise", digits:"nombre entier requis" },
+					valeurR :   { required:"valeur requise", digits:"nombre entier requis" },
+					valeurV :   { required:"valeur requise", digits:"nombre entier requis" },
+					valeurVV :  { required:"valeur requise", digits:"nombre entier requis" },
+					f_methode : { required:"méthode requise" },
+					f_limite :  { required:"méthode requise" },
+					seuilR :    { required:"valeur requise", digits:"nombre entier requis" },
+					seuilV :    { required:"valeur requise", digits:"nombre entier requis" }
 				},
 				errorElement : "label",
 				errorClass : "erreur",
@@ -242,11 +221,11 @@ $(document).ready
 				}
 				else if( (Math.min($('#seuilR').val(),$('#seuilV').val())<0) || (Math.max($('#seuilR').val(),$('#seuilV').val())>100) )
 				{
-					$('#ajax_msg').removeAttr("class").addClass("erreur").html("Seuil d'acquisition : valeurs entre 0 et 100 requises.").show();
+					$('#ajax_msg').removeAttr("class").addClass("erreur").html("Seuil d'aquisition : valeurs entre 0 et 100 requises.").show();
 				}
 				else if( parseInt($('#seuilR').val(),10) > parseInt($('#seuilV').val(),10) )
 				{
-					$('#ajax_msg').removeAttr("class").addClass("erreur").html("Seuil d'acquisition : valeurs croissantes requises.").show();
+					$('#ajax_msg').removeAttr("class").addClass("erreur").html("Seuil d'aquisition : valeurs croissantes requises.").show();
 				}
 				else
 				{

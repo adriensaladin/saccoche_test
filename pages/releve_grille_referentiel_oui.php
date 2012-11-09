@@ -46,7 +46,7 @@ if($_SESSION['USER_PROFIL']=='directeur')
 {
 	$tab_matieres = DB_STRUCTURE_COMMUN::DB_OPT_matieres_etabl();
 	$tab_groupes  = DB_STRUCTURE_COMMUN::DB_OPT_classes_groupes_etabl();
-	$of_g = 'oui'; $sel_g = FALSE; $og_g = 'oui'; $class_form_type = 'show'; $class_form_eleve = $class_form_generique; $sel_n = FALSE;
+	$of_g = 'oui'; $sel_g = false; $og_g = 'oui'; $class_form_type = 'show'; $class_form_eleve = $class_form_generique; $sel_n = false;
 	$multiple_eleve = ' multiple size="9"';
 	$select_eleves = '<option></option>'; // maj en ajax suivant le choix du groupe
 }
@@ -54,7 +54,7 @@ if($_SESSION['USER_PROFIL']=='professeur')
 {
 	$tab_matieres = DB_STRUCTURE_COMMUN::DB_OPT_matieres_professeur($_SESSION['USER_ID']);
 	$tab_groupes  = DB_STRUCTURE_COMMUN::DB_OPT_groupes_professeur($_SESSION['USER_ID']);
-	$of_g = 'oui'; $sel_g = FALSE; $og_g = 'oui'; $class_form_type = 'show'; $class_form_eleve = $class_form_generique; $sel_n = FALSE;
+	$of_g = 'oui'; $sel_g = false; $og_g = 'oui'; $class_form_type = 'show'; $class_form_eleve = $class_form_generique; $sel_n = false;
 	$multiple_eleve = ' multiple size="9"';
 	$select_eleves = '<option></option>'; // maj en ajax suivant le choix du groupe
 	$bouton_modifier_matieres = '<button id="modifier_matiere" type="button" class="form_ajouter">&plusmn;</button>';
@@ -63,7 +63,7 @@ if( ($_SESSION['USER_PROFIL']=='parent') && ($_SESSION['NB_ENFANTS']!=1) )
 {
 	$tab_matieres = DB_STRUCTURE_COMMUN::DB_OPT_matieres_etabl();
 	$tab_groupes  = $_SESSION['OPT_PARENT_CLASSES'];
-	$of_g = 'oui'; $sel_g = FALSE; $og_g = 'non'; $class_form_type = 'hide'; $class_form_eleve = $class_form_generique; $sel_n = FALSE;
+	$of_g = 'oui'; $sel_g = false; $og_g = 'non'; $class_form_type = 'hide'; $class_form_eleve = $class_form_generique; $sel_n = false;
 	$multiple_eleve = ''; // volontaire
 	$select_eleves = '<option></option>'; // maj en ajax suivant le choix du groupe
 }
@@ -71,7 +71,7 @@ if( ($_SESSION['USER_PROFIL']=='parent') && ($_SESSION['NB_ENFANTS']==1) )
 {
 	$tab_matieres = DB_STRUCTURE_COMMUN::DB_OPT_matieres_eleve($_SESSION['OPT_PARENT_ENFANTS'][0]['valeur']);
 	$tab_groupes  = array(0=>array('valeur'=>$_SESSION['ELEVE_CLASSE_ID'],'texte'=>$_SESSION['ELEVE_CLASSE_NOM']));
-	$of_g = 'non'; $sel_g = TRUE;  $og_g = 'non'; $class_form_type = 'hide'; $class_form_eleve = 'hide'; $sel_n = 'val';
+	$of_g = 'non'; $sel_g = true;  $og_g = 'non'; $class_form_type = 'hide'; $class_form_eleve = 'hide'; $sel_n = 'val';
 	$multiple_eleve = '';
 	$select_eleves = '<option value="'.$_SESSION['OPT_PARENT_ENFANTS'][0]['valeur'].'" selected>'.html($_SESSION['OPT_PARENT_ENFANTS'][0]['texte']).'</option>';
 }
@@ -79,7 +79,7 @@ if($_SESSION['USER_PROFIL']=='eleve')
 {
 	$tab_matieres = DB_STRUCTURE_COMMUN::DB_OPT_matieres_eleve($_SESSION['USER_ID']);
 	$tab_groupes  = array(0=>array('valeur'=>$_SESSION['ELEVE_CLASSE_ID'],'texte'=>$_SESSION['ELEVE_CLASSE_NOM']));
-	$of_g = 'non'; $sel_g = TRUE;  $og_g = 'non'; $class_form_type = 'hide'; $class_form_eleve = 'hide'; $sel_n = 'val';
+	$of_g = 'non'; $sel_g = true;  $og_g = 'non'; $class_form_type = 'hide'; $class_form_eleve = 'hide'; $sel_n = 'val';
 	$multiple_eleve = '';
 	$select_eleves = '<option value="'.$_SESSION['USER_ID'].'" selected>'.html($_SESSION['USER_NOM'].' '.$_SESSION['USER_PRENOM']).'</option>';
 }
@@ -89,8 +89,8 @@ $select_tri_mode      = Form::afficher_select(Form::$tab_select_tri_mode      , 
 $select_remplissage   = Form::afficher_select(Form::$tab_select_remplissage   , $select_nom='f_remplissage'   , $option_first='non' , $selection=Form::$tab_choix['remplissage']       , $optgroup='non');
 $select_colonne_bilan = Form::afficher_select(Form::$tab_select_colonne_bilan , $select_nom='f_colonne_bilan' , $option_first='non' , $selection=Form::$tab_choix['colonne_bilan']     , $optgroup='non');
 $select_colonne_vide  = Form::afficher_select(Form::$tab_select_colonne_vide  , $select_nom='f_colonne_vide'  , $option_first='non' , $selection=Form::$tab_choix['colonne_vide']      , $optgroup='non');
-$select_matiere       = Form::afficher_select($tab_matieres                   , $select_nom='f_matiere'       , $option_first='oui' , $selection=Form::$tab_choix['matiere_id']        , $optgroup='non');
-$select_groupe        = Form::afficher_select($tab_groupes                    , $select_nom='f_groupe'        , $option_first=$of_g , $selection=$sel_g                                , $optgroup=$og_g);
+$select_matiere       = Form::afficher_select($tab_matieres                         , $select_nom='f_matiere'       , $option_first='oui' , $selection=Form::$tab_choix['matiere_id']        , $optgroup='non');
+$select_groupe        = Form::afficher_select($tab_groupes                          , $select_nom='f_groupe'        , $option_first=$of_g , $selection=$sel_g                                      , $optgroup=$og_g);
 $select_orientation   = Form::afficher_select(Form::$tab_select_orientation   , $select_nom='f_orientation'   , $option_first='non' , $selection=Form::$tab_choix['orientation']       , $optgroup='non');
 $select_marge_min     = Form::afficher_select(Form::$tab_select_marge_min     , $select_nom='f_marge_min'     , $option_first='non' , $selection=Form::$tab_choix['marge_min']         , $optgroup='non');
 $select_couleur       = Form::afficher_select(Form::$tab_select_couleur       , $select_nom='f_couleur'       , $option_first='non' , $selection=Form::$tab_choix['couleur']           , $optgroup='non');
@@ -124,8 +124,8 @@ $select_cases_larg    = Form::afficher_select(Form::$tab_select_cases_size    , 
 	</div>
 	<div class="toggle hide">
 		<span class="tab"></span><a href="#" class="puce_moins toggle">Afficher moins d'options</a><br />
-		<label class="tab">Restriction :</label><label for="f_restriction"><input type="checkbox" id="f_restriction" name="f_restriction" value="1"<?php echo $check_only_socle ?> /> Uniquement les items liés du socle</label><br />
-		<label class="tab">Indications :</label><label for="f_coef"><input type="checkbox" id="f_coef" name="f_coef" value="1"<?php echo $check_aff_coef ?> /> Coefficients</label>&nbsp;&nbsp;&nbsp;<label for="f_socle"><input type="checkbox" id="f_socle" name="f_socle" value="1"<?php echo $check_aff_socle ?> /> Appartenance au socle</label>&nbsp;&nbsp;&nbsp;<label for="f_lien"><input type="checkbox" id="f_lien" name="f_lien" value="1"<?php echo $check_aff_lien ?> /> Liens (ressources pour travailler)</label><br />
+		<label class="tab">Restriction :</label><input type="checkbox" id="f_restriction" name="f_restriction" value="1"<?php echo $check_only_socle ?> /> <label>Uniquement les items liés du socle</label><br />
+		<label class="tab">Indications :</label><input type="checkbox" id="f_coef" name="f_coef" value="1"<?php echo $check_aff_coef ?> /> <label for="f_coef">Coefficients</label>&nbsp;&nbsp;&nbsp;<input type="checkbox" id="f_socle" name="f_socle" value="1"<?php echo $check_aff_socle ?> /> <label for="f_socle">Appartenance au socle</label>&nbsp;&nbsp;&nbsp;<input type="checkbox" id="f_lien" name="f_lien" value="1"<?php echo $check_aff_lien ?> /> <label for="f_lien">Liens (ressources pour travailler)</label><br />
 		<label class="tab"><img alt="" src="./_img/bulle_aide.png" title="Pour le format pdf." /> Impression :</label><?php echo $select_orientation ?> <?php echo $select_couleur ?> <?php echo $select_legende ?> <?php echo $select_marge_min ?><br />
 		<label class="tab">Évaluations :</label><?php echo $select_cases_nb ?> de largeur <?php echo $select_cases_larg ?>
 	</div>

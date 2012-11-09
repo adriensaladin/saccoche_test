@@ -141,7 +141,6 @@ $tab_droits_par_page = array
 	'officiel_accueil'                        => $tab_droits_profil_prof_dir_admin,
 	'compte_message'                          => $tab_droits_profil_prof_dir_admin,
 	'consultation_date_connexion'             => $tab_droits_profil_prof_dir_admin,
-	'export_fichier'                          => $tab_droits_profil_prof_dir_admin,
 	// Profil professeur | directeur
 	'_maj_select_domaines'                    => $tab_droits_profil_prof_dir,
 	'_maj_select_matieres_famille'            => $tab_droits_profil_prof_dir,
@@ -149,6 +148,7 @@ $tab_droits_par_page = array
 	'calque_voir_photo'                       => $tab_droits_profil_prof_dir,
 	'compte_selection_items'                  => $tab_droits_profil_prof_dir,
 	'consultation_referentiel_externe'        => $tab_droits_profil_prof_dir,
+	'export_fichier'                          => $tab_droits_profil_prof_dir,
 	'releve_recherche'                        => $tab_droits_profil_prof_dir,
 	'releve_synthese_socle'                   => $tab_droits_profil_prof_dir,
 	'consultation_trombinoscope'              => $tab_droits_profil_prof_dir,

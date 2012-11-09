@@ -332,7 +332,7 @@ foreach($tab_eleve as $tab)
 		{
 			extract($tab);	// $pilier_ref $pilier_nom $pilier_nb_entrees
 			$releve_html_body .= '<td class="nu2"></td>';
-			$releve_html_body .= Html::td_validation( 'td' , $tab_user_pilier[$eleve_id][$pilier_id] , FALSE /*detail*/ , FALSE /*etat_pilier*/ , $pilier_nb_entrees /*colspan*/ );
+			$releve_html_body .= Html::td_validation( 'td' , $tab_user_pilier[$eleve_id][$pilier_id] , $detail=false , $etat_pilier=false , $colspan=$pilier_nb_entrees );
 		}
 		$releve_html_body .= '</tr><tr>';
 		// - - - - -
@@ -344,7 +344,7 @@ foreach($tab_eleve as $tab)
 			$releve_html_body .= '<td class="nu2"></td>';
 			foreach($tab as $socle_id => $socle_nom)
 			{
-				$releve_html_body .= Html::td_validation( 'td' , $tab_user_entree[$eleve_id][$socle_id] , FALSE /*detail*/ , $tab_user_pilier[$eleve_id][$pilier_id]['etat'] );
+				$releve_html_body .= Html::td_validation( 'td' , $tab_user_entree[$eleve_id][$socle_id] , $detail=false , $tab_user_pilier[$eleve_id][$pilier_id]['etat'] );
 			}
 		}
 		$releve_html_body .= '</tr>';

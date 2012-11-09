@@ -51,7 +51,7 @@ $fichier_nom = ($make_action!='imprimer') ? 'releve_synthese_'.$format.'_'.Clean
 
 // Initialisation de tableaux
 
-$tab_item       = array();	// [item_id] => array(item_ref,item_nom,item_coef,item_cart,item_socle,item_lien,matiere_id,calcul_methode,calcul_limite,calcul_retroactif,synthese_ref);
+$tab_item       = array();	// [item_id] => array(item_ref,item_nom,item_coef,item_cart,item_socle,item_lien,matiere_id,calcul_methode,calcul_limite,synthese_ref);
 $tab_liste_item = array();	// [i] => item_id
 $tab_eleve      = array();	// [i] => array(eleve_id,eleve_nom,eleve_prenom)
 $tab_matiere    = array();	// [matiere_id] => matiere_nom
@@ -97,13 +97,8 @@ if($date_mysql_debut>$date_mysql_fin)
 	exit('La date de début est postérieure à la date de fin !');
 }
 
-$tab_precision = array
-(
-	'auto' => ' (notes antérieures comptées selon les référentiels)',
-	'oui'  => ' (notes antérieures prises en compte)',
-	'non'  => ''
-);
-$texte_periode = 'Du '.$date_debut.' au '.$date_fin.$tab_precision[$retroactif].'.';
+$date_complement = ($retroactif=='oui') ? ' (notes antérieures comptées).' : '.';
+$texte_periode   = 'Du '.$date_debut.' au '.$date_fin.$date_complement;
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Récupération de la liste des items travaillés durant la période choisie, pour les élèves selectionnés, toutes matières confondues
@@ -122,9 +117,9 @@ elseif($format=='multimatiere')
 	list($tab_item,$tab_synthese,$tab_matiere) = DB_STRUCTURE_BILAN::DB_recuperer_arborescence_synthese($liste_eleve,$matiere_id,$only_socle,$only_niveau,$mode_synthese='predefini',$date_mysql_debut,$date_mysql_fin);
 }
 $item_nb = count($tab_item);
-if( !$item_nb && !$make_officiel ) // Dans le cas d'un bilan officiel, où l'on regarde les élèves d'un groupe un à un, ce ne doit pas être bloquant.
+if(!$item_nb)
 {
-	exit('Aucun item évalué sur cette période selon les paramètres choisis !');
+	exit('Aucun item évalué sur cette période selon les critères indiqués !');
 }
 $tab_liste_item = array_keys($tab_item);
 $liste_item = implode(',',$tab_liste_item);
@@ -146,25 +141,19 @@ $eleve_nb = count($tab_eleve);
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 $tab_score_a_garder = array();
-if($item_nb) // Peut valoir 0 dans le cas d'un bilan officiel où l'on regarde les élèves d'un groupe un à un (il ne faut pas qu'un élève sans rien soit bloquant).
+$DB_TAB = DB_STRUCTURE_BILAN::DB_lister_date_last_eleves_items($liste_eleve,$liste_item);
+foreach($DB_TAB as $DB_ROW)
 {
-	$DB_TAB = DB_STRUCTURE_BILAN::DB_lister_date_last_eleves_items($liste_eleve,$liste_item);
-	foreach($DB_TAB as $DB_ROW)
-	{
-		$tab_score_a_garder[$DB_ROW['eleve_id']][$DB_ROW['item_id']] = ($DB_ROW['date_last']<$date_mysql_debut) ? FALSE : TRUE ;
-	}
+	$tab_score_a_garder[$DB_ROW['eleve_id']][$DB_ROW['item_id']] = ($DB_ROW['date_last']<$date_mysql_debut) ? FALSE : TRUE ;
+}
 
-	$date_mysql_start = ($retroactif=='non') ? $date_mysql_debut : FALSE ; // En 'auto' il faut faire le tri après.
-	$DB_TAB = DB_STRUCTURE_BILAN::DB_lister_result_eleves_items($liste_eleve , $liste_item , $matiere_id , $date_mysql_start , $date_mysql_fin , $_SESSION['USER_PROFIL']);
-	foreach($DB_TAB as $DB_ROW)
+$date_mysql_debut = ($retroactif=='non') ? $date_mysql_debut : FALSE;
+$DB_TAB = DB_STRUCTURE_BILAN::DB_lister_result_eleves_items($liste_eleve , $liste_item , $matiere_id , $date_mysql_debut , $date_mysql_fin , $_SESSION['USER_PROFIL']);
+foreach($DB_TAB as $DB_ROW)
+{
+	if($tab_score_a_garder[$DB_ROW['eleve_id']][$DB_ROW['item_id']])
 	{
-		if($tab_score_a_garder[$DB_ROW['eleve_id']][$DB_ROW['item_id']])
-		{
-			if( ($retroactif!='auto') || $tab_item[$DB_ROW['item_id']][0]['calcul_retroactif'] || ($DB_ROW['date']>=$date_mysql_debut) )
-			{
-				$tab_eval[$DB_ROW['eleve_id']][$DB_ROW['item_id']][] = array('note'=>$DB_ROW['note'],'date'=>$DB_ROW['date'],'info'=>$DB_ROW['info']);
-			}
-		}
+		$tab_eval[$DB_ROW['eleve_id']][$DB_ROW['item_id']][] = array('note'=>$DB_ROW['note'],'date'=>$DB_ROW['date'],'info'=>$DB_ROW['info']);
 	}
 }
 
@@ -207,7 +196,7 @@ foreach($tab_eleve as $key => $tab)
 		foreach($tab_eval[$eleve_id] as $item_id => $tab_devoirs)
 		{
 			// le score bilan
-			extract($tab_item[$item_id][0]);	// $item_ref $item_nom $item_coef $item_cart $item_socle $item_lien $matiere_id $calcul_methode $calcul_limite $calcul_retroactif $synthese_ref
+			extract($tab_item[$item_id][0]);	// $item_ref $item_nom $item_coef $item_cart $item_socle $item_lien $matiere_id $calcul_methode $calcul_limite $synthese_ref
 			$score = calculer_score($tab_devoirs,$calcul_methode,$calcul_limite) ;
 			$tab_score_eleve_item[$eleve_id][$matiere_id][$synthese_ref][$item_id] = $score;
 			// le détail HTML
@@ -270,9 +259,7 @@ $tab_nb_lignes = array();
 $tab_nb_lignes_par_matiere = array();
 $nb_lignes_appreciation_intermediaire_par_prof_hors_intitule = $_SESSION['OFFICIEL']['BULLETIN_APPRECIATION_RUBRIQUE'] / 100 / 2 ;
 $nb_lignes_appreciation_generale_avec_intitule = 1+8 ;
-$nb_lignes_matiere_marge    = 1 ;
-$nb_lignes_matiere_intitule = 2 ;
-$nb_lignes_matiere_intitule_et_marge = $nb_lignes_matiere_marge + $nb_lignes_matiere_intitule ;
+$nb_lignes_matiere_intitule_et_marge = 1 + 2 ;
 
 foreach($tab_eleve as $key => $tab)
 {
@@ -399,10 +386,9 @@ foreach($tab_eleve as $tab)
 					}
 					if($make_html)
 					{
-						$releve_HTML .= '<table class="bilan" style="width:900px;margin-bottom:0"><tbody><tr>';
-						$releve_HTML .= '<th style="width:540px">'.html($tab_matiere[$matiere_id]).'</th>';
-						$releve_HTML .= ($_SESSION['OFFICIEL']['BULLETIN_BARRE_ACQUISITIONS']) ? Html::td_barre_synthese($width=360,$tab_infos_matiere['total'],$total) : '<td style="width:360px"></td>' ;
-						$releve_HTML .= '</tr></tbody></table>'; // Utilisation de 2 tableaux sinon bugs constatés lors de l'affichage des détails...
+						$releve_HTML .= '<table class="bilan" style="width:900px;margin-bottom:0"><tbody>';
+						$releve_HTML .= '<tr><th style="width:540px">'.html($tab_matiere[$matiere_id]).'</th>'.Html::td_barre_synthese($width=360,$tab_infos_matiere['total'],$total).'</tr>';
+						$releve_HTML .= '</tbody></table>'; // Utilisation de 2 tableaux sinon bugs constatés lors de l'affichage des détails...
 						$releve_HTML .= '<table class="bilan" style="width:900px;margin-top:0"><tbody>';
 					}
 					//  On passe en revue les synthèses...
@@ -495,8 +481,7 @@ foreach($tab_eleve as $tab)
 					// Impression des appréciations intermédiaires (PDF)
 					if( ($make_action=='imprimer') && ($_SESSION['OFFICIEL']['BULLETIN_APPRECIATION_RUBRIQUE']) )
 					{
-						$nb_lignes_en_moins = ( $_SESSION['OFFICIEL']['BULLETIN_MOYENNE_SCORES'] || $_SESSION['OFFICIEL']['BULLETIN_BARRE_ACQUISITIONS'] ) ? $nb_lignes_matiere_intitule_et_marge : $nb_lignes_matiere_marge ;
-						$releve_PDF->bilan_synthese_appreciation_rubrique( ( (!isset($tab_saisie[$eleve_id][$matiere_id])) || (max(array_keys($tab_saisie[$eleve_id][$matiere_id]))==0) ) ? NULL : $tab_saisie[$eleve_id][$matiere_id] , $tab_nb_lignes[$eleve_id][$matiere_id] - $nb_lignes_en_moins );
+						$releve_PDF->bilan_synthese_appreciation_rubrique( ( (!isset($tab_saisie[$eleve_id][$matiere_id])) || (max(array_keys($tab_saisie[$eleve_id][$matiere_id]))==0) ) ? NULL : $tab_saisie[$eleve_id][$matiere_id] , $tab_nb_lignes[$eleve_id][$matiere_id] - $nb_lignes_matiere_intitule_et_marge );
 					}
 				}
 			}
@@ -598,7 +583,7 @@ if($make_pdf)  { $releve_PDF->Output(CHEMIN_DOSSIER_EXPORT.$fichier_nom.'.pdf','
 // On fabrique les options js pour le diagramme graphique
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-if( $make_graph && (count($tab_graph_data)) )
+if($make_graph)
 {
 	$js_graph .= '<SCRIPT>';
 	// Matières sur l'axe des abscisses

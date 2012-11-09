@@ -34,32 +34,32 @@ $TITRE = "Liste des évaluations";
 if($_SESSION['USER_PROFIL']=='directeur')
 {
 	$tab_groupes  = DB_STRUCTURE_COMMUN::DB_OPT_classes_groupes_etabl();
-	$of_g = 'oui'; $sel_g = FALSE; $class_form_groupe = 'show'; $class_form_eleve = 'hide';
+	$of_g = 'oui'; $sel_g = false; $class_form_groupe = 'show'; $class_form_eleve = 'hide';
 	$select_eleves = '<option></option>'; // maj en ajax suivant le choix du groupe
 }
 if($_SESSION['USER_PROFIL']=='professeur')
 {
 	$tab_groupes  = DB_STRUCTURE_COMMUN::DB_OPT_groupes_professeur($_SESSION['USER_ID']);
-	$of_g = 'oui'; $sel_g = FALSE; $class_form_groupe = 'show'; $class_form_eleve = 'hide';
+	$of_g = 'oui'; $sel_g = false; $class_form_groupe = 'show'; $class_form_eleve = 'hide';
 	$select_eleves = '<option></option>'; // maj en ajax suivant le choix du groupe
 }
 
 if( ($_SESSION['USER_PROFIL']=='parent') && ($_SESSION['NB_ENFANTS']!=1) )
 {
 	$tab_groupes  = array();
-	$of_g = 'non'; $sel_g = FALSE; $class_form_groupe = 'hide'; $class_form_eleve = 'show';
-	$select_eleves = Form::afficher_select($_SESSION['OPT_PARENT_ENFANTS'] , $select_nom=FALSE , $option_first='oui' , $selection=FALSE , $optgroup='non');
+	$of_g = 'non'; $sel_g = false; $class_form_groupe = 'hide'; $class_form_eleve = 'show';
+	$select_eleves = Form::afficher_select($_SESSION['OPT_PARENT_ENFANTS'] , $select_nom=false , $option_first='oui' , $selection=false , $optgroup='non');
 }
 if( ($_SESSION['USER_PROFIL']=='parent') && ($_SESSION['NB_ENFANTS']==1) )
 {
 	$tab_groupes  = array();
-	$of_g = 'non'; $sel_g = FALSE; $class_form_groupe = 'hide'; $class_form_eleve = 'hide';
+	$of_g = 'non'; $sel_g = false; $class_form_groupe = 'hide'; $class_form_eleve = 'hide';
 	$select_eleves = '<option value="'.$_SESSION['OPT_PARENT_ENFANTS'][0]['valeur'].'" selected>'.html($_SESSION['OPT_PARENT_ENFANTS'][0]['texte']).'</option>';
 }
 if($_SESSION['USER_PROFIL']=='eleve')
 {
 	$tab_groupes  = array();
-	$of_g = 'non'; $sel_g = FALSE; $class_form_groupe = 'hide'; $class_form_eleve = 'hide';
+	$of_g = 'non'; $sel_g = false; $class_form_groupe = 'hide'; $class_form_eleve = 'hide';
 	$select_eleves = '<option value="'.$_SESSION['USER_ID'].'" selected>'.html($_SESSION['USER_NOM'].' '.$_SESSION['USER_PRENOM']).'</option>';
 }
 $select_groupe = Form::afficher_select($tab_groupes , $select_nom='f_groupe' , $option_first=$of_g , $selection=$sel_g , $optgroup='oui'); // optgroup à oui y compris pour les élèves (formulaire invisible) car recherche du type de groupe dans le js

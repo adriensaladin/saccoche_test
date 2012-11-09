@@ -44,7 +44,6 @@ $section = (isset($_POST['f_section'])) ? Clean::texte($_POST['f_section']) : ''
 
 if( in_array( $section , array('officiel_saisir','officiel_examiner','officiel_consulter','officiel_imprimer') ) )
 {
-	require(CHEMIN_DOSSIER_INCLUDE.'fonction_bulletin.php');
 	require(CHEMIN_DOSSIER_INCLUDE.'code_'.$section.'.php');
 }
 

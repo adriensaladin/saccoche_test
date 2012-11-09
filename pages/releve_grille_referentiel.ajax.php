@@ -204,7 +204,7 @@ $eleve_nb = count($tab_eleve);
 
 if( !$type_generique && ( ($remplissage=='plein') || ($colonne_bilan=='oui') || $type_synthese || ($_SESSION['USER_PROFIL']=='eleve') ) )
 {
-	$DB_TAB = DB_STRUCTURE_BILAN::DB_lister_result_eleves_items( $liste_eleve , $liste_item , $matiere_id , FALSE /*date_debut*/ , FALSE /*date_fin*/ , $_SESSION['USER_PROFIL'] ) ;
+	$DB_TAB = DB_STRUCTURE_BILAN::DB_lister_result_eleves_items($liste_eleve , $liste_item , $matiere_id , $date_debut=false , $date_fin=false , $_SESSION['USER_PROFIL']) ;
 	if(!empty($DB_TAB))
 	{
 		foreach($DB_TAB as $DB_ROW)
@@ -391,7 +391,6 @@ $affichage_checkbox = ( $type_synthese && ($_SESSION['USER_PROFIL']=='professeur
 
 if( $type_generique || $type_individuel )
 {
-	$jour_debut_annee_scolaire = jour_debut_annee_scolaire('mysql'); // Date de fin de l'année scolaire précédente
 	// Initialiser au cas où $aff_coef / $aff_socle / $aff_lien sont à 0
 	$texte_coef       = '';
 	$texte_socle      = '';
@@ -469,14 +468,8 @@ if( $type_generique || $type_individuel )
 									}
 									if($remplissage=='plein')
 									{
-										$pdf_bg = ''; $td_class = '';
-										if( $date && ($date<$jour_debut_annee_scolaire) )
-										{
-											$pdf_bg = ( (!$_SESSION['USER_DALTONISME']) || ($couleur=='non') ) ? 'prev_year' : '' ;
-											$td_class = (!$_SESSION['USER_DALTONISME']) ? ' class="prev_year"' : '' ;
-										}
-										$releve_HTML_individuel .= '<td'.$td_class.'>'.Html::note($note,$date,$info,FALSE).'</td>';
-										$releve_PDF->afficher_note_lomer($note,$border=1,$br=floor(($i+1)/$colspan),$pdf_bg);
+										$releve_HTML_individuel .= '<td>'.Html::note($note,$date,$info,FALSE).'</td>';
+										$releve_PDF->afficher_note_lomer($note,$border=1,$br=floor(($i+1)/$colspan));
 									}
 									else
 									{

@@ -271,7 +271,7 @@ class Session
     // Pas besoin de session_start() car la session a déjà été ouverte avant appel à cette fonction.
     $_SESSION = array();
     session_unset();
-    setcookie( session_name() /*name*/ , '' /*value*/ , time()-42000 /*expire*/ , '/' /*path*/ , getServerUrl() /*domain*/ );
+    setcookie( session_name() /*name*/ , '' /*value*/, time()-42000 /*expire*/ , '/' /*path*/ , getServerUrl() /*domain*/ );
     session_destroy();
   }
 

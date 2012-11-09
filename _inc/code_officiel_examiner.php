@@ -123,7 +123,7 @@ if( ($BILAN_TYPE=='bulletin') && $_SESSION['OFFICIEL']['BULLETIN_MOYENNE_SCORES'
 		}
 		$liste_eleve_id_tmp = implode(',',$tab_eleve_id_tmp);
 	}
-	calculer_et_enregistrer_moyennes_eleves_bulletin( $periode_id , $classe_id , $liste_eleve_id_tmp , $liste_rubrique_id , $_SESSION['OFFICIEL']['BULLETIN_RETROACTIF'] , FALSE /*memo_moyennes_classe*/ , FALSE /*memo_moyennes_generale*/ );
+	calculer_et_enregistrer_moyennes_eleves_bulletin( $periode_id , $classe_id , $liste_eleve_id_tmp , $liste_rubrique_id , FALSE /*memo_moyennes_classe*/ , FALSE /*memo_moyennes_generale*/ );
 }
 
 // Récupérer les saisies déjà effectuées pour le bilan officiel concerné
@@ -150,9 +150,8 @@ $make_graph    = FALSE;
 if($BILAN_TYPE=='releve')
 {
 	$format          = 'multimatiere';
-	$aff_bilan_MS    = 0; // Inutile pour un examen de précence des appréciations
-	$aff_bilan_PA    = 0; // Inutile pour un examen de précence des appréciations
-	$aff_conv_sur20  = 0; // Inutile pour un examen de précence des appréciations
+	$aff_bilan_MS    = $_SESSION['OFFICIEL']['RELEVE_MOYENNE_SCORES'];
+	$aff_bilan_PA    = $_SESSION['OFFICIEL']['RELEVE_POURCENTAGE_ACQUIS'];
 	$with_coef       = 1; // Il n'y a que des relevés par matière et pas de synthèse commune : on prend en compte les coefficients pour chaque relevé matière.
 	$matiere_id      = TRUE;
 	$matiere_nom     = '';
@@ -160,8 +159,8 @@ if($BILAN_TYPE=='releve')
 	$groupe_nom      = (!$is_sous_groupe) ? $classe_nom : $classe_nom.' - '.DB_STRUCTURE_COMMUN::DB_recuperer_groupe_nom($groupe_id) ;
 	$date_debut      = '';
 	$date_fin        = '';
-	$retroactif      = $_SESSION['OFFICIEL']['RELEVE_RETROACTIF']; // C'est un relevé de notes sur une période donnée : aller chercher les notes antérieures serait curieux !
-	$only_socle      = $_SESSION['OFFICIEL']['RELEVE_ONLY_SOCLE'];
+	$retroactif      = 'non'; // C'est un relevé de notes sur une période donnée : pas jugé utile de le mettre en option...
+	$only_socle      = 0;     // pas jugé utile de le mettre en option...
 	$aff_domaine     = 0;
 	$aff_theme       = 0;
 	$tab_eleve       = $tab_eleve_id;
@@ -170,8 +169,9 @@ if($BILAN_TYPE=='releve')
 	$type_individuel = 1;
 	$type_synthese   = 0;
 	$type_bulletin   = 0;
-	$tab_matiere_id  = $tab_rubrique_id; // N'est pas utilisé pour la récupération des résultats mais juste pour tester si on doit vérifier cette partie (ce serait un double souci sinon : il faut tester les bilans élèves qui ont des résultats ailleurs + ce tableau peut contenir la valeur 0).
+	$tab_matiere_id = $tab_rubrique_id; // N'est pas utilisé pour la récupération des résultats mais juste pour tester si on doit vérifier cette partie (ce serait un double souci sinon : il faut tester les bilans élèves qui ont des résultats ailleurs + ce tableau peut contenir la valeur 0).
 	require(CHEMIN_DOSSIER_INCLUDE.'code_items_releve.php');
+	// $nom_bilan_html = 'releve_HTML_individuel';
 }
 elseif($BILAN_TYPE=='bulletin')
 {
@@ -180,14 +180,15 @@ elseif($BILAN_TYPE=='bulletin')
 	$groupe_nom     = (!$is_sous_groupe) ? $classe_nom : $classe_nom.' - '.DB_STRUCTURE_COMMUN::DB_recuperer_groupe_nom($groupe_id) ;
 	$date_debut     = '';
 	$date_fin       = '';
-	$retroactif     = $_SESSION['OFFICIEL']['BULLETIN_RETROACTIF'];
+	$retroactif     = 'oui'; // Pas jugé utile de le mettre en option...
 	$niveau_id      = 0; // Niveau transmis uniquement si on restreint sur un niveau : pas jugé utile de le mettre en option...
-	$only_socle     = $_SESSION['OFFICIEL']['BULLETIN_ONLY_SOCLE'];
+	$only_socle     = 0; // pas jugé utile de le mettre en option...
 	$only_niveau    = 0; // pas jugé utile de le mettre en option...
 	$tab_eleve      = $tab_eleve_id;
 	$liste_eleve    = $liste_eleve_id;
 	$tab_matiere_id = $tab_rubrique_id; // N'est pas utilisé pour la récupération des résultats mais juste pour tester si on doit vérifier cette partie (ce serait un double souci sinon : il faut tester les bilans élèves qui ont des résultats ailleurs + ce tableau peut contenir la valeur 0).
 	require(CHEMIN_DOSSIER_INCLUDE.'code_items_synthese.php');
+	// $nom_bilan_html = 'releve_HTML';
 }
 elseif(in_array($BILAN_TYPE,array('palier1','palier2','palier3')))
 {
@@ -203,6 +204,7 @@ elseif(in_array($BILAN_TYPE,array('palier1','palier2','palier3')))
 	$tab_eleve_id   = $tab_eleve_id;
 	$tab_matiere_id = array();
 	require(CHEMIN_DOSSIER_INCLUDE.'code_socle_releve.php');
+	// $nom_bilan_html = 'releve_html';
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////

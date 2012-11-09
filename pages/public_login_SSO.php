@@ -316,12 +316,12 @@ if($connexion_mode=='cas')
 	// Forcer à réinterroger le serveur CAS en cas de nouvel appel à cette page pour être certain que c'est toujours le même utilisateur qui est connecté au CAS.
 	unset($_SESSION['phpCAS']);
 	// Comparer avec les données de la base
-	list($auth_resultat,$auth_DB_ROW) = SessionUser::tester_authentification_utilisateur( $BASE , $id_ENT /*login*/ , FALSE /*password*/ , 'cas' /*mode_connection*/ );
+	list($auth_resultat,$auth_DB_ROW) = tester_authentification_user( $BASE , $id_ENT /*login*/ , FALSE /*password*/ , 'cas' /*mode_connection*/ );
 	if($auth_resultat!='ok')
 	{
 		exit_error( 'Incident authentification' /*titre*/ , $auth_resultat /*contenu*/ );
 	}
-	SessionUser::initialiser_utilisateur($BASE,$auth_DB_ROW);
+	enregistrer_session_user($BASE,$auth_DB_ROW);
 	// Redirection vers la page demandée en cas de succès.
 	// En théorie il faudrait laisser la suite du code se poursuivre, ce qui n'est pas impossible, mais ça pose le souci de la transmission de &verif_cookie
 	// Rediriger le navigateur.
@@ -364,12 +364,12 @@ if($connexion_mode=='gepi')
 	$attr = $auth->getAttributes();
 	$login_GEPI = $attr['USER_ID_GEPI'][0];
 	// Comparer avec les données de la base
-	list($auth_resultat,$auth_DB_ROW) = SessionUser::tester_authentification_utilisateur( $BASE , $login_GEPI /*login*/ , FALSE /*password*/ , 'gepi' /*mode_connection*/ );
+	list($auth_resultat,$auth_DB_ROW) = tester_authentification_user( $BASE , $login_GEPI /*login*/ , FALSE /*password*/ , 'gepi' /*mode_connection*/ );
 	if($auth_resultat!='ok')
 	{
 		exit_error( 'Incident authentification' /*titre*/ , $auth_resultat /*contenu*/ );
 	}
-	SessionUser::initialiser_utilisateur($BASE,$auth_DB_ROW);
+	enregistrer_session_user($BASE,$auth_DB_ROW);
 	// Pas de redirection car passage possible d'infos en POST à conserver ; tant pis pour la vérification du cookie...
 }
 

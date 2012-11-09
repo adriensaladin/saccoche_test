@@ -127,7 +127,7 @@ if($ACTION=='initialiser')
 			}
 			$liste_eleve_id = implode(',',$tab_eleve_id_tmp);
 		}
-		calculer_et_enregistrer_moyennes_eleves_bulletin( $periode_id , $classe_id , $liste_eleve_id , '' /*liste_matiere_id*/ , $_SESSION['OFFICIEL']['BULLETIN_RETROACTIF'] , $_SESSION['OFFICIEL']['BULLETIN_MOYENNE_CLASSE'] , $_SESSION['OFFICIEL']['BULLETIN_MOYENNE_GENERALE'] );
+		calculer_et_enregistrer_moyennes_eleves_bulletin( $periode_id , $classe_id , $liste_eleve_id , '' /*liste_matiere_id*/ , $_SESSION['OFFICIEL']['BULLETIN_MOYENNE_CLASSE'] , $_SESSION['OFFICIEL']['BULLETIN_MOYENNE_GENERALE'] );
 	}
 }
 
@@ -157,7 +157,7 @@ if($BILAN_TYPE=='releve')
 	$format          = 'multimatiere';
 	$aff_bilan_MS    = $_SESSION['OFFICIEL']['RELEVE_MOYENNE_SCORES'];
 	$aff_bilan_PA    = $_SESSION['OFFICIEL']['RELEVE_POURCENTAGE_ACQUIS'];
-	$aff_conv_sur20  = $_SESSION['OFFICIEL']['RELEVE_CONV_SUR20'];
+	$aff_conv_sur20  = 0; // pas jugé utile de le mettre en option...
 	$with_coef       = 1; // Il n'y a que des relevés par matière et pas de synthèse commune : on prend en compte les coefficients pour chaque relevé matière.
 	$matiere_id      = TRUE;
 	$matiere_nom     = '';
@@ -165,8 +165,8 @@ if($BILAN_TYPE=='releve')
 	$groupe_nom      = (!$is_sous_groupe) ? $classe_nom : $classe_nom.' - '.DB_STRUCTURE_COMMUN::DB_recuperer_groupe_nom($groupe_id) ;
 	$date_debut      = '';
 	$date_fin        = '';
-	$retroactif      = $_SESSION['OFFICIEL']['RELEVE_RETROACTIF']; // C'est un relevé de notes sur une période donnée : aller chercher les notes antérieures serait curieux !
-	$only_socle      = $_SESSION['OFFICIEL']['RELEVE_ONLY_SOCLE'];
+	$retroactif      = 'non'; // C'est un relevé de notes sur une période donnée : pas jugé utile de le mettre en option...
+	$only_socle      = 0;     // pas jugé utile de le mettre en option...
 	$aff_coef        = $_SESSION['OFFICIEL']['RELEVE_AFF_COEF'];
 	$aff_socle       = $_SESSION['OFFICIEL']['RELEVE_AFF_SOCLE'];
 	$aff_lien        = 0; // Sans intérêt, l'élève & sa famille n'ayant accès qu'à l'archive pdf
@@ -179,7 +179,7 @@ if($BILAN_TYPE=='releve')
 	$marge_droite    = $_SESSION['OFFICIEL']['MARGE_DROITE'];
 	$marge_haut      = $_SESSION['OFFICIEL']['MARGE_HAUT'];
 	$marge_bas       = $_SESSION['OFFICIEL']['MARGE_BAS'];
-	$pages_nb        = 'optimise'; // pas jugé utile de le mettre en option... à revoir ?
+	$pages_nb        = 'optimise'; // pas jugé utile de le mettre en option... à voir...
 	$cases_nb        = $_SESSION['OFFICIEL']['RELEVE_CASES_NB'];
 	$cases_largeur   = 5; // pas jugé utile de le mettre en option...
 	$tab_eleve       = array($eleve_id); // tableau de l'unique élève à considérer
@@ -190,7 +190,7 @@ if($BILAN_TYPE=='releve')
 	$type_bulletin   = 0;
 	$tab_matiere_id  = array();
 	require(CHEMIN_DOSSIER_INCLUDE.'code_items_releve.php');
-	$nom_bilan_html  = 'releve_HTML_individuel';
+	$nom_bilan_html = 'releve_HTML_individuel';
 }
 elseif($BILAN_TYPE=='bulletin')
 {
@@ -199,13 +199,13 @@ elseif($BILAN_TYPE=='bulletin')
 	$groupe_nom     = (!$is_sous_groupe) ? $classe_nom : $classe_nom.' - '.DB_STRUCTURE_COMMUN::DB_recuperer_groupe_nom($groupe_id) ;
 	$date_debut     = '';
 	$date_fin       = '';
-	$retroactif     = $_SESSION['OFFICIEL']['BULLETIN_RETROACTIF'];
+	$retroactif     = 'oui'; // Pas jugé utile de le mettre en option...
 	$niveau_id      = 0; // Niveau transmis uniquement si on restreint sur un niveau : pas jugé utile de le mettre en option...
 	$aff_coef       = 0; // Sans objet, l'élève & sa famille n'ayant accès qu'à l'archive pdf
 	$aff_socle      = 0; // Sans objet, l'élève & sa famille n'ayant accès qu'à l'archive pdf
 	$aff_lien       = 0; // Sans objet, l'élève & sa famille n'ayant accès qu'à l'archive pdf
 	$aff_start      = 0; // Sans objet, l'élève & sa famille n'ayant accès qu'à l'archive pdf
-	$only_socle     = $_SESSION['OFFICIEL']['BULLETIN_ONLY_SOCLE'];
+	$only_socle     = 0; // pas jugé utile de le mettre en option...
 	$only_niveau    = 0; // pas jugé utile de le mettre en option...
 	$couleur        = $_SESSION['OFFICIEL']['BULLETIN_COULEUR'];
 	$legende        = $_SESSION['OFFICIEL']['BULLETIN_LEGENDE'];
@@ -235,10 +235,10 @@ elseif(in_array($BILAN_TYPE,array('palier1','palier2','palier3')))
 	$aff_start      = 0; // Sans objet, l'élève & sa famille n'ayant accès qu'à l'archive pdf
 	$couleur        = $_SESSION['OFFICIEL']['SOCLE_COULEUR'];
 	$legende        = $_SESSION['OFFICIEL']['SOCLE_LEGENDE'];
-	$marge_gauche   = $_SESSION['OFFICIEL']['MARGE_GAUCHE'];
-	$marge_droite   = $_SESSION['OFFICIEL']['MARGE_DROITE'];
-	$marge_haut     = $_SESSION['OFFICIEL']['MARGE_HAUT'];
-	$marge_bas      = $_SESSION['OFFICIEL']['MARGE_BAS'];
+	$marge_gauche    = $_SESSION['OFFICIEL']['MARGE_GAUCHE'];
+	$marge_droite    = $_SESSION['OFFICIEL']['MARGE_DROITE'];
+	$marge_haut      = $_SESSION['OFFICIEL']['MARGE_HAUT'];
+	$marge_bas       = $_SESSION['OFFICIEL']['MARGE_BAS'];
 	$tab_pilier_id  = $tab_pilier_id;
 	$tab_eleve_id   = array($eleve_id); // tableau de l'unique élève à considérer
 	$tab_matiere_id = array();
@@ -249,11 +249,6 @@ elseif(in_array($BILAN_TYPE,array('palier1','palier2','palier3')))
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Affichage du résultat
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-if(!count($tab_eval))
-{
-	${$nom_bilan_html} = '<div class="danger">Aucun item évalué sur la période pour cet élève selon les paramètres choisis !</div>' ;
-}
 
 if($ACTION=='initialiser')
 {

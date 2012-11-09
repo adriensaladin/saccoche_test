@@ -40,10 +40,10 @@ class VariableStream
 		if(!isset($GLOBALS[$this->varname]))
 		{
 			trigger_error('Global variable '.$this->varname.' does not exist', E_USER_WARNING);
-			return FALSE;
+			return false;
 		}
 		$this->position = 0;
-		return TRUE;
+		return true;
 	}
 
 	function stream_read($count)
@@ -68,9 +68,9 @@ class VariableStream
 		if($whence==SEEK_SET)
 		{
 			$this->position = $offset;
-			return TRUE;
+			return true;
 		}
-		return FALSE;
+		return false;
 	}
 
 	function stream_stat()
@@ -618,10 +618,9 @@ class PDF extends FPDF
 	// Méthode pour afficher une note Lomer
 	// ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	public function afficher_note_lomer($note,$border,$br,$fill='')
+	public function afficher_note_lomer($note,$border,$br)
 	{
-		$tab_fill = array( ''=>'blanc' , 'prev_date'=>'gris_moyen' , 'prev_year'=>'gris_fonce' );
-		$this->choisir_couleur_fond($tab_fill[$fill]);
+		$this->choisir_couleur_fond('blanc');
 		switch ($note)
 		{
 			case 'RR' :
@@ -634,14 +633,13 @@ class PDF extends FPDF
 					$memo_y = $this->GetY();
 					$img_pos_x = $memo_x + ( ($this->lomer_espace_largeur - $this->lomer_image_largeur) / 2 ) ;
 					$img_pos_y = $memo_y + ( ($this->lomer_espace_hauteur - $this->lomer_image_hauteur) / 2 ) ;
-					$this->Cell( $this->lomer_espace_largeur , $this->lomer_espace_hauteur , '' , $border /*bordure*/ , $br /*br*/ , 'C' /*alignement*/ , TRUE /*remplissage*/ );
 					$this->Image('./_img/note/'.$_SESSION['NOTE_DOSSIER'].'/h/'.$note.'.gif',$img_pos_x,$img_pos_y,$this->lomer_image_largeur,$this->lomer_image_hauteur,'GIF');
-					// $this->SetXY($memo_x , $memo_y);
-					// $this->Cell( $this->lomer_espace_largeur , $this->lomer_espace_hauteur , '' , $border /*bordure*/ , $br /*br*/ , 'C' /*alignement*/ , FALSE /*remplissage*/ );
+					$this->SetXY($memo_x , $memo_y);
+					$this->Cell( $this->lomer_espace_largeur , $this->lomer_espace_hauteur , '' , $border , $br , 'C' , FALSE , '');
 				}
 				else
 				{
-					$this->CellFit( $this->lomer_espace_largeur , $this->lomer_espace_hauteur ,  $this->tab_lettre[$note] , $border /*bordure*/ , $br /*br*/ , 'C' /*alignement*/ , TRUE /*remplissage*/ );
+					$this->CellFit( $this->lomer_espace_largeur , $this->lomer_espace_hauteur ,  $this->tab_lettre[$note] , $border , $br , 'C' , TRUE , '');
 				}
 				break;
 			case 'ABS' :
@@ -649,11 +647,11 @@ class PDF extends FPDF
 			case 'DISP' :
 				$tab_texte = array('ABS'=>'Abs.','NN'=>'N.N.','DISP'=>'Disp.');
 					$this->cMargin /= 2;
-				$this->CellFit( $this->lomer_espace_largeur , $this->lomer_espace_hauteur , $tab_texte[$note] , $border /*bordure*/ , $br /*br*/ , 'C' /*alignement*/ , TRUE /*remplissage*/ );
+				$this->CellFit( $this->lomer_espace_largeur , $this->lomer_espace_hauteur , $tab_texte[$note] , $border , $br , 'C' , TRUE , '');
 					$this->cMargin *= 2;
 				break;
 			default :
-				$this->Cell( $this->lomer_espace_largeur , $this->lomer_espace_hauteur , '' , $border /*bordure*/ , $br /*br*/ , 'C' /*alignement*/ , TRUE /*remplissage*/ );
+				$this->Cell( $this->lomer_espace_largeur , $this->lomer_espace_hauteur , '' , $border , $br , 'C' , TRUE , '');
 		}
 	}
 
@@ -714,7 +712,7 @@ class PDF extends FPDF
 		{
 			$score_affiche = (mb_substr_count($_SESSION['DROIT_VOIR_SCORE_BILAN'],$_SESSION['USER_PROFIL'])) ? '-' : '' ;
 			$this->choisir_couleur_fond('blanc');
-			$this->Cell( $this->cases_largeur , $this->cases_hauteur , $score_affiche , 1 /*bordure*/ , $br /*br*/ , 'C' /*alignement*/ , TRUE /*remplissage*/ );
+			$this->Cell( $this->cases_largeur , $this->cases_hauteur , $score_affiche , 1 , $br , 'C' , TRUE , '');
 		}
 		else
 		{
@@ -723,7 +721,7 @@ class PDF extends FPDF
 			else                                          {$this->choisir_couleur_fond($this->tab_choix_couleur['VA']);}
 			$score_affiche = (mb_substr_count($_SESSION['DROIT_VOIR_SCORE_BILAN'],$_SESSION['USER_PROFIL'])) ? $score : '' ;
 			$this->SetFont('Arial' , '' , $this->taille_police-2);
-			$this->Cell( $this->cases_largeur , $this->cases_hauteur , $score_affiche , 1 /*bordure*/ , $br /*br*/ , 'C' /*alignement*/ , TRUE /*remplissage*/ );
+			$this->Cell( $this->cases_largeur , $this->cases_hauteur , $score_affiche , 1 , $br , 'C' , TRUE , '');
 			$this->SetFont('Arial' , '' , $this->taille_police);
 		}
 	}
@@ -891,7 +889,7 @@ class PDF extends FPDF
 			$this->SetFont('Arial' , '' , 7);
 			$this->choisir_couleur_fond('gris_clair');
 			$this->choisir_couleur_trait('gris_moyen');
-			$this->Cell( $this->page_largeur , 3 , To::pdf('Généré le '.date("d/m/Y \à H\hi\m\i\\n").' par '.$_SESSION['USER_PRENOM']{0}.'. '.$_SESSION['USER_NOM'].' ('.$_SESSION['USER_PROFIL'].') avec SACoche [ '.SERVEUR_PROJET.' ].') , 'TB' , 0 , 'C' , TRUE /*remplissage*/ , SERVEUR_PROJET);
+			$this->Cell( $this->page_largeur , 3 , To::pdf('Généré le '.date("d/m/Y \à H\hi\m\i\\n").' par '.$_SESSION['USER_PRENOM']{0}.'. '.$_SESSION['USER_NOM'].' ('.$_SESSION['USER_PROFIL'].') avec SACoche [ '.SERVEUR_PROJET.' ].') , 'TB' , 0 , 'C' , TRUE , SERVEUR_PROJET);
 		}
 	}
 
@@ -1086,7 +1084,6 @@ class PDF extends FPDF
 		}
 		else
 		{
-			$memo_y = $this->GetY();
 			$demi_largeur = ( $this->page_largeur - $this->marge_gauche - $this->marge_droite ) / 2 ;
 			// Intitulé matière
 			$this->SetFont('Arial' , 'B' , $this->taille_police*1.25);
@@ -1096,33 +1093,35 @@ class PDF extends FPDF
 			// Moyenne élève (éventuelle) et moyenne classe (éventuelle)
 			if($_SESSION['OFFICIEL']['BULLETIN_MOYENNE_SCORES'])
 			{
-				$nb_lignes_hauteur = 2 - $_SESSION['OFFICIEL']['BULLETIN_BARRE_ACQUISITIONS'] ;
 				$largeur_note = 10;
-				$this->Rect( $this->GetX() , $this->GetY() , $demi_largeur , $this->lignes_hauteur*$nb_lignes_hauteur , 'D' /* DrawFill */ );
+				$this->Rect( $this->GetX() , $this->GetY() , $demi_largeur , $this->lignes_hauteur , 'D' /* DrawFill */ );
 				$texte = ($_SESSION['OFFICIEL']['BULLETIN_MOYENNE_CLASSE']) ? 'Moyenne élève (classe) :' : 'Moyenne élève :' ;
 				$this->SetFont('Arial' , '' , $this->taille_police);
 				$largueur_texte = ($_SESSION['OFFICIEL']['BULLETIN_MOYENNE_CLASSE']) ? $demi_largeur-2*$largeur_note : $demi_largeur-$largeur_note ;
-				$this->Cell( $largueur_texte , $this->lignes_hauteur*$nb_lignes_hauteur , To::pdf($texte) , 0 /*bordure*/ , 0 /*br*/ , 'R' /*alignement*/ , FALSE /*remplissage*/ );
+				$this->Cell( $largueur_texte , $this->lignes_hauteur , To::pdf($texte) , 0 /*bordure*/ , 0 /*br*/ , 'R' /*alignement*/ , FALSE /*remplissage*/ );
 				$moyenne_eleve = ($moyenne_eleve!==NULL) ? ( ($_SESSION['OFFICIEL']['BULLETIN_NOTE_SUR_20']) ? number_format($moyenne_eleve,1,',','') : ($moyenne_eleve*5).'%' ) : '-' ;
 				$this->SetFont('Arial' , 'B' , $this->taille_police*1.25);
-				$this->Cell( $largeur_note , $this->lignes_hauteur*$nb_lignes_hauteur , To::pdf($moyenne_eleve) , 0 /*bordure*/ , 0 /*br*/ , 'C' /*alignement*/ , FALSE /*remplissage*/ );
+				$this->Cell( $largeur_note , $this->lignes_hauteur , To::pdf($moyenne_eleve) , 0 /*bordure*/ , 0 /*br*/ , 'C' /*alignement*/ , FALSE /*remplissage*/ );
 				if($_SESSION['OFFICIEL']['BULLETIN_MOYENNE_CLASSE'])
 				{
 					$moyenne_classe = ($moyenne_classe!==NULL) ? ( ($_SESSION['OFFICIEL']['BULLETIN_NOTE_SUR_20']) ? number_format($moyenne_classe,1,',','') : round($moyenne_classe*5).'%' ) : '-' ;
 					$this->SetFont('Arial' , '' , $this->taille_police*0.8);
-					$this->Cell( $largeur_note , $this->lignes_hauteur*$nb_lignes_hauteur , To::pdf('('.$moyenne_classe.')') , 0 /*bordure*/ , 0 /*br*/ , 'C' /*alignement*/ , FALSE /*remplissage*/ );
+					$this->Cell( $largeur_note , $this->lignes_hauteur , To::pdf('('.$moyenne_classe.')') , 0 /*bordure*/ , 0 /*br*/ , 'C' /*alignement*/ , FALSE /*remplissage*/ );
 				}
-				$this->SetXY($this->marge_gauche + $demi_largeur , $this->GetY() + $this->lignes_hauteur*$nb_lignes_hauteur );
+				$this->SetXY($this->marge_gauche + $demi_largeur , $this->GetY() + $this->lignes_hauteur );
+				$nb_lignes_acquis = 1;
+				$acquis_bold = '';
+			}
+			else
+			{
+				$nb_lignes_acquis = 2;
+				$acquis_bold = 'B';
 			}
 			// Proportions acquis matière
-			if($_SESSION['OFFICIEL']['BULLETIN_BARRE_ACQUISITIONS'])
-			{
-				$nb_lignes_hauteur = 2 - $_SESSION['OFFICIEL']['BULLETIN_MOYENNE_SCORES'] ;
-				$this->SetFont('Arial' , '' , $this->taille_police);
-				$this->afficher_proportion_acquis($demi_largeur,$this->lignes_hauteur*$nb_lignes_hauteur,$tab_infos_matiere,$total);
-			}
-			// Positionnement
-			$this->SetXY($this->marge_gauche , $memo_y + $this->lignes_hauteur*2);
+			$this->SetFont('Arial' , $acquis_bold , $this->taille_police);
+			$this->afficher_proportion_acquis($demi_largeur,$this->lignes_hauteur*$nb_lignes_acquis,$tab_infos_matiere,$total);
+			// Interligne
+			$this->SetXY($this->marge_gauche , $this->GetY() + $this->lignes_hauteur*$nb_lignes_acquis);
 		}
 	}
 
@@ -2274,7 +2273,7 @@ class PDF extends FPDF
 		if($moyenne_pourcent===FALSE)
 		{
 			$this->choisir_couleur_fond('blanc');
-			$this->Cell( $this->cases_largeur , $this->cases_hauteur , '-' , 1 /*bordure*/ , $direction_after_case1 /*br*/ , 'C' /*alignement*/ , TRUE /*remplissage*/ );
+			$this->Cell( $this->cases_largeur , $this->cases_hauteur , '-' , 1 , $direction_after_case1 , 'C' , TRUE , '');
 		}
 		else
 		{
@@ -2282,7 +2281,7 @@ class PDF extends FPDF
 			elseif($moyenne_pourcent>$_SESSION['CALCUL_SEUIL']['V']) {$this->choisir_couleur_fond($this->tab_choix_couleur['A']);}
 			else                                                     {$this->choisir_couleur_fond($this->tab_choix_couleur['VA']);}
 			$score_affiche = (mb_substr_count($_SESSION['DROIT_VOIR_SCORE_BILAN'],$_SESSION['USER_PROFIL'])) ? $moyenne_pourcent.'%' : '' ;
-			$this->Cell( $this->cases_largeur , $this->cases_hauteur , $score_affiche , 1 /*bordure*/ , $direction_after_case1 /*br*/ , 'C' /*alignement*/ , TRUE /*remplissage*/ );
+			$this->Cell( $this->cases_largeur , $this->cases_hauteur , $score_affiche , 1 , $direction_after_case1 , 'C' , TRUE , '');
 		}
 
 		// pour les 2 cases en diagonales, une case invisible permet de se positionner correctement
@@ -2294,7 +2293,7 @@ class PDF extends FPDF
 		// deuxième case
 		if($moyenne_pourcent===FALSE)
 		{
-			$this->Cell( $this->cases_largeur , $this->cases_hauteur , '-' , 1 /*bordure*/ , $direction_after_case2 /*br*/ , 'C' /*alignement*/ , TRUE /*remplissage*/ );
+			$this->Cell( $this->cases_largeur , $this->cases_hauteur , '-' , 1 , $direction_after_case2 , 'C' , TRUE , '');
 		}
 		else
 		{
@@ -2302,7 +2301,7 @@ class PDF extends FPDF
 			elseif($moyenne_nombre>$_SESSION['CALCUL_SEUIL']['V']) {$this->choisir_couleur_fond($this->tab_choix_couleur['A']);}
 			else                                                   {$this->choisir_couleur_fond($this->tab_choix_couleur['VA']);}
 			$score_affiche = (mb_substr_count($_SESSION['DROIT_VOIR_SCORE_BILAN'],$_SESSION['USER_PROFIL'])) ? $moyenne_nombre.'%' : '' ;
-			$this->Cell( $this->cases_largeur , $this->cases_hauteur , $score_affiche , 1 /*bordure*/ , $direction_after_case2 /*br*/ , 'C' /*alignement*/ , TRUE /*remplissage*/ );
+			$this->Cell( $this->cases_largeur , $this->cases_hauteur , $score_affiche , 1 , $direction_after_case2 , 'C' , TRUE , '');
 		}
 
 		// pour la dernière ligne, mais pas pour les 2 dernières cases, se repositionner à la bonne ordonnée
@@ -2374,7 +2373,7 @@ class PDF extends FPDF
 		$this->SetFont('Arial' , 'B' , $this->taille_police);
 		$this->CellFit( $this->reference_largeur , 3 , To::pdf($item_intro) , 0 /*bordure*/ , 1 /*br*/ , 'L' /*alignement*/ , FALSE /*remplissage*/ );
 		$this->SetFont('Arial' , '' , $this->taille_police);
-		$this->MultiCell( $this->reference_largeur , 3 , To::pdf($item_nom) , 0 /*bordure*/ , 'L' /*alignement*/ , FALSE /*remplissage*/ );
+		$this->MultiCell( $this->reference_largeur , 3 , To::pdf($item_nom) , 0 , 'L' , FALSE , '');
 		$this->SetXY($memo_x+$this->reference_largeur , $memo_y);
 	}
 

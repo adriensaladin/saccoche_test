@@ -206,46 +206,46 @@ class Form
     $check_conv_sur20      = (mb_substr_count($_SESSION['DROIT_BILAN_NOTE_SUR_VINGT'],$_SESSION['USER_PROFIL'])) ? 1 : 0 ;
     $check_aff_lien        = (in_array($_SESSION['USER_PROFIL'],array('parent','eleve'))) ? 1 : 0 ;
     Form::$tab_choix = array(
-      'matiere_id'        => 0 ,
-      'niveau_id'         => 0 ,
-      'palier_id'         => 0 ,
-      'orientation'       => 'portrait' ,
-      'couleur'           => 'oui' ,
-      'legende'           => 'oui' , 
-      'marge_min'         => 5 ,
-      'pages_nb'          => 'optimise' ,
-      'cart_contenu'      => 'AVEC_nom_SANS_result' ,
-      'cart_detail'       => 'complet' ,
-      'only_niveau'       => 0 ,
-      'only_presence'     => 0 ,
-      'only_socle'        => 0 ,
-      'aff_coef'          => 0 ,
-      'aff_socle'         => 1 ,
-      'aff_lien'          => $check_aff_lien ,
-      'aff_start'         => 0 ,
-      'aff_domaine'       => 0 ,
-      'aff_theme'         => 0 ,
-      'cases_nb'          => 4 ,
-      'cases_largeur'     => 5 ,
-      'remplissage'       => 'plein' ,
-      'colonne_bilan'     => 'oui' ,
-      'colonne_vide'      => 0 ,
-      'type_generique'    => 0 ,
-      'type_individuel'   => $check_type_individuel ,
-      'type_synthese'     => 0 ,
-      'type_bulletin'     => 0 ,
-      'aff_bilan_MS'      => $check_bilan_MS ,
-      'aff_bilan_PA'      => $check_bilan_PA ,
-      'aff_conv_sur20'    => $check_conv_sur20 ,
-      'tableau_tri_objet' => 'eleve',
-      'tableau_tri_mode'  => 'score',
-      'with_coef'         => 1 ,
-      'retroactif'        => 'auto' ,
-      'mode_synthese'     => 'predefini' ,
-      'aff_socle_PA'      => 1 ,
-      'aff_socle_EV'      => 1 ,
-      'type'              => '' ,
-      'mode'              => 'auto'
+      'matiere_id'=>0 ,
+      'niveau_id'=>0 ,
+      'palier_id'=>0 ,
+      'orientation'=>'portrait' ,
+      'couleur'=>'oui' ,
+      'legende'=>'oui' , 
+      'marge_min'=>5 ,
+      'pages_nb'=>'optimise' ,
+      'cart_contenu'=>'AVEC_nom_SANS_result' ,
+      'cart_detail'=>'complet' ,
+      'only_niveau'=>0 ,
+      'only_presence'=>0 ,
+      'only_socle'=>0 ,
+      'aff_coef'=>0 ,
+      'aff_socle'=>1 ,
+      'aff_lien'=>$check_aff_lien ,
+      'aff_start'=>0 ,
+      'aff_domaine'=>0 ,
+      'aff_theme'=>0 ,
+      'cases_nb'=>4 ,
+      'cases_largeur'=>5 ,
+      'remplissage'=>'plein' ,
+      'colonne_bilan'=>'oui' ,
+      'colonne_vide'=>0 ,
+      'type_generique'=>0 ,
+      'type_individuel'=>$check_type_individuel ,
+      'type_synthese'=>0 ,
+      'type_bulletin'=>0 ,
+      'aff_bilan_MS'=>$check_bilan_MS ,
+      'aff_bilan_PA'=>$check_bilan_PA ,
+      'aff_conv_sur20'=>$check_conv_sur20 ,
+      'tableau_tri_objet'=>'eleve',
+      'tableau_tri_mode'=>'score',
+      'with_coef'=>1 ,
+      'retroactif'=>'oui' ,
+      'mode_synthese'=>'predefini' ,
+      'aff_socle_PA'=>1 ,
+      'aff_socle_EV'=>1 ,
+      'type'=>'' ,
+      'mode'=>'auto'
     );
   }
 
@@ -352,9 +352,9 @@ class Form
    * Afficher un élément select de formulaire à partir d'un tableau de données et d'options
    * 
    * @param array             $DB_TAB       tableau des données [valeur texte]
-   * @param string|bool       $select_nom   chaine à utiliser pour l'id/nom du select, ou FALSE si on retourne juste les options sans les encapsuler dans un select
+   * @param string|bool       $select_nom   chaine à utiliser pour l'id/nom du select, ou false si on retourne juste les options sans les encapsuler dans un select
    * @param string            $option_first 1ère option éventuelle [non] [oui] [val]
-   * @param string|bool|array $selection    préselection éventuelle [FALSE] [TRUE] [val] [ou $...] [ou array(...)]
+   * @param string|bool|array $selection    préselection éventuelle [false] [true] [val] [ou $...] [ou array(...)]
    * @param string            $optgroup     regroupement d'options éventuel [non] [oui]
    * @return string
    */

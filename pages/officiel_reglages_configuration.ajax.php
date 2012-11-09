@@ -28,66 +28,122 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 if($_SESSION['SESAMATH_ID']==ID_DEMO) {exit('Action désactivée pour la démo...');}
 
-$objet                          = (isset($_POST['objet']))                            ? $_POST['objet']                                           : '';
+$objet                          = (isset($_POST['objet']))                            ? $_POST['objet']                                          : '';
 
-$releve_retroactif              = (isset($_POST['f_releve_retroactif']))              ? Clean::texte($_POST['f_releve_retroactif'])               : '';
-$releve_only_socle              = (isset($_POST['f_releve_only_socle']))              ? 1                                                         : 0;
 $releve_appreciation_rubrique   = (isset($_POST['f_releve_appreciation_rubrique']))   ? Clean::entier($_POST['f_releve_appreciation_rubrique'])   : 0;
 $releve_appreciation_generale   = (isset($_POST['f_releve_appreciation_generale']))   ? Clean::entier($_POST['f_releve_appreciation_generale'])   : 0;
-$releve_moyenne_scores          = (isset($_POST['f_releve_moyenne_scores']))          ? 1                                                         : 0;
-$releve_pourcentage_acquis      = (isset($_POST['f_releve_pourcentage_acquis']))      ? 1                                                         : 0;
-$releve_conv_sur20              = (isset($_POST['f_releve_conv_sur20']))              ? 1                                                         : 0;
+$releve_moyenne_scores          = (isset($_POST['f_releve_moyenne_scores']))          ? 1                                                        : 0;
+$releve_pourcentage_acquis      = (isset($_POST['f_releve_pourcentage_acquis']))      ? 1                                                        : 0;
 $releve_cases_nb                = (isset($_POST['f_releve_cases_nb']))                ? Clean::entier($_POST['f_releve_cases_nb'])                : 0;
-$releve_aff_coef                = (isset($_POST['f_releve_aff_coef']))                ? 1                                                         : 0;
-$releve_aff_socle               = (isset($_POST['f_releve_aff_socle']))               ? 1                                                         : 0;
-$releve_aff_domaine             = (isset($_POST['f_releve_aff_domaine']))             ? 1                                                         : 0;
-$releve_aff_theme               = (isset($_POST['f_releve_aff_theme']))               ? 1                                                         : 0;
+$releve_aff_coef                = (isset($_POST['f_releve_aff_coef']))                ? 1                                                        : 0;
+$releve_aff_socle               = (isset($_POST['f_releve_aff_socle']))               ? 1                                                        : 0;
+$releve_aff_domaine             = (isset($_POST['f_releve_aff_domaine']))             ? 1                                                        : 0;
+$releve_aff_theme               = (isset($_POST['f_releve_aff_theme']))               ? 1                                                        : 0;
 $releve_couleur                 = (isset($_POST['f_releve_couleur']))                 ? Clean::texte($_POST['f_releve_couleur'])                  : '';
 $releve_legende                 = (isset($_POST['f_releve_legende']))                 ? Clean::texte($_POST['f_releve_legende'])                  : '';
 
-$bulletin_retroactif            = (isset($_POST['f_bulletin_retroactif']))            ? Clean::texte($_POST['f_bulletin_retroactif'])             : '';
-$bulletin_only_socle            = (isset($_POST['f_bulletin_only_socle']))            ? 1                                                         : 0;
 $bulletin_appreciation_rubrique = (isset($_POST['f_bulletin_appreciation_rubrique'])) ? Clean::entier($_POST['f_bulletin_appreciation_rubrique']) : 0;
 $bulletin_appreciation_generale = (isset($_POST['f_bulletin_appreciation_generale'])) ? Clean::entier($_POST['f_bulletin_appreciation_generale']) : 0;
-$bulletin_barre_acquisitions    = (isset($_POST['f_bulletin_barre_acquisitions']))    ? 1                                                         : 0;
-$bulletin_moyenne_scores        = (isset($_POST['f_bulletin_moyenne_scores']))        ? 1                                                         : 0;
+$bulletin_moyenne_scores        = (isset($_POST['f_bulletin_moyenne_scores']))        ? 1                                                        : 0;
 $bulletin_note_sur_20           = (isset($_POST['f_bulletin_note_sur_20']))           ? Clean::entier($_POST['f_bulletin_note_sur_20'])           : 0; // Est transmis à 0 si f_bulletin_pourcentage coché
-$bulletin_moyenne_classe        = (isset($_POST['f_bulletin_moyenne_classe']))        ? 1                                                         : 0;
-$bulletin_moyenne_generale      = (isset($_POST['f_bulletin_moyenne_generale']))      ? 1                                                         : 0;
+$bulletin_moyenne_classe        = (isset($_POST['f_bulletin_moyenne_classe']))        ? 1                                                        : 0;
+$bulletin_moyenne_generale      = (isset($_POST['f_bulletin_moyenne_generale']))      ? 1                                                        : 0;
 $bulletin_couleur               = (isset($_POST['f_bulletin_couleur']))               ? Clean::texte($_POST['f_bulletin_couleur'])                : '';
 $bulletin_legende               = (isset($_POST['f_bulletin_legende']))               ? Clean::texte($_POST['f_bulletin_legende'])                : '';
 
 $socle_appreciation_rubrique    = (isset($_POST['f_socle_appreciation_rubrique']))    ? Clean::entier($_POST['f_socle_appreciation_rubrique'])    : 0;
 $socle_appreciation_generale    = (isset($_POST['f_socle_appreciation_generale']))    ? Clean::entier($_POST['f_socle_appreciation_generale'])    : 0;
-$socle_only_presence            = (isset($_POST['f_socle_only_presence']))            ? 1                                                         : 0;
-$socle_pourcentage_acquis       = (isset($_POST['f_socle_pourcentage_acquis']))       ? 1                                                         : 0;
-$socle_etat_validation          = (isset($_POST['f_socle_etat_validation']))          ? 1                                                         : 0;
+$socle_only_presence            = (isset($_POST['f_socle_only_presence']))            ? 1                                                        : 0;
+$socle_pourcentage_acquis       = (isset($_POST['f_socle_pourcentage_acquis']))       ? 1                                                        : 0;
+$socle_etat_validation          = (isset($_POST['f_socle_etat_validation']))          ? 1                                                        : 0;
 $socle_couleur                  = (isset($_POST['f_socle_couleur']))                  ? Clean::texte($_POST['f_socle_couleur'])                   : '';
 $socle_legende                  = (isset($_POST['f_socle_legende']))                  ? Clean::texte($_POST['f_socle_legende'])                   : '';
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Traitement des formulaires "Relevé d'évaluations" + "Bulletin scolaire" + "État de maîtrise du socle"
+// Traitement du formulaire "Relevé d'évaluations"
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-$tab_variables = array(
-	'releve'   => array( 'retroactif', 'only_socle', 'appreciation_rubrique', 'appreciation_generale', 'moyenne_scores', 'pourcentage_acquis', 'conv_sur20', 'cases_nb', 'aff_coef', 'aff_socle', 'aff_domaine', 'aff_theme', 'couleur', 'legende' ),
-	'bulletin' => array( 'retroactif', 'only_socle', 'appreciation_rubrique', 'appreciation_generale', 'barre_acquisitions', 'moyenne_scores', 'note_sur_20', 'moyenne_classe', 'moyenne_generale', 'couleur', 'legende' ),
-	'socle'    => array( 'appreciation_rubrique', 'appreciation_generale', 'only_presence', 'pourcentage_acquis', 'etat_validation', 'couleur', 'legende' )
-);
-
-if( isset($tab_variables[$objet]) )
+if($objet=='releve')
 {
 	$tab_parametres = array();
-	foreach( $tab_variables[$objet] as $option )
-	{
-		$variable_nom    = $objet.'_'.$option;
-		$variable_valeur = ${$variable_nom};
-		// On modifie la session
-		$_SESSION['OFFICIEL'][strtoupper($variable_nom)] = $variable_valeur;
-		// Pour modifier dans la base
-		$tab_parametres['officiel_'.$variable_nom] = $variable_valeur;
-	}
+	$tab_parametres['officiel_releve_appreciation_rubrique'] = $releve_appreciation_rubrique;
+	$tab_parametres['officiel_releve_appreciation_generale'] = $releve_appreciation_generale;
+	$tab_parametres['officiel_releve_moyenne_scores']        = $releve_moyenne_scores;
+	$tab_parametres['officiel_releve_pourcentage_acquis']    = $releve_pourcentage_acquis;
+	$tab_parametres['officiel_releve_cases_nb']              = $releve_cases_nb;
+	$tab_parametres['officiel_releve_aff_coef']              = $releve_aff_coef;
+	$tab_parametres['officiel_releve_aff_socle']             = $releve_aff_socle;
+	$tab_parametres['officiel_releve_aff_domaine']           = $releve_aff_domaine;
+	$tab_parametres['officiel_releve_aff_theme']             = $releve_aff_theme;
+	$tab_parametres['officiel_releve_couleur']               = $releve_couleur;
+	$tab_parametres['officiel_releve_legende']               = $releve_legende;
 	DB_STRUCTURE_COMMUN::DB_modifier_parametres($tab_parametres);
+	// On modifie aussi la session
+	$_SESSION['OFFICIEL']['RELEVE_APPRECIATION_RUBRIQUE'] = $releve_appreciation_rubrique ;
+	$_SESSION['OFFICIEL']['RELEVE_APPRECIATION_GENERALE'] = $releve_appreciation_generale ;
+	$_SESSION['OFFICIEL']['RELEVE_MOYENNE_SCORES']        = $releve_moyenne_scores ;
+	$_SESSION['OFFICIEL']['RELEVE_POURCENTAGE_ACQUIS']    = $releve_pourcentage_acquis ;
+	$_SESSION['OFFICIEL']['RELEVE_CASES_NB']              = $releve_cases_nb ;
+	$_SESSION['OFFICIEL']['RELEVE_AFF_COEF']              = $releve_aff_coef ;
+	$_SESSION['OFFICIEL']['RELEVE_AFF_SOCLE']             = $releve_aff_socle ;
+	$_SESSION['OFFICIEL']['RELEVE_AFF_DOMAINE']           = $releve_aff_domaine ;
+	$_SESSION['OFFICIEL']['RELEVE_AFF_THEME']             = $releve_aff_theme ;
+	$_SESSION['OFFICIEL']['RELEVE_COULEUR']               = $releve_couleur ;
+	$_SESSION['OFFICIEL']['RELEVE_LEGENDE']               = $releve_legende ;
+	exit('ok');
+}
+
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+// Traitement du formulaire "Bulletin scolaire"
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+if($objet=='bulletin')
+{
+	$tab_parametres = array();
+	$tab_parametres['officiel_bulletin_appreciation_rubrique'] = $bulletin_appreciation_rubrique;
+	$tab_parametres['officiel_bulletin_appreciation_generale'] = $bulletin_appreciation_generale;
+	$tab_parametres['officiel_bulletin_moyenne_scores']        = $bulletin_moyenne_scores;
+	$tab_parametres['officiel_bulletin_note_sur_20']           = $bulletin_note_sur_20;
+	$tab_parametres['officiel_bulletin_moyenne_classe']        = $bulletin_moyenne_classe;
+	$tab_parametres['officiel_bulletin_moyenne_generale']      = $bulletin_moyenne_generale;
+	$tab_parametres['officiel_bulletin_couleur']               = $bulletin_couleur;
+	$tab_parametres['officiel_bulletin_legende']               = $bulletin_legende;
+	DB_STRUCTURE_COMMUN::DB_modifier_parametres($tab_parametres);
+	// On modifie aussi la session
+	$_SESSION['OFFICIEL']['BULLETIN_APPRECIATION_RUBRIQUE'] = $bulletin_appreciation_rubrique ;
+	$_SESSION['OFFICIEL']['BULLETIN_APPRECIATION_GENERALE'] = $bulletin_appreciation_generale ;
+	$_SESSION['OFFICIEL']['BULLETIN_MOYENNE_SCORES']        = $bulletin_moyenne_scores ;
+	$_SESSION['OFFICIEL']['BULLETIN_NOTE_SUR_20']           = $bulletin_note_sur_20 ;
+	$_SESSION['OFFICIEL']['BULLETIN_MOYENNE_CLASSE']        = $bulletin_moyenne_classe ;
+	$_SESSION['OFFICIEL']['BULLETIN_MOYENNE_GENERALE']      = $bulletin_moyenne_generale ;
+	$_SESSION['OFFICIEL']['BULLETIN_COULEUR']               = $bulletin_couleur ;
+	$_SESSION['OFFICIEL']['BULLETIN_LEGENDE']               = $bulletin_legende ;
+	exit('ok');
+}
+
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+// Traitement du formulaire "État de maîtrise du socle"
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+if($objet=='socle')
+{
+	$tab_parametres = array();
+	$tab_parametres['officiel_socle_appreciation_rubrique']   = $socle_appreciation_rubrique;
+	$tab_parametres['officiel_socle_appreciation_generale']   = $socle_appreciation_generale;
+	$tab_parametres['officiel_socle_only_presence']           = $socle_only_presence;
+	$tab_parametres['officiel_socle_pourcentage_acquis']      = $socle_pourcentage_acquis;
+	$tab_parametres['officiel_socle_etat_validation']         = $socle_etat_validation;
+	$tab_parametres['officiel_socle_couleur']                 = $socle_couleur;
+	$tab_parametres['officiel_socle_legende']                 = $socle_legende;
+	DB_STRUCTURE_COMMUN::DB_modifier_parametres($tab_parametres);
+	// On modifie aussi la session
+	$_SESSION['OFFICIEL']['SOCLE_APPRECIATION_RUBRIQUE']   = $socle_appreciation_rubrique ;
+	$_SESSION['OFFICIEL']['SOCLE_APPRECIATION_GENERALE']   = $socle_appreciation_generale ;
+	$_SESSION['OFFICIEL']['SOCLE_ONLY_PRESENCE']           = $socle_only_presence ;
+	$_SESSION['OFFICIEL']['SOCLE_POURCENTAGE_ACQUIS']      = $socle_pourcentage_acquis ;
+	$_SESSION['OFFICIEL']['SOCLE_ETAT_VALIDATION']         = $socle_etat_validation ;
+	$_SESSION['OFFICIEL']['SOCLE_COULEUR']                 = $socle_couleur ;
+	$_SESSION['OFFICIEL']['SOCLE_LEGENDE']                 = $socle_legende ;
 	exit('ok');
 }
 
@@ -95,6 +151,8 @@ if( isset($tab_variables[$objet]) )
 // On ne devrait pas en arriver là...
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-exit('Erreur avec les données transmises !');
-
+else
+{
+	echo'Erreur avec les données transmises !';
+}
 ?>

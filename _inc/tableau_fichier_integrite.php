@@ -29,7 +29,7 @@
 		'_img/logo_grand.gif',
 		'_inc/_loader.php',
 		'_inc/class.Session.php',
-		'_inc/class.ServeurCommunautaire.php',
+		'_inc/fonction_appel_serveur_communautaire.php',
 		'pages/__menu_professeur.html',
 		'pages/validation_socle_fichier.ajax.php',
 		'pages/validation_socle_item.ajax.php',

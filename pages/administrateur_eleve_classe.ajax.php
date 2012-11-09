@@ -41,7 +41,7 @@ if($action=='ajouter')
 	$classe_id = current($tab_select_classes); // un élève ne peut être affecté qu'à 1 seule classe : inutile de toutes les passer en revue
 	foreach($tab_select_eleves as $user_id)
 	{
-		DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_liaison_user_groupe_par_admin( $user_id , 'eleve' , $classe_id , 'classe' , TRUE );
+		DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_liaison_user_groupe_par_admin($user_id,'eleve',$classe_id,'classe',true);
 	}
 }
 
@@ -53,7 +53,7 @@ elseif($action=='retirer')
 	{
 		foreach($tab_select_classes as $classe_id)
 		{
-			DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_liaison_user_groupe_par_admin( $user_id , 'eleve' , $classe_id , 'classe' , FALSE );
+			DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_liaison_user_groupe_par_admin($user_id,'eleve',$classe_id,'classe',false);
 		}
 	}
 }

@@ -99,20 +99,6 @@ class FileSystem
     }
   }
 
-  /**
-   * Fabriquer le md5 d'un fichier pour le comparer à ceux d'une archive.
-   * Volontairement non utilisé par ServeurCommunautaire::fabriquer_chaine_integrite() car un peu différent.
-   * 
-   * @param string
-   * @return string
-   */
-  private static function fabriquer_md5_file($fichier)
-  {
-    // Lors du transfert FTP de fichiers, il arrive que les \r\n en fin de ligne soient convertis en \n, ce qui fait que md5_file() renvoie un résultat différent.
-    // Pour y remédier on utilise son équivalent md5(file_get_contents()) couplé à un remplacement des caractères de fin de ligne.
-    return md5( str_replace( array("\r\n","\r","\n") , ' ' , file_get_contents($fichier) ) );
-  }
-
   // //////////////////////////////////////////////////
   // Méthodes publiques
   // //////////////////////////////////////////////////
@@ -243,7 +229,7 @@ class FileSystem
       }
       else
       {
-        $_SESSION['tmp']['fichier'][substr($chemin_contenu,$longueur_prefixe)][$indice] = ($calc_md5) ? FileSystem::fabriquer_md5_file($chemin_contenu) : file_get_contents($chemin_contenu) ;
+        $_SESSION['tmp']['fichier'][substr($chemin_contenu,$longueur_prefixe)][$indice] = ($calc_md5) ? fabriquer_md5_file($chemin_contenu) : file_get_contents($chemin_contenu) ;
       }
     }
     $_SESSION['tmp']['dossier'][substr($dossier,$longueur_prefixe)][$indice] = TRUE;
@@ -295,96 +281,6 @@ class FileSystem
     $fichier_contenu = 'Circulez, il n\'y a rien à voir par ici !';
     if($obligatoire) return FileSystem::ecrire_fichier( $fichier_chemin , $fichier_contenu );
     else return FileSystem::ecrire_fichier_si_possible( $fichier_chemin , $fichier_contenu );
-  }
-
-  /**
-   * Fabriquer ou mettre à jour le fichier de configuration de l'hébergement (gestion par le webmestre)
-   * 
-   * @param array tableau $constante_nom => $constante_valeur des paramètres à modifier (sinon, on prend les constantes déjà définies)
-   * @return void
-   */
-  public static function fabriquer_fichier_hebergeur_info($tab_constantes_modifiees)
-  {
-    $fichier_nom = CHEMIN_DOSSIER_CONFIG.'constantes.php';
-    $tab_constantes_requises = array(
-      'HEBERGEUR_INSTALLATION',
-      'HEBERGEUR_DENOMINATION',
-      'HEBERGEUR_UAI',
-      'HEBERGEUR_ADRESSE_SITE',
-      'HEBERGEUR_LOGO',
-      'CNIL_NUMERO',
-      'CNIL_DATE_ENGAGEMENT',
-      'CNIL_DATE_RECEPISSE',
-      'WEBMESTRE_NOM',
-      'WEBMESTRE_PRENOM',
-      'WEBMESTRE_COURRIEL',
-      'WEBMESTRE_PASSWORD_MD5',
-      'WEBMESTRE_ERREUR_DATE',
-      'SERVEUR_PROXY_USED',
-      'SERVEUR_PROXY_NAME',
-      'SERVEUR_PROXY_PORT',
-      'SERVEUR_PROXY_TYPE',
-      'SERVEUR_PROXY_AUTH_USED',
-      'SERVEUR_PROXY_AUTH_METHOD',
-      'SERVEUR_PROXY_AUTH_USER',
-      'SERVEUR_PROXY_AUTH_PASS',
-      'FICHIER_TAILLE_MAX',
-      'FICHIER_DUREE_CONSERVATION',
-      'CHEMIN_LOGS_PHPCAS'
-    );
-    $fichier_contenu = '<?php'."\r\n";
-    $fichier_contenu.= '// Informations concernant l\'hébergement et son webmestre (n°UAI uniquement pour une installation de type mono-structure)'."\r\n";
-    foreach($tab_constantes_requises as $constante_nom)
-    {
-      $constante_valeur = (isset($tab_constantes_modifiees[$constante_nom])) ? $tab_constantes_modifiees[$constante_nom] : constant($constante_nom);
-      $espaces = str_repeat(' ',26-strlen($constante_nom));
-      $quote = '\'';
-      // var_export() permet d'échapper \ ' et inclus des ' autour.
-      $fichier_contenu.= 'define('.$quote.$constante_nom.$quote.$espaces.','.var_export((string)$constante_valeur,TRUE).');'."\r\n";
-    }
-    $fichier_contenu.= '?>'."\r\n";
-    FileSystem::ecrire_fichier($fichier_nom,$fichier_contenu);
-  }
-
-  /**
-   * Fabriquer ou mettre à jour le fichier de connexion à la base (soit celle du webmestre, soit celle d'un établissement).
-   * 
-   * @param int    $base_id   0 dans le cas d'une install mono-structure ou de la base du webmestre
-   * @param string $BD_host
-   * @param string $BD_name
-   * @param string $BD_user
-   * @param string $BD_pass
-   * @return void
-   */
-  public static function fabriquer_fichier_connexion_base($base_id,$BD_host,$BD_port,$BD_name,$BD_user,$BD_pass)
-  {
-    if( (HEBERGEUR_INSTALLATION=='multi-structures') && ($base_id>0) )
-    {
-      $fichier_nom = CHEMIN_DOSSIER_MYSQL.'serveur_sacoche_structure_'.$base_id.'.php';
-      $fichier_descriptif = 'Paramètres MySQL de la base de données SACoche n°'.$base_id.' (installation multi-structures).';
-      $prefixe = 'STRUCTURE';
-    }
-    elseif(HEBERGEUR_INSTALLATION=='mono-structure')
-    {
-      $fichier_nom = CHEMIN_DOSSIER_MYSQL.'serveur_sacoche_structure.php';
-      $fichier_descriptif = 'Paramètres MySQL de la base de données SACoche (installation mono-structure).';
-      $prefixe = 'STRUCTURE';
-    }
-    else // (HEBERGEUR_INSTALLATION=='multi-structures') && ($base_id==0)
-    {
-      $fichier_nom = CHEMIN_DOSSIER_MYSQL.'serveur_sacoche_webmestre.php';
-      $fichier_descriptif = 'Paramètres MySQL de la base de données SACoche du webmestre (installation multi-structures).';
-      $prefixe = 'WEBMESTRE';
-    }
-    $fichier_contenu  = '<?php'."\r\n";
-    $fichier_contenu .= '// '.$fichier_descriptif."\r\n";
-    $fichier_contenu .= 'define(\'SACOCHE_'.$prefixe.'_BD_HOST\',\''.$BD_host.'\');  // Nom d\'hôte / serveur'."\r\n";
-    $fichier_contenu .= 'define(\'SACOCHE_'.$prefixe.'_BD_PORT\',\''.$BD_port.'\');  // Port de connexion'."\r\n";
-    $fichier_contenu .= 'define(\'SACOCHE_'.$prefixe.'_BD_NAME\',\''.$BD_name.'\');  // Nom de la base'."\r\n";
-    $fichier_contenu .= 'define(\'SACOCHE_'.$prefixe.'_BD_USER\',\''.$BD_user.'\');  // Nom d\'utilisateur'."\r\n";
-    $fichier_contenu .= 'define(\'SACOCHE_'.$prefixe.'_BD_PASS\',\''.$BD_pass.'\');  // Mot de passe'."\r\n";
-    $fichier_contenu .= '?>'."\r\n";
-    FileSystem::ecrire_fichier($fichier_nom,$fichier_contenu);
   }
 
   /**

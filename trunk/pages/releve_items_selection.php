@@ -51,20 +51,21 @@ if(in_array($_SESSION['USER_PROFIL'],array('parent','eleve')))
 	$check_conv_sur20 = (mb_substr_count($_SESSION['DROIT_BILAN_NOTE_SUR_VINGT']    ,$_SESSION['USER_PROFIL'])) ? ' checked' : '' ;
 }
 */
-$check_retro_oui       = (Form::$tab_choix['retroactif']=='oui') ? ' checked' : '' ;
-$check_retro_non       = (Form::$tab_choix['retroactif']=='non') ? ' checked' : '' ;
-$check_aff_coef        = (Form::$tab_choix['aff_coef'])          ? ' checked' : '' ;
-$check_aff_socle       = (Form::$tab_choix['aff_socle'])         ? ' checked' : '' ;
-$check_aff_lien        = (Form::$tab_choix['aff_lien'])          ? ' checked' : '' ;
-$check_aff_domaine     = (Form::$tab_choix['aff_domaine'])       ? ' checked' : '' ;
-$check_aff_theme       = (Form::$tab_choix['aff_theme'])         ? ' checked' : '' ;
+$check_retro_auto      = (Form::$tab_choix['retroactif']=='auto') ? ' checked' : '' ;
+$check_retro_non       = (Form::$tab_choix['retroactif']=='non')  ? ' checked' : '' ;
+$check_retro_oui       = (Form::$tab_choix['retroactif']=='oui')  ? ' checked' : '' ;
+$check_aff_coef        = (Form::$tab_choix['aff_coef'])           ? ' checked' : '' ;
+$check_aff_socle       = (Form::$tab_choix['aff_socle'])          ? ' checked' : '' ;
+$check_aff_lien        = (Form::$tab_choix['aff_lien'])           ? ' checked' : '' ;
+$check_aff_domaine     = (Form::$tab_choix['aff_domaine'])        ? ' checked' : '' ;
+$check_aff_theme       = (Form::$tab_choix['aff_theme'])          ? ' checked' : '' ;
 $tab_groupes   = DB_STRUCTURE_COMMUN::DB_OPT_groupes_professeur($_SESSION['USER_ID']);
 $tab_periodes  = DB_STRUCTURE_COMMUN::DB_OPT_periodes_etabl();
 
 $select_tri_objet   = Form::afficher_select(Form::$tab_select_tri_objet   , $select_nom='f_tri_objet'   , $option_first='non' , $selection=Form::$tab_choix['tableau_tri_objet'] , $optgroup='non');
 $select_tri_mode    = Form::afficher_select(Form::$tab_select_tri_mode    , $select_nom='f_tri_mode'    , $option_first='non' , $selection=Form::$tab_choix['tableau_tri_mode']  , $optgroup='non');
-$select_groupe      = Form::afficher_select($tab_groupes                        , $select_nom='f_groupe'      , $option_first='oui' , $selection=false                                       , $optgroup='oui');
-$select_periode     = Form::afficher_select($tab_periodes                       , $select_nom='f_periode'     , $option_first='val' , $selection=false                                       , $optgroup='non');
+$select_groupe      = Form::afficher_select($tab_groupes                  , $select_nom='f_groupe'      , $option_first='oui' , $selection=FALSE                                 , $optgroup='oui');
+$select_periode     = Form::afficher_select($tab_periodes                 , $select_nom='f_periode'     , $option_first='val' , $selection=FALSE                                 , $optgroup='non');
 $select_orientation = Form::afficher_select(Form::$tab_select_orientation , $select_nom='f_orientation' , $option_first='non' , $selection=Form::$tab_choix['orientation']       , $optgroup='non');
 $select_marge_min   = Form::afficher_select(Form::$tab_select_marge_min   , $select_nom='f_marge_min'   , $option_first='non' , $selection=Form::$tab_choix['marge_min']         , $optgroup='non');
 $select_pages_nb    = Form::afficher_select(Form::$tab_select_pages_nb    , $select_nom='f_pages_nb'    , $option_first='non' , $selection=Form::$tab_choix['pages_nb']          , $optgroup='non');
@@ -73,12 +74,7 @@ $select_legende     = Form::afficher_select(Form::$tab_select_legende     , $sel
 $select_cases_nb    = Form::afficher_select(Form::$tab_select_cases_nb    , $select_nom='f_cases_nb'    , $option_first='non' , $selection=Form::$tab_choix['cases_nb']          , $optgroup='non');
 $select_cases_larg  = Form::afficher_select(Form::$tab_select_cases_size  , $select_nom='f_cases_larg'  , $option_first='non' , $selection=Form::$tab_choix['cases_largeur']     , $optgroup='non');
 
-$select_selection_items = Form::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_selection_items($_SESSION['USER_ID']) , $select_nom='f_selection_items' , $option_first='oui' , $selection=false , $optgroup='non');
-
-// Dates par défaut de début et de fin
-$annee_debut = (date('n')>8) ? date('Y') : date('Y')-1 ;
-$date_debut = '01/09/'.$annee_debut;
-$date_fin   = TODAY_FR;
+$select_selection_items = Form::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_selection_items($_SESSION['USER_ID']) , $select_nom='f_selection_items' , $option_first='oui' , $selection=FALSE , $optgroup='non');
 
 // Fabrication du tableau javascript "tab_groupe_periode" pour les jointures groupes/périodes
 $tab_groupe_periode_js = 'var tab_groupe_periode = new Array();';
@@ -137,10 +133,13 @@ if(is_array($tab_groupes))
 	<p id="zone_periodes" class="hide">
 		<label class="tab" for="f_periode"><img alt="" src="./_img/bulle_aide.png" title="Les items pris en compte sont ceux qui sont évalués<br />au moins une fois sur cette période." /> Période :</label><?php echo $select_periode ?>
 		<span id="dates_perso" class="show">
-			du <input id="f_date_debut" name="f_date_debut" size="9" type="text" value="<?php echo $date_debut ?>" /><q class="date_calendrier" title="Cliquez sur cette image pour importer une date depuis un calendrier !"></q>
-			au <input id="f_date_fin" name="f_date_fin" size="9" type="text" value="<?php echo $date_fin ?>" /><q class="date_calendrier" title="Cliquez sur cette image pour importer une date depuis un calendrier !"></q>
+			du <input id="f_date_debut" name="f_date_debut" size="9" type="text" value="<?php echo jour_debut_annee_scolaire('french') ?>" /><q class="date_calendrier" title="Cliquez sur cette image pour importer une date depuis un calendrier !"></q>
+			au <input id="f_date_fin" name="f_date_fin" size="9" type="text" value="<?php echo TODAY_FR ?>" /><q class="date_calendrier" title="Cliquez sur cette image pour importer une date depuis un calendrier !"></q>
 		</span><br />
-		<span class="radio"><img alt="" src="./_img/bulle_aide.png" title="Le bilan peut être établi uniquement sur la période considérée<br />ou en tenant compte d'évaluations antérieures des items concernés." /> Prise en compte des évaluations antérieures :</span><label for="f_retro_oui"><input type="radio" id="f_retro_oui" name="f_retroactif" value="oui"<?php echo $check_retro_oui ?> /> oui</label>&nbsp;&nbsp;&nbsp;&nbsp;<label for="f_retro_non"><input type="radio" id="f_retro_non" name="f_retroactif" value="non"<?php echo $check_retro_non ?> /> non</label>
+		<span class="radio"><img alt="" src="./_img/bulle_aide.png" title="Le bilan peut être établi uniquement sur la période considérée<br />ou en tenant compte d'évaluations antérieures des items concernés.<br />En automatique, les paramètres enregistrés pour chaque référentiel s'appliquent." /> Prise en compte des évaluations antérieures :</span>
+			<label for="f_retro_auto"><input type="radio" id="f_retro_auto" name="f_retroactif" value="auto"<?php echo $check_retro_auto ?> /> automatique</label>&nbsp;&nbsp;&nbsp;
+			<label for="f_retro_non"><input type="radio" id="f_retro_non" name="f_retroactif" value="non"<?php echo $check_retro_non ?> /> non</label>&nbsp;&nbsp;&nbsp;
+			<label for="f_retro_oui"><input type="radio" id="f_retro_oui" name="f_retroactif" value="oui"<?php echo $check_retro_oui ?> /> oui</label>
 	</p>
 	<div class="toggle">
 		<span class="tab"></span><a href="#" class="puce_plus toggle">Afficher plus d'options</a>
@@ -159,8 +158,8 @@ if(is_array($tab_groupes))
 	<p>Cocher ci-dessous (<span class="astuce">cliquer sur un intitulé pour déployer son contenu</span>) :</p>
 	<?php
 	// Affichage de la liste des items pour toutes les matières d'un professeur, sur tous les niveaux
-	$DB_TAB = DB_STRUCTURE_COMMUN::DB_recuperer_arborescence($_SESSION['USER_ID'],$matiere_id=0,$niveau_id=0,$only_socle=false,$only_item=false,$socle_nom=false);
-	echo afficher_arborescence_matiere_from_SQL($DB_TAB,$dynamique=true,$reference=true,$aff_coef=false,$aff_cart=false,$aff_socle='texte',$aff_lien=false,$aff_input=true);
+	$DB_TAB = DB_STRUCTURE_COMMUN::DB_recuperer_arborescence( $_SESSION['USER_ID'] , 0 /*matiere_id*/ , 0 /*niveau_id*/, FALSE /*only_socle*/ , FALSE /*only_item*/ , FALSE /*socle_nom*/ );
+	echo Html::afficher_arborescence_matiere_from_SQL( $DB_TAB , TRUE /*dynamique*/ , TRUE /*reference*/ , FALSE /*aff_coef*/ , FALSE /*aff_cart*/ , 'texte' /*aff_socle*/ , FALSE /*aff_lien*/ , TRUE /*aff_input*/ );
 	?>
 	<p><span class="tab"></span><button id="valider_compet" type="button" class="valider">Valider la sélection</button>&nbsp;&nbsp;&nbsp;<button id="annuler_compet" type="button" class="annuler">Annuler / Retour</button></p>
 	<hr />

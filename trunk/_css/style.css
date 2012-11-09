@@ -507,6 +507,13 @@ table th.- , table td.- , div.- , span.- , label.- {background-color:#---}
 */
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+/* Couleur de fond pour les saisies anciennes                                                          */
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
+td.prev_date {background-color:#CCC}
+td.prev_year {background-color:#AAA}
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 /* Format des en-têtes de tableaux dont on peut trier les colonnes                                     */
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 

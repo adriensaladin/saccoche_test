@@ -59,7 +59,7 @@ $fichier_nom = ($make_action!='imprimer') ? 'releve_item_'.$format.'_'.Clean::fi
 
 // Initialisation de tableaux
 
-$tab_item       = array();	// [item_id] => array(item_ref,item_nom,item_coef,item_cart,item_socle,item_lien,calcul_methode,calcul_limite);
+$tab_item       = array();	// [item_id] => array(item_ref,item_nom,item_coef,item_cart,item_socle,item_lien,calcul_methode,calcul_limite,calcul_retroactif);
 $tab_liste_item = array();	// [i] => item_id
 $tab_eleve      = array();	// [i] => array(eleve_id,eleve_nom,eleve_prenom,eleve_id_gepi)
 $tab_matiere    = array();	// [matiere_id] => matiere_nom
@@ -105,8 +105,13 @@ if($date_mysql_debut>$date_mysql_fin)
 	exit('La date de début est postérieure à la date de fin !');
 }
 
-$date_complement = ($retroactif=='oui') ? ' (notes antérieures comptées).' : '.';
-$texte_periode   = 'Du '.$date_debut.' au '.$date_fin.$date_complement;
+$tab_precision = array
+(
+	'auto' => ' (notes antérieures comptées selon les référentiels)',
+	'oui'  => ' (notes antérieures prises en compte)',
+	'non'  => ''
+);
+$texte_periode = 'Du '.$date_debut.' au '.$date_fin.$tab_precision[$retroactif].'.';
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Récupération de la liste des items travaillés durant la période choisie, pour les élèves selectionnés, pour la ou les matières ou les items indiqués
@@ -142,9 +147,9 @@ elseif($format=='selection')
 }
 
 $item_nb = count($tab_item);
-if(!$item_nb)
+if( !$item_nb && !$make_officiel ) // Dans le cas d'un bilan officiel, où l'on regarde les élèves d'un groupe un à un, ce ne doit pas être bloquant.
 {
-	exit('Aucun item évalué sur cette période selon les critères indiqués !');
+	exit('Aucun item évalué sur cette période selon les paramètres choisis !');
 }
 $tab_liste_item = array_keys($tab_item);
 $liste_item = implode(',',$tab_liste_item);
@@ -175,20 +180,26 @@ $eleve_nb = count($tab_eleve);
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 $tab_score_a_garder = array();
-$DB_TAB = DB_STRUCTURE_BILAN::DB_lister_date_last_eleves_items($liste_eleve,$liste_item);
-foreach($DB_TAB as $DB_ROW)
+if($item_nb) // Peut valoir 0 dans le cas d'un bilan officiel où l'on regarde les élèves d'un groupe un à un (il ne faut pas qu'un élève sans rien soit bloquant).
 {
-	$tab_score_a_garder[$DB_ROW['eleve_id']][$DB_ROW['item_id']] = ($DB_ROW['date_last']<$date_mysql_debut) ? FALSE : TRUE ;
-}
-
-$date_mysql_debut = ($retroactif=='non') ? $date_mysql_debut : FALSE;
-$DB_TAB = DB_STRUCTURE_BILAN::DB_lister_result_eleves_items($liste_eleve , $liste_item , $matiere_id , $date_mysql_debut , $date_mysql_fin , $_SESSION['USER_PROFIL']);
-foreach($DB_TAB as $DB_ROW)
-{
-	if($tab_score_a_garder[$DB_ROW['eleve_id']][$DB_ROW['item_id']])
+	$DB_TAB = DB_STRUCTURE_BILAN::DB_lister_date_last_eleves_items($liste_eleve,$liste_item);
+	foreach($DB_TAB as $DB_ROW)
 	{
-		$tab_eval[$DB_ROW['eleve_id']][$DB_ROW['matiere_id']][$DB_ROW['item_id']][] = array('note'=>$DB_ROW['note'],'date'=>$DB_ROW['date'],'info'=>$DB_ROW['info']);
-		$tab_matiere_for_item[$DB_ROW['item_id']] = $DB_ROW['matiere_id'];	// sert pour la synthèse sur une sélection d'items issus de différentes matières
+		$tab_score_a_garder[$DB_ROW['eleve_id']][$DB_ROW['item_id']] = ($DB_ROW['date_last']<$date_mysql_debut) ? FALSE : TRUE ;
+	}
+
+	$date_mysql_start = ($retroactif=='non') ? $date_mysql_debut : FALSE ; // En 'auto' il faut faire le tri après.
+	$DB_TAB = DB_STRUCTURE_BILAN::DB_lister_result_eleves_items($liste_eleve , $liste_item , $matiere_id , $date_mysql_start , $date_mysql_fin , $_SESSION['USER_PROFIL']);
+	foreach($DB_TAB as $DB_ROW)
+	{
+		if($tab_score_a_garder[$DB_ROW['eleve_id']][$DB_ROW['item_id']])
+		{
+			if( ($retroactif!='auto') || $tab_item[$DB_ROW['item_id']][0]['calcul_retroactif'] || ($DB_ROW['date']>=$date_mysql_debut) )
+			{
+				$tab_eval[$DB_ROW['eleve_id']][$DB_ROW['matiere_id']][$DB_ROW['item_id']][] = array('note'=>$DB_ROW['note'],'date'=>$DB_ROW['date'],'info'=>$DB_ROW['info']);
+				$tab_matiere_for_item[$DB_ROW['item_id']] = $DB_ROW['matiere_id'];	// sert pour la synthèse sur une sélection d'items issus de différentes matières
+			}
+		}
 	}
 }
 $matiere_nb = count(array_unique($tab_matiere_for_item)); // 1 si $matiere_id >= 0 précédemment, davantage uniquement si $matiere_id = -1
@@ -319,7 +330,7 @@ foreach($tab_eleve as $key => $tab)
 			// On prend la matière 0 pour mettre les résultats toutes matières confondues
 			if($with_coef) { $tab_moyenne_scores_eleve[0][$eleve_id]   = ($tab_total[$eleve_id]['nb_coefs'])  ? round($tab_total[$eleve_id]['somme_scores_coefs']/$tab_total[$eleve_id]['nb_coefs'],0)    : FALSE ; }
 			else           { $tab_moyenne_scores_eleve[0][$eleve_id]   = ($tab_total[$eleve_id]['nb_scores']) ? round($tab_total[$eleve_id]['somme_scores_simples']/$tab_total[$eleve_id]['nb_scores'],0) : FALSE ; }
-			$tab_pourcentage_acquis_eleve[0][$eleve_id] = ($tab_total[$eleve_id]['nb_scores']) ? round( 50 * ( ($tab_total[$eleve_id]['nb_acquis']*2 + $tab_total[$eleve_id]['nb_voie_acquis']) / $tab_total[$eleve_id]['nb_scores'] ) ,0) : false ;
+			$tab_pourcentage_acquis_eleve[0][$eleve_id] = ($tab_total[$eleve_id]['nb_scores']) ? round( 50 * ( ($tab_total[$eleve_id]['nb_acquis']*2 + $tab_total[$eleve_id]['nb_voie_acquis']) / $tab_total[$eleve_id]['nb_scores'] ) ,0) : FALSE ;
 		}
 	}
 }
@@ -430,6 +441,7 @@ $affichage_checkbox = ( $type_synthese && ($_SESSION['USER_PROFIL']=='professeur
 
 if($type_individuel)
 {
+	$jour_debut_annee_scolaire = jour_debut_annee_scolaire('mysql'); // Date de fin de l'année scolaire précédente
 	if($make_html)
 	{
 		$releve_HTML_individuel  = $affichage_direct ? '' : '<style type="text/css">'.$_SESSION['CSS'].'</style>';
@@ -494,7 +506,7 @@ if($type_individuel)
 								// Pour chaque item...
 								foreach($tab_eval[$eleve_id][$matiere_id] as $item_id => $tab_devoirs)
 								{
-									extract($tab_item[$item_id][0]);	// $item_ref $item_nom $item_coef $item_cart $item_socle $item_lien $calcul_methode $calcul_limite
+									extract($tab_item[$item_id][0]);	// $item_ref $item_nom $item_coef $item_cart $item_socle $item_lien $calcul_methode $calcul_limite $calcul_retroactif
 									// cases référence et nom
 									if($aff_coef)
 									{
@@ -531,8 +543,19 @@ if($type_individuel)
 											if($i<$devoirs_nb)
 											{
 												extract($tab_devoirs[$i]);	// $note $date $info
-												if($make_html) { $releve_HTML_table_body .= '<td>'.Html::note($note,$date,$info,TRUE).'</td>'; }
-												if($make_pdf)  { $releve_PDF->afficher_note_lomer($note,$border=1,$br=0); }
+												$pdf_bg = ''; $td_class = '';
+												if($date<$jour_debut_annee_scolaire)
+												{
+													$pdf_bg = ( (!$_SESSION['USER_DALTONISME']) || ($couleur=='non') ) ? 'prev_year' : '' ;
+													$td_class = (!$_SESSION['USER_DALTONISME']) ? ' class="prev_year"' : '' ;
+												}
+												elseif($date<$date_mysql_debut)
+												{
+													$pdf_bg = ( (!$_SESSION['USER_DALTONISME']) || ($couleur=='non') ) ? 'prev_date' : '' ;
+													$td_class = (!$_SESSION['USER_DALTONISME']) ? ' class="prev_date"' : '' ;
+												}
+												if($make_html) { $releve_HTML_table_body .= '<td'.$td_class.'>'.Html::note($note,$date,$info,TRUE).'</td>'; }
+												if($make_pdf)  { $releve_PDF->afficher_note_lomer($note,$border=1,$br=0,$pdf_bg); }
 											}
 											else
 											{
@@ -544,8 +567,19 @@ if($type_individuel)
 										else
 										{
 											extract($tab_devoirs[$i+$decalage]);	// $note $date $info
-											if($make_html) { $releve_HTML_table_body .= '<td>'.Html::note($note,$date,$info,TRUE).'</td>'; }
-											if($make_pdf)  { $releve_PDF->afficher_note_lomer($note,$border=1,$br=0); }
+											$pdf_bg = ''; $td_class = '';
+											if($date<$jour_debut_annee_scolaire)
+											{
+												$pdf_bg = ( (!$_SESSION['USER_DALTONISME']) || ($couleur=='non') ) ? 'prev_year' : '' ;
+												$td_class = (!$_SESSION['USER_DALTONISME']) ? ' class="prev_year"' : '' ;
+											}
+											elseif($date<$date_mysql_debut)
+											{
+												$pdf_bg = ( (!$_SESSION['USER_DALTONISME']) || ($couleur=='non') ) ? 'prev_date' : '' ;
+												$td_class = (!$_SESSION['USER_DALTONISME']) ? ' class="prev_date"' : '' ;
+											}
+											if($make_html) { $releve_HTML_table_body .= '<td'.$td_class.'>'.Html::note($note,$date,$info,TRUE).'</td>'; }
+											if($make_pdf)  { $releve_PDF->afficher_note_lomer($note,$border=1,$br=0,$pdf_bg); }
 										}
 									}
 									// affichage du bilan de l'item
@@ -904,14 +938,14 @@ if($type_bulletin)
 		// Si cet élève a été évalué...
 		if(isset($tab_eval[$eleve_id]))
 		{
-			$note         = ($tab_moyenne_scores_eleve[$matiere_id][$eleve_id] !== false)     ? sprintf("%04.1f",$tab_moyenne_scores_eleve[$matiere_id][$eleve_id]/5)                                                           : '-' ;
-			$appreciation = ($tab_pourcentage_acquis_eleve[$matiere_id][$eleve_id] !== false) ? $tab_pourcentage_acquis_eleve[$matiere_id][$eleve_id].'% d\'items acquis ('.$tab_infos_acquis_eleve[$matiere_id][$eleve_id].')' : '-' ;
+			$note         = ($tab_moyenne_scores_eleve[$matiere_id][$eleve_id]     !== FALSE) ? sprintf("%04.1f",$tab_moyenne_scores_eleve[$matiere_id][$eleve_id]/5)                                                           : '-' ;
+			$appreciation = ($tab_pourcentage_acquis_eleve[$matiere_id][$eleve_id] !== FALSE) ? $tab_pourcentage_acquis_eleve[$matiere_id][$eleve_id].'% d\'items acquis ('.$tab_infos_acquis_eleve[$matiere_id][$eleve_id].')' : '-' ;
 			$bulletin_body     .= '<tr><th>'.html($eleve_nom.' '.$eleve_prenom).'</th><td>'.$note.'</td><td>'.$appreciation.'</td></tr>'."\r\n";
 			$note         = str_replace('.',',',$note); // Pour GEPI je remplace le point décimal par une virgule sinon le tableur convertit en date...
 			$tab_bulletin_csv_gepi['note_appreciation'] .= $eleve_id_gepi.';'.$note.';'.$appreciation."\r\n";
 			$tab_bulletin_csv_gepi['note']              .= $eleve_id_gepi.';'.$note."\r\n";
 			$tab_bulletin_csv_gepi['appreciation']      .= $eleve_id_gepi.';'.''   .';'.$appreciation."\r\n";
-			if( ($bulletin_periode) && ($tab_moyenne_scores_eleve[$matiere_id][$eleve_id] !== false) )
+			if( ($bulletin_periode) && ($tab_moyenne_scores_eleve[$matiere_id][$eleve_id] !== FALSE) )
 			{
 				$tab_bulletin_input[] = $eleve_id.'_'.($tab_moyenne_scores_eleve[$matiere_id][$eleve_id]/5);
 			}
@@ -927,7 +961,7 @@ if($type_bulletin)
 			}
 			else
 			{
-				$bulletin_matiere = Form::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_matieres_professeur($_SESSION['USER_ID']) , $select_nom='f_rubrique' , $option_first='non' , $selection=false , $optgroup='non');
+				$bulletin_matiere = Form::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_matieres_professeur($_SESSION['USER_ID']) , $select_nom='f_rubrique' , $option_first='non' , $selection=FALSE , $optgroup='non');
 			}
 			$bulletin_form = '<li><form id="form_report_bulletin"><fieldset><button id="bouton_report" type="button" class="eclair">Report forcé</button> vers le bulletin <em>SACoche</em> '.$bulletin_periode.'<input type="hidden" id="f_eleves_moyennes" name="f_eleves_moyennes" value="'.implode('x',$tab_bulletin_input).'" /> '.$bulletin_matiere.'</fieldset></form><label id="ajax_msg_report"></label></li>';
 			$bulletin_alerte = '<div class="danger">Un report forcé interrompt le report automatique des moyennes pour le bulletin et la matière concernée.</div>' ;
@@ -942,7 +976,7 @@ if($type_bulletin)
 	$bulletin_foot  = '<tfoot><tr><th>Moyenne '.$info_ponderation_complete.' sur 20</th><th>'.sprintf("%04.1f",$moyenne_moyenne_scores/5).'</th><th>'.$moyenne_pourcentage_acquis.'% d\'items acquis</th></tr></tfoot>'."\r\n";
 	$bulletin_html  = '<h1>Bilan disciplinaire</h1>';
 	$bulletin_html .= '<h2>'.html($matiere_nom.' - '.$groupe_nom).'</h2>';
-	$bulletin_html .= '<h2>Du '.$date_debut.' au '.$date_fin.$date_complement.'</h2>';
+	$bulletin_html .= '<h2>'.$texte_periode.'</h2>';
 	$bulletin_html .= '<h2>Tableau de notes sur 20</h2>';
 	$bulletin_html .= '<table id="export20" class="hsort">'."\r\n".$bulletin_head.$bulletin_foot.$bulletin_body.'</table>'."\r\n";
 	$bulletin_html .= '<script type="text/javascript">$("#export20").tablesorter({ headers:{2:{sorter:false}} });</script>';

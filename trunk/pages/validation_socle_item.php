@@ -70,8 +70,8 @@ $tab_matieres = DB_STRUCTURE_COMMUN::DB_OPT_matieres_etabl();
 $of_p = (count($tab_paliers)<2) ? 'non' : 'oui' ;
 
 $select_palier  = Form::afficher_select($tab_paliers  , $select_nom='f_palier' , $option_first=$of_p , $selection=Form::$tab_choix['palier_id'] , $optgroup='non');
-$select_groupe  = Form::afficher_select($tab_groupes  , $select_nom='f_groupe' , $option_first=$of_g , $selection=false                               , $optgroup=$og_g);
-$select_matiere = Form::afficher_select($tab_matieres , $select_nom=false      , $option_first='non' , $selection=true                                , $optgroup='non');
+$select_groupe  = Form::afficher_select($tab_groupes  , $select_nom='f_groupe' , $option_first=$of_g , $selection=FALSE                         , $optgroup=$og_g);
+$select_matiere = Form::afficher_select($tab_matieres , $select_nom=FALSE      , $option_first='non' , $selection=TRUE                          , $optgroup='non');
 ?>
 
 <script type="text/javascript">

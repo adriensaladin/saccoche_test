@@ -35,19 +35,20 @@ Form::load_choix_memo();
 $check_synthese_predefini = (Form::$tab_choix['mode_synthese']=='predefini') ? ' checked' : '' ;
 $check_synthese_domaine   = (Form::$tab_choix['mode_synthese']=='domaine')   ? ' checked' : '' ;
 $check_synthese_theme     = (Form::$tab_choix['mode_synthese']=='theme')     ? ' checked' : '' ;
-$check_retro_oui          = (Form::$tab_choix['retroactif']=='oui') ? ' checked' : '' ;
-$check_retro_non          = (Form::$tab_choix['retroactif']=='non') ? ' checked' : '' ;
-$check_only_socle         = (Form::$tab_choix['only_socle'])        ? ' checked' : '' ;
-$check_only_niveau        = (Form::$tab_choix['only_niveau'])       ? ' checked' : '' ;
-$check_aff_coef           = (Form::$tab_choix['aff_coef'])          ? ' checked' : '' ;
-$check_aff_socle          = (Form::$tab_choix['aff_socle'])         ? ' checked' : '' ;
-$check_aff_lien           = (Form::$tab_choix['aff_lien'])          ? ' checked' : '' ;
-$check_aff_start          = (Form::$tab_choix['aff_start'])         ? ' checked' : '' ;
+$check_retro_auto         = (Form::$tab_choix['retroactif']=='auto')         ? ' checked' : '' ;
+$check_retro_non          = (Form::$tab_choix['retroactif']=='non')          ? ' checked' : '' ;
+$check_retro_oui          = (Form::$tab_choix['retroactif']=='oui')          ? ' checked' : '' ;
+$check_only_socle         = (Form::$tab_choix['only_socle'])                 ? ' checked' : '' ;
+$check_only_niveau        = (Form::$tab_choix['only_niveau'])                ? ' checked' : '' ;
+$check_aff_coef           = (Form::$tab_choix['aff_coef'])                   ? ' checked' : '' ;
+$check_aff_socle          = (Form::$tab_choix['aff_socle'])                  ? ' checked' : '' ;
+$check_aff_lien           = (Form::$tab_choix['aff_lien'])                   ? ' checked' : '' ;
+$check_aff_start          = (Form::$tab_choix['aff_start'])                  ? ' checked' : '' ;
 if($_SESSION['USER_PROFIL']=='directeur')
 {
 	$tab_groupes  = DB_STRUCTURE_COMMUN::DB_OPT_classes_groupes_etabl();
 	$tab_matieres = 'Choisir d\'abord un groupe ci-dessus...'; // maj en ajax suivant le choix du groupe
-	$of_g = 'oui'; $sel_g = false; $class_form_eleve = 'show'; $class_form_periode = 'hide'; $class_form_option = 'hide';
+	$of_g = 'oui'; $sel_g = FALSE; $class_form_eleve = 'show'; $class_form_periode = 'hide'; $class_form_option = 'hide';
 	$multiple_eleve = ' multiple size="9"';
 	$select_eleves = '<option></option>'; // maj en ajax suivant le choix du groupe
 }
@@ -55,7 +56,7 @@ if($_SESSION['USER_PROFIL']=='professeur')
 {
 	$tab_groupes  = DB_STRUCTURE_COMMUN::DB_OPT_groupes_professeur($_SESSION['USER_ID']);
 	$tab_matieres = DB_STRUCTURE_COMMUN::DB_OPT_matieres_professeur($_SESSION['USER_ID']);
-	$of_g = 'oui'; $sel_g = false; $class_form_eleve = 'show'; $class_form_periode = 'hide'; $class_form_option = 'hide';
+	$of_g = 'oui'; $sel_g = FALSE; $class_form_eleve = 'show'; $class_form_periode = 'hide'; $class_form_option = 'hide';
 	$multiple_eleve = ' multiple size="9"';
 	$select_eleves = '<option></option>'; // maj en ajax suivant le choix du groupe
 }
@@ -63,7 +64,7 @@ if( ($_SESSION['USER_PROFIL']=='parent') && ($_SESSION['NB_ENFANTS']!=1) )
 {
 	$tab_groupes  = $_SESSION['OPT_PARENT_CLASSES']; Form::$tab_select_optgroup = array('classe'=>'Classes');
 	$tab_matieres = DB_STRUCTURE_COMMUN::DB_OPT_matieres_etabl();
-	$of_g = 'oui'; $sel_g = false; $class_form_eleve = 'show'; $class_form_periode = 'hide'; $class_form_option = 'hide';
+	$of_g = 'oui'; $sel_g = FALSE; $class_form_eleve = 'show'; $class_form_periode = 'hide'; $class_form_option = 'hide';
 	$multiple_eleve = ''; // volontaire
 	$select_eleves = '<option></option>'; // maj en ajax suivant le choix du groupe
 }
@@ -71,7 +72,7 @@ if( ($_SESSION['USER_PROFIL']=='parent') && ($_SESSION['NB_ENFANTS']==1) )
 {
 	$tab_groupes  = array(0=>array('valeur'=>$_SESSION['ELEVE_CLASSE_ID'],'texte'=>$_SESSION['ELEVE_CLASSE_NOM'],'optgroup'=>'classe')); Form::$tab_select_optgroup = array('classe'=>'Classes');
 	$tab_matieres = DB_STRUCTURE_COMMUN::DB_OPT_matieres_eleve($_SESSION['OPT_PARENT_ENFANTS'][0]['valeur']);
-	$of_g = 'non'; $sel_g = true; $class_form_eleve = 'hide'; $class_form_periode = 'show'; $class_form_option = 'hide';
+	$of_g = 'non'; $sel_g = TRUE; $class_form_eleve = 'hide'; $class_form_periode = 'show'; $class_form_option = 'hide';
 	$multiple_eleve = '';
 	$select_eleves = '<option value="'.$_SESSION['OPT_PARENT_ENFANTS'][0]['valeur'].'" selected>'.html($_SESSION['OPT_PARENT_ENFANTS'][0]['texte']).'</option>';
 }
@@ -79,23 +80,18 @@ if($_SESSION['USER_PROFIL']=='eleve')
 {
 	$tab_groupes  = array(0=>array('valeur'=>$_SESSION['ELEVE_CLASSE_ID'],'texte'=>$_SESSION['ELEVE_CLASSE_NOM'],'optgroup'=>'classe')); Form::$tab_select_optgroup = array('classe'=>'Classes');
 	$tab_matieres = DB_STRUCTURE_COMMUN::DB_OPT_matieres_eleve($_SESSION['USER_ID']);
-	$of_g = 'non'; $sel_g = true;  $class_form_eleve = 'hide'; $class_form_periode = 'show'; $class_form_option = 'show';
+	$of_g = 'non'; $sel_g = TRUE;  $class_form_eleve = 'hide'; $class_form_periode = 'show'; $class_form_option = 'show';
 	$multiple_eleve = '';
 	$select_eleves = '<option value="'.$_SESSION['USER_ID'].'" selected>'.html($_SESSION['USER_NOM'].' '.$_SESSION['USER_PRENOM']).'</option>';
 }
 $tab_periodes = DB_STRUCTURE_COMMUN::DB_OPT_periodes_etabl();
 
-$select_groupe    = Form::afficher_select($tab_groupes                      , $select_nom='f_groupe'    , $option_first=$of_g , $selection=$sel_g                               , $optgroup='oui'); // optgroup à oui y compris pour les élèves (formulaire invisible) car recherche du type de groupe dans le js
-$select_matiere   = Form::afficher_select($tab_matieres                     , $select_nom='f_matiere'   , $option_first='oui' , $selection=Form::$tab_choix['matiere_id'] , $optgroup='non');
-$select_periode   = Form::afficher_select($tab_periodes                     , $select_nom='f_periode'   , $option_first='val' , $selection=false                                , $optgroup='non');
+$select_groupe    = Form::afficher_select($tab_groupes                , $select_nom='f_groupe'    , $option_first=$of_g , $selection=$sel_g                         , $optgroup='oui'); // optgroup à oui y compris pour les élèves (formulaire invisible) car recherche du type de groupe dans le js
+$select_matiere   = Form::afficher_select($tab_matieres               , $select_nom='f_matiere'   , $option_first='oui' , $selection=Form::$tab_choix['matiere_id'] , $optgroup='non');
+$select_periode   = Form::afficher_select($tab_periodes               , $select_nom='f_periode'   , $option_first='val' , $selection=FALSE                          , $optgroup='non');
 $select_marge_min = Form::afficher_select(Form::$tab_select_marge_min , $select_nom='f_marge_min' , $option_first='non' , $selection=Form::$tab_choix['marge_min']  , $optgroup='non');
 $select_couleur   = Form::afficher_select(Form::$tab_select_couleur   , $select_nom='f_couleur'   , $option_first='non' , $selection=Form::$tab_choix['couleur']    , $optgroup='non');
 $select_legende   = Form::afficher_select(Form::$tab_select_legende   , $select_nom='f_legende'   , $option_first='non' , $selection=Form::$tab_choix['legende']    , $optgroup='non');
-
-// Dates par défaut de début et de fin
-$annee_debut = (date('n')>8) ? date('Y') : date('Y')-1 ;
-$date_debut = '01/09/'.$annee_debut;
-$date_fin   = TODAY_FR;
 
 // Fabrication du tableau javascript "tab_groupe_periode" pour les jointures groupes/périodes
 $tab_groupe_periode_js = 'var tab_groupe_periode = new Array();';
@@ -159,10 +155,13 @@ echo ($nb_inconnu) ? '<label class="alerte">Il y a '.$nb_inconnu.' référentiel
 	<p id="zone_periodes" class="<?php echo $class_form_periode ?>">
 		<label class="tab" for="f_periode"><img alt="" src="./_img/bulle_aide.png" title="Les items pris en compte sont ceux qui sont évalués<br />au moins une fois sur cette période." /> Période :</label><?php echo $select_periode ?>
 		<span id="dates_perso" class="show">
-			du <input id="f_date_debut" name="f_date_debut" size="9" type="text" value="<?php echo $date_debut ?>" /><q class="date_calendrier" title="Cliquez sur cette image pour importer une date depuis un calendrier !"></q>
-			au <input id="f_date_fin" name="f_date_fin" size="9" type="text" value="<?php echo $date_fin ?>" /><q class="date_calendrier" title="Cliquez sur cette image pour importer une date depuis un calendrier !"></q>
+			du <input id="f_date_debut" name="f_date_debut" size="9" type="text" value="<?php echo jour_debut_annee_scolaire('french') ?>" /><q class="date_calendrier" title="Cliquez sur cette image pour importer une date depuis un calendrier !"></q>
+			au <input id="f_date_fin" name="f_date_fin" size="9" type="text" value="<?php echo TODAY_FR ?>" /><q class="date_calendrier" title="Cliquez sur cette image pour importer une date depuis un calendrier !"></q>
 		</span><br />
-		<span class="radio"><img alt="" src="./_img/bulle_aide.png" title="Le bilan peut être établi uniquement sur la période considérée<br />ou en tenant compte d'évaluations antérieures des items concernés." /> Prise en compte des évaluations antérieures :</span><label for="f_retro_oui"><input type="radio" id="f_retro_oui" name="f_retroactif" value="oui"<?php echo $check_retro_oui ?> /> oui</label>&nbsp;&nbsp;&nbsp;&nbsp;<label for="f_retro_non"><input type="radio" id="f_retro_non" name="f_retroactif" value="non"<?php echo $check_retro_non ?> /> non</label>
+		<span class="radio"><img alt="" src="./_img/bulle_aide.png" title="Le bilan peut être établi uniquement sur la période considérée<br />ou en tenant compte d'évaluations antérieures des items concernés.<br />En automatique, les paramètres enregistrés pour chaque référentiel s'appliquent." /> Prise en compte des évaluations antérieures :</span>
+			<label for="f_retro_auto"><input type="radio" id="f_retro_auto" name="f_retroactif" value="auto"<?php echo $check_retro_auto ?> /> automatique</label>&nbsp;&nbsp;&nbsp;
+			<label for="f_retro_non"><input type="radio" id="f_retro_non" name="f_retroactif" value="non"<?php echo $check_retro_non ?> /> non</label>&nbsp;&nbsp;&nbsp;
+			<label for="f_retro_oui"><input type="radio" id="f_retro_oui" name="f_retroactif" value="oui"<?php echo $check_retro_oui ?> /> oui</label>
 	</p>
 	<p>
 		<label class="tab" for="f_matiere">Matière :</label><?php echo $select_matiere ?><input type="hidden" id="f_matiere_nom" name="f_matiere_nom" value="" />
@@ -175,8 +174,8 @@ echo ($nb_inconnu) ? '<label class="alerte">Il y a '.$nb_inconnu.' référentiel
 			<span class="tab"></span><a href="#" class="puce_moins toggle">Afficher moins d'options</a><br />
 			<label class="tab"> Mode de synthèse :</label><label for="f_mode_synthese_predefini"><input type="radio" id="f_mode_synthese_predefini" name="f_mode_synthese" value="predefini"<?php echo $check_synthese_predefini ?> /> tel que prédéfini</label>&nbsp;&nbsp;&nbsp;&nbsp;<label for="f_mode_synthese_domaine"><input type="radio" id="f_mode_synthese_domaine" name="f_mode_synthese" value="domaine"<?php echo $check_synthese_domaine ?> /> forcé par domaines</label>&nbsp;&nbsp;&nbsp;&nbsp;<label for="f_mode_synthese_theme"><input type="radio" id="f_mode_synthese_theme" name="f_mode_synthese" value="theme"<?php echo $check_synthese_theme ?> /> forcé par thèmes</label><br />
 			<label class="tab"><img alt="" src="./_img/bulle_aide.png" title="Pour le format html, le détail des items peut être affiché." /> Indications :</label><label for="f_coef"><input type="checkbox" id="f_coef" name="f_coef" value="1"<?php echo $check_aff_coef ?> /> Coefficients</label>&nbsp;&nbsp;&nbsp;<label for="f_socle"><input type="checkbox" id="f_socle" name="f_socle" value="1"<?php echo $check_aff_socle ?> /> Appartenance au socle</label>&nbsp;&nbsp;&nbsp;<label for="f_lien"><input type="checkbox" id="f_lien" name="f_lien" value="1"<?php echo $check_aff_lien ?> /> Liens (ressources pour travailler)</label>&nbsp;&nbsp;&nbsp;<label for="f_start"><input type="checkbox" id="f_start" name="f_start" value="1"<?php echo $check_aff_start ?> /> Détails affichés par défaut</label><br />
-			<label class="tab">Restrictions :</label><input type="checkbox" id="f_restriction_socle" name="f_restriction_socle" value="1"<?php echo $check_only_socle ?> /> <label for="f_restriction_socle">Uniquement les items liés du socle</label><br />
-			<label class="tab"></label><input type="checkbox" id="f_restriction_niveau" name="f_restriction_niveau" value="1"<?php echo $check_only_niveau ?> /> <label for="f_restriction_niveau">Utiliser uniquement les items du niveau <em id="niveau_nom"></em></label><input type="hidden" id="f_niveau" name="f_niveau" value="" /><br />
+			<label class="tab">Restrictions :</label><label for="f_restriction_socle"><input type="checkbox" id="f_restriction_socle" name="f_restriction_socle" value="1"<?php echo $check_only_socle ?> /> Uniquement les items liés du socle</label><br />
+			<label class="tab"></label><label for="f_restriction_niveau"><input type="checkbox" id="f_restriction_niveau" name="f_restriction_niveau" value="1"<?php echo $check_only_niveau ?> /> Utiliser uniquement les items du niveau <em id="niveau_nom"></em></label><input type="hidden" id="f_niveau" name="f_niveau" value="" /><br />
 			<label class="tab"><img alt="" src="./_img/bulle_aide.png" title="Pour le format pdf." /> Impression :</label><?php echo $select_couleur ?> <?php echo $select_legende ?> <?php echo $select_marge_min ?>
 		</div>
 	</div>

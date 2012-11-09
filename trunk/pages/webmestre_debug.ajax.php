@@ -84,7 +84,7 @@ if( ($action=='modifier_chemin_phpCAS') && ($chemin_logs) )
 	}
 	// ok
 	unlink($chemin_logs.'debugcas_test_ecriture.txt');
-	fabriquer_fichier_hebergeur_info( array('CHEMIN_LOGS_PHPCAS'=>$chemin_logs) );
+	FileSystem::fabriquer_fichier_hebergeur_info( array('CHEMIN_LOGS_PHPCAS'=>$chemin_logs) );
 	exit('ok');
 }
 

@@ -122,7 +122,7 @@ if( ($action=='delete_logo') && $logo )
 	// Si on supprime l'image actuellement utilisée, alors la retirer du fichier
 	if($logo==HEBERGEUR_LOGO)
 	{
-		fabriquer_fichier_hebergeur_info( array('HEBERGEUR_LOGO'=>'') );
+		FileSystem::fabriquer_fichier_hebergeur_info( array('HEBERGEUR_LOGO'=>'') );
 	}
 	exit('ok');
 }
@@ -139,7 +139,7 @@ if( ($action=='enregistrer') && $denomination && $nom && $prenom && $courriel )
 	{
 		exit('Erreur avec le domaine '.$mail_domaine.' !');
 	}
-	fabriquer_fichier_hebergeur_info( array('HEBERGEUR_DENOMINATION'=>$denomination,'HEBERGEUR_UAI'=>$uai,'HEBERGEUR_ADRESSE_SITE'=>$adresse_site,'HEBERGEUR_LOGO'=>$logo,'CNIL_NUMERO'=>$cnil_numero,'CNIL_DATE_ENGAGEMENT'=>$cnil_date_engagement,'CNIL_DATE_RECEPISSE'=>$cnil_date_recepisse,'WEBMESTRE_NOM'=>$nom,'WEBMESTRE_PRENOM'=>$prenom,'WEBMESTRE_COURRIEL'=>$courriel) );
+	FileSystem::fabriquer_fichier_hebergeur_info( array('HEBERGEUR_DENOMINATION'=>$denomination,'HEBERGEUR_UAI'=>$uai,'HEBERGEUR_ADRESSE_SITE'=>$adresse_site,'HEBERGEUR_LOGO'=>$logo,'CNIL_NUMERO'=>$cnil_numero,'CNIL_DATE_ENGAGEMENT'=>$cnil_date_engagement,'CNIL_DATE_RECEPISSE'=>$cnil_date_recepisse,'WEBMESTRE_NOM'=>$nom,'WEBMESTRE_PRENOM'=>$prenom,'WEBMESTRE_COURRIEL'=>$courriel) );
 	if(HEBERGEUR_INSTALLATION=='mono-structure')
 	{
 		// Personnaliser certains paramètres de la structure (pour une installation de type multi-structures, ça se fait à la page de gestion des établissements)

@@ -45,10 +45,10 @@ $(document).ready
 			function()
 			{
 				var type = $(this).val();
-				if(type=='listing_users')                                       {requis='groupe';  $('#div_groupe').slideDown();}  else {$('#div_groupe').slideUp();}
-				if( (type=='listing_matiere') || (type=='arbre_matiere') )      {requis='matiere'; $('#div_matiere').slideDown();} else {$('#div_matiere').slideUp();}
-				if( (type=='arbre_socle') || (type=='jointure_socle_matiere') ) {requis='palier';  $('#div_palier').slideDown();}  else {$('#div_palier').slideUp();}
-				if(type=='')                                                    {requis='';        $('#p_submit').hide(0);}        else {$('#p_submit').show(0);}
+				if( (type=='listing_eleves') || (type.substring(0,6)=='infos_') ) {requis='groupe';  $('#div_groupe').slideDown();}  else {$('#div_groupe').slideUp();}
+				if( (type=='listing_matiere') || (type=='arbre_matiere') )        {requis='matiere'; $('#div_matiere').slideDown();} else {$('#div_matiere').slideUp();}
+				if( (type=='arbre_socle') || (type=='jointure_socle_matiere') )   {requis='palier';  $('#div_palier').slideDown();}  else {$('#div_palier').slideUp();}
+				if(type=='')                                                      {requis='';        $('#p_submit').hide(0);}        else {$('#p_submit').show(0);}
 				$('#bilan').html("&nbsp;");
 			}
 		);
@@ -74,7 +74,7 @@ $(document).ready
 				messages :
 				{
 					f_type :    { required:"type manquant" },
-					f_groupe :  { required:"classe / groupe manquant" },
+					f_groupe :  { required:"regroupement manquant" },
 					f_matiere : { required:"matière manquante" },
 					f_palier :  { required:"palier manquant" }
 				},
@@ -105,24 +105,36 @@ $(document).ready
 			function()
 			{
 				// récupération du type et du nom du groupe
-				val = $("#f_groupe").val();
-				if(val)
+				var groupe_val = $("#f_groupe").val();
+				if(groupe_val)
 				{
-					type = $("#f_groupe option:selected").parent().attr('label');
-					$('#f_groupe_type').val( type );
-					nom  = $("#f_groupe option:selected").text();
-					$('#f_groupe_nom').val( nom );
+					// Pour un directeur ou un administrateur, groupe_val est de la forme d3 / n2 / c51 / g44
+					if(isNaN(parseInt(groupe_val,10)))
+					{
+						groupe_type = groupe_val.substring(0,1);
+						groupe_id   = groupe_val.substring(1);
+					}
+					// Pour un professeur, groupe_val est un entier, et il faut récupérer la 1ère lettre du label parent
+					else
+					{
+						groupe_type = $("#f_groupe option:selected").parent().attr('label').substring(0,1).toLowerCase();
+						groupe_id   = groupe_val;
+					}
+					groupe_nom = $("#f_groupe option:selected").text();
+					$('#f_groupe_type').val( groupe_type );
+					$('#f_groupe_nom').val( groupe_nom );
+					$('#f_groupe_id').val( groupe_id );
 				}
 				// récupération du nom de la matière
-				val = $("#f_matiere").val();
-				if(val)
+				var matiere_val = $("#f_matiere").val();
+				if(matiere_val)
 				{
 					nom  = $("#f_matiere option:selected").text();
 					$('#f_matiere_nom').val( nom );
 				}
 				// récupération du nom du palier
-				val = $("#f_palier").val();
-				if(val)
+				var palier_val = $("#f_palier").val();
+				if(palier_val)
 				{
 					nom  = $("#f_palier option:selected").text();
 					$('#f_palier_nom').val( nom );

@@ -164,7 +164,7 @@ function sauvegarder_tables_base_etablissement($dossier_temp,$nb_lignes_maxi)
  * Vérifie les noms des fichiers et renvoie la taille maximale d'un fichier.
  *
  * @param string $dossier
- * @return int
+ * @return int|FALSE
  */
 
 function verifier_dossier_decompression_sauvegarde($dossier)
@@ -177,7 +177,7 @@ function verifier_dossier_decompression_sauvegarde($dossier)
 		$extension = substr($fichier_nom,-3);
 		if( ($prefixe!='dump_sacoche_') || ($extension!='sql') )
 		{
-			return false;
+			return FALSE;
 		}
 		$fichier_taille_maximale = max( $fichier_taille_maximale , filesize($dossier.$fichier_nom) );
 	}

@@ -36,6 +36,7 @@ $nb_demandes    = (isset($_POST['nb_demandes']))    ? Clean::entier($_POST['nb_d
 $partage        = (isset($_POST['partage']))        ? Clean::texte($_POST['partage'])         : '';	// Changer l'état de partage
 $methode        = (isset($_POST['methode']))        ? Clean::texte($_POST['methode'])         : '';	// Changer le mode de calcul
 $limite         = (isset($_POST['limite']))         ? Clean::entier($_POST['limite'])         : -1;	// Changer le nb d'items pris en compte
+$retroactif     = (isset($_POST['retroactif']))     ? Clean::texte($_POST['retroactif'])      : '';	// Changer le nb d'items pris en compte
 $referentiel_id = (isset($_POST['referentiel_id'])) ? Clean::entier($_POST['referentiel_id']) : -1;	// Référence du référentiel importé (0 si vierge), ou référence du référentiel à consulter
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -54,7 +55,7 @@ if( ($action=='NbDemandes') && $matiere_id && ($nb_demandes!=-1) && ($nb_demande
 
 if($action=='Afficher_structures') // La vérification concernant le nombre de contraintes s'effectue après
 {
-	exit( afficher_formulaire_structures_communautaires($_SESSION['SESAMATH_ID'],$_SESSION['SESAMATH_KEY']) );
+	exit( ServeurCommunautaire::afficher_formulaire_structures_communautaires($_SESSION['SESAMATH_ID'],$_SESSION['SESAMATH_KEY']) );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -63,7 +64,7 @@ if($action=='Afficher_structures') // La vérification concernant le nombre de c
 
 if($action=='Lister_referentiels') // La vérification concernant le nombre de contraintes s'effectue après
 {
-	exit( afficher_liste_referentiels($_SESSION['SESAMATH_ID'],$_SESSION['SESAMATH_KEY'],$matiere_id,$niveau_id,$structure_id) );
+	exit( ServeurCommunautaire::afficher_liste_referentiels($_SESSION['SESAMATH_ID'],$_SESSION['SESAMATH_KEY'],$matiere_id,$niveau_id,$structure_id) );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -72,7 +73,7 @@ if($action=='Lister_referentiels') // La vérification concernant le nombre de c
 
 if( ($action=='Voir_referentiel') && $referentiel_id )
 {
-	exit( afficher_contenu_referentiel($_SESSION['SESAMATH_ID'],$_SESSION['SESAMATH_KEY'],$referentiel_id) );
+	exit( ServeurCommunautaire::afficher_contenu_referentiel($_SESSION['SESAMATH_ID'],$_SESSION['SESAMATH_KEY'],$referentiel_id) );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -98,6 +99,7 @@ $tab_limites['classique']    = array(1,2,3,4,5,6,7,8,9,10,15,20,30,40,50,0);
 $tab_limites['bestof1']      = array(1,2,3,4,5,6,7,8,9,10,15,20,30,40,50,0);
 $tab_limites['bestof2']      = array(  2,3,4,5,6,7,8,9,10,15,20,30,40,50,0);
 $tab_limites['bestof3']      = array(    3,4,5,6,7,8,9,10,15,20,30,40,50,0);
+$tab_retroactifs = array('non','oui');
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Affichage du détail d'un référentiel pour une matière et un niveau donnés
@@ -105,8 +107,8 @@ $tab_limites['bestof3']      = array(    3,4,5,6,7,8,9,10,15,20,30,40,50,0);
 
 if( ($action=='Voir') && $matiere_id && $niveau_id )
 {
-	$DB_TAB = DB_STRUCTURE_COMMUN::DB_recuperer_arborescence($prof_id=0,$matiere_id,$niveau_id,$only_socle=false,$only_item=false,$socle_nom=true);
-	exit( afficher_arborescence_matiere_from_SQL($DB_TAB,$dynamique=false,$reference=false,$aff_coef=true,$aff_cart=true,$aff_socle='image',$aff_lien='image',$aff_input=false) );
+	$DB_TAB = DB_STRUCTURE_COMMUN::DB_recuperer_arborescence( 0 /*prof_id*/ , $matiere_id , $niveau_id , FALSE /*only_socle*/ , FALSE /*only_item*/ , TRUE /*socle_nom*/ );
+	exit( Html::afficher_arborescence_matiere_from_SQL( $DB_TAB , FALSE /*dynamique*/ , FALSE /*reference*/ , TRUE /*aff_coef*/ , TRUE /*aff_cart*/ , 'image' /*aff_socle*/ , 'image' /*aff_lien*/ , FALSE /*aff_input*/ ) );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -122,14 +124,14 @@ if( ($action=='Partager') && $matiere_id && $niveau_id && ($perso==0) && in_arra
 	// Envoyer le référentiel (éventuellement vide pour l'effacer) vers le serveur de partage, sauf si passage non<->bof
 	if($partage=='oui')
 	{
-		$DB_TAB = DB_STRUCTURE_COMMUN::DB_recuperer_arborescence(0,$matiere_id,$niveau_id,$only_socle=false,$only_item=false,$socle_nom=false);
-		$arbreXML = exporter_arborescence_to_XML($DB_TAB);
-		$reponse = envoyer_arborescence_XML($_SESSION['SESAMATH_ID'],$_SESSION['SESAMATH_KEY'],$matiere_id,$niveau_id,$arbreXML);
+		$DB_TAB = DB_STRUCTURE_COMMUN::DB_recuperer_arborescence( 0 /*prof_id*/ , $matiere_id , $niveau_id , FALSE /*only_socle*/ , FALSE /*only_item*/ , FALSE /*socle_nom*/ );
+		$arbreXML = ServeurCommunautaire::exporter_arborescence_to_XML($DB_TAB);
+		$reponse  = ServeurCommunautaire::envoyer_arborescence_XML($_SESSION['SESAMATH_ID'],$_SESSION['SESAMATH_KEY'],$matiere_id,$niveau_id,$arbreXML);
 	}
 	else
 	{
 		$partage_avant = DB_STRUCTURE_REFERENTIEL::DB_recuperer_referentiel_partage_etat($matiere_id,$niveau_id);
-		$reponse = ($partage_avant=='oui') ? envoyer_arborescence_XML($_SESSION['SESAMATH_ID'],$_SESSION['SESAMATH_KEY'],$matiere_id,$niveau_id,'') : 'ok' ;
+		$reponse = ($partage_avant=='oui') ? ServeurCommunautaire::envoyer_arborescence_XML($_SESSION['SESAMATH_ID'],$_SESSION['SESAMATH_KEY'],$matiere_id,$niveau_id,'') : 'ok' ;
 	}
 	// Analyse de la réponse retournée par le serveur de partage
 	if($reponse!='ok')
@@ -154,9 +156,9 @@ if( ($action=='Envoyer') && $matiere_id && $niveau_id && ($perso==0) )
 		exit('Pour échanger avec le serveur communautaire, un administrateur doit identifier l\'établissement dans la base Sésamath.');
 	}
 	// Envoyer le référentiel vers le serveur de partage
-	$DB_TAB = DB_STRUCTURE_COMMUN::DB_recuperer_arborescence(0,$matiere_id,$niveau_id,$only_socle=false,$only_item=false,$socle_nom=false);
-	$arbreXML = exporter_arborescence_to_XML($DB_TAB);
-	$reponse = envoyer_arborescence_XML($_SESSION['SESAMATH_ID'],$_SESSION['SESAMATH_KEY'],$matiere_id,$niveau_id,$arbreXML);
+	$DB_TAB = DB_STRUCTURE_COMMUN::DB_recuperer_arborescence( 0 /*prof_id*/ , $matiere_id , $niveau_id , FALSE /*only_socle*/ , FALSE /*only_item*/ , FALSE /*socle_nom*/ );
+	$arbreXML = ServeurCommunautaire::exporter_arborescence_to_XML($DB_TAB);
+	$reponse  = ServeurCommunautaire::envoyer_arborescence_XML($_SESSION['SESAMATH_ID'],$_SESSION['SESAMATH_KEY'],$matiere_id,$niveau_id,$arbreXML);
 	// Analyse de la réponse retournée par le serveur de partage
 	if($reponse!='ok')
 	{
@@ -181,7 +183,7 @@ if( ($action=='Retirer') && $matiere_id && $niveau_id && in_array($partage,$tab_
 		{
 			exit('Pour échanger avec le serveur communautaire, un administrateur doit identifier l\'établissement dans la base Sésamath.');
 		}
-		$reponse = envoyer_arborescence_XML($_SESSION['SESAMATH_ID'],$_SESSION['SESAMATH_KEY'],$matiere_id,$niveau_id,'');
+		$reponse = ServeurCommunautaire::envoyer_arborescence_XML($_SESSION['SESAMATH_ID'],$_SESSION['SESAMATH_KEY'],$matiere_id,$niveau_id,'');
 		if($reponse!='ok')
 		{
 			exit($reponse);
@@ -197,31 +199,32 @@ if( ($action=='Retirer') && $matiere_id && $niveau_id && in_array($partage,$tab_
 // Modifier le mode de calcul d'un référentiel
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-if( ($action=='Calculer') && $matiere_id && $niveau_id && in_array($methode,$tab_methodes) && in_array($limite,$tab_limites[$methode]) )
+if( ($action=='Calculer') && $matiere_id && $niveau_id && in_array($methode,$tab_methodes) && in_array($limite,$tab_limites[$methode]) && in_array($retroactif,$tab_retroactifs) )
 {
-	DB_STRUCTURE_REFERENTIEL::DB_modifier_referentiel( $matiere_id , $niveau_id , array(':calcul_methode'=>$methode,':calcul_limite'=>$limite) );
+	DB_STRUCTURE_REFERENTIEL::DB_modifier_referentiel( $matiere_id , $niveau_id , array(':calcul_methode'=>$methode,':calcul_limite'=>$limite,':calcul_retroactif'=>$retroactif) );
+	$texte_retroactif = ($retroactif=='non') ? '(sur la période)' : '(rétroactivement)' ;
 	if($limite==1)	// si une seule saisie prise en compte
 	{
-		$retour = 'Seule la dernière saisie compte.';
+		$retour = 'Seule la dernière saisie compte '.$texte_retroactif.'.';
 	}
 	elseif($methode=='classique')	// si moyenne classique
 	{
-		$retour = ($limite==0) ? 'Moyenne de toutes les saisies.' : 'Moyenne des '.$limite.' dernières saisies.';
+		$retour = ($limite==0) ? 'Moyenne de toutes les saisies '.$texte_retroactif.'.' : 'Moyenne des '.$limite.' dernières saisies '.$texte_retroactif.'.';
 	}
 	elseif(in_array($methode,array('geometrique','arithmetique')))	// si moyenne geometrique | arithmetique
 	{
 		$seize = (($methode=='geometrique')&&($limite==5)) ? 1 : 0 ;
 		$coefs = ($methode=='arithmetique') ? substr('1/2/3/4/5/6/7/8/9/',0,2*$limite-19) : substr('1/2/4/8/16/',0,2*$limite-12+$seize) ;
-		$retour = 'Les '.$limite.' dernières saisies &times;'.$coefs.'.';
+		$retour = 'Les '.$limite.' dernières saisies &times;'.$coefs.' '.$texte_retroactif.'.';
 	}
 	elseif($methode=='bestof1')	// si meilleure note
 	{
-		$retour = ($limite==0) ? 'Seule la meilleure saisie compte.' : 'Meilleure des '.$limite.' dernières saisies.';
+		$retour = ($limite==0) ? 'Seule la meilleure saisie compte '.$texte_retroactif.'.' : 'Meilleure des '.$limite.' dernières saisies '.$texte_retroactif.'.';
 	}
 	elseif(in_array($methode,array('bestof2','bestof3')))	// si 2 | 3 meilleures notes
 	{
 		$nb_best = (int)substr($methode,-1);
-		$retour = ($limite==0) ? 'Moyenne des '.$nb_best.' meilleures saisies.' : 'Moyenne des '.$nb_best.' meilleures saisies parmi les '.$limite.' dernières.';
+		$retour = ($limite==0) ? 'Moyenne des '.$nb_best.' meilleures saisies '.$texte_retroactif.'.' : 'Moyenne des '.$nb_best.' meilleures saisies parmi les '.$limite.' dernières '.$texte_retroactif.'.';
 	}
 	exit('ok'.$retour);
 }
@@ -251,13 +254,13 @@ if( ($action=='Ajouter') && $matiere_id && $niveau_id )
 			exit('Pour échanger avec le serveur communautaire, un administrateur doit identifier l\'établissement dans la base Sésamath.');
 		}
 		// Récupérer le référentiel
-		$arbreXML = recuperer_arborescence_XML($_SESSION['SESAMATH_ID'],$_SESSION['SESAMATH_KEY'],$referentiel_id);
+		$arbreXML = ServeurCommunautaire::recuperer_arborescence_XML($_SESSION['SESAMATH_ID'],$_SESSION['SESAMATH_KEY'],$referentiel_id);
 		if(mb_substr($arbreXML,0,6)=='Erreur')
 		{
 			exit($arbreXML);
 		}
 		// L'analyser
-		$test_XML_valide = verifier_arborescence_XML($arbreXML);
+		$test_XML_valide = ServeurCommunautaire::verifier_arborescence_XML($arbreXML);
 		if($test_XML_valide!='ok')
 		{
 			exit($test_XML_valide);

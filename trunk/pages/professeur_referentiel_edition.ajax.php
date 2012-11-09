@@ -66,7 +66,7 @@ if( ($action=='lister_options') && in_array($granulosite,$tab_granulosite) )
 
 if( ($action=='Voir') && $matiere_id )
 {
-	$DB_TAB = DB_STRUCTURE_COMMUN::DB_recuperer_arborescence($prof_id=0,$matiere_id,$niveau_id=0,$only_socle=false,$only_item=false,$socle_nom=true);
+	$DB_TAB = DB_STRUCTURE_COMMUN::DB_recuperer_arborescence( 0 /*prof_id*/ , $matiere_id , 0 /*niveau_id*/ , FALSE /*only_socle*/ , FALSE /*only_item*/ , TRUE /*socle_nom*/ );
 	$tab_niveau  = array();
 	$tab_domaine = array();
 	$tab_theme   = array();

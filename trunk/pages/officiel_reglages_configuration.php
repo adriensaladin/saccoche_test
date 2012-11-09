@@ -44,25 +44,36 @@ $select_socle_appreciation_generale    = Form::afficher_select(Form::$tab_select
 $select_socle_couleur                  = Form::afficher_select(Form::$tab_select_couleur      , $select_nom='f_socle_couleur'                  , $option_first='non' , $selection=$_SESSION['OFFICIEL']['SOCLE_COULEUR']                  , $optgroup='non');
 $select_socle_legende                  = Form::afficher_select(Form::$tab_select_legende      , $select_nom='f_socle_legende'                  , $option_first='non' , $selection=$_SESSION['OFFICIEL']['SOCLE_LEGENDE']                  , $optgroup='non');
 
-$check_releve_moyenne_scores     = ($_SESSION['OFFICIEL']['RELEVE_MOYENNE_SCORES'])          ? ' checked' : '' ;
-$check_releve_pourcentage_acquis = ($_SESSION['OFFICIEL']['RELEVE_POURCENTAGE_ACQUIS'])      ? ' checked' : '' ;
-$check_releve_aff_coef           = ($_SESSION['OFFICIEL']['RELEVE_AFF_COEF'])                ? ' checked' : '' ;
-$check_releve_aff_socle          = ($_SESSION['OFFICIEL']['RELEVE_AFF_SOCLE'])               ? ' checked' : '' ;
-$check_releve_aff_domaine        = ($_SESSION['OFFICIEL']['RELEVE_AFF_DOMAINE'])             ? ' checked' : '' ;
-$check_releve_aff_theme          = ($_SESSION['OFFICIEL']['RELEVE_AFF_THEME'])               ? ' checked' : '' ;
+$check_releve_only_socle           =  $_SESSION['OFFICIEL']['RELEVE_ONLY_SOCLE']              ? ' checked' : '' ;
+$check_releve_retroactif_auto      = ($_SESSION['OFFICIEL']['RELEVE_RETROACTIF']=='auto')     ? ' checked' : '' ;
+$check_releve_retroactif_non       = ($_SESSION['OFFICIEL']['RELEVE_RETROACTIF']=='non')      ? ' checked' : '' ;
+$check_releve_retroactif_oui       = ($_SESSION['OFFICIEL']['RELEVE_RETROACTIF']=='oui')      ? ' checked' : '' ;
+$check_releve_moyenne_scores       =  $_SESSION['OFFICIEL']['RELEVE_MOYENNE_SCORES']          ? ' checked' : '' ;
+$check_releve_pourcentage_acquis   =  $_SESSION['OFFICIEL']['RELEVE_POURCENTAGE_ACQUIS']      ? ' checked' : '' ;
+$check_releve_conv_sur20           =  $_SESSION['OFFICIEL']['RELEVE_CONV_SUR20']              ? ' checked' : '' ;
+$check_releve_aff_coef             =  $_SESSION['OFFICIEL']['RELEVE_AFF_COEF']                ? ' checked' : '' ;
+$check_releve_aff_socle            =  $_SESSION['OFFICIEL']['RELEVE_AFF_SOCLE']               ? ' checked' : '' ;
+$check_releve_aff_domaine          =  $_SESSION['OFFICIEL']['RELEVE_AFF_DOMAINE']             ? ' checked' : '' ;
+$check_releve_aff_theme            =  $_SESSION['OFFICIEL']['RELEVE_AFF_THEME']               ? ' checked' : '' ;
 
-$check_bulletin_moyenne_scores   = ($_SESSION['OFFICIEL']['BULLETIN_MOYENNE_SCORES'])        ? ' checked' : '' ;
-$check_bulletin_note_sur_20      = ($_SESSION['OFFICIEL']['BULLETIN_NOTE_SUR_20'])           ? ' checked' : '' ;
-$check_bulletin_pourcentage      = (!$_SESSION['OFFICIEL']['BULLETIN_NOTE_SUR_20'])          ? ' checked' : '' ;
-$check_bulletin_moyenne_classe   = ($_SESSION['OFFICIEL']['BULLETIN_MOYENNE_CLASSE'])        ? ' checked' : '' ;
-$check_bulletin_moyenne_generale = ($_SESSION['OFFICIEL']['BULLETIN_MOYENNE_GENERALE'])      ? ' checked' : '' ;
+$check_bulletin_only_socle         =  $_SESSION['OFFICIEL']['BULLETIN_ONLY_SOCLE']            ? ' checked' : '' ;
+$check_bulletin_retroactif_auto    = ($_SESSION['OFFICIEL']['BULLETIN_RETROACTIF']=='auto')   ? ' checked' : '' ;
+$check_bulletin_retroactif_non     = ($_SESSION['OFFICIEL']['BULLETIN_RETROACTIF']=='non')    ? ' checked' : '' ;
+$check_bulletin_retroactif_oui     = ($_SESSION['OFFICIEL']['BULLETIN_RETROACTIF']=='oui')    ? ' checked' : '' ;
+$check_bulletin_barre_acquisitions =  $_SESSION['OFFICIEL']['BULLETIN_BARRE_ACQUISITIONS']    ? ' checked' : '' ;
+$check_bulletin_moyenne_scores     =  $_SESSION['OFFICIEL']['BULLETIN_MOYENNE_SCORES']        ? ' checked' : '' ;
+$check_bulletin_note_sur_20        =  $_SESSION['OFFICIEL']['BULLETIN_NOTE_SUR_20']           ? ' checked' : '' ;
+$check_bulletin_pourcentage        = !$_SESSION['OFFICIEL']['BULLETIN_NOTE_SUR_20']           ? ' checked' : '' ;
+$check_bulletin_moyenne_classe     =  $_SESSION['OFFICIEL']['BULLETIN_MOYENNE_CLASSE']        ? ' checked' : '' ;
+$check_bulletin_moyenne_generale   =  $_SESSION['OFFICIEL']['BULLETIN_MOYENNE_GENERALE']      ? ' checked' : '' ;
 
-$check_socle_only_presence       = ($_SESSION['OFFICIEL']['SOCLE_ONLY_PRESENCE'])            ? ' checked' : '' ;
-$check_socle_pourcentage_acquis  = ($_SESSION['OFFICIEL']['SOCLE_POURCENTAGE_ACQUIS'])       ? ' checked' : '' ;
-$check_socle_etat_validation     = ($_SESSION['OFFICIEL']['SOCLE_ETAT_VALIDATION'])          ? ' checked' : '' ;
+$check_socle_only_presence         =  $_SESSION['OFFICIEL']['SOCLE_ONLY_PRESENCE']            ? ' checked' : '' ;
+$check_socle_pourcentage_acquis    =  $_SESSION['OFFICIEL']['SOCLE_POURCENTAGE_ACQUIS']       ? ' checked' : '' ;
+$check_socle_etat_validation       =  $_SESSION['OFFICIEL']['SOCLE_ETAT_VALIDATION']          ? ' checked' : '' ;
 
-$class_span_moyennes             = ($_SESSION['OFFICIEL']['BULLETIN_MOYENNE_SCORES'])        ? 'show'     : 'hide' ;
-$class_span_moyenne_generale     = ($_SESSION['OFFICIEL']['BULLETIN_APPRECIATION_GENERALE']) ? 'show'     : 'hide' ;
+$class_span_bulletin_moyennes         =  $_SESSION['OFFICIEL']['BULLETIN_MOYENNE_SCORES']                  ? 'show' : 'hide' ;
+$class_span_bulletin_moyenne_generale =  $_SESSION['OFFICIEL']['BULLETIN_APPRECIATION_GENERALE']           ? 'show' : 'hide' ;
+$class_label_releve_conv_sur20        = ($check_releve_moyenne_scores || $check_releve_pourcentage_acquis) ? 'show' : 'hide' ;
 
 ?>
 
@@ -76,7 +87,12 @@ $class_span_moyenne_generale     = ($_SESSION['OFFICIEL']['BULLETIN_APPRECIATION
 	<p>
 		<label class="tab">Appr. matière :</label><?php echo $select_releve_appreciation_rubrique ?><br />
 		<label class="tab">Appr. générale :</label><?php echo $select_releve_appreciation_generale ?><br />
-		<label class="tab">Lignes en option :</label><label for="f_releve_moyenne_scores"><input type="checkbox" id="f_releve_moyenne_scores" name="f_releve_moyenne_scores" value="1"<?php echo $check_releve_moyenne_scores ?> /> Moyenne des scores</label>&nbsp;&nbsp;&nbsp;<label for="f_releve_pourcentage_acquis"><input type="checkbox" id="f_releve_pourcentage_acquis" name="f_releve_pourcentage_acquis" value="1"<?php echo $check_releve_pourcentage_acquis ?> /> Pourcentage d'items acquis</label><br />
+		<span class="radio">Prise en compte des évaluations antérieures :</span>
+			<label for="f_releve_retroactif_auto"><input type="radio" id="f_releve_retroactif_auto" name="f_releve_retroactif" value="auto"<?php echo $check_releve_retroactif_auto ?> /> automatique</label>&nbsp;&nbsp;&nbsp;
+			<label for="f_releve_retroactif_non"><input type="radio" id="f_releve_retroactif_non" name="f_releve_retroactif" value="non"<?php echo $check_releve_retroactif_non ?> /> non</label>&nbsp;&nbsp;&nbsp;
+			<label for="f_releve_retroactif_oui"><input type="radio" id="f_releve_retroactif_oui" name="f_releve_retroactif" value="oui"<?php echo $check_releve_retroactif_oui ?> /> oui</label><br />
+		<label class="tab">Restriction :</label><label for="f_releve_only_socle"><input type="checkbox" id="f_releve_only_socle" name="f_releve_only_socle" value="1"<?php echo $check_releve_only_socle ?> /> Uniquement les items liés du socle</label><br />
+		<label class="tab">Lignes en option :</label><label for="f_releve_moyenne_scores"><input type="checkbox" id="f_releve_moyenne_scores" name="f_releve_moyenne_scores" value="1"<?php echo $check_releve_moyenne_scores ?> /> Moyenne des scores</label>&nbsp;&nbsp;&nbsp;<label for="f_releve_pourcentage_acquis"><input type="checkbox" id="f_releve_pourcentage_acquis" name="f_releve_pourcentage_acquis" value="1"<?php echo $check_releve_pourcentage_acquis ?> /> Pourcentage d'items acquis</label>&nbsp;&nbsp;&nbsp;<label for="f_releve_conv_sur20" class="<?php echo $class_label_releve_conv_sur20 ?>"><input type="checkbox" id="f_releve_conv_sur20" name="f_releve_conv_sur20" value="1"<?php echo $check_releve_conv_sur20 ?> /> Proposition de note sur 20</label><br />
 		<label class="tab">Indications :</label><?php echo $select_releve_cases_nb ?>&nbsp;&nbsp;&nbsp;<label for="f_releve_aff_coef"><input type="checkbox" id="f_releve_aff_coef" name="f_releve_aff_coef" value="1"<?php echo $check_releve_aff_coef ?> /> Coefficients</label>&nbsp;&nbsp;&nbsp;<label for="f_releve_aff_socle"><input type="checkbox" id="f_releve_aff_socle" name="f_releve_aff_socle" value="1"<?php echo $check_releve_aff_socle ?> /> Appartenance au socle</label>&nbsp;&nbsp;&nbsp;<label for="f_releve_aff_domaine"><input type="checkbox" id="f_releve_aff_domaine" name="f_releve_aff_domaine" value="1"<?php echo $check_releve_aff_domaine ?> /> Domaines</label>&nbsp;&nbsp;&nbsp;<label for="f_releve_aff_theme"><input type="checkbox" id="f_releve_aff_theme" name="f_releve_aff_theme" value="1"<?php echo $check_releve_aff_theme ?> /> Thèmes</label><br />
 		<label class="tab">Impression :</label><?php echo $select_releve_couleur ?> <?php echo $select_releve_legende ?>
 	</p>
@@ -93,12 +109,19 @@ $class_span_moyenne_generale     = ($_SESSION['OFFICIEL']['BULLETIN_APPRECIATION
 	<p>
 		<label class="tab">Appr. matière :</label><?php echo $select_bulletin_appreciation_rubrique ?><br />
 		<label class="tab">Appr. générale :</label><?php echo $select_bulletin_appreciation_generale ?><br />
-		<label class="tab">Indications :</label>
+		<span class="radio">Prise en compte des évaluations antérieures :</span>
+			<label for="f_bulletin_retroactif_auto"><input type="radio" id="f_bulletin_retroactif_auto" name="f_bulletin_retroactif" value="auto"<?php echo $check_bulletin_retroactif_auto ?> /> automatique</label>&nbsp;&nbsp;&nbsp;
+			<label for="f_bulletin_retroactif_non"><input type="radio" id="f_bulletin_retroactif_non" name="f_bulletin_retroactif" value="non"<?php echo $check_bulletin_retroactif_non ?> /> non</label>&nbsp;&nbsp;&nbsp;
+			<label for="f_bulletin_retroactif_oui"><input type="radio" id="f_bulletin_retroactif_oui" name="f_bulletin_retroactif" value="oui"<?php echo $check_bulletin_retroactif_oui ?> /> oui</label><br />
+		<label class="tab">Restriction :</label><label for="f_bulletin_only_socle"><input type="checkbox" id="f_bulletin_only_socle" name="f_bulletin_only_socle" value="1"<?php echo $check_bulletin_only_socle ?> /> Uniquement les items liés du socle</label><br />
+		<label class="tab">Acquisitions :</label>
+		<label for="f_bulletin_barre_acquisitions"><input type="checkbox" id="f_bulletin_barre_acquisitions" name="f_bulletin_barre_acquisitions" value="1"<?php echo $check_bulletin_barre_acquisitions ?> /> Barre avec le total des états acquisitions par matière</label><br />
+		<label class="tab">Moyennes :</label>
 		<label for="f_bulletin_moyenne_scores"><input type="checkbox" id="f_bulletin_moyenne_scores" name="f_bulletin_moyenne_scores" value="1"<?php echo $check_bulletin_moyenne_scores ?> /> Moyenne des scores</label>
-		<span id="span_moyennes" class="<?php echo $class_span_moyennes ?>">
+		<span id="span_moyennes" class="<?php echo $class_span_bulletin_moyennes ?>">
 			[ <label for="f_bulletin_note_sur_20"><input type="radio" id="f_bulletin_note_sur_20" name="f_bulletin_note_sur_20" value="1"<?php echo $check_bulletin_note_sur_20 ?> /> en note sur 20</label> | <label for="f_bulletin_pourcentage"><input type="radio" id="f_bulletin_pourcentage" name="f_bulletin_note_sur_20" value="0"<?php echo $check_bulletin_pourcentage ?> /> en pourcentage</label> ]&nbsp;&nbsp;&nbsp;
 			<label for="f_bulletin_moyenne_classe"><input type="checkbox" id="f_bulletin_moyenne_classe" name="f_bulletin_moyenne_classe" value="1"<?php echo $check_bulletin_moyenne_classe ?> /> Moyenne de la classe</label>&nbsp;&nbsp;&nbsp;
-			<span id="span_moyenne_generale" class="<?php echo $class_span_moyenne_generale ?>">
+			<span id="span_moyenne_generale" class="<?php echo $class_span_bulletin_moyenne_generale ?>">
 				<label for="f_bulletin_moyenne_generale"><input type="checkbox" id="f_bulletin_moyenne_generale" name="f_bulletin_moyenne_generale" value="1"<?php echo $check_bulletin_moyenne_generale ?> /> Moyenne générale</label>
 			</span>
 		</span><br />

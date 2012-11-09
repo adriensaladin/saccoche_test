@@ -42,7 +42,7 @@ if($action=='ajouter')
 	{
 		foreach($tab_select_groupes as $groupe_id)
 		{
-			DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_liaison_user_groupe_par_admin($user_id,'eleve',$groupe_id,'groupe',true);
+			DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_liaison_user_groupe_par_admin( $user_id , 'eleve' , $groupe_id , 'groupe' , TRUE );
 		}
 	}
 }
@@ -54,7 +54,7 @@ elseif($action=='retirer')
 	{
 		foreach($tab_select_groupes as $groupe_id)
 		{
-			DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_liaison_user_groupe_par_admin($user_id,'eleve',$groupe_id,'groupe',false);
+			DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_liaison_user_groupe_par_admin( $user_id , 'eleve' , $groupe_id , 'groupe' , FALSE );
 		}
 	}
 }

@@ -53,7 +53,7 @@ if($action=='tester')
 // Enregistrer des nouveaux réglages
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-fabriquer_fichier_hebergeur_info( array('SERVEUR_PROXY_USED'=>$proxy_used,'SERVEUR_PROXY_NAME'=>$proxy_name,'SERVEUR_PROXY_PORT'=>$proxy_port,'SERVEUR_PROXY_TYPE'=>$proxy_type,'SERVEUR_PROXY_AUTH_USED'=>$proxy_auth_used,'SERVEUR_PROXY_AUTH_METHOD'=>$proxy_auth_method,'SERVEUR_PROXY_AUTH_USER'=>$proxy_auth_user,'SERVEUR_PROXY_AUTH_PASS'=>$proxy_auth_pass) );
+FileSystem::fabriquer_fichier_hebergeur_info( array('SERVEUR_PROXY_USED'=>$proxy_used,'SERVEUR_PROXY_NAME'=>$proxy_name,'SERVEUR_PROXY_PORT'=>$proxy_port,'SERVEUR_PROXY_TYPE'=>$proxy_type,'SERVEUR_PROXY_AUTH_USED'=>$proxy_auth_used,'SERVEUR_PROXY_AUTH_METHOD'=>$proxy_auth_method,'SERVEUR_PROXY_AUTH_USER'=>$proxy_auth_user,'SERVEUR_PROXY_AUTH_PASS'=>$proxy_auth_pass) );
 exit('ok');
 
 ?>

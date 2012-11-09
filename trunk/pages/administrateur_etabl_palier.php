@@ -66,7 +66,7 @@ $TITRE = "Paliers du socle";
 	<?php
 	// Affichage de la liste des items du socle pour chaque palier
 	$DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_recuperer_arborescence_paliers();
-	echo str_replace( '<li class="li_m1"' , '<li class="li_m1 hide"' , afficher_arborescence_socle_from_SQL($DB_TAB,$dynamique=true,$reference=false,$aff_input=false,$ids=false) );
+	echo str_replace( '<li class="li_m1"' , '<li class="li_m1 hide"' , Html::afficher_arborescence_socle_from_SQL( $DB_TAB , TRUE /*dynamique*/ , FALSE /*reference*/ , FALSE /*aff_input*/ , FALSE /*ids*/ ) );
 	?>
 </div>
 

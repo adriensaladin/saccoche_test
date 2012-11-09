@@ -35,13 +35,14 @@ $valeur['RR'] = (isset($_POST['valeurRR'])) ? Clean::entier($_POST['valeurRR']) 
 $valeur['R']  = (isset($_POST['valeurR']))  ? Clean::entier($_POST['valeurR'])  :  33 ;
 $valeur['V']  = (isset($_POST['valeurV']))  ? Clean::entier($_POST['valeurV'])  :  67 ;
 $valeur['VV'] = (isset($_POST['valeurVV'])) ? Clean::entier($_POST['valeurVV']) : 100 ;
-// Seuil d'aquisition (sur 100) 
+// Seuil d'acquisition (sur 100) 
 $seuil = array();
 $seuil['R'] = (isset($_POST['seuilR'])) ? Clean::entier($_POST['seuilR']) : 40 ;
 $seuil['V'] = (isset($_POST['seuilV'])) ? Clean::entier($_POST['seuilV']) : 60 ;
 // Méthode de calcul
-$methode = (isset($_POST['f_methode'])) ? Clean::texte($_POST['f_methode']) : '' ;
-$limite  = (isset($_POST['f_limite']))  ? Clean::entier($_POST['f_limite']) : 0 ;
+$methode    = (isset($_POST['f_methode']))    ? Clean::texte($_POST['f_methode'])    : '' ;
+$limite     = (isset($_POST['f_limite']))     ? Clean::entier($_POST['f_limite'])    : 0 ;
+$retroactif = (isset($_POST['f_retroactif'])) ? Clean::texte($_POST['f_retroactif']) : '' ;
 
 $tab_methodes = array('geometrique','arithmetique','classique','bestof1','bestof2','bestof3');
 $tab_limites['geometrique']  = array(1,2,3,4,5);
@@ -50,18 +51,34 @@ $tab_limites['classique']    = array(1,2,3,4,5,6,7,8,9,10,15,20,30,40,50,0);
 $tab_limites['bestof1']      = array(1,2,3,4,5,6,7,8,9,10,15,20,30,40,50,0);
 $tab_limites['bestof2']      = array(  2,3,4,5,6,7,8,9,10,15,20,30,40,50,0);
 $tab_limites['bestof3']      = array(    3,4,5,6,7,8,9,10,15,20,30,40,50,0);
+$tab_retroactifs = array('non','oui');
 
-if( ($action=='enregistrer') && in_array($methode,$tab_methodes) && in_array($limite,$tab_limites[$methode]) )
+// Vérification des données transmises
+if( !in_array($methode,$tab_methodes) || !in_array($limite,$tab_limites[$methode]) || !in_array($retroactif,$tab_retroactifs) )
 {
-	$_SESSION['CALCUL_VALEUR']  = $valeur;
-	$_SESSION['CALCUL_SEUIL']   = $seuil;
-	$_SESSION['CALCUL_METHODE'] = $methode;
-	$_SESSION['CALCUL_LIMITE']  = $limite;
-	DB_STRUCTURE_COMMUN::DB_modifier_parametres( array('calcul_valeur_RR'=>$valeur['RR'],'calcul_valeur_R'=>$valeur['R'],'calcul_valeur_V'=>$valeur['V'],'calcul_valeur_VV'=>$valeur['VV'],'calcul_seuil_R'=>$seuil['R'],'calcul_seuil_V'=>$seuil['V'],'calcul_methode'=>$methode,'calcul_limite'=>$limite) );
-	echo'<ok>';
+	exit('Erreur avec les données transmises !');
 }
 
-elseif( ($action=='calculer') && in_array($methode,$tab_methodes) && in_array($limite,$tab_limites[$methode]) )
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+// Enregistrer de nouveaux parapmètres par défaut
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+if($action=='enregistrer')
+{
+	$_SESSION['CALCUL_VALEUR']     = $valeur;
+	$_SESSION['CALCUL_SEUIL']      = $seuil;
+	$_SESSION['CALCUL_METHODE']    = $methode;
+	$_SESSION['CALCUL_LIMITE']     = $limite;
+	$_SESSION['CALCUL_RETROACTIF'] = $retroactif;
+	DB_STRUCTURE_COMMUN::DB_modifier_parametres( array('calcul_valeur_RR'=>$valeur['RR'],'calcul_valeur_R'=>$valeur['R'],'calcul_valeur_V'=>$valeur['V'],'calcul_valeur_VV'=>$valeur['VV'],'calcul_seuil_R'=>$seuil['R'],'calcul_seuil_V'=>$seuil['V'],'calcul_methode'=>$methode,'calcul_limite'=>$limite,'calcul_retroactif'=>$retroactif) );
+	exit('<ok>');
+}
+
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+// Simuler avec des paramètres donnés
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+if($action=='calculer')
 {
 	$type_calcul = (in_array($methode,array('geometrique','arithmetique','classique'))) ? 'moyenne' : 'bestof' ;
 	$tab_bad = array('0','1','2','3');
@@ -144,9 +161,13 @@ elseif( ($action=='calculer') && in_array($methode,$tab_methodes) && in_array($l
 		echo $ligne;
 		echo'</tr>';
 	}
+	exit();
 }
-else
-{
-	echo'Erreur avec les données transmises !';
-}
+
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+// On ne devrait pas en arriver là !
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+exit('Erreur avec les données transmises !');
+
 ?>

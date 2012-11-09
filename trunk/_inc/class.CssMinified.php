@@ -175,7 +175,7 @@ function cssmin_array_is_assoc($array)
 	{
 	if (!is_array($array))
 		{
-		return false;
+		return FALSE;
 		}
 	else
 		{

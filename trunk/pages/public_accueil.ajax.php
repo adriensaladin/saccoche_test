@@ -38,7 +38,7 @@ $password = (isset($_POST['f_password'])) ? Clean::password($_POST['f_password']
  */
 function afficher_formulaire_etablissement($BASE,$profil)
 {
-	$options_structures = Form::afficher_select(DB_WEBMESTRE_SELECT::DB_OPT_structures_sacoche() , $select_nom=false , $option_first='non' , $selection=$BASE , $optgroup='oui');
+	$options_structures = Form::afficher_select(DB_WEBMESTRE_SELECT::DB_OPT_structures_sacoche() , $select_nom=FALSE , $option_first='non' , $selection=$BASE , $optgroup='oui');
 	echo'<label class="tab" for="f_base">Établissement :</label><select id="f_base" name="f_base" tabindex="1" >'.$options_structures.'</select><br />'."\r\n";
 	echo'<span class="tab"></span><button id="f_choisir" type="button" tabindex="2" class="valider">Choisir cet établissement.</button><label id="ajax_msg">&nbsp;</label><br />'."\r\n";
 	echo'<input id="f_profil" name="f_profil" type="hidden" value="'.$profil.'" />'."\r\n";
@@ -169,10 +169,10 @@ if( ( ($action=='initialiser') && ($BASE>0) && (HEBERGEUR_INSTALLATION=='multi-s
 
 if( ($action=='identifier') && ($profil=='webmestre') && ($login=='webmestre') && ($password!='') )
 {
-	$auth_resultat = tester_authentification_webmestre($password);
+	$auth_resultat = SessionUser::tester_authentification_webmestre($password);
 	if($auth_resultat=='ok')
 	{
-		enregistrer_session_webmestre();
+		SessionUser::initialiser_webmestre();
 	}
 	exit($auth_resultat);
 }
@@ -181,10 +181,10 @@ if( ($action=='identifier') && ($profil=='webmestre') && ($login=='webmestre') &
 
 if( ($action=='identifier') && ($profil=='normal') && ($login!='') && ($password!='') )
 {
-	list($auth_resultat,$auth_DB_ROW) = tester_authentification_user( $BASE , $login , $password , 'normal' /*mode_connection*/ );
+	list($auth_resultat,$auth_DB_ROW) = SessionUser::tester_authentification_utilisateur( $BASE , $login , $password , 'normal' /*mode_connection*/ );
 	if($auth_resultat=='ok')
 	{
-		enregistrer_session_user($BASE,$auth_DB_ROW);
+		SessionUser::initialiser_utilisateur($BASE,$auth_DB_ROW);
 	}
 	exit($auth_resultat);
 }

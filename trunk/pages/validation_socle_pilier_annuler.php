@@ -66,7 +66,7 @@ $tab_paliers = DB_STRUCTURE_COMMUN::DB_OPT_paliers_etabl();
 $of_p = (count($tab_paliers)<2) ? 'non' : 'oui' ;
 
 $select_palier = Form::afficher_select($tab_paliers , $select_nom='f_palier' , $option_first=$of_p , $selection=Form::$tab_choix['palier_id'] , $optgroup='non');
-$select_groupe = Form::afficher_select($tab_groupes , $select_nom='f_groupe' , $option_first=$of_g , $selection=false                               , $optgroup=$og_g);
+$select_groupe = Form::afficher_select($tab_groupes , $select_nom='f_groupe' , $option_first=$of_g , $selection=FALSE                         , $optgroup=$og_g);
 ?>
 
 <ul class="puce">

@@ -90,8 +90,8 @@ require(CHEMIN_DOSSIER_INCLUDE.'fonction_affichage_sections_communes.php');
 	<?php
 	// Affichage de la liste des items pour toutes les matières d'un professeur ou toutes les matières de l'établissement si directeur, sur tous les niveaux
 	$user_id = ($_SESSION['USER_PROFIL']=='professeur') ? $_SESSION['USER_ID'] : 0 ;
-	$DB_TAB = DB_STRUCTURE_COMMUN::DB_recuperer_arborescence($user_id,$matiere_id=0,$niveau_id=0,$only_socle=false,$only_item=false,$socle_nom=false);
-	echo afficher_arborescence_matiere_from_SQL($DB_TAB,$dynamique=true,$reference=true,$aff_coef=false,$aff_cart=false,$aff_socle='texte',$aff_lien=false,$aff_input=true);
+	$DB_TAB = DB_STRUCTURE_COMMUN::DB_recuperer_arborescence( $user_id , 0 /*matiere_id*/ , 0 /*niveau_id*/ , FALSE /*only_socle*/ , FALSE /*only_item*/ , FALSE /*socle_nom*/ );
+	echo Html::afficher_arborescence_matiere_from_SQL( $DB_TAB , TRUE /*dynamique*/ , TRUE /*reference*/ , FALSE /*aff_coef*/ , FALSE /*aff_cart*/ , 'texte' /*aff_socle*/ , FALSE /*aff_lien*/ , TRUE /*aff_input*/ );
 	?>
 	<div><span class="tab"></span><button id="valider_compet" type="button" class="valider">Valider la sélection</button>&nbsp;&nbsp;&nbsp;<button id="annuler_compet" type="button" class="annuler">Annuler / Retour</button></div>
 </form>

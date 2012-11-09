@@ -30,7 +30,8 @@
 // ============================================================================
 
 // Définir le décalage horaire par défaut de toutes les fonctions date/heure
-date_default_timezone_set('Europe/Paris'); 
+// La fonction date_default_timezone_set() est disponible depuis PHP 5.1 ; ne pas créer une erreur fatale si PHP 5.0.
+if(function_exists('date_default_timezone_set')) date_default_timezone_set('Europe/Paris'); 
 
 // CHARSET : "iso-8859-1" ou "utf-8" suivant l'encodage utilisé
 // Présence aussi d'un "AddDefaultCharset ..." dans le fichier .htaccess
@@ -39,9 +40,11 @@ define('CHARSET','utf-8');
 // Modifier l'encodage interne pour les fonctions mb_* (manipulation de chaînes de caractères multi-octets)
 mb_internal_encoding(CHARSET);
 
+// Version PHP & MySQL requises et conseillées
+// Attention : ne pas mettre de ".0" (par exemple "5.0") car version_compare() considère que 5 < 5.0 (@see http://fr.php.net/version_compare)
 define('PHP_VERSION_MINI_REQUISE'     ,'5.1');
 define('PHP_VERSION_MINI_CONSEILLEE'  ,'5.3.4'); // PHP 5.2 n'est plus supporté depuis le 16 décembre 2010.
-define('MYSQL_VERSION_MINI_REQUISE'   ,'5.0');
+define('MYSQL_VERSION_MINI_REQUISE'   ,'5');
 define('MYSQL_VERSION_MINI_CONSEILLEE','5.5'); // Version stable depuis octobre 2010
 
 // Vérifier la version de PHP
@@ -56,7 +59,7 @@ $extensions_requises = array('curl','dom','gd','mbstring','mysql','PDO','pdo_mys
 $extensions_manquantes = array_diff($extensions_requises,$extensions_chargees);
 if(count($extensions_manquantes))
 {
-	exit_error( 'PHP incomplet' /*titre*/ , 'Module(s) PHP manquant(s) : '.implode($extensions_manquantes,' ').'<br />Ce serveur n\'a pas la configuration minimale requise.' /*contenu*/ );
+	exit_error( 'PHP incomplet' /*titre*/ , 'Module(s) PHP manquant(s) : '.implode($extensions_manquantes,' ; ').'<br />Ce serveur n\'a pas la configuration minimale requise.' /*contenu*/ );
 }
 
 // Remédier à l'éventuelle configuration de magic_quotes_gpc à On (directive obsolète depuis PHP 5.3.0 et supprimée en PHP 6.0.0).
@@ -410,10 +413,14 @@ function __autoload($class_name)
 		'JSMin'                       => '_inc'.DS.'class.JavaScriptMinified.php' ,
 		'JavaScriptPacker'            => '_inc'.DS.'class.JavaScriptPacker.php' ,
 		'PDF'                         => '_inc'.DS.'class.PDF.php' ,
+		'RSS'                         => '_inc'.DS.'class.RSS.php' ,
 		'SACocheLog'                  => '_inc'.DS.'class.SACocheLog.php' ,
+		'ServeurCommunautaire'        => '_inc'.DS.'class.ServeurCommunautaire.php' ,
 		'Sesamail'                    => '_inc'.DS.'class.Sesamail.php' ,
 		'Session'                     => '_inc'.DS.'class.Session.php' ,
+		'SessionUser'                 => '_inc'.DS.'class.SessionUser.php' ,
 		'To'                          => '_inc'.DS.'class.To.php' ,
+		'Webmestre'                   => '_inc'.DS.'class.Webmestre.php' ,
 
 		'DB_STRUCTURE_ADMINISTRATEUR' => '_sql'.DS.'requetes_structure_administrateur.php' ,
 		'DB_STRUCTURE_DIRECTEUR'      => '_sql'.DS.'requetes_structure_directeur.php' ,
